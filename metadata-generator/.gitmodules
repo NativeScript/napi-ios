@@ -1,3 +1,0 @@
-[submodule "src/generator/nclang"]
-	path = src/generator/nclang
-	url = git@github.com:NativeScript/ios-metadata-generator-nclang.git

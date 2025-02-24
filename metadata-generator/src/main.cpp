@@ -1,244 +1,178 @@
-#include "Binary/binarySerializer.h"
-#include "HeadersParser/Parser.h"
-#include "Meta/DeclarationConverterVisitor.h"
-#include "Meta/Filters/HandleExceptionalMetasFilter.h"
-#include "Meta/Filters/HandleMethodsAndPropertiesWithSameNameFilter.h"
-#include "Meta/Filters/MergeCategoriesFilter.h"
-#include "Meta/Filters/ModulesBlacklist.h"
-#include "Meta/Filters/RemoveDuplicateMembersFilter.h"
-#include "Meta/Filters/ResolveGlobalNamesCollisionsFilter.h"
-#include "TypeScript/DefinitionWriter.h"
-#include "TypeScript/DocSetManager.h"
-#include "Yaml/YamlSerializer.h"
-#include <clang/Frontend/CompilerInstance.h>
-#include <clang/Tooling/Tooling.h>
-#include <fstream>
-#include <llvm/Support/Debug.h>
-#include <llvm/Support/Path.h>
-#include <pwd.h>
-#include <sstream>
+#include "IR.h"
+#include "Metadata.h"
+#include "MetadataWriter.h"
+#include "TSEmitter.h"
+#include <clang-c/Index.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
-// Command line parameters
-llvm::cl::opt<bool>   cla_verbose("verbose", llvm::cl::desc("Set verbose output mode"), llvm::cl::value_desc("bool"));
-llvm::cl::opt<bool>   cla_strictIncludes("strict-includes", llvm::cl::desc("Set strict include headers for diagnostic purposes (usually when some metadata is not generated due to wrong import or include statement)"), llvm::cl::value_desc("bool"));
-llvm::cl::opt<string> cla_outputUmbrellaHeaderFile("output-umbrella", llvm::cl::desc("Specify the output umbrella header file"), llvm::cl::value_desc("file_path"));
-llvm::cl::opt<string> cla_inputUmbrellaHeaderFile("input-umbrella", llvm::cl::desc("Specify the input umbrella header file"), llvm::cl::value_desc("file_path"));
-llvm::cl::opt<string> cla_outputYamlFolder("output-yaml", llvm::cl::desc("Specify the output yaml folder"), llvm::cl::value_desc("<dir_path>"));
-llvm::cl::opt<string> cla_outputModuleMapsFolder("output-modulemaps", llvm::cl::desc("Specify the fodler where modulemap files of all parsed modules will be dumped"), llvm::cl::value_desc("<dir_path>"));
-llvm::cl::opt<string> cla_outputBinFile("output-bin", llvm::cl::desc("Specify the output binary metadata file"), llvm::cl::value_desc("<file_path>"));
-llvm::cl::opt<string> cla_outputDtsFolder("output-typescript", llvm::cl::desc("Specify the output .d.ts folder"), llvm::cl::value_desc("<dir_path>"));
-llvm::cl::opt<string> cla_docSetFile("docset-path", llvm::cl::desc("Specify the path to the iOS SDK docset package"), llvm::cl::value_desc("<file_path>"));
-llvm::cl::opt<string> cla_blackListModuleRegexesFile("blacklist-modules-file", llvm::cl::desc("Specify the metadata entries blacklist file containing regexes of module names on each line"), llvm::cl::value_desc("file_path"));
-llvm::cl::opt<string> cla_whiteListModuleRegexesFile("whitelist-modules-file", llvm::cl::desc("Specify the metadata entries whitelist file containing regexes of module names on each line"), llvm::cl::value_desc("file_path"));
-llvm::cl::opt<bool>   cla_applyManualDtsChanges("apply-manual-dts-changes", llvm::cl::desc("Specify whether to disable manual adjustments to generated .d.ts files for specific erroneous cases in the iOS SDK"), llvm::cl::init(true));
-llvm::cl::opt<string> cla_clangArgumentsDelimiter(llvm::cl::Positional, llvm::cl::desc("Xclang"), llvm::cl::init("-"));
-llvm::cl::list<string> cla_clangArguments(llvm::cl::ConsumeAfter, llvm::cl::desc("<clang arguments>..."));
+using namespace metagen;
 
-class MetaGenerationConsumer : public clang::ASTConsumer {
-public:
-    explicit MetaGenerationConsumer(clang::SourceManager& sourceManager, clang::HeaderSearch& headerSearch, Meta::ModulesBlacklist& modulesBlacklist)
-        : _headerSearch(headerSearch)
-        , _visitor(sourceManager, _headerSearch, cla_verbose, modulesBlacklist)
-    {
+#define UMBRELLA_HEADER "umbrella.h"
+
+int main(int argc, char **argv) {
+  std::string outputFile;
+  std::string outputTypesDir;
+  std::string sdk;
+  std::string frameworksDir;
+
+  std::string code = "";
+
+  std::vector<std::string> args = {"-Xclang",
+                                   "-isysroot",
+                                   "",
+                                   "-x",
+                                   "objective-c",
+                                   "-fno-objc-arc",
+                                   "-fmodule-maps",
+                                   "-ferror-limit=0",
+                                   "-Wno-unknown-pragmas",
+                                   "-Wno-ignored-attributes",
+                                   "-Wno-nullability-completeness",
+                                   "-Wno-expansion-to-defined",
+                                   "-Wno-deprecated-declarations",
+                                   "-Wno-objc-property-no-attribute",
+                                   "-std=gnu11"};
+
+  std::unordered_set<std::string> includePaths;
+
+  for (int i = 1; i < argc; i++) {
+    std::string arg = argv[i];
+    if (arg.find("framework=") == 0) {
+      if (frameworksDir.empty()) {
+        std::cout << "framework= argument must be specified after sdk="
+                  << std::endl;
+        std::exit(1);
+      }
+
+      std::string framework = arg.substr(10);
+      std::string includePath = frameworksDir + "/" + framework + ".framework";
+      includePaths.emplace(includePath);
+      args.emplace_back("-I" + includePath + "/Headers");
+      code += "#import <" + framework + "/" + framework + ".h>\n";
+    } else if (arg.find("include=") == 0) {
+      std::string includeDir = arg.substr(8);
+      includePaths.emplace(includeDir);
+    } else if (arg.find("headers=") == 0) {
+      std::string includeDir = arg.substr(8);
+      args.emplace_back("-I" + includeDir);
+    } else if (arg.find("import=") == 0) {
+      std::string import = arg.substr(7);
+      code += "#import " + import + "\n";
+    } else if (arg.find("sdk=") == 0) {
+      sdk = arg.substr(4);
+      args[2] = sdk;
+      args.emplace_back("-I" + sdk + "/usr/include");
+      frameworksDir = sdk + "/System/Library/Frameworks";
+      args.emplace_back("-F" + frameworksDir);
+    } else if (arg.find("target=") == 0) {
+      std::string target = arg.substr(7);
+      args.emplace_back("-target");
+      args.emplace_back(target);
+    } else if (arg.find("arg=") == 0) {
+      std::string argval = arg.substr(4);
+      args.emplace_back(argval);
+    } else if (arg.find("output=") == 0) {
+      outputFile = arg.substr(7);
+    } else if (arg.find("types=") == 0) {
+      outputTypesDir = arg.substr(6);
+    } else if (arg.find("arch=") == 0) {
+      std::string arch = arg.substr(5);
+      args.emplace_back("-arch");
+      args.emplace_back(arch);
+    } else {
+      std::cout << "Unknown argument: " << arg << std::endl;
+      std::exit(1);
     }
+  }
 
-    virtual void HandleTranslationUnit(clang::ASTContext& Context) override
-    {
-        Context.getDiagnostics().Reset();
-        llvm::SmallVector<clang::Module*, 64> modules;
-        _headerSearch.collectAllModules(modules);
-        std::list<Meta::Meta*>& metaContainer = _visitor.generateMetadata(Context.getTranslationUnitDecl());
+  std::vector<const char *> argsC(args.size());
+  for (size_t i = 0; i < args.size(); ++i) {
+    argsC[i] = args[i].c_str();
+  }
 
-        // Filters
-        Meta::HandleExceptionalMetasFilter().filter(metaContainer);
-        Meta::MergeCategoriesFilter().filter(metaContainer);
-        Meta::RemoveDuplicateMembersFilter().filter(metaContainer);
-        Meta::HandleMethodsAndPropertiesWithSameNameFilter(_visitor.getMetaFactory()).filter(metaContainer);
-        Meta::ResolveGlobalNamesCollisionsFilter filter = Meta::ResolveGlobalNamesCollisionsFilter();
-        filter.filter(metaContainer);
-        std::unique_ptr<std::pair<Meta::ResolveGlobalNamesCollisionsFilter::MetasByModules, Meta::ResolveGlobalNamesCollisionsFilter::InterfacesByName> > result = filter.getResult();
-        Meta::ResolveGlobalNamesCollisionsFilter::MetasByModules& metasByModules = result->first;
-        Meta::ResolveGlobalNamesCollisionsFilter::InterfacesByName& interfacesByName = result->second;
-        _visitor.getMetaFactory().getTypeFactory().resolveCachedBridgedInterfaceTypes(interfacesByName);
+  auto umbrellaHeader = std::fopen(UMBRELLA_HEADER, "w");
+  std::fwrite(code.data(), 1, code.size(), umbrellaHeader);
+  std::fclose(umbrellaHeader);
 
-        // Log statistic for parsed Meta objects
-        std::cout << "Result: " << metaContainer.size() << " declarations from " << metasByModules.size() << " top level modules" << std::endl;
+  CXIndex index = clang_createIndex(0, 0);
+  CXTranslationUnit unit = clang_parseTranslationUnit(
+      index, UMBRELLA_HEADER, argsC.data(), args.size(), nullptr, 0,
+      CXTranslationUnit_None);
 
-        // Dump module maps
-        if (!cla_outputModuleMapsFolder.empty()) {
-            llvm::sys::fs::create_directories(cla_outputModuleMapsFolder);
-            for (clang::Module*& module : modules) {
-                std::string filePath = std::string(cla_outputModuleMapsFolder) + std::string("/") + module->getFullModuleName() + ".modulemap";
-                std::error_code error;
-                llvm::raw_fd_ostream file(filePath, error, llvm::sys::fs::OF_Text);
-                if (error) {
-                    std::cout << error.message();
-                    continue;
-                }
-                module->print(file);
-                file.close();
-            }
-        }
+  std::remove(UMBRELLA_HEADER);
 
-        // Serialize Meta objects to Yaml
-        if (!cla_outputYamlFolder.empty()) {
-            if (!llvm::sys::fs::exists(cla_outputYamlFolder)) {
-                DEBUG_WITH_TYPE("yaml", llvm::dbgs() << "Creating YAML output directory: " << cla_outputYamlFolder << "\n");
-                llvm::sys::fs::create_directories(cla_outputYamlFolder);
-            }
+  if (unit == nullptr) {
+    std::cout << "Failed to parse translation unit" << std::endl;
+    std::exit(1);
+  }
 
-            for (std::pair<clang::Module*, std::vector<Meta::Meta*> >& modulePair : metasByModules) {
-                std::string yamlFileName = modulePair.first->getFullModuleName() + ".yaml";
-                DEBUG_WITH_TYPE("yaml", llvm::dbgs() << "Generating: " << yamlFileName << "\n");
-                Yaml::YamlSerializer::serialize<std::pair<clang::Module*, std::vector<Meta::Meta*> > >(cla_outputYamlFolder + "/" + yamlFileName, modulePair);
-            }
-        }
+  // print diagnostics
+  unsigned numDiagnostics = clang_getNumDiagnostics(unit);
 
-        // Serialize Meta objects to binary metadata
-        if (!cla_outputBinFile.empty()) {
-            binary::MetaFile file(metaContainer.size() / 10); // Average number of hash collisions: 10 per bucket
-            binary::BinarySerializer serializer(&file);
-            serializer.serializeContainer(metasByModules);
-            file.save(cla_outputBinFile);
-        }
-
-        // Generate TypeScript definitions
-        if (!cla_outputDtsFolder.empty()) {
-            llvm::sys::fs::create_directories(cla_outputDtsFolder);
-            std::string docSetPath = cla_docSetFile.empty() ? "" : cla_docSetFile.getValue();
-            for (std::pair<clang::Module*, std::vector<Meta::Meta*> >& modulePair : metasByModules) {
-                TypeScript::DefinitionWriter definitionWriter(modulePair, _visitor.getMetaFactory().getTypeFactory(), docSetPath);
-
-                llvm::SmallString<128> path;
-                llvm::sys::path::append(path, cla_outputDtsFolder, "objc!" + modulePair.first->getFullModuleName() + ".d.ts");
-                std::error_code error;
-                llvm::raw_fd_ostream file(path.str(), error, llvm::sys::fs::OF_Text);
-                if (error) {
-                    std::cout << error.message();
-                    return;
-                }
-
-                file << definitionWriter.write();
-                file.close();
-            }
-        }
+  for (unsigned i = 0; i < numDiagnostics; ++i) {
+    CXDiagnostic diagnostic = clang_getDiagnostic(unit, i);
+    CXDiagnosticSeverity severity = clang_getDiagnosticSeverity(diagnostic);
+    if (severity != CXDiagnostic_Error && severity != CXDiagnostic_Fatal) {
+      continue;
     }
+    CXString string = clang_formatDiagnostic(
+        diagnostic,
+        CXDiagnostic_DisplayCategoryId | CXDiagnostic_DisplaySourceLocation |
+            CXDiagnostic_DisplayColumn | CXDiagnostic_DisplaySourceRanges |
+            CXDiagnostic_DisplayOption);
+    std::cout << clang_getCString(string) << std::endl;
+    clang_disposeString(string);
+  }
 
-private:
-    clang::HeaderSearch& _headerSearch;
-    Meta::DeclarationConverterVisitor _visitor;
-};
+  CXCursor cursor = clang_getTranslationUnitCursor(unit);
 
-class MetaGenerationFrontendAction : public clang::ASTFrontendAction {
-public:
-    MetaGenerationFrontendAction(Meta::ModulesBlacklist& modulesBlacklist)
-        : _modulesBlacklist(modulesBlacklist)
-    {
-    }
+  MetadataFactory factory;
+  factory.includePaths = includePaths;
+  factory.process(cursor);
+  factory.postProcess();
 
-    virtual std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance& Compiler, llvm::StringRef InFile) override
-    {
-        // Since in 4.0.1 'includeNotFound' errors are ignored for some reason
-        // (even though the 'suppressIncludeNotFound' setting is false)
-        // here we set this explicitly in order to keep the same behavior
-        Compiler.getPreprocessor().SetSuppressIncludeNotFoundError(!cla_strictIncludes);
+  clang_disposeTranslationUnit(unit);
+  clang_disposeIndex(index);
 
-        return std::unique_ptr<clang::ASTConsumer>(new MetaGenerationConsumer(Compiler.getASTContext().getSourceManager(), Compiler.getPreprocessor().getHeaderSearchInfo(), _modulesBlacklist));
-    }
+  TSEmitter ts(factory, outputTypesDir);
+  ts.write();
 
-private:
-    Meta::ModulesBlacklist& _modulesBlacklist;
-};
+  MDMetadataWriter writer(factory);
+  writer.write();
 
-std::string replaceString(std::string subject, const std::string& search, const std::string& replace)
-{
-    size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != std::string::npos) {
-        subject.replace(pos, search.length(), replace);
-        pos += replace.length();
-    }
-    return subject;
-}
+  auto result = writer.serialize();
 
-static void dumpArgs(std::ostream& os, int argc, const char **argv) {
-    os << "Metadata Generator Arguments: " << std::endl;
-    for (int i = 0; i < argc; ++i) {
-        std::string arg = *(argv + i);
-        os << arg << " ";
-    }
-    os << std::endl;
-}
+  std::cout << " --- serialization stats ---" << std::endl;
+  std::cout << "           total size: " << result.second / 1024. / 1024.
+            << " MB" << std::endl;
+  std::cout << "       total sections: " << MD_NUM_SECTIONS << std::endl;
+  std::cout << "    strings (n, size): " << writer.strings.size() << ", "
+            << writer.strings.section_size / 1024. << " KB" << std::endl;
+  std::cout << "     consts (n, size): " << writer.constants.size() << ","
+            << writer.constants.section_size / 1024. << " KB" << std::endl;
+  std::cout << "      enums (n, size): " << writer.enums.size() << ", "
+            << writer.enums.section_size / 1024. << " KB" << std::endl;
+  std::cout << " signatures (n, size): " << writer.signatures.size() << ", "
+            << writer.signatures.section_size / 1024. << " KB" << std::endl;
+  std::cout << "  functions (n, size): " << writer.functions.size() << ", "
+            << writer.functions.section_size / 1024. << " KB" << std::endl;
+  std::cout << "  protocols (n, size): " << writer.protocols.size() << ", "
+            << writer.protocols.section_size / 1024. << " KB" << std::endl;
+  std::cout << "    structs (n, size): " << writer.structs.size() << ", "
+            << writer.structs.section_size / 1024. << " KB" << std::endl;
+  std::cout << "    classes (n, size): " << writer.classes.size() << ", "
+            << writer.classes.section_size / 1024. << " KB" << std::endl;
+  std::cout << "     unions (n, size): " << writer.unions.size() << ", "
+            << writer.unions.section_size / 1024. << " KB" << std::endl;
 
-int main(int argc, const char** argv)
-{
-    try {
-        std::clock_t begin = clock();
+  auto file = std::fopen(outputFile.c_str(), "w");
+  std::fwrite(result.first, 1, result.second, file);
+  std::fclose(file);
 
-        llvm::cl::ParseCommandLineOptions(argc, argv);
-        assert(cla_clangArgumentsDelimiter.getValue() == "Xclang");
-
-        // Log Metadata Genrator Arguments
-        dumpArgs(std::cout, argc, argv);
-        dumpArgs(std::cerr, argc, argv);
-
-        TypeScript::DefinitionWriter::applyManualChanges = cla_applyManualDtsChanges;
-
-        std::vector<std::string> clangArgs{
-            "-v",
-            "-x", "objective-c",
-            "-fno-objc-arc", "-fmodule-maps", "-ferror-limit=0",
-            "-Wno-unknown-pragmas", "-Wno-ignored-attributes", "-Wno-nullability-completeness", "-Wno-expansion-to-defined",
-            "-D__NATIVESCRIPT_METADATA_GENERATOR=1"
-        };
-
-        // merge with hardcoded clang arguments
-        clangArgs.insert(clangArgs.end(), cla_clangArguments.begin(), cla_clangArguments.end());
-
-        // Log Clang Arguments
-        std::cout << "Clang Arguments: \n";
-        for (const std::string& arg : clangArgs) {
-            std::cout << "\"" << arg << "\","
-                      << " ";
-        }
-        std::cout << std::endl;
-
-        std::string isysroot;
-        std::vector<string>::const_iterator it = std::find(clangArgs.begin(), clangArgs.end(), "-isysroot");
-        if (it != clangArgs.end() && ++it != clangArgs.end()) {
-            isysroot = *it;
-        }
-
-        std::vector<std::string> includePaths;
-        std::string umbrellaContent = CreateUmbrellaHeader(clangArgs, includePaths);
-
-        if (!cla_inputUmbrellaHeaderFile.empty()) {
-            std::ifstream fs(cla_inputUmbrellaHeaderFile);
-            umbrellaContent = std::string((std::istreambuf_iterator<char>(fs)),
-                                          std::istreambuf_iterator<char>());
-        }
-
-        clangArgs.insert(clangArgs.end(), includePaths.begin(), includePaths.end());
-
-        // Save the umbrella file
-        if (!cla_outputUmbrellaHeaderFile.empty()) {
-            std::error_code errorCode;
-            llvm::raw_fd_ostream umbrellaFileStream(cla_outputUmbrellaHeaderFile, errorCode, llvm::sys::fs::OpenFlags::OF_None);
-            if (!errorCode) {
-                umbrellaFileStream << umbrellaContent;
-                umbrellaFileStream.close();
-            }
-        }
-        // generate metadata for the intermediate sdk header
-        Meta::ModulesBlacklist modulesBlacklist(cla_whiteListModuleRegexesFile, cla_blackListModuleRegexesFile);
-        clang::tooling::runToolOnCodeWithArgs(std::unique_ptr<MetaGenerationFrontendAction>(new MetaGenerationFrontendAction(/*r*/modulesBlacklist)), umbrellaContent, clangArgs, "umbrella.h", "objc-metadata-generator");
-
-        std::clock_t end = clock();
-        double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-        std::cout << "Done! Running time: " << elapsed_secs << " sec " << std::endl;
-
-        return 0;
-    } catch (const std::exception& e) {
-        std::cerr << "error: " << e.what() << std::endl;
-        return 1;
-    }
+  return 0;
 }

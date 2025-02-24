@@ -27,7 +27,12 @@ BUILD_CATALYST=$(to_bool ${BUILD_CATALYST:=true})
 BUILD_IPHONE=$(to_bool ${BUILD_IPHONE:=true})
 BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
 BUILD_VISION=$(to_bool ${BUILD_VISION:=true})
+BUILD_MACOS=$(to_bool ${BUILD_MACOS:=true})
 VERBOSE=$(to_bool ${VERBOSE:=false})
+EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
+
+TARGET_ENGINE=${TARGET_ENGINE:=none}
+METADATA_SIZE=${METADATA_SIZE:=0}
 
 for arg in $@; do
   case $arg in
@@ -39,7 +44,12 @@ for arg in $@; do
     --no-iphone|--no-device) BUILD_IPHONE=false ;;
     --xr|--vision) BUILD_VISION=true ;;
     --no-xr|--no-vision) BUILD_VISION=false ;;
+    --macos) BUILD_MACOS=true ;;
+    --no-macos) BUILD_MACOS=false ;;
     --verbose|-v) VERBOSE=true ;;
+    --v8) TARGET_ENGINE=v8 ;;
+    --embed-metadata) EMBED_METADATA=true ;;
+    --hermes) TARGET_ENGINE=hermes ;;
     *) ;;
   esac
 done
@@ -56,95 +66,161 @@ mkdir -p $DIST
 mkdir -p $DIST/intermediates
 
 checkpoint "Cleanup NativeScript"
-xcodebuild -project v8ios.xcodeproj \
-           -target "NativeScript" \
-           -configuration Release clean \
-           $QUIET
+# xcodebuild -project v8ios.xcodeproj \
+#            -target "NativeScript" \
+#            -configuration Release clean \
+#            $QUIET
 
 if $BUILD_CATALYST; then
 checkpoint "Building NativeScript for Mac Catalyst"
-xcodebuild archive -project v8ios.xcodeproj \
-                   -scheme "NativeScript" \
-                   -configuration Release \
-                   -destination "platform=macOS,variant=Mac Catalyst" \
-                   $QUIET \
-                   EXCLUDED_ARCHS="x86_64" \
-                   SKIP_INSTALL=NO \
-                   BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
-                   INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
-                   -archivePath $DIST/intermediates/NativeScript.maccatalyst.xcarchive
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "platform=macOS,variant=Mac Catalyst" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="x86_64" \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+#                    INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
+#                    -archivePath $DIST/intermediates/NativeScript.maccatalyst.xcarchive
 fi
 
 if $BUILD_SIMULATOR; then
 checkpoint "Building NativeScript for iphone simulators (multi-arch)"
-xcodebuild archive -project v8ios.xcodeproj \
-                   -scheme "NativeScript" \
-                   -configuration Release \
-                   -destination "generic/platform=iOS Simulator" \
-                   $QUIET \
-                   EXCLUDED_ARCHS="i386" \
-                   DEVELOPMENT_TEAM=$DEV_TEAM \
-                   SKIP_INSTALL=NO \
-                   BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
-                   INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
-                   -archivePath $DIST/intermediates/NativeScript.iphonesimulator.xcarchive
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "generic/platform=iOS Simulator" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="i386" \
+#                    DEVELOPMENT_TEAM=$DEV_TEAM \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+#                    INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
+#                    -archivePath $DIST/intermediates/NativeScript.iphonesimulator.xcarchive
+
+mkdir -p $DIST/intermediates/ios-sim
+
+if $EMBED_METADATA; then
+
+  for arch in x86_64 arm64; do
+
+    METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata.ios.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata.ios.$arch.nsmd")))
+
+  done
+
+fi
+
+cmake -S=./NativeScript -B=$DIST/intermediates/ios-sim -GXcode -DTARGET_PLATFORM=ios-sim -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE
+
+cmake --build $DIST/intermediates/ios-sim --config Release
+
 fi
 
 if $BUILD_IPHONE; then
 checkpoint "Building NativeScript for ARM64 device"
-xcodebuild archive -project v8ios.xcodeproj \
-                   -scheme "NativeScript" \
-                   -configuration Release \
-                   -destination "generic/platform=iOS" \
-                   $QUIET \
-                   EXCLUDED_ARCHS="armv7" \
-                   DEVELOPMENT_TEAM=$DEV_TEAM \
-                   SKIP_INSTALL=NO \
-                   BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
-                   INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
-                   -archivePath $DIST/intermediates/NativeScript.iphoneos.xcarchive
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "generic/platform=iOS" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="armv7" \
+#                    DEVELOPMENT_TEAM=$DEV_TEAM \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+#                    INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
+#                    -archivePath $DIST/intermediates/NativeScript.iphoneos.xcarchive
+
+mkdir -p $DIST/intermediates/ios
+
+if $EMBED_METADATA; then
+
+  for arch in x86_64 arm64; do
+
+    METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata.ios.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata.ios.$arch.nsmd")))
+
+  done
+
+fi
+
+cmake -S=./NativeScript -B=$DIST/intermediates/ios -GXcode -DTARGET_PLATFORM=ios -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE
+
+cmake --build $DIST/intermediates/ios --config Release
+
+fi
+
+if $BUILD_MACOS; then
+checkpoint "Building NativeScript for macOS"
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "generic/platform=iOS" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="armv7" \
+#                    DEVELOPMENT_TEAM=$DEV_TEAM \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+#                    INCLUDE_DEFAULT_METADATA=$INCLUDE_DEFAULT_METADATA\
+#                    -archivePath $DIST/intermediates/NativeScript.iphoneos.xcarchive
+
+mkdir -p $DIST/intermediates/macos
+
+if $EMBED_METADATA; then
+
+  for arch in x86_64 arm64; do
+
+    METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata.macos.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata.macos.$arch.nsmd")))
+
+  done
+
+fi
+
+cmake -S=./NativeScript -B=$DIST/intermediates/macos -GXcode -DTARGET_PLATFORM=macos -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE
+
+cmake --build $DIST/intermediates/macos --config Release
+
 fi
 
 if $BUILD_CATALYST; then
 checkpoint "Building NativeScript for Mac Catalyst"
-xcodebuild archive -project v8ios.xcodeproj \
-                   -scheme "NativeScript" \
-                   -configuration Release \
-                   -destination "generic/platform=macOS,variant=Mac Catalyst" \
-                   $QUIET \
-                   EXCLUDED_ARCHS="x86_64" \
-                   SKIP_INSTALL=NO \
-                   BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
-                   -archivePath $DIST/intermediates/NativeScript.maccatalyst.xcarchive
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "generic/platform=macOS,variant=Mac Catalyst" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="x86_64" \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+#                    -archivePath $DIST/intermediates/NativeScript.maccatalyst.xcarchive
 fi
 
 if $BUILD_VISION; then
 
 checkpoint "Building NativeScript for visionOS Device"
-xcodebuild archive -project v8ios.xcodeproj \
-                   -scheme "NativeScript" \
-                   -configuration Release \
-                   -destination "generic/platform=visionOS" \
-                   $QUIET \
-                   EXCLUDED_ARCHS="i386 x86_64" \
-                   VALID_ARCHS=arm64 \
-                   DEVELOPMENT_TEAM=$DEV_TEAM \
-                   SKIP_INSTALL=NO \
-                   BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
-                   -archivePath $DIST/intermediates/NativeScript.xros.xcarchive
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "generic/platform=visionOS" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="i386 x86_64" \
+#                    VALID_ARCHS=arm64 \
+#                    DEVELOPMENT_TEAM=$DEV_TEAM \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+#                    -archivePath $DIST/intermediates/NativeScript.xros.xcarchive
 
-checkpoint "Building NativeScript for visionOS Simulators"
-xcodebuild archive -project v8ios.xcodeproj \
-                   -scheme "NativeScript" \
-                   -configuration Release \
-                   -destination "generic/platform=visionOS Simulator" \
-                   $QUIET \
-                   EXCLUDED_ARCHS="i386 x86_64" \
-                   VALID_ARCHS=arm64 \
-                   DEVELOPMENT_TEAM=$DEV_TEAM \
-                   SKIP_INSTALL=NO \
-                   BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
-                   -archivePath $DIST/intermediates/NativeScript.xrsimulator.xcarchive
+# checkpoint "Building NativeScript for visionOS Simulators"
+# xcodebuild archive -project v8ios.xcodeproj \
+#                    -scheme "NativeScript" \
+#                    -configuration Release \
+#                    -destination "generic/platform=visionOS Simulator" \
+#                    $QUIET \
+#                    EXCLUDED_ARCHS="i386 x86_64" \
+#                    VALID_ARCHS=arm64 \
+#                    DEVELOPMENT_TEAM=$DEV_TEAM \
+#                    SKIP_INSTALL=NO \
+#                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+#                    -archivePath $DIST/intermediates/NativeScript.xrsimulator.xcarchive
 fi
 
 XCFRAMEWORKS=()
@@ -154,13 +230,15 @@ if $BUILD_CATALYST; then
 fi
 
 if $BUILD_SIMULATOR; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.iphonesimulator.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
-                  -debug-symbols "$DIST/intermediates/NativeScript.iphonesimulator.xcarchive/dSYMs/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios-sim/Release-iphonesimulator/NativeScript.framework" )
 fi
 
 if $BUILD_IPHONE; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.iphoneos.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
-                  -debug-symbols "$DIST/intermediates/NativeScript.iphoneos.xcarchive/dSYMs/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios/Release-iphoneos/NativeScript.framework" )
+fi
+
+if $BUILD_MACOS; then
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/Release/NativeScript.framework" )
 fi
 
 if $BUILD_VISION; then
@@ -170,12 +248,23 @@ if $BUILD_VISION; then
                   -debug-symbols "$DIST/intermediates/NativeScript.xrsimulator.xcarchive/dSYMs/NativeScript.framework.dSYM" )
 fi
 
+if [ "$TARGET_ENGINE" != "none" ]; then
+
 checkpoint "Creating NativeScript.xcframework"
 OUTPUT_DIR="$DIST/NativeScript.xcframework"
 rm -rf $OUTPUT_DIR
 xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
 
+else
+
+checkpoint "Creating NativeScript.node"
+
+cp -r "$DIST/intermediates/macos/Release/libNativeScript.dylib" "$DIST/NativeScript.node"
+
+fi
+
 rm -rf "$DIST/intermediates"
+
 
 # DSYM_OUTPUT_DIR="$DIST/NativeScript.framework.dSYM"
 # cp -r "$DIST/NativeScript.iphoneos.xcarchive/dSYMs/NativeScript.framework.dSYM/" $DSYM_OUTPUT_DIR

@@ -1,0 +1,41 @@
+{
+  "name": "@nativescript/objc-node-api",
+  "version": "1.0.0-alpha.7",
+  "description": "Typings for the common Objective-C runtime APIs used by both @nativescript/ios-node-api and @nativescript/macos-node-api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/runtime-node-api.git",
+    "directory": "packages/objc"
+  },
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "type": "module",
+  "files": [
+    "index.d.ts",
+    "inline_functions.d.ts"
+  ],
+  "scripts": {},
+  "keywords": [
+    "Objective-C",
+    "NativeScript"
+  ],
+  "contributors": [
+    {
+      "name": "DjDeveloperr"
+    },
+    {
+      "name": "Jamie Birch"
+    },
+    {
+      "name": "Nathan Walker"
+    },
+    {
+      "name": "Eduardo Speroni"
+    },
+    {
+      "name": "NativeScript",
+      "email": "oss@nativescript.org"
+    }
+  ],
+  "license": "MIT"
+}
