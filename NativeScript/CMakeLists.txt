@@ -8,7 +8,7 @@ set(NAME NativeScript)
 set(VERSION 0.1.0)
 set(BUNDLE_IDENTIFIER "org.nativescript.runtime")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fobjective-c")
+enable_language(OBJCXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -30,6 +30,7 @@ if(TARGET_PLATFORM STREQUAL "ios")
   set(SDK_NAME "iphoneos")
   set(CMAKE_OSX_ARCHITECTURES "arm64")
   set(TARGET_PLATFORM_SPEC "ios-arm64")
+
 elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "13.0")
   set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
@@ -41,6 +42,7 @@ elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(SDK_NAME "iphonesimulator")
   set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
   set(TARGET_PLATFORM_SPEC "ios-arm64_x86_64-simulator")
+
 elseif(TARGET_PLATFORM STREQUAL "macos")
   set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.0")
   set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0")
@@ -49,6 +51,7 @@ elseif(TARGET_PLATFORM STREQUAL "macos")
   set(SDK_NAME "macosx")
   set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
   set(TARGET_PLATFORM_SPEC "macos-arm64_x86_64")
+
 else()
   message(FATAL_ERROR "Unknown target platform: ${TARGET_PLATFORM}")
   return()
@@ -56,24 +59,30 @@ endif()
 
 set(ENABLE_JS_RUNTIME TRUE)
 
-if (TARGET_ENGINE STREQUAL "none")
+if(TARGET_ENGINE STREQUAL "none")
   unset(ENABLE_JS_RUNTIME)
   set(TARGET_ENGINE_NONE TRUE)
-elseif (TARGET_ENGINE STREQUAL "hermes")
+elseif(TARGET_ENGINE STREQUAL "hermes")
   set(TARGET_ENGINE_HERMES TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_HERMES")
-elseif (TARGET_ENGINE STREQUAL "v8")
+elseif(TARGET_ENGINE STREQUAL "v8")
   set(TARGET_ENGINE_V8 TRUE)
   add_link_options("-fuse-ld=/opt/homebrew/opt/llvm/bin/ld64.lld")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DV8_COMPRESS_POINTERS -DV8_ENABLE_SANDBOX -DTARGET_ENGINE_V8")
+elseif(TARGET_ENGINE STREQUAL "quickjs")
+  set(TARGET_ENGINE_QUICKJS TRUE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_ENGINE_QUICKJS")
+elseif(TARGET_ENGINE STREQUAL "jsc")
+  set(TARGET_ENGINE_JSC TRUE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_ENGINE_JSC")
 else()
   message(FATAL_ERROR "Unknown target engine: ${TARGET_ENGINE}")
   return()
 endif()
 
-if (ENABLE_JS_RUNTIME)
+if(ENABLE_JS_RUNTIME)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_JS_RUNTIME")
-elseif (TARGET_PLATFORM_MACOS)
+elseif(TARGET_PLATFORM_MACOS)
   # If building a generic library for macOS, we'll build a dylib instead of a framework
   unset(BUILD_FRAMEWORK)
   set(GENERIC_NAPI TRUE)
@@ -120,24 +129,6 @@ include_directories(
   /Library/Developer/CommandLineTools/usr/include
 )
 
-if (TARGET_ENGINE_V8)
-  include_directories(
-    napi/v8
-    napi/v8/include
-    napi/v8/v8_inspector
-  )
-elseif(TARGET_ENGINE_HERMES)
-  include_directories(
-    napi/hermes
-    napi/hermes/hermes
-    napi/hermes/jsi
-  )
-elseif(TARGET_ENGINE_NONE)
-  include_directories(
-    napi/generic
-  )
-endif()
-
 set(LIB_SOURCE_FILES
   ffi/AutoreleasePool.mm
   ffi/Protocol.mm
@@ -161,7 +152,7 @@ set(LIB_SOURCE_FILES
   ffi/ClassBuilder.mm
 )
 
-if (ENABLE_JS_RUNTIME)
+if(ENABLE_JS_RUNTIME)
   set(LIB_SOURCE_FILES
     ${LIB_SOURCE_FILES}
     runtime/Console.cpp
@@ -175,19 +166,72 @@ if (ENABLE_JS_RUNTIME)
     runtime/RuntimeConfig.cpp
   )
 
-  if (TARGET_ENGINE_V8)
+  if(TARGET_ENGINE_V8)
+    include_directories(
+      napi/v8
+      napi/v8/include
+      napi/v8/v8_inspector
+    )
+
     set(LIB_SOURCE_FILES
       ${LIB_SOURCE_FILES}
       napi/v8/v8-api.cpp
       napi/v8/jsr.cpp
       napi/v8/SimpleAllocator.cpp
     )
+
   elseif(TARGET_ENGINE_HERMES)
+    include_directories(
+      napi/hermes
+      napi/hermes/hermes
+      napi/hermes/jsi
+    )
+
     set(LIB_SOURCE_FILES
       ${LIB_SOURCE_FILES}
       napi/hermes/jsr.cpp
     )
+
+  elseif(TARGET_ENGINE_QUICKJS)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/napi/quickjs/mimalloc-dev mimalloc)
+
+    set(LIB_SOURCE_FILES ${LIB_SOURCE_FILES}
+      # quickjs
+      napi/quickjs/source/cutils.c
+      napi/quickjs/source/libregexp.c
+      napi/quickjs/source/libbf.c
+      napi/quickjs/source/libunicode.c
+      napi/quickjs/source/quickjs.c
+      # napi
+      napi/quickjs/quickjs-api.c
+      napi/quickjs/jsr.cpp
+    )
+
+    include_directories(
+      napi/quickjs
+      napi/quickjs/source
+      napi/common
+      # mimalloc
+      napi/quickjs/mimalloc-dev/include
+    )
+
+  elseif(TARGET_ENGINE_JSC)
+    include_directories(
+      napi/jsc
+      napi/jsc/include
+      napi/common
+    )
+
+    set(LIB_SOURCE_FILES ${LIB_SOURCE_FILES}
+      napi/jsc/jsc-api.cpp
+      napi/jsc/jsr.cpp
+    )
+
   endif()
+else()
+  include_directories(
+    napi/generic
+  )
 endif()
 
 # Build targets
@@ -214,7 +258,7 @@ set_target_properties(${NAME} PROPERTIES
   PUBLIC_HEADER "NativeScript.h"
 )
 
-if (BUILD_FRAMEWORK)
+if(BUILD_FRAMEWORK)
   message(STATUS "FRAMEWORK = TRUE")
   set_target_properties(${NAME} PROPERTIES
     FRAMEWORK TRUE
@@ -257,7 +301,7 @@ target_link_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/libffi/${LIBFFI_BUILD}
 )
 
-if (TARGET_ENGINE_HERMES)
+if(TARGET_ENGINE_HERMES)
   target_link_options(
     ${NAME}
     PRIVATE
@@ -294,12 +338,20 @@ elseif(TARGET_PLATFORM_IOS)
   )
 endif()
 
-# if (GENERIC_NAPI)
-  target_link_options(
+if(TARGET_ENGINE_QUICKJS)
+  target_link_libraries(
     ${NAME}
     PRIVATE
-    "-Wl"
-    "-undefined"
-    "dynamic_lookup"
+    mimalloc-static
   )
+endif()
+
+# if (GENERIC_NAPI)
+target_link_options(
+  ${NAME}
+  PRIVATE
+  "-Wl"
+  "-undefined"
+  "dynamic_lookup"
+)
 # endif()

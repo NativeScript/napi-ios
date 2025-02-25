@@ -48,6 +48,8 @@ for arg in $@; do
     --no-macos) BUILD_MACOS=false ;;
     --verbose|-v) VERBOSE=true ;;
     --v8) TARGET_ENGINE=v8 ;;
+    --quickjs) TARGET_ENGINE=quickjs ;;
+    --jsc) TARGET_ENGINE=jsc ;;
     --embed-metadata) EMBED_METADATA=true ;;
     --hermes) TARGET_ENGINE=hermes ;;
     *) ;;

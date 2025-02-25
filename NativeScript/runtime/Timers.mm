@@ -1,4 +1,5 @@
 #include "js_native_api.h"
+#include "js_native_api_types.h"
 #ifdef __APPLE__
 
 #include "Timers.h"
@@ -20,7 +21,7 @@ void Timers::init(napi_env env) {
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
-          .attributes = napi_default,
+          .attributes = napi_configurable,
           .data = nullptr,
       },
       {
@@ -30,7 +31,7 @@ void Timers::init(napi_env env) {
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
-          .attributes = napi_default,
+          .attributes = napi_configurable,
           .data = nullptr,
       },
       {
@@ -40,7 +41,7 @@ void Timers::init(napi_env env) {
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
-          .attributes = napi_default,
+          .attributes = napi_configurable,
           .data = nullptr,
       },
       {
@@ -50,7 +51,7 @@ void Timers::init(napi_env env) {
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
-          .attributes = napi_default,
+          .attributes = napi_configurable,
           .data = nullptr,
       },
   };

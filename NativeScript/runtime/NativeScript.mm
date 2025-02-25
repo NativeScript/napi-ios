@@ -19,18 +19,18 @@ extern char defaultStartOfMetadataSection __asm("section$start$__DATA$__TNSMetad
 
 std::unique_ptr<Runtime> runtime_;
 
-- (void)runScriptString:(NSString *)script runLoop:(BOOL)runLoop {
-    std::string cppScript = [script UTF8String];
-    runtime_->runScriptString(cppScript);
-    if (runLoop) {
-        runtime_->runRunLoop();
-    }
+- (void)runScriptString:(NSString*)script runLoop:(BOOL)runLoop {
+  std::string cppScript = [script UTF8String];
+  runtime_->runScriptString(cppScript);
+  if (runLoop) {
+    runtime_->runRunLoop();
+  }
 }
 
 - (void)runMainApplication {
-    std::string spec = "./";
-    runtime_->evaluateModule(spec);
-    runtime_->runRunLoop();
+  std::string spec = "./app/bundle.js";
+  runtime_->evaluateModule(spec);
+  runtime_->runRunLoop();
 }
 
 - (bool)liveSync {
@@ -38,15 +38,15 @@ std::unique_ptr<Runtime> runtime_;
 }
 
 - (void)shutdownRuntime {
-    runtime_ = nullptr;
+  runtime_ = nullptr;
 }
 
-- (instancetype)initWithConfig:(Config *)config {
+- (instancetype)initWithConfig:(Config*)config {
   if (self = [super init]) {
     RuntimeConfig.BaseDir = [config.BaseDir UTF8String];
     if (config.ApplicationPath != nil) {
-      RuntimeConfig.ApplicationPath = [[config.BaseDir
-          stringByAppendingPathComponent:config.ApplicationPath] UTF8String];
+      RuntimeConfig.ApplicationPath =
+          [[config.BaseDir stringByAppendingPathComponent:config.ApplicationPath] UTF8String];
     } else {
       RuntimeConfig.ApplicationPath =
           [[config.BaseDir stringByAppendingPathComponent:@"app"] UTF8String];
@@ -59,23 +59,23 @@ std::unique_ptr<Runtime> runtime_;
     RuntimeConfig.IsDebug = [config IsDebug];
     RuntimeConfig.LogToSystemConsole = [config LogToSystemConsole];
 
-    runtime_ = std::make_unique<Runtime>(RuntimeConfig.ApplicationPath);
+    runtime_ = std::make_unique<Runtime>(RuntimeConfig.BaseDir);
 
     // TODO: separate runtime init and measure the time
 
     if (RuntimeConfig.IsDebug) {
-        // TODO: Inspector for debugging
+      // TODO: Inspector for debugging
       // runtime_->enableInspector();
     }
   }
   return self;
 }
 
-- (instancetype)initializeWithConfig:(Config *)config {
+- (instancetype)initializeWithConfig:(Config*)config {
   return [self initWithConfig:config];
 }
 
-- (void)restartWithConfig:(Config *)config {
+- (void)restartWithConfig:(Config*)config {
   [self shutdownRuntime];
   [self initWithConfig:config];
 }

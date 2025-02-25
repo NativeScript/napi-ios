@@ -3,6 +3,7 @@
 #include "js_native_api.h"
 #include "jsr.h"
 #include <dlfcn.h>
+#include <cstddef>
 #include <iostream>
 #include <string>
 
@@ -87,6 +88,7 @@ void finalize_dlobject(napi_env env, void *finalize_data, void *finalize_hint) {
 typedef napi_value napi_module_register_fn(napi_env env, napi_value exports);
 
 napi_value Require::require(napi_env env, std::string &spec) {
+  std::cout << "require inner: " << spec << std::endl;
   NapiScope scope(env);
 
   std::string path = resolve(spec);
@@ -139,21 +141,27 @@ napi_value Require::require(napi_env env, std::string &spec) {
   }
 
   if (spec.ends_with(".json")) {
-    napi_value script, result;
-    napi_create_string_utf8(env, source, NAPI_AUTO_LENGTH, &script);
-    napi_run_script(env, script, &result);
+    std::cout << "json: " << source << std::endl;
+    std::string bootstrap = "(() => { return JSON.parse(`";
+    bootstrap += source;
+    bootstrap += "`); })()";
+    napi_value script, result = NULL;
+    napi_status st = napi_create_string_utf8(env, bootstrap.c_str(), bootstrap.length(), &script);
+    std::cout << "create string: " << st << std::endl;
+    st = napi_run_script(env, script, &result);
+    std::cout << "run script: " << st << std::endl;
     return result;
   }
 
   std::string bootstrap;
-  bootstrap = "(() => { let cjsModule; try { cjsModule = function c(exports, "
-              "require, module, __filename, __dirname) {";
+  bootstrap = "(() => { let cjsModule; cjsModule = function c(exports, "
+              "require, module, __filename, __dirname) {try { ";
   bootstrap += source;
-  bootstrap += "\n};\n"
+  bootstrap += "\n} catch (e) { throw new Error(`Failed to evaluate "
+               "module: ${e.stack}`); }\n};\n"
                "Object.defineProperty(cjsModule, \"name\", { value: `" +
                path +
-               "` });\n} catch (e) { throw new Error(`Failed to evaluate "
-               "module: ${e.stack}`); }\n return cjsModule; })()";
+               "` }); return cjsModule; })()";
 
   napi_status status;
   napi_value func, script, module, exports, require, __filename, __dirname,
@@ -203,11 +211,14 @@ napi_value Require::require(napi_env env, std::string &spec) {
 }
 
 napi_value Require::requireCallback(napi_env env, napi_callback_info cbinfo) {
+  std::cout << "require" << std::endl;
   NapiScope scope(env);
   napi_value arg;
   Require *require;
   size_t argc = 1;
   napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, (void **)&require);
   std::string spec = getStringValue(env, arg);
-  return require->require(env, spec);
+  napi_value res = require->require(env, spec);
+  std::cout << "require done: " << res << std::endl;
+  return res;
 }
