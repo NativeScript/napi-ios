@@ -2,7 +2,10 @@
 #define SRC_JS_NATIVE_API_H_
 
 #include "js_native_api_types.h"
-#include <uchar.h>
+
+#if !defined __cplusplus || (defined(_MSC_VER) && _MSC_VER < 1900)
+typedef uint16_t char16_t;
+#endif
 
 EXTERN_C_START
 

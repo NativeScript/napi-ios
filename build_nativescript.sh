@@ -115,7 +115,7 @@ fi
 
 cmake -S=./NativeScript -B=$DIST/intermediates/ios-sim -GXcode -DTARGET_PLATFORM=ios-sim -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE
 
-cmake --build $DIST/intermediates/ios-sim --config Release
+cmake --build $DIST/intermediates/ios-sim --config Debug
 
 fi
 
@@ -232,7 +232,8 @@ if $BUILD_CATALYST; then
 fi
 
 if $BUILD_SIMULATOR; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios-sim/Release-iphonesimulator/NativeScript.framework" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios-sim/Debug-iphonesimulator/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/ios-sim/Debug-iphonesimulator/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_IPHONE; then
@@ -265,7 +266,7 @@ cp -r "$DIST/intermediates/macos/Release/libNativeScript.dylib" "$DIST/NativeScr
 
 fi
 
-rm -rf "$DIST/intermediates"
+# rm -rf "$DIST/intermediates"
 
 
 # DSYM_OUTPUT_DIR="$DIST/NativeScript.framework.dSYM"

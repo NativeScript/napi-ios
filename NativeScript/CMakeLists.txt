@@ -51,6 +51,7 @@ elseif(TARGET_PLATFORM STREQUAL "macos")
   set(SDK_NAME "macosx")
   set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
   set(TARGET_PLATFORM_SPEC "macos-arm64_x86_64")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_PLATFORM_MACOS")
 
 else()
   message(FATAL_ERROR "Unknown target platform: ${TARGET_PLATFORM}")
@@ -71,10 +72,10 @@ elseif(TARGET_ENGINE STREQUAL "v8")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DV8_COMPRESS_POINTERS -DV8_ENABLE_SANDBOX -DTARGET_ENGINE_V8")
 elseif(TARGET_ENGINE STREQUAL "quickjs")
   set(TARGET_ENGINE_QUICKJS TRUE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_ENGINE_QUICKJS")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_QUICKJS")
 elseif(TARGET_ENGINE STREQUAL "jsc")
   set(TARGET_ENGINE_JSC TRUE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_ENGINE_JSC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_JSC")
 else()
   message(FATAL_ERROR "Unknown target engine: ${TARGET_ENGINE}")
   return()
@@ -91,6 +92,122 @@ endif()
 message(STATUS "TARGET_PLATFORM = ${TARGET_PLATFORM}")
 message(STATUS "TARGET_ENGINE = ${TARGET_ENGINE}")
 message(STATUS "ENABLE_JS_RUNTIME = ${ENABLE_JS_RUNTIME}")
+
+# Set up sources
+
+include_directories(
+  ./
+  ../metadata-generator/include
+  ada
+  napi/common
+  libffi/${LIBFFI_BUILD}/include
+)
+
+set(SOURCE_FILES
+  ffi/AutoreleasePool.mm
+  ffi/Protocol.mm
+  ffi/ObjCBridge.mm
+  ffi/Block.mm
+  ffi/Class.mm
+  ffi/Closure.mm
+  ffi/ClassMember.mm
+  ffi/Cif.mm
+  ffi/TypeConv.mm
+  ffi/Util.mm
+  ffi/Struct.mm
+  ffi/ObjectRef.mm
+  ffi/JSObject.mm
+  ffi/Enum.mm
+  ffi/Variable.mm
+  ffi/Object.mm
+  ffi/CFunction.mm
+  ffi/Interop.mm
+  ffi/InlineFunctions.mm
+  ffi/ClassBuilder.mm
+)
+
+if(ENABLE_JS_RUNTIME)
+  set(SOURCE_FILES
+    ${SOURCE_FILES}
+    runtime/Console.cpp
+    runtime/Runtime.cpp
+    runtime/Require.cpp
+    runtime/Performance.cpp
+    runtime/Bundle.mm
+    runtime/Timers.mm
+    runtime/App.mm
+    runtime/NativeScript.mm
+    runtime/RuntimeConfig.cpp
+  )
+
+  if(TARGET_ENGINE_V8)
+    include_directories(
+      napi/v8
+      napi/v8/include
+      napi/v8/v8_inspector
+    )
+
+    set(SOURCE_FILES
+      ${SOURCE_FILES}
+      napi/v8/v8-api.cpp
+      napi/v8/jsr.cpp
+      napi/v8/SimpleAllocator.cpp
+    )
+
+  elseif(TARGET_ENGINE_HERMES)
+    include_directories(
+      napi/hermes
+      napi/hermes/hermes
+      napi/hermes/jsi
+    )
+
+    set(SOURCE_FILES
+      ${SOURCE_FILES}
+      napi/hermes/jsr.cpp
+    )
+
+  elseif(TARGET_ENGINE_QUICKJS)
+    set(MI_BUILD_OBJECT OFF)
+    add_subdirectory(napi/quickjs/mimalloc-dev mimalloc)
+
+    include_directories(
+      napi/quickjs
+      napi/quickjs/source
+      napi/common
+      mimalloc
+      napi/quickjs/mimalloc-dev/include
+    )
+
+    set(SOURCE_FILES ${SOURCE_FILES}
+      # quickjs
+      napi/quickjs/source/cutils.c
+      napi/quickjs/source/libregexp.c
+      napi/quickjs/source/libbf.c
+      napi/quickjs/source/libunicode.c
+      napi/quickjs/source/quickjs.c
+      # napi
+      napi/quickjs/quickjs-api.c
+      napi/quickjs/jsr.cpp
+    )
+
+  elseif(TARGET_ENGINE_JSC)
+    include_directories(
+      napi/jsc
+      napi/jsc/include
+      napi/common
+    )
+
+    set(SOURCE_FILES ${SOURCE_FILES}
+      napi/jsc/jsc-api.cpp
+      napi/jsc/jsr.cpp
+    )
+
+  endif()
+else()
+  include_directories(
+    napi/generic
+  )
+endif()
 
 # Find SDK
 
@@ -118,128 +235,12 @@ set(CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT_INT}" CACHE INTERNAL "")
 
 message(STATUS "SDK = ${CMAKE_OSX_SYSROOT}")
 
-# Set up sources
-
-include_directories(
-  ./
-  ../metadata-generator/include
-  ada
-  napi/common
-  libffi/${LIBFFI_BUILD}/include
-  /Library/Developer/CommandLineTools/usr/include
-)
-
-set(LIB_SOURCE_FILES
-  ffi/AutoreleasePool.mm
-  ffi/Protocol.mm
-  ffi/ObjCBridge.mm
-  ffi/Block.mm
-  ffi/Class.mm
-  ffi/Closure.mm
-  ffi/ClassMember.mm
-  ffi/Cif.mm
-  ffi/TypeConv.mm
-  ffi/Util.mm
-  ffi/Struct.mm
-  ffi/ObjectRef.mm
-  ffi/JSObject.mm
-  ffi/Enum.mm
-  ffi/Variable.mm
-  ffi/Object.mm
-  ffi/CFunction.mm
-  ffi/Interop.mm
-  ffi/InlineFunctions.mm
-  ffi/ClassBuilder.mm
-)
-
-if(ENABLE_JS_RUNTIME)
-  set(LIB_SOURCE_FILES
-    ${LIB_SOURCE_FILES}
-    runtime/Console.cpp
-    runtime/Runtime.cpp
-    runtime/Require.cpp
-    runtime/Performance.cpp
-    runtime/Bundle.mm
-    runtime/Timers.mm
-    runtime/App.mm
-    runtime/NativeScript.mm
-    runtime/RuntimeConfig.cpp
-  )
-
-  if(TARGET_ENGINE_V8)
-    include_directories(
-      napi/v8
-      napi/v8/include
-      napi/v8/v8_inspector
-    )
-
-    set(LIB_SOURCE_FILES
-      ${LIB_SOURCE_FILES}
-      napi/v8/v8-api.cpp
-      napi/v8/jsr.cpp
-      napi/v8/SimpleAllocator.cpp
-    )
-
-  elseif(TARGET_ENGINE_HERMES)
-    include_directories(
-      napi/hermes
-      napi/hermes/hermes
-      napi/hermes/jsi
-    )
-
-    set(LIB_SOURCE_FILES
-      ${LIB_SOURCE_FILES}
-      napi/hermes/jsr.cpp
-    )
-
-  elseif(TARGET_ENGINE_QUICKJS)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/napi/quickjs/mimalloc-dev mimalloc)
-
-    set(LIB_SOURCE_FILES ${LIB_SOURCE_FILES}
-      # quickjs
-      napi/quickjs/source/cutils.c
-      napi/quickjs/source/libregexp.c
-      napi/quickjs/source/libbf.c
-      napi/quickjs/source/libunicode.c
-      napi/quickjs/source/quickjs.c
-      # napi
-      napi/quickjs/quickjs-api.c
-      napi/quickjs/jsr.cpp
-    )
-
-    include_directories(
-      napi/quickjs
-      napi/quickjs/source
-      napi/common
-      # mimalloc
-      napi/quickjs/mimalloc-dev/include
-    )
-
-  elseif(TARGET_ENGINE_JSC)
-    include_directories(
-      napi/jsc
-      napi/jsc/include
-      napi/common
-    )
-
-    set(LIB_SOURCE_FILES ${LIB_SOURCE_FILES}
-      napi/jsc/jsc-api.cpp
-      napi/jsc/jsr.cpp
-    )
-
-  endif()
-else()
-  include_directories(
-    napi/generic
-  )
-endif()
-
 # Build targets
 
 add_library(
   ${NAME}
   SHARED
-  ${LIB_SOURCE_FILES}
+  ${SOURCE_FILES}
 )
 
 target_sources(
@@ -254,7 +255,7 @@ set_target_properties(${NAME} PROPERTIES
   FRAMEWORK_VERSION ${VERSION}
   MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
   MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
-  MACOSX_FRAMEWORK_IDENTIFIER org.nativescript.runtime
+  MACOSX_FRAMEWORK_IDENTIFIER ${BUNDLE_IDENTIFIER}
   PUBLIC_HEADER "NativeScript.h"
 )
 
@@ -266,8 +267,6 @@ if(BUILD_FRAMEWORK)
 endif()
 
 if(TARGET_PLATFORM_MACOS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_PLATFORM_MACOS")
-
   # add_custom_command(TARGET ${NAME} POST_BUILD
   #   COMMAND /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string ${CMAKE_OSX_DEPLOYMENT_TARGET}" $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
   # )

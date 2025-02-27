@@ -3699,7 +3699,7 @@ napi_check_object_type_tag(napi_env env, napi_value object, const napi_type_tag 
 napi_status napi_run_script(napi_env env,
                             napi_value script,
                             napi_value *result) {
-    return qjs_execute_script(env, script, NULL, result);
+    return qjs_execute_script(env, script, "<anonymous>", result);
 }
 
 /**
