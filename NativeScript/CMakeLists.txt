@@ -168,6 +168,7 @@ if(ENABLE_JS_RUNTIME)
 
   elseif(TARGET_ENGINE_QUICKJS)
     set(MI_BUILD_OBJECT OFF)
+    set(MI_OVERRIDE OFF)
     add_subdirectory(napi/quickjs/mimalloc-dev mimalloc)
 
     include_directories(

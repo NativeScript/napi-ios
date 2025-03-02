@@ -13,7 +13,7 @@
 #include <locale>
 #include <codecvt>
 
-struct NapiCallbackInfo {
+struct napi_callback_info__ {
     napi_value newTarget;
     napi_value thisArg;
     napi_value* argv;
@@ -217,6 +217,7 @@ class NativeInfo {
     static T* GetNativeInfo(JSContextRef ctx, JSObjectRef obj, const char * propertyKey) {
         JSValueRef exception {};
         JSValueRef native_info = JSObjectGetProperty(ctx, obj, JSString(propertyKey), &exception);
+
         NativeInfo* info = Get<NativeInfo>(JSValueToObject(ctx, native_info, &exception));
         if (info != nullptr && info->Type() == T::StaticType) {
             return reinterpret_cast<T*>(info);
@@ -316,7 +317,7 @@ class ConstructorInfo : public NativeInfo {
 //            JSObjectSetProperty(ctx, instance, JSString("prototype"), JSObjectGetProperty(ctx, constructor, JSString("prototype"), nullptr), kJSPropertyAttributeNone,
 //                                nullptr);
 
-            NapiCallbackInfo cbinfo{};
+            napi_callback_info__ cbinfo{};
             cbinfo.thisArg = ToNapi(instance);
             cbinfo.newTarget = ToNapi(constructor);
             cbinfo.argc = argumentCount;
@@ -349,6 +350,11 @@ class ConstructorInfo : public NativeInfo {
         JSClassRef _class;
 };
 
+namespace xyz {
+    static std::once_flag functionInfoOnceFlag;
+    JSClassRef functionInfoClass {};
+}
+
 class FunctionInfo : public NativeInfo {
         public:
         static const NativeType StaticType = NativeType::Function;
@@ -363,19 +369,11 @@ class FunctionInfo : public NativeInfo {
             if (info == nullptr) {
                 return napi_set_last_error(env, napi_generic_failure);
             }
-
-            JSObjectRef function{JSObjectMakeFunctionWithCallback(env->context, JSString(utf8name), CallAsFunction)};
-//            JSObjectRef prototype{JSObjectMake(env->context, info->_class, info)};
-//
-//
-//            JSObjectSetPrototype(env->context, prototype, JSObjectGetPrototype(env->context, function));
-//            JSObjectSetPrototype(env->context, function, prototype);
-
-            NativeInfo::SetNativeInfo(env->context, function, info->_class, "[[jsc_function_info]]", info);
-
+            JSObjectRef function = JSObjectMake(env->context, xyz::functionInfoClass, info);
             *result = ToNapi(function);
             return napi_ok;
         }
+
 
         private:
         FunctionInfo(napi_env env, napi_callback cb, void* data)
@@ -383,15 +381,32 @@ class FunctionInfo : public NativeInfo {
         , _env{env}
         , _cb{cb}
         , _data{data} {
-            JSClassDefinition definition{kJSClassDefinitionEmpty};
-            definition.className = "Native";
-            definition.finalize = Finalize;
-            _class = JSClassCreate(&definition);
+            std::call_once(xyz::functionInfoOnceFlag, []() {
+                JSClassDefinition definition{kJSClassDefinitionEmpty};
+                definition.className = "NapiFunctionCallback";
+                definition.callAsFunction = FunctionInfo::CallAsFunction;
+                definition.attributes = kJSClassAttributeNoAutomaticPrototype;
+                definition.initialize = FunctionInfo::initialize;
+                definition.finalize = Finalize;
+                xyz::functionInfoClass = JSClassCreate(&definition);
+            });
+
         }
 
-        ~FunctionInfo() {
-            JSClassRelease(_class);
+        ~FunctionInfo() {}
+
+    static void initialize(JSContextRef ctx, JSObjectRef object) {
+        JSObjectRef global = JSContextGetGlobalObject(ctx);
+        JSValueRef value =
+                JSObjectGetProperty(ctx, global, JSString("Function"), nullptr);
+        JSObjectRef funcCtor = JSValueToObject(ctx, value, nullptr);
+        if (!funcCtor) {
+            // We can't do anything if Function is not an object
+            return;
         }
+        JSValueRef funcProto = JSObjectGetPrototype(ctx, funcCtor);
+        JSObjectSetPrototype(ctx, object, funcProto);
+    }
 
         // JSObjectCallAsFunctionCallback
         static JSValueRef CallAsFunction(JSContextRef ctx,
@@ -401,16 +416,17 @@ class FunctionInfo : public NativeInfo {
         const JSValueRef arguments[],
         JSValueRef* exception) {
 //            FunctionInfo* info = NativeInfo::Get<FunctionInfo>(function);
-            FunctionInfo* info = NativeInfo::GetNativeInfo<FunctionInfo>(ctx, function, "[[jsc_function_info]]");
+            FunctionInfo* info = reinterpret_cast<FunctionInfo *>(JSObjectGetPrivate(function));
 
             // Make sure any errors encountered last time we were in N-API are gone.
             napi_clear_last_error(info->_env);
 
-            NapiCallbackInfo cbinfo{};
+            napi_callback_info__ cbinfo{};
             cbinfo.thisArg = ToNapi(thisObject);
             cbinfo.newTarget = nullptr;
             cbinfo.argc = argumentCount;
             cbinfo.argv = ToNapi(arguments);
+
             cbinfo.data = info->_data;
 
             napi_value result = info->_cb(info->_env, &cbinfo);
@@ -433,8 +449,8 @@ class FunctionInfo : public NativeInfo {
         napi_env _env;
         napi_callback _cb;
         void* _data;
-        JSClassRef _class;
 };
+
 
 template<typename T, NativeType TType>
 class BaseInfoT : public NativeInfo {
@@ -636,8 +652,8 @@ class ExternalArrayBufferInfo {
 };
 }
 
-struct NapiReference {
-    NapiReference(napi_value value, uint32_t count)
+struct napi_ref__ {
+    napi_ref__(napi_value value, uint32_t count)
     : _value{value}
     , _count{count} {
     }
@@ -708,11 +724,20 @@ struct NapiReference {
     std::list<napi_ref>::iterator _iter{};
 };
 
-void NapiEnvironment::deinit_refs() {
+void napi_env__::deinit_refs() {
     while (!strong_refs.empty()) {
         napi_ref ref{strong_refs.front()};
         ref->deinit(this);
     }
+}
+
+void napi_env__::init_symbol(JSValueRef &symbol, const char *description) {
+    symbol = JSValueMakeSymbol(context, JSString(description));
+    JSValueProtect(context, symbol);
+}
+
+void napi_env__::deinit_symbol(JSValueRef symbol) {
+    JSValueUnprotect(context, symbol);
 }
 
 // Warning: Keep in-sync with napi_status enum
@@ -1899,7 +1924,7 @@ napi_status napi_create_reference(napi_env env,
     CHECK_ARG(env, value);
     CHECK_ARG(env, result);
 
-    NapiReference* ref{new NapiReference{value, initial_refcount}};
+    napi_ref__* ref{new napi_ref__{value, initial_refcount}};
     if (ref == nullptr) {
         return napi_set_last_error(env, napi_generic_failure);
     }

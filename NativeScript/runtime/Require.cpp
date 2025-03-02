@@ -9,7 +9,6 @@
 
 napi_value Require::createRequire(napi_env env, std::string &path,
                                   std::string &tilde, Require **pRequire) {
-  // NapiScope scope(env);
 
   Require *require = new Require(path, tilde);
   if (pRequire) {
@@ -25,7 +24,6 @@ napi_value Require::createRequire(napi_env env, std::string &path,
 }
 
 Require *Require::init(napi_env env, std::string &path, std::string &tilde) {
-  // NapiScope scope(env);
 
   napi_value global;
   napi_get_global(env, &global);
@@ -89,7 +87,6 @@ typedef napi_value napi_module_register_fn(napi_env env, napi_value exports);
 
 napi_value Require::require(napi_env env, std::string &spec) {
   std::cout << "require inner: " << spec << std::endl;
-  NapiScope scope(env);
 
   std::string path = resolve(spec);
 
@@ -212,7 +209,6 @@ napi_value Require::require(napi_env env, std::string &spec) {
 
 napi_value Require::requireCallback(napi_env env, napi_callback_info cbinfo) {
   std::cout << "require" << std::endl;
-  NapiScope scope(env);
   napi_value arg;
   Require *require;
   size_t argc = 1;

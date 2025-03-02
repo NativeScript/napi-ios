@@ -17,9 +17,11 @@ public:
     facebook::hermes::HermesRuntime* rt;
     std::recursive_mutex js_mutex;
     void lock() {
+        threadSafeRuntime->lock();
         js_mutex.lock();
     }
     void unlock() {
+        threadSafeRuntime->unlock();
         js_mutex.unlock();
     }
 
@@ -28,16 +30,22 @@ public:
 
 class NapiScope {
 public:
-    explicit NapiScope(napi_env env)
+    explicit NapiScope(napi_env env, bool openHandle = true)
             : env_(env)
     {
         js_lock_env(env_);
-        napi_open_handle_scope(env_, &napiHandleScope_);
+        if (openHandle) {
+            napi_open_handle_scope(env_, &napiHandleScope_);
+        } else {
+            napiHandleScope_ = nullptr;
+        }
     }
 
     ~NapiScope() {
+        if (napiHandleScope_) {
+            napi_close_handle_scope(env_, napiHandleScope_);
+        }
         js_unlock_env(env_);
-        napi_close_handle_scope(env_, napiHandleScope_);
     }
 
 private:

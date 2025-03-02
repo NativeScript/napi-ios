@@ -79,9 +79,12 @@ Runtime::Runtime(std::string &mainPath) : mainPath(mainPath) {
   App *app = App::init(env);
   // app->runtime = this->runtime;
 #endif // __APPLE__
+
+  napi_close_handle_scope(env, scope);
 }
 
 napi_value Runtime::evaluateModule(std::string &spec) {
+  NapiScope scope(env);
   std::string path = require->resolve(spec);
   return require->require(env, path);
 }

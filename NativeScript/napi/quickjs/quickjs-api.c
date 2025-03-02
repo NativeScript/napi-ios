@@ -2,7 +2,8 @@
 #include <sys/queue.h>
 #include <limits.h>
 #include <quickjs.h>
-#include <js_native_api.h>
+#include "js_native_api.h"
+#include "quicks-runtime.h"
 #include "libbf.h"
 
 #ifdef __ANDROID__
@@ -10,6 +11,8 @@
 #include <android/log.h>
 
 #endif
+
+#define USE_MIMALLOC
 
 #ifdef USE_MIMALLOC
 
@@ -63,6 +66,11 @@ static const JSMallocFunctions mi_mf = {
 
 #endif
 
+
+#define ToJS(value) \
+    *((JSValue*)value)
+
+
 /**
  * --------------------------------------
  *      SAFE LIST TRANSVERSAL MACROS
@@ -106,8 +114,8 @@ typedef struct Handle {
     HandleType type;
 } Handle;
 
-typedef struct NapiHandleScope {
-    LIST_ENTRY(NapiHandleScope)
+typedef struct napi_handle_scope__ {
+    LIST_ENTRY(napi_handle_scope__)
             node; // size_t
     SLIST_HEAD(, Handle)
             handleList; // size_t
@@ -115,25 +123,35 @@ typedef struct NapiHandleScope {
     Handle stackHandles[8];
     int handleCount;
     HandleType type;
-} NapiHandleScope;
+} napi_handle_scope__;
 
-typedef struct NapiReference {
+typedef struct napi_ref__ {
     JSValue value; // size_t * 2
-    LIST_ENTRY(NapiReference)
+    LIST_ENTRY(napi_ref__)
             node;                   // size_t * 2
     uint8_t referenceCount; // 8
-} NapiReference;
+} napi_ref__;
 
-typedef struct NapiDeferred {
+typedef struct napi_deferred__ {
     napi_value resolve;
     napi_value reject;
-} NapiDeferred;
+} napi_deferred__;
 
 typedef struct ExternalInfo {
     void *data;                     // size_t
     void *finalizeHint;             // size_t
     napi_finalize finalizeCallback; // size_t
 } ExternalInfo;
+
+typedef struct NapiHostObjectInfo {
+    void *data;
+    napi_ref ref;
+    napi_finalize finalize_cb;
+    bool is_array;
+    napi_ref getter;
+    napi_ref setter;
+} NapiHostObjectInfo;
+
 
 typedef struct JsAtoms {
     JSAtom napi_external;
@@ -156,13 +174,13 @@ typedef struct JsAtoms {
     JSAtom weakref;
 } JsAtoms;
 
-typedef struct NapiEnvironment {
+typedef struct napi_env__ {
     JSValue referenceSymbolValue; // size_t * 2
     napi_runtime runtime;         // size_t
     JSContext *context;           // size_t
-    LIST_HEAD(, NapiHandleScope)
+    LIST_HEAD(, napi_handle_scope__)
             handleScopeList; // size_t
-    LIST_HEAD(, NapiReference)
+    LIST_HEAD(, napi_ref__)
             referencesList; // size_t
     bool isThrowNull;
     ExternalInfo *instanceData;
@@ -172,22 +190,26 @@ typedef struct NapiEnvironment {
     ExternalInfo *gcBefore;
     ExternalInfo *gcAfter;
     int js_enter_state;
-} NapiEnvironment;
+    int64_t usedMemory;
+} napi_env__;
 
-typedef struct NapiRuntime {
+typedef struct napi_runtime__ {
     JSRuntime *runtime;           // size_t
     JSClassID constructorClassId; // uint32_t
     JSClassID functionClassId;    // uint32_t
     JSClassID externalClassId;    // uint32_t
-} NapiRuntime;
+    JSClassID napiHostObjectClassId; // uint32_t
+    JSClassID napiObjectClassId; // uint32_t
 
-typedef struct NapiCallbackInfo {
+} napi_runtime__;
+
+typedef struct napi_callback_info__ {
     JSValueConst newTarget; // size_t * 2
     JSValueConst thisArg;   // size_t * 2
     JSValueConst *argv;     // size_t * 2
     void *data;             // size_t
     int argc;
-} NapiCallbackInfo;
+} napi_callback_info__;
 
 typedef struct FunctionInfo {
     void *data;             // size_t
@@ -356,6 +378,7 @@ static inline napi_status CreateScopedResult(napi_env env, JSValue value, napi_v
     napi_status status = CreateJSValueHandle(env, value, &jsValueHandle);
     if (status != napi_ok) {
         JS_FreeValue(env->context, value);
+        value = JSUndefined;
         return napi_set_last_error(env, status, NULL, 0, NULL);
     }
     *result = (napi_value) &jsValueHandle->value;
@@ -363,7 +386,7 @@ static inline napi_status CreateScopedResult(napi_env env, JSValue value, napi_v
 }
 
 #define NAPI_OPEN_HANDLE_SCOPE \
-        NapiHandleScope handleScope; \
+        napi_handle_scope__ handleScope; \
         handleScope.type = HANDLE_STACK_ALLOCATED; \
          handleScope.handleCount = 0;\
          handleScope.escapeCalled = false;                      \
@@ -384,7 +407,8 @@ napi_status napi_open_handle_scope(napi_env env, napi_handle_scope *result) {
     CHECK_ARG(env)
     CHECK_ARG(result)
 
-    NapiHandleScope *handleScope = (NapiHandleScope *) mi_malloc(sizeof(NapiHandleScope));
+    napi_handle_scope__ *handleScope = (napi_handle_scope__ *) mi_malloc(
+            sizeof(napi_handle_scope__));
 
     RETURN_STATUS_IF_FALSE(handleScope, napi_memory_error)
     handleScope->type = HANDLE_HEAP_ALLOCATED;
@@ -428,8 +452,8 @@ napi_status napi_open_escapable_handle_scope(napi_env env, napi_escapable_handle
     CHECK_ARG(env)
     CHECK_ARG(result)
 
-    NapiHandleScope *handleScope = (NapiHandleScope *) mi_malloc(
-            sizeof(NapiHandleScope));
+    napi_handle_scope__ *handleScope = (napi_handle_scope__ *) mi_malloc(
+            sizeof(napi_handle_scope__));
     handleScope->type = HANDLE_HEAP_ALLOCATED;
     handleScope->handleCount = 0;
     RETURN_STATUS_IF_FALSE(handleScope, napi_memory_error)
@@ -486,7 +510,7 @@ napi_status napi_escape_handle(napi_env env, napi_escapable_handle_scope scope, 
     RETURN_STATUS_IF_FALSE(handle, napi_memory_error)
 
     scope->escapeCalled = true;
-    handle->value = JS_DupValue(env->context, *((JSValue *) escapee));
+    handle->value = JS_DupValue(env->context, ToJS(escapee));
     SLIST_INSERT_HEAD(&handleScope->handleList, handle, node);
 
     if (result != NULL) {
@@ -507,7 +531,7 @@ napi_status napi_throw(napi_env env, napi_value error) {
     CHECK_ARG(error)
 
     JS_Throw(env->context, JS_IsNull((*(JSValue *) error)) ? JSNull : JS_DupValue(env->context,
-                                                                                  *((JSValue *) error)));
+                                                                                  ToJS(error)));
 
     return napi_clear_last_error(env);
 }
@@ -515,8 +539,18 @@ napi_status napi_throw(napi_env env, napi_value error) {
 napi_status napi_throw_error(napi_env env, const char *code, const char *msg) {
     CHECK_ARG(env)
     CHECK_ARG(msg)
+    if (JS_HasException(env->context)) {
+        return napi_pending_exception;
+    }
 
-    JS_ThrowInternalError(env->context, "code: %s, message: %s\n", code, msg);
+    JSValue error = JS_NewError(env->context);
+    JS_SetPropertyStr(env->context, error, "message", JS_NewString(env->context, msg));
+
+    if (code != NULL) {
+        JS_SetPropertyStr(env->context, error, "code", JS_NewString(env->context, code));
+    }
+
+    JS_Throw(env->context, error);
 
     return napi_clear_last_error(env);
 }
@@ -525,7 +559,21 @@ napi_status napi_throw_range_error(napi_env env, const char *code, const char *m
     CHECK_ARG(env)
     CHECK_ARG(msg)
 
-    JS_ThrowRangeError(env->context, "code: %s, message: %s\n", code, msg);
+    if (JS_HasException(env->context)) {
+        return napi_pending_exception;
+    }
+
+    JSValue error = JS_NewError(env->context);
+    JS_SetPropertyStr(env->context, error, "message", JS_NewString(env->context, msg));
+
+    if (code != NULL) {
+        JS_SetPropertyStr(env->context, error, "code", JS_NewString(env->context, code));
+    }
+
+    JS_SetPropertyStr(env->context, error, "name", JS_NewString(env->context, "RangeError"));
+
+    JS_Throw(env->context, error);
+
 
     return napi_clear_last_error(env);
 }
@@ -534,7 +582,20 @@ napi_status napi_throw_type_error(napi_env env, const char *code, const char *ms
     CHECK_ARG(env)
     CHECK_ARG(msg)
 
-    JS_ThrowTypeError(env->context, "code: %s, message: %s\n", code, msg);
+    if (JS_HasException(env->context)) {
+        return napi_pending_exception;
+    }
+
+    JSValue error = JS_NewError(env->context);
+    JS_SetPropertyStr(env->context, error, "message", JS_NewString(env->context, msg));
+
+    if (code != NULL) {
+        JS_SetPropertyStr(env->context, error, "code", JS_NewString(env->context, code));
+    }
+
+    JS_SetPropertyStr(env->context, error, "name", JS_NewString(env->context, "TypeError"));
+
+    JS_Throw(env->context, error);
 
     return napi_clear_last_error(env);
 }
@@ -556,7 +617,7 @@ napi_status napi_get_and_clear_last_exception(napi_env env, napi_value *result) 
 
     JSValue exceptionValue = JS_GetException(env->context);
 
-    if (JS_IsNull(exceptionValue)) {
+    if (JS_IsUninitialized(exceptionValue) || JS_IsNull(exceptionValue)) {
         *result = (napi_value) &JSUndefined;
         return napi_clear_last_error(env);
     }
@@ -575,21 +636,17 @@ napi_status napi_get_last_error_info(napi_env env, const napi_extended_error_inf
 
 napi_status napi_create_error(napi_env env, napi_value code, napi_value msg, napi_value *result) {
     CHECK_ARG(env)
+    CHECK_ARG(msg);
     CHECK_ARG(result)
 
     JSValue error = JS_NewError(env->context);
-    JSValue msgValue = *((JSValue *) msg);
-
-    JS_DefinePropertyValueStr(env->context, error, "message", JS_DupValue(env->context, msgValue),
-                              JS_PROP_C_W_E);
+    JS_SetPropertyStr(env->context, error, "message",
+                      JS_DupValue(env->context, ToJS(msg)));
 
     if (code != NULL) {
-        JSValue codeValue = *((JSValue *) code);
-        JS_DefinePropertyValueStr(env->context, error, "code", JS_DupValue(env->context, codeValue),
-                                  JS_PROP_C_W_E);
+        JS_SetPropertyStr(env->context, error, "code",
+                          JS_DupValue(env->context, ToJS(code)));
     }
-
-    JS_SetStacktrace(env->context, error);
 
     return CreateScopedResult(env, error, result);
 }
@@ -600,18 +657,15 @@ napi_create_type_error(napi_env env, napi_value code, napi_value msg, napi_value
     CHECK_ARG(result)
 
     JSValue error = JS_NewError(env->context);
-
-    JSValue msgValue = *((JSValue *) msg);
-    JS_DefinePropertyValueStr(env->context, error, "message", JS_DupValue(env->context, msgValue),
-                              JS_PROP_C_W_E);
-    JS_DefinePropertyValueStr(env->context, error, "name", JS_NewString(env->context, "TypeError"),
-                              JS_PROP_C_W_E);
+    JS_SetPropertyStr(env->context, error, "message",
+                      JS_DupValue(env->context, ToJS(msg)));
 
     if (code != NULL) {
-        JSValue codeValue = *((JSValue *) code);
-        JS_DefinePropertyValueStr(env->context, error, "code", JS_DupValue(env->context, codeValue),
-                                  JS_PROP_C_W_E);
+        JS_SetPropertyStr(env->context, error, "code",
+                          JS_DupValue(env->context, ToJS(code)));
     }
+
+    JS_SetPropertyStr(env->context, error, "name", JS_NewString(env->context, "TypeError"));
 
     return CreateScopedResult(env, error, result);
 }
@@ -622,18 +676,15 @@ napi_create_range_error(napi_env env, napi_value code, napi_value msg, napi_valu
     CHECK_ARG(result)
 
     JSValue error = JS_NewError(env->context);
-
-    JSValue msgValue = *((JSValue *) msg);
-    JS_DefinePropertyValueStr(env->context, error, "message", JS_DupValue(env->context, msgValue),
-                              JS_PROP_C_W_E);
-    JS_DefinePropertyValueStr(env->context, error, "name", JS_NewString(env->context, "RangeError"),
-                              JS_PROP_C_W_E);
+    JS_SetPropertyStr(env->context, error, "message",
+                      JS_DupValue(env->context, ToJS(msg)));
 
     if (code != NULL) {
-        JSValue codeValue = *((JSValue *) code);
-        JS_DefinePropertyValueStr(env->context, error, "code", JS_DupValue(env->context, codeValue),
-                                  JS_PROP_C_W_E);
+        JS_SetPropertyStr(env->context, error, "code",
+                          JS_DupValue(env->context, ToJS(code)));
     }
+
+    JS_SetPropertyStr(env->context, error, "name", JS_NewString(env->context, "RangeError"));
 
     return CreateScopedResult(env, error, result);
 }
@@ -644,18 +695,15 @@ napi_create_syntax_error(napi_env env, napi_value code, napi_value msg, napi_val
     CHECK_ARG(result)
 
     JSValue error = JS_NewError(env->context);
-
-    JSValue msgValue = *((JSValue *) msg);
-    JS_DefinePropertyValueStr(env->context, error, "message", JS_DupValue(env->context, msgValue),
-                              JS_PROP_C_W_E);
-    JS_DefinePropertyValueStr(env->context, error, "name",
-                              JS_NewString(env->context, "SyntaxError"), JS_PROP_C_W_E);
+    JS_SetPropertyStr(env->context, error, "message",
+                      JS_DupValue(env->context, ToJS(msg)));
 
     if (code != NULL) {
-        JSValue codeValue = *((JSValue *) code);
-        JS_DefinePropertyValueStr(env->context, error, "code", JS_DupValue(env->context, codeValue),
-                                  JS_PROP_C_W_E);
+        JS_SetPropertyStr(env->context, error, "code",
+                          JS_DupValue(env->context, ToJS(code)));
     }
+
+    JS_SetPropertyStr(env->context, error, "name", JS_NewString(env->context, "SyntaxError"));
 
     return CreateScopedResult(env, error, result);
 }
@@ -673,10 +721,10 @@ napi_create_reference(napi_env env, napi_value value, uint32_t initialRefCount, 
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    *result = (NapiReference *) mi_malloc(sizeof(NapiReference));
+    *result = (napi_ref__ *) mi_malloc(sizeof(napi_ref__));
     RETURN_STATUS_IF_FALSE(*result, napi_memory_error)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (JS_IsUndefined(jsValue)) {
         (*result)->value = JS_UNDEFINED;
@@ -711,7 +759,7 @@ napi_status napi_reference_ref(napi_env env, napi_ref ref, uint32_t *result) {
     CHECK_ARG(env)
     CHECK_ARG(ref)
 
-    if (!ref->referenceCount) {
+    if (ref->referenceCount == 0) {
         JSValue value = JS_WeakRef_Deref(env->context, ref->value);
         JS_FreeValue(env->context, ref->value);
         ref->value = value;
@@ -760,7 +808,8 @@ napi_status napi_get_reference_value(napi_env env, napi_ref ref, napi_value *res
     CHECK_ARG(result)
 
     if (!ref->referenceCount && JS_IsUndefined(ref->value)) {
-        *result = (napi_value) &JSUndefined;
+        *result = NULL;
+        return napi_ok;
     }
 
     JSValue value;
@@ -768,6 +817,11 @@ napi_status napi_get_reference_value(napi_env env, napi_ref ref, napi_value *res
         value = JS_DupValue(env->context, ref->value);
     } else {
         value = JS_WeakRef_Deref(env->context, ref->value);
+    }
+
+    if (JS_IsUndefined(value)) {
+        *result = NULL;
+        return napi_ok;
     }
 
     return CreateScopedResult(env, value, result);
@@ -779,6 +833,7 @@ napi_status napi_delete_reference(napi_env env, napi_ref ref) {
 
     if (!JS_IsUndefined(ref->value)) {
         JS_FreeValue(env->context, ref->value);
+        ref->value = JSUndefined;
     }
 
     LIST_REMOVE(ref, node);
@@ -841,6 +896,7 @@ napi_status napi_create_string_utf8(napi_env env,
     CHECK_ARG(result)
     CHECK_ARG(str)
 
+
     JSValue value = JS_NewStringLen(env->context, str,
                                     (length == NAPI_AUTO_LENGTH) ? strlen(str) : length);
 
@@ -852,6 +908,7 @@ napi_status napi_create_int32(napi_env env, int32_t value, napi_value *result) {
     CHECK_ARG(result)
 
     JSValue jsValue = JS_NewInt32(env->context, value);
+
     return CreateScopedResult(env, jsValue, result);
 }
 
@@ -1084,7 +1141,7 @@ napi_status napi_create_object(napi_env env, napi_value *result) {
     CHECK_ARG(env)
     CHECK_ARG(result)
 
-    JSValue value = JS_NewObject(env->context);
+    JSValue value = JS_NewObjectClass(env->context, env->runtime->napiObjectClassId);
 
     return CreateScopedResult(env, value, result);
 }
@@ -1247,7 +1304,7 @@ napi_status napi_create_typedarray(napi_env env,
     size_t size_of_element = napi_sizeof_typedarray_type(type);
 
     size_t bufferSize = 0;
-    void *buffer = JS_GetArrayBuffer(env->context, &bufferSize, *((JSValue *) arraybuffer));
+    void *buffer = JS_GetArrayBuffer(env->context, &bufferSize, ToJS(arraybuffer));
 
     // It's required that (length * size_of_element) + byte_offset
     // should be <= the size in bytes of the array passed in.
@@ -1267,7 +1324,7 @@ napi_status napi_create_typedarray(napi_env env,
     }
 
     JSValue params[] = {
-            *((JSValue *) arraybuffer),
+            ToJS(arraybuffer),
             JS_NewInt64(env->context, byte_offset),
             JS_NewInt64(env->context, length),
     };
@@ -1293,7 +1350,7 @@ napi_status napi_create_dataview(napi_env env,
     }
 
     size_t bufferSize = 0;
-    void *buffer = JS_GetArrayBuffer(env->context, &bufferSize, *((JSValue *) arraybuffer));
+    void *buffer = JS_GetArrayBuffer(env->context, &bufferSize, ToJS(arraybuffer));
 
     // It is required that byte_length + byte_offset is less
     // than or equal to the size in bytes of the array passed in.
@@ -1306,7 +1363,7 @@ napi_status napi_create_dataview(napi_env env,
     JSValue dataView = JS_GetPropertyStr(env->context, global, "DataView");
 
     JSValue param[] = {
-            *((JSValue *) arraybuffer),
+            ToJS(arraybuffer),
             JS_NewInt64(env->context, byte_offset),
             JS_NewInt64(env->context, byte_length),
     };
@@ -1423,7 +1480,7 @@ napi_status napi_create_symbol(napi_env env,
     JSValue global = JS_GetGlobalObject(env->context);
     JSValue symbolCotr = JS_GetPropertyStr(env->context, global, "Symbol");
 
-    JSValue jsValue = *((JSValue *) description);
+    JSValue jsValue = ToJS(description);
 
     symbol = JS_Call(env->context, symbolCotr, global, 1, &jsValue);
 
@@ -1465,18 +1522,16 @@ napi_status napi_get_array_length(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsArray(env->context, jsValue))
         return napi_set_last_error(env, napi_array_expected, NULL, 0, NULL);
 
-    JSValue lengthValue = JS_GetPropertyStr(env->context, jsValue, "length");
+    int64_t length = 0;
+    JS_GetLength(env->context, jsValue, &length);
 
-    uint32_t length = 0;
-    JS_ToUint32(env->context, &length, lengthValue);
-    JS_FreeValue(env->context, lengthValue);
+    *result = (uint32_t) length;
 
-    *result = length;
     return napi_clear_last_error(env);
 }
 
@@ -1489,7 +1544,7 @@ napi_status napi_get_arraybuffer_info(napi_env env,
     CHECK_ARG(byte_length)
 
     size_t size = 0;
-    JSValue value = *((JSValue *) arraybuffer);
+    JSValue value = ToJS(arraybuffer);
 
     if (!JS_IsArrayBuffer2(env->context, value))
         return napi_set_last_error(env, napi_arraybuffer_expected, NULL, 0, NULL);
@@ -1519,7 +1574,7 @@ napi_status napi_get_buffer_info(napi_env env,
     CHECK_ARG(length)
 
     size_t size = 0;
-    JSValue value = *((JSValue *) buffer);
+    JSValue value = ToJS(buffer);
 
     if (!JS_IsArrayBuffer2(env->context, value))
         return napi_set_last_error(env, napi_arraybuffer_expected, NULL, 0, NULL);
@@ -1541,7 +1596,7 @@ napi_status napi_get_prototype(napi_env env,
     CHECK_ARG(object)
     CHECK_ARG(result)
 
-    JSValue value = *((JSValue *) object);
+    JSValue value = ToJS(object);
 
     if (!JS_IsObject(value))
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -1562,26 +1617,56 @@ int findIndex(const char *array[], int size, const char *target) {
     return -1;
 }
 
-int napi_get_typedarray_type(napi_env env, napi_value typedarray) {
+static inline int napi_get_typedarray_type(napi_env env, napi_value typedarray) {
     CHECK_ARG(env)
     CHECK_ARG(typedarray)
 
-    JSValue value = *((JSValue *) typedarray);
+    JSValue value = ToJS(typedarray);
 
     if (!JS_IsObject(value)) {
         return -1;
     }
 
-    JSValue constructor = JS_GetPropertyStr(env->context, value, "constructor");
-    JSValue className = JS_GetPropertyStr(env->context, constructor, "name");
-    const char *cName = JS_ToCString(env->context, className);
-    int typedArrayType = findIndex(typedArrayClassNames,
-                                   sizeof(typedArrayClassNames) / sizeof(typedArrayClassNames[0]),
-                                   cName);
+    napi_typedarray_type typedArrayType = 0;
 
-    JS_FreeCString(env->context, cName);
-    JS_FreeValue(env->context, className);
-    JS_FreeValue(env->context, constructor);
+    int type = JS_GetTypedArrayType(value);
+    switch (type) {
+        case JS_TYPED_ARRAY_INT8:
+            typedArrayType = napi_int8_array;
+            break;
+        case JS_TYPED_ARRAY_UINT8:
+            typedArrayType = napi_uint8_array;
+            break;
+        case JS_TYPED_ARRAY_UINT8C:
+            typedArrayType = napi_uint8_clamped_array;
+            break;
+        case JS_TYPED_ARRAY_INT16:
+            typedArrayType = napi_int16_array;
+            break;
+        case JS_TYPED_ARRAY_UINT16:
+            typedArrayType = napi_uint16_array;
+            break;
+        case JS_TYPED_ARRAY_INT32:
+            typedArrayType = napi_int32_array;
+            break;
+        case JS_TYPED_ARRAY_UINT32:
+            typedArrayType = napi_uint32_array;
+            break;
+        case JS_TYPED_ARRAY_FLOAT32:
+            typedArrayType = napi_float32_array;
+            break;
+        case JS_TYPED_ARRAY_FLOAT64:
+            typedArrayType = napi_float64_array;
+            break;
+        case JS_TYPED_ARRAY_BIG_INT64:
+            typedArrayType = napi_bigint64_array;
+            break;
+        case JS_TYPED_ARRAY_BIG_UINT64:
+            typedArrayType = napi_biguint64_array;
+            break;
+        default:
+            typedArrayType = -1;
+    }
 
     return typedArrayType;
 }
@@ -1600,7 +1685,7 @@ napi_status napi_get_typedarray_info(napi_env env,
     if (typedArrayType == -1)
         return napi_set_last_error(env, napi_invalid_arg, NULL, 0, NULL);
 
-    JSValue value = *((JSValue *) typedarray);
+    JSValue value = ToJS(typedarray);
 
     if (type) {
         *type = (napi_typedarray_type) typedArrayType;
@@ -1639,6 +1724,7 @@ napi_status napi_get_typedarray_info(napi_env env,
 
 bool JS_IsDataView(JSContext *context, JSValue value) {
     bool result = false;
+
     JSValue constructor = JS_GetPropertyStr(context, value, "constructor");
     JSValue name = JS_GetPropertyStr(context, constructor, "name");
     const char *cName = JS_ToCString(context, name);
@@ -1658,7 +1744,7 @@ napi_status napi_get_dataview_info(napi_env env,
     CHECK_ARG(env)
     CHECK_ARG(dataview)
 
-    JSValue value = *((JSValue *) dataview);
+    JSValue value = ToJS(dataview);
 
     if (!JS_IsDataView(env->context, value)) {
         return napi_set_last_error(env, napi_invalid_arg, NULL, 0, NULL);
@@ -1702,7 +1788,7 @@ napi_status napi_get_date_value(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (JS_GetClassID(jsValue) != 10) {
         return napi_set_last_error(env, napi_date_expected, NULL, 0, NULL);
@@ -1725,7 +1811,7 @@ napi_status napi_get_value_bool(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsBool(jsValue)) {
         return napi_set_last_error(env, napi_boolean_expected, NULL, 0, NULL);
@@ -1743,7 +1829,7 @@ napi_status napi_get_value_double(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     int tag = JS_VALUE_GET_TAG(jsValue);
 
@@ -1821,7 +1907,7 @@ napi_status napi_get_value_external(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -1841,7 +1927,7 @@ napi_status napi_get_value_int32(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsNumber(jsValue)) {
         return napi_set_last_error(env, napi_number_expected, NULL, 0, NULL);
@@ -1859,7 +1945,7 @@ napi_status napi_get_value_int64(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsNumber(jsValue)) {
         return napi_set_last_error(env, napi_number_expected, NULL, 0, NULL);
@@ -1875,12 +1961,12 @@ napi_status napi_get_value_string_latin1(napi_env env, napi_value value, char *s
     CHECK_ARG(env)
     CHECK_ARG(value)
 
-    if (!JS_IsString(*((JSValue *) value))) {
+    if (!JS_IsString(ToJS(value))) {
         return napi_set_last_error(env, napi_string_expected, NULL, 0, NULL);
     }
 
     size_t cstr_len = 0;
-    const char *cstr = JS_ToCStringLen(env->context, &cstr_len, *((JSValue *) value));
+    const char *cstr = JS_ToCStringLen(env->context, &cstr_len, ToJS(value));
 
     if (str == NULL) {
         CHECK_ARG(result)
@@ -1901,12 +1987,12 @@ napi_status napi_get_value_string_utf8(napi_env env, napi_value value, char *str
     CHECK_ARG(env)
     CHECK_ARG(value)
 
-    if (!JS_IsString(*((JSValue *) value))) {
+    if (!JS_IsString(ToJS(value))) {
         return napi_set_last_error(env, napi_string_expected, NULL, 0, NULL);
     }
 
     size_t cstr_len = 0;
-    const char *cstr = JS_ToCStringLen(env->context, &cstr_len, *((JSValue *) value));
+    const char *cstr = JS_ToCStringLen(env->context, &cstr_len, ToJS(value));
 
     if (str == NULL) {
         CHECK_ARG(result)
@@ -2036,7 +2122,7 @@ napi_status napi_get_value_string_utf16(napi_env env,
     CHECK_ARG(value)
 
     size_t l = 0;
-    const char *str = JS_ToCStringLen(env->context, &l, *((JSValue *) value));
+    const char *str = JS_ToCStringLen(env->context, &l, ToJS(value));
 
     if (str == NULL) {
         return napi_set_last_error(env, napi_string_expected, NULL, 0, NULL);
@@ -2068,7 +2154,7 @@ napi_status napi_get_value_uint32(napi_env env,
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsNumber(jsValue)) {
         return napi_set_last_error(env, napi_number_expected, NULL, 0, NULL);
@@ -2097,9 +2183,8 @@ napi_status napi_get_boolean(napi_env env, bool value, napi_value *result) {
     CHECK_ARG(env)
     CHECK_ARG(result)
 
-    *result = (napi_value) (value ? &JSTrueValue : &JSFalseValue);
-
-    return napi_clear_last_error(env);
+    JSValue val = value ? JSTrueValue : JSFalseValue;
+    return CreateScopedResult(env, val, result);
 }
 
 napi_status napi_get_global(napi_env env, napi_value *result) {
@@ -2113,18 +2198,14 @@ napi_status napi_get_null(napi_env env, napi_value *result) {
     CHECK_ARG(env)
     CHECK_ARG(result)
 
-    *result = (napi_value) &JSNull;
-
-    return napi_clear_last_error(env);
+    return CreateScopedResult(env, JS_NULL, result);
 }
 
 napi_status napi_get_undefined(napi_env env, napi_value *result) {
     CHECK_ARG(env)
     CHECK_ARG(result)
 
-    *result = (napi_value) &JSUndefined;
-
-    return napi_clear_last_error(env);
+    return CreateScopedResult(env, JS_UNDEFINED, result);
 }
 
 
@@ -2139,7 +2220,7 @@ napi_status napi_coerce_to_bool(napi_env env, napi_value value, napi_value *resu
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
     int boolValue = JS_ToBool(env->context, jsValue);
     RETURN_STATUS_IF_FALSE(boolValue != -1, napi_pending_exception)
 
@@ -2151,7 +2232,7 @@ napi_status napi_coerce_to_number(napi_env env, napi_value value, napi_value *re
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     double number;
     JS_ToFloat64(env->context, &number, jsValue);
@@ -2172,7 +2253,7 @@ napi_status napi_coerce_to_string(napi_env env, napi_value value, napi_value *re
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
     JSValue jsResult;
     if (JS_IsSymbol(jsValue)) {
         jsResult = JS_GetPropertyStr(env->context, jsValue, "description");
@@ -2194,7 +2275,7 @@ napi_status napi_typeof(napi_env env, napi_value value, napi_valuetype *result) 
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
     if (JS_IsUndefined(jsValue)) {
         *result = napi_undefined;
     } else if (JS_IsNull(jsValue)) {
@@ -2228,7 +2309,7 @@ napi_status napi_instanceof(napi_env env, napi_value object, napi_value construc
     CHECK_ARG(constructor)
     CHECK_ARG(result)
 
-    int status = JS_IsInstanceOf(env->context, *((JSValue *) object), *((JSValue *) constructor));
+    int status = JS_IsInstanceOf(env->context, ToJS(object), ToJS(constructor));
     RETURN_STATUS_IF_FALSE(status != -1, napi_pending_exception);
 
     *result = status;
@@ -2240,7 +2321,7 @@ napi_status napi_is_float(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(env)
     CHECK_ARG(value)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     RETURN_STATUS_IF_FALSE(JS_IsNumber(jsValue), napi_number_expected)
 
@@ -2254,7 +2335,7 @@ napi_status napi_is_array(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
     int status = JS_IsArray(env->context, jsValue);
     RETURN_STATUS_IF_FALSE(status != -1, napi_pending_exception);
     *result = status;
@@ -2267,7 +2348,7 @@ napi_status napi_is_arraybuffer(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
     int status = JS_IsArrayBuffer2(env->context, jsValue);
     RETURN_STATUS_IF_FALSE(status != -1, napi_pending_exception);
 
@@ -2287,7 +2368,7 @@ napi_status napi_is_buffer(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
     int status = JS_IsArrayBuffer2(env->context, jsValue);
     RETURN_STATUS_IF_FALSE(status != -1, napi_pending_exception);
 
@@ -2306,7 +2387,7 @@ napi_status napi_is_date(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2324,7 +2405,7 @@ napi_status napi_is_error(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    int status = JS_IsError(env->context, *((JSValue *) value));
+    int status = JS_IsError(env->context, ToJS(value));
     *result = status;
     return napi_clear_last_error(env);
 }
@@ -2347,7 +2428,7 @@ napi_status napi_is_dataview(napi_env env, napi_value value, bool *result) {
     CHECK_ARG(value)
     CHECK_ARG(result)
 
-    int status = JS_IsDataView(env->context, *((JSValue *) value));
+    int status = JS_IsDataView(env->context, ToJS(value));
     *result = status;
 
     return napi_clear_last_error(env);
@@ -2359,23 +2440,7 @@ napi_status napi_strict_equals(napi_env env, napi_value lhs, napi_value rhs, boo
     CHECK_ARG(rhs);
     CHECK_ARG(result);
 
-    JSValue global = JS_GetGlobalObject(env->context);
-    JSValue object = JS_GetProperty(env->context, global, env->atoms.object);
-    JSValue is = JS_GetProperty(env->context, object, env->atoms.is);
-    JSValue argv[] = {*(JSValue *) lhs, *(JSValue *) rhs};
-
-    JSValue jsResult = JS_Call(env->context, is, object, 2, argv);
-
-    if (JS_IsException(jsResult)) {
-        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
-    }
-
-    *result = JS_ToBool(env->context, jsResult);
-
-    JS_FreeValue(env->context, global);
-    JS_FreeValue(env->context, object);
-    JS_FreeValue(env->context, is);
-    JS_FreeValue(env->context, jsResult);
+    *result = JS_IsStrictEqual(env->context, *(JSValue *) lhs, *(JSValue *) rhs);
 
     return napi_clear_last_error(env);
 }
@@ -2385,7 +2450,7 @@ napi_status napi_detach_arraybuffer(napi_env env, napi_value arraybuffer) {
     CHECK_ARG(env)
     CHECK_ARG(arraybuffer)
 
-    JSValue jsValue = *((JSValue *) arraybuffer);
+    JSValue jsValue = ToJS(arraybuffer);
 
     if (!JS_IsArrayBuffer2(env->context, jsValue)) {
         return napi_set_last_error(env, napi_arraybuffer_expected, NULL, 0, NULL);
@@ -2402,7 +2467,7 @@ napi_status napi_is_detached_arraybuffer(napi_env env, napi_value arraybuffer, b
     CHECK_ARG(arraybuffer)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) arraybuffer);
+    JSValue jsValue = ToJS(arraybuffer);
 
     if (!JS_IsArrayBuffer2(env->context, jsValue)) {
         return napi_set_last_error(env, napi_arraybuffer_expected, NULL, 0, NULL);
@@ -2431,7 +2496,7 @@ napi_status napi_get_all_property_names(napi_env env,
     CHECK_ARG(object)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2458,25 +2523,23 @@ napi_status napi_get_all_property_names(napi_env env,
     JSValue proto = JS_DupValue(env->context, jsValue);
 
     while (!JS_IsNull(proto)) {
-
         JSPropertyEnum *tab = NULL;
         uint32_t len = 0;
 
         JS_GetOwnPropertyNames(env->context, &tab, &len, proto, get_filter);
+
         for (uint32_t i = 0; i < len; i++) {
             JSValue name = JS_AtomToValue(env->context, tab[i].atom);
-
             JS_SetPropertyInt64(env->context, array, i, name);
-            JS_FreeAtom(env->context, tab[i].atom);
         }
 
-        js_free(env->context, tab);
+        JS_FreePropertyEnum(env->context, tab, len);
+
+        // Free the prototype.
+        JS_FreeValue(env->context, proto);
 
         if (key_mode == napi_key_include_prototypes) {
-            JSValue nextProto = JS_GetPrototype(env->context, proto);
-            // Free the prototype.
-            JS_FreeValue(env->context, proto);
-            proto = nextProto;
+            proto = JS_GetPrototype(env->context, proto);
         } else {
             proto = JS_NULL;
         }
@@ -2501,9 +2564,9 @@ napi_status napi_set_property(napi_env env, napi_value object, napi_value key, n
     CHECK_ARG(key)
     CHECK_ARG(value)
 
-    JSValue jsObject = *((JSValue *) object);
-    JSValue jsKey = *((JSValue *) key);
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsObject = ToJS(object);
+    JSValue jsKey = ToJS(key);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsObject(jsObject)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2527,8 +2590,8 @@ napi_status napi_get_property(napi_env env, napi_value object, napi_value key, n
     CHECK_ARG(key)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
-    JSValue jsKey = *((JSValue *) key);
+    JSValue jsValue = ToJS(object);
+    JSValue jsKey = ToJS(key);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2551,8 +2614,8 @@ napi_status napi_has_property(napi_env env, napi_value object, napi_value key, b
     CHECK_ARG(key)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
-    JSValue jsKey = *((JSValue *) key);
+    JSValue jsValue = ToJS(object);
+    JSValue jsKey = ToJS(key);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2576,8 +2639,8 @@ napi_status napi_delete_property(napi_env env, napi_value object, napi_value key
     CHECK_ARG(object)
     CHECK_ARG(key)
 
-    JSValue jsValue = *((JSValue *) object);
-    JSValue jsKey = *((JSValue *) key);
+    JSValue jsValue = ToJS(object);
+    JSValue jsKey = ToJS(key);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2605,7 +2668,7 @@ napi_has_own_named_property(napi_env env, napi_value object, const char *utf8nam
     CHECK_ARG(utf8name)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2631,12 +2694,13 @@ napi_status napi_has_own_property(napi_env env, napi_value object, napi_value ke
     CHECK_ARG(key)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
-    JSValue jsKey = *((JSValue *) key);
+    JSValue jsValue = ToJS(object);
+    JSValue jsKey = ToJS(key);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
+
 
     JSAtom keyAtom = JS_ValueToAtom(env->context, jsKey);
     int status = JS_GetOwnProperty(env->context, NULL, jsValue, keyAtom);
@@ -2658,8 +2722,8 @@ napi_set_named_property(napi_env env, napi_value object, const char *utf8Name, n
     CHECK_ARG(utf8Name)
     CHECK_ARG(value)
 
-    JSValue jsObject = *((JSValue *) object);
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsObject = ToJS(object);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsObject(jsObject)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2682,7 +2746,7 @@ napi_get_named_property(napi_env env, napi_value object, const char *utf8Name, n
     CHECK_ARG(utf8Name)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2704,7 +2768,7 @@ napi_has_named_property(napi_env env, napi_value object, const char *utf8Name, b
     CHECK_ARG(utf8Name)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2728,14 +2792,15 @@ napi_status napi_set_element(napi_env env, napi_value object, uint32_t index, na
     CHECK_ARG(object)
     CHECK_ARG(value)
 
-    JSValue jsObject = *((JSValue *) object);
-    JSValue jsValue = *((JSValue *) value);
+    JSValue jsObject = ToJS(object);
+    JSValue jsValue = ToJS(value);
 
     if (!JS_IsObject(jsObject)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
-    int status = JS_SetPropertyUint32(env->context, jsObject, index, jsValue);
+    int status = JS_SetPropertyUint32(env->context, jsObject, index,
+                                      JS_DupValue(env->context, jsValue));
 
     if (!status) {
         return napi_set_last_error(env, napi_generic_failure, NULL, 0, NULL);
@@ -2749,7 +2814,7 @@ napi_status napi_get_element(napi_env env, napi_value object, uint32_t index, na
     CHECK_ARG(object)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2769,7 +2834,7 @@ napi_status napi_has_element(napi_env env, napi_value object, uint32_t index, bo
     CHECK_ARG(object)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2793,7 +2858,7 @@ napi_status napi_delete_element(napi_env env, napi_value object, uint32_t index,
     CHECK_ARG(object)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2817,13 +2882,13 @@ napi_set_property_descriptor(napi_env env, napi_value object, napi_property_desc
     JSAtom key;
 
     if (descriptor.name) {
-        JSValue symbol = *((JSValue *) descriptor.name);
+        JSValue symbol = ToJS(descriptor.name);
         key = JS_ValueToAtom(env->context, symbol);
     } else {
         key = JS_NewAtom(env->context, descriptor.utf8name);
     }
 
-    JSValue jsObject = *((JSValue *) object);
+    JSValue jsObject = ToJS(object);
 
     int flags = JS_PROP_HAS_WRITABLE | JS_PROP_HAS_ENUMERABLE | JS_PROP_HAS_CONFIGURABLE;
 
@@ -2843,13 +2908,13 @@ napi_set_property_descriptor(napi_env env, napi_value object, napi_property_desc
 
     if (descriptor.value) {
         flags |= JS_PROP_HAS_VALUE;
-        value = JS_DupValue(env->context, *((JSValue *) descriptor.value));
+        value = ToJS(descriptor.value);
     } else if (descriptor.method) {
         flags |= JS_PROP_HAS_VALUE;
-        napi_value function;
+        napi_value function = NULL;
         napi_create_function(env, NULL, 0, descriptor.method, descriptor.data, &function);
         if (function) {
-            value = JS_DupValue(env->context, *((JSValue *) function));
+            value = ToJS(function);
         }
     } else if (descriptor.getter || descriptor.setter) {
         if (descriptor.getter) {
@@ -2857,7 +2922,7 @@ napi_set_property_descriptor(napi_env env, napi_value object, napi_property_desc
             flags |= JS_PROP_HAS_GET;
             napi_create_function(env, NULL, 0, descriptor.getter, descriptor.data, &getter);
             if (getter) {
-                getterValue = *((JSValue *) getter);
+                getterValue = ToJS(getter);
             }
         }
 
@@ -2866,7 +2931,7 @@ napi_set_property_descriptor(napi_env env, napi_value object, napi_property_desc
             flags |= JS_PROP_HAS_SET;
             napi_create_function(env, NULL, 0, descriptor.setter, descriptor.data, &setter);
             if (setter) {
-                setterValue = *((JSValue *) setter);
+                setterValue = ToJS(setter);
             }
         }
     }
@@ -2881,7 +2946,7 @@ napi_status napi_define_properties(napi_env env, napi_value object, size_t prope
     CHECK_ARG(object)
     CHECK_ARG(properties)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -2898,24 +2963,13 @@ napi_status napi_object_freeze(napi_env env, napi_value object) {
     CHECK_ARG(env)
     CHECK_ARG(object)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
-    JSValue global = JS_GetGlobalObject(env->context);
-    JSValue obj = JS_GetProperty(env->context, global, env->atoms.object);
-    JSValue result = JS_Invoke(env->context, obj, env->atoms.freeze, 1, &jsValue);
 
-    JS_FreeValue(env->context, obj);
-    JS_FreeValue(env->context, global);
-
-    if (JS_IsException(result)) {
-        JS_FreeValue(env->context, result);
-        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
-    }
-
-    JS_FreeValue(env->context, result);
+    JS_FreezeObject(env->context, *(JSValue *) object);
 
     return napi_clear_last_error(env);
 }
@@ -2924,24 +2978,13 @@ napi_status napi_object_seal(napi_env env, napi_value object) {
     CHECK_ARG(env)
     CHECK_ARG(object)
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
-    JSValue global = JS_GetGlobalObject(env->context);
-    JSValue obj = JS_GetProperty(env->context, global, env->atoms.object);
-    JSValue result = JS_Invoke(env->context, obj, env->atoms.seal, 1, &jsValue);
-    JS_FreeValue(env->context, obj);
-    JS_FreeValue(env->context, global);
-
-    if (JS_IsException(result)) {
-        JS_FreeValue(env->context, result);
-        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
-    }
-
-    JS_FreeValue(env->context, result);
+    JS_SealObject(env->context, *(JSValue *) object);
 
     return napi_clear_last_error(env);
 }
@@ -2957,7 +3000,7 @@ napi_status napi_call_function(napi_env env, napi_value thisValue, napi_value fu
     CHECK_ARG(env)
     CHECK_ARG(func)
 
-    JSValue jsThis = *((JSValue *) thisValue);
+    JSValue jsThis = ToJS(thisValue);
     JSValue jsFunction = *(JSValue *) func;
 
     bool useGlobal = false;
@@ -2981,7 +3024,7 @@ napi_status napi_call_function(napi_env env, napi_value thisValue, napi_value fu
         }
 
         for (size_t i = 0; i < argc; ++i) {
-            args[i] = *((JSValue *) argv[i]);
+            args[i] = ToJS(argv[i]);
         }
         returnValue = JS_Call(env->context, jsFunction, jsThis, (int) argc,
                               args);
@@ -3025,9 +3068,10 @@ CallCFunction(JSContext *context, JSValueConst thisVal, int argc, JSValueConst *
     FunctionInfo *functionInfo = (FunctionInfo *) JS_GetOpaque(funcData[0],
                                                                env->runtime->functionClassId);
 
-    struct NapiCallbackInfo callbackInfo = {JSUndefined, thisVal, argv, functionInfo->data, argc};
+    struct napi_callback_info__ callbackInfo = {JSUndefined, thisVal, argv, functionInfo->data,
+                                                argc};
 
-    NapiHandleScope handleScope;
+    napi_handle_scope__ handleScope;
     handleScope.type = HANDLE_STACK_ALLOCATED;
     handleScope.handleCount = 0;
     handleScope.escapeCalled = false;
@@ -3042,7 +3086,7 @@ CallCFunction(JSContext *context, JSValueConst thisVal, int argc, JSValueConst *
 
     JSValue returnValue = JSUndefined;
     if (result) {
-        returnValue = JS_DupValue(context, *((JSValue *) result));
+        returnValue = JS_DupValue(context, ToJS(result));
     }
 
     assert(LIST_FIRST(&env->handleScopeList) == &handleScope &&
@@ -3132,6 +3176,7 @@ napi_get_cb_info(napi_env env, napi_callback_info callbackInfo, size_t *argc, na
 
         for (; i < min; ++i) {
             argv[i] = (napi_value) &callbackInfo->argv[i];
+//            CreateScopedResult(env, JS_DupValue(env->context, callbackInfo->argv[i]), &argv[i]);
         }
 
         if (i < *argc) {
@@ -3147,6 +3192,7 @@ napi_get_cb_info(napi_env env, napi_callback_info callbackInfo, size_t *argc, na
 
     if (thisArg) {
         *thisArg = (napi_value) &callbackInfo->thisArg;
+        //CreateScopedResult(env, JS_DupValue(env->context, callbackInfo->thisArg), thisArg);
     }
 
     if (data) {
@@ -3161,13 +3207,7 @@ napi_status napi_get_new_target(napi_env env, napi_callback_info callbackInfo, n
     CHECK_ARG(callbackInfo)
     CHECK_ARG(result)
 
-    if (!JS_IsUndefined(callbackInfo->newTarget)) {
-        *result = (napi_value) &callbackInfo->newTarget;
-    } else {
-        *result = NULL;
-    }
-
-    return napi_clear_last_error(env);
+    return CreateScopedResult(env, JS_DupValue(env->context, callbackInfo->newTarget), result);
 }
 
 napi_status
@@ -3191,14 +3231,14 @@ napi_new_instance(napi_env env, napi_value constructor, size_t argc, const napi_
         }
 
         for (size_t i = 0; i < argc; ++i) {
-            args[i] = *((JSValue *) argv[i]);
+            args[i] = ToJS(argv[i]);
         }
-        returnValue = JS_CallConstructor(env->context, *((JSValue *) constructor), (int) argc,
+        returnValue = JS_CallConstructor(env->context, ToJS(constructor), (int) argc,
                                          args);
 
         if (argc > 8) mi_free(args);
     } else {
-        returnValue = JS_CallConstructor(env->context, *((JSValue *) constructor), (int) argc,
+        returnValue = JS_CallConstructor(env->context, ToJS(constructor), (int) argc,
                                          args);
     }
 
@@ -3228,17 +3268,28 @@ CallConstructor(JSContext *context, JSValueConst newTarget, int argc, JSValueCon
     FunctionInfo *constructorInfo = (FunctionInfo *) JS_GetOpaque(*data,
                                                                   env->runtime->constructorClassId);
 
-    JSValue prototype = JS_GetPropertyStr(context, newTarget, "prototype");
-    JSValue thisValue = JS_NewObjectProto(context, prototype);
-    JS_FreeValue(context, prototype);
+    JSValue prototype = JS_GetProperty(context, newTarget, env->atoms.prototype);
 
-    struct NapiCallbackInfo callbackInfo = {newTarget,
-                                            thisValue,
-                                            argv,
-                                            constructorInfo->data,
-                                            argc};
+    JSValue thisValue = JSUndefined;
 
-    NapiHandleScope handleScope;
+    if (!JS_IsUndefined(prototype)) {
+        thisValue = JS_NewObjectProtoClass(context, prototype, env->runtime->napiObjectClassId);
+        JS_FreeValue(context, prototype);
+    } else {
+        JSValue ctor = JS_GetProperty(context, newTarget, env->atoms.constructor);
+        prototype = JS_GetProperty(context, ctor, env->atoms.prototype);
+        thisValue = JS_NewObjectProtoClass(context, prototype, env->runtime->napiObjectClassId);
+        JS_FreeValue(context, prototype);
+        JS_FreeValue(context, ctor);
+    }
+
+    struct napi_callback_info__ callbackInfo = {newTarget,
+                                                thisValue,
+                                                argv,
+                                                constructorInfo->data,
+                                                argc};
+
+    napi_handle_scope__ handleScope;
     handleScope.type = HANDLE_STACK_ALLOCATED;
     handleScope.handleCount = 0;
     handleScope.escapeCalled = false;
@@ -3250,7 +3301,7 @@ CallConstructor(JSContext *context, JSValueConst newTarget, int argc, JSValueCon
     JSValue returnValue = JS_UNDEFINED;
 
     if (result) {
-        returnValue = *((JSValue *) result);
+        returnValue = ToJS(result);
         JS_DupValue(env->context, returnValue);
         JS_FreeValue(env->context, thisValue);
     }
@@ -3299,8 +3350,10 @@ napi_status napi_define_class(napi_env env,
     JSValue external = JS_NewObjectClass(env->context, (int) env->runtime->constructorClassId);
     JS_SetOpaque(external, constructorInfo);
 
-    JSValue cls = JS_NewCFunctionData(env->context, CallConstructor, 0, 0, 1, &external);
+    JSValue cls = JS_NewCFunctionData(env->context, CallConstructor, 0, JS_CFUNC_constructor, 1,
+                                      &external);
     JS_SetConstructorBit(env->context, cls, true);
+
 
     if (utf8name && strcmp(utf8name, "") != 0) {
         JS_DefinePropertyValue(env->context, cls, env->atoms.name,
@@ -3326,15 +3379,15 @@ napi_status napi_define_class(napi_env env,
 }
 
 napi_status
-napi_wrap(napi_env env, napi_value jsObject, void *nativeObject, napi_finalize finalize_cb,
+napi_wrap(napi_env env, napi_value js_object, void *native_object, napi_finalize finalize_cb,
           void *finalize_hint,
           napi_ref *result) {
 
     CHECK_ARG(env)
-    CHECK_ARG(jsObject)
-    CHECK_ARG(nativeObject)
+    CHECK_ARG(js_object)
+    CHECK_ARG(native_object)
 
-    JSValue jsValue = *((JSValue *) jsObject);
+    JSValue jsValue = ToJS(js_object);
 
     RETURN_STATUS_IF_FALSE(JS_IsObject(jsValue), napi_object_expected)
 
@@ -3346,7 +3399,7 @@ napi_wrap(napi_env env, napi_value jsObject, void *nativeObject, napi_finalize f
 
     ExternalInfo *externalInfo = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
 
-    externalInfo->data = nativeObject;
+    externalInfo->data = native_object;
     externalInfo->finalizeHint = finalize_hint;
     externalInfo->finalizeCallback = NULL;
 
@@ -3357,13 +3410,21 @@ napi_wrap(napi_env env, napi_value jsObject, void *nativeObject, napi_finalize f
         return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
     }
 
+    JSClassID classId = JS_GetClassID(jsValue);
+    if (classId == env->runtime->constructorClassId
+        || classId == env->runtime->napiObjectClassId
+        || classId == env->runtime->functionClassId
+        || classId == env->runtime->externalClassId) {
+        JS_SetOpaque(jsValue, externalInfo);
+    }
+
     JS_SetOpaque(external, externalInfo);
 
     JS_SetProperty(env->context, jsValue, env->atoms.napi_external, external);
 
     if (result) {
         napi_ref ref;
-        napi_create_reference(env, jsObject, 0, &ref);
+        napi_create_reference(env, js_object, 0, &ref);
         *result = ref;
     }
 
@@ -3375,19 +3436,28 @@ napi_status napi_unwrap(napi_env env, napi_value jsObject, void **result) {
     CHECK_ARG(jsObject)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) jsObject);
+    JSValue jsValue = ToJS(jsObject);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
+    JSClassID classId = JS_GetClassID(jsValue);
+    if (classId == env->runtime->constructorClassId
+        || classId == env->runtime->napiObjectClassId
+        || classId == env->runtime->functionClassId
+        || classId == env->runtime->externalClassId) {
+        void *data = JS_GetOpaque(jsValue, classId);
+        if (data != NULL) {
+            ExternalInfo *externalInfo = (ExternalInfo *) data;
+            *result = externalInfo->data;
+            return napi_ok;
+        }
+    }
+
     JSPropertyDescriptor descriptor;
 
     int isWrapped = JS_GetOwnProperty(env->context, &descriptor, jsValue, env->atoms.napi_external);
-
-    if (isWrapped == -1) {
-        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
-    }
 
     if (!isWrapped) {
         *result = NULL;
@@ -3396,16 +3466,10 @@ napi_status napi_unwrap(napi_env env, napi_value jsObject, void **result) {
 
     JSValue external = descriptor.value;
 
-    if (JS_IsException(external)) {
-        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
-    }
-
-    if (JS_IsObject(external)) {
-        ExternalInfo *externalInfo = (ExternalInfo *) JS_GetOpaque(external,
-                                                                   env->runtime->externalClassId);
-        if (externalInfo) {
-            *result = externalInfo->data;
-        }
+    ExternalInfo *externalInfo = (ExternalInfo *) JS_GetOpaque(external,
+                                                               env->runtime->externalClassId);
+    if (externalInfo) {
+        *result = externalInfo->data;
     }
 
     JS_FreeValue(env->context, descriptor.value);
@@ -3418,7 +3482,7 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void **result) {
     CHECK_ARG(jsObject)
     CHECK_ARG(result)
 
-    JSValue jsValue = *((JSValue *) jsObject);
+    JSValue jsValue = ToJS(jsObject);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -3428,10 +3492,12 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void **result) {
     int isWrapped = JS_GetOwnProperty(env->context, &descriptor, jsValue, env->atoms.napi_external);
 
     if (isWrapped == -1) {
+        *result = NULL;
         return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
     }
 
     if (!isWrapped) {
+        *result = NULL;
         return napi_clear_last_error(env);
     }
 
@@ -3446,6 +3512,14 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void **result) {
             }
             mi_free(externalInfo);
             JS_SetOpaque(external, NULL);
+
+            JSClassID classId = JS_GetClassID(jsValue);
+            if (classId == env->runtime->constructorClassId
+                || classId == env->runtime->napiObjectClassId
+                || classId == env->runtime->functionClassId
+                || classId == env->runtime->externalClassId) {
+                JS_SetOpaque(jsValue, NULL);
+            }
         }
 
         int status = JS_DeleteProperty(env->context, jsValue, env->atoms.napi_external, 0);
@@ -3454,30 +3528,31 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void **result) {
             JS_FreeValue(env->context, descriptor.value);
             return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
         }
-
-        JS_FreeValue(env->context, descriptor.value);
     }
+
+    JS_FreeValue(env->context, descriptor.value);
 
     return napi_clear_last_error(env);
 }
 
 napi_status
-napi_add_finalizer(napi_env env, napi_value jsObject, void *nativeObject, napi_finalize finalize_cb,
+napi_add_finalizer(napi_env env, napi_value js_object, void *native_object,
+                   napi_finalize finalize_cb,
                    void *finalize_hint, napi_ref *result) {
     CHECK_ARG(env)
-    CHECK_ARG(jsObject)
-    CHECK_ARG(nativeObject)
+    CHECK_ARG(js_object)
+    CHECK_ARG(native_object)
 
-    JSValue jsValue = *((JSValue *) jsObject);
+    JSValue jsValue = ToJS(js_object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
-    JSValue heldValue = JS_NewObject(env->context);
+    JSValue heldValue = JS_NewObjectClass(env->context, env->runtime->externalClassId);
     ExternalInfo *info = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
 
-    info->data = nativeObject;
+    info->data = native_object;
     info->finalizeCallback = finalize_cb;
     info->finalizeHint = finalize_hint;
     JS_SetOpaque(heldValue, info);
@@ -3489,11 +3564,10 @@ napi_add_finalizer(napi_env env, napi_value jsObject, void *nativeObject, napi_f
     JSValue res = JS_Invoke(env->context, env->finalizationRegistry, env->atoms.registerFinalizer,
                             2, params);
     JS_FreeValue(env->context, res);
-    JS_FreeValue(env->context, heldValue);
 
     if (result) {
         napi_ref ref;
-        napi_create_reference(env, jsObject, 0, &ref);
+        napi_create_reference(env, js_object, 0, &ref);
         *result = ref;
     }
 
@@ -3539,7 +3613,7 @@ napi_status napi_get_instance_data(napi_env env, void **data) {
  */
 
 void deferred_finalize(napi_env env, void *finalizeData, void *finalizeHint) {
-    NapiDeferred *deferred = (NapiDeferred *) finalizeData;
+    napi_deferred__ *deferred = (napi_deferred__ *) finalizeData;
     JS_FreeValue(env->context, *(JSValue *) deferred->resolve);
     JS_FreeValue(env->context, *(JSValue *) deferred->reject);
 };
@@ -3552,12 +3626,12 @@ napi_status napi_create_promise(napi_env env, napi_deferred *deferred, napi_valu
     JSValue resolving_funcs[2];
     JSValue promise = JS_NewPromiseCapability(env->context, resolving_funcs);
 
-    *deferred = (NapiDeferred *) mi_malloc(sizeof(NapiDeferred));
+    *deferred = (napi_deferred__ *) mi_malloc(sizeof(napi_deferred__));
 
     (*deferred)->resolve = (napi_value) &resolving_funcs[0];
     (*deferred)->reject = (napi_value) &resolving_funcs[1];
 
-    JSValue heldValue = JS_NewObject(env->context);
+    JSValue heldValue = JS_NewObjectClass(env->context, env->runtime->externalClassId);
     ExternalInfo *info = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
     info->data = deferred;
     info->finalizeCallback = deferred_finalize;
@@ -3577,13 +3651,12 @@ napi_status napi_create_promise(napi_env env, napi_deferred *deferred, napi_valu
 napi_status napi_resolve_deferred(napi_env env, napi_deferred deferred, napi_value resolution) {
     CHECK_ARG(env);
     CHECK_ARG(deferred);
+    CHECK_ARG(resolution)
 
-    JSValue value = JS_UNDEFINED;
-    if (resolution != NULL) {
-        value = *((JSValue *) resolution);
-    }
+    JSValue value = ToJS(resolution);
+
     js_enter(env);
-    JSValue jsResult = JS_Call(env->context, *((JSValue *) deferred->resolve), JS_UNDEFINED, 1,
+    JSValue jsResult = JS_Call(env->context, ToJS(deferred->resolve), JS_UNDEFINED, 1,
                                &value);
     js_exit(env);
     JS_FreeValue(env->context, jsResult);
@@ -3595,12 +3668,10 @@ napi_status napi_reject_deferred(napi_env env, napi_deferred deferred, napi_valu
     CHECK_ARG(env);
     CHECK_ARG(deferred);
 
-    JSValue value = JS_UNDEFINED;
-    if (rejection != NULL) {
-        value = *((JSValue *) rejection);
-    }
+    JSValue value = ToJS(rejection);
+
     js_enter(env);
-    JSValue jsResult = JS_Call(env->context, *((JSValue *) deferred->reject), JS_UNDEFINED, 1,
+    JSValue jsResult = JS_Call(env->context, ToJS(deferred->reject), JS_UNDEFINED, 1,
                                &value);
     js_exit(env);
     JS_FreeValue(env->context, jsResult);
@@ -3614,17 +3685,22 @@ napi_status napi_is_promise(napi_env env,
     CHECK_ARG(env);
     CHECK_ARG(value);
 
-    JSValue constructor = JS_GetProperty(env->context, *((JSValue *) value),
-                                         env->atoms.constructor);
-    JSValue name = JS_GetProperty(env->context, constructor, env->atoms.name);
-    const char *cName = JS_ToCString(env->context, name);
-    *is_promise = !strcmp("Promise", cName ? cName : "");
-    JS_FreeCString(env->context, cName);
-    JS_FreeValue(env->context, name);
-    JS_FreeValue(env->context, constructor);
-
+    *is_promise = JS_IsPromise(ToJS(value));
 
     return napi_clear_last_error(env);
+}
+
+NAPI_EXTERN napi_status NAPI_CDECL napi_adjust_external_memory(
+        napi_env env, int64_t change_in_bytes, int64_t *adjusted_value) {
+    size_t cur = JS_GetGCThreshold(env->runtime->runtime);
+    if (cur != env->usedMemory && change_in_bytes < 0)
+        return napi_ok; // don't update, changed after GC
+    int64_t new = cur - change_in_bytes;
+    if (new < 0) new = 0;
+    JS_SetGCThreshold(env->runtime->runtime, new);
+    env->usedMemory = new;
+    *adjusted_value = new;
+    return napi_ok;
 }
 
 
@@ -3637,7 +3713,7 @@ napi_status napi_type_tag_object(napi_env env, napi_value object, const napi_typ
     CHECK_ARG(env);
     CHECK_ARG(object);
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -3666,7 +3742,7 @@ napi_check_object_type_tag(napi_env env, napi_value object, const napi_type_tag 
     CHECK_ARG(object);
     CHECK_ARG(result);
 
-    JSValue jsValue = *((JSValue *) object);
+    JSValue jsValue = ToJS(object);
 
     if (!JS_IsObject(jsValue)) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
@@ -3702,6 +3778,219 @@ napi_status napi_run_script(napi_env env,
     return qjs_execute_script(env, script, "<anonymous>", result);
 }
 
+
+void host_object_finalizer(JSRuntime *rt, JSValue value) {
+    napi_env env = (napi_env) JS_GetRuntimeOpaque(rt);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(value,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info->finalize_cb) {
+        info->finalize_cb(env, info->data, NULL);
+    }
+    if (info->is_array) {
+        napi_delete_reference(env, info->getter);
+        napi_delete_reference(env, info->setter);
+    }
+
+    napi_delete_reference(env, info->ref);
+    mi_free(info);
+}
+
+int host_object_set(JSContext *ctx, JSValue obj, JSAtom atom,
+                    JSValue value, JSValue receiver, int flags) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        if (info->is_array) {
+            JSValue atom_val = JS_AtomToValue(ctx, atom);
+            JSValue argv[4] = {
+                    info->ref->value,
+                    atom_val,
+                    value,
+                    obj
+            };
+            JSValue result = JS_Call(ctx, info->setter->value, JS_UNDEFINED, 4, argv);
+
+            JS_FreeValue(ctx, atom_val);
+
+            if (JS_IsException(result) || JS_HasException(ctx)) return -1;
+
+            return true;
+        }
+        return JS_SetProperty(ctx, info->ref->value, atom, JS_DupValue(ctx, value));
+    }
+    return true;
+}
+
+JSValue host_object_get(JSContext *ctx, JSValue obj, JSAtom atom, JSValue receiver) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        if (info->is_array) {
+            JSValue atom_val = JS_AtomToValue(ctx, atom);
+            JSValue argv[3] = {
+                    info->ref->value,
+                    atom_val,
+                    obj
+            };
+            JSValue value = JS_Call(ctx, info->getter->value, JS_UNDEFINED, 3, argv);
+            JS_FreeValue(ctx, atom_val);
+            return value;
+        }
+        return JS_GetProperty(ctx, info->ref->value, atom);
+    }
+    return JS_UNDEFINED;
+}
+
+int host_object_has(JSContext *ctx, JSValue obj, JSAtom atom) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        return JS_HasProperty(ctx, info->ref->value, atom);
+    }
+    return false;
+}
+
+static int host_object_delete(JSContext *ctx, JSValue obj, JSAtom atom) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        return JS_DeleteProperty(ctx, info->ref->value, atom, 0);
+    }
+    return true;
+}
+
+static int host_object_get_own_property_names(JSContext *ctx, JSPropertyEnum **ptab,
+                                              uint32_t *plen,
+                                              JSValue obj) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        return JS_GetOwnPropertyNames(ctx, ptab, plen, info->ref->value,
+                                      JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK | JS_GPN_ENUM_ONLY);
+    }
+    return true;
+}
+
+static int host_object_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
+                                        JSValue obj, JSAtom prop) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        return JS_GetOwnProperty(ctx, desc, info->ref->value, prop);
+    }
+    return true;
+}
+
+static int host_object_define_own_property(JSContext *ctx, JSValue obj,
+                                           JSAtom prop, JSValue val,
+                                           JSValue getter, JSValue setter,
+                                           int flags) {
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(obj,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info != NULL) {
+        return JS_DefineProperty(ctx, info->ref->value, prop, JS_DupValue(ctx, val), getter, setter,
+                                 flags);
+    }
+    return true;
+}
+
+JSClassExoticMethods NapiHostObjectExoticMethods = {
+        .set_property = host_object_set,
+        .get_property = host_object_get,
+        .has_property = host_object_has,
+        .delete_property = host_object_delete,
+//    .get_own_property_names = host_object_get_own_property_names,
+//    .get_own_property = host_object_get_own_property,
+//    .define_own_property = host_object_define_own_property
+};
+
+
+napi_status
+napi_create_host_object(napi_env env, napi_value value, napi_finalize finalize, void *data,
+                        bool is_array, napi_value getter, napi_value setter, napi_value *result) {
+    CHECK_ARG(env);
+    CHECK_ARG(result);
+
+    napi_value constructor;
+    napi_get_named_property(env, value, "constructor", &constructor);
+
+    napi_value prototype;
+    napi_get_named_property(env, constructor, "prototype", &prototype);
+
+    JSValue jsValue = JS_NewObjectClass(env->context, env->runtime->napiHostObjectClassId);
+    JS_SetPrototype(env->context, jsValue, ToJS(prototype));
+
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) mi_malloc(sizeof(NapiHostObjectInfo));
+    info->data = data;
+    if (finalize) {
+        info->finalize_cb = finalize;
+    } else {
+        info->finalize_cb = NULL;
+    }
+    info->is_array = is_array;
+
+    if (is_array) {
+        if (getter) napi_create_reference(env, getter, 1, &info->getter);
+        if (setter) napi_create_reference(env, setter, 1, &info->setter);
+    }
+
+    napi_create_reference(env, value, 1, &info->ref);
+
+    JS_SetOpaque(jsValue, info);
+    return CreateScopedResult(env, jsValue, result);
+}
+
+napi_status napi_get_host_object_data(napi_env env, napi_value object, void **data) {
+    CHECK_ARG(env);
+    CHECK_ARG(object);
+    CHECK_ARG(data);
+
+    JSValue jsValue = ToJS(object);
+
+
+    if (!JS_IsObject(jsValue)) {
+        return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
+    }
+
+    NapiHostObjectInfo *info = (NapiHostObjectInfo *) JS_GetOpaque(jsValue,
+                                                                   env->runtime->napiHostObjectClassId);
+    if (info) {
+        *data = info->data;
+    } else {
+        *data = NULL;
+    }
+
+    return napi_clear_last_error(env);
+}
+
+napi_status napi_is_host_object(napi_env env, napi_value object, bool *result) {
+    CHECK_ARG(env);
+    CHECK_ARG(object);
+
+    JSValue jsValue = ToJS(object);
+
+    if (!JS_IsObject(jsValue)) {
+        return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
+    }
+
+    void *data = JS_GetOpaque(jsValue,
+                              env->runtime->napiHostObjectClassId);
+    if (data != NULL) {
+        *result = true;
+    } else {
+        *result = false;
+    }
+
+    return napi_clear_last_error(env);
+}
+
 /**
  * --------------------------------
  *             JS RUNTIME
@@ -3710,34 +3999,51 @@ napi_status napi_run_script(napi_env env,
 
 
 
+
 napi_status qjs_create_runtime(napi_runtime *runtime) {
     assert(runtime);
 
-    *runtime = mi_malloc(sizeof(NapiRuntime));
+    *runtime = mi_malloc(sizeof(napi_runtime__));
+
 
 #ifdef USE_MIMALLOC
     (*runtime)->runtime = JS_NewRuntime2(&mi_mf, NULL);
+    printf("QuickJS: %s\n", "Mimalloc enabled");
 #else
     (*runtime)->runtime = JS_NewRuntime();
 #endif
 
-    JS_SetMaxStackSize((*runtime)->runtime, 1024 * 1024 * 1024);
+
+#ifndef NDEBUG
+    JS_SetDumpFlags((*runtime)->runtime, JS_DUMP_LEAKS);
+#endif
+
+    JS_SetMaxStackSize((*runtime)->runtime, 0);
 
     (*runtime)->constructorClassId = 0;
     (*runtime)->functionClassId = 0;
     (*runtime)->externalClassId = 0;
+    (*runtime)->napiHostObjectClassId = 0;
+    (*runtime)->napiObjectClassId = 0;
 
     JSClassDef ExternalClassDef = {"ExternalInfo", external_finalizer, NULL, NULL, NULL};
     JSClassDef FunctionClassDef = {"FunctionInfo", function_finalizer, NULL, NULL, NULL};
     JSClassDef ConstructorClassDef = {"ConstructorInfo", function_finalizer, NULL, NULL, NULL};
+    JSClassDef NapiHostObjectClassDef = {"NapiHostObject", host_object_finalizer, NULL, NULL,
+                                         &NapiHostObjectExoticMethods};
+    JSClassDef NapiObjectClassDef = {"NapiObject", NULL, NULL, NULL, NULL};
 
+    JS_NewClassID((*runtime)->runtime, &(*runtime)->napiHostObjectClassId);
     JS_NewClassID((*runtime)->runtime, &(*runtime)->constructorClassId);
     JS_NewClassID((*runtime)->runtime, &(*runtime)->functionClassId);
     JS_NewClassID((*runtime)->runtime, &(*runtime)->externalClassId);
+    JS_NewClassID((*runtime)->runtime, &(*runtime)->napiObjectClassId);
 
+    JS_NewClass((*runtime)->runtime, (*runtime)->napiHostObjectClassId, &NapiHostObjectClassDef);
     JS_NewClass((*runtime)->runtime, (*runtime)->externalClassId, &ExternalClassDef);
     JS_NewClass((*runtime)->runtime, (*runtime)->functionClassId, &FunctionClassDef);
     JS_NewClass((*runtime)->runtime, (*runtime)->constructorClassId, &ConstructorClassDef);
+    JS_NewClass((*runtime)->runtime, (*runtime)->napiObjectClassId, &NapiObjectClassDef);
 
     return napi_ok;
 }
@@ -3770,10 +4076,11 @@ this_val,
 static JSValue
 JSFinalizeValueCallback(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
     napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+
     JSValue heldValue = argv[0];
     if (!JS_IsUndefined(heldValue)) {
-        ExternalInfo *info = (ExternalInfo *) JS_GetOpaqueUnsafe(
-                heldValue);
+        ExternalInfo *info = (ExternalInfo *) JS_GetOpaque(heldValue,
+                                                           env->runtime->externalClassId);
         if (info != NULL) {
             info->finalizeCallback(env, info->data,
                                    info->finalizeHint);
@@ -3782,10 +4089,15 @@ JSFinalizeValueCallback(JSContext *ctx, JSValueConst this_val, int argc, JSValue
     return JS_UNDEFINED;
 }
 
+static JSValue
+JSEngineCallback(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    return JS_UNDEFINED;
+}
+
 napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     assert(env && runtime);
 
-    *env = (NapiEnvironment *) mi_malloc(sizeof(struct NapiEnvironment));
+    *env = (napi_env__ *) mi_malloc(sizeof(struct napi_env__));
 
     (*env)->runtime = runtime;
 
@@ -3823,9 +4135,12 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     (*env)->atoms.napi_typetag = JS_NewAtom(context, "napi_typetag");
     (*env)->atoms.weakref = JS_NewAtom(context, "WeakRef");
 
+
     JS_SetClassProto(context, runtime->externalClassId, JS_NewObject(context));
     JS_SetClassProto(context, runtime->functionClassId, JS_NewObject(context));
     JS_SetClassProto(context, runtime->constructorClassId, JS_NewObject(context));
+    JS_SetClassProto(context, runtime->napiHostObjectClassId, JS_NewObject(context));
+    JS_SetClassProto(context, runtime->napiObjectClassId, JS_NewObject(context));
 
     JSValue globalValue = JS_GetGlobalObject(context);
 
@@ -3837,6 +4152,9 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     JSValue FinalizeCallback = JS_NewCFunction(context, JSFinalizeValueCallback, NULL, 0);
     (*env)->finalizationRegistry = JS_CallConstructor(context, FinalizationRegistry, 1,
                                                       &FinalizeCallback);
+
+    JSValue EngineCallback = JS_NewCFunction(context, JSEngineCallback, NULL, 0);
+    JS_SetPropertyStr(context, globalValue, "directFunction", EngineCallback);
 
     (*env)->instanceData = NULL;
     (*env)->isThrowNull = false;
@@ -3986,7 +4304,7 @@ napi_status qjs_execute_script(napi_env env,
     CHECK_ARG(script)
 
     JSValue eval_result;
-    const char *cScript = JS_ToCString(env->context, *((JSValue *) script));
+    const char *cScript = JS_ToCString(env->context, ToJS(script));
     js_enter(env);
     eval_result = JS_Eval(env->context, cScript, strlen(cScript), file, JS_EVAL_TYPE_GLOBAL);
     JS_FreeCString(env->context, cScript);
@@ -4000,9 +4318,7 @@ napi_status qjs_execute_script(napi_env env,
     }
 
     if (result) {
-        struct Handle *returnHandle;
-        CreateJSValueHandle(env, eval_result, &returnHandle);
-        *result = (napi_value) &returnHandle->value;
+        CreateScopedResult(env, eval_result, result);
     } else {
         JS_FreeValue(env->context, eval_result);
     }

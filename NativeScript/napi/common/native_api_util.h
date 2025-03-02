@@ -5,8 +5,6 @@
 #include <dlfcn.h>
 #include <sstream>
 
-#define NAPI_EXPORT __attribute__((visibility("default")))
-
 #ifndef NAPI_PREAMBLE
 #define NAPI_PREAMBLE napi_status status;
 #endif
@@ -73,9 +71,6 @@
   if (status != napi_ok)
 
 #endif
-
-#define NAPI_MODULE_REGISTER \
-  napi_value napi_register_module_v1(napi_env env, napi_value exports)
 
 #define NAPI_FUNCTION(name) \
   napi_value JS_##name(napi_env env, napi_callback_info cbinfo)
@@ -313,20 +308,13 @@ namespace napi_util {
     }
 
     inline bool is_float(napi_env env, napi_value value) {
-
-#ifdef __QJS__
-        bool result;
-        napi_is_float(env, value, &result);
-        return result;
-#else
         napi_value global, number, is_int, result;
         napi_get_global(env, &global);
         napi_get_named_property(env, global, "Number", &number);
         napi_get_named_property(env, number, "isInteger", &is_int);
         napi_call_function(env, number, is_int, 1, &value, &result);
 
-        return napi_util::get_bool(env, result) == false;
-#endif
+        return !napi_util::get_bool(env, result);
     }
 
     // Same as Object.create()`

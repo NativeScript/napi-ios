@@ -9,9 +9,9 @@
 #include "jsr_common.h"
 #include "libplatform/libplatform.h"
 #include "SimpleAllocator.h"
-// #include "JEnv.h"
+#include "JEnv.h"
 
-typedef struct NapiRuntime *napi_runtime;
+typedef struct napi_runtime__ *napi_runtime;
 
 class JSR {
 public:
@@ -33,18 +33,24 @@ public:
 
 class NapiScope {
 public:
-    explicit NapiScope(napi_env env)
+    explicit NapiScope(napi_env env, bool openHandle = true)
             : env_(env),
               locker_(env->isolate),
-              isolate_scope_(env->isolate),
-              context_scope_(env->context()),
-              handle_scope_(env->isolate)
+             isolate_scope_(env->isolate),
+              context_scope_(env->context())
+//              handle_scope_(env->isolate)
     {
-        napi_open_handle_scope(env_, &napiHandleScope_);
+        if (openHandle) {
+            napi_open_handle_scope(env_, &napiHandleScope_);
+        } else {
+            napiHandleScope_ = nullptr;
+        }
     }
 
     ~NapiScope() {
-        napi_close_handle_scope(env_, napiHandleScope_);
+       if (napiHandleScope_) {
+           napi_close_handle_scope(env_, napiHandleScope_);
+       }
     }
 
 private:
@@ -52,7 +58,7 @@ private:
     v8::Locker locker_;
     v8::Isolate::Scope isolate_scope_;
     v8::Context::Scope context_scope_;
-    v8::HandleScope handle_scope_;
+//    v8::HandleScope handle_scope_;
     napi_handle_scope napiHandleScope_;
 };
 
@@ -62,9 +68,9 @@ v8::HandleScope handle_scope(env->isolate);
 
 namespace tns {
 
-    // inline static v8::Local<v8::String> ConvertToV8String(v8::Isolate* isolate, const jchar* data, int length) {
-    //     return v8::String::NewFromTwoByte(isolate, (const uint16_t*) data, v8::NewStringType::kNormal, length).ToLocalChecked();
-    // }
+    inline static v8::Local<v8::String> ConvertToV8String(v8::Isolate* isolate, const jchar* data, int length) {
+        return v8::String::NewFromTwoByte(isolate, (const uint16_t*) data, v8::NewStringType::kNormal, length).ToLocalChecked();
+    }
 
     inline static v8::Local<v8::String> ConvertToV8String(v8::Isolate* isolate, const std::string& s) {
         return v8::String::NewFromUtf8(isolate, s.c_str(), v8::NewStringType::kNormal, s.length()).ToLocalChecked();
@@ -94,19 +100,19 @@ namespace tns {
     }
 
 
-    // static v8::Local<v8::Value> jstringToV8String(v8::Isolate* isolate, jstring value) {
-    //     if (value == nullptr) {
-    //         return Null(isolate);
-    //     }
+    static v8::Local<v8::Value> jstringToV8String(v8::Isolate* isolate, jstring value) {
+        if (value == nullptr) {
+            return Null(isolate);
+        }
 
-    //     JEnv env;
-    //     auto chars = env.GetStringChars(value, NULL);
-    //     auto length = env.GetStringLength(value);
-    //     auto v8String = tns::ConvertToV8String(isolate, chars, length);
-    //     env.ReleaseStringChars(value, chars);
+        JEnv env;
+        auto chars = env.GetStringChars(value, NULL);
+        auto length = env.GetStringLength(value);
+        auto v8String = tns::ConvertToV8String(isolate, chars, length);
+        env.ReleaseStringChars(value, chars);
 
-    //     return v8String;
-    // }
+        return v8String;
+    }
 
     inline static std::string ToString(v8::Isolate *isolate, const v8::Local<v8::Value> &value) {
         if (value.IsEmpty()) {
@@ -128,20 +134,20 @@ namespace tns {
         return std::string(*result, result.length());
     }
 
-    // static std::string jstringToString(jstring value) {
-    //     if (value == nullptr) {
-    //         return {};
-    //     }
+    static std::string jstringToString(jstring value) {
+        if (value == nullptr) {
+            return {};
+        }
 
-    //     JEnv env;
+        JEnv env;
 
-    //     jboolean f = JNI_FALSE;
-    //     auto chars = env.GetStringUTFChars(value, &f);
-    //     std::string s(chars);
-    //     env.ReleaseStringUTFChars(value, chars);
+        jboolean f = JNI_FALSE;
+        auto chars = env.GetStringUTFChars(value, &f);
+        std::string s(chars);
+        env.ReleaseStringUTFChars(value, chars);
 
-    //     return s;
-    // }
+        return s;
+    }
 }
 
 #endif //TEST_APP_JSR_H
