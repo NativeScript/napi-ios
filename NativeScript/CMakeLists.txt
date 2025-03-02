@@ -40,7 +40,7 @@ elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(TARGET_PLATFORM_IOS TRUE)
   set(TARGET_PLATFORM_SIM TRUE)
   set(SDK_NAME "iphonesimulator")
-  set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
   set(TARGET_PLATFORM_SPEC "ios-arm64_x86_64-simulator")
 
 elseif(TARGET_PLATFORM STREQUAL "macos")
@@ -69,7 +69,7 @@ elseif(TARGET_ENGINE STREQUAL "hermes")
 elseif(TARGET_ENGINE STREQUAL "v8")
   set(TARGET_ENGINE_V8 TRUE)
   add_link_options("-fuse-ld=/opt/homebrew/opt/llvm/bin/ld64.lld")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DV8_COMPRESS_POINTERS -DV8_ENABLE_SANDBOX -DTARGET_ENGINE_V8")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8")
 elseif(TARGET_ENGINE STREQUAL "quickjs")
   set(TARGET_ENGINE_QUICKJS TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_QUICKJS")
@@ -314,6 +314,30 @@ if(TARGET_ENGINE_HERMES)
     ${NAME}
     PRIVATE
     "-framework hermes"
+  )
+endif()
+
+if(TARGET_ENGINE_JSC)
+  target_link_libraries(
+    ${NAME}
+    PRIVATE
+    "-framework JavaScriptCore"
+  )
+endif()
+
+if(TARGET_ENGINE_V8)
+  target_link_directories(
+    ${NAME}
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/v8
+  )
+
+  target_link_libraries(
+    ${NAME}
+    PRIVATE
+    "v8_monolith"
+    "v8_libbase"
+    "v8_libplatform"
   )
 endif()
 

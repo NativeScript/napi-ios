@@ -1199,12 +1199,6 @@ declare const CMTagCollectionError: {
   NotYetImplemented: -15749,
 };
 
-declare const CMPackingType: {
-  None: 1852796517,
-  SideBySide: 1936286821,
-  OverUnder: 1870030194,
-};
-
 declare const CMStereoViewComponents: {
   None: 0,
   LeftEye: 1,
@@ -1268,6 +1262,12 @@ declare const CMProjectionType: {
   Equirectangular: 1701934441,
   HalfEquirectangular: 1751478645,
   Fisheye: 1718186856,
+};
+
+declare const CMPackingType: {
+  None: 1852796517,
+  SideBySide: 1936286821,
+  OverUnder: 1870030194,
 };
 
 declare class OpaqueCMMemoryPool {

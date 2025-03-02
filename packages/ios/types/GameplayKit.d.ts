@@ -685,6 +685,28 @@ declare class GKRule extends NSObject {
   static ruleWithBlockPredicateAction<This extends abstract new (...args: any) => any>(this: This, predicate: (p1: GKRuleSystem) => boolean, action: (p1: GKRuleSystem) => void): InstanceType<This>;
 }
 
+declare class GKAgent extends GKComponent implements NSSecureCoding {
+  delegate: GKAgentDelegate;
+
+  behavior: GKBehavior;
+
+  mass: number;
+
+  radius: number;
+
+  speed: number;
+
+  maxAcceleration: number;
+
+  maxSpeed: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class GKCheckerboardNoiseSource extends GKNoiseSource {
   squareSize: number;
 
@@ -831,28 +853,6 @@ declare class GKPath extends NSObject {
   float2AtIndex(index: number): unknown /* ext vector */;
 
   float3AtIndex(index: number): unknown /* ext vector */;
-}
-
-declare class GKAgent extends GKComponent implements NSSecureCoding {
-  delegate: GKAgentDelegate;
-
-  behavior: GKBehavior;
-
-  mass: number;
-
-  radius: number;
-
-  speed: number;
-
-  maxAcceleration: number;
-
-  maxSpeed: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class GKVoronoiNoiseSource extends GKNoiseSource {

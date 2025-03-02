@@ -4,10 +4,6 @@ declare const os_clockid_t: {
   OS_CLOCK_MACH_ABSOLUTE_TIME: 32,
 };
 
-declare class __sFILEX {
-  constructor(init?: __sFILEX);
-}
-
 declare class simd_float2x2 {
   constructor(init?: simd_float2x2);
   columns: unknown /* const array */;
@@ -32,6 +28,10 @@ declare class os_workgroup_attr_opaque_s {
   constructor(init?: os_workgroup_attr_opaque_s);
   sig: number;
   opaque: unknown /* const array */;
+}
+
+declare class __sFILEX {
+  constructor(init?: __sFILEX);
 }
 
 declare class simd_quatd {

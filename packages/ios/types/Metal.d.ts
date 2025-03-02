@@ -67,11 +67,6 @@ declare const MTLCommonCounterRenderTargetWriteCycles: string;
 
 declare const MTLBufferLayoutStrideDynamic: number;
 
-declare const MTLSamplerMinMagFilter: {
-  Nearest: 0,
-  Linear: 1,
-};
-
 declare const MTLCommandBufferStatus: {
   NotEnqueued: 0,
   Enqueued: 1,
@@ -92,12 +87,6 @@ declare const MTLTextureSwizzle: {
   Green: 3,
   Blue: 4,
   Alpha: 5,
-};
-
-declare const MTLStitchedLibraryOptions: {
-  None: 0,
-  FailOnBinaryArchiveMiss: 1,
-  StoreLibraryInMetalPipelinesScript: 2,
 };
 
 declare const MTLIOPriority: {
@@ -178,6 +167,11 @@ declare const MTLSamplerAddressMode: {
   MirrorRepeat: 3,
   ClampToZero: 4,
   ClampToBorderColor: 5,
+};
+
+declare const MTLSamplerMinMagFilter: {
+  Nearest: 0,
+  Linear: 1,
 };
 
 declare const MTLTessellationPartitionMode: {
@@ -352,11 +346,6 @@ declare const MTLMultisampleDepthResolveFilter: {
   Sample0: 0,
   Min: 1,
   Max: 2,
-};
-
-declare const MTLStoreActionOptions: {
-  None: 0,
-  CustomSamplePositions: 1,
 };
 
 declare const MTLLoadAction: {
@@ -938,6 +927,12 @@ declare const MTLPrimitiveType: {
   TriangleStrip: 4,
 };
 
+declare const MTLStitchedLibraryOptions: {
+  None: 0,
+  FailOnBinaryArchiveMiss: 1,
+  StoreLibraryInMetalPipelinesScript: 2,
+};
+
 declare const MTLGPUFamily: {
   Apple1: 1001,
   Apple2: 1002,
@@ -1034,6 +1029,11 @@ declare const MTLStoreAction: {
   StoreAndMultisampleResolve: 3,
   Unknown: 4,
   CustomSampleDepthStore: 5,
+};
+
+declare const MTLStoreActionOptions: {
+  None: 0,
+  CustomSamplePositions: 1,
 };
 
 declare const MTLWinding: {
@@ -1383,6 +1383,13 @@ declare class MTLRegion {
   size: MTLSize;
 }
 
+declare class unnamed_14068119700928785891 {
+  constructor(init?: unnamed_14068119700928785891);
+  x: number;
+  y: number;
+  z: number;
+}
+
 declare class MTLAccelerationStructureInstanceDescriptor {
   constructor(init?: MTLAccelerationStructureInstanceDescriptor);
   transformationMatrix: _MTLPackedFloat4x3;
@@ -1424,18 +1431,11 @@ declare class MTLIndirectAccelerationStructureMotionInstanceDescriptor {
   motionEndTime: number;
 }
 
-declare class unnamed_3766296192538489294 {
-  constructor(init?: unnamed_3766296192538489294);
-  x: number;
-  y: number;
-  z: number;
-}
-
-type unnamed_4280627783610062968Descriptor = 
+type unnamed_5507129333846803689Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_4280627783610062968 {
-  constructor(init?: unnamed_4280627783610062968Descriptor);
+declare class unnamed_5507129333846803689 {
+  constructor(init?: unnamed_5507129333846803689Descriptor);
   elements: unknown /* const array */;
 }
 
@@ -4108,6 +4108,23 @@ declare class MTLIntersectionFunctionDescriptor extends MTLFunctionDescriptor im
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTLFunctionDescriptor extends NSObject implements NSCopying {
+  static functionDescriptor(): MTLFunctionDescriptor;
+
+  name: string;
+
+  specializedName: string;
+
+  constantValues: MTLFunctionConstantValues;
+
+  options: interop.Enum<typeof MTLFunctionOptions>;
+
+  get binaryArchives(): NSArray;
+  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTLFunctionConstantValues extends NSObject implements NSCopying {
   setConstantValueTypeAtIndex(value: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, index: number): void;
 
@@ -4118,6 +4135,40 @@ declare class MTLFunctionConstantValues extends NSObject implements NSCopying {
   reset(): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLArgument extends NSObject {
+  readonly name: string;
+
+  readonly type: interop.Enum<typeof MTLArgumentType>;
+
+  readonly access: interop.Enum<typeof MTLBindingAccess>;
+
+  readonly index: number;
+
+  readonly isActive: boolean;
+
+  readonly bufferAlignment: number;
+
+  readonly bufferDataSize: number;
+
+  readonly bufferDataType: interop.Enum<typeof MTLDataType>;
+
+  readonly bufferStructType: MTLStructType;
+
+  readonly bufferPointerType: MTLPointerType;
+
+  readonly threadgroupMemoryAlignment: number;
+
+  readonly threadgroupMemoryDataSize: number;
+
+  readonly textureType: interop.Enum<typeof MTLTextureType>;
+
+  readonly textureDataType: interop.Enum<typeof MTLDataType>;
+
+  readonly isDepthTexture: boolean;
+
+  readonly arrayLength: number;
 }
 
 declare class MTLPointerType extends MTLType {
@@ -4389,23 +4440,6 @@ declare class MTLResourceStatePassSampleBufferAttachmentDescriptor extends NSObj
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLFunctionDescriptor extends NSObject implements NSCopying {
-  static functionDescriptor(): MTLFunctionDescriptor;
-
-  name: string;
-
-  specializedName: string;
-
-  constantValues: MTLFunctionConstantValues;
-
-  options: interop.Enum<typeof MTLFunctionOptions>;
-
-  get binaryArchives(): NSArray;
-  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTLComputePipelineDescriptor extends NSObject implements NSCopying {
   label: string;
 
@@ -4491,40 +4525,6 @@ declare class MTLAccelerationStructureMotionCurveGeometryDescriptor extends MTLA
   curveEndCaps: interop.Enum<typeof MTLCurveEndCaps>;
 
   static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
-
-declare class MTLArgument extends NSObject {
-  readonly name: string;
-
-  readonly type: interop.Enum<typeof MTLArgumentType>;
-
-  readonly access: interop.Enum<typeof MTLBindingAccess>;
-
-  readonly index: number;
-
-  readonly isActive: boolean;
-
-  readonly bufferAlignment: number;
-
-  readonly bufferDataSize: number;
-
-  readonly bufferDataType: interop.Enum<typeof MTLDataType>;
-
-  readonly bufferStructType: MTLStructType;
-
-  readonly bufferPointerType: MTLPointerType;
-
-  readonly threadgroupMemoryAlignment: number;
-
-  readonly threadgroupMemoryDataSize: number;
-
-  readonly textureType: interop.Enum<typeof MTLTextureType>;
-
-  readonly textureDataType: interop.Enum<typeof MTLDataType>;
-
-  readonly isDepthTexture: boolean;
-
-  readonly arrayLength: number;
 }
 
 declare class MTLVertexAttributeDescriptor extends NSObject implements NSCopying {

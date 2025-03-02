@@ -109,6 +109,8 @@ declare const INCarChargingConnectorTypeGBTAC: string;
 
 declare const INSetAudioSourceInCarIntentIdentifier: string;
 
+declare const INPersonRelationshipChild: string;
+
 declare const INWorkoutNameIdentifierOther: string;
 
 declare const INPersonRelationshipPartner: string;
@@ -154,8 +156,6 @@ declare const INCarChargingConnectorTypeJ1772: string;
 declare const INPersonHandleLabelHomeFax: string;
 
 declare const INRequestPaymentIntentIdentifier: string;
-
-declare const INPersonRelationshipChild: string;
 
 declare const INCancelWorkoutIntentIdentifier: string;
 
@@ -922,18 +922,6 @@ declare const INShortcutAvailabilityOptions: {
   YogaAndStretching: 64,
 };
 
-declare const INStartAudioCallIntentResponseCode: {
-  Unspecified: 0,
-  Ready: 1,
-  ContinueInApp: 2,
-  Failure: 3,
-  FailureRequiringAppLaunch: 4,
-  FailureAppConfigurationRequired: 5,
-  FailureCallingServiceNotAvailable: 6,
-  FailureContactNotSupportedByApp: 7,
-  FailureNoValidNumber: 8,
-};
-
 declare const INStartCallCallCapabilityUnsupportedReason: {
   VideoCallUnsupported: 1,
   MicrophoneNotAccessible: 2,
@@ -1031,12 +1019,6 @@ declare const INAmountType: {
   StatementBalance: 6,
 };
 
-declare const INInteractionDirection: {
-  Unspecified: 0,
-  Outgoing: 1,
-  Incoming: 2,
-};
-
 declare const INRestaurantReservationUserBookingStatus: {
   Pending: 0,
   Confirmed: 1,
@@ -1084,11 +1066,6 @@ declare const INBillType: {
   Tuition: 20,
   Utilities: 21,
   Water: 22,
-};
-
-declare const INReservationActionType: {
-  Unknown: 0,
-  CheckIn: 1,
 };
 
 declare const INSearchForAccountsIntentResponseCode: {
@@ -1153,15 +1130,6 @@ declare const INGetCarPowerLevelStatusIntentResponseCode: {
   Success: 3,
   Failure: 4,
   FailureRequiringAppLaunch: 5,
-};
-
-declare const INBookRestaurantReservationIntentCode: {
-  Success: 0,
-  Denied: 1,
-  Failure: 2,
-  FailureRequiringAppLaunch: 3,
-  FailureRequiringAppLaunchMustVerifyCredentials: 4,
-  FailureRequiringAppLaunchServiceTemporarilyUnavailable: 5,
 };
 
 declare const INDeleteTasksTaskUnsupportedReason: {
@@ -1434,6 +1402,11 @@ declare const INGetVisualCodeIntentResponseCode: {
   FailureAppConfigurationRequired: 7,
 };
 
+declare const INReservationActionType: {
+  Unknown: 0,
+  CheckIn: 1,
+};
+
 declare const INGetCarLockStatusIntentResponseCode: {
   Unspecified: 0,
   Ready: 1,
@@ -1516,6 +1489,18 @@ declare const INMediaDestinationType: {
   Playlist: 2,
 };
 
+declare const INStartAudioCallIntentResponseCode: {
+  Unspecified: 0,
+  Ready: 1,
+  ContinueInApp: 2,
+  Failure: 3,
+  FailureRequiringAppLaunch: 4,
+  FailureAppConfigurationRequired: 5,
+  FailureCallingServiceNotAvailable: 6,
+  FailureContactNotSupportedByApp: 7,
+  FailureNoValidNumber: 8,
+};
+
 declare const INListCarsIntentResponseCode: {
   Unspecified: 0,
   Ready: 1,
@@ -1575,10 +1560,25 @@ declare const INPhotoAttributeOptions: {
   LongExposurePhoto: 268435456,
 };
 
+declare const INInteractionDirection: {
+  Unspecified: 0,
+  Outgoing: 1,
+  Incoming: 2,
+};
+
 declare const INMediaReference: {
   Unknown: 0,
   CurrentlyPlaying: 1,
   My: 2,
+};
+
+declare const INBookRestaurantReservationIntentCode: {
+  Success: 0,
+  Denied: 1,
+  Failure: 2,
+  FailureRequiringAppLaunch: 3,
+  FailureRequiringAppLaunchMustVerifyCredentials: 4,
+  FailureRequiringAppLaunchServiceTemporarilyUnavailable: 5,
 };
 
 declare const INAddTasksTemporalEventTriggerUnsupportedReason: {
@@ -5132,6 +5132,18 @@ declare class INMessageAttributeResolutionResult extends INIntentResolutionResul
   static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INMessageAttribute>): InstanceType<This>;
 }
 
+declare class INSaveProfileInCarIntent extends INIntent {
+  initWithProfileNumberProfileName(profileNumber: NSNumber | null, profileName: string | null): this;
+
+  readonly profileNumber: NSNumber;
+
+  readonly profileName: string;
+
+  initWithProfileNumberProfileLabel(profileNumber: NSNumber | null, profileLabel: string | null): this;
+
+  readonly profileLabel: string;
+}
+
 declare class INRentalCarReservation extends INReservation implements NSCopying, NSSecureCoding {
   initWithItemReferenceReservationNumberBookingTimeReservationStatusReservationHolderNameActionsURLRentalCarRentalDurationPickupLocationDropOffLocation(itemReference: INSpeakableString, reservationNumber: string | null, bookingTime: NSDate | null, reservationStatus: interop.Enum<typeof INReservationStatus>, reservationHolderName: string | null, actions: NSArray<interop.Object> | Array<interop.Object> | null, URL: NSURL | null, rentalCar: INRentalCar, rentalDuration: INDateComponentsRange, pickupLocation: CLPlacemark | null, dropOffLocation: CLPlacemark | null): this;
 
@@ -5226,18 +5238,6 @@ declare class INPaymentAccount extends NSObject implements NSCopying, NSSecureCo
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class INSaveProfileInCarIntent extends INIntent {
-  initWithProfileNumberProfileName(profileNumber: NSNumber | null, profileName: string | null): this;
-
-  readonly profileNumber: NSNumber;
-
-  readonly profileName: string;
-
-  initWithProfileNumberProfileLabel(profileNumber: NSNumber | null, profileLabel: string | null): this;
-
-  readonly profileLabel: string;
 }
 
 declare class INCallGroup extends NSObject implements NSCopying, NSSecureCoding {

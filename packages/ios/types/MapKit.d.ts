@@ -2320,6 +2320,12 @@ declare class MKPolylineRenderer extends MKOverlayPathRenderer {
   strokeEnd: number;
 }
 
+declare class MKMultiPolygonRenderer extends MKOverlayPathRenderer {
+  initWithMultiPolygon(multiPolygon: MKMultiPolygon): this;
+
+  readonly multiPolygon: MKMultiPolygon;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class MKCircle extends MKShape implements MKOverlay {
   static circleWithCenterCoordinateRadius<This extends abstract new (...args: any) => any>(this: This, coord: CLLocationCoordinate2D, radius: number): InstanceType<This>;
@@ -2381,11 +2387,5 @@ declare class MKCircle extends MKShape implements MKOverlay {
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-declare class MKMultiPolygonRenderer extends MKOverlayPathRenderer {
-  initWithMultiPolygon(multiPolygon: MKMultiPolygon): this;
-
-  readonly multiPolygon: MKMultiPolygon;
 }
 

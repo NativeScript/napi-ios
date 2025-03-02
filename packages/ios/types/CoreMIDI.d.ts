@@ -89,8 +89,6 @@ declare const kMIDIWrongPropertyType: number;
 
 declare const kMIDIUnknownProperty: number;
 
-declare const kMIDIPropertyIsMixer: interop.Pointer;
-
 declare const kMIDIPropertyIsEmbeddedEntity: interop.Pointer;
 
 declare const kMIDIPropertyOffline: interop.Pointer;
@@ -136,6 +134,8 @@ declare const kMIDIPropertyAdvanceScheduleTimeMuSec: interop.Pointer;
 declare const MIDINetworkNotificationSessionDidChange: string;
 
 declare const kMIDIPropertyUMPActiveGroupBitmap: interop.Pointer;
+
+declare const kMIDIPropertyIsMixer: interop.Pointer;
 
 declare const kMIDIInvalidClient: number;
 
@@ -474,95 +474,86 @@ declare class MIDI2DeviceManufacturer {
   sysExIDByte: unknown /* const array */;
 }
 
-declare class unnamed_16369060650413547235 {
-  constructor(init?: unnamed_16369060650413547235);
-  words: unknown /* const array */;
-}
-
-declare class unnamed_1009880263165468972 {
-  constructor(init?: unnamed_1009880263165468972);
-  byteCount: number;
-  streamID: number;
+declare class unnamed_1358690111956786276 {
+  constructor(init?: unnamed_1358690111956786276);
+  mdsID: number;
   data: unknown /* const array */;
   reserved: number;
 }
 
-declare class unnamed_10722686084654363215 {
-  constructor(init?: unnamed_10722686084654363215);
-  note: number;
-  options: interop.Enum<typeof MIDIPerNoteManagementOptions>;
-  reserved: unknown /* const array */;
+declare class unnamed_5726552042494347758 {
+  constructor(init?: unnamed_5726552042494347758);
+  status: interop.Enum<typeof MIDISysExStatus>;
 }
 
-declare class unnamed_14599184191153347748 {
-  constructor(init?: unnamed_14599184191153347748);
+declare class unnamed_5976478452727916341 {
+  constructor(init?: unnamed_5976478452727916341);
   noteNumber: number;
   reserved: number;
   bend: number;
 }
 
-declare class unnamed_1277226180431554131 {
-  constructor(init?: unnamed_1277226180431554131);
+declare class unnamed_8393771342991646255 {
+  constructor(init?: unnamed_8393771342991646255);
   bank: number;
   index: number;
   data: number;
 }
 
-declare class unnamed_6447029892666778769 {
-  constructor(init?: unnamed_6447029892666778769);
+declare class unnamed_4363674216645783470 {
+  constructor(init?: unnamed_4363674216645783470);
   noteNumber: number;
   index: number;
   data: number;
 }
 
-declare class unnamed_15914557193256866318 {
-  constructor(init?: unnamed_15914557193256866318);
+declare class unnamed_4644535429900752411 {
+  constructor(init?: unnamed_4644535429900752411);
   data: number;
   reserved: unknown /* const array */;
 }
 
-declare class unnamed_7942926979919989325 {
-  constructor(init?: unnamed_7942926979919989325);
-  data: number;
+declare class unnamed_16147928331756399310 {
+  constructor(init?: unnamed_16147928331756399310);
+  options: interop.Enum<typeof MIDIProgramChangeOptions>;
+  program: number;
   reserved: unknown /* const array */;
+  bank: number;
 }
 
-declare class unnamed_1795508434189598288 {
-  constructor(init?: unnamed_1795508434189598288);
+declare class unnamed_2471867449920839727 {
+  constructor(init?: unnamed_2471867449920839727);
   index: number;
   reserved: number;
   data: number;
 }
 
-declare class unnamed_12197665905231870000 {
-  constructor(init?: unnamed_12197665905231870000);
-  noteNumber: number;
+declare class unnamed_2814087202440797327 {
+  constructor(init?: unnamed_2814087202440797327);
+  status: interop.Enum<typeof MIDICVStatus>;
+  channel: number;
+  reserved: unknown /* const array */;
+}
+
+declare class unnamed_842547952621437620 {
+  constructor(init?: unnamed_842547952621437620);
+  status: interop.Enum<typeof MIDISysExStatus>;
+  channel: number;
+  data: unknown /* const array */;
   reserved: number;
+}
+
+declare class unnamed_693304160101909011 {
+  constructor(init?: unnamed_693304160101909011);
+  noteNumber: number;
   pressure: number;
 }
 
-declare class unnamed_17914203268852926578 {
-  constructor(init?: unnamed_17914203268852926578);
-  number: number;
-  attributeType: interop.Enum<typeof MIDINoteAttribute>;
-  velocity: number;
-  attribute: number;
-}
-
-declare class unnamed_3181215816142753828 {
-  constructor(init?: unnamed_3181215816142753828);
-  number: number;
-  velocity: number;
-}
-
-declare class unnamed_290973175701478428 {
-  constructor(init?: unnamed_290973175701478428);
-  status: interop.Enum<typeof MIDISystemStatus>;
-}
-
-declare class unnamed_5670225798852103984 {
-  constructor(init?: unnamed_5670225798852103984);
-  status: interop.Enum<typeof MIDIUtilityStatus>;
+declare class unnamed_8281014325342965362 {
+  constructor(init?: unnamed_8281014325342965362);
+  status: interop.Enum<typeof MIDICVStatus>;
+  channel: number;
+  reserved: unknown /* const array */;
 }
 
 declare class MIDIMessage_128 {
@@ -612,16 +603,21 @@ declare class MIDITransform {
   param: number;
 }
 
-declare class unnamed_4058214023775942543 {
-  constructor(init?: unnamed_4058214023775942543);
-  status: interop.Enum<typeof MIDICVStatus>;
-  channel: number;
-  reserved: unknown /* const array */;
-}
-
 declare class MIDIValueMap {
   constructor(init?: MIDIValueMap);
   value: unknown /* const array */;
+}
+
+declare class unnamed_10538141860617478308 {
+  constructor(init?: unnamed_10538141860617478308);
+  data: number;
+  reserved: unknown /* const array */;
+}
+
+declare class unnamed_12406717865254790187 {
+  constructor(init?: unnamed_12406717865254790187);
+  number: number;
+  velocity: number;
 }
 
 declare class MIDIUniversalMessage {
@@ -629,6 +625,11 @@ declare class MIDIUniversalMessage {
   type: interop.Enum<typeof MIDIMessageType>;
   group: number;
   reserved: unknown /* const array */;
+}
+
+declare class unnamed_929289782677342004 {
+  constructor(init?: unnamed_929289782677342004);
+  words: unknown /* const array */;
 }
 
 declare class MIDIIOErrorNotification {
@@ -679,12 +680,6 @@ declare class MIDIMessage_96 {
   word2: number;
 }
 
-declare class unnamed_10399296175927321540 {
-  constructor(init?: unnamed_10399296175927321540);
-  index: number;
-  data: number;
-}
-
 declare class MIDIThruConnectionParams {
   constructor(init?: MIDIThruConnectionParams);
   version: number;
@@ -714,17 +709,27 @@ declare class MIDIThruConnectionParams {
   reserved3: unknown /* const array */;
 }
 
-declare class unnamed_14539767815627376518 {
-  constructor(init?: unnamed_14539767815627376518);
-  status: interop.Enum<typeof MIDISysExStatus>;
-}
-
-declare class unnamed_4742411390110765585 {
-  constructor(init?: unnamed_4742411390110765585);
-  status: interop.Enum<typeof MIDISysExStatus>;
-  channel: number;
+declare class unnamed_4545427089433160240 {
+  constructor(init?: unnamed_4545427089433160240);
+  byteCount: number;
+  streamID: number;
   data: unknown /* const array */;
   reserved: number;
+}
+
+declare class unnamed_15945234132822424341 {
+  constructor(init?: unnamed_15945234132822424341);
+  number: number;
+  attributeType: interop.Enum<typeof MIDINoteAttribute>;
+  velocity: number;
+  attribute: number;
+}
+
+declare class unnamed_567320627853004388 {
+  constructor(init?: unnamed_567320627853004388);
+  noteNumber: number;
+  reserved: number;
+  pressure: number;
 }
 
 declare class MIDI2DeviceRevisionLevel {
@@ -742,11 +747,22 @@ declare class MIDISysexSendRequestUMP {
   completionRefCon: interop.Pointer;
 }
 
-declare class unnamed_8903466342511441356 {
-  constructor(init?: unnamed_8903466342511441356);
-  status: interop.Enum<typeof MIDICVStatus>;
-  channel: number;
+declare class unnamed_3753080802016014583 {
+  constructor(init?: unnamed_3753080802016014583);
+  note: number;
+  options: interop.Enum<typeof MIDIPerNoteManagementOptions>;
   reserved: unknown /* const array */;
+}
+
+declare class unnamed_5997089908182989124 {
+  constructor(init?: unnamed_5997089908182989124);
+  index: number;
+  data: number;
+}
+
+declare class unnamed_14130692168161428217 {
+  constructor(init?: unnamed_14130692168161428217);
+  status: interop.Enum<typeof MIDISystemStatus>;
 }
 
 declare class MIDIPacket {
@@ -766,31 +782,15 @@ declare class MIDIObjectAddRemoveNotification {
   childType: interop.Enum<typeof MIDIObjectType>;
 }
 
-declare class unnamed_9662814578861302287 {
-  constructor(init?: unnamed_9662814578861302287);
-  options: interop.Enum<typeof MIDIProgramChangeOptions>;
-  program: number;
-  reserved: unknown /* const array */;
-  bank: number;
+declare class unnamed_8862143616895501802 {
+  constructor(init?: unnamed_8862143616895501802);
+  status: interop.Enum<typeof MIDIUtilityStatus>;
 }
 
 declare class MIDIThruConnectionEndpoint {
   constructor(init?: MIDIThruConnectionEndpoint);
   endpointRef: number;
   uniqueID: number;
-}
-
-declare class unnamed_13393575623933548947 {
-  constructor(init?: unnamed_13393575623933548947);
-  noteNumber: number;
-  pressure: number;
-}
-
-declare class unnamed_17733950026020344085 {
-  constructor(init?: unnamed_17733950026020344085);
-  mdsID: number;
-  data: unknown /* const array */;
-  reserved: number;
 }
 
 type MIDICIProfileIDDescriptor = 
@@ -803,98 +803,98 @@ declare class MIDICIProfileID {
   manufacturerSpecific: MIDICIProfileIDManufacturerSpecific;
 }
 
-type unnamed_2091720995273032349Descriptor = 
-  | { note: unnamed_17914203268852926578 }
-  | { polyPressure: unnamed_12197665905231870000 }
-  | { controlChange: unnamed_1795508434189598288 }
-  | { programChange: unnamed_9662814578861302287 }
-  | { channelPressure: unnamed_7942926979919989325 }
-  | { pitchBend: unnamed_15914557193256866318 }
-  | { perNoteController: unnamed_6447029892666778769 }
-  | { controller: unnamed_1277226180431554131 }
-  | { perNotePitchBend: unnamed_14599184191153347748 }
-  | { perNoteManagement: unnamed_10722686084654363215 };
+type unnamed_4282587799642565691Descriptor = 
+  | { sysex8: unnamed_4545427089433160240 }
+  | { mixedDataSet: unnamed_1358690111956786276 };
 
-declare class unnamed_2091720995273032349 {
-  constructor(init?: unnamed_2091720995273032349Descriptor);
-  note: unnamed_17914203268852926578;
-  polyPressure: unnamed_12197665905231870000;
-  controlChange: unnamed_1795508434189598288;
-  programChange: unnamed_9662814578861302287;
-  channelPressure: unnamed_7942926979919989325;
-  pitchBend: unnamed_15914557193256866318;
-  perNoteController: unnamed_6447029892666778769;
-  controller: unnamed_1277226180431554131;
-  perNotePitchBend: unnamed_14599184191153347748;
-  perNoteManagement: unnamed_10722686084654363215;
+declare class unnamed_4282587799642565691 {
+  constructor(init?: unnamed_4282587799642565691Descriptor);
+  sysex8: unnamed_4545427089433160240;
+  mixedDataSet: unnamed_1358690111956786276;
 }
 
-type unnamed_391521549902836264Descriptor = 
-  | { sysex8: unnamed_1009880263165468972 }
-  | { mixedDataSet: unnamed_17733950026020344085 };
+type unnamed_6378268291348443999Descriptor = 
+  | { note: unnamed_15945234132822424341 }
+  | { polyPressure: unnamed_567320627853004388 }
+  | { controlChange: unnamed_2471867449920839727 }
+  | { programChange: unnamed_16147928331756399310 }
+  | { channelPressure: unnamed_10538141860617478308 }
+  | { pitchBend: unnamed_4644535429900752411 }
+  | { perNoteController: unnamed_4363674216645783470 }
+  | { controller: unnamed_8393771342991646255 }
+  | { perNotePitchBend: unnamed_5976478452727916341 }
+  | { perNoteManagement: unnamed_3753080802016014583 };
 
-declare class unnamed_391521549902836264 {
-  constructor(init?: unnamed_391521549902836264Descriptor);
-  sysex8: unnamed_1009880263165468972;
-  mixedDataSet: unnamed_17733950026020344085;
+declare class unnamed_6378268291348443999 {
+  constructor(init?: unnamed_6378268291348443999Descriptor);
+  note: unnamed_15945234132822424341;
+  polyPressure: unnamed_567320627853004388;
+  controlChange: unnamed_2471867449920839727;
+  programChange: unnamed_16147928331756399310;
+  channelPressure: unnamed_10538141860617478308;
+  pitchBend: unnamed_4644535429900752411;
+  perNoteController: unnamed_4363674216645783470;
+  controller: unnamed_8393771342991646255;
+  perNotePitchBend: unnamed_5976478452727916341;
+  perNoteManagement: unnamed_3753080802016014583;
 }
 
-type unnamed_6132032490996389029Descriptor = 
-  | { timeCode: number }
-  | { songPositionPointer: number }
-  | { songSelect: number };
+type unnamed_17821606898995139507Descriptor = 
+  | { utility: unnamed_8862143616895501802 }
+  | { system: unnamed_14130692168161428217 }
+  | { channelVoice1: unnamed_8281014325342965362 }
+  | { sysEx: unnamed_842547952621437620 }
+  | { channelVoice2: unnamed_2814087202440797327 }
+  | { data128: unnamed_5726552042494347758 }
+  | { unknown: unnamed_929289782677342004 };
 
-declare class unnamed_6132032490996389029 {
-  constructor(init?: unnamed_6132032490996389029Descriptor);
-  timeCode: number;
-  songPositionPointer: number;
-  songSelect: number;
+declare class unnamed_17821606898995139507 {
+  constructor(init?: unnamed_17821606898995139507Descriptor);
+  utility: unnamed_8862143616895501802;
+  system: unnamed_14130692168161428217;
+  channelVoice1: unnamed_8281014325342965362;
+  sysEx: unnamed_842547952621437620;
+  channelVoice2: unnamed_2814087202440797327;
+  data128: unnamed_5726552042494347758;
+  unknown: unnamed_929289782677342004;
 }
 
-type unnamed_7288908550938668795Descriptor = 
-  | { note: unnamed_3181215816142753828 }
-  | { polyPressure: unnamed_13393575623933548947 }
-  | { controlChange: unnamed_10399296175927321540 }
+type unnamed_14816329683425728140Descriptor = 
+  | { note: unnamed_12406717865254790187 }
+  | { polyPressure: unnamed_693304160101909011 }
+  | { controlChange: unnamed_5997089908182989124 }
   | { program: number }
   | { channelPressure: number }
   | { pitchBend: number };
 
-declare class unnamed_7288908550938668795 {
-  constructor(init?: unnamed_7288908550938668795Descriptor);
-  note: unnamed_3181215816142753828;
-  polyPressure: unnamed_13393575623933548947;
-  controlChange: unnamed_10399296175927321540;
+declare class unnamed_14816329683425728140 {
+  constructor(init?: unnamed_14816329683425728140Descriptor);
+  note: unnamed_12406717865254790187;
+  polyPressure: unnamed_693304160101909011;
+  controlChange: unnamed_5997089908182989124;
   program: number;
   channelPressure: number;
   pitchBend: number;
 }
 
-type unnamed_9754938039584195785Descriptor = 
-  | { utility: unnamed_5670225798852103984 }
-  | { system: unnamed_290973175701478428 }
-  | { channelVoice1: unnamed_8903466342511441356 }
-  | { sysEx: unnamed_4742411390110765585 }
-  | { channelVoice2: unnamed_4058214023775942543 }
-  | { data128: unnamed_14539767815627376518 }
-  | { unknown: unnamed_16369060650413547235 };
+type unnamed_11986275914852824809Descriptor = 
+  | { timeCode: number }
+  | { songPositionPointer: number }
+  | { songSelect: number };
 
-declare class unnamed_9754938039584195785 {
-  constructor(init?: unnamed_9754938039584195785Descriptor);
-  utility: unnamed_5670225798852103984;
-  system: unnamed_290973175701478428;
-  channelVoice1: unnamed_8903466342511441356;
-  sysEx: unnamed_4742411390110765585;
-  channelVoice2: unnamed_4058214023775942543;
-  data128: unnamed_14539767815627376518;
-  unknown: unnamed_16369060650413547235;
+declare class unnamed_11986275914852824809 {
+  constructor(init?: unnamed_11986275914852824809Descriptor);
+  timeCode: number;
+  songPositionPointer: number;
+  songSelect: number;
 }
 
-type unnamed_6568528752774794124Descriptor = 
+type unnamed_12043364838883523722Descriptor = 
   | { jitterReductionClock: number }
   | { jitterReductionTimestamp: number };
 
-declare class unnamed_6568528752774794124 {
-  constructor(init?: unnamed_6568528752774794124Descriptor);
+declare class unnamed_12043364838883523722 {
+  constructor(init?: unnamed_12043364838883523722Descriptor);
   jitterReductionClock: number;
   jitterReductionTimestamp: number;
 }

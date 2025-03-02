@@ -2700,3 +2700,27 @@ napi_status napi_object_seal(napi_env env,
     CHECK_NAPI(napi_call_function(env, object_ctor, seal, 1, &object, nullptr));
     return napi_ok;
 }
+
+napi_status napi_set_instance_data(napi_env env, void* data,
+                                   napi_finalize finalize_cb,
+                                   void* finalize_hint) {
+  CHECK_ENV(env);
+
+  if (env->instance_data != nullptr) {
+    return napi_set_last_error(env, napi_invalid_arg);
+  }
+
+  env->instance_data = data;
+  env->instance_data_finalize_cb = finalize_cb;
+  env->instance_data_finalize_hint = finalize_hint;
+
+  return napi_ok;
+}
+
+napi_status napi_get_instance_data(napi_env env, void** data) {
+  CHECK_ENV(env);
+
+  *data = env->instance_data;
+
+  return napi_ok;
+}

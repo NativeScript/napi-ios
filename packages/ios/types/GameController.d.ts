@@ -428,6 +428,10 @@ declare const GCHapticsLocalityLeftHandle: string;
 
 declare const GCKeyF16: string;
 
+declare const GCProductCategoryDualShock4: string;
+
+declare const GCKeyCodeLANG4: number;
+
 declare const GCKeyK: string;
 
 declare const GCKeyJ: string;
@@ -558,8 +562,6 @@ declare const GCKeyQuote: string;
 
 declare const GCKeyKeypad9: string;
 
-declare const GCProductCategoryDualShock4: string;
-
 declare const GCKeyCodeKeyS: number;
 
 declare const GCKeyCodeKeyM: number;
@@ -657,8 +659,6 @@ declare const GCKeyZero: string;
 declare const GCKeyCapsLock: string;
 
 declare const GCHapticsLocalityRightTrigger: string;
-
-declare const GCKeyCodeLANG4: number;
 
 declare const GCKeyCodeRightGUI: number;
 
@@ -787,29 +787,6 @@ declare class GCExtendedGamepadSnapShotDataV100 {
   rightTrigger: number;
 }
 
-declare class GCExtendedGamepadSnapshotData {
-  constructor(init?: GCExtendedGamepadSnapshotData);
-  version: number;
-  size: number;
-  dpadX: number;
-  dpadY: number;
-  buttonA: number;
-  buttonB: number;
-  buttonX: number;
-  buttonY: number;
-  leftShoulder: number;
-  rightShoulder: number;
-  leftThumbstickX: number;
-  leftThumbstickY: number;
-  rightThumbstickX: number;
-  rightThumbstickY: number;
-  leftTrigger: number;
-  rightTrigger: number;
-  supportsClickableThumbsticks: boolean;
-  leftThumbstickButton: boolean;
-  rightThumbstickButton: boolean;
-}
-
 declare class GCRotationRate {
   constructor(init?: GCRotationRate);
   x: number;
@@ -841,6 +818,29 @@ declare class GCQuaternion {
   y: number;
   z: number;
   w: number;
+}
+
+declare class GCExtendedGamepadSnapshotData {
+  constructor(init?: GCExtendedGamepadSnapshotData);
+  version: number;
+  size: number;
+  dpadX: number;
+  dpadY: number;
+  buttonA: number;
+  buttonB: number;
+  buttonX: number;
+  buttonY: number;
+  leftShoulder: number;
+  rightShoulder: number;
+  leftThumbstickX: number;
+  leftThumbstickY: number;
+  rightThumbstickX: number;
+  rightThumbstickY: number;
+  leftTrigger: number;
+  rightTrigger: number;
+  supportsClickableThumbsticks: boolean;
+  leftThumbstickButton: boolean;
+  rightThumbstickButton: boolean;
 }
 
 declare class GCGamepadSnapShotDataV100 {

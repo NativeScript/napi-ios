@@ -227,8 +227,9 @@ fi
 
 XCFRAMEWORKS=()
 if $BUILD_CATALYST; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.maccatalyst.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
-                  -debug-symbols "$DIST/intermediates/NativeScript.maccatalyst.xcarchive/dSYMs/NativeScript.framework.dSYM" )
+  echo "Building Catalyst - skipped"
+  # XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.maccatalyst.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
+                  # -debug-symbols "$DIST/intermediates/NativeScript.maccatalyst.xcarchive/dSYMs/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_SIMULATOR; then
@@ -245,10 +246,11 @@ if $BUILD_MACOS; then
 fi
 
 if $BUILD_VISION; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.xros.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
-                  -debug-symbols "$DIST/intermediates/NativeScript.xros.xcarchive/dSYMs/NativeScript.framework.dSYM" )
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.xrsimulator.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
-                  -debug-symbols "$DIST/intermediates/NativeScript.xrsimulator.xcarchive/dSYMs/NativeScript.framework.dSYM" )
+  echo "Building Vision - skipped"
+  # XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.xros.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
+                  # -debug-symbols "$DIST/intermediates/NativeScript.xros.xcarchive/dSYMs/NativeScript.framework.dSYM" )
+  # XCFRAMEWORKS+=( -framework "$DIST/intermediates/NativeScript.xrsimulator.xcarchive/Products/Library/Frameworks/NativeScript.framework" \
+                  # -debug-symbols "$DIST/intermediates/NativeScript.xrsimulator.xcarchive/dSYMs/NativeScript.framework.dSYM" )
 fi
 
 if [ "$TARGET_ENGINE" != "none" ]; then

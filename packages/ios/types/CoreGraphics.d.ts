@@ -96,10 +96,6 @@ declare const kCGPDFContextTrimBox: interop.Pointer;
 
 declare const kCGColorConversionBlackPointCompensation: interop.Pointer;
 
-declare const kCGEXRToneMappingGammaExposure: interop.Pointer;
-
-declare const kCGEXRToneMappingGammaDefog: interop.Pointer;
-
 declare const kCGUseLegacyHDREcosystem: interop.Pointer;
 
 declare const kCGSkipBoostToHDR: interop.Pointer;
@@ -107,6 +103,10 @@ declare const kCGSkipBoostToHDR: interop.Pointer;
 declare const kCGFontVariationAxisMinValue: interop.Pointer;
 
 declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
+
+declare const kCGEXRToneMappingGammaExposure: interop.Pointer;
+
+declare const kCGEXRToneMappingGammaDefog: interop.Pointer;
 
 declare const kCGPDFOutlineTitle: interop.Pointer;
 

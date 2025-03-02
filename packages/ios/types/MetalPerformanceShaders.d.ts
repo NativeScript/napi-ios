@@ -8,12 +8,6 @@ declare const MPSFunctionConstantNone: number;
 
 declare const MPSRectNoClip: MTLRegion;
 
-declare const MPSNNTrainingStyle: {
-  None: 0,
-  CPU: 1,
-  GPU: 2,
-};
-
 declare const MPSDeviceOptions: {
   Default: 0,
   LowPower: 1,
@@ -71,6 +65,12 @@ declare const MPSCNNBatchNormalizationFlags: {
   CalculateStatisticsAlways: 1,
   CalculateStatisticsNever: 2,
   CalculateStatisticsMask: 3,
+};
+
+declare const MPSNNTrainingStyle: {
+  None: 0,
+  CPU: 1,
+  GPU: 2,
 };
 
 declare const MPSAlphaType: {
@@ -216,6 +216,12 @@ declare const MPSCNNConvolutionWeightsLayout: {
   MPSCNNConvolutionWeightsLayoutOHWI: 0,
 };
 
+declare const MPSMatrixRandomDistribution: {
+  Default: 1,
+  Uniform: 2,
+  Normal: 3,
+};
+
 declare const MPSImageType: {
   Type2d: 0,
   Type2d_array: 1,
@@ -341,12 +347,6 @@ declare const MPSNNRegularizationType: {
 declare const MPSTemporalWeighting: {
   MPSTemporalWeightingAverage: 0,
   ExponentialMoving: 1,
-};
-
-declare const MPSMatrixRandomDistribution: {
-  Default: 1,
-  Uniform: 2,
-  Normal: 3,
 };
 
 declare const MPSNNPaddingMethod: {
@@ -483,6 +483,13 @@ declare class MPSRayPackedOriginDirection {
   constructor(init?: MPSRayPackedOriginDirection);
   origin: _MPSPackedFloat3;
   direction: _MPSPackedFloat3;
+}
+
+declare class unnamed_5329597748258948915 {
+  constructor(init?: unnamed_5329597748258948915);
+  x: number;
+  y: number;
+  z: number;
 }
 
 declare class _MPSPackedFloat3 {
@@ -683,13 +690,6 @@ declare class MPSScaleTransform {
   translateY: number;
 }
 
-declare class unnamed_18122006087314737069 {
-  constructor(init?: unnamed_18122006087314737069);
-  x: number;
-  y: number;
-  z: number;
-}
-
 declare class MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates {
   constructor(init?: MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates);
   distance: number;
@@ -711,11 +711,11 @@ declare class MPSOffset {
   z: number;
 }
 
-type unnamed_9442701642150783439Descriptor = 
+type unnamed_17733810721528808223Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_9442701642150783439 {
-  constructor(init?: unnamed_9442701642150783439Descriptor);
+declare class unnamed_17733810721528808223 {
+  constructor(init?: unnamed_17733810721528808223Descriptor);
   elements: unknown /* const array */;
 }
 

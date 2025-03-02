@@ -262,36 +262,22 @@ declare const SCNPhysicsFieldScope: {
   Outside: 1,
 };
 
-declare const SCNPhysicsBodyType: {
-  Static: 0,
-  Dynamic: 1,
-  Kinematic: 2,
-};
-
-declare const SCNParticleEvent: {
-  Birth: 0,
-  Death: 1,
-  Collision: 2,
-};
-
-declare const SCNParticleModifierStage: {
-  PreDynamics: 0,
-  PostDynamics: 1,
-  PreCollision: 2,
-  PostCollision: 3,
-};
-
 declare const SCNParticleInputMode: {
   Life: 0,
   Distance: 1,
   OtherProperty: 2,
 };
 
-declare const SCNParticleOrientationMode: {
-  BillboardScreenAligned: 0,
-  BillboardViewAligned: 1,
-  Free: 2,
-  BillboardYAligned: 3,
+declare const SCNParticleBirthDirection: {
+  Constant: 0,
+  SurfaceNormal: 1,
+  Random: 2,
+};
+
+declare const SCNParticleBirthLocation: {
+  Surface: 0,
+  Volume: 1,
+  Vertex: 2,
 };
 
 declare const SCNBillboardAxis: {
@@ -376,18 +362,24 @@ declare const SCNDebugOptions: {
   ShowCameras: 1024,
 };
 
-declare const SCNParticleSortingMode: {
-  None: 0,
-  ProjectedDepth: 1,
-  Distance: 2,
-  OldestFirst: 3,
-  YoungestFirst: 4,
+declare const SCNParticleOrientationMode: {
+  BillboardScreenAligned: 0,
+  BillboardViewAligned: 1,
+  Free: 2,
+  BillboardYAligned: 3,
 };
 
 declare const SCNTessellationSmoothingMode: {
   None: 0,
   PNTriangles: 1,
   Phong: 2,
+};
+
+declare const SCNParticleModifierStage: {
+  PreDynamics: 0,
+  PostDynamics: 1,
+  PreCollision: 2,
+  PostCollision: 3,
 };
 
 declare const SCNWrapMode: {
@@ -403,12 +395,6 @@ declare const SCNShadowMode: {
   Modulated: 2,
 };
 
-declare const SCNParticleImageSequenceAnimationMode: {
-  Repeat: 0,
-  Clamp: 1,
-  AutoReverse: 2,
-};
-
 declare const SCNMorpherCalculationMode: {
   Normalized: 0,
   Additive: 1,
@@ -419,15 +405,15 @@ declare const SCNMovabilityHint: {
   Movable: 1,
 };
 
+declare const SCNPhysicsBodyType: {
+  Static: 0,
+  Dynamic: 1,
+  Kinematic: 2,
+};
+
 declare const SCNLightProbeType: {
   Irradiance: 0,
   Radiance: 1,
-};
-
-declare const SCNParticleBirthLocation: {
-  Surface: 0,
-  Volume: 1,
-  Vertex: 2,
 };
 
 declare const SCNHitTestSearchMode: {
@@ -463,10 +449,18 @@ declare const SCNTransparencyMode: {
   Default: 0,
 };
 
-declare const SCNParticleBirthDirection: {
-  Constant: 0,
-  SurfaceNormal: 1,
-  Random: 2,
+declare const SCNParticleEvent: {
+  Birth: 0,
+  Death: 1,
+  Collision: 2,
+};
+
+declare const SCNParticleSortingMode: {
+  None: 0,
+  ProjectedDepth: 1,
+  Distance: 2,
+  OldestFirst: 3,
+  YoungestFirst: 4,
 };
 
 declare const SCNColorMask: {
@@ -492,6 +486,12 @@ declare const SCNSceneSourceStatus: {
   Validating: 8,
   Processing: 12,
   Complete: 16,
+};
+
+declare const SCNParticleImageSequenceAnimationMode: {
+  Repeat: 0,
+  Clamp: 1,
+  AutoReverse: 2,
 };
 
 declare const SCNPhysicsCollisionCategory: {

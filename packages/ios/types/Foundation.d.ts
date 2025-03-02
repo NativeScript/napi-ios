@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const NSURLAuthenticationMethodDefault: string;
-
 declare const NSURLVolumeIsRootFileSystemKey: string;
 
 declare const NSStringEncodingDetectionLikelyLanguageKey: string;
@@ -677,10 +675,6 @@ declare const NSURLErrorCannotMoveFile: number;
 
 declare const NSFileHandleNotificationMonitorModes: string;
 
-declare const NSPropertyListReadUnknownVersionError: number;
-
-declare const NSStringTransformToUnicodeName: string;
-
 declare const NSStringTransformLatinToKatakana: string;
 
 declare const NSFileBusy: string;
@@ -688,6 +682,10 @@ declare const NSFileBusy: string;
 declare const NSURLUbiquitousItemIsSharedKey: string;
 
 declare const NSFileWriteInvalidFileNameError: number;
+
+declare const NSPropertyListReadUnknownVersionError: number;
+
+declare const NSStringTransformToUnicodeName: string;
 
 declare const NSAssertionHandlerKey: string;
 
@@ -1059,6 +1057,8 @@ declare const NSKeyValueChangeNotificationIsPriorKey: string;
 
 declare const NSKeyValueChangeIndexesKey: string;
 
+declare const NSURLVolumeCreationDateKey: string;
+
 declare const NSStringEncodingErrorKey: string;
 
 declare const NSWindowsCP1254StringEncoding: number;
@@ -1183,8 +1183,6 @@ declare const NSURLVolumeSupportsCompressionKey: string;
 
 declare const NSHTTPCookiePort: string;
 
-declare const NSURLVolumeCreationDateKey: string;
-
 declare const NSCalendarIdentifierIndian: string;
 
 declare const NSURLVolumeIsRemovableKey: string;
@@ -1228,6 +1226,8 @@ declare const NSFileProtectionCompleteWhenUserInactive: string;
 declare const NSURLFileResourceTypeDirectory: string;
 
 declare const NSLocaleVariantCode: string;
+
+declare const NSURLAuthenticationMethodDefault: string;
 
 declare const NSURLAuthenticationMethodHTTPBasic: string;
 
@@ -1413,6 +1413,8 @@ declare const NSURLVolumeSupportsImmutableFilesKey: string;
 
 declare const NSBundleDidLoadNotification: string;
 
+declare const NSHTTPCookieSetByJavaScript: string;
+
 declare const NSBundleExecutableArchitectureARM64: number;
 
 declare const NSProgressFileOperationKindUploading: string;
@@ -1586,13 +1588,6 @@ declare const NSURLUbiquitousSharedItemMostRecentEditorNameComponentsKey: string
 declare const NSURLLinkCountKey: string;
 
 declare const NSMetadataQueryUbiquitousDataScope: string;
-
-declare const NSByteCountFormatterCountStyle: {
-  File: 0,
-  Memory: 1,
-  Decimal: 2,
-  Binary: 3,
-};
 
 declare const NSStringCompareOptions: {
   CaseInsensitive: 1,
@@ -2321,6 +2316,13 @@ declare const NSURLCredentialPersistence: {
   ForSession: 1,
   Permanent: 2,
   Synchronizable: 3,
+};
+
+declare const NSByteCountFormatterCountStyle: {
+  File: 0,
+  Memory: 1,
+  Decimal: 2,
+  Binary: 3,
 };
 
 declare const NSFormattingContext: {
@@ -6453,6 +6455,8 @@ declare class NSURLRequest extends NSObject implements NSSecureCoding, NSCopying
 
   readonly allowsPersistentDNS: boolean;
 
+  readonly cookiePartitionIdentifier: string;
+
   readonly HTTPMethod: string;
 
   readonly allHTTPHeaderFields: NSDictionary;
@@ -10123,143 +10127,6 @@ declare class NSUnitLength extends NSDimension implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NSNumberFormatter extends NSFormatter {
-  formattingContext: interop.Enum<typeof NSFormattingContext>;
-
-  getObjectValueForStringRangeError(obj: interop.PointerConvertible, string: string, rangep: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
-
-  stringFromNumber(number: NSNumber): string;
-
-  numberFromString(string: string): NSNumber;
-
-  static localizedStringFromNumberNumberStyle(num: NSNumber, nstyle: interop.Enum<typeof NSNumberFormatterStyle>): string;
-
-  static defaultFormatterBehavior(): interop.Enum<typeof NSNumberFormatterBehavior>;
-
-  static setDefaultFormatterBehavior(behavior: interop.Enum<typeof NSNumberFormatterBehavior>): void;
-
-  minimumGroupingDigits: number;
-
-  numberStyle: interop.Enum<typeof NSNumberFormatterStyle>;
-
-  locale: NSLocale;
-
-  generatesDecimalNumbers: boolean;
-
-  formatterBehavior: interop.Enum<typeof NSNumberFormatterBehavior>;
-
-  negativeFormat: string;
-
-  get textAttributesForNegativeValues(): NSDictionary;
-  set textAttributesForNegativeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  positiveFormat: string;
-
-  get textAttributesForPositiveValues(): NSDictionary;
-  set textAttributesForPositiveValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  allowsFloats: boolean;
-
-  decimalSeparator: string;
-
-  alwaysShowsDecimalSeparator: boolean;
-
-  currencyDecimalSeparator: string;
-
-  usesGroupingSeparator: boolean;
-
-  groupingSeparator: string;
-
-  zeroSymbol: string;
-
-  get textAttributesForZero(): NSDictionary;
-  set textAttributesForZero(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  nilSymbol: string;
-
-  get textAttributesForNil(): NSDictionary;
-  set textAttributesForNil(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  notANumberSymbol: string;
-
-  get textAttributesForNotANumber(): NSDictionary;
-  set textAttributesForNotANumber(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  positiveInfinitySymbol: string;
-
-  get textAttributesForPositiveInfinity(): NSDictionary;
-  set textAttributesForPositiveInfinity(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  negativeInfinitySymbol: string;
-
-  get textAttributesForNegativeInfinity(): NSDictionary;
-  set textAttributesForNegativeInfinity(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  positivePrefix: string;
-
-  positiveSuffix: string;
-
-  negativePrefix: string;
-
-  negativeSuffix: string;
-
-  currencyCode: string;
-
-  currencySymbol: string;
-
-  internationalCurrencySymbol: string;
-
-  percentSymbol: string;
-
-  perMillSymbol: string;
-
-  minusSign: string;
-
-  plusSign: string;
-
-  exponentSymbol: string;
-
-  groupingSize: number;
-
-  secondaryGroupingSize: number;
-
-  multiplier: NSNumber;
-
-  formatWidth: number;
-
-  paddingCharacter: string;
-
-  paddingPosition: interop.Enum<typeof NSNumberFormatterPadPosition>;
-
-  roundingMode: interop.Enum<typeof NSNumberFormatterRoundingMode>;
-
-  roundingIncrement: NSNumber;
-
-  minimumIntegerDigits: number;
-
-  maximumIntegerDigits: number;
-
-  minimumFractionDigits: number;
-
-  maximumFractionDigits: number;
-
-  minimum: NSNumber;
-
-  maximum: NSNumber;
-
-  currencyGroupingSeparator: string;
-
-  isLenient: boolean;
-
-  usesSignificantDigits: boolean;
-
-  minimumSignificantDigits: number;
-
-  maximumSignificantDigits: number;
-
-  isPartialStringValidationEnabled: boolean;
-}
-
 declare class NSDate extends NSObject implements NSCopying, NSSecureCoding {
   readonly timeIntervalSinceReferenceDate: number;
 
@@ -10681,6 +10548,143 @@ declare class NSDimension extends NSUnit implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NSNumberFormatter extends NSFormatter {
+  formattingContext: interop.Enum<typeof NSFormattingContext>;
+
+  getObjectValueForStringRangeError(obj: interop.PointerConvertible, string: string, rangep: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+
+  stringFromNumber(number: NSNumber): string;
+
+  numberFromString(string: string): NSNumber;
+
+  static localizedStringFromNumberNumberStyle(num: NSNumber, nstyle: interop.Enum<typeof NSNumberFormatterStyle>): string;
+
+  static defaultFormatterBehavior(): interop.Enum<typeof NSNumberFormatterBehavior>;
+
+  static setDefaultFormatterBehavior(behavior: interop.Enum<typeof NSNumberFormatterBehavior>): void;
+
+  minimumGroupingDigits: number;
+
+  numberStyle: interop.Enum<typeof NSNumberFormatterStyle>;
+
+  locale: NSLocale;
+
+  generatesDecimalNumbers: boolean;
+
+  formatterBehavior: interop.Enum<typeof NSNumberFormatterBehavior>;
+
+  negativeFormat: string;
+
+  get textAttributesForNegativeValues(): NSDictionary;
+  set textAttributesForNegativeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  positiveFormat: string;
+
+  get textAttributesForPositiveValues(): NSDictionary;
+  set textAttributesForPositiveValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  allowsFloats: boolean;
+
+  decimalSeparator: string;
+
+  alwaysShowsDecimalSeparator: boolean;
+
+  currencyDecimalSeparator: string;
+
+  usesGroupingSeparator: boolean;
+
+  groupingSeparator: string;
+
+  zeroSymbol: string;
+
+  get textAttributesForZero(): NSDictionary;
+  set textAttributesForZero(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  nilSymbol: string;
+
+  get textAttributesForNil(): NSDictionary;
+  set textAttributesForNil(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  notANumberSymbol: string;
+
+  get textAttributesForNotANumber(): NSDictionary;
+  set textAttributesForNotANumber(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  positiveInfinitySymbol: string;
+
+  get textAttributesForPositiveInfinity(): NSDictionary;
+  set textAttributesForPositiveInfinity(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  negativeInfinitySymbol: string;
+
+  get textAttributesForNegativeInfinity(): NSDictionary;
+  set textAttributesForNegativeInfinity(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  positivePrefix: string;
+
+  positiveSuffix: string;
+
+  negativePrefix: string;
+
+  negativeSuffix: string;
+
+  currencyCode: string;
+
+  currencySymbol: string;
+
+  internationalCurrencySymbol: string;
+
+  percentSymbol: string;
+
+  perMillSymbol: string;
+
+  minusSign: string;
+
+  plusSign: string;
+
+  exponentSymbol: string;
+
+  groupingSize: number;
+
+  secondaryGroupingSize: number;
+
+  multiplier: NSNumber;
+
+  formatWidth: number;
+
+  paddingCharacter: string;
+
+  paddingPosition: interop.Enum<typeof NSNumberFormatterPadPosition>;
+
+  roundingMode: interop.Enum<typeof NSNumberFormatterRoundingMode>;
+
+  roundingIncrement: NSNumber;
+
+  minimumIntegerDigits: number;
+
+  maximumIntegerDigits: number;
+
+  minimumFractionDigits: number;
+
+  maximumFractionDigits: number;
+
+  minimum: NSNumber;
+
+  maximum: NSNumber;
+
+  currencyGroupingSeparator: string;
+
+  isLenient: boolean;
+
+  usesSignificantDigits: boolean;
+
+  minimumSignificantDigits: number;
+
+  maximumSignificantDigits: number;
+
+  isPartialStringValidationEnabled: boolean;
+}
+
 declare class NSISO8601DateFormatter extends NSFormatter implements NSSecureCoding {
   timeZone: NSTimeZone;
 
@@ -10767,6 +10771,9 @@ declare class NSMutableURLRequest extends NSURLRequest {
 
   // @ts-ignore MemberDecl.tsIgnore
   allowsPersistentDNS: boolean;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  cookiePartitionIdentifier: string;
 
   // @ts-ignore MemberDecl.tsIgnore
   HTTPMethod: string;

@@ -42,6 +42,13 @@ declare const WKWebsiteDataTypeSearchFieldRecentSearches: string;
 
 declare const WKWebsiteDataTypeOfflineWebApplicationCache: string;
 
+declare const WKWebpagePreferencesUpgradeToHTTPSPolicy: {
+  KeepAsRequested: 0,
+  AutomaticFallbackToHTTP: 1,
+  UserMediatedFallbackToHTTP: 2,
+  ErrorOnFailure: 3,
+};
+
 declare const WKAudiovisualMediaTypes: {
   None: 0,
   Audio: 1,
@@ -173,6 +180,11 @@ declare const WKInactiveSchedulingPolicy: {
   None: 2,
 };
 
+declare const WKDownloadPlaceholderPolicy: {
+  Disable: 0,
+  Enable: 1,
+};
+
 declare interface WKScriptMessageHandler extends NSObjectProtocol {
   userContentControllerDidReceiveScriptMessage(userContentController: WKUserContentController, message: WKScriptMessage): void;
 }
@@ -300,6 +312,12 @@ declare interface WKDownloadDelegate extends NSObjectProtocol {
   downloadDidFinish?(download: WKDownload): void;
 
   downloadDidFailWithErrorResumeData?(download: WKDownload, error: NSError, resumeData: NSData | null): void;
+
+  downloadDecidePlaceholderPolicy?(download: WKDownload, completionHandler: (p1: interop.Enum<typeof WKDownloadPlaceholderPolicy>, p2: NSURL) => void | null): void;
+
+  downloadDidReceivePlaceholderURLCompletionHandler?(download: WKDownload, url: NSURL, completionHandler: () => void): void;
+
+  downloadDidReceiveFinalURL?(download: WKDownload, url: NSURL): void;
 }
 
 declare class WKDownloadDelegate extends NativeObject implements WKDownloadDelegate {
@@ -370,6 +388,8 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
   urlSchemeHandlerForURLScheme(urlScheme: string): WKURLSchemeHandler;
 
   supportsAdaptiveImageGlyph: boolean;
+
+  writingToolsBehavior: interop.Enum<typeof UIWritingToolsBehavior>;
 
   mediaPlaybackRequiresUserAction: boolean;
 
@@ -505,6 +525,8 @@ declare class WKWebpagePreferences extends NSObject {
   allowsContentJavaScript: boolean;
 
   isLockdownModeEnabled: boolean;
+
+  preferredHTTPSNavigationPolicy: interop.Enum<typeof WKWebpagePreferencesUpgradeToHTTPSPolicy>;
 }
 
 declare class WKWebsiteDataRecord extends NSObject {
@@ -685,6 +707,10 @@ declare class WKDownload extends NSObject implements NSProgressReporting {
   readonly webView: WKWebView | null;
 
   delegate: WKDownloadDelegate | null;
+
+  readonly isUserInitiated: boolean;
+
+  readonly originatingFrame: WKFrameInfo;
 
   cancel(completionHandler: (p1: NSData) => void | null): void;
 

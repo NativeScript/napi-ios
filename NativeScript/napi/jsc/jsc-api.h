@@ -19,6 +19,9 @@ struct napi_env__ {
     napi_extended_error_info last_error{nullptr, nullptr, 0, napi_ok};
     std::unordered_set<napi_value> active_ref_values{};
     std::list<napi_ref> strong_refs{};
+    void *instance_data{};
+    napi_finalize instance_data_finalize_cb;
+    void *instance_data_finalize_hint;
 
     JSValueRef constructor_info_symbol{};
     JSValueRef function_info_symbol{};

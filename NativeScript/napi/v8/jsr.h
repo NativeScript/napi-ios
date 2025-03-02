@@ -62,6 +62,30 @@ private:
     napi_handle_scope napiHandleScope_;
 };
 
+class NapiEscapableScope {
+public:
+    explicit NapiEscapableScope(napi_env env)
+            : env_(env),
+              locker_(env->isolate),
+              isolate_scope_(env->isolate),
+              context_scope_(env->context()),
+              handle_scope_(env->isolate)
+    {
+        napi_open_escapable_handle_scope(env_, &napiHandleScope_);
+    }
+
+    ~NapiEscapableScope() {
+        napi_close_escapable_handle_scope(env_, napiHandleScope_);
+    }
+
+    napi_env env_;
+    v8::Locker locker_;
+    v8::Isolate::Scope isolate_scope_;
+    v8::Context::Scope context_scope_;
+    v8::HandleScope handle_scope_;
+    napi_escapable_handle_scope napiHandleScope_;
+};
+
 #define JSEnterScope    \
 v8::Locker locker(env->isolate);   \
 v8::HandleScope handle_scope(env->isolate);

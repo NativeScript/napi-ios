@@ -34,8 +34,6 @@ declare const kPROPENDirectionClass: number;
 
 declare const kFontBasqueLanguage: number;
 
-declare const kCTFontTableFmtx: number;
-
 declare const kMORTraCDxBA: number;
 
 declare const kJIS2004CharactersSelector: number;
@@ -1086,8 +1084,6 @@ declare const kSTClassEndOfText: number;
 
 declare const kHyphenToMinusOffSelector: number;
 
-declare const descriptorFontTableTag: number;
-
 declare const kSmartQuotesOffSelector: number;
 
 declare const kFormInterrobangOffSelector: number;
@@ -1360,9 +1356,9 @@ declare const kItalicCJKRomanType: number;
 
 declare const kMORTraCDxA: number;
 
-declare const kRomanNumeralAnnotationSelector: number;
-
 declare const kAllTypeFeaturesOnSelector: number;
+
+declare const kRomanNumeralAnnotationSelector: number;
 
 declare const kANKRCurrentVersion: number;
 
@@ -1550,11 +1546,15 @@ declare const kAltHalfWidthTextSelector: number;
 
 declare const kSTKCrossStreamReset: number;
 
+declare const descriptorFontTableTag: number;
+
 declare const kContextualAlternatesType: number;
 
 declare const variationFontTableTag: number;
 
 declare const kKERXOrderedList: number;
+
+declare const kSTRearrVerbMask: number;
 
 declare const kMORTTag: number;
 
@@ -1601,8 +1601,6 @@ declare const kKERNLineStart: number;
 declare const kCTFontTableFpgm: number;
 
 declare const kTraditionalAltThreeSelector: number;
-
-declare const kSTRearrVerbMask: number;
 
 declare const kFleuronsSelector: number;
 
@@ -1672,6 +1670,8 @@ declare const kCTFrameClippingPathsAttributeName: interop.Pointer;
 
 declare const kCTFontVariationAttribute: interop.Pointer;
 
+declare const kLinguisticRearrangementType: number;
+
 declare const kFontSanskritLanguage: number;
 
 declare const kFontDzongkhaLanguage: number;
@@ -1705,8 +1705,6 @@ declare const kFontSinhaleseLanguage: number;
 declare const kCTTypesetterOptionAllowUnboundedLayout: interop.Pointer;
 
 declare const kCharacterAlternativesType: number;
-
-declare const kLinguisticRearrangementType: number;
 
 declare const kCTFontPriorityUser: number;
 
@@ -1801,6 +1799,8 @@ declare const kLineInitialSwashesOffSelector: number;
 declare const kFontPostscriptName: number;
 
 declare const kAllCapsSelector: number;
+
+declare const kCTFontTableFmtx: number;
 
 declare const kFontAlbanianLanguage: number;
 
@@ -2150,13 +2150,6 @@ declare const CTFontManagerError: {
   UnsupportedScope: 307,
 };
 
-declare class sfntCMapHeader {
-  constructor(init?: sfntCMapHeader);
-  version: number;
-  numTables: number;
-  encoding: unknown /* const array */;
-}
-
 declare class STXEntryTwo {
   constructor(init?: STXEntryTwo);
   newState: number;
@@ -2375,6 +2368,13 @@ declare class sfntNameRecord {
   nameID: number;
   length: number;
   offset: number;
+}
+
+declare class sfntCMapHeader {
+  constructor(init?: sfntCMapHeader);
+  version: number;
+  numTables: number;
+  encoding: unknown /* const array */;
 }
 
 declare class sfntCMapEncoding {
@@ -3053,6 +3053,36 @@ declare class KernTableHeader {
   firstSubtable: unknown /* const array */;
 }
 
+type KerxFormatSpecificHeaderDescriptor = 
+  | { orderedList: KerxOrderedListHeader }
+  | { stateTable: KerxStateHeader }
+  | { simpleArray: KerxSimpleArrayHeader }
+  | { indexArray: KerxIndexArrayHeader }
+  | { controlPoint: KerxControlPointHeader };
+
+declare class KerxFormatSpecificHeader {
+  constructor(init?: KerxFormatSpecificHeaderDescriptor);
+  orderedList: KerxOrderedListHeader;
+  stateTable: KerxStateHeader;
+  simpleArray: KerxSimpleArrayHeader;
+  indexArray: KerxIndexArrayHeader;
+  controlPoint: KerxControlPointHeader;
+}
+
+type BslnFormatUnionDescriptor = 
+  | { fmt0Part: BslnFormat0Part }
+  | { fmt1Part: BslnFormat1Part }
+  | { fmt2Part: BslnFormat2Part }
+  | { fmt3Part: BslnFormat3Part };
+
+declare class BslnFormatUnion {
+  constructor(init?: BslnFormatUnionDescriptor);
+  fmt0Part: BslnFormat0Part;
+  fmt1Part: BslnFormat1Part;
+  fmt2Part: BslnFormat2Part;
+  fmt3Part: BslnFormat3Part;
+}
+
 type MorxSpecificSubtableDescriptor = 
   | { rearrangement: MorxRearrangementSubtable }
   | { contextual: MorxContextualSubtable }
@@ -3097,36 +3127,6 @@ declare class MortSpecificSubtable {
   ligature: MortLigatureSubtable;
   swash: MortSwashSubtable;
   insertion: MortInsertionSubtable;
-}
-
-type BslnFormatUnionDescriptor = 
-  | { fmt0Part: BslnFormat0Part }
-  | { fmt1Part: BslnFormat1Part }
-  | { fmt2Part: BslnFormat2Part }
-  | { fmt3Part: BslnFormat3Part };
-
-declare class BslnFormatUnion {
-  constructor(init?: BslnFormatUnionDescriptor);
-  fmt0Part: BslnFormat0Part;
-  fmt1Part: BslnFormat1Part;
-  fmt2Part: BslnFormat2Part;
-  fmt3Part: BslnFormat3Part;
-}
-
-type KerxFormatSpecificHeaderDescriptor = 
-  | { orderedList: KerxOrderedListHeader }
-  | { stateTable: KerxStateHeader }
-  | { simpleArray: KerxSimpleArrayHeader }
-  | { indexArray: KerxIndexArrayHeader }
-  | { controlPoint: KerxControlPointHeader };
-
-declare class KerxFormatSpecificHeader {
-  constructor(init?: KerxFormatSpecificHeaderDescriptor);
-  orderedList: KerxOrderedListHeader;
-  stateTable: KerxStateHeader;
-  simpleArray: KerxSimpleArrayHeader;
-  indexArray: KerxIndexArrayHeader;
-  controlPoint: KerxControlPointHeader;
 }
 
 type SFNTLookupFormatSpecificHeaderDescriptor = 

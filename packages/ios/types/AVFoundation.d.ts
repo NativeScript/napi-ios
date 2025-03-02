@@ -231,10 +231,6 @@ declare const AVMetadataIdentifierID3MetadataUserText: string;
 
 declare const AVMetadataIdentifierID3MetadataYear: string;
 
-declare const AVMetadataIdentifierID3MetadataSetSubtitle: string;
-
-declare const AVMetadataIdentifierID3MetadataEncodedWith: string;
-
 declare const AVMetadataIdentifierID3MetadataTitleSortOrder: string;
 
 declare const AVMetadataIdentifierID3MetadataSize: string;
@@ -465,10 +461,6 @@ declare const AVMetadataIdentifierQuickTimeMetadataIsMontage: string;
 
 declare const AVMetadataIdentifierID3MetadataComments: string;
 
-declare const AVMetadataObjectTypePDF417Code: string;
-
-declare const AVMetadataIdentifierID3MetadataInternationalStandardRecordingCode: string;
-
 declare const AVMetadataIdentifierID3MetadataMusicianCreditsList: string;
 
 declare const AVTrackAssociationTypeSelectionFollower: string;
@@ -522,10 +514,6 @@ declare const AVMetadataIdentifierQuickTimeMetadataLocationName: string;
 declare const AVMetadataIdentifierID3MetadataMediaType: string;
 
 declare const AVMetadataIdentifierID3MetadataInternetRadioStationOwner: string;
-
-declare const AVMetadata3GPUserDataKeyKeywordList: string;
-
-declare const AVMetadataIdentifierID3MetadataPerformerSortOrder: string;
 
 declare const AVErrorMediaSubTypeKey: string;
 
@@ -1113,6 +1101,8 @@ declare const AVContentKeySystemClearKey: string;
 
 declare const AVContentKeySystemFairPlayStreaming: string;
 
+declare const AVMetadataIdentifierID3MetadataSetSubtitle: string;
+
 declare const AVMetadataiTunesMetadataKeyDiscCompilation: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataCredits: string;
@@ -1365,6 +1355,8 @@ declare const AVVideoScalingModeKey: string;
 
 declare const AVMetadataIdentifierID3MetadataInternetRadioStationName: string;
 
+declare const AVMetadataID3MetadataKeySignature: string;
+
 declare const AVMetadataCommonIdentifierAccessibilityDescription: string;
 
 declare const AVMediaCharacteristicVisual: string;
@@ -1392,8 +1384,6 @@ declare const AVMetadataIdentifierID3MetadataTermsOfUse: string;
 declare const AVFileTypeJPEG: string;
 
 declare const AVMetadataID3MetadataKeyEncodedWith: string;
-
-declare const AVMetadataID3MetadataKeySignature: string;
 
 declare const AVMetadata3GPUserDataKeyTitle: string;
 
@@ -1468,6 +1458,10 @@ declare const AVMetadataIdentifierID3MetadataCommerical: string;
 declare const AVMetadataQuickTimeMetadataKeyKeywords: string;
 
 declare const AVMetadataID3MetadataKeyOfficialInternetRadioStationHomepage: string;
+
+declare const AVMetadataIdentifierID3MetadataPerformerSortOrder: string;
+
+declare const AVMetadata3GPUserDataKeyKeywordList: string;
 
 declare const AVMediaTypeHaptic: string;
 
@@ -1823,6 +1817,8 @@ declare const AVMetadataIdentifierQuickTimeMetadataPublisher: string;
 
 declare const AVMetadataIdentifieriTunesMetadataAppleID: string;
 
+declare const AVMetadataIdentifierID3MetadataEncodedWith: string;
+
 declare const AVURLAssetAllowsConstrainedNetworkAccessKey: string;
 
 declare const AVMetadataIdentifieriTunesMetadataBeatsPerMin: string;
@@ -1950,6 +1946,10 @@ declare const AVMetadataCommonKeyArtwork: string;
 declare const AVMetadataCommonKeyCopyrights: string;
 
 declare const AVVideoAllowWideColorKey: string;
+
+declare const AVMetadataObjectTypePDF417Code: string;
+
+declare const AVMetadataIdentifierID3MetadataInternationalStandardRecordingCode: string;
 
 declare const AVMetadataID3MetadataKeyPerformerSortOrder: string;
 
@@ -2321,10 +2321,13 @@ declare const AVAssetExportSessionStatus: {
   Cancelled: 5,
 };
 
-declare const AVCaptionRegionDisplayAlignment: {
-  Before: 0,
-  Center: 1,
-  After: 2,
+declare const AVCaptionTextCombine: {
+  All: -1,
+  None: 0,
+  OneDigit: 1,
+  TwoDigits: 2,
+  ThreeDigits: 3,
+  FourDigits: 4,
 };
 
 declare const AVContentKeyRequestStatus: {
@@ -2336,11 +2339,10 @@ declare const AVContentKeyRequestStatus: {
   Failed: 5,
 };
 
-declare const AVAudioSpatializationFormats: {
-  None: 0,
-  MonoAndStereo: 3,
-  Multichannel: 4,
-  MonoStereoAndMultichannel: 7,
+declare const AVCaptionRegionDisplayAlignment: {
+  Before: 0,
+  Center: 1,
+  After: 2,
 };
 
 declare const AVSampleBufferRequestMode: {
@@ -2368,6 +2370,11 @@ declare const AVCaptionFontWeight: {
   Bold: 2,
 };
 
+declare const AVCaptionRubyPosition: {
+  Before: 0,
+  After: 1,
+};
+
 declare const AVAssetReaderStatus: {
   Unknown: 0,
   Reading: 1,
@@ -2382,20 +2389,10 @@ declare const AVPlayerAudiovisualBackgroundPlaybackPolicy: {
   ContinuesIfPossible: 3,
 };
 
-declare const AVPlayerItemSegmentType: {
-  Primary: 0,
-  Interstitial: 1,
-};
-
 declare const AVAssetImageGeneratorResult: {
   Succeeded: 0,
   Failed: 1,
   Cancelled: 2,
-};
-
-declare const AVCaptionRubyPosition: {
-  Before: 0,
-  After: 1,
 };
 
 declare const AVPlayerActionAtItemEnd: {
@@ -2452,15 +2449,6 @@ declare const AVCaptureTorchMode: {
   Auto: 2,
 };
 
-declare const AVCaptionTextCombine: {
-  All: -1,
-  None: 0,
-  OneDigit: 1,
-  TwoDigits: 2,
-  ThreeDigits: 3,
-  FourDigits: 4,
-};
-
 declare const AVCaptureSystemPressureFactors: {
   None: 0,
   SystemTemperature: 1,
@@ -2489,6 +2477,18 @@ declare const AVPlayerItemStatus: {
 declare const CMTagCollectionVideoOutputPreset: {
   Monoscopic: 0,
   Stereoscopic: 1,
+};
+
+declare const AVAudioSpatializationFormats: {
+  None: 0,
+  MonoAndStereo: 3,
+  Multichannel: 4,
+  MonoStereoAndMultichannel: 7,
+};
+
+declare const AVPlayerItemSegmentType: {
+  Primary: 0,
+  Interstitial: 1,
 };
 
 declare class AVCaptureWhiteBalanceGains {
@@ -2959,6 +2959,8 @@ declare class AVContentKeyRecipient extends NativeObject implements AVContentKey
 
 declare interface AVCaptureFileOutputRecordingDelegate extends NSObjectProtocol {
   captureOutputDidStartRecordingToOutputFileAtURLFromConnections?(output: AVCaptureFileOutput, fileURL: NSURL, connections: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  captureOutputDidStartRecordingToOutputFileAtURLStartPTSFromConnections?(output: AVCaptureFileOutput, fileURL: NSURL, startPTS: CMTime, connections: NSArray<interop.Object> | Array<interop.Object>): void;
 
   captureOutputDidPauseRecordingToOutputFileAtURLFromConnections?(output: AVCaptureFileOutput, fileURL: NSURL, connections: NSArray<interop.Object> | Array<interop.Object>): void;
 
@@ -5769,6 +5771,74 @@ declare class AVMutableVideoCompositionInstruction extends AVVideoCompositionIns
   set requiredSourceSampleDataTrackIDs(value: NSArray<interop.Object> | Array<interop.Object>);
 }
 
+declare class AVVideoCompositionInstruction extends NSObject implements NSSecureCoding, NSCopying, NSMutableCopying, AVVideoCompositionInstructionProtocol {
+  readonly timeRange: CMTimeRange;
+
+  readonly backgroundColor: interop.Pointer;
+
+  readonly layerInstructions: NSArray;
+
+  readonly enablePostProcessing: boolean;
+
+  readonly requiredSourceTrackIDs: NSArray;
+
+  readonly passthroughTrackID: number;
+
+  readonly requiredSourceSampleDataTrackIDs: NSArray;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  mutableCopyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  readonly containsTweening: boolean;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class AVMutableVideoComposition extends AVVideoComposition {
   static videoComposition(): AVMutableVideoComposition;
@@ -6265,74 +6335,6 @@ declare class AVMetricErrorEvent extends AVMetricEvent {
   readonly didRecover: boolean;
 
   readonly error: NSError;
-}
-
-declare class AVVideoCompositionInstruction extends NSObject implements NSSecureCoding, NSCopying, NSMutableCopying, AVVideoCompositionInstructionProtocol {
-  readonly timeRange: CMTimeRange;
-
-  readonly backgroundColor: interop.Pointer;
-
-  readonly layerInstructions: NSArray;
-
-  readonly enablePostProcessing: boolean;
-
-  readonly requiredSourceTrackIDs: NSArray;
-
-  readonly passthroughTrackID: number;
-
-  readonly requiredSourceSampleDataTrackIDs: NSArray;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  mutableCopyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  readonly containsTweening: boolean;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class AVContentKeySession extends NSObject {

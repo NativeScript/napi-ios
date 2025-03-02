@@ -1,12 +1,13 @@
 #ifdef ENABLE_JS_RUNTIME
 
 #include "Runtime.h"
+
 #include "js_native_api_types.h"
 #include "jsr.h"
 #include "jsr_common.h"
 #ifdef __APPLE__
 #include "App.h"
-#endif // __APPLE__
+#endif  // __APPLE__
 #include "Console.h"
 #include "Performance.h"
 #include "Require.h"
@@ -14,9 +15,11 @@
 #include "js_native_api.h"
 #ifdef TARGET_ENGINE_V8
 #include "v8-api.h"
-#endif // TARGET_ENGINE_V8
+#endif  // TARGET_ENGINE_V8
 #include <CoreFoundation/CFRunLoop.h>
+
 #include <iostream>
+
 #include "NativeScript.h"
 
 namespace charon {
@@ -34,7 +37,7 @@ namespace charon {
 //   size_t length_;
 // };
 
-Runtime::Runtime(std::string &mainPath) : mainPath(mainPath) {
+Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
   // hermes::vm::RuntimeConfig config =
   //     hermes::vm::RuntimeConfig::Builder().withMicrotaskQueue(true).build();
   // threadSafeRuntime = facebook::hermes::makeThreadSafeHermesRuntime(config);
@@ -53,7 +56,7 @@ Runtime::Runtime(std::string &mainPath) : mainPath(mainPath) {
   v8::Locker locker(env->isolate);
   v8::Isolate::Scope isolate_scope(env->isolate);
   v8::Context::Scope context_scope(env->context());
-#endif // TARGET_ENGINE_V8
+#endif  // TARGET_ENGINE_V8
 
   napi_open_handle_scope(env, &globalScope);
 
@@ -68,15 +71,15 @@ Runtime::Runtime(std::string &mainPath) : mainPath(mainPath) {
   Performance::init(env);
 #ifdef __APPLE__
   Timers::init(env);
-#endif // __APPLE__
+#endif  // __APPLE__
 
   require = Require::init(env, mainPath, mainPath);
 
-  const char *metadata_path = std::getenv("METADATA_PATH");
+  const char* metadata_path = std::getenv("METADATA_PATH");
   objc_bridge_init(env, metadata_path);
 
 #ifdef __APPLE__
-  App *app = App::init(env);
+  App* app = App::init(env);
   // app->runtime = this->runtime;
 #endif // __APPLE__
 
@@ -89,7 +92,7 @@ napi_value Runtime::evaluateModule(std::string &spec) {
   return require->require(env, path);
 }
 
-int Runtime::runScriptString(std::string &scriptSrc) {
+int Runtime::runScriptString(std::string& scriptSrc) {
   NapiScope scope(env);
 
   napi_value script, result;
@@ -99,7 +102,7 @@ int Runtime::runScriptString(std::string &scriptSrc) {
   return 0;
 }
 
-int Runtime::executeJS(const char *sourceFile) {
+int Runtime::executeJS(const char* sourceFile) {
   NapiScope scope(env);
 
   auto f = std::fopen(sourceFile, "r");
@@ -128,7 +131,7 @@ int Runtime::executeJS(const char *sourceFile) {
   return 0;
 }
 
-int Runtime::executeBytecode(const uint8_t *data, size_t size) {
+int Runtime::executeBytecode(const uint8_t* data, size_t size) {
   NapiScope scope(env);
 
   // auto buffer = std::make_shared<BytecodeBuffer>(data, size);
@@ -173,6 +176,6 @@ void Runtime::runRunLoop() {
   CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
 }
 
-} // namespace charon
+}  // namespace charon
 
-#endif // ENABLE_JS_RUNTIME
+#endif  // ENABLE_JS_RUNTIME

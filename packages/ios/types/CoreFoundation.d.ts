@@ -114,8 +114,6 @@ declare const kCFNumberFormatterGroupingSeparator: interop.Pointer;
 
 declare const kCFNumberFormatterInternationalCurrencySymbol: interop.Pointer;
 
-declare const kCFNumberFormatterNegativePrefix: interop.Pointer;
-
 declare const kCFDateFormatterStandaloneWeekdaySymbols: interop.Pointer;
 
 declare const kCFURLFileProtectionComplete: interop.Pointer;
@@ -316,9 +314,9 @@ declare const kCFDateFormatterPMSymbol: interop.Pointer;
 
 declare const kCFURLIsPurgeableKey: interop.Pointer;
 
-declare const kCFCalendarComponentsWrap: number;
-
 declare const kCFURLVolumeIsEncryptedKey: interop.Pointer;
+
+declare const kCFCalendarComponentsWrap: number;
 
 declare const kCFIslamicUmmAlQuraCalendar: interop.Pointer;
 
@@ -424,6 +422,8 @@ declare const kCFErrorFilePathKey: interop.Pointer;
 
 declare const kCFPlugInFactoriesKey: interop.Pointer;
 
+declare const kCFURLVolumeSupportsAccessPermissionsKey: interop.Pointer;
+
 declare const kCFURLVolumeSubtypeKey: interop.Pointer;
 
 declare const kCFURLUbiquitousItemIsDownloadedKey: interop.Pointer;
@@ -455,8 +455,6 @@ declare const kCFURLVolumeLocalizedFormatDescriptionKey: interop.Pointer;
 declare const kCFBundleExecutableArchitectureARM64: number;
 
 declare const kCFURLIsUbiquitousItemKey: interop.Pointer;
-
-declare const kCFURLVolumeSupportsAccessPermissionsKey: interop.Pointer;
 
 declare const kCFStreamPropertyAppendToFile: interop.Pointer;
 
@@ -540,6 +538,8 @@ declare const kCFStreamSocketSecurityLevelSSLv2: interop.Pointer;
 
 declare const kCFNumberFormatterCurrencySymbol: interop.Pointer;
 
+declare const kCFBooleanFalse: interop.Pointer;
+
 declare const kCFDateFormatterVeryShortStandaloneWeekdaySymbols: interop.Pointer;
 
 declare const kCFURLCreationDateKey: interop.Pointer;
@@ -573,8 +573,6 @@ declare const kCFPlugInUnloadFunctionKey: interop.Pointer;
 declare const kCFMessagePortBecameInvalidError: number;
 
 declare const kCFMessagePortIsInvalid: number;
-
-declare const kCFBooleanFalse: interop.Pointer;
 
 declare const kCFMessagePortSendTimeout: number;
 
@@ -688,6 +686,8 @@ declare const kCFURLMayShareFileContentKey: interop.Pointer;
 
 declare const kCFURLFileProtectionCompleteUntilFirstUserAuthentication: interop.Pointer;
 
+declare const kCFNumberFormatterNegativePrefix: interop.Pointer;
+
 declare const kCFStringTransformLatinArabic: interop.Pointer;
 
 declare const kCFNotificationPostToAllSessions: number;
@@ -763,14 +763,6 @@ declare const CFURLPathStyle: {
   POSIX: 0,
   HFS: 1,
   Windows: 2,
-};
-
-declare const CFDateFormatterStyle: {
-  No: 0,
-  Short: 1,
-  Medium: 2,
-  Long: 3,
-  Full: 4,
 };
 
 declare const __CFByteOrder: {
@@ -1180,6 +1172,14 @@ declare const CFStreamErrorDomain: {
   Custom: -1,
   POSIX: 1,
   MacOSStatus: 2,
+};
+
+declare const CFDateFormatterStyle: {
+  No: 0,
+  Short: 1,
+  Medium: 2,
+  Long: 3,
+  Full: 4,
 };
 
 declare const CFURLComponentType: {

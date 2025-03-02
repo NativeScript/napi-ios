@@ -113,7 +113,7 @@ for (const arch in sdk.targets) {
     `arch=${arch}`,
     `target=${sdk.targets[arch]}`,
     `output=${
-      new URL(`../metadata/metadata.${sdkName}.${arch}.nsmd`, import.meta.url)
+      new URL(`../metadata-generator/metadata.${sdkName}.${arch}.nsmd`, import.meta.url)
         .pathname
     }`,
     // NOTE: We're not differentiating between the arch for TS types - it shouldn't matter much
@@ -132,7 +132,7 @@ for (const arch in sdk.targets) {
   const TNS_WIDGETS_FRAMEWORK = Deno.env.get("TNS_WIDGETS_FRAMEWORK");
   if (TNS_WIDGETS_FRAMEWORK === "1") {
     const basePath = new URL(
-      "../node_modules/@nativescript/core/platforms/ios/",
+      "./node_modules/@nativescript/core/platforms/ios/",
       import.meta.url
     ).pathname;
     const framework = `${basePath}/TNSWidgets.xcframework/${sdkName}-${arch}/TNSWidgets.framework`;
@@ -150,6 +150,20 @@ for (const arch in sdk.targets) {
     args.push('import="NativeScriptEmbedder.h"');
     args.push('import="NativeScriptUtils.h"');
     args.push('import="UIView+NativeScript.h"');
+  }
+
+  if (true) {
+    const framework = "/Volumes/SSD/gh/nativescript/test-app-ng/node_modules/nativescript-ui-sidedrawer/platforms/ios/TNSSideDrawer.xcframework/ios-arm64/TNSSideDrawer.framework";
+
+    const customFrameworks = [framework];
+
+    for (const framework of customFrameworks) {
+      args.push(`include=${framework}`);
+      args.push(`headers=${framework}/Headers`);
+      args.push(`import="TNSSideDrawer.h"`);
+      args.push(`import="TKSideDrawer.h"`);
+      args.push(`import="TKSideDrawerView.h"`);
+    }
   }
 
   console.log(`%c$ MetadataGenerator ${args.join(" ")}`, "color: grey");

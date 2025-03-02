@@ -247,7 +247,9 @@ class CTypeInfo {
     kUint64,
     kFloat32,
     kFloat64,
+    kPointer,
     kV8Value,
+    kSeqOneByteString,
     kApiObject,  // This will be deprecated once all users have
                  // migrated from v8::ApiObject to v8::Local<v8::Value>.
     kAny,        // This is added to enable untyped representation of fast
@@ -379,15 +381,26 @@ struct FastApiArrayBuffer {
   size_t byte_length;
 };
 
+struct FastOneByteString {
+  const char* data;
+  uint32_t length;
+};
+
 class V8_EXPORT CFunctionInfo {
  public:
+  enum class Int64Representation : uint8_t {
+    kNumber = 0,  // Use numbers to represent 64 bit integers.
+    kBigInt = 1,  // Use BigInts to represent 64 bit integers.
+  };
+
   // Construct a struct to hold a CFunction's type information.
   // |return_info| describes the function's return type.
   // |arg_info| is an array of |arg_count| CTypeInfos describing the
   //   arguments. Only the last argument may be of the special type
   //   CTypeInfo::kCallbackOptionsType.
   CFunctionInfo(const CTypeInfo& return_info, unsigned int arg_count,
-                const CTypeInfo* arg_info);
+                const CTypeInfo* arg_info,
+                Int64Representation repr = Int64Representation::kNumber);
 
   const CTypeInfo& ReturnInfo() const { return return_info_; }
 
@@ -396,6 +409,8 @@ class V8_EXPORT CFunctionInfo {
   unsigned int ArgumentCount() const {
     return HasOptions() ? arg_count_ - 1 : arg_count_;
   }
+
+  Int64Representation GetInt64Representation() const { return repr_; }
 
   // |index| must be less than ArgumentCount().
   //  Note: if the last argument passed on construction of CFunctionInfo
@@ -411,6 +426,7 @@ class V8_EXPORT CFunctionInfo {
 
  private:
   const CTypeInfo return_info_;
+  const Int64Representation repr_;
   const unsigned int arg_count_;
   const CTypeInfo* arg_info_;
 };
@@ -429,6 +445,7 @@ struct AnyCType {
     uint64_t uint64_value;
     float float_value;
     double double_value;
+    void* pointer_value;
     Local<Object> object_value;
     Local<Array> sequence_value;
     const FastApiTypedArray<uint8_t>* uint8_ta_value;
@@ -438,6 +455,7 @@ struct AnyCType {
     const FastApiTypedArray<uint64_t>* uint64_ta_value;
     const FastApiTypedArray<float>* float_ta_value;
     const FastApiTypedArray<double>* double_ta_value;
+    const FastOneByteString* string_value;
     FastApiCallbackOptions* options_value;
   };
 };
@@ -460,6 +478,9 @@ class V8_EXPORT CFunction {
   unsigned int ArgumentCount() const { return type_info_->ArgumentCount(); }
 
   const void* GetAddress() const { return address_; }
+  CFunctionInfo::Int64Representation GetInt64Representation() const {
+    return type_info_->GetInt64Representation();
+  }
   const CFunctionInfo* GetTypeInfo() const { return type_info_; }
 
   enum class OverloadResolution { kImpossible, kAtRuntime, kAtCompileTime };
@@ -589,7 +610,8 @@ struct count<T, T, Args...>
 template <typename T, typename U, typename... Args>
 struct count<T, U, Args...> : count<T, Args...> {};
 
-template <typename RetBuilder, typename... ArgBuilders>
+template <CFunctionInfo::Int64Representation Representation,
+          typename RetBuilder, typename... ArgBuilders>
 class CFunctionInfoImpl : public CFunctionInfo {
   static constexpr int kOptionsArgCount =
       count<FastApiCallbackOptions&, ArgBuilders...>();
@@ -604,17 +626,20 @@ class CFunctionInfoImpl : public CFunctionInfo {
  public:
   constexpr CFunctionInfoImpl()
       : CFunctionInfo(RetBuilder::Build(), sizeof...(ArgBuilders),
-                      arg_info_storage_),
+                      arg_info_storage_, Representation),
         arg_info_storage_{ArgBuilders::Build()...} {
     constexpr CTypeInfo::Type kReturnType = RetBuilder::Build().GetType();
     static_assert(kReturnType == CTypeInfo::Type::kVoid ||
                       kReturnType == CTypeInfo::Type::kBool ||
                       kReturnType == CTypeInfo::Type::kInt32 ||
                       kReturnType == CTypeInfo::Type::kUint32 ||
+                      kReturnType == CTypeInfo::Type::kInt64 ||
+                      kReturnType == CTypeInfo::Type::kUint64 ||
                       kReturnType == CTypeInfo::Type::kFloat32 ||
                       kReturnType == CTypeInfo::Type::kFloat64 ||
+                      kReturnType == CTypeInfo::Type::kPointer ||
                       kReturnType == CTypeInfo::Type::kAny,
-                  "64-bit int and api object values are not currently "
+                  "String and api object values are not currently "
                   "supported return types.");
   }
 
@@ -651,13 +676,14 @@ struct CTypeInfoTraits {};
 
 #define PRIMITIVE_C_TYPES(V) \
   V(bool, kBool)             \
+  V(uint8_t, kUint8)         \
   V(int32_t, kInt32)         \
   V(uint32_t, kUint32)       \
   V(int64_t, kInt64)         \
   V(uint64_t, kUint64)       \
   V(float, kFloat32)         \
   V(double, kFloat64)        \
-  V(uint8_t, kUint8)
+  V(void*, kPointer)
 
 // Same as above, but includes deprecated types for compatibility.
 #define ALL_C_TYPES(V)               \
@@ -691,13 +717,13 @@ PRIMITIVE_C_TYPES(DEFINE_TYPE_INFO_TRAITS)
   };
 
 #define TYPED_ARRAY_C_TYPES(V) \
+  V(uint8_t, kUint8)           \
   V(int32_t, kInt32)           \
   V(uint32_t, kUint32)         \
   V(int64_t, kInt64)           \
   V(uint64_t, kUint64)         \
   V(float, kFloat32)           \
-  V(double, kFloat64)          \
-  V(uint8_t, kUint8)
+  V(double, kFloat64)
 
 TYPED_ARRAY_C_TYPES(SPECIALIZE_GET_TYPE_INFO_HELPER_FOR_TA)
 
@@ -729,6 +755,18 @@ struct TypeInfoHelper<FastApiCallbackOptions&> {
 
   static constexpr CTypeInfo::Type Type() {
     return CTypeInfo::kCallbackOptionsType;
+  }
+  static constexpr CTypeInfo::SequenceType SequenceType() {
+    return CTypeInfo::SequenceType::kScalar;
+  }
+};
+
+template <>
+struct TypeInfoHelper<const FastOneByteString&> {
+  static constexpr CTypeInfo::Flags Flags() { return CTypeInfo::Flags::kNone; }
+
+  static constexpr CTypeInfo::Type Type() {
+    return CTypeInfo::Type::kSeqOneByteString;
   }
   static constexpr CTypeInfo::SequenceType SequenceType() {
     return CTypeInfo::SequenceType::kScalar;
@@ -822,8 +860,11 @@ class CFunctionBuilderWithFunction {
     return *this;
   }
 
+  template <CFunctionInfo::Int64Representation Representation =
+                CFunctionInfo::Int64Representation::kNumber>
   auto Build() {
-    static CFunctionInfoImpl<RetBuilder, ArgBuilders...> instance;
+    static CFunctionInfoImpl<Representation, RetBuilder, ArgBuilders...>
+        instance;
     return CFunction(fn_, &instance);
   }
 
