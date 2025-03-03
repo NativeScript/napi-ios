@@ -67,6 +67,18 @@ Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
   napi_get_global(env, &global);
   napi_set_named_property(env, global, "global", global);
 
+#ifdef TARGET_ENGINE_V8
+  const char *WeakRefCompatScript = R"(
+    WeakRef.prototype.get = function() {
+      return this.deref();
+    };
+  )";
+
+  napi_value weakRefCompatScript, result;
+  napi_create_string_utf8(env, WeakRefCompatScript, NAPI_AUTO_LENGTH, &weakRefCompatScript);
+  napi_run_script(env, weakRefCompatScript, &result);
+#endif  // TARGET_ENGINE_V8
+
   Console::init(env);
   Performance::init(env);
 #ifdef __APPLE__

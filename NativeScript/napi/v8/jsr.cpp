@@ -1,12 +1,10 @@
 #include "jsr.h"
-#include "File.h"
 #include <libgen.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
 #include <ctime>
 #include <utime.h>
 #include "v8-fast-api-calls.h"
-#include "NativeScriptAssert.h"
 
 using namespace v8;
 using namespace tns;
@@ -28,7 +26,7 @@ static void divide(const FunctionCallbackInfo<Value>& args) {
 }
 
 static double FastDivide(const int32_t this_arg, const int32_t a, const int32_t b, v8::FastApiCallbackOptions& options) {
-    DEBUG_WRITE_FORCE("%s", "FAST");
+    // DEBUG_WRITE_FORCE("%s", "FAST");
     if (b == 0) {
         options.fallback = true;
         return 0;
@@ -206,7 +204,10 @@ napi_status js_cache_script(napi_env env, const char *source, const char *file) 
 
     int length = cachedData->length;
     auto cachePath = std::string(file) + ".cache";
-    File::WriteBinary(cachePath, cachedData->data, length);
+    // File::WriteBinary(cachePath, cachedData->data, length);
+    std::ofstream cacheFile(cachePath, std::ios::binary);
+    cacheFile.write(reinterpret_cast<const char*>(cachedData->data), length);
+    cacheFile.close();
     delete cachedData;
     // make sure cache and js file have the same modification date
     struct stat result;
@@ -238,10 +239,23 @@ napi_status js_run_cached_script(napi_env env, const char * file, napi_value scr
     }
 
     int length = 0;
-    auto data = File::ReadBinary(cachePath, length);
-    if (!data) {
+    
+    // auto data = File::ReadBinary(cachePath, length);
+    // if (!data) {
+    //     return napi_cannot_run_js;
+    // }
+
+    std::ifstream cacheFile(cachePath, std::ios::binary);
+    if (!cacheFile.is_open()) {
         return napi_cannot_run_js;
     }
+    cacheFile.seekg(0, std::ios::end);
+    length = cacheFile.tellg();
+    cacheFile.seekg(0, std::ios::beg);
+    char* data = new char[length];
+    cacheFile.read(data, length);
+    cacheFile.close();
+
 
     auto * cacheData = new ScriptCompiler::CachedData(reinterpret_cast<uint8_t*>(data), length, ScriptCompiler::CachedData::BufferOwned);
     std::string filePath = std::string("file://") + file;

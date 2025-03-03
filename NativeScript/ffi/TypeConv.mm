@@ -689,7 +689,6 @@ public:
       auto bridgeState = ObjCBridgeState::InstanceData(env);
       auto closure = new Closure(bridgeState->metadata, signatureOffset, true);
       closure->env = env;
-      closure->func = make_ref(env, value);
       id block = registerBlock(env, closure, value);
       *res = (void *)block;
       return;

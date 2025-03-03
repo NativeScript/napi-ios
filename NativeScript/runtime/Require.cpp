@@ -2,7 +2,6 @@
 #include "NapiUtil.h"
 #include "js_native_api.h"
 #include "jsr.h"
-#include "napi/jsc/js_native_api_types.h"
 #include <dlfcn.h>
 #include <cstddef>
 #include <iostream>
@@ -10,10 +9,6 @@
 
 napi_value Require::createRequire(napi_env env, std::string &path,
                                   std::string &tilde, Require **pRequire) {
-<<<<<<< HEAD
-
-=======
->>>>>>> ebc9141 (update v8 headers, add instance data to jsc)
   Require *require = new Require(path, tilde);
   if (pRequire) {
     *pRequire = require;
@@ -28,10 +23,6 @@ napi_value Require::createRequire(napi_env env, std::string &path,
 }
 
 Require *Require::init(napi_env env, std::string &path, std::string &tilde) {
-<<<<<<< HEAD
-
-=======
->>>>>>> ebc9141 (update v8 headers, add instance data to jsc)
   napi_value global;
   napi_get_global(env, &global);
 
