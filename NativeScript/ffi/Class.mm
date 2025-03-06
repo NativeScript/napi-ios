@@ -43,16 +43,16 @@ void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
 
       if ((flags & mdMemberProperty) != 0) {
         bool readonly = (flags & mdMemberReadonly) != 0;
-        offset += sizeof(MDSectionOffset); // name
-        offset += sizeof(MDSectionOffset); // getterSelector
-        offset += sizeof(MDSectionOffset); // getterSignature
+        offset += sizeof(MDSectionOffset);  // name
+        offset += sizeof(MDSectionOffset);  // getterSelector
+        offset += sizeof(MDSectionOffset);  // getterSignature
         if (!readonly) {
-          offset += sizeof(MDSectionOffset); // setterSelector
-          offset += sizeof(MDSectionOffset); // setterSignature
+          offset += sizeof(MDSectionOffset);  // setterSelector
+          offset += sizeof(MDSectionOffset);  // setterSignature
         }
       } else {
-        offset += sizeof(MDSectionOffset); // selector
-        offset += sizeof(MDSectionOffset); // signature
+        offset += sizeof(MDSectionOffset);  // selector
+        offset += sizeof(MDSectionOffset);  // signature
       }
     }
 
@@ -63,13 +63,12 @@ void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
 
     napi_property_descriptor prop = {
         .utf8name = name,
-        .attributes =
-            (napi_property_attributes)(napi_enumerable | napi_configurable),
         .method = nullptr,
+        .getter = JS_classGetter,
         .setter = nullptr,
         .value = nullptr,
-        .data = (void *)((size_t)originalOffset),
-        .getter = JS_classGetter,
+        .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .data = (void*)((size_t)originalOffset),
     };
 
     napi_define_properties(env, global, 1, &prop);
@@ -85,15 +84,14 @@ NAPI_FUNCTION(registerClass) {
   // @NativeClass(NSApplicationDelegate).
   if (argc == 0) {
     napi_value func;
-    napi_create_function(env, "NativeClass", NAPI_AUTO_LENGTH, JS_registerClass,
-                         nullptr, &func);
+    napi_create_function(env, "NativeClass", NAPI_AUTO_LENGTH, JS_registerClass, nullptr, &func);
     return func;
   }
 
   auto bridgeState = ObjCBridgeState::InstanceData(env);
   // bridgeState->registerClass(env, argv[0]);
 
-  ClassBuilder *builder = new ClassBuilder(env, argv[0]);
+  ClassBuilder* builder = new ClassBuilder(env, argv[0]);
   // It gets lazily built when a static method is called.
   // builder->build();
   bridgeState->classesByPointer[builder->nativeClass] = builder;
@@ -105,7 +103,7 @@ char class_name[256];
 
 // Get a Bridged Class by metadata offset, creating it if it doesn't exist.
 // This is used to cache ObjCClass instances.
-ObjCClass *ObjCBridgeState::getClass(napi_env env, MDSectionOffset offset) {
+ObjCClass* ObjCBridgeState::getClass(napi_env env, MDSectionOffset offset) {
   auto find = this->classes[offset];
   if (find != nullptr) {
     return find;
@@ -120,8 +118,7 @@ ObjCClass *ObjCBridgeState::getClass(napi_env env, MDSectionOffset offset) {
 NAPI_FUNCTION(import) {
   NAPI_CALLBACK_BEGIN(1)
 
-  NAPI_GUARD(
-      napi_get_value_string_utf8(env, argv[0], class_name, 256, nullptr)) {
+  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], class_name, 256, nullptr)) {
     NAPI_THROW_LAST_ERROR
     return nullptr;
   }
@@ -132,8 +129,7 @@ NAPI_FUNCTION(import) {
     name = "/System/Library/Frameworks/" + name + ".framework";
   }
 
-  NSBundle *bundle =
-      [NSBundle bundleWithPath:[NSString stringWithUTF8String:name.c_str()]];
+  NSBundle* bundle = [NSBundle bundleWithPath:[NSString stringWithUTF8String:name.c_str()]];
   if (bundle == nil) {
     NSLog(@"Could not find bundle: %s", name.c_str());
     return nullptr;
@@ -150,7 +146,7 @@ NAPI_FUNCTION(import) {
 }
 
 NAPI_FUNCTION(classGetter) {
-  void *data;
+  void* data;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &data);
   MDSectionOffset offset = (MDSectionOffset)((size_t)data);
   auto bridgeState = ObjCBridgeState::InstanceData(env);
@@ -181,13 +177,13 @@ NAPI_FUNCTION(BridgedConstructor) {
 // It's just implementation of nodejs.util.inspect.custom.
 NAPI_FUNCTION(CustomInspect) {
   napi_value jsThis;
-  void *data;
+  void* data;
   size_t argc = 0;
 
   napi_get_cb_info(env, cbinfo, &argc, nil, &jsThis, &data);
 
   id self = nil;
-  napi_unwrap(env, jsThis, (void **)&self);
+  napi_unwrap(env, jsThis, (void**)&self);
 
   if (self == nil) {
     napi_value result;
@@ -207,10 +203,10 @@ NAPI_FUNCTION(CustomInspect) {
 // Used for Symbol.dispose (using statement support).
 NAPI_FUNCTION(releaseObject) {
   napi_value jsThis;
-  void *data;
+  void* data;
   napi_get_cb_info(env, cbinfo, nil, nil, &jsThis, &data);
   id self;
-  napi_unwrap(env, jsThis, (void **)&self);
+  napi_unwrap(env, jsThis, (void**)&self);
   auto bridgeState = ObjCBridgeState::InstanceData(env);
   bridgeState->unregisterObject(self);
   return nullptr;
@@ -219,7 +215,7 @@ NAPI_FUNCTION(releaseObject) {
 // Implemented in JS to minimize calls into native. Fast enumeration
 // makes use of buffers, so we only fill up the buffer once via
 // native call and only do it again if needed via _fillStack.
-static const char *FastEnumerationIteratorFactorySource = R"(
+static const char* FastEnumerationIteratorFactorySource = R"(
   (function () {
     return {
       stack: new Array(16),
@@ -253,42 +249,38 @@ static const char *FastEnumerationIteratorFactorySource = R"(
   })
 )";
 
-void initFastEnumeratorIteratorFactory(napi_env env,
-                                       ObjCBridgeState *bridgeState) {
+void initFastEnumeratorIteratorFactory(napi_env env, ObjCBridgeState* bridgeState) {
   napi_value result, script;
-  napi_create_string_utf8(env, FastEnumerationIteratorFactorySource,
-                          NAPI_AUTO_LENGTH, &script);
+  napi_create_string_utf8(env, FastEnumerationIteratorFactorySource, NAPI_AUTO_LENGTH, &script);
   napi_run_script(env, script, &result);
   bridgeState->createFastEnumeratorIterator = make_ref(env, result);
 }
 
 class FastEnumerationIterator {
-public:
-  FastEnumerationIterator(id<NSFastEnumeration> collection)
-      : collection(collection) {}
+ public:
+  FastEnumerationIterator(id<NSFastEnumeration> collection) : collection(collection) {}
 
-  static void finalize(napi_env env, void *data, void *hint) {
-    FastEnumerationIterator *iterator = (FastEnumerationIterator *)data;
+  static void finalize(napi_env env, void* data, void* hint) {
+    FastEnumerationIterator* iterator = (FastEnumerationIterator*)data;
     delete iterator;
   }
 
   static napi_value fillStack(napi_env env, napi_callback_info cbinfo) {
-    ObjCBridgeState *bridgeState = ObjCBridgeState::InstanceData(env);
+    ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
 
     napi_value jsThis;
-    void *data;
+    void* data;
     size_t argc = 1;
     napi_value stackArray;
 
     napi_get_cb_info(env, cbinfo, &argc, &stackArray, &jsThis, &data);
 
-    FastEnumerationIterator *self = nil;
-    napi_unwrap(env, jsThis, (void **)&self);
+    FastEnumerationIterator* self = nil;
+    napi_unwrap(env, jsThis, (void**)&self);
 
-    NSUInteger count =
-        [self->collection countByEnumeratingWithState:&self->state
-                                              objects:self->stackbuf
-                                                count:16];
+    NSUInteger count = [self->collection countByEnumeratingWithState:&self->state
+                                                             objects:self->stackbuf
+                                                               count:16];
 
     for (NSUInteger index = 0; index < count; index++) {
       id obj = self->state.itemsPtr[index];
@@ -303,14 +295,12 @@ public:
   }
 
   napi_value toJS(napi_env env) {
-    ObjCBridgeState *bridgeState = ObjCBridgeState::InstanceData(env);
+    ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
 
-    napi_value createIterator =
-        get_ref_value(env, bridgeState->createFastEnumeratorIterator);
+    napi_value createIterator = get_ref_value(env, bridgeState->createFastEnumeratorIterator);
 
     napi_value result;
-    napi_call_function(env, createIterator, createIterator, 0, nullptr,
-                       &result);
+    napi_call_function(env, createIterator, createIterator, 0, nullptr, &result);
 
     napi_property_descriptor fillStack = {
         .utf8name = "_fillStack",
@@ -326,8 +316,7 @@ public:
     napi_define_properties(env, result, 1, &fillStack);
 
     napi_ref ref;
-    napi_wrap(env, result, this, FastEnumerationIterator::finalize, nullptr,
-              &ref);
+    napi_wrap(env, result, this, FastEnumerationIterator::finalize, nullptr, &ref);
 
     return result;
   }
@@ -341,13 +330,13 @@ public:
 
 NAPI_FUNCTION(fastEnumeration) {
   napi_value jsThis;
-  void *data;
+  void* data;
   size_t argc = 0;
 
   napi_get_cb_info(env, cbinfo, &argc, nil, &jsThis, &data);
 
   id self = nil;
-  napi_unwrap(env, jsThis, (void **)&self);
+  napi_unwrap(env, jsThis, (void**)&self);
 
   if (self == nil) {
     napi_value result;
@@ -404,8 +393,7 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
       offset += sizeof(MDSectionOffset);
       hasProtocols = (protocolOffset & mdSectionOffsetNext) != 0;
       protocolOffset &= ~mdSectionOffsetNext;
-      if (protocolOffset != MD_SECTION_OFFSET_NULL)
-        protocolOffsets.push_back(protocolOffset);
+      if (protocolOffset != MD_SECTION_OFFSET_NULL) protocolOffsets.push_back(protocolOffset);
     }
     superClassOffset = bridgeState->metadata->getOffset(offset);
     hasMembers = (superClassOffset & mdSectionOffsetNext) != 0;
@@ -416,11 +404,11 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   napi_value constructor, prototype;
 
-  napi_define_class(env, name.c_str(), name.length(), JS_BridgedConstructor,
-                    (void *)this, 0, nil, &constructor);
+  napi_define_class(env, name.c_str(), name.length(), JS_BridgedConstructor, (void*)this, 0, nil,
+                    &constructor);
 
   if (nativeClass != nil) {
-    napi_wrap(env, constructor, (void *)nativeClass, nil, nil, nil);
+    napi_wrap(env, constructor, (void*)nativeClass, nil, nil, nil);
   }
 
   napi_get_named_property(env, constructor, "prototype", &prototype);
@@ -432,12 +420,10 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   // exists.
   if (!isNativeObject) {
     for (auto protocolOffset : protocolOffsets) {
-      auto protocol = bridgeState->getProtocol(
-          env, protocolOffset + bridgeState->metadata->protocolsOffset);
-      if (protocol == nil)
-        continue;
-      ObjCClassMember::defineMembers(env, members, protocol->membersOffset,
-                                     constructor);
+      auto protocol =
+          bridgeState->getProtocol(env, protocolOffset + bridgeState->metadata->protocolsOffset);
+      if (protocol == nil) continue;
+      ObjCClassMember::defineMembers(env, members, protocol->membersOffset, constructor);
     }
 
     if (superClassOffset != MD_SECTION_OFFSET_NULL) {
@@ -529,8 +515,7 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   bridgeState->classesByPointer[nativeClass] = this;
 
-  if (!hasMembers)
-    return;
+  if (!hasMembers) return;
 
   ObjCClassMember::defineMembers(env, members, offset, constructor);
 }
@@ -540,4 +525,4 @@ ObjCClass::~ObjCClass() {
   napi_delete_reference(env, prototype);
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge

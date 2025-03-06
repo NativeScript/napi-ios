@@ -14,6 +14,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(BUILD_FRAMEWORK TRUE)
 
+set(COMMON_FLAGS "-O3 -Wno-shorten-64-to-32")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
+
 # Arguments
 
 set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C bridge")
@@ -274,7 +278,11 @@ if(TARGET_PLATFORM_MACOS)
 
   set(METADATA_FILE "metadata.macos.nsmd")
 elseif(TARGET_PLATFORM_IOS)
-  set(METADATA_FILE "metadata.ios.nsmd")
+  if(TARGET_PLATFORM_SIM)
+    set(METADATA_FILE "metadata.ios-sim.nsmd")
+  else()
+    set(METADATA_FILE "metadata.ios.nsmd")
+  endif()
 endif()
 
 if(NOT METADATA_SIZE EQUAL 0)

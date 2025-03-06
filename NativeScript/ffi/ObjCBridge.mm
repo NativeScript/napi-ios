@@ -34,18 +34,17 @@ embedded_metadata[EMBED_METADATA_SIZE] = "NSMDSectionHeaderX86";
 
 namespace objc_bridge {
 
-void finalize_bridge_data(napi_env env, void *data, void *hint) {
-  auto bridgeState = (ObjCBridgeState *)data;
+void finalize_bridge_data(napi_env env, void* data, void* hint) {
+  auto bridgeState = (ObjCBridgeState*)data;
   delete bridgeState;
 }
 
-MDMetadataReader *loadMetadataFromFile(const char *metadata_path) {
+MDMetadataReader* loadMetadataFromFile(const char* metadata_path) {
   if (metadata_path == nullptr) {
     metadata_path = "metadata.nsmd";
   }
 
-  auto f =
-      fopen(metadata_path == nullptr ? "metadata.nsmd" : metadata_path, "r");
+  auto f = fopen(metadata_path == nullptr ? "metadata.nsmd" : metadata_path, "r");
   if (f == nullptr) {
     fprintf(stderr, "metadata.nsmd not found\n");
     exit(1);
@@ -53,13 +52,13 @@ MDMetadataReader *loadMetadataFromFile(const char *metadata_path) {
   fseek(f, 0, SEEK_END);
   auto size = ftell(f);
   fseek(f, 0, SEEK_SET);
-  auto buffer = (uint8_t *)malloc(size);
+  auto buffer = (uint8_t*)malloc(size);
   fread(buffer, 1, size, f);
   fclose(f);
   return new MDMetadataReader(buffer, size);
 }
 
-ObjCBridgeState::ObjCBridgeState(napi_env env, const char *metadata_path) {
+ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path) {
   napi_set_instance_data(env, this, finalize_bridge_data, nil);
 
   self_dl = dlopen(nullptr, RTLD_NOW);
@@ -68,14 +67,12 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char *metadata_path) {
   if (metadata_path != nullptr) {
     metadata = loadMetadataFromFile(metadata_path);
   } else {
-    metadata =
-        new MDMetadataReader((void *)embedded_metadata, EMBED_METADATA_SIZE);
+    metadata = new MDMetadataReader((void*)embedded_metadata, EMBED_METADATA_SIZE);
   }
 #else
   unsigned long segmentSize = 0;
-  auto segmentData =
-      getsegmentdata((const mach_header_64 *)_dyld_get_image_header(0),
-                     "__objc_metadata", &segmentSize);
+  auto segmentData = getsegmentdata((const mach_header_64*)_dyld_get_image_header(0),
+                                    "__objc_metadata", &segmentSize);
   if (segmentData != nullptr) {
     metadata = new MDMetadataReader(segmentData, segmentSize);
   } else {
@@ -92,13 +89,11 @@ ObjCBridgeState::~ObjCBridgeState() {
   dlclose(self_dl);
 }
 
-napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object,
-                                              id nativeObject) {
+napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, id nativeObject) {
   NAPI_PREAMBLE
 
   napi_value factory = get_ref_value(env, createNativeProxy);
-  napi_value transferOwnershipFunc =
-      get_ref_value(env, this->transferOwnershipToNative);
+  napi_value transferOwnershipFunc = get_ref_value(env, this->transferOwnershipToNative);
   napi_value result, global;
   napi_value args[3] = {object, nullptr, transferOwnershipFunc};
   napi_get_boolean(env, [nativeObject isKindOfClass:NSArray.class], &args[1]);
@@ -110,8 +105,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object,
   napi_wrap(env, result, nativeObject, nullptr, nullptr, nullptr);
 
   napi_ref ref = nullptr;
-  NAPI_GUARD(napi_add_finalizer(env, result, nativeObject, finalize_objc_object,
-                                this, &ref)) {
+  NAPI_GUARD(napi_add_finalizer(env, result, nativeObject, finalize_objc_object, this, &ref)) {
     NAPI_THROW_LAST_ERROR
     return nullptr;
   }
@@ -121,20 +115,19 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object,
   return result;
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge
 
 using namespace objc_bridge;
 
 NAPI_FUNCTION(getArrayBuffer) {
   NAPI_CALLBACK_BEGIN(2)
 
-  void *ptr = Pointer::unwrap(env, argv[0])->data;
+  void* ptr = Pointer::unwrap(env, argv[0])->data;
   int64_t length;
   napi_get_value_int64(env, argv[1], &length);
 
   napi_value arrayBuffer;
-  napi_create_external_arraybuffer(env, ptr, length, nullptr, nullptr,
-                                   &arrayBuffer);
+  napi_create_external_arraybuffer(env, ptr, length, nullptr, nullptr, &arrayBuffer);
 
   return arrayBuffer;
 }
@@ -143,13 +136,12 @@ NAPI_FUNCTION(init) {
   NAPI_CALLBACK_BEGIN(1)
   napi_valuetype type;
   napi_typeof(env, argv[0], &type);
-  const char *metadata_path = nullptr;
+  const char* metadata_path = nullptr;
   if (type == napi_string) {
     size_t len;
     napi_get_value_string_utf8(env, argv[0], nullptr, 0, &len);
-    metadata_path = (char *)malloc(len + 1);
-    napi_get_value_string_utf8(env, argv[0], (char *)metadata_path, len + 1,
-                               &len);
+    metadata_path = (char*)malloc(len + 1);
+    napi_get_value_string_utf8(env, argv[0], (char*)metadata_path, len + 1, &len);
   }
   objc_bridge_init(env, metadata_path);
   return nullptr;
@@ -161,10 +153,10 @@ NAPI_EXPORT NAPI_MODULE_REGISTER {
   return exports;
 }
 
-NAPI_EXPORT void objc_bridge_init(void *_env, const char *metadata_path) {
+NAPI_EXPORT void objc_bridge_init(void* _env, const char* metadata_path) {
   napi_env env = (napi_env)_env;
 
-  ObjCBridgeState *bridgeState = new ObjCBridgeState(env, metadata_path);
+  ObjCBridgeState* bridgeState = new ObjCBridgeState(env, metadata_path);
 
   napi_value objc;
   napi_create_object(env, &objc);
@@ -180,34 +172,33 @@ NAPI_EXPORT void objc_bridge_init(void *_env, const char *metadata_path) {
   napi_value global;
   napi_get_global(env, &global);
 
-  const napi_property_descriptor globalProperties[] = {
-      {
-          .utf8name = "objc",
-          .attributes = napi_enumerable,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = objc,
-          .data = nullptr,
-          .method = nullptr,
-      },
-      {
-          .utf8name = "ObjectRef",
-          .attributes = napi_enumerable,
-          .getter = nullptr,
-          .setter = nullptr,
-          .method = nullptr,
-          .data = nullptr,
-          .value = defineObjectRefClass(env),
-      },
-      {
-          .utf8name = "NativeClass",
-          .attributes = napi_enumerable,
-          .getter = nullptr,
-          .setter = nullptr,
-          .method = JS_registerClass,
-          .data = nullptr,
-          .value = nullptr,
-      }};
+  const napi_property_descriptor globalProperties[] = {{
+                                                           .utf8name = "objc",
+                                                           .method = nullptr,
+                                                           .getter = nullptr,
+                                                           .setter = nullptr,
+                                                           .value = objc,
+                                                           .attributes = napi_enumerable,
+                                                           .data = nullptr,
+                                                       },
+                                                       {
+                                                           .utf8name = "ObjectRef",
+                                                           .method = nullptr,
+                                                           .getter = nullptr,
+                                                           .setter = nullptr,
+                                                           .value = defineObjectRefClass(env),
+                                                           .attributes = napi_enumerable,
+                                                           .data = nullptr,
+                                                       },
+                                                       {
+                                                           .utf8name = "NativeClass",
+                                                           .method = JS_registerClass,
+                                                           .getter = nullptr,
+                                                           .setter = nullptr,
+                                                           .value = nullptr,
+                                                           .attributes = napi_enumerable,
+                                                           .data = nullptr,
+                                                       }};
 
   napi_define_properties(env, global, 3, globalProperties);
 

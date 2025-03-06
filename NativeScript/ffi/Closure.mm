@@ -1,5 +1,6 @@
 #include "Closure.h"
 #include "AutoreleasePool.h"
+#include "Metadata.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "TypeConv.h"
@@ -16,20 +17,17 @@
 
 namespace objc_bridge {
 
-inline void JSCallbackInner(Closure *closure, napi_value func,
-                            napi_value thisArg, napi_value *argv, size_t argc,
-                            bool *done, void *ret) {
+inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisArg, napi_value* argv,
+                            size_t argc, bool* done, void* ret) {
   napi_env env = closure->env;
 
   napi_value result;
 
   napi_get_and_clear_last_exception(env, &result);
 
-  napi_status status =
-      napi_call_function(env, thisArg, func, argc, argv, &result);
+  napi_status status = napi_call_function(env, thisArg, func, argc, argv, &result);
 
-  if (done != NULL)
-    *done = true;
+  if (done != NULL) *done = true;
 
   if (status != napi_ok) {
     napi_get_and_clear_last_exception(env, &result);
@@ -39,18 +37,15 @@ inline void JSCallbackInner(Closure *closure, napi_value func,
     if (resultType != napi_object) {
       napi_value code, msg;
       napi_create_string_utf8(env, "Error", NAPI_AUTO_LENGTH, &code);
-      napi_create_string_utf8(
-          env,
-          "Unable to obtain the error thrown by the JS function "
-          "call",
-          NAPI_AUTO_LENGTH, &msg);
+      napi_create_string_utf8(env,
+                              "Unable to obtain the error thrown by the JS function "
+                              "call",
+                              NAPI_AUTO_LENGTH, &msg);
       napi_create_error(env, code, msg, &result);
     }
 
     napi_value errstr;
-    NAPI_GUARD(napi_get_named_property(env, result, "stack", &errstr)) {
-      return;
-    }
+    NAPI_GUARD(napi_get_named_property(env, result, "stack", &errstr)) { return; }
     char errbuf[512];
     size_t errlen;
     napi_get_value_string_utf8(env, errstr, errbuf, 512, &errlen);
@@ -67,14 +62,14 @@ inline void JSCallbackInner(Closure *closure, napi_value func,
 // Bridge calls from Objective-C to JavaScript.
 // Opposite of what native_call.cc does - but a lot of type conversion logic
 // is reused, just in reverse.
-void JSMethodCallback(ffi_cif *cif, void *ret, void *args[], void *data) {
-  Closure *closure = (Closure *)data;
+void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
+  Closure* closure = (Closure*)data;
   napi_env env = closure->env;
   auto bridgeState = ObjCBridgeState::InstanceData(env);
 
   napi_value constructor = get_ref_value(env, closure->thisConstructor);
 
-  id self = *(id *)args[0];
+  id self = *(id*)args[0];
   napi_value thisArg = bridgeState->getObject(env, self, constructor);
   if (thisArg == nil) {
     NSLog(@"ObjC->JS: thisArg is nil, the JS object was probably garbage "
@@ -91,8 +86,7 @@ void JSMethodCallback(ffi_cif *cif, void *ret, void *args[], void *data) {
   napi_valuetype funcType;
   napi_typeof(env, func, &funcType);
   if (funcType != napi_function) {
-    std::string errmsg = "Property " + closure->propertyName +
-                         " is not a function, cannot call it";
+    std::string errmsg = "Property " + closure->propertyName + " is not a function, cannot call it";
     napi_throw_error(env, nullptr, errmsg.c_str());
     return;
   }
@@ -106,18 +100,17 @@ void JSMethodCallback(ffi_cif *cif, void *ret, void *args[], void *data) {
 }
 
 struct JSBlockCallContext {
-  ffi_cif *cif;
-  void *ret;
-  void **args;
+  ffi_cif* cif;
+  void* ret;
+  void** args;
   std::mutex mutex;
   std::condition_variable cv;
   bool done;
 };
 
-void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb,
-                                      void *context, void *data) {
-  auto closure = (Closure *)context;
-  auto ctx = (JSBlockCallContext *)data;
+void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* context, void* data) {
+  auto closure = (Closure*)context;
+  auto ctx = (JSBlockCallContext*)data;
 
   napi_value func = get_ref_value(env, closure->func);
 
@@ -129,14 +122,13 @@ void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb,
     argv[i] = closure->argTypes[i]->toJS(env, ctx->args[i + 1], 0);
   }
 
-  JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, &ctx->done,
-                  ctx->ret);
+  JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, &ctx->done, ctx->ret);
 
   ctx->cv.notify_one();
 }
 
-void JSBlockCallback(ffi_cif *cif, void *ret, void *args[], void *data) {
-  Closure *closure = (Closure *)data;
+void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
+  Closure* closure = (Closure*)data;
   napi_env env = closure->env;
 
   auto currentThreadId = std::this_thread::get_id();
@@ -148,8 +140,7 @@ void JSBlockCallback(ffi_cif *cif, void *ret, void *args[], void *data) {
   ctx.done = false;
 
   if (currentThreadId == closure->jsThreadId) {
-    Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func),
-                                     closure, &ctx);
+    Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
   } else {
     if (!closure->tsfn) {
       assert(false && "Threadsafe functions are not supported");
@@ -167,59 +158,54 @@ Closure::Closure(std::string encoding, bool isBlock) {
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   size_t argc = signature.numberOfArguments;
 
-  const char *rtypeEncoding = signature.methodReturnType;
+  const char* rtypeEncoding = signature.methodReturnType;
   returnType = TypeConv::Make(env, &rtypeEncoding);
 
   int skipArgs = isBlock ? 1 : 0;
 
-  ffi_type *rtype = this->returnType->type;
-  ffi_type **atypes =
-      (ffi_type **)malloc(sizeof(ffi_type *) * (argc + skipArgs));
+  ffi_type* rtype = this->returnType->type;
+  ffi_type** atypes = (ffi_type**)malloc(sizeof(ffi_type*) * (argc + skipArgs));
 
   if (isBlock) {
     atypes[0] = &ffi_type_pointer;
   }
 
   for (int i = 0; i < argc; i++) {
-    const char *argenc = [signature getArgumentTypeAtIndex:i];
+    const char* argenc = [signature getArgumentTypeAtIndex:i];
     auto argTypeInfo = TypeConv::Make(env, &argenc);
     atypes[i + skipArgs] = argTypeInfo->type;
     this->argTypes.push_back(argTypeInfo);
   }
 
-  ffi_status status =
-      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, (int)argc + skipArgs, rtype, atypes);
+  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, (int)argc + skipArgs, rtype, atypes);
 
   if (status != FFI_OK) {
     std::cout << "ffi_prep_cif failed" << std::endl;
     return;
   }
 
-  closure = (ffi_closure *)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
+  closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(
-      closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
+  ffi_prep_closure_loc(closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
 }
 
-Closure::Closure(MDMetadataReader *reader, MDSectionOffset offset, bool isBlock,
-                 std::string *encoding, bool isMethod, bool isGetter,
-                 bool isSetter) {
+Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
+                 std::string* encoding, bool isMethod, bool isGetter, bool isSetter) {
   this->isGetter = isGetter;
   this->isSetter = isSetter;
 
   auto returnTypeKind = reader->getTypeKind(offset);
-  bool next = (returnTypeKind & mdTypeFlagNext) != 0;
+  bool next = ((MDTypeFlag)returnTypeKind & mdTypeFlagNext) != 0;
 
   returnType = TypeConv::Make(env, reader, &offset);
 
-  if (encoding != nullptr)
-    returnType->encode(encoding);
+  if (encoding != nullptr) returnType->encode(encoding);
 
-  ffi_type *rtype = returnType->type;
-  ffi_type **atypes = nullptr;
+  ffi_type* rtype = returnType->type;
+  ffi_type** atypes = nullptr;
 
   if (isMethod && encoding != nullptr) {
-    const char *argenc = "@";
+    const char* argenc = "@";
     *encoding += argenc;
     argTypes.push_back(TypeConv::Make(env, &argenc));
     argenc = ":";
@@ -229,18 +215,16 @@ Closure::Closure(MDMetadataReader *reader, MDSectionOffset offset, bool isBlock,
 
   while (next) {
     auto argTypeKind = reader->getTypeKind(offset);
-    next = (argTypeKind & mdTypeFlagNext) != 0;
+    next = ((MDTypeFlag)argTypeKind & mdTypeFlagNext) != 0;
     auto argTypeInfo = TypeConv::Make(env, reader, &offset);
-    if (encoding != nullptr)
-      argTypeInfo->encode(encoding);
+    if (encoding != nullptr) argTypeInfo->encode(encoding);
     argTypes.push_back(argTypeInfo);
   }
 
   auto skipArgs = isBlock ? 1 : 0;
 
   if (!argTypes.empty() || isBlock) {
-    atypes =
-        (ffi_type **)malloc(sizeof(ffi_type *) * (argTypes.size() + skipArgs));
+    atypes = (ffi_type**)malloc(sizeof(ffi_type*) * (argTypes.size() + skipArgs));
     if (isBlock) {
       atypes[0] = &ffi_type_pointer;
     }
@@ -249,18 +233,16 @@ Closure::Closure(MDMetadataReader *reader, MDSectionOffset offset, bool isBlock,
     }
   }
 
-  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI,
-                                   argTypes.size() + skipArgs, rtype, atypes);
+  ffi_status status =
+      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argTypes.size() + skipArgs, rtype, atypes);
 
   if (status != FFI_OK) {
-    std::cout << "Failed to prepare CIF, libffi returned error:" << status
-              << std::endl;
+    std::cout << "Failed to prepare CIF, libffi returned error:" << status << std::endl;
   }
 
-  closure = (ffi_closure *)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
+  closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(
-      closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
+  ffi_prep_closure_loc(closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
 }
 
 Closure::~Closure() {
@@ -273,4 +255,4 @@ Closure::~Closure() {
   ffi_closure_free(closure);
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge

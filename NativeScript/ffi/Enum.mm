@@ -1,6 +1,6 @@
 #include "Enum.h"
-#include "ObjCBridge.h"
 #import <Foundation/Foundation.h>
+#include "ObjCBridge.h"
 
 namespace objc_bridge {
 
@@ -21,20 +21,19 @@ void ObjCBridgeState::registerEnumGlobals(napi_env env, napi_value global) {
 
     napi_property_descriptor prop = {
         .utf8name = name,
-        .attributes =
-            (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .method = nullptr,
         .getter = JS_enumGetter,
         .setter = nullptr,
         .value = nullptr,
-        .data = (void *)((size_t)originalOffset),
-        .method = nullptr,
+        .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .data = (void*)((size_t)originalOffset),
     };
     napi_define_properties(env, global, 1, &prop);
   }
 }
 
 NAPI_FUNCTION(enumGetter) {
-  void *data;
+  void* data;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &data);
   MDSectionOffset offset = (MDSectionOffset)((size_t)data);
   MDSectionOffset originalOffset = offset;
@@ -66,12 +65,12 @@ NAPI_FUNCTION(enumGetter) {
 
     napi_property_descriptor prop = {
         .utf8name = name,
-        .attributes = napi_enumerable,
+        .method = nullptr,
         .getter = nullptr,
         .setter = nullptr,
         .value = member,
+        .attributes = napi_enumerable,
         .data = nullptr,
-        .method = nullptr,
     };
 
     napi_define_properties(env, result, 1, &prop);
@@ -82,4 +81,4 @@ NAPI_FUNCTION(enumGetter) {
   return result;
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge

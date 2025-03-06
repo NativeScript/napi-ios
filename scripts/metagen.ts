@@ -52,6 +52,7 @@ interface SDK {
   path: string;
   frameworks: string[];
   targets: Record<string, string>;
+  tnsTarget?: string;
 }
 
 function getSDKPath(platform: string) {
@@ -80,9 +81,9 @@ const sdks: Record<string, SDK> = {
     path: getSDKPath("iphoneos"),
     frameworks: [...COMMON_FRAMEWORKS, ...IOS_FRAMEWORKS],
     targets: {
-      x86_64: "x86_64-apple-ios13.0",
       arm64: "arm64-apple-ios13.0",
     },
+    tnsTarget: "ios-arm64",
   },
   "ios-sim": {
     path: getSDKPath("iphonesimulator"),
@@ -91,6 +92,32 @@ const sdks: Record<string, SDK> = {
       x86_64: "x86_64-apple-ios13.0-simulator",
       arm64: "arm64-apple-ios13.0-simulator",
     },
+    tnsTarget: "ios-arm64_x86_64-simulator",
+  },
+  catalyst: {
+    path: getSDKPath("iphoneos"),
+    frameworks: [...COMMON_FRAMEWORKS, ...MACOS_FRAMEWORKS, ...IOS_FRAMEWORKS],
+    targets: {
+      x86_64: "x86_64-apple-ios13.0-macabi",
+      arm64: "arm64-apple-ios13.0-macabi",
+    },
+    tnsTarget: "ios-arm64_x86_64-maccatalyst",
+  },
+  visionos: {
+    path: getSDKPath("xros"),
+    frameworks: [...COMMON_FRAMEWORKS],
+    targets: {
+      arm64: "arm64-apple-xros13.0",
+    },
+    tnsTarget: "xros-arm64",
+  },
+  "visionos-sim": {
+    path: getSDKPath("xrsimulator"),
+    frameworks: [...COMMON_FRAMEWORKS],
+    targets: {
+      arm64: "arm64-apple-xros13.0-simulator",
+    },
+    tnsTarget: "xros-arm64_x86_64-simulator",
   },
 };
 
@@ -108,13 +135,18 @@ await Deno.mkdir(new URL(`../packages/${sdkName}/types`, import.meta.url), {
 }).catch(() => {});
 
 for (const arch in sdk.targets) {
-  const exec = new URL("../metadata-generator/build/MetadataGenerator", import.meta.url);
+  const exec = new URL(
+    "../metadata-generator/build/MetadataGenerator",
+    import.meta.url
+  );
   const args = [
     `arch=${arch}`,
     `target=${sdk.targets[arch]}`,
     `output=${
-      new URL(`../metadata-generator/metadata.${sdkName}.${arch}.nsmd`, import.meta.url)
-        .pathname
+      new URL(
+        `../metadata-generator/metadata.${sdkName}.${arch}.nsmd`,
+        import.meta.url
+      ).pathname
     }`,
     // NOTE: We're not differentiating between the arch for TS types - it shouldn't matter much
     `types=${
@@ -135,7 +167,9 @@ for (const arch in sdk.targets) {
       "./node_modules/@nativescript/core/platforms/ios/",
       import.meta.url
     ).pathname;
-    const framework = `${basePath}/TNSWidgets.xcframework/${sdkName}-${arch}/TNSWidgets.framework`;
+    const framework = `${basePath}/TNSWidgets.xcframework/${
+      sdk.tnsTarget ?? "ios-arm64"
+    }/TNSWidgets.framework`;
 
     const customFrameworks = [framework];
 
@@ -152,8 +186,10 @@ for (const arch in sdk.targets) {
     args.push('import="UIView+NativeScript.h"');
   }
 
-  if (true) {
-    const framework = "/Volumes/SSD/gh/nativescript/test-app-ng/node_modules/nativescript-ui-sidedrawer/platforms/ios/TNSSideDrawer.xcframework/ios-arm64/TNSSideDrawer.framework";
+  // TODO: remove me
+  if (Deno.env.get("TNS_SIDEDRAWER_FRAMEWORK") === "1") {
+    const framework =
+      "/Volumes/SSD/gh/nativescript/test-app-ng/node_modules/nativescript-ui-sidedrawer/platforms/ios/TNSSideDrawer.xcframework/ios-arm64/TNSSideDrawer.framework";
 
     const customFrameworks = [framework];
 

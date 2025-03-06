@@ -1,18 +1,19 @@
 #include "Cif.h"
+#include <Foundation/Foundation.h>
+#include <iostream>
+#include <vector>
+#include "Metadata.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
-#include <Foundation/Foundation.h>
-#include <iostream>
-#include <vector>
 
 namespace objc_bridge {
 
 // Essentially, we cache libffi structures per unique method signature,
 // this helps us avoid the overhead of creating them on the fly for each
 // invocation.
-Cif *ObjCBridgeState::getMethodCif(napi_env env, Method method) {
+Cif* ObjCBridgeState::getMethodCif(napi_env env, Method method) {
   auto encoding = std::string(method_getTypeEncoding(method));
   auto find = this->cifs[encoding];
   if (find != nullptr) {
@@ -25,7 +26,7 @@ Cif *ObjCBridgeState::getMethodCif(napi_env env, Method method) {
   return cif;
 }
 
-Cif *ObjCBridgeState::getMethodCif(napi_env env, MDSectionOffset offset) {
+Cif* ObjCBridgeState::getMethodCif(napi_env env, MDSectionOffset offset) {
   auto find = this->mdMethodSignatureCache[offset];
   if (find != nullptr) {
     return find;
@@ -37,7 +38,7 @@ Cif *ObjCBridgeState::getMethodCif(napi_env env, MDSectionOffset offset) {
   return cif;
 }
 
-Cif *ObjCBridgeState::getBlockCif(napi_env env, MDSectionOffset offset) {
+Cif* ObjCBridgeState::getBlockCif(napi_env env, MDSectionOffset offset) {
   auto find = this->mdBlockSignatureCache[offset];
   if (find != nullptr) {
     return find;
@@ -49,7 +50,7 @@ Cif *ObjCBridgeState::getBlockCif(napi_env env, MDSectionOffset offset) {
   return cif;
 }
 
-Cif *ObjCBridgeState::getCFunctionCif(napi_env env, MDSectionOffset offset) {
+Cif* ObjCBridgeState::getCFunctionCif(napi_env env, MDSectionOffset offset) {
   auto find = this->mdFunctionSignatureCache[offset];
   if (find != nullptr) {
     return find;
@@ -65,15 +66,15 @@ Cif::Cif(napi_env env, std::string encoding) {
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   unsigned long numberOfArguments = signature.numberOfArguments;
   this->argc = (int)numberOfArguments - 2;
-  this->argv = (napi_value *)malloc(sizeof(napi_value) * this->argc);
+  this->argv = (napi_value*)malloc(sizeof(napi_value) * this->argc);
 
   unsigned int argc = (unsigned int)numberOfArguments;
 
-  const char *returnType = signature.methodReturnType;
+  const char* returnType = signature.methodReturnType;
   this->returnType = TypeConv::Make(env, &returnType);
 
-  ffi_type *rtype = this->returnType->type;
-  ffi_type **atypes = (ffi_type **)malloc(sizeof(ffi_type *) * argc);
+  ffi_type* rtype = this->returnType->type;
+  ffi_type** atypes = (ffi_type**)malloc(sizeof(ffi_type*) * argc);
 
   unsigned long methodReturnLength = signature.methodReturnLength;
   unsigned long frameLength = signature.frameLength;
@@ -82,13 +83,13 @@ Cif::Cif(napi_env env, std::string encoding) {
   this->rvalueLength = methodReturnLength;
   this->frameLength = frameLength;
 
-  this->avalues = (void **)malloc(sizeof(void *) * argc);
-  this->shouldFree = (bool *)malloc(sizeof(bool) * this->argc);
+  this->avalues = (void**)malloc(sizeof(void*) * argc);
+  this->shouldFree = (bool*)malloc(sizeof(bool) * this->argc);
   memset(this->shouldFree, false, sizeof(bool) * this->argc);
   this->shouldFreeAny = false;
 
   for (int i = 0; i < numberOfArguments; i++) {
-    const char *argenc = [signature getArgumentTypeAtIndex:i];
+    const char* argenc = [signature getArgumentTypeAtIndex:i];
 
     auto argTypeInfo = TypeConv::Make(env, &argenc);
     atypes[i] = argTypeInfo->type;
@@ -107,21 +108,20 @@ Cif::Cif(napi_env env, std::string encoding) {
   }
 
   if (status != FFI_OK) {
-    std::cout << "Failed to prepare CIF, libffi returned error:" << status
-              << std::endl;
+    std::cout << "Failed to prepare CIF, libffi returned error:" << status << std::endl;
     return;
   }
 }
 
-Cif::Cif(napi_env env, MDMetadataReader *reader, MDSectionOffset offset,
-         bool isMethod, bool isBlock) {
+Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool isMethod,
+         bool isBlock) {
   auto returnTypeKind = reader->getTypeKind(offset);
-  bool next = (returnTypeKind & mdTypeFlagNext) != 0;
-  isVariadic = (returnTypeKind & mdTypeFlagVariadic) != 0;
+  bool next = ((MDTypeFlag)returnTypeKind & mdTypeFlagNext) != 0;
+  isVariadic = ((MDTypeFlag)returnTypeKind & mdTypeFlagVariadic) != 0;
 
   returnType = TypeConv::Make(env, reader, &offset);
 
-  ffi_type **atypes = nullptr;
+  ffi_type** atypes = nullptr;
 
   auto implicitArgs = isMethod ? 2 : isBlock ? 1 : 0;
 
@@ -130,7 +130,7 @@ Cif::Cif(napi_env env, MDMetadataReader *reader, MDSectionOffset offset,
   if (next || isMethod || isBlock) {
     while (next) {
       auto argTypeKind = reader->getTypeKind(offset);
-      next = (argTypeKind & mdTypeFlagNext) != 0;
+      next = ((MDTypeFlag)argTypeKind & mdTypeFlagNext) != 0;
       auto argTypeInfo = TypeConv::Make(env, reader, &offset);
       std::string enc;
       argTypeInfo->encode(&enc);
@@ -141,11 +141,11 @@ Cif::Cif(napi_env env, MDMetadataReader *reader, MDSectionOffset offset,
 
     auto totalArgc = argc + implicitArgs;
 
-    argv = (napi_value *)malloc(sizeof(napi_value) * argc);
-    shouldFree = (bool *)malloc(sizeof(bool) * argc);
+    argv = (napi_value*)malloc(sizeof(napi_value) * argc);
+    shouldFree = (bool*)malloc(sizeof(bool) * argc);
 
-    atypes = (ffi_type **)malloc(sizeof(ffi_type *) * totalArgc);
-    avalues = (void **)malloc(sizeof(void *) * argc);
+    atypes = (ffi_type**)malloc(sizeof(ffi_type*) * totalArgc);
+    avalues = (void**)malloc(sizeof(void*) * argc);
 
     if (isMethod) {
       atypes[0] = &ffi_type_pointer;
@@ -167,12 +167,11 @@ Cif::Cif(napi_env env, MDMetadataReader *reader, MDSectionOffset offset,
     shouldFree = nullptr;
   }
 
-  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argc + implicitArgs,
-                                   returnType->type, atypes);
+  ffi_status status =
+      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argc + implicitArgs, returnType->type, atypes);
 
   if (status != FFI_OK) {
-    std::cout << "Failed to prepare CIF, libffi returned error: " << status
-              << std::endl;
+    std::cout << "Failed to prepare CIF, libffi returned error: " << status << std::endl;
     return;
   }
 
@@ -184,4 +183,4 @@ Cif::Cif(napi_env env, MDMetadataReader *reader, MDSectionOffset offset,
   rvalueLength = cif.rtype->size;
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge

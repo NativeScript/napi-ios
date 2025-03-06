@@ -16,42 +16,41 @@ void ObjCBridgeState::registerVarGlobals(napi_env env, napi_value global) {
 
     napi_property_descriptor prop = {
         .utf8name = name,
-        .attributes =
-            (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .method = nullptr,
         .getter = JS_variableGetter,
         .setter = nullptr,
         .value = nullptr,
-        .data = (void *)((size_t)originalOffset),
-        .method = nullptr,
+        .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .data = (void*)((size_t)originalOffset),
     };
 
     napi_define_properties(env, global, 1, &prop);
 
     switch (evalKind) {
-    case mdEvalDouble: {
-      offset += sizeof(double);
-      break;
-    }
+      case mdEvalDouble: {
+        offset += sizeof(double);
+        break;
+      }
 
-    case mdEvalInt64: {
-      offset += sizeof(int64_t);
-      break;
-    }
+      case mdEvalInt64: {
+        offset += sizeof(int64_t);
+        break;
+      }
 
-    case mdEvalString: {
-      offset += sizeof(MDSectionOffset);
-      break;
-    }
+      case mdEvalString: {
+        offset += sizeof(MDSectionOffset);
+        break;
+      }
 
-    default:
-      TypeConv::Make(env, metadata, &offset);
-      break;
+      default:
+        TypeConv::Make(env, metadata, &offset);
+        break;
     }
   }
 }
 
 NAPI_FUNCTION(variableGetter) {
-  void *data;
+  void* data;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &data);
   MDSectionOffset offset = (MDSectionOffset)((size_t)data);
   MDSectionOffset originalOffset = offset;
@@ -73,40 +72,40 @@ NAPI_FUNCTION(variableGetter) {
   napi_value result = nullptr;
 
   switch (evalKind) {
-  case mdEvalDouble: {
-    auto value = bridgeState->metadata->getDouble(offset);
-    napi_create_double(env, value, &result);
-    break;
-  }
-
-  case mdEvalInt64: {
-    auto value = bridgeState->metadata->getInt64(offset);
-    napi_create_int64(env, value, &result);
-    break;
-  }
-
-  case mdEvalString: {
-    auto value = bridgeState->metadata->getString(offset);
-    napi_create_string_utf8(env, value, NAPI_AUTO_LENGTH, &result);
-    if (result != nullptr) {
-      bridgeState->mdValueCache[originalOffset] = make_ref(env, result);
+    case mdEvalDouble: {
+      auto value = bridgeState->metadata->getDouble(offset);
+      napi_create_double(env, value, &result);
+      break;
     }
-    break;
-  }
 
-  default: {
-    auto type = TypeConv::Make(env, bridgeState->metadata, &offset);
-    auto value = dlsym(bridgeState->self_dl, name);
-    if (value == nullptr) {
-      napi_get_null(env, &result);
-    } else {
-      result = type->toJS(env, value);
+    case mdEvalInt64: {
+      auto value = bridgeState->metadata->getInt64(offset);
+      napi_create_int64(env, value, &result);
+      break;
     }
-    return result;
-  }
+
+    case mdEvalString: {
+      auto value = bridgeState->metadata->getString(offset);
+      napi_create_string_utf8(env, value, NAPI_AUTO_LENGTH, &result);
+      if (result != nullptr) {
+        bridgeState->mdValueCache[originalOffset] = make_ref(env, result);
+      }
+      break;
+    }
+
+    default: {
+      auto type = TypeConv::Make(env, bridgeState->metadata, &offset);
+      auto value = dlsym(bridgeState->self_dl, name);
+      if (value == nullptr) {
+        napi_get_null(env, &result);
+      } else {
+        result = type->toJS(env, value);
+      }
+      return result;
+    }
   }
 
   return result;
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge

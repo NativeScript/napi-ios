@@ -15,27 +15,26 @@ void ObjCBridgeState::registerFunctionGlobals(napi_env env, napi_value global) {
 
     napi_property_descriptor prop = {
         .utf8name = name,
-        .attributes =
-            (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .method = CFunction::jsCall,
         .getter = nullptr,
         .setter = nullptr,
         .value = nullptr,
-        .data = (void *)((size_t)originalOffset),
-        .method = CFunction::jsCall,
+        .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+        .data = (void*)((size_t)originalOffset),
     };
 
     napi_define_properties(env, global, 1, &prop);
   }
 }
 
-CFunction *ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
+CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
   auto cached = cFunctionCache.find(offset);
   if (cached != cFunctionCache.end()) {
     return cached->second;
   }
 
-  auto sigOffset = metadata->signaturesOffset +
-                   metadata->getOffset(offset + sizeof(MDSectionOffset));
+  auto sigOffset =
+      metadata->signaturesOffset + metadata->getOffset(offset + sizeof(MDSectionOffset));
 
   auto cFunction = new CFunction(dlsym(self_dl, metadata->getString(offset)));
   cFunction->cif = getCFunctionCif(env, sigOffset);
@@ -45,7 +44,7 @@ CFunction *ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
 }
 
 napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
-  void *_offset;
+  void* _offset;
 
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &_offset);
 
@@ -58,8 +57,8 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   size_t argc = cif->argc;
   napi_get_cb_info(env, cbinfo, &argc, cif->argv, nullptr, nullptr);
 
-  void *avalues[cif->argc];
-  void *rvalue = cif->rvalue;
+  void* avalues[cif->argc];
+  void* rvalue = cif->rvalue;
 
   bool shouldFreeAny = false;
   bool shouldFree[cif->argc];
@@ -68,8 +67,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     for (unsigned int i = 0; i < cif->argc; i++) {
       shouldFree[i] = false;
       avalues[i] = cif->avalues[i];
-      cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i], &shouldFree[i],
-                                 &shouldFreeAny);
+      cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i], &shouldFree[i], &shouldFreeAny);
     }
   }
 
@@ -78,7 +76,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   if (shouldFreeAny) {
     for (unsigned int i = 0; i < cif->argc; i++) {
       if (shouldFree[i]) {
-        cif->argTypes[i]->free(env, *((void **)avalues[i]));
+        cif->argTypes[i]->free(env, *((void**)avalues[i]));
       }
     }
   }
@@ -92,4 +90,4 @@ CFunction::~CFunction() {
   }
 }
 
-} // namespace objc_bridge
+}  // namespace objc_bridge
