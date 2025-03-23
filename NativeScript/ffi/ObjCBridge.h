@@ -42,7 +42,7 @@ typedef enum ObjectOwnership {
 
 class ObjCBridgeState {
 public:
-  ObjCBridgeState(napi_env env, const char *metadata_path = nullptr);
+  ObjCBridgeState(napi_env env, const char *metadata_path = nullptr, const void *metadata_ptr = nullptr);
   ~ObjCBridgeState();
 
   static inline ObjCBridgeState *InstanceData(napi_env env) {

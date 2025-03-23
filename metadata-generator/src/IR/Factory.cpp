@@ -1,8 +1,9 @@
-#include "IR.h"
-#include "MetadataWriter.h"
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+
+#include "IR.h"
+#include "MetadataWriter.h"
 
 namespace metagen {
 
@@ -15,7 +16,10 @@ void MetadataFactory::process(CXCursor cursor, bool checkAvailability) {
   clang_visitChildren(
       cursor,
       [](CXCursor cursor, CXCursor, CXClientData clientData) {
-        auto state = (MetadataFactory *)clientData;
+        auto state = (MetadataFactory*)clientData;
+
+        CXString name = clang_getCursorSpelling(cursor);
+        std::string nameStr = clang_getCString(name);
 
         if (state->_checkAvailability && !isAvailable(cursor))
           return CXChildVisit_Continue;
@@ -23,48 +27,48 @@ void MetadataFactory::process(CXCursor cursor, bool checkAvailability) {
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_VarDecl: {
-          state->processVariable(cursor);
-          break;
-        }
+          case CXCursor_VarDecl: {
+            state->processVariable(cursor);
+            break;
+          }
 
-        case CXCursor_EnumDecl: {
-          state->processEnum(cursor);
-          break;
-        }
+          case CXCursor_EnumDecl: {
+            state->processEnum(cursor);
+            break;
+          }
 
-        case CXCursor_StructDecl: {
-          state->processStruct(cursor);
-          break;
-        }
+          case CXCursor_StructDecl: {
+            state->processStruct(cursor);
+            break;
+          }
 
-        case CXCursor_UnionDecl: {
-          state->processUnion(cursor);
-          break;
-        }
+          case CXCursor_UnionDecl: {
+            state->processUnion(cursor);
+            break;
+          }
 
-        case CXCursor_FunctionDecl: {
-          state->processFunction(cursor);
-          break;
-        }
+          case CXCursor_FunctionDecl: {
+            state->processFunction(cursor);
+            break;
+          }
 
-        case CXCursor_ObjCInterfaceDecl: {
-          state->processClass(cursor);
-          break;
-        }
+          case CXCursor_ObjCInterfaceDecl: {
+            state->processClass(cursor);
+            break;
+          }
 
-        case CXCursor_ObjCProtocolDecl: {
-          state->processProtocol(cursor);
-          break;
-        }
+          case CXCursor_ObjCProtocolDecl: {
+            state->processProtocol(cursor);
+            break;
+          }
 
-        case CXCursor_ObjCCategoryDecl: {
-          state->processCategory(cursor);
-          break;
-        }
+          case CXCursor_ObjCCategoryDecl: {
+            state->processCategory(cursor);
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -74,17 +78,42 @@ void MetadataFactory::process(CXCursor cursor, bool checkAvailability) {
   _checkAvailability = _previous_checkAvailability;
 }
 
+bool MetadataFactory::shouldProcess(CXCursor cursor, bool required) {
+  if (required) {
+    return true;
+  }
+
+  if (!isAvailable(cursor)) {
+    return false;
+  }
+
+  CXSourceLocation srcloc = clang_getCursorLocation(cursor);
+  CXFile file;
+  clang_getFileLocation(srcloc, &file, nullptr, nullptr, nullptr);
+  CXString fileName = clang_getFileName(file);
+  std::string fileNameStr = clang_getCString(fileName);
+  clang_disposeString(fileName);
+
+  for (const std::string& path : includePaths) {
+    if (fileNameStr.find(path) != std::string::npos) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 void MetadataFactory::implementClassProtocols(
-    ClassDecl &decl, std::vector<std::string> &protocols) {
-  for (std::string &name : protocols) {
+    ClassDecl& decl, std::vector<std::string>& protocols) {
+  for (std::string& name : protocols) {
     if (!decl.implementedProtocolNames.contains(name)) {
       decl.implementedProtocolNames.emplace(name);
 
       if (this->protocols.contains(name)) {
-        ProtocolDecl &protocol = this->protocols[name];
+        ProtocolDecl& protocol = this->protocols[name];
         decl.protocolRefs.emplace_back(&protocol);
         protocol.implementerRefs.emplace_back(&decl);
-        for (MemberDecl &member : protocol.members) {
+        for (MemberDecl& member : protocol.members) {
           decl.members.emplace_back(member);
         }
         implementClassProtocols(decl, protocol.protocolNames);
@@ -104,27 +133,27 @@ void MetadataFactory::resolveRefs() {
 }
 
 void MetadataFactory::postProcess() {
-  for (auto &kv : structs) {
-    StructDecl &decl = kv.second;
+  for (auto& kv : structs) {
+    StructDecl& decl = kv.second;
     postProcessStruct(decl);
   }
 
-  for (auto &kv : unions) {
-    UnionDecl &decl = kv.second;
+  for (auto& kv : unions) {
+    UnionDecl& decl = kv.second;
     postProcessUnion(decl);
   }
 
-  for (FunctionDecl &decl : functions) {
+  for (FunctionDecl& decl : functions) {
     postProcessFunction(decl);
   }
 
-  for (auto &kv : classes) {
-    ClassDecl &decl = kv.second;
+  for (auto& kv : classes) {
+    ClassDecl& decl = kv.second;
     postProcessClass(decl);
   }
 
-  for (auto &kv : protocols) {
-    ProtocolDecl &decl = kv.second;
+  for (auto& kv : protocols) {
+    ProtocolDecl& decl = kv.second;
     postProcessProtocol(decl);
   }
 
@@ -134,12 +163,12 @@ void MetadataFactory::postProcess() {
 
   // Push category members to their respective classes.
 
-  for (CategoryDecl &category : categories) {
+  for (CategoryDecl& category : categories) {
     if (classes.contains(category.className)) {
-      ClassDecl &cls = classes[category.className];
+      ClassDecl& cls = classes[category.className];
       category.processMembers(&cls.typeParameters);
       postProcessCategory(category);
-      for (MemberDecl &member : category.members) {
+      for (MemberDecl& member : category.members) {
         cls.members.emplace_back(member);
       }
     }
@@ -149,24 +178,24 @@ void MetadataFactory::postProcess() {
 
   // Rename protocols whose names conflict with classes.
 
-  for (auto &kv : protocols) {
-    ProtocolDecl &protocol = kv.second;
+  for (auto& kv : protocols) {
+    ProtocolDecl& protocol = kv.second;
     if (classes.contains(protocol.name)) {
       renamedProtocols.emplace(protocol.name);
       protocol.name = protocol.name + "Protocol";
     }
   }
 
-  for (const std::string &name : renamedProtocols) {
+  for (const std::string& name : renamedProtocols) {
     protocols[name + "Protocol"] = protocols[name];
     protocols.erase(name);
   }
 
-  for (auto &kv : protocols) {
-    ProtocolDecl &protocol = kv.second;
+  for (auto& kv : protocols) {
+    ProtocolDecl& protocol = kv.second;
     std::vector<std::string> protocolNames = protocol.protocolNames;
     protocol.protocolNames.clear();
-    for (const std::string &name : protocolNames) {
+    for (const std::string& name : protocolNames) {
       if (renamedProtocols.contains(name)) {
         protocol.protocolNames.emplace_back(name + "Protocol");
       } else {
@@ -175,11 +204,11 @@ void MetadataFactory::postProcess() {
     }
   }
 
-  for (auto &kv : classes) {
-    ClassDecl &cls = kv.second;
+  for (auto& kv : classes) {
+    ClassDecl& cls = kv.second;
     std::vector<std::string> protocolNames = cls.protocolNames;
     cls.protocolNames.clear();
-    for (const std::string &name : protocolNames) {
+    for (const std::string& name : protocolNames) {
       if (renamedProtocols.contains(name)) {
         cls.protocolNames.emplace_back(name + "Protocol");
       } else {
@@ -190,22 +219,22 @@ void MetadataFactory::postProcess() {
 
   // Resolve references inside ClassDecls and ProtocolDecls.
 
-  for (auto &kv : protocols) {
-    ProtocolDecl &protocol = kv.second;
-    for (std::string &name : protocol.protocolNames) {
+  for (auto& kv : protocols) {
+    ProtocolDecl& protocol = kv.second;
+    for (std::string& name : protocol.protocolNames) {
       if (protocols.contains(name)) {
-        ProtocolDecl &ref = protocols[name];
+        ProtocolDecl& ref = protocols[name];
         protocol.protocolRefs.emplace_back(&ref);
         ref.derivedProtocolRefs.emplace_back(&protocol);
       }
     }
   }
 
-  for (auto &kv : classes) {
-    ClassDecl &cls = kv.second;
+  for (auto& kv : classes) {
+    ClassDecl& cls = kv.second;
 
     if (classes.contains(cls.superClassName)) {
-      ClassDecl &ref = classes[cls.superClassName];
+      ClassDecl& ref = classes[cls.superClassName];
       cls.superClassRef = &ref;
       ref.derivedClassRefs.emplace_back(&cls);
     }
@@ -215,14 +244,14 @@ void MetadataFactory::postProcess() {
 
   // Remove duplicate methods.
 
-  for (auto &kv : classes) {
-    ClassDecl &cls = kv.second;
+  for (auto& kv : classes) {
+    ClassDecl& cls = kv.second;
     removeDuplicateMethods(cls.members);
     cls.postProcessMembers();
   }
 
-  for (auto &kv : protocols) {
-    ProtocolDecl &protocol = kv.second;
+  for (auto& kv : protocols) {
+    ProtocolDecl& protocol = kv.second;
     removeDuplicateMethods(protocol.members);
     protocol.postProcessMembers();
   }
@@ -231,45 +260,19 @@ void MetadataFactory::postProcess() {
   // in derived/implemented classes/protocols.
   // There should be a better way around this.
 
-  for (auto &kv : classes) {
-    ClassDecl &cls = kv.second;
+  for (auto& kv : classes) {
+    ClassDecl& cls = kv.second;
     cls.postProcessMembers();
   }
 
-  for (auto &kv : protocols) {
-    ProtocolDecl &protocol = kv.second;
+  for (auto& kv : protocols) {
+    ProtocolDecl& protocol = kv.second;
     protocol.postProcessMembers();
   }
 }
 
-bool MetadataFactory::shouldProcess(CXCursor cursor, bool required) {
-  if (required) {
-    return true;
-  }
-
-  if (!isAvailable(cursor)) {
-    return false;
-  }
-
-  CXSourceLocation srcloc = clang_getCursorLocation(cursor);
-  CXFile file;
-  clang_getFileLocation(srcloc, &file, nullptr, nullptr, nullptr);
-  CXString fileName = clang_getFileName(file);
-  std::string fileNameStr = clang_getCString(fileName);
-  clang_disposeString(fileName);
-
-  for (const std::string &path : includePaths) {
-    if (fileNameStr.find(path) != std::string::npos) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 void MetadataFactory::processVariable(CXCursor cursor) {
-  if (!shouldProcess(cursor))
-    return;
+  if (!shouldProcess(cursor)) return;
 
   VariableDecl decl(cursor);
   variables.emplace(decl.name, decl);
@@ -285,7 +288,7 @@ void MetadataFactory::processEnum(CXCursor cursor, bool required) {
 
   if (!shouldProcess(cursor, required)) {
     if (skippedEnums.contains(decl.name)) {
-      EnumDecl &prev = skippedEnums[decl.name];
+      EnumDecl& prev = skippedEnums[decl.name];
       if (prev.constants.size() < decl.constants.size()) {
         skippedEnums[decl.name] = decl;
       }
@@ -298,7 +301,7 @@ void MetadataFactory::processEnum(CXCursor cursor, bool required) {
   // If the enum is unnamed, we'll just push the constants as global
   // constants.
   if (decl.name == "") {
-    for (auto &constant : decl.constants) {
+    for (auto& constant : decl.constants) {
       VariableDecl var(decl.framework, constant);
       variables[var.name] = var;
     }
@@ -307,7 +310,7 @@ void MetadataFactory::processEnum(CXCursor cursor, bool required) {
   }
 
   if (enums.contains(decl.name)) {
-    EnumDecl &prev = enums[decl.name];
+    EnumDecl& prev = enums[decl.name];
     if (prev.constants.size() < decl.constants.size()) {
       prev.constants = decl.constants;
     }
@@ -322,7 +325,7 @@ void MetadataFactory::processStruct(CXCursor cursor, bool required) {
 
   if (!shouldProcess(cursor, required)) {
     if (skippedStructs.contains(decl.name)) {
-      StructDecl &prev = skippedStructs[decl.name];
+      StructDecl& prev = skippedStructs[decl.name];
       if (prev.fields.size() < decl.fields.size()) {
         skippedStructs[decl.name] = decl;
       }
@@ -333,7 +336,7 @@ void MetadataFactory::processStruct(CXCursor cursor, bool required) {
   }
 
   if (structs.contains(decl.name)) {
-    StructDecl &prev = structs[decl.name];
+    StructDecl& prev = structs[decl.name];
     if (prev.fields.size() < decl.fields.size()) {
       prev.fields = decl.fields;
     }
@@ -345,8 +348,8 @@ void MetadataFactory::processStruct(CXCursor cursor, bool required) {
   process(cursor, true);
 }
 
-void MetadataFactory::postProcessStruct(StructDecl &decl) {
-  for (StructFieldDecl &decl : decl.fields) {
+void MetadataFactory::postProcessStruct(StructDecl& decl) {
+  for (StructFieldDecl& decl : decl.fields) {
     processType(decl.type);
   }
 }
@@ -360,7 +363,7 @@ void MetadataFactory::processUnion(CXCursor cursor, bool required) {
 
   if (!shouldProcess(cursor, required)) {
     if (skippedUnions.contains(decl.name)) {
-      UnionDecl &prev = skippedUnions[decl.name];
+      UnionDecl& prev = skippedUnions[decl.name];
       if (prev.fields.size() < decl.fields.size()) {
         skippedUnions[decl.name] = decl;
       }
@@ -371,7 +374,7 @@ void MetadataFactory::processUnion(CXCursor cursor, bool required) {
   }
 
   if (unions.contains(decl.name)) {
-    UnionDecl &prev = unions[decl.name];
+    UnionDecl& prev = unions[decl.name];
     if (prev.fields.size() < decl.fields.size()) {
       prev.fields = decl.fields;
     }
@@ -383,8 +386,8 @@ void MetadataFactory::processUnion(CXCursor cursor, bool required) {
   process(cursor, true);
 }
 
-void MetadataFactory::postProcessUnion(UnionDecl &decl) {
-  for (UnionFieldDecl &decl : decl.fields) {
+void MetadataFactory::postProcessUnion(UnionDecl& decl) {
+  for (UnionFieldDecl& decl : decl.fields) {
     processType(decl.type);
   }
 }
@@ -396,15 +399,14 @@ void MetadataFactory::processFunction(CXCursor cursor) {
     return;
   }
 
-  if (!shouldProcess(cursor))
-    return;
+  if (!shouldProcess(cursor)) return;
 
   FunctionDecl decl(cursor);
   functions.emplace_back(decl);
 }
 
-void MetadataFactory::postProcessFunction(FunctionDecl &decl) {
-  for (ParameterDecl &parameter : decl.parameters) {
+void MetadataFactory::postProcessFunction(FunctionDecl& decl) {
+  for (ParameterDecl& parameter : decl.parameters) {
     processType(parameter.type);
   }
 
@@ -426,33 +428,33 @@ void MetadataFactory::processClass(CXCursor cursor, bool required) {
   classes.emplace(decl.name, decl);
 }
 
-void MetadataFactory::postProcessMember(MemberDecl &decl) {
+void MetadataFactory::postProcessMember(MemberDecl& decl) {
   switch (decl.kind) {
-  case kMemberMethod: {
-    for (ParameterDecl &param : decl.parameters) {
-      processType(param.type);
+    case kMemberMethod: {
+      for (ParameterDecl& param : decl.parameters) {
+        processType(param.type);
+      }
+      processType(decl.returnType);
+      break;
     }
-    processType(decl.returnType);
-    break;
-  }
 
-  case kMemberProperty: {
-    processType(decl.propertyType);
-    break;
-  }
+    case kMemberProperty: {
+      processType(decl.propertyType);
+      break;
+    }
   }
 }
 
-void MetadataFactory::postProcessClass(ClassDecl &decl) {
+void MetadataFactory::postProcessClass(ClassDecl& decl) {
   if (!decl.superClassName.empty()) {
     referencedClasses.emplace(decl.superClassName);
   }
 
-  for (std::string &name : decl.protocolNames) {
+  for (std::string& name : decl.protocolNames) {
     referencedProtocols.emplace(name);
   }
 
-  for (MemberDecl &member : decl.members) {
+  for (MemberDecl& member : decl.members) {
     postProcessMember(member);
   }
 }
@@ -468,28 +470,27 @@ void MetadataFactory::processProtocol(CXCursor cursor, bool required) {
   protocols.emplace(decl.name, decl);
 }
 
-void MetadataFactory::postProcessProtocol(ProtocolDecl &decl) {
-  for (std::string &name : decl.protocolNames) {
+void MetadataFactory::postProcessProtocol(ProtocolDecl& decl) {
+  for (std::string& name : decl.protocolNames) {
     referencedProtocols.emplace(name);
   }
 
-  for (MemberDecl &member : decl.members) {
+  for (MemberDecl& member : decl.members) {
     postProcessMember(member);
   }
 }
 
 void MetadataFactory::processCategory(CXCursor cursor) {
-  if (!shouldProcess(cursor))
-    return;
+  if (!shouldProcess(cursor)) return;
 
   CategoryDecl decl(cursor);
   categories.emplace_back(decl);
 }
 
-void MetadataFactory::postProcessCategory(CategoryDecl &decl) {
-  for (MemberDecl &member : decl.members) {
+void MetadataFactory::postProcessCategory(CategoryDecl& decl) {
+  for (MemberDecl& member : decl.members) {
     postProcessMember(member);
   }
 }
 
-} // namespace metagen
+}  // namespace metagen

@@ -1,15 +1,17 @@
 #include "Require.h"
-#include "NapiUtil.h"
-#include "js_native_api.h"
-#include "jsr.h"
+
 #include <dlfcn.h>
+
 #include <cstddef>
 #include <iostream>
 #include <string>
 
-napi_value Require::createRequire(napi_env env, std::string &path,
-                                  std::string &tilde, Require **pRequire) {
-  Require *require = new Require(path, tilde);
+#include "NapiUtil.h"
+#include "js_native_api.h"
+
+napi_value Require::createRequire(napi_env env, std::string& path,
+                                  std::string& tilde, Require** pRequire) {
+  Require* require = new Require(path, tilde);
   if (pRequire) {
     *pRequire = require;
   }
@@ -22,11 +24,11 @@ napi_value Require::createRequire(napi_env env, std::string &path,
   return result;
 }
 
-Require *Require::init(napi_env env, std::string &path, std::string &tilde) {
+Require* Require::init(napi_env env, std::string& path, std::string& tilde) {
   napi_value global;
   napi_get_global(env, &global);
 
-  Require *out = nullptr;
+  Require* out = nullptr;
   napi_value require = createRequire(env, path, tilde, &out);
 
   napi_set_named_property(env, global, "require", require);
@@ -34,12 +36,12 @@ Require *Require::init(napi_env env, std::string &path, std::string &tilde) {
   return out;
 }
 
-void Require::finalize(napi_env env, void *data, void *hint) {
-  Require *require = (Require *)data;
+void Require::finalize(napi_env env, void* data, void* hint) {
+  Require* require = (Require*)data;
   delete require;
 }
 
-std::string Require::resolve(std::string &spec) {
+std::string Require::resolve(std::string& spec) {
   if (spec.find("/") == 0) {
     return spec;
   }
@@ -76,25 +78,25 @@ std::string Require::resolve(std::string &spec) {
   return result;
 }
 
-void finalize_dlobject(napi_env env, void *finalize_data, void *finalize_hint) {
-  void *handle = finalize_data;
+void finalize_dlobject(napi_env env, void* finalize_data, void* finalize_hint) {
+  void* handle = finalize_data;
   dlclose(handle);
 }
 
 typedef napi_value napi_module_register_fn(napi_env env, napi_value exports);
 
-napi_value Require::require(napi_env env, std::string &spec) {
+napi_value Require::require(napi_env env, std::string& spec) {
   std::string path = resolve(spec);
 
   if (path.ends_with(".node") || path.ends_with(".dylib") ||
       path.ends_with(".so")) {
-    void *handle = dlopen(path.c_str(), RTLD_GLOBAL | RTLD_LAZY);
+    void* handle = dlopen(path.c_str(), RTLD_GLOBAL | RTLD_LAZY);
     if (!handle) {
       std::cerr << "error in dlopen: " << dlerror() << std::endl;
       return nullptr;
     }
 
-    void *sym = dlsym(handle, "napi_register_module_v1");
+    void* sym = dlsym(handle, "napi_register_module_v1");
     if (!sym) {
       std::cerr << "error in dlsym: " << dlerror() << std::endl;
       return nullptr;
@@ -105,7 +107,7 @@ napi_value Require::require(napi_env env, std::string &spec) {
     napi_create_object(env, &exports);
     napi_set_named_property(env, module, "exports", exports);
 
-    napi_module_register_fn *register_fn = (napi_module_register_fn *)sym;
+    napi_module_register_fn* register_fn = (napi_module_register_fn*)sym;
 
     exports = register_fn(env, exports);
 
@@ -115,16 +117,14 @@ napi_value Require::require(napi_env env, std::string &spec) {
     return module;
   }
 
-  // std::cout << "================\nrequire: " << path << std::endl;
-
-  char *source = nullptr;
+  char* source = nullptr;
   size_t size = 0;
-  FILE *file = fopen(path.c_str(), "r");
+  FILE* file = fopen(path.c_str(), "r");
   if (file) {
     fseek(file, 0, SEEK_END);
     size = ftell(file);
     fseek(file, 0, SEEK_SET);
-    source = (char *)malloc(size + 1);
+    source = (char*)malloc(size + 1);
     fread(source, 1, size, file);
     source[size] = 0;
     fclose(file);
@@ -138,20 +138,22 @@ napi_value Require::require(napi_env env, std::string &spec) {
     bootstrap += source;
     bootstrap += "`); })()";
     napi_value script, result = NULL;
-    napi_status st = napi_create_string_utf8(env, bootstrap.c_str(), bootstrap.length(), &script);
+    napi_status st = napi_create_string_utf8(env, bootstrap.c_str(),
+                                             bootstrap.length(), &script);
     st = napi_run_script(env, script, &result);
     return result;
   }
 
   std::string bootstrap;
-  bootstrap = "(() => { let cjsModule; cjsModule = function c(exports, "
-              "require, module, __filename, __dirname) {try { ";
+  bootstrap =
+      "(() => { let cjsModule; cjsModule = function c(exports, "
+      "require, module, __filename, __dirname) {try { ";
   bootstrap += source;
-  bootstrap += "\n} catch (e) { throw new Error(`Failed to evaluate "
-               "module: ${e}\n\nStack: ${e.stack}`); }\n};\n"
-               "Object.defineProperty(cjsModule, \"name\", { value: `" +
-               path +
-               "` }); return cjsModule; })()";
+  bootstrap +=
+      "\n} catch (e) { throw new Error(`Failed to evaluate "
+      "module: ${e}\n\nStack: ${e.stack}`); }\n};\n"
+      "Object.defineProperty(cjsModule, \"name\", { value: `" +
+      path + "` }); return cjsModule; })()";
 
   napi_status status;
   napi_value func, script, module, exports, require, __filename, __dirname,
@@ -161,7 +163,7 @@ napi_value Require::require(napi_env env, std::string &spec) {
 
   status = napi_run_script(env, script, &func);
   if (status != napi_ok) {
-    const napi_extended_error_info *info;
+    const napi_extended_error_info* info;
     napi_get_last_error_info(env, &info);
     std::cerr << "error in run script: " << status << ", "
               << info->error_message << std::endl;
@@ -187,17 +189,16 @@ napi_value Require::require(napi_env env, std::string &spec) {
 
   status = napi_call_function(env, global, func, 5, argv, &result);
 
-  
   if (status == napi_pending_exception) {
     napi_value exception;
     napi_get_and_clear_last_exception(env, &exception);
     napi_value stack;
     napi_get_named_property(env, exception, "stack", &stack);
-    std::string stackStr = getStringValue(env, exception);
+    std::string stackStr = getStringValue(env, stack);
     std::cerr << "error in call function: " << stackStr << std::endl;
     return nullptr;
   } else if (status != napi_ok) {
-    const napi_extended_error_info *info;
+    const napi_extended_error_info* info;
     napi_get_last_error_info(env, &info);
     std::cerr << "error in evaluate module: " << status << ", "
               << ((info->error_message == nullptr) ? "" : info->error_message)
@@ -211,9 +212,9 @@ napi_value Require::require(napi_env env, std::string &spec) {
 
 napi_value Require::requireCallback(napi_env env, napi_callback_info cbinfo) {
   napi_value arg;
-  Require *require;
+  Require* require;
   size_t argc = 1;
-  napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, (void **)&require);
+  napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, (void**)&require);
   std::string spec = getStringValue(env, arg);
   napi_value res = require->require(env, spec);
   return res;

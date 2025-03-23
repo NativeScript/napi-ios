@@ -71,6 +71,8 @@ enum MDTypeKind : uint8_t {
   mdTypeVector,
   mdTypeExtVector,
   mdTypeComplex,
+
+  mdTypeF16,
 };
 
 enum MDTypeFlag : uint8_t {
@@ -105,8 +107,8 @@ enum MDMemberFlag : uint8_t {
 
 #define MD_NUM_SECTIONS 9
 
-static inline void ptr_add(void **ptr, size_t size) {
-  *ptr = (void *)(((char *)(*ptr)) + size);
+static inline void ptr_add(void** ptr, size_t size) {
+  *ptr = (void*)(((char*)(*ptr)) + size);
 }
 
-} // namespace metagen
+}  // namespace metagen

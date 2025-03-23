@@ -106,9 +106,10 @@ void removeDuplicateMethods(std::vector<MemberDecl> &members) {
         member.isStatic ? classFilteredProperties : instanceFilteredProperties;
     if (member.kind == kMemberProperty) {
       filtered.insert(member.name);
-      if (!member.setterName.empty()) {
-        filtered.insert(member.setterName);
-      }
+      // NOTE: For backward compatibility
+      // if (!member.setterName.empty()) {
+      //   filtered.insert(member.setterName);
+      // }
     }
   }
 

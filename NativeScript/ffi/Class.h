@@ -13,6 +13,8 @@ using namespace metagen;
 
 namespace objc_bridge {
 
+void setupObjCClassDecorator(napi_env env);
+
 void initFastEnumeratorIteratorFactory(napi_env env,
                                        ObjCBridgeState *bridgeState);
 

@@ -99,6 +99,27 @@ NAPI_FUNCTION(registerClass) {
   return nullptr;
 }
 
+const char *ObjCClassDecorator = R"(
+globalThis.ObjCClass = function ObjCClass(...protocols) {
+  return function (target) {
+    if (target.ObjCProtocols) {
+      target.ObjCProtocols.push(...protocols);
+    } else {
+      target.ObjCProtocols = protocols;
+    }
+
+    return globalThis.NativeClass(target);
+  };
+};
+)";
+
+void setupObjCClassDecorator(napi_env env) {
+  napi_value global, script;
+  napi_get_global(env, &global);
+  napi_create_string_utf8(env, ObjCClassDecorator, NAPI_AUTO_LENGTH, &script);
+  napi_run_script(env, script, &global);
+}
+
 char class_name[256];
 
 // Get a Bridged Class by metadata offset, creating it if it doesn't exist.

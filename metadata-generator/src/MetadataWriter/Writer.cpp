@@ -96,6 +96,9 @@ std::pair<void *, size_t> MDMetadataWriter::serialize() {
   // Unions
   size += unions.section_size;
 
+  // Padding (= 0)
+  size += sizeof(MDSectionOffset);
+
   void *orig_data = malloc(size);
   void *data = orig_data;
 
@@ -243,6 +246,9 @@ std::pair<void *, size_t> MDMetadataWriter::serialize() {
     ptr_add(&data, serializedSize);
     offset += serializedSize;
   }
+
+  // Padding
+  memset(data, 0, sizeof(MDSectionOffset));
 
   return std::make_pair(orig_data, size);
 }

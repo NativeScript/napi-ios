@@ -52,8 +52,8 @@ void ObjCBridgeState::registerStructGlobals(napi_env env, napi_value global) {
 
 void ObjCBridgeState::registerUnionGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->unionsOffset;
-  while (offset < metadata->size) {
-    // Sometimes there is padding after file ends.
+  while (true) {
+    // It's the last section, always ends with 4 bytes of 0.
     if (metadata->getOffset(offset) == 0) break;
     MDSectionOffset originalOffset = offset;
     auto name = metadata->getString(offset);

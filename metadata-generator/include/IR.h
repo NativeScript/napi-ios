@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Metadata.h"
-#include "Util.h"
-#include "clang-c/Index.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include "Metadata.h"
+#include "Util.h"
+#include "clang-c/Index.h"
 
 namespace metagen {
 
@@ -42,14 +43,15 @@ enum TypeSpecKind {
   kTypeExtVector,
   kTypeComplex,
   kTypeFunctionPointer,
+  kTypeF16,
 };
 
 class TypeSpec {
-public:
+ public:
   TypeSpec() {}
 
   TypeSpec(CXType type,
-           std::vector<std::string> *classTypeParameters = nullptr);
+           std::vector<std::string>* classTypeParameters = nullptr);
 
   TypeSpecKind kind;
 
@@ -72,7 +74,7 @@ public:
   std::string enumName;
 
   // kTypeRecord
-  std::string recordName; // struct or union
+  std::string recordName;  // struct or union
 
   // kTypeConstArray, kTypeIncompleteArray
   std::shared_ptr<TypeSpec> arrayElement;
@@ -96,11 +98,11 @@ struct EnumConstDecl {
 };
 
 class VariableDecl {
-public:
+ public:
   VariableDecl() {}
 
   VariableDecl(CXCursor cursor);
-  VariableDecl(std::string &framework, const EnumConstDecl &decl);
+  VariableDecl(std::string& framework, const EnumConstDecl& decl);
 
   std::string framework;
 
@@ -114,7 +116,7 @@ public:
 };
 
 class EnumDecl {
-public:
+ public:
   EnumDecl() {}
 
   EnumDecl(CXCursor cursor);
@@ -134,7 +136,7 @@ struct StructFieldDecl {
 };
 
 class StructDecl {
-public:
+ public:
   StructDecl() {}
 
   StructDecl(CXCursor cursor);
@@ -154,7 +156,7 @@ struct UnionFieldDecl {
 };
 
 class UnionDecl {
-public:
+ public:
   UnionDecl() {}
 
   UnionDecl(CXCursor cursor);
@@ -174,7 +176,7 @@ struct ParameterDecl {
 };
 
 class FunctionDecl {
-public:
+ public:
   FunctionDecl() {}
 
   FunctionDecl(CXCursor cursor);
@@ -193,11 +195,11 @@ enum MemberKind {
 };
 
 class MemberDecl {
-public:
+ public:
   MemberDecl() {}
 
   MemberDecl(CXCursor cursor,
-             std::vector<std::string> *classTypeParameters = nullptr);
+             std::vector<std::string>* classTypeParameters = nullptr);
 
   std::string toString();
 
@@ -231,17 +233,17 @@ public:
   bool tsIgnore = false;
 };
 
-void removeDuplicateMethods(std::vector<MemberDecl> &members);
+void removeDuplicateMethods(std::vector<MemberDecl>& members);
 
 class ProtocolDecl;
 
 class ClassDecl {
-public:
+ public:
   ClassDecl() {}
 
   ClassDecl(CXCursor cursor);
 
-  MemberDecl *getMemberNamed(std::string &name);
+  MemberDecl* getMemberNamed(std::string& name);
 
   void postProcessMembers();
 
@@ -255,9 +257,9 @@ public:
 
   std::vector<MemberDecl> members;
 
-  ClassDecl *superClassRef = nullptr;
-  std::vector<ClassDecl *> derivedClassRefs;
-  std::vector<ProtocolDecl *> protocolRefs;
+  ClassDecl* superClassRef = nullptr;
+  std::vector<ClassDecl*> derivedClassRefs;
+  std::vector<ProtocolDecl*> protocolRefs;
   std::unordered_set<std::string> implementedProtocolNames;
 
   bool tsIgnore = false;
@@ -266,12 +268,12 @@ public:
 };
 
 class ProtocolDecl {
-public:
+ public:
   ProtocolDecl() {}
 
   ProtocolDecl(CXCursor cursor);
 
-  MemberDecl *getMemberNamed(std::string &name);
+  MemberDecl* getMemberNamed(std::string& name);
 
   void postProcessMembers();
 
@@ -282,26 +284,26 @@ public:
 
   std::vector<MemberDecl> members;
 
-  std::vector<ProtocolDecl *> protocolRefs;
-  std::vector<ProtocolDecl *> derivedProtocolRefs;
-  std::vector<ClassDecl *> implementerRefs;
+  std::vector<ProtocolDecl*> protocolRefs;
+  std::vector<ProtocolDecl*> derivedProtocolRefs;
+  std::vector<ClassDecl*> implementerRefs;
 
   bool tsIgnore = false;
 
   MDSectionOffset mdOffset = MD_SECTION_OFFSET_NULL;
 };
 
-void convertMethodToPropertyIfNeeded(MemberDecl &member,
-                                     MemberDecl *memberInSuperclass,
+void convertMethodToPropertyIfNeeded(MemberDecl& member,
+                                     MemberDecl* memberInSuperclass,
                                      bool isSuperclass);
 
 class CategoryDecl {
-public:
+ public:
   CategoryDecl() {}
 
   CategoryDecl(CXCursor cursor);
 
-  void processMembers(std::vector<std::string> *classTypeParameters = nullptr);
+  void processMembers(std::vector<std::string>* classTypeParameters = nullptr);
 
   CXCursor cursor;
 
@@ -312,19 +314,19 @@ public:
 
   std::vector<MemberDecl> members;
 
-  std::vector<std::string> *_classTypeParameters;
+  std::vector<std::string>* _classTypeParameters;
 };
 
 class MetadataFactory {
-public:
+ public:
   MetadataFactory() {}
 
   void process(CXCursor cursor, bool checkAvailability = false);
   void resolveRefs();
   void postProcess();
 
-  void implementClassProtocols(ClassDecl &decl,
-                               std::vector<std::string> &protocols);
+  void implementClassProtocols(ClassDecl& decl,
+                               std::vector<std::string>& protocols);
 
   bool shouldProcess(CXCursor cursor, bool required = false);
 
@@ -336,15 +338,15 @@ public:
   void processClass(CXCursor cursor, bool required = false);
   void processProtocol(CXCursor cursor, bool required = false);
   void processCategory(CXCursor cursor);
-  void processType(TypeSpec &type);
+  void processType(TypeSpec& type);
 
-  void postProcessStruct(StructDecl &decl);
-  void postProcessUnion(UnionDecl &decl);
-  void postProcessFunction(FunctionDecl &decl);
-  void postProcessMember(MemberDecl &decl);
-  void postProcessClass(ClassDecl &decl);
-  void postProcessProtocol(ProtocolDecl &decl);
-  void postProcessCategory(CategoryDecl &decl);
+  void postProcessStruct(StructDecl& decl);
+  void postProcessUnion(UnionDecl& decl);
+  void postProcessFunction(FunctionDecl& decl);
+  void postProcessMember(MemberDecl& decl);
+  void postProcessClass(ClassDecl& decl);
+  void postProcessProtocol(ProtocolDecl& decl);
+  void postProcessCategory(CategoryDecl& decl);
 
   void processEnumRefs();
   void processRecordRefs();
@@ -370,7 +372,7 @@ public:
   std::unordered_set<std::string> renamedProtocols;
   std::unordered_set<std::string> missingClasses;
 
-private:
+ private:
   bool _checkAvailability = false;
 
   std::unordered_map<std::string, EnumDecl> skippedEnums;
@@ -380,4 +382,4 @@ private:
   std::unordered_map<std::string, ProtocolDecl> skippedProtocols;
 };
 
-} // namespace metagen
+}  // namespace metagen

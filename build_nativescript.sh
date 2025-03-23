@@ -23,17 +23,17 @@ function to_bool() {
   esac;
 }
 
-BUILD_CATALYST=$(to_bool ${BUILD_CATALYST:=true})
+BUILD_CATALYST=$(to_bool ${BUILD_CATALYST:=false}) # disable by default for now
 BUILD_IPHONE=$(to_bool ${BUILD_IPHONE:=true})
 BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
-BUILD_VISION=$(to_bool ${BUILD_VISION:=true})
-BUILD_MACOS=$(to_bool ${BUILD_MACOS:=true})
+BUILD_VISION=$(to_bool ${BUILD_VISION:=false}) # disable by default for now
+BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false}) # disable by default for now
 VERBOSE=$(to_bool ${VERBOSE:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebugInfo
 CONFIG_SIMPLE=Debug
 
-TARGET_ENGINE=${TARGET_ENGINE:=none}
+TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 METADATA_SIZE=${METADATA_SIZE:=0}
 
 for arg in $@; do

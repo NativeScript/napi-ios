@@ -1,7 +1,7 @@
 #ifndef REQUIRE_H
 #define REQUIRE_H
 
-#include "js_native_api.h"
+#include "js_native_api_types.h"
 #include <string>
 
 class Require {

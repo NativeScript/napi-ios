@@ -2,6 +2,7 @@
 
 #include "Runtime.h"
 
+#include "RuntimeConfig.h"
 #include "js_native_api_types.h"
 #include "jsr.h"
 #include "jsr_common.h"
@@ -67,17 +68,28 @@ Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
   napi_get_global(env, &global);
   napi_set_named_property(env, global, "global", global);
 
-#ifdef TARGET_ENGINE_V8
-  const char *WeakRefCompatScript = R"(
-    WeakRef.prototype.get = function() {
+  const char* CompatScript = R"(
+    if (!WeakRef.prototype.get) WeakRef.prototype.get = function() {
       return this.deref();
     };
+
+    if (!globalThis.__collect) {
+      globalThis.__collect = function() {
+        gc();
+      };
+    }
+
+    if (!globalThis.gc) {
+      globalThis.gc = function() {
+        console.warn('gc() is not exposed');
+      };
+    }
   )";
 
-  napi_value weakRefCompatScript, result;
-  napi_create_string_utf8(env, WeakRefCompatScript, NAPI_AUTO_LENGTH, &weakRefCompatScript);
-  napi_run_script(env, weakRefCompatScript, &result);
-#endif  // TARGET_ENGINE_V8
+  napi_value compatScript, result;
+  napi_create_string_utf8(env, CompatScript, NAPI_AUTO_LENGTH,
+                          &compatScript);
+  napi_run_script(env, compatScript, &result);
 
   Console::init(env);
   Performance::init(env);
@@ -87,18 +99,18 @@ Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
 
   require = Require::init(env, mainPath, mainPath);
 
-  const char* metadata_path = std::getenv("METADATA_PATH");
-  objc_bridge_init(env, metadata_path);
+  const char* metadata_path = std::getenv("NS_METADATA_PATH");
+  objc_bridge_init(env, metadata_path, RuntimeConfig.MetadataPtr);
 
 #ifdef __APPLE__
   App* app = App::init(env);
   // app->runtime = this->runtime;
-#endif // __APPLE__
+#endif  // __APPLE__
 
   napi_close_handle_scope(env, scope);
 }
 
-napi_value Runtime::evaluateModule(std::string &spec) {
+napi_value Runtime::evaluateModule(std::string& spec) {
   NapiScope scope(env);
   std::string path = require->resolve(spec);
   return require->require(env, path);

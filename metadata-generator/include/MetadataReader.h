@@ -7,9 +7,8 @@ namespace metagen {
 typedef char MDHeaderMagic[MD_HEADER_MAGIC_SIZE];
 
 class MDMetadataReader {
-public:
-  void *data;
-  size_t size;
+ public:
+  void* data;
 
   MDSectionOffset stringsOffset;
   MDSectionOffset constantsOffset;
@@ -21,7 +20,7 @@ public:
   MDSectionOffset structsOffset;
   MDSectionOffset unionsOffset;
 
-  MDMetadataReader(void *data, size_t size) : data(data), size(size) {
+  MDMetadataReader(void* data) : data(data) {
     MDHeaderMagic magic;
     memcpy(magic, data, MD_HEADER_MAGIC_SIZE);
     if (memcmp(magic, MD_HEADER_MAGIC, MD_HEADER_MAGIC_SIZE) != 0) {
@@ -40,64 +39,64 @@ public:
 
     stringsOffset =
         MD_HEADER_SIZE + sizeof(MDSectionOffset) * (MD_NUM_SECTIONS - 1);
-    constantsOffset = *(MDSectionOffset *)data;
+    constantsOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    enumsOffset = *(MDSectionOffset *)data;
+    enumsOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    signaturesOffset = *(MDSectionOffset *)data;
+    signaturesOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    functionsOffset = *(MDSectionOffset *)data;
+    functionsOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    protocolsOffset = *(MDSectionOffset *)data;
+    protocolsOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    classesOffset = *(MDSectionOffset *)data;
+    classesOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    structsOffset = *(MDSectionOffset *)data;
+    structsOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
-    unionsOffset = *(MDSectionOffset *)data;
+    unionsOffset = *(MDSectionOffset*)data;
     ptr_add(&data, sizeof(MDSectionOffset));
   }
 
-  inline char *resolveString(MDSectionOffset offset) {
-    return (char *)data + stringsOffset + offset;
+  inline char* resolveString(MDSectionOffset offset) {
+    return (char*)data + stringsOffset + offset;
   }
 
   inline MDSectionOffset getOffset(MDSectionOffset offset) {
-    return *(MDSectionOffset *)((char *)data + offset);
+    return *(MDSectionOffset*)((char*)data + offset);
   }
 
-  inline char *getString(MDSectionOffset offset) {
+  inline char* getString(MDSectionOffset offset) {
     MDSectionOffset stringOffset = getOffset(offset);
     return resolveString(stringOffset);
   }
 
   inline MDTypeKind getTypeKind(MDSectionOffset offset) {
-    return *(MDTypeKind *)((char *)data + offset);
+    return *(MDTypeKind*)((char*)data + offset);
   }
 
   inline uint16_t getArraySize(MDSectionOffset offset) {
-    return *(uint16_t *)((char *)data + offset);
+    return *(uint16_t*)((char*)data + offset);
   }
 
   inline int64_t getEnumValue(MDSectionOffset offset) {
-    return *(int64_t *)((char *)data + offset);
+    return *(int64_t*)((char*)data + offset);
   }
 
   inline MDMemberFlag getMemberFlag(MDSectionOffset offset) {
-    return *(MDMemberFlag *)((char *)data + offset);
+    return *(MDMemberFlag*)((char*)data + offset);
   }
 
   inline MDVariableEvalKind getVariableEvalKind(MDSectionOffset offset) {
-    return *(MDVariableEvalKind *)((char *)data + offset);
+    return *(MDVariableEvalKind*)((char*)data + offset);
   }
 
   inline double getDouble(MDSectionOffset offset) {
-    return *(double *)((char *)data + offset);
+    return *(double*)((char*)data + offset);
   }
 
   inline int64_t getInt64(MDSectionOffset offset) {
-    return *(int64_t *)((char *)data + offset);
+    return *(int64_t*)((char*)data + offset);
   }
 };
 
-} // namespace metagen
+}  // namespace metagen

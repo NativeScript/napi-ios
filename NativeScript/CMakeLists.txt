@@ -44,7 +44,7 @@ elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(TARGET_PLATFORM_IOS TRUE)
   set(TARGET_PLATFORM_SIM TRUE)
   set(SDK_NAME "iphonesimulator")
-  set(CMAKE_OSX_ARCHITECTURES "arm64")
+  set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
   set(TARGET_PLATFORM_SPEC "ios-arm64_x86_64-simulator")
 
 elseif(TARGET_PLATFORM STREQUAL "macos")
@@ -173,6 +173,11 @@ if(ENABLE_JS_RUNTIME)
   elseif(TARGET_ENGINE_QUICKJS)
     set(MI_BUILD_OBJECT OFF)
     set(MI_OVERRIDE OFF)
+    set(MI_BUILD_SHARED OFF)
+    set(MI_BUILD_TESTS OFF)
+
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
+
     add_subdirectory(napi/quickjs/mimalloc-dev mimalloc)
 
     include_directories(

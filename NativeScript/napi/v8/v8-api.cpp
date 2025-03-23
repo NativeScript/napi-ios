@@ -354,10 +354,14 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
   }
 
   if (obj->IsFunction()) {
-    obj = obj->Get(context, v8::String::NewFromUtf8(env->isolate, "prototype")
+    auto newObj = obj->Get(context, v8::String::NewFromUtf8(env->isolate, "prototype")
                                 .ToLocalChecked())
               .ToLocalChecked()
               .As<v8::Object>();
+
+    if (!newObj->IsUndefined()) {
+      obj = newObj;
+    }
   }
 
   bool isInternalField = obj->InternalFieldCount() > 0;
@@ -375,7 +379,9 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
     auto pkey = v8::Private::ForApi(
         env->isolate,
         v8::String::NewFromUtf8(env->isolate, "napi_private").ToLocalChecked());
-    auto val = obj->GetPrivate(context, pkey).ToLocalChecked();
+    auto maybe_value = obj->GetPrivate(context, pkey);
+    CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe_value, napi_generic_failure);
+    v8::Local<v8::Value> val = maybe_value.ToLocalChecked();
     RETURN_STATUS_IF_FALSE(env, val->IsExternal(), napi_invalid_arg);
     reference =
         static_cast<v8impl::Reference*>(val.As<v8::External>()->Value());

@@ -5,31 +5,34 @@
 
 extern "C"
 
-#endif // __cplusplus
+#endif  // __cplusplus
 
-void objc_bridge_init(void *env, const char *metadata_path);
+    void
+    objc_bridge_init(void* env, const char* metadata_path, const void* metadata_ptr);
 
 #ifdef __OBJC__
 
 #import <Foundation/Foundation.h>
 
+__attribute__((visibility("default")))
 @interface Config : NSObject
 
-@property(nonatomic, retain) NSString *BaseDir;
-@property(nonatomic, retain) NSString *ApplicationPath;
-@property(nonatomic) void *MetadataPtr;
+@property(nonatomic, retain) NSString* BaseDir;
+@property(nonatomic, retain) NSString* ApplicationPath;
+@property(nonatomic) void* MetadataPtr;
 @property BOOL IsDebug;
 @property BOOL LogToSystemConsole;
 @property int ArgumentsCount;
-@property(nonatomic) char **Arguments;
+@property(nonatomic) char** Arguments;
 
 @end
 
+__attribute__((visibility("default")))
 @interface NativeScript : NSObject
 
-- (instancetype)initWithConfig:(Config *)config;
-- (void)runScriptString:(NSString *)script runLoop:(BOOL)runLoop;
-- (void)restartWithConfig:(Config *)config;
+- (instancetype)initWithConfig:(Config*)config;
+- (void)runScriptString:(NSString*)script runLoop:(BOOL)runLoop;
+- (void)restartWithConfig:(Config*)config;
 - (void)shutdownRuntime;
 
 /**
@@ -40,6 +43,6 @@ void objc_bridge_init(void *env, const char *metadata_path);
 
 @end
 
-#endif // __OBJC__
+#endif  // __OBJC__
 
 #endif /* NATIVESCRIPT_H */

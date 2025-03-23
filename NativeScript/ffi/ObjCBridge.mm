@@ -55,30 +55,35 @@ MDMetadataReader* loadMetadataFromFile(const char* metadata_path) {
   auto buffer = (uint8_t*)malloc(size);
   fread(buffer, 1, size, f);
   fclose(f);
-  return new MDMetadataReader(buffer, size);
+  return new MDMetadataReader(buffer);
 }
 
-ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path) {
+ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
+                                 const void* metadata_ptr) {
   napi_set_instance_data(env, this, finalize_bridge_data, nil);
 
   self_dl = dlopen(nullptr, RTLD_NOW);
 
+  if (metadata_ptr) {
+    metadata = new MDMetadataReader((void*)metadata_ptr);
+  } else {
 #ifdef EMBED_METADATA_SIZE
-  if (metadata_path != nullptr) {
-    metadata = loadMetadataFromFile(metadata_path);
-  } else {
-    metadata = new MDMetadataReader((void*)embedded_metadata, EMBED_METADATA_SIZE);
-  }
+    if (metadata_path != nullptr) {
+      metadata = loadMetadataFromFile(metadata_path);
+    } else {
+      metadata = new MDMetadataReader((void*)embedded_metadata, EMBED_METADATA_SIZE);
+    }
 #else
-  unsigned long segmentSize = 0;
-  auto segmentData = getsegmentdata((const mach_header_64*)_dyld_get_image_header(0),
-                                    "__objc_metadata", &segmentSize);
-  if (segmentData != nullptr) {
-    metadata = new MDMetadataReader(segmentData, segmentSize);
-  } else {
-    metadata = loadMetadataFromFile(metadata_path);
-  }
+    unsigned long segmentSize = 0;
+    auto segmentData = getsegmentdata((const mach_header_64*)_dyld_get_image_header(0),
+                                      "__objc_metadata", &segmentSize);
+    if (segmentData != nullptr) {
+      metadata = new MDMetadataReader(segmentData);
+    } else {
+      metadata = loadMetadataFromFile(metadata_path);
+    }
 #endif
+  }
 
   objc_autoreleasePool = objc_autoreleasePoolPush();
 }
@@ -143,7 +148,7 @@ NAPI_FUNCTION(init) {
     metadata_path = (char*)malloc(len + 1);
     napi_get_value_string_utf8(env, argv[0], (char*)metadata_path, len + 1, &len);
   }
-  objc_bridge_init(env, metadata_path);
+  objc_bridge_init(env, metadata_path, nullptr);
   return nullptr;
 }
 
@@ -153,10 +158,10 @@ NAPI_EXPORT NAPI_MODULE_REGISTER {
   return exports;
 }
 
-NAPI_EXPORT void objc_bridge_init(void* _env, const char* metadata_path) {
+NAPI_EXPORT void objc_bridge_init(void* _env, const char* metadata_path, const void* metadata_ptr) {
   napi_env env = (napi_env)_env;
 
-  ObjCBridgeState* bridgeState = new ObjCBridgeState(env, metadata_path);
+  ObjCBridgeState* bridgeState = new ObjCBridgeState(env, metadata_path, metadata_ptr);
 
   napi_value objc;
   napi_create_object(env, &objc);
@@ -201,6 +206,8 @@ NAPI_EXPORT void objc_bridge_init(void* _env, const char* metadata_path) {
                                                        }};
 
   napi_define_properties(env, global, 3, globalProperties);
+
+  setupObjCClassDecorator(env);
 
   initProxyFactory(env, bridgeState);
   initFastEnumeratorIteratorFactory(env, bridgeState);

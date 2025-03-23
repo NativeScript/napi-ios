@@ -1,18 +1,19 @@
 cmake_minimum_required(VERSION 3.15)
 
-set(NAME MetadataGenerator)
+set(NAME objc-metadata-generator)
 set(VERSION 0.1.0)
 
-project(${NAME} VERSION ${VERSION} LANGUAGES CXX)
+project(${NAME} VERSION ${VERSION} LANGUAGES OBJC CXX)
 
-set(CMAKE_C_FLAGS "-fobjective-c")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -target ${METADATA_BINARY_ARCH}-apple-darwin -fno-rtti")
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+if(NOT DEFINED METADATA_BINARY_ARCH)
+  set(METADATA_BINARY_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+endif(NOT DEFINED METADATA_BINARY_ARCH)
+
+# set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -20,6 +21,7 @@ include_directories(
 
 set(EXEC_SOURCE_FILES
   src/main.cpp
+  src/Umbrella.cpp
   src/IR/Category.cpp
   src/IR/Class.cpp
   src/IR/Enum.cpp
@@ -50,6 +52,14 @@ set(EXEC_SOURCE_FILES
   src/MetadataWriter/Writer.cpp
 )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+
 add_executable(
   ${NAME}
   ${EXEC_SOURCE_FILES}
@@ -66,3 +76,8 @@ target_link_libraries(
   PRIVATE
   clang
 )
+
+install(TARGETS ${NAME}
+  RUNTIME DESTINATION bin)
+
+configure_file(build-step-metadata-generator.py ${CMAKE_CURRENT_BINARY_DIR}/bin/build-step-metadata-generator.py COPYONLY)
