@@ -21,7 +21,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
 # Arguments
 
 set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C bridge")
-set(TARGET_ENGINE "hermes" CACHE STRING "Target JS engine for the NativeScript runtime")
+set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runtime")
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
 
 if(TARGET_PLATFORM STREQUAL "ios")
@@ -159,10 +159,12 @@ if(ENABLE_JS_RUNTIME)
     )
 
   elseif(TARGET_ENGINE_HERMES)
+    message(STATUS "Hermes engine detected")
+
     include_directories(
       napi/hermes
-      napi/hermes/hermes
-      napi/hermes/jsi
+      napi/hermes/include/hermes
+      napi/hermes/include/jsi
     )
 
     set(SOURCE_FILES

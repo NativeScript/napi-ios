@@ -2,11 +2,11 @@
 #include "js_native_api_types.h"
 #ifdef __APPLE__
 
-#include "Timers.h"
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
+#include "Timers.h"
 
-namespace charon {
+namespace nativescript {
 
 void Timers::init(napi_env env) {
   napi_value global, Performance, performance;
@@ -72,22 +72,19 @@ napi_value Timers::setTimeout(napi_env env, napi_callback_info cbinfo) {
   napi_ref callback;
   napi_create_reference(env, argv[0], 1, &callback);
 
-  NSTimer *timer = [NSTimer
+  NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
                     repeats:NO
-                      block:^(NSTimer *timer) {
+                      block:^(NSTimer* timer) {
                         napi_value global, callbackValue;
                         napi_get_global(env, &global);
                         napi_get_reference_value(env, callback, &callbackValue);
-                        napi_call_function(env, global, callbackValue, 0,
-                                           nullptr, nullptr);
+                        napi_call_function(env, global, callbackValue, 0, nullptr, nullptr);
                         napi_delete_reference(env, callback);
-                        objc_setAssociatedObject(timer, "callback", nil,
-                                                 OBJC_ASSOCIATION_ASSIGN);
+                        objc_setAssociatedObject(timer, "callback", nil, OBJC_ASSOCIATION_ASSIGN);
                       }];
 
-  objc_setAssociatedObject(timer, "callback", (id)callback,
-                           OBJC_ASSOCIATION_ASSIGN);
+  objc_setAssociatedObject(timer, "callback", (id)callback, OBJC_ASSOCIATION_ASSIGN);
 
   napi_value result;
   napi_create_int64(env, (int64_t)timer, &result);
@@ -110,19 +107,17 @@ napi_value Timers::setInterval(napi_env env, napi_callback_info cbinfo) {
   napi_ref callback;
   napi_create_reference(env, argv[0], 1, &callback);
 
-  NSTimer *timer = [NSTimer
+  NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
                     repeats:YES
-                      block:^(NSTimer *timer) {
+                      block:^(NSTimer* timer) {
                         napi_value global, callbackValue;
                         napi_get_global(env, &global);
                         napi_get_reference_value(env, callback, &callbackValue);
-                        napi_call_function(env, global, callbackValue, 0,
-                                           nullptr, nullptr);
+                        napi_call_function(env, global, callbackValue, 0, nullptr, nullptr);
                       }];
 
-  objc_setAssociatedObject(timer, "callback", (id)callback,
-                           OBJC_ASSOCIATION_ASSIGN);
+  objc_setAssociatedObject(timer, "callback", (id)callback, OBJC_ASSOCIATION_ASSIGN);
 
   napi_value result;
   napi_create_int64(env, (int64_t)timer, &result);
@@ -140,7 +135,7 @@ napi_value Timers::clearTimer(napi_env env, napi_callback_info cbinfo) {
   int64_t timer;
   napi_get_value_int64(env, argv[0], &timer);
 
-  NSTimer *t = (NSTimer *)timer;
+  NSTimer* t = (NSTimer*)timer;
   [t invalidate];
 
   napi_ref callback = (napi_ref)objc_getAssociatedObject(t, "callback");
@@ -151,6 +146,6 @@ napi_value Timers::clearTimer(napi_env env, napi_callback_info cbinfo) {
   return nullptr;
 }
 
-} // namespace charon
+}  // namespace nativescript
 
-#endif // __APPLE__
+#endif  // __APPLE__

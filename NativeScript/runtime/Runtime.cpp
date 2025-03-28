@@ -23,31 +23,9 @@
 
 #include "NativeScript.h"
 
-namespace charon {
+namespace nativescript {
 
-// class BytecodeBuffer : public facebook::jsi::Buffer {
-// public:
-//   BytecodeBuffer(const uint8_t *data, size_t length)
-//       : data_(data), length_(length) {}
-
-//   size_t size() const override { return length_; }
-//   const uint8_t *data() const override { return data_; }
-
-// private:
-//   const uint8_t *data_;
-//   size_t length_;
-// };
-
-Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
-  // hermes::vm::RuntimeConfig config =
-  //     hermes::vm::RuntimeConfig::Builder().withMicrotaskQueue(true).build();
-  // threadSafeRuntime = facebook::hermes::makeThreadSafeHermesRuntime(config);
-  // runtime =
-  //     (facebook::hermes::HermesRuntime
-  //     *)&threadSafeRuntime->getUnsafeRuntime();
-
-  // runtime->createNapiEnv(&env);
-
+Runtime::Runtime() {
   js_set_runtime_flags("");
 
   js_create_runtime(&runtime);
@@ -87,8 +65,7 @@ Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
   )";
 
   napi_value compatScript, result;
-  napi_create_string_utf8(env, CompatScript, NAPI_AUTO_LENGTH,
-                          &compatScript);
+  napi_create_string_utf8(env, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env, compatScript, &result);
 
   Console::init(env);
@@ -97,7 +74,7 @@ Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
   Timers::init(env);
 #endif  // __APPLE__
 
-  require = Require::init(env, mainPath, mainPath);
+  require = Require::init(env, RuntimeConfig.BaseDir, RuntimeConfig.BaseDir);
 
   const char* metadata_path = std::getenv("NS_METADATA_PATH");
   objc_bridge_init(env, metadata_path, RuntimeConfig.MetadataPtr);
@@ -110,96 +87,28 @@ Runtime::Runtime(std::string& mainPath) : mainPath(mainPath) {
   napi_close_handle_scope(env, scope);
 }
 
-napi_value Runtime::evaluateModule(std::string& spec) {
-  NapiScope scope(env);
-  std::string path = require->resolve(spec);
-  return require->require(env, path);
-}
-
-int Runtime::runScriptString(std::string& scriptSrc) {
+void Runtime::RunScript(std::string& scriptSrc) {
   NapiScope scope(env);
 
   napi_value script, result;
   napi_create_string_utf8(env, scriptSrc.c_str(), scriptSrc.length(), &script);
   js_execute_script(env, script, "<anonymous>", &result);
-
-  return 0;
 }
 
-int Runtime::executeJS(const char* sourceFile) {
+napi_value Runtime::RunModule(std::string spec) {
   NapiScope scope(env);
-
-  auto f = std::fopen(sourceFile, "r");
-  if (!f) {
-    std::cout << "Failed to open file: " << sourceFile << std::endl;
-    return 1;
-  }
-
-  auto source = std::string{};
-  auto buf = std::array<char, 1024>{};
-  while (auto n = std::fread(buf.data(), 1, buf.size(), f)) {
-    source.append(buf.data(), n);
-  }
-
-  std::fclose(f);
-
-  // auto buffer = std::make_shared<facebook::jsi::StringBuffer>(source);
-  // std::string sourceURL = sourceFile;
-
-  // auto result = runtime->evaluateJavaScript(buffer, sourceURL);
-
-  napi_value script, result;
-  napi_create_string_utf8(env, source.c_str(), source.length(), &script);
-  js_execute_script(env, script, sourceFile, &result);
-
-  return 0;
+  std::string path = require->resolve(spec);
+  return require->require(env, path);
 }
 
-int Runtime::executeBytecode(const uint8_t* data, size_t size) {
-  NapiScope scope(env);
-
-  // auto buffer = std::make_shared<BytecodeBuffer>(data, size);
-  // std::string sourceURL = "embedded-hbc";
-
-  // auto result = runtime->evaluateJavaScript(buffer, sourceURL);
-  // TODO implement this for v8
-
-  return 0;
+void Runtime::RunMainModule() {
+  napi_value result = RunModule("./");
 }
 
-bool Runtime::eventLoopStep() { return false; }
-
-void Runtime::addEventLoopToRunLoop(bool exitOnEmpty) {
-  auto handler =
-      ^void(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
-        if (activity == kCFRunLoopBeforeWaiting) {
-          bool moreWork = this->eventLoopStep();
-          if (moreWork) {
-            CFRunLoopWakeUp(CFRunLoopGetMain());
-          } else if (exitOnEmpty) {
-            CFRunLoopStop(CFRunLoopGetMain());
-          }
-        }
-      };
-
-  CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(
-      kCFAllocatorDefault, kCFRunLoopAllActivities, true, 0, handler);
-  CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopDefaultMode);
-}
-
-void Runtime::runRunLoop() {
-  // Why does this not stop?
-  // while (true) {
-  //   CFRunLoopRunResult result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0,
-  //   true); if (result == kCFRunLoopRunFinished || result ==
-  //   kCFRunLoopRunStopped) {
-  //     break;
-  //   }
-  // }
-
+void Runtime::RunLoop() {
   CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
 }
 
-}  // namespace charon
+}  // namespace nativescript
 
 #endif  // ENABLE_JS_RUNTIME

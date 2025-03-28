@@ -2,7 +2,7 @@
 #include "Runtime.h"
 #include "RuntimeConfig.h"
 
-using namespace charon;
+using namespace nativescript;
 
 @implementation Config
 

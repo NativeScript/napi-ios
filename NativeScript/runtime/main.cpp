@@ -1,23 +1,22 @@
 #ifdef ENABLE_JS_RUNTIME
 
-#include "Bundle.h"
-#include "Runtime.h"
-#include "segappend.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
-using namespace charon;
+#include "Bundle.h"
+#include "Runtime.h"
+#include "segappend.h"
 
-int main(int argc, char **argv) {
+using namespace nativescript;
+
+int main(int argc, char** argv) {
 #ifdef __APPLE__
   std::string bytecodePath = getBytecodePathFromBundle();
   if (!bytecodePath.empty()) {
     std::string bundlePath = getBundlePath();
 
     auto runtime = Runtime(bundlePath);
-
-    // runtime.addEventLoopToRunLoop(true);
 
     std::ifstream file(bytecodePath, std::ios::binary);
     if (!file.is_open()) {
@@ -30,7 +29,7 @@ int main(int argc, char **argv) {
     file.seekg(0, std::ios::beg);
 
     std::vector<uint8_t> data(size);
-    file.read((char *)data.data(), size);
+    file.read((char*)data.data(), size);
 
     file.close();
 
@@ -38,18 +37,18 @@ int main(int argc, char **argv) {
 
     return 0;
   }
-#endif // __APPLE__
+#endif  // __APPLE__
 
-  const uint8_t *segmentData;
+  const uint8_t* segmentData;
   size_t segmentSize;
-  auto status = segappend_load_segment("__charon_start", (void **)&segmentData,
-                                       &segmentSize);
+  auto status = segappend_load_segment("__nativescript_start",
+                                       (void**)&segmentData, &segmentSize);
 
   std::string cwd = std::filesystem::current_path().string();
 
   if (status == segappend_ok) {
     auto runtime = Runtime(cwd);
-    size_t bytecode_size = *(size_t *)segmentData;
+    size_t bytecode_size = *(size_t*)segmentData;
     segmentData += sizeof(size_t);
 
     runtime.addEventLoopToRunLoop(true);
@@ -72,14 +71,7 @@ int main(int argc, char **argv) {
 
   std::string cmd = argv[1];
 
-  if (cmd == "compile") {
-    if (argc < 4) {
-      std::cout << "Usage: " << argv[0] << " compile <js file> <output file>"
-                << std::endl;
-      return 1;
-    }
-    return compile(argv[0], argv[2], argv[3]);
-  } else if (cmd == "run") {
+  if (cmd == "run") {
     auto runtime = Runtime(cwd);
 
     runtime.addEventLoopToRunLoop(true);
@@ -87,10 +79,6 @@ int main(int argc, char **argv) {
     std::string spec = argv[2];
 
     runtime.evaluateModule(spec);
-    // if (code != 0) {
-    //   std::cout << "Failed to execute JS" << std::endl;
-    //   return code;
-    // }
 
     runtime.runRunLoop();
 
@@ -101,4 +89,4 @@ int main(int argc, char **argv) {
   }
 }
 
-#endif // ENABLE_JS_RUNTIME
+#endif  // ENABLE_JS_RUNTIME

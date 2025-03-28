@@ -1,7 +1,8 @@
 #include "Performance.h"
+
 #include "mach/mach_time.h"
 
-namespace charon {
+namespace nativescript {
 
 void Performance::init(napi_env env) {
   napi_value global, Performance, performance;
@@ -63,4 +64,4 @@ napi_value Performance::now(napi_env env, napi_callback_info cbinfo) {
   return result;
 }
 
-} // namespace charon
+}  // namespace nativescript

@@ -1,9 +1,11 @@
 #include "Console.h"
-#include "js_native_api_types.h"
+
 #include <iostream>
 #include <string>
 
-namespace charon {
+#include "js_native_api_types.h"
+
+namespace nativescript {
 
 void Console::init(napi_env env) {
   napi_value global, Console, console;
@@ -19,7 +21,7 @@ void Console::init(napi_env env) {
           .setter = nullptr,
           .value = nullptr,
           .attributes = napi_default,
-          .data = (void *)kConsoleStreamLog,
+          .data = (void*)kConsoleStreamLog,
       },
       {
           .utf8name = "error",
@@ -29,7 +31,7 @@ void Console::init(napi_env env) {
           .setter = nullptr,
           .value = nullptr,
           .attributes = napi_default,
-          .data = (void *)kConsoleStreamError,
+          .data = (void*)kConsoleStreamError,
       },
       {
           .utf8name = "warn",
@@ -39,7 +41,7 @@ void Console::init(napi_env env) {
           .setter = nullptr,
           .value = nullptr,
           .attributes = napi_default,
-          .data = (void *)kConsoleStreamWarn,
+          .data = (void*)kConsoleStreamWarn,
       },
   };
 
@@ -83,7 +85,7 @@ napi_value Console::constructor(napi_env env, napi_callback_info cbinfo) {
 napi_value Console::log(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 0;
   ConsoleStream stream;
-  void *data = nullptr;
+  void* data = nullptr;
 
   napi_get_cb_info(env, cbinfo, &argc, nullptr, nullptr, &data);
 
@@ -123,7 +125,7 @@ napi_value Console::log(napi_env env, napi_callback_info cbinfo) {
 
     size_t length = 0;
     napi_get_value_string_utf8(env, argstr, nullptr, 0, &length);
-    char *strbuf = (char *)malloc(length + 2);
+    char* strbuf = (char*)malloc(length + 2);
     napi_get_value_string_utf8(env, argstr, strbuf, length + 2, &length);
     strbuf[length] = i >= (argc - 1) ? '\0' : ' ';
     strbuf[length + 1] = '\0';
@@ -135,30 +137,30 @@ napi_value Console::log(napi_env env, napi_callback_info cbinfo) {
   std::string log;
   log += "[JS]";
   switch (stream) {
-  case kConsoleStreamLog:
-    // log += "LOG";
-    break;
-  case kConsoleStreamError:
-    log += " ERROR";
-    break;
-  case kConsoleStreamWarn:
-    log += " WARN";
-    break;
+    case kConsoleStreamLog:
+      // log += "LOG";
+      break;
+    case kConsoleStreamError:
+      log += " ERROR";
+      break;
+    case kConsoleStreamWarn:
+      log += " WARN";
+      break;
   }
   log += " ";
   log += string;
   log += "\n";
 
   switch (stream) {
-  case kConsoleStreamLog:
-    std::cout << log;
-    break;
-  case kConsoleStreamError:
-    std::cerr << log;
-    break;
-  case kConsoleStreamWarn:
-    std::cerr << log;
-    break;
+    case kConsoleStreamLog:
+      std::cout << log;
+      break;
+    case kConsoleStreamError:
+      std::cerr << log;
+      break;
+    case kConsoleStreamWarn:
+      std::cerr << log;
+      break;
   }
 
   napi_value undefined;
@@ -166,4 +168,4 @@ napi_value Console::log(napi_env env, napi_callback_info cbinfo) {
   return undefined;
 }
 
-} // namespace charon
+}  // namespace nativescript

@@ -3,7 +3,7 @@
 
 #include "js_native_api.h"
 
-namespace charon {
+namespace nativescript {
 
 enum ConsoleStream {
   kConsoleStreamLog,
@@ -12,7 +12,7 @@ enum ConsoleStream {
 };
 
 class Console {
-public:
+ public:
   static void init(napi_env env);
 
   static napi_value constructor(napi_env env, napi_callback_info cbinfo);
@@ -20,6 +20,6 @@ public:
   static napi_value log(napi_env env, napi_callback_info cbinfo);
 };
 
-} // namespace charon
+}  // namespace nativescript
 
-#endif // CONSOLE_H
+#endif  // CONSOLE_H

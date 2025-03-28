@@ -1,38 +1,43 @@
 #ifndef RUNTIME_H
 #define RUNTIME_H
 
+#include <CoreFoundation/CFRunLoop.h>
 #ifdef ENABLE_JS_RUNTIME
 
 #include "Require.h"
 #include "js_native_api_types.h"
 #include "jsr.h"
 
-namespace charon {
+namespace nativescript {
 
 class Runtime {
-public:
-  Runtime(std::string &mainPath);
+ public:
+  Runtime();
 
-  napi_value evaluateModule(std::string &spec);
-  int runScriptString(std::string &script);
-  int executeJS(const char *sourceFile);
-  int executeBytecode(const uint8_t *data, size_t size);
+  void Init(bool isWorker);
 
-  bool eventLoopStep();
-  void addEventLoopToRunLoop(bool exitOnEmpty = false);
-  void runRunLoop();
+  void RunScript(std::string& script);
+  napi_value RunModule(std::string spec);
+  void RunMainModule();
 
-  // std::unique_ptr<facebook::jsi::ThreadSafeRuntime> threadSafeRuntime;
-  // facebook::hermes::HermesRuntime *runtime;
+  void RunLoop();
+
+  int workerId;
+  CFRunLoopRef runtimeLoop;
+  double startTime;
+  double realtimeOrigin;
+
   napi_runtime runtime;
   napi_env env;
   napi_handle_scope globalScope;
-  std::string mainPath;
-  Require *require;
+  Require* require;
+
+  // std::shared_ptr<ConcurrentMap<int, std::shared_ptr<Caches::WorkerState>>>
+  //     workerCache_;
 };
 
-} // namespace charon
+}  // namespace nativescript
 
-#endif // ENABLE_JS_RUNTIME
+#endif  // ENABLE_JS_RUNTIME
 
-#endif // RUNTIME_H
+#endif  // RUNTIME_H

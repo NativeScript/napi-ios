@@ -3,10 +3,10 @@
 
 #include "js_native_api.h"
 
-namespace charon {
+namespace nativescript {
 
 class Performance {
-public:
+ public:
   static void init(napi_env env);
 
   static napi_value constructor(napi_env env, napi_callback_info cbinfo);
@@ -14,6 +14,6 @@ public:
   static napi_value now(napi_env env, napi_callback_info cbinfo);
 };
 
-} // namespace charon
+}  // namespace nativescript
 
-#endif // PERFORMANCE_H
+#endif  // PERFORMANCE_H
