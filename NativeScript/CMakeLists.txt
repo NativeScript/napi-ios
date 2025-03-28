@@ -161,8 +161,9 @@ if(ENABLE_JS_RUNTIME)
   elseif(TARGET_ENGINE_HERMES)
     include_directories(
       napi/hermes
-      napi/hermes/hermes
-      napi/hermes/jsi
+      napi/hermes/include
+      napi/hermes/include/hermes
+      napi/hermes/include/jsi
     )
 
     set(SOURCE_FILES
