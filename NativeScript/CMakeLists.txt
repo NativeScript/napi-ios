@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 3.15)
 
 # Metadata
 
-project(NativeScript)
+project(NativeScript CXX OBJCXX)
 
 set(NAME NativeScript)
 set(VERSION 0.1.0)
 set(BUNDLE_IDENTIFIER "org.nativescript.runtime")
-
-enable_language(OBJCXX)
 
 set(CMAKE_CXX_STANDARD 20)
 

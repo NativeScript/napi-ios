@@ -19,8 +19,6 @@
 #endif  // TARGET_ENGINE_V8
 #include <CoreFoundation/CFRunLoop.h>
 
-#include <iostream>
-
 #include "NativeScript.h"
 
 namespace nativescript {
@@ -68,19 +66,19 @@ Runtime::Runtime() {
   napi_create_string_utf8(env, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env, compatScript, &result);
 
-  Console::init(env);
-  Performance::init(env);
+  Console::Init(env);
+  Performance::Init(env);
 #ifdef __APPLE__
-  Timers::init(env);
+  Timers::Init(env);
 #endif  // __APPLE__
 
-  require = Require::init(env, RuntimeConfig.BaseDir, RuntimeConfig.BaseDir);
+  require = Require::Init(env, RuntimeConfig.BaseDir, RuntimeConfig.BaseDir);
 
   const char* metadata_path = std::getenv("NS_METADATA_PATH");
   objc_bridge_init(env, metadata_path, RuntimeConfig.MetadataPtr);
 
 #ifdef __APPLE__
-  App* app = App::init(env);
+  App* app = App::Init(env);
   // app->runtime = this->runtime;
 #endif  // __APPLE__
 
@@ -97,8 +95,8 @@ void Runtime::RunScript(std::string& scriptSrc) {
 
 napi_value Runtime::RunModule(std::string spec) {
   NapiScope scope(env);
-  std::string path = require->resolve(spec);
-  return require->require(env, path);
+  std::string path = require->Resolve(spec);
+  return require->RequireModule(env, path);
 }
 
 void Runtime::RunMainModule() {

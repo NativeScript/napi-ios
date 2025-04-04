@@ -6,7 +6,6 @@
 
 #include "Require.h"
 #include "js_native_api_types.h"
-#include "jsr.h"
 
 namespace nativescript {
 

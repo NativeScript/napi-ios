@@ -1,7 +1,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "js_native_api.h"
+#include "js_native_api_types.h"
 
 namespace nativescript {
 
@@ -13,11 +13,11 @@ enum ConsoleStream {
 
 class Console {
  public:
-  static void init(napi_env env);
+  static void Init(napi_env env);
 
-  static napi_value constructor(napi_env env, napi_callback_info cbinfo);
+  static napi_value Constructor(napi_env env, napi_callback_info cbinfo);
 
-  static napi_value log(napi_env env, napi_callback_info cbinfo);
+  static napi_value Log(napi_env env, napi_callback_info cbinfo);
 };
 
 }  // namespace nativescript

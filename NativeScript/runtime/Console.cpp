@@ -3,11 +3,11 @@
 #include <iostream>
 #include <string>
 
-#include "js_native_api_types.h"
+#include "js_native_api.h"
 
 namespace nativescript {
 
-void Console::init(napi_env env) {
+void Console::Init(napi_env env) {
   napi_value global, Console, console;
 
   napi_get_global(env, &global);
@@ -16,7 +16,7 @@ void Console::init(napi_env env) {
       {
           .utf8name = "log",
           .name = nullptr,
-          .method = log,
+          .method = Log,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -26,7 +26,7 @@ void Console::init(napi_env env) {
       {
           .utf8name = "error",
           .name = nullptr,
-          .method = log,
+          .method = Log,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -36,7 +36,7 @@ void Console::init(napi_env env) {
       {
           .utf8name = "warn",
           .name = nullptr,
-          .method = log,
+          .method = Log,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -45,7 +45,7 @@ void Console::init(napi_env env) {
       },
   };
 
-  napi_define_class(env, "Console", NAPI_AUTO_LENGTH, Console::constructor,
+  napi_define_class(env, "Console", NAPI_AUTO_LENGTH, Console::Constructor,
                     nullptr, 3, properties, &Console);
 
   napi_new_instance(env, Console, 0, nullptr, &console);
@@ -76,13 +76,13 @@ void Console::init(napi_env env) {
   napi_define_properties(env, global, 2, globalProperties);
 }
 
-napi_value Console::constructor(napi_env env, napi_callback_info cbinfo) {
+napi_value Console::Constructor(napi_env env, napi_callback_info cbinfo) {
   napi_value thisArg;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
   return thisArg;
 }
 
-napi_value Console::log(napi_env env, napi_callback_info cbinfo) {
+napi_value Console::Log(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 0;
   ConsoleStream stream;
   void* data = nullptr;

@@ -8,7 +8,7 @@
 
 namespace nativescript {
 
-void Timers::init(napi_env env) {
+void Timers::Init(napi_env env) {
   napi_value global, Performance, performance;
 
   napi_get_global(env, &global);
@@ -17,7 +17,7 @@ void Timers::init(napi_env env) {
       {
           .utf8name = "setTimeout",
           .name = nullptr,
-          .method = setTimeout,
+          .method = SetTimeout,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -27,7 +27,7 @@ void Timers::init(napi_env env) {
       {
           .utf8name = "setInterval",
           .name = nullptr,
-          .method = setInterval,
+          .method = SetInterval,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -37,7 +37,7 @@ void Timers::init(napi_env env) {
       {
           .utf8name = "clearTimeout",
           .name = nullptr,
-          .method = clearTimer,
+          .method = ClearTimer,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -47,7 +47,7 @@ void Timers::init(napi_env env) {
       {
           .utf8name = "clearInterval",
           .name = nullptr,
-          .method = clearTimer,
+          .method = ClearTimer,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -59,7 +59,7 @@ void Timers::init(napi_env env) {
   napi_define_properties(env, global, 4, properties);
 }
 
-napi_value Timers::setTimeout(napi_env env, napi_callback_info cbinfo) {
+napi_value Timers::SetTimeout(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 2;
   napi_value argv[2];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
@@ -94,7 +94,7 @@ napi_value Timers::setTimeout(napi_env env, napi_callback_info cbinfo) {
   return result;
 }
 
-napi_value Timers::setInterval(napi_env env, napi_callback_info cbinfo) {
+napi_value Timers::SetInterval(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 2;
   napi_value argv[2];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
@@ -127,7 +127,7 @@ napi_value Timers::setInterval(napi_env env, napi_callback_info cbinfo) {
   return result;
 }
 
-napi_value Timers::clearTimer(napi_env env, napi_callback_info cbinfo) {
+napi_value Timers::ClearTimer(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 1;
   napi_value argv[1];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);

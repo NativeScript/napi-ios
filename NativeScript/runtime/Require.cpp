@@ -9,7 +9,7 @@
 #include "NapiUtil.h"
 #include "js_native_api.h"
 
-napi_value Require::createRequire(napi_env env, std::string& path,
+napi_value Require::CreateRequire(napi_env env, std::string& path,
                                   std::string& tilde, Require** pRequire) {
   Require* require = new Require(path, tilde);
   if (pRequire) {
@@ -17,31 +17,31 @@ napi_value Require::createRequire(napi_env env, std::string& path,
   }
   napi_value result;
   napi_create_function(env, "require", NAPI_AUTO_LENGTH,
-                       Require::requireCallback, require, &result);
+                       Require::RequireCallback, require, &result);
   napi_ref ref;
   // napi_wrap(env, result, require, Require::finalize, nullptr, &ref);
-  napi_add_finalizer(env, result, require, Require::finalize, nullptr, &ref);
+  napi_add_finalizer(env, result, require, Require::Finalize, nullptr, &ref);
   return result;
 }
 
-Require* Require::init(napi_env env, std::string& path, std::string& tilde) {
+Require* Require::Init(napi_env env, std::string& path, std::string& tilde) {
   napi_value global;
   napi_get_global(env, &global);
 
   Require* out = nullptr;
-  napi_value require = createRequire(env, path, tilde, &out);
+  napi_value require = CreateRequire(env, path, tilde, &out);
 
   napi_set_named_property(env, global, "require", require);
 
   return out;
 }
 
-void Require::finalize(napi_env env, void* data, void* hint) {
+void Require::Finalize(napi_env env, void* data, void* hint) {
   Require* require = (Require*)data;
   delete require;
 }
 
-std::string Require::resolve(std::string& spec) {
+std::string Require::Resolve(std::string& spec) {
   if (spec.find("/") == 0) {
     return spec;
   }
@@ -85,8 +85,8 @@ void finalize_dlobject(napi_env env, void* finalize_data, void* finalize_hint) {
 
 typedef napi_value napi_module_register_fn(napi_env env, napi_value exports);
 
-napi_value Require::require(napi_env env, std::string& spec) {
-  std::string path = resolve(spec);
+napi_value Require::RequireModule(napi_env env, std::string spec) {
+  std::string path = Resolve(spec);
 
   if (path.ends_with(".node") || path.ends_with(".dylib") ||
       path.ends_with(".so")) {
@@ -181,7 +181,7 @@ napi_value Require::require(napi_env env, std::string& spec) {
 
   std::string dirname = path.substr(0, path.rfind("/"));
 
-  require = Require::createRequire(env, dirname, tilde);
+  require = Require::CreateRequire(env, dirname, tilde);
 
   napi_create_string_utf8(env, dirname.c_str(), NAPI_AUTO_LENGTH, &__dirname);
 
@@ -210,12 +210,12 @@ napi_value Require::require(napi_env env, std::string& spec) {
   return exports;
 }
 
-napi_value Require::requireCallback(napi_env env, napi_callback_info cbinfo) {
+napi_value Require::RequireCallback(napi_env env, napi_callback_info cbinfo) {
   napi_value arg;
   Require* require;
   size_t argc = 1;
   napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, (void**)&require);
   std::string spec = getStringValue(env, arg);
-  napi_value res = require->require(env, spec);
+  napi_value res = require->RequireModule(env, spec);
   return res;
 }

@@ -1,10 +1,11 @@
 #include "Performance.h"
 
+#include "js_native_api.h"
 #include "mach/mach_time.h"
 
 namespace nativescript {
 
-void Performance::init(napi_env env) {
+void Performance::Init(napi_env env) {
   napi_value global, Performance, performance;
 
   napi_get_global(env, &global);
@@ -13,7 +14,7 @@ void Performance::init(napi_env env) {
       {
           .utf8name = "now",
           .name = nullptr,
-          .method = now,
+          .method = Now,
           .getter = nullptr,
           .setter = nullptr,
           .value = nullptr,
@@ -23,7 +24,7 @@ void Performance::init(napi_env env) {
   };
 
   napi_define_class(env, "Performance", NAPI_AUTO_LENGTH,
-                    Performance::constructor, nullptr, 1, properties,
+                    Performance::Constructor, nullptr, 1, properties,
                     &Performance);
 
   napi_new_instance(env, Performance, 0, nullptr, &performance);
@@ -44,14 +45,14 @@ void Performance::init(napi_env env) {
   napi_define_properties(env, global, 1, globalProperties);
 }
 
-napi_value Performance::constructor(napi_env env, napi_callback_info cbinfo) {
+napi_value Performance::Constructor(napi_env env, napi_callback_info cbinfo) {
   napi_value thisArg;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
 
   return thisArg;
 }
 
-napi_value Performance::now(napi_env env, napi_callback_info cbinfo) {
+napi_value Performance::Now(napi_env env, napi_callback_info cbinfo) {
   uint64_t time = mach_absolute_time();
   mach_timebase_info_data_t timebase;
   mach_timebase_info(&timebase);

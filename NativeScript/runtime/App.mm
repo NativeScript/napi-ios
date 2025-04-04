@@ -1,6 +1,7 @@
 #ifdef __APPLE__
 
 #include "App.h"
+#include "js_native_api.h"
 
 #ifdef TARGET_OS_MAC
 
@@ -8,7 +9,7 @@
 
 #endif
 
-App *App::init(napi_env env) {
+App *App::Init(napi_env env) {
   App *appInst = new App();
 
   napi_value global, App, app;
@@ -18,13 +19,13 @@ App *App::init(napi_env env) {
   napi_create_object(env, &App);
   napi_set_named_property(env, global, "App", App);
 
-  napi_create_function(env, "run", NAPI_AUTO_LENGTH, run, appInst, &app);
+  napi_create_function(env, "run", NAPI_AUTO_LENGTH, Run, appInst, &app);
   napi_set_named_property(env, App, "run", app);
 
   return appInst;
 }
 
-napi_value App::run(napi_env env, napi_callback_info cbinfo) {
+napi_value App::Run(napi_env env, napi_callback_info cbinfo) {
   App *appInst = nullptr;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, (void **)&appInst);
 
