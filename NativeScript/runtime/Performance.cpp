@@ -2,13 +2,12 @@
 
 #include "js_native_api.h"
 #include "mach/mach_time.h"
+#include "native_api_util.h"
 
 namespace nativescript {
 
-void Performance::Init(napi_env env) {
-  napi_value global, Performance, performance;
-
-  napi_get_global(env, &global);
+JS_CLASS_INIT(Performance::Init) {
+  napi_value Performance, performance;
 
   const napi_property_descriptor properties[] = {
       {
@@ -45,14 +44,14 @@ void Performance::Init(napi_env env) {
   napi_define_properties(env, global, 1, globalProperties);
 }
 
-napi_value Performance::Constructor(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Performance::Constructor) {
   napi_value thisArg;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
 
   return thisArg;
 }
 
-napi_value Performance::Now(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Performance::Now) {
   uint64_t time = mach_absolute_time();
   mach_timebase_info_data_t timebase;
   mach_timebase_info(&timebase);

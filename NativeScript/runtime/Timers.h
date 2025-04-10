@@ -1,17 +1,17 @@
 #ifndef TIMERS_H
 #define TIMERS_H
 
-#include "js_native_api_types.h"
+#include "native_api_util.h"
 
 namespace nativescript {
 
 class Timers {
  public:
-  static void Init(napi_env env);
+  static JS_CLASS_INIT(Init);
 
-  static napi_value SetTimeout(napi_env env, napi_callback_info cbinfo);
-  static napi_value SetInterval(napi_env env, napi_callback_info cbinfo);
-  static napi_value ClearTimer(napi_env env, napi_callback_info cbinfo);
+  static JS_METHOD(SetTimeout);
+  static JS_METHOD(SetInterval);
+  static JS_METHOD(ClearTimer);
 };
 
 }  // namespace nativescript

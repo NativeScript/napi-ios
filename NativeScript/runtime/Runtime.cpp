@@ -66,10 +66,10 @@ Runtime::Runtime() {
   napi_create_string_utf8(env, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env, compatScript, &result);
 
-  Console::Init(env);
-  Performance::Init(env);
+  Console::Init(env, global);
+  Performance::Init(env, global);
 #ifdef __APPLE__
-  Timers::Init(env);
+  Timers::Init(env, global);
 #endif  // __APPLE__
 
   require = Require::Init(env, RuntimeConfig.BaseDir, RuntimeConfig.BaseDir);
@@ -99,13 +99,9 @@ napi_value Runtime::RunModule(std::string spec) {
   return require->RequireModule(env, path);
 }
 
-void Runtime::RunMainModule() {
-  napi_value result = RunModule("./");
-}
+void Runtime::RunMainModule() { napi_value result = RunModule("./"); }
 
-void Runtime::RunLoop() {
-  CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
-}
+void Runtime::RunLoop() { CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true); }
 
 }  // namespace nativescript
 

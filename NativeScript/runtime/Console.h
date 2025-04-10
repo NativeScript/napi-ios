@@ -1,23 +1,33 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "js_native_api_types.h"
+#include "native_api_util.h"
 
 namespace nativescript {
 
-enum ConsoleStream {
-  kConsoleStreamLog,
-  kConsoleStreamError,
-  kConsoleStreamWarn,
+enum ConsoleLogType {
+  kConsoleLogTypeLog,
+  kConsoleLogTypeError,
+  kConsoleLogTypeWarn,
+  kConsoleLogTypeInfo,
+  kConsoleLogTypeAssert,
 };
 
 class Console {
  public:
-  static void Init(napi_env env);
+  static JS_CLASS_INIT(Init);
 
-  static napi_value Constructor(napi_env env, napi_callback_info cbinfo);
+  static JS_METHOD(Constructor);
 
-  static napi_value Log(napi_env env, napi_callback_info cbinfo);
+  static JS_METHOD(Log);
+
+  static JS_METHOD(Time);
+
+  static JS_METHOD(TimeEnd);
+
+  static JS_METHOD(Dir);
+
+  static JS_METHOD(Trace);
 };
 
 }  // namespace nativescript

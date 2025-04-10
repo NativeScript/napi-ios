@@ -1,95 +1,86 @@
 #include "Console.h"
 
-#include <iostream>
+#include <sstream>
 #include <string>
 
 #include "js_native_api.h"
+#include "native_api_util.h"
+#include "runtime/RuntimeConfig.h"
+
+#ifdef __APPLE__
+#include <CoreFoundation/CFString.h>
+void NSLog(CFStringRef format, ...);
+#else
+#include <iostream>
+#endif
 
 namespace nativescript {
 
-void Console::Init(napi_env env) {
-  napi_value global, Console, console;
-
-  napi_get_global(env, &global);
+JS_CLASS_INIT(Console::Init) {
+  napi_value Console, console;
 
   const napi_property_descriptor properties[] = {
-      {
-          .utf8name = "log",
-          .name = nullptr,
-          .method = Log,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_default,
-          .data = (void*)kConsoleStreamLog,
-      },
-      {
-          .utf8name = "error",
-          .name = nullptr,
-          .method = Log,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_default,
-          .data = (void*)kConsoleStreamError,
-      },
-      {
-          .utf8name = "warn",
-          .name = nullptr,
-          .method = Log,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_default,
-          .data = (void*)kConsoleStreamWarn,
-      },
+      napi_util::desc("log", Log, (void*)kConsoleLogTypeLog),
+      napi_util::desc("error", Log, (void*)kConsoleLogTypeError),
+      napi_util::desc("warn", Log, (void*)kConsoleLogTypeWarn),
+      napi_util::desc("info", Log, (void*)kConsoleLogTypeInfo),
+      napi_util::desc("assert", Log, (void*)kConsoleLogTypeAssert),
+      napi_util::desc("time", Time, nullptr),
+      napi_util::desc("timeEnd", TimeEnd, nullptr),
+      napi_util::desc("dir", Dir, nullptr),
+      napi_util::desc("trace", Trace, nullptr),
   };
 
   napi_define_class(env, "Console", NAPI_AUTO_LENGTH, Console::Constructor,
-                    nullptr, 3, properties, &Console);
+                    nullptr, 9, properties, &Console);
 
   napi_new_instance(env, Console, 0, nullptr, &console);
 
   const napi_property_descriptor globalProperties[] = {
-      {
-          .utf8name = "console",
-          .name = nullptr,
-          .method = nullptr,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = console,
-          .attributes = napi_default,
-          .data = nullptr,
-      },
-      {
-          .utf8name = "Console",
-          .name = nullptr,
-          .method = nullptr,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = Console,
-          .attributes = napi_default,
-          .data = nullptr,
-      },
+      napi_util::desc("Console", Console),
+      napi_util::desc("console", console),
   };
 
   napi_define_properties(env, global, 2, globalProperties);
 }
 
-napi_value Console::Constructor(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Console::Constructor) {
   napi_value thisArg;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
   return thisArg;
 }
 
-napi_value Console::Log(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Console::Log) {
+  if (!RuntimeConfig.LogToSystemConsole) {
+    return UNDEFINED;
+  }
+
   size_t argc = 0;
-  ConsoleStream stream;
+  ConsoleLogType stream;
   void* data = nullptr;
 
   napi_get_cb_info(env, cbinfo, &argc, nullptr, nullptr, &data);
 
-  stream = ConsoleStream((unsigned long)data);
+  stream = ConsoleLogType((unsigned long)data);
+
+  size_t initialArg = 0;
+
+  if (stream == kConsoleLogTypeAssert) {
+    bool passes = false;
+
+    if (argc > 0) {
+      napi_value firstArg = nullptr;
+      napi_get_cb_info(env, cbinfo, &argc, &firstArg, nullptr, nullptr);
+      napi_coerce_to_bool(env, firstArg, &firstArg);
+      napi_get_value_bool(env, firstArg, &passes);
+    }
+
+    if (!passes) {
+      initialArg = 1;
+    } else {
+      return UNDEFINED;
+    }
+  }
 
   napi_value argv[argc];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
@@ -102,9 +93,31 @@ napi_value Console::Log(napi_env env, napi_callback_info cbinfo) {
                           &symbolDescription);
   napi_call_function(env, global, SymbolFor, 1, &symbolDescription, &symbol);
 
-  std::string string;
+  std::stringstream log;
 
-  for (size_t i = 0; i < argc; i++) {
+  // TODO(dj): what if we made this pretty?
+
+  log << "CONSOLE";
+  switch (stream) {
+    case kConsoleLogTypeLog:
+      log << " LOG";
+      break;
+    case kConsoleLogTypeError:
+      log << " ERROR";
+      break;
+    case kConsoleLogTypeWarn:
+      log << " WARN";
+      break;
+    case kConsoleLogTypeInfo:
+      log << " INFO";
+      break;
+    case kConsoleLogTypeAssert:
+      log << " ASSERT FAILED";
+      break;
+  }
+  log << ": ";
+
+  for (size_t i = initialArg; i < argc; i++) {
     napi_valuetype type;
     napi_typeof(env, argv[i], &type);
 
@@ -129,43 +142,55 @@ napi_value Console::Log(napi_env env, napi_callback_info cbinfo) {
     napi_get_value_string_utf8(env, argstr, strbuf, length + 2, &length);
     strbuf[length] = i >= (argc - 1) ? '\0' : ' ';
     strbuf[length + 1] = '\0';
-    string += strbuf;
+    log << strbuf;
+    free(strbuf);
   }
 
-  // TODO(dj): what if we made this pretty?
+  log << "\n";
 
-  std::string log;
-  log += "[JS]";
+  std::string logString = log.str();
+
+#ifdef __APPLE__
+  NSLog(CFSTR("%s"), logString.c_str());
+#else
   switch (stream) {
-    case kConsoleStreamLog:
-      // log += "LOG";
+    case kConsoleLogTypeLog:
+    case kConsoleLogTypeInfo:
+      std::cout << logString;
       break;
-    case kConsoleStreamError:
-      log += " ERROR";
-      break;
-    case kConsoleStreamWarn:
-      log += " WARN";
-      break;
-  }
-  log += " ";
-  log += string;
-  log += "\n";
-
-  switch (stream) {
-    case kConsoleStreamLog:
-      std::cout << log;
-      break;
-    case kConsoleStreamError:
-      std::cerr << log;
-      break;
-    case kConsoleStreamWarn:
-      std::cerr << log;
+    case kConsoleLogTypeError:
+    case kConsoleLogTypeWarn:
+    case kConsoleLogTypeAssert:
+      std::cerr << logString;
       break;
   }
+#endif
 
-  napi_value undefined;
-  napi_get_undefined(env, &undefined);
-  return undefined;
+  return UNDEFINED;
+}
+
+JS_METHOD(Console::Time) {
+  napi_value thisArg;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
+  return thisArg;
+}
+
+JS_METHOD(Console::TimeEnd) {
+  napi_value thisArg;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
+  return thisArg;
+}
+
+JS_METHOD(Console::Dir) {
+  napi_value thisArg;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
+  return thisArg;
+}
+
+JS_METHOD(Console::Trace) {
+  napi_value thisArg;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
+  return thisArg;
 }
 
 }  // namespace nativescript

@@ -1,17 +1,17 @@
 #ifndef PERFORMANCE_H
 #define PERFORMANCE_H
 
-#include "js_native_api_types.h"
+#include "native_api_util.h"
 
 namespace nativescript {
 
 class Performance {
  public:
-  static void Init(napi_env env);
+  static JS_CLASS_INIT(Init);
 
-  static napi_value Constructor(napi_env env, napi_callback_info cbinfo);
+  static JS_METHOD(Constructor);
 
-  static napi_value Now(napi_env env, napi_callback_info cbinfo);
+  static JS_METHOD(Now);
 };
 
 }  // namespace nativescript

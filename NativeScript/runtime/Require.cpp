@@ -6,8 +6,8 @@
 #include <iostream>
 #include <string>
 
-#include "NapiUtil.h"
 #include "js_native_api.h"
+#include "native_api_util.h"
 
 napi_value Require::CreateRequire(napi_env env, std::string& path,
                                   std::string& tilde, Require** pRequire) {
@@ -194,7 +194,7 @@ napi_value Require::RequireModule(napi_env env, std::string spec) {
     napi_get_and_clear_last_exception(env, &exception);
     napi_value stack;
     napi_get_named_property(env, exception, "stack", &stack);
-    std::string stackStr = getStringValue(env, stack);
+    std::string stackStr = napi_util::get_cxx_string(env, stack);
     std::cerr << "error in call function: " << stackStr << std::endl;
     return nullptr;
   } else if (status != napi_ok) {
@@ -215,7 +215,7 @@ napi_value Require::RequireCallback(napi_env env, napi_callback_info cbinfo) {
   Require* require;
   size_t argc = 1;
   napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, (void**)&require);
-  std::string spec = getStringValue(env, arg);
+  std::string spec = napi_util::get_cxx_string(env, arg);
   napi_value res = require->RequireModule(env, spec);
   return res;
 }

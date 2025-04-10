@@ -8,58 +8,18 @@
 
 namespace nativescript {
 
-void Timers::Init(napi_env env) {
-  napi_value global, Performance, performance;
-
-  napi_get_global(env, &global);
-
+JS_CLASS_INIT(Timers::Init) {
   const napi_property_descriptor properties[] = {
-      {
-          .utf8name = "setTimeout",
-          .name = nullptr,
-          .method = SetTimeout,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_configurable,
-          .data = nullptr,
-      },
-      {
-          .utf8name = "setInterval",
-          .name = nullptr,
-          .method = SetInterval,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_configurable,
-          .data = nullptr,
-      },
-      {
-          .utf8name = "clearTimeout",
-          .name = nullptr,
-          .method = ClearTimer,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_configurable,
-          .data = nullptr,
-      },
-      {
-          .utf8name = "clearInterval",
-          .name = nullptr,
-          .method = ClearTimer,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = nullptr,
-          .attributes = napi_configurable,
-          .data = nullptr,
-      },
+      napi_util::desc("setTimeout", SetTimeout),
+      napi_util::desc("setInterval", SetInterval),
+      napi_util::desc("clearTimeout", ClearTimer),
+      napi_util::desc("clearInterval", ClearTimer),
   };
 
   napi_define_properties(env, global, 4, properties);
 }
 
-napi_value Timers::SetTimeout(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Timers::SetTimeout) {
   size_t argc = 2;
   napi_value argv[2];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
@@ -94,7 +54,7 @@ napi_value Timers::SetTimeout(napi_env env, napi_callback_info cbinfo) {
   return result;
 }
 
-napi_value Timers::SetInterval(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Timers::SetInterval) {
   size_t argc = 2;
   napi_value argv[2];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
@@ -127,7 +87,7 @@ napi_value Timers::SetInterval(napi_env env, napi_callback_info cbinfo) {
   return result;
 }
 
-napi_value Timers::ClearTimer(napi_env env, napi_callback_info cbinfo) {
+JS_METHOD(Timers::ClearTimer) {
   size_t argc = 1;
   napi_value argv[1];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
