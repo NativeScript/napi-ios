@@ -1,6 +1,7 @@
 #include "CFunction.h"
 #include "ClassMember.h"
 #include "ObjCBridge.h"
+#include "ffi/NativeScriptException.h"
 
 namespace nativescript {
 
@@ -71,7 +72,15 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+  @try {
+    ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    NSLog(@"ObjC->JS: Exception in CFunction: %s", message.c_str());
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return nullptr;
+  }
 
   if (shouldFreeAny) {
     for (unsigned int i = 0; i < cif->argc; i++) {

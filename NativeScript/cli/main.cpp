@@ -1,10 +1,10 @@
-#include "ffi/NativeScriptException.h"
 #ifdef ENABLE_JS_RUNTIME
 
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
+#include "ffi/NativeScriptException.h"
 #include "runtime/Bundle.h"
 #include "runtime/Runtime.h"
 #include "runtime/RuntimeConfig.h"
@@ -31,8 +31,8 @@ void bootFromModuleSpec(std::string baseDir, std::string spec) {
   try {
     runtime.RunModule(spec);
   } catch (const nativescript::NativeScriptException& e) {
-    std::cerr << "Error running module: " << e.Description() << std::endl;
-    return;
+    std::cerr << "Uncaught Exception: " << e.Description() << std::endl;
+    std::exit(1);
   }
 
   runtime.RunLoop();

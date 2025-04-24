@@ -42,12 +42,7 @@ NativeScriptException::~NativeScriptException() {
   }
 }
 
-std::string NativeScriptException::Description() const {
-  std::stringstream ss;
-  ss << "NativeScriptException: " << this->message_ << std::endl;
-  ss << "StackTrace: " << this->stackTrace_ << std::endl;
-  return ss.str();
-}
+std::string NativeScriptException::Description() const { return this->fullMessage_; }
 
 void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
   NapiScope scope(env);
@@ -58,8 +53,12 @@ void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
     fullMessageStream << napi_util::get_cxx_string(
         env, napi_util::get_property(env, error, "fullMessage"));
   } else {
+#ifdef TARGET_ENGINE_V8
+    fullMessageStream << GetErrorStackTrace(env, error);
+#else
     fullMessageStream << GetErrorMessage(env, error);
     fullMessageStream << "\n at \n" << GetErrorStackTrace(env, error);
+#endif
   }
 
   // TODO: discardUncaughtJsExceptions
@@ -80,8 +79,12 @@ void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
 
       if (napi_util::is_of_type(env, result, napi_object)) {
         fullMessageStream << "\n\nError handler threw an error too:\n";
+#ifdef TARGET_ENGINE_V8
+        fullMessageStream << GetErrorStackTrace(env, result);
+#else
         fullMessageStream << GetErrorMessage(env, result);
         fullMessageStream << "\n at \n" << GetErrorStackTrace(env, result);
+#endif
       } else {
         fullMessageStream
             << "\n\nError handler threw an error too, but we couldn't get the error object";
@@ -91,15 +94,15 @@ void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
 
   std::string fullMessage = fullMessageStream.str();
 
-  NSLog(@"NativeScriptException: %s", fullMessage.c_str());
+  NSLog(@"NativeScriptException::OnUncaughtError: %s", fullMessage.c_str());
 
-  NSException* objcException = [NSException exceptionWithName:@(fullMessage.c_str())
-                                                       reason:nil
+  NSException* objcException = [NSException exceptionWithName:@"NativeScriptException"
+                                                       reason:@(fullMessage.c_str())
                                                      userInfo:@{@"sender" : @"onUncaughtError"}];
 
-  dispatch_async(dispatch_get_main_queue(), ^(void) {
-    @throw objcException;
-  });
+  // dispatch_async(dispatch_get_main_queue(), ^(void) {
+  @throw objcException;
+  // });
 }
 
 void NativeScriptException::ReThrowToJS(napi_env env) {
@@ -204,16 +207,21 @@ std::string NativeScriptException::GetFullMessage(napi_env env, napi_value error
     return jsExceptionMessage;
   }
 
-  std::stringstream ss;
-  ss << jsExceptionMessage;
-
   std::string stackTraceMessage = GetErrorStackTrace(env, error);
 
-  ss << std::endl << "StackTrace: " << std::endl << stackTraceMessage << std::endl;
+  std::stringstream ss;
+
+#ifdef TARGET_ENGINE_V8
+  ss << stackTraceMessage;
+#else
+  ss << jsExceptionMessage;
+
+  ss << std::endl << "StackTrace: " << std::endl << stackTraceMessage;
+#endif
 
   std::string loggedMessage = ss.str();
 
-  PrintErrorMessage(loggedMessage);
+  // PrintErrorMessage(loggedMessage);
 
   return loggedMessage;
 }

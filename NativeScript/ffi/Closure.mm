@@ -8,6 +8,7 @@
 #include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
+#include "jsr.h"
 #include "node_api_util.h"
 #include "objc/message.h"
 
@@ -22,7 +23,9 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
                             size_t argc, bool* done, void* ret) {
   napi_env env = closure->env;
 
-  napi_value result;
+  NapiScope scope(env);
+
+      napi_value result;
 
   napi_get_and_clear_last_exception(env, &result);
 

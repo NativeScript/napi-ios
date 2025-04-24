@@ -132,7 +132,7 @@ napi_value ModuleInternal::RequireCallback(napi_env env,
     e.ReThrowToJS(env);
   } catch (std::exception& e) {
     stringstream ss;
-    ss << "Error: c++ exception: " << e.what() << endl;
+    ss << "Error: C++ Exception: " << e.what() << endl;
     NativeScriptException nsEx(ss.str());
     nsEx.ReThrowToJS(env);
   } catch (...) {
@@ -147,7 +147,8 @@ napi_value ModuleInternal::Require(napi_env env, const std::string& moduleName,
                                    const std::string& callingModuleDirName) {
   auto isData = false;
 
-  auto moduleObj = LoadImpl(env, moduleName, callingModuleDirName, isData);
+  napi_value moduleObj =
+      LoadImpl(env, moduleName, callingModuleDirName, isData);
 
   if (isData) {
     assert(!napi_util::is_null_or_undefined(env, moduleObj));
@@ -180,7 +181,12 @@ napi_value ModuleInternal::RequireCallbackImpl(napi_env env,
   string moduleName = napi_util::get_cxx_string(env, argv[0]);
   string callingModuleDirName = napi_util::get_cxx_string(env, argv[1]);
 
-  return Require(env, moduleName, callingModuleDirName);
+  try {
+    return Require(env, moduleName, callingModuleDirName);
+  } catch (NativeScriptException& e) {
+    e.ReThrowToJS(env);
+    return nullptr;
+  }
 }
 
 napi_value ModuleInternal::RequireNativeCallback(napi_env env,
@@ -419,8 +425,6 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
       path = "lib" + moduleName;
     } else if (moduleName.ends_with(".node")) {
       std::string libName = moduleName;
-      // Util::ReplaceAll(libName, ".node", "");
-      // using c++
       libName.replace(libName.find(".node"), 5, "");
       path = "lib" + libName + ".so";
     } else {
