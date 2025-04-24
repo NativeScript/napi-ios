@@ -201,7 +201,7 @@ if $BUILD_MACOS_CLI; then
 
 checkpoint "Creating NativeScript CLI"
 
-cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript" "$DIST/ns"
+cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript" "$DIST/nsr"
 
 fi
 
