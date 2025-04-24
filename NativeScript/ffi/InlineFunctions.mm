@@ -1,9 +1,9 @@
 #include "InlineFunctions.h"
 #include "js_native_api.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
-static const char *inlineFunctionsSource = R"(
+static const char* inlineFunctionsSource = R"(
 
 globalThis.CGPointMake = globalThis.NSMakePoint = function CGMakePoint(x, y) {
   return { x, y };
@@ -29,9 +29,8 @@ globalThis.UIEdgeInsetsMake = function UIEdgeInsetsMake(top, left, bottom, right
 
 void registerInlineFunctions(napi_env env) {
   napi_value script, result;
-  napi_create_string_utf8(env, inlineFunctionsSource, NAPI_AUTO_LENGTH,
-                          &script);
+  napi_create_string_utf8(env, inlineFunctionsSource, NAPI_AUTO_LENGTH, &script);
   napi_run_script(env, script, &result);
 }
 
-} // namespace objc_bridge
+}  // namespace nativescript

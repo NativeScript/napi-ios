@@ -21,6 +21,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
 set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C bridge")
 set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runtime")
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
+set(BUILD_CLI_BINARY OFF CACHE BOOL "Build the NativeScript CLI binary")
 
 if(TARGET_PLATFORM STREQUAL "ios")
   set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "13.0")
@@ -70,8 +71,8 @@ elseif(TARGET_ENGINE STREQUAL "hermes")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_HERMES")
 elseif(TARGET_ENGINE STREQUAL "v8")
   set(TARGET_ENGINE_V8 TRUE)
-  add_link_options("-fuse-ld=/opt/homebrew/opt/llvm/bin/ld64.lld")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8")
+  add_link_options("-fuse-ld=lld")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8 -DV8_COMPRESS_POINTERS -DV8_ENABLE_SANDBOX")
 elseif(TARGET_ENGINE STREQUAL "quickjs")
   set(TARGET_ENGINE_QUICKJS TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_QUICKJS")
@@ -100,7 +101,6 @@ message(STATUS "ENABLE_JS_RUNTIME = ${ENABLE_JS_RUNTIME}")
 include_directories(
   ./
   ../metadata-generator/include
-  ada
   napi/common
   libffi/${LIBFFI_BUILD}/include
 )
@@ -126,20 +126,24 @@ set(SOURCE_FILES
   ffi/Interop.mm
   ffi/InlineFunctions.mm
   ffi/ClassBuilder.mm
+  ffi/NativeScriptException.mm
 )
 
 if(ENABLE_JS_RUNTIME)
   set(SOURCE_FILES
     ${SOURCE_FILES}
-    runtime/Console.cpp
+    runtime/modules/console/Console.cpp
     runtime/Runtime.cpp
-    runtime/Require.cpp
-    runtime/Performance.cpp
+    runtime/modules/module/ModuleInternal.cpp
+    runtime/modules/performance/Performance.cpp
     runtime/Bundle.mm
-    runtime/Timers.mm
-    runtime/App.mm
+    runtime/modules/timers/Timers.mm
+    runtime/modules/app/App.mm
     runtime/NativeScript.mm
     runtime/RuntimeConfig.cpp
+    runtime/modules/url/ada/ada.cpp
+    runtime/modules/url/URL.cpp
+    runtime/modules/url/URLSearchParams.cpp
   )
 
   if(TARGET_ENGINE_V8)
@@ -157,8 +161,6 @@ if(ENABLE_JS_RUNTIME)
     )
 
   elseif(TARGET_ENGINE_HERMES)
-    message(STATUS "Hermes engine detected")
-
     include_directories(
       napi/hermes
       napi/hermes/include/hermes
@@ -219,6 +221,13 @@ else()
   )
 endif()
 
+if(BUILD_CLI_BINARY)
+  set(SOURCE_FILES ${SOURCE_FILES}
+    cli/main.cpp
+    cli/segappend.cpp
+  )
+endif()
+
 # Find SDK
 
 find_program(XCODEBUILD_EXECUTABLE xcodebuild)
@@ -247,11 +256,15 @@ message(STATUS "SDK = ${CMAKE_OSX_SYSROOT}")
 
 # Build targets
 
-add_library(
-  ${NAME}
-  SHARED
-  ${SOURCE_FILES}
-)
+if(BUILD_CLI_BINARY)
+  add_executable(${NAME} ${SOURCE_FILES})
+else()
+  add_library(
+    ${NAME}
+    SHARED
+    ${SOURCE_FILES}
+  )
+endif()
 
 target_sources(
   ${NAME}

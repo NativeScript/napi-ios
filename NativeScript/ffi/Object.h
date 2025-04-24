@@ -3,10 +3,10 @@
 
 #include "ObjCBridge.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
-void initProxyFactory(napi_env env, ObjCBridgeState *bridgeState);
+void initProxyFactory(napi_env env, ObjCBridgeState* bridgeState);
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* OBJECT_H */

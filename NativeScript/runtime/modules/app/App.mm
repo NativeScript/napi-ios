@@ -9,8 +9,8 @@
 
 #endif
 
-App *App::Init(napi_env env) {
-  App *appInst = new App();
+App* App::Init(napi_env env) {
+  App* appInst = new App();
 
   napi_value global, App, app;
 
@@ -26,16 +26,16 @@ App *App::Init(napi_env env) {
 }
 
 napi_value App::Run(napi_env env, napi_callback_info cbinfo) {
-  App *appInst = nullptr;
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, (void **)&appInst);
+  App* appInst = nullptr;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, (void**)&appInst);
 
-  #ifdef TARGET_OS_MAC
+#ifdef TARGET_OS_MAC
 
-  NSApplication *app = [NSApplication sharedApplication];
+  NSApplication* app = [NSApplication sharedApplication];
 
   [app finishLaunching];
 
-  NSEvent *event;
+  NSEvent* event;
 
   while (true) {
     event = [app nextEventMatchingMask:NSEventMaskAny
@@ -48,9 +48,9 @@ napi_value App::Run(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  #endif
+#endif
 
   return nullptr;
 }
 
-#endif // __APPLE__
+#endif  // __APPLE__

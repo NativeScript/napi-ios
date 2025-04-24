@@ -1,12 +1,13 @@
+#include "ffi/NativeScriptException.h"
 #ifdef ENABLE_JS_RUNTIME
 
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
-#include "Bundle.h"
-#include "Runtime.h"
-#include "RuntimeConfig.h"
+#include "runtime/Bundle.h"
+#include "runtime/Runtime.h"
+#include "runtime/RuntimeConfig.h"
 #include "segappend.h"
 
 using namespace nativescript;
@@ -27,12 +28,19 @@ void bootFromModuleSpec(std::string baseDir, std::string spec) {
 
   auto runtime = Runtime();
 
-  runtime.RunModule(spec);
+  try {
+    runtime.RunModule(spec);
+  } catch (const nativescript::NativeScriptException& e) {
+    std::cerr << "Error running module: " << e.Description() << std::endl;
+    return;
+  }
 
   runtime.RunLoop();
 }
 
 int main(int argc, char** argv) {
+  RuntimeConfig.LogToSystemConsole = true;
+
 #ifdef __APPLE__
   std::string bytecodePath = getBytecodePathFromBundle();
   if (!bytecodePath.empty()) {

@@ -354,10 +354,11 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
   }
 
   if (obj->IsFunction()) {
-    auto newObj = obj->Get(context, v8::String::NewFromUtf8(env->isolate, "prototype")
-                                .ToLocalChecked())
-              .ToLocalChecked()
-              .As<v8::Object>();
+    auto newObj =
+        obj->Get(context, v8::String::NewFromUtf8(env->isolate, "prototype")
+                              .ToLocalChecked())
+            .ToLocalChecked()
+            .As<v8::Object>();
 
     if (!newObj->IsUndefined()) {
       obj = newObj;
@@ -3730,7 +3731,11 @@ napi_status napi_create_host_object(napi_env env, napi_value value,
 
   // Set the prototype of the host object to the prototype of the value
   v8::Local<v8::Object> valueObject = v8Value.As<v8::Object>();
-  hostObject->SetPrototype(context, valueObject->GetPrototype());
+  if (!hostObject->SetPrototype(context, valueObject->GetPrototype())
+           .FromMaybe(false)) {
+    napi_throw_error(env, nullptr, "Failed to set prototype");
+    return napi_generic_failure;
+  }
 
   v8::Local<v8::String> superPropertyName =
       v8::String::NewFromUtf8(isolate, "super").ToLocalChecked();

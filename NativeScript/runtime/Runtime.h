@@ -2,9 +2,10 @@
 #define RUNTIME_H
 
 #include <CoreFoundation/CFRunLoop.h>
+
+#include "runtime/modules/RuntimeModules.h"
 #ifdef ENABLE_JS_RUNTIME
 
-#include "Require.h"
 #include "js_native_api_types.h"
 
 namespace nativescript {
@@ -15,7 +16,7 @@ class Runtime {
 
   void Init(bool isWorker);
 
-  void RunScript(std::string& script);
+  void RunScript(std::string& script, std::string file = "<anonymous>");
   napi_value RunModule(std::string spec);
   void RunMainModule();
 
@@ -29,7 +30,7 @@ class Runtime {
   napi_runtime runtime;
   napi_env env;
   napi_handle_scope globalScope;
-  Require* require;
+  RuntimeModules modules = RuntimeModules();
 
   // std::shared_ptr<ConcurrentMap<int, std::shared_ptr<Caches::WorkerState>>>
   //     workerCache_;

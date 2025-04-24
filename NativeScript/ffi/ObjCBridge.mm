@@ -32,7 +32,7 @@ embedded_metadata[EMBED_METADATA_SIZE] = "NSMDSectionHeaderX86";
 #endif
 #endif
 
-namespace objc_bridge {
+namespace nativescript {
 
 void finalize_bridge_data(napi_env env, void* data, void* hint) {
   auto bridgeState = (ObjCBridgeState*)data;
@@ -71,7 +71,7 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
     if (metadata_path != nullptr) {
       metadata = loadMetadataFromFile(metadata_path);
     } else {
-      metadata = new MDMetadataReader((void*)embedded_metadata, EMBED_METADATA_SIZE);
+      metadata = new MDMetadataReader((void*)embedded_metadata);
     }
 #else
     unsigned long segmentSize = 0;
@@ -120,9 +120,9 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   return result;
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript
 
-using namespace objc_bridge;
+using namespace nativescript;
 
 NAPI_FUNCTION(getArrayBuffer) {
   NAPI_CALLBACK_BEGIN(2)
@@ -148,7 +148,7 @@ NAPI_FUNCTION(init) {
     metadata_path = (char*)malloc(len + 1);
     napi_get_value_string_utf8(env, argv[0], (char*)metadata_path, len + 1, &len);
   }
-  objc_bridge_init(env, metadata_path, nullptr);
+  nativescript_init(env, metadata_path, nullptr);
   return nullptr;
 }
 
@@ -158,7 +158,8 @@ NAPI_EXPORT NAPI_MODULE_REGISTER {
   return exports;
 }
 
-NAPI_EXPORT void objc_bridge_init(void* _env, const char* metadata_path, const void* metadata_ptr) {
+NAPI_EXPORT void nativescript_init(void* _env, const char* metadata_path,
+                                   const void* metadata_ptr) {
   napi_env env = (napi_env)_env;
 
   ObjCBridgeState* bridgeState = new ObjCBridgeState(env, metadata_path, metadata_ptr);

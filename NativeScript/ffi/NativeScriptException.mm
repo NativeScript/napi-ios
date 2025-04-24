@@ -1,0 +1,221 @@
+#include "NativeScriptException.h"
+#import <Foundation/Foundation.h>
+#include <sstream>
+#include "js_native_api.h"
+#include "js_native_api_types.h"
+#include "jsr.h"
+#include "native_api_util.h"
+#include "runtime/Runtime.h"
+
+namespace nativescript {
+
+NativeScriptException::NativeScriptException(const std::string& message) {
+  this->javascriptException_ = nullptr;
+  this->message_ = message;
+  this->name_ = "NativeScriptException";
+}
+
+NativeScriptException::NativeScriptException(const std::string& message,
+                                             const std::string& stackTrace) {
+  this->javascriptException_ = nullptr;
+  this->message_ = message;
+  this->stackTrace_ = stackTrace;
+  this->name_ = "NativeScriptException";
+}
+
+NativeScriptException::NativeScriptException(napi_env env, napi_value error,
+                                             const std::string& message, const std::string& name) {
+  this->env_ = env;
+  this->javascriptException_ = nullptr;
+  napi_create_reference(env, error, 1, &this->javascriptException_);
+  this->message_ = GetErrorMessage(env, error, message);
+  this->stackTrace_ = GetErrorStackTrace(env, error);
+  this->fullMessage_ = GetFullMessage(env, error, this->message_);
+  this->name_ = name;
+  napi_set_named_property(env, error, "name", napi_util::to_js_string(env, name));
+}
+
+NativeScriptException::~NativeScriptException() {
+  if (this->javascriptException_ != nullptr) {
+    napi_delete_reference(this->env_, this->javascriptException_);
+    this->javascriptException_ = nullptr;
+  }
+}
+
+std::string NativeScriptException::Description() const {
+  std::stringstream ss;
+  ss << "NativeScriptException: " << this->message_ << std::endl;
+  ss << "StackTrace: " << this->stackTrace_ << std::endl;
+  return ss.str();
+}
+
+void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
+  NapiScope scope(env);
+
+  std::stringstream fullMessageStream;
+
+  if (napi_util::has_property(env, error, "fullMessage")) {
+    fullMessageStream << napi_util::get_cxx_string(
+        env, napi_util::get_property(env, error, "fullMessage"));
+  } else {
+    fullMessageStream << GetErrorMessage(env, error);
+    fullMessageStream << "\n at \n" << GetErrorStackTrace(env, error);
+  }
+
+  // TODO: discardUncaughtJsExceptions
+
+  napi_value global;
+  napi_get_global(env, &global);
+
+  napi_value handler;
+  napi_get_named_property(env, global, "__onUncaughtError", &handler);
+
+  if (napi_util::is_of_type(env, handler, napi_function)) {
+    napi_value args[] = {error};
+    napi_value result;
+    napi_status status = napi_call_function(env, global, handler, 1, args, &result);
+
+    if (status != napi_ok) {
+      napi_get_and_clear_last_exception(env, &result);
+
+      if (napi_util::is_of_type(env, result, napi_object)) {
+        fullMessageStream << "\n\nError handler threw an error too:\n";
+        fullMessageStream << GetErrorMessage(env, result);
+        fullMessageStream << "\n at \n" << GetErrorStackTrace(env, result);
+      } else {
+        fullMessageStream
+            << "\n\nError handler threw an error too, but we couldn't get the error object";
+      }
+    }
+  }
+
+  std::string fullMessage = fullMessageStream.str();
+
+  NSLog(@"NativeScriptException: %s", fullMessage.c_str());
+
+  NSException* objcException = [NSException exceptionWithName:@(fullMessage.c_str())
+                                                       reason:nil
+                                                     userInfo:@{@"sender" : @"onUncaughtError"}];
+
+  dispatch_async(dispatch_get_main_queue(), ^(void) {
+    @throw objcException;
+  });
+}
+
+void NativeScriptException::ReThrowToJS(napi_env env) {
+  napi_value errObj;
+
+  if (javascriptException_ != nullptr) {
+    napi_get_reference_value(env, javascriptException_, &errObj);
+    if (napi_util::is_of_type(env, errObj, napi_object)) {
+      if (!fullMessage_.empty()) {
+        napi_set_named_property(env, errObj, "fullMessage",
+                                napi_util::to_js_string(env, fullMessage_));
+      } else if (!message_.empty()) {
+        napi_set_named_property(env, errObj, "fullMessage", napi_util::to_js_string(env, message_));
+      }
+    }
+  } else if (!fullMessage_.empty()) {
+    napi_create_error(env, napi_util::to_js_string(env, name_),
+                      napi_util::to_js_string(env, fullMessage_), &errObj);
+  } else if (!message_.empty()) {
+    napi_create_error(env, napi_util::to_js_string(env, name_),
+                      napi_util::to_js_string(env, message_), &errObj);
+  } else {
+    napi_create_error(env, napi_util::to_js_string(env, name_),
+                      napi_util::to_js_string(env, "No javascript exception or message provided."),
+                      &errObj);
+  }
+
+  napi_throw(env, errObj);
+}
+
+void NativeScriptException::PrintErrorMessage(const std::string& errorMessage) {
+  std::stringstream ss(errorMessage);
+  std::string line;
+  while (std::getline(ss, line, '\n')) {
+    NSLog(@"%s", line.c_str());
+  }
+}
+
+std::string NativeScriptException::GetErrorMessage(napi_env env, napi_value error,
+                                                   const std::string& prependMessage) {
+  bool isError;
+  napi_is_error(env, error, &isError);
+
+  if (!isError) {
+    napi_value err;
+    napi_coerce_to_string(env, error, &err);
+    return napi_util::get_string_value(env, err);
+  }
+
+  napi_value message;
+  napi_get_named_property(env, error, "message", &message);
+
+  std::string mes = napi_util::get_string_value(env, message);
+
+  std::stringstream ss;
+
+  if (!prependMessage.empty()) {
+    ss << prependMessage << std::endl;
+  }
+
+  std::string errMessage;
+  bool hasFullErrorMessage = false;
+  napi_value fullMessage;
+  napi_get_named_property(env, error, "fullMessage", &fullMessage);
+  if (napi_util::is_of_type(env, fullMessage, napi_string)) {
+    hasFullErrorMessage = true;
+    errMessage = napi_util::get_string_value(env, fullMessage);
+    ss << errMessage;
+  }
+
+  if (!mes.empty()) {
+    if (hasFullErrorMessage) {
+      ss << std::endl;
+    }
+    ss << mes;
+  }
+
+  return ss.str();
+}
+
+std::string NativeScriptException::GetErrorStackTrace(napi_env env, napi_value error) {
+  std::stringstream ss;
+
+  bool isError;
+  napi_is_error(env, error, &isError);
+  if (!isError) return "";
+
+  napi_value stack;
+  napi_get_named_property(env, error, "stack", &stack);
+
+  std::string stackStr = napi_util::get_string_value(env, stack);
+  ss << stackStr;
+
+  return ss.str();
+}
+
+std::string NativeScriptException::GetFullMessage(napi_env env, napi_value error,
+                                                  const std::string& jsExceptionMessage) {
+  bool isError;
+  napi_is_error(env, error, &isError);
+  if (!isError) {
+    return jsExceptionMessage;
+  }
+
+  std::stringstream ss;
+  ss << jsExceptionMessage;
+
+  std::string stackTraceMessage = GetErrorStackTrace(env, error);
+
+  ss << std::endl << "StackTrace: " << std::endl << stackTraceMessage << std::endl;
+
+  std::string loggedMessage = ss.str();
+
+  PrintErrorMessage(loggedMessage);
+
+  return loggedMessage;
+}
+
+}  // namespace nativescript

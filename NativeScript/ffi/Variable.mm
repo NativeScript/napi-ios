@@ -3,7 +3,7 @@
 #include "ObjCBridge.h"
 #include "js_native_api.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 void ObjCBridgeState::registerVarGlobals(napi_env env, napi_value global) {
   auto offset = metadata->constantsOffset;
@@ -108,4 +108,4 @@ NAPI_FUNCTION(variableGetter) {
   return result;
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

@@ -3,10 +3,10 @@
 
 #include "js_native_api.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 napi_value defineObjectRefClass(napi_env env);
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* OBJECT_REF_H */

@@ -3,19 +3,19 @@
 
 #include "Cif.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 class CFunction {
-public:
+ public:
   static napi_value jsCall(napi_env env, napi_callback_info cbinfo);
 
-  CFunction(void *fnptr) : fnptr(fnptr) {}
+  CFunction(void* fnptr) : fnptr(fnptr) {}
   ~CFunction();
 
-  void *fnptr;
-  Cif *cif = nullptr;
+  void* fnptr;
+  Cif* cif = nullptr;
 };
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* C_FUNCTION_H */

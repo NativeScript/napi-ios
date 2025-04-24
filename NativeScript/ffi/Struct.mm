@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-namespace objc_bridge {
+namespace nativescript {
 
 void ObjCBridgeState::registerStructGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->structsOffset;
@@ -388,4 +388,4 @@ napi_value StructObject::fromNative(napi_env env, StructInfo* info, void* data, 
   return result;
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

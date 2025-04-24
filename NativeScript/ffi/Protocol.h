@@ -1,20 +1,21 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-#include "ClassMember.h"
-#include "MetadataReader.h"
-#include "node_api_util.h"
 #include <string>
 #include <unordered_set>
 
+#include "ClassMember.h"
+#include "MetadataReader.h"
+#include "node_api_util.h"
+
 using namespace metagen;
 
-namespace objc_bridge {
+namespace nativescript {
 
 NAPI_FUNCTION(protocolGetter);
 
 class ObjCProtocol {
-public:
+ public:
   static napi_value jsConstructor(napi_env env, napi_callback_info cbinfo);
 
   ObjCProtocol(napi_env env, MDSectionOffset offset);
@@ -26,9 +27,9 @@ public:
   napi_ref constructor;
   MDSectionOffset membersOffset;
   ObjCClassMemberMap members;
-  std::unordered_set<ObjCProtocol *> protocols;
+  std::unordered_set<ObjCProtocol*> protocols;
 };
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* PROTOCOL_H */

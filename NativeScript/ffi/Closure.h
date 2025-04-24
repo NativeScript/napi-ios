@@ -1,24 +1,25 @@
 #ifndef CLOSURE_H
 #define CLOSURE_H
 
+#include <string>
+#include <thread>
+
 #include "MetadataReader.h"
 #include "TypeConv.h"
 #include "ffi.h"
 #include "node_api_util.h"
 #include "objc/runtime.h"
-#include <string>
-#include <thread>
 
-namespace objc_bridge {
+namespace nativescript {
 
 class Closure {
-public:
+ public:
   static void callBlockFromMainThread(napi_env env, napi_value js_cb,
-                                      void *context, void *data);
+                                      void* context, void* data);
 
   Closure(std::string typeEncoding, bool isBlock);
-  Closure(MDMetadataReader *reader, MDSectionOffset offset,
-          bool isBlock = false, std::string *encoding = nullptr,
+  Closure(MDMetadataReader* reader, MDSectionOffset offset,
+          bool isBlock = false, std::string* encoding = nullptr,
           bool isMethod = false, bool isGetter = false, bool isSetter = false);
 
   ~Closure();
@@ -34,13 +35,13 @@ public:
   std::thread::id jsThreadId = std::this_thread::get_id();
 
   ffi_cif cif;
-  ffi_closure *closure;
-  void *fnptr;
+  ffi_closure* closure;
+  void* fnptr;
 
   std::shared_ptr<TypeConv> returnType;
   std::vector<std::shared_ptr<TypeConv>> argTypes;
 };
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* CLOSURE_H */

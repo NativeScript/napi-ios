@@ -127,6 +127,18 @@ inline std::string get_cxx_string(napi_env env, napi_value str) {
   return result;
 }
 
+inline napi_value to_js_string(napi_env env, const std::string& str) {
+  napi_value js_string;
+  napi_create_string_utf8(env, str.c_str(), str.length(), &js_string);
+  return js_string;
+}
+
+inline napi_value to_js_string(napi_env env, const char* str) {
+  napi_value js_string;
+  napi_create_string_utf8(env, str, strlen(str), &js_string);
+  return js_string;
+}
+
 inline napi_value undefined(napi_env env) {
   napi_value undefined;
   napi_get_undefined(env, &undefined);
@@ -188,6 +200,20 @@ inline char* get_string_value(napi_env env, napi_value str, size_t size = 0) {
   char* buffer = new char[str_size + 1];
   napi_get_value_string_utf8(env, str, buffer, str_size + 1, nullptr);
   return buffer;
+}
+
+inline bool has_property(napi_env env, napi_value object,
+                         const char* propertyName) {
+  bool result;
+  napi_has_named_property(env, object, propertyName, &result);
+  return result;
+}
+
+inline napi_value get_property(napi_env env, napi_value object,
+                               const char* propertyName) {
+  napi_value value;
+  napi_get_named_property(env, object, propertyName, &value);
+  return value;
 }
 
 inline napi_status define_property(

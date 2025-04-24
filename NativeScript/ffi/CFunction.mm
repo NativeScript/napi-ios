@@ -2,7 +2,7 @@
 #include "ClassMember.h"
 #include "ObjCBridge.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 void ObjCBridgeState::registerFunctionGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->functionsOffset;
@@ -90,4 +90,4 @@ CFunction::~CFunction() {
   }
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

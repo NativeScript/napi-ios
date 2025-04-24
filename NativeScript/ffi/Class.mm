@@ -13,7 +13,7 @@
 #import <Foundation/Foundation.h>
 #include <string>
 
-namespace objc_bridge {
+namespace nativescript {
 
 void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->classesOffset;
@@ -99,7 +99,7 @@ NAPI_FUNCTION(registerClass) {
   return nullptr;
 }
 
-const char *ObjCClassDecorator = R"(
+const char* ObjCClassDecorator = R"(
 globalThis.ObjCClass = function ObjCClass(...protocols) {
   return function (target) {
     if (target.ObjCProtocols) {
@@ -546,4 +546,4 @@ ObjCClass::~ObjCClass() {
   napi_delete_reference(env, prototype);
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

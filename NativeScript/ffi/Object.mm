@@ -11,8 +11,8 @@ static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationK
 
 @interface JSWrapperObjectAssociation : NSObject
 
-@property (nonatomic) napi_env env;
-@property (nonatomic) napi_ref ref;
+@property(nonatomic) napi_env env;
+@property(nonatomic) napi_ref ref;
 
 + (void)transferOwnership:(napi_env)env of:(napi_value)value toNative:(id)object;
 
@@ -34,9 +34,11 @@ static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationK
 }
 
 + (void)transferOwnership:(napi_env)env of:(napi_value)value toNative:(id)object {
-  napi_ref ref = objc_bridge::make_ref(env, value);
-  JSWrapperObjectAssociation *association = [[JSWrapperObjectAssociation alloc] initWithEnv:env ref:ref];
-  objc_setAssociatedObject(object, JSWrapperObjectAssociationKey, association, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  napi_ref ref = nativescript::make_ref(env, value);
+  JSWrapperObjectAssociation* association = [[JSWrapperObjectAssociation alloc] initWithEnv:env
+                                                                                        ref:ref];
+  objc_setAssociatedObject(object, JSWrapperObjectAssociationKey, association,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 + (instancetype)associationFor:(id)object {
@@ -56,16 +58,16 @@ napi_value JS_transferOwnershipToNative(napi_env env, napi_callback_info cbinfo)
   napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, nullptr);
 
   id obj = nil;
-  napi_unwrap(env, arg, (void **)&obj);
-  
+  napi_unwrap(env, arg, (void**)&obj);
+
   [JSWrapperObjectAssociation transferOwnership:env of:arg toNative:obj];
 
   return nullptr;
 }
 
-namespace objc_bridge {
+namespace nativescript {
 
-const char *nativeObjectProxySource = R"(
+const char* nativeObjectProxySource = R"(
   (function (object, isArray, transferOwnershipToNative) {
     let isTransfered = false;
 
@@ -105,26 +107,25 @@ const char *nativeObjectProxySource = R"(
   })
 )";
 
-void initProxyFactory(napi_env env, ObjCBridgeState *state) {
+void initProxyFactory(napi_env env, ObjCBridgeState* state) {
   napi_value script, result;
-  napi_create_string_utf8(env, nativeObjectProxySource, NAPI_AUTO_LENGTH,
-                          &script);
+  napi_create_string_utf8(env, nativeObjectProxySource, NAPI_AUTO_LENGTH, &script);
   napi_run_script(env, script, &result);
   state->createNativeProxy = make_ref(env, result);
 
   napi_value transferOwnershipToNative;
-  napi_create_function(env, "transferOwnershipToNative", NAPI_AUTO_LENGTH, JS_transferOwnershipToNative, nullptr, &transferOwnershipToNative);
+  napi_create_function(env, "transferOwnershipToNative", NAPI_AUTO_LENGTH,
+                       JS_transferOwnershipToNative, nullptr, &transferOwnershipToNative);
   state->transferOwnershipToNative = make_ref(env, transferOwnershipToNative);
 }
 
-void finalize_objc_object(napi_env /*env*/, void *data, void *hint) {
+void finalize_objc_object(napi_env /*env*/, void* data, void* hint) {
   id object = static_cast<id>(data);
-  ObjCBridgeState *bridgeState = static_cast<ObjCBridgeState *>(hint);
+  ObjCBridgeState* bridgeState = static_cast<ObjCBridgeState*>(hint);
   bridgeState->unregisterObject(object);
 }
 
-napi_value ObjCBridgeState::getObject(napi_env env, id obj,
-                                      napi_value constructor,
+napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value constructor,
                                       ObjectOwnership ownership) {
   if (obj == nil) {
     return nullptr;
@@ -142,7 +143,7 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj,
     unregisterObject(obj);
   }
 
-  JSWrapperObjectAssociation *association = [JSWrapperObjectAssociation associationFor:obj];
+  JSWrapperObjectAssociation* association = [JSWrapperObjectAssociation associationFor:obj];
   if (association != nil) {
     napi_value jsObject = get_ref_value(env, association.ref);
     [obj retain];
@@ -185,7 +186,7 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj,
 
     result = proxyNativeObject(env, result, obj);
 
-// #if DEBUG
+    // #if DEBUG
     // napi_value global, Error, error, stack;
     // napi_get_global(env, &global);
     // napi_get_named_property(env, global, "Error", &Error);
@@ -202,14 +203,14 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj,
     // dbglog([str UTF8String]);
 
     // delete[] stackStr;
-// #endif
+    // #endif
   }
 
   return result;
 }
 
-napi_value findConstructorForObject(napi_env env, ObjCBridgeState *bridgeState,
-                                    id object, Class cls = nil) {
+napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, id object,
+                                    Class cls = nil) {
   if (cls == nil) {
     cls = object_getClass(object);
   }
@@ -244,31 +245,29 @@ napi_value findConstructorForObject(napi_env env, ObjCBridgeState *bridgeState,
   {
     unsigned int count;
     auto protocols = class_copyProtocolList(cls, &count);
-    std::unordered_set<ObjCProtocol *> impls;
+    std::unordered_set<ObjCProtocol*> impls;
 
-    std::function<void(Protocol **, unsigned int)> processProtocolList =
-        [&](Protocol **list, unsigned int count) {
-          for (unsigned int i = 0; i < count; i++) {
-            auto protocol = list[i];
-            auto find = bridgeState->mdProtocolsByPointer.find(protocol);
-            if (find != bridgeState->mdProtocolsByPointer.end()) {
-              impls.insert(bridgeState->getProtocol(env, find->second));
-            }
-            list = protocol_copyProtocolList(protocol, &count);
-            processProtocolList(list, count);
-          }
-        };
+    std::function<void(Protocol**, unsigned int)> processProtocolList = [&](Protocol** list,
+                                                                            unsigned int count) {
+      for (unsigned int i = 0; i < count; i++) {
+        auto protocol = list[i];
+        auto find = bridgeState->mdProtocolsByPointer.find(protocol);
+        if (find != bridgeState->mdProtocolsByPointer.end()) {
+          impls.insert(bridgeState->getProtocol(env, find->second));
+        }
+        list = protocol_copyProtocolList(protocol, &count);
+        processProtocolList(list, count);
+      }
+    };
 
     processProtocolList(protocols, count);
 
     if (!impls.empty()) {
       napi_value constructor;
-      napi_define_class(env, class_getName(cls), NAPI_AUTO_LENGTH,
-                        ObjCProtocol::jsConstructor, nullptr, 0, nullptr,
-                        &constructor);
+      napi_define_class(env, class_getName(cls), NAPI_AUTO_LENGTH, ObjCProtocol::jsConstructor,
+                        nullptr, 0, nullptr, &constructor);
       for (auto impl : impls) {
-        ObjCClassMember::defineMembers(env, impl->members, impl->membersOffset,
-                                       constructor);
+        ObjCClassMember::defineMembers(env, impl->members, impl->membersOffset, constructor);
       }
 
       bridgeState->constructorsByPointer[cls] = make_ref(env, constructor);
@@ -289,10 +288,9 @@ napi_value findConstructorForObject(napi_env env, ObjCBridgeState *bridgeState,
 // Here we also ensure that the native object always points to the same
 // JS object, this makes sure that we only ever finalize it once.
 // Might want to consider using associated objects instead of a hashtable.
-napi_value
-ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership ownership,
-                           MDSectionOffset classOffset,
-                           std::vector<MDSectionOffset> *protocolOffsets) {
+napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership ownership,
+                                      MDSectionOffset classOffset,
+                                      std::vector<MDSectionOffset>* protocolOffsets) {
   NAPI_PREAMBLE
 
   if (obj == nullptr) {
@@ -324,9 +322,7 @@ ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership ownership,
 
   auto findByPointer = classesByPointer.find(cls);
   if (findByPointer != classesByPointer.end()) {
-    return getObject(env, obj,
-                     get_ref_value(env, findByPointer->second->constructor),
-                     ownership);
+    return getObject(env, obj, get_ref_value(env, findByPointer->second->constructor), ownership);
   }
 
   napi_value constructor = nullptr;
@@ -358,13 +354,14 @@ ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership ownership,
 }
 
 void ObjCBridgeState::unregisterObject(id object) noexcept {
-// #if DEBUG
-  // NSString *string = [NSString stringWithFormat: @"Unregistering object <%s: %p> @ %ld # success: %d, finalized: %d",
+  // #if DEBUG
+  // NSString *string = [NSString stringWithFormat: @"Unregistering object <%s: %p> @ %ld # success:
+  // %d, finalized: %d",
   //     class_getName(object_getClass(object)), object, [object retainCount],
   //     (int)objectRefs.contains(object), (int)finalized];
-  
+
   // dbglog([string UTF8String]);
-// #endif
+  // #endif
 
   if (objectRefs.contains(object)) {
     objectRefs.erase(object);
@@ -372,4 +369,4 @@ void ObjCBridgeState::unregisterObject(id object) noexcept {
   }
 }
 
-} // namespace objc_bridge
+}  // namespace nativescript

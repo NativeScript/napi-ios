@@ -1,32 +1,34 @@
-#ifndef OBJC_BRIDGE_H
-#define OBJC_BRIDGE_H
+#ifndef nativescript_H
+#define nativescript_H
+
+#include <dlfcn.h>
+#include <objc/runtime.h>
+#include <stdint.h>
+
+#include <map>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "AutoreleasePool.h"
 #include "CFunction.h"
+#include "Cif.h"
 #include "Class.h"
 #include "MetadataReader.h"
-#include "Cif.h"
+#include "NativeScript.h"
 #include "Protocol.h"
 #include "Struct.h"
 #include "TypeConv.h"
 #include "js_native_api.h"
-#include "NativeScript.h"
 #include "objc/runtime.h"
-#include <dlfcn.h>
-#include <map>
-#include <objc/runtime.h>
-#include <stdint.h>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
 
 extern "C" napi_value napi_register_module_v1(napi_env env, napi_value exports);
 
 using namespace metagen;
 
-namespace objc_bridge {
+namespace nativescript {
 
-void finalize_objc_object(napi_env /*env*/, void *data, void *hint);
+void finalize_objc_object(napi_env /*env*/, void* data, void* hint);
 
 // Determines how retain/release should be called when an Objective-C
 // object is exposed to JavaScript land.
@@ -41,13 +43,14 @@ typedef enum ObjectOwnership {
 } ObjectOwnership;
 
 class ObjCBridgeState {
-public:
-  ObjCBridgeState(napi_env env, const char *metadata_path = nullptr, const void *metadata_ptr = nullptr);
+ public:
+  ObjCBridgeState(napi_env env, const char* metadata_path = nullptr,
+                  const void* metadata_ptr = nullptr);
   ~ObjCBridgeState();
 
-  static inline ObjCBridgeState *InstanceData(napi_env env) {
-    ObjCBridgeState *bridgeState;
-    napi_status status = napi_get_instance_data(env, (void **)&bridgeState);
+  static inline ObjCBridgeState* InstanceData(napi_env env) {
+    ObjCBridgeState* bridgeState;
+    napi_status status = napi_get_instance_data(env, (void**)&bridgeState);
     if (status != napi_ok) {
       return nullptr;
     }
@@ -62,14 +65,14 @@ public:
   void registerClassGlobals(napi_env env, napi_value global);
   void registerProtocolGlobals(napi_env env, napi_value global);
 
-  ObjCClass *getClass(napi_env env, MDSectionOffset offset);
+  ObjCClass* getClass(napi_env env, MDSectionOffset offset);
 
-  ObjCProtocol *getProtocol(napi_env env, MDSectionOffset offset);
+  ObjCProtocol* getProtocol(napi_env env, MDSectionOffset offset);
 
-  Cif *getMethodCif(napi_env env, Method method);
-  Cif *getMethodCif(napi_env env, MDSectionOffset offset);
-  Cif *getBlockCif(napi_env env, MDSectionOffset offset);
-  Cif *getCFunctionCif(napi_env env, MDSectionOffset offset);
+  Cif* getMethodCif(napi_env env, Method method);
+  Cif* getMethodCif(napi_env env, MDSectionOffset offset);
+  Cif* getBlockCif(napi_env env, MDSectionOffset offset);
+  Cif* getCFunctionCif(napi_env env, MDSectionOffset offset);
 
   napi_value proxyNativeObject(napi_env env, napi_value object,
                                id nativeObject);
@@ -79,13 +82,13 @@ public:
   napi_value getObject(napi_env env, id object,
                        ObjectOwnership ownership = kUnownedObject,
                        MDSectionOffset classOffset = 0,
-                       std::vector<MDSectionOffset> *protocolOffsets = nullptr);
+                       std::vector<MDSectionOffset>* protocolOffsets = nullptr);
 
   void unregisterObject(id object) noexcept;
 
-  CFunction *getCFunction(napi_env env, MDSectionOffset offset);
+  CFunction* getCFunction(napi_env env, MDSectionOffset offset);
 
-  inline StructInfo *getStructInfo(napi_env env, MDSectionOffset offset) {
+  inline StructInfo* getStructInfo(napi_env env, MDSectionOffset offset) {
     auto cached = structInfoCache.find(offset);
     if (cached != structInfoCache.end()) {
       return cached->second;
@@ -97,7 +100,7 @@ public:
     return structInfo;
   }
 
-  inline StructInfo *getUnionInfo(napi_env env, MDSectionOffset offset) {
+  inline StructInfo* getUnionInfo(napi_env env, MDSectionOffset offset) {
     auto cached = structInfoCache.find(offset);
     if (cached != structInfoCache.end()) {
       return cached->second;
@@ -109,7 +112,7 @@ public:
     return structInfo;
   }
 
-public:
+ public:
   std::unordered_map<id, napi_ref> objectRefs;
 
   napi_ref pointerClass;
@@ -118,32 +121,32 @@ public:
   napi_ref createFastEnumeratorIterator;
   napi_ref transferOwnershipToNative;
 
-  std::unordered_map<MDSectionOffset, ObjCClass *> classes;
-  std::unordered_map<MDSectionOffset, ObjCProtocol *> protocols;
-  std::unordered_map<Class, ObjCClass *> classesByPointer;
+  std::unordered_map<MDSectionOffset, ObjCClass*> classes;
+  std::unordered_map<MDSectionOffset, ObjCProtocol*> protocols;
+  std::unordered_map<Class, ObjCClass*> classesByPointer;
   std::unordered_map<Class, MDSectionOffset> mdClassesByPointer;
-  std::unordered_map<Protocol *, MDSectionOffset> mdProtocolsByPointer;
+  std::unordered_map<Protocol*, MDSectionOffset> mdProtocolsByPointer;
   std::unordered_map<Class, napi_ref> constructorsByPointer;
 
-  std::unordered_map<std::string, Cif *> cifs;
+  std::unordered_map<std::string, Cif*> cifs;
   std::unordered_map<MDSectionOffset, napi_ref> mdValueCache;
-  std::unordered_map<MDSectionOffset, CFunction *> cFunctionCache;
-  std::unordered_map<MDSectionOffset, Cif *> mdFunctionSignatureCache;
-  std::unordered_map<MDSectionOffset, Cif *> mdMethodSignatureCache;
-  std::unordered_map<MDSectionOffset, Cif *> mdBlockSignatureCache;
+  std::unordered_map<MDSectionOffset, CFunction*> cFunctionCache;
+  std::unordered_map<MDSectionOffset, Cif*> mdFunctionSignatureCache;
+  std::unordered_map<MDSectionOffset, Cif*> mdMethodSignatureCache;
+  std::unordered_map<MDSectionOffset, Cif*> mdBlockSignatureCache;
   std::unordered_map<std::string, MDSectionOffset> structOffsets;
   std::unordered_map<std::string, MDSectionOffset> unionOffsets;
   // std::unordered_map<std::string, MDSectionOffset> protocolOffsets;
 
-  void *self_dl;
+  void* self_dl;
 
-  MDMetadataReader *metadata;
+  MDMetadataReader* metadata;
 
-private:
-  std::unordered_map<MDSectionOffset, StructInfo *> structInfoCache;
-  void *objc_autoreleasePool;
+ private:
+  std::unordered_map<MDSectionOffset, StructInfo*> structInfoCache;
+  void* objc_autoreleasePool;
 };
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
-#endif /* OBJC_BRIDGE_H */
+#endif /* nativescript_H */

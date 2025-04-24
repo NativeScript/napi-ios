@@ -6,10 +6,12 @@
 #include "js_native_api.h"
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"
+#include "runtime/Util.h"
+#include "v8-api.h"
 
 #ifdef __APPLE__
 #include <CoreFoundation/CFString.h>
-void NSLog(CFStringRef format, ...);
+extern "C" void NSLog(CFStringRef format, ...);
 #else
 #include <iostream>
 #endif
@@ -48,6 +50,75 @@ JS_METHOD(Console::Constructor) {
   napi_value thisArg;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
   return thisArg;
+}
+
+std::string transformJSObject(napi_env env, napi_value object) {
+  napi_value toStringFunc;
+  bool hasToString = false;
+
+  // Check if the object has a toString method
+  napi_has_named_property(env, object, "toString", &hasToString);
+  if (hasToString) {
+    napi_get_named_property(env, object, "toString", &toStringFunc);
+    if (napi_util::is_of_type(env, toStringFunc, napi_function)) {
+      napi_value result;
+      napi_call_function(env, object, toStringFunc, 0, nullptr, &result);
+      auto value = napi_util::get_cxx_string(env, result);
+      auto hasCustomToStringImplementation =
+          value.find("[object Object]") == std::string::npos;
+      if (hasCustomToStringImplementation) return value;
+    }
+  }
+  // If no custom toString method, stringify the object
+  return JsonStringifyObject(env, object, false);
+}
+
+std::string buildStringFromArg(napi_env env, napi_value val) {
+  napi_valuetype type;
+  napi_typeof(env, val, &type);
+
+  if (type == napi_function) {
+    napi_value funcString;
+    napi_coerce_to_string(env, val, &funcString);
+    return napi_util::get_string_value(env, funcString);
+  } else if (napi_util::is_array(env, val)) {
+    napi_value global;
+    napi_get_global(env, &global);
+    return JsonStringifyObject(env, val, false);
+  } else if (type == napi_object) {
+    return transformJSObject(env, val);
+  } else if (type == napi_symbol) {
+    napi_value symString;
+    napi_coerce_to_string(env, val, &symString);
+    return "Symbol(" + napi_util::get_cxx_string(env, symString) + ")";
+  } else {
+    napi_value defaultToString;
+    napi_coerce_to_string(env, val, &defaultToString);
+    return napi_util::get_string_value(env, defaultToString);
+  }
+}
+
+std::string buildLogString(napi_env env, napi_callback_info info,
+                           int startingIndex = 0) {
+  NAPI_CALLBACK_BEGIN_VARGS()
+
+  std::stringstream ss;
+
+  if (argc) {
+    for (size_t i = startingIndex; i < argc; i++) {
+      // separate args with a space
+      if (i != 0) {
+        ss << " ";
+      }
+
+      std::string argString = buildStringFromArg(env, argv[i]);
+      ss << argString;
+    }
+  } else {
+    ss << std::endl;
+  }
+
+  return ss.str();
 }
 
 JS_METHOD(Console::Log) {
@@ -166,6 +237,31 @@ JS_METHOD(Console::Log) {
   }
 #endif
 
+#ifdef TARGET_ENGINE_V8
+  v8_inspector::ConsoleAPIType method;
+  switch (stream) {
+    case kConsoleLogTypeLog:
+      method = v8_inspector::ConsoleAPIType::kLog;
+      break;
+    case kConsoleLogTypeError:
+      method = v8_inspector::ConsoleAPIType::kError;
+      break;
+    case kConsoleLogTypeWarn:
+      method = v8_inspector::ConsoleAPIType::kWarning;
+      break;
+    case kConsoleLogTypeInfo:
+      method = v8_inspector::ConsoleAPIType::kInfo;
+      break;
+    case kConsoleLogTypeAssert:
+      method = v8_inspector::ConsoleAPIType::kAssert;
+      break;
+    default:
+      break;
+  }
+
+  sendToDevToolsFrontEnd(env, method, logString);
+#endif
+
   return UNDEFINED;
 }
 
@@ -192,5 +288,47 @@ JS_METHOD(Console::Trace) {
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &thisArg, nullptr);
   return thisArg;
 }
+
+#ifdef TARGET_ENGINE_V8
+int Console::sendToDevToolsFrontEnd(napi_env env,
+                                    v8_inspector::ConsoleAPIType method,
+                                    napi_callback_info info) {
+  if (!m_callback) {
+    return 0;
+  }
+  NAPI_CALLBACK_BEGIN_VARGS()
+
+  v8::Local<v8::Value>* v8_args = reinterpret_cast<v8::Local<v8::Value>*>(
+      const_cast<napi_value*>(argv.data()));
+
+  std::vector<v8::Local<v8::Value>> arg_vector;
+  unsigned nargs = argc;
+  arg_vector.reserve(nargs);
+  for (unsigned ix = 0; ix < nargs; ix++) arg_vector.push_back(v8_args[ix]);
+
+  m_callback(env, method, arg_vector);
+  return 0;
+}
+
+void Console::sendToDevToolsFrontEnd(napi_env env,
+                                     v8_inspector::ConsoleAPIType method,
+                                     const std::string& message) {
+  if (!m_callback) {
+    return;
+  }
+
+  v8::Local<v8::Value> v8_message =
+      v8::String::NewFromUtf8(env->isolate, message.c_str(),
+                              v8::NewStringType::kNormal, message.length())
+          .ToLocalChecked();
+
+  std::vector<v8::Local<v8::Value>> args{
+      v8_message,
+  };
+  m_callback(env, method, args);
+}
+#endif
+
+ConsoleCallback Console::m_callback = nullptr;
 
 }  // namespace nativescript

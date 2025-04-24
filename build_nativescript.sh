@@ -29,9 +29,15 @@ BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
 BUILD_VISION=$(to_bool ${BUILD_VISION:=false}) # disable by default for now
 BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false}) # disable by default for now
 VERBOSE=$(to_bool ${VERBOSE:=false})
+BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebugInfo
 CONFIG_SIMPLE=Debug
+
+ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=false})
+if $BUILD_CATALYST || $BUILD_IPHONE || $BUILD_SIMULATOR || $BUILD_VISION || $BUILD_MACOS; then
+  ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=true})
+fi
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 METADATA_SIZE=${METADATA_SIZE:=0}
@@ -48,6 +54,8 @@ for arg in $@; do
     --no-xr|--no-vision) BUILD_VISION=false ;;
     --macos) BUILD_MACOS=true ;;
     --no-macos) BUILD_MACOS=false ;;
+    --macos-cli) BUILD_MACOS_CLI=true ;;
+    --no-macos-cli) BUILD_MACOS_CLI=false ;;
     --verbose|-v) VERBOSE=true ;;
     --v8) TARGET_ENGINE=v8 ;;
     --quickjs) TARGET_ENGINE=quickjs ;;
@@ -71,10 +79,16 @@ mkdir -p $DIST/intermediates
 
 function cmake_build () {
   local platform="$1"
+  local is_macos_cli=false
+
+  if [ "$platform" == "macos-cli" ]; then
+    platform="macos"
+    is_macos_cli=true
+  fi
 
   mkdir -p $DIST/intermediates/$platform
 
-  if $EMBED_METADATA; then
+  if $EMBED_METADATA || $is_macos_cli; then
 
     for arch in x86_64 arm64; do
 
@@ -84,7 +98,7 @@ function cmake_build () {
 
   fi
 
-  cmake -S=./NativeScript -B=$DIST/intermediates/$platform -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE
+  cmake -S=./NativeScript -B=$DIST/intermediates/$platform -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli
 
   cmake --build $DIST/intermediates/$platform --config $CONFIG_BUILD
 }
@@ -129,6 +143,14 @@ checkpoint "Building NativeScript for visionOS Simulators"
 
 fi
 
+if $BUILD_MACOS_CLI; then
+
+checkpoint "Building NativeScript for macOS CLI"
+
+cmake_build macos-cli
+
+fi
+
 XCFRAMEWORKS=()
 if $BUILD_CATALYST; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/catalyst/$CONFIG_SIMPLE-maccatalyst/NativeScript.framework"
@@ -158,18 +180,28 @@ if $BUILD_VISION; then
                   -debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_SIMPLE-xros/NativeScript.framework.dSYM" )
 fi
 
-if [ "$TARGET_ENGINE" != "none" ]; then
+if $ANY_FRAMEWORK; then
 
 checkpoint "Creating NativeScript.xcframework"
 OUTPUT_DIR="$DIST/NativeScript.xcframework"
 rm -rf $OUTPUT_DIR
 xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
 
-else
+fi
+
+if $BUILD_MACOS; then
 
 checkpoint "Creating NativeScript.node"
 
-cp -r "$DIST/intermediates/macos/Release/libNativeScript.dylib" "$DIST/NativeScript.node"
+cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/libNativeScript.dylib" "$DIST/NativeScript.node"
+
+fi
+
+if $BUILD_MACOS_CLI; then
+
+checkpoint "Creating NativeScript CLI"
+
+cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript" "$DIST/ns"
 
 fi
 
