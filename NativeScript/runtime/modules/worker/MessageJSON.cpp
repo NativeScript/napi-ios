@@ -4,7 +4,7 @@
 //  Created by Eduardo Speroni on 11/22/23.
 //  Copyright © 2023 Progress. All rights reserved.
 
-// #ifndef TARGET_ENGINE_V8
+#ifndef TARGET_ENGINE_V8
 
 #include "js_native_api.h"
 #include "MessageJSON.h"
@@ -270,4 +270,4 @@ Message::Message(MallocedBuffer<char>&& payload)
 };  // namespace worker
 };  // namespace nativescript
 
-// #endif  // TARGET_ENGINE_V8
+#endif  // TARGET_ENGINE_V8
