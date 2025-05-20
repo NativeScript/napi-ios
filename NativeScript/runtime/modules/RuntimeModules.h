@@ -6,6 +6,7 @@
 #include "performance/Performance.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/modules/module/ModuleInternal.h"
+#include "runtime/modules/worker/Worker.h"
 #include "url/URL.h"
 #include "url/URLSearchParams.h"
 #ifdef __APPLE__
@@ -18,7 +19,6 @@ namespace nativescript {
 class RuntimeModules {
  public:
   inline RuntimeModules() {}
-  inline ~RuntimeModules() { module.DeInit(); }
 
   inline void Init(napi_env env, napi_value global) {
     module.Init(env, RuntimeConfig.BaseDir);
@@ -33,7 +33,11 @@ class RuntimeModules {
     App::Init(env);
     Timers::Init(env, global);
 #endif  // __APPLE__
+
+    Worker::Init(env, global);
   }
+
+  inline void DeInit() { module.DeInit(); }
 
   ModuleInternal module;
 };

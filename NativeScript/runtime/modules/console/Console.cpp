@@ -7,7 +7,9 @@
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/Util.h"
+#ifdef TARGET_ENGINE_V8
 #include "v8-api.h"
+#endif
 
 #ifdef __APPLE__
 #include <CoreFoundation/CFString.h>

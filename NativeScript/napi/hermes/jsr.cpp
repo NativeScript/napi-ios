@@ -4,10 +4,6 @@
 using namespace facebook::jsi;
 std::unordered_map<napi_env, JSR *> JSR::env_to_jsr_cache;
 
-typedef struct napi_runtime__ {
-    JSR *hermes;
-} napi_runtime__;
-
 JSR::JSR() {
     hermes::vm::RuntimeConfig config =
             hermes::vm::RuntimeConfig::Builder().withMicrotaskQueue(true).withES6Class(
@@ -58,7 +54,7 @@ napi_status js_unlock_env(napi_env env) {
 
 napi_status js_create_napi_env(napi_env *env, napi_runtime runtime) {
     if (env == nullptr) return napi_invalid_arg;
-    runtime->hermes->rt->createNapiEnv(env);
+    *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);
     JSR::env_to_jsr_cache.insert(std::make_pair(*env, runtime->hermes));
     return napi_ok;
 }

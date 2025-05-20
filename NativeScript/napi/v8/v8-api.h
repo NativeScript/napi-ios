@@ -1,12 +1,13 @@
 #ifndef SRC_JS_NATIVE_API_V8_H_
 #define SRC_JS_NATIVE_API_V8_H_
 
-#include "napi.h"
-#include <unordered_set>
+#include <iostream>
 #include <stdexcept>
 #include <string>
+#include <unordered_set>
 
 #include "js_native_api_types.h"
+#include "napi.h"
 #include "v8-api-internals.h"
 
 #define NODE_API_DEFAULT_MODULE_API_VERSION 8
@@ -20,35 +21,37 @@
 inline napi_status napi_clear_last_error(napi_env env);
 
 namespace node {
-    template <typename Fn>
-    struct OnScopeLeaveImpl {
-      Fn fn_;
-      bool active_;
+template <typename Fn>
+struct OnScopeLeaveImpl {
+  Fn fn_;
+  bool active_;
 
-      explicit OnScopeLeaveImpl(Fn&& fn) : fn_(std::move(fn)), active_(true) {}
-      ~OnScopeLeaveImpl() { if (active_) fn_(); }
+  explicit OnScopeLeaveImpl(Fn&& fn) : fn_(std::move(fn)), active_(true) {}
+  ~OnScopeLeaveImpl() {
+    if (active_) fn_();
+  }
 
-      OnScopeLeaveImpl(const OnScopeLeaveImpl& other) = delete;
-      OnScopeLeaveImpl& operator=(const OnScopeLeaveImpl& other) = delete;
-      OnScopeLeaveImpl(OnScopeLeaveImpl&& other)
-        : fn_(std::move(other.fn_)), active_(other.active_) {
-        other.active_ = false;
-      }
-    };
+  OnScopeLeaveImpl(const OnScopeLeaveImpl& other) = delete;
+  OnScopeLeaveImpl& operator=(const OnScopeLeaveImpl& other) = delete;
+  OnScopeLeaveImpl(OnScopeLeaveImpl&& other)
+      : fn_(std::move(other.fn_)), active_(other.active_) {
+    other.active_ = false;
+  }
+};
 
-    // Run a function when exiting the current scope. Used like this:
-    // auto on_scope_leave = OnScopeLeave([&] {
-    //   // ... run some code ...
-    // });
-    template <typename Fn>
-    inline MUST_USE_RESULT OnScopeLeaveImpl<Fn> OnScopeLeave(Fn&& fn) {
-      return OnScopeLeaveImpl<Fn>{std::move(fn)};
-    }
+// Run a function when exiting the current scope. Used like this:
+// auto on_scope_leave = OnScopeLeave([&] {
+//   // ... run some code ...
+// });
+template <typename Fn>
+inline MUST_USE_RESULT OnScopeLeaveImpl<Fn> OnScopeLeave(Fn&& fn) {
+  return OnScopeLeaveImpl<Fn>{std::move(fn)};
 }
+}  // namespace node
 
 namespace v8impl {
 
-    [[noreturn]] inline void OnFatalError(const char* location,
+[[noreturn]] inline void OnFatalError(const char* location,
                                       const char* message) {
   throw std::runtime_error(std::string{location} + ": " + message);
 }
@@ -199,7 +202,6 @@ struct napi_env__ {
   // Cache the template for NapiHostObject
   v8::Persistent<v8::ObjectTemplate> host_object_template;
 
-
   // We store references in two different lists, depending on whether they have
   // `napi_finalizer` callbacks, because we must first finalize the ones that
   // have such a callback. See `NapiEnvironmentnment()` above for details.
@@ -229,8 +231,7 @@ inline napi_status napi_clear_last_error(napi_env env) {
   return napi_ok;
 }
 
-inline napi_status napi_set_last_error(napi_env env,
-                                       napi_status error_code,
+inline napi_status napi_set_last_error(napi_env env, napi_status error_code,
                                        uint32_t engine_error_code = 0,
                                        void* engine_reserved = nullptr) {
   env->last_error.error_code = error_code;
@@ -239,114 +240,113 @@ inline napi_status napi_set_last_error(napi_env env,
   return error_code;
 }
 
-#define RETURN_STATUS_IF_FALSE(env, condition, status)                         \
-  do {                                                                         \
-    if (!(condition)) {                                                        \
-      return napi_set_last_error((env), (status));                             \
-    }                                                                          \
+#define RETURN_STATUS_IF_FALSE(env, condition, status) \
+  do {                                                 \
+    if (!(condition)) {                                \
+      return napi_set_last_error((env), (status));     \
+    }                                                  \
   } while (0)
 
-#define RETURN_STATUS_IF_FALSE_WITH_PREAMBLE(env, condition, status)           \
-  do {                                                                         \
-    if (!(condition)) {                                                        \
-      return napi_set_last_error(                                              \
-          (env), try_catch.HasCaught() ? napi_pending_exception : (status));   \
-    }                                                                          \
+#define RETURN_STATUS_IF_FALSE_WITH_PREAMBLE(env, condition, status)         \
+  do {                                                                       \
+    if (!(condition)) {                                                      \
+      return napi_set_last_error(                                            \
+          (env), try_catch.HasCaught() ? napi_pending_exception : (status)); \
+    }                                                                        \
   } while (0)
 
-#define CHECK_ENV(env)                                                         \
-  do {                                                                         \
-    if ((env) == nullptr) {                                                    \
-      return napi_invalid_arg;                                                 \
-    }                                                                          \
+#define CHECK_ENV(env)         \
+  do {                         \
+    if ((env) == nullptr) {    \
+      return napi_invalid_arg; \
+    }                          \
   } while (0)
 
-#define CHECK_ENV_NOT_IN_GC(env)                                               \
-  do {                                                                         \
-    CHECK_ENV((env));                                                          \
-    (env)->CheckGCAccess();                                                    \
+#define CHECK_ENV_NOT_IN_GC(env) \
+  do {                           \
+    CHECK_ENV((env));            \
+    (env)->CheckGCAccess();      \
   } while (0)
 
-#define CHECK_ARG(env, arg)                                                    \
+#define CHECK_ARG(env, arg) \
   RETURN_STATUS_IF_FALSE((env), ((arg) != nullptr), napi_invalid_arg)
 
-#define CHECK_ARG_WITH_PREAMBLE(env, arg)                                      \
-  RETURN_STATUS_IF_FALSE_WITH_PREAMBLE(                                        \
-      (env), ((arg) != nullptr), napi_invalid_arg)
+#define CHECK_ARG_WITH_PREAMBLE(env, arg)                         \
+  RETURN_STATUS_IF_FALSE_WITH_PREAMBLE((env), ((arg) != nullptr), \
+                                       napi_invalid_arg)
 
-#define CHECK_MAYBE_EMPTY(env, maybe, status)                                  \
+#define CHECK_MAYBE_EMPTY(env, maybe, status) \
   RETURN_STATUS_IF_FALSE((env), !((maybe).IsEmpty()), (status))
 
-#define CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe, status)                    \
+#define CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe, status) \
   RETURN_STATUS_IF_FALSE_WITH_PREAMBLE((env), !((maybe).IsEmpty()), (status))
 
 // NAPI_PREAMBLE is not wrapped in do..while: try_catch must have function scope
 #define NAPI_PREAMBLE(env)                                                     \
   CHECK_ENV_NOT_IN_GC((env));                                                  \
-  RETURN_STATUS_IF_FALSE(                                                      \
-      (env), (env)->last_exception.IsEmpty(), napi_pending_exception);         \
-  RETURN_STATUS_IF_FALSE((env),                                                \
-                         (env)->can_call_into_js(),                            \
+  RETURN_STATUS_IF_FALSE((env), (env)->last_exception.IsEmpty(),               \
+                         napi_pending_exception);                              \
+  RETURN_STATUS_IF_FALSE((env), (env)->can_call_into_js(),                     \
                          (env->module_api_version == NAPI_VERSION_EXPERIMENTAL \
                               ? napi_cannot_run_js                             \
                               : napi_pending_exception));                      \
   napi_clear_last_error((env));                                                \
   v8impl::TryCatch try_catch((env))
 
-#define CHECK_TO_TYPE(env, type, context, result, src, status)                 \
-  do {                                                                         \
-    CHECK_ARG((env), (src));                                                   \
-    auto maybe = v8impl::V8LocalValueFromJsValue((src))->To##type((context));  \
-    CHECK_MAYBE_EMPTY((env), maybe, (status));                                 \
-    (result) = maybe.ToLocalChecked();                                         \
+#define CHECK_TO_TYPE(env, type, context, result, src, status)                \
+  do {                                                                        \
+    CHECK_ARG((env), (src));                                                  \
+    auto maybe = v8impl::V8LocalValueFromJsValue((src))->To##type((context)); \
+    CHECK_MAYBE_EMPTY((env), maybe, (status));                                \
+    (result) = maybe.ToLocalChecked();                                        \
   } while (0)
 
-#define CHECK_TO_TYPE_WITH_PREAMBLE(env, type, context, result, src, status)   \
-  do {                                                                         \
-    CHECK_ARG_WITH_PREAMBLE((env), (src));                                     \
-    auto maybe = v8impl::V8LocalValueFromJsValue((src))->To##type((context));  \
-    CHECK_MAYBE_EMPTY_WITH_PREAMBLE((env), maybe, (status));                   \
-    (result) = maybe.ToLocalChecked();                                         \
+#define CHECK_TO_TYPE_WITH_PREAMBLE(env, type, context, result, src, status)  \
+  do {                                                                        \
+    CHECK_ARG_WITH_PREAMBLE((env), (src));                                    \
+    auto maybe = v8impl::V8LocalValueFromJsValue((src))->To##type((context)); \
+    CHECK_MAYBE_EMPTY_WITH_PREAMBLE((env), maybe, (status));                  \
+    (result) = maybe.ToLocalChecked();                                        \
   } while (0)
 
-#define CHECK_TO_FUNCTION(env, result, src)                                    \
-  do {                                                                         \
-    CHECK_ARG((env), (src));                                                   \
-    v8::Local<v8::Value> v8value = v8impl::V8LocalValueFromJsValue((src));     \
-    RETURN_STATUS_IF_FALSE((env), v8value->IsFunction(), napi_invalid_arg);    \
-    (result) = v8value.As<v8::Function>();                                     \
+#define CHECK_TO_FUNCTION(env, result, src)                                 \
+  do {                                                                      \
+    CHECK_ARG((env), (src));                                                \
+    v8::Local<v8::Value> v8value = v8impl::V8LocalValueFromJsValue((src));  \
+    RETURN_STATUS_IF_FALSE((env), v8value->IsFunction(), napi_invalid_arg); \
+    (result) = v8value.As<v8::Function>();                                  \
   } while (0)
 
-#define CHECK_TO_OBJECT(env, context, result, src)                             \
+#define CHECK_TO_OBJECT(env, context, result, src) \
   CHECK_TO_TYPE((env), Object, (context), (result), (src), napi_object_expected)
 
-#define CHECK_TO_OBJECT_WITH_PREAMBLE(env, context, result, src)               \
-  CHECK_TO_TYPE_WITH_PREAMBLE(                                                 \
-      (env), Object, (context), (result), (src), napi_object_expected)
+#define CHECK_TO_OBJECT_WITH_PREAMBLE(env, context, result, src)         \
+  CHECK_TO_TYPE_WITH_PREAMBLE((env), Object, (context), (result), (src), \
+                              napi_object_expected)
 
-#define CHECK_TO_STRING(env, context, result, src)                             \
+#define CHECK_TO_STRING(env, context, result, src) \
   CHECK_TO_TYPE((env), String, (context), (result), (src), napi_string_expected)
 
-#define GET_RETURN_STATUS(env)                                                 \
-  (!try_catch.HasCaught()                                                      \
-       ? napi_ok                                                               \
+#define GET_RETURN_STATUS(env) \
+  (!try_catch.HasCaught()      \
+       ? napi_ok               \
        : napi_set_last_error((env), napi_pending_exception))
 
-#define THROW_RANGE_ERROR_IF_FALSE(env, condition, error, message)             \
-  do {                                                                         \
-    if (!(condition)) {                                                        \
-      napi_throw_range_error((env), (error), (message));                       \
-      return napi_set_last_error((env), napi_generic_failure);                 \
-    }                                                                          \
+#define THROW_RANGE_ERROR_IF_FALSE(env, condition, error, message) \
+  do {                                                             \
+    if (!(condition)) {                                            \
+      napi_throw_range_error((env), (error), (message));           \
+      return napi_set_last_error((env), napi_generic_failure);     \
+    }                                                              \
   } while (0)
 
-#define CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe, status)                    \
+#define CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe, status) \
   RETURN_STATUS_IF_FALSE_WITH_PREAMBLE((env), !((maybe).IsEmpty()), (status))
 
-#define STATUS_CALL(call)                                                      \
-  do {                                                                         \
-    napi_status status = (call);                                               \
-    if (status != napi_ok) return status;                                      \
+#define STATUS_CALL(call)                 \
+  do {                                    \
+    napi_status status = (call);          \
+    if (status != napi_ok) return status; \
   } while (0)
 
 namespace v8impl {
@@ -371,9 +371,7 @@ inline v8::Local<v8::Value> V8LocalValueFromJsValue(napi_value v) {
 // Adapter for napi_finalize callbacks.
 class Finalizer {
  protected:
-  Finalizer(napi_env env,
-            napi_finalize finalize_callback,
-            void* finalize_data,
+  Finalizer(napi_env env, napi_finalize finalize_callback, void* finalize_data,
             void* finalize_hint)
       : env_(env),
         finalize_callback_(finalize_callback),
@@ -383,8 +381,7 @@ class Finalizer {
   virtual ~Finalizer() = default;
 
  public:
-  static Finalizer* New(napi_env env,
-                        napi_finalize finalize_callback = nullptr,
+  static Finalizer* New(napi_env env, napi_finalize finalize_callback = nullptr,
                         void* finalize_data = nullptr,
                         void* finalize_hint = nullptr) {
     return new Finalizer(env, finalize_callback, finalize_data, finalize_hint);
@@ -430,16 +427,12 @@ enum class Ownership {
 // Wrapper around Finalizer that can be tracked.
 class TrackedFinalizer : public Finalizer, public RefTracker {
  protected:
-  TrackedFinalizer(napi_env env,
-                   napi_finalize finalize_callback,
-                   void* finalize_data,
-                   void* finalize_hint);
+  TrackedFinalizer(napi_env env, napi_finalize finalize_callback,
+                   void* finalize_data, void* finalize_hint);
 
  public:
-  static TrackedFinalizer* New(napi_env env,
-                               napi_finalize finalize_callback,
-                               void* finalize_data,
-                               void* finalize_hint);
+  static TrackedFinalizer* New(napi_env env, napi_finalize finalize_callback,
+                               void* finalize_data, void* finalize_hint);
   ~TrackedFinalizer() override;
 
  protected:
@@ -450,20 +443,14 @@ class TrackedFinalizer : public Finalizer, public RefTracker {
 // Wrapper around TrackedFinalizer that implements reference counting.
 class RefBase : public TrackedFinalizer {
  protected:
-  RefBase(napi_env env,
-          uint32_t initial_refcount,
-          Ownership ownership,
-          napi_finalize finalize_callback,
-          void* finalize_data,
+  RefBase(napi_env env, uint32_t initial_refcount, Ownership ownership,
+          napi_finalize finalize_callback, void* finalize_data,
           void* finalize_hint);
 
  public:
-  static RefBase* New(napi_env env,
-                      uint32_t initial_refcount,
-                      Ownership ownership,
-                      napi_finalize finalize_callback,
-                      void* finalize_data,
-                      void* finalize_hint);
+  static RefBase* New(napi_env env, uint32_t initial_refcount,
+                      Ownership ownership, napi_finalize finalize_callback,
+                      void* finalize_data, void* finalize_hint);
 
   void* Data();
   uint32_t Ref();
@@ -487,10 +474,8 @@ class Reference : public RefBase {
   Reference(napi_env env, v8::Local<v8::Value> value, Args&&... args);
 
  public:
-  static Reference* New(napi_env env,
-                        v8::Local<v8::Value> value,
-                        uint32_t initial_refcount,
-                        Ownership ownership,
+  static Reference* New(napi_env env, v8::Local<v8::Value> value,
+                        uint32_t initial_refcount, Ownership ownership,
                         napi_finalize finalize_callback = nullptr,
                         void* finalize_data = nullptr,
                         void* finalize_hint = nullptr);

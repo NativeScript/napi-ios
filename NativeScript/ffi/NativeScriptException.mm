@@ -10,24 +10,27 @@
 namespace nativescript {
 
 NativeScriptException::NativeScriptException(const std::string& message) {
-  this->javascriptException_ = nullptr;
   this->message_ = message;
   this->name_ = "NativeScriptException";
 }
 
 NativeScriptException::NativeScriptException(const std::string& message,
                                              const std::string& stackTrace) {
-  this->javascriptException_ = nullptr;
   this->message_ = message;
   this->stackTrace_ = stackTrace;
   this->name_ = "NativeScriptException";
 }
 
+NativeScriptException::NativeScriptException(napi_env env, const std::string& message,
+                                             const std::string& name) {
+  this->message_ = message;
+  this->stackTrace_ = "";
+  this->fullMessage_ = message;
+  this->name_ = name;
+}
+
 NativeScriptException::NativeScriptException(napi_env env, napi_value error,
                                              const std::string& message, const std::string& name) {
-  this->env_ = env;
-  this->javascriptException_ = nullptr;
-  napi_create_reference(env, error, 1, &this->javascriptException_);
   this->message_ = GetErrorMessage(env, error, message);
   this->stackTrace_ = GetErrorStackTrace(env, error);
   this->fullMessage_ = GetFullMessage(env, error, this->message_);
@@ -35,14 +38,13 @@ NativeScriptException::NativeScriptException(napi_env env, napi_value error,
   napi_set_named_property(env, error, "name", napi_util::to_js_string(env, name));
 }
 
-NativeScriptException::~NativeScriptException() {
-  if (this->javascriptException_ != nullptr) {
-    napi_delete_reference(this->env_, this->javascriptException_);
-    this->javascriptException_ = nullptr;
+std::string NativeScriptException::Description() const {
+  if (this->fullMessage_.empty()) {
+    return this->message_;
+  } else {
+    return this->fullMessage_;
   }
 }
-
-std::string NativeScriptException::Description() const { return this->fullMessage_; }
 
 void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
   NapiScope scope(env);
@@ -105,20 +107,10 @@ void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
   // });
 }
 
-void NativeScriptException::ReThrowToJS(napi_env env) {
+void NativeScriptException::ReThrowToJS(napi_env env, napi_value* errorOut) {
   napi_value errObj;
 
-  if (javascriptException_ != nullptr) {
-    napi_get_reference_value(env, javascriptException_, &errObj);
-    if (napi_util::is_of_type(env, errObj, napi_object)) {
-      if (!fullMessage_.empty()) {
-        napi_set_named_property(env, errObj, "fullMessage",
-                                napi_util::to_js_string(env, fullMessage_));
-      } else if (!message_.empty()) {
-        napi_set_named_property(env, errObj, "fullMessage", napi_util::to_js_string(env, message_));
-      }
-    }
-  } else if (!fullMessage_.empty()) {
+  if (!fullMessage_.empty()) {
     napi_create_error(env, napi_util::to_js_string(env, name_),
                       napi_util::to_js_string(env, fullMessage_), &errObj);
   } else if (!message_.empty()) {
@@ -130,7 +122,11 @@ void NativeScriptException::ReThrowToJS(napi_env env) {
                       &errObj);
   }
 
-  napi_throw(env, errObj);
+  if (errorOut != nullptr) {
+    *errorOut = errObj;
+  } else {
+    napi_throw(env, errObj);
+  }
 }
 
 void NativeScriptException::PrintErrorMessage(const std::string& errorMessage) {

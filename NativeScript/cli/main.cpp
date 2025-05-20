@@ -17,6 +17,8 @@ void bootFromBytecode(std::string baseDir, const void* data, size_t size) {
 
   auto runtime = Runtime();
 
+  runtime.Init();
+
   // TODO
   // runtime.ExecuteBytecode(data, size);
 
@@ -27,6 +29,8 @@ void bootFromModuleSpec(std::string baseDir, std::string spec) {
   RuntimeConfig.BaseDir = baseDir;
 
   auto runtime = Runtime();
+
+  runtime.Init();
 
   try {
     runtime.RunModule(spec);
@@ -75,7 +79,6 @@ int main(int argc, char** argv) {
   std::string cwd = std::filesystem::current_path().string();
 
   if (status == segappend_ok) {
-    auto runtime = Runtime();
     size_t bytecode_size = *(size_t*)segmentData;
     segmentData += sizeof(size_t);
 

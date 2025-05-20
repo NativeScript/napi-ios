@@ -1,4 +1,5 @@
 
+#include <CoreFoundation/CFRunLoop.h>
 #include "ffi/NativeScriptException.h"
 #include "jsr_common.h"
 #include "native_api_util.h"
@@ -6,9 +7,8 @@
 
 namespace nativescript {
 
-static robin_hood::unordered_map<napi_env, napi_ref>
-    envToPersistentSmartJSONStringify =
-        robin_hood::unordered_map<napi_env, napi_ref>();
+static robin_hood::unordered_map<napi_env, napi_ref> envToPersistentSmartJSONStringify =
+    robin_hood::unordered_map<napi_env, napi_ref>();
 
 inline napi_value GetSmartJSONStringifyFunction(napi_env env) {
   auto it = envToPersistentSmartJSONStringify.find(env);
@@ -45,8 +45,8 @@ inline napi_value GetSmartJSONStringifyFunction(napi_env env) {
 )";
 
   napi_value source;
-  napi_create_string_utf8(env, smartStringifyFunctionScript,
-                          strlen(smartStringifyFunctionScript), &source);
+  napi_create_string_utf8(env, smartStringifyFunctionScript, strlen(smartStringifyFunctionScript),
+                          &source);
 
   napi_value global;
   napi_get_global(env, &global);
@@ -64,8 +64,7 @@ inline napi_value GetSmartJSONStringifyFunction(napi_env env) {
   napi_ref smartStringifyPersistentFunction;
   napi_create_reference(env, result, 1, &smartStringifyPersistentFunction);
 
-  envToPersistentSmartJSONStringify.emplace(env,
-                                            smartStringifyPersistentFunction);
+  envToPersistentSmartJSONStringify.emplace(env, smartStringifyPersistentFunction);
 
   return result;
 }
@@ -82,17 +81,14 @@ inline std::string JsonStringifyObject(napi_env env, napi_value value,
     napi_value resultValue;
     napi_value args[2];
     args[0] = value;
-    args[1] = handleCircularReferences ? napi_util::get_true(env)
-                                       : napi_util::get_false(env);
-    napi_status status =
-        napi_call_function(env, napi_util::global(env),
-                           smartJSONStringifyFunction, 2, args, &resultValue);
+    args[1] = handleCircularReferences ? napi_util::get_true(env) : napi_util::get_false(env);
+    napi_status status = napi_call_function(env, napi_util::global(env), smartJSONStringifyFunction,
+                                            2, args, &resultValue);
     if (status != napi_ok) {
       napi_value exception;
       napi_get_and_clear_last_exception(env, &exception);
       if (!napi_util::is_null_or_undefined(env, exception)) {
-        throw NativeScriptException(env, exception,
-                                    "Error converting object to json");
+        throw NativeScriptException(env, exception, "Error converting object to json");
       } else {
         throw NativeScriptException("Error converting object to json");
       }
@@ -114,6 +110,37 @@ inline napi_value JsonParse(napi_env env, const std::string& json) {
   napi_create_string_utf8(env, json.c_str(), json.size(), &args[0]);
   napi_call_function(env, global, parseFunction, 1, args, &result);
   return result;
+}
+
+struct LockAndCV {
+  std::mutex m;
+  std::condition_variable cv;
+};
+
+inline void ExecuteOnRunLoop(CFRunLoopRef queue, std::function<void()> func, bool async) {
+  if (!async) {
+    bool __block finished = false;
+    auto v = new LockAndCV;
+    std::unique_lock<std::mutex> lock(v->m);
+    CFRunLoopPerformBlock(queue, kCFRunLoopCommonModes, ^(void) {
+      func();
+      {
+        std::unique_lock lk(v->m);
+        finished = true;
+      }
+      v->cv.notify_all();
+    });
+    CFRunLoopWakeUp(queue);
+    while (!finished) {
+      v->cv.wait(lock);
+    }
+    delete v;
+  } else {
+    CFRunLoopPerformBlock(queue, kCFRunLoopCommonModes, ^(void) {
+      func();
+    });
+    CFRunLoopWakeUp(queue);
+  }
 }
 
 }  // namespace nativescript

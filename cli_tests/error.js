@@ -21,6 +21,11 @@ try {
 //   },
 // );
 
+// globalThis.__onUncaughtError = (err) => {
+//   console.log("Hello, World! from globalThis.__onUncaughtError");
+//   console.log(err.stack);
+// };
+
 // class ApplicationDelegate extends NSObject {
 //   static ObjCProtocols = [NSApplicationDelegate];
 
@@ -41,8 +46,12 @@ try {
 
 // NSApplicationMain(0, null);
 
-// const arr = NSArray.arrayWithArray([1, 2, 3]);
+const arr = NSArray.arrayWithArray([1, 2, 3]);
 
-// arr.enumerateObjectsUsingBlock((_obj, _idx, _stop) => {
-//   throw new Error("JavaScript error from block");
-// });
+try {
+  arr.enumerateObjectsUsingBlock((_obj, _idx, _stop) => {
+    throw new Error("JavaScript error from block");
+  });
+} catch (e) {
+  console.log(e.stack);
+}

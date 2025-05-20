@@ -3,7 +3,7 @@
 #include "App.h"
 #include "js_native_api.h"
 
-#ifdef TARGET_OS_MAC
+#ifdef TARGET_PLATFORM_MACOS
 
 #import <AppKit/AppKit.h>
 
@@ -29,7 +29,7 @@ napi_value App::Run(napi_env env, napi_callback_info cbinfo) {
   App* appInst = nullptr;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, (void**)&appInst);
 
-#ifdef TARGET_OS_MAC
+#ifdef TARGET_PLATFORM_MACOS
 
   NSApplication* app = [NSApplication sharedApplication];
 

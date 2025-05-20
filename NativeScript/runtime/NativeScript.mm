@@ -62,6 +62,7 @@ std::unique_ptr<Runtime> runtime_;
     runtime_ = std::make_unique<Runtime>();
 
     // TODO: separate runtime init and measure the time
+    runtime_->Init();
 
     if (RuntimeConfig.IsDebug) {
       // TODO: Inspector for debugging

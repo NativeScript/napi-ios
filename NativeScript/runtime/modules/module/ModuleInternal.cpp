@@ -68,7 +68,7 @@ void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
   napi_get_global(env, &global);
 
   napi_value result;
-  status = js_execute_script(env, source, "<require_factory>", &result);
+  status = napi_run_script(env, source, &result);
   assert(status == napi_ok);
 
   m_requireFactoryFunction = napi_util::make_ref(m_env, result);
@@ -502,8 +502,10 @@ napi_value ModuleInternal::LoadModule(napi_env env,
     napi_value script = LoadScript(env, modulePath, fullRequiredModulePath);
     // DEBUG_WRITE("%s", modulePath.c_str());
 
-    napi_status status = js_execute_script(
-        env, script, EnsureFileProtocol(modulePath).c_str(), &moduleFunc);
+    // napi_status status = js_execute_script(
+    //     env, script, EnsureFileProtocol(modulePath).c_str(), &moduleFunc);
+    napi_status status = napi_run_script(
+        env, script, &moduleFunc);
     if (status != napi_ok) {
       bool pendingException;
       napi_is_exception_pending(env, &pendingException);

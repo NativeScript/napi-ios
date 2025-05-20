@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "js_native_api.h"
 #include "js_native_api_types.h"
 
 namespace nativescript {
@@ -15,17 +16,23 @@ class NativeScriptException {
   NativeScriptException(napi_env env, napi_value error,
                         const std::string& message,
                         const std::string& name = "NativeScriptException");
-  ~NativeScriptException();
+  NativeScriptException(napi_env env, const std::string& message,
+                        const std::string& name = "NativeScriptException");
 
-  void ReThrowToJS(napi_env env);
+  void ReThrowToJS(napi_env env, napi_value* errorOut = nullptr);
 
   static void OnUncaughtError(napi_env env, napi_value error);
+
+  inline std::string Name() const {
+    if (name_.empty()) {
+      return "NativeScriptException";
+    }
+    return name_;
+  }
 
   std::string Description() const;
 
  private:
-  napi_env env_;
-  napi_ref javascriptException_;
   std::string name_;
   std::string message_;
   std::string stackTrace_;

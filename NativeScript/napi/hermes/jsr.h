@@ -6,7 +6,6 @@
 #define TEST_APP_JSR_H
 
 #include "hermes/hermes.h"
-#include "hermes/hermes_api.h"
 #include "jsi/threadsafe.h"
 #include "jsr_common.h"
 
@@ -27,6 +26,10 @@ public:
 
     static std::unordered_map<napi_env, JSR *> env_to_jsr_cache;
 };
+
+typedef struct napi_runtime__ {
+    JSR *hermes;
+} napi_runtime__;
 
 class NapiScope {
 public:

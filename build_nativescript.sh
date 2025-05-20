@@ -31,7 +31,7 @@ BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false}) # disable by default for now
 VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
-CONFIG_BUILD=RelWithDebugInfo
+CONFIG_BUILD=Debug
 CONFIG_SIMPLE=Debug
 
 ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=false})
@@ -168,7 +168,7 @@ if $BUILD_IPHONE; then
 fi
 
 if $BUILD_MACOS; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/Release/NativeScript.framework"
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript.framework"
                   -debug-symbols "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript.framework.dSYM" )
 fi
 
@@ -205,4 +205,4 @@ cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript" "$DIST/nsr"
 
 fi
 
-rm -rf "$DIST/intermediates"
+# rm -rf "$DIST/intermediates"

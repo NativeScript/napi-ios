@@ -72,7 +72,7 @@ elseif(TARGET_ENGINE STREQUAL "hermes")
 elseif(TARGET_ENGINE STREQUAL "v8")
   set(TARGET_ENGINE_V8 TRUE)
   add_link_options("-fuse-ld=lld")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8 -DV8_COMPRESS_POINTERS -DV8_ENABLE_SANDBOX")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8")
 elseif(TARGET_ENGINE STREQUAL "quickjs")
   set(TARGET_ENGINE_QUICKJS TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_QUICKJS")
@@ -85,6 +85,7 @@ else()
 endif()
 
 if(ENABLE_JS_RUNTIME)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_JS_RUNTIME")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_JS_RUNTIME")
 elseif(TARGET_PLATFORM_MACOS)
   # If building a generic library for macOS, we'll build a dylib instead of a framework
@@ -134,6 +135,12 @@ if(ENABLE_JS_RUNTIME)
     ${SOURCE_FILES}
     runtime/modules/console/Console.cpp
     runtime/Runtime.cpp
+    runtime/modules/worker/Worker.mm
+    runtime/modules/worker/MessageJSON.cpp
+    runtime/modules/worker/MessageV8.cpp
+    runtime/modules/worker/ConcurrentQueue.cpp
+    runtime/modules/worker/WorkerImpl.mm
+    runtime/modules/worker/WorkerImpl.mm
     runtime/modules/module/ModuleInternal.cpp
     runtime/modules/performance/Performance.cpp
     runtime/Bundle.mm
@@ -163,6 +170,7 @@ if(ENABLE_JS_RUNTIME)
   elseif(TARGET_ENGINE_HERMES)
     include_directories(
       napi/hermes
+      napi/hermes/include
       napi/hermes/include/hermes
       napi/hermes/include/jsi
     )
