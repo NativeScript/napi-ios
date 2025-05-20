@@ -2,7 +2,7 @@
 #include "Runtime.h"
 #include "RuntimeConfig.h"
 
-using namespace charon;
+using namespace nativescript;
 
 @implementation Config
 
@@ -21,16 +21,16 @@ std::unique_ptr<Runtime> runtime_;
 
 - (void)runScriptString:(NSString*)script runLoop:(BOOL)runLoop {
   std::string cppScript = [script UTF8String];
-  runtime_->runScriptString(cppScript);
+  runtime_->RunScript(cppScript);
   if (runLoop) {
-    runtime_->runRunLoop();
+    runtime_->RunLoop();
   }
 }
 
 - (void)runMainApplication {
   std::string spec = "./app/bundle.js";
-  runtime_->evaluateModule(spec);
-  runtime_->runRunLoop();
+  runtime_->RunModule(spec);
+  runtime_->RunLoop();
 }
 
 - (bool)liveSync {
@@ -59,9 +59,10 @@ std::unique_ptr<Runtime> runtime_;
     RuntimeConfig.IsDebug = [config IsDebug];
     RuntimeConfig.LogToSystemConsole = [config LogToSystemConsole];
 
-    runtime_ = std::make_unique<Runtime>(RuntimeConfig.BaseDir);
+    runtime_ = std::make_unique<Runtime>();
 
     // TODO: separate runtime init and measure the time
+    runtime_->Init();
 
     if (RuntimeConfig.IsDebug) {
       // TODO: Inspector for debugging

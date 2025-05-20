@@ -1,6 +1,6 @@
 #include "AutoreleasePool.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 napi_value JS_autoreleasepool(napi_env env, napi_callback_info info) {
   napi_value callback;
@@ -15,4 +15,4 @@ napi_value JS_autoreleasepool(napi_env env, napi_callback_info info) {
   return result;
 }
 
-} // namespace objc_bridge
+}  // namespace nativescript

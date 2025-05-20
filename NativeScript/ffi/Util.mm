@@ -5,7 +5,7 @@
 
 using namespace metagen;
 
-namespace objc_bridge {
+namespace nativescript {
 
 std::string implicitSetterSelector(std::string name) {
   std::string setter;
@@ -32,7 +32,7 @@ std::string jsifySelector(std::string selector) {
   return jsifiedSelector;
 }
 
-napi_value jsSymbolFor(napi_env env, const char *string) {
+napi_value jsSymbolFor(napi_env env, const char* string) {
   napi_value global, Symbol, SymbolFor, symbol, symbolString;
   napi_get_global(env, &global);
   napi_get_named_property(env, global, "Symbol", &Symbol);
@@ -49,73 +49,73 @@ std::string getEncodedType(napi_env env, napi_value value) {
   napi_typeof(env, value, &type);
 
   switch (type) {
-  case napi_number: {
-    int32_t number = -1;
-    napi_get_value_int32(env, value, &number);
+    case napi_number: {
+      int32_t number = -1;
+      napi_get_value_int32(env, value, &number);
 
-    switch (number) {
-    case mdTypeVoid:
-      return "v";
+      switch (number) {
+        case mdTypeVoid:
+          return "v";
 
-    case mdTypeBool:
-      return "B";
+        case mdTypeBool:
+          return "B";
 
-    case mdTypeChar:
-      return "c";
+        case mdTypeChar:
+          return "c";
 
-    case mdTypeUInt8:
-      return "C";
+        case mdTypeUInt8:
+          return "C";
 
-    case mdTypeSShort:
-      return "s";
+        case mdTypeSShort:
+          return "s";
 
-    case mdTypeUShort:
-      return "S";
+        case mdTypeUShort:
+          return "S";
 
-    case mdTypeSInt:
-      return "i";
+        case mdTypeSInt:
+          return "i";
 
-    case mdTypeUInt:
-      return "I";
+        case mdTypeUInt:
+          return "I";
 
-    case mdTypeSInt64:
-      return "q";
+        case mdTypeSInt64:
+          return "q";
 
-    case mdTypeUInt64:
-      return "Q";
+        case mdTypeUInt64:
+          return "Q";
 
-    case mdTypeFloat:
-      return "f";
+        case mdTypeFloat:
+          return "f";
 
-    case mdTypeDouble:
-      return "d";
+        case mdTypeDouble:
+          return "d";
 
-    case mdTypeString:
-      return "*";
+        case mdTypeString:
+          return "*";
 
-    case mdTypeAnyObject:
+        case mdTypeAnyObject:
+          return "@";
+
+        case mdTypePointer:
+          return "^v";
+
+        case mdTypeSelector:
+          return ":";
+
+        default:
+          napi_throw_error(env, nullptr, "Invalid type");
+          return "v";
+      }
+    }
+
+    case napi_function:
+      // Must be a native class constructor like NSObject.
       return "@";
-
-    case mdTypePointer:
-      return "^v";
-
-    case mdTypeSelector:
-      return ":";
 
     default:
       napi_throw_error(env, nullptr, "Invalid type");
       return "v";
-    }
-  }
-
-  case napi_function:
-    // Must be a native class constructor like NSObject.
-    return "@";
-
-  default:
-    napi_throw_error(env, nullptr, "Invalid type");
-    return "v";
   }
 }
 
-} // namespace objc_bridge
+}  // namespace nativescript

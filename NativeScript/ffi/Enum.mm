@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 #include "ObjCBridge.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 void ObjCBridgeState::registerEnumGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->enumsOffset;
@@ -81,4 +81,4 @@ NAPI_FUNCTION(enumGetter) {
   return result;
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

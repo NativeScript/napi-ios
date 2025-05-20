@@ -3,10 +3,10 @@
 
 #include "node_api_util.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 NAPI_FUNCTION(variableGetter);
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* VARIABLE_H */

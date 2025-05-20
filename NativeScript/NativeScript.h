@@ -8,7 +8,7 @@ extern "C"
 #endif  // __cplusplus
 
     void
-    objc_bridge_init(void* env, const char* metadata_path, const void* metadata_ptr);
+    nativescript_init(void* env, const char* metadata_path, const void* metadata_ptr);
 
 #ifdef __OBJC__
 

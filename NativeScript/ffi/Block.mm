@@ -1,9 +1,9 @@
 #include "Block.h"
 #import <Foundation/Foundation.h>
-#include "js_native_api_types.h"
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "js_native_api.h"
+#include "js_native_api_types.h"
 #include "node_api_util.h"
 #include "objc/runtime.h"
 
@@ -24,7 +24,7 @@ struct Block_literal_1 {
   void* invoke;
   Block_descriptor_1* descriptor;
   // imported variables
-  objc_bridge::Closure* closure;
+  nativescript::Closure* closure;
 };
 
 void block_copy(void* dest, void* src) {}
@@ -36,7 +36,7 @@ void block_finalize(napi_env env, void* data, void* hint) {
   delete block;
 }
 
-namespace objc_bridge {
+namespace nativescript {
 
 void* stackBlockISA = nullptr;
 
@@ -63,8 +63,8 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
   // TODO: fix memory management of objc blocks here
   // napi_wrap(env, callback, block, block_finalize, nullptr, &ref);
   // if (ref == nullptr) {
-    // Deno doesn't handle napi_wrap properly.
-    ref = make_ref(env, callback, 1);
+  // Deno doesn't handle napi_wrap properly.
+  ref = make_ref(env, callback, 1);
   // } else {
   //   uint32_t refCount;
   //   napi_reference_ref(env, ref, &refCount);
@@ -72,6 +72,8 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
   closure->func = ref;
 
   auto bridgeState = ObjCBridgeState::InstanceData(env);
+
+#ifndef ENABLE_JS_RUNTIME
   if (napiSupportsThreadsafeFunctions(bridgeState->self_dl)) {
     napi_value workName;
     napi_create_string_utf8(env, "Block", NAPI_AUTO_LENGTH, &workName);
@@ -79,6 +81,7 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
                                     closure, Closure::callBlockFromMainThread, &closure->tsfn);
     if (closure->tsfn) napi_unref_threadsafe_function(env, closure->tsfn);
   }
+#endif  // ENABLE_JS_RUNTIME
 
   return (id)block;
 }
@@ -207,4 +210,4 @@ napi_value FunctionPointer::jsCallAsBlock(napi_env env, napi_callback_info cbinf
   return cif->returnType->toJS(env, rvalue);
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

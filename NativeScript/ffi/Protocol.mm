@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-namespace objc_bridge {
+namespace nativescript {
 
 void ObjCBridgeState::registerProtocolGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->protocolsOffset;
@@ -153,4 +153,4 @@ ObjCProtocol::ObjCProtocol(napi_env env, MDSectionOffset offset) {
 
 ObjCProtocol::~ObjCProtocol() { napi_delete_reference(env, constructor); }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

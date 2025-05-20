@@ -6,9 +6,9 @@
 
 #import <Foundation/Foundation.h>
 
-namespace objc_bridge {
+namespace nativescript {
 
-void ObjectRef_finalize(napi_env env, void *data, void *hint) { free(data); }
+void ObjectRef_finalize(napi_env env, void* data, void* hint) { free(data); }
 
 NAPI_FUNCTION(ObjectRef_constructor) {
   napi_value jsThis, arg;
@@ -22,12 +22,12 @@ NAPI_FUNCTION(ObjectRef_constructor) {
   napi_typeof(env, arg, &argType);
 
   if (argType != napi_undefined && argType != napi_null) {
-    const char *argenc = "@";
+    const char* argenc = "@";
     auto conv = TypeConv::Make(env, &argenc);
     bool shouldFree;
     conv->toNative(env, arg, data, &shouldFree, &shouldFree);
   } else {
-    *(id *)data = nil;
+    *(id*)data = nil;
   }
 
   return jsThis;
@@ -37,16 +37,16 @@ NAPI_FUNCTION(ObjectRef_unwrap) {
   napi_value jsThis;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
 
-  void *data;
+  void* data;
   napi_unwrap(env, jsThis, &data);
 
-  id obj = *(id *)data;
+  id obj = *(id*)data;
   if (obj == nil) {
     napi_throw_error(env, nullptr, "ObjectRef.unwrap returned nil");
     return nullptr;
   }
 
-  const char *argenc = "@";
+  const char* argenc = "@";
   auto conv = TypeConv::Make(env, &argenc);
   return conv->toJS(env, &obj);
 }
@@ -55,11 +55,11 @@ NAPI_FUNCTION(ObjectRef_get_value) {
   napi_value jsThis;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
 
-  void *data;
+  void* data;
   napi_unwrap(env, jsThis, &data);
 
-  id obj = *(id *)data;
-  const char *argenc = "@";
+  id obj = *(id*)data;
+  const char* argenc = "@";
   auto conv = TypeConv::Make(env, &argenc);
   return conv->toJS(env, &obj);
 }
@@ -69,10 +69,10 @@ NAPI_FUNCTION(ObjectRef_set_value) {
   size_t argc = 1;
   napi_get_cb_info(env, cbinfo, &argc, &arg, &jsThis, nullptr);
 
-  void *data;
+  void* data;
   napi_unwrap(env, jsThis, &data);
 
-  const char *argenc = "@";
+  const char* argenc = "@";
   auto conv = TypeConv::Make(env, &argenc);
   bool shouldFree;
   conv->toNative(env, arg, data, &shouldFree, &shouldFree);
@@ -84,10 +84,10 @@ NAPI_FUNCTION(ObjectRef_customInspect) {
   napi_value jsThis;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
 
-  void *data;
+  void* data;
   napi_unwrap(env, jsThis, &data);
 
-  id obj = *(id *)data;
+  id obj = *(id*)data;
 
   std::string inspect = "ObjectRef(";
   if (obj == nil) {
@@ -135,9 +135,9 @@ napi_value defineObjectRefClass(napi_env env) {
           .attributes = napi_default,
           .data = nullptr,
       }};
-  napi_define_class(env, "ObjectRef", NAPI_AUTO_LENGTH,
-                    JS_ObjectRef_constructor, nullptr, 3, properties, &result);
+  napi_define_class(env, "ObjectRef", NAPI_AUTO_LENGTH, JS_ObjectRef_constructor, nullptr, 3,
+                    properties, &result);
   return result;
 }
 
-} // namespace objc_bridge
+}  // namespace nativescript

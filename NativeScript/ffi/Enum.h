@@ -3,10 +3,10 @@
 
 #include "node_api_util.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 NAPI_FUNCTION(enumGetter);
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
 #endif /* ENUM_H */

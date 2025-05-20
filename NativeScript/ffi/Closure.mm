@@ -5,8 +5,10 @@
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
+#include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
+#include "jsr.h"
 #include "node_api_util.h"
 #include "objc/message.h"
 
@@ -15,13 +17,15 @@
 #include <condition_variable>
 #include <mutex>
 
-namespace objc_bridge {
+namespace nativescript {
 
 inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisArg, napi_value* argv,
                             size_t argc, bool* done, void* ret) {
   napi_env env = closure->env;
 
-  napi_value result;
+  NapiScope scope(env);
+
+      napi_value result;
 
   napi_get_and_clear_last_exception(env, &result);
 
@@ -29,6 +33,9 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
 
   if (done != NULL) *done = true;
 
+  // If the call failed, we need to create an error object and throw it in native
+  // Likely it will circle back to JS. We have try/catch around all native calls from JS,
+  // so those are likely to catch it.
   if (status != napi_ok) {
     napi_get_and_clear_last_exception(env, &result);
     napi_valuetype resultType;
@@ -36,21 +43,14 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
 
     if (resultType != napi_object) {
       napi_value code, msg;
-      napi_create_string_utf8(env, "Error", NAPI_AUTO_LENGTH, &code);
+      napi_create_string_utf8(env, "NativeScriptException", NAPI_AUTO_LENGTH, &code);
       napi_create_string_utf8(env,
-                              "Unable to obtain the error thrown by the JS function "
-                              "call",
+                              "Unable to obtain the error thrown by the JS implemented closure",
                               NAPI_AUTO_LENGTH, &msg);
       napi_create_error(env, code, msg, &result);
     }
 
-    napi_value errstr;
-    NAPI_GUARD(napi_get_named_property(env, result, "stack", &errstr)) { return; }
-    char errbuf[512];
-    size_t errlen;
-    napi_get_value_string_utf8(env, errstr, errbuf, 512, &errlen);
-    NSLog(@"ObjC->JS call failed: %s", errbuf);
-    napi_throw(env, result);
+    NativeScriptException::OnUncaughtError(env, result);
   }
 
   // Even if call was failed and result is just undefined, let's still try to
@@ -142,6 +142,7 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   if (currentThreadId == closure->jsThreadId) {
     Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
   } else {
+#ifndef ENABLE_JS_RUNTIME
     if (!closure->tsfn) {
       assert(false && "Threadsafe functions are not supported");
     }
@@ -151,6 +152,9 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
     napi_call_threadsafe_function(closure->tsfn, &ctx, napi_tsfn_blocking);
     ctx.cv.wait(lock, [&ctx] { return ctx.done; });
     napi_release_threadsafe_function(closure->tsfn, napi_tsfn_release);
+#else
+    assert(false && "Threadsafe functions are not supported");
+#endif  // ENABLE_JS_RUNTIME
   }
 }
 
@@ -249,10 +253,12 @@ Closure::~Closure() {
   if (func != nullptr) {
     napi_delete_reference(env, func);
   }
+#ifndef ENABLE_JS_RUNTIME
   if (tsfn != nullptr) {
     napi_release_threadsafe_function(tsfn, napi_tsfn_abort);
   }
+#endif  // ENABLE_JS_RUNTIME
   ffi_closure_free(closure);
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

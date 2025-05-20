@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-namespace objc_bridge {
+namespace nativescript {
 
 ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   ffi_type* type = new ffi_type;
@@ -1609,4 +1609,4 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
   }
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

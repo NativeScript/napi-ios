@@ -4,14 +4,14 @@
 #include "node_api_util.h"
 
 extern "C" {
-void *objc_autoreleasePoolPush(void);
-void objc_autoreleasePoolPop(void *pool);
+void* objc_autoreleasePoolPush(void);
+void objc_autoreleasePoolPop(void* pool);
 }
 
-namespace objc_bridge {
+namespace nativescript {
 
 NAPI_FUNCTION(autoreleasepool);
 
-} // namespace objc_bridge
+}  // namespace nativescript
 
-#endif // AUTORELEASEPOOL_H
+#endif  // AUTORELEASEPOOL_H

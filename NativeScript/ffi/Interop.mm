@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #include <memory>
 
-namespace objc_bridge {
+namespace nativescript {
 
 inline napi_value createJSNumber(napi_env env, int32_t ival) {
   napi_value value;
@@ -877,4 +877,4 @@ void* FunctionReference::getFunctionPointer(MDSectionOffset offset) {
   return closure->fnptr;
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

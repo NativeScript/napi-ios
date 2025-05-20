@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-void JSObject_finalize(napi_env, void *data, void *) {
+void JSObject_finalize(napi_env, void* data, void*) {
   id obj = (id)data;
   [obj release];
 }
@@ -12,7 +12,7 @@ void JSObject_finalize(napi_env, void *data, void *) {
 @interface JSObject : NSObject {
   napi_env env;
   napi_ref ref;
-  objc_bridge::ObjCBridgeState *bridgeState;
+  nativescript::ObjCBridgeState* bridgeState;
 }
 
 - (instancetype)initWithEnv:(napi_env)env value:(napi_value)value;
@@ -29,7 +29,7 @@ void JSObject_finalize(napi_env, void *data, void *) {
   uint32_t result;
   napi_reference_ref(env, ref, &result);
   napi_wrap(env, value, self, nullptr, nullptr, nullptr);
-  bridgeState = objc_bridge::ObjCBridgeState::InstanceData(env);
+  bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
   bridgeState->objectRefs[self] = ref;
   return self;
 }
@@ -55,7 +55,7 @@ void JSObject_finalize(napi_env, void *data, void *) {
 
 @end
 
-namespace objc_bridge {
+namespace nativescript {
 
 id jsObjectToId(napi_env env, napi_value value) {
   return [[JSObject alloc] initWithEnv:env value:value];
@@ -66,9 +66,9 @@ napi_value idToJsObject(napi_env env, id obj) {
     return nullptr;
   }
   if ([obj isKindOfClass:[JSObject class]]) {
-    return [((JSObject *)obj) value];
+    return [((JSObject*)obj) value];
   }
   return nil;
 }
 
-} // namespace objc_bridge
+}  // namespace nativescript

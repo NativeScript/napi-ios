@@ -8,7 +8,7 @@
 #include "TypeConv.h"
 #include "Util.h"
 
-namespace objc_bridge {
+namespace nativescript {
 
 // Essentially, we cache libffi structures per unique method signature,
 // this helps us avoid the overhead of creating them on the fly for each
@@ -183,4 +183,4 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
   rvalueLength = cif.rtype->size;
 }
 
-}  // namespace objc_bridge
+}  // namespace nativescript

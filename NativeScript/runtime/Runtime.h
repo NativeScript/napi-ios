@@ -1,38 +1,69 @@
 #ifndef RUNTIME_H
 #define RUNTIME_H
 
-#ifdef ENABLE_JS_RUNTIME
+#include <CoreFoundation/CFRunLoop.h>
 
-#include "Require.h"
+#include <vector>
+
 #include "js_native_api_types.h"
-#include "jsr.h"
+#include "runtime/SpinLock.h"
+#include "runtime/modules/RuntimeModules.h"
 
-namespace charon {
+namespace nativescript {
 
 class Runtime {
-public:
-  Runtime(std::string &mainPath);
+ public:
+  Runtime();
+  ~Runtime();
 
-  napi_value evaluateModule(std::string &spec);
-  int runScriptString(std::string &script);
-  int executeJS(const char *sourceFile);
-  int executeBytecode(const uint8_t *data, size_t size);
+  void Init(bool isWorker = false);
 
-  bool eventLoopStep();
-  void addEventLoopToRunLoop(bool exitOnEmpty = false);
-  void runRunLoop();
+  inline napi_env GetEnv() { return env_; }
+  static Runtime* GetRuntime(napi_env env);
 
-  // std::unique_ptr<facebook::jsi::ThreadSafeRuntime> threadSafeRuntime;
-  // facebook::hermes::HermesRuntime *runtime;
-  napi_runtime runtime;
-  napi_env env;
-  napi_handle_scope globalScope;
-  std::string mainPath;
-  Require *require;
+  void RunScript(std::string& script, std::string file = "<anonymous>");
+  napi_value RunModule(std::string spec);
+  void RunMainModule();
+
+  const int WorkerId();
+  void SetWorkerId(int workerId);
+  inline bool IsRuntimeWorker() { return workerId_ > 0; }
+
+  static bool IsWorker() {
+    if (currentRuntime_ == nullptr) {
+      return false;
+    }
+
+    return currentRuntime_->IsRuntimeWorker();
+  }
+
+  inline CFRunLoopRef RuntimeLoop() { return runtimeLoop_; }
+
+  void RunLoop();
+
+  static Runtime* GetCurrentRuntime() { return currentRuntime_; }
+
+  static bool IsAlive(napi_env env);
+
+ private:
+  int workerId_;
+  CFRunLoopRef runtimeLoop_;
+  double startTime_;
+  double realtimeOrigin_;
+
+  napi_runtime runtime_;
+  napi_env env_ = nullptr;
+  napi_handle_scope globalScope_;
+  RuntimeModules modules_ = RuntimeModules();
+
+  static thread_local Runtime* currentRuntime_;
+  static SpinMutex envsMutex_;
+  static std::atomic<int> nextIsolateId;
+
+  // std::shared_ptr<ConcurrentMap<int, std::shared_ptr<Caches::WorkerState>>>
+  //     workerCache_;
 };
 
-} // namespace charon
+}  // namespace nativescript
 
-#endif // ENABLE_JS_RUNTIME
-
-#endif // RUNTIME_H
+#endif  // RUNTIME_H
