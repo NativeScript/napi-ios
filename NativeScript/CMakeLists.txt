@@ -128,6 +128,7 @@ set(SOURCE_FILES
   ffi/InlineFunctions.mm
   ffi/ClassBuilder.mm
   ffi/NativeScriptException.mm
+  ffi/Tasks.cpp
 )
 
 if(ENABLE_JS_RUNTIME)

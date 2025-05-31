@@ -2,6 +2,8 @@
 #include "ClassMember.h"
 #include "ObjCBridge.h"
 #include "ffi/NativeScriptException.h"
+#include "ffi/Tasks.h"
+#include "jsr.h"
 
 namespace nativescript {
 
@@ -52,7 +54,10 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   auto bridgeState = ObjCBridgeState::InstanceData(env);
   MDSectionOffset offset = (MDSectionOffset)((size_t)_offset);
 
+  auto name = bridgeState->metadata->getString(offset);
+
   auto func = bridgeState->getCFunction(env, offset);
+
   auto cif = func->cif;
 
   size_t argc = cif->argc;
@@ -70,6 +75,31 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
       avalues[i] = cif->avalues[i];
       cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i], &shouldFree[i], &shouldFreeAny);
     }
+  }
+
+
+if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0) {
+    void **avaluesPtr = new void*[cif->argc];
+    memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
+
+    Tasks::Register([env, cif, func, rvalue, avaluesPtr]() {
+      NapiScope scope(env);
+
+      void * avalues[cif->argc];
+      memcpy(avalues, avaluesPtr, cif->argc * sizeof(void*));
+      delete[] avaluesPtr;
+      
+      @try {
+        ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+      } @catch (NSException* exception) {
+        std::string message = exception.description.UTF8String;
+        NSLog(@"ObjC->JS: Exception in CFunction (task): %s", message.c_str());
+        nativescript::NativeScriptException nativeScriptException(message);
+        nativeScriptException.ReThrowToJS(env);
+      }
+    });
+    
+    return nullptr;
   }
 
   @try {

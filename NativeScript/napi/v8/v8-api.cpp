@@ -641,9 +641,8 @@ inline napi_status Wrap(napi_env env, napi_value js_object, void* native_object,
         env->isolate,
         v8::String::NewFromUtf8(env->isolate, "napi_private").ToLocalChecked());
 
-    CHECK(obj->SetPrivate(context, pkey,
-                          v8::External::New(env->isolate, reference))
-              .FromJust());
+    obj->SetPrivate(context, pkey,
+                    v8::External::New(env->isolate, reference));
   }
 
   return GET_RETURN_STATUS(env);

@@ -2,7 +2,10 @@
 set -e
 
 rm -rf ./dist
-./update_version.sh
+# don't run if NO_UPDATE_VERSION is set
+if [ -z "$NO_UPDATE_VERSION" ]; then
+  ./update_version.sh
+fi
 ./build_metadata_generator.sh
 ./build_nativescript.sh --no-vision
 ./build_tklivesync.sh --no-vision

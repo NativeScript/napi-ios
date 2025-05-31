@@ -1,6 +1,7 @@
 #include "NativeScript.h"
 #include "Runtime.h"
 #include "RuntimeConfig.h"
+#include "ffi/Tasks.h"
 
 using namespace nativescript;
 
@@ -25,12 +26,14 @@ std::unique_ptr<Runtime> runtime_;
   if (runLoop) {
     runtime_->RunLoop();
   }
+  Tasks::Drain();
 }
 
 - (void)runMainApplication {
   std::string spec = "./app/bundle.js";
   runtime_->RunModule(spec);
   runtime_->RunLoop();
+  Tasks::Drain();
 }
 
 - (bool)liveSync {

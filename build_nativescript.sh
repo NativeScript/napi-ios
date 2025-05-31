@@ -32,12 +32,6 @@ VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebInfo
-CONFIG_SIMPLE=Debug
-
-ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=false})
-if $BUILD_CATALYST || $BUILD_IPHONE || $BUILD_SIMULATOR || $BUILD_VISION || $BUILD_MACOS; then
-  ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=true})
-fi
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 METADATA_SIZE=${METADATA_SIZE:=0}
@@ -153,34 +147,34 @@ fi
 
 XCFRAMEWORKS=()
 if $BUILD_CATALYST; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/catalyst/$CONFIG_SIMPLE-maccatalyst/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/catalyst/$CONFIG_SIMPLE-maccatalyst/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_SIMULATOR; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios-sim/$CONFIG_SIMPLE-iphonesimulator/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/ios-sim/$CONFIG_SIMPLE-iphonesimulator/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_IPHONE; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios/$CONFIG_SIMPLE-iphoneos/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/ios/$CONFIG_SIMPLE-iphoneos/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_MACOS; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_VISION; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos/$CONFIG_SIMPLE-xros/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/visionos/$CONFIG_SIMPLE-xros/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
 
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos-sim/$CONFIG_SIMPLE-xros/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_SIMPLE-xros/NativeScript.framework.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
 fi
 
-if $ANY_FRAMEWORK; then
+if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
 
 checkpoint "Creating NativeScript.xcframework"
 OUTPUT_DIR="$DIST/NativeScript.xcframework"
@@ -193,7 +187,7 @@ if $BUILD_MACOS; then
 
 checkpoint "Creating NativeScript.node"
 
-cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/libNativeScript.dylib" "$DIST/NativeScript.node"
+cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
 
 fi
 
@@ -201,7 +195,7 @@ if $BUILD_MACOS_CLI; then
 
 checkpoint "Creating NativeScript CLI"
 
-cp -r "$DIST/intermediates/macos/$CONFIG_SIMPLE/NativeScript" "$DIST/nsr"
+cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript" "$DIST/nsr"
 
 fi
 
