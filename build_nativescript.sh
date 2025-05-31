@@ -32,12 +32,7 @@ VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebInfo
-CONFIG_SIMPLE=Debug
-
-ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=false})
-if $BUILD_CATALYST || $BUILD_IPHONE || $BUILD_SIMULATOR || $BUILD_VISION || $BUILD_MACOS; then
-  ANY_FRAMEWORK=$(to_bool ${ANY_FRAMEWORK:=true})
-fi
+CONFIG_SIMPLE=${CONFIG_BUILD}
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 METADATA_SIZE=${METADATA_SIZE:=0}
@@ -180,7 +175,7 @@ if $BUILD_VISION; then
                   -debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_SIMPLE-xros/NativeScript.framework.dSYM" )
 fi
 
-if $ANY_FRAMEWORK; then
+if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
 
 checkpoint "Creating NativeScript.xcframework"
 OUTPUT_DIR="$DIST/NativeScript.xcframework"

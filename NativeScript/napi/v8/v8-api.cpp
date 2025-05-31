@@ -3,6 +3,7 @@
 #include <cmath>
 #include <sstream>
 #include <string_view>  // string_view, u16string_view
+#include "jsr.h"
 
 #define NAPI_EXPERIMENTAL
 
@@ -375,7 +376,6 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
   if (isInternalField) {
     reference = static_cast<v8impl::Reference*>(
         obj->GetAlignedPointerFromInternalField(0));
-    // printf("internal field works\n");
   } else {
     auto pkey = v8::Private::ForApi(
         env->isolate,
@@ -641,10 +641,9 @@ inline napi_status Wrap(napi_env env, napi_value js_object, void* native_object,
         env->isolate,
         v8::String::NewFromUtf8(env->isolate, "napi_private").ToLocalChecked());
 
-    CHECK(obj->SetPrivate(context, pkey,
-                          v8::External::New(env->isolate, reference))
-              .FromJust());
-  }
+    obj->SetPrivate(context, pkey,
+                          v8::External::New(env->isolate, reference));
+}
 
   return GET_RETURN_STATUS(env);
 }

@@ -144,7 +144,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
   }
 }
 
-inline bool objcNativeCall(napi_env env, napi_value jsThis, Cif* cif, id self, void** avalues,
+inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues,
                            void* rvalue) {
   bool classMethod = class_isMetaClass(object_getClass(self));
 
@@ -252,7 +252,7 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
 
   id rvalue;
 
-  if (!objcNativeCall(env, jsThis, cif, self, avalues, &rvalue)) {
+  if (!objcNativeCall(env, cif, self, avalues, &rvalue)) {
     return nullptr;
   }
 
@@ -319,7 +319,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  if (!objcNativeCall(env, jsThis, cif, self, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
     return nullptr;
   }
 
@@ -361,7 +361,7 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
   void* avalues[2] = {&self, &method->methodOrGetter.selector};
   void* rvalue = cif->rvalue;
 
-  if (!objcNativeCall(env, jsThis, cif, self, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
     return nullptr;
   }
 
@@ -403,7 +403,7 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   bool shouldFree = false;
   cif->argTypes[0]->toNative(env, argv, avalues[2], &shouldFree, &shouldFree);
 
-  if (!objcNativeCall(env, jsThis, cif, self, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
     return nullptr;
   }
 
