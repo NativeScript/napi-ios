@@ -328,8 +328,14 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
 std::string ModuleInternal::ResolvePath(napi_env env,
                                         const std::string& baseDir,
                                         const std::string& moduleName) {
+  std::string moduleNameCopy = moduleName;
+
+  if (moduleName.starts_with("~")) {
+    moduleNameCopy = RuntimeConfig.ApplicationPath + moduleNameCopy.substr(1);
+  }
+
   std::filesystem::path baseDirPath(baseDir);
-  std::filesystem::path moduleNamePath(moduleName);
+  std::filesystem::path moduleNamePath(moduleNameCopy);
   std::filesystem::path fullPath = baseDirPath / moduleNamePath;
 
   bool isDirectory = false;

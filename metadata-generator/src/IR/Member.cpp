@@ -89,8 +89,11 @@ MemberDecl::MemberDecl(CXCursor cursor,
 
     CXString cxname = clang_Cursor_getObjCPropertyGetterName(cursor);
     getterSelector = clang_getCString(cxname);
-    name = jsifySelector(getterSelector);
+    CXString cxPropertyName = clang_getCursorSpelling(cursor);
+    std::string propertyName = clang_getCString(cxPropertyName);
+    name = jsifyName(propertyName);
     clang_disposeString(cxname);
+    clang_disposeString(cxPropertyName);
 
     cxname = clang_Cursor_getObjCPropertySetterName(cursor);
     setterSelector = clang_getCString(cxname);
