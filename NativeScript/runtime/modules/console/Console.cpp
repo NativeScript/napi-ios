@@ -190,34 +190,7 @@ JS_METHOD(Console::Log) {
   }
   log << ": ";
 
-  for (size_t i = initialArg; i < argc; i++) {
-    napi_valuetype type;
-    napi_typeof(env, argv[i], &type);
-
-    bool hasSymbol = false;
-    if (type == napi_object || type == napi_function) {
-      napi_has_property(env, argv[i], symbol, &hasSymbol);
-    }
-
-    napi_value argstr = nullptr;
-
-    if (hasSymbol) {
-      napi_value fn;
-      napi_get_property(env, argv[i], symbol, &fn);
-      napi_call_function(env, argv[i], fn, 0, nullptr, &argstr);
-    } else {
-      napi_coerce_to_string(env, argv[i], &argstr);
-    }
-
-    size_t length = 0;
-    napi_get_value_string_utf8(env, argstr, nullptr, 0, &length);
-    char* strbuf = (char*)malloc(length + 2);
-    napi_get_value_string_utf8(env, argstr, strbuf, length + 2, &length);
-    strbuf[length] = i >= (argc - 1) ? '\0' : ' ';
-    strbuf[length + 1] = '\0';
-    log << strbuf;
-    free(strbuf);
-  }
+  log << buildLogString(env, cbinfo, initialArg);
 
   log << "\n";
 
