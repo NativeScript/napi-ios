@@ -390,6 +390,13 @@ std::string NativeObjectName = "NativeObject";
 // extended by a JS class.
 // Every Bridged Class extends the NativeObject class.
 
+void defineProtocolMembers(napi_env env, ObjCClassMemberMap& members, napi_value constructor, ObjCProtocol* protocol) {
+  ObjCClassMember::defineMembers(env, members, protocol->membersOffset, constructor);
+  for (auto protocol : protocol->protocols) {
+    defineProtocolMembers(env, members, constructor, protocol);
+  }
+}
+
 ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   NAPI_PREAMBLE
 
@@ -455,7 +462,7 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
       auto protocol =
           bridgeState->getProtocol(env, protocolOffset + bridgeState->metadata->protocolsOffset);
       if (protocol == nil) continue;
-      ObjCClassMember::defineMembers(env, members, protocol->membersOffset, constructor);
+      defineProtocolMembers(env, members, constructor, protocol);
     }
 
     if (superClassOffset != MD_SECTION_OFFSET_NULL) {
