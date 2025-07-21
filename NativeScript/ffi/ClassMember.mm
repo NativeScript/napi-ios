@@ -318,7 +318,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  //  NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
+  // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
   if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
     return nullptr;
@@ -361,6 +361,8 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
 
   void* avalues[2] = {&self, &method->methodOrGetter.selector};
   void* rvalue = cif->rvalue;
+
+  // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
   if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
     return nullptr;
