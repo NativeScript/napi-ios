@@ -86,7 +86,7 @@ function cmake_build () {
 
     for arch in x86_64 arm64; do
 
-      METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata.$platform.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata.$platform.$arch.nsmd")))
+      METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata.$platform.$arch.nsmd")))
 
     done
 

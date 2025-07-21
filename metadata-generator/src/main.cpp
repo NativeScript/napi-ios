@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
 
   CXIndex index = clang_createIndex(0, 0);
   CXTranslationUnit unit = clang_parseTranslationUnit(
-      index, umbrellaHeaderName.c_str(), argsC.data(), argsC.size(), nullptr, 0,
+      index, umbrellaHeaderName.c_str(), argsC.data(), (MDSectionOffset)argsC.size(), nullptr, 0,
       CXTranslationUnit_None);
 
   // std::remove(umbrellaHeaderName.c_str());

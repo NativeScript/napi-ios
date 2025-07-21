@@ -764,7 +764,6 @@
 		C2DDEB26229EA89200345BFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2DDEB32229EAB3B00345BFE /* NativeScript.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NativeScript.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2DDEB34229EAB3B00345BFE /* NativeScript.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeScript.h; sourceTree = "<group>"; };
-		C2DDEB35229EAB3B00345BFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2DDEB64229EAC8100345BFE /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		C2DDEB65229EAC8100345BFE /* Interop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interop.h; sourceTree = "<group>"; };
 		C2DDEB66229EAC8100345BFE /* ArgConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArgConverter.h; sourceTree = "<group>"; };
@@ -1359,7 +1358,6 @@
 				6573B9C1291FE29F00B0ED7C /* v8runtime */,
 				C247C14C22F82842001D2CA2 /* include */,
 				C2DDEB3B229EAB8600345BFE /* runtime */,
-				C2DDEB35229EAB3B00345BFE /* Info.plist */,
 				C2DDEB34229EAB3B00345BFE /* NativeScript.h */,
 				C2F64E8222E870A300EDB057 /* NativeScript.mm */,
 				C298C029233DEB8C000DDF54 /* NativeScript-Prefix.pch */,
@@ -1705,7 +1703,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2DDEB29229EA89200345BFE /* Build configuration list for PBXNativeTarget "TestRunner" */;
 			buildPhases = (
-				C2F4CBBD22C61D480036B56F /* ShellScript */,
+				C2F4CBBD22C61D480036B56F /* Run Script */,
 				C2DDEB12229EA89000345BFE /* Sources */,
 				C2DDEB13229EA89000345BFE /* Frameworks */,
 				C2DDEB14229EA89000345BFE /* Resources */,
@@ -1732,7 +1730,7 @@
 				C2DDEB2E229EAB3B00345BFE /* Sources */,
 				C2DDEB2F229EAB3B00345BFE /* Frameworks */,
 				C2DDEB30229EAB3B00345BFE /* Resources */,
-				65A6D684291F63A30074DF31 /* ShellScript */,
+				65A6D684291F63A30074DF31 /* Run Script */,
 				2BFE21F02AC1B28000307752 /* Add default metadata */,
 			);
 			buildRules = (
@@ -1882,7 +1880,7 @@
 			shellPath = /bin/sh;
 			shellScript = "echo \"Checking flags to determine whether to copy default metadata\"\nif [ \"$INCLUDE_DEFAULT_METADATA\" = true ] ; then\necho \"Copying ${SRCROOT}/${PRODUCT_NAME}/metadata/metadata-arm64.bin directory to ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework\"\ncp ${SRCROOT}/${PRODUCT_NAME}/metadata/metadata-arm64.bin ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/metadata-arm64.bin\necho \"metadata-arm64.bin has been copied.\"\necho \"Copying ${SRCROOT}/${PRODUCT_NAME}/metadata/metadata-x86_64.bin directory to ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework\"\ncp ${SRCROOT}/${PRODUCT_NAME}/metadata/metadata-x86_64.bin ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/metadata-x86_64.bin\necho \"metadata-x86_64.bin has been copied.\"\nelse\necho \"Skipped copying metadata binaries.\"\nfi\n\n";
 		};
-		65A6D684291F63A30074DF31 /* ShellScript */ = {
+		65A6D684291F63A30074DF31 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1891,6 +1889,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -1935,7 +1934,7 @@
 			shellPath = /bin/sh;
 			shellScript = "cd ${PROJECT_DIR}/metadata-generator\nmkdir build\ncd ./build\ncmake -DCMAKE_BUILD_TYPE=Release ../\nmake\n";
 		};
-		C2F4CBBD22C61D480036B56F /* ShellScript */ = {
+		C2F4CBBD22C61D480036B56F /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -1945,6 +1944,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (

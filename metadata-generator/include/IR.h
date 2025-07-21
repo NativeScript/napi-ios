@@ -250,6 +250,7 @@ class ClassDecl {
   std::string framework;
 
   std::string name;
+  std::string runtimeName;
   std::string superClassName;
   std::vector<std::string> protocolNames;
 

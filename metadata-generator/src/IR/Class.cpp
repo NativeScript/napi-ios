@@ -1,6 +1,7 @@
+#include <unordered_set>
+
 #include "IR.h"
 #include "clang-c/Index.h"
-#include <unordered_set>
 
 namespace metagen {
 
@@ -11,6 +12,23 @@ ClassDecl::ClassDecl(CXCursor cursor) {
   name = clang_getCString(cxname);
   clang_disposeString(cxname);
 
+  CXPrintingPolicy policy = clang_getCursorPrintingPolicy(cursor);
+  CXString printed = clang_getCursorPrettyPrinted(cursor, policy);
+  std::string prettyText = clang_getCString(printed);
+  clang_disposeString(printed);
+  clang_PrintingPolicy_dispose(policy);
+
+  std::string pattern = "objc_runtime_name(\"";
+  size_t pos = prettyText.find(pattern);
+  if (pos != std::string::npos) {
+    size_t start = pos + pattern.length();
+    size_t end = prettyText.find('"', start);
+    if (end != std::string::npos) {
+      std::string runtime = prettyText.substr(start, end - start);
+      this->runtimeName = runtime;
+    }
+  }
+
   clang_visitChildren(
       cursor,
       [](CXCursor cursor, CXCursor, CXClientData clientData) {
@@ -18,37 +36,37 @@ ClassDecl::ClassDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto cls = (ClassDecl *)clientData;
+        auto cls = (ClassDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_ObjCSuperClassRef: {
-          CXString name = clang_getCursorSpelling(cursor);
-          std::string nameStr = clang_getCString(name);
-          cls->superClassName = nameStr;
-          clang_disposeString(name);
-          break;
-        }
+          case CXCursor_ObjCSuperClassRef: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            cls->superClassName = nameStr;
+            clang_disposeString(name);
+            break;
+          }
 
-        case CXCursor_ObjCProtocolRef: {
-          CXString name = clang_getCursorSpelling(cursor);
-          std::string nameStr = clang_getCString(name);
-          cls->protocolNames.emplace_back(nameStr);
-          clang_disposeString(name);
-          break;
-        }
+          case CXCursor_ObjCProtocolRef: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            cls->protocolNames.emplace_back(nameStr);
+            clang_disposeString(name);
+            break;
+          }
 
-        case CXCursor_TemplateTypeParameter: {
-          CXString name = clang_getCursorSpelling(cursor);
-          std::string nameStr = clang_getCString(name);
-          cls->typeParameters.emplace_back(nameStr);
-          clang_disposeString(name);
-          break;
-        }
+          case CXCursor_TemplateTypeParameter: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            cls->typeParameters.emplace_back(nameStr);
+            clang_disposeString(name);
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -62,21 +80,21 @@ ClassDecl::ClassDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto cls = (ClassDecl *)clientData;
+        auto cls = (ClassDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_ObjCPropertyDecl:
-        case CXCursor_ObjCClassMethodDecl:
-        case CXCursor_ObjCInstanceMethodDecl: {
-          auto member = MemberDecl(cursor, &cls->typeParameters);
-          member.parentClassName = cls->name;
-          cls->members.emplace_back(member);
-          break;
-        }
-        default:
-          break;
+          case CXCursor_ObjCPropertyDecl:
+          case CXCursor_ObjCClassMethodDecl:
+          case CXCursor_ObjCInstanceMethodDecl: {
+            auto member = MemberDecl(cursor, &cls->typeParameters);
+            member.parentClassName = cls->name;
+            cls->members.emplace_back(member);
+            break;
+          }
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -84,8 +102,8 @@ ClassDecl::ClassDecl(CXCursor cursor) {
       this);
 }
 
-MemberDecl *ClassDecl::getMemberNamed(std::string &name) {
-  for (auto &member : members) {
+MemberDecl* ClassDecl::getMemberNamed(std::string& name) {
+  for (auto& member : members) {
     if (member.name == name) {
       return &member;
     }
@@ -93,7 +111,7 @@ MemberDecl *ClassDecl::getMemberNamed(std::string &name) {
   return nullptr;
 }
 
-void removeDuplicateMethods(std::vector<MemberDecl> &members) {
+void removeDuplicateMethods(std::vector<MemberDecl>& members) {
   std::vector<MemberDecl> filteredMembers;
 
   // Remove getter methods in favor of properties
@@ -101,8 +119,8 @@ void removeDuplicateMethods(std::vector<MemberDecl> &members) {
   std::unordered_set<std::string> instanceFiltered, classFiltered,
       instanceFilteredProperties, classFilteredProperties;
 
-  for (auto &member : members) {
-    auto &filtered =
+  for (auto& member : members) {
+    auto& filtered =
         member.isStatic ? classFilteredProperties : instanceFilteredProperties;
     if (member.kind == kMemberProperty) {
       filtered.insert(member.name);
@@ -115,13 +133,13 @@ void removeDuplicateMethods(std::vector<MemberDecl> &members) {
 
   // Check whether we should declare
 
-  for (auto &member : members) {
-    auto &filtered = member.isStatic ? classFiltered : instanceFiltered;
-    auto &filteredProps =
+  for (auto& member : members) {
+    auto& filtered = member.isStatic ? classFiltered : instanceFiltered;
+    auto& filteredProps =
         member.isStatic ? classFilteredProperties : instanceFilteredProperties;
 
-    // Prevent getters from being emitted if there is a property with the same
-    // name.
+    // Prevent getters from being emitted if there is a property with the
+    // same name.
     if (member.kind == kMemberMethod) {
       if (filteredProps.contains(member.name)) {
         continue;
@@ -144,7 +162,7 @@ void MetadataFactory::processClassRefs() {
     std::unordered_set<std::string> refs = referencedClasses;
     referencedClasses.clear();
 
-    for (const std::string &name : refs) {
+    for (const std::string& name : refs) {
       if (classes.contains(name)) {
         continue;
       }
@@ -161,8 +179,8 @@ void MetadataFactory::processClassRefs() {
   }
 }
 
-void convertMethodToPropertyIfNeeded(MemberDecl &member,
-                                     MemberDecl *memberInSuperclass,
+void convertMethodToPropertyIfNeeded(MemberDecl& member,
+                                     MemberDecl* memberInSuperclass,
                                      bool isSuperclass) {
   if (memberInSuperclass != nullptr) {
     if (memberInSuperclass->isStatic != member.isStatic) {
@@ -174,8 +192,7 @@ void convertMethodToPropertyIfNeeded(MemberDecl &member,
       member.tsIgnore = true;
     }
 
-    if (member.kind == kMemberProperty)
-      return;
+    if (member.kind == kMemberProperty) return;
 
     if (memberInSuperclass->kind == kMemberProperty) {
       // If the superclass has a property with the same name, we need to
@@ -195,9 +212,9 @@ void convertMethodToPropertyIfNeeded(MemberDecl &member,
   }
 }
 
-void processDerivedClassRefs(MemberDecl &member,
-                             std::vector<ClassDecl *> &derived) {
-  for (ClassDecl *cls : derived) {
+void processDerivedClassRefs(MemberDecl& member,
+                             std::vector<ClassDecl*>& derived) {
+  for (ClassDecl* cls : derived) {
     convertMethodToPropertyIfNeeded(member, cls->getMemberNamed(member.name),
                                     false);
     processDerivedClassRefs(member, cls->derivedClassRefs);
@@ -205,8 +222,8 @@ void processDerivedClassRefs(MemberDecl &member,
 }
 
 void ClassDecl::postProcessMembers() {
-  for (MemberDecl &member : members) {
-    ClassDecl *currentSuperClass = superClassRef;
+  for (MemberDecl& member : members) {
+    ClassDecl* currentSuperClass = superClassRef;
 
     while (currentSuperClass != nullptr) {
       convertMethodToPropertyIfNeeded(
@@ -216,7 +233,7 @@ void ClassDecl::postProcessMembers() {
 
     processDerivedClassRefs(member, derivedClassRefs);
 
-    for (ProtocolDecl *protocol : protocolRefs) {
+    for (ProtocolDecl* protocol : protocolRefs) {
       convertMethodToPropertyIfNeeded(
           member, protocol->getMemberNamed(member.name), false);
     }
@@ -227,4 +244,4 @@ void ClassDecl::postProcessMembers() {
   }
 }
 
-} // namespace metagen
+}  // namespace metagen

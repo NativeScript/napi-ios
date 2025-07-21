@@ -10,6 +10,12 @@ MDSectionOffset MDMetadataWriter::write(ClassDecl &decl) {
   MDClass *mdClass = new MDClass();
 
   mdClass->name = strings.add(decl.name, decl.name);
+  if (decl.runtimeName != "" && decl.runtimeName != decl.name) {
+    mdClass->runtimeName = strings.add(decl.runtimeName, decl.runtimeName);
+  } else {
+    mdClass->runtimeName = MD_SECTION_OFFSET_NULL;
+  }
+
   if (factory.classes.contains(decl.superClassName)) {
     MDResolvable res{decl.superClassName, &mdClass->superclass};
     classResolvables.emplace_back(res);
@@ -42,6 +48,7 @@ size_t MDClassSerde::size(MDClass *value) {
   size_t size = 0;
   // Name
   addsize(value->name);
+  addsize(value->runtimeName);
   // Protocols
   size += sizeof(MDSectionOffset) * value->protocols.size();
   // Superclass
@@ -57,10 +64,12 @@ void MDClassSerde::serialize(MDClass *value, void *data) {
   auto memberSerde = MDMemberSerde();
   // Name
   MDSectionOffset nameOffset = value->name;
+  MDSectionOffset runtimeNameOffset = value->runtimeName;
   if (!value->protocols.empty()) {
     nameOffset |= mdSectionOffsetNext;
   }
   binwrite(nameOffset);
+  binwrite(runtimeNameOffset);
   // Protocols
   size_t protocolsSize = value->protocols.size();
   for (size_t i = 0; i < protocolsSize; i++) {

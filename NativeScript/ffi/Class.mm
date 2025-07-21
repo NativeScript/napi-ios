@@ -21,10 +21,15 @@ void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
     MDSectionOffset originalOffset = offset;
     auto nameOffset = metadata->getOffset(offset);
     offset += sizeof(MDSectionOffset);
+    auto runtimeNameOffset = metadata->getOffset(offset);
+    offset += sizeof(MDSectionOffset);
     bool hasProtocols = (nameOffset & mdSectionOffsetNext) != 0;
     nameOffset &= ~mdSectionOffsetNext;
     auto name = metadata->resolveString(nameOffset);
-
+    auto runtimeName = name;
+    if (runtimeNameOffset != MD_SECTION_OFFSET_NULL) {
+      runtimeName = metadata->resolveString(runtimeNameOffset);
+    }
     while (hasProtocols) {
       auto protocolOffset = metadata->getOffset(offset);
       offset += sizeof(MDSectionOffset);
@@ -56,7 +61,7 @@ void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
       }
     }
 
-    auto nativeClass = objc_getClass(name);
+    auto nativeClass = objc_getClass(runtimeName);
     if (nativeClass != nil) {
       mdClassesByPointer[nativeClass] = originalOffset;
     }
@@ -406,9 +411,16 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   } else {
     auto nameOffset = bridgeState->metadata->getOffset(offset);
     offset += sizeof(MDSectionOffset);
+    auto runtimeNameOffset = bridgeState->metadata->getOffset(offset);
+    offset += sizeof(MDSectionOffset);
     bool hasProtocols = (nameOffset & mdSectionOffsetNext) != 0;
     nameOffset &= ~mdSectionOffsetNext;
     name = bridgeState->metadata->resolveString(nameOffset);
+    const char* runtimeName = name.c_str();
+    if (runtimeNameOffset != MD_SECTION_OFFSET_NULL) {
+      runtimeName = bridgeState->metadata->resolveString(runtimeNameOffset);
+    }
+    nativeClass = objc_getClass(runtimeName);
     while (hasProtocols) {
       auto protocolOffset = bridgeState->metadata->getOffset(offset);
       offset += sizeof(MDSectionOffset);
@@ -420,7 +432,6 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
     hasMembers = (superClassOffset & mdSectionOffsetNext) != 0;
     superClassOffset &= ~mdSectionOffsetNext;
     offset += sizeof(MDSectionOffset);
-    nativeClass = objc_getClass(name.c_str());
   }
 
   napi_value constructor, prototype;

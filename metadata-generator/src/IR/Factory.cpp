@@ -21,8 +21,9 @@ void MetadataFactory::process(CXCursor cursor, bool checkAvailability) {
         CXString name = clang_getCursorSpelling(cursor);
         std::string nameStr = clang_getCString(name);
 
-        if (state->_checkAvailability && !isAvailable(cursor))
+        if (state->_checkAvailability && !isAvailable(cursor)) {
           return CXChildVisit_Continue;
+        }
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
@@ -99,7 +100,7 @@ bool MetadataFactory::shouldProcess(CXCursor cursor, bool required) {
       return true;
     }
   }
-  
+
   return false;
 }
 

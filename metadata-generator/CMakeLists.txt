@@ -77,6 +77,12 @@ target_link_libraries(
   clang
 )
 
+# Set runtime path for libclang
+set_target_properties(${NAME} PROPERTIES
+  BUILD_WITH_INSTALL_RPATH TRUE
+  INSTALL_RPATH "/Library/Developer/CommandLineTools/usr/lib"
+)
+
 install(TARGETS ${NAME}
   RUNTIME DESTINATION bin)
 

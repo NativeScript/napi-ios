@@ -361,11 +361,19 @@ if(TARGET_ENGINE_JSC)
 endif()
 
 if(TARGET_ENGINE_V8)
-  target_link_directories(
-    ${NAME}
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/v8
-  )
+  if (TARGET_PLATFORM_MACOS)
+    target_link_directories(
+      ${NAME}
+      PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/v8_macos
+    )
+  else()
+    target_link_directories(
+      ${NAME}
+      PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/v8_ios
+    )
+  endif()
 
   target_link_libraries(
     ${NAME}

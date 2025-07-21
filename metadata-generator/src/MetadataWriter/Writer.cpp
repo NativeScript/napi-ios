@@ -142,7 +142,7 @@ std::pair<void *, size_t> MDMetadataWriter::serialize() {
   memcpy(data, &protocolsOffset, sizeof(MDSectionOffset));
   ptr_add(&data, sizeof(MDSectionOffset));
 
-  MDSectionOffset classesOffset = protocolsOffset + protocols.section_size;
+  MDSectionOffset classesOffset = protocolsOffset + (MDSectionOffset)protocols.section_size;
   memcpy(data, &classesOffset, sizeof(MDSectionOffset));
   ptr_add(&data, sizeof(MDSectionOffset));
 

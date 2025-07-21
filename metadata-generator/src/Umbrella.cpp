@@ -57,8 +57,8 @@ static std::error_code CreateUmbrellaHeaderForAmbientModule(
     std::vector<std::string>& umbrellaHeaders,
     std::vector<std::string>& includePaths,
     std::vector<std::string>& frameworks) {
-  // std::cerr << "Creating umbrella header for module map: " << moduleMapPath
-  //           << " in " << basePath << std::endl;
+  std::cerr << "Creating umbrella header for module map: " << moduleMapPath
+            << " in " << basePath << std::endl;
 
   std::ifstream file(moduleMapPath);
 
@@ -85,7 +85,14 @@ static std::error_code CreateUmbrellaHeaderForAmbientModule(
         std::filesystem::path headerPath =
             isFramework ? basePath / "Headers" / header : basePath / header;
 
+        if (header.starts_with("/")) {
+          headerPath = header;
+          std::string headerPathOuter = headerPath.string();
+          addIncludePath(headerPathOuter, includePaths);
+        }
+
         if (std::filesystem::exists(headerPath)) {
+          std::cerr << "Adding modulemap header: " << headerPath.string() << std::endl;
           std::string headerPathStr = headerPath.string();
           addHeaderInclude(headerPathStr, umbrellaHeaders);
         }
@@ -173,7 +180,15 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
             return code;
           }
         }
-      } else if (!isFrameworksDir) {
+
+        if (std::filesystem::exists(entry.path() / "SubFrameworks")) {
+          if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
+                  entry.path() / "SubFrameworks", true, umbrellaHeaders,
+                  includePaths, frameworks)) {
+            return code;
+          }
+        }
+      } else if (!isFrameworksDir && !entry.is_symlink()) {
         // TODO: should it inherit isFrameworksDir? I think not
         if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
                 pathstring, false, umbrellaHeaders, includePaths, frameworks)) {

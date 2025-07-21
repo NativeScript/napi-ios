@@ -105,6 +105,7 @@ struct MDProtocol {
 
 struct MDClass {
   MDSectionOffset name;
+  MDSectionOffset runtimeName;
   std::vector<MDSectionOffset> protocols;
   MDSectionOffset superclass;
   std::vector<MDMember *> members;
@@ -242,7 +243,7 @@ public:
     if (stringToKey.contains(strKey)) {
       return stringToKey[strKey];
     }
-    MDSectionOffset key = section_offset;
+    MDSectionOffset key = (MDSectionOffset)section_offset;
     size_t valueSize = serde.size(value);
     section_offset += valueSize;
     section_size += valueSize;

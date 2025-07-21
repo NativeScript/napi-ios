@@ -36,6 +36,7 @@ NativeScriptException::NativeScriptException(napi_env env, napi_value error,
   this->fullMessage_ = GetFullMessage(env, error, this->message_);
   this->name_ = name;
   napi_set_named_property(env, error, "name", napi_util::to_js_string(env, name));
+  NSLog(@"NativeScriptException::NativeScriptException: %s", this->fullMessage_.c_str());
 }
 
 std::string NativeScriptException::Description() const {
