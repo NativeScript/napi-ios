@@ -540,12 +540,17 @@ bool Pointer::isInstance(napi_env env, napi_value value) {
 }
 
 napi_value Pointer::create(napi_env env, void* data) {
+  if (data == nullptr) {
+    printf("Pointer::create called with null data\n");
+    return nullptr;
+  }
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
   bool isInstance = false;
   napi_value jsPointer = get_ref_value(env, bridgeState->pointerClass);
   napi_value result;
   napi_new_instance(env, jsPointer, 0, nullptr, &result);
   Pointer* ptr = Pointer::unwrap(env, result);
+  
   ptr->data = data;
   return result;
 }

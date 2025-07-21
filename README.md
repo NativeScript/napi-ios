@@ -1,5 +1,9 @@
 # Getting Started
 
+**Prerequisites**:
+- Download v8 static libraries from here:
+  - Create a `Frameworks` folder at the root. Unzip and move the `v8_ios` folder inside so they are at `Frameworks/v8_ios`.
+
 To start diving into the v8 iOS runtime make sure you have Xcode and [Homebrew](https://brew.sh/) installed, and then run the following
 ```bash
 # Install CMake

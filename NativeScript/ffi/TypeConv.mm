@@ -13,6 +13,7 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
+#import <CoreFoundation/CoreFoundation.h>
 #include <objc/runtime.h>
 #include <stdbool.h>
 #include <memory>
@@ -531,6 +532,40 @@ class PointerTypeConv : public TypeConv {
         return;
       }
 
+      case napi_string: {
+        size_t len = 0;
+        NAPI_GUARD(napi_get_value_string_utf8(env, value, nullptr, len, &len)) {
+          NAPI_THROW_LAST_ERROR
+          return;
+        }
+
+        char* str = (char*)malloc(len + 1);
+
+        NAPI_GUARD(napi_get_value_string_utf8(env, value, str, len + 1, &len)) {
+          NAPI_THROW_LAST_ERROR
+          ::free(str);
+          return;
+        }
+
+        str[len] = '\0';
+
+        // Check if we need to create a CFStringRef instead of a C string
+        // if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
+          // Create CFStringRef for CF/NS string pointers
+          CFStringRef cfStr = CFStringCreateWithCString(kCFAllocatorDefault, str, kCFStringEncodingUTF8);
+          ::free(str);  // Free the temporary C string
+          *res = (void*)cfStr;
+          *shouldFree = false;  // CFStringRef is reference counted, don't use free()
+          *shouldFreeAny = false;
+        // } else {
+        //   // Default behavior: return C string
+        //   *res = (void*)str;
+        //   *shouldFree = true;
+        //   *shouldFreeAny = true;
+        // }
+        return;
+      }
+
       case napi_external: {
         NAPI_GUARD(napi_get_value_external(env, value, res)) {
           NAPI_THROW_LAST_ERROR
@@ -590,9 +625,23 @@ class PointerTypeConv : public TypeConv {
       }
 
       default:
+            NSLog(@"value %d", type);
         napi_throw_error(env, nullptr, "Invalid pointer type");
         *res = nullptr;
         return;
+    }
+  }
+
+  void free(napi_env env, void* value) override {
+    if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
+      // CFStringRef needs CFRelease, not free()
+      CFStringRef cfStr = (CFStringRef)value;
+      if (cfStr != nullptr) {
+        CFRelease(cfStr);
+      }
+    } else {
+      // Default behavior for C strings
+      ::free(value);
     }
   }
 
@@ -941,6 +990,20 @@ class ObjCObjectTypeConv : public TypeConv {
         status = napi_unwrap(env, value, (void**)res);
 
         if (status != napi_ok) {
+          // Check if this is a Pointer instance and use its underlying data
+          if (Pointer::isInstance(env, value)) {
+            Pointer* ptr = Pointer::unwrap(env, value);
+            *res = (id)ptr->data;
+            return;
+          }
+
+          // Check if this is a Reference instance and use its underlying data
+          if (Reference::isInstance(env, value)) {
+            Reference* ref = Reference::unwrap(env, value);
+            *res = (id)ref->data;
+            return;
+          }
+
           bool isArray = false;
           napi_is_array(env, value, &isArray);
           if (isArray) {
