@@ -47,6 +47,8 @@ class URL {
   static napi_value GetSearch(napi_env env, napi_callback_info info);
   static napi_value SetSearch(napi_env env, napi_callback_info info);
 
+  static napi_value GetSearchParams(napi_env env, napi_callback_info info);
+
   static napi_value GetUserName(napi_env env, napi_callback_info info);
   static napi_value SetUserName(napi_env env, napi_callback_info info);
 

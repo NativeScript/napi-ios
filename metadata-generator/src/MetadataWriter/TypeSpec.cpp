@@ -115,6 +115,8 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
       } else {
         if (type.className == "NSString") {
           info->kind = mdTypeNSStringObject;
+        } else if (type.className == "NSMutableString") {
+          info->kind = mdTypeNSMutableStringObject;
         } else if (factory.classes.contains(type.className)) {
           info->kind = mdTypeClassObject;
           MDResolvable res{type.className, &info->classOffset};
@@ -394,6 +396,9 @@ std::string MDTypeInfoSerde::encode(MDTypeInfo* type) {
       break;
     case mdTypeNSStringObject:
       result = "@'NSString'";
+      break;
+    case mdTypeNSMutableStringObject:
+      result = "@'NSMutableString'";
       break;
     case mdTypeInstanceObject:
       result = "@\"instancetype\"";

@@ -51,6 +51,8 @@ enum MDTypeKind : uint8_t {
   mdTypeInstanceObject,
   // 5. NSString Type Object
   mdTypeNSStringObject,
+  // 6. NSMutableString Type Object
+  mdTypeNSMutableStringObject,
 
   mdTypeClass,
   mdTypeSelector,

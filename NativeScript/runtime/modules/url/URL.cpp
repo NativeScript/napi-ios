@@ -1,5 +1,6 @@
 #include "URL.h"
 
+#include "URLSearchParams.h"
 #include "native_api_util.h"
 
 using namespace ada;
@@ -108,6 +109,53 @@ napi_value URL::GetProtocol(napi_env env, napi_callback_info info) {
 
 napi_value URL::GetSearch(napi_env env, napi_callback_info info) {
   return GetUrlProperty(env, info, &url_aggregator::get_search);
+}
+
+napi_value URL::GetSearchParams(napi_env env, napi_callback_info info) {
+  NAPI_PREAMBLE
+  URL* instance = GetInstance(env, info);
+  if (!instance) return nullptr;
+
+  auto search = instance->GetURL()->get_search();
+
+  // Remove the leading '?' if present
+  std::string_view search_string = search;
+  if (!search_string.empty() && search_string[0] == '?') {
+    search_string = search_string.substr(1);
+  }
+
+  // Create URLSearchParams from the search string
+  url_search_params params(search_string);
+  URLSearchParams* searchParams = new URLSearchParams(params);
+
+  // Get the URLSearchParams constructor
+  napi_value global;
+  NAPI_GUARD(napi_get_global(env, &global)) {
+    delete searchParams;
+    return nullptr;
+  }
+
+  napi_value constructor;
+  NAPI_GUARD(
+      napi_get_named_property(env, global, "URLSearchParams", &constructor)) {
+    delete searchParams;
+    return nullptr;
+  }
+
+  napi_value result;
+  NAPI_GUARD(napi_new_instance(env, constructor, 0, nullptr, &result)) {
+    delete searchParams;
+    return nullptr;
+  }
+
+  // Wrap the native URLSearchParams instance
+  NAPI_GUARD(napi_wrap(env, result, searchParams, URLSearchParams::Destructor,
+                       searchParams, nullptr)) {
+    delete searchParams;
+    return nullptr;
+  }
+
+  return result;
 }
 
 napi_value URL::GetUserName(napi_env env, napi_callback_info info) {
@@ -299,7 +347,7 @@ void URL::Destructor(napi_env env, void* data, void* hint) {
 void URL::Init(napi_env env, napi_value global) {
   NAPI_PREAMBLE
   napi_value ctor;
-  static const int instance_prop_count = 12;
+  static const int instance_prop_count = 13;
   napi_property_descriptor properties[instance_prop_count] = {
       {"hash", nullptr, nullptr, GetHash, SetHash, nullptr, napi_default,
        nullptr},
@@ -321,6 +369,8 @@ void URL::Init(napi_env env, napi_value global) {
        napi_default, nullptr},
       {"search", nullptr, nullptr, GetSearch, SetSearch, nullptr, napi_default,
        nullptr},
+      {"searchParams", nullptr, nullptr, GetSearchParams, nullptr, nullptr,
+       napi_default, nullptr},
       {"username", nullptr, nullptr, GetUserName, SetUserName, nullptr,
        napi_default, nullptr},
       {"toString", nullptr, ToString, nullptr, nullptr, nullptr, napi_default,

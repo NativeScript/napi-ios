@@ -224,7 +224,7 @@ void registerInterop(napi_env env, napi_value global) {
       },
   };
 
-  napi_define_properties(env, interop, 11, properties);
+  napi_define_properties(env, interop, 12, properties);
 
   napi_set_named_property(env, global, "interop", interop);
 }
@@ -479,7 +479,9 @@ napi_value interop_bufferFromData(napi_env env, napi_callback_info info) {
   }
 
   napi_value result;
-  napi_create_external_arraybuffer(env, (void*)data.bytes, data.length, nullptr, nullptr, nullptr);
+
+  napi_create_external_arraybuffer(env, (void*)data.bytes, data.length, nullptr, nullptr, &result);
+
   return result;
 }
 
@@ -550,7 +552,7 @@ napi_value Pointer::create(napi_env env, void* data) {
   napi_value result;
   napi_new_instance(env, jsPointer, 0, nullptr, &result);
   Pointer* ptr = Pointer::unwrap(env, result);
-  
+
   ptr->data = data;
   return result;
 }

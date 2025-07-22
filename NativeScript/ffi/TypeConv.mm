@@ -634,16 +634,16 @@ class PointerTypeConv : public TypeConv {
   }
 
   void free(napi_env env, void* value) override {
-    if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
-      // CFStringRef needs CFRelease, not free()
-      CFStringRef cfStr = (CFStringRef)value;
-      if (cfStr != nullptr) {
-        CFRelease(cfStr);
-      }
-    } else {
-      // Default behavior for C strings
-      ::free(value);
+    // if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
+    // CFStringRef needs CFRelease, not free()
+    CFStringRef cfStr = (CFStringRef)value;
+    if (cfStr != nullptr) {
+      CFRelease(cfStr);
     }
+    // } else {
+    //   // Default behavior for C strings
+    //   ::free(value);
+    // }
   }
 
   void encode(std::string* encoding) override { *encoding += "^v"; }
@@ -890,6 +890,12 @@ class ObjCObjectTypeConv : public TypeConv {
       return null;
     }
 
+    if ([obj isKindOfClass:[NSMutableString class]]) {
+      napi_value result;
+      napi_create_string_utf8(env, [obj UTF8String], [obj length], &result);
+      return result;
+    }
+
     auto bridgeState = ObjCBridgeState::InstanceData(env);
 
     ObjectOwnership ownership;
@@ -1115,6 +1121,63 @@ class ObjCNSStringObjectTypeConv : public TypeConv {
 
 static const std::shared_ptr<ObjCNSStringObjectTypeConv> objcNSStringObjectTypeConv =
     std::make_shared<ObjCNSStringObjectTypeConv>();
+
+class ObjCNSMutableStringObjectTypeConv : public TypeConv {
+ public:
+  ObjCNSMutableStringObjectTypeConv() { type = &ffi_type_pointer; }
+
+  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    NSString* str = *((NSString**)value);
+
+    if (str == nullptr) {
+      return nullptr;
+    }
+
+    napi_value result;
+    napi_create_string_utf8(env, [str UTF8String], [str length], &result);
+    return result;
+  }
+
+  void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
+                bool* shouldFreeAny) override {
+    NAPI_PREAMBLE
+
+    napi_valuetype type;
+    napi_typeof(env, value, &type);
+    if (type == napi_string) {
+      NSMutableString** res = (NSMutableString**)result;
+
+      size_t len = 0;
+      NAPI_GUARD(napi_get_value_string_utf8(env, value, nullptr, len, &len)) {
+        NAPI_THROW_LAST_ERROR
+        return;
+      }
+
+      char* str = (char*)malloc(len + 1);
+
+      NAPI_GUARD(napi_get_value_string_utf8(env, value, str, len + 1, &len)) {
+        NAPI_THROW_LAST_ERROR
+        ::free(str);
+        return;
+      }
+
+      str[len] = '\0';
+
+      *res = [[NSMutableString alloc] initWithUTF8String:str];
+
+      ::free(str);
+      return;
+    }
+
+    ObjCObjectTypeConv typeConv;
+    typeConv.toNative(env, value, result, shouldFree, shouldFreeAny);
+  }
+
+  void encode(std::string* encoding) override { *encoding += "@"; }
+};
+
+static const std::shared_ptr<ObjCNSMutableStringObjectTypeConv> objcNSMutableStringObjectTypeConv =
+    std::make_shared<ObjCNSMutableStringObjectTypeConv>();
 
 class ObjCClassTypeConv : public TypeConv {
  public:
@@ -1593,6 +1656,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
 
     case mdTypeNSStringObject: {
       return objcNSStringObjectTypeConv;
+    }
+
+    case mdTypeNSMutableStringObject: {
+      return objcNSMutableStringObjectTypeConv;
     }
 
     case mdTypeClass: {
