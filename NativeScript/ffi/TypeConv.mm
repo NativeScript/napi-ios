@@ -12,8 +12,8 @@
 #include "js_native_api_types.h"
 #include "node_api_util.h"
 
-#import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
 #include <objc/runtime.h>
 #include <stdbool.h>
 #include <memory>
@@ -551,12 +551,13 @@ class PointerTypeConv : public TypeConv {
 
         // Check if we need to create a CFStringRef instead of a C string
         // if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
-          // Create CFStringRef for CF/NS string pointers
-          CFStringRef cfStr = CFStringCreateWithCString(kCFAllocatorDefault, str, kCFStringEncodingUTF8);
-          ::free(str);  // Free the temporary C string
-          *res = (void*)cfStr;
-          *shouldFree = false;  // CFStringRef is reference counted, don't use free()
-          *shouldFreeAny = false;
+        // Create CFStringRef for CF/NS string pointers
+        CFStringRef cfStr =
+            CFStringCreateWithCString(kCFAllocatorDefault, str, kCFStringEncodingUTF8);
+        ::free(str);  // Free the temporary C string
+        *res = (void*)cfStr;
+        *shouldFree = false;  // CFStringRef is reference counted, don't use free()
+        *shouldFreeAny = false;
         // } else {
         //   // Default behavior: return C string
         //   *res = (void*)str;
@@ -625,7 +626,7 @@ class PointerTypeConv : public TypeConv {
       }
 
       default:
-            NSLog(@"value %d", type);
+        NSLog(@"value %d", type);
         napi_throw_error(env, nullptr, "Invalid pointer type");
         *res = nullptr;
         return;
@@ -987,23 +988,21 @@ class ObjCObjectTypeConv : public TypeConv {
 
       case napi_object:
       case napi_function: {
+        if (Pointer::isInstance(env, value)) {
+          Pointer* ptr = Pointer::unwrap(env, value);
+          *res = (id)ptr->data;
+          return;
+        }
+
+        if (Reference::isInstance(env, value)) {
+          Reference* ref = Reference::unwrap(env, value);
+          *res = (id)ref->data;
+          return;
+        }
+
         status = napi_unwrap(env, value, (void**)res);
 
         if (status != napi_ok) {
-          // Check if this is a Pointer instance and use its underlying data
-          if (Pointer::isInstance(env, value)) {
-            Pointer* ptr = Pointer::unwrap(env, value);
-            *res = (id)ptr->data;
-            return;
-          }
-
-          // Check if this is a Reference instance and use its underlying data
-          if (Reference::isInstance(env, value)) {
-            Reference* ref = Reference::unwrap(env, value);
-            *res = (id)ref->data;
-            return;
-          }
-
           bool isArray = false;
           napi_is_array(env, value, &isArray);
           if (isArray) {

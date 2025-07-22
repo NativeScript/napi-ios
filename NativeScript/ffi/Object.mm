@@ -178,8 +178,6 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
       return nullptr;
     }
 
-    napi_value orig = result;
-
     if (ownership == kUnownedObject) {
       [obj retain];
     }
