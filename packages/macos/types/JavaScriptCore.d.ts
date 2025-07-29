@@ -3,29 +3,29 @@
 
 declare const JSPropertyDescriptorSetKey: string;
 
-declare const JSPropertyDescriptorWritableKey: string;
+declare const JSPropertyDescriptorConfigurableKey: string;
+
+declare const JSPropertyDescriptorEnumerableKey: string;
 
 declare const kJSClassAttributeNoAutomaticPrototype: number;
 
 declare const kJSClassAttributeNone: number;
 
-declare const kJSPropertyAttributeDontDelete: number;
-
-declare const kJSPropertyAttributeDontEnum: number;
-
 declare const kJSPropertyAttributeNone: number;
+
+declare const kJSPropertyAttributeReadOnly: number;
 
 declare const kJSClassDefinitionEmpty: JSClassDefinition;
 
-declare const JSPropertyDescriptorConfigurableKey: string;
+declare const kJSPropertyAttributeDontEnum: number;
 
 declare const JSPropertyDescriptorGetKey: string;
 
-declare const JSPropertyDescriptorEnumerableKey: string;
+declare const kJSPropertyAttributeDontDelete: number;
 
 declare const JSPropertyDescriptorValueKey: string;
 
-declare const kJSPropertyAttributeReadOnly: number;
+declare const JSPropertyDescriptorWritableKey: string;
 
 declare const JSType: {
   Undefined: 0,
@@ -36,13 +36,6 @@ declare const JSType: {
   Object: 5,
   Symbol: 6,
   BigInt: 7,
-};
-
-declare const JSRelationCondition: {
-  Undefined: 0,
-  Equal: 1,
-  GreaterThan: 2,
-  LessThan: 3,
 };
 
 declare const JSTypedArrayType: {
@@ -61,36 +54,12 @@ declare const JSTypedArrayType: {
   BigUint64Array: 12,
 };
 
-declare class JSStaticFunction {
-  constructor(init?: JSStaticFunction);
-  name: string | null;
-  callAsFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Pointer | null;
-  attributes: number;
-}
-
-declare class OpaqueJSString {
-  constructor(init?: OpaqueJSString);
-}
-
-declare class OpaqueJSValue {
-  constructor(init?: OpaqueJSValue);
-}
-
-declare class OpaqueJSPropertyNameAccumulator {
-  constructor(init?: OpaqueJSPropertyNameAccumulator);
-}
-
-declare class OpaqueJSPropertyNameArray {
-  constructor(init?: OpaqueJSPropertyNameArray);
-}
-
-declare class OpaqueJSClass {
-  constructor(init?: OpaqueJSClass);
-}
-
-declare class OpaqueJSContextGroup {
-  constructor(init?: OpaqueJSContextGroup);
-}
+declare const JSRelationCondition: {
+  Undefined: 0,
+  Equal: 1,
+  GreaterThan: 2,
+  LessThan: 3,
+};
 
 declare class JSClassDefinition {
   constructor(init?: JSClassDefinition);
@@ -113,16 +82,47 @@ declare class JSClassDefinition {
   convertToType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof JSType>, p4: interop.PointerConvertible) => interop.Pointer | null;
 }
 
-declare class OpaqueJSContext {
-  constructor(init?: OpaqueJSContext);
-}
-
 declare class JSStaticValue {
   constructor(init?: JSStaticValue);
   name: string | null;
   getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
   setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
   attributes: number;
+}
+
+declare class OpaqueJSPropertyNameAccumulator {
+  constructor(init?: OpaqueJSPropertyNameAccumulator);
+}
+
+declare class OpaqueJSContext {
+  constructor(init?: OpaqueJSContext);
+}
+
+declare class OpaqueJSClass {
+  constructor(init?: OpaqueJSClass);
+}
+
+declare class OpaqueJSString {
+  constructor(init?: OpaqueJSString);
+}
+
+declare class OpaqueJSContextGroup {
+  constructor(init?: OpaqueJSContextGroup);
+}
+
+declare class JSStaticFunction {
+  constructor(init?: JSStaticFunction);
+  name: string | null;
+  callAsFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Pointer | null;
+  attributes: number;
+}
+
+declare class OpaqueJSPropertyNameArray {
+  constructor(init?: OpaqueJSPropertyNameArray);
+}
+
+declare class OpaqueJSValue {
+  constructor(init?: OpaqueJSValue);
 }
 
 declare function JSEvaluateScript(ctx: interop.PointerConvertible, script: interop.PointerConvertible, thisObject: interop.PointerConvertible, sourceURL: interop.PointerConvertible, startingLineNumber: number, exception: interop.PointerConvertible): interop.Pointer;
@@ -369,14 +369,6 @@ declare interface JSExport {
 declare class JSExport extends NativeObject implements JSExport {
 }
 
-declare class JSVirtualMachine extends NSObject {
-  init(): this;
-
-  addManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
-
-  removeManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
-}
-
 declare class JSManagedValue extends NSObject {
   static managedValueWithValue(value: JSValue): JSManagedValue;
 
@@ -414,7 +406,17 @@ declare class JSContext extends NSObject {
 
   name: string;
 
-  isInspectable: boolean;
+  inspectable: boolean;
+
+  setException(exception: JSValue): void;
+
+  setExceptionHandler(exceptionHandler: (p1: JSContext, p2: JSValue) => void): void;
+
+  setName(name: string): void;
+
+  isInspectable(): boolean;
+
+  setInspectable(inspectable: boolean): void;
 
   objectForKeyedSubscript(key: interop.Object): JSValue;
 
@@ -573,5 +575,13 @@ declare class JSValue extends NSObject {
   static valueWithJSValueRefInContext(value: interop.PointerConvertible, context: JSContext): JSValue;
 
   readonly JSValueRef: interop.Pointer;
+}
+
+declare class JSVirtualMachine extends NSObject {
+  init(): this;
+
+  addManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
+
+  removeManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
 }
 

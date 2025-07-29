@@ -3,121 +3,127 @@
 
 declare const NLTagOrganizationName: string;
 
-declare const NLTagPersonalName: string;
+declare const NLTagPlaceName: string;
 
-declare const NLTagOtherWhitespace: string;
-
-declare const NLTagParagraphBreak: string;
+declare const NLTagOtherPunctuation: string;
 
 declare const NLTagDash: string;
 
-declare const NLTagCloseParenthesis: string;
+declare const NLTagWordJoiner: string;
 
-declare const NLTagOpenParenthesis: string;
+declare const NLTagCloseQuote: string;
 
-declare const NLTagOpenQuote: string;
+declare const NLTagSentenceTerminator: string;
 
 declare const NLTagOtherWord: string;
 
 declare const NLTagIdiom: string;
 
-declare const NLTagPreposition: string;
+declare const NLTagConjunction: string;
 
-declare const NLTagDeterminer: string;
+declare const NLTagNumber: string;
+
+declare const NLTagPreposition: string;
 
 declare const NLTagPronoun: string;
 
-declare const NLTagAdverb: string;
-
-declare const NLTagAdjective: string;
-
-declare const NLTagOther: string;
+declare const NLTagNoun: string;
 
 declare const NLTagWhitespace: string;
 
 declare const NLTagPunctuation: string;
 
-declare const NLTagSchemeLanguage: string;
+declare const NLTagWord: string;
 
 declare const NLTagSchemeNameTypeOrLexicalClass: string;
 
 declare const NLTagSchemeLexicalClass: string;
 
+declare const NLContextualEmbeddingKeyRevision: string;
+
+declare const NLContextualEmbeddingKeyScripts: string;
+
 declare const NLScriptTibetan: string;
 
-declare const NLScriptSinhala: string;
+declare const NLScriptTelugu: string;
 
-declare const NLScriptOriya: string;
+declare const NLScriptTamil: string;
+
+declare const NLScriptMyanmar: string;
 
 declare const NLScriptMalayalam: string;
 
 declare const NLScriptLatin: string;
 
+declare const NLScriptKhmer: string;
+
 declare const NLScriptKannada: string;
+
+declare const NLScriptJapanese: string;
 
 declare const NLScriptHebrew: string;
 
-declare const NLScriptGurmukhi: string;
-
 declare const NLScriptGujarati: string;
-
-declare const NLScriptGreek: string;
 
 declare const NLScriptGeorgian: string;
 
 declare const NLScriptDevanagari: string;
 
-declare const NLScriptCyrillic: string;
-
-declare const NLScriptCherokee: string;
-
-declare const NLScriptCanadianAboriginalSyllabics: string;
-
-declare const NLScriptBengali: string;
+declare const NLScriptArmenian: string;
 
 declare const NLScriptArabic: string;
 
-declare const NLScriptUndetermined: string;
+declare const NLLanguageVietnamese: string;
 
-declare const NLLanguageTurkish: string;
+declare const NLLanguageUrdu: string;
+
+declare const NLLanguageUkrainian: string;
 
 declare const NLLanguageTraditionalChinese: string;
 
-declare const NLLanguageTibetan: string;
-
-declare const NLLanguageThai: string;
-
-declare const NLLanguageSwedish: string;
+declare const NLLanguageTelugu: string;
 
 declare const NLLanguageSpanish: string;
 
+declare const NLLanguageSinhalese: string;
+
 declare const NLLanguageSimplifiedChinese: string;
+
+declare const NLLanguageRussian: string;
 
 declare const NLLanguageRomanian: string;
 
-declare const NLLanguagePersian: string;
+declare const NLLanguageOriya: string;
 
 declare const NLLanguageNorwegian: string;
 
-declare const NLLanguageMongolian: string;
+declare const NLLanguageMarathi: string;
 
-declare const NLLanguageMalayalam: string;
+declare const NLLanguageMalay: string;
 
 declare const NLLanguageLao: string;
 
-declare const NLLanguageIndonesian: string;
+declare const NLLanguageKorean: string;
 
-declare const NLLanguageIcelandic: string;
+declare const NLLanguageIndonesian: string;
 
 declare const NLLanguageHungarian: string;
 
-declare const NLLanguageHebrew: string;
+declare const NLLanguageGujarati: string;
 
-declare const NLLanguageFinnish: string;
+declare const NLLanguageGreek: string;
+
+declare const NLLanguageGerman: string;
+
+declare const NLLanguageFrench: string;
+
+declare const NLLanguageEnglish: string;
 
 declare const NLLanguageDutch: string;
 
 declare const NLLanguageDanish: string;
+
+declare const NLLanguageCroatian: string;
 
 declare const NLLanguageCherokee: string;
 
@@ -125,143 +131,137 @@ declare const NLLanguageBulgarian: string;
 
 declare const NLLanguageBengali: string;
 
-declare const NLLanguageArmenian: string;
+declare const NLLanguageArabic: string;
 
 declare const NLLanguageAmharic: string;
 
-declare const NLLanguageUndetermined: string;
+declare const NLLanguageHindi: string;
 
-declare const NLTagSentenceTerminator: string;
-
-declare const NLTagNoun: string;
-
-declare const NLLanguageCatalan: string;
-
-declare const NLLanguagePolish: string;
-
-declare const NLLanguageBurmese: string;
-
-declare const NLLanguageMalay: string;
-
-declare const NLLanguageItalian: string;
-
-declare const NLScriptMyanmar: string;
-
-declare const NLTagSchemeNameType: string;
-
-declare const NLLanguageUkrainian: string;
-
-declare const NLLanguageTelugu: string;
-
-declare const NLTagNumber: string;
-
-declare const NLLanguageSinhalese: string;
-
-declare const NLLanguageGreek: string;
-
-declare const NLScriptKhmer: string;
+declare const NLScriptSimplifiedChinese: string;
 
 declare const NLScriptLao: string;
 
-declare const NLLanguagePortuguese: string;
-
-declare const NLContextualEmbeddingKeyRevision: string;
-
-declare const NLTagCloseQuote: string;
-
-declare const NLTagWord: string;
-
-declare const NLScriptTraditionalChinese: string;
-
-declare const NLTagOtherPunctuation: string;
-
-declare const NLLanguageHindi: string;
-
-declare const NLLanguageGeorgian: string;
-
-declare const NLScriptTamil: string;
-
-declare const NLLanguageOriya: string;
-
-declare const NLTagSchemeTokenType: string;
-
-declare const NLScriptEthiopic: string;
-
-declare const NLContextualEmbeddingKeyScripts: string;
-
-declare const NLLanguageArabic: string;
-
 declare const NLScriptKorean: string;
-
-declare const NLLanguagePunjabi: string;
-
-declare const NLLanguageVietnamese: string;
-
-declare const NLLanguageSlovak: string;
-
-declare const NLLanguageUrdu: string;
-
-declare const NLTagSchemeLemma: string;
-
-declare const NLLanguageRussian: string;
-
-declare const NLContextualEmbeddingKeyLanguages: string;
-
-declare const NLLanguageGerman: string;
-
-declare const NLScriptThai: string;
 
 declare const NLTagSchemeScript: string;
 
-declare const NLLanguageGujarati: string;
-
-declare const NLLanguageEnglish: string;
-
-declare const NLScriptTelugu: string;
-
-declare const NLTagConjunction: string;
-
-declare const NLLanguageKorean: string;
-
-declare const NLScriptMongolian: string;
-
-declare const NLScriptArmenian: string;
-
-declare const NLLanguageKazakh: string;
-
-declare const NLScriptJapanese: string;
-
-declare const NLLanguageJapanese: string;
-
-declare const NLLanguageKannada: string;
-
-declare const NLLanguageFrench: string;
-
-declare const NLLanguageCroatian: string;
-
 declare const NLLanguageTamil: string;
-
-declare const NLLanguageKhmer: string;
-
-declare const NLTagParticle: string;
-
-declare const NLTagWordJoiner: string;
-
-declare const NLTagInterjection: string;
-
-declare const NLTagVerb: string;
-
-declare const NLTagClassifier: string;
-
-declare const NLLanguageMarathi: string;
 
 declare const NLLanguageCzech: string;
 
-declare const NLTagPlaceName: string;
+declare const NLLanguagePersian: string;
+
+declare const NLLanguageThai: string;
+
+declare const NLLanguagePolish: string;
+
+declare const NLLanguageSwedish: string;
+
+declare const NLLanguageTurkish: string;
+
+declare const NLScriptTraditionalChinese: string;
+
+declare const NLScriptCanadianAboriginalSyllabics: string;
+
+declare const NLLanguageUndetermined: string;
+
+declare const NLTagVerb: string;
+
+declare const NLTagSchemeNameType: string;
+
+declare const NLTagParagraphBreak: string;
+
+declare const NLLanguageHebrew: string;
+
+declare const NLScriptEthiopic: string;
+
+declare const NLLanguageTibetan: string;
+
+declare const NLLanguageBurmese: string;
+
+declare const NLScriptMongolian: string;
+
+declare const NLLanguageGeorgian: string;
 
 declare const NLTagSchemeSentimentScore: string;
 
-declare const NLScriptSimplifiedChinese: string;
+declare const NLContextualEmbeddingKeyLanguages: string;
+
+declare const NLScriptOriya: string;
+
+declare const NLTagSchemeTokenType: string;
+
+declare const NLTagInterjection: string;
+
+declare const NLTagCloseParenthesis: string;
+
+declare const NLScriptCyrillic: string;
+
+declare const NLTagOpenParenthesis: string;
+
+declare const NLTagAdjective: string;
+
+declare const NLScriptBengali: string;
+
+declare const NLTagOtherWhitespace: string;
+
+declare const NLScriptGreek: string;
+
+declare const NLTagParticle: string;
+
+declare const NLLanguageMongolian: string;
+
+declare const NLTagSchemeLanguage: string;
+
+declare const NLTagOther: string;
+
+declare const NLTagAdverb: string;
+
+declare const NLLanguageArmenian: string;
+
+declare const NLLanguageSlovak: string;
+
+declare const NLLanguagePunjabi: string;
+
+declare const NLLanguageItalian: string;
+
+declare const NLTagPersonalName: string;
+
+declare const NLTagClassifier: string;
+
+declare const NLScriptCherokee: string;
+
+declare const NLLanguageCatalan: string;
+
+declare const NLLanguageKazakh: string;
+
+declare const NLScriptSinhala: string;
+
+declare const NLLanguageKannada: string;
+
+declare const NLLanguageKhmer: string;
+
+declare const NLTagSchemeLemma: string;
+
+declare const NLTagOpenQuote: string;
+
+declare const NLLanguagePortuguese: string;
+
+declare const NLLanguageJapanese: string;
+
+declare const NLLanguageFinnish: string;
+
+declare const NLScriptUndetermined: string;
+
+declare const NLTagDeterminer: string;
+
+declare const NLScriptGurmukhi: string;
+
+declare const NLLanguageMalayalam: string;
+
+declare const NLScriptThai: string;
+
+declare const NLLanguageIcelandic: string;
 
 declare const NLTaggerAssetsResult: {
   Available: 0,
@@ -278,9 +278,10 @@ declare const NLTaggerOptions: {
   JoinContractions: 32,
 };
 
-declare const NLModelType: {
-  Classifier: 0,
-  Sequence: 1,
+declare const NLContextualEmbeddingAssetsResult: {
+  Available: 0,
+  NotAvailable: 1,
+  Error: 2,
 };
 
 declare const NLTokenizerAttributes: {
@@ -300,10 +301,9 @@ declare const NLDistanceType: {
   NLDistanceTypeCosine: 0,
 };
 
-declare const NLContextualEmbeddingAssetsResult: {
-  Available: 0,
-  NotAvailable: 1,
-  Error: 2,
+declare const NLModelType: {
+  Classifier: 0,
+  Sequence: 1,
 };
 
 declare class NLTagger extends NSObject {
@@ -342,6 +342,8 @@ declare class NLTagger extends NSObject {
   gazetteersForTagScheme(tagScheme: string): NSArray;
 
   static requestAssetsForLanguageTagSchemeCompletionHandler(language: string, tagScheme: string, completionHandler: (p1: interop.Enum<typeof NLTaggerAssetsResult>, p2: NSError) => void | null): void;
+
+  setString(string: string | null): void;
 }
 
 declare class NLModel extends NSObject {
@@ -358,26 +360,6 @@ declare class NLModel extends NSObject {
   predictedLabelHypothesesForStringMaximumCount(string: string, maximumCount: number): NSDictionary;
 
   predictedLabelHypothesesForTokensMaximumCount(tokens: NSArray<interop.Object> | Array<interop.Object>, maximumCount: number): NSArray;
-}
-
-declare class NLLanguageRecognizer extends NSObject {
-  static dominantLanguageForString(string: string): string;
-
-  init(): this;
-
-  processString(string: string): void;
-
-  reset(): void;
-
-  readonly dominantLanguage: string;
-
-  languageHypothesesWithMaximum(maxHypotheses: number): NSDictionary;
-
-  get languageHints(): NSDictionary;
-  set languageHints(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  get languageConstraints(): NSArray;
-  set languageConstraints(value: NSArray<interop.Object> | Array<interop.Object>);
 }
 
 declare class NLContextualEmbedding extends NSObject {
@@ -412,6 +394,26 @@ declare class NLContextualEmbedding extends NSObject {
   requestEmbeddingAssetsWithCompletionHandler(completionHandler: (p1: interop.Enum<typeof NLContextualEmbeddingAssetsResult>, p2: NSError) => void | null): void;
 }
 
+declare class NLTokenizer extends NSObject {
+  initWithUnit(unit: interop.Enum<typeof NLTokenUnit>): this;
+
+  readonly unit: interop.Enum<typeof NLTokenUnit>;
+
+  string: string;
+
+  setLanguage(language: string): void;
+
+  tokenRangeAtIndex(characterIndex: number): _NSRange;
+
+  tokenRangeForRange(range: _NSRange): _NSRange;
+
+  tokensForRange(range: _NSRange): NSArray;
+
+  enumerateTokensInRangeUsingBlock(range: _NSRange, block: (p1: _NSRange, p2: interop.Enum<typeof NLTokenizerAttributes>, p3: interop.PointerConvertible) => void): void;
+
+  setString(string: string | null): void;
+}
+
 declare class NLGazetteer extends NSObject {
   static gazetteerWithContentsOfURLError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, error: interop.PointerConvertible): InstanceType<This>;
 
@@ -428,6 +430,18 @@ declare class NLGazetteer extends NSObject {
   readonly data: NSData;
 
   static writeGazetteerForDictionaryLanguageToURLError(dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, language: string | null, url: NSURL, error: interop.PointerConvertible): boolean;
+}
+
+declare class NLContextualEmbeddingResult extends NSObject {
+  readonly string: string;
+
+  readonly language: string;
+
+  readonly sequenceLength: number;
+
+  enumerateTokenVectorsInRangeUsingBlock(range: _NSRange, block: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: _NSRange, p3: interop.PointerConvertible) => void): void;
+
+  tokenVectorAtIndexTokenRange(characterIndex: number, tokenRange: interop.PointerConvertible): NSArray;
 }
 
 declare class NLEmbedding extends NSObject {
@@ -504,33 +518,27 @@ declare class NLModelConfiguration extends NSObject implements NSCopying, NSSecu
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NLContextualEmbeddingResult extends NSObject {
-  readonly string: string;
+declare class NLLanguageRecognizer extends NSObject {
+  static dominantLanguageForString(string: string): string;
 
-  readonly language: string;
+  init(): this;
 
-  readonly sequenceLength: number;
+  processString(string: string): void;
 
-  enumerateTokenVectorsInRangeUsingBlock(range: _NSRange, block: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: _NSRange, p3: interop.PointerConvertible) => void): void;
+  reset(): void;
 
-  tokenVectorAtIndexTokenRange(characterIndex: number, tokenRange: interop.PointerConvertible): NSArray;
-}
+  readonly dominantLanguage: string;
 
-declare class NLTokenizer extends NSObject {
-  initWithUnit(unit: interop.Enum<typeof NLTokenUnit>): this;
+  languageHypothesesWithMaximum(maxHypotheses: number): NSDictionary;
 
-  readonly unit: interop.Enum<typeof NLTokenUnit>;
+  get languageHints(): NSDictionary;
+  set languageHints(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
-  string: string;
+  get languageConstraints(): NSArray;
+  set languageConstraints(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  setLanguage(language: string): void;
+  setLanguageHints(languageHints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
-  tokenRangeAtIndex(characterIndex: number): _NSRange;
-
-  tokenRangeForRange(range: _NSRange): _NSRange;
-
-  tokensForRange(range: _NSRange): NSArray;
-
-  enumerateTokensInRangeUsingBlock(range: _NSRange, block: (p1: _NSRange, p2: interop.Enum<typeof NLTokenizerAttributes>, p3: interop.PointerConvertible) => void): void;
+  setLanguageConstraints(languageConstraints: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 

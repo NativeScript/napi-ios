@@ -19,10 +19,76 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 
 namespace nativescript {
 
+// Forward declaration
+class StructTypeConv;
+
+// Thread-local storage for tracking structs currently being processed to detect cycles
+thread_local std::unordered_set<MDSectionOffset> processingStructs;
+thread_local std::unordered_set<std::string> processingEncodingStructs;
+
+// Cache for forward-declared struct types that need deferred resolution
+thread_local std::unordered_map<MDSectionOffset, ffi_type*> forwardDeclaredStructs;
+thread_local std::unordered_map<std::string, ffi_type*> forwardDeclaredEncodingStructs;
+
+// Cache for StructTypeConv instances to avoid recreating them and handle recursion
+thread_local std::unordered_map<MDSectionOffset, std::shared_ptr<StructTypeConv>> structTypeCache;
+
+// Cache for encoding-based structs to handle recursion
+thread_local std::unordered_map<std::string, std::shared_ptr<StructTypeConv>> encodingStructCache;
+
 ffi_type* typeFromStruct(napi_env env, const char** encoding) {
+  // Extract struct name for cycle detection
+  std::string structname;
+  const char* nameStart = *encoding + 1; // skip '{'
+  const char* c = nameStart;
+  while (*c != '=') {
+    structname += *c;
+    c++;
+  }
+
+  // Check if we're already processing this struct (cycle detection)
+  if (processingEncodingStructs.find(structname) != processingEncodingStructs.end()) {
+    // Create a forward declaration placeholder
+    ffi_type* forwardType = new ffi_type;
+    forwardType->type = FFI_TYPE_STRUCT;
+    forwardType->size = 0;
+    forwardType->alignment = 0;
+    forwardType->elements = nullptr;
+    
+    // Cache this forward declaration for later resolution
+    forwardDeclaredEncodingStructs[structname] = forwardType;
+    
+    // Skip the struct encoding
+    (*encoding)++;  // skip '{'
+    while (**encoding != '}') {
+      (*encoding)++;
+    }
+    (*encoding)++;  // skip '}'
+    
+    return forwardType;
+  }
+
+  // Check if we already have a forward declaration for this struct
+  auto forwardIt = forwardDeclaredEncodingStructs.find(structname);
+  if (forwardIt != forwardDeclaredEncodingStructs.end()) {
+    // Skip the struct encoding
+    (*encoding)++;  // skip '{'
+    while (**encoding != '}') {
+      (*encoding)++;
+    }
+    (*encoding)++;  // skip '}'
+    
+    return forwardIt->second;
+  }
+
+  // Mark this struct as being processed
+  processingEncodingStructs.insert(structname);
+
   ffi_type* type = new ffi_type;
   type->type = FFI_TYPE_STRUCT;
   type->size = 0;
@@ -53,11 +119,51 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   // null-terminate the array
   type->elements[elements.size()] = nullptr;
 
+  // If this was a forward declaration, update it with the real layout
+  if (forwardIt != forwardDeclaredEncodingStructs.end()) {
+    ffi_type* forwardType = forwardIt->second;
+    forwardType->type = type->type;
+    forwardType->size = type->size;
+    forwardType->alignment = type->alignment;
+    forwardType->elements = type->elements;
+    
+    // Clean up the temporary type and use the forward declaration
+    delete type;
+    type = forwardType;
+    forwardDeclaredEncodingStructs.erase(forwardIt);
+  }
+
+  // Remove from processing set
+  processingEncodingStructs.erase(structname);
+
   return type;
 }
 
 ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset structOffset,
                          bool isUnion) {
+  // Check if we're already processing this struct (cycle detection)
+  if (processingStructs.find(structOffset) != processingStructs.end()) {
+    // Create a forward declaration placeholder
+    ffi_type* forwardType = new ffi_type;
+    forwardType->type = FFI_TYPE_STRUCT;
+    forwardType->size = 0;
+    forwardType->alignment = 0;
+    forwardType->elements = nullptr;
+    
+    // Cache this forward declaration for later resolution
+    forwardDeclaredStructs[structOffset] = forwardType;
+    return forwardType;
+  }
+
+  // Check if we already have a forward declaration for this struct
+  auto forwardIt = forwardDeclaredStructs.find(structOffset);
+  if (forwardIt != forwardDeclaredStructs.end()) {
+    return forwardIt->second;
+  }
+
+  // Mark this struct as being processed
+  processingStructs.insert(structOffset);
+
   ffi_type* type = new ffi_type;
   type->type = FFI_TYPE_STRUCT;
   type->size = 0;
@@ -67,21 +173,21 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
   MDSectionOffset nameOffset = reader->getOffset(structOffset);
   auto name = reader->resolveString(nameOffset);
   bool next = true;
-  structOffset += sizeof(MDSectionOffset);  // skip name
-  structOffset += sizeof(uint16_t);         // skip size
+  MDSectionOffset currentOffset = structOffset + sizeof(MDSectionOffset);  // skip name
+  currentOffset += sizeof(uint16_t);         // skip size
 
   std::vector<ffi_type*> elements;
 
   while (next) {
-    nameOffset = reader->getOffset(structOffset);
+    nameOffset = reader->getOffset(currentOffset);
     next = nameOffset & mdSectionOffsetNext;
     nameOffset &= ~mdSectionOffsetNext;
     if (nameOffset == MD_SECTION_OFFSET_NULL) {
       break;
     }
-    structOffset += sizeof(MDSectionOffset);         // skip name
-    if (!isUnion) structOffset += sizeof(uint16_t);  // skip offset
-    ffi_type* elementType = TypeConv::Make(env, reader, &structOffset, 1)->type;
+    currentOffset += sizeof(MDSectionOffset);         // skip name
+    if (!isUnion) currentOffset += sizeof(uint16_t);  // skip offset
+    ffi_type* elementType = TypeConv::Make(env, reader, &currentOffset, 1)->type;
     elements.push_back(elementType);
   }
 
@@ -91,6 +197,23 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
   }
   // null-terminate the array
   type->elements[elements.size()] = nullptr;
+
+  // If this was a forward declaration, update it with the real layout
+  if (forwardIt != forwardDeclaredStructs.end()) {
+    ffi_type* forwardType = forwardIt->second;
+    forwardType->type = type->type;
+    forwardType->size = type->size;
+    forwardType->alignment = type->alignment;
+    forwardType->elements = type->elements;
+    
+    // Clean up the temporary type and use the forward declaration
+    delete type;
+    type = forwardType;
+    forwardDeclaredStructs.erase(forwardIt);
+  }
+
+  // Remove from processing set
+  processingStructs.erase(structOffset);
 
   return type;
 }
@@ -1511,12 +1634,24 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, const char** encoding) {
         structname += *c;
         c++;
       }
+      
+      // Check if we already have a cached StructTypeConv for this encoding-based struct
+      auto cacheIt = encodingStructCache.find(structname);
+      if (cacheIt != encodingStructCache.end()) {
+        return cacheIt->second;
+      }
+      
       auto bridgeState = ObjCBridgeState::InstanceData(env);
       // NSLog(@"struct: %s, %d", structname.c_str(),
       //       bridgeState->structOffsets[structname]);
       auto structOffset = bridgeState->structOffsets[structname];
       auto type = typeFromStruct(env, encoding);
-      return std::make_shared<StructTypeConv>(StructTypeConv(structOffset, type));
+      auto structTypeConv = std::make_shared<StructTypeConv>(StructTypeConv(structOffset, type));
+      
+      // Cache the StructTypeConv
+      encodingStructCache[structname] = structTypeConv;
+      
+      return structTypeConv;
     }
     case 'b': {
       (*encoding)++;
@@ -1687,9 +1822,27 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       }
       structOffset += isUnion ? reader->unionsOffset : reader->structsOffset;
       auto structName = reader->getString(structOffset);
-      auto type =
-          opaquePointers == 2 ? nullptr : typeFromStruct(env, reader, structOffset, isUnion);
-      return std::make_shared<StructTypeConv>(structOffset, type);
+      
+      // Check if we already have a cached StructTypeConv for this struct
+      auto cacheIt = structTypeCache.find(structOffset);
+      if (cacheIt != structTypeCache.end()) {
+        return cacheIt->second;
+      }
+      
+      // Check if we're currently processing this struct (recursion detection)
+      bool isRecursive = processingStructs.find(structOffset) != processingStructs.end();
+      
+      ffi_type* type = nullptr;
+      if (opaquePointers != 2 && !isRecursive) {
+        type = typeFromStruct(env, reader, structOffset, isUnion);
+      }
+      
+      auto structTypeConv = std::make_shared<StructTypeConv>(structOffset, type);
+      
+      // Cache the StructTypeConv to handle recursion and avoid duplicates
+      structTypeCache[structOffset] = structTypeConv;
+      
+      return structTypeConv;
     }
 
     case mdTypePointer: {
@@ -1736,6 +1889,16 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       std::cout << "getTypeInfo unknown type kind: " << (int)kind << std::endl;
       return pointerTypeConv;
   }
+}
+
+// Cleanup function to clear thread-local caches
+void clearStructTypeCaches() {
+  processingStructs.clear();
+  processingEncodingStructs.clear();
+  forwardDeclaredStructs.clear();
+  forwardDeclaredEncodingStructs.clear();
+  structTypeCache.clear();
+  encodingStructCache.clear();
 }
 
 }  // namespace nativescript

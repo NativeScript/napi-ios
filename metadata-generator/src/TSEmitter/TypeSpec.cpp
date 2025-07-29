@@ -174,7 +174,7 @@ std::string TSFile::typeToString(TypeSpec& type, bool isStatic, bool isReturn) {
       break;
 
     default:
-      std::cout << "Unknown type spec kind: " << type.kind << std::endl;
+      std::cerr << "Unknown type spec kind: " << type.kind << std::endl;
       assert(false && "Unknown type spec kind");
       break;
   }

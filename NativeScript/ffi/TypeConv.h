@@ -40,6 +40,9 @@ class TypeConv {
   virtual void encode(std::string* encoding) {}
 };
 
+// Cleanup function to clear thread-local struct type caches
+void clearStructTypeCaches();
+
 }  // namespace nativescript
 
 #endif /* TYPE_CONV_H */

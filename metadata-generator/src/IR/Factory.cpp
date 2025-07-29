@@ -7,8 +7,6 @@
 
 namespace metagen {
 
-inline void print(std::string str) { std::cout << str << std::endl; }
-
 void MetadataFactory::process(CXCursor cursor, bool checkAvailability) {
   bool _previous_checkAvailability = _checkAvailability;
   _checkAvailability = checkAvailability;

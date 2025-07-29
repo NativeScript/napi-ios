@@ -1,6 +1,18 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const kAudioUnitCarbonViewRange: number;
+
+declare const kAudioUnitCarbonViewEvent_MouseDownInControl: number;
+
+declare const kAUCarbonViewSubType_Generic: number;
+
+declare const kAudioSessionProperty_AudioRoute: number;
+
+declare const kAudioSessionCategory_UserInterfaceSoundEffects: number;
+
+declare const kAudioSessionSetActiveFlag_NotifyOthersOnDeactivation: number;
+
 declare const kAudioSessionProperty_AudioRouteDescription: number;
 
 declare const kAudioSessionProperty_InputGainAvailable: number;
@@ -11,45 +23,49 @@ declare const kAudioSessionProperty_InputSource: number;
 
 declare const kAudioSessionProperty_InputSources: number;
 
-declare const kAudioSessionProperty_InterruptionType: number;
-
-declare const kAudioSessionProperty_OverrideCategoryMixWithOthers: number;
+declare const kAudioSessionProperty_Mode: number;
 
 declare const kAudioSessionProperty_OtherMixableAudioShouldDuck: number;
 
-declare const kAudioSessionProperty_AudioInputAvailable: number;
+declare const kAudioSessionProperty_OtherAudioIsPlaying: number;
 
-declare const kAudioSessionProperty_CurrentHardwareOutputLatency: number;
+declare const kAudioSessionProperty_CurrentHardwareInputLatency: number;
 
-declare const kAudioSessionProperty_CurrentHardwareOutputVolume: number;
+declare const kAudioSessionProperty_CurrentHardwareOutputNumberChannels: number;
 
 declare const kAudioSessionProperty_CurrentHardwareInputNumberChannels: number;
-
-declare const kAudioSessionProperty_CurrentHardwareSampleRate: number;
 
 declare const kAudioSessionProperty_AudioRouteChange: number;
 
 declare const kAudioSessionProperty_AudioCategory: number;
 
-declare const kAudioSessionProperty_PreferredHardwareIOBufferDuration: number;
-
 declare const kAudioSessionProperty_PreferredHardwareSampleRate: number;
 
-declare const kAudioSessionInterruptionType_ShouldResume: number;
+declare const kAudioSessionMode_GameChat: number;
+
+declare const kAudioSessionMode_Measurement: number;
+
+declare const kAudioSessionMode_VideoRecording: number;
 
 declare const kAudioSessionRouteChangeReason_RouteConfigurationChange: number;
-
-declare const kAudioSessionRouteChangeReason_NoSuitableRouteForCategory: number;
 
 declare const kAudioSessionRouteChangeReason_WakeFromSleep: number;
 
 declare const kAudioSessionRouteChangeReason_Override: number;
 
-declare const kAudioSessionRouteChangeReason_Unknown: number;
+declare const kAudioSessionRouteChangeReason_CategoryChange: number;
+
+declare const kAudioSessionRouteChangeReason_OldDeviceUnavailable: number;
+
+declare const kAudioSessionRouteChangeReason_NewDeviceAvailable: number;
 
 declare const kAudioSessionOverrideAudioRoute_Speaker: number;
 
+declare const kAudioSessionOverrideAudioRoute_None: number;
+
 declare const kAudioSessionCategory_PlayAndRecord: number;
+
+declare const kAudioSessionCategory_RecordAudio: number;
 
 declare const kAudioSessionCategory_MediaPlayback: number;
 
@@ -57,119 +73,155 @@ declare const kAudioSessionCategory_AmbientSound: number;
 
 declare const kAudioSessionBeginInterruption: number;
 
-declare const kAudioSessionUnspecifiedError: number;
-
 declare const kAudioSessionIncompatibleCategory: number;
 
 declare const kAudioSessionNoCategorySet: number;
 
 declare const kAudioServicesNoHardwareError: number;
 
-declare const kAudioSessionNotActiveError: number;
+declare const kAudioSessionUnsupportedPropertyError: number;
 
 declare const kAudioSessionInitializationError: number;
 
+declare const kAudioSessionAlreadyInitialized: number;
+
+declare const kAudioSessionNotInitialized: number;
+
 declare const kAudioSessionNoError: number;
 
-declare const kCAClock_CannotSetTimeError: number;
-
 declare const kCAClock_InvalidPlayRateError: number;
-
-declare const kCAClock_InvalidUnitError: number;
-
-declare const kCAClock_InvalidSMPTEOffsetError: number;
-
-declare const kCAClock_InvalidSMPTEFormatError: number;
 
 declare const kCAClock_InvalidTimebaseSourceError: number;
 
 declare const kCAClock_InvalidTimebaseError: number;
 
-declare const kCAClock_InvalidTimeFormatError: number;
+declare const kCAClock_InvalidSyncModeError: number;
+
+declare const kCAClock_InvalidPropertySizeError: number;
+
+declare const kCAClock_UnknownPropertyError: number;
 
 declare const kAudioFileGetUserDataAtOffsetSelect: number;
 
-declare const kAudioFileGetUserDataSizeSelect: number;
+declare const kAudioFileGetUserDataSize64Select: number;
 
-declare const kAudioFileCountUserDataSelect: number;
+declare const kAudioFileReadPacketDataSelect: number;
+
+declare const kAudioFileOpenURLSelect: number;
+
+declare const kAudioFileCreateURLSelect: number;
+
+declare const kAudioFileRemoveUserDataSelect: number;
+
+declare const kAudioFileGetUserDataSizeSelect: number;
 
 declare const kAudioFileGetGlobalInfoSelect: number;
 
 declare const kAudioFileGetGlobalInfoSizeSelect: number;
 
-declare const kAudioFileExtensionIsThisFormatSelect: number;
-
 declare const kAudioFileSetPropertySelect: number;
 
-declare const kAudioFileGetPropertySelect: number;
-
-declare const kAudioFileReadPacketsSelect: number;
+declare const kAudioFileGetPropertyInfoSelect: number;
 
 declare const kAudioFileReadBytesSelect: number;
 
 declare const kAudioFileOptimizeSelect: number;
 
+declare const kAudioFileCloseSelect: number;
+
 declare const kAudioFileInitializeWithCallbacksSelect: number;
+
+declare const kAudioFileOpenWithCallbacksSelect: number;
+
+declare const kAudioFileOpenSelect: number;
 
 declare const kAudioFileCreateSelect: number;
 
+declare const kAudioFileComponent_FastDispatchTable: number;
+
+declare const kAudioFileComponent_AvailableStreamDescriptionsForFormat: number;
+
 declare const kAudioFileComponent_AvailableFormatIDs: number;
 
-declare const kAudioFileComponent_UTIsForType: number;
+declare const kAudioFileComponent_ExtensionsForType: number;
 
-declare const kAudioFileComponent_CanRead: number;
+declare const kAudioFileComponent_FileTypeName: number;
 
-declare const kSequenceTrackProperty_TimeResolution: number;
+declare const kMusicEventType_ExtendedControl: number;
 
-declare const kSequenceTrackProperty_SoloStatus: number;
+declare const kSequenceTrackProperty_AutomatedParameters: number;
+
+declare const kSequenceTrackProperty_MuteStatus: number;
+
+declare const kSequenceTrackProperty_OffsetTime: number;
+
+declare const kSequenceTrackProperty_LoopInfo: number;
 
 declare const kAudioToolboxErr_CannotDoInCurrentContext: number;
 
-declare const kAudioToolboxErr_NoSequence: number;
+declare const kAudioToolboxErr_InvalidEventType: number;
 
 declare const kAudioToolboxErr_StartOfTrack: number;
 
-declare const kAudioToolboxErr_TrackNotFound: number;
+declare const kAudioToolboxErr_InvalidSequenceType: number;
 
 declare const kMusicEventType_AUPreset: number;
 
 declare const kMusicEventType_Parameter: number;
 
-declare const kMusicEventType_MIDIRawData: number;
-
 declare const kMusicEventType_MIDIChannelMessage: number;
 
 declare const kMusicEventType_Meta: number;
 
-declare const kMusicEventType_NULL: number;
+declare const kMusicEventType_User: number;
+
+declare const kExtAudioFileError_AsyncWriteBufferOverflow: number;
 
 declare const kExtAudioFileError_AsyncWriteTooLarge: number;
 
+declare const kExtAudioFileError_InvalidSeek: number;
+
 declare const kExtAudioFileError_MaxPacketSizeUnknown: number;
+
+declare const kExtAudioFileError_InvalidOperationOrder: number;
 
 declare const kExtAudioFileError_InvalidChannelMap: number;
 
 declare const kExtAudioFileError_NonPCMClientFormat: number;
 
-declare const kExtAudioFileError_InvalidPropertySize: number;
+declare const kExtAudioFileError_InvalidProperty: number;
 
-declare const kExtAudioFileProperty_ConverterConfig: number;
+declare const kExtAudioFileProperty_PacketTable: number;
 
-declare const kExtAudioFileProperty_FileLengthFrames: number;
+declare const kExtAudioFileProperty_IOBufferSizeBytes: number;
 
-declare const kExtAudioFileProperty_CodecManufacturer: number;
+declare const kExtAudioFileProperty_AudioFile: number;
 
-declare const kExtAudioFileProperty_FileChannelLayout: number;
+declare const kExtAudioFileProperty_AudioConverter: number;
+
+declare const kExtAudioFileProperty_ClientChannelLayout: number;
+
+declare const kExtAudioFileProperty_ClientDataFormat: number;
 
 declare const kExtAudioFileProperty_FileDataFormat: number;
 
+declare const kExtAudioFilePacketTableInfoOverride_UseFileValueIfValid: number;
+
 declare const kCAF_SMPTE_TimeType50: number;
 
-declare const kCAF_SMPTE_TimeType5994: number;
+declare const kCAF_SMPTE_TimeType5994Drop: number;
 
-declare const kCAF_SMPTE_TimeType25: number;
+declare const kCAF_SMPTE_TimeType60Drop: number;
+
+declare const kCAF_SMPTE_TimeType60: number;
+
+declare const kCAF_SMPTE_TimeType2997Drop: number;
 
 declare const kCAFMarkerType_TimeSignature: number;
+
+declare const kCAFMarkerType_SavedPlayPosition: number;
+
+declare const kCAFMarkerType_ReleaseLoopEnd: number;
 
 declare const kCAFMarkerType_ReleaseLoopStart: number;
 
@@ -185,59 +237,79 @@ declare const kCAFMarkerType_EditSourceBegin: number;
 
 declare const kCAFMarkerType_SelectionEnd: number;
 
-declare const kCAFMarkerType_SelectionStart: number;
+declare const kCAFMarkerType_RegionSyncPoint: number;
+
+declare const kCAFMarkerType_RegionStart: number;
 
 declare const kCAFMarkerType_Index: number;
 
 declare const kCAFMarkerType_TrackEnd: number;
 
+declare const kCAFMarkerType_ProgramEnd: number;
+
+declare const kCAFMarkerType_ProgramStart: number;
+
+declare const kCAFMarkerType_Generic: number;
+
+declare const kCAF_FormatListID: number;
+
 declare const kCAF_OverviewChunkID: number;
+
+declare const kCAF_PeakChunkID: number;
+
+declare const kCAF_UUIDChunkID: number;
 
 declare const kCAF_StringsChunkID: number;
 
 declare const kCAF_InfoStringsChunkID: number;
 
-declare const kCAF_RegionChunkID: number;
+declare const kCAF_MagicCookieID: number;
 
-declare const kCAF_FillerChunkID: number;
+declare const kCAF_InstrumentChunkID: number;
 
-declare const kCAF_ChannelLayoutChunkID: number;
+declare const kCAF_MarkerChunkID: number;
 
 declare const kCAF_AudioDataChunkID: number;
 
-declare const kCAF_FileVersion_Initial: number;
-
-declare const kCAF_FileType: number;
-
-declare const kAUParameterListener_AnyParameter: number;
+declare const kCAF_StreamDescriptionChunkID: number;
 
 declare const kAudioServicesPropertyCompletePlaybackIfAppDies: number;
 
-declare const kUserPreferredAlert: number;
+declare const kAudioServicesPropertyIsUISound: number;
+
+declare const kSystemSoundID_Vibrate: number;
+
+declare const kSystemSoundID_FlashScreen: number;
+
+declare const kSystemSoundID_UserPreferredAlert: number;
 
 declare const kAudioServicesSystemSoundExceededMaximumDurationError: number;
 
 declare const kAudioServicesSystemSoundClientTimedOutError: number;
 
-declare const kAudioServicesSystemSoundUnspecifiedError: number;
+declare const kAudioServicesBadSpecifierSizeError: number;
 
-declare const kAudioServicesUnsupportedPropertyError: number;
+declare const kAudioServicesNoError: number;
 
 declare const kAudioHardwareServiceDeviceProperty_VirtualMasterBalance: number;
 
-declare const kAudioHardwareServiceProperty_ServiceRestarted: number;
+declare const kAudioHardwareServiceDeviceProperty_VirtualMainBalance: number;
+
+declare const kAudioHardwareServiceDeviceProperty_VirtualMainVolume: number;
+
+declare const kAudioQueueParam_Pan: number;
+
+declare const kAudioQueueParam_VolumeRampTime: number;
 
 declare const kAudioQueueParam_PlayRate: number;
+
+declare const kAudioQueueParam_Volume: number;
+
+declare const kAudioQueueProperty_ChannelAssignments: number;
 
 declare const kAudioQueueTimePitchAlgorithm_Varispeed: number;
 
 declare const kAudioQueueTimePitchAlgorithm_TimeDomain: number;
-
-declare const kAudioQueueTimePitchAlgorithm_Spectral: number;
-
-declare const kAudioQueueProperty_TimePitchBypass: number;
-
-declare const kAudioQueueProperty_TimePitchAlgorithm: number;
 
 declare const kAudioQueueProperty_EnableTimePitch: number;
 
@@ -245,23 +317,41 @@ declare const kAudioQueueProperty_ConverterError: number;
 
 declare const kAudioQueueProperty_DecodeBufferSizeFrames: number;
 
+declare const kAudioQueueProperty_CurrentLevelMeterDB: number;
+
 declare const kAudioQueueProperty_CurrentLevelMeter: number;
+
+declare const kAudioQueueProperty_EnableLevelMetering: number;
 
 declare const kAudioQueueProperty_ChannelLayout: number;
 
-declare const kAudioQueueProperty_StreamDescription: number;
+declare const kAudioQueueProperty_MagicCookie: number;
 
-declare const kAudioQueueProperty_MaximumOutputPacketSize: number;
+declare const kAudioQueueDeviceProperty_NumberChannels: number;
 
-declare const kAudioQueueProperty_CurrentDevice: number;
+declare const kAudioQueueDeviceProperty_SampleRate: number;
 
-declare const kAudioQueueErr_QueueInvalidated: number;
+declare const kAudioQueueErr_InvalidOfflineMode: number;
+
+declare const kAudioQueueErr_CannotStartYet: number;
+
+declare const kAudioQueueErr_BufferEnqueuedTwice: number;
+
+declare const kAudioQueueErr_InvalidTapContext: number;
+
+declare const kAudioQueueErr_InvalidCodecAccess: number;
+
+declare const kAudioQueueErr_CodecNotFound: number;
 
 declare const kAudioQueueErr_PrimeTimedOut: number;
 
+declare const kAudioQueueErr_InvalidPropertyValue: number;
+
 declare const kAudioQueueErr_Permissions: number;
 
-declare const kAudioQueueErr_InvalidRunState: number;
+declare const kAudioQueueErr_InvalidQueueType: number;
+
+declare const kAudioQueueErr_CannotStart: number;
 
 declare const kAudioQueueErr_InvalidPropertySize: number;
 
@@ -269,53 +359,67 @@ declare const kAudioQueueErr_InvalidProperty: number;
 
 declare const kAudioQueueErr_DisposalPending: number;
 
-declare const kAudioFormatUnknownFormatError: number;
+declare const kAudioQueueErr_BufferEmpty: number;
 
-declare const kAudioFormatUnsupportedDataFormatError: number;
+declare const kAudioQueueErr_InvalidBuffer: number;
 
-declare const kAudioFormatBadPropertySizeError: number;
+declare const kAudioFormatBadSpecifierSizeError: number;
+
+declare const kAudioFormatUnsupportedPropertyError: number;
+
+declare const kAudioFormatUnspecifiedError: number;
+
+declare const kAudioFormatProperty_ID3TagToDictionary: number;
 
 declare const kAudioFormatProperty_BalanceFade: number;
 
 declare const kAudioFormatProperty_PanningMatrix: number;
 
-declare const kAudioFormatProperty_ChannelName: number;
+declare const kAudioFormatProperty_ChannelShortName: number;
 
-declare const kAudioFormatProperty_TagForChannelLayout: number;
+declare const kAudioFormatProperty_ChannelLayoutSimpleName: number;
 
-declare const kAudioFormatProperty_ValidateChannelLayout: number;
+declare const kAudioFormatProperty_ChannelLayoutForTag: number;
 
 declare const kAudioFormatProperty_ChannelLayoutHash: number;
 
 declare const kAudioFormatProperty_AreChannelLayoutsEquivalent: number;
 
-declare const kAudioFormatProperty_ChannelMap: number;
-
 declare const kAudioFormatProperty_MatrixMixMap: number;
+
+declare const kAudioFormatProperty_BitmapForLayoutTag: number;
+
+declare const kAudioFormatProperty_ASBDFromMPEGPacket: number;
 
 declare const kAudioFormatProperty_AvailableDecodeNumberChannels: number;
 
-declare const kAudioFormatProperty_Encoders: number;
+declare const kAudioFormatProperty_AvailableEncodeNumberChannels: number;
+
+declare const kAudioFormatProperty_AvailableEncodeChannelLayoutTags: number;
+
+declare const kAudioFormatProperty_AvailableEncodeSampleRates: number;
+
+declare const kAudioFormatProperty_Decoders: number;
 
 declare const kAudioFormatProperty_FormatIsEncrypted: number;
 
-declare const kAudioFormatProperty_FormatIsExternallyFramed: number;
+declare const kAudioFormatProperty_FormatEmploysDependentPackets: number;
 
 declare const kAudioFormatProperty_FormatIsVBR: number;
 
-declare const kAudioFormatProperty_ChannelLayoutFromESDS: number;
+declare const kAudioFormatProperty_FirstPlayableFormatFromList: number;
 
-declare const kAudioFormatProperty_FormatList: number;
+declare const kAudioFormatProperty_OutputFormatList: number;
+
+declare const kAudioFormatProperty_ASBDFromESDS: number;
+
+declare const kAudioFormatProperty_DecodeFormatIDs: number;
 
 declare const kAudioFormatProperty_EncodeFormatIDs: number;
 
+declare const kAudioFormatProperty_FormatInfo: number;
+
 declare const kAudioFileStreamProperty_InfoDictionary: number;
-
-declare const kAudioFileStreamProperty_BitRate: number;
-
-declare const kAudioFileStreamProperty_AverageBytesPerPacket: number;
-
-declare const kAudioFileStreamProperty_PacketSizeUpperBound: number;
 
 declare const kAudioFileStreamProperty_PacketTableInfo: number;
 
@@ -325,173 +429,179 @@ declare const kAudioFileStreamProperty_PacketToByte: number;
 
 declare const kAudioFileStreamProperty_PacketToDependencyInfo: number;
 
-declare const kAudioFileStreamProperty_PreviousIndependentPacket: number;
+declare const kAudioFileStreamProperty_NextIndependentPacket: number;
+
+declare const kAudioFileStreamProperty_PacketToRollDistance: number;
 
 declare const kAudioFileStreamProperty_FrameToPacket: number;
 
-declare const kAudioFileStreamProperty_PacketToFrame: number;
-
-declare const kAudioFileStreamProperty_ChannelLayout: number;
-
-declare const kAudioFileStreamProperty_MaximumPacketSize: number;
+declare const kAudioFileStreamProperty_DataOffset: number;
 
 declare const kAudioFileStreamProperty_AudioDataPacketCount: number;
+
+declare const kAudioFileStreamProperty_AudioDataByteCount: number;
 
 declare const kAudioFileStreamProperty_MagicCookieData: number;
 
 declare const kAudioFileStreamProperty_DataFormat: number;
 
+declare const kAudioFileStreamProperty_FileFormat: number;
+
 declare const kAudioFileStreamProperty_ReadyToProducePackets: number;
+
+declare const kAudioFileStreamError_DiscontinuityCantRecover: number;
 
 declare const kAudioFileStreamError_UnspecifiedError: number;
 
+declare const kAudioFileStreamError_IllegalOperation: number;
+
+declare const kAudioFileStreamError_DataUnavailable: number;
+
 declare const kAudioFileStreamError_ValueUnknown: number;
+
+declare const kExtAudioFileProperty_FileLengthFrames: number;
 
 declare const kAudioFileStreamError_InvalidFile: number;
 
-declare const kAudioSessionMode_VideoRecording: number;
-
 declare const kAudioFileStreamError_NotOptimized: number;
-
-declare const kAudioFileStreamError_UnsupportedProperty: number;
-
-declare const kAudioFileStreamError_UnsupportedFileType: number;
 
 declare const kAudioFileGlobalInfo_TypesForExtension: number;
 
+declare const kAudioFileGlobalInfo_TypesForHFSTypeCode: number;
+
+declare const kAudioFileGlobalInfo_TypesForUTI: number;
+
+declare const kAudioFileGlobalInfo_MIMETypesForType: number;
+
 declare const kAudioFileGlobalInfo_UTIsForType: number;
-
-declare const kAudioFileGlobalInfo_HFSTypeCodesForType: number;
-
-declare const kAudioFileGlobalInfo_ExtensionsForType: number;
 
 declare const kAudioFileGlobalInfo_AllMIMETypes: number;
 
 declare const kAudioFileGlobalInfo_AllUTIs: number;
 
-declare const kAudioFileGlobalInfo_AllHFSTypeCodes: number;
-
-declare const kAudioFileGlobalInfo_AllExtensions: number;
-
 declare const kAudioFileGlobalInfo_AvailableFormatIDs: number;
-
-declare const kAudioFileGlobalInfo_FileTypeName: number;
-
-declare const kAudioFileGlobalInfo_WritableTypes: number;
-
-declare const kAudioFileGlobalInfo_ReadableTypes: number;
-
-declare const kAudioFilePropertyUseAudioTrack: number;
 
 declare const kAudioFilePropertyAlbumArtwork: number;
 
-declare const kAudioFilePropertyID3Tag: number;
+declare const kAudioFilePropertySourceBitDepth: number;
 
-declare const kAudioFilePropertyPacketRangeByteCountUpperBound: number;
+declare const kAudioFilePropertyID3TagOffset: number;
+
+declare const kAudioFilePropertyBitRate: number;
+
+declare const kAudioFilePropertyEstimatedDuration: number;
+
+declare const kAudioFilePropertyPacketSizeUpperBound: number;
 
 declare const kAudioFilePropertyFormatList: number;
 
 declare const kAudioFilePropertyInfoDictionary: number;
 
+declare const kAudioFilePropertyByteToPacket: number;
+
 declare const kAudioFilePropertyPacketToByte: number;
 
-declare const kAudioFormatProperty_Decoders: number;
+declare const kAudioFilePropertyPacketToDependencyInfo: number;
+
+declare const kAudioFilePropertyPreviousIndependentPacket: number;
 
 declare const kAudioFilePropertyPacketToRollDistance: number;
+
+declare const kAudioFilePropertyRestrictsRandomAccess: number;
 
 declare const kAudioFilePropertyFrameToPacket: number;
 
 declare const kAudioFilePropertyPacketToFrame: number;
 
-declare const kAudioFilePropertyMarkerList: number;
+declare const kAudioFilePropertyDeferSizeUpdates: number;
 
-declare const kAudioFilePropertyDataFormatName: number;
+declare const kAudioFilePropertyMaximumPacketSize: number;
 
-declare const kAudioFilePropertyDataOffset: number;
+declare const kAudioFilePropertyAudioDataPacketCount: number;
 
-declare const kAudioFilePropertyAudioDataByteCount: number;
+declare const kAudioFilePropertyMagicCookieData: number;
 
 declare const kAudioFilePropertyIsOptimized: number;
-
-declare const kAudioFilePropertyDataFormat: number;
-
-declare const kAudioFileMarkerType_Generic: number;
 
 declare const kAudioFileLoopDirection_ForwardAndBackward: number;
 
 declare const kAudioFileLoopDirection_Forward: number;
 
-declare const kAudioFileLoopDirection_NoLooping: number;
-
 declare const kAudioFileFileNotFoundError: number;
 
 declare const kAudioFilePositionError: number;
 
-declare const kAudioFileEndOfFileError: number;
-
-declare const kAudioFileInvalidPacketDependencyError: number;
+declare const kAudioFileInvalidFileError: number;
 
 declare const kAudioFileInvalidPacketOffsetError: number;
 
 declare const kAudioFileDoesNotAllow64BitDataSizeError: number;
 
+declare const kAudioFileNotOptimizedError: number;
+
+declare const kAudioFilePermissionsError: number;
+
 declare const kAudioFileBadPropertySizeError: number;
 
 declare const kAudioFileUnsupportedPropertyError: number;
 
-declare const kAudioFileUnsupportedFileTypeError: number;
+declare const kAudioFileLATMInLOASType: number;
 
-declare const kAudioFileUnspecifiedError: number;
+declare const kAudioFileFLACType: number;
 
 declare const kAudioFileAMRType: number;
 
-declare const kAudioFile3GP2Type: number;
-
-declare const kAudioFileStreamProperty_FileFormat: number;
+declare const kAudioFile3GPType: number;
 
 declare const kAudioFileCAFType: number;
+
+declare const kAudioFileM4BType: number;
 
 declare const kAudioFileM4AType: number;
 
 declare const kAudioFileAAC_ADTSType: number;
 
+declare const kAudioFileMP1Type: number;
+
+declare const kAudioFileMP2Type: number;
+
 declare const kAudioFileMP3Type: number;
 
-declare const kAudioFileSoundDesigner2Type: number;
+declare const kAudioFileWave64Type: number;
+
+declare const kAudioFileBW64Type: number;
 
 declare const kAudioFileRF64Type: number;
 
-declare const kAudioFileAIFFType: number;
-
-declare const kAudioConverterSampleRateConverterAlgorithm: number;
-
 declare const kAudioConverterPropertyMaximumInputBufferSize: number;
+
+declare const kAudioConverterErr_InputSampleRateOutOfRange: number;
 
 declare const kAudioConverterErr_RequiresPacketDescriptionsError: number;
 
 declare const kAudioConverterErr_BadPropertySizeError: number;
 
-declare const kAudioConverterErr_InputSampleRateOutOfRange: number;
-
 declare const kAudioConverterErr_UnspecifiedError: number;
-
-declare const kAudioConverterErr_InvalidOutputSize: number;
 
 declare const kAudioConverterErr_InvalidInputSize: number;
 
-declare const kAudioConverterErr_PropertyNotSupported: number;
+declare const kAudioConverterErr_OperationNotSupported: number;
+
+declare const kAudioConverterErr_FormatNotSupported: number;
 
 declare const kConverterPrimeMethod_Normal: number;
+
+declare const kAudioConverterSampleRateConverterComplexity_MinimumPhase: number;
 
 declare const kAudioConverterSampleRateConverterComplexity_Mastering: number;
 
 declare const kAudioConverterSampleRateConverterComplexity_Normal: number;
 
-declare const kAudioConverterSampleRateConverterComplexity_Linear: number;
+declare const kAudioConverterQuality_Low: number;
 
 declare const kAudioConverterQuality_High: number;
 
-declare const kAudioConverterQuality_Max: number;
+declare const kDitherAlgorithm_NoiseShaping: number;
 
 declare const kDitherAlgorithm_TPDF: number;
 
@@ -503,53 +613,75 @@ declare const kAudioConverterPropertyBitDepthHint: number;
 
 declare const kAudioConverterPropertySettings: number;
 
-declare const kAudioConverterApplicableEncodeBitRates: number;
+declare const kAudioConverterAvailableEncodeChannelLayoutTags: number;
 
-declare const kAudioConverterInputChannelLayout: number;
+declare const kAudioConverterApplicableEncodeSampleRates: number;
+
+declare const kAudioConverterAvailableEncodeBitRates: number;
+
+declare const kAudioConverterOutputChannelLayout: number;
+
+declare const kAudioConverterEncodeAdjustableSampleRate: number;
+
+declare const kAudioConverterEncodeBitRate: number;
+
+declare const kAudioConverterDecompressionMagicCookie: number;
 
 declare const kAudioConverterChannelMap: number;
 
+declare const kAudioConverterPrimeInfo: number;
+
 declare const kAudioConverterPrimeMethod: number;
+
+declare const kAudioConverterCodecQuality: number;
 
 declare const kAudioConverterSampleRateConverterInitialPhase: number;
 
-declare const kAudioConverterPropertyInputCodecParameters: number;
+declare const kAudioConverterSampleRateConverterQuality: number;
+
+declare const kAudioConverterSampleRateConverterComplexity: number;
+
+declare const kAudioConverterPropertyOutputCodecParameters: number;
+
+declare const kAudioConverterPropertyCalculateOutputBufferSize: number;
 
 declare const kAudioConverterPropertyCalculateInputBufferSize: number;
 
-declare const kAudioConverterPropertyMaximumOutputPacketSize: number;
-
-declare const kAudioConverterPropertyMaximumInputPacketSize: number;
-
-declare const kAudioConverterPropertyMinimumOutputBufferSize: number;
-
-declare const kAudioConverterPropertyMinimumInputBufferSize: number;
-
 declare const kAUNodeInteraction_InputCallback: number;
 
-declare const kAUGraphErr_InvalidAudioUnit: number;
+declare const kAUNodeInteraction_Connection: number;
 
-declare const kAUGraphErr_CannotDoInCurrentContext: number;
+declare const kAUGraphErr_OutputNodeErr: number;
+
+declare const kAUGraphErr_InvalidConnection: number;
 
 declare const kAUGraphErr_NodeNotFound: number;
 
-declare const kMusicDeviceStartNoteSelect: number;
+declare const kMusicDeviceMIDIEventListSelect: number;
+
+declare const kMusicDeviceReleaseInstrumentSelect: number;
+
+declare const kMusicDevicePrepareInstrumentSelect: number;
+
+declare const kMusicDeviceMIDIEventSelect: number;
 
 declare const kMusicDeviceRange: number;
 
 declare const kMusicNoteEvent_Unused: number;
 
+declare const kMusicNoteEvent_UseGroupInstrument: number;
+
 declare const kReverb2Param_DecayTimeAt0Hz: number;
 
-declare const kReverb2Param_MinDelayTime: number;
+declare const kReverb2Param_MaxDelayTime: number;
 
 declare const kReverb2Param_Gain: number;
 
 declare const kReverb2Param_DryWetMix: number;
 
-declare const kRandomParam_Curve: number;
-
 declare const kRandomParam_BoundB: number;
+
+declare const kRandomParam_BoundA: number;
 
 declare const kMusicDeviceParam_Volume: number;
 
@@ -561,31 +693,31 @@ declare const kAUNetStatus_Connecting: number;
 
 declare const kAUNetStatus_Underflow: number;
 
+declare const kAUNetStatus_Overflow: number;
+
 declare const kAUNetStatus_Connected: number;
 
 declare const kAUNetStatus_NotConnected: number;
 
+declare const kAUNetSendParam_Status: number;
+
+declare const kAUNetReceiveParam_NumParameters: number;
+
 declare const kAUNetReceiveParam_Status: number;
 
-declare const kStereoMixerParam_PreAveragePower: number;
+declare const kStereoMixerParam_PostPeakHoldLevel: number;
 
-declare const kStereoMixerParam_Volume: number;
+declare const kStereoMixerParam_Pan: number;
 
 declare const kRogerBeepParam_RogerType: number;
 
 declare const kRogerBeepParam_OutGateThresholdTime: number;
 
-declare const kRogerBeepParam_OutGateThreshold: number;
+declare const kRogerBeepParam_InGateThreshold: number;
 
-declare const kRogerBeepParam_InGateThresholdTime: number;
+declare const kMultibandFilter_HighGain: number;
 
 declare const kMultibandFilter_HighFilterType: number;
-
-declare const kMultibandFilter_Bandwidth3: number;
-
-declare const kMultibandFilter_CenterGain3: number;
-
-declare const kMultibandFilter_CenterFreq3: number;
 
 declare const kMultibandFilter_CenterGain2: number;
 
@@ -595,9 +727,9 @@ declare const kMultibandFilter_Bandwidth1: number;
 
 declare const kMultibandFilter_CenterGain1: number;
 
-declare const kMultibandFilter_LowFrequency: number;
+declare const kMultibandFilter_LowGain: number;
 
-declare const kMultibandCompressorParam_OutputAmplitude4: number;
+declare const kMultibandFilter_LowFilterType: number;
 
 declare const kMultibandCompressorParam_OutputAmplitude3: number;
 
@@ -607,19 +739,25 @@ declare const kMultibandCompressorParam_InputAmplitude4: number;
 
 declare const kMultibandCompressorParam_InputAmplitude3: number;
 
+declare const kMultibandCompressorParam_InputAmplitude2: number;
+
 declare const kMultibandCompressorParam_InputAmplitude1: number;
 
-declare const kMultibandCompressorParam_CompressionAmount3: number;
-
 declare const kMultibandCompressorParam_CompressionAmount2: number;
-
-declare const kMultibandCompressorParam_CompressionAmount1: number;
 
 declare const kMultibandCompressorParam_EQ4: number;
 
 declare const kMultibandCompressorParam_EQ3: number;
 
+declare const kAudioFormatProperty_ChannelLayoutForBitmap: number;
+
 declare const kMultibandCompressorParam_EQ1: number;
+
+declare const kMultibandCompressorParam_ReleaseTime: number;
+
+declare const kMultibandCompressorParam_AttackTime: number;
+
+declare const kMultibandCompressorParam_Headroom4: number;
 
 declare const kMultibandCompressorParam_Headroom3: number;
 
@@ -627,31 +765,53 @@ declare const kMultibandCompressorParam_Headroom1: number;
 
 declare const kMultibandCompressorParam_Threshold4: number;
 
+declare const kMultibandCompressorParam_Threshold3: number;
+
+declare const kMultibandCompressorParam_Threshold2: number;
+
 declare const kMultibandCompressorParam_Threshold1: number;
 
 declare const kMultibandCompressorParam_Crossover2: number;
 
-declare const kMultibandCompressorParam_Crossover1: number;
-
 declare const kMultibandCompressorParam_Postgain: number;
+
+declare const kReverbParam_ModulationDepth: number;
 
 declare const kReverbParam_SmallDelayRange: number;
 
+declare const kReverbParam_LargeBrightness: number;
+
+declare const kReverbParam_SmallBrightness: number;
+
+declare const kReverbParam_LargeDelayRange: number;
+
 declare const kReverbParam_SmallDensity: number;
-
-declare const kReverbParam_PreDelay: number;
-
-declare const kReverbParam_LargeSize: number;
 
 declare const kReverbParam_SmallSize: number;
 
-declare const kReverbParam_SmallLargeMix: number;
+declare const kReverbParam_DryWetMix: number;
+
+declare const kGraphicEQParam_NumberOfBands: number;
 
 declare const kAUSoundIsolationSoundType_Voice: number;
+
+declare const kAUSoundIsolationSoundType_HighQualityVoice: number;
+
+declare const kRoundTripAACParam_CompressedFormatSampleRate: number;
+
+declare const kRoundTripAACParam_Quality: number;
+
+declare const kRoundTripAACParam_BitRate: number;
 
 declare const kRoundTripAACParam_RateOrQuality: number;
 
 declare const kRoundTripAACParam_EncodingStrategy: number;
+
+declare const kNumAUNBandEQFilterTypes: number;
+
+declare const kAUNBandEQFilterType_ResonantHighShelf: number;
+
+declare const kAudioFileAIFCType: number;
 
 declare const kAUNBandEQFilterType_ResonantLowShelf: number;
 
@@ -659,17 +819,23 @@ declare const kAUNBandEQFilterType_LowShelf: number;
 
 declare const kAUNBandEQFilterType_BandStop: number;
 
+declare const kAUNBandEQFilterType_BandPass: number;
+
 declare const kAUNBandEQFilterType_ResonantHighPass: number;
 
-declare const kAUNBandEQFilterType_Parametric: number;
+declare const kAUNBandEQFilterType_ResonantLowPass: number;
 
-declare const kAUNBandEQParam_Bandwidth: number;
+declare const kAUNBandEQFilterType_2ndOrderButterworthHighPass: number;
+
+declare const kAUNBandEQFilterType_2ndOrderButterworthLowPass: number;
+
+declare const kAUNBandEQParam_Gain: number;
 
 declare const kAUNBandEQParam_Frequency: number;
 
-declare const kAUNBandEQParam_FilterType: number;
-
 declare const kDelayParam_LopassCutoff: number;
+
+declare const kDelayParam_DelayTime: number;
 
 declare const kDistortionParam_FinalMix: number;
 
@@ -677,23 +843,21 @@ declare const kDistortionParam_SoftClipGain: number;
 
 declare const kDistortionParam_RingModMix: number;
 
-declare const kDistortionParam_RingModFreq2: number;
-
-declare const kDistortionParam_RingModFreq1: number;
-
 declare const kDistortionParam_PolynomialMix: number;
 
-declare const kDistortionParam_CubicTerm: number;
+declare const kDistortionParam_LinearTerm: number;
 
-declare const kDistortionParam_SquaredTerm: number;
+declare const kDistortionParam_DecimationMix: number;
 
-declare const kDistortionParam_DelayMix: number;
+declare const kDistortionParam_Rounding: number;
 
-declare const kDistortionParam_Decay: number;
+declare const kDistortionParam_Decimation: number;
+
+declare const kDistortionParam_Delay: number;
 
 declare const kVarispeedParam_PlaybackCents: number;
 
-declare const kDynamicsProcessorParam_OutputAmplitude: number;
+declare const kVarispeedParam_PlaybackRate: number;
 
 declare const kDynamicsProcessorParam_InputAmplitude: number;
 
@@ -703,7 +867,7 @@ declare const kDynamicsProcessorParam_OverallGain: number;
 
 declare const kDynamicsProcessorParam_ReleaseTime: number;
 
-declare const kDynamicsProcessorParam_AttackTime: number;
+declare const kDynamicsProcessorParam_ExpansionThreshold: number;
 
 declare const kDynamicsProcessorParam_HeadRoom: number;
 
@@ -711,37 +875,17 @@ declare const kDynamicsProcessorParam_Threshold: number;
 
 declare const kLimiterParam_PreGain: number;
 
-declare const kLimiterParam_AttackTime: number;
-
-declare const kParametricEQParam_Gain: number;
-
-declare const kParametricEQParam_Q: number;
-
-declare const kAULowShelfParam_CutoffFrequency: number;
-
-declare const kHighShelfParam_Gain: number;
-
-declare const kHighShelfParam_CutOffFrequency: number;
-
-declare const kHipassParam_Resonance: number;
+declare const kAULowShelfParam_Gain: number;
 
 declare const kHipassParam_CutoffFrequency: number;
 
 declare const kBandpassParam_Bandwidth: number;
 
+declare const kLowPassParam_Resonance: number;
+
 declare const kBandpassParam_CenterFrequency: number;
 
-declare const kNewTimePitchParam_EnableTransientPreservation: number;
-
-declare const kNewTimePitchParam_EnableSpectralCoherence: number;
-
-declare const kNewTimePitchParam_Overlap: number;
-
-declare const kNewTimePitchParam_Smoothness: number;
-
-declare const kNewTimePitchParam_Pitch: number;
-
-declare const kNewTimePitchParam_Rate: number;
+declare const kAUSamplerParam_CoarseTuning: number;
 
 declare const kTimePitchParam_EffectBlend: number;
 
@@ -749,19 +893,17 @@ declare const kTimePitchParam_Pitch: number;
 
 declare const kTimePitchParam_Rate: number;
 
-declare const kMatrixMixerParam_PostAveragePowerLinear: number;
+declare const kHALOutputParam_Volume: number;
+
+declare const kMatrixMixerParam_PostPeakHoldLevelLinear: number;
 
 declare const kMatrixMixerParam_PrePeakHoldLevelLinear: number;
 
 declare const kMatrixMixerParam_PreAveragePowerLinear: number;
 
-declare const kMatrixMixerParam_PostPeakHoldLevel: number;
-
 declare const kMatrixMixerParam_PostAveragePower: number;
 
-declare const kMatrixMixerParam_Enable: number;
-
-declare const kMatrixMixerParam_Volume: number;
+declare const kMatrixMixerParam_PreAveragePower: number;
 
 declare const kMultiChannelMixerParam_PostPeakHoldLevel: number;
 
@@ -769,39 +911,39 @@ declare const kMultiChannelMixerParam_PostAveragePower: number;
 
 declare const kMultiChannelMixerParam_PrePeakHoldLevel: number;
 
-declare const kMultiChannelMixerParam_PreAveragePower: number;
+declare const kMultiChannelMixerParam_Pan: number;
 
 declare const kMultiChannelMixerParam_Enable: number;
 
-declare const kMultiChannelMixerParam_Volume: number;
-
-declare const k3DMixerParam_PostAveragePower: number;
-
-declare const k3DMixerParam_PrePeakHoldLevel: number;
-
-declare const k3DMixerParam_PreAveragePower: number;
+declare const k3DMixerParam_PostPeakHoldLevel: number;
 
 declare const k3DMixerParam_MaxGain: number;
 
-declare const k3DMixerParam_MinGain: number;
-
 declare const k3DMixerParam_GlobalReverbGain: number;
 
-declare const k3DMixerParam_ObstructionAttenuationInDecibels: number;
+declare const k3DMixerParam_ReverbBlend: number;
 
-declare const k3DMixerParam_DryWetReverbBlend: number;
-
-declare const k3DMixerParam_MaxGainInDecibels: number;
+declare const k3DMixerParam_OcclusionAttenuationInDecibels: number;
 
 declare const k3DMixerParam_MinGainInDecibels: number;
+
+declare const k3DMixerParam_BusEnable: number;
+
+declare const k3DMixerParam_PlaybackRate: number;
 
 declare const k3DMixerParam_Gain: number;
 
 declare const k3DMixerParam_Distance: number;
 
-declare const kReverbParam_FilterBandwidth: number;
+declare const k3DMixerParam_Elevation: number;
 
-declare const kSpatialMixerParam_HeadRoll: number;
+declare const k3DMixerParam_Azimuth: number;
+
+declare const kReverbParam_FilterEnable: number;
+
+declare const kReverbParam_FilterGain: number;
+
+declare const kReverbParam_FilterFrequency: number;
 
 declare const kSpatialMixerParam_HeadPitch: number;
 
@@ -809,79 +951,93 @@ declare const kSpatialMixerParam_HeadYaw: number;
 
 declare const kSpatialMixerParam_ObstructionAttenuation: number;
 
+declare const kSpatialMixerParam_OcclusionAttenuation: number;
+
+declare const kSpatialMixerParam_GlobalReverbGain: number;
+
 declare const kSpatialMixerParam_ReverbBlend: number;
 
-declare const kAudioFormatProperty_ChannelLayoutForBitmap: number;
-
-declare const kSpatialMixerParam_MaxGain: number;
+declare const kSpatialMixerParam_MinGain: number;
 
 declare const kSpatialMixerParam_Enable: number;
-
-declare const kSpatialMixerParam_PlaybackRate: number;
 
 declare const kSpatialMixerParam_Gain: number;
 
 declare const kSpatialMixerParam_Elevation: number;
 
-declare const kPannerParam_CoordScale: number;
+declare const kSpatialMixerParam_Azimuth: number;
 
-declare const kPannerParam_Elevation: number;
+declare const kPannerParam_Distance: number;
 
 declare const kPannerParam_Azimuth: number;
+
+declare const kPannerParam_Gain: number;
 
 declare const kAUGroupParameterID_KeyPressure_LastKey: number;
 
 declare const kAUGroupParameterID_KeyPressure_FirstKey: number;
 
-declare const kAUGroupParameterID_DataEntry_LSB: number;
-
 declare const kAUGroupParameterID_Expression_LSB: number;
 
-declare const kAUGroupParameterID_Pan_LSB: number;
+declare const kAUGroupParameterID_Foot_LSB: number;
 
-declare const kAUGroupParameterID_DataEntry: number;
+declare const kAUGroupParameterID_ModWheel_LSB: number;
 
-declare const kRoundTripAACParam_BitRate: number;
+declare const kAUGroupParameterID_Volume_LSB: number;
 
-declare const kAUGroupParameterID_Expression: number;
-
-declare const kAUGroupParameterID_KeyPressure: number;
+declare const kAUGroupParameterID_ChannelPressure: number;
 
 declare const kAUGroupParameterID_Foot: number;
 
-declare const kAUGroupParameterID_ResetAllControllers: number;
+declare const kAUGroupParameterID_Pan: number;
 
-declare const kAUGroupParameterID_PitchBend: number;
+declare const kAUGroupParameterID_AllSoundOff: number;
 
 declare const kAUGroupParameterID_ModWheel: number;
 
 declare const kAUGroupParameterID_AllNotesOff: number;
 
+declare const kAUGroupParameterID_Sostenuto: number;
+
 declare const kAUGroupParameterID_Sustain: number;
 
-declare const kAUGroupParameterID_Volume: number;
+declare const kAudioOutputUnitStopSelect: number;
 
-declare const kAUSamplerProperty_LoadPresetFromBank: number;
+declare const kAudioOutputUnitRange: number;
+
+declare const kDistortionParam_CubicTerm: number;
+
+declare const kAudioFileStreamProperty_FormatList: number;
+
+declare const kAUSamplerProperty_BankAndPreset: number;
 
 declare const kSpeakerConfiguration_5_1: number;
 
-declare const kSpeakerConfiguration_Stereo: number;
+declare const kSpeakerConfiguration_5_0: number;
+
+declare const kSpeakerConfiguration_HeadPhones: number;
+
+declare const kAudioUnitProperty_SpeakerConfiguration: number;
 
 declare const kMusicDeviceProperty_SoundBankFSSpec: number;
 
-declare const kAudioFileDataIsThisFormatSelect: number;
+declare const kMusicDeviceProperty_GroupOutputBus: number;
 
 declare const kAudioUnitSRCAlgorithm_Polyphase: number;
 
 declare const kAudioOfflineUnitProperty_OutputSize: number;
 
+declare const kAudioOfflineUnitProperty_InputSize: number;
+
 declare const kAudioUnitProperty_BusCount: number;
 
 declare const kAudioUnitProperty_ParameterValueName: number;
 
-declare const kAudioUnitParameterFlag_HasName: number;
+declare const kAudioUnitProperty_CurrentPreset: number;
 
-declare const kAudioSessionProperty_OverrideCategoryDefaultToSpeaker: number;
+declare const kAudioUnitProperty_MIDIControlMapping: number;
+
+declare const kAudioUnitProperty_SRCAlgorithm: number;
 
 declare const kAudioUnitParameterFlag_Group: number;
 
@@ -889,11 +1045,13 @@ declare const kAudioUnitParameterFlag_Input: number;
 
 declare const kAudioUnitParameterFlag_Global: number;
 
+declare const kAUNetSendNumPresetFormats: number;
+
+declare const kAUNetSendPresetFormat_AAC_LD_32kbpspc: number;
+
 declare const kAUNetSendPresetFormat_AAC_LD_48kbpspc: number;
 
 declare const kAUNetSendPresetFormat_AAC_LD_64kbpspc: number;
-
-declare const kAUNetSendPresetFormat_AAC_40kbpspc: number;
 
 declare const kAUNetSendPresetFormat_AAC_48kbpspc: number;
 
@@ -905,11 +1063,19 @@ declare const kAUNetSendPresetFormat_AAC_128kbpspc: number;
 
 declare const kAUNetSendPresetFormat_IMA4: number;
 
+declare const kAUNetSendPresetFormat_Lossless16: number;
+
+declare const kAUNetSendPresetFormat_PCMInt16: number;
+
 declare const kAUNetSendPresetFormat_PCMInt24: number;
 
-declare const kAUNetSendPresetFormat_PCMFloat32: number;
+declare const kAUNetSendProperty_Password: number;
 
-declare const kAUNetSendProperty_Disconnect: number;
+declare const kAUNetSendProperty_ServiceName: number;
+
+declare const kAUNetSendProperty_TransmissionFormatIndex: number;
+
+declare const kAUNetSendProperty_TransmissionFormat: number;
 
 declare const kAUNetSendProperty_PortNum: number;
 
@@ -917,75 +1083,69 @@ declare const kAUNetReceiveProperty_Hostname: number;
 
 declare const kAudioUnitProperty_DeferredRendererWaitFrames: number;
 
-declare const kAudioUnitProperty_DeferredRendererExtraLatency: number;
-
-declare const kAudioUnitProperty_DeferredRendererPullSize: number;
-
-declare const kAUSampler_DefaultBankLSB: number;
-
 declare const kAUSampler_DefaultMelodicBankMSB: number;
 
-declare const kInstrumentType_EXS24: number;
+declare const kInstrumentType_AUPreset: number;
 
 declare const kInstrumentType_DLSPreset: number;
 
-declare const kMusicDeviceProperty_BankName: number;
+declare const kAUSamplerProperty_LoadInstrument: number;
+
+declare const kAUMIDISynthProperty_EnablePreload: number;
 
 declare const kMusicDeviceProperty_InstrumentCount: number;
 
-declare const kMusicDeviceProperty_InstrumentName: number;
-
-declare const kMusicDeviceProperty_SoundBankFSRef: number;
+declare const kMusicDeviceProperty_InstrumentNumber: number;
 
 declare const kMusicDeviceProperty_SoundBankData: number;
+
+declare const kMusicDeviceProperty_UsesInternalReverb: number;
+
+declare const kAudioUnitProperty_ScheduledFileNumberBuffers: number;
 
 declare const kAudioUnitProperty_ScheduledFileBufferSizeFrames: number;
 
 declare const kAudioUnitProperty_ScheduledFilePrime: number;
 
-declare const kAudioUnitProperty_ScheduledFileRegion: number;
-
-declare const kReverbParam_FilterGain: number;
-
 declare const kAudioUnitProperty_ScheduledFileIDs: number;
 
-declare const kAudioUnitProperty_CurrentPlayTime: number;
-
-declare const kAudioUnitProperty_ReverbPreset: number;
+declare const kAudioUnitProperty_ScheduleAudioSlice: number;
 
 declare const kAudioUnitProperty_3DMixerDistanceAtten: number;
 
-declare const kAudioUnitProperty_3DMixerRenderingFlags: number;
-
 declare const kAudioUnitProperty_DopplerShift: number;
+
+declare const kAudioUnitProperty_3DMixerAttenuationCurve: number;
 
 declare const kAudioUnitProperty_3DMixerDistanceParams: number;
 
 declare const kAudioUnitProperty_SpatialMixerAnyInputIsUsingPersonalizedHRTF: number;
 
-declare const kAudioUnitProperty_SpatialMixerPointSourceInHeadMode: number;
+declare const kAudioUnitProperty_SpatialMixerPersonalizedHRTFMode: number;
+
+declare const kAudioUnitProperty_SpatialMixerEnableHeadTracking: number;
+
+declare const kAudioUnitProperty_SpatialMixerAttenuationCurve: number;
 
 declare const kAudioUnitProperty_SpatialMixerSourceMode: number;
+
+declare const kAudioUnitProperty_SpatialMixerRenderingFlags: number;
 
 declare const kAudioUnitProperty_SpatializationAlgorithm: number;
 
 declare const kAudioUnitProperty_ReverbRoomType: number;
 
-declare const kAudioUnitProperty_MeterClipping: number;
-
 declare const kAudioUnitProperty_MatrixDimensions: number;
 
+declare const kAudioUnitProperty_MatrixLevels: number;
+
 declare const kAudioUnitProperty_MeteringMode: number;
-
-declare const kAUNBandEQProperty_BiquadCoefficients: number;
-
-declare const kAUNBandEQProperty_MaxNumberOfBands: number;
 
 declare const kAUNBandEQProperty_NumberOfBands: number;
 
 declare const kAUVoiceIOProperty_OtherAudioDuckingConfiguration: number;
 
-declare const kAUVoiceIOProperty_MutedSpeechActivityEventListener: number;
+declare const kAUVoiceIOProperty_MuteOutput: number;
 
 declare const kAUVoiceIOProperty_VoiceProcessingEnableAGC: number;
 
@@ -995,39 +1155,51 @@ declare const kAudioOutputUnitProperty_HostTransportState: number;
 
 declare const kAudioOutputUnitProperty_RemoteControlToHost: number;
 
+declare const kCAF_FillerChunkID: number;
+
 declare const kAudioOutputUnitProperty_HostReceivesRemoteControlEvents: number;
+
+declare const kAudioOutputUnitProperty_MIDICallbacks: number;
+
+declare const kAudioOutputUnitProperty_StartTimestampsAtZero: number;
+
+declare const kAudioOutputUnitProperty_HasIO: number;
 
 declare const kAudioOutputUnitProperty_SetInputCallback: number;
 
-declare const kAudioOutputUnitProperty_StartTime: number;
-
 declare const kAudioOutputUnitProperty_EnableIO: number;
+
+declare const kAudioOutputUnitProperty_ChannelMap: number;
+
+declare const kAudioOutputUnitProperty_IsRunning: number;
+
+declare const kSampleDelayParam_DelayFrames: number;
 
 declare const kAudioOutputUnitProperty_CurrentDevice: number;
 
-declare const kAudioUnitSampleRateConverterComplexity_Linear: number;
+declare const kAudioUnitSampleRateConverterComplexity_Mastering: number;
 
-declare const kOtherPluginFormat_AU: number;
+declare const kAudioUnitSampleRateConverterComplexity_Normal: number;
 
-declare const kOtherPluginFormat_kVST: number;
+declare const kAudioUnitProperty_SampleRateConverterComplexity: number;
 
 declare const kOtherPluginFormat_kMAS: number;
 
-declare const kOtherPluginFormat_Undefined: number;
-
-declare const kAudioUnitMigrateProperty_OldAutomation: number;
-
 declare const kAudioUnitMigrateProperty_FromPlugin: number;
 
-declare const kAudioUnitProperty_DistanceAttenuationData: number;
+declare const kOfflinePreflight_Required: number;
 
 declare const kOfflinePreflight_Optional: number;
 
-declare const kAudioUnitOfflineProperty_PreflightRequirements: number;
+declare const kAudioUnitOfflineProperty_PreflightName: number;
 
 declare const kAudioUnitOfflineProperty_StartOffset: number;
 
-declare const kAudioUnitOfflineProperty_OutputSize: number;
+declare const kMusicDeviceProperty_SupportsStartStopNote: number;
+
+declare const kMusicDeviceProperty_DualSchedulingMode: number;
+
+declare const kMusicDeviceProperty_PartGroup: number;
 
 declare const kMusicDeviceProperty_MIDIXMLNames: number;
 
@@ -1035,15 +1207,23 @@ declare const kAudioUnitProperty_AddParameterMIDIMapping: number;
 
 declare const kAudioUnitProperty_AllParameterMIDIMappings: number;
 
-declare const kNumberOfResponseFrequencies: number;
+declare const kAudioUnitClumpID_System: number;
 
-declare const kRenderQuality_Low: number;
+declare const kNumberOfResponseFrequencies: number;
 
 declare const kRenderQuality_Medium: number;
 
 declare const kRenderQuality_High: number;
 
+declare const kRenderQuality_Max: number;
+
+declare const kAudioUnitProperty_PeerURL: number;
+
 declare const kAudioUnitProperty_IsInterAppConnected: number;
+
+declare const kAudioUnitProperty_MIDIOutputBufferSizeHint: number;
+
+declare const kAudioUnitProperty_HostMIDIProtocol: number;
 
 declare const kAudioUnitProperty_AudioUnitMIDIProtocol: number;
 
@@ -1053,41 +1233,45 @@ declare const kAudioUnitProperty_MIDIOutputCallback: number;
 
 declare const kAudioUnitProperty_MIDIOutputCallbackInfo: number;
 
+declare const kAudioUnitProperty_AUHostIdentifier: number;
+
+declare const kAudioUnitProperty_CocoaUI: number;
+
 declare const kAudioUnitProperty_GetUIComponentList: number;
+
+declare const kCAClock_InvalidTimeFormatError: number;
 
 declare const kAudioUnitProperty_SetExternalBuffer: number;
 
-declare const kAudioUnitProperty_SupportsMPE: number;
+declare const kAudioUnitProperty_FastDispatch: number;
+
+declare const kAudioUnitProperty_LoadedOutOfProcess: number;
+
+declare const kAudioUnitProperty_LastRenderSampleTime: number;
+
+declare const kAudioUnitProperty_RenderContextObserver: number;
+
+declare const kAudioUnitProperty_ParametersForOverview: number;
 
 declare const kAudioUnitProperty_PresentationLatency: number;
-
-declare const kCAClock_UnknownPropertyError: number;
 
 declare const kAudioUnitProperty_ContextName: number;
 
 declare const kAudioUnitProperty_ParameterValueFromString: number;
 
-declare const kAudioUnitProperty_ParameterClumpName: number;
-
 declare const kAudioUnitProperty_OfflineRender: number;
 
 declare const kAudioUnitProperty_NickName: number;
 
-declare const kAudioUnitProperty_FrequencyResponse: number;
-
 declare const kAudioUnitProperty_ShouldAllocateBuffer: number;
-
-declare const kAudioFileInitializeSelect: number;
 
 declare const kAudioUnitProperty_InputSamplesInOutput: number;
 
 declare const kAudioUnitProperty_DependentParameters: number;
 
-declare const kAudioUnitProperty_PresentPreset: number;
-
 declare const kAudioUnitProperty_SupportedChannelLayoutTags: number;
 
-declare const kAudioUnitProperty_ElementName: number;
+declare const kAudioUnitProperty_InPlaceProcessing: number;
 
 declare const kAudioUnitProperty_RenderQuality: number;
 
@@ -1095,93 +1279,105 @@ declare const kAudioUnitProperty_FactoryPresets: number;
 
 declare const kAudioUnitProperty_SetRenderCallback: number;
 
-declare const kAudioUnitProperty_LastRenderError: number;
-
 declare const kAudioUnitProperty_BypassEffect: number;
 
 declare const kAudioUnitProperty_TailTime: number;
-
-declare const kAudioUnitProperty_AudioChannelLayout: number;
 
 declare const kAudioUnitProperty_ParameterValueStrings: number;
 
 declare const kAudioUnitProperty_SupportedNumChannels: number;
 
-declare const kAudioFilePropertyDeferSizeUpdates: number;
+declare const kAudioUnitProperty_Latency: number;
 
 declare const kAudioUnitProperty_StreamFormat: number;
 
-declare const kAudioUnitProperty_ParameterInfo: number;
+declare const kAudioUnitProperty_CPULoad: number;
 
 declare const kAudioUnitProperty_ParameterList: number;
 
 declare const kAudioUnitProperty_SampleRate: number;
 
-declare const kAudioUnitProperty_MakeConnection: number;
+declare const kAudioUnitScope_LayerItem: number;
 
-declare const kAudioUnitScope_Layer: number;
+declare const kAudioUnitScope_Part: number;
 
-declare const kAudioUnitScope_Note: number;
+declare const kAudioUnitScope_Output: number;
 
 declare const kAudioUnitScope_Global: number;
 
-declare const kAudioUnitErr_InstrumentTypeNotFound: number;
-
-declare const kAudioFileWave64Type: number;
-
-declare const kAudioUnitProcessMultipleSelect: number;
-
-declare const kAudioUnitRenderSelect: number;
-
-declare const kAudioUnitScheduleParametersSelect: number;
+declare const kAudioUnitErr_IllegalInstrument: number;
 
 declare const kAudioUnitSetParameterSelect: number;
-
-declare const kAudioUnitRemoveRenderNotifySelect: number;
 
 declare const kAudioUnitAddRenderNotifySelect: number;
 
 declare const kAudioUnitRemovePropertyListenerWithUserDataSelect: number;
 
+declare const kAudioUnitRemovePropertyListenerSelect: number;
+
 declare const kAudioUnitAddPropertyListenerSelect: number;
 
 declare const kAudioUnitSetPropertySelect: number;
 
+declare const kAudioUnitGetPropertyInfoSelect: number;
+
+declare const kAudioUnitUninitializeSelect: number;
+
+declare const kAudioUnitRange: number;
+
 declare const kAudioComponentInstanceInvalidationNotification: interop.Pointer;
+
+declare const kAudioComponentRegistrationsChangedNotification: interop.Pointer;
 
 declare const kAudioComponentErr_InvalidFormat: number;
 
-declare const kAudioComponentErr_InitializationTimedOut: number;
-
 declare const kAudioComponentErr_NotPermitted: number;
+
+declare const kAudioComponentErr_UnsupportedType: number;
+
+declare const kAudioComponentErr_DuplicateDescription: number;
+
+declare const kAudioUnitErr_MultipleVoiceProcessors: number;
+
+declare const kAudioUnitErr_InvalidParameterValue: number;
+
+declare const kAudioUnitErr_ExtensionNotFound: number;
 
 declare const kAudioUnitErr_RenderTimeout: number;
 
-declare const kAudioComponentErr_InstanceInvalidated: number;
+declare const kAudioComponentErr_InstanceTimedOut: number;
 
 declare const kAudioUnitErr_MIDIOutputBufferFull: number;
-
-declare const kAudioSessionNotInitialized: number;
-
-declare const kAudioUnitErr_InvalidOfflineRender: number;
-
-declare const kAudioUnitErr_PropertyNotInUse: number;
 
 declare const kAudioUnitErr_InvalidPropertyValue: number;
 
 declare const kAudioUnitErr_CannotDoInCurrentContext: number;
 
+declare const kAudioUnitErr_PropertyNotWritable: number;
+
+declare const kAudioUnitErr_InvalidScope: number;
+
+declare const kAudioUnitErr_Uninitialized: number;
+
+declare const kAudioUnitErr_FormatNotSupported: number;
+
 declare const kAudioUnitErr_FileNotSpecified: number;
 
 declare const kAudioUnitErr_UnknownFileType: number;
+
+declare const kAudioUnitErr_InvalidFile: number;
+
+declare const kAudioUnitErr_FailedInitialization: number;
 
 declare const kAudioUnitErr_InvalidElement: number;
 
 declare const kAudioUnitErr_InvalidProperty: number;
 
-declare const kAudioUnitSubType_AudioFilePlayer: number;
-
 declare const kAudioUnitSubType_ScheduledSoundPlayer: number;
+
+declare const kAudioUnitSubType_NetReceive: number;
+
+declare const kAudioUnitSubType_HRTFPanner: number;
 
 declare const kAudioUnitSubType_SoundFieldPanner: number;
 
@@ -1189,27 +1385,31 @@ declare const kAudioUnitSubType_VectorPanner: number;
 
 declare const kAudioUnitSubType_SphericalHeadPanner: number;
 
-declare const kAudioUnitSubType_StereoMixer: number;
+declare const kAudioUnitSubType_3DMixer: number;
 
-declare const kAudioUnitSubType_SpatialMixer: number;
+declare const kAudioUnitSubType_MatrixMixer: number;
 
-declare const kAudioUnitSubType_AUFilter: number;
+declare const kAudioUnitSubType_MultiChannelMixer: number;
 
 declare const kAudioUnitSubType_Pitch: number;
 
-declare const kAudioSessionAlreadyInitialized: number;
+declare const kAudioUnitSubType_MultiBandCompressor: number;
 
-declare const kAudioUnitSubType_MatrixReverb: number;
+declare const kAudioUnitSubType_GraphicEQ: number;
+
+declare const kAudioUnitSubType_AUSoundIsolation: number;
+
+declare const kAudioUnitSubType_SampleDelay: number;
 
 declare const kAudioUnitSubType_Delay: number;
 
 declare const kAudioUnitSubType_Distortion: number;
 
-declare const kAudioUnitSubType_ParametricEQ: number;
-
 declare const kAudioUnitSubType_LowShelfFilter: number;
 
 declare const kAudioUnitSubType_HighShelfFilter: number;
+
+declare const kAudioUnitSubType_BandPassFilter: number;
 
 declare const kAudioUnitSubType_HighPassFilter: number;
 
@@ -1221,27 +1421,15 @@ declare const kAudioUnitSubType_PeakLimiter: number;
 
 declare const kAudioUnitSubType_TimePitch: number;
 
-declare const kAudioUnitSubType_RoundTripAAC: number;
-
 declare const kAudioUnitSubType_AUiPodTimeOther: number;
-
-declare const kAudioUnitSubType_NewTimePitch: number;
-
-declare const kAudioUnitSubType_Merger: number;
 
 declare const kAudioUnitSubType_MultiSplitter: number;
 
-declare const kAudioUnitSubType_DeferredRenderer: number;
+declare const kAudioUnitSubType_Splitter: number;
 
 declare const kAudioUnitSubType_Varispeed: number;
 
-declare const kAudioUnitSubType_AUConverter: number;
-
-declare const kAudioUnitSubType_MIDISynth: number;
-
 declare const kAudioUnitSubType_Sampler: number;
-
-declare const kAudioUnitSubType_DLSSynth: number;
 
 declare const kAudioUnitSubType_SystemOutput: number;
 
@@ -1249,15 +1437,13 @@ declare const kAudioUnitSubType_HALOutput: number;
 
 declare const kAudioUnitSubType_VoiceProcessingIO: number;
 
-declare const kAudioUnitSubType_GenericOutput: number;
-
 declare const kAudioUnitManufacturer_Apple: number;
 
 declare const kAudioUnitType_RemoteMusicEffect: number;
 
 declare const kAudioUnitType_RemoteInstrument: number;
 
-declare const kAudioFilePropertyNextIndependentPacket: number;
+declare const kAudioUnitType_RemoteEffect: number;
 
 declare const kAudioUnitType_SpeechSynthesizer: number;
 
@@ -1265,13 +1451,7 @@ declare const kAudioUnitType_MIDIProcessor: number;
 
 declare const kAudioUnitType_Generator: number;
 
-declare const kAudioUnitType_Panner: number;
-
 declare const kAudioUnitType_Mixer: number;
-
-declare const kAudioUnitType_Effect: number;
-
-declare const kAudioUnitType_FormatConverter: number;
 
 declare const kAudioUnitType_MusicEffect: number;
 
@@ -1279,21 +1459,11 @@ declare const kAudioUnitType_MusicDevice: number;
 
 declare const kHintAdvanced: number;
 
-declare const kHintBasic: number;
-
 declare const kAudioCodecOutputPrecedenceSampleRate: number;
-
-declare const kAudioCodecOutputPrecedenceBitRate: number;
-
-declare const kAudioCodecOutputPrecedenceNone: number;
 
 declare const kAudioCodecBitRateFormat_VBR: number;
 
 declare const kAudioCodecBitRateFormat_CBR: number;
-
-declare const kAudioCodecPropertyZeroFramesPadded: number;
-
-declare const kAudioCodecPropertyAvailableOutputChannelLayouts: number;
 
 declare const kAudioCodecPropertyAvailableInputChannelLayouts: number;
 
@@ -1301,17 +1471,9 @@ declare const kAudioCodecPropertyOutputChannelLayout: number;
 
 declare const kAudioCodecPropertyInputChannelLayout: number;
 
-declare const kAudioCodecOutputFormatsForInputFormat: number;
-
-declare const kAudioCodecUseRecommendedSampleRate: number;
-
-declare const kAudioUnitProperty_ScheduleStartTimeStamp: number;
-
-declare const kAudioCodecExtendFrequencies: number;
-
-declare const kAudioCodecPropertyAvailableBitRates: number;
-
 declare const kAudioCodecPropertyRequiresPacketDescription: number;
+
+declare const kAudioCodecPropertyManufacturerCFString: number;
 
 declare const kAudioCodecPropertyNameCFString: number;
 
@@ -1331,31 +1493,19 @@ declare const kAudioCodecAppendInputDataSelect: number;
 
 declare const kAudioCodecInitializeSelect: number;
 
-declare const kAudioCodecSetPropertySelect: number;
-
-declare const kAudioCodecGetPropertySelect: number;
-
-declare const kAudioCodecGetPropertyInfoSelect: number;
-
 declare const kAudioCodecProduceOutputPacketSuccessConcealed: number;
 
 declare const kAudioCodecProduceOutputPacketAtEOF: number;
 
 declare const kAudioCodecProduceOutputPacketNeedsMoreInputData: number;
 
-declare const kAudioCodecProduceOutputPacketSuccess: number;
-
 declare const kDynamicRangeCompressionProfile_GeneralCompression: number;
-
-declare const kDynamicRangeCompressionProfile_LimitedPlaybackRange: number;
 
 declare const kDynamicRangeCompressionProfile_NoisyEnvironment: number;
 
 declare const kAudioCodecPropertyFormatCFString: number;
 
 declare const kDynamicRangeCompressionProfile_LateNight: number;
-
-declare const kDynamicRangeCompressionProfile_None: number;
 
 declare const kDynamicRangeControlMode_Heavy: number;
 
@@ -1369,35 +1519,19 @@ declare const kProgramTargetLevel_Minus23dB: number;
 
 declare const kProgramTargetLevel_Minus31dB: number;
 
-declare const kProgramTargetLevel_None: number;
-
 declare const kAudioCodecDelayMode_Minimum: number;
 
 declare const kAudioCodecDelayMode_Compatibility: number;
 
-declare const kAudioCodecBitRateControlMode_Variable: number;
-
 declare const kAudioCodecBitRateControlMode_VariableConstrained: number;
-
-declare const kAudioCodecBitRateControlMode_Constant: number;
-
-declare const kAudioCodecPrimeMethod_None: number;
-
-declare const kAudioCodecPrimeMethod_Normal: number;
-
-declare const kDitherAlgorithm_NoiseShaping: number;
 
 declare const kAudioCodecQuality_Low: number;
 
+declare const kOtherPluginFormat_kVST: number;
+
 declare const kAudioCodecQuality_High: number;
 
-declare const kAudioFileNextType: number;
-
 declare const kAudioCodecQuality_Max: number;
-
-declare const kAudioCodecPropertyProgramTargetLevel: number;
-
-declare const kAudioCodecPropertyAdjustTargetLevelConstant: number;
 
 declare const kAudioCodecPropertyDynamicRangeControlMode: number;
 
@@ -1425,12 +1559,6 @@ declare const kAudioCodecPropertyApplicableInputSampleRates: number;
 
 declare const kAudioCodecPropertyQualitySetting: number;
 
-declare const kAudioCodecPropertyCurrentInputSampleRate: number;
-
-declare const kAudioCodecPropertyUsedInputBufferSize: number;
-
-declare const kAudioCodecPropertyMaximumPacketByteSize: number;
-
 declare const kAudioCodecPropertyEmploysDependentPackets: number;
 
 declare const kAudioCodecPropertyHasVariablePacketByteSizes: number;
@@ -1439,1235 +1567,1113 @@ declare const kAudioCodecPropertyInputBufferSize: number;
 
 declare const kAudioCodecPropertyFormatInfo: number;
 
-declare const kAudioCodecPropertyOutputFormatsForInputFormat: number;
-
 declare const kAudioCodecPropertyInputFormatsForOutputFormat: number;
 
 declare const kAudioCodecPropertyAvailableInputChannelLayoutTags: number;
 
 declare const kAudioCodecPropertyDoesSampleRateConversion: number;
 
-declare const kAudioCodecPropertyAvailableNumberChannels: number;
-
 declare const kAudioCodecPropertyAvailableBitRateRange: number;
 
 declare const kAudioCodecPropertyAvailableOutputSampleRates: number;
 
-declare const kAudioCodecPropertyAvailableInputSampleRates: number;
-
 declare const kAudioCodecPropertySupportedOutputFormats: number;
 
-declare const kAudioCodecPropertySupportedInputFormats: number;
+declare const kAudioUnitSubType_AudioFilePlayer: number;
 
-declare const kAudioDecoderComponentType: number;
+declare const kAudioFormatProperty_ID3TagSize: number;
 
-declare const kRoundTripAACParam_CompressedFormatSampleRate: number;
-
-declare const kSpatialMixerParam_GlobalReverbGain: number;
-
-declare const kAudioFileMP2Type: number;
-
-declare const kCAF_MagicCookieID: number;
-
-declare const kAudioOutputUnitProperty_OSWorkgroup: number;
-
-declare const kAudioUnitProperty_SampleRateConverterComplexity: number;
-
-declare const kExtAudioFileError_InvalidProperty: number;
-
-declare const kMusicDevicePrepareInstrumentSelect: number;
-
-declare const k3DMixerParam_OcclusionAttenuationInDecibels: number;
-
-declare const kAudioFileInvalidChunkError: number;
-
-declare const kAudioUnitProperty_Latency: number;
-
-declare const kCAF_MarkerChunkID: number;
-
-declare const kAudioUnitProperty_RemoteControlEventListener: number;
-
-declare const kAudioQueueErr_CodecNotFound: number;
-
-declare const kAudioUnitProperty_AUHostIdentifier: number;
-
-declare const kAudioSessionProperty_AudioRoute: number;
-
-declare const kAudioComponentRegistrationsChangedNotification: interop.Pointer;
-
-declare const kAudioUnitRange: number;
-
-declare const kAudioCodecPropertyCurrentTargetBitRate: number;
-
-declare const kAUNBandEQParam_Gain: number;
-
-declare const kAudioToolboxErr_IllegalTrackDestination: number;
-
-declare const kAudioOutputUnitProperty_HasIO: number;
-
-declare const kAUNBandEQParam_BypassBand: number;
-
-declare const kSpatialMixerParam_MinGain: number;
-
-declare const kAUMIDISynthProperty_EnablePreload: number;
-
-declare const kAudioUnitClumpID_System: number;
-
-declare const kMusicEventType_MIDINoteMessage: number;
-
-declare const kAudioUnitErr_Unauthorized: number;
-
-declare const kAUNetSendPresetFormat_AAC_LD_32kbpspc: number;
-
-declare const kAudioFileStreamProperty_FormatList: number;
-
-declare const kAudioUnitSubType_MatrixMixer: number;
-
-declare const kAUNBandEQFilterType_2ndOrderButterworthHighPass: number;
-
-declare const kMusicDeviceProperty_DualSchedulingMode: number;
+declare const kAudioFileCountUserDataSelect: number;
 
 declare const kAudioFileFileDataIsThisFormatSelect: number;
 
-declare const kAudioCodecPropertyManufacturerCFString: number;
+declare const kAudioUnitRemoveRenderNotifySelect: number;
 
-declare const kAudioQueueErr_InvalidOfflineMode: number;
+declare const kAUNetSendPresetFormat_AAC_40kbpspc: number;
 
-declare const kAudioSessionEndInterruption: number;
+declare const kAUNBandEQProperty_MaxNumberOfBands: number;
 
-declare const kDistortionParam_RingModBalance: number;
+declare const kAudioFormatProperty_TagForChannelLayout: number;
 
-declare const kAudioUnitProperty_ParameterHistoryInfo: number;
+declare const kAudioCodecPropertyAvailableOutputChannelLayouts: number;
 
-declare const kMusicDeviceStopNoteSelect: number;
+declare const kMusicEventType_MIDINoteMessage: number;
 
-declare const kCAF_InstrumentChunkID: number;
+declare const kAudioFileSetUserDataSelect: number;
 
-declare const kAudioFileStreamProperty_AudioDataByteCount: number;
+declare const kAudioSessionProperty_OverrideCategoryMixWithOthers: number;
 
-declare const kMultibandCompressorParam_EQ2: number;
+declare const kAudioUnitType_Output: number;
 
-declare const kAudioConverterCodecQuality: number;
+declare const kAudioCodecPropertySupportedInputFormats: number;
 
-declare const kAudioUnitInitializeSelect: number;
+declare const kUserPreferredAlert: number;
 
-declare const kAudioFileFileIsThisFormatSelect: number;
+declare const kAudioCodecPrimeMethod_None: number;
+
+declare const kHighShelfParam_CutOffFrequency: number;
+
+declare const kAudioUnitScope_Layer: number;
+
+declare const kAudioUnitProperty_ElementName: number;
+
+declare const kAudioUnitSubType_NetSend: number;
+
+declare const kAudioCodecPropertyAdjustTargetLevelConstant: number;
+
+declare const kRoundTripAACParam_Format: number;
+
+declare const kAudioSessionProperty_InputGainScalar: number;
+
+declare const kSpatialMixerParam_HeadRoll: number;
 
 declare const kAudioCodecPrimeMethod_Pre: number;
 
-declare const kAudioUnitProperty_MatrixLevels: number;
+declare const kAudioFormatProperty_AvailableEncodeBitRates: number;
 
-declare const kAUNetSendPresetFormat_Lossless16: number;
+declare const kAudioQueueErr_TooManyTaps: number;
 
-declare const kAudioUnitErr_Uninitialized: number;
-
-declare const kAudioFormatProperty_ASBDFromMPEGPacket: number;
+declare const kAUSamplerParam_Gain: number;
 
 declare const kAudioCodecStateError: number;
 
-declare const kAudioFilePropertyMagicCookieData: number;
+declare const kCAF_SMPTE_TimeType2398: number;
 
-declare const kMultibandCompressorParam_OutputAmplitude2: number;
+declare const kCAF_SMPTE_TimeType24: number;
 
 declare const kAudioCodecPropertyApplicableBitRateRange: number;
 
+declare const kDistortionParam_RingModBalance: number;
+
+declare const kAudioUnitProperty_LastRenderError: number;
+
 declare const kHintHidden: number;
 
-declare const kAudioCodecPropertyMagicCookie: number;
+declare const kAudioFormatProperty_ChannelName: number;
 
-declare const kMusicDeviceSampleFrameMask_SampleOffset: number;
+declare const kAudioCodecDoesSampleRateConversion: number;
+
+declare const kAudioFileExtensionIsThisFormatSelect: number;
+
+declare const kAUParameterListener_AnyParameter: number;
+
+declare const kAudioDecoderComponentType: number;
+
+declare const kReverb2Param_RandomizeReflections: number;
+
+declare const kMusicDeviceProperty_SoundBankFSRef: number;
+
+declare const kAudioCodecPropertyAvailableBitRates: number;
+
+declare const kPannerParam_CoordScale: number;
+
+declare const kAudioFileLoopDirection_NoLooping: number;
+
+declare const kAudioUnitType_FormatConverter: number;
+
+declare const kAudioUnitProperty_ScheduledFileRegion: number;
+
+declare const kAudioUnitParameterFlag_Output: number;
+
+declare const kAudioCodecPropertyCurrentInputFormat: number;
+
+declare const kMatrixMixerParam_Enable: number;
+
+declare const kNewTimePitchParam_Smoothness: number;
+
+declare const kAudioQueueErr_InvalidParameter: number;
+
+declare const kAUNetSendPresetFormat_AAC_LD_40kbpspc: number;
+
+declare const kAudioFormatBadPropertySizeError: number;
+
+declare const kAudioUnitErr_InvalidFilePath: number;
+
+declare const kAudioCodecPropertyProgramTargetLevelConstant: number;
+
+declare const kMusicEventType_ExtendedTempo: number;
+
+declare const kAudioUnitType_Panner: number;
+
+declare const kLimiterParam_AttackTime: number;
+
+declare const kAudioConverterInputChannelLayout: number;
+
+declare const kAUNBandEQProperty_BiquadCoefficients: number;
+
+declare const kDynamicRangeCompressionProfile_LimitedPlaybackRange: number;
+
+declare const kAudioCodecPropertyMagicCookie: number;
 
 declare const kAudioCodecPropertyPacketFrameSize: number;
 
 declare const kAudioCodecPropertyAdjustTargetLevel: number;
 
-declare const kAudioQueueErr_RecordUnderrun: number;
-
-declare const kAudioCodecDoesSampleRateConversion: number;
-
-declare const kAudioFileGlobalInfo_TypesForMIMEType: number;
-
-declare const k3DMixerParam_ReverbBlend: number;
-
-declare const kAudioFileGlobalInfo_TypesForHFSTypeCode: number;
-
-declare const kAUSoundIsolationParam_SoundToIsolate: number;
-
-declare const kAudioUnitSubType_NetReceive: number;
-
-declare const kAudioFormatProperty_ID3TagSize: number;
-
-declare const kAudioUnitErr_InvalidParameterValue: number;
-
-declare const kAudioConverterCurrentInputStreamDescription: number;
-
-declare const kAudioUnitProperty_SpatialMixerDistanceParams: number;
-
-declare const kAudioConverterCompressionMagicCookie: number;
-
-declare const kCAF_FormatListID: number;
-
-declare const kAudioUnitErr_ComponentManagerNotSupported: number;
-
-declare const kAudioUnitScope_Output: number;
-
-declare const kAudioQueueErr_InvalidParameter: number;
-
-declare const kCAFMarkerType_ProgramEnd: number;
-
-declare const kAudioCodecProduceOutputPacketFailure: number;
-
-declare const kAudioFilePropertyAudioTrackCount: number;
-
-declare const kRogerBeepParam_InGateThreshold: number;
-
-declare const kAUGraphErr_OutputNodeErr: number;
-
-declare const kAudioCodecIllegalOperationError: number;
-
-declare const kAudioUnitProperty_ClassInfoFromDocument: number;
-
-declare const kAudioFileStreamError_UnsupportedDataFormat: number;
-
-declare const kReverbParam_FilterEnable: number;
-
-declare const kMusicDeviceMIDIEventListSelect: number;
-
-declare const kSpatialMixerParam_Distance: number;
-
-declare const kAudioFormatProperty_ChannelLayoutSimpleName: number;
-
-declare const kAudioHardwareServiceDeviceProperty_VirtualMainVolume: number;
-
-declare const kAudioUnitProperty_SpatialMixerAttenuationCurve: number;
-
-declare const kAudioFilePropertyRegionList: number;
-
-declare const kAudioQueueErr_CannotStartYet: number;
-
-declare const kAudioFormatProperty_ID3TagToDictionary: number;
-
-declare const kCAF_StreamDescriptionChunkID: number;
-
-declare const kAudioUnitProperty_ElementCount: number;
-
-declare const kAudioSessionProperty_CurrentHardwareInputLatency: number;
-
-declare const kAUSoundIsolationSoundType_HighQualityVoice: number;
-
-declare const kAUNetStatus_Overflow: number;
-
-declare const kLowPassParam_CutoffFrequency: number;
-
-declare const kAudioQueueDeviceProperty_SampleRate: number;
-
-declare const kAudioFileOpenURLSelect: number;
-
-declare const kCAFMarkerType_TrackStart: number;
-
-declare const kAUNetReceiveParam_NumParameters: number;
-
-declare const kCAF_SMPTE_TimeType30: number;
-
-declare const kAudioSessionCategory_RecordAudio: number;
-
-declare const kAudioFormatProperty_FormatName: number;
-
-declare const kAudioCodecUninitializeSelect: number;
-
-declare const kAudioFormatProperty_ChannelLayoutName: number;
-
-declare const kAudioUnitProperty_ScheduledFileNumberBuffers: number;
-
-declare const kReverbParam_DryWetMix: number;
-
-declare const kAudioCodecQuality_Medium: number;
-
-declare const kAudioSessionMode_Default: number;
-
-declare const kCAF_SMPTE_TimeType5994Drop: number;
-
-declare const kSystemSoundID_FlashScreen: number;
-
-declare const kAudioQueueErr_InvalidTapType: number;
-
-declare const kAudioSessionUnsupportedPropertyError: number;
-
-declare const kCAF_SMPTE_TimeType60: number;
-
-declare const kAudioComponentErr_TooManyInstances: number;
-
-declare const kMusicDeviceProperty_PartGroup: number;
-
-declare const kExtAudioFileProperty_ClientDataFormat: number;
-
-declare const kAudioUnitErr_FormatNotSupported: number;
-
-declare const kRenderQuality_Min: number;
-
-declare const kAudioFormatProperty_ChannelLayoutForTag: number;
-
-declare const kAUNetSendPresetFormat_AAC_LD_40kbpspc: number;
-
-declare const kAudioToolboxErr_EndOfTrack: number;
-
-declare const kMusicNoteEvent_UseGroupInstrument: number;
-
-declare const kCAClock_InvalidPropertySizeError: number;
-
-declare const kAudioFileGetPropertyInfoSelect: number;
-
-declare const kAudioServicesBadPropertySizeError: number;
-
-declare const kAUNBandEQFilterType_ResonantHighShelf: number;
-
-declare const kAudioUnitScope_LayerItem: number;
-
-declare const kDistortionParam_DecimationMix: number;
-
-declare const k3DMixerParam_Azimuth: number;
-
-declare const kSequenceTrackProperty_LoopInfo: number;
-
-declare const kAUSoundIsolationParam_WetDryMixPercent: number;
+declare const kAudioUnitCarbonViewCreateSelect: number;
 
 declare const kAudioUnitProperty_HostCallbacks: number;
 
-declare const kCAClock_InvalidSyncModeError: number;
-
-declare const kExtAudioFilePacketTableInfoOverride_UseFileValueIfValid: number;
-
-declare const kAudioCodecProduceOutputPacketSuccessHasMore: number;
-
-declare const kAudioCodecPropertyCurrentOutputSampleRate: number;
-
-declare const kReverbParam_SmallBrightness: number;
-
-declare const kAudioFileGetUserDataSelect: number;
-
-declare const kMusicDeviceReleaseInstrumentSelect: number;
-
-declare const kAudioUnitProperty_MaximumFramesPerSlice: number;
-
-declare const kAudioConverterEncodeBitRate: number;
-
-declare const kAudioCodecQuality_Min: number;
-
-declare const kAudioSessionRouteChangeReason_NewDeviceAvailable: number;
-
-declare const kAudioConverterErr_OutputSampleRateOutOfRange: number;
-
-declare const kAudioFilePropertyByteToPacket: number;
-
-declare const kAudioQueueErr_InvalidBuffer: number;
-
-declare const kMultibandFilter_HighFrequency: number;
-
-declare const kAULowShelfParam_Gain: number;
-
-declare const kAudioUnitSubType_AUSoundIsolation: number;
-
-declare const kAudioFileM4BType: number;
-
-declare const kAudioConverterAvailableEncodeSampleRates: number;
-
-declare const kAudioQueueErr_BufferEnqueuedTwice: number;
-
-declare const kExtAudioFileProperty_AudioFile: number;
-
-declare const kAudioUnitType_Output: number;
-
-declare const kAudioUnitProperty_ScheduleAudioSlice: number;
-
-declare const kAudioToolboxErr_InvalidSequenceType: number;
-
-declare const kAudioCodecPropertyProgramTargetLevelConstant: number;
-
-declare const kCAFMarkerType_ReleaseLoopEnd: number;
-
-declare const kAUGroupParameterID_Foot_LSB: number;
-
-declare const kAudioFormatUnsupportedPropertyError: number;
-
-declare const kAudioConverterApplicableEncodeSampleRates: number;
-
-declare const kAudioFileOperationNotSupportedError: number;
-
-declare const kInstrumentType_Audiofile: number;
-
-declare const kDistortionParam_Rounding: number;
-
-declare const kAudioFileStreamError_IllegalOperation: number;
-
-declare const kAudioUnitSubType_MultiChannelMixer: number;
-
-declare const kReverbParam_ModulationRate: number;
-
-declare const kAudioSessionRouteChangeReason_OldDeviceUnavailable: number;
-
-declare const kAudioComponentErr_UnsupportedType: number;
-
-declare const kLowPassParam_Resonance: number;
-
-declare const kAudioConverterPropertyCalculateOutputBufferSize: number;
-
-declare const kAudioUnitProperty_PannerMode: number;
-
-declare const kAUNBandEQParam_GlobalGain: number;
-
-declare const kAudioCodecPropertyMinimumNumberOutputPackets: number;
-
-declare const kAudioFileComponent_ExtensionsForType: number;
-
-declare const kCAF_PeakChunkID: number;
-
-declare const kAudioQueueErr_InvalidPropertyValue: number;
-
-declare const kMultibandFilter_LowFilterType: number;
-
-declare const kMultiChannelMixerParam_Pan: number;
-
-declare const kMultibandCompressorParam_Headroom2: number;
-
-declare const kInstrumentType_AUPreset: number;
-
-declare const kAudioSessionProperty_ServerDied: number;
-
-declare const kMultibandFilter_CenterFreq1: number;
+declare const kAudioUnitProperty_ParameterInfo: number;
 
 declare const kAudioFileComponent_HFSTypeCodesForType: number;
 
-declare const kMultibandCompressorParam_InputAmplitude2: number;
-
-declare const kAUVoiceIOProperty_MuteOutput: number;
-
-declare const kAudioServicesBadSpecifierSizeError: number;
-
-declare const kSpeakerConfiguration_HeadPhones: number;
-
-declare const kMusicEventType_ExtendedTempo: number;
-
-declare const kAudioUnitType_OfflineEffect: number;
-
-declare const kAudioCodecInputFormatsForOutputFormat: number;
-
-declare const kAudioFileGlobalInfo_TypesForUTI: number;
-
-declare const kAudioToolboxErr_InvalidPlayerState: number;
-
-declare const kRoundTripAACParam_Quality: number;
-
-declare const kCAF_UMIDChunkID: number;
-
 declare const kExtAudioFilePacketTableInfoOverride_UseFileValue: number;
-
-declare const kReverbParam_LargeDelayRange: number;
-
-declare const kAudioFormatUnspecifiedError: number;
-
-declare const kAudioFileComponent_MIMETypesForType: number;
-
-declare const kMusicEventType_ExtendedNote: number;
-
-declare const kAudioUnitErr_FailedInitialization: number;
-
-declare const kAudioCodecPropertyCurrentOutputFormat: number;
-
-declare const kAudioUnitProperty_3DMixerAttenuationCurve: number;
-
-declare const kAudioUnitSubType_RogerBeep: number;
-
-declare const kAudioFileNotOpenError: number;
-
-declare const kAUSamplerProperty_LoadAudioFiles: number;
-
-declare const kReverb2Param_RandomizeReflections: number;
-
-declare const kAudioUnitProperty_CurrentPreset: number;
-
-declare const kAUNetSendParam_NumParameters: number;
-
-declare const kAudioSessionCategory_SoloAmbientSound: number;
-
-declare const kAudioFileStreamProperty_DataOffset: number;
-
-declare const kAUGroupParameterID_Pan: number;
-
-declare const kCAF_EditCommentsChunkID: number;
-
-declare const kAudioFileStreamProperty_NextIndependentPacket: number;
-
-declare const kExtAudioFileProperty_ClientMaxPacketSize: number;
-
-declare const kAudioConverterQuality_Medium: number;
-
-declare const kMusicDeviceProperty_StreamFromDisk: number;
-
-declare const kAudioOutputUnitStopSelect: number;
-
-declare const k3DMixerParam_OcclusionAttenuation: number;
-
-declare const kAudioFilePropertyMaximumPacketSize: number;
-
-declare const kAudioFileLATMInLOASType: number;
-
-declare const kAudioFileWritePacketsSelect: number;
-
-declare const kSystemSoundID_Vibrate: number;
-
-declare const kAUGroupParameterID_ChannelPressure: number;
-
-declare const kDelayParam_Feedback: number;
-
-declare const kAudioFileBW64Type: number;
-
-declare const kAudioComponentErr_DuplicateDescription: number;
-
-declare const kAudioSessionProperty_InputGainScalar: number;
-
-declare const kCAFMarkerType_EditDestinationEnd: number;
-
-declare const kAudioSessionBadPropertySizeError: number;
-
-declare const kAUNodeInteraction_Connection: number;
-
-declare const kAudioCodecBitRateFormat: number;
-
-declare const k3DMixerParam_PostPeakHoldLevel: number;
-
-declare const kAudioConverterDecompressionMagicCookie: number;
-
-declare const kAudioQueueProperty_IsRunning: number;
-
-declare const kStereoMixerParam_PostAveragePower: number;
-
-declare const kAudioUnitErr_InvalidParameter: number;
-
-declare const kAUVoiceIOProperty_BypassVoiceProcessing: number;
-
-declare const kAudioFilePropertyChunkIDs: number;
-
-declare const kAudioConverterQuality_Low: number;
-
-declare const kMultibandFilter_Bandwidth2: number;
-
-declare const kAudioCodecNoError: number;
-
-declare const kAudioCodecPropertyCurrentInputFormat: number;
-
-declare const kAudioUnitProperty_CPULoad: number;
-
-declare const kDynamicsProcessorParam_ExpansionRatio: number;
-
-declare const kAudioFileFLACType: number;
-
-declare const kExtAudioFileError_InvalidOperationOrder: number;
-
-declare const kMultibandCompressorParam_CompressionAmount4: number;
-
-declare const kAudioHardwareServiceDeviceProperty_VirtualMainBalance: number;
-
-declare const kAUNetSendPresetFormat_AAC_32kbpspc: number;
-
-declare const kAudioConverterPrimeInfo: number;
-
-declare const kAudioUnitProperty_HostMIDIProtocol: number;
-
-declare const kAUNetSendPresetFormat_ULaw: number;
-
-declare const kAUSamplerParam_Pan: number;
-
-declare const kAudioUnitSubType_DefaultOutput: number;
-
-declare const kSequenceTrackProperty_OffsetTime: number;
-
-declare const kAudioUnitProperty_UsesInternalReverb: number;
-
-declare const kAudioFilePropertySourceBitDepth: number;
-
-declare const kAudioUnitSampleRateConverterComplexity_Mastering: number;
-
-declare const kDynamicsProcessorParam_MasterGain: number;
-
-declare const k3DMixerParam_PlaybackRate: number;
-
-declare const kAudioFilePropertyPacketToDependencyInfo: number;
-
-declare const kConverterPrimeMethod_None: number;
-
-declare const kAudioFilePermissionsError: number;
-
-declare const kAudioSessionCategory_UserInterfaceSoundEffects: number;
-
-declare const kAudioFormatProperty_FormatInfo: number;
-
-declare const kCAF_SMPTE_TimeTypeNone: number;
-
-declare const kAudioUnitErr_InvalidScope: number;
-
-declare const kAudioFormatProperty_AvailableEncodeBitRates: number;
-
-declare const kAudioUnitUninitializeSelect: number;
-
-declare const kReverbParam_LargeDensity: number;
-
-declare const kPannerParam_RefDistance: number;
-
-declare const kAudioFileComponent_FileTypeName: number;
-
-declare const kAudioUnitGetParameterSelect: number;
-
-declare const kMultibandCompressorParam_ReleaseTime: number;
-
-declare const kStereoMixerParam_PrePeakHoldLevel: number;
-
-declare const kAudioUnitProperty_RenderContextObserver: number;
-
-declare const kAUNetSendNumPresetFormats: number;
-
-declare const kInstrumentType_SF2Preset: number;
-
-declare const kAudioUnitProperty_SpatialMixerPersonalizedHRTFMode: number;
-
-declare const kAudioSessionProperty_OverrideCategoryEnableBluetoothInput: number;
-
-declare const kAudioConverterSampleRateConverterQuality: number;
-
-declare const kAudioFormatProperty_ChannelShortName: number;
-
-declare const kAudioConverterSampleRateConverterComplexity_MinimumPhase: number;
-
-declare const kAudioCodecOutputPrecedence: number;
-
-declare const kMultibandFilter_HighGain: number;
-
-declare const kCAF_SMPTE_TimeType2398: number;
-
-declare const kRandomParam_BoundA: number;
-
-declare const kAudioOutputUnitStartSelect: number;
-
-declare const kAudioUnitSubType_NetSend: number;
-
-declare const kSpatialMixerParam_Azimuth: number;
-
-declare const kMultibandCompressorParam_Threshold3: number;
-
-declare const kAudioCodecNotEnoughBufferSpaceError: number;
-
-declare const kCAF_PacketTableChunkID: number;
-
-declare const kAudioFileOpenWithCallbacksSelect: number;
-
-declare const kAudioConverterErr_FormatNotSupported: number;
-
-declare const kCAFMarkerType_ProgramStart: number;
-
-declare const kAudioUnitErr_InvalidFilePath: number;
-
-declare const kAudioConverterAvailableEncodeBitRates: number;
-
-declare const kAudioUnitProperty_InputAnchorTimeStamp: number;
-
-declare const kAudioFormatProperty_AvailableEncodeChannelLayoutTags: number;
-
-declare const kAudioUnitSubType_SampleDelay: number;
-
-declare const kAudioUnitSampleRateConverterComplexity_Normal: number;
-
-declare const kDelayParam_WetDryMix: number;
-
-declare const kAudioUnitScope_Input: number;
-
-declare const kAudioSessionProperty_OverrideAudioRoute: number;
-
-declare const kAudioFileGetUserDataSize64Select: number;
-
-declare const k3DMixerParam_ObstructionAttenuation: number;
-
-declare const kAudioUnitErr_NoConnection: number;
-
-declare const kAudioFileMPEG4Type: number;
-
-declare const kMultibandCompressorParam_AttackTime: number;
-
-declare const kAudioFilePropertyRestrictsRandomAccess: number;
-
-declare const kAudioCodecDelayMode_Optimal: number;
-
-declare const kExtAudioFileProperty_ClientChannelLayout: number;
-
-declare const kAudioFileInvalidFileError: number;
-
-declare const kAudioUnitProperty_SpatialMixerEnableHeadTracking: number;
-
-declare const kHALOutputParam_Volume: number;
-
-declare const kAudioUnitErr_IllegalInstrument: number;
-
-declare const kAudioUnitProperty_RemoveParameterMIDIMapping: number;
-
-declare const kAudioFilePropertyChannelLayout: number;
-
-declare const kAudioSessionCategory_AudioProcessing: number;
-
-declare const kStereoMixerParam_Pan: number;
-
-declare const kAudioUnitProperty_ClassInfo: number;
-
-declare const kAUNetSendParam_Status: number;
-
-declare const kAudioFileGlobalInfo_AvailableStreamDescriptionsForFormat: number;
-
-declare const kDistortionParam_Decimation: number;
-
-declare const kMusicDeviceProperty_GroupOutputBus: number;
-
-declare const kDistortionParam_LinearTerm: number;
-
-declare const kAudioUnitOfflineProperty_PreflightName: number;
-
-declare const kAudioUnityCodecComponentType: number;
-
-declare const kAudioFilePropertyEstimatedDuration: number;
-
-declare const kExtAudioFileError_AsyncWriteBufferOverflow: number;
-
-declare const kAudioFileComponent_FastDispatchTable: number;
-
-declare const kAudioCodecPropertyBitRateForVBR: number;
-
-declare const kCAFMarkerType_Generic: number;
-
-declare const k3DMixerParam_GlobalReverbGainInDecibels: number;
-
-declare const kMultibandCompressorParam_Crossover3: number;
-
-declare const kAudioUnitProperty_CocoaUI: number;
-
-declare const kAudioCodecUnsupportedFormatError: number;
-
-declare const kAudioUnitResetSelect: number;
-
-declare const kAudioUnitSubType_MultiBandCompressor: number;
-
-declare const kAudioOfflineUnitProperty_InputSize: number;
-
-declare const kAudioFilePropertyPacketTableInfo: number;
-
-declare const kAUGroupParameterID_AllSoundOff: number;
-
-declare const kExtAudioFileError_InvalidSeek: number;
-
-declare const kAudioSessionRouteChangeReason_CategoryChange: number;
-
-declare const kCAF_iXMLChunkID: number;
-
-declare const kMusicDeviceSampleFrameMask_IsScheduled: number;
-
-declare const kAudioUnitProperty_RequestViewController: number;
-
-declare const kAudioUnitGetPropertyInfoSelect: number;
-
-declare const kAudioOutputUnitRange: number;
-
-declare const kCAFMarkerType_RegionStart: number;
-
-declare const kAudioUnitErr_TooManyFramesToProcess: number;
-
-declare const kDelayParam_DelayTime: number;
-
-declare const kAudioFormatProperty_FirstPlayableFormatFromList: number;
-
-declare const kAudioUnitOfflineProperty_InputSize: number;
-
-declare const kExtAudioFileProperty_IOBufferSizeBytes: number;
-
-declare const kAUNetSendProperty_TransmissionFormat: number;
-
-declare const kAudioFormatProperty_FormatEmploysDependentPackets: number;
-
-declare const kCAClock_InvalidSyncSourceError: number;
-
-declare const kExtAudioFileError_InvalidDataFormat: number;
-
-declare const kStereoMixerParam_PostPeakHoldLevel: number;
-
-declare const kAUNetReceiveProperty_Password: number;
-
-declare const kAudioUnitProcessSelect: number;
-
-declare const kAudioFileAIFCType: number;
-
-declare const kRogerBeepParam_RogerGain: number;
-
-declare const kCAF_UUIDChunkID: number;
-
-declare const kCAF_SMPTE_TimeType2997Drop: number;
-
-declare const kAudioCodecPropertyFormatList: number;
-
-declare const kAudioFileStreamError_BadPropertySize: number;
-
-declare const kMatrixMixerParam_PrePeakHoldLevel: number;
-
-declare const kAudioUnitType_RemoteEffect: number;
-
-declare const kAudioFormatProperty_TagsForNumberOfChannels: number;
-
-declare const kReverbParam_LargeBrightness: number;
-
-declare const k3DMixerParam_Elevation: number;
-
-declare const kAudioFileWAVEType: number;
-
-declare const kExtAudioFileProperty_PacketTable: number;
-
-declare const kAudioFilePropertyReserveDuration: number;
-
-declare const kAudioFormatProperty_NumberOfChannelsForLayout: number;
-
-declare const kAudioOutputUnitProperty_MIDICallbacks: number;
-
-declare const kAudioSessionProperty_CurrentHardwareOutputNumberChannels: number;
-
-declare const kAudioFileStreamError_DataUnavailable: number;
-
-declare const kAudioConverterSampleRateConverterComplexity: number;
-
-declare const kAudioFormatBadSpecifierSizeError: number;
-
-declare const kAudioCodecResetSelect: number;
-
-declare const kAUSamplerProperty_LoadInstrument: number;
-
-declare const kDistortionParam_Delay: number;
-
-declare const kAudioQueueParam_VolumeRampTime: number;
-
-declare const kAudioSessionProperty_Mode: number;
-
-declare const kCAFMarkerType_Tempo: number;
-
-declare const kAudioFileStreamError_InvalidPacketOffset: number;
-
-declare const kAudioOutputUnitProperty_StartTimestampsAtZero: number;
-
-declare const kRoundTripAACParam_Format: number;
-
-declare const kAUSamplerParam_Gain: number;
-
-declare const kAudioUnitErr_Initialized: number;
-
-declare const kAudioFileLoopDirection_Backward: number;
-
-declare const kAudioUnitSubType_Splitter: number;
-
-declare const kAudioUnitProperty_IconLocation: number;
-
-declare const kCAF_MIDIChunkID: number;
-
-declare const kMusicDeviceParam_ReverbVolume: number;
-
-declare const kAudioUnitParameterFlag_Output: number;
-
-declare const kAudioCodecPropertyPacketSizeLimitForVBR: number;
-
-declare const kAudioQueueErr_TooManyTaps: number;
-
-declare const kAudioUnitErr_PropertyNotWritable: number;
-
-declare const kAUNetSendProperty_Password: number;
-
-declare const kGraphicEQParam_NumberOfBands: number;
-
-declare const kAudioConverterErr_OperationNotSupported: number;
-
-declare const kAudioFormatProperty_AvailableEncodeSampleRates: number;
-
-declare const kAudioUnitProperty_ParameterIDName: number;
-
-declare const kAudioServicesNoError: number;
-
-declare const kAudioUnitProperty_ParameterStringFromValue: number;
-
-declare const kAudioSessionCategory_LiveAudio: number;
-
-declare const kAudioUnitProperty_InPlaceProcessing: number;
-
-declare const kReverb2Param_MaxDelayTime: number;
-
-declare const kMultibandCompressorParam_Pregain: number;
-
-declare const kParametricEQParam_CenterFreq: number;
-
-declare const kReverbParam_ModulationDepth: number;
-
-declare const kAudioUnitProperty_FastDispatch: number;
-
-declare const kConverterPrimeMethod_Pre: number;
-
-declare const kAUNBandEQFilterType_2ndOrderButterworthLowPass: number;
-
-declare const kAudioCodecPropertyDelayMode: number;
-
-declare const kMatrixMixerParam_PostPeakHoldLevelLinear: number;
-
-declare const kAudioFileWriteBytesSelect: number;
-
-declare const kAudioServicesPropertyIsUISound: number;
-
-declare const kAudioFormatProperty_ASBDFromESDS: number;
-
-declare const kAUNetSendProperty_TransmissionFormatIndex: number;
-
-declare const kCAFMarkerType_SavedPlayPosition: number;
-
-declare const kMusicDeviceProperty_SupportsStartStopNote: number;
-
-declare const kAudioFileAC3Type: number;
-
-declare const kAudioToolboxError_NoTrackDestination: number;
-
-declare const kCAFMarkerType_RegionSyncPoint: number;
-
-declare const kAudioUnitErr_InvalidFile: number;
-
-declare const kVarispeedParam_PlaybackRate: number;
-
-declare const kOfflinePreflight_Required: number;
-
-declare const kAudioFileStreamError_DiscontinuityCantRecover: number;
-
-declare const kAudioConverterEncodeAdjustableSampleRate: number;
-
-declare const kAudioSessionMode_VoiceChat: number;
-
-declare const kAudioToolboxErr_InvalidEventType: number;
-
-declare const kSpeakerConfiguration_Quad: number;
-
-declare const kAudioEncoderComponentType: number;
-
-declare const kSpatialMixerParam_OcclusionAttenuation: number;
-
-declare const kMultibandCompressorParam_Threshold2: number;
-
-declare const kAUSamplerParam_FineTuning: number;
-
-declare const kAudioCodecPropertyMinimumNumberInputPackets: number;
-
-declare const kAudioFormatProperty_BitmapForLayoutTag: number;
-
-declare const kAudioQueueErr_BufferEmpty: number;
-
-declare const kAudioFileGlobalInfo_MIMETypesForType: number;
-
-declare const kSystemSoundID_UserPreferredAlert: number;
-
-declare const kAudioQueueParam_Volume: number;
-
-declare const kSequenceTrackProperty_TrackLength: number;
-
-declare const kAudioConverterCurrentOutputStreamDescription: number;
-
-declare const kAudioUnitSubType_3DMixer: number;
-
-declare const kAudioUnitType_RemoteGenerator: number;
-
-declare const kCAF_SMPTE_TimeType30Drop: number;
-
-declare const kAudioFile3GPType: number;
-
-declare const kAudioUnitProperty_MIDIOutputBufferSizeHint: number;
-
-declare const kMusicDeviceProperty_InstrumentNumber: number;
-
-declare const kNewTimePitchParam_EnablePeakLocking: number;
-
-declare const kAudioUnitSubType_GraphicEQ: number;
-
-declare const kAUNBandEQFilterType_HighShelf: number;
-
-declare const kAudioUnitComplexRenderSelect: number;
-
-declare const kAudioFilePropertyPacketSizeUpperBound: number;
-
-declare const kAudioFileCloseSelect: number;
-
-declare const kAudioFilePropertyBitRate: number;
-
-declare const kAudioSessionProperty_CurrentHardwareIOBufferDuration: number;
-
-declare const kAudioFileSetUserDataSelect: number;
-
-declare const kAUNetSendPresetFormat_AAC_80kbpspc: number;
-
-declare const kAUNetSendPresetFormat_PCMInt16: number;
-
-declare const kAudioUnitSubType_BandPassFilter: number;
-
-declare const kMatrixMixerParam_PreAveragePower: number;
-
-declare const kAudioUnitProperty_SpeakerConfiguration: number;
-
-declare const k3DMixerParam_BusEnable: number;
-
-declare const kAudioUnitProperty_HotMapParameterMIDIMapping: number;
-
-declare const kAudioFormatProperty_OutputFormatList: number;
-
-declare const kMultibandFilter_LowGain: number;
-
-declare const kAudioCodecBitRateControlMode_LongTermAverage: number;
-
-declare const kAUGroupParameterID_Volume_LSB: number;
-
-declare const kCAF_SMPTE_TimeType24: number;
-
-declare const kExtAudioFileProperty_FileMaxPacketSize: number;
-
-declare const kNumAUNBandEQFilterTypes: number;
-
-declare const kAudioUnitErr_ExtensionNotFound: number;
-
-declare const kRenderQuality_Max: number;
-
-declare const kAUNBandEQFilterType_ResonantLowPass: number;
-
-declare const kAudioSessionMode_GameChat: number;
-
-declare const kAudioUnitParameterName_Full: number;
-
-declare const kAudioUnitProperty_SRCAlgorithm: number;
-
-declare const kAudioFormatProperty_DecodeFormatIDs: number;
-
-declare const kMusicEventType_ExtendedControl: number;
-
-declare const kSpeakerConfiguration_5_0: number;
-
-declare const kMultibandCompressorParam_Headroom4: number;
-
-declare const kAudioQueueErr_InvalidQueueType: number;
-
-declare const kAudioQueueErr_BufferInQueue: number;
-
-declare const kAUGroupParameterID_ModWheel_LSB: number;
-
-declare const kAudioSessionInterruptionType_ShouldNotResume: number;
-
-declare const kMusicDeviceMIDIEventSelect: number;
-
-declare const kAudioConverterQuality_Min: number;
-
-declare const kAUSamplerParam_CoarseTuning: number;
-
-declare const kAudioCodecPropertyIsInitialized: number;
-
-declare const kAUSampler_DefaultPercussionBankMSB: number;
-
-declare const kOfflinePreflight_NotRequired: number;
-
-declare const kAudioUnitScope_Part: number;
-
-declare const kAudioFileComponent_AvailableStreamDescriptionsForFormat: number;
-
-declare const kMusicDeviceProperty_UsesInternalReverb: number;
-
-declare const kAudioFileNotOptimizedError: number;
-
-declare const kReverbParam_FilterType: number;
-
-declare const kReverbParam_LargeDelay: number;
-
-declare const kAudioComponentErr_InstanceTimedOut: number;
-
-declare const kRogerBeepParam_Sensitivity: number;
-
-declare const kAudioSessionProperty_OutputDestinations: number;
-
-declare const kAudioQueueErr_InvalidTapContext: number;
-
-declare const kExtAudioFileProperty_IOBuffer: number;
-
-declare const kAudioUnitSubType_NBandEQ: number;
-
-declare const kSequenceTrackProperty_AutomatedParameters: number;
-
-declare const kAudioQueueErr_EnqueueDuringReset: number;
-
-declare const kAudioSessionProperty_OtherAudioIsPlaying: number;
-
-declare const kAudioUnitProperty_PeerURL: number;
-
-declare const kAudioUnitScope_Group: number;
-
-declare const kCAF_SMPTE_TimeType2997: number;
-
-declare const kAudioUnitProperty_ParametersForOverview: number;
-
-declare const kAudioFilePropertyID3TagOffset: number;
-
-declare const kAudioFilePropertyFileFormat: number;
-
-declare const kAudioQueueProperty_MagicCookie: number;
-
-declare const kAudioConverterAvailableEncodeChannelLayoutTags: number;
-
-declare const kAudioQueueProperty_ChannelAssignments: number;
-
-declare const kAudioFileStreamProperty_PacketToRollDistance: number;
-
-declare const kAudioUnitProperty_LoadedOutOfProcess: number;
-
-declare const kAudioCodecBitRateFormat_ABR: number;
-
-declare const kAudioQueueDeviceProperty_NumberChannels: number;
-
-declare const kAudioUnitSRCAlgorithm_MediumQuality: number;
-
-declare const kPannerParam_Distance: number;
-
-declare const kMusicEventType_User: number;
-
-declare const kCAF_SMPTE_TimeType60Drop: number;
-
-declare const kAudioSessionSetActiveFlag_NotifyOthersOnDeactivation: number;
-
-declare const kAudioCodecProduceOutputBufferListSelect: number;
-
-declare const kSequenceTrackProperty_MuteStatus: number;
-
-declare const kAudioSessionOverrideAudioRoute_None: number;
-
-declare const kLimiterParam_DecayTime: number;
-
-declare const kAudioFileReadPacketDataSelect: number;
-
-declare const kAUNBandEQFilterType_BandPass: number;
-
-declare const kAudioQueueErr_InvalidCodecAccess: number;
-
-declare const kAudioConverterPropertyDithering: number;
-
-declare const kAudioFileOpenSelect: number;
-
-declare const kAudioHardwareServiceDeviceProperty_VirtualMasterVolume: number;
-
-declare const kAudioUnitProperty_SpatialMixerRenderingFlags: number;
-
-declare const kReverbParam_FilterFrequency: number;
-
-declare const kAudioFileRemoveUserDataSelect: number;
-
-declare const kAudioUnitSubType_Reverb2: number;
-
-declare const kAudioQueueErr_CannotStart: number;
-
-declare const kAudioUnitRemovePropertyListenerSelect: number;
-
-declare const kAudioUnitErr_MissingKey: number;
-
-declare const kAudioFormatProperty_AvailableEncodeNumberChannels: number;
-
-declare const kAudioUnitProperty_MIDIControlMapping: number;
-
-declare const kAudioQueueParam_Pitch: number;
-
-declare const kAudioFileComponent_CanWrite: number;
-
-declare const kMusicDeviceProperty_SoundBankURL: number;
-
-declare const kCAFMarkerType_KeySignature: number;
-
-declare const kReverb2Param_DecayTimeAtNyquist: number;
-
-declare const kAudioToolboxErr_TrackIndexError: number;
-
-declare const kAudioOutputUnitProperty_IsRunning: number;
-
-declare const kCAFMarkerType_RegionEnd: number;
-
-declare const kAudioFileUnsupportedDataFormatError: number;
-
-declare const kAUVoiceIOErr_UnexpectedNumberOfInputChannels: number;
-
-declare const kAUVoiceIOProperty_VoiceProcessingQuality: number;
-
-declare const kAudioCodecPropertyAdjustCompressionProfile: number;
-
-declare const kAudioFilePropertyAudioDataPacketCount: number;
-
-declare const kAUGroupParameterID_Sostenuto: number;
-
-declare const kAudioFileMP1Type: number;
-
-declare const kSampleDelayParam_DelayFrames: number;
-
-declare const kAudioFileStreamProperty_RestrictsRandomAccess: number;
-
-declare const kAUNetSendProperty_ServiceName: number;
-
-declare const kPannerParam_Gain: number;
-
-declare const kAudioUnitGetPropertySelect: number;
-
-declare const kAudioQueueProperty_CurrentLevelMeterDB: number;
-
-declare const kAudioConverterPropertyOutputCodecParameters: number;
-
-declare const kAudioCodecPropertyAvailableOutputChannelLayoutTags: number;
-
-declare const kAudioFilePropertyPreviousIndependentPacket: number;
 
 declare const kMusicDeviceSysExSelect: number;
 
-declare const kAudioUnitSubType_HRTFPanner: number;
+declare const kAudioCodecProduceOutputPacketFailure: number;
 
-declare const AUEventSampleTimeImmediate: number;
+declare const kAudioUnitSubType_GenericOutput: number;
 
-declare const kAudioOutputUnitProperty_ChannelMap: number;
+declare const kPannerParam_RefDistance: number;
 
-declare const kAudioFileCreateURLSelect: number;
+declare const kAudioSessionUnspecifiedError: number;
 
-declare const kAUGraphErr_InvalidConnection: number;
+declare const kAudioUnitProperty_ClassInfo: number;
 
-declare const kAudioUnitProperty_SpatialMixerOutputType: number;
+declare const kCAClock_CannotSetTimeError: number;
 
-declare const kDynamicsProcessorParam_ExpansionThreshold: number;
+declare const kAudioConverterErr_PropertyNotSupported: number;
 
-declare const kAudioUnitProperty_LastRenderSampleTime: number;
+declare const kAudioFileGlobalInfo_AllHFSTypeCodes: number;
 
-declare const kAudioQueueErr_InvalidDevice: number;
+declare const kDistortionParam_DelayMix: number;
 
-declare const kAUSamplerProperty_BankAndPreset: number;
+declare const k3DMixerParam_OcclusionAttenuation: number;
 
-declare const kAudioConverterOutputChannelLayout: number;
+declare const kMusicDeviceStopNoteSelect: number;
 
-declare const kAUNetSendPresetFormat_Lossless24: number;
+declare const kMultibandCompressorParam_Crossover1: number;
 
-declare const kAudioSessionMode_Measurement: number;
+declare const kSequenceTrackProperty_SoloStatus: number;
 
-declare const kAudioQueueParam_Pan: number;
+declare const kAudioFormatUnsupportedDataFormatError: number;
 
-declare const kAudioQueueProperty_EnableLevelMetering: number;
+declare const kAudioUnitType_Effect: number;
 
-declare const kAudioCodecAppendInputBufferListSelect: number;
+declare const kAudioFormatProperty_ChannelMap: number;
+
+declare const kInstrumentType_Audiofile: number;
+
+declare const kAudioFileInvalidChunkError: number;
+
+declare const kDistortionParam_Decay: number;
+
+declare const kAUGroupParameterID_ResetAllControllers: number;
+
+declare const kAudioUnitSubType_RogerBeep: number;
+
+declare const kAudioSessionMode_Default: number;
+
+declare const kAudioFileUnspecifiedError: number;
+
+declare const kAudioUnitMigrateProperty_OldAutomation: number;
+
+declare const kNewTimePitchParam_EnablePeakLocking: number;
+
+declare const kAudioUnitScope_Note: number;
+
+declare const kAudioCodecBitRateControlMode_LongTermAverage: number;
+
+declare const kHighShelfParam_Gain: number;
+
+declare const kCAClock_InvalidSMPTEOffsetError: number;
+
+declare const kAudioServicesUnsupportedPropertyError: number;
+
+declare const kAudioCodecUseRecommendedSampleRate: number;
 
 declare const kAudioCodecPropertyRecommendedBitRateRange: number;
 
-declare const kExtAudioFileProperty_AudioConverter: number;
+declare const kCAF_MIDIChunkID: number;
 
-declare const CAClockMessage: {
-  StartTimeSet: 1937009005,
-  Started: 1937011316,
-  Stopped: 1937010544,
-  Armed: 1634889060,
-  Disarmed: 1684107885,
-  PropertyChanged: 1885562983,
-  WrongSMPTEFormat: 1064529264,
-};
+declare const kAudioCodecSetPropertySelect: number;
+
+declare const kAudioQueueErr_InvalidRunState: number;
+
+declare const kMultibandCompressorParam_EQ2: number;
+
+declare const kAudioUnitProperty_MakeConnection: number;
+
+declare const kParametricEQParam_CenterFreq: number;
+
+declare const kAudioUnitSubType_DefaultOutput: number;
+
+declare const kAudioFileMarkerType_Generic: number;
+
+declare const kMusicDeviceProperty_BankName: number;
+
+declare const kAudioToolboxErr_EndOfTrack: number;
+
+declare const kAudioUnitOfflineProperty_PreflightRequirements: number;
+
+declare const kAudioFormatProperty_NumberOfChannelsForLayout: number;
+
+declare const kMatrixMixerParam_PostAveragePowerLinear: number;
+
+declare const kMatrixMixerParam_Volume: number;
+
+declare const kAudioConverterQuality_Min: number;
+
+declare const kAudioUnitComplexRenderSelect: number;
+
+declare const kDistortionParam_SquaredTerm: number;
+
+declare const kAudioFormatProperty_ValidateChannelLayout: number;
+
+declare const kMultibandCompressorParam_Crossover3: number;
+
+declare const kCAF_ChannelLayoutChunkID: number;
+
+declare const kRogerBeepParam_InGateThresholdTime: number;
+
+declare const kConverterPrimeMethod_Pre: number;
+
+declare const kAudioUnitProperty_ClassInfoFromDocument: number;
+
+declare const kAudioCodecProduceOutputPacketSuccess: number;
+
+declare const kMultibandFilter_CenterGain3: number;
+
+declare const kReverbParam_PreDelay: number;
+
+declare const kAUNetSendPresetFormat_AAC_32kbpspc: number;
+
+declare const kMusicEventType_NULL: number;
+
+declare const kExtAudioFileError_InvalidPropertySize: number;
+
+declare const kAudioUnitProperty_DeferredRendererPullSize: number;
+
+declare const kMusicDeviceProperty_InstrumentName: number;
+
+declare const kAudioToolboxErr_TrackIndexError: number;
+
+declare const kAudioUnitProperty_RemoteControlEventListener: number;
+
+declare const kMultibandFilter_CenterFreq1: number;
+
+declare const kAudioUnitOfflineProperty_OutputSize: number;
+
+declare const kReverb2Param_MinDelayTime: number;
+
+declare const kAudioUnitProperty_SpatialMixerDistanceParams: number;
+
+declare const kMusicEventType_ExtendedNote: number;
+
+declare const kRenderQuality_Low: number;
+
+declare const kAudioFileUnsupportedFileTypeError: number;
+
+declare const kAudioCodecPrimeMethod_Normal: number;
+
+declare const kAUSamplerProperty_LoadPresetFromBank: number;
+
+declare const kAudioUnitSubType_NBandEQ: number;
+
+declare const kAudioUnitCarbonViewSetEventListenerSelect: number;
+
+declare const kAudioFileWritePacketsSelect: number;
+
+declare const kAudioSessionProperty_OverrideCategoryDefaultToSpeaker: number;
+
+declare const kParametricEQParam_Gain: number;
+
+declare const kCAClock_InvalidUnitError: number;
+
+declare const kAudioUnitSubType_NewTimePitch: number;
+
+declare const kAudioCodecGetPropertySelect: number;
+
+declare const kAudioUnitProperty_3DMixerRenderingFlags: number;
+
+declare const kAudioConverterPropertyMinimumInputBufferSize: number;
+
+declare const kCAF_SMPTE_TimeType2997: number;
+
+declare const kMultibandCompressorParam_OutputAmplitude2: number;
+
+declare const kAudioOutputUnitProperty_OSWorkgroup: number;
+
+declare const kExtAudioFileProperty_IOBuffer: number;
+
+declare const kAudioFileStreamError_UnsupportedFileType: number;
+
+declare const kMultibandCompressorParam_Pregain: number;
+
+declare const kAudioCodecPropertyCurrentOutputSampleRate: number;
+
+declare const kAudioFilePropertyChannelLayout: number;
+
+declare const kAUNBandEQFilterType_HighShelf: number;
+
+declare const kAUNetSendParam_NumParameters: number;
+
+declare const kReverbParam_LargeDensity: number;
+
+declare const kReverbParam_FilterType: number;
+
+declare const kAudioFormatProperty_ChannelLayoutFromESDS: number;
+
+declare const kAudioFileReadPacketsSelect: number;
+
+declare const kAudioConverterQuality_Max: number;
+
+declare const kAudioUnitProperty_InputAnchorTimeStamp: number;
+
+declare const kAudioCodecPropertyOutputFormatsForInputFormat: number;
+
+declare const kAudioCodecQuality_Min: number;
+
+declare const kAudioFilePropertyRegionList: number;
+
+declare const kLowPassParam_CutoffFrequency: number;
+
+declare const kAudioToolboxErr_NoSequence: number;
+
+declare const kStereoMixerParam_PostAveragePower: number;
+
+declare const kAudioCodecUninitializeSelect: number;
+
+declare const kAudioServicesBadPropertySizeError: number;
+
+declare const kAudioUnitProperty_ReverbPreset: number;
+
+declare const kCAFMarkerType_RegionEnd: number;
+
+declare const kAudioFileStreamProperty_PacketSizeUpperBound: number;
+
+declare const kAudioCodecAppendInputBufferListSelect: number;
+
+declare const kAudioUnitType_OfflineEffect: number;
+
+declare const kCAFMarkerType_TrackStart: number;
+
+declare const kAudioCodecProduceOutputBufferListSelect: number;
+
+declare const k3DMixerParam_MaxGainInDecibels: number;
+
+declare const kAudioFileGlobalInfo_HFSTypeCodesForType: number;
+
+declare const kRenderQuality_Min: number;
+
+declare const kExtAudioFileProperty_ConverterConfig: number;
+
+declare const kAudioFilePropertyChunkIDs: number;
+
+declare const kAudioFileInvalidPacketDependencyError: number;
+
+declare const kAudioCodecPropertyFormatList: number;
+
+declare const kAudioUnitProperty_UsesInternalReverb: number;
+
+declare const kParametricEQParam_Q: number;
+
+declare const kAudioUnitInitializeSelect: number;
+
+declare const kCAF_SMPTE_TimeType25: number;
+
+declare const kRogerBeepParam_OutGateThreshold: number;
+
+declare const kAudioConverterSampleRateConverterComplexity_Linear: number;
+
+declare const kAUSamplerParam_FineTuning: number;
+
+declare const kAudioCodecProduceOutputPacketSuccessHasMore: number;
+
+declare const kAudioFileStreamProperty_PreviousIndependentPacket: number;
+
+declare const kAudioConverterPropertyMinimumOutputBufferSize: number;
+
+declare const kAudioCodecPropertyMinimumNumberOutputPackets: number;
+
+declare const kAudioUnitSubType_MIDISynth: number;
+
+declare const kAUGroupParameterID_Pan_LSB: number;
+
+declare const kAUSoundIsolationParam_SoundToIsolate: number;
+
+declare const kMusicDeviceSampleFrameMask_IsScheduled: number;
+
+declare const kAudioUnitProperty_AudioChannelLayout: number;
+
+declare const kAudioEncoderComponentType: number;
+
+declare const kMultibandFilter_LowFrequency: number;
+
+declare const kAudioQueueErr_RecordUnderrun: number;
+
+declare const kAudioCodecPropertyAvailableOutputChannelLayoutTags: number;
+
+declare const kAudioCodecNoError: number;
+
+declare const kAudioUnitSubType_ParametricEQ: number;
+
+declare const kAudioServicesSystemSoundUnspecifiedError: number;
+
+declare const kAudioSessionRouteChangeReason_NoSuitableRouteForCategory: number;
+
+declare const kAudioConverterCurrentInputStreamDescription: number;
+
+declare const kAudioFileAIFFType: number;
+
+declare const kMatrixMixerParam_PostPeakHoldLevel: number;
+
+declare const kAudioQueueProperty_IsRunning: number;
+
+declare const kAUGroupParameterID_DataEntry: number;
+
+declare const kLimiterParam_DecayTime: number;
+
+declare const kAudioFileLoopDirection_Backward: number;
+
+declare const kNewTimePitchParam_Rate: number;
+
+declare const kNewTimePitchParam_EnableSpectralCoherence: number;
+
+declare const kAudioConverterCurrentOutputStreamDescription: number;
+
+declare const kAudioFileInitializeSelect: number;
+
+declare const kCAFMarkerType_EditDestinationEnd: number;
+
+declare const kExtAudioFileProperty_ClientMaxPacketSize: number;
+
+declare const kStereoMixerParam_PreAveragePower: number;
+
+declare const kAudioUnitProperty_PannerMode: number;
+
+declare const kAudioUnitErr_InstrumentTypeNotFound: number;
+
+declare const kAudioFormatUnknownFormatError: number;
+
+declare const kDistortionParam_RingModFreq2: number;
+
+declare const kAudioFileSoundDesigner2Type: number;
+
+declare const kAudioUnitProperty_DeferredRendererExtraLatency: number;
+
+declare const kAudioUnitScheduleParametersSelect: number;
+
+declare const kAudioCodecGetPropertyInfoSelect: number;
+
+declare const kAudioUnitSRCAlgorithm_MediumQuality: number;
+
+declare const kAudioCodecQuality_Medium: number;
+
+declare const kAudioFilePropertyAudioTrackCount: number;
+
+declare const kAudioUnitScope_Input: number;
+
+declare const kAudioSessionBadPropertySizeError: number;
+
+declare const kSequenceTrackProperty_TimeResolution: number;
+
+declare const kAudioFileGlobalInfo_FileTypeName: number;
+
+declare const kMultibandCompressorParam_CompressionAmount4: number;
+
+declare const kRogerBeepParam_Sensitivity: number;
+
+declare const kReverbParam_LargeSize: number;
+
+declare const kMusicEventType_MIDIRawData: number;
+
+declare const kMultibandFilter_HighFrequency: number;
+
+declare const kMultibandFilter_CenterFreq3: number;
+
+declare const kAudioUnitSubType_AUFilter: number;
+
+declare const kAudioCodecIllegalOperationError: number;
+
+declare const kExtAudioFileProperty_FileChannelLayout: number;
+
+declare const kMatrixMixerParam_PrePeakHoldLevel: number;
+
+declare const kAudioUnitErr_MissingKey: number;
+
+declare const kAudioFilePropertyFileFormat: number;
+
+declare const kAudioFileComponent_CanRead: number;
+
+declare const kAudioCodecBitRateControlMode_Constant: number;
+
+declare const kAudioCodecPropertyDelayMode: number;
+
+declare const kAudioCodecResetSelect: number;
+
+declare const kAudioFileNextType: number;
+
+declare const kAudioUnitProperty_SpatialMixerPointSourceInHeadMode: number;
+
+declare const kAudioUnitCarbonViewComponentType: number;
+
+declare const kAudioComponentErr_InstanceInvalidated: number;
+
+declare const kAudioComponentErr_TooManyInstances: number;
+
+declare const kAudioCodecOutputPrecedence: number;
+
+declare const kAudioConverterAvailableEncodeSampleRates: number;
+
+declare const kAudioSessionProperty_OverrideAudioRoute: number;
+
+declare const kAudioQueueProperty_MaximumOutputPacketSize: number;
+
+declare const kMultibandFilter_Bandwidth2: number;
+
+declare const kAudioConverterCompressionMagicCookie: number;
+
+declare const kCAFMarkerType_Tempo: number;
+
+declare const kAudioUnitErr_ComponentManagerNotSupported: number;
+
+declare const kAudioQueueProperty_TimePitchBypass: number;
+
+declare const kAudioSessionProperty_AudioInputAvailable: number;
+
+declare const kProgramTargetLevel_None: number;
+
+declare const kAUVoiceIOErr_UnexpectedNumberOfInputChannels: number;
+
+declare const kAudioCodecExtendFrequencies: number;
+
+declare const kAudioSessionProperty_ServerDied: number;
+
+declare const kAudioCodecNotEnoughBufferSpaceError: number;
+
+declare const kAudioUnitProcessMultipleSelect: number;
+
+declare const kAudioSessionNotActiveError: number;
+
+declare const kAUNetSendPresetFormat_PCMFloat32: number;
+
+declare const kAudioFileOperationNotSupportedError: number;
+
+declare const k3DMixerParam_PreAveragePower: number;
+
+declare const kAudioUnitProperty_FrequencyResponse: number;
+
+declare const kOfflinePreflight_NotRequired: number;
+
+declare const kAudioCodecPropertyAvailableInputSampleRates: number;
+
+declare const kAudioConverterErr_InvalidOutputSize: number;
+
+declare const kMusicDeviceSampleFrameMask_SampleOffset: number;
+
+declare const kAudioHardwareServiceProperty_ServiceRestarted: number;
+
+declare const kAudioUnitCarbonViewEvent_MouseUpInControl: number;
+
+declare const kAudioQueueTimePitchAlgorithm_Spectral: number;
+
+declare const kAudioSessionInterruptionType_ShouldResume: number;
+
+declare const kAudioConverterApplicableEncodeBitRates: number;
+
+declare const kAudioUnitParameterName_Full: number;
+
+declare const kAUGroupParameterID_Volume: number;
+
+declare const kDynamicsProcessorParam_AttackTime: number;
+
+declare const kAudioConverterErr_OutputSampleRateOutOfRange: number;
+
+declare const kCAF_SMPTE_TimeType5994: number;
+
+declare const kOtherPluginFormat_AU: number;
+
+declare const kAudioSessionProperty_InterruptionType: number;
+
+declare const kAudioSessionProperty_OverrideCategoryEnableBluetoothInput: number;
+
+declare const kSpeakerConfiguration_Quad: number;
+
+declare const kAudioUnitErr_NoConnection: number;
+
+declare const kSequenceTrackProperty_TrackLength: number;
+
+declare const kAudioFilePropertyUseAudioTrack: number;
+
+declare const kAudioComponentErr_InitializationTimedOut: number;
+
+declare const kAUNetSendPresetFormat_ULaw: number;
+
+declare const k3DMixerParam_PrePeakHoldLevel: number;
+
+declare const kAudioOutputUnitStartSelect: number;
+
+declare const kAudioToolboxError_NoTrackDestination: number;
+
+declare const kPannerParam_Elevation: number;
+
+declare const kAudioConverterPropertyMaximumOutputPacketSize: number;
+
+declare const kAudioFilePropertyAudioDataByteCount: number;
+
+declare const kAudioUnitErr_PropertyNotInUse: number;
+
+declare const kAudioSessionRouteChangeReason_Unknown: number;
+
+declare const kAudioFileEndOfFileError: number;
+
+declare const kAudioUnitProcessSelect: number;
+
+declare const kCAF_RegionChunkID: number;
+
+declare const kCAF_FileType: number;
+
+declare const kDynamicsProcessorParam_ExpansionRatio: number;
+
+declare const kAudioUnityCodecComponentType: number;
+
+declare const kAUNetReceiveProperty_Password: number;
+
+declare const kSpeakerConfiguration_Stereo: number;
+
+declare const kAudioUnitProperty_HotMapParameterMIDIMapping: number;
+
+declare const kAudioFormatProperty_FormatIsExternallyFramed: number;
+
+declare const kAudioFileMPEG4Type: number;
+
+declare const kCAF_EditCommentsChunkID: number;
+
+declare const kAudioQueueErr_InvalidDevice: number;
+
+declare const kAudioSessionCategory_AudioProcessing: number;
+
+declare const kAudioFormatProperty_TagsForNumberOfChannels: number;
+
+declare const kAudioUnitProperty_ElementCount: number;
+
+declare const kExtAudioFileProperty_FileMaxPacketSize: number;
+
+declare const kAUNBandEQParam_FilterType: number;
+
+declare const kAudioSessionMode_VoiceChat: number;
+
+declare const kAudioUnitProperty_MaximumFramesPerSlice: number;
+
+declare const kNewTimePitchParam_Pitch: number;
+
+declare const kReverbParam_LargeDelay: number;
+
+declare const kAudioCodecPropertyCurrentInputSampleRate: number;
+
+declare const kAudioFileFileIsThisFormatSelect: number;
+
+declare const kAudioUnitType_RemoteGenerator: number;
+
+declare const kAudioFormatProperty_Encoders: number;
+
+declare const kAudioFile3GP2Type: number;
+
+declare const kAudioSessionProperty_OutputDestinations: number;
+
+declare const kRandomParam_Curve: number;
+
+declare const kAudioUnitProperty_ParameterClumpName: number;
+
+declare const kMultibandCompressorParam_OutputAmplitude4: number;
+
+declare const kAudioUnitErr_TooManyFramesToProcess: number;
+
+declare const kAudioFilePropertyPacketRangeByteCountUpperBound: number;
+
+declare const kAudioQueueErr_InvalidTapType: number;
+
+declare const kAUVoiceIOProperty_VoiceProcessingQuality: number;
+
+declare const kAudioFileStreamProperty_PacketToFrame: number;
+
+declare const kAudioFileGetUserDataSelect: number;
+
+declare const kMultibandCompressorParam_Headroom2: number;
+
+declare const kAudioCodecPropertyIsInitialized: number;
+
+declare const kAudioFileAC3Type: number;
+
+declare const kAudioSessionProperty_CurrentHardwareOutputVolume: number;
+
+declare const kCAF_PacketTableChunkID: number;
+
+declare const kAudioSessionCategory_LiveAudio: number;
+
+declare const kAudioUnitSubType_StereoMixer: number;
+
+declare const kAudioFileStreamError_UnsupportedProperty: number;
+
+declare const kSpatialMixerParam_PlaybackRate: number;
+
+declare const kInstrumentType_EXS24: number;
+
+declare const kAUVoiceIOProperty_BypassVoiceProcessing: number;
+
+declare const kAudioUnitSubType_AUConverter: number;
+
+declare const kAudioSessionProperty_CurrentHardwareIOBufferDuration: number;
+
+declare const kAudioOutputUnitProperty_StartTime: number;
+
+declare const kAudioFileGlobalInfo_ReadableTypes: number;
+
+declare const kAudioUnitProperty_RemoveParameterMIDIMapping: number;
+
+declare const kAudioCodecBitRateFormat_ABR: number;
+
+declare const kAudioFileWriteBytesSelect: number;
+
+declare const kAudioToolboxErr_InvalidPlayerState: number;
+
+declare const kStereoMixerParam_PrePeakHoldLevel: number;
+
+declare const kAudioFilePropertyReserveDuration: number;
+
+declare const kAudioUnitProperty_MeterClipping: number;
+
+declare const kAudioCodecUnsupportedFormatError: number;
+
+declare const kAUGroupParameterID_KeyPressure: number;
+
+declare const kAudioUnitGetPropertySelect: number;
+
+declare const kSpatialMixerParam_Distance: number;
+
+declare const kAUNetSendPresetFormat_AAC_80kbpspc: number;
+
+declare const kMultiChannelMixerParam_Volume: number;
+
+declare const kAudioUnitSubType_RoundTripAAC: number;
+
+declare const kAudioSessionProperty_PreferredHardwareIOBufferDuration: number;
+
+declare const kAudioFilePropertyDataFormatName: number;
+
+declare const k3DMixerParam_ObstructionAttenuationInDecibels: number;
+
+declare const kAUNBandEQParam_BypassBand: number;
+
+declare const kReverbParam_SmallLargeMix: number;
+
+declare const kAudioFileStreamProperty_ChannelLayout: number;
+
+declare const kAudioUnitErr_Initialized: number;
+
+declare const kAudioQueueErr_BufferInQueue: number;
+
+declare const kAudioCodecBitRateControlMode_Variable: number;
+
+declare const kAudioFormatProperty_FormatName: number;
+
+declare const kAudioCodecPropertyMaximumPacketByteSize: number;
+
+declare const kAudioUnitProperty_ParameterIDName: number;
+
+declare const kAudioUnitProperty_IconLocation: number;
+
+declare const kAUNBandEQFilterType_Parametric: number;
+
+declare const k3DMixerParam_GlobalReverbGainInDecibels: number;
+
+declare const kExtAudioFileError_InvalidDataFormat: number;
+
+declare const kAUVoiceIOProperty_MutedSpeechActivityEventListener: number;
+
+declare const kAudioUnitSubType_Reverb2: number;
+
+declare const kAudioFormatProperty_FormatList: number;
+
+declare const kRogerBeepParam_RogerGain: number;
+
+declare const kAudioFileComponent_UTIsForType: number;
+
+declare const kAudioQueueErr_QueueInvalidated: number;
+
+declare const kAudioUnitProperty_RequestViewController: number;
+
+declare const kAUSamplerProperty_LoadAudioFiles: number;
+
+declare const kHintBasic: number;
+
+declare const kAudioUnitGetParameterSelect: number;
+
+declare const kAudioUnitOfflineProperty_InputSize: number;
+
+declare const kAudioFileStreamProperty_AverageBytesPerPacket: number;
+
+declare const kAUGroupParameterID_Expression: number;
+
+declare const kConverterPrimeMethod_None: number;
+
+declare const kAudioUnitProperty_DistanceAttenuationData: number;
+
+declare const kMultibandCompressorParam_CompressionAmount1: number;
+
+declare const kAudioFileGlobalInfo_AllExtensions: number;
+
+declare const kAudioQueueParam_Pitch: number;
+
+declare const kAudioFileGlobalInfo_ExtensionsForType: number;
+
+declare const kAudioCodecPropertyCurrentTargetBitRate: number;
+
+declare const kNewTimePitchParam_EnableTransientPreservation: number;
+
+declare const kStereoMixerParam_Volume: number;
+
+declare const kAudioUnitProperty_CurrentPlayTime: number;
+
+declare const kDynamicsProcessorParam_OutputAmplitude: number;
+
+declare const kAudioQueueErr_EnqueueDuringReset: number;
+
+declare const kMultibandFilter_Bandwidth3: number;
+
+declare const k3DMixerParam_MinGain: number;
+
+declare const kAudioFileStreamError_BadPropertySize: number;
+
+declare const kAUGraphErr_InvalidAudioUnit: number;
+
+declare const kAudioCodecPropertyCurrentOutputFormat: number;
+
+declare const kAudioUnitProperty_SupportsMPE: number;
+
+declare const kAudioHardwareServiceDeviceProperty_VirtualMasterVolume: number;
+
+declare const kAudioFileComponent_MIMETypesForType: number;
+
+declare const kCAF_SMPTE_TimeType30Drop: number;
+
+declare const kAudioFilePropertyNextIndependentPacket: number;
+
+declare const kReverbParam_ModulationRate: number;
+
+declare const kInstrumentType_SF2Preset: number;
+
+declare const kAudioUnitProperty_ScheduleStartTimeStamp: number;
+
+declare const k3DMixerParam_DryWetReverbBlend: number;
+
+declare const kAudioUnitResetSelect: number;
+
+declare const kAUNBandEQParam_GlobalGain: number;
+
+declare const kAudioFileDataIsThisFormatSelect: number;
+
+declare const kAudioCodecPropertyZeroFramesPadded: number;
+
+declare const kAudioToolboxErr_IllegalTrackDestination: number;
+
+declare const kCAF_SMPTE_TimeType30: number;
+
+declare const kAUSamplerParam_Pan: number;
+
+declare const kAudioFormatProperty_ChannelLayoutName: number;
+
+declare const AUEventSampleTimeImmediate: number;
+
+declare const kAudioFileStreamProperty_BitRate: number;
+
+declare const kAUGroupParameterID_PitchBend: number;
+
+declare const kAudioCodecPropertyProgramTargetLevel: number;
+
+declare const kAudioSessionInterruptionType_ShouldNotResume: number;
+
+declare const kAudioQueueProperty_TimePitchAlgorithm: number;
+
+declare const kMusicDeviceParam_ReverbVolume: number;
+
+declare const kAudioSessionProperty_CurrentHardwareSampleRate: number;
+
+declare const kMusicDeviceStartNoteSelect: number;
+
+declare const kAudioFileNotOpenError: number;
+
+declare const k3DMixerParam_PostAveragePower: number;
+
+declare const kAudioFilePropertyPacketTableInfo: number;
+
+declare const kDelayParam_WetDryMix: number;
+
+declare const kAudioUnitSubType_DeferredRenderer: number;
+
+declare const kAudioUnitErr_InvalidOfflineRender: number;
+
+declare const kAudioFileGlobalInfo_TypesForMIMEType: number;
+
+declare const kAudioConverterPropertyInputCodecParameters: number;
+
+declare const kAudioFileComponent_CanWrite: number;
+
+declare const kAudioFilePropertyDataOffset: number;
+
+declare const kCAClock_InvalidSyncSourceError: number;
+
+declare const kAudioCodecOutputPrecedenceBitRate: number;
+
+declare const kAudioSessionProperty_CurrentHardwareOutputLatency: number;
+
+declare const kAudioQueueProperty_StreamDescription: number;
+
+declare const kAudioFileWAVEType: number;
+
+declare const kMultiChannelMixerParam_PreAveragePower: number;
+
+declare const kAudioConverterSampleRateConverterAlgorithm: number;
+
+declare const kAudioConverterQuality_Medium: number;
+
+declare const kAudioFilePropertyMarkerList: number;
+
+declare const kAudioSessionEndInterruption: number;
+
+declare const kAUGraphErr_CannotDoInCurrentContext: number;
+
+declare const kAudioFileStreamProperty_MaximumPacketSize: number;
+
+declare const kAudioUnitSampleRateConverterComplexity_Linear: number;
+
+declare const kAudioCodecPropertyBitRateForVBR: number;
+
+declare const kMusicDeviceProperty_StreamFromDisk: number;
+
+declare const kAudioQueueProperty_CurrentDevice: number;
+
+declare const kAudioUnitProperty_ParameterStringFromValue: number;
+
+declare const kAudioUnitSubType_MatrixReverb: number;
+
+declare const kAudioUnitSubType_DLSSynth: number;
+
+declare const kOtherPluginFormat_Undefined: number;
+
+declare const kCAF_UMIDChunkID: number;
+
+declare const kHipassParam_Resonance: number;
+
+declare const kCAFMarkerType_KeySignature: number;
+
+declare const kAUSampler_DefaultPercussionBankMSB: number;
+
+declare const kAudioUnitErr_Unauthorized: number;
+
+declare const kAudioFileStreamError_UnsupportedDataFormat: number;
+
+declare const kAudioUnitRenderSelect: number;
+
+declare const kAudioCodecPropertyMinimumNumberInputPackets: number;
+
+declare const kAudioFileStreamError_InvalidPacketOffset: number;
+
+declare const kDynamicsProcessorParam_MasterGain: number;
+
+declare const kAudioFileStreamProperty_RestrictsRandomAccess: number;
+
+declare const kAudioToolboxErr_TrackNotFound: number;
+
+declare const kAudioFilePropertyID3Tag: number;
+
+declare const kCAF_FileVersion_Initial: number;
+
+declare const kAudioUnitProperty_PresentPreset: number;
+
+declare const kCAFMarkerType_SelectionStart: number;
+
+declare const kAUSampler_DefaultBankLSB: number;
+
+declare const kReverbParam_FilterBandwidth: number;
+
+declare const kAudioUnitParameterFlag_HasName: number;
+
+declare const kCAF_iXMLChunkID: number;
+
+declare const kAudioUnitScope_Group: number;
+
+declare const kAudioUnitErr_InvalidParameter: number;
+
+declare const kAudioUnitProperty_SpatialMixerOutputType: number;
+
+declare const kAudioCodecOutputFormatsForInputFormat: number;
+
+declare const kAudioConverterPropertyDithering: number;
+
+declare const kMusicDeviceProperty_SoundBankURL: number;
+
+declare const kAudioFilePropertyDataFormat: number;
+
+declare const kMultibandCompressorParam_CompressionAmount3: number;
+
+declare const kAudioFileGetPropertySelect: number;
+
+declare const kNewTimePitchParam_Overlap: number;
+
+declare const kAudioUnitProperty_ParameterHistoryInfo: number;
+
+declare const kDistortionParam_RingModFreq1: number;
+
+declare const kAudioFileGlobalInfo_AvailableStreamDescriptionsForFormat: number;
+
+declare const kAUNBandEQParam_Bandwidth: number;
+
+declare const kAudioUnitSubType_SpatialMixer: number;
+
+declare const kAULowShelfParam_CutoffFrequency: number;
+
+declare const kAudioCodecBitRateFormat: number;
+
+declare const kDelayParam_Feedback: number;
+
+declare const kAudioCodecPropertyAvailableNumberChannels: number;
+
+declare const kAUGroupParameterID_DataEntry_LSB: number;
+
+declare const kAUNetSendPresetFormat_Lossless24: number;
+
+declare const kExtAudioFileProperty_CodecManufacturer: number;
+
+declare const kAudioCodecPropertyUsedInputBufferSize: number;
+
+declare const kAUNetSendProperty_Disconnect: number;
+
+declare const kAudioCodecDelayMode_Optimal: number;
+
+declare const kReverb2Param_DecayTimeAtNyquist: number;
+
+declare const kAudioCodecInputFormatsForOutputFormat: number;
+
+declare const kAudioUnitSubType_Merger: number;
+
+declare const kAudioCodecPropertyAdjustCompressionProfile: number;
+
+declare const kAudioFileGlobalInfo_WritableTypes: number;
+
+declare const kCAF_SMPTE_TimeTypeNone: number;
+
+declare const kAUSoundIsolationParam_WetDryMixPercent: number;
+
+declare const kDynamicRangeCompressionProfile_None: number;
+
+declare const kAudioFileUnsupportedDataFormatError: number;
+
+declare const kAudioCodecOutputPrecedenceNone: number;
+
+declare const kAudioSessionCategory_SoloAmbientSound: number;
+
+declare const kCAClock_InvalidSMPTEFormatError: number;
+
+declare const k3DMixerParam_ObstructionAttenuation: number;
+
+declare const kAudioCodecPropertyPacketSizeLimitForVBR: number;
+
+declare const kSpatialMixerParam_MaxGain: number;
+
+declare const kAudioConverterPropertyMaximumInputPacketSize: number;
 
 declare const CAClockPropertyID: {
   InternalTimebase: 1768846434,
@@ -2685,17 +2691,20 @@ declare const CAClockPropertyID: {
   SendMIDISPP: 1836281968,
 };
 
+declare const AUSpatialMixerPointSourceInHeadMode: {
+  Mono: 0,
+  Bypass: 1,
+};
+
+declare const MusicSequenceLoadFlags: {
+  Preserve: 0,
+  ChannelsTo: 1,
+};
+
 declare const CAFRegionFlags: {
   LoopEnable: 1,
   PlayForward: 2,
   PlayBackward: 4,
-};
-
-declare const AudioUnitEventType: {
-  ParameterValueChange: 0,
-  BeginParameterChangeGesture: 1,
-  EndParameterChangeGesture: 2,
-  PropertyChange: 3,
 };
 
 declare const AudioQueueProcessingTapFlags: {
@@ -2724,16 +2733,21 @@ declare const AudioBytePacketTranslationFlags: {
   kBytePacketTranslationFlag_IsEstimate: 1,
 };
 
-declare const AudioFileRegionFlags: {
-  LoopEnable: 1,
-  PlayForward: 2,
-  PlayBackward: 4,
-};
-
 declare const AudioFilePermissions: {
   Read: 1,
   Write: 2,
   ReadWrite: 3,
+};
+
+declare const AUAudioUnitBusType: {
+  Input: 1,
+  Output: 2,
+};
+
+declare const AUParameterAutomationEventType: {
+  Value: 0,
+  Touch: 1,
+  Release: 2,
 };
 
 declare const AUScheduledAudioSliceFlags: {
@@ -2752,21 +2766,6 @@ declare const AU3DMixerAttenuationCurve: {
   Linear: 3,
 };
 
-declare const AU3DMixerRenderingFlags: {
-  InterAuralDelay: 1,
-  DopplerShift: 2,
-  DistanceAttenuation: 4,
-  DistanceFilter: 8,
-  DistanceDiffusion: 16,
-  LinearDistanceAttenuation: 32,
-  ConstantReverbBlend: 64,
-};
-
-declare const AUSpatialMixerPointSourceInHeadMode: {
-  Mono: 0,
-  Bypass: 1,
-};
-
 declare const AUReverbRoomType: {
   SmallRoom: 0,
   MediumRoom: 1,
@@ -2781,6 +2780,23 @@ declare const AUReverbRoomType: {
   MediumHall2: 10,
   MediumHall3: 11,
   LargeHall2: 12,
+};
+
+declare const AU3DMixerRenderingFlags: {
+  InterAuralDelay: 1,
+  DopplerShift: 2,
+  DistanceAttenuation: 4,
+  DistanceFilter: 8,
+  DistanceDiffusion: 16,
+  LinearDistanceAttenuation: 32,
+  ConstantReverbBlend: 64,
+};
+
+declare const AUSpatialMixerAttenuationCurve: {
+  Power: 0,
+  Exponential: 1,
+  Inverse: 2,
+  Linear: 3,
 };
 
 declare const AUVoiceIOSpeechActivityEvent: {
@@ -2819,21 +2835,25 @@ declare const AudioUnitParameterOptions: {
   IsWritable: -2147483648,
 };
 
-declare const AUSpatialMixerAttenuationCurve: {
-  Power: 0,
-  Exponential: 1,
-  Inverse: 2,
-  Linear: 3,
-};
-
 declare const CAFFormatFlags: {
   Float: 1,
   LittleEndian: 2,
 };
 
-declare const AUAudioUnitBusType: {
-  Input: 1,
-  Output: 2,
+declare const AudioFileRegionFlags: {
+  LoopEnable: 1,
+  PlayForward: 2,
+  PlayBackward: 4,
+};
+
+declare const AUParameterEventType: {
+  Immediate: 1,
+  Ramped: 2,
+};
+
+declare const AudioComponentInstantiationOptions: {
+  OutOf: 1,
+  In: 2,
 };
 
 declare const AURenderEventType: {
@@ -2844,63 +2864,32 @@ declare const AURenderEventType: {
   MIDIEventList: 10,
 };
 
-declare const AudioUnitRenderActionFlags: {
-  UnitRenderAction_PreRender: 4,
-  UnitRenderAction_PostRender: 8,
-  UnitRenderAction_OutputIsSilence: 16,
-  OfflineUnitRenderAction_Preflight: 32,
-  OfflineUnitRenderAction_Render: 64,
-  OfflineUnitRenderAction_Complete: 128,
-  UnitRenderAction_PostRenderError: 256,
-  UnitRenderAction_DoNotCheckRenderArgs: 512,
+declare const MusicSequenceType: {
+  Beats: 1650811252,
+  Seconds: 1936024435,
+  Samples: 1935764848,
 };
 
-declare const MusicSequenceLoadFlags: {
-  Preserve: 0,
-  ChannelsTo: 1,
-};
-
-declare const AUVoiceIOOtherAudioDuckingLevel: {
-  Default: 0,
-  Min: 10,
-  Mid: 20,
-  Max: 30,
-};
-
-declare const AUParameterEventType: {
-  Immediate: 1,
-  Ramped: 2,
-};
-
-declare const CAClockSyncMode: {
-  Internal: 1768846450,
-  MIDIClockTransport: 1835232363,
-  MTCTransport: 1835889763,
-};
-
-declare const AUParameterAutomationEventType: {
-  Value: 0,
-  Touch: 1,
-  Release: 2,
-};
-
-declare const AUParameterMIDIMappingFlags: {
-  AnyChannelFlag: 1,
-  AnyNoteFlag: 2,
-  SubRange: 4,
-  Toggle: 8,
-  Bipolar: 16,
-  Bipolar_On: 32,
-};
-
-declare const AUSpatialMixerOutputType: {
-  Headphones: 1,
-  BuiltInSpeakers: 2,
-  ExternalSpeakers: 3,
+declare const AUSpatialMixerPersonalizedHRTFMode: {
+  Off: 0,
+  On: 1,
+  Auto: 2,
 };
 
 declare const AudioFileStreamParseFlags: {
   kAudioFileStreamParseFlag_Discontinuity: 1,
+};
+
+declare const MusicSequenceFileFlags: {
+  Default: 0,
+  EraseFile: 1,
+};
+
+declare const AudioUnitEventType: {
+  ParameterValueChange: 0,
+  BeginParameterChangeGesture: 1,
+  EndParameterChangeGesture: 2,
+  PropertyChange: 3,
 };
 
 declare const AUSpatializationAlgorithm: {
@@ -2912,72 +2901,6 @@ declare const AUSpatializationAlgorithm: {
   StereoPassThrough: 5,
   HRTFHQ: 6,
   UseOutputType: 7,
-};
-
-declare const AudioFileFlags: {
-  EraseFile: 1,
-  DontPageAlignAudioData: 2,
-};
-
-declare const AudioComponentFlags: {
-  Unsearchable: 1,
-  SandboxSafe: 2,
-  IsV3AudioUnit: 4,
-  RequiresAsyncInstantiation: 8,
-  CanLoadInProcess: 16,
-};
-
-declare const MusicSequenceType: {
-  Beats: 1650811252,
-  Seconds: 1936024435,
-  Samples: 1935764848,
-};
-
-declare const AudioConverterOptions: {
-  kAudioConverterOption_Unbuffered: 65536,
-};
-
-declare const AudioComponentValidationResult: {
-  Unknown: 0,
-  Passed: 1,
-  Failed: 2,
-  TimedOut: 3,
-  UnauthorizedError_Open: 4,
-  UnauthorizedError_Init: 5,
-};
-
-declare const AUHostTransportStateFlags: {
-  Changed: 1,
-  Moving: 2,
-  Recording: 4,
-  Cycling: 8,
-};
-
-declare const AudioComponentInstantiationOptions: {
-  OutOf: 1,
-  In: 2,
-};
-
-declare const CAClockTimebase: {
-  HostTime: 1752134516,
-  AudioDevice: 1635083369,
-  AudioOutputUnit: 1635086197,
-};
-
-declare const AUSpatialMixerRenderingFlags: {
-  InterAuralDelay: 1,
-  DistanceAttenuation: 4,
-};
-
-declare const MusicSequenceFileTypeID: {
-  File_Any: 0,
-  File_MIDI: 1835623529,
-  File_iMelody: 1768777068,
-};
-
-declare const AudioFileStreamPropertyFlags: {
-  PropertyIsCached: 1,
-  CacheProperty: 2,
 };
 
 declare const AudioUnitParameterUnit: {
@@ -3011,16 +2934,70 @@ declare const AudioUnitParameterUnit: {
   MIDI2Controller: 27,
 };
 
-declare const MusicSequenceFileFlags: {
-  Default: 0,
-  EraseFile: 1,
+declare const AUHostTransportStateFlags: {
+  Changed: 1,
+  Moving: 2,
+  Recording: 4,
+  Cycling: 8,
 };
 
-declare const AudioSettingsFlags: {
-  Expert: 1,
-  Invisible: 2,
-  Meta: 4,
-  UserInterface: 8,
+declare const AUParameterMIDIMappingFlags: {
+  AnyChannelFlag: 1,
+  AnyNoteFlag: 2,
+  SubRange: 4,
+  Toggle: 8,
+  Bipolar: 16,
+  Bipolar_On: 32,
+};
+
+declare const CAClockMessage: {
+  StartTimeSet: 1937009005,
+  Started: 1937011316,
+  Stopped: 1937010544,
+  Armed: 1634889060,
+  Disarmed: 1684107885,
+  PropertyChanged: 1885562983,
+  WrongSMPTEFormat: 1064529264,
+};
+
+declare const AudioComponentFlags: {
+  Unsearchable: 1,
+  SandboxSafe: 2,
+  IsV3AudioUnit: 4,
+  RequiresAsyncInstantiation: 8,
+  CanLoadInProcess: 16,
+};
+
+declare const CAClockTimebase: {
+  HostTime: 1752134516,
+  AudioDevice: 1635083369,
+  AudioOutputUnit: 1635086197,
+};
+
+declare const AUVoiceIOOtherAudioDuckingLevel: {
+  Default: 0,
+  Min: 10,
+  Mid: 20,
+  Max: 30,
+};
+
+declare const AudioComponentValidationResult: {
+  Unknown: 0,
+  Passed: 1,
+  Failed: 2,
+  TimedOut: 3,
+  UnauthorizedError_Open: 4,
+  UnauthorizedError_Init: 5,
+};
+
+declare const AudioConverterOptions: {
+  kAudioConverterOption_Unbuffered: 65536,
+};
+
+declare const CAClockSyncMode: {
+  Internal: 1768846450,
+  MIDIClockTransport: 1835232363,
+  MTCTransport: 1835889763,
 };
 
 declare const AUSpatialMixerSourceMode: {
@@ -3028,6 +3005,39 @@ declare const AUSpatialMixerSourceMode: {
   Bypass: 1,
   PointSource: 2,
   AmbienceBed: 3,
+};
+
+declare const AUSpatialMixerOutputType: {
+  Headphones: 1,
+  BuiltInSpeakers: 2,
+  ExternalSpeakers: 3,
+};
+
+declare const AudioFileStreamPropertyFlags: {
+  PropertyIsCached: 1,
+  CacheProperty: 2,
+};
+
+declare const AUSpatialMixerRenderingFlags: {
+  InterAuralDelay: 1,
+  DistanceAttenuation: 4,
+};
+
+declare const MusicSequenceFileTypeID: {
+  File_Any: 0,
+  File_MIDI: 1835623529,
+  File_iMelody: 1768777068,
+};
+
+declare const AudioUnitRenderActionFlags: {
+  UnitRenderAction_PreRender: 4,
+  UnitRenderAction_PostRender: 8,
+  UnitRenderAction_OutputIsSilence: 16,
+  OfflineUnitRenderAction_Preflight: 32,
+  OfflineUnitRenderAction_Render: 64,
+  OfflineUnitRenderAction_Complete: 128,
+  UnitRenderAction_PostRenderError: 256,
+  UnitRenderAction_DoNotCheckRenderArgs: 512,
 };
 
 declare const CAClockTimeFormat: {
@@ -3040,10 +3050,16 @@ declare const CAClockTimeFormat: {
   AbsoluteSeconds: 1634952547,
 };
 
-declare const AUSpatialMixerPersonalizedHRTFMode: {
-  Off: 0,
-  On: 1,
-  Auto: 2,
+declare const AudioSettingsFlags: {
+  Expert: 1,
+  Invisible: 2,
+  Meta: 4,
+  UserInterface: 8,
+};
+
+declare const AudioFileFlags: {
+  EraseFile: 1,
+  DontPageAlignAudioData: 2,
 };
 
 declare class CATempoMapEntry {
@@ -3052,11 +3068,21 @@ declare class CATempoMapEntry {
   tempoBPM: number;
 }
 
-declare class CAClockTime {
-  constructor(init?: CAClockTime);
-  format: interop.Enum<typeof CAClockTimeFormat>;
-  reserved: number;
-  time: unnamed_358527712379230248;
+declare class AudioFileFDFTableExtended {
+  constructor(init?: AudioFileFDFTableExtended);
+  mComponentStorage: interop.Pointer;
+  mReadBytesFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  mWriteBytesFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  mReadPacketsFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  mWritePacketsFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  mGetPropertyInfoFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  mGetPropertyFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  mSetPropertyFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
+  mCountUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  mGetUserDataSizeFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
+  mGetUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  mSetUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
+  mReadPacketDataFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
 }
 
 declare class AudioFileFDFTable {
@@ -3075,17 +3101,14 @@ declare class AudioFileFDFTable {
   mSetUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
 }
 
-declare class ExtendedControlEvent {
-  constructor(init?: ExtendedControlEvent);
-  groupID: number;
-  controlID: number;
-  value: number;
-}
-
 declare class MusicTrackLoopInfo {
   constructor(init?: MusicTrackLoopInfo);
   loopDuration: number;
   numberOfLoops: number;
+}
+
+declare class OpaqueMusicEventIterator {
+  constructor(init?: OpaqueMusicEventIterator);
 }
 
 declare class OpaqueMusicTrack {
@@ -3108,14 +3131,6 @@ declare class ExtendedTempoEvent {
   bpm: number;
 }
 
-declare class ParameterEvent {
-  constructor(init?: ParameterEvent);
-  parameterID: number;
-  scope: number;
-  element: number;
-  value: number;
-}
-
 declare class ExtendedNoteOnEvent {
   constructor(init?: ExtendedNoteOnEvent);
   instrumentID: number;
@@ -3124,31 +3139,24 @@ declare class ExtendedNoteOnEvent {
   extendedParams: MusicDeviceNoteParams;
 }
 
-declare class MusicEventUserData {
-  constructor(init?: MusicEventUserData);
+declare class MIDIMetaEvent {
+  constructor(init?: MIDIMetaEvent);
+  metaEventType: number;
+  unused1: number;
+  unused2: number;
+  unused3: number;
+  dataLength: number;
+  data: unknown /* const array */;
+}
+
+declare class MIDIRawData {
+  constructor(init?: MIDIRawData);
   length: number;
   data: unknown /* const array */;
 }
 
-declare class MIDINoteMessage {
-  constructor(init?: MIDINoteMessage);
-  channel: number;
-  note: number;
-  velocity: number;
-  releaseVelocity: number;
-  duration: number;
-}
-
-declare class CAFUMIDChunk {
-  constructor(init?: CAFUMIDChunk);
-  mBytes: unknown /* const array */;
-}
-
-declare class CAFOverviewChunk {
-  constructor(init?: CAFOverviewChunk);
-  mEditCount: number;
-  mNumFramesPerOVWSample: number;
-  mData: unknown /* const array */;
+declare class OpaqueExtAudioFile {
+  constructor(init?: OpaqueExtAudioFile);
 }
 
 declare class CAFOverviewSample {
@@ -3167,11 +3175,6 @@ declare class CAFPositionPeak {
   constructor(init?: CAFPositionPeak);
   mValue: number;
   mFrameNumber: number;
-}
-
-declare class CAFInfoStrings {
-  constructor(init?: CAFInfoStrings);
-  mNumEntries: number;
 }
 
 declare class CAFStrings {
@@ -3194,11 +3197,12 @@ declare class CAFInstrumentChunk {
   mInstrumentID: number;
 }
 
-declare class CAFRegionChunk {
-  constructor(init?: CAFRegionChunk);
-  mSMPTE_TimeType: number;
-  mNumberRegions: number;
-  mRegions: unknown /* const array */;
+declare class CAFRegion {
+  constructor(init?: CAFRegion);
+  mRegionID: number;
+  mFlags: interop.Enum<typeof CAFRegionFlags>;
+  mNumberMarkers: number;
+  mMarkers: unknown /* const array */;
 }
 
 declare class CAFMarkerChunk {
@@ -3208,13 +3212,13 @@ declare class CAFMarkerChunk {
   mMarkers: unknown /* const array */;
 }
 
-declare class CAFMarker {
-  constructor(init?: CAFMarker);
-  mType: number;
-  mFramePosition: number;
-  mMarkerID: number;
-  mSMPTETime: CAF_SMPTE_Time;
-  mChannel: number;
+declare class CAF_SMPTE_Time {
+  constructor(init?: CAF_SMPTE_Time);
+  mHours: number;
+  mMinutes: number;
+  mSeconds: number;
+  mFrames: number;
+  mSubFrameSampleOffset: number;
 }
 
 declare class CAFDataChunk {
@@ -3223,10 +3227,13 @@ declare class CAFDataChunk {
   mData: unknown /* const array */;
 }
 
-declare class CAFAudioFormatListItem {
-  constructor(init?: CAFAudioFormatListItem);
-  mFormat: CAFAudioDescription;
-  mChannelLayoutTag: number;
+declare class CAFPacketTableHeader {
+  constructor(init?: CAFPacketTableHeader);
+  mNumberPackets: number;
+  mNumberValidFrames: number;
+  mPrimingFrames: number;
+  mRemainderFrames: number;
+  mPacketDescriptions: unknown /* const array */;
 }
 
 declare class CAFAudioDescription {
@@ -3246,61 +3253,16 @@ declare class CAF_UUID_ChunkHeader {
   mUUID: unknown /* const array */;
 }
 
-declare class CAFChunkHeader {
-  constructor(init?: CAFChunkHeader);
-  mChunkType: number;
-  mChunkSize: number;
-}
-
-declare class CAFFileHeader {
-  constructor(init?: CAFFileHeader);
-  mFileType: number;
-  mFileVersion: number;
-  mFileFlags: number;
-}
-
 declare class AudioUnitEvent {
   constructor(init?: AudioUnitEvent);
   mEventType: interop.Enum<typeof AudioUnitEventType>;
-  mArgument: unnamed_12201614566185981960;
+  mArgument: unnamed_12591819658234606006;
 }
 
 declare class AudioQueueChannelAssignment {
   constructor(init?: AudioQueueChannelAssignment);
   mDeviceUID: interop.Pointer;
   mChannelNumber: number;
-}
-
-declare class OpaqueAudioQueueProcessingTap {
-  constructor(init?: OpaqueAudioQueueProcessingTap);
-}
-
-declare class AudioQueueLevelMeterState {
-  constructor(init?: AudioQueueLevelMeterState);
-  mAveragePower: number;
-  mPeakPower: number;
-}
-
-declare class AudioQueueParameterEvent {
-  constructor(init?: AudioQueueParameterEvent);
-  mID: number;
-  mValue: number;
-}
-
-declare class OpaqueAudioQueueTimeline {
-  constructor(init?: OpaqueAudioQueueTimeline);
-}
-
-declare class OpaqueAudioQueue {
-  constructor(init?: OpaqueAudioQueue);
-}
-
-declare class ExtendedAudioFormatInfo {
-  constructor(init?: ExtendedAudioFormatInfo);
-  mASBD: AudioStreamBasicDescription;
-  mMagicCookie: interop.Pointer;
-  mMagicCookieSize: number;
-  mClassDescription: AudioClassDescription;
 }
 
 declare class AudioBalanceFade {
@@ -3311,15 +3273,6 @@ declare class AudioBalanceFade {
   mChannelLayout: interop.Pointer;
 }
 
-declare class AudioPanningInfo {
-  constructor(init?: AudioPanningInfo);
-  mPanningMode: interop.Enum<typeof AudioPanningMode>;
-  mCoordinateFlags: number;
-  mCoordinates: unknown /* const array */;
-  mGainScale: number;
-  mOutputChannelMap: interop.Pointer;
-}
-
 declare class OpaqueAudioFileStreamID {
   constructor(init?: OpaqueAudioFileStreamID);
 }
@@ -3328,32 +3281,6 @@ declare class AudioFileTypeAndFormatID {
   constructor(init?: AudioFileTypeAndFormatID);
   mFileType: number;
   mFormatID: number;
-}
-
-declare class AudioPacketDependencyInfoTranslation {
-  constructor(init?: AudioPacketDependencyInfoTranslation);
-  mPacket: number;
-  mIsIndependentlyDecodable: number;
-  mNumberPrerollPackets: number;
-}
-
-declare class AudioIndependentPacketTranslation {
-  constructor(init?: AudioIndependentPacketTranslation);
-  mPacket: number;
-  mIndependentlyDecodablePacket: number;
-}
-
-declare class AudioPacketRollDistanceTranslation {
-  constructor(init?: AudioPacketRollDistanceTranslation);
-  mPacket: number;
-  mRollDistance: number;
-}
-
-declare class AudioPacketRangeByteCountTranslation {
-  constructor(init?: AudioPacketRangeByteCountTranslation);
-  mPacket: number;
-  mPacketCount: number;
-  mByteCountUpperBound: number;
 }
 
 declare class AudioFilePacketTableInfo {
@@ -3371,13 +3298,6 @@ declare class AudioBytePacketTranslation {
   mFlags: interop.Enum<typeof AudioBytePacketTranslationFlags>;
 }
 
-declare class AudioFramePacketTranslation {
-  constructor(init?: AudioFramePacketTranslation);
-  mFrame: number;
-  mPacket: number;
-  mFrameOffsetInPacket: number;
-}
-
 declare class AudioFileRegionList {
   constructor(init?: AudioFileRegionList);
   mSMPTE_TimeType: number;
@@ -3392,15 +3312,13 @@ declare class AudioFileMarkerList {
   mMarkers: unknown /* const array */;
 }
 
-declare class AudioFileMarker {
-  constructor(init?: AudioFileMarker);
-  mFramePosition: number;
-  mName: interop.Pointer;
-  mMarkerID: number;
-  mSMPTETime: AudioFile_SMPTE_Time;
-  mType: number;
-  mReserved: number;
-  mChannel: number;
+declare class AudioFile_SMPTE_Time {
+  constructor(init?: AudioFile_SMPTE_Time);
+  mHours: number;
+  mMinutes: number;
+  mSeconds: number;
+  mFrames: number;
+  mSubFrameSampleOffset: number;
 }
 
 declare class AudioConverterPrimeInfo {
@@ -3412,7 +3330,7 @@ declare class AudioConverterPrimeInfo {
 declare class AUNodeInteraction {
   constructor(init?: AUNodeInteraction);
   nodeInteractionType: number;
-  nodeInteraction: unnamed_8472245440390819209;
+  nodeInteraction: unnamed_5866294985692878565;
 }
 
 declare class AUNodeRenderCallback {
@@ -3430,6 +3348,10 @@ declare class AudioUnitNodeConnection {
   destInputNumber: number;
 }
 
+declare class OpaqueAUGraph {
+  constructor(init?: OpaqueAUGraph);
+}
+
 declare class MusicDeviceNoteParams {
   constructor(init?: MusicDeviceNoteParams);
   argCount: number;
@@ -3438,18 +3360,17 @@ declare class MusicDeviceNoteParams {
   mControls: unknown /* const array */;
 }
 
+declare class NoteParamsControlValue {
+  constructor(init?: NoteParamsControlValue);
+  mID: number;
+  mValue: number;
+}
+
 declare class MusicDeviceStdNoteParams {
   constructor(init?: MusicDeviceStdNoteParams);
   argCount: number;
   mPitch: number;
   mVelocity: number;
-}
-
-declare class MixerDistanceParams {
-  constructor(init?: MixerDistanceParams);
-  mReferenceDistance: number;
-  mMaxDistance: number;
-  mMaxAttenuation: number;
 }
 
 declare class AUMIDIEventList {
@@ -3462,34 +3383,68 @@ declare class AUMIDIEventList {
   eventList: MIDIEventList;
 }
 
-declare class AudioUnitParameterValueName {
-  constructor(init?: AudioUnitParameterValueName);
-  inParamID: number;
-  inValue: interop.Pointer;
-  outName: interop.Pointer;
+declare class AUMIDIEvent {
+  constructor(init?: AUMIDIEvent);
+  next: interop.Pointer;
+  eventSampleTime: number;
+  eventType: interop.Enum<typeof AURenderEventType>;
+  reserved: number;
+  length: number;
+  cable: number;
+  data: unknown /* const array */;
 }
 
-declare class AUHostIdentifier {
-  constructor(init?: AUHostIdentifier);
-  hostName: interop.Pointer;
-  hostVersion: AUNumVersion;
+declare class AURenderEventHeader {
+  constructor(init?: AURenderEventHeader);
+  next: interop.Pointer;
+  eventSampleTime: number;
+  eventType: interop.Enum<typeof AURenderEventType>;
+  reserved: number;
 }
 
-declare class AUSamplerInstrumentData {
-  constructor(init?: AUSamplerInstrumentData);
-  fileURL: interop.Pointer;
-  instrumentType: number;
+declare class AURecordedParameterEvent {
+  constructor(init?: AURecordedParameterEvent);
+  hostTime: number;
+  address: number;
+  value: number;
+}
+
+declare class AUSamplerBankPresetData {
+  constructor(init?: AUSamplerBankPresetData);
+  bankURL: interop.Pointer;
   bankMSB: number;
   bankLSB: number;
   presetID: number;
+  reserved: number;
 }
 
-declare class AUNumVersion {
-  constructor(init?: AUNumVersion);
-  nonRelRev: number;
-  stage: number;
-  minorAndBugRev: number;
-  majorRev: number;
+declare class AudioUnitMIDIControlMapping {
+  constructor(init?: AudioUnitMIDIControlMapping);
+  midiNRPN: number;
+  midiControl: number;
+  scope: number;
+  element: number;
+  parameter: number;
+}
+
+declare class CAFMarker {
+  constructor(init?: CAFMarker);
+  mType: number;
+  mFramePosition: number;
+  mMarkerID: number;
+  mSMPTETime: CAF_SMPTE_Time;
+  mChannel: number;
+}
+
+declare class ScheduledAudioFileRegion {
+  constructor(init?: ScheduledAudioFileRegion);
+  mTimeStamp: AudioTimeStamp;
+  mCompletionProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
+  mCompletionProcUserData: interop.Pointer;
+  mAudioFile: interop.Pointer;
+  mLoopCount: number;
+  mStartFrame: number;
+  mFramesToPlay: number;
 }
 
 declare class ScheduledAudioSlice {
@@ -3502,6 +3457,36 @@ declare class ScheduledAudioSlice {
   mReserved2: interop.Pointer;
   mNumberFrames: number;
   mBufferList: interop.Pointer;
+}
+
+declare class AudioUnitMeterClipping {
+  constructor(init?: AudioUnitMeterClipping);
+  peakValueSinceLastCall: number;
+  sawInfinity: number;
+  sawNotANumber: number;
+}
+
+declare class AUVoiceIOOtherAudioDuckingConfiguration {
+  constructor(init?: AUVoiceIOOtherAudioDuckingConfiguration);
+  mEnableAdvancedDucking: number;
+  mDuckingLevel: interop.Enum<typeof AUVoiceIOOtherAudioDuckingLevel>;
+}
+
+declare class AudioOutputUnitMIDICallbacks {
+  constructor(init?: AudioOutputUnitMIDICallbacks);
+  userData: interop.Pointer;
+  MIDIEventProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
+  MIDISysExProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
+}
+
+declare class AudioUnitPresetMAS_Settings {
+  constructor(init?: AudioUnitPresetMAS_Settings);
+  manufacturerID: number;
+  effectID: number;
+  variantID: number;
+  settingsVersion: number;
+  numberOfSettings: number;
+  settings: unknown /* const array */;
 }
 
 declare class AudioUnitParameterValueTranslation {
@@ -3519,169 +3504,6 @@ declare class AudioUnitOtherPluginDesc {
   plugin: AudioClassDescription;
 }
 
-declare class AudioUnitParameterStringFromValue {
-  constructor(init?: AudioUnitParameterStringFromValue);
-  inParamID: number;
-  inValue: interop.Pointer;
-  outString: interop.Pointer;
-}
-
-declare class AudioUnitParameterNameInfo {
-  constructor(init?: AudioUnitParameterNameInfo);
-  inID: number;
-  inDesiredLength: number;
-  outName: interop.Pointer;
-}
-
-declare class AudioUnitParameterHistoryInfo {
-  constructor(init?: AudioUnitParameterHistoryInfo);
-  updatesPerSecond: number;
-  historyDurationInSeconds: number;
-}
-
-declare class AUMIDIOutputCallbackStruct {
-  constructor(init?: AUMIDIOutputCallbackStruct);
-  midiOutputCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  userData: interop.Pointer;
-}
-
-declare class AUDependentParameter {
-  constructor(init?: AUDependentParameter);
-  mScope: number;
-  mParameterID: number;
-}
-
-declare class AUChannelInfo {
-  constructor(init?: AUChannelInfo);
-  inChannels: number;
-  outChannels: number;
-}
-
-declare class AudioUnitParameter {
-  constructor(init?: AudioUnitParameter);
-  mAudioUnit: interop.Pointer;
-  mParameterID: number;
-  mScope: number;
-  mElement: number;
-}
-
-declare class unnamed_14710779808345695914 {
-  constructor(init?: unnamed_14710779808345695914);
-  bufferOffset: number;
-  value: number;
-}
-
-declare class AudioCodecPrimeInfo {
-  constructor(init?: AudioCodecPrimeInfo);
-  leadingFrames: number;
-  trailingFrames: number;
-}
-
-declare class AudioUnitCocoaViewInfo {
-  constructor(init?: AudioUnitCocoaViewInfo);
-  mCocoaAUViewBundleLocation: interop.Pointer;
-  mCocoaAUViewClass: unknown /* const array */;
-}
-
-declare class AudioComponentPlugInInterface {
-  constructor(init?: AudioComponentPlugInInterface);
-  Open: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  Close: (p1: interop.PointerConvertible) => number | null;
-  Lookup: (p1: number) => (p1: interop.PointerConvertible) => number | null;
-  reserved: interop.Pointer;
-}
-
-declare class AudioUnitParameterValueFromString {
-  constructor(init?: AudioUnitParameterValueFromString);
-  inParamID: number;
-  inString: interop.Pointer;
-  outValue: number;
-}
-
-declare class AudioFile_SMPTE_Time {
-  constructor(init?: AudioFile_SMPTE_Time);
-  mHours: number;
-  mMinutes: number;
-  mSeconds: number;
-  mFrames: number;
-  mSubFrameSampleOffset: number;
-}
-
-declare class AUSamplerBankPresetData {
-  constructor(init?: AUSamplerBankPresetData);
-  bankURL: interop.Pointer;
-  bankMSB: number;
-  bankLSB: number;
-  presetID: number;
-  reserved: number;
-}
-
-declare class OpaqueAudioConverter {
-  constructor(init?: OpaqueAudioConverter);
-}
-
-declare class AudioUnitProperty {
-  constructor(init?: AudioUnitProperty);
-  mAudioUnit: interop.Pointer;
-  mPropertyID: number;
-  mScope: number;
-  mElement: number;
-}
-
-declare class unnamed_10084315552362685345 {
-  constructor(init?: unnamed_10084315552362685345);
-  startBufferOffset: number;
-  durationInFrames: number;
-  startValue: number;
-  endValue: number;
-}
-
-declare class AudioFileRegion {
-  constructor(init?: AudioFileRegion);
-  mRegionID: number;
-  mName: interop.Pointer;
-  mFlags: interop.Enum<typeof AudioFileRegionFlags>;
-  mNumberMarkers: number;
-  mMarkers: unknown /* const array */;
-}
-
-declare class AudioQueueBuffer {
-  constructor(init?: AudioQueueBuffer);
-  mAudioDataBytesCapacity: number;
-  mAudioData: interop.Pointer;
-  mAudioDataByteSize: number;
-  mUserData: interop.Pointer;
-  mPacketDescriptionCapacity: number;
-  mPacketDescriptions: interop.Pointer;
-  mPacketDescriptionCount: number;
-}
-
-declare class MIDIMetaEvent {
-  constructor(init?: MIDIMetaEvent);
-  metaEventType: number;
-  unused1: number;
-  unused2: number;
-  unused3: number;
-  dataLength: number;
-  data: unknown /* const array */;
-}
-
-declare class AudioOutputUnitMIDICallbacks {
-  constructor(init?: AudioOutputUnitMIDICallbacks);
-  userData: interop.Pointer;
-  MIDIEventProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
-  MIDISysExProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-}
-
-declare class AudioUnitParameterEvent {
-  constructor(init?: AudioUnitParameterEvent);
-  scope: number;
-  element: number;
-  parameter: number;
-  eventType: interop.Enum<typeof AUParameterEventType>;
-  eventValues: unnamed_5022603627664147814;
-}
-
 declare class AUParameterMIDIMapping {
   constructor(init?: AUParameterMIDIMapping);
   mScope: number;
@@ -3697,29 +3519,265 @@ declare class AUParameterMIDIMapping {
   reserved3: number;
 }
 
+declare class AudioUnitParameterValueFromString {
+  constructor(init?: AudioUnitParameterValueFromString);
+  inParamID: number;
+  inString: interop.Pointer;
+  outValue: number;
+}
+
+declare class AudioUnitParameterNameInfo {
+  constructor(init?: AudioUnitParameterNameInfo);
+  inID: number;
+  inDesiredLength: number;
+  outName: interop.Pointer;
+}
+
+declare class AUInputSamplesInOutputCallbackStruct {
+  constructor(init?: AUInputSamplesInOutputCallbackStruct);
+  inputToOutputCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  userData: interop.Pointer;
+}
+
+declare class MIDIPacketList {
+  constructor(init?: MIDIPacketList);
+  numPackets: number;
+  packet: unknown /* const array */;
+}
+
+declare class AudioUnitCocoaViewInfo {
+  constructor(init?: AudioUnitCocoaViewInfo);
+  mCocoaAUViewBundleLocation: interop.Pointer;
+  mCocoaAUViewClass: unknown /* const array */;
+}
+
+declare class HostCallbackInfo {
+  constructor(init?: HostCallbackInfo);
+  hostUserData: interop.Pointer;
+  beatAndTempoProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  musicalTimeLocationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  transportStateProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  transportStateProc2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
+}
+
+declare class AudioUnitExternalBuffer {
+  constructor(init?: AudioUnitExternalBuffer);
+  buffer: interop.Pointer;
+  size: number;
+}
+
+declare class unnamed_15861942603198159264 {
+  constructor(init?: unnamed_15861942603198159264);
+  bufferOffset: number;
+  value: number;
+}
+
+declare class unnamed_9113239172164512216 {
+  constructor(init?: unnamed_9113239172164512216);
+  startBufferOffset: number;
+  durationInFrames: number;
+  startValue: number;
+  endValue: number;
+}
+
+declare class AudioUnitParameterEvent {
+  constructor(init?: AudioUnitParameterEvent);
+  scope: number;
+  element: number;
+  parameter: number;
+  eventType: interop.Enum<typeof AUParameterEventType>;
+  eventValues: unnamed_470446515597119637;
+}
+
 declare class AudioCodecMagicCookieInfo {
   constructor(init?: AudioCodecMagicCookieInfo);
   mMagicCookieSize: number;
   mMagicCookie: interop.Pointer;
 }
 
-declare class CABarBeatTime {
-  constructor(init?: CABarBeatTime);
-  bar: number;
-  beat: number;
-  subbeat: number;
-  subbeatDivisor: number;
+declare class AudioQueueBuffer {
+  constructor(init?: AudioQueueBuffer);
+  mAudioDataBytesCapacity: number;
+  mAudioData: interop.Pointer;
+  mAudioDataByteSize: number;
+  mUserData: interop.Pointer;
+  mPacketDescriptionCapacity: number;
+  mPacketDescriptions: interop.Pointer;
+  mPacketDescriptionCount: number;
+}
+
+declare class AudioFormatInfo {
+  constructor(init?: AudioFormatInfo);
+  mASBD: AudioStreamBasicDescription;
+  mMagicCookie: interop.Pointer;
+  mMagicCookieSize: number;
+}
+
+declare class OpaqueAudioConverter {
+  constructor(init?: OpaqueAudioConverter);
+}
+
+declare class AudioOutputUnitStartAtTimeParams {
+  constructor(init?: AudioOutputUnitStartAtTimeParams);
+  mTimestamp: AudioTimeStamp;
+  mFlags: number;
+}
+
+declare class unnamed_9929288674869021462 {
+  constructor(init?: unnamed_9929288674869021462);
+  inDistance: number;
+  outGain: number;
+}
+
+declare class MIDINoteMessage {
+  constructor(init?: MIDINoteMessage);
+  channel: number;
+  note: number;
+  velocity: number;
+  releaseVelocity: number;
+  duration: number;
+}
+
+declare class AudioQueueLevelMeterState {
+  constructor(init?: AudioQueueLevelMeterState);
+  mAveragePower: number;
+  mPeakPower: number;
+}
+
+declare class AudioUnitParameterValueName {
+  constructor(init?: AudioUnitParameterValueName);
+  inParamID: number;
+  inValue: interop.Pointer;
+  outName: interop.Pointer;
+}
+
+declare class ParameterEvent {
+  constructor(init?: ParameterEvent);
+  parameterID: number;
+  scope: number;
+  element: number;
+  value: number;
+}
+
+declare class AudioPanningInfo {
+  constructor(init?: AudioPanningInfo);
+  mPanningMode: interop.Enum<typeof AudioPanningMode>;
+  mCoordinateFlags: number;
+  mCoordinates: unknown /* const array */;
+  mGainScale: number;
+  mOutputChannelMap: interop.Pointer;
+}
+
+declare class AUParameterEvent {
+  constructor(init?: AUParameterEvent);
+  next: interop.Pointer;
+  eventSampleTime: number;
+  eventType: interop.Enum<typeof AURenderEventType>;
+  reserved: unknown /* const array */;
+  rampDurationSampleFrames: number;
+  parameterAddress: number;
+  value: number;
+}
+
+declare class AUParameterAutomationEvent {
+  constructor(init?: AUParameterAutomationEvent);
+  hostTime: number;
+  address: number;
+  value: number;
+  eventType: interop.Enum<typeof AUParameterAutomationEventType>;
   reserved: number;
 }
 
-declare class NoteParamsControlValue {
-  constructor(init?: NoteParamsControlValue);
-  mID: number;
-  mValue: number;
+declare class AudioUnitParameterHistoryInfo {
+  constructor(init?: AudioUnitParameterHistoryInfo);
+  updatesPerSecond: number;
+  historyDurationInSeconds: number;
 }
 
-declare class OpaqueAudioFileID {
-  constructor(init?: OpaqueAudioFileID);
+declare class AudioFramePacketTranslation {
+  constructor(init?: AudioFramePacketTranslation);
+  mFrame: number;
+  mPacket: number;
+  mFrameOffsetInPacket: number;
+}
+
+declare class OpaqueAudioQueueProcessingTap {
+  constructor(init?: OpaqueAudioQueueProcessingTap);
+}
+
+declare class AUNumVersion {
+  constructor(init?: AUNumVersion);
+  nonRelRev: number;
+  stage: number;
+  minorAndBugRev: number;
+  majorRev: number;
+}
+
+declare class AudioPacketRangeByteCountTranslation {
+  constructor(init?: AudioPacketRangeByteCountTranslation);
+  mPacket: number;
+  mPacketCount: number;
+  mByteCountUpperBound: number;
+}
+
+declare class AudioPacketDependencyInfoTranslation {
+  constructor(init?: AudioPacketDependencyInfoTranslation);
+  mPacket: number;
+  mIsIndependentlyDecodable: number;
+  mNumberPrerollPackets: number;
+}
+
+declare class AudioComponentPlugInInterface {
+  constructor(init?: AudioComponentPlugInInterface);
+  Open: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  Close: (p1: interop.PointerConvertible) => number | null;
+  Lookup: (p1: number) => (p1: interop.PointerConvertible) => number | null;
+  reserved: interop.Pointer;
+}
+
+declare class AUListenerBase {
+  constructor(init?: AUListenerBase);
+}
+
+declare class AUPreset {
+  constructor(init?: AUPreset);
+  presetNumber: number;
+  presetName: interop.Pointer;
+}
+
+declare class CAClockTime {
+  constructor(init?: CAClockTime);
+  format: interop.Enum<typeof CAClockTimeFormat>;
+  reserved: number;
+  time: unnamed_8973476607117778603;
+}
+
+declare class AudioCodecPrimeInfo {
+  constructor(init?: AudioCodecPrimeInfo);
+  leadingFrames: number;
+  trailingFrames: number;
+}
+
+declare class AURenderCallbackStruct {
+  constructor(init?: AURenderCallbackStruct);
+  inputProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
+  inputProcRefCon: interop.Pointer;
+}
+
+declare class AudioUnitParameter {
+  constructor(init?: AudioUnitParameter);
+  mAudioUnit: interop.Pointer;
+  mParameterID: number;
+  mScope: number;
+  mElement: number;
+}
+
+declare class AudioUnitPresetMAS_SettingData {
+  constructor(init?: AudioUnitPresetMAS_SettingData);
+  isStockSetting: number;
+  settingID: number;
+  dataLen: number;
+  data: unknown /* const array */;
 }
 
 declare class AudioUnitParameterInfo {
@@ -3735,11 +3793,76 @@ declare class AudioUnitParameterInfo {
   flags: interop.Enum<typeof AudioUnitParameterOptions>;
 }
 
-declare class AURecordedParameterEvent {
-  constructor(init?: AURecordedParameterEvent);
-  hostTime: number;
-  address: number;
-  value: number;
+declare class OpaqueMusicPlayer {
+  constructor(init?: OpaqueMusicPlayer);
+}
+
+declare class CAFRegionChunk {
+  constructor(init?: CAFRegionChunk);
+  mSMPTE_TimeType: number;
+  mNumberRegions: number;
+  mRegions: unknown /* const array */;
+}
+
+declare class OpaqueAudioQueueTimeline {
+  constructor(init?: OpaqueAudioQueueTimeline);
+}
+
+declare class AUSamplerInstrumentData {
+  constructor(init?: AUSamplerInstrumentData);
+  fileURL: interop.Pointer;
+  instrumentType: number;
+  bankMSB: number;
+  bankLSB: number;
+  presetID: number;
+}
+
+declare class AudioUnitParameterStringFromValue {
+  constructor(init?: AudioUnitParameterStringFromValue);
+  inParamID: number;
+  inValue: interop.Pointer;
+  outString: interop.Pointer;
+}
+
+declare class CAFUMIDChunk {
+  constructor(init?: CAFUMIDChunk);
+  mBytes: unknown /* const array */;
+}
+
+declare class OpaqueCAClock {
+  constructor(init?: OpaqueCAClock);
+}
+
+declare class CAFAudioFormatListItem {
+  constructor(init?: CAFAudioFormatListItem);
+  mFormat: CAFAudioDescription;
+  mChannelLayoutTag: number;
+}
+
+declare class OpaqueAudioComponent {
+  constructor(init?: OpaqueAudioComponent);
+}
+
+declare class CABarBeatTime {
+  constructor(init?: CABarBeatTime);
+  bar: number;
+  beat: number;
+  subbeat: number;
+  subbeatDivisor: number;
+  reserved: number;
+}
+
+declare class MIDIEventList {
+  constructor(init?: MIDIEventList);
+  protocol: interop.Enum<typeof MIDIProtocolID>;
+  numPackets: number;
+  packet: unknown /* const array */;
+}
+
+declare class CAFStringID {
+  constructor(init?: CAFStringID);
+  mStringID: number;
+  mStringStartByteOffset: number;
 }
 
 declare class AudioUnitFrequencyResponseBin {
@@ -3748,48 +3871,70 @@ declare class AudioUnitFrequencyResponseBin {
   mMagnitude: number;
 }
 
-declare class OpaqueAUGraph {
-  constructor(init?: OpaqueAUGraph);
+declare class CAFOverviewChunk {
+  constructor(init?: CAFOverviewChunk);
+  mEditCount: number;
+  mNumFramesPerOVWSample: number;
+  mData: unknown /* const array */;
 }
 
-declare class OpaqueCAClock {
-  constructor(init?: OpaqueCAClock);
+declare class CAFInfoStrings {
+  constructor(init?: CAFInfoStrings);
+  mNumEntries: number;
 }
 
-declare class OpaqueMusicEventIterator {
-  constructor(init?: OpaqueMusicEventIterator);
+declare class MIDIChannelMessage {
+  constructor(init?: MIDIChannelMessage);
+  status: number;
+  data1: number;
+  data2: number;
+  reserved: number;
 }
 
-declare class AUParameterEvent {
-  constructor(init?: AUParameterEvent);
-  next: interop.Pointer;
-  eventSampleTime: number;
-  eventType: interop.Enum<typeof AURenderEventType>;
-  reserved: unknown /* const array */;
-  rampDurationSampleFrames: number;
-  parameterAddress: number;
+declare class ExtendedAudioFormatInfo {
+  constructor(init?: ExtendedAudioFormatInfo);
+  mASBD: AudioStreamBasicDescription;
+  mMagicCookie: interop.Pointer;
+  mMagicCookieSize: number;
+  mClassDescription: AudioClassDescription;
+}
+
+declare class MixerDistanceParams {
+  constructor(init?: MixerDistanceParams);
+  mReferenceDistance: number;
+  mMaxDistance: number;
+  mMaxAttenuation: number;
+}
+
+declare class CAFFileHeader {
+  constructor(init?: CAFFileHeader);
+  mFileType: number;
+  mFileVersion: number;
+  mFileFlags: number;
+}
+
+declare class ExtendedControlEvent {
+  constructor(init?: ExtendedControlEvent);
+  groupID: number;
+  controlID: number;
   value: number;
 }
 
-declare class AudioUnitExternalBuffer {
-  constructor(init?: AudioUnitExternalBuffer);
-  buffer: interop.Pointer;
-  size: number;
+declare class AudioUnitProperty {
+  constructor(init?: AudioUnitProperty);
+  mAudioUnit: interop.Pointer;
+  mPropertyID: number;
+  mScope: number;
+  mElement: number;
 }
 
-declare class AudioUnitMIDIControlMapping {
-  constructor(init?: AudioUnitMIDIControlMapping);
-  midiNRPN: number;
-  midiControl: number;
-  scope: number;
-  element: number;
-  parameter: number;
-}
-
-declare class AUVoiceIOOtherAudioDuckingConfiguration {
-  constructor(init?: AUVoiceIOOtherAudioDuckingConfiguration);
-  mEnableAdvancedDucking: number;
-  mDuckingLevel: interop.Enum<typeof AUVoiceIOOtherAudioDuckingLevel>;
+declare class AudioFileRegion {
+  constructor(init?: AudioFileRegion);
+  mRegionID: number;
+  mName: interop.Pointer;
+  mFlags: interop.Enum<typeof AudioFileRegionFlags>;
+  mNumberMarkers: number;
+  mMarkers: unknown /* const array */;
 }
 
 declare class AUHostVersionIdentifier {
@@ -3798,22 +3943,40 @@ declare class AUHostVersionIdentifier {
   hostVersion: number;
 }
 
-declare class OpaqueAudioComponent {
-  constructor(init?: OpaqueAudioComponent);
+declare class AUMIDIOutputCallbackStruct {
+  constructor(init?: AUMIDIOutputCallbackStruct);
+  midiOutputCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
+  userData: interop.Pointer;
 }
 
-declare class MIDIRawData {
-  constructor(init?: MIDIRawData);
-  length: number;
-  data: unknown /* const array */;
+declare class AUDistanceAttenuationData {
+  constructor(init?: AUDistanceAttenuationData);
+  inNumberOfPairs: number;
+  pairs: unknown /* const array */;
 }
 
-declare class AURenderEventHeader {
-  constructor(init?: AURenderEventHeader);
-  next: interop.Pointer;
-  eventSampleTime: number;
-  eventType: interop.Enum<typeof AURenderEventType>;
-  reserved: number;
+declare class AudioUnitRenderContext {
+  constructor(init?: AudioUnitRenderContext);
+  workgroup: OS_os_workgroup | null;
+  reserved: unknown /* const array */;
+}
+
+declare class AUChannelInfo {
+  constructor(init?: AUChannelInfo);
+  inChannels: number;
+  outChannels: number;
+}
+
+declare class AudioPacketRollDistanceTranslation {
+  constructor(init?: AudioPacketRollDistanceTranslation);
+  mPacket: number;
+  mRollDistance: number;
+}
+
+declare class AudioIndependentPacketTranslation {
+  constructor(init?: AudioIndependentPacketTranslation);
+  mPacket: number;
+  mIndependentlyDecodablePacket: number;
 }
 
 declare class CAMeterTrackEntry {
@@ -3823,84 +3986,10 @@ declare class CAMeterTrackEntry {
   meterDenom: number;
 }
 
-declare class ScheduledAudioFileRegion {
-  constructor(init?: ScheduledAudioFileRegion);
-  mTimeStamp: AudioTimeStamp;
-  mCompletionProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  mCompletionProcUserData: interop.Pointer;
-  mAudioFile: interop.Pointer;
-  mLoopCount: number;
-  mStartFrame: number;
-  mFramesToPlay: number;
-}
-
-declare class AUInputSamplesInOutputCallbackStruct {
-  constructor(init?: AUInputSamplesInOutputCallbackStruct);
-  inputToOutputCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  userData: interop.Pointer;
-}
-
-declare class AUParameterAutomationEvent {
-  constructor(init?: AUParameterAutomationEvent);
-  hostTime: number;
-  address: number;
-  value: number;
-  eventType: interop.Enum<typeof AUParameterAutomationEventType>;
-  reserved: number;
-}
-
-declare class CAFPacketTableHeader {
-  constructor(init?: CAFPacketTableHeader);
-  mNumberPackets: number;
-  mNumberValidFrames: number;
-  mPrimingFrames: number;
-  mRemainderFrames: number;
-  mPacketDescriptions: unknown /* const array */;
-}
-
-declare class CAFStringID {
-  constructor(init?: CAFStringID);
-  mStringID: number;
-  mStringStartByteOffset: number;
-}
-
-declare class AudioUnitRenderContext {
-  constructor(init?: AudioUnitRenderContext);
-  workgroup: OS_os_workgroup | null;
-  reserved: unknown /* const array */;
-}
-
-declare class AudioUnitMeterClipping {
-  constructor(init?: AudioUnitMeterClipping);
-  peakValueSinceLastCall: number;
-  sawInfinity: number;
-  sawNotANumber: number;
-}
-
-declare class AudioOutputUnitStartAtTimeParams {
-  constructor(init?: AudioOutputUnitStartAtTimeParams);
-  mTimestamp: AudioTimeStamp;
-  mFlags: number;
-}
-
-declare class OpaqueExtAudioFile {
-  constructor(init?: OpaqueExtAudioFile);
-}
-
-declare class AudioUnitPresetMAS_Settings {
-  constructor(init?: AudioUnitPresetMAS_Settings);
-  manufacturerID: number;
-  effectID: number;
-  variantID: number;
-  settingsVersion: number;
-  numberOfSettings: number;
-  settings: unknown /* const array */;
-}
-
-declare class AURenderCallbackStruct {
-  constructor(init?: AURenderCallbackStruct);
-  inputProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
-  inputProcRefCon: interop.Pointer;
+declare class AudioQueueParameterEvent {
+  constructor(init?: AudioQueueParameterEvent);
+  mID: number;
+  mValue: number;
 }
 
 declare class AudioComponentDescription {
@@ -3912,22 +4001,43 @@ declare class AudioComponentDescription {
   componentFlagsMask: number;
 }
 
-declare class AUPreset {
-  constructor(init?: AUPreset);
-  presetNumber: number;
-  presetName: interop.Pointer;
+declare class AUDependentParameter {
+  constructor(init?: AUDependentParameter);
+  mScope: number;
+  mParameterID: number;
 }
 
-declare class AUListenerBase {
-  constructor(init?: AUListenerBase);
+declare class AudioFileMarker {
+  constructor(init?: AudioFileMarker);
+  mFramePosition: number;
+  mName: interop.Pointer;
+  mMarkerID: number;
+  mSMPTETime: AudioFile_SMPTE_Time;
+  mType: number;
+  mReserved: number;
+  mChannel: number;
 }
 
-declare class AudioUnitPresetMAS_SettingData {
-  constructor(init?: AudioUnitPresetMAS_SettingData);
-  isStockSetting: number;
-  settingID: number;
-  dataLen: number;
+declare class OpaqueAudioQueue {
+  constructor(init?: OpaqueAudioQueue);
+}
+
+declare class AUHostIdentifier {
+  constructor(init?: AUHostIdentifier);
+  hostName: interop.Pointer;
+  hostVersion: AUNumVersion;
+}
+
+declare class MusicEventUserData {
+  constructor(init?: MusicEventUserData);
+  length: number;
   data: unknown /* const array */;
+}
+
+declare class CAFChunkHeader {
+  constructor(init?: CAFChunkHeader);
+  mChunkType: number;
+  mChunkSize: number;
 }
 
 declare class AudioUnitConnection {
@@ -3937,125 +4047,8 @@ declare class AudioUnitConnection {
   destInputNumber: number;
 }
 
-declare class CAFRegion {
-  constructor(init?: CAFRegion);
-  mRegionID: number;
-  mFlags: interop.Enum<typeof CAFRegionFlags>;
-  mNumberMarkers: number;
-  mMarkers: unknown /* const array */;
-}
-
-declare class OpaqueMusicPlayer {
-  constructor(init?: OpaqueMusicPlayer);
-}
-
-declare class AudioFormatInfo {
-  constructor(init?: AudioFormatInfo);
-  mASBD: AudioStreamBasicDescription;
-  mMagicCookie: interop.Pointer;
-  mMagicCookieSize: number;
-}
-
-declare class AUDistanceAttenuationData {
-  constructor(init?: AUDistanceAttenuationData);
-  inNumberOfPairs: number;
-  pairs: unknown /* const array */;
-}
-
-declare class CAF_SMPTE_Time {
-  constructor(init?: CAF_SMPTE_Time);
-  mHours: number;
-  mMinutes: number;
-  mSeconds: number;
-  mFrames: number;
-  mSubFrameSampleOffset: number;
-}
-
-declare class AudioFileFDFTableExtended {
-  constructor(init?: AudioFileFDFTableExtended);
-  mComponentStorage: interop.Pointer;
-  mReadBytesFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  mWriteBytesFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  mReadPacketsFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  mWritePacketsFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  mGetPropertyInfoFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  mGetPropertyFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  mSetPropertyFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  mCountUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  mGetUserDataSizeFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  mGetUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  mSetUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
-  mReadPacketDataFDF: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-}
-
-declare class unnamed_3766961456538229482 {
-  constructor(init?: unnamed_3766961456538229482);
-  inDistance: number;
-  outGain: number;
-}
-
-declare class AUMIDIEvent {
-  constructor(init?: AUMIDIEvent);
-  next: interop.Pointer;
-  eventSampleTime: number;
-  eventType: interop.Enum<typeof AURenderEventType>;
-  reserved: number;
-  length: number;
-  cable: number;
-  data: unknown /* const array */;
-}
-
-declare class MIDIChannelMessage {
-  constructor(init?: MIDIChannelMessage);
-  status: number;
-  data1: number;
-  data2: number;
-  reserved: number;
-}
-
-declare class HostCallbackInfo {
-  constructor(init?: HostCallbackInfo);
-  hostUserData: interop.Pointer;
-  beatAndTempoProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  musicalTimeLocationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  transportStateProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  transportStateProc2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
-}
-
-type unnamed_358527712379230248Descriptor = 
-  | { hostTime: number }
-  | { samples: number }
-  | { beats: number }
-  | { seconds: number }
-  | { smpte: SMPTETime };
-
-declare class unnamed_358527712379230248 {
-  constructor(init?: unnamed_358527712379230248Descriptor);
-  hostTime: number;
-  samples: number;
-  beats: number;
-  seconds: number;
-  smpte: SMPTETime;
-}
-
-type unnamed_12201614566185981960Descriptor = 
-  | { mParameter: AudioUnitParameter }
-  | { mProperty: AudioUnitProperty };
-
-declare class unnamed_12201614566185981960 {
-  constructor(init?: unnamed_12201614566185981960Descriptor);
-  mParameter: AudioUnitParameter;
-  mProperty: AudioUnitProperty;
-}
-
-type unnamed_8472245440390819209Descriptor = 
-  | { connection: AudioUnitNodeConnection }
-  | { inputCallback: AUNodeRenderCallback };
-
-declare class unnamed_8472245440390819209 {
-  constructor(init?: unnamed_8472245440390819209Descriptor);
-  connection: AudioUnitNodeConnection;
-  inputCallback: AUNodeRenderCallback;
+declare class OpaqueAudioFileID {
+  constructor(init?: OpaqueAudioFileID);
 }
 
 type AURenderEventDescriptor = 
@@ -4072,14 +4065,50 @@ declare class AURenderEvent {
   MIDIEventsList: AUMIDIEventList;
 }
 
-type unnamed_5022603627664147814Descriptor = 
-  | { ramp: unnamed_10084315552362685345 }
-  | { immediate: unnamed_14710779808345695914 };
+type unnamed_8973476607117778603Descriptor = 
+  | { hostTime: number }
+  | { samples: number }
+  | { beats: number }
+  | { seconds: number }
+  | { smpte: SMPTETime };
 
-declare class unnamed_5022603627664147814 {
-  constructor(init?: unnamed_5022603627664147814Descriptor);
-  ramp: unnamed_10084315552362685345;
-  immediate: unnamed_14710779808345695914;
+declare class unnamed_8973476607117778603 {
+  constructor(init?: unnamed_8973476607117778603Descriptor);
+  hostTime: number;
+  samples: number;
+  beats: number;
+  seconds: number;
+  smpte: SMPTETime;
+}
+
+type unnamed_5866294985692878565Descriptor = 
+  | { connection: AudioUnitNodeConnection }
+  | { inputCallback: AUNodeRenderCallback };
+
+declare class unnamed_5866294985692878565 {
+  constructor(init?: unnamed_5866294985692878565Descriptor);
+  connection: AudioUnitNodeConnection;
+  inputCallback: AUNodeRenderCallback;
+}
+
+type unnamed_470446515597119637Descriptor = 
+  | { ramp: unnamed_9113239172164512216 }
+  | { immediate: unnamed_15861942603198159264 };
+
+declare class unnamed_470446515597119637 {
+  constructor(init?: unnamed_470446515597119637Descriptor);
+  ramp: unnamed_9113239172164512216;
+  immediate: unnamed_15861942603198159264;
+}
+
+type unnamed_12591819658234606006Descriptor = 
+  | { mParameter: AudioUnitParameter }
+  | { mProperty: AudioUnitProperty };
+
+declare class unnamed_12591819658234606006 {
+  constructor(init?: unnamed_12591819658234606006Descriptor);
+  mParameter: AudioUnitParameter;
+  mProperty: AudioUnitProperty;
 }
 
 declare function AudioComponentFindNext(inComponent: interop.PointerConvertible, inDesc: interop.PointerConvertible): interop.Pointer;
@@ -4798,6 +4827,15 @@ declare function CopyNameFromSoundBank(inURL: interop.PointerConvertible, outNam
 
 declare function CopyInstrumentInfoFromSoundBank(inURL: interop.PointerConvertible, outInstrumentInfo: interop.PointerConvertible): number;
 
+declare interface AUCocoaUIBase {
+  interfaceVersion(): number;
+
+  uiViewForAudioUnitWithSize(inAudioUnit: interop.PointerConvertible, inPreferredSize: CGSize): NSView | null;
+}
+
+declare class AUCocoaUIBase extends NativeObject implements AUCocoaUIBase {
+}
+
 declare interface AUAudioUnitFactory extends NSExtensionRequestHandling {
   createAudioUnitWithComponentDescriptionError(desc: AudioComponentDescription, error: interop.PointerConvertible): AUAudioUnit;
 }
@@ -4809,15 +4847,68 @@ declare interface AUMessageChannel {
   callAudioUnit?(message: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSDictionary;
 
   callHostBlock?: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => NSDictionary;
+
+  setCallHostBlock?(callHostBlock: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => NSDictionary | null): void;
 }
 
 declare class AUMessageChannel extends NativeObject implements AUMessageChannel {
+}
+
+declare class AUAudioUnitBus extends NSObject {
+  readonly format: AVAudioFormat;
+
+  setFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): boolean;
+
+  shouldAllocateBuffer: boolean;
+
+  enabled: boolean;
+
+  name: string;
+
+  readonly index: number;
+
+  readonly busType: interop.Enum<typeof AUAudioUnitBusType>;
+
+  readonly ownerAudioUnit: AUAudioUnit;
+
+  readonly supportedChannelLayoutTags: NSArray;
+
+  contextPresentationLatency: number;
+
+  setShouldAllocateBuffer(shouldAllocateBuffer: boolean): void;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
+
+  setName(name: string | null): void;
+
+  setContextPresentationLatency(contextPresentationLatency: number): void;
+
+  initWithFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): this;
+
+  get supportedChannelCounts(): NSArray;
+  set supportedChannelCounts(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  maximumChannelCount: number;
+
+  setSupportedChannelCounts(supportedChannelCounts: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setMaximumChannelCount(maximumChannelCount: number): void;
+}
+
+declare class AUAudioUnitV2Bridge extends AUAudioUnit {
+  readonly audioUnit: interop.Pointer;
 }
 
 declare class AUAudioUnitPreset extends NSObject implements NSSecureCoding {
   number: number;
 
   name: string;
+
+  setNumber(number: number): void;
+
+  setName(name: string): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -4835,7 +4926,7 @@ declare class AUAudioUnitBusArray extends NSObject implements NSFastEnumeration 
 
   objectAtIndexedSubscript(index: number): AUAudioUnitBus;
 
-  readonly isCountChangeable: boolean;
+  readonly countChangeable: boolean;
 
   setBusCountError(count: number, outError: interop.PointerConvertible): boolean;
 
@@ -4847,12 +4938,52 @@ declare class AUAudioUnitBusArray extends NSObject implements NSFastEnumeration 
 
   readonly busType: interop.Enum<typeof AUAudioUnitBusType>;
 
+  isCountChangeable(): boolean;
+
   replaceBusses(busArray: NSArray<interop.Object> | Array<interop.Object>): void;
 
   countByEnumeratingWithStateObjectsCount(state: interop.PointerConvertible, buffer: interop.PointerConvertible, len: number): number;
 
   readonly [Symbol.iterator]: () => Iterator<any>;
 
+}
+
+declare class AUParameter extends AUParameterNode implements NSSecureCoding {
+  readonly minValue: number;
+
+  readonly maxValue: number;
+
+  readonly unit: interop.Enum<typeof AudioUnitParameterUnit>;
+
+  readonly unitName: string;
+
+  readonly flags: interop.Enum<typeof AudioUnitParameterOptions>;
+
+  readonly address: number;
+
+  readonly valueStrings: NSArray;
+
+  readonly dependentParameters: NSArray;
+
+  value: number;
+
+  setValueOriginator(value: number, originator: interop.PointerConvertible): void;
+
+  setValueOriginatorAtHostTime(value: number, originator: interop.PointerConvertible, hostTime: number): void;
+
+  setValueOriginatorAtHostTimeEventType(value: number, originator: interop.PointerConvertible, hostTime: number, eventType: interop.Enum<typeof AUParameterAutomationEventType>): void;
+
+  stringFromValue(value: interop.PointerConvertible): string;
+
+  valueFromString(string: string): number;
+
+  setValue(value: number): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class AUParameterTree extends AUParameterGroup implements NSSecureCoding {
@@ -4869,18 +5000,6 @@ declare class AUParameterTree extends AUParameterGroup implements NSSecureCoding
   static createGroupFromTemplateIdentifierNameAddressOffset(templateGroup: AUParameterGroup, identifier: string, name: string, addressOffset: number): AUParameterGroup;
 
   static createTreeWithChildren(children: NSArray<interop.Object> | Array<interop.Object>): AUParameterTree;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class AUParameterGroup extends AUParameterNode implements NSSecureCoding {
-  readonly children: NSArray;
-
-  readonly allParameters: NSArray;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -4915,71 +5034,28 @@ declare class AUParameterNode extends NSObject {
   implementorValueFromStringCallback: (p1: AUParameter, p2: string) => number;
 
   implementorDisplayNameWithLengthCallback: (p1: AUParameterNode, p2: number) => string;
+
+  setImplementorValueObserver(implementorValueObserver: (p1: AUParameter, p2: number) => void): void;
+
+  setImplementorValueProvider(implementorValueProvider: (p1: AUParameter) => number): void;
+
+  setImplementorStringFromValueCallback(implementorStringFromValueCallback: (p1: AUParameter, p2: interop.PointerConvertible) => string): void;
+
+  setImplementorValueFromStringCallback(implementorValueFromStringCallback: (p1: AUParameter, p2: string) => number): void;
+
+  setImplementorDisplayNameWithLengthCallback(implementorDisplayNameWithLengthCallback: (p1: AUParameterNode, p2: number) => string): void;
 }
 
-declare class AUParameter extends AUParameterNode implements NSSecureCoding {
-  readonly minValue: number;
+declare class AUParameterGroup extends AUParameterNode implements NSSecureCoding {
+  readonly children: NSArray;
 
-  readonly maxValue: number;
-
-  readonly unit: interop.Enum<typeof AudioUnitParameterUnit>;
-
-  readonly unitName: string;
-
-  readonly flags: interop.Enum<typeof AudioUnitParameterOptions>;
-
-  readonly address: number;
-
-  readonly valueStrings: NSArray;
-
-  readonly dependentParameters: NSArray;
-
-  value: number;
-
-  setValueOriginator(value: number, originator: interop.PointerConvertible): void;
-
-  setValueOriginatorAtHostTime(value: number, originator: interop.PointerConvertible, hostTime: number): void;
-
-  setValueOriginatorAtHostTimeEventType(value: number, originator: interop.PointerConvertible, hostTime: number, eventType: interop.Enum<typeof AUParameterAutomationEventType>): void;
-
-  stringFromValue(value: interop.PointerConvertible): string;
-
-  valueFromString(string: string): number;
+  readonly allParameters: NSArray;
 
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class AUAudioUnitBus extends NSObject {
-  readonly format: AVAudioFormat;
-
-  setFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): boolean;
-
-  shouldAllocateBuffer: boolean;
-
-  isEnabled: boolean;
-
-  name: string;
-
-  readonly index: number;
-
-  readonly busType: interop.Enum<typeof AUAudioUnitBusType>;
-
-  readonly ownerAudioUnit: AUAudioUnit;
-
-  readonly supportedChannelLayoutTags: NSArray;
-
-  contextPresentationLatency: number;
-
-  initWithFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): this;
-
-  get supportedChannelCounts(): NSArray;
-  set supportedChannelCounts(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  maximumChannelCount: number;
 }
 
 declare class AUAudioUnit extends NSObject {
@@ -5031,7 +5107,7 @@ declare class AUAudioUnit extends NSObject {
 
   readonly allParameterValues: boolean;
 
-  readonly isMusicDeviceOrEffect: boolean;
+  readonly musicDeviceOrEffect: boolean;
 
   readonly virtualMIDICableCount: number;
 
@@ -5083,7 +5159,7 @@ declare class AUAudioUnit extends NSObject {
 
   readonly canProcessInPlace: boolean;
 
-  isRenderingOffline: boolean;
+  renderingOffline: boolean;
 
   readonly channelCapabilities: NSArray;
 
@@ -5110,13 +5186,49 @@ declare class AUAudioUnit extends NSObject {
 
   messageChannelFor(channelName: string): AUMessageChannel;
 
+  setMaximumFramesToRender(maximumFramesToRender: number): void;
+
+  setParameterTree(parameterTree: AUParameterTree | null): void;
+
+  isMusicDeviceOrEffect(): boolean;
+
+  setMIDIOutputEventBlock(MIDIOutputEventBlock: (p1: number, p2: number, p3: number, p4: interop.PointerConvertible) => number | null): void;
+
+  setMIDIOutputEventListBlock(MIDIOutputEventListBlock: (p1: number, p2: number, p3: interop.PointerConvertible) => number): void;
+
+  setHostMIDIProtocol(hostMIDIProtocol: interop.Enum<typeof MIDIProtocolID>): void;
+
+  setFullState(fullState: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  setFullStateForDocument(fullStateForDocument: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  setCurrentPreset(currentPreset: AUAudioUnitPreset | null): void;
+
+  setRenderQuality(renderQuality: number): void;
+
+  setShouldBypassEffect(shouldBypassEffect: boolean): void;
+
+  isRenderingOffline(): boolean;
+
+  setRenderingOffline(renderingOffline: boolean): void;
+
+  setMusicalContextBlock(musicalContextBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => boolean | null): void;
+
+  setTransportStateBlock(transportStateBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => boolean | null): void;
+
+  setContextName(contextName: string | null): void;
+
+  setChannelMap(channelMap: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setProfileChangedBlock(profileChangedBlock: (p1: number, p2: number, p3: MIDICIProfile, p4: boolean) => void): void;
+
   readonly canPerformInput: boolean;
 
   readonly canPerformOutput: boolean;
 
-  isInputEnabled: boolean;
+  inputEnabled: boolean;
 
-  isOutputEnabled: boolean;
+  outputEnabled: boolean;
 
   outputProvider: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible) => number;
 
@@ -5130,13 +5242,27 @@ declare class AUAudioUnit extends NSObject {
 
   readonly deviceOutputLatency: number;
 
-  readonly isRunning: boolean;
+  readonly running: boolean;
 
   startHardwareAndReturnError(outError: interop.PointerConvertible): boolean;
 
   stopHardware(): void;
 
   readonly osWorkgroup: OS_os_workgroup;
+
+  isInputEnabled(): boolean;
+
+  setInputEnabled(inputEnabled: boolean): void;
+
+  isOutputEnabled(): boolean;
+
+  setOutputEnabled(outputEnabled: boolean): void;
+
+  setOutputProvider(outputProvider: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible) => number | null): void;
+
+  setInputHandler(inputHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null): void;
+
+  isRunning(): boolean;
 
   static registerSubclassAsComponentDescriptionNameVersion(cls: interop.Object, componentDescription: AudioComponentDescription, name: string, version: number): void;
 
@@ -5147,9 +5273,15 @@ declare class AUAudioUnit extends NSObject {
   MIDIOutputBufferSizeHint: number;
 
   shouldChangeToFormatForBus(format: AVAudioFormat, bus: AUAudioUnitBus): boolean;
-}
 
-declare class AUAudioUnitV2Bridge extends AUAudioUnit {
-  readonly audioUnit: interop.Pointer;
+  setRenderResourcesAllocated(flag: boolean): void;
+
+  setMIDIOutputBufferSizeHint(MIDIOutputBufferSizeHint: number): void;
+
+  requestViewControllerWithCompletionHandler(completionHandler: (p1: NSViewController) => void | null): void;
+
+  supportedViewConfigurations(availableViewConfigurations: NSArray<interop.Object> | Array<interop.Object>): NSIndexSet;
+
+  selectViewConfiguration(viewConfiguration: AUAudioUnitViewConfiguration): void;
 }
 

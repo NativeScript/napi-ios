@@ -1,25 +1,23 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const SCStreamFrameInfoPresenterOverlayContentRect: string;
-
 declare const SCStreamFrameInfoBoundingRect: string;
 
 declare const SCStreamFrameInfoScreenRect: string;
 
-declare const SCStreamFrameInfoStatus: string;
-
-declare const SCStreamErrorDomain: string;
-
-declare const SCStreamFrameInfoDirtyRects: string;
-
 declare const SCStreamFrameInfoContentRect: string;
+
+declare const SCStreamFrameInfoContentScale: string;
+
+declare const SCStreamFrameInfoStatus: string;
 
 declare const SCStreamFrameInfoScaleFactor: string;
 
+declare const SCStreamFrameInfoPresenterOverlayContentRect: string;
+
 declare const SCStreamFrameInfoDisplayTime: string;
 
-declare const SCStreamFrameInfoContentScale: string;
+declare const SCStreamFrameInfoDirtyRects: string;
 
 declare const SCContentSharingPickerMode: {
   SingleWindow: 1,
@@ -53,18 +51,6 @@ declare const SCStreamErrorCode: {
   SystemStoppedStream: -3821,
 };
 
-declare const SCStreamConfigurationPreset: {
-  StreamLocal: 0,
-  StreamCanonical: 1,
-  ScreenshotLocal: 2,
-  ScreenshotCanonical: 3,
-};
-
-declare const SCStreamType: {
-  Window: 0,
-  Display: 1,
-};
-
 declare const SCPresenterOverlayAlertSetting: {
   System: 0,
   Never: 1,
@@ -86,6 +72,11 @@ declare const SCStreamOutputType: {
   Microphone: 2,
 };
 
+declare const SCStreamType: {
+  Window: 0,
+  Display: 1,
+};
+
 declare const SCCaptureDynamicRange: {
   SDR: 0,
   HDRLocalDisplay: 1,
@@ -105,12 +96,23 @@ declare const SCShareableContentStyle: {
   Application: 3,
 };
 
+declare const SCStreamConfigurationPreset: {
+  StreamLocal: 0,
+  StreamCanonical: 1,
+  ScreenshotLocal: 2,
+  ScreenshotCanonical: 3,
+};
+
 declare interface SCStreamDelegate extends NSObjectProtocol {
   streamDidStopWithError?(stream: SCStream, error: NSError): void;
 
   outputVideoEffectDidStartForStream?(stream: SCStream): void;
 
   outputVideoEffectDidStopForStream?(stream: SCStream): void;
+
+  streamDidBecomeActive?(stream: SCStream): void;
+
+  streamDidBecomeInactive?(stream: SCStream): void;
 }
 
 declare class SCStreamDelegate extends NativeObject implements SCStreamDelegate {
@@ -149,6 +151,8 @@ declare class SCScreenshotManager extends NSObject {
   static captureSampleBufferWithFilterConfigurationCompletionHandler(contentFilter: SCContentFilter, config: SCStreamConfiguration, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
 
   static captureImageWithFilterConfigurationCompletionHandler(contentFilter: SCContentFilter, config: SCStreamConfiguration, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
+
+  static captureImageInRectCompletionHandler(rect: CGRect, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
 }
 
 declare class SCContentSharingPickerConfiguration<NSCopying = interop.Object> extends NSObject {
@@ -161,6 +165,14 @@ declare class SCContentSharingPickerConfiguration<NSCopying = interop.Object> ex
   set excludedBundleIDs(value: NSArray<interop.Object> | Array<interop.Object>);
 
   allowsChangingSelectedContent: boolean;
+
+  setAllowedPickerModes(allowedPickerModes: interop.Enum<typeof SCContentSharingPickerMode>): void;
+
+  setExcludedWindowIDs(excludedWindowIDs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setExcludedBundleIDs(excludedBundleIDs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAllowsChangingSelectedContent(allowsChangingSelectedContent: boolean): void;
 }
 
 declare class SCStream extends NSObject {
@@ -183,90 +195,6 @@ declare class SCStream extends NSObject {
   addRecordingOutputError(recordingOutput: SCRecordingOutput, error: interop.PointerConvertible): boolean;
 
   removeRecordingOutputError(recordingOutput: SCRecordingOutput, error: interop.PointerConvertible): boolean;
-}
-
-declare class SCRecordingOutput extends NSObject {
-  readonly recordedDuration: CMTime;
-
-  readonly recordedFileSize: number;
-
-  initWithConfigurationDelegate(recordingOutputConfiguration: SCRecordingOutputConfiguration, delegate: SCRecordingOutputDelegate): this;
-}
-
-declare class SCShareableContentInfo extends NSObject {
-  readonly style: interop.Enum<typeof SCShareableContentStyle>;
-
-  readonly pointPixelScale: number;
-
-  readonly contentRect: CGRect;
-}
-
-declare class SCDisplay extends NSObject {
-  readonly displayID: number;
-
-  readonly width: number;
-
-  readonly height: number;
-
-  readonly frame: CGRect;
-}
-
-declare class SCRunningApplication extends NSObject {
-  readonly bundleIdentifier: string;
-
-  readonly applicationName: string;
-
-  readonly processID: number;
-}
-
-declare class SCContentFilter extends NSObject {
-  readonly streamType: interop.Enum<typeof SCStreamType>;
-
-  readonly style: interop.Enum<typeof SCShareableContentStyle>;
-
-  readonly pointPixelScale: number;
-
-  readonly contentRect: CGRect;
-
-  includeMenuBar: boolean;
-
-  initWithDesktopIndependentWindow(window: SCWindow): this;
-
-  initWithDisplayExcludingWindows(display: SCDisplay, excluded: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithDisplayIncludingWindows(display: SCDisplay, includedWindows: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithDisplayIncludingApplicationsExceptingWindows(display: SCDisplay, applications: NSArray<interop.Object> | Array<interop.Object>, exceptingWindows: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithDisplayExcludingApplicationsExceptingWindows(display: SCDisplay, applications: NSArray<interop.Object> | Array<interop.Object>, exceptingWindows: NSArray<interop.Object> | Array<interop.Object>): this;
-}
-
-declare class SCRecordingOutputConfiguration extends NSObject {
-  outputURL: NSURL;
-
-  videoCodecType: string;
-
-  outputFileType: string;
-
-  readonly availableVideoCodecTypes: NSArray;
-
-  readonly availableOutputFileTypes: NSArray;
-}
-
-declare class SCWindow extends NSObject {
-  readonly windowID: number;
-
-  readonly frame: CGRect;
-
-  readonly title: string;
-
-  readonly windowLayer: number;
-
-  readonly owningApplication: SCRunningApplication;
-
-  readonly isOnScreen: boolean;
-
-  readonly isActive: boolean;
 }
 
 declare class SCStreamConfiguration extends NSObject {
@@ -336,6 +264,116 @@ declare class SCStreamConfiguration extends NSObject {
   captureDynamicRange: interop.Enum<typeof SCCaptureDynamicRange>;
 
   static streamConfigurationWithPreset<This extends abstract new (...args: any) => any>(this: This, preset: interop.Enum<typeof SCStreamConfigurationPreset>): InstanceType<This>;
+
+  setWidth(width: number): void;
+
+  setHeight(height: number): void;
+
+  setMinimumFrameInterval(minimumFrameInterval: CMTime): void;
+
+  setPixelFormat(pixelFormat: number): void;
+
+  setScalesToFit(scalesToFit: boolean): void;
+
+  setPreservesAspectRatio(preservesAspectRatio: boolean): void;
+
+  setStreamName(streamName: string): void;
+
+  setShowsCursor(showsCursor: boolean): void;
+
+  setShowMouseClicks(showMouseClicks: boolean): void;
+
+  setBackgroundColor(backgroundColor: interop.PointerConvertible): void;
+
+  setSourceRect(sourceRect: CGRect): void;
+
+  setDestinationRect(destinationRect: CGRect): void;
+
+  setQueueDepth(queueDepth: number): void;
+
+  setColorMatrix(colorMatrix: interop.PointerConvertible): void;
+
+  setColorSpaceName(colorSpaceName: interop.PointerConvertible): void;
+
+  setCapturesAudio(capturesAudio: boolean): void;
+
+  setSampleRate(sampleRate: number): void;
+
+  setChannelCount(channelCount: number): void;
+
+  setExcludesCurrentProcessAudio(excludesCurrentProcessAudio: boolean): void;
+
+  setIgnoreShadowsDisplay(ignoreShadowsDisplay: boolean): void;
+
+  setIgnoreShadowsSingleWindow(ignoreShadowsSingleWindow: boolean): void;
+
+  setCaptureResolution(captureResolution: interop.Enum<typeof SCCaptureResolutionType>): void;
+
+  setCapturesShadowsOnly(capturesShadowsOnly: boolean): void;
+
+  setShouldBeOpaque(shouldBeOpaque: boolean): void;
+
+  setIgnoreGlobalClipDisplay(ignoreGlobalClipDisplay: boolean): void;
+
+  setIgnoreGlobalClipSingleWindow(ignoreGlobalClipSingleWindow: boolean): void;
+
+  setPresenterOverlayPrivacyAlertSetting(presenterOverlayPrivacyAlertSetting: interop.Enum<typeof SCPresenterOverlayAlertSetting>): void;
+
+  setIncludeChildWindows(includeChildWindows: boolean): void;
+
+  setCaptureMicrophone(captureMicrophone: boolean): void;
+
+  setMicrophoneCaptureDeviceID(microphoneCaptureDeviceID: string): void;
+
+  setCaptureDynamicRange(captureDynamicRange: interop.Enum<typeof SCCaptureDynamicRange>): void;
+}
+
+declare class SCContentFilter extends NSObject {
+  readonly streamType: interop.Enum<typeof SCStreamType>;
+
+  readonly style: interop.Enum<typeof SCShareableContentStyle>;
+
+  readonly pointPixelScale: number;
+
+  readonly contentRect: CGRect;
+
+  includeMenuBar: boolean;
+
+  readonly includedDisplays: NSArray;
+
+  readonly includedApplications: NSArray;
+
+  readonly includedWindows: NSArray;
+
+  initWithDesktopIndependentWindow(window: SCWindow): this;
+
+  initWithDisplayExcludingWindows(display: SCDisplay, excluded: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithDisplayIncludingWindows(display: SCDisplay, includedWindows: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithDisplayIncludingApplicationsExceptingWindows(display: SCDisplay, applications: NSArray<interop.Object> | Array<interop.Object>, exceptingWindows: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithDisplayExcludingApplicationsExceptingWindows(display: SCDisplay, applications: NSArray<interop.Object> | Array<interop.Object>, exceptingWindows: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  setIncludeMenuBar(includeMenuBar: boolean): void;
+}
+
+declare class SCRecordingOutputConfiguration extends NSObject {
+  outputURL: NSURL;
+
+  videoCodecType: string;
+
+  outputFileType: string;
+
+  readonly availableVideoCodecTypes: NSArray;
+
+  readonly availableOutputFileTypes: NSArray;
+
+  setOutputURL(outputURL: NSURL): void;
+
+  setVideoCodecType(videoCodecType: string): void;
+
+  setOutputFileType(outputFileType: string): void;
 }
 
 declare class SCShareableContent extends NSObject {
@@ -358,6 +396,60 @@ declare class SCShareableContent extends NSObject {
   readonly applications: NSArray;
 }
 
+declare class SCDisplay extends NSObject {
+  readonly displayID: number;
+
+  readonly width: number;
+
+  readonly height: number;
+
+  readonly frame: CGRect;
+}
+
+declare class SCRunningApplication extends NSObject {
+  readonly bundleIdentifier: string;
+
+  readonly applicationName: string;
+
+  readonly processID: number;
+}
+
+declare class SCRecordingOutput extends NSObject {
+  readonly recordedDuration: CMTime;
+
+  readonly recordedFileSize: number;
+
+  initWithConfigurationDelegate(recordingOutputConfiguration: SCRecordingOutputConfiguration, delegate: SCRecordingOutputDelegate): this;
+}
+
+declare class SCWindow extends NSObject {
+  readonly windowID: number;
+
+  readonly frame: CGRect;
+
+  readonly title: string;
+
+  readonly windowLayer: number;
+
+  readonly owningApplication: SCRunningApplication;
+
+  readonly onScreen: boolean;
+
+  readonly active: boolean;
+
+  isOnScreen(): boolean;
+
+  isActive(): boolean;
+}
+
+declare class SCShareableContentInfo extends NSObject {
+  readonly style: interop.Enum<typeof SCShareableContentStyle>;
+
+  readonly pointPixelScale: number;
+
+  readonly contentRect: CGRect;
+}
+
 declare class SCContentSharingPicker extends NSObject {
   static readonly sharedPicker: SCContentSharingPicker;
 
@@ -365,7 +457,7 @@ declare class SCContentSharingPicker extends NSObject {
 
   maximumStreamCount: NSNumber;
 
-  isActive: boolean;
+  active: boolean;
 
   addObserver(observer: SCContentSharingPickerObserver): void;
 
@@ -380,5 +472,13 @@ declare class SCContentSharingPicker extends NSObject {
   presentPickerForStream(stream: SCStream): void;
 
   presentPickerForStreamUsingContentStyle(stream: SCStream, contentStyle: interop.Enum<typeof SCShareableContentStyle>): void;
+
+  setDefaultConfiguration(defaultConfiguration: SCContentSharingPickerConfiguration): void;
+
+  setMaximumStreamCount(maximumStreamCount: NSNumber): void;
+
+  isActive(): boolean;
+
+  setActive(active: boolean): void;
 }
 

@@ -136,71 +136,36 @@ await Deno.mkdir(new URL(`../packages/${sdkName}/types`, import.meta.url), {
 
 for (const arch in sdk.targets) {
   const exec = new URL(
-    "../metadata-generator/build/MetadataGenerator",
-    import.meta.url
+    "../metadata-generator/dist/arm64/bin/objc-metadata-generator",
+    import.meta.url,
   );
+  // Ex: -verbose -output-bin -output-umbrella -docset-path Xclang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator18.5.sdk -std=gnu99 -target arm64-apple-ios18.5-simulator
   const args = [
-    `arch=${arch}`,
-    `target=${sdk.targets[arch]}`,
-    `output=${
-      new URL(
-        `../metadata-generator/metadata.${sdkName}.${arch}.nsmd`,
-        import.meta.url
-      ).pathname
-    }`,
-    // NOTE: We're not differentiating between the arch for TS types - it shouldn't matter much
     `types=${
       new URL(`../packages/${sdkName}/types`, import.meta.url).pathname
     }`,
-    `sdk=${sdk.path}`,
+    "-verbose",
+    "-output-bin",
+    new URL(
+      `../metadata-generator/metadata/metadata.${sdkName}.${arch}.nsmd`,
+      import.meta.url,
+    ).pathname,
+    "-output-umbrella",
+    new URL(
+      `../metadata-generator/metadata/metadata.${sdkName}.${arch}.h`,
+      import.meta.url,
+    ).pathname,
+    "Xclang",
+    "-isysroot",
+    sdk.path,
+    "-std=gnu99",
+    "-target",
+    sdk.targets[arch],
   ];
 
-  for (const framework of sdk.frameworks) {
-    args.push(`framework=${framework}`);
-  }
-
-  // TODO: commit these files to the repo
-  // These are needed to make it work with NativeScriptCore on iOS apps (compat with old NativeScript runtime)
-  const TNS_WIDGETS_FRAMEWORK = Deno.env.get("TNS_WIDGETS_FRAMEWORK");
-  if (TNS_WIDGETS_FRAMEWORK === "1") {
-    const basePath = new URL(
-      "./node_modules/@nativescript/core/platforms/ios/",
-      import.meta.url
-    ).pathname;
-    const framework = `${basePath}/TNSWidgets.xcframework/${
-      sdk.tnsTarget ?? "ios-arm64"
-    }/TNSWidgets.framework`;
-
-    const customFrameworks = [framework];
-
-    for (const framework of customFrameworks) {
-      args.push(`include=${framework}`);
-      args.push(`headers=${framework}/Headers`);
-      args.push(`import="TNSWidgets.h"`);
-    }
-
-    args.push(`include=${basePath}/src`);
-    args.push(`headers=${basePath}/src`);
-    args.push('import="NativeScriptEmbedder.h"');
-    args.push('import="NativeScriptUtils.h"');
-    args.push('import="UIView+NativeScript.h"');
-  }
-
-  // TODO: remove me
-  if (Deno.env.get("TNS_SIDEDRAWER_FRAMEWORK") === "1") {
-    const framework =
-      "/Volumes/SSD/gh/nativescript/test-app-ng/node_modules/nativescript-ui-sidedrawer/platforms/ios/TNSSideDrawer.xcframework/ios-arm64/TNSSideDrawer.framework";
-
-    const customFrameworks = [framework];
-
-    for (const framework of customFrameworks) {
-      args.push(`include=${framework}`);
-      args.push(`headers=${framework}/Headers`);
-      args.push(`import="TNSSideDrawer.h"`);
-      args.push(`import="TKSideDrawer.h"`);
-      args.push(`import="TKSideDrawerView.h"`);
-    }
-  }
+  // for (const framework of sdk.frameworks) {
+  //   args.push(`framework=${framework}`);
+  // }
 
   console.log(`%c$ MetadataGenerator ${args.join(" ")}`, "color: grey");
 

@@ -150,7 +150,7 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
         info->structOffset = write(decl) | mdSectionOffsetNext;
       } else {
         info->structOffset = MD_SECTION_OFFSET_NULL;
-        std::cout << "Unknown record: " << type.recordName << std::endl;
+        std::cerr << "Unknown record: " << type.recordName << std::endl;
         // assert(false && "Unknown record: not found in structs or unions");
       }
       break;
@@ -183,12 +183,12 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
       break;
 
     case kTypeUnknown:
-      std::cout << "Unknown type spec: " << type.unknownInfo << std::endl;
+      std::cerr << "Unknown type spec: " << type.unknownInfo << std::endl;
       assert(false && "Unknown type spec");
       break;
 
     default:
-      std::cout << "Unknown type spec kind: " << type.kind << std::endl;
+      std::cerr << "Unknown type spec kind: " << type.kind << std::endl;
       assert(false && "Unknown type spec kind");
       break;
   }

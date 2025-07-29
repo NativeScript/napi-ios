@@ -30,7 +30,7 @@ for (const [arch, offset] of offsets) {
   binary.set(
     await Deno.readFile(
       new URL(
-        `../metadata-generator/${metadataFile.split(".nsmd")[0]}.${
+        `../metadata-generator/metadata/${metadataFile.split(".nsmd")[0]}.${
           arch === "ARM" ? "arm64" : "x86_64"
         }.nsmd`,
         import.meta.url

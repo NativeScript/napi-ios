@@ -1,15 +1,17 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const MTLDynamicLibraryDomain: string;
+
+declare const MTLCommonCounterSetTimestamp: string;
+
+declare const MTLCommonCounterClipperInvocations: string;
+
 declare const MTLIOErrorDomain: string;
 
 declare const MTLBinaryArchiveDomain: string;
 
 declare const MTLLogStateErrorDomain: string;
-
-declare const MTLCaptureErrorDomain: string;
-
-declare const NSProcessInfoPerformanceProfileDidChangeNotification: string;
 
 declare const NSProcessPerformanceProfileDefault: number;
 
@@ -17,17 +19,11 @@ declare const NSDeviceCertificationiPhonePerformanceGaming: number;
 
 declare const MTLCommandBufferErrorDomain: string;
 
-declare const MTLDeviceWasRemovedNotification: string;
-
 declare const MTLDeviceRemovalRequestedNotification: string;
 
 declare const MTLDeviceWasAddedNotification: string;
 
 declare const MTLCommonCounterSetStatistic: string;
-
-declare const MTLCommonCounterSetStageUtilization: string;
-
-declare const MTLCommonCounterRenderTargetWriteCycles: string;
 
 declare const MTLCommonCounterFragmentCycles: string;
 
@@ -41,49 +37,110 @@ declare const MTLCommonCounterTotalCycles: string;
 
 declare const MTLCommonCounterComputeKernelInvocations: string;
 
+declare const MTLCommonCounterFragmentsPassed: string;
+
 declare const MTLCommonCounterFragmentInvocations: string;
 
 declare const MTLCommonCounterClipperPrimitivesOut: string;
 
-declare const MTLCommonCounterClipperInvocations: string;
-
-declare const MTLCommonCounterVertexInvocations: string;
-
 declare const MTLCommonCounterTessellationInputPatches: string;
-
-declare const MTLLibraryErrorDomain: string;
-
-declare const MTLCommonCounterFragmentsPassed: string;
-
-declare const MTLCounterErrorDomain: string;
 
 declare const MTLAttributeStrideStatic: number;
 
-declare const MTLBufferLayoutStrideDynamic: number;
+declare const MTLCommonCounterSetStageUtilization: string;
 
-declare const NSProcessPerformanceProfileSustained: number;
+declare const MTLCommonCounterRenderTargetWriteCycles: string;
 
-declare const MTLDynamicLibraryDomain: string;
-
-declare const MTLCommonCounterSetTimestamp: string;
-
-declare const MTLCommonCounterTimestamp: string;
+declare const MTLCounterErrorDomain: string;
 
 declare const MTLCommonCounterPostTessellationVertexInvocations: string;
 
+declare const NSProcessPerformanceProfileSustained: number;
+
+declare const MTLBufferLayoutStrideDynamic: number;
+
+declare const MTLCommonCounterTimestamp: string;
+
 declare const MTLCommandBufferEncoderInfoErrorKey: string;
 
-declare const MTLLanguageVersion: {
-  Version1_1: 65537,
-  Version1_2: 65538,
-  Version2_0: 131072,
-  Version2_1: 131073,
-  Version2_2: 131074,
-  Version2_3: 131075,
-  Version2_4: 131076,
-  Version3_0: 196608,
-  Version3_1: 196609,
-  Version3_2: 196610,
+declare const MTLDeviceWasRemovedNotification: string;
+
+declare const NSProcessInfoPerformanceProfileDidChangeNotification: string;
+
+declare const MTLCommonCounterVertexInvocations: string;
+
+declare const MTLCaptureErrorDomain: string;
+
+declare const MTLLibraryErrorDomain: string;
+
+declare const MTLIOCompressionMethod: {
+  Zlib: 0,
+  LZFSE: 1,
+  LZ4: 2,
+  LZMA: 3,
+  LZBitmap: 4,
+};
+
+declare const MTLSparsePageSize: {
+  Size16: 101,
+  Size64: 102,
+  Size256: 103,
+};
+
+declare const MTLMultisampleDepthResolveFilter: {
+  Sample0: 0,
+  Min: 1,
+  Max: 2,
+};
+
+declare const MTLBlendFactor: {
+  Zero: 0,
+  One: 1,
+  SourceColor: 2,
+  OneMinusSourceColor: 3,
+  SourceAlpha: 4,
+  OneMinusSourceAlpha: 5,
+  DestinationColor: 6,
+  OneMinusDestinationColor: 7,
+  DestinationAlpha: 8,
+  OneMinusDestinationAlpha: 9,
+  SourceAlphaSaturated: 10,
+  BlendColor: 11,
+  OneMinusBlendColor: 12,
+  BlendAlpha: 13,
+  OneMinusBlendAlpha: 14,
+  Source1Color: 15,
+  OneMinusSource1Color: 16,
+  Source1Alpha: 17,
+  OneMinusSource1Alpha: 18,
+};
+
+declare const MTLVertexStepFunction: {
+  Constant: 0,
+  PerVertex: 1,
+  PerInstance: 2,
+  PerPatch: 3,
+  PerPatchControlPoint: 4,
+};
+
+declare const MTLStoreAction: {
+  DontCare: 0,
+  Store: 1,
+  MultisampleResolve: 2,
+  StoreAndMultisampleResolve: 3,
+  Unknown: 4,
+  CustomSampleDepthStore: 5,
+};
+
+declare const MTLIndexType: {
+  Int16: 0,
+  Int32: 1,
+};
+
+declare const MTLPatchType: {
+  None: 0,
+  Triangle: 1,
+  Quad: 2,
 };
 
 declare const MTLIOStatus: {
@@ -93,15 +150,27 @@ declare const MTLIOStatus: {
   Complete: 3,
 };
 
-declare const MTLIOCommandQueueType: {
-  Concurrent: 0,
-  Serial: 1,
+declare const MTLStitchedLibraryOptions: {
+  None: 0,
+  FailOnBinaryArchiveMiss: 1,
+  StoreLibraryInMetalPipelinesScript: 2,
 };
 
-declare const MTLIOPriority: {
-  High: 0,
-  Normal: 1,
-  Low: 2,
+declare const MTLIntersectionFunctionSignature: {
+  None: 0,
+  Instancing: 1,
+  TriangleData: 2,
+  WorldSpaceData: 4,
+  InstanceMotion: 8,
+  PrimitiveMotion: 16,
+  ExtendedLimits: 32,
+  MaxLevels: 64,
+  CurveData: 128,
+};
+
+declare const MTLLogStateError: {
+  Size: 1,
+  MTLLogStateErrorInvalid: 2,
 };
 
 declare const MTLDynamicLibraryError: {
@@ -136,9 +205,15 @@ declare const MTLAccelerationStructureInstanceDescriptorType: {
   IndirectMotion: 4,
 };
 
-declare const MTLMotionBorderMode: {
-  Clamp: 0,
-  Vanish: 1,
+declare const MTLCurveEndCaps: {
+  None: 0,
+  Disk: 1,
+  Sphere: 2,
+};
+
+declare const MTLCurveType: {
+  Round: 0,
+  Flat: 1,
 };
 
 declare const MTLMatrixLayout: {
@@ -153,124 +228,56 @@ declare const MTLAccelerationStructureUsage: {
   ExtendedLimits: 4,
 };
 
-declare const MTLBinaryArchiveError: {
+declare const MTLTessellationFactorStepFunction: {
+  Constant: 0,
+  PerPatch: 1,
+  PerInstance: 2,
+  PerPatchAndPerInstance: 3,
+};
+
+declare const MTLColorWriteMask: {
   None: 0,
-  InvalidFile: 1,
-  UnexpectedElement: 2,
-  CompilationFailure: 3,
-  InternalError: 4,
+  Red: 8,
+  Green: 4,
+  Blue: 2,
+  Alpha: 1,
+  All: 15,
 };
 
-declare const MTLSamplerBorderColor: {
-  TransparentBlack: 0,
-  OpaqueBlack: 1,
-  OpaqueWhite: 2,
+declare const MTLDepthClipMode: {
+  Clip: 0,
+  Clamp: 1,
 };
 
-declare const MTLSamplerAddressMode: {
-  ClampToEdge: 0,
-  MirrorClampToEdge: 1,
-  Repeat: 2,
-  MirrorRepeat: 3,
-  ClampToZero: 4,
-  ClampToBorderColor: 5,
+declare const MTLWinding: {
+  MTLWindingClockwise: 0,
+  Counter: 1,
 };
 
-declare const MTLSamplerMinMagFilter: {
-  Nearest: 0,
-  Linear: 1,
+declare const MTLCullMode: {
+  None: 0,
+  Front: 1,
+  Back: 2,
 };
 
-declare const MTLBlendOperation: {
-  Add: 0,
-  Subtract: 1,
-  ReverseSubtract: 2,
-  Min: 3,
-  Max: 4,
+declare const MTLVisibilityResultMode: {
+  Disabled: 0,
+  Boolean: 1,
+  Counting: 2,
 };
 
-declare const MTLRenderStages: {
-  Vertex: 1,
-  Fragment: 2,
-  Tile: 4,
-  Object: 8,
-  Mesh: 16,
+declare const MTLPrimitiveType: {
+  Point: 0,
+  Line: 1,
+  LineStrip: 2,
+  Triangle: 3,
+  TriangleStrip: 4,
 };
 
 declare const MTLShaderValidation: {
   Default: 0,
   Enabled: 1,
   Disabled: 2,
-};
-
-declare const MTLIndexType: {
-  Int16: 0,
-  Int32: 1,
-};
-
-declare const MTLAttributeFormat: {
-  Invalid: 0,
-  UChar2: 1,
-  UChar3: 2,
-  UChar4: 3,
-  Char2: 4,
-  Char3: 5,
-  Char4: 6,
-  UChar2Normalized: 7,
-  UChar3Normalized: 8,
-  UChar4Normalized: 9,
-  Char2Normalized: 10,
-  Char3Normalized: 11,
-  Char4Normalized: 12,
-  UShort2: 13,
-  UShort3: 14,
-  UShort4: 15,
-  Short2: 16,
-  Short3: 17,
-  Short4: 18,
-  UShort2Normalized: 19,
-  UShort3Normalized: 20,
-  UShort4Normalized: 21,
-  Short2Normalized: 22,
-  Short3Normalized: 23,
-  Short4Normalized: 24,
-  Half2: 25,
-  Half3: 26,
-  Half4: 27,
-  Float: 28,
-  Float2: 29,
-  Float3: 30,
-  Float4: 31,
-  Int: 32,
-  Int2: 33,
-  Int3: 34,
-  Int4: 35,
-  UInt: 36,
-  UInt2: 37,
-  UInt3: 38,
-  UInt4: 39,
-  Int1010102Normalized: 40,
-  UInt1010102Normalized: 41,
-  UChar4Normalized_BGRA: 42,
-  UChar: 45,
-  Char: 46,
-  UCharNormalized: 47,
-  CharNormalized: 48,
-  UShort: 49,
-  Short: 50,
-  UShortNormalized: 51,
-  ShortNormalized: 52,
-  Half: 53,
-  FloatRG11B10: 54,
-  FloatRGB9E5: 55,
-};
-
-declare const MTLVertexStepFunction: {
-  Constant: 0,
-  PerVertex: 1,
-  PerInstance: 2,
-  PerPatch: 3,
-  PerPatchControlPoint: 4,
 };
 
 declare const MTLVertexFormat: {
@@ -330,6 +337,28 @@ declare const MTLVertexFormat: {
   FloatRGB9E5: 55,
 };
 
+declare const MTLStencilOperation: {
+  Keep: 0,
+  Zero: 1,
+  Replace: 2,
+  IncrementClamp: 3,
+  DecrementClamp: 4,
+  Invert: 5,
+  IncrementWrap: 6,
+  DecrementWrap: 7,
+};
+
+declare const MTLCompareFunction: {
+  Never: 0,
+  Less: 1,
+  Equal: 2,
+  LessEqual: 3,
+  Greater: 4,
+  NotEqual: 5,
+  GreaterEqual: 6,
+  Always: 7,
+};
+
 declare const MTLDispatchType: {
   Serial: 0,
   Concurrent: 1,
@@ -338,6 +367,26 @@ declare const MTLDispatchType: {
 declare const MTLCommandBufferErrorOption: {
   None: 0,
   EncoderExecutionStatus: 1,
+};
+
+declare const MTLCommandBufferError: {
+  None: 0,
+  Internal: 1,
+  Timeout: 2,
+  PageFault: 3,
+  Blacklisted: 4,
+  AccessRevoked: 4,
+  NotPermitted: 7,
+  OutOfMemory: 8,
+  InvalidResource: 9,
+  Memoryless: 10,
+  DeviceRemoved: 11,
+  StackOverflow: 12,
+};
+
+declare const MTLLibraryType: {
+  Executable: 0,
+  Dynamic: 1,
 };
 
 declare const MTLCommandBufferStatus: {
@@ -349,27 +398,21 @@ declare const MTLCommandBufferStatus: {
   Error: 5,
 };
 
-declare const MTLMultisampleStencilResolveFilter: {
-  Sample0: 0,
-  DepthResolvedSample: 1,
+declare const MTLBlitOption: {
+  None: 0,
+  DepthFromDepthStencil: 1,
+  StencilFromDepthStencil: 2,
+  RowLinearPVRTC: 4,
 };
 
-declare const MTLMultisampleDepthResolveFilter: {
-  Sample0: 0,
-  Min: 1,
-  Max: 2,
+declare const MTLSparseTextureMappingMode: {
+  Map: 0,
+  Unmap: 1,
 };
 
-declare const MTLLoadAction: {
-  DontCare: 0,
-  Load: 1,
-  Clear: 2,
-};
-
-declare const MTLSparsePageSize: {
-  Size16: 101,
-  Size64: 102,
-  Size256: 103,
+declare const MTLSparseTextureRegionAlignmentMode: {
+  Outward: 0,
+  Inward: 1,
 };
 
 declare const MTLArgumentBuffersTier: {
@@ -377,38 +420,31 @@ declare const MTLArgumentBuffersTier: {
   Tier2: 1,
 };
 
-declare const MTLReadWriteTextureTier: {
-  TierNone: 0,
-  Tier1: 1,
-  Tier2: 2,
+declare const MTLDeviceLocation: {
+  BuiltIn: 0,
+  Slot: 1,
+  External: 2,
+  Unspecified: -1,
 };
 
-declare const MTLPipelineOption: {
-  None: 0,
-  ArgumentInfo: 1,
-  BindingInfo: 1,
-  BufferTypeInfo: 2,
-  FailOnBinaryArchiveMiss: 4,
-};
-
-declare const MTLFeatureSet: {
-  Set_macOS_GPUFamily1_v1: 10000,
-  Set_OSX_GPUFamily1_v1: 10000,
-  Set_macOS_GPUFamily1_v2: 10001,
-  Set_OSX_GPUFamily1_v2: 10001,
-  Set_macOS_ReadWriteTextureTier2: 10002,
-  Set_OSX_ReadWriteTextureTier2: 10002,
-  Set_macOS_GPUFamily1_v3: 10003,
-  Set_macOS_GPUFamily1_v4: 10004,
-  Set_macOS_GPUFamily2_v1: 10005,
-};
-
-declare const MTLIOCompressionMethod: {
-  Zlib: 0,
-  LZFSE: 1,
-  LZ4: 2,
-  LZMA: 3,
-  LZBitmap: 4,
+declare const MTLGPUFamily: {
+  Apple1: 1001,
+  Apple2: 1002,
+  Apple3: 1003,
+  Apple4: 1004,
+  Apple5: 1005,
+  Apple6: 1006,
+  Apple7: 1007,
+  Apple8: 1008,
+  Apple9: 1009,
+  Mac1: 2001,
+  Mac2: 2002,
+  Common1: 3001,
+  Common2: 3002,
+  Common3: 3003,
+  MacCatalyst1: 4001,
+  MacCatalyst2: 4002,
+  Metal3: 5001,
 };
 
 declare const MTLLibraryError: {
@@ -425,55 +461,6 @@ declare const MTLMathFloatingPointFunctions: {
   Precise: 1,
 };
 
-declare const MTLMathMode: {
-  Safe: 0,
-  Relaxed: 1,
-  Fast: 2,
-};
-
-declare const MTLCompileSymbolVisibility: {
-  Default: 0,
-  Hidden: 1,
-};
-
-declare const MTLSamplerMipFilter: {
-  NotMipmapped: 0,
-  Nearest: 1,
-  Linear: 2,
-};
-
-declare const MTLLibraryType: {
-  Executable: 0,
-  Dynamic: 1,
-};
-
-declare const MTLPatchType: {
-  None: 0,
-  Triangle: 1,
-  Quad: 2,
-};
-
-declare const MTLFunctionOptions: {
-  None: 0,
-  CompileToBinary: 1,
-  StoreFunctionInMetalPipelinesScript: 2,
-  StoreFunctionInMetalScript: 2,
-  FailOnBinaryArchiveMiss: 4,
-};
-
-declare const MTLArgumentType: {
-  Buffer: 0,
-  ThreadgroupMemory: 1,
-  Texture: 2,
-  Sampler: 3,
-  ImageblockData: 16,
-  Imageblock: 17,
-  VisibleFunctionTable: 24,
-  PrimitiveAccelerationStructure: 25,
-  InstanceAccelerationStructure: 26,
-  IntersectionFunctionTable: 27,
-};
-
 declare const MTLBindingType: {
   Buffer: 0,
   ThreadgroupMemory: 1,
@@ -486,6 +473,33 @@ declare const MTLBindingType: {
   InstanceAccelerationStructure: 26,
   IntersectionFunctionTable: 27,
   ObjectPayload: 34,
+};
+
+declare const MTLCompileSymbolVisibility: {
+  Default: 0,
+  Hidden: 1,
+};
+
+declare const MTLLibraryOptimizationLevel: {
+  Default: 0,
+  Size: 1,
+};
+
+declare const MTLFunctionOptions: {
+  None: 0,
+  CompileToBinary: 1,
+  StoreFunctionInMetalPipelinesScript: 2,
+  StoreFunctionInMetalScript: 2,
+  FailOnBinaryArchiveMiss: 4,
+};
+
+declare const MTLBindingAccess: {
+  BindingAccessReadOnly: 0,
+  BindingAccessReadWrite: 1,
+  BindingAccessWriteOnly: 2,
+  ArgumentAccessReadOnly: 0,
+  ArgumentAccessReadWrite: 1,
+  ArgumentAccessWriteOnly: 2,
 };
 
 declare const MTLDataType: {
@@ -586,205 +600,17 @@ declare const MTLDataType: {
   BFloat4: 124,
 };
 
-declare const MTLTextureType: {
-  Type1D: 0,
-  Type1DArray: 1,
-  Type2D: 2,
-  Type2DArray: 3,
-  Type2DMultisample: 4,
-  TypeCube: 5,
-  TypeCubeArray: 6,
-  Type3D: 7,
-  Type2DMultisampleArray: 8,
-  TypeTextureBuffer: 9,
+declare const MTLTessellationFactorFormat: {
+  MTLTessellationFactorFormatHalf: 0,
 };
 
-declare const MTLStorageMode: {
-  Shared: 0,
-  Managed: 1,
-  Private: 2,
-  Memoryless: 3,
-};
-
-declare const MTLIndirectCommandType: {
-  Draw: 1,
-  DrawIndexed: 2,
-  DrawPatches: 4,
-  DrawIndexedPatches: 8,
-  ConcurrentDispatch: 32,
-  ConcurrentDispatchThreads: 64,
-  DrawMeshThreadgroups: 128,
-  DrawMeshThreads: 256,
-};
-
-declare const MTLCPUCacheMode: {
-  DefaultCache: 0,
-  WriteCombined: 1,
-};
-
-declare const MTLPurgeableState: {
-  KeepCurrent: 1,
-  NonVolatile: 2,
-  Volatile: 3,
-  Empty: 4,
-};
-
-declare const MTLResourceUsage: {
-  Read: 1,
-  Write: 2,
-  Sample: 4,
-};
-
-declare const MTLResourceOptions: {
-  CPUCacheModeDefaultCache: 0,
-  CPUCacheModeWriteCombined: 1,
-  StorageModeShared: 0,
-  StorageModeManaged: 16,
-  StorageModePrivate: 32,
-  StorageModeMemoryless: 48,
-  HazardTrackingModeDefault: 0,
-  HazardTrackingModeUntracked: 256,
-  HazardTrackingModeTracked: 512,
-  OptionCPUCacheModeDefault: 0,
-  OptionCPUCacheModeWriteCombined: 1,
-};
-
-declare const MTLCounterSampleBufferError: {
-  OutOfMemory: 0,
-  Invalid: 1,
-  Internal: 2,
-};
-
-declare const MTLDeviceLocation: {
-  BuiltIn: 0,
-  Slot: 1,
-  External: 2,
-  Unspecified: -1,
-};
-
-declare const MTLCommandEncoderErrorState: {
-  Unknown: 0,
-  Completed: 1,
-  Affected: 2,
-  Pending: 3,
-  Faulted: 4,
-};
-
-declare const MTLBarrierScope: {
-  Buffers: 1,
-  Textures: 2,
-  RenderTargets: 4,
-};
-
-declare const MTLLogLevel: {
-  Undefined: 0,
-  Debug: 1,
-  Info: 2,
-  Notice: 3,
-  Error: 4,
-  Fault: 5,
-};
-
-declare const MTLStoreActionOptions: {
-  None: 0,
-  CustomSamplePositions: 1,
-};
-
-declare const MTLTextureCompressionType: {
-  Lossless: 0,
-  Lossy: 1,
-};
-
-declare const MTLTextureUsage: {
-  Unknown: 0,
-  ShaderRead: 1,
-  ShaderWrite: 2,
-  RenderTarget: 4,
-  PixelFormatView: 16,
-  ShaderAtomic: 32,
-};
-
-declare const MTLTransformType: {
-  PackedFloat4x3: 0,
-  Component: 1,
-};
-
-declare const MTLCaptureError: {
-  NotSupported: 1,
-  AlreadyCapturing: 2,
-  InvalidDescriptor: 3,
-};
-
-declare const MTLCounterSamplingPoint: {
-  Stage: 0,
-  Draw: 1,
-  Dispatch: 2,
-  TileDispatch: 3,
-  Blit: 4,
-};
-
-declare const MTLSparseTextureRegionAlignmentMode: {
-  Outward: 0,
-  Inward: 1,
-};
-
-declare const MTLBlitOption: {
-  None: 0,
-  DepthFromDepthStencil: 1,
-  StencilFromDepthStencil: 2,
-  RowLinearPVRTC: 4,
-};
-
-declare const MTLTessellationControlPointIndexType: {
-  None: 0,
-  UInt16: 1,
-  UInt32: 2,
-};
-
-declare const MTLHazardTrackingMode: {
-  Default: 0,
-  Untracked: 1,
-  Tracked: 2,
-};
-
-declare const MTLCaptureDestination: {
-  DeveloperTools: 1,
-  GPUTraceDocument: 2,
-};
-
-declare const MTLColorWriteMask: {
-  None: 0,
-  Red: 8,
-  Green: 4,
-  Blue: 2,
-  Alpha: 1,
-  All: 15,
-};
-
-declare const MTLStitchedLibraryOptions: {
-  None: 0,
-  FailOnBinaryArchiveMiss: 1,
-  StoreLibraryInMetalPipelinesScript: 2,
-};
-
-declare const MTLBindingAccess: {
-  BindingAccessReadOnly: 0,
-  BindingAccessReadWrite: 1,
-  BindingAccessWriteOnly: 2,
-  ArgumentAccessReadOnly: 0,
-  ArgumentAccessReadWrite: 1,
-  ArgumentAccessWriteOnly: 2,
-};
-
-declare const MTLStencilOperation: {
-  Keep: 0,
-  Zero: 1,
-  Replace: 2,
-  IncrementClamp: 3,
-  DecrementClamp: 4,
-  Invert: 5,
-  IncrementWrap: 6,
-  DecrementWrap: 7,
+declare const MTLTextureSwizzle: {
+  Zero: 0,
+  One: 1,
+  Red: 2,
+  Green: 3,
+  Blue: 4,
+  Alpha: 5,
 };
 
 declare const MTLPixelFormat: {
@@ -929,32 +755,168 @@ declare const MTLPixelFormat: {
   X24_Stencil8: 262,
 };
 
-declare const MTLCurveBasis: {
-  BSpline: 0,
-  CatmullRom: 1,
+declare const MTLTextureType: {
+  Type1D: 0,
+  Type1DArray: 1,
+  Type2D: 2,
+  Type2DArray: 3,
+  Type2DMultisample: 4,
+  TypeCube: 5,
+  TypeCubeArray: 6,
+  Type3D: 7,
+  Type2DMultisampleArray: 8,
+  TypeTextureBuffer: 9,
+};
+
+declare const MTLHazardTrackingMode: {
+  Default: 0,
+  Untracked: 1,
+  Tracked: 2,
+};
+
+declare const MTLCPUCacheMode: {
+  DefaultCache: 0,
+  WriteCombined: 1,
+};
+
+declare const MTLPurgeableState: {
+  KeepCurrent: 1,
+  NonVolatile: 2,
+  Volatile: 3,
+  Empty: 4,
+};
+
+declare const MTLLanguageVersion: {
+  Version1_1: 65537,
+  Version1_2: 65538,
+  Version2_0: 131072,
+  Version2_1: 131073,
+  Version2_2: 131074,
+  Version2_3: 131075,
+  Version2_4: 131076,
+  Version3_0: 196608,
+  Version3_1: 196609,
+  Version3_2: 196610,
+};
+
+declare const MTLMultisampleStencilResolveFilter: {
+  Sample0: 0,
+  DepthResolvedSample: 1,
+};
+
+declare const MTLAttributeFormat: {
+  Invalid: 0,
+  UChar2: 1,
+  UChar3: 2,
+  UChar4: 3,
+  Char2: 4,
+  Char3: 5,
+  Char4: 6,
+  UChar2Normalized: 7,
+  UChar3Normalized: 8,
+  UChar4Normalized: 9,
+  Char2Normalized: 10,
+  Char3Normalized: 11,
+  Char4Normalized: 12,
+  UShort2: 13,
+  UShort3: 14,
+  UShort4: 15,
+  Short2: 16,
+  Short3: 17,
+  Short4: 18,
+  UShort2Normalized: 19,
+  UShort3Normalized: 20,
+  UShort4Normalized: 21,
+  Short2Normalized: 22,
+  Short3Normalized: 23,
+  Short4Normalized: 24,
+  Half2: 25,
+  Half3: 26,
+  Half4: 27,
+  Float: 28,
+  Float2: 29,
+  Float3: 30,
+  Float4: 31,
+  Int: 32,
+  Int2: 33,
+  Int3: 34,
+  Int4: 35,
+  UInt: 36,
+  UInt2: 37,
+  UInt3: 38,
+  UInt4: 39,
+  Int1010102Normalized: 40,
+  UInt1010102Normalized: 41,
+  UChar4Normalized_BGRA: 42,
+  UChar: 45,
+  Char: 46,
+  UCharNormalized: 47,
+  CharNormalized: 48,
+  UShort: 49,
+  Short: 50,
+  UShortNormalized: 51,
+  ShortNormalized: 52,
+  Half: 53,
+  FloatRG11B10: 54,
+  FloatRGB9E5: 55,
+};
+
+declare const MTLIOCommandQueueType: {
+  Concurrent: 0,
+  Serial: 1,
+};
+
+declare const MTLBlendOperation: {
+  Add: 0,
+  Subtract: 1,
+  ReverseSubtract: 2,
+  Min: 3,
+  Max: 4,
+};
+
+declare const MTLSamplerMinMagFilter: {
+  Nearest: 0,
+  Linear: 1,
+};
+
+declare const MTLTessellationControlPointIndexType: {
+  None: 0,
+  UInt16: 1,
+  UInt32: 2,
+};
+
+declare const MTLStoreActionOptions: {
+  None: 0,
+  CustomSamplePositions: 1,
+};
+
+declare const MTLMutability: {
+  Default: 0,
+  Mutable: 1,
+  Immutable: 2,
+};
+
+declare const MTLMathMode: {
+  Safe: 0,
+  Relaxed: 1,
+  Fast: 2,
+};
+
+declare const MTLCounterSampleBufferError: {
+  OutOfMemory: 0,
+  Invalid: 1,
+  Internal: 2,
+};
+
+declare const MTLSamplerMipFilter: {
+  NotMipmapped: 0,
+  Nearest: 1,
   Linear: 2,
-  Bezier: 3,
 };
 
-declare const MTLCommandBufferError: {
-  None: 0,
-  Internal: 1,
-  Timeout: 2,
-  PageFault: 3,
-  Blacklisted: 4,
-  AccessRevoked: 4,
-  NotPermitted: 7,
-  OutOfMemory: 8,
-  InvalidResource: 9,
-  Memoryless: 10,
-  DeviceRemoved: 11,
-  StackOverflow: 12,
-};
-
-declare const MTLCurveEndCaps: {
-  None: 0,
-  Disk: 1,
-  Sphere: 2,
+declare const MTLMotionBorderMode: {
+  Clamp: 0,
+  Vanish: 1,
 };
 
 declare const MTLTessellationPartitionMode: {
@@ -964,44 +926,128 @@ declare const MTLTessellationPartitionMode: {
   FractionalEven: 3,
 };
 
-declare const MTLIOCompressionStatus: {
-  Complete: 0,
-  Error: 1,
+declare const MTLResourceOptions: {
+  CPUCacheModeDefaultCache: 0,
+  CPUCacheModeWriteCombined: 1,
+  StorageModeShared: 0,
+  StorageModeManaged: 16,
+  StorageModePrivate: 32,
+  StorageModeMemoryless: 48,
+  HazardTrackingModeDefault: 0,
+  HazardTrackingModeUntracked: 256,
+  HazardTrackingModeTracked: 512,
+  OptionCPUCacheModeDefault: 0,
+  OptionCPUCacheModeWriteCombined: 1,
 };
 
-declare const MTLBlendFactor: {
-  Zero: 0,
-  One: 1,
-  SourceColor: 2,
-  OneMinusSourceColor: 3,
-  SourceAlpha: 4,
-  OneMinusSourceAlpha: 5,
-  DestinationColor: 6,
-  OneMinusDestinationColor: 7,
-  DestinationAlpha: 8,
-  OneMinusDestinationAlpha: 9,
-  SourceAlphaSaturated: 10,
-  BlendColor: 11,
-  OneMinusBlendColor: 12,
-  BlendAlpha: 13,
-  OneMinusBlendAlpha: 14,
-  Source1Color: 15,
-  OneMinusSource1Color: 16,
-  Source1Alpha: 17,
-  OneMinusSource1Alpha: 18,
+declare const MTLCaptureError: {
+  NotSupported: 1,
+  AlreadyCapturing: 2,
+  InvalidDescriptor: 3,
 };
 
-declare const MTLTessellationFactorFormat: {
-  MTLTessellationFactorFormatHalf: 0,
+declare const MTLCounterSamplingPoint: {
+  Stage: 0,
+  Draw: 1,
+  Dispatch: 2,
+  TileDispatch: 3,
+  Blit: 4,
 };
 
-declare const MTLTextureSwizzle: {
-  Zero: 0,
-  One: 1,
-  Red: 2,
-  Green: 3,
-  Blue: 4,
-  Alpha: 5,
+declare const MTLPipelineOption: {
+  None: 0,
+  ArgumentInfo: 1,
+  BindingInfo: 1,
+  BufferTypeInfo: 2,
+  FailOnBinaryArchiveMiss: 4,
+};
+
+declare const MTLAccelerationStructureInstanceOptions: {
+  None: 0,
+  DisableTriangleCulling: 1,
+  TriangleFrontFacingWindingCounterClockwise: 2,
+  Opaque: 4,
+  NonOpaque: 8,
+};
+
+declare const MTLTextureCompressionType: {
+  Lossless: 0,
+  Lossy: 1,
+};
+
+declare const MTLReadWriteTextureTier: {
+  TierNone: 0,
+  Tier1: 1,
+  Tier2: 2,
+};
+
+declare const MTLLogLevel: {
+  Undefined: 0,
+  Debug: 1,
+  Info: 2,
+  Notice: 3,
+  Error: 4,
+  Fault: 5,
+};
+
+declare const MTLStorageMode: {
+  Shared: 0,
+  Managed: 1,
+  Private: 2,
+  Memoryless: 3,
+};
+
+declare const MTLBinaryArchiveError: {
+  None: 0,
+  InvalidFile: 1,
+  UnexpectedElement: 2,
+  CompilationFailure: 3,
+  InternalError: 4,
+};
+
+declare const MTLSamplerBorderColor: {
+  TransparentBlack: 0,
+  OpaqueBlack: 1,
+  OpaqueWhite: 2,
+};
+
+declare const MTLBarrierScope: {
+  Buffers: 1,
+  Textures: 2,
+  RenderTargets: 4,
+};
+
+declare const MTLArgumentType: {
+  Buffer: 0,
+  ThreadgroupMemory: 1,
+  Texture: 2,
+  Sampler: 3,
+  ImageblockData: 16,
+  Imageblock: 17,
+  VisibleFunctionTable: 24,
+  PrimitiveAccelerationStructure: 25,
+  InstanceAccelerationStructure: 26,
+  IntersectionFunctionTable: 27,
+};
+
+declare const MTLFeatureSet: {
+  Set_macOS_GPUFamily1_v1: 10000,
+  Set_OSX_GPUFamily1_v1: 10000,
+  Set_macOS_GPUFamily1_v2: 10001,
+  Set_OSX_GPUFamily1_v2: 10001,
+  Set_macOS_ReadWriteTextureTier2: 10002,
+  Set_OSX_ReadWriteTextureTier2: 10002,
+  Set_macOS_GPUFamily1_v3: 10003,
+  Set_macOS_GPUFamily1_v4: 10004,
+  Set_macOS_GPUFamily2_v1: 10005,
+};
+
+declare const MTLRenderStages: {
+  Vertex: 1,
+  Fragment: 2,
+  Tile: 4,
+  Object: 8,
+  Mesh: 16,
 };
 
 declare const MTLIOError: {
@@ -1009,34 +1055,72 @@ declare const MTLIOError: {
   Internal: 2,
 };
 
-declare const MTLMutability: {
-  Default: 0,
-  Mutable: 1,
-  Immutable: 2,
+declare const MTLIOPriority: {
+  High: 0,
+  Normal: 1,
+  Low: 2,
 };
 
-declare const MTLCompareFunction: {
-  Never: 0,
-  Less: 1,
-  Equal: 2,
-  LessEqual: 3,
-  Greater: 4,
-  NotEqual: 5,
-  GreaterEqual: 6,
-  Always: 7,
+declare const MTLTriangleFillMode: {
+  Fill: 0,
+  Lines: 1,
 };
 
-declare const MTLPrimitiveType: {
-  Point: 0,
-  Line: 1,
-  LineStrip: 2,
-  Triangle: 3,
-  TriangleStrip: 4,
+declare const MTLResourceUsage: {
+  Read: 1,
+  Write: 2,
+  Sample: 4,
 };
 
-declare const MTLLogStateError: {
-  Size: 1,
-  MTLLogStateErrorInvalid: 2,
+declare const MTLCaptureDestination: {
+  DeveloperTools: 1,
+  GPUTraceDocument: 2,
+};
+
+declare const MTLIOCompressionStatus: {
+  Complete: 0,
+  Error: 1,
+};
+
+declare const MTLFunctionType: {
+  Vertex: 1,
+  Fragment: 2,
+  Kernel: 3,
+  Visible: 5,
+  Intersection: 6,
+  Mesh: 7,
+  Object: 8,
+};
+
+declare const MTLLoadAction: {
+  DontCare: 0,
+  Load: 1,
+  Clear: 2,
+};
+
+declare const MTLSamplerAddressMode: {
+  ClampToEdge: 0,
+  MirrorClampToEdge: 1,
+  Repeat: 2,
+  MirrorRepeat: 3,
+  ClampToZero: 4,
+  ClampToBorderColor: 5,
+};
+
+declare const MTLIndirectCommandType: {
+  Draw: 1,
+  DrawIndexed: 2,
+  DrawPatches: 4,
+  DrawIndexedPatches: 8,
+  ConcurrentDispatch: 32,
+  ConcurrentDispatchThreads: 64,
+  DrawMeshThreadgroups: 128,
+  DrawMeshThreads: 256,
+};
+
+declare const MTLTransformType: {
+  PackedFloat4x3: 0,
+  Component: 1,
 };
 
 declare const MTLStepFunction: {
@@ -1051,85 +1135,6 @@ declare const MTLStepFunction: {
   ThreadPositionInGridYIndexed: 8,
 };
 
-declare const MTLCullMode: {
-  None: 0,
-  Front: 1,
-  Back: 2,
-};
-
-declare const MTLGPUFamily: {
-  Apple1: 1001,
-  Apple2: 1002,
-  Apple3: 1003,
-  Apple4: 1004,
-  Apple5: 1005,
-  Apple6: 1006,
-  Apple7: 1007,
-  Apple8: 1008,
-  Apple9: 1009,
-  Mac1: 2001,
-  Mac2: 2002,
-  Common1: 3001,
-  Common2: 3002,
-  Common3: 3003,
-  MacCatalyst1: 4001,
-  MacCatalyst2: 4002,
-  Metal3: 5001,
-};
-
-declare const MTLTriangleFillMode: {
-  Fill: 0,
-  Lines: 1,
-};
-
-declare const MTLSparseTextureMappingMode: {
-  Map: 0,
-  Unmap: 1,
-};
-
-declare const MTLCurveType: {
-  Round: 0,
-  Flat: 1,
-};
-
-declare const MTLVisibilityResultMode: {
-  Disabled: 0,
-  Boolean: 1,
-  Counting: 2,
-};
-
-declare const MTLAccelerationStructureInstanceOptions: {
-  None: 0,
-  DisableTriangleCulling: 1,
-  TriangleFrontFacingWindingCounterClockwise: 2,
-  Opaque: 4,
-  NonOpaque: 8,
-};
-
-declare const MTLTessellationFactorStepFunction: {
-  Constant: 0,
-  PerPatch: 1,
-  PerInstance: 2,
-  PerPatchAndPerInstance: 3,
-};
-
-declare const MTLDepthClipMode: {
-  Clip: 0,
-  Clamp: 1,
-};
-
-declare const MTLIntersectionFunctionSignature: {
-  None: 0,
-  Instancing: 1,
-  TriangleData: 2,
-  WorldSpaceData: 4,
-  InstanceMotion: 8,
-  PrimitiveMotion: 16,
-  ExtendedLimits: 32,
-  MaxLevels: 64,
-  CurveData: 128,
-};
-
 declare const MTLPrimitiveTopologyClass: {
   Unspecified: 0,
   Point: 1,
@@ -1137,37 +1142,111 @@ declare const MTLPrimitiveTopologyClass: {
   Triangle: 3,
 };
 
-declare const MTLStoreAction: {
-  DontCare: 0,
-  Store: 1,
-  MultisampleResolve: 2,
-  StoreAndMultisampleResolve: 3,
-  Unknown: 4,
-  CustomSampleDepthStore: 5,
+declare const MTLCommandEncoderErrorState: {
+  Unknown: 0,
+  Completed: 1,
+  Affected: 2,
+  Pending: 3,
+  Faulted: 4,
 };
 
-declare const MTLWinding: {
-  MTLWindingClockwise: 0,
-  Counter: 1,
+declare const MTLTextureUsage: {
+  Unknown: 0,
+  ShaderRead: 1,
+  ShaderWrite: 2,
+  RenderTarget: 4,
+  PixelFormatView: 16,
+  ShaderAtomic: 32,
 };
 
-declare const MTLFunctionType: {
-  Vertex: 1,
-  Fragment: 2,
-  Kernel: 3,
-  Visible: 5,
-  Intersection: 6,
-  Mesh: 7,
-  Object: 8,
+declare const MTLCurveBasis: {
+  BSpline: 0,
+  CatmullRom: 1,
+  Linear: 2,
+  Bezier: 3,
 };
 
-declare const MTLLibraryOptimizationLevel: {
-  Default: 0,
-  Size: 1,
-};
+declare class MTLIndirectCommandBufferExecutionRange {
+  constructor(init?: MTLIndirectCommandBufferExecutionRange);
+  location: number;
+  length: number;
+}
 
-declare class MTLOrigin {
-  constructor(init?: MTLOrigin);
+declare class MTLAccelerationStructureInstanceDescriptor {
+  constructor(init?: MTLAccelerationStructureInstanceDescriptor);
+  transformationMatrix: _MTLPackedFloat4x3;
+  options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
+  mask: number;
+  intersectionFunctionTableOffset: number;
+  accelerationStructureIndex: number;
+}
+
+declare class MTLPackedFloatQuaternion {
+  constructor(init?: MTLPackedFloatQuaternion);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class MTLTriangleTessellationFactorsHalf {
+  constructor(init?: MTLTriangleTessellationFactorsHalf);
+  edgeTessellationFactor: unknown /* const array */;
+  insideTessellationFactor: number;
+}
+
+declare class MTLDrawPatchIndirectArguments {
+  constructor(init?: MTLDrawPatchIndirectArguments);
+  patchCount: number;
+  instanceCount: number;
+  patchStart: number;
+  baseInstance: number;
+}
+
+declare class MTLVertexAmplificationViewMapping {
+  constructor(init?: MTLVertexAmplificationViewMapping);
+  viewportArrayIndexOffset: number;
+  renderTargetArrayIndexOffset: number;
+}
+
+declare class MTLDrawIndexedPrimitivesIndirectArguments {
+  constructor(init?: MTLDrawIndexedPrimitivesIndirectArguments);
+  indexCount: number;
+  instanceCount: number;
+  indexStart: number;
+  baseVertex: number;
+  baseInstance: number;
+}
+
+declare class MTLViewport {
+  constructor(init?: MTLViewport);
+  originX: number;
+  originY: number;
+  width: number;
+  height: number;
+  znear: number;
+  zfar: number;
+}
+
+declare class MTLStageInRegionIndirectArguments {
+  constructor(init?: MTLStageInRegionIndirectArguments);
+  stageInOrigin: unknown /* const array */;
+  stageInSize: unknown /* const array */;
+}
+
+declare class MTLResourceID {
+  constructor(init?: MTLResourceID);
+  _impl: number;
+}
+
+declare class MTLRegion {
+  constructor(init?: MTLRegion);
+  origin: MTLOrigin;
+  size: MTLSize;
+}
+
+declare class unnamed_3271941155399071732 {
+  constructor(init?: unnamed_3271941155399071732);
   x: number;
   y: number;
   z: number;
@@ -1185,6 +1264,75 @@ declare class MTLCounterResultStatistic {
   computeKernelInvocations: number;
 }
 
+declare class MTLIndirectAccelerationStructureMotionInstanceDescriptor {
+  constructor(init?: MTLIndirectAccelerationStructureMotionInstanceDescriptor);
+  options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
+  mask: number;
+  intersectionFunctionTableOffset: number;
+  userID: number;
+  accelerationStructureID: MTLResourceID;
+  motionTransformsStartIndex: number;
+  motionTransformsCount: number;
+  motionStartBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
+  motionEndBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
+  motionStartTime: number;
+  motionEndTime: number;
+}
+
+declare class MTLSize {
+  constructor(init?: MTLSize);
+  width: number;
+  height: number;
+  depth: number;
+}
+
+declare class MTLQuadTessellationFactorsHalf {
+  constructor(init?: MTLQuadTessellationFactorsHalf);
+  edgeTessellationFactor: unknown /* const array */;
+  insideTessellationFactor: unknown /* const array */;
+}
+
+declare class MTLAccelerationStructureUserIDInstanceDescriptor {
+  constructor(init?: MTLAccelerationStructureUserIDInstanceDescriptor);
+  transformationMatrix: _MTLPackedFloat4x3;
+  options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
+  mask: number;
+  intersectionFunctionTableOffset: number;
+  accelerationStructureIndex: number;
+  userID: number;
+}
+
+declare class MTLCounterResultStageUtilization {
+  constructor(init?: MTLCounterResultStageUtilization);
+  totalCycles: number;
+  vertexCycles: number;
+  tessellationCycles: number;
+  postTessellationVertexCycles: number;
+  fragmentCycles: number;
+  renderTargetCycles: number;
+}
+
+declare class MTLOrigin {
+  constructor(init?: MTLOrigin);
+  x: number;
+  y: number;
+  z: number;
+}
+
+declare class MTLComponentTransform {
+  constructor(init?: MTLComponentTransform);
+  scale: _MTLPackedFloat3;
+  shear: _MTLPackedFloat3;
+  pivot: _MTLPackedFloat3;
+  rotation: MTLPackedFloatQuaternion;
+  translation: _MTLPackedFloat3;
+}
+
+declare class MTLDispatchThreadgroupsIndirectArguments {
+  constructor(init?: MTLDispatchThreadgroupsIndirectArguments);
+  threadgroupsPerGrid: unknown /* const array */;
+}
+
 declare class MTLScissorRect {
   constructor(init?: MTLScissorRect);
   x: number;
@@ -1193,10 +1341,23 @@ declare class MTLScissorRect {
   height: number;
 }
 
-declare class MTLIndirectCommandBufferExecutionRange {
-  constructor(init?: MTLIndirectCommandBufferExecutionRange);
-  location: number;
-  length: number;
+declare class _MTLAxisAlignedBoundingBox {
+  constructor(init?: _MTLAxisAlignedBoundingBox);
+  min: _MTLPackedFloat3;
+  max: _MTLPackedFloat3;
+}
+
+declare class MTLDrawPrimitivesIndirectArguments {
+  constructor(init?: MTLDrawPrimitivesIndirectArguments);
+  vertexCount: number;
+  instanceCount: number;
+  vertexStart: number;
+  baseInstance: number;
+}
+
+declare class _MTLPackedFloat4x3 {
+  constructor(init?: _MTLPackedFloat4x3);
+  columns: unknown /* const array */;
 }
 
 declare class MTLIndirectAccelerationStructureInstanceDescriptor {
@@ -1207,6 +1368,50 @@ declare class MTLIndirectAccelerationStructureInstanceDescriptor {
   intersectionFunctionTableOffset: number;
   userID: number;
   accelerationStructureID: MTLResourceID;
+}
+
+declare class MTLClearColor {
+  constructor(init?: MTLClearColor);
+  red: number;
+  green: number;
+  blue: number;
+  alpha: number;
+}
+
+declare class _MTLPackedFloat3 {
+  constructor(init?: _MTLPackedFloat3);
+}
+
+declare class MTLSamplePosition {
+  constructor(init?: MTLSamplePosition);
+  x: number;
+  y: number;
+}
+
+declare class MTLAccelerationStructureSizes {
+  constructor(init?: MTLAccelerationStructureSizes);
+  accelerationStructureSize: number;
+  buildScratchBufferSize: number;
+  refitScratchBufferSize: number;
+}
+
+declare class MTLCounterResultTimestamp {
+  constructor(init?: MTLCounterResultTimestamp);
+  timestamp: number;
+}
+
+declare class MTLSizeAndAlign {
+  constructor(init?: MTLSizeAndAlign);
+  size: number;
+  align: number;
+}
+
+declare class MTLTextureSwizzleChannels {
+  constructor(init?: MTLTextureSwizzleChannels);
+  red: interop.Enum<typeof MTLTextureSwizzle>;
+  green: interop.Enum<typeof MTLTextureSwizzle>;
+  blue: interop.Enum<typeof MTLTextureSwizzle>;
+  alpha: interop.Enum<typeof MTLTextureSwizzle>;
 }
 
 declare class MTLAccelerationStructureMotionInstanceDescriptor {
@@ -1224,182 +1429,6 @@ declare class MTLAccelerationStructureMotionInstanceDescriptor {
   motionEndTime: number;
 }
 
-declare class MTLAccelerationStructureUserIDInstanceDescriptor {
-  constructor(init?: MTLAccelerationStructureUserIDInstanceDescriptor);
-  transformationMatrix: _MTLPackedFloat4x3;
-  options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
-  mask: number;
-  intersectionFunctionTableOffset: number;
-  accelerationStructureIndex: number;
-  userID: number;
-}
-
-declare class MTLAccelerationStructureInstanceDescriptor {
-  constructor(init?: MTLAccelerationStructureInstanceDescriptor);
-  transformationMatrix: _MTLPackedFloat4x3;
-  options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
-  mask: number;
-  intersectionFunctionTableOffset: number;
-  accelerationStructureIndex: number;
-}
-
-declare class MTLComponentTransform {
-  constructor(init?: MTLComponentTransform);
-  scale: _MTLPackedFloat3;
-  shear: _MTLPackedFloat3;
-  pivot: _MTLPackedFloat3;
-  rotation: MTLPackedFloatQuaternion;
-  translation: _MTLPackedFloat3;
-}
-
-declare class _MTLAxisAlignedBoundingBox {
-  constructor(init?: _MTLAxisAlignedBoundingBox);
-  min: _MTLPackedFloat3;
-  max: _MTLPackedFloat3;
-}
-
-declare class MTLQuadTessellationFactorsHalf {
-  constructor(init?: MTLQuadTessellationFactorsHalf);
-  edgeTessellationFactor: unknown /* const array */;
-  insideTessellationFactor: unknown /* const array */;
-}
-
-declare class MTLStageInRegionIndirectArguments {
-  constructor(init?: MTLStageInRegionIndirectArguments);
-  stageInOrigin: unknown /* const array */;
-  stageInSize: unknown /* const array */;
-}
-
-declare class MTLClearColor {
-  constructor(init?: MTLClearColor);
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
-}
-
-declare class MTLSizeAndAlign {
-  constructor(init?: MTLSizeAndAlign);
-  size: number;
-  align: number;
-}
-
-declare class MTLAccelerationStructureSizes {
-  constructor(init?: MTLAccelerationStructureSizes);
-  accelerationStructureSize: number;
-  buildScratchBufferSize: number;
-  refitScratchBufferSize: number;
-}
-
-declare class MTLCounterResultStageUtilization {
-  constructor(init?: MTLCounterResultStageUtilization);
-  totalCycles: number;
-  vertexCycles: number;
-  tessellationCycles: number;
-  postTessellationVertexCycles: number;
-  fragmentCycles: number;
-  renderTargetCycles: number;
-}
-
-declare class MTLCounterResultTimestamp {
-  constructor(init?: MTLCounterResultTimestamp);
-  timestamp: number;
-}
-
-declare class MTLTextureSwizzleChannels {
-  constructor(init?: MTLTextureSwizzleChannels);
-  red: interop.Enum<typeof MTLTextureSwizzle>;
-  green: interop.Enum<typeof MTLTextureSwizzle>;
-  blue: interop.Enum<typeof MTLTextureSwizzle>;
-  alpha: interop.Enum<typeof MTLTextureSwizzle>;
-}
-
-declare class MTLResourceID {
-  constructor(init?: MTLResourceID);
-  _impl: number;
-}
-
-declare class MTLRegion {
-  constructor(init?: MTLRegion);
-  origin: MTLOrigin;
-  size: MTLSize;
-}
-
-declare class MTLSize {
-  constructor(init?: MTLSize);
-  width: number;
-  height: number;
-  depth: number;
-}
-
-declare class MTLIndirectAccelerationStructureMotionInstanceDescriptor {
-  constructor(init?: MTLIndirectAccelerationStructureMotionInstanceDescriptor);
-  options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
-  mask: number;
-  intersectionFunctionTableOffset: number;
-  userID: number;
-  accelerationStructureID: MTLResourceID;
-  motionTransformsStartIndex: number;
-  motionTransformsCount: number;
-  motionStartBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
-  motionEndBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
-  motionStartTime: number;
-  motionEndTime: number;
-}
-
-declare class MTLTriangleTessellationFactorsHalf {
-  constructor(init?: MTLTriangleTessellationFactorsHalf);
-  edgeTessellationFactor: unknown /* const array */;
-  insideTessellationFactor: number;
-}
-
-declare class MTLPackedFloatQuaternion {
-  constructor(init?: MTLPackedFloatQuaternion);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class MTLDrawIndexedPrimitivesIndirectArguments {
-  constructor(init?: MTLDrawIndexedPrimitivesIndirectArguments);
-  indexCount: number;
-  instanceCount: number;
-  indexStart: number;
-  baseVertex: number;
-  baseInstance: number;
-}
-
-declare class _MTLPackedFloat3 {
-  constructor(init?: _MTLPackedFloat3);
-}
-
-declare class MTLViewport {
-  constructor(init?: MTLViewport);
-  originX: number;
-  originY: number;
-  width: number;
-  height: number;
-  znear: number;
-  zfar: number;
-}
-
-declare class MTLDrawPrimitivesIndirectArguments {
-  constructor(init?: MTLDrawPrimitivesIndirectArguments);
-  vertexCount: number;
-  instanceCount: number;
-  vertexStart: number;
-  baseInstance: number;
-}
-
-declare class MTLDrawPatchIndirectArguments {
-  constructor(init?: MTLDrawPatchIndirectArguments);
-  patchCount: number;
-  instanceCount: number;
-  patchStart: number;
-  baseInstance: number;
-}
-
 declare class MTLMapIndirectArguments {
   constructor(init?: MTLMapIndirectArguments);
   regionOriginX: number;
@@ -1412,40 +1441,11 @@ declare class MTLMapIndirectArguments {
   sliceId: number;
 }
 
-declare class MTLVertexAmplificationViewMapping {
-  constructor(init?: MTLVertexAmplificationViewMapping);
-  viewportArrayIndexOffset: number;
-  renderTargetArrayIndexOffset: number;
-}
-
-declare class unnamed_1027306668930069009 {
-  constructor(init?: unnamed_1027306668930069009);
-  x: number;
-  y: number;
-  z: number;
-}
-
-declare class MTLSamplePosition {
-  constructor(init?: MTLSamplePosition);
-  x: number;
-  y: number;
-}
-
-declare class _MTLPackedFloat4x3 {
-  constructor(init?: _MTLPackedFloat4x3);
-  columns: unknown /* const array */;
-}
-
-declare class MTLDispatchThreadgroupsIndirectArguments {
-  constructor(init?: MTLDispatchThreadgroupsIndirectArguments);
-  threadgroupsPerGrid: unknown /* const array */;
-}
-
-type unnamed_8292664355892592979Descriptor = 
+type unnamed_12138143396734061684Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_8292664355892592979 {
-  constructor(init?: unnamed_8292664355892592979Descriptor);
+declare class unnamed_12138143396734061684 {
+  constructor(init?: unnamed_12138143396734061684Descriptor);
   elements: unknown /* const array */;
 }
 
@@ -1465,52 +1465,244 @@ declare function MTLIOCompressionContextAppendData(context: interop.PointerConve
 
 declare function MTLIOFlushAndDestroyCompressionContext(context: interop.PointerConvertible): interop.Enum<typeof MTLIOCompressionStatus>;
 
-declare interface MTLVisibleFunctionTable extends MTLResource {
-  readonly gpuResourceID: MTLResourceID;
+declare interface MTLAccelerationStructureCommandEncoder extends MTLCommandEncoder {
+  buildAccelerationStructureDescriptorScratchBufferScratchBufferOffset(accelerationStructure: MTLAccelerationStructure, descriptor: MTLAccelerationStructureDescriptor, scratchBuffer: MTLBuffer, scratchBufferOffset: number): void;
 
-  setFunctionAtIndex(function$: MTLFunctionHandle | null, index: number): void;
+  refitAccelerationStructureDescriptorDestinationScratchBufferScratchBufferOffset(sourceAccelerationStructure: MTLAccelerationStructure, descriptor: MTLAccelerationStructureDescriptor, destinationAccelerationStructure: MTLAccelerationStructure | null, scratchBuffer: MTLBuffer | null, scratchBufferOffset: number): void;
 
-  setFunctionsWithRange(functions: interop.PointerConvertible, range: _NSRange): void;
+  refitAccelerationStructureDescriptorDestinationScratchBufferScratchBufferOffsetOptions(sourceAccelerationStructure: MTLAccelerationStructure, descriptor: MTLAccelerationStructureDescriptor, destinationAccelerationStructure: MTLAccelerationStructure | null, scratchBuffer: MTLBuffer | null, scratchBufferOffset: number, options: interop.Enum<typeof MTLAccelerationStructureRefitOptions>): void;
+
+  copyAccelerationStructureToAccelerationStructure(sourceAccelerationStructure: MTLAccelerationStructure, destinationAccelerationStructure: MTLAccelerationStructure): void;
+
+  writeCompactedAccelerationStructureSizeToBufferOffset(accelerationStructure: MTLAccelerationStructure, buffer: MTLBuffer, offset: number): void;
+
+  writeCompactedAccelerationStructureSizeToBufferOffsetSizeDataType(accelerationStructure: MTLAccelerationStructure, buffer: MTLBuffer, offset: number, sizeDataType: interop.Enum<typeof MTLDataType>): void;
+
+  copyAndCompactAccelerationStructureToAccelerationStructure(sourceAccelerationStructure: MTLAccelerationStructure, destinationAccelerationStructure: MTLAccelerationStructure): void;
+
+  updateFence(fence: MTLFence): void;
+
+  waitForFence(fence: MTLFence): void;
+
+  useResourceUsage(resource: MTLResource, usage: interop.Enum<typeof MTLResourceUsage>): void;
+
+  useResourcesCountUsage(resources: interop.PointerConvertible, count: number, usage: interop.Enum<typeof MTLResourceUsage>): void;
+
+  useHeap(heap: MTLHeap): void;
+
+  useHeapsCount(heaps: interop.PointerConvertible, count: number): void;
+
+  sampleCountersInBufferAtSampleIndexWithBarrier(sampleBuffer: MTLCounterSampleBuffer, sampleIndex: number, barrier: boolean): void;
 }
 
-declare class MTLVisibleFunctionTable extends NativeObject implements MTLVisibleFunctionTable {
+declare class MTLAccelerationStructureCommandEncoder extends NativeObject implements MTLAccelerationStructureCommandEncoder {
 }
 
-declare interface MTLResidencySet extends NSObjectProtocol {
+declare interface MTLTextureBinding extends MTLBinding {
+  readonly textureType: interop.Enum<typeof MTLTextureType>;
+
+  readonly textureDataType: interop.Enum<typeof MTLDataType>;
+
+  readonly depthTexture: boolean;
+
+  readonly arrayLength: number;
+
+  isDepthTexture(): boolean;
+}
+
+declare class MTLTextureBinding extends NativeObject implements MTLTextureBinding {
+}
+
+declare interface MTLLibrary extends NSObjectProtocol {
+  label: string;
+
+  readonly device: MTLDevice;
+
+  newFunctionWithName(functionName: string): MTLFunction;
+
+  newFunctionWithNameConstantValuesError(name: string, constantValues: MTLFunctionConstantValues, error: interop.PointerConvertible): MTLFunction;
+
+  newFunctionWithNameConstantValuesCompletionHandler(name: string, constantValues: MTLFunctionConstantValues, completionHandler: (p1: MTLFunction, p2: NSError) => void | null): void;
+
+  newFunctionWithDescriptorCompletionHandler(descriptor: MTLFunctionDescriptor, completionHandler: (p1: MTLFunction, p2: NSError) => void | null): void;
+
+  newFunctionWithDescriptorError(descriptor: MTLFunctionDescriptor, error: interop.PointerConvertible): MTLFunction;
+
+  newIntersectionFunctionWithDescriptorCompletionHandler(descriptor: MTLIntersectionFunctionDescriptor, completionHandler: (p1: MTLFunction, p2: NSError) => void | null): void;
+
+  newIntersectionFunctionWithDescriptorError(descriptor: MTLIntersectionFunctionDescriptor, error: interop.PointerConvertible): MTLFunction;
+
+  readonly functionNames: NSArray;
+
+  readonly type: interop.Enum<typeof MTLLibraryType>;
+
+  readonly installName: string;
+
+  setLabel(label: string | null): void;
+}
+
+declare class MTLLibrary extends NativeObject implements MTLLibrary {
+}
+
+declare interface MTLFunctionLog extends NSObjectProtocol {
+  readonly type: interop.Enum<typeof MTLFunctionLogType>;
+
+  readonly encoderLabel: string;
+
+  readonly function$: MTLFunction;
+
+  readonly debugLocation: MTLFunctionLogDebugLocation;
+
+  function(): MTLFunction | null;
+}
+
+declare class MTLFunctionLog extends NativeObject implements MTLFunctionLog {
+}
+
+declare interface MTLRasterizationRateMap extends NSObjectProtocol {
   readonly device: MTLDevice;
 
   readonly label: string;
 
-  readonly allocatedSize: number;
+  readonly screenSize: MTLSize;
 
-  requestResidency(): void;
+  readonly physicalGranularity: MTLSize;
 
-  endResidency(): void;
+  readonly layerCount: number;
 
-  addAllocation(allocation: MTLAllocation): void;
+  readonly parameterBufferSizeAndAlign: MTLSizeAndAlign;
 
-  addAllocationsCount(allocations: interop.PointerConvertible, count: number): void;
+  copyParameterDataToBufferOffset(buffer: MTLBuffer, offset: number): void;
 
-  removeAllocation(allocation: MTLAllocation): void;
+  physicalSizeForLayer(layerIndex: number): MTLSize;
 
-  removeAllocationsCount(allocations: interop.PointerConvertible, count: number): void;
+  mapScreenToPhysicalCoordinatesForLayer(screenCoordinates: MTLSamplePosition, layerIndex: number): MTLSamplePosition;
 
-  removeAllAllocations(): void;
-
-  containsAllocation(anAllocation: MTLAllocation): boolean;
-
-  readonly allAllocations: NSArray;
-
-  readonly allocationCount: number;
-
-  commit(): void;
+  mapPhysicalToScreenCoordinatesForLayer(physicalCoordinates: MTLSamplePosition, layerIndex: number): MTLSamplePosition;
 }
 
-declare class MTLResidencySet extends NativeObject implements MTLResidencySet {
+declare class MTLRasterizationRateMap extends NativeObject implements MTLRasterizationRateMap {
+}
+
+declare interface MTLSharedEvent extends MTLEvent {
+  notifyListenerAtValueBlock(listener: MTLSharedEventListener, value: number, block: (p1: MTLSharedEvent, p2: number) => void): void;
+
+  newSharedEventHandle(): MTLSharedEventHandle;
+
+  waitUntilSignaledValueTimeoutMS(value: number, milliseconds: number): boolean;
+
+  signaledValue: number;
+
+  setSignaledValue(signaledValue: number): void;
+}
+
+declare class MTLSharedEvent extends NativeObject implements MTLSharedEvent {
+}
+
+declare interface MTLCommandBuffer extends NSObjectProtocol {
+  readonly device: MTLDevice;
+
+  readonly commandQueue: MTLCommandQueue;
+
+  readonly retainedReferences: boolean;
+
+  readonly errorOptions: interop.Enum<typeof MTLCommandBufferErrorOption>;
+
+  label: string;
+
+  readonly kernelStartTime: number;
+
+  readonly kernelEndTime: number;
+
+  readonly logs: MTLLogContainer;
+
+  readonly GPUStartTime: number;
+
+  readonly GPUEndTime: number;
+
+  enqueue(): void;
+
+  commit(): void;
+
+  addScheduledHandler(block: (p1: MTLCommandBuffer) => void): void;
+
+  presentDrawable(drawable: MTLDrawable): void;
+
+  presentDrawableAtTime(drawable: MTLDrawable, presentationTime: number): void;
+
+  presentDrawableAfterMinimumDuration(drawable: MTLDrawable, duration: number): void;
+
+  waitUntilScheduled(): void;
+
+  addCompletedHandler(block: (p1: MTLCommandBuffer) => void): void;
+
+  waitUntilCompleted(): void;
+
+  readonly status: interop.Enum<typeof MTLCommandBufferStatus>;
+
+  readonly error: NSError;
+
+  blitCommandEncoder(): MTLBlitCommandEncoder;
+
+  renderCommandEncoderWithDescriptor(renderPassDescriptor: MTLRenderPassDescriptor): MTLRenderCommandEncoder;
+
+  computeCommandEncoderWithDescriptor(computePassDescriptor: MTLComputePassDescriptor): MTLComputeCommandEncoder;
+
+  blitCommandEncoderWithDescriptor(blitPassDescriptor: MTLBlitPassDescriptor): MTLBlitCommandEncoder;
+
+  computeCommandEncoder(): MTLComputeCommandEncoder;
+
+  computeCommandEncoderWithDispatchType(dispatchType: interop.Enum<typeof MTLDispatchType>): MTLComputeCommandEncoder;
+
+  encodeWaitForEventValue(event: MTLEvent, value: number): void;
+
+  encodeSignalEventValue(event: MTLEvent, value: number): void;
+
+  parallelRenderCommandEncoderWithDescriptor(renderPassDescriptor: MTLRenderPassDescriptor): MTLParallelRenderCommandEncoder;
+
+  resourceStateCommandEncoder(): MTLResourceStateCommandEncoder;
+
+  resourceStateCommandEncoderWithDescriptor(resourceStatePassDescriptor: MTLResourceStatePassDescriptor): MTLResourceStateCommandEncoder;
+
+  accelerationStructureCommandEncoder(): MTLAccelerationStructureCommandEncoder;
+
+  accelerationStructureCommandEncoderWithDescriptor(descriptor: MTLAccelerationStructurePassDescriptor): MTLAccelerationStructureCommandEncoder;
+
+  pushDebugGroup(string: string): void;
+
+  popDebugGroup(): void;
+
+  useResidencySet(residencySet: MTLResidencySet): void;
+
+  useResidencySetsCount(residencySets: interop.PointerConvertible, count: number): void;
+
+  setLabel(label: string | null): void;
+}
+
+declare class MTLCommandBuffer extends NativeObject implements MTLCommandBuffer {
+}
+
+declare interface MTLResourceStateCommandEncoder extends MTLCommandEncoder {
+  updateTextureMappingsModeRegionsMipLevelsSlicesNumRegions?(texture: MTLTexture, mode: interop.Enum<typeof MTLSparseTextureMappingMode>, regions: interop.PointerConvertible, mipLevels: interop.PointerConvertible, slices: interop.PointerConvertible, numRegions: number): void;
+
+  updateTextureMappingModeRegionMipLevelSlice?(texture: MTLTexture, mode: interop.Enum<typeof MTLSparseTextureMappingMode>, region: MTLRegion, mipLevel: number, slice: number): void;
+
+  updateTextureMappingModeIndirectBufferIndirectBufferOffset?(texture: MTLTexture, mode: interop.Enum<typeof MTLSparseTextureMappingMode>, indirectBuffer: MTLBuffer, indirectBufferOffset: number): void;
+
+  updateFence?(fence: MTLFence): void;
+
+  waitForFence?(fence: MTLFence): void;
+
+  moveTextureMappingsFromTextureSourceSliceSourceLevelSourceOriginSourceSizeToTextureDestinationSliceDestinationLevelDestinationOrigin?(sourceTexture: MTLTexture, sourceSlice: number, sourceLevel: number, sourceOrigin: MTLOrigin, sourceSize: MTLSize, destinationTexture: MTLTexture, destinationSlice: number, destinationLevel: number, destinationOrigin: MTLOrigin): void;
+}
+
+declare class MTLResourceStateCommandEncoder extends NativeObject implements MTLResourceStateCommandEncoder {
 }
 
 declare interface MTLIOFileHandle extends NSObjectProtocol {
   label: string;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLIOFileHandle extends NativeObject implements MTLIOFileHandle {
@@ -1561,6 +1753,8 @@ declare interface MTLBinaryArchive extends NSObjectProtocol {
   serializeToURLError(url: NSURL, error: interop.PointerConvertible): boolean;
 
   addFunctionWithDescriptorLibraryError(descriptor: MTLFunctionDescriptor, library: MTLLibrary, error: interop.PointerConvertible): boolean;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLBinaryArchive extends NativeObject implements MTLBinaryArchive {
@@ -1588,59 +1782,53 @@ declare interface MTLDynamicLibrary extends NSObjectProtocol {
   readonly installName: string;
 
   serializeToURLError(url: NSURL, error: interop.PointerConvertible): boolean;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLDynamicLibrary extends NativeObject implements MTLDynamicLibrary {
 }
 
-declare interface MTLFunctionLog extends NSObjectProtocol {
-  readonly type: interop.Enum<typeof MTLFunctionLogType>;
+declare interface MTLCommandQueue extends NSObjectProtocol {
+  label: string;
 
-  readonly encoderLabel: string;
+  readonly device: MTLDevice;
 
-  readonly function: MTLFunction;
+  commandBuffer(): MTLCommandBuffer;
 
-  readonly debugLocation: MTLFunctionLogDebugLocation;
+  commandBufferWithDescriptor(descriptor: MTLCommandBufferDescriptor): MTLCommandBuffer;
+
+  commandBufferWithUnretainedReferences(): MTLCommandBuffer;
+
+  insertDebugCaptureBoundary(): void;
+
+  addResidencySet(residencySet: MTLResidencySet): void;
+
+  addResidencySetsCount(residencySets: interop.PointerConvertible, count: number): void;
+
+  removeResidencySet(residencySet: MTLResidencySet): void;
+
+  removeResidencySetsCount(residencySets: interop.PointerConvertible, count: number): void;
+
+  setLabel(label: string | null): void;
 }
 
-declare class MTLFunctionLog extends NativeObject implements MTLFunctionLog {
+declare class MTLCommandQueue extends NativeObject implements MTLCommandQueue {
 }
 
-declare interface MTLIndirectRenderCommand extends NSObjectProtocol {
-  setRenderPipelineState(pipelineState: MTLRenderPipelineState): void;
+declare interface MTLIndirectCommandBuffer extends MTLResource {
+  readonly size: number;
 
-  setVertexBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
+  readonly gpuResourceID: MTLResourceID;
 
-  setFragmentBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
+  resetWithRange(range: _NSRange): void;
 
-  setVertexBufferOffsetAttributeStrideAtIndex(buffer: MTLBuffer, offset: number, stride: number, index: number): void;
+  indirectRenderCommandAtIndex(commandIndex: number): MTLIndirectRenderCommand;
 
-  drawPatchesPatchStartPatchCountPatchIndexBufferPatchIndexBufferOffsetInstanceCountBaseInstanceTessellationFactorBufferTessellationFactorBufferOffsetTessellationFactorBufferInstanceStride(numberOfPatchControlPoints: number, patchStart: number, patchCount: number, patchIndexBuffer: MTLBuffer | null, patchIndexBufferOffset: number, instanceCount: number, baseInstance: number, buffer: MTLBuffer, offset: number, instanceStride: number): void;
-
-  drawIndexedPatchesPatchStartPatchCountPatchIndexBufferPatchIndexBufferOffsetControlPointIndexBufferControlPointIndexBufferOffsetInstanceCountBaseInstanceTessellationFactorBufferTessellationFactorBufferOffsetTessellationFactorBufferInstanceStride(numberOfPatchControlPoints: number, patchStart: number, patchCount: number, patchIndexBuffer: MTLBuffer | null, patchIndexBufferOffset: number, controlPointIndexBuffer: MTLBuffer, controlPointIndexBufferOffset: number, instanceCount: number, baseInstance: number, buffer: MTLBuffer, offset: number, instanceStride: number): void;
-
-  drawPrimitivesVertexStartVertexCountInstanceCountBaseInstance(primitiveType: interop.Enum<typeof MTLPrimitiveType>, vertexStart: number, vertexCount: number, instanceCount: number, baseInstance: number): void;
-
-  drawIndexedPrimitivesIndexCountIndexTypeIndexBufferIndexBufferOffsetInstanceCountBaseVertexBaseInstance(primitiveType: interop.Enum<typeof MTLPrimitiveType>, indexCount: number, indexType: interop.Enum<typeof MTLIndexType>, indexBuffer: MTLBuffer, indexBufferOffset: number, instanceCount: number, baseVertex: number, baseInstance: number): void;
-
-  setObjectThreadgroupMemoryLengthAtIndex(length: number, index: number): void;
-
-  setObjectBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
-
-  setMeshBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
-
-  drawMeshThreadgroupsThreadsPerObjectThreadgroupThreadsPerMeshThreadgroup(threadgroupsPerGrid: MTLSize, threadsPerObjectThreadgroup: MTLSize, threadsPerMeshThreadgroup: MTLSize): void;
-
-  drawMeshThreadsThreadsPerObjectThreadgroupThreadsPerMeshThreadgroup(threadsPerGrid: MTLSize, threadsPerObjectThreadgroup: MTLSize, threadsPerMeshThreadgroup: MTLSize): void;
-
-  setBarrier(): void;
-
-  clearBarrier(): void;
-
-  reset(): void;
+  indirectComputeCommandAtIndex(commandIndex: number): MTLIndirectComputeCommand;
 }
 
-declare class MTLIndirectRenderCommand extends NativeObject implements MTLIndirectRenderCommand {
+declare class MTLIndirectCommandBuffer extends NativeObject implements MTLIndirectCommandBuffer {
 }
 
 declare interface MTLArgumentEncoder extends NSObjectProtocol {
@@ -1693,6 +1881,8 @@ declare interface MTLArgumentEncoder extends NSObjectProtocol {
   setIntersectionFunctionTableAtIndex(intersectionFunctionTable: MTLIntersectionFunctionTable | null, index: number): void;
 
   setIntersectionFunctionTablesWithRange(intersectionFunctionTables: interop.PointerConvertible, range: _NSRange): void;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLArgumentEncoder extends NativeObject implements MTLArgumentEncoder {
@@ -1738,6 +1928,8 @@ declare interface MTLHeap extends MTLAllocation {
   newAccelerationStructureWithSizeOffset(size: number, offset: number): MTLAccelerationStructure;
 
   newAccelerationStructureWithDescriptorOffset(descriptor: MTLAccelerationStructureDescriptor, offset: number): MTLAccelerationStructure;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLHeap extends NativeObject implements MTLHeap {
@@ -2120,112 +2312,6 @@ declare interface MTLBlitCommandEncoder extends MTLCommandEncoder {
 declare class MTLBlitCommandEncoder extends NativeObject implements MTLBlitCommandEncoder {
 }
 
-declare interface MTLCommandQueue extends NSObjectProtocol {
-  label: string;
-
-  readonly device: MTLDevice;
-
-  commandBuffer(): MTLCommandBuffer;
-
-  commandBufferWithDescriptor(descriptor: MTLCommandBufferDescriptor): MTLCommandBuffer;
-
-  commandBufferWithUnretainedReferences(): MTLCommandBuffer;
-
-  insertDebugCaptureBoundary(): void;
-
-  addResidencySet(residencySet: MTLResidencySet): void;
-
-  addResidencySetsCount(residencySets: interop.PointerConvertible, count: number): void;
-
-  removeResidencySet(residencySet: MTLResidencySet): void;
-
-  removeResidencySetsCount(residencySets: interop.PointerConvertible, count: number): void;
-}
-
-declare class MTLCommandQueue extends NativeObject implements MTLCommandQueue {
-}
-
-declare interface MTLCommandBuffer extends NSObjectProtocol {
-  readonly device: MTLDevice;
-
-  readonly commandQueue: MTLCommandQueue;
-
-  readonly retainedReferences: boolean;
-
-  readonly errorOptions: interop.Enum<typeof MTLCommandBufferErrorOption>;
-
-  label: string;
-
-  readonly kernelStartTime: number;
-
-  readonly kernelEndTime: number;
-
-  readonly logs: MTLLogContainer;
-
-  readonly GPUStartTime: number;
-
-  readonly GPUEndTime: number;
-
-  enqueue(): void;
-
-  commit(): void;
-
-  addScheduledHandler(block: (p1: MTLCommandBuffer) => void): void;
-
-  presentDrawable(drawable: MTLDrawable): void;
-
-  presentDrawableAtTime(drawable: MTLDrawable, presentationTime: number): void;
-
-  presentDrawableAfterMinimumDuration(drawable: MTLDrawable, duration: number): void;
-
-  waitUntilScheduled(): void;
-
-  addCompletedHandler(block: (p1: MTLCommandBuffer) => void): void;
-
-  waitUntilCompleted(): void;
-
-  readonly status: interop.Enum<typeof MTLCommandBufferStatus>;
-
-  readonly error: NSError;
-
-  blitCommandEncoder(): MTLBlitCommandEncoder;
-
-  renderCommandEncoderWithDescriptor(renderPassDescriptor: MTLRenderPassDescriptor): MTLRenderCommandEncoder;
-
-  computeCommandEncoderWithDescriptor(computePassDescriptor: MTLComputePassDescriptor): MTLComputeCommandEncoder;
-
-  blitCommandEncoderWithDescriptor(blitPassDescriptor: MTLBlitPassDescriptor): MTLBlitCommandEncoder;
-
-  computeCommandEncoder(): MTLComputeCommandEncoder;
-
-  computeCommandEncoderWithDispatchType(dispatchType: interop.Enum<typeof MTLDispatchType>): MTLComputeCommandEncoder;
-
-  encodeWaitForEventValue(event: MTLEvent, value: number): void;
-
-  encodeSignalEventValue(event: MTLEvent, value: number): void;
-
-  parallelRenderCommandEncoderWithDescriptor(renderPassDescriptor: MTLRenderPassDescriptor): MTLParallelRenderCommandEncoder;
-
-  resourceStateCommandEncoder(): MTLResourceStateCommandEncoder;
-
-  resourceStateCommandEncoderWithDescriptor(resourceStatePassDescriptor: MTLResourceStatePassDescriptor): MTLResourceStateCommandEncoder;
-
-  accelerationStructureCommandEncoder(): MTLAccelerationStructureCommandEncoder;
-
-  accelerationStructureCommandEncoderWithDescriptor(descriptor: MTLAccelerationStructurePassDescriptor): MTLAccelerationStructureCommandEncoder;
-
-  pushDebugGroup(string: string): void;
-
-  popDebugGroup(): void;
-
-  useResidencySet(residencySet: MTLResidencySet): void;
-
-  useResidencySetsCount(residencySets: interop.PointerConvertible, count: number): void;
-}
-
-declare class MTLCommandBuffer extends NativeObject implements MTLCommandBuffer {
-}
-
 declare interface MTLCommandBufferEncoderInfo extends NSObjectProtocol {
   readonly label: string;
 
@@ -2235,23 +2321,6 @@ declare interface MTLCommandBufferEncoderInfo extends NSObjectProtocol {
 }
 
 declare class MTLCommandBufferEncoderInfo extends NativeObject implements MTLCommandBufferEncoderInfo {
-}
-
-declare interface MTLResourceStateCommandEncoder extends MTLCommandEncoder {
-  updateTextureMappingsModeRegionsMipLevelsSlicesNumRegions?(texture: MTLTexture, mode: interop.Enum<typeof MTLSparseTextureMappingMode>, regions: interop.PointerConvertible, mipLevels: interop.PointerConvertible, slices: interop.PointerConvertible, numRegions: number): void;
-
-  updateTextureMappingModeRegionMipLevelSlice?(texture: MTLTexture, mode: interop.Enum<typeof MTLSparseTextureMappingMode>, region: MTLRegion, mipLevel: number, slice: number): void;
-
-  updateTextureMappingModeIndirectBufferIndirectBufferOffset?(texture: MTLTexture, mode: interop.Enum<typeof MTLSparseTextureMappingMode>, indirectBuffer: MTLBuffer, indirectBufferOffset: number): void;
-
-  updateFence?(fence: MTLFence): void;
-
-  waitForFence?(fence: MTLFence): void;
-
-  moveTextureMappingsFromTextureSourceSliceSourceLevelSourceOriginSourceSizeToTextureDestinationSliceDestinationLevelDestinationOrigin?(sourceTexture: MTLTexture, sourceSlice: number, sourceLevel: number, sourceOrigin: MTLOrigin, sourceSize: MTLSize, destinationTexture: MTLTexture, destinationSlice: number, destinationLevel: number, destinationOrigin: MTLOrigin): void;
-}
-
-declare class MTLResourceStateCommandEncoder extends NativeObject implements MTLResourceStateCommandEncoder {
 }
 
 declare interface MTLCounterSet extends NSObjectProtocol {
@@ -2268,35 +2337,6 @@ declare interface MTLCounter extends NSObjectProtocol {
 }
 
 declare class MTLCounter extends NativeObject implements MTLCounter {
-}
-
-declare interface MTLLibrary extends NSObjectProtocol {
-  label: string;
-
-  readonly device: MTLDevice;
-
-  newFunctionWithName(functionName: string): MTLFunction;
-
-  newFunctionWithNameConstantValuesError(name: string, constantValues: MTLFunctionConstantValues, error: interop.PointerConvertible): MTLFunction;
-
-  newFunctionWithNameConstantValuesCompletionHandler(name: string, constantValues: MTLFunctionConstantValues, completionHandler: (p1: MTLFunction, p2: NSError) => void | null): void;
-
-  newFunctionWithDescriptorCompletionHandler(descriptor: MTLFunctionDescriptor, completionHandler: (p1: MTLFunction, p2: NSError) => void | null): void;
-
-  newFunctionWithDescriptorError(descriptor: MTLFunctionDescriptor, error: interop.PointerConvertible): MTLFunction;
-
-  newIntersectionFunctionWithDescriptorCompletionHandler(descriptor: MTLIntersectionFunctionDescriptor, completionHandler: (p1: MTLFunction, p2: NSError) => void | null): void;
-
-  newIntersectionFunctionWithDescriptorError(descriptor: MTLIntersectionFunctionDescriptor, error: interop.PointerConvertible): MTLFunction;
-
-  readonly functionNames: NSArray;
-
-  readonly type: interop.Enum<typeof MTLLibraryType>;
-
-  readonly installName: string;
-}
-
-declare class MTLLibrary extends NativeObject implements MTLLibrary {
 }
 
 declare interface MTLIOCommandBuffer extends NSObjectProtocol {
@@ -2333,6 +2373,8 @@ declare interface MTLIOCommandBuffer extends NSObjectProtocol {
   readonly status: interop.Enum<typeof MTLIOStatus>;
 
   readonly error: NSError;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLIOCommandBuffer extends NativeObject implements MTLIOCommandBuffer {
@@ -2362,22 +2404,11 @@ declare interface MTLFunction extends NSObjectProtocol {
   newArgumentEncoderWithBufferIndexReflection(bufferIndex: number, reflection: interop.PointerConvertible): MTLArgumentEncoder;
 
   readonly options: interop.Enum<typeof MTLFunctionOptions>;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLFunction extends NativeObject implements MTLFunction {
-}
-
-declare interface MTLTextureBinding extends MTLBinding {
-  readonly textureType: interop.Enum<typeof MTLTextureType>;
-
-  readonly textureDataType: interop.Enum<typeof MTLDataType>;
-
-  readonly isDepthTexture: boolean;
-
-  readonly arrayLength: number;
-}
-
-declare class MTLTextureBinding extends NativeObject implements MTLTextureBinding {
 }
 
 declare interface MTLThreadgroupBinding extends MTLBinding {
@@ -2413,9 +2444,13 @@ declare interface MTLBinding extends NSObjectProtocol {
 
   readonly index: number;
 
-  readonly isUsed: boolean;
+  readonly used: boolean;
 
-  readonly isArgument: boolean;
+  readonly argument: boolean;
+
+  isUsed(): boolean;
+
+  isArgument(): boolean;
 }
 
 declare class MTLBinding extends NativeObject implements MTLBinding {
@@ -2430,11 +2465,11 @@ declare interface MTLDevice extends NSObjectProtocol {
 
   readonly maxThreadsPerThreadgroup: MTLSize;
 
-  readonly isLowPower: boolean;
+  readonly lowPower: boolean;
 
-  readonly isHeadless: boolean;
+  readonly headless: boolean;
 
-  readonly isRemovable: boolean;
+  readonly removable: boolean;
 
   readonly hasUnifiedMemory: boolean;
 
@@ -2446,13 +2481,13 @@ declare interface MTLDevice extends NSObjectProtocol {
 
   readonly maxTransferRate: number;
 
-  readonly isDepth24Stencil8PixelFormatSupported: boolean;
+  readonly depth24Stencil8PixelFormatSupported: boolean;
 
   readonly readWriteTextureSupport: interop.Enum<typeof MTLReadWriteTextureTier>;
 
   readonly argumentBuffersSupport: interop.Enum<typeof MTLArgumentBuffersTier>;
 
-  readonly areRasterOrderGroupsSupported: boolean;
+  readonly rasterOrderGroupsSupported: boolean;
 
   readonly supports32BitFloatFiltering: boolean;
 
@@ -2464,7 +2499,7 @@ declare interface MTLDevice extends NSObjectProtocol {
 
   readonly supportsPullModelInterpolation: boolean;
 
-  readonly areBarycentricCoordsSupported: boolean;
+  readonly barycentricCoordsSupported: boolean;
 
   readonly supportsShaderBarycentricCoordinates: boolean;
 
@@ -2564,7 +2599,7 @@ declare interface MTLDevice extends NSObjectProtocol {
 
   readonly maxArgumentBufferSamplerCount: number;
 
-  readonly areProgrammableSamplePositionsSupported: boolean;
+  readonly programmableSamplePositionsSupported: boolean;
 
   getDefaultSamplePositionsCount(positions: interop.PointerConvertible, count: number): void;
 
@@ -2659,6 +2694,22 @@ declare interface MTLDevice extends NSObjectProtocol {
   readonly maximumConcurrentCompilationTaskCount: number;
 
   newResidencySetWithDescriptorError(desc: MTLResidencySetDescriptor, error: interop.PointerConvertible): MTLResidencySet;
+
+  isLowPower(): boolean;
+
+  isHeadless(): boolean;
+
+  isRemovable(): boolean;
+
+  isDepth24Stencil8PixelFormatSupported(): boolean;
+
+  areRasterOrderGroupsSupported(): boolean;
+
+  areBarycentricCoordsSupported(): boolean;
+
+  areProgrammableSamplePositionsSupported(): boolean;
+
+  setShouldMaximizeConcurrentCompilation(shouldMaximizeConcurrentCompilation: boolean): void;
 }
 
 declare class MTLDevice extends NativeObject implements MTLDevice {
@@ -2687,6 +2738,39 @@ declare interface MTLBuffer extends MTLResource {
 declare class MTLBuffer extends NativeObject implements MTLBuffer {
 }
 
+declare interface MTLObjectPayloadBinding extends MTLBinding {
+  readonly objectPayloadAlignment: number;
+
+  readonly objectPayloadDataSize: number;
+}
+
+declare class MTLObjectPayloadBinding extends NativeObject implements MTLObjectPayloadBinding {
+}
+
+declare interface MTLCaptureScope extends NSObjectProtocol {
+  beginScope(): void;
+
+  endScope(): void;
+
+  label: string;
+
+  readonly device: MTLDevice;
+
+  readonly commandQueue: MTLCommandQueue;
+
+  setLabel(label: string | null): void;
+}
+
+declare class MTLCaptureScope extends NativeObject implements MTLCaptureScope {
+}
+
+declare interface MTLAllocation extends NSObjectProtocol {
+  readonly allocatedSize: number;
+}
+
+declare class MTLAllocation extends NativeObject implements MTLAllocation {
+}
+
 declare interface MTLCommandEncoder extends NSObjectProtocol {
   readonly device: MTLDevice;
 
@@ -2699,49 +2783,44 @@ declare interface MTLCommandEncoder extends NSObjectProtocol {
   pushDebugGroup(string: string): void;
 
   popDebugGroup(): void;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLCommandEncoder extends NativeObject implements MTLCommandEncoder {
 }
 
-declare interface MTLObjectPayloadBinding extends MTLBinding {
-  readonly objectPayloadAlignment: number;
+declare interface MTLResidencySet extends NSObjectProtocol {
+  readonly device: MTLDevice;
 
-  readonly objectPayloadDataSize: number;
-}
+  readonly label: string;
 
-declare class MTLObjectPayloadBinding extends NativeObject implements MTLObjectPayloadBinding {
-}
-
-declare interface MTLAllocation extends NSObjectProtocol {
   readonly allocatedSize: number;
+
+  requestResidency(): void;
+
+  endResidency(): void;
+
+  addAllocation(allocation: MTLAllocation): void;
+
+  addAllocationsCount(allocations: interop.PointerConvertible, count: number): void;
+
+  removeAllocation(allocation: MTLAllocation): void;
+
+  removeAllocationsCount(allocations: interop.PointerConvertible, count: number): void;
+
+  removeAllAllocations(): void;
+
+  containsAllocation(anAllocation: MTLAllocation): boolean;
+
+  readonly allAllocations: NSArray;
+
+  readonly allocationCount: number;
+
+  commit(): void;
 }
 
-declare class MTLAllocation extends NativeObject implements MTLAllocation {
-}
-
-declare interface MTLIndirectCommandBuffer extends MTLResource {
-  readonly size: number;
-
-  readonly gpuResourceID: MTLResourceID;
-
-  resetWithRange(range: _NSRange): void;
-
-  indirectRenderCommandAtIndex(commandIndex: number): MTLIndirectRenderCommand;
-
-  indirectComputeCommandAtIndex(commandIndex: number): MTLIndirectComputeCommand;
-}
-
-declare class MTLIndirectCommandBuffer extends NativeObject implements MTLIndirectCommandBuffer {
-}
-
-declare interface MTLAccelerationStructure extends MTLResource {
-  readonly size: number;
-
-  readonly gpuResourceID: MTLResourceID;
-}
-
-declare class MTLAccelerationStructure extends NativeObject implements MTLAccelerationStructure {
+declare class MTLResidencySet extends NativeObject implements MTLResidencySet {
 }
 
 declare interface MTLIndirectComputeCommand extends NSObjectProtocol {
@@ -2788,6 +2867,15 @@ declare interface MTLDrawable extends NSObjectProtocol {
 declare class MTLDrawable extends NativeObject implements MTLDrawable {
 }
 
+declare interface MTLAccelerationStructure extends MTLResource {
+  readonly size: number;
+
+  readonly gpuResourceID: MTLResourceID;
+}
+
+declare class MTLAccelerationStructure extends NativeObject implements MTLAccelerationStructure {
+}
+
 declare interface MTLLogContainer extends NSObjectProtocol, NSFastEnumeration {
 }
 
@@ -2800,17 +2888,24 @@ declare interface MTLFunctionStitchingAttribute extends NSObjectProtocol {
 declare class MTLFunctionStitchingAttribute extends NativeObject implements MTLFunctionStitchingAttribute {
 }
 
-declare interface MTLIOCommandQueue extends NSObjectProtocol {
-  enqueueBarrier(): void;
-
-  commandBuffer(): MTLIOCommandBuffer;
-
-  commandBufferWithUnretainedReferences(): MTLIOCommandBuffer;
+declare interface MTLFence extends NSObjectProtocol {
+  readonly device: MTLDevice;
 
   label: string;
+
+  setLabel(label: string | null): void;
 }
 
-declare class MTLIOCommandQueue extends NativeObject implements MTLIOCommandQueue {
+declare class MTLFence extends NativeObject implements MTLFence {
+}
+
+declare interface MTLDepthStencilState extends NSObjectProtocol {
+  readonly label: string;
+
+  readonly device: MTLDevice;
+}
+
+declare class MTLDepthStencilState extends NativeObject implements MTLDepthStencilState {
 }
 
 declare interface MTLResource extends MTLAllocation {
@@ -2839,40 +2934,11 @@ declare interface MTLResource extends MTLAllocation {
   isAliasable(): boolean;
 
   setOwnerWithIdentity(task_id_token: number): number;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLResource extends NativeObject implements MTLResource {
-}
-
-declare interface MTLSharedEvent extends MTLEvent {
-  notifyListenerAtValueBlock(listener: MTLSharedEventListener, value: number, block: (p1: MTLSharedEvent, p2: number) => void): void;
-
-  newSharedEventHandle(): MTLSharedEventHandle;
-
-  waitUntilSignaledValueTimeoutMS(value: number, milliseconds: number): boolean;
-
-  signaledValue: number;
-}
-
-declare class MTLSharedEvent extends NativeObject implements MTLSharedEvent {
-}
-
-declare interface MTLFence extends NSObjectProtocol {
-  readonly device: MTLDevice;
-
-  label: string;
-}
-
-declare class MTLFence extends NativeObject implements MTLFence {
-}
-
-declare interface MTLDepthStencilState extends NSObjectProtocol {
-  readonly label: string;
-
-  readonly device: MTLDevice;
-}
-
-declare class MTLDepthStencilState extends NativeObject implements MTLDepthStencilState {
 }
 
 declare interface MTLTexture extends MTLResource {
@@ -2912,9 +2978,9 @@ declare interface MTLTexture extends MTLResource {
 
   readonly usage: interop.Enum<typeof MTLTextureUsage>;
 
-  readonly isShareable: boolean;
+  readonly shareable: boolean;
 
-  readonly isFramebufferOnly: boolean;
+  readonly framebufferOnly: boolean;
 
   readonly firstMipmapInTail?: number;
 
@@ -2949,6 +3015,10 @@ declare interface MTLTexture extends MTLResource {
   readonly swizzle: MTLTextureSwizzleChannels;
 
   newTextureViewWithPixelFormatTextureTypeLevelsSlicesSwizzle(pixelFormat: interop.Enum<typeof MTLPixelFormat>, textureType: interop.Enum<typeof MTLTextureType>, levelRange: _NSRange, sliceRange: _NSRange, swizzle: MTLTextureSwizzleChannels): MTLTexture;
+
+  isShareable(): boolean;
+
+  isFramebufferOnly(): boolean;
 }
 
 declare class MTLTexture extends NativeObject implements MTLTexture {
@@ -2958,9 +3028,29 @@ declare interface MTLEvent extends NSObjectProtocol {
   readonly device: MTLDevice;
 
   label: string;
+
+  setLabel(label: string | null): void;
 }
 
 declare class MTLEvent extends NativeObject implements MTLEvent {
+}
+
+declare interface MTLVisibleFunctionTable extends MTLResource {
+  readonly gpuResourceID: MTLResourceID;
+
+  setFunctionAtIndex(function$: MTLFunctionHandle | null, index: number): void;
+
+  setFunctionsWithRange(functions: interop.PointerConvertible, range: _NSRange): void;
+}
+
+declare class MTLVisibleFunctionTable extends NativeObject implements MTLVisibleFunctionTable {
+}
+
+declare interface MTLIOScratchBufferAllocator extends NSObjectProtocol {
+  newScratchBufferWithMinimumSize(minimumSize: number): MTLIOScratchBuffer | null;
+}
+
+declare class MTLIOScratchBufferAllocator extends NativeObject implements MTLIOScratchBufferAllocator {
 }
 
 declare interface MTLFunctionLogDebugLocation extends NSObjectProtocol {
@@ -2974,39 +3064,6 @@ declare interface MTLFunctionLogDebugLocation extends NSObjectProtocol {
 }
 
 declare class MTLFunctionLogDebugLocation extends NativeObject implements MTLFunctionLogDebugLocation {
-}
-
-declare interface MTLAccelerationStructureCommandEncoder extends MTLCommandEncoder {
-  buildAccelerationStructureDescriptorScratchBufferScratchBufferOffset(accelerationStructure: MTLAccelerationStructure, descriptor: MTLAccelerationStructureDescriptor, scratchBuffer: MTLBuffer, scratchBufferOffset: number): void;
-
-  refitAccelerationStructureDescriptorDestinationScratchBufferScratchBufferOffset(sourceAccelerationStructure: MTLAccelerationStructure, descriptor: MTLAccelerationStructureDescriptor, destinationAccelerationStructure: MTLAccelerationStructure | null, scratchBuffer: MTLBuffer | null, scratchBufferOffset: number): void;
-
-  refitAccelerationStructureDescriptorDestinationScratchBufferScratchBufferOffsetOptions(sourceAccelerationStructure: MTLAccelerationStructure, descriptor: MTLAccelerationStructureDescriptor, destinationAccelerationStructure: MTLAccelerationStructure | null, scratchBuffer: MTLBuffer | null, scratchBufferOffset: number, options: interop.Enum<typeof MTLAccelerationStructureRefitOptions>): void;
-
-  copyAccelerationStructureToAccelerationStructure(sourceAccelerationStructure: MTLAccelerationStructure, destinationAccelerationStructure: MTLAccelerationStructure): void;
-
-  writeCompactedAccelerationStructureSizeToBufferOffset(accelerationStructure: MTLAccelerationStructure, buffer: MTLBuffer, offset: number): void;
-
-  writeCompactedAccelerationStructureSizeToBufferOffsetSizeDataType(accelerationStructure: MTLAccelerationStructure, buffer: MTLBuffer, offset: number, sizeDataType: interop.Enum<typeof MTLDataType>): void;
-
-  copyAndCompactAccelerationStructureToAccelerationStructure(sourceAccelerationStructure: MTLAccelerationStructure, destinationAccelerationStructure: MTLAccelerationStructure): void;
-
-  updateFence(fence: MTLFence): void;
-
-  waitForFence(fence: MTLFence): void;
-
-  useResourceUsage(resource: MTLResource, usage: interop.Enum<typeof MTLResourceUsage>): void;
-
-  useResourcesCountUsage(resources: interop.PointerConvertible, count: number, usage: interop.Enum<typeof MTLResourceUsage>): void;
-
-  useHeap(heap: MTLHeap): void;
-
-  useHeapsCount(heaps: interop.PointerConvertible, count: number): void;
-
-  sampleCountersInBufferAtSampleIndexWithBarrier(sampleBuffer: MTLCounterSampleBuffer, sampleIndex: number, barrier: boolean): void;
-}
-
-declare class MTLAccelerationStructureCommandEncoder extends NativeObject implements MTLAccelerationStructureCommandEncoder {
 }
 
 declare interface MTLComputePipelineState extends NSObjectProtocol {
@@ -3040,19 +3097,86 @@ declare interface MTLComputePipelineState extends NSObjectProtocol {
 declare class MTLComputePipelineState extends NativeObject implements MTLComputePipelineState {
 }
 
-declare interface MTLCaptureScope extends NSObjectProtocol {
-  beginScope(): void;
+declare interface MTLFunctionHandle extends NSObjectProtocol {
+  readonly functionType: interop.Enum<typeof MTLFunctionType>;
 
-  endScope(): void;
+  readonly name: string;
+
+  readonly device: MTLDevice;
+}
+
+declare class MTLFunctionHandle extends NativeObject implements MTLFunctionHandle {
+}
+
+declare interface MTLIndirectRenderCommand extends NSObjectProtocol {
+  setRenderPipelineState(pipelineState: MTLRenderPipelineState): void;
+
+  setVertexBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
+
+  setFragmentBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
+
+  setVertexBufferOffsetAttributeStrideAtIndex(buffer: MTLBuffer, offset: number, stride: number, index: number): void;
+
+  drawPatchesPatchStartPatchCountPatchIndexBufferPatchIndexBufferOffsetInstanceCountBaseInstanceTessellationFactorBufferTessellationFactorBufferOffsetTessellationFactorBufferInstanceStride(numberOfPatchControlPoints: number, patchStart: number, patchCount: number, patchIndexBuffer: MTLBuffer | null, patchIndexBufferOffset: number, instanceCount: number, baseInstance: number, buffer: MTLBuffer, offset: number, instanceStride: number): void;
+
+  drawIndexedPatchesPatchStartPatchCountPatchIndexBufferPatchIndexBufferOffsetControlPointIndexBufferControlPointIndexBufferOffsetInstanceCountBaseInstanceTessellationFactorBufferTessellationFactorBufferOffsetTessellationFactorBufferInstanceStride(numberOfPatchControlPoints: number, patchStart: number, patchCount: number, patchIndexBuffer: MTLBuffer | null, patchIndexBufferOffset: number, controlPointIndexBuffer: MTLBuffer, controlPointIndexBufferOffset: number, instanceCount: number, baseInstance: number, buffer: MTLBuffer, offset: number, instanceStride: number): void;
+
+  drawPrimitivesVertexStartVertexCountInstanceCountBaseInstance(primitiveType: interop.Enum<typeof MTLPrimitiveType>, vertexStart: number, vertexCount: number, instanceCount: number, baseInstance: number): void;
+
+  drawIndexedPrimitivesIndexCountIndexTypeIndexBufferIndexBufferOffsetInstanceCountBaseVertexBaseInstance(primitiveType: interop.Enum<typeof MTLPrimitiveType>, indexCount: number, indexType: interop.Enum<typeof MTLIndexType>, indexBuffer: MTLBuffer, indexBufferOffset: number, instanceCount: number, baseVertex: number, baseInstance: number): void;
+
+  setObjectThreadgroupMemoryLengthAtIndex(length: number, index: number): void;
+
+  setObjectBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
+
+  setMeshBufferOffsetAtIndex(buffer: MTLBuffer, offset: number, index: number): void;
+
+  drawMeshThreadgroupsThreadsPerObjectThreadgroupThreadsPerMeshThreadgroup(threadgroupsPerGrid: MTLSize, threadsPerObjectThreadgroup: MTLSize, threadsPerMeshThreadgroup: MTLSize): void;
+
+  drawMeshThreadsThreadsPerObjectThreadgroupThreadsPerMeshThreadgroup(threadsPerGrid: MTLSize, threadsPerObjectThreadgroup: MTLSize, threadsPerMeshThreadgroup: MTLSize): void;
+
+  setBarrier(): void;
+
+  clearBarrier(): void;
+
+  reset(): void;
+}
+
+declare class MTLIndirectRenderCommand extends NativeObject implements MTLIndirectRenderCommand {
+}
+
+declare interface MTLCounterSampleBuffer extends NSObjectProtocol {
+  readonly device: MTLDevice;
+
+  readonly label: string;
+
+  readonly sampleCount: number;
+
+  resolveCounterRange(range: _NSRange): NSData;
+}
+
+declare class MTLCounterSampleBuffer extends NativeObject implements MTLCounterSampleBuffer {
+}
+
+declare interface MTLIOCommandQueue extends NSObjectProtocol {
+  enqueueBarrier(): void;
+
+  commandBuffer(): MTLIOCommandBuffer;
+
+  commandBufferWithUnretainedReferences(): MTLIOCommandBuffer;
 
   label: string;
 
-  readonly device: MTLDevice;
-
-  readonly commandQueue: MTLCommandQueue;
+  setLabel(label: string | null): void;
 }
 
-declare class MTLCaptureScope extends NativeObject implements MTLCaptureScope {
+declare class MTLIOCommandQueue extends NativeObject implements MTLIOCommandQueue {
+}
+
+declare interface MTLFunctionStitchingNode extends NSObjectProtocol, NSCopying {
+}
+
+declare class MTLFunctionStitchingNode extends NativeObject implements MTLFunctionStitchingNode {
 }
 
 declare interface MTLComputeCommandEncoder extends MTLCommandEncoder {
@@ -3134,227 +3258,68 @@ declare interface MTLComputeCommandEncoder extends MTLCommandEncoder {
 declare class MTLComputeCommandEncoder extends NativeObject implements MTLComputeCommandEncoder {
 }
 
-declare interface MTLCounterSampleBuffer extends NSObjectProtocol {
-  readonly device: MTLDevice;
+declare class MTLAccelerationStructureGeometryDescriptor extends NSObject implements NSCopying {
+  intersectionFunctionTableOffset: number;
 
-  readonly label: string;
+  opaque: boolean;
 
-  readonly sampleCount: number;
-
-  resolveCounterRange(range: _NSRange): NSData;
-}
-
-declare class MTLCounterSampleBuffer extends NativeObject implements MTLCounterSampleBuffer {
-}
-
-declare interface MTLFunctionHandle extends NSObjectProtocol {
-  readonly functionType: interop.Enum<typeof MTLFunctionType>;
-
-  readonly name: string;
-
-  readonly device: MTLDevice;
-}
-
-declare class MTLFunctionHandle extends NativeObject implements MTLFunctionHandle {
-}
-
-declare interface MTLIOScratchBufferAllocator extends NSObjectProtocol {
-  newScratchBufferWithMinimumSize(minimumSize: number): MTLIOScratchBuffer | null;
-}
-
-declare class MTLIOScratchBufferAllocator extends NativeObject implements MTLIOScratchBufferAllocator {
-}
-
-declare interface MTLRasterizationRateMap extends NSObjectProtocol {
-  readonly device: MTLDevice;
-
-  readonly label: string;
-
-  readonly screenSize: MTLSize;
-
-  readonly physicalGranularity: MTLSize;
-
-  readonly layerCount: number;
-
-  readonly parameterBufferSizeAndAlign: MTLSizeAndAlign;
-
-  copyParameterDataToBufferOffset(buffer: MTLBuffer, offset: number): void;
-
-  physicalSizeForLayer(layerIndex: number): MTLSize;
-
-  mapScreenToPhysicalCoordinatesForLayer(screenCoordinates: MTLSamplePosition, layerIndex: number): MTLSamplePosition;
-
-  mapPhysicalToScreenCoordinatesForLayer(physicalCoordinates: MTLSamplePosition, layerIndex: number): MTLSamplePosition;
-}
-
-declare class MTLRasterizationRateMap extends NativeObject implements MTLRasterizationRateMap {
-}
-
-declare interface MTLFunctionStitchingNode extends NSObjectProtocol, NSCopying {
-}
-
-declare class MTLFunctionStitchingNode extends NativeObject implements MTLFunctionStitchingNode {
-}
-
-declare class MTLComputePassSampleBufferAttachmentDescriptorArray extends NSObject {
-  objectAtIndexedSubscript(attachmentIndex: number): MTLComputePassSampleBufferAttachmentDescriptor;
-
-  setObjectAtIndexedSubscript(attachment: MTLComputePassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
-}
-
-declare class MTLComputePipelineDescriptor extends NSObject implements NSCopying {
-  label: string;
-
-  computeFunction: MTLFunction;
-
-  threadGroupSizeIsMultipleOfThreadExecutionWidth: boolean;
-
-  maxTotalThreadsPerThreadgroup: number;
-
-  stageInputDescriptor: MTLStageInputOutputDescriptor;
-
-  readonly buffers: MTLPipelineBufferDescriptorArray;
-
-  supportIndirectCommandBuffers: boolean;
-
-  get insertLibraries(): NSArray;
-  set insertLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get preloadedLibraries(): NSArray;
-  set preloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get binaryArchives(): NSArray;
-  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  reset(): void;
-
-  linkedFunctions: MTLLinkedFunctions;
-
-  supportAddingBinaryFunctions: boolean;
-
-  maxCallStackDepth: number;
-
-  shaderValidation: interop.Enum<typeof MTLShaderValidation>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLRasterizationRateSampleArray extends NSObject {
-  objectAtIndexedSubscript(index: number): NSNumber;
-
-  setObjectAtIndexedSubscript(value: NSNumber, index: number): void;
-}
-
-declare class MTLSamplerDescriptor extends NSObject implements NSCopying {
-  minFilter: interop.Enum<typeof MTLSamplerMinMagFilter>;
-
-  magFilter: interop.Enum<typeof MTLSamplerMinMagFilter>;
-
-  mipFilter: interop.Enum<typeof MTLSamplerMipFilter>;
-
-  maxAnisotropy: number;
-
-  sAddressMode: interop.Enum<typeof MTLSamplerAddressMode>;
-
-  tAddressMode: interop.Enum<typeof MTLSamplerAddressMode>;
-
-  rAddressMode: interop.Enum<typeof MTLSamplerAddressMode>;
-
-  borderColor: interop.Enum<typeof MTLSamplerBorderColor>;
-
-  normalizedCoordinates: boolean;
-
-  lodMinClamp: number;
-
-  lodMaxClamp: number;
-
-  lodAverage: boolean;
-
-  compareFunction: interop.Enum<typeof MTLCompareFunction>;
-
-  supportArgumentBuffers: boolean;
+  allowDuplicateIntersectionFunctionInvocation: boolean;
 
   label: string;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  primitiveDataBuffer: MTLBuffer;
 
-declare class MTLRenderPipelineColorAttachmentDescriptor extends NSObject implements NSCopying {
-  pixelFormat: interop.Enum<typeof MTLPixelFormat>;
+  primitiveDataBufferOffset: number;
 
-  isBlendingEnabled: boolean;
+  primitiveDataStride: number;
 
-  sourceRGBBlendFactor: interop.Enum<typeof MTLBlendFactor>;
+  primitiveDataElementSize: number;
 
-  destinationRGBBlendFactor: interop.Enum<typeof MTLBlendFactor>;
+  setIntersectionFunctionTableOffset(intersectionFunctionTableOffset: number): void;
 
-  rgbBlendOperation: interop.Enum<typeof MTLBlendOperation>;
+  setOpaque(opaque: boolean): void;
 
-  sourceAlphaBlendFactor: interop.Enum<typeof MTLBlendFactor>;
+  setAllowDuplicateIntersectionFunctionInvocation(allowDuplicateIntersectionFunctionInvocation: boolean): void;
 
-  destinationAlphaBlendFactor: interop.Enum<typeof MTLBlendFactor>;
+  setLabel(label: string | null): void;
 
-  alphaBlendOperation: interop.Enum<typeof MTLBlendOperation>;
+  setPrimitiveDataBuffer(primitiveDataBuffer: MTLBuffer | null): void;
 
-  writeMask: interop.Enum<typeof MTLColorWriteMask>;
+  setPrimitiveDataBufferOffset(primitiveDataBufferOffset: number): void;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  setPrimitiveDataStride(primitiveDataStride: number): void;
 
-declare class MTLArrayType extends MTLType {
-  readonly elementType: interop.Enum<typeof MTLDataType>;
-
-  readonly arrayLength: number;
-
-  readonly stride: number;
-
-  readonly argumentIndexStride: number;
-
-  elementStructType(): MTLStructType;
-
-  elementArrayType(): MTLArrayType;
-
-  elementTextureReferenceType(): MTLTextureReferenceType;
-
-  elementPointerType(): MTLPointerType;
-}
-
-declare class MTLRenderPassAttachmentDescriptor extends NSObject implements NSCopying {
-  texture: MTLTexture;
-
-  level: number;
-
-  slice: number;
-
-  depthPlane: number;
-
-  resolveTexture: MTLTexture;
-
-  resolveLevel: number;
-
-  resolveSlice: number;
-
-  resolveDepthPlane: number;
-
-  loadAction: interop.Enum<typeof MTLLoadAction>;
-
-  storeAction: interop.Enum<typeof MTLStoreAction>;
-
-  storeActionOptions: interop.Enum<typeof MTLStoreActionOptions>;
+  setPrimitiveDataElementSize(primitiveDataElementSize: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLFunctionStitchingFunctionNode extends NSObject implements MTLFunctionStitchingNode {
-  name: string;
+declare class MTLIntersectionFunctionDescriptor extends MTLFunctionDescriptor implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
 
-  get arguments(): NSArray;
-  set arguments(value: NSArray<interop.Object> | Array<interop.Object>);
+declare class MTLAttributeDescriptor extends NSObject implements NSCopying {
+  format: interop.Enum<typeof MTLAttributeFormat>;
 
-  get controlDependencies(): NSArray;
-  set controlDependencies(value: NSArray<interop.Object> | Array<interop.Object>);
+  offset: number;
 
-  initWithNameArgumentsControlDependencies(name: string, arguments$: NSArray<interop.Object> | Array<interop.Object>, controlDependencies: NSArray<interop.Object> | Array<interop.Object>): this;
+  bufferIndex: number;
+
+  setFormat(format: interop.Enum<typeof MTLAttributeFormat>): void;
+
+  setOffset(offset: number): void;
+
+  setBufferIndex(bufferIndex: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLFunctionStitchingInputNode extends NSObject implements MTLFunctionStitchingNode {
+  argumentIndex: number;
+
+  initWithArgumentIndex(argument: number): this;
+
+  setArgumentIndex(argumentIndex: number): void;
 
   isEqual(object: interop.Object): boolean;
 
@@ -3399,8 +3364,367 @@ declare class MTLFunctionStitchingFunctionNode extends NSObject implements MTLFu
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLType extends NSObject {
-  readonly dataType: interop.Enum<typeof MTLDataType>;
+declare class MTLRenderPipelineDescriptor extends NSObject implements NSCopying {
+  label: string;
+
+  vertexFunction: MTLFunction;
+
+  fragmentFunction: MTLFunction;
+
+  vertexDescriptor: MTLVertexDescriptor;
+
+  sampleCount: number;
+
+  rasterSampleCount: number;
+
+  alphaToCoverageEnabled: boolean;
+
+  alphaToOneEnabled: boolean;
+
+  rasterizationEnabled: boolean;
+
+  maxVertexAmplificationCount: number;
+
+  readonly colorAttachments: MTLRenderPipelineColorAttachmentDescriptorArray;
+
+  depthAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>;
+
+  stencilAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>;
+
+  inputPrimitiveTopology: interop.Enum<typeof MTLPrimitiveTopologyClass>;
+
+  tessellationPartitionMode: interop.Enum<typeof MTLTessellationPartitionMode>;
+
+  maxTessellationFactor: number;
+
+  tessellationFactorScaleEnabled: boolean;
+
+  tessellationFactorFormat: interop.Enum<typeof MTLTessellationFactorFormat>;
+
+  tessellationControlPointIndexType: interop.Enum<typeof MTLTessellationControlPointIndexType>;
+
+  tessellationFactorStepFunction: interop.Enum<typeof MTLTessellationFactorStepFunction>;
+
+  tessellationOutputWindingOrder: interop.Enum<typeof MTLWinding>;
+
+  readonly vertexBuffers: MTLPipelineBufferDescriptorArray;
+
+  readonly fragmentBuffers: MTLPipelineBufferDescriptorArray;
+
+  supportIndirectCommandBuffers: boolean;
+
+  get binaryArchives(): NSArray;
+  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get vertexPreloadedLibraries(): NSArray;
+  set vertexPreloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get fragmentPreloadedLibraries(): NSArray;
+  set fragmentPreloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  vertexLinkedFunctions: MTLLinkedFunctions;
+
+  fragmentLinkedFunctions: MTLLinkedFunctions;
+
+  supportAddingVertexBinaryFunctions: boolean;
+
+  supportAddingFragmentBinaryFunctions: boolean;
+
+  maxVertexCallStackDepth: number;
+
+  maxFragmentCallStackDepth: number;
+
+  reset(): void;
+
+  shaderValidation: interop.Enum<typeof MTLShaderValidation>;
+
+  setLabel(label: string | null): void;
+
+  setVertexFunction(vertexFunction: MTLFunction | null): void;
+
+  setFragmentFunction(fragmentFunction: MTLFunction | null): void;
+
+  setVertexDescriptor(vertexDescriptor: MTLVertexDescriptor | null): void;
+
+  setSampleCount(sampleCount: number): void;
+
+  setRasterSampleCount(rasterSampleCount: number): void;
+
+  isAlphaToCoverageEnabled(): boolean;
+
+  setAlphaToCoverageEnabled(alphaToCoverageEnabled: boolean): void;
+
+  isAlphaToOneEnabled(): boolean;
+
+  setAlphaToOneEnabled(alphaToOneEnabled: boolean): void;
+
+  isRasterizationEnabled(): boolean;
+
+  setRasterizationEnabled(rasterizationEnabled: boolean): void;
+
+  setMaxVertexAmplificationCount(maxVertexAmplificationCount: number): void;
+
+  setDepthAttachmentPixelFormat(depthAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
+
+  setStencilAttachmentPixelFormat(stencilAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
+
+  setInputPrimitiveTopology(inputPrimitiveTopology: interop.Enum<typeof MTLPrimitiveTopologyClass>): void;
+
+  setTessellationPartitionMode(tessellationPartitionMode: interop.Enum<typeof MTLTessellationPartitionMode>): void;
+
+  setMaxTessellationFactor(maxTessellationFactor: number): void;
+
+  isTessellationFactorScaleEnabled(): boolean;
+
+  setTessellationFactorScaleEnabled(tessellationFactorScaleEnabled: boolean): void;
+
+  setTessellationFactorFormat(tessellationFactorFormat: interop.Enum<typeof MTLTessellationFactorFormat>): void;
+
+  setTessellationControlPointIndexType(tessellationControlPointIndexType: interop.Enum<typeof MTLTessellationControlPointIndexType>): void;
+
+  setTessellationFactorStepFunction(tessellationFactorStepFunction: interop.Enum<typeof MTLTessellationFactorStepFunction>): void;
+
+  setTessellationOutputWindingOrder(tessellationOutputWindingOrder: interop.Enum<typeof MTLWinding>): void;
+
+  setSupportIndirectCommandBuffers(supportIndirectCommandBuffers: boolean): void;
+
+  setBinaryArchives(binaryArchives: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setVertexPreloadedLibraries(vertexPreloadedLibraries: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setFragmentPreloadedLibraries(fragmentPreloadedLibraries: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setVertexLinkedFunctions(vertexLinkedFunctions: MTLLinkedFunctions | null): void;
+
+  setFragmentLinkedFunctions(fragmentLinkedFunctions: MTLLinkedFunctions | null): void;
+
+  setSupportAddingVertexBinaryFunctions(supportAddingVertexBinaryFunctions: boolean): void;
+
+  setSupportAddingFragmentBinaryFunctions(supportAddingFragmentBinaryFunctions: boolean): void;
+
+  setMaxVertexCallStackDepth(maxVertexCallStackDepth: number): void;
+
+  setMaxFragmentCallStackDepth(maxFragmentCallStackDepth: number): void;
+
+  setShaderValidation(shaderValidation: interop.Enum<typeof MTLShaderValidation>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLSamplerDescriptor extends NSObject implements NSCopying {
+  minFilter: interop.Enum<typeof MTLSamplerMinMagFilter>;
+
+  magFilter: interop.Enum<typeof MTLSamplerMinMagFilter>;
+
+  mipFilter: interop.Enum<typeof MTLSamplerMipFilter>;
+
+  maxAnisotropy: number;
+
+  sAddressMode: interop.Enum<typeof MTLSamplerAddressMode>;
+
+  tAddressMode: interop.Enum<typeof MTLSamplerAddressMode>;
+
+  rAddressMode: interop.Enum<typeof MTLSamplerAddressMode>;
+
+  borderColor: interop.Enum<typeof MTLSamplerBorderColor>;
+
+  normalizedCoordinates: boolean;
+
+  lodMinClamp: number;
+
+  lodMaxClamp: number;
+
+  lodAverage: boolean;
+
+  compareFunction: interop.Enum<typeof MTLCompareFunction>;
+
+  supportArgumentBuffers: boolean;
+
+  label: string;
+
+  setMinFilter(minFilter: interop.Enum<typeof MTLSamplerMinMagFilter>): void;
+
+  setMagFilter(magFilter: interop.Enum<typeof MTLSamplerMinMagFilter>): void;
+
+  setMipFilter(mipFilter: interop.Enum<typeof MTLSamplerMipFilter>): void;
+
+  setMaxAnisotropy(maxAnisotropy: number): void;
+
+  setSAddressMode(sAddressMode: interop.Enum<typeof MTLSamplerAddressMode>): void;
+
+  setTAddressMode(tAddressMode: interop.Enum<typeof MTLSamplerAddressMode>): void;
+
+  setRAddressMode(rAddressMode: interop.Enum<typeof MTLSamplerAddressMode>): void;
+
+  setBorderColor(borderColor: interop.Enum<typeof MTLSamplerBorderColor>): void;
+
+  setNormalizedCoordinates(normalizedCoordinates: boolean): void;
+
+  setLodMinClamp(lodMinClamp: number): void;
+
+  setLodMaxClamp(lodMaxClamp: number): void;
+
+  setLodAverage(lodAverage: boolean): void;
+
+  setCompareFunction(compareFunction: interop.Enum<typeof MTLCompareFunction>): void;
+
+  setSupportArgumentBuffers(supportArgumentBuffers: boolean): void;
+
+  setLabel(label: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLIndirectCommandBufferDescriptor extends NSObject implements NSCopying {
+  commandTypes: interop.Enum<typeof MTLIndirectCommandType>;
+
+  inheritPipelineState: boolean;
+
+  inheritBuffers: boolean;
+
+  maxVertexBufferBindCount: number;
+
+  maxFragmentBufferBindCount: number;
+
+  maxKernelBufferBindCount: number;
+
+  maxKernelThreadgroupMemoryBindCount: number;
+
+  maxObjectBufferBindCount: number;
+
+  maxMeshBufferBindCount: number;
+
+  maxObjectThreadgroupMemoryBindCount: number;
+
+  supportRayTracing: boolean;
+
+  supportDynamicAttributeStride: boolean;
+
+  setCommandTypes(commandTypes: interop.Enum<typeof MTLIndirectCommandType>): void;
+
+  setInheritPipelineState(inheritPipelineState: boolean): void;
+
+  setInheritBuffers(inheritBuffers: boolean): void;
+
+  setMaxVertexBufferBindCount(maxVertexBufferBindCount: number): void;
+
+  setMaxFragmentBufferBindCount(maxFragmentBufferBindCount: number): void;
+
+  setMaxKernelBufferBindCount(maxKernelBufferBindCount: number): void;
+
+  setMaxKernelThreadgroupMemoryBindCount(maxKernelThreadgroupMemoryBindCount: number): void;
+
+  setMaxObjectBufferBindCount(maxObjectBufferBindCount: number): void;
+
+  setMaxMeshBufferBindCount(maxMeshBufferBindCount: number): void;
+
+  setMaxObjectThreadgroupMemoryBindCount(maxObjectThreadgroupMemoryBindCount: number): void;
+
+  setSupportRayTracing(supportRayTracing: boolean): void;
+
+  setSupportDynamicAttributeStride(supportDynamicAttributeStride: boolean): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLArrayType extends MTLType {
+  readonly elementType: interop.Enum<typeof MTLDataType>;
+
+  readonly arrayLength: number;
+
+  readonly stride: number;
+
+  readonly argumentIndexStride: number;
+
+  elementStructType(): MTLStructType;
+
+  elementArrayType(): MTLArrayType;
+
+  elementTextureReferenceType(): MTLTextureReferenceType;
+
+  elementPointerType(): MTLPointerType;
+}
+
+declare class MTLCommandQueueDescriptor extends NSObject implements NSCopying {
+  maxCommandBufferCount: number;
+
+  logState: MTLLogState;
+
+  setMaxCommandBufferCount(maxCommandBufferCount: number): void;
+
+  setLogState(logState: MTLLogState | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLStructType extends MTLType {
+  readonly members: NSArray;
+
+  memberByName(name: string): MTLStructMember;
+}
+
+declare class MTLRasterizationRateMapDescriptor extends NSObject implements NSCopying {
+  static rasterizationRateMapDescriptorWithScreenSize(screenSize: MTLSize): MTLRasterizationRateMapDescriptor;
+
+  static rasterizationRateMapDescriptorWithScreenSizeLayer(screenSize: MTLSize, layer: MTLRasterizationRateLayerDescriptor): MTLRasterizationRateMapDescriptor;
+
+  static rasterizationRateMapDescriptorWithScreenSizeLayerCountLayers(screenSize: MTLSize, layerCount: number, layers: interop.PointerConvertible): MTLRasterizationRateMapDescriptor;
+
+  layerAtIndex(layerIndex: number): MTLRasterizationRateLayerDescriptor | null;
+
+  setLayerAtIndex(layer: MTLRasterizationRateLayerDescriptor | null, layerIndex: number): void;
+
+  readonly layers: MTLRasterizationRateLayerArray;
+
+  screenSize: MTLSize;
+
+  label: string;
+
+  readonly layerCount: number;
+
+  setScreenSize(screenSize: MTLSize): void;
+
+  setLabel(label: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLAccelerationStructurePassSampleBufferAttachmentDescriptor extends NSObject implements NSCopying {
+  sampleBuffer: MTLCounterSampleBuffer;
+
+  startOfEncoderSampleIndex: number;
+
+  endOfEncoderSampleIndex: number;
+
+  setSampleBuffer(sampleBuffer: MTLCounterSampleBuffer | null): void;
+
+  setStartOfEncoderSampleIndex(startOfEncoderSampleIndex: number): void;
+
+  setEndOfEncoderSampleIndex(endOfEncoderSampleIndex: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLCommandBufferDescriptor extends NSObject implements NSCopying {
+  retainedReferences: boolean;
+
+  errorOptions: interop.Enum<typeof MTLCommandBufferErrorOption>;
+
+  logState: MTLLogState;
+
+  setRetainedReferences(retainedReferences: boolean): void;
+
+  setErrorOptions(errorOptions: interop.Enum<typeof MTLCommandBufferErrorOption>): void;
+
+  setLogState(logState: MTLLogState | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLBufferLayoutDescriptorArray extends NSObject {
+  objectAtIndexedSubscript(index: number): MTLBufferLayoutDescriptor;
+
+  setObjectAtIndexedSubscript(bufferDesc: MTLBufferLayoutDescriptor | null, index: number): void;
 }
 
 declare class MTLStageInputOutputDescriptor extends NSObject implements NSCopying {
@@ -3416,36 +3740,21 @@ declare class MTLStageInputOutputDescriptor extends NSObject implements NSCopyin
 
   reset(): void;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  setIndexType(indexType: interop.Enum<typeof MTLIndexType>): void;
 
-declare class MTLComputePassDescriptor extends NSObject implements NSCopying {
-  static computePassDescriptor(): MTLComputePassDescriptor;
-
-  dispatchType: interop.Enum<typeof MTLDispatchType>;
-
-  readonly sampleBufferAttachments: MTLComputePassSampleBufferAttachmentDescriptorArray;
+  setIndexBufferIndex(indexBufferIndex: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLBinaryArchiveDescriptor extends NSObject implements NSCopying {
-  url: NSURL;
+declare class MTLFunctionConstantValues extends NSObject implements NSCopying {
+  setConstantValueTypeAtIndex(value: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, index: number): void;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  setConstantValuesTypeWithRange(values: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, range: _NSRange): void;
 
-declare class MTLStitchedLibraryDescriptor extends NSObject implements NSCopying {
-  get functionGraphs(): NSArray;
-  set functionGraphs(value: NSArray<interop.Object> | Array<interop.Object>);
+  setConstantValueTypeWithName(value: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, name: string): void;
 
-  get functions(): NSArray;
-  set functions(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get binaryArchives(): NSArray;
-  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  options: interop.Enum<typeof MTLStitchedLibraryOptions>;
+  reset(): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -3462,6 +3771,521 @@ declare class MTLFunctionStitchingGraph extends NSObject implements NSCopying {
   set attributes(value: NSArray<interop.Object> | Array<interop.Object>);
 
   initWithFunctionNameNodesOutputNodeAttributes(functionName: string, nodes: NSArray<interop.Object> | Array<interop.Object>, outputNode: MTLFunctionStitchingFunctionNode | null, attributes: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  setFunctionName(functionName: string): void;
+
+  setNodes(nodes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setOutputNode(outputNode: MTLFunctionStitchingFunctionNode | null): void;
+
+  setAttributes(attributes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLIntersectionFunctionTableDescriptor extends NSObject implements NSCopying {
+  static intersectionFunctionTableDescriptor(): MTLIntersectionFunctionTableDescriptor;
+
+  functionCount: number;
+
+  setFunctionCount(functionCount: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLInstanceAccelerationStructureDescriptor extends MTLAccelerationStructureDescriptor {
+  instanceDescriptorBuffer: MTLBuffer;
+
+  instanceDescriptorBufferOffset: number;
+
+  instanceDescriptorStride: number;
+
+  instanceCount: number;
+
+  get instancedAccelerationStructures(): NSArray;
+  set instancedAccelerationStructures(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  instanceDescriptorType: interop.Enum<typeof MTLAccelerationStructureInstanceDescriptorType>;
+
+  motionTransformBuffer: MTLBuffer;
+
+  motionTransformBufferOffset: number;
+
+  motionTransformCount: number;
+
+  instanceTransformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>;
+
+  motionTransformType: interop.Enum<typeof MTLTransformType>;
+
+  motionTransformStride: number;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setInstanceDescriptorBuffer(instanceDescriptorBuffer: MTLBuffer | null): void;
+
+  setInstanceDescriptorBufferOffset(instanceDescriptorBufferOffset: number): void;
+
+  setInstanceDescriptorStride(instanceDescriptorStride: number): void;
+
+  setInstanceCount(instanceCount: number): void;
+
+  setInstancedAccelerationStructures(instancedAccelerationStructures: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setInstanceDescriptorType(instanceDescriptorType: interop.Enum<typeof MTLAccelerationStructureInstanceDescriptorType>): void;
+
+  setMotionTransformBuffer(motionTransformBuffer: MTLBuffer | null): void;
+
+  setMotionTransformBufferOffset(motionTransformBufferOffset: number): void;
+
+  setMotionTransformCount(motionTransformCount: number): void;
+
+  setInstanceTransformationMatrixLayout(instanceTransformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>): void;
+
+  setMotionTransformType(motionTransformType: interop.Enum<typeof MTLTransformType>): void;
+
+  setMotionTransformStride(motionTransformStride: number): void;
+}
+
+declare class MTLPrimitiveAccelerationStructureDescriptor extends MTLAccelerationStructureDescriptor {
+  get geometryDescriptors(): NSArray;
+  set geometryDescriptors(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  motionStartBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
+
+  motionEndBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
+
+  motionStartTime: number;
+
+  motionEndTime: number;
+
+  motionKeyframeCount: number;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setGeometryDescriptors(geometryDescriptors: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setMotionStartBorderMode(motionStartBorderMode: interop.Enum<typeof MTLMotionBorderMode>): void;
+
+  setMotionEndBorderMode(motionEndBorderMode: interop.Enum<typeof MTLMotionBorderMode>): void;
+
+  setMotionStartTime(motionStartTime: number): void;
+
+  setMotionEndTime(motionEndTime: number): void;
+
+  setMotionKeyframeCount(motionKeyframeCount: number): void;
+}
+
+declare class MTLFunctionConstant extends NSObject {
+  readonly name: string;
+
+  readonly type: interop.Enum<typeof MTLDataType>;
+
+  readonly index: number;
+
+  readonly required: boolean;
+}
+
+declare class MTLAccelerationStructureBoundingBoxGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
+  boundingBoxBuffer: MTLBuffer;
+
+  boundingBoxBufferOffset: number;
+
+  boundingBoxStride: number;
+
+  boundingBoxCount: number;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setBoundingBoxBuffer(boundingBoxBuffer: MTLBuffer | null): void;
+
+  setBoundingBoxBufferOffset(boundingBoxBufferOffset: number): void;
+
+  setBoundingBoxStride(boundingBoxStride: number): void;
+
+  setBoundingBoxCount(boundingBoxCount: number): void;
+}
+
+declare class MTLRenderPassAttachmentDescriptor extends NSObject implements NSCopying {
+  texture: MTLTexture;
+
+  level: number;
+
+  slice: number;
+
+  depthPlane: number;
+
+  resolveTexture: MTLTexture;
+
+  resolveLevel: number;
+
+  resolveSlice: number;
+
+  resolveDepthPlane: number;
+
+  loadAction: interop.Enum<typeof MTLLoadAction>;
+
+  storeAction: interop.Enum<typeof MTLStoreAction>;
+
+  storeActionOptions: interop.Enum<typeof MTLStoreActionOptions>;
+
+  setTexture(texture: MTLTexture | null): void;
+
+  setLevel(level: number): void;
+
+  setSlice(slice: number): void;
+
+  setDepthPlane(depthPlane: number): void;
+
+  setResolveTexture(resolveTexture: MTLTexture | null): void;
+
+  setResolveLevel(resolveLevel: number): void;
+
+  setResolveSlice(resolveSlice: number): void;
+
+  setResolveDepthPlane(resolveDepthPlane: number): void;
+
+  setLoadAction(loadAction: interop.Enum<typeof MTLLoadAction>): void;
+
+  setStoreAction(storeAction: interop.Enum<typeof MTLStoreAction>): void;
+
+  setStoreActionOptions(storeActionOptions: interop.Enum<typeof MTLStoreActionOptions>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLRenderPassColorAttachmentDescriptor extends MTLRenderPassAttachmentDescriptor {
+  clearColor: MTLClearColor;
+
+  setClearColor(clearColor: MTLClearColor): void;
+}
+
+declare class MTLAccelerationStructureCurveGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
+  controlPointBuffer: MTLBuffer;
+
+  controlPointBufferOffset: number;
+
+  controlPointCount: number;
+
+  controlPointStride: number;
+
+  controlPointFormat: interop.Enum<typeof MTLAttributeFormat>;
+
+  radiusBuffer: MTLBuffer;
+
+  radiusBufferOffset: number;
+
+  radiusFormat: interop.Enum<typeof MTLAttributeFormat>;
+
+  radiusStride: number;
+
+  indexBuffer: MTLBuffer;
+
+  indexBufferOffset: number;
+
+  indexType: interop.Enum<typeof MTLIndexType>;
+
+  segmentCount: number;
+
+  segmentControlPointCount: number;
+
+  curveType: interop.Enum<typeof MTLCurveType>;
+
+  curveBasis: interop.Enum<typeof MTLCurveBasis>;
+
+  curveEndCaps: interop.Enum<typeof MTLCurveEndCaps>;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setControlPointBuffer(controlPointBuffer: MTLBuffer | null): void;
+
+  setControlPointBufferOffset(controlPointBufferOffset: number): void;
+
+  setControlPointCount(controlPointCount: number): void;
+
+  setControlPointStride(controlPointStride: number): void;
+
+  setControlPointFormat(controlPointFormat: interop.Enum<typeof MTLAttributeFormat>): void;
+
+  setRadiusBuffer(radiusBuffer: MTLBuffer | null): void;
+
+  setRadiusBufferOffset(radiusBufferOffset: number): void;
+
+  setRadiusFormat(radiusFormat: interop.Enum<typeof MTLAttributeFormat>): void;
+
+  setRadiusStride(radiusStride: number): void;
+
+  setIndexBuffer(indexBuffer: MTLBuffer | null): void;
+
+  setIndexBufferOffset(indexBufferOffset: number): void;
+
+  setIndexType(indexType: interop.Enum<typeof MTLIndexType>): void;
+
+  setSegmentCount(segmentCount: number): void;
+
+  setSegmentControlPointCount(segmentControlPointCount: number): void;
+
+  setCurveType(curveType: interop.Enum<typeof MTLCurveType>): void;
+
+  setCurveBasis(curveBasis: interop.Enum<typeof MTLCurveBasis>): void;
+
+  setCurveEndCaps(curveEndCaps: interop.Enum<typeof MTLCurveEndCaps>): void;
+}
+
+declare class MTLComputePipelineDescriptor extends NSObject implements NSCopying {
+  label: string;
+
+  computeFunction: MTLFunction;
+
+  threadGroupSizeIsMultipleOfThreadExecutionWidth: boolean;
+
+  maxTotalThreadsPerThreadgroup: number;
+
+  stageInputDescriptor: MTLStageInputOutputDescriptor;
+
+  readonly buffers: MTLPipelineBufferDescriptorArray;
+
+  supportIndirectCommandBuffers: boolean;
+
+  get insertLibraries(): NSArray;
+  set insertLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get preloadedLibraries(): NSArray;
+  set preloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get binaryArchives(): NSArray;
+  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  reset(): void;
+
+  linkedFunctions: MTLLinkedFunctions;
+
+  supportAddingBinaryFunctions: boolean;
+
+  maxCallStackDepth: number;
+
+  shaderValidation: interop.Enum<typeof MTLShaderValidation>;
+
+  setLabel(label: string | null): void;
+
+  setComputeFunction(computeFunction: MTLFunction | null): void;
+
+  setThreadGroupSizeIsMultipleOfThreadExecutionWidth(threadGroupSizeIsMultipleOfThreadExecutionWidth: boolean): void;
+
+  setMaxTotalThreadsPerThreadgroup(maxTotalThreadsPerThreadgroup: number): void;
+
+  setStageInputDescriptor(stageInputDescriptor: MTLStageInputOutputDescriptor | null): void;
+
+  setSupportIndirectCommandBuffers(supportIndirectCommandBuffers: boolean): void;
+
+  setInsertLibraries(insertLibraries: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setPreloadedLibraries(preloadedLibraries: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBinaryArchives(binaryArchives: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setLinkedFunctions(linkedFunctions: MTLLinkedFunctions | null): void;
+
+  setSupportAddingBinaryFunctions(supportAddingBinaryFunctions: boolean): void;
+
+  setMaxCallStackDepth(maxCallStackDepth: number): void;
+
+  setShaderValidation(shaderValidation: interop.Enum<typeof MTLShaderValidation>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLAccelerationStructureTriangleGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
+  vertexBuffer: MTLBuffer;
+
+  vertexBufferOffset: number;
+
+  vertexFormat: interop.Enum<typeof MTLAttributeFormat>;
+
+  vertexStride: number;
+
+  indexBuffer: MTLBuffer;
+
+  indexBufferOffset: number;
+
+  indexType: interop.Enum<typeof MTLIndexType>;
+
+  triangleCount: number;
+
+  transformationMatrixBuffer: MTLBuffer;
+
+  transformationMatrixBufferOffset: number;
+
+  transformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setVertexBuffer(vertexBuffer: MTLBuffer | null): void;
+
+  setVertexBufferOffset(vertexBufferOffset: number): void;
+
+  setVertexFormat(vertexFormat: interop.Enum<typeof MTLAttributeFormat>): void;
+
+  setVertexStride(vertexStride: number): void;
+
+  setIndexBuffer(indexBuffer: MTLBuffer | null): void;
+
+  setIndexBufferOffset(indexBufferOffset: number): void;
+
+  setIndexType(indexType: interop.Enum<typeof MTLIndexType>): void;
+
+  setTriangleCount(triangleCount: number): void;
+
+  setTransformationMatrixBuffer(transformationMatrixBuffer: MTLBuffer | null): void;
+
+  setTransformationMatrixBufferOffset(transformationMatrixBufferOffset: number): void;
+
+  setTransformationMatrixLayout(transformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>): void;
+}
+
+declare class MTLBlitPassSampleBufferAttachmentDescriptorArray extends NSObject {
+  objectAtIndexedSubscript(attachmentIndex: number): MTLBlitPassSampleBufferAttachmentDescriptor;
+
+  setObjectAtIndexedSubscript(attachment: MTLBlitPassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
+}
+
+declare class MTLFunctionDescriptor extends NSObject implements NSCopying {
+  static functionDescriptor(): MTLFunctionDescriptor;
+
+  name: string;
+
+  specializedName: string;
+
+  constantValues: MTLFunctionConstantValues;
+
+  options: interop.Enum<typeof MTLFunctionOptions>;
+
+  get binaryArchives(): NSArray;
+  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setName(name: string | null): void;
+
+  setSpecializedName(specializedName: string | null): void;
+
+  setConstantValues(constantValues: MTLFunctionConstantValues | null): void;
+
+  setOptions(options: interop.Enum<typeof MTLFunctionOptions>): void;
+
+  setBinaryArchives(binaryArchives: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLComputePassDescriptor extends NSObject implements NSCopying {
+  static computePassDescriptor(): MTLComputePassDescriptor;
+
+  dispatchType: interop.Enum<typeof MTLDispatchType>;
+
+  readonly sampleBufferAttachments: MTLComputePassSampleBufferAttachmentDescriptorArray;
+
+  setDispatchType(dispatchType: interop.Enum<typeof MTLDispatchType>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLRenderPassStencilAttachmentDescriptor extends MTLRenderPassAttachmentDescriptor {
+  clearStencil: number;
+
+  stencilResolveFilter: interop.Enum<typeof MTLMultisampleStencilResolveFilter>;
+
+  setClearStencil(clearStencil: number): void;
+
+  setStencilResolveFilter(stencilResolveFilter: interop.Enum<typeof MTLMultisampleStencilResolveFilter>): void;
+}
+
+declare class MTLBinaryArchiveDescriptor extends NSObject implements NSCopying {
+  url: NSURL;
+
+  setUrl(url: NSURL | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLStitchedLibraryDescriptor extends NSObject implements NSCopying {
+  get functionGraphs(): NSArray;
+  set functionGraphs(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get functions(): NSArray;
+  set functions(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get binaryArchives(): NSArray;
+  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  options: interop.Enum<typeof MTLStitchedLibraryOptions>;
+
+  setFunctionGraphs(functionGraphs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setFunctions(functions: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBinaryArchives(binaryArchives: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setOptions(options: interop.Enum<typeof MTLStitchedLibraryOptions>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLFunctionStitchingFunctionNode extends NSObject implements MTLFunctionStitchingNode {
+  name: string;
+
+  get arguments$(): NSArray;
+  set arguments$(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get controlDependencies(): NSArray;
+  set controlDependencies(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  initWithNameArgumentsControlDependencies(name: string, arguments$: NSArray<interop.Object> | Array<interop.Object>, controlDependencies: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  setName(name: string): void;
+
+  arguments(): NSArray;
+
+  setArguments(arguments$: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setControlDependencies(controlDependencies: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -3508,22 +4332,6 @@ declare class MTLFunctionStitchingAttributeAlwaysInline extends NSObject impleme
   readonly debugDescription: string;
 }
 
-declare class MTLIntersectionFunctionTableDescriptor extends NSObject implements NSCopying {
-  static intersectionFunctionTableDescriptor(): MTLIntersectionFunctionTableDescriptor;
-
-  functionCount: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLLogStateDescriptor extends NSObject implements NSCopying {
-  level: interop.Enum<typeof MTLLogLevel>;
-
-  bufferSize: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTLRasterizationRateLayerArray extends NSObject {
   objectAtIndexedSubscript(layerIndex: number): MTLRasterizationRateLayerDescriptor | null;
 
@@ -3547,7 +4355,15 @@ declare class MTLRasterizationRateLayerDescriptor extends NSObject implements NS
 
   readonly vertical: MTLRasterizationRateSampleArray;
 
+  setSampleCount(sampleCount: MTLSize): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLRasterizationRateSampleArray extends NSObject {
+  objectAtIndexedSubscript(index: number): NSNumber;
+
+  setObjectAtIndexedSubscript(value: NSNumber, index: number): void;
 }
 
 declare class MTLAccelerationStructurePassDescriptor extends NSObject implements NSCopying {
@@ -3558,14 +4374,14 @@ declare class MTLAccelerationStructurePassDescriptor extends NSObject implements
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLAccelerationStructurePassSampleBufferAttachmentDescriptor extends NSObject implements NSCopying {
-  sampleBuffer: MTLCounterSampleBuffer;
+declare class MTLSharedEventHandle extends NSObject implements NSSecureCoding {
+  readonly label: string;
 
-  startOfEncoderSampleIndex: number;
+  static readonly supportsSecureCoding: boolean;
 
-  endOfEncoderSampleIndex: number;
+  encodeWithCoder(coder: NSCoder): void;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class MTLSharedEventListener extends NSObject {
@@ -3582,6 +4398,12 @@ declare class MTLCaptureDescriptor extends NSObject implements NSCopying {
   destination: interop.Enum<typeof MTLCaptureDestination>;
 
   outputURL: NSURL;
+
+  setCaptureObject(captureObject: interop.Object | null): void;
+
+  setDestination(destination: interop.Enum<typeof MTLCaptureDestination>): void;
+
+  setOutputURL(outputURL: NSURL | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -3618,35 +4440,36 @@ declare class MTLIndirectInstanceAccelerationStructureDescriptor extends MTLAcce
   motionTransformStride: number;
 
   static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
 
-declare class MTLInstanceAccelerationStructureDescriptor extends MTLAccelerationStructureDescriptor {
-  instanceDescriptorBuffer: MTLBuffer;
+  setInstanceDescriptorBuffer(instanceDescriptorBuffer: MTLBuffer | null): void;
 
-  instanceDescriptorBufferOffset: number;
+  setInstanceDescriptorBufferOffset(instanceDescriptorBufferOffset: number): void;
 
-  instanceDescriptorStride: number;
+  setInstanceDescriptorStride(instanceDescriptorStride: number): void;
 
-  instanceCount: number;
+  setMaxInstanceCount(maxInstanceCount: number): void;
 
-  get instancedAccelerationStructures(): NSArray;
-  set instancedAccelerationStructures(value: NSArray<interop.Object> | Array<interop.Object>);
+  setInstanceCountBuffer(instanceCountBuffer: MTLBuffer | null): void;
 
-  instanceDescriptorType: interop.Enum<typeof MTLAccelerationStructureInstanceDescriptorType>;
+  setInstanceCountBufferOffset(instanceCountBufferOffset: number): void;
 
-  motionTransformBuffer: MTLBuffer;
+  setInstanceDescriptorType(instanceDescriptorType: interop.Enum<typeof MTLAccelerationStructureInstanceDescriptorType>): void;
 
-  motionTransformBufferOffset: number;
+  setMotionTransformBuffer(motionTransformBuffer: MTLBuffer | null): void;
 
-  motionTransformCount: number;
+  setMotionTransformBufferOffset(motionTransformBufferOffset: number): void;
 
-  instanceTransformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>;
+  setMaxMotionTransformCount(maxMotionTransformCount: number): void;
 
-  motionTransformType: interop.Enum<typeof MTLTransformType>;
+  setMotionTransformCountBuffer(motionTransformCountBuffer: MTLBuffer | null): void;
 
-  motionTransformStride: number;
+  setMotionTransformCountBufferOffset(motionTransformCountBufferOffset: number): void;
 
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+  setInstanceTransformationMatrixLayout(instanceTransformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>): void;
+
+  setMotionTransformType(motionTransformType: interop.Enum<typeof MTLTransformType>): void;
+
+  setMotionTransformStride(motionTransformStride: number): void;
 }
 
 declare class MTLAccelerationStructureMotionCurveGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
@@ -3683,44 +4506,36 @@ declare class MTLAccelerationStructureMotionCurveGeometryDescriptor extends MTLA
   curveEndCaps: interop.Enum<typeof MTLCurveEndCaps>;
 
   static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
 
-declare class MTLAccelerationStructureCurveGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
-  controlPointBuffer: MTLBuffer;
+  setControlPointBuffers(controlPointBuffers: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  controlPointBufferOffset: number;
+  setControlPointCount(controlPointCount: number): void;
 
-  controlPointCount: number;
+  setControlPointStride(controlPointStride: number): void;
 
-  controlPointStride: number;
+  setControlPointFormat(controlPointFormat: interop.Enum<typeof MTLAttributeFormat>): void;
 
-  controlPointFormat: interop.Enum<typeof MTLAttributeFormat>;
+  setRadiusBuffers(radiusBuffers: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  radiusBuffer: MTLBuffer;
+  setRadiusFormat(radiusFormat: interop.Enum<typeof MTLAttributeFormat>): void;
 
-  radiusBufferOffset: number;
+  setRadiusStride(radiusStride: number): void;
 
-  radiusFormat: interop.Enum<typeof MTLAttributeFormat>;
+  setIndexBuffer(indexBuffer: MTLBuffer | null): void;
 
-  radiusStride: number;
+  setIndexBufferOffset(indexBufferOffset: number): void;
 
-  indexBuffer: MTLBuffer;
+  setIndexType(indexType: interop.Enum<typeof MTLIndexType>): void;
 
-  indexBufferOffset: number;
+  setSegmentCount(segmentCount: number): void;
 
-  indexType: interop.Enum<typeof MTLIndexType>;
+  setSegmentControlPointCount(segmentControlPointCount: number): void;
 
-  segmentCount: number;
+  setCurveType(curveType: interop.Enum<typeof MTLCurveType>): void;
 
-  segmentControlPointCount: number;
+  setCurveBasis(curveBasis: interop.Enum<typeof MTLCurveBasis>): void;
 
-  curveType: interop.Enum<typeof MTLCurveType>;
-
-  curveBasis: interop.Enum<typeof MTLCurveBasis>;
-
-  curveEndCaps: interop.Enum<typeof MTLCurveEndCaps>;
-
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+  setCurveEndCaps(curveEndCaps: interop.Enum<typeof MTLCurveEndCaps>): void;
 }
 
 declare class MTLAccelerationStructureMotionBoundingBoxGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
@@ -3732,6 +4547,12 @@ declare class MTLAccelerationStructureMotionBoundingBoxGeometryDescriptor extend
   boundingBoxCount: number;
 
   static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setBoundingBoxBuffers(boundingBoxBuffers: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBoundingBoxStride(boundingBoxStride: number): void;
+
+  setBoundingBoxCount(boundingBoxCount: number): void;
 }
 
 declare class MTLAccelerationStructureMotionTriangleGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
@@ -3757,59 +4578,74 @@ declare class MTLAccelerationStructureMotionTriangleGeometryDescriptor extends M
   transformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>;
 
   static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setVertexBuffers(vertexBuffers: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setVertexFormat(vertexFormat: interop.Enum<typeof MTLAttributeFormat>): void;
+
+  setVertexStride(vertexStride: number): void;
+
+  setIndexBuffer(indexBuffer: MTLBuffer | null): void;
+
+  setIndexBufferOffset(indexBufferOffset: number): void;
+
+  setIndexType(indexType: interop.Enum<typeof MTLIndexType>): void;
+
+  setTriangleCount(triangleCount: number): void;
+
+  setTransformationMatrixBuffer(transformationMatrixBuffer: MTLBuffer | null): void;
+
+  setTransformationMatrixBufferOffset(transformationMatrixBufferOffset: number): void;
+
+  setTransformationMatrixLayout(transformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>): void;
 }
 
-declare class MTLAccelerationStructureBoundingBoxGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
-  boundingBoxBuffer: MTLBuffer;
+declare class MTLRenderPipelineColorAttachmentDescriptor extends NSObject implements NSCopying {
+  pixelFormat: interop.Enum<typeof MTLPixelFormat>;
 
-  boundingBoxBufferOffset: number;
+  blendingEnabled: boolean;
 
-  boundingBoxStride: number;
+  sourceRGBBlendFactor: interop.Enum<typeof MTLBlendFactor>;
 
-  boundingBoxCount: number;
+  destinationRGBBlendFactor: interop.Enum<typeof MTLBlendFactor>;
 
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
+  rgbBlendOperation: interop.Enum<typeof MTLBlendOperation>;
 
-declare class MTLPrimitiveAccelerationStructureDescriptor extends MTLAccelerationStructureDescriptor {
-  get geometryDescriptors(): NSArray;
-  set geometryDescriptors(value: NSArray<interop.Object> | Array<interop.Object>);
+  sourceAlphaBlendFactor: interop.Enum<typeof MTLBlendFactor>;
 
-  motionStartBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
+  destinationAlphaBlendFactor: interop.Enum<typeof MTLBlendFactor>;
 
-  motionEndBorderMode: interop.Enum<typeof MTLMotionBorderMode>;
+  alphaBlendOperation: interop.Enum<typeof MTLBlendOperation>;
 
-  motionStartTime: number;
+  writeMask: interop.Enum<typeof MTLColorWriteMask>;
 
-  motionEndTime: number;
+  setPixelFormat(pixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
 
-  motionKeyframeCount: number;
+  isBlendingEnabled(): boolean;
 
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
+  setBlendingEnabled(blendingEnabled: boolean): void;
 
-declare class MTLAccelerationStructureGeometryDescriptor extends NSObject implements NSCopying {
-  intersectionFunctionTableOffset: number;
+  setSourceRGBBlendFactor(sourceRGBBlendFactor: interop.Enum<typeof MTLBlendFactor>): void;
 
-  opaque: boolean;
+  setDestinationRGBBlendFactor(destinationRGBBlendFactor: interop.Enum<typeof MTLBlendFactor>): void;
 
-  allowDuplicateIntersectionFunctionInvocation: boolean;
+  setRgbBlendOperation(rgbBlendOperation: interop.Enum<typeof MTLBlendOperation>): void;
 
-  label: string;
+  setSourceAlphaBlendFactor(sourceAlphaBlendFactor: interop.Enum<typeof MTLBlendFactor>): void;
 
-  primitiveDataBuffer: MTLBuffer;
+  setDestinationAlphaBlendFactor(destinationAlphaBlendFactor: interop.Enum<typeof MTLBlendFactor>): void;
 
-  primitiveDataBufferOffset: number;
+  setAlphaBlendOperation(alphaBlendOperation: interop.Enum<typeof MTLBlendOperation>): void;
 
-  primitiveDataStride: number;
-
-  primitiveDataElementSize: number;
+  setWriteMask(writeMask: interop.Enum<typeof MTLColorWriteMask>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTLAccelerationStructureDescriptor extends NSObject implements NSCopying {
   usage: interop.Enum<typeof MTLAccelerationStructureUsage>;
+
+  setUsage(usage: interop.Enum<typeof MTLAccelerationStructureUsage>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -3843,11 +4679,11 @@ declare class MTLMeshRenderPipelineDescriptor extends NSObject implements NSCopy
 
   rasterSampleCount: number;
 
-  isAlphaToCoverageEnabled: boolean;
+  alphaToCoverageEnabled: boolean;
 
-  isAlphaToOneEnabled: boolean;
+  alphaToOneEnabled: boolean;
 
-  isRasterizationEnabled: boolean;
+  rasterizationEnabled: boolean;
 
   maxVertexAmplificationCount: number;
 
@@ -3872,6 +4708,58 @@ declare class MTLMeshRenderPipelineDescriptor extends NSObject implements NSCopy
 
   shaderValidation: interop.Enum<typeof MTLShaderValidation>;
 
+  setLabel(label: string | null): void;
+
+  setObjectFunction(objectFunction: MTLFunction | null): void;
+
+  setMeshFunction(meshFunction: MTLFunction | null): void;
+
+  setFragmentFunction(fragmentFunction: MTLFunction | null): void;
+
+  setMaxTotalThreadsPerObjectThreadgroup(maxTotalThreadsPerObjectThreadgroup: number): void;
+
+  setMaxTotalThreadsPerMeshThreadgroup(maxTotalThreadsPerMeshThreadgroup: number): void;
+
+  setObjectThreadgroupSizeIsMultipleOfThreadExecutionWidth(objectThreadgroupSizeIsMultipleOfThreadExecutionWidth: boolean): void;
+
+  setMeshThreadgroupSizeIsMultipleOfThreadExecutionWidth(meshThreadgroupSizeIsMultipleOfThreadExecutionWidth: boolean): void;
+
+  setPayloadMemoryLength(payloadMemoryLength: number): void;
+
+  setMaxTotalThreadgroupsPerMeshGrid(maxTotalThreadgroupsPerMeshGrid: number): void;
+
+  setRasterSampleCount(rasterSampleCount: number): void;
+
+  isAlphaToCoverageEnabled(): boolean;
+
+  setAlphaToCoverageEnabled(alphaToCoverageEnabled: boolean): void;
+
+  isAlphaToOneEnabled(): boolean;
+
+  setAlphaToOneEnabled(alphaToOneEnabled: boolean): void;
+
+  isRasterizationEnabled(): boolean;
+
+  setRasterizationEnabled(rasterizationEnabled: boolean): void;
+
+  setMaxVertexAmplificationCount(maxVertexAmplificationCount: number): void;
+
+  setDepthAttachmentPixelFormat(depthAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
+
+  setStencilAttachmentPixelFormat(stencilAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
+
+  setSupportIndirectCommandBuffers(supportIndirectCommandBuffers: boolean): void;
+
+  setBinaryArchives(binaryArchives: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setObjectLinkedFunctions(objectLinkedFunctions: MTLLinkedFunctions | null): void;
+
+  setMeshLinkedFunctions(meshLinkedFunctions: MTLLinkedFunctions | null): void;
+
+  setFragmentLinkedFunctions(fragmentLinkedFunctions: MTLLinkedFunctions | null): void;
+
+  setShaderValidation(shaderValidation: interop.Enum<typeof MTLShaderValidation>): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -3884,6 +4772,8 @@ declare class MTLTileRenderPipelineColorAttachmentDescriptorArray extends NSObje
 declare class MTLTileRenderPipelineColorAttachmentDescriptor extends NSObject implements NSCopying {
   pixelFormat: interop.Enum<typeof MTLPixelFormat>;
 
+  setPixelFormat(pixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -3893,79 +4783,34 @@ declare class MTLRenderPipelineColorAttachmentDescriptorArray extends NSObject {
   setObjectAtIndexedSubscript(attachment: MTLRenderPipelineColorAttachmentDescriptor | null, attachmentIndex: number): void;
 }
 
-declare class MTLRenderPipelineDescriptor extends NSObject implements NSCopying {
+declare class MTLLogStateDescriptor extends NSObject implements NSCopying {
+  level: interop.Enum<typeof MTLLogLevel>;
+
+  bufferSize: number;
+
+  setLevel(level: interop.Enum<typeof MTLLogLevel>): void;
+
+  setBufferSize(bufferSize: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLCounterSampleBufferDescriptor extends NSObject implements NSCopying {
+  counterSet: MTLCounterSet;
+
   label: string;
 
-  vertexFunction: MTLFunction;
-
-  fragmentFunction: MTLFunction;
-
-  vertexDescriptor: MTLVertexDescriptor;
+  storageMode: interop.Enum<typeof MTLStorageMode>;
 
   sampleCount: number;
 
-  rasterSampleCount: number;
+  setCounterSet(counterSet: MTLCounterSet | null): void;
 
-  isAlphaToCoverageEnabled: boolean;
+  setLabel(label: string): void;
 
-  isAlphaToOneEnabled: boolean;
+  setStorageMode(storageMode: interop.Enum<typeof MTLStorageMode>): void;
 
-  isRasterizationEnabled: boolean;
-
-  maxVertexAmplificationCount: number;
-
-  readonly colorAttachments: MTLRenderPipelineColorAttachmentDescriptorArray;
-
-  depthAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>;
-
-  stencilAttachmentPixelFormat: interop.Enum<typeof MTLPixelFormat>;
-
-  inputPrimitiveTopology: interop.Enum<typeof MTLPrimitiveTopologyClass>;
-
-  tessellationPartitionMode: interop.Enum<typeof MTLTessellationPartitionMode>;
-
-  maxTessellationFactor: number;
-
-  isTessellationFactorScaleEnabled: boolean;
-
-  tessellationFactorFormat: interop.Enum<typeof MTLTessellationFactorFormat>;
-
-  tessellationControlPointIndexType: interop.Enum<typeof MTLTessellationControlPointIndexType>;
-
-  tessellationFactorStepFunction: interop.Enum<typeof MTLTessellationFactorStepFunction>;
-
-  tessellationOutputWindingOrder: interop.Enum<typeof MTLWinding>;
-
-  readonly vertexBuffers: MTLPipelineBufferDescriptorArray;
-
-  readonly fragmentBuffers: MTLPipelineBufferDescriptorArray;
-
-  supportIndirectCommandBuffers: boolean;
-
-  get binaryArchives(): NSArray;
-  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get vertexPreloadedLibraries(): NSArray;
-  set vertexPreloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get fragmentPreloadedLibraries(): NSArray;
-  set fragmentPreloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  vertexLinkedFunctions: MTLLinkedFunctions;
-
-  fragmentLinkedFunctions: MTLLinkedFunctions;
-
-  supportAddingVertexBinaryFunctions: boolean;
-
-  supportAddingFragmentBinaryFunctions: boolean;
-
-  maxVertexCallStackDepth: number;
-
-  maxFragmentCallStackDepth: number;
-
-  reset(): void;
-
-  shaderValidation: interop.Enum<typeof MTLShaderValidation>;
+  setSampleCount(sampleCount: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -3988,6 +4833,16 @@ declare class MTLRenderPipelineReflection extends NSObject {
   readonly tileArguments: NSArray;
 }
 
+declare class MTLVisibleFunctionTableDescriptor extends NSObject implements NSCopying {
+  static visibleFunctionTableDescriptor(): MTLVisibleFunctionTableDescriptor;
+
+  functionCount: number;
+
+  setFunctionCount(functionCount: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTLLinkedFunctions extends NSObject implements NSCopying {
   static linkedFunctions(): MTLLinkedFunctions;
 
@@ -4003,6 +4858,14 @@ declare class MTLLinkedFunctions extends NSObject implements NSCopying {
   get privateFunctions(): NSArray;
   set privateFunctions(value: NSArray<interop.Object> | Array<interop.Object>);
 
+  setFunctions(functions: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setBinaryFunctions(binaryFunctions: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setGroups(groups: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  setPrivateFunctions(privateFunctions: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -4015,6 +4878,8 @@ declare class MTLPipelineBufferDescriptorArray extends NSObject {
 declare class MTLPipelineBufferDescriptor extends NSObject implements NSCopying {
   mutability: interop.Enum<typeof MTLMutability>;
 
+  setMutability(mutability: interop.Enum<typeof MTLMutability>): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -4024,28 +4889,18 @@ declare class MTLAttributeDescriptorArray extends NSObject {
   setObjectAtIndexedSubscript(attributeDesc: MTLAttributeDescriptor | null, index: number): void;
 }
 
-declare class MTLAttributeDescriptor extends NSObject implements NSCopying {
-  format: interop.Enum<typeof MTLAttributeFormat>;
-
-  offset: number;
-
-  bufferIndex: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLBufferLayoutDescriptorArray extends NSObject {
-  objectAtIndexedSubscript(index: number): MTLBufferLayoutDescriptor;
-
-  setObjectAtIndexedSubscript(bufferDesc: MTLBufferLayoutDescriptor | null, index: number): void;
-}
-
 declare class MTLBufferLayoutDescriptor extends NSObject implements NSCopying {
   stride: number;
 
   stepFunction: interop.Enum<typeof MTLStepFunction>;
 
   stepRate: number;
+
+  setStride(stride: number): void;
+
+  setStepFunction(stepFunction: interop.Enum<typeof MTLStepFunction>): void;
+
+  setStepRate(stepRate: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -4074,6 +4929,16 @@ declare class MTLVertexBufferLayoutDescriptorArray extends NSObject {
   setObjectAtIndexedSubscript(bufferDesc: MTLVertexBufferLayoutDescriptor | null, index: number): void;
 }
 
+declare class MTLRenderPassDepthAttachmentDescriptor extends MTLRenderPassAttachmentDescriptor {
+  clearDepth: number;
+
+  depthResolveFilter: interop.Enum<typeof MTLMultisampleDepthResolveFilter>;
+
+  setClearDepth(clearDepth: number): void;
+
+  setDepthResolveFilter(depthResolveFilter: interop.Enum<typeof MTLMultisampleDepthResolveFilter>): void;
+}
+
 declare class MTLVertexBufferLayoutDescriptor extends NSObject implements NSCopying {
   stride: number;
 
@@ -4081,19 +4946,37 @@ declare class MTLVertexBufferLayoutDescriptor extends NSObject implements NSCopy
 
   stepRate: number;
 
+  setStride(stride: number): void;
+
+  setStepFunction(stepFunction: interop.Enum<typeof MTLVertexStepFunction>): void;
+
+  setStepRate(stepRate: number): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTLDepthStencilDescriptor extends NSObject implements NSCopying {
   depthCompareFunction: interop.Enum<typeof MTLCompareFunction>;
 
-  isDepthWriteEnabled: boolean;
+  depthWriteEnabled: boolean;
 
   frontFaceStencil: MTLStencilDescriptor;
 
   backFaceStencil: MTLStencilDescriptor;
 
   label: string;
+
+  setDepthCompareFunction(depthCompareFunction: interop.Enum<typeof MTLCompareFunction>): void;
+
+  isDepthWriteEnabled(): boolean;
+
+  setDepthWriteEnabled(depthWriteEnabled: boolean): void;
+
+  setFrontFaceStencil(frontFaceStencil: MTLStencilDescriptor | null): void;
+
+  setBackFaceStencil(backFaceStencil: MTLStencilDescriptor | null): void;
+
+  setLabel(label: string | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -4111,13 +4994,17 @@ declare class MTLStencilDescriptor extends NSObject implements NSCopying {
 
   writeMask: number;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  setStencilCompareFunction(stencilCompareFunction: interop.Enum<typeof MTLCompareFunction>): void;
 
-declare class MTLCommandQueueDescriptor extends NSObject implements NSCopying {
-  maxCommandBufferCount: number;
+  setStencilFailureOperation(stencilFailureOperation: interop.Enum<typeof MTLStencilOperation>): void;
 
-  logState: MTLLogState;
+  setDepthFailureOperation(depthFailureOperation: interop.Enum<typeof MTLStencilOperation>): void;
+
+  setDepthStencilPassOperation(depthStencilPassOperation: interop.Enum<typeof MTLStencilOperation>): void;
+
+  setReadMask(readMask: number): void;
+
+  setWriteMask(writeMask: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -4128,6 +5015,12 @@ declare class MTLComputePassSampleBufferAttachmentDescriptor extends NSObject im
   startOfEncoderSampleIndex: number;
 
   endOfEncoderSampleIndex: number;
+
+  setSampleBuffer(sampleBuffer: MTLCounterSampleBuffer | null): void;
+
+  setStartOfEncoderSampleIndex(startOfEncoderSampleIndex: number): void;
+
+  setEndOfEncoderSampleIndex(endOfEncoderSampleIndex: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -4140,74 +5033,10 @@ declare class MTLBlitPassDescriptor extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLBlitPassSampleBufferAttachmentDescriptor extends NSObject implements NSCopying {
-  sampleBuffer: MTLCounterSampleBuffer;
+declare class MTLRenderPassSampleBufferAttachmentDescriptorArray extends NSObject {
+  objectAtIndexedSubscript(attachmentIndex: number): MTLRenderPassSampleBufferAttachmentDescriptor;
 
-  startOfEncoderSampleIndex: number;
-
-  endOfEncoderSampleIndex: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLRenderPassDescriptor extends NSObject implements NSCopying {
-  static renderPassDescriptor(): MTLRenderPassDescriptor;
-
-  readonly colorAttachments: MTLRenderPassColorAttachmentDescriptorArray;
-
-  depthAttachment: MTLRenderPassDepthAttachmentDescriptor;
-
-  stencilAttachment: MTLRenderPassStencilAttachmentDescriptor;
-
-  visibilityResultBuffer: MTLBuffer;
-
-  renderTargetArrayLength: number;
-
-  imageblockSampleLength: number;
-
-  threadgroupMemoryLength: number;
-
-  tileWidth: number;
-
-  tileHeight: number;
-
-  defaultRasterSampleCount: number;
-
-  renderTargetWidth: number;
-
-  renderTargetHeight: number;
-
-  setSamplePositionsCount(positions: interop.PointerConvertible, count: number): void;
-
-  getSamplePositionsCount(positions: interop.PointerConvertible, count: number): number;
-
-  rasterizationRateMap: MTLRasterizationRateMap;
-
-  readonly sampleBufferAttachments: MTLRenderPassSampleBufferAttachmentDescriptorArray;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLRenderPassColorAttachmentDescriptorArray extends NSObject {
-  objectAtIndexedSubscript(attachmentIndex: number): MTLRenderPassColorAttachmentDescriptor;
-
-  setObjectAtIndexedSubscript(attachment: MTLRenderPassColorAttachmentDescriptor | null, attachmentIndex: number): void;
-}
-
-declare class MTLRenderPassStencilAttachmentDescriptor extends MTLRenderPassAttachmentDescriptor {
-  clearStencil: number;
-
-  stencilResolveFilter: interop.Enum<typeof MTLMultisampleStencilResolveFilter>;
-}
-
-declare class MTLRenderPassDepthAttachmentDescriptor extends MTLRenderPassAttachmentDescriptor {
-  clearDepth: number;
-
-  depthResolveFilter: interop.Enum<typeof MTLMultisampleDepthResolveFilter>;
-}
-
-declare class MTLRenderPassColorAttachmentDescriptor extends MTLRenderPassAttachmentDescriptor {
-  clearColor: MTLClearColor;
+  setObjectAtIndexedSubscript(attachment: MTLRenderPassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
 }
 
 declare class MTLResourceStatePassSampleBufferAttachmentDescriptorArray extends NSObject {
@@ -4222,6 +5051,12 @@ declare class MTLResourceStatePassSampleBufferAttachmentDescriptor extends NSObj
   startOfEncoderSampleIndex: number;
 
   endOfEncoderSampleIndex: number;
+
+  setSampleBuffer(sampleBuffer: MTLCounterSampleBuffer | null): void;
+
+  setStartOfEncoderSampleIndex(startOfEncoderSampleIndex: number): void;
+
+  setEndOfEncoderSampleIndex(endOfEncoderSampleIndex: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -4246,6 +5081,18 @@ declare class MTLArgumentDescriptor extends NSObject implements NSCopying {
   textureType: interop.Enum<typeof MTLTextureType>;
 
   constantBlockAlignment: number;
+
+  setDataType(dataType: interop.Enum<typeof MTLDataType>): void;
+
+  setIndex(index: number): void;
+
+  setArrayLength(arrayLength: number): void;
+
+  setAccess(access: interop.Enum<typeof MTLBindingAccess>): void;
+
+  setTextureType(textureType: interop.Enum<typeof MTLTextureType>): void;
+
+  setConstantBlockAlignment(constantBlockAlignment: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -4281,94 +5128,55 @@ declare class MTLCompileOptions extends NSObject implements NSCopying {
 
   enableLogging: boolean;
 
+  setPreprocessorMacros(preprocessorMacros: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  setFastMathEnabled(fastMathEnabled: boolean): void;
+
+  setMathMode(mathMode: interop.Enum<typeof MTLMathMode>): void;
+
+  setMathFloatingPointFunctions(mathFloatingPointFunctions: interop.Enum<typeof MTLMathFloatingPointFunctions>): void;
+
+  setLanguageVersion(languageVersion: interop.Enum<typeof MTLLanguageVersion>): void;
+
+  setLibraryType(libraryType: interop.Enum<typeof MTLLibraryType>): void;
+
+  setInstallName(installName: string | null): void;
+
+  setLibraries(libraries: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setPreserveInvariance(preserveInvariance: boolean): void;
+
+  setOptimizationLevel(optimizationLevel: interop.Enum<typeof MTLLibraryOptimizationLevel>): void;
+
+  setCompileSymbolVisibility(compileSymbolVisibility: interop.Enum<typeof MTLCompileSymbolVisibility>): void;
+
+  setAllowReferencingUndefinedSymbols(allowReferencingUndefinedSymbols: boolean): void;
+
+  setMaxTotalThreadsPerThreadgroup(maxTotalThreadsPerThreadgroup: number): void;
+
+  setEnableLogging(enableLogging: boolean): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLFunctionConstant extends NSObject {
+declare class MTLVertexAttribute extends NSObject {
   readonly name: string;
 
-  readonly type: interop.Enum<typeof MTLDataType>;
+  readonly attributeIndex: number;
 
-  readonly index: number;
+  readonly attributeType: interop.Enum<typeof MTLDataType>;
 
-  readonly required: boolean;
-}
+  readonly active: boolean;
 
-declare class MTLIntersectionFunctionDescriptor extends MTLFunctionDescriptor implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  readonly patchData: boolean;
 
-declare class MTLFunctionDescriptor extends NSObject implements NSCopying {
-  static functionDescriptor(): MTLFunctionDescriptor;
+  readonly patchControlPointData: boolean;
 
-  name: string;
+  isActive(): boolean;
 
-  specializedName: string;
+  isPatchData(): boolean;
 
-  constantValues: MTLFunctionConstantValues;
-
-  options: interop.Enum<typeof MTLFunctionOptions>;
-
-  get binaryArchives(): NSArray;
-  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLArgument extends NSObject {
-  readonly name: string;
-
-  readonly type: interop.Enum<typeof MTLArgumentType>;
-
-  readonly access: interop.Enum<typeof MTLBindingAccess>;
-
-  readonly index: number;
-
-  readonly isActive: boolean;
-
-  readonly bufferAlignment: number;
-
-  readonly bufferDataSize: number;
-
-  readonly bufferDataType: interop.Enum<typeof MTLDataType>;
-
-  readonly bufferStructType: MTLStructType;
-
-  readonly bufferPointerType: MTLPointerType;
-
-  readonly threadgroupMemoryAlignment: number;
-
-  readonly threadgroupMemoryDataSize: number;
-
-  readonly textureType: interop.Enum<typeof MTLTextureType>;
-
-  readonly textureDataType: interop.Enum<typeof MTLDataType>;
-
-  readonly isDepthTexture: boolean;
-
-  readonly arrayLength: number;
-}
-
-declare class MTLPointerType extends MTLType {
-  readonly elementType: interop.Enum<typeof MTLDataType>;
-
-  readonly access: interop.Enum<typeof MTLBindingAccess>;
-
-  readonly alignment: number;
-
-  readonly dataSize: number;
-
-  readonly elementIsArgumentBuffer: boolean;
-
-  elementStructType(): MTLStructType;
-
-  elementArrayType(): MTLArrayType;
-}
-
-declare class MTLStructType extends MTLType {
-  readonly members: NSArray;
-
-  memberByName(name: string): MTLStructMember;
+  isPatchControlPointData(): boolean;
 }
 
 declare class MTLStructMember extends NSObject {
@@ -4389,248 +5197,14 @@ declare class MTLStructMember extends NSObject {
   readonly argumentIndex: number;
 }
 
-declare class MTLResourceStatePassDescriptor extends NSObject implements NSCopying {
-  static resourceStatePassDescriptor(): MTLResourceStatePassDescriptor;
-
-  readonly sampleBufferAttachments: MTLResourceStatePassSampleBufferAttachmentDescriptorArray;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+declare class MTLType extends NSObject {
+  readonly dataType: interop.Enum<typeof MTLDataType>;
 }
 
-declare class MTLFunctionConstantValues extends NSObject implements NSCopying {
-  setConstantValueTypeAtIndex(value: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, index: number): void;
+declare class MTLRenderPassColorAttachmentDescriptorArray extends NSObject {
+  objectAtIndexedSubscript(attachmentIndex: number): MTLRenderPassColorAttachmentDescriptor;
 
-  setConstantValuesTypeWithRange(values: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, range: _NSRange): void;
-
-  setConstantValueTypeWithName(value: interop.PointerConvertible, type: interop.Enum<typeof MTLDataType>, name: string): void;
-
-  reset(): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLMotionKeyframeData extends NSObject {
-  buffer: MTLBuffer;
-
-  offset: number;
-
-  static data<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
-
-declare class MTLTileRenderPipelineDescriptor extends NSObject implements NSCopying {
-  label: string;
-
-  tileFunction: MTLFunction;
-
-  rasterSampleCount: number;
-
-  readonly colorAttachments: MTLTileRenderPipelineColorAttachmentDescriptorArray;
-
-  threadgroupSizeMatchesTileSize: boolean;
-
-  readonly tileBuffers: MTLPipelineBufferDescriptorArray;
-
-  maxTotalThreadsPerThreadgroup: number;
-
-  get binaryArchives(): NSArray;
-  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get preloadedLibraries(): NSArray;
-  set preloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  linkedFunctions: MTLLinkedFunctions;
-
-  supportAddingBinaryFunctions: boolean;
-
-  maxCallStackDepth: number;
-
-  reset(): void;
-
-  shaderValidation: interop.Enum<typeof MTLShaderValidation>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLSharedEventHandle extends NSObject implements NSSecureCoding {
-  readonly label: string;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MTLSharedTextureHandle extends NSObject implements NSSecureCoding {
-  readonly device: MTLDevice;
-
-  readonly label: string;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MTLVisibleFunctionTableDescriptor extends NSObject implements NSCopying {
-  static visibleFunctionTableDescriptor(): MTLVisibleFunctionTableDescriptor;
-
-  functionCount: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLRasterizationRateMapDescriptor extends NSObject implements NSCopying {
-  static rasterizationRateMapDescriptorWithScreenSize(screenSize: MTLSize): MTLRasterizationRateMapDescriptor;
-
-  static rasterizationRateMapDescriptorWithScreenSizeLayer(screenSize: MTLSize, layer: MTLRasterizationRateLayerDescriptor): MTLRasterizationRateMapDescriptor;
-
-  static rasterizationRateMapDescriptorWithScreenSizeLayerCountLayers(screenSize: MTLSize, layerCount: number, layers: interop.PointerConvertible): MTLRasterizationRateMapDescriptor;
-
-  layerAtIndex(layerIndex: number): MTLRasterizationRateLayerDescriptor | null;
-
-  setLayerAtIndex(layer: MTLRasterizationRateLayerDescriptor | null, layerIndex: number): void;
-
-  readonly layers: MTLRasterizationRateLayerArray;
-
-  screenSize: MTLSize;
-
-  label: string;
-
-  readonly layerCount: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLIOCommandQueueDescriptor extends NSObject implements NSCopying {
-  maxCommandBufferCount: number;
-
-  priority: interop.Enum<typeof MTLIOPriority>;
-
-  type: interop.Enum<typeof MTLIOCommandQueueType>;
-
-  maxCommandsInFlight: number;
-
-  scratchBufferAllocator: MTLIOScratchBufferAllocator;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLResidencySetDescriptor extends NSObject implements NSCopying {
-  label: string;
-
-  initialCapacity: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLTextureReferenceType extends MTLType {
-  readonly textureDataType: interop.Enum<typeof MTLDataType>;
-
-  readonly textureType: interop.Enum<typeof MTLTextureType>;
-
-  readonly access: interop.Enum<typeof MTLBindingAccess>;
-
-  readonly isDepthTexture: boolean;
-}
-
-declare class MTLAccelerationStructureTriangleGeometryDescriptor extends MTLAccelerationStructureGeometryDescriptor {
-  vertexBuffer: MTLBuffer;
-
-  vertexBufferOffset: number;
-
-  vertexFormat: interop.Enum<typeof MTLAttributeFormat>;
-
-  vertexStride: number;
-
-  indexBuffer: MTLBuffer;
-
-  indexBufferOffset: number;
-
-  indexType: interop.Enum<typeof MTLIndexType>;
-
-  triangleCount: number;
-
-  transformationMatrixBuffer: MTLBuffer;
-
-  transformationMatrixBufferOffset: number;
-
-  transformationMatrixLayout: interop.Enum<typeof MTLMatrixLayout>;
-
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-}
-
-declare class MTLCaptureManager extends NSObject {
-  static sharedCaptureManager(): MTLCaptureManager;
-
-  newCaptureScopeWithDevice(device: MTLDevice): MTLCaptureScope;
-
-  newCaptureScopeWithCommandQueue(commandQueue: MTLCommandQueue): MTLCaptureScope;
-
-  supportsDestination(destination: interop.Enum<typeof MTLCaptureDestination>): boolean;
-
-  startCaptureWithDescriptorError(descriptor: MTLCaptureDescriptor, error: interop.PointerConvertible): boolean;
-
-  startCaptureWithDevice(device: MTLDevice): void;
-
-  startCaptureWithCommandQueue(commandQueue: MTLCommandQueue): void;
-
-  startCaptureWithScope(captureScope: MTLCaptureScope): void;
-
-  stopCapture(): void;
-
-  defaultCaptureScope: MTLCaptureScope;
-
-  readonly isCapturing: boolean;
-}
-
-declare class MTLVertexAttributeDescriptor extends NSObject implements NSCopying {
-  format: interop.Enum<typeof MTLVertexFormat>;
-
-  offset: number;
-
-  bufferIndex: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLAttribute extends NSObject {
-  readonly name: string;
-
-  readonly attributeIndex: number;
-
-  readonly attributeType: interop.Enum<typeof MTLDataType>;
-
-  readonly isActive: boolean;
-
-  readonly isPatchData: boolean;
-
-  readonly isPatchControlPointData: boolean;
-}
-
-declare class MTLRenderPassSampleBufferAttachmentDescriptorArray extends NSObject {
-  objectAtIndexedSubscript(attachmentIndex: number): MTLRenderPassSampleBufferAttachmentDescriptor;
-
-  setObjectAtIndexedSubscript(attachment: MTLRenderPassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
-}
-
-declare class MTLHeapDescriptor extends NSObject implements NSCopying {
-  size: number;
-
-  storageMode: interop.Enum<typeof MTLStorageMode>;
-
-  cpuCacheMode: interop.Enum<typeof MTLCPUCacheMode>;
-
-  sparsePageSize: interop.Enum<typeof MTLSparsePageSize>;
-
-  hazardTrackingMode: interop.Enum<typeof MTLHazardTrackingMode>;
-
-  resourceOptions: interop.Enum<typeof MTLResourceOptions>;
-
-  type: interop.Enum<typeof MTLHeapType>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  setObjectAtIndexedSubscript(attachment: MTLRenderPassColorAttachmentDescriptor | null, attachmentIndex: number): void;
 }
 
 declare class MTLTextureDescriptor extends NSObject implements NSCopying {
@@ -4672,33 +5246,65 @@ declare class MTLTextureDescriptor extends NSObject implements NSCopying {
 
   swizzle: MTLTextureSwizzleChannels;
 
+  setTextureType(textureType: interop.Enum<typeof MTLTextureType>): void;
+
+  setPixelFormat(pixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
+
+  setWidth(width: number): void;
+
+  setHeight(height: number): void;
+
+  setDepth(depth: number): void;
+
+  setMipmapLevelCount(mipmapLevelCount: number): void;
+
+  setSampleCount(sampleCount: number): void;
+
+  setArrayLength(arrayLength: number): void;
+
+  setResourceOptions(resourceOptions: interop.Enum<typeof MTLResourceOptions>): void;
+
+  setCpuCacheMode(cpuCacheMode: interop.Enum<typeof MTLCPUCacheMode>): void;
+
+  setStorageMode(storageMode: interop.Enum<typeof MTLStorageMode>): void;
+
+  setHazardTrackingMode(hazardTrackingMode: interop.Enum<typeof MTLHazardTrackingMode>): void;
+
+  setUsage(usage: interop.Enum<typeof MTLTextureUsage>): void;
+
+  setAllowGPUOptimizedContents(allowGPUOptimizedContents: boolean): void;
+
+  setCompressionType(compressionType: interop.Enum<typeof MTLTextureCompressionType>): void;
+
+  setSwizzle(swizzle: MTLTextureSwizzleChannels): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLVertexAttribute extends NSObject {
-  readonly name: string;
+declare class MTLCaptureManager extends NSObject {
+  static sharedCaptureManager(): MTLCaptureManager;
 
-  readonly attributeIndex: number;
+  newCaptureScopeWithDevice(device: MTLDevice): MTLCaptureScope;
 
-  readonly attributeType: interop.Enum<typeof MTLDataType>;
+  newCaptureScopeWithCommandQueue(commandQueue: MTLCommandQueue): MTLCaptureScope;
 
-  readonly isActive: boolean;
+  supportsDestination(destination: interop.Enum<typeof MTLCaptureDestination>): boolean;
 
-  readonly isPatchData: boolean;
+  startCaptureWithDescriptorError(descriptor: MTLCaptureDescriptor, error: interop.PointerConvertible): boolean;
 
-  readonly isPatchControlPointData: boolean;
-}
+  startCaptureWithDevice(device: MTLDevice): void;
 
-declare class MTLCounterSampleBufferDescriptor extends NSObject implements NSCopying {
-  counterSet: MTLCounterSet;
+  startCaptureWithCommandQueue(commandQueue: MTLCommandQueue): void;
 
-  label: string;
+  startCaptureWithScope(captureScope: MTLCaptureScope): void;
 
-  storageMode: interop.Enum<typeof MTLStorageMode>;
+  stopCapture(): void;
 
-  sampleCount: number;
+  defaultCaptureScope: MTLCaptureScope;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  readonly isCapturing: boolean;
+
+  setDefaultCaptureScope(defaultCaptureScope: MTLCaptureScope | null): void;
 }
 
 declare class MTLRenderPipelineFunctionsDescriptor extends NSObject implements NSCopying {
@@ -4711,89 +5317,39 @@ declare class MTLRenderPipelineFunctionsDescriptor extends NSObject implements N
   get tileAdditionalBinaryFunctions(): NSArray;
   set tileAdditionalBinaryFunctions(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
+  setVertexAdditionalBinaryFunctions(vertexAdditionalBinaryFunctions: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
-declare class MTLIndirectCommandBufferDescriptor extends NSObject implements NSCopying {
-  commandTypes: interop.Enum<typeof MTLIndirectCommandType>;
+  setFragmentAdditionalBinaryFunctions(fragmentAdditionalBinaryFunctions: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
-  inheritPipelineState: boolean;
-
-  inheritBuffers: boolean;
-
-  maxVertexBufferBindCount: number;
-
-  maxFragmentBufferBindCount: number;
-
-  maxKernelBufferBindCount: number;
-
-  maxKernelThreadgroupMemoryBindCount: number;
-
-  maxObjectBufferBindCount: number;
-
-  maxMeshBufferBindCount: number;
-
-  maxObjectThreadgroupMemoryBindCount: number;
-
-  supportRayTracing: boolean;
-
-  supportDynamicAttributeStride: boolean;
+  setTileAdditionalBinaryFunctions(tileAdditionalBinaryFunctions: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLFunctionStitchingInputNode extends NSObject implements MTLFunctionStitchingNode {
-  argumentIndex: number;
+declare class MTLTextureReferenceType extends MTLType {
+  readonly textureDataType: interop.Enum<typeof MTLDataType>;
 
-  initWithArgumentIndex(argument: number): this;
+  readonly textureType: interop.Enum<typeof MTLTextureType>;
 
-  isEqual(object: interop.Object): boolean;
+  readonly access: interop.Enum<typeof MTLBindingAccess>;
 
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  readonly isDepthTexture: boolean;
 }
 
-declare class MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray extends NSObject {
-  objectAtIndexedSubscript(attachmentIndex: number): MTLAccelerationStructurePassSampleBufferAttachmentDescriptor;
+declare class MTLPointerType extends MTLType {
+  readonly elementType: interop.Enum<typeof MTLDataType>;
 
-  setObjectAtIndexedSubscript(attachment: MTLAccelerationStructurePassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
+  readonly access: interop.Enum<typeof MTLBindingAccess>;
+
+  readonly alignment: number;
+
+  readonly dataSize: number;
+
+  readonly elementIsArgumentBuffer: boolean;
+
+  elementStructType(): MTLStructType;
+
+  elementArrayType(): MTLArrayType;
 }
 
 declare class MTLRenderPassSampleBufferAttachmentDescriptor extends NSObject implements NSCopying {
@@ -4807,28 +5363,342 @@ declare class MTLRenderPassSampleBufferAttachmentDescriptor extends NSObject imp
 
   endOfFragmentSampleIndex: number;
 
+  setSampleBuffer(sampleBuffer: MTLCounterSampleBuffer | null): void;
+
+  setStartOfVertexSampleIndex(startOfVertexSampleIndex: number): void;
+
+  setEndOfVertexSampleIndex(endOfVertexSampleIndex: number): void;
+
+  setStartOfFragmentSampleIndex(startOfFragmentSampleIndex: number): void;
+
+  setEndOfFragmentSampleIndex(endOfFragmentSampleIndex: number): void;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTLCommandBufferDescriptor extends NSObject implements NSCopying {
-  retainedReferences: boolean;
+declare class MTLSharedTextureHandle extends NSObject implements NSSecureCoding {
+  readonly device: MTLDevice;
 
-  errorOptions: interop.Enum<typeof MTLCommandBufferErrorOption>;
+  readonly label: string;
 
-  logState: MTLLogState;
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class MTLIOCommandQueueDescriptor extends NSObject implements NSCopying {
+  maxCommandBufferCount: number;
+
+  priority: interop.Enum<typeof MTLIOPriority>;
+
+  type: interop.Enum<typeof MTLIOCommandQueueType>;
+
+  maxCommandsInFlight: number;
+
+  scratchBufferAllocator: MTLIOScratchBufferAllocator;
+
+  setMaxCommandBufferCount(maxCommandBufferCount: number): void;
+
+  setPriority(priority: interop.Enum<typeof MTLIOPriority>): void;
+
+  setType(type: interop.Enum<typeof MTLIOCommandQueueType>): void;
+
+  setMaxCommandsInFlight(maxCommandsInFlight: number): void;
+
+  setScratchBufferAllocator(scratchBufferAllocator: MTLIOScratchBufferAllocator | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLResidencySetDescriptor extends NSObject implements NSCopying {
+  label: string;
+
+  initialCapacity: number;
+
+  setLabel(label: string | null): void;
+
+  setInitialCapacity(initialCapacity: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLTileRenderPipelineDescriptor extends NSObject implements NSCopying {
+  label: string;
+
+  tileFunction: MTLFunction;
+
+  rasterSampleCount: number;
+
+  readonly colorAttachments: MTLTileRenderPipelineColorAttachmentDescriptorArray;
+
+  threadgroupSizeMatchesTileSize: boolean;
+
+  readonly tileBuffers: MTLPipelineBufferDescriptorArray;
+
+  maxTotalThreadsPerThreadgroup: number;
+
+  get binaryArchives(): NSArray;
+  set binaryArchives(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get preloadedLibraries(): NSArray;
+  set preloadedLibraries(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  linkedFunctions: MTLLinkedFunctions;
+
+  supportAddingBinaryFunctions: boolean;
+
+  maxCallStackDepth: number;
+
+  reset(): void;
+
+  shaderValidation: interop.Enum<typeof MTLShaderValidation>;
+
+  setLabel(label: string | null): void;
+
+  setTileFunction(tileFunction: MTLFunction): void;
+
+  setRasterSampleCount(rasterSampleCount: number): void;
+
+  setThreadgroupSizeMatchesTileSize(threadgroupSizeMatchesTileSize: boolean): void;
+
+  setMaxTotalThreadsPerThreadgroup(maxTotalThreadsPerThreadgroup: number): void;
+
+  setBinaryArchives(binaryArchives: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setPreloadedLibraries(preloadedLibraries: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setLinkedFunctions(linkedFunctions: MTLLinkedFunctions | null): void;
+
+  setSupportAddingBinaryFunctions(supportAddingBinaryFunctions: boolean): void;
+
+  setMaxCallStackDepth(maxCallStackDepth: number): void;
+
+  setShaderValidation(shaderValidation: interop.Enum<typeof MTLShaderValidation>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLRenderPassDescriptor extends NSObject implements NSCopying {
+  static renderPassDescriptor(): MTLRenderPassDescriptor;
+
+  readonly colorAttachments: MTLRenderPassColorAttachmentDescriptorArray;
+
+  depthAttachment: MTLRenderPassDepthAttachmentDescriptor;
+
+  stencilAttachment: MTLRenderPassStencilAttachmentDescriptor;
+
+  visibilityResultBuffer: MTLBuffer;
+
+  renderTargetArrayLength: number;
+
+  imageblockSampleLength: number;
+
+  threadgroupMemoryLength: number;
+
+  tileWidth: number;
+
+  tileHeight: number;
+
+  defaultRasterSampleCount: number;
+
+  renderTargetWidth: number;
+
+  renderTargetHeight: number;
+
+  setSamplePositionsCount(positions: interop.PointerConvertible, count: number): void;
+
+  getSamplePositionsCount(positions: interop.PointerConvertible, count: number): number;
+
+  rasterizationRateMap: MTLRasterizationRateMap;
+
+  readonly sampleBufferAttachments: MTLRenderPassSampleBufferAttachmentDescriptorArray;
+
+  setDepthAttachment(depthAttachment: MTLRenderPassDepthAttachmentDescriptor | null): void;
+
+  setStencilAttachment(stencilAttachment: MTLRenderPassStencilAttachmentDescriptor | null): void;
+
+  setVisibilityResultBuffer(visibilityResultBuffer: MTLBuffer | null): void;
+
+  setRenderTargetArrayLength(renderTargetArrayLength: number): void;
+
+  setImageblockSampleLength(imageblockSampleLength: number): void;
+
+  setThreadgroupMemoryLength(threadgroupMemoryLength: number): void;
+
+  setTileWidth(tileWidth: number): void;
+
+  setTileHeight(tileHeight: number): void;
+
+  setDefaultRasterSampleCount(defaultRasterSampleCount: number): void;
+
+  setRenderTargetWidth(renderTargetWidth: number): void;
+
+  setRenderTargetHeight(renderTargetHeight: number): void;
+
+  setRasterizationRateMap(rasterizationRateMap: MTLRasterizationRateMap | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLComputePassSampleBufferAttachmentDescriptorArray extends NSObject {
+  objectAtIndexedSubscript(attachmentIndex: number): MTLComputePassSampleBufferAttachmentDescriptor;
+
+  setObjectAtIndexedSubscript(attachment: MTLComputePassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
+}
+
+declare class MTLResourceStatePassDescriptor extends NSObject implements NSCopying {
+  static resourceStatePassDescriptor(): MTLResourceStatePassDescriptor;
+
+  readonly sampleBufferAttachments: MTLResourceStatePassSampleBufferAttachmentDescriptorArray;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLArgument extends NSObject {
+  readonly name: string;
+
+  readonly type: interop.Enum<typeof MTLArgumentType>;
+
+  readonly access: interop.Enum<typeof MTLBindingAccess>;
+
+  readonly index: number;
+
+  readonly active: boolean;
+
+  readonly bufferAlignment: number;
+
+  readonly bufferDataSize: number;
+
+  readonly bufferDataType: interop.Enum<typeof MTLDataType>;
+
+  readonly bufferStructType: MTLStructType;
+
+  readonly bufferPointerType: MTLPointerType;
+
+  readonly threadgroupMemoryAlignment: number;
+
+  readonly threadgroupMemoryDataSize: number;
+
+  readonly textureType: interop.Enum<typeof MTLTextureType>;
+
+  readonly textureDataType: interop.Enum<typeof MTLDataType>;
+
+  readonly isDepthTexture: boolean;
+
+  readonly arrayLength: number;
+
+  isActive(): boolean;
+}
+
+declare class MTLAttribute extends NSObject {
+  readonly name: string;
+
+  readonly attributeIndex: number;
+
+  readonly attributeType: interop.Enum<typeof MTLDataType>;
+
+  readonly active: boolean;
+
+  readonly patchData: boolean;
+
+  readonly patchControlPointData: boolean;
+
+  isActive(): boolean;
+
+  isPatchData(): boolean;
+
+  isPatchControlPointData(): boolean;
+}
+
+declare class MTLBlitPassSampleBufferAttachmentDescriptor extends NSObject implements NSCopying {
+  sampleBuffer: MTLCounterSampleBuffer;
+
+  startOfEncoderSampleIndex: number;
+
+  endOfEncoderSampleIndex: number;
+
+  setSampleBuffer(sampleBuffer: MTLCounterSampleBuffer | null): void;
+
+  setStartOfEncoderSampleIndex(startOfEncoderSampleIndex: number): void;
+
+  setEndOfEncoderSampleIndex(endOfEncoderSampleIndex: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLVertexAttributeDescriptor extends NSObject implements NSCopying {
+  format: interop.Enum<typeof MTLVertexFormat>;
+
+  offset: number;
+
+  bufferIndex: number;
+
+  setFormat(format: interop.Enum<typeof MTLVertexFormat>): void;
+
+  setOffset(offset: number): void;
+
+  setBufferIndex(bufferIndex: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLHeapDescriptor extends NSObject implements NSCopying {
+  size: number;
+
+  storageMode: interop.Enum<typeof MTLStorageMode>;
+
+  cpuCacheMode: interop.Enum<typeof MTLCPUCacheMode>;
+
+  sparsePageSize: interop.Enum<typeof MTLSparsePageSize>;
+
+  hazardTrackingMode: interop.Enum<typeof MTLHazardTrackingMode>;
+
+  resourceOptions: interop.Enum<typeof MTLResourceOptions>;
+
+  type: interop.Enum<typeof MTLHeapType>;
+
+  setSize(size: number): void;
+
+  setStorageMode(storageMode: interop.Enum<typeof MTLStorageMode>): void;
+
+  setCpuCacheMode(cpuCacheMode: interop.Enum<typeof MTLCPUCacheMode>): void;
+
+  setSparsePageSize(sparsePageSize: interop.Enum<typeof MTLSparsePageSize>): void;
+
+  setHazardTrackingMode(hazardTrackingMode: interop.Enum<typeof MTLHazardTrackingMode>): void;
+
+  setResourceOptions(resourceOptions: interop.Enum<typeof MTLResourceOptions>): void;
+
+  setType(type: interop.Enum<typeof MTLHeapType>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray extends NSObject {
+  objectAtIndexedSubscript(attachmentIndex: number): MTLAccelerationStructurePassSampleBufferAttachmentDescriptor;
+
+  setObjectAtIndexedSubscript(attachment: MTLAccelerationStructurePassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
+}
+
+declare class MTLMotionKeyframeData extends NSObject {
+  buffer: MTLBuffer;
+
+  offset: number;
+
+  static data<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setBuffer(buffer: MTLBuffer | null): void;
+
+  setOffset(offset: number): void;
 }
 
 declare class MTLComputePipelineReflection extends NSObject {
   readonly bindings: NSArray;
 
-  readonly arguments: NSArray;
-}
+  readonly arguments$: NSArray;
 
-declare class MTLBlitPassSampleBufferAttachmentDescriptorArray extends NSObject {
-  objectAtIndexedSubscript(attachmentIndex: number): MTLBlitPassSampleBufferAttachmentDescriptor;
-
-  setObjectAtIndexedSubscript(attachment: MTLBlitPassSampleBufferAttachmentDescriptor | null, attachmentIndex: number): void;
+  arguments(): NSArray;
 }
 

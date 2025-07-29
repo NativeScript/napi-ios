@@ -41,7 +41,8 @@ static void addHeaderInclude(std::string& header,
   if (std::find(includes.begin(), includes.end(), header) == includes.end() &&
       !header.ends_with("umbrella-arm64.h") &&
       !header.ends_with("umbrella-x86_64.h") &&
-      header.find("/platforms/ios/internal/") == std::string::npos) {
+      header.find("/platforms/ios/internal/") == std::string::npos &&
+      header.find("/usr/include/ffi/") == std::string::npos) {
     includes.push_back(header);
   }
 }

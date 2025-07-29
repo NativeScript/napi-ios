@@ -52,8 +52,15 @@ int main(int argc, char** argv) {
   std::string whitelistModulesFile;
   // bool applyManualDtsChanges = true;
 
+  std::cerr << "MetadataGenerator called with args: ";
+
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
+
+    std::cerr << arg << " ";
+    if (i == argc - 1) {
+      std::cerr << std::endl;
+    }
 
     // clang arguments following Xclang delim
     if (arg == "Xclang") {
@@ -195,8 +202,8 @@ int main(int argc, char** argv) {
 
   CXIndex index = clang_createIndex(0, 0);
   CXTranslationUnit unit = clang_parseTranslationUnit(
-      index, umbrellaHeaderName.c_str(), argsC.data(), (MDSectionOffset)argsC.size(), nullptr, 0,
-      CXTranslationUnit_None);
+      index, umbrellaHeaderName.c_str(), argsC.data(),
+      (MDSectionOffset)argsC.size(), nullptr, 0, CXTranslationUnit_None);
 
   // std::remove(umbrellaHeaderName.c_str());
 

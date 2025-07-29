@@ -9,6 +9,7 @@
 #include "runtime/Runtime.h"
 #include "runtime/RuntimeConfig.h"
 #include "segappend.h"
+#include "ffi/Tasks.h"
 
 using namespace nativescript;
 
@@ -23,6 +24,8 @@ void bootFromBytecode(std::string baseDir, const void* data, size_t size) {
   // runtime.ExecuteBytecode(data, size);
 
   runtime.RunLoop();
+
+  Tasks::Drain();
 }
 
 void bootFromModuleSpec(std::string baseDir, std::string spec) {
@@ -40,6 +43,8 @@ void bootFromModuleSpec(std::string baseDir, std::string spec) {
   }
 
   runtime.RunLoop();
+
+  Tasks::Drain();
 }
 
 int main(int argc, char** argv) {
