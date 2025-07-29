@@ -3,7 +3,9 @@
 #include "ObjCBridge.h"
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
+#ifdef ENABLE_JS_ENGINE
 #include "jsr.h"
+#endif
 
 namespace nativescript {
 
@@ -77,8 +79,8 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-
-if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0) {
+#ifdef ENABLE_JS_ENGINE
+  if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0) {
     void **avaluesPtr = new void*[cif->argc];
     memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
 
@@ -101,6 +103,7 @@ if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") 
     
     return nullptr;
   }
+#endif
 
   @try {
     ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);

@@ -3,7 +3,9 @@
 #include <sstream>
 #include "js_native_api.h"
 #include "js_native_api_types.h"
+#ifdef ENABLE_JS_ENGINE
 #include "jsr.h"
+#endif
 #include "native_api_util.h"
 #include "runtime/Runtime.h"
 
@@ -48,7 +50,9 @@ std::string NativeScriptException::Description() const {
 }
 
 void NativeScriptException::OnUncaughtError(napi_env env, napi_value error) {
+#ifdef ENABLE_JS_ENGINE
   NapiScope scope(env);
+#endif
 
   std::stringstream fullMessageStream;
 

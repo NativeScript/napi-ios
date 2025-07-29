@@ -56,6 +56,7 @@ for arg in $@; do
     --jsc) TARGET_ENGINE=jsc ;;
     --embed-metadata) EMBED_METADATA=true ;;
     --hermes) TARGET_ENGINE=hermes ;;
+    --no-engine) TARGET_ENGINE=none ;;
     *) ;;
   esac
 done
