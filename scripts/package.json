@@ -12,5 +12,8 @@
   "description": "",
   "dependencies": {
     "@nativescript/core": "^8.8.6"
+  },
+  "devDependencies": {
+    "react-native-node-api": "^0.3.2"
   }
 }
