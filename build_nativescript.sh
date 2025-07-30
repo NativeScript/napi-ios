@@ -146,53 +146,66 @@ cmake_build macos-cli
 
 fi
 
+# Due to inconvenient design choices on both sides, we have to choose between
+# either long flags or short flags based on whether we're calling
+# `xcodebuild -create-xcframework` or `scripts/build_xcframework.mts`.
+if [[ "$TARGET_ENGINE" == "none" ]]; then
+  # Node.js parseArgs() supports short flags, but only if they're single-letter.
+  FRAMEWORK_FLAG="--framework"
+  DSYM_FLAG="--debug-symbols"
+else
+  # xcodebuild doesn't implement any single-letter short flags like -f and -d.
+  FRAMEWORK_FLAG="-framework"
+  DSYM_FLAG="-debug-symbols"
+fi
+
 XCFRAMEWORKS=()
 if $BUILD_CATALYST; then
-  XCFRAMEWORKS+=( --framework "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework"
-                  --debug-symbols "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework.dSYM" )
+  FRAMEWORK="$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework"
+  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
 fi
 
 if $BUILD_SIMULATOR; then
-  XCFRAMEWORKS+=( --framework "$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework"
-                  --debug-symbols "$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework.dSYM" )
+  FRAMEWORK="$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework"
+  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
 fi
 
 if $BUILD_IPHONE; then
-  XCFRAMEWORKS+=( --framework "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework"
-                  --debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
+  FRAMEWORK="$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework"
+  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
 fi
 
 if $BUILD_MACOS; then
-  XCFRAMEWORKS+=( --framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
-                  --debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
+  FRAMEWORK="$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
+  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
 fi
 
 if $BUILD_VISION; then
-  XCFRAMEWORKS+=( --framework "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
-                  --debug-symbols "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
+  FRAMEWORK="$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
+  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
 
-  XCFRAMEWORKS+=( --framework "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework"
-                  --debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
+  FRAMEWORK="$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework"
+  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
 fi
 
 if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
 
-checkpoint "Creating the XCFramework (NativeScript.apple.node)"
 
-# This script used to output to "$DIST/NativeScript.xcframework".
-#
-# We now follow the react-native-node-api prebuilds standard, emitting an
-# XCFramework named "NativeScript.apple.node" into our
-# @nativescript/ios-node-api npm package. The reason we do not use .xcframework
-# as the file extension is that .node works better for other tooling like
-# Node.js. It turns out that Apple apps can link XCFrameworks just fine even if
-# the file extension is not .xcframework!
-#
-# The prebuilds standard is described here:
-# https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
-OUTPUT_DIR="packages/ios/build/Release/NativeScript.apple.node"
-rm -rf $OUTPUT_DIR
-deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+if [[ "$TARGET_ENGINE" == "none" ]]; then
+  checkpoint "Creating the XCFramework (NativeScript.apple.node)"
+
+  # We adhere to the prebuilds standard as described here:
+  # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
+  OUTPUT_DIR="packages/ios/build/Release/NativeScript.apple.node"
+  rm -rf $OUTPUT_DIR
+  deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+else
+  checkpoint "Creating NativeScript.xcframework"
+
+  OUTPUT_DIR="$DIST/NativeScript.xcframework"
+  rm -rf $OUTPUT_DIR
+  xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
+fi
 
 fi
 
