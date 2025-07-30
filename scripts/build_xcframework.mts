@@ -1,6 +1,6 @@
 import path from "node:path";
 import process from "node:process";
-import { parseArgs } from "node:util";
+import yargsParser from "yargs-parser";
 import { createXCframework } from "react-native-node-api";
 
 main();
@@ -13,41 +13,32 @@ async function main() {
 
   const monorepoRoot = path.resolve(__dirname, "..");
 
-  const args = parseArgs({
-    args: process.argv.slice(2),
-    options: {
-      output: {
-        type: "string",
-      },
-      framework: {
-        multiple: true,
-        type: "string",
-      },
-      "debug-symbols": {
-        multiple: true,
-        type: "string",
-      },
-      help: {
-        short: "h",
-        type: "boolean",
-        default: false,
-      },
+  const args = yargsParser(process.argv.slice(2), {
+    configuration: {
+      "short-option-groups": false,
+    },
+    string: ["output", "framework", "debug-symbols"],
+    array: ["framework", "debug-symbols"],
+    boolean: ["help"],
+    alias: {
+      h: "help",
+    },
+    default: {
+      help: false,
     },
   });
 
   const {
-    values: {
-      output,
-      framework: frameworks,
-      "debug-symbols": debugSymbols,
-      help,
-    },
+    output,
+    framework: frameworks = new Array<string>(),
+    "debug-symbols": debugSymbols = new Array<string>(),
+    help,
   } = args;
 
   const helpText = `
 Typical usage:
 
-$ deno run -A ./scripts/build_xcframework.ts --output packages/ios/build/Release/NativeScript.apple.node --framework dist/intermediates/ios/RelWithDebInfo-iphoneos/NativeScript.framework
+$ deno run -A ./scripts/build_xcframework.mts --output packages/ios/build/Release/NativeScript.apple.node -framework dist/intermediates/ios/RelWithDebInfo-iphoneos/NativeScript.framework -debug-symbols dist/intermediates/ios/RelWithDebInfo-iphoneos/NativeScript.framework.dSYM
 `.trim();
 
   if (help) {
@@ -62,9 +53,16 @@ $ deno run -A ./scripts/build_xcframework.ts --output packages/ios/build/Release
     process.exit(1);
   }
 
+  if (!isStringArray(frameworks) || !isStringArray(debugSymbols)) {
+    console.log(
+      `Expected -framework and -debug-symbols to be parsed as arrays.\n\n${helpText}`
+    );
+    process.exit(1);
+  }
+
   if (!frameworks?.length) {
     console.log(
-      `Please specify at least one framework to bundle into the xcframework by passing the \`--framework\` arg one or more times.\n\n${helpText}`
+      `Please specify at least one framework to bundle into the xcframework by passing the \`-framework\` arg one or more times.\n\n${helpText}`
     );
     process.exit(1);
   }
@@ -96,4 +94,18 @@ $ deno run -A ./scripts/build_xcframework.ts --output packages/ios/build/Release
       outputPath
     )}\x1b[22m`
   );
+}
+
+function isStringArray(value: unknown): value is Array<string> {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+
+  for (const element of value) {
+    if (typeof element !== "string") {
+      return false;
+    }
+  }
+
+  return true;
 }

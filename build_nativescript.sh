@@ -148,46 +148,33 @@ cmake_build macos-cli
 
 fi
 
-# Due to inconvenient design choices on both sides, we have to choose between
-# either long flags or short flags based on whether we're calling
-# `xcodebuild -create-xcframework` or `scripts/build_xcframework.mts`.
-if [[ "$TARGET_ENGINE" == "none" ]]; then
-  # Node.js parseArgs() supports short flags, but only if they're single-letter.
-  FRAMEWORK_FLAG="--framework"
-  DSYM_FLAG="--debug-symbols"
-else
-  # xcodebuild doesn't implement any single-letter short flags like -f and -d.
-  FRAMEWORK_FLAG="-framework"
-  DSYM_FLAG="-debug-symbols"
-fi
-
 XCFRAMEWORKS=()
 if $BUILD_CATALYST; then
-  FRAMEWORK="$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework"
-  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_SIMULATOR; then
-  FRAMEWORK="$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework"
-  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/ios-sim/$CONFIG_BUILD-iphonesimulator/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_IPHONE; then
-  FRAMEWORK="$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework"
-  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_MACOS; then
-  FRAMEWORK="$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
-  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_VISION; then
-  FRAMEWORK="$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
-  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
 
-  FRAMEWORK="$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework"
-  XCFRAMEWORKS+=( "$FRAMEWORK_FLAG" "$FRAMEWORK" "$DSYM_FLAG" "$FRAMEWORK.dSYM" )
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
 fi
 
 if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
