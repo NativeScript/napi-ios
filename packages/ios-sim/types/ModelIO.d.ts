@@ -7,41 +7,41 @@ declare const MDLVertexAttributeTangent: string;
 
 declare const MDLVertexAttributeShadingBasisV: string;
 
-declare const MDLVertexAttributePosition: string;
-
-declare const MDLVertexAttributeNormal: string;
-
-declare const MDLVertexAttributeJointWeights: string;
-
-declare const MDLVertexAttributeJointIndices: string;
-
-declare const MDLVertexAttributeEdgeCrease: string;
-
-declare const MDLVertexAttributeBitangent: string;
-
-declare const MDLVertexAttributeBinormal: string;
-
 declare const MDLVertexAttributeAnisotropy: string;
-
-declare const kUTTypeUniversalSceneDescriptionMobile: string;
-
-declare const kUTTypeUniversalSceneDescription: string;
-
-declare const kUTTypePolygon: string;
-
-declare const kUTTypeAlembic: string;
-
-declare const MDLVertexAttributeColor: string;
-
-declare const MDLVertexAttributeTextureCoordinate: string;
 
 declare const MDLVertexAttributeSubdivisionStencil: string;
 
-declare const MDLVertexAttributeOcclusionValue: string;
-
 declare const MDLVertexAttributeShadingBasisU: string;
 
+declare const MDLVertexAttributePosition: string;
+
+declare const MDLVertexAttributeJointWeights: string;
+
+declare const MDLVertexAttributeEdgeCrease: string;
+
+declare const MDLVertexAttributeColor: string;
+
+declare const MDLVertexAttributeBinormal: string;
+
 declare const kUTTypeStereolithography: string;
+
+declare const kUTTypeUniversalSceneDescription: string;
+
+declare const kUTTypeUniversalSceneDescriptionMobile: string;
+
+declare const MDLVertexAttributeJointIndices: string;
+
+declare const MDLVertexAttributeTextureCoordinate: string;
+
+declare const kUTTypeAlembic: string;
+
+declare const MDLVertexAttributeOcclusionValue: string;
+
+declare const MDLVertexAttributeNormal: string;
+
+declare const MDLVertexAttributeBitangent: string;
+
+declare const kUTTypePolygon: string;
 
 declare const MDLTextureChannelEncoding: {
   UInt8: 1,
@@ -55,12 +55,6 @@ declare const MDLTextureChannelEncoding: {
   Float16: 258,
   Float16SR: 770,
   Float32: 260,
-};
-
-declare const MDLMaterialFace: {
-  Front: 0,
-  Back: 1,
-  DoubleSided: 2,
 };
 
 declare const MDLMaterialMipMapFilterMode: {
@@ -237,6 +231,12 @@ declare const MDLIndexBitDepth: {
   Uint16: 16,
   UInt32: 32,
   Uint32: 32,
+};
+
+declare const MDLMaterialFace: {
+  Front: 0,
+  Back: 1,
+  DoubleSided: 2,
 };
 
 declare const MDLTransformOpRotationOrder: {
@@ -417,12 +417,108 @@ declare interface MDLLightProbeIrradianceDataSource extends NSObjectProtocol {
 declare class MDLLightProbeIrradianceDataSource extends NativeObject implements MDLLightProbeIrradianceDataSource {
 }
 
-declare class MDLNoiseTexture extends MDLTexture {
-  initVectorNoiseWithSmoothnessNameTextureDimensionsChannelEncoding(smoothness: number, name: string | null, textureDimensions: unknown /* ext vector */, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>): this;
+declare class MDLCamera extends MDLObject {
+  readonly projectionMatrix: simd_float4x4;
 
-  initScalarNoiseWithSmoothnessNameTextureDimensionsChannelCountChannelEncodingGrayscale(smoothness: number, name: string | null, textureDimensions: unknown /* ext vector */, channelCount: number, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>, grayscale: boolean): this;
+  projection: interop.Enum<typeof MDLCameraProjection>;
 
-  initCellularNoiseWithFrequencyNameTextureDimensionsChannelEncoding(frequency: number, name: string | null, textureDimensions: unknown /* ext vector */, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>): this;
+  frameBoundingBoxSetNearAndFar(boundingBox: MDLAxisAlignedBoundingBox, setNearAndFar: boolean): void;
+
+  lookAt(focusPosition: unknown /* ext vector */): void;
+
+  lookAtFrom(focusPosition: unknown /* ext vector */, cameraPosition: unknown /* ext vector */): void;
+
+  rayToForViewPort(pixel: unknown /* ext vector */, size: unknown /* ext vector */): unknown /* ext vector */;
+
+  nearVisibilityDistance: number;
+
+  farVisibilityDistance: number;
+
+  worldToMetersConversionScale: number;
+
+  barrelDistortion: number;
+
+  fisheyeDistortion: number;
+
+  opticalVignetting: number;
+
+  chromaticAberration: number;
+
+  focalLength: number;
+
+  focusDistance: number;
+
+  fieldOfView: number;
+
+  fStop: number;
+
+  apertureBladeCount: number;
+
+  maximumCircleOfConfusion: number;
+
+  bokehKernelWithSize(size: unknown /* ext vector */): MDLTexture;
+
+  shutterOpenInterval: number;
+
+  sensorVerticalAperture: number;
+
+  sensorAspect: number;
+
+  sensorEnlargement: unknown /* ext vector */;
+
+  sensorShift: unknown /* ext vector */;
+
+  flash: unknown /* ext vector */;
+
+  exposureCompression: unknown /* ext vector */;
+
+  exposure: unknown /* ext vector */;
+
+  setProjection(projection: interop.Enum<typeof MDLCameraProjection>): void;
+
+  setNearVisibilityDistance(nearVisibilityDistance: number): void;
+
+  setFarVisibilityDistance(farVisibilityDistance: number): void;
+
+  setWorldToMetersConversionScale(worldToMetersConversionScale: number): void;
+
+  setBarrelDistortion(barrelDistortion: number): void;
+
+  setFisheyeDistortion(fisheyeDistortion: number): void;
+
+  setOpticalVignetting(opticalVignetting: number): void;
+
+  setChromaticAberration(chromaticAberration: number): void;
+
+  setFocalLength(focalLength: number): void;
+
+  setFocusDistance(focusDistance: number): void;
+
+  setFieldOfView(fieldOfView: number): void;
+
+  setFStop(fStop: number): void;
+
+  setApertureBladeCount(apertureBladeCount: number): void;
+
+  setMaximumCircleOfConfusion(maximumCircleOfConfusion: number): void;
+
+  setShutterOpenInterval(shutterOpenInterval: number): void;
+
+  setSensorVerticalAperture(sensorVerticalAperture: number): void;
+
+  setSensorAspect(sensorAspect: number): void;
+
+  setSensorEnlargement(sensorEnlargement: unknown /* ext vector */): void;
+
+  setSensorShift(sensorShift: unknown /* ext vector */): void;
+
+  setFlash(flash: unknown /* ext vector */): void;
+
+  setExposureCompression(exposureCompression: unknown /* ext vector */): void;
+
+  setExposure(exposure: unknown /* ext vector */): void;
+
+  static cameraWithSCNCamera<This extends abstract new (...args: any) => any>(this: This, scnCamera: SCNCamera): InstanceType<This>;
 }
 
 declare class MDLVoxelArray extends MDLObject {
@@ -553,6 +649,14 @@ declare class MDLMaterialProperty extends NSObject implements MDLNamed, NSCopyin
   setLuminance(luminance: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MDLNoiseTexture extends MDLTexture {
+  initVectorNoiseWithSmoothnessNameTextureDimensionsChannelEncoding(smoothness: number, name: string | null, textureDimensions: unknown /* ext vector */, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>): this;
+
+  initScalarNoiseWithSmoothnessNameTextureDimensionsChannelCountChannelEncodingGrayscale(smoothness: number, name: string | null, textureDimensions: unknown /* ext vector */, channelCount: number, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>, grayscale: boolean): this;
+
+  initCellularNoiseWithFrequencyNameTextureDimensionsChannelEncoding(frequency: number, name: string | null, textureDimensions: unknown /* ext vector */, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>): this;
 }
 
 declare class MDLRelativeAssetResolver extends NSObject implements MDLAssetResolver {
@@ -876,6 +980,56 @@ declare class MDLTextureFilter extends NSObject {
   setMagFilter(magFilter: interop.Enum<typeof MDLMaterialTextureFilterMode>): void;
 
   setMipFilter(mipFilter: interop.Enum<typeof MDLMaterialMipMapFilterMode>): void;
+}
+
+declare class MDLObject extends NSObject implements MDLNamed {
+  readonly components: NSArray;
+
+  setComponentForProtocol(component: MDLComponent, protocol: interop.PointerConvertible): void;
+
+  componentConformingToProtocol(protocol: interop.PointerConvertible): MDLComponent;
+
+  objectForKeyedSubscript(key: interop.PointerConvertible): MDLComponent;
+
+  setObjectForKeyedSubscript(obj: MDLComponent | null, key: interop.PointerConvertible): void;
+
+  parent: MDLObject;
+
+  instance: MDLObject;
+
+  readonly path: string;
+
+  objectAtPath(path: string): MDLObject;
+
+  enumerateChildObjectsOfClassRootUsingBlockStopPointer(objectClass: interop.Object, root: MDLObject, block: (p1: MDLObject, p2: interop.PointerConvertible) => void, stopPointer: interop.PointerConvertible): void;
+
+  transform: MDLTransformComponent;
+
+  children: MDLObjectContainerComponent;
+
+  hidden: boolean;
+
+  addChild(child: MDLObject): void;
+
+  boundingBoxAtTime(time: number): MDLAxisAlignedBoundingBox;
+
+  setParent(parent: MDLObject | null): void;
+
+  setInstance(instance: MDLObject | null): void;
+
+  setTransform(transform: MDLTransformComponent | null): void;
+
+  setChildren(children: MDLObjectContainerComponent): void;
+
+  setHidden(hidden: boolean): void;
+
+  static objectWithSCNNode<This extends abstract new (...args: any) => any>(this: This, scnNode: SCNNode): InstanceType<This>;
+
+  static objectWithSCNNodeBufferAllocator<This extends abstract new (...args: any) => any>(this: This, scnNode: SCNNode, bufferAllocator: MDLMeshBufferAllocator | null): InstanceType<This>;
+
+  name: string;
+
+  setName(name: string): void;
 }
 
 declare class MDLColorSwatchTexture extends MDLTexture {
@@ -1352,110 +1506,6 @@ declare class MDLStereoscopicCamera extends MDLCamera {
   setRightVergence(rightVergence: number): void;
 
   setOverlap(overlap: number): void;
-}
-
-declare class MDLCamera extends MDLObject {
-  readonly projectionMatrix: simd_float4x4;
-
-  projection: interop.Enum<typeof MDLCameraProjection>;
-
-  frameBoundingBoxSetNearAndFar(boundingBox: MDLAxisAlignedBoundingBox, setNearAndFar: boolean): void;
-
-  lookAt(focusPosition: unknown /* ext vector */): void;
-
-  lookAtFrom(focusPosition: unknown /* ext vector */, cameraPosition: unknown /* ext vector */): void;
-
-  rayToForViewPort(pixel: unknown /* ext vector */, size: unknown /* ext vector */): unknown /* ext vector */;
-
-  nearVisibilityDistance: number;
-
-  farVisibilityDistance: number;
-
-  worldToMetersConversionScale: number;
-
-  barrelDistortion: number;
-
-  fisheyeDistortion: number;
-
-  opticalVignetting: number;
-
-  chromaticAberration: number;
-
-  focalLength: number;
-
-  focusDistance: number;
-
-  fieldOfView: number;
-
-  fStop: number;
-
-  apertureBladeCount: number;
-
-  maximumCircleOfConfusion: number;
-
-  bokehKernelWithSize(size: unknown /* ext vector */): MDLTexture;
-
-  shutterOpenInterval: number;
-
-  sensorVerticalAperture: number;
-
-  sensorAspect: number;
-
-  sensorEnlargement: unknown /* ext vector */;
-
-  sensorShift: unknown /* ext vector */;
-
-  flash: unknown /* ext vector */;
-
-  exposureCompression: unknown /* ext vector */;
-
-  exposure: unknown /* ext vector */;
-
-  setProjection(projection: interop.Enum<typeof MDLCameraProjection>): void;
-
-  setNearVisibilityDistance(nearVisibilityDistance: number): void;
-
-  setFarVisibilityDistance(farVisibilityDistance: number): void;
-
-  setWorldToMetersConversionScale(worldToMetersConversionScale: number): void;
-
-  setBarrelDistortion(barrelDistortion: number): void;
-
-  setFisheyeDistortion(fisheyeDistortion: number): void;
-
-  setOpticalVignetting(opticalVignetting: number): void;
-
-  setChromaticAberration(chromaticAberration: number): void;
-
-  setFocalLength(focalLength: number): void;
-
-  setFocusDistance(focusDistance: number): void;
-
-  setFieldOfView(fieldOfView: number): void;
-
-  setFStop(fStop: number): void;
-
-  setApertureBladeCount(apertureBladeCount: number): void;
-
-  setMaximumCircleOfConfusion(maximumCircleOfConfusion: number): void;
-
-  setShutterOpenInterval(shutterOpenInterval: number): void;
-
-  setSensorVerticalAperture(sensorVerticalAperture: number): void;
-
-  setSensorAspect(sensorAspect: number): void;
-
-  setSensorEnlargement(sensorEnlargement: unknown /* ext vector */): void;
-
-  setSensorShift(sensorShift: unknown /* ext vector */): void;
-
-  setFlash(flash: unknown /* ext vector */): void;
-
-  setExposureCompression(exposureCompression: unknown /* ext vector */): void;
-
-  setExposure(exposure: unknown /* ext vector */): void;
-
-  static cameraWithSCNCamera<This extends abstract new (...args: any) => any>(this: This, scnCamera: SCNCamera): InstanceType<This>;
 }
 
 declare class MDLAsset extends NSObject implements NSCopying, NSFastEnumeration {
@@ -2136,6 +2186,24 @@ declare class MDLAnimatedVector2 extends MDLAnimatedValue {
   getDouble2ArrayMaxCount(valuesArray: interop.PointerConvertible, maxCount: number): number;
 }
 
+declare class MDLAnimatedVector4 extends MDLAnimatedValue {
+  setFloat4AtTime(value: unknown /* ext vector */, time: number): void;
+
+  setDouble4AtTime(value: unknown /* ext vector */, time: number): void;
+
+  float4AtTime(time: number): unknown /* ext vector */;
+
+  double4AtTime(time: number): unknown /* ext vector */;
+
+  resetWithFloat4ArrayAtTimesCount(valuesArray: interop.PointerConvertible, timesArray: interop.PointerConvertible, count: number): void;
+
+  resetWithDouble4ArrayAtTimesCount(valuesArray: interop.PointerConvertible, timesArray: interop.PointerConvertible, count: number): void;
+
+  getFloat4ArrayMaxCount(valuesArray: interop.PointerConvertible, maxCount: number): number;
+
+  getDouble4ArrayMaxCount(valuesArray: interop.PointerConvertible, maxCount: number): number;
+}
+
 declare class MDLTransformRotateZOp extends NSObject implements MDLTransformOp {
   readonly name: string;
 
@@ -2272,28 +2340,6 @@ declare class MDLMaterialPropertyGraph extends MDLMaterialPropertyNode {
 
 declare class MDLNormalMapTexture extends MDLTexture {
   initByGeneratingNormalMapWithTextureNameSmoothnessContrast(sourceTexture: MDLTexture, name: string | null, smoothness: number, contrast: number): this;
-}
-
-declare class MDLScatteringFunction extends NSObject implements MDLNamed {
-  name: string;
-
-  readonly baseColor: MDLMaterialProperty;
-
-  readonly emission: MDLMaterialProperty;
-
-  readonly specular: MDLMaterialProperty;
-
-  readonly materialIndexOfRefraction: MDLMaterialProperty;
-
-  readonly interfaceIndexOfRefraction: MDLMaterialProperty;
-
-  readonly normal: MDLMaterialProperty;
-
-  readonly ambientOcclusion: MDLMaterialProperty;
-
-  readonly ambientOcclusionScale: MDLMaterialProperty;
-
-  setName(name: string): void;
 }
 
 declare class MDLPhysicallyPlausibleLight extends MDLLight {
@@ -2452,71 +2498,25 @@ declare class MDLObjectContainer extends NSObject implements MDLObjectContainerC
   countByEnumeratingWithStateObjectsCount(state: interop.PointerConvertible, buffer: interop.PointerConvertible, len: number): number;
 }
 
-declare class MDLObject extends NSObject implements MDLNamed {
-  readonly components: NSArray;
-
-  setComponentForProtocol(component: MDLComponent, protocol: interop.PointerConvertible): void;
-
-  componentConformingToProtocol(protocol: interop.PointerConvertible): MDLComponent;
-
-  objectForKeyedSubscript(key: interop.PointerConvertible): MDLComponent;
-
-  setObjectForKeyedSubscript(obj: MDLComponent | null, key: interop.PointerConvertible): void;
-
-  parent: MDLObject;
-
-  instance: MDLObject;
-
-  readonly path: string;
-
-  objectAtPath(path: string): MDLObject;
-
-  enumerateChildObjectsOfClassRootUsingBlockStopPointer(objectClass: interop.Object, root: MDLObject, block: (p1: MDLObject, p2: interop.PointerConvertible) => void, stopPointer: interop.PointerConvertible): void;
-
-  transform: MDLTransformComponent;
-
-  children: MDLObjectContainerComponent;
-
-  hidden: boolean;
-
-  addChild(child: MDLObject): void;
-
-  boundingBoxAtTime(time: number): MDLAxisAlignedBoundingBox;
-
-  setParent(parent: MDLObject | null): void;
-
-  setInstance(instance: MDLObject | null): void;
-
-  setTransform(transform: MDLTransformComponent | null): void;
-
-  setChildren(children: MDLObjectContainerComponent): void;
-
-  setHidden(hidden: boolean): void;
-
-  static objectWithSCNNode<This extends abstract new (...args: any) => any>(this: This, scnNode: SCNNode): InstanceType<This>;
-
-  static objectWithSCNNodeBufferAllocator<This extends abstract new (...args: any) => any>(this: This, scnNode: SCNNode, bufferAllocator: MDLMeshBufferAllocator | null): InstanceType<This>;
-
+declare class MDLScatteringFunction extends NSObject implements MDLNamed {
   name: string;
 
+  readonly baseColor: MDLMaterialProperty;
+
+  readonly emission: MDLMaterialProperty;
+
+  readonly specular: MDLMaterialProperty;
+
+  readonly materialIndexOfRefraction: MDLMaterialProperty;
+
+  readonly interfaceIndexOfRefraction: MDLMaterialProperty;
+
+  readonly normal: MDLMaterialProperty;
+
+  readonly ambientOcclusion: MDLMaterialProperty;
+
+  readonly ambientOcclusionScale: MDLMaterialProperty;
+
   setName(name: string): void;
-}
-
-declare class MDLAnimatedVector4 extends MDLAnimatedValue {
-  setFloat4AtTime(value: unknown /* ext vector */, time: number): void;
-
-  setDouble4AtTime(value: unknown /* ext vector */, time: number): void;
-
-  float4AtTime(time: number): unknown /* ext vector */;
-
-  double4AtTime(time: number): unknown /* ext vector */;
-
-  resetWithFloat4ArrayAtTimesCount(valuesArray: interop.PointerConvertible, timesArray: interop.PointerConvertible, count: number): void;
-
-  resetWithDouble4ArrayAtTimesCount(valuesArray: interop.PointerConvertible, timesArray: interop.PointerConvertible, count: number): void;
-
-  getFloat4ArrayMaxCount(valuesArray: interop.PointerConvertible, maxCount: number): number;
-
-  getDouble4ArrayMaxCount(valuesArray: interop.PointerConvertible, maxCount: number): number;
 }
 

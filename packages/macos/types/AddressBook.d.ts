@@ -34,6 +34,8 @@ declare const kABGroupNameProperty: string;
 
 declare const kABSuffixProperty: string;
 
+declare const kABTitleProperty: string;
+
 declare const kABSocialProfileServiceMySpace: string;
 
 declare const kABSocialProfileServiceFlickr: string;
@@ -123,8 +125,6 @@ declare const kABFirstNameProperty: string;
 declare const kABCreationDateProperty: string;
 
 declare const ABAddressBookErrorDomain: string;
-
-declare const kABTitleProperty: string;
 
 declare const kABAnniversaryLabel: string;
 
@@ -562,13 +562,6 @@ declare function ABPickerEditInAddressBook(inPicker: interop.Object): void;
 
 declare function ABPickerSelectInAddressBook(inPicker: interop.Object): void;
 
-declare interface ABImageClient extends NSObjectProtocol {
-  consumeImageDataForTag(data: NSData, tag: number): void;
-}
-
-declare class ABImageClient extends NativeObject implements ABImageClient {
-}
-
 declare interface ABPersonPickerDelegate extends NSObjectProtocol {
   personPickerDidChoosePersonPropertyIdentifier(picker: ABPersonPicker, person: ABPerson, property: string, identifier: string): void;
 
@@ -576,6 +569,13 @@ declare interface ABPersonPickerDelegate extends NSObjectProtocol {
 }
 
 declare class ABPersonPickerDelegate extends NativeObject implements ABPersonPickerDelegate {
+}
+
+declare interface ABImageClient extends NSObjectProtocol {
+  consumeImageDataForTag(data: NSData, tag: number): void;
+}
+
+declare class ABImageClient extends NativeObject implements ABImageClient {
 }
 
 declare class ABPersonView extends NSView {

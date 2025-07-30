@@ -321,100 +321,6 @@ declare class CMDeviceMotion extends CMLogItem {
   readonly sensorLocation: interop.Enum<typeof CMDeviceMotionSensorLocation>;
 }
 
-declare class CMMotionManager extends NSObject {
-  accelerometerUpdateInterval: number;
-
-  readonly accelerometerAvailable: boolean;
-
-  readonly accelerometerActive: boolean;
-
-  readonly accelerometerData: CMAccelerometerData;
-
-  startAccelerometerUpdates(): void;
-
-  startAccelerometerUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMAccelerometerData, p2: NSError) => void): void;
-
-  stopAccelerometerUpdates(): void;
-
-  gyroUpdateInterval: number;
-
-  readonly gyroAvailable: boolean;
-
-  readonly gyroActive: boolean;
-
-  readonly gyroData: CMGyroData;
-
-  startGyroUpdates(): void;
-
-  startGyroUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMGyroData, p2: NSError) => void): void;
-
-  stopGyroUpdates(): void;
-
-  magnetometerUpdateInterval: number;
-
-  readonly magnetometerAvailable: boolean;
-
-  readonly magnetometerActive: boolean;
-
-  readonly magnetometerData: CMMagnetometerData;
-
-  startMagnetometerUpdates(): void;
-
-  startMagnetometerUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMMagnetometerData, p2: NSError) => void): void;
-
-  stopMagnetometerUpdates(): void;
-
-  deviceMotionUpdateInterval: number;
-
-  static availableAttitudeReferenceFrames(): interop.Enum<typeof CMAttitudeReferenceFrame>;
-
-  readonly attitudeReferenceFrame: interop.Enum<typeof CMAttitudeReferenceFrame>;
-
-  readonly deviceMotionAvailable: boolean;
-
-  readonly deviceMotionActive: boolean;
-
-  readonly deviceMotion: CMDeviceMotion;
-
-  startDeviceMotionUpdates(): void;
-
-  startDeviceMotionUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMDeviceMotion, p2: NSError) => void): void;
-
-  startDeviceMotionUpdatesUsingReferenceFrame(referenceFrame: interop.Enum<typeof CMAttitudeReferenceFrame>): void;
-
-  startDeviceMotionUpdatesUsingReferenceFrameToQueueWithHandler(referenceFrame: interop.Enum<typeof CMAttitudeReferenceFrame>, queue: NSOperationQueue, handler: (p1: CMDeviceMotion, p2: NSError) => void): void;
-
-  stopDeviceMotionUpdates(): void;
-
-  showsDeviceMovementDisplay: boolean;
-
-  setAccelerometerUpdateInterval(accelerometerUpdateInterval: number): void;
-
-  isAccelerometerAvailable(): boolean;
-
-  isAccelerometerActive(): boolean;
-
-  setGyroUpdateInterval(gyroUpdateInterval: number): void;
-
-  isGyroAvailable(): boolean;
-
-  isGyroActive(): boolean;
-
-  setMagnetometerUpdateInterval(magnetometerUpdateInterval: number): void;
-
-  isMagnetometerAvailable(): boolean;
-
-  isMagnetometerActive(): boolean;
-
-  setDeviceMotionUpdateInterval(deviceMotionUpdateInterval: number): void;
-
-  isDeviceMotionAvailable(): boolean;
-
-  isDeviceMotionActive(): boolean;
-
-  setShowsDeviceMovementDisplay(showsDeviceMovementDisplay: boolean): void;
-}
-
 declare class CMWaterSubmersionMeasurement extends NSObject implements NSSecureCoding, NSCopying {
   readonly date: NSDate;
 
@@ -433,6 +339,14 @@ declare class CMWaterSubmersionMeasurement extends NSObject implements NSSecureC
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CMAbsoluteAltitudeData extends CMLogItem {
+  readonly altitude: number;
+
+  readonly accuracy: number;
+
+  readonly precision: number;
 }
 
 declare class CMMotionActivity extends CMLogItem {
@@ -579,14 +493,6 @@ declare class CMHeadphoneMotionManager extends NSObject {
   isDeviceMotionActive(): boolean;
 }
 
-declare class CMAbsoluteAltitudeData extends CMLogItem {
-  readonly altitude: number;
-
-  readonly accuracy: number;
-
-  readonly precision: number;
-}
-
 declare class CMAmbientPressureData extends CMLogItem {
   readonly pressure: NSMeasurement;
 
@@ -620,24 +526,6 @@ declare class CMGyroData extends CMLogItem {
   readonly rotationRate: CMRotationRate;
 }
 
-declare class CMRotationRateData extends CMLogItem {
-  readonly rotationRate: CMRotationRate;
-}
-
-declare class CMRecordedAccelerometerData extends CMAccelerometerData {
-  readonly identifier: number;
-
-  readonly startDate: NSDate;
-}
-
-declare class CMHighFrequencyHeartRateData extends CMLogItem {
-  readonly heartRate: number;
-
-  readonly confidence: interop.Enum<typeof CMHighFrequencyHeartRateDataConfidence>;
-
-  readonly date: NSDate;
-}
-
 declare class CMPedometerData extends NSObject implements NSSecureCoding, NSCopying {
   readonly startDate: NSDate;
 
@@ -664,6 +552,24 @@ declare class CMPedometerData extends NSObject implements NSSecureCoding, NSCopy
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CMRotationRateData extends CMLogItem {
+  readonly rotationRate: CMRotationRate;
+}
+
+declare class CMRecordedAccelerometerData extends CMAccelerometerData {
+  readonly identifier: number;
+
+  readonly startDate: NSDate;
+}
+
+declare class CMHighFrequencyHeartRateData extends CMLogItem {
+  readonly heartRate: number;
+
+  readonly confidence: interop.Enum<typeof CMHighFrequencyHeartRateDataConfidence>;
+
+  readonly date: NSDate;
 }
 
 declare class CMRecordedPressureData extends CMAmbientPressureData {
@@ -750,6 +656,100 @@ declare class CMAltimeter extends NSObject {
   startAbsoluteAltitudeUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMAbsoluteAltitudeData, p2: NSError) => void): void;
 
   stopAbsoluteAltitudeUpdates(): void;
+}
+
+declare class CMMotionManager extends NSObject {
+  accelerometerUpdateInterval: number;
+
+  readonly accelerometerAvailable: boolean;
+
+  readonly accelerometerActive: boolean;
+
+  readonly accelerometerData: CMAccelerometerData;
+
+  startAccelerometerUpdates(): void;
+
+  startAccelerometerUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMAccelerometerData, p2: NSError) => void): void;
+
+  stopAccelerometerUpdates(): void;
+
+  gyroUpdateInterval: number;
+
+  readonly gyroAvailable: boolean;
+
+  readonly gyroActive: boolean;
+
+  readonly gyroData: CMGyroData;
+
+  startGyroUpdates(): void;
+
+  startGyroUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMGyroData, p2: NSError) => void): void;
+
+  stopGyroUpdates(): void;
+
+  magnetometerUpdateInterval: number;
+
+  readonly magnetometerAvailable: boolean;
+
+  readonly magnetometerActive: boolean;
+
+  readonly magnetometerData: CMMagnetometerData;
+
+  startMagnetometerUpdates(): void;
+
+  startMagnetometerUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMMagnetometerData, p2: NSError) => void): void;
+
+  stopMagnetometerUpdates(): void;
+
+  deviceMotionUpdateInterval: number;
+
+  static availableAttitudeReferenceFrames(): interop.Enum<typeof CMAttitudeReferenceFrame>;
+
+  readonly attitudeReferenceFrame: interop.Enum<typeof CMAttitudeReferenceFrame>;
+
+  readonly deviceMotionAvailable: boolean;
+
+  readonly deviceMotionActive: boolean;
+
+  readonly deviceMotion: CMDeviceMotion;
+
+  startDeviceMotionUpdates(): void;
+
+  startDeviceMotionUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMDeviceMotion, p2: NSError) => void): void;
+
+  startDeviceMotionUpdatesUsingReferenceFrame(referenceFrame: interop.Enum<typeof CMAttitudeReferenceFrame>): void;
+
+  startDeviceMotionUpdatesUsingReferenceFrameToQueueWithHandler(referenceFrame: interop.Enum<typeof CMAttitudeReferenceFrame>, queue: NSOperationQueue, handler: (p1: CMDeviceMotion, p2: NSError) => void): void;
+
+  stopDeviceMotionUpdates(): void;
+
+  showsDeviceMovementDisplay: boolean;
+
+  setAccelerometerUpdateInterval(accelerometerUpdateInterval: number): void;
+
+  isAccelerometerAvailable(): boolean;
+
+  isAccelerometerActive(): boolean;
+
+  setGyroUpdateInterval(gyroUpdateInterval: number): void;
+
+  isGyroAvailable(): boolean;
+
+  isGyroActive(): boolean;
+
+  setMagnetometerUpdateInterval(magnetometerUpdateInterval: number): void;
+
+  isMagnetometerAvailable(): boolean;
+
+  isMagnetometerActive(): boolean;
+
+  setDeviceMotionUpdateInterval(deviceMotionUpdateInterval: number): void;
+
+  isDeviceMotionAvailable(): boolean;
+
+  isDeviceMotionActive(): boolean;
+
+  setShowsDeviceMovementDisplay(showsDeviceMovementDisplay: boolean): void;
 }
 
 declare class CMRecordedRotationRateData extends CMRotationRateData {

@@ -1,5 +1,9 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const UNW_ARM_R6: number;
+
+declare const UNW_PPC64_F7: number;
+
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R11: number;
 
 declare const kDNSServiceFlagsBrowseDomains: number;
@@ -18,19 +22,13 @@ declare const UNW_HEXAGON_R20: number;
 
 declare const optarg: string;
 
+declare const UNWIND_X86_64_REG_R15: number;
+
 declare const UNW_ARM64_D1: number;
 
 declare const UNW_ARM_WC1: number;
 
 declare const UNW_VE_V0: number;
-
-declare const tzname: interop.Pointer;
-
-declare const UNW_PPC64_CR6: number;
-
-declare const UNW_PPC64_R11: number;
-
-declare const UNW_AARCH64_X11: number;
 
 declare const UNW_ARM64_X28: number;
 
@@ -66,9 +64,13 @@ declare const UNW_ARM_D14: number;
 
 declare const UNW_X86_EBX: number;
 
+declare const UNW_VE_V12: number;
+
 declare const UNW_LOONGARCH_F12: number;
 
 declare const UNW_AARCH64_X23: number;
+
+declare const UNW_ARM64_D15: number;
 
 declare const UNW_OR1K_R15: number;
 
@@ -85,6 +87,8 @@ declare const UNW_PPC64_VS61: number;
 declare const UNW_ARM_WR8: number;
 
 declare const optopt: number;
+
+declare const UNW_PPC64_V18: number;
 
 declare const dyld_error_kind_dylib_wrong_arch: number;
 
@@ -124,13 +128,15 @@ declare const UNW_ARM64_D25: number;
 
 declare const UNW_MIPS_R28: number;
 
-declare const UNW_ARM_D26: number;
-
 declare const UNW_PPC64_F26: number;
 
 declare const UNW_AARCH64_X8: number;
 
 declare const _dispatch_data_destructor_free: () => void;
+
+declare const UNW_MIPS_F17: number;
+
+declare const UNW_SPARC_L1: number;
 
 declare const UNW_VE_V4: number;
 
@@ -143,8 +149,6 @@ declare const UNW_MIPS_R21: number;
 declare const UNW_ARM_D4: number;
 
 declare const UNW_PPC64_R21: number;
-
-declare const UNWIND_X86_EBP_FRAME_REGISTERS: number;
 
 declare const UNW_ARM64_D2: number;
 
@@ -164,19 +168,25 @@ declare const UNW_RISCV_F0: number;
 
 declare const kDNSServiceType_SPF: number;
 
-declare const UNWIND_ARM_FRAME_SECOND_PUSH_R9: number;
+declare const UNW_SPARC_G3: number;
+
+declare const UNW_PPC64_F14: number;
 
 declare const KERNEL_SECURITY_TOKEN: security_token_t;
 
 declare const UNW_PPC_F28: number;
 
+declare const UNW_PPC64_VS28: number;
+
 declare const UNW_PPC64_VS40: number;
 
-declare const UNW_PPC64_VS28: number;
+declare const UNW_VE_VM1: number;
 
 declare const UNW_VE_S15: number;
 
 declare const UNW_PPC64_VS37: number;
+
+declare const _xpc_error_termination_imminent: _xpc_dictionary_s;
 
 declare const UNW_MIPS_R30: number;
 
@@ -200,17 +210,13 @@ declare const UNW_PPC_R20: number;
 
 declare const HV_ERROR: number;
 
+declare const UNW_ARM64_X23: number;
+
 declare const kDNSServiceType_MF: number;
 
 declare const UNW_PPC64_F15: number;
 
-declare const HV_SUCCESS: number;
-
 declare const UNW_PPC64_VS63: number;
-
-declare const in6addr_linklocal_allnodes: in6_addr;
-
-declare const kDNSServiceType_AFSDB: number;
 
 declare const UNW_MIPS_F21: number;
 
@@ -218,9 +224,15 @@ declare const kDNSServiceFlagsExpiredAnswer: number;
 
 declare const UNW_HEXAGON_R25: number;
 
+declare const UNW_RISCV_X3: number;
+
+declare const UNW_SPARC_G5: number;
+
 declare const in6addr_loopback: in6_addr;
 
 declare const kDNSServiceType_UINFO: number;
+
+declare const UNW_VE_S0: number;
 
 declare const UNW_RISCV_X19: number;
 
@@ -235,6 +247,8 @@ declare const UNW_OR1K_R27: number;
 declare const UNW_LOONGARCH_R24: number;
 
 declare const UNW_VE_V27: number;
+
+declare const UNW_PPC64_R26: number;
 
 declare const opterr: number;
 
@@ -294,6 +308,8 @@ declare const UNW_SPARC_L4: number;
 
 declare const kDNSServiceType_SIG: number;
 
+declare const UNW_X86_64_RCX: number;
+
 declare const UNW_LOONGARCH_R21: number;
 
 declare const UNW_LOONGARCH_F5: number;
@@ -302,7 +318,11 @@ declare const UITER_UNKNOWN_INDEX: number;
 
 declare const UNW_AARCH64_X20: number;
 
+declare const UNW_X86_64_RDX: number;
+
 declare const kDNSServiceType_LOC: number;
+
+declare const UNW_S390X_R14: number;
 
 declare const UNW_ARM_S29: number;
 
@@ -310,7 +330,25 @@ declare const UNW_VE_V46: number;
 
 declare const UNW_ARM64_X1: number;
 
+declare const UNW_MIPS_F28: number;
+
 declare const UNW_VE_S5: number;
+
+declare const tzname: interop.Pointer;
+
+declare const UNW_VE_S20: number;
+
+declare const UNW_PPC64_CR6: number;
+
+declare const UNW_PPC64_R11: number;
+
+declare const UNWIND_ARM_FRAME_SECOND_PUSH_R9: number;
+
+declare const UNW_AARCH64_X11: number;
+
+declare const in6addr_linklocal_allnodes: in6_addr;
+
+declare const kDNSServiceType_AFSDB: number;
 
 declare const UNW_AARCH64_X7: number;
 
@@ -346,6 +384,8 @@ declare const UNW_ARM_S14: number;
 
 declare const extend: number;
 
+declare const UNW_VE_V39: number;
+
 declare const kDNSServiceType_MINFO: number;
 
 declare const UNW_MIPS_F12: number;
@@ -361,6 +401,8 @@ declare const UNW_RISCV_X24: number;
 declare const UNW_ARM_D18: number;
 
 declare const _xpc_type_int64: _xpc_type_s;
+
+declare const UNW_ARM64_D7: number;
 
 declare const UNW_PPC64_V21: number;
 
@@ -380,45 +422,61 @@ declare const UNW_VE_VM9: number;
 
 declare const UNW_HEXAGON_R10: number;
 
+declare const UNW_RISCV_F24: number;
+
+declare const UNW_RISCV_F12: number;
+
+declare const UNW_PPC64_VS15: number;
+
 declare const kDNSServiceType_GID: number;
 
-declare const kDNSServiceErr_Invalid: number;
+declare const UIDNA_DEFAULT: number;
 
-declare const UNW_MIPS_R15: number;
+declare const UNW_X86_64_XMM1: number;
 
-declare const UNW_PPC_R14: number;
+declare const UNW_MIPS_R3: number;
 
-declare const DYLD_CHAINED_IMPORT_ADDEND: number;
+declare const kDNSServiceFlagsSecure: number;
 
-declare const UNW_MIPS_F19: number;
-
-declare const _xpc_error_connection_interrupted: _xpc_dictionary_s;
+declare const matrix_identity_float3x3: simd_float3x3;
 
 declare const UNW_EREADONLYREG: number;
 
-declare const UNW_ARM_SP: number;
+declare const kDNSServiceType_MX: number;
 
-declare const UNW_LOONGARCH_F0: number;
+declare const bootstrap_port: number;
 
-declare const UNW_SPARC_I7: number;
+declare const UTEXT_MAGIC: number;
 
-declare const UNW_PPC_V0: number;
+declare const UNW_RISCV_X20: number;
 
-declare const UNW_X86_64_R14: number;
+declare const UNW_VE_V53: number;
 
-declare const UNW_ARM64_X31: number;
+declare const UNW_VE_S42: number;
 
 declare const kDNSServiceFlagsShared: number;
 
 declare const kDNSServiceType_KEY: number;
 
-declare const UNW_HEXAGON_R3: number;
+declare const UNW_PPC_CR6: number;
 
-declare const kDNSServiceType_TSIG: number;
+declare const kDNSServiceType_HINFO: number;
 
-declare const UNW_S390X_R14: number;
+declare const vm_page_size: number;
 
-declare const _dispatch_data_destructor_munmap: () => void;
+declare const UNW_VE_S23: number;
+
+declare const HV_MEMORY_EXEC: number;
+
+declare const kDNSServiceFlagsEnableDNSSEC: number;
+
+declare const UNW_HEXAGON_R31: number;
+
+declare const UNW_ARM_S28: number;
+
+declare const UNW_LOONGARCH_R0: number;
+
+declare const UNW_HEXAGON_R21: number;
 
 declare const UNW_MIPS_R13: number;
 
@@ -434,6 +492,8 @@ declare const UNW_RISCV_X31: number;
 
 declare const UNW_OR1K_R0: number;
 
+declare const UNW_ARM64_X21: number;
+
 declare const kDNSServiceType_RT: number;
 
 declare const UNWIND_X86_REG_EBP: number;
@@ -448,11 +508,15 @@ declare const UNW_LOONGARCH_F8: number;
 
 declare const kDNSServiceType_MAILA: number;
 
+declare const UNW_MIPS_F19: number;
+
 declare const UNW_VE_S2: number;
 
 declare const UNW_SPARC_L5: number;
 
 declare const UNW_HEXAGON_R23: number;
+
+declare const UNW_ARM_S27: number;
 
 declare const UNW_AARCH64_X29: number;
 
@@ -466,9 +530,15 @@ declare const XPC_ACTIVITY_STATE_DONE: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E: number;
 
+declare const UNW_PPC_F30: number;
+
 declare const kDNSServiceType_DHCID: number;
 
+declare const UNW_ARM64_RA_SIGN_STATE: number;
+
 declare const UNWIND_X86_64_MODE_MASK: number;
+
+declare const UNW_PPC64_VS3: number;
 
 declare const UTEXT_PROVIDER_WRITABLE: number;
 
@@ -480,13 +550,11 @@ declare const UNWIND_ARM64_FRAME_D8_D9_PAIR: number;
 
 declare const UNW_LOONGARCH_F16: number;
 
-declare const kDNSServiceFlagsPrivateFive: number;
-
 declare const UNW_VE_S10: number;
 
-declare const kDNSServiceType_NULL: number;
+declare const UNW_PPC_V0: number;
 
-declare const UNW_PPC64_VS36: number;
+declare const UNW_X86_64_R14: number;
 
 declare const UNW_PPC64_R4: number;
 
@@ -494,85 +562,33 @@ declare const UNW_PPC64_V7: number;
 
 declare const UNW_ARM_WR1: number;
 
-declare const UNW_ARM64_X23: number;
+declare const kDNSServiceType_NULL: number;
 
-declare const UNW_PPC_CR7: number;
+declare const UNW_PPC64_V6: number;
 
-declare const UNW_EUNSPEC: number;
+declare const UNW_PPC64_VS36: number;
 
-declare const kDNSServiceFlagsSecure: number;
+declare const UIDNA_USE_STD3_RULES: number;
 
-declare const matrix_identity_float3x3: simd_float3x3;
+declare const UNW_S390X_R5: number;
 
-declare const UNW_SPARC_O4: number;
+declare const UNW_PPC_R10: number;
 
-declare const UNW_VE_S11: number;
-
-declare const UNW_PPC_F13: number;
-
-declare const UNW_RISCV_F4: number;
-
-declare const UNW_PPC64_VS3: number;
-
-declare const _c_locale: interop.Pointer;
+declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
 
 declare const UNW_PPC64_VS35: number;
 
-declare const UNW_ARM_WC3: number;
+declare const alphaStage: number;
 
-declare const UNW_RISCV_X15: number;
+declare const UNW_ARM64_X31: number;
 
-declare const UNWIND_X86_FRAMELESS_STACK_REG_COUNT: number;
+declare const UNW_ARM64_D31: number;
 
-declare const UNWIND_ARM64_MODE_DWARF: number;
+declare const UNW_VE_V52: number;
 
-declare const UNW_SPARC_I6: number;
+declare const UNW_OR1K_R25: number;
 
-declare const UNW_S390X_R6: number;
-
-declare const UNW_X86_64_RDI: number;
-
-declare const UNW_PPC64_VSCR: number;
-
-declare const UNW_MIPS_LO: number;
-
-declare const UNW_OR1K_R22: number;
-
-declare const UNW_MIPS_F10: number;
-
-declare const UNW_ARM_WR5: number;
-
-declare const UNW_ARM64_X21: number;
-
-declare const UNW_OR1K_R11: number;
-
-declare const HV_UNSUPPORTED: number;
-
-declare const kDNSServiceFlagsThresholdOne: number;
-
-declare const DYLD_CHAINED_PTR_64_OFFSET: number;
-
-declare const UNW_VE_S20: number;
-
-declare const UNW_PPC64_V5: number;
-
-declare const UNW_PPC64_R7: number;
-
-declare const UNW_ARM_S27: number;
-
-declare const UNW_PPC64_V18: number;
-
-declare const UNW_ARM_S16: number;
-
-declare const UNW_VE_V59: number;
-
-declare const UNW_PPC_V17: number;
-
-declare const UNW_PPC64_V28: number;
-
-declare const UNW_VE_V58: number;
-
-declare const UNW_PPC64_V31: number;
+declare const UNW_PPC64_F17: number;
 
 declare const UNW_RISCV_F22: number;
 
@@ -586,39 +602,33 @@ declare const UNW_X86_EDI: number;
 
 declare const UNW_MIPS_R17: number;
 
-declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
+declare const OBJC_CLEAR_RESIDENT_STACK: number;
 
-declare const UNW_VE_VIXR: number;
+declare const KERNEL_AUDIT_TOKEN: audit_token_t;
 
-declare const UNW_VE_V39: number;
+declare const UNW_PPC64_R17: number;
 
-declare const UNW_PPC64_VS15: number;
+declare const UNWIND_X86_EBP_FRAME_REGISTERS: number;
 
-declare const UNW_ARM64_D15: number;
-
-declare const UNW_VE_V12: number;
-
-declare const UNW_PPC_F4: number;
-
-declare const UNW_PPC_LR: number;
+declare const UNW_ARM64_X26: number;
 
 declare const kDNSServiceFlagsUnicastResponse: number;
 
-declare const _dispatch_source_type_proc: dispatch_source_type_s;
+declare const UNW_VE_S6: number;
 
-declare const UNW_ARM_D19: number;
-
-declare const UNW_ARM64_RA_SIGN_STATE: number;
-
-declare const OBJC_WAIT_UNTIL_DONE: number;
-
-declare const UNW_MIPS_F0: number;
+declare const HV_SUCCESS: number;
 
 declare const UNW_MIPS_F26: number;
 
+declare const _dispatch_data_destructor_munmap: () => void;
+
 declare const UNW_RISCV_X8: number;
 
+declare const _xpc_error_connection_interrupted: _xpc_dictionary_s;
+
 declare const UNW_SPARC_I2: number;
+
+declare const UNW_HEXAGON_R3: number;
 
 declare const UNW_PPC64_VS48: number;
 
@@ -626,19 +636,23 @@ declare const UNW_RISCV_F2: number;
 
 declare const kDNSServiceErr_Unknown: number;
 
+declare const UNW_VE_S11: number;
+
 declare const UNW_VE_S56: number;
 
 declare const UTEXT_PROVIDER_LENGTH_IS_EXPENSIVE: number;
 
 declare const UNWIND_X86_DWARF_SECTION_OFFSET: number;
 
-declare const UNW_VE_S6: number;
-
 declare const UNW_MIPS_F14: number;
 
 declare const UNW_LOONGARCH_R12: number;
 
-declare const UNW_PPC64_F14: number;
+declare const UNW_AARCH64_X1: number;
+
+declare const _c_locale: interop.Pointer;
+
+declare const UNW_ARM_D19: number;
 
 declare const UNW_PPC64_VS39: number;
 
@@ -650,6 +664,14 @@ declare const UNW_PPC64_F23: number;
 
 declare const UNW_MIPS_F25: number;
 
+declare const _dispatch_source_type_proc: dispatch_source_type_s;
+
+declare const UNW_S390X_F10: number;
+
+declare const UNW_X86_64_RDI: number;
+
+declare const UNW_ARM_WR15: number;
+
 declare const UNW_ARM_R8: number;
 
 declare const UNW_HEXAGON_R6: number;
@@ -659,8 +681,6 @@ declare const UNW_RISCV_F18: number;
 declare const UNW_PPC64_VRSAVE: number;
 
 declare const UNW_VE_VM14: number;
-
-declare const UNW_VE_S0: number;
 
 declare const UNW_VE_V31: number;
 
@@ -674,11 +694,7 @@ declare const UNW_ARM_S12: number;
 
 declare const UNW_ARM64_D26: number;
 
-declare const UNW_PPC64_R22: number;
-
 declare const UNW_X86_64_XMM9: number;
-
-declare const UNW_HEXAGON_R21: number;
 
 declare const UNW_ARM_WR0: number;
 
@@ -702,15 +718,7 @@ declare const UNW_PPC64_V15: number;
 
 declare const UNW_ARM_WR3: number;
 
-declare const UNW_VE_S19: number;
-
-declare const UNW_PPC64_VS57: number;
-
-declare const bootstrap_port: number;
-
 declare const UNW_X86_EBP: number;
-
-declare const UNW_PPC64_F7: number;
 
 declare const __fpsr_saturation: number;
 
@@ -722,15 +730,15 @@ declare const UNW_PPC_V7: number;
 
 declare const UNW_SPARC_I0: number;
 
-declare const UNW_ARM64_X17: number;
+declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
 
 declare const __fpcr_trap_denormal: number;
+
+declare const UNW_RISCV_F4: number;
 
 declare const kDNSServiceFlagsDefault: number;
 
 declare const UNW_RISCV_X21: number;
-
-declare const UNW_RISCV_X7: number;
 
 declare const UNW_ARM64_X7: number;
 
@@ -750,13 +758,11 @@ declare const UNW_VE_S17: number;
 
 declare const UNW_VE_S35: number;
 
-declare const UNW_PPC64_F17: number;
-
 declare const UNW_PPC64_V10: number;
 
-declare const UNW_SPARC_L1: number;
-
 declare const UNW_S390X_F6: number;
+
+declare const OBJC_WAIT_UNTIL_DONE: number;
 
 declare const UNWIND_ARM64_MODE_FRAME: number;
 
@@ -766,13 +772,7 @@ declare const UNWIND_ARM_FRAME_D_REG_COUNT_MASK: number;
 
 declare const _xpc_type_error: _xpc_type_s;
 
-declare const UNW_S390X_R5: number;
-
-declare const UIDNA_USE_STD3_RULES: number;
-
-declare const UNW_OR1K_R25: number;
-
-declare const UNW_ARM_IP: number;
+declare const UNW_PPC64_VSCR: number;
 
 declare const UNWIND_X86_64_FRAMELESS_STACK_REG_PERMUTATION: number;
 
@@ -786,17 +786,11 @@ declare const UNW_MIPS_R16: number;
 
 declare const UNW_AARCH64_V23: number;
 
-declare const UNW_LOONGARCH_R19: number;
-
 declare const UNW_AARCH64_V9: number;
-
-declare const UTEXT_MAGIC: number;
 
 declare const UNW_PPC64_R3: number;
 
-declare const UNW_ARM_S8: number;
-
-declare const UNW_PPC_F5: number;
+declare const eNoteExitReparentedDeprecated: number;
 
 declare const UNW_OR1K_R4: number;
 
@@ -805,6 +799,8 @@ declare const UIDNA_ERROR_TRAILING_HYPHEN: number;
 declare const UNW_PPC_V8: number;
 
 declare const UNW_LOONGARCH_F10: number;
+
+declare const UNW_VE_VM11: number;
 
 declare const UNW_LOONGARCH_R5: number;
 
@@ -826,8 +822,6 @@ declare const UNW_ARM64_X30: number;
 
 declare const UNWIND_X86_64_REG_NONE: number;
 
-declare const UNW_PPC_R10: number;
-
 declare const kDNSServiceErr_ServiceNotRunning: number;
 
 declare const kDNSServiceType_A6: number;
@@ -846,9 +840,11 @@ declare const UNW_PPC64_V11: number;
 
 declare const UNW_MIPS_R11: number;
 
-declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
-
 declare const UNW_SPARC_O6: number;
+
+declare const U_PARSE_CONTEXT_LEN: number;
+
+declare const UNW_VE_VM7: number;
 
 declare const UNW_VE_S31: number;
 
@@ -866,9 +862,17 @@ declare const UNW_PPC_V25: number;
 
 declare const UNW_PPC64_V24: number;
 
+declare const UNW_VE_V58: number;
+
+declare const UNW_PPC64_V31: number;
+
 declare const UNW_PPC_R22: number;
 
 declare const _xpc_type_string: _xpc_type_s;
+
+declare const UNW_ARM_D15: number;
+
+declare const UNW_ARM_D26: number;
 
 declare const UNW_VE_V14: number;
 
@@ -884,7 +888,7 @@ declare const UNW_VE_S58: number;
 
 declare const UNW_PPC_V15: number;
 
-declare const UNW_MIPS_F30: number;
+declare const UNW_PPC64_V5: number;
 
 declare const UNW_PPC64_R28: number;
 
@@ -892,7 +896,9 @@ declare const UNW_MIPS_F27: number;
 
 declare const UNW_ARM_WR11: number;
 
-declare const UNW_LOONGARCH_R0: number;
+declare const kDNSServiceFlagsPrivateFive: number;
+
+declare const UNW_AARCH64_RA_SIGN_STATE: number;
 
 declare const UNW_PPC64_F29: number;
 
@@ -902,27 +908,11 @@ declare const UNW_PPC64_R27: number;
 
 declare const _dispatch_source_type_data_or: dispatch_source_type_s;
 
+declare const UNW_PPC_CR7: number;
+
 declare const UNW_PPC_F1: number;
 
 declare const UNW_ARM_R10: number;
-
-declare const UNW_AARCH64_RA_SIGN_STATE: number;
-
-declare const UNW_SPARC_I5: number;
-
-declare const UNW_VE_V6: number;
-
-declare const UNW_ARM_WR15: number;
-
-declare const sqlite3_version: interop.Pointer;
-
-declare const UNW_RISCV_F27: number;
-
-declare const UNW_PPC64_VS13: number;
-
-declare const finalStage: number;
-
-declare const UNW_HEXAGON_R4: number;
 
 declare const matrix_identity_double4x4: simd_double4x4;
 
@@ -942,8 +932,6 @@ declare const UNW_ARM_R3: number;
 
 declare const UNW_RISCV_F30: number;
 
-declare const _xpc_type_endpoint: _xpc_type_s;
-
 declare const UNW_ARM_D25: number;
 
 declare const UNW_LOONGARCH_R10: number;
@@ -956,6 +944,8 @@ declare const UNW_PPC64_R2: number;
 
 declare const _xpc_bool_false: _xpc_bool_s;
 
+declare const UNW_RISCV_F27: number;
+
 declare const kDNSServiceFlagsReturnIntermediates: number;
 
 declare const dyld_shared_cache_ranges: dyld_shared_cache_ranges;
@@ -966,13 +956,9 @@ declare const daylight: number;
 
 declare const _xpc_type_dictionary: _xpc_type_s;
 
-declare const UNW_ARM64_D7: number;
-
 declare const UNW_PPC64_VS9: number;
 
 declare const kDNSServiceType_TKEY: number;
-
-declare const suboptarg: string;
 
 declare const __fpcr_flush_to_zero: number;
 
@@ -982,13 +968,17 @@ declare const UNW_PPC64_VS60: number;
 
 declare const UNW_OR1K_R31: number;
 
+declare const UIDNA_ERROR_EMPTY_LABEL: number;
+
+declare const UNW_VE_S53: number;
+
 declare const kDNSServiceType_PTR: number;
 
 declare const UNW_PPC64_VS54: number;
 
-declare const _xpc_error_termination_imminent: _xpc_dictionary_s;
-
 declare const UNW_PPC_R3: number;
+
+declare const UNW_MIPS_R20: number;
 
 declare const UNW_PPC_CR3: number;
 
@@ -1020,11 +1010,11 @@ declare const UNW_ARM_S31: number;
 
 declare const kDNSServiceFlagsThresholdFinder: number;
 
-declare const UNW_S390X_R11: number;
-
 declare const UNW_PPC64_R1: number;
 
 declare const kDNSServiceFlagsNoAutoRename: number;
+
+declare const kDNSServiceErr_Invalid: number;
 
 declare const kDNSServiceAttributeAAAAFallback: DNSServiceAttribute_s;
 
@@ -1034,6 +1024,8 @@ declare const UNW_PPC64_R29: number;
 
 declare const UNW_ECROSSRASIGNING: number;
 
+declare const UNW_ARM_S16: number;
+
 declare const UNW_VE_V3: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E_USERLAND: number;
@@ -1042,7 +1034,11 @@ declare const UNW_ARM64_D18: number;
 
 declare const UNW_X86_64_R11: number;
 
+declare const UNW_MIPS_F0: number;
+
 declare const _dispatch_source_type_read: dispatch_source_type_s;
+
+declare const UNW_ARM_SP: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R10: number;
 
@@ -1068,19 +1064,19 @@ declare const UNW_PPC_R25: number;
 
 declare const OSBigEndian: number;
 
-declare const UNW_PPC_R15: number;
+declare const UNW_PPC64_VS47: number;
 
-declare const UNW_S390X_R9: number;
+declare const UNW_MIPS_F20: number;
 
-declare const _xpc_type_rich_error: _xpc_type_s;
+declare const _dispatch_source_type_mach_send: dispatch_source_type_s;
 
-declare const kDNSServiceType_NSEC: number;
+declare const UNW_PPC64_LR: number;
 
-declare const kDNSServiceErr_Incompatible: number;
-
-declare const UNW_RISCV_X27: number;
+declare const UNW_ARM_D1: number;
 
 declare const UNW_PPC64_TFHAR: number;
+
+declare const UNW_LOONGARCH_R19: number;
 
 declare const UNW_S390X_R2: number;
 
@@ -1104,13 +1100,19 @@ declare const kDNSServiceFlagsQueueRequest: number;
 
 declare const kDNSServiceErr_BadSig: number;
 
+declare const UNW_PPC64_V28: number;
+
 declare const signgam: number;
 
 declare const UNW_PPC_R29: number;
 
+declare const UNW_SPARC_I7: number;
+
 declare const UNW_LOONGARCH_F27: number;
 
 declare const _dispatch_source_type_signal: dispatch_source_type_s;
+
+declare const UNW_PPC64_VS13: number;
 
 declare const kDNSServiceFlagsSuppressUnusable: number;
 
@@ -1156,6 +1158,8 @@ declare const UNW_ARM_WR9: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R12: number;
 
+declare const mach_task_self_: number;
+
 declare const UNWIND_X86_REG_ECX: number;
 
 declare const italic: number;
@@ -1168,12 +1172,6 @@ declare const _NSConcreteStackBlock: unknown /* const array */;
 
 declare const UNW_HEXAGON_R8: number;
 
-declare const _dispatch_source_type_data_add: dispatch_source_type_s;
-
-declare const XPC_ACTIVITY_STATE_CHECK_IN: number;
-
-declare const UNW_AARCH64_X12: number;
-
 declare const DYLD_CHAINED_PTR_64: number;
 
 declare const UNW_MIPS_F3: number;
@@ -1183,8 +1181,6 @@ declare const UNW_PPC64_VS38: number;
 declare const UIDNA_CHECK_CONTEXTJ: number;
 
 declare const UNW_ARM_S6: number;
-
-declare const UNW_MIPS_R20: number;
 
 declare const kDNSServiceType_DS: number;
 
@@ -1204,11 +1200,13 @@ declare const UNW_ENOINFO: number;
 
 declare const kDNSServiceFlagsBackgroundTrafficClass: number;
 
+declare const UNW_MIPS_LO: number;
+
 declare const UNW_ARM64_D10: number;
 
 declare const UNW_HEXAGON_R11: number;
 
-declare const UNW_PPC64_VS25: number;
+declare const UNW_S390X_R9: number;
 
 declare const condense: number;
 
@@ -1236,8 +1234,6 @@ declare const UNW_SPARC_I1: number;
 
 declare const UNW_ARM64_X16: number;
 
-declare const UNW_ARM_D1: number;
-
 declare const _xpc_type_uint64: _xpc_type_s;
 
 declare const UNW_X86_64_RBP: number;
@@ -1248,15 +1244,21 @@ declare const UNW_SPARC_G1: number;
 
 declare const UNW_PPC_R12: number;
 
-declare const UNW_AARCH64_V27: number;
-
 declare const kDNSServiceType_NS: number;
+
+declare const _xpc_type_rich_error: _xpc_type_s;
+
+declare const kDNSServiceType_NSEC: number;
+
+declare const UNW_MIPS_F30: number;
 
 declare const UNW_S390X_F1: number;
 
 declare const UNW_PPC_R5: number;
 
 declare const UIDNA_ERROR_LABEL_TOO_LONG: number;
+
+declare const UNW_PPC_F13: number;
 
 declare const UNW_LOONGARCH_R7: number;
 
@@ -1268,6 +1270,8 @@ declare const kDNSServiceType_A: number;
 
 declare const UNW_ARM64_D14: number;
 
+declare const UNW_ARM_WC3: number;
+
 declare const UNW_VE_S7: number;
 
 declare const UNW_PPC_F7: number;
@@ -1275,8 +1279,6 @@ declare const UNW_PPC_F7: number;
 declare const matrix_identity_half4x4: simd_half4x4;
 
 declare const UNW_PPC64_V2: number;
-
-declare const UNW_AARCH64_V12: number;
 
 declare const UNW_ARM_D29: number;
 
@@ -1288,8 +1290,6 @@ declare const UNW_ARM_D30: number;
 
 declare const kDNSServiceType_ANY: number;
 
-declare const UNW_ARM_S28: number;
-
 declare const UNW_LOONGARCH_R27: number;
 
 declare const kDNSServiceErr_BadFlags: number;
@@ -1299,8 +1299,6 @@ declare const vm_kernel_page_mask: number;
 declare const UNW_MIPS_F4: number;
 
 declare const UNW_PPC64_VS26: number;
-
-declare const UNW_PPC64_R18: number;
 
 declare const UNW_MIPS_F2: number;
 
@@ -1324,29 +1322,21 @@ declare const UNW_VE_V62: number;
 
 declare const UNW_VE_V48: number;
 
+declare const UNW_RISCV_X7: number;
+
 declare const _xpc_type_double: _xpc_type_s;
 
 declare const DYLD_CHAINED_PTR_64_KERNEL_CACHE: number;
-
-declare const UNW_AARCH64_X15: number;
-
-declare const UNW_PPC64_R26: number;
 
 declare const kDNSServiceType_NSAP: number;
 
 declare const UNWIND_ARM64_FRAME_X19_X20_PAIR: number;
 
-declare const UNW_PPC64_LR: number;
+declare const UNW_PPC64_R7: number;
 
 declare const UNW_PPC64_R6: number;
 
 declare const UNW_ARM_D6: number;
-
-declare const KERNEL_AUDIT_TOKEN: audit_token_t;
-
-declare const __stdinp: interop.Pointer;
-
-declare const UNW_X86_64_XMM1: number;
 
 declare const UNW_X86_EAX: number;
 
@@ -1357,6 +1347,8 @@ declare const UNW_ARM64_X29: number;
 declare const UTEXT_PROVIDER_OWNS_TEXT: number;
 
 declare const UNWIND_X86_64_REG_R13: number;
+
+declare const sqlite3_version: interop.Pointer;
 
 declare const kDNSServiceErr_NATPortMappingDisabled: number;
 
@@ -1374,21 +1366,27 @@ declare const UNW_VE_VM3: number;
 
 declare const UIDNA_ERROR_BIDI: number;
 
+declare const UNWIND_X86_64_REG_R12: number;
+
+declare const UNW_PPC64_VS14: number;
+
+declare const UIDNA_ERROR_CONTEXTO_PUNCTUATION: number;
+
+declare const UNW_PPC_CR4: number;
+
 declare const UNW_AARCH64_X13: number;
 
 declare const UNW_ARM_D28: number;
 
 declare const UNW_PPC_R1: number;
 
-declare const UIDNA_DEFAULT: number;
-
-declare const UNWIND_X86_64_REG_R15: number;
-
 declare const kDNSServiceType_OPT: number;
 
 declare const UNW_LOONGARCH_R9: number;
 
 declare const kNilOptions: number;
+
+declare const DYLD_CHAINED_PTR_64_OFFSET: number;
 
 declare const _xpc_type_data: _xpc_type_s;
 
@@ -1404,21 +1402,27 @@ declare const UNW_AARCH64_X5: number;
 
 declare const UNW_VE_V47: number;
 
+declare const UNW_VE_S43: number;
+
 declare const UNW_PPC_F15: number;
 
 declare const UNW_ARM64_X0: number;
 
 declare const UNW_ARM64_D8: number;
 
-declare const UNW_ARM64_D20: number;
-
 declare const kDNSServiceType_DNSKEY: number;
 
 declare const UNW_PPC_CTR: number;
 
+declare const UNW_X86_64_RIP: number;
+
 declare const UNW_PPC_R7: number;
 
 declare const UNW_ARM64_D28: number;
+
+declare const UNW_OR1K_R11: number;
+
+declare const UNW_MIPS_R15: number;
 
 declare const UNW_ARM_WC2: number;
 
@@ -1432,13 +1436,9 @@ declare const UNW_PPC_F16: number;
 
 declare const UNW_PPC_V21: number;
 
-declare const UNW_VE_V53: number;
-
 declare const UNW_S390X_F8: number;
 
 declare const UNW_AARCH64_V5: number;
-
-declare const UNWIND_ARM_FRAME_FIRST_PUSH_R6: number;
 
 declare const _os_activity_current: os_activity_s;
 
@@ -1446,23 +1446,19 @@ declare const UNW_AARCH64_X27: number;
 
 declare const UNW_VE_S46: number;
 
-declare const UNW_X86_64_RDX: number;
-
 declare const UNWIND_X86_64_REG_RBX: number;
 
 declare const UNW_PPC64_CR2: number;
-
-declare const UNW_PPC64_R31: number;
 
 declare const UNW_ARM_LR: number;
 
 declare const UNW_SPARC_O2: number;
 
-declare const UNW_MIPS_F28: number;
-
 declare const UNW_VE_S25: number;
 
 declare const UNW_ARM64_X12: number;
+
+declare const UNW_ARM64_X17: number;
 
 declare const UNW_PPC64_VS2: number;
 
@@ -1482,15 +1478,13 @@ declare const UNW_PPC_V28: number;
 
 declare const kDNSServiceType_X25: number;
 
+declare const UNW_ARM_S21: number;
+
 declare const UNW_ARM64_FP: number;
 
 declare const UNW_ARM_S22: number;
 
 declare const kDNSServiceFlagsMoreComing: number;
-
-declare const kDNSServiceType_UNSPEC: number;
-
-declare const UNW_ARM64_D5: number;
 
 declare const UNW_PPC64_R0: number;
 
@@ -1512,8 +1506,6 @@ declare const UNW_ARM_D16: number;
 
 declare const UNW_LOONGARCH_F21: number;
 
-declare const kDNSServiceType_MX: number;
-
 declare const UNW_PPC64_V0: number;
 
 declare const DYLD_CHAINED_PTR_START_NONE: number;
@@ -1521,8 +1513,6 @@ declare const DYLD_CHAINED_PTR_START_NONE: number;
 declare const kDNSServiceType_ISDN: number;
 
 declare const UNW_ARM_S30: number;
-
-declare const _dispatch_source_type_mach_send: dispatch_source_type_s;
 
 declare const kDNSServiceType_APL: number;
 
@@ -1544,13 +1534,13 @@ declare const UNW_LOONGARCH_F9: number;
 
 declare const UNW_VE_S18: number;
 
+declare const UNW_X86_64_XMM0: number;
+
 declare const UNW_ARM64_X14: number;
 
 declare const UNW_RISCV_X9: number;
 
 declare const UNW_RISCV_X2: number;
-
-declare const UNW_RISCV_F11: number;
 
 declare const UNW_PPC64_VS51: number;
 
@@ -1560,7 +1550,7 @@ declare const OBJC_EXHAUSTIVE_COLLECTION: number;
 
 declare const UNW_AARCH64_V1: number;
 
-declare const UNW_VE_VM11: number;
+declare const UNW_AARCH64_V12: number;
 
 declare const UNW_VE_S27: number;
 
@@ -1576,13 +1566,13 @@ declare const UNW_LOONGARCH_R22: number;
 
 declare const UNW_VE_S44: number;
 
-declare const U_PARSE_CONTEXT_LEN: number;
-
-declare const UNW_VE_VM7: number;
+declare const UNW_VE_S19: number;
 
 declare const UNW_X86_64_XMM4: number;
 
 declare const UNW_ARM64_LR: number;
+
+declare const kDNSServiceFlagsLongLivedQuery: number;
 
 declare const UNW_PPC64_F27: number;
 
@@ -1598,6 +1588,8 @@ declare const UNW_RISCV_X5: number;
 
 declare const UNW_LOONGARCH_F30: number;
 
+declare const UNW_PPC_R15: number;
+
 declare const UNW_OR1K_R5: number;
 
 declare const UNW_VE_S16: number;
@@ -1609,8 +1601,6 @@ declare const UNW_VE_V44: number;
 declare const kDNSServiceType_MAILB: number;
 
 declare const UNW_LOONGARCH_R25: number;
-
-declare const UNW_MIPS_F20: number;
 
 declare const UNW_ARM64_X18: number;
 
@@ -1628,17 +1618,11 @@ declare const UNWIND_X86_MODE_MASK: number;
 
 declare const UNW_OR1K_R3: number;
 
-declare const UNW_PPC_V9: number;
-
 declare const UNW_MIPS_R8: number;
 
-declare const UNW_PPC64_VS14: number;
-
-declare const UIDNA_ERROR_CONTEXTO_PUNCTUATION: number;
-
-declare const HV_MEMORY_EXEC: number;
-
 declare const _mh_execute_header: mach_header_64;
+
+declare const UNWIND_ARM64_MODE_DWARF: number;
 
 declare const timezone: number;
 
@@ -1658,21 +1642,27 @@ declare const kDNSServiceType_RP: number;
 
 declare const XPC_ACTIVITY_STATE_CONTINUE: number;
 
+declare const UNW_RISCV_X15: number;
+
 declare const sys_nerr: number;
 
 declare const UNW_PPC64_VS56: number;
-
-declare const UNW_PPC64_V1: number;
 
 declare const UNW_PPC64_TEXASR: number;
 
 declare const UNW_PPC_AP: number;
 
+declare const kDNSServiceType_TSIG: number;
+
 declare const UNW_ESTOPUNWIND: number;
+
+declare const UNW_RISCV_X27: number;
 
 declare const UNW_PPC_F9: number;
 
 declare const UNW_VE_S62: number;
+
+declare const HV_EXISTS: number;
 
 declare const kDNSServiceType_MR: number;
 
@@ -1698,9 +1688,9 @@ declare const kDNSServiceType_SSHFP: number;
 
 declare const UNW_AARCH64_X31: number;
 
-declare const UNW_VE_VM6: number;
-
 declare const UNW_VE_V29: number;
+
+declare const UNW_PPC64_VS57: number;
 
 declare const UNWIND_X86_64_DWARF_SECTION_OFFSET: number;
 
@@ -1718,9 +1708,13 @@ declare const UNW_AARCH64_V7: number;
 
 declare const kDNSServiceType_IPSECKEY: number;
 
-declare const UNW_REG_IP: number;
+declare const UNW_PPC_R18: number;
 
-declare const UIDNA_ERROR_EMPTY_LABEL: number;
+declare const _os_log_disabled: os_log_s;
+
+declare const _US_UNWIND_FRAME_RESUME: number;
+
+declare const UNW_SPARC_O1: number;
 
 declare const UNW_ARM_D21: number;
 
@@ -1736,6 +1730,10 @@ declare const UNW_PPC_R31: number;
 
 declare const UNW_MIPS_F7: number;
 
+declare const UNW_S390X_R11: number;
+
+declare const UNW_MIPS_R2: number;
+
 declare const UNW_OR1K_R29: number;
 
 declare const UNW_HEXAGON_P3_0: number;
@@ -1745,6 +1743,8 @@ declare const UNW_PPC64_F5: number;
 declare const kDNSServiceProtocol_IPv6: number;
 
 declare const _dispatch_source_type_vnode: dispatch_source_type_s;
+
+declare const UNW_VE_S29: number;
 
 declare const UNW_VE_V32: number;
 
@@ -1764,15 +1764,23 @@ declare const UNW_PPC64_CR7: number;
 
 declare const kDNSServiceFlagsTimeout: number;
 
+declare const UNW_RISCV_X4: number;
+
+declare const UNW_PPC_V4: number;
+
+declare const UNW_ARM_D11: number;
+
+declare const __fpcr_trap_inexact: number;
+
+declare const UNW_ARM_D20: number;
+
+declare const __fpcr_trap_overflow: number;
+
 declare const _xpc_type_shmem: _xpc_type_s;
 
 declare const UNW_HEXAGON_R15: number;
 
 declare const _US_VIRTUAL_UNWIND_FRAME: number;
-
-declare const _US_UNWIND_FRAME_RESUME: number;
-
-declare const UNW_SPARC_O1: number;
 
 declare const UNW_PPC64_F24: number;
 
@@ -1781,8 +1789,6 @@ declare const UNW_MIPS_R22: number;
 declare const UNW_LOONGARCH_F20: number;
 
 declare const UNW_VE_S50: number;
-
-declare const UNW_AARCH64_X1: number;
 
 declare const UNW_LOONGARCH_F13: number;
 
@@ -1794,17 +1800,23 @@ declare const kDNSServiceFlagsValidateOptional: number;
 
 declare const UNW_LOONGARCH_F1: number;
 
+declare const UNW_LOONGARCH_F0: number;
+
 declare const UNW_LOONGARCH_R31: number;
 
 declare const UNW_LOONGARCH_R29: number;
 
 declare const UNW_PPC64_V16: number;
 
+declare const __stdinp: interop.Pointer;
+
 declare const UNW_ARM_D31: number;
 
 declare const UNW_PPC_R23: number;
 
 declare const UNW_LOONGARCH_R26: number;
+
+declare const UNW_PPC64_V1: number;
 
 declare const UNW_PPC_F11: number;
 
@@ -1815,8 +1827,6 @@ declare const OBJC_COLLECT_IF_NEEDED: number;
 declare const UNW_LOONGARCH_F17: number;
 
 declare const UNW_X86_ESI: number;
-
-declare const UNW_RISCV_X4: number;
 
 declare const UNW_LOONGARCH_R14: number;
 
@@ -1850,13 +1860,19 @@ declare const UNW_MIPS_F24: number;
 
 declare const UNW_S390X_R8: number;
 
-declare const UNW_PPC64_VS47: number;
+declare const UNW_SPARC_I6: number;
+
+declare const UNW_S390X_R6: number;
+
+declare const UNW_PPC_V1: number;
 
 declare const kDNSServiceErr_NoError: number;
 
 declare const UNW_HEXAGON_R0: number;
 
 declare const UNW_S390X_R4: number;
+
+declare const UNW_RISCV_X12: number;
 
 declare const UNW_VE_V60: number;
 
@@ -1870,6 +1886,8 @@ declare const UNW_S390X_R0: number;
 
 declare const UNW_VE_S54: number;
 
+declare const UNW_VE_VIXR: number;
+
 declare const UUID_NULL: unknown /* const array */;
 
 declare const UIDNA_CHECK_CONTEXTO: number;
@@ -1878,23 +1896,11 @@ declare const UNW_PPC_R8: number;
 
 declare const UNW_X86_64_XMM10: number;
 
-declare const UNW_VE_VM1: number;
-
 declare const UNW_VE_V61: number;
 
 declare const UNW_ARM_S17: number;
 
-declare const kDNSServiceFlagsEnableDNSSEC: number;
-
-declare const UNW_HEXAGON_R31: number;
-
-declare const UNW_ARM64_D31: number;
-
-declare const UNW_VE_V52: number;
-
 declare const UNW_VE_V45: number;
-
-declare const UNW_RISCV_F21: number;
 
 declare const UNWIND_X86_64_FRAMELESS_STACK_REG_COUNT: number;
 
@@ -1902,13 +1908,15 @@ declare const UNW_VE_VM8: number;
 
 declare const UNW_VE_V42: number;
 
-declare const UNW_S390X_F10: number;
-
 declare const kDNSServiceType_AAAA: number;
 
 declare const port_obj_table: interop.Pointer;
 
 declare const vm_page_shift: number;
+
+declare const kDNSServiceFlagsThresholdOne: number;
+
+declare const UNW_RISCV_F21: number;
 
 declare const UNW_VE_V24: number;
 
@@ -1942,15 +1950,13 @@ declare const UNW_VE_V7: number;
 
 declare const UNW_PPC64_F0: number;
 
+declare const UNW_VE_V6: number;
+
 declare const UNW_VE_V5: number;
 
 declare const UNWIND_X86_64_RBP_FRAME_REGISTERS: number;
 
 declare const UNW_VE_S59: number;
-
-declare const UNW_LOONGARCH_F14: number;
-
-declare const UNW_VE_S53: number;
 
 declare const UNW_VE_S51: number;
 
@@ -1980,11 +1986,11 @@ declare const UNW_VE_S24: number;
 
 declare const UNW_EBADVERSION: number;
 
-declare const UNW_VE_S23: number;
-
 declare const UNW_AARCH64_V17: number;
 
 declare const UNW_X86_64_XMM14: number;
+
+declare const UNW_SPARC_O4: number;
 
 declare const UNW_VE_S9: number;
 
@@ -1998,21 +2004,15 @@ declare const UNW_VE_V55: number;
 
 declare const UNW_RISCV_X0: number;
 
-declare const UNW_RISCV_F24: number;
-
 declare const UNW_RISCV_F19: number;
 
 declare const UNW_ARM64_X6: number;
-
-declare const vm_page_size: number;
 
 declare const UNW_HEXAGON_R26: number;
 
 declare const UNW_S390X_R3: number;
 
 declare const UNW_RISCV_F13: number;
-
-declare const UNW_RISCV_F12: number;
 
 declare const UNW_RISCV_F8: number;
 
@@ -2021,6 +2021,10 @@ declare const UNW_PPC64_F6: number;
 declare const UNW_RISCV_F3: number;
 
 declare const UNW_RISCV_X28: number;
+
+declare const UNW_PPC_LR: number;
+
+declare const UNW_PPC_F4: number;
 
 declare const UNW_RISCV_X18: number;
 
@@ -2033,8 +2037,6 @@ declare const UNW_HEXAGON_R29: number;
 declare const UNW_PPC_R13: number;
 
 declare const UNW_RISCV_X13: number;
-
-declare const UNW_RISCV_X12: number;
 
 declare const UNW_HEXAGON_R13: number;
 
@@ -2049,6 +2051,8 @@ declare const UNW_RISCV_X11: number;
 declare const UNW_RISCV_X10: number;
 
 declare const UNW_PPC_V20: number;
+
+declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
 
 declare const UNW_RISCV_X6: number;
 
@@ -2070,6 +2074,8 @@ declare const UNW_ARM_S18: number;
 
 declare const UNW_HEXAGON_R5: number;
 
+declare const UNW_HEXAGON_R4: number;
+
 declare const UNW_ARM_S15: number;
 
 declare const kDNSServiceErr_PolicyDenied: number;
@@ -2090,19 +2096,23 @@ declare const UNW_PPC64_VS17: number;
 
 declare const UNW_SPARC_O5: number;
 
+declare const UNW_RISCV_F11: number;
+
 declare const UNW_SPARC_G7: number;
 
 declare const UNW_SPARC_G6: number;
 
-declare const UNW_SPARC_G5: number;
-
 declare const UNW_VE_V51: number;
+
+declare const DYLD_CHAINED_IMPORT_ADDEND: number;
 
 declare const UNW_RISCV_F31: number;
 
-declare const sys_signame: unknown /* const array */;
+declare const kDNSServiceType_UNSPEC: number;
 
-declare const UNW_MIPS_F17: number;
+declare const UNW_ARM64_D5: number;
+
+declare const sys_signame: unknown /* const array */;
 
 declare const UNW_RISCV_F15: number;
 
@@ -2120,7 +2130,13 @@ declare const UNW_PPC64_VS34: number;
 
 declare const UNW_RISCV_F28: number;
 
+declare const UNW_MIPS_F10: number;
+
 declare const DYLD_CHAINED_PTR_ARM64E_USERLAND24: number;
+
+declare const UNW_VE_V59: number;
+
+declare const UNW_PPC_V17: number;
 
 declare const kDNSServiceErr_NameConflict: number;
 
@@ -2140,8 +2156,6 @@ declare const UNW_MIPS_R24: number;
 
 declare const UNW_MIPS_R23: number;
 
-declare const kDNSServiceFlagsLongLivedQuery: number;
-
 declare const UNW_PPC64_VS16: number;
 
 declare const UNW_OR1K_R23: number;
@@ -2154,9 +2168,7 @@ declare const UNW_LOONGARCH_F28: number;
 
 declare const UNW_MIPS_R5: number;
 
-declare const UNW_MIPS_R3: number;
-
-declare const UNW_MIPS_R2: number;
+declare const kDNSServiceErr_Incompatible: number;
 
 declare const _dispatch_source_type_data_replace: dispatch_source_type_s;
 
@@ -2182,8 +2194,6 @@ declare const UNW_ARM64_D27: number;
 
 declare const UNW_OR1K_R8: number;
 
-declare const UNW_ARM_R6: number;
-
 declare const UNW_PPC_F27: number;
 
 declare const UNW_OR1K_R7: number;
@@ -2196,15 +2206,9 @@ declare const _xpc_event_key_name: string;
 
 declare const UNW_VE_V37: number;
 
-declare const UNW_ARM_D20: number;
-
 declare const kDNSServiceType_SVCB: number;
 
 declare const UNW_ARM_D17: number;
-
-declare const UNW_ARM_D15: number;
-
-declare const UNW_VE_S42: number;
 
 declare const UNW_VE_V56: number;
 
@@ -2222,8 +2226,6 @@ declare const UNW_ARM_D8: number;
 
 declare const UNW_ARM_D7: number;
 
-declare const UNW_RISCV_X3: number;
-
 declare const UNW_PPC_F29: number;
 
 declare const UNW_ARM_D2: number;
@@ -2236,19 +2238,17 @@ declare const UNW_ARM_RA_AUTH_CODE: number;
 
 declare const UNW_ARM_S11: number;
 
+declare const UNW_ARM64_X3: number;
+
 declare const UNW_ARM_WR10: number;
 
 declare const UNW_ARM_WC0: number;
 
 declare const UNW_ARM_WR4: number;
 
-declare const _dispatch_source_type_write: dispatch_source_type_s;
-
 declare const UNW_VE_V43: number;
 
 declare const UNW_ARM_S3: number;
-
-declare const __fpcr_trap_overflow: number;
 
 declare const kDNSServiceType_KX: number;
 
@@ -2278,13 +2278,15 @@ declare const UNW_AARCH64_X6: number;
 
 declare const UNW_ARM_S13: number;
 
+declare const UNW_ARM_S8: number;
+
 declare const _FE_DFL_DISABLE_DENORMS_ENV: fenv_t;
 
 declare const UNW_ARM_S7: number;
 
 declare const UNW_HEXAGON_R22: number;
 
-declare const mach_task_self_: number;
+declare const UNW_PPC_F5: number;
 
 declare const UNW_ARM_S1: number;
 
@@ -2324,8 +2326,6 @@ declare const UNW_ARM_R2: number;
 
 declare const UNW_ARM_R1: number;
 
-declare const UNW_PPC64_R17: number;
-
 declare const kDNSServiceType_MG: number;
 
 declare const _mh_dylinker_header: mach_header_64;
@@ -2333,6 +2333,8 @@ declare const _mh_dylinker_header: mach_header_64;
 declare const UNW_X86_64_R15: number;
 
 declare const UNW_ARM64_D24: number;
+
+declare const UNW_ARM64_D20: number;
 
 declare const UNW_ARM64_D17: number;
 
@@ -2352,25 +2354,15 @@ declare const UNW_VE_V26: number;
 
 declare const UNW_ARM64_X27: number;
 
-declare const UNW_PPC_V4: number;
-
-declare const UNW_ARM_D11: number;
-
-declare const UNW_ARM64_X26: number;
-
 declare const UNWIND_X86_REG_EDX: number;
 
 declare const UNW_PPC64_VS45: number;
 
 declare const UNW_ARM64_X15: number;
 
-declare const OBJC_CLEAR_RESIDENT_STACK: number;
-
 declare const UNW_ARM64_X9: number;
 
 declare const UNW_VE_S36: number;
-
-declare const UNW_ARM64_X3: number;
 
 declare const UNW_PPC64_VS23: number;
 
@@ -2389,6 +2381,8 @@ declare const _DefaultRuneLocale: _RuneLocale;
 declare const UNW_AARCH64_V30: number;
 
 declare const UNW_PPC64_CR1: number;
+
+declare const UNW_AARCH64_V27: number;
 
 declare const UNW_PPC64_TFIAR: number;
 
@@ -2430,7 +2424,7 @@ declare const UNW_X86_64_XMM13: number;
 
 declare const UNW_AARCH64_V6: number;
 
-declare const UNWIND_X86_64_REG_R12: number;
+declare const _dispatch_source_type_write: dispatch_source_type_s;
 
 declare const UNW_RISCV_F20: number;
 
@@ -2466,21 +2460,19 @@ declare const UNW_AARCH64_X22: number;
 
 declare const UNW_AARCH64_X18: number;
 
-declare const UNW_AARCH64_X10: number;
-
-declare const __dso_handle: mach_header;
-
-declare const UNW_AARCH64_X9: number;
-
 declare const _xpc_error_connection_invalid: _xpc_dictionary_s;
 
 declare const UNW_PPC_VRSAVE: number;
+
+declare const UNW_LOONGARCH_F14: number;
 
 declare const UNW_PPC64_V30: number;
 
 declare const UNW_PPC_F0: number;
 
 declare const kDNSServiceType_SOA: number;
+
+declare const UNW_ARM_IP: number;
 
 declare const UNW_X86_64_XMM15: number;
 
@@ -2497,6 +2489,8 @@ declare const UNWIND_ARM64_FRAME_X27_X28_PAIR: number;
 declare const UNW_LOONGARCH_R8: number;
 
 declare const kDNSServiceErr_NoSuchKey: number;
+
+declare const UNW_PPC64_V3: number;
 
 declare const UNW_AARCH64_X0: number;
 
@@ -2520,9 +2514,9 @@ declare const UNW_RISCV_X30: number;
 
 declare const UNW_PPC64_F25: number;
 
-declare const UNW_PPC64_V23: number;
+declare const sqlite3_temp_directory: string;
 
-declare const UNW_X86_64_RIP: number;
+declare const UNW_PPC64_V23: number;
 
 declare const UIDNA_ERROR_LABEL_HAS_DOT: number;
 
@@ -2534,8 +2528,6 @@ declare const UNWIND_X86_MODE_STACK_IMMD: number;
 
 declare const UNW_ARM64_X19: number;
 
-declare const UNW_PPC_CR6: number;
-
 declare const kDNSServiceFlagsWakeOnlyService: number;
 
 declare const kDNSServiceErr_BadState: number;
@@ -2544,17 +2536,23 @@ declare const kDNSServiceType_MD: number;
 
 declare const UIDNA_ERROR_LEADING_COMBINING_MARK: number;
 
+declare const UNW_ARM_WR5: number;
+
+declare const UNW_VE_S55: number;
+
 declare const DYLD_CHAINED_IMPORT_ADDEND64: number;
 
+declare const UNW_VE_VM6: number;
+
 declare const kDNSServiceErr_NoAuth: number;
+
+declare const UNW_AARCH64_X15: number;
 
 declare const UNW_PPC64_CTR: number;
 
 declare const UNW_PPC64_F10: number;
 
 declare const UNW_PPC_R21: number;
-
-declare const UNW_PPC_F6: number;
 
 declare const UNW_VE_S28: number;
 
@@ -2571,6 +2569,8 @@ declare const _mh_dylib_header: mach_header_64;
 declare const port_obj_table_size: number;
 
 declare const _dispatch_source_type_timer: dispatch_source_type_s;
+
+declare const UNW_PPC64_R22: number;
 
 declare const UNWIND_X86_64_MODE_RBP_FRAME: number;
 
@@ -2598,6 +2598,10 @@ declare const UNW_VE_V15: number;
 
 declare const getdate_err: number;
 
+declare const UNWIND_X86_64_FRAMELESS_STACK_ADJUST: number;
+
+declare const UNW_PPC64_R31: number;
+
 declare const __stdoutp: interop.Pointer;
 
 declare const UNW_PPC64_VS58: number;
@@ -2606,11 +2610,11 @@ declare const UNW_PPC64_R23: number;
 
 declare const UNW_X86_64_R13: number;
 
-declare const UIDNA_ERROR_DOMAIN_NAME_TOO_LONG: number;
-
 declare const UNW_PPC64_VS20: number;
 
 declare const UNW_PPC64_R19: number;
+
+declare const UNW_PPC64_R18: number;
 
 declare const UNW_X86_EDX: number;
 
@@ -2624,8 +2628,6 @@ declare const UNW_X86_64_XMM2: number;
 
 declare const UNW_RISCV_X16: number;
 
-declare const eNoteExitReparentedDeprecated: number;
-
 declare const UNW_PPC_V30: number;
 
 declare const kDNSServiceErr_NoSuchName: number;
@@ -2634,43 +2636,35 @@ declare const UNW_PPC_V23: number;
 
 declare const UNW_VE_V1: number;
 
-declare const UNW_VE_S33: number;
-
 declare const UNW_LOONGARCH_R2: number;
-
-declare const UNW_RISCV_F17: number;
-
-declare const UNW_PPC_V18: number;
 
 declare const UNW_SPARC_O3: number;
 
 declare const UNW_ARM64_PC: number;
 
-declare const sqlite3_temp_directory: string;
+declare const UNW_PPC_R14: number;
 
 declare const UNW_X86_64_XMM11: number;
+
+declare const UNW_PPC64_VS25: number;
 
 declare const UNW_PPC64_VS59: number;
 
 declare const UNW_PPC_V10: number;
 
+declare const UNW_PPC_V9: number;
+
 declare const UNW_PPC64_R25: number;
 
 declare const UNW_PPC_V6: number;
 
-declare const kDNSServiceType_ATMA: number;
-
 declare const __fpcr_trap_divbyzero: number;
+
+declare const kDNSServiceType_ATMA: number;
 
 declare const UNW_HEXAGON_R16: number;
 
-declare const UNW_X86_64_XMM0: number;
-
 declare const UNW_AARCH64_X19: number;
-
-declare const UNW_PPC_CR4: number;
-
-declare const UNW_PPC_R18: number;
 
 declare const sys_siglist: unknown /* const array */;
 
@@ -2688,6 +2682,8 @@ declare const UNW_PPC_MQ: number;
 
 declare const UNW_PPC_F26: number;
 
+declare const UNW_AARCH64_X12: number;
+
 declare const UNW_PPC_F22: number;
 
 declare const UNW_VE_S1: number;
@@ -2699,6 +2695,8 @@ declare const UNW_PPC_F10: number;
 declare const XPC_ACTIVITY_REQUIRE_HDD_SPINNING: string;
 
 declare const UNW_PPC_F18: number;
+
+declare const UNW_PPC_F6: number;
 
 declare const OSUnknownByteOrder: number;
 
@@ -2718,8 +2716,6 @@ declare const UNW_SPARC_L0: number;
 
 declare const _xpc_type_connection: _xpc_type_s;
 
-declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
-
 declare const UNW_SPARC_O0: number;
 
 declare const noErr: number;
@@ -2733,6 +2729,8 @@ declare const UNWIND_X86_REG_EDI: number;
 declare const UNW_PPC64_R8: number;
 
 declare const UNW_PPC_SPE_ACC: number;
+
+declare const HV_MEMORY_WRITE: number;
 
 declare const UNWIND_X86_REG_ESI: number;
 
@@ -2748,6 +2746,8 @@ declare const betaStage: number;
 
 declare const UNW_X86_64_XMM8: number;
 
+declare const UNW_VE_S33: number;
+
 declare const UNW_X86_64_XMM5: number;
 
 declare const _dispatch_data_empty: dispatch_data_s;
@@ -2756,17 +2756,17 @@ declare const UNW_X86_64_R8: number;
 
 declare const UNW_X86_64_RSP: number;
 
-declare const UNW_SPARC_G3: number;
-
-declare const UNW_X86_64_RCX: number;
+declare const UNW_OR1K_R22: number;
 
 declare const UNW_PPC_R11: number;
 
 declare const UNW_X86_ESP: number;
 
+declare const UNW_REG_IP: number;
+
 declare const DYLD_CHAINED_PTR_ARM64E_SHARED_CACHE: number;
 
-declare const UNW_ARM_S21: number;
+declare const suboptarg: string;
 
 declare const UNW_EBADFRAME: number;
 
@@ -2780,11 +2780,15 @@ declare const vm_kernel_page_shift: number;
 
 declare const UNW_PPC_XER: number;
 
+declare const UNW_EUNSPEC: number;
+
 declare const UNW_RISCV_F16: number;
 
 declare const UNW_ARM64_X10: number;
 
-declare const HV_MEMORY_WRITE: number;
+declare const UNW_RISCV_F17: number;
+
+declare const UNW_PPC_V18: number;
 
 declare const UNWIND_ARM64_DWARF_SECTION_OFFSET: number;
 
@@ -2792,19 +2796,15 @@ declare const HV_ILLEGAL_GUEST_STATE: number;
 
 declare const UNW_PPC64_V25: number;
 
-declare const UNWIND_X86_64_FRAMELESS_STACK_ADJUST: number;
-
-declare const __fpcr_trap_inexact: number;
-
 declare const OBJC_FULL_COLLECTION: number;
 
 declare const _os_activity_none: os_activity_s;
 
 declare const kDNSServiceType_RRSIG: number;
 
-declare const UNW_PPC64_F9: number;
+declare const UNW_AARCH64_X9: number;
 
-declare const kDNSServiceType_SRV: number;
+declare const __dso_handle: mach_header;
 
 declare const UIDNA_NONTRANSITIONAL_TO_UNICODE: number;
 
@@ -2814,15 +2814,15 @@ declare const kDNSServiceFlagAnsweredFromCache: number;
 
 declare const UNW_PPC64_V8: number;
 
-declare const UNW_PPC64_V6: number;
-
 declare const UIDNA_ERROR_HYPHEN_3_4: number;
+
+declare const UNW_PPC64_F9: number;
+
+declare const kDNSServiceType_SRV: number;
 
 declare const UNW_PPC64_F21: number;
 
 declare const UNW_HEXAGON_R2: number;
-
-declare const UNW_VE_S43: number;
 
 declare const shadow: number;
 
@@ -2832,13 +2832,9 @@ declare const UNWIND_ARM_MODE_FRAME: number;
 
 declare const UNW_X86_64_RSI: number;
 
-declare const UNW_RISCV_X20: number;
-
 declare const UNW_PPC_V13: number;
 
 declare const UNWIND_ARM64_FRAMELESS_STACK_SIZE_MASK: number;
-
-declare const _os_log_disabled: os_log_s;
 
 declare const UNWIND_ARM64_FRAME_X23_X24_PAIR: number;
 
@@ -2849,8 +2845,6 @@ declare const UNWIND_X86_64_REG_RBP: number;
 declare const UNW_PPC64_F1: number;
 
 declare const NDR_record: NDR_record_t;
-
-declare const UNW_PPC64_V3: number;
 
 declare const UNW_PPC64_VS33: number;
 
@@ -2865,8 +2859,6 @@ declare const UNWIND_X86_REG_EBX: number;
 declare const UNW_AARCH64_V10: number;
 
 declare const UNWIND_X86_64_REG_R14: number;
-
-declare const UNW_PPC_V1: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E_SEGMENTED: number;
 
@@ -2898,7 +2890,7 @@ declare const h_errno: number;
 
 declare const UNW_PPC64_XER: number;
 
-declare const kDNSServiceType_HINFO: number;
+declare const XPC_ACTIVITY_STATE_CHECK_IN: number;
 
 declare const UNW_VE_S13: number;
 
@@ -2910,9 +2902,9 @@ declare const UNW_S390X_F7: number;
 
 declare const kDNSServiceErr_BadParam: number;
 
-declare const UNW_RISCV_X23: number;
+declare const HV_UNSUPPORTED: number;
 
-declare const alphaStage: number;
+declare const UNW_RISCV_X23: number;
 
 declare const UIDNA_ALLOW_UNASSIGNED: number;
 
@@ -2920,11 +2912,13 @@ declare const UNW_LOONGARCH_R3: number;
 
 declare const UNW_MIPS_F18: number;
 
+declare const _xpc_type_endpoint: _xpc_type_s;
+
 declare const sys_errlist: interop.Pointer;
 
 declare const UNW_PPC_V31: number;
 
-declare const UNW_VE_S55: number;
+declare const UNWIND_ARM_FRAME_FIRST_PUSH_R6: number;
 
 declare const normal: number;
 
@@ -2933,6 +2927,8 @@ declare const UIDNA_ERROR_DISALLOWED: number;
 declare const UNW_ARM64_X2: number;
 
 declare const UIDNA_ERROR_LEADING_HYPHEN: number;
+
+declare const UIDNA_ERROR_DOMAIN_NAME_TOO_LONG: number;
 
 declare const _US_FORCE_UNWIND: number;
 
@@ -2946,6 +2942,8 @@ declare const UNW_VE_V10: number;
 
 declare const UNW_SPARC_I3: number;
 
+declare const UNWIND_X86_FRAMELESS_STACK_REG_COUNT: number;
+
 declare const _xpc_error_key_description: string;
 
 declare const UNWIND_ARM_MODE_MASK: number;
@@ -2958,11 +2956,11 @@ declare const UNW_PPC_F3: number;
 
 declare const kDNSServiceErr_StaleData: number;
 
+declare const UNW_AARCH64_X10: number;
+
 declare const UNW_PPC_V16: number;
 
 declare const utf8_countTrailBytes: interop.Pointer;
-
-declare const in6addr_linklocal_allrouters: in6_addr;
 
 declare const UNW_PPC_R0: number;
 
@@ -2979,8 +2977,6 @@ declare const dyld_error_kind_none: number;
 declare const UNWIND_X86_MODE_DWARF: number;
 
 declare const UNWIND_ARM64_FRAME_D10_D11_PAIR: number;
-
-declare const UNW_PPC_F30: number;
 
 declare const optind: number;
 
@@ -3012,6 +3008,8 @@ declare const kDNSServiceErr_BadReference: number;
 
 declare const kDNSServiceFlagsRegistrationDomains: number;
 
+declare const in6addr_linklocal_allrouters: in6_addr;
+
 declare const matrix_identity_double2x2: simd_double2x2;
 
 declare const kDNSServiceFlagsPrivateThree: number;
@@ -3030,27 +3028,33 @@ declare const UNW_OR1K_R9: number;
 
 declare const UNW_LOONGARCH_F31: number;
 
-declare const UNW_VE_S29: number;
-
 declare const UNW_PPC_V27: number;
 
 declare const bold: number;
 
 declare const UNW_X86_64_XMM7: number;
 
+declare const UNW_SPARC_I5: number;
+
 declare const UNW_HEXAGON_R14: number;
+
+declare const _dispatch_source_type_data_add: dispatch_source_type_s;
+
+declare const finalStage: number;
 
 declare const virtual_memory_guard_exception_code_t: {
   DEALLOC_GAP: 1,
   RECLAIM_COPYIO_FAILURE: 2,
-  SEC_LOOKUP_DENIED: 3,
   RECLAIM_INDEX_FAILURE: 4,
-  SEC_RANGE_DENIED: 6,
-  SEC_ACCESS_FAULT: 7,
   RECLAIM_DEALLOCATE_FAILURE: 8,
-  SEC_COPY_DENIED: 16,
-  SEC_SHARING_DENIED: 32,
-  SEC_ASYNC_ACCESS_FAULT: 64,
+  RECLAIM_ACCOUNTING_FAILURE: 9,
+  SEC_IOPL_ON_EXEC_PAGE: 10,
+  SEC_EXEC_ON_IOPL_PAGE: 11,
+  SEC_UPL_WRITE_ON_EXEC_REGION: 12,
+  SEC_ACCESS_FAULT: 98,
+  SEC_ASYNC_ACCESS_FAULT: 99,
+  SEC_COPY_DENIED: 100,
+  SEC_SHARING_DENIED: 101,
 };
 
 declare const acl_entry_id_t: {
@@ -3423,11 +3427,6 @@ declare const sysdir_search_path_domain_mask_t: {
   ALL: 65535,
 };
 
-declare const mach_vm_range_flavor_t: {
-  INVALID: 0,
-  V1: 1,
-};
-
 declare const objc_AssociationPolicy: {
   ASSIGN: 0,
   RETAIN_NONATOMIC: 1,
@@ -3442,6 +3441,12 @@ declare const NSOtherErrorNumbers: {
   IndrLoop: 2,
   LazyInit: 3,
   InvalidArgs: 4,
+};
+
+declare const xpc_session_create_flags_t: {
+  NONE: 0,
+  INACTIVE: 1,
+  MACH_PRIVILEGED: 2,
 };
 
 declare const UIndicSyllabicCategory: {
@@ -3521,12 +3526,6 @@ declare const ifnet_interface_advisory_wifi_freq_band: {
   WIFI_6GHZ: 3,
 };
 
-declare const xpc_session_create_flags_t: {
-  NONE: 0,
-  INACTIVE: 1,
-  MACH_PRIVILEGED: 2,
-};
-
 declare const at_block_format_t: {
   at_block_format_invalid: 0,
   at_block_format_astc_4x4_ldr: 1,
@@ -3590,10 +3589,6 @@ declare const DNSServiceAAAAPolicy: {
   Fallback: 1,
 };
 
-declare const compression_stream_flags: {
-  COMPRESSION_STREAM_FINALIZE: 1,
-};
-
 declare const ifnet_interface_advisory_notification_type_cell: {
   DEFAULT: 0,
   UPLINK_CRA: 1,
@@ -3634,6 +3629,64 @@ declare const UNumericType: {
   DIGIT: 2,
   NUMERIC: 3,
   COUNT: 4,
+};
+
+declare const ipc_info_object_type_t: {
+  NONE: 0,
+  THREAD_CONTROL: 1,
+  TASK_CONTROL: 2,
+  HOST: 3,
+  HOST_PRIV: 4,
+  PROCESSOR: 5,
+  PROCESSOR_SET: 6,
+  PROCESSOR_SET_NAME: 7,
+  TIMER: 8,
+  PORT_SUBST_ONCE: 9,
+  MIG: 10,
+  MEMORY_OBJECT: 11,
+  XMM_PAGER: 12,
+  XMM_KERNEL: 13,
+  XMM_REPLY: 14,
+  UND_REPLY: 15,
+  HOST_NOTIFY: 16,
+  HOST_SECURITY: 17,
+  LEDGER: 18,
+  MAIN_DEVICE: 19,
+  TASK_NAME: 20,
+  SUBSYSTEM: 21,
+  IO_DONE_QUEUE: 22,
+  SEMAPHORE: 23,
+  LOCK_SET: 24,
+  CLOCK: 25,
+  CLOCK_CTRL: 26,
+  IOKIT_IDENT: 27,
+  NAMED_ENTRY: 28,
+  IOKIT_CONNECT: 29,
+  IOKIT_OBJECT: 30,
+  UPL: 31,
+  MEM_OBJ_CONTROL: 32,
+  AU_SESSIONPORT: 33,
+  FILEPORT: 34,
+  LABELH: 35,
+  TASK_RESUME: 36,
+  VOUCHER: 37,
+  VOUCHER_ATTR_CONTROL: 38,
+  WORK_INTERVAL: 39,
+  UX_HANDLER: 40,
+  UEXT_OBJECT: 41,
+  ARCADE_REG: 42,
+  EVENTLINK: 43,
+  TASK_INSPECT: 44,
+  TASK_READ: 45,
+  THREAD_INSPECT: 46,
+  THREAD_READ: 47,
+  SUID_CRED: 48,
+  HYPERVISOR: 49,
+  TASK_ID_TOKEN: 50,
+  TASK_FATAL: 51,
+  KCDATA: 52,
+  EXCLAVES_RESOURCE: 53,
+  UNKNOWN: -1,
 };
 
 declare const UIdentifierStatus: {
@@ -3857,11 +3910,23 @@ declare const mach_vm_range_tag_t: {
   FIXED: 2,
 };
 
+declare const NSLinkEditErrors: {
+  FileAccess: 0,
+  FileFormat: 1,
+  MachResource: 2,
+  UnixResource: 3,
+  Other: 4,
+  Warning: 5,
+  MultiplyDefined: 6,
+  Undefined: 7,
+};
+
 declare const os_clockid_t: {
   OS_CLOCK_MACH_ABSOLUTE_TIME: 32,
 };
 
 declare const mach_port_guard_exception_codes: {
+  NONE: 0,
   DESTROY: 1,
   MOD_REFS: 2,
   INVALID_OPTIONS: 3,
@@ -3870,9 +3935,14 @@ declare const mach_port_guard_exception_codes: {
   EXCEPTION_BEHAVIOR_ENFORCE: 6,
   SERVICE_PORT_VIOLATION_FATAL: 7,
   UNGUARDED: 8,
+  KOBJECT_REPLY_PORT_SEMANTICS: 9,
+  REQUIRE_REPLY_PORT_SEMANTICS: 10,
   INCORRECT_GUARD: 16,
   IMMOVABLE: 32,
   STRICT_REPLY: 64,
+  INVALID_NOTIFICATION_REQ: 65,
+  INVALID_MPO_ENTITLEMENT: 66,
+  DESCRIPTOR_VIOLATION: 67,
   MSG_FILTERED: 128,
   INVALID_RIGHT: 256,
   INVALID_NAME: 512,
@@ -3889,9 +3959,11 @@ declare const mach_port_guard_exception_codes: {
   RCV_GUARDED_DESC: 1048576,
   SERVICE_PORT_VIOLATION_NON_FATAL: 1048577,
   PROVISIONAL_REPLY_PORT: 1048578,
+  OOL_PORT_ARRAY_CREATION: 1048579,
+  MOVE_PROVISIONAL_REPLY_PORT: 1048580,
+  REPLY_PORT_SINGLE_SO_RIGHT: 1048581,
   MOD_REFS_NON_FATAL: 2097152,
   IMMOVABLE_NON_FATAL: 4194304,
-  REQUIRE_REPLY_PORT_SEMANTICS: 8388608,
 };
 
 declare const dyld_image_mode: {
@@ -3979,6 +4051,7 @@ declare const graftdmg_type_t: {
   BOOT: 1,
   PREBOOT: 2,
   DOWNLEVEL: 3,
+  AUTH_ENV_GENERIC: 4,
   PDI_NONCE: 6,
   EFFECTIVE_AP: 7,
   MOBILE_ASSET: 8,
@@ -4053,6 +4126,16 @@ declare const UHangulSyllableType: {
   LV_SYLLABLE: 4,
   LVT_SYLLABLE: 5,
   COUNT: 6,
+};
+
+declare const task_throughput_qos: {
+  R_UNSPECIFIED: 0,
+  R_0: 16646145,
+  R_1: 16646146,
+  R_2: 16646147,
+  R_3: 16646148,
+  R_4: 16646149,
+  R_5: 16646150,
 };
 
 declare const ACTION: {
@@ -4158,6 +4241,10 @@ declare const _Unwind_Reason_Code: {
   HANDLER_FOUND: 6,
   INSTALL_CONTEXT: 7,
   CONTINUE_UNWIND: 8,
+};
+
+declare const compression_stream_flags: {
+  COMPRESSION_STREAM_FINALIZE: 1,
 };
 
 declare const acl_tag_t: {
@@ -4365,17 +4452,6 @@ declare const UProperty: {
   INVALID_CODE: -1,
 };
 
-declare const NSLinkEditErrors: {
-  FileAccess: 0,
-  FileFormat: 1,
-  MachResource: 2,
-  UnixResource: 3,
-  Other: 4,
-  Warning: 5,
-  MultiplyDefined: 6,
-  Undefined: 7,
-};
-
 declare const task_role: {
   RENICED: -1,
   UNSPECIFIED: 0,
@@ -4387,6 +4463,7 @@ declare const task_role: {
   NONUI_APPLICATION: 6,
   DEFAULT_APPLICATION: 7,
   DARWINBG_APPLICATION: 8,
+  USER_INIT_APPLICATION: 9,
 };
 
 declare const reloc_type_generic: {
@@ -4396,18 +4473,6 @@ declare const reloc_type_generic: {
   PB_LA_PTR: 3,
   LOCAL_SECTDIFF: 4,
   TLV: 5,
-};
-
-declare const URegexpFlag: {
-  CANON_EQ: 128,
-  CASE_INSENSITIVE: 2,
-  COMMENTS: 4,
-  DOTALL: 32,
-  LITERAL: 16,
-  MULTILINE: 8,
-  UNIX_LINES: 1,
-  UWORD: 256,
-  ERROR_ON_UNKNOWN_ESCAPES: 512,
 };
 
 declare const _Unwind_VRS_DataRepresentation: {
@@ -4435,6 +4500,14 @@ declare const at_flags_t: {
   at_flags_flip_texel_region_vertically: 16,
   at_flags_srgb_linear_texels: 32,
   at_flags_weight_channels_equally: 64,
+};
+
+declare const _Unwind_Action: {
+  SEARCH_PHASE: 1,
+  CLEANUP_PHASE: 2,
+  HANDLER_FRAME: 4,
+  FORCE_UNWIND: 8,
+  END_OF_STACK: 16,
 };
 
 declare const reloc_type_arm: {
@@ -4585,28 +4658,21 @@ declare const ifnet_interface_advisory_notification_type_wifi: {
   IF_INTERFACE_ADVISORY_NOTIFICATION_TYPE_WIFI_UNDEFINED: 0,
 };
 
+declare const malloc_zone_malloc_options_t: {
+  NONE: 0,
+  CLEAR: 1,
+  CANONICAL_TAG: 2,
+};
+
 declare const os_signpost_type_t: {
   EVENT: 0,
   INTERVAL_BEGIN: 1,
   INTERVAL_END: 2,
 };
 
-declare const _Unwind_Action: {
-  SEARCH_PHASE: 1,
-  CLEANUP_PHASE: 2,
-  HANDLER_FRAME: 4,
-  FORCE_UNWIND: 8,
-  END_OF_STACK: 16,
-};
-
-declare const task_throughput_qos: {
-  R_UNSPECIFIED: 0,
-  R_0: 16646145,
-  R_1: 16646146,
-  R_2: 16646147,
-  R_3: 16646148,
-  R_4: 16646149,
-  R_5: 16646150,
+declare const mach_vm_range_flavor_t: {
+  INVALID: 0,
+  V1: 1,
 };
 
 declare const audit_session_flags: {
@@ -4764,6 +4830,16 @@ declare const clockid_t: {
   THREAD_CPUTIME_ID: 16,
 };
 
+declare const mpo_flags_t: {
+  PORT: 0,
+  SERVICE_PORT: 1024,
+  CONNECTION_PORT: 2048,
+  REPLY_PORT: 4096,
+  PROVISIONAL_REPLY_PORT: 16384,
+  EXCEPTION_PORT: 32768,
+  CONNECTION_PORT_WITH_PORT_ARRAY: 65536,
+};
+
 declare const so_tracker_attribute: {
   INVALID: 0,
   ADDRESS_FAMILY: 1,
@@ -4830,6 +4906,18 @@ declare const UCPMapRangeOption: {
   FIXED_ALL_SURROGATES: 2,
 };
 
+declare const URegexpFlag: {
+  CANON_EQ: 128,
+  CASE_INSENSITIVE: 2,
+  COMMENTS: 4,
+  DOTALL: 32,
+  LITERAL: 16,
+  MULTILINE: 8,
+  UNIX_LINES: 1,
+  UWORD: 256,
+  ERROR_ON_UNKNOWN_ESCAPES: 512,
+};
+
 declare const os_activity_flag_t: {
   DEFAULT: 0,
   DETACHED: 1,
@@ -4856,11 +4944,6 @@ declare const reloc_type_x86_64: {
   SIGNED_4: 8,
   TLV: 9,
 };
-
-declare class rb_node {
-  constructor(init?: rb_node);
-  opaque: unknown /* const array */;
-}
 
 declare class accessx_descriptor {
   constructor(init?: accessx_descriptor);
@@ -4931,14 +5014,6 @@ declare class __Request__task_register_hardened_exception_handler_t {
   flavors_allowed: number;
 }
 
-declare class malloc_statistics_t {
-  constructor(init?: malloc_statistics_t);
-  blocks_in_use: number;
-  size_in_use: number;
-  max_size_in_use: number;
-  size_allocated: number;
-}
-
 declare class vm_region_submap_short_info_64 {
   constructor(init?: vm_region_submap_short_info_64);
   protection: number;
@@ -4954,6 +5029,7 @@ declare class vm_region_submap_short_info_64 {
   behavior: number;
   object_id: number;
   user_wired_count: number;
+  flags: number;
 }
 
 declare class thread_latency_qos_policy {
@@ -4981,6 +5057,21 @@ declare class sadb_comb {
   sadb_comb_hard_usetime: number;
 }
 
+declare class malloc_statistics_t {
+  constructor(init?: malloc_statistics_t);
+  blocks_in_use: number;
+  size_in_use: number;
+  max_size_in_use: number;
+  size_allocated: number;
+}
+
+declare class ip6_hdr {
+  constructor(init?: ip6_hdr);
+  ip6_ctlun: unnamed_16337859136180877603;
+  ip6_src: in6_addr;
+  ip6_dst: in6_addr;
+}
+
 declare class auditpinfo {
   constructor(init?: auditpinfo);
   ap_pid: number;
@@ -4999,6 +5090,14 @@ declare class msghdr {
   msg_control: interop.Pointer;
   msg_controllen: number;
   msg_flags: number;
+}
+
+declare class ifnet_traffic_descriptor_eth {
+  constructor(init?: ifnet_traffic_descriptor_eth);
+  eth_common: ifnet_traffic_descriptor_common;
+  eth_raddr: ether_addr;
+  eth_type: number;
+  eth_mask: number;
 }
 
 declare class simd_quatf {
@@ -5046,6 +5145,18 @@ declare class ifnet_interface_advisory_wifi_context {
 
 declare class simd_double3x3 {
   constructor(init?: simd_double3x3);
+  columns: unknown /* const array */;
+}
+
+declare class __Reply__thread_set_policy_t {
+  constructor(init?: __Reply__thread_set_policy_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class simd_double2x3 {
+  constructor(init?: simd_double2x3);
   columns: unknown /* const array */;
 }
 
@@ -5200,6 +5311,14 @@ declare class __Request__mach_port_get_set_status_t {
   name: number;
 }
 
+declare class __Request__act_get_state_t {
+  constructor(init?: __Request__act_get_state_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  old_stateCnt: number;
+}
+
 declare class __Request__mach_voucher_debug_info_t {
   constructor(init?: __Request__mach_voucher_debug_info_t);
   Head: mach_msg_header_t;
@@ -5254,6 +5373,7 @@ declare class vm_statistics64 {
   external_page_count: number;
   internal_page_count: number;
   total_uncompressed_pages_in_compressor: number;
+  swapped_count: number;
 }
 
 declare class fsignatures {
@@ -5323,46 +5443,67 @@ declare class dylib_module {
   objc_module_info_size: number;
 }
 
-declare class __Reply__thread_set_policy_t {
-  constructor(init?: __Reply__thread_set_policy_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
+declare class audit_stat {
+  constructor(init?: audit_stat);
+  as_version: number;
+  as_numevent: number;
+  as_generated: number;
+  as_nonattrib: number;
+  as_kernel: number;
+  as_audit: number;
+  as_auditctl: number;
+  as_enqueue: number;
+  as_written: number;
+  as_wblocked: number;
+  as_rblocked: number;
+  as_dropped: number;
+  as_totalsize: number;
+  as_memused: number;
 }
 
-declare class simd_double2x3 {
-  constructor(init?: simd_double2x3);
-  columns: unknown /* const array */;
+declare class exception {
+  constructor(init?: exception);
+  type: number;
+  name: string | null;
+  arg1: number;
+  arg2: number;
+  retval: number;
 }
 
-declare class unnamed_6875058031576432403 {
-  constructor(init?: unnamed_6875058031576432403);
-  fnstart: number;
-  ehtp: interop.Pointer;
-  additional: number;
-  reserved1: number;
+declare class __double2 {
+  constructor(init?: __double2);
+  __sinval: number;
+  __cosval: number;
 }
 
-declare class __Request__act_get_state_t {
-  constructor(init?: __Request__act_get_state_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  old_stateCnt: number;
+declare class __float2 {
+  constructor(init?: __float2);
+  __sinval: number;
+  __cosval: number;
 }
 
-declare class unnamed_3930469133159929878 {
-  constructor(init?: unnamed_3930469133159929878);
+declare class unnamed_15487593949060152290 {
+  constructor(init?: unnamed_15487593949060152290);
   bitpattern: unknown /* const array */;
 }
 
-declare class unnamed_4942079824955366697 {
-  constructor(init?: unnamed_4942079824955366697);
-  reserved1: number;
-  reserved2: number;
-  reserved3: number;
-  reserved4: number;
-  reserved5: number;
+declare class dwarf_eh_bases {
+  constructor(init?: dwarf_eh_bases);
+  tbase: number;
+  dbase: number;
+  func: number;
+}
+
+declare class _Unwind_Context {
+  constructor(init?: _Unwind_Context);
+}
+
+declare class unnamed_3497368185255533242 {
+  constructor(init?: unnamed_3497368185255533242);
+  inp6_hlim: number;
+  inp6_cksum: number;
+  inp6_ifindex: number;
+  inp6_hops: number;
 }
 
 declare class __Reply__mach_voucher_debug_info_t {
@@ -5466,6 +5607,11 @@ declare class _pcred {
   p_refcnt: number;
 }
 
+declare class rb_node {
+  constructor(init?: rb_node);
+  opaque: unknown /* const array */;
+}
+
 declare class __Reply__mach_port_space_info_t {
   constructor(init?: __Reply__mach_port_space_info_t);
   Head: mach_msg_header_t;
@@ -5509,6 +5655,21 @@ declare class vmspace {
   dummy2: string | null;
   dummy3: unknown /* const array */;
   dummy4: unknown /* const array */;
+}
+
+declare class audit_token_t {
+  constructor(init?: audit_token_t);
+  val: unknown /* const array */;
+}
+
+declare class unnamed_13807912713659974825 {
+  constructor(init?: unnamed_13807912713659974825);
+  __p_forw: interop.Pointer;
+  __p_back: interop.Pointer;
+}
+
+declare class proc_ident {
+  constructor(init?: proc_ident);
 }
 
 declare class __Reply__host_virtual_physical_table_info_t {
@@ -5786,6 +5947,16 @@ declare class nt_sid_t {
   sid_authorities: unknown /* const array */;
 }
 
+declare class __Reply__mach_memory_entry_get_page_counts_t {
+  constructor(init?: __Reply__mach_memory_entry_get_page_counts_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  resident_cnt: number;
+  dirty_cnt: number;
+  swapped_cnt: number;
+}
+
 declare class icmp_ra_addr {
   constructor(init?: icmp_ra_addr);
   ira_addr: number;
@@ -5995,6 +6166,17 @@ declare class persona_modify_info {
   unique_pid: number;
 }
 
+declare class security_token_t {
+  constructor(init?: security_token_t);
+  val: unknown /* const array */;
+}
+
+declare class __nl_cat_d {
+  constructor(init?: __nl_cat_d);
+  __data: interop.Pointer;
+  __size: number;
+}
+
 declare class __Request__task_policy_set_t {
   constructor(init?: __Request__task_policy_set_t);
   Head: mach_msg_header_t;
@@ -6187,11 +6369,15 @@ declare class ipc_perm {
   _key: number;
 }
 
-declare class __Request__mach_port_type_t {
-  constructor(init?: __Request__mach_port_type_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  name: number;
+declare class simd_double4x3 {
+  constructor(init?: simd_double4x3);
+  columns: unknown /* const array */;
+}
+
+declare class sched_param {
+  constructor(init?: sched_param);
+  sched_priority: number;
+  __opaque: unknown /* const array */;
 }
 
 declare class __Request__thread_suspend_t {
@@ -6349,7 +6535,6 @@ declare class tcpstat {
   tcps_pawsdrop: number;
   tcps_predack: number;
   tcps_preddat: number;
-  tcps_pcbcachemiss: number;
   tcps_cachedrtt: number;
   tcps_cachedrttvar: number;
   tcps_cachedssthresh: number;
@@ -6365,23 +6550,11 @@ declare class tcpstat {
   tcps_minmssdrops: number;
   tcps_sndrexmitbad: number;
   tcps_badrst: number;
-  tcps_sc_added: number;
-  tcps_sc_retransmitted: number;
-  tcps_sc_dupsyn: number;
   tcps_sc_dropped: number;
   tcps_sc_completed: number;
-  tcps_sc_bucketoverflow: number;
-  tcps_sc_cacheoverflow: number;
-  tcps_sc_reset: number;
-  tcps_sc_stale: number;
   tcps_sc_aborted: number;
-  tcps_sc_badack: number;
-  tcps_sc_unreach: number;
-  tcps_sc_zonefail: number;
   tcps_sc_sendcookie: number;
   tcps_sc_recvcookie: number;
-  tcps_hc_added: number;
-  tcps_hc_bucketoverflow: number;
   tcps_sack_recovery_episode: number;
   tcps_sack_rexmits: number;
   tcps_sack_rexmit_bytes: number;
@@ -6405,16 +6578,12 @@ declare class tcpstat {
   tcps_snd_swcsum_bytes: number;
   tcps_snd6_swcsum: number;
   tcps_snd6_swcsum_bytes: number;
-  tcps_unused_1: number;
-  tcps_unused_2: number;
-  tcps_unused_3: number;
   tcps_invalid_mpcap: number;
   tcps_invalid_joins: number;
   tcps_mpcap_fallback: number;
   tcps_join_fallback: number;
   tcps_estab_fallback: number;
   tcps_invalid_opt: number;
-  tcps_mp_outofwin: number;
   tcps_mp_reducedwin: number;
   tcps_mp_badcsum: number;
   tcps_mp_oodata: number;
@@ -6437,21 +6606,15 @@ declare class tcpstat {
   tcps_detect_reordering: number;
   tcps_delay_recovery: number;
   tcps_avoid_rxmt: number;
-  tcps_unnecessary_rxmt: number;
-  tcps_nostretchack: number;
-  tcps_rescue_rxmt: number;
   tcps_pto_in_recovery: number;
   tcps_pmtudbh_reverted: number;
-  tcps_dsack_disable: number;
   tcps_dsack_ackloss: number;
   tcps_dsack_badrexmt: number;
   tcps_dsack_sent: number;
   tcps_dsack_recvd: number;
   tcps_dsack_recvd_old: number;
-  tcps_mp_sel_symtomsd: number;
   tcps_mp_sel_rtt: number;
   tcps_mp_sel_rto: number;
-  tcps_mp_sel_peer: number;
   tcps_mp_num_probes: number;
   tcps_mp_verdowngrade: number;
   tcps_drop_after_sleep: number;
@@ -6673,8 +6836,27 @@ declare class icmp {
   icmp_type: number;
   icmp_code: number;
   icmp_cksum: number;
-  icmp_hun: unnamed_13992860994693902525;
-  icmp_dun: unnamed_590545025436214185;
+  icmp_hun: unnamed_11756580666549258417;
+  icmp_dun: unnamed_6910657430341859690;
+}
+
+declare class __Reply__host_processor_info_t {
+  constructor(init?: __Reply__host_processor_info_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  out_processor_info: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  out_processor_count: number;
+  out_processor_infoCnt: number;
+}
+
+declare class hv_data_abort_notification_t {
+  constructor(init?: hv_data_abort_notification_t);
+  context: number;
+  ipa: number;
+  value: number;
+  access_size: number;
+  access_type: number;
 }
 
 declare class ip6_opt_router {
@@ -6748,13 +6930,6 @@ declare class ip6_ext {
   ip6e_len: number;
 }
 
-declare class ip6_hdr {
-  constructor(init?: ip6_hdr);
-  ip6_ctlun: unnamed_5780517346839797102;
-  ip6_src: in6_addr;
-  ip6_dst: in6_addr;
-}
-
 declare class objc_method {
   constructor(init?: objc_method);
 }
@@ -6802,14 +6977,6 @@ declare class xinpgen {
   xig_sogen: number;
 }
 
-declare class unnamed_12874029291639675563 {
-  constructor(init?: unnamed_12874029291639675563);
-  inp6_hlim: number;
-  inp6_cksum: number;
-  inp6_ifindex: number;
-  inp6_hops: number;
-}
-
 declare class xinpcb64 {
   constructor(init?: xinpcb64);
   xi_len: number;
@@ -6827,10 +6994,10 @@ declare class xinpcb64 {
   inp_vflag: number;
   inp_ip_ttl: number;
   inp_ip_p: number;
-  inp_dependfaddr: unnamed_9269768510135550006;
-  inp_dependladdr: unnamed_4621196920532605477;
-  inp_depend4: unnamed_7328140584881457184;
-  inp_depend6: unnamed_12874029291639675563;
+  inp_dependfaddr: unnamed_3694722665405033679;
+  inp_dependladdr: unnamed_17329325756089032898;
+  inp_depend4: unnamed_12932631033977542443;
+  inp_depend6: unnamed_3497368185255533242;
   xi_socket: xsocket64;
   xi_alignment_hack: number;
 }
@@ -6896,18 +7063,11 @@ declare class xinpcb {
   xi_alignment_hack: number;
 }
 
-declare class unnamed_16057534543098669224 {
-  constructor(init?: unnamed_16057534543098669224);
-  inp6_options: number;
-  inp6_hlim: number;
-  unused_uint8_1: number;
-  unused_uint16_1: number;
-  inp6_outputopts: number;
-  inp6_moptions: number;
-  inp6_icmp6filt: number;
-  inp6_cksum: number;
-  inp6_ifindex: number;
-  inp6_hops: number;
+declare class unnamed_6009673998943019639 {
+  constructor(init?: unnamed_6009673998943019639);
+  inp4_ip_tos: number;
+  inp4_options: number;
+  inp4_moptions: number;
 }
 
 declare class inpcbpolicy {
@@ -7090,6 +7250,16 @@ declare class nd_opt_pref64 {
   nd_opt_pref64_prefix: unknown /* const array */;
 }
 
+declare class nd_opt_dnr {
+  constructor(init?: nd_opt_dnr);
+  nd_opt_dnr_type: number;
+  nd_opt_dnr_len: number;
+  nd_opt_dnr_svc_priority: unknown /* const array */;
+  nd_opt_dnr_lifetime: unknown /* const array */;
+  nd_opt_dnr_adn_len: unknown /* const array */;
+  nd_opt_dnr_continuation: unknown /* const array */;
+}
+
 declare class auditinfo {
   constructor(init?: auditinfo);
   ai_auid: number;
@@ -7185,7 +7355,7 @@ declare class icmp6_hdr {
   icmp6_type: number;
   icmp6_code: number;
   icmp6_cksum: number;
-  icmp6_dataun: unnamed_12668126292711546999;
+  icmp6_dataun: unnamed_17677869109873497955;
 }
 
 declare class _opaque_pthread_rwlockattr_t {
@@ -7438,6 +7608,14 @@ declare class ifnet_ip_addr {
   constructor(init?: ifnet_ip_addr);
 }
 
+declare class unnamed_179278192402666286 {
+  constructor(init?: unnamed_179278192402666286);
+  fnstart: number;
+  ehtp: interop.Pointer;
+  additional: number;
+  reserved1: number;
+}
+
 declare class ifnet_interface_advisory_cell_context {
   constructor(init?: ifnet_interface_advisory_cell_context);
   radio_access_technology: number;
@@ -7452,13 +7630,6 @@ declare class ifnet_interface_advisory_cell_context {
   estimated_outage_period: number;
   outage_state: number;
   __pad: number;
-}
-
-declare class unnamed_4753490486630450008 {
-  constructor(init?: unnamed_4753490486630450008);
-  inp4_ip_tos: number;
-  inp4_options: number;
-  inp4_moptions: number;
 }
 
 declare class __darwin_ucontext64 {
@@ -7504,7 +7675,7 @@ declare class rpc_subsystem {
 
 declare class if_wifi_status {
   constructor(init?: if_wifi_status);
-  if_wifi_u: unnamed_7183204894828581474;
+  if_wifi_u: unnamed_12652079418674710618;
 }
 
 declare class xucred {
@@ -7517,7 +7688,7 @@ declare class xucred {
 
 declare class if_cellular_status {
   constructor(init?: if_cellular_status);
-  if_cell_u: unnamed_15119962329346617861;
+  if_cell_u: unnamed_8108292665603034391;
 }
 
 declare class so_np_extensions {
@@ -7670,7 +7841,7 @@ declare class dispatch_queue_attr_s {
 declare class ifconf {
   constructor(init?: ifconf);
   ifc_len: number;
-  ifc_ifcu: unnamed_11584990870218000395;
+  ifc_ifcu: unnamed_7714139358160886187;
 }
 
 declare class ifdrv {
@@ -7684,7 +7855,7 @@ declare class ifdrv {
 declare class ifreq {
   constructor(init?: ifreq);
   ifr_name: unknown /* const array */;
-  ifr_ifru: unnamed_7872740099522180759;
+  ifr_ifru: unnamed_2211568306095038366;
 }
 
 declare class __Request__processor_info_t {
@@ -7978,7 +8149,7 @@ declare class wordexp_t {
 
 declare class in6_addr {
   constructor(init?: in6_addr);
-  __u6_addr: unnamed_9514921772044709579;
+  __u6_addr: unnamed_7407515708615317395;
 }
 
 declare class in_pktinfo {
@@ -8121,62 +8292,6 @@ declare class aiocb {
   aio_lio_opcode: number;
 }
 
-declare class audit_stat {
-  constructor(init?: audit_stat);
-  as_version: number;
-  as_numevent: number;
-  as_generated: number;
-  as_nonattrib: number;
-  as_kernel: number;
-  as_audit: number;
-  as_auditctl: number;
-  as_enqueue: number;
-  as_written: number;
-  as_wblocked: number;
-  as_rblocked: number;
-  as_dropped: number;
-  as_totalsize: number;
-  as_memused: number;
-}
-
-declare class exception {
-  constructor(init?: exception);
-  type: number;
-  name: string | null;
-  arg1: number;
-  arg2: number;
-  retval: number;
-}
-
-declare class sqlite3_pcache_methods2 {
-  constructor(init?: sqlite3_pcache_methods2);
-  iVersion: number;
-  pArg: interop.Pointer;
-  xInit: (p1: interop.PointerConvertible) => number | null;
-  xShutdown: (p1: interop.PointerConvertible) => void | null;
-  xCreate: (p1: number, p2: number, p3: number) => interop.Pointer | null;
-  xCachesize: (p1: interop.PointerConvertible, p2: number) => void | null;
-  xPagecount: (p1: interop.PointerConvertible) => number | null;
-  xFetch: (p1: interop.PointerConvertible, p2: number, p3: number) => interop.Pointer | null;
-  xUnpin: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  xRekey: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  xTruncate: (p1: interop.PointerConvertible, p2: number) => void | null;
-  xDestroy: (p1: interop.PointerConvertible) => void | null;
-  xShrink: (p1: interop.PointerConvertible) => void | null;
-}
-
-declare class __double2 {
-  constructor(init?: __double2);
-  __sinval: number;
-  __cosval: number;
-}
-
-declare class __float2 {
-  constructor(init?: __float2);
-  __sinval: number;
-  __cosval: number;
-}
-
 declare class iovec {
   constructor(init?: iovec);
   iov_base: interop.Pointer;
@@ -8240,8 +8355,8 @@ declare class vm_range_t {
   size: number;
 }
 
-declare class unnamed_15122717027961369605 {
-  constructor(init?: unnamed_15122717027961369605);
+declare class unnamed_4004670689430456966 {
+  constructor(init?: unnamed_4004670689430456966);
   hash: number;
   summary: malloc_type_summary_v0_t;
 }
@@ -8290,12 +8405,6 @@ declare class malloc_introspection_t {
   print_task: (p1: number, p2: number, p3: number, p4: (p1: number, p2: number, p3: number, p4: interop.PointerConvertible) => number, p5: (p1: string) => void) => void | null;
   task_statistics: (p1: number, p2: number, p3: (p1: number, p2: number, p3: number, p4: interop.PointerConvertible) => number, p4: interop.PointerConvertible) => void | null;
   zone_type: number;
-}
-
-declare class unnamed_10109850508396581031 {
-  constructor(init?: unnamed_10109850508396581031);
-  opaque1: interop.Pointer;
-  opaque2: number;
 }
 
 declare class objc_super {
@@ -8350,43 +8459,10 @@ declare class os_log_s {
   constructor(init?: os_log_s);
 }
 
-declare class dwarf_eh_bases {
-  constructor(init?: dwarf_eh_bases);
-  tbase: number;
-  dbase: number;
-  func: number;
-}
-
-declare class _Unwind_Context {
-  constructor(init?: _Unwind_Context);
-}
-
 declare class _RuneRange {
   constructor(init?: _RuneRange);
   __nranges: number;
   __ranges: interop.Pointer;
-}
-
-declare class simd_double4x3 {
-  constructor(init?: simd_double4x3);
-  columns: unknown /* const array */;
-}
-
-declare class sched_param {
-  constructor(init?: sched_param);
-  sched_priority: number;
-  __opaque: unknown /* const array */;
-}
-
-declare class security_token_t {
-  constructor(init?: security_token_t);
-  val: unknown /* const array */;
-}
-
-declare class __nl_cat_d {
-  constructor(init?: __nl_cat_d);
-  __data: interop.Pointer;
-  __size: number;
 }
 
 declare class unwind_info_section_header_lsda_index_entry {
@@ -8422,18 +8498,6 @@ declare class unwind_info_section_header {
   personalityArrayCount: number;
   indexSectionOffset: number;
   indexCount: number;
-}
-
-declare class vfs_server {
-  constructor(init?: vfs_server);
-  vs_minutes: number;
-  vs_server_name: unknown /* const array */;
-}
-
-declare class unnamed_2488101097882563130 {
-  constructor(init?: unnamed_2488101097882563130);
-  start: number;
-  length: number;
 }
 
 declare class __Request__processor_set_tasks_with_flavor_t {
@@ -8634,12 +8698,6 @@ declare class __Reply__processor_set_create_t {
   new_name: mach_msg_port_descriptor_t;
 }
 
-declare class unnamed_15188807568549777765 {
-  constructor(init?: unnamed_15188807568549777765);
-  __p_forw: interop.Pointer;
-  __p_back: interop.Pointer;
-}
-
 declare class encryption_info_command_64 {
   constructor(init?: encryption_info_command_64);
   cmd: number;
@@ -8696,16 +8754,6 @@ declare class __Reply__host_get_clock_service_t {
   clock_serv: mach_msg_port_descriptor_t;
 }
 
-declare class __Reply__host_processor_info_t {
-  constructor(init?: __Reply__host_processor_info_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  out_processor_info: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  out_processor_count: number;
-  out_processor_infoCnt: number;
-}
-
 declare class __Reply___host_page_size_t {
   constructor(init?: __Reply___host_page_size_t);
   Head: mach_msg_header_t;
@@ -8728,6 +8776,11 @@ declare class __Request__mach_zone_info_for_zone_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   name: mach_zone_name;
+}
+
+declare class __Request__host_get_multiuser_config_flags_t {
+  constructor(init?: __Request__host_get_multiuser_config_flags_t);
+  Head: mach_msg_header_t;
 }
 
 declare class objc_method_description {
@@ -9277,53 +9330,6 @@ declare class __Request__mach_port_kobject_t {
   name: number;
 }
 
-declare class __Request__processor_set_statistics_t {
-  constructor(init?: __Request__processor_set_statistics_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  info_outCnt: number;
-}
-
-declare class __Reply__host_get_io_main_t {
-  constructor(init?: __Reply__host_get_io_main_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  io_main: mach_msg_port_descriptor_t;
-}
-
-declare class mach_msg_ool_ports_descriptor32_t {
-  constructor(init?: mach_msg_ool_ports_descriptor32_t);
-  address: number;
-  count: number;
-  deallocate: number;
-  copy: number;
-  disposition: number;
-  type: number;
-}
-
-declare class __darwin_arm_thread_state64 {
-  constructor(init?: __darwin_arm_thread_state64);
-  __x: unknown /* const array */;
-  __fp: number;
-  __lr: number;
-  __sp: number;
-  __pc: number;
-  __cpsr: number;
-  __pad: number;
-}
-
-declare class i386_float_state {
-  constructor(init?: i386_float_state);
-}
-
-declare class __Request__mach_port_get_context_t {
-  constructor(init?: __Request__mach_port_get_context_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  name: number;
-}
-
 declare class winsize {
   constructor(init?: winsize);
   ws_row: number;
@@ -9339,24 +9345,9 @@ declare class __Request__mach_port_get_srights_t {
   name: number;
 }
 
-declare class simd_float4x2 {
-  constructor(init?: simd_float4x2);
-  columns: unknown /* const array */;
-}
-
-declare class zone_btrecord {
-  constructor(init?: zone_btrecord);
-  ref_count: number;
-  operation_type: number;
-  bt: unknown /* const array */;
-}
-
-declare class __Request__mach_port_set_context_t {
-  constructor(init?: __Request__mach_port_set_context_t);
+declare class __Request__mach_memory_entry_get_page_counts_t {
+  constructor(init?: __Request__mach_memory_entry_get_page_counts_t);
   Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  name: number;
-  context: number;
 }
 
 declare class __Request__task_set_port_space_t {
@@ -9475,6 +9466,7 @@ declare class vm_region_submap_info_64 {
   behavior: number;
   object_id: number;
   user_wired_count: number;
+  flags: number;
   pages_reusable: number;
   object_id_full: number;
 }
@@ -9845,6 +9837,9 @@ declare class sqlite3_api_routines {
   value_encoding: (p1: interop.PointerConvertible) => number | null;
   is_interrupted: (p1: interop.PointerConvertible) => number | null;
   stmt_explain: (p1: interop.PointerConvertible, p2: number) => number | null;
+  get_clientdata: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  set_clientdata: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible) => void) => number | null;
+  setlk_timeout: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
 }
 
 declare class __Reply__vm_region_recurse_t {
@@ -10259,6 +10254,30 @@ declare class __Request__vm_write_t {
   dataCnt: number;
 }
 
+declare class statvfs {
+  constructor(init?: statvfs);
+  f_bsize: number;
+  f_frsize: number;
+  f_blocks: number;
+  f_bfree: number;
+  f_bavail: number;
+  f_files: number;
+  f_ffree: number;
+  f_favail: number;
+  f_fsid: number;
+  f_flag: number;
+  f_namemax: number;
+}
+
+declare class __Request__vm_inherit_t {
+  constructor(init?: __Request__vm_inherit_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  address: number;
+  size: number;
+  new_inheritance: number;
+}
+
 declare class mach_msg_empty_send_t {
   constructor(init?: mach_msg_empty_send_t);
   header: mach_msg_header_t;
@@ -10421,6 +10440,15 @@ declare class __Reply__thread_get_exception_ports_t {
   old_flavors: unknown /* const array */;
 }
 
+declare class unnamed_12299193357515738360 {
+  constructor(init?: unnamed_12299193357515738360);
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: number;
+}
+
 declare class __Reply__thread_get_special_port_t {
   constructor(init?: __Reply__thread_get_special_port_t);
   Head: mach_msg_header_t;
@@ -10461,7 +10489,7 @@ declare class if_link_status {
   constructor(init?: if_link_status);
   ifsr_version: number;
   ifsr_len: number;
-  ifsr_u: unnamed_13450847161391470468;
+  ifsr_u: unnamed_8615195772057165089;
 }
 
 declare class __Request__thread_get_exception_ports_info_t {
@@ -10596,6 +10624,17 @@ declare class __Reply__host_kernel_version_t {
   kernel_version: unknown /* const array */;
 }
 
+declare class unnamed_6342437417046313061 {
+  constructor(init?: unnamed_6342437417046313061);
+  numColorChannels: number;
+  log2BlockBytes: number;
+  blockWidth: number;
+  blockHeight: number;
+  isHDR: number;
+  hasAlpha: number;
+  _reserved: number;
+}
+
 declare class __Request__thread_swap_exception_ports_t {
   constructor(init?: __Request__thread_swap_exception_ports_t);
   Head: mach_msg_header_t;
@@ -10689,6 +10728,13 @@ declare class __Request__mach_port_insert_member_t {
   NDR: NDR_record_t;
   name: number;
   pset: number;
+}
+
+declare class __Request__mach_port_type_t {
+  constructor(init?: __Request__mach_port_type_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  name: number;
 }
 
 declare class relocation_info {
@@ -11340,11 +11386,6 @@ declare class __Request__task_get_exception_ports_info_t {
   exception_mask: number;
 }
 
-declare class unnamed_7328140584881457184 {
-  constructor(init?: unnamed_7328140584881457184);
-  inp4_ip_tos: number;
-}
-
 declare class __Request__task_dyld_process_info_notify_deregister_t {
   constructor(init?: __Request__task_dyld_process_info_notify_deregister_t);
   Head: mach_msg_header_t;
@@ -11592,6 +11633,12 @@ declare class __Request__task_assign_t {
   assign_threads: number;
 }
 
+declare class Point {
+  constructor(init?: Point);
+  v: number;
+  h: number;
+}
+
 declare class __Reply__vm_region_64_t {
   constructor(init?: __Reply__vm_region_64_t);
   Head: mach_msg_header_t;
@@ -11602,12 +11649,6 @@ declare class __Reply__vm_region_64_t {
   size: number;
   infoCnt: number;
   info: unknown /* const array */;
-}
-
-declare class Point {
-  constructor(init?: Point);
-  v: number;
-  h: number;
 }
 
 declare class __Reply__mach_memory_entry_purgable_control_t {
@@ -11888,6 +11929,12 @@ declare class __Request__task_set_info_t {
   task_info_in: unknown /* const array */;
 }
 
+declare class unnamed_15105762553865172983 {
+  constructor(init?: unnamed_15105762553865172983);
+  sp: number;
+  bitpattern: unknown /* const array */;
+}
+
 declare class vm_extmod_statistics {
   constructor(init?: vm_extmod_statistics);
   task_for_pid_count: number;
@@ -11944,13 +11991,6 @@ declare class __Reply__thread_terminate_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-}
-
-declare class vm_purgeable_info {
-  constructor(init?: vm_purgeable_info);
-  fifo_data: unknown /* const array */;
-  obsolete_data: vm_purgeable_stat;
-  lifo_data: unknown /* const array */;
 }
 
 declare class __Request__vm_region_64_t {
@@ -12099,11 +12139,32 @@ declare class __Request__processor_set_info_t {
   info_outCnt: number;
 }
 
+declare class unnamed_14709552253899551019 {
+  constructor(init?: unnamed_14709552253899551019);
+  start: number;
+  length: number;
+}
+
 declare class __Request__processor_set_policy_enable_t {
   constructor(init?: __Request__processor_set_policy_enable_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   policy: number;
+}
+
+declare class __Reply__host_get_io_main_t {
+  constructor(init?: __Reply__host_get_io_main_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  io_main: mach_msg_port_descriptor_t;
+}
+
+declare class __Request__processor_set_statistics_t {
+  constructor(init?: __Request__processor_set_statistics_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  info_outCnt: number;
 }
 
 declare class __Reply__processor_get_assignment_t {
@@ -12259,7 +12320,7 @@ declare class __Reply__mach_port_kobject_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-  object_type: number;
+  object_type: interop.Enum<typeof ipc_info_object_type_t>;
   object_addr: number;
 }
 
@@ -12425,20 +12486,6 @@ declare class __Request__kext_request_t {
   request_dataCnt: number;
 }
 
-declare class target_triple_command {
-  constructor(init?: target_triple_command);
-  cmd: number;
-  cmdsize: number;
-  triple: lc_str;
-}
-
-declare class __Request__host_set_UNDServer_t {
-  constructor(init?: __Request__host_set_UNDServer_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  server: mach_msg_port_descriptor_t;
-}
-
 declare class __Request__host_swap_exception_ports_t {
   constructor(init?: __Request__host_swap_exception_ports_t);
   Head: mach_msg_header_t;
@@ -12504,68 +12551,31 @@ declare class __Request__host_default_memory_manager_t {
   cluster_size: number;
 }
 
-declare class NXArchInfo {
-  constructor(init?: NXArchInfo);
-  name: string | null;
-  cputype: number;
-  cpusubtype: number;
-  byteorder: interop.Enum<typeof NXByteOrder>;
-  description: string | null;
-}
-
-declare class UCPMap {
-  constructor(init?: UCPMap);
-}
-
-declare class mach_msg_ool_ports_descriptor_t {
-  constructor(init?: mach_msg_ool_ports_descriptor_t);
-  address: interop.Pointer;
-  deallocate: number;
-  copy: number;
-  disposition: number;
-  type: number;
-  count: number;
-}
-
-declare class __Request__task_set_state_t {
-  constructor(init?: __Request__task_set_state_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  new_stateCnt: number;
-  new_state: unknown /* const array */;
-}
-
-declare class kevent {
-  constructor(init?: kevent);
-  ident: number;
-  filter: number;
-  flags: number;
-  fflags: number;
-  data: number;
-  udata: interop.Pointer;
-}
-
-declare class _opaque_pthread_rwlock_t {
-  constructor(init?: _opaque_pthread_rwlock_t);
-  __sig: number;
-  __opaque: unknown /* const array */;
-}
-
-declare class mach_core_fileheader {
-  constructor(init?: mach_core_fileheader);
-  signature: number;
-  log_offset: number;
-  log_length: number;
-  num_files: number;
-  files: unknown /* const array */;
-}
-
 declare class mach_core_details {
   constructor(init?: mach_core_details);
   gzip_offset: number;
   gzip_length: number;
   core_name: unknown /* const array */;
+}
+
+declare class __Request__mach_port_set_context_t {
+  constructor(init?: __Request__mach_port_set_context_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  name: number;
+  context: number;
+}
+
+declare class simd_float4x2 {
+  constructor(init?: simd_float4x2);
+  columns: unknown /* const array */;
+}
+
+declare class zone_btrecord {
+  constructor(init?: zone_btrecord);
+  ref_count: number;
+  operation_type: number;
+  bt: unknown /* const array */;
 }
 
 declare class twolevel_hint {
@@ -12578,7 +12588,7 @@ declare class ifkpi {
   constructor(init?: ifkpi);
   ifk_module_id: number;
   ifk_type: number;
-  ifk_data: unnamed_6750547362077960636;
+  ifk_data: unnamed_9258683820468786927;
 }
 
 declare class __Reply__mach_port_get_context_t {
@@ -12587,6 +12597,12 @@ declare class __Reply__mach_port_get_context_t {
   NDR: NDR_record_t;
   RetCode: number;
   context: number;
+}
+
+declare class vfs_server {
+  constructor(init?: vfs_server);
+  vs_minutes: number;
+  vs_server_name: unknown /* const array */;
 }
 
 declare class vm_info_region {
@@ -12783,29 +12799,38 @@ declare class kmod_info_64_v1 {
   stop_addr: number;
 }
 
-declare class TimeBaseRecord {
-  constructor(init?: TimeBaseRecord);
+declare class z_stream_s {
+  constructor(init?: z_stream_s);
+  next_in: interop.Pointer;
+  avail_in: number;
+  total_in: number;
+  next_out: interop.Pointer;
+  avail_out: number;
+  total_out: number;
+  msg: string | null;
+  state: interop.Pointer;
+  zalloc: (p1: interop.PointerConvertible, p2: number, p3: number) => interop.Pointer | null;
+  zfree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  opaque: interop.Pointer;
+  data_type: number;
+  adler: number;
+  reserved: number;
 }
 
-declare class kmod_info_32_v1 {
-  constructor(init?: kmod_info_32_v1);
-  next_addr: number;
-  info_version: number;
-  id: number;
-  name: unknown /* const array */;
-  version: unknown /* const array */;
-  reference_count: number;
-  reference_list_addr: number;
-  address: number;
-  size: number;
-  hdr_size: number;
-  start_addr: number;
-  stop_addr: number;
+declare class __Request__task_create_identity_token_t {
+  constructor(init?: __Request__task_create_identity_token_t);
+  Head: mach_msg_header_t;
+}
+
+declare class kmod_reference {
+  constructor(init?: kmod_reference);
+  next: interop.Pointer;
+  info: interop.Pointer;
 }
 
 declare class ranlib_64 {
   constructor(init?: ranlib_64);
-  ran_un: unnamed_13354131770504221595;
+  ran_un: unnamed_4326415483873529382;
   ran_off: number;
 }
 
@@ -12961,24 +12986,6 @@ declare class __sigaction {
   sa_tramp: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
   sa_mask: number;
   sa_flags: number;
-}
-
-declare class __Request__mach_port_peek_t {
-  constructor(init?: __Request__mach_port_peek_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  name: number;
-  trailer_type: number;
-  request_seqnop: number;
-  trailer_infopCnt: number;
-}
-
-declare class unnamed_16513952681906905268 {
-  constructor(init?: unnamed_16513952681906905268);
-  w_Termsig: number;
-  w_Coredump: number;
-  w_Retcode: number;
-  w_Filler: number;
 }
 
 declare class task_inspect_basic_counts {
@@ -13376,6 +13383,12 @@ declare class __Reply__vm_remap_new_t {
   max_protection: number;
 }
 
+declare class hv_vm_mem_access_msg_t {
+  constructor(init?: hv_vm_mem_access_msg_t);
+  header: mach_msg_header_t;
+  body: hv_data_abort_notification_t;
+}
+
 declare class ipc_info_name {
   constructor(init?: ipc_info_name);
   iin_name: number;
@@ -13456,6 +13469,13 @@ declare class group_source_req {
 declare class fd_set {
   constructor(init?: fd_set);
   fds_bits: unknown /* const array */;
+}
+
+declare class vm_purgeable_info {
+  constructor(init?: vm_purgeable_info);
+  fifo_data: unknown /* const array */;
+  obsolete_data: vm_purgeable_stat;
+  lifo_data: unknown /* const array */;
 }
 
 declare class host_can_has_debugger_info {
@@ -13617,7 +13637,7 @@ declare class ProcessSerialNumber {
 
 declare class nlist {
   constructor(init?: nlist);
-  n_un: unnamed_2646920081265612283;
+  n_un: unnamed_5674908314878704785;
   n_type: number;
   n_sect: number;
   n_desc: number;
@@ -13696,6 +13716,17 @@ declare class dyld_chained_import {
 
 declare class internal_state {
   constructor(init?: internal_state);
+}
+
+declare class __Request__mach_port_get_context_t {
+  constructor(init?: __Request__mach_port_get_context_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  name: number;
+}
+
+declare class i386_float_state {
+  constructor(init?: i386_float_state);
 }
 
 declare class _NSZone {
@@ -13792,17 +13823,6 @@ declare class __darwin_arm_exception_state64 {
   __far: number;
   __esr: number;
   __exception: number;
-}
-
-declare class unnamed_2553143966604526497 {
-  constructor(init?: unnamed_2553143966604526497);
-  numColorChannels: number;
-  log2BlockBytes: number;
-  blockWidth: number;
-  blockHeight: number;
-  isHDR: number;
-  hasAlpha: number;
-  _reserved: number;
 }
 
 declare class __Request__task_set_policy_t {
@@ -13911,7 +13931,7 @@ declare class dyld_chained_fixups_header {
 
 declare class ranlib {
   constructor(init?: ranlib);
-  ran_un: unnamed_13336292902992397422;
+  ran_un: unnamed_3163621404872128834;
   ran_off: number;
 }
 
@@ -13992,7 +14012,7 @@ declare class tlv_descriptor {
 declare class arm_unified_thread_state {
   constructor(init?: arm_unified_thread_state);
   ash: arm_state_hdr;
-  uts: unnamed_16570823073548673176;
+  uts: unnamed_9545513650739234565;
 }
 
 declare class __Reply__thread_get_exception_ports_info_t {
@@ -14052,6 +14072,12 @@ declare class __Request__host_set_special_port_t {
   which: number;
 }
 
+declare class unnamed_3287053234192669519 {
+  constructor(init?: unnamed_3287053234192669519);
+  opaque1: interop.Pointer;
+  opaque2: number;
+}
+
 declare class __Reply__vm_read_overwrite_t {
   constructor(init?: __Reply__vm_read_overwrite_t);
   Head: mach_msg_header_t;
@@ -14084,6 +14110,20 @@ declare class __Reply__thread_set_mach_voucher_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class __Request__host_set_UNDServer_t {
+  constructor(init?: __Request__host_set_UNDServer_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  server: mach_msg_port_descriptor_t;
+}
+
+declare class target_triple_command {
+  constructor(init?: target_triple_command);
+  cmd: number;
+  cmdsize: number;
+  triple: lc_str;
 }
 
 declare class mach_header {
@@ -14737,6 +14777,27 @@ declare class fvmfile_command {
   header_addr: number;
 }
 
+declare class mach_msg_ool_ports_descriptor32_t {
+  constructor(init?: mach_msg_ool_ports_descriptor32_t);
+  address: number;
+  count: number;
+  deallocate: number;
+  copy: number;
+  disposition: number;
+  type: number;
+}
+
+declare class __darwin_arm_thread_state64 {
+  constructor(init?: __darwin_arm_thread_state64);
+  __x: unknown /* const array */;
+  __fp: number;
+  __lr: number;
+  __sp: number;
+  __pc: number;
+  __cpsr: number;
+  __pad: number;
+}
+
 declare class mach_msg_body_t {
   constructor(init?: mach_msg_body_t);
   msgh_descriptor_count: number;
@@ -14748,6 +14809,26 @@ declare class entry_point_command {
   cmdsize: number;
   entryoff: number;
   stacksize: number;
+}
+
+declare class kmod_info_32_v1 {
+  constructor(init?: kmod_info_32_v1);
+  next_addr: number;
+  info_version: number;
+  id: number;
+  name: unknown /* const array */;
+  version: unknown /* const array */;
+  reference_count: number;
+  reference_list_addr: number;
+  address: number;
+  size: number;
+  hdr_size: number;
+  start_addr: number;
+  stop_addr: number;
+}
+
+declare class TimeBaseRecord {
+  constructor(init?: TimeBaseRecord);
 }
 
 declare class __Request__vm_region_recurse_t {
@@ -14765,6 +14846,39 @@ declare class FixedRect {
   top: number;
   right: number;
   bottom: number;
+}
+
+declare class Fts5ExtensionApi {
+  constructor(init?: Fts5ExtensionApi);
+  iVersion: number;
+  xUserData: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  xColumnCount: (p1: interop.PointerConvertible) => number | null;
+  xRowCount: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  xColumnTotalSize: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  xTokenize: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number, p5: number, p6: number) => number) => number | null;
+  xPhraseCount: (p1: interop.PointerConvertible) => number | null;
+  xPhraseSize: (p1: interop.PointerConvertible, p2: number) => number | null;
+  xInstCount: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  xInst: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  xRowid: (p1: interop.PointerConvertible) => number | null;
+  xColumnText: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  xColumnSize: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  xQueryPhrase: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number) => number | null;
+  xSetAuxdata: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => void) => number | null;
+  xGetAuxdata: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
+  xPhraseFirst: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  xPhraseNext: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
+  xPhraseFirstColumn: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  xPhraseNextColumn: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  xQueryToken: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  xInstToken: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  xColumnLocale: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  xTokenize_v2: (p1: interop.PointerConvertible, p2: string, p3: number, p4: string, p5: number, p6: interop.PointerConvertible, p7: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number, p5: number, p6: number) => number) => number | null;
+}
+
+declare class task_ipc_space_policy_info {
+  constructor(init?: task_ipc_space_policy_info);
+  space_policy: number;
 }
 
 declare class __Request__mach_memory_entry_purgable_control_t {
@@ -14901,6 +15015,15 @@ declare class audit_fstat {
   constructor(init?: audit_fstat);
   af_filesz: number;
   af_currsz: number;
+}
+
+declare class policy_timeshare_info {
+  constructor(init?: policy_timeshare_info);
+  max_priority: number;
+  base_priority: number;
+  cur_priority: number;
+  depressed: number;
+  depress_priority: number;
 }
 
 declare class __Reply__host_processor_sets_t {
@@ -15094,6 +15217,27 @@ declare class __Request__task_get_special_port_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   which_port: number;
+}
+
+declare class __Reply__thread_abort_safely_t {
+  constructor(init?: __Reply__thread_abort_safely_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class unnamed_3527009257996198812 {
+  constructor(init?: unnamed_3527009257996198812);
+  inp6_options: number;
+  inp6_hlim: number;
+  unused_uint8_1: number;
+  unused_uint16_1: number;
+  inp6_outputopts: number;
+  inp6_moptions: number;
+  inp6_icmp6filt: number;
+  inp6_cksum: number;
+  inp6_ifindex: number;
+  inp6_hops: number;
 }
 
 declare class __Reply__task_assign_t {
@@ -15327,18 +15471,6 @@ declare class UIDNA {
   constructor(init?: UIDNA);
 }
 
-declare class policy_rr_base {
-  constructor(init?: policy_rr_base);
-  base_priority: number;
-  quantum: number;
-}
-
-declare class unnamed_16954642694887390931 {
-  constructor(init?: unnamed_16954642694887390931);
-  sp: number;
-  bitpattern: unknown /* const array */;
-}
-
 declare class __Request__thread_set_special_port_t {
   constructor(init?: __Request__thread_set_special_port_t);
   Head: mach_msg_header_t;
@@ -15399,6 +15531,38 @@ declare class __Reply__host_reboot_t {
 declare class msg_labels_t {
   constructor(init?: msg_labels_t);
   sender: number;
+}
+
+declare class NXArchInfo {
+  constructor(init?: NXArchInfo);
+  name: string | null;
+  cputype: number;
+  cpusubtype: number;
+  byteorder: interop.Enum<typeof NXByteOrder>;
+  description: string | null;
+}
+
+declare class UCPMap {
+  constructor(init?: UCPMap);
+}
+
+declare class __Request__task_set_state_t {
+  constructor(init?: __Request__task_set_state_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  new_stateCnt: number;
+  new_state: unknown /* const array */;
+}
+
+declare class mach_msg_ool_ports_descriptor_t {
+  constructor(init?: mach_msg_ool_ports_descriptor_t);
+  address: interop.Pointer;
+  deallocate: number;
+  copy: number;
+  disposition: number;
+  type: number;
+  count: number;
 }
 
 declare class UParseError {
@@ -15492,6 +15656,21 @@ declare class __Reply__thread_swap_exception_ports_t {
   old_flavors: unknown /* const array */;
 }
 
+declare class mach_core_fileheader {
+  constructor(init?: mach_core_fileheader);
+  signature: number;
+  log_offset: number;
+  log_length: number;
+  num_files: number;
+  files: unknown /* const array */;
+}
+
+declare class _opaque_pthread_rwlock_t {
+  constructor(init?: _opaque_pthread_rwlock_t);
+  __sig: number;
+  __opaque: unknown /* const array */;
+}
+
 declare class mach_msg_trailer_t {
   constructor(init?: mach_msg_trailer_t);
   msgh_trailer_type: number;
@@ -15522,6 +15701,20 @@ declare class __Reply__processor_exit_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class __Reply__mach_ports_register_t {
+  constructor(init?: __Reply__mach_ports_register_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class unnamed_544468448031136256 {
+  constructor(init?: unnamed_544468448031136256);
+  w_Stopval: number;
+  w_Stopsig: number;
+  w_Filler: number;
 }
 
 declare class mach_msg_ool_descriptor_t {
@@ -15581,6 +15774,24 @@ declare class sqlite3_module {
   xRelease: (p1: interop.PointerConvertible, p2: number) => number | null;
   xRollbackTo: (p1: interop.PointerConvertible, p2: number) => number | null;
   xShadowName: (p1: string) => number | null;
+  xIntegrity: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: interop.PointerConvertible) => number | null;
+}
+
+declare class mach_msg_port_descriptor_t {
+  constructor(init?: mach_msg_port_descriptor_t);
+  name: number;
+  pad1: number;
+  pad2: number;
+  disposition: number;
+  type: number;
+}
+
+declare class unnamed_15169717648918479760 {
+  constructor(init?: unnamed_15169717648918479760);
+  w_Termsig: number;
+  w_Coredump: number;
+  w_Retcode: number;
+  w_Filler: number;
 }
 
 declare class __Request__host_get_UNDServer_t {
@@ -15605,7 +15816,7 @@ declare class scattered_relocation_info {
 
 declare class extern_proc {
   constructor(init?: extern_proc);
-  p_un: unnamed_15743349110863912704;
+  p_un: unnamed_17148095711108601145;
   p_vmspace: interop.Pointer;
   p_sigacts: interop.Pointer;
   p_flag: number;
@@ -15668,15 +15879,6 @@ declare class rr_pco_use {
   rpu_prefix: in6_addr;
 }
 
-declare class mach_msg_port_descriptor_t {
-  constructor(init?: mach_msg_port_descriptor_t);
-  name: number;
-  pad1: number;
-  pad2: number;
-  disposition: number;
-  type: number;
-}
-
 declare class __Reply__task_register_dyld_set_dyld_state_t {
   constructor(init?: __Reply__task_register_dyld_set_dyld_state_t);
   Head: mach_msg_header_t;
@@ -15723,10 +15925,10 @@ declare class _Unwind_Control_Block {
   constructor(init?: _Unwind_Control_Block);
   exception_class: number;
   exception_cleanup: (p1: interop.Enum<typeof _Unwind_Reason_Code>, p2: interop.PointerConvertible) => void | null;
-  unwinder_cache: unnamed_4942079824955366697;
-  barrier_cache: unnamed_16954642694887390931;
-  cleanup_cache: unnamed_3930469133159929878;
-  pr_cache: unnamed_6875058031576432403;
+  unwinder_cache: unnamed_12299193357515738360;
+  barrier_cache: unnamed_15105762553865172983;
+  cleanup_cache: unnamed_15487593949060152290;
+  pr_cache: unnamed_179278192402666286;
   : number;
 }
 
@@ -15749,6 +15951,16 @@ declare class __Reply__vm_behavior_set_t {
 
 declare class sqlite3_stmt {
   constructor(init?: sqlite3_stmt);
+}
+
+declare class __Request__mach_port_peek_t {
+  constructor(init?: __Request__mach_port_peek_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  name: number;
+  trailer_type: number;
+  request_seqnop: number;
+  trailer_infopCnt: number;
 }
 
 declare class __Request__host_priv_statistics_t {
@@ -15906,6 +16118,28 @@ declare class searchstate {
   ss_fsstate: unknown /* const array */;
 }
 
+declare class sqlite3_pcache_methods2 {
+  constructor(init?: sqlite3_pcache_methods2);
+  iVersion: number;
+  pArg: interop.Pointer;
+  xInit: (p1: interop.PointerConvertible) => number | null;
+  xShutdown: (p1: interop.PointerConvertible) => void | null;
+  xCreate: (p1: number, p2: number, p3: number) => interop.Pointer | null;
+  xCachesize: (p1: interop.PointerConvertible, p2: number) => void | null;
+  xPagecount: (p1: interop.PointerConvertible) => number | null;
+  xFetch: (p1: interop.PointerConvertible, p2: number, p3: number) => interop.Pointer | null;
+  xUnpin: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
+  xRekey: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  xTruncate: (p1: interop.PointerConvertible, p2: number) => void | null;
+  xDestroy: (p1: interop.PointerConvertible) => void | null;
+  xShrink: (p1: interop.PointerConvertible) => void | null;
+}
+
+declare class unnamed_12932631033977542443 {
+  constructor(init?: unnamed_12932631033977542443);
+  inp4_ip_tos: number;
+}
+
 declare class __Request__host_kernel_version_t {
   constructor(init?: __Request__host_kernel_version_t);
   Head: mach_msg_header_t;
@@ -15948,6 +16182,23 @@ declare class __asl_object_s {
   constructor(init?: __asl_object_s);
 }
 
+declare class __Reply__mach_vm_wire_t {
+  constructor(init?: __Reply__mach_vm_wire_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class kevent {
+  constructor(init?: kevent);
+  ident: number;
+  filter: number;
+  flags: number;
+  fflags: number;
+  data: number;
+  udata: interop.Pointer;
+}
+
 declare class NDR_record_t {
   constructor(init?: NDR_record_t);
   mig_vers: number;
@@ -15975,11 +16226,6 @@ declare class if_msghdr2 {
   ifm_data: if_data64;
 }
 
-declare class audit_token_t {
-  constructor(init?: audit_token_t);
-  val: unknown /* const array */;
-}
-
 declare class __Request__host_processor_sets_t {
   constructor(init?: __Request__host_processor_sets_t);
   Head: mach_msg_header_t;
@@ -16000,30 +16246,6 @@ declare class sqlite3_pcache_page {
   constructor(init?: sqlite3_pcache_page);
   pBuf: interop.Pointer;
   pExtra: interop.Pointer;
-}
-
-declare class statvfs {
-  constructor(init?: statvfs);
-  f_bsize: number;
-  f_frsize: number;
-  f_blocks: number;
-  f_bfree: number;
-  f_bavail: number;
-  f_files: number;
-  f_ffree: number;
-  f_favail: number;
-  f_fsid: number;
-  f_flag: number;
-  f_namemax: number;
-}
-
-declare class __Request__vm_inherit_t {
-  constructor(init?: __Request__vm_inherit_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  address: number;
-  size: number;
-  new_inheritance: number;
 }
 
 declare class __Request__mach_port_extract_member_t {
@@ -16061,20 +16283,6 @@ declare class flocktimeout {
   timeout: timespec;
 }
 
-declare class policy_timeshare_info {
-  constructor(init?: policy_timeshare_info);
-  max_priority: number;
-  base_priority: number;
-  cur_priority: number;
-  depressed: number;
-  depress_priority: number;
-}
-
-declare class __Request__host_get_multiuser_config_flags_t {
-  constructor(init?: __Request__host_get_multiuser_config_flags_t);
-  Head: mach_msg_header_t;
-}
-
 declare class __Request__vm_read_t {
   constructor(init?: __Request__vm_read_t);
   Head: mach_msg_header_t;
@@ -16110,13 +16318,6 @@ declare class __Request__task_policy_t {
   base: unknown /* const array */;
   set_limit: number;
   change: number;
-}
-
-declare class __Reply__mach_ports_register_t {
-  constructor(init?: __Reply__mach_ports_register_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class rusage_info_v5 {
@@ -16179,13 +16380,6 @@ declare class proc_persona_info {
   macho_uuid: unknown /* const array */;
 }
 
-declare class __Reply__thread_abort_safely_t {
-  constructor(init?: __Reply__thread_abort_safely_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class group_req {
   constructor(init?: group_req);
   gr_interface: number;
@@ -16236,27 +16430,10 @@ declare class dyld_chained_ptr_64_bind {
   bind: number;
 }
 
-declare class __Request__task_create_identity_token_t {
-  constructor(init?: __Request__task_create_identity_token_t);
-  Head: mach_msg_header_t;
-}
-
-declare class z_stream_s {
-  constructor(init?: z_stream_s);
-  next_in: interop.Pointer;
-  avail_in: number;
-  total_in: number;
-  next_out: interop.Pointer;
-  avail_out: number;
-  total_out: number;
-  msg: string | null;
-  state: interop.Pointer;
-  zalloc: (p1: interop.PointerConvertible, p2: number, p3: number) => interop.Pointer | null;
-  zfree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  opaque: interop.Pointer;
-  data_type: number;
-  adler: number;
-  reserved: number;
+declare class policy_rr_base {
+  constructor(init?: policy_rr_base);
+  base_priority: number;
+  quantum: number;
 }
 
 declare class _DNSServiceRef_t {
@@ -16387,28 +16564,12 @@ declare class __darwin_pthread_handler_rec {
   __next: interop.Pointer;
 }
 
-declare class Fts5ExtensionApi {
-  constructor(init?: Fts5ExtensionApi);
+declare class fts5_tokenizer_v2 {
+  constructor(init?: fts5_tokenizer_v2);
   iVersion: number;
-  xUserData: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  xColumnCount: (p1: interop.PointerConvertible) => number | null;
-  xRowCount: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  xColumnTotalSize: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  xTokenize: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number, p5: number, p6: number) => number) => number | null;
-  xPhraseCount: (p1: interop.PointerConvertible) => number | null;
-  xPhraseSize: (p1: interop.PointerConvertible, p2: number) => number | null;
-  xInstCount: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  xInst: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  xRowid: (p1: interop.PointerConvertible) => number | null;
-  xColumnText: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  xColumnSize: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  xQueryPhrase: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number) => number | null;
-  xSetAuxdata: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => void) => number | null;
-  xGetAuxdata: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  xPhraseFirst: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  xPhraseNext: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  xPhraseFirstColumn: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  xPhraseNextColumn: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  xCreate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
+  xDelete: (p1: interop.PointerConvertible) => void | null;
+  xTokenize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: number, p6: string, p7: number, p8: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number, p5: number, p6: number) => number) => number | null;
 }
 
 declare class dylib {
@@ -16434,13 +16595,6 @@ declare class rusage_info_v0 {
   ri_proc_exit_abstime: number;
 }
 
-declare class unnamed_11079308165254503929 {
-  constructor(init?: unnamed_11079308165254503929);
-  w_Stopval: number;
-  w_Stopsig: number;
-  w_Filler: number;
-}
-
 declare class __Reply__clock_get_time_t {
   constructor(init?: __Reply__clock_get_time_t);
   Head: mach_msg_header_t;
@@ -16461,7 +16615,7 @@ declare class __Reply__mach_port_kobject_description_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-  object_type: number;
+  object_type: interop.Enum<typeof ipc_info_object_type_t>;
   object_addr: number;
   descriptionOffset: number;
   descriptionCnt: number;
@@ -16473,12 +16627,6 @@ declare class au_tid_addr {
   at_port: number;
   at_type: number;
   at_addr: unknown /* const array */;
-}
-
-declare class kmod_reference {
-  constructor(init?: kmod_reference);
-  next: interop.Pointer;
-  info: interop.Pointer;
 }
 
 declare class sqlite3_index_constraint_usage {
@@ -16595,11 +16743,11 @@ declare class inpcb {
   inp_vflag: number;
   inp_ip_ttl: number;
   inp_ip_p: number;
-  inp_dependfaddr: unnamed_15715656241701000234;
-  inp_dependladdr: unnamed_5630484676515343135;
-  inp_dependroute: unnamed_17707848779403660388;
-  inp_depend4: unnamed_4753490486630450008;
-  inp_depend6: unnamed_16057534543098669224;
+  inp_dependfaddr: unnamed_12122219356770104598;
+  inp_dependladdr: unnamed_16151232706894018462;
+  inp_dependroute: unnamed_11983846278908025531;
+  inp_depend4: unnamed_6009673998943019639;
+  inp_depend6: unnamed_3527009257996198812;
   hash_element: number;
   inp_saved_ppcb: number;
   inp_sp: number;
@@ -16612,7 +16760,7 @@ declare class DNSServiceAttribute_s {
 
 declare class nlist_64 {
   constructor(init?: nlist_64);
-  n_un: unnamed_17371802974017955788;
+  n_un: unnamed_16880175681338113954;
   n_type: number;
   n_sect: number;
   n_desc: number;
@@ -16627,13 +16775,6 @@ declare class __Request__task_test_async_upcall_propagation_t {
   NDR: NDR_record_t;
   qos: number;
   iotier: number;
-}
-
-declare class __Reply__mach_vm_wire_t {
-  constructor(init?: __Reply__mach_vm_wire_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class __Reply__host_set_special_port_t {
@@ -16716,382 +16857,18 @@ declare class fts5_api {
   xCreateTokenizer: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => number | null;
   xFindTokenizer: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
   xCreateFunction: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void, p5: (p1: interop.PointerConvertible) => void) => number | null;
+  xCreateTokenizer_v2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => number | null;
+  xFindTokenizer_v2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
 }
 
-type lc_strDescriptor = 
-  | { offset: number };
-
-declare class lc_str {
-  constructor(init?: lc_strDescriptor);
-  offset: number;
-}
-
-type __ReplyUnion__processor_set_subsystemDescriptor = 
-  | { Reply_processor_set_statistics: __Reply__processor_set_statistics_t }
-  | { Reply_processor_set_destroy: __Reply__processor_set_destroy_t }
-  | { Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t }
-  | { Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t }
-  | { Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t }
-  | { Reply_processor_set_tasks: __Reply__processor_set_tasks_t }
-  | { Reply_processor_set_threads: __Reply__processor_set_threads_t }
-  | { Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t }
-  | { Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t }
-  | { Reply_processor_set_info: __Reply__processor_set_info_t }
-  | { Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t };
-
-declare class __ReplyUnion__processor_set_subsystem {
-  constructor(init?: __ReplyUnion__processor_set_subsystemDescriptor);
-  Reply_processor_set_statistics: __Reply__processor_set_statistics_t;
-  Reply_processor_set_destroy: __Reply__processor_set_destroy_t;
-  Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t;
-  Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t;
-  Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t;
-  Reply_processor_set_tasks: __Reply__processor_set_tasks_t;
-  Reply_processor_set_threads: __Reply__processor_set_threads_t;
-  Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t;
-  Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t;
-  Reply_processor_set_info: __Reply__processor_set_info_t;
-  Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t;
-}
-
-type unnamed_16570823073548673176Descriptor = 
-  | { ts_32: __darwin_arm_thread_state }
-  | { ts_64: __darwin_arm_thread_state64 };
-
-declare class unnamed_16570823073548673176 {
-  constructor(init?: unnamed_16570823073548673176Descriptor);
-  ts_32: __darwin_arm_thread_state;
-  ts_64: __darwin_arm_thread_state64;
-}
-
-type __RequestUnion__host_security_subsystemDescriptor = 
-  | { Request_host_security_create_task_token: __Request__host_security_create_task_token_t }
-  | { Request_host_security_set_task_token: __Request__host_security_set_task_token_t };
-
-declare class __RequestUnion__host_security_subsystem {
-  constructor(init?: __RequestUnion__host_security_subsystemDescriptor);
-  Request_host_security_create_task_token: __Request__host_security_create_task_token_t;
-  Request_host_security_set_task_token: __Request__host_security_set_task_token_t;
-}
-
-type unnamed_7183204894828581474Descriptor = 
-  | { if_status_v1: if_wifi_status_v1 };
-
-declare class unnamed_7183204894828581474 {
-  constructor(init?: unnamed_7183204894828581474Descriptor);
-  if_status_v1: if_wifi_status_v1;
-}
-
-type unnamed_15743349110863912704Descriptor = 
-  | { p_st1: unnamed_15188807568549777765 }
-  | { __p_starttime: timeval };
-
-declare class unnamed_15743349110863912704 {
-  constructor(init?: unnamed_15743349110863912704Descriptor);
-  p_st1: unnamed_15188807568549777765;
-  __p_starttime: timeval;
-}
-
-type __ReplyUnion__memory_entry_subsystemDescriptor = 
-  | { Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t }
-  | { Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t }
-  | { Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t };
-
-declare class __ReplyUnion__memory_entry_subsystem {
-  constructor(init?: __ReplyUnion__memory_entry_subsystemDescriptor);
-  Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t;
-  Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t;
-  Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t;
-}
-
-type __ReplyUnion__mach_voucher_subsystemDescriptor = 
-  | { Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t }
-  | { Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t }
-  | { Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t }
-  | { Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t }
-  | { Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t };
-
-declare class __ReplyUnion__mach_voucher_subsystem {
-  constructor(init?: __ReplyUnion__mach_voucher_subsystemDescriptor);
-  Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t;
-  Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t;
-  Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t;
-  Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t;
-  Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t;
-}
-
-type __RequestUnion__mach_voucher_subsystemDescriptor = 
-  | { Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t }
-  | { Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t }
-  | { Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t }
-  | { Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t }
-  | { Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t };
-
-declare class __RequestUnion__mach_voucher_subsystem {
-  constructor(init?: __RequestUnion__mach_voucher_subsystemDescriptor);
-  Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t;
-  Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t;
-  Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t;
-  Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t;
-  Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t;
-}
-
-type unnamed_6750547362077960636Descriptor = 
-  | { ifk_ptr: interop.PointerConvertible }
-  | { ifk_value: number };
-
-declare class unnamed_6750547362077960636 {
-  constructor(init?: unnamed_6750547362077960636Descriptor);
-  ifk_ptr: interop.Pointer;
-  ifk_value: number;
-}
-
-type __ReplyUnion__exc_subsystemDescriptor = 
-  | { Reply_exception_raise: __Reply__exception_raise_t }
-  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
-  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
-
-declare class __ReplyUnion__exc_subsystem {
-  constructor(init?: __ReplyUnion__exc_subsystemDescriptor);
-  Reply_exception_raise: __Reply__exception_raise_t;
-  Reply_exception_raise_state: __Reply__exception_raise_state_t;
-  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
-}
-
-type __RequestUnion__clock_reply_subsystemDescriptor = 
-  | { Request_clock_alarm_reply: __Request__clock_alarm_reply_t };
-
-declare class __RequestUnion__clock_reply_subsystem {
-  constructor(init?: __RequestUnion__clock_reply_subsystemDescriptor);
-  Request_clock_alarm_reply: __Request__clock_alarm_reply_t;
-}
-
-type __ReplyUnion__clock_subsystemDescriptor = 
-  | { Reply_clock_get_time: __Reply__clock_get_time_t }
-  | { Reply_clock_get_attributes: __Reply__clock_get_attributes_t }
-  | { Reply_clock_alarm: __Reply__clock_alarm_t };
-
-declare class __ReplyUnion__clock_subsystem {
-  constructor(init?: __ReplyUnion__clock_subsystemDescriptor);
-  Reply_clock_get_time: __Reply__clock_get_time_t;
-  Reply_clock_get_attributes: __Reply__clock_get_attributes_t;
-  Reply_clock_alarm: __Reply__clock_alarm_t;
-}
-
-type __RequestUnion__clock_subsystemDescriptor = 
-  | { Request_clock_get_time: __Request__clock_get_time_t }
-  | { Request_clock_get_attributes: __Request__clock_get_attributes_t }
-  | { Request_clock_alarm: __Request__clock_alarm_t };
-
-declare class __RequestUnion__clock_subsystem {
-  constructor(init?: __RequestUnion__clock_subsystemDescriptor);
-  Request_clock_get_time: __Request__clock_get_time_t;
-  Request_clock_get_attributes: __Request__clock_get_attributes_t;
-  Request_clock_alarm: __Request__clock_alarm_t;
-}
-
-type __ReplyUnion__mach_host_subsystemDescriptor = 
-  | { Reply_host_info: __Reply__host_info_t }
-  | { Reply_host_kernel_version: __Reply__host_kernel_version_t }
-  | { Reply__host_page_size: __Reply___host_page_size_t }
-  | { Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t }
-  | { Reply_host_processor_info: __Reply__host_processor_info_t }
-  | { Reply_host_get_io_main: __Reply__host_get_io_main_t }
-  | { Reply_host_get_clock_service: __Reply__host_get_clock_service_t }
-  | { Reply_kmod_get_info: __Reply__kmod_get_info_t }
-  | { Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t }
-  | { Reply_processor_set_default: __Reply__processor_set_default_t }
-  | { Reply_processor_set_create: __Reply__processor_set_create_t }
-  | { Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t }
-  | { Reply_host_statistics: __Reply__host_statistics_t }
-  | { Reply_host_request_notification: __Reply__host_request_notification_t }
-  | { Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t }
-  | { Reply_host_statistics64: __Reply__host_statistics64_t }
-  | { Reply_mach_zone_info: __Reply__mach_zone_info_t }
-  | { Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t }
-  | { Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t }
-  | { Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t }
-  | { Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t }
-  | { Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t }
-  | { Reply_mach_memory_info: __Reply__mach_memory_info_t }
-  | { Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t }
-  | { Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t }
-  | { Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t }
-  | { Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t };
-
-declare class __ReplyUnion__mach_host_subsystem {
-  constructor(init?: __ReplyUnion__mach_host_subsystemDescriptor);
-  Reply_host_info: __Reply__host_info_t;
-  Reply_host_kernel_version: __Reply__host_kernel_version_t;
-  Reply__host_page_size: __Reply___host_page_size_t;
-  Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t;
-  Reply_host_processor_info: __Reply__host_processor_info_t;
-  Reply_host_get_io_main: __Reply__host_get_io_main_t;
-  Reply_host_get_clock_service: __Reply__host_get_clock_service_t;
-  Reply_kmod_get_info: __Reply__kmod_get_info_t;
-  Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t;
-  Reply_processor_set_default: __Reply__processor_set_default_t;
-  Reply_processor_set_create: __Reply__processor_set_create_t;
-  Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t;
-  Reply_host_statistics: __Reply__host_statistics_t;
-  Reply_host_request_notification: __Reply__host_request_notification_t;
-  Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t;
-  Reply_host_statistics64: __Reply__host_statistics64_t;
-  Reply_mach_zone_info: __Reply__mach_zone_info_t;
-  Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t;
-  Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t;
-  Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t;
-  Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t;
-  Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t;
-  Reply_mach_memory_info: __Reply__mach_memory_info_t;
-  Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t;
-  Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t;
-  Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t;
-  Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t;
-}
-
-type unnamed_18404259733369804950Descriptor = 
-  | { fts_compar: () => number | null }
-  | { fts_compar_b: () => number | null };
-
-declare class unnamed_18404259733369804950 {
-  constructor(init?: unnamed_18404259733369804950Descriptor);
-  fts_compar: () => number | null;
-  fts_compar_b: () => number | null;
-}
-
-type unnamed_250151222461356890Descriptor = 
-  | { gl_errfunc: (p1: string, p2: number) => number | null }
-  | { gl_errblk: (p1: string, p2: number) => number | null };
-
-declare class unnamed_250151222461356890 {
-  constructor(init?: unnamed_250151222461356890Descriptor);
-  gl_errfunc: (p1: string, p2: number) => number | null;
-  gl_errblk: (p1: string, p2: number) => number | null;
-}
-
-type __RequestUnion__memory_entry_subsystemDescriptor = 
-  | { Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t }
-  | { Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t }
-  | { Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t };
-
-declare class __RequestUnion__memory_entry_subsystem {
-  constructor(init?: __RequestUnion__memory_entry_subsystemDescriptor);
-  Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t;
-  Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t;
-  Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t;
-}
-
-type guid_tDescriptor = 
-  | { g_guid: unknown /* const array */ }
-  | { g_guid_asint: unknown /* const array */ };
-
-declare class guid_t {
-  constructor(init?: guid_tDescriptor);
-  g_guid: unknown /* const array */;
-  g_guid_asint: unknown /* const array */;
-}
-
-type graft_argsDescriptor = 
-  | { max_size: unknown /* const array */ }
-  | { sbc_args: secure_boot_cryptex_args };
-
-declare class graft_args {
-  constructor(init?: graft_argsDescriptor);
-  max_size: unknown /* const array */;
-  sbc_args: secure_boot_cryptex_args;
-}
-
-type semunDescriptor = 
-  | { val: number }
-  | { buf: interop.PointerConvertible }
-  | { array: interop.PointerConvertible };
-
-declare class semun {
-  constructor(init?: semunDescriptor);
-  val: number;
-  buf: interop.Pointer;
-  array: interop.Pointer;
-}
-
-type __ReplyUnion__clock_reply_subsystemDescriptor = 
-  | { Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t };
-
-declare class __ReplyUnion__clock_reply_subsystem {
-  constructor(init?: __ReplyUnion__clock_reply_subsystemDescriptor);
-  Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t;
-}
-
-type waitDescriptor = 
-  | { w_status: number }
-  | { w_T: unnamed_16513952681906905268 }
-  | { w_S: unnamed_11079308165254503929 };
-
-declare class wait {
-  constructor(init?: waitDescriptor);
-  w_status: number;
-  w_T: unnamed_16513952681906905268;
-  w_S: unnamed_11079308165254503929;
-}
-
-type unnamed_4621196920532605477Descriptor = 
-  | { inp46_local: in_addr_4in6 }
-  | { inp6_local: in6_addr };
-
-declare class unnamed_4621196920532605477 {
-  constructor(init?: unnamed_4621196920532605477Descriptor);
-  inp46_local: in_addr_4in6;
-  inp6_local: in6_addr;
-}
-
-type unnamed_11584990870218000395Descriptor = 
+type unnamed_7714139358160886187Descriptor = 
   | { ifcu_buf: string | null }
   | { ifcu_req: interop.PointerConvertible };
 
-declare class unnamed_11584990870218000395 {
-  constructor(init?: unnamed_11584990870218000395Descriptor);
+declare class unnamed_7714139358160886187 {
+  constructor(init?: unnamed_7714139358160886187Descriptor);
   ifcu_buf: string | null;
   ifcu_req: interop.Pointer;
-}
-
-type unnamed_9269768510135550006Descriptor = 
-  | { inp46_foreign: in_addr_4in6 }
-  | { inp6_foreign: in6_addr };
-
-declare class unnamed_9269768510135550006 {
-  constructor(init?: unnamed_9269768510135550006Descriptor);
-  inp46_foreign: in_addr_4in6;
-  inp6_foreign: in6_addr;
-}
-
-type __RequestUnion__clock_priv_subsystemDescriptor = 
-  | { Request_clock_set_time: __Request__clock_set_time_t }
-  | { Request_clock_set_attributes: __Request__clock_set_attributes_t };
-
-declare class __RequestUnion__clock_priv_subsystem {
-  constructor(init?: __RequestUnion__clock_priv_subsystemDescriptor);
-  Request_clock_set_time: __Request__clock_set_time_t;
-  Request_clock_set_attributes: __Request__clock_set_attributes_t;
-}
-
-type unnamed_17707848779403660388Descriptor = 
-  | { inp4_route: unknown /* const array */ }
-  | { inp6_route: unknown /* const array */ };
-
-declare class unnamed_17707848779403660388 {
-  constructor(init?: unnamed_17707848779403660388Descriptor);
-  inp4_route: unknown /* const array */;
-  inp6_route: unknown /* const array */;
-}
-
-type unnamed_5630484676515343135Descriptor = 
-  | { inp46_local: in_addr_4in6 }
-  | { inp6_local: in6_addr };
-
-declare class unnamed_5630484676515343135 {
-  constructor(init?: unnamed_5630484676515343135Descriptor);
-  inp46_local: in_addr_4in6;
-  inp6_local: in6_addr;
 }
 
 type __RequestUnion__task_subsystemDescriptor = 
@@ -17228,138 +17005,150 @@ declare class __RequestUnion__task_subsystem {
   Request_task_register_hardened_exception_handler: __Request__task_register_hardened_exception_handler_t;
 }
 
-type unnamed_1740484493270076062Descriptor = 
-  | { sadb_x_sa2_reserved2: number };
+type __RequestUnion__host_security_subsystemDescriptor = 
+  | { Request_host_security_create_task_token: __Request__host_security_create_task_token_t }
+  | { Request_host_security_set_task_token: __Request__host_security_set_task_token_t };
 
-declare class unnamed_1740484493270076062 {
-  constructor(init?: unnamed_1740484493270076062Descriptor);
-  sadb_x_sa2_reserved2: number;
+declare class __RequestUnion__host_security_subsystem {
+  constructor(init?: __RequestUnion__host_security_subsystemDescriptor);
+  Request_host_security_create_task_token: __Request__host_security_create_task_token_t;
+  Request_host_security_set_task_token: __Request__host_security_set_task_token_t;
 }
 
-type unnamed_3390736850501454953Descriptor = 
-  | { sadb_x_sa2_reserved1: number };
+type unnamed_17148095711108601145Descriptor = 
+  | { p_st1: unnamed_13807912713659974825 }
+  | { __p_starttime: timeval };
 
-declare class unnamed_3390736850501454953 {
-  constructor(init?: unnamed_3390736850501454953Descriptor);
-  sadb_x_sa2_reserved1: number;
+declare class unnamed_17148095711108601145 {
+  constructor(init?: unnamed_17148095711108601145Descriptor);
+  p_st1: unnamed_13807912713659974825;
+  __p_starttime: timeval;
 }
 
-type unnamed_15119962329346617861Descriptor = 
-  | { if_status_v1: if_cellular_status_v1 };
+type __ReplyUnion__memory_entry_subsystemDescriptor = 
+  | { Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t }
+  | { Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t }
+  | { Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t }
+  | { Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t };
 
-declare class unnamed_15119962329346617861 {
-  constructor(init?: unnamed_15119962329346617861Descriptor);
-  if_status_v1: if_cellular_status_v1;
+declare class __ReplyUnion__memory_entry_subsystem {
+  constructor(init?: __ReplyUnion__memory_entry_subsystemDescriptor);
+  Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t;
+  Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t;
+  Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t;
+  Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t;
 }
 
-type unnamed_5780517346839797102Descriptor = 
-  | { ip6_un1: ip6_hdrctl }
-  | { ip6_un2_vfc: number };
+type __ReplyUnion__mach_voucher_subsystemDescriptor = 
+  | { Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t }
+  | { Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t }
+  | { Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t }
+  | { Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t }
+  | { Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t };
 
-declare class unnamed_5780517346839797102 {
-  constructor(init?: unnamed_5780517346839797102Descriptor);
-  ip6_un1: ip6_hdrctl;
-  ip6_un2_vfc: number;
+declare class __ReplyUnion__mach_voucher_subsystem {
+  constructor(init?: __ReplyUnion__mach_voucher_subsystemDescriptor);
+  Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t;
+  Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t;
+  Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t;
+  Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t;
+  Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t;
 }
 
-type __RequestUnion__thread_act_subsystemDescriptor = 
-  | { Request_thread_terminate: __Request__thread_terminate_t }
-  | { Request_act_get_state: __Request__act_get_state_t }
-  | { Request_act_set_state: __Request__act_set_state_t }
-  | { Request_thread_get_state: __Request__thread_get_state_t }
-  | { Request_thread_set_state: __Request__thread_set_state_t }
-  | { Request_thread_suspend: __Request__thread_suspend_t }
-  | { Request_thread_resume: __Request__thread_resume_t }
-  | { Request_thread_abort: __Request__thread_abort_t }
-  | { Request_thread_abort_safely: __Request__thread_abort_safely_t }
-  | { Request_thread_depress_abort: __Request__thread_depress_abort_t }
-  | { Request_thread_get_special_port: __Request__thread_get_special_port_t }
-  | { Request_thread_set_special_port: __Request__thread_set_special_port_t }
-  | { Request_thread_info: __Request__thread_info_t }
-  | { Request_thread_set_exception_ports: __Request__thread_set_exception_ports_t }
-  | { Request_thread_get_exception_ports: __Request__thread_get_exception_ports_t }
-  | { Request_thread_swap_exception_ports: __Request__thread_swap_exception_ports_t }
-  | { Request_thread_policy: __Request__thread_policy_t }
-  | { Request_thread_policy_set: __Request__thread_policy_set_t }
-  | { Request_thread_policy_get: __Request__thread_policy_get_t }
-  | { Request_thread_sample: __Request__thread_sample_t }
-  | { Request_etap_trace_thread: __Request__etap_trace_thread_t }
-  | { Request_thread_assign: __Request__thread_assign_t }
-  | { Request_thread_assign_default: __Request__thread_assign_default_t }
-  | { Request_thread_get_assignment: __Request__thread_get_assignment_t }
-  | { Request_thread_set_policy: __Request__thread_set_policy_t }
-  | { Request_thread_get_mach_voucher: __Request__thread_get_mach_voucher_t }
-  | { Request_thread_set_mach_voucher: __Request__thread_set_mach_voucher_t }
-  | { Request_thread_swap_mach_voucher: __Request__thread_swap_mach_voucher_t }
-  | { Request_thread_convert_thread_state: __Request__thread_convert_thread_state_t }
-  | { Request_thread_get_exception_ports_info: __Request__thread_get_exception_ports_info_t }
-  | { Request_thread_adopt_exception_handler: __Request__thread_adopt_exception_handler_t };
+type __RequestUnion__mach_voucher_subsystemDescriptor = 
+  | { Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t }
+  | { Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t }
+  | { Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t }
+  | { Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t }
+  | { Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t };
 
-declare class __RequestUnion__thread_act_subsystem {
-  constructor(init?: __RequestUnion__thread_act_subsystemDescriptor);
-  Request_thread_terminate: __Request__thread_terminate_t;
-  Request_act_get_state: __Request__act_get_state_t;
-  Request_act_set_state: __Request__act_set_state_t;
-  Request_thread_get_state: __Request__thread_get_state_t;
-  Request_thread_set_state: __Request__thread_set_state_t;
-  Request_thread_suspend: __Request__thread_suspend_t;
-  Request_thread_resume: __Request__thread_resume_t;
-  Request_thread_abort: __Request__thread_abort_t;
-  Request_thread_abort_safely: __Request__thread_abort_safely_t;
-  Request_thread_depress_abort: __Request__thread_depress_abort_t;
-  Request_thread_get_special_port: __Request__thread_get_special_port_t;
-  Request_thread_set_special_port: __Request__thread_set_special_port_t;
-  Request_thread_info: __Request__thread_info_t;
-  Request_thread_set_exception_ports: __Request__thread_set_exception_ports_t;
-  Request_thread_get_exception_ports: __Request__thread_get_exception_ports_t;
-  Request_thread_swap_exception_ports: __Request__thread_swap_exception_ports_t;
-  Request_thread_policy: __Request__thread_policy_t;
-  Request_thread_policy_set: __Request__thread_policy_set_t;
-  Request_thread_policy_get: __Request__thread_policy_get_t;
-  Request_thread_sample: __Request__thread_sample_t;
-  Request_etap_trace_thread: __Request__etap_trace_thread_t;
-  Request_thread_assign: __Request__thread_assign_t;
-  Request_thread_assign_default: __Request__thread_assign_default_t;
-  Request_thread_get_assignment: __Request__thread_get_assignment_t;
-  Request_thread_set_policy: __Request__thread_set_policy_t;
-  Request_thread_get_mach_voucher: __Request__thread_get_mach_voucher_t;
-  Request_thread_set_mach_voucher: __Request__thread_set_mach_voucher_t;
-  Request_thread_swap_mach_voucher: __Request__thread_swap_mach_voucher_t;
-  Request_thread_convert_thread_state: __Request__thread_convert_thread_state_t;
-  Request_thread_get_exception_ports_info: __Request__thread_get_exception_ports_info_t;
-  Request_thread_adopt_exception_handler: __Request__thread_adopt_exception_handler_t;
+declare class __RequestUnion__mach_voucher_subsystem {
+  constructor(init?: __RequestUnion__mach_voucher_subsystemDescriptor);
+  Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t;
+  Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t;
+  Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t;
+  Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t;
+  Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t;
 }
 
-type ifnet_interface_advisory_notification_type_tDescriptor = 
-  | { cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell> }
-  | { wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi> };
+type __ReplyUnion__exc_subsystemDescriptor = 
+  | { Reply_exception_raise: __Reply__exception_raise_t }
+  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
+  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
 
-declare class ifnet_interface_advisory_notification_type_t {
-  constructor(init?: ifnet_interface_advisory_notification_type_tDescriptor);
-  cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell>;
-  wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi>;
+declare class __ReplyUnion__exc_subsystem {
+  constructor(init?: __ReplyUnion__exc_subsystemDescriptor);
+  Reply_exception_raise: __Reply__exception_raise_t;
+  Reply_exception_raise_state: __Reply__exception_raise_state_t;
+  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
 }
 
-type unnamed_13450847161391470468Descriptor = 
-  | { ifsr_cell: if_cellular_status }
-  | { ifsr_wifi: if_wifi_status };
+type __RequestUnion__clock_reply_subsystemDescriptor = 
+  | { Request_clock_alarm_reply: __Request__clock_alarm_reply_t };
 
-declare class unnamed_13450847161391470468 {
-  constructor(init?: unnamed_13450847161391470468Descriptor);
-  ifsr_cell: if_cellular_status;
-  ifsr_wifi: if_wifi_status;
+declare class __RequestUnion__clock_reply_subsystem {
+  constructor(init?: __RequestUnion__clock_reply_subsystemDescriptor);
+  Request_clock_alarm_reply: __Request__clock_alarm_reply_t;
 }
 
-type unnamed_12668126292711546999Descriptor = 
-  | { icmp6_un_data32: unknown /* const array */ }
-  | { icmp6_un_data16: unknown /* const array */ }
-  | { icmp6_un_data8: unknown /* const array */ };
+type __ReplyUnion__clock_subsystemDescriptor = 
+  | { Reply_clock_get_time: __Reply__clock_get_time_t }
+  | { Reply_clock_get_attributes: __Reply__clock_get_attributes_t }
+  | { Reply_clock_alarm: __Reply__clock_alarm_t };
 
-declare class unnamed_12668126292711546999 {
-  constructor(init?: unnamed_12668126292711546999Descriptor);
-  icmp6_un_data32: unknown /* const array */;
-  icmp6_un_data16: unknown /* const array */;
-  icmp6_un_data8: unknown /* const array */;
+declare class __ReplyUnion__clock_subsystem {
+  constructor(init?: __ReplyUnion__clock_subsystemDescriptor);
+  Reply_clock_get_time: __Reply__clock_get_time_t;
+  Reply_clock_get_attributes: __Reply__clock_get_attributes_t;
+  Reply_clock_alarm: __Reply__clock_alarm_t;
+}
+
+type __RequestUnion__clock_subsystemDescriptor = 
+  | { Request_clock_get_time: __Request__clock_get_time_t }
+  | { Request_clock_get_attributes: __Request__clock_get_attributes_t }
+  | { Request_clock_alarm: __Request__clock_alarm_t };
+
+declare class __RequestUnion__clock_subsystem {
+  constructor(init?: __RequestUnion__clock_subsystemDescriptor);
+  Request_clock_get_time: __Request__clock_get_time_t;
+  Request_clock_get_attributes: __Request__clock_get_attributes_t;
+  Request_clock_alarm: __Request__clock_alarm_t;
+}
+
+type __ReplyUnion__processor_set_subsystemDescriptor = 
+  | { Reply_processor_set_statistics: __Reply__processor_set_statistics_t }
+  | { Reply_processor_set_destroy: __Reply__processor_set_destroy_t }
+  | { Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t }
+  | { Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t }
+  | { Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t }
+  | { Reply_processor_set_tasks: __Reply__processor_set_tasks_t }
+  | { Reply_processor_set_threads: __Reply__processor_set_threads_t }
+  | { Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t }
+  | { Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t }
+  | { Reply_processor_set_info: __Reply__processor_set_info_t }
+  | { Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t };
+
+declare class __ReplyUnion__processor_set_subsystem {
+  constructor(init?: __ReplyUnion__processor_set_subsystemDescriptor);
+  Reply_processor_set_statistics: __Reply__processor_set_statistics_t;
+  Reply_processor_set_destroy: __Reply__processor_set_destroy_t;
+  Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t;
+  Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t;
+  Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t;
+  Reply_processor_set_tasks: __Reply__processor_set_tasks_t;
+  Reply_processor_set_threads: __Reply__processor_set_threads_t;
+  Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t;
+  Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t;
+  Reply_processor_set_info: __Reply__processor_set_info_t;
+  Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t;
+}
+
+type unnamed_12652079418674710618Descriptor = 
+  | { if_status_v1: if_wifi_status_v1 };
+
+declare class unnamed_12652079418674710618 {
+  constructor(init?: unnamed_12652079418674710618Descriptor);
+  if_status_v1: if_wifi_status_v1;
 }
 
 type _TXTRecordRef_tDescriptor = 
@@ -17372,25 +17161,127 @@ declare class _TXTRecordRef_t {
   ForceNaturalAlignment: string | null;
 }
 
-type malloc_type_descriptor_v0_tDescriptor = 
-  | { type_id: number };
+type unnamed_6149905307964359173Descriptor = 
+  | { fts_compar: () => number | null }
+  | { fts_compar_b: () => number | null };
 
-declare class malloc_type_descriptor_v0_t {
-  constructor(init?: malloc_type_descriptor_v0_tDescriptor);
-  type_id: number;
+declare class unnamed_6149905307964359173 {
+  constructor(init?: unnamed_6149905307964359173Descriptor);
+  fts_compar: () => number | null;
+  fts_compar_b: () => number | null;
 }
 
-type __sigaction_uDescriptor = 
-  | { __sa_handler: (p1: number) => void | null }
-  | { __sa_sigaction: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null };
+type graft_argsDescriptor = 
+  | { max_size: unknown /* const array */ }
+  | { sbc_args: secure_boot_cryptex_args };
 
-declare class __sigaction_u {
-  constructor(init?: __sigaction_uDescriptor);
-  __sa_handler: (p1: number) => void | null;
-  __sa_sigaction: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+declare class graft_args {
+  constructor(init?: graft_argsDescriptor);
+  max_size: unknown /* const array */;
+  sbc_args: secure_boot_cryptex_args;
 }
 
-type unnamed_7872740099522180759Descriptor = 
+type semunDescriptor = 
+  | { val: number }
+  | { buf: interop.PointerConvertible }
+  | { array: interop.PointerConvertible };
+
+declare class semun {
+  constructor(init?: semunDescriptor);
+  val: number;
+  buf: interop.Pointer;
+  array: interop.Pointer;
+}
+
+type __RequestUnion__processor_subsystemDescriptor = 
+  | { Request_processor_start: __Request__processor_start_t }
+  | { Request_processor_exit: __Request__processor_exit_t }
+  | { Request_processor_info: __Request__processor_info_t }
+  | { Request_processor_control: __Request__processor_control_t }
+  | { Request_processor_assign: __Request__processor_assign_t }
+  | { Request_processor_get_assignment: __Request__processor_get_assignment_t };
+
+declare class __RequestUnion__processor_subsystem {
+  constructor(init?: __RequestUnion__processor_subsystemDescriptor);
+  Request_processor_start: __Request__processor_start_t;
+  Request_processor_exit: __Request__processor_exit_t;
+  Request_processor_info: __Request__processor_info_t;
+  Request_processor_control: __Request__processor_control_t;
+  Request_processor_assign: __Request__processor_assign_t;
+  Request_processor_get_assignment: __Request__processor_get_assignment_t;
+}
+
+type unnamed_16337859136180877603Descriptor = 
+  | { ip6_un1: ip6_hdrctl }
+  | { ip6_un2_vfc: number };
+
+declare class unnamed_16337859136180877603 {
+  constructor(init?: unnamed_16337859136180877603Descriptor);
+  ip6_un1: ip6_hdrctl;
+  ip6_un2_vfc: number;
+}
+
+type unnamed_16151232706894018462Descriptor = 
+  | { inp46_local: in_addr_4in6 }
+  | { inp6_local: in6_addr };
+
+declare class unnamed_16151232706894018462 {
+  constructor(init?: unnamed_16151232706894018462Descriptor);
+  inp46_local: in_addr_4in6;
+  inp6_local: in6_addr;
+}
+
+type unnamed_12122219356770104598Descriptor = 
+  | { inp46_foreign: in_addr_4in6 }
+  | { inp6_foreign: in6_addr };
+
+declare class unnamed_12122219356770104598 {
+  constructor(init?: unnamed_12122219356770104598Descriptor);
+  inp46_foreign: in_addr_4in6;
+  inp6_foreign: in6_addr;
+}
+
+type unnamed_15739349449488162820Descriptor = 
+  | { addr8: unknown /* const array */ }
+  | { addr16: unknown /* const array */ }
+  | { addr32: unknown /* const array */ };
+
+declare class unnamed_15739349449488162820 {
+  constructor(init?: unnamed_15739349449488162820Descriptor);
+  addr8: unknown /* const array */;
+  addr16: unknown /* const array */;
+  addr32: unknown /* const array */;
+}
+
+type unnamed_8615195772057165089Descriptor = 
+  | { ifsr_cell: if_cellular_status }
+  | { ifsr_wifi: if_wifi_status };
+
+declare class unnamed_8615195772057165089 {
+  constructor(init?: unnamed_8615195772057165089Descriptor);
+  ifsr_cell: if_cellular_status;
+  ifsr_wifi: if_wifi_status;
+}
+
+type unnamed_11756580666549258417Descriptor = 
+  | { ih_pptr: number }
+  | { ih_gwaddr: in_addr }
+  | { ih_idseq: ih_idseq }
+  | { ih_void: number }
+  | { ih_pmtu: ih_pmtu }
+  | { ih_rtradv: ih_rtradv };
+
+declare class unnamed_11756580666549258417 {
+  constructor(init?: unnamed_11756580666549258417Descriptor);
+  ih_pptr: number;
+  ih_gwaddr: in_addr;
+  ih_idseq: ih_idseq;
+  ih_void: number;
+  ih_pmtu: ih_pmtu;
+  ih_rtradv: ih_rtradv;
+}
+
+type unnamed_2211568306095038366Descriptor = 
   | { ifru_addr: sockaddr }
   | { ifru_dstaddr: sockaddr }
   | { ifru_broadaddr: sockaddr }
@@ -17409,10 +17300,11 @@ type unnamed_7872740099522180759Descriptor =
   | { ifru_functional_type: number }
   | { ifru_peer_egress_functional_type: number }
   | { ifru_is_directlink: number }
-  | { ifru_is_vpn: number };
+  | { ifru_is_vpn: number }
+  | { ifru_is_companionlink: number };
 
-declare class unnamed_7872740099522180759 {
-  constructor(init?: unnamed_7872740099522180759Descriptor);
+declare class unnamed_2211568306095038366 {
+  constructor(init?: unnamed_2211568306095038366Descriptor);
   ifru_addr: sockaddr;
   ifru_dstaddr: sockaddr;
   ifru_broadaddr: sockaddr;
@@ -17432,46 +17324,43 @@ declare class unnamed_7872740099522180759 {
   ifru_peer_egress_functional_type: number;
   ifru_is_directlink: number;
   ifru_is_vpn: number;
+  ifru_is_companionlink: number;
 }
 
-type unnamed_9514921772044709579Descriptor = 
-  | { __u6_addr8: unknown /* const array */ }
-  | { __u6_addr16: unknown /* const array */ }
-  | { __u6_addr32: unknown /* const array */ };
+type __ReplyUnion__host_security_subsystemDescriptor = 
+  | { Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t }
+  | { Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t };
 
-declare class unnamed_9514921772044709579 {
-  constructor(init?: unnamed_9514921772044709579Descriptor);
-  __u6_addr8: unknown /* const array */;
-  __u6_addr16: unknown /* const array */;
-  __u6_addr32: unknown /* const array */;
+declare class __ReplyUnion__host_security_subsystem {
+  constructor(init?: __ReplyUnion__host_security_subsystemDescriptor);
+  Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t;
+  Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t;
 }
 
-type unnamed_9857371176896213515Descriptor = 
-  | { is_master: number }
-  | { is_main: number };
+type unnamed_17186261683395987684Descriptor = 
+  | { sadb_x_sa2_reserved1: number };
 
-declare class unnamed_9857371176896213515 {
-  constructor(init?: unnamed_9857371176896213515Descriptor);
-  is_master: number;
-  is_main: number;
+declare class unnamed_17186261683395987684 {
+  constructor(init?: unnamed_17186261683395987684Descriptor);
+  sadb_x_sa2_reserved1: number;
 }
 
-type unnamed_13992860994693902525Descriptor = 
-  | { ih_pptr: number }
-  | { ih_gwaddr: in_addr }
-  | { ih_idseq: ih_idseq }
-  | { ih_void: number }
-  | { ih_pmtu: ih_pmtu }
-  | { ih_rtradv: ih_rtradv };
+type unnamed_18251701834387165660Descriptor = 
+  | { gl_errfunc: (p1: string, p2: number) => number | null }
+  | { gl_errblk: (p1: string, p2: number) => number | null };
 
-declare class unnamed_13992860994693902525 {
-  constructor(init?: unnamed_13992860994693902525Descriptor);
-  ih_pptr: number;
-  ih_gwaddr: in_addr;
-  ih_idseq: ih_idseq;
-  ih_void: number;
-  ih_pmtu: ih_pmtu;
-  ih_rtradv: ih_rtradv;
+declare class unnamed_18251701834387165660 {
+  constructor(init?: unnamed_18251701834387165660Descriptor);
+  gl_errfunc: (p1: string, p2: number) => number | null;
+  gl_errblk: (p1: string, p2: number) => number | null;
+}
+
+type malloc_type_descriptor_v0_tDescriptor = 
+  | { type_id: number };
+
+declare class malloc_type_descriptor_v0_t {
+  constructor(init?: malloc_type_descriptor_v0_tDescriptor);
+  type_id: number;
 }
 
 type mach_msg_descriptor_tDescriptor = 
@@ -17488,6 +17377,378 @@ declare class mach_msg_descriptor_t {
   ool_ports: mach_msg_ool_ports_descriptor_t;
   type: mach_msg_type_descriptor_t;
   guarded_port: mach_msg_guarded_port_descriptor_t;
+}
+
+type unnamed_9258683820468786927Descriptor = 
+  | { ifk_ptr: interop.PointerConvertible }
+  | { ifk_value: number };
+
+declare class unnamed_9258683820468786927 {
+  constructor(init?: unnamed_9258683820468786927Descriptor);
+  ifk_ptr: interop.Pointer;
+  ifk_value: number;
+}
+
+type __ReplyUnion__mach_host_subsystemDescriptor = 
+  | { Reply_host_info: __Reply__host_info_t }
+  | { Reply_host_kernel_version: __Reply__host_kernel_version_t }
+  | { Reply__host_page_size: __Reply___host_page_size_t }
+  | { Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t }
+  | { Reply_host_processor_info: __Reply__host_processor_info_t }
+  | { Reply_host_get_io_main: __Reply__host_get_io_main_t }
+  | { Reply_host_get_clock_service: __Reply__host_get_clock_service_t }
+  | { Reply_kmod_get_info: __Reply__kmod_get_info_t }
+  | { Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t }
+  | { Reply_processor_set_default: __Reply__processor_set_default_t }
+  | { Reply_processor_set_create: __Reply__processor_set_create_t }
+  | { Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t }
+  | { Reply_host_statistics: __Reply__host_statistics_t }
+  | { Reply_host_request_notification: __Reply__host_request_notification_t }
+  | { Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t }
+  | { Reply_host_statistics64: __Reply__host_statistics64_t }
+  | { Reply_mach_zone_info: __Reply__mach_zone_info_t }
+  | { Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t }
+  | { Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t }
+  | { Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t }
+  | { Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t }
+  | { Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t }
+  | { Reply_mach_memory_info: __Reply__mach_memory_info_t }
+  | { Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t }
+  | { Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t }
+  | { Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t }
+  | { Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t };
+
+declare class __ReplyUnion__mach_host_subsystem {
+  constructor(init?: __ReplyUnion__mach_host_subsystemDescriptor);
+  Reply_host_info: __Reply__host_info_t;
+  Reply_host_kernel_version: __Reply__host_kernel_version_t;
+  Reply__host_page_size: __Reply___host_page_size_t;
+  Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t;
+  Reply_host_processor_info: __Reply__host_processor_info_t;
+  Reply_host_get_io_main: __Reply__host_get_io_main_t;
+  Reply_host_get_clock_service: __Reply__host_get_clock_service_t;
+  Reply_kmod_get_info: __Reply__kmod_get_info_t;
+  Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t;
+  Reply_processor_set_default: __Reply__processor_set_default_t;
+  Reply_processor_set_create: __Reply__processor_set_create_t;
+  Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t;
+  Reply_host_statistics: __Reply__host_statistics_t;
+  Reply_host_request_notification: __Reply__host_request_notification_t;
+  Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t;
+  Reply_host_statistics64: __Reply__host_statistics64_t;
+  Reply_mach_zone_info: __Reply__mach_zone_info_t;
+  Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t;
+  Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t;
+  Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t;
+  Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t;
+  Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t;
+  Reply_mach_memory_info: __Reply__mach_memory_info_t;
+  Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t;
+  Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t;
+  Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t;
+  Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t;
+}
+
+type __RequestUnion__mach_port_subsystemDescriptor = 
+  | { Request_mach_port_names: __Request__mach_port_names_t }
+  | { Request_mach_port_type: __Request__mach_port_type_t }
+  | { Request_mach_port_rename: __Request__mach_port_rename_t }
+  | { Request_mach_port_allocate_name: __Request__mach_port_allocate_name_t }
+  | { Request_mach_port_allocate: __Request__mach_port_allocate_t }
+  | { Request_mach_port_destroy: __Request__mach_port_destroy_t }
+  | { Request_mach_port_deallocate: __Request__mach_port_deallocate_t }
+  | { Request_mach_port_get_refs: __Request__mach_port_get_refs_t }
+  | { Request_mach_port_mod_refs: __Request__mach_port_mod_refs_t }
+  | { Request_mach_port_peek: __Request__mach_port_peek_t }
+  | { Request_mach_port_set_mscount: __Request__mach_port_set_mscount_t }
+  | { Request_mach_port_get_set_status: __Request__mach_port_get_set_status_t }
+  | { Request_mach_port_move_member: __Request__mach_port_move_member_t }
+  | { Request_mach_port_request_notification: __Request__mach_port_request_notification_t }
+  | { Request_mach_port_insert_right: __Request__mach_port_insert_right_t }
+  | { Request_mach_port_extract_right: __Request__mach_port_extract_right_t }
+  | { Request_mach_port_set_seqno: __Request__mach_port_set_seqno_t }
+  | { Request_mach_port_get_attributes: __Request__mach_port_get_attributes_t }
+  | { Request_mach_port_set_attributes: __Request__mach_port_set_attributes_t }
+  | { Request_mach_port_allocate_qos: __Request__mach_port_allocate_qos_t }
+  | { Request_mach_port_allocate_full: __Request__mach_port_allocate_full_t }
+  | { Request_task_set_port_space: __Request__task_set_port_space_t }
+  | { Request_mach_port_get_srights: __Request__mach_port_get_srights_t }
+  | { Request_mach_port_space_info: __Request__mach_port_space_info_t }
+  | { Request_mach_port_dnrequest_info: __Request__mach_port_dnrequest_info_t }
+  | { Request_mach_port_kernel_object: __Request__mach_port_kernel_object_t }
+  | { Request_mach_port_insert_member: __Request__mach_port_insert_member_t }
+  | { Request_mach_port_extract_member: __Request__mach_port_extract_member_t }
+  | { Request_mach_port_get_context: __Request__mach_port_get_context_t }
+  | { Request_mach_port_set_context: __Request__mach_port_set_context_t }
+  | { Request_mach_port_kobject: __Request__mach_port_kobject_t }
+  | { Request_mach_port_construct: __Request__mach_port_construct_t }
+  | { Request_mach_port_destruct: __Request__mach_port_destruct_t }
+  | { Request_mach_port_guard: __Request__mach_port_guard_t }
+  | { Request_mach_port_unguard: __Request__mach_port_unguard_t }
+  | { Request_mach_port_space_basic_info: __Request__mach_port_space_basic_info_t }
+  | { Request_mach_port_guard_with_flags: __Request__mach_port_guard_with_flags_t }
+  | { Request_mach_port_swap_guard: __Request__mach_port_swap_guard_t }
+  | { Request_mach_port_kobject_description: __Request__mach_port_kobject_description_t }
+  | { Request_mach_port_is_connection_for_service: __Request__mach_port_is_connection_for_service_t }
+  | { Request_mach_port_get_service_port_info: __Request__mach_port_get_service_port_info_t }
+  | { Request_mach_port_assert_attributes: __Request__mach_port_assert_attributes_t };
+
+declare class __RequestUnion__mach_port_subsystem {
+  constructor(init?: __RequestUnion__mach_port_subsystemDescriptor);
+  Request_mach_port_names: __Request__mach_port_names_t;
+  Request_mach_port_type: __Request__mach_port_type_t;
+  Request_mach_port_rename: __Request__mach_port_rename_t;
+  Request_mach_port_allocate_name: __Request__mach_port_allocate_name_t;
+  Request_mach_port_allocate: __Request__mach_port_allocate_t;
+  Request_mach_port_destroy: __Request__mach_port_destroy_t;
+  Request_mach_port_deallocate: __Request__mach_port_deallocate_t;
+  Request_mach_port_get_refs: __Request__mach_port_get_refs_t;
+  Request_mach_port_mod_refs: __Request__mach_port_mod_refs_t;
+  Request_mach_port_peek: __Request__mach_port_peek_t;
+  Request_mach_port_set_mscount: __Request__mach_port_set_mscount_t;
+  Request_mach_port_get_set_status: __Request__mach_port_get_set_status_t;
+  Request_mach_port_move_member: __Request__mach_port_move_member_t;
+  Request_mach_port_request_notification: __Request__mach_port_request_notification_t;
+  Request_mach_port_insert_right: __Request__mach_port_insert_right_t;
+  Request_mach_port_extract_right: __Request__mach_port_extract_right_t;
+  Request_mach_port_set_seqno: __Request__mach_port_set_seqno_t;
+  Request_mach_port_get_attributes: __Request__mach_port_get_attributes_t;
+  Request_mach_port_set_attributes: __Request__mach_port_set_attributes_t;
+  Request_mach_port_allocate_qos: __Request__mach_port_allocate_qos_t;
+  Request_mach_port_allocate_full: __Request__mach_port_allocate_full_t;
+  Request_task_set_port_space: __Request__task_set_port_space_t;
+  Request_mach_port_get_srights: __Request__mach_port_get_srights_t;
+  Request_mach_port_space_info: __Request__mach_port_space_info_t;
+  Request_mach_port_dnrequest_info: __Request__mach_port_dnrequest_info_t;
+  Request_mach_port_kernel_object: __Request__mach_port_kernel_object_t;
+  Request_mach_port_insert_member: __Request__mach_port_insert_member_t;
+  Request_mach_port_extract_member: __Request__mach_port_extract_member_t;
+  Request_mach_port_get_context: __Request__mach_port_get_context_t;
+  Request_mach_port_set_context: __Request__mach_port_set_context_t;
+  Request_mach_port_kobject: __Request__mach_port_kobject_t;
+  Request_mach_port_construct: __Request__mach_port_construct_t;
+  Request_mach_port_destruct: __Request__mach_port_destruct_t;
+  Request_mach_port_guard: __Request__mach_port_guard_t;
+  Request_mach_port_unguard: __Request__mach_port_unguard_t;
+  Request_mach_port_space_basic_info: __Request__mach_port_space_basic_info_t;
+  Request_mach_port_guard_with_flags: __Request__mach_port_guard_with_flags_t;
+  Request_mach_port_swap_guard: __Request__mach_port_swap_guard_t;
+  Request_mach_port_kobject_description: __Request__mach_port_kobject_description_t;
+  Request_mach_port_is_connection_for_service: __Request__mach_port_is_connection_for_service_t;
+  Request_mach_port_get_service_port_info: __Request__mach_port_get_service_port_info_t;
+  Request_mach_port_assert_attributes: __Request__mach_port_assert_attributes_t;
+}
+
+type unnamed_17329325756089032898Descriptor = 
+  | { inp46_local: in_addr_4in6 }
+  | { inp6_local: in6_addr };
+
+declare class unnamed_17329325756089032898 {
+  constructor(init?: unnamed_17329325756089032898Descriptor);
+  inp46_local: in_addr_4in6;
+  inp6_local: in6_addr;
+}
+
+type unnamed_9740646030548395385Descriptor = 
+  | { sadb_x_sa2_reserved2: number };
+
+declare class unnamed_9740646030548395385 {
+  constructor(init?: unnamed_9740646030548395385Descriptor);
+  sadb_x_sa2_reserved2: number;
+}
+
+type __ReplyUnion__thread_act_subsystemDescriptor = 
+  | { Reply_thread_terminate: __Reply__thread_terminate_t }
+  | { Reply_act_get_state: __Reply__act_get_state_t }
+  | { Reply_act_set_state: __Reply__act_set_state_t }
+  | { Reply_thread_get_state: __Reply__thread_get_state_t }
+  | { Reply_thread_set_state: __Reply__thread_set_state_t }
+  | { Reply_thread_suspend: __Reply__thread_suspend_t }
+  | { Reply_thread_resume: __Reply__thread_resume_t }
+  | { Reply_thread_abort: __Reply__thread_abort_t }
+  | { Reply_thread_abort_safely: __Reply__thread_abort_safely_t }
+  | { Reply_thread_depress_abort: __Reply__thread_depress_abort_t }
+  | { Reply_thread_get_special_port: __Reply__thread_get_special_port_t }
+  | { Reply_thread_set_special_port: __Reply__thread_set_special_port_t }
+  | { Reply_thread_info: __Reply__thread_info_t }
+  | { Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t }
+  | { Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t }
+  | { Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t }
+  | { Reply_thread_policy: __Reply__thread_policy_t }
+  | { Reply_thread_policy_set: __Reply__thread_policy_set_t }
+  | { Reply_thread_policy_get: __Reply__thread_policy_get_t }
+  | { Reply_thread_sample: __Reply__thread_sample_t }
+  | { Reply_etap_trace_thread: __Reply__etap_trace_thread_t }
+  | { Reply_thread_assign: __Reply__thread_assign_t }
+  | { Reply_thread_assign_default: __Reply__thread_assign_default_t }
+  | { Reply_thread_get_assignment: __Reply__thread_get_assignment_t }
+  | { Reply_thread_set_policy: __Reply__thread_set_policy_t }
+  | { Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t }
+  | { Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t }
+  | { Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t }
+  | { Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t }
+  | { Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t }
+  | { Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t };
+
+declare class __ReplyUnion__thread_act_subsystem {
+  constructor(init?: __ReplyUnion__thread_act_subsystemDescriptor);
+  Reply_thread_terminate: __Reply__thread_terminate_t;
+  Reply_act_get_state: __Reply__act_get_state_t;
+  Reply_act_set_state: __Reply__act_set_state_t;
+  Reply_thread_get_state: __Reply__thread_get_state_t;
+  Reply_thread_set_state: __Reply__thread_set_state_t;
+  Reply_thread_suspend: __Reply__thread_suspend_t;
+  Reply_thread_resume: __Reply__thread_resume_t;
+  Reply_thread_abort: __Reply__thread_abort_t;
+  Reply_thread_abort_safely: __Reply__thread_abort_safely_t;
+  Reply_thread_depress_abort: __Reply__thread_depress_abort_t;
+  Reply_thread_get_special_port: __Reply__thread_get_special_port_t;
+  Reply_thread_set_special_port: __Reply__thread_set_special_port_t;
+  Reply_thread_info: __Reply__thread_info_t;
+  Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t;
+  Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t;
+  Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t;
+  Reply_thread_policy: __Reply__thread_policy_t;
+  Reply_thread_policy_set: __Reply__thread_policy_set_t;
+  Reply_thread_policy_get: __Reply__thread_policy_get_t;
+  Reply_thread_sample: __Reply__thread_sample_t;
+  Reply_etap_trace_thread: __Reply__etap_trace_thread_t;
+  Reply_thread_assign: __Reply__thread_assign_t;
+  Reply_thread_assign_default: __Reply__thread_assign_default_t;
+  Reply_thread_get_assignment: __Reply__thread_get_assignment_t;
+  Reply_thread_set_policy: __Reply__thread_set_policy_t;
+  Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t;
+  Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t;
+  Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t;
+  Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t;
+  Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t;
+  Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t;
+}
+
+type ifnet_interface_advisory_notification_type_tDescriptor = 
+  | { cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell> }
+  | { wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi> };
+
+declare class ifnet_interface_advisory_notification_type_t {
+  constructor(init?: ifnet_interface_advisory_notification_type_tDescriptor);
+  cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell>;
+  wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi>;
+}
+
+type __RequestUnion__processor_set_subsystemDescriptor = 
+  | { Request_processor_set_statistics: __Request__processor_set_statistics_t }
+  | { Request_processor_set_destroy: __Request__processor_set_destroy_t }
+  | { Request_processor_set_max_priority: __Request__processor_set_max_priority_t }
+  | { Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t }
+  | { Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t }
+  | { Request_processor_set_tasks: __Request__processor_set_tasks_t }
+  | { Request_processor_set_threads: __Request__processor_set_threads_t }
+  | { Request_processor_set_policy_control: __Request__processor_set_policy_control_t }
+  | { Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t }
+  | { Request_processor_set_info: __Request__processor_set_info_t }
+  | { Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t };
+
+declare class __RequestUnion__processor_set_subsystem {
+  constructor(init?: __RequestUnion__processor_set_subsystemDescriptor);
+  Request_processor_set_statistics: __Request__processor_set_statistics_t;
+  Request_processor_set_destroy: __Request__processor_set_destroy_t;
+  Request_processor_set_max_priority: __Request__processor_set_max_priority_t;
+  Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t;
+  Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t;
+  Request_processor_set_tasks: __Request__processor_set_tasks_t;
+  Request_processor_set_threads: __Request__processor_set_threads_t;
+  Request_processor_set_policy_control: __Request__processor_set_policy_control_t;
+  Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t;
+  Request_processor_set_info: __Request__processor_set_info_t;
+  Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t;
+}
+
+type __ReplyUnion__host_priv_subsystemDescriptor = 
+  | { Reply_host_get_boot_info: __Reply__host_get_boot_info_t }
+  | { Reply_host_reboot: __Reply__host_reboot_t }
+  | { Reply_host_priv_statistics: __Reply__host_priv_statistics_t }
+  | { Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t }
+  | { Reply_vm_wire: __Reply__vm_wire_t }
+  | { Reply_thread_wire: __Reply__thread_wire_t }
+  | { Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t }
+  | { Reply_host_processors: __Reply__host_processors_t }
+  | { Reply_host_get_clock_control: __Reply__host_get_clock_control_t }
+  | { Reply_kmod_create: __Reply__kmod_create_t }
+  | { Reply_kmod_destroy: __Reply__kmod_destroy_t }
+  | { Reply_kmod_control: __Reply__kmod_control_t }
+  | { Reply_host_get_special_port: __Reply__host_get_special_port_t }
+  | { Reply_host_set_special_port: __Reply__host_set_special_port_t }
+  | { Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t }
+  | { Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t }
+  | { Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t }
+  | { Reply_mach_vm_wire: __Reply__mach_vm_wire_t }
+  | { Reply_host_processor_sets: __Reply__host_processor_sets_t }
+  | { Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t }
+  | { Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t }
+  | { Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t }
+  | { Reply_kext_request: __Reply__kext_request_t };
+
+declare class __ReplyUnion__host_priv_subsystem {
+  constructor(init?: __ReplyUnion__host_priv_subsystemDescriptor);
+  Reply_host_get_boot_info: __Reply__host_get_boot_info_t;
+  Reply_host_reboot: __Reply__host_reboot_t;
+  Reply_host_priv_statistics: __Reply__host_priv_statistics_t;
+  Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t;
+  Reply_vm_wire: __Reply__vm_wire_t;
+  Reply_thread_wire: __Reply__thread_wire_t;
+  Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t;
+  Reply_host_processors: __Reply__host_processors_t;
+  Reply_host_get_clock_control: __Reply__host_get_clock_control_t;
+  Reply_kmod_create: __Reply__kmod_create_t;
+  Reply_kmod_destroy: __Reply__kmod_destroy_t;
+  Reply_kmod_control: __Reply__kmod_control_t;
+  Reply_host_get_special_port: __Reply__host_get_special_port_t;
+  Reply_host_set_special_port: __Reply__host_set_special_port_t;
+  Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t;
+  Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t;
+  Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t;
+  Reply_mach_vm_wire: __Reply__mach_vm_wire_t;
+  Reply_host_processor_sets: __Reply__host_processor_sets_t;
+  Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t;
+  Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t;
+  Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t;
+  Reply_kext_request: __Reply__kext_request_t;
+}
+
+type unnamed_6910657430341859690Descriptor = 
+  | { id_ts: id_ts }
+  | { id_ip: id_ip }
+  | { id_radv: icmp_ra_addr }
+  | { id_mask: number }
+  | { id_data: unknown /* const array */ };
+
+declare class unnamed_6910657430341859690 {
+  constructor(init?: unnamed_6910657430341859690Descriptor);
+  id_ts: id_ts;
+  id_ip: id_ip;
+  id_radv: icmp_ra_addr;
+  id_mask: number;
+  id_data: unknown /* const array */;
+}
+
+type ipt_timestampDescriptor = 
+  | { ipt_time: unknown /* const array */ }
+  | { ipt_ta: unknown /* const array */ };
+
+declare class ipt_timestamp {
+  constructor(init?: ipt_timestampDescriptor);
+  ipt_time: unknown /* const array */;
+  ipt_ta: unknown /* const array */;
+}
+
+type __ReplyUnion__clock_priv_subsystemDescriptor = 
+  | { Reply_clock_set_time: __Reply__clock_set_time_t }
+  | { Reply_clock_set_attributes: __Reply__clock_set_attributes_t };
+
+declare class __ReplyUnion__clock_priv_subsystem {
+  constructor(init?: __ReplyUnion__clock_priv_subsystemDescriptor);
+  Reply_clock_set_time: __Reply__clock_set_time_t;
+  Reply_clock_set_attributes: __Reply__clock_set_attributes_t;
 }
 
 type __RequestUnion__mach_host_subsystemDescriptor = 
@@ -17640,226 +17901,54 @@ declare class __ReplyUnion__mach_port_subsystem {
   Reply_mach_port_assert_attributes: __Reply__mach_port_assert_attributes_t;
 }
 
-type __RequestUnion__mach_port_subsystemDescriptor = 
-  | { Request_mach_port_names: __Request__mach_port_names_t }
-  | { Request_mach_port_type: __Request__mach_port_type_t }
-  | { Request_mach_port_rename: __Request__mach_port_rename_t }
-  | { Request_mach_port_allocate_name: __Request__mach_port_allocate_name_t }
-  | { Request_mach_port_allocate: __Request__mach_port_allocate_t }
-  | { Request_mach_port_destroy: __Request__mach_port_destroy_t }
-  | { Request_mach_port_deallocate: __Request__mach_port_deallocate_t }
-  | { Request_mach_port_get_refs: __Request__mach_port_get_refs_t }
-  | { Request_mach_port_mod_refs: __Request__mach_port_mod_refs_t }
-  | { Request_mach_port_peek: __Request__mach_port_peek_t }
-  | { Request_mach_port_set_mscount: __Request__mach_port_set_mscount_t }
-  | { Request_mach_port_get_set_status: __Request__mach_port_get_set_status_t }
-  | { Request_mach_port_move_member: __Request__mach_port_move_member_t }
-  | { Request_mach_port_request_notification: __Request__mach_port_request_notification_t }
-  | { Request_mach_port_insert_right: __Request__mach_port_insert_right_t }
-  | { Request_mach_port_extract_right: __Request__mach_port_extract_right_t }
-  | { Request_mach_port_set_seqno: __Request__mach_port_set_seqno_t }
-  | { Request_mach_port_get_attributes: __Request__mach_port_get_attributes_t }
-  | { Request_mach_port_set_attributes: __Request__mach_port_set_attributes_t }
-  | { Request_mach_port_allocate_qos: __Request__mach_port_allocate_qos_t }
-  | { Request_mach_port_allocate_full: __Request__mach_port_allocate_full_t }
-  | { Request_task_set_port_space: __Request__task_set_port_space_t }
-  | { Request_mach_port_get_srights: __Request__mach_port_get_srights_t }
-  | { Request_mach_port_space_info: __Request__mach_port_space_info_t }
-  | { Request_mach_port_dnrequest_info: __Request__mach_port_dnrequest_info_t }
-  | { Request_mach_port_kernel_object: __Request__mach_port_kernel_object_t }
-  | { Request_mach_port_insert_member: __Request__mach_port_insert_member_t }
-  | { Request_mach_port_extract_member: __Request__mach_port_extract_member_t }
-  | { Request_mach_port_get_context: __Request__mach_port_get_context_t }
-  | { Request_mach_port_set_context: __Request__mach_port_set_context_t }
-  | { Request_mach_port_kobject: __Request__mach_port_kobject_t }
-  | { Request_mach_port_construct: __Request__mach_port_construct_t }
-  | { Request_mach_port_destruct: __Request__mach_port_destruct_t }
-  | { Request_mach_port_guard: __Request__mach_port_guard_t }
-  | { Request_mach_port_unguard: __Request__mach_port_unguard_t }
-  | { Request_mach_port_space_basic_info: __Request__mach_port_space_basic_info_t }
-  | { Request_mach_port_guard_with_flags: __Request__mach_port_guard_with_flags_t }
-  | { Request_mach_port_swap_guard: __Request__mach_port_swap_guard_t }
-  | { Request_mach_port_kobject_description: __Request__mach_port_kobject_description_t }
-  | { Request_mach_port_is_connection_for_service: __Request__mach_port_is_connection_for_service_t }
-  | { Request_mach_port_get_service_port_info: __Request__mach_port_get_service_port_info_t }
-  | { Request_mach_port_assert_attributes: __Request__mach_port_assert_attributes_t };
+type unnamed_3163621404872128834Descriptor = 
+  | { ran_strx: number };
 
-declare class __RequestUnion__mach_port_subsystem {
-  constructor(init?: __RequestUnion__mach_port_subsystemDescriptor);
-  Request_mach_port_names: __Request__mach_port_names_t;
-  Request_mach_port_type: __Request__mach_port_type_t;
-  Request_mach_port_rename: __Request__mach_port_rename_t;
-  Request_mach_port_allocate_name: __Request__mach_port_allocate_name_t;
-  Request_mach_port_allocate: __Request__mach_port_allocate_t;
-  Request_mach_port_destroy: __Request__mach_port_destroy_t;
-  Request_mach_port_deallocate: __Request__mach_port_deallocate_t;
-  Request_mach_port_get_refs: __Request__mach_port_get_refs_t;
-  Request_mach_port_mod_refs: __Request__mach_port_mod_refs_t;
-  Request_mach_port_peek: __Request__mach_port_peek_t;
-  Request_mach_port_set_mscount: __Request__mach_port_set_mscount_t;
-  Request_mach_port_get_set_status: __Request__mach_port_get_set_status_t;
-  Request_mach_port_move_member: __Request__mach_port_move_member_t;
-  Request_mach_port_request_notification: __Request__mach_port_request_notification_t;
-  Request_mach_port_insert_right: __Request__mach_port_insert_right_t;
-  Request_mach_port_extract_right: __Request__mach_port_extract_right_t;
-  Request_mach_port_set_seqno: __Request__mach_port_set_seqno_t;
-  Request_mach_port_get_attributes: __Request__mach_port_get_attributes_t;
-  Request_mach_port_set_attributes: __Request__mach_port_set_attributes_t;
-  Request_mach_port_allocate_qos: __Request__mach_port_allocate_qos_t;
-  Request_mach_port_allocate_full: __Request__mach_port_allocate_full_t;
-  Request_task_set_port_space: __Request__task_set_port_space_t;
-  Request_mach_port_get_srights: __Request__mach_port_get_srights_t;
-  Request_mach_port_space_info: __Request__mach_port_space_info_t;
-  Request_mach_port_dnrequest_info: __Request__mach_port_dnrequest_info_t;
-  Request_mach_port_kernel_object: __Request__mach_port_kernel_object_t;
-  Request_mach_port_insert_member: __Request__mach_port_insert_member_t;
-  Request_mach_port_extract_member: __Request__mach_port_extract_member_t;
-  Request_mach_port_get_context: __Request__mach_port_get_context_t;
-  Request_mach_port_set_context: __Request__mach_port_set_context_t;
-  Request_mach_port_kobject: __Request__mach_port_kobject_t;
-  Request_mach_port_construct: __Request__mach_port_construct_t;
-  Request_mach_port_destruct: __Request__mach_port_destruct_t;
-  Request_mach_port_guard: __Request__mach_port_guard_t;
-  Request_mach_port_unguard: __Request__mach_port_unguard_t;
-  Request_mach_port_space_basic_info: __Request__mach_port_space_basic_info_t;
-  Request_mach_port_guard_with_flags: __Request__mach_port_guard_with_flags_t;
-  Request_mach_port_swap_guard: __Request__mach_port_swap_guard_t;
-  Request_mach_port_kobject_description: __Request__mach_port_kobject_description_t;
-  Request_mach_port_is_connection_for_service: __Request__mach_port_is_connection_for_service_t;
-  Request_mach_port_get_service_port_info: __Request__mach_port_get_service_port_info_t;
-  Request_mach_port_assert_attributes: __Request__mach_port_assert_attributes_t;
+declare class unnamed_3163621404872128834 {
+  constructor(init?: unnamed_3163621404872128834Descriptor);
+  ran_strx: number;
 }
 
-type __ReplyUnion__thread_act_subsystemDescriptor = 
-  | { Reply_thread_terminate: __Reply__thread_terminate_t }
-  | { Reply_act_get_state: __Reply__act_get_state_t }
-  | { Reply_act_set_state: __Reply__act_set_state_t }
-  | { Reply_thread_get_state: __Reply__thread_get_state_t }
-  | { Reply_thread_set_state: __Reply__thread_set_state_t }
-  | { Reply_thread_suspend: __Reply__thread_suspend_t }
-  | { Reply_thread_resume: __Reply__thread_resume_t }
-  | { Reply_thread_abort: __Reply__thread_abort_t }
-  | { Reply_thread_abort_safely: __Reply__thread_abort_safely_t }
-  | { Reply_thread_depress_abort: __Reply__thread_depress_abort_t }
-  | { Reply_thread_get_special_port: __Reply__thread_get_special_port_t }
-  | { Reply_thread_set_special_port: __Reply__thread_set_special_port_t }
-  | { Reply_thread_info: __Reply__thread_info_t }
-  | { Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t }
-  | { Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t }
-  | { Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t }
-  | { Reply_thread_policy: __Reply__thread_policy_t }
-  | { Reply_thread_policy_set: __Reply__thread_policy_set_t }
-  | { Reply_thread_policy_get: __Reply__thread_policy_get_t }
-  | { Reply_thread_sample: __Reply__thread_sample_t }
-  | { Reply_etap_trace_thread: __Reply__etap_trace_thread_t }
-  | { Reply_thread_assign: __Reply__thread_assign_t }
-  | { Reply_thread_assign_default: __Reply__thread_assign_default_t }
-  | { Reply_thread_get_assignment: __Reply__thread_get_assignment_t }
-  | { Reply_thread_set_policy: __Reply__thread_set_policy_t }
-  | { Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t }
-  | { Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t }
-  | { Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t }
-  | { Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t }
-  | { Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t }
-  | { Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t };
+type unnamed_11636356504532870410Descriptor = 
+  | { is_master: number }
+  | { is_main: number };
 
-declare class __ReplyUnion__thread_act_subsystem {
-  constructor(init?: __ReplyUnion__thread_act_subsystemDescriptor);
-  Reply_thread_terminate: __Reply__thread_terminate_t;
-  Reply_act_get_state: __Reply__act_get_state_t;
-  Reply_act_set_state: __Reply__act_set_state_t;
-  Reply_thread_get_state: __Reply__thread_get_state_t;
-  Reply_thread_set_state: __Reply__thread_set_state_t;
-  Reply_thread_suspend: __Reply__thread_suspend_t;
-  Reply_thread_resume: __Reply__thread_resume_t;
-  Reply_thread_abort: __Reply__thread_abort_t;
-  Reply_thread_abort_safely: __Reply__thread_abort_safely_t;
-  Reply_thread_depress_abort: __Reply__thread_depress_abort_t;
-  Reply_thread_get_special_port: __Reply__thread_get_special_port_t;
-  Reply_thread_set_special_port: __Reply__thread_set_special_port_t;
-  Reply_thread_info: __Reply__thread_info_t;
-  Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t;
-  Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t;
-  Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t;
-  Reply_thread_policy: __Reply__thread_policy_t;
-  Reply_thread_policy_set: __Reply__thread_policy_set_t;
-  Reply_thread_policy_get: __Reply__thread_policy_get_t;
-  Reply_thread_sample: __Reply__thread_sample_t;
-  Reply_etap_trace_thread: __Reply__etap_trace_thread_t;
-  Reply_thread_assign: __Reply__thread_assign_t;
-  Reply_thread_assign_default: __Reply__thread_assign_default_t;
-  Reply_thread_get_assignment: __Reply__thread_get_assignment_t;
-  Reply_thread_set_policy: __Reply__thread_set_policy_t;
-  Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t;
-  Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t;
-  Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t;
-  Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t;
-  Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t;
-  Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t;
+declare class unnamed_11636356504532870410 {
+  constructor(init?: unnamed_11636356504532870410Descriptor);
+  is_master: number;
+  is_main: number;
 }
 
-type unnamed_2646920081265612283Descriptor = 
+type __RequestUnion__memory_entry_subsystemDescriptor = 
+  | { Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t }
+  | { Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t }
+  | { Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t }
+  | { Request_mach_memory_entry_get_page_counts: __Request__mach_memory_entry_get_page_counts_t };
+
+declare class __RequestUnion__memory_entry_subsystem {
+  constructor(init?: __RequestUnion__memory_entry_subsystemDescriptor);
+  Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t;
+  Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t;
+  Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t;
+  Request_mach_memory_entry_get_page_counts: __Request__mach_memory_entry_get_page_counts_t;
+}
+
+type guid_tDescriptor = 
+  | { g_guid: unknown /* const array */ }
+  | { g_guid_asint: unknown /* const array */ };
+
+declare class guid_t {
+  constructor(init?: guid_tDescriptor);
+  g_guid: unknown /* const array */;
+  g_guid_asint: unknown /* const array */;
+}
+
+type unnamed_16880175681338113954Descriptor = 
   | { n_strx: number };
 
-declare class unnamed_2646920081265612283 {
-  constructor(init?: unnamed_2646920081265612283Descriptor);
+declare class unnamed_16880175681338113954 {
+  constructor(init?: unnamed_16880175681338113954Descriptor);
   n_strx: number;
-}
-
-type __RequestUnion__processor_set_subsystemDescriptor = 
-  | { Request_processor_set_statistics: __Request__processor_set_statistics_t }
-  | { Request_processor_set_destroy: __Request__processor_set_destroy_t }
-  | { Request_processor_set_max_priority: __Request__processor_set_max_priority_t }
-  | { Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t }
-  | { Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t }
-  | { Request_processor_set_tasks: __Request__processor_set_tasks_t }
-  | { Request_processor_set_threads: __Request__processor_set_threads_t }
-  | { Request_processor_set_policy_control: __Request__processor_set_policy_control_t }
-  | { Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t }
-  | { Request_processor_set_info: __Request__processor_set_info_t }
-  | { Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t };
-
-declare class __RequestUnion__processor_set_subsystem {
-  constructor(init?: __RequestUnion__processor_set_subsystemDescriptor);
-  Request_processor_set_statistics: __Request__processor_set_statistics_t;
-  Request_processor_set_destroy: __Request__processor_set_destroy_t;
-  Request_processor_set_max_priority: __Request__processor_set_max_priority_t;
-  Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t;
-  Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t;
-  Request_processor_set_tasks: __Request__processor_set_tasks_t;
-  Request_processor_set_threads: __Request__processor_set_threads_t;
-  Request_processor_set_policy_control: __Request__processor_set_policy_control_t;
-  Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t;
-  Request_processor_set_info: __Request__processor_set_info_t;
-  Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t;
-}
-
-type __ReplyUnion__host_security_subsystemDescriptor = 
-  | { Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t }
-  | { Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t };
-
-declare class __ReplyUnion__host_security_subsystem {
-  constructor(init?: __ReplyUnion__host_security_subsystemDescriptor);
-  Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t;
-  Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t;
-}
-
-type __RequestUnion__processor_subsystemDescriptor = 
-  | { Request_processor_start: __Request__processor_start_t }
-  | { Request_processor_exit: __Request__processor_exit_t }
-  | { Request_processor_info: __Request__processor_info_t }
-  | { Request_processor_control: __Request__processor_control_t }
-  | { Request_processor_assign: __Request__processor_assign_t }
-  | { Request_processor_get_assignment: __Request__processor_get_assignment_t };
-
-declare class __RequestUnion__processor_subsystem {
-  constructor(init?: __RequestUnion__processor_subsystemDescriptor);
-  Request_processor_start: __Request__processor_start_t;
-  Request_processor_exit: __Request__processor_exit_t;
-  Request_processor_info: __Request__processor_info_t;
-  Request_processor_control: __Request__processor_control_t;
-  Request_processor_assign: __Request__processor_assign_t;
-  Request_processor_get_assignment: __Request__processor_get_assignment_t;
 }
 
 type __RequestUnion__host_priv_subsystemDescriptor = 
@@ -17914,58 +18003,218 @@ declare class __RequestUnion__host_priv_subsystem {
   Request_kext_request: __Request__kext_request_t;
 }
 
-type unnamed_15715656241701000234Descriptor = 
+type unnamed_11983846278908025531Descriptor = 
+  | { inp4_route: unknown /* const array */ }
+  | { inp6_route: unknown /* const array */ };
+
+declare class unnamed_11983846278908025531 {
+  constructor(init?: unnamed_11983846278908025531Descriptor);
+  inp4_route: unknown /* const array */;
+  inp6_route: unknown /* const array */;
+}
+
+type unnamed_5674908314878704785Descriptor = 
+  | { n_strx: number };
+
+declare class unnamed_5674908314878704785 {
+  constructor(init?: unnamed_5674908314878704785Descriptor);
+  n_strx: number;
+}
+
+type unnamed_4326415483873529382Descriptor = 
+  | { ran_strx: number };
+
+declare class unnamed_4326415483873529382 {
+  constructor(init?: unnamed_4326415483873529382Descriptor);
+  ran_strx: number;
+}
+
+type unnamed_3694722665405033679Descriptor = 
   | { inp46_foreign: in_addr_4in6 }
   | { inp6_foreign: in6_addr };
 
-declare class unnamed_15715656241701000234 {
-  constructor(init?: unnamed_15715656241701000234Descriptor);
+declare class unnamed_3694722665405033679 {
+  constructor(init?: unnamed_3694722665405033679Descriptor);
   inp46_foreign: in_addr_4in6;
   inp6_foreign: in6_addr;
 }
 
-type unnamed_17371802974017955788Descriptor = 
-  | { n_strx: number };
+type __RequestUnion__thread_act_subsystemDescriptor = 
+  | { Request_thread_terminate: __Request__thread_terminate_t }
+  | { Request_act_get_state: __Request__act_get_state_t }
+  | { Request_act_set_state: __Request__act_set_state_t }
+  | { Request_thread_get_state: __Request__thread_get_state_t }
+  | { Request_thread_set_state: __Request__thread_set_state_t }
+  | { Request_thread_suspend: __Request__thread_suspend_t }
+  | { Request_thread_resume: __Request__thread_resume_t }
+  | { Request_thread_abort: __Request__thread_abort_t }
+  | { Request_thread_abort_safely: __Request__thread_abort_safely_t }
+  | { Request_thread_depress_abort: __Request__thread_depress_abort_t }
+  | { Request_thread_get_special_port: __Request__thread_get_special_port_t }
+  | { Request_thread_set_special_port: __Request__thread_set_special_port_t }
+  | { Request_thread_info: __Request__thread_info_t }
+  | { Request_thread_set_exception_ports: __Request__thread_set_exception_ports_t }
+  | { Request_thread_get_exception_ports: __Request__thread_get_exception_ports_t }
+  | { Request_thread_swap_exception_ports: __Request__thread_swap_exception_ports_t }
+  | { Request_thread_policy: __Request__thread_policy_t }
+  | { Request_thread_policy_set: __Request__thread_policy_set_t }
+  | { Request_thread_policy_get: __Request__thread_policy_get_t }
+  | { Request_thread_sample: __Request__thread_sample_t }
+  | { Request_etap_trace_thread: __Request__etap_trace_thread_t }
+  | { Request_thread_assign: __Request__thread_assign_t }
+  | { Request_thread_assign_default: __Request__thread_assign_default_t }
+  | { Request_thread_get_assignment: __Request__thread_get_assignment_t }
+  | { Request_thread_set_policy: __Request__thread_set_policy_t }
+  | { Request_thread_get_mach_voucher: __Request__thread_get_mach_voucher_t }
+  | { Request_thread_set_mach_voucher: __Request__thread_set_mach_voucher_t }
+  | { Request_thread_swap_mach_voucher: __Request__thread_swap_mach_voucher_t }
+  | { Request_thread_convert_thread_state: __Request__thread_convert_thread_state_t }
+  | { Request_thread_get_exception_ports_info: __Request__thread_get_exception_ports_info_t }
+  | { Request_thread_adopt_exception_handler: __Request__thread_adopt_exception_handler_t };
 
-declare class unnamed_17371802974017955788 {
-  constructor(init?: unnamed_17371802974017955788Descriptor);
-  n_strx: number;
+declare class __RequestUnion__thread_act_subsystem {
+  constructor(init?: __RequestUnion__thread_act_subsystemDescriptor);
+  Request_thread_terminate: __Request__thread_terminate_t;
+  Request_act_get_state: __Request__act_get_state_t;
+  Request_act_set_state: __Request__act_set_state_t;
+  Request_thread_get_state: __Request__thread_get_state_t;
+  Request_thread_set_state: __Request__thread_set_state_t;
+  Request_thread_suspend: __Request__thread_suspend_t;
+  Request_thread_resume: __Request__thread_resume_t;
+  Request_thread_abort: __Request__thread_abort_t;
+  Request_thread_abort_safely: __Request__thread_abort_safely_t;
+  Request_thread_depress_abort: __Request__thread_depress_abort_t;
+  Request_thread_get_special_port: __Request__thread_get_special_port_t;
+  Request_thread_set_special_port: __Request__thread_set_special_port_t;
+  Request_thread_info: __Request__thread_info_t;
+  Request_thread_set_exception_ports: __Request__thread_set_exception_ports_t;
+  Request_thread_get_exception_ports: __Request__thread_get_exception_ports_t;
+  Request_thread_swap_exception_ports: __Request__thread_swap_exception_ports_t;
+  Request_thread_policy: __Request__thread_policy_t;
+  Request_thread_policy_set: __Request__thread_policy_set_t;
+  Request_thread_policy_get: __Request__thread_policy_get_t;
+  Request_thread_sample: __Request__thread_sample_t;
+  Request_etap_trace_thread: __Request__etap_trace_thread_t;
+  Request_thread_assign: __Request__thread_assign_t;
+  Request_thread_assign_default: __Request__thread_assign_default_t;
+  Request_thread_get_assignment: __Request__thread_get_assignment_t;
+  Request_thread_set_policy: __Request__thread_set_policy_t;
+  Request_thread_get_mach_voucher: __Request__thread_get_mach_voucher_t;
+  Request_thread_set_mach_voucher: __Request__thread_set_mach_voucher_t;
+  Request_thread_swap_mach_voucher: __Request__thread_swap_mach_voucher_t;
+  Request_thread_convert_thread_state: __Request__thread_convert_thread_state_t;
+  Request_thread_get_exception_ports_info: __Request__thread_get_exception_ports_info_t;
+  Request_thread_adopt_exception_handler: __Request__thread_adopt_exception_handler_t;
 }
 
-type __RequestUnion__exc_subsystemDescriptor = 
-  | { Request_exception_raise: __Request__exception_raise_t }
-  | { Request_exception_raise_state: __Request__exception_raise_state_t }
-  | { Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t };
+type lc_strDescriptor = 
+  | { offset: number };
 
-declare class __RequestUnion__exc_subsystem {
-  constructor(init?: __RequestUnion__exc_subsystemDescriptor);
-  Request_exception_raise: __Request__exception_raise_t;
-  Request_exception_raise_state: __Request__exception_raise_state_t;
-  Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t;
+declare class lc_str {
+  constructor(init?: lc_strDescriptor);
+  offset: number;
 }
 
-type unnamed_590545025436214185Descriptor = 
-  | { id_ts: id_ts }
-  | { id_ip: id_ip }
-  | { id_radv: icmp_ra_addr }
-  | { id_mask: number }
-  | { id_data: unknown /* const array */ };
+type __ReplyUnion__vm_map_subsystemDescriptor = 
+  | { Reply_vm_region: __Reply__vm_region_t }
+  | { Reply_vm_allocate: __Reply__vm_allocate_t }
+  | { Reply_vm_deallocate: __Reply__vm_deallocate_t }
+  | { Reply_vm_protect: __Reply__vm_protect_t }
+  | { Reply_vm_inherit: __Reply__vm_inherit_t }
+  | { Reply_vm_read: __Reply__vm_read_t }
+  | { Reply_vm_read_list: __Reply__vm_read_list_t }
+  | { Reply_vm_write: __Reply__vm_write_t }
+  | { Reply_vm_copy: __Reply__vm_copy_t }
+  | { Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t }
+  | { Reply_vm_msync: __Reply__vm_msync_t }
+  | { Reply_vm_behavior_set: __Reply__vm_behavior_set_t }
+  | { Reply_vm_map: __Reply__vm_map_t }
+  | { Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t }
+  | { Reply_vm_remap: __Reply__vm_remap_t }
+  | { Reply_task_wire: __Reply__task_wire_t }
+  | { Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t }
+  | { Reply_vm_map_page_query: __Reply__vm_map_page_query_t }
+  | { Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t }
+  | { Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t }
+  | { Reply_vm_region_recurse: __Reply__vm_region_recurse_t }
+  | { Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t }
+  | { Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t }
+  | { Reply_vm_region_64: __Reply__vm_region_64_t }
+  | { Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t }
+  | { Reply_vm_map_64: __Reply__vm_map_64_t }
+  | { Reply_vm_purgable_control: __Reply__vm_purgable_control_t }
+  | { Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t }
+  | { Reply_vm_remap_new: __Reply__vm_remap_new_t };
 
-declare class unnamed_590545025436214185 {
-  constructor(init?: unnamed_590545025436214185Descriptor);
-  id_ts: id_ts;
-  id_ip: id_ip;
-  id_radv: icmp_ra_addr;
-  id_mask: number;
-  id_data: unknown /* const array */;
+declare class __ReplyUnion__vm_map_subsystem {
+  constructor(init?: __ReplyUnion__vm_map_subsystemDescriptor);
+  Reply_vm_region: __Reply__vm_region_t;
+  Reply_vm_allocate: __Reply__vm_allocate_t;
+  Reply_vm_deallocate: __Reply__vm_deallocate_t;
+  Reply_vm_protect: __Reply__vm_protect_t;
+  Reply_vm_inherit: __Reply__vm_inherit_t;
+  Reply_vm_read: __Reply__vm_read_t;
+  Reply_vm_read_list: __Reply__vm_read_list_t;
+  Reply_vm_write: __Reply__vm_write_t;
+  Reply_vm_copy: __Reply__vm_copy_t;
+  Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t;
+  Reply_vm_msync: __Reply__vm_msync_t;
+  Reply_vm_behavior_set: __Reply__vm_behavior_set_t;
+  Reply_vm_map: __Reply__vm_map_t;
+  Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t;
+  Reply_vm_remap: __Reply__vm_remap_t;
+  Reply_task_wire: __Reply__task_wire_t;
+  Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t;
+  Reply_vm_map_page_query: __Reply__vm_map_page_query_t;
+  Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t;
+  Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t;
+  Reply_vm_region_recurse: __Reply__vm_region_recurse_t;
+  Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t;
+  Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t;
+  Reply_vm_region_64: __Reply__vm_region_64_t;
+  Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t;
+  Reply_vm_map_64: __Reply__vm_map_64_t;
+  Reply_vm_purgable_control: __Reply__vm_purgable_control_t;
+  Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t;
+  Reply_vm_remap_new: __Reply__vm_remap_new_t;
 }
 
-type unnamed_13354131770504221595Descriptor = 
-  | { ran_strx: number };
+type __ReplyUnion__processor_subsystemDescriptor = 
+  | { Reply_processor_start: __Reply__processor_start_t }
+  | { Reply_processor_exit: __Reply__processor_exit_t }
+  | { Reply_processor_info: __Reply__processor_info_t }
+  | { Reply_processor_control: __Reply__processor_control_t }
+  | { Reply_processor_assign: __Reply__processor_assign_t }
+  | { Reply_processor_get_assignment: __Reply__processor_get_assignment_t };
 
-declare class unnamed_13354131770504221595 {
-  constructor(init?: unnamed_13354131770504221595Descriptor);
-  ran_strx: number;
+declare class __ReplyUnion__processor_subsystem {
+  constructor(init?: __ReplyUnion__processor_subsystemDescriptor);
+  Reply_processor_start: __Reply__processor_start_t;
+  Reply_processor_exit: __Reply__processor_exit_t;
+  Reply_processor_info: __Reply__processor_info_t;
+  Reply_processor_control: __Reply__processor_control_t;
+  Reply_processor_assign: __Reply__processor_assign_t;
+  Reply_processor_get_assignment: __Reply__processor_get_assignment_t;
+}
+
+type __RequestUnion__clock_priv_subsystemDescriptor = 
+  | { Request_clock_set_time: __Request__clock_set_time_t }
+  | { Request_clock_set_attributes: __Request__clock_set_attributes_t };
+
+declare class __RequestUnion__clock_priv_subsystem {
+  constructor(init?: __RequestUnion__clock_priv_subsystemDescriptor);
+  Request_clock_set_time: __Request__clock_set_time_t;
+  Request_clock_set_attributes: __Request__clock_set_attributes_t;
+}
+
+type unnamed_9545513650739234565Descriptor = 
+  | { ts_32: __darwin_arm_thread_state }
+  | { ts_64: __darwin_arm_thread_state64 };
+
+declare class unnamed_9545513650739234565 {
+  constructor(init?: unnamed_9545513650739234565Descriptor);
+  ts_32: __darwin_arm_thread_state;
+  ts_64: __darwin_arm_thread_state64;
 }
 
 type __ReplyUnion__task_subsystemDescriptor = 
@@ -18174,6 +18423,40 @@ declare class __RequestUnion__vm_map_subsystem {
   Request_vm_remap_new: __Request__vm_remap_new_t;
 }
 
+type __ReplyUnion__clock_reply_subsystemDescriptor = 
+  | { Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t };
+
+declare class __ReplyUnion__clock_reply_subsystem {
+  constructor(init?: __ReplyUnion__clock_reply_subsystemDescriptor);
+  Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t;
+}
+
+type unnamed_7407515708615317395Descriptor = 
+  | { __u6_addr8: unknown /* const array */ }
+  | { __u6_addr16: unknown /* const array */ }
+  | { __u6_addr32: unknown /* const array */ };
+
+declare class unnamed_7407515708615317395 {
+  constructor(init?: unnamed_7407515708615317395Descriptor);
+  __u6_addr8: unknown /* const array */;
+  __u6_addr16: unknown /* const array */;
+  __u6_addr32: unknown /* const array */;
+}
+
+type unnamed_13557069666914893992Descriptor = 
+  | { reserved: unknown /* const array */ }
+  | { work_interval_port: number }
+  | { service_port_info: interop.PointerConvertible }
+  | { service_port_name: number };
+
+declare class unnamed_13557069666914893992 {
+  constructor(init?: unnamed_13557069666914893992Descriptor);
+  reserved: unknown /* const array */;
+  work_interval_port: number;
+  service_port_info: interop.Pointer;
+  service_port_name: number;
+}
+
 type __mbstate_tDescriptor = 
   | { __mbstate8: unknown /* const array */ }
   | { _mbstateL: number };
@@ -18184,16 +18467,16 @@ declare class __mbstate_t {
   _mbstateL: number;
 }
 
-type unnamed_16122929882145028970Descriptor = 
-  | { addr8: unknown /* const array */ }
-  | { addr16: unknown /* const array */ }
-  | { addr32: unknown /* const array */ };
+type unnamed_17677869109873497955Descriptor = 
+  | { icmp6_un_data32: unknown /* const array */ }
+  | { icmp6_un_data16: unknown /* const array */ }
+  | { icmp6_un_data8: unknown /* const array */ };
 
-declare class unnamed_16122929882145028970 {
-  constructor(init?: unnamed_16122929882145028970Descriptor);
-  addr8: unknown /* const array */;
-  addr16: unknown /* const array */;
-  addr32: unknown /* const array */;
+declare class unnamed_17677869109873497955 {
+  constructor(init?: unnamed_17677869109873497955Descriptor);
+  icmp6_un_data32: unknown /* const array */;
+  icmp6_un_data16: unknown /* const array */;
+  icmp6_un_data8: unknown /* const array */;
 }
 
 type mach_msg_empty_tDescriptor = 
@@ -18206,86 +18489,36 @@ declare class mach_msg_empty_t {
   rcv: mach_msg_empty_rcv_t;
 }
 
-type __ReplyUnion__vm_map_subsystemDescriptor = 
-  | { Reply_vm_region: __Reply__vm_region_t }
-  | { Reply_vm_allocate: __Reply__vm_allocate_t }
-  | { Reply_vm_deallocate: __Reply__vm_deallocate_t }
-  | { Reply_vm_protect: __Reply__vm_protect_t }
-  | { Reply_vm_inherit: __Reply__vm_inherit_t }
-  | { Reply_vm_read: __Reply__vm_read_t }
-  | { Reply_vm_read_list: __Reply__vm_read_list_t }
-  | { Reply_vm_write: __Reply__vm_write_t }
-  | { Reply_vm_copy: __Reply__vm_copy_t }
-  | { Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t }
-  | { Reply_vm_msync: __Reply__vm_msync_t }
-  | { Reply_vm_behavior_set: __Reply__vm_behavior_set_t }
-  | { Reply_vm_map: __Reply__vm_map_t }
-  | { Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t }
-  | { Reply_vm_remap: __Reply__vm_remap_t }
-  | { Reply_task_wire: __Reply__task_wire_t }
-  | { Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t }
-  | { Reply_vm_map_page_query: __Reply__vm_map_page_query_t }
-  | { Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t }
-  | { Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t }
-  | { Reply_vm_region_recurse: __Reply__vm_region_recurse_t }
-  | { Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t }
-  | { Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t }
-  | { Reply_vm_region_64: __Reply__vm_region_64_t }
-  | { Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t }
-  | { Reply_vm_map_64: __Reply__vm_map_64_t }
-  | { Reply_vm_purgable_control: __Reply__vm_purgable_control_t }
-  | { Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t }
-  | { Reply_vm_remap_new: __Reply__vm_remap_new_t };
+type waitDescriptor = 
+  | { w_status: number }
+  | { w_T: unnamed_15169717648918479760 }
+  | { w_S: unnamed_544468448031136256 };
 
-declare class __ReplyUnion__vm_map_subsystem {
-  constructor(init?: __ReplyUnion__vm_map_subsystemDescriptor);
-  Reply_vm_region: __Reply__vm_region_t;
-  Reply_vm_allocate: __Reply__vm_allocate_t;
-  Reply_vm_deallocate: __Reply__vm_deallocate_t;
-  Reply_vm_protect: __Reply__vm_protect_t;
-  Reply_vm_inherit: __Reply__vm_inherit_t;
-  Reply_vm_read: __Reply__vm_read_t;
-  Reply_vm_read_list: __Reply__vm_read_list_t;
-  Reply_vm_write: __Reply__vm_write_t;
-  Reply_vm_copy: __Reply__vm_copy_t;
-  Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t;
-  Reply_vm_msync: __Reply__vm_msync_t;
-  Reply_vm_behavior_set: __Reply__vm_behavior_set_t;
-  Reply_vm_map: __Reply__vm_map_t;
-  Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t;
-  Reply_vm_remap: __Reply__vm_remap_t;
-  Reply_task_wire: __Reply__task_wire_t;
-  Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t;
-  Reply_vm_map_page_query: __Reply__vm_map_page_query_t;
-  Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t;
-  Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t;
-  Reply_vm_region_recurse: __Reply__vm_region_recurse_t;
-  Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t;
-  Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t;
-  Reply_vm_region_64: __Reply__vm_region_64_t;
-  Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t;
-  Reply_vm_map_64: __Reply__vm_map_64_t;
-  Reply_vm_purgable_control: __Reply__vm_purgable_control_t;
-  Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t;
-  Reply_vm_remap_new: __Reply__vm_remap_new_t;
+declare class wait {
+  constructor(init?: waitDescriptor);
+  w_status: number;
+  w_T: unnamed_15169717648918479760;
+  w_S: unnamed_544468448031136256;
 }
 
-type __ReplyUnion__processor_subsystemDescriptor = 
-  | { Reply_processor_start: __Reply__processor_start_t }
-  | { Reply_processor_exit: __Reply__processor_exit_t }
-  | { Reply_processor_info: __Reply__processor_info_t }
-  | { Reply_processor_control: __Reply__processor_control_t }
-  | { Reply_processor_assign: __Reply__processor_assign_t }
-  | { Reply_processor_get_assignment: __Reply__processor_get_assignment_t };
+type unnamed_8108292665603034391Descriptor = 
+  | { if_status_v1: if_cellular_status_v1 };
 
-declare class __ReplyUnion__processor_subsystem {
-  constructor(init?: __ReplyUnion__processor_subsystemDescriptor);
-  Reply_processor_start: __Reply__processor_start_t;
-  Reply_processor_exit: __Reply__processor_exit_t;
-  Reply_processor_info: __Reply__processor_info_t;
-  Reply_processor_control: __Reply__processor_control_t;
-  Reply_processor_assign: __Reply__processor_assign_t;
-  Reply_processor_get_assignment: __Reply__processor_get_assignment_t;
+declare class unnamed_8108292665603034391 {
+  constructor(init?: unnamed_8108292665603034391Descriptor);
+  if_status_v1: if_cellular_status_v1;
+}
+
+type __RequestUnion__exc_subsystemDescriptor = 
+  | { Request_exception_raise: __Request__exception_raise_t }
+  | { Request_exception_raise_state: __Request__exception_raise_state_t }
+  | { Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t };
+
+declare class __RequestUnion__exc_subsystem {
+  constructor(init?: __RequestUnion__exc_subsystemDescriptor);
+  Request_exception_raise: __Request__exception_raise_t;
+  Request_exception_raise_state: __Request__exception_raise_state_t;
+  Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t;
 }
 
 type NumVersionVariantDescriptor = 
@@ -18298,92 +18531,6 @@ declare class NumVersionVariant {
   whole: number;
 }
 
-type __ReplyUnion__host_priv_subsystemDescriptor = 
-  | { Reply_host_get_boot_info: __Reply__host_get_boot_info_t }
-  | { Reply_host_reboot: __Reply__host_reboot_t }
-  | { Reply_host_priv_statistics: __Reply__host_priv_statistics_t }
-  | { Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t }
-  | { Reply_vm_wire: __Reply__vm_wire_t }
-  | { Reply_thread_wire: __Reply__thread_wire_t }
-  | { Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t }
-  | { Reply_host_processors: __Reply__host_processors_t }
-  | { Reply_host_get_clock_control: __Reply__host_get_clock_control_t }
-  | { Reply_kmod_create: __Reply__kmod_create_t }
-  | { Reply_kmod_destroy: __Reply__kmod_destroy_t }
-  | { Reply_kmod_control: __Reply__kmod_control_t }
-  | { Reply_host_get_special_port: __Reply__host_get_special_port_t }
-  | { Reply_host_set_special_port: __Reply__host_set_special_port_t }
-  | { Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t }
-  | { Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t }
-  | { Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t }
-  | { Reply_mach_vm_wire: __Reply__mach_vm_wire_t }
-  | { Reply_host_processor_sets: __Reply__host_processor_sets_t }
-  | { Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t }
-  | { Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t }
-  | { Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t }
-  | { Reply_kext_request: __Reply__kext_request_t };
-
-declare class __ReplyUnion__host_priv_subsystem {
-  constructor(init?: __ReplyUnion__host_priv_subsystemDescriptor);
-  Reply_host_get_boot_info: __Reply__host_get_boot_info_t;
-  Reply_host_reboot: __Reply__host_reboot_t;
-  Reply_host_priv_statistics: __Reply__host_priv_statistics_t;
-  Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t;
-  Reply_vm_wire: __Reply__vm_wire_t;
-  Reply_thread_wire: __Reply__thread_wire_t;
-  Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t;
-  Reply_host_processors: __Reply__host_processors_t;
-  Reply_host_get_clock_control: __Reply__host_get_clock_control_t;
-  Reply_kmod_create: __Reply__kmod_create_t;
-  Reply_kmod_destroy: __Reply__kmod_destroy_t;
-  Reply_kmod_control: __Reply__kmod_control_t;
-  Reply_host_get_special_port: __Reply__host_get_special_port_t;
-  Reply_host_set_special_port: __Reply__host_set_special_port_t;
-  Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t;
-  Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t;
-  Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t;
-  Reply_mach_vm_wire: __Reply__mach_vm_wire_t;
-  Reply_host_processor_sets: __Reply__host_processor_sets_t;
-  Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t;
-  Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t;
-  Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t;
-  Reply_kext_request: __Reply__kext_request_t;
-}
-
-type ipt_timestampDescriptor = 
-  | { ipt_time: unknown /* const array */ }
-  | { ipt_ta: unknown /* const array */ };
-
-declare class ipt_timestamp {
-  constructor(init?: ipt_timestampDescriptor);
-  ipt_time: unknown /* const array */;
-  ipt_ta: unknown /* const array */;
-}
-
-type __ReplyUnion__clock_priv_subsystemDescriptor = 
-  | { Reply_clock_set_time: __Reply__clock_set_time_t }
-  | { Reply_clock_set_attributes: __Reply__clock_set_attributes_t };
-
-declare class __ReplyUnion__clock_priv_subsystem {
-  constructor(init?: __ReplyUnion__clock_priv_subsystemDescriptor);
-  Reply_clock_set_time: __Reply__clock_set_time_t;
-  Reply_clock_set_attributes: __Reply__clock_set_attributes_t;
-}
-
-type unnamed_9350674317071776510Descriptor = 
-  | { reserved: unknown /* const array */ }
-  | { work_interval_port: number }
-  | { service_port_info: interop.PointerConvertible }
-  | { service_port_name: number };
-
-declare class unnamed_9350674317071776510 {
-  constructor(init?: unnamed_9350674317071776510Descriptor);
-  reserved: unknown /* const array */;
-  work_interval_port: number;
-  service_port_info: interop.Pointer;
-  service_port_name: number;
-}
-
 type sigvalDescriptor = 
   | { sival_int: number }
   | { sival_ptr: interop.PointerConvertible };
@@ -18394,12 +18541,14 @@ declare class sigval {
   sival_ptr: interop.Pointer;
 }
 
-type unnamed_13336292902992397422Descriptor = 
-  | { ran_strx: number };
+type __sigaction_uDescriptor = 
+  | { __sa_handler: (p1: number) => void | null }
+  | { __sa_sigaction: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null };
 
-declare class unnamed_13336292902992397422 {
-  constructor(init?: unnamed_13336292902992397422Descriptor);
-  ran_strx: number;
+declare class __sigaction_u {
+  constructor(init?: __sigaction_uDescriptor);
+  __sa_handler: (p1: number) => void | null;
+  __sa_sigaction: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
 }
 
 declare function signal(p1: number, p2: (p1: number) => void): (p1: number) => void;
@@ -20216,6 +20365,8 @@ declare function sqlite3_busy_handler(p1: interop.PointerConvertible, p2: (p1: i
 
 declare function sqlite3_busy_timeout(p1: interop.PointerConvertible, ms: number): number;
 
+declare function sqlite3_setlk_timeout(p1: interop.PointerConvertible, ms: number, flags: number): number;
+
 declare function sqlite3_get_table(db: interop.PointerConvertible, zSql: string, pazResult: interop.PointerConvertible, pnRow: interop.PointerConvertible, pnColumn: interop.PointerConvertible, pzErrmsg: interop.PointerConvertible): number;
 
 declare function sqlite3_free_table(result: interop.PointerConvertible): void;
@@ -20473,6 +20624,10 @@ declare function sqlite3_context_db_handle(p1: interop.PointerConvertible): inte
 declare function sqlite3_get_auxdata(p1: interop.PointerConvertible, N: number): interop.Pointer;
 
 declare function sqlite3_set_auxdata(p1: interop.PointerConvertible, N: number, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible) => void): void;
+
+declare function sqlite3_get_clientdata(p1: interop.PointerConvertible, p2: string): interop.Pointer;
+
+declare function sqlite3_set_clientdata(p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible) => void): number;
 
 declare function sqlite3_result_blob(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: (p1: interop.PointerConvertible) => void): void;
 
@@ -21150,17 +21305,29 @@ declare function vasprintf(p1: interop.PointerConvertible, p2: string, p3: strin
 
 declare function funopen(p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: string, p3: number) => number, p3: (p1: interop.PointerConvertible, p2: string, p3: number) => number, p4: (p1: interop.PointerConvertible, p2: number, p3: number) => number, p5: (p1: interop.PointerConvertible) => number): interop.Pointer;
 
-declare function __sprintf_chk(p1: string, p2: number, p3: number, p4: string): number;
-
 declare function __snprintf_chk(p1: string, __maxlen: number, p3: number, p4: number, p5: string): number;
 
-declare function __vsprintf_chk(p1: string, p2: number, p3: number, p4: string, p5: string): number;
-
 declare function __vsnprintf_chk(p1: string, __maxlen: number, p3: number, p4: number, p5: string, p6: string): number;
+
+declare function __sprintf_chk(p1: string, p2: number, p3: number, p4: string): number;
+
+declare function __vsprintf_chk(p1: string, p2: number, p3: number, p4: string, p5: string): number;
 
 declare function xpc_endpoint_create(connection: NSObject): NSObject;
 
 declare function xpc_debugger_api_misuse_info(): string;
+
+declare function xpc_peer_requirement_create_entitlement_exists(entitlement: string, error_out: interop.PointerConvertible): NSObject;
+
+declare function xpc_peer_requirement_create_entitlement_matches_value(entitlement: string, value: NSObject, error_out: interop.PointerConvertible): NSObject;
+
+declare function xpc_peer_requirement_create_team_identity(signing_identifier: string, error_out: interop.PointerConvertible): NSObject;
+
+declare function xpc_peer_requirement_create_platform_identity(signing_identifier: string, error_out: interop.PointerConvertible): NSObject;
+
+declare function xpc_peer_requirement_create_lwcr(lwcr: NSObject, error_out: interop.PointerConvertible): NSObject;
+
+declare function xpc_peer_requirement_match_received_message(peer_requirement: NSObject, message: NSObject, error_out: interop.PointerConvertible): boolean;
 
 declare function xpc_connection_create(name: string, targetq: NSObject): NSObject;
 
@@ -21208,6 +21375,8 @@ declare function xpc_connection_set_peer_platform_identity_requirement(connectio
 
 declare function xpc_connection_set_peer_lightweight_code_requirement(connection: NSObject, lwcr: NSObject): number;
 
+declare function xpc_connection_set_peer_requirement(connection: NSObject, peer_requirement: NSObject): void;
+
 declare function xpc_connection_copy_invalidation_reason(connection: NSObject): string;
 
 declare function xpc_rich_error_copy_description(error: NSObject): string;
@@ -21231,6 +21400,10 @@ declare function xpc_session_send_message(session: NSObject, message: NSObject):
 declare function xpc_session_send_message_with_reply_sync(session: NSObject, message: NSObject, error_out: interop.PointerConvertible): NSObject;
 
 declare function xpc_session_send_message_with_reply_async(session: NSObject, message: NSObject, reply_handler: (p1: NSObject, p2: NSObject) => void): void;
+
+declare function xpc_session_set_peer_requirement(session: NSObject, requirement: NSObject): void;
+
+declare function xpc_listener_set_peer_requirement(listener: NSObject, requirement: NSObject): void;
 
 declare function xpc_retain(object: NSObject): NSObject;
 
@@ -22162,6 +22335,8 @@ declare function pid_for_task(t: number, x: interop.PointerConvertible): number;
 
 declare function debug_control_port_for_pid(target_tport: number, pid: number, t: interop.PointerConvertible): number;
 
+declare function mach_vm_reclaim_update_kernel_accounting_trap(target_tport: number, bytes_reclaimed: interop.PointerConvertible): number;
+
 declare function host_info(host: number, flavor: number, host_info_out: interop.PointerConvertible, host_info_outCnt: interop.PointerConvertible): number;
 
 declare function host_kernel_version(host: number, kernel_version: unknown /* const array */): number;
@@ -22272,325 +22447,39 @@ declare function NXFindBestFatArch_64(cputype: number, cpusubtype: number, fat_a
 
 declare function NXCombineCpuSubtypes(cputype: number, cpusubtype1: number, cpusubtype2: number): number;
 
-declare function catopen(p1: string, p2: number): interop.Pointer;
+declare function nl_langinfo(p1: number): string;
 
-declare function catgets(p1: interop.PointerConvertible, p2: number, p3: number, p4: string): string;
+declare function strfmon(p1: string, __maxsize: number, p3: string): number;
 
-declare function catclose(p1: interop.PointerConvertible): number;
+declare function regcomp(p1: interop.PointerConvertible, p2: string, p3: number): number;
 
-declare function sched_yield(): number;
+declare function regerror(p1: number, p2: interop.PointerConvertible, p3: string, __errbuf_size: number): number;
 
-declare function sched_get_priority_min(p1: number): number;
+declare function regexec(p1: interop.PointerConvertible, p2: string, __nmatch: number, __pmatch: interop.Pointer, p5: number): number;
 
-declare function sched_get_priority_max(p1: number): number;
+declare function regfree(p1: interop.PointerConvertible): void;
 
-declare function asctime(p1: interop.PointerConvertible): string;
+declare function regncomp(p1: interop.PointerConvertible, p2: string, __len: number, p4: number): number;
 
-declare function clock(): number;
+declare function regnexec(p1: interop.PointerConvertible, p2: string, __len: number, __nmatch: number, __pmatch: interop.Pointer, p6: number): number;
 
-declare function ctime(p1: interop.PointerConvertible): string;
+declare function regwcomp(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number): number;
 
-declare function difftime(p1: number, p2: number): number;
+declare function regwexec(p1: interop.PointerConvertible, p2: interop.PointerConvertible, __nmatch: number, __pmatch: interop.Pointer, p5: number): number;
 
-declare function getdate(p1: string): interop.Pointer;
+declare function regwncomp(p1: interop.PointerConvertible, p2: interop.PointerConvertible, __len: number, p4: number): number;
 
-declare function gmtime(p1: interop.PointerConvertible): interop.Pointer;
-
-declare function localtime(p1: interop.PointerConvertible): interop.Pointer;
-
-declare function mktime(p1: interop.PointerConvertible): number;
-
-declare function strftime(p1: string, __maxsize: number, p3: string, p4: interop.PointerConvertible): number;
-
-declare function strptime(p1: string, p2: string, p3: interop.PointerConvertible): string;
-
-declare function time(p1: interop.PointerConvertible): number;
-
-declare function tzset(): void;
-
-declare function asctime_r(p1: interop.PointerConvertible, p2: string): string;
-
-declare function ctime_r(p1: interop.PointerConvertible, p2: string): string;
-
-declare function gmtime_r(p1: interop.PointerConvertible, p2: interop.PointerConvertible): interop.Pointer;
-
-declare function localtime_r(p1: interop.PointerConvertible, p2: interop.PointerConvertible): interop.Pointer;
-
-declare function posix2time(p1: number): number;
-
-declare function tzsetwall(): void;
-
-declare function time2posix(p1: number): number;
-
-declare function timelocal(p1: interop.PointerConvertible): number;
-
-declare function timegm(p1: interop.PointerConvertible): number;
-
-declare function nanosleep(__rqtp: interop.PointerConvertible, __rmtp: interop.PointerConvertible): number;
-
-declare function clock_getres(__clock_id: interop.Enum<typeof clockid_t>, __res: interop.PointerConvertible): number;
-
-declare function clock_gettime(__clock_id: interop.Enum<typeof clockid_t>, __tp: interop.PointerConvertible): number;
-
-declare function clock_gettime_nsec_np(__clock_id: interop.Enum<typeof clockid_t>): number;
-
-declare function timespec_get(ts: interop.PointerConvertible, base: number): number;
-
-declare function pthread_attr_set_qos_class_np(__attr: interop.PointerConvertible, __qos_class: interop.Enum<typeof qos_class_t>, __relative_priority: number): number;
-
-declare function pthread_attr_get_qos_class_np(__attr: interop.PointerConvertible, __qos_class: interop.PointerConvertible, __relative_priority: interop.PointerConvertible): number;
-
-declare function pthread_set_qos_class_self_np(__qos_class: interop.Enum<typeof qos_class_t>, __relative_priority: number): number;
-
-declare function pthread_get_qos_class_np(__pthread: interop.PointerConvertible, __qos_class: interop.PointerConvertible, __relative_priority: interop.PointerConvertible): number;
-
-declare function pthread_override_qos_class_start_np(__pthread: interop.PointerConvertible, __qos_class: interop.Enum<typeof qos_class_t>, __relative_priority: number): interop.Pointer;
-
-declare function pthread_override_qos_class_end_np(__override: interop.PointerConvertible): number;
-
-declare function pthread_atfork(p1: () => void, p2: () => void, p3: () => void): number;
-
-declare function pthread_attr_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_attr_getdetachstate(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getguardsize(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getinheritsched(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getschedparam(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getschedpolicy(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getscope(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getstack(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
-
-declare function pthread_attr_getstackaddr(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_getstacksize(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_init(p1: interop.PointerConvertible): number;
-
-declare function pthread_attr_setdetachstate(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_attr_setguardsize(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_attr_setinheritsched(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_attr_setschedparam(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_setschedpolicy(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_attr_setscope(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_attr_setstack(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number): number;
-
-declare function pthread_attr_setstackaddr(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_attr_setstacksize(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_cancel(p1: interop.PointerConvertible): number;
-
-declare function pthread_cond_broadcast(p1: interop.PointerConvertible): number;
-
-declare function pthread_cond_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_cond_init(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_cond_signal(p1: interop.PointerConvertible): number;
-
-declare function pthread_cond_timedwait(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
-
-declare function pthread_cond_wait(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_condattr_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_condattr_init(p1: interop.PointerConvertible): number;
-
-declare function pthread_condattr_getpshared(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_condattr_setpshared(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_create(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => interop.Pointer, p4: interop.PointerConvertible): number;
-
-declare function pthread_detach(p1: interop.PointerConvertible): number;
-
-declare function pthread_equal(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_exit(p1: interop.PointerConvertible): void;
-
-declare function pthread_getconcurrency(): number;
-
-declare function pthread_getschedparam(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
-
-declare function pthread_getspecific(p1: number): interop.Pointer;
-
-declare function pthread_join(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_key_create(p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible) => void): number;
-
-declare function pthread_key_delete(p1: number): number;
-
-declare function pthread_mutex_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_mutex_getprioceiling(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutex_init(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutex_lock(p1: interop.PointerConvertible): number;
-
-declare function pthread_mutex_setprioceiling(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible): number;
-
-declare function pthread_mutex_trylock(p1: interop.PointerConvertible): number;
-
-declare function pthread_mutex_unlock(p1: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_getprioceiling(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_getprotocol(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_getpshared(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_gettype(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_getpolicy_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_init(p1: interop.PointerConvertible): number;
-
-declare function pthread_mutexattr_setprioceiling(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_mutexattr_setprotocol(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_mutexattr_setpshared(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_mutexattr_settype(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_mutexattr_setpolicy_np(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_once(p1: interop.PointerConvertible, p2: () => void): number;
-
-declare function pthread_rwlock_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlock_init(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_rwlock_rdlock(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlock_tryrdlock(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlock_trywrlock(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlock_wrlock(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlock_unlock(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlockattr_destroy(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlockattr_getpshared(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_rwlockattr_init(p1: interop.PointerConvertible): number;
-
-declare function pthread_rwlockattr_setpshared(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_self(): interop.Pointer;
-
-declare function pthread_setcancelstate(p1: number, p2: interop.PointerConvertible): number;
-
-declare function pthread_setcanceltype(p1: number, p2: interop.PointerConvertible): number;
-
-declare function pthread_setconcurrency(p1: number): number;
-
-declare function pthread_setschedparam(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible): number;
-
-declare function pthread_setspecific(p1: number, p2: interop.PointerConvertible): number;
-
-declare function pthread_testcancel(): void;
-
-declare function pthread_is_threaded_np(): number;
-
-declare function pthread_threadid_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_getname_np(p1: interop.PointerConvertible, p2: string, p3: number): number;
-
-declare function pthread_setname_np(p1: string): number;
-
-declare function pthread_main_np(): number;
-
-declare function pthread_mach_thread_np(p1: interop.PointerConvertible): number;
-
-declare function pthread_get_stacksize_np(p1: interop.PointerConvertible): number;
-
-declare function pthread_get_stackaddr_np(p1: interop.PointerConvertible): interop.Pointer;
-
-declare function pthread_cond_signal_thread_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
-
-declare function pthread_cond_timedwait_relative_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
-
-declare function pthread_create_suspended_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => interop.Pointer, p4: interop.PointerConvertible): number;
-
-declare function pthread_kill(p1: interop.PointerConvertible, p2: number): number;
-
-declare function pthread_from_mach_thread_np(p1: number): interop.Pointer;
-
-declare function pthread_sigmask(p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
-
-declare function pthread_yield_np(): void;
-
-declare function pthread_jit_write_protect_supported_np(): number;
-
-declare function pthread_jit_write_with_callback_np(callback: (p1: interop.PointerConvertible) => number, ctx: interop.PointerConvertible): number;
-
-declare function pthread_jit_write_freeze_callbacks_np(): void;
-
-declare function pthread_cpu_number_np(cpu_number_out: interop.PointerConvertible): number;
-
-declare function _Unwind_RaiseException(exception_object: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
-
-declare function _Unwind_Resume(exception_object: interop.PointerConvertible): void;
-
-declare function _Unwind_DeleteException(exception_object: interop.PointerConvertible): void;
-
-declare function _Unwind_GetGR(context: interop.PointerConvertible, index: number): number;
-
-declare function _Unwind_SetGR(context: interop.PointerConvertible, index: number, new_value: number): void;
-
-declare function _Unwind_GetIP(context: interop.PointerConvertible): number;
-
-declare function _Unwind_SetIP(p1: interop.PointerConvertible, new_value: number): void;
-
-declare function _Unwind_GetRegionStart(context: interop.PointerConvertible): number;
-
-declare function _Unwind_GetLanguageSpecificData(context: interop.PointerConvertible): number;
-
-declare function _Unwind_ForcedUnwind(exception_object: interop.PointerConvertible, stop: (p1: number, p2: interop.Enum<typeof _Unwind_Action>, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Enum<typeof _Unwind_Reason_Code>, stop_parameter: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
-
-declare function _Unwind_Resume_or_Rethrow(exception_object: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
-
-declare function _Unwind_Backtrace(p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof _Unwind_Reason_Code>, p2: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
-
-declare function _Unwind_GetCFA(p1: interop.PointerConvertible): number;
-
-declare function _Unwind_GetIPInfo(context: interop.PointerConvertible, ipBefore: interop.PointerConvertible): number;
-
-declare function __register_frame(fde: interop.PointerConvertible): void;
-
-declare function __deregister_frame(fde: interop.PointerConvertible): void;
-
-declare function _Unwind_Find_FDE(pc: interop.PointerConvertible, p2: interop.PointerConvertible): interop.Pointer;
-
-declare function _Unwind_FindEnclosingFunction(pc: interop.PointerConvertible): interop.Pointer;
+declare function regwnexec(p1: interop.PointerConvertible, p2: interop.PointerConvertible, __len: number, __nmatch: number, __pmatch: interop.Pointer, p6: number): number;
 
 declare function duplocale(p1: interop.PointerConvertible): interop.Pointer;
 
 declare function freelocale(p1: interop.PointerConvertible): number;
 
-declare function localeconv(): interop.Pointer;
-
 declare function newlocale(p1: number, p2: string, p3: interop.PointerConvertible): interop.Pointer;
 
 declare function uselocale(p1: interop.PointerConvertible): interop.Pointer;
+
+declare function localeconv(): interop.Pointer;
 
 declare function ___mb_cur_max(): number;
 
@@ -22599,6 +22488,10 @@ declare function ___mb_cur_max_l(p1: interop.PointerConvertible): number;
 declare function localeconv_l(p1: interop.PointerConvertible): interop.Pointer;
 
 declare function querylocale(p1: number, p2: interop.PointerConvertible): string;
+
+declare function nl_langinfo_l(p1: number, p2: interop.PointerConvertible): string;
+
+declare function strfmon_l(p1: string, __maxsize: number, p3: interop.PointerConvertible, p4: string): number;
 
 declare function fprintf_l(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string): number;
 
@@ -22682,38 +22575,6 @@ declare function strcasestr_l(p1: string, p2: string, p3: interop.PointerConvert
 
 declare function strncasecmp_l(p1: string, p2: string, p3: number, p4: interop.PointerConvertible): number;
 
-declare function strftime_l(p1: string, __n: number, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible): number;
-
-declare function strptime_l(p1: string, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible): string;
-
-declare function nl_langinfo(p1: number): string;
-
-declare function nl_langinfo_l(p1: number, p2: interop.PointerConvertible): string;
-
-declare function strfmon(p1: string, __maxsize: number, p3: string): number;
-
-declare function strfmon_l(p1: string, __maxsize: number, p3: interop.PointerConvertible, p4: string): number;
-
-declare function regcomp(p1: interop.PointerConvertible, p2: string, p3: number): number;
-
-declare function regerror(p1: number, p2: interop.PointerConvertible, p3: string, __errbuf_size: number): number;
-
-declare function regexec(p1: interop.PointerConvertible, p2: string, __nmatch: number, __pmatch: interop.Pointer, p5: number): number;
-
-declare function regfree(p1: interop.PointerConvertible): void;
-
-declare function regncomp(p1: interop.PointerConvertible, p2: string, __len: number, p4: number): number;
-
-declare function regnexec(p1: interop.PointerConvertible, p2: string, __len: number, __nmatch: number, __pmatch: interop.Pointer, p6: number): number;
-
-declare function regwcomp(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number): number;
-
-declare function regwexec(p1: interop.PointerConvertible, p2: interop.PointerConvertible, __nmatch: number, __pmatch: interop.Pointer, p5: number): number;
-
-declare function regwncomp(p1: interop.PointerConvertible, p2: interop.PointerConvertible, __len: number, p4: number): number;
-
-declare function regwnexec(p1: interop.PointerConvertible, p2: interop.PointerConvertible, __len: number, __nmatch: number, __pmatch: interop.Pointer, p6: number): number;
-
 declare function ___runetype(p1: number): number;
 
 declare function ___tolower(p1: number): number;
@@ -22753,6 +22614,62 @@ declare function strtoumax_l(nptr: string, endptr: interop.PointerConvertible, b
 declare function wcstoimax_l(nptr: interop.PointerConvertible, endptr: interop.PointerConvertible, base: number, p4: interop.PointerConvertible): number;
 
 declare function wcstoumax_l(nptr: interop.PointerConvertible, endptr: interop.PointerConvertible, base: number, p4: interop.PointerConvertible): number;
+
+declare function asctime(p1: interop.PointerConvertible): string;
+
+declare function clock(): number;
+
+declare function ctime(p1: interop.PointerConvertible): string;
+
+declare function difftime(p1: number, p2: number): number;
+
+declare function getdate(p1: string): interop.Pointer;
+
+declare function gmtime(p1: interop.PointerConvertible): interop.Pointer;
+
+declare function localtime(p1: interop.PointerConvertible): interop.Pointer;
+
+declare function mktime(p1: interop.PointerConvertible): number;
+
+declare function strftime(p1: string, __maxsize: number, p3: string, p4: interop.PointerConvertible): number;
+
+declare function strptime(p1: string, p2: string, p3: interop.PointerConvertible): string;
+
+declare function time(p1: interop.PointerConvertible): number;
+
+declare function tzset(): void;
+
+declare function asctime_r(p1: interop.PointerConvertible, p2: string): string;
+
+declare function ctime_r(p1: interop.PointerConvertible, p2: string): string;
+
+declare function gmtime_r(p1: interop.PointerConvertible, p2: interop.PointerConvertible): interop.Pointer;
+
+declare function localtime_r(p1: interop.PointerConvertible, p2: interop.PointerConvertible): interop.Pointer;
+
+declare function posix2time(p1: number): number;
+
+declare function tzsetwall(): void;
+
+declare function time2posix(p1: number): number;
+
+declare function timelocal(p1: interop.PointerConvertible): number;
+
+declare function timegm(p1: interop.PointerConvertible): number;
+
+declare function nanosleep(__rqtp: interop.PointerConvertible, __rmtp: interop.PointerConvertible): number;
+
+declare function clock_getres(__clock_id: interop.Enum<typeof clockid_t>, __res: interop.PointerConvertible): number;
+
+declare function clock_gettime(__clock_id: interop.Enum<typeof clockid_t>, __tp: interop.PointerConvertible): number;
+
+declare function clock_gettime_nsec_np(__clock_id: interop.Enum<typeof clockid_t>): number;
+
+declare function timespec_get(ts: interop.PointerConvertible, base: number): number;
+
+declare function strftime_l(p1: string, __n: number, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible): number;
+
+declare function strptime_l(p1: string, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible): string;
 
 declare function wctype(p1: string): number;
 
@@ -23436,6 +23353,8 @@ declare function OSAtomicEnqueue(__list: interop.PointerConvertible, __new: inte
 
 declare function OSAtomicDequeue(__list: interop.PointerConvertible, __offset: number): interop.Pointer;
 
+declare function malloc_type_zone_malloc_with_options(zone: interop.PointerConvertible, alignment: number, size: number, type_id: number, opts: interop.Enum<typeof malloc_zone_malloc_options_t>): interop.Pointer;
+
 declare function malloc_default_zone(): interop.Pointer;
 
 declare function malloc_create_zone(start_size: number, flags: number): interop.Pointer;
@@ -23443,6 +23362,8 @@ declare function malloc_create_zone(start_size: number, flags: number): interop.
 declare function malloc_destroy_zone(zone: interop.PointerConvertible): void;
 
 declare function malloc_zone_malloc(zone: interop.PointerConvertible, size: number): interop.Pointer;
+
+declare function malloc_zone_malloc_with_options(zone: interop.PointerConvertible, align: number, size: number, opts: interop.Enum<typeof malloc_zone_malloc_options_t>): interop.Pointer;
 
 declare function malloc_zone_calloc(zone: interop.PointerConvertible, num_items: number, size: number): interop.Pointer;
 
@@ -23630,593 +23551,7 @@ declare function xattr_flags_from_name(p1: string): number;
 
 declare function xattr_intent_with_flags(p1: number, p2: number): number;
 
-declare function __assert_rtn(p1: string, p2: string, p3: number, p4: string): void;
-
-declare function cacosf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cacos(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cacosl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function casinf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function casin(p1: unknown /* complex */): unknown /* complex */;
-
-declare function casinl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function catanf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function catan(p1: unknown /* complex */): unknown /* complex */;
-
-declare function catanl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ccosf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ccos(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ccosl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csinf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csin(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csinl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ctanf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ctan(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ctanl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cacoshf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cacosh(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cacoshl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function casinhf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function casinh(p1: unknown /* complex */): unknown /* complex */;
-
-declare function casinhl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function catanhf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function catanh(p1: unknown /* complex */): unknown /* complex */;
-
-declare function catanhl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ccoshf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ccosh(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ccoshl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csinhf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csinh(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csinhl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ctanhf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ctanh(p1: unknown /* complex */): unknown /* complex */;
-
-declare function ctanhl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cexpf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cexp(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cexpl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function clogf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function clog(p1: unknown /* complex */): unknown /* complex */;
-
-declare function clogl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cabsf(p1: unknown /* complex */): number;
-
-declare function cabs(p1: unknown /* complex */): number;
-
-declare function cabsl(p1: unknown /* complex */): number;
-
-declare function cpowf(p1: unknown /* complex */, p2: unknown /* complex */): unknown /* complex */;
-
-declare function cpow(p1: unknown /* complex */, p2: unknown /* complex */): unknown /* complex */;
-
-declare function cpowl(p1: unknown /* complex */, p2: unknown /* complex */): unknown /* complex */;
-
-declare function csqrtf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csqrt(p1: unknown /* complex */): unknown /* complex */;
-
-declare function csqrtl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cargf(p1: unknown /* complex */): number;
-
-declare function carg(p1: unknown /* complex */): number;
-
-declare function cargl(p1: unknown /* complex */): number;
-
-declare function cimagf(p1: unknown /* complex */): number;
-
-declare function cimag(p1: unknown /* complex */): number;
-
-declare function cimagl(p1: unknown /* complex */): number;
-
-declare function conjf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function conj(p1: unknown /* complex */): unknown /* complex */;
-
-declare function conjl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cprojf(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cproj(p1: unknown /* complex */): unknown /* complex */;
-
-declare function cprojl(p1: unknown /* complex */): unknown /* complex */;
-
-declare function crealf(p1: unknown /* complex */): number;
-
-declare function creal(p1: unknown /* complex */): number;
-
-declare function creall(p1: unknown /* complex */): number;
-
 declare function __error(): interop.Pointer;
-
-declare function feclearexcept(p1: number): number;
-
-declare function fegetexceptflag(p1: interop.PointerConvertible, p2: number): number;
-
-declare function feraiseexcept(p1: number): number;
-
-declare function fesetexceptflag(p1: interop.PointerConvertible, p2: number): number;
-
-declare function fetestexcept(p1: number): number;
-
-declare function fegetround(): number;
-
-declare function fesetround(p1: number): number;
-
-declare function fegetenv(p1: interop.PointerConvertible): number;
-
-declare function feholdexcept(p1: interop.PointerConvertible): number;
-
-declare function fesetenv(p1: interop.PointerConvertible): number;
-
-declare function feupdateenv(p1: interop.PointerConvertible): number;
-
-declare function setlocale(p1: number, p2: string): string;
-
-declare function __math_errhandling(): number;
-
-declare function __fpclassifyf(p1: number): number;
-
-declare function __fpclassifyd(p1: number): number;
-
-declare function __fpclassifyl(p1: number): number;
-
-declare function acosf(p1: number): number;
-
-declare function acos(p1: number): number;
-
-declare function acosl(p1: number): number;
-
-declare function asinf(p1: number): number;
-
-declare function asin(p1: number): number;
-
-declare function asinl(p1: number): number;
-
-declare function atanf(p1: number): number;
-
-declare function atan(p1: number): number;
-
-declare function atanl(p1: number): number;
-
-declare function atan2f(p1: number, p2: number): number;
-
-declare function atan2(p1: number, p2: number): number;
-
-declare function atan2l(p1: number, p2: number): number;
-
-declare function cosf(p1: number): number;
-
-declare function cos(p1: number): number;
-
-declare function cosl(p1: number): number;
-
-declare function sinf(p1: number): number;
-
-declare function sin(p1: number): number;
-
-declare function sinl(p1: number): number;
-
-declare function tanf(p1: number): number;
-
-declare function tan(p1: number): number;
-
-declare function tanl(p1: number): number;
-
-declare function acoshf(p1: number): number;
-
-declare function acosh(p1: number): number;
-
-declare function acoshl(p1: number): number;
-
-declare function asinhf(p1: number): number;
-
-declare function asinh(p1: number): number;
-
-declare function asinhl(p1: number): number;
-
-declare function atanhf(p1: number): number;
-
-declare function atanh(p1: number): number;
-
-declare function atanhl(p1: number): number;
-
-declare function coshf(p1: number): number;
-
-declare function cosh(p1: number): number;
-
-declare function coshl(p1: number): number;
-
-declare function sinhf(p1: number): number;
-
-declare function sinh(p1: number): number;
-
-declare function sinhl(p1: number): number;
-
-declare function tanhf(p1: number): number;
-
-declare function tanh(p1: number): number;
-
-declare function tanhl(p1: number): number;
-
-declare function expf(p1: number): number;
-
-declare function exp(p1: number): number;
-
-declare function expl(p1: number): number;
-
-declare function exp2f(p1: number): number;
-
-declare function exp2(p1: number): number;
-
-declare function exp2l(p1: number): number;
-
-declare function expm1f(p1: number): number;
-
-declare function expm1(p1: number): number;
-
-declare function expm1l(p1: number): number;
-
-declare function logf(p1: number): number;
-
-declare function log(p1: number): number;
-
-declare function logl(p1: number): number;
-
-declare function log10f(p1: number): number;
-
-declare function log10(p1: number): number;
-
-declare function log10l(p1: number): number;
-
-declare function log2f(p1: number): number;
-
-declare function log2(p1: number): number;
-
-declare function log2l(p1: number): number;
-
-declare function log1pf(p1: number): number;
-
-declare function log1p(p1: number): number;
-
-declare function log1pl(p1: number): number;
-
-declare function logbf(p1: number): number;
-
-declare function logb(p1: number): number;
-
-declare function logbl(p1: number): number;
-
-declare function modff(p1: number, p2: interop.PointerConvertible): number;
-
-declare function modf(p1: number, p2: interop.PointerConvertible): number;
-
-declare function modfl(p1: number, p2: interop.PointerConvertible): number;
-
-declare function ldexpf(p1: number, p2: number): number;
-
-declare function ldexp(p1: number, p2: number): number;
-
-declare function ldexpl(p1: number, p2: number): number;
-
-declare function frexpf(p1: number, p2: interop.PointerConvertible): number;
-
-declare function frexp(p1: number, p2: interop.PointerConvertible): number;
-
-declare function frexpl(p1: number, p2: interop.PointerConvertible): number;
-
-declare function ilogbf(p1: number): number;
-
-declare function ilogb(p1: number): number;
-
-declare function ilogbl(p1: number): number;
-
-declare function scalbnf(p1: number, p2: number): number;
-
-declare function scalbn(p1: number, p2: number): number;
-
-declare function scalbnl(p1: number, p2: number): number;
-
-declare function scalblnf(p1: number, p2: number): number;
-
-declare function scalbln(p1: number, p2: number): number;
-
-declare function scalblnl(p1: number, p2: number): number;
-
-declare function fabsf(p1: number): number;
-
-declare function fabs(p1: number): number;
-
-declare function fabsl(p1: number): number;
-
-declare function cbrtf(p1: number): number;
-
-declare function cbrt(p1: number): number;
-
-declare function cbrtl(p1: number): number;
-
-declare function hypotf(p1: number, p2: number): number;
-
-declare function hypot(p1: number, p2: number): number;
-
-declare function hypotl(p1: number, p2: number): number;
-
-declare function powf(p1: number, p2: number): number;
-
-declare function pow(p1: number, p2: number): number;
-
-declare function powl(p1: number, p2: number): number;
-
-declare function sqrtf(p1: number): number;
-
-declare function sqrt(p1: number): number;
-
-declare function sqrtl(p1: number): number;
-
-declare function erff(p1: number): number;
-
-declare function erf(p1: number): number;
-
-declare function erfl(p1: number): number;
-
-declare function erfcf(p1: number): number;
-
-declare function erfc(p1: number): number;
-
-declare function erfcl(p1: number): number;
-
-declare function lgammaf(p1: number): number;
-
-declare function lgamma(p1: number): number;
-
-declare function lgammal(p1: number): number;
-
-declare function tgammaf(p1: number): number;
-
-declare function tgamma(p1: number): number;
-
-declare function tgammal(p1: number): number;
-
-declare function ceilf(p1: number): number;
-
-declare function ceil(p1: number): number;
-
-declare function ceill(p1: number): number;
-
-declare function floorf(p1: number): number;
-
-declare function floor(p1: number): number;
-
-declare function floorl(p1: number): number;
-
-declare function nearbyintf(p1: number): number;
-
-declare function nearbyint(p1: number): number;
-
-declare function nearbyintl(p1: number): number;
-
-declare function rintf(p1: number): number;
-
-declare function rint(p1: number): number;
-
-declare function rintl(p1: number): number;
-
-declare function lrintf(p1: number): number;
-
-declare function lrint(p1: number): number;
-
-declare function lrintl(p1: number): number;
-
-declare function roundf(p1: number): number;
-
-declare function round(p1: number): number;
-
-declare function roundl(p1: number): number;
-
-declare function lroundf(p1: number): number;
-
-declare function lround(p1: number): number;
-
-declare function lroundl(p1: number): number;
-
-declare function llrintf(p1: number): number;
-
-declare function llrint(p1: number): number;
-
-declare function llrintl(p1: number): number;
-
-declare function llroundf(p1: number): number;
-
-declare function llround(p1: number): number;
-
-declare function llroundl(p1: number): number;
-
-declare function truncf(p1: number): number;
-
-declare function trunc(p1: number): number;
-
-declare function truncl(p1: number): number;
-
-declare function fmodf(p1: number, p2: number): number;
-
-declare function fmod(p1: number, p2: number): number;
-
-declare function fmodl(p1: number, p2: number): number;
-
-declare function remainderf(p1: number, p2: number): number;
-
-declare function remainder(p1: number, p2: number): number;
-
-declare function remainderl(p1: number, p2: number): number;
-
-declare function remquof(p1: number, p2: number, p3: interop.PointerConvertible): number;
-
-declare function remquo(p1: number, p2: number, p3: interop.PointerConvertible): number;
-
-declare function remquol(p1: number, p2: number, p3: interop.PointerConvertible): number;
-
-declare function copysignf(p1: number, p2: number): number;
-
-declare function copysign(p1: number, p2: number): number;
-
-declare function copysignl(p1: number, p2: number): number;
-
-declare function nanf(p1: string): number;
-
-declare function nan(p1: string): number;
-
-declare function nanl(p1: string): number;
-
-declare function nextafterf(p1: number, p2: number): number;
-
-declare function nextafter(p1: number, p2: number): number;
-
-declare function nextafterl(p1: number, p2: number): number;
-
-declare function nexttoward(p1: number, p2: number): number;
-
-declare function nexttowardf(p1: number, p2: number): number;
-
-declare function nexttowardl(p1: number, p2: number): number;
-
-declare function fdimf(p1: number, p2: number): number;
-
-declare function fdim(p1: number, p2: number): number;
-
-declare function fdiml(p1: number, p2: number): number;
-
-declare function fmaxf(p1: number, p2: number): number;
-
-declare function fmax(p1: number, p2: number): number;
-
-declare function fmaxl(p1: number, p2: number): number;
-
-declare function fminf(p1: number, p2: number): number;
-
-declare function fmin(p1: number, p2: number): number;
-
-declare function fminl(p1: number, p2: number): number;
-
-declare function fmaf(p1: number, p2: number, p3: number): number;
-
-declare function fma(p1: number, p2: number, p3: number): number;
-
-declare function fmal(p1: number, p2: number, p3: number): number;
-
-declare function __exp10f(p1: number): number;
-
-declare function __exp10(p1: number): number;
-
-declare function __cospif(p1: number): number;
-
-declare function __cospi(p1: number): number;
-
-declare function __sinpif(p1: number): number;
-
-declare function __sinpi(p1: number): number;
-
-declare function __tanpif(p1: number): number;
-
-declare function __tanpi(p1: number): number;
-
-declare function __fabsf16(p1: number): number;
-
-declare function __hypotf16(p1: number, p2: number): number;
-
-declare function __sqrtf16(p1: number): number;
-
-declare function __ceilf16(p1: number): number;
-
-declare function __floorf16(p1: number): number;
-
-declare function __rintf16(p1: number): number;
-
-declare function __roundf16(p1: number): number;
-
-declare function __truncf16(p1: number): number;
-
-declare function __copysignf16(p1: number, p2: number): number;
-
-declare function __nextafterf16(p1: number, p2: number): number;
-
-declare function __fmaxf16(p1: number, p2: number): number;
-
-declare function __fminf16(p1: number, p2: number): number;
-
-declare function __fmaf16(p1: number, p2: number, p3: number): number;
-
-declare function __sincosf_stret(p1: number): __float2;
-
-declare function __sincos_stret(p1: number): __double2;
-
-declare function __sincospif_stret(p1: number): __float2;
-
-declare function __sincospi_stret(p1: number): __double2;
-
-declare function j0(p1: number): number;
-
-declare function j1(p1: number): number;
-
-declare function jn(p1: number, p2: number): number;
-
-declare function y0(p1: number): number;
-
-declare function y1(p1: number): number;
-
-declare function yn(p1: number, p2: number): number;
-
-declare function scalb(p1: number, p2: number): number;
-
-declare function setjmp(p1: unknown /* const array */): number;
-
-declare function longjmp(p1: unknown /* const array */, p2: number): void;
-
-declare function _setjmp(p1: unknown /* const array */): number;
-
-declare function _longjmp(p1: unknown /* const array */, p2: number): void;
-
-declare function sigsetjmp(p1: unknown /* const array */, p2: number): number;
-
-declare function siglongjmp(p1: unknown /* const array */, p2: number): void;
-
-declare function longjmperror(): void;
 
 declare function raise(p1: number): number;
 
@@ -24271,550 +23606,6 @@ declare function sigblock(p1: number): number;
 declare function sigsetmask(p1: number): number;
 
 declare function sigvec(p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: number): number;
-
-declare function __tg_promote(p1: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_promote(p1: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_promote(p1: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_acos(__x: number): number;
-
-declare function __tg_acos(__x: number): number;
-
-declare function __tg_acos(__x: number): number;
-
-declare function __tg_acos(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_acos(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_acos(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_asin(__x: number): number;
-
-declare function __tg_asin(__x: number): number;
-
-declare function __tg_asin(__x: number): number;
-
-declare function __tg_asin(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_asin(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_asin(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_atan(__x: number): number;
-
-declare function __tg_atan(__x: number): number;
-
-declare function __tg_atan(__x: number): number;
-
-declare function __tg_atan(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_atan(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_atan(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_acosh(__x: number): number;
-
-declare function __tg_acosh(__x: number): number;
-
-declare function __tg_acosh(__x: number): number;
-
-declare function __tg_acosh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_acosh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_acosh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_asinh(__x: number): number;
-
-declare function __tg_asinh(__x: number): number;
-
-declare function __tg_asinh(__x: number): number;
-
-declare function __tg_asinh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_asinh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_asinh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_atanh(__x: number): number;
-
-declare function __tg_atanh(__x: number): number;
-
-declare function __tg_atanh(__x: number): number;
-
-declare function __tg_atanh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_atanh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_atanh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cos(__x: number): number;
-
-declare function __tg_cos(__x: number): number;
-
-declare function __tg_cos(__x: number): number;
-
-declare function __tg_cos(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cos(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cos(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sin(__x: number): number;
-
-declare function __tg_sin(__x: number): number;
-
-declare function __tg_sin(__x: number): number;
-
-declare function __tg_sin(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sin(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sin(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_tan(__x: number): number;
-
-declare function __tg_tan(__x: number): number;
-
-declare function __tg_tan(__x: number): number;
-
-declare function __tg_tan(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_tan(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_tan(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cosh(__x: number): number;
-
-declare function __tg_cosh(__x: number): number;
-
-declare function __tg_cosh(__x: number): number;
-
-declare function __tg_cosh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cosh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cosh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sinh(__x: number): number;
-
-declare function __tg_sinh(__x: number): number;
-
-declare function __tg_sinh(__x: number): number;
-
-declare function __tg_sinh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sinh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sinh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_tanh(__x: number): number;
-
-declare function __tg_tanh(__x: number): number;
-
-declare function __tg_tanh(__x: number): number;
-
-declare function __tg_tanh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_tanh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_tanh(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_exp(__x: number): number;
-
-declare function __tg_exp(__x: number): number;
-
-declare function __tg_exp(__x: number): number;
-
-declare function __tg_exp(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_exp(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_exp(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_log(__x: number): number;
-
-declare function __tg_log(__x: number): number;
-
-declare function __tg_log(__x: number): number;
-
-declare function __tg_log(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_log(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_log(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_pow(__x: number, __y: number): number;
-
-declare function __tg_pow(__x: number, __y: number): number;
-
-declare function __tg_pow(__x: number, __y: number): number;
-
-declare function __tg_pow(__x: unknown /* complex */, __y: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_pow(__x: unknown /* complex */, __y: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_pow(__x: unknown /* complex */, __y: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sqrt(__x: number): number;
-
-declare function __tg_sqrt(__x: number): number;
-
-declare function __tg_sqrt(__x: number): number;
-
-declare function __tg_sqrt(__x: number): number;
-
-declare function __tg_sqrt(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sqrt(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_sqrt(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_fabs(__x: number): number;
-
-declare function __tg_fabs(__x: number): number;
-
-declare function __tg_fabs(__x: number): number;
-
-declare function __tg_fabs(__x: number): number;
-
-declare function __tg_fabs(__x: unknown /* complex */): number;
-
-declare function __tg_fabs(__x: unknown /* complex */): number;
-
-declare function __tg_fabs(__x: unknown /* complex */): number;
-
-declare function __tg_atan2(__x: number, __y: number): number;
-
-declare function __tg_atan2(__x: number, __y: number): number;
-
-declare function __tg_atan2(__x: number, __y: number): number;
-
-declare function __tg_cbrt(__x: number): number;
-
-declare function __tg_cbrt(__x: number): number;
-
-declare function __tg_cbrt(__x: number): number;
-
-declare function __tg_ceil(__x: number): number;
-
-declare function __tg_ceil(__x: number): number;
-
-declare function __tg_ceil(__x: number): number;
-
-declare function __tg_ceil(__x: number): number;
-
-declare function __tg_copysign(__x: number, __y: number): number;
-
-declare function __tg_copysign(__x: number, __y: number): number;
-
-declare function __tg_copysign(__x: number, __y: number): number;
-
-declare function __tg_copysign(__x: number, __y: number): number;
-
-declare function __tg_erf(__x: number): number;
-
-declare function __tg_erf(__x: number): number;
-
-declare function __tg_erf(__x: number): number;
-
-declare function __tg_erfc(__x: number): number;
-
-declare function __tg_erfc(__x: number): number;
-
-declare function __tg_erfc(__x: number): number;
-
-declare function __tg_exp2(__x: number): number;
-
-declare function __tg_exp2(__x: number): number;
-
-declare function __tg_exp2(__x: number): number;
-
-declare function __tg_expm1(__x: number): number;
-
-declare function __tg_expm1(__x: number): number;
-
-declare function __tg_expm1(__x: number): number;
-
-declare function __tg_fdim(__x: number, __y: number): number;
-
-declare function __tg_fdim(__x: number, __y: number): number;
-
-declare function __tg_fdim(__x: number, __y: number): number;
-
-declare function __tg_floor(__x: number): number;
-
-declare function __tg_floor(__x: number): number;
-
-declare function __tg_floor(__x: number): number;
-
-declare function __tg_floor(__x: number): number;
-
-declare function __tg_fma(__x: number, __y: number, __z: number): number;
-
-declare function __tg_fma(__x: number, __y: number, __z: number): number;
-
-declare function __tg_fma(__x: number, __y: number, __z: number): number;
-
-declare function __tg_fma(__x: number, __y: number, __z: number): number;
-
-declare function __tg_fmax(__x: number, __y: number): number;
-
-declare function __tg_fmax(__x: number, __y: number): number;
-
-declare function __tg_fmax(__x: number, __y: number): number;
-
-declare function __tg_fmax(__x: number, __y: number): number;
-
-declare function __tg_fmin(__x: number, __y: number): number;
-
-declare function __tg_fmin(__x: number, __y: number): number;
-
-declare function __tg_fmin(__x: number, __y: number): number;
-
-declare function __tg_fmin(__x: number, __y: number): number;
-
-declare function __tg_fmod(__x: number, __y: number): number;
-
-declare function __tg_fmod(__x: number, __y: number): number;
-
-declare function __tg_fmod(__x: number, __y: number): number;
-
-declare function __tg_frexp(__x: number, __y: interop.PointerConvertible): number;
-
-declare function __tg_frexp(__x: number, __y: interop.PointerConvertible): number;
-
-declare function __tg_frexp(__x: number, __y: interop.PointerConvertible): number;
-
-declare function __tg_hypot(__x: number, __y: number): number;
-
-declare function __tg_hypot(__x: number, __y: number): number;
-
-declare function __tg_hypot(__x: number, __y: number): number;
-
-declare function __tg_hypot(__x: number, __y: number): number;
-
-declare function __tg_ilogb(__x: number): number;
-
-declare function __tg_ilogb(__x: number): number;
-
-declare function __tg_ilogb(__x: number): number;
-
-declare function __tg_ldexp(__x: number, __y: number): number;
-
-declare function __tg_ldexp(__x: number, __y: number): number;
-
-declare function __tg_ldexp(__x: number, __y: number): number;
-
-declare function __tg_lgamma(__x: number): number;
-
-declare function __tg_lgamma(__x: number): number;
-
-declare function __tg_lgamma(__x: number): number;
-
-declare function __tg_llrint(__x: number): number;
-
-declare function __tg_llrint(__x: number): number;
-
-declare function __tg_llrint(__x: number): number;
-
-declare function __tg_llround(__x: number): number;
-
-declare function __tg_llround(__x: number): number;
-
-declare function __tg_llround(__x: number): number;
-
-declare function __tg_log10(__x: number): number;
-
-declare function __tg_log10(__x: number): number;
-
-declare function __tg_log10(__x: number): number;
-
-declare function __tg_log1p(__x: number): number;
-
-declare function __tg_log1p(__x: number): number;
-
-declare function __tg_log1p(__x: number): number;
-
-declare function __tg_log2(__x: number): number;
-
-declare function __tg_log2(__x: number): number;
-
-declare function __tg_log2(__x: number): number;
-
-declare function __tg_logb(__x: number): number;
-
-declare function __tg_logb(__x: number): number;
-
-declare function __tg_logb(__x: number): number;
-
-declare function __tg_lrint(__x: number): number;
-
-declare function __tg_lrint(__x: number): number;
-
-declare function __tg_lrint(__x: number): number;
-
-declare function __tg_lround(__x: number): number;
-
-declare function __tg_lround(__x: number): number;
-
-declare function __tg_lround(__x: number): number;
-
-declare function __tg_nearbyint(__x: number): number;
-
-declare function __tg_nearbyint(__x: number): number;
-
-declare function __tg_nearbyint(__x: number): number;
-
-declare function __tg_nextafter(__x: number, __y: number): number;
-
-declare function __tg_nextafter(__x: number, __y: number): number;
-
-declare function __tg_nextafter(__x: number, __y: number): number;
-
-declare function __tg_nextafter(__x: number, __y: number): number;
-
-declare function __tg_nexttoward(__x: number, __y: number): number;
-
-declare function __tg_nexttoward(__x: number, __y: number): number;
-
-declare function __tg_nexttoward(__x: number, __y: number): number;
-
-declare function __tg_remainder(__x: number, __y: number): number;
-
-declare function __tg_remainder(__x: number, __y: number): number;
-
-declare function __tg_remainder(__x: number, __y: number): number;
-
-declare function __tg_remquo(__x: number, __y: number, __z: interop.PointerConvertible): number;
-
-declare function __tg_remquo(__x: number, __y: number, __z: interop.PointerConvertible): number;
-
-declare function __tg_remquo(__x: number, __y: number, __z: interop.PointerConvertible): number;
-
-declare function __tg_rint(__x: number): number;
-
-declare function __tg_rint(__x: number): number;
-
-declare function __tg_rint(__x: number): number;
-
-declare function __tg_rint(__x: number): number;
-
-declare function __tg_round(__x: number): number;
-
-declare function __tg_round(__x: number): number;
-
-declare function __tg_round(__x: number): number;
-
-declare function __tg_round(__x: number): number;
-
-declare function __tg_scalbn(__x: number, __y: number): number;
-
-declare function __tg_scalbn(__x: number, __y: number): number;
-
-declare function __tg_scalbn(__x: number, __y: number): number;
-
-declare function __tg_scalbln(__x: number, __y: number): number;
-
-declare function __tg_scalbln(__x: number, __y: number): number;
-
-declare function __tg_scalbln(__x: number, __y: number): number;
-
-declare function __tg_tgamma(__x: number): number;
-
-declare function __tg_tgamma(__x: number): number;
-
-declare function __tg_tgamma(__x: number): number;
-
-declare function __tg_trunc(__x: number): number;
-
-declare function __tg_trunc(__x: number): number;
-
-declare function __tg_trunc(__x: number): number;
-
-declare function __tg_trunc(__x: number): number;
-
-declare function __tg_carg(__x: number): number;
-
-declare function __tg_carg(__x: number): number;
-
-declare function __tg_carg(__x: number): number;
-
-declare function __tg_carg(__x: unknown /* complex */): number;
-
-declare function __tg_carg(__x: unknown /* complex */): number;
-
-declare function __tg_carg(__x: unknown /* complex */): number;
-
-declare function __tg_cimag(__x: number): number;
-
-declare function __tg_cimag(__x: number): number;
-
-declare function __tg_cimag(__x: number): number;
-
-declare function __tg_cimag(__x: unknown /* complex */): number;
-
-declare function __tg_cimag(__x: unknown /* complex */): number;
-
-declare function __tg_cimag(__x: unknown /* complex */): number;
-
-declare function __tg_conj(__x: number): unknown /* complex */;
-
-declare function __tg_conj(__x: number): unknown /* complex */;
-
-declare function __tg_conj(__x: number): unknown /* complex */;
-
-declare function __tg_conj(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_conj(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_conj(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cproj(__x: number): unknown /* complex */;
-
-declare function __tg_cproj(__x: number): unknown /* complex */;
-
-declare function __tg_cproj(__x: number): unknown /* complex */;
-
-declare function __tg_cproj(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cproj(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_cproj(__x: unknown /* complex */): unknown /* complex */;
-
-declare function __tg_creal(__x: number): number;
-
-declare function __tg_creal(__x: number): number;
-
-declare function __tg_creal(__x: number): number;
-
-declare function __tg_creal(__x: unknown /* complex */): number;
-
-declare function __tg_creal(__x: unknown /* complex */): number;
-
-declare function __tg_creal(__x: unknown /* complex */): number;
 
 declare function aio_cancel(fd: number, aiocbp: interop.PointerConvertible): number;
 
@@ -25270,6 +24061,222 @@ declare function tracker_action(action: number, buffer: string, buffer_size: num
 
 declare function poll(p1: interop.PointerConvertible, p2: number, p3: number): number;
 
+declare function sched_yield(): number;
+
+declare function sched_get_priority_min(p1: number): number;
+
+declare function sched_get_priority_max(p1: number): number;
+
+declare function pthread_attr_set_qos_class_np(__attr: interop.PointerConvertible, __qos_class: interop.Enum<typeof qos_class_t>, __relative_priority: number): number;
+
+declare function pthread_attr_get_qos_class_np(__attr: interop.PointerConvertible, __qos_class: interop.PointerConvertible, __relative_priority: interop.PointerConvertible): number;
+
+declare function pthread_set_qos_class_self_np(__qos_class: interop.Enum<typeof qos_class_t>, __relative_priority: number): number;
+
+declare function pthread_get_qos_class_np(__pthread: interop.PointerConvertible, __qos_class: interop.PointerConvertible, __relative_priority: interop.PointerConvertible): number;
+
+declare function pthread_override_qos_class_start_np(__pthread: interop.PointerConvertible, __qos_class: interop.Enum<typeof qos_class_t>, __relative_priority: number): interop.Pointer;
+
+declare function pthread_override_qos_class_end_np(__override: interop.PointerConvertible): number;
+
+declare function pthread_atfork(p1: () => void, p2: () => void, p3: () => void): number;
+
+declare function pthread_attr_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_attr_getdetachstate(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getguardsize(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getinheritsched(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getschedparam(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getschedpolicy(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getscope(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getstack(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
+
+declare function pthread_attr_getstackaddr(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_getstacksize(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_init(p1: interop.PointerConvertible): number;
+
+declare function pthread_attr_setdetachstate(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_attr_setguardsize(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_attr_setinheritsched(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_attr_setschedparam(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_setschedpolicy(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_attr_setscope(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_attr_setstack(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number): number;
+
+declare function pthread_attr_setstackaddr(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_attr_setstacksize(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_cancel(p1: interop.PointerConvertible): number;
+
+declare function pthread_cond_broadcast(p1: interop.PointerConvertible): number;
+
+declare function pthread_cond_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_cond_init(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_cond_signal(p1: interop.PointerConvertible): number;
+
+declare function pthread_cond_timedwait(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
+
+declare function pthread_cond_wait(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_condattr_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_condattr_init(p1: interop.PointerConvertible): number;
+
+declare function pthread_condattr_getpshared(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_condattr_setpshared(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_create(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => interop.Pointer, p4: interop.PointerConvertible): number;
+
+declare function pthread_detach(p1: interop.PointerConvertible): number;
+
+declare function pthread_equal(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_exit(p1: interop.PointerConvertible): void;
+
+declare function pthread_getconcurrency(): number;
+
+declare function pthread_getschedparam(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
+
+declare function pthread_getspecific(p1: number): interop.Pointer;
+
+declare function pthread_join(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_key_create(p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible) => void): number;
+
+declare function pthread_key_delete(p1: number): number;
+
+declare function pthread_mutex_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_mutex_getprioceiling(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutex_init(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutex_lock(p1: interop.PointerConvertible): number;
+
+declare function pthread_mutex_setprioceiling(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible): number;
+
+declare function pthread_mutex_trylock(p1: interop.PointerConvertible): number;
+
+declare function pthread_mutex_unlock(p1: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_getprioceiling(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_getprotocol(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_getpshared(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_gettype(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_getpolicy_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_init(p1: interop.PointerConvertible): number;
+
+declare function pthread_mutexattr_setprioceiling(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_mutexattr_setprotocol(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_mutexattr_setpshared(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_mutexattr_settype(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_mutexattr_setpolicy_np(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_once(p1: interop.PointerConvertible, p2: () => void): number;
+
+declare function pthread_rwlock_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlock_init(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_rwlock_rdlock(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlock_tryrdlock(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlock_trywrlock(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlock_wrlock(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlock_unlock(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlockattr_destroy(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlockattr_getpshared(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_rwlockattr_init(p1: interop.PointerConvertible): number;
+
+declare function pthread_rwlockattr_setpshared(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_self(): interop.Pointer;
+
+declare function pthread_setcancelstate(p1: number, p2: interop.PointerConvertible): number;
+
+declare function pthread_setcanceltype(p1: number, p2: interop.PointerConvertible): number;
+
+declare function pthread_setconcurrency(p1: number): number;
+
+declare function pthread_setschedparam(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible): number;
+
+declare function pthread_setspecific(p1: number, p2: interop.PointerConvertible): number;
+
+declare function pthread_testcancel(): void;
+
+declare function pthread_is_threaded_np(): number;
+
+declare function pthread_threadid_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_getname_np(p1: interop.PointerConvertible, p2: string, p3: number): number;
+
+declare function pthread_setname_np(p1: string): number;
+
+declare function pthread_main_np(): number;
+
+declare function pthread_mach_thread_np(p1: interop.PointerConvertible): number;
+
+declare function pthread_get_stacksize_np(p1: interop.PointerConvertible): number;
+
+declare function pthread_get_stackaddr_np(p1: interop.PointerConvertible): interop.Pointer;
+
+declare function pthread_cond_signal_thread_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible): number;
+
+declare function pthread_cond_timedwait_relative_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
+
+declare function pthread_create_suspended_np(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => interop.Pointer, p4: interop.PointerConvertible): number;
+
+declare function pthread_kill(p1: interop.PointerConvertible, p2: number): number;
+
+declare function pthread_from_mach_thread_np(p1: number): interop.Pointer;
+
+declare function pthread_sigmask(p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
+
+declare function pthread_yield_np(): void;
+
+declare function pthread_jit_write_protect_supported_np(): number;
+
+declare function pthread_jit_write_with_callback_np(callback: (p1: interop.PointerConvertible) => number, ctx: interop.PointerConvertible): number;
+
+declare function pthread_jit_write_freeze_callbacks_np(): void;
+
+declare function pthread_cpu_number_np(cpu_number_out: interop.PointerConvertible): number;
+
 declare function posix_spawn(p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, __argv: interop.Pointer, __envp: interop.Pointer): number;
 
 declare function posix_spawnp(p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, __argv: interop.Pointer, __envp: interop.Pointer): number;
@@ -25472,6 +24479,12 @@ declare function utmpxname(p1: string): number;
 
 declare function wtmpxname(p1: string): number;
 
+declare function catopen(p1: string, p2: number): interop.Pointer;
+
+declare function catgets(p1: interop.PointerConvertible, p2: number, p3: number, p4: string): string;
+
+declare function catclose(p1: interop.PointerConvertible): number;
+
 declare function _NSGetArgv(): interop.Pointer;
 
 declare function _NSGetArgc(): interop.Pointer;
@@ -25541,6 +24554,8 @@ declare function mach_memory_entry_purgable_control(mem_entry: number, control: 
 declare function mach_memory_entry_access_tracking(mem_entry: number, access_tracking: interop.PointerConvertible, access_tracking_reads: interop.PointerConvertible, access_tracking_writes: interop.PointerConvertible): number;
 
 declare function mach_memory_entry_ownership(mem_entry: number, owner: number, ledger_tag: number, ledger_flags: number): number;
+
+declare function mach_memory_entry_get_page_counts(mem_entry: number, resident_cnt: interop.PointerConvertible, dirty_cnt: interop.PointerConvertible, swapped_cnt: interop.PointerConvertible): number;
 
 declare function port_obj_init(p1: number): void;
 
@@ -25746,6 +24761,8 @@ declare function statfs(p1: string, p2: interop.PointerConvertible): number;
 
 declare function unmount(p1: string, p2: number): number;
 
+declare function funmount(p1: number, p2: number): number;
+
 declare function getvfsbyname(p1: string, p2: interop.PointerConvertible): number;
 
 declare function quotactl(p1: string, p2: number, p3: number, p4: string): number;
@@ -25810,6 +24827,42 @@ declare function _Unwind_Resume(exception_object: interop.PointerConvertible): v
 
 declare function _Unwind_DeleteException(exception_object: interop.PointerConvertible): void;
 
+declare function _Unwind_GetGR(context: interop.PointerConvertible, index: number): number;
+
+declare function _Unwind_SetGR(context: interop.PointerConvertible, index: number, new_value: number): void;
+
+declare function _Unwind_GetIP(context: interop.PointerConvertible): number;
+
+declare function _Unwind_SetIP(p1: interop.PointerConvertible, new_value: number): void;
+
+declare function _Unwind_GetRegionStart(context: interop.PointerConvertible): number;
+
+declare function _Unwind_GetLanguageSpecificData(context: interop.PointerConvertible): number;
+
+declare function _Unwind_ForcedUnwind(exception_object: interop.PointerConvertible, stop: (p1: number, p2: interop.Enum<typeof _Unwind_Action>, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Enum<typeof _Unwind_Reason_Code>, stop_parameter: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
+
+declare function _Unwind_Resume_or_Rethrow(exception_object: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
+
+declare function _Unwind_Backtrace(p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof _Unwind_Reason_Code>, p2: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
+
+declare function _Unwind_GetCFA(p1: interop.PointerConvertible): number;
+
+declare function _Unwind_GetIPInfo(context: interop.PointerConvertible, ipBefore: interop.PointerConvertible): number;
+
+declare function __register_frame(fde: interop.PointerConvertible): void;
+
+declare function __deregister_frame(fde: interop.PointerConvertible): void;
+
+declare function _Unwind_Find_FDE(pc: interop.PointerConvertible, p2: interop.PointerConvertible): interop.Pointer;
+
+declare function _Unwind_FindEnclosingFunction(pc: interop.PointerConvertible): interop.Pointer;
+
+declare function _Unwind_RaiseException(exception_object: interop.PointerConvertible): interop.Enum<typeof _Unwind_Reason_Code>;
+
+declare function _Unwind_Resume(exception_object: interop.PointerConvertible): void;
+
+declare function _Unwind_DeleteException(exception_object: interop.PointerConvertible): void;
+
 declare function _Unwind_Complete(exception_object: interop.PointerConvertible): void;
 
 declare function _Unwind_VRS_Get(context: interop.PointerConvertible, regclass: interop.Enum<typeof _Unwind_VRS_RegClass>, regno: number, representation: interop.Enum<typeof _Unwind_VRS_DataRepresentation>, valuep: interop.PointerConvertible): interop.Enum<typeof _Unwind_VRS_Result>;
@@ -25817,6 +24870,1136 @@ declare function _Unwind_VRS_Get(context: interop.PointerConvertible, regclass: 
 declare function _Unwind_VRS_Set(context: interop.PointerConvertible, regclass: interop.Enum<typeof _Unwind_VRS_RegClass>, regno: number, representation: interop.Enum<typeof _Unwind_VRS_DataRepresentation>, valuep: interop.PointerConvertible): interop.Enum<typeof _Unwind_VRS_Result>;
 
 declare function _Unwind_VRS_Pop(context: interop.PointerConvertible, regclass: interop.Enum<typeof _Unwind_VRS_RegClass>, discriminator: number, representation: interop.Enum<typeof _Unwind_VRS_DataRepresentation>): interop.Enum<typeof _Unwind_VRS_Result>;
+
+declare function __assert_rtn(p1: string, p2: string, p3: number, p4: string): void;
+
+declare function cacosf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cacos(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cacosl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function casinf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function casin(p1: unknown /* complex */): unknown /* complex */;
+
+declare function casinl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function catanf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function catan(p1: unknown /* complex */): unknown /* complex */;
+
+declare function catanl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ccosf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ccos(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ccosl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csinf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csin(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csinl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ctanf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ctan(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ctanl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cacoshf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cacosh(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cacoshl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function casinhf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function casinh(p1: unknown /* complex */): unknown /* complex */;
+
+declare function casinhl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function catanhf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function catanh(p1: unknown /* complex */): unknown /* complex */;
+
+declare function catanhl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ccoshf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ccosh(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ccoshl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csinhf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csinh(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csinhl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ctanhf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ctanh(p1: unknown /* complex */): unknown /* complex */;
+
+declare function ctanhl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cexpf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cexp(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cexpl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function clogf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function clog(p1: unknown /* complex */): unknown /* complex */;
+
+declare function clogl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cabsf(p1: unknown /* complex */): number;
+
+declare function cabs(p1: unknown /* complex */): number;
+
+declare function cabsl(p1: unknown /* complex */): number;
+
+declare function cpowf(p1: unknown /* complex */, p2: unknown /* complex */): unknown /* complex */;
+
+declare function cpow(p1: unknown /* complex */, p2: unknown /* complex */): unknown /* complex */;
+
+declare function cpowl(p1: unknown /* complex */, p2: unknown /* complex */): unknown /* complex */;
+
+declare function csqrtf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csqrt(p1: unknown /* complex */): unknown /* complex */;
+
+declare function csqrtl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cargf(p1: unknown /* complex */): number;
+
+declare function carg(p1: unknown /* complex */): number;
+
+declare function cargl(p1: unknown /* complex */): number;
+
+declare function cimagf(p1: unknown /* complex */): number;
+
+declare function cimag(p1: unknown /* complex */): number;
+
+declare function cimagl(p1: unknown /* complex */): number;
+
+declare function conjf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function conj(p1: unknown /* complex */): unknown /* complex */;
+
+declare function conjl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cprojf(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cproj(p1: unknown /* complex */): unknown /* complex */;
+
+declare function cprojl(p1: unknown /* complex */): unknown /* complex */;
+
+declare function crealf(p1: unknown /* complex */): number;
+
+declare function creal(p1: unknown /* complex */): number;
+
+declare function creall(p1: unknown /* complex */): number;
+
+declare function feclearexcept(p1: number): number;
+
+declare function fegetexceptflag(p1: interop.PointerConvertible, p2: number): number;
+
+declare function feraiseexcept(p1: number): number;
+
+declare function fesetexceptflag(p1: interop.PointerConvertible, p2: number): number;
+
+declare function fetestexcept(p1: number): number;
+
+declare function fegetround(): number;
+
+declare function fesetround(p1: number): number;
+
+declare function fegetenv(p1: interop.PointerConvertible): number;
+
+declare function feholdexcept(p1: interop.PointerConvertible): number;
+
+declare function fesetenv(p1: interop.PointerConvertible): number;
+
+declare function feupdateenv(p1: interop.PointerConvertible): number;
+
+declare function setlocale(p1: number, p2: string): string;
+
+declare function __math_errhandling(): number;
+
+declare function __fpclassifyf(p1: number): number;
+
+declare function __fpclassifyd(p1: number): number;
+
+declare function __fpclassifyl(p1: number): number;
+
+declare function acosf(p1: number): number;
+
+declare function acos(p1: number): number;
+
+declare function acosl(p1: number): number;
+
+declare function asinf(p1: number): number;
+
+declare function asin(p1: number): number;
+
+declare function asinl(p1: number): number;
+
+declare function atanf(p1: number): number;
+
+declare function atan(p1: number): number;
+
+declare function atanl(p1: number): number;
+
+declare function atan2f(p1: number, p2: number): number;
+
+declare function atan2(p1: number, p2: number): number;
+
+declare function atan2l(p1: number, p2: number): number;
+
+declare function cosf(p1: number): number;
+
+declare function cos(p1: number): number;
+
+declare function cosl(p1: number): number;
+
+declare function sinf(p1: number): number;
+
+declare function sin(p1: number): number;
+
+declare function sinl(p1: number): number;
+
+declare function tanf(p1: number): number;
+
+declare function tan(p1: number): number;
+
+declare function tanl(p1: number): number;
+
+declare function acoshf(p1: number): number;
+
+declare function acosh(p1: number): number;
+
+declare function acoshl(p1: number): number;
+
+declare function asinhf(p1: number): number;
+
+declare function asinh(p1: number): number;
+
+declare function asinhl(p1: number): number;
+
+declare function atanhf(p1: number): number;
+
+declare function atanh(p1: number): number;
+
+declare function atanhl(p1: number): number;
+
+declare function coshf(p1: number): number;
+
+declare function cosh(p1: number): number;
+
+declare function coshl(p1: number): number;
+
+declare function sinhf(p1: number): number;
+
+declare function sinh(p1: number): number;
+
+declare function sinhl(p1: number): number;
+
+declare function tanhf(p1: number): number;
+
+declare function tanh(p1: number): number;
+
+declare function tanhl(p1: number): number;
+
+declare function expf(p1: number): number;
+
+declare function exp(p1: number): number;
+
+declare function expl(p1: number): number;
+
+declare function exp2f(p1: number): number;
+
+declare function exp2(p1: number): number;
+
+declare function exp2l(p1: number): number;
+
+declare function expm1f(p1: number): number;
+
+declare function expm1(p1: number): number;
+
+declare function expm1l(p1: number): number;
+
+declare function logf(p1: number): number;
+
+declare function log(p1: number): number;
+
+declare function logl(p1: number): number;
+
+declare function log10f(p1: number): number;
+
+declare function log10(p1: number): number;
+
+declare function log10l(p1: number): number;
+
+declare function log2f(p1: number): number;
+
+declare function log2(p1: number): number;
+
+declare function log2l(p1: number): number;
+
+declare function log1pf(p1: number): number;
+
+declare function log1p(p1: number): number;
+
+declare function log1pl(p1: number): number;
+
+declare function logbf(p1: number): number;
+
+declare function logb(p1: number): number;
+
+declare function logbl(p1: number): number;
+
+declare function modff(p1: number, p2: interop.PointerConvertible): number;
+
+declare function modf(p1: number, p2: interop.PointerConvertible): number;
+
+declare function modfl(p1: number, p2: interop.PointerConvertible): number;
+
+declare function ldexpf(p1: number, p2: number): number;
+
+declare function ldexp(p1: number, p2: number): number;
+
+declare function ldexpl(p1: number, p2: number): number;
+
+declare function frexpf(p1: number, p2: interop.PointerConvertible): number;
+
+declare function frexp(p1: number, p2: interop.PointerConvertible): number;
+
+declare function frexpl(p1: number, p2: interop.PointerConvertible): number;
+
+declare function ilogbf(p1: number): number;
+
+declare function ilogb(p1: number): number;
+
+declare function ilogbl(p1: number): number;
+
+declare function scalbnf(p1: number, p2: number): number;
+
+declare function scalbn(p1: number, p2: number): number;
+
+declare function scalbnl(p1: number, p2: number): number;
+
+declare function scalblnf(p1: number, p2: number): number;
+
+declare function scalbln(p1: number, p2: number): number;
+
+declare function scalblnl(p1: number, p2: number): number;
+
+declare function fabsf(p1: number): number;
+
+declare function fabs(p1: number): number;
+
+declare function fabsl(p1: number): number;
+
+declare function cbrtf(p1: number): number;
+
+declare function cbrt(p1: number): number;
+
+declare function cbrtl(p1: number): number;
+
+declare function hypotf(p1: number, p2: number): number;
+
+declare function hypot(p1: number, p2: number): number;
+
+declare function hypotl(p1: number, p2: number): number;
+
+declare function powf(p1: number, p2: number): number;
+
+declare function pow(p1: number, p2: number): number;
+
+declare function powl(p1: number, p2: number): number;
+
+declare function sqrtf(p1: number): number;
+
+declare function sqrt(p1: number): number;
+
+declare function sqrtl(p1: number): number;
+
+declare function erff(p1: number): number;
+
+declare function erf(p1: number): number;
+
+declare function erfl(p1: number): number;
+
+declare function erfcf(p1: number): number;
+
+declare function erfc(p1: number): number;
+
+declare function erfcl(p1: number): number;
+
+declare function lgammaf(p1: number): number;
+
+declare function lgamma(p1: number): number;
+
+declare function lgammal(p1: number): number;
+
+declare function tgammaf(p1: number): number;
+
+declare function tgamma(p1: number): number;
+
+declare function tgammal(p1: number): number;
+
+declare function ceilf(p1: number): number;
+
+declare function ceil(p1: number): number;
+
+declare function ceill(p1: number): number;
+
+declare function floorf(p1: number): number;
+
+declare function floor(p1: number): number;
+
+declare function floorl(p1: number): number;
+
+declare function nearbyintf(p1: number): number;
+
+declare function nearbyint(p1: number): number;
+
+declare function nearbyintl(p1: number): number;
+
+declare function rintf(p1: number): number;
+
+declare function rint(p1: number): number;
+
+declare function rintl(p1: number): number;
+
+declare function lrintf(p1: number): number;
+
+declare function lrint(p1: number): number;
+
+declare function lrintl(p1: number): number;
+
+declare function roundf(p1: number): number;
+
+declare function round(p1: number): number;
+
+declare function roundl(p1: number): number;
+
+declare function lroundf(p1: number): number;
+
+declare function lround(p1: number): number;
+
+declare function lroundl(p1: number): number;
+
+declare function llrintf(p1: number): number;
+
+declare function llrint(p1: number): number;
+
+declare function llrintl(p1: number): number;
+
+declare function llroundf(p1: number): number;
+
+declare function llround(p1: number): number;
+
+declare function llroundl(p1: number): number;
+
+declare function truncf(p1: number): number;
+
+declare function trunc(p1: number): number;
+
+declare function truncl(p1: number): number;
+
+declare function fmodf(p1: number, p2: number): number;
+
+declare function fmod(p1: number, p2: number): number;
+
+declare function fmodl(p1: number, p2: number): number;
+
+declare function remainderf(p1: number, p2: number): number;
+
+declare function remainder(p1: number, p2: number): number;
+
+declare function remainderl(p1: number, p2: number): number;
+
+declare function remquof(p1: number, p2: number, p3: interop.PointerConvertible): number;
+
+declare function remquo(p1: number, p2: number, p3: interop.PointerConvertible): number;
+
+declare function remquol(p1: number, p2: number, p3: interop.PointerConvertible): number;
+
+declare function copysignf(p1: number, p2: number): number;
+
+declare function copysign(p1: number, p2: number): number;
+
+declare function copysignl(p1: number, p2: number): number;
+
+declare function nanf(p1: string): number;
+
+declare function nan(p1: string): number;
+
+declare function nanl(p1: string): number;
+
+declare function nextafterf(p1: number, p2: number): number;
+
+declare function nextafter(p1: number, p2: number): number;
+
+declare function nextafterl(p1: number, p2: number): number;
+
+declare function nexttoward(p1: number, p2: number): number;
+
+declare function nexttowardf(p1: number, p2: number): number;
+
+declare function nexttowardl(p1: number, p2: number): number;
+
+declare function fdimf(p1: number, p2: number): number;
+
+declare function fdim(p1: number, p2: number): number;
+
+declare function fdiml(p1: number, p2: number): number;
+
+declare function fmaxf(p1: number, p2: number): number;
+
+declare function fmax(p1: number, p2: number): number;
+
+declare function fmaxl(p1: number, p2: number): number;
+
+declare function fminf(p1: number, p2: number): number;
+
+declare function fmin(p1: number, p2: number): number;
+
+declare function fminl(p1: number, p2: number): number;
+
+declare function fmaf(p1: number, p2: number, p3: number): number;
+
+declare function fma(p1: number, p2: number, p3: number): number;
+
+declare function fmal(p1: number, p2: number, p3: number): number;
+
+declare function __exp10f(p1: number): number;
+
+declare function __exp10(p1: number): number;
+
+declare function __cospif(p1: number): number;
+
+declare function __cospi(p1: number): number;
+
+declare function __sinpif(p1: number): number;
+
+declare function __sinpi(p1: number): number;
+
+declare function __tanpif(p1: number): number;
+
+declare function __tanpi(p1: number): number;
+
+declare function __fabsf16(p1: number): number;
+
+declare function __hypotf16(p1: number, p2: number): number;
+
+declare function __sqrtf16(p1: number): number;
+
+declare function __ceilf16(p1: number): number;
+
+declare function __floorf16(p1: number): number;
+
+declare function __rintf16(p1: number): number;
+
+declare function __roundf16(p1: number): number;
+
+declare function __truncf16(p1: number): number;
+
+declare function __copysignf16(p1: number, p2: number): number;
+
+declare function __nextafterf16(p1: number, p2: number): number;
+
+declare function __fmaxf16(p1: number, p2: number): number;
+
+declare function __fminf16(p1: number, p2: number): number;
+
+declare function __fmaf16(p1: number, p2: number, p3: number): number;
+
+declare function __sincosf_stret(p1: number): __float2;
+
+declare function __sincos_stret(p1: number): __double2;
+
+declare function __sincospif_stret(p1: number): __float2;
+
+declare function __sincospi_stret(p1: number): __double2;
+
+declare function j0(p1: number): number;
+
+declare function j1(p1: number): number;
+
+declare function jn(p1: number, p2: number): number;
+
+declare function y0(p1: number): number;
+
+declare function y1(p1: number): number;
+
+declare function yn(p1: number, p2: number): number;
+
+declare function scalb(p1: number, p2: number): number;
+
+declare function setjmp(p1: unknown /* const array */): number;
+
+declare function longjmp(p1: unknown /* const array */, p2: number): void;
+
+declare function _setjmp(p1: unknown /* const array */): number;
+
+declare function _longjmp(p1: unknown /* const array */, p2: number): void;
+
+declare function sigsetjmp(p1: unknown /* const array */, p2: number): number;
+
+declare function siglongjmp(p1: unknown /* const array */, p2: number): void;
+
+declare function longjmperror(): void;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: number): number;
+
+declare function __tg_promote(p1: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_promote(p1: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_promote(p1: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_acos(__x: number): number;
+
+declare function __tg_acos(__x: number): number;
+
+declare function __tg_acos(__x: number): number;
+
+declare function __tg_acos(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_acos(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_acos(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_asin(__x: number): number;
+
+declare function __tg_asin(__x: number): number;
+
+declare function __tg_asin(__x: number): number;
+
+declare function __tg_asin(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_asin(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_asin(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_atan(__x: number): number;
+
+declare function __tg_atan(__x: number): number;
+
+declare function __tg_atan(__x: number): number;
+
+declare function __tg_atan(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_atan(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_atan(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_acosh(__x: number): number;
+
+declare function __tg_acosh(__x: number): number;
+
+declare function __tg_acosh(__x: number): number;
+
+declare function __tg_acosh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_acosh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_acosh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_asinh(__x: number): number;
+
+declare function __tg_asinh(__x: number): number;
+
+declare function __tg_asinh(__x: number): number;
+
+declare function __tg_asinh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_asinh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_asinh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_atanh(__x: number): number;
+
+declare function __tg_atanh(__x: number): number;
+
+declare function __tg_atanh(__x: number): number;
+
+declare function __tg_atanh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_atanh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_atanh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cos(__x: number): number;
+
+declare function __tg_cos(__x: number): number;
+
+declare function __tg_cos(__x: number): number;
+
+declare function __tg_cos(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cos(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cos(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sin(__x: number): number;
+
+declare function __tg_sin(__x: number): number;
+
+declare function __tg_sin(__x: number): number;
+
+declare function __tg_sin(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sin(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sin(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_tan(__x: number): number;
+
+declare function __tg_tan(__x: number): number;
+
+declare function __tg_tan(__x: number): number;
+
+declare function __tg_tan(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_tan(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_tan(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cosh(__x: number): number;
+
+declare function __tg_cosh(__x: number): number;
+
+declare function __tg_cosh(__x: number): number;
+
+declare function __tg_cosh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cosh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cosh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sinh(__x: number): number;
+
+declare function __tg_sinh(__x: number): number;
+
+declare function __tg_sinh(__x: number): number;
+
+declare function __tg_sinh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sinh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sinh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_tanh(__x: number): number;
+
+declare function __tg_tanh(__x: number): number;
+
+declare function __tg_tanh(__x: number): number;
+
+declare function __tg_tanh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_tanh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_tanh(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_exp(__x: number): number;
+
+declare function __tg_exp(__x: number): number;
+
+declare function __tg_exp(__x: number): number;
+
+declare function __tg_exp(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_exp(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_exp(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_log(__x: number): number;
+
+declare function __tg_log(__x: number): number;
+
+declare function __tg_log(__x: number): number;
+
+declare function __tg_log(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_log(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_log(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_pow(__x: number, __y: number): number;
+
+declare function __tg_pow(__x: number, __y: number): number;
+
+declare function __tg_pow(__x: number, __y: number): number;
+
+declare function __tg_pow(__x: unknown /* complex */, __y: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_pow(__x: unknown /* complex */, __y: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_pow(__x: unknown /* complex */, __y: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sqrt(__x: number): number;
+
+declare function __tg_sqrt(__x: number): number;
+
+declare function __tg_sqrt(__x: number): number;
+
+declare function __tg_sqrt(__x: number): number;
+
+declare function __tg_sqrt(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sqrt(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_sqrt(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_fabs(__x: number): number;
+
+declare function __tg_fabs(__x: number): number;
+
+declare function __tg_fabs(__x: number): number;
+
+declare function __tg_fabs(__x: number): number;
+
+declare function __tg_fabs(__x: unknown /* complex */): number;
+
+declare function __tg_fabs(__x: unknown /* complex */): number;
+
+declare function __tg_fabs(__x: unknown /* complex */): number;
+
+declare function __tg_atan2(__x: number, __y: number): number;
+
+declare function __tg_atan2(__x: number, __y: number): number;
+
+declare function __tg_atan2(__x: number, __y: number): number;
+
+declare function __tg_cbrt(__x: number): number;
+
+declare function __tg_cbrt(__x: number): number;
+
+declare function __tg_cbrt(__x: number): number;
+
+declare function __tg_ceil(__x: number): number;
+
+declare function __tg_ceil(__x: number): number;
+
+declare function __tg_ceil(__x: number): number;
+
+declare function __tg_ceil(__x: number): number;
+
+declare function __tg_copysign(__x: number, __y: number): number;
+
+declare function __tg_copysign(__x: number, __y: number): number;
+
+declare function __tg_copysign(__x: number, __y: number): number;
+
+declare function __tg_copysign(__x: number, __y: number): number;
+
+declare function __tg_erf(__x: number): number;
+
+declare function __tg_erf(__x: number): number;
+
+declare function __tg_erf(__x: number): number;
+
+declare function __tg_erfc(__x: number): number;
+
+declare function __tg_erfc(__x: number): number;
+
+declare function __tg_erfc(__x: number): number;
+
+declare function __tg_exp2(__x: number): number;
+
+declare function __tg_exp2(__x: number): number;
+
+declare function __tg_exp2(__x: number): number;
+
+declare function __tg_expm1(__x: number): number;
+
+declare function __tg_expm1(__x: number): number;
+
+declare function __tg_expm1(__x: number): number;
+
+declare function __tg_fdim(__x: number, __y: number): number;
+
+declare function __tg_fdim(__x: number, __y: number): number;
+
+declare function __tg_fdim(__x: number, __y: number): number;
+
+declare function __tg_floor(__x: number): number;
+
+declare function __tg_floor(__x: number): number;
+
+declare function __tg_floor(__x: number): number;
+
+declare function __tg_floor(__x: number): number;
+
+declare function __tg_fma(__x: number, __y: number, __z: number): number;
+
+declare function __tg_fma(__x: number, __y: number, __z: number): number;
+
+declare function __tg_fma(__x: number, __y: number, __z: number): number;
+
+declare function __tg_fma(__x: number, __y: number, __z: number): number;
+
+declare function __tg_fmax(__x: number, __y: number): number;
+
+declare function __tg_fmax(__x: number, __y: number): number;
+
+declare function __tg_fmax(__x: number, __y: number): number;
+
+declare function __tg_fmax(__x: number, __y: number): number;
+
+declare function __tg_fmin(__x: number, __y: number): number;
+
+declare function __tg_fmin(__x: number, __y: number): number;
+
+declare function __tg_fmin(__x: number, __y: number): number;
+
+declare function __tg_fmin(__x: number, __y: number): number;
+
+declare function __tg_fmod(__x: number, __y: number): number;
+
+declare function __tg_fmod(__x: number, __y: number): number;
+
+declare function __tg_fmod(__x: number, __y: number): number;
+
+declare function __tg_frexp(__x: number, __y: interop.PointerConvertible): number;
+
+declare function __tg_frexp(__x: number, __y: interop.PointerConvertible): number;
+
+declare function __tg_frexp(__x: number, __y: interop.PointerConvertible): number;
+
+declare function __tg_hypot(__x: number, __y: number): number;
+
+declare function __tg_hypot(__x: number, __y: number): number;
+
+declare function __tg_hypot(__x: number, __y: number): number;
+
+declare function __tg_hypot(__x: number, __y: number): number;
+
+declare function __tg_ilogb(__x: number): number;
+
+declare function __tg_ilogb(__x: number): number;
+
+declare function __tg_ilogb(__x: number): number;
+
+declare function __tg_ldexp(__x: number, __y: number): number;
+
+declare function __tg_ldexp(__x: number, __y: number): number;
+
+declare function __tg_ldexp(__x: number, __y: number): number;
+
+declare function __tg_lgamma(__x: number): number;
+
+declare function __tg_lgamma(__x: number): number;
+
+declare function __tg_lgamma(__x: number): number;
+
+declare function __tg_llrint(__x: number): number;
+
+declare function __tg_llrint(__x: number): number;
+
+declare function __tg_llrint(__x: number): number;
+
+declare function __tg_llround(__x: number): number;
+
+declare function __tg_llround(__x: number): number;
+
+declare function __tg_llround(__x: number): number;
+
+declare function __tg_log10(__x: number): number;
+
+declare function __tg_log10(__x: number): number;
+
+declare function __tg_log10(__x: number): number;
+
+declare function __tg_log1p(__x: number): number;
+
+declare function __tg_log1p(__x: number): number;
+
+declare function __tg_log1p(__x: number): number;
+
+declare function __tg_log2(__x: number): number;
+
+declare function __tg_log2(__x: number): number;
+
+declare function __tg_log2(__x: number): number;
+
+declare function __tg_logb(__x: number): number;
+
+declare function __tg_logb(__x: number): number;
+
+declare function __tg_logb(__x: number): number;
+
+declare function __tg_lrint(__x: number): number;
+
+declare function __tg_lrint(__x: number): number;
+
+declare function __tg_lrint(__x: number): number;
+
+declare function __tg_lround(__x: number): number;
+
+declare function __tg_lround(__x: number): number;
+
+declare function __tg_lround(__x: number): number;
+
+declare function __tg_nearbyint(__x: number): number;
+
+declare function __tg_nearbyint(__x: number): number;
+
+declare function __tg_nearbyint(__x: number): number;
+
+declare function __tg_nextafter(__x: number, __y: number): number;
+
+declare function __tg_nextafter(__x: number, __y: number): number;
+
+declare function __tg_nextafter(__x: number, __y: number): number;
+
+declare function __tg_nextafter(__x: number, __y: number): number;
+
+declare function __tg_nexttoward(__x: number, __y: number): number;
+
+declare function __tg_nexttoward(__x: number, __y: number): number;
+
+declare function __tg_nexttoward(__x: number, __y: number): number;
+
+declare function __tg_remainder(__x: number, __y: number): number;
+
+declare function __tg_remainder(__x: number, __y: number): number;
+
+declare function __tg_remainder(__x: number, __y: number): number;
+
+declare function __tg_remquo(__x: number, __y: number, __z: interop.PointerConvertible): number;
+
+declare function __tg_remquo(__x: number, __y: number, __z: interop.PointerConvertible): number;
+
+declare function __tg_remquo(__x: number, __y: number, __z: interop.PointerConvertible): number;
+
+declare function __tg_rint(__x: number): number;
+
+declare function __tg_rint(__x: number): number;
+
+declare function __tg_rint(__x: number): number;
+
+declare function __tg_rint(__x: number): number;
+
+declare function __tg_round(__x: number): number;
+
+declare function __tg_round(__x: number): number;
+
+declare function __tg_round(__x: number): number;
+
+declare function __tg_round(__x: number): number;
+
+declare function __tg_scalbn(__x: number, __y: number): number;
+
+declare function __tg_scalbn(__x: number, __y: number): number;
+
+declare function __tg_scalbn(__x: number, __y: number): number;
+
+declare function __tg_scalbln(__x: number, __y: number): number;
+
+declare function __tg_scalbln(__x: number, __y: number): number;
+
+declare function __tg_scalbln(__x: number, __y: number): number;
+
+declare function __tg_tgamma(__x: number): number;
+
+declare function __tg_tgamma(__x: number): number;
+
+declare function __tg_tgamma(__x: number): number;
+
+declare function __tg_trunc(__x: number): number;
+
+declare function __tg_trunc(__x: number): number;
+
+declare function __tg_trunc(__x: number): number;
+
+declare function __tg_trunc(__x: number): number;
+
+declare function __tg_carg(__x: number): number;
+
+declare function __tg_carg(__x: number): number;
+
+declare function __tg_carg(__x: number): number;
+
+declare function __tg_carg(__x: unknown /* complex */): number;
+
+declare function __tg_carg(__x: unknown /* complex */): number;
+
+declare function __tg_carg(__x: unknown /* complex */): number;
+
+declare function __tg_cimag(__x: number): number;
+
+declare function __tg_cimag(__x: number): number;
+
+declare function __tg_cimag(__x: number): number;
+
+declare function __tg_cimag(__x: unknown /* complex */): number;
+
+declare function __tg_cimag(__x: unknown /* complex */): number;
+
+declare function __tg_cimag(__x: unknown /* complex */): number;
+
+declare function __tg_conj(__x: number): unknown /* complex */;
+
+declare function __tg_conj(__x: number): unknown /* complex */;
+
+declare function __tg_conj(__x: number): unknown /* complex */;
+
+declare function __tg_conj(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_conj(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_conj(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cproj(__x: number): unknown /* complex */;
+
+declare function __tg_cproj(__x: number): unknown /* complex */;
+
+declare function __tg_cproj(__x: number): unknown /* complex */;
+
+declare function __tg_cproj(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cproj(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_cproj(__x: unknown /* complex */): unknown /* complex */;
+
+declare function __tg_creal(__x: number): number;
+
+declare function __tg_creal(__x: number): number;
+
+declare function __tg_creal(__x: number): number;
+
+declare function __tg_creal(__x: unknown /* complex */): number;
+
+declare function __tg_creal(__x: unknown /* complex */): number;
+
+declare function __tg_creal(__x: unknown /* complex */): number;
 
 declare function __tg_promote(p1: unknown /* ext vector */): unknown /* ext vector */;
 
@@ -33933,6 +34116,12 @@ declare interface OS_dispatch_data extends OS_dispatch_object {
 declare class OS_dispatch_data extends NativeObject implements OS_dispatch_data {
 }
 
+declare interface OS_os_log extends NSObjectProtocol {
+}
+
+declare class OS_os_log extends NativeObject implements OS_os_log {
+}
+
 declare interface OS_dispatch_semaphore extends OS_dispatch_object {
 }
 
@@ -33945,16 +34134,16 @@ declare interface OS_at_encoder extends NSObjectProtocol {
 declare class OS_at_encoder extends NativeObject implements OS_at_encoder {
 }
 
+declare interface OS_xpc_peer_requirement extends NSObjectProtocol {
+}
+
+declare class OS_xpc_peer_requirement extends NativeObject implements OS_xpc_peer_requirement {
+}
+
 declare interface OS_os_activity extends NSObjectProtocol {
 }
 
 declare class OS_os_activity extends NativeObject implements OS_os_activity {
-}
-
-declare interface OS_os_log extends NSObjectProtocol {
-}
-
-declare class OS_os_log extends NativeObject implements OS_os_log {
 }
 
 declare class OS_object extends NSObject {
@@ -34161,7 +34350,9 @@ declare class NSObject extends NativeObject implements NSObjectProtocol {
 
   performSelectorInBackgroundWithObject(aSelector: string, arg: interop.Object | null): void;
 
-  provideImageDataBytesPerRowOriginSizeUserInfo(data: interop.PointerConvertible, rowbytes: number, x: number, y: number, width: number, height: number, info: interop.Object | null): void;
+  provideImageDataBytesPerRowOriginSizeUserInfo(data: interop.PointerConvertible, rowbytes: number, originx: number, originy: number, width: number, height: number, info: interop.Object | null): void;
+
+  provideImageToMTLTextureCommandBufferOriginxOriginyWidthHeightUserInfo(texture: MTLTexture, commandBuffer: MTLCommandBuffer, originx: number, originy: number, width: number, height: number, info: interop.Object | null): void;
 
   accessibilityElementCount(): number;
 

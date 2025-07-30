@@ -383,10 +383,16 @@ declare const CFHostInfoType: {
   Reachability: 2,
 };
 
-declare const CFStreamErrorHTTP: {
-  ParseFailure: -1,
-  RedirectionLoop: -2,
-  BadURL: -3,
+declare const CFNetServiceRegisterFlags: {
+  kCFNetServiceFlagNoAutoRename: 1,
+};
+
+declare const CFNetServiceBrowserFlags: {
+  MoreComing: 1,
+  IsDomain: 2,
+  IsDefault: 4,
+  IsRegistrationDomain: 4,
+  Remove: 8,
 };
 
 declare const CFNetServicesError: {
@@ -401,20 +407,14 @@ declare const CFNetServicesError: {
   MissingRequiredConfiguration: -72008,
 };
 
-declare const CFNetServiceRegisterFlags: {
-  kCFNetServiceFlagNoAutoRename: 1,
-};
-
-declare const CFNetServiceBrowserFlags: {
-  MoreComing: 1,
-  IsDomain: 2,
-  IsDefault: 4,
-  IsRegistrationDomain: 4,
-  Remove: 8,
-};
-
 declare const CFNetServiceMonitorType: {
   kCFNetServiceMonitorTXT: 1,
+};
+
+declare const CFStreamErrorHTTP: {
+  ParseFailure: -1,
+  RedirectionLoop: -2,
+  BadURL: -3,
 };
 
 declare const CFStreamErrorHTTPAuthentication: {
@@ -430,15 +430,6 @@ declare const CFNetDiagnosticStatusValues: {
   ConnectionIndeterminate: -66558,
   ConnectionDown: -66557,
 };
-
-declare class CFHostClientContext {
-  constructor(init?: CFHostClientContext);
-  version: number;
-  info: interop.Pointer;
-  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  release: (p1: interop.PointerConvertible) => void | null;
-  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
-}
 
 declare class CFNetServiceClientContext {
   constructor(init?: CFNetServiceClientContext);
@@ -471,6 +462,15 @@ declare class __CFHTTPMessage {
 
 declare class __CFNetServiceBrowser {
   constructor(init?: __CFNetServiceBrowser);
+}
+
+declare class CFHostClientContext {
+  constructor(init?: CFHostClientContext);
+  version: number;
+  info: interop.Pointer;
+  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  release: (p1: interop.PointerConvertible) => void | null;
+  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
 declare class __CFNetDiagnostic {

@@ -85,6 +85,16 @@ declare function MACaptionAppearanceGetRelativeCharacterSize(domain: interop.Enu
 
 declare function MACaptionAppearanceGetTextEdgeStyle(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Enum<typeof MACaptionAppearanceTextEdgeStyle>;
 
+declare function MACaptionAppearanceCopyProfileIDs(): interop.Object;
+
+declare function MACaptionAppearanceSetActiveProfileID(profileID: interop.Object): void;
+
+declare function MACaptionAppearanceCopyActiveProfileID(): interop.Object;
+
+declare function MACaptionAppearanceCopyProfileName(profileID: interop.Object): interop.Object;
+
+declare function MACaptionAppearanceExecuteBlockForProfileID(profileID: interop.Object, aBlock: () => void): void;
+
 declare function MAAudibleMediaCopyPreferredCharacteristics(): interop.Object;
 
 declare function MAImageCaptioningCopyCaption(url: interop.Object, error: interop.PointerConvertible): interop.Object;

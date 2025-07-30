@@ -89,6 +89,104 @@ declare class MTKTextureLoader extends NSObject {
   newTextureWithNameScaleFactorBundleOptionsError(name: string, scaleFactor: number, bundle: NSBundle | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 }
 
+// @ts-ignore ClassDecl.tsIgnore
+declare class MTKMeshBuffer extends NSObject implements MDLMeshBuffer, MDLNamed {
+  readonly length: number;
+
+  readonly allocator: MTKMeshBufferAllocator;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  readonly zone: MDLMeshBufferZone;
+
+  readonly buffer: MTLBuffer;
+
+  readonly offset: number;
+
+  readonly type: interop.Enum<typeof MDLMeshBufferType>;
+
+  fillDataOffset(data: NSData, offset: number): void;
+
+  map(): MDLMeshBufferMap;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  name: string;
+
+  setName(name: string): void;
+}
+
+declare class MTKSubmesh extends NSObject {
+  readonly primitiveType: interop.Enum<typeof MTLPrimitiveType>;
+
+  readonly indexType: interop.Enum<typeof MTLIndexType>;
+
+  readonly indexBuffer: MTKMeshBuffer;
+
+  readonly indexCount: number;
+
+  readonly mesh: MTKMesh;
+
+  name: string;
+
+  setName(name: string): void;
+}
+
+declare class MTKMesh extends NSObject {
+  initWithMeshDeviceError(mesh: MDLMesh, device: MTLDevice, error: interop.PointerConvertible): this;
+
+  static newMeshesFromAssetDeviceSourceMeshesError(asset: MDLAsset, device: MTLDevice, sourceMeshes: interop.PointerConvertible, error: interop.PointerConvertible): NSArray;
+
+  readonly vertexBuffers: NSArray;
+
+  readonly vertexDescriptor: MDLVertexDescriptor;
+
+  readonly submeshes: NSArray;
+
+  readonly vertexCount: number;
+
+  name: string;
+
+  setName(name: string): void;
+}
+
 declare class MTKView extends UIView implements NSCoding, CALayerDelegate {
   initWithFrameDevice(frameRect: CGRect, device: MTLDevice | null): this;
 
@@ -129,6 +227,8 @@ declare class MTKView extends UIView implements NSCoding, CALayerDelegate {
   releaseDrawables(): void;
 
   readonly currentRenderPassDescriptor: MTLRenderPassDescriptor;
+
+  readonly currentMTL4RenderPassDescriptor: MTL4RenderPassDescriptor;
 
   preferredFramesPerSecond: number;
 
@@ -235,104 +335,6 @@ declare class MTKView extends UIView implements NSCoding, CALayerDelegate {
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-declare class MTKSubmesh extends NSObject {
-  readonly primitiveType: interop.Enum<typeof MTLPrimitiveType>;
-
-  readonly indexType: interop.Enum<typeof MTLIndexType>;
-
-  readonly indexBuffer: MTKMeshBuffer;
-
-  readonly indexCount: number;
-
-  readonly mesh: MTKMesh;
-
-  name: string;
-
-  setName(name: string): void;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class MTKMeshBuffer extends NSObject implements MDLMeshBuffer, MDLNamed {
-  readonly length: number;
-
-  readonly allocator: MTKMeshBufferAllocator;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly zone: MDLMeshBufferZone;
-
-  readonly buffer: MTLBuffer;
-
-  readonly offset: number;
-
-  readonly type: interop.Enum<typeof MDLMeshBufferType>;
-
-  fillDataOffset(data: NSData, offset: number): void;
-
-  map(): MDLMeshBufferMap;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  name: string;
-
-  setName(name: string): void;
-}
-
-declare class MTKMesh extends NSObject {
-  initWithMeshDeviceError(mesh: MDLMesh, device: MTLDevice, error: interop.PointerConvertible): this;
-
-  static newMeshesFromAssetDeviceSourceMeshesError(asset: MDLAsset, device: MTLDevice, sourceMeshes: interop.PointerConvertible, error: interop.PointerConvertible): NSArray;
-
-  readonly vertexBuffers: NSArray;
-
-  readonly vertexDescriptor: MDLVertexDescriptor;
-
-  readonly submeshes: NSArray;
-
-  readonly vertexCount: number;
-
-  name: string;
-
-  setName(name: string): void;
 }
 
 declare class MTKMeshBufferAllocator extends NSObject implements MDLMeshBufferAllocator {

@@ -1,19 +1,17 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const BADownloaderPriorityMax: number;
+declare const BAAssetPackIdentifierErrorKey: string;
 
-declare const BADownloaderPriorityDefault: number;
-
-declare const BADownloaderPriorityMin: number;
+declare const BAManagedErrorDomain: string;
 
 declare const BAErrorDomain: string;
 
-declare const BAContentRequest: {
-  Install: 1,
-  Update: 2,
-  Periodic: 3,
-};
+declare const BADownloaderPriorityMax: number;
+
+declare const BADownloaderPriorityMin: number;
+
+declare const BADownloaderPriorityDefault: number;
 
 declare const BADownloadState: {
   Failed: -1,
@@ -21,6 +19,21 @@ declare const BADownloadState: {
   Waiting: 1,
   Downloading: 2,
   Finished: 3,
+};
+
+declare const BAManagedErrorCode: {
+  AssetPack: 0,
+  File: 1,
+};
+
+declare const BAAssetPackStatus: {
+  DownloadAvailable: 1,
+  UpdateAvailable: 2,
+  UpToDate: 4,
+  OutOfDate: 8,
+  Obsolete: 16,
+  Downloading: 32,
+  Downloaded: 64,
 };
 
 declare const BAErrorCode: {
@@ -42,6 +55,27 @@ declare const BAErrorCode: {
   SessionDownloadAllowanceExceeded: 204,
   SessionDownloadNotPermittedBeforeAppLaunch: 206,
 };
+
+declare const BAContentRequest: {
+  Install: 1,
+  Update: 2,
+  Periodic: 3,
+};
+
+declare interface BAManagedAssetPackDownloadDelegate extends NSObjectProtocol {
+  downloadOfAssetPackBegan?(assetPack: BAAssetPack): void;
+
+  downloadOfAssetPackPaused?(assetPack: BAAssetPack): void;
+
+  downloadOfAssetPackHasProgress?(assetPack: BAAssetPack, progress: NSProgress): void;
+
+  downloadOfAssetPackFinished?(assetPack: BAAssetPack): void;
+
+  downloadOfAssetPackFailedWithError?(assetPack: BAAssetPack, error: NSError): void;
+}
+
+declare class BAManagedAssetPackDownloadDelegate extends NativeObject implements BAManagedAssetPackDownloadDelegate {
+}
 
 declare interface BADownloadManagerDelegate extends NSObjectProtocol {
   downloadDidBegin?(download: BADownload): void;
@@ -75,6 +109,25 @@ declare interface BADownloaderExtension extends NSObjectProtocol {
 declare class BADownloaderExtension extends NativeObject implements BADownloaderExtension {
 }
 
+declare interface BAManagedDownloaderExtension extends BADownloaderExtension {
+  shouldDownloadAssetPack?(assetPack: BAAssetPack): boolean;
+}
+
+declare class BAManagedDownloaderExtension extends NativeObject implements BAManagedDownloaderExtension {
+}
+
+declare class BAAppExtensionInfo extends NSObject implements NSSecureCoding {
+  readonly restrictedDownloadSizeRemaining: NSNumber;
+
+  readonly restrictedEssentialDownloadSizeRemaining: NSNumber;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class BADownloadManager extends NSObject {
   static readonly sharedManager: BADownloadManager;
 
@@ -97,16 +150,56 @@ declare class BADownloadManager extends NSObject {
   setDelegate(delegate: BADownloadManagerDelegate): void;
 }
 
-declare class BAAppExtensionInfo extends NSObject implements NSSecureCoding {
-  readonly restrictedDownloadSizeRemaining: NSNumber;
+declare class BAAssetPackManager extends NSObject {
+  static readonly sharedManager: BAAssetPackManager;
 
-  readonly restrictedEssentialDownloadSizeRemaining: NSNumber;
+  delegate: BAManagedAssetPackDownloadDelegate;
 
-  static readonly supportsSecureCoding: boolean;
+  getAllAssetPacksWithCompletionHandler(completionHandler: (p1: NSSet, p2: NSError) => void | null): void;
 
-  encodeWithCoder(coder: NSCoder): void;
+  getAssetPackWithIdentifierCompletionHandler(assetPackIdentifier: string, completionHandler: (p1: BAAssetPack, p2: NSError) => void | null): void;
 
-  initWithCoder(coder: NSCoder): this;
+  getStatusOfAssetPackWithIdentifierCompletionHandler(assetPackIdentifier: string, completionHandler: (p1: interop.Enum<typeof BAAssetPackStatus>, p2: NSError) => void | null): void;
+
+  ensureLocalAvailabilityOfAssetPackCompletionHandler(assetPack: BAAssetPack, completionHandler: (p1: NSError) => void | null): void;
+
+  checkForUpdatesWithCompletionHandler(completionHandler: (p1: NSSet, p2: NSSet, p3: NSError) => void | null): void;
+
+  contentsAtPathSearchingInAssetPackWithIdentifierOptionsError(path: string, assetPackIdentifier: string | null, options: interop.Enum<typeof NSDataReadingOptions>, error: interop.PointerConvertible): NSData;
+
+  fileDescriptorForPathSearchingInAssetPackWithIdentifierError(path: string, assetPackIdentifier: string | null, error: interop.PointerConvertible): number;
+
+  URLForPathError(path: string, error: interop.PointerConvertible): NSURL;
+
+  removeAssetPackWithIdentifierCompletionHandler(assetPackIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
+
+  setDelegate(delegate: BAManagedAssetPackDownloadDelegate | null): void;
+}
+
+declare class BAAssetPack extends NSObject {
+  readonly identifier: string;
+
+  readonly downloadSize: number;
+
+  readonly version: number;
+
+  readonly userInfo: NSData;
+
+  download(): BADownload;
+
+  downloadForContentRequest(contentRequest: interop.Enum<typeof BAContentRequest>): BADownload;
+}
+
+declare class BAURLDownload extends BADownload implements NSCopying {
+  initWithIdentifierRequestFileSizeApplicationGroupIdentifier(identifier: string, request: NSURLRequest, fileSize: number, applicationGroupIdentifier: string): this;
+
+  initWithIdentifierRequestEssentialFileSizeApplicationGroupIdentifierPriority(identifier: string, request: NSURLRequest, essential: boolean, fileSize: number, applicationGroupIdentifier: string, priority: number): this;
+
+  initWithIdentifierRequestApplicationGroupIdentifier(identifier: string, request: NSURLRequest, applicationGroupIdentifier: string): this;
+
+  initWithIdentifierRequestApplicationGroupIdentifierPriority(identifier: string, request: NSURLRequest, applicationGroupIdentifier: string, priority: number): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class BADownload extends NSObject implements NSCoding, NSSecureCoding, NSCopying {
@@ -131,15 +224,15 @@ declare class BADownload extends NSObject implements NSCoding, NSSecureCoding, N
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class BAURLDownload extends BADownload implements NSCopying {
-  initWithIdentifierRequestFileSizeApplicationGroupIdentifier(identifier: string, request: NSURLRequest, fileSize: number, applicationGroupIdentifier: string): this;
+declare class BAAssetPackManifest extends NSObject {
+  readonly assetPacks: NSSet;
 
-  initWithIdentifierRequestEssentialFileSizeApplicationGroupIdentifierPriority(identifier: string, request: NSURLRequest, essential: boolean, fileSize: number, applicationGroupIdentifier: string, priority: number): this;
+  initWithContentsOfURLApplicationGroupIdentifierError(URL: NSURL, applicationGroupIdentifier: string, error: interop.PointerConvertible): this;
 
-  initWithIdentifierRequestApplicationGroupIdentifier(identifier: string, request: NSURLRequest, applicationGroupIdentifier: string): this;
+  initFromDataApplicationGroupIdentifierError(data: NSData, applicationGroupIdentifier: string, error: interop.PointerConvertible): this;
 
-  initWithIdentifierRequestApplicationGroupIdentifierPriority(identifier: string, request: NSURLRequest, applicationGroupIdentifier: string, priority: number): this;
+  allDownloads(): NSSet;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  allDownloadsForContentRequest(contentRequest: interop.Enum<typeof BAContentRequest>): NSSet;
 }
 

@@ -6,6 +6,18 @@ declare const MEComposeSessionErrorDomain: string;
 
 declare const MEMessageSecurityErrorDomain: string;
 
+declare const MEMessageActionFlag: {
+  None: 0,
+  DefaultColor: 1,
+  Red: 2,
+  Orange: 3,
+  Yellow: 4,
+  Green: 5,
+  Blue: 6,
+  Purple: 7,
+  Gray: 8,
+};
+
 declare const MEMessageSecurityErrorCode: {
   Encoding: 0,
   Decoding: 1,
@@ -38,18 +50,6 @@ declare const MEMessageActionMessageColor: {
   Purple: 5,
   Blue: 6,
   Gray: 7,
-};
-
-declare const MEMessageActionFlag: {
-  None: 0,
-  DefaultColor: 1,
-  Red: 2,
-  Orange: 3,
-  Yellow: 4,
-  Green: 5,
-  Blue: 6,
-  Purple: 7,
-  Gray: 8,
 };
 
 declare const MEComposeUserAction: {
@@ -96,19 +96,6 @@ declare interface MEComposeSessionHandler extends NSObjectProtocol {
 declare class MEComposeSessionHandler extends NativeObject implements MEComposeSessionHandler {
 }
 
-declare interface MEExtension extends NSObjectProtocol {
-  handlerForComposeSession?(session: MEComposeSession): MEComposeSessionHandler;
-
-  handlerForMessageActions?(): MEMessageActionHandler;
-
-  handlerForContentBlocker?(): MEContentBlocker;
-
-  handlerForMessageSecurity?(): MEMessageSecurityHandler;
-}
-
-declare class MEExtension extends NativeObject implements MEExtension {
-}
-
 declare interface MEContentBlocker extends NSObjectProtocol {
   contentRulesJSON(): NSData;
 }
@@ -123,6 +110,19 @@ declare interface MEMessageActionHandler extends NSObjectProtocol {
 }
 
 declare class MEMessageActionHandler extends NativeObject implements MEMessageActionHandler {
+}
+
+declare interface MEExtension extends NSObjectProtocol {
+  handlerForComposeSession?(session: MEComposeSession): MEComposeSessionHandler;
+
+  handlerForMessageActions?(): MEMessageActionHandler;
+
+  handlerForContentBlocker?(): MEContentBlocker;
+
+  handlerForMessageSecurity?(): MEMessageSecurityHandler;
+}
+
+declare class MEExtension extends NativeObject implements MEExtension {
 }
 
 declare interface MEMessageDecoder extends NSObjectProtocol {

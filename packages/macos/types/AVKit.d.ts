@@ -37,6 +37,13 @@ declare const AVPlayerViewTrimResult: {
   Cancel: 1,
 };
 
+declare const AVDisplayDynamicRange: {
+  Automatic: 0,
+  Standard: 1,
+  ConstrainedHigh: 2,
+  High: 3,
+};
+
 declare interface AVRoutePickerViewDelegate extends NSObjectProtocol {
   routePickerViewWillBeginPresentingRoutes?(routePickerView: AVRoutePickerView): void;
 
@@ -217,6 +224,18 @@ declare class AVPictureInPictureControllerContentSource extends NSObject {
   readonly sampleBufferPlaybackDelegate: AVPictureInPictureSampleBufferPlaybackDelegate;
 }
 
+declare class AVPlaybackSpeed extends NSObject {
+  static readonly systemDefaultSpeeds: NSArray;
+
+  initWithRateLocalizedName(rate: number, localizedName: string): this;
+
+  readonly rate: number;
+
+  readonly localizedName: string;
+
+  readonly localizedNumericName: string;
+}
+
 declare class AVPlayerView extends NSView {
   player: AVPlayer;
 
@@ -251,6 +270,8 @@ declare class AVPlayerView extends NSView {
 
   setMagnificationCenteredAtPoint(magnification: number, point: CGPoint): void;
 
+  preferredDisplayDynamicRange: interop.Enum<typeof AVDisplayDynamicRange>;
+
   setPlayer(player: AVPlayer | null): void;
 
   setControlsStyle(controlsStyle: interop.Enum<typeof AVPlayerViewControlsStyle>): void;
@@ -272,6 +293,8 @@ declare class AVPlayerView extends NSView {
   setAllowsMagnification(allowsMagnification: boolean): void;
 
   setMagnification(magnification: number): void;
+
+  setPreferredDisplayDynamicRange(preferredDisplayDynamicRange: interop.Enum<typeof AVDisplayDynamicRange>): void;
 
   showsFrameSteppingButtons: boolean;
 
@@ -306,17 +329,5 @@ declare class AVPlayerView extends NSView {
   setAllowsPictureInPicturePlayback(allowsPictureInPicturePlayback: boolean): void;
 
   setPictureInPictureDelegate(pictureInPictureDelegate: AVPlayerViewPictureInPictureDelegate): void;
-}
-
-declare class AVPlaybackSpeed extends NSObject {
-  static readonly systemDefaultSpeeds: NSArray;
-
-  initWithRateLocalizedName(rate: number, localizedName: string): this;
-
-  readonly rate: number;
-
-  readonly localizedName: string;
-
-  readonly localizedNumericName: string;
 }
 

@@ -21,8 +21,11 @@ declare const MPSGraphDeploymentPlatform: {
   Vision: 3,
 };
 
-declare const MPSGraphExecutionStage: {
-  MPSGraphExecutionStageCompleted: 0,
+declare const MPSGraphReducedPrecisionFastMath: {
+  None: 0,
+  AllowFP16Conv2DWinogradTransformIntermediate: 2,
+  AllowFP16Intermediates: 2,
+  Default: 0,
 };
 
 declare const MPSGraphOptimization: {
@@ -120,6 +123,10 @@ declare const MPSGraphSparseStorageType: {
   SR: 2,
 };
 
+declare const MPSGraphExecutionStage: {
+  MPSGraphExecutionStageCompleted: 0,
+};
+
 declare const MPSGraphResizeNearestRoundingMode: {
   RoundPreferCeil: 0,
   RoundPreferFloor: 1,
@@ -138,6 +145,13 @@ declare const MPSGraphOptimizationProfile: {
   PowerEfficiency: 1,
 };
 
+declare const MPSGraphLossReductionType: {
+  None: 0,
+  Axis: 0,
+  Sum: 1,
+  Mean: 2,
+};
+
 declare const MPSGraphScatterMode: {
   Add: 0,
   Sub: 1,
@@ -146,13 +160,6 @@ declare const MPSGraphScatterMode: {
   Min: 4,
   Max: 5,
   Set: 6,
-};
-
-declare const MPSGraphLossReductionType: {
-  None: 0,
-  Axis: 0,
-  Sum: 1,
-  Mean: 2,
 };
 
 declare class MPSGraphStencilOpDescriptor extends MPSGraphObject implements NSCopying {
@@ -1254,6 +1261,8 @@ declare class MPSGraphTensorData extends MPSGraphObject {
 
   initWithMPSImageBatch(imageBatch: NSArray<interop.Object> | Array<interop.Object>): this;
 
+  initWithMTLTensor(tensor: MTLTensor): this;
+
   mpsndarray(): MPSNDArray;
 }
 
@@ -1682,16 +1691,6 @@ declare class MPSGraphOperation extends MPSGraphObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MPSGraphTensor extends MPSGraphObject implements NSCopying {
-  readonly shape: NSArray;
-
-  readonly dataType: interop.Enum<typeof MPSDataType>;
-
-  readonly operation: MPSGraphOperation;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MPSGraphGRUDescriptor extends MPSGraphObject implements NSCopying {
   reverse: boolean;
 
@@ -1750,6 +1749,8 @@ declare class MPSGraphCompilationDescriptor extends MPSGraphObject implements NS
   get callables(): NSDictionary;
   set callables(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
+  reducedPrecisionFastMath: interop.Enum<typeof MPSGraphReducedPrecisionFastMath>;
+
   setOptimizationLevel(optimizationLevel: interop.Enum<typeof MPSGraphOptimization>): void;
 
   setWaitForCompilationCompletion(waitForCompilationCompletion: boolean): void;
@@ -1761,6 +1762,18 @@ declare class MPSGraphCompilationDescriptor extends MPSGraphObject implements NS
   setOptimizationProfile(optimizationProfile: interop.Enum<typeof MPSGraphOptimizationProfile>): void;
 
   setCallables(callables: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  setReducedPrecisionFastMath(reducedPrecisionFastMath: interop.Enum<typeof MPSGraphReducedPrecisionFastMath>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MPSGraphTensor extends MPSGraphObject implements NSCopying {
+  readonly shape: NSArray;
+
+  readonly dataType: interop.Enum<typeof MPSDataType>;
+
+  readonly operation: MPSGraphOperation;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }

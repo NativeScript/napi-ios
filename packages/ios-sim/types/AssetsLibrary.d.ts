@@ -17,6 +17,8 @@ declare const ALAssetPropertyRepresentations: string;
 
 declare const ALAssetPropertyOrientation: string;
 
+declare const ALAssetPropertyDuration: string;
+
 declare const ALAssetPropertyLocation: string;
 
 declare const ALAssetPropertyType: string;
@@ -64,8 +66,6 @@ declare const ALAssetsLibraryWriteIncompatibleDataError: number;
 declare const ALAssetsLibraryUnknownError: number;
 
 declare const ALAssetsLibraryAccessGloballyDeniedError: number;
-
-declare const ALAssetPropertyDuration: string;
 
 declare const ALAssetsGroupPropertyName: string;
 

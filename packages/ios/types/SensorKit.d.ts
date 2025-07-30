@@ -33,6 +33,8 @@ declare const SRDeviceUsageCategoryGames: string;
 
 declare const SRErrorDomain: string;
 
+declare const SRSensorAcousticSettings: string;
+
 declare const SRSensorPhotoplethysmogram: string;
 
 declare const SRSensorElectrocardiogram: string;
@@ -47,6 +49,8 @@ declare const SRSensorRotationRate: string;
 
 declare const SRSensorAccelerometer: string;
 
+declare const SRSensorMessagesUsageReport: string;
+
 declare const SRSensorAmbientLightSensor: string;
 
 declare const SRDeviceUsageCategoryProductivity: string;
@@ -58,6 +62,8 @@ declare const SRDeviceUsageCategoryShopping: string;
 declare const SRDeviceUsageCategoryNewsstand: string;
 
 declare const SRDeviceUsageCategoryMusic: string;
+
+declare const SRDeviceUsageCategoryReference: string;
 
 declare const SRDeviceUsageCategoryDeveloperTools: string;
 
@@ -79,13 +85,9 @@ declare const SRSensorAmbientPressure: string;
 
 declare const SRDeviceUsageCategoryMiscellaneous: string;
 
-declare const SRDeviceUsageCategorySports: string;
-
-declare const SRSensorMessagesUsageReport: string;
-
 declare const SRDeviceUsageCategoryNews: string;
 
-declare const SRDeviceUsageCategoryReference: string;
+declare const SRDeviceUsageCategorySports: string;
 
 declare const SRPhotoplethysmogramOpticalSampleConditionSignalSaturation: string;
 
@@ -93,13 +95,15 @@ declare const SRSensorHeartRate: string;
 
 declare const SRSensorTelephonySpeechMetrics: string;
 
+declare const SRDeviceUsageCategoryBooks: string;
+
 declare const SRPhotoplethysmogramSampleUsageForegroundBloodOxygen: string;
+
+declare const SRSensorSleepSessions: string;
 
 declare const SRDeviceUsageCategoryKids: string;
 
 declare const SRSensorPhoneUsageReport: string;
-
-declare const SRDeviceUsageCategoryBooks: string;
 
 declare const SRSensorOnWristState: string;
 
@@ -113,6 +117,23 @@ declare const SRDeviceUsageCategoryPhotoAndVideo: string;
 
 declare const SRSensorVisits: string;
 
+declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting: {
+  Slight: 1,
+  Moderate: 2,
+  Strong: 3,
+};
+
+declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning: {
+  BalancedTone: 1,
+  VocalRange: 2,
+  Brightness: 3,
+};
+
+declare const SRElectrocardiogramLead: {
+  RightArmMinusLeft: 1,
+  LeftArmMinusRight: 2,
+};
+
 declare const SRElectrocardiogramDataFlags: {
   None: 0,
   SignalInvalid: 1,
@@ -124,11 +145,33 @@ declare const SRElectrocardiogramSessionGuidance: {
   Unguided: 2,
 };
 
-declare const SRWristTemperatureCondition: {
-  None: 0,
-  OffWrist: 1,
-  OnCharger: 2,
-  InMotion: 4,
+declare const SRElectrocardiogramSessionState: {
+  Begin: 1,
+  Active: 2,
+  End: 3,
+};
+
+declare const SRMediaEventType: {
+  On: 1,
+  Off: 2,
+};
+
+declare const SRWristLocation: {
+  Left: 0,
+  Right: 1,
+};
+
+declare const SRKeyboardMetricsSentimentCategory: {
+  Absolutist: 0,
+  Down: 1,
+  Death: 2,
+  Anxiety: 3,
+  Anger: 4,
+  Health: 5,
+  Positive: 6,
+  Sad: 7,
+  LowEnergy: 8,
+  Confused: 9,
 };
 
 declare const SRNotificationEvent: {
@@ -151,48 +194,19 @@ declare const SRNotificationEvent: {
   DeviceUnlocked: 16,
 };
 
+declare const SRTextInputSessionType: {
+  Keyboard: 1,
+  ThirdPartyKeyboard: 2,
+  Pencil: 3,
+  Dictation: 4,
+};
+
 declare const SRLocationCategory: {
   Unknown: 0,
   Home: 1,
   Work: 2,
   School: 3,
   Gym: 4,
-};
-
-declare const SRErrorCode: {
-  InvalidEntitlement: 0,
-  NoAuthorization: 1,
-  DataInaccessible: 2,
-  FetchRequestInvalid: 3,
-  PromptDeclined: 4,
-};
-
-declare const SRSpeechMetricsSessionFlags: {
-  Default: 0,
-  BypassVoiceProcessing: 1,
-};
-
-declare const SRMediaEventType: {
-  On: 1,
-  Off: 2,
-};
-
-declare const SRAuthorizationStatus: {
-  NotDetermined: 0,
-  Authorized: 1,
-  Denied: 2,
-};
-
-declare const SRCrownOrientation: {
-  Left: 0,
-  Right: 1,
-};
-
-declare const SRTextInputSessionType: {
-  Keyboard: 1,
-  ThirdPartyKeyboard: 2,
-  Pencil: 3,
-  Dictation: 4,
 };
 
 declare const SRAmbientLightSensorPlacement: {
@@ -207,6 +221,27 @@ declare const SRAmbientLightSensorPlacement: {
   FrontBottomLeft: 8,
 };
 
+declare const SRErrorCode: {
+  InvalidEntitlement: 0,
+  NoAuthorization: 1,
+  DataInaccessible: 2,
+  FetchRequestInvalid: 3,
+  PromptDeclined: 4,
+};
+
+declare const SRAuthorizationStatus: {
+  NotDetermined: 0,
+  Authorized: 1,
+  Denied: 2,
+};
+
+declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication: {
+  None: 1,
+  Phone: 2,
+  Media: 3,
+  PhoneAndMedia: 4,
+};
+
 declare const SRDeletionReason: {
   UserInitiated: 0,
   LowDiskSpace: 1,
@@ -215,15 +250,40 @@ declare const SRDeletionReason: {
   SystemInitiated: 4,
 };
 
-declare const SRElectrocardiogramSessionState: {
-  Begin: 1,
-  Active: 2,
-  End: 3,
+declare const SRCrownOrientation: {
+  Left: 0,
+  Right: 1,
 };
 
-declare const SRElectrocardiogramLead: {
-  RightArmMinusLeft: 1,
-  LeftArmMinusRight: 2,
+declare const SRWristTemperatureCondition: {
+  None: 0,
+  OffWrist: 1,
+  OnCharger: 2,
+  InMotion: 4,
+};
+
+declare const SRSpeechMetricsSessionFlags: {
+  Default: 0,
+  BypassVoiceProcessing: 1,
+};
+
+declare const SRAcousticSettingsAccessibilityBackgroundSoundsName: {
+  BalancedNoise: 1,
+  BrightNoise: 2,
+  DarkNoise: 3,
+  Ocean: 4,
+  Rain: 5,
+  Stream: 6,
+  Night: 7,
+  Fire: 8,
+  Babble: 9,
+  Steam: 10,
+  Airplane: 11,
+  Boat: 12,
+  Bus: 13,
+  Train: 14,
+  RainOnRoof: 15,
+  QuietNight: 16,
 };
 
 declare const SRFaceMetricsContext: {
@@ -231,22 +291,9 @@ declare const SRFaceMetricsContext: {
   MessagingAppUsage: 2,
 };
 
-declare const SRWristLocation: {
-  Left: 0,
-  Right: 1,
-};
-
-declare const SRKeyboardMetricsSentimentCategory: {
-  Absolutist: 0,
-  Down: 1,
-  Death: 2,
-  Anxiety: 3,
-  Anger: 4,
-  Health: 5,
-  Positive: 6,
-  Sad: 7,
-  LowEnergy: 8,
-  Confused: 9,
+declare const SRAcousticSettingsSampleLifetime: {
+  EightDays: 1,
+  UntilUserDeletes: 2,
 };
 
 declare class SRAmbientLightChromaticity {
@@ -288,168 +335,6 @@ declare interface SRSensorReaderDelegate extends NSObjectProtocol {
 declare class SRSensorReaderDelegate extends NativeObject implements SRSensorReaderDelegate {
 }
 
-declare class SRKeyboardMetrics extends NSObject {
-  readonly duration: number;
-
-  readonly keyboardIdentifier: string;
-
-  readonly version: string;
-
-  readonly width: NSMeasurement;
-
-  readonly height: NSMeasurement;
-
-  readonly inputModes: NSArray;
-
-  readonly sessionIdentifiers: NSArray;
-
-  readonly totalWords: number;
-
-  readonly totalAlteredWords: number;
-
-  readonly totalTaps: number;
-
-  readonly totalDrags: number;
-
-  readonly totalDeletes: number;
-
-  readonly totalEmojis: number;
-
-  readonly totalPaths: number;
-
-  readonly totalPathTime: number;
-
-  readonly totalPathLength: NSMeasurement;
-
-  readonly totalAutoCorrections: number;
-
-  readonly totalSpaceCorrections: number;
-
-  readonly totalRetroCorrections: number;
-
-  readonly totalTranspositionCorrections: number;
-
-  readonly totalInsertKeyCorrections: number;
-
-  readonly totalSkipTouchCorrections: number;
-
-  readonly totalNearKeyCorrections: number;
-
-  readonly totalSubstitutionCorrections: number;
-
-  readonly totalHitTestCorrections: number;
-
-  readonly totalTypingDuration: number;
-
-  readonly upErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly downErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly spaceUpErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly spaceDownErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly deleteUpErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly deleteDownErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyUpErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyDownErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly touchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly spaceTouchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly deleteTouchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyTouchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly touchDownDown: SRKeyboardProbabilityMetric;
-
-  readonly touchUpDown: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToPrediction: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToAnyTapKey: SRKeyboardProbabilityMetric;
-
-  readonly anyTapToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToSpaceKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToDeleteKey: SRKeyboardProbabilityMetric;
-
-  readonly deleteToSpaceKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToSpaceKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToShiftKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToPredictionKey: SRKeyboardProbabilityMetric;
-
-  readonly deleteToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToDelete: SRKeyboardProbabilityMetric;
-
-  readonly deleteToDelete: SRKeyboardProbabilityMetric;
-
-  readonly deleteToShiftKey: SRKeyboardProbabilityMetric;
-
-  readonly deleteToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly anyTapToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly planeChangeToAnyTap: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly planeChangeKeyToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly pathErrorDistanceRatio: NSArray;
-
-  readonly deleteToPath: SRKeyboardProbabilityMetric;
-
-  readonly pathToDelete: SRKeyboardProbabilityMetric;
-
-  readonly spaceToPath: SRKeyboardProbabilityMetric;
-
-  readonly pathToSpace: SRKeyboardProbabilityMetric;
-
-  readonly pathToPath: SRKeyboardProbabilityMetric;
-
-  readonly longWordUpErrorDistance: NSArray;
-
-  readonly longWordDownErrorDistance: NSArray;
-
-  readonly longWordTouchDownUp: NSArray;
-
-  readonly longWordTouchDownDown: NSArray;
-
-  readonly longWordTouchUpDown: NSArray;
-
-  readonly deleteToDeletes: NSArray;
-
-  readonly totalPauses: number;
-
-  readonly totalPathPauses: number;
-
-  readonly typingSpeed: number;
-
-  readonly pathTypingSpeed: number;
-
-  readonly totalTypingEpisodes: number;
-
-  wordCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
-
-  emojiCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
-}
-
 declare class SRAudioLevel extends NSObject implements NSCopying, NSSecureCoding {
   readonly timeRange: CMTimeRange;
 
@@ -474,6 +359,130 @@ declare class SRWristDetection extends NSObject {
   readonly onWristDate: NSDate;
 
   readonly offWristDate: NSDate;
+}
+
+declare class SRSleepSession extends NSObject implements NSCopying, NSSecureCoding {
+  readonly startDate: NSDate;
+
+  readonly duration: number;
+
+  readonly identifier: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SRAcousticSettings extends NSObject implements NSSecureCoding, NSCopying {
+  readonly environmentalSoundMeasurementsEnabled: boolean;
+
+  readonly audioExposureSampleLifetime: interop.Enum<typeof SRAcousticSettingsSampleLifetime>;
+
+  readonly headphoneSafetyAudioLevel: NSNumber;
+
+  readonly musicEQSettings: SRAcousticSettingsMusicEQ;
+
+  readonly accessibilitySettings: SRAcousticSettingsAccessibility;
+
+  isEnvironmentalSoundMeasurementsEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsAccessibility extends NSObject implements NSSecureCoding, NSCopying {
+  readonly leftRightBalance: number;
+
+  readonly monoAudioEnabled: boolean;
+
+  readonly backgroundSounds: SRAcousticSettingsAccessibilityBackgroundSounds;
+
+  readonly headphoneAccommodations: SRAcousticSettingsAccessibilityHeadphoneAccommodations;
+
+  isMonoAudioEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsAccessibilityHeadphoneAccommodations extends NSObject implements NSSecureCoding, NSCopying {
+  readonly enabled: boolean;
+
+  readonly mediaEnhanceTuning: interop.Enum<typeof SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning>;
+
+  readonly mediaEnhanceBoosting: interop.Enum<typeof SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting>;
+
+  readonly mediaEnhanceApplication: interop.Enum<typeof SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication>;
+
+  isEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsAccessibilityBackgroundSounds extends NSObject implements NSSecureCoding, NSCopying {
+  readonly enabled: boolean;
+
+  readonly soundName: interop.Enum<typeof SRAcousticSettingsAccessibilityBackgroundSoundsName>;
+
+  readonly relativeVolume: number;
+
+  readonly playWithMediaEnabled: boolean;
+
+  readonly relativeVolumeWithMedia: number;
+
+  readonly stopOnLockEnabled: boolean;
+
+  isEnabled(): boolean;
+
+  isPlayWithMediaEnabled(): boolean;
+
+  isStopOnLockEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsMusicEQ extends NSObject implements NSSecureCoding, NSCopying {
+  readonly soundCheckEnabled: boolean;
+
+  readonly lateNightModeEnabled: boolean;
+
+  isSoundCheckEnabled(): boolean;
+
+  isLateNightModeEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class SRPhotoplethysmogramSample extends NSObject implements NSCopying, NSSecureCoding {
@@ -862,6 +871,168 @@ declare class SRDeletionRecord extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class SRKeyboardMetrics extends NSObject {
+  readonly duration: number;
+
+  readonly keyboardIdentifier: string;
+
+  readonly version: string;
+
+  readonly width: NSMeasurement;
+
+  readonly height: NSMeasurement;
+
+  readonly inputModes: NSArray;
+
+  readonly sessionIdentifiers: NSArray;
+
+  readonly totalWords: number;
+
+  readonly totalAlteredWords: number;
+
+  readonly totalTaps: number;
+
+  readonly totalDrags: number;
+
+  readonly totalDeletes: number;
+
+  readonly totalEmojis: number;
+
+  readonly totalPaths: number;
+
+  readonly totalPathTime: number;
+
+  readonly totalPathLength: NSMeasurement;
+
+  readonly totalAutoCorrections: number;
+
+  readonly totalSpaceCorrections: number;
+
+  readonly totalRetroCorrections: number;
+
+  readonly totalTranspositionCorrections: number;
+
+  readonly totalInsertKeyCorrections: number;
+
+  readonly totalSkipTouchCorrections: number;
+
+  readonly totalNearKeyCorrections: number;
+
+  readonly totalSubstitutionCorrections: number;
+
+  readonly totalHitTestCorrections: number;
+
+  readonly totalTypingDuration: number;
+
+  readonly upErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly downErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly spaceUpErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly spaceDownErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly deleteUpErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly deleteDownErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyUpErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyDownErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly touchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly spaceTouchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly deleteTouchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyTouchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly touchDownDown: SRKeyboardProbabilityMetric;
+
+  readonly touchUpDown: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToPrediction: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToAnyTapKey: SRKeyboardProbabilityMetric;
+
+  readonly anyTapToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToSpaceKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToDeleteKey: SRKeyboardProbabilityMetric;
+
+  readonly deleteToSpaceKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToSpaceKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToShiftKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToPredictionKey: SRKeyboardProbabilityMetric;
+
+  readonly deleteToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToDelete: SRKeyboardProbabilityMetric;
+
+  readonly deleteToDelete: SRKeyboardProbabilityMetric;
+
+  readonly deleteToShiftKey: SRKeyboardProbabilityMetric;
+
+  readonly deleteToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly anyTapToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly planeChangeToAnyTap: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly planeChangeKeyToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly pathErrorDistanceRatio: NSArray;
+
+  readonly deleteToPath: SRKeyboardProbabilityMetric;
+
+  readonly pathToDelete: SRKeyboardProbabilityMetric;
+
+  readonly spaceToPath: SRKeyboardProbabilityMetric;
+
+  readonly pathToSpace: SRKeyboardProbabilityMetric;
+
+  readonly pathToPath: SRKeyboardProbabilityMetric;
+
+  readonly longWordUpErrorDistance: NSArray;
+
+  readonly longWordDownErrorDistance: NSArray;
+
+  readonly longWordTouchDownUp: NSArray;
+
+  readonly longWordTouchDownDown: NSArray;
+
+  readonly longWordTouchUpDown: NSArray;
+
+  readonly deleteToDeletes: NSArray;
+
+  readonly totalPauses: number;
+
+  readonly totalPathPauses: number;
+
+  readonly typingSpeed: number;
+
+  readonly pathTypingSpeed: number;
+
+  readonly totalTypingEpisodes: number;
+
+  wordCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
+
+  emojiCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
+}
+
 declare class SRApplicationUsage extends NSObject {
   readonly bundleIdentifier: string;
 
@@ -874,6 +1045,18 @@ declare class SRApplicationUsage extends NSObject {
   readonly supplementalCategories: NSArray;
 
   readonly relativeStartTime: number;
+}
+
+declare class SRVisit extends NSObject {
+  readonly distanceFromHome: number;
+
+  readonly arrivalDateInterval: NSDateInterval;
+
+  readonly departureDateInterval: NSDateInterval;
+
+  readonly locationCategory: interop.Enum<typeof SRLocationCategory>;
+
+  readonly identifier: NSUUID;
 }
 
 declare class SRAmbientLightSample extends NSObject {
@@ -894,18 +1077,6 @@ declare class SRSupplementalCategory extends NSObject implements NSCopying, NSSe
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SRVisit extends NSObject {
-  readonly distanceFromHome: number;
-
-  readonly arrivalDateInterval: NSDateInterval;
-
-  readonly departureDateInterval: NSDateInterval;
-
-  readonly locationCategory: interop.Enum<typeof SRLocationCategory>;
-
-  readonly identifier: NSUUID;
 }
 
 declare class SRPhoneUsageReport extends NSObject {

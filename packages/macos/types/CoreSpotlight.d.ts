@@ -32,6 +32,12 @@ declare const CSSearchableItemActivityIdentifier: string;
 
 declare const CSMailboxTrash: string;
 
+declare const CSSuggestionKind: {
+  None: 0,
+  Custom: 1,
+  Default: 2,
+};
+
 declare const CSUserInteraction: {
   Select: 0,
   Default: 0,
@@ -49,12 +55,6 @@ declare const CSSearchQueryErrorCode: {
   IndexUnreachable: -2001,
   InvalidQuery: -2002,
   Cancelled: -2003,
-};
-
-declare const CSSuggestionKind: {
-  None: 0,
-  Custom: 1,
-  Default: 2,
 };
 
 declare const CSIndexErrorCode: {

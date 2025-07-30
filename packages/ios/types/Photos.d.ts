@@ -1,7 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const PHImageResultRequestIDKey: string;
+declare const PHImageErrorKey: string;
 
 declare const PHImageResultIsDegradedKey: string;
 
@@ -9,33 +9,33 @@ declare const PHImageResultIsInCloudKey: string;
 
 declare const PHImageManagerMaximumSize: CGSize;
 
-declare const PHLivePhotoShouldRenderAtPlaybackTime: string;
-
-declare const PHContentEditingInputCancelledKey: string;
-
-declare const PHContentEditingInputResultIsInCloudKey: string;
-
-declare const PHLivePhotoInfoCancelledKey: string;
-
-declare const PHLivePhotoInfoIsDegradedKey: string;
-
-declare const PHLivePhotoRequestIDInvalid: number;
+declare const PHInvalidImageRequestID: number;
 
 declare const PHLocalIdentifiersErrorKey: string;
 
 declare const PHLivePhotoInfoErrorKey: string;
 
-declare const PHPhotosErrorDomain: string;
+declare const PHImageResultRequestIDKey: string;
 
 declare const PHInvalidAssetResourceDataRequestID: number;
 
-declare const PHInvalidImageRequestID: number;
+declare const PHLivePhotoRequestIDInvalid: number;
+
+declare const PHContentEditingInputErrorKey: string;
+
+declare const PHContentEditingInputCancelledKey: string;
+
+declare const PHLivePhotoInfoIsDegradedKey: string;
 
 declare const PHImageCancelledKey: string;
 
-declare const PHImageErrorKey: string;
+declare const PHContentEditingInputResultIsInCloudKey: string;
 
-declare const PHContentEditingInputErrorKey: string;
+declare const PHPhotosErrorDomain: string;
+
+declare const PHLivePhotoShouldRenderAtPlaybackTime: string;
+
+declare const PHLivePhotoInfoCancelledKey: string;
 
 declare const PHVideoRequestOptionsDeliveryMode: {
   Automatic: 0,
@@ -126,6 +126,7 @@ declare const PHAssetMediaSubtype: {
   VideoStreamed: 65536,
   VideoHighFrameRate: 131072,
   VideoTimelapse: 262144,
+  VideoScreenRecording: 524288,
   VideoCinematic: 2097152,
 };
 
@@ -173,6 +174,7 @@ declare const PHAssetCollectionSubtype: {
   SmartAlbumRAW: 217,
   SmartAlbumCinematic: 218,
   SmartAlbumSpatial: 219,
+  SmartAlbumScreenRecordings: 220,
   Any: 9223372036854775807,
 };
 
@@ -342,6 +344,8 @@ declare class PHContentEditingInput extends NSObject {
   readonly creationDate: NSDate;
 
   readonly location: CLLocation;
+
+  readonly contentType: UTType;
 
   readonly uniformTypeIdentifier: string;
 
@@ -785,17 +789,39 @@ declare class PHCollectionList extends PHCollection {
 declare class PHAssetResourceCreationOptions extends NSObject implements NSCopying {
   originalFilename: string;
 
+  contentType: UTType;
+
   uniformTypeIdentifier: string;
 
   shouldMoveFile: boolean;
 
   setOriginalFilename(originalFilename: string | null): void;
 
+  setContentType(contentType: UTType | null): void;
+
   setUniformTypeIdentifier(uniformTypeIdentifier: string | null): void;
 
   setShouldMoveFile(shouldMoveFile: boolean): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PHContentEditingOutput extends NSObject {
+  initWithContentEditingInput(contentEditingInput: PHContentEditingInput): this;
+
+  adjustmentData: PHAdjustmentData;
+
+  readonly renderedContentURL: NSURL;
+
+  readonly defaultRenderedContentType: UTType;
+
+  readonly supportedRenderedContentTypes: NSArray;
+
+  renderedContentURLForTypeError(type: UTType, error: interop.PointerConvertible): NSURL;
+
+  setAdjustmentData(adjustmentData: PHAdjustmentData | null): void;
+
+  initWithPlaceholderForCreatedAsset(placeholderForCreatedAsset: PHObjectPlaceholder): this;
 }
 
 declare class PHCloudIdentifier extends NSObject implements NSSecureCoding {
@@ -820,32 +846,16 @@ declare class PHPersistentChangeToken extends NSObject implements NSCopying, NSS
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class PHContentEditingOutput extends NSObject {
-  initWithContentEditingInput(contentEditingInput: PHContentEditingInput): this;
-
-  adjustmentData: PHAdjustmentData;
-
-  readonly renderedContentURL: NSURL;
-
-  readonly defaultRenderedContentType: UTType;
-
-  readonly supportedRenderedContentTypes: NSArray;
-
-  renderedContentURLForTypeError(type: UTType, error: interop.PointerConvertible): NSURL;
-
-  setAdjustmentData(adjustmentData: PHAdjustmentData | null): void;
-
-  initWithPlaceholderForCreatedAsset(placeholderForCreatedAsset: PHObjectPlaceholder): this;
-}
-
 declare class PHAssetResource extends NSObject {
   readonly type: interop.Enum<typeof PHAssetResourceType>;
 
   readonly assetLocalIdentifier: string;
 
-  readonly uniformTypeIdentifier: string;
-
   readonly originalFilename: string;
+
+  readonly contentType: UTType;
+
+  readonly uniformTypeIdentifier: string;
 
   readonly pixelWidth: number;
 
@@ -904,6 +914,8 @@ declare class PHAsset extends PHObject {
 
   readonly mediaSubtypes: interop.Enum<typeof PHAssetMediaSubtype>;
 
+  readonly contentType: UTType;
+
   readonly pixelWidth: number;
 
   readonly pixelHeight: number;
@@ -911,6 +923,8 @@ declare class PHAsset extends PHObject {
   readonly creationDate: NSDate;
 
   readonly modificationDate: NSDate;
+
+  readonly addedDate: NSDate;
 
   readonly location: CLLocation;
 

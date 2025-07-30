@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kABSourceTypeExchangeGAL: number;
+declare const kABMultiRealPropertyType: number;
 
 declare const kABPersonInstantMessageServiceYahoo: interop.Pointer;
 
@@ -28,8 +28,6 @@ declare const kABPersonSpouseLabel: interop.Pointer;
 
 declare const kABPersonChildLabel: interop.Pointer;
 
-declare const kABPersonParentLabel: interop.Pointer;
-
 declare const kABPersonFatherLabel: interop.Pointer;
 
 declare const kABPersonInstantMessageUsernameKey: interop.Pointer;
@@ -47,8 +45,6 @@ declare const kABPersonPhoneOtherFAXLabel: interop.Pointer;
 declare const kABPersonPhoneProperty: number;
 
 declare const kABPersonKindOrganization: interop.Pointer;
-
-declare const kABPersonKindProperty: number;
 
 declare const kABPersonDateProperty: number;
 
@@ -76,9 +72,9 @@ declare const kABSourceTypeCardDAVSearch: number;
 
 declare const kABSourceTypeMobileMe: number;
 
-declare const kABOperationNotPermittedByStoreError: number;
+declare const kABSourceTypeExchangeGAL: number;
 
-declare const kABMultiRealPropertyType: number;
+declare const kABOperationNotPermittedByStoreError: number;
 
 declare const kABMultiIntegerPropertyType: number;
 
@@ -138,23 +134,25 @@ declare const kABOperationNotPermittedByUserError: number;
 
 declare const kABPersonSocialProfileServiceKey: interop.Pointer;
 
+declare const kABPersonPhoneHomeFAXLabel: interop.Pointer;
+
+declare const kABPersonKindProperty: number;
+
 declare const kABPersonAddressCountryCodeKey: interop.Pointer;
 
 declare const kABPersonSocialProfileServiceFlickr: interop.Pointer;
 
 declare const kABPersonSocialProfileServiceLinkedIn: interop.Pointer;
 
-declare const kABPersonInstantMessageProperty: number;
+declare const kABSourceTypeLocal: number;
+
+declare const kABPersonSocialProfileServiceGameCenter: interop.Pointer;
+
+declare const kABPersonInstantMessageServiceICQ: interop.Pointer;
 
 declare const kABPersonInstantMessageServiceSkype: interop.Pointer;
 
 declare const kABPersonAlternateBirthdayIsLeapMonthKey: interop.Pointer;
-
-declare const kABPersonInstantMessageServiceICQ: interop.Pointer;
-
-declare const kABPersonPhoneHomeFAXLabel: interop.Pointer;
-
-declare const kABSourceTypeLocal: number;
 
 declare const kABPersonAlternateBirthdayYearKey: interop.Pointer;
 
@@ -165,6 +163,8 @@ declare const kABPersonSocialProfileUsernameKey: interop.Pointer;
 declare const kABPersonFirstNamePhoneticProperty: number;
 
 declare const kABOtherLabel: interop.Pointer;
+
+declare const kABPersonInstantMessageProperty: number;
 
 declare const kABSourceTypeLDAP: number;
 
@@ -180,13 +180,13 @@ declare const kABPersonAlternateBirthdayProperty: number;
 
 declare const kABPersonDepartmentProperty: number;
 
-declare const kABPersonSocialProfileServiceGameCenter: interop.Pointer;
-
 declare const kABPersonBrotherLabel: interop.Pointer;
 
 declare const kABPersonPhoneMobileLabel: interop.Pointer;
 
 declare const kABPersonHomePageLabel: interop.Pointer;
+
+declare const kABPersonParentLabel: interop.Pointer;
 
 declare const kABPersonOrganizationProperty: number;
 
@@ -208,6 +208,8 @@ declare const kABPersonSocialProfileServiceFacebook: interop.Pointer;
 
 declare const kABPersonInstantMessageServiceMSN: interop.Pointer;
 
+declare const kABPersonMiddleNameProperty: number;
+
 declare const kABPersonURLProperty: number;
 
 declare const kABPersonSisterLabel: interop.Pointer;
@@ -219,8 +221,6 @@ declare const kABSourceTypeExchange: number;
 declare const kABInvalidPropertyType: number;
 
 declare const kABPersonAlternateBirthdayDayKey: interop.Pointer;
-
-declare const kABPersonMiddleNameProperty: number;
 
 declare const kABGroupType: number;
 
@@ -234,16 +234,16 @@ declare const kABPersonInstantMessageServiceGaduGadu: interop.Pointer;
 
 declare const kABPersonJobTitleProperty: number;
 
+declare const ABPersonImageFormat: {
+  Thumbnail: 0,
+  OriginalSize: 2,
+};
+
 declare const ABAuthorizationStatus: {
   NotDetermined: 0,
   Restricted: 1,
   Denied: 2,
   Authorized: 3,
-};
-
-declare const ABPersonImageFormat: {
-  Thumbnail: 0,
-  OriginalSize: 2,
 };
 
 declare function ABRecordGetRecordID(record: interop.Object): number;

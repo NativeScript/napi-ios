@@ -47,6 +47,11 @@ declare const CTRadioAccessTechnologyGPRS: string;
 
 declare const CTCallStateDialing: string;
 
+declare const CTCellularPlanCapability: {
+  Only: 0,
+  AndVoice: 1,
+};
+
 declare const CTCellularPlanProvisioningAddPlanResult: {
   Unknown: 0,
   Fail: 1,
@@ -78,6 +83,12 @@ declare interface CTSubscriberDelegate {
 }
 
 declare class CTSubscriberDelegate extends NativeObject implements CTSubscriberDelegate {
+}
+
+declare class CTCellularPlanStatus extends NSObject {
+  static getTokenWithCompletion(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static checkValidityOfTokenCompletionHandler(token: string, completionHandler: (p1: boolean, p2: NSError) => void | null): void;
 }
 
 declare class CTCarrier extends NSObject {
@@ -190,6 +201,31 @@ declare class CTCellularPlanProvisioning extends NSObject {
   supportsCellularPlan(): boolean;
 
   addPlanWithCompletionHandler(request: CTCellularPlanProvisioningRequest, completionHandler: (p1: interop.Enum<typeof CTCellularPlanProvisioningAddPlanResult>) => void): void;
+
+  addPlanWithRequestPropertiesCompletionHandler(request: CTCellularPlanProvisioningRequest, properties: CTCellularPlanProperties | null, completionHandler: (p1: interop.Enum<typeof CTCellularPlanProvisioningAddPlanResult>) => void): void;
+
+  updateCellularPlanPropertiesCompletionHandler(properties: CTCellularPlanProperties, completionHandler: (p1: NSError) => void | null): void;
+}
+
+declare class CTCellularPlanProperties extends NSObject implements NSSecureCoding {
+  associatedIccid: string;
+
+  simCapability: interop.Enum<typeof CTCellularPlanCapability>;
+
+  get supportedRegionCodes(): NSArray;
+  set supportedRegionCodes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setAssociatedIccid(associatedIccid: string | null): void;
+
+  setSimCapability(simCapability: interop.Enum<typeof CTCellularPlanCapability>): void;
+
+  setSupportedRegionCodes(supportedRegionCodes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class CTCallCenter extends NSObject {

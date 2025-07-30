@@ -73,15 +73,11 @@ declare const MPErrorDomain: string;
 
 declare const MPMediaItemPropertyComments: string;
 
-declare const MPMediaItemPropertyPersistentID: string;
-
 declare const MPLanguageOptionCharacteristicTranscribesSpokenDialog: string;
 
 declare const MPNowPlayingInfoCollectionIdentifier: string;
 
 declare const MPMediaItemPropertyPlaybackDuration: string;
-
-declare const MPNowPlayingInfoPropertyElapsedPlaybackTime: string;
 
 declare const MPMediaPlaybackIsPreparedToPlayDidChangeNotification: string;
 
@@ -91,6 +87,12 @@ declare const MPNowPlayingInfoPropertyIsLiveStream: string;
 
 declare const MPMediaItemPropertyArtwork: string;
 
+declare const MPNowPlayingInfoPropertyPlaybackQueueCount: string;
+
+declare const MPMediaItemPropertyPersistentID: string;
+
+declare const MPNowPlayingInfoPropertyElapsedPlaybackTime: string;
+
 declare const MPNowPlayingInfoPropertyMediaType: string;
 
 declare const MPMediaItemPropertySkipCount: string;
@@ -98,6 +100,8 @@ declare const MPMediaItemPropertySkipCount: string;
 declare const MPMediaPlaylistPropertySeedItems: string;
 
 declare const MPNowPlayingInfoPropertyAssetURL: string;
+
+declare const MPNowPlayingInfoProperty1x1AnimatedArtwork: string;
 
 declare const MPNowPlayingInfoPropertyPlaybackProgress: string;
 
@@ -110,6 +114,8 @@ declare const MPLanguageOptionCharacteristicLanguageTranslation: string;
 declare const MPNowPlayingInfoPropertyExcludeFromSuggestions: string;
 
 declare const MPMediaPlaylistPropertyPersistentID: string;
+
+declare const MPNowPlayingInfoProperty3x4AnimatedArtwork: string;
 
 declare const MPMediaPlaylistPropertyName: string;
 
@@ -159,9 +165,21 @@ declare const MPMediaItemPropertyIsExplicit: string;
 
 declare const MPNowPlayingInfoPropertyCurrentLanguageOptions: string;
 
-declare const MPNowPlayingInfoPropertyPlaybackQueueCount: string;
-
 declare const MPMediaItemPropertyAlbumTitle: string;
+
+declare const MPNowPlayingInfoMediaType: {
+  None: 0,
+  Audio: 1,
+  Video: 2,
+};
+
+declare const MPNowPlayingPlaybackState: {
+  Unknown: 0,
+  Playing: 1,
+  Paused: 2,
+  Stopped: 3,
+  Interrupted: 4,
+};
 
 declare const MPSeekCommandEventType: {
   Begin: 0,
@@ -191,20 +209,6 @@ declare const MPShuffleType: {
 declare const MPNowPlayingInfoLanguageOptionType: {
   Audible: 0,
   Legible: 1,
-};
-
-declare const MPNowPlayingPlaybackState: {
-  Unknown: 0,
-  Playing: 1,
-  Paused: 2,
-  Stopped: 3,
-  Interrupted: 4,
-};
-
-declare const MPNowPlayingInfoMediaType: {
-  None: 0,
-  Audio: 1,
-  Video: 2,
 };
 
 declare const MPMediaType: {
@@ -244,13 +248,6 @@ declare interface MPSystemMusicPlayerController extends NSObjectProtocol {
 }
 
 declare class MPSystemMusicPlayerController extends NativeObject implements MPSystemMusicPlayerController {
-}
-
-declare class MPSkipIntervalCommand extends MPRemoteCommand {
-  get preferredIntervals(): NSArray;
-  set preferredIntervals(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setPreferredIntervals(preferredIntervals: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
 declare class MPChangePlaybackPositionCommand extends MPRemoteCommand {
@@ -326,14 +323,11 @@ declare class MPRatingCommand extends MPRemoteCommand {
   setMaximumRating(maximumRating: number): void;
 }
 
-declare class MPNowPlayingInfoLanguageOptionGroup extends NSObject {
-  initWithLanguageOptionsDefaultLanguageOptionAllowEmptySelection(languageOptions: NSArray<interop.Object> | Array<interop.Object>, defaultLanguageOption: MPNowPlayingInfoLanguageOption | null, allowEmptySelection: boolean): this;
+declare class MPSkipIntervalCommand extends MPRemoteCommand {
+  get preferredIntervals(): NSArray;
+  set preferredIntervals(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  readonly languageOptions: NSArray;
-
-  readonly defaultLanguageOption: MPNowPlayingInfoLanguageOption;
-
-  readonly allowEmptySelection: boolean;
+  setPreferredIntervals(preferredIntervals: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
 declare class MPNowPlayingInfoLanguageOption extends NSObject {
@@ -352,6 +346,10 @@ declare class MPNowPlayingInfoLanguageOption extends NSObject {
   readonly displayName: string;
 
   readonly identifier: string;
+}
+
+declare class MPMediaItemAnimatedArtwork extends NSObject {
+  initWithArtworkIDPreviewImageRequestHandlerVideoAssetFileURLRequestHandler(artworkID: string, previewImageRequestHandler: (p1: CGSize, p2: (p1: NSImage) => void) => void | null, videoAssetFileURLRequestHandler: (p1: CGSize, p2: (p1: NSURL) => void) => void | null): this;
 }
 
 declare class MPContentItem extends NSObject {
@@ -482,6 +480,8 @@ declare class MPNowPlayingInfoCenter extends NSObject {
 
   playbackState: interop.Enum<typeof MPNowPlayingPlaybackState>;
 
+  static readonly supportedAnimatedArtworkKeys: NSArray;
+
   setNowPlayingInfo(nowPlayingInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 
   setPlaybackState(playbackState: interop.Enum<typeof MPNowPlayingPlaybackState>): void;
@@ -500,6 +500,16 @@ declare class MPChangePlaybackRateCommand extends MPRemoteCommand {
 
 declare class MPSkipIntervalCommandEvent extends MPRemoteCommandEvent {
   readonly interval: number;
+}
+
+declare class MPNowPlayingInfoLanguageOptionGroup extends NSObject {
+  initWithLanguageOptionsDefaultLanguageOptionAllowEmptySelection(languageOptions: NSArray<interop.Object> | Array<interop.Object>, defaultLanguageOption: MPNowPlayingInfoLanguageOption | null, allowEmptySelection: boolean): this;
+
+  readonly languageOptions: NSArray;
+
+  readonly defaultLanguageOption: MPNowPlayingInfoLanguageOption;
+
+  readonly allowEmptySelection: boolean;
 }
 
 declare class MPFeedbackCommandEvent extends MPRemoteCommandEvent {

@@ -2,13 +2,6 @@
 /// <reference path="./AppKit.d.ts" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const SKLabelVerticalAlignmentMode: {
-  Baseline: 0,
-  Center: 1,
-  Top: 2,
-  Bottom: 3,
-};
-
 declare const SKTileSetType: {
   Grid: 0,
   Isometric: 1,
@@ -16,11 +9,35 @@ declare const SKTileSetType: {
   HexagonalPointy: 3,
 };
 
+declare const SKBlendMode: {
+  Alpha: 0,
+  Add: 1,
+  Subtract: 2,
+  Multiply: 3,
+  MultiplyX2: 4,
+  Screen: 5,
+  Replace: 6,
+  MultiplyAlpha: 7,
+};
+
+declare const SKLabelHorizontalAlignmentMode: {
+  Center: 0,
+  Left: 1,
+  Right: 2,
+};
+
 declare const SKTileDefinitionRotation: {
   Rotation0: 0,
   Rotation90: 1,
   Rotation180: 2,
   Rotation270: 3,
+};
+
+declare const SKLabelVerticalAlignmentMode: {
+  Baseline: 0,
+  Center: 1,
+  Top: 2,
+  Bottom: 3,
 };
 
 declare const SKAttributeType: {
@@ -58,17 +75,6 @@ declare const SKActionTimingMode: {
   EaseInEaseOut: 3,
 };
 
-declare const SKBlendMode: {
-  Alpha: 0,
-  Add: 1,
-  Subtract: 2,
-  Multiply: 3,
-  MultiplyX2: 4,
-  Screen: 5,
-  Replace: 6,
-  MultiplyAlpha: 7,
-};
-
 declare const SKUniformType: {
   None: 0,
   Float: 1,
@@ -81,10 +87,11 @@ declare const SKUniformType: {
   Texture: 8,
 };
 
-declare const SKLabelHorizontalAlignmentMode: {
-  Center: 0,
-  Left: 1,
-  Right: 2,
+declare const SKSceneScaleMode: {
+  Fill: 0,
+  AspectFill: 1,
+  AspectFit: 2,
+  ResizeFill: 3,
 };
 
 declare const SKTransitionDirection: {
@@ -132,18 +139,18 @@ declare const SKTileAdjacencyMask: {
   AdjacencyUpperLeftCorner: 247,
 };
 
-declare const SKSceneScaleMode: {
-  Fill: 0,
-  AspectFill: 1,
-  AspectFit: 2,
-  ResizeFill: 3,
-};
-
 declare const SKParticleRenderOrder: {
   OldestLast: 0,
   OldestFirst: 1,
   DontCare: 2,
 };
+
+declare interface SKViewDelegate extends NSObjectProtocol {
+  viewShouldRenderAtTime?(view: SKView, time: number): boolean;
+}
+
+declare class SKViewDelegate extends NativeObject implements SKViewDelegate {
+}
 
 declare interface SKWarpable extends NSObjectProtocol {
   warpGeometry: SKWarpGeometry;
@@ -171,13 +178,6 @@ declare interface SKSceneDelegate extends NSObjectProtocol {
 }
 
 declare class SKSceneDelegate extends NativeObject implements SKSceneDelegate {
-}
-
-declare interface SKViewDelegate extends NSObjectProtocol {
-  viewShouldRenderAtTime?(view: SKView, time: number): boolean;
-}
-
-declare class SKViewDelegate extends NativeObject implements SKViewDelegate {
 }
 
 declare interface SKPhysicsContactDelegate extends NSObjectProtocol {
@@ -563,35 +563,6 @@ declare class SKLightNode extends SKNode {
   setCategoryBitMask(categoryBitMask: number): void;
 }
 
-declare class SKTileGroup extends NSObject implements NSCopying, NSSecureCoding {
-  static tileGroupWithTileDefinition<This extends abstract new (...args: any) => any>(this: This, tileDefinition: SKTileDefinition): InstanceType<This>;
-
-  static tileGroupWithRules<This extends abstract new (...args: any) => any>(this: This, rules: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static emptyTileGroup<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  initWithTileDefinition(tileDefinition: SKTileDefinition): this;
-
-  initWithRules(rules: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  get rules(): NSArray;
-  set rules(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  name: string;
-
-  setRules(rules: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setName(name: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 // @ts-ignore ClassDecl.tsIgnore
 declare class SKVideoNode extends SKNode {
   static videoNodeWithAVPlayer(player: AVPlayer): SKVideoNode;
@@ -751,16 +722,167 @@ declare class SKWarpGeometryGrid extends SKWarpGeometry implements NSSecureCodin
   encodeWithCoder(coder: NSCoder): void;
 }
 
-declare class SKPhysicsJointSpring extends SKPhysicsJoint {
-  static jointWithBodyABodyBAnchorAAnchorB(bodyA: SKPhysicsBody, bodyB: SKPhysicsBody, anchorA: CGPoint, anchorB: CGPoint): SKPhysicsJointSpring;
+declare class SKTileGroup extends NSObject implements NSCopying, NSSecureCoding {
+  static tileGroupWithTileDefinition<This extends abstract new (...args: any) => any>(this: This, tileDefinition: SKTileDefinition): InstanceType<This>;
 
-  damping: number;
+  static tileGroupWithRules<This extends abstract new (...args: any) => any>(this: This, rules: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
-  frequency: number;
+  static emptyTileGroup<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
-  setDamping(damping: number): void;
+  initWithTileDefinition(tileDefinition: SKTileDefinition): this;
 
-  setFrequency(frequency: number): void;
+  initWithRules(rules: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  get rules(): NSArray;
+  set rules(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  name: string;
+
+  setRules(rules: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setName(name: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SKPhysicsBody extends NSObject implements NSCopying, NSSecureCoding {
+  static bodyWithCircleOfRadius(r: number): SKPhysicsBody;
+
+  static bodyWithCircleOfRadiusCenter(r: number, center: CGPoint): SKPhysicsBody;
+
+  static bodyWithRectangleOfSize(s: CGSize): SKPhysicsBody;
+
+  static bodyWithRectangleOfSizeCenter(s: CGSize, center: CGPoint): SKPhysicsBody;
+
+  static bodyWithPolygonFromPath(path: interop.Object): SKPhysicsBody;
+
+  static bodyWithEdgeFromPointToPoint(p1: CGPoint, p2: CGPoint): SKPhysicsBody;
+
+  static bodyWithEdgeChainFromPath(path: interop.Object): SKPhysicsBody;
+
+  static bodyWithEdgeLoopFromPath(path: interop.Object): SKPhysicsBody;
+
+  static bodyWithEdgeLoopFromRect(rect: CGRect): SKPhysicsBody;
+
+  static bodyWithTextureSize(texture: SKTexture, size: CGSize): SKPhysicsBody;
+
+  static bodyWithTextureAlphaThresholdSize(texture: SKTexture, alphaThreshold: number, size: CGSize): SKPhysicsBody;
+
+  static bodyWithBodies(bodies: NSArray<interop.Object> | Array<interop.Object>): SKPhysicsBody;
+
+  dynamic: boolean;
+
+  usesPreciseCollisionDetection: boolean;
+
+  allowsRotation: boolean;
+
+  pinned: boolean;
+
+  resting: boolean;
+
+  friction: number;
+
+  charge: number;
+
+  restitution: number;
+
+  linearDamping: number;
+
+  angularDamping: number;
+
+  density: number;
+
+  mass: number;
+
+  readonly area: number;
+
+  affectedByGravity: boolean;
+
+  fieldBitMask: number;
+
+  categoryBitMask: number;
+
+  collisionBitMask: number;
+
+  contactTestBitMask: number;
+
+  readonly joints: NSArray;
+
+  readonly node: SKNode;
+
+  velocity: CGVector;
+
+  angularVelocity: number;
+
+  applyForce(force: CGVector): void;
+
+  applyForceAtPoint(force: CGVector, point: CGPoint): void;
+
+  applyTorque(torque: number): void;
+
+  applyImpulse(impulse: CGVector): void;
+
+  applyImpulseAtPoint(impulse: CGVector, point: CGPoint): void;
+
+  applyAngularImpulse(impulse: number): void;
+
+  allContactedBodies(): NSArray;
+
+  isDynamic(): boolean;
+
+  setDynamic(dynamic: boolean): void;
+
+  setUsesPreciseCollisionDetection(usesPreciseCollisionDetection: boolean): void;
+
+  setAllowsRotation(allowsRotation: boolean): void;
+
+  setPinned(pinned: boolean): void;
+
+  isResting(): boolean;
+
+  setResting(resting: boolean): void;
+
+  setFriction(friction: number): void;
+
+  setCharge(charge: number): void;
+
+  setRestitution(restitution: number): void;
+
+  setLinearDamping(linearDamping: number): void;
+
+  setAngularDamping(angularDamping: number): void;
+
+  setDensity(density: number): void;
+
+  setMass(mass: number): void;
+
+  setAffectedByGravity(affectedByGravity: boolean): void;
+
+  setFieldBitMask(fieldBitMask: number): void;
+
+  setCategoryBitMask(categoryBitMask: number): void;
+
+  setCollisionBitMask(collisionBitMask: number): void;
+
+  setContactTestBitMask(contactTestBitMask: number): void;
+
+  setVelocity(velocity: CGVector): void;
+
+  setAngularVelocity(angularVelocity: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SKPhysicsWorld extends NSObject implements NSSecureCoding {
@@ -1066,6 +1188,18 @@ declare class SKPhysicsJointSliding extends SKPhysicsJoint {
   setLowerDistanceLimit(lowerDistanceLimit: number): void;
 
   setUpperDistanceLimit(upperDistanceLimit: number): void;
+}
+
+declare class SKPhysicsJointSpring extends SKPhysicsJoint {
+  static jointWithBodyABodyBAnchorAAnchorB(bodyA: SKPhysicsBody, bodyB: SKPhysicsBody, anchorA: CGPoint, anchorB: CGPoint): SKPhysicsJointSpring;
+
+  damping: number;
+
+  frequency: number;
+
+  setDamping(damping: number): void;
+
+  setFrequency(frequency: number): void;
 }
 
 declare class SKPhysicsJointPin extends SKPhysicsJoint {
@@ -1893,6 +2027,12 @@ declare class SKPhysicsJointFixed extends SKPhysicsJoint {
   static jointWithBodyABodyBAnchor(bodyA: SKPhysicsBody, bodyB: SKPhysicsBody, anchor: CGPoint): SKPhysicsJointFixed;
 }
 
+declare class SKCameraNode extends SKNode {
+  containsNode(node: SKNode): boolean;
+
+  containedNodeSet(): NSSet;
+}
+
 declare class SKPhysicsJoint extends NSObject implements NSSecureCoding {
   bodyA: SKPhysicsBody;
 
@@ -2301,140 +2441,6 @@ declare class SKAction extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SKPhysicsBody extends NSObject implements NSCopying, NSSecureCoding {
-  static bodyWithCircleOfRadius(r: number): SKPhysicsBody;
-
-  static bodyWithCircleOfRadiusCenter(r: number, center: CGPoint): SKPhysicsBody;
-
-  static bodyWithRectangleOfSize(s: CGSize): SKPhysicsBody;
-
-  static bodyWithRectangleOfSizeCenter(s: CGSize, center: CGPoint): SKPhysicsBody;
-
-  static bodyWithPolygonFromPath(path: interop.Object): SKPhysicsBody;
-
-  static bodyWithEdgeFromPointToPoint(p1: CGPoint, p2: CGPoint): SKPhysicsBody;
-
-  static bodyWithEdgeChainFromPath(path: interop.Object): SKPhysicsBody;
-
-  static bodyWithEdgeLoopFromPath(path: interop.Object): SKPhysicsBody;
-
-  static bodyWithEdgeLoopFromRect(rect: CGRect): SKPhysicsBody;
-
-  static bodyWithTextureSize(texture: SKTexture, size: CGSize): SKPhysicsBody;
-
-  static bodyWithTextureAlphaThresholdSize(texture: SKTexture, alphaThreshold: number, size: CGSize): SKPhysicsBody;
-
-  static bodyWithBodies(bodies: NSArray<interop.Object> | Array<interop.Object>): SKPhysicsBody;
-
-  dynamic: boolean;
-
-  usesPreciseCollisionDetection: boolean;
-
-  allowsRotation: boolean;
-
-  pinned: boolean;
-
-  resting: boolean;
-
-  friction: number;
-
-  charge: number;
-
-  restitution: number;
-
-  linearDamping: number;
-
-  angularDamping: number;
-
-  density: number;
-
-  mass: number;
-
-  readonly area: number;
-
-  affectedByGravity: boolean;
-
-  fieldBitMask: number;
-
-  categoryBitMask: number;
-
-  collisionBitMask: number;
-
-  contactTestBitMask: number;
-
-  readonly joints: NSArray;
-
-  readonly node: SKNode;
-
-  velocity: CGVector;
-
-  angularVelocity: number;
-
-  applyForce(force: CGVector): void;
-
-  applyForceAtPoint(force: CGVector, point: CGPoint): void;
-
-  applyTorque(torque: number): void;
-
-  applyImpulse(impulse: CGVector): void;
-
-  applyImpulseAtPoint(impulse: CGVector, point: CGPoint): void;
-
-  applyAngularImpulse(impulse: number): void;
-
-  allContactedBodies(): NSArray;
-
-  isDynamic(): boolean;
-
-  setDynamic(dynamic: boolean): void;
-
-  setUsesPreciseCollisionDetection(usesPreciseCollisionDetection: boolean): void;
-
-  setAllowsRotation(allowsRotation: boolean): void;
-
-  setPinned(pinned: boolean): void;
-
-  isResting(): boolean;
-
-  setResting(resting: boolean): void;
-
-  setFriction(friction: number): void;
-
-  setCharge(charge: number): void;
-
-  setRestitution(restitution: number): void;
-
-  setLinearDamping(linearDamping: number): void;
-
-  setAngularDamping(angularDamping: number): void;
-
-  setDensity(density: number): void;
-
-  setMass(mass: number): void;
-
-  setAffectedByGravity(affectedByGravity: boolean): void;
-
-  setFieldBitMask(fieldBitMask: number): void;
-
-  setCategoryBitMask(categoryBitMask: number): void;
-
-  setCollisionBitMask(collisionBitMask: number): void;
-
-  setContactTestBitMask(contactTestBitMask: number): void;
-
-  setVelocity(velocity: CGVector): void;
-
-  setAngularVelocity(angularVelocity: number): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class SKShader extends NSObject implements NSCopying, NSSecureCoding {
   initWithSource(source: string): this;
 
@@ -2519,12 +2525,6 @@ declare class SKPhysicsContact extends NSObject {
   readonly contactNormal: CGVector;
 
   readonly collisionImpulse: number;
-}
-
-declare class SKCameraNode extends SKNode {
-  containsNode(node: SKNode): boolean;
-
-  containedNodeSet(): NSSet;
 }
 
 declare class SKFieldNode extends SKNode {

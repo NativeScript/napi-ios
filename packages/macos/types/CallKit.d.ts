@@ -18,6 +18,8 @@ declare class CXProviderConfiguration extends NSObject implements NSCopying {
 
   supportsVideo: boolean;
 
+  supportsAudioTranslation: boolean;
+
   supportedHandleTypes: NSSet;
 
   init(): this;
@@ -35,6 +37,8 @@ declare class CXProviderConfiguration extends NSObject implements NSCopying {
   setIncludesCallsInRecents(includesCallsInRecents: boolean): void;
 
   setSupportsVideo(supportsVideo: boolean): void;
+
+  setSupportsAudioTranslation(supportsAudioTranslation: boolean): void;
 
   setSupportedHandleTypes(supportedHandleTypes: NSSet): void;
 

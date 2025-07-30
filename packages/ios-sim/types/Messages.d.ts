@@ -40,6 +40,12 @@ declare const MSMessagesAppPresentationContext: {
 
 declare interface MSMessagesAppTranscriptPresentation {
   contentSizeThatFits(size: CGSize): CGSize;
+
+  readonly messageTintColor: UIColor;
+
+  readonly messageCornerRadius: number;
+
+  invalidateMessageTintColor(): void;
 }
 
 declare class MSMessagesAppTranscriptPresentation extends NativeObject implements MSMessagesAppTranscriptPresentation {
@@ -150,6 +156,12 @@ declare class MSMessagesAppViewController extends UIViewController implements MS
   didTransitionToPresentationStyle(presentationStyle: interop.Enum<typeof MSMessagesAppPresentationStyle>): void;
 
   contentSizeThatFits(size: CGSize): CGSize;
+
+  readonly messageTintColor: UIColor;
+
+  readonly messageCornerRadius: number;
+
+  invalidateMessageTintColor(): void;
 }
 
 declare class MSSticker extends NSObject {

@@ -30,6 +30,12 @@ declare const VSSubscriptionAccessLevel: {
   Paid: 2,
 };
 
+declare const VSAutoSignInAuthorization: {
+  NotDetermined: 0,
+  Granted: 1,
+  Denied: 2,
+};
+
 declare const VSUserAccountQueryOptions: {
   None: 0,
   AllDevices: 1,
@@ -75,67 +81,68 @@ declare class VSUserAccountManager extends NSObject {
   updateUserAccountCompletion(account: VSUserAccount, completion: (p1: NSError) => void | null): void;
 
   queryUserAccountsWithOptionsCompletion(options: interop.Enum<typeof VSUserAccountQueryOptions>, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  queryAutoSignInTokenWithCompletionHandler(completion: (p1: VSAutoSignInToken, p2: NSError) => void | null): void;
+
+  requestAutoSignInAuthorizationWithCompletionHandler(completion: (p1: VSAutoSignInTokenUpdateContext, p2: NSError) => void | null): void;
+
+  updateAutoSignInTokenUpdateContextCompletionHandler(autoSignInToken: string, context: VSAutoSignInTokenUpdateContext, completion: (p1: NSError) => void | null): void;
+
+  deleteAutoSignInTokenWithCompletionHandler(completion: (p1: NSError) => void | null): void;
 }
 
-declare class VSAccountMetadataRequest extends NSObject {
-  channelIdentifier: string;
+declare class VSSubscriptionRegistrationCenter extends NSObject {
+  static defaultSubscriptionRegistrationCenter(): VSSubscriptionRegistrationCenter;
 
-  get supportedAccountProviderIdentifiers(): NSArray;
-  set supportedAccountProviderIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
+  setCurrentSubscription(currentSubscription: VSSubscription | null): void;
+}
 
-  get featuredAccountProviderIdentifiers(): NSArray;
-  set featuredAccountProviderIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
+declare class VSSubscription extends NSObject {
+  expirationDate: NSDate;
 
-  verificationToken: string;
+  accessLevel: interop.Enum<typeof VSSubscriptionAccessLevel>;
 
-  includeAccountProviderIdentifier: boolean;
+  get tierIdentifiers(): NSArray;
+  set tierIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  includeAuthenticationExpirationDate: boolean;
+  billingIdentifier: string;
 
-  localizedVideoTitle: string;
+  setExpirationDate(expirationDate: NSDate | null): void;
 
-  interruptionAllowed: boolean;
+  setAccessLevel(accessLevel: interop.Enum<typeof VSSubscriptionAccessLevel>): void;
 
-  forceAuthentication: boolean;
+  setTierIdentifiers(tierIdentifiers: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
-  get attributeNames(): NSArray;
-  set attributeNames(value: NSArray<interop.Object> | Array<interop.Object>);
+  setBillingIdentifier(billingIdentifier: string | null): void;
+}
 
-  get supportedAuthenticationSchemes(): NSArray;
-  set supportedAuthenticationSchemes(value: NSArray<interop.Object> | Array<interop.Object>);
+declare class VSAutoSignInTokenUpdateContext extends NSObject {
+  readonly authorization: interop.Enum<typeof VSAutoSignInAuthorization>;
+}
 
-  accountProviderAuthenticationToken: string;
+declare class VSAutoSignInToken extends NSObject implements NSSecureCoding {
+  readonly authorization: interop.Enum<typeof VSAutoSignInAuthorization>;
 
-  get applicationAccountProviders(): NSArray;
-  set applicationAccountProviders(value: NSArray<interop.Object> | Array<interop.Object>);
+  readonly value: string;
 
-  setChannelIdentifier(channelIdentifier: string | null): void;
+  static readonly supportsSecureCoding: boolean;
 
-  setSupportedAccountProviderIdentifiers(supportedAccountProviderIdentifiers: NSArray<interop.Object> | Array<interop.Object>): void;
+  encodeWithCoder(coder: NSCoder): void;
 
-  setFeaturedAccountProviderIdentifiers(featuredAccountProviderIdentifiers: NSArray<interop.Object> | Array<interop.Object>): void;
+  initWithCoder(coder: NSCoder): this;
+}
 
-  setVerificationToken(verificationToken: string | null): void;
+declare class VSAppleSubscription extends NSObject {
+  customerID: string;
 
-  setIncludeAccountProviderIdentifier(includeAccountProviderIdentifier: boolean): void;
+  get productCodes(): NSArray;
+  set productCodes(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  setIncludeAuthenticationExpirationDate(includeAuthenticationExpirationDate: boolean): void;
+  initWithCustomerIDProductCodes(customerID: string, productCodes: NSArray<interop.Object> | Array<interop.Object>): this;
 
-  setLocalizedVideoTitle(localizedVideoTitle: string | null): void;
+  setCustomerID(customerID: string): void;
 
-  isInterruptionAllowed(): boolean;
-
-  setInterruptionAllowed(interruptionAllowed: boolean): void;
-
-  setForceAuthentication(forceAuthentication: boolean): void;
-
-  setAttributeNames(attributeNames: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setSupportedAuthenticationSchemes(supportedAuthenticationSchemes: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccountProviderAuthenticationToken(accountProviderAuthenticationToken: string | null): void;
-
-  setApplicationAccountProviders(applicationAccountProviders: NSArray<interop.Object> | Array<interop.Object> | null): void;
+  setProductCodes(productCodes: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
 declare class VSAccountMetadata extends NSObject {
@@ -148,6 +155,20 @@ declare class VSAccountMetadata extends NSObject {
   readonly SAMLAttributeQueryResponse: string;
 
   readonly accountProviderResponse: VSAccountProviderResponse;
+}
+
+declare class VSAccountManagerResult extends NSObject {
+  cancel(): void;
+}
+
+declare class VSAccountManager extends NSObject {
+  delegate: VSAccountManagerDelegate | null;
+
+  checkAccessStatusWithOptionsCompletionHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: interop.Enum<typeof VSAccountAccessStatus>, p2: NSError) => void | null): void;
+
+  enqueueAccountMetadataRequestCompletionHandler(request: VSAccountMetadataRequest, completionHandler: (p1: VSAccountMetadata, p2: NSError) => void | null): VSAccountManagerResult;
+
+  setDelegate(delegate: VSAccountManagerDelegate | null): void;
 }
 
 declare class VSAccountApplicationProvider extends NSObject {
@@ -215,33 +236,65 @@ declare class VSUserAccount extends NSObject {
   setAppleSubscription(appleSubscription: VSAppleSubscription | null): void;
 }
 
-declare class VSSubscription extends NSObject {
-  expirationDate: NSDate;
+declare class VSAccountMetadataRequest extends NSObject {
+  channelIdentifier: string;
 
-  accessLevel: interop.Enum<typeof VSSubscriptionAccessLevel>;
+  get supportedAccountProviderIdentifiers(): NSArray;
+  set supportedAccountProviderIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  get tierIdentifiers(): NSArray;
-  set tierIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
+  get featuredAccountProviderIdentifiers(): NSArray;
+  set featuredAccountProviderIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  billingIdentifier: string;
+  verificationToken: string;
 
-  setExpirationDate(expirationDate: NSDate | null): void;
+  includeAccountProviderIdentifier: boolean;
 
-  setAccessLevel(accessLevel: interop.Enum<typeof VSSubscriptionAccessLevel>): void;
+  includeAuthenticationExpirationDate: boolean;
 
-  setTierIdentifiers(tierIdentifiers: NSArray<interop.Object> | Array<interop.Object> | null): void;
+  localizedVideoTitle: string;
 
-  setBillingIdentifier(billingIdentifier: string | null): void;
-}
+  interruptionAllowed: boolean;
 
-declare class VSAccountManagerResult extends NSObject {
-  cancel(): void;
-}
+  forceAuthentication: boolean;
 
-declare class VSSubscriptionRegistrationCenter extends NSObject {
-  static defaultSubscriptionRegistrationCenter(): VSSubscriptionRegistrationCenter;
+  get attributeNames(): NSArray;
+  set attributeNames(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  setCurrentSubscription(currentSubscription: VSSubscription | null): void;
+  get supportedAuthenticationSchemes(): NSArray;
+  set supportedAuthenticationSchemes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accountProviderAuthenticationToken: string;
+
+  get applicationAccountProviders(): NSArray;
+  set applicationAccountProviders(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setChannelIdentifier(channelIdentifier: string | null): void;
+
+  setSupportedAccountProviderIdentifiers(supportedAccountProviderIdentifiers: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setFeaturedAccountProviderIdentifiers(featuredAccountProviderIdentifiers: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setVerificationToken(verificationToken: string | null): void;
+
+  setIncludeAccountProviderIdentifier(includeAccountProviderIdentifier: boolean): void;
+
+  setIncludeAuthenticationExpirationDate(includeAuthenticationExpirationDate: boolean): void;
+
+  setLocalizedVideoTitle(localizedVideoTitle: string | null): void;
+
+  isInterruptionAllowed(): boolean;
+
+  setInterruptionAllowed(interruptionAllowed: boolean): void;
+
+  setForceAuthentication(forceAuthentication: boolean): void;
+
+  setAttributeNames(attributeNames: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setSupportedAuthenticationSchemes(supportedAuthenticationSchemes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccountProviderAuthenticationToken(accountProviderAuthenticationToken: string | null): void;
+
+  setApplicationAccountProviders(applicationAccountProviders: NSArray<interop.Object> | Array<interop.Object> | null): void;
 }
 
 declare class VSAccountProviderResponse extends NSObject {
@@ -250,28 +303,5 @@ declare class VSAccountProviderResponse extends NSObject {
   readonly status: string;
 
   readonly body: string;
-}
-
-declare class VSAccountManager extends NSObject {
-  delegate: VSAccountManagerDelegate | null;
-
-  checkAccessStatusWithOptionsCompletionHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: interop.Enum<typeof VSAccountAccessStatus>, p2: NSError) => void | null): void;
-
-  enqueueAccountMetadataRequestCompletionHandler(request: VSAccountMetadataRequest, completionHandler: (p1: VSAccountMetadata, p2: NSError) => void | null): VSAccountManagerResult;
-
-  setDelegate(delegate: VSAccountManagerDelegate | null): void;
-}
-
-declare class VSAppleSubscription extends NSObject {
-  customerID: string;
-
-  get productCodes(): NSArray;
-  set productCodes(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  initWithCustomerIDProductCodes(customerID: string, productCodes: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  setCustomerID(customerID: string): void;
-
-  setProductCodes(productCodes: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 

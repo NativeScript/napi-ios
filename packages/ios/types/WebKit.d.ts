@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
+declare const WKWebsiteDataTypeScreenTime: string;
+
 declare const WKWebsiteDataTypeMediaKeys: string;
 
 declare const WKWebsiteDataTypeSearchFieldRecentSearches: string;
@@ -82,8 +84,6 @@ declare const WKErrorDomain: string;
 
 declare const NSReadAccessURLDocumentOption: string;
 
-declare const WKWebsiteDataTypeDiskCache: string;
-
 declare const WKWebExtensionContextNotificationUserInfoKeyPermissions: string;
 
 declare const WKPreviewActionItemIdentifierCopy: string;
@@ -99,6 +99,8 @@ declare const WKWebExtensionMatchPatternErrorDomain: string;
 declare const WKWebsiteDataTypeOfflineWebApplicationCache: string;
 
 declare const WKWebsiteDataTypeHashSalt: string;
+
+declare const WKWebsiteDataTypeDiskCache: string;
 
 declare const WKWebExtensionPermissionContextMenus: string;
 
@@ -202,6 +204,10 @@ declare const WKCookiePolicy: {
   Disallow: 1,
 };
 
+declare const WKWebViewDataType: {
+  WKWebViewDataTypeSessionStorage: 1,
+};
+
 declare const WKFullscreenState: {
   NotIn: 0,
   Entering: 1,
@@ -267,11 +273,6 @@ declare const WKDataDetectorTypes: {
   SpotlightSuggestion: 64,
 };
 
-declare const WKDownloadPlaceholderPolicy: {
-  Disable: 0,
-  Enable: 1,
-};
-
 declare const WKPermissionDecision: {
   Prompt: 0,
   Grant: 1,
@@ -291,11 +292,6 @@ declare const WKWebpagePreferencesUpgradeToHTTPSPolicy: {
   ErrorOnFailure: 3,
 };
 
-declare const WKWebExtensionWindowType: {
-  Normal: 0,
-  Popup: 1,
-};
-
 declare const WKWebExtensionContextError: {
   Unknown: 1,
   AlreadyLoaded: 2,
@@ -303,6 +299,11 @@ declare const WKWebExtensionContextError: {
   BaseURLAlreadyInUse: 4,
   NoBackgroundContent: 5,
   BackgroundContentFailedToLoad: 6,
+};
+
+declare const WKDownloadPlaceholderPolicy: {
+  Disable: 0,
+  Enable: 1,
 };
 
 declare const WKWebExtensionTabChangedProperties: {
@@ -336,6 +337,11 @@ declare const WKWebExtensionWindowState: {
   Minimized: 1,
   Maximized: 2,
   Fullscreen: 3,
+};
+
+declare const WKWebExtensionWindowType: {
+  Normal: 0,
+  Popup: 1,
 };
 
 declare interface WKWebExtensionControllerDelegate extends NSObjectProtocol {
@@ -871,6 +877,8 @@ declare class WKNavigationAction extends NSObject {
 
   readonly shouldPerformDownload: boolean;
 
+  readonly isContentRuleListRedirect: boolean;
+
   readonly modifierFlags: interop.Enum<typeof UIKeyModifierFlags>;
 
   readonly buttonNumber: interop.Enum<typeof UIEventButtonMask>;
@@ -904,6 +912,8 @@ declare class WKHTTPCookieStore extends NSObject {
   getAllCookies(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>) => void): void;
 
   setCookieCompletionHandler(cookie: NSHTTPCookie, completionHandler: () => void | null): void;
+
+  setCookiesCompletionHandler(cookies: NSArray<interop.Object> | Array<interop.Object>, completionHandler: () => void | null): void;
 
   deleteCookieCompletionHandler(cookie: NSHTTPCookie, completionHandler: () => void | null): void;
 
@@ -1039,6 +1049,8 @@ declare class WKWebView extends UIView {
 
   interactionState: interop.Object;
 
+  readonly isBlockedByScreenTime: boolean;
+
   loadSimulatedRequestResponseResponseData(request: NSURLRequest, response: NSURLResponse, data: NSData): WKNavigation;
 
   loadSimulatedRequestWithResponseResponseData(request: NSURLRequest, response: NSURLResponse, data: NSData): WKNavigation;
@@ -1069,6 +1081,12 @@ declare class WKWebView extends UIView {
 
   readonly writingToolsActive: boolean;
 
+  fetchDataOfTypesCompletionHandler(dataTypes: interop.Enum<typeof WKWebViewDataType>, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
+
+  restoreDataCompletionHandler(data: NSData, completionHandler: (p1: NSError) => void | null): void;
+
+  obscuredContentInsets: UIEdgeInsets;
+
   setNavigationDelegate(navigationDelegate: WKNavigationDelegate | null): void;
 
   setUIDelegate(UIDelegate: WKUIDelegate | null): void;
@@ -1098,6 +1116,8 @@ declare class WKWebView extends UIView {
   setInspectable(inspectable: boolean): void;
 
   isWritingToolsActive(): boolean;
+
+  setObscuredContentInsets(obscuredContentInsets: UIEdgeInsets): void;
 
   readonly certificateChain: NSArray;
 }
@@ -1299,6 +1319,10 @@ declare class WKWebsiteDataStore extends NSObject implements NSSecureCoding {
 
   readonly identifier: NSUUID;
 
+  fetchDataOfTypesCompletionHandler(dataTypes: NSSet, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
+
+  restoreDataCompletionHandler(data: NSData, completionHandler: (p1: NSError) => void | null): void;
+
   static dataStoreForIdentifier(identifier: NSUUID): WKWebsiteDataStore;
 
   static removeDataStoreForIdentifierCompletionHandler(identifier: NSUUID, completionHandler: (p1: NSError) => void | null): void;
@@ -1312,6 +1336,14 @@ declare class WKWebsiteDataStore extends NSObject implements NSSecureCoding {
 
   setProxyConfigurations(proxyConfigurations: NSArray<interop.Object> | Array<interop.Object>): void;
 
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class WKProcessPool extends NSObject implements NSSecureCoding {
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
@@ -1519,14 +1551,6 @@ declare class WKWebExtensionContext extends NSObject {
   setHasAccessToPrivateData(hasAccessToPrivateData: boolean): void;
 }
 
-declare class WKProcessPool extends NSObject implements NSSecureCoding {
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class WKNavigationResponse extends NSObject {
   readonly forMainFrame: boolean;
 
@@ -1696,6 +1720,8 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
 
   allowsAirPlayForMediaPlayback: boolean;
 
+  showsSystemScreenTimeBlockingView: boolean;
+
   upgradeKnownHostsToHTTPS: boolean;
 
   mediaTypesRequiringUserActionForPlayback: interop.Enum<typeof WKAudiovisualMediaTypes>;
@@ -1739,6 +1765,8 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
   setApplicationNameForUserAgent(applicationNameForUserAgent: string | null): void;
 
   setAllowsAirPlayForMediaPlayback(allowsAirPlayForMediaPlayback: boolean): void;
+
+  setShowsSystemScreenTimeBlockingView(showsSystemScreenTimeBlockingView: boolean): void;
 
   setUpgradeKnownHostsToHTTPS(upgradeKnownHostsToHTTPS: boolean): void;
 

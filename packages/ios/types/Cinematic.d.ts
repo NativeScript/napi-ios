@@ -28,11 +28,29 @@ declare const CNCinematicErrorCode: {
   Cancelled: 7,
 };
 
+declare const CNSpatialAudioContentType: {
+  Stereo: 0,
+  Spatial: 1,
+};
+
 declare const CNRenderingQuality: {
   Thumbnail: 0,
   Preview: 1,
   Export: 2,
   ExportHigh: 3,
+};
+
+declare const CNSpatialAudioRenderingStyle: {
+  Cinematic: 0,
+  Studio: 1,
+  InFrame: 2,
+  CinematicBackgroundStem: 3,
+  CinematicForegroundStem: 4,
+  StudioForegroundStem: 5,
+  InFrameForegroundStem: 6,
+  Standard: 7,
+  StudioBackgroundStem: 8,
+  InFrameBackgroundStem: 9,
 };
 
 declare class CNObjectTracker extends NSObject {
@@ -225,30 +243,26 @@ declare class CNScriptFrame extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class CNDetection extends NSObject implements NSCopying {
-  initWithTimeDetectionTypeNormalizedRectFocusDisparity(time: CMTime, detectionType: interop.Enum<typeof CNDetectionType>, normalizedRect: CGRect, focusDisparity: number): this;
+declare class CNAssetSpatialAudioInfo extends NSObject {
+  static readonly isSupported: boolean;
 
-  readonly time: CMTime;
+  static checkIfContainsSpatialAudioCompletionHandler(asset: AVAsset, completionHandler: (p1: boolean) => void): void;
 
-  readonly detectionType: interop.Enum<typeof CNDetectionType>;
+  static loadFromAssetCompletionHandler(asset: AVAsset, completionHandler: (p1: CNAssetSpatialAudioInfo, p2: NSError) => void | null): void;
 
-  readonly normalizedRect: CGRect;
+  readonly defaultSpatialAudioTrack: AVAssetTrack;
 
-  readonly focusDisparity: number;
+  readonly defaultEffectIntensity: number;
 
-  readonly detectionID: number;
+  readonly defaultRenderingStyle: interop.Enum<typeof CNSpatialAudioRenderingStyle>;
 
-  readonly detectionGroupID: number;
+  readonly spatialAudioMixMetadata: NSData;
 
-  static isValidDetectionID(detectionID: number): boolean;
+  audioMixWithEffectIntensityRenderingStyle(effectIntensity: number, renderingStyle: interop.Enum<typeof CNSpatialAudioRenderingStyle>): AVAudioMix;
 
-  static isValidDetectionGroupID(detectionGroupID: number): boolean;
+  assetReaderOutputSettingsForContentType(contentType: interop.Enum<typeof CNSpatialAudioContentType>): NSDictionary;
 
-  static accessibilityLabelForDetectionType(detectionType: interop.Enum<typeof CNDetectionType>): string;
-
-  static disparityInNormalizedRectSourceDisparityDetectionTypePriorDisparity(normalizedRect: CGRect, sourceDisparity: interop.Object, detectionType: interop.Enum<typeof CNDetectionType>, priorDisparity: number): number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  assetWriterInputSettingsForContentType(contentType: interop.Enum<typeof CNSpatialAudioContentType>): NSDictionary;
 }
 
 declare class CNAssetInfo extends NSObject {
@@ -287,6 +301,32 @@ declare class CNCustomDetectionTrack extends CNDetectionTrack {
   initWithDetectionsSmooth(detections: NSArray<interop.Object> | Array<interop.Object>, applySmoothing: boolean): this;
 
   readonly allDetections: NSArray;
+}
+
+declare class CNDetection extends NSObject implements NSCopying {
+  initWithTimeDetectionTypeNormalizedRectFocusDisparity(time: CMTime, detectionType: interop.Enum<typeof CNDetectionType>, normalizedRect: CGRect, focusDisparity: number): this;
+
+  readonly time: CMTime;
+
+  readonly detectionType: interop.Enum<typeof CNDetectionType>;
+
+  readonly normalizedRect: CGRect;
+
+  readonly focusDisparity: number;
+
+  readonly detectionID: number;
+
+  readonly detectionGroupID: number;
+
+  static isValidDetectionID(detectionID: number): boolean;
+
+  static isValidDetectionGroupID(detectionGroupID: number): boolean;
+
+  static accessibilityLabelForDetectionType(detectionType: interop.Enum<typeof CNDetectionType>): string;
+
+  static disparityInNormalizedRectSourceDisparityDetectionTypePriorDisparity(normalizedRect: CGRect, sourceDisparity: interop.Object, detectionType: interop.Enum<typeof CNDetectionType>, priorDisparity: number): number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class CNRenderingSession extends NSObject {

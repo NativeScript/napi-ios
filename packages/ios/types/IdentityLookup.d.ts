@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
+/// <reference path="./Runtime.d.ts" />
 
 declare const ILMessageFilterErrorDomain: string;
 
@@ -56,18 +56,6 @@ declare interface ILMessageFilterCapabilitiesQueryHandling extends NSObjectProto
 }
 
 declare class ILMessageFilterCapabilitiesQueryHandling extends NativeObject implements ILMessageFilterCapabilitiesQueryHandling {
-}
-
-declare class ILNetworkResponse extends NSObject implements NSSecureCoding {
-  readonly urlResponse: NSHTTPURLResponse;
-
-  readonly data: NSData;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ILMessageFilterExtensionContext extends NSExtensionContext {
@@ -180,6 +168,16 @@ declare class ILMessageFilterCapabilitiesQueryRequest extends NSObject implement
 declare class ILMessageFilterExtension extends NSObject {
 }
 
+declare class ILMessageClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
+  readonly messageCommunications: NSArray;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureCoding {
   action: interop.Enum<typeof ILMessageFilterAction>;
 
@@ -196,8 +194,10 @@ declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureC
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ILMessageClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
-  readonly messageCommunications: NSArray;
+declare class ILNetworkResponse extends NSObject implements NSSecureCoding {
+  readonly urlResponse: NSHTTPURLResponse;
+
+  readonly data: NSData;
 
   static readonly supportsSecureCoding: boolean;
 

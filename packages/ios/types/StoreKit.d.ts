@@ -50,11 +50,11 @@ declare const SKStorefrontIdentifierDidChangeNotification: string;
 
 declare const SKCloudServiceSetupOptionsCampaignTokenKey: string;
 
-declare const SKStoreProductParameterAdNetworkSourceIdentifier: string;
-
 declare const SKCloudServiceSetupOptionsAffiliateTokenKey: string;
 
 declare const SKANErrorDomain: string;
+
+declare const SKStoreProductParameterAdNetworkSourceIdentifier: string;
 
 declare const SKCloudServiceSetupOptionsMessageIdentifierKey: string;
 
@@ -162,17 +162,17 @@ declare const SKProductDiscountPaymentMode: {
   FreeTrial: 2,
 };
 
-declare const SKProductDiscountType: {
-  Introductory: 0,
-  Subscription: 1,
-};
-
 declare const SKPaymentTransactionState: {
   Purchasing: 0,
   Purchased: 1,
   Failed: 2,
   Restored: 3,
   Deferred: 4,
+};
+
+declare const SKProductDiscountType: {
+  Introductory: 0,
+  Subscription: 1,
 };
 
 declare function SKTerminateForInvalidReceipt(): void;
@@ -243,6 +243,12 @@ declare interface SKCloudServiceSetupViewControllerDelegate extends NSObjectProt
 declare class SKCloudServiceSetupViewControllerDelegate extends NativeObject implements SKCloudServiceSetupViewControllerDelegate {
 }
 
+declare interface SKDownloaderExtension extends BAManagedDownloaderExtension {
+}
+
+declare class SKDownloaderExtension extends NativeObject implements SKDownloaderExtension {
+}
+
 declare interface SKRequestDelegate extends NSObjectProtocol {
   requestDidFinish?(request: SKRequest): void;
 
@@ -250,24 +256,6 @@ declare interface SKRequestDelegate extends NSObjectProtocol {
 }
 
 declare class SKRequestDelegate extends NativeObject implements SKRequestDelegate {
-}
-
-declare class SKPaymentTransaction extends NSObject {
-  readonly error: NSError;
-
-  readonly originalTransaction: SKPaymentTransaction;
-
-  readonly payment: SKPayment;
-
-  readonly downloads: NSArray;
-
-  readonly transactionDate: NSDate;
-
-  readonly transactionIdentifier: string;
-
-  readonly transactionReceipt: NSData;
-
-  readonly transactionState: interop.Enum<typeof SKPaymentTransactionState>;
 }
 
 declare class SKOverlayConfiguration extends NSObject {
@@ -381,6 +369,24 @@ declare class SKProductSubscriptionPeriod extends NSObject {
   readonly numberOfUnits: number;
 
   readonly unit: interop.Enum<typeof SKProductPeriodUnit>;
+}
+
+declare class SKPaymentTransaction extends NSObject {
+  readonly error: NSError;
+
+  readonly originalTransaction: SKPaymentTransaction;
+
+  readonly payment: SKPayment;
+
+  readonly downloads: NSArray;
+
+  readonly transactionDate: NSDate;
+
+  readonly transactionIdentifier: string;
+
+  readonly transactionReceipt: NSData;
+
+  readonly transactionState: interop.Enum<typeof SKPaymentTransactionState>;
 }
 
 declare class SKPaymentQueue extends NSObject {

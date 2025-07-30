@@ -1,7 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./QuartzCore.d.ts" />
-/// <reference path="./AppKit.d.ts" />
 /// <reference path="./Runtime.d.ts" />
+/// <reference path="./AppKit.d.ts" />
 
 declare const IKPictureTakerShowAddressBookPicture: string;
 
@@ -237,6 +237,8 @@ declare const IKCellsStyleSubtitled: number;
 
 declare const kQuartzFilterManagerDidRemoveFilterNotification: string;
 
+declare const QCCompositionProtocolImageFilter: string;
+
 declare const IKPictureTakerAllowsVideoCaptureKey: string;
 
 declare const QCPlugInExecutionArgumentMouseLocationKey: string;
@@ -295,8 +297,6 @@ declare const kQuartzFilterPDFWorkflowDomain: string;
 
 declare const IKImageBrowserCellsOutlineColorKey: string;
 
-declare const QCCompositionProtocolImageFilter: string;
-
 declare const QCPlugInPixelFormatARGB8: string;
 
 declare const kQuartzFilterPrintingDomain: string;
@@ -339,10 +339,27 @@ declare const IKImageBrowserIconRefRepresentationType: string;
 
 declare const QCCompositionInputYKey: string;
 
+declare const QCPlugInTimeMode: {
+  None: 0,
+  Idle: 1,
+  TimeBase: 2,
+};
+
 declare const IKScannerDeviceViewDisplayMode: {
   None: -1,
   Simple: 0,
   Advanced: 1,
+};
+
+declare const IKCameraDeviceViewTransferMode: {
+  File: 0,
+  Memory: 1,
+};
+
+declare const IKCameraDeviceViewDisplayMode: {
+  None: -1,
+  Table: 0,
+  Icon: 1,
 };
 
 declare const IKDeviceBrowserViewDisplayMode: {
@@ -357,21 +374,10 @@ declare const IKImageBrowserCellState: {
   Ready: 2,
 };
 
-declare const IKCameraDeviceViewTransferMode: {
-  File: 0,
-  Memory: 1,
-};
-
 declare const QCPlugInExecutionMode: {
   Provider: 1,
   Processor: 2,
   Consumer: 3,
-};
-
-declare const QCPlugInTimeMode: {
-  None: 0,
-  Idle: 1,
-  TimeBase: 2,
 };
 
 declare const IKImageBrowserDropOperation: {
@@ -382,12 +388,6 @@ declare const IKImageBrowserDropOperation: {
 declare const IKScannerDeviceViewTransferMode: {
   File: 0,
   Memory: 1,
-};
-
-declare const IKCameraDeviceViewDisplayMode: {
-  None: -1,
-  Table: 0,
-  Icon: 1,
 };
 
 declare interface IKImageEditPanelDataSource {
@@ -594,34 +594,6 @@ declare class QCCompositionPickerPanel extends NSPanel {
   compositionPickerView(): QCCompositionPickerView;
 }
 
-declare class IKDeviceBrowserView extends NSView {
-  delegate: IKDeviceBrowserViewDelegate;
-
-  displaysLocalCameras: boolean;
-
-  displaysNetworkCameras: boolean;
-
-  displaysLocalScanners: boolean;
-
-  displaysNetworkScanners: boolean;
-
-  mode: interop.Enum<typeof IKDeviceBrowserViewDisplayMode>;
-
-  readonly selectedDevice: ICDevice;
-
-  setDelegate(delegate: IKDeviceBrowserViewDelegate): void;
-
-  setDisplaysLocalCameras(displaysLocalCameras: boolean): void;
-
-  setDisplaysNetworkCameras(displaysNetworkCameras: boolean): void;
-
-  setDisplaysLocalScanners(displaysLocalScanners: boolean): void;
-
-  setDisplaysNetworkScanners(displaysNetworkScanners: boolean): void;
-
-  setMode(mode: interop.Enum<typeof IKDeviceBrowserViewDisplayMode>): void;
-}
-
 declare class QCComposition extends NSObject implements NSCopying {
   static compositionWithFile(path: string): QCComposition;
 
@@ -764,12 +736,6 @@ declare class IKSlideshow extends NSObject {
   static exportSlideshowItemToApplication(item: interop.Object, applicationBundleIdentifier: string): void;
 
   setAutoPlayDelay(autoPlayDelay: number): void;
-}
-
-declare class IKFilterBrowserView extends NSView {
-  setPreviewState(inState: boolean): void;
-
-  filterName(): string;
 }
 
 declare class IKFilterBrowserPanel extends NSPanel {
@@ -1137,46 +1103,6 @@ declare class QCPlugIn extends NSObject {
   createViewController(): QCPlugInViewController;
 }
 
-declare class QCRenderer extends NSObject implements QCCompositionRenderer {
-  initWithCompositionColorSpace(composition: QCComposition, colorSpace: interop.Object): this;
-
-  initWithCGLContextPixelFormatColorSpaceComposition(context: interop.PointerConvertible, format: interop.PointerConvertible, colorSpace: interop.Object, composition: QCComposition): this;
-
-  initOffScreenWithSizeColorSpaceComposition(size: CGSize, colorSpace: interop.Object, composition: QCComposition): this;
-
-  initWithOpenGLContextPixelFormatFile(context: NSOpenGLContext, format: NSOpenGLPixelFormat, path: string): this;
-
-  renderAtTimeArguments(time: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
-
-  renderingTimeForTimeArguments(time: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): number;
-
-  composition(): QCComposition;
-
-  snapshotImage(): NSImage;
-
-  createSnapshotImageOfType(type: string): interop.Object;
-
-  attributes(): NSDictionary;
-
-  inputKeys(): NSArray;
-
-  outputKeys(): NSArray;
-
-  setValueForInputKey(value: interop.Object, key: string): boolean;
-
-  valueForInputKey(key: string): interop.Object;
-
-  valueForOutputKey(key: string): interop.Object;
-
-  valueForOutputKeyOfType(key: string, type: string): interop.Object;
-
-  propertyListFromInputValues(): interop.Object;
-
-  setInputValuesWithPropertyList(plist: interop.Object): void;
-
-  userInfo(): NSMutableDictionary;
-}
-
 declare class IKImageEditPanel extends NSPanel {
   dataSource: IKImageEditPanelDataSource;
 
@@ -1209,6 +1135,34 @@ declare class IKSaveOptions extends NSObject {
   setDelegate(delegate: interop.Object): void;
 
   setRememberLastSetting(rememberLastSetting: boolean): void;
+}
+
+declare class IKDeviceBrowserView extends NSView {
+  delegate: IKDeviceBrowserViewDelegate;
+
+  displaysLocalCameras: boolean;
+
+  displaysNetworkCameras: boolean;
+
+  displaysLocalScanners: boolean;
+
+  displaysNetworkScanners: boolean;
+
+  mode: interop.Enum<typeof IKDeviceBrowserViewDisplayMode>;
+
+  readonly selectedDevice: ICDevice;
+
+  setDelegate(delegate: IKDeviceBrowserViewDelegate): void;
+
+  setDisplaysLocalCameras(displaysLocalCameras: boolean): void;
+
+  setDisplaysNetworkCameras(displaysNetworkCameras: boolean): void;
+
+  setDisplaysLocalScanners(displaysLocalScanners: boolean): void;
+
+  setDisplaysNetworkScanners(displaysNetworkScanners: boolean): void;
+
+  setMode(mode: interop.Enum<typeof IKDeviceBrowserViewDisplayMode>): void;
 }
 
 declare class IKScannerDeviceView extends NSView {
@@ -1353,6 +1307,26 @@ declare class IKCameraDeviceView extends NSView {
   setPostProcessApplication(postProcessApplication: NSURL): void;
 }
 
+declare class QCCompositionParameterView extends NSView {
+  setCompositionRenderer(renderer: QCCompositionRenderer): void;
+
+  compositionRenderer(): QCCompositionRenderer;
+
+  hasParameters(): boolean;
+
+  setBackgroundColor(color: NSColor): void;
+
+  backgroundColor(): NSColor;
+
+  setDrawsBackground(flag: boolean): void;
+
+  drawsBackground(): boolean;
+
+  setDelegate(delegate: interop.Object): void;
+
+  delegate(): interop.Object;
+}
+
 declare class IKPictureTaker extends NSPanel {
   static pictureTaker(): IKPictureTaker;
 
@@ -1451,24 +1425,50 @@ declare class QuartzFilterManager extends NSObject {
   importFilter(filterProperties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): QuartzFilter;
 }
 
-declare class QCCompositionParameterView extends NSView {
-  setCompositionRenderer(renderer: QCCompositionRenderer): void;
+declare class QCRenderer extends NSObject implements QCCompositionRenderer {
+  initWithCompositionColorSpace(composition: QCComposition, colorSpace: interop.Object): this;
 
-  compositionRenderer(): QCCompositionRenderer;
+  initWithCGLContextPixelFormatColorSpaceComposition(context: interop.PointerConvertible, format: interop.PointerConvertible, colorSpace: interop.Object, composition: QCComposition): this;
 
-  hasParameters(): boolean;
+  initOffScreenWithSizeColorSpaceComposition(size: CGSize, colorSpace: interop.Object, composition: QCComposition): this;
 
-  setBackgroundColor(color: NSColor): void;
+  initWithOpenGLContextPixelFormatFile(context: NSOpenGLContext, format: NSOpenGLPixelFormat, path: string): this;
 
-  backgroundColor(): NSColor;
+  renderAtTimeArguments(time: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
 
-  setDrawsBackground(flag: boolean): void;
+  renderingTimeForTimeArguments(time: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): number;
 
-  drawsBackground(): boolean;
+  composition(): QCComposition;
 
-  setDelegate(delegate: interop.Object): void;
+  snapshotImage(): NSImage;
 
-  delegate(): interop.Object;
+  createSnapshotImageOfType(type: string): interop.Object;
+
+  attributes(): NSDictionary;
+
+  inputKeys(): NSArray;
+
+  outputKeys(): NSArray;
+
+  setValueForInputKey(value: interop.Object, key: string): boolean;
+
+  valueForInputKey(key: string): interop.Object;
+
+  valueForOutputKey(key: string): interop.Object;
+
+  valueForOutputKeyOfType(key: string, type: string): interop.Object;
+
+  propertyListFromInputValues(): interop.Object;
+
+  setInputValuesWithPropertyList(plist: interop.Object): void;
+
+  userInfo(): NSMutableDictionary;
+}
+
+declare class IKFilterBrowserView extends NSView {
+  setPreviewState(inState: boolean): void;
+
+  filterName(): string;
 }
 
 declare class QCCompositionLayer extends CAOpenGLLayer implements QCCompositionRenderer {

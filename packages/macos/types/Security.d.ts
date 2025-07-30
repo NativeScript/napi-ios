@@ -106,34 +106,6 @@ declare const errSecureDownloadInvalidDownload: number;
 
 declare const kSecAsn1VisibleStringTemplate: interop.Pointer;
 
-declare const errSecMissingAttributeEffectiveBits: number;
-
-declare const CSSMOID_SupportedApplicationContext: cssm_data;
-
-declare const kCMSEncoderDigestAlgorithmSHA1: interop.Pointer;
-
-declare const CSSMERR_CSSM_MODULE_MANAGER_NOT_FOUND: number;
-
-declare const CSSM_CERT_BUNDLE_PFX: number;
-
-declare const CSSMERR_APPLETP_CERT_NOT_FOUND_FROM_ISSUER: number;
-
-declare const CSSMOID_PKCS12_pbeWithSHAAnd3Key3DESCBC: cssm_data;
-
-declare const kSecOIDUseExemptions: interop.Pointer;
-
-declare const kSecSerialNumberItemAttr: number;
-
-declare const errSSLCrypto: number;
-
-declare const kSecCSFullReport: number;
-
-declare const kSecAttrProtocolHTTPSProxy: interop.Pointer;
-
-declare const TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384: number;
-
-declare const kSecOIDCertIssuer: interop.Pointer;
-
 declare const CSSM_SERVICE_CL: number;
 
 declare const CSSMERR_CSP_INVALID_ATTR_SYMMETRIC_KEY_FORMAT: number;
@@ -153,6 +125,8 @@ declare const errSecInvalidTrustSettings: number;
 declare const CSSMOID_RSAWithOAEP: cssm_data;
 
 declare const CSSMERR_CSP_INVALID_ATTR_MODE: number;
+
+declare const errSecCSSignatureNotVerifiable: number;
 
 declare const CSSMERR_CSSM_EVENT_NOTIFICATION_CALLBACK_NOT_FOUND: number;
 
@@ -230,6 +204,8 @@ declare const CSSM_TP_CERTVERIFY_UNKNOWN: number;
 
 declare const errSecNoFieldValues: number;
 
+declare const CSSMOID_PKCS12_pbeWithSHAAnd3Key3DESCBC: cssm_data;
+
 declare const CSSM_FEE_PRIME_TYPE_GENERAL: number;
 
 declare const errSecSMIMEBadKeyUsage: number;
@@ -295,6 +271,8 @@ declare const CSSMERR_CSSM_EMM_UNLOAD_FAILED: number;
 declare const CSSM_DL_DB_SCHEMA_PARSING_MODULE: number;
 
 declare const CSSM_ALGID_JUNIPER: number;
+
+declare const kSecOIDUseExemptions: interop.Pointer;
 
 declare const kSecAsn1SetOfPrintableStringTemplate: interop.Pointer;
 
@@ -397,8 +375,6 @@ declare const CSSM_WORDID_RSA_PKCS1_SHA1: number;
 declare const TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const CSSMOID_ExtendedKeyUsageAny: cssm_data;
-
-declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA1: interop.Pointer;
 
 declare const CSSM_ERRCODE_ACL_BASE_CERTS_NOT_SUPPORTED: number;
 
@@ -660,6 +636,8 @@ declare const errSecCertificateRevoked: number;
 
 declare const kSecAttrPersistantReference: interop.Pointer;
 
+declare const CSSMERR_CSP_INVALID_ATTR_PUBLIC_KEY_FORMAT: number;
+
 declare const CSSMOID_X509V2CRLExtensionType: cssm_data;
 
 declare const errSecInvalidSearchRef: number;
@@ -820,8 +798,6 @@ declare const kSecDigestHMACMD5: interop.Pointer;
 
 declare const kSecAttrCreationDate: interop.Pointer;
 
-declare const errSSLIllegalParam: number;
-
 declare const kSecCertEncodingItemAttr: number;
 
 declare const CSSMERR_AC_INVALID_TP_HANDLE: number;
@@ -858,8 +834,6 @@ declare const CSSMERR_CL_MEMORY_ERROR: number;
 
 declare const CSSM_TP_AUTHORITY_REQUEST_CRLISSUE: number;
 
-declare const CSSMERR_CL_INVALID_NUMBER_OF_FIELDS: number;
-
 declare const CSSM_AC_BASE_ERROR: number;
 
 declare const CSSMOID_ANSI_DH_HYBRID2_SHA1: cssm_data;
@@ -886,6 +860,14 @@ declare const CSSM_TP_CERTCHANGE_REASON_HOLDRELEASE: number;
 
 declare const kSecKeyEffectiveKeySize: number;
 
+declare const kSecPropertyTypeSection: interop.Pointer;
+
+declare const CSSMOID_ECDSA_WithSHA1: cssm_data;
+
+declare const CSSMERR_CSP_INVALID_KEY_FORMAT: number;
+
+declare const errSecInvalidModifyMode: number;
+
 declare const CSSM_WORDID_LE: number;
 
 declare const CSSM_WORDID_OWNER: number;
@@ -898,13 +880,13 @@ declare const CSSMOID_PKCS5_ENCRYPT_ALG: cssm_data;
 
 declare const CSSMERR_APPLETP_CRL_BAD_URI: number;
 
-declare const CSSMERR_DL_INVALID_ACL_EDIT_MODE: number;
-
 declare const CSSMERR_CSP_APPLE_ADD_APPLICATION_ACL_SUBJECT: number;
 
 declare const errSecInvalidAttributePadding: number;
 
 declare const kSecAttrProtocolHTTPS: interop.Pointer;
+
+declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA1: interop.Pointer;
 
 declare const TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA: number;
 
@@ -961,6 +943,8 @@ declare const CSSMOID_APPLE_TP_REVOCATION: cssm_data;
 declare const CSSMOID_secp192k1: cssm_data;
 
 declare const CSSMOID_SigningTime: cssm_data;
+
+declare const kSecAttrKeyTypeRSA: interop.Pointer;
 
 declare const kSecPolicyTeamIdentifier: interop.Pointer;
 
@@ -1080,6 +1064,8 @@ declare const errSecInsufficientCredentials: number;
 
 declare const errSecCSResourceNotSupported: number;
 
+declare const kSecOIDCertIssuer: interop.Pointer;
+
 declare const CSSM_PADDING_CUSTOM: number;
 
 declare const CSSMOID_MACAPPSTORE_RECEIPT_CERT_POLICY: cssm_data;
@@ -1181,8 +1167,6 @@ declare const CSSM_ALGID_SSL3MD5_MAC: number;
 declare const errSSLHandshakeFail: number;
 
 declare const oidEmailAddress: DERItem;
-
-declare const kSecAttrKeyTypeRC2: interop.Pointer;
 
 declare const CSSMOID_X509V2CRLSingleExtensionStruct: cssm_data;
 
@@ -1321,6 +1305,8 @@ declare const CSSMERR_CSP_INVALID_ATTR_BLOCK_SIZE: number;
 declare const CSSM_ALGMODE_CFB_IV8: number;
 
 declare const CSSMOID_X509V2CRLAllExtensionsStruct: cssm_data;
+
+declare const CSSMERR_APPLETP_CERT_NOT_FOUND_FROM_ISSUER: number;
 
 declare const CSSMOID_ECDSA_WithSpecified: cssm_data;
 
@@ -1658,11 +1644,11 @@ declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA384: interop.Pointer;
 
 declare const kSecAttrAuthenticationTypeRPA: interop.Pointer;
 
+declare const CSSMERR_DL_INVALID_ACL_EDIT_MODE: number;
+
 declare const kSecAttrCanWrap: interop.Pointer;
 
 declare const errSecCoreFoundationUnknown: number;
-
-declare const CSSMERR_DL_ACL_CHANGE_FAILED: number;
 
 declare const CSSMOID_PKCS12_secretBag: cssm_data;
 
@@ -1700,6 +1686,8 @@ declare const CSSMOID_X509V1SubjectPublicKeyAlgorithmParameters: cssm_data;
 
 declare const CSSMOID_APPLE_TP_MACAPPSTORE_RECEIPT: cssm_data;
 
+declare const kSecSerialNumberItemAttr: number;
+
 declare const CSSMERR_APPLEDL_INCOMPATIBLE_DATABASE_BLOB: number;
 
 declare const CSSMERR_CSP_INSUFFICIENT_CLIENT_IDENTIFICATION: number;
@@ -1719,6 +1707,10 @@ declare const CSSM_TP_CERTISSUE_NOT_AUTHORIZED: number;
 declare const CSSM_ALGID_FEEDEXP: number;
 
 declare const SSL_RSA_WITH_IDEA_CBC_MD5: number;
+
+declare const CSSM_DB_ATTRIBUTE_FORMAT_SINT32: number;
+
+declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_28: number;
 
 declare const errSecOCSPBadRequest: number;
 
@@ -1743,6 +1735,8 @@ declare const CSSM_KEYATTR_RETURN_DEFAULT: number;
 declare const CSSMOID_X509V1SignatureAlgorithmTBS: cssm_data;
 
 declare const CSSMOID_APPLE_TP_MOBILE_STORE: cssm_data;
+
+declare const TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384: number;
 
 declare const errSecCSDbCorrupt: number;
 
@@ -1852,6 +1846,8 @@ declare const kSecInputIsAttributeName: interop.Object;
 
 declare const CSSMERR_DL_OBJECT_USE_AUTH_DENIED: number;
 
+declare const errSSLIllegalParam: number;
+
 declare const kSecACLAuthorizationKeychainItemRead: interop.Pointer;
 
 declare const CSSM_ATTRIBUTE_IV_SIZE: number;
@@ -1883,8 +1879,6 @@ declare const kSecTransformErrorAborted: number;
 declare const CSSMOID_APPLE_TP_REVOCATION_CRL: cssm_data;
 
 declare const CSSM_CSP_HYBRID: number;
-
-declare const errSecInvalidCRLType: number;
 
 declare const SSL_NULL_WITH_NULL_NULL: number;
 
@@ -1971,8 +1965,6 @@ declare const CSSMOID_DOTMAC_CERT_REQ_ARCHIVE_FETCH: cssm_data;
 declare const kSecAsn1PointerToBMPStringTemplate: interop.Pointer;
 
 declare const errSecEMMUnloadFailed: number;
-
-declare const errSecInvalidModifyMode: number;
 
 declare const kSecAsn1PointerToT61StringTemplate: interop.Pointer;
 
@@ -2110,6 +2102,8 @@ declare const CSSM_ALGID_MD4: number;
 
 declare const CSSMERR_CSP_OS_ACCESS_DENIED: number;
 
+declare const CSSM_ALGID_GOST: number;
+
 declare const CSSM_CONTEXT_EVENT_UPDATE: number;
 
 declare const kSecAttrProtocolFTPAccount: interop.Pointer;
@@ -2174,9 +2168,9 @@ declare const CSSM_ALGID_3DES_1KEY: number;
 
 declare const CSSM_ALGID_ASC: number;
 
-declare const errSecRestrictedAPI: number;
-
 declare const errSecAttributeNotInContext: number;
+
+declare const errSecRestrictedAPI: number;
 
 declare const CSSMOID_PKCS9_Id_Ct_TSTInfo: cssm_data;
 
@@ -2245,6 +2239,8 @@ declare const CSSMERR_CSP_INVALID_ATTR_KEY_TYPE: number;
 declare const kSecKeyAlwaysSensitive: number;
 
 declare const TLS_DHE_PSK_WITH_NULL_SHA256: number;
+
+declare const kSecCSFullReport: number;
 
 declare const CSSM_DL_FFS: number;
 
@@ -2632,8 +2628,6 @@ declare const CSSMERR_AC_SELF_CHECK_FAILED: number;
 
 declare const SSL_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
-declare const CSSMOID_MD2WithRSA: cssm_data;
-
 declare const CSSM_ADDR_CUSTOM: number;
 
 declare const CSSM_WORDID_G: number;
@@ -2645,8 +2639,6 @@ declare const kSecOIDKERBv5_PKINIT_KP_CLIENT_AUTH: interop.Pointer;
 declare const CSSMERR_TP_INVALID_CONTEXT_HANDLE: number;
 
 declare const CSSM_ALGID_SSL3MD5: number;
-
-declare const kSecAttrKeyTypeRSA: interop.Pointer;
 
 declare const TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384: number;
 
@@ -2726,9 +2718,9 @@ declare const errSecCSOutdated: number;
 
 declare const kSecUseKeychain: interop.Pointer;
 
-declare const CSSM_ACL_SUBJECT_TYPE_ANY: number;
+declare const CSSMERR_CSP_MISSING_ATTR_SALT: number;
 
-declare const CSSM_ACL_KEYCHAIN_PROMPT_UNSIGNED_ACT: number;
+declare const CSSM_ACL_AUTHORIZATION_GENKEY: number;
 
 declare const CSSMOID_PKCS5_pbeWithMD5AndRC2: cssm_data;
 
@@ -2856,8 +2848,6 @@ declare const kSSLSessionConfig_legacy: interop.Pointer;
 
 declare const kSSLSessionConfig_TLSv1_RC4_fallback: interop.Pointer;
 
-declare const kSSLSessionConfig_standard: interop.Pointer;
-
 declare const CSSMERR_CSP_INVALID_KEY_LABEL: number;
 
 declare const kSecUseOperationPrompt: interop.Pointer;
@@ -2917,8 +2907,6 @@ declare const kSecCSUseAllArchitectures: number;
 declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_25: number;
 
 declare const errSecCSObjectRequired: number;
-
-declare const kSecCSCheckNestedCode: number;
 
 declare const kSecCSBasicValidateOnly: number;
 
@@ -3142,10 +3130,6 @@ declare const kSecAttrKeyClass: interop.Pointer;
 
 declare const CSSM_ADDR_SOCKADDR: number;
 
-declare const CSSM_WORDID_OBJECT_HASH: number;
-
-declare const errSecInvalidKeychain: number;
-
 declare const kSecPolicyApplePassbookSigning: interop.Pointer;
 
 declare const kSecACLAuthorizationPartitionID: interop.Pointer;
@@ -3205,8 +3189,6 @@ declare const CSSMOID_DOTMAC_CERT_EXTENSION: cssm_data;
 declare const CSSMERR_CSSM_MEMORY_ERROR: number;
 
 declare const CSSMOID_QC_Statements: cssm_data;
-
-declare const CSSM_ACL_AUTHORIZATION_GENKEY: number;
 
 declare const CSSMOID_DOTMAC_CERT_REQ_VALUE_USERNAME: cssm_data;
 
@@ -3284,8 +3266,6 @@ declare const CSSMOID_sect283k1: cssm_data;
 
 declare const CSSMOID_sect239k1: cssm_data;
 
-declare const CSSMOID_sect233k1: cssm_data;
-
 declare const CSSM_ACL_AUTHORIZATION_EXPORT_CLEAR: number;
 
 declare const CSSMOID_sect163r2: cssm_data;
@@ -3303,10 +3283,6 @@ declare const CSSMOID_secp160r1: cssm_data;
 declare const CSSMERR_CSP_ACL_CHANGE_FAILED: number;
 
 declare const CSSMOID_secp112r2: cssm_data;
-
-declare const kSecCodeInfoFormat: interop.Pointer;
-
-declare const TLS_RSA_PSK_WITH_NULL_SHA: number;
 
 declare const CSSMOID_X9_62_SigType: cssm_data;
 
@@ -3363,8 +3339,6 @@ declare const CSSMOID_PDA_PLACE_OF_BIRTH: cssm_data;
 declare const CSSM_CERT_STATUS_NOT_VALID_YET: number;
 
 declare const kSecTransformActionAttributeValidation: interop.Pointer;
-
-declare const errSecCSSignatureNotVerifiable: number;
 
 declare const CSSMERR_AC_MDS_ERROR: number;
 
@@ -3516,12 +3490,6 @@ declare const CSSMOID_APPLE_TP_LOCAL_CERT_GEN: cssm_data;
 
 declare const CSSMOID_SHA224: cssm_data;
 
-declare const kSecCodeInfoStatus: interop.Pointer;
-
-declare const TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA: number;
-
-declare const CSSMOID_SHA1WithDSA_CMS: cssm_data;
-
 declare const CSSM_ERRCODE_INVALID_ACL_BASE_CERTS: number;
 
 declare const CSSMOID_X509V1SignatureAlgorithmParameters: cssm_data;
@@ -3537,12 +3505,6 @@ declare const CSSMERR_CSSM_SCOPE_NOT_SUPPORTED: number;
 declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA224: interop.Pointer;
 
 declare const CSSMOID_ANSI_DH_HYBRID1_SHA1: cssm_data;
-
-declare const CSSM_ATTRIBUTE_FEE_PRIME_TYPE: number;
-
-declare const CSSMERR_APPLE_DOTMAC_FAILED_CONSISTENCY_CHECK: number;
-
-declare const CSSMOID_ANSI_DH_EPHEM_SHA1: cssm_data;
 
 declare const CSSMOID_ANSI_DH_HYBRID1: cssm_data;
 
@@ -3586,6 +3548,10 @@ declare const kSecAttrProtocol: interop.Pointer;
 
 declare const errSessionValueNotSet: number;
 
+declare const CSSM_ATTRIBUTE_FEE_PRIME_TYPE: number;
+
+declare const CSSMERR_APPLE_DOTMAC_FAILED_CONSISTENCY_CHECK: number;
+
 declare const errAuthorizationBadAddress: number;
 
 declare const CSSM_DL_DB_RECORD_ALL_KEYS: number;
@@ -3619,6 +3585,8 @@ declare const TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384: number;
 declare const CSSM_WORDID_PREAUTH_SOURCE: number;
 
 declare const CSSMOID_SubjectKeyIdentifier: cssm_data;
+
+declare const CSSMERR_CL_INVALID_NUMBER_OF_FIELDS: number;
 
 declare const TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384: number;
 
@@ -3683,6 +3651,10 @@ declare const TLS_DHE_RSA_WITH_AES_256_CBC_SHA256: number;
 declare const CSSMERR_APPLE_DOTMAC_REQ_SERVER_UNIMPL: number;
 
 declare const TLS_DHE_DSS_WITH_AES_256_CBC_SHA256: number;
+
+declare const CSSMERR_CSP_MISSING_ATTR_PRIME: number;
+
+declare const CSSM_TP_CERTRECLAIM_NOT_AUTHORIZED: number;
 
 declare const TLS_DH_RSA_WITH_AES_128_CBC_SHA256: number;
 
@@ -4130,6 +4102,8 @@ declare const CSSM_ACL_AUTHORIZATION_DECRYPT: number;
 
 declare const CSSM_ACL_KEYCHAIN_PROMPT_INVALID: number;
 
+declare const CSSM_ACL_KEYCHAIN_PROMPT_UNSIGNED_ACT: number;
+
 declare const kSecAttrCanDecrypt: interop.Pointer;
 
 declare const CSSM_ACL_KEYCHAIN_PROMPT_REQUIRE_PASSPHRASE: number;
@@ -4314,8 +4288,6 @@ declare const CSSMOID_APPLE_FEE_SHA1: cssm_data;
 
 declare const CSSMERR_CL_INVALID_POINTER: number;
 
-declare const CSSMERR_CL_SCOPE_NOT_SUPPORTED: number;
-
 declare const kSecMatchItemList: interop.Pointer;
 
 declare const errSecCSInvalidAttributeValues: number;
@@ -4345,8 +4317,6 @@ declare const CSSMOID_PKCS5_DES_EDE3_CBC: cssm_data;
 declare const CSSMERR_AC_INVALID_DB_HANDLE: number;
 
 declare const kSecAttrIsSensitive: interop.Pointer;
-
-declare const CSSMERR_CSP_MISSING_ATTR_PRIME: number;
 
 declare const CSSMERR_AC_INVALID_DB_LIST: number;
 
@@ -4480,8 +4450,6 @@ declare const SSL_DH_DSS_WITH_DES_CBC_SHA: number;
 
 declare const CSSMERR_CSP_INVALID_ATTR_PRIVATE_KEY_FORMAT: number;
 
-declare const CSSMERR_CSP_INVALID_ATTR_PUBLIC_KEY_FORMAT: number;
-
 declare const CSSMERR_CSP_MISSING_ATTR_ACCESS_CREDENTIALS: number;
 
 declare const TLS_DHE_RSA_WITH_AES_128_CBC_SHA256: number;
@@ -4539,8 +4507,6 @@ declare const kSecTransformTransformIsNotRegistered: number;
 declare const CSSMERR_CSP_INVALID_DATA_COUNT: number;
 
 declare const CSSM_KEYBLOB_REFERENCE: number;
-
-declare const CSSMERR_CSP_INVALID_KEY_FORMAT: number;
 
 declare const CSSMERR_CSP_UNSUPPORTED_KEYATTR_MASK: number;
 
@@ -4758,8 +4724,6 @@ declare const kSecPublicKeyHashItemAttr: number;
 
 declare const kSecPolicyKU_DigitalSignature: interop.Pointer;
 
-declare const kSecRevocationNetworkAccessDisabled: number;
-
 declare const kSecRevocationPreferCRL: number;
 
 declare const kSecRevocationOCSPMethod: number;
@@ -4831,8 +4795,6 @@ declare const kSecKeyAlgorithmECIESEncryptionCofactorX963SHA1AESGCM: interop.Poi
 declare const CSSM_TP_STOP_ON_NONE: number;
 
 declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM: interop.Pointer;
-
-declare const CSSMOID_ECDSA_WithSHA1: cssm_data;
 
 declare const CSSMERR_APPLETP_SMIME_NO_EMAIL_ADDRS: number;
 
@@ -4996,7 +4958,13 @@ declare const kSecAttrKeyTypeECSECPrimeRandom: interop.Pointer;
 
 declare const kSecAttrKeyTypeCAST: interop.Pointer;
 
+declare const kSecAttrKeyTypeRC2: interop.Pointer;
+
 declare const kSecAttrKeyTypeRC4: interop.Pointer;
+
+declare const CSSMOID_SHA1WithDSA_CMS: cssm_data;
+
+declare const TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const kSecAttrKeyTypeDES: interop.Pointer;
 
@@ -5092,6 +5060,8 @@ declare const CSSM_CRL_ENCODING_UNKNOWN: number;
 
 declare const CSSMERR_CSP_INVALID_ATTR_EFFECTIVE_BITS: number;
 
+declare const kSecRevocationNetworkAccessDisabled: number;
+
 declare const kSecLineLength64: interop.Pointer;
 
 declare const CSSMERR_APPLETP_UNKNOWN_CERT_EXTEN: number;
@@ -5114,17 +5084,15 @@ declare const kSecPropertyTypeString: interop.Pointer;
 
 declare const CSSM_WORDID_NOT_AFTER: number;
 
-declare const kSecPropertyTypeSection: interop.Pointer;
-
 declare const kSecPropertyKeyLabel: interop.Pointer;
 
 declare const kSecPropertyKeyType: interop.Pointer;
 
 declare const TLS_PSK_WITH_AES_256_CBC_SHA: number;
 
-declare const CSSM_APPLEFILEDL_ROLLBACK: number;
-
 declare const errSSLATSMinimumVersionViolation: number;
+
+declare const CSSM_APPLEFILEDL_ROLLBACK: number;
 
 declare const kSecSubjectKeyIdentifierItemAttr: number;
 
@@ -5534,8 +5502,6 @@ declare const kSecAttrProtocolLDAP: interop.Pointer;
 
 declare const CSSM_ALGMODE_CBCPadIV8: number;
 
-declare const CSSMERR_CSP_MISSING_ATTR_SALT: number;
-
 declare const CSSM_ALGMODE_ECBPad: number;
 
 declare const CSSM_ALGMODE_ECB: number;
@@ -5734,6 +5700,8 @@ declare const CSSMERR_CSP_INVALID_ATTR_ROUNDS: number;
 
 declare const CSSM_ACL_SUBJECT_TYPE_THRESHOLD: number;
 
+declare const CSSM_ACL_SUBJECT_TYPE_ANY: number;
+
 declare const CSSM_CERTGROUP_PARSED_CERT: number;
 
 declare const CSSM_CL_CUSTOM_CERT_PARSE_FORMAT: number;
@@ -5765,6 +5733,8 @@ declare const CSSM_CERT_X9_ATTRIBUTE: number;
 declare const CSSM_CERT_X_509_ATTRIBUTE: number;
 
 declare const kSecPolicyAppleIPsec: interop.Pointer;
+
+declare const kCMSEncoderDigestAlgorithmSHA1: interop.Pointer;
 
 declare const CSSM_CERT_PGP: number;
 
@@ -5862,11 +5832,17 @@ declare const errSecCSInvalidEntitlements: number;
 
 declare const CSSM_WORDID_PASSWORD: number;
 
+declare const kSecAttrProtocolHTTPSProxy: interop.Pointer;
+
 declare const kSecMatchLimitOne: interop.Pointer;
 
 declare const CSSM_WORDID_ONLINE: number;
 
 declare const errSecUnsupportedLocality: number;
+
+declare const errSecInvalidKeychain: number;
+
+declare const CSSM_WORDID_OBJECT_HASH: number;
 
 declare const CSSM_WORDID_NUMERIC: number;
 
@@ -5976,19 +5952,27 @@ declare const CSSM_WORDID_X509V3: number;
 
 declare const CSSM_KEY_HIERARCHY_INTEG: number;
 
+declare const CSSM_DB_ATTRIBUTE_FORMAT_BIG_NUM: number;
+
+declare const CSSM_KEY_HIERARCHY_NONE: number;
+
+declare const kSecAttrPath: interop.Pointer;
+
+declare const CSSM_ATTRIBUTE_DATA_NONE: number;
+
+declare const CSSM_FALSE: number;
+
+declare const CSSM_USEE_NONE: number;
+
+declare const CSSM_INVALID_HANDLE: number;
+
+declare const errSSLATSCertificateHashAlgorithmViolation: number;
+
 declare const errSSLATSLeafCertificateHashAlgorithmViolation: number;
 
-declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_20: number;
+declare const errSSLATSCiphersuiteViolation: number;
 
-declare const errSecEMMLoadFailed: number;
-
-declare const CSSM_ACL_PREAUTH_TRACKING_BLOCKED: number;
-
-declare const errSecOCSPBadResponse: number;
-
-declare const CSSMERR_CSSM_INVALID_ATTRIBUTE: number;
-
-declare const errSSLATSViolation: number;
+declare const errSSLUnknownPSKIdentity: number;
 
 declare const CSSMOID_X509V2CRLRevokedEntryAllExtensionsCStruct: cssm_data;
 
@@ -5996,7 +5980,9 @@ declare const CSSMERR_CSP_INVALID_ATTR_START_DATE: number;
 
 declare const errSSLDecodeError: number;
 
-declare const errSSLUnsupportedExtension: number;
+declare const errSSLUnexpectedMessage: number;
+
+declare const errSSLConfigurationFailed: number;
 
 declare const TLS_DHE_PSK_WITH_RC4_128_SHA: number;
 
@@ -6007,6 +5993,8 @@ declare const errSecModuleManagerInitializeFailed: number;
 declare const TLS_DHE_PSK_WITH_AES_128_CBC_SHA256: number;
 
 declare const errSSLClientHelloReceived: number;
+
+declare const errSSLUnsupportedExtension: number;
 
 declare const CSSM_WORDID_SET: number;
 
@@ -6029,6 +6017,8 @@ declare const errSecDskFull: number;
 declare const errSSLPeerDecryptionFail: number;
 
 declare const CSSMERR_AC_INVALID_REQUEST_DESCRIPTOR: number;
+
+declare const errSSLCrypto: number;
 
 declare const CSSMERR_DL_INVALID_ACCESS_CREDENTIALS: number;
 
@@ -6170,6 +6160,8 @@ declare const errSecUnsupportedIndexInfo: number;
 
 declare const kSecOIDExtendedKeyUsage: interop.Pointer;
 
+declare const CSSM_WORDID_SYSTEM: number;
+
 declare const errSecNoSuchKeychain: number;
 
 declare const errSecAttachHandleBusy: number;
@@ -6206,6 +6198,8 @@ declare const errSecMobileMeFailedConsistencyCheck: number;
 
 declare const errSecMobileMeNoRequestPending: number;
 
+declare const kSecAttrKeyType: interop.Pointer;
+
 declare const errSecUnsupportedNumRecordTypes: number;
 
 declare const errSecMobileMeServerError: number;
@@ -6226,9 +6220,11 @@ declare const kSecKeyAlgorithmRSAEncryptionPKCS1: interop.Pointer;
 
 declare const CSSMERR_CSP_INVALID_KEY: number;
 
-declare const errSecSMIMEKeyUsageNotCritical: number;
+declare const CSSMERR_CSSM_INVALID_ATTRIBUTE: number;
 
-declare const CSSM_WORDID_SYSTEM: number;
+declare const errSecOCSPBadResponse: number;
+
+declare const errSecSMIMEKeyUsageNotCritical: number;
 
 declare const errSecCRLPolicyFailed: number;
 
@@ -6272,8 +6268,6 @@ declare const CSSM_WORDID_CERT: number;
 
 declare const errSecMultiplePrivKeys: number;
 
-declare const CSSMOID_StateProvinceName: cssm_data;
-
 declare const errSecInvalidPrefsDomain: number;
 
 declare const CSSM_ATTRIBUTE_PUBLIC_KEY: number;
@@ -6301,12 +6295,6 @@ declare const errSecInvalidCallback: number;
 declare const kSecKeyAlgorithmRSASignatureRaw: interop.Pointer;
 
 declare const errSecNotAvailable: number;
-
-declare const kSecAttrPath: interop.Pointer;
-
-declare const CSSM_ATTRIBUTE_DATA_NONE: number;
-
-declare const CSSM_FALSE: number;
 
 declare const errSecAlreadyLoggedIn: number;
 
@@ -6360,8 +6348,6 @@ declare const errSSLPeerDecompressFail: number;
 
 declare const kSecInputIsRaw: interop.Object;
 
-declare const errSSLATSCertificateHashAlgorithmViolation: number;
-
 declare const CSSM_WORDID_HASH: number;
 
 declare const CSSM_SAMPLE_TYPE_KEYBAG_KEY: number;
@@ -6397,8 +6383,6 @@ declare const CSSM_EVIDENCE_FORM_CRL: number;
 declare const CSSMOID_AliasedEntryName: cssm_data;
 
 declare const TLS_DHE_RSA_WITH_AES_128_CBC_SHA: number;
-
-declare const errSSLATSCiphersuiteViolation: number;
 
 declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_9: number;
 
@@ -6442,10 +6426,6 @@ declare const CSSMERR_TP_INVALID_CERTGROUP: number;
 
 declare const kSecOIDAPPLE_EKU_CODE_SIGNING: interop.Pointer;
 
-declare const CSSM_CERT_BUNDLE_ENCODING_SEXPR: number;
-
-declare const errSecAddinUnloadFailed: number;
-
 declare const errSecCSResourceDirectoryFailed: number;
 
 declare const kSecTransformInvalidOverride: number;
@@ -6462,8 +6442,6 @@ declare const CSSM_CERTGROUP_CERT_PAIR: number;
 
 declare const CSSMOID_OrganizationName: cssm_data;
 
-declare const errSSLConfigurationFailed: number;
-
 declare const kSecAttrPRFHmacAlgSHA256: interop.Pointer;
 
 declare const errSecInvalidAttributeAccessCredentials: number;
@@ -6474,11 +6452,21 @@ declare const CSSMERR_CSSM_INVALID_CONTEXT_HANDLE: number;
 
 declare const kSecAttrAccessibleWhenUnlocked: interop.Pointer;
 
+declare const TLS_RSA_PSK_WITH_NULL_SHA: number;
+
 declare const oidMd4: DERItem;
 
 declare const CSSMOID_DomainComponent: cssm_data;
 
 declare const CSSMERR_CSP_MISSING_ATTR_BASE: number;
+
+declare const CSSMERR_CL_SCOPE_NOT_SUPPORTED: number;
+
+declare const CSSMOID_sect233k1: cssm_data;
+
+declare const TLS_DH_anon_WITH_AES_256_GCM_SHA384: number;
+
+declare const kSecCSCheckNestedCode: number;
 
 declare const kSecOIDX509V1SubjectPublicKeyAlgorithmParameters: interop.Pointer;
 
@@ -6506,14 +6494,6 @@ declare const CSSMERR_CSPDL_APPLE_DL_CONVERSION_ERROR: number;
 
 declare const CSSMERR_APPLETP_CS_BAD_PATH_LENGTH: number;
 
-declare const TLS_DH_anon_WITH_AES_256_GCM_SHA384: number;
-
-declare const CSSM_DB_ATTRIBUTE_FORMAT_SINT32: number;
-
-declare const CSSM_DB_ATTRIBUTE_FORMAT_BIG_NUM: number;
-
-declare const CSSM_KEY_HIERARCHY_NONE: number;
-
 declare const CSSM_ACL_SUBJECT_TYPE_ASYMMETRIC_KEY: number;
 
 declare const CSSM_TP_CRLISSUE_INVALID_DOMAIN: number;
@@ -6540,6 +6520,12 @@ declare const SSL_NO_SUCH_CIPHERSUITE: number;
 
 declare const kSecAttrAuthenticationTypeHTTPBasic: interop.Pointer;
 
+declare const CSSMOID_StateProvinceName: cssm_data;
+
+declare const CSSM_ACL_PREAUTH_TRACKING_BLOCKED: number;
+
+declare const errSecEMMLoadFailed: number;
+
 declare const CSSMERR_TP_FUNCTION_FAILED: number;
 
 declare const kSecTransformPreviousErrorKey: interop.Pointer;
@@ -6562,6 +6548,8 @@ declare const errSecCSInternalError: number;
 
 declare const kSecCSGenerateGuestHash: number;
 
+declare const CSSMERR_CSSM_MODULE_MANAGER_NOT_FOUND: number;
+
 declare const TLS_DH_RSA_WITH_AES_256_CBC_SHA256: number;
 
 declare const kSecImportExportAccess: interop.Pointer;
@@ -6573,6 +6561,8 @@ declare const oidOrganizationName: DERItem;
 declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_15: number;
 
 declare const kSecPaddingNoneKey: interop.Pointer;
+
+declare const CSSM_CERT_BUNDLE_PFX: number;
 
 declare const CSSMERR_CSP_APPLE_SSLv2_ROLLBACK: number;
 
@@ -6586,9 +6576,9 @@ declare const kSecCodeInfoDigestAlgorithm: interop.Pointer;
 
 declare const CSSMERR_CSP_NO_USER_INTERACTION: number;
 
-declare const CSSMERR_APPLETP_CRL_NOT_FOUND: number;
-
 declare const kSecACLAuthorizationChangeACL: interop.Pointer;
+
+declare const CSSMERR_DL_ACL_CHANGE_FAILED: number;
 
 declare const errSessionInvalidAttributes: number;
 
@@ -6644,8 +6634,6 @@ declare const CSSM_TP_CERTVERIFY_INVALID_POLICY: number;
 
 declare const CSSM_CSP_SOFTWARE: number;
 
-declare const kSecAttrKeyType: interop.Pointer;
-
 declare const kSecPropertyKeyLocalizedLabel: interop.Pointer;
 
 declare const CSSMERR_CSP_INVALID_ATTR_BASE: number;
@@ -6668,9 +6656,9 @@ declare const CSSMERR_CSP_INVALID_ATTR_ACCESS_CREDENTIALS: number;
 
 declare const CSSMOID_OID_QCS_SYNTAX_V2: cssm_data;
 
-declare const kSecKeyExtractable: number;
+declare const kSSLSessionConfig_standard: interop.Pointer;
 
-declare const errSSLMissingExtension: number;
+declare const CSSMERR_APPLETP_CRL_NOT_FOUND: number;
 
 declare const CSSMOID_X509V3CertificateNumberOfExtensions: cssm_data;
 
@@ -6688,6 +6676,10 @@ declare const errSecCSCMSConstructionFailed: number;
 
 declare const errSecBufferTooSmall: number;
 
+declare const CSSMOID_OCSPSigning: cssm_data;
+
+declare const errSecACLDeleteFailed: number;
+
 declare const kSecOIDNetscapeCertSequence: interop.Pointer;
 
 declare const kSecTransformDebugAttributeName: interop.Pointer;
@@ -6695,8 +6687,6 @@ declare const kSecTransformDebugAttributeName: interop.Pointer;
 declare const CSSM_EVIDENCE_FORM_CRL_NEXTTIME: number;
 
 declare const CSSM_DB_AND: number;
-
-declare const errSSLUnexpectedMessage: number;
 
 declare const CSSM_ERRCODE_INVALID_DB_HANDLE: number;
 
@@ -6736,6 +6726,10 @@ declare const CSSM_ACL_AUTHORIZATION_DBS_CREATE: number;
 
 declare const CSSMERR_TP_INVALID_CALLERAUTH_CONTEXT_POINTER: number;
 
+declare const CSSM_CERT_BUNDLE_ENCODING_SEXPR: number;
+
+declare const errSecAddinUnloadFailed: number;
+
 declare const CSSMOID_KERBv5_PKINIT_KP_KDC: cssm_data;
 
 declare const CSSM_ALGID_3DES_2KEY: number;
@@ -6772,8 +6766,6 @@ declare const CSSMERR_CSP_KEY_HEADER_INCONSISTENT: number;
 
 declare const errSecOCSPResponderTryLater: number;
 
-declare const CSSM_TP_CERTRECLAIM_NOT_AUTHORIZED: number;
-
 declare const kSecOIDX509V1SignatureAlgorithm: interop.Pointer;
 
 declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_19: number;
@@ -6788,19 +6780,15 @@ declare const CSSM_DB_EQUAL: number;
 
 declare const CSSM_ALGID_MQV: number;
 
-declare const CSSMOID_SearchGuide: cssm_data;
+declare const kSecOIDAPPLE_EXTENSION_CODE_SIGNING: interop.Pointer;
+
+declare const CSSMERR_CSP_APPLE_INVALID_KEY_START_DATE: number;
 
 declare const CSSM_ATTRIBUTE_SALT: number;
-
-declare const errSSLUnknownPSKIdentity: number;
 
 declare const kSecMatchSubjectWholeString: interop.Pointer;
 
 declare const CSSM_WORDID_ELGAMAL: number;
-
-declare const kSecOIDAPPLE_EXTENSION_CODE_SIGNING: interop.Pointer;
-
-declare const CSSMERR_CSP_APPLE_INVALID_KEY_START_DATE: number;
 
 declare const CSSM_PADDING_CIPHERSTEALING: number;
 
@@ -6825,8 +6813,6 @@ declare const CSSMERR_CL_INVALID_CERT_POINTER: number;
 declare const errSecFunctionIntegrityFail: number;
 
 declare const CSSMOID_X9_62_FieldType: cssm_data;
-
-declare const errSecACLDeleteFailed: number;
 
 declare const CSSMOID_AD_TIME_STAMPING: cssm_data;
 
@@ -6862,6 +6848,8 @@ declare const CSSM_ATTRIBUTE_PRIVATE_KEY_FORMAT: number;
 
 declare const CSSM_ALGID_3DES_3KEY_EEE: number;
 
+declare const kSecCodeInfoStatus: interop.Pointer;
+
 declare const errSecInvalidPointer: number;
 
 declare const errSecInvalidCRLEncoding: number;
@@ -6873,6 +6861,8 @@ declare const kSecTransformTransformName: interop.Pointer;
 declare const kSecAttrAccess: interop.Pointer;
 
 declare const CSSM_USEE_LAST: number;
+
+declare const kSecCodeInfoFormat: interop.Pointer;
 
 declare const TLS_RSA_PSK_WITH_NULL_SHA384: number;
 
@@ -6970,6 +6960,8 @@ declare const kSecGuestAttributeCanonical: interop.Pointer;
 
 declare const CSSM_CERT_BUNDLE_PKCS7_SIGNED_DATA: number;
 
+declare const CSSM_APPLE_PRIVATE_CSPDL_CODE_20: number;
+
 declare const TLS_DH_anon_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const CSSM_ACL_AUTHORIZATION_DBS_DELETE: number;
@@ -7030,6 +7022,8 @@ declare const CSSM_WORDID_KEY: number;
 
 declare const CSSM_WORDID_ENCRYPT: number;
 
+declare const errSecMissingAttributeEffectiveBits: number;
+
 declare const kSecTransformAbortAttributeName: interop.Pointer;
 
 declare const CSSMERR_APPLETP_INVALID_SUBJECT_ID: number;
@@ -7066,6 +7060,8 @@ declare const CSSM_KEYUSE_ANY: number;
 
 declare const kSecCodeInfoIdentifier: interop.Pointer;
 
+declare const errSSLMissingExtension: number;
+
 declare const kSecTrustCertificateTransparency: interop.Pointer;
 
 declare const CSSM_TP_ACTION_IMPLICIT_ANCHORS: number;
@@ -7081,6 +7077,8 @@ declare const kSecKeyAlgorithmECDSASignatureDigestRFC4754: interop.Pointer;
 declare const CSSM_DL_DB_RECORD_CERT: number;
 
 declare const errSSLTransportReset: number;
+
+declare const CSSMOID_SearchGuide: cssm_data;
 
 declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA224AESGCM: interop.Pointer;
 
@@ -7106,11 +7104,13 @@ declare const kSecOIDX509V3CertificateExtensionsStruct: interop.Pointer;
 
 declare const CSSM_ACL_CODE_SIGNATURE_OSX: number;
 
-declare const CSSMERR_CL_DEVICE_FAILED: number;
+declare const CSSMOID_X509V1CRLNumberOfRevokedCertEntries: cssm_data;
 
-declare const CSSM_CL_TEMPLATE_INTERMEDIATE_CERT: number;
+declare const kSecAttrPRFHmacAlgSHA512: interop.Pointer;
 
-declare const kSecACLAuthorizationIntegrity: interop.Pointer;
+declare const kSecOIDTimeStamping: interop.Pointer;
+
+declare const CSSMERR_CSP_OUTPUT_LENGTH_ERROR: number;
 
 declare const CSSMERR_TP_INVALID_PASSTHROUGH_ID: number;
 
@@ -7120,7 +7120,7 @@ declare const errSecTimestampUnacceptedPolicy: number;
 
 declare const CSSMOID_UseExemptions: cssm_data;
 
-declare const CSSM_ALGID_GOST: number;
+declare const errSSLATSViolation: number;
 
 declare const kSecOIDSubjectEmailAddress: interop.Pointer;
 
@@ -7141,8 +7141,6 @@ declare const kSecEncodeLineLengthAttribute: interop.Pointer;
 declare const kSecModeOFBKey: interop.Pointer;
 
 declare const CSSM_ALGID_MD2Random: number;
-
-declare const CSSMERR_CSP_OUTPUT_LENGTH_ERROR: number;
 
 declare const CSSMERR_CSP_OBJECT_ACL_NOT_SUPPORTED: number;
 
@@ -7172,6 +7170,8 @@ declare const CSSMOID_secp192r1: cssm_data;
 
 declare const CSSMERR_TP_INVALID_FORM_TYPE: number;
 
+declare const kSecKeyExtractable: number;
+
 declare const CSSMOID_sect163r1: cssm_data;
 
 declare const CSSMERR_DL_INVALID_CL_HANDLE: number;
@@ -7196,6 +7196,8 @@ declare const errSecKeyUsageIncorrect: number;
 
 declare const kSecTransformTransformIsExecuting: number;
 
+declare const CSSMOID_SupportedApplicationContext: cssm_data;
+
 declare const errSecCRLExpired: number;
 
 declare const errSecIO: number;
@@ -7208,12 +7210,6 @@ declare const errSecInvalidAttributeSeed: number;
 
 declare const kSecCSValidatePEH: number;
 
-declare const kSecCodeAttributeArchitecture: interop.Pointer;
-
-declare const CSSMOID_OCSPSigning: cssm_data;
-
-declare const kSecOIDTimeStamping: interop.Pointer;
-
 declare const CSSMERR_TP_NO_DEFAULT_AUTHORITY: number;
 
 declare const CSSM_TP_CERTVERIFY_EXPIRED: number;
@@ -7224,7 +7220,13 @@ declare const errSecTrustNotAvailable: number;
 
 declare const kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256: interop.Pointer;
 
+declare const CSSM_CL_TEMPLATE_INTERMEDIATE_CERT: number;
+
+declare const CSSMERR_CL_DEVICE_FAILED: number;
+
 declare const SSL_RSA_WITH_RC4_128_MD5: number;
+
+declare const errSecInvalidCRLType: number;
 
 declare const CSSMERR_TP_INVALID_ANCHOR_CERT: number;
 
@@ -7240,13 +7242,11 @@ declare const CSSMOID_APPLE_TP_PKINIT_CLIENT: cssm_data;
 
 declare const CSSM_ACL_SUBJECT_TYPE_PASSWORD: number;
 
-declare const CSSMOID_X509V1CRLNumberOfRevokedCertEntries: cssm_data;
-
-declare const kSecAttrPRFHmacAlgSHA512: interop.Pointer;
-
 declare const errAuthorizationDenied: number;
 
 declare const kSecTrustQWACValidation: interop.Pointer;
+
+declare const CSSMOID_MD2WithRSA: cssm_data;
 
 declare const CSSMOID_APPLE_EKU_ICHAT_SIGNING: cssm_data;
 
@@ -7290,6 +7290,8 @@ declare const kSecPolicyAppleEAPClient: interop.Pointer;
 
 declare const CSSMERR_CSSM_FUNCTION_FAILED: number;
 
+declare const CSSMOID_ANSI_DH_EPHEM_SHA1: cssm_data;
+
 declare const CSSMOID_PolicyMappings: cssm_data;
 
 declare const CSSMERR_APPLETP_SMIME_EMAIL_ADDRS_NOT_FOUND: number;
@@ -7320,6 +7322,8 @@ declare const kSecAttrAccessibleWhenUnlockedThisDeviceOnly: interop.Pointer;
 
 declare const errSecRequestDescriptor: number;
 
+declare const kSecACLAuthorizationIntegrity: interop.Pointer;
+
 declare const CSSMOID_APPLEID_CERT_POLICY: cssm_data;
 
 declare const errSSLPeerUserCancelled: number;
@@ -7327,6 +7331,8 @@ declare const errSSLPeerUserCancelled: number;
 declare const errSSLNetworkTimeout: number;
 
 declare const kSecPropertyTypeSuccess: interop.Pointer;
+
+declare const kSecCodeAttributeArchitecture: interop.Pointer;
 
 declare const CSSM_WORDID_ASYMMETRIC_KEY: number;
 
@@ -7360,17 +7366,98 @@ declare const errSecCertificateSuspended: number;
 
 declare const errSecInvalidCRL: number;
 
-declare const CSSM_USEE_NONE: number;
-
-declare const CSSM_INVALID_HANDLE: number;
-
 declare const CSSMERR_DL_MEMORY_ERROR: number;
+
+declare const SecKeyOperationType: {
+  Sign: 0,
+  Verify: 1,
+  Encrypt: 2,
+  Decrypt: 3,
+  KeyExchange: 4,
+};
+
+declare const SecTransformMetaAttributeType: {
+  Value: 0,
+  Name: 1,
+  Ref: 2,
+  Required: 3,
+  RequiresOutboundConnection: 4,
+  Deferred: 5,
+  Stream: 6,
+  CanCycle: 7,
+  Externalize: 8,
+  HasOutboundConnections: 9,
+  HasInboundConnection: 10,
+};
+
+declare const tls_ciphersuite_t: {
+  RSA_WITH_3DES_EDE_CBC_SHA: 10,
+  RSA_WITH_AES_128_CBC_SHA: 47,
+  RSA_WITH_AES_256_CBC_SHA: 53,
+  RSA_WITH_AES_128_GCM_SHA256: 156,
+  RSA_WITH_AES_256_GCM_SHA384: 157,
+  RSA_WITH_AES_128_CBC_SHA256: 60,
+  RSA_WITH_AES_256_CBC_SHA256: 61,
+  ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA: -16376,
+  ECDHE_ECDSA_WITH_AES_128_CBC_SHA: -16375,
+  ECDHE_ECDSA_WITH_AES_256_CBC_SHA: -16374,
+  ECDHE_RSA_WITH_3DES_EDE_CBC_SHA: -16366,
+  ECDHE_RSA_WITH_AES_128_CBC_SHA: -16365,
+  ECDHE_RSA_WITH_AES_256_CBC_SHA: -16364,
+  ECDHE_ECDSA_WITH_AES_128_CBC_SHA256: -16349,
+  ECDHE_ECDSA_WITH_AES_256_CBC_SHA384: -16348,
+  ECDHE_RSA_WITH_AES_128_CBC_SHA256: -16345,
+  ECDHE_RSA_WITH_AES_256_CBC_SHA384: -16344,
+  ECDHE_ECDSA_WITH_AES_128_GCM_SHA256: -16341,
+  ECDHE_ECDSA_WITH_AES_256_GCM_SHA384: -16340,
+  ECDHE_RSA_WITH_AES_128_GCM_SHA256: -16337,
+  ECDHE_RSA_WITH_AES_256_GCM_SHA384: -16336,
+  ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256: -13144,
+  ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256: -13143,
+  AES_128_GCM_SHA256: 4865,
+  AES_256_GCM_SHA384: 4866,
+  CHACHA20_POLY1305_SHA256: 4867,
+};
 
 declare const AuthorizationResult: {
   Allow: 0,
   Deny: 1,
   Undefined: 2,
   UserCanceled: 3,
+};
+
+declare const SecPadding: {
+  None: 0,
+  PKCS1: 1,
+  OAEP: 2,
+  SigRaw: 16384,
+  PKCS1MD2: 32768,
+  PKCS1MD5: 32769,
+  PKCS1SHA1: 32770,
+  PKCS1SHA224: 32771,
+  PKCS1SHA256: 32772,
+  PKCS1SHA384: 32773,
+  PKCS1SHA512: 32774,
+};
+
+declare const tls_ciphersuite_group_t: {
+  tls_ciphersuite_group_default: 0,
+  tls_ciphersuite_group_compatibility: 1,
+  tls_ciphersuite_group_legacy: 2,
+  tls_ciphersuite_group_ats: 3,
+  tls_ciphersuite_group_ats_compatibility: 4,
+};
+
+declare const AuthorizationContextFlags: {
+  Extractable: 1,
+  Volatile: 2,
+  Sticky: 4,
+};
+
+declare const _SecureDownloadTrustCallbackResult: {
+  DoNotEvaluateSigner: 0,
+  EvaluateSigner: 1,
+  FailEvaluation: 2,
 };
 
 declare const __CE_GeneralNameType: {
@@ -7383,6 +7470,52 @@ declare const __CE_GeneralNameType: {
   URI: 6,
   IPAddress: 7,
   RegisteredID: 8,
+};
+
+declare const CMSCertificateChainMode: {
+  None: 0,
+  SignerOnly: 1,
+  Chain: 2,
+  ChainWithRoot: 3,
+  ChainWithRootOrFail: 4,
+};
+
+declare const __CE_DataType: {
+  AuthorityKeyID: 0,
+  SubjectKeyID: 1,
+  KeyUsage: 2,
+  SubjectAltName: 3,
+  IssuerAltName: 4,
+  ExtendedKeyUsage: 5,
+  BasicConstraints: 6,
+  CertPolicies: 7,
+  NetscapeCertType: 8,
+  CrlNumber: 9,
+  DeltaCrl: 10,
+  CrlReason: 11,
+  CrlDistributionPoints: 12,
+  IssuingDistributionPoint: 13,
+  AuthorityInfoAccess: 14,
+  Other: 15,
+  QC_Statements: 16,
+  NameConstraints: 17,
+  PolicyMappings: 18,
+  PolicyConstraints: 19,
+  InhibitAnyPolicy: 20,
+};
+
+declare const SecCodeStatus: {
+  Valid: 1,
+  Hard: 256,
+  Kill: 512,
+  Debugged: 268435456,
+  Platform: 67108864,
+};
+
+declare const SecTrustSettingsDomain: {
+  User: 0,
+  Admin: 1,
+  System: 2,
 };
 
 declare const SecKeyUsage: {
@@ -7399,6 +7532,18 @@ declare const SecKeyUsage: {
   DecipherOnly: 256,
   Critical: -2147483648,
   All: 2147483647,
+};
+
+declare const SecAuthenticationType: {
+  NTLM: 1835824238,
+  MSN: 1634628461,
+  DPA: 1633775716,
+  RPA: 1633775730,
+  HTTPBasic: 1886680168,
+  HTTPDigest: 1685353576,
+  HTMLForm: 1836216166,
+  Default: 1953261156,
+  Any: 0,
 };
 
 declare const SecTrustResultType: {
@@ -7450,106 +7595,6 @@ declare const SecProtocolType: {
   Any: 0,
 };
 
-declare const SSLSessionState: {
-  Idle: 0,
-  Handshake: 1,
-  Connected: 2,
-  Closed: 3,
-  Aborted: 4,
-};
-
-declare const AuthorizationContextFlags: {
-  Extractable: 1,
-  Volatile: 2,
-  Sticky: 4,
-};
-
-declare const SecCodeSignatureFlags: {
-  Host: 1,
-  Adhoc: 2,
-  ForceHard: 256,
-  ForceKill: 512,
-  ForceExpiration: 1024,
-  Restrict: 2048,
-  Enforcement: 4096,
-  LibraryValidation: 8192,
-  Runtime: 65536,
-  LinkerSigned: 131072,
-};
-
-declare const SecRequirementType: {
-  HostRequirementType: 1,
-  GuestRequirementType: 2,
-  DesignatedRequirementType: 3,
-  LibraryRequirementType: 4,
-  PluginRequirementType: 5,
-  InvalidRequirementType: 6,
-  RequirementTypeCount: 6,
-};
-
-declare const SessionAttributeBits: {
-  IsRoot: 1,
-  HasGraphicAccess: 16,
-  HasTTY: 32,
-  IsRemote: 4096,
-};
-
-declare const SecTrustSettingsResult: {
-  Invalid: 0,
-  TrustRoot: 1,
-  TrustAsRoot: 2,
-  Deny: 3,
-  Unspecified: 4,
-};
-
-declare const SecTrustOptionFlags: {
-  AllowExpired: 1,
-  LeafIsCA: 2,
-  FetchIssuerFromNet: 4,
-  AllowExpiredRoot: 8,
-  RequireRevPerCert: 16,
-  UseTrustSettings: 32,
-  ImplicitAnchors: 64,
-};
-
-declare const SecExternalFormat: {
-  Unknown: 0,
-  OpenSSL: 1,
-  SSH: 2,
-  BSAFE: 3,
-  RawKey: 4,
-  WrappedPKCS8: 5,
-  WrappedOpenSSL: 6,
-  WrappedSSH: 7,
-  WrappedLSH: 8,
-  X509Cert: 9,
-  PEMSequence: 10,
-  PKCS7: 11,
-  PKCS12: 12,
-  NetscapeCertSequence: 13,
-  SSHv2: 14,
-};
-
-declare const _SecureDownloadTrustCallbackResult: {
-  DoNotEvaluateSigner: 0,
-  EvaluateSigner: 1,
-  FailEvaluation: 2,
-};
-
-declare const SecKeychainEventMask: {
-  LockEvent: 2,
-  UnlockEvent: 4,
-  AddEvent: 8,
-  DeleteEvent: 16,
-  UpdateEvent: 32,
-  PasswordChangedEvent: 64,
-  DefaultChangedEvent: 512,
-  DataAccessEvent: 1024,
-  KeychainListChanged: 2048,
-  TrustSettingsChangedEvent: 4096,
-  EveryEvent: -1,
-};
-
 declare const SecExternalItemType: {
   Unknown: 0,
   PrivateKey: 1,
@@ -7557,12 +7602,6 @@ declare const SecExternalItemType: {
   SessionKey: 3,
   Certificate: 4,
   Aggregate: 5,
-};
-
-declare const extension_data_format: {
-  ENCODED: 0,
-  PARSED: 1,
-  PAIR: 2,
 };
 
 declare const CMSSignedAttributes: {
@@ -7576,257 +7615,25 @@ declare const CMSSignedAttributes: {
   AppleExpirationTime: 64,
 };
 
-declare const SecCSDigestAlgorithm: {
-  NoHash: 0,
-  HashSHA1: 1,
-  HashSHA256: 2,
-  HashSHA256Truncated: 3,
-  HashSHA384: 4,
-  HashSHA512: 5,
+declare const SSLSessionState: {
+  Idle: 0,
+  Handshake: 1,
+  Connected: 2,
+  Closed: 3,
+  Aborted: 4,
 };
 
-declare const SecItemClass: {
-  InternetPassword: 1768842612,
-  GenericPassword: 1734700656,
-  AppleSharePassword: 1634953328,
-  Certificate: -2147479552,
-  PublicKey: 15,
-  PrivateKey: 16,
-  SymmetricKey: 17,
-};
-
-declare const SecKeychainPromptSelector: {
-  RequirePassphase: 1,
-  Unsigned: 16,
-  UnsignedAct: 32,
-  Invalid: 64,
-  InvalidAct: 128,
-};
-
-declare const tls_ciphersuite_group_t: {
-  tls_ciphersuite_group_default: 0,
-  tls_ciphersuite_group_compatibility: 1,
-  tls_ciphersuite_group_legacy: 2,
-  tls_ciphersuite_group_ats: 3,
-  tls_ciphersuite_group_ats_compatibility: 4,
-};
-
-declare const SecKeyOperationType: {
-  Sign: 0,
-  Verify: 1,
-  Encrypt: 2,
-  Decrypt: 3,
-  KeyExchange: 4,
-};
-
-declare const tls_ciphersuite_t: {
-  RSA_WITH_3DES_EDE_CBC_SHA: 10,
-  RSA_WITH_AES_128_CBC_SHA: 47,
-  RSA_WITH_AES_256_CBC_SHA: 53,
-  RSA_WITH_AES_128_GCM_SHA256: 156,
-  RSA_WITH_AES_256_GCM_SHA384: 157,
-  RSA_WITH_AES_128_CBC_SHA256: 60,
-  RSA_WITH_AES_256_CBC_SHA256: 61,
-  ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA: -16376,
-  ECDHE_ECDSA_WITH_AES_128_CBC_SHA: -16375,
-  ECDHE_ECDSA_WITH_AES_256_CBC_SHA: -16374,
-  ECDHE_RSA_WITH_3DES_EDE_CBC_SHA: -16366,
-  ECDHE_RSA_WITH_AES_128_CBC_SHA: -16365,
-  ECDHE_RSA_WITH_AES_256_CBC_SHA: -16364,
-  ECDHE_ECDSA_WITH_AES_128_CBC_SHA256: -16349,
-  ECDHE_ECDSA_WITH_AES_256_CBC_SHA384: -16348,
-  ECDHE_RSA_WITH_AES_128_CBC_SHA256: -16345,
-  ECDHE_RSA_WITH_AES_256_CBC_SHA384: -16344,
-  ECDHE_ECDSA_WITH_AES_128_GCM_SHA256: -16341,
-  ECDHE_ECDSA_WITH_AES_256_GCM_SHA384: -16340,
-  ECDHE_RSA_WITH_AES_128_GCM_SHA256: -16337,
-  ECDHE_RSA_WITH_AES_256_GCM_SHA384: -16336,
-  ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256: -13144,
-  ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256: -13143,
-  AES_128_GCM_SHA256: 4865,
-  AES_256_GCM_SHA384: 4866,
-  CHACHA20_POLY1305_SHA256: 4867,
-};
-
-declare const SSLCiphersuiteGroup: {
-  Default: 0,
-  Compatibility: 1,
-  Legacy: 2,
-  ATS: 3,
-  ATSCompatibility: 4,
-};
-
-declare const SecKeyImportExportFlags: {
-  ImportOnlyOne: 1,
-  SecurePassphrase: 2,
-  NoAccessControl: 4,
-};
-
-declare const SecPreferencesDomain: {
-  User: 0,
-  System: 1,
-  Common: 2,
-  Dynamic: 3,
-};
-
-declare const SSLClientCertificateState: {
-  None: 0,
-  Requested: 1,
-  Sent: 2,
-  Rejected: 3,
-};
-
-declare const SecAuthenticationType: {
-  NTLM: 1835824238,
-  MSN: 1634628461,
-  DPA: 1633775716,
-  RPA: 1633775730,
-  HTTPBasic: 1886680168,
-  HTTPDigest: 1685353576,
-  HTMLForm: 1836216166,
-  Default: 1953261156,
-  Any: 0,
-};
-
-declare const cssm_appledl_open_parameters_mask: {
-  kCSSM_APPLEDL_MASK_MODE: 1,
-};
-
-declare const SecPadding: {
-  None: 0,
-  PKCS1: 1,
-  OAEP: 2,
-  SigRaw: 16384,
-  PKCS1MD2: 32768,
-  PKCS1MD5: 32769,
-  PKCS1SHA1: 32770,
-  PKCS1SHA224: 32771,
-  PKCS1SHA256: 32772,
-  PKCS1SHA384: 32773,
-  PKCS1SHA512: 32774,
-};
-
-declare const __CE_DataType: {
-  AuthorityKeyID: 0,
-  SubjectKeyID: 1,
-  KeyUsage: 2,
-  SubjectAltName: 3,
-  IssuerAltName: 4,
-  ExtendedKeyUsage: 5,
-  BasicConstraints: 6,
-  CertPolicies: 7,
-  NetscapeCertType: 8,
-  CrlNumber: 9,
-  DeltaCrl: 10,
-  CrlReason: 11,
-  CrlDistributionPoints: 12,
-  IssuingDistributionPoint: 13,
-  AuthorityInfoAccess: 14,
-  Other: 15,
-  QC_Statements: 16,
-  NameConstraints: 17,
-  PolicyMappings: 18,
-  PolicyConstraints: 19,
-  InhibitAnyPolicy: 20,
-};
-
-declare const __CE_CrlDistributionPointNameType: {
-  FullName: 0,
-  NameRelativeToCrlIssuer: 1,
-};
-
-declare const SSLProtocolSide: {
-  Server: 0,
-  Client: 1,
-};
-
-declare const SecTrustSettingsDomain: {
-  User: 0,
-  Admin: 1,
-  System: 2,
-};
-
-declare const SecCredentialType: {
-  Default: 0,
-  WithUI: 1,
-  NoUI: 2,
-};
-
-declare const SecAccessControlCreateFlags: {
-  UserPresence: 1,
-  BiometryAny: 2,
-  TouchIDAny: 2,
-  BiometryCurrentSet: 8,
-  TouchIDCurrentSet: 8,
-  DevicePasscode: 16,
-  Watch: 32,
-  Companion: 32,
-  Or: 16384,
-  And: 32768,
-  PrivateKeyUsage: 1073741824,
-  ApplicationPassword: 2147483648,
-};
-
-declare const SecTrustSettingsKeyUsage: {
-  Signature: 1,
-  EnDecryptData: 2,
-  EnDecryptKey: 4,
-  SignCert: 8,
-  SignRevocation: 16,
-  KeyExchange: 32,
-  Any: -1,
-};
-
-declare const SSLProtocol: {
-  SSLProtocolUnknown: 0,
-  TLSProtocol1: 4,
-  TLSProtocol11: 7,
-  TLSProtocol12: 8,
-  DTLSProtocol1: 9,
-  TLSProtocol13: 10,
-  DTLSProtocol12: 11,
-  TLSProtocolMaxSupported: 999,
-  SSLProtocol2: 1,
-  SSLProtocol3: 2,
-  SSLProtocol3Only: 3,
-  TLSProtocol1Only: 5,
-  SSLProtocolAll: 6,
-};
-
-declare const tls_protocol_version_t: {
-  TLSv10: 769,
-  TLSv11: 770,
-  TLSv12: 771,
-  TLSv13: 772,
-  DTLSv10: -257,
-  DTLSv12: -259,
-};
-
-declare const SessionCreationFlags: {
-  sessionKeepCurrentBootstrap: 32768,
-};
-
-declare const SecItemImportExportFlags: {
-  kSecItemPemArmour: 1,
-};
-
-declare const SecCodeStatus: {
-  Valid: 1,
-  Hard: 256,
-  Kill: 512,
-  Debugged: 268435456,
-  Platform: 67108864,
-};
-
-declare const AuthorizationFlags: {
-  Defaults: 0,
-  InteractionAllowed: 1,
-  ExtendRights: 2,
-  PartialRights: 4,
-  DestroyRights: 8,
-  PreAuthorize: 16,
-  SkipInternalAuth: 512,
-  NoData: 1048576,
+declare const SecCodeSignatureFlags: {
+  Host: 1,
+  Adhoc: 2,
+  ForceHard: 256,
+  ForceKill: 512,
+  ForceExpiration: 1024,
+  Restrict: 2048,
+  Enforcement: 4096,
+  LibraryValidation: 8192,
+  Runtime: 65536,
+  LinkerSigned: 131072,
 };
 
 declare const SecItemAttr: {
@@ -7860,18 +7667,246 @@ declare const SecItemAttr: {
   Alias: 1634494835,
 };
 
-declare const CMSCertificateChainMode: {
-  None: 0,
-  SignerOnly: 1,
-  Chain: 2,
-  ChainWithRoot: 3,
-  ChainWithRootOrFail: 4,
+declare const SecRequirementType: {
+  HostRequirementType: 1,
+  GuestRequirementType: 2,
+  DesignatedRequirementType: 3,
+  LibraryRequirementType: 4,
+  PluginRequirementType: 5,
+  InvalidRequirementType: 6,
+  RequirementTypeCount: 6,
+};
+
+declare const SessionCreationFlags: {
+  sessionKeepCurrentBootstrap: 32768,
+};
+
+declare const SecTrustSettingsResult: {
+  Invalid: 0,
+  TrustRoot: 1,
+  TrustAsRoot: 2,
+  Deny: 3,
+  Unspecified: 4,
+};
+
+declare const SecTrustOptionFlags: {
+  AllowExpired: 1,
+  LeafIsCA: 2,
+  FetchIssuerFromNet: 4,
+  AllowExpiredRoot: 8,
+  RequireRevPerCert: 16,
+  UseTrustSettings: 32,
+  ImplicitAnchors: 64,
+};
+
+declare const extension_data_format: {
+  ENCODED: 0,
+  PARSED: 1,
+  PAIR: 2,
+};
+
+declare const SSLProtocol: {
+  SSLProtocolUnknown: 0,
+  TLSProtocol1: 4,
+  TLSProtocol11: 7,
+  TLSProtocol12: 8,
+  DTLSProtocol1: 9,
+  TLSProtocol13: 10,
+  DTLSProtocol12: 11,
+  TLSProtocolMaxSupported: 999,
+  SSLProtocol2: 1,
+  SSLProtocol3: 2,
+  SSLProtocol3Only: 3,
+  TLSProtocol1Only: 5,
+  SSLProtocolAll: 6,
+};
+
+declare const SSLConnectionType: {
+  Stream: 0,
+  Datagram: 1,
+};
+
+declare const SecExternalFormat: {
+  Unknown: 0,
+  OpenSSL: 1,
+  SSH: 2,
+  BSAFE: 3,
+  RawKey: 4,
+  WrappedPKCS8: 5,
+  WrappedOpenSSL: 6,
+  WrappedSSH: 7,
+  WrappedLSH: 8,
+  X509Cert: 9,
+  PEMSequence: 10,
+  PKCS7: 11,
+  PKCS12: 12,
+  NetscapeCertSequence: 13,
+  SSHv2: 14,
+};
+
+declare const SecKeychainEventMask: {
+  LockEvent: 2,
+  UnlockEvent: 4,
+  AddEvent: 8,
+  DeleteEvent: 16,
+  UpdateEvent: 32,
+  PasswordChangedEvent: 64,
+  DefaultChangedEvent: 512,
+  DataAccessEvent: 1024,
+  KeychainListChanged: 2048,
+  TrustSettingsChangedEvent: 4096,
+  EveryEvent: -1,
+};
+
+declare const cssm_appledl_open_parameters_mask: {
+  kCSSM_APPLEDL_MASK_MODE: 1,
+};
+
+declare const SecKeySizes: {
+  SecDefaultKeySize: 0,
+  Sec3DES192: 192,
+  SecAES128: 128,
+  SecAES192: 192,
+  SecAES256: 256,
+  Secp192r1: 192,
+  Secp256r1: 256,
+  Secp384r1: 384,
+  Secp521r1: 521,
+  SecRSAMin: 1024,
+  SecRSAMax: 4096,
+};
+
+declare const SecCSDigestAlgorithm: {
+  NoHash: 0,
+  HashSHA1: 1,
+  HashSHA256: 2,
+  HashSHA256Truncated: 3,
+  HashSHA384: 4,
+  HashSHA512: 5,
+};
+
+declare const SecItemClass: {
+  InternetPassword: 1768842612,
+  GenericPassword: 1734700656,
+  AppleSharePassword: 1634953328,
+  Certificate: -2147479552,
+  PublicKey: 15,
+  PrivateKey: 16,
+  SymmetricKey: 17,
+};
+
+declare const SecKeychainPromptSelector: {
+  RequirePassphase: 1,
+  Unsigned: 16,
+  UnsignedAct: 32,
+  Invalid: 64,
+  InvalidAct: 128,
 };
 
 declare const SSLAuthenticate: {
   Never: 0,
   Always: 1,
   Try: 2,
+};
+
+declare const SSLCiphersuiteGroup: {
+  Default: 0,
+  Compatibility: 1,
+  Legacy: 2,
+  ATS: 3,
+  ATSCompatibility: 4,
+};
+
+declare const SecKeyImportExportFlags: {
+  ImportOnlyOne: 1,
+  SecurePassphrase: 2,
+  NoAccessControl: 4,
+};
+
+declare const SecPreferencesDomain: {
+  User: 0,
+  System: 1,
+  Common: 2,
+  Dynamic: 3,
+};
+
+declare const SSLClientCertificateState: {
+  None: 0,
+  Requested: 1,
+  Sent: 2,
+  Rejected: 3,
+};
+
+declare const SecItemImportExportFlags: {
+  kSecItemPemArmour: 1,
+};
+
+declare const SecTrustSettingsKeyUsage: {
+  Signature: 1,
+  EnDecryptData: 2,
+  EnDecryptKey: 4,
+  SignCert: 8,
+  SignRevocation: 16,
+  KeyExchange: 32,
+  Any: -1,
+};
+
+declare const __CE_CrlDistributionPointNameType: {
+  FullName: 0,
+  NameRelativeToCrlIssuer: 1,
+};
+
+declare const SSLProtocolSide: {
+  Server: 0,
+  Client: 1,
+};
+
+declare const SecCredentialType: {
+  Default: 0,
+  WithUI: 1,
+  NoUI: 2,
+};
+
+declare const SecAccessControlCreateFlags: {
+  UserPresence: 1,
+  BiometryAny: 2,
+  TouchIDAny: 2,
+  BiometryCurrentSet: 8,
+  TouchIDCurrentSet: 8,
+  DevicePasscode: 16,
+  Watch: 32,
+  Companion: 32,
+  Or: 16384,
+  And: 32768,
+  PrivateKeyUsage: 1073741824,
+  ApplicationPassword: 2147483648,
+};
+
+declare const tls_protocol_version_t: {
+  TLSv10: 769,
+  TLSv11: 770,
+  TLSv12: 771,
+  TLSv13: 772,
+  DTLSv10: -257,
+  DTLSv12: -259,
+};
+
+declare const AuthorizationFlags: {
+  Defaults: 0,
+  InteractionAllowed: 1,
+  ExtendRights: 2,
+  PartialRights: 4,
+  DestroyRights: 8,
+  PreAuthorize: 16,
+  SkipInternalAuth: 512,
+  NoData: 1048576,
+};
+
+declare const SessionAttributeBits: {
+  IsRoot: 1,
+  HasGraphicAccess: 16,
+  HasTTY: 32,
+  IsRemote: 4096,
 };
 
 declare const SSLSessionOption: {
@@ -7900,32 +7935,13 @@ declare const SecCSFlags: {
   MatchGuestRequirementInKernel: 8388608,
 };
 
-declare const SecTransformMetaAttributeType: {
-  Value: 0,
-  Name: 1,
-  Ref: 2,
-  Required: 3,
-  RequiresOutboundConnection: 4,
-  Deferred: 5,
-  Stream: 6,
-  CanCycle: 7,
-  Externalize: 8,
-  HasOutboundConnections: 9,
-  HasInboundConnection: 10,
-};
-
-declare const SecKeySizes: {
-  SecDefaultKeySize: 0,
-  Sec3DES192: 192,
-  SecAES128: 128,
-  SecAES192: 192,
-  SecAES256: 256,
-  Secp192r1: 192,
-  Secp256r1: 256,
-  Secp384r1: 384,
-  Secp521r1: 521,
-  SecRSAMin: 1024,
-  SecRSAMax: 4096,
+declare const CMSSignerStatus: {
+  Unsigned: 0,
+  Valid: 1,
+  NeedsDetachedContent: 2,
+  InvalidSignature: 3,
+  InvalidCert: 4,
+  InvalidIndex: 5,
 };
 
 declare const SecKeychainEvent: {
@@ -7941,32 +7957,8 @@ declare const SecKeychainEvent: {
   TrustSettingsChanged: 12,
 };
 
-declare const SSLConnectionType: {
-  Stream: 0,
-  Datagram: 1,
-};
-
-declare const CMSSignerStatus: {
-  Unsigned: 0,
-  Valid: 1,
-  NeedsDetachedContent: 2,
-  InvalidSignature: 3,
-  InvalidCert: 4,
-  InvalidIndex: 5,
-};
-
 declare class SecAsn1Coder {
   constructor(init?: SecAsn1Coder);
-}
-
-declare class __CE_AuthorityKeyID {
-  constructor(init?: __CE_AuthorityKeyID);
-  keyIdentifierPresent: number;
-  keyIdentifier: cssm_data;
-  generalNamesPresent: number;
-  generalNames: interop.Pointer;
-  serialNumberPresent: number;
-  serialNumber: cssm_data;
 }
 
 declare class AuthorizationPluginInterface {
@@ -8026,6 +8018,12 @@ declare class cssm_selection_predicate {
   constructor(init?: cssm_selection_predicate);
   DbOperator: number;
   Attribute: cssm_db_attribute_data;
+}
+
+declare class __CE_ExtendedKeyUsage {
+  constructor(init?: __CE_ExtendedKeyUsage);
+  numPurposes: number;
+  purposes: interop.Pointer;
 }
 
 declare class cssm_context {
@@ -8119,10 +8117,6 @@ declare class cssm_query_size_data {
 
 declare class OpaqueSecTransformImplementation {
   constructor(init?: OpaqueSecTransformImplementation);
-}
-
-declare class _CMSEncoder {
-  constructor(init?: _CMSEncoder);
 }
 
 declare class __SecTask {
@@ -8438,10 +8432,14 @@ declare class __CE_PolicyQualifierInfo {
   qualifier: cssm_data;
 }
 
-declare class __CE_QC_Statements {
-  constructor(init?: __CE_QC_Statements);
-  numQCStatements: number;
-  qcStatements: interop.Pointer;
+declare class __CE_AuthorityKeyID {
+  constructor(init?: __CE_AuthorityKeyID);
+  keyIdentifierPresent: number;
+  keyIdentifier: cssm_data;
+  generalNamesPresent: number;
+  generalNames: interop.Pointer;
+  serialNumberPresent: number;
+  serialNumber: cssm_data;
 }
 
 declare class __SecRandom {
@@ -8731,12 +8729,6 @@ declare class cssm_kr_profile {
   KRSPExtensions: interop.Pointer;
 }
 
-declare class cssm_key {
-  constructor(init?: cssm_key);
-  KeyHeader: cssm_keyheader;
-  KeyData: cssm_data;
-}
-
 declare class cssm_keyheader {
   constructor(init?: cssm_keyheader);
   HeaderVersion: number;
@@ -8766,12 +8758,6 @@ declare class cssm_date {
   Year: unknown /* const array */;
   Month: unknown /* const array */;
   Day: unknown /* const array */;
-}
-
-declare class __CE_ExtendedKeyUsage {
-  constructor(init?: __CE_ExtendedKeyUsage);
-  numPurposes: number;
-  purposes: interop.Pointer;
 }
 
 declare class cssm_acl_entry_info {
@@ -8925,7 +8911,7 @@ declare class cssm_list_element {
   NextElement: interop.Pointer;
   WordID: number;
   ElementType: number;
-  Element: unnamed_16318325823135489932;
+  Element: unnamed_3974223647111867301;
 }
 
 declare class cssm_db_attribute_info {
@@ -8965,12 +8951,6 @@ declare class cssm_tp_certreclaim_output {
   KeyCacheHandle: number;
 }
 
-declare class cssm_x509_revoked_cert_list {
-  constructor(init?: cssm_x509_revoked_cert_list);
-  numberOfRevokedCertEntries: number;
-  revokedCertEntry: interop.Pointer;
-}
-
 declare class cssm_x509_tbs_certificate {
   constructor(init?: cssm_x509_tbs_certificate);
   version: cssm_data;
@@ -8983,6 +8963,12 @@ declare class cssm_x509_tbs_certificate {
   issuerUniqueIdentifier: cssm_data;
   subjectUniqueIdentifier: cssm_data;
   extensions: cssm_x509_extensions;
+}
+
+declare class cssm_x509_revoked_cert_list {
+  constructor(init?: cssm_x509_revoked_cert_list);
+  numberOfRevokedCertEntries: number;
+  revokedCertEntry: interop.Pointer;
 }
 
 declare class cssm_pkcs5_pbkdf2_params {
@@ -9078,6 +9064,12 @@ declare class cssm_sample {
   Verifier: interop.Pointer;
 }
 
+declare class cssm_key {
+  constructor(init?: cssm_key);
+  KeyHeader: cssm_keyheader;
+  KeyData: cssm_data;
+}
+
 declare class cssm_tp_certchange_output {
   constructor(init?: cssm_tp_certchange_output);
   ActionStatus: number;
@@ -9135,13 +9127,6 @@ declare class SecKeyImportExportParameters {
   keyAttributes: number;
 }
 
-declare class SecKeychainAttributeInfo {
-  constructor(init?: SecKeychainAttributeInfo);
-  count: number;
-  tag: interop.Pointer;
-  format: interop.Pointer;
-}
-
 declare class CSSM_TP_APPLE_EVIDENCE_HEADER {
   constructor(init?: CSSM_TP_APPLE_EVIDENCE_HEADER);
   Version: number;
@@ -9171,6 +9156,10 @@ declare class cssm_x509_rdn {
   constructor(init?: cssm_x509_rdn);
   numberOfPairs: number;
   AttributeTypeAndValue: interop.Pointer;
+}
+
+declare class _CMSEncoder {
+  constructor(init?: _CMSEncoder);
 }
 
 declare class __CE_PolicyMappings {
@@ -9338,6 +9327,13 @@ declare class __SecCode {
   constructor(init?: __SecCode);
 }
 
+declare class SecKeychainAttributeInfo {
+  constructor(init?: SecKeychainAttributeInfo);
+  count: number;
+  tag: interop.Pointer;
+  format: interop.Pointer;
+}
+
 declare class cssm_crypto_data {
   constructor(init?: cssm_crypto_data);
   Param: cssm_data;
@@ -9428,7 +9424,7 @@ declare class cssm_crlgroup {
   CrlType: number;
   CrlEncoding: number;
   NumberOfCrls: number;
-  GroupCrlList: unnamed_6898873698168401550;
+  GroupCrlList: unnamed_1190294481556856456;
   CrlGroupType: number;
 }
 
@@ -9437,7 +9433,7 @@ declare class cssm_certgroup {
   CertType: number;
   CertEncoding: number;
   NumCerts: number;
-  GroupList: unnamed_5827832349553464827;
+  GroupList: unnamed_7696827582356642822;
   CertGroupType: number;
   Reserved: interop.Pointer;
 }
@@ -9445,7 +9441,7 @@ declare class cssm_certgroup {
 declare class __CE_DistributionPointName {
   constructor(init?: __CE_DistributionPointName);
   nameType: interop.Enum<typeof __CE_CrlDistributionPointNameType>;
-  dpn: unnamed_10183227293477613817;
+  dpn: unnamed_8842076481188004116;
 }
 
 declare class CSSM_APPLE_TP_CERT_REQUEST {
@@ -9571,6 +9567,12 @@ declare class CSSM_TUPLE {
   ValidityPeriod: cssm_list;
 }
 
+declare class __CE_QC_Statements {
+  constructor(init?: __CE_QC_Statements);
+  numQCStatements: number;
+  qcStatements: interop.Pointer;
+}
+
 declare class cssm_cert_bundle {
   constructor(init?: cssm_cert_bundle);
   BundleHeader: cssm_cert_bundle_header;
@@ -9641,16 +9643,6 @@ declare class CE_Data {
   rawData: cssm_data;
 }
 
-type unnamed_10183227293477613817Descriptor = 
-  | { fullName: interop.PointerConvertible }
-  | { rdn: interop.PointerConvertible };
-
-declare class unnamed_10183227293477613817 {
-  constructor(init?: unnamed_10183227293477613817Descriptor);
-  fullName: interop.Pointer;
-  rdn: interop.Pointer;
-}
-
 type cssm_x509ext_valueDescriptor = 
   | { tagAndValue: interop.PointerConvertible }
   | { parsedValue: interop.PointerConvertible }
@@ -9673,20 +9665,6 @@ declare class cssm_db_attribute_label {
   AttributeName: string | null;
   AttributeOID: cssm_data;
   AttributeID: number;
-}
-
-type unnamed_6898873698168401550Descriptor = 
-  | { CrlList: interop.PointerConvertible }
-  | { EncodedCrlList: interop.PointerConvertible }
-  | { ParsedCrlList: interop.PointerConvertible }
-  | { PairCrlList: interop.PointerConvertible };
-
-declare class unnamed_6898873698168401550 {
-  constructor(init?: unnamed_6898873698168401550Descriptor);
-  CrlList: interop.Pointer;
-  EncodedCrlList: interop.Pointer;
-  ParsedCrlList: interop.Pointer;
-  PairCrlList: interop.Pointer;
 }
 
 type cssm_context_attribute_valueDescriptor = 
@@ -9719,28 +9697,52 @@ declare class cssm_context_attribute_value {
   KRProfile: interop.Pointer;
 }
 
-type unnamed_16318325823135489932Descriptor = 
-  | { Sublist: cssm_list }
-  | { Word: cssm_data };
-
-declare class unnamed_16318325823135489932 {
-  constructor(init?: unnamed_16318325823135489932Descriptor);
-  Sublist: cssm_list;
-  Word: cssm_data;
-}
-
-type unnamed_5827832349553464827Descriptor = 
+type unnamed_7696827582356642822Descriptor = 
   | { CertList: interop.PointerConvertible }
   | { EncodedCertList: interop.PointerConvertible }
   | { ParsedCertList: interop.PointerConvertible }
   | { PairCertList: interop.PointerConvertible };
 
-declare class unnamed_5827832349553464827 {
-  constructor(init?: unnamed_5827832349553464827Descriptor);
+declare class unnamed_7696827582356642822 {
+  constructor(init?: unnamed_7696827582356642822Descriptor);
   CertList: interop.Pointer;
   EncodedCertList: interop.Pointer;
   ParsedCertList: interop.Pointer;
   PairCertList: interop.Pointer;
+}
+
+type unnamed_1190294481556856456Descriptor = 
+  | { CrlList: interop.PointerConvertible }
+  | { EncodedCrlList: interop.PointerConvertible }
+  | { ParsedCrlList: interop.PointerConvertible }
+  | { PairCrlList: interop.PointerConvertible };
+
+declare class unnamed_1190294481556856456 {
+  constructor(init?: unnamed_1190294481556856456Descriptor);
+  CrlList: interop.Pointer;
+  EncodedCrlList: interop.Pointer;
+  ParsedCrlList: interop.Pointer;
+  PairCrlList: interop.Pointer;
+}
+
+type unnamed_3974223647111867301Descriptor = 
+  | { Sublist: cssm_list }
+  | { Word: cssm_data };
+
+declare class unnamed_3974223647111867301 {
+  constructor(init?: unnamed_3974223647111867301Descriptor);
+  Sublist: cssm_list;
+  Word: cssm_data;
+}
+
+type unnamed_8842076481188004116Descriptor = 
+  | { fullName: interop.PointerConvertible }
+  | { rdn: interop.PointerConvertible };
+
+declare class unnamed_8842076481188004116 {
+  constructor(init?: unnamed_8842076481188004116Descriptor);
+  fullName: interop.Pointer;
+  rdn: interop.Pointer;
 }
 
 declare function SecCopyErrorMessageString(status: number, reserved: interop.PointerConvertible): interop.Object;
@@ -9808,6 +9810,8 @@ declare function SecCertificateCopyNormalizedIssuerContent(certificate: interop.
 declare function SecCertificateCopyNormalizedSubjectContent(certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
 declare function SecIdentityGetTypeID(): number;
+
+declare function SecIdentityCreate(allocator: interop.Object, certificate: interop.Object, privateKey: interop.Object): interop.Object;
 
 declare function SecIdentityCreateWithCertificate(keychainOrArray: interop.Object, certificateRef: interop.Object, identityRef: interop.PointerConvertible): number;
 

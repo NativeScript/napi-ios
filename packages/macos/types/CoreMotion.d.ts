@@ -72,17 +72,17 @@ declare const CMWaterSubmersionState: {
   Submerged: 2,
 };
 
+declare const CMMotionActivityConfidence: {
+  Low: 0,
+  Medium: 1,
+  High: 2,
+};
+
 declare const CMFallDetectionEventUserResolution: {
   Confirmed: 0,
   Dismissed: 1,
   Rejected: 2,
   Unresponsive: 3,
-};
-
-declare const CMMotionActivityConfidence: {
-  Low: 0,
-  Medium: 1,
-  High: 2,
 };
 
 declare const CMMagneticFieldCalibrationAccuracy: {
@@ -325,34 +325,6 @@ declare class CMRotationRateData extends CMLogItem {
   readonly rotationRate: CMRotationRate;
 }
 
-declare class CMHeadphoneActivityManager extends NSObject {
-  static authorizationStatus(): interop.Enum<typeof CMAuthorizationStatus>;
-
-  readonly activityAvailable: boolean;
-
-  readonly activityActive: boolean;
-
-  readonly statusAvailable: boolean;
-
-  readonly statusActive: boolean;
-
-  startActivityUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMMotionActivity, p2: NSError) => void): void;
-
-  stopActivityUpdates(): void;
-
-  startStatusUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: interop.Enum<typeof CMHeadphoneActivityStatus>, p2: NSError) => void): void;
-
-  stopStatusUpdates(): void;
-
-  isActivityAvailable(): boolean;
-
-  isActivityActive(): boolean;
-
-  isStatusAvailable(): boolean;
-
-  isStatusActive(): boolean;
-}
-
 declare class CMAmbientPressureData extends CMLogItem {
   readonly pressure: NSMeasurement;
 
@@ -391,5 +363,33 @@ declare class CMOdometerData extends NSObject implements NSSecureCoding, NSCopyi
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CMHeadphoneActivityManager extends NSObject {
+  static authorizationStatus(): interop.Enum<typeof CMAuthorizationStatus>;
+
+  readonly activityAvailable: boolean;
+
+  readonly activityActive: boolean;
+
+  readonly statusAvailable: boolean;
+
+  readonly statusActive: boolean;
+
+  startActivityUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMMotionActivity, p2: NSError) => void): void;
+
+  stopActivityUpdates(): void;
+
+  startStatusUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: interop.Enum<typeof CMHeadphoneActivityStatus>, p2: NSError) => void): void;
+
+  stopStatusUpdates(): void;
+
+  isActivityAvailable(): boolean;
+
+  isActivityActive(): boolean;
+
+  isStatusAvailable(): boolean;
+
+  isStatusActive(): boolean;
 }
 

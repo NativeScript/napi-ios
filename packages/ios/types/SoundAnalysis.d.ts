@@ -5,6 +5,11 @@ declare const SNClassifierIdentifierVersion1: string;
 
 declare const SNErrorDomain: string;
 
+declare const SNTimeDurationConstraintType: {
+  Enumerated: 1,
+  Range: 2,
+};
+
 declare const SNErrorCode: {
   UnknownError: 1,
   OperationFailed: 2,
@@ -12,17 +17,6 @@ declare const SNErrorCode: {
   InvalidModel: 4,
   InvalidFile: 5,
 };
-
-declare const SNTimeDurationConstraintType: {
-  Enumerated: 1,
-  Range: 2,
-};
-
-declare interface SNResult extends NSObjectProtocol {
-}
-
-declare class SNResult extends NativeObject implements SNResult {
-}
 
 declare interface SNResultsObserving extends NSObjectProtocol {
   requestDidProduceResult(request: SNRequest, result: SNResult): void;
@@ -33,6 +27,12 @@ declare interface SNResultsObserving extends NSObjectProtocol {
 }
 
 declare class SNResultsObserving extends NativeObject implements SNResultsObserving {
+}
+
+declare interface SNResult extends NSObjectProtocol {
+}
+
+declare class SNResult extends NativeObject implements SNResult {
 }
 
 declare interface SNRequest extends NSObjectProtocol {

@@ -4,8 +4,6 @@
 
 declare const GLKTextureLoaderGLErrorKey: string;
 
-declare const GLKTextureLoaderSRGB: string;
-
 declare const GLKTextureLoaderGrayscaleAsAlpha: string;
 
 declare const GLKTextureLoaderOriginBottomLeft: string;
@@ -15,6 +13,8 @@ declare const GLKTextureLoaderGenerateMipmaps: string;
 declare const GLKTextureLoaderApplyPremultiplication: string;
 
 declare const kGLKModelErrorDomain: string;
+
+declare const GLKTextureLoaderSRGB: string;
 
 declare const GLKTextureLoaderErrorDomain: string;
 
@@ -98,16 +98,16 @@ declare const GLKTextureLoaderError: {
   UnsupportedTextureTarget: 19,
 };
 
-declare const GLKViewDrawableDepthFormat: {
-  FormatNone: 0,
-  Format16: 1,
-  Format24: 2,
-};
-
 declare const GLKTextureInfoAlphaState: {
   None: 0,
   NonPremultiplied: 1,
   Premultiplied: 2,
+};
+
+declare const GLKViewDrawableDepthFormat: {
+  FormatNone: 0,
+  Format16: 1,
+  Format24: 2,
 };
 
 declare const GLKViewDrawableColorFormat: {
@@ -123,28 +123,36 @@ declare class _GLKVertexAttributeParameters {
   normalized: number;
 }
 
-declare class unnamed_5330506344788925424 {
-  constructor(init?: unnamed_5330506344788925424);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
+declare class unnamed_9619072515748384153 {
+  constructor(init?: unnamed_9619072515748384153);
+  s: number;
+  t: number;
+  p: number;
+  q: number;
 }
 
-declare class unnamed_16848609145819638116 {
-  constructor(init?: unnamed_16848609145819638116);
+declare class unnamed_3196922036383165364 {
+  constructor(init?: unnamed_3196922036383165364);
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
+declare class unnamed_845072336377056983 {
+  constructor(init?: unnamed_845072336377056983);
   s: number;
   t: number;
 }
 
-declare class unnamed_14104243170216080095 {
-  constructor(init?: unnamed_14104243170216080095);
+declare class unnamed_16673726613481506252 {
+  constructor(init?: unnamed_16673726613481506252);
   x: number;
   y: number;
 }
 
-declare class unnamed_1263229536157147403 {
-  constructor(init?: unnamed_1263229536157147403);
+declare class unnamed_16104079342891207557 {
+  constructor(init?: unnamed_16104079342891207557);
   m00: number;
   m01: number;
   m02: number;
@@ -156,16 +164,16 @@ declare class unnamed_1263229536157147403 {
   m22: number;
 }
 
-declare class unnamed_17559905408798210556 {
-  constructor(init?: unnamed_17559905408798210556);
-  m00: number;
-  m01: number;
-  m10: number;
-  m11: number;
+declare class unnamed_4941123025285653396 {
+  constructor(init?: unnamed_4941123025285653396);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-declare class unnamed_7484547917685560354 {
-  constructor(init?: unnamed_7484547917685560354);
+declare class unnamed_2565579264590363955 {
+  constructor(init?: unnamed_2565579264590363955);
   m00: number;
   m01: number;
   m02: number;
@@ -184,63 +192,55 @@ declare class unnamed_7484547917685560354 {
   m33: number;
 }
 
-declare class unnamed_12673620918688559868 {
-  constructor(init?: unnamed_12673620918688559868);
-  r: number;
-  g: number;
-  b: number;
-}
-
-declare class unnamed_12073957216655656914 {
-  constructor(init?: unnamed_12073957216655656914);
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
-declare class unnamed_5278650258933832850 {
-  constructor(init?: unnamed_5278650258933832850);
-  x: number;
-  y: number;
-  z: number;
-}
-
-declare class unnamed_10147574272876281525 {
-  constructor(init?: unnamed_10147574272876281525);
-  s: number;
-  t: number;
-  p: number;
-  q: number;
-}
-
 declare class GLKEffectPropertyPrv {
   constructor(init?: GLKEffectPropertyPrv);
 }
 
-declare class unnamed_13607322704617387131 {
-  constructor(init?: unnamed_13607322704617387131);
+declare class unnamed_15421067402905298507 {
+  constructor(init?: unnamed_15421067402905298507);
+  m00: number;
+  m01: number;
+  m10: number;
+  m11: number;
+}
+
+declare class unnamed_4634930964719134257 {
+  constructor(init?: unnamed_4634930964719134257);
+  v: _GLKVector3;
+  s: number;
+}
+
+declare class unnamed_459724302143160691 {
+  constructor(init?: unnamed_459724302143160691);
   x: number;
   y: number;
   z: number;
-  w: number;
+}
+
+declare class unnamed_15994263239922143689 {
+  constructor(init?: unnamed_15994263239922143689);
+  s: number;
+  t: number;
+  p: number;
 }
 
 declare class _GLKMatrixStack {
   constructor(init?: _GLKMatrixStack);
 }
 
-declare class unnamed_18359918292662028540 {
-  constructor(init?: unnamed_18359918292662028540);
-  v: _GLKVector3;
-  s: number;
+declare class unnamed_3025356699930407620 {
+  constructor(init?: unnamed_3025356699930407620);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-declare class unnamed_8869469136479634640 {
-  constructor(init?: unnamed_8869469136479634640);
-  s: number;
-  t: number;
-  p: number;
+declare class unnamed_16065270878748604386 {
+  constructor(init?: unnamed_16065270878748604386);
+  r: number;
+  g: number;
+  b: number;
 }
 
 type _GLKQuaternionDescriptor = 
@@ -621,56 +621,6 @@ declare class GLKEffectPropertyTexture extends GLKEffectProperty {
 declare class GLKEffectProperty extends NSObject {
 }
 
-declare class GLKEffectPropertyLight extends GLKEffectProperty {
-  enabled: number;
-
-  position: _GLKVector4;
-
-  ambientColor: _GLKVector4;
-
-  diffuseColor: _GLKVector4;
-
-  specularColor: _GLKVector4;
-
-  spotDirection: _GLKVector3;
-
-  spotExponent: number;
-
-  spotCutoff: number;
-
-  constantAttenuation: number;
-
-  linearAttenuation: number;
-
-  quadraticAttenuation: number;
-
-  transform: GLKEffectPropertyTransform;
-
-  setEnabled(enabled: number): void;
-
-  setPosition(position: _GLKVector4): void;
-
-  setAmbientColor(ambientColor: _GLKVector4): void;
-
-  setDiffuseColor(diffuseColor: _GLKVector4): void;
-
-  setSpecularColor(specularColor: _GLKVector4): void;
-
-  setSpotDirection(spotDirection: _GLKVector3): void;
-
-  setSpotExponent(spotExponent: number): void;
-
-  setSpotCutoff(spotCutoff: number): void;
-
-  setConstantAttenuation(constantAttenuation: number): void;
-
-  setLinearAttenuation(linearAttenuation: number): void;
-
-  setQuadraticAttenuation(quadraticAttenuation: number): void;
-
-  setTransform(transform: GLKEffectPropertyTransform): void;
-}
-
 declare class GLKMeshBufferAllocator extends NSObject implements MDLMeshBufferAllocator {
   newZone(capacity: number): MDLMeshBufferZone;
 
@@ -739,28 +689,6 @@ declare class GLKMesh extends NSObject {
   readonly submeshes: NSArray;
 
   readonly name: string;
-}
-
-declare class GLKEffectPropertyMaterial extends GLKEffectProperty {
-  ambientColor: _GLKVector4;
-
-  diffuseColor: _GLKVector4;
-
-  specularColor: _GLKVector4;
-
-  emissiveColor: _GLKVector4;
-
-  shininess: number;
-
-  setAmbientColor(ambientColor: _GLKVector4): void;
-
-  setDiffuseColor(diffuseColor: _GLKVector4): void;
-
-  setSpecularColor(specularColor: _GLKVector4): void;
-
-  setEmissiveColor(emissiveColor: _GLKVector4): void;
-
-  setShininess(shininess: number): void;
 }
 
 declare class GLKViewController extends UIViewController implements NSCoding, GLKViewDelegate {
@@ -843,6 +771,42 @@ declare class GLKViewController extends UIViewController implements NSCoding, GL
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class GLKEffectPropertyMaterial extends GLKEffectProperty {
+  ambientColor: _GLKVector4;
+
+  diffuseColor: _GLKVector4;
+
+  specularColor: _GLKVector4;
+
+  emissiveColor: _GLKVector4;
+
+  shininess: number;
+
+  setAmbientColor(ambientColor: _GLKVector4): void;
+
+  setDiffuseColor(diffuseColor: _GLKVector4): void;
+
+  setSpecularColor(specularColor: _GLKVector4): void;
+
+  setEmissiveColor(emissiveColor: _GLKVector4): void;
+
+  setShininess(shininess: number): void;
+}
+
+declare class GLKSubmesh extends NSObject {
+  readonly type: number;
+
+  readonly mode: number;
+
+  readonly elementCount: number;
+
+  readonly elementBuffer: GLKMeshBuffer;
+
+  readonly mesh: GLKMesh;
+
+  readonly name: string;
 }
 
 declare class GLKTextureLoader extends NSObject {
@@ -934,18 +898,54 @@ declare class GLKBaseEffect extends NSObject implements GLKNamedEffect {
   setLabel(label: string | null): void;
 }
 
-declare class GLKSubmesh extends NSObject {
-  readonly type: number;
+declare class GLKEffectPropertyLight extends GLKEffectProperty {
+  enabled: number;
 
-  readonly mode: number;
+  position: _GLKVector4;
 
-  readonly elementCount: number;
+  ambientColor: _GLKVector4;
 
-  readonly elementBuffer: GLKMeshBuffer;
+  diffuseColor: _GLKVector4;
 
-  readonly mesh: GLKMesh;
+  specularColor: _GLKVector4;
 
-  readonly name: string;
+  spotDirection: _GLKVector3;
+
+  spotExponent: number;
+
+  spotCutoff: number;
+
+  constantAttenuation: number;
+
+  linearAttenuation: number;
+
+  quadraticAttenuation: number;
+
+  transform: GLKEffectPropertyTransform;
+
+  setEnabled(enabled: number): void;
+
+  setPosition(position: _GLKVector4): void;
+
+  setAmbientColor(ambientColor: _GLKVector4): void;
+
+  setDiffuseColor(diffuseColor: _GLKVector4): void;
+
+  setSpecularColor(specularColor: _GLKVector4): void;
+
+  setSpotDirection(spotDirection: _GLKVector3): void;
+
+  setSpotExponent(spotExponent: number): void;
+
+  setSpotCutoff(spotCutoff: number): void;
+
+  setConstantAttenuation(constantAttenuation: number): void;
+
+  setLinearAttenuation(linearAttenuation: number): void;
+
+  setQuadraticAttenuation(quadraticAttenuation: number): void;
+
+  setTransform(transform: GLKEffectPropertyTransform): void;
 }
 
 declare class GLKSkyboxEffect extends NSObject implements GLKNamedEffect {

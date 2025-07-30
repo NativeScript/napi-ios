@@ -11,6 +11,10 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
-    "@nativescript/core": "^8.8.6"
+    "@nativescript/core": "^8.8.6",
+    "yargs-parser": "^22.0.0"
+  },
+  "devDependencies": {
+    "react-native-node-api": "^0.3.2"
   }
 }

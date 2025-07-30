@@ -14,8 +14,6 @@ declare const kDADiskMountOptionNoFollow: number;
 
 declare const kDADiskMountOptionDefault: number;
 
-declare const kDAReturnNotMounted: number;
-
 declare const kDAReturnBadArgument: number;
 
 declare const kDAReturnNotPermitted: number;
@@ -80,6 +78,8 @@ declare const kDADiskDescriptionVolumeKindKey: interop.Pointer;
 
 declare const kDADiskDescriptionMediaRemovableKey: interop.Pointer;
 
+declare const kDAReturnNotMounted: number;
+
 declare const kDADiskDescriptionDeviceProtocolKey: interop.Pointer;
 
 declare const kDADiskDescriptionDeviceUnitKey: interop.Pointer;
@@ -113,6 +113,8 @@ declare const kDADiskDescriptionWatchVolumeName: interop.Object;
 declare const kDAReturnNoResources: number;
 
 declare const kDADiskDescriptionMediaEncryptedKey: interop.Pointer;
+
+declare const kDADiskDescriptionRepairRunningKey: interop.Pointer;
 
 declare const kDADiskDescriptionMediaIconKey: interop.Pointer;
 

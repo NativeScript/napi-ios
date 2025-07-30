@@ -3,33 +3,33 @@
 
 declare const ENRiskWeightMax: number;
 
-declare const ENRiskWeightDefaultV2: number;
-
 declare const ENRiskWeightDefault: number;
 
 declare const ENRiskScoreMin: number;
 
 declare const ENRiskLevelValueMax: number;
 
-declare const ENRiskLevelMin: number;
-
 declare const ENDaysSinceOnsetOfSymptomsUnknown: number;
 
 declare const ENErrorDomain: string;
 
+declare const ENRiskWeightDefaultV2: number;
+
 declare const ENRiskLevelMax: number;
 
-declare const ENAttenuationMin: number;
+declare const ENRiskLevelMin: number;
 
 declare const ENRiskLevelValueMin: number;
 
 declare const ENAttenuationMax: number;
 
+declare const ENAttenuationMin: number;
+
 declare const ENRiskWeightMin: number;
 
-declare const ENRiskWeightMaxV2: number;
-
 declare const ENRiskScoreMax: number;
+
+declare const ENRiskWeightMaxV2: number;
 
 declare const ENStatus: {
   Unknown: 0,
@@ -203,14 +203,6 @@ declare class ENExposureWindow extends NSObject {
   readonly variantOfConcernType: interop.Enum<typeof ENVariantOfConcernType>;
 }
 
-declare class ENExposureSummaryItem extends NSObject {
-  readonly maximumScore: number;
-
-  readonly scoreSum: number;
-
-  readonly weightedDurationSum: number;
-}
-
 declare class ENExposureDaySummary extends NSObject {
   readonly date: NSDate;
 
@@ -231,6 +223,14 @@ declare class ENScanInstance extends NSObject {
   readonly typicalAttenuation: number;
 
   readonly secondsSinceLastScan: number;
+}
+
+declare class ENExposureSummaryItem extends NSObject {
+  readonly maximumScore: number;
+
+  readonly scoreSum: number;
+
+  readonly weightedDurationSum: number;
 }
 
 declare class ENExposureConfiguration extends NSObject {

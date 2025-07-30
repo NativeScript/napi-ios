@@ -8,17 +8,17 @@ declare const AVAudioUnitTypeOfflineEffect: string;
 
 declare const AVAudioSessionPolarPatternStereo: string;
 
-declare const AVAudioUnitTypeOutput: string;
+declare const AVAudioSessionModeGameChat: string;
 
 declare const AVSampleRateConverterAudioQualityKey: string;
 
 declare const AVAudioSessionPortAVB: string;
 
-declare const AVSpeechSynthesisVoiceIdentifierAlex: string;
+declare const AVSpeechUtteranceDefaultSpeechRate: number;
 
 declare const AVAudioApplicationMuteStateKey: string;
 
-declare const AVSpeechUtteranceDefaultSpeechRate: number;
+declare const AVSpeechSynthesisVoiceIdentifierAlex: string;
 
 declare const AVSpeechUtteranceMaximumSpeechRate: number;
 
@@ -36,11 +36,11 @@ declare const AVAudioUnitTypeFormatConverter: string;
 
 declare const AVAudioUnitTypeMusicEffect: string;
 
+declare const AVAudioUnitTypeOutput: string;
+
 declare const AVAudioSequencerInfoDictionaryKeyYear: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyTitle: string;
-
-declare const AVAudioSequencerInfoDictionaryKeyTimeSignature: string;
 
 declare const AVAudioSequencerInfoDictionaryKeySourceBitDepth: string;
 
@@ -54,25 +54,11 @@ declare const AVAudioSequencerInfoDictionaryKeyGenre: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyEncodingApplication: string;
 
+declare const AVAudioSequencerInfoDictionaryKeyChannelLayout: string;
+
 declare const AVAudioSequencerInfoDictionaryKeyArtist: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyAlbum: string;
-
-declare const AVAudioSessionRenderingModeNewRenderingModeKey: string;
-
-declare const AVAudioSessionRouteChangeReasonKey: string;
-
-declare const AVAudioSessionInterruptionOptionKey: string;
-
-declare const AVAudioSessionSpatialAudioEnabledKey: string;
-
-declare const AVAudioSessionRenderingCapabilitiesChangeNotification: string;
-
-declare const AVAudioSessionSilenceSecondaryAudioHintNotification: string;
-
-declare const AVAudioSessionMediaServicesWereLostNotification: string;
-
-declare const AVAudioSessionInterruptionNotification: string;
 
 declare const AVAudioSessionPolarPatternCardioid: string;
 
@@ -88,6 +74,34 @@ declare const AVAudioSessionOrientationFront: string;
 
 declare const AVAudioSessionOrientationTop: string;
 
+declare const AVAudioSessionAvailableInputsChangeNotification: string;
+
+declare const AVAudioSessionRenderingModeNewRenderingModeKey: string;
+
+declare const AVAudioSessionRouteChangePreviousRouteKey: string;
+
+declare const AVAudioSessionRouteChangeReasonKey: string;
+
+declare const AVAudioSessionInterruptionOptionKey: string;
+
+declare const AVAudioSessionUserIntentToUnmuteOutputNotification: string;
+
+declare const AVAudioSessionMuteStateKey: string;
+
+declare const AVAudioSessionSpatialAudioEnabledKey: string;
+
+declare const AVAudioSessionOutputMuteStateChangeNotification: string;
+
+declare const AVAudioSessionRenderingCapabilitiesChangeNotification: string;
+
+declare const AVAudioSessionSilenceSecondaryAudioHintNotification: string;
+
+declare const AVAudioSessionMediaServicesWereLostNotification: string;
+
+declare const AVAudioSessionInterruptionNotification: string;
+
+declare const AVAudioSessionModeShortFormVideo: string;
+
 declare const AVAudioSessionModeVoicePrompt: string;
 
 declare const AVAudioSessionModeVideoChat: string;
@@ -96,11 +110,7 @@ declare const AVAudioSessionModeMoviePlayback: string;
 
 declare const AVAudioSessionModeVideoRecording: string;
 
-declare const AVAudioSessionModeGameChat: string;
-
 declare const AVAudioSessionModeVoiceChat: string;
-
-declare const AVAudioSessionCategoryMultiRoute: string;
 
 declare const AVAudioSessionCategoryAudioProcessing: string;
 
@@ -111,6 +121,8 @@ declare const AVAudioSessionCategorySoloAmbient: string;
 declare const AVAudioSessionCategoryAmbient: string;
 
 declare const AVAudioSessionPortThunderbolt: string;
+
+declare const AVAudioSessionPortDisplayPort: string;
 
 declare const AVAudioSessionPortPCI: string;
 
@@ -146,6 +158,12 @@ declare const AVAudioBitRateStrategy_Constant: string;
 
 declare const AVChannelLayoutKey: string;
 
+declare const AVEncoderASPFrequencyKey: string;
+
+declare const AVEncoderContentSourceKey: string;
+
+declare const AVEncoderDynamicRangeControlConfigurationKey: string;
+
 declare const AVEncoderBitDepthHintKey: string;
 
 declare const AVEncoderBitRatePerChannelKey: string;
@@ -164,35 +182,29 @@ declare const AVAudioUnitManufacturerNameApple: string;
 
 declare const AVAudioSessionSpatialPlaybackCapabilitiesChangedNotification: string;
 
+declare const AVAudioUnitComponentTagsDidChangeNotification: string;
+
 declare const AVAudioSessionPortFireWire: string;
 
 declare const AVAudioSessionPortHeadsetMic: string;
 
-declare const AVSampleRateConverterAlgorithmKey: string;
-
 declare const AVAudioSessionPortHeadphones: string;
 
+declare const AVAudioSessionPortUSBAudio: string;
+
+declare const AVAudioSequencerInfoDictionaryKeyTimeSignature: string;
+
 declare const AVAudioSequencerInfoDictionaryKeyCopyright: string;
+
+declare const AVSampleRateConverterAlgorithmKey: string;
 
 declare const AVLinearPCMIsNonInterleaved: string;
 
 declare const AVSampleRateKey: string;
 
-declare const AVAudioSessionModeMeasurement: string;
-
 declare const AVAudioSessionInterruptionTypeKey: string;
 
-declare const AVAudioSessionLocationLower: string;
-
-declare const AVEncoderBitRateStrategyKey: string;
-
 declare const AVAudioSequencerInfoDictionaryKeyTempo: string;
-
-declare const AVAudioSessionInterruptionFlags_ShouldResume: number;
-
-declare const AVAudioSessionOrientationBottom: string;
-
-declare const AVAudioUnitComponentTagsDidChangeNotification: string;
 
 declare const AVAudioSessionSilenceSecondaryAudioHintTypeKey: string;
 
@@ -204,6 +216,8 @@ declare const AVSampleRateConverterAlgorithm_MinimumPhase: string;
 
 declare const AVAudioSessionRenderingModeChangeNotification: string;
 
+declare const AVAudioSessionModeMeasurement: string;
+
 declare const AVFormatIDKey: string;
 
 declare const AVAudioSessionRouteChangeNotification: string;
@@ -214,15 +228,9 @@ declare const AVSampleRateConverterAlgorithm_Normal: string;
 
 declare const AVAudioSessionMicrophoneInjectionIsAvailableKey: string;
 
-declare const AVAudioSessionRouteChangePreviousRouteKey: string;
-
-declare const AVAudioSessionPortUSBAudio: string;
-
 declare const AVAudioSessionMediaServicesWereResetNotification: string;
 
 declare const AVAudioSessionCategoryRecord: string;
-
-declare const AVAudioUnitTypeMIDIProcessor: string;
 
 declare const AVAudioSessionInterruptionWasSuspendedKey: string;
 
@@ -232,13 +240,15 @@ declare const AVAudioSessionPortHDMI: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyTrackNumber: string;
 
+declare const AVAudioSessionInterruptionFlags_ShouldResume: number;
+
 declare const AVAudioSessionCategoryPlayback: string;
+
+declare const AVEncoderAudioQualityKey: string;
 
 declare const AVSpeechSynthesisIPANotationAttribute: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyComments: string;
-
-declare const AVAudioSessionInterruptionReasonKey: string;
 
 declare const AVAudioSessionPortCarAudio: string;
 
@@ -246,33 +256,39 @@ declare const AVAudioSequencerInfoDictionaryKeyISRC: string;
 
 declare const AVAudioSessionPortBuiltInMic: string;
 
-declare const AVEncoderAudioQualityKey: string;
-
 declare const AVAudioSessionModeSpokenAudio: string;
 
 declare const AVAudioSequencerInfoDictionaryKeySourceEncoder: string;
 
 declare const AVAudioApplicationInputMuteStateChangeNotification: string;
 
-declare const AVAudioSessionPortDisplayPort: string;
+declare const AVAudioSessionLocationLower: string;
+
+declare const AVEncoderBitRateStrategyKey: string;
 
 declare const AVLinearPCMIsBigEndianKey: string;
 
 declare const AVLinearPCMBitDepthKey: string;
 
-declare const AVAudioSequencerInfoDictionaryKeyChannelLayout: string;
+declare const AVAudioUnitTypeMIDIProcessor: string;
 
 declare const AVAudioBitRateStrategy_Variable: string;
 
 declare const AVAudioSessionPolarPatternSubcardioid: string;
 
+declare const AVAudioSessionOrientationBottom: string;
+
 declare const AVAudioSessionMicrophoneInjectionCapabilitiesChangeNotification: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyNominalBitRate: string;
 
+declare const AVAudioSessionCategoryMultiRoute: string;
+
 declare const AVAudioUnitTypeMusicDevice: string;
 
 declare const AVAudioSessionModeDefault: string;
+
+declare const AVAudioSessionInterruptionReasonKey: string;
 
 declare const AVAudioUnitTypeGenerator: string;
 
@@ -423,13 +439,6 @@ declare const AVAudioSessionSetActiveOptions: {
   AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation: 1,
 };
 
-declare const AVAudioSessionInterruptionReason: {
-  Default: 0,
-  AppWasSuspended: 1,
-  BuiltInMicMuted: 2,
-  RouteDisconnected: 4,
-};
-
 declare const AVAudioSessionInterruptionType: {
   Began: 1,
   Ended: 0,
@@ -439,11 +448,13 @@ declare const AVAudioSessionCategoryOptions: {
   MixWithOthers: 1,
   DuckOthers: 2,
   AllowBluetooth: 4,
+  AllowBluetoothHFP: 4,
   DefaultToSpeaker: 8,
   InterruptSpokenAudioAndMixWithOthers: 17,
   AllowBluetoothA2DP: 32,
   AllowAirPlay: 64,
   OverrideMutedMicrophoneInterruption: 128,
+  BluetoothHighQualityRecording: 524288,
 };
 
 declare const AVAudioSessionPortOverride: {
@@ -519,6 +530,39 @@ declare const AVAudioConverterPrimeMethod: {
   None: 2,
 };
 
+declare const AVAudioContentSource: {
+  Unspecified: -1,
+  Reserved: 0,
+  AppleCapture_Traditional: 1,
+  AppleCapture_Spatial: 2,
+  AppleCapture_Spatial_Enhanced: 3,
+  AppleMusic_Traditional: 4,
+  AppleMusic_Spatial: 5,
+  AppleAV_Traditional_Offline: 6,
+  AppleAV_Spatial_Offline: 7,
+  AppleAV_Traditional_Live: 8,
+  AppleAV_Spatial_Live: 9,
+  ApplePassthrough: 10,
+  Capture_Traditional: 33,
+  Capture_Spatial: 34,
+  Capture_Spatial_Enhanced: 35,
+  Music_Traditional: 36,
+  Music_Spatial: 37,
+  AV_Traditional_Offline: 38,
+  AV_Spatial_Offline: 39,
+  AV_Traditional_Live: 40,
+  AV_Spatial_Live: 41,
+  Passthrough: 42,
+};
+
+declare const AVAudioDynamicRangeControlConfiguration: {
+  None: 0,
+  Music: 1,
+  Speech: 2,
+  Movie: 3,
+  Capture: 4,
+};
+
 declare const AVSpeechSynthesisPersonalVoiceAuthorizationStatus: {
   NotDetermined: 0,
   Denied: 1,
@@ -562,12 +606,11 @@ declare const AVAudioSessionMicrophoneInjectionMode: {
   SpokenAudio: 1,
 };
 
-declare const AVAudioStereoOrientation: {
-  None: 0,
-  Portrait: 1,
-  PortraitUpsideDown: 2,
-  LandscapeRight: 3,
-  LandscapeLeft: 4,
+declare const AVAudioSessionInterruptionReason: {
+  Default: 0,
+  AppWasSuspended: 1,
+  BuiltInMicMuted: 2,
+  RouteDisconnected: 4,
 };
 
 declare const AVAudioSessionRecordPermission: {
@@ -610,6 +653,14 @@ declare const AVAudioSessionPromptStyle: {
 declare const AVAudioSessionSilenceSecondaryAudioHintType: {
   Begin: 1,
   End: 0,
+};
+
+declare const AVAudioStereoOrientation: {
+  None: 0,
+  Portrait: 1,
+  PortraitUpsideDown: 2,
+  LandscapeRight: 3,
+  LandscapeLeft: 4,
 };
 
 declare const AVAudioVoiceProcessingSpeechActivityEvent: {
@@ -692,10 +743,10 @@ declare class AVAudio3DPoint {
   z: number;
 }
 
-declare class AVAudioConverterPrimeInfo {
-  constructor(init?: AVAudioConverterPrimeInfo);
-  leadingFrames: number;
-  trailingFrames: number;
+declare class _AVBeatRange {
+  constructor(init?: _AVBeatRange);
+  start: number;
+  length: number;
 }
 
 declare class AVAudio3DAngularOrientation {
@@ -705,10 +756,10 @@ declare class AVAudio3DAngularOrientation {
   roll: number;
 }
 
-declare class _AVBeatRange {
-  constructor(init?: _AVBeatRange);
-  start: number;
-  length: number;
+declare class AVAudioConverterPrimeInfo {
+  constructor(init?: AVAudioConverterPrimeInfo);
+  leadingFrames: number;
+  trailingFrames: number;
 }
 
 declare interface AVAudioSessionDelegate extends NSObjectProtocol {
@@ -778,25 +829,6 @@ declare interface AVAudioRecorderDelegate extends NSObjectProtocol {
 declare class AVAudioRecorderDelegate extends NativeObject implements AVAudioRecorderDelegate {
 }
 
-declare interface AVSpeechSynthesizerDelegate extends NSObjectProtocol {
-  speechSynthesizerDidStartSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
-
-  speechSynthesizerDidFinishSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
-
-  speechSynthesizerDidPauseSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
-
-  speechSynthesizerDidContinueSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
-
-  speechSynthesizerDidCancelSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
-
-  speechSynthesizerWillSpeakRangeOfSpeechStringUtterance?(synthesizer: AVSpeechSynthesizer, characterRange: _NSRange, utterance: AVSpeechUtterance): void;
-
-  speechSynthesizerWillSpeakMarkerUtterance?(synthesizer: AVSpeechSynthesizer, marker: AVSpeechSynthesisMarker, utterance: AVSpeechUtterance): void;
-}
-
-declare class AVSpeechSynthesizerDelegate extends NativeObject implements AVSpeechSynthesizerDelegate {
-}
-
 declare interface AVAudio3DMixing extends NSObjectProtocol {
   renderingAlgorithm: interop.Enum<typeof AVAudio3DMixingRenderingAlgorithm>;
 
@@ -834,12 +866,23 @@ declare interface AVAudio3DMixing extends NSObjectProtocol {
 declare class AVAudio3DMixing extends NativeObject implements AVAudio3DMixing {
 }
 
-declare class AVMIDIChannelPressureEvent extends AVMIDIChannelEvent {
-  initWithChannelPressure(channel: number, pressure: number): this;
+declare interface AVSpeechSynthesizerDelegate extends NSObjectProtocol {
+  speechSynthesizerDidStartSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
 
-  pressure: number;
+  speechSynthesizerDidFinishSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
 
-  setPressure(pressure: number): void;
+  speechSynthesizerDidPauseSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
+
+  speechSynthesizerDidContinueSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
+
+  speechSynthesizerDidCancelSpeechUtterance?(synthesizer: AVSpeechSynthesizer, utterance: AVSpeechUtterance): void;
+
+  speechSynthesizerWillSpeakRangeOfSpeechStringUtterance?(synthesizer: AVSpeechSynthesizer, characterRange: _NSRange, utterance: AVSpeechUtterance): void;
+
+  speechSynthesizerWillSpeakMarkerUtterance?(synthesizer: AVSpeechSynthesizer, marker: AVSpeechSynthesisMarker, utterance: AVSpeechUtterance): void;
+}
+
+declare class AVSpeechSynthesizerDelegate extends NativeObject implements AVSpeechSynthesizerDelegate {
 }
 
 declare class AVAudioUnitEQFilterParameters extends NSObject {
@@ -1106,23 +1149,15 @@ declare class AVMIDINoteEvent extends AVMusicEvent {
   setDuration(duration: number): void;
 }
 
-declare class AVMusicEvent extends NSObject {
+declare class AVMIDIChannelPressureEvent extends AVMIDIChannelEvent {
+  initWithChannelPressure(channel: number, pressure: number): this;
+
+  pressure: number;
+
+  setPressure(pressure: number): void;
 }
 
-declare class AVSpeechSynthesisProviderRequest extends NSObject implements NSSecureCoding, NSCopying {
-  readonly ssmlRepresentation: string;
-
-  readonly voice: AVSpeechSynthesisProviderVoice;
-
-  initWithSSMLRepresentationVoice(text: string, voice: AVSpeechSynthesisProviderVoice): this;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+declare class AVMusicEvent extends NSObject {
 }
 
 declare class AVAudioSessionChannelDescription extends NSObject {
@@ -1329,26 +1364,6 @@ declare class AVAudioUnitTimePitch extends AVAudioUnitTimeEffect {
   setOverlap(overlap: number): void;
 }
 
-declare class AVAudioUnitTimeEffect extends AVAudioUnit {
-  initWithAudioComponentDescription(audioComponentDescription: AudioComponentDescription): this;
-
-  bypass: boolean;
-
-  setBypass(bypass: boolean): void;
-}
-
-declare class AVAudioUnitDistortion extends AVAudioUnitEffect {
-  loadFactoryPreset(preset: interop.Enum<typeof AVAudioUnitDistortionPreset>): void;
-
-  preGain: number;
-
-  wetDryMix: number;
-
-  setPreGain(preGain: number): void;
-
-  setWetDryMix(wetDryMix: number): void;
-}
-
 declare class AVAudioUnitDelay extends AVAudioUnitEffect {
   delayTime: number;
 
@@ -1379,68 +1394,6 @@ declare class AVAudioUnitComponentManager extends NSObject {
   componentsPassingTest(testHandler: (p1: AVAudioUnitComponent, p2: interop.PointerConvertible) => boolean): NSArray;
 
   componentsMatchingDescription(desc: AudioComponentDescription): NSArray;
-}
-
-declare class AVAudioSinkNode extends AVAudioNode {
-  initWithReceiverBlock(block: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number): this;
-}
-
-declare class AVAudioSequencer extends NSObject {
-  init(): this;
-
-  initWithAudioEngine(engine: AVAudioEngine): this;
-
-  loadFromURLOptionsError(fileURL: NSURL, options: interop.Enum<typeof AVMusicSequenceLoadOptions>, outError: interop.PointerConvertible): boolean;
-
-  loadFromDataOptionsError(data: NSData, options: interop.Enum<typeof AVMusicSequenceLoadOptions>, outError: interop.PointerConvertible): boolean;
-
-  writeToURLSMPTEResolutionReplaceExistingError(fileURL: NSURL, resolution: number, replace: boolean, outError: interop.PointerConvertible): boolean;
-
-  dataWithSMPTEResolutionError(SMPTEResolution: number, outError: interop.PointerConvertible): NSData;
-
-  secondsForBeats(beats: number): number;
-
-  beatsForSeconds(seconds: number): number;
-
-  reverseEvents(): void;
-
-  createAndAppendTrack(): AVMusicTrack;
-
-  removeTrack(track: AVMusicTrack): boolean;
-
-  setUserCallback(userCallback: (p1: AVMusicTrack, p2: NSData, p3: number) => void | null): void;
-
-  readonly tracks: NSArray;
-
-  readonly tempoTrack: AVMusicTrack;
-
-  readonly userInfo: NSDictionary;
-
-  currentPositionInSeconds: number;
-
-  currentPositionInBeats: number;
-
-  readonly playing: boolean;
-
-  rate: number;
-
-  hostTimeForBeatsError(inBeats: number, outError: interop.PointerConvertible): number;
-
-  beatsForHostTimeError(inHostTime: number, outError: interop.PointerConvertible): number;
-
-  prepareToPlay(): void;
-
-  startAndReturnError(outError: interop.PointerConvertible): boolean;
-
-  stop(): void;
-
-  setCurrentPositionInSeconds(currentPositionInSeconds: number): void;
-
-  setCurrentPositionInBeats(currentPositionInBeats: number): void;
-
-  isPlaying(): boolean;
-
-  setRate(rate: number): void;
 }
 
 declare class AVAudioPlayer extends NSObject {
@@ -1580,6 +1533,12 @@ declare class AVAudioSession extends NSObject {
   readonly isEchoCancelledInputEnabled: boolean;
 
   readonly isEchoCancelledInputAvailable: boolean;
+
+  setOutputMutedError(muted: boolean, outError: interop.PointerConvertible): boolean;
+
+  readonly outputMuted: boolean;
+
+  isOutputMuted(): boolean;
 
   setActiveError(active: boolean, outError: interop.PointerConvertible): boolean;
 
@@ -1867,6 +1826,12 @@ declare class AVAudioConverter extends NSObject {
 
   primeInfo: AVAudioConverterPrimeInfo;
 
+  audioSyncPacketFrequency: number;
+
+  contentSource: interop.Enum<typeof AVAudioContentSource>;
+
+  dynamicRangeControlConfiguration: interop.Enum<typeof AVAudioDynamicRangeControlConfiguration>;
+
   convertToBufferFromBufferError(outputBuffer: AVAudioPCMBuffer, inputBuffer: AVAudioPCMBuffer, outError: interop.PointerConvertible): boolean;
 
   convertToBufferErrorWithInputFromBlock(outputBuffer: AVAudioBuffer, outError: interop.PointerConvertible, inputBlock: (p1: number, p2: interop.PointerConvertible) => AVAudioBuffer): interop.Enum<typeof AVAudioConverterOutputStatus>;
@@ -1886,6 +1851,12 @@ declare class AVAudioConverter extends NSObject {
   setPrimeMethod(primeMethod: interop.Enum<typeof AVAudioConverterPrimeMethod>): void;
 
   setPrimeInfo(primeInfo: AVAudioConverterPrimeInfo): void;
+
+  setAudioSyncPacketFrequency(audioSyncPacketFrequency: number): void;
+
+  setContentSource(contentSource: interop.Enum<typeof AVAudioContentSource>): void;
+
+  setDynamicRangeControlConfiguration(dynamicRangeControlConfiguration: interop.Enum<typeof AVAudioDynamicRangeControlConfiguration>): void;
 
   bitRate: number;
 
@@ -1936,6 +1907,12 @@ declare class AVMIDIMetaEvent extends AVMusicEvent {
   initWithTypeData(type: interop.Enum<typeof AVMIDIMetaEventType>, data: NSData): this;
 
   readonly type: interop.Enum<typeof AVMIDIMetaEventType>;
+}
+
+declare class AVAudioSessionPortExtensionBluetoothMicrophone extends NSObject {
+  readonly highQualityRecording: AVAudioSessionCapability;
+
+  readonly farFieldCapture: AVAudioSessionCapability;
 }
 
 declare class AVAudioNode extends NSObject {
@@ -2008,6 +1985,64 @@ declare class AVSpeechSynthesisMarker extends NSObject implements NSSecureCoding
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class AVAudioSequencer extends NSObject {
+  init(): this;
+
+  initWithAudioEngine(engine: AVAudioEngine): this;
+
+  loadFromURLOptionsError(fileURL: NSURL, options: interop.Enum<typeof AVMusicSequenceLoadOptions>, outError: interop.PointerConvertible): boolean;
+
+  loadFromDataOptionsError(data: NSData, options: interop.Enum<typeof AVMusicSequenceLoadOptions>, outError: interop.PointerConvertible): boolean;
+
+  writeToURLSMPTEResolutionReplaceExistingError(fileURL: NSURL, resolution: number, replace: boolean, outError: interop.PointerConvertible): boolean;
+
+  dataWithSMPTEResolutionError(SMPTEResolution: number, outError: interop.PointerConvertible): NSData;
+
+  secondsForBeats(beats: number): number;
+
+  beatsForSeconds(seconds: number): number;
+
+  reverseEvents(): void;
+
+  createAndAppendTrack(): AVMusicTrack;
+
+  removeTrack(track: AVMusicTrack): boolean;
+
+  setUserCallback(userCallback: (p1: AVMusicTrack, p2: NSData, p3: number) => void | null): void;
+
+  readonly tracks: NSArray;
+
+  readonly tempoTrack: AVMusicTrack;
+
+  readonly userInfo: NSDictionary;
+
+  currentPositionInSeconds: number;
+
+  currentPositionInBeats: number;
+
+  readonly playing: boolean;
+
+  rate: number;
+
+  hostTimeForBeatsError(inBeats: number, outError: interop.PointerConvertible): number;
+
+  beatsForHostTimeError(inHostTime: number, outError: interop.PointerConvertible): number;
+
+  prepareToPlay(): void;
+
+  startAndReturnError(outError: interop.PointerConvertible): boolean;
+
+  stop(): void;
+
+  setCurrentPositionInSeconds(currentPositionInSeconds: number): void;
+
+  setCurrentPositionInBeats(currentPositionInBeats: number): void;
+
+  isPlaying(): boolean;
+
+  setRate(rate: number): void;
 }
 
 declare class AVSpeechSynthesisVoice extends NSObject implements NSSecureCoding {
@@ -2228,24 +2263,32 @@ declare class AVSpeechSynthesisProviderVoice extends NSObject implements NSSecur
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class AVAudioPCMBuffer extends AVAudioBuffer {
-  initWithPCMFormatFrameCapacity(format: AVAudioFormat, frameCapacity: number): this;
+declare class AVSpeechSynthesisProviderRequest extends NSObject implements NSSecureCoding, NSCopying {
+  readonly ssmlRepresentation: string;
 
-  initWithPCMFormatBufferListNoCopyDeallocator(format: AVAudioFormat, bufferList: interop.PointerConvertible, deallocator: (p1: interop.PointerConvertible) => void | null): this;
+  readonly voice: AVSpeechSynthesisProviderVoice;
 
-  readonly frameCapacity: number;
+  initWithSSMLRepresentationVoice(text: string, voice: AVSpeechSynthesisProviderVoice): this;
 
-  frameLength: number;
+  static readonly supportsSecureCoding: boolean;
 
-  readonly stride: number;
+  encodeWithCoder(coder: NSCoder): void;
 
-  readonly floatChannelData: interop.Pointer;
+  initWithCoder(coder: NSCoder): this;
 
-  readonly int16ChannelData: interop.Pointer;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
 
-  readonly int32ChannelData: interop.Pointer;
+declare class AVAudioUnitDistortion extends AVAudioUnitEffect {
+  loadFactoryPreset(preset: interop.Enum<typeof AVAudioUnitDistortionPreset>): void;
 
-  setFrameLength(frameLength: number): void;
+  preGain: number;
+
+  wetDryMix: number;
+
+  setPreGain(preGain: number): void;
+
+  setWetDryMix(wetDryMix: number): void;
 }
 
 declare class AVAudioUnitComponent extends NSObject {
@@ -2340,6 +2383,18 @@ declare class AVAudioUnitVarispeed extends AVAudioUnitTimeEffect {
   setRate(rate: number): void;
 }
 
+declare class AVAudioSinkNode extends AVAudioNode {
+  initWithReceiverBlock(block: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number): this;
+}
+
+declare class AVAudioUnitTimeEffect extends AVAudioUnit {
+  initWithAudioComponentDescription(audioComponentDescription: AudioComponentDescription): this;
+
+  bypass: boolean;
+
+  setBypass(bypass: boolean): void;
+}
+
 declare class AVSpeechSynthesizer extends NSObject {
   delegate: AVSpeechSynthesizerDelegate;
 
@@ -2394,6 +2449,8 @@ declare class AVAudioUnitEQ extends AVAudioUnitEffect {
 }
 
 declare class AVAudioFile extends NSObject {
+  init(): this;
+
   initForReadingError(fileURL: NSURL, outError: interop.PointerConvertible): this;
 
   initForReadingCommonFormatInterleavedError(fileURL: NSURL, format: interop.Enum<typeof AVAudioCommonFormat>, interleaved: boolean, outError: interop.PointerConvertible): this;
@@ -2444,6 +2501,8 @@ declare class AVAudioCompressedBuffer extends AVAudioBuffer {
 
   readonly packetDescriptions: interop.Pointer;
 
+  readonly packetDependencies: interop.Pointer;
+
   setPacketCount(packetCount: number): void;
 
   setByteLength(byteLength: number): void;
@@ -2490,18 +2549,24 @@ declare class AVExtendedNoteOnEvent extends AVMusicEvent {
   setDuration(duration: number): void;
 }
 
-declare class AVAudioEnvironmentReverbParameters extends NSObject {
-  enable: boolean;
+declare class AVAudioPCMBuffer extends AVAudioBuffer {
+  initWithPCMFormatFrameCapacity(format: AVAudioFormat, frameCapacity: number): this;
 
-  level: number;
+  initWithPCMFormatBufferListNoCopyDeallocator(format: AVAudioFormat, bufferList: interop.PointerConvertible, deallocator: (p1: interop.PointerConvertible) => void | null): this;
 
-  readonly filterParameters: AVAudioUnitEQFilterParameters;
+  readonly frameCapacity: number;
 
-  loadFactoryReverbPreset(preset: interop.Enum<typeof AVAudioUnitReverbPreset>): void;
+  frameLength: number;
 
-  setEnable(enable: boolean): void;
+  readonly stride: number;
 
-  setLevel(level: number): void;
+  readonly floatChannelData: interop.Pointer;
+
+  readonly int16ChannelData: interop.Pointer;
+
+  readonly int32ChannelData: interop.Pointer;
+
+  setFrameLength(frameLength: number): void;
 }
 
 declare class AVAudioTime extends NSObject {
@@ -2897,6 +2962,36 @@ declare class AVAudioRecorder extends NSObject {
   setChannelAssignments(channelAssignments: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
+declare class AVAudioIONode extends AVAudioNode {
+  readonly presentationLatency: number;
+
+  readonly audioUnit: interop.Pointer;
+
+  readonly voiceProcessingEnabled: boolean;
+
+  setVoiceProcessingEnabledError(enabled: boolean, outError: interop.PointerConvertible): boolean;
+
+  isVoiceProcessingEnabled(): boolean;
+}
+
+declare class AVAudioConnectionPoint extends NSObject {
+  initWithNodeBus(node: AVAudioNode, bus: number): this;
+
+  readonly node: AVAudioNode | null;
+
+  readonly bus: number;
+}
+
+declare class AVAudioSessionCapability extends NSObject {
+  readonly supported: boolean;
+
+  readonly enabled: boolean;
+
+  isSupported(): boolean;
+
+  isEnabled(): boolean;
+}
+
 declare class AVAudioUnitEffect extends AVAudioUnit {
   initWithAudioComponentDescription(audioComponentDescription: AudioComponentDescription): this;
 
@@ -3020,6 +3115,22 @@ declare class AVAudioSessionPortDescription extends NSObject {
   setPreferredDataSourceError(dataSource: AVAudioSessionDataSourceDescription | null, outError: interop.PointerConvertible): boolean;
 
   isSpatialAudioEnabled(): boolean;
+
+  readonly bluetoothMicrophoneExtension: AVAudioSessionPortExtensionBluetoothMicrophone;
+}
+
+declare class AVAudioEnvironmentReverbParameters extends NSObject {
+  enable: boolean;
+
+  level: number;
+
+  readonly filterParameters: AVAudioUnitEQFilterParameters;
+
+  loadFactoryReverbPreset(preset: interop.Enum<typeof AVAudioUnitReverbPreset>): void;
+
+  setEnable(enable: boolean): void;
+
+  setLevel(level: number): void;
 }
 
 declare class AVAudioSourceNode extends AVAudioNode implements AVAudioMixing {
@@ -3108,14 +3219,6 @@ declare class AVAudioSourceNode extends AVAudioNode implements AVAudioMixing {
   setOcclusion(occlusion: number): void;
 
   setPosition(position: AVAudio3DPoint): void;
-}
-
-declare class AVAudioConnectionPoint extends NSObject {
-  initWithNodeBus(node: AVAudioNode, bus: number): this;
-
-  readonly node: AVAudioNode | null;
-
-  readonly bus: number;
 }
 
 declare class AVAudioUnitMIDIInstrument extends AVAudioUnit implements AVAudioMixing {
@@ -3226,17 +3329,5 @@ declare class AVAudioUnitMIDIInstrument extends AVAudioUnit implements AVAudioMi
   setOcclusion(occlusion: number): void;
 
   setPosition(position: AVAudio3DPoint): void;
-}
-
-declare class AVAudioIONode extends AVAudioNode {
-  readonly presentationLatency: number;
-
-  readonly audioUnit: interop.Pointer;
-
-  readonly voiceProcessingEnabled: boolean;
-
-  setVoiceProcessingEnabledError(enabled: boolean, outError: interop.PointerConvertible): boolean;
-
-  isVoiceProcessingEnabled(): boolean;
 }
 

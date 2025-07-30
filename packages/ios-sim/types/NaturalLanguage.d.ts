@@ -11,8 +11,6 @@ declare const NLTagOtherPunctuation: string;
 
 declare const NLLanguageJapanese: string;
 
-declare const NLLanguageKorean: string;
-
 declare const NLLanguageHindi: string;
 
 declare const NLTagPlaceName: string;
@@ -34,6 +32,8 @@ declare const NLTagSentenceTerminator: string;
 declare const NLTagOtherWord: string;
 
 declare const NLTagParticle: string;
+
+declare const NLTagDeterminer: string;
 
 declare const NLTagAdverb: string;
 
@@ -65,6 +65,8 @@ declare const NLScriptGujarati: string;
 
 declare const NLScriptGreek: string;
 
+declare const NLScriptGeorgian: string;
+
 declare const NLScriptDevanagari: string;
 
 declare const NLScriptBengali: string;
@@ -72,6 +74,8 @@ declare const NLScriptBengali: string;
 declare const NLScriptUndetermined: string;
 
 declare const NLLanguageUkrainian: string;
+
+declare const NLLanguageTurkish: string;
 
 declare const NLLanguageTibetan: string;
 
@@ -93,11 +97,11 @@ declare const NLLanguageNorwegian: string;
 
 declare const NLLanguageMalayalam: string;
 
+declare const NLLanguageKorean: string;
+
 declare const NLLanguageKannada: string;
 
 declare const NLLanguageItalian: string;
-
-declare const NLLanguageIndonesian: string;
 
 declare const NLLanguageHebrew: string;
 
@@ -133,6 +137,8 @@ declare const NLTagNumber: string;
 
 declare const NLTagSchemeSentimentScore: string;
 
+declare const NLLanguageKhmer: string;
+
 declare const NLScriptEthiopic: string;
 
 declare const NLLanguageCzech: string;
@@ -155,15 +161,11 @@ declare const NLTagClassifier: string;
 
 declare const NLLanguageBengali: string;
 
+declare const NLTagWord: string;
+
 declare const NLLanguageCatalan: string;
 
 declare const NLContextualEmbeddingKeyLanguages: string;
-
-declare const NLTagWord: string;
-
-declare const NLLanguageKhmer: string;
-
-declare const NLLanguageTurkish: string;
 
 declare const NLTagConjunction: string;
 
@@ -185,6 +187,8 @@ declare const NLLanguageKazakh: string;
 
 declare const NLTagSchemeScript: string;
 
+declare const NLLanguageIndonesian: string;
+
 declare const NLContextualEmbeddingKeyRevision: string;
 
 declare const NLTagIdiom: string;
@@ -196,8 +200,6 @@ declare const NLLanguageRomanian: string;
 declare const NLLanguageArabic: string;
 
 declare const NLLanguageUndetermined: string;
-
-declare const NLScriptArmenian: string;
 
 declare const NLTagOrganizationName: string;
 
@@ -231,8 +233,6 @@ declare const NLLanguageUrdu: string;
 
 declare const NLTagCloseParenthesis: string;
 
-declare const NLTagDeterminer: string;
-
 declare const NLTagVerb: string;
 
 declare const NLScriptHebrew: string;
@@ -255,11 +255,11 @@ declare const NLScriptTibetan: string;
 
 declare const NLLanguageMongolian: string;
 
-declare const NLScriptGeorgian: string;
-
 declare const NLLanguageDanish: string;
 
 declare const NLLanguageCherokee: string;
+
+declare const NLScriptArmenian: string;
 
 declare const NLTagWhitespace: string;
 

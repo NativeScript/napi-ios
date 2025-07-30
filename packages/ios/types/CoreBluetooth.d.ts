@@ -1,6 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const CBAdvertisementDataServiceDataKey: string;
+
+declare const CBUUIDCharacteristicObservationScheduleString: string;
+
 declare const CBUUIDCharacteristicValidRangeString: string;
 
 declare const CBUUIDClientCharacteristicConfigurationString: string;
@@ -43,9 +47,9 @@ declare const CBConnectPeripheralOptionEnableAutoReconnect: string;
 
 declare const CBATTErrorDomain: string;
 
-declare const CBConnectPeripheralOptionNotifyOnConnectionKey: string;
-
 declare const CBAdvertisementDataIsConnectable: string;
+
+declare const CBConnectPeripheralOptionNotifyOnDisconnectionKey: string;
 
 declare const CBUUIDL2CAPPSMCharacteristicString: string;
 
@@ -55,21 +59,17 @@ declare const CBAdvertisementDataSolicitedServiceUUIDsKey: string;
 
 declare const CBAdvertisementDataOverflowServiceUUIDsKey: string;
 
-declare const CBUUIDCharacteristicObservationScheduleString: string;
-
-declare const CBConnectPeripheralOptionNotifyOnDisconnectionKey: string;
-
-declare const CBUUIDServerCharacteristicConfigurationString: string;
+declare const CBConnectPeripheralOptionNotifyOnConnectionKey: string;
 
 declare const CBConnectPeripheralOptionNotifyOnNotificationKey: string;
 
 declare const CBCentralManagerRestoredStateScanOptionsKey: string;
 
+declare const CBUUIDServerCharacteristicConfigurationString: string;
+
 declare const CBCentralManagerScanOptionSolicitedServiceUUIDsKey: string;
 
 declare const CBCentralManagerScanOptionAllowDuplicatesKey: string;
-
-declare const CBAdvertisementDataServiceDataKey: string;
 
 declare const CBErrorDomain: string;
 
@@ -81,11 +81,22 @@ declare const CBCentralManagerOptionDeviceAccessForMedia: string;
 
 declare const CBCentralManagerOptionRestoreIdentifierKey: string;
 
+declare const CBCharacteristicWriteType: {
+  With: 0,
+  Without: 1,
+};
+
 declare const CBPeripheralState: {
   Disconnected: 0,
   Connecting: 1,
   Connected: 2,
   Disconnecting: 3,
+};
+
+declare const CBPeripheralManagerConnectionLatency: {
+  Low: 0,
+  Medium: 1,
+  High: 2,
 };
 
 declare const CBPeripheralManagerState: {
@@ -95,6 +106,13 @@ declare const CBPeripheralManagerState: {
   Unauthorized: 3,
   PoweredOff: 4,
   PoweredOn: 5,
+};
+
+declare const CBPeripheralManagerAuthorizationStatus: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  Authorized: 3,
 };
 
 declare const CBError: {
@@ -118,16 +136,31 @@ declare const CBError: {
   TooManyLEPairedDevices: 16,
 };
 
+declare const CBCentralManagerFeature: {
+  CBCentralManagerFeatureExtendedScanAndConnect: 1,
+};
+
 declare const CBConnectionEvent: {
   Disconnected: 0,
   Connected: 1,
 };
 
-declare const CBManagerAuthorization: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  AllowedAlways: 3,
+declare const CBCentralManagerState: {
+  Unknown: 0,
+  Resetting: 1,
+  Unsupported: 2,
+  Unauthorized: 3,
+  PoweredOff: 4,
+  PoweredOn: 5,
+};
+
+declare const CBManagerState: {
+  Unknown: 0,
+  Resetting: 1,
+  Unsupported: 2,
+  Unauthorized: 3,
+  PoweredOff: 4,
+  PoweredOn: 5,
 };
 
 declare const CBCharacteristicProperties: {
@@ -143,19 +176,11 @@ declare const CBCharacteristicProperties: {
   IndicateEncryptionRequired: 512,
 };
 
-declare const CBCentralManagerState: {
-  Unknown: 0,
-  Resetting: 1,
-  Unsupported: 2,
-  Unauthorized: 3,
-  PoweredOff: 4,
-  PoweredOn: 5,
-};
-
-declare const CBPeripheralManagerConnectionLatency: {
-  Low: 0,
-  Medium: 1,
-  High: 2,
+declare const CBManagerAuthorization: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  AllowedAlways: 3,
 };
 
 declare const CBAttributePermissions: {
@@ -163,24 +188,6 @@ declare const CBAttributePermissions: {
   Writeable: 2,
   ReadEncryptionRequired: 4,
   WriteEncryptionRequired: 8,
-};
-
-declare const CBCharacteristicWriteType: {
-  With: 0,
-  Without: 1,
-};
-
-declare const CBManagerState: {
-  Unknown: 0,
-  Resetting: 1,
-  Unsupported: 2,
-  Unauthorized: 3,
-  PoweredOff: 4,
-  PoweredOn: 5,
-};
-
-declare const CBCentralManagerFeature: {
-  CBCentralManagerFeatureExtendedScanAndConnect: 1,
 };
 
 declare const CBATTError: {
@@ -202,13 +209,6 @@ declare const CBATTError: {
   InsufficientEncryption: 15,
   UnsupportedGroupType: 16,
   InsufficientResources: 17,
-};
-
-declare const CBPeripheralManagerAuthorizationStatus: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  Authorized: 3,
 };
 
 declare interface CBPeripheralManagerDelegate extends NSObjectProtocol {
@@ -332,16 +332,6 @@ declare class CBMutableDescriptor extends CBDescriptor {
   initWithTypeValue(UUID: CBUUID, value: interop.Object | null): this;
 }
 
-declare class CBService extends CBAttribute {
-  readonly peripheral: CBPeripheral | null;
-
-  readonly isPrimary: boolean;
-
-  readonly includedServices: NSArray;
-
-  readonly characteristics: NSArray;
-}
-
 declare class CBPeripheral extends CBPeer {
   delegate: CBPeripheralDelegate;
 
@@ -443,16 +433,6 @@ declare class CBPeripheralManager extends CBManager {
   setDelegate(delegate: CBPeripheralManagerDelegate | null): void;
 }
 
-declare class CBAttribute extends NSObject {
-  readonly UUID: CBUUID;
-}
-
-declare class CBDescriptor extends CBAttribute {
-  readonly characteristic: CBCharacteristic | null;
-
-  readonly value: interop.Object;
-}
-
 declare class CBATTRequest extends NSObject {
   readonly central: CBCentral;
 
@@ -463,6 +443,16 @@ declare class CBATTRequest extends NSObject {
   value: NSData;
 
   setValue(value: NSData | null): void;
+}
+
+declare class CBAttribute extends NSObject {
+  readonly UUID: CBUUID;
+}
+
+declare class CBDescriptor extends CBAttribute {
+  readonly characteristic: CBCharacteristic | null;
+
+  readonly value: interop.Object;
 }
 
 declare class CBCentralManager extends CBManager {
@@ -499,6 +489,16 @@ declare class CBPeer extends NSObject implements NSCopying {
   readonly identifier: NSUUID;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CBService extends CBAttribute {
+  readonly peripheral: CBPeripheral | null;
+
+  readonly isPrimary: boolean;
+
+  readonly includedServices: NSArray;
+
+  readonly characteristics: NSArray;
 }
 
 declare class CBL2CAPChannel extends NSObject {

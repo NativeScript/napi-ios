@@ -24,6 +24,13 @@ declare const AVKitError: {
   PictureInPictureStartFailed: -1001,
 };
 
+declare const AVDisplayDynamicRange: {
+  Automatic: 0,
+  Standard: 1,
+  ConstrainedHigh: 2,
+  High: 3,
+};
+
 declare const AVAudioSessionRouteSelection: {
   None: 0,
   Local: 1,
@@ -37,6 +44,19 @@ declare interface AVRoutePickerViewDelegate extends NSObjectProtocol {
 }
 
 declare class AVRoutePickerViewDelegate extends NativeObject implements AVRoutePickerViewDelegate {
+}
+
+declare interface AVInputPickerInteractionDelegate extends NSObjectProtocol {
+  inputPickerInteractionWillBeginPresenting?(inputPickerInteraction: AVInputPickerInteraction): void;
+
+  inputPickerInteractionDidEndPresenting?(inputPickerInteraction: AVInputPickerInteraction): void;
+
+  inputPickerInteractionWillBeginDismissing?(inputPickerInteraction: AVInputPickerInteraction): void;
+
+  inputPickerInteractionDidEndDismissing?(inputPickerInteraction: AVInputPickerInteraction): void;
+}
+
+declare class AVInputPickerInteractionDelegate extends NativeObject implements AVInputPickerInteractionDelegate {
 }
 
 declare interface AVPictureInPictureSampleBufferPlaybackDelegate extends NSObjectProtocol {
@@ -121,9 +141,13 @@ declare class AVCaptureEventInteraction extends NSObject implements UIInteractio
 
   enabled: boolean;
 
+  static defaultCaptureSoundDisabled: boolean;
+
   isEnabled(): boolean;
 
   setEnabled(enabled: boolean): void;
+
+  static setDefaultCaptureSoundDisabled(defaultCaptureSoundDisabled: boolean): void;
 
   readonly view: UIView;
 
@@ -174,6 +198,78 @@ declare class AVCaptureEventInteraction extends NSObject implements UIInteractio
 
 declare class AVCaptureEvent extends NSObject {
   readonly phase: interop.Enum<typeof AVCaptureEventPhase>;
+
+  playSound(sound: AVCaptureEventSound): boolean;
+
+  readonly shouldPlaySound: boolean;
+}
+
+declare class AVInputPickerInteraction extends NSObject implements UIInteraction {
+  delegate: AVInputPickerInteractionDelegate;
+
+  readonly presented: boolean;
+
+  audioSession: AVAudioSession;
+
+  present(): void;
+
+  dismiss(): void;
+
+  init(): this;
+
+  initWithAudioSession(audioSession: AVAudioSession | null): this;
+
+  setDelegate(delegate: AVInputPickerInteractionDelegate | null): void;
+
+  isPresented(): boolean;
+
+  setAudioSession(audioSession: AVAudioSession): void;
+
+  readonly view: UIView;
+
+  willMoveToView(view: UIView | null): void;
+
+  didMoveToView(view: UIView | null): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class AVRoutePickerView extends UIView {
@@ -264,6 +360,16 @@ declare class AVPictureInPictureController extends NSObject {
   invalidatePlaybackState(): void;
 }
 
+declare class AVCaptureEventSound extends NSObject {
+  initWithURLError(url: NSURL, error: interop.PointerConvertible): this;
+
+  static readonly cameraShutterSound: AVCaptureEventSound;
+
+  static readonly beginVideoRecordingSound: AVCaptureEventSound;
+
+  static readonly endVideoRecordingSound: AVCaptureEventSound;
+}
+
 declare class AVPlayerViewController extends UIViewController {
   player: AVPlayer;
 
@@ -309,6 +415,10 @@ declare class AVPlayerViewController extends UIViewController {
 
   selectSpeed(speed: AVPlaybackSpeed): void;
 
+  preferredDisplayDynamicRange: interop.Enum<typeof AVDisplayDynamicRange>;
+
+  static readonly mediaCharacteristicsForSupportedCustomMediaSelectionSchemes: NSArray;
+
   setPlayer(player: AVPlayer | null): void;
 
   setShowsPlaybackControls(showsPlaybackControls: boolean): void;
@@ -340,6 +450,8 @@ declare class AVPlayerViewController extends UIViewController {
   setDelegate(delegate: AVPlayerViewControllerDelegate): void;
 
   setSpeeds(speeds: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setPreferredDisplayDynamicRange(preferredDisplayDynamicRange: interop.Enum<typeof AVDisplayDynamicRange>): void;
 }
 
 declare class AVPictureInPictureVideoCallViewController extends UIViewController {

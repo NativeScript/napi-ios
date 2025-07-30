@@ -151,6 +151,13 @@ declare const SKAttributeType: {
   VectorHalfFloat4: 8,
 };
 
+declare interface SKViewDelegate extends NSObjectProtocol {
+  viewShouldRenderAtTime?(view: SKView, time: number): boolean;
+}
+
+declare class SKViewDelegate extends NativeObject implements SKViewDelegate {
+}
+
 declare interface SKPhysicsContactDelegate extends NSObjectProtocol {
   didBeginContact?(contact: SKPhysicsContact): void;
 
@@ -158,13 +165,6 @@ declare interface SKPhysicsContactDelegate extends NSObjectProtocol {
 }
 
 declare class SKPhysicsContactDelegate extends NativeObject implements SKPhysicsContactDelegate {
-}
-
-declare interface SKViewDelegate extends NSObjectProtocol {
-  viewShouldRenderAtTime?(view: SKView, time: number): boolean;
-}
-
-declare class SKViewDelegate extends NativeObject implements SKViewDelegate {
 }
 
 declare interface SKSceneDelegate extends NSObjectProtocol {
@@ -193,300 +193,6 @@ declare interface SKWarpable extends NSObjectProtocol {
 }
 
 declare class SKWarpable extends NativeObject implements SKWarpable {
-}
-
-declare class SKNode extends UIResponder implements NSCopying, NSSecureCoding, UIFocusItem, UIFocusItemContainer, UICoordinateSpace {
-  init(): this;
-
-  initWithCoder(aDecoder: NSCoder): this;
-
-  static node<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static nodeWithFileNamed<This extends abstract new (...args: any) => any>(this: This, filename: string): InstanceType<This>;
-
-  static nodeWithFileNamedSecurelyWithClassesAndError<This extends abstract new (...args: any) => any>(this: This, filename: string, classes: NSSet, error: interop.PointerConvertible): InstanceType<This>;
-
-  readonly frame: CGRect;
-
-  calculateAccumulatedFrame(): CGRect;
-
-  position: CGPoint;
-
-  zPosition: number;
-
-  zRotation: number;
-
-  xScale: number;
-
-  yScale: number;
-
-  speed: number;
-
-  alpha: number;
-
-  paused: boolean;
-
-  hidden: boolean;
-
-  userInteractionEnabled: boolean;
-
-  focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>;
-
-  readonly parent: SKNode;
-
-  readonly children: NSArray;
-
-  name: string;
-
-  readonly scene: SKScene;
-
-  physicsBody: SKPhysicsBody;
-
-  userData: NSMutableDictionary;
-
-  reachConstraints: SKReachConstraints;
-
-  get constraints(): NSArray;
-  set constraints(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get attributeValues(): NSDictionary;
-  set attributeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  valueForAttributeNamed(key: string): SKAttributeValue;
-
-  setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
-
-  setScale(scale: number): void;
-
-  addChild(node: SKNode): void;
-
-  insertChildAtIndex(node: SKNode, index: number): void;
-
-  removeChildrenInArray(nodes: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  removeAllChildren(): void;
-
-  removeFromParent(): void;
-
-  moveToParent(parent: SKNode): void;
-
-  childNodeWithName(name: string): SKNode;
-
-  enumerateChildNodesWithNameUsingBlock(name: string, block: (p1: SKNode, p2: interop.PointerConvertible) => void): void;
-
-  objectForKeyedSubscript(name: string): NSArray;
-
-  inParentHierarchy(parent: SKNode): boolean;
-
-  runAction(action: SKAction): void;
-
-  runActionCompletion(action: SKAction, block: () => void): void;
-
-  runActionWithKey(action: SKAction, key: string): void;
-
-  hasActions(): boolean;
-
-  actionForKey(key: string): SKAction;
-
-  removeActionForKey(key: string): void;
-
-  removeAllActions(): void;
-
-  containsPoint(p: CGPoint): boolean;
-
-  nodeAtPoint(p: CGPoint): SKNode;
-
-  nodesAtPoint(p: CGPoint): NSArray;
-
-  convertPointFromNode(point: CGPoint, node: SKNode): CGPoint;
-
-  convertPointToNode(point: CGPoint, node: SKNode): CGPoint;
-
-  intersectsNode(node: SKNode): boolean;
-
-  isEqualToNode(node: SKNode): boolean;
-
-  setPosition(position: CGPoint): void;
-
-  setZPosition(zPosition: number): void;
-
-  setZRotation(zRotation: number): void;
-
-  setXScale(xScale: number): void;
-
-  setYScale(yScale: number): void;
-
-  setSpeed(speed: number): void;
-
-  setAlpha(alpha: number): void;
-
-  isPaused(): boolean;
-
-  setPaused(paused: boolean): void;
-
-  isHidden(): boolean;
-
-  setHidden(hidden: boolean): void;
-
-  isUserInteractionEnabled(): boolean;
-
-  setUserInteractionEnabled(userInteractionEnabled: boolean): void;
-
-  setFocusBehavior(focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>): void;
-
-  setName(name: string | null): void;
-
-  setPhysicsBody(physicsBody: SKPhysicsBody | null): void;
-
-  setUserData(userData: NSMutableDictionary | null): void;
-
-  setReachConstraints(reachConstraints: SKReachConstraints | null): void;
-
-  setConstraints(constraints: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setAttributeValues(attributeValues: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  static obstaclesFromSpriteTexturesAccuracy(sprites: NSArray<interop.Object> | Array<interop.Object>, accuracy: number): NSArray;
-
-  static obstaclesFromNodeBounds(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  static obstaclesFromNodePhysicsBodies(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  entity: GKEntity;
-
-  setEntity(entity: GKEntity): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  readonly canBecomeFocused: boolean;
-
-  readonly focusEffect: UIFocusEffect;
-
-  readonly focusGroupPriority: number;
-
-  readonly focusItemDeferralMode: interop.Enum<typeof UIFocusItemDeferralMode>;
-
-  readonly isTransparentFocusItem: boolean;
-
-  didHintFocusMovement(hint: UIFocusMovementHint): void;
-
-  readonly preferredFocusEnvironments: NSArray;
-
-  readonly parentFocusEnvironment: UIFocusEnvironment;
-
-  readonly focusItemContainer: UIFocusItemContainer;
-
-  setNeedsFocusUpdate(): void;
-
-  updateFocusIfNeeded(): void;
-
-  shouldUpdateFocusInContext(context: UIFocusUpdateContext): boolean;
-
-  didUpdateFocusInContextWithAnimationCoordinator(context: UIFocusUpdateContext, coordinator: UIFocusAnimationCoordinator): void;
-
-  readonly preferredFocusedView: UIView;
-
-  readonly focusGroupIdentifier: string;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  readonly coordinateSpace: UICoordinateSpace;
-
-  focusItemsInRect(rect: CGRect): NSArray;
-
-  convertPointToCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
-
-  convertPointFromCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
-
-  convertRectToCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
-
-  convertRectFromCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
-
-  readonly bounds: CGRect;
-}
-
-declare class SKKeyframeSequence extends NSObject implements NSSecureCoding, NSCopying {
-  initWithKeyframeValuesTimes(values: NSArray<interop.Object> | Array<interop.Object>, times: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithCapacity(numItems: number): this;
-
-  initWithCoder(aDecoder: NSCoder): this;
-
-  count(): number;
-
-  addKeyframeValueTime(value: interop.Object, time: number): void;
-
-  removeLastKeyframe(): void;
-
-  removeKeyframeAtIndex(index: number): void;
-
-  setKeyframeValueForIndex(value: interop.Object, index: number): void;
-
-  setKeyframeTimeForIndex(time: number, index: number): void;
-
-  setKeyframeValueTimeForIndex(value: interop.Object, time: number, index: number): void;
-
-  getKeyframeValueForIndex(index: number): interop.Object;
-
-  getKeyframeTimeForIndex(index: number): number;
-
-  sampleAtTime(time: number): interop.Object;
-
-  interpolationMode: interop.Enum<typeof SKInterpolationMode>;
-
-  repeatMode: interop.Enum<typeof SKRepeatMode>;
-
-  setInterpolationMode(interpolationMode: interop.Enum<typeof SKInterpolationMode>): void;
-
-  setRepeatMode(repeatMode: interop.Enum<typeof SKRepeatMode>): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class SK3DNode extends SKNode {
@@ -813,6 +519,287 @@ declare class SKWarpGeometryGrid extends SKWarpGeometry implements NSSecureCodin
   encodeWithCoder(coder: NSCoder): void;
 }
 
+declare class SKNode extends UIResponder implements NSCopying, NSSecureCoding, UIFocusItem, UIFocusItemContainer, UICoordinateSpace {
+  init(): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  static node<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static nodeWithFileNamed<This extends abstract new (...args: any) => any>(this: This, filename: string): InstanceType<This>;
+
+  static nodeWithFileNamedSecurelyWithClassesAndError<This extends abstract new (...args: any) => any>(this: This, filename: string, classes: NSSet, error: interop.PointerConvertible): InstanceType<This>;
+
+  readonly frame: CGRect;
+
+  calculateAccumulatedFrame(): CGRect;
+
+  position: CGPoint;
+
+  zPosition: number;
+
+  zRotation: number;
+
+  xScale: number;
+
+  yScale: number;
+
+  speed: number;
+
+  alpha: number;
+
+  paused: boolean;
+
+  hidden: boolean;
+
+  userInteractionEnabled: boolean;
+
+  focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>;
+
+  readonly parent: SKNode;
+
+  readonly children: NSArray;
+
+  name: string;
+
+  readonly scene: SKScene;
+
+  physicsBody: SKPhysicsBody;
+
+  userData: NSMutableDictionary;
+
+  reachConstraints: SKReachConstraints;
+
+  get constraints(): NSArray;
+  set constraints(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get attributeValues(): NSDictionary;
+  set attributeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  valueForAttributeNamed(key: string): SKAttributeValue;
+
+  setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
+
+  setScale(scale: number): void;
+
+  addChild(node: SKNode): void;
+
+  insertChildAtIndex(node: SKNode, index: number): void;
+
+  removeChildrenInArray(nodes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  removeAllChildren(): void;
+
+  removeFromParent(): void;
+
+  moveToParent(parent: SKNode): void;
+
+  childNodeWithName(name: string): SKNode;
+
+  enumerateChildNodesWithNameUsingBlock(name: string, block: (p1: SKNode, p2: interop.PointerConvertible) => void): void;
+
+  objectForKeyedSubscript(name: string): NSArray;
+
+  inParentHierarchy(parent: SKNode): boolean;
+
+  runAction(action: SKAction): void;
+
+  runActionCompletion(action: SKAction, block: () => void): void;
+
+  runActionWithKey(action: SKAction, key: string): void;
+
+  hasActions(): boolean;
+
+  actionForKey(key: string): SKAction;
+
+  removeActionForKey(key: string): void;
+
+  removeAllActions(): void;
+
+  containsPoint(p: CGPoint): boolean;
+
+  nodeAtPoint(p: CGPoint): SKNode;
+
+  nodesAtPoint(p: CGPoint): NSArray;
+
+  convertPointFromNode(point: CGPoint, node: SKNode): CGPoint;
+
+  convertPointToNode(point: CGPoint, node: SKNode): CGPoint;
+
+  intersectsNode(node: SKNode): boolean;
+
+  isEqualToNode(node: SKNode): boolean;
+
+  setPosition(position: CGPoint): void;
+
+  setZPosition(zPosition: number): void;
+
+  setZRotation(zRotation: number): void;
+
+  setXScale(xScale: number): void;
+
+  setYScale(yScale: number): void;
+
+  setSpeed(speed: number): void;
+
+  setAlpha(alpha: number): void;
+
+  isPaused(): boolean;
+
+  setPaused(paused: boolean): void;
+
+  isHidden(): boolean;
+
+  setHidden(hidden: boolean): void;
+
+  isUserInteractionEnabled(): boolean;
+
+  setUserInteractionEnabled(userInteractionEnabled: boolean): void;
+
+  setFocusBehavior(focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>): void;
+
+  setName(name: string | null): void;
+
+  setPhysicsBody(physicsBody: SKPhysicsBody | null): void;
+
+  setUserData(userData: NSMutableDictionary | null): void;
+
+  setReachConstraints(reachConstraints: SKReachConstraints | null): void;
+
+  setConstraints(constraints: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setAttributeValues(attributeValues: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  static obstaclesFromSpriteTexturesAccuracy(sprites: NSArray<interop.Object> | Array<interop.Object>, accuracy: number): NSArray;
+
+  static obstaclesFromNodeBounds(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  static obstaclesFromNodePhysicsBodies(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  entity: GKEntity;
+
+  setEntity(entity: GKEntity): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  readonly canBecomeFocused: boolean;
+
+  readonly focusEffect: UIFocusEffect;
+
+  readonly focusGroupPriority: number;
+
+  readonly focusItemDeferralMode: interop.Enum<typeof UIFocusItemDeferralMode>;
+
+  readonly isTransparentFocusItem: boolean;
+
+  didHintFocusMovement(hint: UIFocusMovementHint): void;
+
+  readonly preferredFocusEnvironments: NSArray;
+
+  readonly parentFocusEnvironment: UIFocusEnvironment;
+
+  readonly focusItemContainer: UIFocusItemContainer;
+
+  setNeedsFocusUpdate(): void;
+
+  updateFocusIfNeeded(): void;
+
+  shouldUpdateFocusInContext(context: UIFocusUpdateContext): boolean;
+
+  didUpdateFocusInContextWithAnimationCoordinator(context: UIFocusUpdateContext, coordinator: UIFocusAnimationCoordinator): void;
+
+  readonly preferredFocusedView: UIView;
+
+  readonly focusGroupIdentifier: string;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  readonly coordinateSpace: UICoordinateSpace;
+
+  focusItemsInRect(rect: CGRect): NSArray;
+
+  convertPointToCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
+
+  convertPointFromCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
+
+  convertRectToCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
+
+  convertRectFromCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
+
+  readonly bounds: CGRect;
+}
+
+declare class SKTileGroup extends NSObject implements NSCopying, NSSecureCoding {
+  static tileGroupWithTileDefinition<This extends abstract new (...args: any) => any>(this: This, tileDefinition: SKTileDefinition): InstanceType<This>;
+
+  static tileGroupWithRules<This extends abstract new (...args: any) => any>(this: This, rules: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static emptyTileGroup<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  initWithTileDefinition(tileDefinition: SKTileDefinition): this;
+
+  initWithRules(rules: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  get rules(): NSArray;
+  set rules(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  name: string;
+
+  setRules(rules: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setName(name: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class SKPhysicsBody extends NSObject implements NSCopying, NSSecureCoding {
   static bodyWithCircleOfRadius(r: number): SKPhysicsBody;
 
@@ -947,211 +934,112 @@ declare class SKPhysicsBody extends NSObject implements NSCopying, NSSecureCodin
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SKEmitterNode extends SKNode {
-  advanceSimulationTime(sec: number): void;
+declare class SKAttributeValue extends NSObject implements NSSecureCoding {
+  static valueWithFloat<This extends abstract new (...args: any) => any>(this: This, value: number): InstanceType<This>;
 
-  resetSimulation(): void;
+  static valueWithVectorFloat2<This extends abstract new (...args: any) => any>(this: This, value: unknown /* ext vector */): InstanceType<This>;
 
-  particleTexture: SKTexture;
+  static valueWithVectorFloat3<This extends abstract new (...args: any) => any>(this: This, value: unknown /* ext vector */): InstanceType<This>;
 
-  particleBlendMode: interop.Enum<typeof SKBlendMode>;
+  static valueWithVectorFloat4<This extends abstract new (...args: any) => any>(this: This, value: unknown /* ext vector */): InstanceType<This>;
 
-  particleColor: UIColor;
+  init(): this;
 
-  particleColorRedRange: number;
+  floatValue: number;
 
-  particleColorGreenRange: number;
+  vectorFloat2Value: unknown /* ext vector */;
 
-  particleColorBlueRange: number;
+  vectorFloat3Value: unknown /* ext vector */;
 
-  particleColorAlphaRange: number;
+  vectorFloat4Value: unknown /* ext vector */;
 
-  particleColorRedSpeed: number;
+  setFloatValue(floatValue: number): void;
 
-  particleColorGreenSpeed: number;
+  setVectorFloat2Value(vectorFloat2Value: unknown /* ext vector */): void;
 
-  particleColorBlueSpeed: number;
+  setVectorFloat3Value(vectorFloat3Value: unknown /* ext vector */): void;
 
-  particleColorAlphaSpeed: number;
+  setVectorFloat4Value(vectorFloat4Value: unknown /* ext vector */): void;
 
-  particleColorSequence: SKKeyframeSequence;
+  static readonly supportsSecureCoding: boolean;
 
-  particleColorBlendFactor: number;
+  encodeWithCoder(coder: NSCoder): void;
 
-  particleColorBlendFactorRange: number;
+  initWithCoder(coder: NSCoder): this;
+}
 
-  particleColorBlendFactorSpeed: number;
+declare class SKFieldNode extends SKNode {
+  region: SKRegion;
 
-  particleColorBlendFactorSequence: SKKeyframeSequence;
+  strength: number;
 
-  particlePosition: CGPoint;
+  falloff: number;
 
-  particlePositionRange: CGVector;
+  minimumRadius: number;
 
-  particleSpeed: number;
+  enabled: boolean;
 
-  particleSpeedRange: number;
+  exclusive: boolean;
 
-  emissionAngle: number;
+  categoryBitMask: number;
 
-  emissionAngleRange: number;
+  direction: unknown /* ext vector */;
 
-  xAcceleration: number;
+  smoothness: number;
 
-  yAcceleration: number;
+  animationSpeed: number;
 
-  particleBirthRate: number;
+  texture: SKTexture;
 
-  numParticlesToEmit: number;
+  static dragField(): SKFieldNode;
 
-  particleLifetime: number;
+  static vortexField(): SKFieldNode;
 
-  particleLifetimeRange: number;
+  static radialGravityField(): SKFieldNode;
 
-  particleRotation: number;
+  static linearGravityFieldWithVector(direction: unknown /* ext vector */): SKFieldNode;
 
-  particleRotationRange: number;
+  static velocityFieldWithVector(direction: unknown /* ext vector */): SKFieldNode;
 
-  particleRotationSpeed: number;
+  static velocityFieldWithTexture(velocityTexture: SKTexture): SKFieldNode;
 
-  particleSize: CGSize;
+  static noiseFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SKFieldNode;
 
-  particleScale: number;
+  static turbulenceFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SKFieldNode;
 
-  particleScaleRange: number;
+  static springField(): SKFieldNode;
 
-  particleScaleSpeed: number;
+  static electricField(): SKFieldNode;
 
-  particleScaleSequence: SKKeyframeSequence;
+  static magneticField(): SKFieldNode;
 
-  particleAlpha: number;
+  static customFieldWithEvaluationBlock(block: (p1: unknown /* ext vector */, p2: unknown /* ext vector */, p3: number, p4: number, p5: number) => unknown /* ext vector */): SKFieldNode;
 
-  particleAlphaRange: number;
+  setRegion(region: SKRegion | null): void;
 
-  particleAlphaSpeed: number;
+  setStrength(strength: number): void;
 
-  particleAlphaSequence: SKKeyframeSequence;
+  setFalloff(falloff: number): void;
 
-  particleAction: SKAction;
+  setMinimumRadius(minimumRadius: number): void;
 
-  fieldBitMask: number;
+  isEnabled(): boolean;
 
-  targetNode: SKNode;
+  setEnabled(enabled: boolean): void;
 
-  shader: SKShader;
+  isExclusive(): boolean;
 
-  get attributeValues(): NSDictionary;
-  set attributeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+  setExclusive(exclusive: boolean): void;
 
-  valueForAttributeNamed(key: string): SKAttributeValue;
+  setCategoryBitMask(categoryBitMask: number): void;
 
-  setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
+  setDirection(direction: unknown /* ext vector */): void;
 
-  particleZPosition: number;
+  setSmoothness(smoothness: number): void;
 
-  particleRenderOrder: interop.Enum<typeof SKParticleRenderOrder>;
+  setAnimationSpeed(animationSpeed: number): void;
 
-  particleZPositionRange: number;
-
-  particleZPositionSpeed: number;
-
-  setParticleTexture(particleTexture: SKTexture | null): void;
-
-  setParticleBlendMode(particleBlendMode: interop.Enum<typeof SKBlendMode>): void;
-
-  setParticleColor(particleColor: UIColor): void;
-
-  setParticleColorRedRange(particleColorRedRange: number): void;
-
-  setParticleColorGreenRange(particleColorGreenRange: number): void;
-
-  setParticleColorBlueRange(particleColorBlueRange: number): void;
-
-  setParticleColorAlphaRange(particleColorAlphaRange: number): void;
-
-  setParticleColorRedSpeed(particleColorRedSpeed: number): void;
-
-  setParticleColorGreenSpeed(particleColorGreenSpeed: number): void;
-
-  setParticleColorBlueSpeed(particleColorBlueSpeed: number): void;
-
-  setParticleColorAlphaSpeed(particleColorAlphaSpeed: number): void;
-
-  setParticleColorSequence(particleColorSequence: SKKeyframeSequence | null): void;
-
-  setParticleColorBlendFactor(particleColorBlendFactor: number): void;
-
-  setParticleColorBlendFactorRange(particleColorBlendFactorRange: number): void;
-
-  setParticleColorBlendFactorSpeed(particleColorBlendFactorSpeed: number): void;
-
-  setParticleColorBlendFactorSequence(particleColorBlendFactorSequence: SKKeyframeSequence | null): void;
-
-  setParticlePosition(particlePosition: CGPoint): void;
-
-  setParticlePositionRange(particlePositionRange: CGVector): void;
-
-  setParticleSpeed(particleSpeed: number): void;
-
-  setParticleSpeedRange(particleSpeedRange: number): void;
-
-  setEmissionAngle(emissionAngle: number): void;
-
-  setEmissionAngleRange(emissionAngleRange: number): void;
-
-  setXAcceleration(xAcceleration: number): void;
-
-  setYAcceleration(yAcceleration: number): void;
-
-  setParticleBirthRate(particleBirthRate: number): void;
-
-  setNumParticlesToEmit(numParticlesToEmit: number): void;
-
-  setParticleLifetime(particleLifetime: number): void;
-
-  setParticleLifetimeRange(particleLifetimeRange: number): void;
-
-  setParticleRotation(particleRotation: number): void;
-
-  setParticleRotationRange(particleRotationRange: number): void;
-
-  setParticleRotationSpeed(particleRotationSpeed: number): void;
-
-  setParticleSize(particleSize: CGSize): void;
-
-  setParticleScale(particleScale: number): void;
-
-  setParticleScaleRange(particleScaleRange: number): void;
-
-  setParticleScaleSpeed(particleScaleSpeed: number): void;
-
-  setParticleScaleSequence(particleScaleSequence: SKKeyframeSequence | null): void;
-
-  setParticleAlpha(particleAlpha: number): void;
-
-  setParticleAlphaRange(particleAlphaRange: number): void;
-
-  setParticleAlphaSpeed(particleAlphaSpeed: number): void;
-
-  setParticleAlphaSequence(particleAlphaSequence: SKKeyframeSequence | null): void;
-
-  setParticleAction(particleAction: SKAction | null): void;
-
-  setFieldBitMask(fieldBitMask: number): void;
-
-  setTargetNode(targetNode: SKNode | null): void;
-
-  setShader(shader: SKShader | null): void;
-
-  setAttributeValues(attributeValues: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setParticleZPosition(particleZPosition: number): void;
-
-  setParticleRenderOrder(particleRenderOrder: interop.Enum<typeof SKParticleRenderOrder>): void;
-
-  setParticleZPositionRange(particleZPositionRange: number): void;
-
-  setParticleZPositionSpeed(particleZPositionSpeed: number): void;
+  setTexture(texture: SKTexture | null): void;
 }
 
 declare class SKPhysicsJointSpring extends SKPhysicsJoint {
@@ -1164,6 +1052,52 @@ declare class SKPhysicsJointSpring extends SKPhysicsJoint {
   setDamping(damping: number): void;
 
   setFrequency(frequency: number): void;
+}
+
+declare class SKReachConstraints extends NSObject implements NSSecureCoding {
+  lowerAngleLimit: number;
+
+  upperAngleLimit: number;
+
+  initWithLowerAngleLimitUpperAngleLimit(lowerAngleLimit: number, upperAngleLimit: number): this;
+
+  setLowerAngleLimit(lowerAngleLimit: number): void;
+
+  setUpperAngleLimit(upperAngleLimit: number): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SKLightNode extends SKNode {
+  enabled: boolean;
+
+  lightColor: UIColor;
+
+  ambientColor: UIColor;
+
+  shadowColor: UIColor;
+
+  falloff: number;
+
+  categoryBitMask: number;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
+
+  setLightColor(lightColor: UIColor): void;
+
+  setAmbientColor(ambientColor: UIColor): void;
+
+  setShadowColor(shadowColor: UIColor): void;
+
+  setFalloff(falloff: number): void;
+
+  setCategoryBitMask(categoryBitMask: number): void;
 }
 
 declare class SKPhysicsWorld extends NSObject implements NSSecureCoding {
@@ -1198,40 +1132,6 @@ declare class SKPhysicsWorld extends NSObject implements NSSecureCoding {
   setSpeed(speed: number): void;
 
   setContactDelegate(contactDelegate: SKPhysicsContactDelegate | null): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class SKAttributeValue extends NSObject implements NSSecureCoding {
-  static valueWithFloat<This extends abstract new (...args: any) => any>(this: This, value: number): InstanceType<This>;
-
-  static valueWithVectorFloat2<This extends abstract new (...args: any) => any>(this: This, value: unknown /* ext vector */): InstanceType<This>;
-
-  static valueWithVectorFloat3<This extends abstract new (...args: any) => any>(this: This, value: unknown /* ext vector */): InstanceType<This>;
-
-  static valueWithVectorFloat4<This extends abstract new (...args: any) => any>(this: This, value: unknown /* ext vector */): InstanceType<This>;
-
-  init(): this;
-
-  floatValue: number;
-
-  vectorFloat2Value: unknown /* ext vector */;
-
-  vectorFloat3Value: unknown /* ext vector */;
-
-  vectorFloat4Value: unknown /* ext vector */;
-
-  setFloatValue(floatValue: number): void;
-
-  setVectorFloat2Value(vectorFloat2Value: unknown /* ext vector */): void;
-
-  setVectorFloat3Value(vectorFloat3Value: unknown /* ext vector */): void;
-
-  setVectorFloat4Value(vectorFloat4Value: unknown /* ext vector */): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -1308,24 +1208,6 @@ declare class SKPhysicsJointSliding extends SKPhysicsJoint {
   setUpperDistanceLimit(upperDistanceLimit: number): void;
 }
 
-declare class SKReachConstraints extends NSObject implements NSSecureCoding {
-  lowerAngleLimit: number;
-
-  upperAngleLimit: number;
-
-  initWithLowerAngleLimitUpperAngleLimit(lowerAngleLimit: number, upperAngleLimit: number): this;
-
-  setLowerAngleLimit(lowerAngleLimit: number): void;
-
-  setUpperAngleLimit(upperAngleLimit: number): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class SKRange extends NSObject implements NSSecureCoding, NSCopying {
   initWithLowerLimitUpperLimit(lower: number, upper: number): this;
 
@@ -1366,35 +1248,6 @@ declare class SKMutableTexture extends SKTexture {
   initWithSizePixelFormat(size: CGSize, format: number): this;
 
   modifyPixelDataWithBlock(block: (p1: interop.PointerConvertible, p2: number) => void): void;
-}
-
-declare class SKTileGroup extends NSObject implements NSCopying, NSSecureCoding {
-  static tileGroupWithTileDefinition<This extends abstract new (...args: any) => any>(this: This, tileDefinition: SKTileDefinition): InstanceType<This>;
-
-  static tileGroupWithRules<This extends abstract new (...args: any) => any>(this: This, rules: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static emptyTileGroup<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  initWithTileDefinition(tileDefinition: SKTileDefinition): this;
-
-  initWithRules(rules: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  get rules(): NSArray;
-  set rules(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  name: string;
-
-  setRules(rules: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setName(name: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SKTileSet extends NSObject implements NSCopying, NSSecureCoding {
@@ -1752,6 +1605,48 @@ declare class SKLabelNode extends SKNode {
   setColor(color: UIColor | null): void;
 
   setBlendMode(blendMode: interop.Enum<typeof SKBlendMode>): void;
+}
+
+declare class SKKeyframeSequence extends NSObject implements NSSecureCoding, NSCopying {
+  initWithKeyframeValuesTimes(values: NSArray<interop.Object> | Array<interop.Object>, times: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithCapacity(numItems: number): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  count(): number;
+
+  addKeyframeValueTime(value: interop.Object, time: number): void;
+
+  removeLastKeyframe(): void;
+
+  removeKeyframeAtIndex(index: number): void;
+
+  setKeyframeValueForIndex(value: interop.Object, index: number): void;
+
+  setKeyframeTimeForIndex(time: number, index: number): void;
+
+  setKeyframeValueTimeForIndex(value: interop.Object, time: number, index: number): void;
+
+  getKeyframeValueForIndex(index: number): interop.Object;
+
+  getKeyframeTimeForIndex(index: number): number;
+
+  sampleAtTime(time: number): interop.Object;
+
+  interpolationMode: interop.Enum<typeof SKInterpolationMode>;
+
+  repeatMode: interop.Enum<typeof SKRepeatMode>;
+
+  setInterpolationMode(interpolationMode: interop.Enum<typeof SKInterpolationMode>): void;
+
+  setRepeatMode(repeatMode: interop.Enum<typeof SKRepeatMode>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class SKWarpGeometry extends NSObject implements NSCopying, NSSecureCoding {
@@ -2359,34 +2254,6 @@ declare class SKPhysicsJointPin extends SKPhysicsJoint {
   setRotationSpeed(rotationSpeed: number): void;
 }
 
-declare class SKLightNode extends SKNode {
-  enabled: boolean;
-
-  lightColor: UIColor;
-
-  ambientColor: UIColor;
-
-  shadowColor: UIColor;
-
-  falloff: number;
-
-  categoryBitMask: number;
-
-  isEnabled(): boolean;
-
-  setEnabled(enabled: boolean): void;
-
-  setLightColor(lightColor: UIColor): void;
-
-  setAmbientColor(ambientColor: UIColor): void;
-
-  setShadowColor(shadowColor: UIColor): void;
-
-  setFalloff(falloff: number): void;
-
-  setCategoryBitMask(categoryBitMask: number): void;
-}
-
 declare class SKRenderer extends NSObject {
   static rendererWithDevice(device: MTLDevice): SKRenderer;
 
@@ -2639,78 +2506,211 @@ declare class SKEffectNode extends SKNode implements SKWarpable {
   readonly debugDescription: string;
 }
 
-declare class SKFieldNode extends SKNode {
-  region: SKRegion;
+declare class SKEmitterNode extends SKNode {
+  advanceSimulationTime(sec: number): void;
 
-  strength: number;
+  resetSimulation(): void;
 
-  falloff: number;
+  particleTexture: SKTexture;
 
-  minimumRadius: number;
+  particleBlendMode: interop.Enum<typeof SKBlendMode>;
 
-  enabled: boolean;
+  particleColor: UIColor;
 
-  exclusive: boolean;
+  particleColorRedRange: number;
 
-  categoryBitMask: number;
+  particleColorGreenRange: number;
 
-  direction: unknown /* ext vector */;
+  particleColorBlueRange: number;
 
-  smoothness: number;
+  particleColorAlphaRange: number;
 
-  animationSpeed: number;
+  particleColorRedSpeed: number;
 
-  texture: SKTexture;
+  particleColorGreenSpeed: number;
 
-  static dragField(): SKFieldNode;
+  particleColorBlueSpeed: number;
 
-  static vortexField(): SKFieldNode;
+  particleColorAlphaSpeed: number;
 
-  static radialGravityField(): SKFieldNode;
+  particleColorSequence: SKKeyframeSequence;
 
-  static linearGravityFieldWithVector(direction: unknown /* ext vector */): SKFieldNode;
+  particleColorBlendFactor: number;
 
-  static velocityFieldWithVector(direction: unknown /* ext vector */): SKFieldNode;
+  particleColorBlendFactorRange: number;
 
-  static velocityFieldWithTexture(velocityTexture: SKTexture): SKFieldNode;
+  particleColorBlendFactorSpeed: number;
 
-  static noiseFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SKFieldNode;
+  particleColorBlendFactorSequence: SKKeyframeSequence;
 
-  static turbulenceFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SKFieldNode;
+  particlePosition: CGPoint;
 
-  static springField(): SKFieldNode;
+  particlePositionRange: CGVector;
 
-  static electricField(): SKFieldNode;
+  particleSpeed: number;
 
-  static magneticField(): SKFieldNode;
+  particleSpeedRange: number;
 
-  static customFieldWithEvaluationBlock(block: (p1: unknown /* ext vector */, p2: unknown /* ext vector */, p3: number, p4: number, p5: number) => unknown /* ext vector */): SKFieldNode;
+  emissionAngle: number;
 
-  setRegion(region: SKRegion | null): void;
+  emissionAngleRange: number;
 
-  setStrength(strength: number): void;
+  xAcceleration: number;
 
-  setFalloff(falloff: number): void;
+  yAcceleration: number;
 
-  setMinimumRadius(minimumRadius: number): void;
+  particleBirthRate: number;
 
-  isEnabled(): boolean;
+  numParticlesToEmit: number;
 
-  setEnabled(enabled: boolean): void;
+  particleLifetime: number;
 
-  isExclusive(): boolean;
+  particleLifetimeRange: number;
 
-  setExclusive(exclusive: boolean): void;
+  particleRotation: number;
 
-  setCategoryBitMask(categoryBitMask: number): void;
+  particleRotationRange: number;
 
-  setDirection(direction: unknown /* ext vector */): void;
+  particleRotationSpeed: number;
 
-  setSmoothness(smoothness: number): void;
+  particleSize: CGSize;
 
-  setAnimationSpeed(animationSpeed: number): void;
+  particleScale: number;
 
-  setTexture(texture: SKTexture | null): void;
+  particleScaleRange: number;
+
+  particleScaleSpeed: number;
+
+  particleScaleSequence: SKKeyframeSequence;
+
+  particleAlpha: number;
+
+  particleAlphaRange: number;
+
+  particleAlphaSpeed: number;
+
+  particleAlphaSequence: SKKeyframeSequence;
+
+  particleAction: SKAction;
+
+  fieldBitMask: number;
+
+  targetNode: SKNode;
+
+  shader: SKShader;
+
+  get attributeValues(): NSDictionary;
+  set attributeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  valueForAttributeNamed(key: string): SKAttributeValue;
+
+  setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
+
+  particleZPosition: number;
+
+  particleRenderOrder: interop.Enum<typeof SKParticleRenderOrder>;
+
+  particleZPositionRange: number;
+
+  particleZPositionSpeed: number;
+
+  setParticleTexture(particleTexture: SKTexture | null): void;
+
+  setParticleBlendMode(particleBlendMode: interop.Enum<typeof SKBlendMode>): void;
+
+  setParticleColor(particleColor: UIColor): void;
+
+  setParticleColorRedRange(particleColorRedRange: number): void;
+
+  setParticleColorGreenRange(particleColorGreenRange: number): void;
+
+  setParticleColorBlueRange(particleColorBlueRange: number): void;
+
+  setParticleColorAlphaRange(particleColorAlphaRange: number): void;
+
+  setParticleColorRedSpeed(particleColorRedSpeed: number): void;
+
+  setParticleColorGreenSpeed(particleColorGreenSpeed: number): void;
+
+  setParticleColorBlueSpeed(particleColorBlueSpeed: number): void;
+
+  setParticleColorAlphaSpeed(particleColorAlphaSpeed: number): void;
+
+  setParticleColorSequence(particleColorSequence: SKKeyframeSequence | null): void;
+
+  setParticleColorBlendFactor(particleColorBlendFactor: number): void;
+
+  setParticleColorBlendFactorRange(particleColorBlendFactorRange: number): void;
+
+  setParticleColorBlendFactorSpeed(particleColorBlendFactorSpeed: number): void;
+
+  setParticleColorBlendFactorSequence(particleColorBlendFactorSequence: SKKeyframeSequence | null): void;
+
+  setParticlePosition(particlePosition: CGPoint): void;
+
+  setParticlePositionRange(particlePositionRange: CGVector): void;
+
+  setParticleSpeed(particleSpeed: number): void;
+
+  setParticleSpeedRange(particleSpeedRange: number): void;
+
+  setEmissionAngle(emissionAngle: number): void;
+
+  setEmissionAngleRange(emissionAngleRange: number): void;
+
+  setXAcceleration(xAcceleration: number): void;
+
+  setYAcceleration(yAcceleration: number): void;
+
+  setParticleBirthRate(particleBirthRate: number): void;
+
+  setNumParticlesToEmit(numParticlesToEmit: number): void;
+
+  setParticleLifetime(particleLifetime: number): void;
+
+  setParticleLifetimeRange(particleLifetimeRange: number): void;
+
+  setParticleRotation(particleRotation: number): void;
+
+  setParticleRotationRange(particleRotationRange: number): void;
+
+  setParticleRotationSpeed(particleRotationSpeed: number): void;
+
+  setParticleSize(particleSize: CGSize): void;
+
+  setParticleScale(particleScale: number): void;
+
+  setParticleScaleRange(particleScaleRange: number): void;
+
+  setParticleScaleSpeed(particleScaleSpeed: number): void;
+
+  setParticleScaleSequence(particleScaleSequence: SKKeyframeSequence | null): void;
+
+  setParticleAlpha(particleAlpha: number): void;
+
+  setParticleAlphaRange(particleAlphaRange: number): void;
+
+  setParticleAlphaSpeed(particleAlphaSpeed: number): void;
+
+  setParticleAlphaSequence(particleAlphaSequence: SKKeyframeSequence | null): void;
+
+  setParticleAction(particleAction: SKAction | null): void;
+
+  setFieldBitMask(fieldBitMask: number): void;
+
+  setTargetNode(targetNode: SKNode | null): void;
+
+  setShader(shader: SKShader | null): void;
+
+  setAttributeValues(attributeValues: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setParticleZPosition(particleZPosition: number): void;
+
+  setParticleRenderOrder(particleRenderOrder: interop.Enum<typeof SKParticleRenderOrder>): void;
+
+  setParticleZPositionRange(particleZPositionRange: number): void;
+
+  setParticleZPositionSpeed(particleZPositionSpeed: number): void;
 }
 
 declare class SKTextureAtlas extends NSObject implements NSSecureCoding {

@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./Runtime.d.ts" />
 /// <reference path="./AppKit.d.ts" />
+/// <reference path="./Runtime.d.ts" />
 /// <reference path="./QuartzCore.d.ts" />
 
 declare const SCNSceneSourceAssetAuthorKey: string;
@@ -165,8 +165,6 @@ declare const SCNPhysicsTestSearchModeClosest: string;
 
 declare const SCNVector3Zero: SCNVector3;
 
-declare const SCNGeometrySourceSemanticTangent: string;
-
 declare const SCNNormalTransform: string;
 
 declare const SCNHitTestBoundingBoxOnlyKey: string;
@@ -177,11 +175,11 @@ declare const SCNParticlePropertyVelocity: string;
 
 declare const SCNConsistencyInvalidArgumentError: number;
 
-declare const SCNSceneSourceAssetAuthoringToolKey: string;
-
 declare const SCNParticlePropertyContactNormal: string;
 
 declare const SCNParticlePropertyOpacity: string;
+
+declare const SCNSceneSourceAssetAuthoringToolKey: string;
 
 declare const SCNProgramCompilationError: number;
 
@@ -192,6 +190,8 @@ declare const SCNShaderModifierEntryPointFragment: string;
 declare const SCNSceneSourceOverrideAssetURLsKey: string;
 
 declare const SCNShaderModifierEntryPointSurface: string;
+
+declare const SCNGeometrySourceSemanticTangent: string;
 
 declare const SCNSceneSourceAnimationImportPolicyPlay: string;
 
@@ -235,8 +235,6 @@ declare const SCNLightSpotOuterAngleKey: string;
 
 declare const SCNConsistencyXMLSchemaValidationError: number;
 
-declare const SCNParticlePropertyFrameRate: string;
-
 declare const SCNSceneSourceAssetCreatedDateKey: string;
 
 declare const SCNLightTypeIES: string;
@@ -257,6 +255,68 @@ declare const SCNSceneStartTimeAttributeKey: string;
 
 declare const SCNSceneSourceFlattenSceneKey: string;
 
+declare const SCNParticlePropertyFrameRate: string;
+
+declare const SCNParticleSortingMode: {
+  None: 0,
+  ProjectedDepth: 1,
+  Distance: 2,
+  OldestFirst: 3,
+  YoungestFirst: 4,
+};
+
+declare const SCNParticleBlendMode: {
+  Additive: 0,
+  Subtract: 1,
+  Multiply: 2,
+  Screen: 3,
+  Alpha: 4,
+  Replace: 5,
+};
+
+declare const SCNLightProbeUpdateType: {
+  Never: 0,
+  Realtime: 1,
+};
+
+declare const SCNGeometryPrimitiveType: {
+  Triangles: 0,
+  TriangleStrip: 1,
+  Line: 2,
+  Point: 3,
+  Polygon: 4,
+};
+
+declare const SCNBufferFrequency: {
+  Frame: 0,
+  Node: 1,
+  Shadable: 2,
+};
+
+declare const SCNAntialiasingMode: {
+  None: 0,
+  Multisampling2X: 1,
+  Multisampling4X: 2,
+  Multisampling8X: 3,
+  Multisampling16X: 4,
+};
+
+declare const SCNBlendMode: {
+  Alpha: 0,
+  Add: 1,
+  Subtract: 2,
+  Multiply: 3,
+  Screen: 4,
+  Replace: 5,
+  Max: 6,
+};
+
+declare const SCNPhysicsCollisionCategory: {
+  Default: 1,
+  Static: 2,
+  All: -1,
+};
+
 declare const SCNDebugOptions: {
   None: 0,
   ShowPhysicsShapes: 1,
@@ -272,10 +332,9 @@ declare const SCNDebugOptions: {
   ShowCameras: 1024,
 };
 
-declare const SCNBufferFrequency: {
-  Frame: 0,
-  Node: 1,
-  Shadable: 2,
+declare const SCNLightProbeType: {
+  Irradiance: 0,
+  Radiance: 1,
 };
 
 declare const SCNInteractionMode: {
@@ -298,14 +357,6 @@ declare const SCNBillboardAxis: {
   Y: 2,
   Z: 4,
   All: 7,
-};
-
-declare const SCNGeometryPrimitiveType: {
-  Triangles: 0,
-  TriangleStrip: 1,
-  Line: 2,
-  Point: 3,
-  Polygon: 4,
 };
 
 declare const SCNTransparencyMode: {
@@ -331,11 +382,6 @@ declare const SCNLightAreaType: {
   Polygon: 4,
 };
 
-declare const SCNLightProbeUpdateType: {
-  Never: 0,
-  Realtime: 1,
-};
-
 declare const SCNMovabilityHint: {
   Fixed: 0,
   Movable: 1,
@@ -356,14 +402,6 @@ declare const SCNRenderingAPI: {
   OpenGLCore41: 3,
 };
 
-declare const SCNAntialiasingMode: {
-  None: 0,
-  Multisampling2X: 1,
-  Multisampling4X: 2,
-  Multisampling8X: 3,
-  Multisampling16X: 4,
-};
-
 declare const SCNColorMask: {
   None: 0,
   Red: 8,
@@ -371,14 +409,6 @@ declare const SCNColorMask: {
   Blue: 2,
   Alpha: 1,
   All: 15,
-};
-
-declare const SCNParticleSortingMode: {
-  None: 0,
-  ProjectedDepth: 1,
-  Distance: 2,
-  OldestFirst: 3,
-  YoungestFirst: 4,
 };
 
 declare const SCNCameraProjectionDirection: {
@@ -401,11 +431,6 @@ declare const SCNParticleInputMode: {
 declare const SCNPhysicsFieldScope: {
   Inside: 0,
   Outside: 1,
-};
-
-declare const SCNLightProbeType: {
-  Irradiance: 0,
-  Radiance: 1,
 };
 
 declare const SCNPhysicsBodyType: {
@@ -453,12 +478,6 @@ declare const SCNParticleBirthDirection: {
   Random: 2,
 };
 
-declare const SCNPhysicsCollisionCategory: {
-  Default: 1,
-  Static: 2,
-  All: -1,
-};
-
 declare const SCNTessellationSmoothingMode: {
   None: 0,
   PNTriangles: 1,
@@ -478,34 +497,15 @@ declare const SCNWrapMode: {
   Mirror: 4,
 };
 
-declare const SCNBlendMode: {
-  Alpha: 0,
-  Add: 1,
-  Subtract: 2,
-  Multiply: 3,
-  Screen: 4,
-  Replace: 5,
-  Max: 6,
-};
-
-declare const SCNMorpherCalculationMode: {
-  Normalized: 0,
-  Additive: 1,
-};
-
 declare const SCNParticleEvent: {
   Birth: 0,
   Death: 1,
   Collision: 2,
 };
 
-declare const SCNParticleBlendMode: {
-  Additive: 0,
-  Subtract: 1,
-  Multiply: 2,
-  Screen: 3,
-  Alpha: 4,
-  Replace: 5,
+declare const SCNMorpherCalculationMode: {
+  Normalized: 0,
+  Additive: 1,
 };
 
 declare const SCNParticleBirthLocation: {
@@ -572,6 +572,12 @@ declare interface SCNAvoidOccluderConstraintDelegate extends NSObjectProtocol {
 }
 
 declare class SCNAvoidOccluderConstraintDelegate extends NativeObject implements SCNAvoidOccluderConstraintDelegate {
+}
+
+declare interface SCNAnimationProtocol extends NSObjectProtocol {
+}
+
+declare class SCNAnimationProtocol extends NativeObject implements SCNAnimationProtocol {
 }
 
 declare interface SCNCameraControllerDelegate extends NSObjectProtocol {
@@ -776,12 +782,6 @@ declare interface SCNSceneRenderer extends NSObjectProtocol {
 declare class SCNSceneRenderer extends NativeObject implements SCNSceneRenderer {
 }
 
-declare interface SCNAnimationProtocol extends NSObjectProtocol {
-}
-
-declare class SCNAnimationProtocol extends NativeObject implements SCNAnimationProtocol {
-}
-
 declare interface SCNPhysicsContactDelegate extends NSObjectProtocol {
   physicsWorldDidBeginContact?(world: SCNPhysicsWorld, contact: SCNPhysicsContact): void;
 
@@ -891,38 +891,6 @@ declare interface SCNAnimatable extends NSObjectProtocol {
 declare class SCNAnimatable extends NativeObject implements SCNAnimatable {
 }
 
-declare class SCNTransaction extends NSObject {
-  static begin(): void;
-
-  static commit(): void;
-
-  static flush(): void;
-
-  static lock(): void;
-
-  static unlock(): void;
-
-  static animationDuration: number;
-
-  static animationTimingFunction: CAMediaTimingFunction;
-
-  static disableActions: boolean;
-
-  static completionBlock: () => void;
-
-  static valueForKey(key: string): interop.Object;
-
-  static setValueForKey(value: interop.Object | null, key: string): void;
-
-  static setAnimationDuration(animationDuration: number): void;
-
-  static setAnimationTimingFunction(animationTimingFunction: CAMediaTimingFunction): void;
-
-  static setDisableActions(disableActions: boolean): void;
-
-  static setCompletionBlock(completionBlock: () => void | null): void;
-}
-
 declare class SCNShape extends SCNGeometry {
   static shapeWithPathExtrusionDepth<This extends abstract new (...args: any) => any>(this: This, path: NSBezierPath | null, extrusionDepth: number): InstanceType<This>;
 
@@ -987,362 +955,6 @@ declare class SCNPhysicsWorld extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SCNParticleSystem extends NSObject implements NSCopying, NSSecureCoding, SCNAnimatable {
-  static particleSystem<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static particleSystemNamedInDirectory<This extends abstract new (...args: any) => any>(this: This, name: string, directory: string | null): InstanceType<This>;
-
-  emissionDuration: number;
-
-  emissionDurationVariation: number;
-
-  idleDuration: number;
-
-  idleDurationVariation: number;
-
-  loops: boolean;
-
-  birthRate: number;
-
-  birthRateVariation: number;
-
-  warmupDuration: number;
-
-  emitterShape: SCNGeometry;
-
-  birthLocation: interop.Enum<typeof SCNParticleBirthLocation>;
-
-  birthDirection: interop.Enum<typeof SCNParticleBirthDirection>;
-
-  spreadingAngle: number;
-
-  emittingDirection: SCNVector3;
-
-  orientationDirection: SCNVector3;
-
-  acceleration: SCNVector3;
-
-  local: boolean;
-
-  particleAngle: number;
-
-  particleAngleVariation: number;
-
-  particleVelocity: number;
-
-  particleVelocityVariation: number;
-
-  particleAngularVelocity: number;
-
-  particleAngularVelocityVariation: number;
-
-  particleLifeSpan: number;
-
-  particleLifeSpanVariation: number;
-
-  systemSpawnedOnDying: SCNParticleSystem;
-
-  systemSpawnedOnCollision: SCNParticleSystem;
-
-  systemSpawnedOnLiving: SCNParticleSystem;
-
-  particleImage: interop.Object;
-
-  imageSequenceColumnCount: number;
-
-  imageSequenceRowCount: number;
-
-  imageSequenceInitialFrame: number;
-
-  imageSequenceInitialFrameVariation: number;
-
-  imageSequenceFrameRate: number;
-
-  imageSequenceFrameRateVariation: number;
-
-  imageSequenceAnimationMode: interop.Enum<typeof SCNParticleImageSequenceAnimationMode>;
-
-  particleColor: NSColor;
-
-  particleColorVariation: SCNVector4;
-
-  particleSize: number;
-
-  particleSizeVariation: number;
-
-  particleIntensity: number;
-
-  particleIntensityVariation: number;
-
-  blendMode: interop.Enum<typeof SCNParticleBlendMode>;
-
-  blackPassEnabled: boolean;
-
-  orientationMode: interop.Enum<typeof SCNParticleOrientationMode>;
-
-  sortingMode: interop.Enum<typeof SCNParticleSortingMode>;
-
-  lightingEnabled: boolean;
-
-  affectedByGravity: boolean;
-
-  affectedByPhysicsFields: boolean;
-
-  particleDiesOnCollision: boolean;
-
-  get colliderNodes(): NSArray;
-  set colliderNodes(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  particleMass: number;
-
-  particleMassVariation: number;
-
-  particleBounce: number;
-
-  particleBounceVariation: number;
-
-  particleFriction: number;
-
-  particleFrictionVariation: number;
-
-  particleCharge: number;
-
-  particleChargeVariation: number;
-
-  dampingFactor: number;
-
-  speedFactor: number;
-
-  stretchFactor: number;
-
-  fresnelExponent: number;
-
-  writesToDepthBuffer: boolean;
-
-  get propertyControllers(): NSDictionary;
-  set propertyControllers(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  reset(): void;
-
-  handleEventForPropertiesWithBlock(event: interop.Enum<typeof SCNParticleEvent>, properties: NSArray<interop.Object> | Array<interop.Object>, block: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void): void;
-
-  addModifierForPropertiesAtStageWithBlock(properties: NSArray<interop.Object> | Array<interop.Object>, stage: interop.Enum<typeof SCNParticleModifierStage>, block: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void): void;
-
-  removeModifiersOfStage(stage: interop.Enum<typeof SCNParticleModifierStage>): void;
-
-  removeAllModifiers(): void;
-
-  setEmissionDuration(emissionDuration: number): void;
-
-  setEmissionDurationVariation(emissionDurationVariation: number): void;
-
-  setIdleDuration(idleDuration: number): void;
-
-  setIdleDurationVariation(idleDurationVariation: number): void;
-
-  setLoops(loops: boolean): void;
-
-  setBirthRate(birthRate: number): void;
-
-  setBirthRateVariation(birthRateVariation: number): void;
-
-  setWarmupDuration(warmupDuration: number): void;
-
-  setEmitterShape(emitterShape: SCNGeometry | null): void;
-
-  setBirthLocation(birthLocation: interop.Enum<typeof SCNParticleBirthLocation>): void;
-
-  setBirthDirection(birthDirection: interop.Enum<typeof SCNParticleBirthDirection>): void;
-
-  setSpreadingAngle(spreadingAngle: number): void;
-
-  setEmittingDirection(emittingDirection: SCNVector3): void;
-
-  setOrientationDirection(orientationDirection: SCNVector3): void;
-
-  setAcceleration(acceleration: SCNVector3): void;
-
-  isLocal(): boolean;
-
-  setLocal(local: boolean): void;
-
-  setParticleAngle(particleAngle: number): void;
-
-  setParticleAngleVariation(particleAngleVariation: number): void;
-
-  setParticleVelocity(particleVelocity: number): void;
-
-  setParticleVelocityVariation(particleVelocityVariation: number): void;
-
-  setParticleAngularVelocity(particleAngularVelocity: number): void;
-
-  setParticleAngularVelocityVariation(particleAngularVelocityVariation: number): void;
-
-  setParticleLifeSpan(particleLifeSpan: number): void;
-
-  setParticleLifeSpanVariation(particleLifeSpanVariation: number): void;
-
-  setSystemSpawnedOnDying(systemSpawnedOnDying: SCNParticleSystem | null): void;
-
-  setSystemSpawnedOnCollision(systemSpawnedOnCollision: SCNParticleSystem | null): void;
-
-  setSystemSpawnedOnLiving(systemSpawnedOnLiving: SCNParticleSystem | null): void;
-
-  setParticleImage(particleImage: interop.Object | null): void;
-
-  setImageSequenceColumnCount(imageSequenceColumnCount: number): void;
-
-  setImageSequenceRowCount(imageSequenceRowCount: number): void;
-
-  setImageSequenceInitialFrame(imageSequenceInitialFrame: number): void;
-
-  setImageSequenceInitialFrameVariation(imageSequenceInitialFrameVariation: number): void;
-
-  setImageSequenceFrameRate(imageSequenceFrameRate: number): void;
-
-  setImageSequenceFrameRateVariation(imageSequenceFrameRateVariation: number): void;
-
-  setImageSequenceAnimationMode(imageSequenceAnimationMode: interop.Enum<typeof SCNParticleImageSequenceAnimationMode>): void;
-
-  setParticleColor(particleColor: NSColor): void;
-
-  setParticleColorVariation(particleColorVariation: SCNVector4): void;
-
-  setParticleSize(particleSize: number): void;
-
-  setParticleSizeVariation(particleSizeVariation: number): void;
-
-  setParticleIntensity(particleIntensity: number): void;
-
-  setParticleIntensityVariation(particleIntensityVariation: number): void;
-
-  setBlendMode(blendMode: interop.Enum<typeof SCNParticleBlendMode>): void;
-
-  isBlackPassEnabled(): boolean;
-
-  setBlackPassEnabled(blackPassEnabled: boolean): void;
-
-  setOrientationMode(orientationMode: interop.Enum<typeof SCNParticleOrientationMode>): void;
-
-  setSortingMode(sortingMode: interop.Enum<typeof SCNParticleSortingMode>): void;
-
-  isLightingEnabled(): boolean;
-
-  setLightingEnabled(lightingEnabled: boolean): void;
-
-  setAffectedByGravity(affectedByGravity: boolean): void;
-
-  setAffectedByPhysicsFields(affectedByPhysicsFields: boolean): void;
-
-  setParticleDiesOnCollision(particleDiesOnCollision: boolean): void;
-
-  setColliderNodes(colliderNodes: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setParticleMass(particleMass: number): void;
-
-  setParticleMassVariation(particleMassVariation: number): void;
-
-  setParticleBounce(particleBounce: number): void;
-
-  setParticleBounceVariation(particleBounceVariation: number): void;
-
-  setParticleFriction(particleFriction: number): void;
-
-  setParticleFrictionVariation(particleFrictionVariation: number): void;
-
-  setParticleCharge(particleCharge: number): void;
-
-  setParticleChargeVariation(particleChargeVariation: number): void;
-
-  setDampingFactor(dampingFactor: number): void;
-
-  setSpeedFactor(speedFactor: number): void;
-
-  setStretchFactor(stretchFactor: number): void;
-
-  setFresnelExponent(fresnelExponent: number): void;
-
-  setWritesToDepthBuffer(writesToDepthBuffer: boolean): void;
-
-  setPropertyControllers(propertyControllers: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  addAnimationForKey(animation: SCNAnimation, key: string | null): void;
-
-  addAnimationPlayerForKey(player: SCNAnimationPlayer, key: string | null): void;
-
-  removeAllAnimations(): void;
-
-  removeAllAnimationsWithBlendOutDuration(duration: number): void;
-
-  removeAnimationForKey(key: string): void;
-
-  removeAnimationForKeyBlendOutDuration(key: string, duration: number): void;
-
-  readonly animationKeys: NSArray;
-
-  animationPlayerForKey(key: string): SCNAnimationPlayer;
-
-  removeAnimationForKeyFadeOutDuration(key: string, duration: number): void;
-
-  animationForKey(key: string): CAAnimation;
-
-  pauseAnimationForKey(key: string): void;
-
-  resumeAnimationForKey(key: string): void;
-
-  setSpeedForAnimationKey(speed: number, key: string): void;
-
-  isAnimationForKeyPaused(key: string): boolean;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -1719,6 +1331,30 @@ declare class SCNLevelOfDetail extends NSObject implements NSCopying, NSSecureCo
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class SCNCapsule extends SCNGeometry {
+  static capsuleWithCapRadiusHeight<This extends abstract new (...args: any) => any>(this: This, capRadius: number, height: number): InstanceType<This>;
+
+  capRadius: number;
+
+  height: number;
+
+  radialSegmentCount: number;
+
+  heightSegmentCount: number;
+
+  capSegmentCount: number;
+
+  setCapRadius(capRadius: number): void;
+
+  setHeight(height: number): void;
+
+  setRadialSegmentCount(radialSegmentCount: number): void;
+
+  setHeightSegmentCount(heightSegmentCount: number): void;
+
+  setCapSegmentCount(capSegmentCount: number): void;
+}
+
 declare class SCNScene extends NSObject implements NSSecureCoding {
   static scene<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -1875,44 +1511,12 @@ declare class SCNPhysicsField extends NSObject implements NSCopying, NSSecureCod
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SCNIKConstraint extends SCNConstraint {
-  initWithChainRootNode(chainRootNode: SCNNode): this;
-
-  static inverseKinematicsConstraintWithChainRootNode<This extends abstract new (...args: any) => any>(this: This, chainRootNode: SCNNode): InstanceType<This>;
-
-  readonly chainRootNode: SCNNode;
-
-  targetPosition: SCNVector3;
-
-  setMaxAllowedRotationAngleForJoint(angle: number, node: SCNNode): void;
-
-  maxAllowedRotationAngleForJoint(node: SCNNode): number;
-
-  setTargetPosition(targetPosition: SCNVector3): void;
-}
-
 declare class SCNPhysicsBehavior extends NSObject implements NSSecureCoding {
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SCNPhysicsVehicle extends SCNPhysicsBehavior {
-  static vehicleWithChassisBodyWheels<This extends abstract new (...args: any) => any>(this: This, chassisBody: SCNPhysicsBody, wheels: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  readonly speedInKilometersPerHour: number;
-
-  readonly wheels: NSArray;
-
-  readonly chassisBody: SCNPhysicsBody;
-
-  applyEngineForceForWheelAtIndex(value: number, index: number): void;
-
-  setSteeringAngleForWheelAtIndex(value: number, index: number): void;
-
-  applyBrakingForceForWheelAtIndex(value: number, index: number): void;
 }
 
 declare class SCNAudioPlayer extends NSObject {
@@ -1935,6 +1539,22 @@ declare class SCNAudioPlayer extends NSObject {
   setWillStartPlayback(willStartPlayback: () => void | null): void;
 
   setDidFinishPlayback(didFinishPlayback: () => void | null): void;
+}
+
+declare class SCNPhysicsVehicle extends SCNPhysicsBehavior {
+  static vehicleWithChassisBodyWheels<This extends abstract new (...args: any) => any>(this: This, chassisBody: SCNPhysicsBody, wheels: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  readonly speedInKilometersPerHour: number;
+
+  readonly wheels: NSArray;
+
+  readonly chassisBody: SCNPhysicsBody;
+
+  applyEngineForceForWheelAtIndex(value: number, index: number): void;
+
+  setSteeringAngleForWheelAtIndex(value: number, index: number): void;
+
+  applyBrakingForceForWheelAtIndex(value: number, index: number): void;
 }
 
 declare class SCNPhysicsBallSocketJoint extends SCNPhysicsBehavior {
@@ -2003,6 +1623,362 @@ declare class SCNPhysicsShape extends NSObject implements NSCopying, NSSecureCod
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class SCNParticleSystem extends NSObject implements NSCopying, NSSecureCoding, SCNAnimatable {
+  static particleSystem<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static particleSystemNamedInDirectory<This extends abstract new (...args: any) => any>(this: This, name: string, directory: string | null): InstanceType<This>;
+
+  emissionDuration: number;
+
+  emissionDurationVariation: number;
+
+  idleDuration: number;
+
+  idleDurationVariation: number;
+
+  loops: boolean;
+
+  birthRate: number;
+
+  birthRateVariation: number;
+
+  warmupDuration: number;
+
+  emitterShape: SCNGeometry;
+
+  birthLocation: interop.Enum<typeof SCNParticleBirthLocation>;
+
+  birthDirection: interop.Enum<typeof SCNParticleBirthDirection>;
+
+  spreadingAngle: number;
+
+  emittingDirection: SCNVector3;
+
+  orientationDirection: SCNVector3;
+
+  acceleration: SCNVector3;
+
+  local: boolean;
+
+  particleAngle: number;
+
+  particleAngleVariation: number;
+
+  particleVelocity: number;
+
+  particleVelocityVariation: number;
+
+  particleAngularVelocity: number;
+
+  particleAngularVelocityVariation: number;
+
+  particleLifeSpan: number;
+
+  particleLifeSpanVariation: number;
+
+  systemSpawnedOnDying: SCNParticleSystem;
+
+  systemSpawnedOnCollision: SCNParticleSystem;
+
+  systemSpawnedOnLiving: SCNParticleSystem;
+
+  particleImage: interop.Object;
+
+  imageSequenceColumnCount: number;
+
+  imageSequenceRowCount: number;
+
+  imageSequenceInitialFrame: number;
+
+  imageSequenceInitialFrameVariation: number;
+
+  imageSequenceFrameRate: number;
+
+  imageSequenceFrameRateVariation: number;
+
+  imageSequenceAnimationMode: interop.Enum<typeof SCNParticleImageSequenceAnimationMode>;
+
+  particleColor: NSColor;
+
+  particleColorVariation: SCNVector4;
+
+  particleSize: number;
+
+  particleSizeVariation: number;
+
+  particleIntensity: number;
+
+  particleIntensityVariation: number;
+
+  blendMode: interop.Enum<typeof SCNParticleBlendMode>;
+
+  blackPassEnabled: boolean;
+
+  orientationMode: interop.Enum<typeof SCNParticleOrientationMode>;
+
+  sortingMode: interop.Enum<typeof SCNParticleSortingMode>;
+
+  lightingEnabled: boolean;
+
+  affectedByGravity: boolean;
+
+  affectedByPhysicsFields: boolean;
+
+  particleDiesOnCollision: boolean;
+
+  get colliderNodes(): NSArray;
+  set colliderNodes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  particleMass: number;
+
+  particleMassVariation: number;
+
+  particleBounce: number;
+
+  particleBounceVariation: number;
+
+  particleFriction: number;
+
+  particleFrictionVariation: number;
+
+  particleCharge: number;
+
+  particleChargeVariation: number;
+
+  dampingFactor: number;
+
+  speedFactor: number;
+
+  stretchFactor: number;
+
+  fresnelExponent: number;
+
+  writesToDepthBuffer: boolean;
+
+  get propertyControllers(): NSDictionary;
+  set propertyControllers(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  reset(): void;
+
+  handleEventForPropertiesWithBlock(event: interop.Enum<typeof SCNParticleEvent>, properties: NSArray<interop.Object> | Array<interop.Object>, block: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void): void;
+
+  addModifierForPropertiesAtStageWithBlock(properties: NSArray<interop.Object> | Array<interop.Object>, stage: interop.Enum<typeof SCNParticleModifierStage>, block: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void): void;
+
+  removeModifiersOfStage(stage: interop.Enum<typeof SCNParticleModifierStage>): void;
+
+  removeAllModifiers(): void;
+
+  setEmissionDuration(emissionDuration: number): void;
+
+  setEmissionDurationVariation(emissionDurationVariation: number): void;
+
+  setIdleDuration(idleDuration: number): void;
+
+  setIdleDurationVariation(idleDurationVariation: number): void;
+
+  setLoops(loops: boolean): void;
+
+  setBirthRate(birthRate: number): void;
+
+  setBirthRateVariation(birthRateVariation: number): void;
+
+  setWarmupDuration(warmupDuration: number): void;
+
+  setEmitterShape(emitterShape: SCNGeometry | null): void;
+
+  setBirthLocation(birthLocation: interop.Enum<typeof SCNParticleBirthLocation>): void;
+
+  setBirthDirection(birthDirection: interop.Enum<typeof SCNParticleBirthDirection>): void;
+
+  setSpreadingAngle(spreadingAngle: number): void;
+
+  setEmittingDirection(emittingDirection: SCNVector3): void;
+
+  setOrientationDirection(orientationDirection: SCNVector3): void;
+
+  setAcceleration(acceleration: SCNVector3): void;
+
+  isLocal(): boolean;
+
+  setLocal(local: boolean): void;
+
+  setParticleAngle(particleAngle: number): void;
+
+  setParticleAngleVariation(particleAngleVariation: number): void;
+
+  setParticleVelocity(particleVelocity: number): void;
+
+  setParticleVelocityVariation(particleVelocityVariation: number): void;
+
+  setParticleAngularVelocity(particleAngularVelocity: number): void;
+
+  setParticleAngularVelocityVariation(particleAngularVelocityVariation: number): void;
+
+  setParticleLifeSpan(particleLifeSpan: number): void;
+
+  setParticleLifeSpanVariation(particleLifeSpanVariation: number): void;
+
+  setSystemSpawnedOnDying(systemSpawnedOnDying: SCNParticleSystem | null): void;
+
+  setSystemSpawnedOnCollision(systemSpawnedOnCollision: SCNParticleSystem | null): void;
+
+  setSystemSpawnedOnLiving(systemSpawnedOnLiving: SCNParticleSystem | null): void;
+
+  setParticleImage(particleImage: interop.Object | null): void;
+
+  setImageSequenceColumnCount(imageSequenceColumnCount: number): void;
+
+  setImageSequenceRowCount(imageSequenceRowCount: number): void;
+
+  setImageSequenceInitialFrame(imageSequenceInitialFrame: number): void;
+
+  setImageSequenceInitialFrameVariation(imageSequenceInitialFrameVariation: number): void;
+
+  setImageSequenceFrameRate(imageSequenceFrameRate: number): void;
+
+  setImageSequenceFrameRateVariation(imageSequenceFrameRateVariation: number): void;
+
+  setImageSequenceAnimationMode(imageSequenceAnimationMode: interop.Enum<typeof SCNParticleImageSequenceAnimationMode>): void;
+
+  setParticleColor(particleColor: NSColor): void;
+
+  setParticleColorVariation(particleColorVariation: SCNVector4): void;
+
+  setParticleSize(particleSize: number): void;
+
+  setParticleSizeVariation(particleSizeVariation: number): void;
+
+  setParticleIntensity(particleIntensity: number): void;
+
+  setParticleIntensityVariation(particleIntensityVariation: number): void;
+
+  setBlendMode(blendMode: interop.Enum<typeof SCNParticleBlendMode>): void;
+
+  isBlackPassEnabled(): boolean;
+
+  setBlackPassEnabled(blackPassEnabled: boolean): void;
+
+  setOrientationMode(orientationMode: interop.Enum<typeof SCNParticleOrientationMode>): void;
+
+  setSortingMode(sortingMode: interop.Enum<typeof SCNParticleSortingMode>): void;
+
+  isLightingEnabled(): boolean;
+
+  setLightingEnabled(lightingEnabled: boolean): void;
+
+  setAffectedByGravity(affectedByGravity: boolean): void;
+
+  setAffectedByPhysicsFields(affectedByPhysicsFields: boolean): void;
+
+  setParticleDiesOnCollision(particleDiesOnCollision: boolean): void;
+
+  setColliderNodes(colliderNodes: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setParticleMass(particleMass: number): void;
+
+  setParticleMassVariation(particleMassVariation: number): void;
+
+  setParticleBounce(particleBounce: number): void;
+
+  setParticleBounceVariation(particleBounceVariation: number): void;
+
+  setParticleFriction(particleFriction: number): void;
+
+  setParticleFrictionVariation(particleFrictionVariation: number): void;
+
+  setParticleCharge(particleCharge: number): void;
+
+  setParticleChargeVariation(particleChargeVariation: number): void;
+
+  setDampingFactor(dampingFactor: number): void;
+
+  setSpeedFactor(speedFactor: number): void;
+
+  setStretchFactor(stretchFactor: number): void;
+
+  setFresnelExponent(fresnelExponent: number): void;
+
+  setWritesToDepthBuffer(writesToDepthBuffer: boolean): void;
+
+  setPropertyControllers(propertyControllers: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  addAnimationForKey(animation: SCNAnimation, key: string | null): void;
+
+  addAnimationPlayerForKey(player: SCNAnimationPlayer, key: string | null): void;
+
+  removeAllAnimations(): void;
+
+  removeAllAnimationsWithBlendOutDuration(duration: number): void;
+
+  removeAnimationForKey(key: string): void;
+
+  removeAnimationForKeyBlendOutDuration(key: string, duration: number): void;
+
+  readonly animationKeys: NSArray;
+
+  animationPlayerForKey(key: string): SCNAnimationPlayer;
+
+  removeAnimationForKeyFadeOutDuration(key: string, duration: number): void;
+
+  animationForKey(key: string): CAAnimation;
+
+  pauseAnimationForKey(key: string): void;
+
+  resumeAnimationForKey(key: string): void;
+
+  setSpeedForAnimationKey(speed: number, key: string): void;
+
+  isAnimationForKeyPaused(key: string): boolean;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class SCNParticlePropertyController extends NSObject implements NSSecureCoding, NSCopying {
   static controllerWithAnimation<This extends abstract new (...args: any) => any>(this: This, animation: CAAnimation): InstanceType<This>;
 
@@ -2037,30 +2013,6 @@ declare class SCNParticlePropertyController extends NSObject implements NSSecure
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class SCNLookAtConstraint extends SCNConstraint {
-  static lookAtConstraintWithTarget<This extends abstract new (...args: any) => any>(this: This, target: SCNNode | null): InstanceType<This>;
-
-  target: SCNNode;
-
-  setTarget(target: SCNNode | null): void;
-
-  targetOffset: SCNVector3;
-
-  localFront: SCNVector3;
-
-  worldUp: SCNVector3;
-
-  gimbalLockEnabled: boolean;
-
-  setTargetOffset(targetOffset: SCNVector3): void;
-
-  setLocalFront(localFront: SCNVector3): void;
-
-  setWorldUp(worldUp: SCNVector3): void;
-
-  setGimbalLockEnabled(gimbalLockEnabled: boolean): void;
 }
 
 declare class SCNDistanceConstraint extends SCNConstraint {
@@ -3895,6 +3847,30 @@ declare class SCNAccelerationConstraint extends SCNConstraint {
   setDamping(damping: number): void;
 }
 
+declare class SCNLookAtConstraint extends SCNConstraint {
+  static lookAtConstraintWithTarget<This extends abstract new (...args: any) => any>(this: This, target: SCNNode | null): InstanceType<This>;
+
+  target: SCNNode;
+
+  setTarget(target: SCNNode | null): void;
+
+  targetOffset: SCNVector3;
+
+  localFront: SCNVector3;
+
+  worldUp: SCNVector3;
+
+  gimbalLockEnabled: boolean;
+
+  setTargetOffset(targetOffset: SCNVector3): void;
+
+  setLocalFront(localFront: SCNVector3): void;
+
+  setWorldUp(worldUp: SCNVector3): void;
+
+  setGimbalLockEnabled(gimbalLockEnabled: boolean): void;
+}
+
 declare class SCNAnimationEvent extends NSObject {
   static animationEventWithKeyTimeBlock<This extends abstract new (...args: any) => any>(this: This, time: number, eventBlock: (p1: SCNAnimation, p2: interop.Object, p3: boolean) => void): InstanceType<This>;
 }
@@ -3955,6 +3931,312 @@ declare class SCNPhysicsSliderJoint extends SCNPhysicsBehavior {
   setMotorTargetAngularVelocity(motorTargetAngularVelocity: number): void;
 
   setMotorMaximumTorque(motorMaximumTorque: number): void;
+}
+
+declare class SCNCamera extends NSObject implements SCNAnimatable, SCNTechniqueSupport, NSCopying, NSSecureCoding {
+  static camera<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  name: string;
+
+  fieldOfView: number;
+
+  projectionDirection: interop.Enum<typeof SCNCameraProjectionDirection>;
+
+  focalLength: number;
+
+  sensorHeight: number;
+
+  zNear: number;
+
+  zFar: number;
+
+  automaticallyAdjustsZRange: boolean;
+
+  usesOrthographicProjection: boolean;
+
+  orthographicScale: number;
+
+  projectionTransform: CATransform3D;
+
+  setProjectionTransform(projectionTransform: CATransform3D): void;
+
+  projectionTransformWithViewportSize(viewportSize: CGSize): CATransform3D;
+
+  wantsDepthOfField: boolean;
+
+  focusDistance: number;
+
+  focalBlurSampleCount: number;
+
+  fStop: number;
+
+  apertureBladeCount: number;
+
+  motionBlurIntensity: number;
+
+  screenSpaceAmbientOcclusionIntensity: number;
+
+  screenSpaceAmbientOcclusionRadius: number;
+
+  screenSpaceAmbientOcclusionBias: number;
+
+  screenSpaceAmbientOcclusionDepthThreshold: number;
+
+  screenSpaceAmbientOcclusionNormalThreshold: number;
+
+  wantsHDR: boolean;
+
+  exposureOffset: number;
+
+  averageGray: number;
+
+  whitePoint: number;
+
+  wantsExposureAdaptation: boolean;
+
+  exposureAdaptationBrighteningSpeedFactor: number;
+
+  exposureAdaptationDarkeningSpeedFactor: number;
+
+  minimumExposure: number;
+
+  maximumExposure: number;
+
+  bloomThreshold: number;
+
+  bloomIterationCount: number;
+
+  bloomIterationSpread: number;
+
+  bloomIntensity: number;
+
+  bloomBlurRadius: number;
+
+  vignettingPower: number;
+
+  vignettingIntensity: number;
+
+  colorFringeStrength: number;
+
+  colorFringeIntensity: number;
+
+  saturation: number;
+
+  contrast: number;
+
+  grainIntensity: number;
+
+  grainScale: number;
+
+  grainIsColored: boolean;
+
+  whiteBalanceTemperature: number;
+
+  whiteBalanceTint: number;
+
+  readonly colorGrading: SCNMaterialProperty;
+
+  categoryBitMask: number;
+
+  setName(name: string | null): void;
+
+  setFieldOfView(fieldOfView: number): void;
+
+  setProjectionDirection(projectionDirection: interop.Enum<typeof SCNCameraProjectionDirection>): void;
+
+  setFocalLength(focalLength: number): void;
+
+  setSensorHeight(sensorHeight: number): void;
+
+  setZNear(zNear: number): void;
+
+  setZFar(zFar: number): void;
+
+  setAutomaticallyAdjustsZRange(automaticallyAdjustsZRange: boolean): void;
+
+  setUsesOrthographicProjection(usesOrthographicProjection: boolean): void;
+
+  setOrthographicScale(orthographicScale: number): void;
+
+  setWantsDepthOfField(wantsDepthOfField: boolean): void;
+
+  setFocusDistance(focusDistance: number): void;
+
+  setFocalBlurSampleCount(focalBlurSampleCount: number): void;
+
+  setFStop(fStop: number): void;
+
+  setApertureBladeCount(apertureBladeCount: number): void;
+
+  setMotionBlurIntensity(motionBlurIntensity: number): void;
+
+  setScreenSpaceAmbientOcclusionIntensity(screenSpaceAmbientOcclusionIntensity: number): void;
+
+  setScreenSpaceAmbientOcclusionRadius(screenSpaceAmbientOcclusionRadius: number): void;
+
+  setScreenSpaceAmbientOcclusionBias(screenSpaceAmbientOcclusionBias: number): void;
+
+  setScreenSpaceAmbientOcclusionDepthThreshold(screenSpaceAmbientOcclusionDepthThreshold: number): void;
+
+  setScreenSpaceAmbientOcclusionNormalThreshold(screenSpaceAmbientOcclusionNormalThreshold: number): void;
+
+  setWantsHDR(wantsHDR: boolean): void;
+
+  setExposureOffset(exposureOffset: number): void;
+
+  setAverageGray(averageGray: number): void;
+
+  setWhitePoint(whitePoint: number): void;
+
+  setWantsExposureAdaptation(wantsExposureAdaptation: boolean): void;
+
+  setExposureAdaptationBrighteningSpeedFactor(exposureAdaptationBrighteningSpeedFactor: number): void;
+
+  setExposureAdaptationDarkeningSpeedFactor(exposureAdaptationDarkeningSpeedFactor: number): void;
+
+  setMinimumExposure(minimumExposure: number): void;
+
+  setMaximumExposure(maximumExposure: number): void;
+
+  setBloomThreshold(bloomThreshold: number): void;
+
+  setBloomIterationCount(bloomIterationCount: number): void;
+
+  setBloomIterationSpread(bloomIterationSpread: number): void;
+
+  setBloomIntensity(bloomIntensity: number): void;
+
+  setBloomBlurRadius(bloomBlurRadius: number): void;
+
+  setVignettingPower(vignettingPower: number): void;
+
+  setVignettingIntensity(vignettingIntensity: number): void;
+
+  setColorFringeStrength(colorFringeStrength: number): void;
+
+  setColorFringeIntensity(colorFringeIntensity: number): void;
+
+  setSaturation(saturation: number): void;
+
+  setContrast(contrast: number): void;
+
+  setGrainIntensity(grainIntensity: number): void;
+
+  setGrainScale(grainScale: number): void;
+
+  setGrainIsColored(grainIsColored: boolean): void;
+
+  setWhiteBalanceTemperature(whiteBalanceTemperature: number): void;
+
+  setWhiteBalanceTint(whiteBalanceTint: number): void;
+
+  setCategoryBitMask(categoryBitMask: number): void;
+
+  focalBlurRadius: number;
+
+  xFov: number;
+
+  yFov: number;
+
+  aperture: number;
+
+  focalSize: number;
+
+  focalDistance: number;
+
+  setFocalBlurRadius(focalBlurRadius: number): void;
+
+  setXFov(xFov: number): void;
+
+  setYFov(yFov: number): void;
+
+  setAperture(aperture: number): void;
+
+  setFocalSize(focalSize: number): void;
+
+  setFocalDistance(focalDistance: number): void;
+
+  static cameraWithMDLCamera<This extends abstract new (...args: any) => any>(this: This, mdlCamera: MDLCamera): InstanceType<This>;
+
+  addAnimationForKey(animation: SCNAnimation, key: string | null): void;
+
+  addAnimationPlayerForKey(player: SCNAnimationPlayer, key: string | null): void;
+
+  removeAllAnimations(): void;
+
+  removeAllAnimationsWithBlendOutDuration(duration: number): void;
+
+  removeAnimationForKey(key: string): void;
+
+  removeAnimationForKeyBlendOutDuration(key: string, duration: number): void;
+
+  readonly animationKeys: NSArray;
+
+  animationPlayerForKey(key: string): SCNAnimationPlayer;
+
+  removeAnimationForKeyFadeOutDuration(key: string, duration: number): void;
+
+  animationForKey(key: string): CAAnimation;
+
+  pauseAnimationForKey(key: string): void;
+
+  resumeAnimationForKey(key: string): void;
+
+  setSpeedForAnimationKey(speed: number, key: string): void;
+
+  isAnimationForKeyPaused(key: string): boolean;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  technique: SCNTechnique;
+
+  setTechnique(technique: SCNTechnique): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SCNGeometry extends NSObject implements SCNAnimatable, SCNBoundingVolume, SCNShadable, NSCopying, NSSecureCoding {
@@ -4838,312 +5120,6 @@ declare class SCNLayer extends CAOpenGLLayer implements SCNSceneRenderer, SCNTec
   setTechnique(technique: SCNTechnique): void;
 }
 
-declare class SCNCamera extends NSObject implements SCNAnimatable, SCNTechniqueSupport, NSCopying, NSSecureCoding {
-  static camera<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  name: string;
-
-  fieldOfView: number;
-
-  projectionDirection: interop.Enum<typeof SCNCameraProjectionDirection>;
-
-  focalLength: number;
-
-  sensorHeight: number;
-
-  zNear: number;
-
-  zFar: number;
-
-  automaticallyAdjustsZRange: boolean;
-
-  usesOrthographicProjection: boolean;
-
-  orthographicScale: number;
-
-  projectionTransform: CATransform3D;
-
-  setProjectionTransform(projectionTransform: CATransform3D): void;
-
-  projectionTransformWithViewportSize(viewportSize: CGSize): CATransform3D;
-
-  wantsDepthOfField: boolean;
-
-  focusDistance: number;
-
-  focalBlurSampleCount: number;
-
-  fStop: number;
-
-  apertureBladeCount: number;
-
-  motionBlurIntensity: number;
-
-  screenSpaceAmbientOcclusionIntensity: number;
-
-  screenSpaceAmbientOcclusionRadius: number;
-
-  screenSpaceAmbientOcclusionBias: number;
-
-  screenSpaceAmbientOcclusionDepthThreshold: number;
-
-  screenSpaceAmbientOcclusionNormalThreshold: number;
-
-  wantsHDR: boolean;
-
-  exposureOffset: number;
-
-  averageGray: number;
-
-  whitePoint: number;
-
-  wantsExposureAdaptation: boolean;
-
-  exposureAdaptationBrighteningSpeedFactor: number;
-
-  exposureAdaptationDarkeningSpeedFactor: number;
-
-  minimumExposure: number;
-
-  maximumExposure: number;
-
-  bloomThreshold: number;
-
-  bloomIterationCount: number;
-
-  bloomIterationSpread: number;
-
-  bloomIntensity: number;
-
-  bloomBlurRadius: number;
-
-  vignettingPower: number;
-
-  vignettingIntensity: number;
-
-  colorFringeStrength: number;
-
-  colorFringeIntensity: number;
-
-  saturation: number;
-
-  contrast: number;
-
-  grainIntensity: number;
-
-  grainScale: number;
-
-  grainIsColored: boolean;
-
-  whiteBalanceTemperature: number;
-
-  whiteBalanceTint: number;
-
-  readonly colorGrading: SCNMaterialProperty;
-
-  categoryBitMask: number;
-
-  setName(name: string | null): void;
-
-  setFieldOfView(fieldOfView: number): void;
-
-  setProjectionDirection(projectionDirection: interop.Enum<typeof SCNCameraProjectionDirection>): void;
-
-  setFocalLength(focalLength: number): void;
-
-  setSensorHeight(sensorHeight: number): void;
-
-  setZNear(zNear: number): void;
-
-  setZFar(zFar: number): void;
-
-  setAutomaticallyAdjustsZRange(automaticallyAdjustsZRange: boolean): void;
-
-  setUsesOrthographicProjection(usesOrthographicProjection: boolean): void;
-
-  setOrthographicScale(orthographicScale: number): void;
-
-  setWantsDepthOfField(wantsDepthOfField: boolean): void;
-
-  setFocusDistance(focusDistance: number): void;
-
-  setFocalBlurSampleCount(focalBlurSampleCount: number): void;
-
-  setFStop(fStop: number): void;
-
-  setApertureBladeCount(apertureBladeCount: number): void;
-
-  setMotionBlurIntensity(motionBlurIntensity: number): void;
-
-  setScreenSpaceAmbientOcclusionIntensity(screenSpaceAmbientOcclusionIntensity: number): void;
-
-  setScreenSpaceAmbientOcclusionRadius(screenSpaceAmbientOcclusionRadius: number): void;
-
-  setScreenSpaceAmbientOcclusionBias(screenSpaceAmbientOcclusionBias: number): void;
-
-  setScreenSpaceAmbientOcclusionDepthThreshold(screenSpaceAmbientOcclusionDepthThreshold: number): void;
-
-  setScreenSpaceAmbientOcclusionNormalThreshold(screenSpaceAmbientOcclusionNormalThreshold: number): void;
-
-  setWantsHDR(wantsHDR: boolean): void;
-
-  setExposureOffset(exposureOffset: number): void;
-
-  setAverageGray(averageGray: number): void;
-
-  setWhitePoint(whitePoint: number): void;
-
-  setWantsExposureAdaptation(wantsExposureAdaptation: boolean): void;
-
-  setExposureAdaptationBrighteningSpeedFactor(exposureAdaptationBrighteningSpeedFactor: number): void;
-
-  setExposureAdaptationDarkeningSpeedFactor(exposureAdaptationDarkeningSpeedFactor: number): void;
-
-  setMinimumExposure(minimumExposure: number): void;
-
-  setMaximumExposure(maximumExposure: number): void;
-
-  setBloomThreshold(bloomThreshold: number): void;
-
-  setBloomIterationCount(bloomIterationCount: number): void;
-
-  setBloomIterationSpread(bloomIterationSpread: number): void;
-
-  setBloomIntensity(bloomIntensity: number): void;
-
-  setBloomBlurRadius(bloomBlurRadius: number): void;
-
-  setVignettingPower(vignettingPower: number): void;
-
-  setVignettingIntensity(vignettingIntensity: number): void;
-
-  setColorFringeStrength(colorFringeStrength: number): void;
-
-  setColorFringeIntensity(colorFringeIntensity: number): void;
-
-  setSaturation(saturation: number): void;
-
-  setContrast(contrast: number): void;
-
-  setGrainIntensity(grainIntensity: number): void;
-
-  setGrainScale(grainScale: number): void;
-
-  setGrainIsColored(grainIsColored: boolean): void;
-
-  setWhiteBalanceTemperature(whiteBalanceTemperature: number): void;
-
-  setWhiteBalanceTint(whiteBalanceTint: number): void;
-
-  setCategoryBitMask(categoryBitMask: number): void;
-
-  focalBlurRadius: number;
-
-  xFov: number;
-
-  yFov: number;
-
-  aperture: number;
-
-  focalSize: number;
-
-  focalDistance: number;
-
-  setFocalBlurRadius(focalBlurRadius: number): void;
-
-  setXFov(xFov: number): void;
-
-  setYFov(yFov: number): void;
-
-  setAperture(aperture: number): void;
-
-  setFocalSize(focalSize: number): void;
-
-  setFocalDistance(focalDistance: number): void;
-
-  static cameraWithMDLCamera<This extends abstract new (...args: any) => any>(this: This, mdlCamera: MDLCamera): InstanceType<This>;
-
-  addAnimationForKey(animation: SCNAnimation, key: string | null): void;
-
-  addAnimationPlayerForKey(player: SCNAnimationPlayer, key: string | null): void;
-
-  removeAllAnimations(): void;
-
-  removeAllAnimationsWithBlendOutDuration(duration: number): void;
-
-  removeAnimationForKey(key: string): void;
-
-  removeAnimationForKeyBlendOutDuration(key: string, duration: number): void;
-
-  readonly animationKeys: NSArray;
-
-  animationPlayerForKey(key: string): SCNAnimationPlayer;
-
-  removeAnimationForKeyFadeOutDuration(key: string, duration: number): void;
-
-  animationForKey(key: string): CAAnimation;
-
-  pauseAnimationForKey(key: string): void;
-
-  resumeAnimationForKey(key: string): void;
-
-  setSpeedForAnimationKey(speed: number, key: string): void;
-
-  isAnimationForKeyPaused(key: string): boolean;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  technique: SCNTechnique;
-
-  setTechnique(technique: SCNTechnique): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class SCNPyramid extends SCNGeometry {
   static pyramidWithWidthHeightLength<This extends abstract new (...args: any) => any>(this: This, width: number, height: number, length: number): InstanceType<This>;
 
@@ -5228,6 +5204,38 @@ declare class SCNPhysicsVehicleWheel extends NSObject implements NSCopying, NSSe
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class SCNTransaction extends NSObject {
+  static begin(): void;
+
+  static commit(): void;
+
+  static flush(): void;
+
+  static lock(): void;
+
+  static unlock(): void;
+
+  static animationDuration: number;
+
+  static animationTimingFunction: CAMediaTimingFunction;
+
+  static disableActions: boolean;
+
+  static completionBlock: () => void;
+
+  static valueForKey(key: string): interop.Object;
+
+  static setValueForKey(value: interop.Object | null, key: string): void;
+
+  static setAnimationDuration(animationDuration: number): void;
+
+  static setAnimationTimingFunction(animationTimingFunction: CAMediaTimingFunction): void;
+
+  static setDisableActions(disableActions: boolean): void;
+
+  static setCompletionBlock(completionBlock: () => void | null): void;
 }
 
 declare class SCNProgram extends NSObject implements NSCopying, NSSecureCoding {
@@ -5354,28 +5362,20 @@ declare class SCNSphere extends SCNGeometry {
   setSegmentCount(segmentCount: number): void;
 }
 
-declare class SCNCapsule extends SCNGeometry {
-  static capsuleWithCapRadiusHeight<This extends abstract new (...args: any) => any>(this: This, capRadius: number, height: number): InstanceType<This>;
+declare class SCNIKConstraint extends SCNConstraint {
+  initWithChainRootNode(chainRootNode: SCNNode): this;
 
-  capRadius: number;
+  static inverseKinematicsConstraintWithChainRootNode<This extends abstract new (...args: any) => any>(this: This, chainRootNode: SCNNode): InstanceType<This>;
 
-  height: number;
+  readonly chainRootNode: SCNNode;
 
-  radialSegmentCount: number;
+  targetPosition: SCNVector3;
 
-  heightSegmentCount: number;
+  setMaxAllowedRotationAngleForJoint(angle: number, node: SCNNode): void;
 
-  capSegmentCount: number;
+  maxAllowedRotationAngleForJoint(node: SCNNode): number;
 
-  setCapRadius(capRadius: number): void;
-
-  setHeight(height: number): void;
-
-  setRadialSegmentCount(radialSegmentCount: number): void;
-
-  setHeightSegmentCount(heightSegmentCount: number): void;
-
-  setCapSegmentCount(capSegmentCount: number): void;
+  setTargetPosition(targetPosition: SCNVector3): void;
 }
 
 declare class SCNSceneSource extends NSObject {

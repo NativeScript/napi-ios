@@ -19,8 +19,6 @@ declare const CHHapticAudioResourceKeyUseVolumeEnvelope: string;
 
 declare const CHHapticEventTypeAudioCustom: string;
 
-declare const CHHapticEventTypeAudioContinuous: string;
-
 declare const CHHapticEventTypeHapticTransient: string;
 
 declare const CHHapticDynamicParameterIDAudioPitchControl: string;
@@ -50,6 +48,8 @@ declare const CHHapticEventTypeHapticContinuous: string;
 declare const CHHapticPatternKeyEventWaveformUseVolumeEnvelope: string;
 
 declare const CHHapticDynamicParameterIDHapticIntensityControl: string;
+
+declare const CHHapticEventTypeAudioContinuous: string;
 
 declare const CHHapticEventParameterIDHapticIntensity: string;
 
