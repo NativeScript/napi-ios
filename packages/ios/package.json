@@ -4,15 +4,14 @@
   "description": "An embeddable, engine-agnostic NativeScript runtime for iOS based on Node-API",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NativeScript/runtime-node-api.git",
+    "url": "https://github.com/NativeScript/napi-ios.git",
     "directory": "packages/ios"
   },
   "typings": "index.d.ts",
   "type": "module",
   "files": [
-    "dist/ios-universal/NativeScript.xcframework",
+    "build/Release/NativeScript.apple.node",
     "index.d.ts",
-    "NativeScript.podspec",
     "types"
   ],
   "scripts": {
@@ -22,6 +21,7 @@
   "keywords": [
     "iOS",
     "NativeScript",
+    "React Native",
     "UIKit"
   ],
   "contributors": [
@@ -43,6 +43,14 @@
     }
   ],
   "license": "MIT",
+  "peerDependencies": {
+    "react-native-node-api": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native-node-api": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@nativescript/objc-node-api": ">=1.0.0-alpha.5"
   },
