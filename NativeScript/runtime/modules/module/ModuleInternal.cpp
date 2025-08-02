@@ -13,10 +13,13 @@
 #include <sstream>
 
 #include "ffi/NativeScriptException.h"
-#include "jsr_common.h"
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/Util.h"
+
+#ifdef TARGET_ENGINE_V8
+#include "../../napi/v8/v8-module-loader.h"
+#endif
 
 using namespace nativescript;
 using namespace std;
@@ -27,6 +30,13 @@ ModuleInternal::ModuleInternal()
       m_requireFactoryFunction(nullptr) {}
 
 void ModuleInternal::DeInit() {
+#ifdef TARGET_ENGINE_V8
+  for (auto& kv : v8impl::g_moduleRegistry) {
+    kv.second.Reset();
+  }
+  v8impl::g_moduleRegistry.clear();
+#endif
+
   if (m_env != nullptr) {
     napi_delete_reference(m_env, this->m_requireFunction);
     napi_delete_reference(m_env, this->m_requireFactoryFunction);
@@ -44,6 +54,13 @@ void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
   napi_status status;
 
   m_env = env;
+
+#ifdef V8_RUNTIME
+  // Initialize ES module system for V8
+  // We need to get the V8 isolate from napi_env to properly initialize ES modules
+  // This is implementation-specific and may need adjustment based on the actual V8 NAPI binding
+  // v8impl::InitializeESModuleSystem(isolate);
+#endif
 
   const char* requireFactoryScript = R"(
     (function () {
@@ -154,10 +171,27 @@ napi_value ModuleInternal::Require(napi_env env, const std::string& moduleName,
     assert(!napi_util::is_null_or_undefined(env, moduleObj));
     return moduleObj;
   } else {
-    napi_value exports;
-    napi_get_named_property(env, moduleObj, "exports", &exports);
-    assert(!napi_util::is_null_or_undefined(env, exports));
-    return exports;
+    // Check if this is an ES module by looking for __esModule property
+    bool hasEsModuleProp;
+    napi_status status = napi_has_named_property(env, moduleObj, "__esModule", &hasEsModuleProp);
+    
+    bool isEsModule = false;
+    if (status == napi_ok && hasEsModuleProp) {
+      napi_value esModuleFlag;
+      napi_get_named_property(env, moduleObj, "__esModule", &esModuleFlag);
+      napi_get_value_bool(env, esModuleFlag, &isEsModule);
+    }
+    
+    if (isEsModule) {
+      // For ES modules, return the module namespace directly
+      return moduleObj;
+    } else {
+      // For CommonJS modules, return the exports
+      napi_value exports;
+      napi_get_named_property(env, moduleObj, "exports", &exports);
+      assert(!napi_util::is_null_or_undefined(env, exports));
+      return exports;
+    }
   }
 }
 
@@ -342,6 +376,15 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   bool exists = std::filesystem::exists(fullPath);
 
   if (exists == true && isDirectory == true) {
+    // Try .mjs first for ES modules
+    std::filesystem::path mjsFile = fullPath;
+    mjsFile = mjsFile.replace_extension(".mjs");
+    if (std::filesystem::exists(mjsFile) &&
+        !std::filesystem::is_directory(mjsFile)) {
+      return mjsFile.string();
+    }
+    
+    // Then try .js for CommonJS
     std::filesystem::path jsFile = fullPath;
     jsFile = jsFile.replace_extension(".js");
     if (std::filesystem::exists(jsFile) &&
@@ -351,6 +394,17 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   }
 
   if (exists == false) {
+    // Try .mjs extension first (ES modules have priority)
+    std::filesystem::path mjsPath = fullPath.string() + ".mjs";
+    if (std::filesystem::exists(mjsPath)) {
+      exists = true;
+      isDirectory = std::filesystem::is_directory(mjsPath);
+      if (!isDirectory) {
+        return mjsPath.string();
+      }
+    }
+    
+    // Try .js extension
     fullPath = fullPath.replace_extension(".js");
     exists = std::filesystem::exists(fullPath);
     isDirectory = std::filesystem::is_directory(fullPath);
@@ -385,8 +439,22 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   }
 
   if (exists == false) {
+    // Try index.mjs first
+    std::filesystem::path indexMjs = fullPath.parent_path() / "index.mjs";
+    if (std::filesystem::exists(indexMjs)) {
+      return indexMjs.string();
+    }
+    
+    // Then try index.js
     fullPath = fullPath.replace_extension(".js");
   } else {
+    // Try index.mjs first in directory
+    std::filesystem::path indexMjs = fullPath / "index.mjs";
+    if (std::filesystem::exists(indexMjs)) {
+      return indexMjs.string();
+    }
+    
+    // Then try index.js
     fullPath /= "index.js";
   }
 
@@ -440,8 +508,8 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
     auto it2 = m_loadedModules.find(path);
 
     if (it2 == m_loadedModules.end()) {
-      if (path.ends_with(".js") || path.ends_with(".so") ||
-          path.ends_with((".dylib"))) {
+      if (path.ends_with(".js") || path.ends_with(".mjs") || 
+          path.ends_with(".so") || path.ends_with((".dylib"))) {
         isData = false;
         result = LoadModule(env, path, cachePathKey);
       } else if (path.ends_with(".json")) {
@@ -450,7 +518,10 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
       } else {
         std::filesystem::path filePath(path);
         std::filesystem::path fileWithIndexJs = filePath / "index.js";
-        if (std::filesystem::exists(fileWithIndexJs)) {
+        std::filesystem::path fileWithIndexMjs = filePath / "index.mjs";
+        if (std::filesystem::exists(fileWithIndexMjs)) {
+          return LoadImpl(env, fileWithIndexMjs.string(), baseDir, isData);
+        } else if (std::filesystem::exists(fileWithIndexJs)) {
           return LoadImpl(env, fileWithIndexJs.string(), baseDir, isData);
         }
         std::string errMsg = "Unsupported file extension: " + path;
@@ -504,7 +575,19 @@ napi_value ModuleInternal::LoadModule(napi_env env,
 
   napi_value moduleFunc;
 
-  if (modulePath.ends_with(".js")) {
+  if (modulePath.ends_with(".mjs")) {
+    // Handle ES modules
+    napi_value esModuleResult = LoadESModule(env, modulePath);
+    
+    // Mark the result as an ES module
+    napi_value isESModuleFlag;
+    napi_get_boolean(env, true, &isESModuleFlag);
+    napi_set_named_property(env, esModuleResult, "__esModule", isESModuleFlag);
+    
+    // For ES modules, we return the namespace directly, not wrapped in a module object
+    tempModule.SaveToCache();
+    return esModuleResult;
+  } else if (modulePath.ends_with(".js")) {
     napi_value script = LoadScript(env, modulePath, fullRequiredModulePath);
     // DEBUG_WRITE("%s", modulePath.c_str());
 
@@ -638,6 +721,43 @@ napi_value ModuleInternal::LoadData(napi_env env, const std::string& path) {
   return json;
 }
 
+// ES Module support functions
+bool ModuleInternal::IsESModule(const std::string& path) {
+  return path.size() >= 4 && path.compare(path.size() - 4, 4, ".mjs") == 0;
+}
+
+napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
+  try {
+    // Get absolute path to ensure proper resolution
+    std::filesystem::path absolutePath = std::filesystem::absolute(path);
+    std::string absPath = absolutePath.string();
+    
+    // Read the ES module source
+    napi_value scriptContent = WrapModuleContent(env, absPath);
+    
+    // Use the new napi_run_script_as_module function
+    napi_value moduleNamespace;
+    napi_status status = napi_run_script_as_module(env, scriptContent, absPath.c_str(), &moduleNamespace);
+    
+    if (status != napi_ok) {
+      bool pendingException;
+      napi_is_exception_pending(env, &pendingException);
+      if (pendingException) {
+        napi_value error;
+        napi_get_and_clear_last_exception(env, &error);
+        throw NativeScriptException(env, error, "Failed to load ES module " + absPath);
+      } else {
+        throw NativeScriptException("Failed to load ES module " + absPath);
+      }
+    }
+    
+    return moduleNamespace;
+    
+  } catch (const std::exception& e) {
+    throw NativeScriptException("Failed to load ES module " + path + ": " + e.what());
+  }
+}
+
 napi_value ModuleInternal::WrapModuleContent(napi_env env,
                                              const std::string& path) {
   std::string content;
@@ -650,11 +770,18 @@ napi_value ModuleInternal::WrapModuleContent(napi_env env,
   content = buffer.str();
   file.close();
 
-  // TODO: Use statically allocated buffer for better performance
-  std::string result(MODULE_PROLOGUE);
-  result.reserve(content.length() + 1024);
-  result += content;
-  result += MODULE_EPILOGUE;
+  std::string result;
+  
+  if (IsESModule(path)) {
+    // For ES modules, return content as-is to preserve import/export syntax
+    result = content;
+  } else {
+    // For CommonJS modules, wrap in factory function
+    result.reserve(content.length() + 1024);
+    result += MODULE_PROLOGUE;
+    result += content;
+    result += MODULE_EPILOGUE;
+  }
 
   napi_value wrappedContent;
   napi_create_string_utf8(env, result.c_str(), result.size(), &wrappedContent);

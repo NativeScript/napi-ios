@@ -164,6 +164,7 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES
       ${SOURCE_FILES}
       napi/v8/v8-api.cpp
+      napi/v8/v8-module-loader.cpp
       napi/v8/jsr.cpp
       napi/v8/SimpleAllocator.cpp
     )

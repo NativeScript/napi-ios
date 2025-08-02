@@ -440,6 +440,12 @@ NAPI_EXTERN napi_status NAPI_CDECL napi_run_script_source(napi_env env,
                                                           const char* source_url,
                                                           napi_value* result);
 
+// ES Module support
+NAPI_EXTERN napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
+                                                            napi_value script,
+                                                            const char* source_url,
+                                                            napi_value* result);
+
 // Memory management
 NAPI_EXTERN napi_status NAPI_CDECL napi_adjust_external_memory(
         napi_env env, int64_t change_in_bytes, int64_t *adjusted_value);

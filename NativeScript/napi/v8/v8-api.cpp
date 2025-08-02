@@ -8,6 +8,7 @@
 
 #include "js_native_api.h"
 #include "v8-api.h"
+#include "v8-module-loader.h"
 
 #ifdef ANDROID
 #include <android/log.h>
@@ -3270,6 +3271,110 @@ napi_status napi_run_script_source(napi_env env, napi_value script,
 
   return napi_run_script(
       env, v8impl::JsValueFromV8LocalValue(source_with_comment), result);
+}
+
+// ES Module support
+napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
+                                                 napi_value script,
+                                                 const char* source_url,
+                                                 napi_value* result) {
+  NAPI_PREAMBLE(env);
+  CHECK_ARG(env, script);
+  CHECK_ARG(env, source_url);
+  CHECK_ARG(env, result);
+
+  v8::Local<v8::Value> v8_script = v8impl::V8LocalValueFromJsValue(script);
+
+  if (!v8_script->IsString()) {
+    return napi_set_last_error(env, napi_string_expected);
+  }
+
+  v8::Local<v8::Context> context = env->context();
+  v8::Isolate* isolate = env->isolate;
+
+  v8::TryCatch module_try_catch(isolate);
+
+  // Initialize ES module system on first use
+  static bool es_module_initialized = false;
+  if (!es_module_initialized) {
+    v8impl::InitializeESModuleSystem(isolate);
+    es_module_initialized = true;
+  }
+
+  // Create script origin for ES module
+  v8::ScriptOrigin origin(
+      isolate,
+      v8::String::NewFromUtf8(isolate, source_url, v8::NewStringType::kNormal).ToLocalChecked(),
+      0, 0, false, -1, v8::Local<v8::Value>(), false, false,
+      true  // is_module = true for ES modules
+  );
+
+  v8::ScriptCompiler::Source source(v8_script.As<v8::String>(), origin);
+
+  // Compile as ES module
+  v8::MaybeLocal<v8::Module> maybe_module = v8::ScriptCompiler::CompileModule(
+      isolate, &source, v8::ScriptCompiler::kNoCompileOptions);
+
+  if (maybe_module.IsEmpty()) {
+    CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe_module, napi_generic_failure);
+    return napi_generic_failure;
+  }
+
+  v8::Local<v8::Module> module = maybe_module.ToLocalChecked();
+
+  // Register the module in our module registry for resolution
+  // Use the source_url as the module path
+  std::string modulePath = source_url;
+
+  // Safe Global handle management: Clear any existing entry first
+  auto it = v8impl::g_moduleRegistry.find(modulePath);
+  if (it != v8impl::g_moduleRegistry.end()) {
+    // Clear the existing Global handle before replacing it
+    it->second.Reset();
+  }
+
+  v8impl::g_moduleRegistry[modulePath].Reset(isolate, module);
+  
+  // Check for pending exception from compilation
+  if (module_try_catch.HasCaught()) {
+    // Log the exception to console to debug
+    v8::Local<v8::Value> exception = module_try_catch.Exception();
+    v8::Local<v8::Message> message = module_try_catch.Message();
+    if (!message.IsEmpty()) {
+      v8::String::Utf8Value error(isolate, message->Get());
+      fprintf(stderr, "Error compiling module: %s\n", *error);
+    } else {
+      v8::String::Utf8Value error(isolate, exception);
+      fprintf(stderr, "Error compiling module: %s\n", *error);
+    }
+    return napi_set_last_error(env, napi_generic_failure);
+  }
+
+  // Use our ES module resolver
+  v8::TryCatch instantiate_try_catch(isolate);
+  if (!module->InstantiateModule(context, &v8impl::ResolveModuleCallback).FromMaybe(false)) {
+    if (instantiate_try_catch.HasCaught()) {
+      // Store the exception in env->last_exception instead of throwing
+      v8::Local<v8::Value> exception = instantiate_try_catch.Exception();
+      v8::String::Utf8Value error(isolate, exception);
+      
+      if (!env->last_exception.IsEmpty()) {
+        env->last_exception.Reset();
+      }
+      env->last_exception.Reset(env->isolate, instantiate_try_catch.Exception());
+    }
+    return napi_set_last_error(env, napi_generic_failure);
+  }
+  
+  // Evaluate the module
+  v8::MaybeLocal<v8::Value> maybe_result = module->Evaluate(context);
+  CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe_result, napi_generic_failure);
+
+  // Get the module namespace as the result
+  v8::Local<v8::Value> namespace_obj = module->GetModuleNamespace();
+  *result = v8impl::JsValueFromV8LocalValue(namespace_obj);
+
+  return GET_RETURN_STATUS(env);
 }
 
 napi_status NAPI_CDECL napi_add_finalizer(napi_env env, napi_value js_object,

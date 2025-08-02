@@ -85,6 +85,10 @@ class ModuleInternal {
 
   napi_value GetRequireFunction(napi_env env, const std::string& dirName);
 
+  // ES Module support functions
+  bool IsESModule(const std::string& path);
+  napi_value LoadESModule(napi_env env, const std::string& path);
+
   // void SaveScriptCache(napi_env env, napi_value script, const std::string&
   // path);
 
