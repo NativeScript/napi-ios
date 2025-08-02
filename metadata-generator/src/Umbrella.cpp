@@ -63,6 +63,9 @@ static std::error_code CreateUmbrellaHeaderForAmbientModule(
 
   std::ifstream file(moduleMapPath);
 
+  std::string basePathStr = basePath.string();
+  addIncludePath(basePathStr, includePaths);
+
   if (isFramework && std::find(frameworks.begin(), frameworks.end(),
                                basePath) == frameworks.end()) {
     frameworks.push_back(basePath.string());
@@ -267,14 +270,14 @@ static std::error_code CreateUmbrellaHeaderForAmbientModules(
 
   for (std::string arg : args) {
     if (arg.find("-fmodule-map-file=") == 0) {
-      std::string moduleMapFile = arg.substr(20);
+      std::string moduleMapFile = arg.substr(18);
       std::filesystem::path moduleMapPath(moduleMapFile);
       if (std::filesystem::exists(moduleMapPath)) {
-        std::cerr << "Found module map arg: " << moduleMapPath.string()
-                  << std::endl;
+        std::cerr << "Found module map arg: " << moduleMapPath.string() << std::endl;
         if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(moduleMapPath.parent_path(), false, moduleMapPath, umbrellaHeaders, includePaths, frameworks)) {
           return code;
         }
+        std::cerr << "Added module map headers from: " << moduleMapPath.string() << std::endl;
       }
     }
   }
