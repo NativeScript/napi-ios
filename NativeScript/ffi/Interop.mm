@@ -222,9 +222,18 @@ void registerInterop(napi_env env, napi_value global) {
           .attributes = napi_enumerable,
           .data = nullptr,
       },
+      {
+          .utf8name = "stringFromCString",
+          .method = interop_stringFromCString,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = napi_enumerable,
+          .data = nullptr,
+      },
   };
 
-  napi_define_properties(env, interop, 12, properties);
+  napi_define_properties(env, interop, 13, properties);
 
   napi_set_named_property(env, global, "interop", interop);
 }
@@ -323,6 +332,42 @@ napi_value interop_free(napi_env env, napi_callback_info info) {
   }
 
   return nullptr;
+}
+
+napi_value interop_stringFromCString(napi_env env, napi_callback_info info) {
+  napi_value arg;
+  size_t argc = 1;
+  napi_get_cb_info(env, info, &argc, &arg, nullptr, nullptr);
+
+  napi_valuetype type;
+  napi_typeof(env, arg, &type);
+
+  if (type != napi_object) {
+    napi_throw_type_error(env, "TypeError", "Expected an object");
+    return nullptr;
+  }
+
+  void *data = nullptr;
+
+  if (Pointer::isInstance(env, arg)) {
+    Pointer *ptr = Pointer::unwrap(env, arg);
+    data = ptr->data;
+  }
+
+  if (Reference::isInstance(env, arg)) {
+    Reference *ref = Reference::unwrap(env, arg);
+    data = ref->data;
+  }
+
+  napi_value result;
+
+  if (data == nullptr) {
+    napi_get_null(env, &result);
+  } else {
+    napi_create_string_utf8(env, (const char *)data, NAPI_AUTO_LENGTH, &result);
+  }
+  
+  return result;
 }
 
 size_t jsSizeof(napi_env env, napi_value arg) {

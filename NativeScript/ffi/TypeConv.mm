@@ -957,6 +957,39 @@ class StringTypeConv : public TypeConv {
                 bool* shouldFreeAny) override {
     NAPI_PREAMBLE
 
+    napi_valuetype valuetype;
+    napi_typeof(env, value, &valuetype);
+
+    if (valuetype == napi_null || valuetype == napi_undefined) {
+      *(char**)result = nullptr;
+      *shouldFree = false;
+      *shouldFreeAny = false;
+      return;
+    }
+
+    if (valuetype == napi_object) {
+      if (Pointer::isInstance(env, value)) {
+        Pointer* ptr = Pointer::unwrap(env, value);
+        *(char**)result = (char*)ptr->data;
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      if (Reference::isInstance(env, value)) {
+        Reference* ref = Reference::unwrap(env, value);
+        *(char**)result = (char*)ref->data;
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      *(char**)result = nullptr;
+      *shouldFree = false;
+      *shouldFreeAny = false;
+      return;
+    }
+
     char** res = (char**)result;
 
     *res = nullptr;
