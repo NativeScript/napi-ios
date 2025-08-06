@@ -809,7 +809,12 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
       bool shouldFree;
       reference->type->toNative(env, argv[1], reference->data, &shouldFree, &shouldFree);
     }
-  } else if (argc != 0) {
+  } else if (argc == 0) {
+    reference->data = nullptr;
+    const char * typestr = "@";
+    reference->type = TypeConv::Make(env, &typestr);
+    reference->initValue = nullptr;
+  } else {
     napi_throw_error(env, nullptr, "Invalid number of arguments");
     return nullptr;
   }
