@@ -810,7 +810,7 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
       reference->type->toNative(env, argv[1], reference->data, &shouldFree, &shouldFree);
     }
   } else if (argc == 0) {
-    reference->data = nullptr;
+    reference->data = malloc(sizeof(void*));
     const char * typestr = "@";
     reference->type = TypeConv::Make(env, &typestr);
     reference->initValue = nullptr;
