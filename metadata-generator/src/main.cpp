@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
       outputModuleMapsFolder = argv[++i];
     } else if (arg == "-output-bin") {
       outputBinFile = argv[++i];
-    } else if (arg == "-output-dts") {
+    } else if (arg == "-output-dts" || arg == "-output-typescript") {
       outputDtsFolder = argv[++i];
     } else if (arg == "-docset-path") {
       docSetFile = argv[++i];
