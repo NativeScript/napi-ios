@@ -84,9 +84,37 @@ std::string buildStringFromArg(napi_env env, napi_value val) {
     napi_coerce_to_string(env, val, &funcString);
     return napi_util::get_string_value(env, funcString);
   } else if (napi_util::is_array(env, val)) {
-    napi_value global;
-    napi_get_global(env, &global);
-    return JsonStringifyObject(env, val, false);
+    napi_value cachedSelf = val;
+    
+    // Get array length
+    uint32_t arrayLength;
+    napi_get_array_length(env, val, &arrayLength);
+    
+    std::stringstream arrayStr;
+    arrayStr << "[";
+    
+    for (uint32_t i = 0; i < arrayLength; i++) {
+      napi_value propertyValue;
+      napi_get_element(env, val, i, &propertyValue);
+      
+      // Check for circular reference
+      bool isStrictEqual = false;
+      napi_strict_equals(env, propertyValue, cachedSelf, &isStrictEqual);
+      
+      if (isStrictEqual) {
+        arrayStr << "[Circular]";
+      } else {
+        std::string elementString = buildStringFromArg(env, propertyValue);
+        arrayStr << elementString;
+      }
+      
+      if (i != arrayLength - 1) {
+        arrayStr << ", ";
+      }
+    }
+    
+    arrayStr << "]";
+    return arrayStr.str();
   } else if (type == napi_object) {
     return transformJSObject(env, val);
   } else if (type == napi_symbol) {
