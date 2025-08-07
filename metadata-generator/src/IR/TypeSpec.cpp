@@ -5,6 +5,14 @@
 #include "IR.h"
 #include "clang-c/Index.h"
 
+static const std::vector<std::string> KNOWN_BRIDGED_TYPES = {
+#define CF_TYPE(NAME) #NAME,
+#define NON_CF_TYPE(NAME)
+#include "CFDatabase.def"
+#undef CF_TYPE
+#undef NON_CF_TYPE
+};
+
 namespace metagen {
 
 TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
@@ -13,6 +21,13 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
   CXString nameStr = clang_getTypeSpelling(type);
   std::string name = clang_getCString(nameStr);
   clang_disposeString(nameStr);
+
+  // if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
+  //               name) != KNOWN_BRIDGED_TYPES.end()) {
+  //   kind = kTypeAnyObject;
+  //   // typeParameterName = name;
+  //   return;
+  // }
 
   CXString canonicalNameStr = clang_getTypeSpelling(canonicalType);
   std::string canonicalName = stripCInfo(clang_getCString(canonicalNameStr));
