@@ -910,8 +910,17 @@ class FunctionPointerTypeConv : public TypeConv {
       }
 
       case napi_object: {
-        FunctionReference* ref = FunctionReference::unwrap(env, value);
-        *res = ref->getFunctionPointer(signatureOffset);
+        if (Pointer::isInstance(env, value)) {
+          Pointer* ptr = Pointer::unwrap(env, value);
+          *res = ptr->data;
+        } else if (Reference::isInstance(env, value)) {
+          Reference* ref = Reference::unwrap(env, value);
+          *res = ref->data;
+        } else {
+          FunctionReference* ref = FunctionReference::unwrap(env, value);
+          *res = ref->getFunctionPointer(signatureOffset);
+        }
+        return;
       }
 
       case napi_function: {

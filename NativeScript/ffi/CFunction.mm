@@ -3,7 +3,7 @@
 #include "ObjCBridge.h"
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
-#ifdef ENABLE_JS_ENGINE
+#ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
 
@@ -79,7 +79,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-#ifdef ENABLE_JS_ENGINE
+#ifdef ENABLE_JS_RUNTIME
   if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0) {
     void **avaluesPtr = new void*[cif->argc];
     memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));

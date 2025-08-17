@@ -8,7 +8,7 @@
 #include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
-#ifdef ENABLE_JS_ENGINE
+#ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
 #include "node_api_util.h"
@@ -25,7 +25,7 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
                             size_t argc, bool* done, void* ret) {
   napi_env env = closure->env;
 
-#ifdef ENABLE_JS_ENGINE
+#ifdef ENABLE_JS_RUNTIME
   NapiScope scope(env);
 #endif
 

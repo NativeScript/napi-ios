@@ -22,12 +22,12 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
   std::string name = clang_getCString(nameStr);
   clang_disposeString(nameStr);
 
-  // if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
-  //               name) != KNOWN_BRIDGED_TYPES.end()) {
-  //   kind = kTypeAnyObject;
-  //   // typeParameterName = name;
-  //   return;
-  // }
+  if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
+                name) != KNOWN_BRIDGED_TYPES.end()) {
+    kind = kTypeAnyObject;
+    // typeParameterName = name;
+    return;
+  }
 
   CXString canonicalNameStr = clang_getTypeSpelling(canonicalType);
   std::string canonicalName = stripCInfo(clang_getCString(canonicalNameStr));

@@ -554,6 +554,13 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   bridgeState->classesByPointer[nativeClass] = this;
 
+  // Add the 'extend' static method to all native classes (not NativeObject)
+  if (!isNativeObject) {
+    napi_value extendMethod;
+    napi_create_function(env, "extend", NAPI_AUTO_LENGTH, ClassBuilder::ExtendCallback, nullptr, &extendMethod);
+    napi_set_named_property(env, constructor, "extend", extendMethod);
+  }
+
   if (!hasMembers) return;
 
   ObjCClassMember::defineMembers(env, members, offset, constructor);

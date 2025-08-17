@@ -24,6 +24,9 @@ class ClassBuilder : public ObjCClass {
                  napi_value func = nullptr);
 
   void build();
+  
+  // Static callback for extending native classes
+  static napi_value ExtendCallback(napi_env env, napi_callback_info info);
 
   MethodMap exposedMethods;
   std::unordered_set<ObjCProtocol*> protocols;

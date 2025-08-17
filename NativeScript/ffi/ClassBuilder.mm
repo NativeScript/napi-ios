@@ -259,4 +259,110 @@ void ClassBuilder::build() {
   }
 }
 
+// Static method to extend native classes with JavaScript-defined methods
+napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
+  size_t argc = 2;
+  napi_value args[2];
+  napi_value thisArg;
+  
+  napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
+  
+  if (argc < 1) {
+    napi_throw_error(env, nullptr, "extend() requires at least one parameter with method definitions");
+    return nullptr;
+  }
+  
+  // Validate that the first argument is an object
+  napi_valuetype argType;
+  napi_typeof(env, args[0], &argType);
+  if (argType != napi_object) {
+    napi_throw_error(env, nullptr, "extend() first parameter must be an object");
+    return nullptr;
+  }
+  
+  // Get the native class from 'this' (the constructor function)
+  Class baseNativeClass = nullptr;
+  napi_unwrap(env, thisArg, (void**)&baseNativeClass);
+  
+  if (baseNativeClass == nullptr) {
+    napi_throw_error(env, nullptr, "extend() can only be called on native class constructors");
+    return nullptr;
+  }
+  
+  // Create a unique class name
+  napi_value baseClassName;
+  napi_get_named_property(env, thisArg, "name", &baseClassName);
+  static char baseClassNameBuf[512];
+  napi_get_value_string_utf8(env, baseClassName, baseClassNameBuf, 512, nullptr);
+  
+  std::string newClassName = baseClassNameBuf;
+  newClassName += "_Extended_";
+  newClassName += std::to_string(rand());
+  
+  // Create the new constructor function that extends the base
+  napi_value newConstructor;
+  napi_define_class(env, newClassName.c_str(), newClassName.length(), 
+                    [](napi_env env, napi_callback_info info) -> napi_value {
+    // Constructor implementation - delegate to base class
+    napi_value thisArg;
+    napi_get_cb_info(env, info, nullptr, nullptr, &thisArg, nullptr);
+    return thisArg;
+  }, nullptr, 0, nullptr, &newConstructor);
+  
+  // Set up JavaScript inheritance from the base class
+  napi_inherits(env, newConstructor, thisArg);
+  
+  // Get prototype for adding methods
+  napi_value newPrototype;
+  napi_get_named_property(env, newConstructor, "prototype", &newPrototype);
+  
+  // Add methods from the first parameter to the prototype
+  napi_value methodNames;
+  napi_get_all_property_names(env, args[0], napi_key_own_only, napi_key_skip_symbols,
+                              napi_key_numbers_to_strings, &methodNames);
+  
+  uint32_t methodCount = 0;
+  napi_get_array_length(env, methodNames, &methodCount);
+  
+  for (uint32_t i = 0; i < methodCount; i++) {
+    napi_value methodName, methodFunc;
+    napi_get_element(env, methodNames, i, &methodName);
+    
+    static char methodNameBuf[512];
+    napi_get_value_string_utf8(env, methodName, methodNameBuf, 512, nullptr);
+    std::string name = methodNameBuf;
+    
+    napi_get_named_property(env, args[0], name.c_str(), &methodFunc);
+    
+    // Add the method to the prototype
+    napi_set_named_property(env, newPrototype, name.c_str(), methodFunc);
+  }
+  
+  // Handle optional second parameter for protocols
+  if (argc >= 2) {
+    napi_valuetype secondArgType;
+    napi_typeof(env, args[1], &secondArgType);
+    if (secondArgType == napi_object) {
+      napi_value protocols;
+      bool hasProtocols = false;
+      napi_has_named_property(env, args[1], "protocols", &hasProtocols);
+      
+      if (hasProtocols) {
+        napi_get_named_property(env, args[1], "protocols", &protocols);
+        napi_set_named_property(env, newConstructor, "ObjCProtocols", protocols);
+      }
+    }
+  }
+  
+  // Use ClassBuilder to create the native class and bridge the methods
+  ClassBuilder* builder = new ClassBuilder(env, newConstructor);
+  builder->build();
+  
+  // Register the builder in the bridge state
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeState->classesByPointer[builder->nativeClass] = builder;
+  
+  return newConstructor;
+}
+
 }  // namespace nativescript

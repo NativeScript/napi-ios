@@ -342,6 +342,10 @@ napi_value interop_stringFromCString(napi_env env, napi_callback_info info) {
   napi_valuetype type;
   napi_typeof(env, arg, &type);
 
+  if (type == napi_string) {
+    return arg;
+  }
+
   if (type != napi_object) {
     napi_throw_type_error(env, "TypeError", "Expected an object");
     return nullptr;

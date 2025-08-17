@@ -60,6 +60,11 @@ Runtime::~Runtime() {
   }
 }
 
+napi_value drainMicrotasks(napi_env env, napi_callback_info cbinfo) {
+  js_execute_pending_jobs(env);
+  return nullptr;
+}
+
 void Runtime::Init(bool isWorker) {
   js_set_runtime_flags("");
 
@@ -118,10 +123,89 @@ void Runtime::Init(bool isWorker) {
   napi_create_string_utf8(env_, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env_, compatScript, &result);
 
+  #ifdef TARGET_ENGINE_V8
+  const char *PromiseProxyScript = R"(
+        // Ensure that Promise callbacks are executed on the
+        // same thread on which they were created
+        (() => {
+            global.Promise = new Proxy(global.Promise, {
+                construct: function(target, args) {
+                    let origFunc = args[0];
+                    let runloop = CFRunLoopGetCurrent();
+
+                    let promise = new target(function(resolve, reject) {
+                        function isFulfilled() {
+                            return !resolve;
+                        }
+                        function markFulfilled() {
+                            origFunc = null;
+                            resolve = null;
+                            reject = null;
+                        }
+                        origFunc(value => {
+                            if (isFulfilled()) {
+                                return;
+                            }
+                            const resolveCall = resolve.bind(this, value);
+                            if (runloop === CFRunLoopGetCurrent()) {
+                                markFulfilled();
+                                resolveCall();
+                            } else {
+                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, resolveCall);
+                                CFRunLoopWakeUp(runloop);
+                                markFulfilled();
+                            }
+                        }, reason => {
+                            if (isFulfilled()) {
+                                return;
+                            }
+                            const rejectCall = reject.bind(this, reason);
+                            if (runloop === CFRunLoopGetCurrent()) {
+                                markFulfilled();
+                                rejectCall();
+                            } else {
+                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, rejectCall);
+                                CFRunLoopWakeUp(runloop);
+                                markFulfilled();
+                            }
+                        });
+                    });
+
+                    return new Proxy(promise, {
+                        get: function(target, name) {
+                            let orig = target[name];
+                            if (name === "then" || name === "catch" || name === "finally") {
+                                return orig.bind(target);
+                            }
+                            return typeof orig === 'function' ? function(x) {
+                                if (runloop === CFRunLoopGetCurrent()) {
+                                    orig.bind(target, x)();
+                                    return target;
+                                }
+                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, orig.bind(target, x));
+                                CFRunLoopWakeUp(runloop);
+                                return target;
+                            } : orig;
+                        }
+                    });
+                }
+            });
+        })();
+    )";
+
+    napi_value promiseProxyScript;
+    napi_create_string_utf8(env_, PromiseProxyScript, NAPI_AUTO_LENGTH, &promiseProxyScript);
+    napi_run_script(env_, promiseProxyScript, &result);
+    #endif  // TARGET_ENGINE_V8
+
   if (isWorker) {
     napi_property_descriptor prop = napi_util::desc("self", global);
     napi_define_properties(env_, global, 1, &prop);
   }
+
+  napi_property_descriptor prop = napi_util::desc(
+      "__drainMicrotaskQueue", drainMicrotasks, nullptr);
+  napi_define_properties(env_, global, 1, &prop);
 
   modules_.Init(env_, global);
 

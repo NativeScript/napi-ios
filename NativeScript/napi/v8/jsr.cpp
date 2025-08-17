@@ -85,6 +85,7 @@ JSR::JSR(): isolate(nullptr) {
 
     if (!JSR::s_mainThreadInitialized) {
         JSR::platform = v8::platform::NewDefaultPlatform().release();
+        v8::V8::SetFlagsFromString("--expose_gc");
         v8::V8::InitializePlatform(JSR::platform);
         v8::V8::Initialize();
         JSR::s_mainThreadInitialized = true;
