@@ -19,9 +19,12 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
+#include <limits.h>
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 #include <objc/runtime.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #ifdef EMBED_METADATA_SIZE
 const unsigned char __attribute__((section("__objc_metadata,__objc_metadata")))
@@ -41,10 +44,13 @@ void finalize_bridge_data(napi_env env, void* data, void* hint) {
 
 MDMetadataReader* loadMetadataFromFile(const char* metadata_path) {
   if (metadata_path == nullptr) {
-    metadata_path = "metadata.nsmd";
+    metadata_path = [[[[NSBundle mainBundle] resourcePath]
+        stringByAppendingPathComponent:@"metadata.nsmd"] fileSystemRepresentation];
   }
 
-  auto f = fopen(metadata_path == nullptr ? "metadata.nsmd" : metadata_path, "r");
+  fprintf(stderr, "Opening metadata_path: %s\n", metadata_path);
+
+  auto f = fopen(metadata_path, "r");
   if (f == nullptr) {
     fprintf(stderr, "metadata.nsmd not found\n");
     exit(1);
