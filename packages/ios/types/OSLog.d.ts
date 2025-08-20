@@ -2,10 +2,6 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
-declare const OSLogEnumeratorOptions: {
-  OSLogEnumeratorReverse: 1,
-};
-
 declare const OSLogMessageComponentArgumentCategory: {
   Undefined: 0,
   Data: 1,
@@ -25,6 +21,10 @@ declare const OSLogEntryStoreCategory: {
   LongTerm7: 6,
   LongTerm14: 7,
   LongTerm30: 8,
+};
+
+declare const OSLogEnumeratorOptions: {
+  OSLogEnumeratorReverse: 1,
 };
 
 declare const OSLogStoreScope: {
@@ -78,6 +78,32 @@ declare class OSLogEntryFromProcess extends NativeObject implements OSLogEntryFr
 declare class OSLogPosition extends NSObject {
 }
 
+declare class OSLogMessageComponent extends NSObject implements NSSecureCoding {
+  readonly formatSubstring: string;
+
+  readonly placeholder: string;
+
+  readonly argumentCategory: interop.Enum<typeof OSLogMessageComponentArgumentCategory>;
+
+  readonly argumentDataValue: NSData;
+
+  readonly argumentDoubleValue: number;
+
+  readonly argumentInt64Value: number;
+
+  readonly argumentNumberValue: NSNumber;
+
+  readonly argumentStringValue: string;
+
+  readonly argumentUInt64Value: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class OSLogEntryLog extends OSLogEntry implements OSLogEntryFromProcess, OSLogEntryWithPayload {
   readonly level: interop.Enum<typeof OSLogEntryLogLevel>;
 
@@ -115,32 +141,6 @@ declare class OSLogEntryActivity extends OSLogEntry implements OSLogEntryFromPro
 }
 
 declare class OSLogEntryBoundary extends OSLogEntry {
-}
-
-declare class OSLogMessageComponent extends NSObject implements NSSecureCoding {
-  readonly formatSubstring: string;
-
-  readonly placeholder: string;
-
-  readonly argumentCategory: interop.Enum<typeof OSLogMessageComponentArgumentCategory>;
-
-  readonly argumentDataValue: NSData;
-
-  readonly argumentDoubleValue: number;
-
-  readonly argumentInt64Value: number;
-
-  readonly argumentNumberValue: NSNumber;
-
-  readonly argumentStringValue: string;
-
-  readonly argumentUInt64Value: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class OSLogEnumerator extends NSEnumerator {

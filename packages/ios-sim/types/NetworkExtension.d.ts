@@ -29,19 +29,19 @@ declare const NEVPNConfigurationChangeNotification: string;
 
 declare const NEAppProxyErrorDomain: string;
 
-declare const NERelayErrorDomain: string;
-
 declare const NEFilterConfigurationDidChangeNotification: string;
-
-declare const NEDNSProxyErrorDomain: string;
 
 declare const NEHotspotConfigurationErrorDomain: string;
 
+declare const NEDNSProxyErrorDomain: string;
+
+declare const NERelayErrorDomain: string;
+
 declare const NERelayClientErrorDomain: string;
 
-declare const NETunnelProviderErrorDomain: string;
-
 declare const NEVPNErrorDomain: string;
+
+declare const NETunnelProviderErrorDomain: string;
 
 declare const NEAppPushErrorDomain: string;
 
@@ -59,6 +59,12 @@ declare const NEAppPushManagerError: {
   ConfigurationNotLoaded: 2,
   InternalError: 3,
   InactiveSession: 4,
+};
+
+declare const NEVPNIKEv2PostQuantumKeyExchangeMethod: {
+  MethodNone: 0,
+  Method36: 36,
+  Method37: 37,
 };
 
 declare const NEVPNIKEv2IntegrityAlgorithm: {
@@ -102,6 +108,12 @@ declare const NERelayManagerError: {
   Disabled: 2,
   Stale: 3,
   CannotBeRemoved: 4,
+};
+
+declare const NEOnDemandRuleInterfaceType: {
+  Any: 0,
+  WiFi: 2,
+  Cellular: 3,
 };
 
 declare const NEFilterManagerError: {
@@ -273,13 +285,6 @@ declare const NEOnDemandRuleAction: {
   Ignore: 4,
 };
 
-declare const NEHotspotConfigurationEAPType: {
-  TLS: 13,
-  TTLS: 21,
-  PEAP: 25,
-  FAST: 43,
-};
-
 declare const NWTCPConnectionState: {
   Invalid: 0,
   Connecting: 1,
@@ -323,6 +328,21 @@ declare const NEHotspotHelperResult: {
   TemporaryFailure: 6,
 };
 
+declare const NEURLFilterVerdict: {
+  Unknown: 1,
+  Allow: 2,
+  Deny: 3,
+};
+
+declare const NEVPNIKEv2CertificateType: {
+  RSA: 1,
+  ECDSA256: 2,
+  ECDSA384: 3,
+  ECDSA521: 4,
+  Ed25519: 5,
+  RSAPSS: 6,
+};
+
 declare const NEHotspotConfigurationTTLSInnerAuthenticationType: {
   PAP: 0,
   CHAP: 1,
@@ -347,19 +367,17 @@ declare const NEHotspotHelperConfidence: {
   High: 2,
 };
 
-declare const NEVPNIKEv2CertificateType: {
-  RSA: 1,
-  ECDSA256: 2,
-  ECDSA384: 3,
-  ECDSA521: 4,
-  Ed25519: 5,
-  RSAPSS: 6,
-};
-
 declare const NETrafficDirection: {
   Any: 0,
   Inbound: 1,
   Outbound: 2,
+};
+
+declare const NEHotspotConfigurationEAPType: {
+  TLS: 13,
+  TTLS: 21,
+  PEAP: 25,
+  FAST: 43,
 };
 
 declare const NEProviderStopReason: {
@@ -381,12 +399,6 @@ declare const NEProviderStopReason: {
   Sleep: 15,
   AppUpdate: 16,
   InternalError: 17,
-};
-
-declare const NEOnDemandRuleInterfaceType: {
-  Any: 0,
-  WiFi: 2,
-  Cellular: 3,
 };
 
 declare interface NWTCPConnectionAuthenticationDelegate extends NSObjectProtocol {
@@ -530,6 +542,8 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
 
   enablePFS: boolean;
 
+  allowPostQuantumKeyExchangeFallback: boolean;
+
   enableRevocationCheck: boolean;
 
   strictRevocationCheck: boolean;
@@ -560,6 +574,8 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
 
   setEnablePFS(enablePFS: boolean): void;
 
+  setAllowPostQuantumKeyExchangeFallback(allowPostQuantumKeyExchangeFallback: boolean): void;
+
   setEnableRevocationCheck(enableRevocationCheck: boolean): void;
 
   setStrictRevocationCheck(strictRevocationCheck: boolean): void;
@@ -573,17 +589,6 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
   setMtu(mtu: number): void;
 
   setPpkConfiguration(ppkConfiguration: NEVPNIKEv2PPKConfiguration): void;
-}
-
-declare class NETunnelProviderProtocol extends NEVPNProtocol {
-  get providerConfiguration(): NSDictionary;
-  set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  providerBundleIdentifier: string;
-
-  setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setProviderBundleIdentifier(providerBundleIdentifier: string): void;
 }
 
 declare class NEVPNConnection extends NSObject {
@@ -619,6 +624,8 @@ declare class NERelayManager extends NSObject {
 
   UIToggleEnabled: boolean;
 
+  allowDNSFailover: boolean;
+
   get relays(): NSArray;
   set relays(value: NSArray<interop.Object> | Array<interop.Object>);
 
@@ -648,6 +655,10 @@ declare class NERelayManager extends NSObject {
   isUIToggleEnabled(): boolean;
 
   setUIToggleEnabled(UIToggleEnabled: boolean): void;
+
+  isDNSFailoverAllowed(): boolean;
+
+  setAllowDNSFailover(allowDNSFailover: boolean): void;
 
   setRelays(relays: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
@@ -858,7 +869,7 @@ declare class NEHotspotEAPSettings extends NSObject implements NSCopying, NSSecu
 
   preferredTLSVersion: interop.Enum<typeof NEHotspotConfigurationEAPTLSVersion>;
 
-  setIdentity(identity: interop.Object): boolean;
+  setIdentity(identity: interop.PointerConvertible): boolean;
 
   setTrustedServerCertificates(certificates: NSArray<interop.Object> | Array<interop.Object>): boolean;
 
@@ -879,6 +890,41 @@ declare class NEHotspotEAPSettings extends NSObject implements NSCopying, NSSecu
   setTlsClientCertificateRequired(tlsClientCertificateRequired: boolean): void;
 
   setPreferredTLSVersion(preferredTLSVersion: interop.Enum<typeof NEHotspotConfigurationEAPTLSVersion>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class NEHotspotHS20Settings extends NSObject implements NSCopying, NSSecureCoding {
+  readonly domainName: string;
+
+  roamingEnabled: boolean;
+
+  get roamingConsortiumOIs(): NSArray;
+  set roamingConsortiumOIs(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get naiRealmNames(): NSArray;
+  set naiRealmNames(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get MCCAndMNCs(): NSArray;
+  set MCCAndMNCs(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  initWithDomainNameRoamingEnabled(domainName: string, roamingEnabled: boolean): this;
+
+  isRoamingEnabled(): boolean;
+
+  setRoamingEnabled(roamingEnabled: boolean): void;
+
+  setRoamingConsortiumOIs(roamingConsortiumOIs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setNaiRealmNames(naiRealmNames: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setMCCAndMNCs(MCCAndMNCs: NSArray<interop.Object> | Array<interop.Object>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -1036,6 +1082,26 @@ declare class NEFilterDataProvider extends NEFilterProvider {
   handleRulesChanged(): void;
 }
 
+declare class NEFilterReport extends NSObject implements NSSecureCoding, NSCopying {
+  readonly flow: NEFilterFlow;
+
+  readonly action: interop.Enum<typeof NEFilterAction>;
+
+  readonly event: interop.Enum<typeof NEFilterReportEvent>;
+
+  readonly bytesInboundCount: number;
+
+  readonly bytesOutboundCount: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class NEFilterVerdict extends NSObject implements NSSecureCoding, NSCopying {
   shouldReport: boolean;
 
@@ -1178,6 +1244,26 @@ declare class NEProvider extends NSObject {
   readonly defaultPath: NWPath;
 }
 
+declare class NEAppProxyFlow extends NSObject {
+  openWithLocalFlowEndpointCompletionHandler(localEndpoint: NSObject | null, completionHandler: (p1: NSError) => void | null): void;
+
+  openWithLocalEndpointCompletionHandler(localEndpoint: NWHostEndpoint | null, completionHandler: (p1: NSError) => void | null): void;
+
+  closeReadWithError(error: NSError | null): void;
+
+  closeWriteWithError(error: NSError | null): void;
+
+  readonly metaData: NEFlowMetaData;
+
+  networkInterface: NSObject;
+
+  readonly remoteHostname: string;
+
+  readonly isBound: boolean;
+
+  setNetworkInterface(networkInterface: NSObject | null): void;
+}
+
 declare class NEPrivateLTENetwork extends NSObject implements NSCopying, NSSecureCoding {
   mobileCountryCode: string;
 
@@ -1234,6 +1320,34 @@ declare class NEOnDemandRuleEvaluateConnection extends NEOnDemandRule {
   setConnectionRules(connectionRules: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
+declare class NEProxyServer extends NSObject implements NSSecureCoding, NSCopying {
+  initWithAddressPort(address: string, port: number): this;
+
+  readonly address: string;
+
+  readonly port: number;
+
+  authenticationRequired: boolean;
+
+  username: string;
+
+  password: string;
+
+  setAuthenticationRequired(authenticationRequired: boolean): void;
+
+  setUsername(username: string): void;
+
+  setPassword(password: string): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class NEFilterRemediationVerdict extends NEFilterVerdict implements NSSecureCoding, NSCopying {
   static allowVerdict(): NEFilterRemediationVerdict;
 
@@ -1277,6 +1391,76 @@ declare class NEDNSSettingsManager extends NSObject {
   isEnabled(): boolean;
 }
 
+declare class NEVPNProtocol extends NSObject implements NSCopying, NSSecureCoding {
+  serverAddress: string;
+
+  username: string;
+
+  passwordReference: NSData;
+
+  identityReference: NSData;
+
+  identityData: NSData;
+
+  identityDataPassword: string;
+
+  disconnectOnSleep: boolean;
+
+  proxySettings: NEProxySettings;
+
+  includeAllNetworks: boolean;
+
+  excludeLocalNetworks: boolean;
+
+  excludeCellularServices: boolean;
+
+  excludeAPNs: boolean;
+
+  excludeDeviceCommunication: boolean;
+
+  enforceRoutes: boolean;
+
+  sliceUUID: string;
+
+  setServerAddress(serverAddress: string): void;
+
+  setUsername(username: string): void;
+
+  setPasswordReference(passwordReference: NSData): void;
+
+  setIdentityReference(identityReference: NSData): void;
+
+  setIdentityData(identityData: NSData): void;
+
+  setIdentityDataPassword(identityDataPassword: string): void;
+
+  setDisconnectOnSleep(disconnectOnSleep: boolean): void;
+
+  setProxySettings(proxySettings: NEProxySettings): void;
+
+  setIncludeAllNetworks(includeAllNetworks: boolean): void;
+
+  setExcludeLocalNetworks(excludeLocalNetworks: boolean): void;
+
+  setExcludeCellularServices(excludeCellularServices: boolean): void;
+
+  setExcludeAPNs(excludeAPNs: boolean): void;
+
+  setExcludeDeviceCommunication(excludeDeviceCommunication: boolean): void;
+
+  setEnforceRoutes(enforceRoutes: boolean): void;
+
+  setSliceUUID(sliceUUID: string): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class NWPath extends NSObject {
   readonly status: interop.Enum<typeof NWPathStatus>;
 
@@ -1289,6 +1473,20 @@ declare class NWPath extends NSObject {
   isExpensive(): boolean;
 
   isConstrained(): boolean;
+}
+
+declare class NEAppProxyProvider extends NETunnelProvider {
+  startProxyWithOptionsCompletionHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: NSError) => void | null): void;
+
+  stopProxyWithReasonCompletionHandler(reason: interop.Enum<typeof NEProviderStopReason>, completionHandler: () => void): void;
+
+  cancelProxyWithError(error: NSError | null): void;
+
+  handleNewFlow(flow: NEAppProxyFlow): boolean;
+
+  handleNewUDPFlowInitialRemoteFlowEndpoint(flow: NEAppProxyUDPFlow, remoteEndpoint: NSObject): boolean;
+
+  handleNewUDPFlowInitialRemoteEndpoint(flow: NEAppProxyUDPFlow, remoteEndpoint: NWEndpoint): boolean;
 }
 
 declare class NEAppProxyProviderManager extends NETunnelProviderManager {
@@ -1356,44 +1554,6 @@ declare class NEVPNManager extends NSObject {
   isEnabled(): boolean;
 
   setEnabled(enabled: boolean): void;
-}
-
-declare class NEHotspotConfiguration extends NSObject implements NSCopying, NSSecureCoding {
-  readonly SSID: string;
-
-  readonly SSIDPrefix: string;
-
-  joinOnce: boolean;
-
-  lifeTimeInDays: NSNumber;
-
-  hidden: boolean;
-
-  initWithSSID(SSID: string): this;
-
-  initWithSSIDPassphraseIsWEP(SSID: string, passphrase: string, isWEP: boolean): this;
-
-  initWithSSIDEapSettings(SSID: string, eapSettings: NEHotspotEAPSettings): this;
-
-  initWithHS20SettingsEapSettings(hs20Settings: NEHotspotHS20Settings, eapSettings: NEHotspotEAPSettings): this;
-
-  initWithSSIDPrefix(SSIDPrefix: string): this;
-
-  initWithSSIDPrefixPassphraseIsWEP(SSIDPrefix: string, passphrase: string, isWEP: boolean): this;
-
-  setJoinOnce(joinOnce: boolean): void;
-
-  setLifeTimeInDays(lifeTimeInDays: NSNumber): void;
-
-  setHidden(hidden: boolean): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NEVPNIKEv2PPKConfiguration extends NSObject implements NSCopying {
@@ -1480,6 +1640,8 @@ declare class NEAppPushProvider extends NEProvider {
   reportPushToTalkMessageWithUserInfo(userInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
   handleTimerEvent(): void;
+
+  unmatchEthernet(): void;
 }
 
 declare class NEPacketTunnelFlow extends NSObject {
@@ -1520,75 +1682,6 @@ declare class NEFilterControlProvider extends NEFilterProvider {
   setURLAppendStringMap(URLAppendStringMap: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 }
 
-declare class NEHotspotHS20Settings extends NSObject implements NSCopying, NSSecureCoding {
-  readonly domainName: string;
-
-  roamingEnabled: boolean;
-
-  get roamingConsortiumOIs(): NSArray;
-  set roamingConsortiumOIs(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get naiRealmNames(): NSArray;
-  set naiRealmNames(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get MCCAndMNCs(): NSArray;
-  set MCCAndMNCs(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  initWithDomainNameRoamingEnabled(domainName: string, roamingEnabled: boolean): this;
-
-  isRoamingEnabled(): boolean;
-
-  setRoamingEnabled(roamingEnabled: boolean): void;
-
-  setRoamingConsortiumOIs(roamingConsortiumOIs: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setNaiRealmNames(naiRealmNames: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setMCCAndMNCs(MCCAndMNCs: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class NEFilterReport extends NSObject implements NSSecureCoding, NSCopying {
-  readonly flow: NEFilterFlow;
-
-  readonly action: interop.Enum<typeof NEFilterAction>;
-
-  readonly event: interop.Enum<typeof NEFilterReportEvent>;
-
-  readonly bytesInboundCount: number;
-
-  readonly bytesOutboundCount: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class NEAppProxyProvider extends NETunnelProvider {
-  startProxyWithOptionsCompletionHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: NSError) => void | null): void;
-
-  stopProxyWithReasonCompletionHandler(reason: interop.Enum<typeof NEProviderStopReason>, completionHandler: () => void): void;
-
-  cancelProxyWithError(error: NSError | null): void;
-
-  handleNewFlow(flow: NEAppProxyFlow): boolean;
-
-  handleNewUDPFlowInitialRemoteFlowEndpoint(flow: NEAppProxyUDPFlow, remoteEndpoint: NSObject): boolean;
-
-  handleNewUDPFlowInitialRemoteEndpoint(flow: NEAppProxyUDPFlow, remoteEndpoint: NWEndpoint): boolean;
-}
-
 declare class NEDNSProxyProvider extends NEProvider {
   startProxyWithOptionsCompletionHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: NSError) => void | null): void;
 
@@ -1603,146 +1696,6 @@ declare class NEDNSProxyProvider extends NEProvider {
   handleNewUDPFlowInitialRemoteEndpoint(flow: NEAppProxyUDPFlow, remoteEndpoint: NWEndpoint): boolean;
 
   readonly systemDNSSettings: NSArray;
-}
-
-declare class NEProxyServer extends NSObject implements NSSecureCoding, NSCopying {
-  initWithAddressPort(address: string, port: number): this;
-
-  readonly address: string;
-
-  readonly port: number;
-
-  authenticationRequired: boolean;
-
-  username: string;
-
-  password: string;
-
-  setAuthenticationRequired(authenticationRequired: boolean): void;
-
-  setUsername(username: string): void;
-
-  setPassword(password: string): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class NEVPNProtocolIPSec extends NEVPNProtocol {
-  authenticationMethod: interop.Enum<typeof NEVPNIKEAuthenticationMethod>;
-
-  useExtendedAuthentication: boolean;
-
-  sharedSecretReference: NSData;
-
-  localIdentifier: string;
-
-  remoteIdentifier: string;
-
-  setAuthenticationMethod(authenticationMethod: interop.Enum<typeof NEVPNIKEAuthenticationMethod>): void;
-
-  setUseExtendedAuthentication(useExtendedAuthentication: boolean): void;
-
-  setSharedSecretReference(sharedSecretReference: NSData): void;
-
-  setLocalIdentifier(localIdentifier: string): void;
-
-  setRemoteIdentifier(remoteIdentifier: string): void;
-}
-
-declare class NEAppProxyFlow extends NSObject {
-  openWithLocalFlowEndpointCompletionHandler(localEndpoint: NSObject | null, completionHandler: (p1: NSError) => void | null): void;
-
-  openWithLocalEndpointCompletionHandler(localEndpoint: NWHostEndpoint | null, completionHandler: (p1: NSError) => void | null): void;
-
-  closeReadWithError(error: NSError | null): void;
-
-  closeWriteWithError(error: NSError | null): void;
-
-  readonly metaData: NEFlowMetaData;
-
-  networkInterface: NSObject;
-
-  readonly remoteHostname: string;
-
-  readonly isBound: boolean;
-
-  setNetworkInterface(networkInterface: NSObject | null): void;
-}
-
-declare class NEVPNProtocol extends NSObject implements NSCopying, NSSecureCoding {
-  serverAddress: string;
-
-  username: string;
-
-  passwordReference: NSData;
-
-  identityReference: NSData;
-
-  identityData: NSData;
-
-  identityDataPassword: string;
-
-  disconnectOnSleep: boolean;
-
-  proxySettings: NEProxySettings;
-
-  includeAllNetworks: boolean;
-
-  excludeLocalNetworks: boolean;
-
-  excludeCellularServices: boolean;
-
-  excludeAPNs: boolean;
-
-  excludeDeviceCommunication: boolean;
-
-  enforceRoutes: boolean;
-
-  sliceUUID: string;
-
-  setServerAddress(serverAddress: string): void;
-
-  setUsername(username: string): void;
-
-  setPasswordReference(passwordReference: NSData): void;
-
-  setIdentityReference(identityReference: NSData): void;
-
-  setIdentityData(identityData: NSData): void;
-
-  setIdentityDataPassword(identityDataPassword: string): void;
-
-  setDisconnectOnSleep(disconnectOnSleep: boolean): void;
-
-  setProxySettings(proxySettings: NEProxySettings): void;
-
-  setIncludeAllNetworks(includeAllNetworks: boolean): void;
-
-  setExcludeLocalNetworks(excludeLocalNetworks: boolean): void;
-
-  setExcludeCellularServices(excludeCellularServices: boolean): void;
-
-  setExcludeAPNs(excludeAPNs: boolean): void;
-
-  setExcludeDeviceCommunication(excludeDeviceCommunication: boolean): void;
-
-  setEnforceRoutes(enforceRoutes: boolean): void;
-
-  setSliceUUID(sliceUUID: string): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NETunnelProviderSession extends NEVPNConnection {
@@ -1770,6 +1723,8 @@ declare class NEDNSSettings extends NSObject implements NSSecureCoding, NSCopyin
 
   matchDomainsNoSearch: boolean;
 
+  allowFailover: boolean;
+
   setSearchDomains(searchDomains: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setDomainName(domainName: string): void;
@@ -1777,6 +1732,8 @@ declare class NEDNSSettings extends NSObject implements NSSecureCoding, NSCopyin
   setMatchDomains(matchDomains: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setMatchDomainsNoSearch(matchDomainsNoSearch: boolean): void;
+
+  setAllowFailover(allowFailover: boolean): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -1826,6 +1783,28 @@ declare class NEPacketTunnelProvider extends NETunnelProvider {
   createTCPConnectionThroughTunnelToEndpointEnableTLSTLSParametersDelegate(remoteEndpoint: NWEndpoint, enableTLS: boolean, TLSParameters: NWTLSParameters | null, delegate: interop.Object | null): NWTCPConnection;
 
   createUDPSessionThroughTunnelToEndpointFromEndpoint(remoteEndpoint: NWEndpoint, localEndpoint: NWHostEndpoint | null): NWUDPSession;
+}
+
+declare class NEVPNProtocolIPSec extends NEVPNProtocol {
+  authenticationMethod: interop.Enum<typeof NEVPNIKEAuthenticationMethod>;
+
+  useExtendedAuthentication: boolean;
+
+  sharedSecretReference: NSData;
+
+  localIdentifier: string;
+
+  remoteIdentifier: string;
+
+  setAuthenticationMethod(authenticationMethod: interop.Enum<typeof NEVPNIKEAuthenticationMethod>): void;
+
+  setUseExtendedAuthentication(useExtendedAuthentication: boolean): void;
+
+  setSharedSecretReference(sharedSecretReference: NSData): void;
+
+  setLocalIdentifier(localIdentifier: string): void;
+
+  setRemoteIdentifier(remoteIdentifier: string): void;
 }
 
 declare class NEAppRule extends NSObject implements NSSecureCoding, NSCopying {
@@ -1880,6 +1859,17 @@ declare class NEIPv6Settings extends NSObject implements NSSecureCoding, NSCopyi
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class NETunnelProviderProtocol extends NEVPNProtocol {
+  get providerConfiguration(): NSDictionary;
+  set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  providerBundleIdentifier: string;
+
+  setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setProviderBundleIdentifier(providerBundleIdentifier: string): void;
+}
+
 declare class NEProxySettings extends NSObject implements NSSecureCoding, NSCopying {
   autoProxyConfigurationEnabled: boolean;
 
@@ -1930,6 +1920,48 @@ declare class NEProxySettings extends NSObject implements NSSecureCoding, NSCopy
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class NEURLFilter extends NSObject {
+  static verdictForURLCompletionHandler(url: NSURL, completionHandler: (p1: interop.Enum<typeof NEURLFilterVerdict>) => void): void;
+}
+
+declare class NEHotspotConfiguration extends NSObject implements NSCopying, NSSecureCoding {
+  readonly SSID: string;
+
+  readonly SSIDPrefix: string;
+
+  joinOnce: boolean;
+
+  lifeTimeInDays: NSNumber;
+
+  hidden: boolean;
+
+  initWithSSID(SSID: string): this;
+
+  initWithSSIDPassphraseIsWEP(SSID: string, passphrase: string, isWEP: boolean): this;
+
+  initWithSSIDEapSettings(SSID: string, eapSettings: NEHotspotEAPSettings): this;
+
+  initWithHS20SettingsEapSettings(hs20Settings: NEHotspotHS20Settings, eapSettings: NEHotspotEAPSettings): this;
+
+  initWithSSIDPrefix(SSIDPrefix: string): this;
+
+  initWithSSIDPrefixPassphraseIsWEP(SSIDPrefix: string, passphrase: string, isWEP: boolean): this;
+
+  setJoinOnce(joinOnce: boolean): void;
+
+  setLifeTimeInDays(lifeTimeInDays: NSNumber): void;
+
+  setHidden(hidden: boolean): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NEFilterSocketFlow extends NEFilterFlow implements NSSecureCoding, NSCopying {
@@ -2007,6 +2039,8 @@ declare class NEAppPushManager extends NSObject {
   get matchPrivateLTENetworks(): NSArray;
   set matchPrivateLTENetworks(value: NSArray<interop.Object> | Array<interop.Object>);
 
+  matchEthernet: boolean;
+
   get providerConfiguration(): NSDictionary;
   set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
@@ -2031,6 +2065,8 @@ declare class NEAppPushManager extends NSObject {
   setMatchSSIDs(matchSSIDs: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setMatchPrivateLTENetworks(matchPrivateLTENetworks: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setMatchEthernet(matchEthernet: boolean): void;
 
   setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
@@ -2072,6 +2108,9 @@ declare class NEVPNIKEv2SecurityAssociationParameters extends NSObject implement
 
   diffieHellmanGroup: interop.Enum<typeof NEVPNIKEv2DiffieHellmanGroup>;
 
+  get postQuantumKeyExchangeMethods(): NSArray;
+  set postQuantumKeyExchangeMethods(value: NSArray<interop.Object> | Array<interop.Object>);
+
   lifetimeMinutes: number;
 
   setEncryptionAlgorithm(encryptionAlgorithm: interop.Enum<typeof NEVPNIKEv2EncryptionAlgorithm>): void;
@@ -2079,6 +2118,8 @@ declare class NEVPNIKEv2SecurityAssociationParameters extends NSObject implement
   setIntegrityAlgorithm(integrityAlgorithm: interop.Enum<typeof NEVPNIKEv2IntegrityAlgorithm>): void;
 
   setDiffieHellmanGroup(diffieHellmanGroup: interop.Enum<typeof NEVPNIKEv2DiffieHellmanGroup>): void;
+
+  setPostQuantumKeyExchangeMethods(postQuantumKeyExchangeMethods: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setLifetimeMinutes(lifetimeMinutes: number): void;
 

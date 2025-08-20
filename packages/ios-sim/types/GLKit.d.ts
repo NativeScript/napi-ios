@@ -4,8 +4,6 @@
 
 declare const GLKTextureLoaderGLErrorKey: string;
 
-declare const GLKTextureLoaderSRGB: string;
-
 declare const GLKTextureLoaderGrayscaleAsAlpha: string;
 
 declare const GLKTextureLoaderOriginBottomLeft: string;
@@ -15,6 +13,8 @@ declare const GLKTextureLoaderGenerateMipmaps: string;
 declare const GLKTextureLoaderApplyPremultiplication: string;
 
 declare const kGLKModelErrorDomain: string;
+
+declare const GLKTextureLoaderSRGB: string;
 
 declare const GLKTextureLoaderErrorDomain: string;
 
@@ -27,6 +27,12 @@ declare const GLKMatrix4Identity: _GLKMatrix4;
 declare const kGLKModelErrorKey: string;
 
 declare const GLKMatrix3Identity: _GLKMatrix3;
+
+declare const GLKTextureInfoOrigin: {
+  Unknown: 0,
+  TopLeft: 1,
+  BottomLeft: 2,
+};
 
 declare const GLKVertexAttrib: {
   Position: 0,
@@ -56,12 +62,6 @@ declare const GLKViewDrawableStencilFormat: {
 declare const GLKLightingType: {
   Vertex: 0,
   Pixel: 1,
-};
-
-declare const GLKTextureInfoOrigin: {
-  Unknown: 0,
-  TopLeft: 1,
-  BottomLeft: 2,
 };
 
 declare const GLKTextureEnvMode: {
@@ -98,16 +98,16 @@ declare const GLKTextureLoaderError: {
   UnsupportedTextureTarget: 19,
 };
 
-declare const GLKViewDrawableDepthFormat: {
-  FormatNone: 0,
-  Format16: 1,
-  Format24: 2,
-};
-
 declare const GLKTextureInfoAlphaState: {
   None: 0,
   NonPremultiplied: 1,
   Premultiplied: 2,
+};
+
+declare const GLKViewDrawableDepthFormat: {
+  FormatNone: 0,
+  Format16: 1,
+  Format24: 2,
 };
 
 declare const GLKViewDrawableColorFormat: {
@@ -123,28 +123,36 @@ declare class _GLKVertexAttributeParameters {
   normalized: number;
 }
 
-declare class unnamed_5330506344788925424 {
-  constructor(init?: unnamed_5330506344788925424);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
+declare class unnamed_9619072515748384153 {
+  constructor(init?: unnamed_9619072515748384153);
+  s: number;
+  t: number;
+  p: number;
+  q: number;
 }
 
-declare class unnamed_16848609145819638116 {
-  constructor(init?: unnamed_16848609145819638116);
+declare class unnamed_3196922036383165364 {
+  constructor(init?: unnamed_3196922036383165364);
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
+declare class unnamed_845072336377056983 {
+  constructor(init?: unnamed_845072336377056983);
   s: number;
   t: number;
 }
 
-declare class unnamed_14104243170216080095 {
-  constructor(init?: unnamed_14104243170216080095);
+declare class unnamed_16673726613481506252 {
+  constructor(init?: unnamed_16673726613481506252);
   x: number;
   y: number;
 }
 
-declare class unnamed_1263229536157147403 {
-  constructor(init?: unnamed_1263229536157147403);
+declare class unnamed_16104079342891207557 {
+  constructor(init?: unnamed_16104079342891207557);
   m00: number;
   m01: number;
   m02: number;
@@ -156,16 +164,16 @@ declare class unnamed_1263229536157147403 {
   m22: number;
 }
 
-declare class unnamed_17559905408798210556 {
-  constructor(init?: unnamed_17559905408798210556);
-  m00: number;
-  m01: number;
-  m10: number;
-  m11: number;
+declare class unnamed_4941123025285653396 {
+  constructor(init?: unnamed_4941123025285653396);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-declare class unnamed_7484547917685560354 {
-  constructor(init?: unnamed_7484547917685560354);
+declare class unnamed_2565579264590363955 {
+  constructor(init?: unnamed_2565579264590363955);
   m00: number;
   m01: number;
   m02: number;
@@ -184,63 +192,55 @@ declare class unnamed_7484547917685560354 {
   m33: number;
 }
 
-declare class unnamed_12673620918688559868 {
-  constructor(init?: unnamed_12673620918688559868);
-  r: number;
-  g: number;
-  b: number;
-}
-
-declare class unnamed_12073957216655656914 {
-  constructor(init?: unnamed_12073957216655656914);
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
-declare class unnamed_5278650258933832850 {
-  constructor(init?: unnamed_5278650258933832850);
-  x: number;
-  y: number;
-  z: number;
-}
-
-declare class unnamed_10147574272876281525 {
-  constructor(init?: unnamed_10147574272876281525);
-  s: number;
-  t: number;
-  p: number;
-  q: number;
-}
-
 declare class GLKEffectPropertyPrv {
   constructor(init?: GLKEffectPropertyPrv);
 }
 
-declare class unnamed_13607322704617387131 {
-  constructor(init?: unnamed_13607322704617387131);
+declare class unnamed_15421067402905298507 {
+  constructor(init?: unnamed_15421067402905298507);
+  m00: number;
+  m01: number;
+  m10: number;
+  m11: number;
+}
+
+declare class unnamed_4634930964719134257 {
+  constructor(init?: unnamed_4634930964719134257);
+  v: _GLKVector3;
+  s: number;
+}
+
+declare class unnamed_459724302143160691 {
+  constructor(init?: unnamed_459724302143160691);
   x: number;
   y: number;
   z: number;
-  w: number;
+}
+
+declare class unnamed_15994263239922143689 {
+  constructor(init?: unnamed_15994263239922143689);
+  s: number;
+  t: number;
+  p: number;
 }
 
 declare class _GLKMatrixStack {
   constructor(init?: _GLKMatrixStack);
 }
 
-declare class unnamed_18359918292662028540 {
-  constructor(init?: unnamed_18359918292662028540);
-  v: _GLKVector3;
-  s: number;
+declare class unnamed_3025356699930407620 {
+  constructor(init?: unnamed_3025356699930407620);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-declare class unnamed_8869469136479634640 {
-  constructor(init?: unnamed_8869469136479634640);
-  s: number;
-  t: number;
-  p: number;
+declare class unnamed_16065270878748604386 {
+  constructor(init?: unnamed_16065270878748604386);
+  r: number;
+  g: number;
+  b: number;
 }
 
 type _GLKQuaternionDescriptor = 
@@ -323,59 +323,59 @@ declare function GLKMatrix4Invert(matrix: _GLKMatrix4, isInvertible: interop.Poi
 
 declare function GLKMatrix4InvertAndTranspose(matrix: _GLKMatrix4, isInvertible: interop.PointerConvertible): _GLKMatrix4;
 
-declare function GLKMatrixStackCreate(alloc: interop.Object): interop.Object;
+declare function GLKMatrixStackCreate(alloc: interop.PointerConvertible): interop.Pointer;
 
 declare function GLKMatrixStackGetTypeID(): number;
 
-declare function GLKMatrixStackPush(stack: interop.Object): void;
+declare function GLKMatrixStackPush(stack: interop.PointerConvertible): void;
 
-declare function GLKMatrixStackPop(stack: interop.Object): void;
+declare function GLKMatrixStackPop(stack: interop.PointerConvertible): void;
 
-declare function GLKMatrixStackSize(stack: interop.Object): number;
+declare function GLKMatrixStackSize(stack: interop.PointerConvertible): number;
 
-declare function GLKMatrixStackLoadMatrix4(stack: interop.Object, matrix: _GLKMatrix4): void;
+declare function GLKMatrixStackLoadMatrix4(stack: interop.PointerConvertible, matrix: _GLKMatrix4): void;
 
-declare function GLKMatrixStackGetMatrix4(stack: interop.Object): _GLKMatrix4;
+declare function GLKMatrixStackGetMatrix4(stack: interop.PointerConvertible): _GLKMatrix4;
 
-declare function GLKMatrixStackGetMatrix3(stack: interop.Object): _GLKMatrix3;
+declare function GLKMatrixStackGetMatrix3(stack: interop.PointerConvertible): _GLKMatrix3;
 
-declare function GLKMatrixStackGetMatrix2(stack: interop.Object): _GLKMatrix2;
+declare function GLKMatrixStackGetMatrix2(stack: interop.PointerConvertible): _GLKMatrix2;
 
-declare function GLKMatrixStackGetMatrix4Inverse(stack: interop.Object): _GLKMatrix4;
+declare function GLKMatrixStackGetMatrix4Inverse(stack: interop.PointerConvertible): _GLKMatrix4;
 
-declare function GLKMatrixStackGetMatrix4InverseTranspose(stack: interop.Object): _GLKMatrix4;
+declare function GLKMatrixStackGetMatrix4InverseTranspose(stack: interop.PointerConvertible): _GLKMatrix4;
 
-declare function GLKMatrixStackGetMatrix3Inverse(stack: interop.Object): _GLKMatrix3;
+declare function GLKMatrixStackGetMatrix3Inverse(stack: interop.PointerConvertible): _GLKMatrix3;
 
-declare function GLKMatrixStackGetMatrix3InverseTranspose(stack: interop.Object): _GLKMatrix3;
+declare function GLKMatrixStackGetMatrix3InverseTranspose(stack: interop.PointerConvertible): _GLKMatrix3;
 
-declare function GLKMatrixStackMultiplyMatrix4(stack: interop.Object, matrix: _GLKMatrix4): void;
+declare function GLKMatrixStackMultiplyMatrix4(stack: interop.PointerConvertible, matrix: _GLKMatrix4): void;
 
-declare function GLKMatrixStackMultiplyMatrixStack(stackLeft: interop.Object, stackRight: interop.Object): void;
+declare function GLKMatrixStackMultiplyMatrixStack(stackLeft: interop.PointerConvertible, stackRight: interop.PointerConvertible): void;
 
-declare function GLKMatrixStackTranslate(stack: interop.Object, tx: number, ty: number, tz: number): void;
+declare function GLKMatrixStackTranslate(stack: interop.PointerConvertible, tx: number, ty: number, tz: number): void;
 
-declare function GLKMatrixStackTranslateWithVector3(stack: interop.Object, translationVector: _GLKVector3): void;
+declare function GLKMatrixStackTranslateWithVector3(stack: interop.PointerConvertible, translationVector: _GLKVector3): void;
 
-declare function GLKMatrixStackTranslateWithVector4(stack: interop.Object, translationVector: _GLKVector4): void;
+declare function GLKMatrixStackTranslateWithVector4(stack: interop.PointerConvertible, translationVector: _GLKVector4): void;
 
-declare function GLKMatrixStackScale(stack: interop.Object, sx: number, sy: number, sz: number): void;
+declare function GLKMatrixStackScale(stack: interop.PointerConvertible, sx: number, sy: number, sz: number): void;
 
-declare function GLKMatrixStackScaleWithVector3(stack: interop.Object, scaleVector: _GLKVector3): void;
+declare function GLKMatrixStackScaleWithVector3(stack: interop.PointerConvertible, scaleVector: _GLKVector3): void;
 
-declare function GLKMatrixStackScaleWithVector4(stack: interop.Object, scaleVector: _GLKVector4): void;
+declare function GLKMatrixStackScaleWithVector4(stack: interop.PointerConvertible, scaleVector: _GLKVector4): void;
 
-declare function GLKMatrixStackRotate(stack: interop.Object, radians: number, x: number, y: number, z: number): void;
+declare function GLKMatrixStackRotate(stack: interop.PointerConvertible, radians: number, x: number, y: number, z: number): void;
 
-declare function GLKMatrixStackRotateWithVector3(stack: interop.Object, radians: number, axisVector: _GLKVector3): void;
+declare function GLKMatrixStackRotateWithVector3(stack: interop.PointerConvertible, radians: number, axisVector: _GLKVector3): void;
 
-declare function GLKMatrixStackRotateWithVector4(stack: interop.Object, radians: number, axisVector: _GLKVector4): void;
+declare function GLKMatrixStackRotateWithVector4(stack: interop.PointerConvertible, radians: number, axisVector: _GLKVector4): void;
 
-declare function GLKMatrixStackRotateX(stack: interop.Object, radians: number): void;
+declare function GLKMatrixStackRotateX(stack: interop.PointerConvertible, radians: number): void;
 
-declare function GLKMatrixStackRotateY(stack: interop.Object, radians: number): void;
+declare function GLKMatrixStackRotateY(stack: interop.PointerConvertible, radians: number): void;
 
-declare function GLKMatrixStackRotateZ(stack: interop.Object, radians: number): void;
+declare function GLKMatrixStackRotateZ(stack: interop.PointerConvertible, radians: number): void;
 
 declare function GLKMathProject(object: _GLKVector3, model: _GLKMatrix4, projection: _GLKMatrix4, viewport: interop.PointerConvertible): _GLKVector3;
 
@@ -480,6 +480,56 @@ declare class GLKEffectPropertyFog extends GLKEffectProperty {
   setEnd(end: number): void;
 }
 
+declare class GLKEffectPropertyLight extends GLKEffectProperty {
+  enabled: number;
+
+  position: _GLKVector4;
+
+  ambientColor: _GLKVector4;
+
+  diffuseColor: _GLKVector4;
+
+  specularColor: _GLKVector4;
+
+  spotDirection: _GLKVector3;
+
+  spotExponent: number;
+
+  spotCutoff: number;
+
+  constantAttenuation: number;
+
+  linearAttenuation: number;
+
+  quadraticAttenuation: number;
+
+  transform: GLKEffectPropertyTransform;
+
+  setEnabled(enabled: number): void;
+
+  setPosition(position: _GLKVector4): void;
+
+  setAmbientColor(ambientColor: _GLKVector4): void;
+
+  setDiffuseColor(diffuseColor: _GLKVector4): void;
+
+  setSpecularColor(specularColor: _GLKVector4): void;
+
+  setSpotDirection(spotDirection: _GLKVector3): void;
+
+  setSpotExponent(spotExponent: number): void;
+
+  setSpotCutoff(spotCutoff: number): void;
+
+  setConstantAttenuation(constantAttenuation: number): void;
+
+  setLinearAttenuation(linearAttenuation: number): void;
+
+  setQuadraticAttenuation(quadraticAttenuation: number): void;
+
+  setTransform(transform: GLKEffectPropertyTransform): void;
+}
+
 declare class GLKEffectPropertyTransform extends GLKEffectProperty {
   modelviewMatrix: _GLKMatrix4;
 
@@ -552,6 +602,60 @@ declare class GLKMeshBuffer extends NSObject implements MDLMeshBuffer {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class GLKMeshBufferAllocator extends NSObject implements MDLMeshBufferAllocator {
+  newZone(capacity: number): MDLMeshBufferZone;
+
+  newZoneForBuffersWithSizeAndType(sizes: NSArray<interop.Object> | Array<interop.Object>, types: NSArray<interop.Object> | Array<interop.Object>): MDLMeshBufferZone;
+
+  newBufferType(length: number, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
+
+  newBufferWithDataType(data: NSData, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
+
+  newBufferFromZoneLengthType(zone: MDLMeshBufferZone | null, length: number, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
+
+  newBufferFromZoneDataType(zone: MDLMeshBufferZone | null, data: NSData, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class GLKView extends UIView implements NSCoding {
   initWithFrameContext(frame: CGRect, context: EAGLContext): this;
 
@@ -619,148 +723,6 @@ declare class GLKEffectPropertyTexture extends GLKEffectProperty {
 }
 
 declare class GLKEffectProperty extends NSObject {
-}
-
-declare class GLKEffectPropertyLight extends GLKEffectProperty {
-  enabled: number;
-
-  position: _GLKVector4;
-
-  ambientColor: _GLKVector4;
-
-  diffuseColor: _GLKVector4;
-
-  specularColor: _GLKVector4;
-
-  spotDirection: _GLKVector3;
-
-  spotExponent: number;
-
-  spotCutoff: number;
-
-  constantAttenuation: number;
-
-  linearAttenuation: number;
-
-  quadraticAttenuation: number;
-
-  transform: GLKEffectPropertyTransform;
-
-  setEnabled(enabled: number): void;
-
-  setPosition(position: _GLKVector4): void;
-
-  setAmbientColor(ambientColor: _GLKVector4): void;
-
-  setDiffuseColor(diffuseColor: _GLKVector4): void;
-
-  setSpecularColor(specularColor: _GLKVector4): void;
-
-  setSpotDirection(spotDirection: _GLKVector3): void;
-
-  setSpotExponent(spotExponent: number): void;
-
-  setSpotCutoff(spotCutoff: number): void;
-
-  setConstantAttenuation(constantAttenuation: number): void;
-
-  setLinearAttenuation(linearAttenuation: number): void;
-
-  setQuadraticAttenuation(quadraticAttenuation: number): void;
-
-  setTransform(transform: GLKEffectPropertyTransform): void;
-}
-
-declare class GLKMeshBufferAllocator extends NSObject implements MDLMeshBufferAllocator {
-  newZone(capacity: number): MDLMeshBufferZone;
-
-  newZoneForBuffersWithSizeAndType(sizes: NSArray<interop.Object> | Array<interop.Object>, types: NSArray<interop.Object> | Array<interop.Object>): MDLMeshBufferZone;
-
-  newBufferType(length: number, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
-
-  newBufferWithDataType(data: NSData, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
-
-  newBufferFromZoneLengthType(zone: MDLMeshBufferZone | null, length: number, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
-
-  newBufferFromZoneDataType(zone: MDLMeshBufferZone | null, data: NSData, type: interop.Enum<typeof MDLMeshBufferType>): MDLMeshBuffer;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class GLKMesh extends NSObject {
-  initWithMeshError(mesh: MDLMesh, error: interop.PointerConvertible): this;
-
-  static newMeshesFromAssetSourceMeshesError(asset: MDLAsset, sourceMeshes: interop.PointerConvertible, error: interop.PointerConvertible): NSArray;
-
-  readonly vertexCount: number;
-
-  readonly vertexBuffers: NSArray;
-
-  readonly vertexDescriptor: MDLVertexDescriptor;
-
-  readonly submeshes: NSArray;
-
-  readonly name: string;
-}
-
-declare class GLKEffectPropertyMaterial extends GLKEffectProperty {
-  ambientColor: _GLKVector4;
-
-  diffuseColor: _GLKVector4;
-
-  specularColor: _GLKVector4;
-
-  emissiveColor: _GLKVector4;
-
-  shininess: number;
-
-  setAmbientColor(ambientColor: _GLKVector4): void;
-
-  setDiffuseColor(diffuseColor: _GLKVector4): void;
-
-  setSpecularColor(specularColor: _GLKVector4): void;
-
-  setEmissiveColor(emissiveColor: _GLKVector4): void;
-
-  setShininess(shininess: number): void;
 }
 
 declare class GLKViewController extends UIViewController implements NSCoding, GLKViewDelegate {
@@ -845,6 +807,42 @@ declare class GLKViewController extends UIViewController implements NSCoding, GL
   readonly debugDescription: string;
 }
 
+declare class GLKEffectPropertyMaterial extends GLKEffectProperty {
+  ambientColor: _GLKVector4;
+
+  diffuseColor: _GLKVector4;
+
+  specularColor: _GLKVector4;
+
+  emissiveColor: _GLKVector4;
+
+  shininess: number;
+
+  setAmbientColor(ambientColor: _GLKVector4): void;
+
+  setDiffuseColor(diffuseColor: _GLKVector4): void;
+
+  setSpecularColor(specularColor: _GLKVector4): void;
+
+  setEmissiveColor(emissiveColor: _GLKVector4): void;
+
+  setShininess(shininess: number): void;
+}
+
+declare class GLKSubmesh extends NSObject {
+  readonly type: number;
+
+  readonly mode: number;
+
+  readonly elementCount: number;
+
+  readonly elementBuffer: GLKMeshBuffer;
+
+  readonly mesh: GLKMesh;
+
+  readonly name: string;
+}
+
 declare class GLKTextureLoader extends NSObject {
   static textureWithContentsOfFileOptionsError(path: string, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
@@ -854,7 +852,7 @@ declare class GLKTextureLoader extends NSObject {
 
   static textureWithContentsOfDataOptionsError(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
-  static textureWithCGImageOptionsError(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
+  static textureWithCGImageOptionsError(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
   static cubeMapWithContentsOfFilesOptionsError(paths: NSArray<interop.Object> | Array<interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
@@ -872,7 +870,7 @@ declare class GLKTextureLoader extends NSObject {
 
   textureWithContentsOfDataOptionsQueueCompletionHandler(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
 
-  textureWithCGImageOptionsQueueCompletionHandler(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
+  textureWithCGImageOptionsQueueCompletionHandler(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
 
   cubeMapWithContentsOfFilesOptionsQueueCompletionHandler(paths: NSArray<interop.Object> | Array<interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
 
@@ -934,16 +932,18 @@ declare class GLKBaseEffect extends NSObject implements GLKNamedEffect {
   setLabel(label: string | null): void;
 }
 
-declare class GLKSubmesh extends NSObject {
-  readonly type: number;
+declare class GLKMesh extends NSObject {
+  initWithMeshError(mesh: MDLMesh, error: interop.PointerConvertible): this;
 
-  readonly mode: number;
+  static newMeshesFromAssetSourceMeshesError(asset: MDLAsset, sourceMeshes: interop.PointerConvertible, error: interop.PointerConvertible): NSArray;
 
-  readonly elementCount: number;
+  readonly vertexCount: number;
 
-  readonly elementBuffer: GLKMeshBuffer;
+  readonly vertexBuffers: NSArray;
 
-  readonly mesh: GLKMesh;
+  readonly vertexDescriptor: MDLVertexDescriptor;
+
+  readonly submeshes: NSArray;
 
   readonly name: string;
 }

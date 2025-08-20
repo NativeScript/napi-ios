@@ -1,10 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const CoreLocationUIVersionNumber: number;
-
-declare const CoreLocationUIVersionString: interop.Pointer;
-
 declare const CLLocationButtonLabel: {
   None: 0,
   CurrentLocation: 1,

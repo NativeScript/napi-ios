@@ -5,6 +5,8 @@ declare const SHMediaItemConfidence: string;
 
 declare const SHMediaItemMatchOffset: string;
 
+declare const SHErrorDomain: string;
+
 declare const SHMediaItemCreationDate: string;
 
 declare const SHMediaItemFrequencySkewRanges: string;
@@ -30,8 +32,6 @@ declare const SHMediaItemShazamID: string;
 declare const SHMediaItemAppleMusicURL: string;
 
 declare const SHMediaItemFrequencySkew: string;
-
-declare const SHErrorDomain: string;
 
 declare const SHMediaItemArtworkURL: string;
 
@@ -193,22 +193,6 @@ declare class SHSignatureGenerator extends NSObject {
   signature(): SHSignature;
 }
 
-declare class SHCustomCatalog extends SHCatalog {
-  readonly dataRepresentation: NSData;
-
-  addReferenceSignatureRepresentingMediaItemsError(signature: SHSignature, mediaItems: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
-
-  addCustomCatalogFromURLError(customCatalogURL: NSURL, error: interop.PointerConvertible): boolean;
-
-  writeToURLError(destinationURL: NSURL, error: interop.PointerConvertible): boolean;
-
-  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  init(): this;
-
-  initWithDataRepresentationError(dataRepresentation: NSData, error: interop.PointerConvertible): this;
-}
-
 declare class SHMatchedMediaItem extends SHMediaItem implements NSSecureCoding {
   readonly frequencySkew: number;
 
@@ -223,5 +207,21 @@ declare class SHMatchedMediaItem extends SHMediaItem implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class SHCustomCatalog extends SHCatalog {
+  readonly dataRepresentation: NSData;
+
+  addReferenceSignatureRepresentingMediaItemsError(signature: SHSignature, mediaItems: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
+
+  addCustomCatalogFromURLError(customCatalogURL: NSURL, error: interop.PointerConvertible): boolean;
+
+  writeToURLError(destinationURL: NSURL, error: interop.PointerConvertible): boolean;
+
+  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  init(): this;
+
+  initWithDataRepresentationError(dataRepresentation: NSData, error: interop.PointerConvertible): this;
 }
 

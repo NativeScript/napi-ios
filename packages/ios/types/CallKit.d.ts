@@ -8,9 +8,9 @@ declare const CXErrorDomainRequestTransaction: string;
 
 declare const CXErrorDomainIncomingCall: string;
 
-declare const CXErrorDomain: string;
-
 declare const CXErrorDomainNotificationServiceExtension: string;
+
+declare const CXErrorDomain: string;
 
 declare const CXCallDirectoryPhoneNumberMax: number;
 
@@ -28,16 +28,9 @@ declare const CXCallEndedReason: {
   DeclinedElsewhere: 5,
 };
 
-declare const CXErrorCodeCallDirectoryManagerError: {
-  Unknown: 0,
-  NoExtensionFound: 1,
-  LoadingInterrupted: 2,
-  EntriesOutOfOrder: 3,
-  DuplicateEntries: 4,
-  MaximumEntriesExceeded: 5,
-  ExtensionDisabled: 6,
-  CurrentlyLoading: 7,
-  UnexpectedIncrementalRemoval: 8,
+declare const CXTranslationEngine: {
+  Default: 0,
+  Custom: 1,
 };
 
 declare const CXPlayDTMFCallActionType: {
@@ -54,6 +47,19 @@ declare const CXErrorCodeIncomingCallError: {
   FilteredByBlockList: 4,
   FilteredDuringRestrictedSharingMode: 5,
   CallIsProtected: 6,
+  FilteredBySensitiveParticipants: 7,
+};
+
+declare const CXErrorCodeCallDirectoryManagerError: {
+  Unknown: 0,
+  NoExtensionFound: 1,
+  LoadingInterrupted: 2,
+  EntriesOutOfOrder: 3,
+  DuplicateEntries: 4,
+  MaximumEntriesExceeded: 5,
+  ExtensionDisabled: 6,
+  CurrentlyLoading: 7,
+  UnexpectedIncrementalRemoval: 8,
 };
 
 declare const CXErrorCodeNotificationServiceExtensionError: {
@@ -107,6 +113,8 @@ declare interface CXProviderDelegate extends NSObjectProtocol {
   providerPerformSetGroupCallAction?(provider: CXProvider, action: CXSetGroupCallAction): void;
 
   providerPerformPlayDTMFCallAction?(provider: CXProvider, action: CXPlayDTMFCallAction): void;
+
+  providerPerformSetTranslatingCallAction?(provider: CXProvider, action: CXSetTranslatingCallAction): void;
 
   providerTimedOutPerformingAction?(provider: CXProvider, action: CXAction): void;
 
@@ -205,6 +213,8 @@ declare class CXProviderConfiguration extends NSObject implements NSCopying {
 
   supportsVideo: boolean;
 
+  supportsAudioTranslation: boolean;
+
   supportedHandleTypes: NSSet;
 
   init(): this;
@@ -223,6 +233,8 @@ declare class CXProviderConfiguration extends NSObject implements NSCopying {
 
   setSupportsVideo(supportsVideo: boolean): void;
 
+  setSupportsAudioTranslation(supportsAudioTranslation: boolean): void;
+
   setSupportedHandleTypes(supportedHandleTypes: NSSet): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -240,6 +252,18 @@ declare class CXPlayDTMFCallAction extends CXCallAction {
   setDigits(digits: string): void;
 
   setType(type: interop.Enum<typeof CXPlayDTMFCallActionType>): void;
+}
+
+declare class CXSetMutedCallAction extends CXCallAction {
+  initWithCallUUIDMuted(callUUID: NSUUID, muted: boolean): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  muted: boolean;
+
+  isMuted(): boolean;
+
+  setMuted(muted: boolean): void;
 }
 
 declare class CXSetHeldCallAction extends CXCallAction {
@@ -368,16 +392,22 @@ declare class CXCallObserver extends NSObject {
   setDelegateQueue(delegate: CXCallObserverDelegate | null, queue: NSObject | null): void;
 }
 
-declare class CXSetMutedCallAction extends CXCallAction {
-  initWithCallUUIDMuted(callUUID: NSUUID, muted: boolean): this;
+declare class CXSetTranslatingCallAction extends CXCallAction implements NSSecureCoding {
+  readonly isTranslating: boolean;
+
+  readonly localLanguage: string;
+
+  readonly remoteLanguage: string;
+
+  initWithCallUUIDIsTranslatingLocalLanguageRemoteLanguage(uuid: NSUUID, isTranslating: boolean, localLanguage: string, remoteLanguage: string): this;
 
   initWithCoder(aDecoder: NSCoder): this;
 
-  muted: boolean;
+  fulfillUsingTranslationEngine(translationEngine: interop.Enum<typeof CXTranslationEngine>): void;
 
-  isMuted(): boolean;
+  static readonly supportsSecureCoding: boolean;
 
-  setMuted(muted: boolean): void;
+  encodeWithCoder(coder: NSCoder): void;
 }
 
 declare class CXCallUpdate extends NSObject implements NSCopying {

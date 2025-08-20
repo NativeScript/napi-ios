@@ -24,6 +24,28 @@ declare interface MXMetricManagerSubscriber extends NSObjectProtocol {
 declare class MXMetricManagerSubscriber extends NativeObject implements MXMetricManagerSubscriber {
 }
 
+declare class MXSignpostIntervalData extends NSObject implements NSSecureCoding {
+  readonly histogrammedSignpostDuration: MXHistogram;
+
+  readonly cumulativeCPUTime: NSMeasurement;
+
+  readonly averageMemory: MXAverage;
+
+  readonly cumulativeLogicalWrites: NSMeasurement;
+
+  readonly cumulativeHitchTimeRatio: NSMeasurement;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class MXUnitAveragePixelLuminance extends NSDimension {
+  static readonly apl: MXUnitAveragePixelLuminance;
+}
+
 declare class MXMetric extends NSObject implements NSSecureCoding {
   JSONRepresentation(): NSData;
 
@@ -38,16 +60,8 @@ declare class MXMetric extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MXUnitAveragePixelLuminance extends NSDimension {
-  static readonly apl: MXUnitAveragePixelLuminance;
-}
-
 declare class MXCellularConditionMetric extends MXMetric {
   readonly histogrammedCellularConditionTime: MXHistogram;
-}
-
-declare class MXDisplayMetric extends MXMetric {
-  readonly averagePixelLuminance: MXAverage;
 }
 
 declare class MXDiagnosticPayload extends NSObject implements NSSecureCoding {
@@ -76,20 +90,6 @@ declare class MXDiagnosticPayload extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MXAverage<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
-  readonly averageMeasurement: NSMeasurement;
-
-  readonly sampleCount: number;
-
-  readonly standardDeviation: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class MXMemoryMetric extends MXMetric {
   readonly peakMemoryUsage: NSMeasurement;
 
@@ -98,20 +98,6 @@ declare class MXMemoryMetric extends MXMetric {
 
 declare class MXCallStackTree extends NSObject implements NSSecureCoding {
   JSONRepresentation(): NSData;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MXHistogramBucket<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
-  readonly bucketStart: NSMeasurement;
-
-  readonly bucketEnd: NSMeasurement;
-
-  readonly bucketCount: number;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -158,6 +144,20 @@ declare class MXNetworkTransferMetric extends MXMetric {
   readonly cumulativeCellularDownload: NSMeasurement;
 }
 
+declare class MXHistogramBucket<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
+  readonly bucketStart: NSMeasurement;
+
+  readonly bucketEnd: NSMeasurement;
+
+  readonly bucketCount: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class MXGPUMetric extends MXMetric {
   readonly cumulativeGPUTime: NSMeasurement;
 }
@@ -172,6 +172,20 @@ declare class MXDiagnostic extends NSObject implements NSSecureCoding {
   JSONRepresentation(): NSData;
 
   dictionaryRepresentation(): NSDictionary;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class MXAverage<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
+  readonly averageMeasurement: NSMeasurement;
+
+  readonly sampleCount: number;
+
+  readonly standardDeviation: number;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -198,10 +212,12 @@ declare class MXAppLaunchMetric extends MXMetric {
 
 declare class MXAnimationMetric extends MXMetric {
   readonly scrollHitchTimeRatio: NSMeasurement;
+
+  readonly hitchTimeRatio: NSMeasurement;
 }
 
-declare class MXAppResponsivenessMetric extends MXMetric {
-  readonly histogrammedApplicationHangTime: MXHistogram;
+declare class MXDiskIOMetric extends MXMetric {
+  readonly cumulativeLogicalWrites: NSMeasurement;
 }
 
 declare class MXCPUExceptionDiagnostic extends MXDiagnostic {
@@ -210,6 +226,10 @@ declare class MXCPUExceptionDiagnostic extends MXDiagnostic {
   readonly totalCPUTime: NSMeasurement;
 
   readonly totalSampledTime: NSMeasurement;
+}
+
+declare class MXAppResponsivenessMetric extends MXMetric {
+  readonly histogrammedApplicationHangTime: MXHistogram;
 }
 
 declare class MXCPUMetric extends MXMetric {
@@ -293,6 +313,8 @@ declare class MXMetricPayload extends NSObject implements NSSecureCoding {
 
   readonly applicationExitMetrics: MXAppExitMetric;
 
+  readonly diskSpaceUsageMetrics: MXDiskSpaceUsageMetric;
+
   readonly signpostMetrics: NSArray;
 
   readonly metaData: MXMetaData;
@@ -308,6 +330,24 @@ declare class MXMetricPayload extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class MXDiskSpaceUsageMetric extends MXMetric {
+  readonly totalBinaryFileSize: NSMeasurement;
+
+  readonly totalBinaryFileCount: number;
+
+  readonly totalDataFileSize: NSMeasurement;
+
+  readonly totalDataFileCount: number;
+
+  readonly totalCacheFolderSize: NSMeasurement;
+
+  readonly totalCloneSize: NSMeasurement;
+
+  readonly totalDiskSpaceUsedSize: NSMeasurement;
+
+  readonly totalDiskSpaceCapacity: NSMeasurement;
 }
 
 declare class MXAppRunTimeMetric extends MXMetric {
@@ -438,10 +478,6 @@ declare class MXForegroundExitData extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MXDiskIOMetric extends MXMetric {
-  readonly cumulativeLogicalWrites: NSMeasurement;
-}
-
 declare class MXMetaData extends NSObject implements NSSecureCoding {
   readonly regionFormat: string;
 
@@ -459,6 +495,8 @@ declare class MXMetaData extends NSObject implements NSSecureCoding {
 
   readonly pid: number;
 
+  readonly bundleIdentifier: string;
+
   JSONRepresentation(): NSData;
 
   DictionaryRepresentation(): NSDictionary;
@@ -472,22 +510,8 @@ declare class MXMetaData extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MXSignpostIntervalData extends NSObject implements NSSecureCoding {
-  readonly histogrammedSignpostDuration: MXHistogram;
-
-  readonly cumulativeCPUTime: NSMeasurement;
-
-  readonly averageMemory: MXAverage;
-
-  readonly cumulativeLogicalWrites: NSMeasurement;
-
-  readonly cumulativeHitchTimeRatio: NSMeasurement;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+declare class MXDisplayMetric extends MXMetric {
+  readonly averagePixelLuminance: MXAverage;
 }
 
 declare class MXAppLaunchDiagnostic extends MXDiagnostic {

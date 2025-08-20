@@ -1,7 +1,13 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const ASPickerDisplaySettingsDiscoveryTimeoutLong: number;
+
+declare const ASPickerDisplaySettingsDiscoveryTimeoutMedium: number;
+
 declare const ASErrorDomain: string;
+
+declare const ASPickerDisplaySettingsDiscoveryTimeoutShort: number;
 
 declare const ASPickerDisplayItemSetupOptions: {
   Rename: 1,
@@ -25,6 +31,21 @@ declare const ASAccessoryState: {
   Authorized: 20,
 };
 
+declare const ASErrorCode: {
+  Success: 0,
+  Unknown: 1,
+  ActivationFailed: 100,
+  ConnectionFailed: 150,
+  DiscoveryTimeout: 200,
+  ExtensionNotFound: 300,
+  Invalidated: 400,
+  InvalidRequest: 450,
+  PickerAlreadyActive: 500,
+  PickerRestricted: 550,
+  UserCancelled: 700,
+  UserRestricted: 750,
+};
+
 declare const ASAccessoryEventType: {
   Unknown: 0,
   Activated: 10,
@@ -41,25 +62,23 @@ declare const ASAccessoryEventType: {
   PickerSetupRename: 90,
 };
 
-declare const ASErrorCode: {
-  Success: 0,
-  Unknown: 1,
-  ActivationFailed: 100,
-  ConnectionFailed: 150,
-  DiscoveryTimeout: 200,
-  ExtensionNotFound: 300,
-  Invalidated: 400,
-  InvalidRequest: 450,
-  PickerAlreadyActive: 500,
-  PickerRestricted: 550,
-  UserCancelled: 700,
-  UserRestricted: 750,
-};
-
 declare const ASDiscoveryDescriptorRange: {
   Default: 0,
   Immediate: 10,
 };
+
+declare const ASDiscoveryDescriptorWiFiAwareServiceRole: {
+  Subscriber: 10,
+  Publisher: 20,
+};
+
+declare class ASPickerDisplaySettings extends NSObject {
+  static readonly defaultSettings: ASPickerDisplaySettings;
+
+  discoveryTimeout: number;
+
+  setDiscoveryTimeout(discoveryTimeout: number): void;
+}
 
 declare class ASMigrationDisplayItem extends ASPickerDisplayItem {
   peripheralIdentifier: NSUUID;
@@ -77,6 +96,14 @@ declare class ASAccessoryEvent extends NSObject {
   readonly accessory: ASAccessory;
 
   readonly error: NSError;
+}
+
+declare class ASPropertyCompareString extends NSObject {
+  readonly string: string;
+
+  readonly compareOptions: interop.Enum<typeof NSStringCompareOptions>;
+
+  initWithStringCompareOptions(string: string, compareOptions: interop.Enum<typeof NSStringCompareOptions>): this;
 }
 
 declare class ASDiscoveryDescriptor extends NSObject {
@@ -104,6 +131,14 @@ declare class ASDiscoveryDescriptor extends NSObject {
 
   SSIDPrefix: string;
 
+  wifiAwareServiceName: string;
+
+  wifiAwareServiceRole: interop.Enum<typeof ASDiscoveryDescriptorWiFiAwareServiceRole>;
+
+  wifiAwareModelNameMatch: ASPropertyCompareString;
+
+  wifiAwareVendorNameMatch: ASPropertyCompareString;
+
   setSupportedOptions(supportedOptions: interop.Enum<typeof ASAccessorySupportOptions>): void;
 
   setBluetoothCompanyIdentifier(bluetoothCompanyIdentifier: number): void;
@@ -127,6 +162,14 @@ declare class ASDiscoveryDescriptor extends NSObject {
   setSSID(SSID: string | null): void;
 
   setSSIDPrefix(SSIDPrefix: string | null): void;
+
+  setWifiAwareServiceName(wifiAwareServiceName: string): void;
+
+  setWifiAwareServiceRole(wifiAwareServiceRole: interop.Enum<typeof ASDiscoveryDescriptorWiFiAwareServiceRole>): void;
+
+  setWifiAwareModelNameMatch(wifiAwareModelNameMatch: ASPropertyCompareString): void;
+
+  setWifiAwareVendorNameMatch(wifiAwareVendorNameMatch: ASPropertyCompareString): void;
 }
 
 declare class ASAccessory extends NSObject {
@@ -139,6 +182,8 @@ declare class ASAccessory extends NSObject {
   readonly displayName: string;
 
   readonly SSID: string;
+
+  readonly wifiAwarePairedDeviceID: number;
 
   readonly descriptor: ASDiscoveryDescriptor;
 }
@@ -176,6 +221,8 @@ declare class ASAccessorySettings extends NSObject {
 declare class ASAccessorySession extends NSObject {
   readonly accessories: NSArray;
 
+  pickerDisplaySettings: ASPickerDisplaySettings;
+
   activateWithQueueEventHandler(queue: NSObject, eventHandler: (p1: ASAccessoryEvent) => void): void;
 
   invalidate(): void;
@@ -191,5 +238,9 @@ declare class ASAccessorySession extends NSObject {
   removeAccessoryCompletionHandler(accessory: ASAccessory, completionHandler: (p1: NSError) => void | null): void;
 
   renameAccessoryOptionsCompletionHandler(accessory: ASAccessory, renameOptions: interop.Enum<typeof ASAccessoryRenameOptions>, completionHandler: (p1: NSError) => void | null): void;
+
+  updateAuthorizationDescriptorCompletionHandler(accessory: ASAccessory, descriptor: ASDiscoveryDescriptor, completionHandler: (p1: NSError) => void | null): void;
+
+  setPickerDisplaySettings(pickerDisplaySettings: ASPickerDisplaySettings): void;
 }
 

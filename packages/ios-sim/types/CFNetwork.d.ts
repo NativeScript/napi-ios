@@ -14,35 +14,41 @@ declare const kCFStreamPropertyConnectionIsExpensive: interop.Pointer;
 
 declare const kCFStreamErrorDomainHTTP: number;
 
+declare const kCFStreamErrorDomainNetServices: number;
+
 declare const kCFStreamSSLValidatesCertificateChain: interop.Pointer;
+
+declare const kCFNetworkProxiesHTTPProxy: interop.Pointer;
 
 declare const kCFStreamSSLAllowsExpiredCertificates: interop.Pointer;
 
 declare const kCFStreamSSLIsServer: interop.Pointer;
 
+declare const kCFStreamNetworkServiceType: interop.Pointer;
+
 declare const kCFStreamNetworkServiceTypeVoice: interop.Pointer;
 
 declare const kCFProxyTypeFTP: interop.Pointer;
 
-declare const kCFStreamNetworkServiceType: interop.Pointer;
-
 declare const kCFNetworkProxiesHTTPPort: interop.Pointer;
+
+declare const kCFStreamPropertyFTPProxyUser: interop.Pointer;
 
 declare const kCFStreamPropertyFTPFileTransferOffset: interop.Pointer;
 
-declare const kCFStreamPropertySSLSettings: interop.Pointer;
+declare const kCFStreamErrorSOCKS4IdentdFailed: number;
+
+declare const kCFStreamPropertyHTTPProxyHost: interop.Pointer;
+
+declare const kCFStreamErrorSOCKSSubDomainNone: number;
 
 declare const kCFStreamSSLLevel: interop.Pointer;
 
-declare const kCFStreamPropertyHTTPFinalURL: interop.Pointer;
-
-declare const kCFHTTPVersion3_0: interop.Pointer;
-
-declare const kCFProxyUsernameKey: interop.Pointer;
-
 declare const kCFStreamPropertyFTPProxyPort: interop.Pointer;
 
-declare const kCFHTTPAuthenticationPassword: interop.Pointer;
+declare const kCFStreamPropertySSLSettings: interop.Pointer;
+
+declare const kCFStreamPropertySSLPeerCertificates: interop.Pointer;
 
 declare const kCFStreamErrorDomainSystemConfiguration: number;
 
@@ -53,6 +59,8 @@ declare const kCFFTPResourceName: interop.Pointer;
 declare const kCFProxyPasswordKey: interop.Pointer;
 
 declare const kCFStreamNetworkServiceTypeVideo: interop.Pointer;
+
+declare const kCFStreamPropertyHTTPFinalURL: interop.Pointer;
 
 declare const kCFStreamErrorDomainWinSock: number;
 
@@ -74,6 +82,8 @@ declare const kCFProxyTypeSOCKS: interop.Pointer;
 
 declare const kCFProxyTypeHTTPS: interop.Pointer;
 
+declare const kCFProxyUsernameKey: interop.Pointer;
+
 declare const kCFProxyAutoConfigurationJavaScriptKey: interop.Pointer;
 
 declare const kCFProxyHostNameKey: interop.Pointer;
@@ -81,6 +91,8 @@ declare const kCFProxyHostNameKey: interop.Pointer;
 declare const kCFProxyTypeKey: interop.Pointer;
 
 declare const kCFHTTPAuthenticationAccountDomain: interop.Pointer;
+
+declare const kCFHTTPAuthenticationPassword: interop.Pointer;
 
 declare const kCFHTTPAuthenticationUsername: interop.Pointer;
 
@@ -94,8 +106,6 @@ declare const kCFStreamPropertyHTTPSProxyHost: interop.Pointer;
 
 declare const kCFStreamPropertyHTTPProxyPort: interop.Pointer;
 
-declare const kCFStreamPropertyHTTPProxyHost: interop.Pointer;
-
 declare const kCFStreamPropertyHTTPFinalRequest: interop.Pointer;
 
 declare const kCFStreamPropertyHTTPResponseHeader: interop.Pointer;
@@ -106,6 +116,8 @@ declare const kCFHTTPAuthenticationSchemeKerberos: interop.Pointer;
 
 declare const kCFHTTPAuthenticationSchemeDigest: interop.Pointer;
 
+declare const kCFHTTPVersion3_0: interop.Pointer;
+
 declare const kCFHTTPVersion2_0: interop.Pointer;
 
 declare const kCFFTPResourceGroup: interop.Pointer;
@@ -115,8 +127,6 @@ declare const kCFFTPResourceOwner: interop.Pointer;
 declare const kCFFTPResourceMode: interop.Pointer;
 
 declare const kCFStreamPropertyFTPProxyPassword: interop.Pointer;
-
-declare const kCFStreamPropertyFTPProxyUser: interop.Pointer;
 
 declare const kCFStreamPropertyFTPProxyHost: interop.Pointer;
 
@@ -134,11 +144,7 @@ declare const kCFStreamSSLAllowsAnyRoot: interop.Pointer;
 
 declare const kCFStreamSSLAllowsExpiredRoots: interop.Pointer;
 
-declare const kCFStreamPropertySSLPeerCertificates: interop.Pointer;
-
 declare const kCFStreamPropertyProxyLocalBypass: interop.Pointer;
-
-declare const kCFStreamPropertyFTPUsePassiveMode: interop.Pointer;
 
 declare const kSOCKS5NoAcceptableMethod: number;
 
@@ -174,8 +180,6 @@ declare const kCFStreamPropertySSLPeerTrust: interop.Pointer;
 
 declare const kCFStreamPropertySSLContext: interop.Pointer;
 
-declare const kCFStreamErrorDomainNetServices: number;
-
 declare const kCFStreamErrorDomainMach: number;
 
 declare const kCFStreamErrorDomainNetDB: number;
@@ -192,11 +196,9 @@ declare const kCFErrorDomainCFNetwork: interop.Pointer;
 
 declare const kCFStreamPropertyHTTPSProxyPort: interop.Pointer;
 
-declare const kCFStreamErrorSOCKSSubDomainNone: number;
-
-declare const kCFURLErrorFailingURLErrorKey: interop.Pointer;
-
 declare const kCFStreamPropertySocketRemoteNetService: interop.Pointer;
+
+declare const kCFStreamPropertyFTPUsePassiveMode: interop.Pointer;
 
 declare const kCFFTPResourceType: interop.Pointer;
 
@@ -234,7 +236,7 @@ declare const kCFProxyTypeHTTP: interop.Pointer;
 
 declare const kCFHTTPVersion1_0: interop.Pointer;
 
-declare const kCFNetworkProxiesHTTPProxy: interop.Pointer;
+declare const kCFURLErrorFailingURLErrorKey: interop.Pointer;
 
 declare const kCFHTTPAuthenticationSchemeBasic: interop.Pointer;
 
@@ -245,8 +247,6 @@ declare const kCFGetAddrInfoFailureKey: interop.Pointer;
 declare const kCFFTPResourceModDate: interop.Pointer;
 
 declare const kCFNetworkProxiesProxyAutoConfigURLString: interop.Pointer;
-
-declare const kCFStreamErrorSOCKS4IdentdFailed: number;
 
 declare const kCFProxyAutoConfigurationURLKey: interop.Pointer;
 
@@ -441,27 +441,27 @@ declare class __CFNetServiceMonitor {
 
 declare function CFHostGetTypeID(): number;
 
-declare function CFHostCreateWithName(allocator: interop.Object, hostname: interop.Object): interop.Object;
+declare function CFHostCreateWithName(allocator: interop.PointerConvertible, hostname: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHostCreateWithAddress(allocator: interop.Object, addr: interop.Object): interop.Object;
+declare function CFHostCreateWithAddress(allocator: interop.PointerConvertible, addr: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHostCreateCopy(alloc: interop.Object, host: interop.Object): interop.Object;
+declare function CFHostCreateCopy(alloc: interop.PointerConvertible, host: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHostStartInfoResolution(theHost: interop.Object, info: interop.Enum<typeof CFHostInfoType>, error: interop.PointerConvertible): number;
+declare function CFHostStartInfoResolution(theHost: interop.PointerConvertible, info: interop.Enum<typeof CFHostInfoType>, error: interop.PointerConvertible): number;
 
-declare function CFHostGetAddressing(theHost: interop.Object, hasBeenResolved: interop.PointerConvertible): interop.Object;
+declare function CFHostGetAddressing(theHost: interop.PointerConvertible, hasBeenResolved: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHostGetNames(theHost: interop.Object, hasBeenResolved: interop.PointerConvertible): interop.Object;
+declare function CFHostGetNames(theHost: interop.PointerConvertible, hasBeenResolved: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHostGetReachability(theHost: interop.Object, hasBeenResolved: interop.PointerConvertible): interop.Object;
+declare function CFHostGetReachability(theHost: interop.PointerConvertible, hasBeenResolved: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHostCancelInfoResolution(theHost: interop.Object, info: interop.Enum<typeof CFHostInfoType>): void;
+declare function CFHostCancelInfoResolution(theHost: interop.PointerConvertible, info: interop.Enum<typeof CFHostInfoType>): void;
 
-declare function CFHostSetClient(theHost: interop.Object, clientCB: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFHostInfoType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
+declare function CFHostSetClient(theHost: interop.PointerConvertible, clientCB: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFHostInfoType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
 
-declare function CFHostScheduleWithRunLoop(theHost: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFHostScheduleWithRunLoop(theHost: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFHostUnscheduleFromRunLoop(theHost: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFHostUnscheduleFromRunLoop(theHost: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
 declare function CFNetServiceGetTypeID(): number;
 
@@ -469,163 +469,163 @@ declare function CFNetServiceMonitorGetTypeID(): number;
 
 declare function CFNetServiceBrowserGetTypeID(): number;
 
-declare function CFNetServiceCreate(alloc: interop.Object, domain: interop.Object, serviceType: interop.Object, name: interop.Object, port: number): interop.Object;
+declare function CFNetServiceCreate(alloc: interop.PointerConvertible, domain: interop.PointerConvertible, serviceType: interop.PointerConvertible, name: interop.PointerConvertible, port: number): interop.Pointer;
 
-declare function CFNetServiceCreateCopy(alloc: interop.Object, service: interop.Object): interop.Object;
+declare function CFNetServiceCreateCopy(alloc: interop.PointerConvertible, service: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceGetDomain(theService: interop.Object): interop.Object;
+declare function CFNetServiceGetDomain(theService: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceGetType(theService: interop.Object): interop.Object;
+declare function CFNetServiceGetType(theService: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceGetName(theService: interop.Object): interop.Object;
+declare function CFNetServiceGetName(theService: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceRegisterWithOptions(theService: interop.Object, options: number, error: interop.PointerConvertible): number;
+declare function CFNetServiceRegisterWithOptions(theService: interop.PointerConvertible, options: number, error: interop.PointerConvertible): number;
 
-declare function CFNetServiceResolveWithTimeout(theService: interop.Object, timeout: number, error: interop.PointerConvertible): number;
+declare function CFNetServiceResolveWithTimeout(theService: interop.PointerConvertible, timeout: number, error: interop.PointerConvertible): number;
 
-declare function CFNetServiceCancel(theService: interop.Object): void;
+declare function CFNetServiceCancel(theService: interop.PointerConvertible): void;
 
-declare function CFNetServiceGetTargetHost(theService: interop.Object): interop.Object;
+declare function CFNetServiceGetTargetHost(theService: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceGetPortNumber(theService: interop.Object): number;
+declare function CFNetServiceGetPortNumber(theService: interop.PointerConvertible): number;
 
-declare function CFNetServiceGetAddressing(theService: interop.Object): interop.Object;
+declare function CFNetServiceGetAddressing(theService: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceGetTXTData(theService: interop.Object): interop.Object;
+declare function CFNetServiceGetTXTData(theService: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceSetTXTData(theService: interop.Object, txtRecord: interop.Object): number;
+declare function CFNetServiceSetTXTData(theService: interop.PointerConvertible, txtRecord: interop.PointerConvertible): number;
 
-declare function CFNetServiceCreateDictionaryWithTXTData(alloc: interop.Object, txtRecord: interop.Object): interop.Object;
+declare function CFNetServiceCreateDictionaryWithTXTData(alloc: interop.PointerConvertible, txtRecord: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceCreateTXTDataWithDictionary(alloc: interop.Object, keyValuePairs: interop.Object): interop.Object;
+declare function CFNetServiceCreateTXTDataWithDictionary(alloc: interop.PointerConvertible, keyValuePairs: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceSetClient(theService: interop.Object, clientCB: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
+declare function CFNetServiceSetClient(theService: interop.PointerConvertible, clientCB: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
 
-declare function CFNetServiceScheduleWithRunLoop(theService: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFNetServiceScheduleWithRunLoop(theService: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFNetServiceUnscheduleFromRunLoop(theService: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFNetServiceUnscheduleFromRunLoop(theService: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFNetServiceMonitorCreate(alloc: interop.Object, theService: interop.Object, clientCB: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof CFNetServiceMonitorType>, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Object;
+declare function CFNetServiceMonitorCreate(alloc: interop.PointerConvertible, theService: interop.PointerConvertible, clientCB: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof CFNetServiceMonitorType>, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceMonitorInvalidate(monitor: interop.Object): void;
+declare function CFNetServiceMonitorInvalidate(monitor: interop.PointerConvertible): void;
 
-declare function CFNetServiceMonitorStart(monitor: interop.Object, recordType: interop.Enum<typeof CFNetServiceMonitorType>, error: interop.PointerConvertible): number;
+declare function CFNetServiceMonitorStart(monitor: interop.PointerConvertible, recordType: interop.Enum<typeof CFNetServiceMonitorType>, error: interop.PointerConvertible): number;
 
-declare function CFNetServiceMonitorStop(monitor: interop.Object, error: interop.PointerConvertible): void;
+declare function CFNetServiceMonitorStop(monitor: interop.PointerConvertible, error: interop.PointerConvertible): void;
 
-declare function CFNetServiceMonitorScheduleWithRunLoop(monitor: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFNetServiceMonitorScheduleWithRunLoop(monitor: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFNetServiceMonitorUnscheduleFromRunLoop(monitor: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFNetServiceMonitorUnscheduleFromRunLoop(monitor: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFNetServiceBrowserCreate(alloc: interop.Object, clientCB: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Object;
+declare function CFNetServiceBrowserCreate(alloc: interop.PointerConvertible, clientCB: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetServiceBrowserInvalidate(browser: interop.Object): void;
+declare function CFNetServiceBrowserInvalidate(browser: interop.PointerConvertible): void;
 
-declare function CFNetServiceBrowserSearchForDomains(browser: interop.Object, registrationDomains: number, error: interop.PointerConvertible): number;
+declare function CFNetServiceBrowserSearchForDomains(browser: interop.PointerConvertible, registrationDomains: number, error: interop.PointerConvertible): number;
 
-declare function CFNetServiceBrowserSearchForServices(browser: interop.Object, domain: interop.Object, serviceType: interop.Object, error: interop.PointerConvertible): number;
+declare function CFNetServiceBrowserSearchForServices(browser: interop.PointerConvertible, domain: interop.PointerConvertible, serviceType: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function CFNetServiceBrowserStopSearch(browser: interop.Object, error: interop.PointerConvertible): void;
+declare function CFNetServiceBrowserStopSearch(browser: interop.PointerConvertible, error: interop.PointerConvertible): void;
 
-declare function CFNetServiceBrowserScheduleWithRunLoop(browser: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFNetServiceBrowserScheduleWithRunLoop(browser: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFNetServiceBrowserUnscheduleFromRunLoop(browser: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
+declare function CFNetServiceBrowserUnscheduleFromRunLoop(browser: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFStreamCreatePairWithSocketToCFHost(alloc: interop.Object, host: interop.Object, port: number, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
+declare function CFStreamCreatePairWithSocketToCFHost(alloc: interop.PointerConvertible, host: interop.PointerConvertible, port: number, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
 
-declare function CFStreamCreatePairWithSocketToNetService(alloc: interop.Object, service: interop.Object, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
+declare function CFStreamCreatePairWithSocketToNetService(alloc: interop.PointerConvertible, service: interop.PointerConvertible, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
 
-declare function CFReadStreamCreateWithFTPURL(alloc: interop.Object, ftpURL: interop.Object): interop.Object;
+declare function CFReadStreamCreateWithFTPURL(alloc: interop.PointerConvertible, ftpURL: interop.PointerConvertible): interop.Pointer;
 
-declare function CFFTPCreateParsedResourceListing(alloc: interop.Object, buffer: interop.PointerConvertible, bufferLength: number, parsed: interop.PointerConvertible): number;
+declare function CFFTPCreateParsedResourceListing(alloc: interop.PointerConvertible, buffer: interop.PointerConvertible, bufferLength: number, parsed: interop.PointerConvertible): number;
 
-declare function CFWriteStreamCreateWithFTPURL(alloc: interop.Object, ftpURL: interop.Object): interop.Object;
+declare function CFWriteStreamCreateWithFTPURL(alloc: interop.PointerConvertible, ftpURL: interop.PointerConvertible): interop.Pointer;
 
 declare function CFHTTPMessageGetTypeID(): number;
 
-declare function CFHTTPMessageCreateRequest(alloc: interop.Object, requestMethod: interop.Object, url: interop.Object, httpVersion: interop.Object): interop.Object;
+declare function CFHTTPMessageCreateRequest(alloc: interop.PointerConvertible, requestMethod: interop.PointerConvertible, url: interop.PointerConvertible, httpVersion: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageCreateResponse(alloc: interop.Object, statusCode: number, statusDescription: interop.Object, httpVersion: interop.Object): interop.Object;
+declare function CFHTTPMessageCreateResponse(alloc: interop.PointerConvertible, statusCode: number, statusDescription: interop.PointerConvertible, httpVersion: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageCreateEmpty(alloc: interop.Object, isRequest: number): interop.Object;
+declare function CFHTTPMessageCreateEmpty(alloc: interop.PointerConvertible, isRequest: number): interop.Pointer;
 
-declare function CFHTTPMessageCreateCopy(alloc: interop.Object, message: interop.Object): interop.Object;
+declare function CFHTTPMessageCreateCopy(alloc: interop.PointerConvertible, message: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageIsRequest(message: interop.Object): number;
+declare function CFHTTPMessageIsRequest(message: interop.PointerConvertible): number;
 
-declare function CFHTTPMessageCopyVersion(message: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyVersion(message: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageCopyBody(message: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyBody(message: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageSetBody(message: interop.Object, bodyData: interop.Object): void;
+declare function CFHTTPMessageSetBody(message: interop.PointerConvertible, bodyData: interop.PointerConvertible): void;
 
-declare function CFHTTPMessageCopyHeaderFieldValue(message: interop.Object, headerField: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyHeaderFieldValue(message: interop.PointerConvertible, headerField: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageCopyAllHeaderFields(message: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyAllHeaderFields(message: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageSetHeaderFieldValue(message: interop.Object, headerField: interop.Object, value: interop.Object): void;
+declare function CFHTTPMessageSetHeaderFieldValue(message: interop.PointerConvertible, headerField: interop.PointerConvertible, value: interop.PointerConvertible): void;
 
-declare function CFHTTPMessageAppendBytes(message: interop.Object, newBytes: interop.PointerConvertible, numBytes: number): number;
+declare function CFHTTPMessageAppendBytes(message: interop.PointerConvertible, newBytes: interop.PointerConvertible, numBytes: number): number;
 
-declare function CFHTTPMessageIsHeaderComplete(message: interop.Object): number;
+declare function CFHTTPMessageIsHeaderComplete(message: interop.PointerConvertible): number;
 
-declare function CFHTTPMessageCopySerializedMessage(message: interop.Object): interop.Object;
+declare function CFHTTPMessageCopySerializedMessage(message: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageCopyRequestURL(request: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyRequestURL(request: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageCopyRequestMethod(request: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyRequestMethod(request: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPMessageAddAuthentication(request: interop.Object, authenticationFailureResponse: interop.Object, username: interop.Object, password: interop.Object, authenticationScheme: interop.Object, forProxy: number): number;
+declare function CFHTTPMessageAddAuthentication(request: interop.PointerConvertible, authenticationFailureResponse: interop.PointerConvertible, username: interop.PointerConvertible, password: interop.PointerConvertible, authenticationScheme: interop.PointerConvertible, forProxy: number): number;
 
-declare function CFHTTPMessageGetResponseStatusCode(response: interop.Object): number;
+declare function CFHTTPMessageGetResponseStatusCode(response: interop.PointerConvertible): number;
 
-declare function CFHTTPMessageCopyResponseStatusLine(response: interop.Object): interop.Object;
+declare function CFHTTPMessageCopyResponseStatusLine(response: interop.PointerConvertible): interop.Pointer;
 
-declare function CFReadStreamCreateForHTTPRequest(alloc: interop.Object, request: interop.Object): interop.Object;
+declare function CFReadStreamCreateForHTTPRequest(alloc: interop.PointerConvertible, request: interop.PointerConvertible): interop.Pointer;
 
-declare function CFReadStreamCreateForStreamedHTTPRequest(alloc: interop.Object, requestHeaders: interop.Object, requestBody: interop.Object): interop.Object;
+declare function CFReadStreamCreateForStreamedHTTPRequest(alloc: interop.PointerConvertible, requestHeaders: interop.PointerConvertible, requestBody: interop.PointerConvertible): interop.Pointer;
 
 declare function CFHTTPAuthenticationGetTypeID(): number;
 
-declare function CFHTTPAuthenticationCreateFromResponse(alloc: interop.Object, response: interop.Object): interop.Object;
+declare function CFHTTPAuthenticationCreateFromResponse(alloc: interop.PointerConvertible, response: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPAuthenticationIsValid(auth: interop.Object, error: interop.PointerConvertible): number;
+declare function CFHTTPAuthenticationIsValid(auth: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function CFHTTPAuthenticationAppliesToRequest(auth: interop.Object, request: interop.Object): number;
+declare function CFHTTPAuthenticationAppliesToRequest(auth: interop.PointerConvertible, request: interop.PointerConvertible): number;
 
-declare function CFHTTPAuthenticationRequiresOrderedRequests(auth: interop.Object): number;
+declare function CFHTTPAuthenticationRequiresOrderedRequests(auth: interop.PointerConvertible): number;
 
-declare function CFHTTPMessageApplyCredentials(request: interop.Object, auth: interop.Object, username: interop.Object, password: interop.Object, error: interop.PointerConvertible): number;
+declare function CFHTTPMessageApplyCredentials(request: interop.PointerConvertible, auth: interop.PointerConvertible, username: interop.PointerConvertible, password: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function CFHTTPMessageApplyCredentialDictionary(request: interop.Object, auth: interop.Object, dict: interop.Object, error: interop.PointerConvertible): number;
+declare function CFHTTPMessageApplyCredentialDictionary(request: interop.PointerConvertible, auth: interop.PointerConvertible, dict: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function CFHTTPAuthenticationCopyRealm(auth: interop.Object): interop.Object;
+declare function CFHTTPAuthenticationCopyRealm(auth: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPAuthenticationCopyDomains(auth: interop.Object): interop.Object;
+declare function CFHTTPAuthenticationCopyDomains(auth: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPAuthenticationCopyMethod(auth: interop.Object): interop.Object;
+declare function CFHTTPAuthenticationCopyMethod(auth: interop.PointerConvertible): interop.Pointer;
 
-declare function CFHTTPAuthenticationRequiresUserNameAndPassword(auth: interop.Object): number;
+declare function CFHTTPAuthenticationRequiresUserNameAndPassword(auth: interop.PointerConvertible): number;
 
-declare function CFHTTPAuthenticationRequiresAccountDomain(auth: interop.Object): number;
+declare function CFHTTPAuthenticationRequiresAccountDomain(auth: interop.PointerConvertible): number;
 
-declare function CFNetDiagnosticCreateWithStreams(alloc: interop.Object, readStream: interop.Object, writeStream: interop.Object): interop.Object;
+declare function CFNetDiagnosticCreateWithStreams(alloc: interop.PointerConvertible, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetDiagnosticCreateWithURL(alloc: interop.Object, url: interop.Object): interop.Object;
+declare function CFNetDiagnosticCreateWithURL(alloc: interop.PointerConvertible, url: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetDiagnosticSetName(details: interop.Object, name: interop.Object): void;
+declare function CFNetDiagnosticSetName(details: interop.PointerConvertible, name: interop.PointerConvertible): void;
 
-declare function CFNetDiagnosticDiagnoseProblemInteractively(details: interop.Object): number;
+declare function CFNetDiagnosticDiagnoseProblemInteractively(details: interop.PointerConvertible): number;
 
-declare function CFNetDiagnosticCopyNetworkStatusPassively(details: interop.Object, description: interop.PointerConvertible): number;
+declare function CFNetDiagnosticCopyNetworkStatusPassively(details: interop.PointerConvertible, description: interop.PointerConvertible): number;
 
-declare function CFNetworkCopySystemProxySettings(): interop.Object;
+declare function CFNetworkCopySystemProxySettings(): interop.Pointer;
 
-declare function CFNetworkCopyProxiesForURL(url: interop.Object, proxySettings: interop.Object): interop.Object;
+declare function CFNetworkCopyProxiesForURL(url: interop.PointerConvertible, proxySettings: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetworkCopyProxiesForAutoConfigurationScript(proxyAutoConfigurationScript: interop.Object, targetURL: interop.Object, error: interop.PointerConvertible): interop.Object;
+declare function CFNetworkCopyProxiesForAutoConfigurationScript(proxyAutoConfigurationScript: interop.PointerConvertible, targetURL: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetworkExecuteProxyAutoConfigurationScript(proxyAutoConfigurationScript: interop.Object, targetURL: interop.Object, cb: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Object;
+declare function CFNetworkExecuteProxyAutoConfigurationScript(proxyAutoConfigurationScript: interop.PointerConvertible, targetURL: interop.PointerConvertible, cb: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Pointer;
 
-declare function CFNetworkExecuteProxyAutoConfigurationURL(proxyAutoConfigURL: interop.Object, targetURL: interop.Object, cb: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Object;
+declare function CFNetworkExecuteProxyAutoConfigurationURL(proxyAutoConfigURL: interop.PointerConvertible, targetURL: interop.PointerConvertible, cb: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): interop.Pointer;
 

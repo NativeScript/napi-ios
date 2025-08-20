@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
+declare const PKInkTypeCrayon: string;
+
 declare const PKInkTypeWatercolor: string;
 
 declare const PKInkTypeMonoline: string;
@@ -10,11 +12,11 @@ declare const PKInkTypeMarker: string;
 
 declare const PKInkTypePencil: string;
 
+declare const PKInkTypeReed: string;
+
 declare const PKAppleDrawingTypeIdentifier: interop.Pointer;
 
 declare const PKInkTypePen: string;
-
-declare const PKInkTypeCrayon: string;
 
 declare const PKInkTypeFountainPen: string;
 
@@ -34,7 +36,15 @@ declare const PKContentVersion: {
   Version1: 1,
   Version2: 2,
   Version3: 3,
-  VersionLatest: 3,
+  Version4: 4,
+  VersionLatest: 4,
+};
+
+declare const PKToolPickerVisibility: {
+  Inherited: 0,
+  Inactive: 1,
+  Hidden: 2,
+  Visible: 3,
 };
 
 declare const PKEraserType: {
@@ -129,10 +139,6 @@ declare class PKStroke extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class PKLassoTool extends PKTool {
-  init(): this;
-}
-
 declare class PKToolPickerEraserItem extends PKToolPickerItem {
   initWithEraserType(eraserType: interop.Enum<typeof PKEraserType>): this;
 
@@ -141,12 +147,22 @@ declare class PKToolPickerEraserItem extends PKToolPickerItem {
   readonly eraserTool: PKEraserTool;
 }
 
+declare class PKLassoTool extends PKTool {
+  init(): this;
+}
+
 declare class PKTool extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class PKToolPickerScribbleItem extends PKToolPickerItem {
+  init(): this;
+}
+
 declare class PKToolPickerItem extends NSObject implements NSCopying {
   readonly identifier: string;
+
+  readonly tool: PKTool;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -167,6 +183,8 @@ declare class PKToolPicker extends NSObject {
   selectedToolItemIdentifier: string;
 
   readonly toolItems: NSArray;
+
+  static readonly defaultToolItems: NSArray;
 
   rulerActive: boolean;
 
@@ -192,6 +210,8 @@ declare class PKToolPicker extends NSObject {
 
   initWithToolItems(items: NSArray<interop.Object> | Array<interop.Object>): this;
 
+  colorMaximumLinearExposure: number;
+
   setDelegate(delegate: PKToolPickerDelegate | null): void;
 
   setSelectedTool(selectedTool: PKTool): void;
@@ -215,10 +235,40 @@ declare class PKToolPicker extends NSObject {
   setShowsDrawingPolicyControls(showsDrawingPolicyControls: boolean): void;
 
   setAccessoryItem(accessoryItem: UIBarButtonItem | null): void;
+
+  setColorMaximumLinearExposure(colorMaximumLinearExposure: number): void;
 }
 
 declare class PKToolPickerRulerItem extends PKToolPickerItem {
   init(): this;
+}
+
+declare class PKStrokePoint extends NSObject implements NSCopying {
+  initWithLocationTimeOffsetSizeOpacityForceAzimuthAltitude(location: CGPoint, timeOffset: number, size: CGSize, opacity: number, force: number, azimuth: number, altitude: number): this;
+
+  initWithLocationTimeOffsetSizeOpacityForceAzimuthAltitudeSecondaryScale(location: CGPoint, timeOffset: number, size: CGSize, opacity: number, force: number, azimuth: number, altitude: number, secondaryScale: number): this;
+
+  initWithLocationTimeOffsetSizeOpacityForceAzimuthAltitudeSecondaryScaleThreshold(location: CGPoint, timeOffset: number, size: CGSize, opacity: number, force: number, azimuth: number, altitude: number, secondaryScale: number, threshold: number): this;
+
+  readonly location: CGPoint;
+
+  readonly timeOffset: number;
+
+  readonly size: CGSize;
+
+  readonly opacity: number;
+
+  readonly azimuth: number;
+
+  readonly force: number;
+
+  readonly altitude: number;
+
+  readonly secondaryScale: number;
+
+  readonly threshold: number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class PKToolPickerCustomItemConfiguration extends NSObject implements NSCopying {
@@ -264,10 +314,6 @@ declare class PKToolPickerCustomItemConfiguration extends NSObject implements NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class PKToolPickerScribbleItem extends PKToolPickerItem {
-  init(): this;
-}
-
 declare class PKInk extends NSObject implements NSCopying {
   initWithInkTypeColor(type: string, color: UIColor): this;
 
@@ -278,6 +324,16 @@ declare class PKInk extends NSObject implements NSCopying {
   readonly requiredContentVersion: interop.Enum<typeof PKContentVersion>;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PKResponderState extends NSObject {
+  toolPickerVisibility: interop.Enum<typeof PKToolPickerVisibility>;
+
+  activeToolPicker: PKToolPicker;
+
+  setToolPickerVisibility(toolPickerVisibility: interop.Enum<typeof PKToolPickerVisibility>): void;
+
+  setActiveToolPicker(activeToolPicker: PKToolPicker | null): void;
 }
 
 declare class PKToolPickerCustomItem extends PKToolPickerItem {
@@ -338,6 +394,26 @@ declare class PKToolPickerLassoItem extends PKToolPickerItem {
   readonly lassoTool: PKLassoTool;
 }
 
+declare class PKToolPickerInkingItem extends PKToolPickerItem {
+  initWithInkType(inkType: string): this;
+
+  initWithInkTypeColor(inkType: string, color: UIColor): this;
+
+  initWithInkTypeWidth(inkType: string, width: number): this;
+
+  initWithInkTypeColorWidth(inkType: string, color: UIColor, width: number): this;
+
+  initWithInkTypeColorWidthIdentifier(inkType: string, color: UIColor, width: number, identifier: string | null): this;
+
+  initWithInkTypeColorWidthAzimuthIdentifier(inkType: string, color: UIColor, width: number, azimuth: number, identifier: string | null): this;
+
+  readonly inkingTool: PKInkingTool;
+
+  allowsColorSelection: boolean;
+
+  setAllowsColorSelection(allowsColorSelection: boolean): void;
+}
+
 declare class PKFloatRange extends NSObject implements NSCopying {
   readonly lowerBound: number;
 
@@ -364,50 +440,10 @@ declare class PKEraserTool extends PKTool {
   static maximumWidthForEraserType(eraserType: interop.Enum<typeof PKEraserType>): number;
 }
 
-declare class PKToolPickerInkingItem extends PKToolPickerItem {
-  initWithInkType(inkType: string): this;
-
-  initWithInkTypeColor(inkType: string, color: UIColor): this;
-
-  initWithInkTypeWidth(inkType: string, width: number): this;
-
-  initWithInkTypeColorWidth(inkType: string, color: UIColor, width: number): this;
-
-  initWithInkTypeColorWidthIdentifier(inkType: string, color: UIColor, width: number, identifier: string | null): this;
-
-  readonly inkingTool: PKInkingTool;
-
-  allowsColorSelection: boolean;
-
-  setAllowsColorSelection(allowsColorSelection: boolean): void;
-}
-
-declare class PKStrokePoint extends NSObject implements NSCopying {
-  initWithLocationTimeOffsetSizeOpacityForceAzimuthAltitude(location: CGPoint, timeOffset: number, size: CGSize, opacity: number, force: number, azimuth: number, altitude: number): this;
-
-  initWithLocationTimeOffsetSizeOpacityForceAzimuthAltitudeSecondaryScale(location: CGPoint, timeOffset: number, size: CGSize, opacity: number, force: number, azimuth: number, altitude: number, secondaryScale: number): this;
-
-  readonly location: CGPoint;
-
-  readonly timeOffset: number;
-
-  readonly size: CGSize;
-
-  readonly opacity: number;
-
-  readonly azimuth: number;
-
-  readonly force: number;
-
-  readonly altitude: number;
-
-  readonly secondaryScale: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class PKInkingTool extends PKTool {
   initWithInkTypeColorWidth(type: string, color: UIColor, width: number): this;
+
+  initWithInkTypeColorWidthAzimuth(type: string, color: UIColor, width: number, angle: number): this;
 
   initWithInkTypeColor(type: string, color: UIColor): this;
 
@@ -426,6 +462,8 @@ declare class PKInkingTool extends PKTool {
   static convertColorFromUserInterfaceStyleTo(color: UIColor, fromUserInterfaceStyle: interop.Enum<typeof UIUserInterfaceStyle>, toUserInterfaceStyle: interop.Enum<typeof UIUserInterfaceStyle>): UIColor;
 
   readonly width: number;
+
+  readonly azimuth: number;
 
   readonly ink: PKInk;
 

@@ -29,8 +29,6 @@ declare const CHHapticEventTypeAudioCustom: string;
 
 declare const CHHapticEventTypeHapticTransient: string;
 
-declare const CHHapticDynamicParameterIDAudioReleaseTimeControl: string;
-
 declare const CHHapticDynamicParameterIDAudioAttackTimeControl: string;
 
 declare const CHHapticDynamicParameterIDAudioPitchControl: string;
@@ -45,7 +43,11 @@ declare const CHHapticEventParameterIDAudioBrightness: string;
 
 declare const CHHapticEventParameterIDAudioPitch: string;
 
+declare const CHHapticEventParameterIDSustained: string;
+
 declare const CHHapticEventParameterIDReleaseTime: string;
+
+declare const CHHapticEventParameterIDDecayTime: string;
 
 declare const CHHapticEventParameterIDHapticIntensity: string;
 
@@ -53,17 +55,15 @@ declare const CHHapticPatternKeyEventWaveformPath: string;
 
 declare const CHHapticEventParameterIDAttackTime: string;
 
-declare const CHHapticDynamicParameterIDHapticSharpnessControl: string;
+declare const CHHapticDynamicParameterIDAudioReleaseTimeControl: string;
 
 declare const CHHapticEventParameterIDAudioVolume: string;
-
-declare const CHHapticEventParameterIDSustained: string;
 
 declare const CHHapticPatternKeyEventWaveformLoopEnabled: string;
 
 declare const CHHapticEventParameterIDAudioPan: string;
 
-declare const CHHapticDynamicParameterIDAudioBrightnessControl: string;
+declare const CHHapticDynamicParameterIDHapticSharpnessControl: string;
 
 declare const CHHapticEventTypeHapticContinuous: string;
 
@@ -75,19 +75,19 @@ declare const CHHapticEventParameterIDHapticSharpness: string;
 
 declare const CHHapticDynamicParameterIDHapticDecayTimeControl: string;
 
-declare const CHHapticEventParameterIDDecayTime: string;
-
-declare const CHHapticPatternKeyTime: string;
-
 declare const CHHapticPatternKeyPattern: string;
 
 declare const CHHapticPatternKeyEventType: string;
+
+declare const CHHapticPatternKeyTime: string;
 
 declare const CHHapticDynamicParameterIDHapticReleaseTimeControl: string;
 
 declare const CHHapticPatternKeyParameter: string;
 
 declare const CHHapticDynamicParameterIDHapticIntensityControl: string;
+
+declare const CHHapticDynamicParameterIDAudioBrightnessControl: string;
 
 declare const CHHapticEngineStoppedReason: {
   AudioSessionInterrupt: 1,
@@ -97,11 +97,6 @@ declare const CHHapticEngineStoppedReason: {
   EngineDestroyed: 5,
   GameControllerDisconnect: 6,
   SystemError: -1,
-};
-
-declare const CHHapticEngineFinishedAction: {
-  StopEngine: 1,
-  LeaveEngineRunning: 2,
 };
 
 declare const CHHapticErrorCode: {
@@ -129,6 +124,11 @@ declare const CHHapticErrorCode: {
   InsufficientPower: -4897,
   UnknownError: -4898,
   MemoryError: -4899,
+};
+
+declare const CHHapticEngineFinishedAction: {
+  StopEngine: 1,
+  LeaveEngineRunning: 2,
 };
 
 declare interface CHHapticAdvancedPatternPlayer extends CHHapticPatternPlayer {

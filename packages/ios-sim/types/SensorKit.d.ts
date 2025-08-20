@@ -33,6 +33,8 @@ declare const SRDeviceUsageCategoryGames: string;
 
 declare const SRErrorDomain: string;
 
+declare const SRSensorAcousticSettings: string;
+
 declare const SRSensorPhotoplethysmogram: string;
 
 declare const SRSensorElectrocardiogram: string;
@@ -47,6 +49,8 @@ declare const SRSensorRotationRate: string;
 
 declare const SRSensorAccelerometer: string;
 
+declare const SRSensorMessagesUsageReport: string;
+
 declare const SRSensorAmbientLightSensor: string;
 
 declare const SRDeviceUsageCategoryProductivity: string;
@@ -58,6 +62,8 @@ declare const SRDeviceUsageCategoryShopping: string;
 declare const SRDeviceUsageCategoryNewsstand: string;
 
 declare const SRDeviceUsageCategoryMusic: string;
+
+declare const SRDeviceUsageCategoryReference: string;
 
 declare const SRDeviceUsageCategoryDeveloperTools: string;
 
@@ -79,13 +85,9 @@ declare const SRSensorAmbientPressure: string;
 
 declare const SRDeviceUsageCategoryMiscellaneous: string;
 
-declare const SRDeviceUsageCategorySports: string;
-
-declare const SRSensorMessagesUsageReport: string;
-
 declare const SRDeviceUsageCategoryNews: string;
 
-declare const SRDeviceUsageCategoryReference: string;
+declare const SRDeviceUsageCategorySports: string;
 
 declare const SRPhotoplethysmogramOpticalSampleConditionSignalSaturation: string;
 
@@ -93,13 +95,15 @@ declare const SRSensorHeartRate: string;
 
 declare const SRSensorTelephonySpeechMetrics: string;
 
+declare const SRDeviceUsageCategoryBooks: string;
+
 declare const SRPhotoplethysmogramSampleUsageForegroundBloodOxygen: string;
+
+declare const SRSensorSleepSessions: string;
 
 declare const SRDeviceUsageCategoryKids: string;
 
 declare const SRSensorPhoneUsageReport: string;
-
-declare const SRDeviceUsageCategoryBooks: string;
 
 declare const SRSensorOnWristState: string;
 
@@ -112,6 +116,18 @@ declare const SRDeviceUsageCategoryEducation: string;
 declare const SRDeviceUsageCategoryPhotoAndVideo: string;
 
 declare const SRSensorVisits: string;
+
+declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting: {
+  Slight: 1,
+  Moderate: 2,
+  Strong: 3,
+};
+
+declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning: {
+  BalancedTone: 1,
+  VocalRange: 2,
+  Brightness: 3,
+};
 
 declare const SRElectrocardiogramDataFlags: {
   None: 0,
@@ -177,6 +193,32 @@ declare const SRMediaEventType: {
   Off: 2,
 };
 
+declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication: {
+  None: 1,
+  Phone: 2,
+  Media: 3,
+  PhoneAndMedia: 4,
+};
+
+declare const SRAcousticSettingsAccessibilityBackgroundSoundsName: {
+  BalancedNoise: 1,
+  BrightNoise: 2,
+  DarkNoise: 3,
+  Ocean: 4,
+  Rain: 5,
+  Stream: 6,
+  Night: 7,
+  Fire: 8,
+  Babble: 9,
+  Steam: 10,
+  Airplane: 11,
+  Boat: 12,
+  Bus: 13,
+  Train: 14,
+  RainOnRoof: 15,
+  QuietNight: 16,
+};
+
 declare const SRAuthorizationStatus: {
   NotDetermined: 0,
   Authorized: 1,
@@ -195,6 +237,14 @@ declare const SRTextInputSessionType: {
   Dictation: 4,
 };
 
+declare const SRDeletionReason: {
+  UserInitiated: 0,
+  LowDiskSpace: 1,
+  AgeLimit: 2,
+  NoInterestedClients: 3,
+  SystemInitiated: 4,
+};
+
 declare const SRAmbientLightSensorPlacement: {
   Unknown: 0,
   FrontTop: 1,
@@ -205,14 +255,6 @@ declare const SRAmbientLightSensorPlacement: {
   FrontTopLeft: 6,
   FrontBottomRight: 7,
   FrontBottomLeft: 8,
-};
-
-declare const SRDeletionReason: {
-  UserInitiated: 0,
-  LowDiskSpace: 1,
-  AgeLimit: 2,
-  NoInterestedClients: 3,
-  SystemInitiated: 4,
 };
 
 declare const SRElectrocardiogramSessionState: {
@@ -247,6 +289,11 @@ declare const SRKeyboardMetricsSentimentCategory: {
   Sad: 7,
   LowEnergy: 8,
   Confused: 9,
+};
+
+declare const SRAcousticSettingsSampleLifetime: {
+  EightDays: 1,
+  UntilUserDeletes: 2,
 };
 
 declare class SRAmbientLightChromaticity {
@@ -286,6 +333,26 @@ declare interface SRSensorReaderDelegate extends NSObjectProtocol {
 }
 
 declare class SRSensorReaderDelegate extends NativeObject implements SRSensorReaderDelegate {
+}
+
+declare class SRFaceMetrics extends NSObject implements NSCopying, NSSecureCoding {
+  readonly version: string;
+
+  readonly sessionIdentifier: string;
+
+  readonly context: interop.Enum<typeof SRFaceMetricsContext>;
+
+  readonly wholeFaceExpressions: NSArray;
+
+  readonly partialFaceExpressions: NSArray;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SRKeyboardMetrics extends NSObject {
@@ -476,6 +543,130 @@ declare class SRWristDetection extends NSObject {
   readonly offWristDate: NSDate;
 }
 
+declare class SRSleepSession extends NSObject implements NSCopying, NSSecureCoding {
+  readonly startDate: NSDate;
+
+  readonly duration: number;
+
+  readonly identifier: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SRAcousticSettings extends NSObject implements NSSecureCoding, NSCopying {
+  readonly environmentalSoundMeasurementsEnabled: boolean;
+
+  readonly audioExposureSampleLifetime: interop.Enum<typeof SRAcousticSettingsSampleLifetime>;
+
+  readonly headphoneSafetyAudioLevel: NSNumber;
+
+  readonly musicEQSettings: SRAcousticSettingsMusicEQ;
+
+  readonly accessibilitySettings: SRAcousticSettingsAccessibility;
+
+  isEnvironmentalSoundMeasurementsEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsAccessibility extends NSObject implements NSSecureCoding, NSCopying {
+  readonly leftRightBalance: number;
+
+  readonly monoAudioEnabled: boolean;
+
+  readonly backgroundSounds: SRAcousticSettingsAccessibilityBackgroundSounds;
+
+  readonly headphoneAccommodations: SRAcousticSettingsAccessibilityHeadphoneAccommodations;
+
+  isMonoAudioEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsAccessibilityHeadphoneAccommodations extends NSObject implements NSSecureCoding, NSCopying {
+  readonly enabled: boolean;
+
+  readonly mediaEnhanceTuning: interop.Enum<typeof SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning>;
+
+  readonly mediaEnhanceBoosting: interop.Enum<typeof SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting>;
+
+  readonly mediaEnhanceApplication: interop.Enum<typeof SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication>;
+
+  isEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsAccessibilityBackgroundSounds extends NSObject implements NSSecureCoding, NSCopying {
+  readonly enabled: boolean;
+
+  readonly soundName: interop.Enum<typeof SRAcousticSettingsAccessibilityBackgroundSoundsName>;
+
+  readonly relativeVolume: number;
+
+  readonly playWithMediaEnabled: boolean;
+
+  readonly relativeVolumeWithMedia: number;
+
+  readonly stopOnLockEnabled: boolean;
+
+  isEnabled(): boolean;
+
+  isPlayWithMediaEnabled(): boolean;
+
+  isStopOnLockEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SRAcousticSettingsMusicEQ extends NSObject implements NSSecureCoding, NSCopying {
+  readonly soundCheckEnabled: boolean;
+
+  readonly lateNightModeEnabled: boolean;
+
+  isSoundCheckEnabled(): boolean;
+
+  isLateNightModeEnabled(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class SRPhotoplethysmogramSample extends NSObject implements NSCopying, NSSecureCoding {
   readonly startDate: NSDate;
 
@@ -570,16 +761,20 @@ declare class SRElectrocardiogramSession extends NSObject implements NSCopying, 
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SRFaceMetrics extends NSObject implements NSCopying, NSSecureCoding {
+declare class SRSpeechExpression extends NSObject implements NSCopying, NSSecureCoding {
   readonly version: string;
 
-  readonly sessionIdentifier: string;
+  readonly timeRange: CMTimeRange;
 
-  readonly context: interop.Enum<typeof SRFaceMetricsContext>;
+  readonly confidence: number;
 
-  readonly wholeFaceExpressions: NSArray;
+  readonly mood: number;
 
-  readonly partialFaceExpressions: NSArray;
+  readonly valence: number;
+
+  readonly activation: number;
+
+  readonly dominance: number;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -640,6 +835,10 @@ declare class SRWristTemperature extends NSObject implements NSCopying, NSSecure
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class SRKeyboardProbabilityMetric<UnitType = interop.Object> extends NSObject {
+  readonly distributionSampleValues: NSArray;
+}
+
 declare class SRMessagesUsageReport extends NSObject {
   readonly duration: number;
 
@@ -652,6 +851,12 @@ declare class SRMessagesUsageReport extends NSObject {
 
 declare class SRWebUsage extends NSObject {
   readonly totalUsageTime: number;
+}
+
+declare class SRNotificationUsage extends NSObject {
+  readonly bundleIdentifier: string;
+
+  readonly event: interop.Enum<typeof SRNotificationEvent>;
 }
 
 declare class SRDeviceUsageReport extends NSObject {
@@ -706,40 +911,6 @@ declare class SRFetchRequest extends NSObject {
   setTo(to: number): void;
 
   setDevice(device: SRDevice): void;
-}
-
-declare class SRNotificationUsage extends NSObject {
-  readonly bundleIdentifier: string;
-
-  readonly event: interop.Enum<typeof SRNotificationEvent>;
-}
-
-declare class SRKeyboardProbabilityMetric<UnitType = interop.Object> extends NSObject {
-  readonly distributionSampleValues: NSArray;
-}
-
-declare class SRSpeechExpression extends NSObject implements NSCopying, NSSecureCoding {
-  readonly version: string;
-
-  readonly timeRange: CMTimeRange;
-
-  readonly confidence: number;
-
-  readonly mood: number;
-
-  readonly valence: number;
-
-  readonly activation: number;
-
-  readonly dominance: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SRSpeechMetrics extends NSObject implements NSCopying, NSSecureCoding {
@@ -874,6 +1045,18 @@ declare class SRApplicationUsage extends NSObject {
   readonly relativeStartTime: number;
 }
 
+declare class SRVisit extends NSObject {
+  readonly distanceFromHome: number;
+
+  readonly arrivalDateInterval: NSDateInterval;
+
+  readonly departureDateInterval: NSDateInterval;
+
+  readonly locationCategory: interop.Enum<typeof SRLocationCategory>;
+
+  readonly identifier: NSUUID;
+}
+
 declare class SRAmbientLightSample extends NSObject {
   readonly placement: interop.Enum<typeof SRAmbientLightSensorPlacement>;
 
@@ -892,18 +1075,6 @@ declare class SRSupplementalCategory extends NSObject implements NSCopying, NSSe
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SRVisit extends NSObject {
-  readonly distanceFromHome: number;
-
-  readonly arrivalDateInterval: NSDateInterval;
-
-  readonly departureDateInterval: NSDateInterval;
-
-  readonly locationCategory: interop.Enum<typeof SRLocationCategory>;
-
-  readonly identifier: NSUUID;
 }
 
 declare class SRPhoneUsageReport extends NSObject {

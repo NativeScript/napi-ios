@@ -193,6 +193,62 @@ declare const EKAlarmProximity: {
   Leave: 2,
 };
 
+declare class EKVirtualConferenceProvider extends NSObject implements NSExtensionRequestHandling {
+  fetchAvailableRoomTypesWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  fetchVirtualConferenceForIdentifierCompletionHandler(identifier: string, completionHandler: (p1: EKVirtualConferenceDescriptor, p2: NSError) => void | null): void;
+
+  beginRequestWithExtensionContext(context: NSExtensionContext): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+declare class EKVirtualConferenceRoomTypeDescriptor extends NSObject {
+  initWithTitleIdentifier(title: string, identifier: string): this;
+
+  readonly title: string;
+
+  readonly identifier: string;
+}
+
 declare class EKStructuredLocation extends EKObject implements NSCopying {
   static locationWithTitle<This extends abstract new (...args: any) => any>(this: This, title: string): InstanceType<This>;
 
@@ -211,6 +267,32 @@ declare class EKStructuredLocation extends EKObject implements NSCopying {
   setRadius(radius: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class EKReminder extends EKCalendarItem {
+  static reminderWithEventStore(eventStore: EKEventStore): EKReminder;
+
+  startDateComponents: NSDateComponents;
+
+  dueDateComponents: NSDateComponents;
+
+  completed: boolean;
+
+  completionDate: NSDate;
+
+  priority: number;
+
+  setStartDateComponents(startDateComponents: NSDateComponents | null): void;
+
+  setDueDateComponents(dueDateComponents: NSDateComponents | null): void;
+
+  isCompleted(): boolean;
+
+  setCompleted(completed: boolean): void;
+
+  setCompletionDate(completionDate: NSDate | null): void;
+
+  setPriority(priority: number): void;
 }
 
 declare class EKRecurrenceEnd extends NSObject implements NSCopying, NSSecureCoding {
@@ -246,7 +328,7 @@ declare class EKParticipant extends EKObject implements NSCopying {
 
   readonly contactPredicate: NSPredicate;
 
-  ABRecordWithAddressBook(addressBook: interop.Object): interop.Object;
+  ABRecordWithAddressBook(addressBook: interop.PointerConvertible): interop.Pointer;
 
   isCurrentUser(): boolean;
 
@@ -380,7 +462,8 @@ declare class EKCalendar extends EKObject {
 
   readonly immutable: boolean;
 
-  CGColor: interop.Object;
+  get CGColor(): interop.Pointer;
+  set CGColor(value: interop.PointerConvertible);
 
   readonly supportedEventAvailabilities: interop.Enum<typeof EKCalendarEventAvailabilityMask>;
 
@@ -394,7 +477,7 @@ declare class EKCalendar extends EKObject {
 
   isImmutable(): boolean;
 
-  setCGColor(CGColor: interop.Object): void;
+  setCGColor(CGColor: interop.PointerConvertible): void;
 }
 
 declare class EKAlarm extends EKObject implements NSCopying {
@@ -467,40 +550,6 @@ declare class EKRecurrenceDayOfWeek extends NSObject implements NSCopying, NSSec
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class EKVirtualConferenceRoomTypeDescriptor extends NSObject {
-  initWithTitleIdentifier(title: string, identifier: string): this;
-
-  readonly title: string;
-
-  readonly identifier: string;
-}
-
-declare class EKReminder extends EKCalendarItem {
-  static reminderWithEventStore(eventStore: EKEventStore): EKReminder;
-
-  startDateComponents: NSDateComponents;
-
-  dueDateComponents: NSDateComponents;
-
-  completed: boolean;
-
-  completionDate: NSDate;
-
-  priority: number;
-
-  setStartDateComponents(startDateComponents: NSDateComponents | null): void;
-
-  setDueDateComponents(dueDateComponents: NSDateComponents | null): void;
-
-  isCompleted(): boolean;
-
-  setCompleted(completed: boolean): void;
-
-  setCompletionDate(completionDate: NSDate | null): void;
-
-  setPriority(priority: number): void;
 }
 
 declare class EKEventStore extends NSObject {
@@ -613,6 +662,14 @@ declare class EKRecurrenceRule extends EKObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class EKVirtualConferenceURLDescriptor extends NSObject {
+  initWithTitleURL(title: string | null, URL: NSURL): this;
+
+  readonly title: string;
+
+  readonly URL: NSURL;
+}
+
 declare class EKVirtualConferenceDescriptor extends NSObject {
   initWithTitleURLDescriptorsConferenceDetails(title: string | null, URLDescriptors: NSArray<interop.Object> | Array<interop.Object>, conferenceDetails: string | null): this;
 
@@ -621,61 +678,5 @@ declare class EKVirtualConferenceDescriptor extends NSObject {
   readonly URLDescriptors: NSArray;
 
   readonly conferenceDetails: string;
-}
-
-declare class EKVirtualConferenceProvider extends NSObject implements NSExtensionRequestHandling {
-  fetchAvailableRoomTypesWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  fetchVirtualConferenceForIdentifierCompletionHandler(identifier: string, completionHandler: (p1: EKVirtualConferenceDescriptor, p2: NSError) => void | null): void;
-
-  beginRequestWithExtensionContext(context: NSExtensionContext): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class EKVirtualConferenceURLDescriptor extends NSObject {
-  initWithTitleURL(title: string | null, URL: NSURL): this;
-
-  readonly title: string;
-
-  readonly URL: NSURL;
 }
 

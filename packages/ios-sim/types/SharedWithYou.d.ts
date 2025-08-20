@@ -245,62 +245,6 @@ declare class SWCollaborationView extends UIView {
   setManageButtonTitle(manageButtonTitle: string): void;
 }
 
-declare class SWHighlightChangeEvent extends NSObject implements SWHighlightEvent {
-  readonly changeEventTrigger: interop.Enum<typeof SWHighlightChangeEventTrigger>;
-
-  initWithHighlightTrigger(highlight: SWHighlight, trigger: interop.Enum<typeof SWHighlightChangeEventTrigger>): this;
-
-  readonly highlightURL: NSURL;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class SWHighlightMembershipEvent extends NSObject implements SWHighlightEvent {
   readonly membershipEventTrigger: interop.Enum<typeof SWHighlightMembershipEventTrigger>;
 
@@ -363,6 +307,62 @@ declare class SWHighlightMentionEvent extends NSObject implements SWHighlightEve
   initWithHighlightMentionedPersonCloudKitShareHandle(highlight: SWHighlight, handle: string): this;
 
   initWithHighlightMentionedPersonIdentity(highlight: SWHighlight, identity: SWPersonIdentity): this;
+
+  readonly highlightURL: NSURL;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class SWHighlightChangeEvent extends NSObject implements SWHighlightEvent {
+  readonly changeEventTrigger: interop.Enum<typeof SWHighlightChangeEventTrigger>;
+
+  initWithHighlightTrigger(highlight: SWHighlight, trigger: interop.Enum<typeof SWHighlightChangeEventTrigger>): this;
 
   readonly highlightURL: NSURL;
 

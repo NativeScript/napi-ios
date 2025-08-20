@@ -82,6 +82,16 @@ declare class ILClassificationRequest extends NSObject implements NSSecureCoding
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class ILCallClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
+  readonly callCommunications: NSArray;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class ILClassificationResponse extends NSObject implements NSSecureCoding {
   readonly action: interop.Enum<typeof ILClassificationAction>;
 
@@ -159,16 +169,6 @@ declare class ILMessageFilterQueryRequest extends NSObject implements NSSecureCo
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ILCallClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
-  readonly callCommunications: NSArray;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class ILMessageFilterCapabilitiesQueryRequest extends NSObject implements NSSecureCoding {
   static readonly supportsSecureCoding: boolean;
 
@@ -180,14 +180,8 @@ declare class ILMessageFilterCapabilitiesQueryRequest extends NSObject implement
 declare class ILMessageFilterExtension extends NSObject {
 }
 
-declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureCoding {
-  action: interop.Enum<typeof ILMessageFilterAction>;
-
-  subAction: interop.Enum<typeof ILMessageFilterSubAction>;
-
-  setAction(action: interop.Enum<typeof ILMessageFilterAction>): void;
-
-  setSubAction(subAction: interop.Enum<typeof ILMessageFilterSubAction>): void;
+declare class ILMessageClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
+  readonly messageCommunications: NSArray;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -196,8 +190,14 @@ declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureC
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ILMessageClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
-  readonly messageCommunications: NSArray;
+declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureCoding {
+  action: interop.Enum<typeof ILMessageFilterAction>;
+
+  subAction: interop.Enum<typeof ILMessageFilterSubAction>;
+
+  setAction(action: interop.Enum<typeof ILMessageFilterAction>): void;
+
+  setSubAction(subAction: interop.Enum<typeof ILMessageFilterSubAction>): void;
 
   static readonly supportsSecureCoding: boolean;
 

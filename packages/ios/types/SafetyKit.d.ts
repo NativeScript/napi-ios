@@ -42,14 +42,6 @@ declare interface SACrashDetectionDelegate extends NSObjectProtocol {
 declare class SACrashDetectionDelegate extends NativeObject implements SACrashDetectionDelegate {
 }
 
-declare class SAEmergencyResponseManager extends NSObject {
-  delegate: SAEmergencyResponseDelegate | null;
-
-  dialVoiceCallToPhoneNumberCompletionHandler(phoneNumber: string, handler: (p1: boolean, p2: NSError) => void | null): void;
-
-  setDelegate(delegate: SAEmergencyResponseDelegate | null): void;
-}
-
 declare class SACrashDetectionManager extends NSObject {
   static readonly available: boolean;
 
@@ -62,6 +54,14 @@ declare class SACrashDetectionManager extends NSObject {
   static isAvailable(): boolean;
 
   setDelegate(delegate: SACrashDetectionDelegate | null): void;
+}
+
+declare class SAEmergencyResponseManager extends NSObject {
+  delegate: SAEmergencyResponseDelegate | null;
+
+  dialVoiceCallToPhoneNumberCompletionHandler(phoneNumber: string, handler: (p1: boolean, p2: NSError) => void | null): void;
+
+  setDelegate(delegate: SAEmergencyResponseDelegate | null): void;
 }
 
 declare class SACrashDetectionEvent extends NSObject implements NSSecureCoding, NSCopying {

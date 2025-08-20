@@ -19,16 +19,16 @@ declare const PHLivePhotoViewPlaybackStyle: {
   Hint: 2,
 };
 
+declare const PHLivePhotoBadgeOptions: {
+  OverContent: 1,
+  LiveOff: 2,
+};
+
 declare const PHPickerConfigurationSelection: {
   Default: 0,
   Ordered: 1,
   Continuous: 2,
   ContinuousAndOrdered: 3,
-};
-
-declare const PHLivePhotoBadgeOptions: {
-  OverContent: 1,
-  LiveOff: 2,
 };
 
 declare const PHPickerCapabilities: {
@@ -97,6 +97,12 @@ declare class PHPickerViewController extends UIViewController {
   setDelegate(delegate: PHPickerViewControllerDelegate): void;
 }
 
+declare class PHPickerResult extends NSObject {
+  readonly itemProvider: NSItemProvider;
+
+  readonly assetIdentifier: string;
+}
+
 declare class PHPickerFilter extends NSObject implements NSCopying {
   static readonly imagesFilter: PHPickerFilter;
 
@@ -131,12 +137,6 @@ declare class PHPickerFilter extends NSObject implements NSCopying {
   static notFilterOfSubfilter(subfilter: PHPickerFilter): PHPickerFilter;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class PHPickerResult extends NSObject {
-  readonly itemProvider: NSItemProvider;
-
-  readonly assetIdentifier: string;
 }
 
 declare class PHLivePhotoView extends UIView {

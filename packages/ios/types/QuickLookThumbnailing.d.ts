@@ -25,26 +25,6 @@ declare const QLThumbnailRepresentationType: {
   Thumbnail: 2,
 };
 
-declare class QLFileThumbnailRequest extends NSObject {
-  readonly maximumSize: CGSize;
-
-  readonly minimumSize: CGSize;
-
-  readonly scale: number;
-
-  readonly fileURL: NSURL;
-}
-
-declare class QLThumbnailRepresentation extends NSObject {
-  readonly type: interop.Enum<typeof QLThumbnailRepresentationType>;
-
-  readonly CGImage: interop.Object;
-
-  readonly UIImage: UIImage;
-
-  readonly contentRect: CGRect;
-}
-
 declare class QLThumbnailGenerationRequest extends NSObject implements NSCopying, NSSecureCoding {
   initWithFileAtURLSizeScaleRepresentationTypes(url: NSURL, size: CGSize, scale: number, representationTypes: interop.Enum<typeof QLThumbnailGenerationRequestRepresentationTypes>): this;
 
@@ -73,6 +53,26 @@ declare class QLThumbnailGenerationRequest extends NSObject implements NSCopying
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class QLFileThumbnailRequest extends NSObject {
+  readonly maximumSize: CGSize;
+
+  readonly minimumSize: CGSize;
+
+  readonly scale: number;
+
+  readonly fileURL: NSURL;
+}
+
+declare class QLThumbnailRepresentation extends NSObject {
+  readonly type: interop.Enum<typeof QLThumbnailRepresentationType>;
+
+  readonly CGImage: interop.Pointer;
+
+  readonly UIImage: UIImage;
+
+  readonly contentRect: CGRect;
 }
 
 declare class QLThumbnailProvider extends NSObject {

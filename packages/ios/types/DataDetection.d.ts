@@ -33,6 +33,10 @@ declare class DDMatchPostalAddress extends DDMatch {
   readonly country: string;
 }
 
+declare class DDMatchLink extends DDMatch {
+  readonly URL: NSURL;
+}
+
 declare class DDMatchFlightNumber extends DDMatch {
   readonly airline: string;
 
@@ -55,10 +59,6 @@ declare class DDMatchShipmentTrackingNumber extends DDMatch {
   readonly carrier: string;
 
   readonly trackingNumber: string;
-}
-
-declare class DDMatchLink extends DDMatch {
-  readonly URL: NSURL;
 }
 
 declare class DDMatch extends NSObject {

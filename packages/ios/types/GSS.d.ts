@@ -1,204 +1,48 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const __gss_c_ma_integ_prot_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_attr_local_login_user: gss_buffer_desc_struct;
-
-declare const __gss_c_ma_ctx_trans_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_compress_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_pfs_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_cbindings_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_replay_det_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_wrap_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_deleg_cred_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_auth_targ_anon_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_auth_targ_init_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_auth_init_init_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_deprecated_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_not_mech_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mech_pseudo_oid_desc: gss_OID_desc_struct;
+declare const __gss_krb5_nt_principal_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_nt_principal_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_krb5_nt_principal_name_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_anonymous_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_string_uid_name_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_machine_uid_name_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_pku2u_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_ntlm_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_inq_sspi_session_key_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_netlogon_nt_netbios_dns_name_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_netlogon_set_sign_algorithm_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_netlogon_set_session_key_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_appl_lkdc_supported_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_auth_init_anon_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_netlogon_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mech_name_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_get_default_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_diag_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_reset_keys_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_support_lm2_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_support_channelbindings_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_uuid_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_cred_no_ci_flags_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_force_v1_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_v2_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_dn_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_set_time_offset_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_set_default_realm_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_set_allowable_enctypes_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_service_keyblock_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_acceptor_subkey_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_subkey_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_export_lucid_context_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_register_acceptor_identity_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_scram_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_not_dflt_mech_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_plugin_register_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_authtime_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_peer_has_updated_spnego_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mic_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_iakerb_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_import_cred_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_send_to_kdc_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_ntlm_get_session_key_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_auth_targ_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mech_glue_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_krb5_nt_principal_name_referral_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_inq_win2k_pac_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_certificate_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mech_nego_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_secidentity_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_prot_ready_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_export_name_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_guest_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_user_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_spnego_mechanism_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_ctx_pfs_x_oid_desc: gss_OID_desc_struct;
+declare class gss_name_t_desc_struct {
+  constructor(init?: gss_name_t_desc_struct);
+}
 
-declare const __gss_krb5_export_lucid_context_v1_x_oid_desc: gss_OID_desc_struct;
+declare class gss_OID_set_desc_struct {
+  constructor(init?: gss_OID_set_desc_struct);
+  count: number;
+  elements: interop.Pointer;
+}
 
-declare const __gss_c_ma_auth_init_oid_desc: gss_OID_desc_struct;
+declare class gss_buffer_set_desc_struct {
+  constructor(init?: gss_buffer_set_desc_struct);
+  count: number;
+  elements: interop.Pointer;
+}
 
-declare const __gss_c_ma_conf_prot_oid_desc: gss_OID_desc_struct;
+declare class gss_OID_desc_struct {
+  constructor(init?: gss_OID_desc_struct);
+  length: number;
+  elements: interop.Pointer;
+}
 
-declare const __gss_c_ma_mech_composite_oid_desc: gss_OID_desc_struct;
+declare class gss_cred_id_t_desc_struct {
+  constructor(init?: gss_cred_id_t_desc_struct);
+}
 
-declare const __gss_c_ma_sasl_mech_name_oid_desc: gss_OID_desc_struct;
+declare class krb5_ccache_data {
+  constructor(init?: krb5_ccache_data);
+}
 
-declare const __gss_krb5_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_set_default_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mech_concrete_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_hostbased_service_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_itok_framed_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_mech_description_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_v1_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_renew_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_initiator_subkey_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_session_key_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_password_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_sasl_digest_md5_mechanism_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_time_offset_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_set_dns_canonicalize_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_ccache_name_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_hostbased_service_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_oos_det_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_compat_des3_mic_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_copy_ccache_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_heimbase_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_ntlm_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_extract_authz_data_from_sec_context_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_validate_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_get_tkt_flags_x_oid_desc: gss_OID_desc_struct;
+declare class gss_buffer_desc_struct {
+  constructor(init?: gss_buffer_desc_struct);
+  length: number;
+  value: interop.Pointer;
+}
 
 declare class gss_krb5_lucid_context_version {
   constructor(init?: gss_krb5_lucid_context_version);
@@ -215,46 +59,6 @@ declare class gss_krb5_lucid_context_v1 {
   protocol: number;
   rfc1964_kd: gss_krb5_rfc1964_keydata;
   cfx_kd: gss_krb5_cfx_keydata;
-}
-
-declare class krb5_ccache_data {
-  constructor(init?: krb5_ccache_data);
-}
-
-declare class gss_auth_identity {
-  constructor(init?: gss_auth_identity);
-}
-
-declare class gss_buffer_set_desc_struct {
-  constructor(init?: gss_buffer_set_desc_struct);
-  count: number;
-  elements: interop.Pointer;
-}
-
-declare class gss_buffer_desc_struct {
-  constructor(init?: gss_buffer_desc_struct);
-  length: number;
-  value: interop.Pointer;
-}
-
-declare class gss_cred_id_t_desc_struct {
-  constructor(init?: gss_cred_id_t_desc_struct);
-}
-
-declare class gss_OID_set_desc_struct {
-  constructor(init?: gss_OID_set_desc_struct);
-  count: number;
-  elements: interop.Pointer;
-}
-
-declare class gss_OID_desc_struct {
-  constructor(init?: gss_OID_desc_struct);
-  length: number;
-  elements: interop.Pointer;
-}
-
-declare class gss_name_t_desc_struct {
-  constructor(init?: gss_name_t_desc_struct);
 }
 
 declare class gss_ctx_id_t_desc_struct {
@@ -275,12 +79,6 @@ declare class gss_channel_bindings_struct {
   acceptor_addrtype: number;
   acceptor_address: gss_buffer_desc_struct;
   application_data: gss_buffer_desc_struct;
-}
-
-declare class gss_iov_buffer_desc_struct {
-  constructor(init?: gss_iov_buffer_desc_struct);
-  type: number;
-  buffer: gss_buffer_desc_struct;
 }
 
 declare class gss_krb5_cfx_keydata {
@@ -443,21 +241,21 @@ declare function gsskrb5_register_acceptor_identity(identity: string): number;
 
 declare function krb5_gss_register_acceptor_identity(identity: string): number;
 
-declare function GSSCreateCredentialFromUUID(uuid: interop.Object): interop.Pointer;
+declare function GSSCreateCredentialFromUUID(uuid: interop.PointerConvertible): interop.Pointer;
 
-declare function GSSCreateError(mech: interop.PointerConvertible, major_status: number, minor_status: number): interop.Object;
+declare function GSSCreateError(mech: interop.PointerConvertible, major_status: number, minor_status: number): interop.Pointer;
 
-declare function GSSCreateName(name: interop.Object, name_type: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function GSSCreateName(name: interop.PointerConvertible, name_type: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
 
 declare function GSSCredentialCopyName(cred: interop.PointerConvertible): interop.Pointer;
 
-declare function GSSCredentialCopyUUID(credential: interop.PointerConvertible): interop.Object;
+declare function GSSCredentialCopyUUID(credential: interop.PointerConvertible): interop.Pointer;
 
 declare function GSSCredentialGetLifetime(cred: interop.PointerConvertible): number;
 
-declare function GSSNameCreateDisplayString(name: interop.PointerConvertible): interop.Object;
+declare function GSSNameCreateDisplayString(name: interop.PointerConvertible): interop.Pointer;
 
-declare function gss_aapl_change_password(name: interop.PointerConvertible, mech: interop.PointerConvertible, attributes: interop.Object, error: interop.PointerConvertible): number;
+declare function gss_aapl_change_password(name: interop.PointerConvertible, mech: interop.PointerConvertible, attributes: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function gss_aapl_initial_cred(desired_name: interop.PointerConvertible, desired_mech: interop.PointerConvertible, attributes: interop.Object, output_cred_handle: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function gss_aapl_initial_cred(desired_name: interop.PointerConvertible, desired_mech: interop.PointerConvertible, attributes: interop.PointerConvertible, output_cred_handle: interop.PointerConvertible, error: interop.PointerConvertible): number;
 

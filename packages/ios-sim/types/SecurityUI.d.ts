@@ -2,13 +2,13 @@
 /// <reference path="./Runtime.d.ts" />
 
 declare class SFCertificatePresentation extends NSObject {
-  initWithTrust(trust: interop.Object): this;
+  initWithTrust(trust: interop.PointerConvertible): this;
 
   presentSheetInViewControllerDismissHandler(viewController: UIViewController, dismissHandler: () => void | null): void;
 
   dismissSheet(): void;
 
-  readonly trust: interop.Object;
+  readonly trust: interop.Pointer;
 
   title: string;
 

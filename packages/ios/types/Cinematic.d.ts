@@ -28,6 +28,11 @@ declare const CNCinematicErrorCode: {
   Cancelled: 7,
 };
 
+declare const CNSpatialAudioContentType: {
+  Stereo: 0,
+  Spatial: 1,
+};
+
 declare const CNRenderingQuality: {
   Thumbnail: 0,
   Preview: 1,
@@ -35,16 +40,29 @@ declare const CNRenderingQuality: {
   ExportHigh: 3,
 };
 
+declare const CNSpatialAudioRenderingStyle: {
+  Cinematic: 0,
+  Studio: 1,
+  InFrame: 2,
+  CinematicBackgroundStem: 3,
+  CinematicForegroundStem: 4,
+  StudioForegroundStem: 5,
+  InFrameForegroundStem: 6,
+  Standard: 7,
+  StudioBackgroundStem: 8,
+  InFrameBackgroundStem: 9,
+};
+
 declare class CNObjectTracker extends NSObject {
   static readonly isSupported: boolean;
 
   initWithCommandQueue(commandQueue: MTLCommandQueue): this;
 
-  findObjectAtPointSourceImage(point: CGPoint, sourceImage: interop.Object): CNBoundsPrediction;
+  findObjectAtPointSourceImage(point: CGPoint, sourceImage: interop.PointerConvertible): CNBoundsPrediction;
 
-  startTrackingAtWithinSourceImageSourceDisparity(time: CMTime, normalizedBounds: CGRect, sourceImage: interop.Object, sourceDisparity: interop.Object): boolean;
+  startTrackingAtWithinSourceImageSourceDisparity(time: CMTime, normalizedBounds: CGRect, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible): boolean;
 
-  continueTrackingAtSourceImageSourceDisparity(time: CMTime, sourceImage: interop.Object, sourceDisparity: interop.Object): CNBoundsPrediction;
+  continueTrackingAtSourceImageSourceDisparity(time: CMTime, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible): CNBoundsPrediction;
 
   finishDetectionTrack(): CNDetectionTrack;
 
@@ -182,7 +200,7 @@ declare class CNDecision extends NSObject implements NSCopying {
 }
 
 declare class CNRenderingSessionFrameAttributes extends NSObject implements NSCopying, NSMutableCopying {
-  initWithSampleBufferSessionAttributes(sampleBuffer: interop.Object, sessionAttributes: CNRenderingSessionAttributes): this;
+  initWithSampleBufferSessionAttributes(sampleBuffer: interop.PointerConvertible, sessionAttributes: CNRenderingSessionAttributes): this;
 
   initWithTimedMetadataGroupSessionAttributes(metadataGroup: AVTimedMetadataGroup, sessionAttributes: CNRenderingSessionAttributes): this;
 
@@ -225,6 +243,28 @@ declare class CNScriptFrame extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class CNAssetSpatialAudioInfo extends NSObject {
+  static readonly isSupported: boolean;
+
+  static checkIfContainsSpatialAudioCompletionHandler(asset: AVAsset, completionHandler: (p1: boolean) => void): void;
+
+  static loadFromAssetCompletionHandler(asset: AVAsset, completionHandler: (p1: CNAssetSpatialAudioInfo, p2: NSError) => void | null): void;
+
+  readonly defaultSpatialAudioTrack: AVAssetTrack;
+
+  readonly defaultEffectIntensity: number;
+
+  readonly defaultRenderingStyle: interop.Enum<typeof CNSpatialAudioRenderingStyle>;
+
+  readonly spatialAudioMixMetadata: NSData;
+
+  audioMixWithEffectIntensityRenderingStyle(effectIntensity: number, renderingStyle: interop.Enum<typeof CNSpatialAudioRenderingStyle>): AVAudioMix;
+
+  assetReaderOutputSettingsForContentType(contentType: interop.Enum<typeof CNSpatialAudioContentType>): NSDictionary;
+
+  assetWriterInputSettingsForContentType(contentType: interop.Enum<typeof CNSpatialAudioContentType>): NSDictionary;
+}
+
 declare class CNDetection extends NSObject implements NSCopying {
   initWithTimeDetectionTypeNormalizedRectFocusDisparity(time: CMTime, detectionType: interop.Enum<typeof CNDetectionType>, normalizedRect: CGRect, focusDisparity: number): this;
 
@@ -246,9 +286,15 @@ declare class CNDetection extends NSObject implements NSCopying {
 
   static accessibilityLabelForDetectionType(detectionType: interop.Enum<typeof CNDetectionType>): string;
 
-  static disparityInNormalizedRectSourceDisparityDetectionTypePriorDisparity(normalizedRect: CGRect, sourceDisparity: interop.Object, detectionType: interop.Enum<typeof CNDetectionType>, priorDisparity: number): number;
+  static disparityInNormalizedRectSourceDisparityDetectionTypePriorDisparity(normalizedRect: CGRect, sourceDisparity: interop.PointerConvertible, detectionType: interop.Enum<typeof CNDetectionType>, priorDisparity: number): number;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CNCustomDetectionTrack extends CNDetectionTrack {
+  initWithDetectionsSmooth(detections: NSArray<interop.Object> | Array<interop.Object>, applySmoothing: boolean): this;
+
+  readonly allDetections: NSArray;
 }
 
 declare class CNAssetInfo extends NSObject {
@@ -283,12 +329,6 @@ declare class CNAssetInfo extends NSObject {
   readonly sampleDataTrackIDs: NSArray;
 }
 
-declare class CNCustomDetectionTrack extends CNDetectionTrack {
-  initWithDetectionsSmooth(detections: NSArray<interop.Object> | Array<interop.Object>, applySmoothing: boolean): this;
-
-  readonly allDetections: NSArray;
-}
-
 declare class CNRenderingSession extends NSObject {
   initWithCommandQueueSessionAttributesPreferredTransformQuality(commandQueue: MTLCommandQueue, sessionAttributes: CNRenderingSessionAttributes, preferredTransform: CGAffineTransform, quality: interop.Enum<typeof CNRenderingQuality>): this;
 
@@ -300,11 +340,11 @@ declare class CNRenderingSession extends NSObject {
 
   readonly quality: interop.Enum<typeof CNRenderingQuality>;
 
-  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationImage(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.Object, sourceDisparity: interop.Object, destinationImage: interop.Object): boolean;
+  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationImage(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible, destinationImage: interop.PointerConvertible): boolean;
 
-  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationRGBA(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.Object, sourceDisparity: interop.Object, destinationRGBA: MTLTexture): boolean;
+  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationRGBA(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible, destinationRGBA: MTLTexture): boolean;
 
-  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationLumaDestinationChroma(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.Object, sourceDisparity: interop.Object, destinationLuma: MTLTexture, destinationChroma: MTLTexture): boolean;
+  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationLumaDestinationChroma(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible, destinationLuma: MTLTexture, destinationChroma: MTLTexture): boolean;
 
   static readonly sourcePixelFormatTypes: NSArray;
 

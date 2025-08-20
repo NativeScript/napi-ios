@@ -1,12 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const NFCTagResponseUnexpectedLengthErrorKey: string;
-
-declare const NFCISO15693TagResponseErrorKey: string;
-
-declare const NFCErrorDomain: string;
-
 declare const NFCVASMode: {
   NFCVASModeURLOnly: 0,
   NFCVASModeNormal: 1,
@@ -87,31 +81,6 @@ declare const NFCPollingOption: {
   ISO15693: 2,
   ISO18092: 4,
   PACE: 8,
-};
-
-declare const NFCReaderError: {
-  ReaderErrorUnsupportedFeature: 1,
-  ReaderErrorSecurityViolation: 2,
-  ReaderErrorInvalidParameter: 3,
-  ReaderErrorInvalidParameterLength: 4,
-  ReaderErrorParameterOutOfBound: 5,
-  ReaderErrorRadioDisabled: 6,
-  ReaderTransceiveErrorTagConnectionLost: 100,
-  ReaderTransceiveErrorRetryExceeded: 101,
-  ReaderTransceiveErrorTagResponseError: 102,
-  ReaderTransceiveErrorSessionInvalidated: 103,
-  ReaderTransceiveErrorTagNotConnected: 104,
-  ReaderTransceiveErrorPacketTooLong: 105,
-  ReaderSessionInvalidationErrorUserCanceled: 200,
-  ReaderSessionInvalidationErrorSessionTimeout: 201,
-  ReaderSessionInvalidationErrorSessionTerminatedUnexpectedly: 202,
-  ReaderSessionInvalidationErrorSystemIsBusy: 203,
-  ReaderSessionInvalidationErrorFirstNDEFTagRead: 204,
-  TagCommandConfigurationErrorInvalidParameters: 300,
-  NdefReaderSessionErrorTagNotWritable: 400,
-  NdefReaderSessionErrorTagUpdateFailure: 401,
-  NdefReaderSessionErrorTagSizeTooSmall: 402,
-  NdefReaderSessionErrorZeroLengthMessage: 403,
 };
 
 declare const NFCISO15693ResponseFlag: {
@@ -214,21 +183,6 @@ declare interface NFCVASReaderSessionDelegate extends NSObjectProtocol {
 declare class NFCVASReaderSessionDelegate extends NativeObject implements NFCVASReaderSessionDelegate {
 }
 
-declare interface NFCMiFareTag extends NFCTag, NFCNDEFTag {
-  readonly mifareFamily: interop.Enum<typeof NFCMiFareFamily>;
-
-  readonly identifier: NSData;
-
-  readonly historicalBytes: NSData;
-
-  sendMiFareCommandCompletionHandler(command: NSData, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
-
-  sendMiFareISO7816CommandCompletionHandler(apdu: NFCISO7816APDU, completionHandler: (p1: NSData, p2: number, p3: number, p4: NSError) => void | null): void;
-}
-
-declare class NFCMiFareTag extends NativeObject implements NFCMiFareTag {
-}
-
 declare interface NFCISO7816Tag extends NFCTag, NFCNDEFTag {
   readonly initialSelectedAID: string;
 
@@ -261,6 +215,21 @@ declare interface NFCNDEFTag extends NSObjectProtocol, NSSecureCoding, NSCopying
 }
 
 declare class NFCNDEFTag extends NativeObject implements NFCNDEFTag {
+}
+
+declare interface NFCMiFareTag extends NFCTag, NFCNDEFTag {
+  readonly mifareFamily: interop.Enum<typeof NFCMiFareFamily>;
+
+  readonly identifier: NSData;
+
+  readonly historicalBytes: NSData;
+
+  sendMiFareCommandCompletionHandler(command: NSData, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
+
+  sendMiFareISO7816CommandCompletionHandler(apdu: NFCISO7816APDU, completionHandler: (p1: NSData, p2: number, p3: number, p4: NSError) => void | null): void;
+}
+
+declare class NFCMiFareTag extends NativeObject implements NFCMiFareTag {
 }
 
 declare interface NFCFeliCaTag extends NFCTag, NFCNDEFTag {
@@ -484,6 +453,24 @@ declare class NFCTagCommandConfiguration extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class NFCVASCommandConfiguration extends NSObject implements NSCopying {
+  mode: interop.Enum<typeof NFCVASMode>;
+
+  passTypeIdentifier: string;
+
+  url: NSURL;
+
+  initWithVASModePassTypeIdentifierUrl(mode: interop.Enum<typeof NFCVASMode>, passTypeIdentifier: string, url: NSURL | null): this;
+
+  setMode(mode: interop.Enum<typeof NFCVASMode>): void;
+
+  setPassTypeIdentifier(passTypeIdentifier: string): void;
+
+  setUrl(url: NSURL): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class NFCISO7816APDU extends NSObject implements NSCopying {
   readonly instructionClass: number;
 
@@ -584,6 +571,10 @@ declare class NFCISO15693CustomCommandConfiguration extends NFCTagCommandConfigu
   setRequestParameters(requestParameters: NSData): void;
 }
 
+declare class NFCPaymentTagReaderSession extends NFCTagReaderSession {
+  initWithDelegateQueue(delegate: NFCTagReaderSessionDelegate, queue: NSObject | null): this;
+}
+
 declare class NFCISO15693ReaderSession extends NFCReaderSession {
   initWithDelegateQueue(delegate: NFCReaderSessionDelegate, queue: NSObject | null): this;
 
@@ -610,23 +601,5 @@ declare class NFCNDEFReaderSession extends NFCReaderSession {
   restartPolling(): void;
 
   connectToTagCompletionHandler(tag: NFCNDEFTag, completionHandler: (p1: NSError) => void | null): void;
-}
-
-declare class NFCVASCommandConfiguration extends NSObject implements NSCopying {
-  mode: interop.Enum<typeof NFCVASMode>;
-
-  passTypeIdentifier: string;
-
-  url: NSURL;
-
-  initWithVASModePassTypeIdentifierUrl(mode: interop.Enum<typeof NFCVASMode>, passTypeIdentifier: string, url: NSURL | null): this;
-
-  setMode(mode: interop.Enum<typeof NFCVASMode>): void;
-
-  setPassTypeIdentifier(passTypeIdentifier: string): void;
-
-  setUrl(url: NSURL): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 

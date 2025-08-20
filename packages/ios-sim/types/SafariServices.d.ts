@@ -34,6 +34,8 @@ declare const SFErrorCode: {
   NoExtensionFound: 1,
   NoAttachmentFound: 2,
   LoadingInterrupted: 3,
+  InternalError: 4,
+  MissingEntitlement: 5,
 };
 
 declare const SSReadingListErrorCode: {
@@ -70,6 +72,25 @@ declare interface SFAddToHomeScreenActivityItem extends NSObjectProtocol {
 }
 
 declare class SFAddToHomeScreenActivityItem extends NativeObject implements SFAddToHomeScreenActivityItem {
+}
+
+declare class SFContentBlockerState extends NSObject {
+  readonly enabled: boolean;
+
+  isEnabled(): boolean;
+}
+
+declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
+  initWithManifest(manifest: BEWebAppManifest): this;
+
+  readonly manifest: BEWebAppManifest;
+
+  get websiteCookies(): NSArray;
+  set websiteCookies(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setWebsiteCookies(websiteCookies: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class SFSafariViewControllerDataStore extends NSObject {
@@ -113,7 +134,7 @@ declare class SFSafariViewController extends UIViewController {
 
   static prewarmConnectionsToURLs(URLs: NSArray<interop.Object> | Array<interop.Object>): SFSafariViewControllerPrewarmingToken;
 
-  setDelegate(delegate: SFSafariViewControllerDelegate | null): void;
+  setDelegate(delegate: SFSafariViewControllerDelegate): void;
 
   setPreferredBarTintColor(preferredBarTintColor: UIColor): void;
 
@@ -136,23 +157,8 @@ declare class SFAuthenticationSession extends NSObject {
   cancel(): void;
 }
 
-declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
-  initWithManifest(manifest: BEWebAppManifest): this;
-
-  readonly manifest: BEWebAppManifest;
-
-  get websiteCookies(): NSArray;
-  set websiteCookies(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setWebsiteCookies(websiteCookies: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class SFContentBlockerState extends NSObject {
-  readonly enabled: boolean;
-
-  isEnabled(): boolean;
+declare class SFSafariSettings extends NSObject {
+  static openExportBrowsingDataSettingsWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
 }
 
 declare class SSReadingList extends NSObject {

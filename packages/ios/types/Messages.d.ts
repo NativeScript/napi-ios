@@ -40,6 +40,12 @@ declare const MSMessagesAppPresentationContext: {
 
 declare interface MSMessagesAppTranscriptPresentation {
   contentSizeThatFits(size: CGSize): CGSize;
+
+  readonly messageTintColor: UIColor;
+
+  readonly messageCornerRadius: number;
+
+  invalidateMessageTintColor(): void;
 }
 
 declare class MSMessagesAppTranscriptPresentation extends NativeObject implements MSMessagesAppTranscriptPresentation {
@@ -52,6 +58,30 @@ declare interface MSStickerBrowserViewDataSource extends NSObjectProtocol {
 }
 
 declare class MSStickerBrowserViewDataSource extends NativeObject implements MSStickerBrowserViewDataSource {
+}
+
+declare class MSStickerBrowserView extends UIView {
+  initWithFrame(frame: CGRect): this;
+
+  initWithFrameStickerSize(frame: CGRect, stickerSize: interop.Enum<typeof MSStickerSize>): this;
+
+  readonly stickerSize: interop.Enum<typeof MSStickerSize>;
+
+  dataSource: MSStickerBrowserViewDataSource;
+
+  contentOffset: CGPoint;
+
+  contentInset: UIEdgeInsets;
+
+  setContentOffsetAnimated(contentOffset: CGPoint, animated: boolean): void;
+
+  reloadData(): void;
+
+  setDataSource(dataSource: MSStickerBrowserViewDataSource | null): void;
+
+  setContentOffset(contentOffset: CGPoint): void;
+
+  setContentInset(contentInset: UIEdgeInsets): void;
 }
 
 declare class MSSession extends NSObject implements NSSecureCoding {
@@ -150,6 +180,12 @@ declare class MSMessagesAppViewController extends UIViewController implements MS
   didTransitionToPresentationStyle(presentationStyle: interop.Enum<typeof MSMessagesAppPresentationStyle>): void;
 
   contentSizeThatFits(size: CGSize): CGSize;
+
+  readonly messageTintColor: UIColor;
+
+  readonly messageCornerRadius: number;
+
+  invalidateMessageTintColor(): void;
 }
 
 declare class MSSticker extends NSObject {
@@ -192,30 +228,6 @@ declare class MSMessageTemplateLayout extends MSMessageLayout {
   setImageTitle(imageTitle: string | null): void;
 
   setImageSubtitle(imageSubtitle: string | null): void;
-}
-
-declare class MSStickerBrowserView extends UIView {
-  initWithFrame(frame: CGRect): this;
-
-  initWithFrameStickerSize(frame: CGRect, stickerSize: interop.Enum<typeof MSStickerSize>): this;
-
-  readonly stickerSize: interop.Enum<typeof MSStickerSize>;
-
-  dataSource: MSStickerBrowserViewDataSource;
-
-  contentOffset: CGPoint;
-
-  contentInset: UIEdgeInsets;
-
-  setContentOffsetAnimated(contentOffset: CGPoint, animated: boolean): void;
-
-  reloadData(): void;
-
-  setDataSource(dataSource: MSStickerBrowserViewDataSource | null): void;
-
-  setContentOffset(contentOffset: CGPoint): void;
-
-  setContentInset(contentInset: UIEdgeInsets): void;
 }
 
 declare class MSStickerBrowserViewController extends UIViewController implements MSStickerBrowserViewDataSource {

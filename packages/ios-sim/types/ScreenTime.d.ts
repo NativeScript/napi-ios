@@ -2,10 +2,6 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
-declare class STScreenTimeConfiguration extends NSObject {
-  readonly enforcesChildRestrictions: boolean;
-}
-
 declare class STScreenTimeConfigurationObserver extends NSObject {
   initWithUpdateQueue(updateQueue: NSObject): this;
 
@@ -14,6 +10,10 @@ declare class STScreenTimeConfigurationObserver extends NSObject {
   stopObserving(): void;
 
   readonly configuration: STScreenTimeConfiguration;
+}
+
+declare class STScreenTimeConfiguration extends NSObject {
+  readonly enforcesChildRestrictions: boolean;
 }
 
 declare class STWebHistory extends NSObject {

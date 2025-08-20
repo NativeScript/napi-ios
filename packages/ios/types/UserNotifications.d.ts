@@ -156,6 +156,18 @@ declare class UNUserNotificationCenter extends NSObject {
   setDelegate(delegate: UNUserNotificationCenterDelegate | null): void;
 }
 
+declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
+  readonly repeats: boolean;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class UNNotificationServiceExtension extends NSObject {
   didReceiveNotificationRequestWithContentHandler(request: UNNotificationRequest, contentHandler: (p1: UNNotificationContent) => void): void;
 
@@ -365,14 +377,14 @@ declare class UNNotificationAttachment extends NSObject implements NSCopying, NS
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class UNTextInputNotificationResponse extends UNNotificationResponse {
-  readonly userText: string;
-}
-
 declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
   readonly region: CLRegion;
 
   static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
+}
+
+declare class UNTextInputNotificationResponse extends UNNotificationResponse {
+  readonly userText: string;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -508,22 +520,6 @@ declare class UNNotificationContent extends NSObject implements NSCopying, NSMut
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
-  readonly notification: UNNotification;
-
-  readonly actionIdentifier: string;
-
-  readonly targetScene: UIScene;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class UNNotificationSettings extends NSObject implements NSCopying, NSSecureCoding {
   readonly authorizationStatus: interop.Enum<typeof UNAuthorizationStatus>;
 
@@ -564,18 +560,12 @@ declare class UNNotificationSettings extends NSObject implements NSCopying, NSSe
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class UNTextInputNotificationAction extends UNNotificationAction {
-  static actionWithIdentifierTitleOptionsTextInputButtonTitleTextInputPlaceholder<This extends abstract new (...args: any) => any>(this: This, identifier: string, title: string, options: interop.Enum<typeof UNNotificationActionOptions>, textInputButtonTitle: string, textInputPlaceholder: string): InstanceType<This>;
+declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
+  readonly notification: UNNotification;
 
-  static actionWithIdentifierTitleOptionsIconTextInputButtonTitleTextInputPlaceholder<This extends abstract new (...args: any) => any>(this: This, identifier: string, title: string, options: interop.Enum<typeof UNNotificationActionOptions>, icon: UNNotificationActionIcon | null, textInputButtonTitle: string, textInputPlaceholder: string): InstanceType<This>;
+  readonly actionIdentifier: string;
 
-  readonly textInputButtonTitle: string;
-
-  readonly textInputPlaceholder: string;
-}
-
-declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
-  readonly repeats: boolean;
+  readonly targetScene: UIScene;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -584,5 +574,15 @@ declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSec
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class UNTextInputNotificationAction extends UNNotificationAction {
+  static actionWithIdentifierTitleOptionsTextInputButtonTitleTextInputPlaceholder<This extends abstract new (...args: any) => any>(this: This, identifier: string, title: string, options: interop.Enum<typeof UNNotificationActionOptions>, textInputButtonTitle: string, textInputPlaceholder: string): InstanceType<This>;
+
+  static actionWithIdentifierTitleOptionsIconTextInputButtonTitleTextInputPlaceholder<This extends abstract new (...args: any) => any>(this: This, identifier: string, title: string, options: interop.Enum<typeof UNNotificationActionOptions>, icon: UNNotificationActionIcon | null, textInputButtonTitle: string, textInputPlaceholder: string): InstanceType<This>;
+
+  readonly textInputButtonTitle: string;
+
+  readonly textInputPlaceholder: string;
 }
 

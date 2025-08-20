@@ -1,12 +1,12 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./UIKit.d.ts" />
 /// <reference path="./Runtime.d.ts" />
+/// <reference path="./UIKit.d.ts" />
 
 declare const PDFAnnotationKeyBorder: string;
 
-declare const PDFViewPageChangedNotification: string;
+declare const PDFDocumentDidUnlockNotification: string;
 
-declare const PDFAnnotationKeyWidgetAppearanceDictionary: string;
+declare const PDFViewPageChangedNotification: string;
 
 declare const PDFAnnotationKeyContents: string;
 
@@ -34,6 +34,8 @@ declare const PDFDocumentOwnerPasswordOption: string;
 
 declare const PDFDocumentProducerAttribute: string;
 
+declare const PDFDocumentSubjectAttribute: string;
+
 declare const PDFDocumentTitleAttribute: string;
 
 declare const PDFDocumentPageIndexKey: string;
@@ -46,8 +48,6 @@ declare const PDFDocumentDidBeginPageFindNotification: string;
 
 declare const PDFDocumentDidEndFindNotification: string;
 
-declare const PDFDocumentDidUnlockNotification: string;
-
 declare const PDFBorderKeyLineWidth: string;
 
 declare const PDFAppearanceCharacteristicsKeyBorderColor: string;
@@ -56,11 +56,15 @@ declare const PDFAnnotationHighlightingModePush: string;
 
 declare const PDFAnnotationTextIconTypeNote: string;
 
+declare const PDFAnnotationTextIconTypeKey: string;
+
 declare const PDFAnnotationTextIconTypeComment: string;
 
 declare const PDFAnnotationLineEndingStyleSquare: string;
 
 declare const PDFAnnotationWidgetSubtypeSignature: string;
+
+declare const PDFAnnotationWidgetSubtypeButton: string;
 
 declare const PDFAnnotationSubtypeStamp: string;
 
@@ -94,8 +98,6 @@ declare const PDFAnnotationKeyPage: string;
 
 declare const PDFAnnotationKeyAppearanceState: string;
 
-declare const PDFAnnotationKeyAppearanceDictionary: string;
-
 declare const PDFPageImageInitializationOptionUpscaleIfSmaller: string;
 
 declare const PDFAnnotationWidgetSubtypeChoice: string;
@@ -104,15 +106,15 @@ declare const PDFDocumentDidEndPageFindNotification: string;
 
 declare const PDFAppearanceCharacteristicsKeyRotation: string;
 
-declare const PDFAnnotationKeyIconName: string;
-
 declare const PDFAnnotationKeySubtype: string;
 
 declare const PDFAnnotationKeyDefaultAppearance: string;
 
-declare const PDFAnnotationKeyWidgetOptions: string;
+declare const PDFAnnotationKeyPopup: string;
 
 declare const PDFBorderKeyDashPattern: string;
+
+declare const PDFAnnotationKeyWidgetAppearanceDictionary: string;
 
 declare const PDFAnnotationKeyInklist: string;
 
@@ -130,7 +132,11 @@ declare const PDFDocumentModificationDateAttribute: string;
 
 declare const PDFAnnotationKeyBorderStyle: string;
 
-declare const PDFDocumentSubjectAttribute: string;
+declare const PDFAnnotationKeyWidgetOptions: string;
+
+declare const PDFAnnotationKeyWidgetRolloverCaption: string;
+
+declare const PDFAnnotationKeyQuadding: string;
 
 declare const PDFViewAnnotationHitNotification: string;
 
@@ -142,7 +148,7 @@ declare const PDFAppearanceCharacteristicsKeyCaption: string;
 
 declare const PDFAnnotationLineEndingStyleDiamond: string;
 
-declare const PDFAnnotationKeyQuadding: string;
+declare const PDFAnnotationTextIconTypeNewParagraph: string;
 
 declare const PDFPageImageInitializationOptionRotation: string;
 
@@ -154,35 +160,31 @@ declare const PDFAnnotationSubtypeUnderline: string;
 
 declare const PDFAnnotationLineEndingStyleCircle: string;
 
-declare const PDFAnnotationKeyColor: string;
-
 declare const PDFDocumentDidBeginWriteNotification: string;
 
 declare const PDFAppearanceCharacteristicsKeyRolloverCaption: string;
 
 declare const PDFAnnotationSubtypeInk: string;
 
-declare const PDFAnnotationSubtypeLink: string;
-
 declare const PDFThumbnailViewDocumentEditedNotification: string;
 
 declare const PDFAnnotationWidgetSubtypeText: string;
+
+declare const PDFAnnotationKeyAppearanceDictionary: string;
 
 declare const PDFAnnotationKeyHighlightingMode: string;
 
 declare const PDFAnnotationKeyWidgetBackgroundColor: string;
 
-declare const PDFDocumentUserPasswordOption: string;
-
-declare const PDFAnnotationKeyWidgetRolloverCaption: string;
-
 declare const PDFAnnotationKeyWidgetCaption: string;
 
-declare const PDFAnnotationTextIconTypeNewParagraph: string;
+declare const PDFAnnotationKeyColor: string;
 
 declare const PDFViewPrintPermissionNotification: string;
 
 declare const PDFAnnotationHighlightingModeNone: string;
+
+declare const PDFAnnotationSubtypeLink: string;
 
 declare const PDFAnnotationLineEndingStyleNone: string;
 
@@ -190,15 +192,13 @@ declare const PDFDocumentKeywordsAttribute: string;
 
 declare const PDFAnnotationSubtypeHighlight: string;
 
-declare const PDFAnnotationWidgetSubtypeButton: string;
-
 declare const PDFAnnotationKeyInteriorColor: string;
-
-declare const PDFAnnotationKeyWidgetBorderColor: string;
 
 declare const PDFAnnotationHighlightingModeOutline: string;
 
 declare const PDFViewScaleChangedNotification: string;
+
+declare const PDFDocumentUserPasswordOption: string;
 
 declare const PDFAnnotationKeyLineEndingStyles: string;
 
@@ -210,6 +210,8 @@ declare const PDFDocumentCreatorAttribute: string;
 
 declare const PDFAnnotationKeyWidgetDefaultValue: string;
 
+declare const PDFAnnotationKeyWidgetBorderColor: string;
+
 declare const PDFAnnotationLineEndingStyleClosedArrow: string;
 
 declare const PDFAppearanceCharacteristicsKeyDownCaption: string;
@@ -220,17 +222,15 @@ declare const PDFPageImageInitializationOptionCompressionQuality: string;
 
 declare const PDFAnnotationKeyDate: string;
 
-declare const PDFAnnotationKeyPopup: string;
-
 declare const PDFAnnotationTextIconTypeParagraph: string;
 
 declare const PDFAnnotationKeyWidgetFieldFlags: string;
 
+declare const PDFAnnotationKeyIconName: string;
+
 declare const PDFAppearanceCharacteristicsKeyBackgroundColor: string;
 
 declare const PDFDocumentDidFindMatchNotification: string;
-
-declare const PDFAnnotationHighlightingModeInvert: string;
 
 declare const kPDFDestinationUnspecifiedValue: number;
 
@@ -238,11 +238,11 @@ declare const PDFDocumentSaveImagesAsJPEGOption: string;
 
 declare const PDFAnnotationKeyParent: string;
 
-declare const PDFAnnotationTextIconTypeKey: string;
-
 declare const PDFViewDisplayModeChangedNotification: string;
 
 declare const PDFAnnotationKeyFlags: string;
+
+declare const PDFAnnotationHighlightingModeInvert: string;
 
 declare const PDFDocumentDidBeginPageWriteNotification: string;
 
@@ -342,6 +342,11 @@ declare const PDFTextAnnotationIconType: {
   Insert: 6,
 };
 
+declare const PDFThumbnailLayoutMode: {
+  Vertical: 0,
+  Horizontal: 1,
+};
+
 declare const PDFBorderStyle: {
   Solid: 0,
   Dashed: 1,
@@ -362,18 +367,13 @@ declare const PDFWidgetCellState: {
   On: 1,
 };
 
-declare const PDFDisplayDirection: {
-  Vertical: 0,
-  Horizontal: 1,
-};
-
 declare const PDFSelectionGranularity: {
   Character: 0,
   Word: 1,
   Line: 2,
 };
 
-declare const PDFThumbnailLayoutMode: {
+declare const PDFDisplayDirection: {
   Vertical: 0,
   Horizontal: 1,
 };
@@ -439,6 +439,44 @@ declare interface PDFPageOverlayViewProvider extends NSObjectProtocol {
 }
 
 declare class PDFPageOverlayViewProvider extends NativeObject implements PDFPageOverlayViewProvider {
+}
+
+declare class PDFSelection extends NSObject implements NSCopying {
+  initWithDocument(document: PDFDocument): this;
+
+  readonly pages: NSArray;
+
+  color: UIColor;
+
+  readonly string: string;
+
+  readonly attributedString: NSAttributedString;
+
+  boundsForPage(page: PDFPage): CGRect;
+
+  numberOfTextRangesOnPage(page: PDFPage): number;
+
+  rangeAtIndexOnPage(index: number, page: PDFPage): _NSRange;
+
+  selectionsByLine(): NSArray;
+
+  addSelection(selection: PDFSelection): void;
+
+  addSelections(selections: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  extendSelectionAtEnd(succeed: number): void;
+
+  extendSelectionAtStart(precede: number): void;
+
+  extendSelectionForLineBoundaries(): void;
+
+  drawForPageActive(page: PDFPage, active: boolean): void;
+
+  drawForPageWithBoxActive(page: PDFPage, box: interop.Enum<typeof PDFDisplayBox>, active: boolean): void;
+
+  setColor(color: UIColor): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -546,9 +584,9 @@ declare class PDFView extends UIView implements UIGestureRecognizerDelegate, UIF
   get highlightedSelections(): NSArray;
   set highlightedSelections(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  drawPageToContext(page: PDFPage, context: interop.Object): void;
+  drawPageToContext(page: PDFPage, context: interop.PointerConvertible): void;
 
-  drawPagePostToContext(page: PDFPage, context: interop.Object): void;
+  drawPagePostToContext(page: PDFPage, context: interop.PointerConvertible): void;
 
   // @ts-ignore MemberDecl.tsIgnore
   copy(sender: interop.Object | null): void;
@@ -720,44 +758,6 @@ declare class PDFThumbnailView extends UIView implements NSCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class PDFSelection extends NSObject implements NSCopying {
-  initWithDocument(document: PDFDocument): this;
-
-  readonly pages: NSArray;
-
-  color: UIColor;
-
-  readonly string: string;
-
-  readonly attributedString: NSAttributedString;
-
-  boundsForPage(page: PDFPage): CGRect;
-
-  numberOfTextRangesOnPage(page: PDFPage): number;
-
-  rangeAtIndexOnPage(index: number, page: PDFPage): _NSRange;
-
-  selectionsByLine(): NSArray;
-
-  addSelection(selection: PDFSelection): void;
-
-  addSelections(selections: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  extendSelectionAtEnd(succeed: number): void;
-
-  extendSelectionAtStart(precede: number): void;
-
-  extendSelectionForLineBoundaries(): void;
-
-  drawForPageActive(page: PDFPage, active: boolean): void;
-
-  drawForPageWithBoxActive(page: PDFPage, box: interop.Enum<typeof PDFDisplayBox>, active: boolean): void;
-
-  setColor(color: UIColor): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class PDFOutline extends NSObject {
   init(): this;
 
@@ -801,7 +801,7 @@ declare class PDFDocument extends NSObject implements NSCopying {
 
   readonly documentURL: NSURL;
 
-  readonly documentRef: interop.Object;
+  readonly documentRef: interop.Pointer;
 
   get documentAttributes(): NSDictionary;
   set documentAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
@@ -922,7 +922,7 @@ declare class PDFPage extends NSObject implements NSCopying {
 
   readonly document: PDFDocument;
 
-  readonly pageRef: interop.Object;
+  readonly pageRef: interop.Pointer;
 
   readonly label: string;
 
@@ -944,9 +944,9 @@ declare class PDFPage extends NSObject implements NSCopying {
 
   transformForBox(box: interop.Enum<typeof PDFDisplayBox>): CGAffineTransform;
 
-  drawWithBoxToContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.Object): void;
+  drawWithBoxToContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.PointerConvertible): void;
 
-  transformContextForBox(context: interop.Object, box: interop.Enum<typeof PDFDisplayBox>): void;
+  transformContextForBox(context: interop.PointerConvertible, box: interop.Enum<typeof PDFDisplayBox>): void;
 
   thumbnailOfSizeForBox(size: CGSize, box: interop.Enum<typeof PDFDisplayBox>): UIImage;
 
@@ -979,6 +979,24 @@ declare class PDFPage extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class PDFActionRemoteGoTo extends PDFAction implements NSCopying {
+  initWithPageIndexAtPointFileURL(pageIndex: number, point: CGPoint, url: NSURL): this;
+
+  pageIndex: number;
+
+  point: CGPoint;
+
+  URL: NSURL;
+
+  setPageIndex(pageIndex: number): void;
+
+  setPoint(point: CGPoint): void;
+
+  setURL(URL: NSURL): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class PDFActionNamed extends PDFAction implements NSCopying {
   initWithName(name: interop.Enum<typeof PDFActionNamedName>): this;
 
@@ -1001,24 +1019,6 @@ declare class PDFActionURL extends PDFAction implements NSCopying {
   URL: NSURL;
 
   setURL(URL: NSURL | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class PDFActionRemoteGoTo extends PDFAction implements NSCopying {
-  initWithPageIndexAtPointFileURL(pageIndex: number, point: CGPoint, url: NSURL): this;
-
-  pageIndex: number;
-
-  point: CGPoint;
-
-  URL: NSURL;
-
-  setPageIndex(pageIndex: number): void;
-
-  setPoint(point: CGPoint): void;
-
-  setURL(URL: NSURL): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -1098,7 +1098,7 @@ declare class PDFAnnotation extends NSObject implements NSCopying, NSCoding {
 
   highlighted: boolean;
 
-  drawWithBoxInContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.Object): void;
+  drawWithBoxInContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.PointerConvertible): void;
 
   setValueForAnnotationKey(value: interop.Object, key: string): boolean;
 

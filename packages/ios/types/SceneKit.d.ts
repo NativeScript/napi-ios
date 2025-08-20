@@ -10,9 +10,9 @@ declare const SCNParticlePropertyBounce: string;
 
 declare const SCNDetailedErrorsKey: string;
 
-declare const SCNSceneSourceConvertToYUpKey: string;
+declare const SCNLightTypeProbe: string;
 
-declare const SCNParticlePropertyFrame: string;
+declare const SCNSceneSourceConvertToYUpKey: string;
 
 declare const SCNShaderModifierEntryPointFragment: string;
 
@@ -40,6 +40,8 @@ declare const SCNHitTestOptionSearchMode: string;
 
 declare const SCNConsistencyLineNumberErrorKey: string;
 
+declare const SCNParticlePropertyPosition: string;
+
 declare const SCNPhysicsTestSearchModeAny: string;
 
 declare const SCNPhysicsShapeTypeConvexHull: string;
@@ -51,6 +53,8 @@ declare const SCNPhysicsShapeScaleKey: string;
 declare const SCNPhysicsShapeTypeKey: string;
 
 declare const SCNParticlePropertyFriction: string;
+
+declare const SCNSceneSourceUseSafeModeKey: string;
 
 declare const SCNParticlePropertyOpacity: string;
 
@@ -64,6 +68,8 @@ declare const SCNGeometrySourceSemanticVertexCrease: string;
 
 declare const SCNGeometrySourceSemanticTangent: string;
 
+declare const SCNGeometrySourceSemanticTexcoord: string;
+
 declare const SCNGeometrySourceSemanticColor: string;
 
 declare const SCNLightingModelShadowOnly: string;
@@ -73,8 +79,6 @@ declare const SCNLightingModelConstant: string;
 declare const SCNLightingModelLambert: string;
 
 declare const SCNLightingModelPhong: string;
-
-declare const SCNLightTypeArea: string;
 
 declare const SCNLightTypeSpot: string;
 
@@ -90,19 +94,17 @@ declare const SCNConsistencyInvalidURIError: number;
 
 declare const SCNSceneSourceAnimationImportPolicyPlayRepeatedly: string;
 
+declare const SCNSceneSourceStrictConformanceKey: string;
+
 declare const SCNSceneSourceCheckConsistencyKey: string;
 
 declare const SCNSceneSourceCreateNormalsIfAbsentKey: string;
 
 declare const SCNSceneSourceAssetUnitMeterKey: string;
 
-declare const SCNSceneSourceAssetUpAxisKey: string;
-
 declare const SCNSceneSourceAssetCreatedDateKey: string;
 
 declare const SCNSceneSourceAssetContributorsKey: string;
-
-declare const SCNPreferredRenderingAPIKey: string;
 
 declare const SCNShaderModifierEntryPointSurface: string;
 
@@ -118,20 +120,6 @@ declare const SCNProgramCompilationError: number;
 
 declare const SCNMatrix4Identity: SCNMatrix4;
 
-declare const SCNParticlePropertyAngularVelocity: string;
-
-declare const SCNSceneSourceUseSafeModeKey: string;
-
-declare const SCNPhysicsTestSearchModeClosest: string;
-
-declare const SCNSceneSourceStrictConformanceKey: string;
-
-declare const SCNShaderModifierEntryPointLightingModel: string;
-
-declare const SCNVector4Zero: SCNVector4;
-
-declare const SCNGeometrySourceSemanticTexcoord: string;
-
 declare const SCNSceneSourceAnimationImportPolicyPlayUsingSceneTimeBase: string;
 
 declare const SCNSceneSourceConvertUnitsToMetersKey: string;
@@ -142,11 +130,11 @@ declare const SCNParticlePropertyVelocity: string;
 
 declare const SCNPhysicsShapeTypeConcavePolyhedron: string;
 
-declare const SCNLightingModelPhysicallyBased: string;
-
 declare const SCNConsistencyInvalidCountError: number;
 
 declare const SCNShaderModifierEntryPointGeometry: string;
+
+declare const SCNLightingModelPhysicallyBased: string;
 
 declare const SCNPhysicsTestSearchModeAll: string;
 
@@ -156,7 +144,13 @@ declare const SCNGeometrySourceSemanticEdgeCrease: string;
 
 declare const SCNParticlePropertyAngle: string;
 
+declare const SCNPreferredRenderingAPIKey: string;
+
 declare const SCNParticlePropertyCharge: string;
+
+declare const SCNLightTypeArea: string;
+
+declare const SCNSceneSourceAssetUpAxisKey: string;
 
 declare const SCNSceneSourceAssetAuthoringToolKey: string;
 
@@ -172,6 +166,10 @@ declare const SCNHitTestIgnoreHiddenNodesKey: string;
 
 declare const SCNSceneStartTimeAttributeKey: string;
 
+declare const SCNParticlePropertyFrame: string;
+
+declare const SCNPhysicsTestSearchModeClosest: string;
+
 declare const SCNPhysicsTestBackfaceCullingKey: string;
 
 declare const SCNViewTransform: string;
@@ -182,6 +180,8 @@ declare const SCNConsistencyMissingAttributeError: number;
 
 declare const SCNGeometrySourceSemanticBoneWeights: string;
 
+declare const SCNConsistencyXMLSchemaValidationError: number;
+
 declare const SCNParticlePropertyFrameRate: string;
 
 declare const SCNLightTypeDirectional: string;
@@ -190,13 +190,13 @@ declare const SCNHitTestIgnoreChildNodesKey: string;
 
 declare const SCNParticlePropertyColor: string;
 
+declare const SCNVector4Zero: SCNVector4;
+
 declare const SCNSceneExportDestinationURL: string;
 
 declare const SCNSceneSourceAssetModifiedDateKey: string;
 
 declare const SCNSceneEndTimeAttributeKey: string;
-
-declare const SCNLightTypeProbe: string;
 
 declare const SCNSceneSourceAssetAuthorKey: string;
 
@@ -216,36 +216,31 @@ declare const SCNErrorDomain: string;
 
 declare const SCNParticlePropertyContactPoint: string;
 
+declare const SCNModelTransform: string;
+
 declare const SCNProjectionTransform: string;
 
 declare const SCNSceneSourceAssetUnitKey: string;
 
 declare const SCNSceneUpAxisAttributeKey: string;
 
-declare const SCNLightTypeIES: string;
+declare const SCNParticlePropertyAngularVelocity: string;
 
-declare const SCNConsistencyXMLSchemaValidationError: number;
+declare const SCNLightTypeIES: string;
 
 declare const SCNHitTestRootNodeKey: string;
 
-declare const SCNVector3Zero: SCNVector3;
+declare const SCNShaderModifierEntryPointLightingModel: string;
 
-declare const SCNModelTransform: string;
+declare const SCNVector3Zero: SCNVector3;
 
 declare const SCNConsistencyElementIDErrorKey: string;
 
 declare const SCNSceneSourceAnimationImportPolicyKey: string;
 
-declare const SCNParticlePropertyPosition: string;
-
 declare const SCNLightingModelBlinn: string;
 
 declare const SCNHitTestFirstFoundOnlyKey: string;
-
-declare const SCNLightProbeType: {
-  Irradiance: 0,
-  Radiance: 1,
-};
 
 declare const SCNPhysicsFieldScope: {
   Inside: 0,
@@ -329,6 +324,11 @@ declare const SCNCullMode: {
 declare const SCNLightAreaType: {
   Rectangle: 1,
   Polygon: 4,
+};
+
+declare const SCNLightProbeType: {
+  Irradiance: 0,
+  Radiance: 1,
 };
 
 declare const SCNMovabilityHint: {
@@ -691,7 +691,7 @@ declare interface SCNSceneRenderer extends NSObjectProtocol {
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Object;
+  readonly workingColorSpace: interop.Pointer;
 
   readonly context: interop.Pointer;
 
@@ -904,6 +904,32 @@ declare class SCNAudioPlayer extends NSObject {
   setDidFinishPlayback(didFinishPlayback: () => void | null): void;
 }
 
+declare class SCNSceneSource extends NSObject {
+  static sceneSourceWithURLOptions<This extends abstract new (...args: any) => any>(this: This, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+
+  static sceneSourceWithDataOptions<This extends abstract new (...args: any) => any>(this: This, data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+
+  initWithURLOptions(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+
+  initWithDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+
+  readonly url: NSURL;
+
+  readonly data: NSData;
+
+  sceneWithOptionsStatusHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, statusHandler: (p1: number, p2: interop.Enum<typeof SCNSceneSourceStatus>, p3: NSError, p4: interop.PointerConvertible) => void | null): SCNScene;
+
+  sceneWithOptionsError(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): SCNScene;
+
+  propertyForKey(key: string): interop.Object;
+
+  entryWithIdentifierWithClass(uid: string, entryClass: interop.Object): interop.Object;
+
+  identifiersOfEntriesWithClass(entryClass: interop.Object): NSArray;
+
+  entriesPassingTest(predicate: (p1: interop.Object, p2: string, p3: interop.PointerConvertible) => boolean): NSArray;
+}
+
 declare class SCNTechnique extends NSObject implements SCNAnimatable, NSCopying, NSSecureCoding {
   static techniqueWithDictionary(dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): SCNTechnique;
 
@@ -996,38 +1022,6 @@ declare class SCNTechnique extends NSObject implements SCNAnimatable, NSCopying,
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SCNTransformConstraint extends SCNConstraint {
-  static transformConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNMatrix4) => SCNMatrix4): InstanceType<This>;
-
-  static positionConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector3) => SCNVector3): InstanceType<This>;
-
-  static orientationConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector4) => SCNVector4): InstanceType<This>;
-}
-
-declare class SCNShape extends SCNGeometry {
-  static shapeWithPathExtrusionDepth<This extends abstract new (...args: any) => any>(this: This, path: UIBezierPath | null, extrusionDepth: number): InstanceType<This>;
-
-  path: UIBezierPath;
-
-  extrusionDepth: number;
-
-  chamferMode: interop.Enum<typeof SCNChamferMode>;
-
-  chamferRadius: number;
-
-  chamferProfile: UIBezierPath;
-
-  setPath(path: UIBezierPath | null): void;
-
-  setExtrusionDepth(extrusionDepth: number): void;
-
-  setChamferMode(chamferMode: interop.Enum<typeof SCNChamferMode>): void;
-
-  setChamferRadius(chamferRadius: number): void;
-
-  setChamferProfile(chamferProfile: UIBezierPath | null): void;
 }
 
 declare class SCNCone extends SCNGeometry {
@@ -1472,202 +1466,6 @@ declare class SCNReferenceNode extends SCNNode {
   setLoadingPolicy(loadingPolicy: interop.Enum<typeof SCNReferenceLoadingPolicy>): void;
 
   isLoaded(): boolean;
-}
-
-declare class SCNCapsule extends SCNGeometry {
-  static capsuleWithCapRadiusHeight<This extends abstract new (...args: any) => any>(this: This, capRadius: number, height: number): InstanceType<This>;
-
-  capRadius: number;
-
-  height: number;
-
-  radialSegmentCount: number;
-
-  heightSegmentCount: number;
-
-  capSegmentCount: number;
-
-  setCapRadius(capRadius: number): void;
-
-  setHeight(height: number): void;
-
-  setRadialSegmentCount(radialSegmentCount: number): void;
-
-  setHeightSegmentCount(heightSegmentCount: number): void;
-
-  setCapSegmentCount(capSegmentCount: number): void;
-}
-
-declare class SCNPhysicsVehicle extends SCNPhysicsBehavior {
-  static vehicleWithChassisBodyWheels<This extends abstract new (...args: any) => any>(this: This, chassisBody: SCNPhysicsBody, wheels: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  readonly speedInKilometersPerHour: number;
-
-  readonly wheels: NSArray;
-
-  readonly chassisBody: SCNPhysicsBody;
-
-  applyEngineForceForWheelAtIndex(value: number, index: number): void;
-
-  setSteeringAngleForWheelAtIndex(value: number, index: number): void;
-
-  applyBrakingForceForWheelAtIndex(value: number, index: number): void;
-}
-
-declare class SCNScene extends NSObject implements NSSecureCoding {
-  static scene<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  readonly rootNode: SCNNode;
-
-  readonly physicsWorld: SCNPhysicsWorld;
-
-  attributeForKey(key: string): interop.Object;
-
-  setAttributeForKey(attribute: interop.Object | null, key: string): void;
-
-  readonly background: SCNMaterialProperty;
-
-  readonly lightingEnvironment: SCNMaterialProperty;
-
-  static sceneNamed<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
-
-  static sceneNamedInDirectoryOptions<This extends abstract new (...args: any) => any>(this: This, name: string, directory: string | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
-
-  static sceneWithURLOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  writeToURLOptionsDelegateProgressHandler(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, delegate: SCNSceneExportDelegate | null, progressHandler: (p1: number, p2: NSError, p3: interop.PointerConvertible) => void | null): boolean;
-
-  fogStartDistance: number;
-
-  fogEndDistance: number;
-
-  fogDensityExponent: number;
-
-  fogColor: interop.Object;
-
-  wantsScreenSpaceReflection: boolean;
-
-  screenSpaceReflectionSampleCount: number;
-
-  screenSpaceReflectionMaximumDistance: number;
-
-  screenSpaceReflectionStride: number;
-
-  paused: boolean;
-
-  setFogStartDistance(fogStartDistance: number): void;
-
-  setFogEndDistance(fogEndDistance: number): void;
-
-  setFogDensityExponent(fogDensityExponent: number): void;
-
-  setFogColor(fogColor: interop.Object): void;
-
-  setWantsScreenSpaceReflection(wantsScreenSpaceReflection: boolean): void;
-
-  setScreenSpaceReflectionSampleCount(screenSpaceReflectionSampleCount: number): void;
-
-  setScreenSpaceReflectionMaximumDistance(screenSpaceReflectionMaximumDistance: number): void;
-
-  setScreenSpaceReflectionStride(screenSpaceReflectionStride: number): void;
-
-  isPaused(): boolean;
-
-  setPaused(paused: boolean): void;
-
-  addParticleSystemWithTransform(system: SCNParticleSystem, transform: SCNMatrix4): void;
-
-  removeAllParticleSystems(): void;
-
-  removeParticleSystem(system: SCNParticleSystem): void;
-
-  readonly particleSystems: NSArray;
-
-  static sceneWithMDLAsset<This extends abstract new (...args: any) => any>(this: This, mdlAsset: MDLAsset): InstanceType<This>;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class SCNPhysicsField extends NSObject implements NSCopying, NSSecureCoding {
-  strength: number;
-
-  falloffExponent: number;
-
-  minimumDistance: number;
-
-  active: boolean;
-
-  exclusive: boolean;
-
-  halfExtent: SCNVector3;
-
-  usesEllipsoidalExtent: boolean;
-
-  scope: interop.Enum<typeof SCNPhysicsFieldScope>;
-
-  offset: SCNVector3;
-
-  direction: SCNVector3;
-
-  categoryBitMask: number;
-
-  static dragField(): SCNPhysicsField;
-
-  static vortexField(): SCNPhysicsField;
-
-  static radialGravityField(): SCNPhysicsField;
-
-  static linearGravityField(): SCNPhysicsField;
-
-  static noiseFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SCNPhysicsField;
-
-  static turbulenceFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SCNPhysicsField;
-
-  static springField(): SCNPhysicsField;
-
-  static electricField(): SCNPhysicsField;
-
-  static magneticField(): SCNPhysicsField;
-
-  static customFieldWithEvaluationBlock(block: (p1: SCNVector3, p2: SCNVector3, p3: number, p4: number, p5: number) => SCNVector3): SCNPhysicsField;
-
-  setStrength(strength: number): void;
-
-  setFalloffExponent(falloffExponent: number): void;
-
-  setMinimumDistance(minimumDistance: number): void;
-
-  isActive(): boolean;
-
-  setActive(active: boolean): void;
-
-  isExclusive(): boolean;
-
-  setExclusive(exclusive: boolean): void;
-
-  setHalfExtent(halfExtent: SCNVector3): void;
-
-  setUsesEllipsoidalExtent(usesEllipsoidalExtent: boolean): void;
-
-  setScope(scope: interop.Enum<typeof SCNPhysicsFieldScope>): void;
-
-  setOffset(offset: SCNVector3): void;
-
-  setDirection(direction: SCNVector3): void;
-
-  setCategoryBitMask(categoryBitMask: number): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SCNHitTestResult extends NSObject {
@@ -2139,6 +1937,84 @@ declare class SCNPhysicsShape extends NSObject implements NSCopying, NSSecureCod
   readonly sourceObject: interop.Object;
 
   readonly transforms: NSArray;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SCNPhysicsField extends NSObject implements NSCopying, NSSecureCoding {
+  strength: number;
+
+  falloffExponent: number;
+
+  minimumDistance: number;
+
+  active: boolean;
+
+  exclusive: boolean;
+
+  halfExtent: SCNVector3;
+
+  usesEllipsoidalExtent: boolean;
+
+  scope: interop.Enum<typeof SCNPhysicsFieldScope>;
+
+  offset: SCNVector3;
+
+  direction: SCNVector3;
+
+  categoryBitMask: number;
+
+  static dragField(): SCNPhysicsField;
+
+  static vortexField(): SCNPhysicsField;
+
+  static radialGravityField(): SCNPhysicsField;
+
+  static linearGravityField(): SCNPhysicsField;
+
+  static noiseFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SCNPhysicsField;
+
+  static turbulenceFieldWithSmoothnessAnimationSpeed(smoothness: number, speed: number): SCNPhysicsField;
+
+  static springField(): SCNPhysicsField;
+
+  static electricField(): SCNPhysicsField;
+
+  static magneticField(): SCNPhysicsField;
+
+  static customFieldWithEvaluationBlock(block: (p1: SCNVector3, p2: SCNVector3, p3: number, p4: number, p5: number) => SCNVector3): SCNPhysicsField;
+
+  setStrength(strength: number): void;
+
+  setFalloffExponent(falloffExponent: number): void;
+
+  setMinimumDistance(minimumDistance: number): void;
+
+  isActive(): boolean;
+
+  setActive(active: boolean): void;
+
+  isExclusive(): boolean;
+
+  setExclusive(exclusive: boolean): void;
+
+  setHalfExtent(halfExtent: SCNVector3): void;
+
+  setUsesEllipsoidalExtent(usesEllipsoidalExtent: boolean): void;
+
+  setScope(scope: interop.Enum<typeof SCNPhysicsFieldScope>): void;
+
+  setOffset(offset: SCNVector3): void;
+
+  setDirection(direction: SCNVector3): void;
+
+  setCategoryBitMask(categoryBitMask: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -2997,34 +2873,6 @@ declare class SCNCylinder extends SCNGeometry {
   setHeightSegmentCount(heightSegmentCount: number): void;
 }
 
-declare class SCNPyramid extends SCNGeometry {
-  static pyramidWithWidthHeightLength<This extends abstract new (...args: any) => any>(this: This, width: number, height: number, length: number): InstanceType<This>;
-
-  width: number;
-
-  height: number;
-
-  length: number;
-
-  widthSegmentCount: number;
-
-  heightSegmentCount: number;
-
-  lengthSegmentCount: number;
-
-  setWidth(width: number): void;
-
-  setHeight(height: number): void;
-
-  setLength(length: number): void;
-
-  setWidthSegmentCount(widthSegmentCount: number): void;
-
-  setHeightSegmentCount(heightSegmentCount: number): void;
-
-  setLengthSegmentCount(lengthSegmentCount: number): void;
-}
-
 declare class SCNBox extends SCNGeometry {
   static boxWithWidthHeightLengthChamferRadius<This extends abstract new (...args: any) => any>(this: This, width: number, height: number, length: number, chamferRadius: number): InstanceType<This>;
 
@@ -3346,30 +3194,82 @@ declare class SCNAction extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SCNSceneSource extends NSObject {
-  static sceneSourceWithURLOptions<This extends abstract new (...args: any) => any>(this: This, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+declare class SCNScene extends NSObject implements NSSecureCoding {
+  static scene<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
-  static sceneSourceWithDataOptions<This extends abstract new (...args: any) => any>(this: This, data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+  readonly rootNode: SCNNode;
 
-  initWithURLOptions(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  readonly physicsWorld: SCNPhysicsWorld;
 
-  initWithDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  attributeForKey(key: string): interop.Object;
 
-  readonly url: NSURL;
+  setAttributeForKey(attribute: interop.Object | null, key: string): void;
 
-  readonly data: NSData;
+  readonly background: SCNMaterialProperty;
 
-  sceneWithOptionsStatusHandler(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, statusHandler: (p1: number, p2: interop.Enum<typeof SCNSceneSourceStatus>, p3: NSError, p4: interop.PointerConvertible) => void | null): SCNScene;
+  readonly lightingEnvironment: SCNMaterialProperty;
 
-  sceneWithOptionsError(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): SCNScene;
+  static sceneNamed<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
 
-  propertyForKey(key: string): interop.Object;
+  static sceneNamedInDirectoryOptions<This extends abstract new (...args: any) => any>(this: This, name: string, directory: string | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
 
-  entryWithIdentifierWithClass(uid: string, entryClass: interop.Object): interop.Object;
+  static sceneWithURLOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
-  identifiersOfEntriesWithClass(entryClass: interop.Object): NSArray;
+  writeToURLOptionsDelegateProgressHandler(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, delegate: SCNSceneExportDelegate | null, progressHandler: (p1: number, p2: NSError, p3: interop.PointerConvertible) => void | null): boolean;
 
-  entriesPassingTest(predicate: (p1: interop.Object, p2: string, p3: interop.PointerConvertible) => boolean): NSArray;
+  fogStartDistance: number;
+
+  fogEndDistance: number;
+
+  fogDensityExponent: number;
+
+  fogColor: interop.Object;
+
+  wantsScreenSpaceReflection: boolean;
+
+  screenSpaceReflectionSampleCount: number;
+
+  screenSpaceReflectionMaximumDistance: number;
+
+  screenSpaceReflectionStride: number;
+
+  paused: boolean;
+
+  setFogStartDistance(fogStartDistance: number): void;
+
+  setFogEndDistance(fogEndDistance: number): void;
+
+  setFogDensityExponent(fogDensityExponent: number): void;
+
+  setFogColor(fogColor: interop.Object): void;
+
+  setWantsScreenSpaceReflection(wantsScreenSpaceReflection: boolean): void;
+
+  setScreenSpaceReflectionSampleCount(screenSpaceReflectionSampleCount: number): void;
+
+  setScreenSpaceReflectionMaximumDistance(screenSpaceReflectionMaximumDistance: number): void;
+
+  setScreenSpaceReflectionStride(screenSpaceReflectionStride: number): void;
+
+  isPaused(): boolean;
+
+  setPaused(paused: boolean): void;
+
+  addParticleSystemWithTransform(system: SCNParticleSystem, transform: SCNMatrix4): void;
+
+  removeAllParticleSystems(): void;
+
+  removeParticleSystem(system: SCNParticleSystem): void;
+
+  readonly particleSystems: NSArray;
+
+  static sceneWithMDLAsset<This extends abstract new (...args: any) => any>(this: This, mdlAsset: MDLAsset): InstanceType<This>;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SCNView extends UIView implements SCNSceneRenderer, SCNTechniqueSupport {
@@ -3451,7 +3351,7 @@ declare class SCNView extends UIView implements SCNSceneRenderer, SCNTechniqueSu
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Object;
+  readonly workingColorSpace: interop.Pointer;
 
   readonly context: interop.Pointer;
 
@@ -3909,6 +3809,30 @@ declare class SCNBillboardConstraint extends SCNConstraint {
   setFreeAxes(freeAxes: interop.Enum<typeof SCNBillboardAxis>): void;
 }
 
+declare class SCNShape extends SCNGeometry {
+  static shapeWithPathExtrusionDepth<This extends abstract new (...args: any) => any>(this: This, path: UIBezierPath | null, extrusionDepth: number): InstanceType<This>;
+
+  path: UIBezierPath;
+
+  extrusionDepth: number;
+
+  chamferMode: interop.Enum<typeof SCNChamferMode>;
+
+  chamferRadius: number;
+
+  chamferProfile: UIBezierPath;
+
+  setPath(path: UIBezierPath | null): void;
+
+  setExtrusionDepth(extrusionDepth: number): void;
+
+  setChamferMode(chamferMode: interop.Enum<typeof SCNChamferMode>): void;
+
+  setChamferRadius(chamferRadius: number): void;
+
+  setChamferProfile(chamferProfile: UIBezierPath | null): void;
+}
+
 declare class SCNMaterialProperty extends NSObject implements SCNAnimatable, NSSecureCoding {
   static materialPropertyWithContents<This extends abstract new (...args: any) => any>(this: This, contents: interop.Object): InstanceType<This>;
 
@@ -4061,22 +3985,70 @@ declare class SCNAccelerationConstraint extends SCNConstraint {
   setDamping(damping: number): void;
 }
 
-declare class SCNSphere extends SCNGeometry {
-  static sphereWithRadius<This extends abstract new (...args: any) => any>(this: This, radius: number): InstanceType<This>;
+declare class SCNPhysicsVehicleWheel extends NSObject implements NSCopying, NSSecureCoding {
+  static wheelWithNode<This extends abstract new (...args: any) => any>(this: This, node: SCNNode): InstanceType<This>;
+
+  readonly node: SCNNode;
+
+  suspensionStiffness: number;
+
+  suspensionCompression: number;
+
+  suspensionDamping: number;
+
+  maximumSuspensionTravel: number;
+
+  frictionSlip: number;
+
+  maximumSuspensionForce: number;
+
+  connectionPosition: SCNVector3;
+
+  steeringAxis: SCNVector3;
+
+  axle: SCNVector3;
 
   radius: number;
 
-  geodesic: boolean;
+  suspensionRestLength: number;
 
-  segmentCount: number;
+  setSuspensionStiffness(suspensionStiffness: number): void;
+
+  setSuspensionCompression(suspensionCompression: number): void;
+
+  setSuspensionDamping(suspensionDamping: number): void;
+
+  setMaximumSuspensionTravel(maximumSuspensionTravel: number): void;
+
+  setFrictionSlip(frictionSlip: number): void;
+
+  setMaximumSuspensionForce(maximumSuspensionForce: number): void;
+
+  setConnectionPosition(connectionPosition: SCNVector3): void;
+
+  setSteeringAxis(steeringAxis: SCNVector3): void;
+
+  setAxle(axle: SCNVector3): void;
 
   setRadius(radius: number): void;
 
-  isGeodesic(): boolean;
+  setSuspensionRestLength(suspensionRestLength: number): void;
 
-  setGeodesic(geodesic: boolean): void;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
-  setSegmentCount(segmentCount: number): void;
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SCNTransformConstraint extends SCNConstraint {
+  static transformConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNMatrix4) => SCNMatrix4): InstanceType<This>;
+
+  static positionConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector3) => SCNVector3): InstanceType<This>;
+
+  static orientationConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector4) => SCNVector4): InstanceType<This>;
 }
 
 declare class SCNNode extends NSObject implements NSCopying, NSSecureCoding, SCNAnimatable, SCNActionable, SCNBoundingVolume {
@@ -4527,6 +4499,22 @@ declare class SCNPhysicsContact extends NSObject {
   readonly sweepTestFraction: number;
 }
 
+declare class SCNPhysicsVehicle extends SCNPhysicsBehavior {
+  static vehicleWithChassisBodyWheels<This extends abstract new (...args: any) => any>(this: This, chassisBody: SCNPhysicsBody, wheels: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  readonly speedInKilometersPerHour: number;
+
+  readonly wheels: NSArray;
+
+  readonly chassisBody: SCNPhysicsBody;
+
+  applyEngineForceForWheelAtIndex(value: number, index: number): void;
+
+  setSteeringAngleForWheelAtIndex(value: number, index: number): void;
+
+  applyBrakingForceForWheelAtIndex(value: number, index: number): void;
+}
+
 declare class SCNPhysicsConeTwistJoint extends SCNPhysicsBehavior {
   static jointWithBodyAFrameABodyBFrameB<This extends abstract new (...args: any) => any>(this: This, bodyA: SCNPhysicsBody, frameA: SCNMatrix4, bodyB: SCNPhysicsBody, frameB: SCNMatrix4): InstanceType<This>;
 
@@ -4555,6 +4543,40 @@ declare class SCNPhysicsConeTwistJoint extends SCNPhysicsBehavior {
   setMaximumAngularLimit2(maximumAngularLimit2: number): void;
 
   setMaximumTwistAngle(maximumTwistAngle: number): void;
+}
+
+declare class SCNIKConstraint extends SCNConstraint {
+  initWithChainRootNode(chainRootNode: SCNNode): this;
+
+  static inverseKinematicsConstraintWithChainRootNode<This extends abstract new (...args: any) => any>(this: This, chainRootNode: SCNNode): InstanceType<This>;
+
+  readonly chainRootNode: SCNNode;
+
+  targetPosition: SCNVector3;
+
+  setMaxAllowedRotationAngleForJoint(angle: number, node: SCNNode): void;
+
+  maxAllowedRotationAngleForJoint(node: SCNNode): number;
+
+  setTargetPosition(targetPosition: SCNVector3): void;
+}
+
+declare class SCNSphere extends SCNGeometry {
+  static sphereWithRadius<This extends abstract new (...args: any) => any>(this: This, radius: number): InstanceType<This>;
+
+  radius: number;
+
+  geodesic: boolean;
+
+  segmentCount: number;
+
+  setRadius(radius: number): void;
+
+  isGeodesic(): boolean;
+
+  setGeodesic(geodesic: boolean): void;
+
+  setSegmentCount(segmentCount: number): void;
 }
 
 declare class SCNLookAtConstraint extends SCNConstraint {
@@ -4646,7 +4668,7 @@ declare class SCNRenderer extends NSObject implements SCNSceneRenderer, SCNTechn
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Object;
+  readonly workingColorSpace: interop.Pointer;
 
   readonly context: interop.Pointer;
 
@@ -5068,78 +5090,32 @@ declare class SCNLight extends NSObject implements SCNAnimatable, NSCopying, NSS
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SCNIKConstraint extends SCNConstraint {
-  initWithChainRootNode(chainRootNode: SCNNode): this;
+declare class SCNPyramid extends SCNGeometry {
+  static pyramidWithWidthHeightLength<This extends abstract new (...args: any) => any>(this: This, width: number, height: number, length: number): InstanceType<This>;
 
-  static inverseKinematicsConstraintWithChainRootNode<This extends abstract new (...args: any) => any>(this: This, chainRootNode: SCNNode): InstanceType<This>;
+  width: number;
 
-  readonly chainRootNode: SCNNode;
+  height: number;
 
-  targetPosition: SCNVector3;
+  length: number;
 
-  setMaxAllowedRotationAngleForJoint(angle: number, node: SCNNode): void;
+  widthSegmentCount: number;
 
-  maxAllowedRotationAngleForJoint(node: SCNNode): number;
+  heightSegmentCount: number;
 
-  setTargetPosition(targetPosition: SCNVector3): void;
-}
+  lengthSegmentCount: number;
 
-declare class SCNPhysicsVehicleWheel extends NSObject implements NSCopying, NSSecureCoding {
-  static wheelWithNode<This extends abstract new (...args: any) => any>(this: This, node: SCNNode): InstanceType<This>;
+  setWidth(width: number): void;
 
-  readonly node: SCNNode;
+  setHeight(height: number): void;
 
-  suspensionStiffness: number;
+  setLength(length: number): void;
 
-  suspensionCompression: number;
+  setWidthSegmentCount(widthSegmentCount: number): void;
 
-  suspensionDamping: number;
+  setHeightSegmentCount(heightSegmentCount: number): void;
 
-  maximumSuspensionTravel: number;
-
-  frictionSlip: number;
-
-  maximumSuspensionForce: number;
-
-  connectionPosition: SCNVector3;
-
-  steeringAxis: SCNVector3;
-
-  axle: SCNVector3;
-
-  radius: number;
-
-  suspensionRestLength: number;
-
-  setSuspensionStiffness(suspensionStiffness: number): void;
-
-  setSuspensionCompression(suspensionCompression: number): void;
-
-  setSuspensionDamping(suspensionDamping: number): void;
-
-  setMaximumSuspensionTravel(maximumSuspensionTravel: number): void;
-
-  setFrictionSlip(frictionSlip: number): void;
-
-  setMaximumSuspensionForce(maximumSuspensionForce: number): void;
-
-  setConnectionPosition(connectionPosition: SCNVector3): void;
-
-  setSteeringAxis(steeringAxis: SCNVector3): void;
-
-  setAxle(axle: SCNVector3): void;
-
-  setRadius(radius: number): void;
-
-  setSuspensionRestLength(suspensionRestLength: number): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  setLengthSegmentCount(lengthSegmentCount: number): void;
 }
 
 declare class SCNMorpher extends NSObject implements SCNAnimatable, NSSecureCoding {
@@ -5242,5 +5218,29 @@ declare class SCNMorpher extends NSObject implements SCNAnimatable, NSSecureCodi
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class SCNCapsule extends SCNGeometry {
+  static capsuleWithCapRadiusHeight<This extends abstract new (...args: any) => any>(this: This, capRadius: number, height: number): InstanceType<This>;
+
+  capRadius: number;
+
+  height: number;
+
+  radialSegmentCount: number;
+
+  heightSegmentCount: number;
+
+  capSegmentCount: number;
+
+  setCapRadius(capRadius: number): void;
+
+  setHeight(height: number): void;
+
+  setRadialSegmentCount(radialSegmentCount: number): void;
+
+  setHeightSegmentCount(heightSegmentCount: number): void;
+
+  setCapSegmentCount(capSegmentCount: number): void;
 }
 

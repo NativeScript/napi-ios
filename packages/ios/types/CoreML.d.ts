@@ -5,17 +5,17 @@ declare const MLModelErrorDomain: string;
 
 declare const MLModelCreatorDefinedKey: string;
 
-declare const MLModelLicenseKey: string;
-
 declare const MLModelAuthorKey: string;
 
 declare const MLModelVersionStringKey: string;
+
+declare const MLModelDescriptionKey: string;
 
 declare const MLFeatureValueImageOptionCropAndScale: string;
 
 declare const MLModelCollectionDidChangeNotification: string;
 
-declare const MLModelDescriptionKey: string;
+declare const MLModelLicenseKey: string;
 
 declare const MLFeatureValueImageOptionCropRect: string;
 
@@ -56,6 +56,14 @@ declare const MLImageSizeConstraintType: {
   Range: 3,
 };
 
+declare const MLTaskState: {
+  Suspended: 1,
+  Running: 2,
+  Cancelling: 3,
+  Completed: 4,
+  Failed: 5,
+};
+
 declare const MLFeatureType: {
   Invalid: 0,
   Int64: 1,
@@ -66,14 +74,6 @@ declare const MLFeatureType: {
   Dictionary: 6,
   Sequence: 7,
   State: 8,
-};
-
-declare const MLTaskState: {
-  Suspended: 1,
-  Running: 2,
-  Cancelling: 3,
-  Completed: 4,
-  Failed: 5,
 };
 
 declare const MLComputeUnits: {
@@ -95,6 +95,7 @@ declare const MLMultiArrayDataType: {
   Float16: 65552,
   Float: 65568,
   Int32: 131104,
+  Int8: 131080,
 };
 
 declare function MLAllComputeDevices(): NSArray;
@@ -186,29 +187,6 @@ declare class MLModelStructureProgramFunction extends NSObject {
   readonly block: MLModelStructureProgramBlock;
 }
 
-declare class MLPredictionOptions extends NSObject {
-  usesCPUOnly: boolean;
-
-  get outputBackings(): NSDictionary;
-  set outputBackings(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  setUsesCPUOnly(usesCPUOnly: boolean): void;
-
-  setOutputBackings(outputBackings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-}
-
-declare class MLModelStructure extends NSObject {
-  static loadContentsOfURLCompletionHandler(url: NSURL, handler: (p1: MLModelStructure, p2: NSError) => void | null): void;
-
-  static loadModelAssetCompletionHandler(asset: MLModelAsset, handler: (p1: MLModelStructure, p2: NSError) => void | null): void;
-
-  readonly neuralNetwork: MLModelStructureNeuralNetwork;
-
-  readonly program: MLModelStructureProgram;
-
-  readonly pipeline: MLModelStructurePipeline;
-}
-
 declare class MLComputePlanCost extends NSObject {
   readonly weight: number;
 }
@@ -241,6 +219,18 @@ declare class MLModelStructureProgramBinding extends NSObject {
 
 declare class MLModelStructureProgram extends NSObject {
   readonly functions: NSDictionary;
+}
+
+declare class MLModelStructure extends NSObject {
+  static loadContentsOfURLCompletionHandler(url: NSURL, handler: (p1: MLModelStructure, p2: NSError) => void | null): void;
+
+  static loadModelAssetCompletionHandler(asset: MLModelAsset, handler: (p1: MLModelStructure, p2: NSError) => void | null): void;
+
+  readonly neuralNetwork: MLModelStructureNeuralNetwork;
+
+  readonly program: MLModelStructureProgram;
+
+  readonly pipeline: MLModelStructurePipeline;
 }
 
 declare class MLGPUComputeDevice extends NSObject implements MLComputeDeviceProtocol {
@@ -309,18 +299,6 @@ declare class MLUpdateContext extends NSObject {
   readonly metrics: NSDictionary;
 
   readonly parameters: NSDictionary;
-}
-
-declare class MLUpdateTask extends MLTask {
-  static updateTaskForModelAtURLTrainingDataConfigurationCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
-
-  static updateTaskForModelAtURLTrainingDataCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
-
-  static updateTaskForModelAtURLTrainingDataConfigurationProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
-
-  static updateTaskForModelAtURLTrainingDataProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
-
-  resumeWithParameters(updateParameters: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 }
 
 declare class MLTask extends NSObject {
@@ -540,7 +518,7 @@ declare class MLMultiArray extends NSObject implements NSSecureCoding {
 
   readonly count: number;
 
-  readonly pixelBuffer: interop.Object;
+  readonly pixelBuffer: interop.Pointer;
 
   initWithShapeDataTypeError(shape: NSArray<interop.Object> | Array<interop.Object>, dataType: interop.Enum<typeof MLMultiArrayDataType>, error: interop.PointerConvertible): this;
 
@@ -548,7 +526,7 @@ declare class MLMultiArray extends NSObject implements NSSecureCoding {
 
   initWithDataPointerShapeDataTypeStridesDeallocatorError(dataPointer: interop.PointerConvertible, shape: NSArray<interop.Object> | Array<interop.Object>, dataType: interop.Enum<typeof MLMultiArrayDataType>, strides: NSArray<interop.Object> | Array<interop.Object>, deallocator: (p1: interop.PointerConvertible) => void | null, error: interop.PointerConvertible): this;
 
-  initWithPixelBufferShape(pixelBuffer: interop.Object, shape: NSArray<interop.Object> | Array<interop.Object>): this;
+  initWithPixelBufferShape(pixelBuffer: interop.PointerConvertible, shape: NSArray<interop.Object> | Array<interop.Object>): this;
 
   getBytesWithHandler(handler: (p1: interop.PointerConvertible, p2: number) => void): void;
 
@@ -591,6 +569,81 @@ declare class MLMetricKey extends MLKey {
   static readonly miniBatchIndex: MLMetricKey;
 }
 
+declare class MLPredictionOptions extends NSObject {
+  usesCPUOnly: boolean;
+
+  get outputBackings(): NSDictionary;
+  set outputBackings(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  setUsesCPUOnly(usesCPUOnly: boolean): void;
+
+  setOutputBackings(outputBackings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+}
+
+declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCoding {
+  readonly type: interop.Enum<typeof MLFeatureType>;
+
+  readonly undefined: boolean;
+
+  readonly int64Value: number;
+
+  readonly doubleValue: number;
+
+  readonly stringValue: string;
+
+  readonly multiArrayValue: MLMultiArray;
+
+  readonly dictionaryValue: NSDictionary;
+
+  readonly imageBufferValue: interop.Pointer;
+
+  readonly sequenceValue: MLSequence;
+
+  static featureValueWithInt64<This extends abstract new (...args: any) => any>(this: This, value: number): InstanceType<This>;
+
+  static featureValueWithDouble<This extends abstract new (...args: any) => any>(this: This, value: number): InstanceType<This>;
+
+  static featureValueWithString<This extends abstract new (...args: any) => any>(this: This, value: string): InstanceType<This>;
+
+  static featureValueWithMultiArray<This extends abstract new (...args: any) => any>(this: This, value: MLMultiArray): InstanceType<This>;
+
+  static featureValueWithPixelBuffer<This extends abstract new (...args: any) => any>(this: This, value: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithSequence<This extends abstract new (...args: any) => any>(this: This, sequence: MLSequence): InstanceType<This>;
+
+  static undefinedFeatureValueWithType<This extends abstract new (...args: any) => any>(this: This, type: interop.Enum<typeof MLFeatureType>): InstanceType<This>;
+
+  static featureValueWithDictionaryError<This extends abstract new (...args: any) => any>(this: This, value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): InstanceType<This>;
+
+  isEqualToFeatureValue(value: MLFeatureValue): boolean;
+
+  isUndefined(): boolean;
+
+  static featureValueWithImageAtURLPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithImageAtURLConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithCGImagePixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithCGImageConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithImageAtURLOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithImageAtURLOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithCGImageOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  static featureValueWithCGImageOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class MLMultiArrayConstraint extends NSObject implements NSSecureCoding {
   readonly shape: NSArray;
 
@@ -605,10 +658,32 @@ declare class MLMultiArrayConstraint extends NSObject implements NSSecureCoding 
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class MLUpdateTask extends MLTask {
+  static updateTaskForModelAtURLTrainingDataConfigurationCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
+
+  static updateTaskForModelAtURLTrainingDataCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
+
+  static updateTaskForModelAtURLTrainingDataConfigurationProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
+
+  static updateTaskForModelAtURLTrainingDataProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
+
+  resumeWithParameters(updateParameters: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+}
+
 declare class MLComputePlanDeviceUsage extends NSObject {
   readonly supportedComputeDevices: NSArray;
 
   readonly preferredComputeDevice: MLComputeDeviceProtocol;
+}
+
+declare class MLModelStructureNeuralNetworkLayer extends NSObject {
+  readonly name: string;
+
+  readonly type: string;
+
+  readonly inputNames: NSArray;
+
+  readonly outputNames: NSArray;
 }
 
 declare class MLComputePlan extends NSObject {
@@ -639,80 +714,6 @@ declare class MLImageConstraint extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCoding {
-  readonly type: interop.Enum<typeof MLFeatureType>;
-
-  readonly undefined: boolean;
-
-  readonly int64Value: number;
-
-  readonly doubleValue: number;
-
-  readonly stringValue: string;
-
-  readonly multiArrayValue: MLMultiArray;
-
-  readonly dictionaryValue: NSDictionary;
-
-  readonly imageBufferValue: interop.Object;
-
-  readonly sequenceValue: MLSequence;
-
-  static featureValueWithInt64<This extends abstract new (...args: any) => any>(this: This, value: number): InstanceType<This>;
-
-  static featureValueWithDouble<This extends abstract new (...args: any) => any>(this: This, value: number): InstanceType<This>;
-
-  static featureValueWithString<This extends abstract new (...args: any) => any>(this: This, value: string): InstanceType<This>;
-
-  static featureValueWithMultiArray<This extends abstract new (...args: any) => any>(this: This, value: MLMultiArray): InstanceType<This>;
-
-  static featureValueWithPixelBuffer<This extends abstract new (...args: any) => any>(this: This, value: interop.Object): InstanceType<This>;
-
-  static featureValueWithSequence<This extends abstract new (...args: any) => any>(this: This, sequence: MLSequence): InstanceType<This>;
-
-  static undefinedFeatureValueWithType<This extends abstract new (...args: any) => any>(this: This, type: interop.Enum<typeof MLFeatureType>): InstanceType<This>;
-
-  static featureValueWithDictionaryError<This extends abstract new (...args: any) => any>(this: This, value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): InstanceType<This>;
-
-  isEqualToFeatureValue(value: MLFeatureValue): boolean;
-
-  isUndefined(): boolean;
-
-  static featureValueWithImageAtURLPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithImageAtURLConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithCGImagePixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithCGImageConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithImageAtURLOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithImageAtURLOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithCGImageOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  static featureValueWithCGImageOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MLModelStructureNeuralNetworkLayer extends NSObject {
-  readonly name: string;
-
-  readonly type: string;
-
-  readonly inputNames: NSArray;
-
-  readonly outputNames: NSArray;
 }
 
 declare class MLNeuralEngineComputeDevice extends NSObject implements MLComputeDeviceProtocol {
@@ -843,6 +844,48 @@ declare class MLImageSizeConstraint extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class MLCPUComputeDevice extends NSObject implements MLComputeDeviceProtocol {
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class MLModelCollection extends NSObject {
   readonly identifier: string;
 
@@ -909,48 +952,6 @@ declare class MLNumericConstraint extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class MLCPUComputeDevice extends NSObject implements MLComputeDeviceProtocol {
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class MLModelStructureNeuralNetwork extends NSObject {

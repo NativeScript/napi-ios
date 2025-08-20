@@ -1,12 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const NFCTagResponseUnexpectedLengthErrorKey: string;
-
-declare const NFCISO15693TagResponseErrorKey: string;
-
-declare const NFCErrorDomain: string;
-
 declare const NFCVASMode: {
   NFCVASModeURLOnly: 0,
   NFCVASModeNormal: 1,
@@ -89,31 +83,6 @@ declare const NFCPollingOption: {
   PACE: 8,
 };
 
-declare const NFCReaderError: {
-  ReaderErrorUnsupportedFeature: 1,
-  ReaderErrorSecurityViolation: 2,
-  ReaderErrorInvalidParameter: 3,
-  ReaderErrorInvalidParameterLength: 4,
-  ReaderErrorParameterOutOfBound: 5,
-  ReaderErrorRadioDisabled: 6,
-  ReaderTransceiveErrorTagConnectionLost: 100,
-  ReaderTransceiveErrorRetryExceeded: 101,
-  ReaderTransceiveErrorTagResponseError: 102,
-  ReaderTransceiveErrorSessionInvalidated: 103,
-  ReaderTransceiveErrorTagNotConnected: 104,
-  ReaderTransceiveErrorPacketTooLong: 105,
-  ReaderSessionInvalidationErrorUserCanceled: 200,
-  ReaderSessionInvalidationErrorSessionTimeout: 201,
-  ReaderSessionInvalidationErrorSessionTerminatedUnexpectedly: 202,
-  ReaderSessionInvalidationErrorSystemIsBusy: 203,
-  ReaderSessionInvalidationErrorFirstNDEFTagRead: 204,
-  TagCommandConfigurationErrorInvalidParameters: 300,
-  NdefReaderSessionErrorTagNotWritable: 400,
-  NdefReaderSessionErrorTagUpdateFailure: 401,
-  NdefReaderSessionErrorTagSizeTooSmall: 402,
-  NdefReaderSessionErrorZeroLengthMessage: 403,
-};
-
 declare const NFCISO15693ResponseFlag: {
   Error: 1,
   ResponseBufferValid: 2,
@@ -122,13 +91,6 @@ declare const NFCISO15693ResponseFlag: {
   BlockSecurityStatusBit5: 16,
   BlockSecurityStatusBit6: 32,
   WaitTimeExtension: 64,
-};
-
-declare const NFCFeliCaEncryptionId: {
-  NFCFeliCaEncryptionIdA: 79,
-  NFCFeliCaEncryptionIdAES_D: 65,
-  EncryptionIdA: 79,
-  EncryptionIdAES_D: 65,
 };
 
 declare const NFCVASErrorCode: {
@@ -148,6 +110,13 @@ declare const NFCVASErrorCode: {
   VASErrorCodeUserIntervention: 27012,
   VASErrorCodeIncorrectData: 27264,
   VASErrorCodeUnsupportedApplicationVersion: 25408,
+};
+
+declare const NFCFeliCaEncryptionId: {
+  NFCFeliCaEncryptionIdA: 79,
+  NFCFeliCaEncryptionIdAES_D: 65,
+  EncryptionIdA: 79,
+  EncryptionIdAES_D: 65,
 };
 
 declare interface NFCReaderSessionProtocol extends NSObjectProtocol {
@@ -484,6 +453,24 @@ declare class NFCTagCommandConfiguration extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class NFCVASCommandConfiguration extends NSObject implements NSCopying {
+  mode: interop.Enum<typeof NFCVASMode>;
+
+  passTypeIdentifier: string;
+
+  url: NSURL;
+
+  initWithVASModePassTypeIdentifierUrl(mode: interop.Enum<typeof NFCVASMode>, passTypeIdentifier: string, url: NSURL | null): this;
+
+  setMode(mode: interop.Enum<typeof NFCVASMode>): void;
+
+  setPassTypeIdentifier(passTypeIdentifier: string): void;
+
+  setUrl(url: NSURL): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class NFCISO7816APDU extends NSObject implements NSCopying {
   readonly instructionClass: number;
 
@@ -584,6 +571,10 @@ declare class NFCISO15693CustomCommandConfiguration extends NFCTagCommandConfigu
   setRequestParameters(requestParameters: NSData): void;
 }
 
+declare class NFCPaymentTagReaderSession extends NFCTagReaderSession {
+  initWithDelegateQueue(delegate: NFCTagReaderSessionDelegate, queue: NSObject | null): this;
+}
+
 declare class NFCISO15693ReaderSession extends NFCReaderSession {
   initWithDelegateQueue(delegate: NFCReaderSessionDelegate, queue: NSObject | null): this;
 
@@ -610,23 +601,5 @@ declare class NFCNDEFReaderSession extends NFCReaderSession {
   restartPolling(): void;
 
   connectToTagCompletionHandler(tag: NFCNDEFTag, completionHandler: (p1: NSError) => void | null): void;
-}
-
-declare class NFCVASCommandConfiguration extends NSObject implements NSCopying {
-  mode: interop.Enum<typeof NFCVASMode>;
-
-  passTypeIdentifier: string;
-
-  url: NSURL;
-
-  initWithVASModePassTypeIdentifierUrl(mode: interop.Enum<typeof NFCVASMode>, passTypeIdentifier: string, url: NSURL | null): this;
-
-  setMode(mode: interop.Enum<typeof NFCVASMode>): void;
-
-  setPassTypeIdentifier(passTypeIdentifier: string): void;
-
-  setUrl(url: NSURL): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 

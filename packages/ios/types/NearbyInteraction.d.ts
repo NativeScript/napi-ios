@@ -30,6 +30,25 @@ declare const NINearbyObjectRemovalReason: {
   PeerEnded: 1,
 };
 
+declare const NIDLTDOACoordinatesType: {
+  Geodetic: 0,
+  Relative: 1,
+};
+
+declare const NIDLTDOAMeasurementType: {
+  Poll: 0,
+  Response: 1,
+  Final: 2,
+};
+
+declare const NINearbyObjectVerticalDirectionEstimate: {
+  Unknown: 0,
+  Same: 1,
+  Above: 2,
+  Below: 3,
+  AboveOrBelow: 4,
+};
+
 declare const NIErrorCode: {
   UnsupportedPlatform: -5889,
   InvalidConfiguration: -5888,
@@ -41,14 +60,6 @@ declare const NIErrorCode: {
   AccessoryPeerDeviceUnavailable: -5882,
   IncompatiblePeerDevice: -5881,
   ActiveExtendedDistanceSessionsLimitExceeded: -5880,
-};
-
-declare const NINearbyObjectVerticalDirectionEstimate: {
-  Unknown: 0,
-  Same: 1,
-  Above: 2,
-  Below: 3,
-  AboveOrBelow: 4,
 };
 
 declare function NIAlgorithmConvergenceStatusReasonDescription(reason: string): string;
@@ -68,6 +79,8 @@ declare interface NISessionDelegate extends NSObjectProtocol {
 
   sessionDidUpdateAlgorithmConvergenceForObject?(session: NISession, convergence: NIAlgorithmConvergence, object: NINearbyObject | null): void;
 
+  sessionDidUpdateDLTDOAMeasurements?(session: NISession, measurements: NSArray<interop.Object> | Array<interop.Object>): void;
+
   sessionDidStartRunning?(session: NISession): void;
 }
 
@@ -82,6 +95,8 @@ declare interface NIDeviceCapability {
   readonly supportsCameraAssistance: boolean;
 
   readonly supportsExtendedDistanceMeasurement: boolean;
+
+  readonly supportsDLTDOAMeasurement: boolean;
 }
 
 declare class NIDeviceCapability extends NativeObject implements NIDeviceCapability {
@@ -131,6 +146,32 @@ declare class NISession extends NSObject {
   setDelegateQueue(delegateQueue: NSObject | null): void;
 }
 
+declare class NIDLTDOAMeasurement extends NSObject implements NSCopying, NSSecureCoding {
+  readonly address: number;
+
+  readonly measurementType: interop.Enum<typeof NIDLTDOAMeasurementType>;
+
+  readonly transmitTime: number;
+
+  readonly receiveTime: number;
+
+  readonly signalStrength: number;
+
+  readonly carrierFrequencyOffset: number;
+
+  readonly coordinatesType: interop.Enum<typeof NIDLTDOACoordinatesType>;
+
+  readonly coordinates: unknown /* ext vector */;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class NINearbyObject extends NSObject implements NSCopying, NSSecureCoding {
   readonly discoveryToken: NIDiscoveryToken;
 
@@ -149,6 +190,14 @@ declare class NINearbyObject extends NSObject implements NSCopying, NSSecureCodi
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class NIDLTDOAConfiguration extends NIConfiguration {
+  networkIdentifier: number;
+
+  initWithNetworkIdentifier(networkIdentifier: number): this;
+
+  setNetworkIdentifier(networkIdentifier: number): void;
 }
 
 declare class NINearbyAccessoryConfiguration extends NIConfiguration {
@@ -183,7 +232,9 @@ declare class NINearbyPeerConfiguration extends NIConfiguration {
   setExtendedDistanceMeasurementEnabled(extendedDistanceMeasurementEnabled: boolean): void;
 }
 
-declare class NIConfiguration extends NSObject implements NSCopying, NSSecureCoding {
+declare class NIDiscoveryToken extends NSObject implements NSCopying, NSSecureCoding {
+  readonly deviceCapabilities: NIDeviceCapability;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
   static readonly supportsSecureCoding: boolean;
@@ -193,9 +244,7 @@ declare class NIConfiguration extends NSObject implements NSCopying, NSSecureCod
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NIDiscoveryToken extends NSObject implements NSCopying, NSSecureCoding {
-  readonly deviceCapabilities: NIDeviceCapability;
-
+declare class NIConfiguration extends NSObject implements NSCopying, NSSecureCoding {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
   static readonly supportsSecureCoding: boolean;

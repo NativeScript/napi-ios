@@ -4,8 +4,6 @@
 
 declare const PKIdentityErrorDomain: string;
 
-declare const PKMerchantCategoryCodeNone: number;
-
 declare const PKStoredValuePassBalanceTypeLoyaltyPoints: string;
 
 declare const PKStoredValuePassBalanceTypeCash: string;
@@ -70,15 +68,13 @@ declare const PKPaymentNetworkEftpos: string;
 
 declare const PKPaymentNetworkDiscover: string;
 
+declare const PKPaymentNetworkCarteBancaires: string;
+
 declare const PKPaymentNetworkBancontact: string;
 
 declare const PKContactFieldName: string;
 
 declare const PKPaymentNetworkBancomat: string;
-
-declare const PKPaymentNetworkBarcode: string;
-
-declare const PKPaymentNetworkBankAxept: string;
 
 declare const PKPaymentErrorDomain: string;
 
@@ -92,17 +88,23 @@ declare const PKPaymentErrorContactFieldUserInfoKey: string;
 
 declare const PKEncryptionSchemeRSA_V2: string;
 
+declare const PKPaymentNetworkBarcode: string;
+
 declare const PKContactFieldPostalAddress: string;
+
+declare const PKPaymentNetworkCarteBancaire: string;
 
 declare const PKPassLibraryRemotePaymentPassesDidChangeNotification: string;
 
-declare const PKPaymentNetworkCarteBancaires: string;
+declare const PKPaymentNetworkCartesBancaires: string;
 
 declare const PKPassLibraryReplacementPassesUserInfoKey: string;
 
 declare const PKPaymentNetworkChinaUnionPay: string;
 
 declare const PKDisbursementErrorContactFieldUserInfoKey: string;
+
+declare const PKPaymentNetworkElectron: string;
 
 declare const PKPaymentNetworkNAPAS: string;
 
@@ -112,39 +114,27 @@ declare const PKPaymentNetworkJaywan: string;
 
 declare const PKPaymentNetworkWaon: string;
 
-declare const PKPaymentNetworkElectron: string;
+declare const PKPaymentNetworkMyDebit: string;
 
-declare const PKPaymentNetworkCartesBancaires: string;
+declare const PKPaymentNetworkBankAxept: string;
 
-declare const PKContactFieldPhoneticName: string;
+declare const PKMerchantCategoryCodeNone: number;
 
 declare const PKEncryptionSchemeECC_V2: string;
 
 declare const PKShareSecureElementPassErrorDomain: string;
 
+declare const PKContactFieldPhoneticName: string;
+
 declare const PKContactFieldPhoneNumber: string;
 
 declare const PKPassKitErrorDomain: string;
-
-declare const PKPaymentNetworkCarteBancaire: string;
 
 declare const PKPayLaterDisplayStyle: {
   Standard: 0,
   Badge: 1,
   Checkout: 2,
   Price: 3,
-};
-
-declare const PKIdentityError: {
-  Unknown: 0,
-  NotSupported: 1,
-  Cancelled: 2,
-  NetworkUnavailable: 3,
-  NoElementsRequested: 4,
-  RequestAlreadyInProgress: 5,
-  InvalidNonce: 6,
-  InvalidElement: 7,
-  RegionNotSupported: 8,
 };
 
 declare const PKVehicleConnectionErrorCode: {
@@ -246,6 +236,22 @@ declare const PKAutomaticPassPresentationSuppressionResult: {
   Success: 4,
 };
 
+declare const PKIdentityError: {
+  Unknown: 0,
+  NotSupported: 1,
+  Cancelled: 2,
+  NetworkUnavailable: 3,
+  NoElementsRequested: 4,
+  RequestAlreadyInProgress: 5,
+  InvalidNonce: 6,
+  InvalidElement: 7,
+  RegionNotSupported: 8,
+};
+
+declare const PKPassLibraryCapability: {
+  PKPassLibraryCapabilityBackgroundAddPasses: 0,
+};
+
 declare const PKBarcodeEventConfigurationDataType: {
   Unknown: 0,
   SigningKeyMaterial: 1,
@@ -291,6 +297,11 @@ declare const PKIdentityButtonLabel: {
   Verify: 1,
   VerifyAge: 2,
   Continue: 3,
+};
+
+declare const PKShareSecureElementPassErrorCode: {
+  Unknown: 0,
+  Setup: 1,
 };
 
 declare const PKMerchantCapability: {
@@ -344,14 +355,22 @@ declare const PKPassLibraryAddPassesStatus: {
   DidCancelAdd: 2,
 };
 
+declare const PKPassLibraryAuthorizationStatus: {
+  NotDetermined: -1,
+  Denied: 0,
+  Authorized: 1,
+  Restricted: 2,
+};
+
 declare const PKPayLaterAction: {
   LearnMore: 0,
   Calculator: 1,
 };
 
-declare const PKShareSecureElementPassErrorCode: {
-  Unknown: 0,
-  Setup: 1,
+declare const PKAddIdentityDocumentType: {
+  IDCard: 0,
+  MDL: 1,
+  PhotoID: 2,
 };
 
 declare const PKDisbursementErrorCode: {
@@ -475,7 +494,7 @@ declare interface PKPaymentAuthorizationViewControllerDelegate extends NSObjectP
 
   paymentAuthorizationViewControllerDidSelectShippingMethodCompletion?(controller: PKPaymentAuthorizationViewController, shippingMethod: PKShippingMethod, completion: (p1: interop.Enum<typeof PKPaymentAuthorizationStatus>, p2: NSArray<interop.Object> | Array<interop.Object>) => void): void;
 
-  paymentAuthorizationViewControllerDidSelectShippingAddressCompletion?(controller: PKPaymentAuthorizationViewController, address: interop.Object, completion: (p1: interop.Enum<typeof PKPaymentAuthorizationStatus>, p2: NSArray<interop.Object> | Array<interop.Object>, p3: NSArray<interop.Object> | Array<interop.Object>) => void): void;
+  paymentAuthorizationViewControllerDidSelectShippingAddressCompletion?(controller: PKPaymentAuthorizationViewController, address: interop.PointerConvertible, completion: (p1: interop.Enum<typeof PKPaymentAuthorizationStatus>, p2: NSArray<interop.Object> | Array<interop.Object>, p3: NSArray<interop.Object> | Array<interop.Object>) => void): void;
 
   paymentAuthorizationViewControllerDidSelectShippingContactCompletion?(controller: PKPaymentAuthorizationViewController, contact: PKContact, completion: (p1: interop.Enum<typeof PKPaymentAuthorizationStatus>, p2: NSArray<interop.Object> | Array<interop.Object>, p3: NSArray<interop.Object> | Array<interop.Object>) => void): void;
 
@@ -530,6 +549,12 @@ declare interface PKAddPassesViewControllerDelegate extends NSObjectProtocol {
 declare class PKAddPassesViewControllerDelegate extends NativeObject implements PKAddPassesViewControllerDelegate {
 }
 
+declare class PKPassRelevantDate extends NSObject {
+  readonly interval: NSDateInterval;
+
+  readonly date: NSDate;
+}
+
 declare class PKIdentityRequest extends NSObject {
   descriptor: PKIdentityDocumentDescriptor;
 
@@ -563,6 +588,18 @@ declare class PKIdentityElement extends NSObject implements NSCopying {
 
   static readonly addressElement: PKIdentityElement;
 
+  static readonly heightElement: PKIdentityElement;
+
+  static readonly weightElement: PKIdentityElement;
+
+  static readonly eyeColorElement: PKIdentityElement;
+
+  static readonly hairColorElement: PKIdentityElement;
+
+  static readonly organDonorStatusElement: PKIdentityElement;
+
+  static readonly veteranStatusElement: PKIdentityElement;
+
   static readonly issuingAuthorityElement: PKIdentityElement;
 
   static readonly documentIssueDateElement: PKIdentityElement;
@@ -584,6 +621,106 @@ declare class PKIdentityElement extends NSObject implements NSCopying {
   static ageThresholdElementWithAge<This extends abstract new (...args: any) => any>(this: This, age: number): InstanceType<This>;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PKIdentityAnyOfDescriptor extends NSObject implements PKIdentityDocumentDescriptor {
+  readonly descriptors: NSArray;
+
+  initWithDescriptors(descriptors: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly elements: NSArray;
+
+  intentToStoreForElement(element: PKIdentityElement): PKIdentityIntentToStore;
+
+  addElementsWithIntentToStore(elements: NSArray<interop.Object> | Array<interop.Object>, intentToStore: PKIdentityIntentToStore): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+declare class PKIdentityPhotoIDDescriptor extends NSObject implements PKIdentityDocumentDescriptor {
+  readonly elements: NSArray;
+
+  intentToStoreForElement(element: PKIdentityElement): PKIdentityIntentToStore;
+
+  addElementsWithIntentToStore(elements: NSArray<interop.Object> | Array<interop.Object>, intentToStore: PKIdentityIntentToStore): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class PKIdentityDriversLicenseDescriptor extends NSObject implements PKIdentityDocumentDescriptor {
@@ -659,7 +796,7 @@ declare class PKIssuerProvisioningExtensionPassEntry extends NSObject {
 
   readonly title: string;
 
-  readonly art: interop.Object;
+  readonly art: interop.Pointer;
 }
 
 declare class PKIssuerProvisioningExtensionHandler extends NSObject {
@@ -681,7 +818,7 @@ declare class PKAddIdentityDocumentConfiguration extends PKAddSecureElementPassC
 declare class PKJapanIndividualNumberCardMetadata extends PKIdentityDocumentMetadata {
   initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardTemplateIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, preview: PKAddPassMetadataPreview): this;
 
-  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardConfigurationIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, preview: PKAddPassMetadataPreview): this;
+  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardConfigurationIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, cardConfigurationIdentifier: string, preview: PKAddPassMetadataPreview): this;
 
   authenticationPassword: string;
 
@@ -696,10 +833,16 @@ declare class PKJapanIndividualNumberCardMetadata extends PKIdentityDocumentMeta
   setPreview(preview: PKAddPassMetadataPreview): void;
 }
 
-declare class PKShareablePassMetadata extends NSObject {
-  initWithProvisioningCredentialIdentifierCardConfigurationIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescription(credentialIdentifier: string, cardConfigurationIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.Object, ownerDisplayName: string, localizedDescription: string): this;
+declare class PKAddIdentityDocumentMetadata extends PKIdentityDocumentMetadata {
+  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardTemplateIdentifierIssuingCountryCodeDocumentTypePreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, issuingCountryCode: string, documentType: interop.Enum<typeof PKAddIdentityDocumentType>, preview: PKAddPassMetadataPreview): this;
 
-  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescriptionAccountHashTemplateIdentifierRelyingPartyIdentifierRequiresUnifiedAccessCapableDevice(credentialIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.Object, ownerDisplayName: string, localizedDescription: string, accountHash: string, templateIdentifier: string, relyingPartyIdentifier: string, requiresUnifiedAccessCapableDevice: boolean): this;
+  readonly preview: PKAddPassMetadataPreview;
+}
+
+declare class PKShareablePassMetadata extends NSObject {
+  initWithProvisioningCredentialIdentifierCardConfigurationIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescription(credentialIdentifier: string, cardConfigurationIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.PointerConvertible, ownerDisplayName: string, localizedDescription: string): this;
+
+  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescriptionAccountHashTemplateIdentifierRelyingPartyIdentifierRequiresUnifiedAccessCapableDevice(credentialIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.PointerConvertible, ownerDisplayName: string, localizedDescription: string, accountHash: string, templateIdentifier: string, relyingPartyIdentifier: string, requiresUnifiedAccessCapableDevice: boolean): this;
 
   initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardTemplateIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, preview: PKShareablePassMetadataPreview): this;
 
@@ -721,7 +864,7 @@ declare class PKShareablePassMetadata extends NSObject {
 
   readonly preview: PKShareablePassMetadataPreview;
 
-  readonly passThumbnailImage: interop.Object;
+  readonly passThumbnailImage: interop.Pointer;
 
   readonly localizedDescription: string;
 
@@ -767,24 +910,16 @@ declare class PKAddSecureElementPassConfiguration extends NSObject {
 }
 
 declare class PKAddPassMetadataPreview extends NSObject {
-  initWithPassThumbnailLocalizedDescription(passThumbnail: interop.Object, description: string): this;
+  initWithPassThumbnailLocalizedDescription(passThumbnail: interop.PointerConvertible, description: string): this;
 
-  static previewWithPassThumbnailLocalizedDescription<This extends abstract new (...args: any) => any>(this: This, passThumbnail: interop.Object, description: string): InstanceType<This>;
+  static previewWithPassThumbnailLocalizedDescription<This extends abstract new (...args: any) => any>(this: This, passThumbnail: interop.PointerConvertible, description: string): InstanceType<This>;
 
-  readonly passThumbnailImage: interop.Object;
+  readonly passThumbnailImage: interop.Pointer;
 
   readonly localizedDescription: string;
 }
 
 declare class PKPaymentInformationEventExtension extends NSObject {
-}
-
-declare class PKBarcodeEventSignatureResponse extends NSObject {
-  initWithSignedData(signedData: NSData): this;
-
-  signedData: NSData;
-
-  setSignedData(signedData: NSData): void;
 }
 
 declare class PKBarcodeEventSignatureRequest extends NSObject {
@@ -821,6 +956,16 @@ declare class PKBarcodeEventMetadataRequest extends NSObject {
   readonly deviceAccountIdentifier: string;
 
   readonly lastUsedBarcodeIdentifier: string;
+}
+
+declare class PKAddPaymentPassViewController extends UIViewController {
+  static canAddPaymentPass(): boolean;
+
+  initWithRequestConfigurationDelegate(configuration: PKAddPaymentPassRequestConfiguration, delegate: PKAddPaymentPassViewControllerDelegate | null): this;
+
+  delegate: PKAddPaymentPassViewControllerDelegate;
+
+  setDelegate(delegate: PKAddPaymentPassViewControllerDelegate | null): void;
 }
 
 declare class PKAddPassesViewController extends UIViewController {
@@ -914,11 +1059,11 @@ declare class PKPayment extends NSObject {
 
   readonly billingContact: PKContact;
 
-  readonly billingAddress: interop.Object;
+  readonly billingAddress: interop.Pointer;
 
   readonly shippingContact: PKContact;
 
-  readonly shippingAddress: interop.Object;
+  readonly shippingAddress: interop.Pointer;
 
   readonly shippingMethod: PKShippingMethod;
 }
@@ -1013,6 +1158,8 @@ declare class PKPaymentRequest extends NSObject {
 
   merchantIdentifier: string;
 
+  attributionIdentifier: string;
+
   countryCode: string;
 
   get supportedNetworks(): NSArray;
@@ -1054,9 +1201,11 @@ declare class PKPaymentRequest extends NSObject {
 
   supportedCountries: NSSet;
 
-  shippingAddress: interop.Object;
+  get shippingAddress(): interop.Pointer;
+  set shippingAddress(value: interop.PointerConvertible);
 
-  billingAddress: interop.Object;
+  get billingAddress(): interop.Pointer;
+  set billingAddress(value: interop.PointerConvertible);
 
   get multiTokenContexts(): NSArray;
   set multiTokenContexts(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -1070,6 +1219,8 @@ declare class PKPaymentRequest extends NSObject {
   applePayLaterAvailability: interop.Enum<typeof PKApplePayLaterAvailability>;
 
   setMerchantIdentifier(merchantIdentifier: string): void;
+
+  setAttributionIdentifier(attributionIdentifier: string): void;
 
   setCountryCode(countryCode: string): void;
 
@@ -1109,9 +1260,9 @@ declare class PKPaymentRequest extends NSObject {
 
   setSupportedCountries(supportedCountries: NSSet | null): void;
 
-  setShippingAddress(shippingAddress: interop.Object): void;
+  setShippingAddress(shippingAddress: interop.PointerConvertible): void;
 
-  setBillingAddress(billingAddress: interop.Object): void;
+  setBillingAddress(billingAddress: interop.PointerConvertible): void;
 
   setMultiTokenContexts(multiTokenContexts: NSArray<interop.Object> | Array<interop.Object>): void;
 
@@ -1254,6 +1405,48 @@ declare class PKContact extends NSObject {
   setSupplementarySubLocality(supplementarySubLocality: string | null): void;
 }
 
+declare class PKPass extends PKObject {
+  initWithDataError(data: NSData, error: interop.PointerConvertible): this;
+
+  readonly passType: interop.Enum<typeof PKPassType>;
+
+  readonly paymentPass: PKPaymentPass;
+
+  readonly secureElementPass: PKSecureElementPass;
+
+  readonly serialNumber: string;
+
+  readonly passTypeIdentifier: string;
+
+  readonly webServiceURL: NSURL;
+
+  readonly authenticationToken: string;
+
+  readonly icon: UIImage;
+
+  readonly localizedName: string;
+
+  readonly localizedDescription: string;
+
+  readonly organizationName: string;
+
+  readonly relevantDate: NSDate;
+
+  readonly relevantDates: NSArray;
+
+  readonly userInfo: NSDictionary;
+
+  readonly passURL: NSURL;
+
+  readonly remotePass: boolean;
+
+  readonly deviceName: string;
+
+  localizedValueForFieldKey(key: string): interop.Object;
+
+  isRemotePass(): boolean;
+}
+
 declare class PKObject extends NSObject {
 }
 
@@ -1354,51 +1547,6 @@ declare class PKLabeledValue extends NSObject {
   readonly value: string;
 }
 
-declare class PKAutomaticReloadPaymentRequest extends NSObject {
-  paymentDescription: string;
-
-  automaticReloadBilling: PKAutomaticReloadPaymentSummaryItem;
-
-  billingAgreement: string;
-
-  managementURL: NSURL;
-
-  tokenNotificationURL: NSURL;
-
-  initWithPaymentDescriptionAutomaticReloadBillingManagementURL(paymentDescription: string, automaticReloadBilling: PKAutomaticReloadPaymentSummaryItem, managementURL: NSURL): this;
-
-  setPaymentDescription(paymentDescription: string): void;
-
-  setAutomaticReloadBilling(automaticReloadBilling: PKAutomaticReloadPaymentSummaryItem): void;
-
-  setBillingAgreement(billingAgreement: string | null): void;
-
-  setManagementURL(managementURL: NSURL): void;
-
-  setTokenNotificationURL(tokenNotificationURL: NSURL | null): void;
-}
-
-declare class PKInstantFundsOutFeeSummaryItem extends PKPaymentSummaryItem {
-}
-
-declare class PKPaymentPass extends PKSecureElementPass {
-  readonly activationState: interop.Enum<typeof PKPaymentPassActivationState>;
-}
-
-declare class PKIdentityButton extends UIControl {
-  static buttonWithLabelStyle<This extends abstract new (...args: any) => any>(this: This, label: interop.Enum<typeof PKIdentityButtonLabel>, style: interop.Enum<typeof PKIdentityButtonStyle>): InstanceType<This>;
-
-  initWithLabelStyle(label: interop.Enum<typeof PKIdentityButtonLabel>, style: interop.Enum<typeof PKIdentityButtonStyle>): this;
-
-  cornerRadius: number;
-
-  setCornerRadius(cornerRadius: number): void;
-}
-
-declare class PKIdentityDocument extends NSObject {
-  readonly encryptedData: NSData;
-}
-
 declare class PKAddPaymentPassRequestConfiguration extends NSObject {
   initWithEncryptionScheme(encryptionScheme: string): this;
 
@@ -1442,26 +1590,25 @@ declare class PKAddPaymentPassRequestConfiguration extends NSObject {
   setRequiresFelicaSecureElement(requiresFelicaSecureElement: boolean): void;
 }
 
-declare class PKStoredValuePassProperties extends NSObject {
-  static passPropertiesForPass<This extends abstract new (...args: any) => any>(this: This, pass: PKPass): InstanceType<This>;
-
-  readonly blacklisted: boolean;
-
-  readonly blocked: boolean;
-
-  readonly expirationDate: NSDate;
-
-  readonly balances: NSArray;
-
-  isBlacklisted(): boolean;
-
-  isBlocked(): boolean;
+declare class PKInstantFundsOutFeeSummaryItem extends PKPaymentSummaryItem {
 }
 
-declare class PKIssuerProvisioningExtensionPaymentPassEntry extends PKIssuerProvisioningExtensionPassEntry {
-  initWithIdentifierTitleArtAddRequestConfiguration(identifier: string, title: string, art: interop.Object, configuration: PKAddPaymentPassRequestConfiguration): this;
+declare class PKPaymentPass extends PKSecureElementPass {
+  readonly activationState: interop.Enum<typeof PKPaymentPassActivationState>;
+}
 
-  readonly addRequestConfiguration: PKAddPaymentPassRequestConfiguration;
+declare class PKIdentityButton extends UIControl {
+  static buttonWithLabelStyle<This extends abstract new (...args: any) => any>(this: This, label: interop.Enum<typeof PKIdentityButtonLabel>, style: interop.Enum<typeof PKIdentityButtonStyle>): InstanceType<This>;
+
+  initWithLabelStyle(label: interop.Enum<typeof PKIdentityButtonLabel>, style: interop.Enum<typeof PKIdentityButtonStyle>): this;
+
+  cornerRadius: number;
+
+  setCornerRadius(cornerRadius: number): void;
+}
+
+declare class PKIdentityDocument extends NSObject {
+  readonly encryptedData: NSData;
 }
 
 declare class PKAddPaymentPassRequest extends NSObject {
@@ -1492,26 +1639,6 @@ declare class PKAddSecureElementPassViewController extends UIViewController {
   delegate: PKAddSecureElementPassViewControllerDelegate;
 
   setDelegate(delegate: PKAddSecureElementPassViewControllerDelegate | null): void;
-}
-
-declare class PKTransitPassProperties extends PKStoredValuePassProperties {
-  readonly transitBalance: NSDecimalNumber;
-
-  readonly transitBalanceCurrencyCode: string;
-
-  readonly blacklisted: boolean;
-
-  readonly expirationDate: NSDate;
-
-  readonly blocked: boolean;
-
-  readonly inStation: boolean;
-
-  isBlacklisted(): boolean;
-
-  isBlocked(): boolean;
-
-  isInStation(): boolean;
 }
 
 declare class PKPassLibrary extends NSObject {
@@ -1572,6 +1699,10 @@ declare class PKPassLibrary extends NSObject {
   encryptedServiceProviderDataForSecureElementPassCompletion(secureElementPass: PKSecureElementPass, completion: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, p2: NSError) => void | null): void;
 
   serviceProviderDataForSecureElementPassCompletion(secureElementPass: PKSecureElementPass, completion: (p1: NSData, p2: NSError) => void | null): void;
+
+  authorizationStatusForCapability(capability: interop.Enum<typeof PKPassLibraryCapability>): interop.Enum<typeof PKPassLibraryAuthorizationStatus>;
+
+  requestAuthorizationForCapabilityCompletion(capability: interop.Enum<typeof PKPassLibraryCapability>, completion: (p1: interop.Enum<typeof PKPassLibraryAuthorizationStatus>) => void): void;
 
   isSecureElementPassActivationAvailable(): boolean;
 }
@@ -1669,6 +1800,10 @@ declare class PKIdentityDocumentMetadata extends NSObject {
 
   serverEnvironmentIdentifier: string;
 
+  readonly issuingCountryCode: string;
+
+  readonly documentType: interop.Enum<typeof PKAddIdentityDocumentType>;
+
   setServerEnvironmentIdentifier(serverEnvironmentIdentifier: string): void;
 }
 
@@ -1707,179 +1842,34 @@ declare class PKBarcodeEventConfigurationRequest extends NSObject {
 declare class PKDisbursementSummaryItem extends PKPaymentSummaryItem {
 }
 
-declare class PKDeferredPaymentSummaryItem extends PKPaymentSummaryItem {
-  deferredDate: NSDate;
+declare class PKIssuerProvisioningExtensionPaymentPassEntry extends PKIssuerProvisioningExtensionPassEntry {
+  initWithIdentifierTitleArtAddRequestConfiguration(identifier: string, title: string, art: interop.PointerConvertible, configuration: PKAddPaymentPassRequestConfiguration): this;
 
-  setDeferredDate(deferredDate: NSDate): void;
+  readonly addRequestConfiguration: PKAddPaymentPassRequestConfiguration;
 }
 
-declare class PKPaymentAuthorizationResult extends NSObject {
-  initWithStatusErrors(status: interop.Enum<typeof PKPaymentAuthorizationStatus>, errors: NSArray<interop.Object> | Array<interop.Object> | null): this;
+declare class PKAutomaticReloadPaymentRequest extends NSObject {
+  paymentDescription: string;
 
-  status: interop.Enum<typeof PKPaymentAuthorizationStatus>;
+  automaticReloadBilling: PKAutomaticReloadPaymentSummaryItem;
 
-  get errors(): NSArray;
-  set errors(value: NSArray<interop.Object> | Array<interop.Object>);
+  billingAgreement: string;
 
-  orderDetails: PKPaymentOrderDetails;
+  managementURL: NSURL;
 
-  setStatus(status: interop.Enum<typeof PKPaymentAuthorizationStatus>): void;
+  tokenNotificationURL: NSURL;
 
-  setErrors(errors: NSArray<interop.Object> | Array<interop.Object> | null): void;
+  initWithPaymentDescriptionAutomaticReloadBillingManagementURL(paymentDescription: string, automaticReloadBilling: PKAutomaticReloadPaymentSummaryItem, managementURL: NSURL): this;
 
-  setOrderDetails(orderDetails: PKPaymentOrderDetails): void;
-}
+  setPaymentDescription(paymentDescription: string): void;
 
-declare class PKPaymentSummaryItem extends NSObject {
-  static summaryItemWithLabelAmount<This extends abstract new (...args: any) => any>(this: This, label: string, amount: NSDecimalNumber): InstanceType<This>;
+  setAutomaticReloadBilling(automaticReloadBilling: PKAutomaticReloadPaymentSummaryItem): void;
 
-  static summaryItemWithLabelAmountType<This extends abstract new (...args: any) => any>(this: This, label: string, amount: NSDecimalNumber, type: interop.Enum<typeof PKPaymentSummaryItemType>): InstanceType<This>;
+  setBillingAgreement(billingAgreement: string | null): void;
 
-  label: string;
+  setManagementURL(managementURL: NSURL): void;
 
-  amount: NSDecimalNumber;
-
-  type: interop.Enum<typeof PKPaymentSummaryItemType>;
-
-  setLabel(label: string): void;
-
-  setAmount(amount: NSDecimalNumber): void;
-
-  setType(type: interop.Enum<typeof PKPaymentSummaryItemType>): void;
-}
-
-declare class PKAddPaymentPassViewController extends UIViewController {
-  static canAddPaymentPass(): boolean;
-
-  initWithRequestConfigurationDelegate(configuration: PKAddPaymentPassRequestConfiguration, delegate: PKAddPaymentPassViewControllerDelegate | null): this;
-
-  delegate: PKAddPaymentPassViewControllerDelegate;
-
-  setDelegate(delegate: PKAddPaymentPassViewControllerDelegate | null): void;
-}
-
-declare class PKPaymentButton extends UIButton {
-  static buttonWithTypeStyle<This extends abstract new (...args: any) => any>(this: This, buttonType: interop.Enum<typeof PKPaymentButtonType>, buttonStyle: interop.Enum<typeof PKPaymentButtonStyle>): InstanceType<This>;
-
-  initWithPaymentButtonTypePaymentButtonStyle(type: interop.Enum<typeof PKPaymentButtonType>, style: interop.Enum<typeof PKPaymentButtonStyle>): this;
-
-  cornerRadius: number;
-
-  setCornerRadius(cornerRadius: number): void;
-}
-
-declare class PKIssuerProvisioningExtensionStatus extends NSObject {
-  init(): this;
-
-  requiresAuthentication: boolean;
-
-  passEntriesAvailable: boolean;
-
-  remotePassEntriesAvailable: boolean;
-
-  setRequiresAuthentication(requiresAuthentication: boolean): void;
-
-  setPassEntriesAvailable(passEntriesAvailable: boolean): void;
-
-  setRemotePassEntriesAvailable(remotePassEntriesAvailable: boolean): void;
-}
-
-declare class PKPaymentToken extends NSObject {
-  readonly paymentMethod: PKPaymentMethod;
-
-  readonly paymentInstrumentName: string;
-
-  readonly paymentNetwork: string;
-
-  readonly transactionIdentifier: string;
-
-  readonly paymentData: NSData;
-}
-
-declare class PKPayLaterView extends UIView {
-  initWithAmountCurrencyCode(amount: NSDecimalNumber, currencyCode: string): this;
-
-  delegate: PKPayLaterViewDelegate;
-
-  amount: NSDecimalNumber;
-
-  currencyCode: string;
-
-  displayStyle: interop.Enum<typeof PKPayLaterDisplayStyle>;
-
-  action: interop.Enum<typeof PKPayLaterAction>;
-
-  setDelegate(delegate: PKPayLaterViewDelegate): void;
-
-  setAmount(amount: NSDecimalNumber): void;
-
-  setCurrencyCode(currencyCode: string): void;
-
-  setDisplayStyle(displayStyle: interop.Enum<typeof PKPayLaterDisplayStyle>): void;
-
-  setAction(action: interop.Enum<typeof PKPayLaterAction>): void;
-}
-
-declare class PKPaymentOrderDetails extends NSObject {
-  initWithOrderTypeIdentifierOrderIdentifierWebServiceURLAuthenticationToken(orderTypeIdentifier: string, orderIdentifier: string, webServiceURL: NSURL, authenticationToken: string): this;
-
-  orderTypeIdentifier: string;
-
-  orderIdentifier: string;
-
-  webServiceURL: NSURL;
-
-  authenticationToken: string;
-
-  setOrderTypeIdentifier(orderTypeIdentifier: string): void;
-
-  setOrderIdentifier(orderIdentifier: string): void;
-
-  setWebServiceURL(webServiceURL: NSURL): void;
-
-  setAuthenticationToken(authenticationToken: string): void;
-}
-
-declare class PKPass extends PKObject {
-  initWithDataError(data: NSData, error: interop.PointerConvertible): this;
-
-  readonly passType: interop.Enum<typeof PKPassType>;
-
-  readonly paymentPass: PKPaymentPass;
-
-  readonly secureElementPass: PKSecureElementPass;
-
-  readonly serialNumber: string;
-
-  readonly passTypeIdentifier: string;
-
-  readonly webServiceURL: NSURL;
-
-  readonly authenticationToken: string;
-
-  readonly icon: UIImage;
-
-  readonly localizedName: string;
-
-  readonly localizedDescription: string;
-
-  readonly organizationName: string;
-
-  readonly relevantDate: NSDate;
-
-  readonly relevantDates: NSArray;
-
-  readonly userInfo: NSDictionary;
-
-  readonly passURL: NSURL;
-
-  readonly remotePass: boolean;
-
-  readonly deviceName: string;
-
-  localizedValueForFieldKey(key: string): interop.Object;
-
-  isRemotePass(): boolean;
+  setTokenNotificationURL(tokenNotificationURL: NSURL | null): void;
 }
 
 declare class PKDisbursementRequest extends NSObject {
@@ -1932,5 +1922,176 @@ declare class PKDisbursementRequest extends NSObject {
   setSupportedRegions(supportedRegions: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setApplicationData(applicationData: NSData | null): void;
+}
+
+declare class PKDeferredPaymentSummaryItem extends PKPaymentSummaryItem {
+  deferredDate: NSDate;
+
+  setDeferredDate(deferredDate: NSDate): void;
+}
+
+declare class PKPaymentAuthorizationResult extends NSObject {
+  initWithStatusErrors(status: interop.Enum<typeof PKPaymentAuthorizationStatus>, errors: NSArray<interop.Object> | Array<interop.Object> | null): this;
+
+  status: interop.Enum<typeof PKPaymentAuthorizationStatus>;
+
+  get errors(): NSArray;
+  set errors(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  orderDetails: PKPaymentOrderDetails;
+
+  setStatus(status: interop.Enum<typeof PKPaymentAuthorizationStatus>): void;
+
+  setErrors(errors: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setOrderDetails(orderDetails: PKPaymentOrderDetails): void;
+}
+
+declare class PKPaymentSummaryItem extends NSObject {
+  static summaryItemWithLabelAmount<This extends abstract new (...args: any) => any>(this: This, label: string, amount: NSDecimalNumber): InstanceType<This>;
+
+  static summaryItemWithLabelAmountType<This extends abstract new (...args: any) => any>(this: This, label: string, amount: NSDecimalNumber, type: interop.Enum<typeof PKPaymentSummaryItemType>): InstanceType<This>;
+
+  label: string;
+
+  amount: NSDecimalNumber;
+
+  type: interop.Enum<typeof PKPaymentSummaryItemType>;
+
+  setLabel(label: string): void;
+
+  setAmount(amount: NSDecimalNumber): void;
+
+  setType(type: interop.Enum<typeof PKPaymentSummaryItemType>): void;
+}
+
+declare class PKStoredValuePassProperties extends NSObject {
+  static passPropertiesForPass<This extends abstract new (...args: any) => any>(this: This, pass: PKPass): InstanceType<This>;
+
+  readonly blacklisted: boolean;
+
+  readonly blocked: boolean;
+
+  readonly expirationDate: NSDate;
+
+  readonly balances: NSArray;
+
+  isBlacklisted(): boolean;
+
+  isBlocked(): boolean;
+}
+
+declare class PKPaymentButton extends UIButton {
+  static buttonWithTypeStyle<This extends abstract new (...args: any) => any>(this: This, buttonType: interop.Enum<typeof PKPaymentButtonType>, buttonStyle: interop.Enum<typeof PKPaymentButtonStyle>): InstanceType<This>;
+
+  initWithPaymentButtonTypePaymentButtonStyle(type: interop.Enum<typeof PKPaymentButtonType>, style: interop.Enum<typeof PKPaymentButtonStyle>): this;
+
+  static buttonWithTypeStyleDisableCardArt<This extends abstract new (...args: any) => any>(this: This, buttonType: interop.Enum<typeof PKPaymentButtonType>, buttonStyle: interop.Enum<typeof PKPaymentButtonStyle>, disableCardArt: boolean): InstanceType<This>;
+
+  initWithPaymentButtonTypePaymentButtonStyleDisableCardArt(type: interop.Enum<typeof PKPaymentButtonType>, style: interop.Enum<typeof PKPaymentButtonStyle>, disableCardArt: boolean): this;
+
+  cornerRadius: number;
+
+  setCornerRadius(cornerRadius: number): void;
+}
+
+declare class PKBarcodeEventSignatureResponse extends NSObject {
+  initWithSignedData(signedData: NSData): this;
+
+  signedData: NSData;
+
+  setSignedData(signedData: NSData): void;
+}
+
+declare class PKIssuerProvisioningExtensionStatus extends NSObject {
+  init(): this;
+
+  requiresAuthentication: boolean;
+
+  passEntriesAvailable: boolean;
+
+  remotePassEntriesAvailable: boolean;
+
+  setRequiresAuthentication(requiresAuthentication: boolean): void;
+
+  setPassEntriesAvailable(passEntriesAvailable: boolean): void;
+
+  setRemotePassEntriesAvailable(remotePassEntriesAvailable: boolean): void;
+}
+
+declare class PKPaymentToken extends NSObject {
+  readonly paymentMethod: PKPaymentMethod;
+
+  readonly paymentInstrumentName: string;
+
+  readonly paymentNetwork: string;
+
+  readonly transactionIdentifier: string;
+
+  readonly paymentData: NSData;
+}
+
+declare class PKTransitPassProperties extends PKStoredValuePassProperties {
+  readonly transitBalance: NSDecimalNumber;
+
+  readonly transitBalanceCurrencyCode: string;
+
+  readonly blacklisted: boolean;
+
+  readonly expirationDate: NSDate;
+
+  readonly blocked: boolean;
+
+  readonly inStation: boolean;
+
+  isBlacklisted(): boolean;
+
+  isBlocked(): boolean;
+
+  isInStation(): boolean;
+}
+
+declare class PKPayLaterView extends UIView {
+  initWithAmountCurrencyCode(amount: NSDecimalNumber, currencyCode: string): this;
+
+  delegate: PKPayLaterViewDelegate;
+
+  amount: NSDecimalNumber;
+
+  currencyCode: string;
+
+  displayStyle: interop.Enum<typeof PKPayLaterDisplayStyle>;
+
+  action: interop.Enum<typeof PKPayLaterAction>;
+
+  setDelegate(delegate: PKPayLaterViewDelegate): void;
+
+  setAmount(amount: NSDecimalNumber): void;
+
+  setCurrencyCode(currencyCode: string): void;
+
+  setDisplayStyle(displayStyle: interop.Enum<typeof PKPayLaterDisplayStyle>): void;
+
+  setAction(action: interop.Enum<typeof PKPayLaterAction>): void;
+}
+
+declare class PKPaymentOrderDetails extends NSObject {
+  initWithOrderTypeIdentifierOrderIdentifierWebServiceURLAuthenticationToken(orderTypeIdentifier: string, orderIdentifier: string, webServiceURL: NSURL, authenticationToken: string): this;
+
+  orderTypeIdentifier: string;
+
+  orderIdentifier: string;
+
+  webServiceURL: NSURL;
+
+  authenticationToken: string;
+
+  setOrderTypeIdentifier(orderTypeIdentifier: string): void;
+
+  setOrderIdentifier(orderIdentifier: string): void;
+
+  setWebServiceURL(webServiceURL: NSURL): void;
+
+  setAuthenticationToken(authenticationToken: string): void;
 }
 

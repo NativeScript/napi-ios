@@ -163,92 +163,6 @@ declare class CLSDataStore extends NSObject {
   fetchActivityForURLCompletion(url: NSURL, completion: (p1: CLSActivity, p2: NSError) => void | null): void;
 }
 
-declare class CLSContext extends CLSObject {
-  readonly identifierPath: NSArray;
-
-  readonly identifier: string;
-
-  universalLinkURL: NSURL;
-
-  readonly type: interop.Enum<typeof CLSContextType>;
-
-  customTypeName: string;
-
-  title: string;
-
-  displayOrder: number;
-
-  topic: string;
-
-  assignable: boolean;
-
-  suggestedAge: _NSRange;
-
-  suggestedCompletionTime: _NSRange;
-
-  readonly progressReportingCapabilities: NSSet;
-
-  summary: string;
-
-  thumbnail: interop.Object;
-
-  initWithTypeIdentifierTitle(type: interop.Enum<typeof CLSContextType>, identifier: string, title: string): this;
-
-  readonly active: boolean;
-
-  becomeActive(): void;
-
-  resignActive(): void;
-
-  setType(type: interop.Enum<typeof CLSContextType>): void;
-
-  addProgressReportingCapabilities(capabilities: NSSet): void;
-
-  resetProgressReportingCapabilities(): void;
-
-  setUniversalLinkURL(universalLinkURL: NSURL | null): void;
-
-  setCustomTypeName(customTypeName: string | null): void;
-
-  setTitle(title: string): void;
-
-  setDisplayOrder(displayOrder: number): void;
-
-  setTopic(topic: string | null): void;
-
-  isAssignable(): boolean;
-
-  setAssignable(assignable: boolean): void;
-
-  setSuggestedAge(suggestedAge: _NSRange): void;
-
-  setSuggestedCompletionTime(suggestedCompletionTime: _NSRange): void;
-
-  setSummary(summary: string | null): void;
-
-  setThumbnail(thumbnail: interop.Object | null): void;
-
-  isActive(): boolean;
-
-  readonly parent: CLSContext;
-
-  removeFromParent(): void;
-
-  addChildContext(child: CLSContext): void;
-
-  descendantMatchingIdentifierPathCompletion(identifierPath: NSArray<interop.Object> | Array<interop.Object>, completion: (p1: CLSContext, p2: NSError) => void | null): void;
-
-  readonly navigationChildContexts: NSArray;
-
-  addNavigationChildContext(child: CLSContext): void;
-
-  removeNavigationChildContext(child: CLSContext): void;
-
-  readonly currentActivity: CLSActivity;
-
-  createNewActivity(): CLSActivity;
-}
-
 declare class CLSObject extends NSObject implements NSSecureCoding {
   readonly dateCreated: NSDate;
 
@@ -297,5 +211,92 @@ declare class CLSActivity extends CLSObject {
   removeAllActivityItems(): void;
 
   isStarted(): boolean;
+}
+
+declare class CLSContext extends CLSObject {
+  readonly identifierPath: NSArray;
+
+  readonly identifier: string;
+
+  universalLinkURL: NSURL;
+
+  readonly type: interop.Enum<typeof CLSContextType>;
+
+  customTypeName: string;
+
+  title: string;
+
+  displayOrder: number;
+
+  topic: string;
+
+  assignable: boolean;
+
+  suggestedAge: _NSRange;
+
+  suggestedCompletionTime: _NSRange;
+
+  readonly progressReportingCapabilities: NSSet;
+
+  summary: string;
+
+  get thumbnail(): interop.Pointer;
+  set thumbnail(value: interop.PointerConvertible);
+
+  initWithTypeIdentifierTitle(type: interop.Enum<typeof CLSContextType>, identifier: string, title: string): this;
+
+  readonly active: boolean;
+
+  becomeActive(): void;
+
+  resignActive(): void;
+
+  setType(type: interop.Enum<typeof CLSContextType>): void;
+
+  addProgressReportingCapabilities(capabilities: NSSet): void;
+
+  resetProgressReportingCapabilities(): void;
+
+  setUniversalLinkURL(universalLinkURL: NSURL | null): void;
+
+  setCustomTypeName(customTypeName: string | null): void;
+
+  setTitle(title: string): void;
+
+  setDisplayOrder(displayOrder: number): void;
+
+  setTopic(topic: string | null): void;
+
+  isAssignable(): boolean;
+
+  setAssignable(assignable: boolean): void;
+
+  setSuggestedAge(suggestedAge: _NSRange): void;
+
+  setSuggestedCompletionTime(suggestedCompletionTime: _NSRange): void;
+
+  setSummary(summary: string | null): void;
+
+  setThumbnail(thumbnail: interop.PointerConvertible): void;
+
+  isActive(): boolean;
+
+  readonly parent: CLSContext;
+
+  removeFromParent(): void;
+
+  addChildContext(child: CLSContext): void;
+
+  descendantMatchingIdentifierPathCompletion(identifierPath: NSArray<interop.Object> | Array<interop.Object>, completion: (p1: CLSContext, p2: NSError) => void | null): void;
+
+  readonly navigationChildContexts: NSArray;
+
+  addNavigationChildContext(child: CLSContext): void;
+
+  removeNavigationChildContext(child: CLSContext): void;
+
+  readonly currentActivity: CLSActivity;
+
+  createNewActivity(): CLSActivity;
 }
 

@@ -1466,6 +1466,6 @@ declare class EAGLContext extends NSObject {
 
   presentRenderbufferAfterMinimumDuration(target: number, duration: number): boolean;
 
-  texImageIOSurfaceTargetInternalFormatWidthHeightFormatTypePlane(ioSurface: interop.Object, target: number, internalFormat: number, width: number, height: number, format: number, type: number, plane: number): boolean;
+  texImageIOSurfaceTargetInternalFormatWidthHeightFormatTypePlane(ioSurface: interop.PointerConvertible, target: number, internalFormat: number, width: number, height: number, format: number, type: number, plane: number): boolean;
 }
 

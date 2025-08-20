@@ -3,53 +3,33 @@
 
 declare const INWorkoutNameIdentifierSwim: string;
 
-declare const INWorkoutNameIdentifierHighIntensityIntervalTraining: string;
-
-declare const INWorkoutNameIdentifierHike: string;
-
-declare const INWorkoutNameIdentifierExercise: string;
-
-declare const INWorkoutNameIdentifierIndoorwalk: string;
+declare const INWorkoutNameIdentifierIndoorcycle: string;
 
 declare const INWorkoutNameIdentifierIndoorrun: string;
 
-declare const INWorkoutNameIdentifierOther: string;
-
 declare const INWorkoutNameIdentifierCycle: string;
-
-declare const INWorkoutNameIdentifierRower: string;
 
 declare const INWorkoutNameIdentifierCrosstraining: string;
 
 declare const INWorkoutNameIdentifierDance: string;
 
-declare const INWorkoutNameIdentifierYoga: string;
-
 declare const INWorkoutNameIdentifierWalk: string;
-
-declare const INWorkoutNameIdentifierMove: string;
-
-declare const INWorkoutNameIdentifierStand: string;
 
 declare const INWorkoutNameIdentifierSteps: string;
 
 declare const INWorkoutNameIdentifierSit: string;
 
-declare const INPersonRelationshipManager: string;
+declare const INPersonRelationshipDaughter: string;
 
 declare const INPersonRelationshipAssistant: string;
 
-declare const INPersonRelationshipPartner: string;
+declare const INPersonRelationshipSister: string;
 
-declare const INPersonRelationshipChild: string;
+declare const INPersonRelationshipFather: string;
 
-declare const INPersonRelationshipParent: string;
+declare const INPersonHandleLabelPager: string;
 
-declare const INPersonHandleLabelSchool: string;
-
-declare const INPersonHandleLabelWorkFax: string;
-
-declare const INPersonHandleLabelMain: string;
+declare const INPersonHandleLabelMobile: string;
 
 declare const INPersonHandleLabeliPhone: string;
 
@@ -57,119 +37,139 @@ declare const INPersonHandleLabelHome: string;
 
 declare const INCarChargingConnectorTypeNACSAC: string;
 
-declare const INCarChargingConnectorTypeNACSDC: string;
-
-declare const INCarChargingConnectorTypeMennekes: string;
-
-declare const INCarChargingConnectorTypeTesla: string;
-
-declare const INCarChargingConnectorTypeGBTDC: string;
-
-declare const INCarChargingConnectorTypeGBTAC: string;
-
-declare const INCarChargingConnectorTypeCHAdeMO: string;
-
-declare const INCarChargingConnectorTypeCCS1: string;
-
-declare const INCarChargingConnectorTypeJ1772: string;
-
-declare const INGetRideStatusIntentIdentifier: string;
-
 declare const INRequestRideIntentIdentifier: string;
-
-declare const INListRideOptionsIntentIdentifier: string;
-
-declare const INStartPhotoPlaybackIntentIdentifier: string;
-
-declare const INSearchForPhotosIntentIdentifier: string;
 
 declare const INSetMessageAttributeIntentIdentifier: string;
 
-declare const INSearchForMessagesIntentIdentifier: string;
-
-declare const INSetRadioStationIntentIdentifier: string;
+declare const INSendMessageIntentIdentifier: string;
 
 declare const INResumeWorkoutIntentIdentifier: string;
 
-declare const INCancelWorkoutIntentIdentifier: string;
-
-declare const INPauseWorkoutIntentIdentifier: string;
-
-declare const INStartWorkoutIntentIdentifier: string;
-
-declare const INSaveProfileInCarIntentIdentifier: string;
+declare const INSetProfileInCarIntentIdentifier: string;
 
 declare const INSetDefrosterSettingsInCarIntentIdentifier: string;
 
 declare const INSetClimateSettingsInCarIntentIdentifier: string;
 
-declare const INSearchCallHistoryIntentIdentifier: string;
+declare const INStartCallIntentIdentifier: string;
 
-declare const INStartVideoCallIntentIdentifier: string;
+declare const INCarChargingConnectorTypeCHAdeMO: string;
 
-declare const INStartAudioCallIntentIdentifier: string;
-
-declare const INIntentErrorDomain: string;
+declare const INCancelWorkoutIntentIdentifier: string;
 
 declare const IntentsVersionString: interop.Pointer;
 
-declare const IntentsVersionNumber: number;
+declare const INPersonHandleLabelSchool: string;
 
-declare const INPersonHandleLabelHomeFax: string;
+declare const INPersonHandleLabelWork: string;
+
+declare const INStartVideoCallIntentIdentifier: string;
 
 declare const INPersonRelationshipSpouse: string;
+
+declare const INPersonHandleLabelWorkFax: string;
 
 declare const INRequestPaymentIntentIdentifier: string;
 
 declare const INSetSeatSettingsInCarIntentIdentifier: string;
 
-declare const INPersonRelationshipBrother: string;
-
-declare const INWorkoutNameIdentifierRun: string;
-
-declare const INPersonRelationshipDaughter: string;
-
-declare const INEndWorkoutIntentIdentifier: string;
-
-declare const INPersonHandleLabelWork: string;
-
-declare const INWorkoutNameIdentifierElliptical: string;
-
-declare const INAnswerCallIntentIdentifier: string;
-
-declare const INSetAudioSourceInCarIntentIdentifier: string;
-
-declare const INPersonRelationshipSister: string;
-
-declare const INSendPaymentIntentIdentifier: string;
+declare const INWorkoutNameIdentifierMove: string;
 
 declare const INPersonRelationshipFriend: string;
 
+declare const INPersonRelationshipBrother: string;
+
+declare const INAnswerCallIntentIdentifier: string;
+
+declare const INWorkoutNameIdentifierRun: string;
+
 declare const INPersonHandleLabelOther: string;
 
-declare const INStartCallIntentIdentifier: string;
+declare const INWorkoutNameIdentifierElliptical: string;
 
-declare const INWorkoutNameIdentifierStairs: string;
+declare const INCarChargingConnectorTypeTesla: string;
+
+declare const INPersonRelationshipParent: string;
+
+declare const INWorkoutNameIdentifierExercise: string;
 
 declare const INHangUpCallIntentIdentifier: string;
 
-declare const INSetProfileInCarIntentIdentifier: string;
+declare const INCarChargingConnectorTypeCCS1: string;
 
-declare const INPersonHandleLabelMobile: string;
+declare const INCarChargingConnectorTypeMennekes: string;
 
-declare const INPersonRelationshipSon: string;
+declare const INListRideOptionsIntentIdentifier: string;
+
+declare const INSearchForMessagesIntentIdentifier: string;
 
 declare const INPersonRelationshipMother: string;
 
-declare const INPersonRelationshipFather: string;
+declare const INSetAudioSourceInCarIntentIdentifier: string;
 
-declare const INPersonHandleLabelPager: string;
+declare const INPersonHandleLabelMain: string;
 
-declare const INSendMessageIntentIdentifier: string;
+declare const INPersonRelationshipSon: string;
 
-declare const INWorkoutNameIdentifierIndoorcycle: string;
+declare const INIntentErrorDomain: string;
+
+declare const INPersonRelationshipChild: string;
+
+declare const INEndWorkoutIntentIdentifier: string;
 
 declare const INCarChargingConnectorTypeCCS2: string;
+
+declare const INSetRadioStationIntentIdentifier: string;
+
+declare const INPersonHandleLabelHomeFax: string;
+
+declare const INSendPaymentIntentIdentifier: string;
+
+declare const INSearchForPhotosIntentIdentifier: string;
+
+declare const INWorkoutNameIdentifierIndoorwalk: string;
+
+declare const INSaveProfileInCarIntentIdentifier: string;
+
+declare const INWorkoutNameIdentifierYoga: string;
+
+declare const INPauseWorkoutIntentIdentifier: string;
+
+declare const INPersonRelationshipManager: string;
+
+declare const INWorkoutNameIdentifierStairs: string;
+
+declare const INStartPhotoPlaybackIntentIdentifier: string;
+
+declare const INStartWorkoutIntentIdentifier: string;
+
+declare const INPersonRelationshipPartner: string;
+
+declare const INWorkoutNameIdentifierOther: string;
+
+declare const INCarChargingConnectorTypeGBTDC: string;
+
+declare const IntentsVersionNumber: number;
+
+declare const INWorkoutNameIdentifierStand: string;
+
+declare const INGetRideStatusIntentIdentifier: string;
+
+declare const INWorkoutNameIdentifierRower: string;
+
+declare const INWorkoutNameIdentifierHighIntensityIntervalTraining: string;
+
+declare const INCarChargingConnectorTypeJ1772: string;
+
+declare const INStartAudioCallIntentIdentifier: string;
+
+declare const INSearchCallHistoryIntentIdentifier: string;
+
+declare const INCarChargingConnectorTypeGBTAC: string;
+
+declare const INWorkoutNameIdentifierHike: string;
+
+declare const INCarChargingConnectorTypeNACSDC: string;
 
 declare const INRelevantShortcutRole: {
   Action: 0,
@@ -200,11 +200,6 @@ declare const INFocusStatusAuthorizationStatus: {
   Restricted: 1,
   Denied: 2,
   Authorized: 3,
-};
-
-declare const INGetRestaurantGuestIntentResponseCode: {
-  Success: 0,
-  Failure: 1,
 };
 
 declare const INGetAvailableRestaurantReservationBookingDefaultsIntentResponseCode: {
@@ -670,15 +665,6 @@ declare const INSetRadioStationIntentResponseCode: {
   FailureNotSubscribed: 6,
 };
 
-declare const INUpdateMediaAffinityIntentResponseCode: {
-  Unspecified: 0,
-  Ready: 1,
-  InProgress: 2,
-  Success: 3,
-  Failure: 4,
-  FailureRequiringAppLaunch: 5,
-};
-
 declare const INSearchForMediaIntentResponseCode: {
   Unspecified: 0,
   Ready: 1,
@@ -1107,13 +1093,6 @@ declare const INAddTasksTargetTaskListConfirmationReason: {
   INAddTasksTargetTaskListConfirmationReasonListShouldBeCreated: 1,
 };
 
-declare const INPlaybackRepeatMode: {
-  Unknown: 0,
-  None: 1,
-  All: 2,
-  One: 3,
-};
-
 declare const INStartVideoCallIntentResponseCode: {
   Unspecified: 0,
   Ready: 1,
@@ -1167,6 +1146,12 @@ declare const INGetCarLockStatusIntentResponseCode: {
   FailureRequiringAppLaunch: 5,
 };
 
+declare const INMediaAffinityType: {
+  Unknown: 0,
+  Like: 1,
+  Dislike: 2,
+};
+
 declare const INSendMessageRecipientUnsupportedReason: {
   NoAccount: 1,
   Offline: 2,
@@ -1209,10 +1194,33 @@ declare const INCallCapability: {
   VideoCall: 2,
 };
 
+declare const INUpdateMediaAffinityIntentResponseCode: {
+  Unspecified: 0,
+  Ready: 1,
+  InProgress: 2,
+  Success: 3,
+  Failure: 4,
+  FailureRequiringAppLaunch: 5,
+};
+
+declare const INPlaybackRepeatMode: {
+  Unknown: 0,
+  None: 1,
+  All: 2,
+  One: 3,
+};
+
 declare const INSpatialEvent: {
   Unknown: 0,
   Arrive: 1,
   Depart: 2,
+};
+
+declare const INSiriAuthorizationStatus: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  Authorized: 3,
 };
 
 declare const INRideFeedbackTypeOptions: {
@@ -1237,12 +1245,6 @@ declare const INVocabularyStringType: {
   MediaAudiobookTitle: 702,
   MediaAudiobookAuthorName: 703,
   MediaShowTitle: 704,
-};
-
-declare const INMediaAffinityType: {
-  Unknown: 0,
-  Like: 1,
-  Dislike: 2,
 };
 
 declare const INBillType: {
@@ -1335,12 +1337,6 @@ declare const INSendPaymentIntentResponseCode: {
   FailureTermsAndConditionsAcceptanceRequired: 13,
 };
 
-declare const INNoteContentType: {
-  Unknown: 0,
-  Text: 1,
-  Image: 2,
-};
-
 declare const INVisualCodeType: {
   Unknown: 0,
   Contact: 1,
@@ -1397,6 +1393,12 @@ declare const INConditionalOperator: {
   All: 0,
   Any: 1,
   None: 2,
+};
+
+declare const INNoteContentType: {
+  Unknown: 0,
+  Text: 1,
+  Image: 2,
 };
 
 declare const INCreateNoteIntentResponseCode: {
@@ -1496,13 +1498,6 @@ declare const INTransferMoneyIntentResponseCode: {
   FailureInsufficientFunds: 7,
 };
 
-declare const INSiriAuthorizationStatus: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  Authorized: 3,
-};
-
 declare const INStartWorkoutIntentResponseCode: {
   Unspecified: 0,
   Ready: 1,
@@ -1513,18 +1508,6 @@ declare const INStartWorkoutIntentResponseCode: {
   FailureNoMatchingWorkout: 6,
   HandleInApp: 7,
   Success: 8,
-};
-
-declare const INPaymentMethodType: {
-  Unknown: 0,
-  Checking: 1,
-  Savings: 2,
-  Brokerage: 3,
-  Debit: 4,
-  Credit: 5,
-  Prepaid: 6,
-  Store: 7,
-  ApplePay: 8,
 };
 
 declare const INSearchForPhotosIntentResponseCode: {
@@ -1552,15 +1535,15 @@ declare const INDateSearchType: {
   ByCreatedDate: 3,
 };
 
-declare const INUpcomingMediaPredictionMode: {
-  Default: 0,
-  OnlyPredictSuggestedIntents: 1,
-};
-
 declare const INRestaurantReservationUserBookingStatus: {
   Pending: 0,
   Confirmed: 1,
   Denied: 2,
+};
+
+declare const INUpcomingMediaPredictionMode: {
+  Default: 0,
+  OnlyPredictSuggestedIntents: 1,
 };
 
 declare const INSearchForBillsIntentResponseCode: {
@@ -1585,6 +1568,11 @@ declare const INResumeWorkoutIntentResponseCode: {
   Success: 7,
 };
 
+declare const INGetRestaurantGuestIntentResponseCode: {
+  Success: 0,
+  Failure: 1,
+};
+
 declare const INGetRideStatusIntentResponseCode: {
   Unspecified: 0,
   Ready: 1,
@@ -1596,35 +1584,17 @@ declare const INGetRideStatusIntentResponseCode: {
   FailureRequiringAppLaunchServiceTemporarilyUnavailable: 7,
 };
 
-declare interface INEditMessageIntentHandling extends NSObjectProtocol {
-  handleEditMessageCompletion(intent: INEditMessageIntent, completion: (p1: INEditMessageIntentResponse) => void): void;
-
-  confirmEditMessageCompletion?(intent: INEditMessageIntent, completion: (p1: INEditMessageIntentResponse) => void): void;
-
-  resolveEditedContentForEditMessageWithCompletion?(intent: INEditMessageIntent, completion: (p1: INStringResolutionResult) => void): void;
-}
-
-declare class INEditMessageIntentHandling extends NativeObject implements INEditMessageIntentHandling {
-}
-
-declare interface INRequestRideIntentHandling extends NSObjectProtocol {
-  handleRequestRideCompletion(intent: INRequestRideIntent, completion: (p1: INRequestRideIntentResponse) => void): void;
-
-  confirmRequestRideCompletion?(intent: INRequestRideIntent, completion: (p1: INRequestRideIntentResponse) => void): void;
-
-  resolvePickupLocationForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INPlacemarkResolutionResult) => void): void;
-
-  resolveDropOffLocationForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INPlacemarkResolutionResult) => void): void;
-
-  resolveRideOptionNameForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INSpeakableStringResolutionResult) => void): void;
-
-  resolvePartySizeForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INIntegerResolutionResult) => void): void;
-
-  resolveScheduledPickupTimeForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INDateComponentsRangeResolutionResult) => void): void;
-}
-
-declare class INRequestRideIntentHandling extends NativeObject implements INRequestRideIntentHandling {
-}
+declare const INPaymentMethodType: {
+  Unknown: 0,
+  Checking: 1,
+  Savings: 2,
+  Brokerage: 3,
+  Debit: 4,
+  Credit: 5,
+  Prepaid: 6,
+  Store: 7,
+  ApplePay: 8,
+};
 
 declare interface INStartPhotoPlaybackIntentHandling extends NSObjectProtocol {
   handleStartPhotoPlaybackCompletion(intent: INStartPhotoPlaybackIntent, completion: (p1: INStartPhotoPlaybackIntentResponse) => void): void;
@@ -1718,6 +1688,12 @@ declare interface INPaymentsDomainHandling extends INSendPaymentIntentHandling, 
 }
 
 declare class INPaymentsDomainHandling extends NativeObject implements INPaymentsDomainHandling {
+}
+
+declare interface INCarPlayDomainHandling extends INSetAudioSourceInCarIntentHandling, INSetClimateSettingsInCarIntentHandling, INSetDefrosterSettingsInCarIntentHandling, INSetSeatSettingsInCarIntentHandling, INSetProfileInCarIntentHandling, INSaveProfileInCarIntentHandling {
+}
+
+declare class INCarPlayDomainHandling extends NativeObject implements INCarPlayDomainHandling {
 }
 
 declare interface INGetVisualCodeIntentHandling extends NSObjectProtocol {
@@ -2206,12 +2182,6 @@ declare interface INEndWorkoutIntentHandling extends NSObjectProtocol {
 declare class INEndWorkoutIntentHandling extends NativeObject implements INEndWorkoutIntentHandling {
 }
 
-declare interface INCarCommandsDomainHandling extends INActivateCarSignalIntentHandling, INSetCarLockStatusIntentHandling, INGetCarLockStatusIntentHandling, INGetCarPowerLevelStatusIntentHandling {
-}
-
-declare class INCarCommandsDomainHandling extends NativeObject implements INCarCommandsDomainHandling {
-}
-
 declare interface INShareFocusStatusIntentHandling extends NSObjectProtocol {
   handleShareFocusStatusCompletion(intent: INShareFocusStatusIntent, completion: (p1: INShareFocusStatusIntentResponse) => void): void;
 
@@ -2280,12 +2250,6 @@ declare interface INCallsDomainHandling extends INStartAudioCallIntentHandling, 
 declare class INCallsDomainHandling extends NativeObject implements INCallsDomainHandling {
 }
 
-declare interface INMessagesDomainHandling extends INSendMessageIntentHandling, INSearchForMessagesIntentHandling, INSetMessageAttributeIntentHandling {
-}
-
-declare class INMessagesDomainHandling extends NativeObject implements INMessagesDomainHandling {
-}
-
 declare interface INCreateTaskListIntentHandling extends NSObjectProtocol {
   handleCreateTaskListCompletion(intent: INCreateTaskListIntent, completion: (p1: INCreateTaskListIntentResponse) => void): void;
 
@@ -2325,6 +2289,25 @@ declare interface INSetMessageAttributeIntentHandling extends NSObjectProtocol {
 declare class INSetMessageAttributeIntentHandling extends NativeObject implements INSetMessageAttributeIntentHandling {
 }
 
+declare interface INRequestRideIntentHandling extends NSObjectProtocol {
+  handleRequestRideCompletion(intent: INRequestRideIntent, completion: (p1: INRequestRideIntentResponse) => void): void;
+
+  confirmRequestRideCompletion?(intent: INRequestRideIntent, completion: (p1: INRequestRideIntentResponse) => void): void;
+
+  resolvePickupLocationForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INPlacemarkResolutionResult) => void): void;
+
+  resolveDropOffLocationForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INPlacemarkResolutionResult) => void): void;
+
+  resolveRideOptionNameForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INSpeakableStringResolutionResult) => void): void;
+
+  resolvePartySizeForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INIntegerResolutionResult) => void): void;
+
+  resolveScheduledPickupTimeForRequestRideWithCompletion?(intent: INRequestRideIntent, completion: (p1: INDateComponentsRangeResolutionResult) => void): void;
+}
+
+declare class INRequestRideIntentHandling extends NativeObject implements INRequestRideIntentHandling {
+}
+
 declare interface INRidesharingDomainHandling extends INListRideOptionsIntentHandling, INRequestRideIntentHandling, INGetRideStatusIntentHandling, INCancelRideIntentHandling, INSendRideFeedbackIntentHandling {
 }
 
@@ -2337,10 +2320,10 @@ declare interface INPhotosDomainHandling extends INSearchForPhotosIntentHandling
 declare class INPhotosDomainHandling extends NativeObject implements INPhotosDomainHandling {
 }
 
-declare interface INCarPlayDomainHandling extends INSetAudioSourceInCarIntentHandling, INSetClimateSettingsInCarIntentHandling, INSetDefrosterSettingsInCarIntentHandling, INSetSeatSettingsInCarIntentHandling, INSetProfileInCarIntentHandling, INSaveProfileInCarIntentHandling {
+declare interface INCarCommandsDomainHandling extends INActivateCarSignalIntentHandling, INSetCarLockStatusIntentHandling, INGetCarLockStatusIntentHandling, INGetCarPowerLevelStatusIntentHandling {
 }
 
-declare class INCarPlayDomainHandling extends NativeObject implements INCarPlayDomainHandling {
+declare class INCarCommandsDomainHandling extends NativeObject implements INCarCommandsDomainHandling {
 }
 
 declare interface INUpdateMediaAffinityIntentHandling extends NSObjectProtocol {
@@ -2459,6 +2442,17 @@ declare interface INActivateCarSignalIntentHandling extends NSObjectProtocol {
 declare class INActivateCarSignalIntentHandling extends NativeObject implements INActivateCarSignalIntentHandling {
 }
 
+declare interface INEditMessageIntentHandling extends NSObjectProtocol {
+  handleEditMessageCompletion(intent: INEditMessageIntent, completion: (p1: INEditMessageIntentResponse) => void): void;
+
+  confirmEditMessageCompletion?(intent: INEditMessageIntent, completion: (p1: INEditMessageIntentResponse) => void): void;
+
+  resolveEditedContentForEditMessageWithCompletion?(intent: INEditMessageIntent, completion: (p1: INStringResolutionResult) => void): void;
+}
+
+declare class INEditMessageIntentHandling extends NativeObject implements INEditMessageIntentHandling {
+}
+
 declare interface INRadioDomainHandling extends INSetRadioStationIntentHandling {
 }
 
@@ -2498,6 +2492,12 @@ declare interface INCancelRideIntentHandling extends NSObjectProtocol {
 }
 
 declare class INCancelRideIntentHandling extends NativeObject implements INCancelRideIntentHandling {
+}
+
+declare interface INMessagesDomainHandling extends INSendMessageIntentHandling, INSearchForMessagesIntentHandling, INSetMessageAttributeIntentHandling {
+}
+
+declare class INMessagesDomainHandling extends NativeObject implements INMessagesDomainHandling {
 }
 
 declare interface INSetDefrosterSettingsInCarIntentHandling extends NSObjectProtocol {
@@ -2608,6 +2608,39 @@ declare interface INSetTaskAttributeIntentHandling extends NSObjectProtocol {
 declare class INSetTaskAttributeIntentHandling extends NativeObject implements INSetTaskAttributeIntentHandling {
 }
 
+declare class INPlayMediaIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INPlayMediaIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INPlayMediaIntentResponseCode>;
+
+  get nowPlayingInfo(): NSDictionary;
+  set nowPlayingInfo(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  setNowPlayingInfo(nowPlayingInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+}
+
+declare class INRestaurantResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedRestaurant<This extends abstract new (...args: any) => any>(this: This, resolvedRestaurant: INRestaurant): InstanceType<This>;
+
+  static disambiguationWithRestaurantsToDisambiguate<This extends abstract new (...args: any) => any>(this: This, restaurantsToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static confirmationRequiredWithRestaurantToConfirm<This extends abstract new (...args: any) => any>(this: This, restaurantToConfirm: INRestaurant | null): InstanceType<This>;
+}
+
+declare class INFocusStatus extends NSObject implements NSCopying, NSSecureCoding {
+  initWithIsFocused(isFocused: NSNumber | null): this;
+
+  readonly isFocused: NSNumber;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class INURLResolutionResult extends INIntentResolutionResult {
   static successWithResolvedURL<This extends abstract new (...args: any) => any>(this: This, resolvedURL: NSURL): InstanceType<This>;
 
@@ -2676,14 +2709,10 @@ declare class INRelevantShortcutStore extends NSObject {
   setRelevantShortcutsCompletionHandler(shortcuts: NSArray<interop.Object> | Array<interop.Object>, completionHandler: (p1: NSError) => void | null): void;
 }
 
-declare class INShortcut extends NSObject implements NSSecureCoding, NSCopying {
-  readonly intent: INIntent;
+declare class INImageNoteContent extends INNoteContent implements NSSecureCoding, NSCopying {
+  initWithImage(image: INImage): this;
 
-  readonly userActivity: NSUserActivity;
-
-  initWithIntent(intent: INIntent): this;
-
-  initWithUserActivity(userActivity: NSUserActivity): this;
+  readonly image: INImage;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -3416,6 +3445,72 @@ declare class INPerson extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class INSpeakableString extends NSObject implements INSpeakable, NSCopying, NSSecureCoding {
+  initWithVocabularyIdentifierSpokenPhrasePronunciationHint(vocabularyIdentifier: string, spokenPhrase: string, pronunciationHint: string | null): this;
+
+  initWithIdentifierSpokenPhrasePronunciationHint(identifier: string, spokenPhrase: string, pronunciationHint: string | null): this;
+
+  initWithSpokenPhrase(spokenPhrase: string): this;
+
+  readonly spokenPhrase: string;
+
+  readonly pronunciationHint: string;
+
+  readonly vocabularyIdentifier: string;
+
+  readonly alternativeSpeakableMatches: NSArray;
+
+  readonly identifier: string;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class INSetDefrosterSettingsInCarIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INSetDefrosterSettingsInCarIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
@@ -3596,6 +3691,14 @@ declare class INSetTaskAttributeTemporalEventTriggerResolutionResult extends INT
   initWithTemporalEventTriggerResolutionResult(temporalEventTriggerResolutionResult: INTemporalEventTriggerResolutionResult): this;
 }
 
+declare class INSearchForMediaMediaItemResolutionResult extends INMediaItemResolutionResult {
+  static successesWithResolvedMediaItems(resolvedMediaItems: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INSearchForMediaMediaItemUnsupportedReason>): InstanceType<This>;
+
+  initWithMediaItemResolutionResult(mediaItemResolutionResult: INMediaItemResolutionResult): this;
+}
+
 declare class INRequestPaymentPayerResolutionResult extends INPersonResolutionResult {
   static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INRequestPaymentPayerUnsupportedReason>): InstanceType<This>;
 
@@ -3660,14 +3763,6 @@ declare class INNoteContentTypeResolutionResult extends INIntentResolutionResult
   static confirmationRequiredWithNoteContentTypeToConfirm<This extends abstract new (...args: any) => any>(this: This, noteContentTypeToConfirm: interop.Enum<typeof INNoteContentType>): InstanceType<This>;
 }
 
-declare class INNoteContentResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedNoteContent<This extends abstract new (...args: any) => any>(this: This, resolvedNoteContent: INNoteContent): InstanceType<This>;
-
-  static disambiguationWithNoteContentsToDisambiguate<This extends abstract new (...args: any) => any>(this: This, noteContentsToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static confirmationRequiredWithNoteContentToConfirm<This extends abstract new (...args: any) => any>(this: This, noteContentToConfirm: INNoteContent | null): InstanceType<This>;
-}
-
 declare class INNote extends NSObject implements NSCopying, NSSecureCoding {
   initWithTitleContentsGroupNameCreatedDateComponentsModifiedDateComponentsIdentifier(title: INSpeakableString, contents: NSArray<interop.Object> | Array<interop.Object>, groupName: INSpeakableString | null, createdDateComponents: NSDateComponents | null, modifiedDateComponents: NSDateComponents | null, identifier: string | null): this;
 
@@ -3682,6 +3777,24 @@ declare class INNote extends NSObject implements NSCopying, NSSecureCoding {
   readonly modifiedDateComponents: NSDateComponents;
 
   readonly identifier: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class INMessageReaction extends NSObject implements NSCopying, NSSecureCoding {
+  initWithReactionTypeReactionDescriptionEmoji(reactionType: interop.Enum<typeof INMessageReactionType>, reactionDescription: string | null, emoji: string | null): this;
+
+  readonly reactionType: interop.Enum<typeof INMessageReactionType>;
+
+  readonly reactionDescription: string;
+
+  readonly emoji: string;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -3746,6 +3859,16 @@ declare class INCurrencyAmountResolutionResult extends INIntentResolutionResult 
   static disambiguationWithCurrencyAmountsToDisambiguate<This extends abstract new (...args: any) => any>(this: This, currencyAmountsToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
   static confirmationRequiredWithCurrencyAmountToConfirm<This extends abstract new (...args: any) => any>(this: This, currencyAmountToConfirm: INCurrencyAmount | null): InstanceType<This>;
+}
+
+declare class INCarSeatResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedCarSeat<This extends abstract new (...args: any) => any>(this: This, resolvedCarSeat: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+
+  static successWithResolvedValue<This extends abstract new (...args: any) => any>(this: This, resolvedValue: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+
+  static confirmationRequiredWithCarSeatToConfirm<This extends abstract new (...args: any) => any>(this: This, carSeatToConfirm: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+
+  static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INCarSeat>): InstanceType<This>;
 }
 
 declare class INCarAirCirculationModeResolutionResult extends INIntentResolutionResult {
@@ -3854,14 +3977,6 @@ declare class INTaskListResolutionResult extends INIntentResolutionResult {
   static confirmationRequiredWithTaskListToConfirm<This extends abstract new (...args: any) => any>(this: This, taskListToConfirm: INTaskList | null): InstanceType<This>;
 }
 
-declare class INAddMediaMediaItemResolutionResult extends INMediaItemResolutionResult {
-  static successesWithResolvedMediaItems(resolvedMediaItems: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INAddMediaMediaItemUnsupportedReason>): InstanceType<This>;
-
-  initWithMediaItemResolutionResult(mediaItemResolutionResult: INMediaItemResolutionResult): this;
-}
-
 declare class INMediaItemResolutionResult extends INIntentResolutionResult {
   static successWithResolvedMediaItem<This extends abstract new (...args: any) => any>(this: This, resolvedMediaItem: INMediaItem): InstanceType<This>;
 
@@ -3922,6 +4037,16 @@ declare class INRequestRideIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INRequestRideIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
   readonly code: interop.Enum<typeof INRequestRideIntentResponseCode>;
+
+  rideStatus: INRideStatus;
+
+  setRideStatus(rideStatus: INRideStatus | null): void;
+}
+
+declare class INGetRideStatusIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INGetRideStatusIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INGetRideStatusIntentResponseCode>;
 
   rideStatus: INRideStatus;
 
@@ -4009,17 +4134,6 @@ declare class INSearchForNotebookItemsIntentResponse extends INIntentResponse {
   setSortType(sortType: interop.Enum<typeof INSortType>): void;
 }
 
-declare class INDeleteTasksIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INDeleteTasksIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INDeleteTasksIntentResponseCode>;
-
-  get deletedTasks(): NSArray;
-  set deletedTasks(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setDeletedTasks(deletedTasks: NSArray<interop.Object> | Array<interop.Object> | null): void;
-}
-
 declare class INAppendToNoteIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INAppendToNoteIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
@@ -4075,6 +4189,12 @@ declare class INAddMediaIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INAddMediaIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
   readonly code: interop.Enum<typeof INAddMediaIntentResponseCode>;
+}
+
+declare class INResumeWorkoutIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INResumeWorkoutIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INResumeWorkoutIntentResponseCode>;
 }
 
 declare class INSetSeatSettingsInCarIntentResponse extends INIntentResponse {
@@ -4229,6 +4349,12 @@ declare class INActivateCarSignalIntentResponse extends INIntentResponse {
   setSignals(signals: interop.Enum<typeof INCarSignalOptions>): void;
 }
 
+declare class INStartVideoCallIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INStartVideoCallIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INStartVideoCallIntentResponseCode>;
+}
+
 declare class INSearchCallHistoryIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INSearchCallHistoryIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
@@ -4238,6 +4364,17 @@ declare class INSearchCallHistoryIntentResponse extends INIntentResponse {
   set callRecords(value: NSArray<interop.Object> | Array<interop.Object>);
 
   setCallRecords(callRecords: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class INAnswerCallIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INAnswerCallIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INAnswerCallIntentResponseCode>;
+
+  get callRecords(): NSArray;
+  set callRecords(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setCallRecords(callRecords: NSArray<interop.Object> | Array<interop.Object> | null): void;
 }
 
 declare class INObjectCollection<ObjectType = interop.Object> extends NSObject implements NSCopying, NSSecureCoding {
@@ -4334,18 +4471,6 @@ declare class INSendRideFeedbackIntent extends INIntent {
   setRating(rating: NSNumber | null): void;
 
   setTip(tip: INCurrencyAmount | null): void;
-}
-
-declare class INSnoozeTasksTaskResolutionResult extends INTaskResolutionResult {
-  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INSnoozeTasksTaskUnsupportedReason>): InstanceType<This>;
-
-  initWithTaskResolutionResult(taskResolutionResult: INTaskResolutionResult): this;
-}
-
-declare class INCancelRideIntent extends INIntent {
-  initWithRideIdentifier(rideIdentifier: string): this;
-
-  readonly rideIdentifier: string;
 }
 
 declare class INGetRideStatusIntent extends INIntent {
@@ -4660,6 +4785,12 @@ declare class INGetCarPowerLevelStatusIntent extends INIntent {
   readonly carName: INSpeakableString;
 }
 
+declare class INGetCarLockStatusIntent extends INIntent {
+  initWithCarName(carName: INSpeakableString | null): this;
+
+  readonly carName: INSpeakableString;
+}
+
 declare class INTemperatureResolutionResult extends INIntentResolutionResult {
   static successWithResolvedTemperature<This extends abstract new (...args: any) => any>(this: This, resolvedTemperature: NSMeasurement): InstanceType<This>;
 
@@ -4737,7 +4868,7 @@ declare class INImage extends NSObject implements NSCopying, NSSecureCoding {
 
   static imageWithURLWidthHeight<This extends abstract new (...args: any) => any>(this: This, URL: NSURL, width: number, height: number): InstanceType<This>;
 
-  static imageWithCGImage<This extends abstract new (...args: any) => any>(this: This, imageRef: interop.Object): InstanceType<This>;
+  static imageWithCGImage<This extends abstract new (...args: any) => any>(this: This, imageRef: interop.PointerConvertible): InstanceType<This>;
 
   static imageWithUIImage<This extends abstract new (...args: any) => any>(this: This, image: UIImage): InstanceType<This>;
 
@@ -4754,20 +4885,16 @@ declare class INImage extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class INSticker extends NSObject implements NSCopying, NSSecureCoding {
-  initWithTypeEmoji(type: interop.Enum<typeof INStickerType>, emoji: string | null): this;
+declare class INSnoozeTasksTaskResolutionResult extends INTaskResolutionResult {
+  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INSnoozeTasksTaskUnsupportedReason>): InstanceType<This>;
 
-  readonly type: interop.Enum<typeof INStickerType>;
+  initWithTaskResolutionResult(taskResolutionResult: INTaskResolutionResult): this;
+}
 
-  readonly emoji: string;
+declare class INCancelRideIntent extends INIntent {
+  initWithRideIdentifier(rideIdentifier: string): this;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  readonly rideIdentifier: string;
 }
 
 declare class INDoubleResolutionResult extends INIntentResolutionResult {
@@ -4782,24 +4909,24 @@ declare class INLocationSearchTypeResolutionResult extends INIntentResolutionRes
   static confirmationRequiredWithLocationSearchTypeToConfirm<This extends abstract new (...args: any) => any>(this: This, locationSearchTypeToConfirm: interop.Enum<typeof INLocationSearchType>): InstanceType<This>;
 }
 
-declare class INNoteContent extends NSObject implements NSSecureCoding, NSCopying {
-  static readonly supportsSecureCoding: boolean;
+declare class INIntentResolutionResult extends NSObject {
+  static needsValue<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
-  encodeWithCoder(coder: NSCoder): void;
+  static notRequired<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
-  initWithCoder(coder: NSCoder): this;
+  static unsupported<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  static unsupportedWithReason<This extends abstract new (...args: any) => any>(this: This, reason: number): InstanceType<This>;
+
+  static confirmationRequiredWithItemToConfirmForReason<This extends abstract new (...args: any) => any>(this: This, itemToConfirm: interop.Object, reason: number): InstanceType<This>;
 }
 
-declare class INTrainReservation extends INReservation implements NSCopying, NSSecureCoding {
-  initWithItemReferenceReservationNumberBookingTimeReservationStatusReservationHolderNameActionsURLReservedSeatTrainTrip(itemReference: INSpeakableString, reservationNumber: string | null, bookingTime: NSDate | null, reservationStatus: interop.Enum<typeof INReservationStatus>, reservationHolderName: string | null, actions: NSArray<interop.Object> | Array<interop.Object> | null, URL: NSURL | null, reservedSeat: INSeat | null, trainTrip: INTrainTrip): this;
+declare class INPaymentAmount extends NSObject implements NSCopying, NSSecureCoding {
+  initWithAmountTypeAmount(amountType: interop.Enum<typeof INAmountType>, amount: INCurrencyAmount): this;
 
-  initWithItemReferenceReservationNumberBookingTimeReservationStatusReservationHolderNameActionsReservedSeatTrainTrip(itemReference: INSpeakableString, reservationNumber: string | null, bookingTime: NSDate | null, reservationStatus: interop.Enum<typeof INReservationStatus>, reservationHolderName: string | null, actions: NSArray<interop.Object> | Array<interop.Object> | null, reservedSeat: INSeat | null, trainTrip: INTrainTrip): this;
+  readonly amount: INCurrencyAmount;
 
-  readonly reservedSeat: INSeat;
-
-  readonly trainTrip: INTrainTrip;
+  readonly amountType: interop.Enum<typeof INAmountType>;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -4824,18 +4951,6 @@ declare class INBoatReservation extends INReservation implements NSCopying, NSSe
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class INIntentResolutionResult extends NSObject {
-  static needsValue<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static notRequired<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static unsupported<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static unsupportedWithReason<This extends abstract new (...args: any) => any>(this: This, reason: number): InstanceType<This>;
-
-  static confirmationRequiredWithItemToConfirmForReason<This extends abstract new (...args: any) => any>(this: This, itemToConfirm: interop.Object, reason: number): InstanceType<This>;
 }
 
 declare class INListCarsIntentResponse extends INIntentResponse {
@@ -4930,14 +5045,36 @@ declare class INObject extends NSObject implements INSpeakable, NSCopying, NSSec
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class INCarSeatResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedCarSeat<This extends abstract new (...args: any) => any>(this: This, resolvedCarSeat: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+declare class INMessageLinkMetadata extends NSObject implements NSCopying, NSSecureCoding {
+  initWithSiteNameSummaryTitleOpenGraphTypeLinkURL(siteName: string | null, summary: string | null, title: string | null, openGraphType: string | null, linkURL: NSURL | null): this;
 
-  static successWithResolvedValue<This extends abstract new (...args: any) => any>(this: This, resolvedValue: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+  siteName: string;
 
-  static confirmationRequiredWithCarSeatToConfirm<This extends abstract new (...args: any) => any>(this: This, carSeatToConfirm: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+  summary: string;
 
-  static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INCarSeat>): InstanceType<This>;
+  title: string;
+
+  openGraphType: string;
+
+  linkURL: NSURL;
+
+  setSiteName(siteName: string | null): void;
+
+  setSummary(summary: string | null): void;
+
+  setTitle(title: string | null): void;
+
+  setOpenGraphType(openGraphType: string | null): void;
+
+  setLinkURL(linkURL: NSURL | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class INPaymentRecord extends NSObject implements NSCopying, NSSecureCoding {
@@ -4980,6 +5117,12 @@ declare class INGetAvailableRestaurantReservationBookingDefaultsIntent extends I
   restaurant: INRestaurant;
 
   setRestaurant(restaurant: INRestaurant | null): void;
+}
+
+declare class INSetClimateSettingsInCarIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INSetClimateSettingsInCarIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INSetClimateSettingsInCarIntentResponseCode>;
 }
 
 declare class INRelevanceProvider extends NSObject implements NSCopying, NSSecureCoding {
@@ -5044,6 +5187,12 @@ declare class INCreateNoteIntentResponse extends INIntentResponse {
   createdNote: INNote;
 
   setCreatedNote(createdNote: INNote | null): void;
+}
+
+declare class INHangUpCallIntent extends INIntent {
+  initWithCallIdentifier(callIdentifier: string | null): this;
+
+  readonly callIdentifier: string;
 }
 
 declare class INSnoozeTasksIntentResponse extends INIntentResponse {
@@ -5146,289 +5295,94 @@ declare class INCancelWorkoutIntentResponse extends INIntentResponse {
   readonly code: interop.Enum<typeof INCancelWorkoutIntentResponseCode>;
 }
 
-declare class INBookRestaurantReservationIntent extends INIntent implements NSCopying {
-  initWithRestaurantBookingDateComponentsPartySizeBookingIdentifierGuestSelectedOfferGuestProvidedSpecialRequestText(restaurant: INRestaurant, bookingDateComponents: NSDateComponents, partySize: number, bookingIdentifier: string | null, guest: INRestaurantGuest | null, selectedOffer: INRestaurantOffer | null, guestProvidedSpecialRequestText: string | null): this;
-
-  restaurant: INRestaurant;
-
-  bookingDateComponents: NSDateComponents;
-
-  partySize: number;
-
-  bookingIdentifier: string;
-
-  guest: INRestaurantGuest;
-
-  selectedOffer: INRestaurantOffer;
-
-  guestProvidedSpecialRequestText: string;
-
-  setRestaurant(restaurant: INRestaurant): void;
-
-  setBookingDateComponents(bookingDateComponents: NSDateComponents): void;
-
-  setPartySize(partySize: number): void;
-
-  setBookingIdentifier(bookingIdentifier: string | null): void;
-
-  setGuest(guest: INRestaurantGuest | null): void;
-
-  setSelectedOffer(selectedOffer: INRestaurantOffer | null): void;
-
-  setGuestProvidedSpecialRequestText(guestProvidedSpecialRequestText: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class INGetRideStatusIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INGetRideStatusIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INGetRideStatusIntentResponseCode>;
-
-  rideStatus: INRideStatus;
-
-  setRideStatus(rideStatus: INRideStatus | null): void;
-}
-
-declare class INPaymentAmount extends NSObject implements NSCopying, NSSecureCoding {
-  initWithAmountTypeAmount(amountType: interop.Enum<typeof INAmountType>, amount: INCurrencyAmount): this;
-
-  readonly amount: INCurrencyAmount;
-
-  readonly amountType: interop.Enum<typeof INAmountType>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INDateComponentsRangeResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedDateComponentsRange<This extends abstract new (...args: any) => any>(this: This, resolvedDateComponentsRange: INDateComponentsRange): InstanceType<This>;
-
-  static disambiguationWithDateComponentsRangesToDisambiguate<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangesToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static confirmationRequiredWithDateComponentsRangeToConfirm<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangeToConfirm: INDateComponentsRange | null): InstanceType<This>;
-}
-
-declare class INAnswerCallIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INAnswerCallIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INAnswerCallIntentResponseCode>;
-
-  get callRecords(): NSArray;
-  set callRecords(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setCallRecords(callRecords: NSArray<interop.Object> | Array<interop.Object> | null): void;
-}
-
-declare class INMessageLinkMetadata extends NSObject implements NSCopying, NSSecureCoding {
-  initWithSiteNameSummaryTitleOpenGraphTypeLinkURL(siteName: string | null, summary: string | null, title: string | null, openGraphType: string | null, linkURL: NSURL | null): this;
-
-  siteName: string;
-
-  summary: string;
-
-  title: string;
-
-  openGraphType: string;
-
-  linkURL: NSURL;
-
-  setSiteName(siteName: string | null): void;
-
-  setSummary(summary: string | null): void;
-
-  setTitle(title: string | null): void;
-
-  setOpenGraphType(openGraphType: string | null): void;
-
-  setLinkURL(linkURL: NSURL | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INResumeWorkoutIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INResumeWorkoutIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INResumeWorkoutIntentResponseCode>;
-}
-
-declare class INSetClimateSettingsInCarIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INSetClimateSettingsInCarIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INSetClimateSettingsInCarIntentResponseCode>;
-}
-
-declare class INFocusStatus extends NSObject implements NSCopying, NSSecureCoding {
-  initWithIsFocused(isFocused: NSNumber | null): this;
-
-  readonly isFocused: NSNumber;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INMessageReaction extends NSObject implements NSCopying, NSSecureCoding {
-  initWithReactionTypeReactionDescriptionEmoji(reactionType: interop.Enum<typeof INMessageReactionType>, reactionDescription: string | null, emoji: string | null): this;
-
-  readonly reactionType: interop.Enum<typeof INMessageReactionType>;
-
-  readonly reactionDescription: string;
-
-  readonly emoji: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INSearchForMediaMediaItemResolutionResult extends INMediaItemResolutionResult {
-  static successesWithResolvedMediaItems(resolvedMediaItems: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INSearchForMediaMediaItemUnsupportedReason>): InstanceType<This>;
-
-  initWithMediaItemResolutionResult(mediaItemResolutionResult: INMediaItemResolutionResult): this;
-}
-
-declare class INGetCarLockStatusIntent extends INIntent {
-  initWithCarName(carName: INSpeakableString | null): this;
-
-  readonly carName: INSpeakableString;
-}
-
-declare class INStartVideoCallIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INStartVideoCallIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INStartVideoCallIntentResponseCode>;
-}
-
-declare class INTemporalEventTrigger extends NSObject implements NSCopying, NSSecureCoding {
-  initWithDateComponentsRange(dateComponentsRange: INDateComponentsRange): this;
-
-  readonly dateComponentsRange: INDateComponentsRange;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INSpeakableString extends NSObject implements INSpeakable, NSCopying, NSSecureCoding {
-  initWithVocabularyIdentifierSpokenPhrasePronunciationHint(vocabularyIdentifier: string, spokenPhrase: string, pronunciationHint: string | null): this;
-
-  initWithIdentifierSpokenPhrasePronunciationHint(identifier: string, spokenPhrase: string, pronunciationHint: string | null): this;
-
-  initWithSpokenPhrase(spokenPhrase: string): this;
-
-  readonly spokenPhrase: string;
-
-  readonly pronunciationHint: string;
-
-  readonly vocabularyIdentifier: string;
-
-  readonly alternativeSpeakableMatches: NSArray;
-
-  readonly identifier: string;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INImageNoteContent extends INNoteContent implements NSSecureCoding, NSCopying {
-  initWithImage(image: INImage): this;
-
-  readonly image: INImage;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class INEditMessageIntent extends INIntent {
-  initWithMessageIdentifierEditedContent(messageIdentifier: string | null, editedContent: string | null): this;
-
-  readonly messageIdentifier: string;
-
-  readonly editedContent: string;
-}
-
 declare class INTemporalEventTriggerResolutionResult extends INIntentResolutionResult {
   static successWithResolvedTemporalEventTrigger<This extends abstract new (...args: any) => any>(this: This, resolvedTemporalEventTrigger: INTemporalEventTrigger): InstanceType<This>;
 
   static disambiguationWithTemporalEventTriggersToDisambiguate<This extends abstract new (...args: any) => any>(this: This, temporalEventTriggersToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
   static confirmationRequiredWithTemporalEventTriggerToConfirm<This extends abstract new (...args: any) => any>(this: This, temporalEventTriggerToConfirm: INTemporalEventTrigger | null): InstanceType<This>;
+}
+
+declare class INSearchForNotebookItemsIntent extends INIntent {
+  initWithTitleContentItemTypeStatusLocationLocationSearchTypeDateTimeDateSearchTypeTemporalEventTriggerTypesTaskPriorityNotebookItemIdentifier(title: INSpeakableString | null, content: string | null, itemType: interop.Enum<typeof INNotebookItemType>, status: interop.Enum<typeof INTaskStatus>, location: CLPlacemark | null, locationSearchType: interop.Enum<typeof INLocationSearchType>, dateTime: INDateComponentsRange | null, dateSearchType: interop.Enum<typeof INDateSearchType>, temporalEventTriggerTypes: interop.Enum<typeof INTemporalEventTriggerTypeOptions>, taskPriority: interop.Enum<typeof INTaskPriority>, notebookItemIdentifier: string | null): this;
+
+  readonly title: INSpeakableString;
+
+  readonly content: string;
+
+  readonly itemType: interop.Enum<typeof INNotebookItemType>;
+
+  readonly status: interop.Enum<typeof INTaskStatus>;
+
+  readonly location: CLPlacemark;
+
+  readonly locationSearchType: interop.Enum<typeof INLocationSearchType>;
+
+  readonly dateTime: INDateComponentsRange;
+
+  readonly dateSearchType: interop.Enum<typeof INDateSearchType>;
+
+  readonly temporalEventTriggerTypes: interop.Enum<typeof INTemporalEventTriggerTypeOptions>;
+
+  readonly taskPriority: interop.Enum<typeof INTaskPriority>;
+
+  readonly notebookItemIdentifier: string;
+
+  initWithTitleContentItemTypeStatusLocationLocationSearchTypeDateTimeDateSearchType(title: INSpeakableString | null, content: string | null, itemType: interop.Enum<typeof INNotebookItemType>, status: interop.Enum<typeof INTaskStatus>, location: CLPlacemark | null, locationSearchType: interop.Enum<typeof INLocationSearchType>, dateTime: INDateComponentsRange | null, dateSearchType: interop.Enum<typeof INDateSearchType>): this;
+
+  initWithTitleContentItemTypeStatusLocationLocationSearchTypeDateTimeDateSearchTypeNotebookItemIdentifier(title: INSpeakableString | null, content: string | null, itemType: interop.Enum<typeof INNotebookItemType>, status: interop.Enum<typeof INTaskStatus>, location: CLPlacemark | null, locationSearchType: interop.Enum<typeof INLocationSearchType>, dateTime: INDateComponentsRange | null, dateSearchType: interop.Enum<typeof INDateSearchType>, notebookItemIdentifier: string | null): this;
+}
+
+declare class INDeleteTasksIntent extends INIntent {
+  initWithTaskListTasksAll(taskList: INTaskList | null, tasks: NSArray<interop.Object> | Array<interop.Object> | null, all: NSNumber | null): this;
+
+  readonly taskList: INTaskList;
+
+  readonly tasks: NSArray;
+
+  readonly all: NSNumber;
+}
+
+declare class INIntentResponse extends NSObject implements NSCopying, NSSecureCoding {
+  userActivity: NSUserActivity;
+
+  setUserActivity(userActivity: NSUserActivity | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class INBillTypeResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedBillType<This extends abstract new (...args: any) => any>(this: This, resolvedBillType: interop.Enum<typeof INBillType>): InstanceType<This>;
+
+  static successWithResolvedValue<This extends abstract new (...args: any) => any>(this: This, resolvedValue: interop.Enum<typeof INBillType>): InstanceType<This>;
+
+  static confirmationRequiredWithBillTypeToConfirm<This extends abstract new (...args: any) => any>(this: This, billTypeToConfirm: interop.Enum<typeof INBillType>): InstanceType<This>;
+
+  static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INBillType>): InstanceType<This>;
+}
+
+declare class INAirline extends NSObject implements NSCopying, NSSecureCoding {
+  initWithNameIataCodeIcaoCode(name: string | null, iataCode: string | null, icaoCode: string | null): this;
+
+  readonly name: string;
+
+  readonly iataCode: string;
+
+  readonly icaoCode: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class INStartCallIntentResponse extends INIntentResponse {
@@ -5519,70 +5473,6 @@ declare class INRestaurantReservationUserBooking extends INRestaurantReservation
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class INDeleteTasksIntent extends INIntent {
-  initWithTaskListTasksAll(taskList: INTaskList | null, tasks: NSArray<interop.Object> | Array<interop.Object> | null, all: NSNumber | null): this;
-
-  readonly taskList: INTaskList;
-
-  readonly tasks: NSArray;
-
-  readonly all: NSNumber;
-}
-
-declare class INIntentResponse extends NSObject implements NSCopying, NSSecureCoding {
-  userActivity: NSUserActivity;
-
-  setUserActivity(userActivity: NSUserActivity | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class INBillTypeResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedBillType<This extends abstract new (...args: any) => any>(this: This, resolvedBillType: interop.Enum<typeof INBillType>): InstanceType<This>;
-
-  static successWithResolvedValue<This extends abstract new (...args: any) => any>(this: This, resolvedValue: interop.Enum<typeof INBillType>): InstanceType<This>;
-
-  static confirmationRequiredWithBillTypeToConfirm<This extends abstract new (...args: any) => any>(this: This, billTypeToConfirm: interop.Enum<typeof INBillType>): InstanceType<This>;
-
-  static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INBillType>): InstanceType<This>;
-}
-
-declare class INSearchForNotebookItemsIntent extends INIntent {
-  initWithTitleContentItemTypeStatusLocationLocationSearchTypeDateTimeDateSearchTypeTemporalEventTriggerTypesTaskPriorityNotebookItemIdentifier(title: INSpeakableString | null, content: string | null, itemType: interop.Enum<typeof INNotebookItemType>, status: interop.Enum<typeof INTaskStatus>, location: CLPlacemark | null, locationSearchType: interop.Enum<typeof INLocationSearchType>, dateTime: INDateComponentsRange | null, dateSearchType: interop.Enum<typeof INDateSearchType>, temporalEventTriggerTypes: interop.Enum<typeof INTemporalEventTriggerTypeOptions>, taskPriority: interop.Enum<typeof INTaskPriority>, notebookItemIdentifier: string | null): this;
-
-  readonly title: INSpeakableString;
-
-  readonly content: string;
-
-  readonly itemType: interop.Enum<typeof INNotebookItemType>;
-
-  readonly status: interop.Enum<typeof INTaskStatus>;
-
-  readonly location: CLPlacemark;
-
-  readonly locationSearchType: interop.Enum<typeof INLocationSearchType>;
-
-  readonly dateTime: INDateComponentsRange;
-
-  readonly dateSearchType: interop.Enum<typeof INDateSearchType>;
-
-  readonly temporalEventTriggerTypes: interop.Enum<typeof INTemporalEventTriggerTypeOptions>;
-
-  readonly taskPriority: interop.Enum<typeof INTaskPriority>;
-
-  readonly notebookItemIdentifier: string;
-
-  initWithTitleContentItemTypeStatusLocationLocationSearchTypeDateTimeDateSearchType(title: INSpeakableString | null, content: string | null, itemType: interop.Enum<typeof INNotebookItemType>, status: interop.Enum<typeof INTaskStatus>, location: CLPlacemark | null, locationSearchType: interop.Enum<typeof INLocationSearchType>, dateTime: INDateComponentsRange | null, dateSearchType: interop.Enum<typeof INDateSearchType>): this;
-
-  initWithTitleContentItemTypeStatusLocationLocationSearchTypeDateTimeDateSearchTypeNotebookItemIdentifier(title: INSpeakableString | null, content: string | null, itemType: interop.Enum<typeof INNotebookItemType>, status: interop.Enum<typeof INTaskStatus>, location: CLPlacemark | null, locationSearchType: interop.Enum<typeof INLocationSearchType>, dateTime: INDateComponentsRange | null, dateSearchType: interop.Enum<typeof INDateSearchType>, notebookItemIdentifier: string | null): this;
-}
-
 declare class INSeat extends NSObject implements NSCopying, NSSecureCoding {
   initWithSeatSectionSeatRowSeatNumberSeatingType(seatSection: string | null, seatRow: string | null, seatNumber: string | null, seatingType: string | null): this;
 
@@ -5618,7 +5508,7 @@ declare class INShareFocusStatusIntentResponse extends INIntentResponse {
 }
 
 declare class INCar extends NSObject implements NSCopying, NSSecureCoding {
-  initWithCarIdentifierDisplayNameYearMakeModelColorHeadUnitSupportedChargingConnectors(carIdentifier: string, displayName: string | null, year: string | null, make: string | null, model: string | null, color: interop.Object | null, headUnit: INCarHeadUnit | null, supportedChargingConnectors: NSArray<interop.Object> | Array<interop.Object>): this;
+  initWithCarIdentifierDisplayNameYearMakeModelColorHeadUnitSupportedChargingConnectors(carIdentifier: string, displayName: string | null, year: string | null, make: string | null, model: string | null, color: interop.PointerConvertible, headUnit: INCarHeadUnit | null, supportedChargingConnectors: NSArray<interop.Object> | Array<interop.Object>): this;
 
   readonly carIdentifier: string;
 
@@ -5630,7 +5520,7 @@ declare class INCar extends NSObject implements NSCopying, NSSecureCoding {
 
   readonly model: string;
 
-  readonly color: interop.Object;
+  readonly color: interop.Pointer;
 
   readonly headUnit: INCarHeadUnit;
 
@@ -5647,37 +5537,6 @@ declare class INCar extends NSObject implements NSCopying, NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class INRelevantShortcut extends NSObject implements NSSecureCoding, NSCopying {
-  get relevanceProviders(): NSArray;
-  set relevanceProviders(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  watchTemplate: INDefaultCardTemplate;
-
-  widgetKind: string;
-
-  shortcutRole: interop.Enum<typeof INRelevantShortcutRole>;
-
-  readonly shortcut: INShortcut;
-
-  initWithShortcut(shortcut: INShortcut): this;
-
-  setRelevanceProviders(relevanceProviders: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setWatchTemplate(watchTemplate: INDefaultCardTemplate | null): void;
-
-  setWidgetKind(widgetKind: string | null): void;
-
-  setShortcutRole(shortcutRole: interop.Enum<typeof INRelevantShortcutRole>): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class INRequestPaymentIntentResponse extends INIntentResponse {
@@ -5698,12 +5557,6 @@ declare class INDateComponentsResolutionResult extends INIntentResolutionResult 
   static confirmationRequiredWithDateComponentsToConfirm<This extends abstract new (...args: any) => any>(this: This, dateComponentsToConfirm: NSDateComponents | null): InstanceType<This>;
 }
 
-declare class INHangUpCallIntent extends INIntent {
-  initWithCallIdentifier(callIdentifier: string | null): this;
-
-  readonly callIdentifier: string;
-}
-
 declare class INRelativeSettingResolutionResult extends INIntentResolutionResult {
   static successWithResolvedRelativeSetting<This extends abstract new (...args: any) => any>(this: This, resolvedRelativeSetting: interop.Enum<typeof INRelativeSetting>): InstanceType<This>;
 
@@ -5712,6 +5565,30 @@ declare class INRelativeSettingResolutionResult extends INIntentResolutionResult
   static confirmationRequiredWithRelativeSettingToConfirm<This extends abstract new (...args: any) => any>(this: This, relativeSettingToConfirm: interop.Enum<typeof INRelativeSetting>): InstanceType<This>;
 
   static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INRelativeSetting>): InstanceType<This>;
+}
+
+declare class INAddMediaMediaItemResolutionResult extends INMediaItemResolutionResult {
+  static successesWithResolvedMediaItems(resolvedMediaItems: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INAddMediaMediaItemUnsupportedReason>): InstanceType<This>;
+
+  initWithMediaItemResolutionResult(mediaItemResolutionResult: INMediaItemResolutionResult): this;
+}
+
+declare class INSticker extends NSObject implements NSCopying, NSSecureCoding {
+  initWithTypeEmoji(type: interop.Enum<typeof INStickerType>, emoji: string | null): this;
+
+  readonly type: interop.Enum<typeof INStickerType>;
+
+  readonly emoji: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class INSetClimateSettingsInCarIntent extends INIntent {
@@ -5790,10 +5667,21 @@ declare class INPaymentAccount extends NSObject implements NSCopying, NSSecureCo
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class INDeleteTasksTaskListResolutionResult extends INTaskListResolutionResult {
-  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INDeleteTasksTaskListUnsupportedReason>): InstanceType<This>;
+declare class INDeleteTasksIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INDeleteTasksIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
-  initWithTaskListResolutionResult(taskListResolutionResult: INTaskListResolutionResult): this;
+  readonly code: interop.Enum<typeof INDeleteTasksIntentResponseCode>;
+
+  get deletedTasks(): NSArray;
+  set deletedTasks(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setDeletedTasks(deletedTasks: NSArray<interop.Object> | Array<interop.Object> | null): void;
+}
+
+declare class INStartCallContactResolutionResult extends INPersonResolutionResult {
+  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INStartCallContactUnsupportedReason>): InstanceType<This>;
+
+  initWithPersonResolutionResult(personResolutionResult: INPersonResolutionResult): this;
 }
 
 declare class INPersonHandle extends NSObject implements NSCopying, NSSecureCoding {
@@ -5816,10 +5704,95 @@ declare class INPersonHandle extends NSObject implements NSCopying, NSSecureCodi
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class INRideDriver extends INPerson implements NSCopying, NSSecureCoding {
+  readonly rating: string;
+
+  readonly phoneNumber: string;
+
+  initWithPhoneNumberNameComponentsDisplayNameImageRating(phoneNumber: string, nameComponents: NSPersonNameComponents | null, displayName: string | null, image: INImage | null, rating: string | null): this;
+
+  initWithPersonHandleNameComponentsDisplayNameImageRatingPhoneNumber(personHandle: INPersonHandle, nameComponents: NSPersonNameComponents | null, displayName: string | null, image: INImage | null, rating: string | null, phoneNumber: string | null): this;
+
+  initWithHandleDisplayNameImageRatingPhoneNumber(handle: string, displayName: string | null, image: INImage | null, rating: string | null, phoneNumber: string | null): this;
+
+  initWithHandleNameComponentsImageRatingPhoneNumber(handle: string, nameComponents: NSPersonNameComponents, image: INImage | null, rating: string | null, phoneNumber: string | null): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class INCarDefrosterResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedCarDefroster<This extends abstract new (...args: any) => any>(this: This, resolvedCarDefroster: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
+
+  static successWithResolvedValue<This extends abstract new (...args: any) => any>(this: This, resolvedValue: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
+
+  static confirmationRequiredWithCarDefrosterToConfirm<This extends abstract new (...args: any) => any>(this: This, carDefrosterToConfirm: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
+
+  static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
+}
+
+declare class INSendMessageIntentDonationMetadata extends INIntentDonationMetadata {
+  mentionsCurrentUser: boolean;
+
+  replyToCurrentUser: boolean;
+
+  notifyRecipientAnyway: boolean;
+
+  recipientCount: number;
+
+  init(): this;
+
+  setMentionsCurrentUser(mentionsCurrentUser: boolean): void;
+
+  isReplyToCurrentUser(): boolean;
+
+  setReplyToCurrentUser(replyToCurrentUser: boolean): void;
+
+  setNotifyRecipientAnyway(notifyRecipientAnyway: boolean): void;
+
+  setRecipientCount(recipientCount: number): void;
+}
+
 declare class INPlaybackQueueLocationResolutionResult extends INIntentResolutionResult {
   static successWithResolvedPlaybackQueueLocation<This extends abstract new (...args: any) => any>(this: This, resolvedPlaybackQueueLocation: interop.Enum<typeof INPlaybackQueueLocation>): InstanceType<This>;
 
   static confirmationRequiredWithPlaybackQueueLocationToConfirm<This extends abstract new (...args: any) => any>(this: This, playbackQueueLocationToConfirm: interop.Enum<typeof INPlaybackQueueLocation>): InstanceType<This>;
+}
+
+declare class INRelevantShortcut extends NSObject implements NSSecureCoding, NSCopying {
+  get relevanceProviders(): NSArray;
+  set relevanceProviders(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  watchTemplate: INDefaultCardTemplate;
+
+  widgetKind: string;
+
+  shortcutRole: interop.Enum<typeof INRelevantShortcutRole>;
+
+  readonly shortcut: INShortcut;
+
+  initWithShortcut(shortcut: INShortcut): this;
+
+  setRelevanceProviders(relevanceProviders: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setWatchTemplate(watchTemplate: INDefaultCardTemplate | null): void;
+
+  setWidgetKind(widgetKind: string | null): void;
+
+  setShortcutRole(shortcutRole: interop.Enum<typeof INRelevantShortcutRole>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class INAddTasksTargetTaskListResolutionResult extends INTaskListResolutionResult {
@@ -5840,52 +5813,6 @@ declare class INGetRestaurantGuestIntentResponse extends INIntentResponse {
   setGuest(guest: INRestaurantGuest | null): void;
 
   setGuestDisplayPreferences(guestDisplayPreferences: INRestaurantGuestDisplayPreferences | null): void;
-}
-
-declare class INStartCallContactResolutionResult extends INPersonResolutionResult {
-  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INStartCallContactUnsupportedReason>): InstanceType<This>;
-
-  initWithPersonResolutionResult(personResolutionResult: INPersonResolutionResult): this;
-}
-
-declare class INCallRecord extends NSObject implements NSCopying, NSSecureCoding {
-  initWithIdentifierDateCreatedCallRecordTypeCallCapabilityCallDurationUnseenParticipantsNumberOfCallsIsCallerIdBlocked(identifier: string, dateCreated: NSDate | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null, participants: NSArray<interop.Object> | Array<interop.Object> | null, numberOfCalls: NSNumber | null, isCallerIdBlocked: NSNumber | null): this;
-
-  initWithIdentifierDateCreatedCallRecordTypeCallCapabilityCallDurationUnseen(identifier: string, dateCreated: NSDate | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null): this;
-
-  initWithIdentifierDateCreatedCallRecordTypeCallCapabilityCallDurationUnseenNumberOfCalls(identifier: string, dateCreated: NSDate | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null, numberOfCalls: NSNumber | null): this;
-
-  readonly identifier: string;
-
-  readonly dateCreated: NSDate;
-
-  readonly callRecordType: interop.Enum<typeof INCallRecordType>;
-
-  readonly callDuration: NSNumber;
-
-  readonly unseen: NSNumber;
-
-  readonly callCapability: interop.Enum<typeof INCallCapability>;
-
-  readonly numberOfCalls: NSNumber;
-
-  readonly isCallerIdBlocked: NSNumber;
-
-  readonly participants: NSArray;
-
-  initWithIdentifierDateCreatedCallerCallRecordTypeCallCapabilityCallDurationUnseen(identifier: string, dateCreated: NSDate | null, caller: INPerson | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null): this;
-
-  initWithIdentifierDateCreatedCallerCallRecordTypeCallCapabilityCallDurationUnseenNumberOfCalls(identifier: string, dateCreated: NSDate | null, caller: INPerson | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null, numberOfCalls: NSNumber | null): this;
-
-  readonly caller: INPerson;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class INStartWorkoutIntentResponse extends INIntentResponse {
@@ -5992,6 +5919,70 @@ declare class INListRideOptionsIntentResponse extends INIntentResponse {
   setExpirationDate(expirationDate: NSDate | null): void;
 }
 
+declare class INCallRecord extends NSObject implements NSCopying, NSSecureCoding {
+  initWithIdentifierDateCreatedCallRecordTypeCallCapabilityCallDurationUnseenParticipantsNumberOfCallsIsCallerIdBlocked(identifier: string, dateCreated: NSDate | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null, participants: NSArray<interop.Object> | Array<interop.Object> | null, numberOfCalls: NSNumber | null, isCallerIdBlocked: NSNumber | null): this;
+
+  initWithIdentifierDateCreatedCallRecordTypeCallCapabilityCallDurationUnseen(identifier: string, dateCreated: NSDate | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null): this;
+
+  initWithIdentifierDateCreatedCallRecordTypeCallCapabilityCallDurationUnseenNumberOfCalls(identifier: string, dateCreated: NSDate | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null, numberOfCalls: NSNumber | null): this;
+
+  readonly identifier: string;
+
+  readonly dateCreated: NSDate;
+
+  readonly callRecordType: interop.Enum<typeof INCallRecordType>;
+
+  readonly callDuration: NSNumber;
+
+  readonly unseen: NSNumber;
+
+  readonly callCapability: interop.Enum<typeof INCallCapability>;
+
+  readonly numberOfCalls: NSNumber;
+
+  readonly isCallerIdBlocked: NSNumber;
+
+  readonly participants: NSArray;
+
+  initWithIdentifierDateCreatedCallerCallRecordTypeCallCapabilityCallDurationUnseen(identifier: string, dateCreated: NSDate | null, caller: INPerson | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null): this;
+
+  initWithIdentifierDateCreatedCallerCallRecordTypeCallCapabilityCallDurationUnseenNumberOfCalls(identifier: string, dateCreated: NSDate | null, caller: INPerson | null, callRecordType: interop.Enum<typeof INCallRecordType>, callCapability: interop.Enum<typeof INCallCapability>, callDuration: NSNumber | null, unseen: NSNumber | null, numberOfCalls: NSNumber | null): this;
+
+  readonly caller: INPerson;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class INDeleteTasksTaskListResolutionResult extends INTaskListResolutionResult {
+  static unsupportedForReason<This extends abstract new (...args: any) => any>(this: This, reason: interop.Enum<typeof INDeleteTasksTaskListUnsupportedReason>): InstanceType<This>;
+
+  initWithTaskListResolutionResult(taskListResolutionResult: INTaskListResolutionResult): this;
+}
+
+declare class INTrainReservation extends INReservation implements NSCopying, NSSecureCoding {
+  initWithItemReferenceReservationNumberBookingTimeReservationStatusReservationHolderNameActionsURLReservedSeatTrainTrip(itemReference: INSpeakableString, reservationNumber: string | null, bookingTime: NSDate | null, reservationStatus: interop.Enum<typeof INReservationStatus>, reservationHolderName: string | null, actions: NSArray<interop.Object> | Array<interop.Object> | null, URL: NSURL | null, reservedSeat: INSeat | null, trainTrip: INTrainTrip): this;
+
+  initWithItemReferenceReservationNumberBookingTimeReservationStatusReservationHolderNameActionsReservedSeatTrainTrip(itemReference: INSpeakableString, reservationNumber: string | null, bookingTime: NSDate | null, reservationStatus: interop.Enum<typeof INReservationStatus>, reservationHolderName: string | null, actions: NSArray<interop.Object> | Array<interop.Object> | null, reservedSeat: INSeat | null, trainTrip: INTrainTrip): this;
+
+  readonly reservedSeat: INSeat;
+
+  readonly trainTrip: INTrainTrip;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class INMessageAttributeResolutionResult extends INIntentResolutionResult {
   static successWithResolvedMessageAttribute<This extends abstract new (...args: any) => any>(this: This, resolvedMessageAttribute: interop.Enum<typeof INMessageAttribute>): InstanceType<This>;
 
@@ -6012,28 +6003,6 @@ declare class INSaveProfileInCarIntent extends INIntent {
   initWithProfileNumberProfileLabel(profileNumber: NSNumber | null, profileLabel: string | null): this;
 
   readonly profileLabel: string;
-}
-
-declare class INRideDriver extends INPerson implements NSCopying, NSSecureCoding {
-  readonly rating: string;
-
-  readonly phoneNumber: string;
-
-  initWithPhoneNumberNameComponentsDisplayNameImageRating(phoneNumber: string, nameComponents: NSPersonNameComponents | null, displayName: string | null, image: INImage | null, rating: string | null): this;
-
-  initWithPersonHandleNameComponentsDisplayNameImageRatingPhoneNumber(personHandle: INPersonHandle, nameComponents: NSPersonNameComponents | null, displayName: string | null, image: INImage | null, rating: string | null, phoneNumber: string | null): this;
-
-  initWithHandleDisplayNameImageRatingPhoneNumber(handle: string, displayName: string | null, image: INImage | null, rating: string | null, phoneNumber: string | null): this;
-
-  initWithHandleNameComponentsImageRatingPhoneNumber(handle: string, nameComponents: NSPersonNameComponents, image: INImage | null, rating: string | null, phoneNumber: string | null): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class INRestaurantReservation extends INReservation implements NSCopying, NSSecureCoding {
@@ -6110,26 +6079,14 @@ declare class INSendPaymentCurrencyAmountResolutionResult extends INCurrencyAmou
   initWithCurrencyAmountResolutionResult(currencyAmountResolutionResult: INCurrencyAmountResolutionResult): this;
 }
 
-declare class INSendMessageIntentDonationMetadata extends INIntentDonationMetadata {
-  mentionsCurrentUser: boolean;
+declare class INSendPaymentIntent extends INIntent {
+  initWithPayeeCurrencyAmountNote(payee: INPerson | null, currencyAmount: INCurrencyAmount | null, note: string | null): this;
 
-  replyToCurrentUser: boolean;
+  readonly payee: INPerson;
 
-  notifyRecipientAnyway: boolean;
+  readonly currencyAmount: INCurrencyAmount;
 
-  recipientCount: number;
-
-  init(): this;
-
-  setMentionsCurrentUser(mentionsCurrentUser: boolean): void;
-
-  isReplyToCurrentUser(): boolean;
-
-  setReplyToCurrentUser(replyToCurrentUser: boolean): void;
-
-  setNotifyRecipientAnyway(notifyRecipientAnyway: boolean): void;
-
-  setRecipientCount(recipientCount: number): void;
+  readonly note: string;
 }
 
 declare class INSendPaymentPayeeResolutionResult extends INPersonResolutionResult {
@@ -6163,12 +6120,12 @@ declare class INSendMessageIntentResponse extends INIntentResponse {
   setSentMessage(sentMessage: INMessage | null): void;
 }
 
-declare class INPersonResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedPerson<This extends abstract new (...args: any) => any>(this: This, resolvedPerson: INPerson): InstanceType<This>;
+declare class INDateComponentsRangeResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedDateComponentsRange<This extends abstract new (...args: any) => any>(this: This, resolvedDateComponentsRange: INDateComponentsRange): InstanceType<This>;
 
-  static disambiguationWithPeopleToDisambiguate<This extends abstract new (...args: any) => any>(this: This, peopleToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+  static disambiguationWithDateComponentsRangesToDisambiguate<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangesToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
-  static confirmationRequiredWithPersonToConfirm<This extends abstract new (...args: any) => any>(this: This, personToConfirm: INPerson | null): InstanceType<This>;
+  static confirmationRequiredWithDateComponentsRangeToConfirm<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangeToConfirm: INDateComponentsRange | null): InstanceType<This>;
 }
 
 declare class INMessageAttributeOptionsResolutionResult extends INIntentResolutionResult {
@@ -6211,21 +6168,28 @@ declare class INPaymentAccountResolutionResult extends INIntentResolutionResult 
   static confirmationRequiredWithPaymentAccountToConfirm<This extends abstract new (...args: any) => any>(this: This, paymentAccountToConfirm: INPaymentAccount | null): InstanceType<This>;
 }
 
+declare class INNoteContent extends NSObject implements NSSecureCoding, NSCopying {
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class INPersonResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedPerson<This extends abstract new (...args: any) => any>(this: This, resolvedPerson: INPerson): InstanceType<This>;
+
+  static disambiguationWithPeopleToDisambiguate<This extends abstract new (...args: any) => any>(this: This, peopleToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static confirmationRequiredWithPersonToConfirm<This extends abstract new (...args: any) => any>(this: This, personToConfirm: INPerson | null): InstanceType<This>;
+}
+
 declare class INStartAudioCallIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INStartAudioCallIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
   readonly code: interop.Enum<typeof INStartAudioCallIntentResponseCode>;
-}
-
-declare class INPlayMediaIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INPlayMediaIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INPlayMediaIntentResponseCode>;
-
-  get nowPlayingInfo(): NSDictionary;
-  set nowPlayingInfo(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  setNowPlayingInfo(nowPlayingInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 }
 
 declare class INSearchForAccountsIntentResponse extends INIntentResponse {
@@ -6237,16 +6201,6 @@ declare class INSearchForAccountsIntentResponse extends INIntentResponse {
   set accounts(value: NSArray<interop.Object> | Array<interop.Object>);
 
   setAccounts(accounts: NSArray<interop.Object> | Array<interop.Object> | null): void;
-}
-
-declare class INSendPaymentIntent extends INIntent {
-  initWithPayeeCurrencyAmountNote(payee: INPerson | null, currencyAmount: INCurrencyAmount | null, note: string | null): this;
-
-  readonly payee: INPerson;
-
-  readonly currencyAmount: INCurrencyAmount;
-
-  readonly note: string;
 }
 
 declare class INGetUserCurrentRestaurantReservationBookingsIntent extends INIntent implements NSCopying {
@@ -6271,32 +6225,12 @@ declare class INGetUserCurrentRestaurantReservationBookingsIntent extends INInte
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class INRestaurant extends NSObject implements NSSecureCoding, NSCopying {
-  initWithLocationNameVendorIdentifierRestaurantIdentifier(location: CLLocation, name: string, vendorIdentifier: string, restaurantIdentifier: string): this;
+declare class INNoteContentResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedNoteContent<This extends abstract new (...args: any) => any>(this: This, resolvedNoteContent: INNoteContent): InstanceType<This>;
 
-  location: CLLocation;
+  static disambiguationWithNoteContentsToDisambiguate<This extends abstract new (...args: any) => any>(this: This, noteContentsToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
-  name: string;
-
-  vendorIdentifier: string;
-
-  restaurantIdentifier: string;
-
-  setLocation(location: CLLocation): void;
-
-  setName(name: string): void;
-
-  setVendorIdentifier(vendorIdentifier: string): void;
-
-  setRestaurantIdentifier(restaurantIdentifier: string): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  static confirmationRequiredWithNoteContentToConfirm<This extends abstract new (...args: any) => any>(this: This, noteContentToConfirm: INNoteContent | null): InstanceType<This>;
 }
 
 declare class INGetVisualCodeIntentResponse extends INIntentResponse {
@@ -6309,60 +6243,18 @@ declare class INGetVisualCodeIntentResponse extends INIntentResponse {
   setVisualCodeImage(visualCodeImage: INImage | null): void;
 }
 
-declare class INMessage extends NSObject implements NSCopying, NSSecureCoding {
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageTypeServiceNameAttachmentFiles(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>, serviceName: string | null, attachmentFiles: NSArray<interop.Object> | Array<interop.Object> | null): this;
+declare class INTemporalEventTriggerTypeOptionsResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedTemporalEventTriggerTypeOptions<This extends abstract new (...args: any) => any>(this: This, resolvedTemporalEventTriggerTypeOptions: interop.Enum<typeof INTemporalEventTriggerTypeOptions>): InstanceType<This>;
 
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageTypeServiceNameAudioMessageFile(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>, serviceName: string | null, audioMessageFile: INFile | null): this;
+  static confirmationRequiredWithTemporalEventTriggerTypeOptionsToConfirm<This extends abstract new (...args: any) => any>(this: This, temporalEventTriggerTypeOptionsToConfirm: interop.Enum<typeof INTemporalEventTriggerTypeOptions>): InstanceType<This>;
+}
 
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageTypeServiceName(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>, serviceName: string | null): this;
+declare class INCarHeadUnit extends NSObject implements NSCopying, NSSecureCoding {
+  initWithBluetoothIdentifierIAP2Identifier(bluetoothIdentifier: string | null, iAP2Identifier: string | null): this;
 
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageType(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>): this;
+  readonly bluetoothIdentifier: string;
 
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsMessageType(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, messageType: interop.Enum<typeof INMessageType>): this;
-
-  initWithIdentifierContentDateSentSenderRecipients(identifier: string, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null): this;
-
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameLinkMetadata(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, linkMetadata: INMessageLinkMetadata | null): this;
-
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameMessageTypeNumberOfAttachments(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, messageType: interop.Enum<typeof INMessageType>, numberOfAttachments: NSNumber | null): this;
-
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameMessageTypeReferencedMessageReaction(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, messageType: interop.Enum<typeof INMessageType>, referencedMessage: INMessage | null, reaction: INMessageReaction | null): this;
-
-  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameMessageTypeReferencedMessageStickerReaction(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, messageType: interop.Enum<typeof INMessageType>, referencedMessage: INMessage | null, sticker: INSticker | null, reaction: INMessageReaction | null): this;
-
-  readonly identifier: string;
-
-  readonly conversationIdentifier: string;
-
-  readonly content: string;
-
-  readonly dateSent: NSDate;
-
-  readonly sender: INPerson;
-
-  readonly recipients: NSArray;
-
-  readonly groupName: INSpeakableString;
-
-  readonly messageType: interop.Enum<typeof INMessageType>;
-
-  readonly serviceName: string;
-
-  readonly attachmentFiles: NSArray;
-
-  readonly numberOfAttachments: NSNumber;
-
-  readonly audioMessageFile: INFile;
-
-  readonly linkMetadata: INMessageLinkMetadata;
-
-  sticker: INSticker;
-
-  reaction: INMessageReaction;
-
-  setSticker(sticker: INSticker | null): void;
-
-  setReaction(reaction: INMessageReaction): void;
+  readonly iAP2Identifier: string;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -6371,6 +6263,16 @@ declare class INMessage extends NSObject implements NSCopying, NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class INCreateTaskListIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INCreateTaskListIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INCreateTaskListIntentResponseCode>;
+
+  createdTaskList: INTaskList;
+
+  setCreatedTaskList(createdTaskList: INTaskList | null): void;
 }
 
 declare class INUnsendMessagesIntent extends INIntent {
@@ -6431,6 +6333,40 @@ declare class INExtension extends NSObject implements INIntentHandlerProviding {
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class INBookRestaurantReservationIntent extends INIntent implements NSCopying {
+  initWithRestaurantBookingDateComponentsPartySizeBookingIdentifierGuestSelectedOfferGuestProvidedSpecialRequestText(restaurant: INRestaurant, bookingDateComponents: NSDateComponents, partySize: number, bookingIdentifier: string | null, guest: INRestaurantGuest | null, selectedOffer: INRestaurantOffer | null, guestProvidedSpecialRequestText: string | null): this;
+
+  restaurant: INRestaurant;
+
+  bookingDateComponents: NSDateComponents;
+
+  partySize: number;
+
+  bookingIdentifier: string;
+
+  guest: INRestaurantGuest;
+
+  selectedOffer: INRestaurantOffer;
+
+  guestProvidedSpecialRequestText: string;
+
+  setRestaurant(restaurant: INRestaurant): void;
+
+  setBookingDateComponents(bookingDateComponents: NSDateComponents): void;
+
+  setPartySize(partySize: number): void;
+
+  setBookingIdentifier(bookingIdentifier: string | null): void;
+
+  setGuest(guest: INRestaurantGuest | null): void;
+
+  setSelectedOffer(selectedOffer: INRestaurantOffer | null): void;
+
+  setGuestProvidedSpecialRequestText(guestProvidedSpecialRequestText: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class INFlight extends NSObject implements NSCopying, NSSecureCoding {
@@ -6516,14 +6452,10 @@ declare class INRestaurantReservationBooking extends NSObject implements NSSecur
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class INAirline extends NSObject implements NSCopying, NSSecureCoding {
-  initWithNameIataCodeIcaoCode(name: string | null, iataCode: string | null, icaoCode: string | null): this;
+declare class INTemporalEventTrigger extends NSObject implements NSCopying, NSSecureCoding {
+  initWithDateComponentsRange(dateComponentsRange: INDateComponentsRange): this;
 
-  readonly name: string;
-
-  readonly iataCode: string;
-
-  readonly icaoCode: string;
+  readonly dateComponentsRange: INDateComponentsRange;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -6635,21 +6567,6 @@ declare class INCreateNoteIntent extends INIntent {
   readonly groupName: INSpeakableString;
 }
 
-declare class INAddTasksIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INAddTasksIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INAddTasksIntentResponseCode>;
-
-  modifiedTaskList: INTaskList;
-
-  get addedTasks(): NSArray;
-  set addedTasks(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setModifiedTaskList(modifiedTaskList: INTaskList | null): void;
-
-  setAddedTasks(addedTasks: NSArray<interop.Object> | Array<interop.Object> | null): void;
-}
-
 declare class INSendPaymentIntentResponse extends INIntentResponse {
   initWithCodeUserActivity(code: interop.Enum<typeof INSendPaymentIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
@@ -6658,6 +6575,70 @@ declare class INSendPaymentIntentResponse extends INIntentResponse {
   paymentRecord: INPaymentRecord;
 
   setPaymentRecord(paymentRecord: INPaymentRecord | null): void;
+}
+
+declare class INMessage extends NSObject implements NSCopying, NSSecureCoding {
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageTypeServiceNameAttachmentFiles(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>, serviceName: string | null, attachmentFiles: NSArray<interop.Object> | Array<interop.Object> | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageTypeServiceNameAudioMessageFile(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>, serviceName: string | null, audioMessageFile: INFile | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageTypeServiceName(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>, serviceName: string | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameMessageType(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, messageType: interop.Enum<typeof INMessageType>): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsMessageType(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, messageType: interop.Enum<typeof INMessageType>): this;
+
+  initWithIdentifierContentDateSentSenderRecipients(identifier: string, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameLinkMetadata(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, linkMetadata: INMessageLinkMetadata | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameMessageTypeNumberOfAttachments(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, messageType: interop.Enum<typeof INMessageType>, numberOfAttachments: NSNumber | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameMessageTypeReferencedMessageReaction(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, messageType: interop.Enum<typeof INMessageType>, referencedMessage: INMessage | null, reaction: INMessageReaction | null): this;
+
+  initWithIdentifierConversationIdentifierContentDateSentSenderRecipientsGroupNameServiceNameMessageTypeReferencedMessageStickerReaction(identifier: string, conversationIdentifier: string | null, content: string | null, dateSent: NSDate | null, sender: INPerson | null, recipients: NSArray<interop.Object> | Array<interop.Object> | null, groupName: INSpeakableString | null, serviceName: string | null, messageType: interop.Enum<typeof INMessageType>, referencedMessage: INMessage | null, sticker: INSticker | null, reaction: INMessageReaction | null): this;
+
+  readonly identifier: string;
+
+  readonly conversationIdentifier: string;
+
+  readonly content: string;
+
+  readonly dateSent: NSDate;
+
+  readonly sender: INPerson;
+
+  readonly recipients: NSArray;
+
+  readonly groupName: INSpeakableString;
+
+  readonly messageType: interop.Enum<typeof INMessageType>;
+
+  readonly serviceName: string;
+
+  readonly attachmentFiles: NSArray;
+
+  readonly numberOfAttachments: NSNumber;
+
+  readonly audioMessageFile: INFile;
+
+  readonly linkMetadata: INMessageLinkMetadata;
+
+  sticker: INSticker;
+
+  reaction: INMessageReaction;
+
+  setSticker(sticker: INSticker | null): void;
+
+  setReaction(reaction: INMessageReaction): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class INCallRecordTypeOptionsResolutionResult extends INIntentResolutionResult {
@@ -6672,40 +6653,6 @@ declare class INPlacemarkResolutionResult extends INIntentResolutionResult {
   static disambiguationWithPlacemarksToDisambiguate<This extends abstract new (...args: any) => any>(this: This, placemarksToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
   static confirmationRequiredWithPlacemarkToConfirm<This extends abstract new (...args: any) => any>(this: This, placemarkToConfirm: CLPlacemark | null): InstanceType<This>;
-}
-
-declare class INPayBillIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INPayBillIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INPayBillIntentResponseCode>;
-
-  fromAccount: INPaymentAccount;
-
-  billDetails: INBillDetails;
-
-  transactionAmount: INPaymentAmount;
-
-  transactionScheduledDate: INDateComponentsRange;
-
-  transactionNote: string;
-
-  setFromAccount(fromAccount: INPaymentAccount | null): void;
-
-  setBillDetails(billDetails: INBillDetails | null): void;
-
-  setTransactionAmount(transactionAmount: INPaymentAmount | null): void;
-
-  setTransactionScheduledDate(transactionScheduledDate: INDateComponentsRange | null): void;
-
-  setTransactionNote(transactionNote: string | null): void;
-}
-
-declare class INRestaurantResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedRestaurant<This extends abstract new (...args: any) => any>(this: This, resolvedRestaurant: INRestaurant): InstanceType<This>;
-
-  static disambiguationWithRestaurantsToDisambiguate<This extends abstract new (...args: any) => any>(this: This, restaurantsToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static confirmationRequiredWithRestaurantToConfirm<This extends abstract new (...args: any) => any>(this: This, restaurantToConfirm: INRestaurant | null): InstanceType<This>;
 }
 
 declare class INEndWorkoutIntentResponse extends INIntentResponse {
@@ -6728,16 +6675,6 @@ declare class INVoiceShortcut extends NSObject implements NSSecureCoding, NSCopy
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class INCarDefrosterResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedCarDefroster<This extends abstract new (...args: any) => any>(this: This, resolvedCarDefroster: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
-
-  static successWithResolvedValue<This extends abstract new (...args: any) => any>(this: This, resolvedValue: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
-
-  static confirmationRequiredWithCarDefrosterToConfirm<This extends abstract new (...args: any) => any>(this: This, carDefrosterToConfirm: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
-
-  static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INCarDefroster>): InstanceType<This>;
 }
 
 declare class INOutgoingMessageTypeResolutionResult extends INIntentResolutionResult {
@@ -6856,6 +6793,22 @@ declare class INStartAudioCallIntent extends INIntent {
   initWithContacts(contacts: NSArray<interop.Object> | Array<interop.Object> | null): this;
 }
 
+declare class INCallGroup extends NSObject implements NSCopying, NSSecureCoding {
+  initWithGroupNameGroupId(groupName: string | null, groupId: string | null): this;
+
+  readonly groupName: string;
+
+  readonly groupId: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class INGetAvailableRestaurantReservationBookingsIntent extends INIntent implements NSCopying {
   initWithRestaurantPartySizePreferredBookingDateComponentsMaximumNumberOfResultsEarliestBookingDateForResultsLatestBookingDateForResults(restaurant: INRestaurant, partySize: number, preferredBookingDateComponents: NSDateComponents | null, maximumNumberOfResults: NSNumber | null, earliestBookingDateForResults: NSDate | null, latestBookingDateForResults: NSDate | null): this;
 
@@ -6896,6 +6849,34 @@ declare class INAccountTypeResolutionResult extends INIntentResolutionResult {
   static confirmationRequiredWithValueToConfirm<This extends abstract new (...args: any) => any>(this: This, valueToConfirm: interop.Enum<typeof INAccountType>): InstanceType<This>;
 }
 
+declare class INRestaurant extends NSObject implements NSSecureCoding, NSCopying {
+  initWithLocationNameVendorIdentifierRestaurantIdentifier(location: CLLocation, name: string, vendorIdentifier: string, restaurantIdentifier: string): this;
+
+  location: CLLocation;
+
+  name: string;
+
+  vendorIdentifier: string;
+
+  restaurantIdentifier: string;
+
+  setLocation(location: CLLocation): void;
+
+  setName(name: string): void;
+
+  setVendorIdentifier(vendorIdentifier: string): void;
+
+  setRestaurantIdentifier(restaurantIdentifier: string): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class INPaymentMethod extends NSObject implements NSCopying, NSSecureCoding {
   initWithTypeNameIdentificationHintIcon(type: interop.Enum<typeof INPaymentMethodType>, name: string | null, identificationHint: string | null, icon: INImage | null): this;
 
@@ -6924,26 +6905,22 @@ declare class INTaskStatusResolutionResult extends INIntentResolutionResult {
   static confirmationRequiredWithTaskStatusToConfirm<This extends abstract new (...args: any) => any>(this: This, taskStatusToConfirm: interop.Enum<typeof INTaskStatus>): InstanceType<This>;
 }
 
-declare class INTemporalEventTriggerTypeOptionsResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedTemporalEventTriggerTypeOptions<This extends abstract new (...args: any) => any>(this: This, resolvedTemporalEventTriggerTypeOptions: interop.Enum<typeof INTemporalEventTriggerTypeOptions>): InstanceType<This>;
+declare class INShortcut extends NSObject implements NSSecureCoding, NSCopying {
+  readonly intent: INIntent;
 
-  static confirmationRequiredWithTemporalEventTriggerTypeOptionsToConfirm<This extends abstract new (...args: any) => any>(this: This, temporalEventTriggerTypeOptionsToConfirm: interop.Enum<typeof INTemporalEventTriggerTypeOptions>): InstanceType<This>;
-}
+  readonly userActivity: NSUserActivity;
 
-declare class INCarHeadUnit extends NSObject implements NSCopying, NSSecureCoding {
-  initWithBluetoothIdentifierIAP2Identifier(bluetoothIdentifier: string | null, iAP2Identifier: string | null): this;
+  initWithIntent(intent: INIntent): this;
 
-  readonly bluetoothIdentifier: string;
-
-  readonly iAP2Identifier: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  initWithUserActivity(userActivity: NSUserActivity): this;
 
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class INFocusStatusCenter extends NSObject {
@@ -6974,10 +6951,44 @@ declare class INAirport extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class INEditMessageIntent extends INIntent {
+  initWithMessageIdentifierEditedContent(messageIdentifier: string | null, editedContent: string | null): this;
+
+  readonly messageIdentifier: string;
+
+  readonly editedContent: string;
+}
+
 declare class INMediaAffinityTypeResolutionResult extends INIntentResolutionResult {
   static successWithResolvedMediaAffinityType<This extends abstract new (...args: any) => any>(this: This, resolvedMediaAffinityType: interop.Enum<typeof INMediaAffinityType>): InstanceType<This>;
 
   static confirmationRequiredWithMediaAffinityTypeToConfirm<This extends abstract new (...args: any) => any>(this: This, mediaAffinityTypeToConfirm: interop.Enum<typeof INMediaAffinityType>): InstanceType<This>;
+}
+
+declare class INPayBillIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INPayBillIntentResponseCode>, userActivity: NSUserActivity | null): this;
+
+  readonly code: interop.Enum<typeof INPayBillIntentResponseCode>;
+
+  fromAccount: INPaymentAccount;
+
+  billDetails: INBillDetails;
+
+  transactionAmount: INPaymentAmount;
+
+  transactionScheduledDate: INDateComponentsRange;
+
+  transactionNote: string;
+
+  setFromAccount(fromAccount: INPaymentAccount | null): void;
+
+  setBillDetails(billDetails: INBillDetails | null): void;
+
+  setTransactionAmount(transactionAmount: INPaymentAmount | null): void;
+
+  setTransactionScheduledDate(transactionScheduledDate: INDateComponentsRange | null): void;
+
+  setTransactionNote(transactionNote: string | null): void;
 }
 
 declare class INRestaurantGuestResolutionResult extends INIntentResolutionResult {
@@ -7024,20 +7035,19 @@ declare class INSendMessageRecipientResolutionResult extends INPersonResolutionR
   initWithPersonResolutionResult(personResolutionResult: INPersonResolutionResult): this;
 }
 
-declare class INCallGroup extends NSObject implements NSCopying, NSSecureCoding {
-  initWithGroupNameGroupId(groupName: string | null, groupId: string | null): this;
+declare class INAddTasksIntentResponse extends INIntentResponse {
+  initWithCodeUserActivity(code: interop.Enum<typeof INAddTasksIntentResponseCode>, userActivity: NSUserActivity | null): this;
 
-  readonly groupName: string;
+  readonly code: interop.Enum<typeof INAddTasksIntentResponseCode>;
 
-  readonly groupId: string;
+  modifiedTaskList: INTaskList;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  get addedTasks(): NSArray;
+  set addedTasks(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  static readonly supportsSecureCoding: boolean;
+  setModifiedTaskList(modifiedTaskList: INTaskList | null): void;
 
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  setAddedTasks(addedTasks: NSArray<interop.Object> | Array<interop.Object> | null): void;
 }
 
 declare class INEditMessageIntentResponse extends INIntentResponse {
@@ -7084,16 +7094,6 @@ declare class INRequestRideIntent extends INIntent {
   readonly scheduledPickupTime: INDateComponentsRange;
 
   initWithPickupLocationDropOffLocationRideOptionNamePartySizePaymentMethod(pickupLocation: CLPlacemark | null, dropOffLocation: CLPlacemark | null, rideOptionName: INSpeakableString | null, partySize: NSNumber | null, paymentMethod: INPaymentMethod | null): this;
-}
-
-declare class INCreateTaskListIntentResponse extends INIntentResponse {
-  initWithCodeUserActivity(code: interop.Enum<typeof INCreateTaskListIntentResponseCode>, userActivity: NSUserActivity | null): this;
-
-  readonly code: interop.Enum<typeof INCreateTaskListIntentResponseCode>;
-
-  createdTaskList: INTaskList;
-
-  setCreatedTaskList(createdTaskList: INTaskList | null): void;
 }
 
 declare class INMassResolutionResult extends INIntentResolutionResult {

@@ -87,18 +87,6 @@ declare class EASession extends NSObject {
   readonly outputStream: NSOutputStream;
 }
 
-declare class EAAccessoryManager extends NSObject {
-  static sharedAccessoryManager(): EAAccessoryManager;
-
-  showBluetoothAccessoryPickerWithNameFilterCompletion(predicate: NSPredicate | null, completion: (p1: NSError) => void | null): void;
-
-  registerForLocalNotifications(): void;
-
-  unregisterForLocalNotifications(): void;
-
-  readonly connectedAccessories: NSArray;
-}
-
 declare class EAAccessory extends NSObject {
   readonly connected: boolean;
 
@@ -125,6 +113,18 @@ declare class EAAccessory extends NSObject {
   isConnected(): boolean;
 
   setDelegate(delegate: EAAccessoryDelegate): void;
+}
+
+declare class EAAccessoryManager extends NSObject {
+  static sharedAccessoryManager(): EAAccessoryManager;
+
+  showBluetoothAccessoryPickerWithNameFilterCompletion(predicate: NSPredicate | null, completion: (p1: NSError) => void | null): void;
+
+  registerForLocalNotifications(): void;
+
+  unregisterForLocalNotifications(): void;
+
+  readonly connectedAccessories: NSArray;
 }
 
 declare class EAWiFiUnconfiguredAccessory extends NSObject {

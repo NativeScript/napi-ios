@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
+declare const MPMediaItemPropertyAlbumTrackCount: string;
+
 declare const MPMediaItemPropertyAlbumTrackNumber: string;
 
 declare const MPLanguageOptionCharacteristicDescribesMusicAndSound: string;
@@ -11,6 +13,8 @@ declare const MPMoviePlayerWillEnterFullscreenNotification: string;
 declare const MPMediaItemPropertyHasProtectedAsset: string;
 
 declare const MPMoviePlayerReadyForDisplayDidChangeNotification: string;
+
+declare const MPLanguageOptionCharacteristicIsMainProgramContent: string;
 
 declare const MPMediaItemPropertyPodcastPersistentID: string;
 
@@ -28,15 +32,11 @@ declare const MPLanguageOptionCharacteristicTranscribesSpokenDialog: string;
 
 declare const MPLanguageOptionCharacteristicIsAuxiliaryContent: string;
 
-declare const MPLanguageOptionCharacteristicIsMainProgramContent: string;
-
 declare const MPNowPlayingInfoPropertyAdTimeRanges: string;
 
 declare const MPNowPlayingInfoPropertyCurrentPlaybackDate: string;
 
 declare const MPNowPlayingInfoPropertyExternalContentIdentifier: string;
-
-declare const MPNowPlayingInfoCollectionIdentifier: string;
 
 declare const MPNowPlayingInfoPropertyCurrentLanguageOptions: string;
 
@@ -47,6 +47,8 @@ declare const MPNowPlayingInfoPropertyPlaybackRate: string;
 declare const MPMusicPlayerControllerVolumeDidChangeNotification: string;
 
 declare const MPMusicPlayerControllerPlaybackStateDidChangeNotification: string;
+
+declare const MPMoviePlayerTimedMetadataKeyDataType: string;
 
 declare const MPMoviePlayerTimedMetadataUpdatedNotification: string;
 
@@ -74,8 +76,6 @@ declare const MPMediaPlaybackIsPreparedToPlayDidChangeNotification: string;
 
 declare const MPMediaPlaylistPropertyPlaylistAttributes: string;
 
-declare const MPMediaPlaylistPropertyName: string;
-
 declare const MPMediaPlaylistPropertyPersistentID: string;
 
 declare const MPMediaItemPropertyIsPreorder: string;
@@ -87,6 +87,8 @@ declare const MPMediaItemPropertyDateAdded: string;
 declare const MPMediaItemPropertyBookmarkTime: string;
 
 declare const MPMediaItemPropertyPlayCount: string;
+
+declare const MPMediaItemPropertyPodcastTitle: string;
 
 declare const MPMediaItemPropertyIsCloudItem: string;
 
@@ -104,19 +106,19 @@ declare const MPMediaItemPropertyMediaType: string;
 
 declare const MPMediaEntityPropertyPersistentID: string;
 
-declare const MPMediaItemPropertyComments: string;
-
 declare const MPNowPlayingInfoPropertyInternationalStandardRecordingCode: string;
-
-declare const MPLanguageOptionCharacteristicEasyToRead: string;
-
-declare const MPMediaPlaylistPropertyDescriptionText: string;
 
 declare const MPMediaItemPropertyDiscCount: string;
 
 declare const MPNowPlayingInfoPropertyMediaType: string;
 
 declare const MPMoviePlayerWillExitFullscreenNotification: string;
+
+declare const MPLanguageOptionCharacteristicEasyToRead: string;
+
+declare const MPNowPlayingInfoCollectionIdentifier: string;
+
+declare const MPMediaPlaylistPropertyName: string;
 
 declare const MPNowPlayingInfoPropertyIsLiveStream: string;
 
@@ -128,7 +130,11 @@ declare const MPMoviePlayerTimedMetadataKeyInfo: string;
 
 declare const MPMediaItemPropertyAlbumPersistentID: string;
 
+declare const MPMediaPlaylistPropertyDescriptionText: string;
+
 declare const MPMediaItemPropertyPersistentID: string;
+
+declare const MPMediaPlaylistPropertyCloudGlobalID: string;
 
 declare const MPMediaItemPropertySkipCount: string;
 
@@ -142,9 +148,9 @@ declare const MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification: string;
 
 declare const MPNowPlayingInfoPropertyCreditsStartTime: string;
 
-declare const MPMoviePlayerTimedMetadataKeyMIMEType: string;
+declare const MPMovieSourceTypeAvailableNotification: string;
 
-declare const MPMusicPlayerControllerNowPlayingItemDidChangeNotification: string;
+declare const MPMediaItemPropertyAssetURL: string;
 
 declare const MPMediaPlaylistPropertyAuthorDisplayName: string;
 
@@ -152,9 +158,9 @@ declare const MPMediaItemPropertyGenre: string;
 
 declare const MPNowPlayingInfoPropertyChapterNumber: string;
 
-declare const MPMediaItemPropertyPodcastTitle: string;
+declare const MPMusicPlayerControllerNowPlayingItemDidChangeNotification: string;
 
-declare const MPMediaPlaylistPropertyCloudGlobalID: string;
+declare const MPNowPlayingInfoPropertyPlaybackQueueCount: string;
 
 declare const MPMediaItemPropertyArtistPersistentID: string;
 
@@ -172,21 +178,19 @@ declare const MPLanguageOptionCharacteristicVoiceOverTranslation: string;
 
 declare const MPMoviePlayerTimedMetadataKeyLanguageCode: string;
 
-declare const MPMediaLibraryDidChangeNotification: string;
-
 declare const MPNowPlayingInfoPropertyPlaybackQueueIndex: string;
 
 declare const MPMediaItemPropertyDiscNumber: string;
+
+declare const MPMediaItemPropertyComments: string;
 
 declare const MPMediaItemPropertyAlbumArtist: string;
 
 declare const MPNowPlayingInfoPropertyDefaultPlaybackRate: string;
 
-declare const MPMovieSourceTypeAvailableNotification: string;
+declare const MPNowPlayingInfoProperty3x4AnimatedArtwork: string;
 
 declare const MPNowPlayingInfoPropertyAssetURL: string;
-
-declare const MPMediaItemPropertyReleaseDate: string;
 
 declare const MPMusicPlayerControllerQueueDidChangeNotification: string;
 
@@ -196,7 +200,7 @@ declare const MPMediaItemPropertyPlaybackDuration: string;
 
 declare const MPMovieDurationAvailableNotification: string;
 
-declare const MPMediaItemPropertyAssetURL: string;
+declare const MPNowPlayingInfoProperty1x1AnimatedArtwork: string;
 
 declare const MPMediaItemPropertyArtwork: string;
 
@@ -210,15 +214,17 @@ declare const MPNowPlayingInfoPropertyElapsedPlaybackTime: string;
 
 declare const MPMoviePlayerFullscreenAnimationCurveUserInfoKey: string;
 
-declare const MPMediaItemPropertyAlbumTrackCount: string;
-
 declare const MPErrorDomain: string;
 
-declare const MPMoviePlayerTimedMetadataKeyDataType: string;
+declare const MPMediaItemPropertyReleaseDate: string;
 
-declare const MPMoviePlayerPlaybackStateDidChangeNotification: string;
+declare const MPMoviePlayerTimedMetadataKeyMIMEType: string;
+
+declare const MPMediaLibraryDidChangeNotification: string;
 
 declare const MPMoviePlayerTimedMetadataKeyName: string;
+
+declare const MPMoviePlayerPlaybackStateDidChangeNotification: string;
 
 declare const MPMediaItemPropertyIsCompilation: string;
 
@@ -229,8 +235,6 @@ declare const MPMediaItemPropertyTitle: string;
 declare const MPMoviePlayerThumbnailImageRequestDidFinishNotification: string;
 
 declare const MPMediaPlaylistPropertySeedItems: string;
-
-declare const MPNowPlayingInfoPropertyPlaybackQueueCount: string;
 
 declare const MPMediaItemPropertyBeatsPerMinute: string;
 
@@ -318,18 +322,18 @@ declare const MPMovieControlStyle: {
   Default: 1,
 };
 
+declare const MPMovieSourceType: {
+  Unknown: 0,
+  File: 1,
+  Streaming: 2,
+};
+
 declare const MPNowPlayingPlaybackState: {
   Unknown: 0,
   Playing: 1,
   Paused: 2,
   Stopped: 3,
   Interrupted: 4,
-};
-
-declare const MPMovieSourceType: {
-  Unknown: 0,
-  File: 1,
-  Streaming: 2,
 };
 
 declare const MPMovieMediaTypeMask: {
@@ -430,21 +434,6 @@ declare function MPVolumeSettingsAlertHide(): void;
 
 declare function MPVolumeSettingsAlertIsVisible(): boolean;
 
-declare interface MPPlayableContentDataSource extends NSObjectProtocol {
-  beginLoadingChildItemsAtIndexPathCompletionHandler?(indexPath: NSIndexPath, completionHandler: (p1: NSError) => void | null): void;
-
-  childItemsDisplayPlaybackProgressAtIndexPath?(indexPath: NSIndexPath): boolean;
-
-  contentItemForIdentifierCompletionHandler?(identifier: string, completionHandler: (p1: MPContentItem, p2: NSError) => void | null): void;
-
-  numberOfChildItemsAtIndexPath(indexPath: NSIndexPath): number;
-
-  contentItemAtIndexPath(indexPath: NSIndexPath): MPContentItem;
-}
-
-declare class MPPlayableContentDataSource extends NativeObject implements MPPlayableContentDataSource {
-}
-
 declare interface MPNowPlayingSessionDelegate extends NSObjectProtocol {
   nowPlayingSessionDidChangeActive?(nowPlayingSession: MPNowPlayingSession): void;
 
@@ -459,6 +448,21 @@ declare interface MPSystemMusicPlayerController extends NSObjectProtocol {
 }
 
 declare class MPSystemMusicPlayerController extends NativeObject implements MPSystemMusicPlayerController {
+}
+
+declare interface MPPlayableContentDataSource extends NSObjectProtocol {
+  beginLoadingChildItemsAtIndexPathCompletionHandler?(indexPath: NSIndexPath, completionHandler: (p1: NSError) => void | null): void;
+
+  childItemsDisplayPlaybackProgressAtIndexPath?(indexPath: NSIndexPath): boolean;
+
+  contentItemForIdentifierCompletionHandler?(identifier: string, completionHandler: (p1: MPContentItem, p2: NSError) => void | null): void;
+
+  numberOfChildItemsAtIndexPath(indexPath: NSIndexPath): number;
+
+  contentItemAtIndexPath(indexPath: NSIndexPath): MPContentItem;
+}
+
+declare class MPPlayableContentDataSource extends NativeObject implements MPPlayableContentDataSource {
 }
 
 declare interface MPPlayableContentDelegate extends NSObjectProtocol {
@@ -512,11 +516,118 @@ declare interface MPMediaPlayback {
 declare class MPMediaPlayback extends NativeObject implements MPMediaPlayback {
 }
 
+declare class MPSkipIntervalCommand extends MPRemoteCommand {
+  get preferredIntervals(): NSArray;
+  set preferredIntervals(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setPreferredIntervals(preferredIntervals: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class MPChangeShuffleModeCommand extends MPRemoteCommand {
+  currentShuffleType: interop.Enum<typeof MPShuffleType>;
+
+  setCurrentShuffleType(currentShuffleType: interop.Enum<typeof MPShuffleType>): void;
+}
+
 declare class MPChangePlaybackPositionCommand extends MPRemoteCommand {
 }
 
 declare class MPSeekCommandEvent extends MPRemoteCommandEvent {
   readonly type: interop.Enum<typeof MPSeekCommandEventType>;
+}
+
+declare class MPMediaItem extends MPMediaEntity {
+  readonly persistentID: number;
+
+  readonly mediaType: interop.Enum<typeof MPMediaType>;
+
+  readonly title: string;
+
+  readonly albumTitle: string;
+
+  readonly albumPersistentID: number;
+
+  readonly artist: string;
+
+  readonly artistPersistentID: number;
+
+  readonly albumArtist: string;
+
+  readonly albumArtistPersistentID: number;
+
+  readonly genre: string;
+
+  readonly genrePersistentID: number;
+
+  readonly composer: string;
+
+  readonly composerPersistentID: number;
+
+  readonly playbackDuration: number;
+
+  readonly albumTrackNumber: number;
+
+  readonly albumTrackCount: number;
+
+  readonly discNumber: number;
+
+  readonly discCount: number;
+
+  readonly artwork: MPMediaItemArtwork;
+
+  readonly explicitItem: boolean;
+
+  readonly lyrics: string;
+
+  readonly compilation: boolean;
+
+  readonly releaseDate: NSDate;
+
+  readonly beatsPerMinute: number;
+
+  readonly comments: string;
+
+  readonly assetURL: NSURL;
+
+  readonly cloudItem: boolean;
+
+  readonly protectedAsset: boolean;
+
+  readonly podcastTitle: string;
+
+  readonly podcastPersistentID: number;
+
+  readonly playCount: number;
+
+  readonly skipCount: number;
+
+  readonly rating: number;
+
+  readonly lastPlayedDate: NSDate;
+
+  readonly userGrouping: string;
+
+  readonly bookmarkTime: number;
+
+  readonly dateAdded: NSDate;
+
+  readonly playbackStoreID: string;
+
+  readonly preorder: boolean;
+
+  isExplicitItem(): boolean;
+
+  isCompilation(): boolean;
+
+  isCloudItem(): boolean;
+
+  hasProtectedAsset(): boolean;
+
+  isPreorder(): boolean;
+
+  static persistentIDPropertyForGroupingType(groupingType: interop.Enum<typeof MPMediaGrouping>): string;
+
+  static titlePropertyForGroupingType(groupingType: interop.Enum<typeof MPMediaGrouping>): string;
 }
 
 declare class MPMediaQuery extends NSObject implements NSSecureCoding, NSCopying {
@@ -593,6 +704,10 @@ declare class MPChangeLanguageOptionCommandEvent extends MPRemoteCommandEvent {
 
 declare class MPChangePlaybackRateCommandEvent extends MPRemoteCommandEvent {
   readonly playbackRate: number;
+}
+
+declare class MPRatingCommandEvent extends MPRemoteCommandEvent {
+  readonly rating: number;
 }
 
 declare class MPSkipIntervalCommandEvent extends MPRemoteCommandEvent {
@@ -766,9 +881,15 @@ declare class MPNowPlayingInfoCenter extends NSObject {
 
   playbackState: interop.Enum<typeof MPNowPlayingPlaybackState>;
 
+  static readonly supportedAnimatedArtworkKeys: NSArray;
+
   setNowPlayingInfo(nowPlayingInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 
   setPlaybackState(playbackState: interop.Enum<typeof MPNowPlayingPlaybackState>): void;
+}
+
+declare class MPMusicPlayerControllerQueue extends NSObject {
+  readonly items: NSArray;
 }
 
 declare class MPMusicPlayerPlayParametersQueueDescriptor extends MPMusicPlayerQueueDescriptor {
@@ -968,6 +1089,20 @@ declare class MPMoviePlayerController extends NSObject implements MPMediaPlaybac
   setCurrentPlaybackRate(currentPlaybackRate: number): void;
 }
 
+declare class MPMediaQuerySection extends NSObject implements NSSecureCoding, NSCopying {
+  readonly title: string;
+
+  readonly range: _NSRange;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MPMediaPlaylistCreationMetadata extends NSObject {
   initWithName(name: string): this;
 
@@ -994,6 +1129,10 @@ declare class MPMediaItemCollection extends MPMediaEntity {
   readonly count: number;
 
   readonly mediaTypes: interop.Enum<typeof MPMediaType>;
+}
+
+declare class MPMediaItemAnimatedArtwork extends NSObject {
+  initWithArtworkIDPreviewImageRequestHandlerVideoAssetFileURLRequestHandler(artworkID: string, previewImageRequestHandler: (p1: CGSize, p2: (p1: UIImage) => void) => void | null, videoAssetFileURLRequestHandler: (p1: CGSize, p2: (p1: NSURL) => void) => void | null): this;
 }
 
 declare class MPMediaItemArtwork extends NSObject {
@@ -1072,41 +1211,6 @@ declare class MPContentItem extends NSObject {
   setPlayable(playable: boolean): void;
 }
 
-declare class MPMediaQuerySection extends NSObject implements NSSecureCoding, NSCopying {
-  readonly title: string;
-
-  readonly range: _NSRange;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MPChangeShuffleModeCommand extends MPRemoteCommand {
-  currentShuffleType: interop.Enum<typeof MPShuffleType>;
-
-  setCurrentShuffleType(currentShuffleType: interop.Enum<typeof MPShuffleType>): void;
-}
-
-declare class MPMusicPlayerControllerQueue extends NSObject {
-  readonly items: NSArray;
-}
-
-declare class MPRatingCommandEvent extends MPRemoteCommandEvent {
-  readonly rating: number;
-}
-
-declare class MPSkipIntervalCommand extends MPRemoteCommand {
-  get preferredIntervals(): NSArray;
-  set preferredIntervals(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setPreferredIntervals(preferredIntervals: NSArray<interop.Object> | Array<interop.Object>): void;
-}
-
 declare class MPPlayableContentManager extends NSObject {
   dataSource: MPPlayableContentDataSource;
 
@@ -1146,6 +1250,52 @@ declare class MPTimedMetadata extends NSObject {
 
 declare class MPMusicPlayerApplicationController extends MPMusicPlayerController {
   performQueueTransactionCompletionHandler(queueTransaction: (p1: MPMusicPlayerControllerMutableQueue) => void, completionHandler: (p1: MPMusicPlayerControllerQueue, p2: NSError) => void | null): void;
+}
+
+declare class MPMediaPlaylist extends MPMediaItemCollection {
+  readonly persistentID: number;
+
+  readonly cloudGlobalID: string;
+
+  readonly name: string;
+
+  readonly playlistAttributes: interop.Enum<typeof MPMediaPlaylistAttribute>;
+
+  readonly seedItems: NSArray;
+
+  readonly descriptionText: string;
+
+  readonly authorDisplayName: string;
+
+  addItemWithProductIDCompletionHandler(productID: string, completionHandler: (p1: NSError) => void | null): void;
+
+  addMediaItemsCompletionHandler(mediaItems: NSArray<interop.Object> | Array<interop.Object>, completionHandler: (p1: NSError) => void | null): void;
+}
+
+declare class MPMediaPickerController extends UIViewController {
+  initWithMediaTypes(mediaTypes: interop.Enum<typeof MPMediaType>): this;
+
+  readonly mediaTypes: interop.Enum<typeof MPMediaType>;
+
+  delegate: MPMediaPickerControllerDelegate;
+
+  allowsPickingMultipleItems: boolean;
+
+  showsCloudItems: boolean;
+
+  showsItemsWithProtectedAssets: boolean;
+
+  prompt: string;
+
+  setDelegate(delegate: MPMediaPickerControllerDelegate | null): void;
+
+  setAllowsPickingMultipleItems(allowsPickingMultipleItems: boolean): void;
+
+  setShowsCloudItems(showsCloudItems: boolean): void;
+
+  setShowsItemsWithProtectedAssets(showsItemsWithProtectedAssets: boolean): void;
+
+  setPrompt(prompt: string | null): void;
 }
 
 declare class MPMusicPlayerController extends NSObject implements MPMediaPlayback {
@@ -1258,6 +1408,16 @@ declare class MPFeedbackCommand extends MPRemoteCommand {
   setLocalizedShortTitle(localizedShortTitle: string): void;
 }
 
+declare class MPMovieErrorLog extends NSObject implements NSCopying {
+  readonly extendedLogData: NSData;
+
+  readonly extendedLogDataStringEncoding: number;
+
+  readonly events: NSArray;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MPMusicPlayerPlayParameters extends NSObject {
   initWithDictionary(dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
@@ -1314,172 +1474,6 @@ declare class MPMediaLibrary extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MPMusicPlayerControllerMutableQueue extends MPMusicPlayerControllerQueue {
-  insertQueueDescriptorAfterItem(queueDescriptor: MPMusicPlayerQueueDescriptor, afterItem: MPMediaItem | null): void;
-
-  removeItem(item: MPMediaItem): void;
-}
-
-declare class MPMediaItem extends MPMediaEntity {
-  readonly persistentID: number;
-
-  readonly mediaType: interop.Enum<typeof MPMediaType>;
-
-  readonly title: string;
-
-  readonly albumTitle: string;
-
-  readonly albumPersistentID: number;
-
-  readonly artist: string;
-
-  readonly artistPersistentID: number;
-
-  readonly albumArtist: string;
-
-  readonly albumArtistPersistentID: number;
-
-  readonly genre: string;
-
-  readonly genrePersistentID: number;
-
-  readonly composer: string;
-
-  readonly composerPersistentID: number;
-
-  readonly playbackDuration: number;
-
-  readonly albumTrackNumber: number;
-
-  readonly albumTrackCount: number;
-
-  readonly discNumber: number;
-
-  readonly discCount: number;
-
-  readonly artwork: MPMediaItemArtwork;
-
-  readonly explicitItem: boolean;
-
-  readonly lyrics: string;
-
-  readonly compilation: boolean;
-
-  readonly releaseDate: NSDate;
-
-  readonly beatsPerMinute: number;
-
-  readonly comments: string;
-
-  readonly assetURL: NSURL;
-
-  readonly cloudItem: boolean;
-
-  readonly protectedAsset: boolean;
-
-  readonly podcastTitle: string;
-
-  readonly podcastPersistentID: number;
-
-  readonly playCount: number;
-
-  readonly skipCount: number;
-
-  readonly rating: number;
-
-  readonly lastPlayedDate: NSDate;
-
-  readonly userGrouping: string;
-
-  readonly bookmarkTime: number;
-
-  readonly dateAdded: NSDate;
-
-  readonly playbackStoreID: string;
-
-  readonly preorder: boolean;
-
-  isExplicitItem(): boolean;
-
-  isCompilation(): boolean;
-
-  isCloudItem(): boolean;
-
-  hasProtectedAsset(): boolean;
-
-  isPreorder(): boolean;
-
-  static persistentIDPropertyForGroupingType(groupingType: interop.Enum<typeof MPMediaGrouping>): string;
-
-  static titlePropertyForGroupingType(groupingType: interop.Enum<typeof MPMediaGrouping>): string;
-}
-
-declare class MPMediaPickerController extends UIViewController {
-  initWithMediaTypes(mediaTypes: interop.Enum<typeof MPMediaType>): this;
-
-  readonly mediaTypes: interop.Enum<typeof MPMediaType>;
-
-  delegate: MPMediaPickerControllerDelegate;
-
-  allowsPickingMultipleItems: boolean;
-
-  showsCloudItems: boolean;
-
-  showsItemsWithProtectedAssets: boolean;
-
-  prompt: string;
-
-  setDelegate(delegate: MPMediaPickerControllerDelegate | null): void;
-
-  setAllowsPickingMultipleItems(allowsPickingMultipleItems: boolean): void;
-
-  setShowsCloudItems(showsCloudItems: boolean): void;
-
-  setShowsItemsWithProtectedAssets(showsItemsWithProtectedAssets: boolean): void;
-
-  setPrompt(prompt: string | null): void;
-}
-
-declare class MPMovieErrorLog extends NSObject implements NSCopying {
-  readonly extendedLogData: NSData;
-
-  readonly extendedLogDataStringEncoding: number;
-
-  readonly events: NSArray;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MPMediaPlaylist extends MPMediaItemCollection {
-  readonly persistentID: number;
-
-  readonly cloudGlobalID: string;
-
-  readonly name: string;
-
-  readonly playlistAttributes: interop.Enum<typeof MPMediaPlaylistAttribute>;
-
-  readonly seedItems: NSArray;
-
-  readonly descriptionText: string;
-
-  readonly authorDisplayName: string;
-
-  addItemWithProductIDCompletionHandler(productID: string, completionHandler: (p1: NSError) => void | null): void;
-
-  addMediaItemsCompletionHandler(mediaItems: NSArray<interop.Object> | Array<interop.Object>, completionHandler: (p1: NSError) => void | null): void;
-}
-
-declare class MPAdTimeRange extends NSObject implements NSCopying {
-  timeRange: CMTimeRange;
-
-  initWithTimeRange(timeRange: CMTimeRange): this;
-
-  setTimeRange(timeRange: CMTimeRange): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MPMediaPropertyPredicate extends MPMediaPredicate {
   static predicateWithValueForProperty(value: interop.Object | null, property: string): MPMediaPropertyPredicate;
 
@@ -1490,6 +1484,22 @@ declare class MPMediaPropertyPredicate extends MPMediaPredicate {
   readonly value: interop.Object;
 
   readonly comparisonType: interop.Enum<typeof MPMediaPredicateComparison>;
+}
+
+declare class MPMusicPlayerControllerMutableQueue extends MPMusicPlayerControllerQueue {
+  insertQueueDescriptorAfterItem(queueDescriptor: MPMusicPlayerQueueDescriptor, afterItem: MPMediaItem | null): void;
+
+  removeItem(item: MPMediaItem): void;
+}
+
+declare class MPAdTimeRange extends NSObject implements NSCopying {
+  timeRange: CMTimeRange;
+
+  initWithTimeRange(timeRange: CMTimeRange): this;
+
+  setTimeRange(timeRange: CMTimeRange): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MPVolumeView extends UIView implements NSCoding {

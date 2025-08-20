@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
+/// <reference path="./Runtime.d.ts" />
 
 declare const SCStreamErrorDomain: string;
 
@@ -100,49 +100,6 @@ declare interface RPScreenRecorderDelegate extends NSObjectProtocol {
 declare class RPScreenRecorderDelegate extends NativeObject implements RPScreenRecorderDelegate {
 }
 
-declare class RPBroadcastActivityViewController extends UIViewController {
-  static loadBroadcastActivityViewControllerWithHandler(handler: (p1: RPBroadcastActivityViewController, p2: NSError) => void | null): void;
-
-  static loadBroadcastActivityViewControllerWithPreferredExtensionHandler(preferredExtension: string | null, handler: (p1: RPBroadcastActivityViewController, p2: NSError) => void | null): void;
-
-  delegate: RPBroadcastActivityViewControllerDelegate;
-
-  setDelegate(delegate: RPBroadcastActivityViewControllerDelegate | null): void;
-}
-
-declare class RPBroadcastSampleHandler extends RPBroadcastHandler {
-  broadcastStartedWithSetupInfo(setupInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
-
-  broadcastPaused(): void;
-
-  broadcastResumed(): void;
-
-  broadcastFinished(): void;
-
-  broadcastAnnotatedWithApplicationInfo(applicationInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  processSampleBufferWithType(sampleBuffer: interop.Object, sampleBufferType: interop.Enum<typeof RPSampleBufferType>): void;
-
-  finishBroadcastWithError(error: NSError): void;
-}
-
-declare class RPBroadcastConfiguration extends NSObject implements NSCoding, NSSecureCoding {
-  clipDuration: number;
-
-  get videoCompressionProperties(): NSDictionary;
-  set videoCompressionProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  setClipDuration(clipDuration: number): void;
-
-  setVideoCompressionProperties(videoCompressionProperties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  static readonly supportsSecureCoding: boolean;
-}
-
 declare class RPSystemBroadcastPickerView extends UIView implements NSCoding {
   preferredExtension: string;
 
@@ -157,44 +114,14 @@ declare class RPSystemBroadcastPickerView extends UIView implements NSCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class RPPreviewViewController extends UIViewController {
-  previewControllerDelegate: RPPreviewViewControllerDelegate;
+declare class RPBroadcastActivityViewController extends UIViewController {
+  static loadBroadcastActivityViewControllerWithHandler(handler: (p1: RPBroadcastActivityViewController, p2: NSError) => void | null): void;
 
-  setPreviewControllerDelegate(previewControllerDelegate: RPPreviewViewControllerDelegate | null): void;
-}
+  static loadBroadcastActivityViewControllerWithPreferredExtensionHandler(preferredExtension: string | null, handler: (p1: RPBroadcastActivityViewController, p2: NSError) => void | null): void;
 
-declare class RPBroadcastController extends NSObject {
-  readonly broadcasting: boolean;
+  delegate: RPBroadcastActivityViewControllerDelegate;
 
-  readonly paused: boolean;
-
-  readonly broadcastURL: NSURL;
-
-  readonly serviceInfo: NSDictionary;
-
-  delegate: RPBroadcastControllerDelegate | null;
-
-  readonly broadcastExtensionBundleID: string;
-
-  startBroadcastWithHandler(handler: (p1: NSError) => void | null): void;
-
-  pauseBroadcast(): void;
-
-  resumeBroadcast(): void;
-
-  finishBroadcastWithHandler(handler: (p1: NSError) => void | null): void;
-
-  isBroadcasting(): boolean;
-
-  isPaused(): boolean;
-
-  setDelegate(delegate: RPBroadcastControllerDelegate | null): void;
-}
-
-declare class RPBroadcastMP4ClipHandler extends RPBroadcastHandler {
-  processMP4ClipWithURLSetupInfoFinished(mp4ClipURL: NSURL | null, setupInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, finished: boolean): void;
-
-  finishedProcessingMP4ClipWithUpdatedBroadcastConfigurationError(broadcastConfiguration: RPBroadcastConfiguration | null, error: NSError | null): void;
+  setDelegate(delegate: RPBroadcastActivityViewControllerDelegate | null): void;
 }
 
 declare class RPScreenRecorder extends NSObject {
@@ -251,6 +178,28 @@ declare class RPScreenRecorder extends NSObject {
   setCameraPosition(cameraPosition: interop.Enum<typeof RPCameraPosition>): void;
 }
 
+declare class RPBroadcastSampleHandler extends RPBroadcastHandler {
+  broadcastStartedWithSetupInfo(setupInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  broadcastPaused(): void;
+
+  broadcastResumed(): void;
+
+  broadcastFinished(): void;
+
+  broadcastAnnotatedWithApplicationInfo(applicationInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  processSampleBufferWithType(sampleBuffer: interop.PointerConvertible, sampleBufferType: interop.Enum<typeof RPSampleBufferType>): void;
+
+  finishBroadcastWithError(error: NSError): void;
+}
+
+declare class RPBroadcastMP4ClipHandler extends RPBroadcastHandler {
+  processMP4ClipWithURLSetupInfoFinished(mp4ClipURL: NSURL | null, setupInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, finished: boolean): void;
+
+  finishedProcessingMP4ClipWithUpdatedBroadcastConfigurationError(broadcastConfiguration: RPBroadcastConfiguration | null, error: NSError | null): void;
+}
+
 declare class RPBroadcastHandler extends NSObject implements NSExtensionRequestHandling {
   updateServiceInfo(serviceInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
@@ -297,5 +246,56 @@ declare class RPBroadcastHandler extends NSObject implements NSExtensionRequestH
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class RPBroadcastConfiguration extends NSObject implements NSCoding, NSSecureCoding {
+  clipDuration: number;
+
+  get videoCompressionProperties(): NSDictionary;
+  set videoCompressionProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  setClipDuration(clipDuration: number): void;
+
+  setVideoCompressionProperties(videoCompressionProperties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  static readonly supportsSecureCoding: boolean;
+}
+
+declare class RPPreviewViewController extends UIViewController {
+  previewControllerDelegate: RPPreviewViewControllerDelegate;
+
+  setPreviewControllerDelegate(previewControllerDelegate: RPPreviewViewControllerDelegate | null): void;
+}
+
+declare class RPBroadcastController extends NSObject {
+  readonly broadcasting: boolean;
+
+  readonly paused: boolean;
+
+  readonly broadcastURL: NSURL;
+
+  readonly serviceInfo: NSDictionary;
+
+  delegate: RPBroadcastControllerDelegate | null;
+
+  readonly broadcastExtensionBundleID: string;
+
+  startBroadcastWithHandler(handler: (p1: NSError) => void | null): void;
+
+  pauseBroadcast(): void;
+
+  resumeBroadcast(): void;
+
+  finishBroadcastWithHandler(handler: (p1: NSError) => void | null): void;
+
+  isBroadcasting(): boolean;
+
+  isPaused(): boolean;
+
+  setDelegate(delegate: RPBroadcastControllerDelegate | null): void;
 }
 

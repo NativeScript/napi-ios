@@ -92,24 +92,6 @@ declare interface MCSessionDelegate extends NSObjectProtocol {
 declare class MCSessionDelegate extends NativeObject implements MCSessionDelegate {
 }
 
-declare class MCNearbyServiceAdvertiser extends NSObject {
-  initWithPeerDiscoveryInfoServiceType(myPeerID: MCPeerID, info: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, serviceType: string): this;
-
-  startAdvertisingPeer(): void;
-
-  stopAdvertisingPeer(): void;
-
-  delegate: MCNearbyServiceAdvertiserDelegate;
-
-  readonly myPeerID: MCPeerID;
-
-  readonly discoveryInfo: NSDictionary;
-
-  readonly serviceType: string;
-
-  setDelegate(delegate: MCNearbyServiceAdvertiserDelegate | null): void;
-}
-
 declare class MCNearbyServiceBrowser extends NSObject {
   initWithPeerServiceType(myPeerID: MCPeerID, serviceType: string): this;
 
@@ -240,6 +222,24 @@ declare class MCBrowserViewController extends UIViewController implements MCNear
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class MCNearbyServiceAdvertiser extends NSObject {
+  initWithPeerDiscoveryInfoServiceType(myPeerID: MCPeerID, info: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, serviceType: string): this;
+
+  startAdvertisingPeer(): void;
+
+  stopAdvertisingPeer(): void;
+
+  delegate: MCNearbyServiceAdvertiserDelegate;
+
+  readonly myPeerID: MCPeerID;
+
+  readonly discoveryInfo: NSDictionary;
+
+  readonly serviceType: string;
+
+  setDelegate(delegate: MCNearbyServiceAdvertiserDelegate | null): void;
 }
 
 declare class MCAdvertiserAssistant extends NSObject {

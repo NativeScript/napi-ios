@@ -72,7 +72,7 @@ declare class MTKTextureLoader extends NSObject {
 
   newTextureWithDataOptionsCompletionHandler(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
 
-  newTextureWithCGImageOptionsCompletionHandler(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
+  newTextureWithCGImageOptionsCompletionHandler(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
 
   newTextureWithMDLTextureOptionsCompletionHandler(texture: MDLTexture, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
 
@@ -82,7 +82,7 @@ declare class MTKTextureLoader extends NSObject {
 
   newTextureWithDataOptionsError(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 
-  newTextureWithCGImageOptionsError(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
+  newTextureWithCGImageOptionsError(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 
   newTextureWithMDLTextureOptionsError(texture: MDLTexture, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 
@@ -344,7 +344,7 @@ declare class MTKView extends UIView implements NSCoding, CALayerDelegate {
 
   displayLayer(layer: CALayer): void;
 
-  drawLayerInContext(layer: CALayer, ctx: interop.Object): void;
+  drawLayerInContext(layer: CALayer, ctx: interop.PointerConvertible): void;
 
   layerWillDraw(layer: CALayer): void;
 

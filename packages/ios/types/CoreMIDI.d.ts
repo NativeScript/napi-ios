@@ -65,8 +65,6 @@ declare const kMIDIPropertyCanRoute: interop.Pointer;
 
 declare const kMIDIPropertySupportsGeneralMIDI: interop.Pointer;
 
-declare const kMIDIPropertyNameConfigurationDictionary: interop.Pointer;
-
 declare const kMIDIPropertyDriverOwner: interop.Pointer;
 
 declare const kMIDIPropertyPrivate: interop.Pointer;
@@ -91,6 +89,8 @@ declare const kMIDIPropertyName: interop.Pointer;
 
 declare const kMIDIUnknownError: number;
 
+declare const kMIDINotPermitted: number;
+
 declare const kMIDIObjectNotFound: number;
 
 declare const kMIDIWrongThread: number;
@@ -103,6 +103,8 @@ declare const kMIDIMessageSendErr: number;
 
 declare const kMIDIWrongPropertyType: number;
 
+declare const kMIDIUnknownProperty: number;
+
 declare const kMIDINoConnection: number;
 
 declare const kMIDIInvalidClient: number;
@@ -113,11 +115,11 @@ declare const kMIDIPropertyTransmitsMTC: interop.Pointer;
 
 declare const kMIDIPropertyIsSampler: interop.Pointer;
 
+declare const kMIDIPropertyNameConfigurationDictionary: interop.Pointer;
+
 declare const kMIDIPropertyTransmitsBankSelectLSB: interop.Pointer;
 
 declare const kMIDIPropertyIsEmbeddedEntity: interop.Pointer;
-
-declare const kMIDIUnknownEndpoint: number;
 
 declare const kMIDINoCurrentSetup: number;
 
@@ -137,17 +139,17 @@ declare const kMIDIPropertyReceivesBankSelectLSB: interop.Pointer;
 
 declare const kMIDIPropertyUMPActiveGroupBitmap: interop.Pointer;
 
-declare const kMIDIPropertyImage: interop.Pointer;
-
 declare const kMIDIPropertyTransmitsProgramChanges: interop.Pointer;
 
 declare const kMIDI1UPMaxSysexSize: number;
+
+declare const kMIDIPropertyImage: interop.Pointer;
 
 declare const kMIDIPropertyReceivesClock: interop.Pointer;
 
 declare const kMIDIPropertyTransmitsClock: interop.Pointer;
 
-declare const kMIDIUnknownProperty: number;
+declare const kMIDIUnknownEndpoint: number;
 
 declare const kMIDIPropertyTransmitsNotes: interop.Pointer;
 
@@ -173,15 +175,13 @@ declare const MIDIUMPFunctionBlockWasUpdatedNotification: string;
 
 declare const MIDIChannelsWholePort: number;
 
-declare const kMIDINotPermitted: number;
-
-declare const MIDIUMPEndpointWasRemovedNotification: string;
+declare const kMIDIThruConnection_MaxEndpoints: number;
 
 declare const kMIDIPropertyIsMixer: interop.Pointer;
 
-declare const kMIDIWrongEndpointType: number;
+declare const MIDIUMPEndpointWasRemovedNotification: string;
 
-declare const kMIDIThruConnection_MaxEndpoints: number;
+declare const kMIDIWrongEndpointType: number;
 
 declare const MIDICIDeviceObjectKey: string;
 
@@ -358,15 +358,6 @@ declare const MIDIPerNoteManagementOptions: {
   Detach: 2,
 };
 
-declare const MIDISysExStatus: {
-  Complete: 0,
-  Start: 1,
-  Continue: 2,
-  End: 3,
-  MixedDataSetHeader: 8,
-  MixedDataSetPayload: 9,
-};
-
 declare const MIDINotificationMessageID: {
   SetupChanged: 1,
   ObjectAdded: 2,
@@ -442,6 +433,15 @@ declare const MIDICIPropertyExchangeMessageType: {
   Notify: 63,
 };
 
+declare const MIDISysExStatus: {
+  Complete: 0,
+  Start: 1,
+  Continue: 2,
+  End: 3,
+  MixedDataSetHeader: 8,
+  MixedDataSetPayload: 9,
+};
+
 declare class MIDICIProfileIDStandard {
   constructor(init?: MIDICIProfileIDStandard);
   profileIDByte1: number;
@@ -461,83 +461,63 @@ declare class MIDI2DeviceManufacturer {
   sysExIDByte: unknown /* const array */;
 }
 
-declare class unnamed_2429264512936002264 {
-  constructor(init?: unnamed_2429264512936002264);
-  words: unknown /* const array */;
+declare class unnamed_6383159896844909270 {
+  constructor(init?: unnamed_6383159896844909270);
+  status: interop.Enum<typeof MIDISysExStatus>;
 }
 
-declare class unnamed_14033045680710370512 {
-  constructor(init?: unnamed_14033045680710370512);
-  byteCount: number;
-  streamID: number;
-  data: unknown /* const array */;
-  reserved: number;
-}
-
-declare class unnamed_7687765511065609828 {
-  constructor(init?: unnamed_7687765511065609828);
+declare class unnamed_3427901160143497882 {
+  constructor(init?: unnamed_3427901160143497882);
   note: number;
   options: interop.Enum<typeof MIDIPerNoteManagementOptions>;
   reserved: unknown /* const array */;
 }
 
-declare class unnamed_141153532667663696 {
-  constructor(init?: unnamed_141153532667663696);
+declare class unnamed_9778813443748703470 {
+  constructor(init?: unnamed_9778813443748703470);
   noteNumber: number;
   reserved: number;
   bend: number;
 }
 
-declare class unnamed_13033887881180824301 {
-  constructor(init?: unnamed_13033887881180824301);
-  noteNumber: number;
-  reserved: number;
-  pressure: number;
+declare class unnamed_9284414440325847619 {
+  constructor(init?: unnamed_9284414440325847619);
+  bank: number;
+  index: number;
+  data: number;
 }
 
-declare class unnamed_9018410676970361355 {
-  constructor(init?: unnamed_9018410676970361355);
+declare class unnamed_106644537616426634 {
+  constructor(init?: unnamed_106644537616426634);
+  noteNumber: number;
+  index: number;
+  data: number;
+}
+
+declare class unnamed_6295510036229818237 {
+  constructor(init?: unnamed_6295510036229818237);
+  index: number;
+  reserved: number;
+  data: number;
+}
+
+declare class unnamed_12529692152931190884 {
+  constructor(init?: unnamed_12529692152931190884);
   number: number;
   attributeType: interop.Enum<typeof MIDINoteAttribute>;
   velocity: number;
   attribute: number;
 }
 
-declare class unnamed_340373939070755051 {
-  constructor(init?: unnamed_340373939070755051);
+declare class unnamed_3132482729960000882 {
+  constructor(init?: unnamed_3132482729960000882);
   status: interop.Enum<typeof MIDICVStatus>;
   channel: number;
   reserved: unknown /* const array */;
 }
 
-declare class unnamed_2137745323853783348 {
-  constructor(init?: unnamed_2137745323853783348);
-  status: interop.Enum<typeof MIDISysExStatus>;
-  channel: number;
-  data: unknown /* const array */;
-  reserved: number;
-}
-
-declare class unnamed_7311090010878626665 {
-  constructor(init?: unnamed_7311090010878626665);
-  noteNumber: number;
-  pressure: number;
-}
-
-declare class unnamed_3706463365555223001 {
-  constructor(init?: unnamed_3706463365555223001);
-  status: interop.Enum<typeof MIDICVStatus>;
-  channel: number;
-  reserved: unknown /* const array */;
-}
-
-declare class unnamed_7825577394665438592 {
-  constructor(init?: unnamed_7825577394665438592);
-  status: interop.Enum<typeof MIDISystemStatus>;
-}
-
-declare class unnamed_12721469423572434874 {
-  constructor(init?: unnamed_12721469423572434874);
+declare class unnamed_17557418612741649852 {
+  constructor(init?: unnamed_17557418612741649852);
   status: interop.Enum<typeof MIDIUtilityStatus>;
 }
 
@@ -546,6 +526,14 @@ declare class MIDIUniversalMessage {
   type: interop.Enum<typeof MIDIMessageType>;
   group: number;
   reserved: unknown /* const array */;
+}
+
+declare class MIDIMessage_128 {
+  constructor(init?: MIDIMessage_128);
+  word0: number;
+  word1: number;
+  word2: number;
+  word3: number;
 }
 
 declare class MIDIMessage_96 {
@@ -572,27 +560,6 @@ declare class MIDIValueMap {
   value: unknown /* const array */;
 }
 
-declare class unnamed_4330967872734767946 {
-  constructor(init?: unnamed_4330967872734767946);
-  bank: number;
-  index: number;
-  data: number;
-}
-
-declare class unnamed_9719375593835432931 {
-  constructor(init?: unnamed_9719375593835432931);
-  data: number;
-  reserved: unknown /* const array */;
-}
-
-declare class MIDIMessage_128 {
-  constructor(init?: MIDIMessage_128);
-  word0: number;
-  word1: number;
-  word2: number;
-  word3: number;
-}
-
 declare class MIDIIOErrorNotification {
   constructor(init?: MIDIIOErrorNotification);
   messageID: interop.Enum<typeof MIDINotificationMessageID>;
@@ -607,7 +574,7 @@ declare class MIDIObjectPropertyChangeNotification {
   messageSize: number;
   object: number;
   objectType: interop.Enum<typeof MIDIObjectType>;
-  propertyName: interop.Object | null;
+  propertyName: interop.Pointer;
 }
 
 declare class MIDIObjectAddRemoveNotification {
@@ -637,6 +604,44 @@ declare class MIDISysexSendRequestUMP {
   completionRefCon: interop.Pointer;
 }
 
+declare class unnamed_6779601740640291629 {
+  constructor(init?: unnamed_6779601740640291629);
+  options: interop.Enum<typeof MIDIProgramChangeOptions>;
+  program: number;
+  reserved: unknown /* const array */;
+  bank: number;
+}
+
+declare class unnamed_1285817736437967875 {
+  constructor(init?: unnamed_1285817736437967875);
+  words: unknown /* const array */;
+}
+
+declare class unnamed_13506063927170228169 {
+  constructor(init?: unnamed_13506063927170228169);
+  index: number;
+  data: number;
+}
+
+declare class unnamed_4085369521086625279 {
+  constructor(init?: unnamed_4085369521086625279);
+  data: number;
+  reserved: unknown /* const array */;
+}
+
+declare class unnamed_12241325300451769864 {
+  constructor(init?: unnamed_12241325300451769864);
+  status: interop.Enum<typeof MIDISystemStatus>;
+}
+
+declare class unnamed_4533504746931238502 {
+  constructor(init?: unnamed_4533504746931238502);
+  status: interop.Enum<typeof MIDISysExStatus>;
+  channel: number;
+  data: unknown /* const array */;
+  reserved: number;
+}
+
 declare class MIDICIProfileIDManufacturerSpecific {
   constructor(init?: MIDICIProfileIDManufacturerSpecific);
   sysExID1: number;
@@ -644,14 +649,6 @@ declare class MIDICIProfileIDManufacturerSpecific {
   sysExID3: number;
   info1: number;
   info2: number;
-}
-
-declare class unnamed_10037325418729180158 {
-  constructor(init?: unnamed_10037325418729180158);
-  options: interop.Enum<typeof MIDIProgramChangeOptions>;
-  program: number;
-  reserved: unknown /* const array */;
-  bank: number;
 }
 
 declare class MIDICIDeviceIdentification {
@@ -663,21 +660,10 @@ declare class MIDICIDeviceIdentification {
   reserved: unknown /* const array */;
 }
 
-declare class unnamed_17538660431246106127 {
-  constructor(init?: unnamed_17538660431246106127);
-  number: number;
-  velocity: number;
-}
-
-declare class unnamed_17730955363881296192 {
-  constructor(init?: unnamed_17730955363881296192);
-  data: number;
-  reserved: unknown /* const array */;
-}
-
-declare class unnamed_5075483881222346623 {
-  constructor(init?: unnamed_5075483881222346623);
-  status: interop.Enum<typeof MIDISysExStatus>;
+declare class unnamed_9235466548861736036 {
+  constructor(init?: unnamed_9235466548861736036);
+  noteNumber: number;
+  pressure: number;
 }
 
 declare class MIDIDriverInterface {
@@ -698,18 +684,10 @@ declare class MIDIDriverInterface {
   MonitorEvents: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
 }
 
-declare class unnamed_8744276450782712886 {
-  constructor(init?: unnamed_8744276450782712886);
-  noteNumber: number;
-  index: number;
-  data: number;
-}
-
-declare class unnamed_8333069689470836658 {
-  constructor(init?: unnamed_8333069689470836658);
-  mdsID: number;
-  data: unknown /* const array */;
-  reserved: number;
+declare class unnamed_2638869642748014863 {
+  constructor(init?: unnamed_2638869642748014863);
+  number: number;
+  velocity: number;
 }
 
 declare class MIDIThruConnectionParams {
@@ -741,17 +719,11 @@ declare class MIDIThruConnectionParams {
   reserved3: unknown /* const array */;
 }
 
-declare class unnamed_13553748487531151932 {
-  constructor(init?: unnamed_13553748487531151932);
-  index: number;
-  data: number;
-}
-
-declare class unnamed_16872999786086617997 {
-  constructor(init?: unnamed_16872999786086617997);
-  index: number;
+declare class unnamed_16024615064400410491 {
+  constructor(init?: unnamed_16024615064400410491);
+  noteNumber: number;
   reserved: number;
-  data: number;
+  pressure: number;
 }
 
 declare class MIDIPacket {
@@ -767,10 +739,31 @@ declare class MIDIThruConnectionEndpoint {
   uniqueID: number;
 }
 
+declare class unnamed_9244770490098736666 {
+  constructor(init?: unnamed_9244770490098736666);
+  byteCount: number;
+  streamID: number;
+  data: unknown /* const array */;
+  reserved: number;
+}
+
 declare class MIDINotification {
   constructor(init?: MIDINotification);
   messageID: interop.Enum<typeof MIDINotificationMessageID>;
   messageSize: number;
+}
+
+declare class unnamed_2322868027034687605 {
+  constructor(init?: unnamed_2322868027034687605);
+  status: interop.Enum<typeof MIDICVStatus>;
+  channel: number;
+  reserved: unknown /* const array */;
+}
+
+declare class unnamed_4200750392886343788 {
+  constructor(init?: unnamed_4200750392886343788);
+  data: number;
+  reserved: unknown /* const array */;
 }
 
 declare class MIDIControlTransform {
@@ -780,6 +773,13 @@ declare class MIDIControlTransform {
   controlNumber: number;
   transform: interop.Enum<typeof MIDITransformType>;
   param: number;
+}
+
+declare class unnamed_524940706441899092 {
+  constructor(init?: unnamed_524940706441899092);
+  mdsID: number;
+  data: unknown /* const array */;
+  reserved: number;
 }
 
 declare class MIDISysexSendRequest {
@@ -803,115 +803,115 @@ declare class MIDICIProfileID {
   manufacturerSpecific: MIDICIProfileIDManufacturerSpecific;
 }
 
-type unnamed_467029603697623995Descriptor = 
-  | { sysex8: unnamed_14033045680710370512 }
-  | { mixedDataSet: unnamed_8333069689470836658 };
-
-declare class unnamed_467029603697623995 {
-  constructor(init?: unnamed_467029603697623995Descriptor);
-  sysex8: unnamed_14033045680710370512;
-  mixedDataSet: unnamed_8333069689470836658;
-}
-
-type unnamed_16991776690501519408Descriptor = 
-  | { timeCode: number }
-  | { songPositionPointer: number }
-  | { songSelect: number };
-
-declare class unnamed_16991776690501519408 {
-  constructor(init?: unnamed_16991776690501519408Descriptor);
-  timeCode: number;
-  songPositionPointer: number;
-  songSelect: number;
-}
-
-type unnamed_5042239631392195305Descriptor = 
-  | { utility: unnamed_12721469423572434874 }
-  | { system: unnamed_7825577394665438592 }
-  | { channelVoice1: unnamed_3706463365555223001 }
-  | { sysEx: unnamed_2137745323853783348 }
-  | { channelVoice2: unnamed_340373939070755051 }
-  | { data128: unnamed_5075483881222346623 }
-  | { unknown: unnamed_2429264512936002264 };
-
-declare class unnamed_5042239631392195305 {
-  constructor(init?: unnamed_5042239631392195305Descriptor);
-  utility: unnamed_12721469423572434874;
-  system: unnamed_7825577394665438592;
-  channelVoice1: unnamed_3706463365555223001;
-  sysEx: unnamed_2137745323853783348;
-  channelVoice2: unnamed_340373939070755051;
-  data128: unnamed_5075483881222346623;
-  unknown: unnamed_2429264512936002264;
-}
-
-type unnamed_16201449366139603636Descriptor = 
-  | { jitterReductionClock: number }
-  | { jitterReductionTimestamp: number };
-
-declare class unnamed_16201449366139603636 {
-  constructor(init?: unnamed_16201449366139603636Descriptor);
-  jitterReductionClock: number;
-  jitterReductionTimestamp: number;
-}
-
-type unnamed_2604511874792587835Descriptor = 
-  | { note: unnamed_9018410676970361355 }
-  | { polyPressure: unnamed_13033887881180824301 }
-  | { controlChange: unnamed_16872999786086617997 }
-  | { programChange: unnamed_10037325418729180158 }
-  | { channelPressure: unnamed_9719375593835432931 }
-  | { pitchBend: unnamed_17730955363881296192 }
-  | { perNoteController: unnamed_8744276450782712886 }
-  | { controller: unnamed_4330967872734767946 }
-  | { perNotePitchBend: unnamed_141153532667663696 }
-  | { perNoteManagement: unnamed_7687765511065609828 };
-
-declare class unnamed_2604511874792587835 {
-  constructor(init?: unnamed_2604511874792587835Descriptor);
-  note: unnamed_9018410676970361355;
-  polyPressure: unnamed_13033887881180824301;
-  controlChange: unnamed_16872999786086617997;
-  programChange: unnamed_10037325418729180158;
-  channelPressure: unnamed_9719375593835432931;
-  pitchBend: unnamed_17730955363881296192;
-  perNoteController: unnamed_8744276450782712886;
-  controller: unnamed_4330967872734767946;
-  perNotePitchBend: unnamed_141153532667663696;
-  perNoteManagement: unnamed_7687765511065609828;
-}
-
-type unnamed_11728219675385906659Descriptor = 
-  | { note: unnamed_17538660431246106127 }
-  | { polyPressure: unnamed_7311090010878626665 }
-  | { controlChange: unnamed_13553748487531151932 }
+type unnamed_10400283593238679883Descriptor = 
+  | { note: unnamed_2638869642748014863 }
+  | { polyPressure: unnamed_9235466548861736036 }
+  | { controlChange: unnamed_13506063927170228169 }
   | { program: number }
   | { channelPressure: number }
   | { pitchBend: number };
 
-declare class unnamed_11728219675385906659 {
-  constructor(init?: unnamed_11728219675385906659Descriptor);
-  note: unnamed_17538660431246106127;
-  polyPressure: unnamed_7311090010878626665;
-  controlChange: unnamed_13553748487531151932;
+declare class unnamed_10400283593238679883 {
+  constructor(init?: unnamed_10400283593238679883Descriptor);
+  note: unnamed_2638869642748014863;
+  polyPressure: unnamed_9235466548861736036;
+  controlChange: unnamed_13506063927170228169;
   program: number;
   channelPressure: number;
   pitchBend: number;
 }
 
-declare function MIDIClientCreate(name: interop.Object, notifyProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, notifyRefCon: interop.PointerConvertible, outClient: interop.PointerConvertible): number;
+type unnamed_16367073337491183493Descriptor = 
+  | { timeCode: number }
+  | { songPositionPointer: number }
+  | { songSelect: number };
 
-declare function MIDIClientCreateWithBlock(name: interop.Object, outClient: interop.PointerConvertible, notifyBlock: (p1: interop.PointerConvertible) => void): number;
+declare class unnamed_16367073337491183493 {
+  constructor(init?: unnamed_16367073337491183493Descriptor);
+  timeCode: number;
+  songPositionPointer: number;
+  songSelect: number;
+}
+
+type unnamed_5667026652002761829Descriptor = 
+  | { jitterReductionClock: number }
+  | { jitterReductionTimestamp: number };
+
+declare class unnamed_5667026652002761829 {
+  constructor(init?: unnamed_5667026652002761829Descriptor);
+  jitterReductionClock: number;
+  jitterReductionTimestamp: number;
+}
+
+type unnamed_16168749494453046008Descriptor = 
+  | { utility: unnamed_17557418612741649852 }
+  | { system: unnamed_12241325300451769864 }
+  | { channelVoice1: unnamed_2322868027034687605 }
+  | { sysEx: unnamed_4533504746931238502 }
+  | { channelVoice2: unnamed_3132482729960000882 }
+  | { data128: unnamed_6383159896844909270 }
+  | { unknown: unnamed_1285817736437967875 };
+
+declare class unnamed_16168749494453046008 {
+  constructor(init?: unnamed_16168749494453046008Descriptor);
+  utility: unnamed_17557418612741649852;
+  system: unnamed_12241325300451769864;
+  channelVoice1: unnamed_2322868027034687605;
+  sysEx: unnamed_4533504746931238502;
+  channelVoice2: unnamed_3132482729960000882;
+  data128: unnamed_6383159896844909270;
+  unknown: unnamed_1285817736437967875;
+}
+
+type unnamed_5524459790893853084Descriptor = 
+  | { note: unnamed_12529692152931190884 }
+  | { polyPressure: unnamed_16024615064400410491 }
+  | { controlChange: unnamed_6295510036229818237 }
+  | { programChange: unnamed_6779601740640291629 }
+  | { channelPressure: unnamed_4200750392886343788 }
+  | { pitchBend: unnamed_4085369521086625279 }
+  | { perNoteController: unnamed_106644537616426634 }
+  | { controller: unnamed_9284414440325847619 }
+  | { perNotePitchBend: unnamed_9778813443748703470 }
+  | { perNoteManagement: unnamed_3427901160143497882 };
+
+declare class unnamed_5524459790893853084 {
+  constructor(init?: unnamed_5524459790893853084Descriptor);
+  note: unnamed_12529692152931190884;
+  polyPressure: unnamed_16024615064400410491;
+  controlChange: unnamed_6295510036229818237;
+  programChange: unnamed_6779601740640291629;
+  channelPressure: unnamed_4200750392886343788;
+  pitchBend: unnamed_4085369521086625279;
+  perNoteController: unnamed_106644537616426634;
+  controller: unnamed_9284414440325847619;
+  perNotePitchBend: unnamed_9778813443748703470;
+  perNoteManagement: unnamed_3427901160143497882;
+}
+
+type unnamed_8852609346553694851Descriptor = 
+  | { sysex8: unnamed_9244770490098736666 }
+  | { mixedDataSet: unnamed_524940706441899092 };
+
+declare class unnamed_8852609346553694851 {
+  constructor(init?: unnamed_8852609346553694851Descriptor);
+  sysex8: unnamed_9244770490098736666;
+  mixedDataSet: unnamed_524940706441899092;
+}
+
+declare function MIDIClientCreate(name: interop.PointerConvertible, notifyProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, notifyRefCon: interop.PointerConvertible, outClient: interop.PointerConvertible): number;
+
+declare function MIDIClientCreateWithBlock(name: interop.PointerConvertible, outClient: interop.PointerConvertible, notifyBlock: (p1: interop.PointerConvertible) => void): number;
 
 declare function MIDIClientDispose(client: number): number;
 
-declare function MIDIInputPortCreateWithProtocol(client: number, portName: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, outPort: interop.PointerConvertible, receiveBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIInputPortCreateWithProtocol(client: number, portName: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, outPort: interop.PointerConvertible, receiveBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDIInputPortCreate(client: number, portName: interop.Object, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outPort: interop.PointerConvertible): number;
+declare function MIDIInputPortCreate(client: number, portName: interop.PointerConvertible, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outPort: interop.PointerConvertible): number;
 
-declare function MIDIInputPortCreateWithBlock(client: number, portName: interop.Object, outPort: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIInputPortCreateWithBlock(client: number, portName: interop.PointerConvertible, outPort: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDIOutputPortCreate(client: number, portName: interop.Object, outPort: interop.PointerConvertible): number;
+declare function MIDIOutputPortCreate(client: number, portName: interop.PointerConvertible, outPort: interop.PointerConvertible): number;
 
 declare function MIDIPortDispose(port: number): number;
 
@@ -947,15 +947,15 @@ declare function MIDIGetDestination(destIndex0: number): number;
 
 declare function MIDIEndpointGetEntity(inEndpoint: number, outEntity: interop.PointerConvertible): number;
 
-declare function MIDIDestinationCreateWithProtocol(client: number, name: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIDestinationCreateWithProtocol(client: number, name: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDIDestinationCreate(client: number, name: interop.Object, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outDest: interop.PointerConvertible): number;
+declare function MIDIDestinationCreate(client: number, name: interop.PointerConvertible, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outDest: interop.PointerConvertible): number;
 
-declare function MIDIDestinationCreateWithBlock(client: number, name: interop.Object, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIDestinationCreateWithBlock(client: number, name: interop.PointerConvertible, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDISourceCreateWithProtocol(client: number, name: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, outSrc: interop.PointerConvertible): number;
+declare function MIDISourceCreateWithProtocol(client: number, name: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, outSrc: interop.PointerConvertible): number;
 
-declare function MIDISourceCreate(client: number, name: interop.Object, outSrc: interop.PointerConvertible): number;
+declare function MIDISourceCreate(client: number, name: interop.PointerConvertible, outSrc: interop.PointerConvertible): number;
 
 declare function MIDIEndpointDispose(endpt: number): number;
 
@@ -963,25 +963,25 @@ declare function MIDIGetNumberOfExternalDevices(): number;
 
 declare function MIDIGetExternalDevice(deviceIndex0: number): number;
 
-declare function MIDIObjectGetIntegerProperty(obj: number, propertyID: interop.Object, outValue: interop.PointerConvertible): number;
+declare function MIDIObjectGetIntegerProperty(obj: number, propertyID: interop.PointerConvertible, outValue: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetIntegerProperty(obj: number, propertyID: interop.Object, value: number): number;
+declare function MIDIObjectSetIntegerProperty(obj: number, propertyID: interop.PointerConvertible, value: number): number;
 
-declare function MIDIObjectGetStringProperty(obj: number, propertyID: interop.Object, str: interop.PointerConvertible): number;
+declare function MIDIObjectGetStringProperty(obj: number, propertyID: interop.PointerConvertible, str: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetStringProperty(obj: number, propertyID: interop.Object, str: interop.Object): number;
+declare function MIDIObjectSetStringProperty(obj: number, propertyID: interop.PointerConvertible, str: interop.PointerConvertible): number;
 
-declare function MIDIObjectGetDataProperty(obj: number, propertyID: interop.Object, outData: interop.PointerConvertible): number;
+declare function MIDIObjectGetDataProperty(obj: number, propertyID: interop.PointerConvertible, outData: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetDataProperty(obj: number, propertyID: interop.Object, data: interop.Object): number;
+declare function MIDIObjectSetDataProperty(obj: number, propertyID: interop.PointerConvertible, data: interop.PointerConvertible): number;
 
-declare function MIDIObjectGetDictionaryProperty(obj: number, propertyID: interop.Object, outDict: interop.PointerConvertible): number;
+declare function MIDIObjectGetDictionaryProperty(obj: number, propertyID: interop.PointerConvertible, outDict: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetDictionaryProperty(obj: number, propertyID: interop.Object, dict: interop.Object): number;
+declare function MIDIObjectSetDictionaryProperty(obj: number, propertyID: interop.PointerConvertible, dict: interop.PointerConvertible): number;
 
 declare function MIDIObjectGetProperties(obj: number, outProperties: interop.PointerConvertible, deep: number): number;
 
-declare function MIDIObjectRemoveProperty(obj: number, propertyID: interop.Object): number;
+declare function MIDIObjectRemoveProperty(obj: number, propertyID: interop.PointerConvertible): number;
 
 declare function MIDIObjectFindByUniqueID(inUniqueID: number, outObject: interop.PointerConvertible, outObjectType: interop.PointerConvertible): number;
 
@@ -1013,9 +1013,9 @@ declare function MIDIPacketListInit(pktlist: interop.PointerConvertible): intero
 
 declare function MIDIPacketListAdd(pktlist: interop.PointerConvertible, listSize: number, curPacket: interop.PointerConvertible, time: number, nData: number, data: interop.PointerConvertible): interop.Pointer;
 
-declare function MIDIDeviceNewEntity(device: number, name: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
+declare function MIDIDeviceNewEntity(device: number, name: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
 
-declare function MIDIDeviceAddEntity(device: number, name: interop.Object, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
+declare function MIDIDeviceAddEntity(device: number, name: interop.PointerConvertible, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
 
 declare function MIDIDeviceRemoveEntity(device: number, entity: number): number;
 
@@ -1029,21 +1029,21 @@ declare function MIDISetupAddExternalDevice(device: number): number;
 
 declare function MIDISetupRemoveExternalDevice(device: number): number;
 
-declare function MIDIExternalDeviceCreate(name: interop.Object, manufacturer: interop.Object, model: interop.Object, outDevice: interop.PointerConvertible): number;
+declare function MIDIExternalDeviceCreate(name: interop.PointerConvertible, manufacturer: interop.PointerConvertible, model: interop.PointerConvertible, outDevice: interop.PointerConvertible): number;
 
 declare function MIDIThruConnectionParamsInitialize(inConnectionParams: interop.PointerConvertible): void;
 
-declare function MIDIThruConnectionCreate(inPersistentOwnerID: interop.Object, inConnectionParams: interop.Object, outConnection: interop.PointerConvertible): number;
+declare function MIDIThruConnectionCreate(inPersistentOwnerID: interop.PointerConvertible, inConnectionParams: interop.PointerConvertible, outConnection: interop.PointerConvertible): number;
 
 declare function MIDIThruConnectionDispose(connection: number): number;
 
 declare function MIDIThruConnectionGetParams(connection: number, outConnectionParams: interop.PointerConvertible): number;
 
-declare function MIDIThruConnectionSetParams(connection: number, inConnectionParams: interop.Object): number;
+declare function MIDIThruConnectionSetParams(connection: number, inConnectionParams: interop.PointerConvertible): number;
 
-declare function MIDIThruConnectionFind(inPersistentOwnerID: interop.Object, outConnectionList: interop.PointerConvertible): number;
+declare function MIDIThruConnectionFind(inPersistentOwnerID: interop.PointerConvertible, outConnectionList: interop.PointerConvertible): number;
 
-declare function MIDIDeviceCreate(owner: interop.PointerConvertible, name: interop.Object, manufacturer: interop.Object, model: interop.Object, outDevice: interop.PointerConvertible): number;
+declare function MIDIDeviceCreate(owner: interop.PointerConvertible, name: interop.PointerConvertible, manufacturer: interop.PointerConvertible, model: interop.PointerConvertible, outDevice: interop.PointerConvertible): number;
 
 declare function MIDIDeviceDispose(device: number): number;
 
@@ -1059,7 +1059,7 @@ declare function MIDIEndpointSetRefCons(endpt: number, ref1: interop.PointerConv
 
 declare function MIDIEndpointGetRefCons(endpt: number, ref1: interop.PointerConvertible, ref2: interop.PointerConvertible): number;
 
-declare function MIDIGetDriverIORunLoop(): interop.Object;
+declare function MIDIGetDriverIORunLoop(): interop.Pointer;
 
 declare function MIDIGetDriverDeviceList(driver: interop.PointerConvertible): number;
 
@@ -1067,7 +1067,7 @@ declare function MIDIEventListForEachEvent(evtlist: interop.PointerConvertible, 
 
 declare function MIDIBluetoothDriverActivateAllConnections(): number;
 
-declare function MIDIBluetoothDriverDisconnect(uuid: interop.Object): number;
+declare function MIDIBluetoothDriverDisconnect(uuid: interop.PointerConvertible): number;
 
 declare interface MIDICIProfileResponderDelegate extends NSObjectProtocol {
   connectInitiatorWithDeviceInfo(initiatorMUID: NSNumber, deviceInfo: MIDICIDeviceInfo): boolean;
@@ -1239,6 +1239,48 @@ declare class MIDI2DeviceInfo extends NSObject {
   initWithManufacturerIDFamilyModelNumberRevisionLevel(manufacturerID: MIDI2DeviceManufacturer, family: number, modelNumber: number, revisionLevel: MIDI2DeviceRevisionLevel): this;
 }
 
+declare class MIDINetworkHost extends NSObject {
+  static hostWithNameAddressPort<This extends abstract new (...args: any) => any>(this: This, name: string, address: string, port: number): InstanceType<This>;
+
+  static hostWithNameNetService<This extends abstract new (...args: any) => any>(this: This, name: string, netService: NSNetService): InstanceType<This>;
+
+  static hostWithNameNetServiceNameNetServiceDomain<This extends abstract new (...args: any) => any>(this: This, name: string, netServiceName: string, netServiceDomain: string): InstanceType<This>;
+
+  hasSameAddressAs(other: MIDINetworkHost): boolean;
+
+  readonly name: string;
+
+  readonly address: string;
+
+  readonly port: number;
+
+  readonly netServiceName: string;
+
+  readonly netServiceDomain: string;
+}
+
+declare class MIDICIDevice extends NSObject {
+  readonly deviceInfo: MIDI2DeviceInfo;
+
+  readonly MUID: number;
+
+  readonly supportsProtocolNegotiation: boolean;
+
+  readonly supportsProfileConfiguration: boolean;
+
+  readonly supportsPropertyExchange: boolean;
+
+  readonly supportsProcessInquiry: boolean;
+
+  readonly maxSysExSize: number;
+
+  readonly maxPropertyExchangeRequests: number;
+
+  readonly deviceType: interop.Enum<typeof MIDICIDeviceType>;
+
+  readonly profiles: NSArray;
+}
+
 declare class MIDINetworkSession extends NSObject {
   static defaultSession(): MIDINetworkSession;
 
@@ -1273,26 +1315,6 @@ declare class MIDINetworkSession extends NSObject {
   setEnabled(enabled: boolean): void;
 
   setConnectionPolicy(connectionPolicy: interop.Enum<typeof MIDINetworkConnectionPolicy>): void;
-}
-
-declare class MIDINetworkHost extends NSObject {
-  static hostWithNameAddressPort<This extends abstract new (...args: any) => any>(this: This, name: string, address: string, port: number): InstanceType<This>;
-
-  static hostWithNameNetService<This extends abstract new (...args: any) => any>(this: This, name: string, netService: NSNetService): InstanceType<This>;
-
-  static hostWithNameNetServiceNameNetServiceDomain<This extends abstract new (...args: any) => any>(this: This, name: string, netServiceName: string, netServiceDomain: string): InstanceType<This>;
-
-  hasSameAddressAs(other: MIDINetworkHost): boolean;
-
-  readonly name: string;
-
-  readonly address: string;
-
-  readonly port: number;
-
-  readonly netServiceName: string;
-
-  readonly netServiceDomain: string;
 }
 
 declare class MIDICIDeviceInfo extends NSObject implements NSSecureCoding {
@@ -1392,28 +1414,6 @@ declare class MIDICIProfile extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class MIDICIDevice extends NSObject {
-  readonly deviceInfo: MIDI2DeviceInfo;
-
-  readonly MUID: number;
-
-  readonly supportsProtocolNegotiation: boolean;
-
-  readonly supportsProfileConfiguration: boolean;
-
-  readonly supportsPropertyExchange: boolean;
-
-  readonly supportsProcessInquiry: boolean;
-
-  readonly maxSysExSize: number;
-
-  readonly maxPropertyExchangeRequests: number;
-
-  readonly deviceType: interop.Enum<typeof MIDICIDeviceType>;
-
-  readonly profiles: NSArray;
 }
 
 declare class MIDIUMPEndpointManager extends NSObject {

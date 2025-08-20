@@ -17,6 +17,8 @@ declare const ALAssetPropertyRepresentations: string;
 
 declare const ALAssetPropertyOrientation: string;
 
+declare const ALAssetPropertyDuration: string;
+
 declare const ALAssetPropertyLocation: string;
 
 declare const ALAssetPropertyType: string;
@@ -65,8 +67,6 @@ declare const ALAssetsLibraryUnknownError: number;
 
 declare const ALAssetsLibraryAccessGloballyDeniedError: number;
 
-declare const ALAssetPropertyDuration: string;
-
 declare const ALAssetsGroupPropertyName: string;
 
 declare const ALAssetsGroupFaces: number;
@@ -97,36 +97,10 @@ declare const ALAssetOrientation: {
   RightMirrored: 7,
 };
 
-declare class ALAssetRepresentation extends NSObject {
-  UTI(): string;
-
-  dimensions(): CGSize;
-
-  size(): number;
-
-  getBytesFromOffsetLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): number;
-
-  fullResolutionImage(): interop.Object;
-
-  CGImageWithOptions(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): interop.Object;
-
-  fullScreenImage(): interop.Object;
-
-  url(): NSURL;
-
-  metadata(): NSDictionary;
-
-  orientation(): interop.Enum<typeof ALAssetOrientation>;
-
-  scale(): number;
-
-  filename(): string;
-}
-
 declare class ALAssetsGroup extends NSObject {
   valueForProperty(property: string): interop.Object;
 
-  posterImage(): interop.Object;
+  posterImage(): interop.Pointer;
 
   setAssetsFilter(filter: ALAssetsFilter): void;
 
@@ -152,9 +126,9 @@ declare class ALAsset extends NSObject {
 
   representationForUTI(representationUTI: string): ALAssetRepresentation;
 
-  thumbnail(): interop.Object;
+  thumbnail(): interop.Pointer;
 
-  aspectRatioThumbnail(): interop.Object;
+  aspectRatioThumbnail(): interop.Pointer;
 
   writeModifiedImageDataToSavedPhotosAlbumMetadataCompletionBlock(imageData: NSData, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionBlock: (p1: NSURL, p2: NSError) => void): void;
 
@@ -180,9 +154,9 @@ declare class ALAssetsLibrary extends NSObject {
 
   addAssetsGroupAlbumWithNameResultBlockFailureBlock(name: string, resultBlock: (p1: ALAssetsGroup) => void, failureBlock: (p1: NSError) => void): void;
 
-  writeImageToSavedPhotosAlbumOrientationCompletionBlock(imageRef: interop.Object, orientation: interop.Enum<typeof ALAssetOrientation>, completionBlock: (p1: NSURL, p2: NSError) => void): void;
+  writeImageToSavedPhotosAlbumOrientationCompletionBlock(imageRef: interop.PointerConvertible, orientation: interop.Enum<typeof ALAssetOrientation>, completionBlock: (p1: NSURL, p2: NSError) => void): void;
 
-  writeImageToSavedPhotosAlbumMetadataCompletionBlock(imageRef: interop.Object, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionBlock: (p1: NSURL, p2: NSError) => void): void;
+  writeImageToSavedPhotosAlbumMetadataCompletionBlock(imageRef: interop.PointerConvertible, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionBlock: (p1: NSURL, p2: NSError) => void): void;
 
   writeImageDataToSavedPhotosAlbumMetadataCompletionBlock(imageData: NSData, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionBlock: (p1: NSURL, p2: NSError) => void): void;
 
@@ -193,6 +167,32 @@ declare class ALAssetsLibrary extends NSObject {
   static authorizationStatus(): interop.Enum<typeof ALAuthorizationStatus>;
 
   static disableSharedPhotoStreamsSupport(): void;
+}
+
+declare class ALAssetRepresentation extends NSObject {
+  UTI(): string;
+
+  dimensions(): CGSize;
+
+  size(): number;
+
+  getBytesFromOffsetLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): number;
+
+  fullResolutionImage(): interop.Pointer;
+
+  CGImageWithOptions(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): interop.Pointer;
+
+  fullScreenImage(): interop.Pointer;
+
+  url(): NSURL;
+
+  metadata(): NSDictionary;
+
+  orientation(): interop.Enum<typeof ALAssetOrientation>;
+
+  scale(): number;
+
+  filename(): string;
 }
 
 declare class ALAssetsFilter extends NSObject {

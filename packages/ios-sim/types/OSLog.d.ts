@@ -2,10 +2,6 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
-declare const OSLogEnumeratorOptions: {
-  OSLogEnumeratorReverse: 1,
-};
-
 declare const OSLogMessageComponentArgumentCategory: {
   Undefined: 0,
   Data: 1,
@@ -13,6 +9,10 @@ declare const OSLogMessageComponentArgumentCategory: {
   Int64: 3,
   String: 4,
   UInt64: 5,
+};
+
+declare const OSLogEnumeratorOptions: {
+  OSLogEnumeratorReverse: 1,
 };
 
 declare const OSLogEntryStoreCategory: {
@@ -75,23 +75,33 @@ declare interface OSLogEntryFromProcess {
 declare class OSLogEntryFromProcess extends NativeObject implements OSLogEntryFromProcess {
 }
 
-declare class OSLogStore extends NSObject {
-  static storeWithScopeError<This extends abstract new (...args: any) => any>(this: This, scope: interop.Enum<typeof OSLogStoreScope>, error: interop.PointerConvertible): InstanceType<This>;
-
-  static storeWithURLError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, error: interop.PointerConvertible): InstanceType<This>;
-
-  entriesEnumeratorWithOptionsPositionPredicateError(options: interop.Enum<typeof OSLogEnumeratorOptions>, position: OSLogPosition | null, predicate: NSPredicate | null, error: interop.PointerConvertible): OSLogEnumerator;
-
-  entriesEnumeratorAndReturnError(error: interop.PointerConvertible): OSLogEnumerator;
-
-  positionWithDate(date: NSDate): OSLogPosition;
-
-  positionWithTimeIntervalSinceEnd(seconds: number): OSLogPosition;
-
-  positionWithTimeIntervalSinceLatestBoot(seconds: number): OSLogPosition;
+declare class OSLogPosition extends NSObject {
 }
 
-declare class OSLogPosition extends NSObject {
+declare class OSLogMessageComponent extends NSObject implements NSSecureCoding {
+  readonly formatSubstring: string;
+
+  readonly placeholder: string;
+
+  readonly argumentCategory: interop.Enum<typeof OSLogMessageComponentArgumentCategory>;
+
+  readonly argumentDataValue: NSData;
+
+  readonly argumentDoubleValue: number;
+
+  readonly argumentInt64Value: number;
+
+  readonly argumentNumberValue: NSNumber;
+
+  readonly argumentStringValue: string;
+
+  readonly argumentUInt64Value: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class OSLogEntryLog extends OSLogEntry implements OSLogEntryFromProcess, OSLogEntryWithPayload {
@@ -133,32 +143,6 @@ declare class OSLogEntryActivity extends OSLogEntry implements OSLogEntryFromPro
   readonly threadIdentifier: number;
 }
 
-declare class OSLogMessageComponent extends NSObject implements NSSecureCoding {
-  readonly formatSubstring: string;
-
-  readonly placeholder: string;
-
-  readonly argumentCategory: interop.Enum<typeof OSLogMessageComponentArgumentCategory>;
-
-  readonly argumentDataValue: NSData;
-
-  readonly argumentDoubleValue: number;
-
-  readonly argumentInt64Value: number;
-
-  readonly argumentNumberValue: NSNumber;
-
-  readonly argumentStringValue: string;
-
-  readonly argumentUInt64Value: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class OSLogEnumerator extends NSEnumerator {
 }
 
@@ -186,6 +170,22 @@ declare class OSLogEntrySignpost extends OSLogEntry implements OSLogEntryFromPro
   readonly formatString: string;
 
   readonly subsystem: string;
+}
+
+declare class OSLogStore extends NSObject {
+  static storeWithScopeError<This extends abstract new (...args: any) => any>(this: This, scope: interop.Enum<typeof OSLogStoreScope>, error: interop.PointerConvertible): InstanceType<This>;
+
+  static storeWithURLError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, error: interop.PointerConvertible): InstanceType<This>;
+
+  entriesEnumeratorWithOptionsPositionPredicateError(options: interop.Enum<typeof OSLogEnumeratorOptions>, position: OSLogPosition | null, predicate: NSPredicate | null, error: interop.PointerConvertible): OSLogEnumerator;
+
+  entriesEnumeratorAndReturnError(error: interop.PointerConvertible): OSLogEnumerator;
+
+  positionWithDate(date: NSDate): OSLogPosition;
+
+  positionWithTimeIntervalSinceEnd(seconds: number): OSLogPosition;
+
+  positionWithTimeIntervalSinceLatestBoot(seconds: number): OSLogPosition;
 }
 
 declare class OSLogEntry extends NSObject {

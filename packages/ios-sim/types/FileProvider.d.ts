@@ -11,6 +11,8 @@ declare const NSFileProviderErrorDomain: string;
 
 declare const NSFileProviderInitialPageSortedByDate: NSData;
 
+declare const NSFileProviderUserInfoExperimentIDKey: string;
+
 declare const NSFileProviderDomainDidChange: string;
 
 declare const NSFileProviderErrorNonExistentItemIdentifierKey: string;
@@ -47,7 +49,9 @@ declare const NSFileProviderDomainRemovalMode: {
 };
 
 declare const NSFileProviderModifyItemOptions: {
-  NSFileProviderModifyItemMayAlreadyExist: 1,
+  MayAlreadyExist: 1,
+  FailOnConflict: 2,
+  IsImmediateUploadRequestByPresentingApplication: 4,
 };
 
 declare const NSFileProviderKnownFolders: {
@@ -75,6 +79,7 @@ declare const NSFileProviderErrorCode: {
   ProviderDomainTemporarilyUnavailable: -2012,
   ProviderDomainNotFound: -2013,
   ApplicationExtensionNotFound: -2014,
+  LocalVersionConflictingWithServer: -2015,
 };
 
 declare const NSFileProviderTestingOperationSide: {
@@ -481,64 +486,40 @@ declare interface NSFileProviderEnumerating extends NSObjectProtocol {
 declare class NSFileProviderEnumerating extends NativeObject implements NSFileProviderEnumerating {
 }
 
-declare class NSFileProviderManager extends NSObject {
-  static readonly defaultManager: NSFileProviderManager;
+declare class NSFileProviderRequest extends NSObject {
+  readonly isSystemRequest: boolean;
 
-  static managerForDomain<This extends abstract new (...args: any) => any>(this: This, domain: NSFileProviderDomain): InstanceType<This>;
+  readonly isFileViewerRequest: boolean;
 
-  signalEnumeratorForContainerItemIdentifierCompletionHandler(containerItemIdentifier: string, completion: (p1: NSError) => void | null): void;
+  readonly domainVersion: NSFileProviderDomainVersion;
+}
 
-  getUserVisibleURLForItemIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSURL, p2: NSError) => void | null): void;
+declare class NSFileProviderDomain extends NSObject {
+  initWithIdentifierDisplayNamePathRelativeToDocumentStorage(identifier: string, displayName: string, pathRelativeToDocumentStorage: string): this;
 
-  static getIdentifierForUserVisibleFileAtURLCompletionHandler(url: NSURL, completionHandler: (p1: string, p2: string, p3: NSError) => void | null): void;
+  initWithIdentifierDisplayName(identifier: string, displayName: string): this;
 
-  registerURLSessionTaskForItemWithIdentifierCompletionHandler(task: NSURLSessionTask, identifier: string, completion: (p1: NSError) => void | null): void;
+  readonly identifier: string;
 
-  readonly providerIdentifier: string;
+  readonly displayName: string;
 
-  readonly documentStorageURL: NSURL;
+  readonly pathRelativeToDocumentStorage: string;
 
-  temporaryDirectoryURLWithError(error: interop.PointerConvertible): NSURL;
+  readonly userEnabled: boolean;
 
-  static writePlaceholderAtURLWithMetadataError(placeholderURL: NSURL, metadata: NSFileProviderItem, error: interop.PointerConvertible): boolean;
+  readonly replicated: boolean;
 
-  static placeholderURLForURL(url: NSURL): NSURL;
+  testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>;
 
-  static addDomainCompletionHandler(domain: NSFileProviderDomain, completionHandler: (p1: NSError) => void | null): void;
+  readonly backingStoreIdentity: NSData;
 
-  static removeDomainCompletionHandler(domain: NSFileProviderDomain, completionHandler: (p1: NSError) => void | null): void;
+  supportsSyncingTrash: boolean;
 
-  static removeDomainModeCompletionHandler(domain: NSFileProviderDomain, mode: interop.Enum<typeof NSFileProviderDomainRemovalMode>, completionHandler: (p1: NSURL, p2: NSError) => void | null): void;
+  isReplicated(): boolean;
 
-  static getDomainsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+  setTestingModes(testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>): void;
 
-  static removeAllDomainsWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
-
-  signalErrorResolvedCompletionHandler(error: NSError, completionHandler: (p1: NSError) => void | null): void;
-
-  globalProgressForKind(kind: string): NSProgress;
-
-  enumeratorForMaterializedItems(): NSFileProviderEnumerator;
-
-  enumeratorForPendingItems(): NSFileProviderPendingSetEnumerator;
-
-  static importDomainFromDirectoryAtURLCompletionHandler(domain: NSFileProviderDomain, url: NSURL, completionHandler: (p1: NSError) => void | null): void;
-
-  reimportItemsBelowItemWithIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
-
-  requestModificationOfFieldsForItemWithIdentifierOptionsCompletionHandler(fields: interop.Enum<typeof NSFileProviderItemFields>, itemIdentifier: string, options: interop.Enum<typeof NSFileProviderModifyItemOptions>, completionHandler: (p1: NSError) => void | null): void;
-
-  evictItemWithIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
-
-  waitForChangesOnItemsBelowItemWithIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
-
-  waitForStabilizationWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
-
-  getServiceWithNameItemIdentifierCompletionHandler(serviceName: string, itemIdentifier: string, completionHandler: (p1: NSFileProviderService, p2: NSError) => void | null): void;
-
-  listAvailableTestingOperationsWithError(error: interop.PointerConvertible): NSArray;
-
-  runTestingOperationsError(operations: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): NSDictionary;
+  setSupportsSyncingTrash(supportsSyncingTrash: boolean): void;
 }
 
 declare class NSFileProviderDomainVersion extends NSObject implements NSSecureCoding {
@@ -605,34 +586,6 @@ declare class NSFileProviderExtension extends NSObject {
   fetchThumbnailsForItemIdentifiersRequestedSizePerThumbnailCompletionHandlerCompletionHandler(itemIdentifiers: NSArray<interop.Object> | Array<interop.Object>, size: CGSize, perThumbnailCompletionHandler: (p1: string, p2: NSData, p3: NSError) => void | null, completionHandler: (p1: NSError) => void | null): NSProgress;
 }
 
-declare class NSFileProviderDomain extends NSObject {
-  initWithIdentifierDisplayNamePathRelativeToDocumentStorage(identifier: string, displayName: string, pathRelativeToDocumentStorage: string): this;
-
-  initWithIdentifierDisplayName(identifier: string, displayName: string): this;
-
-  readonly identifier: string;
-
-  readonly displayName: string;
-
-  readonly pathRelativeToDocumentStorage: string;
-
-  readonly userEnabled: boolean;
-
-  readonly replicated: boolean;
-
-  testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>;
-
-  readonly backingStoreIdentity: NSData;
-
-  supportsSyncingTrash: boolean;
-
-  isReplicated(): boolean;
-
-  setTestingModes(testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>): void;
-
-  setSupportsSyncingTrash(supportsSyncingTrash: boolean): void;
-}
-
 declare class NSFileProviderItemVersion extends NSObject {
   static readonly beforeFirstSyncComponent: NSData;
 
@@ -643,11 +596,63 @@ declare class NSFileProviderItemVersion extends NSObject {
   readonly metadataVersion: NSData;
 }
 
-declare class NSFileProviderRequest extends NSObject {
-  readonly isSystemRequest: boolean;
+declare class NSFileProviderManager extends NSObject {
+  static readonly defaultManager: NSFileProviderManager;
 
-  readonly isFileViewerRequest: boolean;
+  static managerForDomain<This extends abstract new (...args: any) => any>(this: This, domain: NSFileProviderDomain): InstanceType<This>;
 
-  readonly domainVersion: NSFileProviderDomainVersion;
+  signalEnumeratorForContainerItemIdentifierCompletionHandler(containerItemIdentifier: string, completion: (p1: NSError) => void | null): void;
+
+  getUserVisibleURLForItemIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSURL, p2: NSError) => void | null): void;
+
+  static getIdentifierForUserVisibleFileAtURLCompletionHandler(url: NSURL, completionHandler: (p1: string, p2: string, p3: NSError) => void | null): void;
+
+  registerURLSessionTaskForItemWithIdentifierCompletionHandler(task: NSURLSessionTask, identifier: string, completion: (p1: NSError) => void | null): void;
+
+  readonly providerIdentifier: string;
+
+  readonly documentStorageURL: NSURL;
+
+  temporaryDirectoryURLWithError(error: interop.PointerConvertible): NSURL;
+
+  static writePlaceholderAtURLWithMetadataError(placeholderURL: NSURL, metadata: NSFileProviderItem, error: interop.PointerConvertible): boolean;
+
+  static placeholderURLForURL(url: NSURL): NSURL;
+
+  static addDomainCompletionHandler(domain: NSFileProviderDomain, completionHandler: (p1: NSError) => void | null): void;
+
+  static removeDomainCompletionHandler(domain: NSFileProviderDomain, completionHandler: (p1: NSError) => void | null): void;
+
+  static removeDomainModeCompletionHandler(domain: NSFileProviderDomain, mode: interop.Enum<typeof NSFileProviderDomainRemovalMode>, completionHandler: (p1: NSURL, p2: NSError) => void | null): void;
+
+  static getDomainsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static removeAllDomainsWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
+
+  signalErrorResolvedCompletionHandler(error: NSError, completionHandler: (p1: NSError) => void | null): void;
+
+  globalProgressForKind(kind: string): NSProgress;
+
+  enumeratorForMaterializedItems(): NSFileProviderEnumerator;
+
+  enumeratorForPendingItems(): NSFileProviderPendingSetEnumerator;
+
+  static importDomainFromDirectoryAtURLCompletionHandler(domain: NSFileProviderDomain, url: NSURL, completionHandler: (p1: NSError) => void | null): void;
+
+  reimportItemsBelowItemWithIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
+
+  requestModificationOfFieldsForItemWithIdentifierOptionsCompletionHandler(fields: interop.Enum<typeof NSFileProviderItemFields>, itemIdentifier: string, options: interop.Enum<typeof NSFileProviderModifyItemOptions>, completionHandler: (p1: NSError) => void | null): void;
+
+  evictItemWithIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
+
+  waitForChangesOnItemsBelowItemWithIdentifierCompletionHandler(itemIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
+
+  waitForStabilizationWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
+
+  getServiceWithNameItemIdentifierCompletionHandler(serviceName: string, itemIdentifier: string, completionHandler: (p1: NSFileProviderService, p2: NSError) => void | null): void;
+
+  listAvailableTestingOperationsWithError(error: interop.PointerConvertible): NSArray;
+
+  runTestingOperationsError(operations: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): NSDictionary;
 }
 

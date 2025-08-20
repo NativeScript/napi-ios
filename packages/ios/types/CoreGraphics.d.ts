@@ -4,13 +4,15 @@ declare const kCGColorSpaceGenericRGB: interop.Pointer;
 
 declare const kCGUseBT1886ForCoreVideoGamma: interop.Pointer;
 
+declare const kCGPDFContextOutputIntents: interop.Pointer;
+
+declare const kCGPDFOutlineDestination: interop.Pointer;
+
+declare const CGAffineTransformIdentity: CGAffineTransform;
+
 declare const kCGPDFContextCreator: interop.Pointer;
 
 declare const kCGFontIndexInvalid: number;
-
-declare const kCGPDFContextOutputIntents: interop.Pointer;
-
-declare const CGAffineTransformIdentity: CGAffineTransform;
 
 declare const kCGColorSpaceLinearGray: interop.Pointer;
 
@@ -24,15 +26,17 @@ declare const kCGColorSpaceITUR_2020: interop.Pointer;
 
 declare const kCGColorSpaceDisplayP3_HLG: interop.Pointer;
 
-declare const kCGPDFOutlineDestination: interop.Pointer;
+declare const kCGDynamicRangeStandard: interop.Pointer;
 
 declare const kCGColorSpaceExtendedSRGB: interop.Pointer;
+
+declare const kCGColorSpaceSRGB: interop.Pointer;
+
+declare const kCGPDFContextUserPassword: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearGray: interop.Pointer;
 
 declare const kCGColorSpaceDisplayP3_PQ_EOTF: interop.Pointer;
-
-declare const kCGPDFContextCropBox: interop.Pointer;
 
 declare const kCGDefaultHDRImageContentHeadroom: number;
 
@@ -42,11 +46,7 @@ declare const kCGPDFContextTrimBox: interop.Pointer;
 
 declare const kCGPDFContextAllowsPrinting: interop.Pointer;
 
-declare const kCGPDFContextOutputIntent: interop.Pointer;
-
-declare const kCGColorSpaceITUR_2020_PQ_EOTF: interop.Pointer;
-
-declare const kCGPDFContextUserPassword: interop.Pointer;
+declare const kCGDynamicRangeHigh: interop.Pointer;
 
 declare const kCGPDFOutlineTitle: interop.Pointer;
 
@@ -56,13 +56,15 @@ declare const kCGColorSpaceACESCGLinear: interop.Pointer;
 
 declare const kCGEXRToneMappingGammaKneeHigh: interop.Pointer;
 
-declare const kCGFontVariationAxisMinValue: interop.Pointer;
-
 declare const kCGPDFContextMediaBox: interop.Pointer;
+
+declare const kCGFontVariationAxisMinValue: interop.Pointer;
 
 declare const kCGPDFTagPropertyLanguageText: interop.Pointer;
 
 declare const kCGPDFTagPropertyTitleText: interop.Pointer;
+
+declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
 
 declare const kCGPDFTagPropertyActualText: interop.Pointer;
 
@@ -75,6 +77,8 @@ declare const kCGPDFXOutputCondition: interop.Pointer;
 declare const kCGPDFXOutputConditionIdentifier: interop.Pointer;
 
 declare const kCGPDFXOutputIntentSubtype: interop.Pointer;
+
+declare const kCGPDFContextOutputIntent: interop.Pointer;
 
 declare const kCGPDFContextAllowsCopying: interop.Pointer;
 
@@ -90,13 +94,17 @@ declare const kCGPDFContextTitle: interop.Pointer;
 
 declare const kCGPDFContextArtBox: interop.Pointer;
 
+declare const kCGPDFContextCropBox: interop.Pointer;
+
 declare const kCGColorConversionTRCSize: interop.Pointer;
 
 declare const kCGColorConversionBlackPointCompensation: interop.Pointer;
 
-declare const kCGUseLegacyHDREcosystem: interop.Pointer;
+declare const kCGDynamicRangeConstrained: interop.Pointer;
 
-declare const kCGEXRToneMappingGammaKneeLow: interop.Pointer;
+declare const kCGPreferredDynamicRange: interop.Pointer;
+
+declare const kCGUseLegacyHDREcosystem: interop.Pointer;
 
 declare const kCGPDFOutlineDestinationRect: interop.Pointer;
 
@@ -121,6 +129,8 @@ declare const kCGColorWhite: interop.Pointer;
 declare const kCGColorSpaceExtendedRange: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearSRGB: interop.Pointer;
+
+declare const kCGColorSpaceITUR_2020_PQ_EOTF: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearDisplayP3: interop.Pointer;
 
@@ -150,11 +160,11 @@ declare const kCGColorSpaceGenericGray: interop.Pointer;
 
 declare const CGSizeZero: CGSize;
 
-declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
-
 declare const kCGColorSpaceGenericRGBLinear: interop.Pointer;
 
 declare const kCGColorSpaceGenericXYZ: interop.Pointer;
+
+declare const kCGContentAverageLightLevel: interop.Pointer;
 
 declare const kCGPDFContextBleedBox: interop.Pointer;
 
@@ -182,9 +192,13 @@ declare const kCGBitmapByteOrder16Host: interop.Enum<typeof CGBitmapInfo>;
 
 declare const kCGColorSpaceCoreMedia709: interop.Pointer;
 
+declare const kCGContentAverageLightLevelNits: interop.Pointer;
+
 declare const kCGColorSpaceDCIP3: interop.Pointer;
 
 declare const kCGFontVariationAxisMaxValue: interop.Pointer;
+
+declare const kCGAdaptiveMaximumBitDepth: interop.Pointer;
 
 declare const kCGPDFXRegistryName: interop.Pointer;
 
@@ -200,11 +214,11 @@ declare const kCGPDFXDestinationOutputProfile: interop.Pointer;
 
 declare const CGRectInfinite: CGRect;
 
-declare const kCGColorSpaceSRGB: interop.Pointer;
-
 declare const kCGColorSpaceITUR_2020_PQ: interop.Pointer;
 
 declare const kCGColorSpaceITUR_2100_PQ: interop.Pointer;
+
+declare const kCGEXRToneMappingGammaKneeLow: interop.Pointer;
 
 declare const CGColorRenderingIntent: {
   Default: 0,
@@ -230,15 +244,6 @@ declare const CGTextDrawingMode: {
   Clip: 7,
 };
 
-declare const CGToneMapping: {
-  Default: 0,
-  ImageSpecificLumaScaling: 1,
-  ReferenceWhiteBased: 2,
-  ITURecommended: 3,
-  EXRGamma: 4,
-  None: 5,
-};
-
 declare const CGImagePixelFormatInfo: {
   Mask: 983040,
   Packed: 0,
@@ -248,12 +253,13 @@ declare const CGImagePixelFormatInfo: {
   RGBCIF10: 262144,
 };
 
-declare const CGPDFBox: {
-  Media: 0,
-  Crop: 1,
-  Bleed: 2,
-  Trim: 3,
-  Art: 4,
+declare const CGToneMapping: {
+  Default: 0,
+  ImageSpecificLumaScaling: 1,
+  ReferenceWhiteBased: 2,
+  ITURecommended: 3,
+  EXRGamma: 4,
+  None: 5,
 };
 
 declare const CGPDFAccessPermissions: {
@@ -265,6 +271,33 @@ declare const CGPDFAccessPermissions: {
   ContentAccessibility: 32,
   Commenting: 64,
   FormFieldEntry: 128,
+};
+
+declare const CGColorModel: {
+  NoColorant: 0,
+  Gray: 1,
+  RGB: 2,
+  CMYK: 4,
+  Lab: 8,
+  DeviceN: 16,
+};
+
+declare const CGComponent: {
+  Unknown: 0,
+  Integer8Bit: 1,
+  Integer10Bit: 6,
+  Integer16Bit: 2,
+  Integer32Bit: 3,
+  Float16Bit: 5,
+  Float32Bit: 4,
+};
+
+declare const CGPDFBox: {
+  Media: 0,
+  Crop: 1,
+  Bleed: 2,
+  Trim: 3,
+  Art: 4,
 };
 
 declare const CGBlendMode: {
@@ -296,6 +329,21 @@ declare const CGBlendMode: {
   XOR: 25,
   PlusDarker: 26,
   PlusLighter: 27,
+};
+
+declare const CGBitmapLayout: {
+  AlphaOnly: 0,
+  Gray: 1,
+  GrayAlpha: 2,
+  RGBA: 3,
+  ARGB: 4,
+  RGBX: 5,
+  XRGB: 6,
+  BGRA: 7,
+  BGRX: 8,
+  ABGR: 9,
+  XBGR: 10,
+  CMYK: 11,
 };
 
 declare const CGInterpolationQuality: {
@@ -363,6 +411,8 @@ declare const CGImageByteOrderInfo: {
   Order32Little: 8192,
   Order16Big: 12288,
   Order32Big: 16384,
+  Order16Host: 4096,
+  Order32Host: 8192,
 };
 
 declare const CGColorSpaceModel: {
@@ -379,9 +429,12 @@ declare const CGColorSpaceModel: {
 
 declare const CGBitmapInfo: {
   AlphaInfoMask: 31,
+  ComponentInfoMask: 3840,
+  ByteOrderInfoMask: 28672,
+  PixelFormatInfoMask: 983040,
   FloatInfoMask: 3840,
-  FloatComponents: 256,
   ByteOrderMask: 28672,
+  FloatComponents: 256,
   ByteOrderDefault: 0,
   ByteOrder16Little: 4096,
   ByteOrder32Little: 8192,
@@ -456,12 +509,6 @@ declare const CGLineJoin: {
   Bevel: 2,
 };
 
-declare const CGLineCap: {
-  Butt: 0,
-  Round: 1,
-  Square: 2,
-};
-
 declare const CGColorConversionInfoTransformType: {
   From: 0,
   To: 1,
@@ -471,6 +518,11 @@ declare const CGColorConversionInfoTransformType: {
 declare const CGGlyphDeprecatedEnum: {
   Min: 0,
   Max: 1,
+};
+
+declare const CGImageComponentInfo: {
+  Integer: 0,
+  Float: 256,
 };
 
 declare const CGPDFDataFormat: {
@@ -491,6 +543,12 @@ declare const CGPDFObjectType: {
   Stream: 9,
 };
 
+declare const CGLineCap: {
+  Butt: 0,
+  Round: 1,
+  Square: 2,
+};
+
 declare class CGPDFContentStream {
   constructor(init?: CGPDFContentStream);
 }
@@ -506,7 +564,7 @@ declare class CGDataConsumer {
 declare class CGColorDataFormat {
   constructor(init?: CGColorDataFormat);
   version: number;
-  colorspace_info: interop.Object | null;
+  colorspace_info: interop.Pointer;
   bitmap_info: interop.Enum<typeof CGBitmapInfo>;
   bits_per_component: number;
   bytes_per_row: number;
@@ -547,6 +605,10 @@ declare class CGContext {
   constructor(init?: CGContext);
 }
 
+declare class CGColorConversionInfo {
+  constructor(init?: CGColorConversionInfo);
+}
+
 declare class __IOSurface {
   constructor(init?: __IOSurface);
 }
@@ -572,10 +634,6 @@ declare class CGDataConsumerCallbacks {
   releaseConsumer: (p1: interop.PointerConvertible) => void | null;
 }
 
-declare class CGColorConversionInfo {
-  constructor(init?: CGColorConversionInfo);
-}
-
 declare class CGPDFScanner {
   constructor(init?: CGPDFScanner);
 }
@@ -591,8 +649,23 @@ declare class CGPDFPage {
   constructor(init?: CGPDFPage);
 }
 
+declare class CGContentInfo {
+  constructor(init?: CGContentInfo);
+  deepestImageComponent: interop.Enum<typeof CGComponent>;
+  contentColorModels: interop.Enum<typeof CGColorModel>;
+  hasWideGamut: boolean;
+  hasTransparency: boolean;
+  largestContentHeadroom: number;
+}
+
 declare class CGPDFObject {
   constructor(init?: CGPDFObject);
+}
+
+declare class CGContentToneMappingInfo {
+  constructor(init?: CGContentToneMappingInfo);
+  method: interop.Enum<typeof CGToneMapping>;
+  options: interop.Pointer;
 }
 
 declare class CGPathElement {
@@ -623,6 +696,10 @@ declare class CGPDFStream {
 
 declare class CGFont {
   constructor(init?: CGFont);
+}
+
+declare class CGRenderingBufferProvider {
+  constructor(init?: CGRenderingBufferProvider);
 }
 
 declare class CGShading {
@@ -657,6 +734,21 @@ declare class CGColorSpace {
 
 declare class CGColor {
   constructor(init?: CGColor);
+}
+
+declare class CGBitmapParameters {
+  constructor(init?: CGBitmapParameters);
+  width: number;
+  height: number;
+  bytesPerPixel: number;
+  alignedBytesPerRow: number;
+  component: interop.Enum<typeof CGComponent>;
+  layout: interop.Enum<typeof CGBitmapLayout>;
+  format: interop.Enum<typeof CGImagePixelFormatInfo>;
+  colorSpace: interop.Pointer;
+  hasPremultipliedAlpha: boolean;
+  byteOrder: number;
+  edrTargetHeadroom: number;
 }
 
 declare function CGRectGetMinX(rect: CGRect): number;
@@ -707,17 +799,17 @@ declare function CGRectContainsRect(rect1: CGRect, rect2: CGRect): boolean;
 
 declare function CGRectIntersectsRect(rect1: CGRect, rect2: CGRect): boolean;
 
-declare function CGPointCreateDictionaryRepresentation(point: CGPoint): interop.Object;
+declare function CGPointCreateDictionaryRepresentation(point: CGPoint): interop.Pointer;
 
-declare function CGPointMakeWithDictionaryRepresentation(dict: interop.Object, point: interop.PointerConvertible): boolean;
+declare function CGPointMakeWithDictionaryRepresentation(dict: interop.PointerConvertible, point: interop.PointerConvertible): boolean;
 
-declare function CGSizeCreateDictionaryRepresentation(size: CGSize): interop.Object;
+declare function CGSizeCreateDictionaryRepresentation(size: CGSize): interop.Pointer;
 
-declare function CGSizeMakeWithDictionaryRepresentation(dict: interop.Object, size: interop.PointerConvertible): boolean;
+declare function CGSizeMakeWithDictionaryRepresentation(dict: interop.PointerConvertible, size: interop.PointerConvertible): boolean;
 
-declare function CGRectCreateDictionaryRepresentation(p1: CGRect): interop.Object;
+declare function CGRectCreateDictionaryRepresentation(p1: CGRect): interop.Pointer;
 
-declare function CGRectMakeWithDictionaryRepresentation(dict: interop.Object, rect: interop.PointerConvertible): boolean;
+declare function CGRectMakeWithDictionaryRepresentation(dict: interop.PointerConvertible, rect: interop.PointerConvertible): boolean;
 
 declare function CGAffineTransformMake(a: number, b: number, c: number, d: number, tx: number, ty: number): CGAffineTransform;
 
@@ -753,379 +845,397 @@ declare function CGAffineTransformMakeWithComponents(components: CGAffineTransfo
 
 declare function CGDataProviderGetTypeID(): number;
 
-declare function CGDataProviderCreateSequential(info: interop.PointerConvertible, callbacks: interop.PointerConvertible): interop.Object;
+declare function CGDataProviderCreateSequential(info: interop.PointerConvertible, callbacks: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataProviderCreateDirect(info: interop.PointerConvertible, size: number, callbacks: interop.PointerConvertible): interop.Object;
+declare function CGDataProviderCreateDirect(info: interop.PointerConvertible, size: number, callbacks: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataProviderCreateWithData(info: interop.PointerConvertible, data: interop.PointerConvertible, size: number, releaseData: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): interop.Object;
+declare function CGDataProviderCreateWithData(info: interop.PointerConvertible, data: interop.PointerConvertible, size: number, releaseData: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): interop.Pointer;
 
-declare function CGDataProviderCreateWithCFData(data: interop.Object): interop.Object;
+declare function CGDataProviderCreateWithCFData(data: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataProviderCreateWithURL(url: interop.Object): interop.Object;
+declare function CGDataProviderCreateWithURL(url: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataProviderCreateWithFilename(filename: string): interop.Object;
+declare function CGDataProviderCreateWithFilename(filename: string): interop.Pointer;
 
-declare function CGDataProviderRetain(provider: interop.Object): interop.Object;
+declare function CGDataProviderRetain(provider: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataProviderRelease(provider: interop.Object): void;
+declare function CGDataProviderRelease(provider: interop.PointerConvertible): void;
 
-declare function CGDataProviderCopyData(provider: interop.Object): interop.Object;
+declare function CGDataProviderCopyData(provider: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataProviderGetInfo(provider: interop.Object): interop.Pointer;
+declare function CGDataProviderGetInfo(provider: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateDeviceGray(): interop.Object;
+declare function CGColorSpaceCreateDeviceGray(): interop.Pointer;
 
-declare function CGColorSpaceCreateDeviceRGB(): interop.Object;
+declare function CGColorSpaceCreateDeviceRGB(): interop.Pointer;
 
-declare function CGColorSpaceCreateDeviceCMYK(): interop.Object;
+declare function CGColorSpaceCreateDeviceCMYK(): interop.Pointer;
 
-declare function CGColorSpaceCreateCalibratedGray(whitePoint: interop.PointerConvertible, blackPoint: interop.PointerConvertible, gamma: number): interop.Object;
+declare function CGColorSpaceCreateCalibratedGray(whitePoint: interop.PointerConvertible, blackPoint: interop.PointerConvertible, gamma: number): interop.Pointer;
 
-declare function CGColorSpaceCreateCalibratedRGB(whitePoint: interop.PointerConvertible, blackPoint: interop.PointerConvertible, gamma: interop.PointerConvertible, matrix: interop.PointerConvertible): interop.Object;
+declare function CGColorSpaceCreateCalibratedRGB(whitePoint: interop.PointerConvertible, blackPoint: interop.PointerConvertible, gamma: interop.PointerConvertible, matrix: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateLab(whitePoint: interop.PointerConvertible, blackPoint: interop.PointerConvertible, range: interop.PointerConvertible): interop.Object;
+declare function CGColorSpaceCreateLab(whitePoint: interop.PointerConvertible, blackPoint: interop.PointerConvertible, range: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateWithICCData(data: interop.Object): interop.Object;
+declare function CGColorSpaceCreateWithICCData(data: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateICCBased(nComponents: number, range: interop.PointerConvertible, profile: interop.Object, alternate: interop.Object): interop.Object;
+declare function CGColorSpaceCreateICCBased(nComponents: number, range: interop.PointerConvertible, profile: interop.PointerConvertible, alternate: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateIndexed(baseSpace: interop.Object, lastIndex: number, colorTable: interop.PointerConvertible): interop.Object;
+declare function CGColorSpaceCreateIndexed(baseSpace: interop.PointerConvertible, lastIndex: number, colorTable: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreatePattern(baseSpace: interop.Object): interop.Object;
+declare function CGColorSpaceCreatePattern(baseSpace: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateWithColorSyncProfile(p1: interop.Object, options: interop.Object): interop.Object;
+declare function CGColorSpaceCreateWithColorSyncProfile(p1: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateWithName(name: interop.Object): interop.Object;
+declare function CGColorSpaceCreateWithName(name: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceRetain(space: interop.Object): interop.Object;
+declare function CGColorSpaceRetain(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceRelease(space: interop.Object): void;
+declare function CGColorSpaceRelease(space: interop.PointerConvertible): void;
 
-declare function CGColorSpaceGetName(space: interop.Object): interop.Object;
+declare function CGColorSpaceGetName(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCopyName(space: interop.Object): interop.Object;
+declare function CGColorSpaceCopyName(space: interop.PointerConvertible): interop.Pointer;
 
 declare function CGColorSpaceGetTypeID(): number;
 
-declare function CGColorSpaceGetNumberOfComponents(space: interop.Object): number;
+declare function CGColorSpaceGetNumberOfComponents(space: interop.PointerConvertible): number;
 
-declare function CGColorSpaceGetModel(space: interop.Object): interop.Enum<typeof CGColorSpaceModel>;
+declare function CGColorSpaceGetModel(space: interop.PointerConvertible): interop.Enum<typeof CGColorSpaceModel>;
 
-declare function CGColorSpaceGetBaseColorSpace(space: interop.Object): interop.Object;
+declare function CGColorSpaceGetBaseColorSpace(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCopyBaseColorSpace(space: interop.Object): interop.Object;
+declare function CGColorSpaceCopyBaseColorSpace(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceGetColorTableCount(space: interop.Object): number;
+declare function CGColorSpaceGetColorTableCount(space: interop.PointerConvertible): number;
 
-declare function CGColorSpaceGetColorTable(space: interop.Object, table: interop.PointerConvertible): void;
+declare function CGColorSpaceGetColorTable(space: interop.PointerConvertible, table: interop.PointerConvertible): void;
 
-declare function CGColorSpaceCopyICCData(space: interop.Object): interop.Object;
+declare function CGColorSpaceCopyICCData(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceIsWideGamutRGB(p1: interop.Object): boolean;
+declare function CGColorSpaceIsWideGamutRGB(p1: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceIsHDR(p1: interop.Object): boolean;
+declare function CGColorSpaceIsHDR(p1: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceUsesITUR_2100TF(p1: interop.Object): boolean;
+declare function CGColorSpaceUsesITUR_2100TF(p1: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceIsPQBased(s: interop.Object): boolean;
+declare function CGColorSpaceIsPQBased(s: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceIsHLGBased(s: interop.Object): boolean;
+declare function CGColorSpaceIsHLGBased(s: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceSupportsOutput(space: interop.Object): boolean;
+declare function CGColorSpaceSupportsOutput(space: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceCopyPropertyList(space: interop.Object): interop.Object;
+declare function CGColorSpaceCopyPropertyList(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateWithPropertyList(plist: interop.Object): interop.Object;
+declare function CGColorSpaceCreateWithPropertyList(plist: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceUsesExtendedRange(space: interop.Object): boolean;
+declare function CGColorSpaceUsesExtendedRange(space: interop.PointerConvertible): boolean;
 
-declare function CGColorSpaceCreateLinearized(space: interop.Object): interop.Object;
+declare function CGColorSpaceCreateLinearized(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateExtended(space: interop.Object): interop.Object;
+declare function CGColorSpaceCreateExtended(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateExtendedLinearized(space: interop.Object): interop.Object;
+declare function CGColorSpaceCreateExtendedLinearized(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateCopyWithStandardRange(s: interop.Object): interop.Object;
+declare function CGColorSpaceCreateCopyWithStandardRange(s: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateWithICCProfile(data: interop.Object): interop.Object;
+declare function CGColorSpaceCreateWithICCProfile(data: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCopyICCProfile(space: interop.Object): interop.Object;
+declare function CGColorSpaceCopyICCProfile(space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorSpaceCreateWithPlatformColorSpace(ref: interop.PointerConvertible): interop.Object;
+declare function CGColorSpaceCreateWithPlatformColorSpace(ref: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPatternGetTypeID(): number;
 
-declare function CGPatternCreate(info: interop.PointerConvertible, bounds: CGRect, matrix: CGAffineTransform, xStep: number, yStep: number, tiling: interop.Enum<typeof CGPatternTiling>, isColored: boolean, callbacks: interop.PointerConvertible): interop.Object;
+declare function CGPatternCreate(info: interop.PointerConvertible, bounds: CGRect, matrix: CGAffineTransform, xStep: number, yStep: number, tiling: interop.Enum<typeof CGPatternTiling>, isColored: boolean, callbacks: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPatternRetain(pattern: interop.Object): interop.Object;
+declare function CGPatternRetain(pattern: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPatternRelease(pattern: interop.Object): void;
+declare function CGPatternRelease(pattern: interop.PointerConvertible): void;
 
-declare function CGColorCreate(space: interop.Object, components: interop.PointerConvertible): interop.Object;
+declare function CGColorCreate(space: interop.PointerConvertible, components: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorCreateGenericGray(gray: number, alpha: number): interop.Object;
+declare function CGColorCreateGenericGray(gray: number, alpha: number): interop.Pointer;
 
-declare function CGColorCreateGenericRGB(red: number, green: number, blue: number, alpha: number): interop.Object;
+declare function CGColorCreateGenericRGB(red: number, green: number, blue: number, alpha: number): interop.Pointer;
 
-declare function CGColorCreateGenericCMYK(cyan: number, magenta: number, yellow: number, black: number, alpha: number): interop.Object;
+declare function CGColorCreateGenericCMYK(cyan: number, magenta: number, yellow: number, black: number, alpha: number): interop.Pointer;
 
-declare function CGColorCreateGenericGrayGamma2_2(gray: number, alpha: number): interop.Object;
+declare function CGColorCreateGenericGrayGamma2_2(gray: number, alpha: number): interop.Pointer;
 
-declare function CGColorCreateSRGB(red: number, green: number, blue: number, alpha: number): interop.Object;
+declare function CGColorCreateSRGB(red: number, green: number, blue: number, alpha: number): interop.Pointer;
 
-declare function CGColorGetConstantColor(colorName: interop.Object): interop.Object;
+declare function CGColorCreateWithContentHeadroom(headroom: number, space: interop.PointerConvertible, red: number, green: number, blue: number, alpha: number): interop.Pointer;
 
-declare function CGColorCreateWithPattern(space: interop.Object, pattern: interop.Object, components: interop.PointerConvertible): interop.Object;
+declare function CGColorGetContentHeadroom(color: interop.PointerConvertible): number;
 
-declare function CGColorCreateCopy(color: interop.Object): interop.Object;
+declare function CGColorGetConstantColor(colorName: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorCreateCopyWithAlpha(color: interop.Object, alpha: number): interop.Object;
+declare function CGColorCreateWithPattern(space: interop.PointerConvertible, pattern: interop.PointerConvertible, components: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorCreateCopyByMatchingToColorSpace(p1: interop.Object, intent: interop.Enum<typeof CGColorRenderingIntent>, color: interop.Object, options: interop.Object): interop.Object;
+declare function CGColorCreateCopy(color: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorRetain(color: interop.Object): interop.Object;
+declare function CGColorCreateCopyWithAlpha(color: interop.PointerConvertible, alpha: number): interop.Pointer;
 
-declare function CGColorRelease(color: interop.Object): void;
+declare function CGColorCreateCopyByMatchingToColorSpace(p1: interop.PointerConvertible, intent: interop.Enum<typeof CGColorRenderingIntent>, color: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorEqualToColor(color1: interop.Object, color2: interop.Object): boolean;
+declare function CGColorRetain(color: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorGetNumberOfComponents(color: interop.Object): number;
+declare function CGColorRelease(color: interop.PointerConvertible): void;
 
-declare function CGColorGetComponents(color: interop.Object): interop.Pointer;
+declare function CGColorEqualToColor(color1: interop.PointerConvertible, color2: interop.PointerConvertible): boolean;
 
-declare function CGColorGetAlpha(color: interop.Object): number;
+declare function CGColorGetNumberOfComponents(color: interop.PointerConvertible): number;
 
-declare function CGColorGetColorSpace(color: interop.Object): interop.Object;
+declare function CGColorGetComponents(color: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorGetPattern(color: interop.Object): interop.Object;
+declare function CGColorGetAlpha(color: interop.PointerConvertible): number;
+
+declare function CGColorGetColorSpace(color: interop.PointerConvertible): interop.Pointer;
+
+declare function CGColorGetPattern(color: interop.PointerConvertible): interop.Pointer;
 
 declare function CGColorGetTypeID(): number;
 
 declare function CGFontGetTypeID(): number;
 
-declare function CGFontCreateWithDataProvider(provider: interop.Object): interop.Object;
+declare function CGFontCreateWithDataProvider(provider: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCreateWithFontName(name: interop.Object): interop.Object;
+declare function CGFontCreateWithFontName(name: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCreateCopyWithVariations(font: interop.Object, variations: interop.Object): interop.Object;
+declare function CGFontCreateCopyWithVariations(font: interop.PointerConvertible, variations: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontRetain(font: interop.Object): interop.Object;
+declare function CGFontRetain(font: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontRelease(font: interop.Object): void;
+declare function CGFontRelease(font: interop.PointerConvertible): void;
 
-declare function CGFontGetNumberOfGlyphs(font: interop.Object): number;
+declare function CGFontGetNumberOfGlyphs(font: interop.PointerConvertible): number;
 
-declare function CGFontGetUnitsPerEm(font: interop.Object): number;
+declare function CGFontGetUnitsPerEm(font: interop.PointerConvertible): number;
 
-declare function CGFontCopyPostScriptName(font: interop.Object): interop.Object;
+declare function CGFontCopyPostScriptName(font: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCopyFullName(font: interop.Object): interop.Object;
+declare function CGFontCopyFullName(font: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontGetAscent(font: interop.Object): number;
+declare function CGFontGetAscent(font: interop.PointerConvertible): number;
 
-declare function CGFontGetDescent(font: interop.Object): number;
+declare function CGFontGetDescent(font: interop.PointerConvertible): number;
 
-declare function CGFontGetLeading(font: interop.Object): number;
+declare function CGFontGetLeading(font: interop.PointerConvertible): number;
 
-declare function CGFontGetCapHeight(font: interop.Object): number;
+declare function CGFontGetCapHeight(font: interop.PointerConvertible): number;
 
-declare function CGFontGetXHeight(font: interop.Object): number;
+declare function CGFontGetXHeight(font: interop.PointerConvertible): number;
 
-declare function CGFontGetFontBBox(font: interop.Object): CGRect;
+declare function CGFontGetFontBBox(font: interop.PointerConvertible): CGRect;
 
-declare function CGFontGetItalicAngle(font: interop.Object): number;
+declare function CGFontGetItalicAngle(font: interop.PointerConvertible): number;
 
-declare function CGFontGetStemV(font: interop.Object): number;
+declare function CGFontGetStemV(font: interop.PointerConvertible): number;
 
-declare function CGFontCopyVariationAxes(font: interop.Object): interop.Object;
+declare function CGFontCopyVariationAxes(font: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCopyVariations(font: interop.Object): interop.Object;
+declare function CGFontCopyVariations(font: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontGetGlyphAdvances(font: interop.Object, glyphs: interop.PointerConvertible, count: number, advances: interop.PointerConvertible): boolean;
+declare function CGFontGetGlyphAdvances(font: interop.PointerConvertible, glyphs: interop.PointerConvertible, count: number, advances: interop.PointerConvertible): boolean;
 
-declare function CGFontGetGlyphBBoxes(font: interop.Object, glyphs: interop.PointerConvertible, count: number, bboxes: interop.PointerConvertible): boolean;
+declare function CGFontGetGlyphBBoxes(font: interop.PointerConvertible, glyphs: interop.PointerConvertible, count: number, bboxes: interop.PointerConvertible): boolean;
 
-declare function CGFontGetGlyphWithGlyphName(font: interop.Object, name: interop.Object): number;
+declare function CGFontGetGlyphWithGlyphName(font: interop.PointerConvertible, name: interop.PointerConvertible): number;
 
-declare function CGFontCopyGlyphNameForGlyph(font: interop.Object, glyph: number): interop.Object;
+declare function CGFontCopyGlyphNameForGlyph(font: interop.PointerConvertible, glyph: number): interop.Pointer;
 
-declare function CGFontCanCreatePostScriptSubset(font: interop.Object, format: interop.Enum<typeof CGFontPostScriptFormat>): boolean;
+declare function CGFontCanCreatePostScriptSubset(font: interop.PointerConvertible, format: interop.Enum<typeof CGFontPostScriptFormat>): boolean;
 
-declare function CGFontCreatePostScriptSubset(font: interop.Object, subsetName: interop.Object, format: interop.Enum<typeof CGFontPostScriptFormat>, glyphs: interop.PointerConvertible, count: number, encoding: interop.PointerConvertible): interop.Object;
+declare function CGFontCreatePostScriptSubset(font: interop.PointerConvertible, subsetName: interop.PointerConvertible, format: interop.Enum<typeof CGFontPostScriptFormat>, glyphs: interop.PointerConvertible, count: number, encoding: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCreatePostScriptEncoding(font: interop.Object, encoding: interop.PointerConvertible): interop.Object;
+declare function CGFontCreatePostScriptEncoding(font: interop.PointerConvertible, encoding: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCopyTableTags(font: interop.Object): interop.Object;
+declare function CGFontCopyTableTags(font: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFontCopyTableForTag(font: interop.Object, tag: number): interop.Object;
+declare function CGFontCopyTableForTag(font: interop.PointerConvertible, tag: number): interop.Pointer;
 
 declare function CGGradientGetTypeID(): number;
 
-declare function CGGradientCreateWithColorComponents(space: interop.Object, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Object;
+declare function CGGradientCreateWithColorComponents(space: interop.PointerConvertible, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Pointer;
 
-declare function CGGradientCreateWithColors(space: interop.Object, colors: interop.Object, locations: interop.PointerConvertible): interop.Object;
+declare function CGGradientCreateWithContentHeadroom(headroom: number, space: interop.PointerConvertible, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Pointer;
 
-declare function CGGradientRetain(gradient: interop.Object): interop.Object;
+declare function CGGradientCreateWithColors(space: interop.PointerConvertible, colors: interop.PointerConvertible, locations: interop.PointerConvertible): interop.Pointer;
 
-declare function CGGradientRelease(gradient: interop.Object): void;
+declare function CGGradientRetain(gradient: interop.PointerConvertible): interop.Pointer;
+
+declare function CGGradientRelease(gradient: interop.PointerConvertible): void;
+
+declare function CGGradientGetContentHeadroom(gradient: interop.PointerConvertible): number;
 
 declare function CGImageGetTypeID(): number;
 
-declare function CGImageCreate(width: number, height: number, bitsPerComponent: number, bitsPerPixel: number, bytesPerRow: number, space: interop.Object, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, provider: interop.Object, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Object;
+declare function CGImageCreate(width: number, height: number, bitsPerComponent: number, bitsPerPixel: number, bytesPerRow: number, space: interop.PointerConvertible, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, provider: interop.PointerConvertible, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Pointer;
 
-declare function CGImageMaskCreate(width: number, height: number, bitsPerComponent: number, bitsPerPixel: number, bytesPerRow: number, provider: interop.Object, decode: interop.PointerConvertible, shouldInterpolate: boolean): interop.Object;
+declare function CGImageMaskCreate(width: number, height: number, bitsPerComponent: number, bitsPerPixel: number, bytesPerRow: number, provider: interop.PointerConvertible, decode: interop.PointerConvertible, shouldInterpolate: boolean): interop.Pointer;
 
-declare function CGImageCreateCopy(image: interop.Object): interop.Object;
+declare function CGImageCreateCopy(image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageCreateWithJPEGDataProvider(source: interop.Object, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Object;
+declare function CGImageCreateWithJPEGDataProvider(source: interop.PointerConvertible, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Pointer;
 
-declare function CGImageCreateWithPNGDataProvider(source: interop.Object, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Object;
+declare function CGImageCreateWithPNGDataProvider(source: interop.PointerConvertible, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Pointer;
 
-declare function CGImageCreateWithImageInRect(image: interop.Object, rect: CGRect): interop.Object;
+declare function CGImageCreateWithImageInRect(image: interop.PointerConvertible, rect: CGRect): interop.Pointer;
 
-declare function CGImageCreateWithMask(image: interop.Object, mask: interop.Object): interop.Object;
+declare function CGImageCreateWithMask(image: interop.PointerConvertible, mask: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageCreateWithMaskingColors(image: interop.Object, components: interop.PointerConvertible): interop.Object;
+declare function CGImageCreateWithMaskingColors(image: interop.PointerConvertible, components: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageCreateCopyWithColorSpace(image: interop.Object, space: interop.Object): interop.Object;
+declare function CGImageCreateCopyWithColorSpace(image: interop.PointerConvertible, space: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageCreateWithContentHeadroom(headroom: number, width: number, height: number, bitsPerComponent: number, bitsPerPixel: number, bytesPerRow: number, space: interop.Object, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, provider: interop.Object, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Object;
+declare function CGImageCreateWithContentHeadroom(headroom: number, width: number, height: number, bitsPerComponent: number, bitsPerPixel: number, bytesPerRow: number, space: interop.PointerConvertible, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, provider: interop.PointerConvertible, decode: interop.PointerConvertible, shouldInterpolate: boolean, intent: interop.Enum<typeof CGColorRenderingIntent>): interop.Pointer;
 
-declare function CGImageCreateCopyWithContentHeadroom(headroom: number, image: interop.Object): interop.Object;
+declare function CGImageCreateCopyWithContentHeadroom(headroom: number, image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageGetContentHeadroom(image: interop.Object): number;
+declare function CGImageGetContentHeadroom(image: interop.PointerConvertible): number;
 
-declare function CGImageRetain(image: interop.Object): interop.Object;
+declare function CGImageCalculateContentHeadroom(image: interop.PointerConvertible): number;
 
-declare function CGImageRelease(image: interop.Object): void;
+declare function CGImageGetContentAverageLightLevel(image: interop.PointerConvertible): number;
 
-declare function CGImageIsMask(image: interop.Object): boolean;
+declare function CGImageCalculateContentAverageLightLevel(image: interop.PointerConvertible): number;
 
-declare function CGImageGetWidth(image: interop.Object): number;
+declare function CGImageCreateCopyWithContentAverageLightLevel(image: interop.PointerConvertible, avll: number): interop.Pointer;
 
-declare function CGImageGetHeight(image: interop.Object): number;
+declare function CGImageCreateCopyWithCalculatedHDRStats(image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageGetBitsPerComponent(image: interop.Object): number;
+declare function CGImageRetain(image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageGetBitsPerPixel(image: interop.Object): number;
+declare function CGImageRelease(image: interop.PointerConvertible): void;
 
-declare function CGImageGetBytesPerRow(image: interop.Object): number;
+declare function CGImageIsMask(image: interop.PointerConvertible): boolean;
 
-declare function CGImageGetColorSpace(image: interop.Object): interop.Object;
+declare function CGImageGetWidth(image: interop.PointerConvertible): number;
 
-declare function CGImageGetAlphaInfo(image: interop.Object): interop.Enum<typeof CGImageAlphaInfo>;
+declare function CGImageGetHeight(image: interop.PointerConvertible): number;
 
-declare function CGImageGetDataProvider(image: interop.Object): interop.Object;
+declare function CGImageGetBitsPerComponent(image: interop.PointerConvertible): number;
 
-declare function CGImageGetDecode(image: interop.Object): interop.Pointer;
+declare function CGImageGetBitsPerPixel(image: interop.PointerConvertible): number;
 
-declare function CGImageGetShouldInterpolate(image: interop.Object): boolean;
+declare function CGImageGetBytesPerRow(image: interop.PointerConvertible): number;
 
-declare function CGImageGetRenderingIntent(image: interop.Object): interop.Enum<typeof CGColorRenderingIntent>;
+declare function CGImageGetColorSpace(image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageGetBitmapInfo(image: interop.Object): interop.Enum<typeof CGBitmapInfo>;
+declare function CGImageGetAlphaInfo(image: interop.PointerConvertible): interop.Enum<typeof CGImageAlphaInfo>;
 
-declare function CGImageGetByteOrderInfo(image: interop.Object): interop.Enum<typeof CGImageByteOrderInfo>;
+declare function CGImageGetDataProvider(image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageGetPixelFormatInfo(image: interop.Object): interop.Enum<typeof CGImagePixelFormatInfo>;
+declare function CGImageGetDecode(image: interop.PointerConvertible): interop.Pointer;
 
-declare function CGImageShouldToneMap(image: interop.Object): boolean;
+declare function CGImageGetShouldInterpolate(image: interop.PointerConvertible): boolean;
 
-declare function CGImageContainsImageSpecificToneMappingMetadata(image: interop.Object): boolean;
+declare function CGImageGetRenderingIntent(image: interop.PointerConvertible): interop.Enum<typeof CGColorRenderingIntent>;
 
-declare function CGImageGetUTType(image: interop.Object): interop.Object;
+declare function CGImageGetBitmapInfo(image: interop.PointerConvertible): interop.Enum<typeof CGBitmapInfo>;
+
+declare function CGImageGetByteOrderInfo(image: interop.PointerConvertible): interop.Enum<typeof CGImageByteOrderInfo>;
+
+declare function CGImageGetPixelFormatInfo(image: interop.PointerConvertible): interop.Enum<typeof CGImagePixelFormatInfo>;
+
+declare function CGImageShouldToneMap(image: interop.PointerConvertible): boolean;
+
+declare function CGImageContainsImageSpecificToneMappingMetadata(image: interop.PointerConvertible): boolean;
+
+declare function CGImageGetUTType(image: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPathGetTypeID(): number;
 
-declare function CGPathCreateMutable(): interop.Object;
+declare function CGPathCreateMutable(): interop.Pointer;
 
-declare function CGPathCreateCopy(path: interop.Object): interop.Object;
+declare function CGPathCreateCopy(path: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathCreateCopyByTransformingPath(path: interop.Object, transform: interop.PointerConvertible): interop.Object;
+declare function CGPathCreateCopyByTransformingPath(path: interop.PointerConvertible, transform: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathCreateMutableCopy(path: interop.Object): interop.Object;
+declare function CGPathCreateMutableCopy(path: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathCreateMutableCopyByTransformingPath(path: interop.Object, transform: interop.PointerConvertible): interop.Object;
+declare function CGPathCreateMutableCopyByTransformingPath(path: interop.PointerConvertible, transform: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathCreateWithRect(rect: CGRect, transform: interop.PointerConvertible): interop.Object;
+declare function CGPathCreateWithRect(rect: CGRect, transform: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathCreateWithEllipseInRect(rect: CGRect, transform: interop.PointerConvertible): interop.Object;
+declare function CGPathCreateWithEllipseInRect(rect: CGRect, transform: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathCreateWithRoundedRect(rect: CGRect, cornerWidth: number, cornerHeight: number, transform: interop.PointerConvertible): interop.Object;
+declare function CGPathCreateWithRoundedRect(rect: CGRect, cornerWidth: number, cornerHeight: number, transform: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathAddRoundedRect(path: interop.Object, transform: interop.PointerConvertible, rect: CGRect, cornerWidth: number, cornerHeight: number): void;
+declare function CGPathAddRoundedRect(path: interop.PointerConvertible, transform: interop.PointerConvertible, rect: CGRect, cornerWidth: number, cornerHeight: number): void;
 
-declare function CGPathCreateCopyByDashingPath(path: interop.Object, transform: interop.PointerConvertible, phase: number, lengths: interop.PointerConvertible, count: number): interop.Object;
+declare function CGPathCreateCopyByDashingPath(path: interop.PointerConvertible, transform: interop.PointerConvertible, phase: number, lengths: interop.PointerConvertible, count: number): interop.Pointer;
 
-declare function CGPathCreateCopyByStrokingPath(path: interop.Object, transform: interop.PointerConvertible, lineWidth: number, lineCap: interop.Enum<typeof CGLineCap>, lineJoin: interop.Enum<typeof CGLineJoin>, miterLimit: number): interop.Object;
+declare function CGPathCreateCopyByStrokingPath(path: interop.PointerConvertible, transform: interop.PointerConvertible, lineWidth: number, lineCap: interop.Enum<typeof CGLineCap>, lineJoin: interop.Enum<typeof CGLineJoin>, miterLimit: number): interop.Pointer;
 
-declare function CGPathRetain(path: interop.Object): interop.Object;
+declare function CGPathRetain(path: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPathRelease(path: interop.Object): void;
+declare function CGPathRelease(path: interop.PointerConvertible): void;
 
-declare function CGPathEqualToPath(path1: interop.Object, path2: interop.Object): boolean;
+declare function CGPathEqualToPath(path1: interop.PointerConvertible, path2: interop.PointerConvertible): boolean;
 
-declare function CGPathMoveToPoint(path: interop.Object, m: interop.PointerConvertible, x: number, y: number): void;
+declare function CGPathMoveToPoint(path: interop.PointerConvertible, m: interop.PointerConvertible, x: number, y: number): void;
 
-declare function CGPathAddLineToPoint(path: interop.Object, m: interop.PointerConvertible, x: number, y: number): void;
+declare function CGPathAddLineToPoint(path: interop.PointerConvertible, m: interop.PointerConvertible, x: number, y: number): void;
 
-declare function CGPathAddQuadCurveToPoint(path: interop.Object, m: interop.PointerConvertible, cpx: number, cpy: number, x: number, y: number): void;
+declare function CGPathAddQuadCurveToPoint(path: interop.PointerConvertible, m: interop.PointerConvertible, cpx: number, cpy: number, x: number, y: number): void;
 
-declare function CGPathAddCurveToPoint(path: interop.Object, m: interop.PointerConvertible, cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
+declare function CGPathAddCurveToPoint(path: interop.PointerConvertible, m: interop.PointerConvertible, cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
 
-declare function CGPathCloseSubpath(path: interop.Object): void;
+declare function CGPathCloseSubpath(path: interop.PointerConvertible): void;
 
-declare function CGPathAddRect(path: interop.Object, m: interop.PointerConvertible, rect: CGRect): void;
+declare function CGPathAddRect(path: interop.PointerConvertible, m: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGPathAddRects(path: interop.Object, m: interop.PointerConvertible, rects: interop.PointerConvertible, count: number): void;
+declare function CGPathAddRects(path: interop.PointerConvertible, m: interop.PointerConvertible, rects: interop.PointerConvertible, count: number): void;
 
-declare function CGPathAddLines(path: interop.Object, m: interop.PointerConvertible, points: interop.PointerConvertible, count: number): void;
+declare function CGPathAddLines(path: interop.PointerConvertible, m: interop.PointerConvertible, points: interop.PointerConvertible, count: number): void;
 
-declare function CGPathAddEllipseInRect(path: interop.Object, m: interop.PointerConvertible, rect: CGRect): void;
+declare function CGPathAddEllipseInRect(path: interop.PointerConvertible, m: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGPathAddRelativeArc(path: interop.Object, matrix: interop.PointerConvertible, x: number, y: number, radius: number, startAngle: number, delta: number): void;
+declare function CGPathAddRelativeArc(path: interop.PointerConvertible, matrix: interop.PointerConvertible, x: number, y: number, radius: number, startAngle: number, delta: number): void;
 
-declare function CGPathAddArc(path: interop.Object, m: interop.PointerConvertible, x: number, y: number, radius: number, startAngle: number, endAngle: number, clockwise: boolean): void;
+declare function CGPathAddArc(path: interop.PointerConvertible, m: interop.PointerConvertible, x: number, y: number, radius: number, startAngle: number, endAngle: number, clockwise: boolean): void;
 
-declare function CGPathAddArcToPoint(path: interop.Object, m: interop.PointerConvertible, x1: number, y1: number, x2: number, y2: number, radius: number): void;
+declare function CGPathAddArcToPoint(path: interop.PointerConvertible, m: interop.PointerConvertible, x1: number, y1: number, x2: number, y2: number, radius: number): void;
 
-declare function CGPathAddPath(path1: interop.Object, m: interop.PointerConvertible, path2: interop.Object): void;
+declare function CGPathAddPath(path1: interop.PointerConvertible, m: interop.PointerConvertible, path2: interop.PointerConvertible): void;
 
-declare function CGPathIsEmpty(path: interop.Object): boolean;
+declare function CGPathIsEmpty(path: interop.PointerConvertible): boolean;
 
-declare function CGPathIsRect(path: interop.Object, rect: interop.PointerConvertible): boolean;
+declare function CGPathIsRect(path: interop.PointerConvertible, rect: interop.PointerConvertible): boolean;
 
-declare function CGPathGetCurrentPoint(path: interop.Object): CGPoint;
+declare function CGPathGetCurrentPoint(path: interop.PointerConvertible): CGPoint;
 
-declare function CGPathGetBoundingBox(path: interop.Object): CGRect;
+declare function CGPathGetBoundingBox(path: interop.PointerConvertible): CGRect;
 
-declare function CGPathGetPathBoundingBox(path: interop.Object): CGRect;
+declare function CGPathGetPathBoundingBox(path: interop.PointerConvertible): CGRect;
 
-declare function CGPathContainsPoint(path: interop.Object, m: interop.PointerConvertible, point: CGPoint, eoFill: boolean): boolean;
+declare function CGPathContainsPoint(path: interop.PointerConvertible, m: interop.PointerConvertible, point: CGPoint, eoFill: boolean): boolean;
 
-declare function CGPathApply(path: interop.Object, info: interop.PointerConvertible, function$: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
+declare function CGPathApply(path: interop.PointerConvertible, info: interop.PointerConvertible, function$: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
 
-declare function CGPathApplyWithBlock(path: interop.Object, block: (p1: interop.PointerConvertible) => void): void;
+declare function CGPathApplyWithBlock(path: interop.PointerConvertible, block: (p1: interop.PointerConvertible) => void): void;
 
-declare function CGPathCreateCopyByNormalizing(path: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyByNormalizing(path: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyByUnioningPath(path: interop.Object, maskPath: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyByUnioningPath(path: interop.PointerConvertible, maskPath: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyByIntersectingPath(path: interop.Object, maskPath: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyByIntersectingPath(path: interop.PointerConvertible, maskPath: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyBySubtractingPath(path: interop.Object, maskPath: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyBySubtractingPath(path: interop.PointerConvertible, maskPath: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyBySymmetricDifferenceOfPath(path: interop.Object, maskPath: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyBySymmetricDifferenceOfPath(path: interop.PointerConvertible, maskPath: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyOfLineBySubtractingPath(path: interop.Object, maskPath: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyOfLineBySubtractingPath(path: interop.PointerConvertible, maskPath: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyOfLineByIntersectingPath(path: interop.Object, maskPath: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateCopyOfLineByIntersectingPath(path: interop.PointerConvertible, maskPath: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateSeparateComponents(path: interop.Object, evenOddFillRule: boolean): interop.Object;
+declare function CGPathCreateSeparateComponents(path: interop.PointerConvertible, evenOddFillRule: boolean): interop.Pointer;
 
-declare function CGPathCreateCopyByFlattening(path: interop.Object, flatteningThreshold: number): interop.Object;
+declare function CGPathCreateCopyByFlattening(path: interop.PointerConvertible, flatteningThreshold: number): interop.Pointer;
 
-declare function CGPathIntersectsPath(path1: interop.Object, path2: interop.Object, evenOddFillRule: boolean): boolean;
+declare function CGPathIntersectsPath(path1: interop.PointerConvertible, path2: interop.PointerConvertible, evenOddFillRule: boolean): boolean;
 
 declare function CGPDFObjectGetType(object: interop.PointerConvertible): interop.Enum<typeof CGPDFObjectType>;
 
@@ -1133,15 +1243,15 @@ declare function CGPDFObjectGetValue(object: interop.PointerConvertible, type: i
 
 declare function CGPDFStreamGetDictionary(stream: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFStreamCopyData(stream: interop.PointerConvertible, format: interop.PointerConvertible): interop.Object;
+declare function CGPDFStreamCopyData(stream: interop.PointerConvertible, format: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPDFStringGetLength(string: interop.PointerConvertible): number;
 
 declare function CGPDFStringGetBytePtr(string: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFStringCopyTextString(string: interop.PointerConvertible): interop.Object;
+declare function CGPDFStringCopyTextString(string: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFStringCopyDate(string: interop.PointerConvertible): interop.Object;
+declare function CGPDFStringCopyDate(string: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPDFArrayGetCount(array: interop.PointerConvertible): number;
 
@@ -1191,395 +1301,423 @@ declare function CGPDFDictionaryApplyFunction(dict: interop.PointerConvertible, 
 
 declare function CGPDFDictionaryApplyBlock(dict: interop.PointerConvertible, block: (p1: string, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => boolean, info: interop.PointerConvertible): void;
 
-declare function CGPDFPageRetain(page: interop.Object): interop.Object;
+declare function CGPDFPageRetain(page: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFPageRelease(page: interop.Object): void;
+declare function CGPDFPageRelease(page: interop.PointerConvertible): void;
 
-declare function CGPDFPageGetDocument(page: interop.Object): interop.Object;
+declare function CGPDFPageGetDocument(page: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFPageGetPageNumber(page: interop.Object): number;
+declare function CGPDFPageGetPageNumber(page: interop.PointerConvertible): number;
 
-declare function CGPDFPageGetBoxRect(page: interop.Object, box: interop.Enum<typeof CGPDFBox>): CGRect;
+declare function CGPDFPageGetBoxRect(page: interop.PointerConvertible, box: interop.Enum<typeof CGPDFBox>): CGRect;
 
-declare function CGPDFPageGetRotationAngle(page: interop.Object): number;
+declare function CGPDFPageGetRotationAngle(page: interop.PointerConvertible): number;
 
-declare function CGPDFPageGetDrawingTransform(page: interop.Object, box: interop.Enum<typeof CGPDFBox>, rect: CGRect, rotate: number, preserveAspectRatio: boolean): CGAffineTransform;
+declare function CGPDFPageGetDrawingTransform(page: interop.PointerConvertible, box: interop.Enum<typeof CGPDFBox>, rect: CGRect, rotate: number, preserveAspectRatio: boolean): CGAffineTransform;
 
-declare function CGPDFPageGetDictionary(page: interop.Object): interop.Pointer;
+declare function CGPDFPageGetDictionary(page: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPDFPageGetTypeID(): number;
 
-declare function CGPDFDocumentCreateWithProvider(provider: interop.Object): interop.Object;
+declare function CGPDFDocumentCreateWithProvider(provider: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFDocumentCreateWithURL(url: interop.Object): interop.Object;
+declare function CGPDFDocumentCreateWithURL(url: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFDocumentRetain(document: interop.Object): interop.Object;
+declare function CGPDFDocumentRetain(document: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFDocumentRelease(document: interop.Object): void;
+declare function CGPDFDocumentRelease(document: interop.PointerConvertible): void;
 
-declare function CGPDFDocumentGetVersion(document: interop.Object, majorVersion: interop.PointerConvertible, minorVersion: interop.PointerConvertible): void;
+declare function CGPDFDocumentGetVersion(document: interop.PointerConvertible, majorVersion: interop.PointerConvertible, minorVersion: interop.PointerConvertible): void;
 
-declare function CGPDFDocumentIsEncrypted(document: interop.Object): boolean;
+declare function CGPDFDocumentIsEncrypted(document: interop.PointerConvertible): boolean;
 
-declare function CGPDFDocumentUnlockWithPassword(document: interop.Object, password: string): boolean;
+declare function CGPDFDocumentUnlockWithPassword(document: interop.PointerConvertible, password: string): boolean;
 
-declare function CGPDFDocumentIsUnlocked(document: interop.Object): boolean;
+declare function CGPDFDocumentIsUnlocked(document: interop.PointerConvertible): boolean;
 
-declare function CGPDFDocumentAllowsPrinting(document: interop.Object): boolean;
+declare function CGPDFDocumentAllowsPrinting(document: interop.PointerConvertible): boolean;
 
-declare function CGPDFDocumentAllowsCopying(document: interop.Object): boolean;
+declare function CGPDFDocumentAllowsCopying(document: interop.PointerConvertible): boolean;
 
-declare function CGPDFDocumentGetNumberOfPages(document: interop.Object): number;
+declare function CGPDFDocumentGetNumberOfPages(document: interop.PointerConvertible): number;
 
-declare function CGPDFDocumentGetPage(document: interop.Object, pageNumber: number): interop.Object;
+declare function CGPDFDocumentGetPage(document: interop.PointerConvertible, pageNumber: number): interop.Pointer;
 
-declare function CGPDFDocumentGetCatalog(document: interop.Object): interop.Pointer;
+declare function CGPDFDocumentGetCatalog(document: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFDocumentGetInfo(document: interop.Object): interop.Pointer;
+declare function CGPDFDocumentGetInfo(document: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFDocumentGetID(document: interop.Object): interop.Pointer;
+declare function CGPDFDocumentGetID(document: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPDFDocumentGetTypeID(): number;
 
-declare function CGPDFDocumentGetOutline(document: interop.Object): interop.Object;
+declare function CGPDFDocumentGetOutline(document: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFDocumentGetAccessPermissions(document: interop.Object): interop.Enum<typeof CGPDFAccessPermissions>;
+declare function CGPDFDocumentGetAccessPermissions(document: interop.PointerConvertible): interop.Enum<typeof CGPDFAccessPermissions>;
 
 declare function CGFunctionGetTypeID(): number;
 
-declare function CGFunctionCreate(info: interop.PointerConvertible, domainDimension: number, domain: interop.PointerConvertible, rangeDimension: number, range: interop.PointerConvertible, callbacks: interop.PointerConvertible): interop.Object;
+declare function CGFunctionCreate(info: interop.PointerConvertible, domainDimension: number, domain: interop.PointerConvertible, rangeDimension: number, range: interop.PointerConvertible, callbacks: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFunctionRetain(function$: interop.Object): interop.Object;
+declare function CGFunctionRetain(function$: interop.PointerConvertible): interop.Pointer;
 
-declare function CGFunctionRelease(function$: interop.Object): void;
+declare function CGFunctionRelease(function$: interop.PointerConvertible): void;
 
 declare function CGShadingGetTypeID(): number;
 
-declare function CGShadingCreateAxial(space: interop.Object, start: CGPoint, end: CGPoint, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
+declare function CGShadingCreateAxial(space: interop.PointerConvertible, start: CGPoint, end: CGPoint, function$: interop.PointerConvertible, extendStart: boolean, extendEnd: boolean): interop.Pointer;
 
-declare function CGShadingCreateRadial(space: interop.Object, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
+declare function CGShadingCreateAxialWithContentHeadroom(headroom: number, space: interop.PointerConvertible, start: CGPoint, end: CGPoint, function$: interop.PointerConvertible, extendStart: boolean, extendEnd: boolean): interop.Pointer;
 
-declare function CGShadingRetain(shading: interop.Object): interop.Object;
+declare function CGShadingCreateRadial(space: interop.PointerConvertible, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.PointerConvertible, extendStart: boolean, extendEnd: boolean): interop.Pointer;
 
-declare function CGShadingRelease(shading: interop.Object): void;
+declare function CGShadingCreateRadialWithContentHeadroom(headroom: number, space: interop.PointerConvertible, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.PointerConvertible, extendStart: boolean, extendEnd: boolean): interop.Pointer;
+
+declare function CGShadingRetain(shading: interop.PointerConvertible): interop.Pointer;
+
+declare function CGShadingRelease(shading: interop.PointerConvertible): void;
+
+declare function CGShadingGetContentHeadroom(shading: interop.PointerConvertible): number;
+
+declare function CGEXRToneMappingGammaGetDefaultOptions(): interop.Pointer;
 
 declare function CGContextGetTypeID(): number;
 
-declare function CGContextSaveGState(c: interop.Object): void;
+declare function CGContextSaveGState(c: interop.PointerConvertible): void;
 
-declare function CGContextRestoreGState(c: interop.Object): void;
+declare function CGContextRestoreGState(c: interop.PointerConvertible): void;
 
-declare function CGContextScaleCTM(c: interop.Object, sx: number, sy: number): void;
+declare function CGContextScaleCTM(c: interop.PointerConvertible, sx: number, sy: number): void;
 
-declare function CGContextTranslateCTM(c: interop.Object, tx: number, ty: number): void;
+declare function CGContextTranslateCTM(c: interop.PointerConvertible, tx: number, ty: number): void;
 
-declare function CGContextRotateCTM(c: interop.Object, angle: number): void;
+declare function CGContextRotateCTM(c: interop.PointerConvertible, angle: number): void;
 
-declare function CGContextConcatCTM(c: interop.Object, transform: CGAffineTransform): void;
+declare function CGContextConcatCTM(c: interop.PointerConvertible, transform: CGAffineTransform): void;
 
-declare function CGContextGetCTM(c: interop.Object): CGAffineTransform;
+declare function CGContextGetCTM(c: interop.PointerConvertible): CGAffineTransform;
 
-declare function CGContextSetLineWidth(c: interop.Object, width: number): void;
+declare function CGContextSetLineWidth(c: interop.PointerConvertible, width: number): void;
 
-declare function CGContextSetLineCap(c: interop.Object, cap: interop.Enum<typeof CGLineCap>): void;
+declare function CGContextSetLineCap(c: interop.PointerConvertible, cap: interop.Enum<typeof CGLineCap>): void;
 
-declare function CGContextSetLineJoin(c: interop.Object, join: interop.Enum<typeof CGLineJoin>): void;
+declare function CGContextSetLineJoin(c: interop.PointerConvertible, join: interop.Enum<typeof CGLineJoin>): void;
 
-declare function CGContextSetMiterLimit(c: interop.Object, limit: number): void;
+declare function CGContextSetMiterLimit(c: interop.PointerConvertible, limit: number): void;
 
-declare function CGContextSetLineDash(c: interop.Object, phase: number, lengths: interop.PointerConvertible, count: number): void;
+declare function CGContextSetLineDash(c: interop.PointerConvertible, phase: number, lengths: interop.PointerConvertible, count: number): void;
 
-declare function CGContextSetFlatness(c: interop.Object, flatness: number): void;
+declare function CGContextSetFlatness(c: interop.PointerConvertible, flatness: number): void;
 
-declare function CGContextSetAlpha(c: interop.Object, alpha: number): void;
+declare function CGContextSetAlpha(c: interop.PointerConvertible, alpha: number): void;
 
-declare function CGContextSetBlendMode(c: interop.Object, mode: interop.Enum<typeof CGBlendMode>): void;
+declare function CGContextSetBlendMode(c: interop.PointerConvertible, mode: interop.Enum<typeof CGBlendMode>): void;
 
-declare function CGContextBeginPath(c: interop.Object): void;
+declare function CGContextBeginPath(c: interop.PointerConvertible): void;
 
-declare function CGContextMoveToPoint(c: interop.Object, x: number, y: number): void;
+declare function CGContextMoveToPoint(c: interop.PointerConvertible, x: number, y: number): void;
 
-declare function CGContextAddLineToPoint(c: interop.Object, x: number, y: number): void;
+declare function CGContextAddLineToPoint(c: interop.PointerConvertible, x: number, y: number): void;
 
-declare function CGContextAddCurveToPoint(c: interop.Object, cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
+declare function CGContextAddCurveToPoint(c: interop.PointerConvertible, cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
 
-declare function CGContextAddQuadCurveToPoint(c: interop.Object, cpx: number, cpy: number, x: number, y: number): void;
+declare function CGContextAddQuadCurveToPoint(c: interop.PointerConvertible, cpx: number, cpy: number, x: number, y: number): void;
 
-declare function CGContextClosePath(c: interop.Object): void;
+declare function CGContextClosePath(c: interop.PointerConvertible): void;
 
-declare function CGContextAddRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextAddRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextAddRects(c: interop.Object, rects: interop.PointerConvertible, count: number): void;
+declare function CGContextAddRects(c: interop.PointerConvertible, rects: interop.PointerConvertible, count: number): void;
 
-declare function CGContextAddLines(c: interop.Object, points: interop.PointerConvertible, count: number): void;
+declare function CGContextAddLines(c: interop.PointerConvertible, points: interop.PointerConvertible, count: number): void;
 
-declare function CGContextAddEllipseInRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextAddEllipseInRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextAddArc(c: interop.Object, x: number, y: number, radius: number, startAngle: number, endAngle: number, clockwise: number): void;
+declare function CGContextAddArc(c: interop.PointerConvertible, x: number, y: number, radius: number, startAngle: number, endAngle: number, clockwise: number): void;
 
-declare function CGContextAddArcToPoint(c: interop.Object, x1: number, y1: number, x2: number, y2: number, radius: number): void;
+declare function CGContextAddArcToPoint(c: interop.PointerConvertible, x1: number, y1: number, x2: number, y2: number, radius: number): void;
 
-declare function CGContextAddPath(c: interop.Object, path: interop.Object): void;
+declare function CGContextAddPath(c: interop.PointerConvertible, path: interop.PointerConvertible): void;
 
-declare function CGContextReplacePathWithStrokedPath(c: interop.Object): void;
+declare function CGContextReplacePathWithStrokedPath(c: interop.PointerConvertible): void;
 
-declare function CGContextIsPathEmpty(c: interop.Object): boolean;
+declare function CGContextIsPathEmpty(c: interop.PointerConvertible): boolean;
 
-declare function CGContextGetPathCurrentPoint(c: interop.Object): CGPoint;
+declare function CGContextGetPathCurrentPoint(c: interop.PointerConvertible): CGPoint;
 
-declare function CGContextGetPathBoundingBox(c: interop.Object): CGRect;
+declare function CGContextGetPathBoundingBox(c: interop.PointerConvertible): CGRect;
 
-declare function CGContextCopyPath(c: interop.Object): interop.Object;
+declare function CGContextCopyPath(c: interop.PointerConvertible): interop.Pointer;
 
-declare function CGContextPathContainsPoint(c: interop.Object, point: CGPoint, mode: interop.Enum<typeof CGPathDrawingMode>): boolean;
+declare function CGContextPathContainsPoint(c: interop.PointerConvertible, point: CGPoint, mode: interop.Enum<typeof CGPathDrawingMode>): boolean;
 
-declare function CGContextDrawPath(c: interop.Object, mode: interop.Enum<typeof CGPathDrawingMode>): void;
+declare function CGContextDrawPath(c: interop.PointerConvertible, mode: interop.Enum<typeof CGPathDrawingMode>): void;
 
-declare function CGContextFillPath(c: interop.Object): void;
+declare function CGContextFillPath(c: interop.PointerConvertible): void;
 
-declare function CGContextEOFillPath(c: interop.Object): void;
+declare function CGContextEOFillPath(c: interop.PointerConvertible): void;
 
-declare function CGContextStrokePath(c: interop.Object): void;
+declare function CGContextStrokePath(c: interop.PointerConvertible): void;
 
-declare function CGContextFillRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextFillRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextFillRects(c: interop.Object, rects: interop.PointerConvertible, count: number): void;
+declare function CGContextFillRects(c: interop.PointerConvertible, rects: interop.PointerConvertible, count: number): void;
 
-declare function CGContextStrokeRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextStrokeRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextStrokeRectWithWidth(c: interop.Object, rect: CGRect, width: number): void;
+declare function CGContextStrokeRectWithWidth(c: interop.PointerConvertible, rect: CGRect, width: number): void;
 
-declare function CGContextClearRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextClearRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextFillEllipseInRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextFillEllipseInRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextStrokeEllipseInRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextStrokeEllipseInRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextStrokeLineSegments(c: interop.Object, points: interop.PointerConvertible, count: number): void;
+declare function CGContextStrokeLineSegments(c: interop.PointerConvertible, points: interop.PointerConvertible, count: number): void;
 
-declare function CGContextClip(c: interop.Object): void;
+declare function CGContextClip(c: interop.PointerConvertible): void;
 
-declare function CGContextEOClip(c: interop.Object): void;
+declare function CGContextEOClip(c: interop.PointerConvertible): void;
 
-declare function CGContextResetClip(c: interop.Object): void;
+declare function CGContextResetClip(c: interop.PointerConvertible): void;
 
-declare function CGContextClipToMask(c: interop.Object, rect: CGRect, mask: interop.Object): void;
+declare function CGContextClipToMask(c: interop.PointerConvertible, rect: CGRect, mask: interop.PointerConvertible): void;
 
-declare function CGContextGetClipBoundingBox(c: interop.Object): CGRect;
+declare function CGContextGetClipBoundingBox(c: interop.PointerConvertible): CGRect;
 
-declare function CGContextClipToRect(c: interop.Object, rect: CGRect): void;
+declare function CGContextClipToRect(c: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGContextClipToRects(c: interop.Object, rects: interop.PointerConvertible, count: number): void;
+declare function CGContextClipToRects(c: interop.PointerConvertible, rects: interop.PointerConvertible, count: number): void;
 
-declare function CGContextSetFillColorWithColor(c: interop.Object, color: interop.Object): void;
+declare function CGContextSetFillColorWithColor(c: interop.PointerConvertible, color: interop.PointerConvertible): void;
 
-declare function CGContextSetStrokeColorWithColor(c: interop.Object, color: interop.Object): void;
+declare function CGContextSetStrokeColorWithColor(c: interop.PointerConvertible, color: interop.PointerConvertible): void;
 
-declare function CGContextSetFillColorSpace(c: interop.Object, space: interop.Object): void;
+declare function CGContextSetFillColorSpace(c: interop.PointerConvertible, space: interop.PointerConvertible): void;
 
-declare function CGContextSetStrokeColorSpace(c: interop.Object, space: interop.Object): void;
+declare function CGContextSetStrokeColorSpace(c: interop.PointerConvertible, space: interop.PointerConvertible): void;
 
-declare function CGContextSetFillColor(c: interop.Object, components: interop.PointerConvertible): void;
+declare function CGContextSetFillColor(c: interop.PointerConvertible, components: interop.PointerConvertible): void;
 
-declare function CGContextSetStrokeColor(c: interop.Object, components: interop.PointerConvertible): void;
+declare function CGContextSetStrokeColor(c: interop.PointerConvertible, components: interop.PointerConvertible): void;
 
-declare function CGContextSetFillPattern(c: interop.Object, pattern: interop.Object, components: interop.PointerConvertible): void;
+declare function CGContextSetFillPattern(c: interop.PointerConvertible, pattern: interop.PointerConvertible, components: interop.PointerConvertible): void;
 
-declare function CGContextSetStrokePattern(c: interop.Object, pattern: interop.Object, components: interop.PointerConvertible): void;
+declare function CGContextSetStrokePattern(c: interop.PointerConvertible, pattern: interop.PointerConvertible, components: interop.PointerConvertible): void;
 
-declare function CGContextSetPatternPhase(c: interop.Object, phase: CGSize): void;
+declare function CGContextSetPatternPhase(c: interop.PointerConvertible, phase: CGSize): void;
 
-declare function CGContextSetGrayFillColor(c: interop.Object, gray: number, alpha: number): void;
+declare function CGContextSetGrayFillColor(c: interop.PointerConvertible, gray: number, alpha: number): void;
 
-declare function CGContextSetGrayStrokeColor(c: interop.Object, gray: number, alpha: number): void;
+declare function CGContextSetGrayStrokeColor(c: interop.PointerConvertible, gray: number, alpha: number): void;
 
-declare function CGContextSetRGBFillColor(c: interop.Object, red: number, green: number, blue: number, alpha: number): void;
+declare function CGContextSetRGBFillColor(c: interop.PointerConvertible, red: number, green: number, blue: number, alpha: number): void;
 
-declare function CGContextSetRGBStrokeColor(c: interop.Object, red: number, green: number, blue: number, alpha: number): void;
+declare function CGContextSetRGBStrokeColor(c: interop.PointerConvertible, red: number, green: number, blue: number, alpha: number): void;
 
-declare function CGContextSetCMYKFillColor(c: interop.Object, cyan: number, magenta: number, yellow: number, black: number, alpha: number): void;
+declare function CGContextSetCMYKFillColor(c: interop.PointerConvertible, cyan: number, magenta: number, yellow: number, black: number, alpha: number): void;
 
-declare function CGContextSetCMYKStrokeColor(c: interop.Object, cyan: number, magenta: number, yellow: number, black: number, alpha: number): void;
+declare function CGContextSetCMYKStrokeColor(c: interop.PointerConvertible, cyan: number, magenta: number, yellow: number, black: number, alpha: number): void;
 
-declare function CGContextSetRenderingIntent(c: interop.Object, intent: interop.Enum<typeof CGColorRenderingIntent>): void;
+declare function CGContextSetRenderingIntent(c: interop.PointerConvertible, intent: interop.Enum<typeof CGColorRenderingIntent>): void;
 
-declare function CGContextSetEDRTargetHeadroom(c: interop.Object, headroom: number): boolean;
+declare function CGContextSetEDRTargetHeadroom(c: interop.PointerConvertible, headroom: number): boolean;
 
-declare function CGContextGetEDRTargetHeadroom(c: interop.Object): number;
+declare function CGContextGetEDRTargetHeadroom(c: interop.PointerConvertible): number;
 
-declare function CGContextDrawImage(c: interop.Object, rect: CGRect, image: interop.Object): void;
+declare function CGContextDrawImage(c: interop.PointerConvertible, rect: CGRect, image: interop.PointerConvertible): void;
 
-declare function CGContextDrawTiledImage(c: interop.Object, rect: CGRect, image: interop.Object): void;
+declare function CGContextDrawTiledImage(c: interop.PointerConvertible, rect: CGRect, image: interop.PointerConvertible): void;
 
-declare function CGContextDrawImageApplyingToneMapping(c: interop.Object, r: CGRect, image: interop.Object, method: interop.Enum<typeof CGToneMapping>, options: interop.Object): boolean;
+declare function CGContextDrawImageApplyingToneMapping(c: interop.PointerConvertible, r: CGRect, image: interop.PointerConvertible, method: interop.Enum<typeof CGToneMapping>, options: interop.PointerConvertible): boolean;
 
-declare function CGContextGetInterpolationQuality(c: interop.Object): interop.Enum<typeof CGInterpolationQuality>;
+declare function CGContextGetContentToneMappingInfo(c: interop.PointerConvertible): CGContentToneMappingInfo;
 
-declare function CGContextSetInterpolationQuality(c: interop.Object, quality: interop.Enum<typeof CGInterpolationQuality>): void;
+declare function CGContextSetContentToneMappingInfo(c: interop.PointerConvertible, info: CGContentToneMappingInfo): void;
 
-declare function CGContextSetShadowWithColor(c: interop.Object, offset: CGSize, blur: number, color: interop.Object): void;
+declare function CGContextGetInterpolationQuality(c: interop.PointerConvertible): interop.Enum<typeof CGInterpolationQuality>;
 
-declare function CGContextSetShadow(c: interop.Object, offset: CGSize, blur: number): void;
+declare function CGContextSetInterpolationQuality(c: interop.PointerConvertible, quality: interop.Enum<typeof CGInterpolationQuality>): void;
 
-declare function CGContextDrawLinearGradient(c: interop.Object, gradient: interop.Object, startPoint: CGPoint, endPoint: CGPoint, options: interop.Enum<typeof CGGradientDrawingOptions>): void;
+declare function CGContextSetShadowWithColor(c: interop.PointerConvertible, offset: CGSize, blur: number, color: interop.PointerConvertible): void;
 
-declare function CGContextDrawRadialGradient(c: interop.Object, gradient: interop.Object, startCenter: CGPoint, startRadius: number, endCenter: CGPoint, endRadius: number, options: interop.Enum<typeof CGGradientDrawingOptions>): void;
+declare function CGContextSetShadow(c: interop.PointerConvertible, offset: CGSize, blur: number): void;
 
-declare function CGContextDrawConicGradient(c: interop.Object, gradient: interop.Object, center: CGPoint, angle: number): void;
+declare function CGContextDrawLinearGradient(c: interop.PointerConvertible, gradient: interop.PointerConvertible, startPoint: CGPoint, endPoint: CGPoint, options: interop.Enum<typeof CGGradientDrawingOptions>): void;
 
-declare function CGContextDrawShading(c: interop.Object, shading: interop.Object): void;
+declare function CGContextDrawRadialGradient(c: interop.PointerConvertible, gradient: interop.PointerConvertible, startCenter: CGPoint, startRadius: number, endCenter: CGPoint, endRadius: number, options: interop.Enum<typeof CGGradientDrawingOptions>): void;
 
-declare function CGContextSetCharacterSpacing(c: interop.Object, spacing: number): void;
+declare function CGContextDrawConicGradient(c: interop.PointerConvertible, gradient: interop.PointerConvertible, center: CGPoint, angle: number): void;
 
-declare function CGContextSetTextPosition(c: interop.Object, x: number, y: number): void;
+declare function CGContextDrawShading(c: interop.PointerConvertible, shading: interop.PointerConvertible): void;
 
-declare function CGContextGetTextPosition(c: interop.Object): CGPoint;
+declare function CGContextSetCharacterSpacing(c: interop.PointerConvertible, spacing: number): void;
 
-declare function CGContextSetTextMatrix(c: interop.Object, t: CGAffineTransform): void;
+declare function CGContextSetTextPosition(c: interop.PointerConvertible, x: number, y: number): void;
 
-declare function CGContextGetTextMatrix(c: interop.Object): CGAffineTransform;
+declare function CGContextGetTextPosition(c: interop.PointerConvertible): CGPoint;
 
-declare function CGContextSetTextDrawingMode(c: interop.Object, mode: interop.Enum<typeof CGTextDrawingMode>): void;
+declare function CGContextSetTextMatrix(c: interop.PointerConvertible, t: CGAffineTransform): void;
 
-declare function CGContextSetFont(c: interop.Object, font: interop.Object): void;
+declare function CGContextGetTextMatrix(c: interop.PointerConvertible): CGAffineTransform;
 
-declare function CGContextSetFontSize(c: interop.Object, size: number): void;
+declare function CGContextSetTextDrawingMode(c: interop.PointerConvertible, mode: interop.Enum<typeof CGTextDrawingMode>): void;
 
-declare function CGContextShowGlyphsAtPositions(c: interop.Object, glyphs: interop.PointerConvertible, Lpositions: interop.PointerConvertible, count: number): void;
+declare function CGContextSetFont(c: interop.PointerConvertible, font: interop.PointerConvertible): void;
 
-declare function CGContextDrawPDFPage(c: interop.Object, page: interop.Object): void;
+declare function CGContextSetFontSize(c: interop.PointerConvertible, size: number): void;
 
-declare function CGContextBeginPage(c: interop.Object, mediaBox: interop.PointerConvertible): void;
+declare function CGContextShowGlyphsAtPositions(c: interop.PointerConvertible, glyphs: interop.PointerConvertible, Lpositions: interop.PointerConvertible, count: number): void;
 
-declare function CGContextEndPage(c: interop.Object): void;
+declare function CGContextDrawPDFPage(c: interop.PointerConvertible, page: interop.PointerConvertible): void;
 
-declare function CGContextRetain(c: interop.Object): interop.Object;
+declare function CGContextBeginPage(c: interop.PointerConvertible, mediaBox: interop.PointerConvertible): void;
 
-declare function CGContextRelease(c: interop.Object): void;
+declare function CGContextEndPage(c: interop.PointerConvertible): void;
 
-declare function CGContextFlush(c: interop.Object): void;
+declare function CGContextRetain(c: interop.PointerConvertible): interop.Pointer;
 
-declare function CGContextSynchronize(c: interop.Object): void;
+declare function CGContextRelease(c: interop.PointerConvertible): void;
 
-declare function CGContextSetShouldAntialias(c: interop.Object, shouldAntialias: boolean): void;
+declare function CGContextFlush(c: interop.PointerConvertible): void;
 
-declare function CGContextSetAllowsAntialiasing(c: interop.Object, allowsAntialiasing: boolean): void;
+declare function CGContextSynchronize(c: interop.PointerConvertible): void;
 
-declare function CGContextSetShouldSmoothFonts(c: interop.Object, shouldSmoothFonts: boolean): void;
+declare function CGContextSynchronizeAttributes(c: interop.PointerConvertible): void;
 
-declare function CGContextSetAllowsFontSmoothing(c: interop.Object, allowsFontSmoothing: boolean): void;
+declare function CGContextSetShouldAntialias(c: interop.PointerConvertible, shouldAntialias: boolean): void;
 
-declare function CGContextSetShouldSubpixelPositionFonts(c: interop.Object, shouldSubpixelPositionFonts: boolean): void;
+declare function CGContextSetAllowsAntialiasing(c: interop.PointerConvertible, allowsAntialiasing: boolean): void;
 
-declare function CGContextSetAllowsFontSubpixelPositioning(c: interop.Object, allowsFontSubpixelPositioning: boolean): void;
+declare function CGContextSetShouldSmoothFonts(c: interop.PointerConvertible, shouldSmoothFonts: boolean): void;
 
-declare function CGContextSetShouldSubpixelQuantizeFonts(c: interop.Object, shouldSubpixelQuantizeFonts: boolean): void;
+declare function CGContextSetAllowsFontSmoothing(c: interop.PointerConvertible, allowsFontSmoothing: boolean): void;
 
-declare function CGContextSetAllowsFontSubpixelQuantization(c: interop.Object, allowsFontSubpixelQuantization: boolean): void;
+declare function CGContextSetShouldSubpixelPositionFonts(c: interop.PointerConvertible, shouldSubpixelPositionFonts: boolean): void;
 
-declare function CGContextBeginTransparencyLayer(c: interop.Object, auxiliaryInfo: interop.Object): void;
+declare function CGContextSetAllowsFontSubpixelPositioning(c: interop.PointerConvertible, allowsFontSubpixelPositioning: boolean): void;
 
-declare function CGContextBeginTransparencyLayerWithRect(c: interop.Object, rect: CGRect, auxInfo: interop.Object): void;
+declare function CGContextSetShouldSubpixelQuantizeFonts(c: interop.PointerConvertible, shouldSubpixelQuantizeFonts: boolean): void;
 
-declare function CGContextEndTransparencyLayer(c: interop.Object): void;
+declare function CGContextSetAllowsFontSubpixelQuantization(c: interop.PointerConvertible, allowsFontSubpixelQuantization: boolean): void;
 
-declare function CGContextGetUserSpaceToDeviceSpaceTransform(c: interop.Object): CGAffineTransform;
+declare function CGContextBeginTransparencyLayer(c: interop.PointerConvertible, auxiliaryInfo: interop.PointerConvertible): void;
 
-declare function CGContextConvertPointToDeviceSpace(c: interop.Object, point: CGPoint): CGPoint;
+declare function CGContextBeginTransparencyLayerWithRect(c: interop.PointerConvertible, rect: CGRect, auxInfo: interop.PointerConvertible): void;
 
-declare function CGContextConvertPointToUserSpace(c: interop.Object, point: CGPoint): CGPoint;
+declare function CGContextEndTransparencyLayer(c: interop.PointerConvertible): void;
 
-declare function CGContextConvertSizeToDeviceSpace(c: interop.Object, size: CGSize): CGSize;
+declare function CGContextGetUserSpaceToDeviceSpaceTransform(c: interop.PointerConvertible): CGAffineTransform;
 
-declare function CGContextConvertSizeToUserSpace(c: interop.Object, size: CGSize): CGSize;
+declare function CGContextConvertPointToDeviceSpace(c: interop.PointerConvertible, point: CGPoint): CGPoint;
 
-declare function CGContextConvertRectToDeviceSpace(c: interop.Object, rect: CGRect): CGRect;
+declare function CGContextConvertPointToUserSpace(c: interop.PointerConvertible, point: CGPoint): CGPoint;
 
-declare function CGContextConvertRectToUserSpace(c: interop.Object, rect: CGRect): CGRect;
+declare function CGContextConvertSizeToDeviceSpace(c: interop.PointerConvertible, size: CGSize): CGSize;
 
-declare function CGContextSelectFont(c: interop.Object, name: string, size: number, textEncoding: interop.Enum<typeof CGTextEncoding>): void;
+declare function CGContextConvertSizeToUserSpace(c: interop.PointerConvertible, size: CGSize): CGSize;
 
-declare function CGContextShowText(c: interop.Object, string: string, length: number): void;
+declare function CGContextConvertRectToDeviceSpace(c: interop.PointerConvertible, rect: CGRect): CGRect;
 
-declare function CGContextShowTextAtPoint(c: interop.Object, x: number, y: number, string: string, length: number): void;
+declare function CGContextConvertRectToUserSpace(c: interop.PointerConvertible, rect: CGRect): CGRect;
 
-declare function CGContextShowGlyphs(c: interop.Object, g: interop.PointerConvertible, count: number): void;
+declare function CGContextSelectFont(c: interop.PointerConvertible, name: string, size: number, textEncoding: interop.Enum<typeof CGTextEncoding>): void;
 
-declare function CGContextShowGlyphsAtPoint(c: interop.Object, x: number, y: number, glyphs: interop.PointerConvertible, count: number): void;
+declare function CGContextShowText(c: interop.PointerConvertible, string: string, length: number): void;
 
-declare function CGContextShowGlyphsWithAdvances(c: interop.Object, glyphs: interop.PointerConvertible, advances: interop.PointerConvertible, count: number): void;
+declare function CGContextShowTextAtPoint(c: interop.PointerConvertible, x: number, y: number, string: string, length: number): void;
 
-declare function CGBitmapContextCreateWithData(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: number, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: interop.PointerConvertible): interop.Object;
+declare function CGContextShowGlyphs(c: interop.PointerConvertible, g: interop.PointerConvertible, count: number): void;
 
-declare function CGBitmapContextCreate(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: number): interop.Object;
+declare function CGContextShowGlyphsAtPoint(c: interop.PointerConvertible, x: number, y: number, glyphs: interop.PointerConvertible, count: number): void;
 
-declare function CGBitmapContextGetData(context: interop.Object): interop.Pointer;
+declare function CGContextShowGlyphsWithAdvances(c: interop.PointerConvertible, glyphs: interop.PointerConvertible, advances: interop.PointerConvertible, count: number): void;
 
-declare function CGBitmapContextGetWidth(context: interop.Object): number;
+declare function CGRenderingBufferProviderCreate(info: interop.PointerConvertible, size: number, lockPointer: (p1: interop.PointerConvertible) => interop.Pointer, unlockPointer: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: (p1: interop.PointerConvertible) => void): interop.Pointer;
 
-declare function CGBitmapContextGetHeight(context: interop.Object): number;
+declare function CGRenderingBufferProviderCreateWithCFData(data: interop.PointerConvertible): interop.Pointer;
 
-declare function CGBitmapContextGetBitsPerComponent(context: interop.Object): number;
+declare function CGRenderingBufferProviderGetSize(provider: interop.PointerConvertible): number;
 
-declare function CGBitmapContextGetBitsPerPixel(context: interop.Object): number;
+declare function CGRenderingBufferLockBytePtr(provider: interop.PointerConvertible): interop.Pointer;
 
-declare function CGBitmapContextGetBytesPerRow(context: interop.Object): number;
+declare function CGRenderingBufferUnlockBytePtr(provider: interop.PointerConvertible): void;
 
-declare function CGBitmapContextGetColorSpace(context: interop.Object): interop.Object;
+declare function CGRenderingBufferProviderGetTypeID(): number;
 
-declare function CGBitmapContextGetAlphaInfo(context: interop.Object): interop.Enum<typeof CGImageAlphaInfo>;
+declare function CGBitmapContextCreateWithData(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.PointerConvertible, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: interop.PointerConvertible): interop.Pointer;
 
-declare function CGBitmapContextGetBitmapInfo(context: interop.Object): interop.Enum<typeof CGBitmapInfo>;
+declare function CGBitmapContextCreate(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.PointerConvertible, bitmapInfo: interop.Enum<typeof CGBitmapInfo>): interop.Pointer;
 
-declare function CGBitmapContextCreateImage(context: interop.Object): interop.Object;
+declare function CGBitmapContextCreateAdaptive(width: number, height: number, auxiliaryInfo: interop.PointerConvertible, onResolve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => boolean, onAllocate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, onFree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, onError: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): interop.Pointer;
+
+declare function CGBitmapContextGetData(context: interop.PointerConvertible): interop.Pointer;
+
+declare function CGBitmapContextGetWidth(context: interop.PointerConvertible): number;
+
+declare function CGBitmapContextGetHeight(context: interop.PointerConvertible): number;
+
+declare function CGBitmapContextGetBitsPerComponent(context: interop.PointerConvertible): number;
+
+declare function CGBitmapContextGetBitsPerPixel(context: interop.PointerConvertible): number;
+
+declare function CGBitmapContextGetBytesPerRow(context: interop.PointerConvertible): number;
+
+declare function CGBitmapContextGetColorSpace(context: interop.PointerConvertible): interop.Pointer;
+
+declare function CGBitmapContextGetAlphaInfo(context: interop.PointerConvertible): interop.Enum<typeof CGImageAlphaInfo>;
+
+declare function CGBitmapContextGetBitmapInfo(context: interop.PointerConvertible): interop.Enum<typeof CGBitmapInfo>;
+
+declare function CGBitmapContextCreateImage(context: interop.PointerConvertible): interop.Pointer;
 
 declare function CGColorConversionInfoGetTypeID(): number;
 
-declare function CGColorConversionInfoCreate(src: interop.Object, dst: interop.Object): interop.Pointer;
+declare function CGColorConversionInfoCreate(src: interop.PointerConvertible, dst: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorConversionInfoCreateWithOptions(src: interop.Object, dst: interop.Object, options: interop.Object): interop.Pointer;
+declare function CGColorConversionInfoCreateWithOptions(src: interop.PointerConvertible, dst: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorConversionInfoCreateFromList(options: interop.Object, p2: interop.Object, p3: interop.Enum<typeof CGColorConversionInfoTransformType>, p4: interop.Enum<typeof CGColorRenderingIntent>): interop.Pointer;
+declare function CGColorConversionInfoCreateFromList(options: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof CGColorConversionInfoTransformType>, p4: interop.Enum<typeof CGColorRenderingIntent>): interop.Pointer;
 
-declare function CGColorConversionInfoCreateFromListWithArguments(options: interop.Object, p2: interop.Object, p3: interop.Enum<typeof CGColorConversionInfoTransformType>, p4: interop.Enum<typeof CGColorRenderingIntent>, p5: string): interop.Pointer;
+declare function CGColorConversionInfoCreateFromListWithArguments(options: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof CGColorConversionInfoTransformType>, p4: interop.Enum<typeof CGColorRenderingIntent>, p5: string): interop.Pointer;
 
-declare function CGColorConversionInfoCreateForToneMapping(from: interop.Object, source_headroom: number, to: interop.Object, target_headroom: number, method: interop.Enum<typeof CGToneMapping>, options: interop.Object, error: interop.PointerConvertible): interop.Pointer;
+declare function CGColorConversionInfoCreateForToneMapping(from: interop.PointerConvertible, source_headroom: number, to: interop.PointerConvertible, target_headroom: number, method: interop.Enum<typeof CGToneMapping>, options: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
 
-declare function CGColorConversionInfoConvertData(info: interop.PointerConvertible, width: number, height: number, dst_data: interop.PointerConvertible, dst_format: CGColorBufferFormat, src_data: interop.PointerConvertible, src_format: CGColorBufferFormat, options: interop.Object): boolean;
+declare function CGColorConversionInfoConvertData(info: interop.PointerConvertible, width: number, height: number, dst_data: interop.PointerConvertible, dst_format: CGColorBufferFormat, src_data: interop.PointerConvertible, src_format: CGColorBufferFormat, options: interop.PointerConvertible): boolean;
 
-declare function CGConvertColorDataWithFormat(width: number, height: number, dst_data: interop.PointerConvertible, dst_format: CGColorDataFormat, src_data: interop.PointerConvertible, src_format: CGColorDataFormat, options: interop.Object): boolean;
+declare function CGConvertColorDataWithFormat(width: number, height: number, dst_data: interop.PointerConvertible, dst_format: CGColorDataFormat, src_data: interop.PointerConvertible, src_format: CGColorDataFormat, options: interop.PointerConvertible): boolean;
 
 declare function CGDataConsumerGetTypeID(): number;
 
-declare function CGDataConsumerCreate(info: interop.PointerConvertible, cbks: interop.PointerConvertible): interop.Object;
+declare function CGDataConsumerCreate(info: interop.PointerConvertible, cbks: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataConsumerCreateWithURL(url: interop.Object): interop.Object;
+declare function CGDataConsumerCreateWithURL(url: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataConsumerCreateWithCFData(data: interop.Object): interop.Object;
+declare function CGDataConsumerCreateWithCFData(data: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataConsumerRetain(consumer: interop.Object): interop.Object;
+declare function CGDataConsumerRetain(consumer: interop.PointerConvertible): interop.Pointer;
 
-declare function CGDataConsumerRelease(consumer: interop.Object): void;
+declare function CGDataConsumerRelease(consumer: interop.PointerConvertible): void;
 
 declare function CGErrorSetCallback(callback: () => void): void;
 
-declare function CGLayerCreateWithContext(context: interop.Object, size: CGSize, auxiliaryInfo: interop.Object): interop.Object;
+declare function CGLayerCreateWithContext(context: interop.PointerConvertible, size: CGSize, auxiliaryInfo: interop.PointerConvertible): interop.Pointer;
 
-declare function CGLayerRetain(layer: interop.Object): interop.Object;
+declare function CGLayerRetain(layer: interop.PointerConvertible): interop.Pointer;
 
-declare function CGLayerRelease(layer: interop.Object): void;
+declare function CGLayerRelease(layer: interop.PointerConvertible): void;
 
-declare function CGLayerGetSize(layer: interop.Object): CGSize;
+declare function CGLayerGetSize(layer: interop.PointerConvertible): CGSize;
 
-declare function CGLayerGetContext(layer: interop.Object): interop.Object;
+declare function CGLayerGetContext(layer: interop.PointerConvertible): interop.Pointer;
 
-declare function CGContextDrawLayerInRect(context: interop.Object, rect: CGRect, layer: interop.Object): void;
+declare function CGContextDrawLayerInRect(context: interop.PointerConvertible, rect: CGRect, layer: interop.PointerConvertible): void;
 
-declare function CGContextDrawLayerAtPoint(context: interop.Object, point: CGPoint, layer: interop.Object): void;
+declare function CGContextDrawLayerAtPoint(context: interop.PointerConvertible, point: CGPoint, layer: interop.PointerConvertible): void;
 
 declare function CGLayerGetTypeID(): number;
 
-declare function CGPDFContentStreamCreateWithPage(page: interop.Object): interop.Pointer;
+declare function CGPDFContentStreamCreateWithPage(page: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPDFContentStreamCreateWithStream(stream: interop.PointerConvertible, streamResources: interop.PointerConvertible, parent: interop.PointerConvertible): interop.Pointer;
 
@@ -1587,41 +1725,41 @@ declare function CGPDFContentStreamRetain(cs: interop.PointerConvertible): inter
 
 declare function CGPDFContentStreamRelease(cs: interop.PointerConvertible): void;
 
-declare function CGPDFContentStreamGetStreams(cs: interop.PointerConvertible): interop.Object;
+declare function CGPDFContentStreamGetStreams(cs: interop.PointerConvertible): interop.Pointer;
 
 declare function CGPDFContentStreamGetResource(cs: interop.PointerConvertible, category: string, name: string): interop.Pointer;
 
-declare function CGPDFContextCreate(consumer: interop.Object, mediaBox: interop.PointerConvertible, auxiliaryInfo: interop.Object): interop.Object;
+declare function CGPDFContextCreate(consumer: interop.PointerConvertible, mediaBox: interop.PointerConvertible, auxiliaryInfo: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFContextCreateWithURL(url: interop.Object, mediaBox: interop.PointerConvertible, auxiliaryInfo: interop.Object): interop.Object;
+declare function CGPDFContextCreateWithURL(url: interop.PointerConvertible, mediaBox: interop.PointerConvertible, auxiliaryInfo: interop.PointerConvertible): interop.Pointer;
 
-declare function CGPDFContextClose(context: interop.Object): void;
+declare function CGPDFContextClose(context: interop.PointerConvertible): void;
 
-declare function CGPDFContextBeginPage(context: interop.Object, pageInfo: interop.Object): void;
+declare function CGPDFContextBeginPage(context: interop.PointerConvertible, pageInfo: interop.PointerConvertible): void;
 
-declare function CGPDFContextEndPage(context: interop.Object): void;
+declare function CGPDFContextEndPage(context: interop.PointerConvertible): void;
 
-declare function CGPDFContextAddDocumentMetadata(context: interop.Object, metadata: interop.Object): void;
+declare function CGPDFContextAddDocumentMetadata(context: interop.PointerConvertible, metadata: interop.PointerConvertible): void;
 
-declare function CGPDFContextSetParentTree(context: interop.Object, parentTreeDictionary: interop.PointerConvertible): void;
+declare function CGPDFContextSetParentTree(context: interop.PointerConvertible, parentTreeDictionary: interop.PointerConvertible): void;
 
-declare function CGPDFContextSetIDTree(context: interop.Object, IDTreeDictionary: interop.PointerConvertible): void;
+declare function CGPDFContextSetIDTree(context: interop.PointerConvertible, IDTreeDictionary: interop.PointerConvertible): void;
 
-declare function CGPDFContextSetPageTagStructureTree(context: interop.Object, pageTagStructureTreeDictionary: interop.Object): void;
+declare function CGPDFContextSetPageTagStructureTree(context: interop.PointerConvertible, pageTagStructureTreeDictionary: interop.PointerConvertible): void;
 
-declare function CGPDFContextSetURLForRect(context: interop.Object, url: interop.Object, rect: CGRect): void;
+declare function CGPDFContextSetURLForRect(context: interop.PointerConvertible, url: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGPDFContextAddDestinationAtPoint(context: interop.Object, name: interop.Object, point: CGPoint): void;
+declare function CGPDFContextAddDestinationAtPoint(context: interop.PointerConvertible, name: interop.PointerConvertible, point: CGPoint): void;
 
-declare function CGPDFContextSetDestinationForRect(context: interop.Object, name: interop.Object, rect: CGRect): void;
+declare function CGPDFContextSetDestinationForRect(context: interop.PointerConvertible, name: interop.PointerConvertible, rect: CGRect): void;
 
-declare function CGPDFContextSetOutline(context: interop.Object, outline: interop.Object): void;
+declare function CGPDFContextSetOutline(context: interop.PointerConvertible, outline: interop.PointerConvertible): void;
 
 declare function CGPDFTagTypeGetName(tagType: interop.Enum<typeof CGPDFTagType>): string;
 
-declare function CGPDFContextBeginTag(context: interop.Object, tagType: interop.Enum<typeof CGPDFTagType>, tagProperties: interop.Object): void;
+declare function CGPDFContextBeginTag(context: interop.PointerConvertible, tagType: interop.Enum<typeof CGPDFTagType>, tagProperties: interop.PointerConvertible): void;
 
-declare function CGPDFContextEndTag(context: interop.Object): void;
+declare function CGPDFContextEndTag(context: interop.PointerConvertible): void;
 
 declare function CGPDFScannerCreate(cs: interop.PointerConvertible, table: interop.PointerConvertible, info: interop.PointerConvertible): interop.Pointer;
 

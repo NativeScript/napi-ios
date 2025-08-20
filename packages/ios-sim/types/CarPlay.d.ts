@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
+declare const CPMaximumMessageItemLeadingDetailTextImageSize: CGSize;
+
 declare const CPMaximumMessageItemImageSize: CGSize;
 
 declare const CPMaximumNumberOfGridImages: number;
@@ -24,9 +26,15 @@ declare const CPTemplateApplicationInstrumentClusterSceneSessionRoleApplication:
 
 declare const CPNavigationAlertMinimumDuration: number;
 
-declare const CPLimitableUserInterface: {
-  Keyboard: 1,
-  Lists: 2,
+declare const CPMessageLeadingItem: {
+  None: 0,
+  Pin: 1,
+  Star: 2,
+};
+
+declare const CPTripEstimateStyle: {
+  Light: 0,
+  Dark: 1,
 };
 
 declare const CPManeuverDisplayStyle: {
@@ -37,12 +45,12 @@ declare const CPManeuverDisplayStyle: {
   InstructionOnly: 4,
 };
 
-declare const CPTripPauseReason: {
-  Arrived: 1,
-  Loading: 2,
-  Locating: 3,
-  Rerouting: 4,
-  ProceedToRoute: 5,
+declare const CPPanDirection: {
+  None: 0,
+  Left: 1,
+  Right: 2,
+  Up: 4,
+  Down: 8,
 };
 
 declare const CPNavigationAlertDismissalContext: {
@@ -58,22 +66,14 @@ declare const CPManeuverState: {
   Execute: 3,
 };
 
-declare const CPTimeRemainingColor: {
-  Default: 0,
-  Green: 1,
-  Orange: 2,
-  Red: 3,
-};
-
 declare const CPJunctionType: {
   Intersection: 0,
   Roundabout: 1,
 };
 
-declare const CPLaneStatus: {
-  NotGood: 0,
-  Good: 1,
-  Preferred: 2,
+declare const CPListImageRowItemCondensedElementShape: {
+  Circular: 0,
+  RoundedRectangle: 1,
 };
 
 declare const CPInformationTemplateLayout: {
@@ -84,11 +84,6 @@ declare const CPInformationTemplateLayout: {
 declare const CPBarButtonType: {
   Text: 0,
   Image: 1,
-};
-
-declare const CPTripEstimateStyle: {
-  Light: 0,
-  Dark: 1,
 };
 
 declare const CPAssistantCellActionType: {
@@ -118,9 +113,9 @@ declare const CPTrafficSide: {
   Left: 1,
 };
 
-declare const CPMessageTrailingItem: {
-  None: 0,
-  Mute: 1,
+declare const CPLimitableUserInterface: {
+  Keyboard: 1,
+  Lists: 2,
 };
 
 declare const CPAssistantCellPosition: {
@@ -128,12 +123,22 @@ declare const CPAssistantCellPosition: {
   Bottom: 1,
 };
 
-declare const CPPanDirection: {
-  None: 0,
-  Left: 1,
-  Right: 2,
-  Up: 4,
-  Down: 8,
+declare const CPLaneStatus: {
+  NotGood: 0,
+  Good: 1,
+  Preferred: 2,
+};
+
+declare const CPListImageRowItemImageGridElementShape: {
+  Circular: 0,
+  RoundedRectangle: 1,
+};
+
+declare const CPTimeRemainingColor: {
+  Default: 0,
+  Green: 1,
+  Orange: 2,
+  Red: 3,
 };
 
 declare const CPListItemPlayingIndicatorLocation: {
@@ -141,10 +146,17 @@ declare const CPListItemPlayingIndicatorLocation: {
   Trailing: 1,
 };
 
-declare const CPMessageLeadingItem: {
+declare const CPTripPauseReason: {
+  Arrived: 1,
+  Loading: 2,
+  Locating: 3,
+  Rerouting: 4,
+  ProceedToRoute: 5,
+};
+
+declare const CPMessageTrailingItem: {
   None: 0,
-  Pin: 1,
-  Star: 2,
+  Mute: 1,
 };
 
 declare const CPManeuverType: {
@@ -210,12 +222,6 @@ declare const CPListItemAccessoryType: {
   Cloud: 2,
 };
 
-declare const CPTextButtonStyle: {
-  Normal: 0,
-  Cancel: 1,
-  Confirm: 2,
-};
-
 declare const CPAlertActionStyle: {
   Default: 0,
   Cancel: 1,
@@ -226,6 +232,12 @@ declare const CPAssistantCellVisibility: {
   Off: 0,
   WhileLimitedUIActive: 1,
   Always: 2,
+};
+
+declare const CPTextButtonStyle: {
+  Normal: 0,
+  Cancel: 1,
+  Confirm: 2,
 };
 
 declare interface CPTemplateApplicationSceneDelegate extends UISceneDelegate {
@@ -294,6 +306,24 @@ declare interface CPMapTemplateDelegate extends NSObjectProtocol {
 
   mapTemplateDidEndPanGestureWithVelocity?(mapTemplate: CPMapTemplate, velocity: CGPoint): void;
 
+  mapTemplateDidBeginZoomGesture?(mapTemplate: CPMapTemplate): void;
+
+  mapTemplateDidUpdateZoomGestureWithCenterScaleVelocity?(mapTemplate: CPMapTemplate, center: CGPoint, scale: number, velocity: number): void;
+
+  mapTemplateDidEndZoomGestureWithVelocity?(mapTemplate: CPMapTemplate, velocity: number): void;
+
+  mapTemplateDidBeginRotationGesture?(mapTemplate: CPMapTemplate): void;
+
+  mapTemplateDidRotateWithCenterRotationVelocity?(mapTemplate: CPMapTemplate, center: CGPoint, rotation: number, velocity: number): void;
+
+  mapTemplateRotationDidEndWithVelocity?(mapTemplate: CPMapTemplate, velocity: number): void;
+
+  mapTemplateDidBeginPitchGesture?(mapTemplate: CPMapTemplate): void;
+
+  mapTemplatePitchWithCenter?(mapTemplate: CPMapTemplate, center: CGPoint): void;
+
+  mapTemplatePitchEndedWithCenter?(mapTemplate: CPMapTemplate, center: CGPoint): void;
+
   mapTemplateWillShowNavigationAlert?(mapTemplate: CPMapTemplate, navigationAlert: CPNavigationAlert): void;
 
   mapTemplateDidShowNavigationAlert?(mapTemplate: CPMapTemplate, navigationAlert: CPNavigationAlert): void;
@@ -327,15 +357,6 @@ declare interface CPInterfaceControllerDelegate extends NSObjectProtocol {
 declare class CPInterfaceControllerDelegate extends NativeObject implements CPInterfaceControllerDelegate {
 }
 
-declare interface CPSelectableListItem extends CPListTemplateItem {
-  handler: (p1: CPSelectableListItem, p2: () => void) => void;
-
-  setHandler(handler: (p1: CPSelectableListItem, p2: () => void) => void | null): void;
-}
-
-declare class CPSelectableListItem extends NativeObject implements CPSelectableListItem {
-}
-
 declare interface CPNowPlayingTemplateObserver extends NSObjectProtocol {
   nowPlayingTemplateUpNextButtonTapped?(nowPlayingTemplate: CPNowPlayingTemplate): void;
 
@@ -343,6 +364,15 @@ declare interface CPNowPlayingTemplateObserver extends NSObjectProtocol {
 }
 
 declare class CPNowPlayingTemplateObserver extends NativeObject implements CPNowPlayingTemplateObserver {
+}
+
+declare interface CPSelectableListItem extends CPListTemplateItem {
+  handler: (p1: CPSelectableListItem, p2: () => void) => void;
+
+  setHandler(handler: (p1: CPSelectableListItem, p2: () => void) => void | null): void;
+}
+
+declare class CPSelectableListItem extends NativeObject implements CPSelectableListItem {
 }
 
 declare interface CPTemplateApplicationInstrumentClusterSceneDelegate extends UISceneDelegate {
@@ -454,8 +484,78 @@ declare interface CPInstrumentClusterControllerDelegate extends NSObjectProtocol
 declare class CPInstrumentClusterControllerDelegate extends NativeObject implements CPInstrumentClusterControllerDelegate {
 }
 
+declare class CPNowPlayingSportsEventStatus extends NSObject implements NSSecureCoding {
+  initWithEventStatusTextEventStatusImageEventClock(eventStatusText: NSArray<interop.Object> | Array<interop.Object> | null, eventStatusImage: UIImage | null, eventClock: CPNowPlayingSportsClock | null): this;
+
+  readonly eventStatusText: NSArray;
+
+  readonly eventClock: CPNowPlayingSportsClock;
+
+  readonly eventStatusImage: UIImage;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CPDashboardButton extends NSObject implements NSSecureCoding {
+  initWithTitleVariantsSubtitleVariantsImageHandler(titleVariants: NSArray<interop.Object> | Array<interop.Object>, subtitleVariants: NSArray<interop.Object> | Array<interop.Object>, image: UIImage, handler: (p1: CPDashboardButton) => void | null): this;
+
+  readonly image: UIImage;
+
+  readonly titleVariants: NSArray;
+
+  readonly subtitleVariants: NSArray;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CPMessageListItemTrailingConfiguration extends NSObject {
+  readonly trailingItem: interop.Enum<typeof CPMessageTrailingItem>;
+
+  readonly trailingImage: UIImage;
+
+  initWithTrailingItemTrailingImage(trailingItem: interop.Enum<typeof CPMessageTrailingItem>, trailingImage: UIImage | null): this;
+}
+
+declare class CPRouteInformation extends NSObject {
+  initWithManeuversLaneGuidancesCurrentManeuversCurrentLaneGuidanceTripTravelEstimatesManeuverTravelEstimates(maneuvers: NSArray<interop.Object> | Array<interop.Object>, laneGuidances: NSArray<interop.Object> | Array<interop.Object>, currentManeuvers: NSArray<interop.Object> | Array<interop.Object>, currentLaneGuidance: CPLaneGuidance, tripTravelEstimates: CPTravelEstimates, maneuverTravelEstimates: CPTravelEstimates): this;
+
+  readonly maneuvers: NSArray;
+
+  readonly laneGuidances: NSArray;
+
+  readonly currentManeuvers: NSArray;
+
+  readonly currentLaneGuidance: CPLaneGuidance;
+
+  readonly tripTravelEstimates: CPTravelEstimates;
+
+  readonly maneuverTravelEstimates: CPTravelEstimates;
+}
+
+declare class CPMessageGridItemConfiguration extends NSObject {
+  initWithConversationIdentifierUnread(conversationIdentifier: string, unread: boolean): this;
+
+  unread: boolean;
+
+  readonly conversationIdentifier: string;
+
+  isUnread(): boolean;
+
+  setUnread(unread: boolean): void;
+}
+
 declare class CPGridTemplate extends CPTemplate implements CPBarButtonProviding {
   initWithTitleGridButtons(title: string | null, gridButtons: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  static readonly maximumGridButtonImageSize: CGSize;
 
   readonly gridButtons: NSArray;
 
@@ -518,6 +618,12 @@ declare class CPGridTemplate extends CPTemplate implements CPBarButtonProviding 
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class CPContactMessageButton extends CPButton {
+  initWithPhoneOrEmail(phoneOrEmail: string): this;
+
+  readonly phoneOrEmail: string;
 }
 
 declare class CPVoiceControlState extends NSObject implements NSSecureCoding {
@@ -775,6 +881,94 @@ declare class CPNowPlayingButton extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class CPMessageListItem extends NSObject implements CPListTemplateItem {
+  initWithConversationIdentifierTextLeadingConfigurationTrailingConfigurationDetailTextTrailingText(conversationIdentifier: string, text: string, leadingConfiguration: CPMessageListItemLeadingConfiguration, trailingConfiguration: CPMessageListItemTrailingConfiguration | null, detailText: string | null, trailingText: string | null): this;
+
+  initWithFullNamePhoneOrEmailAddressLeadingConfigurationTrailingConfigurationDetailTextTrailingText(fullName: string, phoneOrEmailAddress: string, leadingConfiguration: CPMessageListItemLeadingConfiguration, trailingConfiguration: CPMessageListItemTrailingConfiguration | null, detailText: string | null, trailingText: string | null): this;
+
+  text: string;
+
+  conversationIdentifier: string;
+
+  phoneOrEmailAddress: string;
+
+  leadingConfiguration: CPMessageListItemLeadingConfiguration;
+
+  trailingConfiguration: CPMessageListItemTrailingConfiguration;
+
+  detailText: string;
+
+  trailingText: string;
+
+  enabled: boolean;
+
+  userInfo: interop.Object;
+
+  leadingDetailTextImage: UIImage;
+
+  setText(text: string | null): void;
+
+  setConversationIdentifier(conversationIdentifier: string | null): void;
+
+  setPhoneOrEmailAddress(phoneOrEmailAddress: string | null): void;
+
+  setLeadingConfiguration(leadingConfiguration: CPMessageListItemLeadingConfiguration): void;
+
+  setTrailingConfiguration(trailingConfiguration: CPMessageListItemTrailingConfiguration | null): void;
+
+  setDetailText(detailText: string | null): void;
+
+  setTrailingText(trailingText: string | null): void;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
+
+  setUserInfo(userInfo: interop.Object | null): void;
+
+  setLeadingDetailTextImage(leadingDetailTextImage: UIImage): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class CPMessageComposeBarButton extends CPBarButton {
   init(): this;
 
@@ -890,6 +1084,28 @@ declare class CPMapTemplate extends CPTemplate implements CPBarButtonProviding {
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class CPRouteChoice extends NSObject implements NSCopying, NSSecureCoding {
+  initWithSummaryVariantsAdditionalInformationVariantsSelectionSummaryVariants(summaryVariants: NSArray<interop.Object> | Array<interop.Object>, additionalInformationVariants: NSArray<interop.Object> | Array<interop.Object>, selectionSummaryVariants: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly summaryVariants: NSArray;
+
+  readonly selectionSummaryVariants: NSArray;
+
+  readonly additionalInformationVariants: NSArray;
+
+  userInfo: interop.Object;
+
+  setUserInfo(userInfo: interop.Object | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class CPNavigationAlert extends NSObject implements NSSecureCoding {
@@ -1049,6 +1265,115 @@ declare class CPLaneGuidance extends NSObject implements NSCopying, NSSecureCodi
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class CPListTemplate extends CPTemplate implements CPBarButtonProviding {
+  initWithTitleSections(title: string | null, sections: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithTitleSectionsAssistantCellConfiguration(title: string | null, sections: NSArray<interop.Object> | Array<interop.Object>, assistantCellConfiguration: CPAssistantCellConfiguration | null): this;
+
+  initWithTitleSectionsAssistantCellConfigurationHeaderGridButtons(title: string | null, sections: NSArray<interop.Object> | Array<interop.Object>, assistantCellConfiguration: CPAssistantCellConfiguration | null, headerGridButtons: NSArray<interop.Object> | Array<interop.Object> | null): this;
+
+  delegate: CPListTemplateDelegate;
+
+  static readonly maximumItemCount: number;
+
+  static readonly maximumSectionCount: number;
+
+  readonly sections: NSArray;
+
+  readonly title: string;
+
+  updateSections(sections: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  readonly sectionCount: number;
+
+  readonly itemCount: number;
+
+  indexPathForItem(item: CPListTemplateItem): NSIndexPath;
+
+  get emptyViewTitleVariants(): NSArray;
+  set emptyViewTitleVariants(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get emptyViewSubtitleVariants(): NSArray;
+  set emptyViewSubtitleVariants(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  showsSpinnerWhileEmpty: boolean;
+
+  assistantCellConfiguration: CPAssistantCellConfiguration;
+
+  static readonly maximumHeaderGridButtonCount: number;
+
+  static readonly maximumGridButtonImageSize: CGSize;
+
+  get headerGridButtons(): NSArray;
+  set headerGridButtons(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setDelegate(delegate: CPListTemplateDelegate): void;
+
+  setEmptyViewTitleVariants(emptyViewTitleVariants: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setEmptyViewSubtitleVariants(emptyViewSubtitleVariants: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setShowsSpinnerWhileEmpty(showsSpinnerWhileEmpty: boolean): void;
+
+  setAssistantCellConfiguration(assistantCellConfiguration: CPAssistantCellConfiguration): void;
+
+  setHeaderGridButtons(headerGridButtons: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  get leadingNavigationBarButtons(): NSArray;
+  set leadingNavigationBarButtons(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get trailingNavigationBarButtons(): NSArray;
+  set trailingNavigationBarButtons(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  backButton: CPBarButton;
+
+  setLeadingNavigationBarButtons(leadingNavigationBarButtons: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setTrailingNavigationBarButtons(trailingNavigationBarButtons: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBackButton(backButton: CPBarButton | null): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class CPListItem extends NSObject implements CPSelectableListItem {
   initWithTextDetailTextImageAccessoryImageAccessoryType(text: string | null, detailText: string | null, image: UIImage | null, accessoryImage: UIImage | null, accessoryType: interop.Enum<typeof CPListItemAccessoryType>): this;
 
@@ -1166,6 +1491,16 @@ declare class CPListImageRowItem extends NSObject implements CPSelectableListIte
 
   initWithTextImagesImageTitles(text: string, images: NSArray<interop.Object> | Array<interop.Object>, imageTitles: NSArray<interop.Object> | Array<interop.Object>): this;
 
+  initWithTextElementsAllowsMultipleLines(text: string | null, elements: NSArray<interop.Object> | Array<interop.Object>, allowsMultipleLines: boolean): this;
+
+  initWithTextCardElementsAllowsMultipleLines(text: string | null, elements: NSArray<interop.Object> | Array<interop.Object>, allowsMultipleLines: boolean): this;
+
+  initWithTextCondensedElementsAllowsMultipleLines(text: string | null, elements: NSArray<interop.Object> | Array<interop.Object>, allowsMultipleLines: boolean): this;
+
+  initWithTextGridElementsAllowsMultipleLines(text: string | null, elements: NSArray<interop.Object> | Array<interop.Object>, allowsMultipleLines: boolean): this;
+
+  initWithTextImageGridElementsAllowsMultipleLines(text: string | null, elements: NSArray<interop.Object> | Array<interop.Object>, allowsMultipleLines: boolean): this;
+
   text: string;
 
   userInfo: interop.Object;
@@ -1178,8 +1513,12 @@ declare class CPListImageRowItem extends NSObject implements CPSelectableListIte
 
   updateImages(gridImages: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  get imageTitles(): NSArray;
-  set imageTitles(value: NSArray<interop.Object> | Array<interop.Object>);
+  readonly imageTitles: NSArray;
+
+  get elements(): NSArray;
+  set elements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  readonly allowsMultipleLines: boolean;
 
   listImageRowHandler: (p1: CPListImageRowItem, p2: number, p3: () => void) => void;
 
@@ -1195,7 +1534,7 @@ declare class CPListImageRowItem extends NSObject implements CPSelectableListIte
 
   setEnabled(enabled: boolean): void;
 
-  setImageTitles(imageTitles: NSArray<interop.Object> | Array<interop.Object>): void;
+  setElements(elements: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setListImageRowHandler(listImageRowHandler: (p1: CPListImageRowItem, p2: number, p3: () => void) => void | null): void;
 
@@ -1238,6 +1577,108 @@ declare class CPListImageRowItem extends NSObject implements CPSelectableListIte
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class CPNowPlayingSportsTeamLogo extends NSObject implements NSSecureCoding {
+  initWithTeamLogo(teamLogo: UIImage): this;
+
+  initWithTeamInitials(teamInitials: string): this;
+
+  readonly logo: UIImage;
+
+  readonly initials: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CPListSection extends NSObject implements NSSecureCoding {
+  initWithItemsHeaderSectionIndexTitle(items: NSArray<interop.Object> | Array<interop.Object>, header: string | null, sectionIndexTitle: string | null): this;
+
+  initWithItemsHeaderHeaderSubtitleHeaderImageHeaderButtonSectionIndexTitle(items: NSArray<interop.Object> | Array<interop.Object>, header: string, headerSubtitle: string | null, headerImage: UIImage | null, headerButton: CPButton | null, sectionIndexTitle: string | null): this;
+
+  initWithItems(items: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly header: string;
+
+  readonly headerSubtitle: string;
+
+  headerImage: UIImage;
+
+  readonly headerButton: CPButton;
+
+  readonly sectionIndexTitle: string;
+
+  readonly items: NSArray;
+
+  indexOfItem(item: CPListTemplateItem): number;
+
+  itemAtIndex(index: number): CPListTemplateItem;
+
+  setHeaderImage(headerImage: UIImage): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CPListImageRowItemCondensedElement extends CPListImageRowItemElement {
+  initWithImageImageShapeTitleSubtitleAccessorySymbolName(image: UIImage, imageShape: interop.Enum<typeof CPListImageRowItemCondensedElementShape>, title: string, subtitle: string | null, accessorySymbolName: string | null): this;
+
+  title: string;
+
+  subtitle: string;
+
+  accessorySymbolName: string;
+
+  readonly imageShape: interop.Enum<typeof CPListImageRowItemCondensedElementShape>;
+
+  setTitle(title: string): void;
+
+  setSubtitle(subtitle: string | null): void;
+
+  setAccessorySymbolName(accessorySymbolName: string | null): void;
+}
+
+declare class CPListImageRowItemCardElement extends CPListImageRowItemElement {
+  initWithImageShowsImageFullHeightTitleSubtitleTintColor(image: UIImage, showsImageFullHeight: boolean, title: string | null, subtitle: string | null, tintColor: UIColor | null): this;
+
+  title: string;
+
+  subtitle: string;
+
+  readonly showsImageFullHeight: boolean;
+
+  tintColor: UIColor;
+
+  static readonly maximumImageSize: CGSize;
+
+  static readonly maximumFullHeightImageSize: CGSize;
+
+  setTitle(title: string): void;
+
+  setSubtitle(subtitle: string | null): void;
+
+  setTintColor(tintColor: UIColor | null): void;
+}
+
+declare class CPListImageRowItemElement extends NSObject {
+  image: UIImage;
+
+  static readonly maximumImageSize: CGSize;
+
+  enabled: boolean;
+
+  setImage(image: UIImage): void;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
 }
 
 declare class CPAlertAction extends NSObject implements NSSecureCoding {
@@ -1382,6 +1823,20 @@ declare class CPInformationTemplate extends CPTemplate implements CPBarButtonPro
   readonly debugDescription: string;
 }
 
+declare class CPInformationItem extends NSObject implements NSSecureCoding {
+  initWithTitleDetail(title: string | null, detail: string | null): this;
+
+  readonly title: string;
+
+  readonly detail: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class CPTextButton extends NSObject {
   initWithTitleTextStyleHandler(title: string, textStyle: interop.Enum<typeof CPTextButtonStyle>, handler: (p1: CPTextButton) => void | null): this;
 
@@ -1411,11 +1866,19 @@ declare class CPImageSet extends NSObject implements NSSecureCoding {
 declare class CPGridButton extends NSObject implements NSSecureCoding {
   initWithTitleVariantsImageHandler(titleVariants: NSArray<interop.Object> | Array<interop.Object>, image: UIImage, handler: (p1: CPGridButton) => void | null): this;
 
+  initWithTitleVariantsImageMessageConfigurationHandler(titleVariants: NSArray<interop.Object> | Array<interop.Object>, image: UIImage, messageConfiguration: CPMessageGridItemConfiguration | null, handler: (p1: CPGridButton) => void | null): this;
+
   enabled: boolean;
+
+  readonly messageConfiguration: CPMessageGridItemConfiguration;
 
   readonly image: UIImage;
 
+  updateImage(image: UIImage): void;
+
   readonly titleVariants: NSArray;
+
+  updateTitleVariants(titleVariants: NSArray<interop.Object> | Array<interop.Object>): void;
 
   isEnabled(): boolean;
 
@@ -1426,12 +1889,6 @@ declare class CPGridButton extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class CPContactMessageButton extends CPButton {
-  initWithPhoneOrEmail(phoneOrEmail: string): this;
-
-  readonly phoneOrEmail: string;
 }
 
 declare class CPContactCallButton extends CPButton {
@@ -1492,98 +1949,6 @@ declare class CPVoiceControlTemplate extends CPTemplate {
   readonly activeStateIdentifier: string;
 }
 
-declare class CPMessageListItem extends NSObject implements CPListTemplateItem {
-  initWithConversationIdentifierTextLeadingConfigurationTrailingConfigurationDetailTextTrailingText(conversationIdentifier: string, text: string, leadingConfiguration: CPMessageListItemLeadingConfiguration, trailingConfiguration: CPMessageListItemTrailingConfiguration | null, detailText: string | null, trailingText: string | null): this;
-
-  initWithFullNamePhoneOrEmailAddressLeadingConfigurationTrailingConfigurationDetailTextTrailingText(fullName: string, phoneOrEmailAddress: string, leadingConfiguration: CPMessageListItemLeadingConfiguration, trailingConfiguration: CPMessageListItemTrailingConfiguration | null, detailText: string | null, trailingText: string | null): this;
-
-  text: string;
-
-  conversationIdentifier: string;
-
-  phoneOrEmailAddress: string;
-
-  leadingConfiguration: CPMessageListItemLeadingConfiguration;
-
-  trailingConfiguration: CPMessageListItemTrailingConfiguration;
-
-  detailText: string;
-
-  trailingText: string;
-
-  enabled: boolean;
-
-  userInfo: interop.Object;
-
-  setText(text: string | null): void;
-
-  setConversationIdentifier(conversationIdentifier: string | null): void;
-
-  setPhoneOrEmailAddress(phoneOrEmailAddress: string | null): void;
-
-  setLeadingConfiguration(leadingConfiguration: CPMessageListItemLeadingConfiguration): void;
-
-  setTrailingConfiguration(trailingConfiguration: CPMessageListItemTrailingConfiguration | null): void;
-
-  setDetailText(detailText: string | null): void;
-
-  setTrailingText(trailingText: string | null): void;
-
-  isEnabled(): boolean;
-
-  setEnabled(enabled: boolean): void;
-
-  setUserInfo(userInfo: interop.Object | null): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class CPMessageListItemTrailingConfiguration extends NSObject {
-  readonly trailingItem: interop.Enum<typeof CPMessageTrailingItem>;
-
-  readonly trailingImage: UIImage;
-
-  initWithTrailingItemTrailingImage(trailingItem: interop.Enum<typeof CPMessageTrailingItem>, trailingImage: UIImage | null): this;
-}
-
 declare class CPNowPlayingAddToLibraryButton extends CPNowPlayingButton {
 }
 
@@ -1609,202 +1974,18 @@ declare class CPInstrumentClusterController extends NSObject {
   setAttributedInactiveDescriptionVariants(attributedInactiveDescriptionVariants: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
-declare class CPNowPlayingSportsTeamLogo extends NSObject implements NSSecureCoding {
-  initWithTeamLogo(teamLogo: UIImage): this;
+declare class CPListImageRowItemImageGridElement extends CPListImageRowItemElement {
+  initWithImageImageShapeTitleAccessorySymbolName(image: UIImage, imageShape: interop.Enum<typeof CPListImageRowItemImageGridElementShape>, title: string, accessorySymbolName: string | null): this;
 
-  initWithTeamInitials(teamInitials: string): this;
+  title: string;
 
-  readonly logo: UIImage;
+  accessorySymbolName: string;
 
-  readonly initials: string;
+  readonly imageShape: interop.Enum<typeof CPListImageRowItemImageGridElementShape>;
 
-  static readonly supportsSecureCoding: boolean;
+  setTitle(title: string): void;
 
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CPListSection extends NSObject implements NSSecureCoding {
-  initWithItemsHeaderSectionIndexTitle(items: NSArray<interop.Object> | Array<interop.Object>, header: string | null, sectionIndexTitle: string | null): this;
-
-  initWithItemsHeaderHeaderSubtitleHeaderImageHeaderButtonSectionIndexTitle(items: NSArray<interop.Object> | Array<interop.Object>, header: string, headerSubtitle: string | null, headerImage: UIImage | null, headerButton: CPButton | null, sectionIndexTitle: string | null): this;
-
-  initWithItems(items: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly header: string;
-
-  readonly headerSubtitle: string;
-
-  headerImage: UIImage;
-
-  readonly headerButton: CPButton;
-
-  readonly sectionIndexTitle: string;
-
-  readonly items: NSArray;
-
-  indexOfItem(item: CPListTemplateItem): number;
-
-  itemAtIndex(index: number): CPListTemplateItem;
-
-  setHeaderImage(headerImage: UIImage): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CPListTemplate extends CPTemplate implements CPBarButtonProviding {
-  initWithTitleSections(title: string | null, sections: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithTitleSectionsAssistantCellConfiguration(title: string | null, sections: NSArray<interop.Object> | Array<interop.Object>, assistantCellConfiguration: CPAssistantCellConfiguration | null): this;
-
-  delegate: CPListTemplateDelegate;
-
-  static readonly maximumItemCount: number;
-
-  static readonly maximumSectionCount: number;
-
-  readonly sections: NSArray;
-
-  readonly title: string;
-
-  updateSections(sections: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  readonly sectionCount: number;
-
-  readonly itemCount: number;
-
-  indexPathForItem(item: CPListTemplateItem): NSIndexPath;
-
-  get emptyViewTitleVariants(): NSArray;
-  set emptyViewTitleVariants(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get emptyViewSubtitleVariants(): NSArray;
-  set emptyViewSubtitleVariants(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  showsSpinnerWhileEmpty: boolean;
-
-  assistantCellConfiguration: CPAssistantCellConfiguration;
-
-  setDelegate(delegate: CPListTemplateDelegate): void;
-
-  setEmptyViewTitleVariants(emptyViewTitleVariants: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setEmptyViewSubtitleVariants(emptyViewSubtitleVariants: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setShowsSpinnerWhileEmpty(showsSpinnerWhileEmpty: boolean): void;
-
-  setAssistantCellConfiguration(assistantCellConfiguration: CPAssistantCellConfiguration): void;
-
-  get leadingNavigationBarButtons(): NSArray;
-  set leadingNavigationBarButtons(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get trailingNavigationBarButtons(): NSArray;
-  set trailingNavigationBarButtons(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  backButton: CPBarButton;
-
-  setLeadingNavigationBarButtons(leadingNavigationBarButtons: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setTrailingNavigationBarButtons(trailingNavigationBarButtons: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setBackButton(backButton: CPBarButton | null): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class CPInformationItem extends NSObject implements NSSecureCoding {
-  initWithTitleDetail(title: string | null, detail: string | null): this;
-
-  readonly title: string;
-
-  readonly detail: string;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CPRouteChoice extends NSObject implements NSCopying, NSSecureCoding {
-  initWithSummaryVariantsAdditionalInformationVariantsSelectionSummaryVariants(summaryVariants: NSArray<interop.Object> | Array<interop.Object>, additionalInformationVariants: NSArray<interop.Object> | Array<interop.Object>, selectionSummaryVariants: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly summaryVariants: NSArray;
-
-  readonly selectionSummaryVariants: NSArray;
-
-  readonly additionalInformationVariants: NSArray;
-
-  userInfo: interop.Object;
-
-  setUserInfo(userInfo: interop.Object | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CPNowPlayingSportsEventStatus extends NSObject implements NSSecureCoding {
-  initWithEventStatusTextEventStatusImageEventClock(eventStatusText: NSArray<interop.Object> | Array<interop.Object> | null, eventStatusImage: UIImage | null, eventClock: CPNowPlayingSportsClock | null): this;
-
-  readonly eventStatusText: NSArray;
-
-  readonly eventClock: CPNowPlayingSportsClock;
-
-  readonly eventStatusImage: UIImage;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  setAccessorySymbolName(accessorySymbolName: string | null): void;
 }
 
 declare class CPNavigationSession extends NSObject {
@@ -1922,24 +2103,6 @@ declare class CPTravelEstimates extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class CPNowPlayingModeSports extends CPNowPlayingMode implements NSSecureCoding {
-  initWithLeftTeamRightTeamEventStatusBackgroundArtwork(leftTeam: CPNowPlayingSportsTeam, rightTeam: CPNowPlayingSportsTeam, eventStatus: CPNowPlayingSportsEventStatus | null, backgroundArtwork: UIImage | null): this;
-
-  readonly leftTeam: CPNowPlayingSportsTeam;
-
-  readonly rightTeam: CPNowPlayingSportsTeam;
-
-  readonly eventStatus: CPNowPlayingSportsEventStatus;
-
-  readonly backgroundArtwork: UIImage;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class CPNowPlayingRepeatButton extends CPNowPlayingButton {
 }
 
@@ -2044,6 +2207,18 @@ declare class CPContact extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class CPListImageRowItemRowElement extends CPListImageRowItemElement {
+  initWithImageTitleSubtitle(image: UIImage, title: string | null, subtitle: string | null): this;
+
+  title: string;
+
+  subtitle: string;
+
+  setTitle(title: string | null): void;
+
+  setSubtitle(subtitle: string | null): void;
+}
+
 declare class CPInformationRatingItem extends CPInformationItem {
   initWithRatingMaximumRatingTitleDetail(rating: NSNumber | null, maximumRating: NSNumber | null, title: string | null, detail: string | null): this;
 
@@ -2082,14 +2257,16 @@ declare class CPMapButton extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class CPDashboardButton extends NSObject implements NSSecureCoding {
-  initWithTitleVariantsSubtitleVariantsImageHandler(titleVariants: NSArray<interop.Object> | Array<interop.Object>, subtitleVariants: NSArray<interop.Object> | Array<interop.Object>, image: UIImage, handler: (p1: CPDashboardButton) => void | null): this;
+declare class CPNowPlayingModeSports extends CPNowPlayingMode implements NSSecureCoding {
+  initWithLeftTeamRightTeamEventStatusBackgroundArtwork(leftTeam: CPNowPlayingSportsTeam, rightTeam: CPNowPlayingSportsTeam, eventStatus: CPNowPlayingSportsEventStatus | null, backgroundArtwork: UIImage | null): this;
 
-  readonly image: UIImage;
+  readonly leftTeam: CPNowPlayingSportsTeam;
 
-  readonly titleVariants: NSArray;
+  readonly rightTeam: CPNowPlayingSportsTeam;
 
-  readonly subtitleVariants: NSArray;
+  readonly eventStatus: CPNowPlayingSportsEventStatus;
+
+  readonly backgroundArtwork: UIImage;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -2138,6 +2315,12 @@ declare class CPNowPlayingSportsTeam extends NSObject implements NSSecureCoding 
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class CPSearchTemplate extends CPTemplate {
+  delegate: CPSearchTemplateDelegate;
+
+  setDelegate(delegate: CPSearchTemplateDelegate | null): void;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class CPTemplateApplicationScene extends UIScene {
   // @ts-ignore MemberDecl.tsIgnore
@@ -2167,6 +2350,10 @@ declare class CPTemplateApplicationInstrumentClusterScene extends UIScene {
 }
 
 declare class CPNowPlayingShuffleButton extends CPNowPlayingButton {
+}
+
+declare class CPListImageRowItemGridElement extends CPListImageRowItemElement {
+  initWithImage(image: UIImage): this;
 }
 
 declare class CPContactTemplate extends CPTemplate implements CPBarButtonProviding {
@@ -2288,12 +2475,6 @@ declare class CPTrip extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class CPSearchTemplate extends CPTemplate {
-  delegate: CPSearchTemplateDelegate;
-
-  setDelegate(delegate: CPSearchTemplateDelegate | null): void;
-}
-
 declare class CPDashboardController extends NSObject {
   get shortcutButtons(): NSArray;
   set shortcutButtons(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -2307,21 +2488,5 @@ declare class CPWindow extends UIWindow {
   templateApplicationScene: CPTemplateApplicationScene;
 
   setTemplateApplicationScene(templateApplicationScene: CPTemplateApplicationScene | null): void;
-}
-
-declare class CPRouteInformation extends NSObject {
-  initWithManeuversLaneGuidancesCurrentManeuversCurrentLaneGuidanceTripTravelEstimatesManeuverTravelEstimates(maneuvers: NSArray<interop.Object> | Array<interop.Object>, laneGuidances: NSArray<interop.Object> | Array<interop.Object>, currentManeuvers: NSArray<interop.Object> | Array<interop.Object>, currentLaneGuidance: CPLaneGuidance, tripTravelEstimates: CPTravelEstimates, maneuverTravelEstimates: CPTravelEstimates): this;
-
-  readonly maneuvers: NSArray;
-
-  readonly laneGuidances: NSArray;
-
-  readonly currentManeuvers: NSArray;
-
-  readonly currentLaneGuidance: CPLaneGuidance;
-
-  readonly tripTravelEstimates: CPTravelEstimates;
-
-  readonly maneuverTravelEstimates: CPTravelEstimates;
 }
 

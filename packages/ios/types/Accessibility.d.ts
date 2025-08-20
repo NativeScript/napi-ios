@@ -15,17 +15,17 @@ declare const AXTechnologyVoiceControl: string;
 
 declare const AXTechnologyVoiceOver: string;
 
-declare const AXMFiHearingDevicePairedUUIDsDidChangeNotification: string;
-
 declare const AXMFiHearingDeviceStreamingEarDidChangeNotification: string;
-
-declare const AXTechnologySwitchControl: string;
 
 declare const AXTechnologyHoverText: string;
 
 declare const AXAnimatedImagesEnabledDidChangeNotification: string;
 
+declare const AXTechnologySwitchControl: string;
+
 declare const AXFeatureOverrideSessionErrorDomain: string;
+
+declare const AXMFiHearingDevicePairedUUIDsDidChangeNotification: string;
 
 declare const AXPrefersNonBlinkingTextInsertionIndicatorDidChangeNotification: string;
 
@@ -67,6 +67,9 @@ declare const AXFeatureOverrideSessionOptions: {
 declare const AXSettingsFeature: {
   PersonalVoiceAllowAppsToRequestToUse: 1,
   AllowAppsToAddAudioToCalls: 2,
+  AssistiveTouch: 3,
+  AssistiveTouchDevices: 4,
+  DwellControl: 5,
 };
 
 declare const AXFeatureOverrideSessionError: {
@@ -76,7 +79,7 @@ declare const AXFeatureOverrideSessionError: {
   OverrideNotFoundForUUID: 3,
 };
 
-declare function AXNameFromColor(color: interop.Object): string;
+declare function AXNameFromColor(color: interop.PointerConvertible): string;
 
 declare function AXMFiHearingDeviceStreamingEar(): interop.Enum<typeof AXHearingDeviceEar>;
 
@@ -148,6 +151,34 @@ declare interface AXDataAxisDescriptor extends NSCopying {
 }
 
 declare class AXDataAxisDescriptor extends NativeObject implements AXDataAxisDescriptor {
+}
+
+declare class AXBrailleTranslator extends NSObject {
+  initWithBrailleTable(brailleTable: AXBrailleTable): this;
+
+  translatePrintText(printText: string): AXBrailleTranslationResult;
+
+  backTranslateBraille(braille: string): AXBrailleTranslationResult;
+}
+
+declare class AXBrailleTranslationResult extends NSObject implements NSCopying, NSCoding {
+  readonly resultString: string;
+
+  readonly locationMap: NSArray;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class AXFeatureOverrideSessionManager extends NSObject {
+  static readonly sharedInstance: AXFeatureOverrideSessionManager;
+
+  beginOverrideSessionEnablingOptionsDisablingOptionsError(enableOptions: interop.Enum<typeof AXFeatureOverrideSessionOptions>, disableOptions: interop.Enum<typeof AXFeatureOverrideSessionOptions>, error: interop.PointerConvertible): AXFeatureOverrideSession;
+
+  endOverrideSessionError(session: AXFeatureOverrideSession, error: interop.PointerConvertible): boolean;
 }
 
 declare class AXMathExpressionRoot extends AXMathExpression {
@@ -223,7 +254,7 @@ declare class AXBrailleMap extends NSObject implements NSCopying, NSSecureCoding
 
   heightAtPoint(point: CGPoint): number;
 
-  presentImage(image: interop.Object): void;
+  presentImage(image: interop.PointerConvertible): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -232,6 +263,31 @@ declare class AXBrailleMap extends NSObject implements NSCopying, NSSecureCoding
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class AXDataSeriesDescriptor extends NSObject implements NSCopying {
+  name: string;
+
+  attributedName: NSAttributedString;
+
+  isContinuous: boolean;
+
+  get dataPoints(): NSArray;
+  set dataPoints(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  initWithNameIsContinuousDataPoints(name: string, isContinuous: boolean, dataPoints: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithAttributedNameIsContinuousDataPoints(attributedName: NSAttributedString, isContinuous: boolean, dataPoints: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  setName(name: string | null): void;
+
+  setAttributedName(attributedName: NSAttributedString): void;
+
+  setIsContinuous(isContinuous: boolean): void;
+
+  setDataPoints(dataPoints: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class AXDataPointValue extends NSObject implements NSCopying {
@@ -264,6 +320,38 @@ declare class AXLiveAudioGraph extends NSObject {
   static updateValue(value: number): void;
 
   static stop(): void;
+}
+
+declare class AXMathExpressionRow extends AXMathExpression {
+  initWithExpressions(expressions: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly expressions: NSArray;
+}
+
+declare class AXCustomContent extends NSObject implements NSCopying, NSSecureCoding {
+  static customContentWithLabelValue<This extends abstract new (...args: any) => any>(this: This, label: string, value: string): InstanceType<This>;
+
+  static customContentWithAttributedLabelAttributedValue<This extends abstract new (...args: any) => any>(this: This, label: NSAttributedString, value: NSAttributedString): InstanceType<This>;
+
+  readonly label: string;
+
+  readonly attributedLabel: NSAttributedString;
+
+  readonly value: string;
+
+  readonly attributedValue: NSAttributedString;
+
+  importance: interop.Enum<typeof AXCustomContentImportance>;
+
+  setImportance(importance: interop.Enum<typeof AXCustomContentImportance>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class AXMathExpressionSubSuperscript extends AXMathExpression {
@@ -319,6 +407,38 @@ declare class AXMathExpressionText extends AXMathExpression {
   readonly content: string;
 }
 
+declare class AXBrailleTable extends NSObject implements NSCopying, NSCoding {
+  readonly identifier: string;
+
+  readonly localizedName: string;
+
+  readonly providerIdentifier: string;
+
+  readonly localizedProviderName: string;
+
+  readonly language: string;
+
+  readonly locales: NSSet;
+
+  readonly isEightDot: boolean;
+
+  static supportedLocales(): NSSet;
+
+  static defaultTableForLocale(locale: NSLocale): AXBrailleTable;
+
+  static tablesForLocale(locale: NSLocale): NSSet;
+
+  static languageAgnosticTables(): NSSet;
+
+  initWithIdentifier(identifier: string): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class AXCategoricalDataAxisDescriptor extends NSObject implements AXDataAxisDescriptor {
   get categoryOrder(): NSArray;
   set categoryOrder(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -340,49 +460,16 @@ declare class AXCategoricalDataAxisDescriptor extends NSObject implements AXData
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class AXFeatureOverrideSessionManager extends NSObject {
-  static readonly sharedInstance: AXFeatureOverrideSessionManager;
-
-  beginOverrideSessionEnablingOptionsDisablingOptionsError(enableOptions: interop.Enum<typeof AXFeatureOverrideSessionOptions>, disableOptions: interop.Enum<typeof AXFeatureOverrideSessionOptions>, error: interop.PointerConvertible): AXFeatureOverrideSession;
-
-  endOverrideSessionError(session: AXFeatureOverrideSession, error: interop.PointerConvertible): boolean;
-}
-
 declare class AXMathExpressionNumber extends AXMathExpression {
   initWithContent(content: string): this;
 
   readonly content: string;
 }
 
-declare class AXMathExpressionRow extends AXMathExpression {
+declare class AXMathExpressionTable extends AXMathExpression {
   initWithExpressions(expressions: NSArray<interop.Object> | Array<interop.Object>): this;
 
   readonly expressions: NSArray;
-}
-
-declare class AXDataSeriesDescriptor extends NSObject implements NSCopying {
-  name: string;
-
-  attributedName: NSAttributedString;
-
-  isContinuous: boolean;
-
-  get dataPoints(): NSArray;
-  set dataPoints(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  initWithNameIsContinuousDataPoints(name: string, isContinuous: boolean, dataPoints: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithAttributedNameIsContinuousDataPoints(attributedName: NSAttributedString, isContinuous: boolean, dataPoints: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  setName(name: string | null): void;
-
-  setAttributedName(attributedName: NSAttributedString): void;
-
-  setIsContinuous(isContinuous: boolean): void;
-
-  setDataPoints(dataPoints: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class AXDataPoint extends NSObject implements NSCopying {
@@ -479,38 +566,6 @@ declare class AXChartDescriptor extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class AXMathExpressionTable extends AXMathExpression {
-  initWithExpressions(expressions: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly expressions: NSArray;
-}
-
 declare class AXMathExpression extends NSObject {
-}
-
-declare class AXCustomContent extends NSObject implements NSCopying, NSSecureCoding {
-  static customContentWithLabelValue<This extends abstract new (...args: any) => any>(this: This, label: string, value: string): InstanceType<This>;
-
-  static customContentWithAttributedLabelAttributedValue<This extends abstract new (...args: any) => any>(this: This, label: NSAttributedString, value: NSAttributedString): InstanceType<This>;
-
-  readonly label: string;
-
-  readonly attributedLabel: NSAttributedString;
-
-  readonly value: string;
-
-  readonly attributedValue: NSAttributedString;
-
-  importance: interop.Enum<typeof AXCustomContentImportance>;
-
-  setImportance(importance: interop.Enum<typeof AXCustomContentImportance>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 

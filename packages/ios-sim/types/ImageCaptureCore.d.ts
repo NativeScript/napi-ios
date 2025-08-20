@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const ICAuthorizationStatusAuthorized: string;
-
 declare const ICAuthorizationStatusRestricted: string;
 
 declare const ICAuthorizationStatusNotDetermined: string;
@@ -16,6 +14,8 @@ declare const ICDeleteCanceled: string;
 declare const ICDeleteSuccessful: string;
 
 declare const ICCameraDeviceSupportsHEIF: string;
+
+declare const ICCameraDeviceCanAcceptPTPCommands: string;
 
 declare const ICCameraDeviceCanReceiveFile: string;
 
@@ -63,15 +63,15 @@ declare const ICSavedFilename: string;
 
 declare const ICTruncateAfterSuccessfulDownload: string;
 
-declare const ICDeleteErrorDeviceMissing: string;
-
-declare const ICCameraDeviceCanAcceptPTPCommands: string;
+declare const ICAuthorizationStatusAuthorized: string;
 
 declare const ICOverwrite: string;
 
 declare const ICDeviceLocationDescriptionBluetooth: string;
 
 declare const ICStatusNotificationKey: string;
+
+declare const ICDeleteErrorDeviceMissing: string;
 
 declare const ICDownloadsDirectoryURL: string;
 
@@ -264,7 +264,7 @@ declare interface ICCameraDeviceDelegate extends ICDeviceDelegate {
 
   cameraDeviceDidRemoveItems(camera: ICCameraDevice, items: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  cameraDeviceDidReceiveThumbnailForItemError(camera: ICCameraDevice, thumbnail: interop.Object | null, item: ICCameraItem, error: NSError | null): void;
+  cameraDeviceDidReceiveThumbnailForItemError(camera: ICCameraDevice, thumbnail: interop.PointerConvertible, item: ICCameraItem, error: NSError | null): void;
 
   cameraDeviceDidReceiveMetadataForItemError(camera: ICCameraDevice, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, item: ICCameraItem, error: NSError | null): void;
 
@@ -475,7 +475,7 @@ declare class ICCameraItem extends NSObject {
 
   readonly modificationDate: NSDate;
 
-  readonly thumbnail: interop.Object;
+  readonly thumbnail: interop.Pointer;
 
   readonly metadata: NSDictionary;
 
@@ -493,9 +493,9 @@ declare class ICCameraItem extends NSObject {
 
   flushMetadataCache(): void;
 
-  readonly thumbnailIfAvailable: interop.Object;
+  readonly thumbnailIfAvailable: interop.Pointer;
 
-  readonly largeThumbnailIfAvailable: interop.Object;
+  readonly largeThumbnailIfAvailable: interop.Pointer;
 
   readonly metadataIfAvailable: NSDictionary;
 
@@ -519,7 +519,7 @@ declare class ICDevice extends NSObject {
 
   readonly productKind: string;
 
-  readonly icon: interop.Object;
+  readonly icon: interop.Pointer;
 
   readonly systemSymbolName: string;
 

@@ -30,6 +30,12 @@ declare const VSSubscriptionAccessLevel: {
   Paid: 2,
 };
 
+declare const VSAutoSignInAuthorization: {
+  NotDetermined: 0,
+  Granted: 1,
+  Denied: 2,
+};
+
 declare const VSUserAccountQueryOptions: {
   None: 0,
   AllDevices: 1,
@@ -75,6 +81,26 @@ declare class VSUserAccountManager extends NSObject {
   updateUserAccountCompletion(account: VSUserAccount, completion: (p1: NSError) => void | null): void;
 
   queryUserAccountsWithOptionsCompletion(options: interop.Enum<typeof VSUserAccountQueryOptions>, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  queryAutoSignInTokenWithCompletionHandler(completion: (p1: VSAutoSignInToken, p2: NSError) => void | null): void;
+
+  requestAutoSignInAuthorizationWithCompletionHandler(completion: (p1: VSAutoSignInTokenUpdateContext, p2: NSError) => void | null): void;
+
+  updateAutoSignInTokenUpdateContextCompletionHandler(autoSignInToken: string, context: VSAutoSignInTokenUpdateContext, completion: (p1: NSError) => void | null): void;
+
+  deleteAutoSignInTokenWithCompletionHandler(completion: (p1: NSError) => void | null): void;
+}
+
+declare class VSAutoSignInToken extends NSObject implements NSSecureCoding {
+  readonly authorization: interop.Enum<typeof VSAutoSignInAuthorization>;
+
+  readonly value: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class VSAccountMetadataRequest extends NSObject {
@@ -158,6 +184,10 @@ declare class VSAccountApplicationProvider extends NSObject {
   readonly identifier: string;
 }
 
+declare class VSAutoSignInTokenUpdateContext extends NSObject {
+  readonly authorization: interop.Enum<typeof VSAutoSignInAuthorization>;
+}
+
 declare class VSUserAccount extends NSObject {
   updateURL: NSURL;
 
@@ -234,10 +264,6 @@ declare class VSSubscription extends NSObject {
   setBillingIdentifier(billingIdentifier: string | null): void;
 }
 
-declare class VSAccountManagerResult extends NSObject {
-  cancel(): void;
-}
-
 declare class VSSubscriptionRegistrationCenter extends NSObject {
   static defaultSubscriptionRegistrationCenter(): VSSubscriptionRegistrationCenter;
 
@@ -250,6 +276,10 @@ declare class VSAccountProviderResponse extends NSObject {
   readonly status: string;
 
   readonly body: string;
+}
+
+declare class VSAccountManagerResult extends NSObject {
+  cancel(): void;
 }
 
 declare class VSAccountManager extends NSObject {
