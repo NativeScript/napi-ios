@@ -780,355 +780,355 @@ declare class __SCNetworkInterface {
 
 declare function SCDynamicStoreGetTypeID(): number;
 
-declare function SCDynamicStoreCreate(allocator: interop.PointerConvertible, name: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCreate(allocator: interop.Object, name: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function SCDynamicStoreCreateWithOptions(allocator: interop.PointerConvertible, name: interop.PointerConvertible, storeOptions: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCreateWithOptions(allocator: interop.Object, name: interop.Object, storeOptions: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function SCDynamicStoreCreateRunLoopSource(allocator: interop.PointerConvertible, store: interop.PointerConvertible, order: number): interop.Pointer;
+declare function SCDynamicStoreCreateRunLoopSource(allocator: interop.Object, store: interop.Object, order: number): interop.Object;
 
-declare function SCDynamicStoreSetDispatchQueue(store: interop.PointerConvertible, queue: NSObject): number;
+declare function SCDynamicStoreSetDispatchQueue(store: interop.Object, queue: NSObject): number;
 
-declare function SCDynamicStoreCopyKeyList(store: interop.PointerConvertible, pattern: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyKeyList(store: interop.Object, pattern: interop.Object): interop.Object;
 
-declare function SCDynamicStoreAddValue(store: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SCDynamicStoreAddValue(store: interop.Object, key: interop.Object, value: interop.Object): number;
 
-declare function SCDynamicStoreAddTemporaryValue(store: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SCDynamicStoreAddTemporaryValue(store: interop.Object, key: interop.Object, value: interop.Object): number;
 
-declare function SCDynamicStoreCopyValue(store: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyValue(store: interop.Object, key: interop.Object): interop.Object;
 
-declare function SCDynamicStoreCopyMultiple(store: interop.PointerConvertible, keys: interop.PointerConvertible, patterns: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyMultiple(store: interop.Object, keys: interop.Object, patterns: interop.Object): interop.Object;
 
-declare function SCDynamicStoreSetValue(store: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SCDynamicStoreSetValue(store: interop.Object, key: interop.Object, value: interop.Object): number;
 
-declare function SCDynamicStoreSetMultiple(store: interop.PointerConvertible, keysToSet: interop.PointerConvertible, keysToRemove: interop.PointerConvertible, keysToNotify: interop.PointerConvertible): number;
+declare function SCDynamicStoreSetMultiple(store: interop.Object, keysToSet: interop.Object, keysToRemove: interop.Object, keysToNotify: interop.Object): number;
 
-declare function SCDynamicStoreRemoveValue(store: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function SCDynamicStoreRemoveValue(store: interop.Object, key: interop.Object): number;
 
-declare function SCDynamicStoreNotifyValue(store: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function SCDynamicStoreNotifyValue(store: interop.Object, key: interop.Object): number;
 
-declare function SCDynamicStoreSetNotificationKeys(store: interop.PointerConvertible, keys: interop.PointerConvertible, patterns: interop.PointerConvertible): number;
+declare function SCDynamicStoreSetNotificationKeys(store: interop.Object, keys: interop.Object, patterns: interop.Object): number;
 
-declare function SCDynamicStoreCopyNotifiedKeys(store: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyNotifiedKeys(store: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreate(allocator: interop.PointerConvertible, fmt: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreate(allocator: interop.Object, fmt: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateNetworkGlobalEntity(allocator: interop.PointerConvertible, domain: interop.PointerConvertible, entity: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateNetworkGlobalEntity(allocator: interop.Object, domain: interop.Object, entity: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateNetworkInterface(allocator: interop.PointerConvertible, domain: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateNetworkInterface(allocator: interop.Object, domain: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateNetworkInterfaceEntity(allocator: interop.PointerConvertible, domain: interop.PointerConvertible, ifname: interop.PointerConvertible, entity: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateNetworkInterfaceEntity(allocator: interop.Object, domain: interop.Object, ifname: interop.Object, entity: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateNetworkServiceEntity(allocator: interop.PointerConvertible, domain: interop.PointerConvertible, serviceID: interop.PointerConvertible, entity: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateNetworkServiceEntity(allocator: interop.Object, domain: interop.Object, serviceID: interop.Object, entity: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateComputerName(allocator: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateComputerName(allocator: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateConsoleUser(allocator: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateConsoleUser(allocator: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateHostNames(allocator: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateHostNames(allocator: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateLocation(allocator: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateLocation(allocator: interop.Object): interop.Object;
 
-declare function SCDynamicStoreKeyCreateProxies(allocator: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreKeyCreateProxies(allocator: interop.Object): interop.Object;
 
-declare function SCDynamicStoreCopyComputerName(store: interop.PointerConvertible, nameEncoding: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyComputerName(store: interop.Object, nameEncoding: interop.PointerConvertible): interop.Object;
 
-declare function SCDynamicStoreCopyConsoleUser(store: interop.PointerConvertible, uid: interop.PointerConvertible, gid: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyConsoleUser(store: interop.Object, uid: interop.PointerConvertible, gid: interop.PointerConvertible): interop.Object;
 
-declare function SCDynamicStoreCopyLocalHostName(store: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyLocalHostName(store: interop.Object): interop.Object;
 
-declare function SCDynamicStoreCopyLocation(store: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyLocation(store: interop.Object): interop.Object;
 
-declare function SCDynamicStoreCopyProxies(store: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyProxies(store: interop.Object): interop.Object;
 
 declare function SCPreferencesGetTypeID(): number;
 
-declare function SCPreferencesCreate(allocator: interop.PointerConvertible, name: interop.PointerConvertible, prefsID: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesCreate(allocator: interop.Object, name: interop.Object, prefsID: interop.Object): interop.Object;
 
-declare function SCPreferencesCreateWithAuthorization(allocator: interop.PointerConvertible, name: interop.PointerConvertible, prefsID: interop.PointerConvertible, authorization: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesCreateWithAuthorization(allocator: interop.Object, name: interop.Object, prefsID: interop.Object, authorization: interop.PointerConvertible): interop.Object;
 
-declare function SCPreferencesLock(prefs: interop.PointerConvertible, wait: number): number;
+declare function SCPreferencesLock(prefs: interop.Object, wait: number): number;
 
-declare function SCPreferencesCommitChanges(prefs: interop.PointerConvertible): number;
+declare function SCPreferencesCommitChanges(prefs: interop.Object): number;
 
-declare function SCPreferencesApplyChanges(prefs: interop.PointerConvertible): number;
+declare function SCPreferencesApplyChanges(prefs: interop.Object): number;
 
-declare function SCPreferencesUnlock(prefs: interop.PointerConvertible): number;
+declare function SCPreferencesUnlock(prefs: interop.Object): number;
 
-declare function SCPreferencesGetSignature(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesGetSignature(prefs: interop.Object): interop.Object;
 
-declare function SCPreferencesCopyKeyList(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesCopyKeyList(prefs: interop.Object): interop.Object;
 
-declare function SCPreferencesGetValue(prefs: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesGetValue(prefs: interop.Object, key: interop.Object): interop.Object;
 
-declare function SCPreferencesAddValue(prefs: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SCPreferencesAddValue(prefs: interop.Object, key: interop.Object, value: interop.Object): number;
 
-declare function SCPreferencesSetValue(prefs: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SCPreferencesSetValue(prefs: interop.Object, key: interop.Object, value: interop.Object): number;
 
-declare function SCPreferencesRemoveValue(prefs: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function SCPreferencesRemoveValue(prefs: interop.Object, key: interop.Object): number;
 
-declare function SCPreferencesSetCallback(prefs: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCPreferencesNotification>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function SCPreferencesSetCallback(prefs: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCPreferencesNotification>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function SCPreferencesScheduleWithRunLoop(prefs: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCPreferencesScheduleWithRunLoop(prefs: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCPreferencesUnscheduleFromRunLoop(prefs: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCPreferencesUnscheduleFromRunLoop(prefs: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCPreferencesSetDispatchQueue(prefs: interop.PointerConvertible, queue: NSObject): number;
+declare function SCPreferencesSetDispatchQueue(prefs: interop.Object, queue: NSObject): number;
 
-declare function SCPreferencesSynchronize(prefs: interop.PointerConvertible): void;
+declare function SCPreferencesSynchronize(prefs: interop.Object): void;
 
-declare function SCPreferencesPathCreateUniqueChild(prefs: interop.PointerConvertible, prefix: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesPathCreateUniqueChild(prefs: interop.Object, prefix: interop.Object): interop.Object;
 
-declare function SCPreferencesPathGetValue(prefs: interop.PointerConvertible, path: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesPathGetValue(prefs: interop.Object, path: interop.Object): interop.Object;
 
-declare function SCPreferencesPathGetLink(prefs: interop.PointerConvertible, path: interop.PointerConvertible): interop.Pointer;
+declare function SCPreferencesPathGetLink(prefs: interop.Object, path: interop.Object): interop.Object;
 
-declare function SCPreferencesPathSetValue(prefs: interop.PointerConvertible, path: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SCPreferencesPathSetValue(prefs: interop.Object, path: interop.Object, value: interop.Object): number;
 
-declare function SCPreferencesPathSetLink(prefs: interop.PointerConvertible, path: interop.PointerConvertible, link: interop.PointerConvertible): number;
+declare function SCPreferencesPathSetLink(prefs: interop.Object, path: interop.Object, link: interop.Object): number;
 
-declare function SCPreferencesPathRemoveValue(prefs: interop.PointerConvertible, path: interop.PointerConvertible): number;
+declare function SCPreferencesPathRemoveValue(prefs: interop.Object, path: interop.Object): number;
 
-declare function SCPreferencesSetComputerName(prefs: interop.PointerConvertible, name: interop.PointerConvertible, nameEncoding: number): number;
+declare function SCPreferencesSetComputerName(prefs: interop.Object, name: interop.Object, nameEncoding: number): number;
 
-declare function SCPreferencesSetLocalHostName(prefs: interop.PointerConvertible, name: interop.PointerConvertible): number;
+declare function SCPreferencesSetLocalHostName(prefs: interop.Object, name: interop.Object): number;
 
 declare function SCNetworkInterfaceGetTypeID(): number;
 
-declare function SCNetworkInterfaceCopyAll(): interop.Pointer;
+declare function SCNetworkInterfaceCopyAll(): interop.Object;
 
-declare function SCNetworkInterfaceGetSupportedInterfaceTypes(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetSupportedInterfaceTypes(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetSupportedProtocolTypes(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetSupportedProtocolTypes(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceCreateWithInterface(interface: interop.PointerConvertible, interfaceType: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceCreateWithInterface(interface: interop.Object, interfaceType: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetBSDName(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetBSDName(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetConfiguration(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetConfiguration(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetExtendedConfiguration(interface: interop.PointerConvertible, extendedType: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetExtendedConfiguration(interface: interop.Object, extendedType: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetHardwareAddressString(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetHardwareAddressString(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetInterface(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetInterface(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetInterfaceType(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetInterfaceType(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceGetLocalizedDisplayName(interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceGetLocalizedDisplayName(interface: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceSetConfiguration(interface: interop.PointerConvertible, config: interop.PointerConvertible): number;
+declare function SCNetworkInterfaceSetConfiguration(interface: interop.Object, config: interop.Object): number;
 
-declare function SCNetworkInterfaceSetExtendedConfiguration(interface: interop.PointerConvertible, extendedType: interop.PointerConvertible, config: interop.PointerConvertible): number;
+declare function SCNetworkInterfaceSetExtendedConfiguration(interface: interop.Object, extendedType: interop.Object, config: interop.Object): number;
 
-declare function SCNetworkInterfaceCopyMediaOptions(interface: interop.PointerConvertible, current: interop.PointerConvertible, active: interop.PointerConvertible, available: interop.PointerConvertible, filter: number): number;
+declare function SCNetworkInterfaceCopyMediaOptions(interface: interop.Object, current: interop.PointerConvertible, active: interop.PointerConvertible, available: interop.PointerConvertible, filter: number): number;
 
-declare function SCNetworkInterfaceCopyMediaSubTypes(available: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceCopyMediaSubTypes(available: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceCopyMediaSubTypeOptions(available: interop.PointerConvertible, subType: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkInterfaceCopyMediaSubTypeOptions(available: interop.Object, subType: interop.Object): interop.Object;
 
-declare function SCNetworkInterfaceCopyMTU(interface: interop.PointerConvertible, mtu_cur: interop.PointerConvertible, mtu_min: interop.PointerConvertible, mtu_max: interop.PointerConvertible): number;
+declare function SCNetworkInterfaceCopyMTU(interface: interop.Object, mtu_cur: interop.PointerConvertible, mtu_min: interop.PointerConvertible, mtu_max: interop.PointerConvertible): number;
 
-declare function SCNetworkInterfaceSetMediaOptions(interface: interop.PointerConvertible, subtype: interop.PointerConvertible, options: interop.PointerConvertible): number;
+declare function SCNetworkInterfaceSetMediaOptions(interface: interop.Object, subtype: interop.Object, options: interop.Object): number;
 
-declare function SCNetworkInterfaceSetMTU(interface: interop.PointerConvertible, mtu: number): number;
+declare function SCNetworkInterfaceSetMTU(interface: interop.Object, mtu: number): number;
 
-declare function SCNetworkInterfaceForceConfigurationRefresh(interface: interop.PointerConvertible): number;
+declare function SCNetworkInterfaceForceConfigurationRefresh(interface: interop.Object): number;
 
-declare function SCBondInterfaceCopyAll(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCBondInterfaceCopyAll(prefs: interop.Object): interop.Object;
 
-declare function SCBondInterfaceCopyAvailableMemberInterfaces(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCBondInterfaceCopyAvailableMemberInterfaces(prefs: interop.Object): interop.Object;
 
-declare function SCBondInterfaceCreate(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCBondInterfaceCreate(prefs: interop.Object): interop.Object;
 
-declare function SCBondInterfaceRemove(bond: interop.PointerConvertible): number;
+declare function SCBondInterfaceRemove(bond: interop.Object): number;
 
-declare function SCBondInterfaceGetMemberInterfaces(bond: interop.PointerConvertible): interop.Pointer;
+declare function SCBondInterfaceGetMemberInterfaces(bond: interop.Object): interop.Object;
 
-declare function SCBondInterfaceGetOptions(bond: interop.PointerConvertible): interop.Pointer;
+declare function SCBondInterfaceGetOptions(bond: interop.Object): interop.Object;
 
-declare function SCBondInterfaceSetMemberInterfaces(bond: interop.PointerConvertible, members: interop.PointerConvertible): number;
+declare function SCBondInterfaceSetMemberInterfaces(bond: interop.Object, members: interop.Object): number;
 
-declare function SCBondInterfaceSetLocalizedDisplayName(bond: interop.PointerConvertible, newName: interop.PointerConvertible): number;
+declare function SCBondInterfaceSetLocalizedDisplayName(bond: interop.Object, newName: interop.Object): number;
 
-declare function SCBondInterfaceSetOptions(bond: interop.PointerConvertible, newOptions: interop.PointerConvertible): number;
+declare function SCBondInterfaceSetOptions(bond: interop.Object, newOptions: interop.Object): number;
 
-declare function SCBondInterfaceCopyStatus(bond: interop.PointerConvertible): interop.Pointer;
+declare function SCBondInterfaceCopyStatus(bond: interop.Object): interop.Object;
 
 declare function SCBondStatusGetTypeID(): number;
 
-declare function SCBondStatusGetMemberInterfaces(bondStatus: interop.PointerConvertible): interop.Pointer;
+declare function SCBondStatusGetMemberInterfaces(bondStatus: interop.Object): interop.Object;
 
-declare function SCBondStatusGetInterfaceStatus(bondStatus: interop.PointerConvertible, interface: interop.PointerConvertible): interop.Pointer;
+declare function SCBondStatusGetInterfaceStatus(bondStatus: interop.Object, interface: interop.Object): interop.Object;
 
-declare function SCVLANInterfaceCopyAll(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCVLANInterfaceCopyAll(prefs: interop.Object): interop.Object;
 
-declare function SCVLANInterfaceCopyAvailablePhysicalInterfaces(): interop.Pointer;
+declare function SCVLANInterfaceCopyAvailablePhysicalInterfaces(): interop.Object;
 
-declare function SCVLANInterfaceCreate(prefs: interop.PointerConvertible, physical: interop.PointerConvertible, tag: interop.PointerConvertible): interop.Pointer;
+declare function SCVLANInterfaceCreate(prefs: interop.Object, physical: interop.Object, tag: interop.Object): interop.Object;
 
-declare function SCVLANInterfaceRemove(vlan: interop.PointerConvertible): number;
+declare function SCVLANInterfaceRemove(vlan: interop.Object): number;
 
-declare function SCVLANInterfaceGetPhysicalInterface(vlan: interop.PointerConvertible): interop.Pointer;
+declare function SCVLANInterfaceGetPhysicalInterface(vlan: interop.Object): interop.Object;
 
-declare function SCVLANInterfaceGetTag(vlan: interop.PointerConvertible): interop.Pointer;
+declare function SCVLANInterfaceGetTag(vlan: interop.Object): interop.Object;
 
-declare function SCVLANInterfaceGetOptions(vlan: interop.PointerConvertible): interop.Pointer;
+declare function SCVLANInterfaceGetOptions(vlan: interop.Object): interop.Object;
 
-declare function SCVLANInterfaceSetPhysicalInterfaceAndTag(vlan: interop.PointerConvertible, physical: interop.PointerConvertible, tag: interop.PointerConvertible): number;
+declare function SCVLANInterfaceSetPhysicalInterfaceAndTag(vlan: interop.Object, physical: interop.Object, tag: interop.Object): number;
 
-declare function SCVLANInterfaceSetLocalizedDisplayName(vlan: interop.PointerConvertible, newName: interop.PointerConvertible): number;
+declare function SCVLANInterfaceSetLocalizedDisplayName(vlan: interop.Object, newName: interop.Object): number;
 
-declare function SCVLANInterfaceSetOptions(vlan: interop.PointerConvertible, newOptions: interop.PointerConvertible): number;
+declare function SCVLANInterfaceSetOptions(vlan: interop.Object, newOptions: interop.Object): number;
 
 declare function SCNetworkProtocolGetTypeID(): number;
 
-declare function SCNetworkProtocolGetConfiguration(protocol: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkProtocolGetConfiguration(protocol: interop.Object): interop.Object;
 
-declare function SCNetworkProtocolGetEnabled(protocol: interop.PointerConvertible): number;
+declare function SCNetworkProtocolGetEnabled(protocol: interop.Object): number;
 
-declare function SCNetworkProtocolGetProtocolType(protocol: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkProtocolGetProtocolType(protocol: interop.Object): interop.Object;
 
-declare function SCNetworkProtocolSetConfiguration(protocol: interop.PointerConvertible, config: interop.PointerConvertible): number;
+declare function SCNetworkProtocolSetConfiguration(protocol: interop.Object, config: interop.Object): number;
 
-declare function SCNetworkProtocolSetEnabled(protocol: interop.PointerConvertible, enabled: number): number;
+declare function SCNetworkProtocolSetEnabled(protocol: interop.Object, enabled: number): number;
 
 declare function SCNetworkServiceGetTypeID(): number;
 
-declare function SCNetworkServiceAddProtocolType(service: interop.PointerConvertible, protocolType: interop.PointerConvertible): number;
+declare function SCNetworkServiceAddProtocolType(service: interop.Object, protocolType: interop.Object): number;
 
-declare function SCNetworkServiceCopyAll(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceCopyAll(prefs: interop.Object): interop.Object;
 
-declare function SCNetworkServiceCopyProtocols(service: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceCopyProtocols(service: interop.Object): interop.Object;
 
-declare function SCNetworkServiceCreate(prefs: interop.PointerConvertible, interface: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceCreate(prefs: interop.Object, interface: interop.Object): interop.Object;
 
-declare function SCNetworkServiceCopy(prefs: interop.PointerConvertible, serviceID: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceCopy(prefs: interop.Object, serviceID: interop.Object): interop.Object;
 
-declare function SCNetworkServiceEstablishDefaultConfiguration(service: interop.PointerConvertible): number;
+declare function SCNetworkServiceEstablishDefaultConfiguration(service: interop.Object): number;
 
-declare function SCNetworkServiceGetEnabled(service: interop.PointerConvertible): number;
+declare function SCNetworkServiceGetEnabled(service: interop.Object): number;
 
-declare function SCNetworkServiceGetInterface(service: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceGetInterface(service: interop.Object): interop.Object;
 
-declare function SCNetworkServiceGetName(service: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceGetName(service: interop.Object): interop.Object;
 
-declare function SCNetworkServiceCopyProtocol(service: interop.PointerConvertible, protocolType: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceCopyProtocol(service: interop.Object, protocolType: interop.Object): interop.Object;
 
-declare function SCNetworkServiceGetServiceID(service: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkServiceGetServiceID(service: interop.Object): interop.Object;
 
-declare function SCNetworkServiceRemove(service: interop.PointerConvertible): number;
+declare function SCNetworkServiceRemove(service: interop.Object): number;
 
-declare function SCNetworkServiceRemoveProtocolType(service: interop.PointerConvertible, protocolType: interop.PointerConvertible): number;
+declare function SCNetworkServiceRemoveProtocolType(service: interop.Object, protocolType: interop.Object): number;
 
-declare function SCNetworkServiceSetEnabled(service: interop.PointerConvertible, enabled: number): number;
+declare function SCNetworkServiceSetEnabled(service: interop.Object, enabled: number): number;
 
-declare function SCNetworkServiceSetName(service: interop.PointerConvertible, name: interop.PointerConvertible): number;
+declare function SCNetworkServiceSetName(service: interop.Object, name: interop.Object): number;
 
 declare function SCNetworkSetGetTypeID(): number;
 
-declare function SCNetworkSetAddService(set: interop.PointerConvertible, service: interop.PointerConvertible): number;
+declare function SCNetworkSetAddService(set: interop.Object, service: interop.Object): number;
 
-declare function SCNetworkSetContainsInterface(set: interop.PointerConvertible, interface: interop.PointerConvertible): number;
+declare function SCNetworkSetContainsInterface(set: interop.Object, interface: interop.Object): number;
 
-declare function SCNetworkSetCopyAll(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetCopyAll(prefs: interop.Object): interop.Object;
 
-declare function SCNetworkSetCopyCurrent(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetCopyCurrent(prefs: interop.Object): interop.Object;
 
-declare function SCNetworkSetCopyServices(set: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetCopyServices(set: interop.Object): interop.Object;
 
-declare function SCNetworkSetCreate(prefs: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetCreate(prefs: interop.Object): interop.Object;
 
-declare function SCNetworkSetCopy(prefs: interop.PointerConvertible, setID: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetCopy(prefs: interop.Object, setID: interop.Object): interop.Object;
 
-declare function SCNetworkSetGetName(set: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetGetName(set: interop.Object): interop.Object;
 
-declare function SCNetworkSetGetSetID(set: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetGetSetID(set: interop.Object): interop.Object;
 
-declare function SCNetworkSetGetServiceOrder(set: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkSetGetServiceOrder(set: interop.Object): interop.Object;
 
-declare function SCNetworkSetRemove(set: interop.PointerConvertible): number;
+declare function SCNetworkSetRemove(set: interop.Object): number;
 
-declare function SCNetworkSetRemoveService(set: interop.PointerConvertible, service: interop.PointerConvertible): number;
+declare function SCNetworkSetRemoveService(set: interop.Object, service: interop.Object): number;
 
-declare function SCNetworkSetSetCurrent(set: interop.PointerConvertible): number;
+declare function SCNetworkSetSetCurrent(set: interop.Object): number;
 
-declare function SCNetworkSetSetName(set: interop.PointerConvertible, name: interop.PointerConvertible): number;
+declare function SCNetworkSetSetName(set: interop.Object, name: interop.Object): number;
 
-declare function SCNetworkSetSetServiceOrder(set: interop.PointerConvertible, newOrder: interop.PointerConvertible): number;
+declare function SCNetworkSetSetServiceOrder(set: interop.Object, newOrder: interop.Object): number;
 
 declare function SCNetworkCheckReachabilityByAddress(address: interop.PointerConvertible, addrlen: number, flags: interop.PointerConvertible): number;
 
 declare function SCNetworkCheckReachabilityByName(nodename: string, flags: interop.PointerConvertible): number;
 
-declare function SCNetworkInterfaceRefreshConfiguration(ifName: interop.PointerConvertible): number;
+declare function SCNetworkInterfaceRefreshConfiguration(ifName: interop.Object): number;
 
-declare function SCNetworkReachabilityCreateWithAddress(allocator: interop.PointerConvertible, address: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkReachabilityCreateWithAddress(allocator: interop.Object, address: interop.PointerConvertible): interop.Object;
 
-declare function SCNetworkReachabilityCreateWithAddressPair(allocator: interop.PointerConvertible, localAddress: interop.PointerConvertible, remoteAddress: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkReachabilityCreateWithAddressPair(allocator: interop.Object, localAddress: interop.PointerConvertible, remoteAddress: interop.PointerConvertible): interop.Object;
 
-declare function SCNetworkReachabilityCreateWithName(allocator: interop.PointerConvertible, nodename: string): interop.Pointer;
+declare function SCNetworkReachabilityCreateWithName(allocator: interop.Object, nodename: string): interop.Object;
 
 declare function SCNetworkReachabilityGetTypeID(): number;
 
-declare function SCNetworkReachabilityGetFlags(target: interop.PointerConvertible, flags: interop.PointerConvertible): number;
+declare function SCNetworkReachabilityGetFlags(target: interop.Object, flags: interop.PointerConvertible): number;
 
-declare function SCNetworkReachabilitySetCallback(target: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCNetworkReachabilityFlags>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function SCNetworkReachabilitySetCallback(target: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCNetworkReachabilityFlags>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function SCNetworkReachabilityScheduleWithRunLoop(target: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCNetworkReachabilityScheduleWithRunLoop(target: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCNetworkReachabilityUnscheduleFromRunLoop(target: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCNetworkReachabilityUnscheduleFromRunLoop(target: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCNetworkReachabilitySetDispatchQueue(target: interop.PointerConvertible, queue: NSObject): number;
+declare function SCNetworkReachabilitySetDispatchQueue(target: interop.Object, queue: NSObject): number;
 
 declare function SCNetworkConnectionGetTypeID(): number;
 
-declare function SCNetworkConnectionCopyUserPreferences(selectionOptions: interop.PointerConvertible, serviceID: interop.PointerConvertible, userOptions: interop.PointerConvertible): number;
+declare function SCNetworkConnectionCopyUserPreferences(selectionOptions: interop.Object, serviceID: interop.PointerConvertible, userOptions: interop.PointerConvertible): number;
 
-declare function SCNetworkConnectionCreateWithServiceID(allocator: interop.PointerConvertible, serviceID: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCNetworkConnectionStatus>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkConnectionCreateWithServiceID(allocator: interop.Object, serviceID: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCNetworkConnectionStatus>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function SCNetworkConnectionCopyServiceID(connection: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkConnectionCopyServiceID(connection: interop.Object): interop.Object;
 
-declare function SCNetworkConnectionGetStatus(connection: interop.PointerConvertible): interop.Enum<typeof SCNetworkConnectionStatus>;
+declare function SCNetworkConnectionGetStatus(connection: interop.Object): interop.Enum<typeof SCNetworkConnectionStatus>;
 
-declare function SCNetworkConnectionCopyExtendedStatus(connection: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkConnectionCopyExtendedStatus(connection: interop.Object): interop.Object;
 
-declare function SCNetworkConnectionCopyStatistics(connection: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkConnectionCopyStatistics(connection: interop.Object): interop.Object;
 
-declare function SCNetworkConnectionStart(connection: interop.PointerConvertible, userOptions: interop.PointerConvertible, linger: number): number;
+declare function SCNetworkConnectionStart(connection: interop.Object, userOptions: interop.Object, linger: number): number;
 
-declare function SCNetworkConnectionStop(connection: interop.PointerConvertible, forceDisconnect: number): number;
+declare function SCNetworkConnectionStop(connection: interop.Object, forceDisconnect: number): number;
 
-declare function SCNetworkConnectionCopyUserOptions(connection: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkConnectionCopyUserOptions(connection: interop.Object): interop.Object;
 
-declare function SCNetworkConnectionScheduleWithRunLoop(connection: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCNetworkConnectionScheduleWithRunLoop(connection: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCNetworkConnectionUnscheduleFromRunLoop(connection: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCNetworkConnectionUnscheduleFromRunLoop(connection: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCNetworkConnectionSetDispatchQueue(connection: interop.PointerConvertible, queue: NSObject): number;
+declare function SCNetworkConnectionSetDispatchQueue(connection: interop.Object, queue: NSObject): number;
 
-declare function SCCopyLastError(): interop.Pointer;
+declare function SCCopyLastError(): interop.Object;
 
 declare function SCError(): number;
 
 declare function SCErrorString(status: number): string;
 
-declare function CNSetSupportedSSIDs(ssidArray: interop.PointerConvertible): number;
+declare function CNSetSupportedSSIDs(ssidArray: interop.Object): number;
 
-declare function CNMarkPortalOnline(interfaceName: interop.PointerConvertible): number;
+declare function CNMarkPortalOnline(interfaceName: interop.Object): number;
 
-declare function CNMarkPortalOffline(interfaceName: interop.PointerConvertible): number;
+declare function CNMarkPortalOffline(interfaceName: interop.Object): number;
 
-declare function CNCopySupportedInterfaces(): interop.Pointer;
+declare function CNCopySupportedInterfaces(): interop.Object;
 
-declare function DHCPClientPreferencesSetApplicationOptions(applicationID: interop.PointerConvertible, options: interop.PointerConvertible, count: number): number;
+declare function DHCPClientPreferencesSetApplicationOptions(applicationID: interop.Object, options: interop.PointerConvertible, count: number): number;
 
-declare function DHCPClientPreferencesCopyApplicationOptions(applicationID: interop.PointerConvertible, count: interop.PointerConvertible): interop.Pointer;
+declare function DHCPClientPreferencesCopyApplicationOptions(applicationID: interop.Object, count: interop.PointerConvertible): interop.Pointer;
 
-declare function SCDynamicStoreCopyDHCPInfo(store: interop.PointerConvertible, serviceID: interop.PointerConvertible): interop.Pointer;
+declare function SCDynamicStoreCopyDHCPInfo(store: interop.Object, serviceID: interop.Object): interop.Object;
 
-declare function DHCPInfoGetOptionData(info: interop.PointerConvertible, code: number): interop.Pointer;
+declare function DHCPInfoGetOptionData(info: interop.Object, code: number): interop.Object;
 
-declare function DHCPInfoGetLeaseStartTime(info: interop.PointerConvertible): interop.Pointer;
+declare function DHCPInfoGetLeaseStartTime(info: interop.Object): interop.Object;
 
-declare function DHCPInfoGetLeaseExpirationTime(info: interop.PointerConvertible): interop.Pointer;
+declare function DHCPInfoGetLeaseExpirationTime(info: interop.Object): interop.Object;
 

@@ -3,91 +3,101 @@
 
 declare const CHHapticPatternKeyParameterCurveControlPoints: string;
 
+declare const CHHapticPatternKeyParameterCurve: string;
+
 declare const CHHapticPatternKeyParameterValue: string;
 
 declare const CHHapticPatternKeyParameterID: string;
-
-declare const CHHapticPatternKeyParameter: string;
 
 declare const CHHapticPatternKeyEventWaveformUseVolumeEnvelope: string;
 
 declare const CHHapticPatternKeyEventParameters: string;
 
-declare const CHHapticPatternKeyEventWaveformPath: string;
-
 declare const CHHapticPatternKeyEventDuration: string;
-
-declare const CHHapticPatternKeyPattern: string;
-
-declare const CHHapticPatternKeyVersion: string;
-
-declare const CoreHapticsErrorDomain: string;
-
-declare const CHHapticDynamicParameterIDAudioReleaseTimeControl: string;
-
-declare const CHHapticDynamicParameterIDAudioAttackTimeControl: string;
-
-declare const CHHapticDynamicParameterIDAudioBrightnessControl: string;
-
-declare const CHHapticDynamicParameterIDHapticReleaseTimeControl: string;
-
-declare const CHHapticDynamicParameterIDHapticDecayTimeControl: string;
-
-declare const CHHapticDynamicParameterIDHapticAttackTimeControl: string;
-
-declare const CHHapticDynamicParameterIDHapticSharpnessControl: string;
-
-declare const CHHapticDynamicParameterIDHapticIntensityControl: string;
-
-declare const CHHapticEventParameterIDAudioBrightness: string;
-
-declare const CHHapticEventParameterIDAudioPan: string;
-
-declare const CHHapticEventParameterIDAudioPitch: string;
-
-declare const CHHapticEventParameterIDSustained: string;
-
-declare const CHHapticEventParameterIDAttackTime: string;
-
-declare const CHHapticEventParameterIDHapticSharpness: string;
-
-declare const CHHapticEventParameterIDHapticIntensity: string;
-
-declare const CHHapticDynamicParameterIDAudioDecayTimeControl: string;
-
-declare const CHHapticEventTypeHapticContinuous: string;
-
-declare const CHHapticDynamicParameterIDAudioPanControl: string;
-
-declare const CHHapticEventParameterIDAudioVolume: string;
 
 declare const CHHapticPatternKeyEvent: string;
 
-declare const CHHapticPatternKeyParameterCurve: string;
-
-declare const CHHapticEventParameterIDDecayTime: string;
-
-declare const CHHapticEventTypeAudioContinuous: string;
-
-declare const CHHapticPatternKeyEventWaveformLoopEnabled: string;
-
-declare const CHHapticAudioResourceKeyUseVolumeEnvelope: string;
-
-declare const CHHapticPatternKeyTime: string;
-
-declare const CHHapticEventParameterIDReleaseTime: string;
-
-declare const CHHapticDynamicParameterIDAudioPitchControl: string;
+declare const CHHapticPatternKeyVersion: string;
 
 declare const CHHapticAudioResourceKeyLoopEnabled: string;
 
-declare const CHHapticPatternKeyEventType: string;
+declare const CHHapticAudioResourceKeyUseVolumeEnvelope: string;
+
+declare const CoreHapticsErrorDomain: string;
 
 declare const CHHapticEventTypeAudioCustom: string;
 
 declare const CHHapticEventTypeHapticTransient: string;
 
+declare const CHHapticDynamicParameterIDAudioReleaseTimeControl: string;
+
+declare const CHHapticDynamicParameterIDAudioAttackTimeControl: string;
+
+declare const CHHapticDynamicParameterIDAudioPitchControl: string;
+
+declare const CHHapticDynamicParameterIDAudioPanControl: string;
+
 declare const CHHapticDynamicParameterIDAudioVolumeControl: string;
+
+declare const CHHapticDynamicParameterIDHapticAttackTimeControl: string;
+
+declare const CHHapticEventParameterIDAudioBrightness: string;
+
+declare const CHHapticEventParameterIDAudioPitch: string;
+
+declare const CHHapticEventParameterIDReleaseTime: string;
+
+declare const CHHapticEventParameterIDHapticIntensity: string;
+
+declare const CHHapticPatternKeyEventWaveformPath: string;
+
+declare const CHHapticEventParameterIDAttackTime: string;
+
+declare const CHHapticDynamicParameterIDHapticSharpnessControl: string;
+
+declare const CHHapticEventParameterIDAudioVolume: string;
+
+declare const CHHapticEventParameterIDSustained: string;
+
+declare const CHHapticPatternKeyEventWaveformLoopEnabled: string;
+
+declare const CHHapticEventParameterIDAudioPan: string;
+
+declare const CHHapticDynamicParameterIDAudioBrightnessControl: string;
+
+declare const CHHapticEventTypeHapticContinuous: string;
+
+declare const CHHapticEventTypeAudioContinuous: string;
+
+declare const CHHapticDynamicParameterIDAudioDecayTimeControl: string;
+
+declare const CHHapticEventParameterIDHapticSharpness: string;
+
+declare const CHHapticDynamicParameterIDHapticDecayTimeControl: string;
+
+declare const CHHapticEventParameterIDDecayTime: string;
+
+declare const CHHapticPatternKeyTime: string;
+
+declare const CHHapticPatternKeyPattern: string;
+
+declare const CHHapticPatternKeyEventType: string;
+
+declare const CHHapticDynamicParameterIDHapticReleaseTimeControl: string;
+
+declare const CHHapticPatternKeyParameter: string;
+
+declare const CHHapticDynamicParameterIDHapticIntensityControl: string;
+
+declare const CHHapticEngineStoppedReason: {
+  AudioSessionInterrupt: 1,
+  ApplicationSuspended: 2,
+  IdleTimeout: 3,
+  NotifyWhenFinished: 4,
+  EngineDestroyed: 5,
+  GameControllerDisconnect: 6,
+  SystemError: -1,
+};
 
 declare const CHHapticEngineFinishedAction: {
   StopEngine: 1,
@@ -121,16 +131,6 @@ declare const CHHapticErrorCode: {
   MemoryError: -4899,
 };
 
-declare const CHHapticEngineStoppedReason: {
-  AudioSessionInterrupt: 1,
-  ApplicationSuspended: 2,
-  IdleTimeout: 3,
-  NotifyWhenFinished: 4,
-  EngineDestroyed: 5,
-  GameControllerDisconnect: 6,
-  SystemError: -1,
-};
-
 declare interface CHHapticAdvancedPatternPlayer extends CHHapticPatternPlayer {
   pauseAtTimeError(time: number, outError: interop.PointerConvertible): boolean;
 
@@ -147,6 +147,16 @@ declare interface CHHapticAdvancedPatternPlayer extends CHHapticPatternPlayer {
   isMuted: boolean;
 
   completionHandler: (p1: NSError) => void;
+
+  setLoopEnabled(loopEnabled: boolean): void;
+
+  setLoopEnd(loopEnd: number): void;
+
+  setPlaybackRate(playbackRate: number): void;
+
+  setIsMuted(isMuted: boolean): void;
+
+  setCompletionHandler(completionHandler: (p1: NSError) => void): void;
 }
 
 declare class CHHapticAdvancedPatternPlayer extends NativeObject implements CHHapticAdvancedPatternPlayer {
@@ -164,6 +174,8 @@ declare interface CHHapticPatternPlayer extends NSObjectProtocol {
   cancelAndReturnError(outError: interop.PointerConvertible): boolean;
 
   isMuted: boolean;
+
+  setIsMuted(isMuted: boolean): void;
 }
 
 declare class CHHapticPatternPlayer extends NativeObject implements CHHapticPatternPlayer {
@@ -207,42 +219,6 @@ declare class CHHapticPattern extends NSObject {
   exportDictionaryAndReturnError(outError: interop.PointerConvertible): NSDictionary;
 }
 
-declare class CHHapticParameterCurve extends NSObject {
-  readonly parameterID: string;
-
-  relativeTime: number;
-
-  readonly controlPoints: NSArray;
-
-  initWithParameterIDControlPointsRelativeTime(parameterID: string, controlPoints: NSArray<interop.Object> | Array<interop.Object>, relativeTime: number): this;
-}
-
-declare class CHHapticParameterCurveControlPoint extends NSObject {
-  relativeTime: number;
-
-  value: number;
-
-  initWithRelativeTimeValue(time: number, value: number): this;
-}
-
-declare class CHHapticDynamicParameter extends NSObject {
-  readonly parameterID: string;
-
-  value: number;
-
-  relativeTime: number;
-
-  initWithParameterIDValueRelativeTime(parameterID: string, value: number, time: number): this;
-}
-
-declare class CHHapticEventParameter extends NSObject {
-  readonly parameterID: string;
-
-  value: number;
-
-  initWithParameterIDValue(parameterID: string, value: number): this;
-}
-
 declare class CHHapticEvent extends NSObject {
   readonly type: string;
 
@@ -259,6 +235,32 @@ declare class CHHapticEvent extends NSObject {
   initWithAudioResourceIDParametersRelativeTime(resID: number, eventParams: NSArray<interop.Object> | Array<interop.Object>, time: number): this;
 
   initWithAudioResourceIDParametersRelativeTimeDuration(resID: number, eventParams: NSArray<interop.Object> | Array<interop.Object>, time: number, duration: number): this;
+
+  setRelativeTime(relativeTime: number): void;
+
+  setDuration(duration: number): void;
+}
+
+declare class CHHapticEventParameter extends NSObject {
+  readonly parameterID: string;
+
+  value: number;
+
+  initWithParameterIDValue(parameterID: string, value: number): this;
+
+  setValue(value: number): void;
+}
+
+declare class CHHapticParameterCurveControlPoint extends NSObject {
+  relativeTime: number;
+
+  value: number;
+
+  initWithRelativeTimeValue(time: number, value: number): this;
+
+  setRelativeTime(relativeTime: number): void;
+
+  setValue(value: number): void;
 }
 
 declare class CHHapticEngine extends NSObject {
@@ -278,7 +280,7 @@ declare class CHHapticEngine extends NSObject {
 
   isMutedForHaptics: boolean;
 
-  isAutoShutdownEnabled: boolean;
+  autoShutdownEnabled: boolean;
 
   initAndReturnError(error: interop.PointerConvertible): this;
 
@@ -303,5 +305,47 @@ declare class CHHapticEngine extends NSObject {
   playPatternFromURLError(fileURL: NSURL, outError: interop.PointerConvertible): boolean;
 
   playPatternFromDataError(data: NSData, outError: interop.PointerConvertible): boolean;
+
+  setStoppedHandler(stoppedHandler: (p1: interop.Enum<typeof CHHapticEngineStoppedReason>) => void): void;
+
+  setResetHandler(resetHandler: () => void): void;
+
+  setPlaysHapticsOnly(playsHapticsOnly: boolean): void;
+
+  setPlaysAudioOnly(playsAudioOnly: boolean): void;
+
+  setIsMutedForAudio(isMutedForAudio: boolean): void;
+
+  setIsMutedForHaptics(isMutedForHaptics: boolean): void;
+
+  isAutoShutdownEnabled(): boolean;
+
+  setAutoShutdownEnabled(autoShutdownEnabled: boolean): void;
+}
+
+declare class CHHapticDynamicParameter extends NSObject {
+  readonly parameterID: string;
+
+  value: number;
+
+  relativeTime: number;
+
+  initWithParameterIDValueRelativeTime(parameterID: string, value: number, time: number): this;
+
+  setValue(value: number): void;
+
+  setRelativeTime(relativeTime: number): void;
+}
+
+declare class CHHapticParameterCurve extends NSObject {
+  readonly parameterID: string;
+
+  relativeTime: number;
+
+  readonly controlPoints: NSArray;
+
+  initWithParameterIDControlPointsRelativeTime(parameterID: string, controlPoints: NSArray<interop.Object> | Array<interop.Object>, relativeTime: number): this;
+
+  setRelativeTime(relativeTime: number): void;
 }
 

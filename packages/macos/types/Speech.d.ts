@@ -271,7 +271,7 @@ declare class SFSpeechAudioBufferRecognitionRequest extends SFSpeechRecognitionR
 
   appendAudioPCMBuffer(audioPCMBuffer: AVAudioPCMBuffer): void;
 
-  appendAudioSampleBuffer(sampleBuffer: interop.PointerConvertible): void;
+  appendAudioSampleBuffer(sampleBuffer: interop.Object): void;
 
   endAudio(): void;
 }

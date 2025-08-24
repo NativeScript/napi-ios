@@ -25,6 +25,7 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
   if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
                 name) != KNOWN_BRIDGED_TYPES.end()) {
     kind = kTypeAnyObject;
+    std::cout << "Bridged type found: " << name << std::endl;
     // typeParameterName = name;
     return;
   }
@@ -32,6 +33,14 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
   CXString canonicalNameStr = clang_getTypeSpelling(canonicalType);
   std::string canonicalName = stripCInfo(clang_getCString(canonicalNameStr));
   clang_disposeString(canonicalNameStr);
+
+  if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
+                canonicalName) != KNOWN_BRIDGED_TYPES.end()) {
+    kind = kTypeAnyObject;
+    std::cout << "Canonical bridged type found: " << canonicalName << std::endl;
+    // typeParameterName = name;
+    return;
+  }
 
   if (classTypeParameters != nullptr &&
       std::find(classTypeParameters->begin(), classTypeParameters->end(),

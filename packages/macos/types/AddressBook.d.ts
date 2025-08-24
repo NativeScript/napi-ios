@@ -372,195 +372,195 @@ declare class __ABSearchElementRef {
 
 declare function ABLocalizedPropertyOrLabel(propertyOrLabel: string): string;
 
-declare function ABGetSharedAddressBook(): interop.Pointer;
+declare function ABGetSharedAddressBook(): interop.Object;
 
-declare function ABCopyArrayOfMatchingRecords(addressBook: interop.PointerConvertible, search: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyArrayOfMatchingRecords(addressBook: interop.Object, search: interop.Object): interop.Object;
 
-declare function ABSave(addressBook: interop.PointerConvertible): boolean;
+declare function ABSave(addressBook: interop.Object): boolean;
 
-declare function ABHasUnsavedChanges(addressBook: interop.PointerConvertible): boolean;
+declare function ABHasUnsavedChanges(addressBook: interop.Object): boolean;
 
-declare function ABGetMe(addressBook: interop.PointerConvertible): interop.Pointer;
+declare function ABGetMe(addressBook: interop.Object): interop.Object;
 
-declare function ABSetMe(addressBook: interop.PointerConvertible, moi: interop.PointerConvertible): void;
+declare function ABSetMe(addressBook: interop.Object, moi: interop.Object): void;
 
-declare function ABCopyRecordTypeFromUniqueId(addressBook: interop.PointerConvertible, uniqueId: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyRecordTypeFromUniqueId(addressBook: interop.Object, uniqueId: interop.Object): interop.Object;
 
-declare function ABAddPropertiesAndTypes(addressBook: interop.PointerConvertible, recordType: interop.PointerConvertible, propertiesAndTypes: interop.PointerConvertible): number;
+declare function ABAddPropertiesAndTypes(addressBook: interop.Object, recordType: interop.Object, propertiesAndTypes: interop.Object): number;
 
-declare function ABRemoveProperties(addressBook: interop.PointerConvertible, recordType: interop.PointerConvertible, properties: interop.PointerConvertible): number;
+declare function ABRemoveProperties(addressBook: interop.Object, recordType: interop.Object, properties: interop.Object): number;
 
-declare function ABCopyArrayOfPropertiesForRecordType(addressBook: interop.PointerConvertible, recordType: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyArrayOfPropertiesForRecordType(addressBook: interop.Object, recordType: interop.Object): interop.Object;
 
-declare function ABTypeOfProperty(addressBook: interop.PointerConvertible, recordType: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function ABTypeOfProperty(addressBook: interop.Object, recordType: interop.Object, property: interop.Object): number;
 
-declare function ABCopyRecordForUniqueId(addressBook: interop.PointerConvertible, uniqueId: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyRecordForUniqueId(addressBook: interop.Object, uniqueId: interop.Object): interop.Object;
 
-declare function ABAddRecord(addressBook: interop.PointerConvertible, record: interop.PointerConvertible): boolean;
+declare function ABAddRecord(addressBook: interop.Object, record: interop.Object): boolean;
 
-declare function ABRemoveRecord(addressBook: interop.PointerConvertible, record: interop.PointerConvertible): boolean;
+declare function ABRemoveRecord(addressBook: interop.Object, record: interop.Object): boolean;
 
-declare function ABCopyArrayOfAllPeople(addressBook: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyArrayOfAllPeople(addressBook: interop.Object): interop.Object;
 
-declare function ABCopyArrayOfAllGroups(addressBook: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyArrayOfAllGroups(addressBook: interop.Object): interop.Object;
 
-declare function ABRecordCreateCopy(record: interop.PointerConvertible): interop.Pointer;
+declare function ABRecordCreateCopy(record: interop.Object): interop.Object;
 
-declare function ABRecordCopyRecordType(record: interop.PointerConvertible): interop.Pointer;
+declare function ABRecordCopyRecordType(record: interop.Object): interop.Object;
 
-declare function ABRecordCopyValue(record: interop.PointerConvertible, property: interop.PointerConvertible): interop.Pointer;
+declare function ABRecordCopyValue(record: interop.Object, property: interop.Object): interop.Object;
 
-declare function ABRecordSetValue(record: interop.PointerConvertible, property: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+declare function ABRecordSetValue(record: interop.Object, property: interop.Object, value: interop.Object): boolean;
 
-declare function ABRecordRemoveValue(record: interop.PointerConvertible, property: interop.PointerConvertible): boolean;
+declare function ABRecordRemoveValue(record: interop.Object, property: interop.Object): boolean;
 
-declare function ABRecordIsReadOnly(record: interop.PointerConvertible): boolean;
+declare function ABRecordIsReadOnly(record: interop.Object): boolean;
 
-declare function ABRecordCopyUniqueId(record: interop.PointerConvertible): interop.Pointer;
+declare function ABRecordCopyUniqueId(record: interop.Object): interop.Object;
 
-declare function ABPersonCreate(): interop.Pointer;
+declare function ABPersonCreate(): interop.Object;
 
-declare function ABPersonCreateWithVCardRepresentation(vCard: interop.PointerConvertible): interop.Pointer;
+declare function ABPersonCreateWithVCardRepresentation(vCard: interop.Object): interop.Object;
 
-declare function ABPersonCopyVCardRepresentation(person: interop.PointerConvertible): interop.Pointer;
+declare function ABPersonCopyVCardRepresentation(person: interop.Object): interop.Object;
 
-declare function ABPersonCopyParentGroups(person: interop.PointerConvertible): interop.Pointer;
+declare function ABPersonCopyParentGroups(person: interop.Object): interop.Object;
 
-declare function ABPersonCreateSearchElement(property: interop.PointerConvertible, label: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, comparison: number): interop.Pointer;
+declare function ABPersonCreateSearchElement(property: interop.Object, label: interop.Object, key: interop.Object, value: interop.Object, comparison: number): interop.Object;
 
-declare function ABGroupCreate(): interop.Pointer;
+declare function ABGroupCreate(): interop.Object;
 
-declare function ABGroupCopyArrayOfAllMembers(group: interop.PointerConvertible): interop.Pointer;
+declare function ABGroupCopyArrayOfAllMembers(group: interop.Object): interop.Object;
 
-declare function ABGroupAddMember(group: interop.PointerConvertible, personToAdd: interop.PointerConvertible): boolean;
+declare function ABGroupAddMember(group: interop.Object, personToAdd: interop.Object): boolean;
 
-declare function ABGroupRemoveMember(group: interop.PointerConvertible, personToRemove: interop.PointerConvertible): boolean;
+declare function ABGroupRemoveMember(group: interop.Object, personToRemove: interop.Object): boolean;
 
-declare function ABGroupCopyArrayOfAllSubgroups(group: interop.PointerConvertible): interop.Pointer;
+declare function ABGroupCopyArrayOfAllSubgroups(group: interop.Object): interop.Object;
 
-declare function ABGroupAddGroup(group: interop.PointerConvertible, groupToAdd: interop.PointerConvertible): boolean;
+declare function ABGroupAddGroup(group: interop.Object, groupToAdd: interop.Object): boolean;
 
-declare function ABGroupRemoveGroup(group: interop.PointerConvertible, groupToRemove: interop.PointerConvertible): boolean;
+declare function ABGroupRemoveGroup(group: interop.Object, groupToRemove: interop.Object): boolean;
 
-declare function ABGroupCopyParentGroups(group: interop.PointerConvertible): interop.Pointer;
+declare function ABGroupCopyParentGroups(group: interop.Object): interop.Object;
 
-declare function ABGroupSetDistributionIdentifier(group: interop.PointerConvertible, person: interop.PointerConvertible, property: interop.PointerConvertible, identifier: interop.PointerConvertible): boolean;
+declare function ABGroupSetDistributionIdentifier(group: interop.Object, person: interop.Object, property: interop.Object, identifier: interop.Object): boolean;
 
-declare function ABGroupCopyDistributionIdentifier(group: interop.PointerConvertible, person: interop.PointerConvertible, property: interop.PointerConvertible): interop.Pointer;
+declare function ABGroupCopyDistributionIdentifier(group: interop.Object, person: interop.Object, property: interop.Object): interop.Object;
 
-declare function ABGroupCreateSearchElement(property: interop.PointerConvertible, label: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, comparison: number): interop.Pointer;
+declare function ABGroupCreateSearchElement(property: interop.Object, label: interop.Object, key: interop.Object, value: interop.Object, comparison: number): interop.Object;
 
-declare function ABSearchElementCreateWithConjunction(conjunction: number, childrenSearchElement: interop.PointerConvertible): interop.Pointer;
+declare function ABSearchElementCreateWithConjunction(conjunction: number, childrenSearchElement: interop.Object): interop.Object;
 
-declare function ABSearchElementMatchesRecord(searchElement: interop.PointerConvertible, record: interop.PointerConvertible): boolean;
+declare function ABSearchElementMatchesRecord(searchElement: interop.Object, record: interop.Object): boolean;
 
-declare function ABMultiValueCreate(): interop.Pointer;
+declare function ABMultiValueCreate(): interop.Object;
 
-declare function ABMultiValueCount(multiValue: interop.PointerConvertible): number;
+declare function ABMultiValueCount(multiValue: interop.Object): number;
 
-declare function ABMultiValueCopyValueAtIndex(multiValue: interop.PointerConvertible, index: number): interop.Pointer;
+declare function ABMultiValueCopyValueAtIndex(multiValue: interop.Object, index: number): interop.Object;
 
-declare function ABMultiValueCopyLabelAtIndex(multiValue: interop.PointerConvertible, index: number): interop.Pointer;
+declare function ABMultiValueCopyLabelAtIndex(multiValue: interop.Object, index: number): interop.Object;
 
-declare function ABMultiValueCopyPrimaryIdentifier(multiValue: interop.PointerConvertible): interop.Pointer;
+declare function ABMultiValueCopyPrimaryIdentifier(multiValue: interop.Object): interop.Object;
 
-declare function ABMultiValueIndexForIdentifier(multiValue: interop.PointerConvertible, identifier: interop.PointerConvertible): number;
+declare function ABMultiValueIndexForIdentifier(multiValue: interop.Object, identifier: interop.Object): number;
 
-declare function ABMultiValueCopyIdentifierAtIndex(multiValue: interop.PointerConvertible, index: number): interop.Pointer;
+declare function ABMultiValueCopyIdentifierAtIndex(multiValue: interop.Object, index: number): interop.Object;
 
-declare function ABMultiValuePropertyType(multiValue: interop.PointerConvertible): number;
+declare function ABMultiValuePropertyType(multiValue: interop.Object): number;
 
-declare function ABMultiValueCreateCopy(multiValue: interop.PointerConvertible): interop.Pointer;
+declare function ABMultiValueCreateCopy(multiValue: interop.Object): interop.Object;
 
-declare function ABMultiValueCreateMutable(): interop.Pointer;
+declare function ABMultiValueCreateMutable(): interop.Object;
 
-declare function ABMultiValueAdd(multiValue: interop.PointerConvertible, value: interop.PointerConvertible, label: interop.PointerConvertible, outIdentifier: interop.PointerConvertible): boolean;
+declare function ABMultiValueAdd(multiValue: interop.Object, value: interop.Object, label: interop.Object, outIdentifier: interop.PointerConvertible): boolean;
 
-declare function ABMultiValueInsert(multiValue: interop.PointerConvertible, value: interop.PointerConvertible, label: interop.PointerConvertible, index: number, outIdentifier: interop.PointerConvertible): boolean;
+declare function ABMultiValueInsert(multiValue: interop.Object, value: interop.Object, label: interop.Object, index: number, outIdentifier: interop.PointerConvertible): boolean;
 
-declare function ABMultiValueRemove(multiValue: interop.PointerConvertible, index: number): boolean;
+declare function ABMultiValueRemove(multiValue: interop.Object, index: number): boolean;
 
-declare function ABMultiValueReplaceValue(multiValue: interop.PointerConvertible, value: interop.PointerConvertible, index: number): boolean;
+declare function ABMultiValueReplaceValue(multiValue: interop.Object, value: interop.Object, index: number): boolean;
 
-declare function ABMultiValueReplaceLabel(multiValue: interop.PointerConvertible, label: interop.PointerConvertible, index: number): boolean;
+declare function ABMultiValueReplaceLabel(multiValue: interop.Object, label: interop.Object, index: number): boolean;
 
-declare function ABMultiValueSetPrimaryIdentifier(multiValue: interop.PointerConvertible, identifier: interop.PointerConvertible): boolean;
+declare function ABMultiValueSetPrimaryIdentifier(multiValue: interop.Object, identifier: interop.Object): boolean;
 
-declare function ABMultiValueCreateMutableCopy(multiValue: interop.PointerConvertible): interop.Pointer;
+declare function ABMultiValueCreateMutableCopy(multiValue: interop.Object): interop.Object;
 
-declare function ABCopyLocalizedPropertyOrLabel(labelOrProperty: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyLocalizedPropertyOrLabel(labelOrProperty: interop.Object): interop.Object;
 
-declare function ABCreateFormattedAddressFromDictionary(addressBook: interop.PointerConvertible, address: interop.PointerConvertible): interop.Pointer;
+declare function ABCreateFormattedAddressFromDictionary(addressBook: interop.Object, address: interop.Object): interop.Object;
 
-declare function ABCopyDefaultCountryCode(addressBook: interop.PointerConvertible): interop.Pointer;
+declare function ABCopyDefaultCountryCode(addressBook: interop.Object): interop.Object;
 
-declare function ABPersonSetImageData(person: interop.PointerConvertible, imageData: interop.PointerConvertible): boolean;
+declare function ABPersonSetImageData(person: interop.Object, imageData: interop.Object): boolean;
 
-declare function ABPersonCopyImageData(person: interop.PointerConvertible): interop.Pointer;
+declare function ABPersonCopyImageData(person: interop.Object): interop.Object;
 
-declare function ABBeginLoadingImageDataForClient(person: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, refcon: interop.PointerConvertible): number;
+declare function ABBeginLoadingImageDataForClient(person: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, refcon: interop.PointerConvertible): number;
 
 declare function ABCancelLoadingImageDataForTag(tag: number): void;
 
-declare function ABPickerCreate(): interop.Pointer;
+declare function ABPickerCreate(): interop.Object;
 
-declare function ABPickerSetFrame(inPicker: interop.PointerConvertible, inFrame: interop.PointerConvertible): void;
+declare function ABPickerSetFrame(inPicker: interop.Object, inFrame: interop.PointerConvertible): void;
 
-declare function ABPickerGetFrame(inPicker: interop.PointerConvertible, outFrame: interop.PointerConvertible): void;
+declare function ABPickerGetFrame(inPicker: interop.Object, outFrame: interop.PointerConvertible): void;
 
-declare function ABPickerSetVisibility(inPicker: interop.PointerConvertible, visible: boolean): void;
+declare function ABPickerSetVisibility(inPicker: interop.Object, visible: boolean): void;
 
-declare function ABPickerIsVisible(inPicker: interop.PointerConvertible): boolean;
+declare function ABPickerIsVisible(inPicker: interop.Object): boolean;
 
-declare function ABPickerGetAttributes(inPicker: interop.PointerConvertible): number;
+declare function ABPickerGetAttributes(inPicker: interop.Object): number;
 
-declare function ABPickerChangeAttributes(inPicker: interop.PointerConvertible, inAttributesToSet: number, inAttributesToClear: number): void;
+declare function ABPickerChangeAttributes(inPicker: interop.Object, inAttributesToSet: number, inAttributesToClear: number): void;
 
-declare function ABPickerAddProperty(inPicker: interop.PointerConvertible, inProperty: interop.PointerConvertible): void;
+declare function ABPickerAddProperty(inPicker: interop.Object, inProperty: interop.Object): void;
 
-declare function ABPickerRemoveProperty(inPicker: interop.PointerConvertible, inProperty: interop.PointerConvertible): void;
+declare function ABPickerRemoveProperty(inPicker: interop.Object, inProperty: interop.Object): void;
 
-declare function ABPickerCopyProperties(inPicker: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopyProperties(inPicker: interop.Object): interop.Object;
 
-declare function ABPickerSetColumnTitle(inPicker: interop.PointerConvertible, inTitle: interop.PointerConvertible, inProperty: interop.PointerConvertible): void;
+declare function ABPickerSetColumnTitle(inPicker: interop.Object, inTitle: interop.Object, inProperty: interop.Object): void;
 
-declare function ABPickerCopyColumnTitle(inPicker: interop.PointerConvertible, inProperty: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopyColumnTitle(inPicker: interop.Object, inProperty: interop.Object): interop.Object;
 
-declare function ABPickerSetDisplayedProperty(inPicker: interop.PointerConvertible, inProperty: interop.PointerConvertible): void;
+declare function ABPickerSetDisplayedProperty(inPicker: interop.Object, inProperty: interop.Object): void;
 
-declare function ABPickerCopyDisplayedProperty(inPicker: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopyDisplayedProperty(inPicker: interop.Object): interop.Object;
 
-declare function ABPickerCopySelectedGroups(inPicker: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopySelectedGroups(inPicker: interop.Object): interop.Object;
 
-declare function ABPickerCopySelectedRecords(inPicker: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopySelectedRecords(inPicker: interop.Object): interop.Object;
 
-declare function ABPickerCopySelectedIdentifiers(inPicker: interop.PointerConvertible, inPerson: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopySelectedIdentifiers(inPicker: interop.Object, inPerson: interop.Object): interop.Object;
 
-declare function ABPickerCopySelectedValues(inPicker: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerCopySelectedValues(inPicker: interop.Object): interop.Object;
 
-declare function ABPickerSelectGroup(inPicker: interop.PointerConvertible, inGroup: interop.PointerConvertible, inExtendSelection: boolean): void;
+declare function ABPickerSelectGroup(inPicker: interop.Object, inGroup: interop.Object, inExtendSelection: boolean): void;
 
-declare function ABPickerSelectRecord(inPicker: interop.PointerConvertible, inRecord: interop.PointerConvertible, inExtendSelection: boolean): void;
+declare function ABPickerSelectRecord(inPicker: interop.Object, inRecord: interop.Object, inExtendSelection: boolean): void;
 
-declare function ABPickerSelectIdentifier(inPicker: interop.PointerConvertible, inPerson: interop.PointerConvertible, inIdentifier: interop.PointerConvertible, inExtendSelection: boolean): void;
+declare function ABPickerSelectIdentifier(inPicker: interop.Object, inPerson: interop.Object, inIdentifier: interop.Object, inExtendSelection: boolean): void;
 
-declare function ABPickerDeselectGroup(inPicker: interop.PointerConvertible, inGroup: interop.PointerConvertible): void;
+declare function ABPickerDeselectGroup(inPicker: interop.Object, inGroup: interop.Object): void;
 
-declare function ABPickerDeselectRecord(inPicker: interop.PointerConvertible, inRecord: interop.PointerConvertible): void;
+declare function ABPickerDeselectRecord(inPicker: interop.Object, inRecord: interop.Object): void;
 
-declare function ABPickerDeselectIdentifier(inPicker: interop.PointerConvertible, inPerson: interop.PointerConvertible, inIdentifier: interop.PointerConvertible): void;
+declare function ABPickerDeselectIdentifier(inPicker: interop.Object, inPerson: interop.Object, inIdentifier: interop.Object): void;
 
-declare function ABPickerDeselectAll(inPicker: interop.PointerConvertible): void;
+declare function ABPickerDeselectAll(inPicker: interop.Object): void;
 
-declare function ABPickerSetDelegate(inPicker: interop.PointerConvertible, inDelegate: interop.PointerConvertible): void;
+declare function ABPickerSetDelegate(inPicker: interop.Object, inDelegate: interop.PointerConvertible): void;
 
-declare function ABPickerGetDelegate(inPicker: interop.PointerConvertible): interop.Pointer;
+declare function ABPickerGetDelegate(inPicker: interop.Object): interop.Pointer;
 
-declare function ABPickerClearSearchField(inPicker: interop.PointerConvertible): void;
+declare function ABPickerClearSearchField(inPicker: interop.Object): void;
 
-declare function ABPickerEditInAddressBook(inPicker: interop.PointerConvertible): void;
+declare function ABPickerEditInAddressBook(inPicker: interop.Object): void;
 
-declare function ABPickerSelectInAddressBook(inPicker: interop.PointerConvertible): void;
+declare function ABPickerSelectInAddressBook(inPicker: interop.Object): void;
 
 declare interface ABImageClient extends NSObjectProtocol {
   consumeImageDataForTag(data: NSData, tag: number): void;

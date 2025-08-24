@@ -246,13 +246,13 @@ declare class TkWindowPrivate {
   constructor(init?: TkWindowPrivate);
   winPtr: interop.Pointer;
   view: NSView | null;
-  context: interop.Pointer;
+  context: interop.Object | null;
   xOff: number;
   yOff: number;
   size: CGSize;
-  visRgn: interop.Pointer;
-  aboveVisRgn: interop.Pointer;
-  drawRgn: interop.Pointer;
+  visRgn: interop.Object | null;
+  aboveVisRgn: interop.Object | null;
+  drawRgn: interop.Object | null;
   referenceCount: number;
   toplevel: interop.Pointer;
   flags: number;
@@ -1230,9 +1230,9 @@ declare class Ttk_LayoutNode_ {
 declare class TkpGCCache {
   constructor(init?: TkpGCCache);
   cachedForeground: number;
-  cachedForegroundColor: interop.Pointer;
+  cachedForegroundColor: interop.Object | null;
   cachedBackground: number;
-  cachedBackgroundColor: interop.Pointer;
+  cachedBackgroundColor: interop.Object | null;
 }
 
 declare class _XIMPreeditCaretCallbackStruct {

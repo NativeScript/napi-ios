@@ -359,9 +359,9 @@ declare function JSObjectGetArrayBufferBytesPtr(ctx: interop.PointerConvertible,
 
 declare function JSObjectGetArrayBufferByteLength(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): number;
 
-declare function JSStringCreateWithCFString(string: interop.PointerConvertible): interop.Pointer;
+declare function JSStringCreateWithCFString(string: interop.Object): interop.Pointer;
 
-declare function JSStringCopyCFString(alloc: interop.PointerConvertible, string: interop.PointerConvertible): interop.Pointer;
+declare function JSStringCopyCFString(alloc: interop.Object, string: interop.PointerConvertible): interop.Object;
 
 declare interface JSExport {
 }

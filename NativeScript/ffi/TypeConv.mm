@@ -956,7 +956,8 @@ class StringTypeConv : public TypeConv {
  public:
   StringTypeConv() { type = &ffi_type_pointer; }
 
-  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+  napi_value toJS(napi_env env, void* cont, uint32_t flags) override {
+    void *value = *((void**)cont);
     napi_value result;
     napi_create_string_utf8(env, (char*)value, NAPI_AUTO_LENGTH, &result);
     return result;

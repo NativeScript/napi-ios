@@ -473,7 +473,7 @@ declare interface ICCameraDeviceDelegate extends ICDeviceDelegate {
 
   cameraDeviceDidRemoveItems(camera: ICCameraDevice, items: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  cameraDeviceDidReceiveThumbnailForItemError(camera: ICCameraDevice, thumbnail: interop.PointerConvertible, item: ICCameraItem, error: NSError | null): void;
+  cameraDeviceDidReceiveThumbnailForItemError(camera: ICCameraDevice, thumbnail: interop.Object | null, item: ICCameraItem, error: NSError | null): void;
 
   cameraDeviceDidReceiveMetadataForItemError(camera: ICCameraDevice, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, item: ICCameraItem, error: NSError | null): void;
 
@@ -604,7 +604,7 @@ declare class ICScannerFunctionalUnit extends NSObject {
 
   readonly overviewScanInProgress: boolean;
 
-  readonly overviewImage: interop.Pointer;
+  readonly overviewImage: interop.Object;
 
   overviewResolution: number;
 
@@ -842,7 +842,7 @@ declare class ICCameraItem extends NSObject {
 
   readonly modificationDate: NSDate;
 
-  readonly thumbnail: interop.Pointer;
+  readonly thumbnail: interop.Object;
 
   readonly metadata: NSDictionary;
 
@@ -860,9 +860,9 @@ declare class ICCameraItem extends NSObject {
 
   flushMetadataCache(): void;
 
-  readonly thumbnailIfAvailable: interop.Pointer;
+  readonly thumbnailIfAvailable: interop.Object;
 
-  readonly largeThumbnailIfAvailable: interop.Pointer;
+  readonly largeThumbnailIfAvailable: interop.Object;
 
   readonly metadataIfAvailable: NSDictionary;
 
@@ -886,7 +886,7 @@ declare class ICDevice extends NSObject {
 
   readonly productKind: string;
 
-  readonly icon: interop.Pointer;
+  readonly icon: interop.Object;
 
   readonly systemSymbolName: string;
 

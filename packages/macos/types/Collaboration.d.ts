@@ -36,9 +36,9 @@ declare class CBIdentityAuthority extends NSObject {
 
   static defaultIdentityAuthority(): CBIdentityAuthority;
 
-  static identityAuthorityWithCSIdentityAuthority(CSIdentityAuthority: interop.PointerConvertible): CBIdentityAuthority;
+  static identityAuthorityWithCSIdentityAuthority(CSIdentityAuthority: interop.Object): CBIdentityAuthority;
 
-  readonly CSIdentityAuthority: interop.Pointer;
+  readonly CSIdentityAuthority: interop.Object;
 
   readonly localizedName: string;
 }
@@ -52,7 +52,7 @@ declare class CBIdentity extends NSObject implements NSCoding, NSCopying {
 
   static identityWithPersistentReference(data: NSData): CBIdentity;
 
-  static identityWithCSIdentity(csIdentity: interop.PointerConvertible): CBIdentity;
+  static identityWithCSIdentity(csIdentity: interop.Object): CBIdentity;
 
   readonly authority: CBIdentityAuthority;
 
@@ -76,7 +76,7 @@ declare class CBIdentity extends NSObject implements NSCoding, NSCopying {
 
   isMemberOfGroup(group: CBGroupIdentity): boolean;
 
-  readonly CSIdentity: interop.Pointer;
+  readonly CSIdentity: interop.Object;
 
   isHidden(): boolean;
 
@@ -92,7 +92,7 @@ declare class CBUserIdentity extends CBIdentity implements NSCoding, NSCopying {
 
   readonly posixUID: number;
 
-  readonly certificate: interop.Pointer;
+  readonly certificate: interop.Object;
 
   readonly enabled: boolean;
 

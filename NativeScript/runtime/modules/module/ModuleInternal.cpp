@@ -593,8 +593,8 @@ napi_value ModuleInternal::LoadModule(napi_env env,
 
     // napi_status status = js_execute_script(
     //     env, script, EnsureFileProtocol(modulePath).c_str(), &moduleFunc);
-    napi_status status = napi_run_script(
-        env, script, &moduleFunc);
+    napi_status status = napi_run_script_source(
+        env, script, modulePath.c_str(), &moduleFunc);
     if (status != napi_ok) {
       bool pendingException;
       napi_is_exception_pending(env, &pendingException);

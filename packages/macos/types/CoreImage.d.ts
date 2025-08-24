@@ -1697,8 +1697,7 @@ declare interface CIColorCurves extends CIFilterProtocol {
 
   curvesDomain: CIVector;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   setInputImage(inputImage: CIImage | null): void;
 
@@ -1706,7 +1705,7 @@ declare interface CIColorCurves extends CIFilterProtocol {
 
   setCurvesDomain(curvesDomain: CIVector): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 }
 
 declare class CIColorCurves extends NativeObject implements CIColorCurves {
@@ -2746,8 +2745,7 @@ declare interface CIColorCubesMixedWithMask extends CIFilterProtocol {
 
   cube1Data: NSData;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   extrapolate: boolean;
 
@@ -2761,7 +2759,7 @@ declare interface CIColorCubesMixedWithMask extends CIFilterProtocol {
 
   setCube1Data(cube1Data: NSData): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 
   setExtrapolate(extrapolate: boolean): void;
 }
@@ -3283,8 +3281,7 @@ declare interface CIHueSaturationValueGradient extends CIFilterProtocol {
 
   dither: number;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   setValue(value: number): void;
 
@@ -3294,7 +3291,7 @@ declare interface CIHueSaturationValueGradient extends CIFilterProtocol {
 
   setDither(dither: number): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 }
 
 declare class CIHueSaturationValueGradient extends NativeObject implements CIHueSaturationValueGradient {
@@ -3358,8 +3355,7 @@ declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
 
   cubeData: NSData;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   extrapolate: boolean;
 
@@ -3369,7 +3365,7 @@ declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
 
   setCubeData(cubeData: NSData): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 
   setExtrapolate(extrapolate: boolean): void;
 }
@@ -3421,9 +3417,9 @@ declare interface CIImageProcessorOutput {
 
   readonly baseAddress: interop.Pointer;
 
-  readonly surface: interop.Pointer;
+  readonly surface: interop.Object;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   readonly metalTexture: MTLTexture;
 
@@ -3525,9 +3521,9 @@ declare interface CIImageProcessorInput {
 
   readonly baseAddress: interop.Pointer;
 
-  readonly surface: interop.Pointer;
+  readonly surface: interop.Object;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   readonly metalTexture: MTLTexture;
 
@@ -4166,7 +4162,7 @@ declare class CIRAWFilter extends CIFilter {
 
   static filterWithImageDataIdentifierHint<This extends abstract new (...args: any) => any>(this: This, data: NSData, identifierHint: string | null): InstanceType<This>;
 
-  static filterWithCVPixelBufferProperties<This extends abstract new (...args: any) => any>(this: This, buffer: interop.PointerConvertible, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): InstanceType<This>;
+  static filterWithCVPixelBufferProperties<This extends abstract new (...args: any) => any>(this: This, buffer: interop.Object, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): InstanceType<This>;
 
   setOrientation(orientation: interop.Enum<typeof CGImagePropertyOrientation>): void;
 
@@ -4284,11 +4280,11 @@ declare class CIFilterShape extends NSObject implements NSCopying {
 declare class CIImageAccumulator extends NSObject {
   static imageAccumulatorWithExtentFormat<This extends abstract new (...args: any) => any>(this: This, extent: CGRect, format: number): InstanceType<This>;
 
-  static imageAccumulatorWithExtentFormatColorSpace<This extends abstract new (...args: any) => any>(this: This, extent: CGRect, format: number, colorSpace: interop.PointerConvertible): InstanceType<This>;
+  static imageAccumulatorWithExtentFormatColorSpace<This extends abstract new (...args: any) => any>(this: This, extent: CGRect, format: number, colorSpace: interop.Object): InstanceType<This>;
 
   initWithExtentFormat(extent: CGRect, format: number): this;
 
-  initWithExtentFormatColorSpace(extent: CGRect, format: number, colorSpace: interop.PointerConvertible): this;
+  initWithExtentFormatColorSpace(extent: CGRect, format: number, colorSpace: interop.Object): this;
 
   readonly extent: CGRect;
 
@@ -4364,27 +4360,27 @@ declare class CIDataMatrixCodeDescriptor extends CIBarcodeDescriptor {
 }
 
 declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
-  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, c: interop.PointerConvertible): InstanceType<This>;
+  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, c: interop.Object): InstanceType<This>;
 
   static colorWithRedGreenBlueAlpha<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number): InstanceType<This>;
 
   static colorWithRedGreenBlue<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number): InstanceType<This>;
 
-  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number, colorSpace: interop.PointerConvertible): InstanceType<This>;
+  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number, colorSpace: interop.Object): InstanceType<This>;
 
-  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, colorSpace: interop.PointerConvertible): InstanceType<This>;
+  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, colorSpace: interop.Object): InstanceType<This>;
 
   static colorWithString<This extends abstract new (...args: any) => any>(this: This, representation: string): InstanceType<This>;
 
-  initWithCGColor(c: interop.PointerConvertible): this;
+  initWithCGColor(c: interop.Object): this;
 
   initWithRedGreenBlueAlpha(r: number, g: number, b: number, a: number): this;
 
   initWithRedGreenBlue(r: number, g: number, b: number): this;
 
-  initWithRedGreenBlueAlphaColorSpace(r: number, g: number, b: number, a: number, colorSpace: interop.PointerConvertible): this;
+  initWithRedGreenBlueAlphaColorSpace(r: number, g: number, b: number, a: number, colorSpace: interop.Object): this;
 
-  initWithRedGreenBlueColorSpace(r: number, g: number, b: number, colorSpace: interop.PointerConvertible): this;
+  initWithRedGreenBlueColorSpace(r: number, g: number, b: number, colorSpace: interop.Object): this;
 
   readonly numberOfComponents: number;
 
@@ -4392,7 +4388,7 @@ declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
 
   readonly alpha: number;
 
-  readonly colorSpace: interop.Pointer;
+  readonly colorSpace: interop.Object;
 
   readonly red: number;
 
@@ -4438,7 +4434,7 @@ declare class CIBlendKernel extends CIColorKernel {
 
   applyWithForegroundBackground(foreground: CIImage, background: CIImage): CIImage;
 
-  applyWithForegroundBackgroundColorSpace(foreground: CIImage, background: CIImage, colorSpace: interop.PointerConvertible): CIImage;
+  applyWithForegroundBackgroundColorSpace(foreground: CIImage, background: CIImage, colorSpace: interop.Object): CIImage;
 
   static readonly componentAdd: CIBlendKernel;
 
@@ -4614,7 +4610,7 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
 
   static filterWithImageDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
 
-  static filterWithCVPixelBufferPropertiesOptions(pixelBuffer: interop.PointerConvertible, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
+  static filterWithCVPixelBufferPropertiesOptions(pixelBuffer: interop.Object, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
 
   static supportedRawCameraModels(): NSArray;
 
@@ -5102,19 +5098,19 @@ declare class CIFeature extends NSObject {
 }
 
 declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
-  static imageWithCGImage(image: interop.PointerConvertible): CIImage;
+  static imageWithCGImage(image: interop.Object): CIImage;
 
-  static imageWithCGImageOptions(image: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCGImageOptions(image: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCGImageSourceIndexOptions(source: interop.PointerConvertible, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCGImageSourceIndexOptions(source: interop.Object, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCGLayer(layer: interop.PointerConvertible): CIImage;
+  static imageWithCGLayer(layer: interop.Object): CIImage;
 
-  static imageWithCGLayerOptions(layer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCGLayerOptions(layer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.PointerConvertible): CIImage;
+  static imageWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.Object | null): CIImage;
 
-  static imageWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.PointerConvertible): CIImage;
+  static imageWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.Object | null): CIImage;
 
   static imageWithTextureSizeFlippedOptions(name: number, size: CGSize, flipped: boolean, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
@@ -5128,17 +5124,17 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   static imageWithDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCVImageBuffer(imageBuffer: interop.PointerConvertible): CIImage;
+  static imageWithCVImageBuffer(imageBuffer: interop.Object): CIImage;
 
-  static imageWithCVImageBufferOptions(imageBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCVImageBufferOptions(imageBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCVPixelBuffer(pixelBuffer: interop.PointerConvertible): CIImage;
+  static imageWithCVPixelBuffer(pixelBuffer: interop.Object): CIImage;
 
-  static imageWithCVPixelBufferOptions(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCVPixelBufferOptions(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithIOSurface(surface: interop.PointerConvertible): CIImage;
+  static imageWithIOSurface(surface: interop.Object): CIImage;
 
-  static imageWithIOSurfaceOptions(surface: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithIOSurfaceOptions(surface: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
   static imageWithColor(color: CIColor): CIImage;
 
@@ -5164,23 +5160,23 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   static readonly clearImage: CIImage;
 
-  initWithCGImage(image: interop.PointerConvertible): this;
+  initWithCGImage(image: interop.Object): this;
 
-  initWithCGImageOptions(image: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCGImageOptions(image: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCGImageSourceIndexOptions(source: interop.PointerConvertible, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCGImageSourceIndexOptions(source: interop.Object, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCGLayer(layer: interop.PointerConvertible): this;
+  initWithCGLayer(layer: interop.Object): this;
 
-  initWithCGLayerOptions(layer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCGLayerOptions(layer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   initWithData(data: NSData): this;
 
   initWithDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.PointerConvertible): this;
+  initWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.Object | null): this;
 
-  initWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.PointerConvertible): this;
+  initWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.Object | null): this;
 
   initWithTextureSizeFlippedOptions(name: number, size: CGSize, flipped: boolean, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
@@ -5190,19 +5186,19 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   initWithContentsOfURLOptions(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithIOSurface(surface: interop.PointerConvertible): this;
+  initWithIOSurface(surface: interop.Object): this;
 
-  initWithIOSurfaceOptions(surface: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithIOSurfaceOptions(surface: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithIOSurfacePlaneFormatOptions(surface: interop.PointerConvertible, plane: number, format: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithIOSurfacePlaneFormatOptions(surface: interop.Object, plane: number, format: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCVImageBuffer(imageBuffer: interop.PointerConvertible): this;
+  initWithCVImageBuffer(imageBuffer: interop.Object): this;
 
-  initWithCVImageBufferOptions(imageBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCVImageBufferOptions(imageBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCVPixelBuffer(pixelBuffer: interop.PointerConvertible): this;
+  initWithCVPixelBuffer(pixelBuffer: interop.Object): this;
 
-  initWithCVPixelBufferOptions(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCVPixelBufferOptions(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   initWithColor(color: CIColor): this;
 
@@ -5230,9 +5226,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   imageByApplyingFilter(filterName: string): CIImage;
 
-  imageByColorMatchingColorSpaceToWorkingSpace(colorSpace: interop.PointerConvertible): CIImage;
+  imageByColorMatchingColorSpaceToWorkingSpace(colorSpace: interop.Object): CIImage;
 
-  imageByColorMatchingWorkingSpaceToColorSpace(colorSpace: interop.PointerConvertible): CIImage;
+  imageByColorMatchingWorkingSpaceToColorSpace(colorSpace: interop.Object): CIImage;
 
   imageByPremultiplyingAlpha(): CIImage;
 
@@ -5264,13 +5260,13 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   readonly url: NSURL;
 
-  readonly colorSpace: interop.Pointer;
+  readonly colorSpace: interop.Object;
 
   readonly contentHeadroom: number;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
-  readonly CGImage: interop.Pointer;
+  readonly CGImage: interop.Object;
 
   readonly metalTexture: MTLTexture;
 
@@ -5322,9 +5318,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   drawAtPointFromRectOperationFraction(point: CGPoint, fromRect: CGRect, op: interop.Enum<typeof NSCompositingOperation>, delta: number): void;
 
-  static imageWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  initWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -5420,7 +5416,7 @@ declare class CIVector extends NSObject implements NSCopying, NSSecureCoding {
 }
 
 declare class CIRenderDestination extends NSObject {
-  initWithPixelBuffer(pixelBuffer: interop.PointerConvertible): this;
+  initWithPixelBuffer(pixelBuffer: interop.Object): this;
 
   initWithIOSurface(surface: IOSurface): this;
 
@@ -5444,8 +5440,7 @@ declare class CIRenderDestination extends NSObject {
 
   clamped: boolean;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   blendKernel: CIBlendKernel;
 
@@ -5465,7 +5460,7 @@ declare class CIRenderDestination extends NSObject {
 
   setClamped(clamped: boolean): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 
   setBlendKernel(blendKernel: CIBlendKernel | null): void;
 
@@ -5493,11 +5488,11 @@ declare class CISampler extends NSObject implements NSCopying {
 }
 
 declare class CIContext extends NSObject {
-  static contextWithCGLContextPixelFormatColorSpaceOptions(cglctx: interop.PointerConvertible, pixelFormat: interop.PointerConvertible, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
+  static contextWithCGLContextPixelFormatColorSpaceOptions(cglctx: interop.PointerConvertible, pixelFormat: interop.PointerConvertible, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
   static contextWithCGLContextPixelFormatOptions(cglctx: interop.PointerConvertible, pixelFormat: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
-  static contextWithCGContextOptions(cgctx: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
+  static contextWithCGContextOptions(cgctx: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
   static contextWithOptions(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
@@ -5515,7 +5510,7 @@ declare class CIContext extends NSObject {
 
   static contextWithMTLCommandQueueOptions(commandQueue: MTLCommandQueue, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly workingFormat: number;
 
@@ -5523,55 +5518,55 @@ declare class CIContext extends NSObject {
 
   drawImageInRectFromRect(image: CIImage, inRect: CGRect, fromRect: CGRect): void;
 
-  createCGLayerWithSizeInfo(size: CGSize, info: interop.PointerConvertible): interop.Pointer;
+  createCGLayerWithSizeInfo(size: CGSize, info: interop.Object | null): interop.Object;
 
-  renderToBitmapRowBytesBoundsFormatColorSpace(image: CIImage, data: interop.PointerConvertible, rowBytes: number, bounds: CGRect, format: number, colorSpace: interop.PointerConvertible): void;
+  renderToBitmapRowBytesBoundsFormatColorSpace(image: CIImage, data: interop.PointerConvertible, rowBytes: number, bounds: CGRect, format: number, colorSpace: interop.Object | null): void;
 
-  renderToIOSurfaceBoundsColorSpace(image: CIImage, surface: interop.PointerConvertible, bounds: CGRect, colorSpace: interop.PointerConvertible): void;
+  renderToIOSurfaceBoundsColorSpace(image: CIImage, surface: interop.Object, bounds: CGRect, colorSpace: interop.Object | null): void;
 
-  renderToCVPixelBuffer(image: CIImage, buffer: interop.PointerConvertible): void;
+  renderToCVPixelBuffer(image: CIImage, buffer: interop.Object): void;
 
-  renderToCVPixelBufferBoundsColorSpace(image: CIImage, buffer: interop.PointerConvertible, bounds: CGRect, colorSpace: interop.PointerConvertible): void;
+  renderToCVPixelBufferBoundsColorSpace(image: CIImage, buffer: interop.Object, bounds: CGRect, colorSpace: interop.Object | null): void;
 
-  renderToMTLTextureCommandBufferBoundsColorSpace(image: CIImage, texture: MTLTexture, commandBuffer: MTLCommandBuffer | null, bounds: CGRect, colorSpace: interop.PointerConvertible): void;
+  renderToMTLTextureCommandBufferBoundsColorSpace(image: CIImage, texture: MTLTexture, commandBuffer: MTLCommandBuffer | null, bounds: CGRect, colorSpace: interop.Object): void;
 
   reclaimResources(): void;
 
   clearCaches(): void;
 
-  createCGImageFromRect(image: CIImage, fromRect: CGRect): interop.Pointer;
+  createCGImageFromRect(image: CIImage, fromRect: CGRect): interop.Object;
 
-  createCGImageFromRectFormatColorSpace(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.PointerConvertible): interop.Pointer;
+  createCGImageFromRectFormatColorSpace(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null): interop.Object;
 
-  createCGImageFromRectFormatColorSpaceDeferred(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.PointerConvertible, deferred: boolean): interop.Pointer;
+  createCGImageFromRectFormatColorSpaceDeferred(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean): interop.Object;
 
   static offlineGPUCount(): number;
 
   static contextForOfflineGPUAtIndex(index: number): CIContext;
 
-  static contextForOfflineGPUAtIndexColorSpaceOptionsSharedContext(index: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, sharedContext: interop.PointerConvertible): CIContext;
+  static contextForOfflineGPUAtIndexColorSpaceOptionsSharedContext(index: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, sharedContext: interop.PointerConvertible): CIContext;
 
-  TIFFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  TIFFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
-  JPEGRepresentationOfImageColorSpaceOptions(image: CIImage, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  JPEGRepresentationOfImageColorSpaceOptions(image: CIImage, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
-  HEIFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  HEIFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
-  HEIF10RepresentationOfImageColorSpaceOptionsError(image: CIImage, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): NSData;
+  HEIF10RepresentationOfImageColorSpaceOptionsError(image: CIImage, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): NSData;
 
-  PNGRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  PNGRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
   OpenEXRRepresentationOfImageOptionsError(image: CIImage, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): NSData;
 
-  writeTIFFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeTIFFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writePNGRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writePNGRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writeJPEGRepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeJPEGRepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writeHEIFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeHEIFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writeHEIF10RepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeHEIF10RepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
   writeOpenEXRRepresentationOfImageToURLOptionsError(image: CIImage, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 

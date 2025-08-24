@@ -48,7 +48,7 @@ declare const AXChartDescriptorContentDirection: {
   RadialCounterClockwise: 5,
 };
 
-declare function AXNameFromColor(color: interop.PointerConvertible): string;
+declare function AXNameFromColor(color: interop.Object): string;
 
 declare function AXPrefersHorizontalTextLayout(): boolean;
 
@@ -185,7 +185,7 @@ declare class AXBrailleMap extends NSObject implements NSCopying, NSSecureCoding
 
   heightAtPoint(point: CGPoint): number;
 
-  presentImage(image: interop.PointerConvertible): void;
+  presentImage(image: interop.Object): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 

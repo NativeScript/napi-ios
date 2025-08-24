@@ -274,7 +274,7 @@ declare interface ASAuthorizationProviderExtensionRegistrationHandler extends NS
 
   readonly supportedUserSecureEnclaveKeySigningAlgorithms?: NSArray;
 
-  keyWillRotateForKeyTypeNewKeyLoginManagerCompletion?(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>, newKey: interop.PointerConvertible, loginManager: ASAuthorizationProviderExtensionLoginManager, completion: (p1: boolean) => void): void;
+  keyWillRotateForKeyTypeNewKeyLoginManagerCompletion?(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>, newKey: interop.Object, loginManager: ASAuthorizationProviderExtensionLoginManager, completion: (p1: boolean) => void): void;
 }
 
 declare class ASAuthorizationProviderExtensionRegistrationHandler extends NativeObject implements ASAuthorizationProviderExtensionRegistrationHandler {
@@ -756,8 +756,7 @@ declare class ASAuthorizationProviderExtensionLoginConfiguration extends NSObjec
   get customFederationUserPreauthenticationRequestValues(): NSArray;
   set customFederationUserPreauthenticationRequestValues(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  get loginRequestEncryptionPublicKey(): interop.Pointer;
-  set loginRequestEncryptionPublicKey(value: interop.PointerConvertible);
+  loginRequestEncryptionPublicKey: interop.Object;
 
   loginRequestEncryptionAPVPrefix: NSData;
 
@@ -787,8 +786,7 @@ declare class ASAuthorizationProviderExtensionLoginConfiguration extends NSObjec
 
   hpkePreSharedKeyID: NSData;
 
-  get hpkeAuthPublicKey(): interop.Pointer;
-  set hpkeAuthPublicKey(value: interop.PointerConvertible);
+  hpkeAuthPublicKey: interop.Object;
 
   setInvalidCredentialPredicate(invalidCredentialPredicate: string | null): void;
 
@@ -852,7 +850,7 @@ declare class ASAuthorizationProviderExtensionLoginConfiguration extends NSObjec
 
   setCustomFederationUserPreauthenticationRequestValues(customFederationUserPreauthenticationRequestValues: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  setLoginRequestEncryptionPublicKey(loginRequestEncryptionPublicKey: interop.PointerConvertible): void;
+  setLoginRequestEncryptionPublicKey(loginRequestEncryptionPublicKey: interop.Object): void;
 
   setLoginRequestEncryptionAPVPrefix(loginRequestEncryptionAPVPrefix: NSData): void;
 
@@ -872,7 +870,7 @@ declare class ASAuthorizationProviderExtensionLoginConfiguration extends NSObjec
 
   setHpkePreSharedKeyID(hpkePreSharedKeyID: NSData): void;
 
-  setHpkeAuthPublicKey(hpkeAuthPublicKey: interop.PointerConvertible): void;
+  setHpkeAuthPublicKey(hpkeAuthPublicKey: interop.Object): void;
 }
 
 declare class ASPublicKeyCredentialClientData extends NSObject {
@@ -2223,13 +2221,13 @@ declare class ASAuthorizationProviderExtensionLoginManager extends NSObject {
 
   saveLoginConfigurationError(loginConfiguration: ASAuthorizationProviderExtensionLoginConfiguration, error: interop.PointerConvertible): boolean;
 
-  saveCertificateKeyType(certificate: interop.PointerConvertible, keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): void;
+  saveCertificateKeyType(certificate: interop.Object, keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): void;
 
-  copyKeyForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): interop.Pointer;
+  copyKeyForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): interop.Object;
 
-  copyIdentityForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): interop.Pointer;
+  copyIdentityForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): interop.Object;
 
-  beginKeyRotationForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): interop.Pointer;
+  beginKeyRotationForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): interop.Object;
 
   completeKeyRotationForKeyType(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>): void;
 

@@ -1594,7 +1594,7 @@ declare const CSSM_OK: number;
 
 declare const CSSMOID_X509V2CRLRevokedEntryExtensionCritical: cssm_data;
 
-declare const kSecInputIsDigest: interop.Pointer;
+declare const kSecInputIsDigest: interop.Object;
 
 declare const CSSM_KEYBLOB_RAW_FORMAT_OPENSSH2: number;
 
@@ -1848,7 +1848,7 @@ declare const TLS_RSA_WITH_NULL_SHA256: number;
 
 declare const CSSMERR_CL_INVALID_CRL_INDEX: number;
 
-declare const kSecInputIsAttributeName: interop.Pointer;
+declare const kSecInputIsAttributeName: interop.Object;
 
 declare const CSSMERR_DL_OBJECT_USE_AUTH_DENIED: number;
 
@@ -3174,7 +3174,7 @@ declare const kSecCSSingleThreaded: number;
 
 declare const CSSMOID_APPLE_EKU_ICHAT_ENCRYPTION: cssm_data;
 
-declare const kSecSignatureAttributeName: interop.Pointer;
+declare const kSecSignatureAttributeName: interop.Object;
 
 declare const CSSMOID_APPLE_EKU_CODE_SIGNING_DEV: cssm_data;
 
@@ -6358,7 +6358,7 @@ declare const kSecAttrPort: interop.Pointer;
 
 declare const errSSLPeerDecompressFail: number;
 
-declare const kSecInputIsRaw: interop.Pointer;
+declare const kSecInputIsRaw: interop.Object;
 
 declare const errSSLATSCertificateHashAlgorithmViolation: number;
 
@@ -8056,8 +8056,8 @@ declare class OpaqueSecureDownload {
 declare class SecKeychainCallbackInfo {
   constructor(init?: SecKeychainCallbackInfo);
   version: number;
-  item: interop.Pointer;
-  keychain: interop.Pointer;
+  item: interop.Object | null;
+  keychain: interop.Object | null;
   pid: number;
 }
 
@@ -8300,12 +8300,12 @@ declare class SecItemImportExportKeyParameters {
   constructor(init?: SecItemImportExportKeyParameters);
   version: number;
   flags: interop.Enum<typeof SecKeyImportExportFlags>;
-  passphrase: interop.Pointer;
-  alertTitle: interop.Pointer;
-  alertPrompt: interop.Pointer;
-  accessRef: interop.Pointer;
-  keyUsage: interop.Pointer;
-  keyAttributes: interop.Pointer;
+  passphrase: interop.Object | null;
+  alertTitle: interop.Object | null;
+  alertPrompt: interop.Object | null;
+  accessRef: interop.Object | null;
+  keyUsage: interop.Object | null;
+  keyAttributes: interop.Object | null;
 }
 
 declare class CSSM_TP_APPLE_EVIDENCE_INFO {
@@ -9127,10 +9127,10 @@ declare class SecKeyImportExportParameters {
   constructor(init?: SecKeyImportExportParameters);
   version: number;
   flags: interop.Enum<typeof SecKeyImportExportFlags>;
-  passphrase: interop.Pointer;
-  alertTitle: interop.Pointer;
-  alertPrompt: interop.Pointer;
-  accessRef: interop.Pointer;
+  passphrase: interop.Object | null;
+  alertTitle: interop.Object | null;
+  alertPrompt: interop.Object | null;
+  accessRef: interop.Object | null;
   keyUsage: number;
   keyAttributes: number;
 }
@@ -9743,193 +9743,193 @@ declare class unnamed_5827832349553464827 {
   PairCertList: interop.Pointer;
 }
 
-declare function SecCopyErrorMessageString(status: number, reserved: interop.PointerConvertible): interop.Pointer;
+declare function SecCopyErrorMessageString(status: number, reserved: interop.PointerConvertible): interop.Object;
 
 declare function SecCertificateGetTypeID(): number;
 
-declare function SecCertificateCreateWithData(allocator: interop.PointerConvertible, data: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCreateWithData(allocator: interop.Object, data: interop.Object): interop.Object;
 
-declare function SecCertificateCopyData(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyData(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopySubjectSummary(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopySubjectSummary(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopyCommonName(certificate: interop.PointerConvertible, commonName: interop.PointerConvertible): number;
+declare function SecCertificateCopyCommonName(certificate: interop.Object, commonName: interop.PointerConvertible): number;
 
-declare function SecCertificateCopyEmailAddresses(certificate: interop.PointerConvertible, emailAddresses: interop.PointerConvertible): number;
+declare function SecCertificateCopyEmailAddresses(certificate: interop.Object, emailAddresses: interop.PointerConvertible): number;
 
-declare function SecCertificateCopyNormalizedIssuerSequence(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyNormalizedIssuerSequence(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopyNormalizedSubjectSequence(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyNormalizedSubjectSequence(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopyKey(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyKey(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopyPublicKey(certificate: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function SecCertificateCopyPublicKey(certificate: interop.Object, key: interop.PointerConvertible): number;
 
-declare function SecCertificateCopySerialNumberData(certificate: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopySerialNumberData(certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecCertificateCopyNotValidBeforeDate(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyNotValidBeforeDate(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopyNotValidAfterDate(certificate: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyNotValidAfterDate(certificate: interop.Object): interop.Object;
 
-declare function SecCertificateCopySerialNumber(certificate: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopySerialNumber(certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
 declare function SecCertificateCreateFromData(data: interop.PointerConvertible, type: number, encoding: number, certificate: interop.PointerConvertible): number;
 
-declare function SecCertificateAddToKeychain(certificate: interop.PointerConvertible, keychain: interop.PointerConvertible): number;
+declare function SecCertificateAddToKeychain(certificate: interop.Object, keychain: interop.Object): number;
 
-declare function SecCertificateGetData(certificate: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function SecCertificateGetData(certificate: interop.Object, data: interop.PointerConvertible): number;
 
-declare function SecCertificateGetType(certificate: interop.PointerConvertible, certificateType: interop.PointerConvertible): number;
+declare function SecCertificateGetType(certificate: interop.Object, certificateType: interop.PointerConvertible): number;
 
-declare function SecCertificateGetSubject(certificate: interop.PointerConvertible, subject: interop.PointerConvertible): number;
+declare function SecCertificateGetSubject(certificate: interop.Object, subject: interop.PointerConvertible): number;
 
-declare function SecCertificateGetIssuer(certificate: interop.PointerConvertible, issuer: interop.PointerConvertible): number;
+declare function SecCertificateGetIssuer(certificate: interop.Object, issuer: interop.PointerConvertible): number;
 
-declare function SecCertificateGetCLHandle(certificate: interop.PointerConvertible, clHandle: interop.PointerConvertible): number;
+declare function SecCertificateGetCLHandle(certificate: interop.Object, clHandle: interop.PointerConvertible): number;
 
-declare function SecCertificateGetAlgorithmID(certificate: interop.PointerConvertible, algid: interop.PointerConvertible): number;
+declare function SecCertificateGetAlgorithmID(certificate: interop.Object, algid: interop.PointerConvertible): number;
 
-declare function SecCertificateCopyPreference(name: interop.PointerConvertible, keyUsage: number, certificate: interop.PointerConvertible): number;
+declare function SecCertificateCopyPreference(name: interop.Object, keyUsage: number, certificate: interop.PointerConvertible): number;
 
-declare function SecCertificateCopyPreferred(name: interop.PointerConvertible, keyUsage: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyPreferred(name: interop.Object, keyUsage: interop.Object): interop.Object;
 
-declare function SecCertificateSetPreference(certificate: interop.PointerConvertible, name: interop.PointerConvertible, keyUsage: number, date: interop.PointerConvertible): number;
+declare function SecCertificateSetPreference(certificate: interop.Object, name: interop.Object, keyUsage: number, date: interop.Object): number;
 
-declare function SecCertificateSetPreferred(certificate: interop.PointerConvertible, name: interop.PointerConvertible, keyUsage: interop.PointerConvertible): number;
+declare function SecCertificateSetPreferred(certificate: interop.Object, name: interop.Object, keyUsage: interop.Object): number;
 
-declare function SecCertificateCopyValues(certificate: interop.PointerConvertible, keys: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyValues(certificate: interop.Object, keys: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecCertificateCopyLongDescription(alloc: interop.PointerConvertible, certificate: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyLongDescription(alloc: interop.Object, certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecCertificateCopyShortDescription(alloc: interop.PointerConvertible, certificate: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyShortDescription(alloc: interop.Object, certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecCertificateCopyNormalizedIssuerContent(certificate: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyNormalizedIssuerContent(certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecCertificateCopyNormalizedSubjectContent(certificate: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecCertificateCopyNormalizedSubjectContent(certificate: interop.Object, error: interop.PointerConvertible): interop.Object;
 
 declare function SecIdentityGetTypeID(): number;
 
-declare function SecIdentityCreateWithCertificate(keychainOrArray: interop.PointerConvertible, certificateRef: interop.PointerConvertible, identityRef: interop.PointerConvertible): number;
+declare function SecIdentityCreateWithCertificate(keychainOrArray: interop.Object, certificateRef: interop.Object, identityRef: interop.PointerConvertible): number;
 
-declare function SecIdentityCopyCertificate(identityRef: interop.PointerConvertible, certificateRef: interop.PointerConvertible): number;
+declare function SecIdentityCopyCertificate(identityRef: interop.Object, certificateRef: interop.PointerConvertible): number;
 
-declare function SecIdentityCopyPrivateKey(identityRef: interop.PointerConvertible, privateKeyRef: interop.PointerConvertible): number;
+declare function SecIdentityCopyPrivateKey(identityRef: interop.Object, privateKeyRef: interop.PointerConvertible): number;
 
-declare function SecIdentityCopyPreference(name: interop.PointerConvertible, keyUsage: number, validIssuers: interop.PointerConvertible, identity: interop.PointerConvertible): number;
+declare function SecIdentityCopyPreference(name: interop.Object, keyUsage: number, validIssuers: interop.Object, identity: interop.PointerConvertible): number;
 
-declare function SecIdentityCopyPreferred(name: interop.PointerConvertible, keyUsage: interop.PointerConvertible, validIssuers: interop.PointerConvertible): interop.Pointer;
+declare function SecIdentityCopyPreferred(name: interop.Object, keyUsage: interop.Object, validIssuers: interop.Object): interop.Object;
 
-declare function SecIdentitySetPreference(identity: interop.PointerConvertible, name: interop.PointerConvertible, keyUsage: number): number;
+declare function SecIdentitySetPreference(identity: interop.Object, name: interop.Object, keyUsage: number): number;
 
-declare function SecIdentitySetPreferred(identity: interop.PointerConvertible, name: interop.PointerConvertible, keyUsage: interop.PointerConvertible): number;
+declare function SecIdentitySetPreferred(identity: interop.Object, name: interop.Object, keyUsage: interop.Object): number;
 
-declare function SecIdentityCopySystemIdentity(domain: interop.PointerConvertible, idRef: interop.PointerConvertible, actualDomain: interop.PointerConvertible): number;
+declare function SecIdentityCopySystemIdentity(domain: interop.Object, idRef: interop.PointerConvertible, actualDomain: interop.PointerConvertible): number;
 
-declare function SecIdentitySetSystemIdentity(domain: interop.PointerConvertible, idRef: interop.PointerConvertible): number;
+declare function SecIdentitySetSystemIdentity(domain: interop.Object, idRef: interop.Object): number;
 
 declare function SecAccessControlGetTypeID(): number;
 
-declare function SecAccessControlCreateWithFlags(allocator: interop.PointerConvertible, protection: interop.PointerConvertible, flags: interop.Enum<typeof SecAccessControlCreateFlags>, error: interop.PointerConvertible): interop.Pointer;
+declare function SecAccessControlCreateWithFlags(allocator: interop.Object, protection: interop.Object, flags: interop.Enum<typeof SecAccessControlCreateFlags>, error: interop.PointerConvertible): interop.Object;
 
-declare function SecItemCopyMatching(query: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function SecItemCopyMatching(query: interop.Object, result: interop.PointerConvertible): number;
 
-declare function SecItemAdd(attributes: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function SecItemAdd(attributes: interop.Object, result: interop.PointerConvertible): number;
 
-declare function SecItemUpdate(query: interop.PointerConvertible, attributesToUpdate: interop.PointerConvertible): number;
+declare function SecItemUpdate(query: interop.Object, attributesToUpdate: interop.Object): number;
 
-declare function SecItemDelete(query: interop.PointerConvertible): number;
+declare function SecItemDelete(query: interop.Object): number;
 
 declare function SecAccessGetTypeID(): number;
 
-declare function SecAccessCreate(descriptor: interop.PointerConvertible, trustedlist: interop.PointerConvertible, accessRef: interop.PointerConvertible): number;
+declare function SecAccessCreate(descriptor: interop.Object, trustedlist: interop.Object, accessRef: interop.PointerConvertible): number;
 
 declare function SecAccessCreateFromOwnerAndACL(owner: interop.PointerConvertible, aclCount: number, acls: interop.PointerConvertible, accessRef: interop.PointerConvertible): number;
 
-declare function SecAccessCreateWithOwnerAndACL(userId: number, groupId: number, ownerType: number, acls: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecAccessCreateWithOwnerAndACL(userId: number, groupId: number, ownerType: number, acls: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecAccessGetOwnerAndACL(accessRef: interop.PointerConvertible, owner: interop.PointerConvertible, aclCount: interop.PointerConvertible, acls: interop.PointerConvertible): number;
+declare function SecAccessGetOwnerAndACL(accessRef: interop.Object, owner: interop.PointerConvertible, aclCount: interop.PointerConvertible, acls: interop.PointerConvertible): number;
 
-declare function SecAccessCopyOwnerAndACL(accessRef: interop.PointerConvertible, userId: interop.PointerConvertible, groupId: interop.PointerConvertible, ownerType: interop.PointerConvertible, aclList: interop.PointerConvertible): number;
+declare function SecAccessCopyOwnerAndACL(accessRef: interop.Object, userId: interop.PointerConvertible, groupId: interop.PointerConvertible, ownerType: interop.PointerConvertible, aclList: interop.PointerConvertible): number;
 
-declare function SecAccessCopyACLList(accessRef: interop.PointerConvertible, aclList: interop.PointerConvertible): number;
+declare function SecAccessCopyACLList(accessRef: interop.Object, aclList: interop.PointerConvertible): number;
 
-declare function SecAccessCopySelectedACLList(accessRef: interop.PointerConvertible, action: number, aclList: interop.PointerConvertible): number;
+declare function SecAccessCopySelectedACLList(accessRef: interop.Object, action: number, aclList: interop.PointerConvertible): number;
 
-declare function SecAccessCopyMatchingACLList(accessRef: interop.PointerConvertible, authorizationTag: interop.PointerConvertible): interop.Pointer;
+declare function SecAccessCopyMatchingACLList(accessRef: interop.Object, authorizationTag: interop.Object): interop.Object;
 
 declare function SecKeyGetTypeID(): number;
 
-declare function SecKeyCreatePair(keychainRef: interop.PointerConvertible, algorithm: number, keySizeInBits: number, contextHandle: number, publicKeyUsage: number, publicKeyAttr: number, privateKeyUsage: number, privateKeyAttr: number, initialAccess: interop.PointerConvertible, publicKey: interop.PointerConvertible, privateKey: interop.PointerConvertible): number;
+declare function SecKeyCreatePair(keychainRef: interop.Object, algorithm: number, keySizeInBits: number, contextHandle: number, publicKeyUsage: number, publicKeyAttr: number, privateKeyUsage: number, privateKeyAttr: number, initialAccess: interop.Object, publicKey: interop.PointerConvertible, privateKey: interop.PointerConvertible): number;
 
-declare function SecKeyGenerate(keychainRef: interop.PointerConvertible, algorithm: number, keySizeInBits: number, contextHandle: number, keyUsage: number, keyAttr: number, initialAccess: interop.PointerConvertible, keyRef: interop.PointerConvertible): number;
+declare function SecKeyGenerate(keychainRef: interop.Object, algorithm: number, keySizeInBits: number, contextHandle: number, keyUsage: number, keyAttr: number, initialAccess: interop.Object, keyRef: interop.PointerConvertible): number;
 
-declare function SecKeyGetCSSMKey(key: interop.PointerConvertible, cssmKey: interop.PointerConvertible): number;
+declare function SecKeyGetCSSMKey(key: interop.Object, cssmKey: interop.PointerConvertible): number;
 
-declare function SecKeyGetCSPHandle(keyRef: interop.PointerConvertible, cspHandle: interop.PointerConvertible): number;
+declare function SecKeyGetCSPHandle(keyRef: interop.Object, cspHandle: interop.PointerConvertible): number;
 
-declare function SecKeyGetCredentials(keyRef: interop.PointerConvertible, operation: number, credentialType: interop.Enum<typeof SecCredentialType>, outCredentials: interop.PointerConvertible): number;
+declare function SecKeyGetCredentials(keyRef: interop.Object, operation: number, credentialType: interop.Enum<typeof SecCredentialType>, outCredentials: interop.PointerConvertible): number;
 
-declare function SecKeyGenerateSymmetric(parameters: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyGenerateSymmetric(parameters: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyCreateFromData(parameters: interop.PointerConvertible, keyData: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCreateFromData(parameters: interop.Object, keyData: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyGeneratePairAsync(parameters: interop.PointerConvertible, deliveryQueue: NSObject, result: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): void;
+declare function SecKeyGeneratePairAsync(parameters: interop.Object, deliveryQueue: NSObject, result: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): void;
 
-declare function SecKeyDeriveFromPassword(password: interop.PointerConvertible, parameters: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyDeriveFromPassword(password: interop.Object, parameters: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyWrapSymmetric(keyToWrap: interop.PointerConvertible, wrappingKey: interop.PointerConvertible, parameters: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyWrapSymmetric(keyToWrap: interop.Object, wrappingKey: interop.Object, parameters: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyUnwrapSymmetric(keyToUnwrap: interop.PointerConvertible, unwrappingKey: interop.PointerConvertible, parameters: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyUnwrapSymmetric(keyToUnwrap: interop.PointerConvertible, unwrappingKey: interop.Object, parameters: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyGeneratePair(parameters: interop.PointerConvertible, publicKey: interop.PointerConvertible, privateKey: interop.PointerConvertible): number;
+declare function SecKeyGeneratePair(parameters: interop.Object, publicKey: interop.PointerConvertible, privateKey: interop.PointerConvertible): number;
 
-declare function SecKeyCreateRandomKey(parameters: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCreateRandomKey(parameters: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyCreateWithData(keyData: interop.PointerConvertible, attributes: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCreateWithData(keyData: interop.Object, attributes: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyGetBlockSize(key: interop.PointerConvertible): number;
+declare function SecKeyGetBlockSize(key: interop.Object): number;
 
-declare function SecKeyCopyExternalRepresentation(key: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCopyExternalRepresentation(key: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyCopyAttributes(key: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCopyAttributes(key: interop.Object): interop.Object;
 
-declare function SecKeyCopyPublicKey(key: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCopyPublicKey(key: interop.Object): interop.Object;
 
-declare function SecKeyCreateSignature(key: interop.PointerConvertible, algorithm: interop.PointerConvertible, dataToSign: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCreateSignature(key: interop.Object, algorithm: interop.PointerConvertible, dataToSign: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyVerifySignature(key: interop.PointerConvertible, algorithm: interop.PointerConvertible, signedData: interop.PointerConvertible, signature: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function SecKeyVerifySignature(key: interop.Object, algorithm: interop.PointerConvertible, signedData: interop.Object, signature: interop.Object, error: interop.PointerConvertible): number;
 
-declare function SecKeyCreateEncryptedData(key: interop.PointerConvertible, algorithm: interop.PointerConvertible, plaintext: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCreateEncryptedData(key: interop.Object, algorithm: interop.PointerConvertible, plaintext: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyCreateDecryptedData(key: interop.PointerConvertible, algorithm: interop.PointerConvertible, ciphertext: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCreateDecryptedData(key: interop.Object, algorithm: interop.PointerConvertible, ciphertext: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyCopyKeyExchangeResult(privateKey: interop.PointerConvertible, algorithm: interop.PointerConvertible, publicKey: interop.PointerConvertible, parameters: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecKeyCopyKeyExchangeResult(privateKey: interop.Object, algorithm: interop.PointerConvertible, publicKey: interop.Object, parameters: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecKeyIsAlgorithmSupported(key: interop.PointerConvertible, operation: interop.Enum<typeof SecKeyOperationType>, algorithm: interop.PointerConvertible): number;
+declare function SecKeyIsAlgorithmSupported(key: interop.Object, operation: interop.Enum<typeof SecKeyOperationType>, algorithm: interop.PointerConvertible): number;
 
 declare function SecPolicyGetTypeID(): number;
 
-declare function SecPolicyCopyProperties(policyRef: interop.PointerConvertible): interop.Pointer;
+declare function SecPolicyCopyProperties(policyRef: interop.Object): interop.Object;
 
-declare function SecPolicyCreateBasicX509(): interop.Pointer;
+declare function SecPolicyCreateBasicX509(): interop.Object;
 
-declare function SecPolicyCreateSSL(server: number, hostname: interop.PointerConvertible): interop.Pointer;
+declare function SecPolicyCreateSSL(server: number, hostname: interop.Object): interop.Object;
 
-declare function SecPolicyCreateRevocation(revocationFlags: number): interop.Pointer;
+declare function SecPolicyCreateRevocation(revocationFlags: number): interop.Object;
 
-declare function SecPolicyCreateWithProperties(policyIdentifier: interop.PointerConvertible, properties: interop.PointerConvertible): interop.Pointer;
+declare function SecPolicyCreateWithProperties(policyIdentifier: interop.Object, properties: interop.Object): interop.Object;
 
-declare function SecPolicyCreateWithOID(policyOID: interop.PointerConvertible): interop.Pointer;
+declare function SecPolicyCreateWithOID(policyOID: interop.Object): interop.Object;
 
-declare function SecPolicyGetOID(policyRef: interop.PointerConvertible, oid: interop.PointerConvertible): number;
+declare function SecPolicyGetOID(policyRef: interop.Object, oid: interop.PointerConvertible): number;
 
-declare function SecPolicyGetValue(policyRef: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SecPolicyGetValue(policyRef: interop.Object, value: interop.PointerConvertible): number;
 
-declare function SecPolicySetValue(policyRef: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function SecPolicySetValue(policyRef: interop.Object, value: interop.PointerConvertible): number;
 
-declare function SecPolicySetProperties(policyRef: interop.PointerConvertible, properties: interop.PointerConvertible): number;
+declare function SecPolicySetProperties(policyRef: interop.Object, properties: interop.Object): number;
 
-declare function SecPolicyGetTPHandle(policyRef: interop.PointerConvertible, tpHandle: interop.PointerConvertible): number;
+declare function SecPolicyGetTPHandle(policyRef: interop.Object, tpHandle: interop.PointerConvertible): number;
 
 declare function SecRandomCopyBytes(rnd: interop.PointerConvertible, count: number, bytes: interop.PointerConvertible): number;
 
@@ -9945,45 +9945,45 @@ declare function SecKeychainGetVersion(returnVers: interop.PointerConvertible): 
 
 declare function SecKeychainOpen(pathName: string, keychain: interop.PointerConvertible): number;
 
-declare function SecKeychainCreate(pathName: string, passwordLength: number, password: interop.PointerConvertible, promptUser: number, initialAccess: interop.PointerConvertible, keychain: interop.PointerConvertible): number;
+declare function SecKeychainCreate(pathName: string, passwordLength: number, password: interop.PointerConvertible, promptUser: number, initialAccess: interop.Object, keychain: interop.PointerConvertible): number;
 
-declare function SecKeychainDelete(keychainOrArray: interop.PointerConvertible): number;
+declare function SecKeychainDelete(keychainOrArray: interop.Object): number;
 
-declare function SecKeychainSetSettings(keychain: interop.PointerConvertible, newSettings: interop.PointerConvertible): number;
+declare function SecKeychainSetSettings(keychain: interop.Object, newSettings: interop.PointerConvertible): number;
 
-declare function SecKeychainCopySettings(keychain: interop.PointerConvertible, outSettings: interop.PointerConvertible): number;
+declare function SecKeychainCopySettings(keychain: interop.Object, outSettings: interop.PointerConvertible): number;
 
-declare function SecKeychainUnlock(keychain: interop.PointerConvertible, passwordLength: number, password: interop.PointerConvertible, usePassword: number): number;
+declare function SecKeychainUnlock(keychain: interop.Object, passwordLength: number, password: interop.PointerConvertible, usePassword: number): number;
 
-declare function SecKeychainLock(keychain: interop.PointerConvertible): number;
+declare function SecKeychainLock(keychain: interop.Object): number;
 
 declare function SecKeychainLockAll(): number;
 
 declare function SecKeychainCopyDefault(keychain: interop.PointerConvertible): number;
 
-declare function SecKeychainSetDefault(keychain: interop.PointerConvertible): number;
+declare function SecKeychainSetDefault(keychain: interop.Object): number;
 
 declare function SecKeychainCopySearchList(searchList: interop.PointerConvertible): number;
 
-declare function SecKeychainSetSearchList(searchList: interop.PointerConvertible): number;
+declare function SecKeychainSetSearchList(searchList: interop.Object): number;
 
 declare function SecKeychainCopyDomainDefault(domain: interop.Enum<typeof SecPreferencesDomain>, keychain: interop.PointerConvertible): number;
 
-declare function SecKeychainSetDomainDefault(domain: interop.Enum<typeof SecPreferencesDomain>, keychain: interop.PointerConvertible): number;
+declare function SecKeychainSetDomainDefault(domain: interop.Enum<typeof SecPreferencesDomain>, keychain: interop.Object): number;
 
 declare function SecKeychainCopyDomainSearchList(domain: interop.Enum<typeof SecPreferencesDomain>, searchList: interop.PointerConvertible): number;
 
-declare function SecKeychainSetDomainSearchList(domain: interop.Enum<typeof SecPreferencesDomain>, searchList: interop.PointerConvertible): number;
+declare function SecKeychainSetDomainSearchList(domain: interop.Enum<typeof SecPreferencesDomain>, searchList: interop.Object): number;
 
 declare function SecKeychainSetPreferenceDomain(domain: interop.Enum<typeof SecPreferencesDomain>): number;
 
 declare function SecKeychainGetPreferenceDomain(domain: interop.PointerConvertible): number;
 
-declare function SecKeychainGetStatus(keychain: interop.PointerConvertible, keychainStatus: interop.PointerConvertible): number;
+declare function SecKeychainGetStatus(keychain: interop.Object, keychainStatus: interop.PointerConvertible): number;
 
-declare function SecKeychainGetPath(keychain: interop.PointerConvertible, ioPathLength: interop.PointerConvertible, pathName: string): number;
+declare function SecKeychainGetPath(keychain: interop.Object, ioPathLength: interop.PointerConvertible, pathName: string): number;
 
-declare function SecKeychainAttributeInfoForItemID(keychain: interop.PointerConvertible, itemID: number, info: interop.PointerConvertible): number;
+declare function SecKeychainAttributeInfoForItemID(keychain: interop.Object, itemID: number, info: interop.PointerConvertible): number;
 
 declare function SecKeychainFreeAttributeInfo(info: interop.PointerConvertible): number;
 
@@ -9991,133 +9991,133 @@ declare function SecKeychainAddCallback(callbackFunction: (p1: interop.Enum<type
 
 declare function SecKeychainRemoveCallback(callbackFunction: (p1: interop.Enum<typeof SecKeychainEvent>, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): number;
 
-declare function SecKeychainAddInternetPassword(keychain: interop.PointerConvertible, serverNameLength: number, serverName: string, securityDomainLength: number, securityDomain: string, accountNameLength: number, accountName: string, pathLength: number, path: string, port: number, protocol: interop.Enum<typeof SecProtocolType>, authenticationType: interop.Enum<typeof SecAuthenticationType>, passwordLength: number, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainAddInternetPassword(keychain: interop.Object, serverNameLength: number, serverName: string, securityDomainLength: number, securityDomain: string, accountNameLength: number, accountName: string, pathLength: number, path: string, port: number, protocol: interop.Enum<typeof SecProtocolType>, authenticationType: interop.Enum<typeof SecAuthenticationType>, passwordLength: number, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
 
-declare function SecKeychainFindInternetPassword(keychainOrArray: interop.PointerConvertible, serverNameLength: number, serverName: string, securityDomainLength: number, securityDomain: string, accountNameLength: number, accountName: string, pathLength: number, path: string, port: number, protocol: interop.Enum<typeof SecProtocolType>, authenticationType: interop.Enum<typeof SecAuthenticationType>, passwordLength: interop.PointerConvertible, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainFindInternetPassword(keychainOrArray: interop.Object, serverNameLength: number, serverName: string, securityDomainLength: number, securityDomain: string, accountNameLength: number, accountName: string, pathLength: number, path: string, port: number, protocol: interop.Enum<typeof SecProtocolType>, authenticationType: interop.Enum<typeof SecAuthenticationType>, passwordLength: interop.PointerConvertible, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
 
-declare function SecKeychainAddGenericPassword(keychain: interop.PointerConvertible, serviceNameLength: number, serviceName: string, accountNameLength: number, accountName: string, passwordLength: number, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainAddGenericPassword(keychain: interop.Object, serviceNameLength: number, serviceName: string, accountNameLength: number, accountName: string, passwordLength: number, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
 
-declare function SecKeychainFindGenericPassword(keychainOrArray: interop.PointerConvertible, serviceNameLength: number, serviceName: string, accountNameLength: number, accountName: string, passwordLength: interop.PointerConvertible, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainFindGenericPassword(keychainOrArray: interop.Object, serviceNameLength: number, serviceName: string, accountNameLength: number, accountName: string, passwordLength: interop.PointerConvertible, passwordData: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
 
 declare function SecKeychainSetUserInteractionAllowed(state: number): number;
 
 declare function SecKeychainGetUserInteractionAllowed(state: interop.PointerConvertible): number;
 
-declare function SecKeychainGetCSPHandle(keychain: interop.PointerConvertible, cspHandle: interop.PointerConvertible): number;
+declare function SecKeychainGetCSPHandle(keychain: interop.Object, cspHandle: interop.PointerConvertible): number;
 
-declare function SecKeychainGetDLDBHandle(keychain: interop.PointerConvertible, dldbHandle: interop.PointerConvertible): number;
+declare function SecKeychainGetDLDBHandle(keychain: interop.Object, dldbHandle: interop.PointerConvertible): number;
 
-declare function SecKeychainCopyAccess(keychain: interop.PointerConvertible, access: interop.PointerConvertible): number;
+declare function SecKeychainCopyAccess(keychain: interop.Object, access: interop.PointerConvertible): number;
 
-declare function SecKeychainSetAccess(keychain: interop.PointerConvertible, access: interop.PointerConvertible): number;
+declare function SecKeychainSetAccess(keychain: interop.Object, access: interop.Object): number;
 
-declare function SecKeychainItemExport(keychainItemOrArray: interop.PointerConvertible, outputFormat: interop.Enum<typeof SecExternalFormat>, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, exportedData: interop.PointerConvertible): number;
+declare function SecKeychainItemExport(keychainItemOrArray: interop.Object, outputFormat: interop.Enum<typeof SecExternalFormat>, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, exportedData: interop.PointerConvertible): number;
 
-declare function SecItemExport(secItemOrArray: interop.PointerConvertible, outputFormat: interop.Enum<typeof SecExternalFormat>, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, exportedData: interop.PointerConvertible): number;
+declare function SecItemExport(secItemOrArray: interop.Object, outputFormat: interop.Enum<typeof SecExternalFormat>, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, exportedData: interop.PointerConvertible): number;
 
-declare function SecKeychainItemImport(importedData: interop.PointerConvertible, fileNameOrExtension: interop.PointerConvertible, inputFormat: interop.PointerConvertible, itemType: interop.PointerConvertible, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, importKeychain: interop.PointerConvertible, outItems: interop.PointerConvertible): number;
+declare function SecKeychainItemImport(importedData: interop.Object, fileNameOrExtension: interop.Object, inputFormat: interop.PointerConvertible, itemType: interop.PointerConvertible, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, importKeychain: interop.Object, outItems: interop.PointerConvertible): number;
 
-declare function SecItemImport(importedData: interop.PointerConvertible, fileNameOrExtension: interop.PointerConvertible, inputFormat: interop.PointerConvertible, itemType: interop.PointerConvertible, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, importKeychain: interop.PointerConvertible, outItems: interop.PointerConvertible): number;
+declare function SecItemImport(importedData: interop.Object, fileNameOrExtension: interop.Object, inputFormat: interop.PointerConvertible, itemType: interop.PointerConvertible, flags: interop.Enum<typeof SecItemImportExportFlags>, keyParams: interop.PointerConvertible, importKeychain: interop.Object, outItems: interop.PointerConvertible): number;
 
-declare function SecPKCS12Import(pkcs12_data: interop.PointerConvertible, options: interop.PointerConvertible, items: interop.PointerConvertible): number;
+declare function SecPKCS12Import(pkcs12_data: interop.Object, options: interop.Object, items: interop.PointerConvertible): number;
 
 declare function SecTrustGetTypeID(): number;
 
-declare function SecTrustCreateWithCertificates(certificates: interop.PointerConvertible, policies: interop.PointerConvertible, trust: interop.PointerConvertible): number;
+declare function SecTrustCreateWithCertificates(certificates: interop.Object, policies: interop.Object, trust: interop.PointerConvertible): number;
 
-declare function SecTrustSetPolicies(trust: interop.PointerConvertible, policies: interop.PointerConvertible): number;
+declare function SecTrustSetPolicies(trust: interop.Object, policies: interop.Object): number;
 
-declare function SecTrustCopyPolicies(trust: interop.PointerConvertible, policies: interop.PointerConvertible): number;
+declare function SecTrustCopyPolicies(trust: interop.Object, policies: interop.PointerConvertible): number;
 
-declare function SecTrustSetNetworkFetchAllowed(trust: interop.PointerConvertible, allowFetch: number): number;
+declare function SecTrustSetNetworkFetchAllowed(trust: interop.Object, allowFetch: number): number;
 
-declare function SecTrustGetNetworkFetchAllowed(trust: interop.PointerConvertible, allowFetch: interop.PointerConvertible): number;
+declare function SecTrustGetNetworkFetchAllowed(trust: interop.Object, allowFetch: interop.PointerConvertible): number;
 
-declare function SecTrustSetAnchorCertificates(trust: interop.PointerConvertible, anchorCertificates: interop.PointerConvertible): number;
+declare function SecTrustSetAnchorCertificates(trust: interop.Object, anchorCertificates: interop.Object): number;
 
-declare function SecTrustSetAnchorCertificatesOnly(trust: interop.PointerConvertible, anchorCertificatesOnly: number): number;
+declare function SecTrustSetAnchorCertificatesOnly(trust: interop.Object, anchorCertificatesOnly: number): number;
 
-declare function SecTrustCopyCustomAnchorCertificates(trust: interop.PointerConvertible, anchors: interop.PointerConvertible): number;
+declare function SecTrustCopyCustomAnchorCertificates(trust: interop.Object, anchors: interop.PointerConvertible): number;
 
-declare function SecTrustSetVerifyDate(trust: interop.PointerConvertible, verifyDate: interop.PointerConvertible): number;
+declare function SecTrustSetVerifyDate(trust: interop.Object, verifyDate: interop.Object): number;
 
-declare function SecTrustGetVerifyTime(trust: interop.PointerConvertible): number;
+declare function SecTrustGetVerifyTime(trust: interop.Object): number;
 
-declare function SecTrustEvaluate(trust: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function SecTrustEvaluate(trust: interop.Object, result: interop.PointerConvertible): number;
 
-declare function SecTrustEvaluateAsync(trust: interop.PointerConvertible, queue: NSObject, result: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SecTrustResultType>) => void): number;
+declare function SecTrustEvaluateAsync(trust: interop.Object, queue: NSObject, result: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SecTrustResultType>) => void): number;
 
-declare function SecTrustEvaluateWithError(trust: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function SecTrustEvaluateWithError(trust: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function SecTrustEvaluateAsyncWithError(trust: interop.PointerConvertible, queue: NSObject, result: (p1: interop.PointerConvertible, p2: boolean, p3: interop.PointerConvertible) => void): number;
+declare function SecTrustEvaluateAsyncWithError(trust: interop.Object, queue: NSObject, result: (p1: interop.PointerConvertible, p2: boolean, p3: interop.PointerConvertible) => void): number;
 
-declare function SecTrustGetTrustResult(trust: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function SecTrustGetTrustResult(trust: interop.Object, result: interop.PointerConvertible): number;
 
-declare function SecTrustCopyPublicKey(trust: interop.PointerConvertible): interop.Pointer;
+declare function SecTrustCopyPublicKey(trust: interop.Object): interop.Object;
 
-declare function SecTrustCopyKey(trust: interop.PointerConvertible): interop.Pointer;
+declare function SecTrustCopyKey(trust: interop.Object): interop.Object;
 
-declare function SecTrustGetCertificateCount(trust: interop.PointerConvertible): number;
+declare function SecTrustGetCertificateCount(trust: interop.Object): number;
 
-declare function SecTrustGetCertificateAtIndex(trust: interop.PointerConvertible, ix: number): interop.Pointer;
+declare function SecTrustGetCertificateAtIndex(trust: interop.Object, ix: number): interop.Object;
 
-declare function SecTrustCopyExceptions(trust: interop.PointerConvertible): interop.Pointer;
+declare function SecTrustCopyExceptions(trust: interop.Object): interop.Object;
 
-declare function SecTrustSetExceptions(trust: interop.PointerConvertible, exceptions: interop.PointerConvertible): boolean;
+declare function SecTrustSetExceptions(trust: interop.Object, exceptions: interop.Object): boolean;
 
-declare function SecTrustCopyProperties(trust: interop.PointerConvertible): interop.Pointer;
+declare function SecTrustCopyProperties(trust: interop.Object): interop.Object;
 
-declare function SecTrustCopyResult(trust: interop.PointerConvertible): interop.Pointer;
+declare function SecTrustCopyResult(trust: interop.Object): interop.Object;
 
-declare function SecTrustSetOCSPResponse(trust: interop.PointerConvertible, responseData: interop.PointerConvertible): number;
+declare function SecTrustSetOCSPResponse(trust: interop.Object, responseData: interop.Object): number;
 
-declare function SecTrustSetSignedCertificateTimestamps(trust: interop.PointerConvertible, sctArray: interop.PointerConvertible): number;
+declare function SecTrustSetSignedCertificateTimestamps(trust: interop.Object, sctArray: interop.Object): number;
 
-declare function SecTrustCopyCertificateChain(trust: interop.PointerConvertible): interop.Pointer;
+declare function SecTrustCopyCertificateChain(trust: interop.Object): interop.Object;
 
-declare function SecTrustSetOptions(trustRef: interop.PointerConvertible, options: interop.Enum<typeof SecTrustOptionFlags>): number;
+declare function SecTrustSetOptions(trustRef: interop.Object, options: interop.Enum<typeof SecTrustOptionFlags>): number;
 
-declare function SecTrustSetParameters(trustRef: interop.PointerConvertible, action: number, actionData: interop.PointerConvertible): number;
+declare function SecTrustSetParameters(trustRef: interop.Object, action: number, actionData: interop.Object): number;
 
-declare function SecTrustSetKeychains(trust: interop.PointerConvertible, keychainOrArray: interop.PointerConvertible): number;
+declare function SecTrustSetKeychains(trust: interop.Object, keychainOrArray: interop.Object): number;
 
-declare function SecTrustGetResult(trustRef: interop.PointerConvertible, result: interop.PointerConvertible, certChain: interop.PointerConvertible, statusChain: interop.PointerConvertible): number;
+declare function SecTrustGetResult(trustRef: interop.Object, result: interop.PointerConvertible, certChain: interop.PointerConvertible, statusChain: interop.PointerConvertible): number;
 
-declare function SecTrustGetCssmResult(trust: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function SecTrustGetCssmResult(trust: interop.Object, result: interop.PointerConvertible): number;
 
-declare function SecTrustGetCssmResultCode(trust: interop.PointerConvertible, resultCode: interop.PointerConvertible): number;
+declare function SecTrustGetCssmResultCode(trust: interop.Object, resultCode: interop.PointerConvertible): number;
 
-declare function SecTrustGetTPHandle(trust: interop.PointerConvertible, handle: interop.PointerConvertible): number;
+declare function SecTrustGetTPHandle(trust: interop.Object, handle: interop.PointerConvertible): number;
 
 declare function SecTrustCopyAnchorCertificates(anchors: interop.PointerConvertible): number;
 
-declare function SecAddSharedWebCredential(fqdn: interop.PointerConvertible, account: interop.PointerConvertible, password: interop.PointerConvertible, completionHandler: (p1: interop.PointerConvertible) => void): void;
+declare function SecAddSharedWebCredential(fqdn: interop.Object, account: interop.Object, password: interop.Object, completionHandler: (p1: interop.PointerConvertible) => void): void;
 
-declare function SecRequestSharedWebCredential(fqdn: interop.PointerConvertible, account: interop.PointerConvertible, completionHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
+declare function SecRequestSharedWebCredential(fqdn: interop.Object, account: interop.Object, completionHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
 
-declare function SecCreateSharedWebCredentialPassword(): interop.Pointer;
+declare function SecCreateSharedWebCredentialPassword(): interop.Object;
 
 declare function sec_retain(obj: interop.PointerConvertible): interop.Pointer;
 
 declare function sec_release(obj: interop.PointerConvertible): void;
 
-declare function sec_trust_create(trust: interop.PointerConvertible): NSObject;
+declare function sec_trust_create(trust: interop.Object): NSObject;
 
-declare function sec_trust_copy_ref(trust: NSObject): interop.Pointer;
+declare function sec_trust_copy_ref(trust: NSObject): interop.Object;
 
-declare function sec_identity_create(identity: interop.PointerConvertible): NSObject;
+declare function sec_identity_create(identity: interop.Object): NSObject;
 
-declare function sec_identity_create_with_certificates(identity: interop.PointerConvertible, certificates: interop.PointerConvertible): NSObject;
+declare function sec_identity_create_with_certificates(identity: interop.Object, certificates: interop.Object): NSObject;
 
 declare function sec_identity_access_certificates(identity: NSObject, handler: (p1: NSObject) => void): boolean;
 
-declare function sec_identity_copy_ref(identity: NSObject): interop.Pointer;
+declare function sec_identity_copy_ref(identity: NSObject): interop.Object;
 
-declare function sec_identity_copy_certificates_ref(identity: NSObject): interop.Pointer;
+declare function sec_identity_copy_certificates_ref(identity: NSObject): interop.Object;
 
-declare function sec_certificate_create(certificate: interop.PointerConvertible): NSObject;
+declare function sec_certificate_create(certificate: interop.Object): NSObject;
 
-declare function sec_certificate_copy_ref(certificate: NSObject): interop.Pointer;
+declare function sec_certificate_copy_ref(certificate: NSObject): interop.Object;
 
 declare function sec_protocol_metadata_get_negotiated_protocol(metadata: NSObject): string;
 
@@ -10615,139 +10615,139 @@ declare function MDS_Uninstall(MdsHandle: number): number;
 
 declare function SecACLGetTypeID(): number;
 
-declare function SecACLCreateFromSimpleContents(access: interop.PointerConvertible, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.PointerConvertible, newAcl: interop.PointerConvertible): number;
+declare function SecACLCreateFromSimpleContents(access: interop.Object, applicationList: interop.Object, description: interop.Object, promptSelector: interop.PointerConvertible, newAcl: interop.PointerConvertible): number;
 
-declare function SecACLCreateWithSimpleContents(access: interop.PointerConvertible, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.Enum<typeof SecKeychainPromptSelector>, newAcl: interop.PointerConvertible): number;
+declare function SecACLCreateWithSimpleContents(access: interop.Object, applicationList: interop.Object, description: interop.Object, promptSelector: interop.Enum<typeof SecKeychainPromptSelector>, newAcl: interop.PointerConvertible): number;
 
-declare function SecACLRemove(aclRef: interop.PointerConvertible): number;
+declare function SecACLRemove(aclRef: interop.Object): number;
 
-declare function SecACLCopySimpleContents(acl: interop.PointerConvertible, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.PointerConvertible): number;
+declare function SecACLCopySimpleContents(acl: interop.Object, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.PointerConvertible): number;
 
-declare function SecACLCopyContents(acl: interop.PointerConvertible, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.PointerConvertible): number;
+declare function SecACLCopyContents(acl: interop.Object, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.PointerConvertible): number;
 
-declare function SecACLSetSimpleContents(acl: interop.PointerConvertible, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.PointerConvertible): number;
+declare function SecACLSetSimpleContents(acl: interop.Object, applicationList: interop.Object, description: interop.Object, promptSelector: interop.PointerConvertible): number;
 
-declare function SecACLSetContents(acl: interop.PointerConvertible, applicationList: interop.PointerConvertible, description: interop.PointerConvertible, promptSelector: interop.Enum<typeof SecKeychainPromptSelector>): number;
+declare function SecACLSetContents(acl: interop.Object, applicationList: interop.Object, description: interop.Object, promptSelector: interop.Enum<typeof SecKeychainPromptSelector>): number;
 
-declare function SecACLGetAuthorizations(acl: interop.PointerConvertible, tags: interop.PointerConvertible, tagCount: interop.PointerConvertible): number;
+declare function SecACLGetAuthorizations(acl: interop.Object, tags: interop.PointerConvertible, tagCount: interop.PointerConvertible): number;
 
-declare function SecACLCopyAuthorizations(acl: interop.PointerConvertible): interop.Pointer;
+declare function SecACLCopyAuthorizations(acl: interop.Object): interop.Object;
 
-declare function SecACLSetAuthorizations(acl: interop.PointerConvertible, tags: interop.PointerConvertible, tagCount: number): number;
+declare function SecACLSetAuthorizations(acl: interop.Object, tags: interop.PointerConvertible, tagCount: number): number;
 
-declare function SecACLUpdateAuthorizations(acl: interop.PointerConvertible, authorizations: interop.PointerConvertible): number;
+declare function SecACLUpdateAuthorizations(acl: interop.Object, authorizations: interop.Object): number;
 
 declare function SecIdentitySearchGetTypeID(): number;
 
-declare function SecIdentitySearchCreate(keychainOrArray: interop.PointerConvertible, keyUsage: number, searchRef: interop.PointerConvertible): number;
+declare function SecIdentitySearchCreate(keychainOrArray: interop.Object, keyUsage: number, searchRef: interop.PointerConvertible): number;
 
-declare function SecIdentitySearchCopyNext(searchRef: interop.PointerConvertible, identity: interop.PointerConvertible): number;
+declare function SecIdentitySearchCopyNext(searchRef: interop.Object, identity: interop.PointerConvertible): number;
 
 declare function SecKeychainItemGetTypeID(): number;
 
-declare function SecKeychainItemModifyAttributesAndData(itemRef: interop.PointerConvertible, attrList: interop.PointerConvertible, length: number, data: interop.PointerConvertible): number;
+declare function SecKeychainItemModifyAttributesAndData(itemRef: interop.Object, attrList: interop.PointerConvertible, length: number, data: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCreateFromContent(itemClass: interop.Enum<typeof SecItemClass>, attrList: interop.PointerConvertible, length: number, data: interop.PointerConvertible, keychainRef: interop.PointerConvertible, initialAccess: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainItemCreateFromContent(itemClass: interop.Enum<typeof SecItemClass>, attrList: interop.PointerConvertible, length: number, data: interop.PointerConvertible, keychainRef: interop.Object, initialAccess: interop.Object, itemRef: interop.PointerConvertible): number;
 
-declare function SecKeychainItemModifyContent(itemRef: interop.PointerConvertible, attrList: interop.PointerConvertible, length: number, data: interop.PointerConvertible): number;
+declare function SecKeychainItemModifyContent(itemRef: interop.Object, attrList: interop.PointerConvertible, length: number, data: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCopyContent(itemRef: interop.PointerConvertible, itemClass: interop.PointerConvertible, attrList: interop.PointerConvertible, length: interop.PointerConvertible, outData: interop.PointerConvertible): number;
+declare function SecKeychainItemCopyContent(itemRef: interop.Object, itemClass: interop.PointerConvertible, attrList: interop.PointerConvertible, length: interop.PointerConvertible, outData: interop.PointerConvertible): number;
 
 declare function SecKeychainItemFreeContent(attrList: interop.PointerConvertible, data: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCopyAttributesAndData(itemRef: interop.PointerConvertible, info: interop.PointerConvertible, itemClass: interop.PointerConvertible, attrList: interop.PointerConvertible, length: interop.PointerConvertible, outData: interop.PointerConvertible): number;
+declare function SecKeychainItemCopyAttributesAndData(itemRef: interop.Object, info: interop.PointerConvertible, itemClass: interop.PointerConvertible, attrList: interop.PointerConvertible, length: interop.PointerConvertible, outData: interop.PointerConvertible): number;
 
 declare function SecKeychainItemFreeAttributesAndData(attrList: interop.PointerConvertible, data: interop.PointerConvertible): number;
 
-declare function SecKeychainItemDelete(itemRef: interop.PointerConvertible): number;
+declare function SecKeychainItemDelete(itemRef: interop.Object): number;
 
-declare function SecKeychainItemCopyKeychain(itemRef: interop.PointerConvertible, keychainRef: interop.PointerConvertible): number;
+declare function SecKeychainItemCopyKeychain(itemRef: interop.Object, keychainRef: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCreateCopy(itemRef: interop.PointerConvertible, destKeychainRef: interop.PointerConvertible, initialAccess: interop.PointerConvertible, itemCopy: interop.PointerConvertible): number;
+declare function SecKeychainItemCreateCopy(itemRef: interop.Object, destKeychainRef: interop.Object, initialAccess: interop.Object, itemCopy: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCreatePersistentReference(itemRef: interop.PointerConvertible, persistentItemRef: interop.PointerConvertible): number;
+declare function SecKeychainItemCreatePersistentReference(itemRef: interop.Object, persistentItemRef: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCopyFromPersistentReference(persistentItemRef: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainItemCopyFromPersistentReference(persistentItemRef: interop.Object, itemRef: interop.PointerConvertible): number;
 
-declare function SecKeychainItemGetDLDBHandle(keyItemRef: interop.PointerConvertible, dldbHandle: interop.PointerConvertible): number;
+declare function SecKeychainItemGetDLDBHandle(keyItemRef: interop.Object, dldbHandle: interop.PointerConvertible): number;
 
-declare function SecKeychainItemGetUniqueRecordID(itemRef: interop.PointerConvertible, uniqueRecordID: interop.PointerConvertible): number;
+declare function SecKeychainItemGetUniqueRecordID(itemRef: interop.Object, uniqueRecordID: interop.PointerConvertible): number;
 
-declare function SecKeychainItemCopyAccess(itemRef: interop.PointerConvertible, access: interop.PointerConvertible): number;
+declare function SecKeychainItemCopyAccess(itemRef: interop.Object, access: interop.PointerConvertible): number;
 
-declare function SecKeychainItemSetAccess(itemRef: interop.PointerConvertible, access: interop.PointerConvertible): number;
+declare function SecKeychainItemSetAccess(itemRef: interop.Object, access: interop.Object): number;
 
 declare function SecKeychainSearchGetTypeID(): number;
 
-declare function SecKeychainSearchCreateFromAttributes(keychainOrArray: interop.PointerConvertible, itemClass: interop.Enum<typeof SecItemClass>, attrList: interop.PointerConvertible, searchRef: interop.PointerConvertible): number;
+declare function SecKeychainSearchCreateFromAttributes(keychainOrArray: interop.Object, itemClass: interop.Enum<typeof SecItemClass>, attrList: interop.PointerConvertible, searchRef: interop.PointerConvertible): number;
 
-declare function SecKeychainSearchCopyNext(searchRef: interop.PointerConvertible, itemRef: interop.PointerConvertible): number;
+declare function SecKeychainSearchCopyNext(searchRef: interop.Object, itemRef: interop.PointerConvertible): number;
 
 declare function SecPolicySearchGetTypeID(): number;
 
 declare function SecPolicySearchCreate(certType: number, policyOID: interop.PointerConvertible, value: interop.PointerConvertible, searchRef: interop.PointerConvertible): number;
 
-declare function SecPolicySearchCopyNext(searchRef: interop.PointerConvertible, policyRef: interop.PointerConvertible): number;
+declare function SecPolicySearchCopyNext(searchRef: interop.Object, policyRef: interop.PointerConvertible): number;
 
 declare function SecTrustedApplicationGetTypeID(): number;
 
 declare function SecTrustedApplicationCreateFromPath(path: string, app: interop.PointerConvertible): number;
 
-declare function SecTrustedApplicationCopyData(appRef: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function SecTrustedApplicationCopyData(appRef: interop.Object, data: interop.PointerConvertible): number;
 
-declare function SecTrustedApplicationSetData(appRef: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function SecTrustedApplicationSetData(appRef: interop.Object, data: interop.Object): number;
 
-declare function SecTrustSettingsCopyTrustSettings(certRef: interop.PointerConvertible, domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettings: interop.PointerConvertible): number;
+declare function SecTrustSettingsCopyTrustSettings(certRef: interop.Object, domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettings: interop.PointerConvertible): number;
 
-declare function SecTrustSettingsSetTrustSettings(certRef: interop.PointerConvertible, domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettingsDictOrArray: interop.PointerConvertible): number;
+declare function SecTrustSettingsSetTrustSettings(certRef: interop.Object, domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettingsDictOrArray: interop.Object): number;
 
-declare function SecTrustSettingsRemoveTrustSettings(certRef: interop.PointerConvertible, domain: interop.Enum<typeof SecTrustSettingsDomain>): number;
+declare function SecTrustSettingsRemoveTrustSettings(certRef: interop.Object, domain: interop.Enum<typeof SecTrustSettingsDomain>): number;
 
 declare function SecTrustSettingsCopyCertificates(domain: interop.Enum<typeof SecTrustSettingsDomain>, certArray: interop.PointerConvertible): number;
 
-declare function SecTrustSettingsCopyModificationDate(certRef: interop.PointerConvertible, domain: interop.Enum<typeof SecTrustSettingsDomain>, modificationDate: interop.PointerConvertible): number;
+declare function SecTrustSettingsCopyModificationDate(certRef: interop.Object, domain: interop.Enum<typeof SecTrustSettingsDomain>, modificationDate: interop.PointerConvertible): number;
 
 declare function SecTrustSettingsCreateExternalRepresentation(domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettings: interop.PointerConvertible): number;
 
-declare function SecTrustSettingsImportExternalRepresentation(domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettings: interop.PointerConvertible): number;
+declare function SecTrustSettingsImportExternalRepresentation(domain: interop.Enum<typeof SecTrustSettingsDomain>, trustSettings: interop.Object): number;
 
 declare function SecStaticCodeGetTypeID(): number;
 
-declare function SecStaticCodeCreateWithPath(path: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, staticCode: interop.PointerConvertible): number;
+declare function SecStaticCodeCreateWithPath(path: interop.Object, flags: interop.Enum<typeof SecCSFlags>, staticCode: interop.PointerConvertible): number;
 
-declare function SecStaticCodeCreateWithPathAndAttributes(path: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, attributes: interop.PointerConvertible, staticCode: interop.PointerConvertible): number;
+declare function SecStaticCodeCreateWithPathAndAttributes(path: interop.Object, flags: interop.Enum<typeof SecCSFlags>, attributes: interop.Object, staticCode: interop.PointerConvertible): number;
 
-declare function SecStaticCodeCheckValidity(staticCode: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
+declare function SecStaticCodeCheckValidity(staticCode: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.Object): number;
 
-declare function SecStaticCodeCheckValidityWithErrors(staticCode: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible, errors: interop.PointerConvertible): number;
+declare function SecStaticCodeCheckValidityWithErrors(staticCode: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.Object, errors: interop.PointerConvertible): number;
 
 declare function SecCodeGetTypeID(): number;
 
 declare function SecCodeCopySelf(flags: interop.Enum<typeof SecCSFlags>, self: interop.PointerConvertible): number;
 
-declare function SecCodeCopyStaticCode(code: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, staticCode: interop.PointerConvertible): number;
+declare function SecCodeCopyStaticCode(code: interop.Object, flags: interop.Enum<typeof SecCSFlags>, staticCode: interop.PointerConvertible): number;
 
-declare function SecCodeCopyHost(guest: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, host: interop.PointerConvertible): number;
+declare function SecCodeCopyHost(guest: interop.Object, flags: interop.Enum<typeof SecCSFlags>, host: interop.PointerConvertible): number;
 
-declare function SecCodeCopyGuestWithAttributes(host: interop.PointerConvertible, attributes: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, guest: interop.PointerConvertible): number;
+declare function SecCodeCopyGuestWithAttributes(host: interop.Object, attributes: interop.Object, flags: interop.Enum<typeof SecCSFlags>, guest: interop.PointerConvertible): number;
 
 declare function SecCodeCreateWithXPCMessage(message: NSObject, flags: interop.Enum<typeof SecCSFlags>, target: interop.PointerConvertible): number;
 
-declare function SecCodeCheckValidity(code: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
+declare function SecCodeCheckValidity(code: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.Object): number;
 
-declare function SecCodeCheckValidityWithErrors(code: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible, errors: interop.PointerConvertible): number;
+declare function SecCodeCheckValidityWithErrors(code: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.Object, errors: interop.PointerConvertible): number;
 
-declare function SecCodeValidateFileResource(code: interop.PointerConvertible, relativePath: interop.PointerConvertible, fileData: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>): number;
+declare function SecCodeValidateFileResource(code: interop.Object, relativePath: interop.Object, fileData: interop.Object, flags: interop.Enum<typeof SecCSFlags>): number;
 
-declare function SecCodeCopyPath(staticCode: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, path: interop.PointerConvertible): number;
+declare function SecCodeCopyPath(staticCode: interop.Object, flags: interop.Enum<typeof SecCSFlags>, path: interop.PointerConvertible): number;
 
-declare function SecCodeCopyDesignatedRequirement(code: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
+declare function SecCodeCopyDesignatedRequirement(code: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
 
-declare function SecCodeCopySigningInformation(code: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, information: interop.PointerConvertible): number;
+declare function SecCodeCopySigningInformation(code: interop.Object, flags: interop.Enum<typeof SecCSFlags>, information: interop.PointerConvertible): number;
 
-declare function SecCodeMapMemory(code: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>): number;
+declare function SecCodeMapMemory(code: interop.Object, flags: interop.Enum<typeof SecCSFlags>): number;
 
-declare function SecHostCreateGuest(host: number, status: number, path: interop.PointerConvertible, attributes: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, newGuest: interop.PointerConvertible): number;
+declare function SecHostCreateGuest(host: number, status: number, path: interop.Object, attributes: interop.Object, flags: interop.Enum<typeof SecCSFlags>, newGuest: interop.PointerConvertible): number;
 
 declare function SecHostRemoveGuest(host: number, guest: number, flags: interop.Enum<typeof SecCSFlags>): number;
 
@@ -10755,37 +10755,37 @@ declare function SecHostSelectGuest(guestRef: number, flags: interop.Enum<typeof
 
 declare function SecHostSelectedGuest(flags: interop.Enum<typeof SecCSFlags>, guestRef: interop.PointerConvertible): number;
 
-declare function SecHostSetGuestStatus(guestRef: number, status: number, attributes: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>): number;
+declare function SecHostSetGuestStatus(guestRef: number, status: number, attributes: interop.Object, flags: interop.Enum<typeof SecCSFlags>): number;
 
 declare function SecHostSetHostingPort(hostingPort: number, flags: interop.Enum<typeof SecCSFlags>): number;
 
 declare function SecRequirementGetTypeID(): number;
 
-declare function SecRequirementCreateWithData(data: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
+declare function SecRequirementCreateWithData(data: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
 
-declare function SecRequirementCreateWithString(text: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
+declare function SecRequirementCreateWithString(text: interop.Object, flags: interop.Enum<typeof SecCSFlags>, requirement: interop.PointerConvertible): number;
 
-declare function SecRequirementCreateWithStringAndErrors(text: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, errors: interop.PointerConvertible, requirement: interop.PointerConvertible): number;
+declare function SecRequirementCreateWithStringAndErrors(text: interop.Object, flags: interop.Enum<typeof SecCSFlags>, errors: interop.PointerConvertible, requirement: interop.PointerConvertible): number;
 
-declare function SecRequirementCopyData(requirement: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, data: interop.PointerConvertible): number;
+declare function SecRequirementCopyData(requirement: interop.Object, flags: interop.Enum<typeof SecCSFlags>, data: interop.PointerConvertible): number;
 
-declare function SecRequirementCopyString(requirement: interop.PointerConvertible, flags: interop.Enum<typeof SecCSFlags>, text: interop.PointerConvertible): number;
+declare function SecRequirementCopyString(requirement: interop.Object, flags: interop.Enum<typeof SecCSFlags>, text: interop.PointerConvertible): number;
 
 declare function SecTaskGetTypeID(): number;
 
-declare function SecTaskCreateWithAuditToken(allocator: interop.PointerConvertible, token: audit_token_t): interop.Pointer;
+declare function SecTaskCreateWithAuditToken(allocator: interop.Object, token: audit_token_t): interop.Object;
 
-declare function SecTaskCreateFromSelf(allocator: interop.PointerConvertible): interop.Pointer;
+declare function SecTaskCreateFromSelf(allocator: interop.Object): interop.Object;
 
-declare function SecTaskCopyValueForEntitlement(task: interop.PointerConvertible, entitlement: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecTaskCopyValueForEntitlement(task: interop.Object, entitlement: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecTaskCopyValuesForEntitlements(task: interop.PointerConvertible, entitlements: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecTaskCopyValuesForEntitlements(task: interop.Object, entitlements: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecTaskCopySigningIdentifier(task: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecTaskCopySigningIdentifier(task: interop.Object, error: interop.PointerConvertible): interop.Object;
 
 declare function AuthorizationRightGet(rightName: string, rightDefinition: interop.PointerConvertible): number;
 
-declare function AuthorizationRightSet(authRef: interop.PointerConvertible, rightName: string, rightDefinition: interop.PointerConvertible, descriptionKey: interop.PointerConvertible, bundle: interop.PointerConvertible, localeTableName: interop.PointerConvertible): number;
+declare function AuthorizationRightSet(authRef: interop.PointerConvertible, rightName: string, rightDefinition: interop.Object, descriptionKey: interop.Object, bundle: interop.Object, localeTableName: interop.Object): number;
 
 declare function AuthorizationRightRemove(authRef: interop.PointerConvertible, rightName: string): number;
 
@@ -10793,293 +10793,293 @@ declare function CMSDecoderGetTypeID(): number;
 
 declare function CMSDecoderCreate(cmsDecoderOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderUpdateMessage(cmsDecoder: interop.PointerConvertible, msgBytes: interop.PointerConvertible, msgBytesLen: number): number;
+declare function CMSDecoderUpdateMessage(cmsDecoder: interop.Object, msgBytes: interop.PointerConvertible, msgBytesLen: number): number;
 
-declare function CMSDecoderFinalizeMessage(cmsDecoder: interop.PointerConvertible): number;
+declare function CMSDecoderFinalizeMessage(cmsDecoder: interop.Object): number;
 
-declare function CMSDecoderSetDetachedContent(cmsDecoder: interop.PointerConvertible, detachedContent: interop.PointerConvertible): number;
+declare function CMSDecoderSetDetachedContent(cmsDecoder: interop.Object, detachedContent: interop.Object): number;
 
-declare function CMSDecoderCopyDetachedContent(cmsDecoder: interop.PointerConvertible, detachedContentOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopyDetachedContent(cmsDecoder: interop.Object, detachedContentOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderSetSearchKeychain(cmsDecoder: interop.PointerConvertible, keychainOrArray: interop.PointerConvertible): number;
+declare function CMSDecoderSetSearchKeychain(cmsDecoder: interop.Object, keychainOrArray: interop.Object): number;
 
-declare function CMSDecoderGetNumSigners(cmsDecoder: interop.PointerConvertible, numSignersOut: interop.PointerConvertible): number;
+declare function CMSDecoderGetNumSigners(cmsDecoder: interop.Object, numSignersOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerStatus(cmsDecoder: interop.PointerConvertible, signerIndex: number, policyOrArray: interop.PointerConvertible, evaluateSecTrust: number, signerStatusOut: interop.PointerConvertible, secTrustOut: interop.PointerConvertible, certVerifyResultCodeOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerStatus(cmsDecoder: interop.Object, signerIndex: number, policyOrArray: interop.Object, evaluateSecTrust: number, signerStatusOut: interop.PointerConvertible, secTrustOut: interop.PointerConvertible, certVerifyResultCodeOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerEmailAddress(cmsDecoder: interop.PointerConvertible, signerIndex: number, signerEmailAddressOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerEmailAddress(cmsDecoder: interop.Object, signerIndex: number, signerEmailAddressOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerCert(cmsDecoder: interop.PointerConvertible, signerIndex: number, signerCertOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerCert(cmsDecoder: interop.Object, signerIndex: number, signerCertOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderIsContentEncrypted(cmsDecoder: interop.PointerConvertible, isEncryptedOut: interop.PointerConvertible): number;
+declare function CMSDecoderIsContentEncrypted(cmsDecoder: interop.Object, isEncryptedOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopyEncapsulatedContentType(cmsDecoder: interop.PointerConvertible, eContentTypeOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopyEncapsulatedContentType(cmsDecoder: interop.Object, eContentTypeOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopyAllCerts(cmsDecoder: interop.PointerConvertible, certsOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopyAllCerts(cmsDecoder: interop.Object, certsOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopyContent(cmsDecoder: interop.PointerConvertible, contentOut: interop.PointerConvertible): number;
+declare function CMSDecoderCopyContent(cmsDecoder: interop.Object, contentOut: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerSigningTime(cmsDecoder: interop.PointerConvertible, signerIndex: number, signingTime: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerSigningTime(cmsDecoder: interop.Object, signerIndex: number, signingTime: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerTimestamp(cmsDecoder: interop.PointerConvertible, signerIndex: number, timestamp: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerTimestamp(cmsDecoder: interop.Object, signerIndex: number, timestamp: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerTimestampWithPolicy(cmsDecoder: interop.PointerConvertible, timeStampPolicy: interop.PointerConvertible, signerIndex: number, timestamp: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerTimestampWithPolicy(cmsDecoder: interop.Object, timeStampPolicy: interop.Object, signerIndex: number, timestamp: interop.PointerConvertible): number;
 
-declare function CMSDecoderCopySignerTimestampCertificates(cmsDecoder: interop.PointerConvertible, signerIndex: number, certificateRefs: interop.PointerConvertible): number;
+declare function CMSDecoderCopySignerTimestampCertificates(cmsDecoder: interop.Object, signerIndex: number, certificateRefs: interop.PointerConvertible): number;
 
 declare function CMSEncoderGetTypeID(): number;
 
 declare function CMSEncoderCreate(cmsEncoderOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderSetSignerAlgorithm(cmsEncoder: interop.PointerConvertible, digestAlgorithm: interop.PointerConvertible): number;
+declare function CMSEncoderSetSignerAlgorithm(cmsEncoder: interop.Object, digestAlgorithm: interop.Object): number;
 
-declare function CMSEncoderAddSigners(cmsEncoder: interop.PointerConvertible, signerOrArray: interop.PointerConvertible): number;
+declare function CMSEncoderAddSigners(cmsEncoder: interop.Object, signerOrArray: interop.Object): number;
 
-declare function CMSEncoderCopySigners(cmsEncoder: interop.PointerConvertible, signersOut: interop.PointerConvertible): number;
+declare function CMSEncoderCopySigners(cmsEncoder: interop.Object, signersOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderAddRecipients(cmsEncoder: interop.PointerConvertible, recipientOrArray: interop.PointerConvertible): number;
+declare function CMSEncoderAddRecipients(cmsEncoder: interop.Object, recipientOrArray: interop.Object): number;
 
-declare function CMSEncoderCopyRecipients(cmsEncoder: interop.PointerConvertible, recipientsOut: interop.PointerConvertible): number;
+declare function CMSEncoderCopyRecipients(cmsEncoder: interop.Object, recipientsOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderSetHasDetachedContent(cmsEncoder: interop.PointerConvertible, detachedContent: number): number;
+declare function CMSEncoderSetHasDetachedContent(cmsEncoder: interop.Object, detachedContent: number): number;
 
-declare function CMSEncoderGetHasDetachedContent(cmsEncoder: interop.PointerConvertible, detachedContentOut: interop.PointerConvertible): number;
+declare function CMSEncoderGetHasDetachedContent(cmsEncoder: interop.Object, detachedContentOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderSetEncapsulatedContentType(cmsEncoder: interop.PointerConvertible, eContentType: interop.PointerConvertible): number;
+declare function CMSEncoderSetEncapsulatedContentType(cmsEncoder: interop.Object, eContentType: interop.PointerConvertible): number;
 
-declare function CMSEncoderSetEncapsulatedContentTypeOID(cmsEncoder: interop.PointerConvertible, eContentTypeOID: interop.PointerConvertible): number;
+declare function CMSEncoderSetEncapsulatedContentTypeOID(cmsEncoder: interop.Object, eContentTypeOID: interop.Object): number;
 
-declare function CMSEncoderCopyEncapsulatedContentType(cmsEncoder: interop.PointerConvertible, eContentTypeOut: interop.PointerConvertible): number;
+declare function CMSEncoderCopyEncapsulatedContentType(cmsEncoder: interop.Object, eContentTypeOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderAddSupportingCerts(cmsEncoder: interop.PointerConvertible, certOrArray: interop.PointerConvertible): number;
+declare function CMSEncoderAddSupportingCerts(cmsEncoder: interop.Object, certOrArray: interop.Object): number;
 
-declare function CMSEncoderCopySupportingCerts(cmsEncoder: interop.PointerConvertible, certsOut: interop.PointerConvertible): number;
+declare function CMSEncoderCopySupportingCerts(cmsEncoder: interop.Object, certsOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderAddSignedAttributes(cmsEncoder: interop.PointerConvertible, signedAttributes: interop.Enum<typeof CMSSignedAttributes>): number;
+declare function CMSEncoderAddSignedAttributes(cmsEncoder: interop.Object, signedAttributes: interop.Enum<typeof CMSSignedAttributes>): number;
 
-declare function CMSEncoderSetCertificateChainMode(cmsEncoder: interop.PointerConvertible, chainMode: interop.Enum<typeof CMSCertificateChainMode>): number;
+declare function CMSEncoderSetCertificateChainMode(cmsEncoder: interop.Object, chainMode: interop.Enum<typeof CMSCertificateChainMode>): number;
 
-declare function CMSEncoderGetCertificateChainMode(cmsEncoder: interop.PointerConvertible, chainModeOut: interop.PointerConvertible): number;
+declare function CMSEncoderGetCertificateChainMode(cmsEncoder: interop.Object, chainModeOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderUpdateContent(cmsEncoder: interop.PointerConvertible, content: interop.PointerConvertible, contentLen: number): number;
+declare function CMSEncoderUpdateContent(cmsEncoder: interop.Object, content: interop.PointerConvertible, contentLen: number): number;
 
-declare function CMSEncoderCopyEncodedContent(cmsEncoder: interop.PointerConvertible, encodedContentOut: interop.PointerConvertible): number;
+declare function CMSEncoderCopyEncodedContent(cmsEncoder: interop.Object, encodedContentOut: interop.PointerConvertible): number;
 
-declare function CMSEncode(signers: interop.PointerConvertible, recipients: interop.PointerConvertible, eContentType: interop.PointerConvertible, detachedContent: number, signedAttributes: interop.Enum<typeof CMSSignedAttributes>, content: interop.PointerConvertible, contentLen: number, encodedContentOut: interop.PointerConvertible): number;
+declare function CMSEncode(signers: interop.Object, recipients: interop.Object, eContentType: interop.PointerConvertible, detachedContent: number, signedAttributes: interop.Enum<typeof CMSSignedAttributes>, content: interop.PointerConvertible, contentLen: number, encodedContentOut: interop.PointerConvertible): number;
 
-declare function CMSEncodeContent(signers: interop.PointerConvertible, recipients: interop.PointerConvertible, eContentTypeOID: interop.PointerConvertible, detachedContent: number, signedAttributes: interop.Enum<typeof CMSSignedAttributes>, content: interop.PointerConvertible, contentLen: number, encodedContentOut: interop.PointerConvertible): number;
+declare function CMSEncodeContent(signers: interop.Object, recipients: interop.Object, eContentTypeOID: interop.Object, detachedContent: number, signedAttributes: interop.Enum<typeof CMSSignedAttributes>, content: interop.PointerConvertible, contentLen: number, encodedContentOut: interop.PointerConvertible): number;
 
-declare function CMSEncoderCopySignerTimestamp(cmsEncoder: interop.PointerConvertible, signerIndex: number, timestamp: interop.PointerConvertible): number;
+declare function CMSEncoderCopySignerTimestamp(cmsEncoder: interop.Object, signerIndex: number, timestamp: interop.PointerConvertible): number;
 
-declare function CMSEncoderCopySignerTimestampWithPolicy(cmsEncoder: interop.PointerConvertible, timeStampPolicy: interop.PointerConvertible, signerIndex: number, timestamp: interop.PointerConvertible): number;
+declare function CMSEncoderCopySignerTimestampWithPolicy(cmsEncoder: interop.Object, timeStampPolicy: interop.Object, signerIndex: number, timestamp: interop.PointerConvertible): number;
 
 declare function SSLContextGetTypeID(): number;
 
-declare function SSLCreateContext(alloc: interop.PointerConvertible, protocolSide: interop.Enum<typeof SSLProtocolSide>, connectionType: interop.Enum<typeof SSLConnectionType>): interop.Pointer;
+declare function SSLCreateContext(alloc: interop.Object, protocolSide: interop.Enum<typeof SSLProtocolSide>, connectionType: interop.Enum<typeof SSLConnectionType>): interop.Object;
 
 declare function SSLNewContext(isServer: number, contextPtr: interop.PointerConvertible): number;
 
-declare function SSLDisposeContext(context: interop.PointerConvertible): number;
+declare function SSLDisposeContext(context: interop.Object): number;
 
-declare function SSLGetSessionState(context: interop.PointerConvertible, state: interop.PointerConvertible): number;
+declare function SSLGetSessionState(context: interop.Object, state: interop.PointerConvertible): number;
 
-declare function SSLSetSessionOption(context: interop.PointerConvertible, option: interop.Enum<typeof SSLSessionOption>, value: number): number;
+declare function SSLSetSessionOption(context: interop.Object, option: interop.Enum<typeof SSLSessionOption>, value: number): number;
 
-declare function SSLGetSessionOption(context: interop.PointerConvertible, option: interop.Enum<typeof SSLSessionOption>, value: interop.PointerConvertible): number;
+declare function SSLGetSessionOption(context: interop.Object, option: interop.Enum<typeof SSLSessionOption>, value: interop.PointerConvertible): number;
 
-declare function SSLSetIOFuncs(context: interop.PointerConvertible, readFunc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, writeFunc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): number;
+declare function SSLSetIOFuncs(context: interop.Object, readFunc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, writeFunc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): number;
 
-declare function SSLSetSessionConfig(context: interop.PointerConvertible, config: interop.PointerConvertible): number;
+declare function SSLSetSessionConfig(context: interop.Object, config: interop.Object): number;
 
-declare function SSLSetProtocolVersionMin(context: interop.PointerConvertible, minVersion: interop.Enum<typeof SSLProtocol>): number;
+declare function SSLSetProtocolVersionMin(context: interop.Object, minVersion: interop.Enum<typeof SSLProtocol>): number;
 
-declare function SSLGetProtocolVersionMin(context: interop.PointerConvertible, minVersion: interop.PointerConvertible): number;
+declare function SSLGetProtocolVersionMin(context: interop.Object, minVersion: interop.PointerConvertible): number;
 
-declare function SSLSetProtocolVersionMax(context: interop.PointerConvertible, maxVersion: interop.Enum<typeof SSLProtocol>): number;
+declare function SSLSetProtocolVersionMax(context: interop.Object, maxVersion: interop.Enum<typeof SSLProtocol>): number;
 
-declare function SSLGetProtocolVersionMax(context: interop.PointerConvertible, maxVersion: interop.PointerConvertible): number;
+declare function SSLGetProtocolVersionMax(context: interop.Object, maxVersion: interop.PointerConvertible): number;
 
-declare function SSLSetProtocolVersionEnabled(context: interop.PointerConvertible, protocol: interop.Enum<typeof SSLProtocol>, enable: number): number;
+declare function SSLSetProtocolVersionEnabled(context: interop.Object, protocol: interop.Enum<typeof SSLProtocol>, enable: number): number;
 
-declare function SSLGetProtocolVersionEnabled(context: interop.PointerConvertible, protocol: interop.Enum<typeof SSLProtocol>, enable: interop.PointerConvertible): number;
+declare function SSLGetProtocolVersionEnabled(context: interop.Object, protocol: interop.Enum<typeof SSLProtocol>, enable: interop.PointerConvertible): number;
 
-declare function SSLSetProtocolVersion(context: interop.PointerConvertible, version: interop.Enum<typeof SSLProtocol>): number;
+declare function SSLSetProtocolVersion(context: interop.Object, version: interop.Enum<typeof SSLProtocol>): number;
 
-declare function SSLGetProtocolVersion(context: interop.PointerConvertible, protocol: interop.PointerConvertible): number;
+declare function SSLGetProtocolVersion(context: interop.Object, protocol: interop.PointerConvertible): number;
 
-declare function SSLSetCertificate(context: interop.PointerConvertible, certRefs: interop.PointerConvertible): number;
+declare function SSLSetCertificate(context: interop.Object, certRefs: interop.Object): number;
 
-declare function SSLSetConnection(context: interop.PointerConvertible, connection: interop.PointerConvertible): number;
+declare function SSLSetConnection(context: interop.Object, connection: interop.PointerConvertible): number;
 
-declare function SSLGetConnection(context: interop.PointerConvertible, connection: interop.PointerConvertible): number;
+declare function SSLGetConnection(context: interop.Object, connection: interop.PointerConvertible): number;
 
-declare function SSLSetPeerDomainName(context: interop.PointerConvertible, peerName: string, peerNameLen: number): number;
+declare function SSLSetPeerDomainName(context: interop.Object, peerName: string, peerNameLen: number): number;
 
-declare function SSLGetPeerDomainNameLength(context: interop.PointerConvertible, peerNameLen: interop.PointerConvertible): number;
+declare function SSLGetPeerDomainNameLength(context: interop.Object, peerNameLen: interop.PointerConvertible): number;
 
-declare function SSLGetPeerDomainName(context: interop.PointerConvertible, peerName: string, peerNameLen: interop.PointerConvertible): number;
+declare function SSLGetPeerDomainName(context: interop.Object, peerName: string, peerNameLen: interop.PointerConvertible): number;
 
-declare function SSLCopyRequestedPeerNameLength(ctx: interop.PointerConvertible, peerNameLen: interop.PointerConvertible): number;
+declare function SSLCopyRequestedPeerNameLength(ctx: interop.Object, peerNameLen: interop.PointerConvertible): number;
 
-declare function SSLCopyRequestedPeerName(context: interop.PointerConvertible, peerName: string, peerNameLen: interop.PointerConvertible): number;
+declare function SSLCopyRequestedPeerName(context: interop.Object, peerName: string, peerNameLen: interop.PointerConvertible): number;
 
-declare function SSLSetDatagramHelloCookie(dtlsContext: interop.PointerConvertible, cookie: interop.PointerConvertible, cookieLen: number): number;
+declare function SSLSetDatagramHelloCookie(dtlsContext: interop.Object, cookie: interop.PointerConvertible, cookieLen: number): number;
 
-declare function SSLSetMaxDatagramRecordSize(dtlsContext: interop.PointerConvertible, maxSize: number): number;
+declare function SSLSetMaxDatagramRecordSize(dtlsContext: interop.Object, maxSize: number): number;
 
-declare function SSLGetMaxDatagramRecordSize(dtlsContext: interop.PointerConvertible, maxSize: interop.PointerConvertible): number;
+declare function SSLGetMaxDatagramRecordSize(dtlsContext: interop.Object, maxSize: interop.PointerConvertible): number;
 
-declare function SSLGetNegotiatedProtocolVersion(context: interop.PointerConvertible, protocol: interop.PointerConvertible): number;
+declare function SSLGetNegotiatedProtocolVersion(context: interop.Object, protocol: interop.PointerConvertible): number;
 
-declare function SSLGetNumberSupportedCiphers(context: interop.PointerConvertible, numCiphers: interop.PointerConvertible): number;
+declare function SSLGetNumberSupportedCiphers(context: interop.Object, numCiphers: interop.PointerConvertible): number;
 
-declare function SSLGetSupportedCiphers(context: interop.PointerConvertible, ciphers: interop.PointerConvertible, numCiphers: interop.PointerConvertible): number;
+declare function SSLGetSupportedCiphers(context: interop.Object, ciphers: interop.PointerConvertible, numCiphers: interop.PointerConvertible): number;
 
-declare function SSLGetNumberEnabledCiphers(context: interop.PointerConvertible, numCiphers: interop.PointerConvertible): number;
+declare function SSLGetNumberEnabledCiphers(context: interop.Object, numCiphers: interop.PointerConvertible): number;
 
-declare function SSLSetEnabledCiphers(context: interop.PointerConvertible, ciphers: interop.PointerConvertible, numCiphers: number): number;
+declare function SSLSetEnabledCiphers(context: interop.Object, ciphers: interop.PointerConvertible, numCiphers: number): number;
 
-declare function SSLGetEnabledCiphers(context: interop.PointerConvertible, ciphers: interop.PointerConvertible, numCiphers: interop.PointerConvertible): number;
+declare function SSLGetEnabledCiphers(context: interop.Object, ciphers: interop.PointerConvertible, numCiphers: interop.PointerConvertible): number;
 
-declare function SSLSetSessionTicketsEnabled(context: interop.PointerConvertible, enabled: number): number;
+declare function SSLSetSessionTicketsEnabled(context: interop.Object, enabled: number): number;
 
-declare function SSLSetEnableCertVerify(context: interop.PointerConvertible, enableVerify: number): number;
+declare function SSLSetEnableCertVerify(context: interop.Object, enableVerify: number): number;
 
-declare function SSLGetEnableCertVerify(context: interop.PointerConvertible, enableVerify: interop.PointerConvertible): number;
+declare function SSLGetEnableCertVerify(context: interop.Object, enableVerify: interop.PointerConvertible): number;
 
-declare function SSLSetAllowsExpiredCerts(context: interop.PointerConvertible, allowsExpired: number): number;
+declare function SSLSetAllowsExpiredCerts(context: interop.Object, allowsExpired: number): number;
 
-declare function SSLGetAllowsExpiredCerts(context: interop.PointerConvertible, allowsExpired: interop.PointerConvertible): number;
+declare function SSLGetAllowsExpiredCerts(context: interop.Object, allowsExpired: interop.PointerConvertible): number;
 
-declare function SSLSetAllowsExpiredRoots(context: interop.PointerConvertible, allowsExpired: number): number;
+declare function SSLSetAllowsExpiredRoots(context: interop.Object, allowsExpired: number): number;
 
-declare function SSLGetAllowsExpiredRoots(context: interop.PointerConvertible, allowsExpired: interop.PointerConvertible): number;
+declare function SSLGetAllowsExpiredRoots(context: interop.Object, allowsExpired: interop.PointerConvertible): number;
 
-declare function SSLSetAllowsAnyRoot(context: interop.PointerConvertible, anyRoot: number): number;
+declare function SSLSetAllowsAnyRoot(context: interop.Object, anyRoot: number): number;
 
-declare function SSLGetAllowsAnyRoot(context: interop.PointerConvertible, anyRoot: interop.PointerConvertible): number;
+declare function SSLGetAllowsAnyRoot(context: interop.Object, anyRoot: interop.PointerConvertible): number;
 
-declare function SSLSetTrustedRoots(context: interop.PointerConvertible, trustedRoots: interop.PointerConvertible, replaceExisting: number): number;
+declare function SSLSetTrustedRoots(context: interop.Object, trustedRoots: interop.Object, replaceExisting: number): number;
 
-declare function SSLCopyTrustedRoots(context: interop.PointerConvertible, trustedRoots: interop.PointerConvertible): number;
+declare function SSLCopyTrustedRoots(context: interop.Object, trustedRoots: interop.PointerConvertible): number;
 
-declare function SSLCopyPeerCertificates(context: interop.PointerConvertible, certs: interop.PointerConvertible): number;
+declare function SSLCopyPeerCertificates(context: interop.Object, certs: interop.PointerConvertible): number;
 
-declare function SSLCopyPeerTrust(context: interop.PointerConvertible, trust: interop.PointerConvertible): number;
+declare function SSLCopyPeerTrust(context: interop.Object, trust: interop.PointerConvertible): number;
 
-declare function SSLSetPeerID(context: interop.PointerConvertible, peerID: interop.PointerConvertible, peerIDLen: number): number;
+declare function SSLSetPeerID(context: interop.Object, peerID: interop.PointerConvertible, peerIDLen: number): number;
 
-declare function SSLGetPeerID(context: interop.PointerConvertible, peerID: interop.PointerConvertible, peerIDLen: interop.PointerConvertible): number;
+declare function SSLGetPeerID(context: interop.Object, peerID: interop.PointerConvertible, peerIDLen: interop.PointerConvertible): number;
 
-declare function SSLGetNegotiatedCipher(context: interop.PointerConvertible, cipherSuite: interop.PointerConvertible): number;
+declare function SSLGetNegotiatedCipher(context: interop.Object, cipherSuite: interop.PointerConvertible): number;
 
-declare function SSLSetALPNProtocols(context: interop.PointerConvertible, protocols: interop.PointerConvertible): number;
+declare function SSLSetALPNProtocols(context: interop.Object, protocols: interop.Object): number;
 
-declare function SSLCopyALPNProtocols(context: interop.PointerConvertible, protocols: interop.PointerConvertible): number;
+declare function SSLCopyALPNProtocols(context: interop.Object, protocols: interop.PointerConvertible): number;
 
-declare function SSLSetOCSPResponse(context: interop.PointerConvertible, response: interop.PointerConvertible): number;
+declare function SSLSetOCSPResponse(context: interop.Object, response: interop.Object): number;
 
-declare function SSLSetEncryptionCertificate(context: interop.PointerConvertible, certRefs: interop.PointerConvertible): number;
+declare function SSLSetEncryptionCertificate(context: interop.Object, certRefs: interop.Object): number;
 
-declare function SSLSetClientSideAuthenticate(context: interop.PointerConvertible, auth: interop.Enum<typeof SSLAuthenticate>): number;
+declare function SSLSetClientSideAuthenticate(context: interop.Object, auth: interop.Enum<typeof SSLAuthenticate>): number;
 
-declare function SSLAddDistinguishedName(context: interop.PointerConvertible, derDN: interop.PointerConvertible, derDNLen: number): number;
+declare function SSLAddDistinguishedName(context: interop.Object, derDN: interop.PointerConvertible, derDNLen: number): number;
 
-declare function SSLSetCertificateAuthorities(context: interop.PointerConvertible, certificateOrArray: interop.PointerConvertible, replaceExisting: number): number;
+declare function SSLSetCertificateAuthorities(context: interop.Object, certificateOrArray: interop.Object, replaceExisting: number): number;
 
-declare function SSLCopyCertificateAuthorities(context: interop.PointerConvertible, certificates: interop.PointerConvertible): number;
+declare function SSLCopyCertificateAuthorities(context: interop.Object, certificates: interop.PointerConvertible): number;
 
-declare function SSLCopyDistinguishedNames(context: interop.PointerConvertible, names: interop.PointerConvertible): number;
+declare function SSLCopyDistinguishedNames(context: interop.Object, names: interop.PointerConvertible): number;
 
-declare function SSLGetClientCertificateState(context: interop.PointerConvertible, clientState: interop.PointerConvertible): number;
+declare function SSLGetClientCertificateState(context: interop.Object, clientState: interop.PointerConvertible): number;
 
-declare function SSLSetDiffieHellmanParams(context: interop.PointerConvertible, dhParams: interop.PointerConvertible, dhParamsLen: number): number;
+declare function SSLSetDiffieHellmanParams(context: interop.Object, dhParams: interop.PointerConvertible, dhParamsLen: number): number;
 
-declare function SSLGetDiffieHellmanParams(context: interop.PointerConvertible, dhParams: interop.PointerConvertible, dhParamsLen: interop.PointerConvertible): number;
+declare function SSLGetDiffieHellmanParams(context: interop.Object, dhParams: interop.PointerConvertible, dhParamsLen: interop.PointerConvertible): number;
 
-declare function SSLSetRsaBlinding(context: interop.PointerConvertible, blinding: number): number;
+declare function SSLSetRsaBlinding(context: interop.Object, blinding: number): number;
 
-declare function SSLGetRsaBlinding(context: interop.PointerConvertible, blinding: interop.PointerConvertible): number;
+declare function SSLGetRsaBlinding(context: interop.Object, blinding: interop.PointerConvertible): number;
 
-declare function SSLHandshake(context: interop.PointerConvertible): number;
+declare function SSLHandshake(context: interop.Object): number;
 
-declare function SSLReHandshake(context: interop.PointerConvertible): number;
+declare function SSLReHandshake(context: interop.Object): number;
 
-declare function SSLWrite(context: interop.PointerConvertible, data: interop.PointerConvertible, dataLength: number, processed: interop.PointerConvertible): number;
+declare function SSLWrite(context: interop.Object, data: interop.PointerConvertible, dataLength: number, processed: interop.PointerConvertible): number;
 
-declare function SSLRead(context: interop.PointerConvertible, data: interop.PointerConvertible, dataLength: number, processed: interop.PointerConvertible): number;
+declare function SSLRead(context: interop.Object, data: interop.PointerConvertible, dataLength: number, processed: interop.PointerConvertible): number;
 
-declare function SSLGetBufferedReadSize(context: interop.PointerConvertible, bufferSize: interop.PointerConvertible): number;
+declare function SSLGetBufferedReadSize(context: interop.Object, bufferSize: interop.PointerConvertible): number;
 
-declare function SSLGetDatagramWriteSize(dtlsContext: interop.PointerConvertible, bufSize: interop.PointerConvertible): number;
+declare function SSLGetDatagramWriteSize(dtlsContext: interop.Object, bufSize: interop.PointerConvertible): number;
 
-declare function SSLClose(context: interop.PointerConvertible): number;
+declare function SSLClose(context: interop.Object): number;
 
-declare function SSLSetError(context: interop.PointerConvertible, status: number): number;
+declare function SSLSetError(context: interop.Object, status: number): number;
 
 declare function SecTransformGetTypeID(): number;
 
 declare function SecGroupTransformGetTypeID(): number;
 
-declare function SecTransformCreateFromExternalRepresentation(dictionary: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformCreateFromExternalRepresentation(dictionary: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecTransformCopyExternalRepresentation(transformRef: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformCopyExternalRepresentation(transformRef: interop.Object): interop.Object;
 
-declare function SecTransformCreateGroupTransform(): interop.Pointer;
+declare function SecTransformCreateGroupTransform(): interop.Object;
 
-declare function SecTransformConnectTransforms(sourceTransformRef: interop.PointerConvertible, sourceAttributeName: interop.PointerConvertible, destinationTransformRef: interop.PointerConvertible, destinationAttributeName: interop.PointerConvertible, group: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformConnectTransforms(sourceTransformRef: interop.Object, sourceAttributeName: interop.Object, destinationTransformRef: interop.Object, destinationAttributeName: interop.Object, group: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecTransformSetAttribute(transformRef: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function SecTransformSetAttribute(transformRef: interop.Object, key: interop.Object, value: interop.Object, error: interop.PointerConvertible): number;
 
-declare function SecTransformGetAttribute(transformRef: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformGetAttribute(transformRef: interop.Object, key: interop.Object): interop.Object;
 
-declare function SecTransformFindByName(transform: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformFindByName(transform: interop.Object, name: interop.Object): interop.Object;
 
-declare function SecTransformExecute(transformRef: interop.PointerConvertible, errorRef: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformExecute(transformRef: interop.Object, errorRef: interop.PointerConvertible): interop.Object;
 
-declare function SecTransformExecuteAsync(transformRef: interop.PointerConvertible, deliveryQueue: NSObject, deliveryBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): void;
+declare function SecTransformExecuteAsync(transformRef: interop.Object, deliveryQueue: NSObject, deliveryBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): void;
 
-declare function SecTransformSetAttributeAction(ref: interop.PointerConvertible, action: interop.PointerConvertible, attribute: interop.PointerConvertible, newAction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer): interop.Pointer;
+declare function SecTransformSetAttributeAction(ref: interop.PointerConvertible, action: interop.Object, attribute: interop.Object, newAction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer): interop.Object;
 
-declare function SecTransformSetDataAction(ref: interop.PointerConvertible, action: interop.PointerConvertible, newAction: (p1: interop.PointerConvertible) => interop.Pointer): interop.Pointer;
+declare function SecTransformSetDataAction(ref: interop.PointerConvertible, action: interop.Object, newAction: (p1: interop.PointerConvertible) => interop.Pointer): interop.Object;
 
-declare function SecTransformSetTransformAction(ref: interop.PointerConvertible, action: interop.PointerConvertible, newAction: () => interop.Pointer): interop.Pointer;
+declare function SecTransformSetTransformAction(ref: interop.PointerConvertible, action: interop.Object, newAction: () => interop.Pointer): interop.Object;
 
-declare function SecTranformCustomGetAttribute(ref: interop.PointerConvertible, attribute: interop.PointerConvertible, type: interop.Enum<typeof SecTransformMetaAttributeType>): interop.Pointer;
+declare function SecTranformCustomGetAttribute(ref: interop.PointerConvertible, attribute: interop.Object, type: interop.Enum<typeof SecTransformMetaAttributeType>): interop.Object;
 
-declare function SecTransformCustomGetAttribute(ref: interop.PointerConvertible, attribute: interop.PointerConvertible, type: interop.Enum<typeof SecTransformMetaAttributeType>): interop.Pointer;
+declare function SecTransformCustomGetAttribute(ref: interop.PointerConvertible, attribute: interop.Object, type: interop.Enum<typeof SecTransformMetaAttributeType>): interop.Object;
 
-declare function SecTransformCustomSetAttribute(ref: interop.PointerConvertible, attribute: interop.PointerConvertible, type: interop.Enum<typeof SecTransformMetaAttributeType>, value: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformCustomSetAttribute(ref: interop.PointerConvertible, attribute: interop.Object, type: interop.Enum<typeof SecTransformMetaAttributeType>, value: interop.Object): interop.Object;
 
-declare function SecTransformPushbackAttribute(ref: interop.PointerConvertible, attribute: interop.PointerConvertible, value: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformPushbackAttribute(ref: interop.PointerConvertible, attribute: interop.Object, value: interop.Object): interop.Object;
 
-declare function SecTransformRegister(uniqueName: interop.PointerConvertible, createTransformFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => () => interop.Pointer, error: interop.PointerConvertible): number;
+declare function SecTransformRegister(uniqueName: interop.Object, createTransformFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => () => interop.Pointer, error: interop.PointerConvertible): number;
 
-declare function SecTransformCreate(name: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformCreate(name: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecTransformNoData(): interop.Pointer;
+declare function SecTransformNoData(): interop.Object;
 
-declare function SecEncodeTransformCreate(encodeType: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecEncodeTransformCreate(encodeType: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecDecodeTransformCreate(DecodeType: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecDecodeTransformCreate(DecodeType: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecDigestTransformCreate(digestType: interop.PointerConvertible, digestLength: number, error: interop.PointerConvertible): interop.Pointer;
+declare function SecDigestTransformCreate(digestType: interop.Object, digestLength: number, error: interop.PointerConvertible): interop.Object;
 
 declare function SecDigestTransformGetTypeID(): number;
 
-declare function SecEncryptTransformCreate(keyRef: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecEncryptTransformCreate(keyRef: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecDecryptTransformCreate(keyRef: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecDecryptTransformCreate(keyRef: interop.Object, error: interop.PointerConvertible): interop.Object;
 
 declare function SecDecryptTransformGetTypeID(): number;
 
 declare function SecEncryptTransformGetTypeID(): number;
 
-declare function SecSignTransformCreate(key: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecSignTransformCreate(key: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecVerifyTransformCreate(key: interop.PointerConvertible, signature: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function SecVerifyTransformCreate(key: interop.Object, signature: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function SecTransformCreateReadTransformWithReadStream(inputStream: interop.PointerConvertible): interop.Pointer;
+declare function SecTransformCreateReadTransformWithReadStream(inputStream: interop.Object): interop.Object;
 
 declare function AuthorizationPluginCreate(callbacks: interop.PointerConvertible, outPlugin: interop.PointerConvertible, outPluginInterface: interop.PointerConvertible): number;
 
@@ -11103,7 +11103,7 @@ declare function SecAsn1AllocCopyItem(coder: interop.PointerConvertible, src: in
 
 declare function SecAsn1OidCompare(oid1: interop.PointerConvertible, oid2: interop.PointerConvertible): boolean;
 
-declare function SecureDownloadCreateWithTicket(ticket: interop.PointerConvertible, setup: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof _SecureDownloadTrustCallbackResult>, setupContext: interop.PointerConvertible, evaluate: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SecTrustResultType>, p3: interop.PointerConvertible) => interop.Enum<typeof SecTrustResultType>, evaluateContext: interop.PointerConvertible, downloadRef: interop.PointerConvertible): number;
+declare function SecureDownloadCreateWithTicket(ticket: interop.Object, setup: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof _SecureDownloadTrustCallbackResult>, setupContext: interop.PointerConvertible, evaluate: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SecTrustResultType>, p3: interop.PointerConvertible) => interop.Enum<typeof SecTrustResultType>, evaluateContext: interop.PointerConvertible, downloadRef: interop.PointerConvertible): number;
 
 declare function SecureDownloadCopyURLs(downloadRef: interop.PointerConvertible, urls: interop.PointerConvertible): number;
 
@@ -11113,13 +11113,13 @@ declare function SecureDownloadCopyCreationDate(downloadRef: interop.PointerConv
 
 declare function SecureDownloadGetDownloadSize(downloadRef: interop.PointerConvertible, downloadSize: interop.PointerConvertible): number;
 
-declare function SecureDownloadUpdateWithData(downloadRef: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function SecureDownloadUpdateWithData(downloadRef: interop.PointerConvertible, data: interop.Object): number;
 
 declare function SecureDownloadFinished(downloadRef: interop.PointerConvertible): number;
 
 declare function SecureDownloadRelease(downloadRef: interop.PointerConvertible): number;
 
-declare function SecureDownloadCopyTicketLocation(url: interop.PointerConvertible, ticketLocation: interop.PointerConvertible): number;
+declare function SecureDownloadCopyTicketLocation(url: interop.Object, ticketLocation: interop.PointerConvertible): number;
 
 declare interface OS_sec_protocol_options extends NSObjectProtocol {
 }

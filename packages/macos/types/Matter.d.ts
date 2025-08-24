@@ -7897,9 +7897,9 @@ declare class MTRPersistentStorageDelegate extends NativeObject implements MTRPe
 }
 
 declare interface MTRKeypair extends NSObjectProtocol {
-  copyPublicKey?(): interop.Pointer;
+  copyPublicKey?(): interop.Object;
 
-  publicKey?(): interop.Pointer;
+  publicKey?(): interop.Object;
 
   signMessageECDSA_RAW?(message: NSData): NSData;
 
@@ -41392,13 +41392,13 @@ declare class MTRCertificates extends NSObject {
 
   static createRootCertificateIssuerIDFabricIDError(keypair: MTRKeypair, issuerID: NSNumber | null, fabricID: NSNumber | null, error: interop.PointerConvertible): NSData | null;
 
-  static createIntermediateCertificateRootCertificateIntermediatePublicKeyIssuerIDFabricIDValidityPeriodError(rootKeypair: MTRKeypair, rootCertificate: NSData, intermediatePublicKey: interop.PointerConvertible, issuerID: NSNumber | null, fabricID: NSNumber | null, validityPeriod: NSDateInterval, error: interop.PointerConvertible): NSData | null;
+  static createIntermediateCertificateRootCertificateIntermediatePublicKeyIssuerIDFabricIDValidityPeriodError(rootKeypair: MTRKeypair, rootCertificate: NSData, intermediatePublicKey: interop.Object, issuerID: NSNumber | null, fabricID: NSNumber | null, validityPeriod: NSDateInterval, error: interop.PointerConvertible): NSData | null;
 
-  static createIntermediateCertificateRootCertificateIntermediatePublicKeyIssuerIDFabricIDError(rootKeypair: MTRKeypair, rootCertificate: NSData, intermediatePublicKey: interop.PointerConvertible, issuerID: NSNumber | null, fabricID: NSNumber | null, error: interop.PointerConvertible): NSData | null;
+  static createIntermediateCertificateRootCertificateIntermediatePublicKeyIssuerIDFabricIDError(rootKeypair: MTRKeypair, rootCertificate: NSData, intermediatePublicKey: interop.Object, issuerID: NSNumber | null, fabricID: NSNumber | null, error: interop.PointerConvertible): NSData | null;
 
-  static createOperationalCertificateSigningCertificateOperationalPublicKeyFabricIDNodeIDCaseAuthenticatedTagsValidityPeriodError(signingKeypair: MTRKeypair, signingCertificate: NSData, operationalPublicKey: interop.PointerConvertible, fabricID: NSNumber, nodeID: NSNumber, caseAuthenticatedTags: NSSet | null, validityPeriod: NSDateInterval, error: interop.PointerConvertible): NSData | null;
+  static createOperationalCertificateSigningCertificateOperationalPublicKeyFabricIDNodeIDCaseAuthenticatedTagsValidityPeriodError(signingKeypair: MTRKeypair, signingCertificate: NSData, operationalPublicKey: interop.Object, fabricID: NSNumber, nodeID: NSNumber, caseAuthenticatedTags: NSSet | null, validityPeriod: NSDateInterval, error: interop.PointerConvertible): NSData | null;
 
-  static createOperationalCertificateSigningCertificateOperationalPublicKeyFabricIDNodeIDCaseAuthenticatedTagsError(signingKeypair: MTRKeypair, signingCertificate: NSData, operationalPublicKey: interop.PointerConvertible, fabricID: NSNumber, nodeID: NSNumber, caseAuthenticatedTags: NSSet | null, error: interop.PointerConvertible): NSData | null;
+  static createOperationalCertificateSigningCertificateOperationalPublicKeyFabricIDNodeIDCaseAuthenticatedTagsError(signingKeypair: MTRKeypair, signingCertificate: NSData, operationalPublicKey: interop.Object, fabricID: NSNumber, nodeID: NSNumber, caseAuthenticatedTags: NSSet | null, error: interop.PointerConvertible): NSData | null;
 
   static keypairMatchesCertificate(keypair: MTRKeypair, certificate: NSData): boolean;
 
@@ -41414,9 +41414,9 @@ declare class MTRCertificates extends NSObject {
 
   static generateRootCertificateIssuerIdFabricIdError(keypair: MTRKeypair, issuerId: NSNumber | null, fabricId: NSNumber | null, error: interop.PointerConvertible): NSData;
 
-  static generateIntermediateCertificateRootCertificateIntermediatePublicKeyIssuerIdFabricIdError(rootKeypair: MTRKeypair, rootCertificate: NSData, intermediatePublicKey: interop.PointerConvertible, issuerId: NSNumber | null, fabricId: NSNumber | null, error: interop.PointerConvertible): NSData;
+  static generateIntermediateCertificateRootCertificateIntermediatePublicKeyIssuerIdFabricIdError(rootKeypair: MTRKeypair, rootCertificate: NSData, intermediatePublicKey: interop.Object, issuerId: NSNumber | null, fabricId: NSNumber | null, error: interop.PointerConvertible): NSData;
 
-  static generateOperationalCertificateSigningCertificateOperationalPublicKeyFabricIdNodeIdCaseAuthenticatedTagsError(signingKeypair: MTRKeypair, signingCertificate: NSData, operationalPublicKey: interop.PointerConvertible, fabricId: NSNumber, nodeId: NSNumber, caseAuthenticatedTags: NSArray<interop.Object> | Array<interop.Object> | null, error: interop.PointerConvertible): NSData;
+  static generateOperationalCertificateSigningCertificateOperationalPublicKeyFabricIdNodeIdCaseAuthenticatedTagsError(signingKeypair: MTRKeypair, signingCertificate: NSData, operationalPublicKey: interop.Object, fabricId: NSNumber, nodeId: NSNumber, caseAuthenticatedTags: NSArray<interop.Object> | Array<interop.Object> | null, error: interop.PointerConvertible): NSData;
 
   static generateCertificateSigningRequestError(keypair: MTRKeypair, error: interop.PointerConvertible): NSData;
 }

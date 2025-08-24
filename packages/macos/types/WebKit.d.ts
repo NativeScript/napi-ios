@@ -3906,7 +3906,7 @@ declare class WKWebView extends NSView {
 
   readonly hasOnlySecureContent: boolean;
 
-  readonly serverTrust: interop.Pointer;
+  readonly serverTrust: interop.Object;
 
   readonly canGoBack: boolean;
 

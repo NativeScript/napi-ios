@@ -592,19 +592,19 @@ declare function DVDDispose(): number;
 
 declare function DVDIsValidMediaRef(inRef: interop.PointerConvertible, outIsValid: interop.PointerConvertible): number;
 
-declare function DVDIsValidMediaURL(inRef: interop.PointerConvertible, outIsValid: interop.PointerConvertible): number;
+declare function DVDIsValidMediaURL(inRef: interop.Object, outIsValid: interop.PointerConvertible): number;
 
 declare function DVDHasMedia(outHasMedia: interop.PointerConvertible): number;
 
 declare function DVDOpenMediaFile(inFile: interop.PointerConvertible): number;
 
-declare function DVDOpenMediaFileWithURL(inFile: interop.PointerConvertible): number;
+declare function DVDOpenMediaFileWithURL(inFile: interop.Object): number;
 
 declare function DVDCloseMediaFile(): number;
 
 declare function DVDOpenMediaVolume(inVolume: interop.PointerConvertible): number;
 
-declare function DVDOpenMediaVolumeWithURL(inVolume: interop.PointerConvertible): number;
+declare function DVDOpenMediaVolumeWithURL(inVolume: interop.Object): number;
 
 declare function DVDCloseMediaVolume(): number;
 

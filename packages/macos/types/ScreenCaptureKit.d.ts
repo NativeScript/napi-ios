@@ -119,7 +119,7 @@ declare class SCStreamDelegate extends NativeObject implements SCStreamDelegate 
 }
 
 declare interface SCStreamOutput extends NSObjectProtocol {
-  streamDidOutputSampleBufferOfType?(stream: SCStream, sampleBuffer: interop.PointerConvertible, type: interop.Enum<typeof SCStreamOutputType>): void;
+  streamDidOutputSampleBufferOfType?(stream: SCStream, sampleBuffer: interop.Object, type: interop.Enum<typeof SCStreamOutputType>): void;
 }
 
 declare class SCStreamOutput extends NativeObject implements SCStreamOutput {
@@ -176,7 +176,7 @@ declare class SCContentSharingPickerConfiguration<NSCopying = interop.Object> ex
 }
 
 declare class SCStream extends NSObject {
-  readonly synchronizationClock: interop.Pointer;
+  readonly synchronizationClock: interop.Object;
 
   initWithFilterConfigurationDelegate(contentFilter: SCContentFilter, streamConfig: SCStreamConfiguration, delegate: SCStreamDelegate | null): this;
 
@@ -216,8 +216,7 @@ declare class SCStreamConfiguration extends NSObject {
 
   showMouseClicks: boolean;
 
-  get backgroundColor(): interop.Pointer;
-  set backgroundColor(value: interop.PointerConvertible);
+  backgroundColor: interop.Object;
 
   sourceRect: CGRect;
 
@@ -225,11 +224,9 @@ declare class SCStreamConfiguration extends NSObject {
 
   queueDepth: number;
 
-  get colorMatrix(): interop.Pointer;
-  set colorMatrix(value: interop.PointerConvertible);
+  colorMatrix: interop.Object;
 
-  get colorSpaceName(): interop.Pointer;
-  set colorSpaceName(value: interop.PointerConvertible);
+  colorSpaceName: interop.Object;
 
   capturesAudio: boolean;
 
@@ -283,7 +280,7 @@ declare class SCStreamConfiguration extends NSObject {
 
   setShowMouseClicks(showMouseClicks: boolean): void;
 
-  setBackgroundColor(backgroundColor: interop.PointerConvertible): void;
+  setBackgroundColor(backgroundColor: interop.Object): void;
 
   setSourceRect(sourceRect: CGRect): void;
 
@@ -291,9 +288,9 @@ declare class SCStreamConfiguration extends NSObject {
 
   setQueueDepth(queueDepth: number): void;
 
-  setColorMatrix(colorMatrix: interop.PointerConvertible): void;
+  setColorMatrix(colorMatrix: interop.Object): void;
 
-  setColorSpaceName(colorSpaceName: interop.PointerConvertible): void;
+  setColorSpaceName(colorSpaceName: interop.Object): void;
 
   setCapturesAudio(capturesAudio: boolean): void;
 

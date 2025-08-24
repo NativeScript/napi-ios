@@ -56,81 +56,81 @@ declare class __QLThumbnailRequest {
 
 declare function QLThumbnailRequestGetTypeID(): number;
 
-declare function QLThumbnailRequestCopyURL(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailRequestCopyURL(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailRequestCopyOptions(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailRequestCopyOptions(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailRequestCopyContentUTI(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailRequestCopyContentUTI(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailRequestGetMaximumSize(thumbnail: interop.PointerConvertible): CGSize;
+declare function QLThumbnailRequestGetMaximumSize(thumbnail: interop.Object): CGSize;
 
-declare function QLThumbnailRequestGetGeneratorBundle(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailRequestGetGeneratorBundle(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailRequestSetDocumentObject(thumbnail: interop.PointerConvertible, object: interop.PointerConvertible, callbacks: interop.PointerConvertible): void;
+declare function QLThumbnailRequestSetDocumentObject(thumbnail: interop.Object, object: interop.PointerConvertible, callbacks: interop.PointerConvertible): void;
 
-declare function QLThumbnailRequestGetDocumentObject(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailRequestGetDocumentObject(thumbnail: interop.Object): interop.Pointer;
 
-declare function QLThumbnailRequestSetImage(thumbnail: interop.PointerConvertible, image: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLThumbnailRequestSetImage(thumbnail: interop.Object, image: interop.Object, properties: interop.Object): void;
 
-declare function QLThumbnailRequestSetImageWithData(thumbnail: interop.PointerConvertible, data: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLThumbnailRequestSetImageWithData(thumbnail: interop.Object, data: interop.Object, properties: interop.Object): void;
 
-declare function QLThumbnailRequestCreateContext(thumbnail: interop.PointerConvertible, size: CGSize, isBitmap: number, properties: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailRequestCreateContext(thumbnail: interop.Object, size: CGSize, isBitmap: number, properties: interop.Object): interop.Object;
 
-declare function QLThumbnailRequestFlushContext(thumbnail: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function QLThumbnailRequestFlushContext(thumbnail: interop.Object, context: interop.Object): void;
 
-declare function QLThumbnailRequestSetImageAtURL(thumbnail: interop.PointerConvertible, url: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLThumbnailRequestSetImageAtURL(thumbnail: interop.Object, url: interop.Object, properties: interop.Object): void;
 
-declare function QLThumbnailRequestSetThumbnailWithDataRepresentation(thumbnail: interop.PointerConvertible, data: interop.PointerConvertible, contentTypeUTI: interop.PointerConvertible, previewProperties: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLThumbnailRequestSetThumbnailWithDataRepresentation(thumbnail: interop.Object, data: interop.Object, contentTypeUTI: interop.Object, previewProperties: interop.Object, properties: interop.Object): void;
 
-declare function QLThumbnailRequestSetThumbnailWithURLRepresentation(thumbnail: interop.PointerConvertible, url: interop.PointerConvertible, contentTypeUTI: interop.PointerConvertible, previewProperties: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLThumbnailRequestSetThumbnailWithURLRepresentation(thumbnail: interop.Object, url: interop.Object, contentTypeUTI: interop.Object, previewProperties: interop.Object, properties: interop.Object): void;
 
-declare function QLThumbnailRequestIsCancelled(thumbnail: interop.PointerConvertible): number;
+declare function QLThumbnailRequestIsCancelled(thumbnail: interop.Object): number;
 
 declare function QLPreviewRequestGetTypeID(): number;
 
-declare function QLPreviewRequestCopyURL(preview: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestCopyURL(preview: interop.Object): interop.Object;
 
-declare function QLPreviewRequestCopyOptions(preview: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestCopyOptions(preview: interop.Object): interop.Object;
 
-declare function QLPreviewRequestCopyContentUTI(preview: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestCopyContentUTI(preview: interop.Object): interop.Object;
 
-declare function QLPreviewRequestGetGeneratorBundle(preview: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestGetGeneratorBundle(preview: interop.Object): interop.Object;
 
-declare function QLPreviewRequestSetDocumentObject(preview: interop.PointerConvertible, object: interop.PointerConvertible, callbacks: interop.PointerConvertible): void;
+declare function QLPreviewRequestSetDocumentObject(preview: interop.Object, object: interop.PointerConvertible, callbacks: interop.PointerConvertible): void;
 
-declare function QLPreviewRequestGetDocumentObject(preview: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestGetDocumentObject(preview: interop.Object): interop.Pointer;
 
-declare function QLPreviewRequestIsCancelled(preview: interop.PointerConvertible): number;
+declare function QLPreviewRequestIsCancelled(preview: interop.Object): number;
 
-declare function QLPreviewRequestSetDataRepresentation(preview: interop.PointerConvertible, data: interop.PointerConvertible, contentTypeUTI: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLPreviewRequestSetDataRepresentation(preview: interop.Object, data: interop.Object, contentTypeUTI: interop.Object, properties: interop.Object): void;
 
-declare function QLPreviewRequestSetURLRepresentation(preview: interop.PointerConvertible, url: interop.PointerConvertible, contentTypeUTI: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function QLPreviewRequestSetURLRepresentation(preview: interop.Object, url: interop.Object, contentTypeUTI: interop.Object, properties: interop.Object): void;
 
-declare function QLPreviewRequestCreateContext(preview: interop.PointerConvertible, size: CGSize, isBitmap: number, properties: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestCreateContext(preview: interop.Object, size: CGSize, isBitmap: number, properties: interop.Object): interop.Object;
 
-declare function QLPreviewRequestCreatePDFContext(preview: interop.PointerConvertible, mediaBox: interop.PointerConvertible, auxiliaryInfo: interop.PointerConvertible, properties: interop.PointerConvertible): interop.Pointer;
+declare function QLPreviewRequestCreatePDFContext(preview: interop.Object, mediaBox: interop.PointerConvertible, auxiliaryInfo: interop.Object, properties: interop.Object): interop.Object;
 
-declare function QLPreviewRequestFlushContext(preview: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function QLPreviewRequestFlushContext(preview: interop.Object, context: interop.Object): void;
 
-declare function QLThumbnailImageCreate(allocator: interop.PointerConvertible, url: interop.PointerConvertible, maxThumbnailSize: CGSize, options: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailImageCreate(allocator: interop.Object, url: interop.Object, maxThumbnailSize: CGSize, options: interop.Object): interop.Object;
 
 declare function QLThumbnailGetTypeID(): number;
 
-declare function QLThumbnailCreate(allocator: interop.PointerConvertible, url: interop.PointerConvertible, maxThumbnailSize: CGSize, options: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailCreate(allocator: interop.Object, url: interop.Object, maxThumbnailSize: CGSize, options: interop.Object): interop.Object;
 
-declare function QLThumbnailCopyDocumentURL(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailCopyDocumentURL(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailGetMaximumSize(thumbnail: interop.PointerConvertible): CGSize;
+declare function QLThumbnailGetMaximumSize(thumbnail: interop.Object): CGSize;
 
-declare function QLThumbnailCopyOptions(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailCopyOptions(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailDispatchAsync(thumbnail: interop.PointerConvertible, queue: NSObject, completion: () => void): void;
+declare function QLThumbnailDispatchAsync(thumbnail: interop.Object, queue: NSObject, completion: () => void): void;
 
-declare function QLThumbnailCopyImage(thumbnail: interop.PointerConvertible): interop.Pointer;
+declare function QLThumbnailCopyImage(thumbnail: interop.Object): interop.Object;
 
-declare function QLThumbnailGetContentRect(thumbnail: interop.PointerConvertible): CGRect;
+declare function QLThumbnailGetContentRect(thumbnail: interop.Object): CGRect;
 
-declare function QLThumbnailCancel(thumbnail: interop.PointerConvertible): void;
+declare function QLThumbnailCancel(thumbnail: interop.Object): void;
 
-declare function QLThumbnailIsCancelled(thumbnail: interop.PointerConvertible): number;
+declare function QLThumbnailIsCancelled(thumbnail: interop.Object): number;
 

@@ -2334,7 +2334,7 @@ declare class GCController extends NSObject implements GCDevice {
 
   readonly haptics: GCDeviceHaptics;
 
-  static supportsHIDDevice(device: interop.PointerConvertible): boolean;
+  static supportsHIDDevice(device: interop.Object): boolean;
 
   setControllerPausedHandler(controllerPausedHandler: (p1: GCController) => void | null): void;
 

@@ -443,21 +443,21 @@ declare function krb5_gss_register_acceptor_identity(identity: string): number;
 
 declare function krb5_gss_register_acceptor_identity(identity: string): number;
 
-declare function GSSCreateCredentialFromUUID(uuid: interop.PointerConvertible): interop.Pointer;
+declare function GSSCreateCredentialFromUUID(uuid: interop.Object): interop.Pointer;
 
-declare function GSSCreateError(mech: interop.PointerConvertible, major_status: number, minor_status: number): interop.Pointer;
+declare function GSSCreateError(mech: interop.PointerConvertible, major_status: number, minor_status: number): interop.Object;
 
-declare function GSSCreateName(name: interop.PointerConvertible, name_type: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function GSSCreateName(name: interop.Object, name_type: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
 
 declare function GSSCredentialCopyName(cred: interop.PointerConvertible): interop.Pointer;
 
-declare function GSSCredentialCopyUUID(credential: interop.PointerConvertible): interop.Pointer;
+declare function GSSCredentialCopyUUID(credential: interop.PointerConvertible): interop.Object;
 
 declare function GSSCredentialGetLifetime(cred: interop.PointerConvertible): number;
 
-declare function GSSNameCreateDisplayString(name: interop.PointerConvertible): interop.Pointer;
+declare function GSSNameCreateDisplayString(name: interop.PointerConvertible): interop.Object;
 
-declare function gss_aapl_change_password(name: interop.PointerConvertible, mech: interop.PointerConvertible, attributes: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function gss_aapl_change_password(name: interop.PointerConvertible, mech: interop.PointerConvertible, attributes: interop.Object, error: interop.PointerConvertible): number;
 
-declare function gss_aapl_initial_cred(desired_name: interop.PointerConvertible, desired_mech: interop.PointerConvertible, attributes: interop.PointerConvertible, output_cred_handle: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function gss_aapl_initial_cred(desired_name: interop.PointerConvertible, desired_mech: interop.PointerConvertible, attributes: interop.Object, output_cred_handle: interop.PointerConvertible, error: interop.PointerConvertible): number;
 

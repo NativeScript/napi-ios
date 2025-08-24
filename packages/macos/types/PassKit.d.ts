@@ -428,7 +428,7 @@ declare class PKIssuerProvisioningExtensionPassEntry extends NSObject {
 
   readonly title: string;
 
-  readonly art: interop.Pointer;
+  readonly art: interop.Object;
 }
 
 declare class PKIssuerProvisioningExtensionStatus extends NSObject {
@@ -486,9 +486,9 @@ declare class PKIdentityDocumentMetadata extends NSObject {
 }
 
 declare class PKShareablePassMetadata extends NSObject {
-  initWithProvisioningCredentialIdentifierCardConfigurationIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescription(credentialIdentifier: string, cardConfigurationIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.PointerConvertible, ownerDisplayName: string, localizedDescription: string): this;
+  initWithProvisioningCredentialIdentifierCardConfigurationIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescription(credentialIdentifier: string, cardConfigurationIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.Object, ownerDisplayName: string, localizedDescription: string): this;
 
-  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescriptionAccountHashTemplateIdentifierRelyingPartyIdentifierRequiresUnifiedAccessCapableDevice(credentialIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.PointerConvertible, ownerDisplayName: string, localizedDescription: string, accountHash: string, templateIdentifier: string, relyingPartyIdentifier: string, requiresUnifiedAccessCapableDevice: boolean): this;
+  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierPassThumbnailImageOwnerDisplayNameLocalizedDescriptionAccountHashTemplateIdentifierRelyingPartyIdentifierRequiresUnifiedAccessCapableDevice(credentialIdentifier: string, sharingInstanceIdentifier: string, passThumbnailImage: interop.Object, ownerDisplayName: string, localizedDescription: string, accountHash: string, templateIdentifier: string, relyingPartyIdentifier: string, requiresUnifiedAccessCapableDevice: boolean): this;
 
   initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardTemplateIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, preview: PKShareablePassMetadataPreview): this;
 
@@ -510,7 +510,7 @@ declare class PKShareablePassMetadata extends NSObject {
 
   readonly preview: PKShareablePassMetadataPreview;
 
-  readonly passThumbnailImage: interop.Pointer;
+  readonly passThumbnailImage: interop.Object;
 
   readonly localizedDescription: string;
 
@@ -556,11 +556,11 @@ declare class PKAddSecureElementPassConfiguration extends NSObject {
 }
 
 declare class PKAddPassMetadataPreview extends NSObject {
-  initWithPassThumbnailLocalizedDescription(passThumbnail: interop.PointerConvertible, description: string): this;
+  initWithPassThumbnailLocalizedDescription(passThumbnail: interop.Object, description: string): this;
 
-  static previewWithPassThumbnailLocalizedDescription<This extends abstract new (...args: any) => any>(this: This, passThumbnail: interop.PointerConvertible, description: string): InstanceType<This>;
+  static previewWithPassThumbnailLocalizedDescription<This extends abstract new (...args: any) => any>(this: This, passThumbnail: interop.Object, description: string): InstanceType<This>;
 
-  readonly passThumbnailImage: interop.Pointer;
+  readonly passThumbnailImage: interop.Object;
 
   readonly localizedDescription: string;
 }
@@ -1242,7 +1242,7 @@ declare class PKStoredValuePassProperties extends NSObject {
 }
 
 declare class PKIssuerProvisioningExtensionPaymentPassEntry extends PKIssuerProvisioningExtensionPassEntry {
-  initWithIdentifierTitleArtAddRequestConfiguration(identifier: string, title: string, art: interop.PointerConvertible, configuration: PKAddPaymentPassRequestConfiguration): this;
+  initWithIdentifierTitleArtAddRequestConfiguration(identifier: string, title: string, art: interop.Object, configuration: PKAddPaymentPassRequestConfiguration): this;
 
   readonly addRequestConfiguration: PKAddPaymentPassRequestConfiguration;
 }

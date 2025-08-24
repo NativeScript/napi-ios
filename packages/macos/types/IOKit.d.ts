@@ -19723,7 +19723,7 @@ declare function IONotificationPortCreate(mainPort: number): interop.Pointer;
 
 declare function IONotificationPortDestroy(notify: interop.PointerConvertible): void;
 
-declare function IONotificationPortGetRunLoopSource(notify: interop.PointerConvertible): interop.Pointer;
+declare function IONotificationPortGetRunLoopSource(notify: interop.PointerConvertible): interop.Object;
 
 declare function IONotificationPortGetMachPort(notify: interop.PointerConvertible): number;
 
@@ -19741,11 +19741,11 @@ declare function IOObjectRetain(object: number): number;
 
 declare function IOObjectGetClass(object: number, className: unknown /* const array */): number;
 
-declare function IOObjectCopyClass(object: number): interop.Pointer;
+declare function IOObjectCopyClass(object: number): interop.Object;
 
-declare function IOObjectCopySuperclassForClass(classname: interop.PointerConvertible): interop.Pointer;
+declare function IOObjectCopySuperclassForClass(classname: interop.Object): interop.Object;
 
-declare function IOObjectCopyBundleIdentifierForClass(classname: interop.PointerConvertible): interop.Pointer;
+declare function IOObjectCopyBundleIdentifierForClass(classname: interop.Object): interop.Object;
 
 declare function IOObjectConformsTo(object: number, className: unknown /* const array */): number;
 
@@ -19763,17 +19763,17 @@ declare function IOIteratorReset(iterator: number): void;
 
 declare function IOIteratorIsValid(iterator: number): number;
 
-declare function IOServiceGetMatchingService(mainPort: number, matching: interop.PointerConvertible): number;
+declare function IOServiceGetMatchingService(mainPort: number, matching: interop.Object): number;
 
-declare function IOServiceGetMatchingServices(mainPort: number, matching: interop.PointerConvertible, existing: interop.PointerConvertible): number;
+declare function IOServiceGetMatchingServices(mainPort: number, matching: interop.Object, existing: interop.PointerConvertible): number;
 
-declare function IOServiceAddNotification(mainPort: number, notificationType: unknown /* const array */, matching: interop.PointerConvertible, wakePort: number, reference: number, notification: interop.PointerConvertible): number;
+declare function IOServiceAddNotification(mainPort: number, notificationType: unknown /* const array */, matching: interop.Object, wakePort: number, reference: number, notification: interop.PointerConvertible): number;
 
-declare function IOServiceAddMatchingNotification(notifyPort: interop.PointerConvertible, notificationType: unknown /* const array */, matching: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number) => void, refCon: interop.PointerConvertible, notification: interop.PointerConvertible): number;
+declare function IOServiceAddMatchingNotification(notifyPort: interop.PointerConvertible, notificationType: unknown /* const array */, matching: interop.Object, callback: (p1: interop.PointerConvertible, p2: number) => void, refCon: interop.PointerConvertible, notification: interop.PointerConvertible): number;
 
 declare function IOServiceAddInterestNotification(notifyPort: interop.PointerConvertible, service: number, interestType: unknown /* const array */, callback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, notification: interop.PointerConvertible): number;
 
-declare function IOServiceMatchPropertyTable(service: number, matching: interop.PointerConvertible, matches: interop.PointerConvertible): number;
+declare function IOServiceMatchPropertyTable(service: number, matching: interop.Object, matches: interop.PointerConvertible): number;
 
 declare function IOServiceGetBusyState(service: number, busyState: interop.PointerConvertible): number;
 
@@ -19809,9 +19809,9 @@ declare function IOConnectUnmapMemory(connect: number, memoryType: number, fromT
 
 declare function IOConnectUnmapMemory64(connect: number, memoryType: number, fromTask: number, atAddress: number): number;
 
-declare function IOConnectSetCFProperties(connect: number, properties: interop.PointerConvertible): number;
+declare function IOConnectSetCFProperties(connect: number, properties: interop.Object): number;
 
-declare function IOConnectSetCFProperty(connect: number, propertyName: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IOConnectSetCFProperty(connect: number, propertyName: interop.Object, property: interop.Object): number;
 
 declare function IOConnectCallMethod(connection: number, selector: number, input: interop.PointerConvertible, inputCnt: number, inputStruct: interop.PointerConvertible, inputStructCnt: number, output: interop.PointerConvertible, outputCnt: interop.PointerConvertible, outputStruct: interop.PointerConvertible, outputStructCnt: interop.PointerConvertible): number;
 
@@ -19845,7 +19845,7 @@ declare function IORegistryGetRootEntry(mainPort: number): number;
 
 declare function IORegistryEntryFromPath(mainPort: number, path: unknown /* const array */): number;
 
-declare function IORegistryEntryCopyFromPath(mainPort: number, path: interop.PointerConvertible): number;
+declare function IORegistryEntryCopyFromPath(mainPort: number, path: interop.Object): number;
 
 declare function IORegistryCreateIterator(mainPort: number, plane: unknown /* const array */, options: number, iterator: interop.PointerConvertible): number;
 
@@ -19863,21 +19863,21 @@ declare function IORegistryEntryGetLocationInPlane(entry: number, plane: unknown
 
 declare function IORegistryEntryGetPath(entry: number, plane: unknown /* const array */, path: unknown /* const array */): number;
 
-declare function IORegistryEntryCopyPath(entry: number, plane: unknown /* const array */): interop.Pointer;
+declare function IORegistryEntryCopyPath(entry: number, plane: unknown /* const array */): interop.Object;
 
 declare function IORegistryEntryGetRegistryEntryID(entry: number, entryID: interop.PointerConvertible): number;
 
-declare function IORegistryEntryCreateCFProperties(entry: number, properties: interop.PointerConvertible, allocator: interop.PointerConvertible, options: number): number;
+declare function IORegistryEntryCreateCFProperties(entry: number, properties: interop.PointerConvertible, allocator: interop.Object, options: number): number;
 
-declare function IORegistryEntryCreateCFProperty(entry: number, key: interop.PointerConvertible, allocator: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IORegistryEntryCreateCFProperty(entry: number, key: interop.Object, allocator: interop.Object, options: number): interop.Object;
 
-declare function IORegistryEntrySearchCFProperty(entry: number, plane: unknown /* const array */, key: interop.PointerConvertible, allocator: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IORegistryEntrySearchCFProperty(entry: number, plane: unknown /* const array */, key: interop.Object, allocator: interop.Object, options: number): interop.Object;
 
 declare function IORegistryEntryGetProperty(entry: number, propertyName: unknown /* const array */, buffer: unknown /* const array */, size: interop.PointerConvertible): number;
 
-declare function IORegistryEntrySetCFProperties(entry: number, properties: interop.PointerConvertible): number;
+declare function IORegistryEntrySetCFProperties(entry: number, properties: interop.Object): number;
 
-declare function IORegistryEntrySetCFProperty(entry: number, propertyName: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IORegistryEntrySetCFProperty(entry: number, propertyName: interop.Object, property: interop.Object): number;
 
 declare function IORegistryEntryGetChildIterator(entry: number, plane: unknown /* const array */, iterator: interop.PointerConvertible): number;
 
@@ -19889,15 +19889,15 @@ declare function IORegistryEntryGetParentEntry(entry: number, plane: unknown /* 
 
 declare function IORegistryEntryInPlane(entry: number, plane: unknown /* const array */): number;
 
-declare function IOServiceMatching(name: string): interop.Pointer;
+declare function IOServiceMatching(name: string): interop.Object;
 
-declare function IOServiceNameMatching(name: string): interop.Pointer;
+declare function IOServiceNameMatching(name: string): interop.Object;
 
-declare function IOBSDNameMatching(mainPort: number, options: number, bsdName: string): interop.Pointer;
+declare function IOBSDNameMatching(mainPort: number, options: number, bsdName: string): interop.Object;
 
-declare function IOOpenFirmwarePathMatching(mainPort: number, options: number, path: string): interop.Pointer;
+declare function IOOpenFirmwarePathMatching(mainPort: number, options: number, path: string): interop.Object;
 
-declare function IORegistryEntryIDMatching(entryID: number): interop.Pointer;
+declare function IORegistryEntryIDMatching(entryID: number): interop.Object;
 
 declare function IOServiceOFPathToBSDName(mainPort: number, openFirmwarePath: unknown /* const array */, bsdName: unknown /* const array */): number;
 
@@ -19927,23 +19927,23 @@ declare function IODataQueueEnqueue(dataQueue: interop.PointerConvertible, data:
 
 declare function IODataQueueSetNotificationPort(dataQueue: interop.PointerConvertible, notifyPort: number): number;
 
-declare function IOCreatePlugInInterfaceForService(service: number, pluginType: interop.PointerConvertible, interfaceType: interop.PointerConvertible, theInterface: interop.PointerConvertible, theScore: interop.PointerConvertible): number;
+declare function IOCreatePlugInInterfaceForService(service: number, pluginType: interop.Object, interfaceType: interop.Object, theInterface: interop.PointerConvertible, theScore: interop.PointerConvertible): number;
 
 declare function IODestroyPlugInInterface(interface: interop.PointerConvertible): number;
 
-declare function IOCFSerialize(object: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IOCFSerialize(object: interop.Object, options: number): interop.Object;
 
-declare function IOURLCreatePropertyFromResource(alloc: interop.PointerConvertible, url: interop.PointerConvertible, property: interop.PointerConvertible, errorCode: interop.PointerConvertible): interop.Pointer;
+declare function IOURLCreatePropertyFromResource(alloc: interop.Object, url: interop.Object, property: interop.Object, errorCode: interop.PointerConvertible): interop.Object;
 
-declare function IOURLCreateDataAndPropertiesFromResource(alloc: interop.PointerConvertible, url: interop.PointerConvertible, resourceData: interop.PointerConvertible, properties: interop.PointerConvertible, desiredProperties: interop.PointerConvertible, errorCode: interop.PointerConvertible): number;
+declare function IOURLCreateDataAndPropertiesFromResource(alloc: interop.Object, url: interop.Object, resourceData: interop.PointerConvertible, properties: interop.PointerConvertible, desiredProperties: interop.Object, errorCode: interop.PointerConvertible): number;
 
-declare function IOURLWriteDataAndPropertiesToResource(url: interop.PointerConvertible, dataToWrite: interop.PointerConvertible, propertiesToWrite: interop.PointerConvertible, errorCode: interop.PointerConvertible): number;
+declare function IOURLWriteDataAndPropertiesToResource(url: interop.Object, dataToWrite: interop.Object, propertiesToWrite: interop.Object, errorCode: interop.PointerConvertible): number;
 
-declare function IOCFUnserialize(buffer: string, allocator: interop.PointerConvertible, options: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function IOCFUnserialize(buffer: string, allocator: interop.Object, options: number, errorString: interop.PointerConvertible): interop.Object;
 
-declare function IOCFUnserializeBinary(buffer: string, bufferSize: number, allocator: interop.PointerConvertible, options: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function IOCFUnserializeBinary(buffer: string, bufferSize: number, allocator: interop.Object, options: number, errorString: interop.PointerConvertible): interop.Object;
 
-declare function IOCFUnserializeWithSize(buffer: string, bufferSize: number, allocator: interop.PointerConvertible, options: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function IOCFUnserializeWithSize(buffer: string, bufferSize: number, allocator: interop.Object, options: number, errorString: interop.PointerConvertible): interop.Object;
 
 declare function IORPCMessageFromMach(msg: interop.PointerConvertible, reply: boolean): interop.Pointer;
 
@@ -19951,293 +19951,293 @@ declare function IOAccelFindAccelerator(framebuffer: number, pAccelerator: inter
 
 declare function IOFramebufferOpen(service: number, owningTask: number, type: number, connect: interop.PointerConvertible): number;
 
-declare function IODisplayCreateInfoDictionary(framebuffer: number, options: number): interop.Pointer;
+declare function IODisplayCreateInfoDictionary(framebuffer: number, options: number): interop.Object;
 
-declare function IODisplayMatchDictionaries(matching1: interop.PointerConvertible, matching2: interop.PointerConvertible, options: number): number;
+declare function IODisplayMatchDictionaries(matching1: interop.Object, matching2: interop.Object, options: number): number;
 
 declare function IODisplayForFramebuffer(framebuffer: number, options: number): number;
 
-declare function IODisplaySetParameters(service: number, options: number, params: interop.PointerConvertible): number;
+declare function IODisplaySetParameters(service: number, options: number, params: interop.Object): number;
 
-declare function IODisplaySetFloatParameter(service: number, options: number, parameterName: interop.PointerConvertible, value: number): number;
+declare function IODisplaySetFloatParameter(service: number, options: number, parameterName: interop.Object, value: number): number;
 
-declare function IODisplaySetIntegerParameter(service: number, options: number, parameterName: interop.PointerConvertible, value: number): number;
+declare function IODisplaySetIntegerParameter(service: number, options: number, parameterName: interop.Object, value: number): number;
 
 declare function IODisplayCopyParameters(service: number, options: number, params: interop.PointerConvertible): number;
 
 declare function IODisplayCopyFloatParameters(service: number, options: number, params: interop.PointerConvertible): number;
 
-declare function IODisplayGetFloatParameter(service: number, options: number, parameterName: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function IODisplayGetFloatParameter(service: number, options: number, parameterName: interop.Object, value: interop.PointerConvertible): number;
 
-declare function IODisplayGetIntegerRangeParameter(service: number, options: number, parameterName: interop.PointerConvertible, value: interop.PointerConvertible, min: interop.PointerConvertible, max: interop.PointerConvertible): number;
+declare function IODisplayGetIntegerRangeParameter(service: number, options: number, parameterName: interop.Object, value: interop.PointerConvertible, min: interop.PointerConvertible, max: interop.PointerConvertible): number;
 
 declare function IODisplayCommitParameters(service: number, options: number): number;
 
 declare function IOHIDQueueGetTypeID(): number;
 
-declare function IOHIDQueueCreate(allocator: interop.PointerConvertible, device: interop.PointerConvertible, depth: number, options: number): interop.Pointer;
+declare function IOHIDQueueCreate(allocator: interop.Object, device: interop.Object, depth: number, options: number): interop.Object;
 
-declare function IOHIDQueueGetDevice(queue: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDQueueGetDevice(queue: interop.Object): interop.Object;
 
-declare function IOHIDQueueGetDepth(queue: interop.PointerConvertible): number;
+declare function IOHIDQueueGetDepth(queue: interop.Object): number;
 
-declare function IOHIDQueueSetDepth(queue: interop.PointerConvertible, depth: number): void;
+declare function IOHIDQueueSetDepth(queue: interop.Object, depth: number): void;
 
-declare function IOHIDQueueAddElement(queue: interop.PointerConvertible, element: interop.PointerConvertible): void;
+declare function IOHIDQueueAddElement(queue: interop.Object, element: interop.Object): void;
 
-declare function IOHIDQueueRemoveElement(queue: interop.PointerConvertible, element: interop.PointerConvertible): void;
+declare function IOHIDQueueRemoveElement(queue: interop.Object, element: interop.Object): void;
 
-declare function IOHIDQueueContainsElement(queue: interop.PointerConvertible, element: interop.PointerConvertible): number;
+declare function IOHIDQueueContainsElement(queue: interop.Object, element: interop.Object): number;
 
-declare function IOHIDQueueStart(queue: interop.PointerConvertible): void;
+declare function IOHIDQueueStart(queue: interop.Object): void;
 
-declare function IOHIDQueueStop(queue: interop.PointerConvertible): void;
+declare function IOHIDQueueStop(queue: interop.Object): void;
 
-declare function IOHIDQueueScheduleWithRunLoop(queue: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDQueueScheduleWithRunLoop(queue: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDQueueUnscheduleFromRunLoop(queue: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDQueueUnscheduleFromRunLoop(queue: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDQueueSetDispatchQueue(queue: interop.PointerConvertible, dispatchQueue: NSObject): void;
+declare function IOHIDQueueSetDispatchQueue(queue: interop.Object, dispatchQueue: NSObject): void;
 
-declare function IOHIDQueueSetCancelHandler(queue: interop.PointerConvertible, handler: () => void): void;
+declare function IOHIDQueueSetCancelHandler(queue: interop.Object, handler: () => void): void;
 
-declare function IOHIDQueueActivate(queue: interop.PointerConvertible): void;
+declare function IOHIDQueueActivate(queue: interop.Object): void;
 
-declare function IOHIDQueueCancel(queue: interop.PointerConvertible): void;
+declare function IOHIDQueueCancel(queue: interop.Object): void;
 
-declare function IOHIDQueueRegisterValueAvailableCallback(queue: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function IOHIDQueueRegisterValueAvailableCallback(queue: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDQueueCopyNextValue(queue: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDQueueCopyNextValue(queue: interop.Object): interop.Object;
 
-declare function IOHIDQueueCopyNextValueWithTimeout(queue: interop.PointerConvertible, timeout: number): interop.Pointer;
+declare function IOHIDQueueCopyNextValueWithTimeout(queue: interop.Object, timeout: number): interop.Object;
 
 declare function IOHIDDeviceGetTypeID(): number;
 
-declare function IOHIDDeviceCreate(allocator: interop.PointerConvertible, service: number): interop.Pointer;
+declare function IOHIDDeviceCreate(allocator: interop.Object, service: number): interop.Object;
 
-declare function IOHIDDeviceGetService(device: interop.PointerConvertible): number;
+declare function IOHIDDeviceGetService(device: interop.Object): number;
 
-declare function IOHIDDeviceOpen(device: interop.PointerConvertible, options: number): number;
+declare function IOHIDDeviceOpen(device: interop.Object, options: number): number;
 
-declare function IOHIDDeviceClose(device: interop.PointerConvertible, options: number): number;
+declare function IOHIDDeviceClose(device: interop.Object, options: number): number;
 
-declare function IOHIDDeviceConformsTo(device: interop.PointerConvertible, usagePage: number, usage: number): number;
+declare function IOHIDDeviceConformsTo(device: interop.Object, usagePage: number, usage: number): number;
 
-declare function IOHIDDeviceGetProperty(device: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDDeviceGetProperty(device: interop.Object, key: interop.Object): interop.Object;
 
-declare function IOHIDDeviceSetProperty(device: interop.PointerConvertible, key: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IOHIDDeviceSetProperty(device: interop.Object, key: interop.Object, property: interop.Object): number;
 
-declare function IOHIDDeviceCopyMatchingElements(device: interop.PointerConvertible, matching: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IOHIDDeviceCopyMatchingElements(device: interop.Object, matching: interop.Object, options: number): interop.Object;
 
-declare function IOHIDDeviceScheduleWithRunLoop(device: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDDeviceScheduleWithRunLoop(device: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDDeviceUnscheduleFromRunLoop(device: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDDeviceUnscheduleFromRunLoop(device: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDDeviceSetDispatchQueue(device: interop.PointerConvertible, queue: NSObject): void;
+declare function IOHIDDeviceSetDispatchQueue(device: interop.Object, queue: NSObject): void;
 
-declare function IOHIDDeviceSetCancelHandler(device: interop.PointerConvertible, handler: () => void): void;
+declare function IOHIDDeviceSetCancelHandler(device: interop.Object, handler: () => void): void;
 
-declare function IOHIDDeviceActivate(device: interop.PointerConvertible): void;
+declare function IOHIDDeviceActivate(device: interop.Object): void;
 
-declare function IOHIDDeviceCancel(device: interop.PointerConvertible): void;
+declare function IOHIDDeviceCancel(device: interop.Object): void;
 
-declare function IOHIDDeviceRegisterRemovalCallback(device: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function IOHIDDeviceRegisterRemovalCallback(device: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDDeviceRegisterInputValueCallback(device: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function IOHIDDeviceRegisterInputValueCallback(device: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDDeviceRegisterInputReportCallback(device: interop.PointerConvertible, report: interop.PointerConvertible, reportLength: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): void;
+declare function IOHIDDeviceRegisterInputReportCallback(device: interop.Object, report: interop.PointerConvertible, reportLength: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDDeviceRegisterInputReportWithTimeStampCallback(device: interop.PointerConvertible, report: interop.PointerConvertible, reportLength: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number, p8: number) => void, context: interop.PointerConvertible): void;
+declare function IOHIDDeviceRegisterInputReportWithTimeStampCallback(device: interop.Object, report: interop.PointerConvertible, reportLength: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number, p8: number) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDDeviceSetInputValueMatching(device: interop.PointerConvertible, matching: interop.PointerConvertible): void;
+declare function IOHIDDeviceSetInputValueMatching(device: interop.Object, matching: interop.Object): void;
 
-declare function IOHIDDeviceSetInputValueMatchingMultiple(device: interop.PointerConvertible, multiple: interop.PointerConvertible): void;
+declare function IOHIDDeviceSetInputValueMatchingMultiple(device: interop.Object, multiple: interop.Object): void;
 
-declare function IOHIDDeviceSetValue(device: interop.PointerConvertible, element: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function IOHIDDeviceSetValue(device: interop.Object, element: interop.Object, value: interop.Object): number;
 
-declare function IOHIDDeviceSetValueMultiple(device: interop.PointerConvertible, multiple: interop.PointerConvertible): number;
+declare function IOHIDDeviceSetValueMultiple(device: interop.Object, multiple: interop.Object): number;
 
-declare function IOHIDDeviceSetValueWithCallback(device: interop.PointerConvertible, element: interop.PointerConvertible, value: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function IOHIDDeviceSetValueWithCallback(device: interop.Object, element: interop.Object, value: interop.Object, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceSetValueMultipleWithCallback(device: interop.PointerConvertible, multiple: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function IOHIDDeviceSetValueMultipleWithCallback(device: interop.Object, multiple: interop.Object, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceGetValue(device: interop.PointerConvertible, element: interop.PointerConvertible, pValue: interop.PointerConvertible): number;
+declare function IOHIDDeviceGetValue(device: interop.Object, element: interop.Object, pValue: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceGetValueWithOptions(device: interop.PointerConvertible, element: interop.PointerConvertible, pValue: interop.PointerConvertible, options: number): number;
+declare function IOHIDDeviceGetValueWithOptions(device: interop.Object, element: interop.Object, pValue: interop.PointerConvertible, options: number): number;
 
-declare function IOHIDDeviceCopyValueMultiple(device: interop.PointerConvertible, elements: interop.PointerConvertible, pMultiple: interop.PointerConvertible): number;
+declare function IOHIDDeviceCopyValueMultiple(device: interop.Object, elements: interop.Object, pMultiple: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceGetValueWithCallback(device: interop.PointerConvertible, element: interop.PointerConvertible, pValue: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function IOHIDDeviceGetValueWithCallback(device: interop.Object, element: interop.Object, pValue: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceCopyValueMultipleWithCallback(device: interop.PointerConvertible, elements: interop.PointerConvertible, pMultiple: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function IOHIDDeviceCopyValueMultipleWithCallback(device: interop.Object, elements: interop.Object, pMultiple: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceSetReport(device: interop.PointerConvertible, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, reportLength: number): number;
+declare function IOHIDDeviceSetReport(device: interop.Object, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, reportLength: number): number;
 
-declare function IOHIDDeviceSetReportWithCallback(device: interop.PointerConvertible, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, reportLength: number, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): number;
+declare function IOHIDDeviceSetReportWithCallback(device: interop.Object, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, reportLength: number, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceGetReport(device: interop.PointerConvertible, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, pReportLength: interop.PointerConvertible): number;
+declare function IOHIDDeviceGetReport(device: interop.Object, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, pReportLength: interop.PointerConvertible): number;
 
-declare function IOHIDDeviceGetReportWithCallback(device: interop.PointerConvertible, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, pReportLength: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): number;
+declare function IOHIDDeviceGetReportWithCallback(device: interop.Object, reportType: interop.Enum<typeof IOHIDReportType>, reportID: number, report: interop.PointerConvertible, pReportLength: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): number;
 
 declare function IOHIDElementGetTypeID(): number;
 
-declare function IOHIDElementCreateWithDictionary(allocator: interop.PointerConvertible, dictionary: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementCreateWithDictionary(allocator: interop.Object, dictionary: interop.Object): interop.Object;
 
-declare function IOHIDElementGetDevice(element: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementGetDevice(element: interop.Object): interop.Object;
 
-declare function IOHIDElementGetParent(element: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementGetParent(element: interop.Object): interop.Object;
 
-declare function IOHIDElementGetChildren(element: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementGetChildren(element: interop.Object): interop.Object;
 
-declare function IOHIDElementAttach(element: interop.PointerConvertible, toAttach: interop.PointerConvertible): void;
+declare function IOHIDElementAttach(element: interop.Object, toAttach: interop.Object): void;
 
-declare function IOHIDElementDetach(element: interop.PointerConvertible, toDetach: interop.PointerConvertible): void;
+declare function IOHIDElementDetach(element: interop.Object, toDetach: interop.Object): void;
 
-declare function IOHIDElementCopyAttached(element: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementCopyAttached(element: interop.Object): interop.Object;
 
-declare function IOHIDElementGetCookie(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetCookie(element: interop.Object): number;
 
-declare function IOHIDElementGetType(element: interop.PointerConvertible): interop.Enum<typeof IOHIDElementType>;
+declare function IOHIDElementGetType(element: interop.Object): interop.Enum<typeof IOHIDElementType>;
 
-declare function IOHIDElementGetCollectionType(element: interop.PointerConvertible): interop.Enum<typeof IOHIDElementCollectionType>;
+declare function IOHIDElementGetCollectionType(element: interop.Object): interop.Enum<typeof IOHIDElementCollectionType>;
 
-declare function IOHIDElementGetUsagePage(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetUsagePage(element: interop.Object): number;
 
-declare function IOHIDElementGetUsage(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetUsage(element: interop.Object): number;
 
-declare function IOHIDElementIsVirtual(element: interop.PointerConvertible): number;
+declare function IOHIDElementIsVirtual(element: interop.Object): number;
 
-declare function IOHIDElementIsRelative(element: interop.PointerConvertible): number;
+declare function IOHIDElementIsRelative(element: interop.Object): number;
 
-declare function IOHIDElementIsWrapping(element: interop.PointerConvertible): number;
+declare function IOHIDElementIsWrapping(element: interop.Object): number;
 
-declare function IOHIDElementIsArray(element: interop.PointerConvertible): number;
+declare function IOHIDElementIsArray(element: interop.Object): number;
 
-declare function IOHIDElementIsNonLinear(element: interop.PointerConvertible): number;
+declare function IOHIDElementIsNonLinear(element: interop.Object): number;
 
-declare function IOHIDElementHasPreferredState(element: interop.PointerConvertible): number;
+declare function IOHIDElementHasPreferredState(element: interop.Object): number;
 
-declare function IOHIDElementHasNullState(element: interop.PointerConvertible): number;
+declare function IOHIDElementHasNullState(element: interop.Object): number;
 
-declare function IOHIDElementGetName(element: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementGetName(element: interop.Object): interop.Object;
 
-declare function IOHIDElementGetReportID(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetReportID(element: interop.Object): number;
 
-declare function IOHIDElementGetReportSize(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetReportSize(element: interop.Object): number;
 
-declare function IOHIDElementGetReportCount(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetReportCount(element: interop.Object): number;
 
-declare function IOHIDElementGetUnit(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetUnit(element: interop.Object): number;
 
-declare function IOHIDElementGetUnitExponent(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetUnitExponent(element: interop.Object): number;
 
-declare function IOHIDElementGetLogicalMin(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetLogicalMin(element: interop.Object): number;
 
-declare function IOHIDElementGetLogicalMax(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetLogicalMax(element: interop.Object): number;
 
-declare function IOHIDElementGetPhysicalMin(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetPhysicalMin(element: interop.Object): number;
 
-declare function IOHIDElementGetPhysicalMax(element: interop.PointerConvertible): number;
+declare function IOHIDElementGetPhysicalMax(element: interop.Object): number;
 
-declare function IOHIDElementGetProperty(element: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDElementGetProperty(element: interop.Object, key: interop.Object): interop.Object;
 
-declare function IOHIDElementSetProperty(element: interop.PointerConvertible, key: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IOHIDElementSetProperty(element: interop.Object, key: interop.Object, property: interop.Object): number;
 
 declare function IOHIDManagerGetTypeID(): number;
 
-declare function IOHIDManagerCreate(allocator: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IOHIDManagerCreate(allocator: interop.Object, options: number): interop.Object;
 
-declare function IOHIDManagerOpen(manager: interop.PointerConvertible, options: number): number;
+declare function IOHIDManagerOpen(manager: interop.Object, options: number): number;
 
-declare function IOHIDManagerClose(manager: interop.PointerConvertible, options: number): number;
+declare function IOHIDManagerClose(manager: interop.Object, options: number): number;
 
-declare function IOHIDManagerGetProperty(manager: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDManagerGetProperty(manager: interop.Object, key: interop.Object): interop.Object;
 
-declare function IOHIDManagerSetProperty(manager: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function IOHIDManagerSetProperty(manager: interop.Object, key: interop.Object, value: interop.Object): number;
 
-declare function IOHIDManagerScheduleWithRunLoop(manager: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDManagerScheduleWithRunLoop(manager: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDManagerUnscheduleFromRunLoop(manager: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDManagerUnscheduleFromRunLoop(manager: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDManagerSetDispatchQueue(manager: interop.PointerConvertible, queue: NSObject): void;
+declare function IOHIDManagerSetDispatchQueue(manager: interop.Object, queue: NSObject): void;
 
-declare function IOHIDManagerSetCancelHandler(manager: interop.PointerConvertible, handler: () => void): void;
+declare function IOHIDManagerSetCancelHandler(manager: interop.Object, handler: () => void): void;
 
-declare function IOHIDManagerActivate(manager: interop.PointerConvertible): void;
+declare function IOHIDManagerActivate(manager: interop.Object): void;
 
-declare function IOHIDManagerCancel(manager: interop.PointerConvertible): void;
+declare function IOHIDManagerCancel(manager: interop.Object): void;
 
-declare function IOHIDManagerSetDeviceMatching(manager: interop.PointerConvertible, matching: interop.PointerConvertible): void;
+declare function IOHIDManagerSetDeviceMatching(manager: interop.Object, matching: interop.Object): void;
 
-declare function IOHIDManagerSetDeviceMatchingMultiple(manager: interop.PointerConvertible, multiple: interop.PointerConvertible): void;
+declare function IOHIDManagerSetDeviceMatchingMultiple(manager: interop.Object, multiple: interop.Object): void;
 
-declare function IOHIDManagerCopyDevices(manager: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDManagerCopyDevices(manager: interop.Object): interop.Object;
 
-declare function IOHIDManagerRegisterDeviceMatchingCallback(manager: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function IOHIDManagerRegisterDeviceMatchingCallback(manager: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDManagerRegisterDeviceRemovalCallback(manager: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function IOHIDManagerRegisterDeviceRemovalCallback(manager: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDManagerRegisterInputReportCallback(manager: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): void;
+declare function IOHIDManagerRegisterInputReportCallback(manager: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDManagerRegisterInputReportWithTimeStampCallback(manager: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number, p8: number) => void, context: interop.PointerConvertible): void;
+declare function IOHIDManagerRegisterInputReportWithTimeStampCallback(manager: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.Enum<typeof IOHIDReportType>, p5: number, p6: interop.PointerConvertible, p7: number, p8: number) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDManagerRegisterInputValueCallback(manager: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function IOHIDManagerRegisterInputValueCallback(manager: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function IOHIDManagerSetInputValueMatching(manager: interop.PointerConvertible, matching: interop.PointerConvertible): void;
+declare function IOHIDManagerSetInputValueMatching(manager: interop.Object, matching: interop.Object): void;
 
-declare function IOHIDManagerSetInputValueMatchingMultiple(manager: interop.PointerConvertible, multiple: interop.PointerConvertible): void;
+declare function IOHIDManagerSetInputValueMatchingMultiple(manager: interop.Object, multiple: interop.Object): void;
 
-declare function IOHIDManagerSaveToPropertyDomain(manager: interop.PointerConvertible, applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible, options: number): void;
+declare function IOHIDManagerSaveToPropertyDomain(manager: interop.Object, applicationID: interop.Object, userName: interop.Object, hostName: interop.Object, options: number): void;
 
 declare function IOHIDValueGetTypeID(): number;
 
-declare function IOHIDValueCreateWithIntegerValue(allocator: interop.PointerConvertible, element: interop.PointerConvertible, timeStamp: number, value: number): interop.Pointer;
+declare function IOHIDValueCreateWithIntegerValue(allocator: interop.Object, element: interop.Object, timeStamp: number, value: number): interop.Object;
 
-declare function IOHIDValueCreateWithBytes(allocator: interop.PointerConvertible, element: interop.PointerConvertible, timeStamp: number, bytes: interop.PointerConvertible, length: number): interop.Pointer;
+declare function IOHIDValueCreateWithBytes(allocator: interop.Object, element: interop.Object, timeStamp: number, bytes: interop.PointerConvertible, length: number): interop.Object;
 
-declare function IOHIDValueCreateWithBytesNoCopy(allocator: interop.PointerConvertible, element: interop.PointerConvertible, timeStamp: number, bytes: interop.PointerConvertible, length: number): interop.Pointer;
+declare function IOHIDValueCreateWithBytesNoCopy(allocator: interop.Object, element: interop.Object, timeStamp: number, bytes: interop.PointerConvertible, length: number): interop.Object;
 
-declare function IOHIDValueGetElement(value: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDValueGetElement(value: interop.Object): interop.Object;
 
-declare function IOHIDValueGetTimeStamp(value: interop.PointerConvertible): number;
+declare function IOHIDValueGetTimeStamp(value: interop.Object): number;
 
-declare function IOHIDValueGetLength(value: interop.PointerConvertible): number;
+declare function IOHIDValueGetLength(value: interop.Object): number;
 
-declare function IOHIDValueGetBytePtr(value: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDValueGetBytePtr(value: interop.Object): interop.Pointer;
 
-declare function IOHIDValueGetIntegerValue(value: interop.PointerConvertible): number;
+declare function IOHIDValueGetIntegerValue(value: interop.Object): number;
 
-declare function IOHIDValueGetScaledValue(value: interop.PointerConvertible, type: number): number;
+declare function IOHIDValueGetScaledValue(value: interop.Object, type: number): number;
 
 declare function IOHIDTransactionGetTypeID(): number;
 
-declare function IOHIDTransactionCreate(allocator: interop.PointerConvertible, device: interop.PointerConvertible, direction: interop.Enum<typeof IOHIDTransactionDirectionType>, options: number): interop.Pointer;
+declare function IOHIDTransactionCreate(allocator: interop.Object, device: interop.Object, direction: interop.Enum<typeof IOHIDTransactionDirectionType>, options: number): interop.Object;
 
-declare function IOHIDTransactionGetDevice(transaction: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDTransactionGetDevice(transaction: interop.Object): interop.Object;
 
-declare function IOHIDTransactionGetDirection(transaction: interop.PointerConvertible): interop.Enum<typeof IOHIDTransactionDirectionType>;
+declare function IOHIDTransactionGetDirection(transaction: interop.Object): interop.Enum<typeof IOHIDTransactionDirectionType>;
 
-declare function IOHIDTransactionSetDirection(transaction: interop.PointerConvertible, direction: interop.Enum<typeof IOHIDTransactionDirectionType>): void;
+declare function IOHIDTransactionSetDirection(transaction: interop.Object, direction: interop.Enum<typeof IOHIDTransactionDirectionType>): void;
 
-declare function IOHIDTransactionAddElement(transaction: interop.PointerConvertible, element: interop.PointerConvertible): void;
+declare function IOHIDTransactionAddElement(transaction: interop.Object, element: interop.Object): void;
 
-declare function IOHIDTransactionRemoveElement(transaction: interop.PointerConvertible, element: interop.PointerConvertible): void;
+declare function IOHIDTransactionRemoveElement(transaction: interop.Object, element: interop.Object): void;
 
-declare function IOHIDTransactionContainsElement(transaction: interop.PointerConvertible, element: interop.PointerConvertible): number;
+declare function IOHIDTransactionContainsElement(transaction: interop.Object, element: interop.Object): number;
 
-declare function IOHIDTransactionScheduleWithRunLoop(transaction: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDTransactionScheduleWithRunLoop(transaction: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDTransactionUnscheduleFromRunLoop(transaction: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function IOHIDTransactionUnscheduleFromRunLoop(transaction: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function IOHIDTransactionSetValue(transaction: interop.PointerConvertible, element: interop.PointerConvertible, value: interop.PointerConvertible, options: number): void;
+declare function IOHIDTransactionSetValue(transaction: interop.Object, element: interop.Object, value: interop.Object, options: number): void;
 
-declare function IOHIDTransactionGetValue(transaction: interop.PointerConvertible, element: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IOHIDTransactionGetValue(transaction: interop.Object, element: interop.Object, options: number): interop.Object;
 
-declare function IOHIDTransactionCommit(transaction: interop.PointerConvertible): number;
+declare function IOHIDTransactionCommit(transaction: interop.Object): number;
 
-declare function IOHIDTransactionCommitWithCallback(transaction: interop.PointerConvertible, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function IOHIDTransactionCommitWithCallback(transaction: interop.Object, timeout: number, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function IOHIDTransactionClear(transaction: interop.PointerConvertible): void;
+declare function IOHIDTransactionClear(transaction: interop.Object): void;
 
 declare function IOHIDCreateSharedMemory(connect: number, version: number): number;
 
@@ -20263,17 +20263,17 @@ declare function IOHIDGetMouseButtonMode(handle: number, mode: interop.PointerCo
 
 declare function IOHIDSetMouseButtonMode(handle: number, mode: number): number;
 
-declare function IOHIDGetAccelerationWithKey(handle: number, key: interop.PointerConvertible, acceleration: interop.PointerConvertible): number;
+declare function IOHIDGetAccelerationWithKey(handle: number, key: interop.Object, acceleration: interop.PointerConvertible): number;
 
-declare function IOHIDSetAccelerationWithKey(handle: number, key: interop.PointerConvertible, acceleration: number): number;
+declare function IOHIDSetAccelerationWithKey(handle: number, key: interop.Object, acceleration: number): number;
 
-declare function IOHIDGetParameter(handle: number, key: interop.PointerConvertible, maxSize: number, bytes: interop.PointerConvertible, actualSize: interop.PointerConvertible): number;
+declare function IOHIDGetParameter(handle: number, key: interop.Object, maxSize: number, bytes: interop.PointerConvertible, actualSize: interop.PointerConvertible): number;
 
-declare function IOHIDSetParameter(handle: number, key: interop.PointerConvertible, bytes: interop.PointerConvertible, size: number): number;
+declare function IOHIDSetParameter(handle: number, key: interop.Object, bytes: interop.PointerConvertible, size: number): number;
 
-declare function IOHIDCopyCFTypeParameter(handle: number, key: interop.PointerConvertible, parameter: interop.PointerConvertible): number;
+declare function IOHIDCopyCFTypeParameter(handle: number, key: interop.Object, parameter: interop.PointerConvertible): number;
 
-declare function IOHIDSetCFTypeParameter(handle: number, key: interop.PointerConvertible, parameter: interop.PointerConvertible): number;
+declare function IOHIDSetCFTypeParameter(handle: number, key: interop.Object, parameter: interop.Object): number;
 
 declare function IOHIDGetStateForSelector(handle: number, selector: number, state: interop.PointerConvertible): number;
 
@@ -20323,29 +20323,29 @@ declare function NXGetClickSpace(handle: number, area: interop.PointerConvertibl
 
 declare function NXResetMouse(handle: number): void;
 
-declare function IOHIDEventSystemClientCreateSimpleClient(allocator: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDEventSystemClientCreateSimpleClient(allocator: interop.Object): interop.Pointer;
 
-declare function IOHIDEventSystemClientSetProperty(client: interop.PointerConvertible, key: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IOHIDEventSystemClientSetProperty(client: interop.PointerConvertible, key: interop.Object, property: interop.Object): number;
 
-declare function IOHIDEventSystemClientCopyProperty(client: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDEventSystemClientCopyProperty(client: interop.PointerConvertible, key: interop.Object): interop.Object;
 
 declare function IOHIDEventSystemClientGetTypeID(): number;
 
-declare function IOHIDEventSystemClientCopyServices(client: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDEventSystemClientCopyServices(client: interop.PointerConvertible): interop.Object;
 
-declare function IOHIDServiceClientSetProperty(service: interop.PointerConvertible, key: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IOHIDServiceClientSetProperty(service: interop.PointerConvertible, key: interop.Object, property: interop.Object): number;
 
-declare function IOHIDServiceClientCopyProperty(service: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDServiceClientCopyProperty(service: interop.PointerConvertible, key: interop.Object): interop.Object;
 
 declare function IOHIDServiceClientGetTypeID(): number;
 
-declare function IOHIDServiceClientGetRegistryID(service: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDServiceClientGetRegistryID(service: interop.PointerConvertible): interop.Object;
 
 declare function IOHIDServiceClientConformsTo(service: interop.PointerConvertible, usagePage: number, usage: number): number;
 
 declare function IOHIDUserDeviceGetTypeID(): number;
 
-declare function IOHIDUserDeviceCreateWithProperties(allocator: interop.PointerConvertible, properties: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IOHIDUserDeviceCreateWithProperties(allocator: interop.Object, properties: interop.Object, options: number): interop.Pointer;
 
 declare function IOHIDUserDeviceRegisterGetReportBlock(device: interop.PointerConvertible, block: (p1: interop.Enum<typeof IOHIDReportType>, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): void;
 
@@ -20359,9 +20359,9 @@ declare function IOHIDUserDeviceActivate(device: interop.PointerConvertible): vo
 
 declare function IOHIDUserDeviceCancel(device: interop.PointerConvertible): void;
 
-declare function IOHIDUserDeviceCopyProperty(device: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function IOHIDUserDeviceCopyProperty(device: interop.PointerConvertible, key: interop.Object): interop.Object;
 
-declare function IOHIDUserDeviceSetProperty(device: interop.PointerConvertible, key: interop.PointerConvertible, property: interop.PointerConvertible): number;
+declare function IOHIDUserDeviceSetProperty(device: interop.PointerConvertible, key: interop.Object, property: interop.Object): number;
 
 declare function IOHIDUserDeviceHandleReportWithTimeStamp(device: interop.PointerConvertible, timestamp: number, report: interop.PointerConvertible, reportLength: number): number;
 
@@ -20369,7 +20369,7 @@ declare function IOFBGetI2CInterfaceCount(framebuffer: number, count: interop.Po
 
 declare function IOFBCopyI2CInterfaceForBus(framebuffer: number, bus: number, interface: interop.PointerConvertible): number;
 
-declare function IOI2CCopyInterfaceForID(identifier: interop.PointerConvertible, interface: interop.PointerConvertible): number;
+declare function IOI2CCopyInterfaceForID(identifier: interop.Object, interface: interop.PointerConvertible): number;
 
 declare function IOI2CInterfaceOpen(interface: number, options: number, connect: interop.PointerConvertible): number;
 
@@ -20377,15 +20377,15 @@ declare function IOI2CInterfaceClose(connect: interop.PointerConvertible, option
 
 declare function IOI2CSendRequest(connect: interop.PointerConvertible, options: number, request: interop.PointerConvertible): number;
 
-declare function KextManagerCreateURLForBundleIdentifier(allocator: interop.PointerConvertible, kextIdentifier: interop.PointerConvertible): interop.Pointer;
+declare function KextManagerCreateURLForBundleIdentifier(allocator: interop.Object, kextIdentifier: interop.Object): interop.Object;
 
-declare function KextManagerLoadKextWithIdentifier(kextIdentifier: interop.PointerConvertible, dependencyKextAndFolderURLs: interop.PointerConvertible): number;
+declare function KextManagerLoadKextWithIdentifier(kextIdentifier: interop.Object, dependencyKextAndFolderURLs: interop.Object): number;
 
-declare function KextManagerLoadKextWithURL(kextURL: interop.PointerConvertible, dependencyKextAndFolderURLs: interop.PointerConvertible): number;
+declare function KextManagerLoadKextWithURL(kextURL: interop.Object, dependencyKextAndFolderURLs: interop.Object): number;
 
-declare function KextManagerUnloadKextWithIdentifier(kextIdentifier: interop.PointerConvertible): number;
+declare function KextManagerUnloadKextWithIdentifier(kextIdentifier: interop.Object): number;
 
-declare function KextManagerCopyLoadedKextInfo(kextIdentifiers: interop.PointerConvertible, infoKeys: interop.PointerConvertible): interop.Pointer;
+declare function KextManagerCopyLoadedKextInfo(kextIdentifiers: interop.Object, infoKeys: interop.Object): interop.Object;
 
 declare function IONetworkOpen(obj: number, con: interop.PointerConvertible): number;
 
@@ -20409,19 +20409,19 @@ declare function IOPSGetBatteryWarningLevel(): interop.Enum<typeof IOPSLowBatter
 
 declare function IOPSGetTimeRemainingEstimate(): number;
 
-declare function IOPSCopyPowerSourcesInfo(): interop.Pointer;
+declare function IOPSCopyPowerSourcesInfo(): interop.Object;
 
-declare function IOPSCopyPowerSourcesList(blob: interop.PointerConvertible): interop.Pointer;
+declare function IOPSCopyPowerSourcesList(blob: interop.Object): interop.Object;
 
-declare function IOPSGetPowerSourceDescription(blob: interop.PointerConvertible, ps: interop.PointerConvertible): interop.Pointer;
+declare function IOPSGetPowerSourceDescription(blob: interop.Object, ps: interop.Object): interop.Object;
 
-declare function IOPSGetProvidingPowerSourceType(snapshot: interop.PointerConvertible): interop.Pointer;
+declare function IOPSGetProvidingPowerSourceType(snapshot: interop.Object): interop.Object;
 
-declare function IOPSNotificationCreateRunLoopSource(callback: (p1: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function IOPSNotificationCreateRunLoopSource(callback: (p1: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function IOPSCreateLimitedPowerNotification(callback: (p1: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function IOPSCreateLimitedPowerNotification(callback: (p1: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function IOPSCopyExternalPowerAdapterDetails(): interop.Pointer;
+declare function IOPSCopyExternalPowerAdapterDetails(): interop.Object;
 
 declare function IOPMFindPowerManagement(master_device_port: number): number;
 
@@ -20447,39 +20447,39 @@ declare function IOAllowPowerChange(kernelPort: number, notificationID: number):
 
 declare function IOCancelPowerChange(kernelPort: number, notificationID: number): number;
 
-declare function IOPMSchedulePowerEvent(time_to_wake: interop.PointerConvertible, my_id: interop.PointerConvertible, type: interop.PointerConvertible): number;
+declare function IOPMSchedulePowerEvent(time_to_wake: interop.Object, my_id: interop.Object, type: interop.Object): number;
 
-declare function IOPMCancelScheduledPowerEvent(time_to_wake: interop.PointerConvertible, my_id: interop.PointerConvertible, type: interop.PointerConvertible): number;
+declare function IOPMCancelScheduledPowerEvent(time_to_wake: interop.Object, my_id: interop.Object, type: interop.Object): number;
 
-declare function IOPMCopyScheduledPowerEvents(): interop.Pointer;
+declare function IOPMCopyScheduledPowerEvents(): interop.Object;
 
-declare function IOPMAssertionCreateWithDescription(AssertionType: interop.PointerConvertible, Name: interop.PointerConvertible, Details: interop.PointerConvertible, HumanReadableReason: interop.PointerConvertible, LocalizationBundlePath: interop.PointerConvertible, Timeout: number, TimeoutAction: interop.PointerConvertible, AssertionID: interop.PointerConvertible): number;
+declare function IOPMAssertionCreateWithDescription(AssertionType: interop.Object, Name: interop.Object, Details: interop.Object, HumanReadableReason: interop.Object, LocalizationBundlePath: interop.Object, Timeout: number, TimeoutAction: interop.Object, AssertionID: interop.PointerConvertible): number;
 
-declare function IOPMAssertionCreateWithProperties(AssertionProperties: interop.PointerConvertible, AssertionID: interop.PointerConvertible): number;
+declare function IOPMAssertionCreateWithProperties(AssertionProperties: interop.Object, AssertionID: interop.PointerConvertible): number;
 
-declare function IOPMAssertionDeclareUserActivity(AssertionName: interop.PointerConvertible, userType: interop.Enum<typeof IOPMUserActiveType>, AssertionID: interop.PointerConvertible): number;
+declare function IOPMAssertionDeclareUserActivity(AssertionName: interop.Object, userType: interop.Enum<typeof IOPMUserActiveType>, AssertionID: interop.PointerConvertible): number;
 
-declare function IOPMDeclareNetworkClientActivity(AssertionName: interop.PointerConvertible, AssertionID: interop.PointerConvertible): number;
+declare function IOPMDeclareNetworkClientActivity(AssertionName: interop.Object, AssertionID: interop.PointerConvertible): number;
 
 declare function IOPMAssertionRetain(theAssertion: number): void;
 
 declare function IOPMAssertionRelease(AssertionID: number): number;
 
-declare function IOPMAssertionCopyProperties(theAssertion: number): interop.Pointer;
+declare function IOPMAssertionCopyProperties(theAssertion: number): interop.Object;
 
-declare function IOPMAssertionSetProperty(theAssertion: number, theProperty: interop.PointerConvertible, theValue: interop.PointerConvertible): number;
+declare function IOPMAssertionSetProperty(theAssertion: number, theProperty: interop.Object, theValue: interop.Object): number;
 
 declare function IOPMCopyAssertionsByProcess(AssertionsByPID: interop.PointerConvertible): number;
 
 declare function IOPMCopyAssertionsStatus(AssertionsStatus: interop.PointerConvertible): number;
 
-declare function IOPMAssertionCreate(AssertionType: interop.PointerConvertible, AssertionLevel: number, AssertionID: interop.PointerConvertible): number;
+declare function IOPMAssertionCreate(AssertionType: interop.Object, AssertionLevel: number, AssertionID: interop.PointerConvertible): number;
 
-declare function IOPMAssertionCreateWithName(AssertionType: interop.PointerConvertible, AssertionLevel: number, AssertionName: interop.PointerConvertible, AssertionID: interop.PointerConvertible): number;
+declare function IOPMAssertionCreateWithName(AssertionType: interop.Object, AssertionLevel: number, AssertionName: interop.Object, AssertionID: interop.PointerConvertible): number;
 
 declare function IOGetSystemLoadAdvisory(): number;
 
-declare function IOCopySystemLoadAdvisoryDetailed(): interop.Pointer;
+declare function IOCopySystemLoadAdvisoryDetailed(): interop.Object;
 
 declare function IOPMCopyCPUPowerStatus(cpuPowerStatus: interop.PointerConvertible): number;
 

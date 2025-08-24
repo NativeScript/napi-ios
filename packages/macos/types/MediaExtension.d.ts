@@ -50,7 +50,7 @@ declare interface MERAWProcessor extends NSObjectProtocol {
 
   readonly readyForMoreMediaData: boolean;
 
-  processFrameFromImageBufferCompletionHandler(inputFrame: interop.PointerConvertible, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
+  processFrameFromImageBufferCompletionHandler(inputFrame: interop.Object, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
 
   setMetalDeviceRegistryID?(metalDeviceRegistryID: number): void;
 
@@ -77,9 +77,9 @@ declare interface MEVideoDecoder extends NSObjectProtocol {
 
   readonly readyForMoreMediaData: boolean;
 
-  decodeFrameFromSampleBufferOptionsCompletionHandler(sampleBuffer: interop.PointerConvertible, options: MEDecodeFrameOptions, completionHandler: (p1: interop.PointerConvertible, p2: interop.Enum<typeof MEDecodeFrameStatus>, p3: NSError) => void | null): void;
+  decodeFrameFromSampleBufferOptionsCompletionHandler(sampleBuffer: interop.Object, options: MEDecodeFrameOptions, completionHandler: (p1: interop.PointerConvertible, p2: interop.Enum<typeof MEDecodeFrameStatus>, p3: NSError) => void | null): void;
 
-  canAcceptFormatDescription?(formatDescription: interop.PointerConvertible): boolean;
+  canAcceptFormatDescription?(formatDescription: interop.Object): boolean;
 
   setRecommendedThreadCount?(recommendedThreadCount: number): void;
 
@@ -98,7 +98,7 @@ declare interface MESampleCursor extends NSObjectProtocol, NSCopying {
 
   readonly currentSampleDuration: CMTime;
 
-  readonly currentSampleFormatDescription: interop.Pointer;
+  readonly currentSampleFormatDescription: interop.Object;
 
   stepInDecodeOrderByCountCompletionHandler(stepCount: number, completionHandler: (p1: number, p2: NSError) => void | null): void;
 
@@ -182,7 +182,7 @@ declare class MEFormatReader extends NativeObject implements MEFormatReader {
 declare interface MERAWProcessorExtension extends NSObjectProtocol {
   init(): this;
 
-  processorWithFormatDescriptionExtensionPixelBufferManagerError(formatDescription: interop.PointerConvertible, extensionPixelBufferManager: MERAWProcessorPixelBufferManager, error: interop.PointerConvertible): MERAWProcessor | null;
+  processorWithFormatDescriptionExtensionPixelBufferManagerError(formatDescription: interop.Object, extensionPixelBufferManager: MERAWProcessorPixelBufferManager, error: interop.PointerConvertible): MERAWProcessor | null;
 }
 
 declare class MERAWProcessorExtension extends NativeObject implements MERAWProcessorExtension {
@@ -191,7 +191,7 @@ declare class MERAWProcessorExtension extends NativeObject implements MERAWProce
 declare interface MEVideoDecoderExtension extends NSObjectProtocol {
   init(): this;
 
-  videoDecoderWithCodecTypeVideoFormatDescriptionVideoDecoderSpecificationsExtensionDecoderPixelBufferManagerError(codecType: number, videoFormatDescription: interop.PointerConvertible, videoDecoderSpecifications: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, extensionDecoderPixelBufferManager: MEVideoDecoderPixelBufferManager, error: interop.PointerConvertible): MEVideoDecoder | null;
+  videoDecoderWithCodecTypeVideoFormatDescriptionVideoDecoderSpecificationsExtensionDecoderPixelBufferManagerError(codecType: number, videoFormatDescription: interop.Object, videoDecoderSpecifications: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, extensionDecoderPixelBufferManager: MEVideoDecoderPixelBufferManager, error: interop.PointerConvertible): MEVideoDecoder | null;
 }
 
 declare class MEVideoDecoderExtension extends NativeObject implements MEVideoDecoderExtension {
@@ -213,7 +213,7 @@ declare class MERAWProcessorPixelBufferManager extends NSObject {
   get pixelBufferAttributes(): NSDictionary;
   set pixelBufferAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
-  createPixelBufferAndReturnError(error: interop.PointerConvertible): interop.Pointer;
+  createPixelBufferAndReturnError(error: interop.PointerConvertible): interop.Object | null;
 
   setPixelBufferAttributes(pixelBufferAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 }
@@ -282,7 +282,7 @@ declare class MEVideoDecoderPixelBufferManager extends NSObject {
   get pixelBufferAttributes(): NSDictionary;
   set pixelBufferAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
-  createPixelBufferAndReturnError(error: interop.PointerConvertible): interop.Pointer;
+  createPixelBufferAndReturnError(error: interop.PointerConvertible): interop.Object | null;
 
   registerCustomPixelFormat(customPixelFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 

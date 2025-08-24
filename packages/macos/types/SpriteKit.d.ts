@@ -1298,7 +1298,7 @@ declare class SKTexture extends NSObject implements NSCopying, NSSecureCoding {
 
   static textureNoiseWithSmoothnessSizeGrayscale<This extends abstract new (...args: any) => any>(this: This, smoothness: number, size: CGSize, grayscale: boolean): InstanceType<This>;
 
-  static textureWithCGImage<This extends abstract new (...args: any) => any>(this: This, image: interop.PointerConvertible): InstanceType<This>;
+  static textureWithCGImage<This extends abstract new (...args: any) => any>(this: This, image: interop.Object): InstanceType<This>;
 
   static textureWithImage<This extends abstract new (...args: any) => any>(this: This, image: NSImage): InstanceType<This>;
 
@@ -1322,7 +1322,7 @@ declare class SKTexture extends NSObject implements NSCopying, NSSecureCoding {
 
   usesMipmaps: boolean;
 
-  CGImage(): interop.Pointer;
+  CGImage(): interop.Object;
 
   static preloadTexturesWithCompletionHandler(textures: NSArray<interop.Object> | Array<interop.Object>, completionHandler: () => void): void;
 
@@ -1434,7 +1434,7 @@ declare class SKView extends NSView implements NSSecureCoding {
 }
 
 declare class SKRegion extends NSObject implements NSCopying, NSSecureCoding {
-  readonly path: interop.Pointer;
+  readonly path: interop.Object;
 
   static infiniteRegion<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -1442,7 +1442,7 @@ declare class SKRegion extends NSObject implements NSCopying, NSSecureCoding {
 
   initWithSize(size: CGSize): this;
 
-  initWithPath(path: interop.PointerConvertible): this;
+  initWithPath(path: interop.Object): this;
 
   inverseRegion(): this;
 
@@ -1586,9 +1586,9 @@ declare class SKAudioNode extends SKNode implements NSSecureCoding {
 }
 
 declare class SKShapeNode extends SKNode {
-  static shapeNodeWithPath<This extends abstract new (...args: any) => any>(this: This, path: interop.PointerConvertible): InstanceType<This>;
+  static shapeNodeWithPath<This extends abstract new (...args: any) => any>(this: This, path: interop.Object): InstanceType<This>;
 
-  static shapeNodeWithPathCentered<This extends abstract new (...args: any) => any>(this: This, path: interop.PointerConvertible, centered: boolean): InstanceType<This>;
+  static shapeNodeWithPathCentered<This extends abstract new (...args: any) => any>(this: This, path: interop.Object, centered: boolean): InstanceType<This>;
 
   static shapeNodeWithRect<This extends abstract new (...args: any) => any>(this: This, rect: CGRect): InstanceType<This>;
 
@@ -1608,8 +1608,7 @@ declare class SKShapeNode extends SKNode {
 
   static shapeNodeWithSplinePointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, numPoints: number): InstanceType<This>;
 
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
   strokeColor: NSColor;
 
@@ -1646,7 +1645,7 @@ declare class SKShapeNode extends SKNode {
 
   setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object | null): void;
 
   setStrokeColor(strokeColor: NSColor): void;
 
@@ -2189,13 +2188,13 @@ declare class SKAction extends NSObject implements NSCopying, NSSecureCoding {
 
   static falloffByDuration(falloff: number, duration: number): SKAction;
 
-  static followPathDuration(path: interop.PointerConvertible, duration: number): SKAction;
+  static followPathDuration(path: interop.Object, duration: number): SKAction;
 
-  static followPathAsOffsetOrientToPathDuration(path: interop.PointerConvertible, offset: boolean, orient: boolean, duration: number): SKAction;
+  static followPathAsOffsetOrientToPathDuration(path: interop.Object, offset: boolean, orient: boolean, duration: number): SKAction;
 
-  static followPathSpeed(path: interop.PointerConvertible, speed: number): SKAction;
+  static followPathSpeed(path: interop.Object, speed: number): SKAction;
 
-  static followPathAsOffsetOrientToPathSpeed(path: interop.PointerConvertible, offset: boolean, orient: boolean, speed: number): SKAction;
+  static followPathAsOffsetOrientToPathSpeed(path: interop.Object, offset: boolean, orient: boolean, speed: number): SKAction;
 
   static speedByDuration(speed: number, duration: number): SKAction;
 
@@ -2311,13 +2310,13 @@ declare class SKPhysicsBody extends NSObject implements NSCopying, NSSecureCodin
 
   static bodyWithRectangleOfSizeCenter(s: CGSize, center: CGPoint): SKPhysicsBody;
 
-  static bodyWithPolygonFromPath(path: interop.PointerConvertible): SKPhysicsBody;
+  static bodyWithPolygonFromPath(path: interop.Object): SKPhysicsBody;
 
   static bodyWithEdgeFromPointToPoint(p1: CGPoint, p2: CGPoint): SKPhysicsBody;
 
-  static bodyWithEdgeChainFromPath(path: interop.PointerConvertible): SKPhysicsBody;
+  static bodyWithEdgeChainFromPath(path: interop.Object): SKPhysicsBody;
 
-  static bodyWithEdgeLoopFromPath(path: interop.PointerConvertible): SKPhysicsBody;
+  static bodyWithEdgeLoopFromPath(path: interop.Object): SKPhysicsBody;
 
   static bodyWithEdgeLoopFromRect(rect: CGRect): SKPhysicsBody;
 

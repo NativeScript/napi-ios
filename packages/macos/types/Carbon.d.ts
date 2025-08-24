@@ -10058,8 +10058,8 @@ declare class ListRec {
   indent: Point;
   cellSize: Point;
   visible: Rect;
-  vScroll: interop.Pointer;
-  hScroll: interop.Pointer;
+  vScroll: interop.Object | null;
+  hScroll: interop.Object | null;
   selFlags: number;
   lActive: number;
   lReserved: number;
@@ -10088,13 +10088,13 @@ declare class ControlTabInfoRecV1 {
   constructor(init?: ControlTabInfoRecV1);
   version: number;
   iconSuiteID: number;
-  name: interop.Pointer;
+  name: interop.Object | null;
 }
 
 declare class ControlTabEntry {
   constructor(init?: ControlTabEntry);
   icon: interop.Pointer;
-  name: interop.Pointer;
+  name: interop.Object | null;
   enabled: number;
 }
 
@@ -10219,9 +10219,9 @@ declare class AlertStdCFStringAlertParamRec {
   version: number;
   movable: number;
   helpButton: number;
-  defaultText: interop.Pointer;
-  cancelText: interop.Pointer;
-  otherText: interop.Pointer;
+  defaultText: interop.Object | null;
+  cancelText: interop.Object | null;
+  otherText: interop.Object | null;
   defaultButton: number;
   cancelButton: number;
   position: number;
@@ -10246,14 +10246,14 @@ declare class HILayoutInfo {
 
 declare class HIAxisScale {
   constructor(init?: HIAxisScale);
-  toView: interop.Pointer;
+  toView: interop.Object | null;
   kind: number;
   ratio: number;
 }
 
 declare class HISideBinding {
   constructor(init?: HISideBinding);
-  toView: interop.Pointer;
+  toView: interop.Object | null;
   kind: number;
   offset: number;
 }
@@ -10449,7 +10449,7 @@ declare class TabletPointRec {
 
 declare class unnamed_9647932948503875537 {
   constructor(init?: unnamed_9647932948503875537);
-  menuRef: interop.Pointer;
+  menuRef: interop.Object | null;
   menuItemIndex: number;
 }
 
@@ -10669,7 +10669,7 @@ declare class ContextualMenuInterfaceStruct {
 
 declare class unnamed_11573165570801710882 {
   constructor(init?: unnamed_11573165570801710882);
-  classID: interop.Pointer;
+  classID: interop.Object | null;
   initEvent: interop.Pointer;
 }
 
@@ -10697,27 +10697,27 @@ declare class MenuItemDataRec {
   cmdID: number;
   encoding: number;
   submenuID: number;
-  submenuHandle: interop.Pointer;
+  submenuHandle: interop.Object | null;
   fontID: number;
   refcon: interop.Pointer;
   attr: number;
-  cfText: interop.Pointer;
+  cfText: interop.Object | null;
   properties: interop.Pointer;
   indent: number;
   cmdVirtualKey: number;
-  attributedText: interop.Pointer;
-  font: interop.Pointer;
+  attributedText: interop.Object | null;
+  font: interop.Object | null;
 }
 
 declare class HMenuBarMenu {
   constructor(init?: HMenuBarMenu);
-  menu: interop.Pointer;
+  menu: interop.Object | null;
   reserved: number;
 }
 
 declare class MenuBarMenu {
   constructor(init?: MenuBarMenu);
-  menu: interop.Pointer;
+  menu: interop.Object | null;
   menuLeft: number;
 }
 
@@ -10809,7 +10809,7 @@ declare class DataBrowserListViewHeaderDesc {
   minimumWidth: number;
   maximumWidth: number;
   titleOffset: number;
-  titleString: interop.Pointer;
+  titleString: interop.Object | null;
   initialOrder: number;
   btnFontStyle: ControlFontStyleRec;
   btnContentInfo: ControlImageContentInfo;
@@ -10964,7 +10964,7 @@ declare class HFSFlavor {
 
 declare class HIAxisPosition {
   constructor(init?: HIAxisPosition);
-  toView: interop.Pointer;
+  toView: interop.Object | null;
   kind: number;
   offset: number;
 }
@@ -11187,7 +11187,7 @@ declare class TXNCarbonEventInfo {
   useCarbonEvents: number;
   filler: number;
   flags: number;
-  fDictionary: interop.Pointer;
+  fDictionary: interop.Object | null;
 }
 
 declare class ControlKind {
@@ -11204,7 +11204,7 @@ declare class FileTranslationList {
 
 declare class unnamed_9607386324739661828 {
   constructor(init?: unnamed_9607386324739661828);
-  menuRef: interop.Pointer;
+  menuRef: interop.Object | null;
   menuItemIndex: number;
 }
 
@@ -11268,7 +11268,7 @@ declare class OpaqueHIObjectRef {
 
 declare class MenuTrackingData {
   constructor(init?: MenuTrackingData);
-  menu: interop.Pointer;
+  menu: interop.Object | null;
   itemSelected: number;
   itemUnderMouse: number;
   itemRect: Rect;
@@ -11401,7 +11401,7 @@ declare class HIThemeTextInfo {
   truncationMaxLines: number;
   truncationHappened: number;
   filler1: number;
-  font: interop.Pointer;
+  font: interop.Object | null;
 }
 
 declare class EvQEl {
@@ -11451,13 +11451,13 @@ declare class unnamed_13576877042859569145 {
 type unnamed_9681769620417475286Descriptor = 
   | { resID: number }
   | { iconRef: interop.PointerConvertible }
-  | { imageRef: interop.PointerConvertible };
+  | { imageRef: interop.Object | null };
 
 declare class unnamed_9681769620417475286 {
   constructor(init?: unnamed_9681769620417475286Descriptor);
   resID: number;
   iconRef: interop.Pointer;
-  imageRef: interop.Pointer;
+  imageRef: interop.Object | null;
 }
 
 type unnamed_9465903142474588548Descriptor = 
@@ -11479,7 +11479,7 @@ type TXNAttributeDataDescriptor =
   | { dataValue: number }
   | { atsuFeatures: interop.PointerConvertible }
   | { atsuVariations: interop.PointerConvertible }
-  | { urlReference: interop.PointerConvertible };
+  | { urlReference: interop.Object | null };
 
 declare class TXNAttributeData {
   constructor(init?: TXNAttributeDataDescriptor);
@@ -11487,7 +11487,7 @@ declare class TXNAttributeData {
   dataValue: number;
   atsuFeatures: interop.Pointer;
   atsuVariations: interop.Pointer;
-  urlReference: interop.Pointer;
+  urlReference: interop.Object | null;
 }
 
 type TXNControlDataDescriptor = 
@@ -11507,18 +11507,18 @@ declare class TXNControlData {
 type unnamed_18078734113175991373Descriptor = 
   | { iconRef: interop.PointerConvertible }
   | { iconTypeAndCreator: HITypeAndCreator }
-  | { imageRef: interop.PointerConvertible }
-  | { imageResource: interop.PointerConvertible }
-  | { imageFile: interop.PointerConvertible }
+  | { imageRef: interop.Object | null }
+  | { imageResource: interop.Object | null }
+  | { imageFile: interop.Object | null }
   | { nsImage: NSImage | null };
 
 declare class unnamed_18078734113175991373 {
   constructor(init?: unnamed_18078734113175991373Descriptor);
   iconRef: interop.Pointer;
   iconTypeAndCreator: HITypeAndCreator;
-  imageRef: interop.Pointer;
-  imageResource: interop.Pointer;
-  imageFile: interop.Pointer;
+  imageRef: interop.Object | null;
+  imageResource: interop.Object | null;
+  imageFile: interop.Object | null;
   nsImage: NSImage | null;
 }
 
@@ -11555,7 +11555,7 @@ declare class unnamed_7263634869071173640 {
 }
 
 type unnamed_6725748924257102927Descriptor = 
-  | { tagCFString: interop.PointerConvertible }
+  | { tagCFString: interop.Object | null }
   | { tagString: unknown /* const array */ }
   | { tagStringRes: HMStringResType }
   | { tagTEHandle: interop.PointerConvertible }
@@ -11564,7 +11564,7 @@ type unnamed_6725748924257102927Descriptor =
 
 declare class unnamed_6725748924257102927 {
   constructor(init?: unnamed_6725748924257102927Descriptor);
-  tagCFString: interop.Pointer;
+  tagCFString: interop.Object | null;
   tagString: unknown /* const array */;
   tagStringRes: HMStringResType;
   tagTEHandle: interop.Pointer;
@@ -11573,13 +11573,13 @@ declare class unnamed_6725748924257102927 {
 }
 
 type unnamed_9623544446476781723Descriptor = 
-  | { control: interop.PointerConvertible }
+  | { control: interop.Object | null }
   | { window: interop.PointerConvertible }
   | { menu: unnamed_9647932948503875537 };
 
 declare class unnamed_9623544446476781723 {
   constructor(init?: unnamed_9623544446476781723Descriptor);
-  control: interop.Pointer;
+  control: interop.Object | null;
   window: interop.Pointer;
   menu: unnamed_9647932948503875537;
 }
@@ -11636,15 +11636,15 @@ declare function RunCurrentEventLoop(inTimeout: number): number;
 
 declare function QuitEventLoop(inEventLoop: interop.PointerConvertible): number;
 
-declare function GetCFRunLoopFromEventLoop(inEventLoop: interop.PointerConvertible): interop.Pointer;
+declare function GetCFRunLoopFromEventLoop(inEventLoop: interop.PointerConvertible): interop.Object;
 
 declare function ReceiveNextEvent(inNumTypes: number, inList: interop.PointerConvertible, inTimeout: number, inPullEvent: number, outEvent: interop.PointerConvertible): number;
 
-declare function CreateEvent(inAllocator: interop.PointerConvertible, inClassID: number, inKind: number, inWhen: number, inAttributes: number, outEvent: interop.PointerConvertible): number;
+declare function CreateEvent(inAllocator: interop.Object, inClassID: number, inKind: number, inWhen: number, inAttributes: number, outEvent: interop.PointerConvertible): number;
 
 declare function CopyEvent(inOther: interop.PointerConvertible): interop.Pointer;
 
-declare function CopyEventAs(inAllocator: interop.PointerConvertible, inOther: interop.PointerConvertible, inEventClass: number, inEventKind: number): interop.Pointer;
+declare function CopyEventAs(inAllocator: interop.Object, inOther: interop.PointerConvertible, inEventClass: number, inEventKind: number): interop.Pointer;
 
 declare function RetainEvent(inEvent: interop.PointerConvertible): interop.Pointer;
 
@@ -11666,9 +11666,9 @@ declare function GetEventTime(inEvent: interop.PointerConvertible): number;
 
 declare function SetEventTime(inEvent: interop.PointerConvertible, inTime: number): number;
 
-declare function CreateEventWithCGEvent(inAllocator: interop.PointerConvertible, inEvent: interop.PointerConvertible, inAttributes: number, outEvent: interop.PointerConvertible): number;
+declare function CreateEventWithCGEvent(inAllocator: interop.Object, inEvent: interop.Object, inAttributes: number, outEvent: interop.PointerConvertible): number;
 
-declare function CopyEventCGEvent(inEvent: interop.PointerConvertible): interop.Pointer;
+declare function CopyEventCGEvent(inEvent: interop.PointerConvertible): interop.Object;
 
 declare function GetCurrentEventQueue(): interop.Pointer;
 
@@ -11720,15 +11720,15 @@ declare function DisposeEventLoopTimerUPP(userUPP: (p1: interop.PointerConvertib
 
 declare function DisposeEventLoopIdleTimerUPP(userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void): void;
 
-declare function InvokeEventLoopTimerUPP(inTimer: interop.PointerConvertible, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
+declare function InvokeEventLoopTimerUPP(inTimer: interop.Object, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
 
-declare function InvokeEventLoopIdleTimerUPP(inTimer: interop.PointerConvertible, inState: number, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void): void;
+declare function InvokeEventLoopIdleTimerUPP(inTimer: interop.Object, inState: number, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void): void;
 
 declare function InstallEventLoopTimer(inEventLoop: interop.PointerConvertible, inFireDelay: number, inInterval: number, inTimerProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, inTimerData: interop.PointerConvertible, outTimer: interop.PointerConvertible): number;
 
-declare function RemoveEventLoopTimer(inTimer: interop.PointerConvertible): number;
+declare function RemoveEventLoopTimer(inTimer: interop.Object): number;
 
-declare function SetEventLoopTimerNextFireTime(inTimer: interop.PointerConvertible, inNextFire: number): number;
+declare function SetEventLoopTimerNextFireTime(inTimer: interop.Object, inNextFire: number): number;
 
 declare function NewEventHandlerUPP(userRoutine: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number;
 
@@ -11756,35 +11756,35 @@ declare function DisableSecureEventInput(): number;
 
 declare function IsSecureEventInputEnabled(): number;
 
-declare function HIObjectRegisterSubclass(inClassID: interop.PointerConvertible, inBaseClassID: interop.PointerConvertible, inOptions: number, inConstructProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, inNumEvents: number, inEventList: interop.PointerConvertible, inConstructData: interop.PointerConvertible, outClassRef: interop.PointerConvertible): number;
+declare function HIObjectRegisterSubclass(inClassID: interop.Object, inBaseClassID: interop.Object, inOptions: number, inConstructProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, inNumEvents: number, inEventList: interop.PointerConvertible, inConstructData: interop.PointerConvertible, outClassRef: interop.PointerConvertible): number;
 
-declare function HIObjectUnregisterClass(inClassRef: interop.PointerConvertible): number;
+declare function HIObjectUnregisterClass(inClassRef: interop.Object): number;
 
-declare function HIObjectCreate(inClassID: interop.PointerConvertible, inConstructData: interop.PointerConvertible, outObject: interop.PointerConvertible): number;
+declare function HIObjectCreate(inClassID: interop.Object, inConstructData: interop.PointerConvertible, outObject: interop.PointerConvertible): number;
 
-declare function HIObjectGetEventTarget(inObject: interop.PointerConvertible): interop.Pointer;
+declare function HIObjectGetEventTarget(inObject: interop.Object): interop.Pointer;
 
-declare function HIObjectPrintDebugInfo(inObject: interop.PointerConvertible): void;
+declare function HIObjectPrintDebugInfo(inObject: interop.Object): void;
 
-declare function HIObjectCopyClassID(inObject: interop.PointerConvertible): interop.Pointer;
+declare function HIObjectCopyClassID(inObject: interop.Object): interop.Object;
 
-declare function HIObjectIsOfClass(inObject: interop.PointerConvertible, inObjectClassID: interop.PointerConvertible): number;
+declare function HIObjectIsOfClass(inObject: interop.Object, inObjectClassID: interop.Object): number;
 
-declare function HIObjectDynamicCast(inObject: interop.PointerConvertible, inClassID: interop.PointerConvertible): interop.Pointer;
+declare function HIObjectDynamicCast(inObject: interop.Object, inClassID: interop.Object): interop.Pointer;
 
-declare function HIObjectCreateFromBundle(inBundle: interop.PointerConvertible, outObject: interop.PointerConvertible): number;
+declare function HIObjectCreateFromBundle(inBundle: interop.Object, outObject: interop.PointerConvertible): number;
 
-declare function HIObjectFromEventTarget(inTarget: interop.PointerConvertible): interop.Pointer;
+declare function HIObjectFromEventTarget(inTarget: interop.PointerConvertible): interop.Object;
 
-declare function HIObjectIsArchivingIgnored(inObject: interop.PointerConvertible): number;
+declare function HIObjectIsArchivingIgnored(inObject: interop.Object): number;
 
-declare function HIObjectAddDelegate(inObject: interop.PointerConvertible, inDelegate: interop.PointerConvertible, inPosition: number): number;
+declare function HIObjectAddDelegate(inObject: interop.Object, inDelegate: interop.Object, inPosition: number): number;
 
-declare function HIObjectRemoveDelegate(inObject: interop.PointerConvertible, inDelegate: interop.PointerConvertible, inPosition: number): number;
+declare function HIObjectRemoveDelegate(inObject: interop.Object, inDelegate: interop.Object, inPosition: number): number;
 
-declare function HIObjectCopyDelegates(inObject: interop.PointerConvertible, outDelegates: interop.PointerConvertible): number;
+declare function HIObjectCopyDelegates(inObject: interop.Object, outDelegates: interop.PointerConvertible): number;
 
-declare function HIObjectGetEventHandlerObject(inRef: interop.PointerConvertible): interop.Pointer;
+declare function HIObjectGetEventHandlerObject(inRef: interop.PointerConvertible): interop.Object;
 
 declare function NewThemeTabTitleDrawUPP(userRoutine: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => void): (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => void;
 
@@ -11844,7 +11844,7 @@ declare function LMGetKbdLast(): number;
 
 declare function LMGetKbdType(): number;
 
-declare function GetMenuTrackingData(theMenu: interop.PointerConvertible, outData: interop.PointerConvertible): number;
+declare function GetMenuTrackingData(theMenu: interop.Object, outData: interop.PointerConvertible): number;
 
 declare function CMPluginExamineContext(thisInstance: interop.PointerConvertible, inContext: interop.PointerConvertible, outCommandPairs: interop.PointerConvertible): number;
 
@@ -11958,13 +11958,13 @@ declare function NewControlActionUPP(userRoutine: (p1: interop.PointerConvertibl
 
 declare function DisposeControlActionUPP(userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
 
-declare function InvokeControlActionUPP(theControl: interop.PointerConvertible, partCode: number, userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
+declare function InvokeControlActionUPP(theControl: interop.Object, partCode: number, userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
 
 declare function NewControlKeyFilterUPP(userRoutine: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number;
 
 declare function DisposeControlKeyFilterUPP(userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): void;
 
-declare function InvokeControlKeyFilterUPP(theControl: interop.PointerConvertible, keyCode: interop.PointerConvertible, charCode: interop.PointerConvertible, modifiers: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): number;
+declare function InvokeControlKeyFilterUPP(theControl: interop.Object, keyCode: interop.PointerConvertible, charCode: interop.PointerConvertible, modifiers: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): number;
 
 declare function NewWindowPaintUPP(userRoutine: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number;
 
@@ -11998,7 +11998,7 @@ declare function PopSymbolicHotKeyMode(inToken: interop.PointerConvertible): voi
 
 declare function GetSymbolicHotKeyMode(): number;
 
-declare function HIThemeDrawButton(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number, outLabelRect: interop.PointerConvertible): number;
+declare function HIThemeDrawButton(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number, outLabelRect: interop.PointerConvertible): number;
 
 declare function HIThemeGetButtonShape(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, outShape: interop.PointerConvertible): number;
 
@@ -12006,27 +12006,27 @@ declare function HIThemeGetButtonContentBounds(inBounds: interop.PointerConverti
 
 declare function HIThemeGetButtonBackgroundBounds(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, outBounds: interop.PointerConvertible): number;
 
-declare function HIThemeDrawChasingArrows(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawChasingArrows(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawPopupArrow(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawPopupArrow(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawMenuBarBackground(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawMenuBarBackground(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawMenuTitle(inMenuBarRect: interop.PointerConvertible, inTitleRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number, outLabelRect: interop.PointerConvertible): number;
+declare function HIThemeDrawMenuTitle(inMenuBarRect: interop.PointerConvertible, inTitleRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number, outLabelRect: interop.PointerConvertible): number;
 
-declare function HIThemeDrawMenuBackground(inMenuRect: interop.PointerConvertible, inMenuDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawMenuBackground(inMenuRect: interop.PointerConvertible, inMenuDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawMenuItem(inMenuRect: interop.PointerConvertible, inItemRect: interop.PointerConvertible, inItemDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number, outContentRect: interop.PointerConvertible): number;
+declare function HIThemeDrawMenuItem(inMenuRect: interop.PointerConvertible, inItemRect: interop.PointerConvertible, inItemDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number, outContentRect: interop.PointerConvertible): number;
 
-declare function HIThemeDrawMenuSeparator(inMenuRect: interop.PointerConvertible, inItemRect: interop.PointerConvertible, inItemDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawMenuSeparator(inMenuRect: interop.PointerConvertible, inItemRect: interop.PointerConvertible, inItemDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
 declare function HIThemeGetMenuBackgroundShape(inMenuRect: interop.PointerConvertible, inMenuDrawInfo: interop.PointerConvertible, outShape: interop.PointerConvertible): number;
 
-declare function HIThemeDrawSegment(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawSegment(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawTabPane(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawTabPane(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawTab(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number, outLabelRect: interop.PointerConvertible): number;
+declare function HIThemeDrawTab(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number, outLabelRect: interop.PointerConvertible): number;
 
 declare function HIThemeGetTabPaneDrawShape(inRect: interop.PointerConvertible, inDirection: number, inTabSize: number, outShape: interop.PointerConvertible): number;
 
@@ -12036,17 +12036,17 @@ declare function HIThemeGetTabDrawShape(inRect: interop.PointerConvertible, inDr
 
 declare function HIThemeGetTabShape(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, outShape: interop.PointerConvertible): number;
 
-declare function HIThemeGetTextDimensions(inString: interop.PointerConvertible, inWidth: number, inTextInfo: interop.PointerConvertible, outWidth: interop.PointerConvertible, outHeight: interop.PointerConvertible, outBaseline: interop.PointerConvertible): number;
+declare function HIThemeGetTextDimensions(inString: interop.Object, inWidth: number, inTextInfo: interop.PointerConvertible, outWidth: interop.PointerConvertible, outHeight: interop.PointerConvertible, outBaseline: interop.PointerConvertible): number;
 
-declare function HIThemeDrawTextBox(inString: interop.PointerConvertible, inBounds: interop.PointerConvertible, inTextInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawTextBox(inString: interop.Object, inBounds: interop.PointerConvertible, inTextInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
 declare function HIThemeGetUIFontType(inFontID: number): interop.Enum<typeof CTFontUIFontType>;
 
-declare function HIThemeDrawTrack(inDrawInfo: interop.PointerConvertible, inGhostRect: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawTrack(inDrawInfo: interop.PointerConvertible, inGhostRect: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawTrackTickMarks(inDrawInfo: interop.PointerConvertible, inNumTicks: number, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawTrackTickMarks(inDrawInfo: interop.PointerConvertible, inNumTicks: number, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawTickMark(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawTickMark(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
 declare function HIThemeGetTrackThumbShape(inDrawInfo: interop.PointerConvertible, outThumbShape: interop.PointerConvertible): number;
 
@@ -12070,13 +12070,13 @@ declare function HIThemeGetScrollBarTrackRect(inBounds: interop.PointerConvertib
 
 declare function HIThemeHitTestScrollBarArrows(inScrollBarBounds: interop.PointerConvertible, inTrackInfo: interop.PointerConvertible, inIsHoriz: number, inPtHit: interop.PointerConvertible, outTrackBounds: interop.PointerConvertible, outPartCode: interop.PointerConvertible): number;
 
-declare function HIThemeDrawScrollBarDelimiters(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawScrollBarDelimiters(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawWindowFrame(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number, outTitleRect: interop.PointerConvertible): number;
+declare function HIThemeDrawWindowFrame(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number, outTitleRect: interop.PointerConvertible): number;
 
-declare function HIThemeDrawTitleBarWidget(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawTitleBarWidget(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawGrowBox(inOrigin: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawGrowBox(inOrigin: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
 declare function HIThemeGetGrowBoxBounds(inOrigin: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, outBounds: interop.PointerConvertible): number;
 
@@ -12084,37 +12084,37 @@ declare function HIThemeGetWindowShape(inContRect: interop.PointerConvertible, i
 
 declare function HIThemeGetWindowRegionHit(inContRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inPoint: interop.PointerConvertible, outRegionHit: interop.PointerConvertible): number;
 
-declare function HIThemeDrawFrame(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawFrame(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawGroupBox(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawGroupBox(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawGenericWell(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawGenericWell(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawPaneSplitter(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawPaneSplitter(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawGrabber(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawGrabber(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawPlacard(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawPlacard(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawHeader(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawHeader(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawFocusRect(inRect: interop.PointerConvertible, inHasFocus: number, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawFocusRect(inRect: interop.PointerConvertible, inHasFocus: number, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeBeginFocus(inContext: interop.PointerConvertible, inRing: number, inReserved: interop.PointerConvertible): number;
+declare function HIThemeBeginFocus(inContext: interop.Object, inRing: number, inReserved: interop.PointerConvertible): number;
 
-declare function HIThemeEndFocus(inContext: interop.PointerConvertible): number;
+declare function HIThemeEndFocus(inContext: interop.Object): number;
 
-declare function HIThemeDrawSeparator(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawSeparator(inRect: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeSetFill(inBrush: number, inInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeSetFill(inBrush: number, inInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeSetStroke(inBrush: number, inInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeSetStroke(inBrush: number, inInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeSetTextFill(inColor: number, inInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeSetTextFill(inColor: number, inInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeApplyBackground(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeApplyBackground(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
-declare function HIThemeDrawBackground(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.PointerConvertible, inOrientation: number): number;
+declare function HIThemeDrawBackground(inBounds: interop.PointerConvertible, inDrawInfo: interop.PointerConvertible, inContext: interop.Object, inOrientation: number): number;
 
 declare function HIThemeBrushCreateCGColor(inBrush: number, outColor: interop.PointerConvertible): number;
 
@@ -12220,9 +12220,9 @@ declare function DisposeTXNScrollInfoUPP(userUPP: (p1: number, p2: number, p3: n
 
 declare function InvokeTXNFindUPP(matchData: interop.PointerConvertible, iDataType: number, iMatchOptions: number, iSearchTextPtr: interop.PointerConvertible, encoding: number, absStartOffset: number, searchTextLength: number, oStartMatch: interop.PointerConvertible, oEndMatch: interop.PointerConvertible, ofound: interop.PointerConvertible, refCon: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible, p10: interop.PointerConvertible, p11: interop.PointerConvertible) => number): number;
 
-declare function InvokeTXNActionNameMapperUPP(actionName: interop.PointerConvertible, commandID: number, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer): interop.Pointer;
+declare function InvokeTXNActionNameMapperUPP(actionName: interop.Object, commandID: number, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer): interop.Object;
 
-declare function InvokeTXNContextualMenuSetupUPP(iContextualMenu: interop.PointerConvertible, object: interop.PointerConvertible, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): void;
+declare function InvokeTXNContextualMenuSetupUPP(iContextualMenu: interop.Object, object: interop.PointerConvertible, inUserData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): void;
 
 declare function InvokeTXNScrollInfoUPP(iValue: number, iMaximumValue: number, iScrollBarOrientation: number, iRefCon: interop.PointerConvertible, userUPP: (p1: number, p2: number, p3: number, p4: interop.PointerConvertible) => void): void;
 
@@ -12230,7 +12230,7 @@ declare function NewTXNActionKeyMapperUPP(userRoutine: (p1: number, p2: number) 
 
 declare function DisposeTXNActionKeyMapperUPP(userUPP: (p1: number, p2: number) => interop.Pointer): void;
 
-declare function InvokeTXNActionKeyMapperUPP(actionKey: number, commandID: number, userUPP: (p1: number, p2: number) => interop.Pointer): interop.Pointer;
+declare function InvokeTXNActionKeyMapperUPP(actionKey: number, commandID: number, userUPP: (p1: number, p2: number) => interop.Pointer): interop.Object;
 
 declare function NewHMControlContentUPP(userRoutine: (p1: interop.PointerConvertible, p2: Point, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): (p1: interop.PointerConvertible, p2: Point, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number;
 
@@ -12248,11 +12248,11 @@ declare function DisposeHMMenuTitleContentUPP(userUPP: (p1: interop.PointerConve
 
 declare function DisposeHMMenuItemContentUPP(userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): void;
 
-declare function InvokeHMControlContentUPP(inControl: interop.PointerConvertible, inGlobalMouse: Point, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: Point, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
+declare function InvokeHMControlContentUPP(inControl: interop.Object, inGlobalMouse: Point, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: Point, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
 
 declare function InvokeHMWindowContentUPP(inWindow: interop.PointerConvertible, inGlobalMouse: Point, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: Point, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
 
-declare function InvokeHMMenuTitleContentUPP(inMenu: interop.PointerConvertible, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): number;
+declare function InvokeHMMenuTitleContentUPP(inMenu: interop.Object, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): number;
 
 declare function InvokeHMMenuItemContentUPP(inTrackingData: interop.PointerConvertible, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number): number;
 
@@ -12284,19 +12284,19 @@ declare function DisposeControlUserPaneActivateUPP(userUPP: (p1: interop.Pointer
 
 declare function DisposeControlUserPaneFocusUPP(userUPP: (p1: interop.PointerConvertible, p2: number) => number): void;
 
-declare function InvokeControlUserPaneDrawUPP(control: interop.PointerConvertible, part: number, userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
+declare function InvokeControlUserPaneDrawUPP(control: interop.Object, part: number, userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
 
-declare function InvokeControlUserPaneHitTestUPP(control: interop.PointerConvertible, where: Point, userUPP: (p1: interop.PointerConvertible, p2: Point) => number): number;
+declare function InvokeControlUserPaneHitTestUPP(control: interop.Object, where: Point, userUPP: (p1: interop.PointerConvertible, p2: Point) => number): number;
 
-declare function InvokeControlUserPaneTrackingUPP(control: interop.PointerConvertible, startPt: Point, actionProc: (p1: interop.PointerConvertible, p2: number) => void, userUPP: (p1: interop.PointerConvertible, p2: Point, p3: (p1: interop.PointerConvertible, p2: number) => void) => number): number;
+declare function InvokeControlUserPaneTrackingUPP(control: interop.Object, startPt: Point, actionProc: (p1: interop.PointerConvertible, p2: number) => void, userUPP: (p1: interop.PointerConvertible, p2: Point, p3: (p1: interop.PointerConvertible, p2: number) => void) => number): number;
 
-declare function InvokeControlUserPaneIdleUPP(control: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible) => void): void;
+declare function InvokeControlUserPaneIdleUPP(control: interop.Object, userUPP: (p1: interop.PointerConvertible) => void): void;
 
-declare function InvokeControlUserPaneKeyDownUPP(control: interop.PointerConvertible, keyCode: number, charCode: number, modifiers: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number): number;
+declare function InvokeControlUserPaneKeyDownUPP(control: interop.Object, keyCode: number, charCode: number, modifiers: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number): number;
 
-declare function InvokeControlUserPaneActivateUPP(control: interop.PointerConvertible, activating: number, userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
+declare function InvokeControlUserPaneActivateUPP(control: interop.Object, activating: number, userUPP: (p1: interop.PointerConvertible, p2: number) => void): void;
 
-declare function InvokeControlUserPaneFocusUPP(control: interop.PointerConvertible, action: number, userUPP: (p1: interop.PointerConvertible, p2: number) => number): number;
+declare function InvokeControlUserPaneFocusUPP(control: interop.Object, action: number, userUPP: (p1: interop.PointerConvertible, p2: number) => number): number;
 
 declare function NewDataBrowserItemUPP(userRoutine: (p1: number, p2: number, p3: interop.PointerConvertible) => void): (p1: number, p2: number, p3: interop.PointerConvertible) => void;
 
@@ -12348,27 +12348,27 @@ declare function DisposeDataBrowserSelectContextualMenuUPP(userUPP: (p1: interop
 
 declare function DisposeDataBrowserItemHelpContentUPP(userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void): void;
 
-declare function InvokeDataBrowserItemDataUPP(browser: interop.PointerConvertible, item: number, property: number, itemData: interop.PointerConvertible, setValue: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number): number;
+declare function InvokeDataBrowserItemDataUPP(browser: interop.Object, item: number, property: number, itemData: interop.PointerConvertible, setValue: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number): number;
 
-declare function InvokeDataBrowserItemCompareUPP(browser: interop.PointerConvertible, itemOne: number, itemTwo: number, sortProperty: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number): number;
+declare function InvokeDataBrowserItemCompareUPP(browser: interop.Object, itemOne: number, itemTwo: number, sortProperty: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number): number;
 
-declare function InvokeDataBrowserItemNotificationWithItemUPP(browser: interop.PointerConvertible, item: number, message: number, itemData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => void): void;
+declare function InvokeDataBrowserItemNotificationWithItemUPP(browser: interop.Object, item: number, message: number, itemData: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => void): void;
 
-declare function InvokeDataBrowserItemNotificationUPP(browser: interop.PointerConvertible, item: number, message: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number) => void): void;
+declare function InvokeDataBrowserItemNotificationUPP(browser: interop.Object, item: number, message: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number) => void): void;
 
-declare function InvokeDataBrowserAddDragItemUPP(browser: interop.PointerConvertible, theDrag: interop.PointerConvertible, item: number, itemRef: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number): number;
+declare function InvokeDataBrowserAddDragItemUPP(browser: interop.Object, theDrag: interop.PointerConvertible, item: number, itemRef: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number): number;
 
-declare function InvokeDataBrowserAcceptDragUPP(browser: interop.PointerConvertible, theDrag: interop.PointerConvertible, item: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number): number;
+declare function InvokeDataBrowserAcceptDragUPP(browser: interop.Object, theDrag: interop.PointerConvertible, item: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number): number;
 
-declare function InvokeDataBrowserReceiveDragUPP(browser: interop.PointerConvertible, theDrag: interop.PointerConvertible, item: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number): number;
+declare function InvokeDataBrowserReceiveDragUPP(browser: interop.Object, theDrag: interop.PointerConvertible, item: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number): number;
 
-declare function InvokeDataBrowserPostProcessDragUPP(browser: interop.PointerConvertible, theDrag: interop.PointerConvertible, trackDragResult: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): void;
+declare function InvokeDataBrowserPostProcessDragUPP(browser: interop.Object, theDrag: interop.PointerConvertible, trackDragResult: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): void;
 
-declare function InvokeDataBrowserGetContextualMenuUPP(browser: interop.PointerConvertible, menu: interop.PointerConvertible, helpType: interop.PointerConvertible, helpItemString: interop.PointerConvertible, selection: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void): void;
+declare function InvokeDataBrowserGetContextualMenuUPP(browser: interop.Object, menu: interop.PointerConvertible, helpType: interop.PointerConvertible, helpItemString: interop.PointerConvertible, selection: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void): void;
 
-declare function InvokeDataBrowserSelectContextualMenuUPP(browser: interop.PointerConvertible, menu: interop.PointerConvertible, selectionType: number, menuID: number, menuItem: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void): void;
+declare function InvokeDataBrowserSelectContextualMenuUPP(browser: interop.Object, menu: interop.Object, selectionType: number, menuID: number, menuItem: number, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void): void;
 
-declare function InvokeDataBrowserItemHelpContentUPP(browser: interop.PointerConvertible, item: number, property: number, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void): void;
+declare function InvokeDataBrowserItemHelpContentUPP(browser: interop.Object, item: number, property: number, inRequest: number, outContentProvided: interop.PointerConvertible, ioHelpContent: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void): void;
 
 declare function NewDataBrowserDrawItemUPP(userRoutine: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void): (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void;
 
@@ -12398,19 +12398,19 @@ declare function DisposeDataBrowserItemAcceptDragUPP(userUPP: (p1: interop.Point
 
 declare function DisposeDataBrowserItemReceiveDragUPP(userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number): void;
 
-declare function InvokeDataBrowserDrawItemUPP(browser: interop.PointerConvertible, item: number, property: number, itemState: number, theRect: interop.PointerConvertible, gdDepth: number, colorDevice: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void): void;
+declare function InvokeDataBrowserDrawItemUPP(browser: interop.Object, item: number, property: number, itemState: number, theRect: interop.PointerConvertible, gdDepth: number, colorDevice: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void): void;
 
-declare function InvokeDataBrowserEditItemUPP(browser: interop.PointerConvertible, item: number, property: number, theString: interop.PointerConvertible, maxEditTextRect: interop.PointerConvertible, shrinkToFit: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number): number;
+declare function InvokeDataBrowserEditItemUPP(browser: interop.Object, item: number, property: number, theString: interop.Object, maxEditTextRect: interop.PointerConvertible, shrinkToFit: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number): number;
 
-declare function InvokeDataBrowserHitTestUPP(browser: interop.PointerConvertible, itemID: number, property: number, theRect: interop.PointerConvertible, mouseRect: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
+declare function InvokeDataBrowserHitTestUPP(browser: interop.Object, itemID: number, property: number, theRect: interop.PointerConvertible, mouseRect: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
 
-declare function InvokeDataBrowserTrackingUPP(browser: interop.PointerConvertible, itemID: number, property: number, theRect: interop.PointerConvertible, startPt: Point, modifiers: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: Point, p6: number) => number): number;
+declare function InvokeDataBrowserTrackingUPP(browser: interop.Object, itemID: number, property: number, theRect: interop.PointerConvertible, startPt: Point, modifiers: number, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: Point, p6: number) => number): number;
 
-declare function InvokeDataBrowserItemDragRgnUPP(browser: interop.PointerConvertible, itemID: number, property: number, theRect: interop.PointerConvertible, dragRgn: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void): void;
+declare function InvokeDataBrowserItemDragRgnUPP(browser: interop.Object, itemID: number, property: number, theRect: interop.PointerConvertible, dragRgn: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void): void;
 
-declare function InvokeDataBrowserItemAcceptDragUPP(browser: interop.PointerConvertible, itemID: number, property: number, theRect: interop.PointerConvertible, theDrag: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
+declare function InvokeDataBrowserItemAcceptDragUPP(browser: interop.Object, itemID: number, property: number, theRect: interop.PointerConvertible, theDrag: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number): number;
 
-declare function InvokeDataBrowserItemReceiveDragUPP(browser: interop.PointerConvertible, itemID: number, property: number, dragFlags: number, theDrag: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number): number;
+declare function InvokeDataBrowserItemReceiveDragUPP(browser: interop.Object, itemID: number, property: number, dragFlags: number, theDrag: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number): number;
 
 declare function NewControlEditTextValidationUPP(userRoutine: (p1: interop.PointerConvertible) => void): (p1: interop.PointerConvertible) => void;
 
@@ -12420,7 +12420,7 @@ declare function DisposeControlEditTextValidationUPP(userUPP: (p1: interop.Point
 
 declare function DisposeEditUnicodePostUpdateUPP(userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number): void;
 
-declare function InvokeControlEditTextValidationUPP(control: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible) => void): void;
+declare function InvokeControlEditTextValidationUPP(control: interop.Object, userUPP: (p1: interop.PointerConvertible) => void): void;
 
 declare function InvokeEditUnicodePostUpdateUPP(uniText: interop.PointerConvertible, uniTextLength: number, iStartOffset: number, iEndOffset: number, refcon: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number): number;
 
@@ -12454,43 +12454,43 @@ declare function GetSystemUIMode(outMode: interop.PointerConvertible, outOptions
 
 declare function GetApplicationTextEncoding(): number;
 
-declare function HISearchWindowShow(inSearchString: interop.PointerConvertible, inFlags: number): number;
+declare function HISearchWindowShow(inSearchString: interop.Object, inFlags: number): number;
 
-declare function HIDictionaryWindowShow(dictionary: interop.PointerConvertible, textString: interop.PointerConvertible, selectionRange: CFRange, textFont: interop.PointerConvertible, textOrigin: CGPoint, verticalText: number, viewTransform: interop.PointerConvertible): void;
+declare function HIDictionaryWindowShow(dictionary: interop.Object, textString: interop.Object, selectionRange: CFRange, textFont: interop.Object, textOrigin: CGPoint, verticalText: number, viewTransform: interop.PointerConvertible): void;
 
 declare function KBGetLayoutType(iKeyboardType: number): number;
 
 declare function TISInputSourceGetTypeID(): number;
 
-declare function TISGetInputSourceProperty(inputSource: interop.PointerConvertible, propertyKey: interop.PointerConvertible): interop.Pointer;
+declare function TISGetInputSourceProperty(inputSource: interop.Object, propertyKey: interop.Object): interop.Pointer;
 
-declare function TISCreateInputSourceList(properties: interop.PointerConvertible, includeAllInstalled: number): interop.Pointer;
+declare function TISCreateInputSourceList(properties: interop.Object, includeAllInstalled: number): interop.Object;
 
-declare function TISCopyCurrentKeyboardInputSource(): interop.Pointer;
+declare function TISCopyCurrentKeyboardInputSource(): interop.Object;
 
-declare function TISCopyCurrentKeyboardLayoutInputSource(): interop.Pointer;
+declare function TISCopyCurrentKeyboardLayoutInputSource(): interop.Object;
 
-declare function TISCopyCurrentASCIICapableKeyboardInputSource(): interop.Pointer;
+declare function TISCopyCurrentASCIICapableKeyboardInputSource(): interop.Object;
 
-declare function TISCopyCurrentASCIICapableKeyboardLayoutInputSource(): interop.Pointer;
+declare function TISCopyCurrentASCIICapableKeyboardLayoutInputSource(): interop.Object;
 
-declare function TISCopyInputSourceForLanguage(language: interop.PointerConvertible): interop.Pointer;
+declare function TISCopyInputSourceForLanguage(language: interop.Object): interop.Object;
 
-declare function TISCreateASCIICapableInputSourceList(): interop.Pointer;
+declare function TISCreateASCIICapableInputSourceList(): interop.Object;
 
-declare function TISSelectInputSource(inputSource: interop.PointerConvertible): number;
+declare function TISSelectInputSource(inputSource: interop.Object): number;
 
-declare function TISDeselectInputSource(inputSource: interop.PointerConvertible): number;
+declare function TISDeselectInputSource(inputSource: interop.Object): number;
 
-declare function TISEnableInputSource(inputSource: interop.PointerConvertible): number;
+declare function TISEnableInputSource(inputSource: interop.Object): number;
 
-declare function TISDisableInputSource(inputSource: interop.PointerConvertible): number;
+declare function TISDisableInputSource(inputSource: interop.Object): number;
 
-declare function TISSetInputMethodKeyboardLayoutOverride(keyboardLayout: interop.PointerConvertible): number;
+declare function TISSetInputMethodKeyboardLayoutOverride(keyboardLayout: interop.Object): number;
 
-declare function TISCopyInputMethodKeyboardLayoutOverride(): interop.Pointer;
+declare function TISCopyInputMethodKeyboardLayoutOverride(): interop.Object;
 
-declare function TISRegisterInputSource(location: interop.PointerConvertible): number;
+declare function TISRegisterInputSource(location: interop.Object): number;
 
 declare function DebugPrintMainEventQueue(): void;
 
@@ -12586,9 +12586,9 @@ declare function OSADoEvent(scriptingComponent: interop.PointerConvertible, theA
 
 declare function OSAMakeContext(scriptingComponent: interop.PointerConvertible, contextName: interop.PointerConvertible, parentContext: number, resultingContextID: interop.PointerConvertible): number;
 
-declare function OSAGetScriptDataFromURL(scriptURL: interop.PointerConvertible, storable: interop.PointerConvertible, modeFlags: number, resultingScriptData: interop.PointerConvertible): number;
+declare function OSAGetScriptDataFromURL(scriptURL: interop.Object, storable: interop.PointerConvertible, modeFlags: number, resultingScriptData: interop.PointerConvertible): number;
 
-declare function OSALoadScriptData(scriptingComponent: interop.PointerConvertible, scriptData: interop.PointerConvertible, fromURL: interop.PointerConvertible, modeFlags: number, resultingScriptID: interop.PointerConvertible): number;
+declare function OSALoadScriptData(scriptingComponent: interop.PointerConvertible, scriptData: interop.PointerConvertible, fromURL: interop.Object, modeFlags: number, resultingScriptID: interop.PointerConvertible): number;
 
 declare function OSALoadFile(scriptingComponent: interop.PointerConvertible, scriptFile: interop.PointerConvertible, storable: interop.PointerConvertible, modeFlags: number, resultingScriptID: interop.PointerConvertible): number;
 
@@ -12624,7 +12624,7 @@ declare function ASGetSourceStyles(scriptingComponent: interop.PointerConvertibl
 
 declare function ASCopySourceAttributes(scriptingComponent: interop.PointerConvertible, resultingSourceAttributes: interop.PointerConvertible): number;
 
-declare function ASSetSourceAttributes(scriptingComponent: interop.PointerConvertible, sourceAttributes: interop.PointerConvertible): number;
+declare function ASSetSourceAttributes(scriptingComponent: interop.PointerConvertible, sourceAttributes: interop.Object): number;
 
 declare function ASGetSourceStyleNames(scriptingComponent: interop.PointerConvertible, modeFlags: number, resultingSourceStyleNamesList: interop.PointerConvertible): number;
 
@@ -12644,7 +12644,7 @@ declare function OSAGetSysTerminology(scriptingComponent: interop.PointerConvert
 
 declare function OSACopyScriptingDefinition(ref: interop.PointerConvertible, modeFlags: number, sdef: interop.PointerConvertible): number;
 
-declare function OSACopyScriptingDefinitionFromURL(url: interop.PointerConvertible, modeFlags: number, sdef: interop.PointerConvertible): number;
+declare function OSACopyScriptingDefinitionFromURL(url: interop.Object, modeFlags: number, sdef: interop.PointerConvertible): number;
 
 declare function NewNColorChangedUPP(userRoutine: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void;
 
@@ -12682,21 +12682,21 @@ declare function FPShowHideFontPanel(): number;
 
 declare function SetFontInfoForSelection(iStyleType: number, iNumStyles: number, iStyles: interop.PointerConvertible, iFPEventTarget: interop.PointerConvertible): number;
 
-declare function FCCopyCollectionNames(): interop.Pointer;
+declare function FCCopyCollectionNames(): interop.Object;
 
-declare function FCCopyFontDescriptorsInCollection(iCollection: interop.PointerConvertible): interop.Pointer;
+declare function FCCopyFontDescriptorsInCollection(iCollection: interop.Object): interop.Object;
 
-declare function FCAddCollection(iCollection: interop.PointerConvertible, iCollectionOptions: number): number;
+declare function FCAddCollection(iCollection: interop.Object, iCollectionOptions: number): number;
 
-declare function FCRemoveCollection(iCollection: interop.PointerConvertible): number;
+declare function FCRemoveCollection(iCollection: interop.Object): number;
 
-declare function FCAddFontDescriptorToCollection(iDescriptor: interop.PointerConvertible, iCollection: interop.PointerConvertible): number;
+declare function FCAddFontDescriptorToCollection(iDescriptor: interop.Object, iCollection: interop.Object): number;
 
-declare function FCRemoveFontDescriptorFromCollection(iDescriptor: interop.PointerConvertible, iCollection: interop.PointerConvertible): number;
+declare function FCRemoveFontDescriptorFromCollection(iDescriptor: interop.Object, iCollection: interop.Object): number;
 
-declare function FCFontDescriptorCreateWithFontAttributes(iAttributes: interop.PointerConvertible): interop.Pointer;
+declare function FCFontDescriptorCreateWithFontAttributes(iAttributes: interop.Object): interop.Object;
 
-declare function FCFontDescriptorCreateWithName(iFontName: interop.PointerConvertible, iSize: number): interop.Pointer;
+declare function FCFontDescriptorCreateWithName(iFontName: interop.Object, iSize: number): interop.Object;
 
 declare function NewSRCallBackUPP(userRoutine: (p1: interop.PointerConvertible) => void): (p1: interop.PointerConvertible) => void;
 
@@ -12790,15 +12790,15 @@ declare function KCAddInternetPasswordWithPath(serverName: interop.PointerConver
 
 declare function KCAddGenericPassword(serviceName: interop.PointerConvertible, accountName: interop.PointerConvertible, passwordLength: number, passwordData: interop.PointerConvertible, item: interop.PointerConvertible): number;
 
-declare function KCAddItem(item: interop.PointerConvertible): number;
+declare function KCAddItem(item: interop.Object): number;
 
-declare function KCUnlock(keychain: interop.PointerConvertible, password: interop.PointerConvertible): number;
+declare function KCUnlock(keychain: interop.Object, password: interop.PointerConvertible): number;
 
 declare function KCCreateKeychain(password: interop.PointerConvertible, keychain: interop.PointerConvertible): number;
 
-declare function KCChangeSettings(keychain: interop.PointerConvertible): number;
+declare function KCChangeSettings(keychain: interop.Object): number;
 
-declare function kcunlock(keychain: interop.PointerConvertible, password: string): number;
+declare function kcunlock(keychain: interop.Object, password: string): number;
 
 declare function kccreatekeychain(password: string, keychain: interop.PointerConvertible): number;
 
@@ -12822,25 +12822,25 @@ declare function InvokeURLNotifyUPP(userContext: interop.PointerConvertible, eve
 
 declare function InvokeURLSystemEventUPP(userContext: interop.PointerConvertible, event: interop.PointerConvertible, userUPP: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): number;
 
-declare function SecChooseIdentity(displayInfo: interop.PointerConvertible, identities: interop.PointerConvertible, identityRef: interop.PointerConvertible): number;
+declare function SecChooseIdentity(displayInfo: interop.Object, identities: interop.Object, identityRef: interop.PointerConvertible): number;
 
-declare function SecChooseIdentityAsSheet(parentWindow: interop.PointerConvertible, inTarget: interop.PointerConvertible, displayInfo: interop.PointerConvertible, identities: interop.PointerConvertible): number;
+declare function SecChooseIdentityAsSheet(parentWindow: interop.PointerConvertible, inTarget: interop.PointerConvertible, displayInfo: interop.Object, identities: interop.Object): number;
 
-declare function SecDisplayCertificate(certificate: interop.PointerConvertible, keychainList: interop.PointerConvertible): number;
+declare function SecDisplayCertificate(certificate: interop.Object, keychainList: interop.Object): number;
 
-declare function SecDisplayCertificateGroup(certificates: interop.PointerConvertible, keychainList: interop.PointerConvertible): number;
+declare function SecDisplayCertificateGroup(certificates: interop.PointerConvertible, keychainList: interop.Object): number;
 
-declare function SecEditTrust(displayInfo: interop.PointerConvertible, trust: interop.PointerConvertible): number;
+declare function SecEditTrust(displayInfo: interop.Object, trust: interop.Object): number;
 
-declare function SecEditTrustAsSheet(parentWindow: interop.PointerConvertible, inTarget: interop.PointerConvertible, displayInfo: interop.PointerConvertible, trust: interop.PointerConvertible): number;
+declare function SecEditTrustAsSheet(parentWindow: interop.PointerConvertible, inTarget: interop.PointerConvertible, displayInfo: interop.Object, trust: interop.Object): number;
 
-declare function AHSearch(bookname: interop.PointerConvertible, query: interop.PointerConvertible): number;
+declare function AHSearch(bookname: interop.Object, query: interop.Object): number;
 
 declare function AHGotoMainTOC(toctype: number): number;
 
-declare function AHGotoPage(bookname: interop.PointerConvertible, path: interop.PointerConvertible, anchor: interop.PointerConvertible): number;
+declare function AHGotoPage(bookname: interop.Object, path: interop.Object, anchor: interop.Object): number;
 
-declare function AHLookupAnchor(bookname: interop.PointerConvertible, anchor: interop.PointerConvertible): number;
+declare function AHLookupAnchor(bookname: interop.Object, anchor: interop.Object): number;
 
 declare function AHRegisterHelpBook(appBundleRef: interop.PointerConvertible): number;
 

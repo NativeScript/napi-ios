@@ -124,6 +124,8 @@ checkpoint "Building NativeScript for macOS"
 
 cmake_build macos
 
+cp "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/../packages/macos/dist/macos/NativeScript.node"
+
 fi
 
 if $BUILD_VISION; then
@@ -162,10 +164,6 @@ if $BUILD_IPHONE; then
                   -debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
 fi
 
-if $BUILD_MACOS; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
-fi
 
 if $BUILD_VISION; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"

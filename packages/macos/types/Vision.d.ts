@@ -792,13 +792,13 @@ declare class VNTranslationalImageRegistrationRequest extends VNImageRegistratio
 declare class VNSequenceRequestHandler extends NSObject {
   init(): this;
 
-  performRequestsOnCVPixelBufferError(requests: NSArray<interop.Object> | Array<interop.Object>, pixelBuffer: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+  performRequestsOnCVPixelBufferError(requests: NSArray<interop.Object> | Array<interop.Object>, pixelBuffer: interop.Object, error: interop.PointerConvertible): boolean;
 
-  performRequestsOnCVPixelBufferOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, pixelBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
+  performRequestsOnCVPixelBufferOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
 
-  performRequestsOnCGImageError(requests: NSArray<interop.Object> | Array<interop.Object>, image: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+  performRequestsOnCGImageError(requests: NSArray<interop.Object> | Array<interop.Object>, image: interop.Object, error: interop.PointerConvertible): boolean;
 
-  performRequestsOnCGImageOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, image: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
+  performRequestsOnCGImageOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, image: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
 
   performRequestsOnCIImageError(requests: NSArray<interop.Object> | Array<interop.Object>, image: CIImage, error: interop.PointerConvertible): boolean;
 
@@ -812,21 +812,21 @@ declare class VNSequenceRequestHandler extends NSObject {
 
   performRequestsOnImageDataOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, imageData: NSData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
 
-  performRequestsOnCMSampleBufferError(requests: NSArray<interop.Object> | Array<interop.Object>, sampleBuffer: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+  performRequestsOnCMSampleBufferError(requests: NSArray<interop.Object> | Array<interop.Object>, sampleBuffer: interop.Object, error: interop.PointerConvertible): boolean;
 
-  performRequestsOnCMSampleBufferOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, sampleBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
+  performRequestsOnCMSampleBufferOrientationError(requests: NSArray<interop.Object> | Array<interop.Object>, sampleBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, error: interop.PointerConvertible): boolean;
 }
 
 declare class VNImageRequestHandler extends NSObject {
-  initWithCVPixelBufferOptions(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCVPixelBufferOptions(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCVPixelBufferOrientationOptions(pixelBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCVPixelBufferOrientationOptions(pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCVPixelBufferDepthDataOrientationOptions(pixelBuffer: interop.PointerConvertible, depthData: AVDepthData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCVPixelBufferDepthDataOrientationOptions(pixelBuffer: interop.Object, depthData: AVDepthData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCGImageOptions(image: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCGImageOptions(image: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCGImageOrientationOptions(image: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCGImageOrientationOptions(image: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
   initWithCIImageOptions(image: CIImage, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
@@ -840,11 +840,11 @@ declare class VNImageRequestHandler extends NSObject {
 
   initWithDataOrientationOptions(imageData: NSData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCMSampleBufferOptions(sampleBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCMSampleBufferOptions(sampleBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCMSampleBufferOrientationOptions(sampleBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCMSampleBufferOrientationOptions(sampleBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCMSampleBufferDepthDataOrientationOptions(sampleBuffer: interop.PointerConvertible, depthData: AVDepthData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithCMSampleBufferDepthDataOrientationOptions(sampleBuffer: interop.Object, depthData: AVDepthData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
   performRequestsError(requests: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
 }
@@ -1187,7 +1187,7 @@ declare class VNContour extends NSObject implements NSCopying, VNRequestRevision
 
   readonly normalizedPoints: interop.Pointer;
 
-  readonly normalizedPath: interop.Pointer;
+  readonly normalizedPath: interop.Object;
 
   readonly aspectRatio: number;
 
@@ -1353,15 +1353,15 @@ declare class VNVideoProcessorRequestProcessingOptions extends NSObject implemen
 }
 
 declare class VNInstanceMaskObservation extends VNObservation {
-  readonly instanceMask: interop.Pointer;
+  readonly instanceMask: interop.Object;
 
   readonly allInstances: NSIndexSet;
 
-  generateMaskForInstancesError(instances: NSIndexSet, error: interop.PointerConvertible): interop.Pointer;
+  generateMaskForInstancesError(instances: NSIndexSet, error: interop.PointerConvertible): interop.Object;
 
-  generateMaskedImageOfInstancesFromRequestHandlerCroppedToInstancesExtentError(instances: NSIndexSet, requestHandler: VNImageRequestHandler, cropResult: boolean, error: interop.PointerConvertible): interop.Pointer;
+  generateMaskedImageOfInstancesFromRequestHandlerCroppedToInstancesExtentError(instances: NSIndexSet, requestHandler: VNImageRequestHandler, cropResult: boolean, error: interop.PointerConvertible): interop.Object;
 
-  generateScaledMaskForImageForInstancesFromRequestHandlerError(instances: NSIndexSet, requestHandler: VNImageRequestHandler, error: interop.PointerConvertible): interop.Pointer;
+  generateScaledMaskForImageForInstancesFromRequestHandlerError(instances: NSIndexSet, requestHandler: VNImageRequestHandler, error: interop.PointerConvertible): interop.Object;
 }
 
 declare class VNCoreMLModel extends NSObject {
@@ -1604,7 +1604,7 @@ declare class VNContoursObservation extends VNObservation {
 
   contourAtIndexPathError(indexPath: NSIndexPath, error: interop.PointerConvertible): VNContour;
 
-  readonly normalizedPath: interop.Pointer;
+  readonly normalizedPath: interop.Object;
 }
 
 declare class VNRecognizedTextObservation extends VNRectangleObservation {
@@ -1747,7 +1747,7 @@ declare class VNCalculateImageAestheticsScoresRequest extends VNImageBasedReques
 }
 
 declare class VNPixelBufferObservation extends VNObservation {
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   readonly featureName: string;
 }
@@ -1769,21 +1769,21 @@ declare class VNDetectFaceRectanglesRequest extends VNImageBasedRequest {
 }
 
 declare class VNTargetedImageRequest extends VNImageBasedRequest {
-  initWithTargetedCVPixelBufferOptions(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithTargetedCVPixelBufferOptions(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithTargetedCVPixelBufferOptionsCompletionHandler(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
+  initWithTargetedCVPixelBufferOptionsCompletionHandler(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
-  initWithTargetedCVPixelBufferOrientationOptions(pixelBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithTargetedCVPixelBufferOrientationOptions(pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithTargetedCVPixelBufferOrientationOptionsCompletionHandler(pixelBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
+  initWithTargetedCVPixelBufferOrientationOptionsCompletionHandler(pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
-  initWithTargetedCGImageOptions(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithTargetedCGImageOptions(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithTargetedCGImageOptionsCompletionHandler(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
+  initWithTargetedCGImageOptionsCompletionHandler(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
-  initWithTargetedCGImageOrientationOptions(cgImage: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithTargetedCGImageOrientationOptions(cgImage: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithTargetedCGImageOrientationOptionsCompletionHandler(cgImage: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
+  initWithTargetedCGImageOrientationOptionsCompletionHandler(cgImage: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
   initWithTargetedCIImageOptions(ciImage: CIImage, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
@@ -1809,13 +1809,13 @@ declare class VNTargetedImageRequest extends VNImageBasedRequest {
 
   initWithTargetedImageDataOrientationOptionsCompletionHandler(imageData: NSData, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
-  initWithTargetedCMSampleBufferOptions(sampleBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithTargetedCMSampleBufferOptions(sampleBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithTargetedCMSampleBufferOptionsCompletionHandler(sampleBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
+  initWithTargetedCMSampleBufferOptionsCompletionHandler(sampleBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
-  initWithTargetedCMSampleBufferOrientationOptions(sampleBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+  initWithTargetedCMSampleBufferOrientationOptions(sampleBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithTargetedCMSampleBufferOrientationOptionsCompletionHandler(sampleBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
+  initWithTargetedCMSampleBufferOrientationOptionsCompletionHandler(sampleBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 }
 
 declare class VNTrackTranslationalImageRegistrationRequest extends VNStatefulRequest {

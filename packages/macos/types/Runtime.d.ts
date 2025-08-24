@@ -52131,9 +52131,9 @@ declare class NSObject extends NativeObject implements NSObjectProtocol {
 
   writeLength(data: interop.PointerConvertible, length: number): number;
 
-  static withL2CAPChannelRef(l2capChannelRef: interop.PointerConvertible): IOBluetoothL2CAPChannel;
+  static withL2CAPChannelRef(l2capChannelRef: interop.Object): IOBluetoothL2CAPChannel;
 
-  getL2CAPChannelRef(): interop.Pointer;
+  getL2CAPChannelRef(): interop.Object;
 
   fileTransferServicesConnectionCompleteError(inServices: OBEXFileTransferServices, inError: number): void;
 
@@ -52367,11 +52367,11 @@ declare class NSObject extends NativeObject implements NSObjectProtocol {
 
   getPixelBufferPixelFormat(pixelFormatOut: interop.PointerConvertible): void;
 
-  renderIntoPixelBufferForTime(buffer: interop.PointerConvertible, timeStamp: interop.PointerConvertible): boolean;
+  renderIntoPixelBufferForTime(buffer: interop.Object, timeStamp: interop.PointerConvertible): boolean;
 
   getOpenGLBufferContextPixelFormat(contextOut: interop.PointerConvertible, pixelFormatOut: interop.PointerConvertible): void;
 
-  renderIntoOpenGLBufferOnScreenForTime(buffer: interop.PointerConvertible, screenInOut: interop.PointerConvertible, timeStamp: interop.PointerConvertible): boolean;
+  renderIntoOpenGLBufferOnScreenForTime(buffer: interop.Object, screenInOut: interop.PointerConvertible, timeStamp: interop.PointerConvertible): boolean;
 
   inputTextKeyModifiersClient(string: string, keyCode: number, flags: number, sender: interop.Object): boolean;
 

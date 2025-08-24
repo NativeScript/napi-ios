@@ -30,55 +30,55 @@ declare const IOBluetoothHandsFreeIndicatorCall: string;
 
 declare const IOBluetoothHandsFreeIndicatorService: string;
 
-declare const kFTSListingTypeKey: interop.Pointer;
+declare const kFTSListingTypeKey: interop.Object;
 
-declare const kFTSListingNameKey: interop.Pointer;
+declare const kFTSListingNameKey: interop.Object;
 
-declare const kFTSProgressTransferRateKey: interop.Pointer;
+declare const kFTSProgressTransferRateKey: interop.Object;
 
-declare const kFTSProgressTimeElapsedKey: interop.Pointer;
+declare const kFTSProgressTimeElapsedKey: interop.Object;
 
-declare const kFTSProgressBytesTransferredKey: interop.Pointer;
+declare const kFTSProgressBytesTransferredKey: interop.Object;
 
-declare const kOBEXHeaderIDKeyUnknown1ByteQuantity: interop.Pointer;
+declare const kOBEXHeaderIDKeyUnknown1ByteQuantity: interop.Object;
 
-declare const kOBEXHeaderIDKeyUnknownByteSequence: interop.Pointer;
+declare const kOBEXHeaderIDKeyUnknownByteSequence: interop.Object;
 
-declare const kOBEXHeaderIDKeyUnknownUnicodeText: interop.Pointer;
+declare const kOBEXHeaderIDKeyUnknownUnicodeText: interop.Object;
 
-declare const kOBEXHeaderIDKeyObjectClass: interop.Pointer;
+declare const kOBEXHeaderIDKeyObjectClass: interop.Object;
 
-declare const kOBEXHeaderIDKeyAuthorizationResponse: interop.Pointer;
+declare const kOBEXHeaderIDKeyAuthorizationResponse: interop.Object;
 
-declare const kOBEXHeaderIDKeyAppParameters: interop.Pointer;
+declare const kOBEXHeaderIDKeyAppParameters: interop.Object;
 
-declare const kOBEXHeaderIDKeyHTTP: interop.Pointer;
+declare const kOBEXHeaderIDKeyHTTP: interop.Object;
 
-declare const kOBEXHeaderIDKeyTarget: interop.Pointer;
+declare const kOBEXHeaderIDKeyTarget: interop.Object;
 
-declare const kOBEXHeaderIDKeyDescription: interop.Pointer;
+declare const kOBEXHeaderIDKeyDescription: interop.Object;
 
-declare const kOBEXHeaderIDKeyType: interop.Pointer;
+declare const kOBEXHeaderIDKeyType: interop.Object;
 
 declare const IOBluetoothL2CAPChannelTerminatedNotification: string;
 
 declare const IOBluetoothHostControllerPoweredOffNotification: string;
 
-declare const kOBEXHeaderIDKeyBody: interop.Pointer;
+declare const kOBEXHeaderIDKeyBody: interop.Object;
 
 declare const IOBluetoothHostControllerPoweredOnNotification: string;
 
 declare const IOBluetoothPDUUserData: string;
 
-declare const kOBEXHeaderIDKeyAuthorizationChallenge: interop.Pointer;
+declare const kOBEXHeaderIDKeyAuthorizationChallenge: interop.Object;
 
-declare const kOBEXHeaderIDKeyConnectionID: interop.Pointer;
+declare const kOBEXHeaderIDKeyConnectionID: interop.Object;
 
-declare const kOBEXHeaderIDKeyName: interop.Pointer;
+declare const kOBEXHeaderIDKeyName: interop.Object;
 
-declare const kOBEXHeaderIDKeyByteSequence: interop.Pointer;
+declare const kOBEXHeaderIDKeyByteSequence: interop.Object;
 
-declare const kOBEXHeaderIDKeyCount: interop.Pointer;
+declare const kOBEXHeaderIDKeyCount: interop.Object;
 
 declare const kBluetoothServiceClassMajorCapturing: number;
 
@@ -86,7 +86,7 @@ declare const kBluetoothHCIEventMaskDefault: number;
 
 declare const kBluetoothHCIErrorSCOAirModeRejected: number;
 
-declare const kOBEXHeaderIDKeyEndOfBody: interop.Pointer;
+declare const kOBEXHeaderIDKeyEndOfBody: interop.Object;
 
 declare const kBluetoothL2CAPTCICommandL2CA_DisconnectResp: number;
 
@@ -108,7 +108,7 @@ declare const kBluetoothLESecurityManagerNoBonding: number;
 
 declare const kBluetoothVoiceSettingInputCodingULawInputCoding: number;
 
-declare const kOBEXHeaderIDKeyTime4Byte: interop.Pointer;
+declare const kOBEXHeaderIDKeyTime4Byte: interop.Object;
 
 declare const kBluetoothHCICommandSetReservedLTADDR: number;
 
@@ -1120,7 +1120,7 @@ declare const kBluetoothHCICommandLEWriteRFPathCompensation: number;
 
 declare const kBluetoothHCICommandReadStoredLinkKey: number;
 
-declare const kOBEXHeaderIDKeyUnknown4ByteQuantity: interop.Pointer;
+declare const kOBEXHeaderIDKeyUnknown4ByteQuantity: interop.Object;
 
 declare const kBluetoothDeviceClassMinorPeripheral1Pointing: number;
 
@@ -1308,7 +1308,7 @@ declare const kBluetoothHCIEventMaskNumberOfCompletedPackets: number;
 
 declare const kBluetoothHCICommandLEPeriodicAdvertisingCreateSync: number;
 
-declare const kFTSProgressBytesTotalKey: interop.Pointer;
+declare const kFTSProgressBytesTotalKey: interop.Object;
 
 declare const kBluetoothL2CAPPSMDynamicEnd: number;
 
@@ -1336,11 +1336,11 @@ declare const kBluetoothDeviceClassMinorAudioSetTopBox: number;
 
 declare const kBluetoothHCIEventConnectionPacketType: number;
 
-declare const kOBEXHeaderIDKeyLength: interop.Pointer;
+declare const kOBEXHeaderIDKeyLength: interop.Object;
 
 declare const kBluetoothDeviceClassMinorAudioVideoDisplayAndLoudspeaker: number;
 
-declare const kFTSProgressPercentageKey: interop.Pointer;
+declare const kFTSProgressPercentageKey: interop.Object;
 
 declare const kBluetoothDeviceClassMinorWearableJacket: number;
 
@@ -1468,9 +1468,9 @@ declare const kBluetoothL2CAPMTUSIG: number;
 
 declare const kBluetoothL2CAPQoSFlagsDefault: number;
 
-declare const kFTSProgressPrecentageKey: interop.Pointer;
+declare const kFTSProgressPrecentageKey: interop.Object;
 
-declare const kOBEXHeaderIDKeyWho: interop.Pointer;
+declare const kOBEXHeaderIDKeyWho: interop.Object;
 
 declare const kBluetoothHCISubEventLEPhyUpdateComplete: number;
 
@@ -1540,7 +1540,7 @@ declare const kBluetoothGAPAppearanceGenericKeyring: number;
 
 declare const kBluetoothDeviceClassMinorHealthScale: number;
 
-declare const kOBEXHeaderIDKeyUserDefined: interop.Pointer;
+declare const kOBEXHeaderIDKeyUserDefined: interop.Object;
 
 declare const kBluetoothSDPUUID16HIDP: number;
 
@@ -1774,7 +1774,7 @@ declare const IOBluetoothHandsFreeCallType: string;
 
 declare const kBluetoothHCIErrorControllerBusy: number;
 
-declare const kOBEXHeaderIDKeyTimeISO: interop.Pointer;
+declare const kOBEXHeaderIDKeyTimeISO: interop.Object;
 
 declare const kBluetoothPacketTypeDM1: number;
 
@@ -1864,7 +1864,7 @@ declare const kBluetoothSDPErrorCodeReservedEnd: number;
 
 declare const kBluetoothHCICommandWriteCurrentIACLAP: number;
 
-declare const kFTSProgressEstimatedTimeKey: interop.Pointer;
+declare const kFTSProgressEstimatedTimeKey: interop.Object;
 
 declare const kBluetoothDeviceClassMinorPeripheral2CardReader: number;
 
@@ -1884,7 +1884,7 @@ declare const kBluetoothDeviceClassMajorEnd: number;
 
 declare const kBluetoothL2CAPMTUMaximum: number;
 
-declare const kFTSListingSizeKey: interop.Pointer;
+declare const kFTSListingSizeKey: interop.Object;
 
 declare const kBluetoothHCIEventFlushOccurred: number;
 
@@ -4246,17 +4246,17 @@ declare class unnamed_11843560018784926152 {
   padding: unknown /* const array */;
 }
 
-declare function IOBluetoothIgnoreHIDDevice(device: interop.PointerConvertible): void;
+declare function IOBluetoothIgnoreHIDDevice(device: interop.Object): void;
 
-declare function IOBluetoothRemoveIgnoredHIDDevice(device: interop.PointerConvertible): void;
+declare function IOBluetoothRemoveIgnoredHIDDevice(device: interop.Object): void;
 
-declare function IOBluetoothUserNotificationUnregister(notificationRef: interop.PointerConvertible): void;
+declare function IOBluetoothUserNotificationUnregister(notificationRef: interop.Object): void;
 
-declare function IOBluetoothL2CAPChannelRegisterForChannelCloseNotification(channel: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, inRefCon: interop.PointerConvertible): interop.Pointer;
+declare function IOBluetoothL2CAPChannelRegisterForChannelCloseNotification(channel: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, inRefCon: interop.PointerConvertible): interop.Object;
 
-declare function IOBluetoothAddSCOAudioDevice(device: interop.PointerConvertible, configDict: interop.PointerConvertible): number;
+declare function IOBluetoothAddSCOAudioDevice(device: interop.Object, configDict: interop.Object): number;
 
-declare function IOBluetoothRemoveSCOAudioDevice(device: interop.PointerConvertible): number;
+declare function IOBluetoothRemoveSCOAudioDevice(device: interop.Object): number;
 
 declare function IOBluetoothNSStringToDeviceAddress(inNameString: string, outDeviceAddress: interop.PointerConvertible): number;
 
@@ -4322,55 +4322,55 @@ declare function OBEXSessionSetPathResponse(inSessionRef: interop.PointerConvert
 
 declare function OBEXSessionSetServerCallback(inSessionRef: interop.PointerConvertible, inCallback: (p1: interop.PointerConvertible) => void, inUserRefCon: interop.PointerConvertible): number;
 
-declare function OBEXCreateVCard(inFirstName: interop.PointerConvertible, inFirstNameLength: number, inLastName: interop.PointerConvertible, inLastNameLength: number, inFriendlyName: interop.PointerConvertible, inFriendlyNameLength: number, inNameCharset: interop.PointerConvertible, inNameCharsetLength: number, inHomePhone: interop.PointerConvertible, inHomePhoneLength: number, inWorkPhone: interop.PointerConvertible, inWorkPhoneLength: number, inCellPhone: interop.PointerConvertible, inCellPhoneLength: number, inFaxPhone: interop.PointerConvertible, inFaxPhoneLength: number, inEMailAddress: interop.PointerConvertible, inEMailAddressLength: number, inEMailAddressCharset: interop.PointerConvertible, inEMailAddressCharsetLength: number, inOrganization: interop.PointerConvertible, inOrganizationLength: number, inOrganizationCharset: interop.PointerConvertible, inOrganizationCharsetLength: number, inTitle: interop.PointerConvertible, inTitleLength: number, inTitleCharset: interop.PointerConvertible, inTitleCharsetLength: number): interop.Pointer;
+declare function OBEXCreateVCard(inFirstName: interop.PointerConvertible, inFirstNameLength: number, inLastName: interop.PointerConvertible, inLastNameLength: number, inFriendlyName: interop.PointerConvertible, inFriendlyNameLength: number, inNameCharset: interop.PointerConvertible, inNameCharsetLength: number, inHomePhone: interop.PointerConvertible, inHomePhoneLength: number, inWorkPhone: interop.PointerConvertible, inWorkPhoneLength: number, inCellPhone: interop.PointerConvertible, inCellPhoneLength: number, inFaxPhone: interop.PointerConvertible, inFaxPhoneLength: number, inEMailAddress: interop.PointerConvertible, inEMailAddressLength: number, inEMailAddressCharset: interop.PointerConvertible, inEMailAddressCharsetLength: number, inOrganization: interop.PointerConvertible, inOrganizationLength: number, inOrganizationCharset: interop.PointerConvertible, inOrganizationCharsetLength: number, inTitle: interop.PointerConvertible, inTitleLength: number, inTitleCharset: interop.PointerConvertible, inTitleCharsetLength: number): interop.Object;
 
-declare function OBEXCreateVEvent(inCharset: string, inCharsetLength: number, inEncoding: string, inEncodingLength: number, inEventStartDate: string, inEventStartDateLength: number, inEventEndDate: string, inEventEndDateLength: number, inAlarmDate: string, inAlarmDateLength: number, inCategory: string, inCategoryLength: number, inSummary: string, inSummaryLength: number, inLocation: string, inLocationLength: number, inXIRMCLUID: string, inXIRMCLUIDLength: number): interop.Pointer;
+declare function OBEXCreateVEvent(inCharset: string, inCharsetLength: number, inEncoding: string, inEncodingLength: number, inEventStartDate: string, inEventStartDateLength: number, inEventEndDate: string, inEventEndDateLength: number, inAlarmDate: string, inAlarmDateLength: number, inCategory: string, inCategoryLength: number, inSummary: string, inSummaryLength: number, inLocation: string, inLocationLength: number, inXIRMCLUID: string, inXIRMCLUIDLength: number): interop.Object;
 
-declare function OBEXGetHeaders(inData: interop.PointerConvertible, inDataSize: number): interop.Pointer;
+declare function OBEXGetHeaders(inData: interop.PointerConvertible, inDataSize: number): interop.Object;
 
-declare function OBEXHeadersToBytes(dictionaryOfHeaders: interop.PointerConvertible): interop.Pointer;
+declare function OBEXHeadersToBytes(dictionaryOfHeaders: interop.Object): interop.Object;
 
-declare function OBEXAddNameHeader(name: interop.PointerConvertible, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddNameHeader(name: interop.Object, dictRef: interop.Object): number;
 
-declare function OBEXAddDescriptionHeader(description: interop.PointerConvertible, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddDescriptionHeader(description: interop.Object, dictRef: interop.Object): number;
 
-declare function OBEXAddCountHeader(count: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddCountHeader(count: number, dictRef: interop.Object): number;
 
-declare function OBEXAddTime4ByteHeader(time4Byte: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddTime4ByteHeader(time4Byte: number, dictRef: interop.Object): number;
 
-declare function OBEXAddLengthHeader(length: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddLengthHeader(length: number, dictRef: interop.Object): number;
 
-declare function OBEXAddTypeHeader(type: interop.PointerConvertible, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddTypeHeader(type: interop.Object, dictRef: interop.Object): number;
 
-declare function OBEXAddTimeISOHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddTimeISOHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddTargetHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddTargetHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddHTTPHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddHTTPHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddBodyHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, isEndOfBody: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddBodyHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, isEndOfBody: number, dictRef: interop.Object): number;
 
-declare function OBEXAddWhoHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddWhoHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddConnectionIDHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddConnectionIDHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddApplicationParameterHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddApplicationParameterHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddByteSequenceHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddByteSequenceHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddObjectClassHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddObjectClassHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddAuthorizationChallengeHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddAuthorizationChallengeHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddAuthorizationResponseHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddAuthorizationResponseHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function OBEXAddUserDefinedHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.PointerConvertible): number;
+declare function OBEXAddUserDefinedHeader(inHeaderData: interop.PointerConvertible, inHeaderDataLength: number, dictRef: interop.Object): number;
 
-declare function IOBluetoothOBEXSessionCreateWithIOBluetoothSDPServiceRecordRef(inSDPServiceRef: interop.PointerConvertible, outSessionRef: interop.PointerConvertible): number;
+declare function IOBluetoothOBEXSessionCreateWithIOBluetoothSDPServiceRecordRef(inSDPServiceRef: interop.Object, outSessionRef: interop.PointerConvertible): number;
 
-declare function IOBluetoothOBEXSessionCreateWithIOBluetoothDeviceRefAndChannelNumber(inDeviceRef: interop.PointerConvertible, inChannelID: number, outSessionRef: interop.PointerConvertible): number;
+declare function IOBluetoothOBEXSessionCreateWithIOBluetoothDeviceRefAndChannelNumber(inDeviceRef: interop.Object, inChannelID: number, outSessionRef: interop.PointerConvertible): number;
 
-declare function IOBluetoothOBEXSessionCreateWithIncomingIOBluetoothRFCOMMChannel(inRFCOMMChannelRef: interop.PointerConvertible, inCallback: (p1: interop.PointerConvertible) => void, inUserRefCon: interop.PointerConvertible, outSessionRef: interop.PointerConvertible): number;
+declare function IOBluetoothOBEXSessionCreateWithIncomingIOBluetoothRFCOMMChannel(inRFCOMMChannelRef: interop.Object, inCallback: (p1: interop.PointerConvertible) => void, inUserRefCon: interop.PointerConvertible, outSessionRef: interop.PointerConvertible): number;
 
 declare function IOBluetoothOBEXSessionOpenTransportConnection(inSessionRef: interop.PointerConvertible, inCallback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, inUserRefCon: interop.PointerConvertible): number;
 
@@ -4591,13 +4591,13 @@ declare class IOBluetoothSDPDataElement extends NSObject implements NSCoding, NS
 
   static withTypeSizeDescriptorSizeValue<This extends abstract new (...args: any) => any>(this: This, type: number, newSizeDescriptor: number, newSize: number, newValue: NSObject): InstanceType<This>;
 
-  static withSDPDataElementRef<This extends abstract new (...args: any) => any>(this: This, sdpDataElementRef: interop.PointerConvertible): InstanceType<This>;
+  static withSDPDataElementRef<This extends abstract new (...args: any) => any>(this: This, sdpDataElementRef: interop.Object): InstanceType<This>;
 
   initWithElementValue(element: NSObject): this;
 
   initWithTypeSizeDescriptorSizeValue(newType: number, newSizeDescriptor: number, newSize: number, newValue: NSObject): this;
 
-  getSDPDataElementRef(): interop.Pointer;
+  getSDPDataElementRef(): interop.Object;
 
   getTypeDescriptor(): number;
 
@@ -4787,11 +4787,11 @@ declare class IOBluetoothRFCOMMChannel extends IOBluetoothObject implements NSPo
 
   static registerForChannelOpenNotificationsSelectorWithChannelIDDirection(object: interop.Object, selector: string, channelID: number, inDirection: interop.Enum<typeof IOBluetoothUserNotificationChannelDirection>): IOBluetoothUserNotification;
 
-  static withRFCOMMChannelRef<This extends abstract new (...args: any) => any>(this: This, rfcommChannelRef: interop.PointerConvertible): InstanceType<This>;
+  static withRFCOMMChannelRef<This extends abstract new (...args: any) => any>(this: This, rfcommChannelRef: interop.Object): InstanceType<This>;
 
   static withObjectID<This extends abstract new (...args: any) => any>(this: This, objectID: number): InstanceType<This>;
 
-  getRFCOMMChannelRef(): interop.Pointer;
+  getRFCOMMChannelRef(): interop.Object;
 
   closeChannel(): number;
 
@@ -5177,9 +5177,9 @@ declare class IOBluetoothSDPServiceRecord extends NSObject implements NSCoding, 
 
   initWithServiceDictionaryDevice(serviceDict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, device: IOBluetoothDevice): this;
 
-  static withSDPServiceRecordRef<This extends abstract new (...args: any) => any>(this: This, sdpServiceRecordRef: interop.PointerConvertible): InstanceType<This>;
+  static withSDPServiceRecordRef<This extends abstract new (...args: any) => any>(this: This, sdpServiceRecordRef: interop.Object): InstanceType<This>;
 
-  getSDPServiceRecordRef(): interop.Pointer;
+  getSDPServiceRecordRef(): interop.Object;
 
   readonly device: IOBluetoothDevice;
 
@@ -5233,9 +5233,9 @@ declare class IOBluetoothDevice extends IOBluetoothObject implements NSCoding, N
 
   static deviceWithAddressString<This extends abstract new (...args: any) => any>(this: This, address: string): InstanceType<This>;
 
-  static withDeviceRef<This extends abstract new (...args: any) => any>(this: This, deviceRef: interop.PointerConvertible): InstanceType<This>;
+  static withDeviceRef<This extends abstract new (...args: any) => any>(this: This, deviceRef: interop.Object): InstanceType<This>;
 
-  getDeviceRef(): interop.Pointer;
+  getDeviceRef(): interop.Object;
 
   openL2CAPChannelSyncWithPSMDelegate(newChannel: interop.PointerConvertible, psm: number, channelDelegate: interop.Object): number;
 
@@ -5391,13 +5391,13 @@ declare class IOBluetoothSDPUUID extends NSData {
 
   static uuid32<This extends abstract new (...args: any) => any>(this: This, uuid32: number): InstanceType<This>;
 
-  static withSDPUUIDRef<This extends abstract new (...args: any) => any>(this: This, sdpUUIDRef: interop.PointerConvertible): InstanceType<This>;
+  static withSDPUUIDRef<This extends abstract new (...args: any) => any>(this: This, sdpUUIDRef: interop.Object): InstanceType<This>;
 
   initWithUUID16(uuid16: number): this;
 
   initWithUUID32(uuid32: number): this;
 
-  getSDPUUIDRef(): interop.Pointer;
+  getSDPUUIDRef(): interop.Object;
 
   getUUIDWithLength(newLength: number): this;
 

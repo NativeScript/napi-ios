@@ -1,29 +1,29 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kCMIOSampleBufferAttachmentKey_PixelBufferOverlaidByStaticImage: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_PixelBufferOverlaidByStaticImage: interop.Object;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorFrameRect: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorFrameRect: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_MouseAndKeyboardModifiers: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_MouseAndKeyboardModifiers: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_ClientSequenceID: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_ClientSequenceID: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_RepeatedBufferContents: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_RepeatedBufferContents: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_HostTime: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_HostTime: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_NumberOfVideoFramesInBuffer: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_NumberOfVideoFramesInBuffer: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_SMPTETime: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_SMPTETime: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_CAAudioTimeStamp: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_CAAudioTimeStamp: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_HDV2_VAUX: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_HDV2_VAUX: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_HDV1_PackData: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_HDV1_PackData: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_DiscontinuityFlags: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_DiscontinuityFlags: interop.Object;
 
 declare const kCMIOSampleBufferNoDataEvent_SleepWakeCycle: number;
 
@@ -367,7 +367,7 @@ declare const kCMIODevicePropertyDeviceControl: number;
 
 declare const kCMIODevicePropertySMPTETimeCallback: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorReference: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorReference: interop.Object;
 
 declare const kCMIOObjectClassID: number;
 
@@ -411,9 +411,9 @@ declare const kCMIOStreamPropertyDeckDropness: number;
 
 declare const kCMIOAVCDeviceType_DVCPro100_NTSC: number;
 
-declare const kCMIOSampleBufferAttachmentKey_MuxedSourcePresentationTimeStamp: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_MuxedSourcePresentationTimeStamp: interop.Object;
 
-declare const kCMIOBlockBufferAttachmentKey_CVPixelBufferReference: interop.Pointer;
+declare const kCMIOBlockBufferAttachmentKey_CVPixelBufferReference: interop.Object;
 
 declare const kCMIODeviceAVCSignalModeMPEG25Mbps_60: number;
 
@@ -423,7 +423,7 @@ declare const kCMIODeckStatusNoDevice: number;
 
 declare const CMIOExtensionPropertyDeviceTransportType: string;
 
-declare const kCMIOSampleBufferAttachmentKey_ClosedCaptionSampleBuffer: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_ClosedCaptionSampleBuffer: interop.Object;
 
 declare const kCMIODeckStatusSearchingForDevice: number;
 
@@ -449,7 +449,7 @@ declare const kCMIOHardwarePropertySuspendedBySystem: number;
 
 declare const kCMIODeviceAVCSignalMode8mmNTSC: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorPositionX: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorPositionX: interop.Object;
 
 declare const kCMIOControlPropertyVariant: number;
 
@@ -485,11 +485,11 @@ declare const kCMIOPlugInPropertyIsExtension: number;
 
 declare const kCMIOStreamPropertyStillImageFormatDescriptions: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_KeyboardModifiersEvent: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_KeyboardModifiersEvent: interop.Object;
 
 declare const kCMIODeviceAVCSignalModeSVHS525_60: number;
 
-declare const kCMIOSampleBufferAttachmentKey_NumberOfVideoFramesInGOP: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_NumberOfVideoFramesInGOP: interop.Object;
 
 declare const kCMIOFeatureControlPropertyAbsoluteNative: number;
 
@@ -497,11 +497,11 @@ declare const kCMIOSaturationControlClassID: number;
 
 declare const kCMIOPanTiltAbsoluteControlClassID: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorIsDrawnInFramebuffer: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorIsDrawnInFramebuffer: interop.Object;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorSeed: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorSeed: interop.Object;
 
-declare const kCMIOSampleBufferAttachmentKey_PulldownCadenceInfo: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_PulldownCadenceInfo: interop.Object;
 
 declare const kCMIODeviceAVCSignalModeDVCPro100_60: number;
 
@@ -537,7 +537,7 @@ declare const kCMIOAVCDeviceType_DV_NTSC: number;
 
 declare const CMIOExtensionPropertyDeviceCanBeDefaultOutputDevice: string;
 
-declare const kCMIOSampleBufferAttachmentKey_NativeSMPTEFrameCount: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_NativeSMPTEFrameCount: interop.Object;
 
 declare const kCMIODevicePropertyLocationUnknown: number;
 
@@ -553,13 +553,13 @@ declare const kCMIODeviceAVCSignalModeMicroMV12Mbps_60: number;
 
 declare const kCMIOControlPropertyElement: number;
 
-declare const kCMIOSampleBufferAttachmentKey_SourceAudioFormatDescription: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_SourceAudioFormatDescription: interop.Object;
 
 declare const kCMIODeviceAVCSignalModeSDL525_60: number;
 
 declare const kCMIOHardwarePropertyPlugInForBundleID: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorPositionY: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorPositionY: interop.Object;
 
 declare const kCMIOFeatureControlPropertyAutomaticManual: number;
 
@@ -575,7 +575,7 @@ declare const kCMIODevicePropertyCanSwitchFrameRatesWithoutFrameDrops: number;
 
 declare const kCMIOBlackLevelControlClassID: number;
 
-declare const kCMIOSampleBufferAttachmentKey_NoDataMarker: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_NoDataMarker: interop.Object;
 
 declare const kCMIODevicePropertyStreams: number;
 
@@ -607,7 +607,7 @@ declare const kCMIOObjectPropertyClass: number;
 
 declare const kCMIOWhiteBalanceControlClassID: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_MouseButtonState: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_MouseButtonState: interop.Object;
 
 declare const CMIOExtensionMachServiceNameKey: string;
 
@@ -615,7 +615,7 @@ declare const kCMIOSampleBufferDiscontinuityFlag_DiscontinuityInDTS: number;
 
 declare const kCMIODeckStatusTapeInserted: number;
 
-declare const kCMIOSampleBufferAttachmentKey_SequenceNumber: interop.Pointer;
+declare const kCMIOSampleBufferAttachmentKey_SequenceNumber: interop.Object;
 
 declare const kCMIODeckShuttleReverseSlow2: number;
 
@@ -631,7 +631,7 @@ declare const kCMIOAVCDeviceType_DVCPro100_720p: number;
 
 declare const kCMIODevicePropertyStreamConfiguration: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_KeyboardModifiers: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_KeyboardModifiers: interop.Object;
 
 declare const kCMIODeckShuttlePlaySlowest: number;
 
@@ -699,9 +699,9 @@ declare const kCMIOHardwarePropertyIsInitingOrExiting: number;
 
 declare const kCMIOStreamPropertyDeckFrameNumber: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorScale: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorScale: interop.Object;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorIsVisible: interop.Pointer;
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorIsVisible: interop.Object;
 
 declare const kCMIOExposureControlPropertyUnlockThreshold: number;
 
@@ -847,13 +847,13 @@ declare function CMIOStreamDeckJog(streamID: number, speed: number): number;
 
 declare function CMIOStreamDeckCueTo(streamID: number, frameNumber: number, playOnCue: number): number;
 
-declare function CMIOStreamClockCreate(allocator: interop.PointerConvertible, clockName: interop.PointerConvertible, sourceIdentifier: interop.PointerConvertible, getTimeCallMinimumInterval: CMTime, numberOfEventsForRateSmoothing: number, numberOfAveragesForRateSmoothing: number, clock: interop.PointerConvertible): number;
+declare function CMIOStreamClockCreate(allocator: interop.Object, clockName: interop.Object, sourceIdentifier: interop.PointerConvertible, getTimeCallMinimumInterval: CMTime, numberOfEventsForRateSmoothing: number, numberOfAveragesForRateSmoothing: number, clock: interop.PointerConvertible): number;
 
-declare function CMIOStreamClockPostTimingEvent(eventTime: CMTime, hostTime: number, resynchronize: number, clock: interop.PointerConvertible): number;
+declare function CMIOStreamClockPostTimingEvent(eventTime: CMTime, hostTime: number, resynchronize: number, clock: interop.Object): number;
 
-declare function CMIOStreamClockInvalidate(clock: interop.PointerConvertible): number;
+declare function CMIOStreamClockInvalidate(clock: interop.Object): number;
 
-declare function CMIOStreamClockConvertHostTimeToDeviceTime(hostTime: number, clock: interop.PointerConvertible): CMTime;
+declare function CMIOStreamClockConvertHostTimeToDeviceTime(hostTime: number, clock: interop.Object): CMTime;
 
 declare function CMIODeviceStartStream(deviceID: number, streamID: number): number;
 
@@ -869,23 +869,23 @@ declare function CMIOObjectsPublishedAndDied(owningPlugIn: interop.PointerConver
 
 declare function CMIOObjectPropertiesChanged(owningPlugIn: interop.PointerConvertible, objectID: number, numberAddresses: number, addresses: interop.Pointer): number;
 
-declare function CMIOSampleBufferCreate(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, formatDescription: interop.PointerConvertible, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sequenceNumber: number, discontinuityFlags: number, sBufOut: interop.PointerConvertible): number;
+declare function CMIOSampleBufferCreate(allocator: interop.Object, dataBuffer: interop.Object, formatDescription: interop.Object, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sequenceNumber: number, discontinuityFlags: number, sBufOut: interop.PointerConvertible): number;
 
-declare function CMIOSampleBufferCreateForImageBuffer(allocator: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, formatDescription: interop.PointerConvertible, sampleTiming: interop.PointerConvertible, sequenceNumber: number, discontinuityFlags: number, sBufOut: interop.PointerConvertible): number;
+declare function CMIOSampleBufferCreateForImageBuffer(allocator: interop.Object, imageBuffer: interop.Object, formatDescription: interop.Object, sampleTiming: interop.PointerConvertible, sequenceNumber: number, discontinuityFlags: number, sBufOut: interop.PointerConvertible): number;
 
-declare function CMIOSampleBufferCreateNoDataMarker(allocator: interop.PointerConvertible, noDataEvent: number, formatDescription: interop.PointerConvertible, sequenceNumber: number, discontinuityFlags: number, sBufOut: interop.PointerConvertible): number;
+declare function CMIOSampleBufferCreateNoDataMarker(allocator: interop.Object, noDataEvent: number, formatDescription: interop.Object, sequenceNumber: number, discontinuityFlags: number, sBufOut: interop.PointerConvertible): number;
 
-declare function CMIOSampleBufferSetSequenceNumber(allocator: interop.PointerConvertible, sbuf: interop.PointerConvertible, sequenceNumber: number): void;
+declare function CMIOSampleBufferSetSequenceNumber(allocator: interop.Object, sbuf: interop.Object, sequenceNumber: number): void;
 
-declare function CMIOSampleBufferGetSequenceNumber(sbuf: interop.PointerConvertible): number;
+declare function CMIOSampleBufferGetSequenceNumber(sbuf: interop.Object): number;
 
-declare function CMIOSampleBufferSetDiscontinuityFlags(allocator: interop.PointerConvertible, sbuf: interop.PointerConvertible, discontinuityFlags: number): void;
+declare function CMIOSampleBufferSetDiscontinuityFlags(allocator: interop.Object, sbuf: interop.Object, discontinuityFlags: number): void;
 
-declare function CMIOSampleBufferGetDiscontinuityFlags(sbuf: interop.PointerConvertible): number;
+declare function CMIOSampleBufferGetDiscontinuityFlags(sbuf: interop.Object): number;
 
-declare function CMIOSampleBufferCopyNonRequiredAttachments(sourceSBuf: interop.PointerConvertible, destSBuf: interop.PointerConvertible, attachmentMode: number): number;
+declare function CMIOSampleBufferCopyNonRequiredAttachments(sourceSBuf: interop.Object, destSBuf: interop.Object, attachmentMode: number): number;
 
-declare function CMIOSampleBufferCopySampleAttachments(sourceSBuf: interop.PointerConvertible, destSBuf: interop.PointerConvertible): number;
+declare function CMIOSampleBufferCopySampleAttachments(sourceSBuf: interop.Object, destSBuf: interop.Object): number;
 
 declare interface CMIOExtensionProviderSource extends NSObjectProtocol {
   connectClientError(client: CMIOExtensionClient, outError: interop.PointerConvertible): boolean;
@@ -967,7 +967,7 @@ declare class CMIOExtensionStream extends NSObject {
 
   notifyPropertiesChanged(propertyStates: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
-  sendSampleBufferDiscontinuityHostTimeInNanoseconds(sampleBuffer: interop.PointerConvertible, discontinuity: interop.Enum<typeof CMIOExtensionStreamDiscontinuityFlags>, hostTimeInNanoseconds: number): void;
+  sendSampleBufferDiscontinuityHostTimeInNanoseconds(sampleBuffer: interop.Object, discontinuity: interop.Enum<typeof CMIOExtensionStreamDiscontinuityFlags>, hostTimeInNanoseconds: number): void;
 
   consumeSampleBufferFromClientCompletionHandler(client: CMIOExtensionClient, completionHandler: (p1: interop.PointerConvertible, p2: number, p3: interop.Enum<typeof CMIOExtensionStreamDiscontinuityFlags>, p4: boolean, p5: NSError) => void | null): void;
 
@@ -1116,11 +1116,11 @@ declare class CMIOExtensionProviderProperties extends NSObject {
 }
 
 declare class CMIOExtensionStreamFormat extends NSObject implements NSCopying, NSSecureCoding {
-  static streamFormatWithFormatDescriptionMaxFrameDurationMinFrameDurationValidFrameDurations<This extends abstract new (...args: any) => any>(this: This, formatDescription: interop.PointerConvertible, maxFrameDuration: CMTime, minFrameDuration: CMTime, validFrameDurations: NSArray<interop.Object> | Array<interop.Object> | null): InstanceType<This>;
+  static streamFormatWithFormatDescriptionMaxFrameDurationMinFrameDurationValidFrameDurations<This extends abstract new (...args: any) => any>(this: This, formatDescription: interop.Object, maxFrameDuration: CMTime, minFrameDuration: CMTime, validFrameDurations: NSArray<interop.Object> | Array<interop.Object> | null): InstanceType<This>;
 
-  initWithFormatDescriptionMaxFrameDurationMinFrameDurationValidFrameDurations(formatDescription: interop.PointerConvertible, maxFrameDuration: CMTime, minFrameDuration: CMTime, validFrameDurations: NSArray<interop.Object> | Array<interop.Object> | null): this;
+  initWithFormatDescriptionMaxFrameDurationMinFrameDurationValidFrameDurations(formatDescription: interop.Object, maxFrameDuration: CMTime, minFrameDuration: CMTime, validFrameDurations: NSArray<interop.Object> | Array<interop.Object> | null): this;
 
-  readonly formatDescription: interop.Pointer;
+  readonly formatDescription: interop.Object;
 
   readonly minFrameDuration: CMTime;
 

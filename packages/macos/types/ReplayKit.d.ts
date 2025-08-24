@@ -249,7 +249,7 @@ declare class RPBroadcastSampleHandler extends RPBroadcastHandler {
 
   broadcastAnnotatedWithApplicationInfo(applicationInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
-  processSampleBufferWithType(sampleBuffer: interop.PointerConvertible, sampleBufferType: interop.Enum<typeof RPSampleBufferType>): void;
+  processSampleBufferWithType(sampleBuffer: interop.Object, sampleBufferType: interop.Enum<typeof RPSampleBufferType>): void;
 
   finishBroadcastWithError(error: NSError): void;
 }

@@ -580,25 +580,25 @@ declare const kSelectorSmall4Bit: number;
 
 declare const kUAZoomFocusTypeInsertionPoint: number;
 
-declare const kAXForegoundColorTextAttribute: interop.Pointer;
+declare const kAXForegoundColorTextAttribute: interop.Object;
 
-declare const kAXVisibleNameKey: interop.Pointer;
+declare const kAXVisibleNameKey: interop.Object;
 
-declare const kAXFontFamilyKey: interop.Pointer;
+declare const kAXFontFamilyKey: interop.Object;
 
-declare const kAXMisspelledTextAttribute: interop.Pointer;
+declare const kAXMisspelledTextAttribute: interop.Object;
 
-declare const kAXReplacementStringTextAttribute: interop.Pointer;
+declare const kAXReplacementStringTextAttribute: interop.Object;
 
-declare const kAXAttachmentTextAttribute: interop.Pointer;
+declare const kAXAttachmentTextAttribute: interop.Object;
 
-declare const kAXStrikethroughTextAttribute: interop.Pointer;
+declare const kAXStrikethroughTextAttribute: interop.Object;
 
-declare const kAXStrikethroughColorTextAttribute: interop.Pointer;
+declare const kAXStrikethroughColorTextAttribute: interop.Object;
 
-declare const kAXUnderlineColorTextAttribute: interop.Pointer;
+declare const kAXUnderlineColorTextAttribute: interop.Object;
 
-declare const kAXFontTextAttribute: interop.Pointer;
+declare const kAXFontTextAttribute: interop.Object;
 
 declare const kAXValueIllegalType: number;
 
@@ -606,7 +606,7 @@ declare const kAXValueCFRangeType: number;
 
 declare const kAXValueCGSizeType: number;
 
-declare const kAXTrustedCheckOptionPrompt: interop.Pointer;
+declare const kAXTrustedCheckOptionPrompt: interop.Object;
 
 declare const kTranslationDataTranslation: number;
 
@@ -1180,7 +1180,7 @@ declare const cmSigProfileSequenceDescType: number;
 
 declare const cmSigNamedColor2Type: number;
 
-declare const kAXUnderlineTextAttribute: interop.Pointer;
+declare const kAXUnderlineTextAttribute: interop.Object;
 
 declare const cmSigNamedColorType: number;
 
@@ -1586,9 +1586,9 @@ declare const cmReflective: number;
 
 declare const cmRGBSpace: number;
 
-declare const kAXListItemIndexTextAttribute: interop.Pointer;
+declare const kAXListItemIndexTextAttribute: interop.Object;
 
-declare const kAXAutocorrectedTextAttribute: interop.Pointer;
+declare const kAXAutocorrectedTextAttribute: interop.Object;
 
 declare const launchContinue: number;
 
@@ -1644,7 +1644,7 @@ declare const kUYVY422PixelFormat: number;
 
 declare const kUseAtoB: number;
 
-declare const kAXShadowTextAttribute: interop.Pointer;
+declare const kAXShadowTextAttribute: interop.Object;
 
 declare const kATSULineDirectionTag: number;
 
@@ -1794,7 +1794,7 @@ declare const k16LE5551PixelFormat: number;
 
 declare const kATSUStyleUnderlineCountOptionTag: number;
 
-declare const kAXSuperscriptTextAttribute: interop.Pointer;
+declare const kAXSuperscriptTextAttribute: interop.Object;
 
 declare const cmSRGB16ChannelEncoding: number;
 
@@ -1804,7 +1804,7 @@ declare const cmTechnologySilkscreen: number;
 
 declare const atNone: number;
 
-declare const kAXForegroundColorTextAttribute: interop.Pointer;
+declare const kAXForegroundColorTextAttribute: interop.Object;
 
 declare const kATSRadiansFactor: number;
 
@@ -2022,7 +2022,7 @@ declare const mode32BitCompatible: number;
 
 declare const kSelectorAll1BitData: number;
 
-declare const kAXNaturalLanguageTextAttribute: interop.Pointer;
+declare const kAXNaturalLanguageTextAttribute: interop.Object;
 
 declare const cm13CLRData: number;
 
@@ -2166,7 +2166,7 @@ declare const kATSUImposeWidthTag: number;
 
 declare const kPMCMYKColorSpaceModel: number;
 
-declare const kAXMarkedMisspelledTextAttribute: interop.Pointer;
+declare const kAXMarkedMisspelledTextAttribute: interop.Object;
 
 declare const cmRGBA64Space: number;
 
@@ -2350,7 +2350,7 @@ declare const atLeft: number;
 
 declare const kPMShowInlinePageRangeWithSelection: number;
 
-declare const kAXListItemPrefixTextAttribute: interop.Pointer;
+declare const kAXListItemPrefixTextAttribute: interop.Object;
 
 declare const cmBestMode: number;
 
@@ -2360,11 +2360,11 @@ declare const kPMLayoutTopBottomRightLeft: number;
 
 declare const kATSUQDBoldfaceTag: number;
 
-declare const kAXFontNameKey: interop.Pointer;
+declare const kAXFontNameKey: interop.Object;
 
 declare const cmXYZ48Space: number;
 
-declare const kAXListItemLevelTextAttribute: interop.Pointer;
+declare const kAXListItemLevelTextAttribute: interop.Object;
 
 declare const icInternalErr: number;
 
@@ -2426,7 +2426,7 @@ declare const kATSUFromTextBeginning: number;
 
 declare const ttSelectedOpen: number;
 
-declare const kAXLinkTextAttribute: interop.Pointer;
+declare const kAXLinkTextAttribute: interop.Object;
 
 declare const cmAlphaLastPacking: number;
 
@@ -2484,7 +2484,7 @@ declare const cmRGB565LSpace: number;
 
 declare const kSpeechNumberModeProperty: interop.Pointer;
 
-declare const kAXFontSizeKey: interop.Pointer;
+declare const kAXFontSizeKey: interop.Object;
 
 declare const kPMDestinationFax: number;
 
@@ -2502,7 +2502,7 @@ declare const kSelectorSmall1Bit: number;
 
 declare const kATSOptionFlagsRecordPersistently: number;
 
-declare const kAXBackgroundColorTextAttribute: interop.Pointer;
+declare const kAXBackgroundColorTextAttribute: interop.Object;
 
 declare const launchNoFileFlags: number;
 
@@ -2987,7 +2987,7 @@ declare class NCMDeviceProfileInfo {
   dataVersion: number;
   profileID: number;
   profileLoc: CMProfileLocation;
-  profileName: interop.Pointer;
+  profileName: interop.Object | null;
   profileScope: CMDeviceScope;
   reserved: number;
 }
@@ -3927,8 +3927,8 @@ declare class ICCharTable {
 
 declare class CMDeviceScope {
   constructor(init?: CMDeviceScope);
-  deviceUser: interop.Pointer;
-  deviceHost: interop.Pointer;
+  deviceUser: interop.Object | null;
+  deviceHost: interop.Object | null;
 }
 
 declare class CMIntentCRDVMSize {
@@ -4202,7 +4202,7 @@ declare class CMDeviceProfileInfo {
   dataVersion: number;
   profileID: number;
   profileLoc: CMProfileLocation;
-  profileName: interop.Pointer;
+  profileName: interop.Object | null;
   reserved: number;
 }
 
@@ -4346,7 +4346,7 @@ declare function ATSFontFamilyIteratorReset(iContext: number, iFilter: interop.P
 
 declare function ATSFontFamilyIteratorNext(iIterator: interop.PointerConvertible, oFamily: interop.PointerConvertible): number;
 
-declare function ATSFontFamilyFindFromName(iName: interop.PointerConvertible, iOptions: number): number;
+declare function ATSFontFamilyFindFromName(iName: interop.Object, iOptions: number): number;
 
 declare function ATSFontFamilyGetGeneration(iFamily: number): number;
 
@@ -4364,9 +4364,9 @@ declare function ATSFontIteratorReset(iContext: number, iFilter: interop.Pointer
 
 declare function ATSFontIteratorNext(iIterator: interop.PointerConvertible, oFont: interop.PointerConvertible): number;
 
-declare function ATSFontFindFromName(iName: interop.PointerConvertible, iOptions: number): number;
+declare function ATSFontFindFromName(iName: interop.Object, iOptions: number): number;
 
-declare function ATSFontFindFromPostScriptName(iName: interop.PointerConvertible, iOptions: number): number;
+declare function ATSFontFindFromPostScriptName(iName: interop.Object, iOptions: number): number;
 
 declare function ATSFontFindFromContainer(iContainer: number, iOptions: number, iCount: number, ioArray: interop.Pointer, oCount: interop.PointerConvertible): number;
 
@@ -4398,73 +4398,73 @@ declare function ATSFontNotificationSubscribe(callback: (p1: interop.PointerConv
 
 declare function ATSFontNotificationUnsubscribe(notificationRef: interop.PointerConvertible): number;
 
-declare function ATSCreateFontQueryRunLoopSource(queryOrder: number, sourceOrder: number, callout: (p1: interop.Enum<typeof ATSFontQueryMessageID>, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): interop.Pointer;
+declare function ATSCreateFontQueryRunLoopSource(queryOrder: number, sourceOrder: number, callout: (p1: interop.Enum<typeof ATSFontQueryMessageID>, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): interop.Object;
 
 declare function ATSFontSetGlobalAutoActivationSetting(iSetting: number): number;
 
 declare function ATSFontGetGlobalAutoActivationSetting(): number;
 
-declare function ATSFontSetAutoActivationSettingForApplication(iSetting: number, iApplicationFileURL: interop.PointerConvertible): number;
+declare function ATSFontSetAutoActivationSettingForApplication(iSetting: number, iApplicationFileURL: interop.Object): number;
 
-declare function ATSFontGetAutoActivationSettingForApplication(iApplicationFileURL: interop.PointerConvertible): number;
+declare function ATSFontGetAutoActivationSettingForApplication(iApplicationFileURL: interop.Object): number;
 
 declare function HIShapeGetTypeID(): number;
 
-declare function HIShapeCreateEmpty(): interop.Pointer;
+declare function HIShapeCreateEmpty(): interop.Object;
 
-declare function HIShapeCreateWithQDRgn(inRgn: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateWithQDRgn(inRgn: interop.PointerConvertible): interop.Object;
 
-declare function HIShapeCreateWithRect(inRect: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateWithRect(inRect: interop.PointerConvertible): interop.Object;
 
-declare function HIShapeCreateCopy(inShape: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateCopy(inShape: interop.Object): interop.Object;
 
-declare function HIShapeCreateIntersection(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateIntersection(inShape1: interop.Object, inShape2: interop.Object): interop.Object;
 
-declare function HIShapeCreateDifference(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateDifference(inShape1: interop.Object, inShape2: interop.Object): interop.Object;
 
-declare function HIShapeCreateUnion(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateUnion(inShape1: interop.Object, inShape2: interop.Object): interop.Object;
 
-declare function HIShapeCreateXor(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateXor(inShape1: interop.Object, inShape2: interop.Object): interop.Object;
 
-declare function HIShapeIsEmpty(inShape: interop.PointerConvertible): number;
+declare function HIShapeIsEmpty(inShape: interop.Object): number;
 
-declare function HIShapeIsRectangular(inShape: interop.PointerConvertible): number;
+declare function HIShapeIsRectangular(inShape: interop.Object): number;
 
-declare function HIShapeContainsPoint(inShape: interop.PointerConvertible, inPoint: interop.PointerConvertible): number;
+declare function HIShapeContainsPoint(inShape: interop.Object, inPoint: interop.PointerConvertible): number;
 
-declare function HIShapeIntersectsRect(inShape: interop.PointerConvertible, inRect: interop.PointerConvertible): number;
+declare function HIShapeIntersectsRect(inShape: interop.Object, inRect: interop.PointerConvertible): number;
 
-declare function HIShapeGetBounds(inShape: interop.PointerConvertible, outRect: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeGetBounds(inShape: interop.Object, outRect: interop.PointerConvertible): interop.Pointer;
 
-declare function HIShapeGetAsQDRgn(inShape: interop.PointerConvertible, outRgn: interop.PointerConvertible): number;
+declare function HIShapeGetAsQDRgn(inShape: interop.Object, outRgn: interop.PointerConvertible): number;
 
-declare function HIShapeReplacePathInCGContext(inShape: interop.PointerConvertible, inContext: interop.PointerConvertible): number;
+declare function HIShapeReplacePathInCGContext(inShape: interop.Object, inContext: interop.Object): number;
 
-declare function HIShapeEnumerate(inShape: interop.PointerConvertible, inOptions: number, inProc: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number, inRefcon: interop.PointerConvertible): number;
+declare function HIShapeEnumerate(inShape: interop.Object, inOptions: number, inProc: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number, inRefcon: interop.PointerConvertible): number;
 
-declare function HIShapeCreateMutable(): interop.Pointer;
+declare function HIShapeCreateMutable(): interop.Object;
 
-declare function HIShapeCreateMutableCopy(inOrig: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateMutableCopy(inOrig: interop.Object): interop.Object;
 
-declare function HIShapeCreateMutableWithRect(inRect: interop.PointerConvertible): interop.Pointer;
+declare function HIShapeCreateMutableWithRect(inRect: interop.PointerConvertible): interop.Object;
 
-declare function HIShapeSetEmpty(inShape: interop.PointerConvertible): number;
+declare function HIShapeSetEmpty(inShape: interop.Object): number;
 
-declare function HIShapeSetWithShape(inDestShape: interop.PointerConvertible, inSrcShape: interop.PointerConvertible): number;
+declare function HIShapeSetWithShape(inDestShape: interop.Object, inSrcShape: interop.Object): number;
 
-declare function HIShapeIntersect(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible, outResult: interop.PointerConvertible): number;
+declare function HIShapeIntersect(inShape1: interop.Object, inShape2: interop.Object, outResult: interop.Object): number;
 
-declare function HIShapeDifference(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible, outResult: interop.PointerConvertible): number;
+declare function HIShapeDifference(inShape1: interop.Object, inShape2: interop.Object, outResult: interop.Object): number;
 
-declare function HIShapeUnion(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible, outResult: interop.PointerConvertible): number;
+declare function HIShapeUnion(inShape1: interop.Object, inShape2: interop.Object, outResult: interop.Object): number;
 
-declare function HIShapeXor(inShape1: interop.PointerConvertible, inShape2: interop.PointerConvertible, outResult: interop.PointerConvertible): number;
+declare function HIShapeXor(inShape1: interop.Object, inShape2: interop.Object, outResult: interop.Object): number;
 
-declare function HIShapeOffset(inShape: interop.PointerConvertible, inDX: number, inDY: number): number;
+declare function HIShapeOffset(inShape: interop.Object, inDX: number, inDY: number): number;
 
-declare function HIShapeInset(inShape: interop.PointerConvertible, inDX: number, inDY: number): number;
+declare function HIShapeInset(inShape: interop.Object, inDX: number, inDY: number): number;
 
-declare function HIShapeUnionWithRect(inShape: interop.PointerConvertible, inRect: interop.PointerConvertible): number;
+declare function HIShapeUnionWithRect(inShape: interop.Object, inRect: interop.PointerConvertible): number;
 
 declare function NewIconActionUPP(userRoutine: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number;
 
@@ -4484,13 +4484,13 @@ declare function SetIconFamilyData(iconFamily: interop.PointerConvertible, iconT
 
 declare function GetIconFamilyData(iconFamily: interop.PointerConvertible, iconType: number, h: interop.PointerConvertible): number;
 
-declare function PlotIconRefInContext(inContext: interop.PointerConvertible, inRect: interop.PointerConvertible, inAlign: number, inTransform: number, inLabelColor: interop.PointerConvertible, inFlags: number, inIconRef: interop.PointerConvertible): number;
+declare function PlotIconRefInContext(inContext: interop.Object, inRect: interop.PointerConvertible, inAlign: number, inTransform: number, inLabelColor: interop.PointerConvertible, inFlags: number, inIconRef: interop.PointerConvertible): number;
 
 declare function IconRefContainsCGPoint(testPt: interop.PointerConvertible, iconRect: interop.PointerConvertible, align: number, iconServicesUsageFlags: number, theIconRef: interop.PointerConvertible): number;
 
 declare function IconRefIntersectsCGRect(testRect: interop.PointerConvertible, iconRect: interop.PointerConvertible, align: number, iconServicesUsageFlags: number, theIconRef: interop.PointerConvertible): number;
 
-declare function IconRefToHIShape(iconRect: interop.PointerConvertible, align: number, iconServicesUsageFlags: number, theIconRef: interop.PointerConvertible): interop.Pointer;
+declare function IconRefToHIShape(iconRect: interop.PointerConvertible, align: number, iconServicesUsageFlags: number, theIconRef: interop.PointerConvertible): interop.Object;
 
 declare function IsIconRefMaskEmpty(iconRef: interop.PointerConvertible): number;
 
@@ -4586,7 +4586,7 @@ declare function GetNextProcess(pPSN: interop.PointerConvertible): number;
 
 declare function GetProcessInformation(PSN: interop.PointerConvertible, info: interop.PointerConvertible): number;
 
-declare function ProcessInformationCopyDictionary(PSN: interop.PointerConvertible, infoToReturn: number): interop.Pointer;
+declare function ProcessInformationCopyDictionary(PSN: interop.PointerConvertible, infoToReturn: number): interop.Object;
 
 declare function SetFrontProcess(pPSN: interop.PointerConvertible): number;
 
@@ -4616,101 +4616,101 @@ declare function TransformProcessType(psn: interop.PointerConvertible, transform
 
 declare function PasteboardGetTypeID(): number;
 
-declare function PasteboardCreate(inName: interop.PointerConvertible, outPasteboard: interop.PointerConvertible): number;
+declare function PasteboardCreate(inName: interop.Object, outPasteboard: interop.PointerConvertible): number;
 
-declare function PasteboardSynchronize(inPasteboard: interop.PointerConvertible): interop.Enum<typeof PasteboardSyncFlags>;
+declare function PasteboardSynchronize(inPasteboard: interop.Object): interop.Enum<typeof PasteboardSyncFlags>;
 
-declare function PasteboardClear(inPasteboard: interop.PointerConvertible): number;
+declare function PasteboardClear(inPasteboard: interop.Object): number;
 
-declare function PasteboardCopyName(inPasteboard: interop.PointerConvertible, outName: interop.PointerConvertible): number;
+declare function PasteboardCopyName(inPasteboard: interop.Object, outName: interop.PointerConvertible): number;
 
-declare function PasteboardGetItemCount(inPasteboard: interop.PointerConvertible, outItemCount: interop.PointerConvertible): number;
+declare function PasteboardGetItemCount(inPasteboard: interop.Object, outItemCount: interop.PointerConvertible): number;
 
-declare function PasteboardGetItemIdentifier(inPasteboard: interop.PointerConvertible, inIndex: number, outItem: interop.PointerConvertible): number;
+declare function PasteboardGetItemIdentifier(inPasteboard: interop.Object, inIndex: number, outItem: interop.PointerConvertible): number;
 
-declare function PasteboardCopyItemFlavors(inPasteboard: interop.PointerConvertible, inItem: interop.PointerConvertible, outFlavorTypes: interop.PointerConvertible): number;
+declare function PasteboardCopyItemFlavors(inPasteboard: interop.Object, inItem: interop.PointerConvertible, outFlavorTypes: interop.PointerConvertible): number;
 
-declare function PasteboardGetItemFlavorFlags(inPasteboard: interop.PointerConvertible, inItem: interop.PointerConvertible, inFlavorType: interop.PointerConvertible, outFlags: interop.PointerConvertible): number;
+declare function PasteboardGetItemFlavorFlags(inPasteboard: interop.Object, inItem: interop.PointerConvertible, inFlavorType: interop.Object, outFlags: interop.PointerConvertible): number;
 
-declare function PasteboardCopyItemFlavorData(inPasteboard: interop.PointerConvertible, inItem: interop.PointerConvertible, inFlavorType: interop.PointerConvertible, outData: interop.PointerConvertible): number;
+declare function PasteboardCopyItemFlavorData(inPasteboard: interop.Object, inItem: interop.PointerConvertible, inFlavorType: interop.Object, outData: interop.PointerConvertible): number;
 
-declare function PasteboardPutItemFlavor(inPasteboard: interop.PointerConvertible, inItem: interop.PointerConvertible, inFlavorType: interop.PointerConvertible, inData: interop.PointerConvertible, inFlags: interop.Enum<typeof PasteboardFlavorFlags>): number;
+declare function PasteboardPutItemFlavor(inPasteboard: interop.Object, inItem: interop.PointerConvertible, inFlavorType: interop.Object, inData: interop.Object, inFlags: interop.Enum<typeof PasteboardFlavorFlags>): number;
 
-declare function PasteboardCopyPasteLocation(inPasteboard: interop.PointerConvertible, outPasteLocation: interop.PointerConvertible): number;
+declare function PasteboardCopyPasteLocation(inPasteboard: interop.Object, outPasteLocation: interop.PointerConvertible): number;
 
-declare function PasteboardSetPasteLocation(inPasteboard: interop.PointerConvertible, inPasteLocation: interop.PointerConvertible): number;
+declare function PasteboardSetPasteLocation(inPasteboard: interop.Object, inPasteLocation: interop.Object): number;
 
-declare function PasteboardSetPromiseKeeper(inPasteboard: interop.PointerConvertible, inPromiseKeeper: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number, inContext: interop.PointerConvertible): number;
+declare function PasteboardSetPromiseKeeper(inPasteboard: interop.Object, inPromiseKeeper: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number, inContext: interop.PointerConvertible): number;
 
-declare function PasteboardResolvePromises(inPasteboard: interop.PointerConvertible): number;
+declare function PasteboardResolvePromises(inPasteboard: interop.Object): number;
 
 declare function TranslationGetTypeID(): number;
 
-declare function TranslationCreate(inSourceType: interop.PointerConvertible, inDestinationType: interop.PointerConvertible, inTranslationFlags: number, outTranslation: interop.PointerConvertible): number;
+declare function TranslationCreate(inSourceType: interop.Object, inDestinationType: interop.Object, inTranslationFlags: number, outTranslation: interop.PointerConvertible): number;
 
-declare function TranslationCreateWithSourceArray(inSourceTypes: interop.PointerConvertible, inTranslationFlags: number, outDestinationTypes: interop.PointerConvertible, outTranslations: interop.PointerConvertible): number;
+declare function TranslationCreateWithSourceArray(inSourceTypes: interop.Object, inTranslationFlags: number, outDestinationTypes: interop.PointerConvertible, outTranslations: interop.PointerConvertible): number;
 
-declare function TranslationPerformForData(inTranslation: interop.PointerConvertible, inSourceData: interop.PointerConvertible, outDestinationData: interop.PointerConvertible): number;
+declare function TranslationPerformForData(inTranslation: interop.Object, inSourceData: interop.Object, outDestinationData: interop.PointerConvertible): number;
 
-declare function TranslationPerformForFile(inTranslation: interop.PointerConvertible, inSourceFile: interop.PointerConvertible, inDestinationDirectory: interop.PointerConvertible, inDestinationName: interop.PointerConvertible, outTranslatedFile: interop.PointerConvertible): number;
+declare function TranslationPerformForFile(inTranslation: interop.Object, inSourceFile: interop.PointerConvertible, inDestinationDirectory: interop.PointerConvertible, inDestinationName: interop.Object, outTranslatedFile: interop.PointerConvertible): number;
 
-declare function TranslationPerformForURL(inTranslation: interop.PointerConvertible, inSourceURL: interop.PointerConvertible, inDestinationURL: interop.PointerConvertible, outTranslatedURL: interop.PointerConvertible): number;
+declare function TranslationPerformForURL(inTranslation: interop.Object, inSourceURL: interop.Object, inDestinationURL: interop.Object, outTranslatedURL: interop.PointerConvertible): number;
 
-declare function TranslationCopySourceType(inTranslation: interop.PointerConvertible, outSourceType: interop.PointerConvertible): number;
+declare function TranslationCopySourceType(inTranslation: interop.Object, outSourceType: interop.PointerConvertible): number;
 
-declare function TranslationCopyDestinationType(inTranslation: interop.PointerConvertible, outDestinationType: interop.PointerConvertible): number;
+declare function TranslationCopyDestinationType(inTranslation: interop.Object, outDestinationType: interop.PointerConvertible): number;
 
-declare function TranslationGetTranslationFlags(inTranslation: interop.PointerConvertible, outTranslationFlags: interop.PointerConvertible): number;
+declare function TranslationGetTranslationFlags(inTranslation: interop.Object, outTranslationFlags: interop.PointerConvertible): number;
 
 declare function AXAPIEnabled(): number;
 
-declare function AXIsProcessTrustedWithOptions(options: interop.PointerConvertible): number;
+declare function AXIsProcessTrustedWithOptions(options: interop.Object): number;
 
 declare function AXIsProcessTrusted(): number;
 
-declare function AXMakeProcessTrusted(executablePath: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXMakeProcessTrusted(executablePath: interop.Object): interop.Enum<typeof AXError>;
 
 declare function AXUIElementGetTypeID(): number;
 
-declare function AXUIElementCopyAttributeNames(element: interop.PointerConvertible, names: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyAttributeNames(element: interop.Object, names: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyAttributeValue(element: interop.PointerConvertible, attribute: interop.PointerConvertible, value: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyAttributeValue(element: interop.Object, attribute: interop.Object, value: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementGetAttributeValueCount(element: interop.PointerConvertible, attribute: interop.PointerConvertible, count: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementGetAttributeValueCount(element: interop.Object, attribute: interop.Object, count: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyAttributeValues(element: interop.PointerConvertible, attribute: interop.PointerConvertible, index: number, maxValues: number, values: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyAttributeValues(element: interop.Object, attribute: interop.Object, index: number, maxValues: number, values: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementIsAttributeSettable(element: interop.PointerConvertible, attribute: interop.PointerConvertible, settable: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementIsAttributeSettable(element: interop.Object, attribute: interop.Object, settable: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementSetAttributeValue(element: interop.PointerConvertible, attribute: interop.PointerConvertible, value: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementSetAttributeValue(element: interop.Object, attribute: interop.Object, value: interop.Object): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyMultipleAttributeValues(element: interop.PointerConvertible, attributes: interop.PointerConvertible, options: interop.Enum<typeof AXCopyMultipleAttributeOptions>, values: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyMultipleAttributeValues(element: interop.Object, attributes: interop.Object, options: interop.Enum<typeof AXCopyMultipleAttributeOptions>, values: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyParameterizedAttributeNames(element: interop.PointerConvertible, names: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyParameterizedAttributeNames(element: interop.Object, names: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyParameterizedAttributeValue(element: interop.PointerConvertible, parameterizedAttribute: interop.PointerConvertible, parameter: interop.PointerConvertible, result: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyParameterizedAttributeValue(element: interop.Object, parameterizedAttribute: interop.Object, parameter: interop.Object, result: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyActionNames(element: interop.PointerConvertible, names: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyActionNames(element: interop.Object, names: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyActionDescription(element: interop.PointerConvertible, action: interop.PointerConvertible, description: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyActionDescription(element: interop.Object, action: interop.Object, description: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementPerformAction(element: interop.PointerConvertible, action: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementPerformAction(element: interop.Object, action: interop.Object): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCopyElementAtPosition(application: interop.PointerConvertible, x: number, y: number, element: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementCopyElementAtPosition(application: interop.Object, x: number, y: number, element: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementCreateApplication(pid: number): interop.Pointer;
+declare function AXUIElementCreateApplication(pid: number): interop.Object;
 
-declare function AXUIElementCreateSystemWide(): interop.Pointer;
+declare function AXUIElementCreateSystemWide(): interop.Object;
 
-declare function AXUIElementGetPid(element: interop.PointerConvertible, pid: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXUIElementGetPid(element: interop.Object, pid: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXUIElementSetMessagingTimeout(element: interop.PointerConvertible, timeoutInSeconds: number): interop.Enum<typeof AXError>;
+declare function AXUIElementSetMessagingTimeout(element: interop.Object, timeoutInSeconds: number): interop.Enum<typeof AXError>;
 
-declare function AXUIElementPostKeyboardEvent(application: interop.PointerConvertible, keyChar: number, virtualKey: number, keyDown: number): interop.Enum<typeof AXError>;
+declare function AXUIElementPostKeyboardEvent(application: interop.Object, keyChar: number, virtualKey: number, keyDown: number): interop.Enum<typeof AXError>;
 
 declare function AXTextMarkerGetTypeID(): number;
 
-declare function AXTextMarkerCreate(allocator: interop.PointerConvertible, bytes: interop.PointerConvertible, length: number): interop.Pointer;
+declare function AXTextMarkerCreate(allocator: interop.Object, bytes: interop.PointerConvertible, length: number): interop.Pointer;
 
 declare function AXTextMarkerGetLength(marker: interop.PointerConvertible): number;
 
@@ -4718,9 +4718,9 @@ declare function AXTextMarkerGetBytePtr(theTextMarker: interop.PointerConvertibl
 
 declare function AXTextMarkerRangeGetTypeID(): number;
 
-declare function AXTextMarkerRangeCreate(allocator: interop.PointerConvertible, startMarker: interop.PointerConvertible, endMarker: interop.PointerConvertible): interop.Pointer;
+declare function AXTextMarkerRangeCreate(allocator: interop.Object, startMarker: interop.PointerConvertible, endMarker: interop.PointerConvertible): interop.Pointer;
 
-declare function AXTextMarkerRangeCreateWithBytes(allocator: interop.PointerConvertible, startMarkerBytes: interop.PointerConvertible, startMarkerLength: number, endMarkerBytes: interop.PointerConvertible, endMarkerLength: number): interop.Pointer;
+declare function AXTextMarkerRangeCreateWithBytes(allocator: interop.Object, startMarkerBytes: interop.PointerConvertible, startMarkerLength: number, endMarkerBytes: interop.PointerConvertible, endMarkerLength: number): interop.Pointer;
 
 declare function AXTextMarkerRangeCopyStartMarker(textMarkerRange: interop.PointerConvertible): interop.Pointer;
 
@@ -4732,19 +4732,19 @@ declare function AXObserverCreate(application: number, callback: (p1: interop.Po
 
 declare function AXObserverCreateWithInfoCallback(application: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, outObserver: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXObserverAddNotification(observer: interop.PointerConvertible, element: interop.PointerConvertible, notification: interop.PointerConvertible, refcon: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXObserverAddNotification(observer: interop.Object, element: interop.Object, notification: interop.Object, refcon: interop.PointerConvertible): interop.Enum<typeof AXError>;
 
-declare function AXObserverRemoveNotification(observer: interop.PointerConvertible, element: interop.PointerConvertible, notification: interop.PointerConvertible): interop.Enum<typeof AXError>;
+declare function AXObserverRemoveNotification(observer: interop.Object, element: interop.Object, notification: interop.Object): interop.Enum<typeof AXError>;
 
-declare function AXObserverGetRunLoopSource(observer: interop.PointerConvertible): interop.Pointer;
+declare function AXObserverGetRunLoopSource(observer: interop.Object): interop.Object;
 
 declare function AXValueGetTypeID(): number;
 
-declare function AXValueCreate(theType: interop.Enum<typeof AXValueType>, valuePtr: interop.PointerConvertible): interop.Pointer;
+declare function AXValueCreate(theType: interop.Enum<typeof AXValueType>, valuePtr: interop.PointerConvertible): interop.Object;
 
-declare function AXValueGetType(value: interop.PointerConvertible): interop.Enum<typeof AXValueType>;
+declare function AXValueGetType(value: interop.Object): interop.Enum<typeof AXValueType>;
 
-declare function AXValueGetValue(value: interop.PointerConvertible, theType: interop.Enum<typeof AXValueType>, valuePtr: interop.PointerConvertible): number;
+declare function AXValueGetValue(value: interop.Object, theType: interop.Enum<typeof AXValueType>, valuePtr: interop.PointerConvertible): number;
 
 declare function UAZoomEnabled(): number;
 
@@ -4776,7 +4776,7 @@ declare function PMSessionCopyDestinationFormat(printSession: interop.PointerCon
 
 declare function PMSessionCopyDestinationLocation(printSession: interop.PointerConvertible, printSettings: interop.PointerConvertible, destLocationP: interop.PointerConvertible): number;
 
-declare function PMSessionSetDestination(printSession: interop.PointerConvertible, printSettings: interop.PointerConvertible, destType: number, destFormat: interop.PointerConvertible, destLocation: interop.PointerConvertible): number;
+declare function PMSessionSetDestination(printSession: interop.PointerConvertible, printSettings: interop.PointerConvertible, destType: number, destFormat: interop.Object, destLocation: interop.Object): number;
 
 declare function PMSessionCopyOutputFormatList(printSession: interop.PointerConvertible, destType: number, documentFormatP: interop.PointerConvertible): number;
 
@@ -4788,9 +4788,9 @@ declare function PMSessionGetCurrentPrinter(printSession: interop.PointerConvert
 
 declare function PMSessionSetCurrentPMPrinter(session: interop.PointerConvertible, printer: interop.PointerConvertible): number;
 
-declare function PMSessionGetDataFromSession(printSession: interop.PointerConvertible, key: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function PMSessionGetDataFromSession(printSession: interop.PointerConvertible, key: interop.Object, data: interop.PointerConvertible): number;
 
-declare function PMSessionSetDataInSession(printSession: interop.PointerConvertible, key: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function PMSessionSetDataInSession(printSession: interop.PointerConvertible, key: interop.Object, data: interop.Object): number;
 
 declare function PMCreatePageFormat(pageFormat: interop.PointerConvertible): number;
 
@@ -4804,7 +4804,7 @@ declare function PMCreatePageFormatWithPMPaper(pageFormat: interop.PointerConver
 
 declare function PMPageFormatCreateDataRepresentation(pageFormat: interop.PointerConvertible, data: interop.PointerConvertible, format: interop.Enum<typeof PMDataFormat>): number;
 
-declare function PMPageFormatCreateWithDataRepresentation(data: interop.PointerConvertible, pageFormat: interop.PointerConvertible): number;
+declare function PMPageFormatCreateWithDataRepresentation(data: interop.Object, pageFormat: interop.PointerConvertible): number;
 
 declare function PMGetAdjustedPageRect(pageFormat: interop.PointerConvertible, pageRect: interop.PointerConvertible): number;
 
@@ -4838,7 +4838,7 @@ declare function PMCopyPrintSettings(settingSrc: interop.PointerConvertible, set
 
 declare function PMPrintSettingsCreateDataRepresentation(printSettings: interop.PointerConvertible, data: interop.PointerConvertible, format: interop.Enum<typeof PMDataFormat>): number;
 
-declare function PMPrintSettingsCreateWithDataRepresentation(data: interop.PointerConvertible, printSettings: interop.PointerConvertible): number;
+declare function PMPrintSettingsCreateWithDataRepresentation(data: interop.Object, printSettings: interop.PointerConvertible): number;
 
 declare function PMGetCollate(printSettings: interop.PointerConvertible, collate: interop.PointerConvertible): number;
 
@@ -4854,7 +4854,7 @@ declare function PMGetPageRange(printSettings: interop.PointerConvertible, minPa
 
 declare function PMPrintSettingsGetJobName(printSettings: interop.PointerConvertible, name: interop.PointerConvertible): number;
 
-declare function PMPrintSettingsGetValue(printSettings: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function PMPrintSettingsGetValue(printSettings: interop.PointerConvertible, key: interop.Object, value: interop.PointerConvertible): number;
 
 declare function PMSetCollate(printSettings: interop.PointerConvertible, collate: number): number;
 
@@ -4868,9 +4868,9 @@ declare function PMSetLastPage(printSettings: interop.PointerConvertible, last: 
 
 declare function PMSetPageRange(printSettings: interop.PointerConvertible, minPage: number, maxPage: number): number;
 
-declare function PMPrintSettingsSetJobName(printSettings: interop.PointerConvertible, name: interop.PointerConvertible): number;
+declare function PMPrintSettingsSetJobName(printSettings: interop.PointerConvertible, name: interop.Object): number;
 
-declare function PMPrintSettingsSetValue(printSettings: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, locked: number): number;
+declare function PMPrintSettingsSetValue(printSettings: interop.PointerConvertible, key: interop.Object, value: interop.Object, locked: number): number;
 
 declare function PMPrintSettingsCopyAsDictionary(printSettings: interop.PointerConvertible, settingsDictionary: interop.PointerConvertible): number;
 
@@ -4880,11 +4880,11 @@ declare function PMCreateGenericPrinter(printer: interop.PointerConvertible): nu
 
 declare function PMServerCreatePrinterList(server: interop.PointerConvertible, printerList: interop.PointerConvertible): number;
 
-declare function PMServerLaunchPrinterBrowser(server: interop.PointerConvertible, options: interop.PointerConvertible): number;
+declare function PMServerLaunchPrinterBrowser(server: interop.PointerConvertible, options: interop.Object): number;
 
-declare function PMPrinterCreateFromPrinterID(printerID: interop.PointerConvertible): interop.Pointer;
+declare function PMPrinterCreateFromPrinterID(printerID: interop.Object): interop.Pointer;
 
-declare function PMPrinterCopyDescriptionURL(printer: interop.PointerConvertible, descriptionType: interop.PointerConvertible, fileURL: interop.PointerConvertible): number;
+declare function PMPrinterCopyDescriptionURL(printer: interop.PointerConvertible, descriptionType: interop.Object, fileURL: interop.PointerConvertible): number;
 
 declare function PMPrinterCopyDeviceURI(printer: interop.PointerConvertible, deviceURI: interop.PointerConvertible): number;
 
@@ -4894,9 +4894,9 @@ declare function PMPrinterCopyPresets(printer: interop.PointerConvertible, prese
 
 declare function PMPrinterGetCommInfo(printer: interop.PointerConvertible, supportsControlCharRangeP: interop.PointerConvertible, supportsEightBitP: interop.PointerConvertible): number;
 
-declare function PMPrinterGetID(printer: interop.PointerConvertible): interop.Pointer;
+declare function PMPrinterGetID(printer: interop.PointerConvertible): interop.Object;
 
-declare function PMPrinterGetLocation(printer: interop.PointerConvertible): interop.Pointer;
+declare function PMPrinterGetLocation(printer: interop.PointerConvertible): interop.Object;
 
 declare function PMPrinterGetDriverCreator(printer: interop.PointerConvertible, creator: interop.PointerConvertible): number;
 
@@ -4916,7 +4916,7 @@ declare function PMPrinterGetMakeAndModelName(printer: interop.PointerConvertibl
 
 declare function PMPrinterGetMimeTypes(printer: interop.PointerConvertible, settings: interop.PointerConvertible, mimeTypes: interop.PointerConvertible): number;
 
-declare function PMPrinterGetName(printer: interop.PointerConvertible): interop.Pointer;
+declare function PMPrinterGetName(printer: interop.PointerConvertible): interop.Object;
 
 declare function PMPrinterGetPaperList(printer: interop.PointerConvertible, paperList: interop.PointerConvertible): number;
 
@@ -4942,7 +4942,7 @@ declare function PMPresetGetAttributes(preset: interop.PointerConvertible, attri
 
 declare function PMGetPageFormatPaper(format: interop.PointerConvertible, paper: interop.PointerConvertible): number;
 
-declare function PMPaperCreateCustom(printer: interop.PointerConvertible, id: interop.PointerConvertible, name: interop.PointerConvertible, width: number, height: number, margins: interop.PointerConvertible, paperP: interop.PointerConvertible): number;
+declare function PMPaperCreateCustom(printer: interop.PointerConvertible, id: interop.Object, name: interop.Object, width: number, height: number, margins: interop.PointerConvertible, paperP: interop.PointerConvertible): number;
 
 declare function PMPaperGetWidth(paper: interop.PointerConvertible, paperWidth: interop.PointerConvertible): number;
 
@@ -4962,31 +4962,31 @@ declare function PMPaperIsCustom(paper: interop.PointerConvertible): number;
 
 declare function PMWorkflowCopyItems(workflowItems: interop.PointerConvertible): number;
 
-declare function PMWorkflowSubmitPDFWithOptions(workflowItem: interop.PointerConvertible, title: interop.PointerConvertible, options: string, pdfFile: interop.PointerConvertible): number;
+declare function PMWorkflowSubmitPDFWithOptions(workflowItem: interop.Object, title: interop.Object, options: string, pdfFile: interop.Object): number;
 
-declare function PMWorkflowSubmitPDFWithSettings(workflowItem: interop.PointerConvertible, settings: interop.PointerConvertible, pdfFile: interop.PointerConvertible): number;
+declare function PMWorkflowSubmitPDFWithSettings(workflowItem: interop.Object, settings: interop.PointerConvertible, pdfFile: interop.Object): number;
 
-declare function PMPrinterPrintWithProvider(printer: interop.PointerConvertible, settings: interop.PointerConvertible, format: interop.PointerConvertible, mimeType: interop.PointerConvertible, provider: interop.PointerConvertible): number;
+declare function PMPrinterPrintWithProvider(printer: interop.PointerConvertible, settings: interop.PointerConvertible, format: interop.PointerConvertible, mimeType: interop.Object, provider: interop.Object): number;
 
-declare function PMPrinterPrintWithFile(printer: interop.PointerConvertible, settings: interop.PointerConvertible, format: interop.PointerConvertible, mimeType: interop.PointerConvertible, fileURL: interop.PointerConvertible): number;
+declare function PMPrinterPrintWithFile(printer: interop.PointerConvertible, settings: interop.PointerConvertible, format: interop.PointerConvertible, mimeType: interop.Object, fileURL: interop.Object): number;
 
-declare function PMPrinterWritePostScriptToURL(printer: interop.PointerConvertible, settings: interop.PointerConvertible, format: interop.PointerConvertible, mimeType: interop.PointerConvertible, sourceFileURL: interop.PointerConvertible, destinationFileURL: interop.PointerConvertible): number;
+declare function PMPrinterWritePostScriptToURL(printer: interop.PointerConvertible, settings: interop.PointerConvertible, format: interop.PointerConvertible, mimeType: interop.Object, sourceFileURL: interop.Object, destinationFileURL: interop.Object): number;
 
 declare function PMPrintSettingsToOptions(settings: interop.PointerConvertible, options: interop.PointerConvertible): number;
 
 declare function PMPrintSettingsToOptionsWithPrinterAndPageFormat(settings: interop.PointerConvertible, printer: interop.PointerConvertible, pageFormat: interop.PointerConvertible, options: interop.PointerConvertible): number;
 
-declare function PMPrinterSendCommand(printer: interop.PointerConvertible, commandString: interop.PointerConvertible, jobTitle: interop.PointerConvertible, options: interop.PointerConvertible): number;
+declare function PMPrinterSendCommand(printer: interop.PointerConvertible, commandString: interop.Object, jobTitle: interop.Object, options: interop.Object): number;
 
 declare function PMPrinterCopyState(printer: interop.PointerConvertible, stateDict: interop.PointerConvertible): number;
 
 declare function PMCopyAvailablePPDs(domain: number, ppds: interop.PointerConvertible): number;
 
-declare function PMCopyLocalizedPPD(ppd: interop.PointerConvertible, localizedPPD: interop.PointerConvertible): number;
+declare function PMCopyLocalizedPPD(ppd: interop.Object, localizedPPD: interop.PointerConvertible): number;
 
-declare function PMCopyPPDData(ppd: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function PMCopyPPDData(ppd: interop.Object, data: interop.PointerConvertible): number;
 
-declare function PMCGImageCreateWithEPSDataProvider(epsDataProvider: interop.PointerConvertible, epsPreview: interop.PointerConvertible): interop.Pointer;
+declare function PMCGImageCreateWithEPSDataProvider(epsDataProvider: interop.Object, epsPreview: interop.Object): interop.Object;
 
 declare function NewSpeechTextDoneUPP(userRoutine: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void;
 
@@ -5074,19 +5074,19 @@ declare function TextToPhonemes(chan: interop.PointerConvertible, textBuf: inter
 
 declare function UseDictionary(chan: interop.PointerConvertible, dictionary: interop.PointerConvertible): number;
 
-declare function SpeakCFString(chan: interop.PointerConvertible, aString: interop.PointerConvertible, options: interop.PointerConvertible): number;
+declare function SpeakCFString(chan: interop.PointerConvertible, aString: interop.Object, options: interop.Object): number;
 
-declare function UseSpeechDictionary(chan: interop.PointerConvertible, speechDictionary: interop.PointerConvertible): number;
+declare function UseSpeechDictionary(chan: interop.PointerConvertible, speechDictionary: interop.Object): number;
 
-declare function CopyPhonemesFromText(chan: interop.PointerConvertible, text: interop.PointerConvertible, phonemes: interop.PointerConvertible): number;
+declare function CopyPhonemesFromText(chan: interop.PointerConvertible, text: interop.Object, phonemes: interop.PointerConvertible): number;
 
-declare function CopySpeechProperty(chan: interop.PointerConvertible, property: interop.PointerConvertible, object: interop.PointerConvertible): number;
+declare function CopySpeechProperty(chan: interop.PointerConvertible, property: interop.Object, object: interop.PointerConvertible): number;
 
-declare function SetSpeechProperty(chan: interop.PointerConvertible, property: interop.PointerConvertible, object: interop.PointerConvertible): number;
+declare function SetSpeechProperty(chan: interop.PointerConvertible, property: interop.Object, object: interop.Object): number;
 
-declare function SpeechSynthesisRegisterModuleURL(url: interop.PointerConvertible): number;
+declare function SpeechSynthesisRegisterModuleURL(url: interop.Object): number;
 
-declare function SpeechSynthesisUnregisterModuleURL(url: interop.PointerConvertible): number;
+declare function SpeechSynthesisUnregisterModuleURL(url: interop.Object): number;
 
 declare interface PDEPlugInCallbackProtocol {
   printSession(): interop.Pointer;

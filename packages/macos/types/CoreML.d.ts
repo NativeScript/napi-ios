@@ -618,7 +618,7 @@ declare class MLMultiArray extends NSObject implements NSSecureCoding {
 
   readonly count: number;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   initWithShapeDataTypeError(shape: NSArray<interop.Object> | Array<interop.Object>, dataType: interop.Enum<typeof MLMultiArrayDataType>, error: interop.PointerConvertible): this;
 
@@ -626,7 +626,7 @@ declare class MLMultiArray extends NSObject implements NSSecureCoding {
 
   initWithDataPointerShapeDataTypeStridesDeallocatorError(dataPointer: interop.PointerConvertible, shape: NSArray<interop.Object> | Array<interop.Object>, dataType: interop.Enum<typeof MLMultiArrayDataType>, strides: NSArray<interop.Object> | Array<interop.Object>, deallocator: (p1: interop.PointerConvertible) => void | null, error: interop.PointerConvertible): this;
 
-  initWithPixelBufferShape(pixelBuffer: interop.PointerConvertible, shape: NSArray<interop.Object> | Array<interop.Object>): this;
+  initWithPixelBufferShape(pixelBuffer: interop.Object, shape: NSArray<interop.Object> | Array<interop.Object>): this;
 
   getBytesWithHandler(handler: (p1: interop.PointerConvertible, p2: number) => void): void;
 
@@ -710,7 +710,7 @@ declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCodi
 
   readonly dictionaryValue: NSDictionary;
 
-  readonly imageBufferValue: interop.Pointer;
+  readonly imageBufferValue: interop.Object;
 
   readonly sequenceValue: MLSequence;
 
@@ -722,7 +722,7 @@ declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCodi
 
   static featureValueWithMultiArray<This extends abstract new (...args: any) => any>(this: This, value: MLMultiArray): InstanceType<This>;
 
-  static featureValueWithPixelBuffer<This extends abstract new (...args: any) => any>(this: This, value: interop.PointerConvertible): InstanceType<This>;
+  static featureValueWithPixelBuffer<This extends abstract new (...args: any) => any>(this: This, value: interop.Object): InstanceType<This>;
 
   static featureValueWithSequence<This extends abstract new (...args: any) => any>(this: This, sequence: MLSequence): InstanceType<This>;
 
@@ -738,17 +738,17 @@ declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCodi
 
   static featureValueWithImageAtURLConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
-  static featureValueWithCGImagePixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+  static featureValueWithCGImagePixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
-  static featureValueWithCGImageConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+  static featureValueWithCGImageConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
   static featureValueWithImageAtURLOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
   static featureValueWithImageAtURLOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
-  static featureValueWithCGImageOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+  static featureValueWithCGImageOrientationPixelsWidePixelsHighPixelFormatTypeOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, pixelsWide: number, pixelsHigh: number, pixelFormatType: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
-  static featureValueWithCGImageOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+  static featureValueWithCGImageOrientationConstraintOptionsError<This extends abstract new (...args: any) => any>(this: This, cgImage: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, constraint: MLImageConstraint, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 

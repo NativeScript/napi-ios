@@ -545,7 +545,7 @@ declare class ICD_ScannerSetParametersPB {
   objectInfo: ICAObjectInfo;
   connectionID: number;
   sessionID: number;
-  theDict: interop.Pointer;
+  theDict: interop.Object | null;
 }
 
 declare class ICD_ScannerInitializePB {
@@ -640,7 +640,7 @@ declare class ICAScannerSetParametersPB {
   constructor(init?: ICAScannerSetParametersPB);
   header: ICAHeader;
   sessionID: number;
-  theDict: interop.Pointer;
+  theDict: interop.Object | null;
 }
 
 declare class ICAScannerInitializePB {
@@ -678,7 +678,7 @@ declare class ICAUnloadDeviceModulePB {
 declare class ICALoadDeviceModulePB {
   constructor(init?: ICALoadDeviceModulePB);
   header: ICAHeader;
-  paramDictionary: interop.Pointer;
+  paramDictionary: interop.Object | null;
 }
 
 declare class ICAUploadFilePB {
@@ -726,9 +726,9 @@ declare class ICARegisterForEventNotificationPB {
   constructor(init?: ICARegisterForEventNotificationPB);
   header: ICAHeader;
   objectOfInterest: number;
-  eventsOfInterest: interop.Pointer;
+  eventsOfInterest: interop.Object | null;
   notificationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  options: interop.Pointer;
+  options: interop.Object | null;
 }
 
 declare class ICAObjectInfo {
@@ -911,7 +911,7 @@ declare class ICD_ScannerGetParametersPB {
   objectInfo: ICAObjectInfo;
   connectionID: number;
   sessionID: number;
-  theDict: interop.Pointer;
+  theDict: interop.Object | null;
 }
 
 declare class ICAScannerStatusPB {
@@ -925,13 +925,13 @@ declare class ICAScannerGetParametersPB {
   constructor(init?: ICAScannerGetParametersPB);
   header: ICAHeader;
   sessionID: number;
-  theDict: interop.Pointer;
+  theDict: interop.Object | null;
 }
 
 declare class ICASendNotificationPB {
   constructor(init?: ICASendNotificationPB);
   header: ICAHeader;
-  notificationDictionary: interop.Pointer;
+  notificationDictionary: interop.Object | null;
   replyCode: number;
 }
 
@@ -949,14 +949,14 @@ declare class ICAImportImagePB {
   header: ICAHeader;
   deviceObject: number;
   flags: number;
-  supportedFileTypes: interop.Pointer;
+  supportedFileTypes: interop.Object | null;
   filterProc: (p1: interop.PointerConvertible, p2: number) => number | null;
   importedImages: interop.Pointer;
 }
 
 declare function ICAImportImage(pb: interop.PointerConvertible, completion: (p1: interop.PointerConvertible) => void): number;
 
-declare function ICAShowDeviceBrowser(options: interop.PointerConvertible): number;
+declare function ICAShowDeviceBrowser(options: interop.Object): number;
 
 declare function ICARegisterForEventNotification(params: interop.PointerConvertible, completionProc: (p1: interop.PointerConvertible) => void): number;
 
@@ -1038,13 +1038,13 @@ declare function ICDDisconnectFWDevice(guid: number): number;
 
 declare function ICDDisconnectFWDeviceWithIORegPath(guid: number, ioregPath: unknown /* const array */): number;
 
-declare function ICDConnectBluetoothDevice(params: interop.PointerConvertible): number;
+declare function ICDConnectBluetoothDevice(params: interop.Object): number;
 
-declare function ICDDisconnectBluetoothDevice(params: interop.PointerConvertible): number;
+declare function ICDDisconnectBluetoothDevice(params: interop.Object): number;
 
-declare function ICDConnectTCPIPDevice(params: interop.PointerConvertible): number;
+declare function ICDConnectTCPIPDevice(params: interop.Object): number;
 
-declare function ICDDisconnectTCPIPDevice(params: interop.PointerConvertible): number;
+declare function ICDDisconnectTCPIPDevice(params: interop.Object): number;
 
 declare function ICD_ScannerMain(argc: number, argv: interop.Pointer): number;
 
@@ -1076,19 +1076,19 @@ declare function ICDScannerDisconnectFWDevice(guid: number): number;
 
 declare function ICDScannerDisconnectFWDeviceWithIORegPath(guid: number, ioregPath: unknown /* const array */): number;
 
-declare function ICDScannerConnectBluetoothDevice(params: interop.PointerConvertible): number;
+declare function ICDScannerConnectBluetoothDevice(params: interop.Object): number;
 
-declare function ICDScannerDisconnectBluetoothDevice(params: interop.PointerConvertible): number;
+declare function ICDScannerDisconnectBluetoothDevice(params: interop.Object): number;
 
-declare function ICDScannerConnectTCPIPDevice(params: interop.PointerConvertible): number;
+declare function ICDScannerConnectTCPIPDevice(params: interop.Object): number;
 
-declare function ICDScannerDisconnectTCPIPDevice(params: interop.PointerConvertible): number;
+declare function ICDScannerDisconnectTCPIPDevice(params: interop.Object): number;
 
-declare function ICDCreateColorSpace(bitsPerPixel: number, samplesPerPixel: number, icaObject: number, colorSyncMode: interop.PointerConvertible, abstractProfile: interop.PointerConvertible, tmpProfilePath: string): interop.Pointer;
+declare function ICDCreateColorSpace(bitsPerPixel: number, samplesPerPixel: number, icaObject: number, colorSyncMode: interop.Object, abstractProfile: interop.Object, tmpProfilePath: string): interop.Object;
 
-declare function ICDAddImageInfoToNotificationDictionary(dict: interop.PointerConvertible, width: number, height: number, bytesPerRow: number, dataStartRow: number, dataNumberOfRows: number, dataSize: number, dataBuffer: interop.PointerConvertible): number;
+declare function ICDAddImageInfoToNotificationDictionary(dict: interop.Object, width: number, height: number, bytesPerRow: number, dataStartRow: number, dataNumberOfRows: number, dataSize: number, dataBuffer: interop.PointerConvertible): number;
 
-declare function ICDAddBandInfoToNotificationDictionary(dict: interop.PointerConvertible, width: number, height: number, bitsPerPixel: number, bitsPerComponent: number, numComponents: number, endianness: number, pixelDataType: number, bytesPerRow: number, dataStartRow: number, dataNumberOfRows: number, dataSize: number, dataBuffer: interop.PointerConvertible): number;
+declare function ICDAddBandInfoToNotificationDictionary(dict: interop.Object, width: number, height: number, bitsPerPixel: number, bitsPerComponent: number, numComponents: number, endianness: number, pixelDataType: number, bytesPerRow: number, dataStartRow: number, dataNumberOfRows: number, dataSize: number, dataBuffer: interop.PointerConvertible): number;
 
 declare function ICDSendNotification(pb: interop.PointerConvertible): number;
 

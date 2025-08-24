@@ -3,17 +3,11 @@
 
 declare const CLLocationPushServiceErrorDomain: string;
 
-declare const kCLErrorUserInfoAlternateRegionKey: string;
-
-declare const kCLErrorDomain: string;
-
-declare const kCLLocationCoordinate2DInvalid: CLLocationCoordinate2D;
+declare const kCLHeadingFilterNone: number;
 
 declare const CLTimeIntervalMax: number;
 
 declare const CLLocationDistanceMax: number;
-
-declare const kCLLocationAccuracyReduced: number;
 
 declare const kCLLocationAccuracyThreeKilometers: number;
 
@@ -25,7 +19,13 @@ declare const kCLLocationAccuracyBestForNavigation: number;
 
 declare const kCLDistanceFilterNone: number;
 
-declare const kCLHeadingFilterNone: number;
+declare const kCLErrorUserInfoAlternateRegionKey: string;
+
+declare const kCLErrorDomain: string;
+
+declare const kCLLocationAccuracyReduced: number;
+
+declare const kCLLocationCoordinate2DInvalid: CLLocationCoordinate2D;
 
 declare const kCLLocationAccuracyKilometer: number;
 
@@ -35,6 +35,14 @@ declare const CLServiceSessionAuthorizationRequirement: {
   None: 0,
   WhenInUse: 1,
   Always: 2,
+};
+
+declare const CLActivityType: {
+  Other: 1,
+  AutomotiveNavigation: 2,
+  Fitness: 3,
+  OtherNavigation: 4,
+  Airborne: 5,
 };
 
 declare const CLAccuracyAuthorization: {
@@ -112,14 +120,6 @@ declare const CLError: {
   HistoricalLocationError: 19,
 };
 
-declare const CLActivityType: {
-  Other: 1,
-  AutomotiveNavigation: 2,
-  Fitness: 3,
-  OtherNavigation: 4,
-  Airborne: 5,
-};
-
 declare const CLLocationPushServiceError: {
   Unknown: 0,
   MissingPushExtension: 1,
@@ -192,6 +192,30 @@ declare interface CLLocationManagerDelegate extends NSObjectProtocol {
 declare class CLLocationManagerDelegate extends NativeObject implements CLLocationManagerDelegate {
 }
 
+declare class CLGeocoder extends NSObject {
+  readonly geocoding: boolean;
+
+  reverseGeocodeLocationCompletionHandler(location: CLLocation, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  reverseGeocodeLocationPreferredLocaleCompletionHandler(location: CLLocation, locale: NSLocale | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  geocodeAddressDictionaryCompletionHandler(addressDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  geocodeAddressStringInRegionCompletionHandler(addressString: string, region: CLRegion | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  geocodeAddressStringInRegionPreferredLocaleCompletionHandler(addressString: string, region: CLRegion | null, locale: NSLocale | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  geocodeAddressStringCompletionHandler(addressString: string, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  cancelGeocode(): void;
+
+  isGeocoding(): boolean;
+
+  geocodePostalAddressCompletionHandler(postalAddress: CNPostalAddress, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  geocodePostalAddressPreferredLocaleCompletionHandler(postalAddress: CNPostalAddress, locale: NSLocale | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+}
+
 declare class CLServiceSessionDiagnostic extends NSObject {
   readonly authorizationDenied: boolean;
 
@@ -232,6 +256,56 @@ declare class CLBackgroundActivitySessionDiagnostic extends NSObject {
   readonly authorizationRequestInProgress: boolean;
 }
 
+declare class CLPlacemark extends NSObject implements NSCopying, NSSecureCoding {
+  initWithPlacemark(placemark: CLPlacemark): this;
+
+  readonly location: CLLocation;
+
+  readonly region: CLRegion;
+
+  readonly timeZone: NSTimeZone;
+
+  readonly addressDictionary: NSDictionary;
+
+  readonly name: string;
+
+  readonly thoroughfare: string;
+
+  readonly subThoroughfare: string;
+
+  readonly locality: string;
+
+  readonly subLocality: string;
+
+  readonly administrativeArea: string;
+
+  readonly subAdministrativeArea: string;
+
+  readonly postalCode: string;
+
+  readonly ISOcountryCode: string;
+
+  readonly country: string;
+
+  readonly inlandWater: string;
+
+  readonly ocean: string;
+
+  readonly areasOfInterest: NSArray;
+
+  readonly postalAddress: CNPostalAddress;
+
+  static placemarkWithLocationNamePostalAddress<This extends abstract new (...args: any) => any>(this: This, location: CLLocation, name: string | null, postalAddress: CNPostalAddress | null): InstanceType<This>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class CLLocationManager extends NSObject {
   static locationServicesEnabled(): boolean;
 
@@ -253,7 +327,7 @@ declare class CLLocationManager extends NSObject {
 
   readonly accuracyAuthorization: interop.Enum<typeof CLAccuracyAuthorization>;
 
-  readonly isAuthorizedForWidgetUpdates: boolean;
+  readonly authorizedForWidgetUpdates: boolean;
 
   delegate: CLLocationManagerDelegate;
 
@@ -340,6 +414,28 @@ declare class CLLocationManager extends NSObject {
   disallowDeferredLocationUpdates(): void;
 
   static deferredLocationUpdatesAvailable(): boolean;
+
+  isAuthorizedForWidgetUpdates(): boolean;
+
+  setDelegate(delegate: CLLocationManagerDelegate | null): void;
+
+  setPurpose(purpose: string | null): void;
+
+  setActivityType(activityType: interop.Enum<typeof CLActivityType>): void;
+
+  setDistanceFilter(distanceFilter: number): void;
+
+  setDesiredAccuracy(desiredAccuracy: number): void;
+
+  setPausesLocationUpdatesAutomatically(pausesLocationUpdatesAutomatically: boolean): void;
+
+  setAllowsBackgroundLocationUpdates(allowsBackgroundLocationUpdates: boolean): void;
+
+  setShowsBackgroundLocationIndicator(showsBackgroundLocationIndicator: boolean): void;
+
+  setHeadingFilter(headingFilter: number): void;
+
+  setHeadingOrientation(headingOrientation: interop.Enum<typeof CLDeviceOrientation>): void;
 
   startMonitoringVisits(): void;
 
@@ -456,30 +552,6 @@ declare class CLUpdate extends NSObject {
   readonly location: CLLocation | null;
 }
 
-declare class CLHeading extends NSObject implements NSCopying, NSSecureCoding {
-  readonly magneticHeading: number;
-
-  readonly trueHeading: number;
-
-  readonly headingAccuracy: number;
-
-  readonly x: number;
-
-  readonly y: number;
-
-  readonly z: number;
-
-  readonly timestamp: NSDate;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class CLBeacon extends NSObject implements NSCopying, NSSecureCoding {
   readonly timestamp: NSDate;
 
@@ -565,55 +637,9 @@ declare class CLRegion extends NSObject implements NSCopying, NSSecureCoding {
 
   containsCoordinate(coordinate: CLLocationCoordinate2D): boolean;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  setNotifyOnEntry(notifyOnEntry: boolean): void;
 
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CLPlacemark extends NSObject implements NSCopying, NSSecureCoding {
-  initWithPlacemark(placemark: CLPlacemark): this;
-
-  readonly location: CLLocation;
-
-  readonly region: CLRegion;
-
-  readonly timeZone: NSTimeZone;
-
-  readonly addressDictionary: NSDictionary;
-
-  readonly name: string;
-
-  readonly thoroughfare: string;
-
-  readonly subThoroughfare: string;
-
-  readonly locality: string;
-
-  readonly subLocality: string;
-
-  readonly administrativeArea: string;
-
-  readonly subAdministrativeArea: string;
-
-  readonly postalCode: string;
-
-  readonly ISOcountryCode: string;
-
-  readonly country: string;
-
-  readonly inlandWater: string;
-
-  readonly ocean: string;
-
-  readonly areasOfInterest: NSArray;
-
-  readonly postalAddress: CNPostalAddress;
-
-  static placemarkWithLocationNamePostalAddress<This extends abstract new (...args: any) => any>(this: This, location: CLLocation, name: string | null, postalAddress: CNPostalAddress | null): InstanceType<This>;
+  setNotifyOnExit(notifyOnExit: boolean): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -624,8 +650,20 @@ declare class CLPlacemark extends NSObject implements NSCopying, NSSecureCoding 
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class CLFloor extends NSObject implements NSCopying, NSSecureCoding {
-  readonly level: number;
+declare class CLHeading extends NSObject implements NSCopying, NSSecureCoding {
+  readonly magneticHeading: number;
+
+  readonly trueHeading: number;
+
+  readonly headingAccuracy: number;
+
+  readonly x: number;
+
+  readonly y: number;
+
+  readonly z: number;
+
+  readonly timestamp: NSDate;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -664,6 +702,8 @@ declare class CLBeaconRegion extends CLRegion {
   readonly minor: NSNumber;
 
   notifyEntryStateOnDisplay: boolean;
+
+  setNotifyEntryStateOnDisplay(notifyEntryStateOnDisplay: boolean): void;
 }
 
 declare class CLBeaconIdentityCondition extends CLCondition implements NSCopying, NSSecureCoding {
@@ -700,34 +740,24 @@ declare class CLServiceSession extends NSObject {
   invalidate(): void;
 }
 
-declare class CLGeocoder extends NSObject {
-  readonly isGeocoding: boolean;
-
-  reverseGeocodeLocationCompletionHandler(location: CLLocation, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  reverseGeocodeLocationPreferredLocaleCompletionHandler(location: CLLocation, locale: NSLocale | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  geocodeAddressDictionaryCompletionHandler(addressDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  geocodeAddressStringInRegionCompletionHandler(addressString: string, region: CLRegion | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  geocodeAddressStringInRegionPreferredLocaleCompletionHandler(addressString: string, region: CLRegion | null, locale: NSLocale | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  geocodeAddressStringCompletionHandler(addressString: string, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  cancelGeocode(): void;
-
-  geocodePostalAddressCompletionHandler(postalAddress: CNPostalAddress, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  geocodePostalAddressPreferredLocaleCompletionHandler(postalAddress: CNPostalAddress, locale: NSLocale | null, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-}
-
 declare class CLLocationSourceInformation extends NSObject implements NSCopying, NSSecureCoding {
   initWithSoftwareSimulationStateAndExternalAccessoryState(isSoftware: boolean, isAccessory: boolean): this;
 
   readonly isSimulatedBySoftware: boolean;
 
   readonly isProducedByAccessory: boolean;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CLFloor extends NSObject implements NSCopying, NSSecureCoding {
+  readonly level: number;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 

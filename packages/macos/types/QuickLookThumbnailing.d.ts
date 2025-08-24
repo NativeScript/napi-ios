@@ -28,7 +28,7 @@ declare const QLThumbnailRepresentationType: {
 declare class QLThumbnailRepresentation extends NSObject {
   readonly type: interop.Enum<typeof QLThumbnailRepresentationType>;
 
-  readonly CGImage: interop.Pointer;
+  readonly CGImage: interop.Object;
 
   readonly NSImage: NSImage;
 

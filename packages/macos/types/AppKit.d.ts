@@ -10062,9 +10062,9 @@ declare class NSEvent extends NSObject implements NSCopying, NSCoding {
 
   static eventWithEventRef(eventRef: interop.PointerConvertible): NSEvent;
 
-  readonly CGEvent: interop.Pointer;
+  readonly CGEvent: interop.Object;
 
-  static eventWithCGEvent(cgEvent: interop.PointerConvertible): NSEvent;
+  static eventWithCGEvent(cgEvent: interop.Object): NSEvent;
 
   static mouseCoalescingEnabled: boolean;
 
@@ -10453,9 +10453,9 @@ declare class NSColor extends NSObject implements NSCopying, NSSecureCoding, NSP
 
   drawSwatchInRect(rect: CGRect): void;
 
-  static colorWithCGColor(cgColor: interop.PointerConvertible): NSColor;
+  static colorWithCGColor(cgColor: interop.Object): NSColor;
 
-  readonly CGColor: interop.Pointer;
+  readonly CGColor: interop.Object;
 
   static ignoresAlpha: boolean;
 
@@ -13522,9 +13522,9 @@ declare class NSImage extends NSObject {
 
   accessibilityDescription: string;
 
-  initWithCGImageSize(cgImage: interop.PointerConvertible, size: CGSize): this;
+  initWithCGImageSize(cgImage: interop.Object, size: CGSize): this;
 
-  CGImageForProposedRectContextHints(proposedDestRect: interop.PointerConvertible, referenceContext: NSGraphicsContext | null, hints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): interop.Pointer;
+  CGImageForProposedRectContextHints(proposedDestRect: interop.PointerConvertible, referenceContext: NSGraphicsContext | null, hints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): interop.Object;
 
   bestRepresentationForRectContextHints(rect: CGRect, referenceContext: NSGraphicsContext | null, hints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): NSImageRep;
 
@@ -14552,7 +14552,7 @@ declare class NSImageRep extends NSObject implements NSCopying, NSCoding {
 
   static imageRepWithPasteboard(pasteboard: NSPasteboard): NSImageRep;
 
-  CGImageForProposedRectContextHints(proposedDestRect: interop.PointerConvertible, context: NSGraphicsContext | null, hints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): interop.Pointer;
+  CGImageForProposedRectContextHints(proposedDestRect: interop.PointerConvertible, context: NSGraphicsContext | null, hints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): interop.Object;
 
   setSize(size: CGSize): void;
 
@@ -18523,7 +18523,7 @@ declare class NSBitmapImageRep extends NSImageRep implements NSSecureCoding {
 
   initWithBitmapDataPlanesPixelsWidePixelsHighBitsPerSampleSamplesPerPixelHasAlphaIsPlanarColorSpaceNameBitmapFormatBytesPerRowBitsPerPixel(planes: interop.PointerConvertible, width: number, height: number, bps: number, spp: number, alpha: boolean, isPlanar: boolean, colorSpaceName: string, bitmapFormat: interop.Enum<typeof NSBitmapFormat>, rBytes: number, pBits: number): this;
 
-  initWithCGImage(cgImage: interop.PointerConvertible): this;
+  initWithCGImage(cgImage: interop.Object): this;
 
   initWithCIImage(ciImage: CIImage): this;
 
@@ -18583,7 +18583,7 @@ declare class NSBitmapImageRep extends NSImageRep implements NSSecureCoding {
 
   setPixelAtXY(p: interop.PointerConvertible, x: number, y: number): void;
 
-  readonly CGImage: interop.Pointer;
+  readonly CGImage: interop.Object;
 
   readonly colorSpace: NSColorSpace;
 
@@ -20602,11 +20602,11 @@ declare class NSPasteboardItem extends NSObject implements NSPasteboardWriting, 
 }
 
 declare class NSTextPreview extends NSObject {
-  initWithSnapshotImagePresentationFrameCandidateRects(snapshotImage: interop.PointerConvertible, presentationFrame: CGRect, candidateRects: NSArray<interop.Object> | Array<interop.Object>): this;
+  initWithSnapshotImagePresentationFrameCandidateRects(snapshotImage: interop.Object, presentationFrame: CGRect, candidateRects: NSArray<interop.Object> | Array<interop.Object>): this;
 
-  initWithSnapshotImagePresentationFrame(snapshotImage: interop.PointerConvertible, presentationFrame: CGRect): this;
+  initWithSnapshotImagePresentationFrame(snapshotImage: interop.Object, presentationFrame: CGRect): this;
 
-  readonly previewImage: interop.Pointer;
+  readonly previewImage: interop.Object;
 
   readonly presentationFrame: CGRect;
 
@@ -20644,7 +20644,7 @@ declare class NSAdaptiveImageGlyph extends NSObject implements NSCopying, NSSecu
 
   encodeWithCoder(coder: NSCoder): void;
 
-  imageForProposedSizeScaleFactorImageOffsetImageSize(proposedSize: CGSize, scaleFactor: number, outImageOffset: interop.PointerConvertible, outImageSize: interop.PointerConvertible): interop.Pointer;
+  imageForProposedSizeScaleFactorImageOffsetImageSize(proposedSize: CGSize, scaleFactor: number, outImageOffset: interop.PointerConvertible, outImageSize: interop.PointerConvertible): interop.Object | null;
 }
 
 declare class NSGridColumn extends NSObject implements NSCoding {
@@ -21126,7 +21126,7 @@ declare class NSLayoutManager extends NSObject implements NSSecureCoding {
 
   drawGlyphsForGlyphRangeAtPoint(glyphsToShow: _NSRange, origin: CGPoint): void;
 
-  showCGGlyphsPositionsCountFontTextMatrixAttributesInContext(glyphs: interop.PointerConvertible, positions: interop.PointerConvertible, glyphCount: number, font: NSFont, textMatrix: CGAffineTransform, attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, CGContext: interop.PointerConvertible): void;
+  showCGGlyphsPositionsCountFontTextMatrixAttributesInContext(glyphs: interop.PointerConvertible, positions: interop.PointerConvertible, glyphCount: number, font: NSFont, textMatrix: CGAffineTransform, attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, CGContext: interop.Object): void;
 
   fillBackgroundRectArrayCountForCharacterRangeColor(rectArray: interop.PointerConvertible, rectCount: number, charRange: _NSRange, color: NSColor): void;
 
@@ -27686,7 +27686,7 @@ declare class NSTextLineFragment extends NSObject implements NSSecureCoding {
 
   readonly glyphOrigin: CGPoint;
 
-  drawAtPointInContext(point: CGPoint, context: interop.PointerConvertible): void;
+  drawAtPointInContext(point: CGPoint, context: interop.Object): void;
 
   locationForCharacterAtIndex(index: number): CGPoint;
 
@@ -32045,9 +32045,9 @@ declare class NSColorSpace extends NSObject implements NSSecureCoding {
 
   readonly colorSyncProfile: interop.Pointer;
 
-  initWithCGColorSpace(cgColorSpace: interop.PointerConvertible): this;
+  initWithCGColorSpace(cgColorSpace: interop.Object): this;
 
-  readonly CGColorSpace: interop.Pointer;
+  readonly CGColorSpace: interop.Object;
 
   readonly numberOfColorComponents: number;
 
@@ -32175,7 +32175,7 @@ declare class NSGraphicsContext extends NSObject {
 
   static graphicsContextWithBitmapImageRep(bitmapRep: NSBitmapImageRep): NSGraphicsContext;
 
-  static graphicsContextWithCGContextFlipped(graphicsPort: interop.PointerConvertible, initialFlippedState: boolean): NSGraphicsContext;
+  static graphicsContextWithCGContextFlipped(graphicsPort: interop.Object, initialFlippedState: boolean): NSGraphicsContext;
 
   static currentContext: NSGraphicsContext;
 
@@ -32195,7 +32195,7 @@ declare class NSGraphicsContext extends NSObject {
 
   flushGraphics(): void;
 
-  readonly CGContext: interop.Pointer;
+  readonly CGContext: interop.Object;
 
   readonly flipped: boolean;
 
@@ -33010,7 +33010,7 @@ declare class NSTextLayoutFragment extends NSObject implements NSSecureCoding {
 
   readonly bottomMargin: number;
 
-  drawAtPointInContext(point: CGPoint, context: interop.PointerConvertible): void;
+  drawAtPointInContext(point: CGPoint, context: interop.Object): void;
 
   readonly textAttachmentViewProviders: NSArray;
 
@@ -35200,10 +35200,9 @@ declare class NSBezierPath extends NSObject implements NSCopying, NSSecureCoding
 
   static bezierPathWithRoundedRectXRadiusYRadius(rect: CGRect, xRadius: number, yRadius: number): NSBezierPath;
 
-  static bezierPathWithCGPath(cgPath: interop.PointerConvertible): NSBezierPath;
+  static bezierPathWithCGPath(cgPath: interop.Object): NSBezierPath;
 
-  get CGPath(): interop.Pointer;
-  set CGPath(value: interop.PointerConvertible);
+  CGPath: interop.Object;
 
   static fillRect(rect: CGRect): void;
 
@@ -35315,7 +35314,7 @@ declare class NSBezierPath extends NSObject implements NSCopying, NSSecureCoding
 
   containsPoint(point: CGPoint): boolean;
 
-  setCGPath(CGPath: interop.PointerConvertible): void;
+  setCGPath(CGPath: interop.Object): void;
 
   static setDefaultMiterLimit(defaultMiterLimit: number): void;
 

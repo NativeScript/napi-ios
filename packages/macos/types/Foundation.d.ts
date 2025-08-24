@@ -6494,7 +6494,7 @@ declare class NSURLProtectionSpace extends NSObject implements NSSecureCoding, N
 
   readonly distinguishedNames: NSArray;
 
-  readonly serverTrust: interop.Pointer;
+  readonly serverTrust: interop.Object;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -10021,17 +10021,17 @@ declare class NSURLCredential extends NSObject implements NSSecureCoding, NSCopy
 
   readonly hasPassword: boolean;
 
-  initWithIdentityCertificatesPersistence(identity: interop.PointerConvertible, certArray: NSArray<interop.Object> | Array<interop.Object> | null, persistence: interop.Enum<typeof NSURLCredentialPersistence>): this;
+  initWithIdentityCertificatesPersistence(identity: interop.Object, certArray: NSArray<interop.Object> | Array<interop.Object> | null, persistence: interop.Enum<typeof NSURLCredentialPersistence>): this;
 
-  static credentialWithIdentityCertificatesPersistence(identity: interop.PointerConvertible, certArray: NSArray<interop.Object> | Array<interop.Object> | null, persistence: interop.Enum<typeof NSURLCredentialPersistence>): NSURLCredential;
+  static credentialWithIdentityCertificatesPersistence(identity: interop.Object, certArray: NSArray<interop.Object> | Array<interop.Object> | null, persistence: interop.Enum<typeof NSURLCredentialPersistence>): NSURLCredential;
 
-  readonly identity: interop.Pointer;
+  readonly identity: interop.Object;
 
   readonly certificates: NSArray;
 
-  initWithTrust(trust: interop.PointerConvertible): this;
+  initWithTrust(trust: interop.Object): this;
 
-  static credentialForTrust(trust: interop.PointerConvertible): NSURLCredential;
+  static credentialForTrust(trust: interop.Object): NSURLCredential;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -12697,7 +12697,7 @@ declare class NSRunLoop extends NSObject {
 
   readonly currentMode: string;
 
-  getCFRunLoop(): interop.Pointer;
+  getCFRunLoop(): interop.Object;
 
   addTimerForMode(timer: NSTimer, mode: string): void;
 

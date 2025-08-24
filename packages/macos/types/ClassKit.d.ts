@@ -218,8 +218,7 @@ declare class CLSContext extends CLSObject {
 
   summary: string;
 
-  get thumbnail(): interop.Pointer;
-  set thumbnail(value: interop.PointerConvertible);
+  thumbnail: interop.Object;
 
   initWithTypeIdentifierTitle(type: interop.Enum<typeof CLSContextType>, identifier: string, title: string): this;
 
@@ -255,7 +254,7 @@ declare class CLSContext extends CLSObject {
 
   setSummary(summary: string | null): void;
 
-  setThumbnail(thumbnail: interop.PointerConvertible): void;
+  setThumbnail(thumbnail: interop.Object | null): void;
 
   isActive(): boolean;
 

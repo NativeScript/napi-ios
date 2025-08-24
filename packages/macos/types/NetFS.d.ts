@@ -3,7 +3,7 @@
 declare class NetFSInterface {
   constructor(init?: NetFSInterface);
   _interface: interop.Pointer;
-  _factoryID: interop.Pointer;
+  _factoryID: interop.Object | null;
   _refCount: number;
 }
 
@@ -25,23 +25,23 @@ declare class NetFSMountInterface_V1 {
   GetMountInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
 }
 
-declare function NetFSMountURLSync(url: interop.PointerConvertible, mountpath: interop.PointerConvertible, user: interop.PointerConvertible, passwd: interop.PointerConvertible, open_options: interop.PointerConvertible, mount_options: interop.PointerConvertible, mountpoints: interop.PointerConvertible): number;
+declare function NetFSMountURLSync(url: interop.Object, mountpath: interop.Object, user: interop.Object, passwd: interop.Object, open_options: interop.Object, mount_options: interop.Object, mountpoints: interop.PointerConvertible): number;
 
-declare function NetFSMountURLAsync(url: interop.PointerConvertible, mountpath: interop.PointerConvertible, user: interop.PointerConvertible, passwd: interop.PointerConvertible, open_options: interop.PointerConvertible, mount_options: interop.PointerConvertible, requestID: interop.PointerConvertible, dispatchq: NSObject, mount_report: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): number;
+declare function NetFSMountURLAsync(url: interop.Object, mountpath: interop.Object, user: interop.Object, passwd: interop.Object, open_options: interop.Object, mount_options: interop.Object, requestID: interop.PointerConvertible, dispatchq: NSObject, mount_report: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): number;
 
 declare function NetFSMountURLCancel(requestID: interop.PointerConvertible): number;
 
-declare function NetFSMountURLProbe(hostname: interop.PointerConvertible): interop.Pointer;
+declare function NetFSMountURLProbe(hostname: interop.Object): interop.Object;
 
-declare function NetFSCopyURLForRemountingVolume(localPathURL: interop.PointerConvertible): interop.Pointer;
+declare function NetFSCopyURLForRemountingVolume(localPathURL: interop.Object): interop.Object;
 
 declare function NetFSInterface_AddRef(p1: interop.PointerConvertible): number;
 
 declare function NetFSInterface_Release(p1: interop.PointerConvertible): number;
 
-declare function NetFS_CreateInterface(factoryID: interop.PointerConvertible, interfaceFTbl: interop.PointerConvertible): interop.Pointer;
+declare function NetFS_CreateInterface(factoryID: interop.Object, interfaceFTbl: interop.PointerConvertible): interop.Pointer;
 
 declare function NetFSQueryInterface(p1: interop.PointerConvertible, iid: CFUUIDBytes, ppv: interop.PointerConvertible): number;
 
-declare function NetFSCFStringtoCString(p1: interop.PointerConvertible): string;
+declare function NetFSCFStringtoCString(p1: interop.Object): string;
 

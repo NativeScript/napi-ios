@@ -151,7 +151,7 @@ declare class TKTokenConfiguration extends NSObject {
 }
 
 declare class TKTokenKeychainCertificate extends TKTokenKeychainItem {
-  initWithCertificateObjectID(certificateRef: interop.PointerConvertible, objectID: interop.Object): this;
+  initWithCertificateObjectID(certificateRef: interop.Object, objectID: interop.Object): this;
 
   readonly data: NSData;
 }
@@ -505,7 +505,7 @@ declare class TKTokenPasswordAuthOperation extends TKTokenAuthOperation {
 }
 
 declare class TKTokenKeychainKey extends TKTokenKeychainItem {
-  initWithCertificateObjectID(certificateRef: interop.PointerConvertible, objectID: interop.Object): this;
+  initWithCertificateObjectID(certificateRef: interop.Object | null, objectID: interop.Object): this;
 
   keyType: string;
 

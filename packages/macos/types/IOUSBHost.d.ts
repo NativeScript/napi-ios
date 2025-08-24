@@ -240,7 +240,7 @@ declare class IOUSBHostIOSource extends NSObject {
 }
 
 declare class IOUSBHostInterface extends IOUSBHostObject {
-  static createMatchingDictionaryWithVendorIDProductIDBcdDeviceInterfaceNumberConfigurationValueInterfaceClassInterfaceSubclassInterfaceProtocolSpeedProductIDArray(vendorID: NSNumber | null, productID: NSNumber | null, bcdDevice: NSNumber | null, interfaceNumber: NSNumber | null, configurationValue: NSNumber | null, interfaceClass: NSNumber | null, interfaceSubclass: NSNumber | null, interfaceProtocol: NSNumber | null, speed: NSNumber | null, productIDArray: NSArray<interop.Object> | Array<interop.Object> | null): interop.Pointer;
+  static createMatchingDictionaryWithVendorIDProductIDBcdDeviceInterfaceNumberConfigurationValueInterfaceClassInterfaceSubclassInterfaceProtocolSpeedProductIDArray(vendorID: NSNumber | null, productID: NSNumber | null, bcdDevice: NSNumber | null, interfaceNumber: NSNumber | null, configurationValue: NSNumber | null, interfaceClass: NSNumber | null, interfaceSubclass: NSNumber | null, interfaceProtocol: NSNumber | null, speed: NSNumber | null, productIDArray: NSArray<interop.Object> | Array<interop.Object> | null): interop.Object;
 
   initWithIOServiceOptionsQueueErrorInterestHandler(ioService: number, options: interop.Enum<typeof IOUSBHostObjectInitOptions>, queue: NSObject | null, error: interop.PointerConvertible, interestHandler: (p1: IOUSBHostObject, p2: number, p3: interop.PointerConvertible) => void | null): this;
 
@@ -312,7 +312,7 @@ declare class IOUSBHostObject extends NSObject {
 }
 
 declare class IOUSBHostDevice extends IOUSBHostObject {
-  static createMatchingDictionaryWithVendorIDProductIDBcdDeviceDeviceClassDeviceSubclassDeviceProtocolSpeedProductIDArray(vendorID: NSNumber | null, productID: NSNumber | null, bcdDevice: NSNumber | null, deviceClass: NSNumber | null, deviceSubclass: NSNumber | null, deviceProtocol: NSNumber | null, speed: NSNumber | null, productIDArray: NSArray<interop.Object> | Array<interop.Object> | null): interop.Pointer;
+  static createMatchingDictionaryWithVendorIDProductIDBcdDeviceDeviceClassDeviceSubclassDeviceProtocolSpeedProductIDArray(vendorID: NSNumber | null, productID: NSNumber | null, bcdDevice: NSNumber | null, deviceClass: NSNumber | null, deviceSubclass: NSNumber | null, deviceProtocol: NSNumber | null, speed: NSNumber | null, productIDArray: NSArray<interop.Object> | Array<interop.Object> | null): interop.Object;
 
   configureWithValueMatchInterfacesError(value: number, matchInterfaces: boolean, error: interop.PointerConvertible): boolean;
 

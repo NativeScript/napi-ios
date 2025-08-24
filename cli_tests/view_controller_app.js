@@ -91,10 +91,10 @@ class ViewController extends NSViewController {
 
     label.stringValue = "Hello, macOS";
 
-    label.isBezeled = false;
+    label.bezeled = false;
     label.drawsBackground = false;
-    label.isEditable = false;
-    label.isSelectable = false;
+    label.editable = false;
+    label.selectable = false;
     label.alignment = NSTextAlignment.Center;
     label.translatesAutoresizingMaskIntoConstraints = false;
     label.textColor = NSColor.colorWithSRGBRedGreenBlueAlpha(1, 1, 1, 1);
@@ -149,10 +149,10 @@ class ViewController extends NSViewController {
 
     vstack.centerXAnchor.constraintEqualToAnchor(
       this.view.centerXAnchor,
-    ).isActive = true;
+    ).active = true;
     vstack.centerYAnchor.constraintEqualToAnchor(
       this.view.centerYAnchor,
-    ).isActive = true;
+    ).active = true;
   }
 
   /**

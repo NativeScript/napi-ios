@@ -289,7 +289,7 @@ declare class CBUUID extends NSObject implements NSCopying {
 
   static UUIDWithData(theData: NSData): CBUUID;
 
-  static UUIDWithCFUUID(theUUID: interop.PointerConvertible): CBUUID;
+  static UUIDWithCFUUID(theUUID: interop.Object): CBUUID;
 
   static UUIDWithNSUUID(theUUID: NSUUID): CBUUID;
 

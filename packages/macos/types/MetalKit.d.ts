@@ -112,8 +112,7 @@ declare class MTKView extends NSView implements NSCoding, CALayerDelegate {
 
   paused: boolean;
 
-  get colorspace(): interop.Pointer;
-  set colorspace(value: interop.PointerConvertible);
+  colorspace: interop.Object;
 
   draw(): void;
 
@@ -155,13 +154,13 @@ declare class MTKView extends NSView implements NSCoding, CALayerDelegate {
 
   setPaused(paused: boolean): void;
 
-  setColorspace(colorspace: interop.PointerConvertible): void;
+  setColorspace(colorspace: interop.Object): void;
 
   encodeWithCoder(coder: NSCoder): void;
 
   displayLayer(layer: CALayer): void;
 
-  drawLayerInContext(layer: CALayer, ctx: interop.PointerConvertible): void;
+  drawLayerInContext(layer: CALayer, ctx: interop.Object): void;
 
   layerWillDraw(layer: CALayer): void;
 
@@ -229,7 +228,7 @@ declare class MTKTextureLoader extends NSObject {
 
   newTextureWithDataOptionsCompletionHandler(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
 
-  newTextureWithCGImageOptionsCompletionHandler(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
+  newTextureWithCGImageOptionsCompletionHandler(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
 
   newTextureWithMDLTextureOptionsCompletionHandler(texture: MDLTexture, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completionHandler: (p1: MTLTexture, p2: NSError) => void): void;
 
@@ -239,7 +238,7 @@ declare class MTKTextureLoader extends NSObject {
 
   newTextureWithDataOptionsError(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 
-  newTextureWithCGImageOptionsError(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
+  newTextureWithCGImageOptionsError(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 
   newTextureWithMDLTextureOptionsError(texture: MDLTexture, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): MTLTexture;
 

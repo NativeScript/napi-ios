@@ -160,25 +160,25 @@ declare function CWKeychainDeleteWiFiEAPUsernameAndPassword(domain: interop.Enum
 
 declare function CWKeychainCopyWiFiEAPIdentity(domain: interop.Enum<typeof CWKeychainDomain>, ssid: NSData, identity: interop.PointerConvertible): number;
 
-declare function CWKeychainSetWiFiEAPIdentity(domain: interop.Enum<typeof CWKeychainDomain>, ssid: NSData, identity: interop.PointerConvertible): number;
+declare function CWKeychainSetWiFiEAPIdentity(domain: interop.Enum<typeof CWKeychainDomain>, ssid: NSData, identity: interop.Object): number;
 
 declare function CWKeychainCopyEAPIdentityList(list: interop.PointerConvertible): number;
 
-declare function CWKeychainCopyEAPUsernameAndPassword(ssidData: interop.PointerConvertible, username: interop.PointerConvertible, password: interop.PointerConvertible): number;
+declare function CWKeychainCopyEAPUsernameAndPassword(ssidData: interop.Object, username: interop.PointerConvertible, password: interop.PointerConvertible): number;
 
-declare function CWKeychainSetEAPUsernameAndPassword(ssidData: interop.PointerConvertible, username: interop.PointerConvertible, password: interop.PointerConvertible): number;
+declare function CWKeychainSetEAPUsernameAndPassword(ssidData: interop.Object, username: interop.Object, password: interop.Object): number;
 
-declare function CWKeychainDeleteEAPUsernameAndPassword(ssidData: interop.PointerConvertible): number;
+declare function CWKeychainDeleteEAPUsernameAndPassword(ssidData: interop.Object): number;
 
-declare function CWKeychainCopyEAPIdentity(ssidData: interop.PointerConvertible, identity: interop.PointerConvertible): number;
+declare function CWKeychainCopyEAPIdentity(ssidData: interop.Object, identity: interop.PointerConvertible): number;
 
-declare function CWKeychainSetEAPIdentity(ssidData: interop.PointerConvertible, identity: interop.PointerConvertible): number;
+declare function CWKeychainSetEAPIdentity(ssidData: interop.Object, identity: interop.Object): number;
 
-declare function CWKeychainSetPassword(ssidData: interop.PointerConvertible, password: interop.PointerConvertible): number;
+declare function CWKeychainSetPassword(ssidData: interop.Object, password: interop.Object): number;
 
-declare function CWKeychainCopyPassword(ssidData: interop.PointerConvertible, password: interop.PointerConvertible): number;
+declare function CWKeychainCopyPassword(ssidData: interop.Object, password: interop.PointerConvertible): number;
 
-declare function CWKeychainDeletePassword(ssidData: interop.PointerConvertible): number;
+declare function CWKeychainDeletePassword(ssidData: interop.Object): number;
 
 declare function CWMergeNetworks(networks: NSSet): NSSet;
 
@@ -380,7 +380,7 @@ declare class CWInterface extends NSObject {
 
   disassociate(): void;
 
-  associateToEnterpriseNetworkIdentityUsernamePasswordError(network: CWNetwork, identity: interop.PointerConvertible, username: string | null, password: string | null, error: interop.PointerConvertible): boolean;
+  associateToEnterpriseNetworkIdentityUsernamePasswordError(network: CWNetwork, identity: interop.Object | null, username: string | null, password: string | null, error: interop.PointerConvertible): boolean;
 
   startIBSSModeWithSSIDSecurityChannelPasswordError(ssidData: NSData, security: interop.Enum<typeof CWIBSSModeSecurity>, channel: number, password: string | null, error: interop.PointerConvertible): boolean;
 

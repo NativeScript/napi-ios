@@ -1638,195 +1638,195 @@ declare class DRFileProductionInfo {
   fork: number;
 }
 
-declare function DRSetRefCon(ref: interop.PointerConvertible, refCon: interop.PointerConvertible, callbacks: interop.PointerConvertible): void;
+declare function DRSetRefCon(ref: interop.Object, refCon: interop.PointerConvertible, callbacks: interop.PointerConvertible): void;
 
-declare function DRGetRefCon(ref: interop.PointerConvertible): interop.Pointer;
+declare function DRGetRefCon(ref: interop.Object): interop.Pointer;
 
-declare function DRCopyLocalizedStringForValue(value: interop.PointerConvertible): interop.Pointer;
+declare function DRCopyLocalizedStringForValue(value: interop.Object): interop.Object;
 
 declare function DRDeviceGetTypeID(): number;
 
-declare function DRCopyDeviceArray(): interop.Pointer;
+declare function DRCopyDeviceArray(): interop.Object;
 
-declare function DRDeviceCopyDeviceForBSDName(name: interop.PointerConvertible): interop.Pointer;
+declare function DRDeviceCopyDeviceForBSDName(name: interop.Object): interop.Object;
 
-declare function DRDeviceCopyDeviceForIORegistryEntryPath(path: interop.PointerConvertible): interop.Pointer;
+declare function DRDeviceCopyDeviceForIORegistryEntryPath(path: interop.Object): interop.Object;
 
-declare function DRDeviceIsValid(device: interop.PointerConvertible): number;
+declare function DRDeviceIsValid(device: interop.Object): number;
 
-declare function DRDeviceOpenTray(device: interop.PointerConvertible): number;
+declare function DRDeviceOpenTray(device: interop.Object): number;
 
-declare function DRDeviceCloseTray(device: interop.PointerConvertible): number;
+declare function DRDeviceCloseTray(device: interop.Object): number;
 
-declare function DRDeviceEjectMedia(device: interop.PointerConvertible): number;
+declare function DRDeviceEjectMedia(device: interop.Object): number;
 
-declare function DRDeviceAcquireMediaReservation(device: interop.PointerConvertible): void;
+declare function DRDeviceAcquireMediaReservation(device: interop.Object): void;
 
-declare function DRDeviceReleaseMediaReservation(device: interop.PointerConvertible): void;
+declare function DRDeviceReleaseMediaReservation(device: interop.Object): void;
 
-declare function DRDeviceAcquireExclusiveAccess(device: interop.PointerConvertible): number;
+declare function DRDeviceAcquireExclusiveAccess(device: interop.Object): number;
 
-declare function DRDeviceReleaseExclusiveAccess(device: interop.PointerConvertible): void;
+declare function DRDeviceReleaseExclusiveAccess(device: interop.Object): void;
 
-declare function DRDeviceCopyInfo(device: interop.PointerConvertible): interop.Pointer;
+declare function DRDeviceCopyInfo(device: interop.Object): interop.Object;
 
-declare function DRDeviceCopyStatus(device: interop.PointerConvertible): interop.Pointer;
+declare function DRDeviceCopyStatus(device: interop.Object): interop.Object;
 
-declare function DRDeviceKPSForXFactor(deviceOrMediaType: interop.PointerConvertible, xfactor: number): number;
+declare function DRDeviceKPSForXFactor(deviceOrMediaType: interop.Object, xfactor: number): number;
 
-declare function DRDeviceXFactorForKPS(deviceOrMediaType: interop.PointerConvertible, kps: number): number;
+declare function DRDeviceXFactorForKPS(deviceOrMediaType: interop.Object, kps: number): number;
 
 declare function DRTrackGetTypeID(): number;
 
-declare function DRTrackCreate(properties: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number): interop.Pointer;
+declare function DRTrackCreate(properties: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number): interop.Object;
 
-declare function DRTrackSetProperties(track: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function DRTrackSetProperties(track: interop.Object, properties: interop.Object): void;
 
-declare function DRTrackGetProperties(track: interop.PointerConvertible): interop.Pointer;
+declare function DRTrackGetProperties(track: interop.Object): interop.Object;
 
-declare function DRTrackSpeedTest(track: interop.PointerConvertible, howManyMilliseconds: number, howManyBytes: number): number;
+declare function DRTrackSpeedTest(track: interop.Object, howManyMilliseconds: number, howManyBytes: number): number;
 
-declare function DRTrackEstimateLength(track: interop.PointerConvertible): number;
+declare function DRTrackEstimateLength(track: interop.Object): number;
 
 declare function DRBurnGetTypeID(): number;
 
-declare function DRBurnCreate(device: interop.PointerConvertible): interop.Pointer;
+declare function DRBurnCreate(device: interop.Object): interop.Object;
 
-declare function DRBurnWriteLayout(burn: interop.PointerConvertible, layout: interop.PointerConvertible): number;
+declare function DRBurnWriteLayout(burn: interop.Object, layout: interop.Object): number;
 
-declare function DRBurnAbort(burn: interop.PointerConvertible): void;
+declare function DRBurnAbort(burn: interop.Object): void;
 
-declare function DRBurnCopyStatus(burn: interop.PointerConvertible): interop.Pointer;
+declare function DRBurnCopyStatus(burn: interop.Object): interop.Object;
 
-declare function DRBurnGetDevice(burn: interop.PointerConvertible): interop.Pointer;
+declare function DRBurnGetDevice(burn: interop.Object): interop.Object;
 
-declare function DRBurnSetProperties(burn: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function DRBurnSetProperties(burn: interop.Object, properties: interop.Object): void;
 
-declare function DRBurnGetProperties(burn: interop.PointerConvertible): interop.Pointer;
+declare function DRBurnGetProperties(burn: interop.Object): interop.Object;
 
-declare function DRCDTextBlockCreateArrayFromPackList(packs: interop.PointerConvertible): interop.Pointer;
+declare function DRCDTextBlockCreateArrayFromPackList(packs: interop.Object): interop.Object;
 
 declare function DRCDTextBlockGetTypeID(): number;
 
-declare function DRCDTextBlockCreate(language: interop.PointerConvertible, encoding: number): interop.Pointer;
+declare function DRCDTextBlockCreate(language: interop.Object, encoding: number): interop.Object;
 
-declare function DRCDTextBlockGetProperties(block: interop.PointerConvertible): interop.Pointer;
+declare function DRCDTextBlockGetProperties(block: interop.Object): interop.Object;
 
-declare function DRCDTextBlockSetProperties(block: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function DRCDTextBlockSetProperties(block: interop.Object, properties: interop.Object): void;
 
-declare function DRCDTextBlockGetTrackDictionaries(block: interop.PointerConvertible): interop.Pointer;
+declare function DRCDTextBlockGetTrackDictionaries(block: interop.Object): interop.Object;
 
-declare function DRCDTextBlockSetTrackDictionaries(block: interop.PointerConvertible, array: interop.PointerConvertible): void;
+declare function DRCDTextBlockSetTrackDictionaries(block: interop.Object, array: interop.Object): void;
 
-declare function DRCDTextBlockGetValue(block: interop.PointerConvertible, trackIndex: number, key: interop.PointerConvertible): interop.Pointer;
+declare function DRCDTextBlockGetValue(block: interop.Object, trackIndex: number, key: interop.Object): interop.Object;
 
-declare function DRCDTextBlockSetValue(block: interop.PointerConvertible, trackIndex: number, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function DRCDTextBlockSetValue(block: interop.Object, trackIndex: number, key: interop.Object, value: interop.Object): void;
 
-declare function DRCDTextBlockFlatten(block: interop.PointerConvertible): number;
+declare function DRCDTextBlockFlatten(block: interop.Object): number;
 
 declare function DREraseGetTypeID(): number;
 
-declare function DREraseCreate(device: interop.PointerConvertible): interop.Pointer;
+declare function DREraseCreate(device: interop.Object): interop.Object;
 
-declare function DREraseStart(erase: interop.PointerConvertible): number;
+declare function DREraseStart(erase: interop.Object): number;
 
-declare function DREraseCopyStatus(erase: interop.PointerConvertible): interop.Pointer;
+declare function DREraseCopyStatus(erase: interop.Object): interop.Object;
 
-declare function DREraseGetDevice(erase: interop.PointerConvertible): interop.Pointer;
+declare function DREraseGetDevice(erase: interop.Object): interop.Object;
 
-declare function DREraseSetProperties(erase: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function DREraseSetProperties(erase: interop.Object, properties: interop.Object): void;
 
-declare function DREraseGetProperties(erase: interop.PointerConvertible): interop.Pointer;
+declare function DREraseGetProperties(erase: interop.Object): interop.Object;
 
-declare function DRCopyLocalizedStringForDiscRecordingError(osError: number): interop.Pointer;
+declare function DRCopyLocalizedStringForDiscRecordingError(osError: number): interop.Object;
 
-declare function DRCopyLocalizedStringForSenseCode(senseCode: number): interop.Pointer;
+declare function DRCopyLocalizedStringForSenseCode(senseCode: number): interop.Object;
 
-declare function DRCopyLocalizedStringForAdditionalSense(ASC: number, ASCQ: number): interop.Pointer;
+declare function DRCopyLocalizedStringForAdditionalSense(ASC: number, ASCQ: number): interop.Object;
 
 declare function DRNotificationCenterGetTypeID(): number;
 
-declare function DRNotificationCenterCreate(): interop.Pointer;
+declare function DRNotificationCenterCreate(): interop.Object;
 
-declare function DRNotificationCenterCreateRunLoopSource(center: interop.PointerConvertible): interop.Pointer;
+declare function DRNotificationCenterCreateRunLoopSource(center: interop.Object): interop.Object;
 
-declare function DRNotificationCenterAddObserver(center: interop.PointerConvertible, observer: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, name: interop.PointerConvertible, object: interop.PointerConvertible): void;
+declare function DRNotificationCenterAddObserver(center: interop.Object, observer: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, name: interop.Object, object: interop.Object): void;
 
-declare function DRNotificationCenterRemoveObserver(center: interop.PointerConvertible, observer: interop.PointerConvertible, name: interop.PointerConvertible, object: interop.PointerConvertible): void;
+declare function DRNotificationCenterRemoveObserver(center: interop.Object, observer: interop.PointerConvertible, name: interop.Object, object: interop.Object): void;
 
 declare function DRFSObjectIsVirtual(object: interop.PointerConvertible): number;
 
 declare function DRFSObjectGetRealFSRef(object: interop.PointerConvertible, fsRef: interop.PointerConvertible): void;
 
-declare function DRFSObjectCopyRealURL(object: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectCopyRealURL(object: interop.PointerConvertible): interop.Object;
 
-declare function DRFSObjectGetParent(object: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectGetParent(object: interop.PointerConvertible): interop.Object;
 
-declare function DRFSObjectCopyBaseName(object: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectCopyBaseName(object: interop.PointerConvertible): interop.Object;
 
-declare function DRFSObjectCopySpecificName(object: interop.PointerConvertible, fsKey: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectCopySpecificName(object: interop.PointerConvertible, fsKey: interop.Object): interop.Object;
 
-declare function DRFSObjectCopySpecificNames(object: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectCopySpecificNames(object: interop.PointerConvertible): interop.Object;
 
-declare function DRFSObjectCopyMangledName(object: interop.PointerConvertible, fsKey: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectCopyMangledName(object: interop.PointerConvertible, fsKey: interop.Object): interop.Object;
 
-declare function DRFSObjectCopyMangledNames(object: interop.PointerConvertible): interop.Pointer;
+declare function DRFSObjectCopyMangledNames(object: interop.PointerConvertible): interop.Object;
 
-declare function DRFSObjectCopyFilesystemProperty(object: interop.PointerConvertible, fsKey: interop.PointerConvertible, propertyKey: interop.PointerConvertible, coalesce: number): interop.Pointer;
+declare function DRFSObjectCopyFilesystemProperty(object: interop.PointerConvertible, fsKey: interop.Object, propertyKey: interop.Object, coalesce: number): interop.Object;
 
-declare function DRFSObjectCopyFilesystemProperties(object: interop.PointerConvertible, fsKey: interop.PointerConvertible, coalesce: number): interop.Pointer;
+declare function DRFSObjectCopyFilesystemProperties(object: interop.PointerConvertible, fsKey: interop.Object, coalesce: number): interop.Object;
 
 declare function DRFSObjectGetFilesystemMask(object: interop.PointerConvertible, explicitMask: interop.PointerConvertible, effectiveMask: interop.PointerConvertible): number;
 
-declare function DRFSObjectSetBaseName(object: interop.PointerConvertible, baseName: interop.PointerConvertible): void;
+declare function DRFSObjectSetBaseName(object: interop.Object, baseName: interop.Object): void;
 
-declare function DRFSObjectSetSpecificName(object: interop.PointerConvertible, fsKey: interop.PointerConvertible, specificName: interop.PointerConvertible): void;
+declare function DRFSObjectSetSpecificName(object: interop.Object, fsKey: interop.Object, specificName: interop.Object): void;
 
-declare function DRFSObjectSetSpecificNames(object: interop.PointerConvertible, specificNames: interop.PointerConvertible): void;
+declare function DRFSObjectSetSpecificNames(object: interop.Object, specificNames: interop.Object): void;
 
-declare function DRFSObjectSetFilesystemProperty(object: interop.PointerConvertible, fsKey: interop.PointerConvertible, propertyKey: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function DRFSObjectSetFilesystemProperty(object: interop.Object, fsKey: interop.Object, propertyKey: interop.Object, value: interop.Object): void;
 
-declare function DRFSObjectSetFilesystemProperties(object: interop.PointerConvertible, fsKey: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function DRFSObjectSetFilesystemProperties(object: interop.Object, fsKey: interop.Object, properties: interop.Object): void;
 
-declare function DRFSObjectSetFilesystemMask(object: interop.PointerConvertible, newMask: number): void;
+declare function DRFSObjectSetFilesystemMask(object: interop.Object, newMask: number): void;
 
 declare function DRFolderGetTypeID(): number;
 
-declare function DRFolderCreateReal(fsRef: interop.PointerConvertible): interop.Pointer;
+declare function DRFolderCreateReal(fsRef: interop.PointerConvertible): interop.Object;
 
-declare function DRFolderCreateRealWithURL(urlRef: interop.PointerConvertible): interop.Pointer;
+declare function DRFolderCreateRealWithURL(urlRef: interop.PointerConvertible): interop.Object;
 
-declare function DRFolderCreateVirtual(baseName: interop.PointerConvertible): interop.Pointer;
+declare function DRFolderCreateVirtual(baseName: interop.Object): interop.Object;
 
-declare function DRFolderConvertRealToVirtual(realFolder: interop.PointerConvertible): void;
+declare function DRFolderConvertRealToVirtual(realFolder: interop.Object): void;
 
-declare function DRFolderAddChild(parent: interop.PointerConvertible, newChild: interop.PointerConvertible): void;
+declare function DRFolderAddChild(parent: interop.Object, newChild: interop.Object): void;
 
-declare function DRFolderRemoveChild(parent: interop.PointerConvertible, child: interop.PointerConvertible): void;
+declare function DRFolderRemoveChild(parent: interop.Object, child: interop.Object): void;
 
 declare function DRFolderCountChildren(folder: interop.PointerConvertible): number;
 
-declare function DRFolderCopyChildren(folder: interop.PointerConvertible): interop.Pointer;
+declare function DRFolderCopyChildren(folder: interop.PointerConvertible): interop.Object;
 
 declare function DRFileGetTypeID(): number;
 
-declare function DRFileCreateReal(fsRef: interop.PointerConvertible): interop.Pointer;
+declare function DRFileCreateReal(fsRef: interop.PointerConvertible): interop.Object;
 
-declare function DRFileCreateRealWithURL(urlRef: interop.PointerConvertible): interop.Pointer;
+declare function DRFileCreateRealWithURL(urlRef: interop.PointerConvertible): interop.Object;
 
-declare function DRFileCreateVirtualWithData(baseName: interop.PointerConvertible, fileData: interop.PointerConvertible, fileDataLength: number): interop.Pointer;
+declare function DRFileCreateVirtualWithData(baseName: interop.Object, fileData: interop.PointerConvertible, fileDataLength: number): interop.Object;
 
-declare function DRFileCreateVirtualWithCallback(baseName: interop.PointerConvertible, fileProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, fileProcRefCon: interop.PointerConvertible): interop.Pointer;
+declare function DRFileCreateVirtualWithCallback(baseName: interop.Object, fileProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, fileProcRefCon: interop.PointerConvertible): interop.Object;
 
-declare function DRFileCreateVirtualLink(original: interop.PointerConvertible, linkType: number, fsKey: interop.PointerConvertible): interop.Pointer;
+declare function DRFileCreateVirtualLink(original: interop.Object, linkType: number, fsKey: interop.Object): interop.Object;
 
-declare function DRFilesystemTrackCreate(rootFolder: interop.PointerConvertible): interop.Pointer;
+declare function DRFilesystemTrackCreate(rootFolder: interop.Object): interop.Object;
 
 declare function DRFilesystemTrackEstimateOverhead(numBlocks: number, blockSize: number, fsMask: number): number;
 
-declare function DRAudioTrackCreate(audioFile: interop.PointerConvertible): interop.Pointer;
+declare function DRAudioTrackCreate(audioFile: interop.PointerConvertible): interop.Object;
 
-declare function DRAudioTrackCreateWithURL(audioFileURL: interop.PointerConvertible): interop.Pointer;
+declare function DRAudioTrackCreateWithURL(audioFileURL: interop.Object): interop.Object;
 
 declare function DRGetVersion(): NumVersion;
 

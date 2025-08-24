@@ -65,7 +65,7 @@ declare class DREraseSessionProgressDialogOptions {
   constructor(init?: DREraseSessionProgressDialogOptions);
   version: number;
   dialogOptionFlags: number;
-  description: interop.Pointer;
+  description: interop.Object | null;
 }
 
 declare class DREraseSessionSetupCallbacks {
@@ -102,14 +102,14 @@ declare class DRBurnSessionProgressDialogOptions {
   constructor(init?: DRBurnSessionProgressDialogOptions);
   version: number;
   dialogOptionFlags: number;
-  description: interop.Pointer;
+  description: interop.Object | null;
 }
 
 declare class DRBurnSessionSetupDialogOptions {
   constructor(init?: DRBurnSessionSetupDialogOptions);
   version: number;
   dialogOptionFlags: number;
-  defaultButtonTitle: interop.Pointer;
+  defaultButtonTitle: interop.Object | null;
 }
 
 declare class DRBurnSessionProgressCallbacks {
@@ -130,27 +130,27 @@ declare class DREraseSessionProgressCallbacks {
 
 declare function DRBurnSessionGetTypeID(): number;
 
-declare function DRBurnSessionCreate(): interop.Pointer;
+declare function DRBurnSessionCreate(): interop.Object;
 
-declare function DRBurnSessionSetBurn(burnSession: interop.PointerConvertible, burn: interop.PointerConvertible): void;
+declare function DRBurnSessionSetBurn(burnSession: interop.Object, burn: interop.Object): void;
 
-declare function DRBurnSessionGetBurn(burnSession: interop.PointerConvertible): interop.Pointer;
+declare function DRBurnSessionGetBurn(burnSession: interop.Object): interop.Object;
 
-declare function DRBurnSessionSetupDialog(burnSession: interop.PointerConvertible, options: interop.PointerConvertible, setupCallbacks: interop.PointerConvertible): number;
+declare function DRBurnSessionSetupDialog(burnSession: interop.Object, options: interop.PointerConvertible, setupCallbacks: interop.PointerConvertible): number;
 
-declare function DRBurnSessionBeginProgressDialog(burnSession: interop.PointerConvertible, layout: interop.PointerConvertible, options: interop.PointerConvertible, progressCallbacks: interop.PointerConvertible): void;
+declare function DRBurnSessionBeginProgressDialog(burnSession: interop.Object, layout: interop.Object, options: interop.PointerConvertible, progressCallbacks: interop.PointerConvertible): void;
 
 declare function DREraseSessionGetTypeID(): number;
 
-declare function DREraseSessionCreate(): interop.Pointer;
+declare function DREraseSessionCreate(): interop.Object;
 
-declare function DREraseSessionSetErase(eraseSession: interop.PointerConvertible, erase: interop.PointerConvertible): void;
+declare function DREraseSessionSetErase(eraseSession: interop.Object, erase: interop.Object): void;
 
-declare function DREraseSessionGetErase(eraseSession: interop.PointerConvertible): interop.Pointer;
+declare function DREraseSessionGetErase(eraseSession: interop.Object): interop.Object;
 
-declare function DREraseSessionSetupDialog(eraseSession: interop.PointerConvertible, options: interop.PointerConvertible, setupCallbacks: interop.PointerConvertible): number;
+declare function DREraseSessionSetupDialog(eraseSession: interop.Object, options: interop.PointerConvertible, setupCallbacks: interop.PointerConvertible): number;
 
-declare function DREraseSessionBeginProgressDialog(eraseSession: interop.PointerConvertible, options: interop.PointerConvertible, progressCallbacks: interop.PointerConvertible): void;
+declare function DREraseSessionBeginProgressDialog(eraseSession: interop.Object, options: interop.PointerConvertible, progressCallbacks: interop.PointerConvertible): void;
 
 declare class DREraseSetupPanel extends DRSetupPanel {
   static setupPanel(): DREraseSetupPanel;

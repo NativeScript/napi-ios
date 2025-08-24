@@ -1,31 +1,42 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const JSPropertyDescriptorSetKey: string;
+declare const JSPropertyDescriptorConfigurableKey: string;
 
-declare const JSPropertyDescriptorGetKey: string;
-
-declare const JSPropertyDescriptorValueKey: string;
-
-declare const JSPropertyDescriptorEnumerableKey: string;
+declare const JSPropertyDescriptorWritableKey: string;
 
 declare const kJSClassDefinitionEmpty: JSClassDefinition;
-
-declare const kJSClassAttributeNoAutomaticPrototype: number;
 
 declare const kJSClassAttributeNone: number;
 
 declare const kJSPropertyAttributeDontDelete: number;
 
-declare const kJSPropertyAttributeReadOnly: number;
+declare const kJSPropertyAttributeDontEnum: number;
 
 declare const kJSPropertyAttributeNone: number;
 
-declare const JSPropertyDescriptorWritableKey: string;
+declare const JSPropertyDescriptorGetKey: string;
 
-declare const JSPropertyDescriptorConfigurableKey: string;
+declare const JSPropertyDescriptorSetKey: string;
 
-declare const kJSPropertyAttributeDontEnum: number;
+declare const kJSPropertyAttributeReadOnly: number;
+
+declare const JSPropertyDescriptorValueKey: string;
+
+declare const JSPropertyDescriptorEnumerableKey: string;
+
+declare const kJSClassAttributeNoAutomaticPrototype: number;
+
+declare const JSType: {
+  Undefined: 0,
+  Null: 1,
+  Boolean: 2,
+  Number: 3,
+  String: 4,
+  Object: 5,
+  Symbol: 6,
+  BigInt: 7,
+};
 
 declare const JSTypedArrayType: {
   Int8Array: 0,
@@ -43,17 +54,6 @@ declare const JSTypedArrayType: {
   BigUint64Array: 12,
 };
 
-declare const JSType: {
-  Undefined: 0,
-  Null: 1,
-  Boolean: 2,
-  Number: 3,
-  String: 4,
-  Object: 5,
-  Symbol: 6,
-  BigInt: 7,
-};
-
 declare const JSRelationCondition: {
   Undefined: 0,
   Equal: 1,
@@ -61,31 +61,8 @@ declare const JSRelationCondition: {
   LessThan: 3,
 };
 
-declare class JSStaticFunction {
-  constructor(init?: JSStaticFunction);
-  name: string | null;
-  callAsFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Pointer | null;
-  attributes: number;
-}
-
-declare class OpaqueJSValue {
-  constructor(init?: OpaqueJSValue);
-}
-
-declare class OpaqueJSPropertyNameAccumulator {
-  constructor(init?: OpaqueJSPropertyNameAccumulator);
-}
-
-declare class OpaqueJSPropertyNameArray {
-  constructor(init?: OpaqueJSPropertyNameArray);
-}
-
 declare class OpaqueJSClass {
   constructor(init?: OpaqueJSClass);
-}
-
-declare class OpaqueJSString {
-  constructor(init?: OpaqueJSString);
 }
 
 declare class OpaqueJSContext {
@@ -96,12 +73,31 @@ declare class OpaqueJSContextGroup {
   constructor(init?: OpaqueJSContextGroup);
 }
 
+declare class OpaqueJSPropertyNameAccumulator {
+  constructor(init?: OpaqueJSPropertyNameAccumulator);
+}
+
 declare class JSStaticValue {
   constructor(init?: JSStaticValue);
   name: string | null;
   getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
   setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
   attributes: number;
+}
+
+declare class JSStaticFunction {
+  constructor(init?: JSStaticFunction);
+  name: string | null;
+  callAsFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Pointer | null;
+  attributes: number;
+}
+
+declare class OpaqueJSString {
+  constructor(init?: OpaqueJSString);
+}
+
+declare class OpaqueJSValue {
+  constructor(init?: OpaqueJSValue);
 }
 
 declare class JSClassDefinition {
@@ -123,6 +119,10 @@ declare class JSClassDefinition {
   callAsConstructor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
   hasInstance: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => boolean | null;
   convertToType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof JSType>, p4: interop.PointerConvertible) => interop.Pointer | null;
+}
+
+declare class OpaqueJSPropertyNameArray {
+  constructor(init?: OpaqueJSPropertyNameArray);
 }
 
 declare function JSEvaluateScript(ctx: interop.PointerConvertible, script: interop.PointerConvertible, thisObject: interop.PointerConvertible, sourceURL: interop.PointerConvertible, startingLineNumber: number, exception: interop.PointerConvertible): interop.Pointer;
@@ -359,60 +359,14 @@ declare function JSObjectGetArrayBufferBytesPtr(ctx: interop.PointerConvertible,
 
 declare function JSObjectGetArrayBufferByteLength(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): number;
 
-declare function JSStringCreateWithCFString(string: interop.PointerConvertible): interop.Pointer;
+declare function JSStringCreateWithCFString(string: interop.Object): interop.Pointer;
 
-declare function JSStringCopyCFString(alloc: interop.PointerConvertible, string: interop.PointerConvertible): interop.Pointer;
+declare function JSStringCopyCFString(alloc: interop.Object, string: interop.PointerConvertible): interop.Object;
 
 declare interface JSExport {
 }
 
 declare class JSExport extends NativeObject implements JSExport {
-}
-
-declare class JSVirtualMachine extends NSObject {
-  init(): this;
-
-  addManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
-
-  removeManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
-}
-
-declare class JSContext extends NSObject {
-  init(): this;
-
-  initWithVirtualMachine(virtualMachine: JSVirtualMachine): this;
-
-  evaluateScript(script: string): JSValue;
-
-  evaluateScriptWithSourceURL(script: string, sourceURL: NSURL): JSValue;
-
-  static currentContext(): JSContext;
-
-  static currentCallee(): JSValue;
-
-  static currentThis(): JSValue;
-
-  static currentArguments(): NSArray;
-
-  readonly globalObject: JSValue;
-
-  exception: JSValue;
-
-  exceptionHandler: (p1: JSContext, p2: JSValue) => void;
-
-  readonly virtualMachine: JSVirtualMachine;
-
-  name: string;
-
-  isInspectable: boolean;
-
-  objectForKeyedSubscript(key: interop.Object): JSValue;
-
-  setObjectForKeyedSubscript(object: interop.Object, key: NSObject): void;
-
-  static contextWithJSGlobalContextRef(jsGlobalContextRef: interop.PointerConvertible): JSContext;
-
-  readonly JSGlobalContextRef: interop.Pointer;
 }
 
 declare class JSManagedValue extends NSObject {
@@ -573,5 +527,61 @@ declare class JSValue extends NSObject {
   static valueWithJSValueRefInContext(value: interop.PointerConvertible, context: JSContext): JSValue;
 
   readonly JSValueRef: interop.Pointer;
+}
+
+declare class JSContext extends NSObject {
+  init(): this;
+
+  initWithVirtualMachine(virtualMachine: JSVirtualMachine): this;
+
+  evaluateScript(script: string): JSValue;
+
+  evaluateScriptWithSourceURL(script: string, sourceURL: NSURL): JSValue;
+
+  static currentContext(): JSContext;
+
+  static currentCallee(): JSValue;
+
+  static currentThis(): JSValue;
+
+  static currentArguments(): NSArray;
+
+  readonly globalObject: JSValue;
+
+  exception: JSValue;
+
+  exceptionHandler: (p1: JSContext, p2: JSValue) => void;
+
+  readonly virtualMachine: JSVirtualMachine;
+
+  name: string;
+
+  inspectable: boolean;
+
+  setException(exception: JSValue): void;
+
+  setExceptionHandler(exceptionHandler: (p1: JSContext, p2: JSValue) => void): void;
+
+  setName(name: string): void;
+
+  isInspectable(): boolean;
+
+  setInspectable(inspectable: boolean): void;
+
+  objectForKeyedSubscript(key: interop.Object): JSValue;
+
+  setObjectForKeyedSubscript(object: interop.Object, key: NSObject): void;
+
+  static contextWithJSGlobalContextRef(jsGlobalContextRef: interop.PointerConvertible): JSContext;
+
+  readonly JSGlobalContextRef: interop.Pointer;
+}
+
+declare class JSVirtualMachine extends NSObject {
+  init(): this;
+
+  addManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
+
+  removeManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
 }
 

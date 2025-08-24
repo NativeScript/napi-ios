@@ -391,11 +391,11 @@ declare const IKCameraDeviceViewDisplayMode: {
 };
 
 declare interface IKImageEditPanelDataSource {
-  readonly image: interop.Pointer;
+  readonly image: interop.Object;
 
-  setImageImageProperties(image: interop.PointerConvertible, metaData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+  setImageImageProperties(image: interop.Object, metaData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
-  thumbnailWithMaximumSize?(size: CGSize): interop.Pointer;
+  thumbnailWithMaximumSize?(size: CGSize): interop.Object;
 
   readonly imageProperties?: NSDictionary;
 
@@ -458,7 +458,7 @@ declare class IKFilterCustomUIProvider extends NativeObject implements IKFilterC
 declare interface QCPlugInOutputImageProvider {
   imageBounds(): CGRect;
 
-  imageColorSpace(): interop.Pointer;
+  imageColorSpace(): interop.Object;
 
   shouldColorMatch?(): boolean;
 
@@ -483,11 +483,11 @@ declare class QCPlugInOutputImageProvider extends NativeObject implements QCPlug
 declare interface QCPlugInInputImageSource {
   imageBounds(): CGRect;
 
-  imageColorSpace(): interop.Pointer;
+  imageColorSpace(): interop.Object;
 
   shouldColorMatch(): boolean;
 
-  lockBufferRepresentationWithPixelFormatColorSpaceForBounds(format: string, colorSpace: interop.PointerConvertible, bounds: CGRect): boolean;
+  lockBufferRepresentationWithPixelFormatColorSpaceForBounds(format: string, colorSpace: interop.Object, bounds: CGRect): boolean;
 
   bufferPixelsWide(): number;
 
@@ -495,7 +495,7 @@ declare interface QCPlugInInputImageSource {
 
   bufferPixelFormat(): string;
 
-  bufferColorSpace(): interop.Pointer;
+  bufferColorSpace(): interop.Object;
 
   bufferBaseAddress(): interop.Pointer;
 
@@ -503,7 +503,7 @@ declare interface QCPlugInInputImageSource {
 
   unlockBufferRepresentation(): void;
 
-  lockTextureRepresentationWithColorSpaceForBounds(colorSpace: interop.PointerConvertible, bounds: CGRect): boolean;
+  lockTextureRepresentationWithColorSpaceForBounds(colorSpace: interop.Object, bounds: CGRect): boolean;
 
   texturePixelsWide(): number;
 
@@ -513,7 +513,7 @@ declare interface QCPlugInInputImageSource {
 
   textureName(): number;
 
-  textureColorSpace(): interop.Pointer;
+  textureColorSpace(): interop.Object;
 
   textureFlipped(): boolean;
 
@@ -549,15 +549,15 @@ declare interface QCPlugInContext {
 
   userInfo(): NSMutableDictionary;
 
-  colorSpace(): interop.Pointer;
+  colorSpace(): interop.Object;
 
   bounds(): CGRect;
 
   CGLContextObj(): interop.Pointer;
 
-  outputImageProviderFromBufferWithPixelFormatPixelsWidePixelsHighBaseAddressBytesPerRowReleaseCallbackReleaseContextColorSpaceShouldColorMatch(format: string, width: number, height: number, baseAddress: interop.PointerConvertible, rowBytes: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible, colorSpace: interop.PointerConvertible, colorMatch: boolean): interop.Object;
+  outputImageProviderFromBufferWithPixelFormatPixelsWidePixelsHighBaseAddressBytesPerRowReleaseCallbackReleaseContextColorSpaceShouldColorMatch(format: string, width: number, height: number, baseAddress: interop.PointerConvertible, rowBytes: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible, colorSpace: interop.Object, colorMatch: boolean): interop.Object;
 
-  outputImageProviderFromTextureWithPixelFormatPixelsWidePixelsHighNameFlippedReleaseCallbackReleaseContextColorSpaceShouldColorMatch(format: string, width: number, height: number, name: number, flipped: boolean, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible, colorSpace: interop.PointerConvertible, colorMatch: boolean): interop.Object;
+  outputImageProviderFromTextureWithPixelFormatPixelsWidePixelsHighNameFlippedReleaseCallbackReleaseContextColorSpaceShouldColorMatch(format: string, width: number, height: number, name: number, flipped: boolean, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible, colorSpace: interop.Object, colorMatch: boolean): interop.Object;
 }
 
 declare class QCPlugInContext extends NativeObject implements QCPlugInContext {
@@ -667,11 +667,11 @@ declare class IKImageView extends NSView {
 
   backgroundColor: NSColor;
 
-  setImageImageProperties(image: interop.PointerConvertible, metaData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+  setImageImageProperties(image: interop.Object, metaData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
   setImageWithURL(url: NSURL): void;
 
-  image(): interop.Pointer;
+  image(): interop.Object;
 
   imageSize(): CGSize;
 
@@ -1138,11 +1138,11 @@ declare class QCPlugIn extends NSObject {
 }
 
 declare class QCRenderer extends NSObject implements QCCompositionRenderer {
-  initWithCompositionColorSpace(composition: QCComposition, colorSpace: interop.PointerConvertible): this;
+  initWithCompositionColorSpace(composition: QCComposition, colorSpace: interop.Object): this;
 
-  initWithCGLContextPixelFormatColorSpaceComposition(context: interop.PointerConvertible, format: interop.PointerConvertible, colorSpace: interop.PointerConvertible, composition: QCComposition): this;
+  initWithCGLContextPixelFormatColorSpaceComposition(context: interop.PointerConvertible, format: interop.PointerConvertible, colorSpace: interop.Object, composition: QCComposition): this;
 
-  initOffScreenWithSizeColorSpaceComposition(size: CGSize, colorSpace: interop.PointerConvertible, composition: QCComposition): this;
+  initOffScreenWithSizeColorSpaceComposition(size: CGSize, colorSpace: interop.Object, composition: QCComposition): this;
 
   initWithOpenGLContextPixelFormatFile(context: NSOpenGLContext, format: NSOpenGLPixelFormat, path: string): this;
 
@@ -1516,9 +1516,9 @@ declare class QuartzFilter extends NSObject {
 
   localizedName(): string;
 
-  applyToContext(aContext: interop.PointerConvertible): boolean;
+  applyToContext(aContext: interop.Object): boolean;
 
-  removeFromContext(aContext: interop.PointerConvertible): void;
+  removeFromContext(aContext: interop.Object): void;
 }
 
 declare class QCPlugInViewController extends NSViewController {

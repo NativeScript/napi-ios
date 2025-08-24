@@ -1258,7 +1258,7 @@ declare function CGLGetShareGroup(ctx: interop.PointerConvertible): interop.Poin
 
 declare function CGLGetDeviceFromGLRenderer(rendererID: number): interop.Pointer;
 
-declare function CGLTexImageIOSurface2D(ctx: interop.PointerConvertible, target: number, internal_format: number, width: number, height: number, format: number, type: number, ioSurface: interop.PointerConvertible, plane: number): interop.Enum<typeof _CGLError>;
+declare function CGLTexImageIOSurface2D(ctx: interop.PointerConvertible, target: number, internal_format: number, width: number, height: number, format: number, type: number, ioSurface: interop.Object, plane: number): interop.Enum<typeof _CGLError>;
 
 declare function CGLChoosePixelFormat(attribs: interop.PointerConvertible, pix: interop.PointerConvertible, npix: interop.PointerConvertible): interop.Enum<typeof _CGLError>;
 

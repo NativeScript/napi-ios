@@ -58,57 +58,57 @@ declare function LSMTextGetTypeID(): number;
 
 declare function LSMResultGetTypeID(): number;
 
-declare function LSMMapCreate(alloc: interop.PointerConvertible, flags: number): interop.Pointer;
+declare function LSMMapCreate(alloc: interop.Object, flags: number): interop.Object;
 
-declare function LSMMapSetProperties(mapref: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function LSMMapSetProperties(mapref: interop.Object, properties: interop.Object): void;
 
-declare function LSMMapGetProperties(mapref: interop.PointerConvertible): interop.Pointer;
+declare function LSMMapGetProperties(mapref: interop.Object): interop.Object;
 
-declare function LSMMapStartTraining(mapref: interop.PointerConvertible): number;
+declare function LSMMapStartTraining(mapref: interop.Object): number;
 
-declare function LSMMapAddCategory(mapref: interop.PointerConvertible): number;
+declare function LSMMapAddCategory(mapref: interop.Object): number;
 
-declare function LSMMapGetCategoryCount(mapref: interop.PointerConvertible): number;
+declare function LSMMapGetCategoryCount(mapref: interop.Object): number;
 
-declare function LSMMapSetStopWords(mapref: interop.PointerConvertible, textref: interop.PointerConvertible): number;
+declare function LSMMapSetStopWords(mapref: interop.Object, textref: interop.Object): number;
 
-declare function LSMMapAddText(mapref: interop.PointerConvertible, textref: interop.PointerConvertible, category: number): number;
+declare function LSMMapAddText(mapref: interop.Object, textref: interop.Object, category: number): number;
 
-declare function LSMMapAddTextWithWeight(mapref: interop.PointerConvertible, textref: interop.PointerConvertible, category: number, weight: number): number;
+declare function LSMMapAddTextWithWeight(mapref: interop.Object, textref: interop.Object, category: number, weight: number): number;
 
-declare function LSMMapCompile(mapref: interop.PointerConvertible): number;
+declare function LSMMapCompile(mapref: interop.Object): number;
 
-declare function LSMMapCreateClusters(alloc: interop.PointerConvertible, mapref: interop.PointerConvertible, subset: interop.PointerConvertible, numClusters: number, flags: number): interop.Pointer;
+declare function LSMMapCreateClusters(alloc: interop.Object, mapref: interop.Object, subset: interop.Object, numClusters: number, flags: number): interop.Object;
 
-declare function LSMMapApplyClusters(mapref: interop.PointerConvertible, clusters: interop.PointerConvertible): number;
+declare function LSMMapApplyClusters(mapref: interop.Object, clusters: interop.Object): number;
 
-declare function LSMResultCreate(alloc: interop.PointerConvertible, mapref: interop.PointerConvertible, textref: interop.PointerConvertible, numResults: number, flags: number): interop.Pointer;
+declare function LSMResultCreate(alloc: interop.Object, mapref: interop.Object, textref: interop.Object, numResults: number, flags: number): interop.Object;
 
-declare function LSMResultGetCount(result: interop.PointerConvertible): number;
+declare function LSMResultGetCount(result: interop.Object): number;
 
-declare function LSMResultGetCategory(result: interop.PointerConvertible, n: number): number;
+declare function LSMResultGetCategory(result: interop.Object, n: number): number;
 
-declare function LSMResultGetScore(result: interop.PointerConvertible, n: number): number;
+declare function LSMResultGetScore(result: interop.Object, n: number): number;
 
-declare function LSMResultCopyWord(result: interop.PointerConvertible, n: number): interop.Pointer;
+declare function LSMResultCopyWord(result: interop.Object, n: number): interop.Object;
 
-declare function LSMResultCopyToken(result: interop.PointerConvertible, n: number): interop.Pointer;
+declare function LSMResultCopyToken(result: interop.Object, n: number): interop.Object;
 
-declare function LSMResultCopyWordCluster(result: interop.PointerConvertible, n: number): interop.Pointer;
+declare function LSMResultCopyWordCluster(result: interop.Object, n: number): interop.Object;
 
-declare function LSMResultCopyTokenCluster(result: interop.PointerConvertible, n: number): interop.Pointer;
+declare function LSMResultCopyTokenCluster(result: interop.Object, n: number): interop.Object;
 
-declare function LSMMapWriteToURL(mapref: interop.PointerConvertible, file: interop.PointerConvertible, flags: number): number;
+declare function LSMMapWriteToURL(mapref: interop.Object, file: interop.Object, flags: number): number;
 
-declare function LSMMapCreateFromURL(alloc: interop.PointerConvertible, file: interop.PointerConvertible, flags: number): interop.Pointer;
+declare function LSMMapCreateFromURL(alloc: interop.Object, file: interop.Object, flags: number): interop.Object;
 
-declare function LSMMapWriteToStream(mapref: interop.PointerConvertible, textref: interop.PointerConvertible, stream: interop.PointerConvertible, options: number): number;
+declare function LSMMapWriteToStream(mapref: interop.Object, textref: interop.Object, stream: interop.Object, options: number): number;
 
-declare function LSMTextCreate(alloc: interop.PointerConvertible, mapref: interop.PointerConvertible): interop.Pointer;
+declare function LSMTextCreate(alloc: interop.Object, mapref: interop.Object): interop.Object;
 
-declare function LSMTextAddWord(textref: interop.PointerConvertible, word: interop.PointerConvertible): number;
+declare function LSMTextAddWord(textref: interop.Object, word: interop.Object): number;
 
-declare function LSMTextAddWords(textref: interop.PointerConvertible, words: interop.PointerConvertible, locale: interop.PointerConvertible, flags: number): number;
+declare function LSMTextAddWords(textref: interop.Object, words: interop.Object, locale: interop.Object, flags: number): number;
 
-declare function LSMTextAddToken(textref: interop.PointerConvertible, token: interop.PointerConvertible): number;
+declare function LSMTextAddToken(textref: interop.Object, token: interop.Object): number;
 

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 
+#include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"
@@ -85,34 +86,34 @@ std::string buildStringFromArg(napi_env env, napi_value val) {
     return napi_util::get_string_value(env, funcString);
   } else if (napi_util::is_array(env, val)) {
     napi_value cachedSelf = val;
-    
+
     // Get array length
     uint32_t arrayLength;
     napi_get_array_length(env, val, &arrayLength);
-    
+
     std::stringstream arrayStr;
     arrayStr << "[";
-    
+
     for (uint32_t i = 0; i < arrayLength; i++) {
       napi_value propertyValue;
       napi_get_element(env, val, i, &propertyValue);
-      
+
       // Check for circular reference
       bool isStrictEqual = false;
       napi_strict_equals(env, propertyValue, cachedSelf, &isStrictEqual);
-      
+
       if (isStrictEqual) {
         arrayStr << "[Circular]";
       } else {
         std::string elementString = buildStringFromArg(env, propertyValue);
         arrayStr << elementString;
       }
-      
+
       if (i != arrayLength - 1) {
         arrayStr << ", ";
       }
     }
-    
+
     arrayStr << "]";
     return arrayStr.str();
   } else if (type == napi_object) {
@@ -152,118 +153,122 @@ std::string buildLogString(napi_env env, napi_callback_info info,
 }
 
 JS_METHOD(Console::Log) {
-  if (!RuntimeConfig.LogToSystemConsole) {
-    return UNDEFINED;
-  }
-
-  size_t argc = 0;
-  ConsoleLogType stream;
-  void* data = nullptr;
-
-  napi_get_cb_info(env, cbinfo, &argc, nullptr, nullptr, &data);
-
-  stream = ConsoleLogType((unsigned long)data);
-
-  size_t initialArg = 0;
-
-  if (stream == kConsoleLogTypeAssert) {
-    bool passes = false;
-
-    if (argc > 0) {
-      napi_value firstArg = nullptr;
-      napi_get_cb_info(env, cbinfo, &argc, &firstArg, nullptr, nullptr);
-      napi_coerce_to_bool(env, firstArg, &firstArg);
-      napi_get_value_bool(env, firstArg, &passes);
-    }
-
-    if (!passes) {
-      initialArg = 1;
-    } else {
+  try {
+    if (!RuntimeConfig.LogToSystemConsole) {
       return UNDEFINED;
     }
-  }
 
-  napi_value argv[argc];
-  napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
+    size_t argc = 0;
+    ConsoleLogType stream;
+    void* data = nullptr;
 
-  napi_value global, Symbol, SymbolFor, symbolDescription, symbol;
-  napi_get_global(env, &global);
-  napi_get_named_property(env, global, "Symbol", &Symbol);
-  napi_get_named_property(env, Symbol, "for", &SymbolFor);
-  napi_create_string_utf8(env, "nodejs.util.inspect.custom", NAPI_AUTO_LENGTH,
-                          &symbolDescription);
-  napi_call_function(env, global, SymbolFor, 1, &symbolDescription, &symbol);
+    napi_get_cb_info(env, cbinfo, &argc, nullptr, nullptr, &data);
 
-  std::stringstream log;
+    stream = ConsoleLogType((unsigned long)data);
 
-  // TODO(dj): what if we made this pretty?
+    size_t initialArg = 0;
 
-  log << "CONSOLE";
-  switch (stream) {
-    case kConsoleLogTypeLog:
-      log << " LOG";
-      break;
-    case kConsoleLogTypeError:
-      log << " ERROR";
-      break;
-    case kConsoleLogTypeWarn:
-      log << " WARN";
-      break;
-    case kConsoleLogTypeInfo:
-      log << " INFO";
-      break;
-    case kConsoleLogTypeAssert:
-      log << " ASSERT FAILED";
-      break;
-  }
-  log << ": ";
+    if (stream == kConsoleLogTypeAssert) {
+      bool passes = false;
 
-  log << buildLogString(env, cbinfo, initialArg);
+      if (argc > 0) {
+        napi_value firstArg = nullptr;
+        napi_get_cb_info(env, cbinfo, &argc, &firstArg, nullptr, nullptr);
+        napi_coerce_to_bool(env, firstArg, &firstArg);
+        napi_get_value_bool(env, firstArg, &passes);
+      }
 
-  log << "\n";
+      if (!passes) {
+        initialArg = 1;
+      } else {
+        return UNDEFINED;
+      }
+    }
 
-  std::string logString = log.str();
+    napi_value argv[argc];
+    napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
+
+    napi_value global, Symbol, SymbolFor, symbolDescription, symbol;
+    napi_get_global(env, &global);
+    napi_get_named_property(env, global, "Symbol", &Symbol);
+    napi_get_named_property(env, Symbol, "for", &SymbolFor);
+    napi_create_string_utf8(env, "nodejs.util.inspect.custom", NAPI_AUTO_LENGTH,
+                            &symbolDescription);
+    napi_call_function(env, global, SymbolFor, 1, &symbolDescription, &symbol);
+
+    std::stringstream log;
+
+    // TODO(dj): what if we made this pretty?
+
+    log << "CONSOLE";
+    switch (stream) {
+      case kConsoleLogTypeLog:
+        log << " LOG";
+        break;
+      case kConsoleLogTypeError:
+        log << " ERROR";
+        break;
+      case kConsoleLogTypeWarn:
+        log << " WARN";
+        break;
+      case kConsoleLogTypeInfo:
+        log << " INFO";
+        break;
+      case kConsoleLogTypeAssert:
+        log << " ASSERT FAILED";
+        break;
+    }
+    log << ": ";
+
+    log << buildLogString(env, cbinfo, initialArg);
+
+    log << "\n";
+
+    std::string logString = log.str();
 
 #ifdef __APPLE__
-  NSLog(CFSTR("%s"), logString.c_str());
+    NSLog(CFSTR("%s"), logString.c_str());
 #else
-  switch (stream) {
-    case kConsoleLogTypeLog:
-    case kConsoleLogTypeInfo:
-      std::cout << logString;
-      break;
-    case kConsoleLogTypeError:
-    case kConsoleLogTypeWarn:
-    case kConsoleLogTypeAssert:
-      std::cerr << logString;
-      break;
-  }
+    switch (stream) {
+      case kConsoleLogTypeLog:
+      case kConsoleLogTypeInfo:
+        std::cout << logString;
+        break;
+      case kConsoleLogTypeError:
+      case kConsoleLogTypeWarn:
+      case kConsoleLogTypeAssert:
+        std::cerr << logString;
+        break;
+    }
 #endif
 
 #ifdef TARGET_ENGINE_V8
-  v8_inspector::ConsoleAPIType method;
-  switch (stream) {
-    case kConsoleLogTypeLog:
-      method = v8_inspector::ConsoleAPIType::kLog;
-      break;
-    case kConsoleLogTypeError:
-      method = v8_inspector::ConsoleAPIType::kError;
-      break;
-    case kConsoleLogTypeWarn:
-      method = v8_inspector::ConsoleAPIType::kWarning;
-      break;
-    case kConsoleLogTypeInfo:
-      method = v8_inspector::ConsoleAPIType::kInfo;
-      break;
-    case kConsoleLogTypeAssert:
-      method = v8_inspector::ConsoleAPIType::kAssert;
-      break;
-    default:
-      break;
-  }
+    v8_inspector::ConsoleAPIType method;
+    switch (stream) {
+      case kConsoleLogTypeLog:
+        method = v8_inspector::ConsoleAPIType::kLog;
+        break;
+      case kConsoleLogTypeError:
+        method = v8_inspector::ConsoleAPIType::kError;
+        break;
+      case kConsoleLogTypeWarn:
+        method = v8_inspector::ConsoleAPIType::kWarning;
+        break;
+      case kConsoleLogTypeInfo:
+        method = v8_inspector::ConsoleAPIType::kInfo;
+        break;
+      case kConsoleLogTypeAssert:
+        method = v8_inspector::ConsoleAPIType::kAssert;
+        break;
+      default:
+        break;
+    }
 
-  sendToDevToolsFrontEnd(env, method, logString);
+    sendToDevToolsFrontEnd(env, method, logString);
 #endif
+  } catch (NativeScriptException& e) {
+    e.ReThrowToJS(env);
+  }
 
   return UNDEFINED;
 }

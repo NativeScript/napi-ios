@@ -357,63 +357,63 @@ declare function JRSFontGetRenderingStyleForContext(context: interop.PointerConv
 
 declare function JRSFontSetRenderingStyleOnContext(context: interop.PointerConvertible, style: number): void;
 
-declare function JRSFontCreateFallbackFontForCharacters(font: interop.PointerConvertible, unichars: interop.PointerConvertible, length: number): interop.Pointer;
+declare function JRSFontCreateFallbackFontForCharacters(font: interop.PointerConvertible, unichars: interop.PointerConvertible, length: number): interop.Object;
 
 declare function JRSFontGetAdvancesForGlyphsAndStyle(font: interop.PointerConvertible, tx: interop.PointerConvertible, style: number, glyphs: interop.Pointer, count: number, advances: interop.Pointer): number;
 
 declare function JRSFontGetBoundingBoxesForGlyphsAndStyle(font: interop.PointerConvertible, tx: interop.PointerConvertible, style: number, glyphs: interop.Pointer, count: number, bboxes: interop.Pointer): CGRect;
 
-declare function JRSUIRendererCreate(): interop.Pointer;
+declare function JRSUIRendererCreate(): interop.Object;
 
-declare function JRSUIRendererRelease(renderer: interop.PointerConvertible): void;
+declare function JRSUIRendererRelease(renderer: interop.Object): void;
 
-declare function JRSUIControlCreate(isFlipped: number): interop.Pointer;
+declare function JRSUIControlCreate(isFlipped: number): interop.Object;
 
-declare function JRSUIControlRelease(control: interop.PointerConvertible): void;
+declare function JRSUIControlRelease(control: interop.Object): void;
 
-declare function JRSUIControlDraw(renderer: interop.PointerConvertible, control: interop.PointerConvertible, context: interop.PointerConvertible, bounds: CGRect): void;
+declare function JRSUIControlDraw(renderer: interop.Object, control: interop.Object, context: interop.Object, bounds: CGRect): void;
 
-declare function JRSUIGetKey(value: number): interop.Pointer;
+declare function JRSUIGetKey(value: number): interop.Object;
 
-declare function JRSUIControlSetValueByKey(control: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function JRSUIControlSetValueByKey(control: interop.Object, key: interop.Object, value: interop.Object): void;
 
-declare function JRSUIControlSetWidget(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetWidget(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetState(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetState(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetSize(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetSize(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetDirection(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetDirection(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetOrientation(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetOrientation(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetAlignmentVertical(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetAlignmentVertical(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetAlignmentHorizontal(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetAlignmentHorizontal(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetSegmentPosition(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetSegmentPosition(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetScrollBarPart(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetScrollBarPart(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetVariant(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetVariant(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetWindowType(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetWindowType(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetPresentationState(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetPresentationState(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetUserInterfaceLayoutDirection(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetUserInterfaceLayoutDirection(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetShowArrows(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetShowArrows(control: interop.Object, value: number): void;
 
-declare function JRSUIControlSetAnimating(control: interop.PointerConvertible, value: number): void;
+declare function JRSUIControlSetAnimating(control: interop.Object, value: number): void;
 
-declare function JRSUIControlGetHitPart(renderer: interop.PointerConvertible, control: interop.PointerConvertible, bounds: CGRect, point: CGPoint): number;
+declare function JRSUIControlGetHitPart(renderer: interop.Object, control: interop.Object, bounds: CGRect, point: CGPoint): number;
 
 declare function JRSUIControlShouldScrollToClick(): number;
 
-declare function JRSUIControlGetScrollBarPartBounds(control: interop.PointerConvertible, frame: CGRect, part: number): CGRect;
+declare function JRSUIControlGetScrollBarPartBounds(control: interop.Object, frame: CGRect, part: number): CGRect;
 
-declare function JRSUIControlGetScrollBarOffsetFor(control: interop.PointerConvertible, frame: CGRect, offset: number, visibleAmount: number, extent: number): number;
+declare function JRSUIControlGetScrollBarOffsetFor(control: interop.Object, frame: CGRect, offset: number, visibleAmount: number, extent: number): number;
 
 declare interface JRSRemoteLayer {
   readonly layerID: number;

@@ -274,7 +274,7 @@ declare function FFReleaseDevice(deviceReference: interop.PointerConvertible): n
 
 declare function FFIsForceFeedback(hidDevice: number): number;
 
-declare function FFDeviceCreateEffect(deviceReference: interop.PointerConvertible, uuidRef: interop.PointerConvertible, pEffectDefinition: interop.PointerConvertible, pEffectReference: interop.PointerConvertible): number;
+declare function FFDeviceCreateEffect(deviceReference: interop.PointerConvertible, uuidRef: interop.Object, pEffectDefinition: interop.PointerConvertible, pEffectReference: interop.PointerConvertible): number;
 
 declare function FFDeviceReleaseEffect(deviceReference: interop.PointerConvertible, effectReference: interop.PointerConvertible): number;
 

@@ -18,11 +18,11 @@ declare const BluetoothKeyboardReturnType: {
   No: 3,
 };
 
-declare function IOBluetoothValidateHardwareWithDescription(cancelButtonTitle: interop.PointerConvertible, descriptionText: interop.PointerConvertible): number;
+declare function IOBluetoothValidateHardwareWithDescription(cancelButtonTitle: interop.Object, descriptionText: interop.Object): number;
 
-declare function IOBluetoothGetPairingController(): interop.Pointer;
+declare function IOBluetoothGetPairingController(): interop.Object;
 
-declare function IOBluetoothGetDeviceSelectorController(): interop.Pointer;
+declare function IOBluetoothGetDeviceSelectorController(): interop.Object;
 
 declare class IOBluetoothPairingController extends NSWindowController {
   static pairingController(): IOBluetoothPairingController;
@@ -65,9 +65,9 @@ declare class IOBluetoothServiceBrowserController extends NSWindowController {
 
   static browseDevicesAsSheetForWindowOptionsWindow(outRecord: interop.PointerConvertible, inOptions: number, inWindow: NSWindow): number;
 
-  static withServiceBrowserControllerRef(serviceBrowserControllerRef: interop.PointerConvertible): IOBluetoothServiceBrowserController;
+  static withServiceBrowserControllerRef(serviceBrowserControllerRef: interop.Object): IOBluetoothServiceBrowserController;
 
-  getServiceBrowserControllerRef(): interop.Pointer;
+  getServiceBrowserControllerRef(): interop.Object;
 
   discover(outRecord: interop.PointerConvertible): number;
 

@@ -30,9 +30,9 @@ declare class OpaqueVDADecoder {
   constructor(init?: OpaqueVDADecoder);
 }
 
-declare function VDADecoderCreate(decoderConfiguration: interop.PointerConvertible, destinationImageBufferAttributes: interop.PointerConvertible, outputCallback: interop.PointerConvertible, decoderOutputCallbackRefcon: interop.PointerConvertible, decoderOut: interop.PointerConvertible): number;
+declare function VDADecoderCreate(decoderConfiguration: interop.Object, destinationImageBufferAttributes: interop.Object, outputCallback: interop.PointerConvertible, decoderOutputCallbackRefcon: interop.PointerConvertible, decoderOut: interop.PointerConvertible): number;
 
-declare function VDADecoderDecode(decoder: interop.PointerConvertible, decodeFlags: number, compressedBuffer: interop.PointerConvertible, frameInfo: interop.PointerConvertible): number;
+declare function VDADecoderDecode(decoder: interop.PointerConvertible, decodeFlags: number, compressedBuffer: interop.Object, frameInfo: interop.Object): number;
 
 declare function VDADecoderFlush(decoder: interop.PointerConvertible, flushFlags: number): number;
 

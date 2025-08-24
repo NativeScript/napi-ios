@@ -336,7 +336,7 @@ declare const dayMask: number;
 
 declare const afpCallNotAllowed: number;
 
-declare const kWSStreamErrorError: interop.Pointer;
+declare const kWSStreamErrorError: interop.Object;
 
 declare const smFondStart: number;
 
@@ -410,7 +410,7 @@ declare const kioVAtrbFilesOpenMask: number;
 
 declare const lastDskErr: number;
 
-declare const kWSFaultCode: interop.Pointer;
+declare const kWSFaultCode: interop.Object;
 
 declare const kKeychainListChangedKCEvent: number;
 
@@ -426,7 +426,7 @@ declare const kPathKCItemAttr: number;
 
 declare const verNetherlands: number;
 
-declare const kWSDebugIncomingHeaders: interop.Pointer;
+declare const kWSDebugIncomingHeaders: interop.Object;
 
 declare const kUTTypeQuickTimeMovie: interop.Pointer;
 
@@ -518,7 +518,7 @@ declare const gestaltOCEToolboxAttr: number;
 
 declare const kBadCISErr: number;
 
-declare const kLSSharedFileListVolumesComputerVisible: interop.Pointer;
+declare const kLSSharedFileListVolumesComputerVisible: interop.Object;
 
 declare const kOffset2Pos: number;
 
@@ -626,7 +626,7 @@ declare const kFBCnoSuchHit: number;
 
 declare const pDNS: number;
 
-declare const kMDLabelVisibility: interop.Pointer;
+declare const kMDLabelVisibility: interop.Object;
 
 declare const kPEFWeakImportSymMask: number;
 
@@ -1198,7 +1198,7 @@ declare const iuWordWrapTable: number;
 
 declare const langLappish: number;
 
-declare const kLSSharedFileListGlobalLoginItems: interop.Pointer;
+declare const kLSSharedFileListGlobalLoginItems: interop.Object;
 
 declare const kUTTypeRawImage: interop.Pointer;
 
@@ -1244,7 +1244,7 @@ declare const gestaltFSMVersion: number;
 
 declare const dsCantHoldSystemHeap: number;
 
-declare const kWSRecordNamespaceURI: interop.Pointer;
+declare const kWSRecordNamespaceURI: interop.Object;
 
 declare const kEACCESErr: number;
 
@@ -1624,7 +1624,7 @@ declare const typeCString: number;
 
 declare const badRoutingSizeErr: number;
 
-declare const kLSSharedFileListItemHidden: interop.Pointer;
+declare const kLSSharedFileListItemHidden: interop.Object;
 
 declare const kFSEjectVolumeForceEject: number;
 
@@ -1646,7 +1646,7 @@ declare const kAnyProtocol: number;
 
 declare const kSmall1BitMask: number;
 
-declare const kWSHTTPExtraHeaders: interop.Pointer;
+declare const kWSHTTPExtraHeaders: interop.Object;
 
 declare const kMacRomanLatin1IcelandicVariant: number;
 
@@ -1832,15 +1832,15 @@ declare const enumSaveOptions: number;
 
 declare const kLSSharedFileListDoNotMountVolumes: number;
 
-declare const kLSSharedFileListLoginItemHidden: interop.Pointer;
+declare const kLSSharedFileListLoginItemHidden: interop.Object;
 
-declare const kLSSharedFileListRecentApplicationItems: interop.Pointer;
+declare const kLSSharedFileListRecentApplicationItems: interop.Object;
 
-declare const kLSSharedFileListFavoriteItems: interop.Pointer;
+declare const kLSSharedFileListFavoriteItems: interop.Object;
 
 declare const kETIMEDOUTErr: number;
 
-declare const kLSSharedFileListFavoriteVolumes: interop.Pointer;
+declare const kLSSharedFileListFavoriteVolumes: interop.Object;
 
 declare const kFSEventStreamEventFlagItemCloned: number;
 
@@ -1926,17 +1926,17 @@ declare const kMDLabelRemovedNotification: interop.Pointer;
 
 declare const kMDLabelChangedNotification: interop.Pointer;
 
-declare const kMDPublicVisibility: interop.Pointer;
+declare const kMDPublicVisibility: interop.Object;
 
-declare const kMDPrivateVisibility: interop.Pointer;
+declare const kMDPrivateVisibility: interop.Object;
 
-declare const kMDLabelKindIsMutuallyExclusiveSetKey: interop.Pointer;
+declare const kMDLabelKindIsMutuallyExclusiveSetKey: interop.Object;
 
 declare const cDepthErr: number;
 
-declare const kMDLabelSetsFinderColor: interop.Pointer;
+declare const kMDLabelSetsFinderColor: interop.Object;
 
-declare const kMDLabelIconData: interop.Pointer;
+declare const kMDLabelIconData: interop.Object;
 
 declare const kMDQueryScopeNetworkIndexed: interop.Pointer;
 
@@ -2710,7 +2710,7 @@ declare const kAppleMenuFolderIconResource: number;
 
 declare const cFixedRectangle: number;
 
-declare const kWSFaultExtra: interop.Pointer;
+declare const kWSFaultExtra: interop.Object;
 
 declare const kGenericExtensionIconResource: number;
 
@@ -2736,31 +2736,31 @@ declare const kGenericEditionFileIconResource: number;
 
 declare const kGenericStationeryIconResource: number;
 
-declare const kWSSOAPMessageHeaders: interop.Pointer;
+declare const kWSSOAPMessageHeaders: interop.Object;
 
-declare const kWSSOAPStyleRPC: interop.Pointer;
+declare const kWSSOAPStyleRPC: interop.Object;
 
-declare const kWSSOAPStyleDoc: interop.Pointer;
+declare const kWSSOAPStyleDoc: interop.Object;
 
-declare const kWSSOAPBodyEncodingStyle: interop.Pointer;
+declare const kWSSOAPBodyEncodingStyle: interop.Object;
 
-declare const kWSDebugIncomingBody: interop.Pointer;
+declare const kWSDebugIncomingBody: interop.Object;
 
-declare const kWSDebugOutgoingHeaders: interop.Pointer;
+declare const kWSDebugOutgoingHeaders: interop.Object;
 
-declare const kWSHTTPVersion: interop.Pointer;
+declare const kWSHTTPVersion: interop.Object;
 
-declare const kWSHTTPResponseMessage: interop.Pointer;
+declare const kWSHTTPResponseMessage: interop.Object;
 
-declare const kWSHTTPMessage: interop.Pointer;
+declare const kWSHTTPMessage: interop.Object;
 
 declare const kFSOperationTotalUserVisibleObjectsKey: interop.Pointer;
 
-declare const kWSFaultString: interop.Pointer;
+declare const kWSFaultString: interop.Object;
 
-declare const kWSMethodInvocationResult: interop.Pointer;
+declare const kWSMethodInvocationResult: interop.Object;
 
-declare const kWSSOAP1999Protocol: interop.Pointer;
+declare const kWSSOAP1999Protocol: interop.Object;
 
 declare const errWSTimeoutError: number;
 
@@ -3450,7 +3450,7 @@ declare const typeDegreesF: number;
 
 declare const hrMiscellaneousExceptionErr: number;
 
-declare const kMDLabelKind: interop.Pointer;
+declare const kMDLabelKind: interop.Object;
 
 declare const typeDegreesC: number;
 
@@ -3538,7 +3538,7 @@ declare const keyAETSMTextFMFont: number;
 
 declare const keyAENextBody: number;
 
-declare const kLSSharedFileListSessionLoginItems: interop.Pointer;
+declare const kLSSharedFileListSessionLoginItems: interop.Object;
 
 declare const keyAEFixLength: number;
 
@@ -4416,7 +4416,7 @@ declare const typeUTF16ExternalRepresentation: number;
 
 declare const typeEncodedString: number;
 
-declare const kMDLabelIsMutuallyExclusiveSetMember: interop.Pointer;
+declare const kMDLabelIsMutuallyExclusiveSetMember: interop.Object;
 
 declare const typeChar: number;
 
@@ -4450,7 +4450,7 @@ declare const ACE2Type: number;
 
 declare const telBadAPattErr: number;
 
-declare const kWSDebugOutgoingBody: interop.Pointer;
+declare const kWSDebugOutgoingBody: interop.Object;
 
 declare const NoneType: number;
 
@@ -4850,7 +4850,7 @@ declare const langSundaneseRom: number;
 
 declare const kUnicodeMatchOtherBaseMask: number;
 
-declare const kLSSharedFileListItemBeforeFirst: interop.Pointer;
+declare const kLSSharedFileListItemBeforeFirst: interop.Object;
 
 declare const kUnicodeMatchOtherFormatBit: number;
 
@@ -5712,7 +5712,7 @@ declare const fsSBUserIDBit: number;
 
 declare const kCollectionUser7Mask: number;
 
-declare const kWSSOAP2001Protocol: interop.Pointer;
+declare const kWSSOAP2001Protocol: interop.Object;
 
 declare const fsSBAttributeModDateBit: number;
 
@@ -6190,7 +6190,7 @@ declare const teScrapSizeErr: number;
 
 declare const gestaltTSMgr15: number;
 
-declare const kWSMethodInvocationTimeoutValue: interop.Pointer;
+declare const kWSMethodInvocationTimeoutValue: interop.Object;
 
 declare const kAEQDAdMin: number;
 
@@ -6592,7 +6592,7 @@ declare const gestaltQuadra605: number;
 
 declare const kTextEncodingDOSGreek1: number;
 
-declare const kWSStreamErrorMessage: interop.Pointer;
+declare const kWSStreamErrorMessage: interop.Object;
 
 declare const gestaltMacOSCompatibility: number;
 
@@ -7088,7 +7088,7 @@ declare const gestaltColorPickerVersion: number;
 
 declare const gestaltConnMgrErrorString: number;
 
-declare const kWSRecordType: interop.Pointer;
+declare const kWSRecordType: interop.Object;
 
 declare const gestaltConnMgrCMSearchFix: number;
 
@@ -7098,7 +7098,7 @@ declare const gestaltConnMgrPresent: number;
 
 declare const gestaltColorSync30: number;
 
-declare const kWSSOAPMethodNamespaceURI: interop.Pointer;
+declare const kWSSOAPMethodNamespaceURI: interop.Object;
 
 declare const kATSUInvalidTextLayoutErr: number;
 
@@ -8398,7 +8398,7 @@ declare const kTXNOutsideOfFrameErr: number;
 
 declare const kTXNATSUIIsNotInstalledErr: number;
 
-declare const kWSHTTPFollowsRedirects: interop.Pointer;
+declare const kWSHTTPFollowsRedirects: interop.Object;
 
 declare const kTECPluginDispatchTableCurrentVersion: number;
 
@@ -8960,7 +8960,7 @@ declare const kPOSIXErrorEDESTADDRREQ: number;
 
 declare const kTXNCannotSetAutoIndentErr: number;
 
-declare const kLSSharedFileListRecentItemsMaxAmount: interop.Pointer;
+declare const kLSSharedFileListRecentItemsMaxAmount: interop.Object;
 
 declare const kUSBOutOfMemoryErr: number;
 
@@ -9318,7 +9318,7 @@ declare const gestaltWindowMgrPresentMask: number;
 
 declare const cmCantGamutCheckError: number;
 
-declare const kMDLabelKindVisibilityKey: interop.Pointer;
+declare const kMDLabelKindVisibilityKey: interop.Object;
 
 declare const kUTTypeSpotlightImporter: interop.Pointer;
 
@@ -9346,7 +9346,7 @@ declare const errAEBadTestKey: number;
 
 declare const errKCKeySizeNotAllowed: number;
 
-declare const kWSHTTPProxy: interop.Pointer;
+declare const kWSHTTPProxy: interop.Object;
 
 declare const kNSLInsufficientSysVer: number;
 
@@ -9390,7 +9390,7 @@ declare const pickerResourceError: number;
 
 declare const kQDCorruptPICTDataErr: number;
 
-declare const kLSSharedFileListRecentDocumentItems: interop.Pointer;
+declare const kLSSharedFileListRecentDocumentItems: interop.Object;
 
 declare const dcmNoRecordErr: number;
 
@@ -9688,7 +9688,7 @@ declare const tsmNoHandler: number;
 
 declare const kFSForceReadMask: number;
 
-declare const kWSRecordParameterOrder: interop.Pointer;
+declare const kWSRecordParameterOrder: interop.Object;
 
 declare const tsmInvalidContext: number;
 
@@ -10250,7 +10250,7 @@ declare const fsSBDrUsrWds: number;
 
 declare const badServiceMethodErr: number;
 
-declare const kMDLabelIconUUID: interop.Pointer;
+declare const kMDLabelIconUUID: interop.Object;
 
 declare const networkErr: number;
 
@@ -11776,7 +11776,7 @@ declare const typeCFMutableAttributedStringRef: number;
 
 declare const kInternetLocationFTP: number;
 
-declare const kLSSharedFileListVolumesIDiskVisible: interop.Pointer;
+declare const kLSSharedFileListVolumesIDiskVisible: interop.Object;
 
 declare const kAEUTEnumerated: number;
 
@@ -11892,7 +11892,7 @@ declare const eTrackpad: number;
 
 declare const formAbsolutePosition: number;
 
-declare const kMDLabelUUID: interop.Pointer;
+declare const kMDLabelUUID: interop.Object;
 
 declare const dataVerErr: number;
 
@@ -12248,7 +12248,7 @@ declare const tooManyReqs: number;
 
 declare const errAEBufferTooSmall: number;
 
-declare const kLSSharedFileListRecentServerItems: interop.Pointer;
+declare const kLSSharedFileListRecentServerItems: interop.Object;
 
 declare const kCertSearchAny: number;
 
@@ -12988,7 +12988,7 @@ declare const gestaltStereoCapability: number;
 
 declare const typeProcessSerialNumber: number;
 
-declare const kWSStreamErrorDomain: interop.Pointer;
+declare const kWSStreamErrorDomain: interop.Object;
 
 declare const smTransRuleBaseFormat: number;
 
@@ -13028,7 +13028,7 @@ declare const firstPickerError: number;
 
 declare const synthNotReady: number;
 
-declare const kMDLabelBundleURL: interop.Pointer;
+declare const kMDLabelBundleURL: interop.Object;
 
 declare const afpDirNotEmpty: number;
 
@@ -13090,7 +13090,7 @@ declare const gestaltScreenCaptureDir: number;
 
 declare const btRecNotFnd: number;
 
-declare const kLSSharedFileListItemLast: interop.Pointer;
+declare const kLSSharedFileListItemLast: interop.Object;
 
 declare const kNSLBadNetConnection: number;
 
@@ -13286,7 +13286,7 @@ declare const kCertSearchVerifyDisallowed: number;
 
 declare const kAEDoNotAutomaticallyAddAnnotationsToEvent: number;
 
-declare const kLSSharedFileListVolumesNetworkVisible: interop.Pointer;
+declare const kLSSharedFileListVolumesNetworkVisible: interop.Object;
 
 declare const gestaltPwrBkEKJISKbd: number;
 
@@ -13664,7 +13664,7 @@ declare const dsFSErr: number;
 
 declare const portNameExistsErr: number;
 
-declare const kWSNetworkStreamFaultString: interop.Pointer;
+declare const kWSNetworkStreamFaultString: interop.Object;
 
 declare const gestaltMacClassic: number;
 
@@ -14092,7 +14092,7 @@ declare const kNSpTopologyNotSupportedErr: number;
 
 declare const kUCTSOptionsReleaseStringMask: number;
 
-declare const kMDLabelContentChangeDate: interop.Pointer;
+declare const kMDLabelContentChangeDate: interop.Object;
 
 declare const kWindowsLatin1PalmVariant: number;
 
@@ -14198,7 +14198,7 @@ declare const kCertUsageSigningAskAndAdd: number;
 
 declare const keyAERestoreAppState: number;
 
-declare const kWSXMLRPCProtocol: interop.Pointer;
+declare const kWSXMLRPCProtocol: interop.Object;
 
 declare const gestaltTeleMgrSoundStreams: number;
 
@@ -14726,7 +14726,7 @@ declare const tokenHash: number;
 
 declare const kPOSIXErrorEDEVERR: number;
 
-declare const kWSMethodInvocationResultParameterName: interop.Pointer;
+declare const kWSMethodInvocationResultParameterName: interop.Object;
 
 declare const laPropertyValueErr: number;
 
@@ -15662,7 +15662,7 @@ declare const kFSEventStreamEventFlagKernelDropped: number;
 
 declare const invalidChunkNum: number;
 
-declare const kMDLabelDisplayName: interop.Pointer;
+declare const kMDLabelDisplayName: interop.Object;
 
 declare const kMacIcelandicStdDefaultVariant: number;
 
@@ -15917,7 +15917,7 @@ declare class LSItemInfoRecord {
   flags: interop.Enum<typeof LSItemInfoFlags>;
   filetype: number;
   creator: number;
-  extension: interop.Pointer;
+  extension: interop.Object | null;
 }
 
 declare class OpaqueIconRef {
@@ -15940,10 +15940,10 @@ declare class WSClientContext {
 declare class KCCallbackInfo {
   constructor(init?: KCCallbackInfo);
   version: number;
-  item: interop.Pointer;
+  item: interop.Object | null;
   processID: unknown /* const array */;
   event: unknown /* const array */;
-  keychain: interop.Pointer;
+  keychain: interop.Object | null;
 }
 
 declare class SleepQRec {
@@ -17574,7 +17574,7 @@ declare class FSPermissionInfo {
   reserved1: number;
   userAccess: number;
   mode: number;
-  fileSec: interop.Pointer;
+  fileSec: interop.Object | null;
 }
 
 declare class OpaqueCollatorRef {
@@ -17711,8 +17711,8 @@ declare class LSApplicationParameters {
   flags: interop.Enum<typeof LSLaunchFlags>;
   application: interop.Pointer;
   asyncLaunchRefCon: interop.Pointer;
-  environment: interop.Pointer;
-  argv: interop.Pointer;
+  environment: interop.Object | null;
+  argv: interop.Object | null;
   initialEvent: interop.Pointer;
 }
 
@@ -17925,8 +17925,8 @@ declare class FolderDesc {
 
 declare class LSLaunchURLSpec {
   constructor(init?: LSLaunchURLSpec);
-  appURL: interop.Pointer;
-  itemURLs: interop.Pointer;
+  appURL: interop.Object | null;
+  itemURLs: interop.Object | null;
   passThruParams: interop.Pointer;
   launchFlags: interop.Enum<typeof LSLaunchFlags>;
   asyncRefCon: interop.Pointer;
@@ -18379,15 +18379,15 @@ declare function S64Absolute(value: number): number;
 
 declare function U64Compare(left: number, right: number): number;
 
-declare function CSBackupSetItemExcluded(item: interop.PointerConvertible, exclude: number, excludeByPath: number): number;
+declare function CSBackupSetItemExcluded(item: interop.Object, exclude: number, excludeByPath: number): number;
 
-declare function CSBackupIsItemExcluded(item: interop.PointerConvertible, excludeByPath: interop.PointerConvertible): number;
+declare function CSBackupIsItemExcluded(item: interop.Object, excludeByPath: interop.PointerConvertible): number;
 
-declare function CSDiskSpaceStartRecovery(volumeURL: interop.PointerConvertible, bytesNeeded: number, options: number, outOperationUUID: interop.PointerConvertible, callbackQueue: NSObject, callback: (p1: number, p2: number, p3: interop.PointerConvertible) => void): void;
+declare function CSDiskSpaceStartRecovery(volumeURL: interop.Object, bytesNeeded: number, options: number, outOperationUUID: interop.PointerConvertible, callbackQueue: NSObject, callback: (p1: number, p2: number, p3: interop.PointerConvertible) => void): void;
 
-declare function CSDiskSpaceCancelRecovery(operationUUID: interop.PointerConvertible): void;
+declare function CSDiskSpaceCancelRecovery(operationUUID: interop.Object): void;
 
-declare function CSDiskSpaceGetRecoveryEstimate(volumeURL: interop.PointerConvertible): number;
+declare function CSDiskSpaceGetRecoveryEstimate(volumeURL: interop.Object): number;
 
 declare function UCConvertUTCDateTimeToCFAbsoluteTime(iUTCDate: interop.PointerConvertible, oCFTime: interop.PointerConvertible): number;
 
@@ -18413,9 +18413,9 @@ declare function ReadLocation(loc: interop.PointerConvertible): void;
 
 declare function TickCount(): number;
 
-declare function CSCopyUserName(useShortName: number): interop.Pointer;
+declare function CSCopyUserName(useShortName: number): interop.Object;
 
-declare function CSCopyMachineName(): interop.Pointer;
+declare function CSCopyMachineName(): interop.Object;
 
 declare function NewDeferredTaskUPP(userRoutine: (p1: number) => void): (p1: number) => void;
 
@@ -18477,9 +18477,9 @@ declare function PBExchangeObjectsSync(paramBlock: interop.PointerConvertible): 
 
 declare function PBExchangeObjectsAsync(paramBlock: interop.PointerConvertible): void;
 
-declare function FSReplaceObject(originalObject: interop.PointerConvertible, replacementObject: interop.PointerConvertible, newName: interop.PointerConvertible, temporaryName: interop.PointerConvertible, temporaryDirectory: interop.PointerConvertible, flags: number, resultObject: interop.PointerConvertible): number;
+declare function FSReplaceObject(originalObject: interop.PointerConvertible, replacementObject: interop.PointerConvertible, newName: interop.Object, temporaryName: interop.Object, temporaryDirectory: interop.PointerConvertible, flags: number, resultObject: interop.PointerConvertible): number;
 
-declare function FSPathReplaceObject(originalObjectPath: string, replacementObjectPath: string, newName: interop.PointerConvertible, temporaryName: interop.PointerConvertible, temporaryDirectoryPath: string, flags: number): number;
+declare function FSPathReplaceObject(originalObjectPath: string, replacementObjectPath: string, newName: interop.Object, temporaryName: interop.Object, temporaryDirectoryPath: string, flags: number): number;
 
 declare function FSGetTemporaryDirectoryForReplaceObject(originalObject: interop.PointerConvertible, temporaryDirectory: interop.PointerConvertible, flags: number): number;
 
@@ -18695,19 +18695,19 @@ declare function FSCreateVolumeOperation(volumeOp: interop.PointerConvertible): 
 
 declare function FSDisposeVolumeOperation(volumeOp: interop.PointerConvertible): number;
 
-declare function FSMountLocalVolumeSync(diskID: interop.PointerConvertible, mountDir: interop.PointerConvertible, mountedVolumeRefNum: interop.PointerConvertible, flags: number): number;
+declare function FSMountLocalVolumeSync(diskID: interop.Object, mountDir: interop.Object, mountedVolumeRefNum: interop.PointerConvertible, flags: number): number;
 
-declare function FSMountLocalVolumeAsync(diskID: interop.PointerConvertible, mountDir: interop.PointerConvertible, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void, runloop: interop.PointerConvertible, runloopMode: interop.PointerConvertible): number;
+declare function FSMountLocalVolumeAsync(diskID: interop.Object, mountDir: interop.Object, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void, runloop: interop.Object, runloopMode: interop.Object): number;
 
-declare function FSMountServerVolumeSync(url: interop.PointerConvertible, mountDir: interop.PointerConvertible, user: interop.PointerConvertible, password: interop.PointerConvertible, mountedVolumeRefNum: interop.PointerConvertible, flags: number): number;
+declare function FSMountServerVolumeSync(url: interop.Object, mountDir: interop.Object, user: interop.Object, password: interop.Object, mountedVolumeRefNum: interop.PointerConvertible, flags: number): number;
 
-declare function FSMountServerVolumeAsync(url: interop.PointerConvertible, mountDir: interop.PointerConvertible, user: interop.PointerConvertible, password: interop.PointerConvertible, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void, runloop: interop.PointerConvertible, runloopMode: interop.PointerConvertible): number;
+declare function FSMountServerVolumeAsync(url: interop.Object, mountDir: interop.Object, user: interop.Object, password: interop.Object, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void, runloop: interop.Object, runloopMode: interop.Object): number;
 
 declare function FSGetAsyncMountStatus(volumeOp: interop.PointerConvertible, status: interop.PointerConvertible, volumeOpStatus: interop.PointerConvertible, mountedVolumeRefNum: interop.PointerConvertible, clientData: interop.PointerConvertible): number;
 
 declare function FSUnmountVolumeSync(vRefNum: number, flags: number, dissenter: interop.PointerConvertible): number;
 
-declare function FSUnmountVolumeAsync(vRefNum: number, flags: number, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void, runloop: interop.PointerConvertible, runloopMode: interop.PointerConvertible): number;
+declare function FSUnmountVolumeAsync(vRefNum: number, flags: number, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void, runloop: interop.Object, runloopMode: interop.Object): number;
 
 declare function FSGetAsyncUnmountStatus(volumeOp: interop.PointerConvertible, status: interop.PointerConvertible, volumeOpStatus: interop.PointerConvertible, volumeRefNum: interop.PointerConvertible, dissenter: interop.PointerConvertible, clientData: interop.PointerConvertible): number;
 
@@ -18715,7 +18715,7 @@ declare function FSCancelVolumeOperation(volumeOp: interop.PointerConvertible): 
 
 declare function FSEjectVolumeSync(vRefNum: number, flags: number, dissenter: interop.PointerConvertible): number;
 
-declare function FSEjectVolumeAsync(vRefNum: number, flags: number, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void, runloop: interop.PointerConvertible, runloopMode: interop.PointerConvertible): number;
+declare function FSEjectVolumeAsync(vRefNum: number, flags: number, volumeOp: interop.PointerConvertible, clientData: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void, runloop: interop.Object, runloopMode: interop.Object): number;
 
 declare function FSGetAsyncEjectStatus(volumeOp: interop.PointerConvertible, status: interop.PointerConvertible, volumeOpStatus: interop.PointerConvertible, volumeRefNum: interop.PointerConvertible, dissenter: interop.PointerConvertible, clientData: interop.PointerConvertible): number;
 
@@ -18723,85 +18723,85 @@ declare function FSCopyDiskIDForVolume(vRefNum: number, diskID: interop.PointerC
 
 declare function FSCopyURLForVolume(vRefNum: number, url: interop.PointerConvertible): number;
 
-declare function FSGetVolumeForDiskID(diskID: interop.PointerConvertible, vRefNum: interop.PointerConvertible): number;
+declare function FSGetVolumeForDiskID(diskID: interop.Object, vRefNum: interop.PointerConvertible): number;
 
 declare function FSCopyDADiskForVolume(vRefNum: number, disk: interop.PointerConvertible): number;
 
-declare function FSGetVolumeForDADisk(disk: interop.PointerConvertible, vRefNum: interop.PointerConvertible): number;
+declare function FSGetVolumeForDADisk(disk: interop.Object, vRefNum: interop.PointerConvertible): number;
 
-declare function FSCopyObjectSync(source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.PointerConvertible, target: interop.PointerConvertible, options: number): number;
+declare function FSCopyObjectSync(source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.Object, target: interop.PointerConvertible, options: number): number;
 
-declare function FSMoveObjectSync(source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.PointerConvertible, target: interop.PointerConvertible, options: number): number;
+declare function FSMoveObjectSync(source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.Object, target: interop.PointerConvertible, options: number): number;
 
 declare function FSMoveObjectToTrashSync(source: interop.PointerConvertible, target: interop.PointerConvertible, options: number): number;
 
-declare function FSPathCopyObjectSync(sourcePath: string, destDirPath: string, destName: interop.PointerConvertible, targetPath: interop.PointerConvertible, options: number): number;
+declare function FSPathCopyObjectSync(sourcePath: string, destDirPath: string, destName: interop.Object, targetPath: interop.PointerConvertible, options: number): number;
 
-declare function FSPathMoveObjectSync(sourcePath: string, destDirPath: string, destName: interop.PointerConvertible, targetPath: interop.PointerConvertible, options: number): number;
+declare function FSPathMoveObjectSync(sourcePath: string, destDirPath: string, destName: interop.Object, targetPath: interop.PointerConvertible, options: number): number;
 
 declare function FSPathMoveObjectToTrashSync(sourcePath: string, targetPath: interop.PointerConvertible, options: number): number;
 
 declare function FSFileOperationGetTypeID(): number;
 
-declare function FSFileOperationCreate(alloc: interop.PointerConvertible): interop.Pointer;
+declare function FSFileOperationCreate(alloc: interop.Object): interop.Object;
 
-declare function FSFileOperationScheduleWithRunLoop(fileOp: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function FSFileOperationScheduleWithRunLoop(fileOp: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function FSFileOperationUnscheduleFromRunLoop(fileOp: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function FSFileOperationUnscheduleFromRunLoop(fileOp: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function FSCopyObjectAsync(fileOp: interop.PointerConvertible, source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
+declare function FSCopyObjectAsync(fileOp: interop.Object, source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.Object, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
 
-declare function FSMoveObjectAsync(fileOp: interop.PointerConvertible, source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
+declare function FSMoveObjectAsync(fileOp: interop.Object, source: interop.PointerConvertible, destDir: interop.PointerConvertible, destName: interop.Object, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
 
-declare function FSMoveObjectToTrashAsync(fileOp: interop.PointerConvertible, source: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
+declare function FSMoveObjectToTrashAsync(fileOp: interop.Object, source: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
 
-declare function FSPathCopyObjectAsync(fileOp: interop.PointerConvertible, sourcePath: string, destDirPath: string, destName: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
+declare function FSPathCopyObjectAsync(fileOp: interop.Object, sourcePath: string, destDirPath: string, destName: interop.Object, flags: number, callback: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
 
-declare function FSPathMoveObjectAsync(fileOp: interop.PointerConvertible, sourcePath: string, destDirPath: string, destName: interop.PointerConvertible, flags: number, callback: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
+declare function FSPathMoveObjectAsync(fileOp: interop.Object, sourcePath: string, destDirPath: string, destName: interop.Object, flags: number, callback: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
 
-declare function FSPathMoveObjectToTrashAsync(fileOp: interop.PointerConvertible, sourcePath: string, flags: number, callback: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
+declare function FSPathMoveObjectToTrashAsync(fileOp: interop.Object, sourcePath: string, flags: number, callback: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, statusChangeInterval: number, clientContext: interop.PointerConvertible): number;
 
-declare function FSFileOperationCancel(fileOp: interop.PointerConvertible): number;
+declare function FSFileOperationCancel(fileOp: interop.Object): number;
 
-declare function FSFileOperationCopyStatus(fileOp: interop.PointerConvertible, currentItem: interop.PointerConvertible, stage: interop.PointerConvertible, error: interop.PointerConvertible, statusDictionary: interop.PointerConvertible, info: interop.PointerConvertible): number;
+declare function FSFileOperationCopyStatus(fileOp: interop.Object, currentItem: interop.PointerConvertible, stage: interop.PointerConvertible, error: interop.PointerConvertible, statusDictionary: interop.PointerConvertible, info: interop.PointerConvertible): number;
 
-declare function FSPathFileOperationCopyStatus(fileOp: interop.PointerConvertible, currentItem: interop.PointerConvertible, stage: interop.PointerConvertible, error: interop.PointerConvertible, statusDictionary: interop.PointerConvertible, info: interop.PointerConvertible): number;
+declare function FSPathFileOperationCopyStatus(fileOp: interop.Object, currentItem: interop.PointerConvertible, stage: interop.PointerConvertible, error: interop.PointerConvertible, statusDictionary: interop.PointerConvertible, info: interop.PointerConvertible): number;
 
-declare function FSCreateStringFromHFSUniStr(alloc: interop.PointerConvertible, uniStr: interop.PointerConvertible): interop.Pointer;
+declare function FSCreateStringFromHFSUniStr(alloc: interop.Object, uniStr: interop.PointerConvertible): interop.Object;
 
-declare function FSGetHFSUniStrFromString(theString: interop.PointerConvertible, uniStr: interop.PointerConvertible): number;
+declare function FSGetHFSUniStrFromString(theString: interop.Object, uniStr: interop.PointerConvertible): number;
 
 declare function FSFileSecurityGetTypeID(): number;
 
-declare function FSFileSecurityCreate(alloc: interop.PointerConvertible): interop.Pointer;
+declare function FSFileSecurityCreate(alloc: interop.Object): interop.Object;
 
-declare function FSFileSecurityCreateWithFSPermissionInfo(alloc: interop.PointerConvertible, permissions: interop.PointerConvertible): interop.Pointer;
+declare function FSFileSecurityCreateWithFSPermissionInfo(alloc: interop.Object, permissions: interop.PointerConvertible): interop.Object;
 
-declare function FSFileSecurityRefCreateCopy(alloc: interop.PointerConvertible, fileSec: interop.PointerConvertible): interop.Pointer;
+declare function FSFileSecurityRefCreateCopy(alloc: interop.Object, fileSec: interop.Object): interop.Object;
 
-declare function FSFileSecurityGetOwnerUUID(fileSec: interop.PointerConvertible, owner: interop.PointerConvertible): number;
+declare function FSFileSecurityGetOwnerUUID(fileSec: interop.Object, owner: interop.PointerConvertible): number;
 
-declare function FSFileSecuritySetOwnerUUID(fileSec: interop.PointerConvertible, owner: interop.PointerConvertible): number;
+declare function FSFileSecuritySetOwnerUUID(fileSec: interop.Object, owner: interop.PointerConvertible): number;
 
-declare function FSFileSecurityGetGroupUUID(fileSec: interop.PointerConvertible, group: interop.PointerConvertible): number;
+declare function FSFileSecurityGetGroupUUID(fileSec: interop.Object, group: interop.PointerConvertible): number;
 
-declare function FSFileSecuritySetGroupUUID(fileSec: interop.PointerConvertible, group: interop.PointerConvertible): number;
+declare function FSFileSecuritySetGroupUUID(fileSec: interop.Object, group: interop.PointerConvertible): number;
 
-declare function FSFileSecurityCopyAccessControlList(fileSec: interop.PointerConvertible, accessControlList: interop.PointerConvertible): number;
+declare function FSFileSecurityCopyAccessControlList(fileSec: interop.Object, accessControlList: interop.PointerConvertible): number;
 
-declare function FSFileSecuritySetAccessControlList(fileSec: interop.PointerConvertible, accessControlList: interop.PointerConvertible): number;
+declare function FSFileSecuritySetAccessControlList(fileSec: interop.Object, accessControlList: interop.PointerConvertible): number;
 
-declare function FSFileSecurityGetOwner(fileSec: interop.PointerConvertible, owner: interop.PointerConvertible): number;
+declare function FSFileSecurityGetOwner(fileSec: interop.Object, owner: interop.PointerConvertible): number;
 
-declare function FSFileSecuritySetOwner(fileSec: interop.PointerConvertible, owner: number): number;
+declare function FSFileSecuritySetOwner(fileSec: interop.Object, owner: number): number;
 
-declare function FSFileSecurityGetGroup(fileSec: interop.PointerConvertible, group: interop.PointerConvertible): number;
+declare function FSFileSecurityGetGroup(fileSec: interop.Object, group: interop.PointerConvertible): number;
 
-declare function FSFileSecuritySetGroup(fileSec: interop.PointerConvertible, group: number): number;
+declare function FSFileSecuritySetGroup(fileSec: interop.Object, group: number): number;
 
-declare function FSFileSecurityGetMode(fileSec: interop.PointerConvertible, mode: interop.PointerConvertible): number;
+declare function FSFileSecurityGetMode(fileSec: interop.Object, mode: interop.PointerConvertible): number;
 
-declare function FSFileSecuritySetMode(fileSec: interop.PointerConvertible, mode: number): number;
+declare function FSFileSecuritySetMode(fileSec: interop.Object, mode: number): number;
 
 declare function FSGetVolumeParms(volume: number, buffer: interop.PointerConvertible, bufferSize: number): number;
 
@@ -19439,15 +19439,15 @@ declare function UCTypeSelectFlushSelectorData(ref: interop.PointerConvertible):
 
 declare function UCTypeSelectReleaseSelector(ref: interop.PointerConvertible): number;
 
-declare function UCTypeSelectWouldResetBuffer(inRef: interop.PointerConvertible, inText: interop.PointerConvertible, inEventTime: number): number;
+declare function UCTypeSelectWouldResetBuffer(inRef: interop.PointerConvertible, inText: interop.Object, inEventTime: number): number;
 
-declare function UCTypeSelectAddKeyToSelector(inRef: interop.PointerConvertible, inText: interop.PointerConvertible, inEventTime: number, updateFlag: interop.PointerConvertible): number;
+declare function UCTypeSelectAddKeyToSelector(inRef: interop.PointerConvertible, inText: interop.Object, inEventTime: number, updateFlag: interop.PointerConvertible): number;
 
-declare function UCTypeSelectCompare(ref: interop.PointerConvertible, inText: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function UCTypeSelectCompare(ref: interop.PointerConvertible, inText: interop.Object, result: interop.PointerConvertible): number;
 
 declare function UCTypeSelectFindItem(ref: interop.PointerConvertible, listSize: number, listDataPtr: interop.PointerConvertible, refcon: interop.PointerConvertible, userUPP: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number, closestItem: interop.PointerConvertible): number;
 
-declare function UCTypeSelectWalkList(ref: interop.PointerConvertible, currSelect: interop.PointerConvertible, direction: number, listSize: number, listDataPtr: interop.PointerConvertible, refcon: interop.PointerConvertible, userUPP: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number, closestItem: interop.PointerConvertible): number;
+declare function UCTypeSelectWalkList(ref: interop.PointerConvertible, currSelect: interop.Object, direction: number, listSize: number, listDataPtr: interop.PointerConvertible, refcon: interop.PointerConvertible, userUPP: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number, closestItem: interop.PointerConvertible): number;
 
 declare function compound(rate: number, periods: number): number;
 
@@ -19549,7 +19549,7 @@ declare function TECSetBasicOptions(encodingConverter: interop.PointerConvertibl
 
 declare function TECCopyTextEncodingInternetNameAndMIB(textEncoding: number, usage: number, encodingNamePtr: interop.PointerConvertible, mibEnumPtr: interop.PointerConvertible): number;
 
-declare function TECGetTextEncodingFromInternetNameOrMIB(textEncodingPtr: interop.PointerConvertible, usage: number, encodingName: interop.PointerConvertible, mibEnum: number): number;
+declare function TECGetTextEncodingFromInternetNameOrMIB(textEncodingPtr: interop.PointerConvertible, usage: number, encodingName: interop.Object, mibEnum: number): number;
 
 declare function NewUnicodeToTextFallbackUPP(userRoutine: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number): (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number;
 
@@ -19905,13 +19905,13 @@ declare function AEGetSpecialHandler(functionClass: number, handler: interop.Poi
 
 declare function AEManagerInfo(keyWord: number, result: interop.PointerConvertible): number;
 
-declare function AECreateRemoteProcessResolver(allocator: interop.PointerConvertible, url: interop.PointerConvertible): interop.Pointer;
+declare function AECreateRemoteProcessResolver(allocator: interop.Object, url: interop.Object): interop.Pointer;
 
 declare function AEDisposeRemoteProcessResolver(ref: interop.PointerConvertible): void;
 
-declare function AERemoteProcessResolverGetProcesses(ref: interop.PointerConvertible, outError: interop.PointerConvertible): interop.Pointer;
+declare function AERemoteProcessResolverGetProcesses(ref: interop.PointerConvertible, outError: interop.PointerConvertible): interop.Object;
 
-declare function AERemoteProcessResolverScheduleWithRunLoop(ref: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, ctx: interop.PointerConvertible): void;
+declare function AERemoteProcessResolverScheduleWithRunLoop(ref: interop.PointerConvertible, runLoop: interop.Object, runLoopMode: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, ctx: interop.PointerConvertible): void;
 
 declare function AEDeterminePermissionToAutomateTarget(target: interop.PointerConvertible, theAEEventClass: number, theAEEventID: number, askUserIfNeeded: number): number;
 
@@ -20047,115 +20047,115 @@ declare function AEProcessMessage(header: interop.PointerConvertible): number;
 
 declare function AESendMessage(event: interop.PointerConvertible, reply: interop.PointerConvertible, sendMode: number, timeOutInTicks: number): number;
 
-declare function DCSGetTermRangeInString(dictionary: interop.PointerConvertible, textString: interop.PointerConvertible, offset: number): CFRange;
+declare function DCSGetTermRangeInString(dictionary: interop.Object, textString: interop.Object, offset: number): CFRange;
 
-declare function DCSCopyTextDefinition(dictionary: interop.PointerConvertible, textString: interop.PointerConvertible, range: CFRange): interop.Pointer;
+declare function DCSCopyTextDefinition(dictionary: interop.Object, textString: interop.Object, range: CFRange): interop.Object;
 
 declare function CSIdentityAuthorityGetTypeID(): number;
 
-declare function CSGetDefaultIdentityAuthority(): interop.Pointer;
+declare function CSGetDefaultIdentityAuthority(): interop.Object;
 
-declare function CSGetLocalIdentityAuthority(): interop.Pointer;
+declare function CSGetLocalIdentityAuthority(): interop.Object;
 
-declare function CSGetManagedIdentityAuthority(): interop.Pointer;
+declare function CSGetManagedIdentityAuthority(): interop.Object;
 
-declare function CSIdentityAuthorityCopyLocalizedName(authority: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityAuthorityCopyLocalizedName(authority: interop.Object): interop.Object;
 
 declare function CSIdentityGetTypeID(): number;
 
-declare function CSIdentityCreate(allocator: interop.PointerConvertible, identityClass: number, fullName: interop.PointerConvertible, posixName: interop.PointerConvertible, flags: number, authority: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityCreate(allocator: interop.Object, identityClass: number, fullName: interop.Object, posixName: interop.Object, flags: number, authority: interop.Object): interop.Object;
 
-declare function CSIdentityCreateCopy(allocator: interop.PointerConvertible, identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityCreateCopy(allocator: interop.Object, identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetClass(identity: interop.PointerConvertible): number;
+declare function CSIdentityGetClass(identity: interop.Object): number;
 
-declare function CSIdentityGetAuthority(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetAuthority(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetUUID(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetUUID(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetFullName(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetFullName(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetPosixID(identity: interop.PointerConvertible): number;
+declare function CSIdentityGetPosixID(identity: interop.Object): number;
 
-declare function CSIdentityGetPosixName(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetPosixName(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetEmailAddress(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetEmailAddress(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetImageURL(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetImageURL(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetImageData(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetImageData(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetImageDataType(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetImageDataType(identity: interop.Object): interop.Object;
 
-declare function CSIdentityGetAliases(identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetAliases(identity: interop.Object): interop.Object;
 
-declare function CSIdentityIsMemberOfGroup(identity: interop.PointerConvertible, group: interop.PointerConvertible): number;
+declare function CSIdentityIsMemberOfGroup(identity: interop.Object, group: interop.Object): number;
 
-declare function CSIdentityIsHidden(identity: interop.PointerConvertible): number;
+declare function CSIdentityIsHidden(identity: interop.Object): number;
 
-declare function CSIdentityCreatePersistentReference(allocator: interop.PointerConvertible, identity: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityCreatePersistentReference(allocator: interop.Object, identity: interop.Object): interop.Object;
 
-declare function CSIdentityIsEnabled(user: interop.PointerConvertible): number;
+declare function CSIdentityIsEnabled(user: interop.Object): number;
 
-declare function CSIdentityAuthenticateUsingPassword(user: interop.PointerConvertible, password: interop.PointerConvertible): number;
+declare function CSIdentityAuthenticateUsingPassword(user: interop.Object, password: interop.Object): number;
 
-declare function CSIdentityGetCertificate(user: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityGetCertificate(user: interop.Object): interop.Object;
 
-declare function CSIdentityCreateGroupMembershipQuery(allocator: interop.PointerConvertible, group: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityCreateGroupMembershipQuery(allocator: interop.Object, group: interop.Object): interop.Object;
 
-declare function CSIdentitySetFullName(identity: interop.PointerConvertible, fullName: interop.PointerConvertible): void;
+declare function CSIdentitySetFullName(identity: interop.Object, fullName: interop.Object): void;
 
-declare function CSIdentitySetEmailAddress(identity: interop.PointerConvertible, emailAddress: interop.PointerConvertible): void;
+declare function CSIdentitySetEmailAddress(identity: interop.Object, emailAddress: interop.Object): void;
 
-declare function CSIdentitySetImageURL(identity: interop.PointerConvertible, url: interop.PointerConvertible): void;
+declare function CSIdentitySetImageURL(identity: interop.Object, url: interop.Object): void;
 
-declare function CSIdentitySetImageData(identity: interop.PointerConvertible, imageData: interop.PointerConvertible, imageDataType: interop.PointerConvertible): void;
+declare function CSIdentitySetImageData(identity: interop.Object, imageData: interop.Object, imageDataType: interop.Object): void;
 
-declare function CSIdentityAddAlias(identity: interop.PointerConvertible, alias: interop.PointerConvertible): void;
+declare function CSIdentityAddAlias(identity: interop.Object, alias: interop.Object): void;
 
-declare function CSIdentityRemoveAlias(identity: interop.PointerConvertible, alias: interop.PointerConvertible): void;
+declare function CSIdentityRemoveAlias(identity: interop.Object, alias: interop.Object): void;
 
-declare function CSIdentityAddMember(group: interop.PointerConvertible, member: interop.PointerConvertible): void;
+declare function CSIdentityAddMember(group: interop.Object, member: interop.Object): void;
 
-declare function CSIdentityRemoveMember(group: interop.PointerConvertible, member: interop.PointerConvertible): void;
+declare function CSIdentityRemoveMember(group: interop.Object, member: interop.Object): void;
 
-declare function CSIdentitySetIsEnabled(user: interop.PointerConvertible, isEnabled: number): void;
+declare function CSIdentitySetIsEnabled(user: interop.Object, isEnabled: number): void;
 
-declare function CSIdentitySetPassword(user: interop.PointerConvertible, password: interop.PointerConvertible): void;
+declare function CSIdentitySetPassword(user: interop.Object, password: interop.Object): void;
 
-declare function CSIdentitySetCertificate(user: interop.PointerConvertible, certificate: interop.PointerConvertible): void;
+declare function CSIdentitySetCertificate(user: interop.Object, certificate: interop.Object): void;
 
-declare function CSIdentityDelete(identity: interop.PointerConvertible): void;
+declare function CSIdentityDelete(identity: interop.Object): void;
 
-declare function CSIdentityCommit(identity: interop.PointerConvertible, authorization: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CSIdentityCommit(identity: interop.Object, authorization: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function CSIdentityCommitAsynchronously(identity: interop.PointerConvertible, clientContext: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible, authorization: interop.PointerConvertible): number;
+declare function CSIdentityCommitAsynchronously(identity: interop.Object, clientContext: interop.PointerConvertible, runLoop: interop.Object, runLoopMode: interop.Object, authorization: interop.PointerConvertible): number;
 
-declare function CSIdentityIsCommitting(identity: interop.PointerConvertible): number;
+declare function CSIdentityIsCommitting(identity: interop.Object): number;
 
-declare function CSIdentityRemoveClient(identity: interop.PointerConvertible): void;
+declare function CSIdentityRemoveClient(identity: interop.Object): void;
 
 declare function CSIdentityQueryGetTypeID(): number;
 
-declare function CSIdentityQueryCreate(allocator: interop.PointerConvertible, identityClass: number, authority: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCreate(allocator: interop.Object, identityClass: number, authority: interop.Object): interop.Object;
 
-declare function CSIdentityQueryCreateForName(allocator: interop.PointerConvertible, name: interop.PointerConvertible, comparisonMethod: number, identityClass: number, authority: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCreateForName(allocator: interop.Object, name: interop.Object, comparisonMethod: number, identityClass: number, authority: interop.Object): interop.Object;
 
-declare function CSIdentityQueryCreateForUUID(allocator: interop.PointerConvertible, uuid: interop.PointerConvertible, authority: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCreateForUUID(allocator: interop.Object, uuid: interop.Object, authority: interop.Object): interop.Object;
 
-declare function CSIdentityQueryCreateForPosixID(allocator: interop.PointerConvertible, posixID: number, identityClass: number, authority: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCreateForPosixID(allocator: interop.Object, posixID: number, identityClass: number, authority: interop.Object): interop.Object;
 
-declare function CSIdentityQueryCreateForPersistentReference(allocator: interop.PointerConvertible, referenceData: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCreateForPersistentReference(allocator: interop.Object, referenceData: interop.Object): interop.Object;
 
-declare function CSIdentityQueryCreateForCurrentUser(allocator: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCreateForCurrentUser(allocator: interop.Object): interop.Object;
 
-declare function CSIdentityQueryCopyResults(query: interop.PointerConvertible): interop.Pointer;
+declare function CSIdentityQueryCopyResults(query: interop.Object): interop.Object;
 
-declare function CSIdentityQueryExecute(query: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): number;
+declare function CSIdentityQueryExecute(query: interop.Object, flags: number, error: interop.PointerConvertible): number;
 
-declare function CSIdentityQueryExecuteAsynchronously(query: interop.PointerConvertible, flags: number, clientContext: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function CSIdentityQueryExecuteAsynchronously(query: interop.Object, flags: number, clientContext: interop.PointerConvertible, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function CSIdentityQueryStop(query: interop.PointerConvertible): void;
+declare function CSIdentityQueryStop(query: interop.Object): void;
 
 declare function NewSleepQUPP(userRoutine: (p1: number, p2: interop.PointerConvertible) => number): (p1: number, p2: interop.PointerConvertible) => number;
 
@@ -20189,19 +20189,19 @@ declare function KCMakeKCRefFromFSRef(keychainFSRef: interop.PointerConvertible,
 
 declare function KCMakeKCRefFromAlias(keychainAlias: interop.PointerConvertible, keychain: interop.PointerConvertible): number;
 
-declare function KCMakeAliasFromKCRef(keychain: interop.PointerConvertible, keychainAlias: interop.PointerConvertible): number;
+declare function KCMakeAliasFromKCRef(keychain: interop.Object, keychainAlias: interop.PointerConvertible): number;
 
 declare function KCReleaseKeychain(keychain: interop.PointerConvertible): number;
 
 declare function KCGetDefaultKeychain(keychain: interop.PointerConvertible): number;
 
-declare function KCSetDefaultKeychain(keychain: interop.PointerConvertible): number;
+declare function KCSetDefaultKeychain(keychain: interop.Object): number;
 
-declare function KCGetStatus(keychain: interop.PointerConvertible, keychainStatus: interop.PointerConvertible): number;
+declare function KCGetStatus(keychain: interop.Object, keychainStatus: interop.PointerConvertible): number;
 
-declare function KCGetKeychain(item: interop.PointerConvertible, keychain: interop.PointerConvertible): number;
+declare function KCGetKeychain(item: interop.Object, keychain: interop.PointerConvertible): number;
 
-declare function KCGetKeychainName(keychain: interop.PointerConvertible, keychainName: interop.PointerConvertible): number;
+declare function KCGetKeychainName(keychain: interop.Object, keychainName: interop.PointerConvertible): number;
 
 declare function KCCountKeychains(): number;
 
@@ -20227,31 +20227,31 @@ declare function KCRemoveCallback(callbackProc: (p1: number, p2: interop.Pointer
 
 declare function KCNewItem(itemClass: number, itemCreator: number, length: number, data: interop.PointerConvertible, item: interop.PointerConvertible): number;
 
-declare function KCSetAttribute(item: interop.PointerConvertible, attr: interop.PointerConvertible): number;
+declare function KCSetAttribute(item: interop.Object, attr: interop.PointerConvertible): number;
 
-declare function KCGetAttribute(item: interop.PointerConvertible, attr: interop.PointerConvertible, actualLength: interop.PointerConvertible): number;
+declare function KCGetAttribute(item: interop.Object, attr: interop.PointerConvertible, actualLength: interop.PointerConvertible): number;
 
-declare function KCSetData(item: interop.PointerConvertible, length: number, data: interop.PointerConvertible): number;
+declare function KCSetData(item: interop.Object, length: number, data: interop.PointerConvertible): number;
 
-declare function KCUpdateItem(item: interop.PointerConvertible): number;
+declare function KCUpdateItem(item: interop.Object): number;
 
 declare function KCReleaseItem(item: interop.PointerConvertible): number;
 
-declare function KCCopyItem(item: interop.PointerConvertible, destKeychain: interop.PointerConvertible, copy: interop.PointerConvertible): number;
+declare function KCCopyItem(item: interop.Object, destKeychain: interop.Object, copy: interop.PointerConvertible): number;
 
-declare function KCFindFirstItem(keychain: interop.PointerConvertible, attrList: interop.PointerConvertible, search: interop.PointerConvertible, item: interop.PointerConvertible): number;
+declare function KCFindFirstItem(keychain: interop.Object, attrList: interop.PointerConvertible, search: interop.PointerConvertible, item: interop.PointerConvertible): number;
 
-declare function KCFindNextItem(search: interop.PointerConvertible, item: interop.PointerConvertible): number;
+declare function KCFindNextItem(search: interop.Object, item: interop.PointerConvertible): number;
 
 declare function KCReleaseSearch(search: interop.PointerConvertible): number;
 
-declare function KCDeleteItem(item: interop.PointerConvertible): number;
+declare function KCDeleteItem(item: interop.Object): number;
 
-declare function KCGetData(item: interop.PointerConvertible, maxLength: number, data: interop.PointerConvertible, actualLength: interop.PointerConvertible): number;
+declare function KCGetData(item: interop.Object, maxLength: number, data: interop.PointerConvertible, actualLength: interop.PointerConvertible): number;
 
-declare function KCLock(keychain: interop.PointerConvertible): number;
+declare function KCLock(keychain: interop.Object): number;
 
-declare function kcgetkeychainname(keychain: interop.PointerConvertible, keychainName: string): number;
+declare function kcgetkeychainname(keychain: interop.Object, keychainName: string): number;
 
 declare function kcfindapplesharepassword(serverSignature: interop.PointerConvertible, serverAddress: string, serverName: string, volumeName: string, accountName: string, maxLength: number, passwordData: interop.PointerConvertible, actualLength: interop.PointerConvertible, item: interop.PointerConvertible): number;
 
@@ -20261,61 +20261,61 @@ declare function kcfindinternetpasswordwithpath(serverName: string, securityDoma
 
 declare function kcfindgenericpassword(serviceName: string, accountName: string, maxLength: number, passwordData: interop.PointerConvertible, actualLength: interop.PointerConvertible, item: interop.PointerConvertible): number;
 
-declare function WSGetWSTypeIDFromCFType(ref: interop.PointerConvertible): interop.Enum<typeof WSTypeID>;
+declare function WSGetWSTypeIDFromCFType(ref: interop.Object): interop.Enum<typeof WSTypeID>;
 
 declare function WSGetCFTypeIDFromWSTypeID(typeID: interop.Enum<typeof WSTypeID>): number;
 
 declare function WSMethodInvocationGetTypeID(): number;
 
-declare function WSMethodInvocationCreate(url: interop.PointerConvertible, methodName: interop.PointerConvertible, protocol: interop.PointerConvertible): interop.Pointer;
+declare function WSMethodInvocationCreate(url: interop.Object, methodName: interop.Object, protocol: interop.Object): interop.Object;
 
-declare function WSMethodInvocationCreateFromSerialization(contract: interop.PointerConvertible): interop.Pointer;
+declare function WSMethodInvocationCreateFromSerialization(contract: interop.Object): interop.Object;
 
-declare function WSMethodInvocationCopySerialization(invocation: interop.PointerConvertible): interop.Pointer;
+declare function WSMethodInvocationCopySerialization(invocation: interop.Object): interop.Object;
 
-declare function WSMethodInvocationSetParameters(invocation: interop.PointerConvertible, parameters: interop.PointerConvertible, parameterOrder: interop.PointerConvertible): void;
+declare function WSMethodInvocationSetParameters(invocation: interop.Object, parameters: interop.Object, parameterOrder: interop.Object): void;
 
-declare function WSMethodInvocationCopyParameters(invocation: interop.PointerConvertible, parameterOrder: interop.PointerConvertible): interop.Pointer;
+declare function WSMethodInvocationCopyParameters(invocation: interop.Object, parameterOrder: interop.PointerConvertible): interop.Object;
 
-declare function WSMethodInvocationSetProperty(invocation: interop.PointerConvertible, propertyName: interop.PointerConvertible, propertyValue: interop.PointerConvertible): void;
+declare function WSMethodInvocationSetProperty(invocation: interop.Object, propertyName: interop.Object, propertyValue: interop.Object): void;
 
-declare function WSMethodInvocationCopyProperty(invocation: interop.PointerConvertible, propertyName: interop.PointerConvertible): interop.Pointer;
+declare function WSMethodInvocationCopyProperty(invocation: interop.Object, propertyName: interop.Object): interop.Object;
 
-declare function WSMethodInvocationInvoke(invocation: interop.PointerConvertible): interop.Pointer;
+declare function WSMethodInvocationInvoke(invocation: interop.Object): interop.Object;
 
-declare function WSMethodInvocationSetCallBack(invocation: interop.PointerConvertible, clientCB: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function WSMethodInvocationSetCallBack(invocation: interop.Object, clientCB: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function WSMethodInvocationScheduleWithRunLoop(invocation: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function WSMethodInvocationScheduleWithRunLoop(invocation: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function WSMethodInvocationUnscheduleFromRunLoop(invocation: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function WSMethodInvocationUnscheduleFromRunLoop(invocation: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function WSMethodResultIsFault(methodResult: interop.PointerConvertible): number;
+declare function WSMethodResultIsFault(methodResult: interop.Object): number;
 
-declare function WSMethodInvocationAddSerializationOverride(invocation: interop.PointerConvertible, objType: number, serializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function WSMethodInvocationAddSerializationOverride(invocation: interop.Object, objType: number, serializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
-declare function WSMethodInvocationAddDeserializationOverride(invocation: interop.PointerConvertible, typeNamespace: interop.PointerConvertible, typeName: interop.PointerConvertible, deserializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function WSMethodInvocationAddDeserializationOverride(invocation: interop.Object, typeNamespace: interop.Object, typeName: interop.Object, deserializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
 declare function WSProtocolHandlerGetTypeID(): number;
 
-declare function WSProtocolHandlerCreate(allocator: interop.PointerConvertible, protocol: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCreate(allocator: interop.Object, protocol: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerCopyRequestDictionary(ref: interop.PointerConvertible, data: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCopyRequestDictionary(ref: interop.Object, data: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerCopyReplyDictionary(ref: interop.PointerConvertible, methodName: interop.PointerConvertible, data: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCopyReplyDictionary(ref: interop.Object, methodName: interop.Object, data: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerCopyReplyDocument(ref: interop.PointerConvertible, methodContext: interop.PointerConvertible, resultValue: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCopyReplyDocument(ref: interop.Object, methodContext: interop.Object, resultValue: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerCopyFaultDocument(ref: interop.PointerConvertible, methodContext: interop.PointerConvertible, faultDict: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCopyFaultDocument(ref: interop.Object, methodContext: interop.Object, faultDict: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerCopyRequestDocument(ref: interop.PointerConvertible, methodName: interop.PointerConvertible, methodParams: interop.PointerConvertible, methodParamOrder: interop.PointerConvertible, methodExtras: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCopyRequestDocument(ref: interop.Object, methodName: interop.Object, methodParams: interop.Object, methodParamOrder: interop.Object, methodExtras: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerCopyProperty(ref: interop.PointerConvertible, propertyName: interop.PointerConvertible): interop.Pointer;
+declare function WSProtocolHandlerCopyProperty(ref: interop.Object, propertyName: interop.Object): interop.Object;
 
-declare function WSProtocolHandlerSetProperty(ref: interop.PointerConvertible, propertyName: interop.PointerConvertible, propertyValue: interop.PointerConvertible): void;
+declare function WSProtocolHandlerSetProperty(ref: interop.Object, propertyName: interop.Object, propertyValue: interop.Object): void;
 
-declare function WSProtocolHandlerSetSerializationOverride(protocol: interop.PointerConvertible, objType: number, serializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function WSProtocolHandlerSetSerializationOverride(protocol: interop.Object, objType: number, serializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
-declare function WSProtocolHandlerSetDeserializationOverride(protocol: interop.PointerConvertible, typeNamespace: interop.PointerConvertible, typeName: interop.PointerConvertible, deserializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function WSProtocolHandlerSetDeserializationOverride(protocol: interop.Object, typeNamespace: interop.Object, typeName: interop.Object, deserializationProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
 declare function GetIconRefOwners(theIconRef: interop.PointerConvertible, owners: interop.PointerConvertible): number;
 
@@ -20329,7 +20329,7 @@ declare function GetIconRefFromFolder(vRefNum: number, parentFolderID: number, f
 
 declare function GetIconRefFromFileInfo(inRef: interop.PointerConvertible, inFileNameLength: number, inFileName: interop.PointerConvertible, inWhichInfo: number, inCatalogInfo: interop.PointerConvertible, inUsageFlags: number, outIconRef: interop.PointerConvertible, outLabel: interop.PointerConvertible): number;
 
-declare function GetIconRefFromTypeInfo(inCreator: number, inType: number, inExtension: interop.PointerConvertible, inMIMEType: interop.PointerConvertible, inUsageFlags: number, outIconRef: interop.PointerConvertible): number;
+declare function GetIconRefFromTypeInfo(inCreator: number, inType: number, inExtension: interop.Object, inMIMEType: interop.Object, inUsageFlags: number, outIconRef: interop.PointerConvertible): number;
 
 declare function GetIconRefFromIconFamilyPtr(inIconFamilyPtr: interop.PointerConvertible, inSize: number, outIconRef: interop.PointerConvertible): number;
 
@@ -20361,31 +20361,31 @@ declare function GetCustomIconsEnabled(vRefNum: number, customIconsEnabled: inte
 
 declare function ReadIconFromFSRef(ref: interop.PointerConvertible, iconFamily: interop.PointerConvertible): number;
 
-declare function LSCopyDefaultApplicationURLForURL(inURL: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, outError: interop.PointerConvertible): interop.Pointer;
+declare function LSCopyDefaultApplicationURLForURL(inURL: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>, outError: interop.PointerConvertible): interop.Object;
 
-declare function LSCopyDefaultApplicationURLForContentType(inContentType: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, outError: interop.PointerConvertible): interop.Pointer;
+declare function LSCopyDefaultApplicationURLForContentType(inContentType: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>, outError: interop.PointerConvertible): interop.Object;
 
-declare function LSCopyApplicationURLsForBundleIdentifier(inBundleIdentifier: interop.PointerConvertible, outError: interop.PointerConvertible): interop.Pointer;
+declare function LSCopyApplicationURLsForBundleIdentifier(inBundleIdentifier: interop.Object, outError: interop.PointerConvertible): interop.Object;
 
-declare function LSCopyApplicationURLsForURL(inURL: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>): interop.Pointer;
+declare function LSCopyApplicationURLsForURL(inURL: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>): interop.Object;
 
-declare function LSCanURLAcceptURL(inItemURL: interop.PointerConvertible, inTargetURL: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, inFlags: interop.Enum<typeof LSAcceptanceFlags>, outAcceptsItem: interop.PointerConvertible): number;
+declare function LSCanURLAcceptURL(inItemURL: interop.Object, inTargetURL: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>, inFlags: interop.Enum<typeof LSAcceptanceFlags>, outAcceptsItem: interop.PointerConvertible): number;
 
-declare function LSRegisterURL(inURL: interop.PointerConvertible, inUpdate: number): number;
+declare function LSRegisterURL(inURL: interop.Object, inUpdate: number): number;
 
-declare function LSCopyDefaultRoleHandlerForContentType(inContentType: interop.PointerConvertible, inRole: interop.Enum<typeof LSRolesMask>): interop.Pointer;
+declare function LSCopyDefaultRoleHandlerForContentType(inContentType: interop.Object, inRole: interop.Enum<typeof LSRolesMask>): interop.Object;
 
-declare function LSCopyAllRoleHandlersForContentType(inContentType: interop.PointerConvertible, inRole: interop.Enum<typeof LSRolesMask>): interop.Pointer;
+declare function LSCopyAllRoleHandlersForContentType(inContentType: interop.Object, inRole: interop.Enum<typeof LSRolesMask>): interop.Object;
 
-declare function LSSetDefaultRoleHandlerForContentType(inContentType: interop.PointerConvertible, inRole: interop.Enum<typeof LSRolesMask>, inHandlerBundleID: interop.PointerConvertible): number;
+declare function LSSetDefaultRoleHandlerForContentType(inContentType: interop.Object, inRole: interop.Enum<typeof LSRolesMask>, inHandlerBundleID: interop.Object): number;
 
-declare function LSCopyDefaultHandlerForURLScheme(inURLScheme: interop.PointerConvertible): interop.Pointer;
+declare function LSCopyDefaultHandlerForURLScheme(inURLScheme: interop.Object): interop.Object;
 
-declare function LSCopyAllHandlersForURLScheme(inURLScheme: interop.PointerConvertible): interop.Pointer;
+declare function LSCopyAllHandlersForURLScheme(inURLScheme: interop.Object): interop.Object;
 
-declare function LSSetDefaultHandlerForURLScheme(inURLScheme: interop.PointerConvertible, inHandlerBundleID: interop.PointerConvertible): number;
+declare function LSSetDefaultHandlerForURLScheme(inURLScheme: interop.Object, inHandlerBundleID: interop.Object): number;
 
-declare function LSCopyItemInfoForURL(inURL: interop.PointerConvertible, inWhichInfo: interop.Enum<typeof LSRequestedInfo>, outItemInfo: interop.PointerConvertible): number;
+declare function LSCopyItemInfoForURL(inURL: interop.Object, inWhichInfo: interop.Enum<typeof LSRequestedInfo>, outItemInfo: interop.PointerConvertible): number;
 
 declare function LSCopyItemInfoForRef(inItemRef: interop.PointerConvertible, inWhichInfo: interop.Enum<typeof LSRequestedInfo>, outItemInfo: interop.PointerConvertible): number;
 
@@ -20393,45 +20393,45 @@ declare function LSGetExtensionInfo(inNameLen: number, inNameBuffer: interop.Poi
 
 declare function LSCopyDisplayNameForRef(inRef: interop.PointerConvertible, outDisplayName: interop.PointerConvertible): number;
 
-declare function LSCopyDisplayNameForURL(inURL: interop.PointerConvertible, outDisplayName: interop.PointerConvertible): number;
+declare function LSCopyDisplayNameForURL(inURL: interop.Object, outDisplayName: interop.PointerConvertible): number;
 
 declare function LSSetExtensionHiddenForRef(inRef: interop.PointerConvertible, inHide: number): number;
 
-declare function LSSetExtensionHiddenForURL(inURL: interop.PointerConvertible, inHide: number): number;
+declare function LSSetExtensionHiddenForURL(inURL: interop.Object, inHide: number): number;
 
 declare function LSCopyKindStringForRef(inFSRef: interop.PointerConvertible, outKindString: interop.PointerConvertible): number;
 
-declare function LSCopyKindStringForURL(inURL: interop.PointerConvertible, outKindString: interop.PointerConvertible): number;
+declare function LSCopyKindStringForURL(inURL: interop.Object, outKindString: interop.PointerConvertible): number;
 
-declare function LSCopyKindStringForTypeInfo(inType: number, inCreator: number, inExtension: interop.PointerConvertible, outKindString: interop.PointerConvertible): number;
+declare function LSCopyKindStringForTypeInfo(inType: number, inCreator: number, inExtension: interop.Object, outKindString: interop.PointerConvertible): number;
 
-declare function LSCopyKindStringForMIMEType(inMIMEType: interop.PointerConvertible, outKindString: interop.PointerConvertible): number;
+declare function LSCopyKindStringForMIMEType(inMIMEType: interop.Object, outKindString: interop.PointerConvertible): number;
 
 declare function LSGetApplicationForItem(inItemRef: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
 
-declare function LSGetApplicationForInfo(inType: number, inCreator: number, inExtension: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
+declare function LSGetApplicationForInfo(inType: number, inCreator: number, inExtension: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
 
-declare function LSCopyApplicationForMIMEType(inMIMEType: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppURL: interop.PointerConvertible): number;
+declare function LSCopyApplicationForMIMEType(inMIMEType: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppURL: interop.PointerConvertible): number;
 
-declare function LSGetApplicationForURL(inURL: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
+declare function LSGetApplicationForURL(inURL: interop.Object, inRoleMask: interop.Enum<typeof LSRolesMask>, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
 
-declare function LSFindApplicationForInfo(inCreator: number, inBundleID: interop.PointerConvertible, inName: interop.PointerConvertible, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
+declare function LSFindApplicationForInfo(inCreator: number, inBundleID: interop.Object, inName: interop.Object, outAppRef: interop.PointerConvertible, outAppURL: interop.PointerConvertible): number;
 
 declare function LSCanRefAcceptItem(inItemFSRef: interop.PointerConvertible, inTargetRef: interop.PointerConvertible, inRoleMask: interop.Enum<typeof LSRolesMask>, inFlags: interop.Enum<typeof LSAcceptanceFlags>, outAcceptsItem: interop.PointerConvertible): number;
 
 declare function LSRegisterFSRef(inRef: interop.PointerConvertible, inUpdate: number): number;
 
-declare function LSCopyItemAttribute(inItem: interop.PointerConvertible, inRoles: interop.Enum<typeof LSRolesMask>, inAttributeName: interop.PointerConvertible, outValue: interop.PointerConvertible): number;
+declare function LSCopyItemAttribute(inItem: interop.PointerConvertible, inRoles: interop.Enum<typeof LSRolesMask>, inAttributeName: interop.Object, outValue: interop.PointerConvertible): number;
 
-declare function LSCopyItemAttributes(inItem: interop.PointerConvertible, inRoles: interop.Enum<typeof LSRolesMask>, inAttributeNames: interop.PointerConvertible, outValues: interop.PointerConvertible): number;
+declare function LSCopyItemAttributes(inItem: interop.PointerConvertible, inRoles: interop.Enum<typeof LSRolesMask>, inAttributeNames: interop.Object, outValues: interop.PointerConvertible): number;
 
-declare function LSSetItemAttribute(inItem: interop.PointerConvertible, inRoles: interop.Enum<typeof LSRolesMask>, inAttributeName: interop.PointerConvertible, inValue: interop.PointerConvertible): number;
+declare function LSSetItemAttribute(inItem: interop.PointerConvertible, inRoles: interop.Enum<typeof LSRolesMask>, inAttributeName: interop.Object, inValue: interop.Object): number;
 
-declare function LSGetHandlerOptionsForContentType(inContentType: interop.PointerConvertible): interop.Enum<typeof LSHandlerOptions>;
+declare function LSGetHandlerOptionsForContentType(inContentType: interop.Object): interop.Enum<typeof LSHandlerOptions>;
 
-declare function LSSetHandlerOptionsForContentType(inContentType: interop.PointerConvertible, inOptions: interop.Enum<typeof LSHandlerOptions>): number;
+declare function LSSetHandlerOptionsForContentType(inContentType: interop.Object, inOptions: interop.Enum<typeof LSHandlerOptions>): number;
 
-declare function LSOpenCFURLRef(inURL: interop.PointerConvertible, outLaunchedURL: interop.PointerConvertible): number;
+declare function LSOpenCFURLRef(inURL: interop.Object, outLaunchedURL: interop.PointerConvertible): number;
 
 declare function LSOpenFromURLSpec(inLaunchSpec: interop.PointerConvertible, outLaunchedURL: interop.PointerConvertible): number;
 
@@ -20443,305 +20443,305 @@ declare function LSOpenApplication(appParams: interop.PointerConvertible, outPSN
 
 declare function LSOpenItemsWithRole(inItems: interop.PointerConvertible, inItemCount: number, inRole: interop.Enum<typeof LSRolesMask>, inAEParam: interop.PointerConvertible, inAppParams: interop.PointerConvertible, outPSNs: interop.PointerConvertible, inMaxPSNCount: number): number;
 
-declare function LSOpenURLsWithRole(inURLs: interop.PointerConvertible, inRole: interop.Enum<typeof LSRolesMask>, inAEParam: interop.PointerConvertible, inAppParams: interop.PointerConvertible, outPSNs: interop.PointerConvertible, inMaxPSNCount: number): number;
+declare function LSOpenURLsWithRole(inURLs: interop.Object, inRole: interop.Enum<typeof LSRolesMask>, inAEParam: interop.PointerConvertible, inAppParams: interop.PointerConvertible, outPSNs: interop.PointerConvertible, inMaxPSNCount: number): number;
 
-declare function UTTypeCreatePreferredIdentifierForTag(inTagClass: interop.PointerConvertible, inTag: interop.PointerConvertible, inConformingToUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCreatePreferredIdentifierForTag(inTagClass: interop.Object, inTag: interop.Object, inConformingToUTI: interop.Object): interop.Object;
 
-declare function UTTypeCreateAllIdentifiersForTag(inTagClass: interop.PointerConvertible, inTag: interop.PointerConvertible, inConformingToUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCreateAllIdentifiersForTag(inTagClass: interop.Object, inTag: interop.Object, inConformingToUTI: interop.Object): interop.Object;
 
-declare function UTTypeCopyPreferredTagWithClass(inUTI: interop.PointerConvertible, inTagClass: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyPreferredTagWithClass(inUTI: interop.Object, inTagClass: interop.Object): interop.Object;
 
-declare function UTTypeCopyAllTagsWithClass(inUTI: interop.PointerConvertible, inTagClass: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyAllTagsWithClass(inUTI: interop.Object, inTagClass: interop.Object): interop.Object;
 
-declare function UTTypeEqual(inUTI1: interop.PointerConvertible, inUTI2: interop.PointerConvertible): number;
+declare function UTTypeEqual(inUTI1: interop.Object, inUTI2: interop.Object): number;
 
-declare function UTTypeConformsTo(inUTI: interop.PointerConvertible, inConformsToUTI: interop.PointerConvertible): number;
+declare function UTTypeConformsTo(inUTI: interop.Object, inConformsToUTI: interop.Object): number;
 
-declare function UTTypeCopyDescription(inUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyDescription(inUTI: interop.Object): interop.Object;
 
-declare function UTTypeIsDeclared(inUTI: interop.PointerConvertible): number;
+declare function UTTypeIsDeclared(inUTI: interop.Object): number;
 
-declare function UTTypeIsDynamic(inUTI: interop.PointerConvertible): number;
+declare function UTTypeIsDynamic(inUTI: interop.Object): number;
 
-declare function UTTypeCopyDeclaration(inUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyDeclaration(inUTI: interop.Object): interop.Object;
 
-declare function UTTypeCopyDeclaringBundleURL(inUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyDeclaringBundleURL(inUTI: interop.Object): interop.Object;
 
-declare function UTCreateStringForOSType(inOSType: number): interop.Pointer;
+declare function UTCreateStringForOSType(inOSType: number): interop.Object;
 
-declare function UTGetOSTypeFromString(inString: interop.PointerConvertible): number;
+declare function UTGetOSTypeFromString(inString: interop.Object): number;
 
 declare function MDItemGetTypeID(): number;
 
-declare function MDItemCreate(allocator: interop.PointerConvertible, path: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCreate(allocator: interop.Object, path: interop.Object): interop.Object;
 
-declare function MDItemCreateWithURL(allocator: interop.PointerConvertible, url: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCreateWithURL(allocator: interop.Object, url: interop.Object): interop.Object;
 
-declare function MDItemsCreateWithURLs(allocator: interop.PointerConvertible, urls: interop.PointerConvertible): interop.Pointer;
+declare function MDItemsCreateWithURLs(allocator: interop.Object, urls: interop.Object): interop.Object;
 
-declare function MDItemCopyAttribute(item: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCopyAttribute(item: interop.Object, name: interop.Object): interop.Object;
 
-declare function MDItemCopyAttributes(item: interop.PointerConvertible, names: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCopyAttributes(item: interop.Object, names: interop.Object): interop.Object;
 
-declare function MDItemCopyAttributeList(item: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCopyAttributeList(item: interop.Object): interop.Object;
 
-declare function MDItemCopyAttributeNames(item: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCopyAttributeNames(item: interop.Object): interop.Object;
 
-declare function MDItemsCopyAttributes(items: interop.PointerConvertible, names: interop.PointerConvertible): interop.Pointer;
+declare function MDItemsCopyAttributes(items: interop.Object, names: interop.Object): interop.Object;
 
-declare function MDItemGetCacheFileDescriptors(items: interop.PointerConvertible, completionHandler: (p1: interop.PointerConvertible) => void): void;
+declare function MDItemGetCacheFileDescriptors(items: interop.Object, completionHandler: (p1: interop.PointerConvertible) => void): void;
 
-declare function __MDItemCopyAttributesEllipsis1(item: interop.PointerConvertible): interop.Pointer;
+declare function __MDItemCopyAttributesEllipsis1(item: interop.Object): interop.Object;
 
 declare function MDQueryGetTypeID(): number;
 
-declare function MDQueryCreate(allocator: interop.PointerConvertible, queryString: interop.PointerConvertible, valueListAttrs: interop.PointerConvertible, sortingAttrs: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCreate(allocator: interop.Object, queryString: interop.Object, valueListAttrs: interop.Object, sortingAttrs: interop.Object): interop.Object;
 
-declare function MDQueryCreateSubset(allocator: interop.PointerConvertible, query: interop.PointerConvertible, queryString: interop.PointerConvertible, valueListAttrs: interop.PointerConvertible, sortingAttrs: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCreateSubset(allocator: interop.Object, query: interop.Object, queryString: interop.Object, valueListAttrs: interop.Object, sortingAttrs: interop.Object): interop.Object;
 
-declare function MDQueryCreateForItems(allocator: interop.PointerConvertible, queryString: interop.PointerConvertible, valueListAttrs: interop.PointerConvertible, sortingAttrs: interop.PointerConvertible, items: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCreateForItems(allocator: interop.Object, queryString: interop.Object, valueListAttrs: interop.Object, sortingAttrs: interop.Object, items: interop.Object): interop.Object;
 
-declare function MDQueryCopyQueryString(query: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCopyQueryString(query: interop.Object): interop.Object;
 
-declare function MDQueryCopyValueListAttributes(query: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCopyValueListAttributes(query: interop.Object): interop.Object;
 
-declare function MDQueryCopySortingAttributes(query: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCopySortingAttributes(query: interop.Object): interop.Object;
 
-declare function MDQueryGetBatchingParameters(query: interop.PointerConvertible): MDQueryBatchingParams;
+declare function MDQueryGetBatchingParameters(query: interop.Object): MDQueryBatchingParams;
 
-declare function MDQuerySetBatchingParameters(query: interop.PointerConvertible, params: MDQueryBatchingParams): void;
+declare function MDQuerySetBatchingParameters(query: interop.Object, params: MDQueryBatchingParams): void;
 
-declare function MDQuerySetCreateResultFunction(query: interop.PointerConvertible, func: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible, cb: interop.PointerConvertible): void;
+declare function MDQuerySetCreateResultFunction(query: interop.Object, func: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible, cb: interop.PointerConvertible): void;
 
-declare function MDQuerySetCreateValueFunction(query: interop.PointerConvertible, func: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible, cb: interop.PointerConvertible): void;
+declare function MDQuerySetCreateValueFunction(query: interop.Object, func: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible, cb: interop.PointerConvertible): void;
 
-declare function MDQuerySetDispatchQueue(query: interop.PointerConvertible, queue: NSObject): void;
+declare function MDQuerySetDispatchQueue(query: interop.Object, queue: NSObject): void;
 
-declare function MDQueryExecute(query: interop.PointerConvertible, optionFlags: number): number;
+declare function MDQueryExecute(query: interop.Object, optionFlags: number): number;
 
-declare function MDQueryStop(query: interop.PointerConvertible): void;
+declare function MDQueryStop(query: interop.Object): void;
 
-declare function MDQueryDisableUpdates(query: interop.PointerConvertible): void;
+declare function MDQueryDisableUpdates(query: interop.Object): void;
 
-declare function MDQueryEnableUpdates(query: interop.PointerConvertible): void;
+declare function MDQueryEnableUpdates(query: interop.Object): void;
 
-declare function MDQueryIsGatheringComplete(query: interop.PointerConvertible): number;
+declare function MDQueryIsGatheringComplete(query: interop.Object): number;
 
-declare function MDQueryGetResultCount(query: interop.PointerConvertible): number;
+declare function MDQueryGetResultCount(query: interop.Object): number;
 
-declare function MDQueryGetResultAtIndex(query: interop.PointerConvertible, idx: number): interop.Pointer;
+declare function MDQueryGetResultAtIndex(query: interop.Object, idx: number): interop.Pointer;
 
-declare function MDQueryGetIndexOfResult(query: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function MDQueryGetIndexOfResult(query: interop.Object, result: interop.PointerConvertible): number;
 
-declare function MDQueryGetAttributeValueOfResultAtIndex(query: interop.PointerConvertible, name: interop.PointerConvertible, idx: number): interop.Pointer;
+declare function MDQueryGetAttributeValueOfResultAtIndex(query: interop.Object, name: interop.Object, idx: number): interop.Pointer;
 
-declare function MDQueryCopyValuesOfAttribute(query: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+declare function MDQueryCopyValuesOfAttribute(query: interop.Object, name: interop.Object): interop.Object;
 
-declare function MDQueryGetCountOfResultsWithAttributeValue(query: interop.PointerConvertible, name: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function MDQueryGetCountOfResultsWithAttributeValue(query: interop.Object, name: interop.Object, value: interop.Object): number;
 
-declare function MDQuerySetSortOrder(query: interop.PointerConvertible, sortingAttrs: interop.PointerConvertible): number;
+declare function MDQuerySetSortOrder(query: interop.Object, sortingAttrs: interop.Object): number;
 
-declare function MDQuerySetSortOptionFlagsForAttribute(query: interop.PointerConvertible, fieldName: interop.PointerConvertible, flags: number): number;
+declare function MDQuerySetSortOptionFlagsForAttribute(query: interop.Object, fieldName: interop.Object, flags: number): number;
 
-declare function MDQueryGetSortOptionFlagsForAttribute(query: interop.PointerConvertible, fieldName: interop.PointerConvertible): number;
+declare function MDQueryGetSortOptionFlagsForAttribute(query: interop.Object, fieldName: interop.Object): number;
 
-declare function MDQuerySetSortComparator(query: interop.PointerConvertible, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): void;
+declare function MDQuerySetSortComparator(query: interop.Object, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): void;
 
-declare function MDQuerySetSortComparatorBlock(query: interop.PointerConvertible, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>): void;
+declare function MDQuerySetSortComparatorBlock(query: interop.Object, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>): void;
 
-declare function MDQuerySetSearchScope(query: interop.PointerConvertible, scopeDirectories: interop.PointerConvertible, scopeOptions: number): void;
+declare function MDQuerySetSearchScope(query: interop.Object, scopeDirectories: interop.Object, scopeOptions: number): void;
 
-declare function MDQuerySetMaxCount(query: interop.PointerConvertible, size: number): void;
+declare function MDQuerySetMaxCount(query: interop.Object, size: number): void;
 
 declare function MDLabelGetTypeID(): number;
 
-declare function MDItemCopyLabels(item: interop.PointerConvertible): interop.Pointer;
+declare function MDItemCopyLabels(item: interop.Object): interop.Object;
 
-declare function MDItemSetLabel(item: interop.PointerConvertible, label: interop.PointerConvertible): number;
+declare function MDItemSetLabel(item: interop.Object, label: interop.Object): number;
 
-declare function MDItemRemoveLabel(item: interop.PointerConvertible, label: interop.PointerConvertible): number;
+declare function MDItemRemoveLabel(item: interop.Object, label: interop.Object): number;
 
-declare function MDLabelCreate(allocator: interop.PointerConvertible, displayName: interop.PointerConvertible, kind: interop.PointerConvertible, domain: interop.Enum<typeof MDLabelDomain>): interop.Pointer;
+declare function MDLabelCreate(allocator: interop.Object, displayName: interop.Object, kind: interop.Object, domain: interop.Enum<typeof MDLabelDomain>): interop.Object;
 
-declare function MDLabelCopyAttribute(label: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+declare function MDLabelCopyAttribute(label: interop.Object, name: interop.Object): interop.Object;
 
-declare function MDLabelCopyAttributeName(label: interop.PointerConvertible): interop.Pointer;
+declare function MDLabelCopyAttributeName(label: interop.Object): interop.Object;
 
-declare function MDLabelDelete(label: interop.PointerConvertible): number;
+declare function MDLabelDelete(label: interop.Object): number;
 
-declare function MDLabelSetAttributes(label: interop.PointerConvertible, attrs: interop.PointerConvertible): number;
+declare function MDLabelSetAttributes(label: interop.Object, attrs: interop.Object): number;
 
-declare function MDCopyLabelKinds(): interop.Pointer;
+declare function MDCopyLabelKinds(): interop.Object;
 
-declare function MDCopyLabelsMatchingExpression(simpleQueryString: interop.PointerConvertible): interop.Pointer;
+declare function MDCopyLabelsMatchingExpression(simpleQueryString: interop.Object): interop.Object;
 
-declare function MDCopyLabelsWithKind(kind: interop.PointerConvertible): interop.Pointer;
+declare function MDCopyLabelsWithKind(kind: interop.Object): interop.Object;
 
-declare function MDCopyLabelWithUUID(labelUUID: interop.PointerConvertible): interop.Pointer;
+declare function MDCopyLabelWithUUID(labelUUID: interop.Object): interop.Object;
 
-declare function MDSchemaCopyAttributesForContentType(contentTypeUTI: interop.PointerConvertible): interop.Pointer;
+declare function MDSchemaCopyAttributesForContentType(contentTypeUTI: interop.Object): interop.Object;
 
-declare function MDSchemaCopyMetaAttributesForAttribute(name: interop.PointerConvertible): interop.Pointer;
+declare function MDSchemaCopyMetaAttributesForAttribute(name: interop.Object): interop.Object;
 
-declare function MDSchemaCopyAllAttributes(): interop.Pointer;
+declare function MDSchemaCopyAllAttributes(): interop.Object;
 
-declare function MDSchemaCopyDisplayNameForAttribute(name: interop.PointerConvertible): interop.Pointer;
+declare function MDSchemaCopyDisplayNameForAttribute(name: interop.Object): interop.Object;
 
-declare function MDSchemaCopyDisplayDescriptionForAttribute(name: interop.PointerConvertible): interop.Pointer;
+declare function MDSchemaCopyDisplayDescriptionForAttribute(name: interop.Object): interop.Object;
 
 declare function SKDocumentGetTypeID(): number;
 
-declare function SKDocumentCreateWithURL(inURL: interop.PointerConvertible): interop.Pointer;
+declare function SKDocumentCreateWithURL(inURL: interop.Object): interop.Object;
 
-declare function SKDocumentCopyURL(inDocument: interop.PointerConvertible): interop.Pointer;
+declare function SKDocumentCopyURL(inDocument: interop.Object): interop.Object;
 
-declare function SKDocumentCreate(inScheme: interop.PointerConvertible, inParent: interop.PointerConvertible, inName: interop.PointerConvertible): interop.Pointer;
+declare function SKDocumentCreate(inScheme: interop.Object, inParent: interop.Object, inName: interop.Object): interop.Object;
 
-declare function SKDocumentGetSchemeName(inDocument: interop.PointerConvertible): interop.Pointer;
+declare function SKDocumentGetSchemeName(inDocument: interop.Object): interop.Object;
 
-declare function SKDocumentGetName(inDocument: interop.PointerConvertible): interop.Pointer;
+declare function SKDocumentGetName(inDocument: interop.Object): interop.Object;
 
-declare function SKDocumentGetParent(inDocument: interop.PointerConvertible): interop.Pointer;
+declare function SKDocumentGetParent(inDocument: interop.Object): interop.Object;
 
 declare function SKIndexGetTypeID(): number;
 
 declare function SKIndexDocumentIteratorGetTypeID(): number;
 
-declare function SKIndexCreateWithURL(inURL: interop.PointerConvertible, inIndexName: interop.PointerConvertible, inIndexType: interop.Enum<typeof SKIndexType>, inAnalysisProperties: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexCreateWithURL(inURL: interop.Object, inIndexName: interop.Object, inIndexType: interop.Enum<typeof SKIndexType>, inAnalysisProperties: interop.Object): interop.Object;
 
-declare function SKIndexOpenWithURL(inURL: interop.PointerConvertible, inIndexName: interop.PointerConvertible, inWriteAccess: number): interop.Pointer;
+declare function SKIndexOpenWithURL(inURL: interop.Object, inIndexName: interop.Object, inWriteAccess: number): interop.Object;
 
-declare function SKIndexCreateWithMutableData(inData: interop.PointerConvertible, inIndexName: interop.PointerConvertible, inIndexType: interop.Enum<typeof SKIndexType>, inAnalysisProperties: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexCreateWithMutableData(inData: interop.Object, inIndexName: interop.Object, inIndexType: interop.Enum<typeof SKIndexType>, inAnalysisProperties: interop.Object): interop.Object;
 
-declare function SKIndexOpenWithData(inData: interop.PointerConvertible, inIndexName: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexOpenWithData(inData: interop.Object, inIndexName: interop.Object): interop.Object;
 
-declare function SKIndexOpenWithMutableData(inData: interop.PointerConvertible, inIndexName: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexOpenWithMutableData(inData: interop.Object, inIndexName: interop.Object): interop.Object;
 
-declare function SKIndexFlush(inIndex: interop.PointerConvertible): number;
+declare function SKIndexFlush(inIndex: interop.Object): number;
 
-declare function SKIndexSetMaximumBytesBeforeFlush(inIndex: interop.PointerConvertible, inBytesForUpdate: number): void;
+declare function SKIndexSetMaximumBytesBeforeFlush(inIndex: interop.Object, inBytesForUpdate: number): void;
 
-declare function SKIndexGetMaximumBytesBeforeFlush(inIndex: interop.PointerConvertible): number;
+declare function SKIndexGetMaximumBytesBeforeFlush(inIndex: interop.Object): number;
 
-declare function SKIndexCompact(inIndex: interop.PointerConvertible): number;
+declare function SKIndexCompact(inIndex: interop.Object): number;
 
-declare function SKIndexGetIndexType(inIndex: interop.PointerConvertible): interop.Enum<typeof SKIndexType>;
+declare function SKIndexGetIndexType(inIndex: interop.Object): interop.Enum<typeof SKIndexType>;
 
-declare function SKIndexGetAnalysisProperties(inIndex: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexGetAnalysisProperties(inIndex: interop.Object): interop.Object;
 
-declare function SKIndexGetDocumentCount(inIndex: interop.PointerConvertible): number;
+declare function SKIndexGetDocumentCount(inIndex: interop.Object): number;
 
-declare function SKIndexClose(inIndex: interop.PointerConvertible): void;
+declare function SKIndexClose(inIndex: interop.Object): void;
 
-declare function SKIndexAddDocumentWithText(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible, inDocumentText: interop.PointerConvertible, inCanReplace: number): number;
+declare function SKIndexAddDocumentWithText(inIndex: interop.Object, inDocument: interop.Object, inDocumentText: interop.Object, inCanReplace: number): number;
 
-declare function SKIndexAddDocument(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible, inMIMETypeHint: interop.PointerConvertible, inCanReplace: number): number;
+declare function SKIndexAddDocument(inIndex: interop.Object, inDocument: interop.Object, inMIMETypeHint: interop.Object, inCanReplace: number): number;
 
-declare function SKIndexRemoveDocument(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible): number;
+declare function SKIndexRemoveDocument(inIndex: interop.Object, inDocument: interop.Object): number;
 
-declare function SKIndexCopyDocumentProperties(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexCopyDocumentProperties(inIndex: interop.Object, inDocument: interop.Object): interop.Object;
 
-declare function SKIndexSetDocumentProperties(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible, inProperties: interop.PointerConvertible): void;
+declare function SKIndexSetDocumentProperties(inIndex: interop.Object, inDocument: interop.Object, inProperties: interop.Object): void;
 
-declare function SKIndexGetDocumentState(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible): interop.Enum<typeof SKDocumentIndexState>;
+declare function SKIndexGetDocumentState(inIndex: interop.Object, inDocument: interop.Object): interop.Enum<typeof SKDocumentIndexState>;
 
-declare function SKIndexGetDocumentID(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible): number;
+declare function SKIndexGetDocumentID(inIndex: interop.Object, inDocument: interop.Object): number;
 
-declare function SKIndexCopyDocumentForDocumentID(inIndex: interop.PointerConvertible, inDocumentID: number): interop.Pointer;
+declare function SKIndexCopyDocumentForDocumentID(inIndex: interop.Object, inDocumentID: number): interop.Object;
 
-declare function SKIndexRenameDocument(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible, inNewName: interop.PointerConvertible): number;
+declare function SKIndexRenameDocument(inIndex: interop.Object, inDocument: interop.Object, inNewName: interop.Object): number;
 
-declare function SKIndexMoveDocument(inIndex: interop.PointerConvertible, inDocument: interop.PointerConvertible, inNewParent: interop.PointerConvertible): number;
+declare function SKIndexMoveDocument(inIndex: interop.Object, inDocument: interop.Object, inNewParent: interop.Object): number;
 
-declare function SKIndexDocumentIteratorCreate(inIndex: interop.PointerConvertible, inParentDocument: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexDocumentIteratorCreate(inIndex: interop.Object, inParentDocument: interop.Object): interop.Object;
 
-declare function SKIndexDocumentIteratorCopyNext(inIterator: interop.PointerConvertible): interop.Pointer;
+declare function SKIndexDocumentIteratorCopyNext(inIterator: interop.Object): interop.Object;
 
-declare function SKIndexGetMaximumDocumentID(inIndex: interop.PointerConvertible): number;
+declare function SKIndexGetMaximumDocumentID(inIndex: interop.Object): number;
 
-declare function SKIndexGetDocumentTermCount(inIndex: interop.PointerConvertible, inDocumentID: number): number;
+declare function SKIndexGetDocumentTermCount(inIndex: interop.Object, inDocumentID: number): number;
 
-declare function SKIndexCopyTermIDArrayForDocumentID(inIndex: interop.PointerConvertible, inDocumentID: number): interop.Pointer;
+declare function SKIndexCopyTermIDArrayForDocumentID(inIndex: interop.Object, inDocumentID: number): interop.Object;
 
-declare function SKIndexGetDocumentTermFrequency(inIndex: interop.PointerConvertible, inDocumentID: number, inTermID: number): number;
+declare function SKIndexGetDocumentTermFrequency(inIndex: interop.Object, inDocumentID: number, inTermID: number): number;
 
-declare function SKIndexGetMaximumTermID(inIndex: interop.PointerConvertible): number;
+declare function SKIndexGetMaximumTermID(inIndex: interop.Object): number;
 
-declare function SKIndexGetTermDocumentCount(inIndex: interop.PointerConvertible, inTermID: number): number;
+declare function SKIndexGetTermDocumentCount(inIndex: interop.Object, inTermID: number): number;
 
-declare function SKIndexCopyDocumentIDArrayForTermID(inIndex: interop.PointerConvertible, inTermID: number): interop.Pointer;
+declare function SKIndexCopyDocumentIDArrayForTermID(inIndex: interop.Object, inTermID: number): interop.Object;
 
-declare function SKIndexCopyTermStringForTermID(inIndex: interop.PointerConvertible, inTermID: number): interop.Pointer;
+declare function SKIndexCopyTermStringForTermID(inIndex: interop.Object, inTermID: number): interop.Object;
 
-declare function SKIndexGetTermIDForTermString(inIndex: interop.PointerConvertible, inTermString: interop.PointerConvertible): number;
+declare function SKIndexGetTermIDForTermString(inIndex: interop.Object, inTermString: interop.Object): number;
 
 declare function SKLoadDefaultExtractorPlugIns(): void;
 
 declare function SKSearchGetTypeID(): number;
 
-declare function SKSearchCreate(inIndex: interop.PointerConvertible, inQuery: interop.PointerConvertible, inSearchOptions: number): interop.Pointer;
+declare function SKSearchCreate(inIndex: interop.Object, inQuery: interop.Object, inSearchOptions: number): interop.Object;
 
-declare function SKSearchCancel(inSearch: interop.PointerConvertible): void;
+declare function SKSearchCancel(inSearch: interop.Object): void;
 
-declare function SKSearchFindMatches(inSearch: interop.PointerConvertible, inMaximumCount: number, outDocumentIDsArray: interop.PointerConvertible, outScoresArray: interop.PointerConvertible, maximumTime: number, outFoundCount: interop.PointerConvertible): number;
+declare function SKSearchFindMatches(inSearch: interop.Object, inMaximumCount: number, outDocumentIDsArray: interop.PointerConvertible, outScoresArray: interop.PointerConvertible, maximumTime: number, outFoundCount: interop.PointerConvertible): number;
 
-declare function SKIndexCopyInfoForDocumentIDs(inIndex: interop.PointerConvertible, inCount: number, inDocumentIDsArray: interop.PointerConvertible, outNamesArray: interop.PointerConvertible, outParentIDsArray: interop.PointerConvertible): void;
+declare function SKIndexCopyInfoForDocumentIDs(inIndex: interop.Object, inCount: number, inDocumentIDsArray: interop.PointerConvertible, outNamesArray: interop.PointerConvertible, outParentIDsArray: interop.PointerConvertible): void;
 
-declare function SKIndexCopyDocumentRefsForDocumentIDs(inIndex: interop.PointerConvertible, inCount: number, inDocumentIDsArray: interop.PointerConvertible, outDocumentRefsArray: interop.PointerConvertible): void;
+declare function SKIndexCopyDocumentRefsForDocumentIDs(inIndex: interop.Object, inCount: number, inDocumentIDsArray: interop.PointerConvertible, outDocumentRefsArray: interop.PointerConvertible): void;
 
-declare function SKIndexCopyDocumentURLsForDocumentIDs(inIndex: interop.PointerConvertible, inCount: number, inDocumentIDsArray: interop.PointerConvertible, outDocumentURLsArray: interop.PointerConvertible): void;
+declare function SKIndexCopyDocumentURLsForDocumentIDs(inIndex: interop.Object, inCount: number, inDocumentIDsArray: interop.PointerConvertible, outDocumentURLsArray: interop.PointerConvertible): void;
 
 declare function SKSearchGroupGetTypeID(): number;
 
 declare function SKSearchResultsGetTypeID(): number;
 
-declare function SKSearchGroupCreate(inArrayOfInIndexes: interop.PointerConvertible): interop.Pointer;
+declare function SKSearchGroupCreate(inArrayOfInIndexes: interop.Object): interop.Object;
 
-declare function SKSearchGroupCopyIndexes(inSearchGroup: interop.PointerConvertible): interop.Pointer;
+declare function SKSearchGroupCopyIndexes(inSearchGroup: interop.Object): interop.Object;
 
-declare function SKSearchResultsCreateWithQuery(inSearchGroup: interop.PointerConvertible, inQuery: interop.PointerConvertible, inSearchType: interop.Enum<typeof SKSearchType>, inMaxFoundDocuments: number, inContext: interop.PointerConvertible, inFilterCallBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): interop.Pointer;
+declare function SKSearchResultsCreateWithQuery(inSearchGroup: interop.Object, inQuery: interop.Object, inSearchType: interop.Enum<typeof SKSearchType>, inMaxFoundDocuments: number, inContext: interop.PointerConvertible, inFilterCallBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): interop.Object;
 
-declare function SKSearchResultsCreateWithDocuments(inSearchGroup: interop.PointerConvertible, inExampleDocuments: interop.PointerConvertible, inMaxFoundDocuments: number, inContext: interop.PointerConvertible, inFilterCallBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): interop.Pointer;
+declare function SKSearchResultsCreateWithDocuments(inSearchGroup: interop.Object, inExampleDocuments: interop.Object, inMaxFoundDocuments: number, inContext: interop.PointerConvertible, inFilterCallBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): interop.Object;
 
-declare function SKSearchResultsGetCount(inSearchResults: interop.PointerConvertible): number;
+declare function SKSearchResultsGetCount(inSearchResults: interop.Object): number;
 
-declare function SKSearchResultsGetInfoInRange(inSearchResults: interop.PointerConvertible, inRange: CFRange, outDocumentsArray: interop.PointerConvertible, outIndexesArray: interop.PointerConvertible, outScoresArray: interop.PointerConvertible): number;
+declare function SKSearchResultsGetInfoInRange(inSearchResults: interop.Object, inRange: CFRange, outDocumentsArray: interop.PointerConvertible, outIndexesArray: interop.PointerConvertible, outScoresArray: interop.PointerConvertible): number;
 
-declare function SKSearchResultsCopyMatchingTerms(inSearchResults: interop.PointerConvertible, inItem: number): interop.Pointer;
+declare function SKSearchResultsCopyMatchingTerms(inSearchResults: interop.Object, inItem: number): interop.Object;
 
 declare function SKSummaryGetTypeID(): number;
 
-declare function SKSummaryCreateWithString(inString: interop.PointerConvertible): interop.Pointer;
+declare function SKSummaryCreateWithString(inString: interop.Object): interop.Object;
 
-declare function SKSummaryGetSentenceCount(summary: interop.PointerConvertible): number;
+declare function SKSummaryGetSentenceCount(summary: interop.Object): number;
 
-declare function SKSummaryGetParagraphCount(summary: interop.PointerConvertible): number;
+declare function SKSummaryGetParagraphCount(summary: interop.Object): number;
 
-declare function SKSummaryCopySentenceAtIndex(summary: interop.PointerConvertible, i: number): interop.Pointer;
+declare function SKSummaryCopySentenceAtIndex(summary: interop.Object, i: number): interop.Object;
 
-declare function SKSummaryCopyParagraphAtIndex(summary: interop.PointerConvertible, i: number): interop.Pointer;
+declare function SKSummaryCopyParagraphAtIndex(summary: interop.Object, i: number): interop.Object;
 
-declare function SKSummaryCopySentenceSummaryString(summary: interop.PointerConvertible, numSentences: number): interop.Pointer;
+declare function SKSummaryCopySentenceSummaryString(summary: interop.Object, numSentences: number): interop.Object;
 
-declare function SKSummaryCopyParagraphSummaryString(summary: interop.PointerConvertible, numParagraphs: number): interop.Pointer;
+declare function SKSummaryCopyParagraphSummaryString(summary: interop.Object, numParagraphs: number): interop.Object;
 
-declare function SKSummaryGetSentenceSummaryInfo(summary: interop.PointerConvertible, numSentencesInSummary: number, outRankOrderOfSentences: interop.PointerConvertible, outSentenceIndexOfSentences: interop.PointerConvertible, outParagraphIndexOfSentences: interop.PointerConvertible): number;
+declare function SKSummaryGetSentenceSummaryInfo(summary: interop.Object, numSentencesInSummary: number, outRankOrderOfSentences: interop.PointerConvertible, outSentenceIndexOfSentences: interop.PointerConvertible, outParagraphIndexOfSentences: interop.PointerConvertible): number;
 
-declare function SKSummaryGetParagraphSummaryInfo(summary: interop.PointerConvertible, numParagraphsInSummary: number, outRankOrderOfParagraphs: interop.PointerConvertible, outParagraphIndexOfParagraphs: interop.PointerConvertible): number;
+declare function SKSummaryGetParagraphSummaryInfo(summary: interop.Object, numParagraphsInSummary: number, outRankOrderOfParagraphs: interop.PointerConvertible, outParagraphIndexOfParagraphs: interop.PointerConvertible): number;
 
-declare function FSEventStreamCreate(allocator: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, context: interop.PointerConvertible, pathsToWatch: interop.PointerConvertible, sinceWhen: number, latency: number, flags: number): interop.Pointer;
+declare function FSEventStreamCreate(allocator: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, context: interop.PointerConvertible, pathsToWatch: interop.Object, sinceWhen: number, latency: number, flags: number): interop.Pointer;
 
-declare function FSEventStreamCreateRelativeToDevice(allocator: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, context: interop.PointerConvertible, deviceToWatch: number, pathsToWatchRelativeToDevice: interop.PointerConvertible, sinceWhen: number, latency: number, flags: number): interop.Pointer;
+declare function FSEventStreamCreateRelativeToDevice(allocator: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void, context: interop.PointerConvertible, deviceToWatch: number, pathsToWatchRelativeToDevice: interop.Object, sinceWhen: number, latency: number, flags: number): interop.Pointer;
 
 declare function FSEventStreamGetLatestEventId(streamRef: interop.PointerConvertible): number;
 
 declare function FSEventStreamGetDeviceBeingWatched(streamRef: interop.PointerConvertible): number;
 
-declare function FSEventStreamCopyPathsBeingWatched(streamRef: interop.PointerConvertible): interop.Pointer;
+declare function FSEventStreamCopyPathsBeingWatched(streamRef: interop.PointerConvertible): interop.Object;
 
 declare function FSEventsGetCurrentEventId(): number;
 
-declare function FSEventsCopyUUIDForDevice(dev: number): interop.Pointer;
+declare function FSEventsCopyUUIDForDevice(dev: number): interop.Object;
 
 declare function FSEventsGetLastEventIdForDeviceBeforeTime(dev: number, time: number): number;
 
@@ -20751,9 +20751,9 @@ declare function FSEventStreamRetain(streamRef: interop.PointerConvertible): voi
 
 declare function FSEventStreamRelease(streamRef: interop.PointerConvertible): void;
 
-declare function FSEventStreamScheduleWithRunLoop(streamRef: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function FSEventStreamScheduleWithRunLoop(streamRef: interop.PointerConvertible, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function FSEventStreamUnscheduleFromRunLoop(streamRef: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function FSEventStreamUnscheduleFromRunLoop(streamRef: interop.PointerConvertible, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
 declare function FSEventStreamSetDispatchQueue(streamRef: interop.PointerConvertible, q: NSObject): void;
 
@@ -20769,51 +20769,51 @@ declare function FSEventStreamStop(streamRef: interop.PointerConvertible): void;
 
 declare function FSEventStreamShow(streamRef: interop.PointerConvertible): void;
 
-declare function FSEventStreamCopyDescription(streamRef: interop.PointerConvertible): interop.Pointer;
+declare function FSEventStreamCopyDescription(streamRef: interop.PointerConvertible): interop.Object;
 
-declare function FSEventStreamSetExclusionPaths(streamRef: interop.PointerConvertible, pathsToExclude: interop.PointerConvertible): number;
+declare function FSEventStreamSetExclusionPaths(streamRef: interop.PointerConvertible, pathsToExclude: interop.Object): number;
 
 declare function LSSharedFileListGetTypeID(): number;
 
 declare function LSSharedFileListItemGetTypeID(): number;
 
-declare function LSSharedFileListCreate(inAllocator: interop.PointerConvertible, inListType: interop.PointerConvertible, listOptions: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListCreate(inAllocator: interop.Object, inListType: interop.Object, listOptions: interop.Object): interop.Object;
 
-declare function LSSharedFileListSetAuthorization(inList: interop.PointerConvertible, inAuthorization: interop.PointerConvertible): number;
+declare function LSSharedFileListSetAuthorization(inList: interop.Object, inAuthorization: interop.PointerConvertible): number;
 
-declare function LSSharedFileListAddObserver(inList: interop.PointerConvertible, inRunloop: interop.PointerConvertible, inRunloopMode: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function LSSharedFileListAddObserver(inList: interop.Object, inRunloop: interop.Object, inRunloopMode: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function LSSharedFileListRemoveObserver(inList: interop.PointerConvertible, inRunloop: interop.PointerConvertible, inRunloopMode: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function LSSharedFileListRemoveObserver(inList: interop.Object, inRunloop: interop.Object, inRunloopMode: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function LSSharedFileListGetSeedValue(inList: interop.PointerConvertible): number;
+declare function LSSharedFileListGetSeedValue(inList: interop.Object): number;
 
-declare function LSSharedFileListCopyProperty(inList: interop.PointerConvertible, inPropertyName: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListCopyProperty(inList: interop.Object, inPropertyName: interop.Object): interop.Object;
 
-declare function LSSharedFileListSetProperty(inList: interop.PointerConvertible, inPropertyName: interop.PointerConvertible, inPropertyData: interop.PointerConvertible): number;
+declare function LSSharedFileListSetProperty(inList: interop.Object, inPropertyName: interop.Object, inPropertyData: interop.Object): number;
 
-declare function LSSharedFileListCopySnapshot(inList: interop.PointerConvertible, outSnapshotSeed: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListCopySnapshot(inList: interop.Object, outSnapshotSeed: interop.PointerConvertible): interop.Object;
 
-declare function LSSharedFileListInsertItemURL(inList: interop.PointerConvertible, insertAfterThisItem: interop.PointerConvertible, inDisplayName: interop.PointerConvertible, inIconRef: interop.PointerConvertible, inURL: interop.PointerConvertible, inPropertiesToSet: interop.PointerConvertible, inPropertiesToClear: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListInsertItemURL(inList: interop.Object, insertAfterThisItem: interop.Object, inDisplayName: interop.Object, inIconRef: interop.PointerConvertible, inURL: interop.Object, inPropertiesToSet: interop.Object, inPropertiesToClear: interop.Object): interop.Object;
 
-declare function LSSharedFileListInsertItemFSRef(inList: interop.PointerConvertible, insertAfterThisItem: interop.PointerConvertible, inDisplayName: interop.PointerConvertible, inIconRef: interop.PointerConvertible, inFSRef: interop.PointerConvertible, inPropertiesToSet: interop.PointerConvertible, inPropertiesToClear: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListInsertItemFSRef(inList: interop.Object, insertAfterThisItem: interop.Object, inDisplayName: interop.Object, inIconRef: interop.PointerConvertible, inFSRef: interop.PointerConvertible, inPropertiesToSet: interop.Object, inPropertiesToClear: interop.Object): interop.Object;
 
-declare function LSSharedFileListItemMove(inList: interop.PointerConvertible, inItem: interop.PointerConvertible, inMoveAfterItem: interop.PointerConvertible): number;
+declare function LSSharedFileListItemMove(inList: interop.Object, inItem: interop.Object, inMoveAfterItem: interop.Object): number;
 
-declare function LSSharedFileListItemRemove(inList: interop.PointerConvertible, inItem: interop.PointerConvertible): number;
+declare function LSSharedFileListItemRemove(inList: interop.Object, inItem: interop.Object): number;
 
-declare function LSSharedFileListRemoveAllItems(inList: interop.PointerConvertible): number;
+declare function LSSharedFileListRemoveAllItems(inList: interop.Object): number;
 
-declare function LSSharedFileListItemGetID(inItem: interop.PointerConvertible): number;
+declare function LSSharedFileListItemGetID(inItem: interop.Object): number;
 
-declare function LSSharedFileListItemCopyIconRef(inItem: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListItemCopyIconRef(inItem: interop.Object): interop.Pointer;
 
-declare function LSSharedFileListItemCopyDisplayName(inItem: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListItemCopyDisplayName(inItem: interop.Object): interop.Object;
 
-declare function LSSharedFileListItemResolve(inItem: interop.PointerConvertible, inFlags: number, outURL: interop.PointerConvertible, outRef: interop.PointerConvertible): number;
+declare function LSSharedFileListItemResolve(inItem: interop.Object, inFlags: number, outURL: interop.PointerConvertible, outRef: interop.PointerConvertible): number;
 
-declare function LSSharedFileListItemCopyResolvedURL(inItem: interop.PointerConvertible, inFlags: number, outError: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListItemCopyResolvedURL(inItem: interop.Object, inFlags: number, outError: interop.PointerConvertible): interop.Object;
 
-declare function LSSharedFileListItemCopyProperty(inItem: interop.PointerConvertible, inPropertyName: interop.PointerConvertible): interop.Pointer;
+declare function LSSharedFileListItemCopyProperty(inItem: interop.Object, inPropertyName: interop.Object): interop.Object;
 
-declare function LSSharedFileListItemSetProperty(inItem: interop.PointerConvertible, inPropertyName: interop.PointerConvertible, inPropertyData: interop.PointerConvertible): number;
+declare function LSSharedFileListItemSetProperty(inItem: interop.Object, inPropertyName: interop.Object, inPropertyData: interop.Object): number;
 

@@ -42,17 +42,17 @@ declare const SMAppServiceStatus: {
   NotFound: 3,
 };
 
-declare function SMLoginItemSetEnabled(identifier: interop.PointerConvertible, enabled: number): number;
+declare function SMLoginItemSetEnabled(identifier: interop.Object, enabled: number): number;
 
-declare function SMJobCopyDictionary(domain: interop.PointerConvertible, jobLabel: interop.PointerConvertible): interop.Pointer;
+declare function SMJobCopyDictionary(domain: interop.Object, jobLabel: interop.Object): interop.Object;
 
-declare function SMCopyAllJobDictionaries(domain: interop.PointerConvertible): interop.Pointer;
+declare function SMCopyAllJobDictionaries(domain: interop.Object): interop.Object;
 
-declare function SMJobSubmit(domain: interop.PointerConvertible, job: interop.PointerConvertible, auth: interop.PointerConvertible, outError: interop.PointerConvertible): number;
+declare function SMJobSubmit(domain: interop.Object, job: interop.Object, auth: interop.PointerConvertible, outError: interop.PointerConvertible): number;
 
-declare function SMJobRemove(domain: interop.PointerConvertible, jobLabel: interop.PointerConvertible, auth: interop.PointerConvertible, wait: number, outError: interop.PointerConvertible): number;
+declare function SMJobRemove(domain: interop.Object, jobLabel: interop.Object, auth: interop.PointerConvertible, wait: number, outError: interop.PointerConvertible): number;
 
-declare function SMJobBless(domain: interop.PointerConvertible, executableLabel: interop.PointerConvertible, auth: interop.PointerConvertible, outError: interop.PointerConvertible): number;
+declare function SMJobBless(domain: interop.Object, executableLabel: interop.Object, auth: interop.PointerConvertible, outError: interop.PointerConvertible): number;
 
 declare class SMAppService extends NSObject {
   static loginItemServiceWithIdentifier<This extends abstract new (...args: any) => any>(this: This, identifier: string): InstanceType<This>;

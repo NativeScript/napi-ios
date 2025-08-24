@@ -8,7 +8,7 @@ rm -rf ./dist
   # ./update_version.sh
 # fi
 ./build_metadata_generator.sh
-./build_nativescript.sh --no-vision $1
+./build_nativescript.sh --no-vision $1 $2
 ./build_tklivesync.sh --no-vision
 ./prepare_dSYMs.sh
 ./build_npm_ios.sh

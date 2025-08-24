@@ -729,7 +729,7 @@ declare const kODPolicyTypePasswordSelfModification: string;
 
 declare const ODPacketSigningDisabled: number;
 
-declare const kODSessionDefault: interop.Pointer;
+declare const kODSessionDefault: interop.Object;
 
 declare const kODPolicyAttributePassword: string;
 
@@ -936,153 +936,153 @@ declare function ODContextGetTypeID(): number;
 
 declare function ODNodeGetTypeID(): number;
 
-declare function ODNodeCreateWithNodeType(allocator: interop.PointerConvertible, session: interop.PointerConvertible, nodeType: number, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCreateWithNodeType(allocator: interop.Object, session: interop.Object, nodeType: number, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCreateWithName(allocator: interop.PointerConvertible, session: interop.PointerConvertible, nodeName: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCreateWithName(allocator: interop.Object, session: interop.Object, nodeName: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCreateCopy(allocator: interop.PointerConvertible, node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCreateCopy(allocator: interop.Object, node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopySubnodeNames(node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopySubnodeNames(node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopyUnreachableSubnodeNames(node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopyUnreachableSubnodeNames(node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeGetName(node: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeGetName(node: interop.Object): interop.Object;
 
-declare function ODNodeCopyDetails(node: interop.PointerConvertible, keys: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopyDetails(node: interop.Object, keys: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopySupportedRecordTypes(node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopySupportedRecordTypes(node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopySupportedAttributes(node: interop.PointerConvertible, recordType: string, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopySupportedAttributes(node: interop.Object, recordType: string, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeSetCredentials(node: interop.PointerConvertible, recordType: string, recordName: interop.PointerConvertible, password: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodeSetCredentials(node: interop.Object, recordType: string, recordName: interop.Object, password: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeSetCredentialsExtended(node: interop.PointerConvertible, recordType: string, authType: string, authItems: interop.PointerConvertible, outAuthItems: interop.PointerConvertible, outContext: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodeSetCredentialsExtended(node: interop.Object, recordType: string, authType: string, authItems: interop.Object, outAuthItems: interop.PointerConvertible, outContext: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeSetCredentialsUsingKerberosCache(node: interop.PointerConvertible, cacheName: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodeSetCredentialsUsingKerberosCache(node: interop.Object, cacheName: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeCreateRecord(node: interop.PointerConvertible, recordType: string, recordName: interop.PointerConvertible, attributeDict: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCreateRecord(node: interop.Object, recordType: string, recordName: interop.Object, attributeDict: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopyRecord(node: interop.PointerConvertible, recordType: string, recordName: interop.PointerConvertible, attributes: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopyRecord(node: interop.Object, recordType: string, recordName: interop.Object, attributes: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCustomCall(node: interop.PointerConvertible, customCode: number, data: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCustomCall(node: interop.Object, customCode: number, data: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCustomFunction(node: interop.PointerConvertible, function$: interop.PointerConvertible, payload: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCustomFunction(node: interop.Object, function$: interop.Object, payload: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopyPolicies(node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopyPolicies(node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeCopySupportedPolicies(node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopySupportedPolicies(node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodeSetPolicies(node: interop.PointerConvertible, policies: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodeSetPolicies(node: interop.Object, policies: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeSetPolicy(node: interop.PointerConvertible, policyType: string, value: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodeSetPolicy(node: interop.Object, policyType: string, value: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeRemovePolicy(node: interop.PointerConvertible, policyType: string, error: interop.PointerConvertible): boolean;
+declare function ODNodeRemovePolicy(node: interop.Object, policyType: string, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeAddAccountPolicy(node: interop.PointerConvertible, policy: interop.PointerConvertible, category: string, error: interop.PointerConvertible): boolean;
+declare function ODNodeAddAccountPolicy(node: interop.Object, policy: interop.Object, category: string, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeRemoveAccountPolicy(node: interop.PointerConvertible, policy: interop.PointerConvertible, category: string, error: interop.PointerConvertible): boolean;
+declare function ODNodeRemoveAccountPolicy(node: interop.Object, policy: interop.Object, category: string, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeSetAccountPolicies(node: interop.PointerConvertible, policies: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodeSetAccountPolicies(node: interop.Object, policies: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODNodeCopyAccountPolicies(node: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODNodeCopyAccountPolicies(node: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODNodePasswordContentCheck(node: interop.PointerConvertible, password: interop.PointerConvertible, recordName: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODNodePasswordContentCheck(node: interop.Object, password: interop.Object, recordName: interop.Object, error: interop.PointerConvertible): boolean;
 
 declare function ODQueryGetTypeID(): number;
 
-declare function ODQueryCreateWithNode(allocator: interop.PointerConvertible, node: interop.PointerConvertible, recordTypeOrList: interop.PointerConvertible, attribute: string, matchType: number, queryValueOrList: interop.PointerConvertible, returnAttributeOrList: interop.PointerConvertible, maxResults: number, error: interop.PointerConvertible): interop.Pointer;
+declare function ODQueryCreateWithNode(allocator: interop.Object, node: interop.Object, recordTypeOrList: interop.Object, attribute: string, matchType: number, queryValueOrList: interop.Object, returnAttributeOrList: interop.Object, maxResults: number, error: interop.PointerConvertible): interop.Object;
 
-declare function ODQueryCreateWithNodeType(allocator: interop.PointerConvertible, nodeType: number, recordTypeOrList: interop.PointerConvertible, attribute: string, matchType: number, queryValueOrList: interop.PointerConvertible, returnAttributeOrList: interop.PointerConvertible, maxResults: number, error: interop.PointerConvertible): interop.Pointer;
+declare function ODQueryCreateWithNodeType(allocator: interop.Object, nodeType: number, recordTypeOrList: interop.Object, attribute: string, matchType: number, queryValueOrList: interop.Object, returnAttributeOrList: interop.Object, maxResults: number, error: interop.PointerConvertible): interop.Object;
 
-declare function ODQueryCopyResults(query: interop.PointerConvertible, allowPartialResults: boolean, error: interop.PointerConvertible): interop.Pointer;
+declare function ODQueryCopyResults(query: interop.Object, allowPartialResults: boolean, error: interop.PointerConvertible): interop.Object;
 
-declare function ODQuerySynchronize(query: interop.PointerConvertible): void;
+declare function ODQuerySynchronize(query: interop.Object): void;
 
-declare function ODQuerySetCallback(query: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, userInfo: interop.PointerConvertible): void;
+declare function ODQuerySetCallback(query: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void, userInfo: interop.PointerConvertible): void;
 
-declare function ODQueryScheduleWithRunLoop(query: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function ODQueryScheduleWithRunLoop(query: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function ODQueryUnscheduleFromRunLoop(query: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function ODQueryUnscheduleFromRunLoop(query: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function ODQuerySetDispatchQueue(query: interop.PointerConvertible, queue: NSObject): void;
+declare function ODQuerySetDispatchQueue(query: interop.Object, queue: NSObject): void;
 
 declare function ODRecordGetTypeID(): number;
 
-declare function ODRecordSetNodeCredentials(record: interop.PointerConvertible, username: interop.PointerConvertible, password: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetNodeCredentials(record: interop.Object, username: interop.Object, password: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordSetNodeCredentialsExtended(record: interop.PointerConvertible, recordType: string, authType: string, authItems: interop.PointerConvertible, outAuthItems: interop.PointerConvertible, outContext: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetNodeCredentialsExtended(record: interop.Object, recordType: string, authType: string, authItems: interop.Object, outAuthItems: interop.PointerConvertible, outContext: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordSetNodeCredentialsUsingKerberosCache(record: interop.PointerConvertible, cacheName: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetNodeCredentialsUsingKerberosCache(record: interop.Object, cacheName: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordCopyPasswordPolicy(allocator: interop.PointerConvertible, record: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopyPasswordPolicy(allocator: interop.Object, record: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordVerifyPassword(record: interop.PointerConvertible, password: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordVerifyPassword(record: interop.Object, password: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordVerifyPasswordExtended(record: interop.PointerConvertible, authType: string, authItems: interop.PointerConvertible, outAuthItems: interop.PointerConvertible, outContext: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordVerifyPasswordExtended(record: interop.Object, authType: string, authItems: interop.Object, outAuthItems: interop.PointerConvertible, outContext: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordChangePassword(record: interop.PointerConvertible, oldPassword: interop.PointerConvertible, newPassword: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordChangePassword(record: interop.Object, oldPassword: interop.Object, newPassword: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordGetRecordType(record: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordGetRecordType(record: interop.Object): interop.Object;
 
-declare function ODRecordGetRecordName(record: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordGetRecordName(record: interop.Object): interop.Object;
 
-declare function ODRecordCopyValues(record: interop.PointerConvertible, attribute: string, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopyValues(record: interop.Object, attribute: string, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordSetValue(record: interop.PointerConvertible, attribute: string, valueOrValues: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetValue(record: interop.Object, attribute: string, valueOrValues: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordAddValue(record: interop.PointerConvertible, attribute: string, value: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordAddValue(record: interop.Object, attribute: string, value: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordRemoveValue(record: interop.PointerConvertible, attribute: string, value: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordRemoveValue(record: interop.Object, attribute: string, value: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordCopyDetails(record: interop.PointerConvertible, attributes: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopyDetails(record: interop.Object, attributes: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordSynchronize(record: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSynchronize(record: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordDelete(record: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordDelete(record: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordAddMember(group: interop.PointerConvertible, member: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordAddMember(group: interop.Object, member: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordRemoveMember(group: interop.PointerConvertible, member: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordRemoveMember(group: interop.Object, member: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordContainsMember(group: interop.PointerConvertible, member: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordContainsMember(group: interop.Object, member: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordCopyPolicies(record: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopyPolicies(record: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordCopyEffectivePolicies(record: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopyEffectivePolicies(record: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordCopySupportedPolicies(record: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopySupportedPolicies(record: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordSetPolicies(record: interop.PointerConvertible, policies: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetPolicies(record: interop.Object, policies: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordSetPolicy(record: interop.PointerConvertible, policy: string, value: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetPolicy(record: interop.Object, policy: string, value: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordRemovePolicy(record: interop.PointerConvertible, policy: string, error: interop.PointerConvertible): boolean;
+declare function ODRecordRemovePolicy(record: interop.Object, policy: string, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordAddAccountPolicy(record: interop.PointerConvertible, policy: interop.PointerConvertible, category: string, error: interop.PointerConvertible): boolean;
+declare function ODRecordAddAccountPolicy(record: interop.Object, policy: interop.Object, category: string, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordRemoveAccountPolicy(record: interop.PointerConvertible, policy: interop.PointerConvertible, category: string, error: interop.PointerConvertible): boolean;
+declare function ODRecordRemoveAccountPolicy(record: interop.Object, policy: interop.Object, category: string, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordSetAccountPolicies(record: interop.PointerConvertible, policies: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordSetAccountPolicies(record: interop.Object, policies: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordCopyAccountPolicies(record: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODRecordCopyAccountPolicies(record: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODRecordAuthenticationAllowed(record: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordAuthenticationAllowed(record: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordPasswordChangeAllowed(record: interop.PointerConvertible, newPassword: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function ODRecordPasswordChangeAllowed(record: interop.Object, newPassword: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function ODRecordWillPasswordExpire(record: interop.PointerConvertible, willExpireIn: number): boolean;
+declare function ODRecordWillPasswordExpire(record: interop.Object, willExpireIn: number): boolean;
 
-declare function ODRecordWillAuthenticationsExpire(record: interop.PointerConvertible, willExpireIn: number): boolean;
+declare function ODRecordWillAuthenticationsExpire(record: interop.Object, willExpireIn: number): boolean;
 
-declare function ODRecordSecondsUntilPasswordExpires(record: interop.PointerConvertible): number;
+declare function ODRecordSecondsUntilPasswordExpires(record: interop.Object): number;
 
-declare function ODRecordSecondsUntilAuthenticationsExpire(record: interop.PointerConvertible): number;
+declare function ODRecordSecondsUntilAuthenticationsExpire(record: interop.Object): number;
 
 declare function ODSessionGetTypeID(): number;
 
-declare function ODSessionCreate(allocator: interop.PointerConvertible, options: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODSessionCreate(allocator: interop.Object, options: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ODSessionCopyNodeNames(allocator: interop.PointerConvertible, session: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ODSessionCopyNodeNames(allocator: interop.Object, session: interop.Object, error: interop.PointerConvertible): interop.Object;
 
 declare interface ODQueryDelegate extends NSObjectProtocol {
   queryFoundResultsError(inQuery: ODQuery, inResults: NSArray<interop.Object> | Array<interop.Object>, inError: NSError): void;

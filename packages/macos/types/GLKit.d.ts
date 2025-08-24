@@ -300,59 +300,59 @@ declare function GLKMatrix4Invert(matrix: _GLKMatrix4, isInvertible: interop.Poi
 
 declare function GLKMatrix4InvertAndTranspose(matrix: _GLKMatrix4, isInvertible: interop.PointerConvertible): _GLKMatrix4;
 
-declare function GLKMatrixStackCreate(alloc: interop.PointerConvertible): interop.Pointer;
+declare function GLKMatrixStackCreate(alloc: interop.Object): interop.Object;
 
 declare function GLKMatrixStackGetTypeID(): number;
 
-declare function GLKMatrixStackPush(stack: interop.PointerConvertible): void;
+declare function GLKMatrixStackPush(stack: interop.Object): void;
 
-declare function GLKMatrixStackPop(stack: interop.PointerConvertible): void;
+declare function GLKMatrixStackPop(stack: interop.Object): void;
 
-declare function GLKMatrixStackSize(stack: interop.PointerConvertible): number;
+declare function GLKMatrixStackSize(stack: interop.Object): number;
 
-declare function GLKMatrixStackLoadMatrix4(stack: interop.PointerConvertible, matrix: _GLKMatrix4): void;
+declare function GLKMatrixStackLoadMatrix4(stack: interop.Object, matrix: _GLKMatrix4): void;
 
-declare function GLKMatrixStackGetMatrix4(stack: interop.PointerConvertible): _GLKMatrix4;
+declare function GLKMatrixStackGetMatrix4(stack: interop.Object): _GLKMatrix4;
 
-declare function GLKMatrixStackGetMatrix3(stack: interop.PointerConvertible): _GLKMatrix3;
+declare function GLKMatrixStackGetMatrix3(stack: interop.Object): _GLKMatrix3;
 
-declare function GLKMatrixStackGetMatrix2(stack: interop.PointerConvertible): _GLKMatrix2;
+declare function GLKMatrixStackGetMatrix2(stack: interop.Object): _GLKMatrix2;
 
-declare function GLKMatrixStackGetMatrix4Inverse(stack: interop.PointerConvertible): _GLKMatrix4;
+declare function GLKMatrixStackGetMatrix4Inverse(stack: interop.Object): _GLKMatrix4;
 
-declare function GLKMatrixStackGetMatrix4InverseTranspose(stack: interop.PointerConvertible): _GLKMatrix4;
+declare function GLKMatrixStackGetMatrix4InverseTranspose(stack: interop.Object): _GLKMatrix4;
 
-declare function GLKMatrixStackGetMatrix3Inverse(stack: interop.PointerConvertible): _GLKMatrix3;
+declare function GLKMatrixStackGetMatrix3Inverse(stack: interop.Object): _GLKMatrix3;
 
-declare function GLKMatrixStackGetMatrix3InverseTranspose(stack: interop.PointerConvertible): _GLKMatrix3;
+declare function GLKMatrixStackGetMatrix3InverseTranspose(stack: interop.Object): _GLKMatrix3;
 
-declare function GLKMatrixStackMultiplyMatrix4(stack: interop.PointerConvertible, matrix: _GLKMatrix4): void;
+declare function GLKMatrixStackMultiplyMatrix4(stack: interop.Object, matrix: _GLKMatrix4): void;
 
-declare function GLKMatrixStackMultiplyMatrixStack(stackLeft: interop.PointerConvertible, stackRight: interop.PointerConvertible): void;
+declare function GLKMatrixStackMultiplyMatrixStack(stackLeft: interop.Object, stackRight: interop.Object): void;
 
-declare function GLKMatrixStackTranslate(stack: interop.PointerConvertible, tx: number, ty: number, tz: number): void;
+declare function GLKMatrixStackTranslate(stack: interop.Object, tx: number, ty: number, tz: number): void;
 
-declare function GLKMatrixStackTranslateWithVector3(stack: interop.PointerConvertible, translationVector: _GLKVector3): void;
+declare function GLKMatrixStackTranslateWithVector3(stack: interop.Object, translationVector: _GLKVector3): void;
 
-declare function GLKMatrixStackTranslateWithVector4(stack: interop.PointerConvertible, translationVector: _GLKVector4): void;
+declare function GLKMatrixStackTranslateWithVector4(stack: interop.Object, translationVector: _GLKVector4): void;
 
-declare function GLKMatrixStackScale(stack: interop.PointerConvertible, sx: number, sy: number, sz: number): void;
+declare function GLKMatrixStackScale(stack: interop.Object, sx: number, sy: number, sz: number): void;
 
-declare function GLKMatrixStackScaleWithVector3(stack: interop.PointerConvertible, scaleVector: _GLKVector3): void;
+declare function GLKMatrixStackScaleWithVector3(stack: interop.Object, scaleVector: _GLKVector3): void;
 
-declare function GLKMatrixStackScaleWithVector4(stack: interop.PointerConvertible, scaleVector: _GLKVector4): void;
+declare function GLKMatrixStackScaleWithVector4(stack: interop.Object, scaleVector: _GLKVector4): void;
 
-declare function GLKMatrixStackRotate(stack: interop.PointerConvertible, radians: number, x: number, y: number, z: number): void;
+declare function GLKMatrixStackRotate(stack: interop.Object, radians: number, x: number, y: number, z: number): void;
 
-declare function GLKMatrixStackRotateWithVector3(stack: interop.PointerConvertible, radians: number, axisVector: _GLKVector3): void;
+declare function GLKMatrixStackRotateWithVector3(stack: interop.Object, radians: number, axisVector: _GLKVector3): void;
 
-declare function GLKMatrixStackRotateWithVector4(stack: interop.PointerConvertible, radians: number, axisVector: _GLKVector4): void;
+declare function GLKMatrixStackRotateWithVector4(stack: interop.Object, radians: number, axisVector: _GLKVector4): void;
 
-declare function GLKMatrixStackRotateX(stack: interop.PointerConvertible, radians: number): void;
+declare function GLKMatrixStackRotateX(stack: interop.Object, radians: number): void;
 
-declare function GLKMatrixStackRotateY(stack: interop.PointerConvertible, radians: number): void;
+declare function GLKMatrixStackRotateY(stack: interop.Object, radians: number): void;
 
-declare function GLKMatrixStackRotateZ(stack: interop.PointerConvertible, radians: number): void;
+declare function GLKMatrixStackRotateZ(stack: interop.Object, radians: number): void;
 
 declare function GLKMathProject(object: _GLKVector3, model: _GLKMatrix4, projection: _GLKMatrix4, viewport: interop.PointerConvertible): _GLKVector3;
 
@@ -390,7 +390,7 @@ declare class GLKTextureLoader extends NSObject {
 
   static textureWithContentsOfDataOptionsError(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
-  static textureWithCGImageOptionsError(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
+  static textureWithCGImageOptionsError(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
   static cubeMapWithContentsOfFilesOptionsError(paths: NSArray<interop.Object> | Array<interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outError: interop.PointerConvertible): GLKTextureInfo;
 
@@ -408,7 +408,7 @@ declare class GLKTextureLoader extends NSObject {
 
   textureWithContentsOfDataOptionsQueueCompletionHandler(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
 
-  textureWithCGImageOptionsQueueCompletionHandler(cgImage: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
+  textureWithCGImageOptionsQueueCompletionHandler(cgImage: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
 
   cubeMapWithContentsOfFilesOptionsQueueCompletionHandler(paths: NSArray<interop.Object> | Array<interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, queue: NSObject | null, block: (p1: GLKTextureInfo, p2: NSError) => void): void;
 

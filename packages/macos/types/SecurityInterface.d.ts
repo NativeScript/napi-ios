@@ -32,11 +32,11 @@ declare const SFButtonType: {
 declare class SFCertificatePanel extends NSPanel {
   static sharedCertificatePanel(): SFCertificatePanel;
 
-  runModalForTrustShowGroup(trust: interop.PointerConvertible, showGroup: boolean): number;
+  runModalForTrustShowGroup(trust: interop.Object, showGroup: boolean): number;
 
   runModalForCertificatesShowGroup(certificates: NSArray<interop.Object> | Array<interop.Object>, showGroup: boolean): number;
 
-  beginSheetForWindowModalDelegateDidEndSelectorContextInfoTrustShowGroup(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, trust: interop.PointerConvertible, showGroup: boolean): void;
+  beginSheetForWindowModalDelegateDidEndSelectorContextInfoTrustShowGroup(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, trust: interop.Object, showGroup: boolean): void;
 
   beginSheetForWindowModalDelegateDidEndSelectorContextInfoCertificatesShowGroup(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, certificates: NSArray<interop.Object> | Array<interop.Object>, showGroup: boolean): void;
 
@@ -62,9 +62,9 @@ declare class SFCertificatePanel extends NSPanel {
 declare class SFKeychainSettingsPanel extends NSPanel {
   static sharedKeychainSettingsPanel(): SFKeychainSettingsPanel;
 
-  runModalForSettingsKeychain(settings: interop.PointerConvertible, keychain: interop.PointerConvertible): number;
+  runModalForSettingsKeychain(settings: interop.PointerConvertible, keychain: interop.Object): number;
 
-  beginSheetForWindowModalDelegateDidEndSelectorContextInfoSettingsKeychain(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, settings: interop.PointerConvertible, keychain: interop.PointerConvertible): void;
+  beginSheetForWindowModalDelegateDidEndSelectorContextInfoSettingsKeychain(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, settings: interop.PointerConvertible, keychain: interop.Object): void;
 }
 
 declare class SFChooseIdentityTableCellView extends NSTableCellView {
@@ -142,9 +142,9 @@ declare class SFAuthorizationView extends NSView {
 declare class SFCertificateTrustPanel extends SFCertificatePanel {
   static sharedCertificateTrustPanel(): SFCertificateTrustPanel;
 
-  runModalForTrustMessage(trust: interop.PointerConvertible, message: string): number;
+  runModalForTrustMessage(trust: interop.Object, message: string): number;
 
-  beginSheetForWindowModalDelegateDidEndSelectorContextInfoTrustMessage(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, trust: interop.PointerConvertible, message: string): void;
+  beginSheetForWindowModalDelegateDidEndSelectorContextInfoTrustMessage(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, trust: interop.Object, message: string): void;
 
   setInformativeText(informativeText: string): void;
 
@@ -152,9 +152,9 @@ declare class SFCertificateTrustPanel extends SFCertificatePanel {
 }
 
 declare class SFCertificateView extends NSVisualEffectView {
-  setCertificate(certificate: interop.PointerConvertible): void;
+  setCertificate(certificate: interop.Object): void;
 
-  certificate(): interop.Pointer;
+  certificate(): interop.Object;
 
   setPolicies(policies: interop.Object): void;
 
@@ -192,7 +192,7 @@ declare class SFKeychainSavePanel extends NSSavePanel {
 
   setPassword(password: string): void;
 
-  keychain(): interop.Pointer;
+  keychain(): interop.Object;
 
   error(): NSError;
 
@@ -207,7 +207,7 @@ declare class SFChooseIdentityPanel extends NSPanel {
 
   beginSheetForWindowModalDelegateDidEndSelectorContextInfoIdentitiesMessage(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, identities: NSArray<interop.Object> | Array<interop.Object>, message: string): void;
 
-  identity(): interop.Pointer;
+  identity(): interop.Object;
 
   setPolicies(policies: interop.Object): void;
 

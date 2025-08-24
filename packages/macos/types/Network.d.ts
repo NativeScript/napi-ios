@@ -529,7 +529,7 @@ declare function nw_error_get_error_domain(error: NSObject): interop.Enum<typeof
 
 declare function nw_error_get_error_code(error: NSObject): number;
 
-declare function nw_error_copy_cf_error(error: NSObject): interop.Pointer;
+declare function nw_error_copy_cf_error(error: NSObject): interop.Object;
 
 declare function nw_browser_create(descriptor: NSObject, parameters: NSObject): NSObject;
 

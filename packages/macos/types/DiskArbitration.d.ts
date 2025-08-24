@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kDADiskDescriptionWatchVolumePath: interop.Pointer;
+declare const kDADiskDescriptionWatchVolumePath: interop.Object;
 
 declare const kDADiskEjectOptionDefault: number;
 
@@ -20,19 +20,19 @@ declare const kDAReturnBadArgument: number;
 
 declare const kDAReturnNotPermitted: number;
 
-declare const kDADiskDescriptionMatchMediaWhole: interop.Pointer;
+declare const kDADiskDescriptionMatchMediaWhole: interop.Object;
 
 declare const kDADiskClaimOptionDefault: number;
 
 declare const kDAReturnNotFound: number;
 
-declare const kDADiskDescriptionMatchVolumeUnrecognized: interop.Pointer;
+declare const kDADiskDescriptionMatchVolumeUnrecognized: interop.Object;
 
 declare const kDAReturnNotWritable: number;
 
 declare const kDAReturnExclusiveAccess: number;
 
-declare const kDADiskDescriptionMatchVolumeMountable: interop.Pointer;
+declare const kDADiskDescriptionMatchVolumeMountable: interop.Object;
 
 declare const kDADiskDescriptionMediaLeafKey: interop.Pointer;
 
@@ -98,7 +98,7 @@ declare const kDADiskDescriptionMediaBSDMajorKey: interop.Pointer;
 
 declare const kDAReturnError: number;
 
-declare const kDADiskDescriptionMatchMediaUnformatted: interop.Pointer;
+declare const kDADiskDescriptionMatchMediaUnformatted: interop.Object;
 
 declare const kDAReturnNotPrivileged: number;
 
@@ -108,7 +108,7 @@ declare const kDADiskDescriptionDeviceGUIDKey: interop.Pointer;
 
 declare const kDADiskDescriptionBusNameKey: interop.Pointer;
 
-declare const kDADiskDescriptionWatchVolumeName: interop.Pointer;
+declare const kDADiskDescriptionWatchVolumeName: interop.Object;
 
 declare const kDAReturnNoResources: number;
 
@@ -150,79 +150,79 @@ declare class __DASession {
 
 declare function DASessionGetTypeID(): number;
 
-declare function DASessionCreate(allocator: interop.PointerConvertible): interop.Pointer;
+declare function DASessionCreate(allocator: interop.Object): interop.Object;
 
-declare function DASessionScheduleWithRunLoop(session: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function DASessionScheduleWithRunLoop(session: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function DASessionUnscheduleFromRunLoop(session: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function DASessionUnscheduleFromRunLoop(session: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function DASessionSetDispatchQueue(session: interop.PointerConvertible, queue: NSObject): void;
+declare function DASessionSetDispatchQueue(session: interop.Object, queue: NSObject): void;
 
 declare function DAApprovalSessionGetTypeID(): number;
 
-declare function DAApprovalSessionCreate(allocator: interop.PointerConvertible): interop.Pointer;
+declare function DAApprovalSessionCreate(allocator: interop.Object): interop.Object;
 
-declare function DAApprovalSessionScheduleWithRunLoop(session: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function DAApprovalSessionScheduleWithRunLoop(session: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
-declare function DAApprovalSessionUnscheduleFromRunLoop(session: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function DAApprovalSessionUnscheduleFromRunLoop(session: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): void;
 
 declare function DADiskGetTypeID(): number;
 
-declare function DADiskCreateFromBSDName(allocator: interop.PointerConvertible, session: interop.PointerConvertible, name: string): interop.Pointer;
+declare function DADiskCreateFromBSDName(allocator: interop.Object, session: interop.Object, name: string): interop.Object;
 
-declare function DADiskCreateFromIOMedia(allocator: interop.PointerConvertible, session: interop.PointerConvertible, media: number): interop.Pointer;
+declare function DADiskCreateFromIOMedia(allocator: interop.Object, session: interop.Object, media: number): interop.Object;
 
-declare function DADiskCreateFromVolumePath(allocator: interop.PointerConvertible, session: interop.PointerConvertible, path: interop.PointerConvertible): interop.Pointer;
+declare function DADiskCreateFromVolumePath(allocator: interop.Object, session: interop.Object, path: interop.Object): interop.Object;
 
-declare function DADiskGetBSDName(disk: interop.PointerConvertible): string;
+declare function DADiskGetBSDName(disk: interop.Object): string;
 
-declare function DADiskCopyIOMedia(disk: interop.PointerConvertible): number;
+declare function DADiskCopyIOMedia(disk: interop.Object): number;
 
-declare function DADiskCopyDescription(disk: interop.PointerConvertible): interop.Pointer;
+declare function DADiskCopyDescription(disk: interop.Object): interop.Object;
 
-declare function DADiskCopyWholeDisk(disk: interop.PointerConvertible): interop.Pointer;
+declare function DADiskCopyWholeDisk(disk: interop.Object): interop.Object;
 
-declare function DADissenterCreate(allocator: interop.PointerConvertible, status: number, string: interop.PointerConvertible): interop.Pointer;
+declare function DADissenterCreate(allocator: interop.Object, status: number, string: interop.Object): interop.Object;
 
-declare function DADissenterGetStatus(dissenter: interop.PointerConvertible): number;
+declare function DADissenterGetStatus(dissenter: interop.Object): number;
 
-declare function DADissenterGetStatusString(dissenter: interop.PointerConvertible): interop.Pointer;
+declare function DADissenterGetStatusString(dissenter: interop.Object): interop.Object;
 
-declare function DARegisterDiskAppearedCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DARegisterDiskAppearedCallback(session: interop.Object, match: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DARegisterDiskDescriptionChangedCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, watch: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DARegisterDiskDescriptionChangedCallback(session: interop.Object, match: interop.Object, watch: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DARegisterDiskDisappearedCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DARegisterDiskDisappearedCallback(session: interop.Object, match: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DADiskMount(disk: interop.PointerConvertible, path: interop.PointerConvertible, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DADiskMount(disk: interop.Object, path: interop.Object, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DADiskMountWithArguments(disk: interop.PointerConvertible, path: interop.PointerConvertible, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible, arguments$: interop.PointerConvertible): void;
+declare function DADiskMountWithArguments(disk: interop.Object, path: interop.Object, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible, arguments$: interop.PointerConvertible): void;
 
-declare function DARegisterDiskMountApprovalCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function DARegisterDiskMountApprovalCallback(session: interop.Object, match: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
-declare function DADiskRename(disk: interop.PointerConvertible, name: interop.PointerConvertible, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DADiskRename(disk: interop.Object, name: interop.Object, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DADiskUnmount(disk: interop.PointerConvertible, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DADiskUnmount(disk: interop.Object, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DARegisterDiskUnmountApprovalCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function DARegisterDiskUnmountApprovalCallback(session: interop.Object, match: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
-declare function DADiskEject(disk: interop.PointerConvertible, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DADiskEject(disk: interop.Object, options: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DARegisterDiskEjectApprovalCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
+declare function DARegisterDiskEjectApprovalCallback(session: interop.Object, match: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible): void;
 
-declare function DADiskClaim(disk: interop.PointerConvertible, options: number, release: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, releaseContext: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, callbackContext: interop.PointerConvertible): void;
+declare function DADiskClaim(disk: interop.Object, options: number, release: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, releaseContext: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, callbackContext: interop.PointerConvertible): void;
 
-declare function DADiskIsClaimed(disk: interop.PointerConvertible): number;
+declare function DADiskIsClaimed(disk: interop.Object): number;
 
-declare function DADiskUnclaim(disk: interop.PointerConvertible): void;
+declare function DADiskUnclaim(disk: interop.Object): void;
 
-declare function DARegisterDiskPeekCallback(session: interop.PointerConvertible, match: interop.PointerConvertible, order: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function DARegisterDiskPeekCallback(session: interop.Object, match: interop.Object, order: number, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function DADiskGetOptions(disk: interop.PointerConvertible): number;
+declare function DADiskGetOptions(disk: interop.Object): number;
 
-declare function DADiskSetOptions(disk: interop.PointerConvertible, options: number, value: number): number;
+declare function DADiskSetOptions(disk: interop.Object, options: number, value: number): number;
 
-declare function DAUnregisterCallback(session: interop.PointerConvertible, callback: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function DAUnregisterCallback(session: interop.Object, callback: interop.PointerConvertible, context: interop.PointerConvertible): void;
 
-declare function DAUnregisterApprovalCallback(session: interop.PointerConvertible, callback: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function DAUnregisterApprovalCallback(session: interop.Object, callback: interop.PointerConvertible, context: interop.PointerConvertible): void;
 

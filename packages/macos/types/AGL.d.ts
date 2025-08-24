@@ -89,9 +89,9 @@ declare function aglSetWindowRef(ctx: interop.PointerConvertible, window: intero
 
 declare function aglGetWindowRef(ctx: interop.PointerConvertible): interop.Pointer;
 
-declare function aglSetHIViewRef(ctx: interop.PointerConvertible, hiview: interop.PointerConvertible): number;
+declare function aglSetHIViewRef(ctx: interop.PointerConvertible, hiview: interop.Object): number;
 
-declare function aglGetHIViewRef(ctx: interop.PointerConvertible): interop.Pointer;
+declare function aglGetHIViewRef(ctx: interop.PointerConvertible): interop.Object;
 
 declare function aglSetOffScreen(ctx: interop.PointerConvertible, width: number, height: number, rowbytes: number, baseaddr: interop.PointerConvertible): number;
 

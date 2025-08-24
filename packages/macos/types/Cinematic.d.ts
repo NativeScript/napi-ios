@@ -178,7 +178,7 @@ declare class CNDecision extends NSObject implements NSCopying {
 }
 
 declare class CNRenderingSessionFrameAttributes extends NSObject implements NSCopying, NSMutableCopying {
-  initWithSampleBufferSessionAttributes(sampleBuffer: interop.PointerConvertible, sessionAttributes: CNRenderingSessionAttributes): this;
+  initWithSampleBufferSessionAttributes(sampleBuffer: interop.Object, sessionAttributes: CNRenderingSessionAttributes): this;
 
   initWithTimedMetadataGroupSessionAttributes(metadataGroup: AVTimedMetadataGroup, sessionAttributes: CNRenderingSessionAttributes): this;
 
@@ -226,11 +226,11 @@ declare class CNObjectTracker extends NSObject {
 
   initWithCommandQueue(commandQueue: MTLCommandQueue): this;
 
-  findObjectAtPointSourceImage(point: CGPoint, sourceImage: interop.PointerConvertible): CNBoundsPrediction;
+  findObjectAtPointSourceImage(point: CGPoint, sourceImage: interop.Object): CNBoundsPrediction;
 
-  startTrackingAtWithinSourceImageSourceDisparity(time: CMTime, normalizedBounds: CGRect, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible): boolean;
+  startTrackingAtWithinSourceImageSourceDisparity(time: CMTime, normalizedBounds: CGRect, sourceImage: interop.Object, sourceDisparity: interop.Object): boolean;
 
-  continueTrackingAtSourceImageSourceDisparity(time: CMTime, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible): CNBoundsPrediction;
+  continueTrackingAtSourceImageSourceDisparity(time: CMTime, sourceImage: interop.Object, sourceDisparity: interop.Object): CNBoundsPrediction;
 
   finishDetectionTrack(): CNDetectionTrack;
 
@@ -264,7 +264,7 @@ declare class CNDetection extends NSObject implements NSCopying {
 
   static accessibilityLabelForDetectionType(detectionType: interop.Enum<typeof CNDetectionType>): string;
 
-  static disparityInNormalizedRectSourceDisparityDetectionTypePriorDisparity(normalizedRect: CGRect, sourceDisparity: interop.PointerConvertible, detectionType: interop.Enum<typeof CNDetectionType>, priorDisparity: number): number;
+  static disparityInNormalizedRectSourceDisparityDetectionTypePriorDisparity(normalizedRect: CGRect, sourceDisparity: interop.Object, detectionType: interop.Enum<typeof CNDetectionType>, priorDisparity: number): number;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -312,11 +312,11 @@ declare class CNRenderingSession extends NSObject {
 
   readonly quality: interop.Enum<typeof CNRenderingQuality>;
 
-  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationImage(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible, destinationImage: interop.PointerConvertible): boolean;
+  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationImage(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.Object, sourceDisparity: interop.Object, destinationImage: interop.Object): boolean;
 
-  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationRGBA(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible, destinationRGBA: MTLTexture): boolean;
+  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationRGBA(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.Object, sourceDisparity: interop.Object, destinationRGBA: MTLTexture): boolean;
 
-  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationLumaDestinationChroma(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.PointerConvertible, sourceDisparity: interop.PointerConvertible, destinationLuma: MTLTexture, destinationChroma: MTLTexture): boolean;
+  encodeRenderToCommandBufferFrameAttributesSourceImageSourceDisparityDestinationLumaDestinationChroma(commandBuffer: MTLCommandBuffer, frameAttributes: CNRenderingSessionFrameAttributes, sourceImage: interop.Object, sourceDisparity: interop.Object, destinationLuma: MTLTexture, destinationChroma: MTLTexture): boolean;
 
   static readonly sourcePixelFormatTypes: NSArray;
 

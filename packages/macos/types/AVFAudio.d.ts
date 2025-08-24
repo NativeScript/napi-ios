@@ -2033,7 +2033,7 @@ declare class AVAudioFormat extends NSObject implements NSSecureCoding {
 
   initWithSettings(settings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCMAudioFormatDescription(formatDescription: interop.PointerConvertible): this;
+  initWithCMAudioFormatDescription(formatDescription: interop.Object): this;
 
   isEqual(object: interop.Object): boolean;
 
@@ -2055,7 +2055,7 @@ declare class AVAudioFormat extends NSObject implements NSSecureCoding {
 
   readonly settings: NSDictionary;
 
-  readonly formatDescription: interop.Pointer;
+  readonly formatDescription: interop.Object;
 
   isStandard(): boolean;
 

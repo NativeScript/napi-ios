@@ -775,9 +775,9 @@ declare class PDFView extends NSView implements NSAnimationDelegate, NSMenuDeleg
   get highlightedSelections(): NSArray;
   set highlightedSelections(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  drawPageToContext(page: PDFPage, context: interop.PointerConvertible): void;
+  drawPageToContext(page: PDFPage, context: interop.Object): void;
 
-  drawPagePostToContext(page: PDFPage, context: interop.PointerConvertible): void;
+  drawPagePostToContext(page: PDFPage, context: interop.Object): void;
 
   // @ts-ignore MemberDecl.tsIgnore
   copy(sender: interop.Object | null): void;
@@ -1024,7 +1024,7 @@ declare class PDFDocument extends NSObject implements NSCopying {
 
   readonly documentURL: NSURL;
 
-  readonly documentRef: interop.Pointer;
+  readonly documentRef: interop.Object;
 
   get documentAttributes(): NSDictionary;
   set documentAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
@@ -1194,7 +1194,7 @@ declare class PDFAnnotation extends NSObject implements NSCopying, NSCoding {
 
   highlighted: boolean;
 
-  drawWithBoxInContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.PointerConvertible): void;
+  drawWithBoxInContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.Object): void;
 
   setValueForAnnotationKey(value: interop.Object, key: string): boolean;
 
@@ -1664,7 +1664,7 @@ declare class PDFPage extends NSObject implements NSCopying {
 
   readonly document: PDFDocument;
 
-  readonly pageRef: interop.Pointer;
+  readonly pageRef: interop.Object;
 
   readonly label: string;
 
@@ -1686,9 +1686,9 @@ declare class PDFPage extends NSObject implements NSCopying {
 
   transformForBox(box: interop.Enum<typeof PDFDisplayBox>): CGAffineTransform;
 
-  drawWithBoxToContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.PointerConvertible): void;
+  drawWithBoxToContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.Object): void;
 
-  transformContextForBox(context: interop.PointerConvertible, box: interop.Enum<typeof PDFDisplayBox>): void;
+  transformContextForBox(context: interop.Object, box: interop.Enum<typeof PDFDisplayBox>): void;
 
   thumbnailOfSizeForBox(size: CGSize, box: interop.Enum<typeof PDFDisplayBox>): NSImage;
 

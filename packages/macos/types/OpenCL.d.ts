@@ -1729,7 +1729,7 @@ declare function clGetGLContextInfoAPPLE(p1: interop.PointerConvertible, p2: int
 
 declare function clCreateEventFromGLsyncKHR(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): interop.Pointer;
 
-declare function clCreateImageFromIOSurface2DAPPLE(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible): interop.Pointer;
+declare function clCreateImageFromIOSurface2DAPPLE(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: interop.Object, p7: interop.PointerConvertible): interop.Pointer;
 
 declare function clCreateImageFromIOSurfaceWithPropertiesAPPLE(p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible): interop.Pointer;
 
@@ -1767,7 +1767,7 @@ declare function gcl_malloc(bytes: number, host_ptr: interop.PointerConvertible,
 
 declare function gcl_free(ptr: interop.PointerConvertible): void;
 
-declare function gcl_create_image(image_format: interop.PointerConvertible, image_width: number, image_height: number, image_depth: number, io_surface: interop.PointerConvertible): interop.Pointer;
+declare function gcl_create_image(image_format: interop.PointerConvertible, image_width: number, image_height: number, image_depth: number, io_surface: interop.Object): interop.Pointer;
 
 declare function gcl_retain_image(image: interop.PointerConvertible): void;
 

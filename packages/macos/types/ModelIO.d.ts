@@ -418,9 +418,9 @@ declare class MDLMeshBufferAllocator extends NativeObject implements MDLMeshBuff
 }
 
 declare class MDLLight extends MDLObject {
-  irradianceAtPoint(point: unknown /* ext vector */): interop.Pointer;
+  irradianceAtPoint(point: unknown /* ext vector */): interop.Object;
 
-  irradianceAtPointColorSpace(point: unknown /* ext vector */, colorSpace: interop.PointerConvertible): interop.Pointer;
+  irradianceAtPointColorSpace(point: unknown /* ext vector */, colorSpace: interop.Object): interop.Object;
 
   lightType: interop.Enum<typeof MDLLightType>;
 
@@ -452,7 +452,7 @@ declare class MDLMaterialProperty extends NSObject implements MDLNamed, NSCopyin
 
   initWithNameSemanticTextureSampler(name: string, semantic: interop.Enum<typeof MDLMaterialSemantic>, textureSampler: MDLTextureSampler | null): this;
 
-  initWithNameSemanticColor(name: string, semantic: interop.Enum<typeof MDLMaterialSemantic>, color: interop.PointerConvertible): this;
+  initWithNameSemanticColor(name: string, semantic: interop.Enum<typeof MDLMaterialSemantic>, color: interop.Object): this;
 
   setProperties(property: MDLMaterialProperty): void;
 
@@ -468,8 +468,7 @@ declare class MDLMaterialProperty extends NSObject implements MDLNamed, NSCopyin
 
   textureSamplerValue: MDLTextureSampler;
 
-  get color(): interop.Pointer;
-  set color(value: interop.PointerConvertible);
+  color: interop.Object;
 
   floatValue: number;
 
@@ -495,7 +494,7 @@ declare class MDLMaterialProperty extends NSObject implements MDLNamed, NSCopyin
 
   setTextureSamplerValue(textureSamplerValue: MDLTextureSampler | null): void;
 
-  setColor(color: interop.PointerConvertible): void;
+  setColor(color: interop.Object | null): void;
 
   setFloatValue(floatValue: number): void;
 
@@ -741,7 +740,7 @@ declare class MDLTransformRotateYOp extends NSObject implements MDLTransformOp {
 declare class MDLColorSwatchTexture extends MDLTexture {
   initWithColorTemperatureGradientFromToColorTemperatureNameTextureDimensions(colorTemperature1: number, colorTemperature2: number, name: string | null, textureDimensions: unknown /* ext vector */): this;
 
-  initWithColorGradientFromToColorNameTextureDimensions(color1: interop.PointerConvertible, color2: interop.PointerConvertible, name: string | null, textureDimensions: unknown /* ext vector */): this;
+  initWithColorGradientFromToColorNameTextureDimensions(color1: interop.Object, color2: interop.Object, name: string | null, textureDimensions: unknown /* ext vector */): this;
 }
 
 declare class MDLTransformRotateOp extends NSObject implements MDLTransformOp {
@@ -1156,8 +1155,7 @@ declare class MDLSkyCubeTexture extends MDLTexture {
 
   horizonElevation: number;
 
-  get groundColor(): interop.Pointer;
-  set groundColor(value: interop.PointerConvertible);
+  groundColor: interop.Object;
 
   gamma: number;
 
@@ -1183,7 +1181,7 @@ declare class MDLSkyCubeTexture extends MDLTexture {
 
   setHorizonElevation(horizonElevation: number): void;
 
-  setGroundColor(groundColor: interop.PointerConvertible): void;
+  setGroundColor(groundColor: interop.Object | null): void;
 
   setGamma(gamma: number): void;
 
@@ -1199,21 +1197,19 @@ declare class MDLSkyCubeTexture extends MDLTexture {
 }
 
 declare class MDLCheckerboardTexture extends MDLTexture {
-  initWithDivisionsNameDimensionsChannelCountChannelEncodingColor1Color2(divisions: number, name: string | null, dimensions: unknown /* ext vector */, channelCount: number, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>, color1: interop.PointerConvertible, color2: interop.PointerConvertible): this;
+  initWithDivisionsNameDimensionsChannelCountChannelEncodingColor1Color2(divisions: number, name: string | null, dimensions: unknown /* ext vector */, channelCount: number, channelEncoding: interop.Enum<typeof MDLTextureChannelEncoding>, color1: interop.Object, color2: interop.Object): this;
 
   divisions: number;
 
-  get color1(): interop.Pointer;
-  set color1(value: interop.PointerConvertible);
+  color1: interop.Object;
 
-  get color2(): interop.Pointer;
-  set color2(value: interop.PointerConvertible);
+  color2: interop.Object;
 
   setDivisions(divisions: number): void;
 
-  setColor1(color1: interop.PointerConvertible): void;
+  setColor1(color1: interop.Object | null): void;
 
-  setColor2(color2: interop.PointerConvertible): void;
+  setColor2(color2: interop.Object | null): void;
 }
 
 declare class MDLURLTexture extends MDLTexture {
@@ -1508,8 +1504,7 @@ declare class MDLTextureSampler extends NSObject {
 declare class MDLPhysicallyPlausibleLight extends MDLLight {
   setColorByTemperature(temperature: number): void;
 
-  get color(): interop.Pointer;
-  set color(value: interop.PointerConvertible);
+  color: interop.Object;
 
   lumens: number;
 
@@ -1521,7 +1516,7 @@ declare class MDLPhysicallyPlausibleLight extends MDLLight {
 
   attenuationEndDistance: number;
 
-  setColor(color: interop.PointerConvertible): void;
+  setColor(color: interop.Object | null): void;
 
   setLumens(lumens: number): void;
 
@@ -2212,13 +2207,13 @@ declare class MDLTexture extends NSObject implements MDLNamed {
 
   writeToURLLevel(URL: NSURL, level: number): boolean;
 
-  writeToURLType(nsurl: NSURL, type: interop.PointerConvertible): boolean;
+  writeToURLType(nsurl: NSURL, type: interop.Object): boolean;
 
-  writeToURLTypeLevel(nsurl: NSURL, type: interop.PointerConvertible, level: number): boolean;
+  writeToURLTypeLevel(nsurl: NSURL, type: interop.Object, level: number): boolean;
 
-  imageFromTexture(): interop.Pointer;
+  imageFromTexture(): interop.Object;
 
-  imageFromTextureAtLevel(level: number): interop.Pointer;
+  imageFromTextureAtLevel(level: number): interop.Object;
 
   texelDataWithTopLeftOrigin(): NSData;
 

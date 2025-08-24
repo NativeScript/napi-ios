@@ -2529,7 +2529,7 @@ declare interface MTLDevice extends NSObjectProtocol {
 
   newTextureWithDescriptor(descriptor: MTLTextureDescriptor): MTLTexture;
 
-  newTextureWithDescriptorIosurfacePlane(descriptor: MTLTextureDescriptor, iosurface: interop.PointerConvertible, plane: number): MTLTexture;
+  newTextureWithDescriptorIosurfacePlane(descriptor: MTLTextureDescriptor, iosurface: interop.Object, plane: number): MTLTexture;
 
   newSharedTextureWithDescriptor(descriptor: MTLTextureDescriptor): MTLTexture;
 
@@ -2956,7 +2956,7 @@ declare interface MTLTexture extends MTLResource {
 
   readonly bufferBytesPerRow: number;
 
-  readonly iosurface: interop.Pointer;
+  readonly iosurface: interop.Object;
 
   readonly iosurfacePlane: number;
 

@@ -1381,18 +1381,17 @@ declare class MKOverlayPathRenderer extends MKOverlayRenderer {
 
   createPath(): void;
 
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
   invalidatePath(): void;
 
-  applyStrokePropertiesToContextAtZoomScale(context: interop.PointerConvertible, zoomScale: number): void;
+  applyStrokePropertiesToContextAtZoomScale(context: interop.Object, zoomScale: number): void;
 
-  applyFillPropertiesToContextAtZoomScale(context: interop.PointerConvertible, zoomScale: number): void;
+  applyFillPropertiesToContextAtZoomScale(context: interop.Object, zoomScale: number): void;
 
-  strokePathInContext(path: interop.PointerConvertible, context: interop.PointerConvertible): void;
+  strokePathInContext(path: interop.Object, context: interop.Object): void;
 
-  fillPathInContext(path: interop.PointerConvertible, context: interop.PointerConvertible): void;
+  fillPathInContext(path: interop.Object, context: interop.Object): void;
 
   setFillColor(fillColor: NSColor | null): void;
 
@@ -1412,7 +1411,7 @@ declare class MKOverlayPathRenderer extends MKOverlayRenderer {
 
   setShouldRasterize(shouldRasterize: boolean): void;
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object | null): void;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -1948,7 +1947,7 @@ declare class MKOverlayRenderer extends NSObject {
 
   canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
 
-  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.PointerConvertible): void;
+  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
 
   setNeedsDisplay(): void;
 

@@ -199,7 +199,7 @@ declare class LAContext extends NSObject {
 
   isCredentialSet(type: interop.Enum<typeof LACredentialType>): boolean;
 
-  evaluateAccessControlOperationLocalizedReasonReply(accessControl: interop.PointerConvertible, operation: interop.Enum<typeof LAAccessControlOperation>, localizedReason: string, reply: (p1: boolean, p2: NSError) => void | null): void;
+  evaluateAccessControlOperationLocalizedReasonReply(accessControl: interop.Object, operation: interop.Enum<typeof LAAccessControlOperation>, localizedReason: string, reply: (p1: boolean, p2: NSError) => void | null): void;
 
   localizedFallbackTitle: string;
 

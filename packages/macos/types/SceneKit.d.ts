@@ -706,7 +706,7 @@ declare interface SCNSceneRenderer extends NSObjectProtocol {
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 
@@ -3335,7 +3335,7 @@ declare class SCNView extends NSView implements SCNSceneRenderer, SCNTechniqueSu
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 
@@ -4572,7 +4572,7 @@ declare class SCNRenderer extends NSObject implements SCNSceneRenderer, SCNTechn
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 
@@ -4728,7 +4728,7 @@ declare class SCNLayer extends CAOpenGLLayer implements SCNSceneRenderer, SCNTec
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 

@@ -505,7 +505,7 @@ declare function dsAppendAuthBufferWithAuthorityAttribute(inNodeRef: number, inR
 
 declare function dsAppendAuthBufferWithAuthorityStrings(inUserName: string, inAuthAuthority: interop.Pointer, inOutAuthBuffer: interop.PointerConvertible): interop.Enum<typeof tDirStatus>;
 
-declare function dsServiceInformationAllocate(inServiceInfo: interop.PointerConvertible, inBufferSize: number, outPackedServiceInfo: interop.PointerConvertible): interop.Enum<typeof tDirStatus>;
+declare function dsServiceInformationAllocate(inServiceInfo: interop.Object, inBufferSize: number, outPackedServiceInfo: interop.PointerConvertible): interop.Enum<typeof tDirStatus>;
 
 declare function dsBuildListFromNodes(inDirReferences: number, in1stDataNodePtr: interop.PointerConvertible): interop.Pointer;
 

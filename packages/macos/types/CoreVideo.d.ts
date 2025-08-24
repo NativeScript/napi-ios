@@ -4,115 +4,115 @@ declare const kCVImageBufferPostDecodeProcessingFrameMetadataKey: interop.Pointe
 
 declare const kCVPixelFormatType_32RGBA: number;
 
-declare const kCVPixelFormatContainsRGB: interop.Pointer;
+declare const kCVPixelFormatContainsRGB: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_SMPTE_C: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_SMPTE_C: interop.Object;
 
 declare const kCVPixelFormatType_16LE565: number;
 
-declare const kCVMetalTextureUsage: interop.Pointer;
+declare const kCVMetalTextureUsage: interop.Object;
 
-declare const kCVOpenGLTextureCacheChromaSamplingModeAutomatic: interop.Pointer;
+declare const kCVOpenGLTextureCacheChromaSamplingModeAutomatic: interop.Object;
 
-declare const kCVImageBufferTransferFunction_SMPTE_C: interop.Pointer;
+declare const kCVImageBufferTransferFunction_SMPTE_C: interop.Object;
 
-declare const kCVPixelFormatFillExtendedPixelsCallback: interop.Pointer;
+declare const kCVPixelFormatFillExtendedPixelsCallback: interop.Object;
 
-declare const kCVPixelBufferPoolFreeBufferNotification: interop.Pointer;
+declare const kCVPixelBufferPoolFreeBufferNotification: interop.Object;
 
 declare const kCVPixelFormatType_422YpCbCr8FullRange: number;
 
 declare const kCVPixelFormatType_444YpCbCr10: number;
 
-declare const kCVImageBufferAmbientViewingEnvironmentKey: interop.Pointer;
+declare const kCVImageBufferAmbientViewingEnvironmentKey: interop.Object;
 
 declare const kCVReturnInvalidPoolAttributes: number;
 
-declare const kCVImageBufferChromaLocation_BottomLeft: interop.Pointer;
+declare const kCVImageBufferChromaLocation_BottomLeft: interop.Object;
 
-declare const kCVPixelBufferExtendedPixelsBottomKey: interop.Pointer;
+declare const kCVPixelBufferExtendedPixelsBottomKey: interop.Object;
 
-declare const kCVMetalBufferCacheMaximumBufferAgeKey: interop.Pointer;
+declare const kCVMetalBufferCacheMaximumBufferAgeKey: interop.Object;
 
-declare const kCVMetalTextureCacheMaximumTextureAgeKey: interop.Pointer;
+declare const kCVMetalTextureCacheMaximumTextureAgeKey: interop.Object;
 
-declare const kCVPixelFormatOpenGLCompatibility: interop.Pointer;
+declare const kCVPixelFormatOpenGLCompatibility: interop.Object;
 
-declare const kCVPixelFormatOpenGLInternalFormat: interop.Pointer;
+declare const kCVPixelFormatOpenGLInternalFormat: interop.Object;
 
-declare const kCVPixelFormatHorizontalSubsampling: interop.Pointer;
+declare const kCVPixelFormatHorizontalSubsampling: interop.Object;
 
-declare const kCVPixelFormatBlackBlock: interop.Pointer;
+declare const kCVPixelFormatBlackBlock: interop.Object;
 
-declare const kCVPixelFormatBitsPerComponent: interop.Pointer;
+declare const kCVPixelFormatBitsPerComponent: interop.Object;
 
-declare const kCVPixelFormatBlockHeight: interop.Pointer;
+declare const kCVPixelFormatBlockHeight: interop.Object;
 
-declare const kCVPixelFormatComponentRange_WideRange: interop.Pointer;
+declare const kCVPixelFormatComponentRange_WideRange: interop.Object;
 
-declare const kCVPixelFormatComponentRange_FullRange: interop.Pointer;
+declare const kCVPixelFormatComponentRange_FullRange: interop.Object;
 
-declare const kCVPixelFormatComponentRange_VideoRange: interop.Pointer;
+declare const kCVPixelFormatComponentRange_VideoRange: interop.Object;
 
-declare const kCVPixelFormatContainsYCbCr: interop.Pointer;
+declare const kCVPixelFormatContainsYCbCr: interop.Object;
 
-declare const kCVPixelFormatContainsAlpha: interop.Pointer;
+declare const kCVPixelFormatContainsAlpha: interop.Object;
 
-declare const kCVPixelFormatConstant: interop.Pointer;
+declare const kCVPixelFormatConstant: interop.Object;
 
-declare const kCVOpenGLTextureCacheChromaSamplingModeBestPerformance: interop.Pointer;
+declare const kCVOpenGLTextureCacheChromaSamplingModeBestPerformance: interop.Object;
 
-declare const kCVOpenGLTextureCacheChromaSamplingModeHighestQuality: interop.Pointer;
+declare const kCVOpenGLTextureCacheChromaSamplingModeHighestQuality: interop.Object;
 
-declare const kCVOpenGLTextureCacheChromaSamplingModeKey: interop.Pointer;
+declare const kCVOpenGLTextureCacheChromaSamplingModeKey: interop.Object;
 
-declare const kCVOpenGLBufferMaximumMipmapLevel: interop.Pointer;
+declare const kCVOpenGLBufferMaximumMipmapLevel: interop.Object;
 
-declare const kCVOpenGLBufferInternalFormat: interop.Pointer;
+declare const kCVOpenGLBufferInternalFormat: interop.Object;
 
-declare const kCVOpenGLBufferTarget: interop.Pointer;
+declare const kCVOpenGLBufferTarget: interop.Object;
 
-declare const kCVOpenGLBufferHeight: interop.Pointer;
+declare const kCVOpenGLBufferHeight: interop.Object;
 
-declare const kCVOpenGLBufferWidth: interop.Pointer;
+declare const kCVOpenGLBufferWidth: interop.Object;
 
-declare const kCVPixelBufferPoolAllocationThresholdKey: interop.Pointer;
+declare const kCVPixelBufferPoolAllocationThresholdKey: interop.Object;
 
-declare const kCVPixelBufferPoolMaximumBufferAgeKey: interop.Pointer;
+declare const kCVPixelBufferPoolMaximumBufferAgeKey: interop.Object;
 
-declare const kCVPixelBufferIOSurfaceOpenGLTextureCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferIOSurfaceOpenGLTextureCompatibilityKey: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_MetadataExtension: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_MetadataExtension: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_GainFactor: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_GainFactor: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_ColorMatrix: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_ColorMatrix: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_WhiteBalanceCCT: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_WhiteBalanceCCT: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_WhiteLevel: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_WhiteLevel: interop.Object;
 
 declare const kCVVersatileBayer_BayerPattern_GBRG: number;
 
 declare const kCVVersatileBayer_BayerPattern_RGGB: number;
 
-declare const kCVPixelBufferVersatileBayerKey_BayerPattern: interop.Pointer;
+declare const kCVPixelBufferVersatileBayerKey_BayerPattern: interop.Object;
 
-declare const kCVPixelBufferOpenGLTextureCacheCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferOpenGLTextureCacheCompatibilityKey: interop.Object;
 
-declare const kCVPixelBufferIOSurfacePropertiesKey: interop.Pointer;
+declare const kCVPixelBufferIOSurfacePropertiesKey: interop.Object;
 
-declare const kCVPixelBufferOpenGLCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferOpenGLCompatibilityKey: interop.Object;
 
-declare const kCVPixelBufferBytesPerRowAlignmentKey: interop.Pointer;
+declare const kCVPixelBufferBytesPerRowAlignmentKey: interop.Object;
 
-declare const kCVPixelBufferExtendedPixelsRightKey: interop.Pointer;
+declare const kCVPixelBufferExtendedPixelsRightKey: interop.Object;
 
-declare const kCVPixelBufferHeightKey: interop.Pointer;
+declare const kCVPixelBufferHeightKey: interop.Object;
 
-declare const kCVPixelBufferWidthKey: interop.Pointer;
+declare const kCVPixelBufferWidthKey: interop.Object;
 
-declare const kCVPixelBufferMemoryAllocatorKey: interop.Pointer;
+declare const kCVPixelBufferMemoryAllocatorKey: interop.Object;
 
 declare const kCVPixelFormatType_Lossy_420YpCbCr8BiPlanarFullRange: number;
 
@@ -210,67 +210,67 @@ declare const kCVPixelFormatType_2Indexed: number;
 
 declare const kCVPixelFormatType_1Monochrome: number;
 
-declare const kCVImageBufferLogTransferFunction_AppleLog: interop.Pointer;
+declare const kCVImageBufferLogTransferFunction_AppleLog: interop.Object;
 
-declare const kCVImageBufferLogTransferFunctionKey: interop.Pointer;
+declare const kCVImageBufferLogTransferFunctionKey: interop.Object;
 
-declare const kCVImageBufferRegionOfInterestKey: interop.Pointer;
+declare const kCVImageBufferRegionOfInterestKey: interop.Object;
 
-declare const kCVImageBufferContentLightLevelInfoKey: interop.Pointer;
+declare const kCVImageBufferContentLightLevelInfoKey: interop.Object;
 
 declare const kCVImageBufferPostDecodeProcessingSequenceMetadataKey: interop.Pointer;
 
-declare const kCVImageBufferAlphaChannelMode_PremultipliedAlpha: interop.Pointer;
+declare const kCVImageBufferAlphaChannelMode_PremultipliedAlpha: interop.Object;
 
-declare const kCVImageBufferChromaSubsampling_420: interop.Pointer;
+declare const kCVImageBufferChromaSubsampling_420: interop.Object;
 
-declare const kCVImageBufferChromaSubsamplingKey: interop.Pointer;
+declare const kCVImageBufferChromaSubsamplingKey: interop.Object;
 
-declare const kCVImageBufferChromaLocation_DV420: interop.Pointer;
+declare const kCVImageBufferChromaLocation_DV420: interop.Object;
 
-declare const kCVImageBufferChromaLocation_TopLeft: interop.Pointer;
+declare const kCVImageBufferChromaLocation_TopLeft: interop.Object;
 
-declare const kCVImageBufferChromaLocationBottomFieldKey: interop.Pointer;
+declare const kCVImageBufferChromaLocationBottomFieldKey: interop.Object;
 
-declare const kCVImageBufferTransferFunction_Linear: interop.Pointer;
+declare const kCVImageBufferTransferFunction_Linear: interop.Object;
 
-declare const kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ: interop.Pointer;
+declare const kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ: interop.Object;
 
-declare const kCVImageBufferTransferFunction_EBU_3213: interop.Pointer;
+declare const kCVImageBufferTransferFunction_EBU_3213: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_ITU_R_2020: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_ITU_R_2020: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_DCI_P3: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_DCI_P3: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_P22: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_P22: interop.Object;
 
-declare const kCVImageBufferColorPrimariesKey: interop.Pointer;
+declare const kCVImageBufferColorPrimariesKey: interop.Object;
 
-declare const kCVImageBufferYCbCrMatrix_ITU_R_2020: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrix_ITU_R_2020: interop.Object;
 
-declare const kCVImageBufferYCbCrMatrix_P3_D65: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrix_P3_D65: interop.Object;
 
-declare const kCVImageBufferYCbCrMatrix_DCI_P3: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrix_DCI_P3: interop.Object;
 
-declare const kCVImageBufferDisplayWidthKey: interop.Pointer;
+declare const kCVImageBufferDisplayWidthKey: interop.Object;
 
-declare const kCVImageBufferFieldDetailSpatialFirstLineLate: interop.Pointer;
+declare const kCVImageBufferFieldDetailSpatialFirstLineLate: interop.Object;
 
-declare const kCVImageBufferFieldDetailSpatialFirstLineEarly: interop.Pointer;
+declare const kCVImageBufferFieldDetailSpatialFirstLineEarly: interop.Object;
 
-declare const kCVImageBufferFieldDetailTemporalBottomFirst: interop.Pointer;
+declare const kCVImageBufferFieldDetailTemporalBottomFirst: interop.Object;
 
-declare const kCVImageBufferFieldDetailKey: interop.Pointer;
+declare const kCVImageBufferFieldDetailKey: interop.Object;
 
-declare const kCVImageBufferFieldCountKey: interop.Pointer;
+declare const kCVImageBufferFieldCountKey: interop.Object;
 
-declare const kCVImageBufferCleanApertureHorizontalOffsetKey: interop.Pointer;
+declare const kCVImageBufferCleanApertureHorizontalOffsetKey: interop.Object;
 
-declare const kCVBufferTimeScaleKey: interop.Pointer;
+declare const kCVBufferTimeScaleKey: interop.Object;
 
-declare const kCVBufferMovieTimeKey: interop.Pointer;
+declare const kCVBufferMovieTimeKey: interop.Object;
 
-declare const kCVBufferNonPropagatedAttachmentsKey: interop.Pointer;
+declare const kCVBufferNonPropagatedAttachmentsKey: interop.Object;
 
 declare const kCVReturnLast: number;
 
@@ -300,33 +300,33 @@ declare const kCVIndefiniteTime: CVTime;
 
 declare const kCVZeroTime: CVTime;
 
-declare const kCVImageBufferChromaLocationTopFieldKey: interop.Pointer;
+declare const kCVImageBufferChromaLocationTopFieldKey: interop.Object;
 
 declare const kCVPixelFormatType_4IndexedGray_WhiteIsZero: number;
 
 declare const kCVReturnFirst: number;
 
-declare const kCVPixelFormatCGImageCompatibility: interop.Pointer;
+declare const kCVPixelFormatCGImageCompatibility: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_EBU_3213: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_EBU_3213: interop.Object;
 
-declare const kCVImageBufferCleanApertureWidthKey: interop.Pointer;
+declare const kCVImageBufferCleanApertureWidthKey: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_ITU_R_709_2: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_ITU_R_709_2: interop.Object;
 
 declare const kCVPixelFormatType_420YpCbCr8Planar: number;
 
-declare const kCVImageBufferChromaLocation_Bottom: interop.Pointer;
+declare const kCVImageBufferChromaLocation_Bottom: interop.Object;
 
 declare const kCVPixelFormatType_420YpCbCr8VideoRange_8A_TriPlanar: number;
 
 declare const kCVPixelFormatType_TwoComponent32Float: number;
 
-declare const kCVPixelFormatBlockHorizontalAlignment: interop.Pointer;
+declare const kCVPixelFormatBlockHorizontalAlignment: interop.Object;
 
 declare const kCVPixelFormatType_OneComponent32Float: number;
 
-declare const kCVOpenGLBufferPoolMaximumBufferAgeKey: interop.Pointer;
+declare const kCVOpenGLBufferPoolMaximumBufferAgeKey: interop.Object;
 
 declare const kCVPixelFormatType_ARGB2101010LEPacked: number;
 
@@ -334,95 +334,95 @@ declare const kCVPixelFormatType_4444AYpCbCr8: number;
 
 declare const kCVPixelFormatType_16LE555: number;
 
-declare const kCVImageBufferICCProfileKey: interop.Pointer;
+declare const kCVImageBufferICCProfileKey: interop.Object;
 
-declare const kCVPixelFormatCodecType: interop.Pointer;
+declare const kCVPixelFormatCodecType: interop.Object;
 
 declare const kCVPixelFormatType_OneComponent16Half: number;
 
-declare const kCVImageBufferTransferFunction_ITU_R_2020: interop.Pointer;
+declare const kCVImageBufferTransferFunction_ITU_R_2020: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_BlackLevel: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_BlackLevel: interop.Object;
 
 declare const kCVPixelFormatType_420YpCbCr8BiPlanarFullRange: number;
 
-declare const kCVPixelFormatContainsGrayscale: interop.Pointer;
+declare const kCVPixelFormatContainsGrayscale: interop.Object;
 
 declare const kCVReturnDisplayLinkAlreadyRunning: number;
 
-declare const kCVPixelFormatBitsPerBlock: interop.Pointer;
+declare const kCVPixelFormatBitsPerBlock: interop.Object;
 
 declare const kCVPixelFormatType_Lossy_420YpCbCr10PackedBiPlanarVideoRange: number;
 
-declare const kCVImageBufferCleanApertureKey: interop.Pointer;
+declare const kCVImageBufferCleanApertureKey: interop.Object;
 
-declare const kCVPixelFormatName: interop.Pointer;
+declare const kCVPixelFormatName: interop.Object;
 
-declare const kCVImageBufferFieldDetailTemporalTopFirst: interop.Pointer;
+declare const kCVImageBufferFieldDetailTemporalTopFirst: interop.Object;
 
-declare const kCVImageBufferAlphaChannelModeKey: interop.Pointer;
+declare const kCVImageBufferAlphaChannelModeKey: interop.Object;
 
-declare const kCVImageBufferChromaLocation_Center: interop.Pointer;
+declare const kCVImageBufferChromaLocation_Center: interop.Object;
 
-declare const kCVImageBufferPixelAspectRatioVerticalSpacingKey: interop.Pointer;
+declare const kCVImageBufferPixelAspectRatioVerticalSpacingKey: interop.Object;
 
 declare const kCVPixelFormatType_OneComponent8: number;
 
 declare const kCVPixelFormatType_OneComponent10: number;
 
-declare const kCVImageBufferPreferredCleanApertureKey: interop.Pointer;
+declare const kCVImageBufferPreferredCleanApertureKey: interop.Object;
 
 declare const kCVPixelFormatType_420YpCbCr10BiPlanarFullRange: number;
 
-declare const kCVImageBufferAlphaChannelIsOpaque: interop.Pointer;
+declare const kCVImageBufferAlphaChannelIsOpaque: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_WhiteBalanceRedFactor: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_WhiteBalanceRedFactor: interop.Object;
 
-declare const kCVPixelFormatCGBitmapInfo: interop.Pointer;
+declare const kCVPixelFormatCGBitmapInfo: interop.Object;
 
-declare const kCVPixelBufferProResRAWKey_WhiteBalanceBlueFactor: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_WhiteBalanceBlueFactor: interop.Object;
 
-declare const kCVImageBufferCleanApertureHeightKey: interop.Pointer;
+declare const kCVImageBufferCleanApertureHeightKey: interop.Object;
 
 declare const kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange: number;
 
-declare const kCVPixelBufferProResRAWKey_RecommendedCrop: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_RecommendedCrop: interop.Object;
 
 declare const kCVPixelFormatType_422YpCbCr10BiPlanarVideoRange: number;
 
-declare const kCVImageBufferGammaLevelKey: interop.Pointer;
+declare const kCVImageBufferGammaLevelKey: interop.Object;
 
 declare const kCVPixelFormatType_444YpCbCr16BiPlanarVideoRange: number;
 
 declare const kCVPixelFormatType_Lossless_422YpCbCr10PackedBiPlanarVideoRange: number;
 
-declare const kCVPixelBufferIOSurfaceOpenGLFBOCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferIOSurfaceOpenGLFBOCompatibilityKey: interop.Object;
 
 declare const kCVPixelFormatType_64RGBALE: number;
 
 declare const kCVPixelFormatType_4444AYpCbCrFloat: number;
 
-declare const kCVBufferPropagatedAttachmentsKey: interop.Pointer;
+declare const kCVBufferPropagatedAttachmentsKey: interop.Object;
 
-declare const kCVImageBufferTransferFunction_SMPTE_ST_428_1: interop.Pointer;
+declare const kCVImageBufferTransferFunction_SMPTE_ST_428_1: interop.Object;
 
-declare const kCVImageBufferTransferFunction_SMPTE_240M_1995: interop.Pointer;
+declare const kCVImageBufferTransferFunction_SMPTE_240M_1995: interop.Object;
 
-declare const kCVImageBufferTransferFunction_UseGamma: interop.Pointer;
+declare const kCVImageBufferTransferFunction_UseGamma: interop.Object;
 
-declare const kCVImageBufferDisplayHeightKey: interop.Pointer;
+declare const kCVImageBufferDisplayHeightKey: interop.Object;
 
-declare const kCVPixelBufferCGBitmapContextCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferCGBitmapContextCompatibilityKey: interop.Object;
 
-declare const kCVPixelFormatOpenGLFormat: interop.Pointer;
+declare const kCVPixelFormatOpenGLFormat: interop.Object;
 
 declare const kCVPixelFormatType_24BGR: number;
 
-declare const kCVPixelBufferPlaneAlignmentKey: interop.Pointer;
+declare const kCVPixelBufferPlaneAlignmentKey: interop.Object;
 
 declare const kCVPixelFormatType_48RGB: number;
 
-declare const kCVPixelBufferCGImageCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferCGImageCompatibilityKey: interop.Object;
 
 declare const kCVReturnPixelBufferNotOpenGLCompatible: number;
 
@@ -430,21 +430,21 @@ declare const kCVPixelFormatType_422YpCbCr8_yuvs: number;
 
 declare const kCVPixelFormatType_422YpCbCr10BiPlanarFullRange: number;
 
-declare const kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey: interop.Object;
 
-declare const kCVImageBufferAlphaChannelMode_StraightAlpha: interop.Pointer;
+declare const kCVImageBufferAlphaChannelMode_StraightAlpha: interop.Object;
 
-declare const kCVImageBufferPixelAspectRatioKey: interop.Pointer;
+declare const kCVImageBufferPixelAspectRatioKey: interop.Object;
 
-declare const kCVImageBufferChromaLocation_Left: interop.Pointer;
+declare const kCVImageBufferChromaLocation_Left: interop.Object;
 
-declare const kCVPixelFormatBlockVerticalAlignment: interop.Pointer;
+declare const kCVPixelFormatBlockVerticalAlignment: interop.Object;
 
 declare const kCVPixelFormatType_64ARGB: number;
 
-declare const kCVPixelFormatPlanes: interop.Pointer;
+declare const kCVPixelFormatPlanes: interop.Object;
 
-declare const kCVImageBufferCGColorSpaceKey: interop.Pointer;
+declare const kCVImageBufferCGColorSpaceKey: interop.Object;
 
 declare const kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange: number;
 
@@ -454,83 +454,83 @@ declare const kCVPixelFormatType_Lossy_422YpCbCr10PackedBiPlanarVideoRange: numb
 
 declare const kCVPixelFormatType_OneComponent16: number;
 
-declare const kCVPixelBufferProResRAWKey_SenselSitingOffsets: interop.Pointer;
+declare const kCVPixelBufferProResRAWKey_SenselSitingOffsets: interop.Object;
 
 declare const kCVPixelFormatType_128RGBAFloat: number;
 
-declare const kCVPixelBufferPixelFormatTypeKey: interop.Pointer;
+declare const kCVPixelBufferPixelFormatTypeKey: interop.Object;
 
-declare const kCVMetalTextureStorageMode: interop.Pointer;
+declare const kCVMetalTextureStorageMode: interop.Object;
 
-declare const kCVImageBufferChromaSubsampling_422: interop.Pointer;
+declare const kCVImageBufferChromaSubsampling_422: interop.Object;
 
-declare const kCVPixelFormatVerticalSubsampling: interop.Pointer;
+declare const kCVPixelFormatVerticalSubsampling: interop.Object;
 
 declare const kCVPixelFormatType_TwoComponent8: number;
 
-declare const kCVImageBufferTransferFunction_sRGB: interop.Pointer;
+declare const kCVImageBufferTransferFunction_sRGB: interop.Object;
 
-declare const kCVImageBufferSceneIlluminationKey: interop.Pointer;
+declare const kCVImageBufferSceneIlluminationKey: interop.Object;
 
 declare const kCVVersatileBayer_BayerPattern_GRBG: number;
 
-declare const kCVImageBufferYCbCrMatrix_SMPTE_240M_1995: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrix_SMPTE_240M_1995: interop.Object;
 
-declare const kCVImageBufferDisplayDimensionsKey: interop.Pointer;
+declare const kCVImageBufferDisplayDimensionsKey: interop.Object;
 
-declare const kCVImageBufferColorPrimaries_P3_D65: interop.Pointer;
+declare const kCVImageBufferColorPrimaries_P3_D65: interop.Object;
 
-declare const kCVImageBufferCleanApertureVerticalOffsetKey: interop.Pointer;
+declare const kCVImageBufferCleanApertureVerticalOffsetKey: interop.Object;
 
 declare const kCVPixelFormatType_DisparityFloat32: number;
 
 declare const kCVPixelFormatType_Lossy_420YpCbCr8BiPlanarVideoRange: number;
 
-declare const kCVPixelFormatQDCompatibility: interop.Pointer;
+declare const kCVPixelFormatQDCompatibility: interop.Object;
 
 declare const kCVReturnUnsupported: number;
 
-declare const kCVPixelBufferExtendedPixelsLeftKey: interop.Pointer;
+declare const kCVPixelBufferExtendedPixelsLeftKey: interop.Object;
 
-declare const kCVImageBufferChromaLocation_Top: interop.Pointer;
+declare const kCVImageBufferChromaLocation_Top: interop.Object;
 
 declare const kCVPixelFormatType_4444YpCbCrA8: number;
 
 declare const kCVVersatileBayer_BayerPattern_BGGR: number;
 
-declare const kCVOpenGLBufferPoolMinimumBufferCountKey: interop.Pointer;
+declare const kCVOpenGLBufferPoolMinimumBufferCountKey: interop.Object;
 
-declare const kCVImageBufferYCbCrMatrix_ITU_R_709_2: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrix_ITU_R_709_2: interop.Object;
 
-declare const kCVPixelFormatBlockWidth: interop.Pointer;
+declare const kCVPixelFormatBlockWidth: interop.Object;
 
-declare const kCVImageBufferTransferFunction_ITU_R_709_2: interop.Pointer;
+declare const kCVImageBufferTransferFunction_ITU_R_709_2: interop.Object;
 
-declare const kCVPixelFormatFourCC: interop.Pointer;
+declare const kCVPixelFormatFourCC: interop.Object;
 
-declare const kCVImageBufferTransferFunction_ITU_R_2100_HLG: interop.Pointer;
+declare const kCVImageBufferTransferFunction_ITU_R_2100_HLG: interop.Object;
 
-declare const kCVImageBufferPixelAspectRatioHorizontalSpacingKey: interop.Pointer;
+declare const kCVImageBufferPixelAspectRatioHorizontalSpacingKey: interop.Object;
 
-declare const kCVPixelFormatOpenGLType: interop.Pointer;
+declare const kCVPixelFormatOpenGLType: interop.Object;
 
-declare const kCVPixelBufferPoolMinimumBufferCountKey: interop.Pointer;
+declare const kCVPixelBufferPoolMinimumBufferCountKey: interop.Object;
 
-declare const kCVPixelFormatContainsSenselArray: interop.Pointer;
+declare const kCVPixelFormatContainsSenselArray: interop.Object;
 
-declare const kCVImageBufferYCbCrMatrix_ITU_R_601_4: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrix_ITU_R_601_4: interop.Object;
 
-declare const kCVBufferTimeValueKey: interop.Pointer;
+declare const kCVBufferTimeValueKey: interop.Object;
 
 declare const kCVPixelFormatType_422YpCbCr16BiPlanarVideoRange: number;
 
 declare const kCVReturnWouldExceedAllocationThreshold: number;
 
-declare const kCVPixelBufferMetalCompatibilityKey: interop.Pointer;
+declare const kCVPixelBufferMetalCompatibilityKey: interop.Object;
 
-declare const kCVPixelFormatCGBitmapContextCompatibility: interop.Pointer;
+declare const kCVPixelFormatCGBitmapContextCompatibility: interop.Object;
 
-declare const kCVImageBufferYCbCrMatrixKey: interop.Pointer;
+declare const kCVImageBufferYCbCrMatrixKey: interop.Object;
 
 declare const kCVPixelFormatType_16Gray: number;
 
@@ -538,7 +538,7 @@ declare const kCVPixelFormatType_TwoComponent16Half: number;
 
 declare const kCVPixelFormatType_40ARGBLEWideGamut: number;
 
-declare const kCVImageBufferChromaSubsampling_411: interop.Pointer;
+declare const kCVImageBufferChromaSubsampling_411: interop.Object;
 
 declare const kCVPixelFormatType_4Indexed: number;
 
@@ -548,7 +548,7 @@ declare const kCVPixelFormatType_8Indexed: number;
 
 declare const kCVReturnSuccess: number;
 
-declare const kCVPixelBufferExtendedPixelsTopKey: interop.Pointer;
+declare const kCVPixelBufferExtendedPixelsTopKey: interop.Object;
 
 declare const kCVPixelFormatType_OneComponent12: number;
 
@@ -556,11 +556,11 @@ declare const kCVPixelFormatType_Lossless_32BGRA: number;
 
 declare const kCVPixelFormatType_422YpCbCr8: number;
 
-declare const kCVPixelFormatComponentRange: interop.Pointer;
+declare const kCVPixelFormatComponentRange: interop.Object;
 
-declare const kCVImageBufferTransferFunctionKey: interop.Pointer;
+declare const kCVImageBufferTransferFunctionKey: interop.Object;
 
-declare const kCVImageBufferMasteringDisplayColorVolumeKey: interop.Pointer;
+declare const kCVImageBufferMasteringDisplayColorVolumeKey: interop.Object;
 
 declare const CVAttachmentMode: {
   Not: 0,
@@ -715,229 +715,229 @@ declare function CVDisplayLinkCreateWithCGDisplay(displayID: number, displayLink
 
 declare function CVDisplayLinkCreateWithActiveCGDisplays(displayLinkOut: interop.PointerConvertible): number;
 
-declare function CVDisplayLinkSetCurrentCGDisplay(displayLink: interop.PointerConvertible, displayID: number): number;
+declare function CVDisplayLinkSetCurrentCGDisplay(displayLink: interop.Object, displayID: number): number;
 
-declare function CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink: interop.PointerConvertible, cglContext: interop.PointerConvertible, cglPixelFormat: interop.PointerConvertible): number;
+declare function CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink: interop.Object, cglContext: interop.PointerConvertible, cglPixelFormat: interop.PointerConvertible): number;
 
-declare function CVDisplayLinkGetCurrentCGDisplay(displayLink: interop.PointerConvertible): number;
+declare function CVDisplayLinkGetCurrentCGDisplay(displayLink: interop.Object): number;
 
-declare function CVDisplayLinkSetOutputCallback(displayLink: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number, userInfo: interop.PointerConvertible): number;
+declare function CVDisplayLinkSetOutputCallback(displayLink: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number, userInfo: interop.PointerConvertible): number;
 
-declare function CVDisplayLinkSetOutputHandler(displayLink: interop.PointerConvertible, handler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number): number;
+declare function CVDisplayLinkSetOutputHandler(displayLink: interop.Object, handler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number): number;
 
-declare function CVDisplayLinkStart(displayLink: interop.PointerConvertible): number;
+declare function CVDisplayLinkStart(displayLink: interop.Object): number;
 
-declare function CVDisplayLinkStop(displayLink: interop.PointerConvertible): number;
+declare function CVDisplayLinkStop(displayLink: interop.Object): number;
 
-declare function CVDisplayLinkGetNominalOutputVideoRefreshPeriod(displayLink: interop.PointerConvertible): CVTime;
+declare function CVDisplayLinkGetNominalOutputVideoRefreshPeriod(displayLink: interop.Object): CVTime;
 
-declare function CVDisplayLinkGetOutputVideoLatency(displayLink: interop.PointerConvertible): CVTime;
+declare function CVDisplayLinkGetOutputVideoLatency(displayLink: interop.Object): CVTime;
 
-declare function CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink: interop.PointerConvertible): number;
+declare function CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink: interop.Object): number;
 
-declare function CVDisplayLinkIsRunning(displayLink: interop.PointerConvertible): number;
+declare function CVDisplayLinkIsRunning(displayLink: interop.Object): number;
 
-declare function CVDisplayLinkGetCurrentTime(displayLink: interop.PointerConvertible, outTime: interop.PointerConvertible): number;
+declare function CVDisplayLinkGetCurrentTime(displayLink: interop.Object, outTime: interop.PointerConvertible): number;
 
-declare function CVDisplayLinkTranslateTime(displayLink: interop.PointerConvertible, inTime: interop.PointerConvertible, outTime: interop.PointerConvertible): number;
+declare function CVDisplayLinkTranslateTime(displayLink: interop.Object, inTime: interop.PointerConvertible, outTime: interop.PointerConvertible): number;
 
-declare function CVDisplayLinkRetain(displayLink: interop.PointerConvertible): interop.Pointer;
+declare function CVDisplayLinkRetain(displayLink: interop.Object): interop.Object;
 
-declare function CVDisplayLinkRelease(displayLink: interop.PointerConvertible): void;
+declare function CVDisplayLinkRelease(displayLink: interop.Object): void;
 
-declare function CVBufferRetain(buffer: interop.PointerConvertible): interop.Pointer;
+declare function CVBufferRetain(buffer: interop.Object): interop.Object;
 
-declare function CVBufferRelease(buffer: interop.PointerConvertible): void;
+declare function CVBufferRelease(buffer: interop.Object): void;
 
-declare function CVBufferSetAttachment(buffer: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, attachmentMode: interop.Enum<typeof CVAttachmentMode>): void;
+declare function CVBufferSetAttachment(buffer: interop.Object, key: interop.Object, value: interop.Object, attachmentMode: interop.Enum<typeof CVAttachmentMode>): void;
 
-declare function CVBufferGetAttachment(buffer: interop.PointerConvertible, key: interop.PointerConvertible, attachmentMode: interop.PointerConvertible): interop.Pointer;
+declare function CVBufferGetAttachment(buffer: interop.Object, key: interop.Object, attachmentMode: interop.PointerConvertible): interop.Object;
 
-declare function CVBufferRemoveAttachment(buffer: interop.PointerConvertible, key: interop.PointerConvertible): void;
+declare function CVBufferRemoveAttachment(buffer: interop.Object, key: interop.Object): void;
 
-declare function CVBufferRemoveAllAttachments(buffer: interop.PointerConvertible): void;
+declare function CVBufferRemoveAllAttachments(buffer: interop.Object): void;
 
-declare function CVBufferGetAttachments(buffer: interop.PointerConvertible, attachmentMode: interop.Enum<typeof CVAttachmentMode>): interop.Pointer;
+declare function CVBufferGetAttachments(buffer: interop.Object, attachmentMode: interop.Enum<typeof CVAttachmentMode>): interop.Object;
 
-declare function CVBufferSetAttachments(buffer: interop.PointerConvertible, theAttachments: interop.PointerConvertible, attachmentMode: interop.Enum<typeof CVAttachmentMode>): void;
+declare function CVBufferSetAttachments(buffer: interop.Object, theAttachments: interop.Object, attachmentMode: interop.Enum<typeof CVAttachmentMode>): void;
 
-declare function CVBufferPropagateAttachments(sourceBuffer: interop.PointerConvertible, destinationBuffer: interop.PointerConvertible): void;
+declare function CVBufferPropagateAttachments(sourceBuffer: interop.Object, destinationBuffer: interop.Object): void;
 
-declare function CVBufferCopyAttachments(buffer: interop.PointerConvertible, attachmentMode: interop.Enum<typeof CVAttachmentMode>): interop.Pointer;
+declare function CVBufferCopyAttachments(buffer: interop.Object, attachmentMode: interop.Enum<typeof CVAttachmentMode>): interop.Object;
 
-declare function CVBufferCopyAttachment(buffer: interop.PointerConvertible, key: interop.PointerConvertible, attachmentMode: interop.PointerConvertible): interop.Pointer;
+declare function CVBufferCopyAttachment(buffer: interop.Object, key: interop.Object, attachmentMode: interop.PointerConvertible): interop.Object;
 
-declare function CVBufferHasAttachment(buffer: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function CVBufferHasAttachment(buffer: interop.Object, key: interop.Object): number;
 
-declare function CVYCbCrMatrixGetIntegerCodePointForString(yCbCrMatrixString: interop.PointerConvertible): number;
+declare function CVYCbCrMatrixGetIntegerCodePointForString(yCbCrMatrixString: interop.Object): number;
 
-declare function CVColorPrimariesGetIntegerCodePointForString(colorPrimariesString: interop.PointerConvertible): number;
+declare function CVColorPrimariesGetIntegerCodePointForString(colorPrimariesString: interop.Object): number;
 
-declare function CVTransferFunctionGetIntegerCodePointForString(transferFunctionString: interop.PointerConvertible): number;
+declare function CVTransferFunctionGetIntegerCodePointForString(transferFunctionString: interop.Object): number;
 
-declare function CVYCbCrMatrixGetStringForIntegerCodePoint(yCbCrMatrixCodePoint: number): interop.Pointer;
+declare function CVYCbCrMatrixGetStringForIntegerCodePoint(yCbCrMatrixCodePoint: number): interop.Object;
 
-declare function CVColorPrimariesGetStringForIntegerCodePoint(colorPrimariesCodePoint: number): interop.Pointer;
+declare function CVColorPrimariesGetStringForIntegerCodePoint(colorPrimariesCodePoint: number): interop.Object;
 
-declare function CVTransferFunctionGetStringForIntegerCodePoint(transferFunctionCodePoint: number): interop.Pointer;
+declare function CVTransferFunctionGetStringForIntegerCodePoint(transferFunctionCodePoint: number): interop.Object;
 
-declare function CVImageBufferGetEncodedSize(imageBuffer: interop.PointerConvertible): CGSize;
+declare function CVImageBufferGetEncodedSize(imageBuffer: interop.Object): CGSize;
 
-declare function CVImageBufferGetDisplaySize(imageBuffer: interop.PointerConvertible): CGSize;
+declare function CVImageBufferGetDisplaySize(imageBuffer: interop.Object): CGSize;
 
-declare function CVImageBufferGetCleanRect(imageBuffer: interop.PointerConvertible): CGRect;
+declare function CVImageBufferGetCleanRect(imageBuffer: interop.Object): CGRect;
 
-declare function CVImageBufferIsFlipped(imageBuffer: interop.PointerConvertible): number;
+declare function CVImageBufferIsFlipped(imageBuffer: interop.Object): number;
 
-declare function CVImageBufferGetColorSpace(imageBuffer: interop.PointerConvertible): interop.Pointer;
+declare function CVImageBufferGetColorSpace(imageBuffer: interop.Object): interop.Object;
 
-declare function CVImageBufferCreateColorSpaceFromAttachments(attachments: interop.PointerConvertible): interop.Pointer;
+declare function CVImageBufferCreateColorSpaceFromAttachments(attachments: interop.Object): interop.Object;
 
 declare function CVPixelBufferGetTypeID(): number;
 
-declare function CVPixelBufferRetain(texture: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferRetain(texture: interop.Object): interop.Object;
 
-declare function CVPixelBufferRelease(texture: interop.PointerConvertible): void;
+declare function CVPixelBufferRelease(texture: interop.Object): void;
 
-declare function CVPixelBufferCreateResolvedAttributesDictionary(allocator: interop.PointerConvertible, attributes: interop.PointerConvertible, resolvedDictionaryOut: interop.PointerConvertible): number;
+declare function CVPixelBufferCreateResolvedAttributesDictionary(allocator: interop.Object, attributes: interop.Object, resolvedDictionaryOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferCreate(allocator: interop.PointerConvertible, width: number, height: number, pixelFormatType: number, pixelBufferAttributes: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function CVPixelBufferCreate(allocator: interop.Object, width: number, height: number, pixelFormatType: number, pixelBufferAttributes: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferCreateWithBytes(allocator: interop.PointerConvertible, width: number, height: number, pixelFormatType: number, baseAddress: interop.PointerConvertible, bytesPerRow: number, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseRefCon: interop.PointerConvertible, pixelBufferAttributes: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function CVPixelBufferCreateWithBytes(allocator: interop.Object, width: number, height: number, pixelFormatType: number, baseAddress: interop.PointerConvertible, bytesPerRow: number, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseRefCon: interop.PointerConvertible, pixelBufferAttributes: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferCreateWithPlanarBytes(allocator: interop.PointerConvertible, width: number, height: number, pixelFormatType: number, dataPtr: interop.PointerConvertible, dataSize: number, numberOfPlanes: number, planeBaseAddress: interop.PointerConvertible, planeWidth: interop.PointerConvertible, planeHeight: interop.PointerConvertible, planeBytesPerRow: interop.PointerConvertible, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible) => void, releaseRefCon: interop.PointerConvertible, pixelBufferAttributes: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function CVPixelBufferCreateWithPlanarBytes(allocator: interop.Object, width: number, height: number, pixelFormatType: number, dataPtr: interop.PointerConvertible, dataSize: number, numberOfPlanes: number, planeBaseAddress: interop.PointerConvertible, planeWidth: interop.PointerConvertible, planeHeight: interop.PointerConvertible, planeBytesPerRow: interop.PointerConvertible, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible) => void, releaseRefCon: interop.PointerConvertible, pixelBufferAttributes: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferLockBaseAddress(pixelBuffer: interop.PointerConvertible, lockFlags: interop.Enum<typeof CVPixelBufferLockFlags>): number;
+declare function CVPixelBufferLockBaseAddress(pixelBuffer: interop.Object, lockFlags: interop.Enum<typeof CVPixelBufferLockFlags>): number;
 
-declare function CVPixelBufferUnlockBaseAddress(pixelBuffer: interop.PointerConvertible, unlockFlags: interop.Enum<typeof CVPixelBufferLockFlags>): number;
+declare function CVPixelBufferUnlockBaseAddress(pixelBuffer: interop.Object, unlockFlags: interop.Enum<typeof CVPixelBufferLockFlags>): number;
 
-declare function CVPixelBufferGetWidth(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferGetWidth(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferGetHeight(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferGetHeight(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferGetPixelFormatType(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferGetPixelFormatType(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferGetBaseAddress(pixelBuffer: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferGetBaseAddress(pixelBuffer: interop.Object): interop.Pointer;
 
-declare function CVPixelBufferGetBytesPerRow(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferGetBytesPerRow(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferGetDataSize(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferGetDataSize(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferIsPlanar(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferIsPlanar(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferGetPlaneCount(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferGetPlaneCount(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferGetWidthOfPlane(pixelBuffer: interop.PointerConvertible, planeIndex: number): number;
+declare function CVPixelBufferGetWidthOfPlane(pixelBuffer: interop.Object, planeIndex: number): number;
 
-declare function CVPixelBufferGetHeightOfPlane(pixelBuffer: interop.PointerConvertible, planeIndex: number): number;
+declare function CVPixelBufferGetHeightOfPlane(pixelBuffer: interop.Object, planeIndex: number): number;
 
-declare function CVPixelBufferGetBaseAddressOfPlane(pixelBuffer: interop.PointerConvertible, planeIndex: number): interop.Pointer;
+declare function CVPixelBufferGetBaseAddressOfPlane(pixelBuffer: interop.Object, planeIndex: number): interop.Pointer;
 
-declare function CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer: interop.PointerConvertible, planeIndex: number): number;
+declare function CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer: interop.Object, planeIndex: number): number;
 
-declare function CVPixelBufferGetExtendedPixels(pixelBuffer: interop.PointerConvertible, extraColumnsOnLeft: interop.PointerConvertible, extraColumnsOnRight: interop.PointerConvertible, extraRowsOnTop: interop.PointerConvertible, extraRowsOnBottom: interop.PointerConvertible): void;
+declare function CVPixelBufferGetExtendedPixels(pixelBuffer: interop.Object, extraColumnsOnLeft: interop.PointerConvertible, extraColumnsOnRight: interop.PointerConvertible, extraRowsOnTop: interop.PointerConvertible, extraRowsOnBottom: interop.PointerConvertible): void;
 
-declare function CVPixelBufferFillExtendedPixels(pixelBuffer: interop.PointerConvertible): number;
+declare function CVPixelBufferFillExtendedPixels(pixelBuffer: interop.Object): number;
 
-declare function CVPixelBufferCopyCreationAttributes(pixelBuffer: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferCopyCreationAttributes(pixelBuffer: interop.Object): interop.Object;
 
-declare function CVPixelBufferGetIOSurface(pixelBuffer: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferGetIOSurface(pixelBuffer: interop.Object): interop.Object;
 
-declare function CVPixelBufferCreateWithIOSurface(allocator: interop.PointerConvertible, surface: interop.PointerConvertible, pixelBufferAttributes: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function CVPixelBufferCreateWithIOSurface(allocator: interop.Object, surface: interop.Object, pixelBufferAttributes: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
 declare function CVPixelBufferPoolGetTypeID(): number;
 
-declare function CVPixelBufferPoolRetain(pixelBufferPool: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferPoolRetain(pixelBufferPool: interop.Object): interop.Object;
 
-declare function CVPixelBufferPoolRelease(pixelBufferPool: interop.PointerConvertible): void;
+declare function CVPixelBufferPoolRelease(pixelBufferPool: interop.Object): void;
 
-declare function CVPixelBufferPoolCreate(allocator: interop.PointerConvertible, poolAttributes: interop.PointerConvertible, pixelBufferAttributes: interop.PointerConvertible, poolOut: interop.PointerConvertible): number;
+declare function CVPixelBufferPoolCreate(allocator: interop.Object, poolAttributes: interop.Object, pixelBufferAttributes: interop.Object, poolOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferPoolGetAttributes(pool: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferPoolGetAttributes(pool: interop.Object): interop.Object;
 
-declare function CVPixelBufferPoolGetPixelBufferAttributes(pool: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelBufferPoolGetPixelBufferAttributes(pool: interop.Object): interop.Object;
 
-declare function CVPixelBufferPoolCreatePixelBuffer(allocator: interop.PointerConvertible, pixelBufferPool: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function CVPixelBufferPoolCreatePixelBuffer(allocator: interop.Object, pixelBufferPool: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(allocator: interop.PointerConvertible, pixelBufferPool: interop.PointerConvertible, auxAttributes: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(allocator: interop.Object, pixelBufferPool: interop.Object, auxAttributes: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
-declare function CVPixelBufferPoolFlush(pool: interop.PointerConvertible, options: interop.Enum<typeof CVPixelBufferPoolFlushFlags>): void;
+declare function CVPixelBufferPoolFlush(pool: interop.Object, options: interop.Enum<typeof CVPixelBufferPoolFlushFlags>): void;
 
 declare function CVOpenGLBufferGetTypeID(): number;
 
-declare function CVOpenGLBufferRetain(buffer: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLBufferRetain(buffer: interop.Object): interop.Object;
 
-declare function CVOpenGLBufferRelease(buffer: interop.PointerConvertible): void;
+declare function CVOpenGLBufferRelease(buffer: interop.Object): void;
 
-declare function CVOpenGLBufferCreate(allocator: interop.PointerConvertible, width: number, height: number, attributes: interop.PointerConvertible, bufferOut: interop.PointerConvertible): number;
+declare function CVOpenGLBufferCreate(allocator: interop.Object, width: number, height: number, attributes: interop.Object, bufferOut: interop.PointerConvertible): number;
 
-declare function CVOpenGLBufferGetAttributes(openGLBuffer: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLBufferGetAttributes(openGLBuffer: interop.Object): interop.Object;
 
-declare function CVOpenGLBufferAttach(openGLBuffer: interop.PointerConvertible, cglContext: interop.PointerConvertible, face: number, level: number, screen: number): number;
+declare function CVOpenGLBufferAttach(openGLBuffer: interop.Object, cglContext: interop.PointerConvertible, face: number, level: number, screen: number): number;
 
 declare function CVOpenGLBufferPoolGetTypeID(): number;
 
-declare function CVOpenGLBufferPoolRetain(openGLBufferPool: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLBufferPoolRetain(openGLBufferPool: interop.Object): interop.Object;
 
-declare function CVOpenGLBufferPoolRelease(openGLBufferPool: interop.PointerConvertible): void;
+declare function CVOpenGLBufferPoolRelease(openGLBufferPool: interop.Object): void;
 
-declare function CVOpenGLBufferPoolCreate(allocator: interop.PointerConvertible, poolAttributes: interop.PointerConvertible, openGLBufferAttributes: interop.PointerConvertible, poolOut: interop.PointerConvertible): number;
+declare function CVOpenGLBufferPoolCreate(allocator: interop.Object, poolAttributes: interop.Object, openGLBufferAttributes: interop.Object, poolOut: interop.PointerConvertible): number;
 
-declare function CVOpenGLBufferPoolGetAttributes(pool: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLBufferPoolGetAttributes(pool: interop.Object): interop.Object;
 
-declare function CVOpenGLBufferPoolGetOpenGLBufferAttributes(pool: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLBufferPoolGetOpenGLBufferAttributes(pool: interop.Object): interop.Object;
 
-declare function CVOpenGLBufferPoolCreateOpenGLBuffer(allocator: interop.PointerConvertible, openGLBufferPool: interop.PointerConvertible, openGLBufferOut: interop.PointerConvertible): number;
+declare function CVOpenGLBufferPoolCreateOpenGLBuffer(allocator: interop.Object, openGLBufferPool: interop.Object, openGLBufferOut: interop.PointerConvertible): number;
 
 declare function CVOpenGLTextureGetTypeID(): number;
 
-declare function CVOpenGLTextureRetain(texture: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLTextureRetain(texture: interop.Object): interop.Object;
 
-declare function CVOpenGLTextureRelease(texture: interop.PointerConvertible): void;
+declare function CVOpenGLTextureRelease(texture: interop.Object): void;
 
-declare function CVOpenGLTextureGetTarget(image: interop.PointerConvertible): number;
+declare function CVOpenGLTextureGetTarget(image: interop.Object): number;
 
-declare function CVOpenGLTextureGetName(image: interop.PointerConvertible): number;
+declare function CVOpenGLTextureGetName(image: interop.Object): number;
 
-declare function CVOpenGLTextureIsFlipped(image: interop.PointerConvertible): number;
+declare function CVOpenGLTextureIsFlipped(image: interop.Object): number;
 
-declare function CVOpenGLTextureGetCleanTexCoords(image: interop.PointerConvertible, lowerLeft: interop.PointerConvertible, lowerRight: interop.PointerConvertible, upperRight: interop.PointerConvertible, upperLeft: interop.PointerConvertible): void;
+declare function CVOpenGLTextureGetCleanTexCoords(image: interop.Object, lowerLeft: interop.PointerConvertible, lowerRight: interop.PointerConvertible, upperRight: interop.PointerConvertible, upperLeft: interop.PointerConvertible): void;
 
 declare function CVOpenGLTextureCacheGetTypeID(): number;
 
-declare function CVOpenGLTextureCacheRetain(textureCache: interop.PointerConvertible): interop.Pointer;
+declare function CVOpenGLTextureCacheRetain(textureCache: interop.Object): interop.Object;
 
-declare function CVOpenGLTextureCacheRelease(textureCache: interop.PointerConvertible): void;
+declare function CVOpenGLTextureCacheRelease(textureCache: interop.Object): void;
 
-declare function CVOpenGLTextureCacheCreate(allocator: interop.PointerConvertible, cacheAttributes: interop.PointerConvertible, cglContext: interop.PointerConvertible, cglPixelFormat: interop.PointerConvertible, textureAttributes: interop.PointerConvertible, cacheOut: interop.PointerConvertible): number;
+declare function CVOpenGLTextureCacheCreate(allocator: interop.Object, cacheAttributes: interop.Object, cglContext: interop.PointerConvertible, cglPixelFormat: interop.PointerConvertible, textureAttributes: interop.Object, cacheOut: interop.PointerConvertible): number;
 
-declare function CVOpenGLTextureCacheCreateTextureFromImage(allocator: interop.PointerConvertible, textureCache: interop.PointerConvertible, sourceImage: interop.PointerConvertible, attributes: interop.PointerConvertible, textureOut: interop.PointerConvertible): number;
+declare function CVOpenGLTextureCacheCreateTextureFromImage(allocator: interop.Object, textureCache: interop.Object, sourceImage: interop.Object, attributes: interop.Object, textureOut: interop.PointerConvertible): number;
 
-declare function CVOpenGLTextureCacheFlush(textureCache: interop.PointerConvertible, options: number): void;
+declare function CVOpenGLTextureCacheFlush(textureCache: interop.Object, options: number): void;
 
-declare function CVPixelFormatDescriptionCreateWithPixelFormatType(allocator: interop.PointerConvertible, pixelFormat: number): interop.Pointer;
+declare function CVPixelFormatDescriptionCreateWithPixelFormatType(allocator: interop.Object, pixelFormat: number): interop.Object;
 
-declare function CVPixelFormatDescriptionArrayCreateWithAllPixelFormatTypes(allocator: interop.PointerConvertible): interop.Pointer;
+declare function CVPixelFormatDescriptionArrayCreateWithAllPixelFormatTypes(allocator: interop.Object): interop.Object;
 
-declare function CVPixelFormatDescriptionRegisterDescriptionWithPixelFormatType(description: interop.PointerConvertible, pixelFormat: number): void;
+declare function CVPixelFormatDescriptionRegisterDescriptionWithPixelFormatType(description: interop.Object, pixelFormat: number): void;
 
 declare function CVIsCompressedPixelFormatAvailable(pixelFormatType: number): number;
 
 declare function CVMetalTextureGetTypeID(): number;
 
-declare function CVMetalTextureGetTexture(image: interop.PointerConvertible): MTLTexture;
+declare function CVMetalTextureGetTexture(image: interop.Object): MTLTexture;
 
-declare function CVMetalTextureIsFlipped(image: interop.PointerConvertible): number;
+declare function CVMetalTextureIsFlipped(image: interop.Object): number;
 
-declare function CVMetalTextureGetCleanTexCoords(image: interop.PointerConvertible, lowerLeft: interop.PointerConvertible, lowerRight: interop.PointerConvertible, upperRight: interop.PointerConvertible, upperLeft: interop.PointerConvertible): void;
+declare function CVMetalTextureGetCleanTexCoords(image: interop.Object, lowerLeft: interop.PointerConvertible, lowerRight: interop.PointerConvertible, upperRight: interop.PointerConvertible, upperLeft: interop.PointerConvertible): void;
 
 declare function CVMetalTextureCacheGetTypeID(): number;
 
-declare function CVMetalTextureCacheCreate(allocator: interop.PointerConvertible, cacheAttributes: interop.PointerConvertible, metalDevice: MTLDevice, textureAttributes: interop.PointerConvertible, cacheOut: interop.PointerConvertible): number;
+declare function CVMetalTextureCacheCreate(allocator: interop.Object, cacheAttributes: interop.Object, metalDevice: MTLDevice, textureAttributes: interop.Object, cacheOut: interop.PointerConvertible): number;
 
-declare function CVMetalTextureCacheCreateTextureFromImage(allocator: interop.PointerConvertible, textureCache: interop.PointerConvertible, sourceImage: interop.PointerConvertible, textureAttributes: interop.PointerConvertible, pixelFormat: interop.Enum<typeof MTLPixelFormat>, width: number, height: number, planeIndex: number, textureOut: interop.PointerConvertible): number;
+declare function CVMetalTextureCacheCreateTextureFromImage(allocator: interop.Object, textureCache: interop.Object, sourceImage: interop.Object, textureAttributes: interop.Object, pixelFormat: interop.Enum<typeof MTLPixelFormat>, width: number, height: number, planeIndex: number, textureOut: interop.PointerConvertible): number;
 
-declare function CVMetalTextureCacheFlush(textureCache: interop.PointerConvertible, options: number): void;
+declare function CVMetalTextureCacheFlush(textureCache: interop.Object, options: number): void;
 
 declare function CVMetalBufferGetTypeID(): number;
 
@@ -945,9 +945,9 @@ declare function CVMetalBufferGetBuffer(buffer: interop.PointerConvertible): MTL
 
 declare function CVMetalBufferCacheGetTypeID(): number;
 
-declare function CVMetalBufferCacheCreate(allocator: interop.PointerConvertible, cacheAttributes: interop.PointerConvertible, metalDevice: MTLDevice, cacheOut: interop.PointerConvertible): number;
+declare function CVMetalBufferCacheCreate(allocator: interop.Object, cacheAttributes: interop.Object, metalDevice: MTLDevice, cacheOut: interop.PointerConvertible): number;
 
-declare function CVMetalBufferCacheCreateBufferFromImage(allocator: interop.PointerConvertible, bufferCache: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, bufferOut: interop.PointerConvertible): number;
+declare function CVMetalBufferCacheCreateBufferFromImage(allocator: interop.Object, bufferCache: interop.PointerConvertible, imageBuffer: interop.Object, bufferOut: interop.PointerConvertible): number;
 
 declare function CVMetalBufferCacheFlush(bufferCache: interop.PointerConvertible, options: number): void;
 

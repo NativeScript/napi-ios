@@ -93,9 +93,9 @@ declare class IMKCandidates extends NSResponder {
 
   selectionKeys(): NSArray;
 
-  setSelectionKeysKeylayout(layout: interop.PointerConvertible): void;
+  setSelectionKeysKeylayout(layout: interop.Object): void;
 
-  selectionKeysKeylayout(): interop.Pointer;
+  selectionKeysKeylayout(): interop.Object;
 
   setAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 

@@ -25,11 +25,7 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
                             size_t argc, bool* done, void* ret) {
   napi_env env = closure->env;
 
-#ifdef ENABLE_JS_RUNTIME
-  NapiScope scope(env);
-#endif
-
-      napi_value result;
+  napi_value result;
 
   napi_get_and_clear_last_exception(env, &result);
 
@@ -69,6 +65,11 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
 void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   Closure* closure = (Closure*)data;
   napi_env env = closure->env;
+
+#ifdef ENABLE_JS_RUNTIME
+  NapiScope scope(env);
+#endif
+
   auto bridgeState = ObjCBridgeState::InstanceData(env);
 
   napi_value constructor = get_ref_value(env, closure->thisConstructor);
@@ -135,6 +136,10 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   Closure* closure = (Closure*)data;
   napi_env env = closure->env;
 
+#ifdef ENABLE_JS_RUNTIME
+  NapiScope scope(env);
+#endif
+
   auto currentThreadId = std::this_thread::get_id();
 
   JSBlockCallContext ctx;
@@ -157,7 +162,9 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
     ctx.cv.wait(lock, [&ctx] { return ctx.done; });
     napi_release_threadsafe_function(closure->tsfn, napi_tsfn_release);
 #else
-    assert(false && "Threadsafe functions are not supported");
+    NSLog(@"Threadsafe functions are not supported");
+    // assert(false && "Threadsafe functions are not supported");
+    Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
 #endif  // ENABLE_JS_RUNTIME
   }
 }

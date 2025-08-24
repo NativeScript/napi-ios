@@ -376,8 +376,7 @@ declare class EKCalendar extends EKObject {
 
   readonly immutable: boolean;
 
-  get CGColor(): interop.Pointer;
-  set CGColor(value: interop.PointerConvertible);
+  CGColor: interop.Object;
 
   color: NSColor;
 
@@ -393,7 +392,7 @@ declare class EKCalendar extends EKObject {
 
   isImmutable(): boolean;
 
-  setCGColor(CGColor: interop.PointerConvertible): void;
+  setCGColor(CGColor: interop.Object): void;
 
   setColor(color: NSColor): void;
 }

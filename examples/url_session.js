@@ -16,9 +16,11 @@ task.resume();
 
 // Here, we'll run the runloop until the task is complete,
 // in a way that JS event loop will still be running.
-const interval = setInterval(() => {
-  CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, 1);
-  if (stopped) {
-    clearInterval(interval);
-  }
-}, 0);
+// const interval = setInterval(() => {
+//   CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, 1);
+//   if (stopped) {
+//     clearInterval(interval);
+//   }
+// }, 0);
+
+NSApplicationMain(0, null);

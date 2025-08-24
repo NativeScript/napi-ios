@@ -20,7 +20,7 @@ declare class SCSensitivityAnalyzer extends NSObject {
 
   analyzeImageFileCompletionHandler(fileURL: NSURL, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): void;
 
-  analyzeCGImageCompletionHandler(image: interop.PointerConvertible, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): void;
+  analyzeCGImageCompletionHandler(image: interop.Object, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): void;
 
   analyzeVideoFileCompletionHandler(fileURL: NSURL, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): NSProgress;
 }

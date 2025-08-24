@@ -900,7 +900,7 @@ declare class AudioServerPlugInClientInfo {
   mClientID: number;
   mProcessID: number;
   mIsNativeEndian: number;
-  mBundleID: interop.Pointer;
+  mBundleID: interop.Object | null;
 }
 
 type unnamed_3944208891795786455Descriptor = 
@@ -935,7 +935,7 @@ declare function AudioObjectRemovePropertyListenerBlock(inObjectID: number, inAd
 
 declare function AudioHardwareUnload(): number;
 
-declare function AudioHardwareCreateAggregateDevice(inDescription: interop.PointerConvertible, outDeviceID: interop.PointerConvertible): number;
+declare function AudioHardwareCreateAggregateDevice(inDescription: interop.Object, outDeviceID: interop.PointerConvertible): number;
 
 declare function AudioHardwareDestroyAggregateDevice(inDeviceID: number): number;
 
@@ -957,9 +957,9 @@ declare function AudioDeviceTranslateTime(inDevice: number, inTime: interop.Poin
 
 declare function AudioDeviceGetNearestStartTime(inDevice: number, ioRequestedStartTime: interop.PointerConvertible, inFlags: number): number;
 
-declare function AudioHardwareAddRunLoopSource(inRunLoopSource: interop.PointerConvertible): number;
+declare function AudioHardwareAddRunLoopSource(inRunLoopSource: interop.Object): number;
 
-declare function AudioHardwareRemoveRunLoopSource(inRunLoopSource: interop.PointerConvertible): number;
+declare function AudioHardwareRemoveRunLoopSource(inRunLoopSource: interop.Object): number;
 
 declare function AudioHardwareGetPropertyInfo(inPropertyID: number, outSize: interop.PointerConvertible, outWritable: interop.PointerConvertible): number;
 

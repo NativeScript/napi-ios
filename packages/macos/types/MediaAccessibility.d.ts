@@ -51,25 +51,25 @@ declare const MACaptionAppearanceDisplayType: {
   AlwaysOn: 2,
 };
 
-declare function MACaptionAppearanceDidDisplayCaptions(strings: interop.PointerConvertible): void;
+declare function MACaptionAppearanceDidDisplayCaptions(strings: interop.Object): void;
 
-declare function MACaptionAppearanceAddSelectedLanguage(domain: interop.Enum<typeof MACaptionAppearanceDomain>, language: interop.PointerConvertible): boolean;
+declare function MACaptionAppearanceAddSelectedLanguage(domain: interop.Enum<typeof MACaptionAppearanceDomain>, language: interop.Object): boolean;
 
-declare function MACaptionAppearanceCopySelectedLanguages(domain: interop.Enum<typeof MACaptionAppearanceDomain>): interop.Pointer;
+declare function MACaptionAppearanceCopySelectedLanguages(domain: interop.Enum<typeof MACaptionAppearanceDomain>): interop.Object;
 
 declare function MACaptionAppearanceGetDisplayType(domain: interop.Enum<typeof MACaptionAppearanceDomain>): interop.Enum<typeof MACaptionAppearanceDisplayType>;
 
 declare function MACaptionAppearanceSetDisplayType(domain: interop.Enum<typeof MACaptionAppearanceDomain>, displayType: interop.Enum<typeof MACaptionAppearanceDisplayType>): void;
 
-declare function MACaptionAppearanceCopyPreferredCaptioningMediaCharacteristics(domain: interop.Enum<typeof MACaptionAppearanceDomain>): interop.Pointer;
+declare function MACaptionAppearanceCopyPreferredCaptioningMediaCharacteristics(domain: interop.Enum<typeof MACaptionAppearanceDomain>): interop.Object;
 
 declare function MACaptionAppearanceIsCustomized(domain: interop.Enum<typeof MACaptionAppearanceDomain>): boolean;
 
-declare function MACaptionAppearanceCopyForegroundColor(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Pointer;
+declare function MACaptionAppearanceCopyForegroundColor(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Object;
 
-declare function MACaptionAppearanceCopyBackgroundColor(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Pointer;
+declare function MACaptionAppearanceCopyBackgroundColor(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Object;
 
-declare function MACaptionAppearanceCopyWindowColor(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Pointer;
+declare function MACaptionAppearanceCopyWindowColor(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Object;
 
 declare function MACaptionAppearanceGetForegroundOpacity(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): number;
 
@@ -79,26 +79,26 @@ declare function MACaptionAppearanceGetWindowOpacity(domain: interop.Enum<typeof
 
 declare function MACaptionAppearanceGetWindowRoundedCornerRadius(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): number;
 
-declare function MACaptionAppearanceCopyFontDescriptorForStyle(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible, fontStyle: interop.Enum<typeof MACaptionAppearanceFontStyle>): interop.Pointer;
+declare function MACaptionAppearanceCopyFontDescriptorForStyle(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible, fontStyle: interop.Enum<typeof MACaptionAppearanceFontStyle>): interop.Object;
 
 declare function MACaptionAppearanceGetRelativeCharacterSize(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): number;
 
 declare function MACaptionAppearanceGetTextEdgeStyle(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Enum<typeof MACaptionAppearanceTextEdgeStyle>;
 
-declare function MAAudibleMediaCopyPreferredCharacteristics(): interop.Pointer;
+declare function MAAudibleMediaCopyPreferredCharacteristics(): interop.Object;
 
-declare function MAImageCaptioningCopyCaption(url: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function MAImageCaptioningCopyCaption(url: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function MAImageCaptioningSetCaption(url: interop.PointerConvertible, string: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function MAImageCaptioningSetCaption(url: interop.Object, string: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function MAImageCaptioningCopyMetadataTagPath(): interop.Pointer;
+declare function MAImageCaptioningCopyMetadataTagPath(): interop.Object;
 
 declare function MADimFlashingLightsEnabled(): boolean;
 
 declare class MAFlashingLightsProcessor extends NSObject {
-  canProcessSurface(surface: interop.PointerConvertible): boolean;
+  canProcessSurface(surface: interop.Object): boolean;
 
-  processSurfaceOutSurfaceTimestampOptions(inSurface: interop.PointerConvertible, outSurface: interop.PointerConvertible, timestamp: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): MAFlashingLightsProcessorResult;
+  processSurfaceOutSurfaceTimestampOptions(inSurface: interop.Object, outSurface: interop.Object, timestamp: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): MAFlashingLightsProcessorResult;
 }
 
 declare class MAMusicHapticsManager extends NSObject {
