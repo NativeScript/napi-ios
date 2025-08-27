@@ -1,8 +1,7 @@
 #include <assert.h>
 
-#include <iostream>
-
 #include "IR.h"
+#include "Util.h"
 #include "clang-c/Index.h"
 
 static const std::vector<std::string> KNOWN_BRIDGED_TYPES = {
@@ -22,25 +21,27 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
   std::string name = clang_getCString(nameStr);
   clang_disposeString(nameStr);
 
-  if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
-                name) != KNOWN_BRIDGED_TYPES.end()) {
+  if (name.find(" _Nullable *") != std::string::npos) {
+    std::string strippedName = name.substr(0, name.find(" _Nullable *"));
+    strippedName = rtrim(strippedName);
+    if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
+                  strippedName) != KNOWN_BRIDGED_TYPES.end()) {
+      kind = kTypePointer;
+      auto pointeeType = clang_getPointeeType(type);
+      pointee = std::make_shared<TypeSpec>(pointeeType, classTypeParameters);
+      return;
+    }
+  }
+
+  if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(), name) !=
+      KNOWN_BRIDGED_TYPES.end()) {
     kind = kTypeAnyObject;
-    std::cout << "Bridged type found: " << name << std::endl;
-    // typeParameterName = name;
     return;
   }
 
   CXString canonicalNameStr = clang_getTypeSpelling(canonicalType);
   std::string canonicalName = stripCInfo(clang_getCString(canonicalNameStr));
   clang_disposeString(canonicalNameStr);
-
-  if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
-                canonicalName) != KNOWN_BRIDGED_TYPES.end()) {
-    kind = kTypeAnyObject;
-    std::cout << "Canonical bridged type found: " << canonicalName << std::endl;
-    // typeParameterName = name;
-    return;
-  }
 
   if (classTypeParameters != nullptr &&
       std::find(classTypeParameters->begin(), classTypeParameters->end(),
@@ -116,7 +117,10 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
       break;
 
     case CXType_Pointer: {
+      unknownInfo = name;
+
       auto pointeeType = clang_getPointeeType(canonicalType);
+
       if (pointeeType.kind == CXType_Char_S) {
         kind = kTypeString;
       } else if (pointeeType.kind == CXType_ObjCSel) {
