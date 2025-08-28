@@ -85,8 +85,6 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
 
     Tasks::Register([env, cif, func, rvalue, avaluesPtr]() {
-      NapiScope scope(env);
-
       void * avalues[cif->argc];
       memcpy(avalues, avaluesPtr, cif->argc * sizeof(void*));
       delete[] avaluesPtr;
@@ -94,6 +92,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
       @try {
         ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
       } @catch (NSException* exception) {
+        NapiScope scope(env);
         std::string message = exception.description.UTF8String;
         NSLog(@"ObjC->JS: Exception in CFunction (task): %s", message.c_str());
         nativescript::NativeScriptException nativeScriptException(message);

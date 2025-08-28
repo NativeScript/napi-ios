@@ -162,8 +162,6 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
     ctx.cv.wait(lock, [&ctx] { return ctx.done; });
     napi_release_threadsafe_function(closure->tsfn, napi_tsfn_release);
 #else
-    NSLog(@"Threadsafe functions are not supported");
-    // assert(false && "Threadsafe functions are not supported");
     Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
 #endif  // ENABLE_JS_RUNTIME
   }
