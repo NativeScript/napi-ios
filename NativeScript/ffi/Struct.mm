@@ -356,6 +356,15 @@ napi_value StructObject::defineJSClass(napi_env env, StructInfo* info) {
   return result;
 }
 
+bool StructObject::isInstance(napi_env env, napi_value object) {
+  napi_value sizeofSymbol = jsSymbolFor(env, "sizeof");
+  napi_value prop;
+  if (napi_get_property(env, object, sizeofSymbol, &prop) == napi_ok) {
+    return true;
+  }
+  return false;
+}
+
 napi_value StructObject::getJSClass(napi_env env, StructInfo* info) {
   if (info->jsClass != nullptr) {
     return get_ref_value(env, info->jsClass);

@@ -8,6 +8,7 @@
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "ffi.h"
+#include "ffi/Struct.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
@@ -18,9 +19,9 @@
 #include <stdbool.h>
 #include <memory>
 #include <string>
-#include <vector>
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 namespace nativescript {
 
@@ -44,7 +45,7 @@ thread_local std::unordered_map<std::string, std::shared_ptr<StructTypeConv>> en
 ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   // Extract struct name for cycle detection
   std::string structname;
-  const char* nameStart = *encoding + 1; // skip '{'
+  const char* nameStart = *encoding + 1;  // skip '{'
   const char* c = nameStart;
   while (*c != '=') {
     structname += *c;
@@ -59,17 +60,17 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
     forwardType->size = 0;
     forwardType->alignment = 0;
     forwardType->elements = nullptr;
-    
+
     // Cache this forward declaration for later resolution
     forwardDeclaredEncodingStructs[structname] = forwardType;
-    
+
     // Skip the struct encoding
     (*encoding)++;  // skip '{'
     while (**encoding != '}') {
       (*encoding)++;
     }
     (*encoding)++;  // skip '}'
-    
+
     return forwardType;
   }
 
@@ -82,7 +83,7 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
       (*encoding)++;
     }
     (*encoding)++;  // skip '}'
-    
+
     return forwardIt->second;
   }
 
@@ -126,7 +127,7 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
     forwardType->size = type->size;
     forwardType->alignment = type->alignment;
     forwardType->elements = type->elements;
-    
+
     // Clean up the temporary type and use the forward declaration
     delete type;
     type = forwardType;
@@ -149,7 +150,7 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
     forwardType->size = 0;
     forwardType->alignment = 0;
     forwardType->elements = nullptr;
-    
+
     // Cache this forward declaration for later resolution
     forwardDeclaredStructs[structOffset] = forwardType;
     return forwardType;
@@ -174,7 +175,7 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
   auto name = reader->resolveString(nameOffset);
   bool next = true;
   MDSectionOffset currentOffset = structOffset + sizeof(MDSectionOffset);  // skip name
-  currentOffset += sizeof(uint16_t);         // skip size
+  currentOffset += sizeof(uint16_t);                                       // skip size
 
   std::vector<ffi_type*> elements;
 
@@ -205,7 +206,7 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
     forwardType->size = type->size;
     forwardType->alignment = type->alignment;
     forwardType->elements = type->elements;
-    
+
     // Clean up the temporary type and use the forward declaration
     delete type;
     type = forwardType;
@@ -583,6 +584,9 @@ class Float64TypeConv : public TypeConv {
     double val;
     napi_coerce_to_number(env, value, &value);
     napi_get_value_double(env, value, &val);
+    if (std::isnan(val) || std::isinf(val)) {
+      val = 0.0;
+    }
     *(double*)result = val;
   }
 
@@ -720,6 +724,15 @@ class PointerTypeConv : public TypeConv {
             }
           }
           *res = ref->data;
+          return;
+        }
+
+        if (StructObject::isInstance(env, value)) {
+          StructObject* structObj = StructObject::unwrap(env, value);
+          if (structObj != nullptr) {
+            *res = structObj->data;
+          } else
+            *res = nullptr;
           return;
         }
 
@@ -957,7 +970,7 @@ class StringTypeConv : public TypeConv {
   StringTypeConv() { type = &ffi_type_pointer; }
 
   napi_value toJS(napi_env env, void* cont, uint32_t flags) override {
-    void *value = *((void**)cont);
+    void* value = *((void**)cont);
     napi_value result;
     napi_create_string_utf8(env, (char*)value, NAPI_AUTO_LENGTH, &result);
     return result;
@@ -1677,23 +1690,23 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, const char** encoding) {
         structname += *c;
         c++;
       }
-      
+
       // Check if we already have a cached StructTypeConv for this encoding-based struct
       auto cacheIt = encodingStructCache.find(structname);
       if (cacheIt != encodingStructCache.end()) {
         return cacheIt->second;
       }
-      
+
       auto bridgeState = ObjCBridgeState::InstanceData(env);
       // NSLog(@"struct: %s, %d", structname.c_str(),
       //       bridgeState->structOffsets[structname]);
       auto structOffset = bridgeState->structOffsets[structname];
       auto type = typeFromStruct(env, encoding);
       auto structTypeConv = std::make_shared<StructTypeConv>(StructTypeConv(structOffset, type));
-      
+
       // Cache the StructTypeConv
       encodingStructCache[structname] = structTypeConv;
-      
+
       return structTypeConv;
     }
     case 'b': {
@@ -1865,26 +1878,26 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       }
       structOffset += isUnion ? reader->unionsOffset : reader->structsOffset;
       auto structName = reader->getString(structOffset);
-      
+
       // Check if we already have a cached StructTypeConv for this struct
       auto cacheIt = structTypeCache.find(structOffset);
       if (cacheIt != structTypeCache.end()) {
         return cacheIt->second;
       }
-      
+
       // Check if we're currently processing this struct (recursion detection)
       bool isRecursive = processingStructs.find(structOffset) != processingStructs.end();
-      
+
       ffi_type* type = nullptr;
       if (opaquePointers != 2 && !isRecursive) {
         type = typeFromStruct(env, reader, structOffset, isUnion);
       }
-      
+
       auto structTypeConv = std::make_shared<StructTypeConv>(structOffset, type);
-      
+
       // Cache the StructTypeConv to handle recursion and avoid duplicates
       structTypeCache[structOffset] = structTypeConv;
-      
+
       return structTypeConv;
     }
 

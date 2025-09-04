@@ -50,6 +50,8 @@ class StructObject {
   static napi_value fromNative(napi_env env, StructInfo* info, void* data,
                                bool owned);
 
+  static bool isInstance(napi_env env, napi_value object);
+
   ~StructObject();
 };
 
