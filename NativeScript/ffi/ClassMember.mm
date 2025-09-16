@@ -8,6 +8,7 @@
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
+#include "ffi/Class.h"
 #include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
@@ -35,7 +36,8 @@ napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
 }
 
 void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
-                                    MDSectionOffset offset, napi_value constructor) {
+                                    MDSectionOffset offset, napi_value constructor,
+                                    ObjCClass* cls) {
   auto bridgeState = ObjCBridgeState::InstanceData(env);
 
   napi_value prototype;
@@ -115,7 +117,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
 
       bool hasProperty = false;
       napi_has_named_property(env, jsObject, name.c_str(), &hasProperty);
-      if (hasProperty) {
+      if (hasProperty && name != "init") {
         continue;
       }
 
@@ -134,6 +136,10 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
               (napi_property_attributes)(napi_configurable | napi_writable | napi_enumerable),
           .data = &kv.first->second,
       };
+
+      if ((flags & mdMemberIsInit) != 0) {
+        kv.first->second.cls = cls;
+      }
 
       if (name == "alloc") {
         property.method = JS_NSObject_alloc;
@@ -198,6 +204,144 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues, void
   return true;
 }
 
+// Utility function to check if a JS value can be converted to a specific type
+bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> typeConv) {
+  if (value == nullptr) {
+    return true;  // null/undefined can convert to most types
+  }
+
+  napi_valuetype jsType;
+  napi_typeof(env, value, &jsType);
+
+  if (jsType == napi_null || jsType == napi_undefined) {
+    return true;  // null/undefined are generally acceptable
+  }
+
+  // Check basic type compatibility based on TypeConv kind
+  switch (typeConv->kind) {
+    case mdTypeBool:
+      return jsType == napi_boolean || jsType == napi_number;
+
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+      return jsType == napi_number || jsType == napi_bigint;
+
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject: {
+      if (jsType == napi_string) {
+        // String can convert to NSString
+        return true;
+      }
+      if (jsType == napi_object) {
+        bool isArray;
+        napi_is_array(env, value, &isArray);
+        if (isArray) {
+          // Array can convert to NSArray
+          return true;
+        }
+        // Check if it's a wrapped native object
+        void* wrapped;
+        napi_status status = napi_unwrap(env, value, &wrapped);
+        return status == napi_ok;
+      }
+      return false;
+    }
+
+    case mdTypeSelector:
+      return jsType == napi_string;
+
+    case mdTypePointer:
+    case mdTypeOpaquePointer:
+      return jsType == napi_object || jsType == napi_bigint || jsType == napi_string;
+
+    case mdTypeStruct:
+      return jsType == napi_object;
+
+    case mdTypeBlock:
+      return jsType == napi_function;
+
+    default:
+      return true;  // For unknown types, assume compatible
+  }
+}
+
+// Find the best initializer for a class given JS arguments
+ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initializers, size_t argc,
+                                        napi_value* argv) {
+  std::vector<ObjCClassMember*> candidates;
+
+  // First pass: find initializers with matching argument count
+  for (auto& pair : *initializers) {
+    auto* candidate = &pair.second;
+    const char* name = sel_getName(candidate->methodOrGetter.selector);
+    // NSLog(@"Checking initializer: %s", name);
+    if (name[0] != 'i' || name[1] != 'n' || name[2] != 'i' || name[3] != 't') {
+      continue;
+    }
+    Cif* cif = candidate->cif;
+    if (!cif) {
+      // Need to get the CIF to check argument count
+      cif = const_cast<ObjCClassMember*>(candidate)->bridgeState->getMethodCif(
+          env, candidate->methodOrGetter.signatureOffset);
+    }
+
+    // Match argument count (cif->argc excludes self and selector)
+    if (cif->argc == argc) {
+      bool canInvoke = true;
+
+      // Check if all arguments can be converted to the expected types
+      for (size_t i = 0; i < argc; ++i) {
+        if (!canConvertToType(env, argv[i], cif->argTypes[i])) {
+          canInvoke = false;
+          break;
+        }
+      }
+
+      if (canInvoke) {
+        candidates.push_back(candidate);
+      }
+    }
+  }
+
+  if (candidates.empty()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "No initializer found that matches constructor invocation.");
+    return nullptr;
+  } else if (candidates.size() > 1) {
+    // Prefer "init" if no arguments
+    if (argc == 0) {
+      for (auto* candidate : candidates) {
+        const char* selectorName = sel_getName(candidate->methodOrGetter.selector);
+        if (strcmp(selectorName, "init") == 0) {
+          return candidate;
+        }
+      }
+    }
+
+    // If multiple candidates, throw an error with details
+    std::string errorMsg = "More than one initializer found that matches constructor invocation:";
+    for (const auto* candidate : candidates) {
+      errorMsg += " ";
+      errorMsg += sel_getName(candidate->methodOrGetter.selector);
+    }
+    napi_throw_error(env, "NativeScriptException", errorMsg.c_str());
+    return nullptr;
+  }
+
+  return candidates[0];
+}
+
 inline id assertSelf(napi_env env, napi_value jsThis) {
   id self;
   napi_unwrap(env, jsThis, (void**)&self);
@@ -216,12 +360,28 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   napi_value jsThis;
   ObjCClassMember* method;
 
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
+  size_t argc = 0;
+  napi_get_cb_info(env, cbinfo, &argc, nullptr, &jsThis, (void**)&method);
 
   id self = assertSelf(env, jsThis);
 
   if (self == nullptr) {
     return nullptr;
+  }
+
+  SEL sel = method->methodOrGetter.selector;
+  if (sel == @selector(init) && argc > 0) {
+    napi_value argv[argc];
+    napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, nullptr);
+    Class nativeClass = [self class];
+    ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+    ObjCClass* cls = state->classesByPointer[nativeClass];
+    // NSLog(@"find init for class: %@, cls: %p", nativeClass, cls);
+    ObjCClassMember* newMethod = findInitializerForArgs(env, &cls->members, argc, argv);
+    // NSLog(@"new init: %p", newMethod);
+    if (newMethod != nullptr) {
+      method = newMethod;
+    }
   }
 
   Cif* cif = method->cif;
@@ -230,7 +390,7 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
         method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
   }
 
-  size_t argc = cif->argc;
+  argc = cif->argc;
   napi_get_cb_info(env, cbinfo, &argc, cif->argv, &jsThis, nullptr);
 
   void* avalues[cif->cif.nargs];

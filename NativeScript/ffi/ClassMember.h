@@ -47,10 +47,13 @@ class ObjCClassMember;
 
 typedef std::unordered_map<std::string, ObjCClassMember> ObjCClassMemberMap;
 
+class ObjCClass;
+
 class ObjCClassMember {
  public:
   static void defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
-                            MDSectionOffset offset, napi_value constructor);
+                            MDSectionOffset offset, napi_value constructor,
+                            ObjCClass* cls = nullptr);
 
   static napi_value jsCall(napi_env env, napi_callback_info cbinfo);
   static napi_value jsCallInit(napi_env env, napi_callback_info cbinfo);
@@ -83,6 +86,7 @@ class ObjCClassMember {
   Cif* setterCif = nullptr;
   bool returnOwned;
   bool classMethod;
+  ObjCClass* cls;
 };
 
 }  // namespace nativescript

@@ -1205,12 +1205,31 @@ class ObjCObjectTypeConv : public TypeConv {
 
             return;
           } else {
-            napi_value global, jsObject, valueConstructor;
+            napi_value global, jsObject, valueConstructor, DateConstructor;
             napi_get_global(env, &global);
             napi_get_named_property(env, global, "Object", &jsObject);
+            napi_get_named_property(env, global, "Date", &DateConstructor);
             napi_get_named_property(env, value, "constructor", &valueConstructor);
             bool isEqual;
             napi_strict_equals(env, jsObject, valueConstructor, &isEqual);
+            bool isDate;
+            napi_strict_equals(env, DateConstructor, valueConstructor, &isDate);
+
+            if (isDate) {
+              // Get the timestamp from the JavaScript Date object
+              napi_value getTimeMethod;
+              napi_get_named_property(env, value, "getTime", &getTimeMethod);
+              napi_value timestamp;
+              napi_call_function(env, value, getTimeMethod, 0, nullptr, &timestamp);
+
+              double timeInMilliseconds;
+              napi_get_value_double(env, timestamp, &timeInMilliseconds);
+
+              // Convert milliseconds to seconds for NSDate
+              NSTimeInterval timeInSeconds = timeInMilliseconds / 1000.0;
+              *res = [NSDate dateWithTimeIntervalSince1970:timeInSeconds];
+              return;
+            }
 
             if (!isEqual) {
               auto bridgeState = ObjCBridgeState::InstanceData(env);
@@ -1281,7 +1300,9 @@ class ObjCNSStringObjectTypeConv : public TypeConv {
     NSString* str = *((NSString**)value);
 
     if (str == nullptr) {
-      return nullptr;
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
     }
 
     napi_value result;
@@ -1309,7 +1330,9 @@ class ObjCNSMutableStringObjectTypeConv : public TypeConv {
     NSString* str = *((NSString**)value);
 
     if (str == nullptr) {
-      return nullptr;
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
     }
 
     napi_value result;
@@ -1366,7 +1389,9 @@ class ObjCClassTypeConv : public TypeConv {
     Class cls = *((Class*)value);
 
     if (cls == nullptr) {
-      return nullptr;
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
     }
 
     auto bridgeState = ObjCBridgeState::InstanceData(env);
@@ -1374,7 +1399,9 @@ class ObjCClassTypeConv : public TypeConv {
     ObjCClass* bridgedCls = bridgeState->classesByPointer[cls];
 
     if (bridgedCls == nullptr) {
-      return nullptr;
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
     }
 
     napi_value constructor = get_ref_value(env, bridgedCls->constructor);
@@ -1600,7 +1627,9 @@ class VectorTypeConv : public TypeConv {
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     NSLog(@"VectorTypeConv toJS: TODO");
-    return nullptr;
+    napi_value result;
+    napi_get_null(env, &result);
+    return result;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,

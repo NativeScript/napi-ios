@@ -168,15 +168,15 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
   if (isClass) {
     result = constructor;
   } else {
-    NAPI_GUARD(napi_new_instance(env, constructor, 0, nullptr, &result)) {
+    napi_value ext;
+    napi_create_external(env, nullptr, nullptr, nullptr, &ext);
+
+    NAPI_GUARD(napi_new_instance(env, constructor, 1, &ext, &result)) {
       NAPI_THROW_LAST_ERROR
       return nullptr;
     }
 
-    NAPI_GUARD(napi_wrap(env, result, obj, nullptr, nullptr, nullptr)) {
-      NAPI_THROW_LAST_ERROR
-      return nullptr;
-    }
+    napi_wrap(env, result, obj, nullptr, nullptr, nullptr);
 
     if (ownership == kUnownedObject) {
       [obj retain];

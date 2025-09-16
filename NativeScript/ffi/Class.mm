@@ -195,7 +195,25 @@ NAPI_FUNCTION(classGetter) {
 }
 
 NAPI_FUNCTION(BridgedConstructor) {
-  NAPI_CALLBACK_BEGIN(0)
+  NAPI_CALLBACK_BEGIN(1)
+
+  napi_valuetype jsType;
+  napi_typeof(env, argv[0], &jsType);
+
+  id object = nil;
+
+  if (jsType == napi_external) {
+    return jsThis;
+  } else {
+    Class cls = (Class)data;
+    object = [cls new];
+
+    ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+    jsThis = bridgeState->proxyNativeObject(env, jsThis, object);
+  }
+
+  napi_wrap(env, jsThis, object, nullptr, nullptr, nullptr);
+
   return jsThis;
 }
 
@@ -390,7 +408,8 @@ std::string NativeObjectName = "NativeObject";
 // extended by a JS class.
 // Every Bridged Class extends the NativeObject class.
 
-void defineProtocolMembers(napi_env env, ObjCClassMemberMap& members, napi_value constructor, ObjCProtocol* protocol) {
+void defineProtocolMembers(napi_env env, ObjCClassMemberMap& members, napi_value constructor,
+                           ObjCProtocol* protocol) {
   ObjCClassMember::defineMembers(env, members, protocol->membersOffset, constructor);
   for (auto protocol : protocol->protocols) {
     defineProtocolMembers(env, members, constructor, protocol);
@@ -443,11 +462,12 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   napi_value constructor, prototype;
 
-  napi_define_class(env, name.c_str(), name.length(), JS_BridgedConstructor, (void*)this, 0, nil,
-                    &constructor);
+  napi_define_class(env, name.c_str(), name.length(), JS_BridgedConstructor, (void*)nativeClass, 0,
+                    nil, &constructor);
 
   if (nativeClass != nil) {
     napi_wrap(env, constructor, (void*)nativeClass, nil, nil, nil);
+    bridgeState->classesByPointer[nativeClass] = this;
   }
 
   napi_get_named_property(env, constructor, "prototype", &prototype);
@@ -552,18 +572,17 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
     return;
   }
 
-  bridgeState->classesByPointer[nativeClass] = this;
-
   // Add the 'extend' static method to all native classes (not NativeObject)
   if (!isNativeObject) {
     napi_value extendMethod;
-    napi_create_function(env, "extend", NAPI_AUTO_LENGTH, ClassBuilder::ExtendCallback, nullptr, &extendMethod);
+    napi_create_function(env, "extend", NAPI_AUTO_LENGTH, ClassBuilder::ExtendCallback, nullptr,
+                         &extendMethod);
     napi_set_named_property(env, constructor, "extend", extendMethod);
   }
 
   if (!hasMembers) return;
 
-  ObjCClassMember::defineMembers(env, members, offset, constructor);
+  ObjCClassMember::defineMembers(env, members, offset, constructor, this);
 }
 
 ObjCClass::~ObjCClass() {
