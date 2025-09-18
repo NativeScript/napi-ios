@@ -202,13 +202,32 @@ NAPI_FUNCTION(BridgedConstructor) {
 
   id object = nil;
 
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+
+  Class cls = (Class)data;
+
+  if (jsThis != nullptr) {
+    napi_value constructor;
+    napi_get_named_property(env, jsThis, "constructor", &constructor);
+    Class newTargetCls = nil;
+    napi_unwrap(env, constructor, (void**)&newTargetCls);
+
+    if (newTargetCls != nil) {
+      cls = newTargetCls;
+    }
+  }
+
   if (jsType == napi_external) {
     return jsThis;
   } else {
-    Class cls = (Class)data;
-    object = [cls new];
+    bool supercall = class_conformsToProtocol(cls, @protocol(ObjCBridgeClassBuilderProtocol));
 
-    ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+    if (supercall) {
+      ClassBuilder* builder = (ClassBuilder*)bridgeState->classesByPointer[cls];
+      if (!builder->isFinal) builder->build();
+    }
+
+    object = [cls new];
     jsThis = bridgeState->proxyNativeObject(env, jsThis, object);
   }
 
