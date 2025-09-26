@@ -84,7 +84,7 @@ $ deno run -A ./scripts/build_xcframework.mts --output packages/ios/build/Releas
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "<unknown>";
-    console.error(`Failed to assemble XCFramework: ${errorMessage}`);
+    console.error(`Failed to assemble XCFramework: ${errorMessage}`, error);
     process.exit(1);
   }
 

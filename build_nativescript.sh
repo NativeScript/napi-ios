@@ -185,7 +185,7 @@ if [[ "$TARGET_ENGINE" == "none" ]]; then
 
   # We adhere to the prebuilds standard as described here:
   # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
-  OUTPUT_DIR="packages/ios/build/Release/NativeScript.apple.node"
+  OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD/NativeScript.apple.node"
   rm -rf $OUTPUT_DIR
   deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
 else
