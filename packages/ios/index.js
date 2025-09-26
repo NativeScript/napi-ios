@@ -6,7 +6,7 @@
 // This is why we've added react-native-node-api as a peer dependency. We've
 // marked it as optional, however, because other hosts may choose not to use
 // that Babel transform.
-module.exports = require("./build/Release/NativeScript.apple.node");
+module.exports = require("./build/Debug/NativeScript.apple.node");
 
 // Out of interest, we could alternatively write the path as follows:
 //   module.exports = require("bindings")("NativeScript");

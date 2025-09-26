@@ -31,7 +31,7 @@ BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false}) # disable by default for now
 VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
-CONFIG_BUILD=RelWithDebInfo
+CONFIG_BUILD=Debug
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 METADATA_SIZE=${METADATA_SIZE:=0}
