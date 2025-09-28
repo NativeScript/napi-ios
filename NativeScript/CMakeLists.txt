@@ -88,8 +88,6 @@ if(ENABLE_JS_RUNTIME)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_JS_RUNTIME")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_JS_RUNTIME")
 elseif(TARGET_PLATFORM_MACOS)
-  # If building a generic library for macOS, we'll build a dylib instead of a framework
-  unset(BUILD_FRAMEWORK)
   set(GENERIC_NAPI TRUE)
 endif()
 
