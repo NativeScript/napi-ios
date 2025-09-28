@@ -54,6 +54,10 @@ elseif(TARGET_PLATFORM STREQUAL "macos")
   set(TARGET_PLATFORM_SPEC "macos-arm64_x86_64")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_PLATFORM_MACOS")
 
+# Force dSYM generation for macOS (by default, they're embedded into the
+# binary itself, giving us a 14,981,336 byte / 15 MB binary)
+# set(CMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")
+# set(CMAKE_XCODE_ATTRIBUTE_DWARF_DSYM_FOLDER_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>")
 else()
   message(FATAL_ERROR "Unknown target platform: ${TARGET_PLATFORM}")
   return()
@@ -302,7 +306,7 @@ if(TARGET_PLATFORM_MACOS)
   # Convert the Info.plist from binary format to XML format.
   # This seemed to unblock a build error when using in React Native.
   add_custom_command(TARGET ${NAME} POST_BUILD
-    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Info.plist
+    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
   )
   set(METADATA_FILE "metadata.macos.nsmd")
 elseif(TARGET_PLATFORM_IOS)

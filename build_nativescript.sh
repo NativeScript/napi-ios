@@ -105,8 +105,6 @@ checkpoint "Building NativeScript for macOS"
 
 cmake_build macos x86_64 arm64
 
-cp "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/../packages/macos/dist/macos/NativeScript.node"
-
 fi
 
 if $BUILD_VISION; then
@@ -145,11 +143,6 @@ if $BUILD_IPHONE; then
                   -debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
 fi
 
-if $BUILD_MACOS; then
-  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
-fi
-
 if $BUILD_VISION; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
                   -debug-symbols "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
@@ -176,7 +169,15 @@ if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
   fi
 fi
 
+# We're currently distributing two separate packages:
+# 1. UIKit-based (@nativescript/ios-node-api)
+# 2. AppKit-based (@nativescript/macos-node-api)
+# As such, there's no point bundling both UIKit-based and AppKit-based into a
+# single XCFramework.
 if $BUILD_MACOS; then
+  XCFRAMEWORKS=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
+
   if [[ "$TARGET_ENGINE" == "none" ]]; then
     checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
 
