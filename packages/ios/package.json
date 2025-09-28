@@ -10,7 +10,7 @@
   "typings": "index.d.ts",
   "type": "module",
   "files": [
-    "build/Release/NativeScript.apple.node",
+    "build/RelWithDebInfo/NativeScript.apple.node",
     "index.d.ts",
     "types"
   ],

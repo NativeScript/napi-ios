@@ -1,19 +1,34 @@
-// react-native-node-api/babel-plugin will rewrite this path to:
-//   module.exports = require("react-native-node-api").requireNodeAddon("-nativescript-ios-node-api—-NativeScript");
-// ... And some other build-time tooling in react-native-node-api searches this
-// package for `*.node` files to point `requireNodeAddon()` to the true path.
-//
-// This is why we've added react-native-node-api as a peer dependency. We've
-// marked it as optional, however, because other hosts may choose not to use
-// that Babel transform.
-module.exports = require("./build/Release/NativeScript.apple.node");
+if (typeof interop === "undefined") {
+  // deno-lint-ignore no-process-globals
+  if (process) {
+    // ===
+    // If we're in a Node-like environment (e.g. Node.js for Mobile)
+    // ===
 
-// Out of interest, we could alternatively write the path as follows:
-//   module.exports = require("bindings")("NativeScript");
-//
-// react-native-node-api/babel-plugin would recognise and rewrite it all the
-// same. That approach might make sense if we were also supporting Node.js with
-// this package (as in the case of Node.js, you'd omit the Babel transform and
-// you would actually depend on the "bindings" package), but unless we one day
-// merge the iOS and macOS packages into one, it feels better to reduce the
-// amount of magic involved.
+    const path =
+      "./build/RelWithDebInfo/NativeScript.apple.node/ios-arm64/NativeScript.framework/NativeScript";
+
+    let metaURL = import.meta.url;
+    if (!metaURL.includes("://")) {
+      metaURL = "file://" + metaURL;
+    }
+
+    const module = { exports: {} };
+
+    // deno-lint-ignore no-process-globals
+    process.dlopen(module, new URL(path, metaURL).pathname);
+
+    module.exports.init(
+      // deno-lint-ignore no-process-globals
+      process.env.METADATA_PATH
+    );
+  } else {
+    // ===
+    // If we're in a React Native-like environment
+    // ===
+
+    // react-native-node-api/babel-plugin will rewrite this to:
+    //   module.exports = require("react-native-node-api").requireNodeAddon("-nativescript-macos-node-api—-NativeScript");
+    module.exports = require("./build/RelWithDebInfo/NativeScript.apple.node");
+  }
+}
