@@ -157,32 +157,36 @@ if $BUILD_VISION; then
 fi
 
 if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
+  if [[ "$TARGET_ENGINE" == "none" ]]; then
+    checkpoint "Creating the XCFramework for iOS (NativeScript.apple.node)"
 
+    # We adhere to the prebuilds standard as described here:
+    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
+    OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD/NativeScript.apple.node"
+    rm -rf $OUTPUT_DIR
+    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+  else
+    checkpoint "Creating NativeScript.xcframework"
 
-if [[ "$TARGET_ENGINE" == "none" ]]; then
-  checkpoint "Creating the XCFramework (NativeScript.apple.node)"
-
-  # We adhere to the prebuilds standard as described here:
-  # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
-  OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD/NativeScript.apple.node"
-  rm -rf $OUTPUT_DIR
-  deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
-else
-  checkpoint "Creating NativeScript.xcframework"
-
-  OUTPUT_DIR="$DIST/NativeScript.xcframework"
-  rm -rf $OUTPUT_DIR
-  xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
-fi
-
+    OUTPUT_DIR="$DIST/NativeScript.xcframework"
+    rm -rf $OUTPUT_DIR
+    xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
+  fi
 fi
 
 if $BUILD_MACOS; then
+  if [[ "$TARGET_ENGINE" == "none" ]]; then
+    checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
 
-checkpoint "Creating NativeScript.node"
-
-cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
-
+    # We adhere to the prebuilds standard as described here:
+    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
+    OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD/NativeScript.apple.node"
+    rm -rf $OUTPUT_DIR
+    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+  else
+    checkpoint "Creating NativeScript.node for macOS"
+    cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
+  fi
 fi
 
 if $BUILD_MACOS_CLI; then

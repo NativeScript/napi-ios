@@ -39,6 +39,8 @@ async function main() {
 Typical usage:
 
 $ deno run -A ./scripts/build_xcframework.mts --output packages/ios/build/Release/NativeScript.apple.node -framework dist/intermediates/ios/RelWithDebInfo-iphoneos/NativeScript.framework -debug-symbols dist/intermediates/ios/RelWithDebInfo-iphoneos/NativeScript.framework.dSYM
+
+$ deno run -A ./scripts/build_xcframework.mts --output packages/macos/build/Release/NativeScript.apple.node -framework dist/intermediates/macos/RelWithDebInfo/NativeScript.framework -debug-symbols dist/intermediates/macos/RelWithDebInfo/NativeScript.framework.dSYM
 `.trim();
 
   if (help) {
