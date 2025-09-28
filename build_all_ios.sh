@@ -1,16 +1,13 @@
 #!/bin/bash
 set -e
 
-TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
+TARGET_ENGINE=${TARGET_ENGINE:=some}
 
 # See build_nativescript.sh for all supported flags. This parent script is only
-# interested in --no-engine.
+# interested in intercepting --no-engine.
 for arg in $@; do
   case $arg in
-    --v8) TARGET_ENGINE=v8 ;;
-    --quickjs) TARGET_ENGINE=quickjs ;;
-    --jsc) TARGET_ENGINE=jsc ;;
-    --hermes) TARGET_ENGINE=hermes ;;
+    --v8|--quickjs|--jsc|--hermes) TARGET_ENGINE=some ;;
     --no-engine) TARGET_ENGINE=none ;;
     *) ;;
   esac
@@ -23,9 +20,7 @@ rm -rf ./dist
   # ./update_version.sh
 # fi
 ./build_metadata_generator.sh
-./build_nativescript.sh --no-vision $1 $2
-./build_tklivesync.sh --no-vision
-./prepare_dSYMs.sh
+./build_nativescript.sh --no-vision $1 $2 $3 $4 $5 $6 $7 $8 $9
 
 if [[ "$TARGET_ENGINE" == "none" ]]; then
   # If you're building *with* --no-engine, you're trying to make an npm release
@@ -35,5 +30,7 @@ if [[ "$TARGET_ENGINE" == "none" ]]; then
 else
   # If you're building *without* --no-engine, you're trying to make an npm
   # release of the root-level workspace, @nativescript/ios.
+  ./build_tklivesync.sh --no-vision
+  ./prepare_dSYMs.sh
   ./build_npm_ios.sh
 fi
