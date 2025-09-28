@@ -87,13 +87,14 @@ endif()
 if(ENABLE_JS_RUNTIME)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_JS_RUNTIME")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_JS_RUNTIME")
-elseif(TARGET_PLATFORM_MACOS)
+else()
   set(GENERIC_NAPI TRUE)
 endif()
 
 message(STATUS "TARGET_PLATFORM = ${TARGET_PLATFORM}")
 message(STATUS "TARGET_ENGINE = ${TARGET_ENGINE}")
 message(STATUS "ENABLE_JS_RUNTIME = ${ENABLE_JS_RUNTIME}")
+message(STATUS "GENERIC_NAPI = ${GENERIC_NAPI}")
 
 # Set up sources
 
@@ -418,12 +419,12 @@ if(TARGET_ENGINE_QUICKJS)
   )
 endif()
 
-# if (GENERIC_NAPI)
-target_link_options(
-  ${NAME}
-  PRIVATE
-  "-Wl"
-  "-undefined"
-  "dynamic_lookup"
-)
-# endif()
+if(GENERIC_NAPI)
+  target_link_options(
+    ${NAME}
+    PRIVATE
+    "-Wl"
+    "-undefined"
+    "dynamic_lookup"
+  )
+endif()
