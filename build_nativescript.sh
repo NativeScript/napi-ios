@@ -53,6 +53,8 @@ mkdir -p $DIST/intermediates
 
 function cmake_build () {
   local platform="$1"
+  shift
+  local archs=("$@")
   local is_macos_cli=false
 
   if [ "$platform" == "macos-cli" ]; then
@@ -64,7 +66,7 @@ function cmake_build () {
 
   if $EMBED_METADATA || $is_macos_cli; then
 
-    for arch in x86_64 arm64; do
+    for arch in "${archs[@]}"; do
 
       METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd")))
 
@@ -80,28 +82,28 @@ function cmake_build () {
 if $BUILD_CATALYST; then
 checkpoint "Building NativeScript for Mac Catalyst"
 
-# cmake_build catalyst
+# cmake_build catalyst x86_64 arm64
 
 fi
 
 if $BUILD_SIMULATOR; then
-checkpoint "Building NativeScript for iphone simulators (multi-arch)"
+checkpoint "Building NativeScript for iPhone (simulator)"
 
-cmake_build ios-sim
+cmake_build ios-sim x86_64 arm64
 
 fi
 
 if $BUILD_IPHONE; then
-checkpoint "Building NativeScript for ARM64 device"
+checkpoint "Building NativeScript for iPhone (physical)"
 
-cmake_build ios
+cmake_build ios arm64
 
 fi
 
 if $BUILD_MACOS; then
 checkpoint "Building NativeScript for macOS"
 
-cmake_build macos
+cmake_build macos x86_64 arm64
 
 cp "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/../packages/macos/dist/macos/NativeScript.node"
 
@@ -109,13 +111,13 @@ fi
 
 if $BUILD_VISION; then
 
-checkpoint "Building NativeScript for visionOS Device"
+checkpoint "Building NativeScript for visionOS (physical)"
 
-# cmake_build visionos
+# cmake_build visionos arm64
 
-checkpoint "Building NativeScript for visionOS Simulators"
+checkpoint "Building NativeScript for visionOS (simulator)"
 
-# cmake_build visionos-sim
+# cmake_build visionos-sim x86_64 arm64
 
 fi
 
@@ -123,7 +125,7 @@ if $BUILD_MACOS_CLI; then
 
 checkpoint "Building NativeScript for macOS CLI"
 
-cmake_build macos-cli
+cmake_build macos-cli x86_64 arm64
 
 fi
 
