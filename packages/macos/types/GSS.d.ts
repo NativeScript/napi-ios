@@ -68,6 +68,8 @@ declare const __gss_c_ntlm_support_channelbindings_oid_desc: gss_OID_desc_struct
 
 declare const __gss_c_ntlm_force_v1_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_c_ntlm_session_key_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_c_ntlm_v1_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_nt_principal_name_referral_oid_desc: gss_OID_desc_struct;
@@ -126,8 +128,6 @@ declare const __gss_c_ma_mech_composite_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_mech_glue_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_krb5_nt_principal_name_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_c_ntlm_guest_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_cred_certificate_oid_desc: gss_OID_desc_struct;
@@ -146,23 +146,25 @@ declare const __gss_ntlm_mechanism_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_scram_mechanism_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_c_ma_mech_concrete_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_c_nt_string_uid_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_cred_renew_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_krb5_nt_principal_name_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_krb5_cred_no_ci_flags_x_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_ma_mech_concrete_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_c_ma_oos_det_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ntlm_session_key_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_nt_export_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_nt_user_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_auth_init_oid_desc: gss_OID_desc_struct;
+
+declare const __gss_krb5_get_subkey_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_extract_authz_data_from_sec_context_x_oid_desc: gss_OID_desc_struct;
 
@@ -194,19 +196,31 @@ declare const __gss_krb5_send_to_kdc_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_cred_get_default_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_krb5_get_subkey_x_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_c_ma_mech_nego_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_compat_des3_mic_x_oid_desc: gss_OID_desc_struct;
 
-declare class unnamed_7967380930605020034 {
-  constructor(init?: unnamed_7967380930605020034);
+declare class unnamed_11806834830333504684 {
+  constructor(init?: unnamed_11806834830333504684);
   version: number;
 }
 
-declare class unnamed_4795933033888277118 {
-  constructor(init?: unnamed_4795933033888277118);
+declare class unnamed_17639582569358877519 {
+  constructor(init?: unnamed_17639582569358877519);
+  have_acceptor_subkey: number;
+  ctx_key: gss_krb5_lucid_key;
+  acceptor_subkey: gss_krb5_lucid_key;
+}
+
+declare class unnamed_18077086184503181927 {
+  constructor(init?: unnamed_18077086184503181927);
+  sign_alg: number;
+  seal_alg: number;
+  ctx_key: gss_krb5_lucid_key;
+}
+
+declare class unnamed_5456487890017543789 {
+  constructor(init?: unnamed_5456487890017543789);
   type: number;
   length: number;
   data: interop.Pointer;
@@ -220,25 +234,28 @@ declare class gss_auth_identity {
   constructor(init?: gss_auth_identity);
 }
 
-declare class gss_iov_buffer_desc_struct {
-  constructor(init?: gss_iov_buffer_desc_struct);
-  type: number;
-  buffer: gss_buffer_desc_struct;
-}
-
-declare class unnamed_17370042900624271939 {
-  constructor(init?: unnamed_17370042900624271939);
-  length: number;
-  value: interop.Pointer;
+declare class unnamed_9948434055116690519 {
+  constructor(init?: unnamed_9948434055116690519);
+  initiator_addrtype: number;
+  initiator_address: gss_buffer_desc_struct;
+  acceptor_addrtype: number;
+  acceptor_address: gss_buffer_desc_struct;
+  application_data: gss_buffer_desc_struct;
 }
 
 declare class gss_cred_id_t_desc_struct {
   constructor(init?: gss_cred_id_t_desc_struct);
 }
 
-declare class unnamed_6084201249083735910 {
-  constructor(init?: unnamed_6084201249083735910);
+declare class unnamed_9788644074609968877 {
+  constructor(init?: unnamed_9788644074609968877);
   count: number;
+  elements: interop.Pointer;
+}
+
+declare class unnamed_10275533149539677566 {
+  constructor(init?: unnamed_10275533149539677566);
+  length: number;
   elements: interop.Pointer;
 }
 
@@ -246,32 +263,18 @@ declare class gss_ctx_id_t_desc_struct {
   constructor(init?: gss_ctx_id_t_desc_struct);
 }
 
-declare class unnamed_211721845698695626 {
-  constructor(init?: unnamed_211721845698695626);
-  sign_alg: number;
-  seal_alg: number;
-  ctx_key: gss_krb5_lucid_key;
-}
-
 declare class gss_name_t_desc_struct {
   constructor(init?: gss_name_t_desc_struct);
 }
 
-declare class unnamed_2579536541302902464 {
-  constructor(init?: unnamed_2579536541302902464);
-  have_acceptor_subkey: number;
-  ctx_key: gss_krb5_lucid_key;
-  acceptor_subkey: gss_krb5_lucid_key;
+declare class gss_iov_buffer_desc_struct {
+  constructor(init?: gss_iov_buffer_desc_struct);
+  type: number;
+  buffer: gss_buffer_desc_struct;
 }
 
-declare class unnamed_3561351341452540172 {
-  constructor(init?: unnamed_3561351341452540172);
-  length: number;
-  elements: interop.Pointer;
-}
-
-declare class unnamed_5623556321196614033 {
-  constructor(init?: unnamed_5623556321196614033);
+declare class unnamed_850834283251080230 {
+  constructor(init?: unnamed_850834283251080230);
   version: number;
   initiate: number;
   endtime: number;
@@ -288,13 +291,10 @@ declare class gss_buffer_set_desc_struct {
   elements: interop.Pointer;
 }
 
-declare class unnamed_6944317420548783439 {
-  constructor(init?: unnamed_6944317420548783439);
-  initiator_addrtype: number;
-  initiator_address: gss_buffer_desc_struct;
-  acceptor_addrtype: number;
-  acceptor_address: gss_buffer_desc_struct;
-  application_data: gss_buffer_desc_struct;
+declare class unnamed_5623836244412629902 {
+  constructor(init?: unnamed_5623836244412629902);
+  length: number;
+  value: interop.Pointer;
 }
 
 declare function gss_accept_sec_context(minor_status: interop.PointerConvertible, context_handle: interop.PointerConvertible, acceptor_cred_handle: interop.PointerConvertible, input_token: interop.PointerConvertible, input_chan_bindings: interop.PointerConvertible, src_name: interop.PointerConvertible, mech_type: interop.PointerConvertible, output_token: interop.PointerConvertible, ret_flags: interop.PointerConvertible, time_rec: interop.PointerConvertible, delegated_cred_handle: interop.PointerConvertible): number;

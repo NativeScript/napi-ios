@@ -1,15 +1,15 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const UNNotificationContentExtensionMediaPlayPauseButtonType: {
-  None: 0,
-  Default: 1,
-  Overlay: 2,
-};
-
 declare const UNNotificationContentExtensionResponseOption: {
   DoNotDismiss: 0,
   Dismiss: 1,
   DismissAndForwardAction: 2,
+};
+
+declare const UNNotificationContentExtensionMediaPlayPauseButtonType: {
+  None: 0,
+  Default: 1,
+  Overlay: 2,
 };
 
 declare interface UNNotificationContentExtension extends NSObjectProtocol {

@@ -7,31 +7,6 @@ declare const SCSensitivityAnalysisPolicy: {
   DescriptiveInterventions: 2,
 };
 
-declare const SCVideoStreamAnalyzerStreamDirection: {
-  Outgoing: 1,
-  Incoming: 2,
-};
-
-declare class SCVideoStreamAnalyzer extends NSObject {
-  readonly analysis: SCSensitivityAnalysis;
-
-  analysisChangedHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void;
-
-  initWithParticipantUUIDStreamDirectionError(participantUUID: string, streamDirection: interop.Enum<typeof SCVideoStreamAnalyzerStreamDirection>, error: interop.PointerConvertible): this;
-
-  analyzePixelBuffer(pixelBuffer: interop.Object): void;
-
-  setAnalysisChangedHandler(analysisChangedHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void): void;
-
-  beginAnalysisOfDecompressionSessionError(decompressionSession: interop.Object, error: interop.PointerConvertible): boolean;
-
-  beginAnalysisOfCaptureDeviceInputError(captureDeviceInput: AVCaptureDeviceInput, error: interop.PointerConvertible): boolean;
-
-  endAnalysis(): void;
-
-  continueStream(): void;
-}
-
 declare class SCSensitivityAnalyzer extends NSObject {
   init(): this;
 
@@ -48,11 +23,5 @@ declare class SCSensitivityAnalysis extends NSObject {
   readonly sensitive: boolean;
 
   isSensitive(): boolean;
-
-  readonly shouldInterruptVideo: boolean;
-
-  readonly shouldIndicateSensitivity: boolean;
-
-  readonly shouldMuteAudio: boolean;
 }
 

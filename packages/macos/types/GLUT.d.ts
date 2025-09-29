@@ -16,6 +16,8 @@ declare const glutStrokeMonoRoman: interop.Pointer;
 
 declare const _gle_gc: interop.Pointer;
 
+declare const glutBitmapHelvetica10: interop.Pointer;
+
 declare const SMAP_TOP: number;
 
 declare const glutBitmapTimesRoman24: interop.Pointer;
@@ -35,8 +37,6 @@ declare const glutBitmap9By15: interop.Pointer;
 declare const SMAP_BACK: number;
 
 declare const Z: number;
-
-declare const glutBitmapHelvetica10: interop.Pointer;
 
 declare const SphereMapFlags: {
   CLEAR_SMAP_TEXTURE: 1,

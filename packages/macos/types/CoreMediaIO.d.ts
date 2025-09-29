@@ -93,6 +93,8 @@ declare const kCMIOFeatureControlPropertyConvertAbsoluteToNative: number;
 
 declare const kCMIOFeatureControlPropertyConvertNativeToAbsolute: number;
 
+declare const kCMIOFeatureControlPropertyAbsoluteRange: number;
+
 declare const kCMIOFeatureControlPropertyNativeRange: number;
 
 declare const kCMIOFeatureControlPropertyAbsoluteValue: number;
@@ -134,6 +136,8 @@ declare const kCMIODevicePropertyLocationExternalWirelessDevice: number;
 declare const kCMIODevicePropertyLocationExternalDevice: number;
 
 declare const kCMIODevicePropertyLocationBuiltInDisplay: number;
+
+declare const kCMIODevicePropertyIIDCInitialUnitSpace: number;
 
 declare const kCMIODevicePropertyLinkedAndSyncedCoreAudioDeviceUID: number;
 
@@ -214,6 +218,8 @@ declare const kCMIODeviceClassID: number;
 declare const kCMIODevicePropertyScopePlayThrough: number;
 
 declare const kCMIODevicePropertyScopeOutput: number;
+
+declare const kCMIODevicePropertyScopeInput: number;
 
 declare const kCMIOStreamPropertyPreferredFrameRate: number;
 
@@ -301,6 +307,8 @@ declare const kCMIOObjectPropertyOwnedObjects: number;
 
 declare const kCMIOObjectPropertyElementNumberName: number;
 
+declare const kCMIOObjectPropertyElementCategoryName: number;
+
 declare const kCMIOObjectPropertyManufacturer: number;
 
 declare const kCMIOObjectPropertyCreator: number;
@@ -371,6 +379,8 @@ declare const kCMIOSampleBufferDiscontinuityFlag_BufferOverrun: number;
 
 declare const kCMIOAVCDeviceType_DVCProHD_1080i50: number;
 
+declare const kCMIOStreamPropertyDeck: number;
+
 declare const kCMIOObjectPropertyElementWildcard: number;
 
 declare const CMIOExtensionPropertyStreamSinkBuffersRequiredForStartup: string;
@@ -427,13 +437,11 @@ declare const kCMIOSampleBufferDiscontinuityFlag_StreamDiscontinuity: number;
 
 declare const kCMIOContrastControlClassID: number;
 
+declare const kCMIOStreamClassID: number;
+
 declare const kCMIOOpticalFilterClassID: number;
 
-declare const kCMIODevicePropertyIIDCInitialUnitSpace: number;
-
 declare const kCMIOHardwarePropertyAllowScreenCaptureDevices: number;
-
-declare const kCMIOFeatureControlPropertyAbsoluteRange: number;
 
 declare const kCMIOHueControlClassID: number;
 
@@ -456,8 +464,6 @@ declare const kCMIOPanTiltRelativeControlClassID: number;
 declare const kCMIOHardwarePropertyUserSessionIsActiveOrHeadless: number;
 
 declare const kCMIODeckStateStop: number;
-
-declare const kCMIOStreamClassID: number;
 
 declare const kCMIOSampleBufferNoDataEvent_DeviceInWrongMode: number;
 
@@ -507,8 +513,6 @@ declare const kCMIODevicePropertyDeviceHasStreamingError: number;
 
 declare const kCMIOHardwarePropertySleepingIsAllowed: number;
 
-declare const kCMIOObjectPropertyElementCategoryName: number;
-
 declare const kCMIOWhiteBalanceVControlClassID: number;
 
 declare const kCMIOZoomControlClassID: number;
@@ -536,8 +540,6 @@ declare const CMIOExtensionPropertyDeviceCanBeDefaultOutputDevice: string;
 declare const kCMIOSampleBufferAttachmentKey_NativeSMPTEFrameCount: interop.Object;
 
 declare const kCMIODevicePropertyLocationUnknown: number;
-
-declare const kCMIOStreamPropertyDeck: number;
 
 declare const kCMIODeckStateReverseSlow: number;
 
@@ -681,8 +683,6 @@ declare const kCMIOHardwareBadObjectError: number;
 
 declare const kCMIOSampleBufferDiscontinuityFlag_DataWasFlushed: number;
 
-declare const kCMIODevicePropertyScopeInput: number;
-
 declare const kCMIOSelectorControlPropertyItemName: number;
 
 declare const kCMIODeviceAVCSignalModeMPEG6Mbps_50: number;
@@ -693,8 +693,6 @@ declare const kCMIORollAbsoluteControlClassID: number;
 
 declare const kCMIODeckShuttleReverseHighSpeed: number;
 
-declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorIsVisible: interop.Object;
-
 declare const kCMIOAVCDeviceType_DVCPro50_NTSC: number;
 
 declare const kCMIOHardwarePropertyIsInitingOrExiting: number;
@@ -702,6 +700,8 @@ declare const kCMIOHardwarePropertyIsInitingOrExiting: number;
 declare const kCMIOStreamPropertyDeckFrameNumber: number;
 
 declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorScale: interop.Object;
+
+declare const kCMIOSampleBufferAttachment_MouseAndKeyboardModifiersKey_CursorIsVisible: interop.Object;
 
 declare const kCMIOExposureControlPropertyUnlockThreshold: number;
 
@@ -721,11 +721,10 @@ declare const kCMIODeckStatePlaySlow: number;
 
 declare const kCMIODevicePropertyTransportType: number;
 
-declare const CMIOExtensionStreamDiscontinuityFlags: {
-  None: 0,
-  Unknown: 1,
-  Time: 2,
-  SampleDropped: 64,
+declare const CMIOExtensionStreamClockType: {
+  HostTime: 0,
+  LinkedCoreAudioDeviceUID: 1,
+  Custom: 2,
 };
 
 declare const CMIOExtensionStreamDirection: {
@@ -733,10 +732,11 @@ declare const CMIOExtensionStreamDirection: {
   Sink: 1,
 };
 
-declare const CMIOExtensionStreamClockType: {
-  HostTime: 0,
-  LinkedCoreAudioDeviceUID: 1,
-  Custom: 2,
+declare const CMIOExtensionStreamDiscontinuityFlags: {
+  None: 0,
+  Unknown: 1,
+  Time: 2,
+  SampleDropped: 64,
 };
 
 declare class CMIOHardwarePlugInInterface {

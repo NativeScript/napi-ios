@@ -103,22 +103,21 @@ declare const ICDeleteAfterSuccessfulDownload: string;
 
 declare const ICImageSourceThumbnailMaxPixelSize: string;
 
-declare const ICReturnThumbnailErrorCode: {
-  NotAvailable: -21000,
-  AlreadyFetching: -20999,
-  Canceled: -20098,
-  Invalid: -20097,
+declare const ICScannerPixelDataType: {
+  BW: 0,
+  Gray: 1,
+  RGB: 2,
+  Palette: 3,
+  CMY: 4,
+  CMYK: 5,
+  YUV: 6,
+  YUVK: 7,
+  CIEXYZ: 8,
 };
 
-declare const ICReturnConnectionErrorCode: {
-  DriverExited: -21350,
-  ClosedSessionSuddenly: -21349,
-  EjectedSuddenly: -21348,
-  SessionAlreadyOpen: -21347,
-  EjectFailed: -21346,
-  FailedToOpen: -21345,
-  FailedToOpenDevice: -21344,
-  NotAuthorizedToOpenDevice: -21343,
+declare const ICScannerTransferMode: {
+  File: 0,
+  Memory: 1,
 };
 
 declare const ICScannerFeatureType: {
@@ -128,9 +127,132 @@ declare const ICScannerFeatureType: {
   Template: 3,
 };
 
-declare const ICScannerTransferMode: {
-  File: 0,
-  Memory: 1,
+declare const ICScannerFunctionalUnitState: {
+  Ready: 1,
+  ScanInProgress: 2,
+  OverviewScanInProgress: 4,
+};
+
+declare const ICLegacyReturnCode: {
+  CommunicationErr: -9900,
+  DeviceNotFoundErr: -9901,
+  DeviceNotOpenErr: -9902,
+  FileCorruptedErr: -9903,
+  IOPendingErr: -9904,
+  InvalidObjectErr: -9905,
+  InvalidPropertyErr: -9906,
+  IndexOutOfRangeErr: -9907,
+  PropertyTypeNotFoundErr: -9908,
+  CannotYieldDevice: -9909,
+  DataTypeNotFoundErr: -9910,
+  DeviceMemoryAllocationErr: -9911,
+  DeviceInternalErr: -9912,
+  DeviceInvalidParamErr: -9913,
+  DeviceAlreadyOpenErr: -9914,
+  DeviceLocationIDNotFoundErr: -9915,
+  DeviceGUIDNotFoundErr: -9916,
+  DeviceIOServicePathNotFoundErr: -9917,
+  DeviceUnsupportedErr: -9918,
+  FrameworkInternalErr: -9919,
+  ExtensionInternalErr: -9920,
+  InvalidSessionErr: -9921,
+};
+
+declare const ICReturnCodeOffset: {
+  ThumbnailOffset: -21000,
+  MetadataOffset: -21050,
+  DownloadOffset: -21100,
+  DeleteOffset: -21150,
+  ExFATOffset: -21200,
+  PTPOffset: -21250,
+  SystemOffset: -21300,
+  DeviceOffset: -21350,
+  DeviceConnection: -21400,
+  ObjectOffset: -21450,
+};
+
+declare const ICScannerFunctionalUnitType: {
+  Flatbed: 0,
+  PositiveTransparency: 1,
+  NegativeTransparency: 2,
+  DocumentFeeder: 3,
+};
+
+declare const ICDeviceLocationTypeMask: {
+  Local: 256,
+  Shared: 512,
+  Bonjour: 1024,
+  Bluetooth: 2048,
+  Remote: 65024,
+};
+
+declare const ICScannerColorDataFormatType: {
+  Chunky: 0,
+  Planar: 1,
+};
+
+declare const ICEXIFOrientationType: {
+  Orientation1: 1,
+  Orientation2: 2,
+  Orientation3: 3,
+  Orientation4: 4,
+  Orientation5: 5,
+  Orientation6: 6,
+  Orientation7: 7,
+  Orientation8: 8,
+};
+
+declare const ICReturnMetadataErrorCode: {
+  NotAvailable: -20150,
+  AlreadyFetching: -20149,
+  Canceled: -20148,
+  Invalid: -20147,
+};
+
+declare const ICDeviceType: {
+  Camera: 1,
+  Scanner: 2,
+};
+
+declare const ICDeviceTypeMask: {
+  Camera: 1,
+  Scanner: 2,
+};
+
+declare const ICReturnPTPDeviceErrorCode: {
+  Failed: -21250,
+  NotAuthorized: -21249,
+};
+
+declare const ICMediaPresentation: {
+  Converted: 1,
+  Original: 2,
+};
+
+declare const ICReturnObjectErrorCode: {
+  DoesNotExist: -21450,
+  DataOffsetInvalid: -21449,
+  CouldNotBeRead: -21448,
+  DataEmpty: -21447,
+  DataRequestTooLarge: -21446,
+};
+
+declare const ICReturnDownloadErrorCode: {
+  PathInvalid: -21100,
+  FileWritable: -21099,
+};
+
+declare const ICReturnThumbnailErrorCode: {
+  NotAvailable: -21000,
+  AlreadyFetching: -20999,
+  Canceled: -20098,
+  Invalid: -20097,
+};
+
+declare const ICScannerBitDepth: {
+  Depth1Bit: 1,
+  Depth8Bits: 8,
+  Depth16Bits: 16,
 };
 
 declare const ICScannerDocumentType: {
@@ -208,22 +330,11 @@ declare const ICScannerDocumentType: {
   TypeLF: 78,
 };
 
-declare const ICScannerPixelDataType: {
-  BW: 0,
-  Gray: 1,
-  RGB: 2,
-  Palette: 3,
-  CMY: 4,
-  CMYK: 5,
-  YUV: 6,
-  YUVK: 7,
-  CIEXYZ: 8,
-};
-
-declare const ICScannerBitDepth: {
-  Depth1Bit: 1,
-  Depth8Bits: 8,
-  Depth16Bits: 16,
+declare const ICDeviceLocationType: {
+  Local: 256,
+  Shared: 512,
+  Bonjour: 1024,
+  Bluetooth: 2048,
 };
 
 declare const ICScannerMeasurementUnit: {
@@ -233,19 +344,6 @@ declare const ICScannerMeasurementUnit: {
   Points: 3,
   Twips: 4,
   Pixels: 5,
-};
-
-declare const ICMediaPresentation: {
-  Converted: 1,
-  Original: 2,
-};
-
-declare const ICReturnObjectErrorCode: {
-  DoesNotExist: -21450,
-  DataOffsetInvalid: -21449,
-  CouldNotBeRead: -21448,
-  DataEmpty: -21447,
-  DataRequestTooLarge: -21446,
 };
 
 declare const ICReturnCode: {
@@ -291,113 +389,15 @@ declare const ICReturnCode: {
   MultiErrorDictionary: -30000,
 };
 
-declare const ICLegacyReturnCode: {
-  CommunicationErr: -9900,
-  DeviceNotFoundErr: -9901,
-  DeviceNotOpenErr: -9902,
-  FileCorruptedErr: -9903,
-  IOPendingErr: -9904,
-  InvalidObjectErr: -9905,
-  InvalidPropertyErr: -9906,
-  IndexOutOfRangeErr: -9907,
-  PropertyTypeNotFoundErr: -9908,
-  CannotYieldDevice: -9909,
-  DataTypeNotFoundErr: -9910,
-  DeviceMemoryAllocationErr: -9911,
-  DeviceInternalErr: -9912,
-  DeviceInvalidParamErr: -9913,
-  DeviceAlreadyOpenErr: -9914,
-  DeviceLocationIDNotFoundErr: -9915,
-  DeviceGUIDNotFoundErr: -9916,
-  DeviceIOServicePathNotFoundErr: -9917,
-  DeviceUnsupportedErr: -9918,
-  FrameworkInternalErr: -9919,
-  ExtensionInternalErr: -9920,
-  InvalidSessionErr: -9921,
-};
-
-declare const ICReturnCodeOffset: {
-  ThumbnailOffset: -21000,
-  MetadataOffset: -21050,
-  DownloadOffset: -21100,
-  DeleteOffset: -21150,
-  ExFATOffset: -21200,
-  PTPOffset: -21250,
-  SystemOffset: -21300,
-  DeviceOffset: -21350,
-  DeviceConnection: -21400,
-  ObjectOffset: -21450,
-};
-
-declare const ICScannerColorDataFormatType: {
-  Chunky: 0,
-  Planar: 1,
-};
-
-declare const ICEXIFOrientationType: {
-  Orientation1: 1,
-  Orientation2: 2,
-  Orientation3: 3,
-  Orientation4: 4,
-  Orientation5: 5,
-  Orientation6: 6,
-  Orientation7: 7,
-  Orientation8: 8,
-};
-
-declare const ICReturnMetadataErrorCode: {
-  NotAvailable: -20150,
-  AlreadyFetching: -20149,
-  Canceled: -20148,
-  Invalid: -20147,
-};
-
-declare const ICScannerFunctionalUnitState: {
-  Ready: 1,
-  ScanInProgress: 2,
-  OverviewScanInProgress: 4,
-};
-
-declare const ICDeviceType: {
-  Camera: 1,
-  Scanner: 2,
-};
-
-declare const ICScannerFunctionalUnitType: {
-  Flatbed: 0,
-  PositiveTransparency: 1,
-  NegativeTransparency: 2,
-  DocumentFeeder: 3,
-};
-
-declare const ICDeviceTypeMask: {
-  Camera: 1,
-  Scanner: 2,
-};
-
-declare const ICDeviceLocationTypeMask: {
-  Local: 256,
-  Shared: 512,
-  Bonjour: 1024,
-  Bluetooth: 2048,
-  Remote: 65024,
-};
-
-declare const ICReturnPTPDeviceErrorCode: {
-  Failed: -21250,
-  NotAuthorized: -21249,
-};
-
-declare const ICReturnDownloadErrorCode: {
-  PathInvalid: -21100,
-  FileWritable: -21099,
-};
-
-declare const ICDeviceLocationType: {
-  Local: 256,
-  Shared: 512,
-  Bonjour: 1024,
-  Bluetooth: 2048,
+declare const ICReturnConnectionErrorCode: {
+  DriverExited: -21350,
+  ClosedSessionSuddenly: -21349,
+  EjectedSuddenly: -21348,
+  SessionAlreadyOpen: -21347,
+  EjectFailed: -21346,
+  FailedToOpen: -21345,
+  FailedToOpenDevice: -21344,
+  NotAuthorizedToOpenDevice: -21343,
 };
 
 declare interface ICScannerDeviceDelegate extends ICDeviceDelegate {
@@ -683,6 +683,74 @@ declare class ICDeviceBrowser extends NSObject {
   setBrowsedDeviceTypeMask(browsedDeviceTypeMask: interop.Enum<typeof ICDeviceTypeMask>): void;
 }
 
+declare class ICCameraDevice extends ICDevice {
+  readonly contentCatalogPercentCompleted: number;
+
+  readonly contents: NSArray;
+
+  readonly mediaFiles: NSArray;
+
+  readonly ejectable: boolean;
+
+  readonly locked: boolean;
+
+  readonly accessRestrictedAppleDevice: boolean;
+
+  readonly iCloudPhotosEnabled: boolean;
+
+  readonly mountPoint: string;
+
+  mediaPresentation: interop.Enum<typeof ICMediaPresentation>;
+
+  filesOfType(fileUTType: string): NSArray;
+
+  requestReadDataFromFileAtOffsetLengthReadDelegateDidReadDataSelectorContextInfo(file: ICCameraFile, offset: number, length: number, readDelegate: interop.Object, selector: string, contextInfo: interop.PointerConvertible): void;
+
+  requestDownloadFileOptionsDownloadDelegateDidDownloadSelectorContextInfo(file: ICCameraFile, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, downloadDelegate: ICCameraDeviceDownloadDelegate, selector: string, contextInfo: interop.PointerConvertible): void;
+
+  cancelDownload(): void;
+
+  requestDeleteFiles(files: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  requestDeleteFilesDeleteFailedCompletion(files: NSArray<interop.Object> | Array<interop.Object>, deleteFailed: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => void, completion: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, p2: NSError) => void | null): NSProgress;
+
+  cancelDelete(): void;
+
+  requestSyncClock(): void;
+
+  readonly timeOffset: number;
+
+  readonly batteryLevelAvailable: boolean;
+
+  readonly batteryLevel: number;
+
+  requestUploadFileOptionsUploadDelegateDidUploadSelectorContextInfo(fileURL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, uploadDelegate: interop.Object, selector: string, contextInfo: interop.PointerConvertible): void;
+
+  readonly tetheredCaptureEnabled: boolean;
+
+  requestTakePicture(): void;
+
+  requestEnableTethering(): void;
+
+  requestDisableTethering(): void;
+
+  ptpEventHandler: (p1: NSData) => void;
+
+  requestSendPTPCommandOutDataSendCommandDelegateDidSendCommandSelectorContextInfo(command: NSData, data: NSData | null, sendCommandDelegate: interop.Object, selector: string, contextInfo: interop.PointerConvertible): void;
+
+  requestSendPTPCommandOutDataCompletion(ptpCommand: NSData, ptpData: NSData | null, completion: (p1: NSData, p2: NSData, p3: NSError) => void | null): void;
+
+  isEjectable(): boolean;
+
+  isLocked(): boolean;
+
+  isAccessRestrictedAppleDevice(): boolean;
+
+  setMediaPresentation(mediaPresentation: interop.Enum<typeof ICMediaPresentation>): void;
+
+  setPtpEventHandler(ptpEventHandler: (p1: NSData) => void): void;
+}
+
 declare class ICCameraFolder extends ICCameraItem {
   readonly contents: NSArray;
 }
@@ -881,16 +949,6 @@ declare class ICScannerFeatureTemplate extends ICScannerFeature {
   readonly targets: NSArray;
 }
 
-declare class ICScannerFunctionalUnitNegativeTransparency extends ICScannerFunctionalUnit {
-  readonly supportedDocumentTypes: NSIndexSet;
-
-  documentType: interop.Enum<typeof ICScannerDocumentType>;
-
-  readonly documentSize: CGSize;
-
-  setDocumentType(documentType: interop.Enum<typeof ICScannerDocumentType>): void;
-}
-
 declare class ICScannerFeatureRange extends ICScannerFeature {
   currentValue: number;
 
@@ -903,6 +961,16 @@ declare class ICScannerFeatureRange extends ICScannerFeature {
   readonly stepSize: number;
 
   setCurrentValue(currentValue: number): void;
+}
+
+declare class ICScannerFunctionalUnitNegativeTransparency extends ICScannerFunctionalUnit {
+  readonly supportedDocumentTypes: NSIndexSet;
+
+  documentType: interop.Enum<typeof ICScannerDocumentType>;
+
+  readonly documentSize: CGSize;
+
+  setDocumentType(documentType: interop.Enum<typeof ICScannerDocumentType>): void;
 }
 
 declare class ICScannerFunctionalUnitPositiveTransparency extends ICScannerFunctionalUnit {
@@ -941,74 +1009,6 @@ declare class ICScannerFunctionalUnitDocumentFeeder extends ICScannerFunctionalU
   setOddPageOrientation(oddPageOrientation: interop.Enum<typeof ICEXIFOrientationType>): void;
 
   setEvenPageOrientation(evenPageOrientation: interop.Enum<typeof ICEXIFOrientationType>): void;
-}
-
-declare class ICCameraDevice extends ICDevice {
-  readonly contentCatalogPercentCompleted: number;
-
-  readonly contents: NSArray;
-
-  readonly mediaFiles: NSArray;
-
-  readonly ejectable: boolean;
-
-  readonly locked: boolean;
-
-  readonly accessRestrictedAppleDevice: boolean;
-
-  readonly iCloudPhotosEnabled: boolean;
-
-  readonly mountPoint: string;
-
-  mediaPresentation: interop.Enum<typeof ICMediaPresentation>;
-
-  filesOfType(fileUTType: string): NSArray;
-
-  requestReadDataFromFileAtOffsetLengthReadDelegateDidReadDataSelectorContextInfo(file: ICCameraFile, offset: number, length: number, readDelegate: interop.Object, selector: string, contextInfo: interop.PointerConvertible): void;
-
-  requestDownloadFileOptionsDownloadDelegateDidDownloadSelectorContextInfo(file: ICCameraFile, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, downloadDelegate: ICCameraDeviceDownloadDelegate, selector: string, contextInfo: interop.PointerConvertible): void;
-
-  cancelDownload(): void;
-
-  requestDeleteFiles(files: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  requestDeleteFilesDeleteFailedCompletion(files: NSArray<interop.Object> | Array<interop.Object>, deleteFailed: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => void, completion: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, p2: NSError) => void | null): NSProgress;
-
-  cancelDelete(): void;
-
-  requestSyncClock(): void;
-
-  readonly timeOffset: number;
-
-  readonly batteryLevelAvailable: boolean;
-
-  readonly batteryLevel: number;
-
-  requestUploadFileOptionsUploadDelegateDidUploadSelectorContextInfo(fileURL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, uploadDelegate: interop.Object, selector: string, contextInfo: interop.PointerConvertible): void;
-
-  readonly tetheredCaptureEnabled: boolean;
-
-  requestTakePicture(): void;
-
-  requestEnableTethering(): void;
-
-  requestDisableTethering(): void;
-
-  ptpEventHandler: (p1: NSData) => void;
-
-  requestSendPTPCommandOutDataSendCommandDelegateDidSendCommandSelectorContextInfo(command: NSData, data: NSData | null, sendCommandDelegate: interop.Object, selector: string, contextInfo: interop.PointerConvertible): void;
-
-  requestSendPTPCommandOutDataCompletion(ptpCommand: NSData, ptpData: NSData | null, completion: (p1: NSData, p2: NSData, p3: NSError) => void | null): void;
-
-  isEjectable(): boolean;
-
-  isLocked(): boolean;
-
-  isAccessRestrictedAppleDevice(): boolean;
-
-  setMediaPresentation(mediaPresentation: interop.Enum<typeof ICMediaPresentation>): void;
-
-  setPtpEventHandler(ptpEventHandler: (p1: NSData) => void): void;
 }
 
 declare class ICScannerDevice extends ICDevice {

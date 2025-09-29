@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
+declare const CSSuggestionHighlightAttributeName: string;
+
 declare const CSSearchQueryErrorDomain: string;
 
 declare const CSIndexErrorDomain: string;
@@ -29,8 +31,6 @@ declare const CSSearchQueryString: string;
 declare const CoreSpotlightVersionNumber: number;
 
 declare const CSQueryContinuationActionType: string;
-
-declare const CSSuggestionHighlightAttributeName: string;
 
 declare const CSMailboxDrafts: string;
 
@@ -301,38 +301,6 @@ declare class CSSearchableItem extends NSObject implements NSSecureCoding, NSCop
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class CSCustomAttributeKey extends NSObject implements NSCopying, NSSecureCoding {
-  initWithKeyName(keyName: string): this;
-
-  initWithKeyNameSearchableSearchableByDefaultUniqueMultiValued(keyName: string, searchable: boolean, searchableByDefault: boolean, unique: boolean, multiValued: boolean): this;
-
-  readonly keyName: string;
-
-  readonly searchable: boolean;
-
-  readonly searchableByDefault: boolean;
-
-  readonly unique: boolean;
-
-  readonly multiValued: boolean;
-
-  isSearchable(): boolean;
-
-  isSearchableByDefault(): boolean;
-
-  isUnique(): boolean;
-
-  isMultiValued(): boolean;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class CSSearchQueryContext extends NSObject implements NSSecureCoding, NSCopying {
@@ -1290,5 +1258,37 @@ declare class CSIndexExtensionRequestHandler extends NSObject implements NSExten
   searchableItemsForIdentifiersSearchableItemsHandler(identifiers: NSArray<interop.Object> | Array<interop.Object>, searchableItemsHandler: (p1: NSArray<interop.Object> | Array<interop.Object>) => void): void;
 
   searchableItemsDidUpdate(items: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class CSCustomAttributeKey extends NSObject implements NSCopying, NSSecureCoding {
+  initWithKeyName(keyName: string): this;
+
+  initWithKeyNameSearchableSearchableByDefaultUniqueMultiValued(keyName: string, searchable: boolean, searchableByDefault: boolean, unique: boolean, multiValued: boolean): this;
+
+  readonly keyName: string;
+
+  readonly searchable: boolean;
+
+  readonly searchableByDefault: boolean;
+
+  readonly unique: boolean;
+
+  readonly multiValued: boolean;
+
+  isSearchable(): boolean;
+
+  isSearchableByDefault(): boolean;
+
+  isUnique(): boolean;
+
+  isMultiValued(): boolean;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

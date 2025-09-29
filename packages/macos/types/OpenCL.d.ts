@@ -53,14 +53,20 @@ declare class _cl_command_queue {
   constructor(init?: _cl_command_queue);
 }
 
-declare class unnamed_3384217995241409524 {
-  constructor(init?: unnamed_3384217995241409524);
+declare class unnamed_16034811108561402464 {
+  constructor(init?: unnamed_16034811108561402464);
   lo: cl_double8;
   hi: cl_double8;
 }
 
-declare class unnamed_10075698169940300385 {
-  constructor(init?: unnamed_10075698169940300385);
+declare class unnamed_2819662505498471704 {
+  constructor(init?: unnamed_2819662505498471704);
+  lo: cl_double4;
+  hi: cl_double4;
+}
+
+declare class unnamed_3219181940098549515 {
+  constructor(init?: unnamed_3219181940098549515);
   s0: number;
   s1: number;
   s2: number;
@@ -71,28 +77,20 @@ declare class unnamed_10075698169940300385 {
   s7: number;
 }
 
-declare class unnamed_1487096924336279358 {
-  constructor(init?: unnamed_1487096924336279358);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_17916113464289890500 {
-  constructor(init?: unnamed_17916113464289890500);
+declare class unnamed_18354696321709473682 {
+  constructor(init?: unnamed_18354696321709473682);
   s0: number;
   s1: number;
 }
 
-declare class unnamed_10452921887961483967 {
-  constructor(init?: unnamed_10452921887961483967);
+declare class unnamed_5099427627633689761 {
+  constructor(init?: unnamed_5099427627633689761);
   lo: cl_float8;
   hi: cl_float8;
 }
 
-declare class unnamed_4265872420881341375 {
-  constructor(init?: unnamed_4265872420881341375);
+declare class unnamed_9570120833490121199 {
+  constructor(init?: unnamed_9570120833490121199);
   s0: number;
   s1: number;
   s2: number;
@@ -111,8 +109,8 @@ declare class unnamed_4265872420881341375 {
   sF: number;
 }
 
-declare class unnamed_4375177653692867402 {
-  constructor(init?: unnamed_4375177653692867402);
+declare class unnamed_14038895401505408408 {
+  constructor(init?: unnamed_14038895401505408408);
   x: number;
   y: number;
   z: number;
@@ -131,142 +129,92 @@ declare class unnamed_4375177653692867402 {
   sf: number;
 }
 
-declare class unnamed_3951090377487620185 {
-  constructor(init?: unnamed_3951090377487620185);
-  lo: cl_float4;
-  hi: cl_float4;
+declare class unnamed_14633242823170636523 {
+  constructor(init?: unnamed_14633242823170636523);
+  lo: cl_float2;
+  hi: cl_float2;
 }
 
-declare class unnamed_11128493026031761872 {
-  constructor(init?: unnamed_11128493026031761872);
+declare class unnamed_17791786919002749368 {
+  constructor(init?: unnamed_17791786919002749368);
   s0: number;
   s1: number;
   s2: number;
   s3: number;
 }
 
-declare class unnamed_9460502415089137320 {
-  constructor(init?: unnamed_9460502415089137320);
+declare class unnamed_6530372759096521643 {
+  constructor(init?: unnamed_6530372759096521643);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_5711417867074854471 {
-  constructor(init?: unnamed_5711417867074854471);
+declare class unnamed_6188589366592898738 {
+  constructor(init?: unnamed_6188589366592898738);
   lo: number;
   hi: number;
 }
 
-declare class unnamed_10189424661010001568 {
-  constructor(init?: unnamed_10189424661010001568);
+declare class unnamed_6612196975004174093 {
+  constructor(init?: unnamed_6612196975004174093);
   s0: number;
   s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+  s8: number;
+  s9: number;
+  sA: number;
+  sB: number;
+  sC: number;
+  sD: number;
+  sE: number;
+  sF: number;
 }
 
-declare class unnamed_4948529187926790050 {
-  constructor(init?: unnamed_4948529187926790050);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-  __spacer4: number;
-  __spacer5: number;
-  __spacer6: number;
-  __spacer7: number;
-  __spacer8: number;
-  __spacer9: number;
-  sa: number;
-  sb: number;
-  sc: number;
-  sd: number;
-  se: number;
-  sf: number;
-}
-
-declare class unnamed_15794953310966416195 {
-  constructor(init?: unnamed_15794953310966416195);
-  lo: cl_ulong4;
-  hi: cl_ulong4;
-}
-
-declare class unnamed_11747182226146023338 {
-  constructor(init?: unnamed_11747182226146023338);
+declare class unnamed_6472752661204557757 {
+  constructor(init?: unnamed_6472752661204557757);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_12467758043249578531 {
-  constructor(init?: unnamed_12467758043249578531);
+declare class unnamed_2719441796413993843 {
+  constructor(init?: unnamed_2719441796413993843);
   lo: cl_ulong2;
   hi: cl_ulong2;
 }
 
-declare class unnamed_157298104481405609 {
-  constructor(init?: unnamed_157298104481405609);
-  lo: cl_long8;
-  hi: cl_long8;
-}
-
-declare class unnamed_14826148865455445890 {
-  constructor(init?: unnamed_14826148865455445890);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-  __spacer4: number;
-  __spacer5: number;
-  __spacer6: number;
-  __spacer7: number;
-  __spacer8: number;
-  __spacer9: number;
-  sa: number;
-  sb: number;
-  sc: number;
-  sd: number;
-  se: number;
-  sf: number;
-}
-
-declare class unnamed_16534046582714501500 {
-  constructor(init?: unnamed_16534046582714501500);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_1928208705536956950 {
-  constructor(init?: unnamed_1928208705536956950);
+declare class unnamed_7522825959710834146 {
+  constructor(init?: unnamed_7522825959710834146);
   s0: number;
   s1: number;
   s2: number;
   s3: number;
 }
 
-declare class unnamed_14351621013282865903 {
-  constructor(init?: unnamed_14351621013282865903);
+declare class unnamed_12561491991399553712 {
+  constructor(init?: unnamed_12561491991399553712);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_10599617683292921951 {
+  constructor(init?: unnamed_10599617683292921951);
   s0: number;
   s1: number;
 }
 
-declare class unnamed_17179882819924420600 {
-  constructor(init?: unnamed_17179882819924420600);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_11932633045031876193 {
-  constructor(init?: unnamed_11932633045031876193);
-  lo: cl_uint8;
-  hi: cl_uint8;
-}
-
-declare class unnamed_18068353447637168682 {
-  constructor(init?: unnamed_18068353447637168682);
+declare class unnamed_13420978872563642741 {
+  constructor(init?: unnamed_13420978872563642741);
   s0: number;
   s1: number;
   s2: number;
@@ -285,8 +233,8 @@ declare class unnamed_18068353447637168682 {
   sF: number;
 }
 
-declare class unnamed_15782319874853990514 {
-  constructor(init?: unnamed_15782319874853990514);
+declare class unnamed_8721104090434095600 {
+  constructor(init?: unnamed_8721104090434095600);
   x: number;
   y: number;
   z: number;
@@ -305,8 +253,14 @@ declare class unnamed_15782319874853990514 {
   sf: number;
 }
 
-declare class unnamed_13472826477927789743 {
-  constructor(init?: unnamed_13472826477927789743);
+declare class unnamed_15336942035615823607 {
+  constructor(init?: unnamed_15336942035615823607);
+  lo: number;
+  hi: number;
+}
+
+declare class unnamed_2555550089059133021 {
+  constructor(init?: unnamed_2555550089059133021);
   s0: number;
   s1: number;
   s2: number;
@@ -315,90 +269,106 @@ declare class unnamed_13472826477927789743 {
   s5: number;
   s6: number;
   s7: number;
+  s8: number;
+  s9: number;
+  sA: number;
+  sB: number;
+  sC: number;
+  sD: number;
+  sE: number;
+  sF: number;
 }
 
-declare class unnamed_17804257352245573197 {
-  constructor(init?: unnamed_17804257352245573197);
+declare class unnamed_17931293963522911835 {
+  constructor(init?: unnamed_17931293963522911835);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+  __spacer4: number;
+  __spacer5: number;
+  __spacer6: number;
+  __spacer7: number;
+  __spacer8: number;
+  __spacer9: number;
+  sa: number;
+  sb: number;
+  sc: number;
+  sd: number;
+  se: number;
+  sf: number;
+}
+
+declare class unnamed_6027689127615064521 {
+  constructor(init?: unnamed_6027689127615064521);
+  lo: cl_uint2;
+  hi: cl_uint2;
+}
+
+declare class unnamed_6767419818264718803 {
+  constructor(init?: unnamed_6767419818264718803);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_1819420466203880739 {
+  constructor(init?: unnamed_1819420466203880739);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+  s8: number;
+  s9: number;
+  sA: number;
+  sB: number;
+  sC: number;
+  sD: number;
+  sE: number;
+  sF: number;
+}
+
+declare class unnamed_14728210720433338166 {
+  constructor(init?: unnamed_14728210720433338166);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_11692550308387624276 {
-  constructor(init?: unnamed_11692550308387624276);
-  lo: number;
-  hi: number;
-}
-
-declare class unnamed_10875463678178951979 {
-  constructor(init?: unnamed_10875463678178951979);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_1912165358789006771 {
-  constructor(init?: unnamed_1912165358789006771);
-  lo: cl_int4;
-  hi: cl_int4;
-}
-
-declare class unnamed_14741079727055866135 {
-  constructor(init?: unnamed_14741079727055866135);
+declare class unnamed_17104770922173623215 {
+  constructor(init?: unnamed_17104770922173623215);
   lo: cl_int2;
   hi: cl_int2;
 }
 
-declare class unnamed_11015101876155846343 {
-  constructor(init?: unnamed_11015101876155846343);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-}
-
-declare class unnamed_10714372094052795385 {
-  constructor(init?: unnamed_10714372094052795385);
+declare class unnamed_739362498422776837 {
+  constructor(init?: unnamed_739362498422776837);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_6061416245719678494 {
-  constructor(init?: unnamed_6061416245719678494);
+declare class unnamed_15269127906778106802 {
+  constructor(init?: unnamed_15269127906778106802);
   lo: number;
   hi: number;
 }
 
-declare class unnamed_16175095162510523254 {
-  constructor(init?: unnamed_16175095162510523254);
+declare class unnamed_12746667840781852745 {
+  constructor(init?: unnamed_12746667840781852745);
   s0: number;
   s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
 }
 
-declare class unnamed_11431299934465012507 {
-  constructor(init?: unnamed_11431299934465012507);
-  lo: cl_ushort2;
-  hi: cl_ushort2;
-}
-
-declare class unnamed_37027789258998962 {
-  constructor(init?: unnamed_37027789258998962);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_11728641542996814287 {
-  constructor(init?: unnamed_11728641542996814287);
+declare class unnamed_5795083664324778254 {
+  constructor(init?: unnamed_5795083664324778254);
   s0: number;
   s1: number;
   s2: number;
@@ -417,56 +387,88 @@ declare class unnamed_11728641542996814287 {
   sF: number;
 }
 
-declare class unnamed_15270323389585556263 {
-  constructor(init?: unnamed_15270323389585556263);
+declare class unnamed_15181045986496109099 {
+  constructor(init?: unnamed_15181045986496109099);
+  lo: cl_ushort4;
+  hi: cl_ushort4;
+}
+
+declare class unnamed_14800564279684125138 {
+  constructor(init?: unnamed_14800564279684125138);
+  lo: cl_int4;
+  hi: cl_int4;
+}
+
+declare class unnamed_10502842994476019205 {
+  constructor(init?: unnamed_10502842994476019205);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_16748556713609542478 {
-  constructor(init?: unnamed_16748556713609542478);
+declare class unnamed_74273077931814438 {
+  constructor(init?: unnamed_74273077931814438);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_13090128613918077829 {
+  constructor(init?: unnamed_13090128613918077829);
+  s0: number;
+  s1: number;
+}
+
+declare class unnamed_7233199044943222266 {
+  constructor(init?: unnamed_7233199044943222266);
+  lo: cl_short8;
+  hi: cl_short8;
+}
+
+declare class unnamed_11283273495419222991 {
+  constructor(init?: unnamed_11283273495419222991);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_2952525089179247331 {
+  constructor(init?: unnamed_2952525089179247331);
   lo: cl_short2;
   hi: cl_short2;
 }
 
-declare class unnamed_10262120028975896883 {
-  constructor(init?: unnamed_10262120028975896883);
+declare class unnamed_776192571616592320 {
+  constructor(init?: unnamed_776192571616592320);
   s0: number;
   s1: number;
   s2: number;
   s3: number;
 }
 
-declare class unnamed_16297725364147337596 {
-  constructor(init?: unnamed_16297725364147337596);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_12807319024543346599 {
-  constructor(init?: unnamed_12807319024543346599);
-  lo: number;
-  hi: number;
-}
-
-declare class unnamed_6893033831670583988 {
-  constructor(init?: unnamed_6893033831670583988);
+declare class unnamed_7685583719932560770 {
+  constructor(init?: unnamed_7685583719932560770);
   s0: number;
   s1: number;
 }
 
-declare class unnamed_9230305257605907363 {
-  constructor(init?: unnamed_9230305257605907363);
+declare class unnamed_6163057139404872671 {
+  constructor(init?: unnamed_6163057139404872671);
   x: number;
   y: number;
 }
 
-declare class unnamed_14008731696207659668 {
-  constructor(init?: unnamed_14008731696207659668);
+declare class unnamed_693354482524594845 {
+  constructor(init?: unnamed_693354482524594845);
+  lo: cl_uchar8;
+  hi: cl_uchar8;
+}
+
+declare class unnamed_8910255871431256421 {
+  constructor(init?: unnamed_8910255871431256421);
   s0: number;
   s1: number;
   s2: number;
@@ -485,98 +487,40 @@ declare class unnamed_14008731696207659668 {
   sF: number;
 }
 
-declare class unnamed_10302458957594651158 {
-  constructor(init?: unnamed_10302458957594651158);
+declare class unnamed_5115025008701481751 {
+  constructor(init?: unnamed_5115025008701481751);
   lo: cl_uchar4;
   hi: cl_uchar4;
 }
 
-declare class unnamed_3184464211421284931 {
-  constructor(init?: unnamed_3184464211421284931);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
+declare class unnamed_8271206444026783686 {
+  constructor(init?: unnamed_8271206444026783686);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-declare class unnamed_4314393786622110517 {
-  constructor(init?: unnamed_4314393786622110517);
+declare class unnamed_11150196383070993406 {
+  constructor(init?: unnamed_11150196383070993406);
+  lo: cl_uchar2;
+  hi: cl_uchar2;
+}
+
+declare class unnamed_10792301152710413319 {
+  constructor(init?: unnamed_10792301152710413319);
+  s0: number;
+  s1: number;
+}
+
+declare class unnamed_15945774705627422475 {
+  constructor(init?: unnamed_15945774705627422475);
   lo: cl_char8;
   hi: cl_char8;
 }
 
-declare class unnamed_6890114919233052243 {
-  constructor(init?: unnamed_6890114919233052243);
-  lo: cl_char4;
-  hi: cl_char4;
-}
-
-declare class unnamed_9069934110533823967 {
-  constructor(init?: unnamed_9069934110533823967);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-}
-
-declare class unnamed_6866413762664061019 {
-  constructor(init?: unnamed_6866413762664061019);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_97391304474044721 {
-  constructor(init?: unnamed_97391304474044721);
-  s0: number;
-  s1: number;
-}
-
-declare class unnamed_9150435229609773826 {
-  constructor(init?: unnamed_9150435229609773826);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_3947849111994773202 {
-  constructor(init?: unnamed_3947849111994773202);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-}
-
-declare class unnamed_16956709262785277280 {
-  constructor(init?: unnamed_16956709262785277280);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_16184349839104627448 {
-  constructor(init?: unnamed_16184349839104627448);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_555892314822413329 {
-  constructor(init?: unnamed_555892314822413329);
-  lo: number;
-  hi: number;
-}
-
-declare class unnamed_194442836655258556 {
-  constructor(init?: unnamed_194442836655258556);
+declare class unnamed_14394187154476498222 {
+  constructor(init?: unnamed_14394187154476498222);
   s0: number;
   s1: number;
   s2: number;
@@ -595,12 +539,114 @@ declare class unnamed_194442836655258556 {
   sF: number;
 }
 
-declare class unnamed_11508907125777683973 {
-  constructor(init?: unnamed_11508907125777683973);
+declare class unnamed_6182718632721323282 {
+  constructor(init?: unnamed_6182718632721323282);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+  __spacer4: number;
+  __spacer5: number;
+  __spacer6: number;
+  __spacer7: number;
+  __spacer8: number;
+  __spacer9: number;
+  sa: number;
+  sb: number;
+  sc: number;
+  sd: number;
+  se: number;
+  sf: number;
+}
+
+declare class unnamed_1273822905655070330 {
+  constructor(init?: unnamed_1273822905655070330);
+  lo: cl_ushort8;
+  hi: cl_ushort8;
+}
+
+declare class unnamed_3377347259633150282 {
+  constructor(init?: unnamed_3377347259633150282);
+  lo: cl_char4;
+  hi: cl_char4;
+}
+
+declare class unnamed_8210053787908371511 {
+  constructor(init?: unnamed_8210053787908371511);
+  lo: cl_char2;
+  hi: cl_char2;
+}
+
+declare class unnamed_982659719039718185 {
+  constructor(init?: unnamed_982659719039718185);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_13286621471959288335 {
+  constructor(init?: unnamed_13286621471959288335);
+  lo: number;
+  hi: number;
+}
+
+declare class unnamed_12437497114818524305 {
+  constructor(init?: unnamed_12437497114818524305);
+  s0: number;
+  s1: number;
+}
+
+declare class unnamed_2186519694430481922 {
+  constructor(init?: unnamed_2186519694430481922);
   s0: number;
   s1: number;
   s2: number;
   s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+}
+
+declare class unnamed_6960209013535270555 {
+  constructor(init?: unnamed_6960209013535270555);
+  lo: cl_long2;
+  hi: cl_long2;
+}
+
+declare class unnamed_13533710881337191989 {
+  constructor(init?: unnamed_13533710881337191989);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_7437874460212522173 {
+  constructor(init?: unnamed_7437874460212522173);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_6241790122804093816 {
+  constructor(init?: unnamed_6241790122804093816);
+  lo: cl_uint8;
+  hi: cl_uint8;
+}
+
+declare class unnamed_6397840410872137413 {
+  constructor(init?: unnamed_6397840410872137413);
+  lo: cl_long4;
+  hi: cl_long4;
+}
+
+declare class unnamed_18064820411455376396 {
+  constructor(init?: unnamed_18064820411455376396);
+  s0: number;
+  s1: number;
 }
 
 declare class _cl_image_format {
@@ -617,108 +663,36 @@ declare class _cl_ndrange {
   local_work_size: unknown /* const array */;
 }
 
-declare class unnamed_12411578003359084094 {
-  constructor(init?: unnamed_12411578003359084094);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_11964066516897993654 {
-  constructor(init?: unnamed_11964066516897993654);
-  lo: cl_long2;
-  hi: cl_long2;
-}
-
-declare class unnamed_8748670721906742408 {
-  constructor(init?: unnamed_8748670721906742408);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-  s8: number;
-  s9: number;
-  sA: number;
-  sB: number;
-  sC: number;
-  sD: number;
-  sE: number;
-  sF: number;
-}
-
-declare class unnamed_13231383001259203263 {
-  constructor(init?: unnamed_13231383001259203263);
-  lo: cl_uchar2;
-  hi: cl_uchar2;
-}
-
-declare class unnamed_12211959722025922171 {
-  constructor(init?: unnamed_12211959722025922171);
+declare class unnamed_9883327140142018045 {
+  constructor(init?: unnamed_9883327140142018045);
   lo: number;
   hi: number;
 }
 
-declare class unnamed_16770986038177360195 {
-  constructor(init?: unnamed_16770986038177360195);
-  lo: cl_short4;
-  hi: cl_short4;
+declare class unnamed_12624203642288807035 {
+  constructor(init?: unnamed_12624203642288807035);
+  lo: number;
+  hi: number;
+}
+
+declare class unnamed_6500221450325593087 {
+  constructor(init?: unnamed_6500221450325593087);
+  s0: number;
+  s1: number;
+}
+
+declare class unnamed_17729007419039326301 {
+  constructor(init?: unnamed_17729007419039326301);
+  lo: cl_long8;
+  hi: cl_long8;
 }
 
 declare class _cl_program {
   constructor(init?: _cl_program);
 }
 
-declare class unnamed_4207023800260751375 {
-  constructor(init?: unnamed_4207023800260751375);
-  s0: number;
-  s1: number;
-}
-
-declare class unnamed_5567254350586322420 {
-  constructor(init?: unnamed_5567254350586322420);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-  s8: number;
-  s9: number;
-  sA: number;
-  sB: number;
-  sC: number;
-  sD: number;
-  sE: number;
-  sF: number;
-}
-
-declare class unnamed_10303716954420111258 {
-  constructor(init?: unnamed_10303716954420111258);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-}
-
-declare class unnamed_13386671362320546895 {
-  constructor(init?: unnamed_13386671362320546895);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_772419599995069687 {
-  constructor(init?: unnamed_772419599995069687);
+declare class unnamed_1946820365813514541 {
+  constructor(init?: unnamed_1946820365813514541);
   x: number;
   y: number;
   z: number;
@@ -737,56 +711,24 @@ declare class unnamed_772419599995069687 {
   sf: number;
 }
 
-declare class unnamed_17781229732302822053 {
-  constructor(init?: unnamed_17781229732302822053);
+declare class unnamed_2487186800082705995 {
+  constructor(init?: unnamed_2487186800082705995);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_1569544728411194586 {
+  constructor(init?: unnamed_1569544728411194586);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_13183432563966936686 {
-  constructor(init?: unnamed_13183432563966936686);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-  __spacer4: number;
-  __spacer5: number;
-  __spacer6: number;
-  __spacer7: number;
-  __spacer8: number;
-  __spacer9: number;
-  sa: number;
-  sb: number;
-  sc: number;
-  sd: number;
-  se: number;
-  sf: number;
-}
-
-declare class unnamed_5330709934686461026 {
-  constructor(init?: unnamed_5330709934686461026);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-  __spacer4: number;
-  __spacer5: number;
-  __spacer6: number;
-  __spacer7: number;
-  __spacer8: number;
-  __spacer9: number;
-  sa: number;
-  sb: number;
-  sc: number;
-  sd: number;
-  se: number;
-  sf: number;
-}
-
-declare class unnamed_4803235281582364344 {
-  constructor(init?: unnamed_4803235281582364344);
+declare class unnamed_14593402944719333552 {
+  constructor(init?: unnamed_14593402944719333552);
   s0: number;
   s1: number;
   s2: number;
@@ -797,40 +739,84 @@ declare class unnamed_4803235281582364344 {
   s7: number;
 }
 
-declare class unnamed_5862795029955144721 {
-  constructor(init?: unnamed_5862795029955144721);
+declare class unnamed_1644755732203373115 {
+  constructor(init?: unnamed_1644755732203373115);
+  lo: cl_ushort2;
+  hi: cl_ushort2;
+}
+
+declare class unnamed_9049553175772090190 {
+  constructor(init?: unnamed_9049553175772090190);
   x: number;
   y: number;
   z: number;
   w: number;
+  __spacer4: number;
+  __spacer5: number;
+  __spacer6: number;
+  __spacer7: number;
+  __spacer8: number;
+  __spacer9: number;
+  sa: number;
+  sb: number;
+  sc: number;
+  sd: number;
+  se: number;
+  sf: number;
 }
 
-declare class unnamed_16840043814704548474 {
-  constructor(init?: unnamed_16840043814704548474);
+declare class unnamed_3837577725587740317 {
+  constructor(init?: unnamed_3837577725587740317);
   lo: number;
   hi: number;
 }
 
-declare class unnamed_2236783618833938177 {
-  constructor(init?: unnamed_2236783618833938177);
-  lo: cl_ushort4;
-  hi: cl_ushort4;
+declare class unnamed_9979595282118533093 {
+  constructor(init?: unnamed_9979595282118533093);
+  x: number;
+  y: number;
 }
 
-declare class unnamed_9678992148274389456 {
-  constructor(init?: unnamed_9678992148274389456);
-  lo: number;
-  hi: number;
+declare class unnamed_18238269395002839470 {
+  constructor(init?: unnamed_18238269395002839470);
+  x: number;
+  y: number;
 }
 
-declare class unnamed_7625645434287248923 {
-  constructor(init?: unnamed_7625645434287248923);
-  lo: cl_ushort8;
-  hi: cl_ushort8;
+declare class unnamed_10400188111848522637 {
+  constructor(init?: unnamed_10400188111848522637);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-declare class unnamed_6196611363029610707 {
-  constructor(init?: unnamed_6196611363029610707);
+declare class unnamed_12754060223060493855 {
+  constructor(init?: unnamed_12754060223060493855);
+  lo: cl_uint4;
+  hi: cl_uint4;
+}
+
+declare class unnamed_9157561686933708146 {
+  constructor(init?: unnamed_9157561686933708146);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_16385338497790649991 {
+  constructor(init?: unnamed_16385338497790649991);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_6458311726042768331 {
+  constructor(init?: unnamed_6458311726042768331);
+  s0: number;
+  s1: number;
+}
+
+declare class unnamed_12004882356018572084 {
+  constructor(init?: unnamed_12004882356018572084);
   s0: number;
   s1: number;
   s2: number;
@@ -841,64 +827,70 @@ declare class unnamed_6196611363029610707 {
   s7: number;
 }
 
-declare class unnamed_12166987235307106462 {
-  constructor(init?: unnamed_12166987235307106462);
-  lo: cl_uchar8;
-  hi: cl_uchar8;
+declare class unnamed_6438040471757030141 {
+  constructor(init?: unnamed_6438040471757030141);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+}
+
+declare class unnamed_15100707233021697975 {
+  constructor(init?: unnamed_15100707233021697975);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+}
+
+declare class unnamed_6763021381838628833 {
+  constructor(init?: unnamed_6763021381838628833);
+  lo: cl_int8;
+  hi: cl_int8;
+}
+
+declare class unnamed_9618557860090300578 {
+  constructor(init?: unnamed_9618557860090300578);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_4666911346988320980 {
+  constructor(init?: unnamed_4666911346988320980);
+  x: number;
+  y: number;
 }
 
 declare class _cl_mem {
   constructor(init?: _cl_mem);
 }
 
-declare class unnamed_5219057221493548418 {
-  constructor(init?: unnamed_5219057221493548418);
-  s0: number;
-  s1: number;
+declare class unnamed_3986540473480319689 {
+  constructor(init?: unnamed_3986540473480319689);
+  lo: cl_float4;
+  hi: cl_float4;
 }
 
-declare class unnamed_13260691394700945960 {
-  constructor(init?: unnamed_13260691394700945960);
-  lo: cl_char2;
-  hi: cl_char2;
-}
-
-declare class unnamed_12549456473285533332 {
-  constructor(init?: unnamed_12549456473285533332);
+declare class unnamed_11134364468959895575 {
+  constructor(init?: unnamed_11134364468959895575);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_15256887036015144609 {
-  constructor(init?: unnamed_15256887036015144609);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-}
-
-declare class unnamed_159222924329320256 {
-  constructor(init?: unnamed_159222924329320256);
-  s0: number;
-  s1: number;
-}
-
-declare class unnamed_4028282752200185587 {
-  constructor(init?: unnamed_4028282752200185587);
-  lo: number;
-  hi: number;
-}
-
-declare class unnamed_16959281423077821148 {
-  constructor(init?: unnamed_16959281423077821148);
-  lo: cl_double4;
-  hi: cl_double4;
-}
-
-declare class unnamed_2834694814692681740 {
-  constructor(init?: unnamed_2834694814692681740);
+declare class unnamed_13740118056625853865 {
+  constructor(init?: unnamed_13740118056625853865);
   x: number;
   y: number;
   z: number;
@@ -917,14 +909,14 @@ declare class unnamed_2834694814692681740 {
   sf: number;
 }
 
-declare class unnamed_4356081763692807939 {
-  constructor(init?: unnamed_4356081763692807939);
-  lo: cl_short8;
-  hi: cl_short8;
+declare class unnamed_6924731791719995564 {
+  constructor(init?: unnamed_6924731791719995564);
+  x: number;
+  y: number;
 }
 
-declare class unnamed_15704488921777524102 {
-  constructor(init?: unnamed_15704488921777524102);
+declare class unnamed_9585116623290011903 {
+  constructor(init?: unnamed_9585116623290011903);
   x: number;
   y: number;
   z: number;
@@ -935,14 +927,54 @@ declare class _cl_sampler {
   constructor(init?: _cl_sampler);
 }
 
-declare class unnamed_2149272547613073215 {
-  constructor(init?: unnamed_2149272547613073215);
-  s0: number;
-  s1: number;
+declare class unnamed_10482239830954401727 {
+  constructor(init?: unnamed_10482239830954401727);
+  lo: number;
+  hi: number;
 }
 
-declare class unnamed_17980170885232899383 {
-  constructor(init?: unnamed_17980170885232899383);
+declare class unnamed_12484321073972680486 {
+  constructor(init?: unnamed_12484321073972680486);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_11189614783186180804 {
+  constructor(init?: unnamed_11189614783186180804);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_1748794661801335929 {
+  constructor(init?: unnamed_1748794661801335929);
+  lo: cl_double2;
+  hi: cl_double2;
+}
+
+declare class unnamed_5721823564588727388 {
+  constructor(init?: unnamed_5721823564588727388);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+  s8: number;
+  s9: number;
+  sA: number;
+  sB: number;
+  sC: number;
+  sD: number;
+  sE: number;
+  sF: number;
+}
+
+declare class unnamed_8981274017641558109 {
+  constructor(init?: unnamed_8981274017641558109);
   x: number;
   y: number;
   z: number;
@@ -961,38 +993,72 @@ declare class unnamed_17980170885232899383 {
   sf: number;
 }
 
-declare class unnamed_11994757213479542098 {
-  constructor(init?: unnamed_11994757213479542098);
+declare class unnamed_11302872970779158884 {
+  constructor(init?: unnamed_11302872970779158884);
   x: number;
   y: number;
   z: number;
   w: number;
-}
-
-declare class unnamed_13320461778201585441 {
-  constructor(init?: unnamed_13320461778201585441);
-  lo: cl_uint4;
-  hi: cl_uint4;
+  __spacer4: number;
+  __spacer5: number;
+  __spacer6: number;
+  __spacer7: number;
+  __spacer8: number;
+  __spacer9: number;
+  sa: number;
+  sb: number;
+  sc: number;
+  sd: number;
+  se: number;
+  sf: number;
 }
 
 declare class _cl_context {
   constructor(init?: _cl_context);
 }
 
-declare class unnamed_9289550386312012466 {
-  constructor(init?: unnamed_9289550386312012466);
+declare class unnamed_3720990161873163288 {
+  constructor(init?: unnamed_3720990161873163288);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_12114216443084654599 {
+  constructor(init?: unnamed_12114216443084654599);
+  lo: cl_short4;
+  hi: cl_short4;
+}
+
+declare class unnamed_9773897657373769585 {
+  constructor(init?: unnamed_9773897657373769585);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_14636497690848038482 {
+  constructor(init?: unnamed_14636497690848038482);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
+}
+
+declare class unnamed_15621542676825204315 {
+  constructor(init?: unnamed_15621542676825204315);
   x: number;
   y: number;
 }
 
-declare class unnamed_10471347480373535166 {
-  constructor(init?: unnamed_10471347480373535166);
-  lo: cl_float2;
-  hi: cl_float2;
-}
-
-declare class unnamed_1875860523750722620 {
-  constructor(init?: unnamed_1875860523750722620);
+declare class unnamed_1297227212635802800 {
+  constructor(init?: unnamed_1297227212635802800);
   x: number;
   y: number;
   z: number;
@@ -1011,8 +1077,58 @@ declare class unnamed_1875860523750722620 {
   sf: number;
 }
 
-declare class unnamed_3673161230670366766 {
-  constructor(init?: unnamed_3673161230670366766);
+declare class unnamed_11260123065878261137 {
+  constructor(init?: unnamed_11260123065878261137);
+  lo: cl_ulong4;
+  hi: cl_ulong4;
+}
+
+declare class unnamed_15960992654880514058 {
+  constructor(init?: unnamed_15960992654880514058);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_7680766546587653470 {
+  constructor(init?: unnamed_7680766546587653470);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_11332789061462845115 {
+  constructor(init?: unnamed_11332789061462845115);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_3275707324775388011 {
+  constructor(init?: unnamed_3275707324775388011);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_14643397470680795882 {
+  constructor(init?: unnamed_14643397470680795882);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+}
+
+declare class unnamed_12651311968785683267 {
+  constructor(init?: unnamed_12651311968785683267);
+  lo: number;
+  hi: number;
+}
+
+declare class unnamed_5463109362388884269 {
+  constructor(init?: unnamed_5463109362388884269);
   s0: number;
   s1: number;
   s2: number;
@@ -1023,82 +1139,22 @@ declare class unnamed_3673161230670366766 {
   s7: number;
 }
 
-declare class unnamed_11068696551276944428 {
-  constructor(init?: unnamed_11068696551276944428);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_600230121619828623 {
-  constructor(init?: unnamed_600230121619828623);
+declare class unnamed_13390172889855948814 {
+  constructor(init?: unnamed_13390172889855948814);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_15331715987502894722 {
-  constructor(init?: unnamed_15331715987502894722);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-}
-
-declare class unnamed_2101168293470219234 {
-  constructor(init?: unnamed_2101168293470219234);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-}
-
-declare class unnamed_14225003743631509738 {
-  constructor(init?: unnamed_14225003743631509738);
-  lo: cl_double2;
-  hi: cl_double2;
-}
-
-declare class unnamed_11700175491718462115 {
-  constructor(init?: unnamed_11700175491718462115);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_2552323460012218616 {
-  constructor(init?: unnamed_2552323460012218616);
-  lo: cl_uint2;
-  hi: cl_uint2;
-}
-
-declare class unnamed_1047472312168669025 {
-  constructor(init?: unnamed_1047472312168669025);
-  lo: cl_int8;
-  hi: cl_int8;
-}
-
-declare class unnamed_18152717688230967427 {
-  constructor(init?: unnamed_18152717688230967427);
-  lo: number;
-  hi: number;
-}
-
-declare class unnamed_18317222777170162012 {
-  constructor(init?: unnamed_18317222777170162012);
+declare class unnamed_5673994448134028211 {
+  constructor(init?: unnamed_5673994448134028211);
   lo: cl_ulong8;
   hi: cl_ulong8;
 }
 
-declare class unnamed_13101114464805566533 {
-  constructor(init?: unnamed_13101114464805566533);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-}
-
-declare class unnamed_1314304141384370253 {
-  constructor(init?: unnamed_1314304141384370253);
+declare class unnamed_17661578356839386753 {
+  constructor(init?: unnamed_17661578356839386753);
   s0: number;
   s1: number;
   s2: number;
@@ -1115,86 +1171,24 @@ declare class unnamed_1314304141384370253 {
   sD: number;
   sE: number;
   sF: number;
-}
-
-declare class unnamed_13174122816410880636 {
-  constructor(init?: unnamed_13174122816410880636);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
 }
 
 declare class _cl_platform_id {
   constructor(init?: _cl_platform_id);
 }
 
-declare class unnamed_10407365959024308971 {
-  constructor(init?: unnamed_10407365959024308971);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_9393313168929645737 {
-  constructor(init?: unnamed_9393313168929645737);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-  s8: number;
-  s9: number;
-  sA: number;
-  sB: number;
-  sC: number;
-  sD: number;
-  sE: number;
-  sF: number;
+declare class unnamed_13694083251232476035 {
+  constructor(init?: unnamed_13694083251232476035);
+  lo: number;
+  hi: number;
 }
 
 declare class _cl_kernel {
   constructor(init?: _cl_kernel);
 }
 
-declare class unnamed_11590620345495854670 {
-  constructor(init?: unnamed_11590620345495854670);
-  s0: number;
-  s1: number;
-  s2: number;
-  s3: number;
-  s4: number;
-  s5: number;
-  s6: number;
-  s7: number;
-  s8: number;
-  s9: number;
-  sA: number;
-  sB: number;
-  sC: number;
-  sD: number;
-  sE: number;
-  sF: number;
-}
-
-declare class unnamed_392995555903558520 {
-  constructor(init?: unnamed_392995555903558520);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_9806171102498768262 {
-  constructor(init?: unnamed_9806171102498768262);
-  s0: number;
-  s1: number;
-}
-
-declare class unnamed_14279403489433722746 {
-  constructor(init?: unnamed_14279403489433722746);
+declare class unnamed_14620490594992007504 {
+  constructor(init?: unnamed_14620490594992007504);
   s0: number;
   s1: number;
   s2: number;
@@ -1205,10 +1199,16 @@ declare class unnamed_14279403489433722746 {
   s7: number;
 }
 
-declare class unnamed_16445201664163532135 {
-  constructor(init?: unnamed_16445201664163532135);
-  lo: cl_long4;
-  hi: cl_long4;
+declare class unnamed_7482864552580001480 {
+  constructor(init?: unnamed_7482864552580001480);
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+  s4: number;
+  s5: number;
+  s6: number;
+  s7: number;
 }
 
 type cl_double8Descriptor = 
@@ -1259,6 +1259,14 @@ declare class cl_ulong16 {
   s: unknown /* const array */;
 }
 
+type cl_ulong8Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_ulong8 {
+  constructor(init?: cl_ulong8Descriptor);
+  s: unknown /* const array */;
+}
+
 type cl_ulong4Descriptor = 
   | { s: unknown /* const array */ };
 
@@ -1288,14 +1296,6 @@ type cl_long4Descriptor =
 
 declare class cl_long4 {
   constructor(init?: cl_long4Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_uint16Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_uint16 {
-  constructor(init?: cl_uint16Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1331,14 +1331,6 @@ declare class cl_int8 {
   s: unknown /* const array */;
 }
 
-type cl_int4Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_int4 {
-  constructor(init?: cl_int4Descriptor);
-  s: unknown /* const array */;
-}
-
 type cl_ushort4Descriptor = 
   | { s: unknown /* const array */ };
 
@@ -1355,11 +1347,11 @@ declare class cl_ushort2 {
   s: unknown /* const array */;
 }
 
-type cl_short4Descriptor = 
+type cl_short16Descriptor = 
   | { s: unknown /* const array */ };
 
-declare class cl_short4 {
-  constructor(init?: cl_short4Descriptor);
+declare class cl_short16 {
+  constructor(init?: cl_short16Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1379,35 +1371,11 @@ declare class cl_uchar4 {
   s: unknown /* const array */;
 }
 
-type cl_char2Descriptor = 
+type cl_uchar2Descriptor = 
   | { s: unknown /* const array */ };
 
-declare class cl_char2 {
-  constructor(init?: cl_char2Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_ulong8Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_ulong8 {
-  constructor(init?: cl_ulong8Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_float4Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_float4 {
-  constructor(init?: cl_float4Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_float2Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_float2 {
-  constructor(init?: cl_float2Descriptor);
+declare class cl_uchar2 {
+  constructor(init?: cl_uchar2Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1419,19 +1387,11 @@ declare class cl_char16 {
   s: unknown /* const array */;
 }
 
-type cl_uchar16Descriptor = 
+type cl_char2Descriptor = 
   | { s: unknown /* const array */ };
 
-declare class cl_uchar16 {
-  constructor(init?: cl_uchar16Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_ushort8Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_ushort8 {
-  constructor(init?: cl_ushort8Descriptor);
+declare class cl_char2 {
+  constructor(init?: cl_char2Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1443,11 +1403,67 @@ declare class cl_char4 {
   s: unknown /* const array */;
 }
 
-type cl_short8Descriptor = 
+type cl_ushort8Descriptor = 
   | { s: unknown /* const array */ };
 
-declare class cl_short8 {
-  constructor(init?: cl_short8Descriptor);
+declare class cl_ushort8 {
+  constructor(init?: cl_ushort8Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_float2Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_float2 {
+  constructor(init?: cl_float2Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_float4Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_float4 {
+  constructor(init?: cl_float4Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_ulong2Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_ulong2 {
+  constructor(init?: cl_ulong2Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_uchar16Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_uchar16 {
+  constructor(init?: cl_uchar16Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_int2Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_int2 {
+  constructor(init?: cl_int2Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_short2Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_short2 {
+  constructor(init?: cl_short2Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_ushort16Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_ushort16 {
+  constructor(init?: cl_ushort16Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1459,11 +1475,27 @@ declare class cl_long2 {
   s: unknown /* const array */;
 }
 
-type cl_short16Descriptor = 
+type cl_int4Descriptor = 
   | { s: unknown /* const array */ };
 
-declare class cl_short16 {
-  constructor(init?: cl_short16Descriptor);
+declare class cl_int4 {
+  constructor(init?: cl_int4Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_uint16Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_uint16 {
+  constructor(init?: cl_uint16Descriptor);
+  s: unknown /* const array */;
+}
+
+type cl_short8Descriptor = 
+  | { s: unknown /* const array */ };
+
+declare class cl_short8 {
+  constructor(init?: cl_short8Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1483,19 +1515,11 @@ declare class cl_char8 {
   s: unknown /* const array */;
 }
 
-type cl_ushort16Descriptor = 
+type cl_short4Descriptor = 
   | { s: unknown /* const array */ };
 
-declare class cl_ushort16 {
-  constructor(init?: cl_ushort16Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_uchar2Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_uchar2 {
-  constructor(init?: cl_uchar2Descriptor);
+declare class cl_short4 {
+  constructor(init?: cl_short4Descriptor);
   s: unknown /* const array */;
 }
 
@@ -1504,30 +1528,6 @@ type cl_int16Descriptor =
 
 declare class cl_int16 {
   constructor(init?: cl_int16Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_short2Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_short2 {
-  constructor(init?: cl_short2Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_int2Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_int2 {
-  constructor(init?: cl_int2Descriptor);
-  s: unknown /* const array */;
-}
-
-type cl_ulong2Descriptor = 
-  | { s: unknown /* const array */ };
-
-declare class cl_ulong2 {
-  constructor(init?: cl_ulong2Descriptor);
   s: unknown /* const array */;
 }
 

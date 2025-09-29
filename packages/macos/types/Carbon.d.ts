@@ -22,6 +22,8 @@ declare const kURLPropertyChangedEvent: number;
 
 declare const kURLPercentEvent: number;
 
+declare const kURLSystemEvent: number;
+
 declare const kURLUploadingEvent: number;
 
 declare const kURLErrorOccurredEvent: number;
@@ -107,6 +109,8 @@ declare const kSRCancelOnSoundOut: number;
 declare const kSRReadAudioURL: number;
 
 declare const kSRReadAudioFSSpec: number;
+
+declare const kSRForegroundOnly: number;
 
 declare const kSRAutoFinishingParam: number;
 
@@ -346,6 +350,8 @@ declare const enumAfterDate: number;
 
 declare const enumBeforeDate: number;
 
+declare const enumLastMonth: number;
+
 declare const enumThisWeek: number;
 
 declare const enumYesterday: number;
@@ -363,6 +369,8 @@ declare const enumConflicts: number;
 declare const enumGestalt: number;
 
 declare const pGrid: number;
+
+declare const pLargeButton: number;
 
 declare const pSmallButton: number;
 
@@ -565,6 +573,8 @@ declare const cFontFile: number;
 declare const cDocumentFile: number;
 
 declare const cDeskAccessoryFile: number;
+
+declare const cControlPanelFile: number;
 
 declare const cInternalFinderObject: number;
 
@@ -1370,6 +1380,8 @@ declare const popupFixedWidth: number;
 
 declare const kControlPopupArrowSizeNormal: number;
 
+declare const kControlPopupArrowOrientationNorth: number;
+
 declare const kControlPopupArrowOrientationWest: number;
 
 declare const kControlPopupArrowOrientationEast: number;
@@ -1541,6 +1553,8 @@ declare const kDataBrowserUserToggledContainer: number;
 declare const kDataBrowserContainerClosing: number;
 
 declare const kDataBrowserItemDeselected: number;
+
+declare const kDataBrowserItemSelected: number;
 
 declare const kDataBrowserEditStopped: number;
 
@@ -1836,6 +1850,8 @@ declare const kHMOutsideRightTopAligned: number;
 
 declare const kHMOutsideBottomRightAligned: number;
 
+declare const kHMOutsideTopRightAligned: number;
+
 declare const kHMOutsideTopLeftAligned: number;
 
 declare const kHMDefaultSide: number;
@@ -1909,6 +1925,8 @@ declare const kTXNQDFontStyleAttributeSize: number;
 declare const kControlBevelButtonMenuHandleTag: number;
 
 declare const kTXNQDFontFamilyIDAttributeSize: number;
+
+declare const kTXNQDFontNameAttributeSize: number;
 
 declare const kTXNQDFontStyleAttribute: number;
 
@@ -2143,6 +2161,8 @@ declare const kScrapGetNamedScrap: number;
 declare const kScrapReservedFlavorType: number;
 
 declare const kScrapFlavorTypeUnicodeStyle: number;
+
+declare const kScrapFlavorTypeUTF16External: number;
 
 declare const kScrapFlavorTypeUnicode: number;
 
@@ -2468,6 +2488,8 @@ declare const kThemeMetricRoundTextFieldMiniContentInsetBottom: number;
 
 declare const kThemeMetricRoundTextFieldMiniContentHeight: number;
 
+declare const kThemeMetricRoundTextFieldContentInsetWithIconLeft: number;
+
 declare const kThemeMetricMiniVSliderWidth: number;
 
 declare const kThemeMetricMiniVSliderTickWidth: number;
@@ -2515,6 +2537,8 @@ declare const kThemeMetricComboBoxLargeDisclosureWidth: number;
 declare const kThemeMetricComboBoxSmallRightShadowOffset: number;
 
 declare const kThemeMetricComboBoxSmallBottomShadowOffset: number;
+
+declare const kThemeMetricComboBoxLargeRightShadowOffset: number;
 
 declare const kThemeMetricSmallVSliderTickOffset: number;
 
@@ -2636,6 +2660,8 @@ declare const kHIThemeTabAdornmentFocus: number;
 
 declare const kHIThemeMenuTitleDrawCondensed: number;
 
+declare const kHIThemeFrameTextFieldRoundMini: number;
+
 declare const kHIThemeFrameTextFieldRoundSmall: number;
 
 declare const kHIThemeFrameTextFieldRound: number;
@@ -2715,6 +2741,8 @@ declare const kEventSystemUserSessionDeactivated: number;
 declare const kEventSystemUserSessionActivated: number;
 
 declare const kEventSystemDisplayReconfigured: number;
+
+declare const kEventSystemDisplaysAsleep: number;
 
 declare const kEventSystemTimeDateChanged: number;
 
@@ -3262,6 +3290,8 @@ declare const kSRBlockBackground: number;
 
 declare const kEventParamWindowTitleTextWidth: number;
 
+declare const kEventParamWindowTitleFullWidth: number;
+
 declare const kEventParamWindowStateChangedFlags: number;
 
 declare const kEventParamWindowProxyOutlineRgn: number;
@@ -3330,6 +3360,8 @@ declare const kEventParamTextInputSendShowHide: number;
 
 declare const kEventParamTextInputReplyCTFontRef: number;
 
+declare const kEventParamTextInputReplyPoint: number;
+
 declare const kEventParamTextInputSendDraggingMode: number;
 
 declare const kEventParamTextInputSendCurrentPoint: number;
@@ -3346,6 +3378,8 @@ declare const kEventParamTextInputSendLeadingEdge: number;
 
 declare const kEventParamTextInputSendHiliteRng: number;
 
+declare const kEventParamTextInputReplyAttributedString: number;
+
 declare const kEventParamTextInputSendAttributedString: number;
 
 declare const kEventParamTextInputReplySLRec: number;
@@ -3353,6 +3387,8 @@ declare const kEventParamTextInputReplySLRec: number;
 declare const kEventParamTextInputSendRefCon: number;
 
 declare const kEventParamTSMSendComponentInstance: number;
+
+declare const typeEventHotKeyID: number;
 
 declare const kEventParamKeyModifiers: number;
 
@@ -3674,6 +3710,8 @@ declare const kWindowCloseBoxRgn: number;
 
 declare const kWindowTitleTextRgn: number;
 
+declare const kWindowTitleBarRgn: number;
+
 declare const kWindowAlertPositionOnMainScreen: number;
 
 declare const kWindowCascadeOnParentWindowScreen: number;
@@ -3721,6 +3759,8 @@ declare const kWindowFloatVertZoomProc: number;
 declare const kWindowFloatGrowProc: number;
 
 declare const kWindowFloatProc: number;
+
+declare const kWindowMovableModalGrowProc: number;
 
 declare const kWindowMovableAlertProc: number;
 
@@ -4003,6 +4043,8 @@ declare const kControlCollectionTagMaximum: number;
 declare const kControlFocusPrevPart: number;
 
 declare const kControlFocusNoPart: number;
+
+declare const kControlOpaqueMetaPart: number;
 
 declare const kControlContentMetaPart: number;
 
@@ -4288,6 +4330,8 @@ declare const kHIMenuDismissedByKeyEvent: number;
 
 declare const kHIMenuDismissedByMouseUp: number;
 
+declare const kMenuDefClassID: number;
+
 declare const kMenuDefProcPtr: number;
 
 declare const kMenuItemDataAllDataVersionTwo: number;
@@ -4545,6 +4589,8 @@ declare const kVK_ANSI_Keypad8: number;
 declare const kVK_ANSI_Keypad7: number;
 
 declare const kVK_ANSI_Keypad6: number;
+
+declare const kVK_ANSI_Keypad4: number;
 
 declare const kVK_ANSI_KeypadMinus: number;
 
@@ -4921,6 +4967,12 @@ declare const kThemeSoundPopupWindowOpen: number;
 declare const kThemeSoundAlertClose: number;
 
 declare const kThemeSoundAlertOpen: number;
+
+declare const ok: number;
+
+declare const kThemeMetricRoundTextFieldSmallContentInsetLeft: number;
+
+declare const kThemeSoundDialogClose: number;
 
 declare const kThemeSoundDialogOpen: number;
 
@@ -5440,6 +5492,8 @@ declare const kThemeTextColorPopupLabelActive: number;
 
 declare const kThemeTextColorMenuItemSelected: number;
 
+declare const kThemeTextColorRootMenuDisabled: number;
+
 declare const kThemeTextColorRootMenuSelected: number;
 
 declare const kThemeTextColorRootMenuActive: number;
@@ -5563,6 +5617,12 @@ declare const kThemeBrushModelessDialogBackgroundActive: number;
 declare const kThemeBrushAlertBackgroundActive: number;
 
 declare const kThemeBrushDialogBackgroundInactive: number;
+
+declare const kThemeDocumentWindowBackgroundBrush: number;
+
+declare const kThemeMediumProgressBar: number;
+
+declare const kAppearanceRegionToolbarButton: number;
 
 declare const kAppearanceRegionContent: number;
 
@@ -5724,8 +5784,6 @@ declare const kEventToolbarItemAdded: number;
 
 declare const kThemeIndeterminateBar: number;
 
-declare const kVK_ANSI_Keypad4: number;
-
 declare const cTrash: number;
 
 declare const kControlImageWellContentTag: number;
@@ -5754,8 +5812,6 @@ declare const typeMenuItemIndex: number;
 
 declare const kTXNWillDefaultToCarbonEventMask: number;
 
-declare const kEventParamWindowTitleFullWidth: number;
-
 declare const kHIArchiveDecodeSuperclassForUnregisteredObjects: number;
 
 declare const kMenuParagraphKoreanGlyph: number;
@@ -5769,8 +5825,6 @@ declare const kThemeMetricMiniHSliderHeight: number;
 declare const kVK_ANSI_0: number;
 
 declare const kThemeBevelButton: number;
-
-declare const kEventParamTextInputReplyAttributedString: number;
 
 declare const kCMHidePaletteWindows: number;
 
@@ -5952,6 +6006,8 @@ declare const pInherits: number;
 
 declare const kControlKindEditUnicodeText: number;
 
+declare const pShouldCallBack: number;
+
 declare const kHIViewZOrderBelow: number;
 
 declare const teCenter: number;
@@ -6032,47 +6088,19 @@ declare const kThemePopupTabCenterOnOffset: number;
 
 declare const kHIThemeTabPositionFirst: number;
 
-declare const kThemeMetricComboBoxLargeRightShadowOffset: number;
-
 declare const kOSASelectCompile: number;
 
 declare const kThemeMetricDisclosureTriangleHeight: number;
 
-declare const vAxisOnly: number;
-
 declare const kEventParamWindowProxyImageRgn: number;
 
-declare const cAugust: number;
+declare const kThemeSoundEmptyTrash: number;
 
-declare const kThemeInactiveDialogBackgroundBrush: number;
+declare const kMouseTrackingScrollWheel: number;
 
-declare const kControlListBoxProc: number;
-
-declare const kASComment: number;
-
-declare const kThemePopupButtonSmall: number;
+declare const kWindowEdgeBottom: number;
 
 declare const kThemeBrushButtonPressedLightShadow: number;
-
-declare const kThemeTextColorRootMenuDisabled: number;
-
-declare const cControlPanelFile: number;
-
-declare const kTXNQDFontNameAttributeSize: number;
-
-declare const typeEventHotKeyID: number;
-
-declare const kEventSystemDisplaysAsleep: number;
-
-declare const kMenuDefClassID: number;
-
-declare const kControlPopupArrowOrientationNorth: number;
-
-declare const kEventParamTextInputReplyPoint: number;
-
-declare const kURLSystemEvent: number;
-
-declare const faceBit: number;
 
 declare const kHIViewFeatureAutoToggles: number;
 
@@ -6091,6 +6119,8 @@ declare const kThemeMenuItemScrollDownArrow: number;
 declare const bScriptLanguageMask: number;
 
 declare const kThemeArrowCursor: number;
+
+declare const kThemeThumbPlain: number;
 
 declare const kScrapFlavorMaskNone: number;
 
@@ -6280,8 +6310,6 @@ declare const hiArchiveTypeMismatchErr: number;
 
 declare const kAppearanceRegionZoomBox: number;
 
-declare const kControlInvertsUpDownValueMeaning: number;
-
 declare const kHIScrollViewScrollToBottom: number;
 
 declare const cInfoWindow: number;
@@ -6370,8 +6398,6 @@ declare const typeFSVolumeRefNum: number;
 
 declare const kControlEditTextTEHandleTag: number;
 
-declare const pLargeButton: number;
-
 declare const kTXNSupportFontCommandProcessing: number;
 
 declare const kThemeTextColorBevelButtonInactive: number;
@@ -6450,6 +6476,8 @@ declare const kThemeMetricMiniTabOverlap: number;
 
 declare const kHMInsideBottomCenterAligned: number;
 
+declare const kThemeInactiveDialogBackgroundBrush: number;
+
 declare const appendDITLBottom: number;
 
 declare const kControlKeyScriptBehaviorAllowAnyScript: number;
@@ -6518,8 +6546,6 @@ declare const kThemeCheckBoxSmall: number;
 
 declare const kDataBrowserPropertyProgressBarPart: number;
 
-declare const kThemeSoundEmptyTrash: number;
-
 declare const kThemeMetricTexturedSmallPushButtonHeight: number;
 
 declare const kDataBrowserListViewNoGapForIconInHeaderButton: number;
@@ -6537,8 +6563,6 @@ declare const kPageUpCharCode: number;
 declare const kControlEditUnicodeTextPasswordProc: number;
 
 declare const kThemeSmoothFontMinSizeTag: number;
-
-declare const kMenuDisposeMsg: number;
 
 declare const kControlGroupBoxTitleRectTag: number;
 
@@ -6718,6 +6742,8 @@ declare const kGSSSelectRealToGenericID: number;
 
 declare const pASIt: number;
 
+declare const kEventParamControlMessage: number;
+
 declare const kThemeScrollBarSmall: number;
 
 declare const kTSMDocumentTextServicePropertyTag: number;
@@ -6725,6 +6751,8 @@ declare const kTSMDocumentTextServicePropertyTag: number;
 declare const kWindowActivationScopeNone: number;
 
 declare const textMenuProc: number;
+
+declare const kDataBrowserItemAdded: number;
 
 declare const kThemeNoAdornment: number;
 
@@ -6763,12 +6791,6 @@ declare const kHICommandShowHideFontPanel: number;
 declare const kColorPickerAppIsColorSyncAware: number;
 
 declare const appearanceThemeHasNoAccents: number;
-
-declare const kThemeThumbPlain: number;
-
-declare const kEventControlEnabledStateChanged: number;
-
-declare const kHIThemeFrameTextFieldRoundMini: number;
 
 declare const kWindowAlertPositionMainScreen: number;
 
@@ -6857,6 +6879,8 @@ declare const kOSAModeDisplayForHumans: number;
 declare const kOSAScriptIsTypeScriptValue: number;
 
 declare const kControlSupportsFocus: number;
+
+declare const kDragRegionIdle: number;
 
 declare const kHIObjectCustomDataDelegateGroupParametersKey: interop.Pointer;
 
@@ -7016,13 +7040,13 @@ declare const enumThisMonth: number;
 
 declare const keyASPrepositionGiven: number;
 
+declare const kThemePopupButtonSmall: number;
+
 declare const kThemeActiveDialogTextColor: number;
 
 declare const kDataBrowserLatestCallbacks: number;
 
 declare const wInStructure: number;
-
-declare const kMouseTrackingScrollWheel: number;
 
 declare const kHICommandClose: number;
 
@@ -7092,20 +7116,6 @@ declare const kVK_ANSI_Grave: number;
 
 declare const kControlPopupButtonProc: number;
 
-declare const ok: number;
-
-declare const kThemeMetricRoundTextFieldSmallContentInsetLeft: number;
-
-declare const kThemeSoundDialogClose: number;
-
-declare const kDataBrowserItemAdded: number;
-
-declare const kMenuItemAttrDisabled: number;
-
-declare const popupTitleUnderline: number;
-
-declare const kControlOpaqueMetaPart: number;
-
 declare const typeWindowModality: number;
 
 declare const kThemePushButtonMini: number;
@@ -7134,11 +7144,7 @@ declare const kThemeSpinningCursor: number;
 
 declare const kDrawerWindowClass: number;
 
-declare const enumLastMonth: number;
-
 declare const kOSAErrorApp: number;
-
-declare const kDataBrowserItemSelected: number;
 
 declare const wTextColor: number;
 
@@ -7165,6 +7171,8 @@ declare const alphaLock: number;
 declare const kThemeSoundSliderEndOfTrack: number;
 
 declare const kControlBevelButtonLastMenuTag: number;
+
+declare const kMenuDisposeMsg: number;
 
 declare const kEventParamProcessID: number;
 
@@ -7386,12 +7394,6 @@ declare const kThemeMetricMenuIndentWidth: number;
 
 declare const resumeFlag: number;
 
-declare const kThemeDocumentWindowBackgroundBrush: number;
-
-declare const kThemeMediumProgressBar: number;
-
-declare const kAppearanceRegionToolbarButton: number;
-
 declare const kEventOffsetToPos: number;
 
 declare const kColorPickerCanAnimatePalette: number;
@@ -7432,13 +7434,13 @@ declare const kThemeBrushAlertBackgroundInactive: number;
 
 declare const kThemeBrushBevelInactiveLight: number;
 
-declare const kMenuReturnR2LGlyph: number;
-
 declare const kUIModeNormal: number;
 
 declare const kThemeSoundLittleArrowDnPress: number;
 
 declare const kThemeCountingDownHandCursor: number;
+
+declare const kMenuItemAttrDisabled: number;
 
 declare const typeAppleScript: number;
 
@@ -7538,8 +7540,6 @@ declare const kTXNNoFontVariations: number;
 
 declare const kUIOptionDisableMenuBarTransparency: number;
 
-declare const kScrapFlavorTypeUTF16External: number;
-
 declare const kASNotEqual: number;
 
 declare const kMenuHiliteItemMsg: number;
@@ -7607,6 +7607,8 @@ declare const kThemeTextColorBlack: number;
 declare const kMenuContextPullDown: number;
 
 declare const kControlEditTextTextTag: number;
+
+declare const kMenuReturnR2LGlyph: number;
 
 declare const kAEIngoreBuiltInEventHandler: number;
 
@@ -7690,8 +7692,6 @@ declare const kControlBehaviorPushbutton: number;
 
 declare const kDataBrowserListViewAppendColumn: number;
 
-declare const pByKindArrangement: number;
-
 declare const kOSAScriptIsTypeCompiledScript: number;
 
 declare const kIMKNearestBoundaryMode: number;
@@ -7701,8 +7701,6 @@ declare const pMinAppPartition: number;
 declare const kSRUsePushToTalk: number;
 
 declare const kControlGroupBoxTextTitleProc: number;
-
-declare const kWindowMovableModalGrowProc: number;
 
 declare const pShowVersion: number;
 
@@ -7814,11 +7812,11 @@ declare const kEventParamControlParam: number;
 
 declare const kOSASelectSetResumeDispatchProc: number;
 
-declare const kWindowEdgeBottom: number;
-
 declare const kHMOutsideTopScriptAligned: number;
 
 declare const kTXNShowWindowMask: number;
+
+declare const kTXNActionDrop: interop.Pointer;
 
 declare const kControlTabLargeEastProc: number;
 
@@ -8054,6 +8052,8 @@ declare const kThemeDialogWindow: number;
 
 declare const kDataBrowserNoDisjointSelection: number;
 
+declare const kEventControlEnabledStateChanged: number;
+
 declare const kAppearancePartUpButton: number;
 
 declare const kControlTabInfoVersionOne: number;
@@ -8214,8 +8214,6 @@ declare const keyOSASourceEnd: number;
 
 declare const kMenuContextMenuBar: number;
 
-declare const kEventParamControlMessage: number;
-
 declare const pLabel6: number;
 
 declare const kControlEditTextCFStringTag: number;
@@ -8315,6 +8313,8 @@ declare const kEventParamReplacementText: number;
 declare const kVK_F11: number;
 
 declare const kMouseTrackingMousePressed: number;
+
+declare const kThemeTabNorth: number;
 
 declare const kTXNDisableLayoutAndDrawTag: number;
 
@@ -8494,7 +8494,7 @@ declare const kThemeMetricSmallProgressBarThickness: number;
 
 declare const kControlIconRefProc: number;
 
-declare const kDialogFontUseFontNameMask: number;
+declare const kHIViewFocusNoPart: number;
 
 declare const kTXNClearTheseFontFeatures: number;
 
@@ -8535,6 +8535,10 @@ declare const kEndCharCode: number;
 declare const kThemeSmallCheckBox: number;
 
 declare const kWindowCanBeVisibleWithoutLoginAttribute: number;
+
+declare const faceBit: number;
+
+declare const kThemeAdornmentShadowOnly: number;
 
 declare const kEventClassHIComboBox: number;
 
@@ -8656,6 +8660,8 @@ declare const kEventAppTerminated: number;
 
 declare const type4BitIcon: number;
 
+declare const cAugust: number;
+
 declare const kFontPanelAttributeValuesKey: interop.Pointer;
 
 declare const kEventWindowRestoredAfterRelaunch: number;
@@ -8679,6 +8685,8 @@ declare const kVK_ANSI_Equal: number;
 declare const kSRListenKeyName: number;
 
 declare const teWordSelect: number;
+
+declare const kControlListBoxProc: number;
 
 declare const keyASPrepositionApartFrom: number;
 
@@ -8759,6 +8767,8 @@ declare const pFontsFolderPreAllegro: number;
 declare const kHIScrollViewScrollToLeft: number;
 
 declare const kControlSizeLarge: number;
+
+declare const kControlInvertsUpDownValueMeaning: number;
 
 declare const popupTitleNoStyle: number;
 
@@ -8844,8 +8854,6 @@ declare const kTXNVerticalScrollBarRectKey: number;
 
 declare const errFinderAppFolderProtected: number;
 
-declare const kSRForegroundOnly: number;
-
 declare const cTextColor: number;
 
 declare const enumLastWeek: number;
@@ -8892,7 +8900,7 @@ declare const kControlDisclosureTrianglePointLeft: number;
 
 declare const kThemeRightTrackPressed: number;
 
-declare const kThemeMetricRoundTextFieldContentInsetWithIconLeft: number;
+declare const kDialogFontUseFontNameMask: number;
 
 declare const kDataBrowserItemIsDragTarget: number;
 
@@ -9130,6 +9138,8 @@ declare const kHIViewWindowCollapseBoxID: ControlID;
 
 declare const kTXNActionCountOfTextChanges: interop.Pointer;
 
+declare const vAxisOnly: number;
+
 declare const kSRCallBackParam: number;
 
 declare const kASCommentEvent: number;
@@ -9177,8 +9187,6 @@ declare const intHitTestHook: number;
 declare const errHMIllegalContentForMinimumState: number;
 
 declare const kMenuF17Glyph: number;
-
-declare const kHIViewFocusNoPart: number;
 
 declare const kWindowCenterOnParentWindowScreen: number;
 
@@ -9246,7 +9254,9 @@ declare const kControlPushButtonIconOnRight: number;
 
 declare const cMay: number;
 
-declare const kThemeMetricDisclosureTriangleWidth: number;
+declare const cListRecordOrString: number;
+
+declare const eventDeferAccessibilityEventErr: number;
 
 declare const cCoerceOneByteToTwoByte: number;
 
@@ -9292,8 +9302,6 @@ declare const kSRNotAvailable: number;
 
 declare const kControlSliderPointsDownOrRight: number;
 
-declare const kWindowTitleBarRgn: number;
-
 declare const kHIThemeTabPositionMiddle: number;
 
 declare const kEventFontSelection: number;
@@ -9308,7 +9316,9 @@ declare const keyIconAndMask: number;
 
 declare const kMenuItemAttrUpdateSingleItem: number;
 
-declare const kTXNActionDrop: interop.Pointer;
+declare const kSRRefCon: number;
+
+declare const kEventWindowAttributesChanged: number;
 
 declare const kEventParamFMFontFamily: number;
 
@@ -9318,7 +9328,7 @@ declare const kControlKindRoundButton: number;
 
 declare const kWindowMsgDrawGrowBox: number;
 
-declare const kThemeTabNorth: number;
+declare const kTXNDocumentAttributeKeywordsKey: interop.Pointer;
 
 declare const kHMOutsideRightBottomAligned: number;
 
@@ -9396,6 +9406,8 @@ declare const kMenuItemDataCmdVirtualKey: number;
 
 declare const kEventParamDataBrowserItemState: number;
 
+declare const kThemeMetricDisclosureTriangleWidth: number;
+
 declare const kUnicodeDocument: number;
 
 declare const kWindowPropertyPersistent: number;
@@ -9456,8 +9468,6 @@ declare const kTXNEnableLayoutAndDraw: number;
 
 declare const kEventParamTextInputReplyText: number;
 
-declare const kControlIndicatorPart: number;
-
 declare const kCharacterPaletteInputMethodClass: number;
 
 declare const wDispose: number;
@@ -9484,17 +9494,9 @@ declare const kEventTextInputGetSelectedText: number;
 
 declare const kThemeMetricSmallTabFrameOverlap: number;
 
-declare const kTXNDocumentAttributeKeywordsKey: interop.Pointer;
-
-declare const kSRRefCon: number;
-
-declare const kEventWindowAttributesChanged: number;
-
 declare const kEventWindowDefGetGrowImageRegion: number;
 
 declare const kDataBrowserTruncateTextMiddle: number;
-
-declare const eventDeferAccessibilityEventErr: number;
 
 declare const kEventWindowResizeCompleted: number;
 
@@ -9509,6 +9511,10 @@ declare const kOSASelectScriptError: number;
 declare const kControlStaticTextProc: number;
 
 declare const kThemeActivePopupArrowBrush: number;
+
+declare const errFinderUnsupportedInsidePackages: number;
+
+declare const kTXNLineDirectionTag: number;
 
 declare const wInZoomOut: number;
 
@@ -9544,8 +9550,6 @@ declare const kVK_ANSI_Keypad3: number;
 
 declare const kCMGetScriptLangSupport: number;
 
-declare const pShouldCallBack: number;
-
 declare const kEventParamBounds: number;
 
 declare const kDragRegionEnd: number;
@@ -9553,16 +9557,6 @@ declare const kDragRegionEnd: number;
 declare const typeMenuRef: number;
 
 declare const kThemeDragSoundMoveIcon: number;
-
-declare const kThemeAdornmentShadowOnly: number;
-
-declare const kThemeSystemFontDetail: number;
-
-declare const errFinderUnsupportedInsidePackages: number;
-
-declare const kTXNLineDirectionTag: number;
-
-declare const kDragRegionIdle: number;
 
 declare const kAEIgnoreAppEventHandler: number;
 
@@ -9589,8 +9583,6 @@ declare const kDataBrowserSelectionAnchorDown: number;
 declare const kHIWindowBehaviorTransient: number;
 
 declare const btnCtrl: number;
-
-declare const kHMOutsideTopRightAligned: number;
 
 declare const kAvailBoundsChangedForDisplay: number;
 
@@ -9627,6 +9619,8 @@ declare const typeCTGlyphInfoRef: number;
 declare const kScrapFlavorSizeUnknown: number;
 
 declare const kMenuContextKeyMatching: number;
+
+declare const kMenuControlModifier: number;
 
 declare const kWindowDoesNotCycleAttribute: number;
 
@@ -9738,8 +9732,6 @@ declare const kDataBrowserCmdTogglesSelection: number;
 
 declare const cWeekday: number;
 
-declare const cListRecordOrString: number;
-
 declare const kWindowHideOnFullScreenAttribute: number;
 
 declare const kThemeResizeDownCursor: number;
@@ -9806,8 +9798,6 @@ declare const kControlScrollTextBoxContentsTag: number;
 
 declare const kDataBrowserMetricLast: number;
 
-declare const kMenuControlModifier: number;
-
 declare const typeCGContextRef: number;
 
 declare const kWindowAlertPositionOnParentWindowScreen: number;
@@ -9826,14 +9816,6 @@ declare const kOSASelectSetScriptInfo: number;
 
 declare const kHIComboBoxListPixelHeightTag: number;
 
-declare const kHIViewFocusWithoutWrapping: number;
-
-declare const kWindowGroupAttrHideOnCollapse: number;
-
-declare const kTXNWantVScrollBarBit: number;
-
-declare const kOSAScriptBestType: number;
-
 declare const kVK_ANSI_J: number;
 
 declare const kVK_ANSI_9: number;
@@ -9851,6 +9833,10 @@ declare const kSRCanned22kHzSpeechSource: number;
 declare const kEventParamDelegateGroupParameters: number;
 
 declare const kThemePushButtonSmall: number;
+
+declare const kHIViewFocusWithoutWrapping: number;
+
+declare const kWindowGroupAttrHideOnCollapse: number;
 
 declare const userKind: number;
 
@@ -9908,6 +9894,8 @@ declare const kHIThemeTabPositionOnly: number;
 
 declare const kFlavorTypeUnicodeClippingFilename: number;
 
+declare const kThemeSystemFontDetail: number;
+
 declare const kBulletCharCode: number;
 
 declare const kHICommandQuitAndKeepWindows: number;
@@ -9942,7 +9930,11 @@ declare const kDragInsideSenderApplication: number;
 
 declare const eventNotInQueueErr: number;
 
+declare const kControlIndicatorPart: number;
+
 declare const kWindowFloatSideFullZoomProc: number;
+
+declare const kASComment: number;
 
 declare const kControlUnicode: number;
 
@@ -9954,17 +9946,25 @@ declare const kTXNDrawItemScrollbarsBit: number;
 
 declare const kThemeLargeProgressBar: number;
 
+declare const popupTitleUnderline: number;
+
 declare const kWindowPlainDialogProc: number;
 
 declare const typeHIToolbarItemRef: number;
 
 declare const typeHIPointScreenPixel: number;
 
+declare const pByKindArrangement: number;
+
 declare const kHIThemeTabSizeNormal: number;
 
 declare const kControlDialogItem: number;
 
 declare const kHIViewAllowsSubviews: number;
+
+declare const kOSAScriptBestType: number;
+
+declare const kTXNWantVScrollBarBit: number;
 
 declare const kIBCarbonRuntimeObjectNotOfRequestedType: number;
 
@@ -10039,7 +10039,7 @@ declare class FileTypeSpec {
 declare class ListDefSpec {
   constructor(init?: ListDefSpec);
   defType: number;
-  u: unnamed_2857126740677160067;
+  u: unnamed_13945423800316668647;
 }
 
 declare class StandardIconListCellDataRec {
@@ -10101,7 +10101,7 @@ declare class ControlTabEntry {
 declare class DataBrowserAccessibilityItemInfo {
   constructor(init?: DataBrowserAccessibilityItemInfo);
   version: number;
-  u: unnamed_13984278800451807663;
+  u: unnamed_13576877042859569145;
 }
 
 declare class DataBrowserAccessibilityItemInfoV1 {
@@ -10117,21 +10117,7 @@ declare class DataBrowserAccessibilityItemInfoV1 {
 declare class DataBrowserCustomCallbacks {
   constructor(init?: DataBrowserCustomCallbacks);
   version: number;
-  u: unnamed_16754814269475328127;
-}
-
-declare class unnamed_7862278037549649304 {
-  constructor(init?: unnamed_7862278037549649304);
-  itemDataCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
-  itemCompareCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number | null;
-  itemNotificationCallback: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  addDragItemCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  acceptDragCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  receiveDragCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  postProcessDragCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  itemHelpContentCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void | null;
-  getContextualMenuCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
-  selectContextualMenuCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void | null;
+  u: unnamed_7571046792957458790;
 }
 
 declare class HMStringResType {
@@ -10275,7 +10261,7 @@ declare class HISideBinding {
 declare class HIViewContentInfo {
   constructor(init?: HIViewContentInfo);
   contentType: number;
-  u: unnamed_10152673369849465444;
+  u: unnamed_18078734113175991373;
 }
 
 declare class HIViewFrameMetrics {
@@ -10408,7 +10394,7 @@ declare class HIThemeButtonDrawInfo {
   kind: number;
   value: number;
   adornment: number;
-  animation: unnamed_9463215352432912008;
+  animation: unnamed_255618483034151116;
 }
 
 declare class HIThemeAnimationTimeInfo {
@@ -10429,7 +10415,7 @@ declare class HIThemeTrackDrawInfo {
   attributes: number;
   enableState: number;
   filler1: number;
-  trackInfo: unnamed_9548908348272556868;
+  trackInfo: unnamed_9648947734287256456;
 }
 
 declare class HIScrollBarTrackInfo {
@@ -10461,17 +10447,17 @@ declare class TabletPointRec {
   vendor3: number;
 }
 
+declare class unnamed_9647932948503875537 {
+  constructor(init?: unnamed_9647932948503875537);
+  menuRef: interop.Object | null;
+  menuItemIndex: number;
+}
+
 declare class HICommandExtended {
   constructor(init?: HICommandExtended);
   attributes: number;
   commandID: number;
-  source: unnamed_17116481973128983476;
-}
-
-declare class unnamed_6626132889242014545 {
-  constructor(init?: unnamed_6626132889242014545);
-  windowDefProc: number;
-  windowHasCloseBox: number;
+  source: unnamed_9623544446476781723;
 }
 
 declare class __TISInputSource {
@@ -10487,7 +10473,7 @@ declare class BasicWindowDescription {
   windowStateFlags: number;
   windowPositionMethod: number;
   windowDefinitionVersion: number;
-  windowDefinition: unnamed_18112676916515831784;
+  windowDefinition: unnamed_991460123502360792;
 }
 
 declare class WinCTab {
@@ -10521,7 +10507,7 @@ declare class OpaqueWindowGroupRef {
 declare class WindowDefSpec {
   constructor(init?: WindowDefSpec);
   defType: number;
-  u: unnamed_5831069759083166394;
+  u: unnamed_9465903142474588548;
 }
 
 declare class WStateData {
@@ -10681,10 +10667,16 @@ declare class ContextualMenuInterfaceStruct {
   PostMenuCleanup: (p1: interop.PointerConvertible) => void | null;
 }
 
+declare class unnamed_11573165570801710882 {
+  constructor(init?: unnamed_11573165570801710882);
+  classID: interop.Object | null;
+  initEvent: interop.Pointer;
+}
+
 declare class MenuDefSpec {
   constructor(init?: MenuDefSpec);
   defType: number;
-  u: unnamed_8091147511952639000;
+  u: unnamed_7004384673694573486;
 }
 
 declare class MenuItemDataRec {
@@ -10774,7 +10766,7 @@ declare class ThemeTrackDrawInfo {
   attributes: number;
   enableState: number;
   filler1: number;
-  trackInfo: unnamed_338682942674878331;
+  trackInfo: unnamed_7263634869071173640;
 }
 
 declare class SliderTrackInfo {
@@ -10823,6 +10815,12 @@ declare class DataBrowserListViewHeaderDesc {
   btnContentInfo: ControlImageContentInfo;
 }
 
+declare class unnamed_3293385467463746431 {
+  constructor(init?: unnamed_3293385467463746431);
+  windowClass: number;
+  windowAttributes: number;
+}
+
 declare class TXNBackgroundData {
   constructor(init?: TXNBackgroundData);
   color: RGBColor;
@@ -10859,14 +10857,15 @@ declare class HIScaling {
   y: HIAxisScale;
 }
 
-declare class unnamed_17065242291780745842 {
-  constructor(init?: unnamed_17065242291780745842);
-  classID: interop.Object | null;
-  initEvent: interop.Pointer;
-}
-
 declare class OpaqueHIViewTrackingAreaRef {
   constructor(init?: OpaqueHIViewTrackingAreaRef);
+}
+
+declare class SetupWindowProxyDragImageRec {
+  constructor(init?: SetupWindowProxyDragImageRec);
+  imageGWorld: interop.Pointer;
+  imageRgn: interop.Pointer;
+  outlineRgn: interop.Pointer;
 }
 
 declare class ScrollBarTrackInfo {
@@ -10875,17 +10874,15 @@ declare class ScrollBarTrackInfo {
   pressState: number;
 }
 
-declare class unnamed_18327286281903537215 {
-  constructor(init?: unnamed_18327286281903537215);
-  windowClass: number;
-  windowAttributes: number;
-}
-
 declare class HICommand {
   constructor(init?: HICommand);
   attributes: number;
   commandID: number;
-  menu: unnamed_17337783634597839381;
+  menu: unnamed_9607386324739661828;
+}
+
+declare class OpaquePicker {
+  constructor(init?: OpaquePicker);
 }
 
 declare class EventHotKeyID {
@@ -10923,6 +10920,14 @@ declare class TransitionWindowOptions {
   userData: interop.Pointer;
 }
 
+declare class HIBinding {
+  constructor(init?: HIBinding);
+  top: HISideBinding;
+  left: HISideBinding;
+  bottom: HISideBinding;
+  right: HISideBinding;
+}
+
 declare class StScrpRec {
   constructor(init?: StScrpRec);
   scrpNStyles: number;
@@ -10943,6 +10948,12 @@ declare class TXNATSUIFeatures {
   featureSelectors: interop.Pointer;
 }
 
+declare class HIViewKind {
+  constructor(init?: HIViewKind);
+  signature: number;
+  kind: number;
+}
+
 declare class HFSFlavor {
   constructor(init?: HFSFlavor);
   fileType: number;
@@ -10958,12 +10969,11 @@ declare class HIAxisPosition {
   offset: number;
 }
 
-declare class HIBinding {
-  constructor(init?: HIBinding);
-  top: HISideBinding;
-  left: HISideBinding;
-  bottom: HISideBinding;
-  right: HISideBinding;
+declare class TypeSelectRecord {
+  constructor(init?: TypeSelectRecord);
+  tsrLastKeyTime: number;
+  tsrScript: number;
+  tsrKeyStrokes: unknown /* const array */;
 }
 
 declare class CalibratorInfo {
@@ -10976,28 +10986,11 @@ declare class CalibratorInfo {
   isGood: number;
 }
 
-declare class TypeSelectRecord {
-  constructor(init?: TypeSelectRecord);
-  tsrLastKeyTime: number;
-  tsrScript: number;
-  tsrKeyStrokes: unknown /* const array */;
-}
-
 declare class HIThemeMenuItemDrawInfo {
   constructor(init?: HIThemeMenuItemDrawInfo);
   version: number;
   itemType: number;
   state: number;
-}
-
-declare class HIThemeWindowDrawInfo {
-  constructor(init?: HIThemeWindowDrawInfo);
-  version: number;
-  state: number;
-  windowType: number;
-  attributes: number;
-  titleHeight: number;
-  titleWidth: number;
 }
 
 declare class HIThemeScrollBarDelimitersDrawInfo {
@@ -11074,17 +11067,6 @@ declare class GetWindowRegionRec {
   regionCode: number;
 }
 
-declare class unnamed_3306046706271922423 {
-  constructor(init?: unnamed_3306046706271922423);
-  drawItemCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void | null;
-  editTextCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  hitTestCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  trackingCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: Point, p6: number) => number | null;
-  dragRegionCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
-  acceptDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  receiveDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
-}
-
 declare class URLCallbackInfo {
   constructor(init?: URLCallbackInfo);
   version: number;
@@ -11107,13 +11089,6 @@ declare class ControlTemplate {
   controlTitle: unknown /* const array */;
 }
 
-declare class SetupWindowProxyDragImageRec {
-  constructor(init?: SetupWindowProxyDragImageRec);
-  imageGWorld: interop.Pointer;
-  imageRgn: interop.Pointer;
-  outlineRgn: interop.Pointer;
-}
-
 declare class TabletProximityRec {
   constructor(init?: TabletProximityRec);
   vendorID: number;
@@ -11127,16 +11102,6 @@ declare class TabletProximityRec {
   capabilityMask: number;
   pointerType: number;
   enterProximity: number;
-}
-
-declare class MenuTrackingData {
-  constructor(init?: MenuTrackingData);
-  menu: interop.Object | null;
-  itemSelected: number;
-  itemUnderMouse: number;
-  itemRect: Rect;
-  virtualMenuTop: number;
-  virtualMenuBottom: number;
 }
 
 declare class OpaqueKeyboardLayoutRef {
@@ -11160,16 +11125,6 @@ declare class OpaqueURLReference {
 
 declare class OpaqueEventHotKeyRef {
   constructor(init?: OpaqueEventHotKeyRef);
-}
-
-declare class HIViewKind {
-  constructor(init?: HIViewKind);
-  signature: number;
-  kind: number;
-}
-
-declare class OpaquePicker {
-  constructor(init?: OpaquePicker);
 }
 
 declare class DialogTemplate {
@@ -11221,6 +11176,12 @@ declare class NColorPickerInfo {
   reserved: number;
 }
 
+declare class unnamed_10014203196250960773 {
+  constructor(init?: unnamed_10014203196250960773);
+  windowDefProc: number;
+  windowHasCloseBox: number;
+}
+
 declare class TXNCarbonEventInfo {
   constructor(init?: TXNCarbonEventInfo);
   useCarbonEvents: number;
@@ -11241,10 +11202,16 @@ declare class FileTranslationList {
   groupCount: number;
 }
 
+declare class unnamed_9607386324739661828 {
+  constructor(init?: unnamed_9607386324739661828);
+  menuRef: interop.Object | null;
+  menuItemIndex: number;
+}
+
 declare class HMHelpContent {
   constructor(init?: HMHelpContent);
   contentType: number;
-  u: unnamed_5596887202026904659;
+  u: unnamed_6725748924257102927;
 }
 
 declare class OpaqueEventTargetRef {
@@ -11289,20 +11256,24 @@ declare class HIPositioning {
   y: HIAxisPosition;
 }
 
-declare class unnamed_17337783634597839381 {
-  constructor(init?: unnamed_17337783634597839381);
-  menuRef: interop.Object | null;
-  menuItemIndex: number;
-}
-
 declare class DataBrowserCallbacks {
   constructor(init?: DataBrowserCallbacks);
   version: number;
-  u: unnamed_2105859447822557000;
+  u: unnamed_11571823140436843538;
 }
 
 declare class OpaqueHIObjectRef {
   constructor(init?: OpaqueHIObjectRef);
+}
+
+declare class MenuTrackingData {
+  constructor(init?: MenuTrackingData);
+  menu: interop.Object | null;
+  itemSelected: number;
+  itemUnderMouse: number;
+  itemRect: Rect;
+  virtualMenuTop: number;
+  virtualMenuBottom: number;
 }
 
 declare class DataBrowserAccessibilityItemInfoV0 {
@@ -11329,10 +11300,22 @@ declare class MDEFDrawItemsData {
   context: interop.Pointer;
 }
 
+declare class ControlFontStyleRec {
+  constructor(init?: ControlFontStyleRec);
+  flags: number;
+  font: number;
+  size: number;
+  style: number;
+  mode: number;
+  just: number;
+  foreColor: RGBColor;
+  backColor: RGBColor;
+}
+
 declare class ControlImageContentInfo {
   constructor(init?: ControlImageContentInfo);
   contentType: number;
-  u: unnamed_217146360178583400;
+  u: unnamed_9681769620417475286;
 }
 
 declare class PickerMenuItemInfo {
@@ -11352,18 +11335,6 @@ declare class ThemeButtonDrawInfo {
   adornment: number;
 }
 
-declare class ControlFontStyleRec {
-  constructor(init?: ControlFontStyleRec);
-  flags: number;
-  font: number;
-  size: number;
-  style: number;
-  mode: number;
-  just: number;
-  foreColor: RGBColor;
-  backColor: RGBColor;
-}
-
 declare class DataBrowserListViewColumnDesc {
   constructor(init?: DataBrowserListViewColumnDesc);
   propertyDesc: DataBrowserPropertyDesc;
@@ -11378,10 +11349,44 @@ declare class HIThemeTabPaneDrawInfoVersionZero {
   size: number;
 }
 
-declare class unnamed_5969512033234636902 {
-  constructor(init?: unnamed_5969512033234636902);
-  menuRef: interop.Object | null;
-  menuItemIndex: number;
+declare class unnamed_4576464142400887721 {
+  constructor(init?: unnamed_4576464142400887721);
+  drawItemCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void | null;
+  editTextCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  hitTestCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  trackingCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: Point, p6: number) => number | null;
+  dragRegionCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
+  acceptDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  receiveDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
+}
+
+declare class ProgressTrackInfo {
+  constructor(init?: ProgressTrackInfo);
+  phase: number;
+}
+
+declare class unnamed_15035847760294958748 {
+  constructor(init?: unnamed_15035847760294958748);
+  itemDataCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
+  itemCompareCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number | null;
+  itemNotificationCallback: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  addDragItemCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
+  acceptDragCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  receiveDragCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  postProcessDragCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
+  itemHelpContentCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void | null;
+  getContextualMenuCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
+  selectContextualMenuCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void | null;
+}
+
+declare class HIThemeWindowDrawInfo {
+  constructor(init?: HIThemeWindowDrawInfo);
+  version: number;
+  state: number;
+  windowType: number;
+  attributes: number;
+  titleHeight: number;
+  titleWidth: number;
 }
 
 declare class HIThemeTextInfo {
@@ -11425,37 +11430,48 @@ declare class NMRec {
   nmRefCon: interop.Pointer;
 }
 
-declare class ProgressTrackInfo {
-  constructor(init?: ProgressTrackInfo);
-  phase: number;
+type unnamed_11571823140436843538Descriptor = 
+  | { v1: unnamed_15035847760294958748 };
+
+declare class unnamed_11571823140436843538 {
+  constructor(init?: unnamed_11571823140436843538Descriptor);
+  v1: unnamed_15035847760294958748;
 }
 
-type unnamed_13984278800451807663Descriptor = 
+type unnamed_13576877042859569145Descriptor = 
   | { v0: DataBrowserAccessibilityItemInfoV0 }
   | { v1: DataBrowserAccessibilityItemInfoV1 };
 
-declare class unnamed_13984278800451807663 {
-  constructor(init?: unnamed_13984278800451807663Descriptor);
+declare class unnamed_13576877042859569145 {
+  constructor(init?: unnamed_13576877042859569145Descriptor);
   v0: DataBrowserAccessibilityItemInfoV0;
   v1: DataBrowserAccessibilityItemInfoV1;
 }
 
-type unnamed_2857126740677160067Descriptor = 
-  | { userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null };
+type unnamed_9681769620417475286Descriptor = 
+  | { resID: number }
+  | { iconRef: interop.PointerConvertible }
+  | { imageRef: interop.Object | null };
 
-declare class unnamed_2857126740677160067 {
-  constructor(init?: unnamed_2857126740677160067Descriptor);
-  userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null;
+declare class unnamed_9681769620417475286 {
+  constructor(init?: unnamed_9681769620417475286Descriptor);
+  resID: number;
+  iconRef: interop.Pointer;
+  imageRef: interop.Object | null;
 }
 
-type unnamed_18112676916515831784Descriptor = 
-  | { versionOne: unnamed_6626132889242014545 }
-  | { versionTwo: unnamed_18327286281903537215 };
+type unnamed_9465903142474588548Descriptor = 
+  | { defProc: interop.PointerConvertible }
+  | { classRef: interop.PointerConvertible }
+  | { procID: number }
+  | { rootView: interop.PointerConvertible };
 
-declare class unnamed_18112676916515831784 {
-  constructor(init?: unnamed_18112676916515831784Descriptor);
-  versionOne: unnamed_6626132889242014545;
-  versionTwo: unnamed_18327286281903537215;
+declare class unnamed_9465903142474588548 {
+  constructor(init?: unnamed_9465903142474588548Descriptor);
+  defProc: interop.Pointer;
+  classRef: interop.Pointer;
+  procID: number;
+  rootView: interop.Pointer;
 }
 
 type TXNAttributeDataDescriptor = 
@@ -11488,7 +11504,7 @@ declare class TXNControlData {
   marginsPtr: interop.Pointer;
 }
 
-type unnamed_10152673369849465444Descriptor = 
+type unnamed_18078734113175991373Descriptor = 
   | { iconRef: interop.PointerConvertible }
   | { iconTypeAndCreator: HITypeAndCreator }
   | { imageRef: interop.Object | null }
@@ -11496,8 +11512,8 @@ type unnamed_10152673369849465444Descriptor =
   | { imageFile: interop.Object | null }
   | { nsImage: NSImage | null };
 
-declare class unnamed_10152673369849465444 {
-  constructor(init?: unnamed_10152673369849465444Descriptor);
+declare class unnamed_18078734113175991373 {
+  constructor(init?: unnamed_18078734113175991373Descriptor);
   iconRef: interop.Pointer;
   iconTypeAndCreator: HITypeAndCreator;
   imageRef: interop.Object | null;
@@ -11506,83 +11522,39 @@ declare class unnamed_10152673369849465444 {
   nsImage: NSImage | null;
 }
 
-type unnamed_9463215352432912008Descriptor = 
+type unnamed_255618483034151116Descriptor = 
   | { time: HIThemeAnimationTimeInfo }
   | { frame: HIThemeAnimationFrameInfo };
 
-declare class unnamed_9463215352432912008 {
-  constructor(init?: unnamed_9463215352432912008Descriptor);
+declare class unnamed_255618483034151116 {
+  constructor(init?: unnamed_255618483034151116Descriptor);
   time: HIThemeAnimationTimeInfo;
   frame: HIThemeAnimationFrameInfo;
 }
 
-type unnamed_9548908348272556868Descriptor = 
+type unnamed_991460123502360792Descriptor = 
+  | { versionOne: unnamed_10014203196250960773 }
+  | { versionTwo: unnamed_3293385467463746431 };
+
+declare class unnamed_991460123502360792 {
+  constructor(init?: unnamed_991460123502360792Descriptor);
+  versionOne: unnamed_10014203196250960773;
+  versionTwo: unnamed_3293385467463746431;
+}
+
+type unnamed_7263634869071173640Descriptor = 
   | { scrollbar: ScrollBarTrackInfo }
   | { slider: SliderTrackInfo }
   | { progress: ProgressTrackInfo };
 
-declare class unnamed_9548908348272556868 {
-  constructor(init?: unnamed_9548908348272556868Descriptor);
+declare class unnamed_7263634869071173640 {
+  constructor(init?: unnamed_7263634869071173640Descriptor);
   scrollbar: ScrollBarTrackInfo;
   slider: SliderTrackInfo;
   progress: ProgressTrackInfo;
 }
 
-type unnamed_338682942674878331Descriptor = 
-  | { scrollbar: ScrollBarTrackInfo }
-  | { slider: SliderTrackInfo }
-  | { progress: ProgressTrackInfo };
-
-declare class unnamed_338682942674878331 {
-  constructor(init?: unnamed_338682942674878331Descriptor);
-  scrollbar: ScrollBarTrackInfo;
-  slider: SliderTrackInfo;
-  progress: ProgressTrackInfo;
-}
-
-type unnamed_8091147511952639000Descriptor = 
-  | { defProc: interop.PointerConvertible }
-  | { view: unnamed_17065242291780745842 };
-
-declare class unnamed_8091147511952639000 {
-  constructor(init?: unnamed_8091147511952639000Descriptor);
-  defProc: interop.Pointer;
-  view: unnamed_17065242291780745842;
-}
-
-type unnamed_17116481973128983476Descriptor = 
-  | { control: interop.Object | null }
-  | { window: interop.PointerConvertible }
-  | { menu: unnamed_5969512033234636902 };
-
-declare class unnamed_17116481973128983476 {
-  constructor(init?: unnamed_17116481973128983476Descriptor);
-  control: interop.Object | null;
-  window: interop.Pointer;
-  menu: unnamed_5969512033234636902;
-}
-
-type unnamed_217146360178583400Descriptor = 
-  | { resID: number }
-  | { iconRef: interop.PointerConvertible }
-  | { imageRef: interop.Object | null };
-
-declare class unnamed_217146360178583400 {
-  constructor(init?: unnamed_217146360178583400Descriptor);
-  resID: number;
-  iconRef: interop.Pointer;
-  imageRef: interop.Object | null;
-}
-
-type unnamed_16754814269475328127Descriptor = 
-  | { v1: unnamed_3306046706271922423 };
-
-declare class unnamed_16754814269475328127 {
-  constructor(init?: unnamed_16754814269475328127Descriptor);
-  v1: unnamed_3306046706271922423;
-}
-
-type unnamed_5596887202026904659Descriptor = 
+type unnamed_6725748924257102927Descriptor = 
   | { tagCFString: interop.Object | null }
   | { tagString: unknown /* const array */ }
   | { tagStringRes: HMStringResType }
@@ -11590,8 +11562,8 @@ type unnamed_5596887202026904659Descriptor =
   | { tagTextRes: number }
   | { tagStrRes: number };
 
-declare class unnamed_5596887202026904659 {
-  constructor(init?: unnamed_5596887202026904659Descriptor);
+declare class unnamed_6725748924257102927 {
+  constructor(init?: unnamed_6725748924257102927Descriptor);
   tagCFString: interop.Object | null;
   tagString: unknown /* const array */;
   tagStringRes: HMStringResType;
@@ -11600,26 +11572,54 @@ declare class unnamed_5596887202026904659 {
   tagStrRes: number;
 }
 
-type unnamed_2105859447822557000Descriptor = 
-  | { v1: unnamed_7862278037549649304 };
+type unnamed_9623544446476781723Descriptor = 
+  | { control: interop.Object | null }
+  | { window: interop.PointerConvertible }
+  | { menu: unnamed_9647932948503875537 };
 
-declare class unnamed_2105859447822557000 {
-  constructor(init?: unnamed_2105859447822557000Descriptor);
-  v1: unnamed_7862278037549649304;
+declare class unnamed_9623544446476781723 {
+  constructor(init?: unnamed_9623544446476781723Descriptor);
+  control: interop.Object | null;
+  window: interop.Pointer;
+  menu: unnamed_9647932948503875537;
 }
 
-type unnamed_5831069759083166394Descriptor = 
-  | { defProc: interop.PointerConvertible }
-  | { classRef: interop.PointerConvertible }
-  | { procID: number }
-  | { rootView: interop.PointerConvertible };
+type unnamed_9648947734287256456Descriptor = 
+  | { scrollbar: ScrollBarTrackInfo }
+  | { slider: SliderTrackInfo }
+  | { progress: ProgressTrackInfo };
 
-declare class unnamed_5831069759083166394 {
-  constructor(init?: unnamed_5831069759083166394Descriptor);
+declare class unnamed_9648947734287256456 {
+  constructor(init?: unnamed_9648947734287256456Descriptor);
+  scrollbar: ScrollBarTrackInfo;
+  slider: SliderTrackInfo;
+  progress: ProgressTrackInfo;
+}
+
+type unnamed_7004384673694573486Descriptor = 
+  | { defProc: interop.PointerConvertible }
+  | { view: unnamed_11573165570801710882 };
+
+declare class unnamed_7004384673694573486 {
+  constructor(init?: unnamed_7004384673694573486Descriptor);
   defProc: interop.Pointer;
-  classRef: interop.Pointer;
-  procID: number;
-  rootView: interop.Pointer;
+  view: unnamed_11573165570801710882;
+}
+
+type unnamed_13945423800316668647Descriptor = 
+  | { userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null };
+
+declare class unnamed_13945423800316668647 {
+  constructor(init?: unnamed_13945423800316668647Descriptor);
+  userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null;
+}
+
+type unnamed_7571046792957458790Descriptor = 
+  | { v1: unnamed_4576464142400887721 };
+
+declare class unnamed_7571046792957458790 {
+  constructor(init?: unnamed_7571046792957458790Descriptor);
+  v1: unnamed_4576464142400887721;
 }
 
 declare function HIPointConvert(ioPoint: interop.PointerConvertible, inSourceSpace: number, inSourceObject: interop.PointerConvertible, inDestinationSpace: number, inDestinationObject: interop.PointerConvertible): void;

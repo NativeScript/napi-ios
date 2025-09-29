@@ -347,6 +347,34 @@ declare class UNNotificationAction extends NSObject implements NSCopying, NSSecu
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class UNNotificationAttachment extends NSObject implements NSCopying, NSSecureCoding {
+  readonly identifier: string;
+
+  readonly URL: NSURL;
+
+  readonly type: string;
+
+  static attachmentWithIdentifierURLOptionsError<This extends abstract new (...args: any) => any>(this: This, identifier: string, URL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class UNTextInputNotificationResponse extends UNNotificationResponse {
+  readonly userText: string;
+}
+
+declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
+  readonly region: CLRegion;
+
+  static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class UNMutableNotificationContent extends UNNotificationContent {
   // @ts-ignore MemberDecl.tsIgnore
@@ -434,34 +462,6 @@ declare class UNMutableNotificationContent extends UNNotificationContent {
   setFilterCriteria(filterCriteria: string | null): void;
 }
 
-declare class UNNotificationAttachment extends NSObject implements NSCopying, NSSecureCoding {
-  readonly identifier: string;
-
-  readonly URL: NSURL;
-
-  readonly type: string;
-
-  static attachmentWithIdentifierURLOptionsError<This extends abstract new (...args: any) => any>(this: This, identifier: string, URL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class UNTextInputNotificationResponse extends UNNotificationResponse {
-  readonly userText: string;
-}
-
-declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
-  readonly region: CLRegion;
-
-  static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
-}
-
 declare class UNNotificationContent extends NSObject implements NSCopying, NSMutableCopying, NSSecureCoding {
   readonly attachments: NSArray;
 
@@ -508,6 +508,22 @@ declare class UNNotificationContent extends NSObject implements NSCopying, NSMut
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
+  readonly notification: UNNotification;
+
+  readonly actionIdentifier: string;
+
+  readonly targetScene: UIScene;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class UNNotificationSettings extends NSObject implements NSCopying, NSSecureCoding {
   readonly authorizationStatus: interop.Enum<typeof UNAuthorizationStatus>;
 
@@ -538,22 +554,6 @@ declare class UNNotificationSettings extends NSObject implements NSCopying, NSSe
   readonly scheduledDeliverySetting: interop.Enum<typeof UNNotificationSetting>;
 
   readonly directMessagesSetting: interop.Enum<typeof UNNotificationSetting>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
-  readonly notification: UNNotification;
-
-  readonly actionIdentifier: string;
-
-  readonly targetScene: UIScene;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 

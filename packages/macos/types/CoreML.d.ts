@@ -19,11 +19,6 @@ declare const MLModelCreatorDefinedKey: string;
 
 declare const MLModelCollectionDidChangeNotification: string;
 
-declare const MLSpecializationStrategy: {
-  Default: 0,
-  FastPrediction: 1,
-};
-
 declare const MLUpdateProgressEvent: {
   TrainingBegin: 1,
   EpochEnd: 2,
@@ -42,7 +37,6 @@ declare const MLMultiArrayDataType: {
   Float16: 65552,
   Float: 65568,
   Int32: 131104,
-  Int8: 131080,
 };
 
 declare const MLFeatureType: {
@@ -76,6 +70,11 @@ declare const MLModelError: {
   ModelDecryption: 9,
   ModelCollection: 10,
   PredictionCancelled: 11,
+};
+
+declare const MLSpecializationStrategy: {
+  Default: 0,
+  FastPrediction: 1,
 };
 
 declare const MLTaskState: {
@@ -155,6 +154,50 @@ declare interface MLBatchProvider {
 }
 
 declare class MLBatchProvider extends NativeObject implements MLBatchProvider {
+}
+
+declare class MLNeuralEngineComputeDevice extends NSObject implements MLComputeDeviceProtocol {
+  readonly totalCoreCount: number;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class MLParameterDescription extends NSObject implements NSSecureCoding {
@@ -314,6 +357,18 @@ declare class MLUpdateContext extends NSObject {
   readonly metrics: NSDictionary;
 
   readonly parameters: NSDictionary;
+}
+
+declare class MLUpdateTask extends MLTask {
+  static updateTaskForModelAtURLTrainingDataConfigurationCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
+
+  static updateTaskForModelAtURLTrainingDataCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
+
+  static updateTaskForModelAtURLTrainingDataConfigurationProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
+
+  static updateTaskForModelAtURLTrainingDataProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
+
+  resumeWithParameters(updateParameters: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 }
 
 declare class MLTask extends NSObject {
@@ -616,16 +671,6 @@ declare class MLMetricKey extends MLKey {
   static readonly miniBatchIndex: MLMetricKey;
 }
 
-declare class MLModelStructureNeuralNetworkLayer extends NSObject {
-  readonly name: string;
-
-  readonly type: string;
-
-  readonly inputNames: NSArray;
-
-  readonly outputNames: NSArray;
-}
-
 declare class MLComputePlan extends NSObject {
   static loadContentsOfURLConfigurationCompletionHandler(url: NSURL, configuration: MLModelConfiguration, handler: (p1: MLComputePlan, p2: NSError) => void | null): void;
 
@@ -638,6 +683,16 @@ declare class MLComputePlan extends NSObject {
   computeDeviceUsageForMLProgramOperation(operation: MLModelStructureProgramOperation): MLComputePlanDeviceUsage;
 
   readonly modelStructure: MLModelStructure;
+}
+
+declare class MLModelStructureNeuralNetworkLayer extends NSObject {
+  readonly name: string;
+
+  readonly type: string;
+
+  readonly inputNames: NSArray;
+
+  readonly outputNames: NSArray;
 }
 
 declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCoding {
@@ -720,18 +775,6 @@ declare class MLSequenceConstraint extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MLUpdateTask extends MLTask {
-  static updateTaskForModelAtURLTrainingDataConfigurationCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
-
-  static updateTaskForModelAtURLTrainingDataCompletionHandlerError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, completionHandler: (p1: MLUpdateContext) => void, error: interop.PointerConvertible): InstanceType<This>;
-
-  static updateTaskForModelAtURLTrainingDataConfigurationProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, configuration: MLModelConfiguration | null, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
-
-  static updateTaskForModelAtURLTrainingDataProgressHandlersError<This extends abstract new (...args: any) => any>(this: This, modelURL: NSURL, trainingData: MLBatchProvider, progressHandlers: MLUpdateProgressHandlers, error: interop.PointerConvertible): InstanceType<This>;
-
-  resumeWithParameters(updateParameters: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-}
-
 declare class MLModelStructureNeuralNetwork extends NSObject {
   readonly layers: NSArray;
 }
@@ -800,50 +843,6 @@ declare class MLModelStructure extends NSObject {
   readonly program: MLModelStructureProgram;
 
   readonly pipeline: MLModelStructurePipeline;
-}
-
-declare class MLNeuralEngineComputeDevice extends NSObject implements MLComputeDeviceProtocol {
-  readonly totalCoreCount: number;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class MLModel extends NSObject {

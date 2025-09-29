@@ -38,8 +38,6 @@ declare const kvImageBufferTypeCode_ColorSpaceChannel11: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel4: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel3: number;
-
 declare const kvImageBufferTypeCode_ColorSpaceChannel2: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel1: number;
@@ -54,19 +52,17 @@ declare const kvImageGamma_9_over_11_half_precision: number;
 
 declare const kvImageGamma_11_over_9_half_precision: number;
 
-declare const kvImageGamma_sRGB_reverse_half_precision: number;
-
 declare const kvImageGamma_5_over_11_half_precision: number;
 
 declare const kvImage_PNG_FILTER_VALUE_NONE: number;
 
 declare const kRotate0DegreesCounterClockwise: number;
 
+declare const kRotate270DegreesClockwise: number;
+
 declare const kRotate90DegreesClockwise: number;
 
 declare const kvImageConvert_OrderedNoiseShapeMask: number;
-
-declare const kvImageConvert_DitherAtkinson: number;
 
 declare const kvImageConvert_DitherOrderedReproducible: number;
 
@@ -86,8 +82,6 @@ declare const kvImageEdgeExtend: number;
 
 declare const kvImageInvalidImageObject: number;
 
-declare const kvImageOutOfPlaceOperationRequired: number;
-
 declare const kvImageColorSyncIsAbsent: number;
 
 declare const kvImageInvalidRowBytes: number;
@@ -97,8 +91,6 @@ declare const kvImageUnknownFlagsBit: number;
 declare const kvImageInvalidParameter: number;
 
 declare const kvImageNullPointerArgument: number;
-
-declare const kvImageInvalidEdgeStyle: number;
 
 declare const kvImageInvalidKernelSize: number;
 
@@ -114,17 +106,19 @@ declare const FFT_FORWARD: number;
 
 declare const kFFTDirection_Forward: number;
 
+declare const kvImageCVImageFormat_AlphaIsOneHint: number;
+
 declare const kFFTDirection_Inverse: number;
 
 declare const kvImageGamma_sRGB_forward_half_precision: number;
 
 declare const FFT_RADIX5: number;
 
-declare const kvImageBufferTypeCode_RGB_Blue: number;
-
 declare const kvImageBufferTypeCode_Chroma: number;
 
 declare const kvImageGetTempBufferSize: number;
+
+declare const kvImageBufferTypeCode_RGB_Blue: number;
 
 declare const kFFTRadix2: number;
 
@@ -138,9 +132,9 @@ declare const kvImageCVImageFormat_ColorSpace: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel9: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel14: number;
-
 declare const kvImageMemoryAllocationError: number;
+
+declare const kvImageBufferTypeCode_ColorSpaceChannel14: number;
 
 declare const kvImageUseFP16Accumulator: number;
 
@@ -153,8 +147,6 @@ declare const kvImageBufferTypeCode_Monochrome: number;
 declare const kvImageBufferTypeCode_Alpha: number;
 
 declare const kvImageBufferTypeCode_XYZ_Z: number;
-
-declare const kRotate270DegreesClockwise: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel15: number;
 
@@ -182,8 +174,6 @@ declare const kvImageBufferTypeCode_CMYK_Yellow: number;
 
 declare const kvImageGamma_9_over_5_half_precision: number;
 
-declare const kvImageCVImageFormat_AlphaIsOneHint: number;
-
 declare const kvImageGamma_5_over_9_half_precision: number;
 
 declare const kvImageConvert_DitherNone: number;
@@ -198,19 +188,19 @@ declare const kvImageInvalidOffset_Y: number;
 
 declare const kvImageDoNotClamp: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel5: number;
-
-declare const vDSP_HANN_DENORM: number;
-
 declare const kvImage_ARGBToYpCbCrMatrix_ITU_R_709_2: interop.Pointer;
+
+declare const kvImageConvert_DitherFloydSteinberg: number;
 
 declare const vDSP_HALF_WINDOW: number;
 
-declare const kvImageConvert_DitherFloydSteinberg: number;
+declare const kvImageConvert_DitherAtkinson: number;
 
 declare const kvImageNoError: number;
 
 declare const kvImageInternalError: number;
+
+declare const kvImageBufferTypeCode_ColorSpaceChannel3: number;
 
 declare const vDSP_HANN_NORM: number;
 
@@ -230,7 +220,11 @@ declare const kvImageBufferTypeCode_XYZ_X: number;
 
 declare const kvImageConvert_OrderedUniformBlue: number;
 
+declare const kvImageBufferTypeCode_CMYK_Cyan: number;
+
 declare const kvImageGamma_BT709_reverse_half_precision: number;
+
+declare const vDSP_HANN_DENORM: number;
 
 declare const kvImageConvert_OrderedGaussianBlue: number;
 
@@ -238,7 +232,7 @@ declare const kRotate90DegreesCounterClockwise: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel7: number;
 
-declare const kvImageNoFlags: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel10: number;
 
 declare const kFFTRadix5: number;
 
@@ -246,13 +240,15 @@ declare const kRotate0DegreesClockwise: number;
 
 declare const kvImageGamma_11_over_5_half_precision: number;
 
+declare const kvImageBufferTypeCode_ColorSpaceChannel5: number;
+
 declare const kvImageBufferTypeCode_RGB_Green: number;
 
 declare const _SparseDefaultNumericFactorOptions_Complex_Float: SparseNumericFactorOptions;
 
-declare const kvImageUnsupportedConversion: number;
+declare const kvImageInvalidEdgeStyle: number;
 
-declare const kvImageBufferTypeCode_CMYK_Cyan: number;
+declare const kvImageUnsupportedConversion: number;
 
 declare const kvImageInvalidCVImageFormat: number;
 
@@ -260,15 +256,19 @@ declare const _SparseDefaultNumericFactorOptions_Float: SparseNumericFactorOptio
 
 declare const kvImage_YpCbCrToARGBMatrix_ITU_R_709_2: interop.Pointer;
 
+declare const kvImageOutOfPlaceOperationRequired: number;
+
+declare const kvImageInterpolationNearest: number;
+
 declare const kvImageCopyInPlace: number;
 
 declare const kvImageGamma_UseGammaValue: number;
 
-declare const kvImageInvalidOffset_X: number;
-
-declare const kvImageBufferTypeCode_ColorSpaceChannel10: number;
-
 declare const kvImageInvalidImageFormat: number;
+
+declare const kvImageNoFlags: number;
+
+declare const kvImageInvalidOffset_X: number;
 
 declare const kvImageBufferTypeCode_CGFormat: number;
 
@@ -284,9 +284,9 @@ declare const FFT_RADIX2: number;
 
 declare const kvImageBufferTypeCode_Chunky: number;
 
-declare const kvImageInterpolationNearest: number;
-
 declare const kvImageBufferTypeCode_RGB_Red: number;
+
+declare const kvImageGamma_sRGB_reverse_half_precision: number;
 
 declare const kvImageBufferTypeCode_LAB_L: number;
 
@@ -316,13 +316,25 @@ declare const BNNSGraphOptimizationPreference: {
   IRSize: 1,
 };
 
+declare const BNNSTargetSystem: {
+  BNNSTargetSystemGeneric: 0,
+};
+
 declare const BNNSSparsityType: {
   BNNSSparsityTypeUnstructured: 0,
+};
+
+declare const BNNSRandomGeneratorMethod: {
+  BNNSRandomGeneratorMethodAES_CTR: 0,
 };
 
 declare const BNNSQuantizerFunction: {
   Quantize: 0,
   Dequantize: 1,
+};
+
+declare const BNNSEmbeddingFlags: {
+  BNNSEmbeddingFlagScaleGradientByFrequency: 1,
 };
 
 declare const BNNSPointerSpecifier: {
@@ -462,10 +474,64 @@ declare const BNNSLossFunction: {
   CategoricalCrossEntropy: 10,
 };
 
+declare const BNNSActivationFunction: {
+  Identity: 0,
+  RectifiedLinear: 1,
+  LeakyRectifiedLinear: 2,
+  Sigmoid: 3,
+  Tanh: 4,
+  ScaledTanh: 5,
+  Abs: 6,
+  Linear: 7,
+  Clamp: 8,
+  IntegerLinearSaturate: 9,
+  IntegerLinearSaturatePerChannel: 10,
+  Softmax: 11,
+  GELUApproximation: 12,
+  Gumbel: 13,
+  GumbelMax: 14,
+  HardSigmoid: 15,
+  Softplus: 16,
+  Softsign: 17,
+  ELU: 18,
+  ClampedLeakyRectifiedLinear: 19,
+  LinearWithBias: 20,
+  LogSoftmax: 21,
+  LogSigmoid: 22,
+  SELU: 23,
+  CELU: 24,
+  HardShrink: 25,
+  SoftShrink: 26,
+  TanhShrink: 27,
+  Threshold: 28,
+  PReLUPerChannel: 29,
+  GELUApproximation2: 30,
+  HardSwish: 30,
+  SiLU: 31,
+  ReLU6: 32,
+  Erf: 33,
+  GELU: 34,
+  GELUApproximationSigmoid: 35,
+};
+
 declare const quadrature_integrator: {
   NG: 0,
   AG: 1,
   AGS: 2,
+};
+
+declare const SparseSubfactor_t: {
+  Invalid: 0,
+  P: 1,
+  S: 2,
+  L: 3,
+  D: 4,
+  PLPS: 5,
+  Q: 6,
+  R: 7,
+  RP: 8,
+  Sr: 9,
+  Sc: 10,
 };
 
 declare const SparseOrder_t: {
@@ -474,7 +540,6 @@ declare const SparseOrder_t: {
   AMD: 2,
   Metis: 3,
   COLAMD: 4,
-  MTMetis: 5,
 };
 
 declare const SparseFactorization_t: {
@@ -515,20 +580,6 @@ declare const vDSP_DFT_RealtoComplex: {
   Realto: -1,
 };
 
-declare const SparseSubfactor_t: {
-  Invalid: 0,
-  P: 1,
-  S: 2,
-  L: 3,
-  D: 4,
-  PLPS: 5,
-  Q: 6,
-  R: 7,
-  RP: 8,
-  Sr: 9,
-  Sc: 10,
-};
-
 declare const vDSP_DFT_Direction: {
   FORWARD: 1,
   INVERSE: -1,
@@ -537,6 +588,12 @@ declare const vDSP_DFT_Direction: {
 declare const SparseLSMRConvergenceTest_t: {
   Default: 0,
   FongSaunders: 1,
+};
+
+declare const _SparseIterativeMethod_t: {
+  CG: 0,
+  GMRES: 1,
+  LSMR: 2,
 };
 
 declare const BNNSOptimizerFunction: {
@@ -552,6 +609,11 @@ declare const BNNSOptimizerFunction: {
   AdamWWithClipping: 10,
   AdamAMSGradWithClipping: 11,
   AdamWAMSGradWithClipping: 12,
+};
+
+declare const CBLAS_UPLO: {
+  Upper: 121,
+  Lower: 122,
 };
 
 declare const BNNSGraphArgumentType: {
@@ -623,12 +685,6 @@ declare const SparseKind_t: {
   Hermitian: 7,
 };
 
-declare const _SparseIterativeMethod_t: {
-  CG: 0,
-  GMRES: 1,
-  LSMR: 2,
-};
-
 declare const BNNSRelationalOperator: {
   Equal: 0,
   Less: 1,
@@ -644,30 +700,10 @@ declare const BNNSRelationalOperator: {
   LogicalXOR: 11,
 };
 
-declare const BNNSEmbeddingFlags: {
-  BNNSEmbeddingFlagScaleGradientByFrequency: 1,
-};
-
-declare const CBLAS_UPLO: {
-  Upper: 121,
-  Lower: 122,
-};
-
-declare const BNNSTargetSystem: {
-  BNNSTargetSystemGeneric: 0,
-};
-
 declare const BNNSOptimizerSGDMomentumVariant: {
   Variant0: 0,
   Variant1: 1,
   Variant2: 2,
-};
-
-declare const BNNSGraphMessageLevel: {
-  Info: 1,
-  Unsupported: 2,
-  Warning: 4,
-  Error: 8,
 };
 
 declare const SparsePreconditioner_t: {
@@ -718,49 +754,16 @@ declare const sparse_status: {
   SYSTEM_ERROR: -1002,
 };
 
+declare const BNNSGraphMessageLevel: {
+  Info: 1,
+  Unsupported: 2,
+  Warning: 4,
+  Error: 8,
+};
+
 declare const BNNSLayerFlags: {
   Bidirectional: 1,
   DefaultActivations: 2,
-};
-
-declare const BNNSActivationFunction: {
-  Identity: 0,
-  RectifiedLinear: 1,
-  LeakyRectifiedLinear: 2,
-  Sigmoid: 3,
-  Tanh: 4,
-  ScaledTanh: 5,
-  Abs: 6,
-  Linear: 7,
-  Clamp: 8,
-  IntegerLinearSaturate: 9,
-  IntegerLinearSaturatePerChannel: 10,
-  Softmax: 11,
-  GELUApproximation: 12,
-  Gumbel: 13,
-  GumbelMax: 14,
-  HardSigmoid: 15,
-  Softplus: 16,
-  Softsign: 17,
-  ELU: 18,
-  ClampedLeakyRectifiedLinear: 19,
-  LinearWithBias: 20,
-  LogSoftmax: 21,
-  LogSigmoid: 22,
-  SELU: 23,
-  CELU: 24,
-  HardShrink: 25,
-  SoftShrink: 26,
-  TanhShrink: 27,
-  Threshold: 28,
-  PReLUPerChannel: 29,
-  GELUApproximation2: 30,
-  HardSwish: 30,
-  SiLU: 31,
-  ReLU6: 32,
-  Erf: 33,
-  GELU: 34,
-  GELUApproximationSigmoid: 35,
 };
 
 declare const BNNSShuffleType: {
@@ -768,10 +771,6 @@ declare const BNNSShuffleType: {
   PixelUnshuffle: 1,
   DepthToSpace: 2,
   SpaceToDepth: 3,
-};
-
-declare const BNNSRandomGeneratorMethod: {
-  BNNSRandomGeneratorMethodAES_CTR: 0,
 };
 
 declare const vImageMDTableUsageHint: {
@@ -794,14 +793,19 @@ declare const SparseScaling_t: {
   Default: 0,
   User: 1,
   EquilibriationInf: 2,
-  HungarianScalingOnly: 3,
-  HungarianScalingAndOrdering: 4,
 };
 
 declare const vDSP_DCT_Type: {
   I: 2,
   II: 3,
   V: 4,
+};
+
+declare const BNNSOptimizerClippingFunction: {
+  None: 0,
+  ByValue: 1,
+  ByNorm: 2,
+  ByGlobalNorm: 3,
 };
 
 declare const BNNSDataType: {
@@ -862,13 +866,6 @@ declare const BNNSDescriptorType: {
   Constant: 0,
   Sample: 1,
   Parameter: 2,
-};
-
-declare const BNNSOptimizerClippingFunction: {
-  None: 0,
-  ByValue: 1,
-  ByNorm: 2,
-  ByGlobalNorm: 3,
 };
 
 declare const quadrature_status: {
@@ -933,6 +930,10 @@ declare class vImage_ARGBToYpCbCrMatrix {
   B_Cb_R_Cr: number;
   G_Cr: number;
   B_Cr: number;
+}
+
+declare class vImageCVImageFormat {
+  constructor(init?: vImageCVImageFormat);
 }
 
 declare class vImage_PerpsectiveTransform {
@@ -1385,15 +1386,6 @@ declare class SparseOpaqueSubfactor_Complex_Double {
   workspaceRequiredPerRHS: number;
 }
 
-declare class SparseOpaqueSubfactor_Float {
-  constructor(init?: SparseOpaqueSubfactor_Float);
-  attributes: SparseAttributes_t;
-  contents: interop.Enum<typeof SparseSubfactor_t>;
-  factor: SparseOpaqueFactorization_Float;
-  workspaceRequiredStatic: number;
-  workspaceRequiredPerRHS: number;
-}
-
 declare class SparseOpaqueSubfactor_Double {
   constructor(init?: SparseOpaqueSubfactor_Double);
   attributes: SparseAttributes_t;
@@ -1475,6 +1467,12 @@ declare class DenseVector_Complex_Float {
 
 declare class DenseVector_Complex_Double {
   constructor(init?: DenseVector_Complex_Double);
+  count: number;
+  data: interop.Pointer;
+}
+
+declare class DenseVector_Float {
+  constructor(init?: DenseVector_Float);
   count: number;
   data: interop.Pointer;
 }
@@ -1622,14 +1620,13 @@ declare class OpaqueFFTSetupD {
   constructor(init?: OpaqueFFTSetupD);
 }
 
-declare class BNNSLayerParametersQuantization {
-  constructor(init?: BNNSLayerParametersQuantization);
-  axis_mask: number;
-  function: interop.Enum<typeof BNNSQuantizerFunction>;
-  i_desc: BNNSNDArrayDescriptor;
-  o_desc: BNNSNDArrayDescriptor;
-  scale: BNNSNDArrayDescriptor;
-  bias: BNNSNDArrayDescriptor;
+declare class SparseNumericFactorOptions {
+  constructor(init?: SparseNumericFactorOptions);
+  control: interop.Enum<typeof SparseControl_t>;
+  scalingMethod: interop.Enum<typeof SparseScaling_t>;
+  scaling: interop.Pointer;
+  pivotTolerance: number;
+  zeroTolerance: number;
 }
 
 declare class vDSP_biquad_SetupStructD {
@@ -1651,15 +1648,6 @@ declare class vImage_YpCbCrToARGB {
 
 declare class sparse_m_float_complex {
   constructor(init?: sparse_m_float_complex);
-}
-
-declare class SparseNumericFactorOptions {
-  constructor(init?: SparseNumericFactorOptions);
-  control: interop.Enum<typeof SparseControl_t>;
-  scalingMethod: interop.Enum<typeof SparseScaling_t>;
-  scaling: interop.Pointer;
-  pivotTolerance: number;
-  zeroTolerance: number;
 }
 
 declare class bnns_user_message_data_t {
@@ -1822,17 +1810,13 @@ declare class BNNSVectorDescriptor {
 declare class SparseIterativeMethod {
   constructor(init?: SparseIterativeMethod);
   method: number;
-  options: unnamed_11692908426398789471;
+  options: unnamed_18399289040338888417;
 }
 
 declare class SparseMatrix_Complex_Double {
   constructor(init?: SparseMatrix_Complex_Double);
   structure: SparseMatrixStructureComplex;
   data: interop.Pointer;
-}
-
-declare class vImageCVImageFormat {
-  constructor(init?: vImageCVImageFormat);
 }
 
 declare class BNNSOptimizerSGDMomentumWithClippingFields {
@@ -1872,6 +1856,15 @@ declare class BNNSLayerParametersActivation {
   o_desc: BNNSNDArrayDescriptor;
   activation: BNNSActivation;
   axis_flags: number;
+}
+
+declare class SparseOpaqueSubfactor_Float {
+  constructor(init?: SparseOpaqueSubfactor_Float);
+  attributes: SparseAttributes_t;
+  contents: interop.Enum<typeof SparseSubfactor_t>;
+  factor: SparseOpaqueFactorization_Float;
+  workspaceRequiredStatic: number;
+  workspaceRequiredPerRHS: number;
 }
 
 declare class DSPDoubleComplex {
@@ -1950,6 +1943,16 @@ declare class BNNSTensor {
   name: string | null;
 }
 
+declare class BNNSLayerParametersQuantization {
+  constructor(init?: BNNSLayerParametersQuantization);
+  axis_mask: number;
+  function: interop.Enum<typeof BNNSQuantizerFunction>;
+  i_desc: BNNSNDArrayDescriptor;
+  o_desc: BNNSNDArrayDescriptor;
+  scale: BNNSNDArrayDescriptor;
+  bias: BNNSNDArrayDescriptor;
+}
+
 declare class SparseOpaqueFactorization_Complex_Float {
   constructor(init?: SparseOpaqueFactorization_Complex_Float);
   status: interop.Enum<typeof SparseStatus_t>;
@@ -1999,12 +2002,6 @@ declare class BNNSOptimizerAdamWithClippingFields {
   clip_gradients_use_norm: number;
 }
 
-declare class DenseVector_Float {
-  constructor(init?: DenseVector_Float);
-  count: number;
-  data: interop.Pointer;
-}
-
 declare class SparseMatrixStructureComplex {
   constructor(init?: SparseMatrixStructureComplex);
   rowCount: number;
@@ -2025,15 +2022,15 @@ declare class BNNSLayerParametersCropResize {
   method: interop.Enum<typeof BNNSInterpolationMethod>;
 }
 
-type unnamed_11692908426398789471Descriptor = 
+type unnamed_18399289040338888417Descriptor = 
   | { base: _SparseIterativeMethodBaseOptions }
   | { cg: SparseCGOptions }
   | { gmres: SparseGMRESOptions }
   | { lsmr: SparseLSMROptions }
   | { padding: unknown /* const array */ };
 
-declare class unnamed_11692908426398789471 {
-  constructor(init?: unnamed_11692908426398789471Descriptor);
+declare class unnamed_18399289040338888417 {
+  constructor(init?: unnamed_18399289040338888417Descriptor);
   base: _SparseIterativeMethodBaseOptions;
   cg: SparseCGOptions;
   gmres: SparseGMRESOptions;
@@ -2041,13 +2038,13 @@ declare class unnamed_11692908426398789471 {
   padding: unknown /* const array */;
 }
 
-type unnamed_5048876362657550829Descriptor = 
+type unnamed_15099074601355879866Descriptor = 
   | { tensor: interop.PointerConvertible }
   | { descriptor: interop.PointerConvertible }
   | { data_ptr: interop.PointerConvertible };
 
-declare class unnamed_5048876362657550829 {
-  constructor(init?: unnamed_5048876362657550829Descriptor);
+declare class unnamed_15099074601355879866 {
+  constructor(init?: unnamed_15099074601355879866Descriptor);
   tensor: interop.Pointer;
   descriptor: interop.Pointer;
   data_ptr: interop.Pointer;
@@ -7137,23 +7134,17 @@ declare function _SparseConvertFromCoordinate_Complex_Double(m: number, n: numbe
 
 declare function _SparseConvertFromOpaque_Complex_Double(matrix: interop.PointerConvertible): SparseMatrix_Complex_Double;
 
-declare function _SparseNumericFactorSymmetric_Complex_Double(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
-
 declare function _SparseNumericFactorHermitian_Complex_Double(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
 
 declare function _SparseNumericFactorQR_Complex_Double(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
 
 declare function _SparseNumericFactorLU_Complex_Double(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
 
-declare function _SparseFactorSymmetric_Complex_Double(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
-
 declare function _SparseFactorHermitian_Complex_Double(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
 
 declare function _SparseFactorQR_Complex_Double(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
 
 declare function _SparseFactorLU_Complex_Double(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Double;
-
-declare function _SparseRefactorSymmetric_Complex_Double(Matrix: interop.PointerConvertible, Factorization: interop.PointerConvertible, nfoptions: interop.PointerConvertible, workspace: interop.PointerConvertible): void;
 
 declare function _SparseRefactorHermitian_Complex_Double(Matrix: interop.PointerConvertible, Factorization: interop.PointerConvertible, nfoptions: interop.PointerConvertible, workspace: interop.PointerConvertible): void;
 
@@ -7201,23 +7192,17 @@ declare function _SparseConvertFromCoordinate_Complex_Float(m: number, n: number
 
 declare function _SparseConvertFromOpaque_Complex_Float(matrix: interop.PointerConvertible): SparseMatrix_Complex_Float;
 
-declare function _SparseNumericFactorSymmetric_Complex_Float(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
-
 declare function _SparseNumericFactorHermitian_Complex_Float(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
 
 declare function _SparseNumericFactorQR_Complex_Float(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
 
 declare function _SparseNumericFactorLU_Complex_Float(symbolicFactor: interop.PointerConvertible, Matrix: interop.PointerConvertible, options: interop.PointerConvertible, factorStorage: interop.PointerConvertible, workspace: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
 
-declare function _SparseFactorSymmetric_Complex_Float(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
-
 declare function _SparseFactorHermitian_Complex_Float(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
 
 declare function _SparseFactorQR_Complex_Float(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
 
 declare function _SparseFactorLU_Complex_Float(factorType: interop.Enum<typeof SparseFactorization_t>, Matrix: interop.PointerConvertible, sfoptions: interop.PointerConvertible, nfoptions: interop.PointerConvertible): SparseOpaqueFactorization_Complex_Float;
-
-declare function _SparseRefactorSymmetric_Complex_Float(Matrix: interop.PointerConvertible, Factorization: interop.PointerConvertible, nfoptions: interop.PointerConvertible, workspace: interop.PointerConvertible): void;
 
 declare function _SparseRefactorHermitian_Complex_Float(Matrix: interop.PointerConvertible, Factorization: interop.PointerConvertible, nfoptions: interop.PointerConvertible, workspace: interop.PointerConvertible): void;
 

@@ -19,8 +19,6 @@ declare const ASAuthorizationPublicKeyCredentialAttestationKindDirect: string;
 
 declare const ASAuthorizationPublicKeyCredentialAttestationKindNone: string;
 
-declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged: string;
-
 declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceRequired: string;
 
 declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferencePreferred: string;
@@ -43,7 +41,7 @@ declare const ASAuthorizationScopeEmail: string;
 
 declare const ASCredentialIdentityStoreErrorDomain: string;
 
-declare const ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB: string;
+declare const ASExtensionLocalizedFailureReasonErrorKey: string;
 
 declare const ASAuthorizationPublicKeyCredentialAttestationKindEnterprise: string;
 
@@ -53,9 +51,11 @@ declare const ASCOSEAlgorithmIdentifierES256: number;
 
 declare const ASExtensionErrorDomain: string;
 
-declare const ASExtensionLocalizedFailureReasonErrorKey: string;
-
 declare const ASAuthorizationScopeFullName: string;
+
+declare const ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB: string;
+
+declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged: string;
 
 declare const ASAuthorizationPublicKeyCredentialResidentKeyPreferenceRequired: string;
 
@@ -109,17 +109,17 @@ declare const ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement: {
   Preferred: 1,
 };
 
-declare const ASCredentialIdentityStoreErrorCode: {
-  InternalError: 0,
-  StoreDisabled: 1,
-  StoreBusy: 2,
-};
-
 declare const ASAuthorizationAppleIDProviderCredentialState: {
   Revoked: 0,
   Authorized: 1,
   NotFound: 2,
   Transferred: 3,
+};
+
+declare const ASCredentialIdentityStoreErrorCode: {
+  InternalError: 0,
+  StoreDisabled: 1,
+  StoreBusy: 2,
 };
 
 declare const ASPublicKeyCredentialClientDataCrossOriginValue: {
@@ -178,8 +178,6 @@ declare const ASAuthorizationError: {
   MatchedExcludedCredential: 1006,
   CredentialImport: 1007,
   CredentialExport: 1008,
-  PreferSignInWithApple: 1009,
-  DeviceNotConfiguredForPasskeyCreation: 1010,
 };
 
 declare function ASAuthorizationAllSupportedPublicKeyCredentialDescriptorTransports(): NSArray;
@@ -902,14 +900,6 @@ declare class ASCredentialProviderViewController extends UIViewController {
   prepareInterfaceForPasskeyRegistration(registrationRequest: ASCredentialRequest): void;
 
   performPasskeyRegistrationWithoutUserInteractionIfPossible(registrationRequest: ASPasskeyCredentialRequest): void;
-
-  reportPublicKeyCredentialUpdateForRelyingPartyUserHandleNewName(relyingParty: string, userHandle: NSData, newName: string): void;
-
-  reportUnknownPublicKeyCredentialForRelyingPartyCredentialID(relyingParty: string, credentialID: NSData): void;
-
-  reportAllAcceptedPublicKeyCredentialsForRelyingPartyUserHandleAcceptedCredentialIDs(relyingParty: string, userHandle: NSData, acceptedCredentialIDs: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  reportUnusedPasswordCredentialForDomainUserName(domain: string, userName: string): void;
 }
 
 declare class ASAuthorizationSingleSignOnProvider extends NSObject implements ASAuthorizationProvider {
@@ -2282,9 +2272,6 @@ declare class ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput extends
   readonly didWrite: boolean;
 }
 
-declare class ASAccountAuthenticationModificationRequest extends NSObject {
-}
-
 declare class ASAuthorizationProviderExtensionAuthorizationResult extends NSObject {
   initWithHTTPAuthorizationHeaders(httpAuthorizationHeaders: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
@@ -2468,6 +2455,9 @@ declare class ASPasskeyCredentialRequest extends NSObject implements ASCredentia
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class ASAccountAuthenticationModificationRequest extends NSObject {
 }
 
 declare class ASAuthorizationPlatformPublicKeyCredentialDescriptor extends NSObject implements ASAuthorizationPublicKeyCredentialDescriptor {

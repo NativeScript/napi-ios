@@ -28,24 +28,6 @@ declare const CNCinematicErrorCode: {
   Cancelled: 7,
 };
 
-declare const CNSpatialAudioRenderingStyle: {
-  Cinematic: 0,
-  Studio: 1,
-  InFrame: 2,
-  CinematicBackgroundStem: 3,
-  CinematicForegroundStem: 4,
-  StudioForegroundStem: 5,
-  InFrameForegroundStem: 6,
-  Standard: 7,
-  StudioBackgroundStem: 8,
-  InFrameBackgroundStem: 9,
-};
-
-declare const CNSpatialAudioContentType: {
-  Stereo: 0,
-  Spatial: 1,
-};
-
 declare const CNRenderingQuality: {
   Thumbnail: 0,
   Preview: 1,
@@ -237,28 +219,6 @@ declare class CNScriptFrame extends NSObject implements NSCopying {
   bestDetectionForGroupID(detectionGroupID: number): CNDetection;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class CNAssetSpatialAudioInfo extends NSObject {
-  static readonly isSupported: boolean;
-
-  static checkIfContainsSpatialAudioCompletionHandler(asset: AVAsset, completionHandler: (p1: boolean) => void): void;
-
-  static loadFromAssetCompletionHandler(asset: AVAsset, completionHandler: (p1: CNAssetSpatialAudioInfo, p2: NSError) => void | null): void;
-
-  readonly defaultSpatialAudioTrack: AVAssetTrack;
-
-  readonly defaultEffectIntensity: number;
-
-  readonly defaultRenderingStyle: interop.Enum<typeof CNSpatialAudioRenderingStyle>;
-
-  readonly spatialAudioMixMetadata: NSData;
-
-  audioMixWithEffectIntensityRenderingStyle(effectIntensity: number, renderingStyle: interop.Enum<typeof CNSpatialAudioRenderingStyle>): AVAudioMix;
-
-  assetReaderOutputSettingsForContentType(contentType: interop.Enum<typeof CNSpatialAudioContentType>): NSDictionary;
-
-  assetWriterInputSettingsForContentType(contentType: interop.Enum<typeof CNSpatialAudioContentType>): NSDictionary;
 }
 
 declare class CNObjectTracker extends NSObject {

@@ -121,21 +121,6 @@ declare class TW_EVENT {
   TWMessage: number;
 }
 
-declare class TW_CIECOLOR {
-  constructor(init?: TW_CIECOLOR);
-  ColorSpace: number;
-  LowEndian: number;
-  DeviceDependent: number;
-  VersionNumber: number;
-  StageABC: TW_TRANSFORMSTAGE;
-  StageLMN: TW_TRANSFORMSTAGE;
-  WhitePoint: TW_CIEPOINT;
-  BlackPoint: TW_CIEPOINT;
-  WhitePaper: TW_CIEPOINT;
-  BlackInk: TW_CIEPOINT;
-  Samples: unknown /* const array */;
-}
-
 declare class TW_CAPABILITY {
   constructor(init?: TW_CAPABILITY);
   Cap: number;
@@ -244,11 +229,6 @@ declare class TW_DECODEFUNCTION {
   SampleCount: TW_FIX32;
 }
 
-declare class TW_RGBRESPONSE {
-  constructor(init?: TW_RGBRESPONSE);
-  Response: unknown /* const array */;
-}
-
 declare class TW_TWUNKDSENTRYPARAMS {
   constructor(init?: TW_TWUNKDSENTRYPARAMS);
   destFlag: number;
@@ -309,10 +289,30 @@ declare class TW_CUSTOMDSDATA {
   hData: interop.Pointer;
 }
 
+declare class TW_RGBRESPONSE {
+  constructor(init?: TW_RGBRESPONSE);
+  Response: unknown /* const array */;
+}
+
 declare class TW_AUDIOINFO {
   constructor(init?: TW_AUDIOINFO);
   Name: unknown /* const array */;
   Reserved: number;
+}
+
+declare class TW_CIECOLOR {
+  constructor(init?: TW_CIECOLOR);
+  ColorSpace: number;
+  LowEndian: number;
+  DeviceDependent: number;
+  VersionNumber: number;
+  StageABC: TW_TRANSFORMSTAGE;
+  StageLMN: TW_TRANSFORMSTAGE;
+  WhitePoint: TW_CIEPOINT;
+  BlackPoint: TW_CIEPOINT;
+  WhitePaper: TW_CIEPOINT;
+  BlackInk: TW_CIEPOINT;
+  Samples: unknown /* const array */;
 }
 
 declare class TW_FILESYSTEM {
@@ -351,15 +351,15 @@ declare class TW_STATUS {
 declare class TW_PENDINGXFERS {
   constructor(init?: TW_PENDINGXFERS);
   Count: number;
-  TW_JOBCONTROL: unnamed_15227971832212315252;
+  TW_JOBCONTROL: unnamed_3104997768750170193;
 }
 
-type unnamed_15227971832212315252Descriptor = 
+type unnamed_3104997768750170193Descriptor = 
   | { EOJ: number }
   | { Reserved: number };
 
-declare class unnamed_15227971832212315252 {
-  constructor(init?: unnamed_15227971832212315252Descriptor);
+declare class unnamed_3104997768750170193 {
+  constructor(init?: unnamed_3104997768750170193Descriptor);
   EOJ: number;
   Reserved: number;
 }

@@ -1,21 +1,17 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const PHASESpatialCategoryLateReverb: string;
-
 declare const PHASESpatialCategoryEarlyReflections: string;
 
 declare const PHASEErrorDomain: string;
+
+declare const PHASESpatialCategoryLateReverb: string;
 
 declare const PHASESpatialCategoryDirectPathTransmission: string;
 
 declare const PHASEAssetErrorDomain: string;
 
 declare const PHASESoundEventErrorDomain: string;
-
-declare const PHASEMediumPreset: {
-  PHASEMediumPresetAir: 1835286898,
-};
 
 declare const PHASEMaterialPreset: {
   Cardboard: 1833136740,
@@ -24,6 +20,10 @@ declare const PHASEMaterialPreset: {
   Concrete: 1833132914,
   Drywall: 1833202295,
   Wood: 1834448228,
+};
+
+declare const PHASEAutomaticHeadTrackingFlags: {
+  PHASEAutomaticHeadTrackingFlagOrientation: 1,
 };
 
 declare const PHASEPlaybackMode: {
@@ -104,9 +104,9 @@ declare const PHASEUpdateMode: {
   Manual: 1,
 };
 
-declare const PHASEAutomaticHeadTrackingFlags: {
-  Orientation: 1,
-  Position: 2,
+declare const PHASENormalizationMode: {
+  None: 0,
+  Dynamic: 1,
 };
 
 declare const PHASEReverbPreset: {
@@ -160,15 +160,14 @@ declare const PHASEPushStreamCompletionCallbackCondition: {
   PHASEPushStreamCompletionDataRendered: 0,
 };
 
-declare const PHASENormalizationMode: {
-  None: 0,
-  Dynamic: 1,
-};
-
 declare const PHASESoundEventSeekHandlerReason: {
   Failure: 0,
   FailureSeekAlreadyInProgress: 1,
   SeekSuccessful: 2,
+};
+
+declare const PHASEMediumPreset: {
+  PHASEMediumPresetAir: 1835286898,
 };
 
 declare class PHASESource extends PHASEObject {
@@ -228,8 +227,6 @@ declare class PHASEEngine extends NSObject {
 
   readonly activeGroupPreset: PHASEGroupPreset;
 
-  readonly lastRenderTime: AVAudioTime;
-
   setOutputSpatializationMode(outputSpatializationMode: interop.Enum<typeof PHASESpatializationMode>): void;
 
   setDefaultMedium(defaultMedium: PHASEMedium): void;
@@ -250,17 +247,11 @@ declare class PHASESoundEvent extends NSObject {
 
   startWithCompletion(handler: (p1: interop.Enum<typeof PHASESoundEventStartHandlerReason>) => void | null): void;
 
-  startAtTimeCompletion(when: AVAudioTime | null, handler: (p1: interop.Enum<typeof PHASESoundEventStartHandlerReason>) => void | null): void;
-
   seekToTimeCompletion(time: number, handler: (p1: interop.Enum<typeof PHASESoundEventSeekHandlerReason>) => void | null): void;
-
-  seekToTimeResumeAtEngineTimeCompletion(time: number, engineTime: AVAudioTime, handler: (p1: interop.Enum<typeof PHASESoundEventSeekHandlerReason>) => void | null): void;
 
   pause(): void;
 
   resume(): void;
-
-  resumeAtTime(time: AVAudioTime | null): void;
 
   stopAndInvalidate(): void;
 
@@ -486,6 +477,16 @@ declare class PHASESpatialMixerDefinition extends PHASEMixerDefinition {
   setListenerDirectivityModelParameters(listenerDirectivityModelParameters: PHASEDirectivityModelParameters | null): void;
 
   setSourceDirectivityModelParameters(sourceDirectivityModelParameters: PHASEDirectivityModelParameters | null): void;
+}
+
+declare class PHASEMappedMetaParameterDefinition extends PHASENumberMetaParameterDefinition {
+  initWithInputMetaParameterDefinitionEnvelopeIdentifier(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope, identifier: string): this;
+
+  initWithInputMetaParameterDefinitionEnvelope(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope): this;
+
+  readonly envelope: PHASEEnvelope;
+
+  readonly inputMetaParameterDefinition: PHASENumberMetaParameterDefinition;
 }
 
 declare class PHASEStringMetaParameterDefinition extends PHASEMetaParameterDefinition {
@@ -760,16 +761,6 @@ declare class PHASEPushStreamNode extends PHASEStreamNode {
   scheduleBufferAtTimeOptions(buffer: AVAudioPCMBuffer, when: AVAudioTime | null, options: interop.Enum<typeof PHASEPushStreamBufferOptions>): void;
 
   scheduleBufferAtTimeOptionsCompletionCallbackTypeCompletionHandler(buffer: AVAudioPCMBuffer, when: AVAudioTime | null, options: interop.Enum<typeof PHASEPushStreamBufferOptions>, completionCallbackType: interop.Enum<typeof PHASEPushStreamCompletionCallbackCondition>, completionHandler: (p1: interop.Enum<typeof PHASEPushStreamCompletionCallbackCondition>) => void): void;
-}
-
-declare class PHASEMappedMetaParameterDefinition extends PHASENumberMetaParameterDefinition {
-  initWithInputMetaParameterDefinitionEnvelopeIdentifier(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope, identifier: string): this;
-
-  initWithInputMetaParameterDefinitionEnvelope(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope): this;
-
-  readonly envelope: PHASEEnvelope;
-
-  readonly inputMetaParameterDefinition: PHASENumberMetaParameterDefinition;
 }
 
 declare class PHASENumberMetaParameter extends PHASEMetaParameter {

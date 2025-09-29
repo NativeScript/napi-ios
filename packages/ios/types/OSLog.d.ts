@@ -2,6 +2,10 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
+declare const OSLogEnumeratorOptions: {
+  OSLogEnumeratorReverse: 1,
+};
+
 declare const OSLogMessageComponentArgumentCategory: {
   Undefined: 0,
   Data: 1,
@@ -21,10 +25,6 @@ declare const OSLogEntryStoreCategory: {
   LongTerm7: 6,
   LongTerm14: 7,
   LongTerm30: 8,
-};
-
-declare const OSLogEnumeratorOptions: {
-  OSLogEnumeratorReverse: 1,
 };
 
 declare const OSLogStoreScope: {

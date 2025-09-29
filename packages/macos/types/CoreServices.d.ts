@@ -1,5 +1,33 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const cfragFileSizeErr: number;
+
+declare const kBusyErr: number;
+
+declare const fsSBFlAttribBit: number;
+
+declare const errOSACorruptTerminology: number;
+
+declare const kMPQueueInfoVersion: number;
+
+declare const fiLigature: number;
+
+declare const kDefaultChangedKCEvent: number;
+
+declare const gestaltATSUVersion: number;
+
+declare const kSuspendRevoke: number;
+
+declare const kMachineNameStrID: number;
+
+declare const keyAEFlipVertical: number;
+
+declare const kTextEncodingWindowsArabic: number;
+
+declare const verLapland: number;
+
+declare const kDeleteKCEventMask: number;
+
 declare const gestaltHasIRRemote: number;
 
 declare const kAppleScriptBadgeIcon: number;
@@ -30,15 +58,11 @@ declare const kInVBLTaskMask: number;
 
 declare const kUTTypeAssemblyLanguageSource: interop.Pointer;
 
-declare const gestaltHardwareVendorCode: number;
-
 declare const verFrBelgium: number;
 
 declare const kSmall4BitData: number;
 
 declare const kCertUsageDecryptAskAndAdd: number;
-
-declare const typeNull: number;
 
 declare const kEIOErr: number;
 
@@ -67,8 +91,6 @@ declare const pTextColor: number;
 declare const kPEFRelocUndefinedOpcode: number;
 
 declare const kUnicodeVerticalFormBit: number;
-
-declare const tsmTSHasNoMenuErr: number;
 
 declare const kPOSIXErrorEADDRINUSE: number;
 
@@ -278,6 +300,8 @@ declare const errCpplength_error: number;
 
 declare const kForkInfoFlagsWriteBit: number;
 
+declare const langAzerbaijanRoman: number;
+
 declare const kAERemoteProcessNameKey: interop.Pointer;
 
 declare const kOTClientNotInittedErr: number;
@@ -331,6 +355,8 @@ declare const kUnicodeNoComposedVariant: number;
 declare const kATSUFontsMatched: number;
 
 declare const keySelection: number;
+
+declare const gestalt68040FPU: number;
 
 declare const kGetDebugOption: number;
 
@@ -506,8 +532,6 @@ declare const platformPowerPCNativeEntryPoint: number;
 
 declare const kRegisterResultLocationPhase: number;
 
-declare const kPOSIXErrorENODATA: number;
-
 declare const hmNoBalloonUp: number;
 
 declare const kMPAllocate8ByteAligned: number;
@@ -567,6 +591,8 @@ declare const kTextEncodingUnicodeV12_1: number;
 declare const cantGetFlavorErr: number;
 
 declare const kUTTypeM3UPlaylist: interop.Pointer;
+
+declare const gestaltDragMgrHasImageSupport: number;
 
 declare const keyAEXMLReplyData: number;
 
@@ -690,8 +716,6 @@ declare const gestalt68000: number;
 
 declare const cRangeErr: number;
 
-declare const fsSBFlAttribBit: number;
-
 declare const gestaltDesktopPicturesInstalled: number;
 
 declare const numberFormattingUnOrdredCurrencyRangeErr: number;
@@ -736,6 +760,8 @@ declare const OSATokenTooLong: number;
 
 declare const qtXMLParseErr: number;
 
+declare const invalidNodeFormatErr: number;
+
 declare const badDBtSlp: number;
 
 declare const typeEventInfo: number;
@@ -769,6 +795,8 @@ declare const kEWOULDBLOCKErr: number;
 declare const errKCBufferTooSmall: number;
 
 declare const kPEFRelocWithSkipMaxRelocCount: number;
+
+declare const kRANCPRejectedbyPeer: number;
 
 declare const kAppleTalkIcon: number;
 
@@ -968,8 +996,6 @@ declare const kFSCatInfoAttrMod: number;
 
 declare const errControlDoesntSupportFocus: number;
 
-declare const kAppleSharePasswordKCItemClass: number;
-
 declare const controllerHasFixedHeight: number;
 
 declare const kControlPanelDisabledFolderIcon: number;
@@ -1007,6 +1033,8 @@ declare const gestaltATSUFallbacksObjFeatures: number;
 declare const cantReceiveFromSynthesizerOSErr: number;
 
 declare const eSerial: number;
+
+declare const tsmAlreadyRegisteredErr: number;
 
 declare const scrapFlavorNotFoundErr: number;
 
@@ -1075,8 +1103,6 @@ declare const cfragStdFolderErr: number;
 declare const kAEQuitAll: number;
 
 declare const gestaltALMHasRescanNotifiers: number;
-
-declare const gestaltWorldScriptIIVersion: number;
 
 declare const langTigrinya: number;
 
@@ -1154,8 +1180,6 @@ declare const kOTBadFlagErr: number;
 
 declare const kFSEventStreamCreateFlagIgnoreSelf: number;
 
-declare const kMacCroatianEuroSignVariant: number;
-
 declare const keySenderEUIDAttr: number;
 
 declare const kPOSIXErrorEPROCLIM: number;
@@ -1229,6 +1253,8 @@ declare const themeInvalidBrushErr: number;
 declare const hwParamErr: number;
 
 declare const dsForcedQuit: number;
+
+declare const tsmTSHasNoMenuErr: number;
 
 declare const gestaltCPU603e: number;
 
@@ -1318,6 +1344,10 @@ declare const kNavInvalidSystemConfigErr: number;
 
 declare const kCollectionUser8Mask: number;
 
+declare const kFSCatInfoFSFileSecurityRef: number;
+
+declare const kMDItemEXIFGPSVersion: interop.Pointer;
+
 declare const gestaltMacII: number;
 
 declare const kPOSIXErrorEHOSTUNREACH: number;
@@ -1371,6 +1401,8 @@ declare const kPrinterDescriptionFolderIcon: number;
 declare const telDetAlreadyOn: number;
 
 declare const kMPCreateTaskTakesAllExceptionsMask: number;
+
+declare const kATSUQuickDrawTextErr: number;
 
 declare const kTextEncodingUnicodeV4_0: number;
 
@@ -1444,8 +1476,6 @@ declare const errAECantSupplyType: number;
 
 declare const gestaltExtendedWindowAttributesBit: number;
 
-declare const kATSUQuickDrawTextErr: number;
-
 declare const romanSysFond: number;
 
 declare const kFSEventStreamEventIdSinceNow: number;
@@ -1453,6 +1483,8 @@ declare const kFSEventStreamEventIdSinceNow: number;
 declare const smInitStatVErr: number;
 
 declare const typeAppParameters: number;
+
+declare const kMacJapanesePostScriptScrnVariant: number;
 
 declare const gestaltFolderMgrSupportsExtendedCalls: number;
 
@@ -1586,23 +1618,7 @@ declare const desktopIconResource: number;
 
 declare const kTextEncodingWindowsVietnamese: number;
 
-declare const gestaltProF16ANSIKbd: number;
-
-declare const keyKeyboard: number;
-
-declare const kNSLBadServiceTypeErr: number;
-
-declare const gestaltTVAttr: number;
-
-declare const kFSCatInfoFSFileSecurityRef: number;
-
-declare const kMDItemEXIFGPSVersion: interop.Pointer;
-
-declare const kLSLaunchInProgressErr: number;
-
 declare const kCSIdentityQueryEventResultsChanged: number;
-
-declare const kAEUndo: number;
 
 declare const typeCString: number;
 
@@ -1656,25 +1672,19 @@ declare const kTSMInsideOfActiveInputArea: number;
 
 declare const platformPowerPC: number;
 
-declare const invalidNodeFormatErr: number;
-
-declare const kUTTypeFlatRTFD: interop.Pointer;
-
 declare const kFSOperationTotalBytesKey: interop.Pointer;
 
 declare const smCentralEuroRoman: number;
 
 declare const kDefaultChangedKCEventMask: number;
 
+declare const tokLeftQuote: number;
+
 declare const circumflexUprI: number;
 
 declare const fetchReference: number;
 
 declare const kAEFormulaProtect: number;
-
-declare const kFolderManagerLastDomain: number;
-
-declare const kVoicesFolderIcon: number;
 
 declare const tokenOK: number;
 
@@ -1868,10 +1878,6 @@ declare const kFSEventStreamEventFlagUserDropped: number;
 
 declare const kFSEventStreamEventFlagNone: number;
 
-declare const kUTTypeMPEG4Audio: interop.Pointer;
-
-declare const kFSEventStreamCreateDeviceState: number;
-
 declare const kFSEventStreamCreateWithDocID: number;
 
 declare const kFSEventStreamCreateFlagFullHistory: number;
@@ -1891,6 +1897,8 @@ declare const kFSEventStreamCreateFlagWatchRoot: number;
 declare const kSKSearchOptionNoRelevanceScores: number;
 
 declare const kSKSearchOptionDefault: number;
+
+declare const gestaltTranslationMgrHintOrder: number;
 
 declare const kSKLanguageTypes: interop.Pointer;
 
@@ -2025,6 +2033,8 @@ declare const kUTImportedTypeDeclarationsKey: interop.Pointer;
 declare const kMDItemLyricist: interop.Pointer;
 
 declare const kMDItemAudioEncodingApplication: interop.Pointer;
+
+declare const kioFCBOwnClumpBit: number;
 
 declare const kMDItemTempo: interop.Pointer;
 
@@ -2278,6 +2288,8 @@ declare const kDMMirroringBlocked: number;
 
 declare const kUTTypeWebArchive: interop.Pointer;
 
+declare const kUTTypeFlatRTFD: interop.Pointer;
+
 declare const kUTTypeBinaryPropertyList: interop.Pointer;
 
 declare const kUTTypeXMLPropertyList: interop.Pointer;
@@ -2373,6 +2385,8 @@ declare const kLSServerCommunicationErr: number;
 declare const kUTTypePlainText: interop.Pointer;
 
 declare const kLSNotRegisteredErr: number;
+
+declare const kLSLaunchInProgressErr: number;
 
 declare const kLSDataTooOldErr: number;
 
@@ -2493,6 +2507,8 @@ declare const kRecentServersFolderIcon: number;
 declare const kRecentApplicationsFolderIcon: number;
 
 declare const kPrinterDriverFolderIcon: number;
+
+declare const gestaltPowerBook500PPCUpgrade: number;
 
 declare const kPreferencesFolderIcon: number;
 
@@ -2691,6 +2707,8 @@ declare const genericFolderIconResource: number;
 declare const genericDocumentIconResource: number;
 
 declare const kAppleMenuFolderIconResource: number;
+
+declare const cFixedRectangle: number;
 
 declare const kWSFaultExtra: interop.Object;
 
@@ -2900,8 +2918,6 @@ declare const kPasswordChangedKCEventMask: number;
 
 declare const kUpdateKCEventMask: number;
 
-declare const kDeleteKCEventMask: number;
-
 declare const kAddKCEventMask: number;
 
 declare const fsQType: number;
@@ -2915,10 +2931,6 @@ declare const kLockKCEventMask: number;
 declare const gestaltALMAttr: number;
 
 declare const kDataAccessKCEvent: number;
-
-declare const fiLigature: number;
-
-declare const kDefaultChangedKCEvent: number;
 
 declare const kDeleteKCEvent: number;
 
@@ -3710,25 +3722,19 @@ declare const pIsModified: number;
 
 declare const pIsFrontProcess: number;
 
-declare const pHasTitleBar: number;
+declare const pInsertionLoc: number;
 
-declare const kInternationResourcesIcon: number;
+declare const kComponentCanDoSelect: number;
 
-declare const pGraphicObjects: number;
+declare const gestaltOpenTptNetworkSetupSupportsMultihoming: number;
 
-declare const kAENullEvent: number;
+declare const pIndex: number;
 
-declare const pFillColor: number;
+declare const kTextEncodingDOSTurkish: number;
 
-declare const pEndPoint: number;
+declare const kMDItemGPSDestBearing: interop.Pointer;
 
-declare const pEnabled: number;
-
-declare const cBusAddress: number;
-
-declare const pDefaultType: number;
-
-declare const pDashStyle: number;
+declare const fsSBDrCrDat: number;
 
 declare const gestaltOSLCompliantFinder: number;
 
@@ -3740,23 +3746,37 @@ declare const pCornerCurveHeight: number;
 
 declare const pContents: number;
 
-declare const gestaltNotificationPresent: number;
+declare const errAENotASpecialFunction: number;
 
-declare const pColorTable: number;
+declare const kExitIdle: number;
 
-declare const smTransPreDoubleByting: number;
+declare const gestaltPortableUSBJISKbd: number;
 
-declare const pColor: number;
+declare const gestaltGraphicsIsPowerPC: number;
 
-declare const gestaltPerforma46x: number;
+declare const kClassicDesktopFolderType: number;
 
-declare const pClass: number;
-
-declare const pBestType: number;
+declare const pBackgroundPattern: number;
 
 declare const pBackgroundColor: number;
 
+declare const smfDisableKeyScriptSync: number;
+
+declare const illegalScrapFlavorFlagsErr: number;
+
+declare const pArcAngle: number;
+
+declare const kUTTypePluginBundle: interop.Pointer;
+
+declare const typeElemInfo: number;
+
+declare const kUCTextBreakIterateMask: number;
+
+declare const keyHighLevelClass: number;
+
 declare const keyDriveNumber: number;
+
+declare const keyKeyboard: number;
 
 declare const keyKeyCode: number;
 
@@ -3837,8 +3857,6 @@ declare const keyAEInsertHere: number;
 declare const typeDecimalStruct: number;
 
 declare const keyAEImageQuality: number;
-
-declare const keyAEFlipVertical: number;
 
 declare const keyAEElements: number;
 
@@ -4104,8 +4122,6 @@ declare const defaultComponentAnyFlagsAnyManufacturer: number;
 
 declare const cInsertionLoc: number;
 
-declare const gestaltDragMgrHasImageSupport: number;
-
 declare const kPEFRelocImportRun: number;
 
 declare const cGraphicText: number;
@@ -4221,8 +4237,6 @@ declare const kOwnerName2ID: number;
 declare const kAEDirectCall: number;
 
 declare const kAEUnknownSource: number;
-
-declare const pIndex: number;
 
 declare const kAEStopRecording: number;
 
@@ -4542,8 +4556,6 @@ declare const kMPEventInfoVersion: number;
 
 declare const kMPSemaphoreInfoVersion: number;
 
-declare const kMPQueueInfoVersion: number;
-
 declare const kResFileNotOpened: number;
 
 declare const noMPPErr: number;
@@ -4802,6 +4814,8 @@ declare const kWhereToEmptyTrashFolderType: number;
 
 declare const kLastDomainConstant: number;
 
+declare const kFolderManagerLastDomain: number;
+
 declare const gestaltMacQuadra660AV: number;
 
 declare const gestaltX86HasSupplementalSSE3: number;
@@ -4856,9 +4870,11 @@ declare const kUnicodeForceASCIIRangeMask: number;
 
 declare const kPEFPkDataRepeatBlock: number;
 
-declare const kUnicodeKeepInfoMask: number;
+declare const pFillColor: number;
 
-declare const kATSUUnsupportedStreamFormatErr: number;
+declare const kAENullEvent: number;
+
+declare const kUnicodeKeepInfoMask: number;
 
 declare const kAudioComponentsFolderType: number;
 
@@ -4904,14 +4920,6 @@ declare const gestaltQuickTimeThreadSafeGraphicsImport: number;
 
 declare const GREATERTHAN: number;
 
-declare const kUTTypePluginBundle: interop.Pointer;
-
-declare const typeElemInfo: number;
-
-declare const keyHighLevelClass: number;
-
-declare const kUCTextBreakIterateMask: number;
-
 declare const kUCTextBreakGoBackwardsMask: number;
 
 declare const kUCTextBreakLeadingEdgeMask: number;
@@ -4931,6 +4939,10 @@ declare const diaeresisUprY: number;
 declare const kUCTextBreakClusterMask: number;
 
 declare const kUCTSOptionsNoneMask: number;
+
+declare const kInternationResourcesIcon: number;
+
+declare const pGraphicObjects: number;
 
 declare const kUCTSDirectionNext: number;
 
@@ -5115,6 +5127,10 @@ declare const gestaltPMgrSCC: number;
 declare const kMPHighLevelDebugger: number;
 
 declare const kMPTaskReady: number;
+
+declare const kFSOperationUserVisibleObjectsCompleteKey: interop.Pointer;
+
+declare const pID: number;
 
 declare const kMPTaskResumeMask: number;
 
@@ -5348,8 +5364,6 @@ declare const kioFCBModifiedMask: number;
 
 declare const kioFCBOwnClumpMask: number;
 
-declare const kioFCBOwnClumpBit: number;
-
 declare const kUCGenlCatPunctOther: number;
 
 declare const kioFCBSharedWriteMask: number;
@@ -5456,10 +5470,6 @@ declare const kAppleMenuFolderIcon: number;
 
 declare const kFSOperationThroughputKey: interop.Pointer;
 
-declare const pID: number;
-
-declare const kFSOperationUserVisibleObjectsCompleteKey: interop.Pointer;
-
 declare const kFSOperationTotalObjectsKey: interop.Pointer;
 
 declare const kFSOperationStageRunning: number;
@@ -5534,8 +5544,6 @@ declare const kUSBUnknownNotification: number;
 
 declare const volMountExtendedFlagsBit: number;
 
-declare const pictInfoIDErr: number;
-
 declare const AppleShareMediaType: number;
 
 declare const kFSVolFlagJournalingActiveBit: number;
@@ -5567,8 +5575,6 @@ declare const kCertUsageShift: number;
 declare const fsSBDrParID: number;
 
 declare const kFSIterateSubtree: number;
-
-declare const kTextEncodingWindowsArabic: number;
 
 declare const kFSNodeInSharedMask: number;
 
@@ -5749,12 +5755,6 @@ declare const fsSBAccessDate: number;
 declare const kISpSystemListErr: number;
 
 declare const fsSBDrFndrInfo: number;
-
-declare const kTextEncodingDOSTurkish: number;
-
-declare const kMDItemGPSDestBearing: interop.Pointer;
-
-declare const fsSBDrCrDat: number;
 
 declare const gestaltPowerPCHasGraphicsInstructions: number;
 
@@ -6058,6 +6058,10 @@ declare const gestaltWindowMinimizeToDockMask: number;
 
 declare const gestaltHasWindowBufferingMask: number;
 
+declare const pColorTable: number;
+
+declare const gestaltNotificationPresent: number;
+
 declare const kMacArabicTrueTypeVariant: number;
 
 declare const smSlotOOBErr: number;
@@ -6140,8 +6144,6 @@ declare const gestaltATSUGlyphBoundsFeature: number;
 
 declare const kUCBidiCatLeftRight: number;
 
-declare const cFixedRectangle: number;
-
 declare const badDragFlavorErr: number;
 
 declare const gestaltATSUUpdate7: number;
@@ -6153,8 +6155,6 @@ declare const gestaltATSUUpdate5: number;
 declare const gestaltATSUUpdate1: number;
 
 declare const gestaltOriginalATSUVersion: number;
-
-declare const gestaltATSUVersion: number;
 
 declare const laEnvironmentNotFoundErr: number;
 
@@ -6562,6 +6562,8 @@ declare const gestaltMiscAttr: number;
 
 declare const gestaltMenuMgrMoreThanFiveMenusDeepMask: number;
 
+declare const gestaltMenuMgrMultipleItemsWithCommandIDMask: number;
+
 declare const gestaltMenuMgrAquaLayoutMask: number;
 
 declare const kTextEncodingDOSLatinUS: number;
@@ -6577,8 +6579,6 @@ declare const gestaltMediaBay: number;
 declare const gestaltTE2: number;
 
 declare const gestaltSMPMailerVersion: number;
-
-declare const kMachineNameStrID: number;
 
 declare const gestaltQuadra700: number;
 
@@ -6619,8 +6619,6 @@ declare const gestaltPowerBook3400: number;
 declare const gestaltPowerBook5300: number;
 
 declare const fullTrashIconResource: number;
-
-declare const gestaltPowerBook500PPCUpgrade: number;
 
 declare const kResolveAliasFileNoUI: number;
 
@@ -6729,6 +6727,10 @@ declare const kRARemoteAccessNotReady: number;
 declare const gestaltPowerMac5260: number;
 
 declare const gestaltAWS8150_110: number;
+
+declare const kRAATalkInactive: number;
+
+declare const gestaltPowerMac8100_110: number;
 
 declare const kAEISAction: number;
 
@@ -6960,6 +6962,8 @@ declare const gestaltFileMappingAttr: number;
 
 declare const kPEFRelocLgRepeat: number;
 
+declare const kAppleSharePasswordKCItemClass: number;
+
 declare const errAEAccessorNotFound: number;
 
 declare const gestaltOSXFBCCurrentVersion: number;
@@ -7103,10 +7107,6 @@ declare const gestaltColorSync26: number;
 declare const gestaltColorSync213: number;
 
 declare const gestaltColorSync211: number;
-
-declare const kComponentCanDoSelect: number;
-
-declare const gestaltOpenTptNetworkSetupSupportsMultihoming: number;
 
 declare const gestaltColorSync20: number;
 
@@ -7364,8 +7364,6 @@ declare const kDSpFrameRateNotReadyErr: number;
 
 declare const cannotMoveAttachedController: number;
 
-declare const kBusyErr: number;
-
 declare const kRegisterD4: number;
 
 declare const fsSBSkipPackageContentsBit: number;
@@ -7375,8 +7373,6 @@ declare const kRegisterD2: number;
 declare const kCFM68kRTA: number;
 
 declare const kPowerPCRTA: number;
-
-declare const pArcAngle: number;
 
 declare const kioACAccessUserReadMask: number;
 
@@ -7588,6 +7584,8 @@ declare const kInternetLocationMail: number;
 
 declare const kDOSJapanesePalmVariant: number;
 
+declare const pEndPoint: number;
+
 declare const siUnknownQuality: number;
 
 declare const kAEOpenDocuments: number;
@@ -7622,13 +7620,13 @@ declare const menuPropertyInvalidErr: number;
 
 declare const kMacArabicThuluthVariant: number;
 
-declare const kMacJapanesePostScriptScrnVariant: number;
-
 declare const kMacJapaneseBasicVariant: number;
 
 declare const kMacRomanianDefaultVariant: number;
 
 declare const bNoRootTimes: number;
+
+declare const kMacCroatianEuroSignVariant: number;
 
 declare const kMacIcelandicTTCurrSignVariant: number;
 
@@ -7649,6 +7647,10 @@ declare const kMountedFolderAliasType: number;
 declare const kMacCyrillicDefaultVariant: number;
 
 declare const kMacRomanCurrencySignVariant: number;
+
+declare const cBusAddress: number;
+
+declare const pDefaultType: number;
 
 declare const kTextEncodingNextStepJapanese: number;
 
@@ -7786,8 +7788,6 @@ declare const kTextEncodingISOLatin5: number;
 
 declare const ForwardLooping: number;
 
-declare const cfragFileSizeErr: number;
-
 declare const unicodeNotFoundErr: number;
 
 declare const kTextEncodingISOLatinHebrew: number;
@@ -7817,6 +7817,8 @@ declare const kFSCatInfoSetOwnership: number;
 declare const kTextEncodingUnicodeV11_0: number;
 
 declare const kTextEncodingUnicodeV8_0: number;
+
+declare const pFormula: number;
 
 declare const kTextEncodingUnicodeV6_3: number;
 
@@ -7993,6 +7995,8 @@ declare const kPOSIXErrorEACCES: number;
 declare const kPOSIXErrorENOMEM: number;
 
 declare const kPOSIXErrorEDEADLK: number;
+
+declare const pDashStyle: number;
 
 declare const internalComponentErr: number;
 
@@ -8242,6 +8246,8 @@ declare const kNSpAddPlayerFailedErr: number;
 
 declare const kNSpNoHostVolunteersErr: number;
 
+declare const kATSUUnsupportedStreamFormatErr: number;
+
 declare const rcDBNull: number;
 
 declare const kNSpNoPlayersErr: number;
@@ -8441,6 +8447,8 @@ declare const dsNoPatch: number;
 declare const kHIDInvalidReportLengthErr: number;
 
 declare const kSharingPrivsWritableIcon: number;
+
+declare const gestaltWorldScriptIIVersion: number;
 
 declare const dayLdingZ: number;
 
@@ -8872,13 +8880,9 @@ declare const kATSUInvalidTextRangeErr: number;
 
 declare const kRANotEnabled: number;
 
-declare const kRANCPRejectedbyPeer: number;
-
 declare const kUSBDeviceDisconnected: number;
 
 declare const kRAExtAuthenticationFailed: number;
-
-declare const kRAATalkInactive: number;
 
 declare const kRAPPPUserDisconnected: number;
 
@@ -9083,6 +9087,8 @@ declare const genericSuitcaseIconResource: number;
 declare const kUTTypeDatabase: interop.Pointer;
 
 declare const windowAppModalStateAlreadyExistsErr: number;
+
+declare const typeNull: number;
 
 declare const requiredFlagsDontMatch: number;
 
@@ -9353,6 +9359,8 @@ declare const kNSLNoElementsInList: number;
 declare const errFSMissingCatInfo: number;
 
 declare const kNSLBadReferenceErr: number;
+
+declare const kNSLBadServiceTypeErr: number;
 
 declare const dsBadSlotInt: number;
 
@@ -9640,8 +9648,6 @@ declare const kEEXISTErr: number;
 
 declare const errOSAStackOverflow: number;
 
-declare const errOSACorruptTerminology: number;
-
 declare const errOSACantLaunch: number;
 
 declare const errOSANumericOverflow: number;
@@ -9702,8 +9708,6 @@ declare const tsmInvalidDocIDErr: number;
 
 declare const unicodeNoTableErr: number;
 
-declare const tsmAlreadyRegisteredErr: number;
-
 declare const mapReadOnly: number;
 
 declare const kTextEncodingUnicodeV2_0: number;
@@ -9717,8 +9721,6 @@ declare const kernelAsyncSendLimitErr: number;
 declare const kernelExecutionLevelErr: number;
 
 declare const kernelExecutePermissionErr: number;
-
-declare const kSuspendRevoke: number;
 
 declare const kOTNoAddressErr: number;
 
@@ -10008,6 +10010,8 @@ declare const invalidMovie: number;
 
 declare const invalidTrack: number;
 
+declare const kAEUndo: number;
+
 declare const kioFlAttribCopyProtMask: number;
 
 declare const noDataHandler: number;
@@ -10078,6 +10082,8 @@ declare const errOSACorruptData: number;
 
 declare const errOSADataFormatObsolete: number;
 
+declare const pEnabled: number;
+
 declare const kResolveAliasTryFileIDFirst: number;
 
 declare const errOSABadStorageType: number;
@@ -10121,10 +10127,6 @@ declare const errAEUnknownAddressType: number;
 declare const kMDItemOrientation: interop.Pointer;
 
 declare const typePString: number;
-
-declare const kExitIdle: number;
-
-declare const errAENotASpecialFunction: number;
 
 declare const errAENoUserInteraction: number;
 
@@ -10281,6 +10283,10 @@ declare const nameTypeErr: number;
 declare const notInitErr: number;
 
 declare const hmCloseViewActive: number;
+
+declare const gestaltSCCReadAddr: number;
+
+declare const hmWrongVersion: number;
 
 declare const hmSameAsLastBalloon: number;
 
@@ -11090,6 +11096,10 @@ declare const kOTNoUDErrErr: number;
 
 declare const smTransAscii2: number;
 
+declare const smTransPreDoubleByting: number;
+
+declare const pColor: number;
+
 declare const smTransAscii: number;
 
 declare const smChar2byte: number;
@@ -11231,8 +11241,6 @@ declare const verFaeroeIsl: number;
 declare const codecUnimpErr: number;
 
 declare const kPOSIXErrorENOSTR: number;
-
-declare const verLapland: number;
 
 declare const kTextEncodingISOLatin9: number;
 
@@ -11390,7 +11398,7 @@ declare const langChinese: number;
 
 declare const langYugoslavian: number;
 
-declare const langAzerbaijanRoman: number;
+declare const gestaltProF16ANSIKbd: number;
 
 declare const langTongan: number;
 
@@ -11471,10 +11479,6 @@ declare const langUzbek: number;
 declare const telNoOpenErr: number;
 
 declare const kAEGetPrivilegeSelection: number;
-
-declare const smfDisableKeyScriptSync: number;
-
-declare const illegalScrapFlavorFlagsErr: number;
 
 declare const langBulgarian: number;
 
@@ -11720,10 +11724,6 @@ declare const fTrash: number;
 
 declare const fInvisible: number;
 
-declare const fHasBundle: number;
-
-declare const fOnDesk: number;
-
 declare const kIsAlias: number;
 
 declare const kAESuspend: number;
@@ -11734,23 +11734,13 @@ declare const OSASyntaxTypeError: number;
 
 declare const smMaskAscii2: number;
 
-declare const gestaltQuickTimeStreamingFeatures: number;
+declare const kUpdateActiveInputArea: number;
 
-declare const kIsStationery: number;
+declare const tsmInputModeChangeFailedErr: number;
 
-declare const kColor: number;
+declare const kHasBeenInited: number;
 
-declare const kUnicodeMatchUnicodeFormatBit: number;
-
-declare const kIsOnDesk: number;
-
-declare const kFSOperationBytesCompleteKey: interop.Pointer;
-
-declare const kDropFolderAliasType: number;
-
-declare const kExportedFolderAliasType: number;
-
-declare const gestaltPowerMacQuadra700: number;
+declare const kUnicodeStringUnterminatedBit: number;
 
 declare const kPreferencesFolderAliasType: number;
 
@@ -12040,6 +12030,8 @@ declare const keyAEObject2: number;
 
 declare const kVolumeSettingsFolderType: number;
 
+declare const kIsShared: number;
+
 declare const keyAEKeyData: number;
 
 declare const kTextEncodingDOSCyrillic: number;
@@ -12061,6 +12053,8 @@ declare const telTransferRej: number;
 declare const tsmComponentAlreadyOpenErr: number;
 
 declare const kSystemDesktopFolderType: number;
+
+declare const gestaltPowerMacQuadra700: number;
 
 declare const bHasOpenDeny: number;
 
@@ -12117,6 +12111,10 @@ declare const kFSVolInfoNextAlloc: number;
 declare const verAustriaGerman: number;
 
 declare const kGetSelectedText: number;
+
+declare const kFSCatInfoDataSizes: number;
+
+declare const cmMethodError: number;
 
 declare const kNSpAlreadyAdvertisingErr: number;
 
@@ -12230,6 +12228,10 @@ declare const smKeyScript: number;
 
 declare const kUSBUnknownInterfaceErr: number;
 
+declare const gestaltEasyAccessOn: number;
+
+declare const kFSFileOperationDoNotMoveAcrossVolumes: number;
+
 declare const kAEQDSupplementalSuite: number;
 
 declare const kCustomIconResource: number;
@@ -12247,6 +12249,8 @@ declare const tooManyReqs: number;
 declare const errAEBufferTooSmall: number;
 
 declare const kLSSharedFileListRecentServerItems: interop.Object;
+
+declare const kCertSearchAny: number;
 
 declare const kFBCdeletionFailed: number;
 
@@ -12275,8 +12279,6 @@ declare const kLocaleAllPartsMask: number;
 declare const gestaltCPU750FX: number;
 
 declare const gestaltColorSync10: number;
-
-declare const kCertSearchAny: number;
 
 declare const kOpaqueConsoleID: number;
 
@@ -12359,6 +12361,8 @@ declare const kTECDisableFallbacksMask: number;
 declare const gestaltTEAttr: number;
 
 declare const kRegisterD5: number;
+
+declare const fOnDesk: number;
 
 declare const kAssistantsFolderType: number;
 
@@ -12444,9 +12448,9 @@ declare const kUSBLinkErr: number;
 
 declare const verIreland: number;
 
-declare const WDEFNFnd: number;
-
 declare const togDelta12HourBit: number;
+
+declare const WDEFNFnd: number;
 
 declare const kPOSIXErrorEBUSY: number;
 
@@ -12614,8 +12618,6 @@ declare const gestaltHasGPIaToRTxCa: number;
 
 declare const gestaltPowerMac6500: number;
 
-declare const kUnicodeStringUnterminatedBit: number;
-
 declare const kTextEncodingMacCentralEurRoman: number;
 
 declare const kSuspendDemand: number;
@@ -12697,8 +12699,6 @@ declare const rdVerifyBit: number;
 declare const kioACAccessUserReadBit: number;
 
 declare const kTECGlobalsUnavailableErr: number;
-
-declare const urlDataHFTPDataConnectionErr: number;
 
 declare const invalidSpriteWorldPropertyErr: number;
 
@@ -12818,6 +12818,8 @@ declare const qtsConnectionFailedErr: number;
 
 declare const cLongFixedPoint: number;
 
+declare const kColor: number;
+
 declare const typeJPEG: number;
 
 declare const kFSNoCacheMask: number;
@@ -12918,6 +12920,8 @@ declare const errInvalidWindowProperty: number;
 
 declare const kMPTaskInfoVersion: number;
 
+declare const kUTTypeMPEG4Audio: interop.Pointer;
+
 declare const fsSBFlParID: number;
 
 declare const kPOSIXErrorEADDRNOTAVAIL: number;
@@ -12933,6 +12937,12 @@ declare const cChar: number;
 declare const kCallingConventionPhase: number;
 
 declare const kAEShowClipboard: number;
+
+declare const kIsOnDesk: number;
+
+declare const kUnicodeMatchUnicodeFormatBit: number;
+
+declare const kPOSIXErrorENODATA: number;
 
 declare const gestaltPowerBook165c: number;
 
@@ -13056,8 +13066,6 @@ declare const kCollectionUser6Mask: number;
 
 declare const kAEISMethod: number;
 
-declare const pInsertionLoc: number;
-
 declare const telConfLimitErr: number;
 
 declare const eLCD: number;
@@ -13120,6 +13128,8 @@ declare const kFSAllowConcurrentAsyncIOBit: number;
 
 declare const kSpeakableItemsFolder: number;
 
+declare const kVoicesFolderIcon: number;
+
 declare const smTransJamo2: number;
 
 declare const telStateNotSupp: number;
@@ -13139,6 +13149,8 @@ declare const eFireWire: number;
 declare const kConfigurationLockedErr: number;
 
 declare const errFSBadFSRef: number;
+
+declare const gestaltHardwareVendorCode: number;
 
 declare const kAEWakeUpEvent: number;
 
@@ -13167,8 +13179,6 @@ declare const kadministratorUser: number;
 declare const typeCFNumberRef: number;
 
 declare const fExtraDecimal: number;
-
-declare const gestaltEasyAccessOn: number;
 
 declare const typeFileURL: number;
 
@@ -13418,6 +13428,8 @@ declare const fsSBPartialNameBit: number;
 
 declare const verTurkey: number;
 
+declare const kFSOperationBytesCompleteKey: interop.Pointer;
+
 declare const kTECPluginCreator: number;
 
 declare const keyAETextLineHeight: number;
@@ -13566,12 +13578,6 @@ declare const nrOverrunErr: number;
 
 declare const kPEFPkDataOpcodeShift: number;
 
-declare const tsmInputModeChangeFailedErr: number;
-
-declare const kHasBeenInited: number;
-
-declare const kUpdateActiveInputArea: number;
-
 declare const fsUnixPriv: number;
 
 declare const lockPortBitsSurfaceLostErr: number;
@@ -13581,6 +13587,10 @@ declare const kAudioDigidesignFolderType: number;
 declare const verBritain: number;
 
 declare const kUSBUnknownRequestErr: number;
+
+declare const pClass: number;
+
+declare const gestaltPerforma46x: number;
 
 declare const gestaltMacLCII: number;
 
@@ -13606,8 +13616,6 @@ declare const kHIDUnmatchedStringRangeErr: number;
 
 declare const qtsAddressBusyErr: number;
 
-declare const cmMethodError: number;
-
 declare const dsBadLibrary: number;
 
 declare const kMacJapaneseStdNoVerticalsVariant: number;
@@ -13624,6 +13632,8 @@ declare const gestaltAllegroQDText: number;
 
 declare const kOTBadSyncErr: number;
 
+declare const kDropFolderAliasType: number;
+
 declare const toggleBadDelta: number;
 
 declare const kMPTaskResumeStepMask: number;
@@ -13639,8 +13649,6 @@ declare const kPEFRelocSmIndexMaxIndex: number;
 declare const kFSOperationObjectsRemainingKey: interop.Pointer;
 
 declare const kTextEncodingBig5_HKSCS_1999: number;
-
-declare const kIsShared: number;
 
 declare const smMaskHangul2: number;
 
@@ -13734,15 +13742,23 @@ declare const kFBCbadSearchSession: number;
 
 declare const notEnoughMemoryErr: number;
 
-declare const cannotFindAtomErr: number;
-
 declare const duplicateRoutingErr: number;
 
 declare const memFullErr: number;
 
-declare const kResultSizeWidth: number;
+declare const kMPTaskStateVectors: number;
 
-declare const kTXNDataTypeNotAllowedErr: number;
+declare const gestaltTeleMgrPresent: number;
+
+declare const cLongRectangle: number;
+
+declare const keyAEPropData: number;
+
+declare const kOTBadReferenceErr: number;
+
+declare const kPOSIXErrorETOOMANYREFS: number;
+
+declare const kUnicodeCollationClass: number;
 
 declare const kLSQuarantineTypeInstantMessageAttachment: interop.Pointer;
 
@@ -13787,6 +13803,8 @@ declare const kGenericComponentIcon: number;
 declare const floppyIconResource: number;
 
 declare const kAEUTlistOfItems: number;
+
+declare const telFeatNotSub: number;
 
 declare const kAEBeginTransaction: number;
 
@@ -13863,6 +13881,8 @@ declare const kMDItemIsGeneralMIDISequence: interop.Pointer;
 declare const tokenDollar: number;
 
 declare const kMDItemContactKeywords: interop.Pointer;
+
+declare const pBestType: number;
 
 declare const gestaltGXVersion: number;
 
@@ -13944,8 +13964,6 @@ declare const kApplicationSupportFolderType: number;
 
 declare const gestaltQuickTimeVersion: number;
 
-declare const gestaltPowerMac8100_110: number;
-
 declare const keyAETransferMode: number;
 
 declare const kPEFRelocLgRepeatMaxChunkCount: number;
@@ -13976,6 +13994,10 @@ declare const kPOSIXErrorEHOSTDOWN: number;
 
 declare const kFSVolInfoNone: number;
 
+declare const kioVAtrbFilesOpenBit: number;
+
+declare const kRegisterA4: number;
+
 declare const smKeyToggleDirection: number;
 
 declare const kPEFExpSymNameOffsetMask: number;
@@ -13994,11 +14016,15 @@ declare const kAESocks5Protocol: number;
 
 declare const langUkrainian: number;
 
-declare const gestaltSCCReadAddr: number;
-
-declare const hmWrongVersion: number;
-
 declare const keyAEStartPoint: number;
+
+declare const gestaltScrollingThrottle: number;
+
+declare const kUCTSDirectionPrevious: number;
+
+declare const fsSBFlRLgLenBit: number;
+
+declare const extraneousStrings: number;
 
 declare const gestaltPerforma6300: number;
 
@@ -14138,6 +14164,8 @@ declare const cfragLibConnErr: number;
 
 declare const gestaltPowerMacNewWorld: number;
 
+declare const kTXNDataTypeNotAllowedErr: number;
+
 declare const kAEDiskEvent: number;
 
 declare const notThePublisherWrn: number;
@@ -14210,8 +14238,6 @@ declare const kPOSIXErrorENOTTY: number;
 
 declare const verAustralia: number;
 
-declare const fsSBFlRLgLenBit: number;
-
 declare const gestaltTSMTEPresent: number;
 
 declare const kRAUserPwdEntryRequired: number;
@@ -14264,6 +14290,10 @@ declare const gestaltMacPlusKbd: number;
 
 declare const smTransPreLowerCasing: number;
 
+declare const gestaltExtToolboxTable: number;
+
+declare const errKCNoSuchAttr: number;
+
 declare const volOnLinErr: number;
 
 declare const kTextEncodingBig5: number;
@@ -14277,14 +14307,6 @@ declare const toggleBadNum: number;
 declare const gestaltNativeProcessMgrBit: number;
 
 declare const gestaltALMHasCFMSupport: number;
-
-declare const gestaltMenuMgrMultipleItemsWithCommandIDMask: number;
-
-declare const kIconServices32PixelDataARGB: number;
-
-declare const gestaltDiskCacheSize: number;
-
-declare const kCollectionDontWantSize: number;
 
 declare const typePixMapMinus: number;
 
@@ -14318,6 +14340,10 @@ declare const defaultComponentIdentical: number;
 
 declare const dsCoreErr: number;
 
+declare const kIconServices32PixelDataARGB: number;
+
+declare const gestaltDiskCacheSize: number;
+
 declare const langKannada: number;
 
 declare const keyAEFillPattern: number;
@@ -14332,13 +14358,7 @@ declare const channelNotBusy: number;
 
 declare const tokenLeft2Quote: number;
 
-declare const pBackgroundPattern: number;
-
-declare const gestaltPortableUSBJISKbd: number;
-
-declare const gestaltGraphicsIsPowerPC: number;
-
-declare const kClassicDesktopFolderType: number;
+declare const pHasTitleBar: number;
 
 declare const gestaltPowerMac8500: number;
 
@@ -14352,17 +14372,7 @@ declare const telCANotDeflectable: number;
 
 declare const kLSQuarantineTypeCalendarEventAttachment: interop.Pointer;
 
-declare const kUCTSDirectionPrevious: number;
-
-declare const extraneousStrings: number;
-
-declare const gestaltScrollingThrottle: number;
-
 declare const kNoCompatibleNameErr: number;
-
-declare const kioVAtrbFilesOpenBit: number;
-
-declare const kRegisterA4: number;
 
 declare const kMDAttributeName: interop.Pointer;
 
@@ -14408,6 +14418,10 @@ declare const kernelIDErr: number;
 
 declare const kPOSIXErrorEBADEXEC: number;
 
+declare const gestaltQuickTimeStreamingFeatures: number;
+
+declare const kIsStationery: number;
+
 declare const kTextRegionDontCare: number;
 
 declare const gestaltUSBCosmoANSIKbd: number;
@@ -14417,6 +14431,10 @@ declare const kTECWebEncodingsResType: number;
 declare const platformNeXTsparc: number;
 
 declare const gestaltIconUtilitiesHas32BitIcons: number;
+
+declare const keyInteractLevelAttr: number;
+
+declare const pStartPoint: number;
 
 declare const kUTTypeCSource: interop.Pointer;
 
@@ -14478,12 +14496,6 @@ declare const kMDItemLabelKind: interop.Pointer;
 
 declare const kAENext: number;
 
-declare const kOTBadReferenceErr: number;
-
-declare const cLongRectangle: number;
-
-declare const keyAEPropData: number;
-
 declare const kAEGetSuiteInfo: number;
 
 declare const kLocaleOperationVariantNameMask: number;
@@ -14495,8 +14507,6 @@ declare const kUTTypeGNUZipArchive: interop.Pointer;
 declare const kTextEncodingISO_2022_JP: number;
 
 declare const unicodeDirectionErr: number;
-
-declare const gestaltTeleMgrPresent: number;
 
 declare const token2Equal: number;
 
@@ -14560,13 +14570,7 @@ declare const kRAInvalidPortState: number;
 
 declare const keyAEObjectClass: number;
 
-declare const keyTimeoutAttr: number;
-
-declare const keyInteractLevelAttr: number;
-
-declare const pStartPoint: number;
-
-declare const errAECantUndo: number;
+declare const tokenLeftLit: number;
 
 declare const vmNoVectorErr: number;
 
@@ -14591,18 +14595,6 @@ declare const gestaltColorSync105: number;
 declare const kNSpProtocolNotAvailableErr: number;
 
 declare const kTextEncodingJIS_C6226_78: number;
-
-declare const kUnicodeKeepInfoBit: number;
-
-declare const kUTTypeResolvable: interop.Pointer;
-
-declare const kFolderNeverMatchedInIdentifyFolderBit: number;
-
-declare const keyAEEditionFileLoc: number;
-
-declare const badDelim: number;
-
-declare const gestaltPowerMac9500: number;
 
 declare const kCollectionDontWantData: number;
 
@@ -14642,6 +14634,8 @@ declare const keyAETheText: number;
 
 declare const cCell: number;
 
+declare const kFolderNeverMatchedInIdentifyFolderBit: number;
+
 declare const gestaltPowerPCHasDCBTStreams: number;
 
 declare const errCpprange_error: number;
@@ -14660,6 +14654,10 @@ declare const kCertSearchDecryptMask: number;
 
 declare const verTibet: number;
 
+declare const kUTTypeResolvable: interop.Pointer;
+
+declare const kUnicodeKeepInfoBit: number;
+
 declare const aeBuildSyntaxNoCloseHex: number;
 
 declare const kDMDriverNotDisplayMgrAwareErr: number;
@@ -14669,8 +14667,6 @@ declare const qtsUnsupportedDataTypeErr: number;
 declare const kUnicodeObjectReplacement: number;
 
 declare const gestaltQuickTimeThreadSafeMovieToolbox: number;
-
-declare const telFeatNotSub: number;
 
 declare const pUpdateOn: number;
 
@@ -14726,27 +14722,23 @@ declare const kWrapKCItemAttr: number;
 
 declare const verArabia: number;
 
-declare const gestaltX86ResACPI: number;
+declare const tokenHash: number;
 
-declare const kFBCaccessorStoreFailed: number;
+declare const kPOSIXErrorEDEVERR: number;
 
-declare const gestaltStdNBPSupportsAutoPosition: number;
+declare const kWSMethodInvocationResultParameterName: interop.Object;
 
 declare const laPropertyValueErr: number;
-
-declare const gestaltExtToolboxTable: number;
-
-declare const errKCNoSuchAttr: number;
 
 declare const kUTTypeRubyScript: interop.Pointer;
 
 declare const gestaltHidePortA: number;
 
-declare const gestalt68040FPU: number;
-
 declare const cfragAbortClosureErr: number;
 
 declare const kTextEncodingUnicodeV13_0: number;
+
+declare const gestaltX86ResACPI: number;
 
 declare const kTextEncodingBaseName: number;
 
@@ -14786,6 +14778,8 @@ declare const kHIDNullStateErr: number;
 
 declare const vmMappingPrivilegesErr: number;
 
+declare const gestaltPowerMac9500: number;
+
 declare const badDataRefIndex: number;
 
 declare const kISOLatinArabicVisualOrderVariant: number;
@@ -14824,7 +14818,7 @@ declare const kUTTypeMP3: interop.Pointer;
 
 declare const extractErr: number;
 
-declare const kFSCatInfoDataSizes: number;
+declare const kResultSizeWidth: number;
 
 declare const ddpLenErr: number;
 
@@ -14839,8 +14833,6 @@ declare const kComponentUnregisterSelect: number;
 declare const kOTStateChangeErr: number;
 
 declare const kUSBFlagsError: number;
-
-declare const kFSFileOperationDoNotMoveAcrossVolumes: number;
 
 declare const kAEDoNotPromptForUserConsent: number;
 
@@ -14884,7 +14876,9 @@ declare const noHardware: number;
 
 declare const gestaltMenuMgrMultipleItemsWithCommandIDBit: number;
 
-declare const kPOSIXErrorEDEVERR: number;
+declare const keyAEEditionFileLoc: number;
+
+declare const badDelim: number;
 
 declare const cantCreateSingleForkFile: number;
 
@@ -14916,7 +14910,7 @@ declare const kInUseErr: number;
 
 declare const kCollectionUser0Bit: number;
 
-declare const gestaltTranslationMgrHintOrder: number;
+declare const fHasBundle: number;
 
 declare const verBrazil: number;
 
@@ -15002,19 +14996,15 @@ declare const langGalla: number;
 
 declare const langEstonian: number;
 
-declare const kUnicodeCollationClass: number;
-
-declare const kPOSIXErrorETOOMANYREFS: number;
-
-declare const tokLeftQuote: number;
-
-declare const kMPTaskStateVectors: number;
-
 declare const kPEFRelocBySectDWithSkip: number;
 
 declare const kAEIDoMarking: number;
 
 declare const longDateFound: number;
+
+declare const kFBCaccessorStoreFailed: number;
+
+declare const gestaltStdNBPSupportsAutoPosition: number;
 
 declare const kClassicPreferencesFolderType: number;
 
@@ -15138,8 +15128,6 @@ declare const vmAddressNotInFileViewErr: number;
 
 declare const ApplicationSpecificID: number;
 
-declare const tokenHash: number;
-
 declare const tokRightQuote: number;
 
 declare const kCollectionUser5Mask: number;
@@ -15149,6 +15137,8 @@ declare const monthField: number;
 declare const kRANotSupported: number;
 
 declare const gestaltComponentMgr: number;
+
+declare const cannotFindAtomErr: number;
 
 declare const verByeloRussian: number;
 
@@ -15167,6 +15157,8 @@ declare const kUnmappedMemoryException: number;
 declare const auxiliaryExportDataUnavailable: number;
 
 declare const kCollateMissingUnicodeTableErr: number;
+
+declare const kExportedFolderAliasType: number;
 
 declare const fidNotFound: number;
 
@@ -15196,8 +15188,6 @@ declare const kNSpNotAdvertisingErr: number;
 
 declare const kIconServices256PixelDataARGB: number;
 
-declare const kWSMethodInvocationResultParameterName: interop.Object;
-
 declare const kALMInstallationErr: number;
 
 declare const kBlessedFolder: number;
@@ -15216,15 +15206,11 @@ declare const smTransAscii1: number;
 
 declare const noRecordOfApp: number;
 
-declare const dsSwitchOffOrRestart: number;
-
-declare const gestaltTSMgrVersion: number;
+declare const typeArc: number;
 
 declare const dblDagger: number;
 
 declare const kUnicodeMapLineFeedToReturnMask: number;
-
-declare const kFSOperationObjectsCompleteKey: interop.Pointer;
 
 declare const kAEContains: number;
 
@@ -15233,6 +15219,8 @@ declare const graveUprU: number;
 declare const gestaltPCXUseICMapping: number;
 
 declare const MIDIDataID: number;
+
+declare const vmOffErr: number;
 
 declare const resPurgeable: number;
 
@@ -15288,8 +15276,6 @@ declare const keyAEDefaultType: number;
 
 declare const hrUnableToResizeHandleErr: number;
 
-declare const vmOffErr: number;
-
 declare const typeCubicInches: number;
 
 declare const tokDecPoint: number;
@@ -15321,8 +15307,6 @@ declare const smMaskKana1: number;
 declare const typeCubicMeters: number;
 
 declare const keyErrorNumber: number;
-
-declare const tokenLeftLit: number;
 
 declare const kPEFRelocSmByImport: number;
 
@@ -15382,6 +15366,12 @@ declare const qfcbNotFoundErr: number;
 
 declare const errOpening: number;
 
+declare const kEnterIdle: number;
+
+declare const kAEUTNotDirectParamIsTarget: number;
+
+declare const gestaltTSMgrVersion: number;
+
 declare const kAEQDOr: number;
 
 declare const langFarsi: number;
@@ -15396,11 +15386,11 @@ declare const systemCurLang: number;
 
 declare const dsPrivErr: number;
 
+declare const errAECantUndo: number;
+
 declare const kPOSIXErrorEAGAIN: number;
 
 declare const gestaltInternalDisplay: number;
-
-declare const pFormula: number;
 
 declare const eF8Key: number;
 
@@ -15421,6 +15411,8 @@ declare const smUnicodeScript: number;
 declare const kDurationImmediate: number;
 
 declare const kUCBidiCatPopDirectionalFormat: number;
+
+declare const dsSwitchOffOrRestart: number;
 
 declare const smSinhalese: number;
 
@@ -15489,6 +15481,8 @@ declare const keyAEDoRotate: number;
 declare const smKanaSoftOK: number;
 
 declare const eMonitorOut: number;
+
+declare const keyTimeoutAttr: number;
 
 declare const dcmProtectedErr: number;
 
@@ -15592,6 +15586,8 @@ declare const langArabic: number;
 
 declare const keyAEScriptTag: number;
 
+declare const kCollectionDontWantSize: number;
+
 declare const kTextEncodingMacLaotian: number;
 
 declare const kDeveloperApplicationsFolderType: number;
@@ -15605,8 +15601,6 @@ declare const kFolderInLocalOrRemoteUserFolder: number;
 declare const langSwahili: number;
 
 declare const kUserDomain: number;
-
-declare const kEnterIdle: number;
 
 declare const kFSUnmountVolumeForceUnmount: number;
 
@@ -15626,11 +15620,11 @@ declare const telBadStateErr: number;
 
 declare const gestaltADBKbdII: number;
 
-declare const kAEUTNotDirectParamIsTarget: number;
-
 declare const kMacRomanLatin1TurkishVariant: number;
 
 declare const seNoDB: number;
+
+declare const gestaltTVAttr: number;
 
 declare const kMDItemIsLikelyJunk: interop.Pointer;
 
@@ -15642,6 +15636,8 @@ declare const kATSUInvalidFontErr: number;
 
 declare const nrPropertyAlreadyExists: number;
 
+declare const pictInfoIDErr: number;
+
 declare const keyMenuID: number;
 
 declare const kioFlAttribFileOpenBit: number;
@@ -15652,13 +15648,13 @@ declare const kSSpCantInstallErr: number;
 
 declare const tokenIntl: number;
 
+declare const urlDataHFTPDataConnectionErr: number;
+
 declare const keyAEPointSize: number;
 
 declare const gestaltTSMgrAttr: number;
 
 declare const centeredDot: number;
-
-declare const typeArc: number;
 
 declare const kRedirectedRelativeFolder: number;
 
@@ -15669,6 +15665,8 @@ declare const invalidChunkNum: number;
 declare const kMDLabelDisplayName: interop.Object;
 
 declare const kMacIcelandicStdDefaultVariant: number;
+
+declare const kFSOperationObjectsCompleteKey: interop.Pointer;
 
 declare const kPEFTOCSymbol: number;
 
@@ -15686,28 +15684,26 @@ declare const illegalNoteChannelOSErr: number;
 
 declare const kUnicodeMatchOtherVariantBit: number;
 
-declare const SKIndexType: {
-  Unknown: 0,
-  Inverted: 1,
-  Vector: 2,
-  InvertedVector: 3,
+declare const LSAcceptanceFlags: {
+  Default: 1,
+  AllowLoginUI: 2,
 };
 
-declare const LSHandlerOptions: {
-  Default: 0,
-  IgnoreCreator: 1,
-};
-
-declare const LSLaunchFlags: {
-  Defaults: 1,
-  AndPrint: 2,
-  AndDisplayErrors: 64,
-  DontAddToRecents: 256,
-  DontSwitch: 512,
-  Async: 65536,
-  NewInstance: 524288,
-  AndHide: 1048576,
-  AndHideOthers: 2097152,
+declare const LSItemInfoFlags: {
+  IsPlainFile: 1,
+  IsPackage: 2,
+  IsApplication: 4,
+  IsContainer: 8,
+  IsAliasFile: 16,
+  IsSymlink: 32,
+  IsInvisible: 64,
+  IsNativeApp: 128,
+  IsClassicApp: 256,
+  AppPrefersNative: 512,
+  AppPrefersClassic: 1024,
+  AppIsScriptable: 2048,
+  IsVolume: 4096,
+  ExtensionIsHidden: 1048576,
 };
 
 declare const LSRequestedInfo: {
@@ -15719,6 +15715,38 @@ declare const LSRequestedInfo: {
   IconAndKind: 32,
   ExtensionFlagsOnly: 64,
   AllInfo: -1,
+};
+
+declare const SKSearchType: {
+  kSKSearchRanked: 0,
+  Boolean: 1,
+  Required: 2,
+  Prefix: 3,
+};
+
+declare const SKIndexType: {
+  Unknown: 0,
+  Inverted: 1,
+  Vector: 2,
+  InvertedVector: 3,
+};
+
+declare const MDQueryOptionFlags: {
+  Synchronous: 1,
+  WantsUpdates: 4,
+  AllowFSTranslation: 8,
+};
+
+declare const SKDocumentIndexState: {
+  NotIndexed: 0,
+  Indexed: 1,
+  AddPending: 2,
+  DeletePending: 3,
+};
+
+declare const LSHandlerOptions: {
+  Default: 0,
+  IgnoreCreator: 1,
 };
 
 declare const LSRolesMask: {
@@ -15742,48 +15770,6 @@ declare const WSTypeID: {
   Dictionary: 9,
 };
 
-declare const LSAcceptanceFlags: {
-  Default: 1,
-  AllowLoginUI: 2,
-};
-
-declare const SKSearchType: {
-  kSKSearchRanked: 0,
-  Boolean: 1,
-  Required: 2,
-  Prefix: 3,
-};
-
-declare const LSItemInfoFlags: {
-  IsPlainFile: 1,
-  IsPackage: 2,
-  IsApplication: 4,
-  IsContainer: 8,
-  IsAliasFile: 16,
-  IsSymlink: 32,
-  IsInvisible: 64,
-  IsNativeApp: 128,
-  IsClassicApp: 256,
-  AppPrefersNative: 512,
-  AppPrefersClassic: 1024,
-  AppIsScriptable: 2048,
-  IsVolume: 4096,
-  ExtensionIsHidden: 1048576,
-};
-
-declare const MDQueryOptionFlags: {
-  Synchronous: 1,
-  WantsUpdates: 4,
-  AllowFSTranslation: 8,
-};
-
-declare const SKDocumentIndexState: {
-  NotIndexed: 0,
-  Indexed: 1,
-  AddPending: 2,
-  DeletePending: 3,
-};
-
 declare const MDQuerySortOptionFlags: {
   kMDQueryReverseSortOrderFlag: 1,
 };
@@ -15792,6 +15778,23 @@ declare const MDLabelDomain: {
   User: 0,
   Local: 1,
 };
+
+declare const LSLaunchFlags: {
+  Defaults: 1,
+  AndPrint: 2,
+  AndDisplayErrors: 64,
+  DontAddToRecents: 256,
+  DontSwitch: 512,
+  Async: 65536,
+  NewInstance: 524288,
+  AndHide: 1048576,
+  AndHideOthers: 2097152,
+};
+
+declare class MachineInformation {
+  constructor(init?: MachineInformation);
+  __unusedMachineInformationField: interop.Pointer;
+}
 
 declare class PEFImportedLibrary {
   constructor(init?: PEFImportedLibrary);
@@ -15985,7 +15988,7 @@ declare class UCKeyLayoutFeatureInfo {
 
 declare class PEFExportedSymbolKey {
   constructor(init?: PEFExportedSymbolKey);
-  u: unnamed_8468402883870321414;
+  u: unnamed_16551389789329836630;
 }
 
 declare class AEBuildError {
@@ -16272,13 +16275,6 @@ declare class decform {
   digits: number;
 }
 
-declare class unnamed_17868221517438899448 {
-  constructor(init?: unnamed_17868221517438899448);
-  length: number;
-  text: unknown /* const array */;
-  unused: number;
-}
-
 declare class UCKeyStateTerminators {
   constructor(init?: UCKeyStateTerminators);
   keyStateTerminatorsFormat: number;
@@ -16320,11 +16316,6 @@ declare class VectorInformation {
 declare class RegisterInformation {
   constructor(init?: RegisterInformation);
   __unusedRegisterInformationField: interop.Pointer;
-}
-
-declare class MachineInformation {
-  constructor(init?: MachineInformation);
-  __unusedMachineInformationField: interop.Pointer;
 }
 
 declare class RegisterInformationPowerPC {
@@ -16497,12 +16488,6 @@ declare class ComponentDescription {
   componentManufacturer: number;
   componentFlags: number;
   componentFlagsMask: number;
-}
-
-declare class unnamed_17171530611659253000 {
-  constructor(init?: unnamed_17171530611659253000);
-  lo: number;
-  hi: number;
 }
 
 declare class FSFileOperationClientContext {
@@ -16736,13 +16721,19 @@ declare class MachineLocation {
   constructor(init?: MachineLocation);
   latitude: number;
   longitude: number;
-  u: unnamed_6972270121872955462;
+  u: unnamed_1065555818574495266;
 }
 
-declare class unnamed_4755705498491620100 {
-  constructor(init?: unnamed_4755705498491620100);
+declare class unnamed_17663518117199877425 {
+  constructor(init?: unnamed_17663518117199877425);
   eraAlt: number;
   oldDate: DateTimeRec;
+}
+
+declare class unnamed_7994584717718899728 {
+  constructor(init?: unnamed_7994584717718899728);
+  lLow: number;
+  lHigh: number;
 }
 
 declare class DateCacheRecord {
@@ -16861,6 +16852,15 @@ declare class ItlbExtRecord {
   itlbAliasStyle: number;
 }
 
+declare class RuleBasedTrslRecord {
+  constructor(init?: RuleBasedTrslRecord);
+  sourceType: number;
+  targetType: number;
+  formatNumber: number;
+  propertyFlag: number;
+  numberOfRules: number;
+}
+
 declare class Itl5Record {
   constructor(init?: Itl5Record);
   versionNumber: number;
@@ -16894,6 +16894,12 @@ declare class Itl4Rec {
   resOffset6: number;
   resOffset7: number;
   resOffset8: number;
+}
+
+declare class unnamed_796733774800138574 {
+  constructor(init?: unnamed_796733774800138574);
+  lo: number;
+  hi: number;
 }
 
 declare class Intl1Rec {
@@ -17092,7 +17098,29 @@ declare class decimal {
   sgn: number;
   unused: number;
   exp: number;
-  sig: unnamed_17868221517438899448;
+  sig: unnamed_92125956774180753;
+}
+
+declare class DateTimeRec {
+  constructor(init?: DateTimeRec);
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+  dayOfWeek: number;
+}
+
+declare class NumberParts {
+  constructor(init?: NumberParts);
+  version: number;
+  data: unknown /* const array */;
+  pePlus: WideCharArr;
+  peMinus: WideCharArr;
+  peMinusPlus: WideCharArr;
+  altNumTable: WideCharArr;
+  reserved: unknown /* const array */;
 }
 
 declare class ItlcRecord {
@@ -17161,60 +17189,20 @@ declare class OpaqueMPCoherenceID {
   constructor(init?: OpaqueMPCoherenceID);
 }
 
-declare class unnamed_7530669769913771768 {
-  constructor(init?: unnamed_7530669769913771768);
-  era: number;
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-  dayOfWeek: number;
-  dayOfYear: number;
-  weekOfYear: number;
-  pm: number;
-  res1: number;
-  res2: number;
-  res3: number;
-}
-
 declare class __SKSummary {
   constructor(init?: __SKSummary);
-}
-
-declare class XLibExportedSymbol {
-  constructor(init?: XLibExportedSymbol);
-  classAndName: number;
-  bpOffset: number;
-}
-
-declare class DateTimeRec {
-  constructor(init?: DateTimeRec);
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-  dayOfWeek: number;
-}
-
-declare class NumberParts {
-  constructor(init?: NumberParts);
-  version: number;
-  data: unknown /* const array */;
-  pePlus: WideCharArr;
-  peMinus: WideCharArr;
-  peMinusPlus: WideCharArr;
-  altNumTable: WideCharArr;
-  reserved: unknown /* const array */;
 }
 
 declare class ChunkHeader {
   constructor(init?: ChunkHeader);
   ckID: number;
   ckSize: number;
+}
+
+declare class XLibExportedSymbol {
+  constructor(init?: XLibExportedSymbol);
+  classAndName: number;
+  bpOffset: number;
 }
 
 declare class TextRange {
@@ -17356,17 +17344,6 @@ declare class BigEndianUnsignedShort {
   bigEndianValue: number;
 }
 
-declare class OpaqueTextBreakLocatorRef {
-  constructor(init?: OpaqueTextBreakLocatorRef);
-}
-
-declare class FPUInformationPowerPC {
-  constructor(init?: FPUInformationPowerPC);
-  Registers: unknown /* const array */;
-  FPSCR: number;
-  Reserved: number;
-}
-
 declare class TECLocaleListToEncodingListRec {
   constructor(init?: TECLocaleListToEncodingListRec);
   offset: number;
@@ -17391,12 +17368,6 @@ declare class MachineInformationPowerPC {
   DSISR: number;
   DAR: UnsignedWide;
   Reserved: UnsignedWide;
-}
-
-declare class unnamed_14041157553998255225 {
-  constructor(init?: unnamed_14041157553998255225);
-  lLow: number;
-  lHigh: number;
 }
 
 declare class WideCharArr {
@@ -17508,19 +17479,22 @@ declare class TECEncodingPairRec {
   dest: TextEncodingRec;
 }
 
-declare class RuleBasedTrslRecord {
-  constructor(init?: RuleBasedTrslRecord);
-  sourceType: number;
-  targetType: number;
-  formatNumber: number;
-  propertyFlag: number;
-  numberOfRules: number;
-}
-
-declare class unnamed_9284286218556619430 {
-  constructor(init?: unnamed_9284286218556619430);
-  pad: unknown /* const array */;
-  Delta: number;
+declare class unnamed_15470629821266774340 {
+  constructor(init?: unnamed_15470629821266774340);
+  era: number;
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+  dayOfWeek: number;
+  dayOfYear: number;
+  weekOfYear: number;
+  pm: number;
+  res1: number;
+  res2: number;
+  res3: number;
 }
 
 declare class MPTaskInfo {
@@ -17619,6 +17593,13 @@ declare class OpaqueUnicodeToTextInfo {
   constructor(init?: OpaqueUnicodeToTextInfo);
 }
 
+declare class unnamed_92125956774180753 {
+  constructor(init?: unnamed_92125956774180753);
+  length: number;
+  text: unknown /* const array */;
+  unused: number;
+}
+
 declare class SchedulerInfoRec {
   constructor(init?: SchedulerInfoRec);
   InfoRecSize: number;
@@ -17683,6 +17664,12 @@ declare class FVector {
   length: number;
 }
 
+declare class unnamed_10063595179712342448 {
+  constructor(init?: unnamed_10063595179712342448);
+  pad: unknown /* const array */;
+  Delta: number;
+}
+
 declare class UCKeyToCharTableIndex {
   constructor(init?: UCKeyToCharTableIndex);
   keyToCharTableIndexFormat: number;
@@ -17727,6 +17714,17 @@ declare class LSApplicationParameters {
   environment: interop.Object | null;
   argv: interop.Object | null;
   initialEvent: interop.Pointer;
+}
+
+declare class OpaqueTextBreakLocatorRef {
+  constructor(init?: OpaqueTextBreakLocatorRef);
+}
+
+declare class FPUInformationPowerPC {
+  constructor(init?: FPUInformationPowerPC);
+  Registers: unknown /* const array */;
+  FPSCR: number;
+  Reserved: number;
 }
 
 declare class OpaqueMPNotificationID {
@@ -17778,15 +17776,6 @@ declare class TokenRec {
   position: string | null;
   length: number;
   stringPosition: interop.Pointer;
-}
-
-declare class FSEventStreamContext {
-  constructor(init?: FSEventStreamContext);
-  version: number;
-  info: interop.Pointer;
-  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  release: (p1: interop.PointerConvertible) => void | null;
-  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
 declare class OpaqueMPAreaID {
@@ -17855,6 +17844,15 @@ declare class __FSFileSecurity {
 
 declare class OpaqueMPCpuID {
   constructor(init?: OpaqueMPCpuID);
+}
+
+declare class FSEventStreamContext {
+  constructor(init?: FSEventStreamContext);
+  version: number;
+  info: interop.Pointer;
+  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  release: (p1: interop.PointerConvertible) => void | null;
+  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
 declare class FXInfo {
@@ -18016,15 +18014,25 @@ declare class FSVolumeInfo {
 }
 
 type LongDateRecDescriptor = 
-  | { ld: unnamed_7530669769913771768 }
+  | { ld: unnamed_15470629821266774340 }
   | { list: unknown /* const array */ }
-  | { od: unnamed_4755705498491620100 };
+  | { od: unnamed_17663518117199877425 };
 
 declare class LongDateRec {
   constructor(init?: LongDateRecDescriptor);
-  ld: unnamed_7530669769913771768;
+  ld: unnamed_15470629821266774340;
   list: unknown /* const array */;
-  od: unnamed_4755705498491620100;
+  od: unnamed_17663518117199877425;
+}
+
+type unnamed_16551389789329836630Descriptor = 
+  | { fullHashWord: number }
+  | { splitHashWord: PEFSplitHashWord };
+
+declare class unnamed_16551389789329836630 {
+  constructor(init?: unnamed_16551389789329836630Descriptor);
+  fullHashWord: number;
+  splitHashWord: PEFSplitHashWord;
 }
 
 type Vector128Descriptor = 
@@ -18041,21 +18049,31 @@ declare class Vector128 {
 
 type LongDateCvtDescriptor = 
   | { c: number }
-  | { hl: unnamed_14041157553998255225 };
+  | { hl: unnamed_7994584717718899728 };
 
 declare class LongDateCvt {
   constructor(init?: LongDateCvtDescriptor);
   c: number;
-  hl: unnamed_14041157553998255225;
+  hl: unnamed_7994584717718899728;
+}
+
+type unnamed_1065555818574495266Descriptor = 
+  | { gmtDelta: number }
+  | { dls: unnamed_10063595179712342448 };
+
+declare class unnamed_1065555818574495266 {
+  constructor(init?: unnamed_1065555818574495266Descriptor);
+  gmtDelta: number;
+  dls: unnamed_10063595179712342448;
 }
 
 type WideCharDescriptor = 
-  | { a: unnamed_17171530611659253000 }
+  | { a: unnamed_796733774800138574 }
   | { b: number };
 
 declare class WideChar {
   constructor(init?: WideCharDescriptor);
-  a: unnamed_17171530611659253000;
+  a: unnamed_796733774800138574;
   b: number;
 }
 
@@ -18065,26 +18083,6 @@ type ExceptionInfoDescriptor =
 declare class ExceptionInfo {
   constructor(init?: ExceptionInfoDescriptor);
   memoryInfo: interop.Pointer;
-}
-
-type unnamed_6972270121872955462Descriptor = 
-  | { gmtDelta: number }
-  | { dls: unnamed_9284286218556619430 };
-
-declare class unnamed_6972270121872955462 {
-  constructor(init?: unnamed_6972270121872955462Descriptor);
-  gmtDelta: number;
-  dls: unnamed_9284286218556619430;
-}
-
-type unnamed_8468402883870321414Descriptor = 
-  | { fullHashWord: number }
-  | { splitHashWord: PEFSplitHashWord };
-
-declare class unnamed_8468402883870321414 {
-  constructor(init?: unnamed_8468402883870321414Descriptor);
-  fullHashWord: number;
-  splitHashWord: PEFSplitHashWord;
 }
 
 type AEArrayDataDescriptor = 

@@ -4,15 +4,13 @@ declare const kCGColorSpaceGenericRGB: interop.Pointer;
 
 declare const kCGUseBT1886ForCoreVideoGamma: interop.Pointer;
 
-declare const kCGPDFContextOutputIntents: interop.Pointer;
-
-declare const kCGPDFOutlineDestination: interop.Pointer;
-
-declare const CGAffineTransformIdentity: CGAffineTransform;
-
 declare const kCGPDFContextCreator: interop.Pointer;
 
 declare const kCGFontIndexInvalid: number;
+
+declare const kCGPDFContextOutputIntents: interop.Pointer;
+
+declare const CGAffineTransformIdentity: CGAffineTransform;
 
 declare const kCGColorSpaceLinearGray: interop.Pointer;
 
@@ -26,17 +24,15 @@ declare const kCGColorSpaceITUR_2020: interop.Pointer;
 
 declare const kCGColorSpaceDisplayP3_HLG: interop.Pointer;
 
-declare const kCGDynamicRangeStandard: interop.Object;
+declare const kCGPDFOutlineDestination: interop.Pointer;
 
 declare const kCGColorSpaceExtendedSRGB: interop.Pointer;
-
-declare const kCGColorSpaceSRGB: interop.Pointer;
-
-declare const kCGPDFContextUserPassword: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearGray: interop.Pointer;
 
 declare const kCGColorSpaceDisplayP3_PQ_EOTF: interop.Pointer;
+
+declare const kCGPDFContextCropBox: interop.Pointer;
 
 declare const kCGDefaultHDRImageContentHeadroom: number;
 
@@ -46,7 +42,11 @@ declare const kCGPDFContextTrimBox: interop.Pointer;
 
 declare const kCGPDFContextAllowsPrinting: interop.Pointer;
 
-declare const kCGDynamicRangeHigh: interop.Object;
+declare const kCGPDFContextOutputIntent: interop.Pointer;
+
+declare const kCGColorSpaceITUR_2020_PQ_EOTF: interop.Pointer;
+
+declare const kCGPDFContextUserPassword: interop.Pointer;
 
 declare const kCGPDFOutlineTitle: interop.Pointer;
 
@@ -56,15 +56,13 @@ declare const kCGColorSpaceACESCGLinear: interop.Pointer;
 
 declare const kCGEXRToneMappingGammaKneeHigh: interop.Pointer;
 
-declare const kCGPDFContextMediaBox: interop.Pointer;
-
 declare const kCGFontVariationAxisMinValue: interop.Pointer;
+
+declare const kCGPDFContextMediaBox: interop.Pointer;
 
 declare const kCGPDFTagPropertyLanguageText: interop.Pointer;
 
 declare const kCGPDFTagPropertyTitleText: interop.Pointer;
-
-declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
 
 declare const kCGPDFTagPropertyActualText: interop.Pointer;
 
@@ -77,8 +75,6 @@ declare const kCGPDFXOutputCondition: interop.Pointer;
 declare const kCGPDFXOutputConditionIdentifier: interop.Pointer;
 
 declare const kCGPDFXOutputIntentSubtype: interop.Pointer;
-
-declare const kCGPDFContextOutputIntent: interop.Pointer;
 
 declare const kCGPDFContextAllowsCopying: interop.Pointer;
 
@@ -94,17 +90,13 @@ declare const kCGPDFContextTitle: interop.Pointer;
 
 declare const kCGPDFContextArtBox: interop.Pointer;
 
-declare const kCGPDFContextCropBox: interop.Pointer;
-
 declare const kCGColorConversionTRCSize: interop.Pointer;
 
 declare const kCGColorConversionBlackPointCompensation: interop.Pointer;
 
-declare const kCGDynamicRangeConstrained: interop.Object;
-
-declare const kCGPreferredDynamicRange: interop.Object;
-
 declare const kCGUseLegacyHDREcosystem: interop.Pointer;
+
+declare const kCGEXRToneMappingGammaKneeLow: interop.Pointer;
 
 declare const kCGPDFOutlineDestinationRect: interop.Pointer;
 
@@ -129,8 +121,6 @@ declare const kCGColorWhite: interop.Pointer;
 declare const kCGColorSpaceExtendedRange: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearSRGB: interop.Pointer;
-
-declare const kCGColorSpaceITUR_2020_PQ_EOTF: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearDisplayP3: interop.Pointer;
 
@@ -160,11 +150,11 @@ declare const kCGColorSpaceGenericGray: interop.Pointer;
 
 declare const CGSizeZero: CGSize;
 
+declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
+
 declare const kCGColorSpaceGenericRGBLinear: interop.Pointer;
 
 declare const kCGColorSpaceGenericXYZ: interop.Pointer;
-
-declare const kCGContentAverageLightLevel: interop.Object;
 
 declare const kCGPDFContextBleedBox: interop.Pointer;
 
@@ -192,13 +182,9 @@ declare const kCGBitmapByteOrder16Host: interop.Enum<typeof CGBitmapInfo>;
 
 declare const kCGColorSpaceCoreMedia709: interop.Pointer;
 
-declare const kCGContentAverageLightLevelNits: interop.Object;
-
 declare const kCGColorSpaceDCIP3: interop.Pointer;
 
 declare const kCGFontVariationAxisMaxValue: interop.Pointer;
-
-declare const kCGAdaptiveMaximumBitDepth: interop.Pointer;
 
 declare const kCGPDFXRegistryName: interop.Pointer;
 
@@ -214,11 +200,11 @@ declare const kCGPDFXDestinationOutputProfile: interop.Pointer;
 
 declare const CGRectInfinite: CGRect;
 
+declare const kCGColorSpaceSRGB: interop.Pointer;
+
 declare const kCGColorSpaceITUR_2020_PQ: interop.Pointer;
 
 declare const kCGColorSpaceITUR_2100_PQ: interop.Pointer;
-
-declare const kCGEXRToneMappingGammaKneeLow: interop.Pointer;
 
 declare const CGColorRenderingIntent: {
   Default: 0,
@@ -226,15 +212,6 @@ declare const CGColorRenderingIntent: {
   RelativeColorimetric: 2,
   Perceptual: 3,
   Saturation: 4,
-};
-
-declare const CGToneMapping: {
-  Default: 0,
-  ImageSpecificLumaScaling: 1,
-  ReferenceWhiteBased: 2,
-  ITURecommended: 3,
-  EXRGamma: 4,
-  None: 5,
 };
 
 declare const CGTextEncoding: {
@@ -253,6 +230,15 @@ declare const CGTextDrawingMode: {
   Clip: 7,
 };
 
+declare const CGToneMapping: {
+  Default: 0,
+  ImageSpecificLumaScaling: 1,
+  ReferenceWhiteBased: 2,
+  ITURecommended: 3,
+  EXRGamma: 4,
+  None: 5,
+};
+
 declare const CGImagePixelFormatInfo: {
   Mask: 983040,
   Packed: 0,
@@ -260,6 +246,14 @@ declare const CGImagePixelFormatInfo: {
   RGB565: 131072,
   RGB101010: 196608,
   RGBCIF10: 262144,
+};
+
+declare const CGPDFBox: {
+  Media: 0,
+  Crop: 1,
+  Bleed: 2,
+  Trim: 3,
+  Art: 4,
 };
 
 declare const CGPDFAccessPermissions: {
@@ -271,33 +265,6 @@ declare const CGPDFAccessPermissions: {
   ContentAccessibility: 32,
   Commenting: 64,
   FormFieldEntry: 128,
-};
-
-declare const CGColorModel: {
-  NoColorant: 0,
-  Gray: 1,
-  RGB: 2,
-  CMYK: 4,
-  Lab: 8,
-  DeviceN: 16,
-};
-
-declare const CGComponent: {
-  Unknown: 0,
-  Integer8Bit: 1,
-  Integer10Bit: 6,
-  Integer16Bit: 2,
-  Integer32Bit: 3,
-  Float16Bit: 5,
-  Float32Bit: 4,
-};
-
-declare const CGPDFBox: {
-  Media: 0,
-  Crop: 1,
-  Bleed: 2,
-  Trim: 3,
-  Art: 4,
 };
 
 declare const CGBlendMode: {
@@ -329,21 +296,6 @@ declare const CGBlendMode: {
   XOR: 25,
   PlusDarker: 26,
   PlusLighter: 27,
-};
-
-declare const CGBitmapLayout: {
-  AlphaOnly: 0,
-  Gray: 1,
-  GrayAlpha: 2,
-  RGBA: 3,
-  ARGB: 4,
-  RGBX: 5,
-  XRGB: 6,
-  BGRA: 7,
-  BGRX: 8,
-  ABGR: 9,
-  XBGR: 10,
-  CMYK: 11,
 };
 
 declare const CGInterpolationQuality: {
@@ -411,8 +363,6 @@ declare const CGImageByteOrderInfo: {
   Order32Little: 8192,
   Order16Big: 12288,
   Order32Big: 16384,
-  Order16Host: 4096,
-  Order32Host: 8192,
 };
 
 declare const CGColorSpaceModel: {
@@ -429,12 +379,9 @@ declare const CGColorSpaceModel: {
 
 declare const CGBitmapInfo: {
   AlphaInfoMask: 31,
-  ComponentInfoMask: 3840,
-  ByteOrderInfoMask: 28672,
-  PixelFormatInfoMask: 983040,
   FloatInfoMask: 3840,
-  ByteOrderMask: 28672,
   FloatComponents: 256,
+  ByteOrderMask: 28672,
   ByteOrderDefault: 0,
   ByteOrder16Little: 4096,
   ByteOrder32Little: 8192,
@@ -448,12 +395,6 @@ declare const CGPathElementType: {
   AddQuadCurveToPoint: 2,
   AddCurveToPoint: 3,
   CloseSubpath: 4,
-};
-
-declare const CGLineJoin: {
-  Miter: 0,
-  Round: 1,
-  Bevel: 2,
 };
 
 declare const CGPDFTagType: {
@@ -509,6 +450,18 @@ declare const CGPDFTagType: {
   Object: 800,
 };
 
+declare const CGLineJoin: {
+  Miter: 0,
+  Round: 1,
+  Bevel: 2,
+};
+
+declare const CGLineCap: {
+  Butt: 0,
+  Round: 1,
+  Square: 2,
+};
+
 declare const CGColorConversionInfoTransformType: {
   From: 0,
   To: 1,
@@ -518,11 +471,6 @@ declare const CGColorConversionInfoTransformType: {
 declare const CGGlyphDeprecatedEnum: {
   Min: 0,
   Max: 1,
-};
-
-declare const CGImageComponentInfo: {
-  Integer: 0,
-  Float: 256,
 };
 
 declare const CGPDFDataFormat: {
@@ -541,12 +489,6 @@ declare const CGPDFObjectType: {
   Array: 7,
   Dictionary: 8,
   Stream: 9,
-};
-
-declare const CGLineCap: {
-  Butt: 0,
-  Round: 1,
-  Square: 2,
 };
 
 declare class CGPDFContentStream {
@@ -605,10 +547,6 @@ declare class CGContext {
   constructor(init?: CGContext);
 }
 
-declare class CGColorConversionInfo {
-  constructor(init?: CGColorConversionInfo);
-}
-
 declare class __IOSurface {
   constructor(init?: __IOSurface);
 }
@@ -634,6 +572,10 @@ declare class CGDataConsumerCallbacks {
   releaseConsumer: (p1: interop.PointerConvertible) => void | null;
 }
 
+declare class CGColorConversionInfo {
+  constructor(init?: CGColorConversionInfo);
+}
+
 declare class CGPDFScanner {
   constructor(init?: CGPDFScanner);
 }
@@ -649,23 +591,8 @@ declare class CGPDFPage {
   constructor(init?: CGPDFPage);
 }
 
-declare class CGContentInfo {
-  constructor(init?: CGContentInfo);
-  deepestImageComponent: interop.Enum<typeof CGComponent>;
-  contentColorModels: interop.Enum<typeof CGColorModel>;
-  hasWideGamut: boolean;
-  hasTransparency: boolean;
-  largestContentHeadroom: number;
-}
-
 declare class CGPDFObject {
   constructor(init?: CGPDFObject);
-}
-
-declare class CGContentToneMappingInfo {
-  constructor(init?: CGContentToneMappingInfo);
-  method: interop.Enum<typeof CGToneMapping>;
-  options: interop.Object | null;
 }
 
 declare class CGPathElement {
@@ -682,8 +609,8 @@ declare class CGFunction {
   constructor(init?: CGFunction);
 }
 
-declare class CGColor {
-  constructor(init?: CGColor);
+declare class CGPDFArray {
+  constructor(init?: CGPDFArray);
 }
 
 declare class CGPDFOperatorTable {
@@ -698,16 +625,8 @@ declare class CGFont {
   constructor(init?: CGFont);
 }
 
-declare class CGRenderingBufferProvider {
-  constructor(init?: CGRenderingBufferProvider);
-}
-
 declare class CGShading {
   constructor(init?: CGShading);
-}
-
-declare class CGPDFArray {
-  constructor(init?: CGPDFArray);
 }
 
 declare class CGDataProviderSequentialCallbacks {
@@ -736,19 +655,8 @@ declare class CGColorSpace {
   constructor(init?: CGColorSpace);
 }
 
-declare class CGBitmapParameters {
-  constructor(init?: CGBitmapParameters);
-  width: number;
-  height: number;
-  bytesPerPixel: number;
-  alignedBytesPerRow: number;
-  component: interop.Enum<typeof CGComponent>;
-  layout: interop.Enum<typeof CGBitmapLayout>;
-  format: interop.Enum<typeof CGImagePixelFormatInfo>;
-  colorSpace: interop.Object | null;
-  hasPremultipliedAlpha: boolean;
-  byteOrder: number;
-  edrTargetHeadroom: number;
+declare class CGColor {
+  constructor(init?: CGColor);
 }
 
 declare function CGRectGetMinX(rect: CGRect): number;
@@ -965,10 +873,6 @@ declare function CGColorCreateGenericGrayGamma2_2(gray: number, alpha: number): 
 
 declare function CGColorCreateSRGB(red: number, green: number, blue: number, alpha: number): interop.Object;
 
-declare function CGColorCreateWithContentHeadroom(headroom: number, space: interop.Object, red: number, green: number, blue: number, alpha: number): interop.Object;
-
-declare function CGColorGetContentHeadroom(color: interop.Object): number;
-
 declare function CGColorGetConstantColor(colorName: interop.Object): interop.Object;
 
 declare function CGColorCreateWithPattern(space: interop.Object, pattern: interop.Object, components: interop.PointerConvertible): interop.Object;
@@ -1059,15 +963,11 @@ declare function CGGradientGetTypeID(): number;
 
 declare function CGGradientCreateWithColorComponents(space: interop.Object, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Object;
 
-declare function CGGradientCreateWithContentHeadroom(headroom: number, space: interop.Object, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Object;
-
 declare function CGGradientCreateWithColors(space: interop.Object, colors: interop.Object, locations: interop.PointerConvertible): interop.Object;
 
 declare function CGGradientRetain(gradient: interop.Object): interop.Object;
 
 declare function CGGradientRelease(gradient: interop.Object): void;
-
-declare function CGGradientGetContentHeadroom(gradient: interop.Object): number;
 
 declare function CGImageGetTypeID(): number;
 
@@ -1094,16 +994,6 @@ declare function CGImageCreateWithContentHeadroom(headroom: number, width: numbe
 declare function CGImageCreateCopyWithContentHeadroom(headroom: number, image: interop.Object): interop.Object;
 
 declare function CGImageGetContentHeadroom(image: interop.Object): number;
-
-declare function CGImageCalculateContentHeadroom(image: interop.Object): number;
-
-declare function CGImageGetContentAverageLightLevel(image: interop.Object): number;
-
-declare function CGImageCalculateContentAverageLightLevel(image: interop.Object): number;
-
-declare function CGImageCreateCopyWithContentAverageLightLevel(image: interop.Object, avll: number): interop.Object;
-
-declare function CGImageCreateCopyWithCalculatedHDRStats(image: interop.Object): interop.Object;
 
 declare function CGImageRetain(image: interop.Object): interop.Object;
 
@@ -1367,19 +1257,11 @@ declare function CGShadingGetTypeID(): number;
 
 declare function CGShadingCreateAxial(space: interop.Object, start: CGPoint, end: CGPoint, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
 
-declare function CGShadingCreateAxialWithContentHeadroom(headroom: number, space: interop.Object, start: CGPoint, end: CGPoint, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
-
 declare function CGShadingCreateRadial(space: interop.Object, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
-
-declare function CGShadingCreateRadialWithContentHeadroom(headroom: number, space: interop.Object, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
 
 declare function CGShadingRetain(shading: interop.Object): interop.Object;
 
 declare function CGShadingRelease(shading: interop.Object): void;
-
-declare function CGShadingGetContentHeadroom(shading: interop.Object): number;
-
-declare function CGEXRToneMappingGammaGetDefaultOptions(): interop.Object;
 
 declare function CGContextGetTypeID(): number;
 
@@ -1531,10 +1413,6 @@ declare function CGContextDrawTiledImage(c: interop.Object, rect: CGRect, image:
 
 declare function CGContextDrawImageApplyingToneMapping(c: interop.Object, r: CGRect, image: interop.Object, method: interop.Enum<typeof CGToneMapping>, options: interop.Object): boolean;
 
-declare function CGContextGetContentToneMappingInfo(c: interop.Object): CGContentToneMappingInfo;
-
-declare function CGContextSetContentToneMappingInfo(c: interop.Object, info: CGContentToneMappingInfo): void;
-
 declare function CGContextGetInterpolationQuality(c: interop.Object): interop.Enum<typeof CGInterpolationQuality>;
 
 declare function CGContextSetInterpolationQuality(c: interop.Object, quality: interop.Enum<typeof CGInterpolationQuality>): void;
@@ -1582,8 +1460,6 @@ declare function CGContextRelease(c: interop.Object): void;
 declare function CGContextFlush(c: interop.Object): void;
 
 declare function CGContextSynchronize(c: interop.Object): void;
-
-declare function CGContextSynchronizeAttributes(c: interop.Object): void;
 
 declare function CGContextSetShouldAntialias(c: interop.Object, shouldAntialias: boolean): void;
 
@@ -1633,23 +1509,9 @@ declare function CGContextShowGlyphsAtPoint(c: interop.Object, x: number, y: num
 
 declare function CGContextShowGlyphsWithAdvances(c: interop.Object, glyphs: interop.PointerConvertible, advances: interop.PointerConvertible, count: number): void;
 
-declare function CGRenderingBufferProviderCreate(info: interop.PointerConvertible, size: number, lockPointer: (p1: interop.PointerConvertible) => interop.Pointer, unlockPointer: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: (p1: interop.PointerConvertible) => void): interop.Pointer;
+declare function CGBitmapContextCreateWithData(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: number, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: interop.PointerConvertible): interop.Object;
 
-declare function CGRenderingBufferProviderCreateWithCFData(data: interop.Object): interop.Pointer;
-
-declare function CGRenderingBufferProviderGetSize(provider: interop.PointerConvertible): number;
-
-declare function CGRenderingBufferLockBytePtr(provider: interop.PointerConvertible): interop.Pointer;
-
-declare function CGRenderingBufferUnlockBytePtr(provider: interop.PointerConvertible): void;
-
-declare function CGRenderingBufferProviderGetTypeID(): number;
-
-declare function CGBitmapContextCreateWithData(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: interop.PointerConvertible): interop.Object;
-
-declare function CGBitmapContextCreate(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: interop.Enum<typeof CGBitmapInfo>): interop.Object;
-
-declare function CGBitmapContextCreateAdaptive(width: number, height: number, auxiliaryInfo: interop.Object, onResolve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => boolean, onAllocate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, onFree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, onError: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): interop.Object;
+declare function CGBitmapContextCreate(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: number): interop.Object;
 
 declare function CGBitmapContextGetData(context: interop.Object): interop.Pointer;
 

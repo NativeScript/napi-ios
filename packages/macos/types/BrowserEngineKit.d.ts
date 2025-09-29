@@ -1,22 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const BEAccessibilityContainerType: {
-  None: 0,
-  Landmark: 1,
-  Table: 2,
-  List: 4,
-  Fieldset: 8,
-  Dialog: 16,
-  Tree: 32,
-  Frame: 64,
-  Article: 128,
-  SemanticGroup: 256,
-  ScrollArea: 512,
-  Alert: 1024,
-  DescriptionList: 2048,
-};
-
 declare const BEAccessibilityPressedState: {
   Undefined: 0,
   False: 1,
@@ -37,11 +21,20 @@ declare const BEGestureType: {
   ForceTouch: 15,
 };
 
-declare const BESelectionFlags: {
-  SelectionFlagsNone: 0,
-  WordIsNearTap: 1,
-  SelectionFlipped: 2,
-  PhraseBoundaryChanged: 4,
+declare const BEAccessibilityContainerType: {
+  None: 0,
+  Landmark: 1,
+  Table: 2,
+  List: 4,
+  Fieldset: 8,
+  Dialog: 16,
+  Tree: 32,
+  Frame: 64,
+  Article: 128,
+  SemanticGroup: 256,
+  ScrollArea: 512,
+  Alert: 1024,
+  DescriptionList: 2048,
 };
 
 declare const BESelectionTouchPhase: {
@@ -51,6 +44,13 @@ declare const BESelectionTouchPhase: {
   EndedMovingForward: 3,
   EndedMovingBackward: 4,
   EndedNotMoving: 5,
+};
+
+declare const BESelectionFlags: {
+  SelectionFlagsNone: 0,
+  WordIsNearTap: 1,
+  SelectionFlipped: 2,
+  PhraseBoundaryChanged: 4,
 };
 
 declare interface BEProcessCapabilityGrant extends NSObjectProtocol {
@@ -79,15 +79,6 @@ declare interface BETextInputDelegate {
 }
 
 declare class BETextInputDelegate extends NativeObject implements BETextInputDelegate {
-}
-
-declare interface BEExtensionProcess extends NSObjectProtocol {
-  invalidate(): void;
-
-  makeLibXPCConnectionError(error: interop.PointerConvertible): NSObject;
-}
-
-declare class BEExtensionProcess extends NativeObject implements BEExtensionProcess {
 }
 
 declare interface BETextInteractionDelegate {

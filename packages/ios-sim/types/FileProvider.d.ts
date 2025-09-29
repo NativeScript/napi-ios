@@ -11,8 +11,6 @@ declare const NSFileProviderErrorDomain: string;
 
 declare const NSFileProviderInitialPageSortedByDate: NSData;
 
-declare const NSFileProviderUserInfoExperimentIDKey: string;
-
 declare const NSFileProviderDomainDidChange: string;
 
 declare const NSFileProviderErrorNonExistentItemIdentifierKey: string;
@@ -49,9 +47,7 @@ declare const NSFileProviderDomainRemovalMode: {
 };
 
 declare const NSFileProviderModifyItemOptions: {
-  MayAlreadyExist: 1,
-  FailOnConflict: 2,
-  IsImmediateUploadRequestByPresentingApplication: 4,
+  NSFileProviderModifyItemMayAlreadyExist: 1,
 };
 
 declare const NSFileProviderKnownFolders: {
@@ -79,7 +75,6 @@ declare const NSFileProviderErrorCode: {
   ProviderDomainTemporarilyUnavailable: -2012,
   ProviderDomainNotFound: -2013,
   ApplicationExtensionNotFound: -2014,
-  LocalVersionConflictingWithServer: -2015,
 };
 
 declare const NSFileProviderTestingOperationSide: {
@@ -558,52 +553,6 @@ declare class NSFileProviderDomainVersion extends NSObject implements NSSecureCo
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NSFileProviderDomain extends NSObject {
-  initWithIdentifierDisplayNamePathRelativeToDocumentStorage(identifier: string, displayName: string, pathRelativeToDocumentStorage: string): this;
-
-  initWithIdentifierDisplayName(identifier: string, displayName: string): this;
-
-  readonly identifier: string;
-
-  readonly displayName: string;
-
-  readonly pathRelativeToDocumentStorage: string;
-
-  readonly userEnabled: boolean;
-
-  readonly replicated: boolean;
-
-  testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>;
-
-  readonly backingStoreIdentity: NSData;
-
-  supportsSyncingTrash: boolean;
-
-  isReplicated(): boolean;
-
-  setTestingModes(testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>): void;
-
-  setSupportsSyncingTrash(supportsSyncingTrash: boolean): void;
-}
-
-declare class NSFileProviderItemVersion extends NSObject {
-  static readonly beforeFirstSyncComponent: NSData;
-
-  initWithContentVersionMetadataVersion(contentVersion: NSData, metadataVersion: NSData): this;
-
-  readonly contentVersion: NSData;
-
-  readonly metadataVersion: NSData;
-}
-
-declare class NSFileProviderRequest extends NSObject {
-  readonly isSystemRequest: boolean;
-
-  readonly isFileViewerRequest: boolean;
-
-  readonly domainVersion: NSFileProviderDomainVersion;
-}
-
 declare class NSFileProviderExtension extends NSObject {
   itemForIdentifierError(identifier: string, error: interop.PointerConvertible): NSFileProviderItem;
 
@@ -654,5 +603,51 @@ declare class NSFileProviderExtension extends NSObject {
   supportedServiceSourcesForItemIdentifierError(itemIdentifier: string, error: interop.PointerConvertible): NSArray;
 
   fetchThumbnailsForItemIdentifiersRequestedSizePerThumbnailCompletionHandlerCompletionHandler(itemIdentifiers: NSArray<interop.Object> | Array<interop.Object>, size: CGSize, perThumbnailCompletionHandler: (p1: string, p2: NSData, p3: NSError) => void | null, completionHandler: (p1: NSError) => void | null): NSProgress;
+}
+
+declare class NSFileProviderDomain extends NSObject {
+  initWithIdentifierDisplayNamePathRelativeToDocumentStorage(identifier: string, displayName: string, pathRelativeToDocumentStorage: string): this;
+
+  initWithIdentifierDisplayName(identifier: string, displayName: string): this;
+
+  readonly identifier: string;
+
+  readonly displayName: string;
+
+  readonly pathRelativeToDocumentStorage: string;
+
+  readonly userEnabled: boolean;
+
+  readonly replicated: boolean;
+
+  testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>;
+
+  readonly backingStoreIdentity: NSData;
+
+  supportsSyncingTrash: boolean;
+
+  isReplicated(): boolean;
+
+  setTestingModes(testingModes: interop.Enum<typeof NSFileProviderDomainTestingModes>): void;
+
+  setSupportsSyncingTrash(supportsSyncingTrash: boolean): void;
+}
+
+declare class NSFileProviderItemVersion extends NSObject {
+  static readonly beforeFirstSyncComponent: NSData;
+
+  initWithContentVersionMetadataVersion(contentVersion: NSData, metadataVersion: NSData): this;
+
+  readonly contentVersion: NSData;
+
+  readonly metadataVersion: NSData;
+}
+
+declare class NSFileProviderRequest extends NSObject {
+  readonly isSystemRequest: boolean;
+
+  readonly isFileViewerRequest: boolean;
+
+  readonly domainVersion: NSFileProviderDomainVersion;
 }
 

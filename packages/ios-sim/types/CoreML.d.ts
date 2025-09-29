@@ -5,17 +5,17 @@ declare const MLModelErrorDomain: string;
 
 declare const MLModelCreatorDefinedKey: string;
 
+declare const MLModelLicenseKey: string;
+
 declare const MLModelAuthorKey: string;
 
 declare const MLModelVersionStringKey: string;
-
-declare const MLModelDescriptionKey: string;
 
 declare const MLFeatureValueImageOptionCropAndScale: string;
 
 declare const MLModelCollectionDidChangeNotification: string;
 
-declare const MLModelLicenseKey: string;
+declare const MLModelDescriptionKey: string;
 
 declare const MLFeatureValueImageOptionCropRect: string;
 
@@ -95,7 +95,6 @@ declare const MLMultiArrayDataType: {
   Float16: 65552,
   Float: 65568,
   Int32: 131104,
-  Int8: 131080,
 };
 
 declare function MLAllComputeDevices(): NSArray;
@@ -586,6 +585,56 @@ declare class MLMetricKey extends MLKey {
   static readonly miniBatchIndex: MLMetricKey;
 }
 
+declare class MLMultiArrayConstraint extends NSObject implements NSSecureCoding {
+  readonly shape: NSArray;
+
+  readonly dataType: interop.Enum<typeof MLMultiArrayDataType>;
+
+  readonly shapeConstraint: MLMultiArrayShapeConstraint;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class MLComputePlanDeviceUsage extends NSObject {
+  readonly supportedComputeDevices: NSArray;
+
+  readonly preferredComputeDevice: MLComputeDeviceProtocol;
+}
+
+declare class MLComputePlan extends NSObject {
+  static loadContentsOfURLConfigurationCompletionHandler(url: NSURL, configuration: MLModelConfiguration, handler: (p1: MLComputePlan, p2: NSError) => void | null): void;
+
+  static loadModelAssetConfigurationCompletionHandler(asset: MLModelAsset, configuration: MLModelConfiguration, handler: (p1: MLComputePlan, p2: NSError) => void | null): void;
+
+  estimatedCostOfMLProgramOperation(operation: MLModelStructureProgramOperation): MLComputePlanCost;
+
+  computeDeviceUsageForNeuralNetworkLayer(layer: MLModelStructureNeuralNetworkLayer): MLComputePlanDeviceUsage;
+
+  computeDeviceUsageForMLProgramOperation(operation: MLModelStructureProgramOperation): MLComputePlanDeviceUsage;
+
+  readonly modelStructure: MLModelStructure;
+}
+
+declare class MLImageConstraint extends NSObject implements NSSecureCoding {
+  readonly pixelsHigh: number;
+
+  readonly pixelsWide: number;
+
+  readonly pixelFormatType: number;
+
+  readonly sizeConstraint: MLImageSizeConstraint;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCoding {
   readonly type: interop.Enum<typeof MLFeatureType>;
 
@@ -650,26 +699,6 @@ declare class MLFeatureValue extends NSObject implements NSCopying, NSSecureCodi
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MLMultiArrayConstraint extends NSObject implements NSSecureCoding {
-  readonly shape: NSArray;
-
-  readonly dataType: interop.Enum<typeof MLMultiArrayDataType>;
-
-  readonly shapeConstraint: MLMultiArrayShapeConstraint;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MLComputePlanDeviceUsage extends NSObject {
-  readonly supportedComputeDevices: NSArray;
-
-  readonly preferredComputeDevice: MLComputeDeviceProtocol;
-}
-
 declare class MLModelStructureNeuralNetworkLayer extends NSObject {
   readonly name: string;
 
@@ -678,36 +707,6 @@ declare class MLModelStructureNeuralNetworkLayer extends NSObject {
   readonly inputNames: NSArray;
 
   readonly outputNames: NSArray;
-}
-
-declare class MLComputePlan extends NSObject {
-  static loadContentsOfURLConfigurationCompletionHandler(url: NSURL, configuration: MLModelConfiguration, handler: (p1: MLComputePlan, p2: NSError) => void | null): void;
-
-  static loadModelAssetConfigurationCompletionHandler(asset: MLModelAsset, configuration: MLModelConfiguration, handler: (p1: MLComputePlan, p2: NSError) => void | null): void;
-
-  estimatedCostOfMLProgramOperation(operation: MLModelStructureProgramOperation): MLComputePlanCost;
-
-  computeDeviceUsageForNeuralNetworkLayer(layer: MLModelStructureNeuralNetworkLayer): MLComputePlanDeviceUsage;
-
-  computeDeviceUsageForMLProgramOperation(operation: MLModelStructureProgramOperation): MLComputePlanDeviceUsage;
-
-  readonly modelStructure: MLModelStructure;
-}
-
-declare class MLImageConstraint extends NSObject implements NSSecureCoding {
-  readonly pixelsHigh: number;
-
-  readonly pixelsWide: number;
-
-  readonly pixelFormatType: number;
-
-  readonly sizeConstraint: MLImageSizeConstraint;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class MLNeuralEngineComputeDevice extends NSObject implements MLComputeDeviceProtocol {
@@ -844,48 +843,6 @@ declare class MLImageSizeConstraint extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MLCPUComputeDevice extends NSObject implements MLComputeDeviceProtocol {
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
 declare class MLModelCollection extends NSObject {
   readonly identifier: string;
 
@@ -952,6 +909,48 @@ declare class MLNumericConstraint extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class MLCPUComputeDevice extends NSObject implements MLComputeDeviceProtocol {
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class MLModelStructureNeuralNetwork extends NSObject {

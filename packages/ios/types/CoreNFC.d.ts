@@ -1,9 +1,9 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const NFCISO15693TagResponseErrorKey: string;
-
 declare const NFCTagResponseUnexpectedLengthErrorKey: string;
+
+declare const NFCISO15693TagResponseErrorKey: string;
 
 declare const NFCErrorDomain: string;
 
@@ -96,8 +96,6 @@ declare const NFCReaderError: {
   ReaderErrorInvalidParameterLength: 4,
   ReaderErrorParameterOutOfBound: 5,
   ReaderErrorRadioDisabled: 6,
-  ReaderErrorIneligible: 7,
-  ReaderErrorAccessNotAccepted: 8,
   ReaderTransceiveErrorTagConnectionLost: 100,
   ReaderTransceiveErrorRetryExceeded: 101,
   ReaderTransceiveErrorTagResponseError: 102,
@@ -216,6 +214,21 @@ declare interface NFCVASReaderSessionDelegate extends NSObjectProtocol {
 declare class NFCVASReaderSessionDelegate extends NativeObject implements NFCVASReaderSessionDelegate {
 }
 
+declare interface NFCMiFareTag extends NFCTag, NFCNDEFTag {
+  readonly mifareFamily: interop.Enum<typeof NFCMiFareFamily>;
+
+  readonly identifier: NSData;
+
+  readonly historicalBytes: NSData;
+
+  sendMiFareCommandCompletionHandler(command: NSData, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
+
+  sendMiFareISO7816CommandCompletionHandler(apdu: NFCISO7816APDU, completionHandler: (p1: NSData, p2: number, p3: number, p4: NSError) => void | null): void;
+}
+
+declare class NFCMiFareTag extends NativeObject implements NFCMiFareTag {
+}
+
 declare interface NFCISO7816Tag extends NFCTag, NFCNDEFTag {
   readonly initialSelectedAID: string;
 
@@ -248,21 +261,6 @@ declare interface NFCNDEFTag extends NSObjectProtocol, NSSecureCoding, NSCopying
 }
 
 declare class NFCNDEFTag extends NativeObject implements NFCNDEFTag {
-}
-
-declare interface NFCMiFareTag extends NFCTag, NFCNDEFTag {
-  readonly mifareFamily: interop.Enum<typeof NFCMiFareFamily>;
-
-  readonly identifier: NSData;
-
-  readonly historicalBytes: NSData;
-
-  sendMiFareCommandCompletionHandler(command: NSData, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
-
-  sendMiFareISO7816CommandCompletionHandler(apdu: NFCISO7816APDU, completionHandler: (p1: NSData, p2: number, p3: number, p4: NSError) => void | null): void;
-}
-
-declare class NFCMiFareTag extends NativeObject implements NFCMiFareTag {
 }
 
 declare interface NFCFeliCaTag extends NFCTag, NFCNDEFTag {
@@ -584,10 +582,6 @@ declare class NFCISO15693CustomCommandConfiguration extends NFCTagCommandConfigu
   setCustomCommandCode(customCommandCode: number): void;
 
   setRequestParameters(requestParameters: NSData): void;
-}
-
-declare class NFCPaymentTagReaderSession extends NFCTagReaderSession {
-  initWithDelegateQueue(delegate: NFCTagReaderSessionDelegate, queue: NSObject | null): this;
 }
 
 declare class NFCISO15693ReaderSession extends NFCReaderSession {

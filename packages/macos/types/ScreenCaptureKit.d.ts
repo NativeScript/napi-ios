@@ -77,21 +77,10 @@ declare const SCStreamType: {
   Display: 1,
 };
 
-declare const SCScreenshotDynamicRange: {
-  S: 0,
-  H: 1,
-  SDRAndH: 2,
-};
-
 declare const SCCaptureDynamicRange: {
   SDR: 0,
   HDRLocalDisplay: 1,
   HDRCanonicalDisplay: 2,
-};
-
-declare const SCScreenshotDisplayIntent: {
-  Canonical: 0,
-  Local: 1,
 };
 
 declare const SCCaptureResolutionType: {
@@ -108,11 +97,10 @@ declare const SCShareableContentStyle: {
 };
 
 declare const SCStreamConfigurationPreset: {
-  StreamLocalDisplay: 0,
-  StreamCanonicalDisplay: 1,
-  ScreenshotLocalDisplay: 2,
-  ScreenshotCanonicalDisplay: 3,
-  RecordingPreservedSDRHDR10: 4,
+  StreamLocal: 0,
+  StreamCanonical: 1,
+  ScreenshotLocal: 2,
+  ScreenshotCanonical: 3,
 };
 
 declare interface SCStreamDelegate extends NSObjectProtocol {
@@ -165,24 +153,6 @@ declare class SCScreenshotManager extends NSObject {
   static captureImageWithFilterConfigurationCompletionHandler(contentFilter: SCContentFilter, config: SCStreamConfiguration, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
 
   static captureImageInRectCompletionHandler(rect: CGRect, completionHandler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
-
-  static captureScreenshotWithFilterConfigurationCompletionHandler(contentFilter: SCContentFilter, config: SCScreenshotConfiguration, completionHandler: (p1: SCScreenshotOutput, p2: NSError) => void | null): void;
-
-  static captureScreenshotWithRectConfigurationCompletionHandler(rect: CGRect, config: SCScreenshotConfiguration, completionHandler: (p1: SCScreenshotOutput, p2: NSError) => void | null): void;
-}
-
-declare class SCScreenshotOutput extends NSObject {
-  sdrImage: interop.Object;
-
-  hdrImage: interop.Object;
-
-  fileURL: NSURL;
-
-  setSdrImage(sdrImage: interop.Object | null): void;
-
-  setHdrImage(hdrImage: interop.Object | null): void;
-
-  setFileURL(fileURL: NSURL | null): void;
 }
 
 declare class SCContentSharingPickerConfiguration<NSCopying = interop.Object> extends NSObject {
@@ -467,58 +437,6 @@ declare class SCWindow extends NSObject {
   isOnScreen(): boolean;
 
   isActive(): boolean;
-}
-
-declare class SCScreenshotConfiguration extends NSObject {
-  width: number;
-
-  height: number;
-
-  showsCursor: boolean;
-
-  sourceRect: CGRect;
-
-  destinationRect: CGRect;
-
-  ignoreShadows: boolean;
-
-  ignoreClipping: boolean;
-
-  includeChildWindows: boolean;
-
-  displayIntent: interop.Enum<typeof SCScreenshotDisplayIntent>;
-
-  dynamicRange: interop.Enum<typeof SCScreenshotDynamicRange>;
-
-  contentType: UTType;
-
-  fileURL: NSURL;
-
-  static readonly supportedContentTypes: NSArray;
-
-  setWidth(width: number): void;
-
-  setHeight(height: number): void;
-
-  setShowsCursor(showsCursor: boolean): void;
-
-  setSourceRect(sourceRect: CGRect): void;
-
-  setDestinationRect(destinationRect: CGRect): void;
-
-  setIgnoreShadows(ignoreShadows: boolean): void;
-
-  setIgnoreClipping(ignoreClipping: boolean): void;
-
-  setIncludeChildWindows(includeChildWindows: boolean): void;
-
-  setDisplayIntent(displayIntent: interop.Enum<typeof SCScreenshotDisplayIntent>): void;
-
-  setDynamicRange(dynamicRange: interop.Enum<typeof SCScreenshotDynamicRange>): void;
-
-  setContentType(contentType: UTType): void;
-
-  setFileURL(fileURL: NSURL | null): void;
 }
 
 declare class SCShareableContentInfo extends NSObject {

@@ -2,6 +2,12 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
+declare const DRDeviceIsBusyKey: string;
+
+declare const DRMediaCatalogNumberKey: string;
+
+declare const DRErrorStatusErrorInfoStringKey: string;
+
 declare const kDRErrorStatusErrorKey: interop.Pointer;
 
 declare const DRDeviceMediaFreeSpaceKey: string;
@@ -127,8 +133,6 @@ declare const DRBurnStrategyCDTAO: string;
 declare const DRBurnFailureActionNone: string;
 
 declare const DRBurnStrategyIsRequiredKey: string;
-
-declare const DRMediaCatalogNumberKey: string;
 
 declare const DRBurnTestingKey: string;
 
@@ -722,8 +726,6 @@ declare const DRDeviceCanWriteDVDDAOKey: string;
 
 declare const kDRCDTextSongwriterKey: interop.Pointer;
 
-declare const DRTrackTypeKey: string;
-
 declare const kDRStatusStateFailed: interop.Pointer;
 
 declare const kDRMacFinderHideExtension: interop.Pointer;
@@ -769,8 +771,6 @@ declare const kDRDeviceCanWriteCDRKey: interop.Pointer;
 declare const kDRISO9660LevelOne: interop.Pointer;
 
 declare const kDRDeviceCanWriteBDKey: interop.Pointer;
-
-declare const kDREraseTypeComplete: interop.Pointer;
 
 declare const DRHFSPlusCatalogNodeID: string;
 
@@ -950,6 +950,8 @@ declare const DRStatusStateTrackClose: string;
 
 declare const kDRCDTextGenreCodeLatin: number;
 
+declare const kDRMediaNotSupportedErr: number;
+
 declare const DRCDTextGenreCodeJazz: number;
 
 declare const DRDeviceLoadingMechanismCanOpenKey: string;
@@ -1062,6 +1064,8 @@ declare const kDRDeviceMediaTypeHDDVDRAM: interop.Pointer;
 
 declare const kDRStatusStateErasing: interop.Pointer;
 
+declare const kDREraseTypeComplete: interop.Pointer;
+
 declare const DRDeviceLoadingMechanismCanEjectKey: string;
 
 declare const kDRTrackISRCKey: interop.Pointer;
@@ -1134,8 +1138,6 @@ declare const kDRAudioPreEmphasisKey: interop.Pointer;
 
 declare const DRDeviceCanWriteCDRKey: string;
 
-declare const DRDeviceIsBusyKey: string;
-
 declare const kDRLinkTypeHardLink: number;
 
 declare const kDRSCMSCopyrightProtectedCopy: interop.Pointer;
@@ -1194,8 +1196,6 @@ declare const kDRTrackPacketTypeFixed: interop.Pointer;
 
 declare const DRCDTextGenreCodeGospel: number;
 
-declare const kDRMediaNotSupportedErr: number;
-
 declare const DRTrackTypeClosed: string;
 
 declare const kDRCDTextGenreCodeAdultContemporary: number;
@@ -1225,8 +1225,6 @@ declare const kDRCDTextGenreCodeClassical: number;
 declare const kDRCDTextGenreCodeJazz: number;
 
 declare const DRErrorStatusSenseCodeStringKey: string;
-
-declare const DRErrorStatusErrorInfoStringKey: string;
 
 declare const kDRDeviceWriteCapabilitiesKey: interop.Pointer;
 
@@ -1271,6 +1269,8 @@ declare const kDRStatusCurrentSpeedKey: interop.Pointer;
 declare const DRUDFPrimaryVolumeDescriptorNumber: string;
 
 declare const DRDeviceMediaTypeDVDRWDualLayer: string;
+
+declare const DRSCMSCopyrightProtectedCopy: string;
 
 declare const DRDeviceMediaClassCD: string;
 
@@ -1472,11 +1472,11 @@ declare const DRCDTextGenreCodeSoundtrack: number;
 
 declare const kDRSerialCopyManagementStateKey: interop.Pointer;
 
+declare const kDRDeviceBusyErr: number;
+
 declare const kDRBlockTypeAudio: number;
 
 declare const kDRTrackMessageVerificationStarting: number;
-
-declare const DRErrorStatusAdditionalSenseStringKey: string;
 
 declare const DRDVDTimestampKey: string;
 
@@ -1490,17 +1490,15 @@ declare const DRDeviceCanUnderrunProtectCDKey: string;
 
 declare const kDREraseTypeKey: interop.Pointer;
 
-declare const kDRCDTextEncodingASCII: number;
-
 declare const kDRDeviceMediaBlocksFreeKey: interop.Pointer;
 
 declare const kDRStatusProgressCurrentKPS: interop.Pointer;
 
 declare const kDRStatusStateKey: interop.Pointer;
 
-declare const kDRCDTextGenreCodeSoundEffects: number;
+declare const DRErrorStatusAdditionalSenseStringKey: string;
 
-declare const DRSCMSCopyrightProtectedCopy: string;
+declare const kDRCDTextGenreCodeSoundEffects: number;
 
 declare const DRDeviceIORegistryEntryPathKey: string;
 
@@ -1511,6 +1509,8 @@ declare const kDRDeviceBurnSpeedHDDVD1x: number;
 declare const DRStatusStateKey: string;
 
 declare const kDRMacFileType: interop.Pointer;
+
+declare const kDRCDTextEncodingASCII: number;
 
 declare const DRStatusCurrentSessionKey: string;
 
@@ -1527,8 +1527,6 @@ declare const kDRCDTextGenreCodeSoundtrack: number;
 declare const DRBibliographicFile: string;
 
 declare const kDRSuppressMacSpecificFiles: interop.Pointer;
-
-declare const kDRDeviceBusyErr: number;
 
 declare const DRAbstractFile: string;
 
@@ -1553,6 +1551,8 @@ declare const kDRTrackPacketSizeKey: interop.Pointer;
 declare const kDRPosixUID: interop.Pointer;
 
 declare const kDRBurnKey: interop.Pointer;
+
+declare const DRTrackTypeKey: string;
 
 declare const kDRStatusStateVerifying: interop.Pointer;
 

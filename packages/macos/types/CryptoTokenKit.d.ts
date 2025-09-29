@@ -3,41 +3,23 @@
 
 declare const TKErrorDomain: string;
 
+declare const TKTokenOperation: {
+  None: 0,
+  ReadData: 1,
+  SignData: 2,
+  DecryptData: 3,
+  PerformKeyExchange: 4,
+};
+
 declare const TKSmartCardPINConfirmation: {
   None: 0,
   New: 1,
   Current: 2,
 };
 
-declare const TKSmartCardPINCompletion: {
-  MaxLength: 1,
-  Key: 2,
-  Timeout: 4,
-};
-
 declare const TKSmartCardPINJustification: {
   Left: 0,
   Right: 1,
-};
-
-declare const TKSmartCardPINEncoding: {
-  Binary: 0,
-  ASCII: 1,
-  BCD: 2,
-};
-
-declare const TKSmartCardPINCharset: {
-  Numeric: 0,
-  Alphanumeric: 1,
-  UpperAlphanumeric: 2,
-};
-
-declare const TKSmartCardProtocol: {
-  None: 0,
-  T0: 1,
-  T1: 2,
-  T15: 32768,
-  Any: 65535,
 };
 
 declare const TKErrorCode: {
@@ -55,12 +37,24 @@ declare const TKErrorCode: {
   TokenNotFound: -7,
 };
 
-declare const TKTokenOperation: {
+declare const TKSmartCardPINEncoding: {
+  Binary: 0,
+  ASCII: 1,
+  BCD: 2,
+};
+
+declare const TKSmartCardProtocol: {
   None: 0,
-  ReadData: 1,
-  SignData: 2,
-  DecryptData: 3,
-  PerformKeyExchange: 4,
+  T0: 1,
+  T1: 2,
+  T15: 32768,
+  Any: 65535,
+};
+
+declare const TKSmartCardPINCompletion: {
+  MaxLength: 1,
+  Key: 2,
+  Timeout: 4,
 };
 
 declare const TKSmartCardSlotState: {
@@ -69,6 +63,12 @@ declare const TKSmartCardSlotState: {
   Probing: 2,
   MuteCard: 3,
   ValidCard: 4,
+};
+
+declare const TKSmartCardPINCharset: {
+  Numeric: 0,
+  Alphanumeric: 1,
+  UpperAlphanumeric: 2,
 };
 
 declare interface TKSmartCardTokenDriverDelegate extends TKTokenDriverDelegate {
@@ -417,8 +417,6 @@ declare class TKTokenWatcher extends NSObject {
 
 declare class TKSmartCardTokenSession extends TKTokenSession {
   readonly smartCard: TKSmartCard;
-
-  getSmartCardWithError(error: interop.PointerConvertible): TKSmartCard;
 }
 
 declare class TKSimpleTLVRecord extends TKTLVRecord {
@@ -500,6 +498,12 @@ declare class TKToken extends NSObject {
   setDelegate(delegate: TKTokenDelegate | null): void;
 }
 
+declare class TKTokenPasswordAuthOperation extends TKTokenAuthOperation {
+  password: string;
+
+  setPassword(password: string | null): void;
+}
+
 declare class TKTokenKeychainKey extends TKTokenKeychainItem {
   initWithCertificateObjectID(certificateRef: interop.Object | null, objectID: interop.Object): this;
 
@@ -540,12 +544,6 @@ declare class TKTokenKeychainKey extends TKTokenKeychainItem {
   isSuitableForLogin(): boolean;
 
   setSuitableForLogin(suitableForLogin: boolean): void;
-}
-
-declare class TKTokenPasswordAuthOperation extends TKTokenAuthOperation {
-  password: string;
-
-  setPassword(password: string | null): void;
 }
 
 declare class TKTokenKeyAlgorithm extends NSObject {

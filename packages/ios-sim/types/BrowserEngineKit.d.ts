@@ -16,6 +16,13 @@ declare const BEAccessibilitySelectionChangedNotification: number;
 
 declare const BEAccessibilityValueChangedNotification: number;
 
+declare const BEAccessibilityPressedState: {
+  Undefined: 0,
+  False: 1,
+  True: 2,
+  Mixed: 3,
+};
+
 declare const BETextDocumentRequestOptions: {
   None: 0,
   Text: 1,
@@ -52,13 +59,6 @@ declare const BEScrollViewScrollUpdatePhase: {
   Cancelled: 3,
 };
 
-declare const BEAccessibilityPressedState: {
-  Undefined: 0,
-  False: 1,
-  True: 2,
-  Mixed: 3,
-};
-
 declare const BEAccessibilityContainerType: {
   None: 0,
   Landmark: 1,
@@ -75,11 +75,6 @@ declare const BEAccessibilityContainerType: {
   DescriptionList: 2048,
 };
 
-declare const BEKeyPressState: {
-  Down: 1,
-  Up: 2,
-};
-
 declare const BESelectionTouchPhase: {
   Started: 0,
   Moved: 1,
@@ -87,6 +82,11 @@ declare const BESelectionTouchPhase: {
   EndedMovingForward: 3,
   EndedMovingBackward: 4,
   EndedNotMoving: 5,
+};
+
+declare const BEKeyPressState: {
+  Down: 1,
+  Up: 2,
 };
 
 declare const BEKeyModifierFlags: {
@@ -155,15 +155,6 @@ declare interface BETextInputDelegate {
 declare class BETextInputDelegate extends NativeObject implements BETextInputDelegate {
 }
 
-declare interface BEExtensionProcess extends NSObjectProtocol {
-  invalidate(): void;
-
-  makeLibXPCConnectionError(error: interop.PointerConvertible): NSObject;
-}
-
-declare class BEExtensionProcess extends NativeObject implements BEExtensionProcess {
-}
-
 declare interface BEDragInteractionDelegate extends UIDragInteractionDelegate {
   dragInteractionPrepareDragSessionCompletion?(dragInteraction: BEDragInteraction, session: UIDragSession, completion: () => boolean): void;
 
@@ -223,10 +214,6 @@ declare interface BETextInput extends UIKeyInput, BETextSelectionDirectionNaviga
   adjustSelectionBoundaryToPointTouchPhaseBaseIsStartFlags(point: CGPoint, touch: interop.Enum<typeof BESelectionTouchPhase>, boundaryIsStart: boolean, flags: interop.Enum<typeof BESelectionFlags>): void;
 
   textInteractionGestureShouldBeginAtPoint(gestureType: interop.Enum<typeof BEGestureType>, point: CGPoint): boolean;
-
-  readonly selectionContainerViewBelowText?: UIView;
-
-  readonly selectionContainerViewAboveText?: UIView;
 
   readonly selectedText: string;
 
@@ -699,10 +686,6 @@ declare class BELayerHierarchyHandle extends NSObject implements NSSecureCoding 
 
   createXPCRepresentation(): NSObject;
 
-  static handleWithPortDataError(port: number, data: NSData, error: interop.PointerConvertible): BELayerHierarchyHandle;
-
-  encodeWithBlock(block: (p1: number, p2: NSData) => void): void;
-
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
@@ -723,23 +706,11 @@ declare class BELayerHierarchyHostingTransactionCoordinator extends NSObject imp
 
   commit(): void;
 
-  static coordinatorWithPortDataError(port: number, data: NSData, error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
-
-  encodeWithBlock(block: (p1: number, p2: NSData) => void): void;
-
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class BEAccessibilityRemoteHostElement extends NSObject {
-  initWithIdentifierRemotePid(identifier: string, remotePid: number): this;
-
-  accessibilityContainer: interop.Object | null;
-
-  setAccessibilityContainer(accessibilityContainer: interop.Object | null): void;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -794,9 +765,5 @@ declare class BEMediaEnvironment extends NSObject {
   suspendWithError(error: interop.PointerConvertible): boolean;
 
   makeCaptureSessionWithError(error: interop.PointerConvertible): AVCaptureSession;
-}
-
-declare class BEAccessibilityRemoteElement extends NSObject {
-  initWithIdentifierHostPid(identifier: string, hostPid: number): this;
 }
 

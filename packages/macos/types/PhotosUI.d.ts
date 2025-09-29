@@ -7,13 +7,13 @@ declare const PHProjectCategoryOther: string;
 
 declare const PHProjectCategoryPrints: string;
 
+declare const PHProjectCategoryCard: string;
+
 declare const PHProjectCategoryCalendar: string;
 
 declare const PHProjectCategoryBook: string;
 
 declare const PHProjectTypeUndefined: string;
-
-declare const PHProjectCategoryCard: string;
 
 declare const PHProjectCategoryWallDecor: string;
 
@@ -195,6 +195,36 @@ declare class PHProjectTextElement extends PHProjectElement implements NSSecureC
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class PHProjectElement extends NSObject implements NSSecureCoding {
+  readonly weight: number;
+
+  readonly placement: CGRect;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class PHProjectSectionContent extends NSObject implements NSSecureCoding {
+  readonly elements: NSArray;
+
+  readonly numberOfColumns: number;
+
+  readonly aspectRatio: number;
+
+  readonly cloudAssetIdentifiers: NSArray;
+
+  readonly backgroundColor: NSColor;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class PHProjectInfo extends NSObject implements NSSecureCoding {
   readonly creationSource: interop.Enum<typeof PHProjectCreationSource>;
 
@@ -271,26 +301,6 @@ declare class PHPickerViewController extends NSViewController {
   setDelegate(delegate: PHPickerViewControllerDelegate): void;
 }
 
-declare class PHProjectMapElement extends PHProjectElement implements NSSecureCoding {
-  readonly mapType: interop.Enum<typeof MKMapType>;
-
-  readonly centerCoordinate: CLLocationCoordinate2D;
-
-  readonly heading: number;
-
-  readonly pitch: number;
-
-  readonly altitude: number;
-
-  readonly annotations: NSArray;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class PHPickerFilter extends NSObject implements NSCopying {
   static readonly imagesFilter: PHPickerFilter;
 
@@ -327,40 +337,30 @@ declare class PHPickerFilter extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class PHProjectMapElement extends PHProjectElement implements NSSecureCoding {
+  readonly mapType: interop.Enum<typeof MKMapType>;
+
+  readonly centerCoordinate: CLLocationCoordinate2D;
+
+  readonly heading: number;
+
+  readonly pitch: number;
+
+  readonly altitude: number;
+
+  readonly annotations: NSArray;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class PHPickerResult extends NSObject {
   readonly itemProvider: NSItemProvider;
 
   readonly assetIdentifier: string;
-}
-
-declare class PHProjectSectionContent extends NSObject implements NSSecureCoding {
-  readonly elements: NSArray;
-
-  readonly numberOfColumns: number;
-
-  readonly aspectRatio: number;
-
-  readonly cloudAssetIdentifiers: NSArray;
-
-  readonly backgroundColor: NSColor;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class PHProjectElement extends NSObject implements NSSecureCoding {
-  readonly weight: number;
-
-  readonly placement: CGRect;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class PHLivePhotoView extends NSView {
@@ -440,20 +440,6 @@ declare class PHPickerConfiguration extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class PHProjectSection extends NSObject implements NSSecureCoding {
-  readonly sectionContents: NSArray;
-
-  readonly sectionType: interop.Enum<typeof PHProjectSectionType>;
-
-  readonly title: string;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class PHProjectRegionOfInterest extends NSObject implements NSSecureCoding {
   readonly rect: CGRect;
 
@@ -500,5 +486,19 @@ declare class PHPickerUpdateConfiguration extends NSObject implements NSCopying 
   setEdgesWithoutContentMargins(edgesWithoutContentMargins: interop.Enum<typeof NSDirectionalRectEdge>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PHProjectSection extends NSObject implements NSSecureCoding {
+  readonly sectionContents: NSArray;
+
+  readonly sectionType: interop.Enum<typeof PHProjectSectionType>;
+
+  readonly title: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

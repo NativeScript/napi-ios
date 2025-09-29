@@ -5,17 +5,6 @@ declare const AVBErrorDomain: string;
 
 declare const AVBNullEUI64: number;
 
-declare const AVB17221ADPTalkerCapabilities: {
-  Implemented: 1,
-  HasOtherSource: 512,
-  HasControlSource: 1024,
-  HasMediaClockSource: 2048,
-  HasSMPTESource: 4096,
-  HasMIDISource: 8192,
-  HasAudioSource: 16384,
-  HasVideoSource: -32768,
-};
-
 declare const AVB17221EntityPropertyChanged: {
   TimeToLive: 1,
   GUID: 2,
@@ -80,6 +69,17 @@ declare const AVB17221AECPMessageType: {
 
 declare const AVB17221ADPControllerCapabilities: {
   AVB17221ADPControllerCapabilitiesImplemented: 1,
+};
+
+declare const AVB17221ADPTalkerCapabilities: {
+  Implemented: 1,
+  HasOtherSource: 512,
+  HasControlSource: 1024,
+  HasMediaClockSource: 2048,
+  HasSMPTESource: 4096,
+  HasMIDISource: 8192,
+  HasAudioSource: 16384,
+  HasVideoSource: -32768,
 };
 
 declare const AVB17221ACMPStatusCode: {

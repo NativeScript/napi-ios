@@ -24,8 +24,6 @@ declare const GCKeyCodeInternational3: number;
 
 declare const GCKeyLANG9: string;
 
-declare const GCInputRightBumper: string;
-
 declare const GCKeyCodeF9: number;
 
 declare const GCKeyCodeF3: number;
@@ -44,15 +42,11 @@ declare const GCInputMicroGamepadButtonMenu: string;
 
 declare const GCInputDirectionalCardinalDpad: string;
 
-declare const GCKeyKeypadHyphen: string;
-
 declare const GCInputMicroGamepadButtonX: string;
 
 declare const GCKeyCodeBackslash: number;
 
 declare const GCKeyCodeGraveAccentAndTilde: number;
-
-declare const GCKeyboardDidConnectNotification: string;
 
 declare const GCKeyCodeLeftAlt: number;
 
@@ -72,10 +66,6 @@ declare const GCControllerDidConnectNotification: string;
 
 declare const GCKeyPrintScreen: string;
 
-declare const GCKeyCodeKeypadNumLock: number;
-
-declare const GCKeyCodeLANG6: number;
-
 declare const GCKeyF3: string;
 
 declare const GCMouseDidStopBeingCurrentNotification: string;
@@ -88,15 +78,19 @@ declare const GCKeyK: string;
 
 declare const GCInputDualShockTouchpadTwo: string;
 
-declare const GCKeyN: string;
-
-declare const GCKeyCodeF6: number;
-
 declare const GCKeyCodeF15: number;
 
-declare const GCKeyB: string;
+declare const GCKeyNonUSBackslash: string;
 
-declare const GCHapticsLocalityTriggers: string;
+declare const GCProductCategoryMFi: string;
+
+declare const GCKeyPower: string;
+
+declare const GCHapticDurationInfinite: number;
+
+declare const GCHapticsLocalityLeftTrigger: string;
+
+declare const GCHapticsLocalityRightHandle: string;
 
 declare const GCHapticsLocalityLeftHandle: string;
 
@@ -104,51 +98,57 @@ declare const GCMouseDidDisconnectNotification: string;
 
 declare const GCMouseDidConnectNotification: string;
 
-declare const GCKeyboardDidDisconnectNotification: string;
+declare const GCControllerUserCustomizationsDidChangeNotification: string;
 
 declare const GCControllerDidStopBeingCurrentNotification: string;
 
 declare const GCControllerDidBecomeCurrentNotification: string;
 
-declare const GCControllerDidDisconnectNotification: string;
+declare const GCCurrentMicroGamepadSnapshotDataVersion: interop.Enum<typeof GCMicroGamepadSnapshotDataVersion>;
 
-declare const GCKeyCodeInternational9: number;
-
-declare const GCInputDirectionalDpad: string;
+declare const GCInputMicroGamepadButtonA: string;
 
 declare const GCInputMicroGamepadDpad: string;
 
+declare const GCKeyRightControl: string;
+
 declare const GCKeyLeftGUI: string;
+
+declare const GCKeyLeftAlt: string;
+
+declare const GCKeyLeftShift: string;
 
 declare const GCKeyLeftControl: string;
 
-declare const GCKeyLANG8: string;
+declare const GCKeyLANG7: string;
 
-declare const GCKeyLANG3: string;
+declare const GCKeyLANG5: string;
 
-declare const GCKeyInternational9: string;
+declare const GCKeyLANG4: string;
+
+declare const GCKeyLANG1: string;
+
+declare const GCKeyInternational8: string;
+
+declare const GCKeyInternational7: string;
 
 declare const GCKeyInternational6: string;
 
-declare const GCKeyPower: string;
+declare const GCKeyInternational5: string;
 
-declare const GCKeyNonUSBackslash: string;
+declare const GCKeyInternational4: string;
+
+declare const GCKeyKeypadEqualSign: string;
 
 declare const GCKeyKeypad9: string;
+
+declare const GCKeyKeypad8: string;
 
 declare const GCKeyKeypad7: string;
 
 declare const GCKeyKeypad6: string;
 
-declare const GCKeyKeypad5: string;
-
-declare const GCKeyKeypad4: string;
-
-declare const GCKeyKeypad1: string;
-
 declare const GCKeyKeypadEnter: string;
-
-declare const GCKeyKeypadPlus: string;
 
 declare const GCKeyKeypadSlash: string;
 
@@ -170,17 +170,15 @@ declare const GCKeyScrollLock: string;
 
 declare const GCKeyF20: string;
 
-declare const GCKeyF16: string;
-
 declare const GCKeyF14: string;
 
 declare const GCKeyF10: string;
 
 declare const GCKeyF9: string;
 
-declare const GCKeyGraveAccentAndTilde: string;
+declare const GCKeyF7: string;
 
-declare const GCKeyQuote: string;
+declare const GCKeyGraveAccentAndTilde: string;
 
 declare const GCKeyOpenBracket: string;
 
@@ -216,11 +214,7 @@ declare const GCKeyCodeRightShift: number;
 
 declare const GCKeyCodeRightControl: number;
 
-declare const GCKeyCodeLANG4: number;
-
 declare const GCKeyCodeInternational2: number;
-
-declare const GCKeyCodeInternational1: number;
 
 declare const GCKeyCodeApplication: number;
 
@@ -248,13 +242,9 @@ declare const GCKeyCodeF14: number;
 
 declare const GCKeyCodeF13: number;
 
-declare const GCKeyCodeF12: number;
-
 declare const GCKeyCodeF11: number;
 
 declare const GCKeyCodeF10: number;
-
-declare const GCKeyCodeF2: number;
 
 declare const GCKeyCodeSlash: number;
 
@@ -268,6 +258,8 @@ declare const GCKeyCodeSemicolon: number;
 
 declare const GCKeyCodeNonUSPound: number;
 
+declare const GCKeyCodeCloseBracket: number;
+
 declare const GCKeyCodeDeleteOrBackspace: number;
 
 declare const GCKeyCodeEscape: number;
@@ -276,27 +268,19 @@ declare const GCKeyCodeNine: number;
 
 declare const GCKeyCodeEight: number;
 
-declare const GCKeyCodeFive: number;
-
 declare const GCKeyCodeFour: number;
 
 declare const GCKeyCodeThree: number;
 
 declare const GCKeyCodeOne: number;
 
-declare const GCKeyCodeKeyY: number;
-
-declare const GCKeyCodeKeyX: number;
+declare const GCKeyCodeKeyZ: number;
 
 declare const GCKeyCodeKeyW: number;
 
 declare const GCKeyCodeKeyV: number;
 
-declare const GCKeyCodeKeyU: number;
-
 declare const GCKeyCodeKeyP: number;
-
-declare const GCKeyCodeKeyL: number;
 
 declare const GCKeyCodeKeyJ: number;
 
@@ -312,15 +296,7 @@ declare const GCInputButtonHome: string;
 
 declare const GCInputLeftTrigger: string;
 
-declare const GCInputTrigger: string;
-
-declare const GCInputRightShoulder: string;
-
-declare const GCInputGripButton: string;
-
 declare const GCInputRightThumbstickButton: string;
-
-declare const GCInputThumbstickButton: string;
 
 declare const GCInputButtonY: string;
 
@@ -330,41 +306,77 @@ declare const GCProductCategoryCoalescedRemote: string;
 
 declare const GCProductCategoryUniversalElectronicsRemote: string;
 
-declare const GCProductCategoryControlCenterRemote: string;
-
-declare const GCProductCategoryMFi: string;
-
 declare const GCPoint2Zero: GCPoint2;
 
 declare const GCKeyCodeKeyT: number;
-
-declare const GCKeyTwo: string;
 
 declare const GCKeyCodeInternational6: number;
 
 declare const GCKeyCodeKeyH: number;
 
-declare const GCKeyLANG2: string;
+declare const GCKeyTwo: string;
+
+declare const GCKeyCodeSix: number;
+
+declare const GCKeyCodeLANG7: number;
+
+declare const GCProductCategoryDualSense: string;
 
 declare const GCKeyCodeKeypadSlash: number;
 
 declare const GCKeyCodeOpenBracket: number;
 
-declare const GCKeyF7: string;
+declare const GCKeyCodePrintScreen: number;
+
+declare const GCKeyCodeFive: number;
+
+declare const GCKeyLANG6: string;
+
+declare const GCKeyF16: string;
+
+declare const GCKeyR: string;
+
+declare const GCKeyCodeLANG4: number;
+
+declare const GCKeyB: string;
+
+declare const GCKeyCodeInternational1: number;
+
+declare const GCKeyF18: string;
+
+declare const GCKeyCodeF12: number;
+
+declare const GCKeyCodeKeyL: number;
+
+declare const GCKeyCodeKeyX: number;
+
+declare const GCKeyCodeF2: number;
+
+declare const GCKeyQuote: string;
+
+declare const GCCurrentExtendedGamepadSnapshotDataVersion: interop.Enum<typeof GCExtendedGamepadSnapshotDataVersion>;
 
 declare const GCKeyCodeKeyG: number;
 
 declare const GCKeyCodeF7: number;
 
-declare const GCKeyCodePrintScreen: number;
-
 declare const GCKeyF13: string;
 
 declare const GCKeyOne: string;
 
-declare const GCKeyCodeF19: number;
+declare const GCKeyCodeKeyY: number;
 
-declare const GCInputButtonA: string;
+declare const GCKeyCodeF16: number;
+
+declare const GCInputXboxPaddleFour: string;
+
+declare const GCKeyKeypadPlus: string;
+
+declare const GCKeyCodeKeyU: number;
+
+declare const GCProductCategoryControlCenterRemote: string;
+
+declare const GCKeyInternational3: string;
 
 declare const GCKeyCodeRightArrow: number;
 
@@ -374,15 +386,15 @@ declare const GCInputDirectionPad: string;
 
 declare const GCKeyCodeReturnOrEnter: number;
 
-declare const GCProductCategoryDualSense: string;
-
-declare const GCKeyLANG1: string;
+declare const GCKeyLANG3: string;
 
 declare const GCKeyV: string;
 
-declare const GCKeyCodeKeyK: number;
+declare const GCKeyCodeKeypadNumLock: number;
 
-declare const GCKeyInternational4: string;
+declare const GCKeyCodeLANG6: number;
+
+declare const GCKeyCodeKeyK: number;
 
 declare const GCKeyCodeInternational7: number;
 
@@ -390,15 +402,9 @@ declare const GCKeyCodeF8: number;
 
 declare const GCKeyRightArrow: string;
 
-declare const GCKeyLANG7: string;
-
-declare const GCKeyCodeLANG7: number;
-
 declare const GCKeyF1: string;
 
 declare const GCInputLeftBumper: string;
-
-declare const GCKeyLeftAlt: string;
 
 declare const GCKeyQ: string;
 
@@ -408,7 +414,9 @@ declare const GCKeyCodeEqualSign: number;
 
 declare const GCKeyComma: string;
 
-declare const GCKeyF18: string;
+declare const GCKeyKeypad5: string;
+
+declare const GCKeyN: string;
 
 declare const GCKeyCodeF1: number;
 
@@ -428,11 +436,7 @@ declare const GCKeyCodeKeypad9: number;
 
 declare const GCInputXboxPaddleTwo: string;
 
-declare const GCKeyInternational3: string;
-
 declare const GCKeyEscape: string;
-
-declare const GCKeyLeftShift: string;
 
 declare const GCKeyKeypad2: string;
 
@@ -440,17 +444,9 @@ declare const GCKeyP: string;
 
 declare const GCKeyCodeLANG1: number;
 
-declare const GCKeyCodeKeyZ: number;
-
 declare const GCKeyL: string;
 
 declare const GCProductCategoryKeyboard: string;
-
-declare const GCInputMicroGamepadButtonA: string;
-
-declare const GCCurrentExtendedGamepadSnapshotDataVersion: interop.Enum<typeof GCExtendedGamepadSnapshotDataVersion>;
-
-declare const GCKeyRightControl: string;
 
 declare const GCKeyY: string;
 
@@ -460,37 +456,39 @@ declare const GCKeyF4: string;
 
 declare const GCInputButtonMenu: string;
 
-declare const GCKeyCodeKeypadPeriod: number;
-
 declare const GCKeyCodeKeyN: number;
+
+declare const GCControllerDidDisconnectNotification: string;
 
 declare const GCKeyCodeHyphen: number;
 
 declare const GCProductCategoryHID: string;
 
-declare const GCKeyKeypadAsterisk: string;
+declare const GCKeyCodeKeypadPeriod: number;
+
+declare const GCKeyCodeF19: number;
+
+declare const GCInputRightShoulder: string;
 
 declare const GCKeyNonUSPound: string;
 
-declare const GCKeyInternational2: string;
+declare const GCKeyCodeKeypadEqualSign: number;
+
+declare const GCKeyKeypadAsterisk: string;
 
 declare const GCKeyCodePower: number;
 
 declare const GCKeyBackslash: string;
 
-declare const GCKeyD: string;
-
 declare const GCKeyTab: string;
 
-declare const GCKeyCodeKeyS: number;
+declare const GCKeyD: string;
 
-declare const GCKeyInternational8: string;
+declare const GCHapticsLocalityTriggers: string;
 
 declare const GCKeyCodeKeypadHyphen: number;
 
 declare const GCProductCategorySiriRemote1stGen: string;
-
-declare const GCHapticsLocalityLeftTrigger: string;
 
 declare const GCKeyCodeKeypad2: number;
 
@@ -504,27 +502,33 @@ declare const GCInputLeftShoulder: string;
 
 declare const GCKeyCodeKeyA: number;
 
+declare const GCKeyCodeInternational9: number;
+
 declare const GCKeyF6: string;
 
 declare const GCDualSenseAdaptiveTriggerDiscretePositionCount: number;
 
-declare const GCControllerUserCustomizationsDidChangeNotification: string;
+declare const GCKeyKeypad1: string;
+
+declare const GCKeyboardDidDisconnectNotification: string;
+
+declare const GCKeyLANG8: string;
 
 declare const GCKeyCodeLeftControl: number;
 
 declare const GCKeyCodeLANG5: number;
 
-declare const GCKeyCodeKeypadEqualSign: number;
-
 declare const GCKeyCodePageDown: number;
 
 declare const GCKeyCodePause: number;
 
-declare const GCInputXboxPaddleFour: string;
+declare const GCKeyW: string;
 
 declare const GCKeyI: string;
 
 declare const GCKeySlash: string;
+
+declare const GCKeyInternational9: string;
 
 declare const GCKeyX: string;
 
@@ -536,25 +540,13 @@ declare const GCKeyCodeLANG8: number;
 
 declare const GCKeyKeypad0: string;
 
-declare const GCHapticsLocalityDefault: string;
-
-declare const GCKeyLANG5: string;
-
 declare const GCKeyCodeLeftGUI: number;
 
-declare const GCHapticsLocalityRightHandle: string;
-
-declare const GCInputDirectionalTouchSurfaceButton: string;
-
 declare const GCKeyKeypad3: string;
-
-declare const GCHapticDurationInfinite: number;
 
 declare const GCKeyCodeKeyD: number;
 
 declare const GCKeyThree: string;
-
-declare const GCProductCategorySpatialController: string;
 
 declare const GCInputLeftThumbstick: string;
 
@@ -562,17 +554,17 @@ declare const GCKeyCodeSpacebar: number;
 
 declare const GCKeyCodeTab: number;
 
+declare const GCKeyLANG2: string;
+
 declare const GCKeyCodeInternational8: number;
-
-declare const GCKeyCodeCloseBracket: number;
-
-declare const GCKeyCodeKeyO: number;
 
 declare const GCKeySemicolon: string;
 
 declare const GCKeyCodeRightGUI: number;
 
-declare const GCHapticsLocalityRightTrigger: string;
+declare const GCKeyInternational2: string;
+
+declare const GCKeyCodeF6: number;
 
 declare const GCKeyRightGUI: string;
 
@@ -582,29 +574,23 @@ declare const GCKeyZero: string;
 
 declare const GCInputXboxPaddleThree: string;
 
-declare const GCKeyCodeSix: number;
-
 declare const GCInputDualShockTouchpadButton: string;
+
+declare const GCHapticsLocalityDefault: string;
 
 declare const GCKeyCapsLock: string;
 
 declare const GCKeyF11: string;
 
-declare const GCKeyW: string;
+declare const GCKeyKeypad4: string;
 
 declare const GCHapticsLocalityHandles: string;
-
-declare const GCKeyApplication: string;
 
 declare const GCKeyFour: string;
 
 declare const GCKeyCloseBracket: string;
 
 declare const GCKeyCodeInsert: number;
-
-declare const GCKeyCodeF4: number;
-
-declare const GCKeyCodeF16: number;
 
 declare const GCKeySeven: string;
 
@@ -614,9 +600,13 @@ declare const GCKeyCodeCapsLock: number;
 
 declare const GCProductCategoryXboxOne: string;
 
+declare const GCKeyboardDidConnectNotification: string;
+
 declare const GCInputDirectionalCenterButton: string;
 
 declare const GCKeyCodeLeftArrow: number;
+
+declare const GCKeyCodeKeyS: number;
 
 declare const GCInputButtonOptions: string;
 
@@ -624,33 +614,31 @@ declare const GCKeyCodeKeypad6: number;
 
 declare const GCKeyCodeSeven: number;
 
+declare const GCKeyCodeF4: number;
+
+declare const GCInputDirectionalDpad: string;
+
+declare const GCKeyApplication: string;
+
 declare const GCKeyCodeKeyC: number;
 
 declare const GCKeyF17: string;
 
-declare const GCInputThumbstick: string;
-
 declare const GCKeyF8: string;
-
-declare const GCCurrentMicroGamepadSnapshotDataVersion: interop.Enum<typeof GCMicroGamepadSnapshotDataVersion>;
-
-declare const GCKeyR: string;
-
-declare const GCKeyLANG4: string;
 
 declare const GCKeyHome: string;
 
-declare const GCKeyInternational1: string;
+declare const GCInputButtonA: string;
 
-declare const GCKeyCodeKeyR: number;
+declare const GCKeyInternational1: string;
 
 declare const GCKeyCodeUpArrow: number;
 
-declare const GCKeyKeypadPeriod: string;
+declare const GCKeyCodeKeyR: number;
+
+declare const GCKeyCodeKeyO: number;
 
 declare const GCKeyPeriod: string;
-
-declare const GCKeyKeypadEqualSign: string;
 
 declare const GCProductCategoryDualShock4: string;
 
@@ -660,15 +648,19 @@ declare const GCKeyCodeKeyI: number;
 
 declare const GCKeyH: string;
 
+declare const GCInputRightBumper: string;
+
+declare const GCInputDirectionalTouchSurfaceButton: string;
+
 declare const GCInputXboxPaddleOne: string;
 
 declare const GCKeyUpArrow: string;
 
 declare const GCKeyCodeDownArrow: number;
 
-declare const GCKeyKeypad8: string;
+declare const GCKeyKeypadPeriod: string;
 
-declare const GCKeyInternational7: string;
+declare const GCHapticsLocalityRightTrigger: string;
 
 declare const GCKeySpacebar: string;
 
@@ -676,15 +668,13 @@ declare const GCKeyCodeKeypad8: number;
 
 declare const GCKeyNine: string;
 
-declare const GCKeyInternational5: string;
-
 declare const GCKeyCodeKeyQ: number;
+
+declare const GCKeyKeypadHyphen: string;
 
 declare const GCKeyF19: string;
 
 declare const GCKeyF2: string;
-
-declare const GCKeyLANG6: string;
 
 declare const GCKeyCodeKeyM: number;
 
@@ -767,6 +757,13 @@ declare const GCPhysicalInputSourceDirection: {
   Left: 8,
 };
 
+declare class GCRotationRate {
+  constructor(init?: GCRotationRate);
+  x: number;
+  y: number;
+  z: number;
+}
+
 declare class GCGamepadSnapShotDataV100 {
   constructor(init?: GCGamepadSnapShotDataV100);
   version: number;
@@ -787,13 +784,6 @@ declare class GCQuaternion {
   y: number;
   z: number;
   w: number;
-}
-
-declare class GCRotationRate {
-  constructor(init?: GCRotationRate);
-  x: number;
-  y: number;
-  z: number;
 }
 
 declare class GCDualSenseAdaptiveTriggerPositionalAmplitudes {
@@ -1179,8 +1169,6 @@ declare interface GCButtonElement extends GCPhysicalInputElement {
   readonly pressedInput: GCLinearInput;
 
   readonly touchedInput: GCTouchedStateInput;
-
-  readonly forceInput: GCLinearInput;
 }
 
 declare class GCButtonElement extends NativeObject implements GCButtonElement {
@@ -1249,6 +1237,16 @@ declare interface GCPressedStateInput extends NSObjectProtocol {
 }
 
 declare class GCPressedStateInput extends NativeObject implements GCPressedStateInput {
+}
+
+declare class GCExtendedGamepadSnapshot extends GCExtendedGamepad {
+  snapshotData: NSData;
+
+  initWithSnapshotData(data: NSData): this;
+
+  initWithControllerSnapshotData(controller: GCController, data: NSData): this;
+
+  setSnapshotData(snapshotData: NSData): void;
 }
 
 declare class GCEventViewController extends UIViewController {
@@ -1341,16 +1339,58 @@ declare class GCVirtualController extends NSObject {
   setPositionForDirectionPadElement(position: CGPoint, element: string): void;
 }
 
-declare class GCEventInteraction extends NSObject {
+declare class GCEventInteraction extends NSObject implements UIInteraction {
   init(): this;
 
   handledEventTypes: interop.Enum<typeof GCUIEventTypes>;
 
-  receivesEventsInView: boolean;
-
   setHandledEventTypes(handledEventTypes: interop.Enum<typeof GCUIEventTypes>): void;
 
-  setReceivesEventsInView(receivesEventsInView: boolean): void;
+  readonly view: UIView;
+
+  willMoveToView(view: UIView | null): void;
+
+  didMoveToView(view: UIView | null): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class GCMouse extends NSObject implements GCDevice {
@@ -1487,7 +1527,7 @@ declare class GCXboxGamepad extends GCExtendedGamepad {
   readonly buttonShare: GCControllerButtonInput;
 }
 
-declare class GCExtendedGamepadSnapshot extends GCExtendedGamepad {
+declare class GCGamepadSnapshot extends GCGamepad {
   snapshotData: NSData;
 
   initWithSnapshotData(data: NSData): this;
@@ -1497,14 +1537,46 @@ declare class GCExtendedGamepadSnapshot extends GCExtendedGamepad {
   setSnapshotData(snapshotData: NSData): void;
 }
 
-declare class GCGamepadSnapshot extends GCGamepad {
-  snapshotData: NSData;
+declare class GCPhysicalInputProfile extends NSObject {
+  readonly device: GCDevice | null;
 
-  initWithSnapshotData(data: NSData): this;
+  readonly lastEventTimestamp: number;
 
-  initWithControllerSnapshotData(controller: GCController, data: NSData): this;
+  readonly hasRemappedElements: boolean;
 
-  setSnapshotData(snapshotData: NSData): void;
+  valueDidChangeHandler: (p1: GCPhysicalInputProfile, p2: GCControllerElement) => void;
+
+  readonly elements: NSDictionary;
+
+  readonly buttons: NSDictionary;
+
+  readonly axes: NSDictionary;
+
+  readonly dpads: NSDictionary;
+
+  readonly touchpads: NSDictionary;
+
+  readonly allElements: NSSet;
+
+  readonly allButtons: NSSet;
+
+  readonly allAxes: NSSet;
+
+  readonly allDpads: NSSet;
+
+  readonly allTouchpads: NSSet;
+
+  objectForKeyedSubscript(key: string): GCControllerElement | null;
+
+  capture(): this;
+
+  setStateFromPhysicalInput(physicalInput: GCPhysicalInputProfile): void;
+
+  mappedElementAliasForPhysicalInputName(inputName: string): string;
+
+  mappedPhysicalInputNamesForElementAlias(elementAlias: string): NSSet;
+
+  setValueDidChangeHandler(valueDidChangeHandler: (p1: GCPhysicalInputProfile, p2: GCControllerElement) => void | null): void;
 }
 
 declare class GCMotion extends NSObject {
@@ -1674,48 +1746,6 @@ declare class GCKeyboardInput extends GCPhysicalInputProfile {
 
 declare class GCGameControllerActivationContext extends NSObject {
   readonly previousApplicationBundleID: string;
-}
-
-declare class GCPhysicalInputProfile extends NSObject {
-  readonly device: GCDevice | null;
-
-  readonly lastEventTimestamp: number;
-
-  readonly hasRemappedElements: boolean;
-
-  valueDidChangeHandler: (p1: GCPhysicalInputProfile, p2: GCControllerElement) => void;
-
-  readonly elements: NSDictionary;
-
-  readonly buttons: NSDictionary;
-
-  readonly axes: NSDictionary;
-
-  readonly dpads: NSDictionary;
-
-  readonly touchpads: NSDictionary;
-
-  readonly allElements: NSSet;
-
-  readonly allButtons: NSSet;
-
-  readonly allAxes: NSSet;
-
-  readonly allDpads: NSSet;
-
-  readonly allTouchpads: NSSet;
-
-  objectForKeyedSubscript(key: string): GCControllerElement | null;
-
-  capture(): this;
-
-  setStateFromPhysicalInput(physicalInput: GCPhysicalInputProfile): void;
-
-  mappedElementAliasForPhysicalInputName(inputName: string): string;
-
-  mappedPhysicalInputNamesForElementAlias(elementAlias: string): NSSet;
-
-  setValueDidChangeHandler(valueDidChangeHandler: (p1: GCPhysicalInputProfile, p2: GCControllerElement) => void | null): void;
 }
 
 declare class GCColor extends NSObject implements NSCopying, NSSecureCoding {

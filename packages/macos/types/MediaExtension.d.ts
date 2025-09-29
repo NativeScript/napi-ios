@@ -46,8 +46,6 @@ declare interface MERAWProcessor extends NSObjectProtocol {
 
   readonly outputColorAttachments?: NSDictionary;
 
-  readonly metadataForSidecarFile?: NSData;
-
   readonly processingParameters: NSArray;
 
   readonly readyForMoreMediaData: boolean;
@@ -250,6 +248,26 @@ declare class MERAWProcessingIntegerParameter extends MERAWProcessingParameter {
   setCurrentValue(currentValue: number): void;
 }
 
+declare class MERAWProcessingBooleanParameter extends MERAWProcessingParameter {
+  initWithNameKeyDescriptionInitialValue(name: string, key: string, description: string, initialValue: boolean): this;
+
+  initWithNameKeyDescriptionInitialValueNeutralValue(name: string, key: string, description: string, initialValue: boolean, neutralValue: boolean): this;
+
+  initWithNameKeyDescriptionInitialValueCameraValue(name: string, key: string, description: string, initialValue: boolean, cameraValue: boolean): this;
+
+  initWithNameKeyDescriptionInitialValueNeutralValueCameraValue(name: string, key: string, description: string, initialValue: boolean, neutralValue: boolean, cameraValue: boolean): this;
+
+  readonly initialValue: boolean;
+
+  currentValue: boolean;
+
+  hasNeutralValue(outNeutralValue: interop.PointerConvertible): boolean;
+
+  hasCameraValue(outCameraValue: interop.PointerConvertible): boolean;
+
+  setCurrentValue(currentValue: boolean): void;
+}
+
 declare class MEDecodeFrameOptions extends NSObject {
   doNotOutputFrame: boolean;
 
@@ -383,13 +401,9 @@ declare class MEFileInfo extends NSObject implements NSCopying {
 
   fragmentsStatus: interop.Enum<typeof MEFileInfoFragmentsStatus>;
 
-  sidecarFileName: string;
-
   setDuration(duration: CMTime): void;
 
   setFragmentsStatus(fragmentsStatus: interop.Enum<typeof MEFileInfoFragmentsStatus>): void;
-
-  setSidecarFileName(sidecarFileName: string): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -450,6 +464,30 @@ declare class MEByteSource extends NSObject {
   byteSourceForRelatedFileNameError(fileName: string, errorOut: interop.PointerConvertible): MEByteSource | null;
 }
 
+declare class MESampleLocation extends NSObject implements NSCopying {
+  initWithByteSourceSampleLocation(byteSource: MEByteSource, sampleLocation: AVSampleCursorStorageRange): this;
+
+  readonly sampleLocation: AVSampleCursorStorageRange;
+
+  readonly byteSource: MEByteSource;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MESampleCursorChunk extends NSObject implements NSCopying {
+  initWithByteSourceChunkStorageRangeChunkInfoSampleIndexWithinChunk(byteSource: MEByteSource, chunkStorageRange: AVSampleCursorStorageRange, chunkInfo: AVSampleCursorChunkInfo, sampleIndexWithinChunk: number): this;
+
+  readonly byteSource: MEByteSource;
+
+  readonly chunkStorageRange: AVSampleCursorStorageRange;
+
+  readonly chunkInfo: AVSampleCursorChunkInfo;
+
+  readonly sampleIndexWithinChunk: number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MERAWProcessingListParameter extends MERAWProcessingParameter {
   initWithNameKeyDescriptionListInitialValue(name: string, key: string, description: string, listElements: NSArray<interop.Object> | Array<interop.Object>, initialValue: number): this;
 
@@ -470,49 +508,5 @@ declare class MERAWProcessingListParameter extends MERAWProcessingParameter {
   hasCameraValue(outCameraValue: interop.PointerConvertible): boolean;
 
   setCurrentValue(currentValue: number): void;
-}
-
-declare class MERAWProcessingBooleanParameter extends MERAWProcessingParameter {
-  initWithNameKeyDescriptionInitialValue(name: string, key: string, description: string, initialValue: boolean): this;
-
-  initWithNameKeyDescriptionInitialValueNeutralValue(name: string, key: string, description: string, initialValue: boolean, neutralValue: boolean): this;
-
-  initWithNameKeyDescriptionInitialValueCameraValue(name: string, key: string, description: string, initialValue: boolean, cameraValue: boolean): this;
-
-  initWithNameKeyDescriptionInitialValueNeutralValueCameraValue(name: string, key: string, description: string, initialValue: boolean, neutralValue: boolean, cameraValue: boolean): this;
-
-  readonly initialValue: boolean;
-
-  currentValue: boolean;
-
-  hasNeutralValue(outNeutralValue: interop.PointerConvertible): boolean;
-
-  hasCameraValue(outCameraValue: interop.PointerConvertible): boolean;
-
-  setCurrentValue(currentValue: boolean): void;
-}
-
-declare class MESampleCursorChunk extends NSObject implements NSCopying {
-  initWithByteSourceChunkStorageRangeChunkInfoSampleIndexWithinChunk(byteSource: MEByteSource, chunkStorageRange: AVSampleCursorStorageRange, chunkInfo: AVSampleCursorChunkInfo, sampleIndexWithinChunk: number): this;
-
-  readonly byteSource: MEByteSource;
-
-  readonly chunkStorageRange: AVSampleCursorStorageRange;
-
-  readonly chunkInfo: AVSampleCursorChunkInfo;
-
-  readonly sampleIndexWithinChunk: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MESampleLocation extends NSObject implements NSCopying {
-  initWithByteSourceSampleLocation(byteSource: MEByteSource, sampleLocation: AVSampleCursorStorageRange): this;
-
-  readonly sampleLocation: AVSampleCursorStorageRange;
-
-  readonly byteSource: MEByteSource;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 

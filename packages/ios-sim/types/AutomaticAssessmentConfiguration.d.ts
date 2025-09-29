@@ -3,16 +3,11 @@
 
 declare const AEAssessmentErrorDomain: string;
 
-declare const AERestrictedSystemParticipantsKey: string;
-
-declare const AENotInstalledParticipantsKey: string;
-
 declare const AEAssessmentErrorCode: {
   Unknown: 1,
   UnsupportedPlatform: 2,
   MultipleParticipantsNotSupported: 3,
   ConfigurationUpdatesNotSupported: 4,
-  RequiredParticipantsNotAvailable: 5,
 };
 
 declare const AEAutocorrectMode: {
@@ -53,8 +48,6 @@ declare class AEAssessmentConfiguration extends NSObject implements NSCopying {
 
   allowsAccessibilitySpeech: boolean;
 
-  allowsAccessibilityTypingFeedback: boolean;
-
   allowsPasswordAutoFill: boolean;
 
   allowsContinuousPathKeyboard: boolean;
@@ -80,8 +73,6 @@ declare class AEAssessmentConfiguration extends NSObject implements NSCopying {
   setAllowsDictation(allowsDictation: boolean): void;
 
   setAllowsAccessibilitySpeech(allowsAccessibilitySpeech: boolean): void;
-
-  setAllowsAccessibilityTypingFeedback(allowsAccessibilityTypingFeedback: boolean): void;
 
   setAllowsPasswordAutoFill(allowsPasswordAutoFill: boolean): void;
 
@@ -125,8 +116,6 @@ declare class AEAssessmentSession extends NSObject {
 declare class AEAssessmentParticipantConfiguration extends NSObject implements NSCopying {
   allowsNetworkAccess: boolean;
 
-  required: boolean;
-
   get configurationInfo(): NSDictionary;
   set configurationInfo(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
@@ -135,10 +124,6 @@ declare class AEAssessmentParticipantConfiguration extends NSObject implements N
   static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
   setAllowsNetworkAccess(allowsNetworkAccess: boolean): void;
-
-  isRequired(): boolean;
-
-  setRequired(required: boolean): void;
 
   setConfigurationInfo(configurationInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 

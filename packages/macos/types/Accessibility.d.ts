@@ -37,9 +37,6 @@ declare const AXNumericDataAxisDescriptorScale: {
 declare const AXSettingsFeature: {
   PersonalVoiceAllowAppsToRequestToUse: 1,
   AllowAppsToAddAudioToCalls: 2,
-  AssistiveTouch: 3,
-  AssistiveTouchDevices: 4,
-  DwellControl: 5,
 };
 
 declare const AXChartDescriptorContentDirection: {
@@ -119,58 +116,6 @@ declare interface AXDataAxisDescriptor extends NSCopying {
 declare class AXDataAxisDescriptor extends NativeObject implements AXDataAxisDescriptor {
 }
 
-declare class AXBrailleTranslator extends NSObject {
-  initWithBrailleTable(brailleTable: AXBrailleTable): this;
-
-  translatePrintText(printText: string): AXBrailleTranslationResult;
-
-  backTranslateBraille(braille: string): AXBrailleTranslationResult;
-}
-
-declare class AXBrailleTranslationResult extends NSObject implements NSCopying, NSCoding {
-  readonly resultString: string;
-
-  readonly locationMap: NSArray;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class AXBrailleTable extends NSObject implements NSCopying, NSCoding {
-  readonly identifier: string;
-
-  readonly localizedName: string;
-
-  readonly providerIdentifier: string;
-
-  readonly localizedProviderName: string;
-
-  readonly language: string;
-
-  readonly locales: NSSet;
-
-  readonly isEightDot: boolean;
-
-  static supportedLocales(): NSSet;
-
-  static defaultTableForLocale(locale: NSLocale): AXBrailleTable;
-
-  static tablesForLocale(locale: NSLocale): NSSet;
-
-  static languageAgnosticTables(): NSSet;
-
-  initWithIdentifier(identifier: string): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class AXMathExpressionRoot extends AXMathExpression {
   initWithRadicandExpressionsRootIndexExpression(radicandExpressions: NSArray<interop.Object> | Array<interop.Object>, rootIndexExpression: AXMathExpression): this;
 
@@ -222,6 +167,12 @@ declare class AXMathExpressionText extends AXMathExpression {
 }
 
 declare class AXMathExpressionIdentifier extends AXMathExpression {
+  initWithContent(content: string): this;
+
+  readonly content: string;
+}
+
+declare class AXMathExpressionNumber extends AXMathExpression {
   initWithContent(content: string): this;
 
   readonly content: string;
@@ -368,26 +319,6 @@ declare class AXMathExpressionRow extends AXMathExpression {
   readonly expressions: NSArray;
 }
 
-declare class AXMathExpressionUnderOver extends AXMathExpression {
-  initWithBaseExpressionUnderExpressionOverExpression(baseExpression: AXMathExpression, underExpression: AXMathExpression, overExpression: AXMathExpression): this;
-
-  readonly baseExpression: AXMathExpression;
-
-  readonly underExpression: AXMathExpression;
-
-  readonly overExpression: AXMathExpression;
-}
-
-declare class AXMathExpressionFenced extends AXMathExpression {
-  initWithExpressionsOpenStringCloseString(expressions: NSArray<interop.Object> | Array<interop.Object>, openString: string, closeString: string): this;
-
-  readonly expressions: NSArray;
-
-  readonly openString: string;
-
-  readonly closeString: string;
-}
-
 declare class AXDataSeriesDescriptor extends NSObject implements NSCopying {
   name: string;
 
@@ -411,6 +342,26 @@ declare class AXDataSeriesDescriptor extends NSObject implements NSCopying {
   setDataPoints(dataPoints: NSArray<interop.Object> | Array<interop.Object>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class AXMathExpressionUnderOver extends AXMathExpression {
+  initWithBaseExpressionUnderExpressionOverExpression(baseExpression: AXMathExpression, underExpression: AXMathExpression, overExpression: AXMathExpression): this;
+
+  readonly baseExpression: AXMathExpression;
+
+  readonly underExpression: AXMathExpression;
+
+  readonly overExpression: AXMathExpression;
+}
+
+declare class AXMathExpressionFenced extends AXMathExpression {
+  initWithExpressionsOpenStringCloseString(expressions: NSArray<interop.Object> | Array<interop.Object>, openString: string, closeString: string): this;
+
+  readonly expressions: NSArray;
+
+  readonly openString: string;
+
+  readonly closeString: string;
 }
 
 declare class AXDataPoint extends NSObject implements NSCopying {
@@ -513,12 +464,6 @@ declare class AXCategoricalDataAxisDescriptor extends NSObject implements AXData
   setAttributedTitle(attributedTitle: NSAttributedString): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class AXMathExpressionNumber extends AXMathExpression {
-  initWithContent(content: string): this;
-
-  readonly content: string;
 }
 
 declare class AXMathExpression extends NSObject {

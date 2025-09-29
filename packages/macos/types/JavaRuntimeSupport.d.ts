@@ -25,6 +25,8 @@ declare const kJRSUI_PartHit_none: number;
 
 declare const kJRSUI_UserInterfaceLayoutDirection_rightToLeft: number;
 
+declare const kJRSUI_UserInterfaceLayoutDirection_leftToRight: number;
+
 declare const kJRSUI_PresentationState_inactive: number;
 
 declare const kJRSUI_WindowType_titlelessUtility: number;
@@ -222,8 +224,6 @@ declare const kJRSUI_Widget_buttonListHeader: number;
 declare const kJRSUI_Key_nothingToScroll: number;
 
 declare const kJRSUI_Direction_west: number;
-
-declare const kJRSUI_UserInterfaceLayoutDirection_leftToRight: number;
 
 declare const kJRSUI_Direction_down: number;
 

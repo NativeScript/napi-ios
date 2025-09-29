@@ -76,6 +76,8 @@ declare const kCGPDFContextKeywords: interop.Pointer;
 
 declare const kCGPDFContextSubject: interop.Pointer;
 
+declare const kCGPDFContextAuthor: interop.Pointer;
+
 declare const kCGPDFContextArtBox: interop.Pointer;
 
 declare const kCGPDFContextTrimBox: interop.Pointer;
@@ -94,17 +96,7 @@ declare const CGSizeZero: CGSize;
 
 declare const kCGWindowName: interop.Pointer;
 
-declare const kCGPDFContextAuthor: interop.Pointer;
-
 declare const kCGPDFContextMediaBox: interop.Pointer;
-
-declare const kCGContentAverageLightLevelNits: interop.Object;
-
-declare const kCGContentAverageLightLevel: interop.Object;
-
-declare const kCGDynamicRangeConstrained: interop.Object;
-
-declare const kCGDynamicRangeHigh: interop.Object;
 
 declare const kCGSkipBoostToHDR: interop.Pointer;
 
@@ -184,8 +176,6 @@ declare const CGAffineTransformIdentity: CGAffineTransform;
 
 declare const kCGPDFXInfo: interop.Pointer;
 
-declare const kCGAdaptiveMaximumBitDepth: interop.Pointer;
-
 declare const kCGWindowBounds: interop.Pointer;
 
 declare const kCGPDFOutlineDestination: interop.Pointer;
@@ -206,8 +196,6 @@ declare const kCGDisplayShowDuplicateLowResolutionModes: interop.Pointer;
 
 declare const kCGWindowOwnerName: interop.Pointer;
 
-declare const kCGPreferredDynamicRange: interop.Object;
-
 declare const kCGPDFTagPropertyLanguageText: interop.Pointer;
 
 declare const kCGWindowLayer: interop.Pointer;
@@ -215,8 +203,6 @@ declare const kCGWindowLayer: interop.Pointer;
 declare const kCGPDFXOutputCondition: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearSRGB: interop.Pointer;
-
-declare const kCGDynamicRangeStandard: interop.Object;
 
 declare const kCGFontVariationAxisDefaultValue: interop.Pointer;
 
@@ -270,9 +256,10 @@ declare const kCGColorSpaceExtendedLinearITUR_2020: interop.Pointer;
 
 declare const kCGColorSpaceGenericGray: interop.Pointer;
 
-declare const CGScrollEventUnit: {
-  Pixel: 0,
-  Line: 1,
+declare const CGEventSourceStateID: {
+  Private: -1,
+  CombinedSessionState: 0,
+  HIDSystemState: 1,
 };
 
 declare const CGImagePixelFormatInfo: {
@@ -282,79 +269,6 @@ declare const CGImagePixelFormatInfo: {
   RGB565: 131072,
   RGB101010: 196608,
   RGBCIF10: 262144,
-};
-
-declare const CGGlyphDeprecatedEnum: {
-  Min: 0,
-  Max: 1,
-};
-
-declare const CGImageAlphaInfo: {
-  None: 0,
-  PremultipliedLast: 1,
-  PremultipliedFirst: 2,
-  Last: 3,
-  First: 4,
-  NoneSkipLast: 5,
-  NoneSkipFirst: 6,
-  Only: 7,
-};
-
-declare const CGEventSuppressionState: {
-  EventSuppressionStateSuppressionInterval: 0,
-  EventSuppressionStateRemoteMouseDrag: 1,
-  NumberOfEventSuppressionStates: 2,
-};
-
-declare const CGColorRenderingIntent: {
-  Default: 0,
-  AbsoluteColorimetric: 1,
-  RelativeColorimetric: 2,
-  Perceptual: 3,
-  Saturation: 4,
-};
-
-declare const CGWindowListOption: {
-  OptionAll: 0,
-  OptionOnScreenOnly: 1,
-  OptionOnScreenAboveWindow: 2,
-  OptionOnScreenBelowWindow: 4,
-  OptionIncludingWindow: 8,
-  ExcludeDesktopElements: 16,
-};
-
-declare const CGGradientDrawingOptions: {
-  BeforeStart: 1,
-  AfterEnd: 2,
-};
-
-declare const CGColorSpaceModel: {
-  Unknown: -1,
-  Monochrome: 0,
-  RGB: 1,
-  CMYK: 2,
-  Lab: 3,
-  DeviceN: 4,
-  Indexed: 5,
-  Pattern: 6,
-  XYZ: 7,
-};
-
-declare const CGColorModel: {
-  NoColorant: 0,
-  Gray: 1,
-  RGB: 2,
-  CMYK: 4,
-  Lab: 8,
-  DeviceN: 16,
-};
-
-declare const CGPDFBox: {
-  Media: 0,
-  Crop: 1,
-  Bleed: 2,
-  Trim: 3,
-  Art: 4,
 };
 
 declare const CGEventType: {
@@ -379,60 +293,24 @@ declare const CGEventType: {
   TapDisabledByUserInput: -1,
 };
 
-declare const CGDisplayChangeSummaryFlags: {
-  BeginConfiguration: 1,
-  Moved: 2,
-  SetMain: 4,
-  SetMode: 8,
-  Add: 16,
-  Remove: 32,
-  Enabled: 256,
-  Disabled: 512,
-  Mirror: 1024,
-  UnMirror: 2048,
-  DesktopShapeChanged: 4096,
-};
-
-declare const CGEventSourceStateID: {
-  Private: -1,
-  CombinedSessionState: 0,
-  HIDSystemState: 1,
-};
-
-declare const CGTextDrawingMode: {
-  Fill: 0,
-  Stroke: 1,
-  FillStroke: 2,
-  Invisible: 3,
-  FillClip: 4,
-  StrokeClip: 5,
-  FillStrokeClip: 6,
-  Clip: 7,
-};
-
-declare const CGMomentumScrollPhase: {
-  None: 0,
-  Begin: 1,
-  Continue: 2,
-  End: 3,
-};
-
 declare const CGPatternTiling: {
   NoDistortion: 0,
   ConstantSpacingMinimalDistortion: 1,
   ConstantSpacing: 2,
 };
 
-declare const CGEventFlags: {
-  AlphaShift: 65536,
-  Shift: 131072,
-  Control: 262144,
-  Alternate: 524288,
-  Command: 1048576,
-  Help: 4194304,
-  SecondaryFn: 8388608,
-  NumericPad: 2097152,
-  NonCoalesced: 256,
+declare const CGPDFBox: {
+  Media: 0,
+  Crop: 1,
+  Bleed: 2,
+  Trim: 3,
+  Art: 4,
+};
+
+declare const CGLineJoin: {
+  Miter: 0,
+  Round: 1,
+  Bevel: 2,
 };
 
 declare const CGPDFDataFormat: {
@@ -441,54 +319,17 @@ declare const CGPDFDataFormat: {
   JPEG2000: 2,
 };
 
-declare const CGScrollPhase: {
-  Began: 1,
-  Changed: 2,
-  Ended: 4,
-  Cancelled: 8,
-  MayBegin: 128,
-};
-
-declare const CGComponent: {
-  Unknown: 0,
-  Integer8Bit: 1,
-  Integer10Bit: 6,
-  Integer16Bit: 2,
-  Integer32Bit: 3,
-  Float16Bit: 5,
-  Float32Bit: 4,
-};
-
-declare const CGBitmapLayout: {
-  AlphaOnly: 0,
-  Gray: 1,
-  GrayAlpha: 2,
-  RGBA: 3,
-  ARGB: 4,
-  RGBX: 5,
-  XRGB: 6,
-  BGRA: 7,
-  BGRX: 8,
-  ABGR: 9,
-  XBGR: 10,
-  CMYK: 11,
-};
-
-declare const CGConfigureOption: {
-  ForAppOnly: 0,
-  ForSession: 1,
-  Permanently: 2,
+declare const CGColorRenderingIntent: {
+  Default: 0,
+  AbsoluteColorimetric: 1,
+  RelativeColorimetric: 2,
+  Perceptual: 3,
+  Saturation: 4,
 };
 
 declare const CGEventTapPlacement: {
   HeadInsert: 0,
   TailAppend: 1,
-};
-
-declare const CGMouseButton: {
-  Left: 0,
-  Right: 1,
-  Center: 2,
 };
 
 declare const CGEventTapLocation: {
@@ -565,6 +406,18 @@ declare const CGEventField: {
   ScrollWheelEventRawDeltaAxis2: 177,
 };
 
+declare const CGEventFlags: {
+  AlphaShift: 65536,
+  Shift: 131072,
+  Control: 262144,
+  Alternate: 524288,
+  Command: 1048576,
+  Help: 4194304,
+  SecondaryFn: 8388608,
+  NumericPad: 2097152,
+  NonCoalesced: 256,
+};
+
 declare const CGGesturePhase: {
   None: 0,
   Began: 1,
@@ -572,6 +425,25 @@ declare const CGGesturePhase: {
   Ended: 4,
   Cancelled: 8,
   MayBegin: 128,
+};
+
+declare const CGMomentumScrollPhase: {
+  None: 0,
+  Begin: 1,
+  Continue: 2,
+  End: 3,
+};
+
+declare const CGMouseButton: {
+  Left: 0,
+  Right: 1,
+  Center: 2,
+};
+
+declare const CGEventSuppressionState: {
+  EventSuppressionStateSuppressionInterval: 0,
+  EventSuppressionStateRemoteMouseDrag: 1,
+  NumberOfEventSuppressionStates: 2,
 };
 
 declare const CGDisplayStreamUpdateRectType: {
@@ -684,6 +556,17 @@ declare const CGColorConversionInfoTransformType: {
   Apply: 2,
 };
 
+declare const CGTextDrawingMode: {
+  Fill: 0,
+  Stroke: 1,
+  FillStroke: 2,
+  Invisible: 3,
+  FillClip: 4,
+  StrokeClip: 5,
+  FillStrokeClip: 6,
+  Clip: 7,
+};
+
 declare const CGPathDrawingMode: {
   Fill: 0,
   EOFill: 1,
@@ -721,12 +604,9 @@ declare const CGPDFObjectType: {
 
 declare const CGBitmapInfo: {
   AlphaInfoMask: 31,
-  ComponentInfoMask: 3840,
-  ByteOrderInfoMask: 28672,
-  PixelFormatInfoMask: 983040,
   FloatInfoMask: 3840,
-  ByteOrderMask: 28672,
   FloatComponents: 256,
+  ByteOrderMask: 28672,
   ByteOrderDefault: 0,
   ByteOrder16Little: 4096,
   ByteOrder32Little: 8192,
@@ -734,9 +614,9 @@ declare const CGBitmapInfo: {
   ByteOrder32Big: 16384,
 };
 
-declare const CGImageComponentInfo: {
-  Integer: 0,
-  Float: 256,
+declare const CGGlyphDeprecatedEnum: {
+  Min: 0,
+  Max: 1,
 };
 
 declare const CGFontPostScriptFormat: {
@@ -745,15 +625,32 @@ declare const CGFontPostScriptFormat: {
   Type42: 42,
 };
 
+declare const CGColorSpaceModel: {
+  Unknown: -1,
+  Monochrome: 0,
+  RGB: 1,
+  CMYK: 2,
+  Lab: 3,
+  DeviceN: 4,
+  Indexed: 5,
+  Pattern: 6,
+  XYZ: 7,
+};
+
 declare const CGEventTapOptions: {
   Default: 0,
   ListenOnly: 1,
 };
 
-declare const CGLineJoin: {
-  Miter: 0,
-  Round: 1,
-  Bevel: 2,
+declare const CGImageAlphaInfo: {
+  None: 0,
+  PremultipliedLast: 1,
+  PremultipliedFirst: 2,
+  Last: 3,
+  First: 4,
+  NoneSkipLast: 5,
+  NoneSkipFirst: 6,
+  Only: 7,
 };
 
 declare const CGBlendMode: {
@@ -787,10 +684,32 @@ declare const CGBlendMode: {
   PlusLighter: 27,
 };
 
+declare const CGDisplayChangeSummaryFlags: {
+  BeginConfiguration: 1,
+  Moved: 2,
+  SetMain: 4,
+  SetMode: 8,
+  Add: 16,
+  Remove: 32,
+  Enabled: 256,
+  Disabled: 512,
+  Mirror: 1024,
+  UnMirror: 2048,
+  DesktopShapeChanged: 4096,
+};
+
 declare const CGEventMouseSubtype: {
   Default: 0,
   TabletPoint: 1,
   TabletProximity: 2,
+};
+
+declare const CGScrollPhase: {
+  Began: 1,
+  Changed: 2,
+  Ended: 4,
+  Cancelled: 8,
+  MayBegin: 128,
 };
 
 declare const CGDisplayStreamFrameStatus: {
@@ -805,10 +724,21 @@ declare const CGTextEncoding: {
   MacRoman: 1,
 };
 
+declare const CGConfigureOption: {
+  ForAppOnly: 0,
+  ForSession: 1,
+  Permanently: 2,
+};
+
 declare const CGScreenUpdateOperation: {
   Refresh: 0,
   Move: 1,
   ReducedDirtyRectangleCount: -2147483648,
+};
+
+declare const CGScrollEventUnit: {
+  Pixel: 0,
+  Line: 1,
 };
 
 declare const CGPDFAccessPermissions: {
@@ -852,8 +782,6 @@ declare const CGImageByteOrderInfo: {
   Order32Little: 8192,
   Order16Big: 12288,
   Order32Big: 16384,
-  Order16Host: 4096,
-  Order32Host: 8192,
 };
 
 declare const CGInterpolationQuality: {
@@ -868,6 +796,20 @@ declare const CGWindowSharingType: {
   None: 0,
   ReadOnly: 1,
   ReadWrite: 2,
+};
+
+declare const CGWindowListOption: {
+  OptionAll: 0,
+  OptionOnScreenOnly: 1,
+  OptionOnScreenAboveWindow: 2,
+  OptionOnScreenBelowWindow: 4,
+  OptionIncludingWindow: 8,
+  ExcludeDesktopElements: 16,
+};
+
+declare const CGGradientDrawingOptions: {
+  BeforeStart: 1,
+  AfterEnd: 2,
 };
 
 declare const CGLineCap: {
@@ -919,25 +861,6 @@ declare class CGDataConsumer {
   constructor(init?: CGDataConsumer);
 }
 
-declare class CGBitmapParameters {
-  constructor(init?: CGBitmapParameters);
-  width: number;
-  height: number;
-  bytesPerPixel: number;
-  alignedBytesPerRow: number;
-  component: interop.Enum<typeof CGComponent>;
-  layout: interop.Enum<typeof CGBitmapLayout>;
-  format: interop.Enum<typeof CGImagePixelFormatInfo>;
-  colorSpace: interop.Object | null;
-  hasPremultipliedAlpha: boolean;
-  byteOrder: number;
-  edrTargetHeadroom: number;
-}
-
-declare class CGRenderingBufferProvider {
-  constructor(init?: CGRenderingBufferProvider);
-}
-
 declare class CGDisplayMode {
   constructor(init?: CGDisplayMode);
 }
@@ -949,18 +872,16 @@ declare class CGDeviceColor {
   blue: number;
 }
 
-declare class CGContentToneMappingInfo {
-  constructor(init?: CGContentToneMappingInfo);
-  method: interop.Enum<typeof CGToneMapping>;
-  options: interop.Object | null;
-}
-
 declare class CGShading {
   constructor(init?: CGShading);
 }
 
 declare class CGPDFStream {
   constructor(init?: CGPDFStream);
+}
+
+declare class CGPDFDictionary {
+  constructor(init?: CGPDFDictionary);
 }
 
 declare class CGPDFPage {
@@ -997,8 +918,8 @@ declare class CGDataProvider {
   constructor(init?: CGDataProvider);
 }
 
-declare class CGPDFDocument {
-  constructor(init?: CGPDFDocument);
+declare class CGColor {
+  constructor(init?: CGColor);
 }
 
 declare class CGPDFArray {
@@ -1056,13 +977,6 @@ declare class CGDataConsumerCallbacks {
   releaseConsumer: (p1: interop.PointerConvertible) => void | null;
 }
 
-declare class CGFunctionCallbacks {
-  constructor(init?: CGFunctionCallbacks);
-  version: number;
-  evaluate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  releaseInfo: (p1: interop.PointerConvertible) => void | null;
-}
-
 declare class CGPatternCallbacks {
   constructor(init?: CGPatternCallbacks);
   version: number;
@@ -1070,8 +984,11 @@ declare class CGPatternCallbacks {
   releaseInfo: (p1: interop.PointerConvertible) => void | null;
 }
 
-declare class CGPDFDictionary {
-  constructor(init?: CGPDFDictionary);
+declare class CGFunctionCallbacks {
+  constructor(init?: CGFunctionCallbacks);
+  version: number;
+  evaluate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  releaseInfo: (p1: interop.PointerConvertible) => void | null;
 }
 
 declare class CGColorSpace {
@@ -1092,15 +1009,6 @@ declare class CGPDFObject {
 
 declare class ColorSyncProfile {
   constructor(init?: ColorSyncProfile);
-}
-
-declare class CGContentInfo {
-  constructor(init?: CGContentInfo);
-  deepestImageComponent: interop.Enum<typeof CGComponent>;
-  contentColorModels: interop.Enum<typeof CGColorModel>;
-  hasWideGamut: boolean;
-  hasTransparency: boolean;
-  largestContentHeadroom: number;
 }
 
 declare class CGPSConverterCallbacks {
@@ -1145,8 +1053,8 @@ declare class CGFont {
   constructor(init?: CGFont);
 }
 
-declare class CGColor {
-  constructor(init?: CGColor);
+declare class CGPDFDocument {
+  constructor(init?: CGPDFDocument);
 }
 
 declare function CGRectGetMinX(rect: CGRect): number;
@@ -1363,10 +1271,6 @@ declare function CGColorCreateGenericGrayGamma2_2(gray: number, alpha: number): 
 
 declare function CGColorCreateSRGB(red: number, green: number, blue: number, alpha: number): interop.Object;
 
-declare function CGColorCreateWithContentHeadroom(headroom: number, space: interop.Object, red: number, green: number, blue: number, alpha: number): interop.Object;
-
-declare function CGColorGetContentHeadroom(color: interop.Object): number;
-
 declare function CGColorGetConstantColor(colorName: interop.Object): interop.Object;
 
 declare function CGColorCreateWithPattern(space: interop.Object, pattern: interop.Object, components: interop.PointerConvertible): interop.Object;
@@ -1459,15 +1363,11 @@ declare function CGGradientGetTypeID(): number;
 
 declare function CGGradientCreateWithColorComponents(space: interop.Object, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Object;
 
-declare function CGGradientCreateWithContentHeadroom(headroom: number, space: interop.Object, components: interop.PointerConvertible, locations: interop.PointerConvertible, count: number): interop.Object;
-
 declare function CGGradientCreateWithColors(space: interop.Object, colors: interop.Object, locations: interop.PointerConvertible): interop.Object;
 
 declare function CGGradientRetain(gradient: interop.Object): interop.Object;
 
 declare function CGGradientRelease(gradient: interop.Object): void;
-
-declare function CGGradientGetContentHeadroom(gradient: interop.Object): number;
 
 declare function CGImageGetTypeID(): number;
 
@@ -1494,16 +1394,6 @@ declare function CGImageCreateWithContentHeadroom(headroom: number, width: numbe
 declare function CGImageCreateCopyWithContentHeadroom(headroom: number, image: interop.Object): interop.Object;
 
 declare function CGImageGetContentHeadroom(image: interop.Object): number;
-
-declare function CGImageCalculateContentHeadroom(image: interop.Object): number;
-
-declare function CGImageGetContentAverageLightLevel(image: interop.Object): number;
-
-declare function CGImageCalculateContentAverageLightLevel(image: interop.Object): number;
-
-declare function CGImageCreateCopyWithContentAverageLightLevel(image: interop.Object, avll: number): interop.Object;
-
-declare function CGImageCreateCopyWithCalculatedHDRStats(image: interop.Object): interop.Object;
 
 declare function CGImageRetain(image: interop.Object): interop.Object;
 
@@ -1779,19 +1669,11 @@ declare function CGShadingGetTypeID(): number;
 
 declare function CGShadingCreateAxial(space: interop.Object, start: CGPoint, end: CGPoint, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
 
-declare function CGShadingCreateAxialWithContentHeadroom(headroom: number, space: interop.Object, start: CGPoint, end: CGPoint, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
-
 declare function CGShadingCreateRadial(space: interop.Object, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
-
-declare function CGShadingCreateRadialWithContentHeadroom(headroom: number, space: interop.Object, start: CGPoint, startRadius: number, end: CGPoint, endRadius: number, function$: interop.Object, extendStart: boolean, extendEnd: boolean): interop.Object;
 
 declare function CGShadingRetain(shading: interop.Object): interop.Object;
 
 declare function CGShadingRelease(shading: interop.Object): void;
-
-declare function CGShadingGetContentHeadroom(shading: interop.Object): number;
-
-declare function CGEXRToneMappingGammaGetDefaultOptions(): interop.Object;
 
 declare function CGContextGetTypeID(): number;
 
@@ -1943,10 +1825,6 @@ declare function CGContextDrawTiledImage(c: interop.Object, rect: CGRect, image:
 
 declare function CGContextDrawImageApplyingToneMapping(c: interop.Object, r: CGRect, image: interop.Object, method: interop.Enum<typeof CGToneMapping>, options: interop.Object): boolean;
 
-declare function CGContextGetContentToneMappingInfo(c: interop.Object): CGContentToneMappingInfo;
-
-declare function CGContextSetContentToneMappingInfo(c: interop.Object, info: CGContentToneMappingInfo): void;
-
 declare function CGContextGetInterpolationQuality(c: interop.Object): interop.Enum<typeof CGInterpolationQuality>;
 
 declare function CGContextSetInterpolationQuality(c: interop.Object, quality: interop.Enum<typeof CGInterpolationQuality>): void;
@@ -1994,8 +1872,6 @@ declare function CGContextRelease(c: interop.Object): void;
 declare function CGContextFlush(c: interop.Object): void;
 
 declare function CGContextSynchronize(c: interop.Object): void;
-
-declare function CGContextSynchronizeAttributes(c: interop.Object): void;
 
 declare function CGContextSetShouldAntialias(c: interop.Object, shouldAntialias: boolean): void;
 
@@ -2047,23 +1923,9 @@ declare function CGContextShowGlyphsWithAdvances(c: interop.Object, glyphs: inte
 
 declare function CGContextDrawPDFDocument(c: interop.Object, rect: CGRect, document: interop.Object, page: number): void;
 
-declare function CGRenderingBufferProviderCreate(info: interop.PointerConvertible, size: number, lockPointer: (p1: interop.PointerConvertible) => interop.Pointer, unlockPointer: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: (p1: interop.PointerConvertible) => void): interop.Pointer;
+declare function CGBitmapContextCreateWithData(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: number, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: interop.PointerConvertible): interop.Object;
 
-declare function CGRenderingBufferProviderCreateWithCFData(data: interop.Object): interop.Pointer;
-
-declare function CGRenderingBufferProviderGetSize(provider: interop.PointerConvertible): number;
-
-declare function CGRenderingBufferLockBytePtr(provider: interop.PointerConvertible): interop.Pointer;
-
-declare function CGRenderingBufferUnlockBytePtr(provider: interop.PointerConvertible): void;
-
-declare function CGRenderingBufferProviderGetTypeID(): number;
-
-declare function CGBitmapContextCreateWithData(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: interop.Enum<typeof CGBitmapInfo>, releaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, releaseInfo: interop.PointerConvertible): interop.Object;
-
-declare function CGBitmapContextCreate(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: interop.Enum<typeof CGBitmapInfo>): interop.Object;
-
-declare function CGBitmapContextCreateAdaptive(width: number, height: number, auxiliaryInfo: interop.Object, onResolve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => boolean, onAllocate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer, onFree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, onError: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): interop.Object;
+declare function CGBitmapContextCreate(data: interop.PointerConvertible, width: number, height: number, bitsPerComponent: number, bytesPerRow: number, space: interop.Object, bitmapInfo: number): interop.Object;
 
 declare function CGBitmapContextGetData(context: interop.Object): interop.Pointer;
 

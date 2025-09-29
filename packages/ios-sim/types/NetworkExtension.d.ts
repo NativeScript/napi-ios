@@ -29,19 +29,19 @@ declare const NEVPNConfigurationChangeNotification: string;
 
 declare const NEAppProxyErrorDomain: string;
 
-declare const NEFilterConfigurationDidChangeNotification: string;
+declare const NERelayErrorDomain: string;
 
-declare const NEHotspotConfigurationErrorDomain: string;
+declare const NEFilterConfigurationDidChangeNotification: string;
 
 declare const NEDNSProxyErrorDomain: string;
 
-declare const NERelayErrorDomain: string;
+declare const NEHotspotConfigurationErrorDomain: string;
 
 declare const NERelayClientErrorDomain: string;
 
-declare const NEVPNErrorDomain: string;
-
 declare const NETunnelProviderErrorDomain: string;
+
+declare const NEVPNErrorDomain: string;
 
 declare const NEAppPushErrorDomain: string;
 
@@ -59,12 +59,6 @@ declare const NEAppPushManagerError: {
   ConfigurationNotLoaded: 2,
   InternalError: 3,
   InactiveSession: 4,
-};
-
-declare const NEVPNIKEv2PostQuantumKeyExchangeMethod: {
-  MethodNone: 0,
-  Method36: 36,
-  Method37: 37,
 };
 
 declare const NEVPNIKEv2IntegrityAlgorithm: {
@@ -279,6 +273,13 @@ declare const NEOnDemandRuleAction: {
   Ignore: 4,
 };
 
+declare const NEHotspotConfigurationEAPType: {
+  TLS: 13,
+  TTLS: 21,
+  PEAP: 25,
+  FAST: 43,
+};
+
 declare const NWTCPConnectionState: {
   Invalid: 0,
   Connecting: 1,
@@ -322,21 +323,6 @@ declare const NEHotspotHelperResult: {
   TemporaryFailure: 6,
 };
 
-declare const NEURLFilterVerdict: {
-  Unknown: 1,
-  Allow: 2,
-  Deny: 3,
-};
-
-declare const NEVPNIKEv2CertificateType: {
-  RSA: 1,
-  ECDSA256: 2,
-  ECDSA384: 3,
-  ECDSA521: 4,
-  Ed25519: 5,
-  RSAPSS: 6,
-};
-
 declare const NEHotspotConfigurationTTLSInnerAuthenticationType: {
   PAP: 0,
   CHAP: 1,
@@ -361,17 +347,19 @@ declare const NEHotspotHelperConfidence: {
   High: 2,
 };
 
+declare const NEVPNIKEv2CertificateType: {
+  RSA: 1,
+  ECDSA256: 2,
+  ECDSA384: 3,
+  ECDSA521: 4,
+  Ed25519: 5,
+  RSAPSS: 6,
+};
+
 declare const NETrafficDirection: {
   Any: 0,
   Inbound: 1,
   Outbound: 2,
-};
-
-declare const NEHotspotConfigurationEAPType: {
-  TLS: 13,
-  TTLS: 21,
-  PEAP: 25,
-  FAST: 43,
 };
 
 declare const NEProviderStopReason: {
@@ -542,8 +530,6 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
 
   enablePFS: boolean;
 
-  allowPostQuantumKeyExchangeFallback: boolean;
-
   enableRevocationCheck: boolean;
 
   strictRevocationCheck: boolean;
@@ -574,8 +560,6 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
 
   setEnablePFS(enablePFS: boolean): void;
 
-  setAllowPostQuantumKeyExchangeFallback(allowPostQuantumKeyExchangeFallback: boolean): void;
-
   setEnableRevocationCheck(enableRevocationCheck: boolean): void;
 
   setStrictRevocationCheck(strictRevocationCheck: boolean): void;
@@ -589,6 +573,17 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
   setMtu(mtu: number): void;
 
   setPpkConfiguration(ppkConfiguration: NEVPNIKEv2PPKConfiguration): void;
+}
+
+declare class NETunnelProviderProtocol extends NEVPNProtocol {
+  get providerConfiguration(): NSDictionary;
+  set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  providerBundleIdentifier: string;
+
+  setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setProviderBundleIdentifier(providerBundleIdentifier: string): void;
 }
 
 declare class NEVPNConnection extends NSObject {
@@ -624,8 +619,6 @@ declare class NERelayManager extends NSObject {
 
   UIToggleEnabled: boolean;
 
-  allowDNSFailover: boolean;
-
   get relays(): NSArray;
   set relays(value: NSArray<interop.Object> | Array<interop.Object>);
 
@@ -655,10 +648,6 @@ declare class NERelayManager extends NSObject {
   isUIToggleEnabled(): boolean;
 
   setUIToggleEnabled(UIToggleEnabled: boolean): void;
-
-  isDNSFailoverAllowed(): boolean;
-
-  setAllowDNSFailover(allowDNSFailover: boolean): void;
 
   setRelays(relays: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
@@ -1421,17 +1410,6 @@ declare class NEVPNIKEv2PPKConfiguration extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class NETunnelProviderProtocol extends NEVPNProtocol {
-  get providerConfiguration(): NSDictionary;
-  set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  providerBundleIdentifier: string;
-
-  setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setProviderBundleIdentifier(providerBundleIdentifier: string): void;
-}
-
 declare class NEIPv4Route extends NSObject implements NSSecureCoding, NSCopying {
   initWithDestinationAddressSubnetMask(address: string, subnetMask: string): this;
 
@@ -1502,8 +1480,6 @@ declare class NEAppPushProvider extends NEProvider {
   reportPushToTalkMessageWithUserInfo(userInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
   handleTimerEvent(): void;
-
-  unmatchEthernet(): void;
 }
 
 declare class NEPacketTunnelFlow extends NSObject {
@@ -1794,8 +1770,6 @@ declare class NEDNSSettings extends NSObject implements NSSecureCoding, NSCopyin
 
   matchDomainsNoSearch: boolean;
 
-  allowFailover: boolean;
-
   setSearchDomains(searchDomains: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setDomainName(domainName: string): void;
@@ -1803,8 +1777,6 @@ declare class NEDNSSettings extends NSObject implements NSSecureCoding, NSCopyin
   setMatchDomains(matchDomains: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setMatchDomainsNoSearch(matchDomainsNoSearch: boolean): void;
-
-  setAllowFailover(allowFailover: boolean): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -1960,10 +1932,6 @@ declare class NEProxySettings extends NSObject implements NSSecureCoding, NSCopy
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class NEURLFilter extends NSObject {
-  static verdictForURLCompletionHandler(url: NSURL, completionHandler: (p1: interop.Enum<typeof NEURLFilterVerdict>) => void): void;
-}
-
 declare class NEFilterSocketFlow extends NEFilterFlow implements NSSecureCoding, NSCopying {
   readonly remoteFlowEndpoint: NSObject;
 
@@ -2039,8 +2007,6 @@ declare class NEAppPushManager extends NSObject {
   get matchPrivateLTENetworks(): NSArray;
   set matchPrivateLTENetworks(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  matchEthernet: boolean;
-
   get providerConfiguration(): NSDictionary;
   set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
@@ -2065,8 +2031,6 @@ declare class NEAppPushManager extends NSObject {
   setMatchSSIDs(matchSSIDs: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setMatchPrivateLTENetworks(matchPrivateLTENetworks: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setMatchEthernet(matchEthernet: boolean): void;
 
   setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
@@ -2108,9 +2072,6 @@ declare class NEVPNIKEv2SecurityAssociationParameters extends NSObject implement
 
   diffieHellmanGroup: interop.Enum<typeof NEVPNIKEv2DiffieHellmanGroup>;
 
-  get postQuantumKeyExchangeMethods(): NSArray;
-  set postQuantumKeyExchangeMethods(value: NSArray<interop.Object> | Array<interop.Object>);
-
   lifetimeMinutes: number;
 
   setEncryptionAlgorithm(encryptionAlgorithm: interop.Enum<typeof NEVPNIKEv2EncryptionAlgorithm>): void;
@@ -2118,8 +2079,6 @@ declare class NEVPNIKEv2SecurityAssociationParameters extends NSObject implement
   setIntegrityAlgorithm(integrityAlgorithm: interop.Enum<typeof NEVPNIKEv2IntegrityAlgorithm>): void;
 
   setDiffieHellmanGroup(diffieHellmanGroup: interop.Enum<typeof NEVPNIKEv2DiffieHellmanGroup>): void;
-
-  setPostQuantumKeyExchangeMethods(postQuantumKeyExchangeMethods: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setLifetimeMinutes(lifetimeMinutes: number): void;
 

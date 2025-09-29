@@ -8,9 +8,9 @@ declare const SLServiceTypeTwitter: string;
 
 declare const SLServiceTypeLinkedIn: string;
 
-declare const SLServiceTypeTencentWeibo: string;
-
 declare const SLServiceTypeSinaWeibo: string;
+
+declare const SLServiceTypeTencentWeibo: string;
 
 declare const SLComposeViewControllerResult: {
   Cancelled: 0,
@@ -115,15 +115,11 @@ declare class SLComposeServiceViewController extends UIViewController implements
 
   textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: _NSRange, text: string): boolean;
 
-  textViewShouldChangeTextInRangesReplacementText(textView: UITextView, ranges: NSArray<interop.Object> | Array<interop.Object>, text: string): boolean;
-
   textViewDidChange(textView: UITextView): void;
 
   textViewDidChangeSelection(textView: UITextView): void;
 
   textViewEditMenuForTextInRangeSuggestedActions(textView: UITextView, range: _NSRange, suggestedActions: NSArray<interop.Object> | Array<interop.Object>): UIMenu;
-
-  textViewEditMenuForTextInRangesSuggestedActions(textView: UITextView, ranges: NSArray<interop.Object> | Array<interop.Object>, suggestedActions: NSArray<interop.Object> | Array<interop.Object>): UIMenu;
 
   textViewWillPresentEditMenuWithAnimator(textView: UITextView, animator: UIEditMenuInteractionAnimating): void;
 

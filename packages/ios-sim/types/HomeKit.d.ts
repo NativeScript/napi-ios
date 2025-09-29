@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./UIKit.d.ts" />
 /// <reference path="./Runtime.d.ts" />
-
-declare const HMCharacteristicPropertyWritable: string;
+/// <reference path="./UIKit.d.ts" />
 
 declare const HMCharacteristicTypeRemainingDuration: string;
 
@@ -58,10 +56,6 @@ declare const HMCharacteristicMetadataUnitsSeconds: string;
 
 declare const HMCharacteristicMetadataUnitsArcDegree: string;
 
-declare const HMCharacteristicMetadataUnitsPercentage: string;
-
-declare const HMCharacteristicMetadataFormatUInt64: string;
-
 declare const HMCharacteristicMetadataFormatUInt32: string;
 
 declare const HMCharacteristicMetadataFormatUInt8: string;
@@ -80,13 +74,13 @@ declare const HMCharacteristicTypeNightVision: string;
 
 declare const HMCharacteristicTypeVolume: string;
 
+declare const HMCharacteristicTypeConfiguredName: string;
+
 declare const HMCharacteristicTypeColorTemperature: string;
 
 declare const HMCharacteristicTypeDehumidifierThreshold: string;
 
 declare const HMCharacteristicTypeTargetFanState: string;
-
-declare const HMCharacteristicTypeWaterLevel: string;
 
 declare const HMCharacteristicTypeCurrentHumidifierDehumidifierState: string;
 
@@ -136,17 +130,15 @@ declare const HMCharacteristicTypeSetDuration: string;
 
 declare const HMCharacteristicTypeProgramMode: string;
 
+declare const HMCharacteristicTypePM2_5Density: string;
+
 declare const HMCharacteristicTypeNitrogenDioxideDensity: string;
 
 declare const HMCharacteristicTypeOzoneDensity: string;
 
-declare const HMCharacteristicTypeSlatType: string;
-
 declare const HMCharacteristicTypeFilterLifeLevel: string;
 
 declare const HMCharacteristicTypeCurrentSlatState: string;
-
-declare const HMCharacteristicTypeImageMirroring: string;
 
 declare const HMCharacteristicTypeDigitalZoom: string;
 
@@ -188,7 +180,7 @@ declare const HMCharacteristicTypeLockMechanismLastKnownAction: string;
 
 declare const HMCharacteristicTypeAdminOnlyAccess: string;
 
-declare const HMCharacteristicTypeLogs: string;
+declare const HMCharacteristicTypeAudioFeedback: string;
 
 declare const HMCharacteristicPropertyRequiresAuthorizationData: string;
 
@@ -201,6 +193,8 @@ declare const HMAccessoryCategoryTypeTelevisionSetTopBox: string;
 declare const HMAccessoryCategoryTypeTelevision: string;
 
 declare const HMAccessoryCategoryTypeShowerHead: string;
+
+declare const HMAccessoryCategoryTypeSprinkler: string;
 
 declare const HMAccessoryCategoryTypeAirConditioner: string;
 
@@ -240,17 +234,15 @@ declare const HMServiceTypeOccupancySensor: string;
 
 declare const HMCharacteristicTypeRemoteKey: string;
 
+declare const HMCharacteristicMetadataUnitsMicrogramsPerCubicMeter: string;
+
 declare const HMCharacteristicTypeImageRotation: string;
 
 declare const HMAccessoryCategoryTypeAudioReceiver: string;
 
-declare const HMCharacteristicMetadataUnitsCelsius: string;
-
-declare const HMCharacteristicTypePM2_5Density: string;
-
 declare const HMCharacteristicTypeMotionDetected: string;
 
-declare const HMCharacteristicMetadataFormatData: string;
+declare const HMCharacteristicMetadataUnitsPercentage: string;
 
 declare const HMCharacteristicTypeSerialNumber: string;
 
@@ -288,37 +280,27 @@ declare const HMCharacteristicTypeClosedCaptions: string;
 
 declare const HMCharacteristicTypePowerState: string;
 
-declare const HMCharacteristicTypeFilterChangeIndication: string;
-
 declare const HMCharacteristicTypeTargetHumidifierDehumidifierState: string;
 
 declare const HMCharacteristicTypeManufacturer: string;
 
 declare const HMAccessoryCategoryTypeFaucet: string;
 
-declare const HMCharacteristicTypeFilterResetChangeIndication: string;
-
-declare const HMCharacteristicTypeConfiguredName: string;
-
 declare const HMCharacteristicMetadataUnitsLux: string;
 
 declare const HMCharacteristicTypeCurrentHorizontalTilt: string;
-
-declare const HMCharacteristicMetadataUnitsMicrogramsPerCubicMeter: string;
 
 declare const HMCharacteristicTypeSoftwareVersion: string;
 
 declare const HMServiceTypeCameraControl: string;
 
-declare const HMCharacteristicMetadataUnitsPartsPerMillion: string;
+declare const HMCharacteristicMetadataFormatData: string;
 
-declare const HMCharacteristicTypeVersion: string;
+declare const HMCharacteristicMetadataUnitsPartsPerMillion: string;
 
 declare const HMCharacteristicTypeSecuritySystemAlarmType: string;
 
 declare const HMActionSetTypeHomeArrival: string;
-
-declare const HMAccessoryCategoryTypeFan: string;
 
 declare const HMServiceTypeCarbonMonoxideSensor: string;
 
@@ -326,7 +308,17 @@ declare const HMCharacteristicTypeCarbonMonoxideDetected: string;
 
 declare const HMCharacteristicTypeTargetHeatingCooling: string;
 
+declare const HMCharacteristicPropertyReadable: string;
+
 declare const HMServiceTypeHumidifierDehumidifier: string;
+
+declare const HMCharacteristicMetadataFormatDictionary: string;
+
+declare const HMCharacteristicTypeTargetRelativeHumidity: string;
+
+declare const HMServiceTypeDoorbell: string;
+
+declare const HMAccessoryCategoryTypeBridge: string;
 
 declare const HMAccessoryCategoryTypeLightbulb: string;
 
@@ -342,9 +334,31 @@ declare const HMUserFailedAccessoriesKey: string;
 
 declare const HMCharacteristicTypeHoldPosition: string;
 
+declare const HMCharacteristicTypeIdentifier: string;
+
+declare const HMActionSetTypeTriggerOwned: string;
+
+declare const HMCharacteristicMetadataUnitsCelsius: string;
+
+declare const HMServiceTypeInputSource: string;
+
+declare const HMCharacteristicTypeLogs: string;
+
+declare const HMCharacteristicTypeCurrentHeaterCoolerState: string;
+
 declare const HMServiceTypeLabel: string;
 
-declare const HMAccessoryCategoryTypeSprinkler: string;
+declare const HMCharacteristicTypeVersion: string;
+
+declare const HMCharacteristicMetadataFormatUInt64: string;
+
+declare const HMAccessoryCategoryTypeAirDehumidifier: string;
+
+declare const HMCharacteristicTypeWaterLevel: string;
+
+declare const HMCharacteristicTypeSlatType: string;
+
+declare const HMAccessoryCategoryTypeFan: string;
 
 declare const HMCharacteristicTypeCurrentHeatingCooling: string;
 
@@ -358,11 +372,9 @@ declare const HMServiceTypeWiFiSatellite: string;
 
 declare const HMCharacteristicTypeIdentify: string;
 
-declare const HMActionSetTypeTriggerOwned: string;
-
 declare const HMCharacteristicMetadataFormatBool: string;
 
-declare const HMCharacteristicTypeCurrentHeaterCoolerState: string;
+declare const HMCharacteristicTypeCurrentTemperature: string;
 
 declare const HMCharacteristicTypeHeatingThreshold: string;
 
@@ -376,13 +388,17 @@ declare const HMServiceTypeLightbulb: string;
 
 declare const HMSignificantEventSunrise: string;
 
-declare const HMCharacteristicTypeCurrentTemperature: string;
-
 declare const HMCharacteristicTypeStatusActive: string;
 
 declare const HMAccessoryCategoryTypeTelevisionStreamingStick: string;
 
+declare const HMCharacteristicTypeImageMirroring: string;
+
+declare const HMCharacteristicTypeLabelIndex: string;
+
 declare const HMServiceTypeAirPurifier: string;
+
+declare const HMCharacteristicTypeFilterChangeIndication: string;
 
 declare const HMCharacteristicTypeInputEvent: string;
 
@@ -390,25 +406,17 @@ declare const HMCharacteristicMetadataFormatUInt16: string;
 
 declare const HMServiceTypeContactSensor: string;
 
-declare const HMServiceTypeDoorbell: string;
-
-declare const HMAccessoryCategoryTypeBridge: string;
-
-declare const HMAccessoryCategoryTypeAirDehumidifier: string;
-
 declare const HMCharacteristicTypeTargetVerticalTilt: string;
 
-declare const HMCharacteristicTypeWiFiSatelliteStatus: string;
-
-declare const HMServiceTypeAccessoryInformation: string;
-
-declare const HMCharacteristicTypeLabelIndex: string;
+declare const HMCharacteristicTypeTargetLockMechanismState: string;
 
 declare const HMCharacteristicTypeCarbonMonoxideLevel: string;
 
 declare const HMServiceTypeDoor: string;
 
 declare const HMActionSetTypeHomeDeparture: string;
+
+declare const HMCharacteristicTypeFilterResetChangeIndication: string;
 
 declare const HMAccessoryCategoryTypeSwitch: string;
 
@@ -428,8 +436,6 @@ declare const HMAccessoryCategoryTypeProgrammableSwitch: string;
 
 declare const HMCharacteristicTypeCurrentLightLevel: string;
 
-declare const HMServiceTypeInputSource: string;
-
 declare const HMCharacteristicTypeSupportedAudioStreamConfiguration: string;
 
 declare const HMAccessoryCategoryTypeAirHumidifier: string;
@@ -441,14 +447,6 @@ declare const HMCharacteristicTypePositionState: string;
 declare const HMCharacteristicMetadataFormatTLV8: string;
 
 declare const HMCharacteristicTypePM10Density: string;
-
-declare const HMServiceTypeCameraRTPStreamManagement: string;
-
-declare const HMCharacteristicMetadataFormatDictionary: string;
-
-declare const HMCharacteristicTypeInputDeviceType: string;
-
-declare const HMCharacteristicTypeTargetLockMechanismState: string;
 
 declare const HMActionSetTypeWakeUp: string;
 
@@ -467,6 +465,8 @@ declare const HMPresenceKeyPath: string;
 declare const HMCharacteristicTypeActive: string;
 
 declare const HMCharacteristicValueKeyPath: string;
+
+declare const HMCharacteristicPropertyWritable: string;
 
 declare const HMCharacteristicTypeIsConfigured: string;
 
@@ -488,13 +488,9 @@ declare const HMCharacteristicTypeCarbonDioxidePeakLevel: string;
 
 declare const HMCharacteristicTypeTargetTemperature: string;
 
-declare const HMCharacteristicPropertyReadable: string;
-
 declare const HMCharacteristicTypeLabelNamespace: string;
 
-declare const HMCharacteristicTypeTargetRelativeHumidity: string;
-
-declare const HMCharacteristicTypeIdentifier: string;
+declare const HMCharacteristicTypeInputDeviceType: string;
 
 declare const HMCharacteristicTypeSetupStreamEndpoint: string;
 
@@ -508,9 +504,13 @@ declare const HMCharacteristicTypeCurrentAirPurifierState: string;
 
 declare const HMAccessoryCategoryTypeAirPurifier: string;
 
-declare const HMCharacteristicTypeAudioFeedback: string;
+declare const HMServiceTypeAccessoryInformation: string;
 
 declare const HMCharacteristicTypeVolatileOrganicCompoundDensity: string;
+
+declare const HMCharacteristicTypeWiFiSatelliteStatus: string;
+
+declare const HMServiceTypeCameraRTPStreamManagement: string;
 
 declare const HMCharacteristicValueCurrentHumidifierDehumidifierState: {
   Inactive: 0,
@@ -699,6 +699,13 @@ declare const HMCharacteristicValueVolumeControlType: {
   Absolute: 3,
 };
 
+declare const HMCharacteristicValueValveType: {
+  GenericValve: 0,
+  Irrigation: 1,
+  ShowerHead: 2,
+  WaterFaucet: 3,
+};
+
 declare const HMCharacteristicValueTargetAirPurifierState: {
   Manual: 0,
   Automatic: 1,
@@ -760,15 +767,15 @@ declare const HMCharacteristicValueTemperatureUnit: {
   Fahrenheit: 1,
 };
 
-declare const HMCharacteristicValueRouterStatus: {
-  HMCharacteristicValueRouterStatusReady: 0,
-  Not: 1,
-};
-
 declare const HMPresenceEventUserType: {
   CurrentUser: 1,
   HomeUsers: 2,
   CustomUsers: 3,
+};
+
+declare const HMCharacteristicValueRouterStatus: {
+  HMCharacteristicValueRouterStatusReady: 0,
+  Not: 1,
 };
 
 declare const HMCharacteristicValueJammedStatus: {
@@ -779,12 +786,6 @@ declare const HMCharacteristicValueJammedStatus: {
 declare const HMCharacteristicValueTargetFanState: {
   Manual: 0,
   Automatic: 1,
-};
-
-declare const HMCharacteristicValueCurrentFanState: {
-  Inactive: 0,
-  Idle: 1,
-  Active: 2,
 };
 
 declare const HMCharacteristicValueTamperedStatus: {
@@ -844,13 +845,6 @@ declare const HMCharacteristicValuePictureMode: {
   Custom3: 13,
 };
 
-declare const HMCharacteristicValueValveType: {
-  GenericValve: 0,
-  Irrigation: 1,
-  ShowerHead: 2,
-  WaterFaucet: 3,
-};
-
 declare const HMCharacteristicValueCurrentMediaState: {
   Playing: 0,
   Paused: 1,
@@ -880,19 +874,16 @@ declare const HMCharacteristicValueTargetSecuritySystemState: {
   Disarm: 3,
 };
 
+declare const HMCharacteristicValueCurrentFanState: {
+  Inactive: 0,
+  Idle: 1,
+  Active: 2,
+};
+
 declare const HMCharacteristicValueWiFiSatelliteStatus: {
   Unknown: 0,
   Connected: 1,
   NotConnected: 2,
-};
-
-declare const HMPresenceEventType: {
-  EveryEntry: 1,
-  EveryExit: 2,
-  FirstEntry: 3,
-  LastExit: 4,
-  AtHome: 3,
-  NotAtHome: 4,
 };
 
 declare const HMCharacteristicValueCurrentHeaterCoolerState: {
@@ -914,6 +905,15 @@ declare const HMEventTriggerActivationState: {
   DisabledNoCompatibleHomeHub: 2,
   DisabledNoLocationServicesAuthorization: 3,
   Enabled: 4,
+};
+
+declare const HMPresenceEventType: {
+  EveryEntry: 1,
+  EveryExit: 2,
+  FirstEntry: 3,
+  LastExit: 4,
+  AtHome: 3,
+  NotAtHome: 4,
 };
 
 declare const HMCharacteristicValueClosedCaptions: {
@@ -946,11 +946,6 @@ declare const HMCharacteristicValueSmokeDetectionStatus: {
   Detected: 1,
 };
 
-declare const HMCharacteristicValueFilterChange: {
-  Not: 0,
-  HMCharacteristicValueFilterChangeNeeded: 1,
-};
-
 declare const HMCharacteristicValueUsageState: {
   Not: 0,
   HMCharacteristicValueUsageStateInUse: 1,
@@ -961,6 +956,11 @@ declare const HMCharacteristicValueLockMechanismState: {
   Secured: 1,
   Jammed: 2,
   Unknown: 3,
+};
+
+declare const HMCharacteristicValueFilterChange: {
+  Not: 0,
+  HMCharacteristicValueFilterChangeNeeded: 1,
 };
 
 declare const HMCharacteristicValueLockMechanismLastKnownAction: {
@@ -1204,12 +1204,17 @@ declare interface HMCameraSnapshotControlDelegate extends NSObjectProtocol {
 declare class HMCameraSnapshotControlDelegate extends NativeObject implements HMCameraSnapshotControlDelegate {
 }
 
-declare class HMCameraView extends UIView {
-  init(): this;
+// @ts-ignore ClassDecl.tsIgnore
+declare class HMMutablePresenceEvent extends HMPresenceEvent {
+  // @ts-ignore MemberDecl.tsIgnore
+  presenceEventType: interop.Enum<typeof HMPresenceEventType>;
 
-  cameraSource: HMCameraSource;
+  // @ts-ignore MemberDecl.tsIgnore
+  presenceUserType: interop.Enum<typeof HMPresenceEventUserType>;
 
-  setCameraSource(cameraSource: HMCameraSource | null): void;
+  setPresenceEventType(presenceEventType: interop.Enum<typeof HMPresenceEventType>): void;
+
+  setPresenceUserType(presenceUserType: interop.Enum<typeof HMPresenceEventUserType>): void;
 }
 
 declare class HMAccessoryCategory extends NSObject {
@@ -1318,17 +1323,12 @@ declare class HMCameraProfile extends HMAccessoryProfile {
   readonly microphoneControl: HMCameraAudioControl;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class HMMutablePresenceEvent extends HMPresenceEvent {
-  // @ts-ignore MemberDecl.tsIgnore
-  presenceEventType: interop.Enum<typeof HMPresenceEventType>;
+declare class HMCameraView extends UIView {
+  init(): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
-  presenceUserType: interop.Enum<typeof HMPresenceEventUserType>;
+  cameraSource: HMCameraSource;
 
-  setPresenceEventType(presenceEventType: interop.Enum<typeof HMPresenceEventType>): void;
-
-  setPresenceUserType(presenceUserType: interop.Enum<typeof HMPresenceEventUserType>): void;
+  setCameraSource(cameraSource: HMCameraSource | null): void;
 }
 
 declare class HMNumberRange extends NSObject {
@@ -1770,19 +1770,6 @@ declare class HMCharacteristicEvent<TriggerValueType = interop.Object> extends H
   mutableCopyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class HMMutableSignificantTimeEvent extends HMSignificantTimeEvent {
-  // @ts-ignore MemberDecl.tsIgnore
-  significantEvent: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  offset: NSDateComponents;
-
-  setSignificantEvent(significantEvent: string): void;
-
-  setOffset(offset: NSDateComponents): void;
-}
-
 declare class HMUser extends NSObject {
   readonly name: string;
 
@@ -1805,6 +1792,24 @@ declare class HMNetworkConfigurationProfile extends HMAccessoryProfile {
   setDelegate(delegate: HMNetworkConfigurationProfileDelegate | null): void;
 
   isNetworkAccessRestricted(): boolean;
+}
+
+declare class HMAddAccessoryRequest extends NSObject {
+  readonly home: HMHome;
+
+  readonly accessoryName: string;
+
+  readonly accessoryCategory: HMAccessoryCategory;
+
+  readonly requiresSetupPayloadURL: boolean;
+
+  readonly requiresOwnershipToken: boolean;
+
+  payloadWithOwnershipToken(ownershipToken: HMAccessoryOwnershipToken): HMAccessorySetupPayload;
+
+  payloadWithURLOwnershipToken(setupPayloadURL: NSURL, ownershipToken: HMAccessoryOwnershipToken): HMAccessorySetupPayload;
+
+  init(): this;
 }
 
 declare class HMTrigger extends NSObject {
@@ -1834,6 +1839,19 @@ declare class HMTimeEvent extends HMEvent {
 
 declare class HMAccessoryOwnershipToken extends NSObject {
   initWithData(data: NSData): this;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class HMMutableSignificantTimeEvent extends HMSignificantTimeEvent {
+  // @ts-ignore MemberDecl.tsIgnore
+  significantEvent: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  offset: NSDateComponents;
+
+  setSignificantEvent(significantEvent: string): void;
+
+  setOffset(offset: NSDateComponents): void;
 }
 
 declare class HMCameraControl extends NSObject {
@@ -1954,24 +1972,6 @@ declare class HMHome extends NSObject {
   readonly matterControllerXPCConnectBlock: () => NSXPCConnection;
 
   readonly matterStartupParametersXPCConnectBlock: () => NSXPCConnection;
-}
-
-declare class HMAddAccessoryRequest extends NSObject {
-  readonly home: HMHome;
-
-  readonly accessoryName: string;
-
-  readonly accessoryCategory: HMAccessoryCategory;
-
-  readonly requiresSetupPayloadURL: boolean;
-
-  readonly requiresOwnershipToken: boolean;
-
-  payloadWithOwnershipToken(ownershipToken: HMAccessoryOwnershipToken): HMAccessorySetupPayload;
-
-  payloadWithURLOwnershipToken(setupPayloadURL: NSURL, ownershipToken: HMAccessoryOwnershipToken): HMAccessorySetupPayload;
-
-  init(): this;
 }
 
 declare class HMCalendarEvent extends HMTimeEvent implements NSCopying, NSMutableCopying {

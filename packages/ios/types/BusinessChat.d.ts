@@ -4,9 +4,9 @@
 
 declare const BCParameterNameBody: string;
 
-declare const BCParameterNameIntent: string;
-
 declare const BCParameterNameGroup: string;
+
+declare const BCParameterNameIntent: string;
 
 declare const BCChatButtonStyle: {
   Light: 0,
