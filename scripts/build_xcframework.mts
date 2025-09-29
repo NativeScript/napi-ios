@@ -5,6 +5,15 @@ import { createXCframework } from "react-native-node-api";
 
 main();
 
+/**
+ * Builds an XCFramework in the style that `react-native-node-api` expects,
+ * following the [prebuilds standard](https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md).
+ *
+ * This is really just an XCFramework renamed with a `.node` extension,
+ * containing an extra file named `react-native-api-module`. Once `cmake-rn`
+ * supports it, we may be able to replace this whole script with a simple
+ * `cmake-rn` call.
+ */
 async function main() {
   const __dirname = import.meta.dirname;
   if (!__dirname) {
@@ -13,6 +22,8 @@ async function main() {
 
   const monorepoRoot = path.resolve(__dirname, "..");
 
+  // Args are designed to match the names of the args from cmake we're
+  // interested in.
   const args = yargsParser(process.argv.slice(2), {
     configuration: {
       "short-option-groups": false,

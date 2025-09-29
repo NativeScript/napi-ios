@@ -54,10 +54,10 @@ elseif(TARGET_PLATFORM STREQUAL "macos")
   set(TARGET_PLATFORM_SPEC "macos-arm64_x86_64")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_PLATFORM_MACOS")
 
-# Force dSYM generation for macOS (by default, they're embedded into the
-# binary itself, giving us a 14,981,336 byte / 15 MB binary)
-# set(CMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")
-# set(CMAKE_XCODE_ATTRIBUTE_DWARF_DSYM_FOLDER_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>")
+  # Unlike "ios", "macos" doesn't seem to produce a NativeScript.framework.dSYM
+  # by default. We can produce it by setting these variables.
+  set(CMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")
+  set(CMAKE_XCODE_ATTRIBUTE_DWARF_DSYM_FOLDER_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>")
 else()
   message(FATAL_ERROR "Unknown target platform: ${TARGET_PLATFORM}")
   return()
