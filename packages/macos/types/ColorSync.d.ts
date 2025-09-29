@@ -180,8 +180,6 @@ declare const kColorSyncDeviceProfileID: interop.Object;
 
 declare const kColorSyncSigTechnologyTag: interop.Object;
 
-declare const kColorSyncRenderingIntentRelative: interop.Object;
-
 declare const kColorSyncSigPreview0Tag: interop.Object;
 
 declare const kColorSyncSigNamedColorClass: interop.Object;
@@ -243,6 +241,8 @@ declare const kColorSyncConversionParamCurve0: interop.Object;
 declare const kColorSyncProfile: interop.Object;
 
 declare const kColorSyncProfileUserScope: interop.Object;
+
+declare const kColorSyncRenderingIntentRelative: interop.Object;
 
 declare const kColorSyncTransformCodeFragmentType: interop.Object;
 
@@ -451,6 +451,4 @@ declare function ColorSyncIterateDeviceProfiles(callBack: (p1: interop.PointerCo
 declare function CGDisplayCreateUUIDFromDisplayID(displayID: number): interop.Object;
 
 declare function CGDisplayGetDisplayIDFromUUID(uuid: interop.Object): number;
-
-declare function ColorSyncAPIVersion(): number;
 

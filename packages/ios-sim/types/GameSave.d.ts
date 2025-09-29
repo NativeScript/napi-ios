@@ -1,6 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const GameSaveVersionString: interop.Pointer;
+
+declare const GameSaveVersionNumber: number;
+
 declare const GSSyncState: {
   Ready: 0,
   Offline: 1,

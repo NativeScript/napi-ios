@@ -709,7 +709,7 @@ declare class SKTexture extends NSObject implements NSCopying, NSSecureCoding {
 
   static textureNoiseWithSmoothnessSizeGrayscale<This extends abstract new (...args: any) => any>(this: This, smoothness: number, size: CGSize, grayscale: boolean): InstanceType<This>;
 
-  static textureWithCGImage<This extends abstract new (...args: any) => any>(this: This, image: interop.PointerConvertible): InstanceType<This>;
+  static textureWithCGImage<This extends abstract new (...args: any) => any>(this: This, image: interop.Object): InstanceType<This>;
 
   static textureWithImage<This extends abstract new (...args: any) => any>(this: This, image: UIImage): InstanceType<This>;
 
@@ -733,7 +733,7 @@ declare class SKTexture extends NSObject implements NSCopying, NSSecureCoding {
 
   usesMipmaps: boolean;
 
-  CGImage(): interop.Pointer;
+  CGImage(): interop.Object;
 
   static preloadTexturesWithCompletionHandler(textures: NSArray<interop.Object> | Array<interop.Object>, completionHandler: () => void): void;
 
@@ -744,6 +744,33 @@ declare class SKTexture extends NSObject implements NSCopying, NSSecureCoding {
   setUsesMipmaps(usesMipmaps: boolean): void;
 
   static textureWithNoiseMap<This extends abstract new (...args: any) => any>(this: This, noiseMap: GKNoiseMap): InstanceType<This>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class SKTileGroupRule extends NSObject implements NSCopying, NSSecureCoding {
+  static tileGroupRuleWithAdjacencyTileDefinitions<This extends abstract new (...args: any) => any>(this: This, adjacency: interop.Enum<typeof SKTileAdjacencyMask>, tileDefinitions: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  initWithAdjacencyTileDefinitions(adjacency: interop.Enum<typeof SKTileAdjacencyMask>, tileDefinitions: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  adjacency: interop.Enum<typeof SKTileAdjacencyMask>;
+
+  get tileDefinitions(): NSArray;
+  set tileDefinitions(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  name: string;
+
+  setAdjacency(adjacency: interop.Enum<typeof SKTileAdjacencyMask>): void;
+
+  setTileDefinitions(tileDefinitions: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setName(name: string | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -824,13 +851,13 @@ declare class SKPhysicsBody extends NSObject implements NSCopying, NSSecureCodin
 
   static bodyWithRectangleOfSizeCenter(s: CGSize, center: CGPoint): SKPhysicsBody;
 
-  static bodyWithPolygonFromPath(path: interop.PointerConvertible): SKPhysicsBody;
+  static bodyWithPolygonFromPath(path: interop.Object): SKPhysicsBody;
 
   static bodyWithEdgeFromPointToPoint(p1: CGPoint, p2: CGPoint): SKPhysicsBody;
 
-  static bodyWithEdgeChainFromPath(path: interop.PointerConvertible): SKPhysicsBody;
+  static bodyWithEdgeChainFromPath(path: interop.Object): SKPhysicsBody;
 
-  static bodyWithEdgeLoopFromPath(path: interop.PointerConvertible): SKPhysicsBody;
+  static bodyWithEdgeLoopFromPath(path: interop.Object): SKPhysicsBody;
 
   static bodyWithEdgeLoopFromRect(rect: CGRect): SKPhysicsBody;
 
@@ -1501,33 +1528,6 @@ declare class SKPhysicsJoint extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SKTileGroupRule extends NSObject implements NSCopying, NSSecureCoding {
-  static tileGroupRuleWithAdjacencyTileDefinitions<This extends abstract new (...args: any) => any>(this: This, adjacency: interop.Enum<typeof SKTileAdjacencyMask>, tileDefinitions: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  initWithAdjacencyTileDefinitions(adjacency: interop.Enum<typeof SKTileAdjacencyMask>, tileDefinitions: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  adjacency: interop.Enum<typeof SKTileAdjacencyMask>;
-
-  get tileDefinitions(): NSArray;
-  set tileDefinitions(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  name: string;
-
-  setAdjacency(adjacency: interop.Enum<typeof SKTileAdjacencyMask>): void;
-
-  setTileDefinitions(tileDefinitions: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setName(name: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class SKUniform extends NSObject implements NSCopying, NSSecureCoding {
   static uniformWithName<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
 
@@ -1759,7 +1759,7 @@ declare class SKView extends UIView {
 }
 
 declare class SKRegion extends NSObject implements NSCopying, NSSecureCoding {
-  readonly path: interop.Pointer;
+  readonly path: interop.Object;
 
   static infiniteRegion<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -1767,7 +1767,7 @@ declare class SKRegion extends NSObject implements NSCopying, NSSecureCoding {
 
   initWithSize(size: CGSize): this;
 
-  initWithPath(path: interop.PointerConvertible): this;
+  initWithPath(path: interop.Object): this;
 
   inverseRegion(): this;
 
@@ -2013,13 +2013,13 @@ declare class SKAction extends NSObject implements NSCopying, NSSecureCoding {
 
   static falloffByDuration(falloff: number, duration: number): SKAction;
 
-  static followPathDuration(path: interop.PointerConvertible, duration: number): SKAction;
+  static followPathDuration(path: interop.Object, duration: number): SKAction;
 
-  static followPathAsOffsetOrientToPathDuration(path: interop.PointerConvertible, offset: boolean, orient: boolean, duration: number): SKAction;
+  static followPathAsOffsetOrientToPathDuration(path: interop.Object, offset: boolean, orient: boolean, duration: number): SKAction;
 
-  static followPathSpeed(path: interop.PointerConvertible, speed: number): SKAction;
+  static followPathSpeed(path: interop.Object, speed: number): SKAction;
 
-  static followPathAsOffsetOrientToPathSpeed(path: interop.PointerConvertible, offset: boolean, orient: boolean, speed: number): SKAction;
+  static followPathAsOffsetOrientToPathSpeed(path: interop.Object, offset: boolean, orient: boolean, speed: number): SKAction;
 
   static speedByDuration(speed: number, duration: number): SKAction;
 
@@ -2331,9 +2331,9 @@ declare class SKPhysicsContact extends NSObject {
 }
 
 declare class SKShapeNode extends SKNode {
-  static shapeNodeWithPath<This extends abstract new (...args: any) => any>(this: This, path: interop.PointerConvertible): InstanceType<This>;
+  static shapeNodeWithPath<This extends abstract new (...args: any) => any>(this: This, path: interop.Object): InstanceType<This>;
 
-  static shapeNodeWithPathCentered<This extends abstract new (...args: any) => any>(this: This, path: interop.PointerConvertible, centered: boolean): InstanceType<This>;
+  static shapeNodeWithPathCentered<This extends abstract new (...args: any) => any>(this: This, path: interop.Object, centered: boolean): InstanceType<This>;
 
   static shapeNodeWithRect<This extends abstract new (...args: any) => any>(this: This, rect: CGRect): InstanceType<This>;
 
@@ -2353,8 +2353,7 @@ declare class SKShapeNode extends SKNode {
 
   static shapeNodeWithSplinePointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, numPoints: number): InstanceType<This>;
 
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
   strokeColor: UIColor;
 
@@ -2391,7 +2390,7 @@ declare class SKShapeNode extends SKNode {
 
   setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object | null): void;
 
   setStrokeColor(strokeColor: UIColor): void;
 

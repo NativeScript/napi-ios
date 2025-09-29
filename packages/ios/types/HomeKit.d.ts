@@ -2,8 +2,6 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const HMCharacteristicTypeSetupStreamEndpoint: string;
-
 declare const HMCharacteristicPropertyWritable: string;
 
 declare const HMCharacteristicTypeRemainingDuration: string;
@@ -208,8 +206,6 @@ declare const HMAccessoryCategoryTypeAirConditioner: string;
 
 declare const HMAccessoryCategoryTypeWindowCovering: string;
 
-declare const HMAccessoryCategoryTypeVideoDoorbell: string;
-
 declare const HMAccessoryCategoryTypeThermostat: string;
 
 declare const HMAccessoryCategoryTypeSensor: string;
@@ -233,6 +229,10 @@ declare const HMCharacteristicTypeSulphurDioxideDensity: string;
 declare const HMCharacteristicTypeLockManagementAutoSecureTimeout: string;
 
 declare const HMCharacteristicTypeHumidifierThreshold: string;
+
+declare const HMCharacteristicTypePictureMode: string;
+
+declare const HMAccessoryCategoryTypeVideoDoorbell: string;
 
 declare const HMCharacteristicTypeCurrentDoorState: string;
 
@@ -398,8 +398,6 @@ declare const HMAccessoryCategoryTypeAirDehumidifier: string;
 
 declare const HMCharacteristicTypeTargetVerticalTilt: string;
 
-declare const HMCharacteristicTypePictureMode: string;
-
 declare const HMCharacteristicTypeWiFiSatelliteStatus: string;
 
 declare const HMServiceTypeAccessoryInformation: string;
@@ -497,6 +495,8 @@ declare const HMCharacteristicTypeLabelNamespace: string;
 declare const HMCharacteristicTypeTargetRelativeHumidity: string;
 
 declare const HMCharacteristicTypeIdentifier: string;
+
+declare const HMCharacteristicTypeSetupStreamEndpoint: string;
 
 declare const HMCharacteristicTypeMute: string;
 
@@ -680,11 +680,6 @@ declare const HMCharacteristicValueInputEvent: {
   Long: 2,
 };
 
-declare const HMCharacteristicValueTemperatureUnit: {
-  Celsius: 0,
-  Fahrenheit: 1,
-};
-
 declare const HMCharacteristicValueCurrentHeatingCooling: {
   Off: 0,
   Heat: 1,
@@ -746,6 +741,11 @@ declare const HMHomeHubState: {
   NotAvailable: 0,
   Connected: 1,
   Disconnected: 2,
+};
+
+declare const HMCharacteristicValueTemperatureUnit: {
+  Celsius: 0,
+  Fahrenheit: 1,
 };
 
 declare const HMCharacteristicValueRouterStatus: {
@@ -1204,22 +1204,6 @@ declare interface HMCameraSnapshotControlDelegate extends NSObjectProtocol {
 declare class HMCameraSnapshotControlDelegate extends NativeObject implements HMCameraSnapshotControlDelegate {
 }
 
-declare class HMAccessoryProfile extends NSObject {
-  readonly uniqueIdentifier: NSUUID;
-
-  readonly services: NSArray;
-
-  readonly accessory: HMAccessory | null;
-}
-
-declare class HMCameraView extends UIView {
-  init(): this;
-
-  cameraSource: HMCameraSource;
-
-  setCameraSource(cameraSource: HMCameraSource | null): void;
-}
-
 declare class HMAccessoryCategory extends NSObject {
   readonly categoryType: string;
 
@@ -1318,26 +1302,6 @@ declare class HMAccessorySetupManager extends NSObject {
   performAccessorySetupUsingRequestCompletionHandler(request: HMAccessorySetupRequest, completion: (p1: HMAccessorySetupResult, p2: NSError) => void | null): void;
 }
 
-declare class HMCameraSettingsControl extends HMCameraControl {
-  readonly nightVision: HMCharacteristic;
-
-  readonly currentHorizontalTilt: HMCharacteristic;
-
-  readonly targetHorizontalTilt: HMCharacteristic;
-
-  readonly currentVerticalTilt: HMCharacteristic;
-
-  readonly targetVerticalTilt: HMCharacteristic;
-
-  readonly opticalZoom: HMCharacteristic;
-
-  readonly digitalZoom: HMCharacteristic;
-
-  readonly imageRotation: HMCharacteristic;
-
-  readonly imageMirroring: HMCharacteristic;
-}
-
 declare class HMCameraSnapshot extends HMCameraSource {
   readonly captureDate: NSDate;
 
@@ -1354,6 +1318,14 @@ declare class HMCameraProfile extends HMAccessoryProfile {
   readonly speakerControl: HMCameraAudioControl;
 
   readonly microphoneControl: HMCameraAudioControl;
+}
+
+declare class HMCameraView extends UIView {
+  init(): this;
+
+  cameraSource: HMCameraSource;
+
+  setCameraSource(cameraSource: HMCameraSource | null): void;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -1488,16 +1460,6 @@ declare class HMHomeAccessControl extends HMAccessControl {
 }
 
 declare class HMAccessControl extends NSObject {
-}
-
-declare class HMCharacteristicWriteAction<TargetValueType = interop.Object> extends HMAction {
-  initWithCharacteristicTargetValue(characteristic: HMCharacteristic, targetValue: TargetValueType): this;
-
-  readonly characteristic: HMCharacteristic;
-
-  readonly targetValue: TargetValueType;
-
-  updateTargetValueCompletionHandler(targetValue: TargetValueType, completion: (p1: NSError) => void | null): void;
 }
 
 declare class HMCharacteristicMetadata extends NSObject {
@@ -1680,6 +1642,54 @@ declare class HMDurationEvent extends HMTimeEvent implements NSCopying, NSMutabl
   mutableCopyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class HMCharacteristicWriteAction<TargetValueType = interop.Object> extends HMAction {
+  initWithCharacteristicTargetValue(characteristic: HMCharacteristic, targetValue: TargetValueType): this;
+
+  readonly characteristic: HMCharacteristic;
+
+  readonly targetValue: TargetValueType;
+
+  updateTargetValueCompletionHandler(targetValue: TargetValueType, completion: (p1: NSError) => void | null): void;
+}
+
+declare class HMCameraSettingsControl extends HMCameraControl {
+  readonly nightVision: HMCharacteristic;
+
+  readonly currentHorizontalTilt: HMCharacteristic;
+
+  readonly targetHorizontalTilt: HMCharacteristic;
+
+  readonly currentVerticalTilt: HMCharacteristic;
+
+  readonly targetVerticalTilt: HMCharacteristic;
+
+  readonly opticalZoom: HMCharacteristic;
+
+  readonly digitalZoom: HMCharacteristic;
+
+  readonly imageRotation: HMCharacteristic;
+
+  readonly imageMirroring: HMCharacteristic;
+}
+
+declare class HMAccessoryProfile extends NSObject {
+  readonly uniqueIdentifier: NSUUID;
+
+  readonly services: NSArray;
+
+  readonly accessory: HMAccessory | null;
+}
+
+declare class HMCameraStream extends HMCameraSource {
+  readonly audioStreamSetting: interop.Enum<typeof HMCameraAudioStreamSetting>;
+
+  setAudioStreamSetting(audioStreamSetting: interop.Enum<typeof HMCameraAudioStreamSetting>): void;
+
+  updateAudioStreamSettingCompletionHandler(audioStreamSetting: interop.Enum<typeof HMCameraAudioStreamSetting>, completion: (p1: NSError) => void | null): void;
+
+  init(): this;
+}
+
 declare class HMCameraAudioControl extends HMCameraControl {
   readonly mute: HMCharacteristic;
 
@@ -1768,16 +1778,6 @@ declare class HMCharacteristicEvent<TriggerValueType = interop.Object> extends H
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
   mutableCopyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class HMCameraStream extends HMCameraSource {
-  readonly audioStreamSetting: interop.Enum<typeof HMCameraAudioStreamSetting>;
-
-  setAudioStreamSetting(audioStreamSetting: interop.Enum<typeof HMCameraAudioStreamSetting>): void;
-
-  updateAudioStreamSettingCompletionHandler(audioStreamSetting: interop.Enum<typeof HMCameraAudioStreamSetting>, completion: (p1: NSError) => void | null): void;
-
-  init(): this;
 }
 
 declare class HMUser extends NSObject {

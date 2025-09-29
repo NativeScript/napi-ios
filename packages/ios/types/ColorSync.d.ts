@@ -1,54 +1,54 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kColorSyncConversionOutChan: interop.Pointer;
+declare const kColorSyncConversionOutChan: interop.Object;
 
-declare const kColorSyncConversionNDLut: interop.Pointer;
+declare const kColorSyncConversionNDLut: interop.Object;
 
-declare const kColorSyncConversion3DLut: interop.Pointer;
+declare const kColorSyncConversion3DLut: interop.Object;
 
-declare const kColorSyncConversionChannelID: interop.Pointer;
+declare const kColorSyncConversionChannelID: interop.Object;
 
-declare const kColorSyncConversionParamCurve2: interop.Pointer;
+declare const kColorSyncConversionParamCurve2: interop.Object;
 
-declare const kColorSyncConversionParamCurve0: interop.Pointer;
+declare const kColorSyncConversionParamCurve0: interop.Object;
 
-declare const kColorSyncConversionMatrix: interop.Pointer;
+declare const kColorSyncConversionMatrix: interop.Object;
 
-declare const kColorSyncTransformUseITU709OETF: interop.Pointer;
+declare const kColorSyncTransformUseITU709OETF: interop.Object;
 
-declare const kColorSyncTransformProfileSequnce: interop.Pointer;
+declare const kColorSyncTransformProfileSequnce: interop.Object;
 
-declare const kColorSyncTransformDstSpace: interop.Pointer;
+declare const kColorSyncTransformDstSpace: interop.Object;
 
-declare const kColorSyncTransformCreator: interop.Pointer;
+declare const kColorSyncTransformCreator: interop.Object;
 
-declare const kColorSyncNormalQuality: interop.Pointer;
+declare const kColorSyncNormalQuality: interop.Object;
 
-declare const kColorSyncBestQuality: interop.Pointer;
+declare const kColorSyncBestQuality: interop.Object;
 
-declare const kColorSyncConvertQuality: interop.Pointer;
+declare const kColorSyncConvertQuality: interop.Object;
 
-declare const kColorSyncExtendedRange: interop.Pointer;
+declare const kColorSyncExtendedRange: interop.Object;
 
-declare const kColorSyncTransformDeviceToDevice: interop.Pointer;
+declare const kColorSyncTransformDeviceToDevice: interop.Object;
 
-declare const kColorSyncTransformPCSToDevice: interop.Pointer;
+declare const kColorSyncTransformPCSToDevice: interop.Object;
 
-declare const kColorSyncTransformPCSToPCS: interop.Pointer;
+declare const kColorSyncTransformPCSToPCS: interop.Object;
 
-declare const kColorSyncTransformDeviceToPCS: interop.Pointer;
+declare const kColorSyncTransformDeviceToPCS: interop.Object;
 
-declare const kColorSyncTransformTag: interop.Pointer;
+declare const kColorSyncTransformTag: interop.Object;
 
-declare const kColorSyncRenderingIntentUseProfileHeader: interop.Pointer;
+declare const kColorSyncRenderingIntentUseProfileHeader: interop.Object;
 
-declare const kColorSyncRenderingIntentAbsolute: interop.Pointer;
+declare const kColorSyncRenderingIntentAbsolute: interop.Object;
 
-declare const kColorSyncRenderingIntentSaturation: interop.Pointer;
+declare const kColorSyncRenderingIntentSaturation: interop.Object;
 
-declare const kColorSyncRenderingIntent: interop.Pointer;
+declare const kColorSyncRenderingIntent: interop.Object;
 
-declare const kColorSyncProfile: interop.Pointer;
+declare const kColorSyncProfile: interop.Object;
 
 declare const kColorSyncByteOrder16Big: number;
 
@@ -62,183 +62,183 @@ declare const kColorSyncByteOrderMask: number;
 
 declare const kColorSyncAlphaInfoMask: number;
 
-declare const kColorSyncProfileCacheSeed: interop.Pointer;
+declare const kColorSyncProfileCacheSeed: interop.Object;
 
-declare const kColorSyncSigMediaWhitePointTag: interop.Pointer;
+declare const kColorSyncSigMediaWhitePointTag: interop.Object;
 
-declare const kColorSyncSigViewingCondDescTag: interop.Pointer;
+declare const kColorSyncSigViewingCondDescTag: interop.Object;
 
-declare const kColorSyncSigTechnologyTag: interop.Pointer;
+declare const kColorSyncSigTechnologyTag: interop.Object;
 
-declare const kColorSyncSigInputClass: interop.Pointer;
+declare const kColorSyncSigInputClass: interop.Object;
 
-declare const kColorSyncSigProfileSequenceDescTag: interop.Pointer;
+declare const kColorSyncSigProfileSequenceDescTag: interop.Object;
 
-declare const kColorSyncSigOutputClass: interop.Pointer;
+declare const kColorSyncSigOutputClass: interop.Object;
 
-declare const kColorSyncSigPreview2Tag: interop.Pointer;
+declare const kColorSyncSigPreview2Tag: interop.Object;
 
-declare const kColorSyncSigNamedColorClass: interop.Pointer;
+declare const kColorSyncSigNamedColorClass: interop.Object;
 
-declare const kColorSyncSigNamedColor2Tag: interop.Pointer;
+declare const kColorSyncSigNamedColor2Tag: interop.Object;
 
-declare const kColorSyncSigLinkClass: interop.Pointer;
+declare const kColorSyncSigLinkClass: interop.Object;
 
-declare const kColorSyncSigGamutTag: interop.Pointer;
+declare const kColorSyncSigGamutTag: interop.Object;
 
-declare const kColorSyncSigGreenColorantTag: interop.Pointer;
+declare const kColorSyncSigGreenColorantTag: interop.Object;
 
-declare const kColorSyncSigGreenTRCTag: interop.Pointer;
+declare const kColorSyncSigGreenTRCTag: interop.Object;
 
-declare const kColorSyncSigDeviceMfgDescTag: interop.Pointer;
+declare const kColorSyncSigDeviceMfgDescTag: interop.Object;
 
-declare const kColorSyncSigDeviceModelDescTag: interop.Pointer;
+declare const kColorSyncSigXYZData: interop.Object;
 
-declare const kColorSyncSigProfileDescriptionTag: interop.Pointer;
+declare const kColorSyncSigLabData: interop.Object;
 
-declare const kColorSyncSigBlueTRCTag: interop.Pointer;
+declare const kColorSyncSigBToA1Tag: interop.Object;
 
-declare const kColorSyncSigRgbData: interop.Pointer;
+declare const kColorSyncSigAToB2Tag: interop.Object;
 
-declare const kColorSyncSigLabData: interop.Pointer;
+declare const kColorSyncSigAToB0Tag: interop.Object;
 
-declare const kColorSyncSigGrayData: interop.Pointer;
+declare const kColorSyncProfilePCS: interop.Object;
 
-declare const kColorSyncSigCmykData: interop.Pointer;
+declare const kColorSyncProfileClass: interop.Object;
 
-declare const kColorSyncProfileIsValid: interop.Pointer;
+declare const kColorSyncROMMRGBProfile: interop.Object;
 
-declare const kColorSyncProfileDescription: interop.Pointer;
+declare const kColorSyncITUR2020Profile: interop.Object;
 
-declare const kColorSyncProfilePCS: interop.Pointer;
+declare const kColorSyncDCIP3Profile: interop.Object;
 
-declare const kColorSyncProfileClass: interop.Pointer;
+declare const kColorSyncACESCGLinearProfile: interop.Object;
 
-declare const kColorSyncWebSafeColorsProfile: interop.Pointer;
+declare const kColorSyncGenericXYZProfile: interop.Object;
 
-declare const kColorSyncITUR2020Profile: interop.Pointer;
+declare const kColorSyncAdobeRGB1998Profile: interop.Object;
 
-declare const kColorSyncDCIP3Profile: interop.Pointer;
+declare const kColorSyncDisplayP3Profile: interop.Object;
 
-declare const kColorSyncGenericXYZProfile: interop.Pointer;
+declare const kColorSyncGenericCMYKProfile: interop.Object;
 
-declare const kColorSyncAdobeRGB1998Profile: interop.Pointer;
+declare const kColorSyncGenericGrayProfile: interop.Object;
 
-declare const kColorSyncSRGBProfile: interop.Pointer;
+declare const kColorSyncSRGBProfile: interop.Object;
 
-declare const kColorSyncGenericCMYKProfile: interop.Pointer;
+declare const kColorSyncTransformCodeFragmentType: interop.Object;
 
-declare const kColorSyncGenericGrayGamma22Profile: interop.Pointer;
+declare const kColorSyncPQDerivative: interop.Object;
 
-declare const kColorSyncSigAToB0Tag: interop.Pointer;
+declare const kColorSyncProfileIsValid: interop.Object;
 
-declare const kColorSyncProfileColorSpace: interop.Pointer;
+declare const kColorSyncSigMediaBlackPointTag: interop.Object;
 
-declare const kColorSyncTransformCodeFragmentType: interop.Pointer;
+declare const kColorSyncTransformFullConversionData: interop.Object;
 
-declare const kColorSyncPQDerivative: interop.Pointer;
+declare const kColorSyncTransformInfo: interop.Object;
 
-declare const kColorSyncSigMediaBlackPointTag: interop.Pointer;
+declare const kColorSyncTransformSimplifiedConversionData: interop.Object;
 
-declare const kColorSyncTransformFullConversionData: interop.Pointer;
+declare const kColorSyncSigAbstractClass: interop.Object;
 
-declare const kColorSyncTransformInfo: interop.Pointer;
+declare const kColorSyncProfileHeader: interop.Object;
 
-declare const kColorSyncSigBlueColorantTag: interop.Pointer;
+declare const kColorSyncProfileURL: interop.Object;
 
-declare const kColorSyncTransformSimplifiedConversionData: interop.Pointer;
+declare const kColorSyncConversionInpChan: interop.Object;
 
-declare const kColorSyncSigAbstractClass: interop.Pointer;
+declare const kColorSyncTransformParametricConversionData: interop.Object;
 
-declare const kColorSyncProfileHeader: interop.Pointer;
+declare const kColorSyncConversionParamCurve1: interop.Object;
 
-declare const kColorSyncProfileURL: interop.Pointer;
+declare const kColorSyncConversionParamCurve3: interop.Object;
 
-declare const kColorSyncSigAToB1Tag: interop.Pointer;
+declare const kColorSyncSigBToA0Tag: interop.Object;
 
-declare const kColorSyncGenericLabProfile: interop.Pointer;
+declare const kColorSyncSigDisplayClass: interop.Object;
 
-declare const kColorSyncConversionInpChan: interop.Pointer;
+declare const kColorSyncSigCopyrightTag: interop.Object;
 
-declare const kColorSyncTransformParametricConversionData: interop.Pointer;
+declare const kColorSyncSigGrayData: interop.Object;
 
-declare const kColorSyncConversionParamCurve1: interop.Pointer;
+declare const kColorSyncTransformSrcSpace: interop.Object;
 
-declare const kColorSyncConversionParamCurve3: interop.Pointer;
+declare const kColorSyncSigBlueColorantTag: interop.Object;
 
-declare const kColorSyncGenericGrayProfile: interop.Pointer;
+declare const kColorSyncITUR709Profile: interop.Object;
 
-declare const kColorSyncSigBToA0Tag: interop.Pointer;
+declare const kColorSyncSigCmykData: interop.Object;
 
-declare const kColorSyncSigDisplayClass: interop.Pointer;
+declare const kColorSyncSigBlueTRCTag: interop.Object;
 
-declare const kColorSyncSigCopyrightTag: interop.Pointer;
+declare const kColorSyncBlackPointCompensation: interop.Object;
 
-declare const kColorSyncSigBToA2Tag: interop.Pointer;
+declare const kColorSyncHDRDerivative: interop.Object;
 
-declare const kColorSyncTransformSrcSpace: interop.Pointer;
+declare const kColorSyncConvertUseExtendedRange: interop.Object;
 
-declare const kColorSyncITUR709Profile: interop.Pointer;
+declare const kColorSyncConversionGridPoints: interop.Object;
 
-declare const kColorSyncROMMRGBProfile: interop.Pointer;
+declare const kColorSyncTransformCodeFragmentMD5: interop.Object;
 
-declare const kColorSyncGenericRGBProfile: interop.Pointer;
+declare const kColorSyncProfileColorSpace: interop.Object;
 
-declare const kColorSyncBlackPointCompensation: interop.Pointer;
+declare const kColorSyncGenericGrayGamma22Profile: interop.Object;
 
-declare const kColorSyncHDRDerivative: interop.Pointer;
+declare const kColorSyncConversion1DLut: interop.Object;
 
-declare const kColorSyncDisplayP3Profile: interop.Pointer;
+declare const kColorSyncProfileDescription: interop.Object;
 
-declare const kColorSyncConvertUseExtendedRange: interop.Pointer;
+declare const kColorSyncDraftQuality: interop.Object;
 
-declare const kColorSyncConversionGridPoints: interop.Pointer;
+declare const kColorSyncRenderingIntentPerceptual: interop.Object;
 
-declare const kColorSyncTransformCodeFragmentMD5: interop.Pointer;
+declare const kColorSyncSigViewingConditionsTag: interop.Object;
 
-declare const kColorSyncConversion1DLut: interop.Pointer;
+declare const kColorSyncSigPreview0Tag: interop.Object;
 
-declare const kColorSyncACESCGLinearProfile: interop.Pointer;
+declare const kColorSyncGenericRGBProfile: interop.Object;
 
-declare const kColorSyncDraftQuality: interop.Pointer;
+declare const kColorSyncConversionBPC: interop.Object;
 
-declare const kColorSyncProfileMD5Digest: interop.Pointer;
+declare const kColorSyncProfileMD5Digest: interop.Object;
 
-declare const kColorSyncSigBToA1Tag: interop.Pointer;
+declare const kColorSyncSigAToB1Tag: interop.Object;
 
-declare const kColorSyncRenderingIntentPerceptual: interop.Pointer;
+declare const kColorSyncSigRgbData: interop.Object;
 
-declare const kColorSyncSigViewingConditionsTag: interop.Pointer;
+declare const kColorSyncSigPreview1Tag: interop.Object;
 
-declare const kColorSyncSigAToB2Tag: interop.Pointer;
+declare const kColorSyncWebSafeColorsProfile: interop.Object;
 
-declare const kColorSyncSigPreview0Tag: interop.Pointer;
+declare const kColorSyncSigDeviceModelDescTag: interop.Object;
 
-declare const kColorSyncConversionBPC: interop.Pointer;
+declare const kColorSyncSigBToA2Tag: interop.Object;
 
-declare const kColorSyncSigXYZData: interop.Pointer;
+declare const kColorSyncFixedPointRange: interop.Object;
 
-declare const kColorSyncSigPreview1Tag: interop.Pointer;
+declare const kColorSyncConversionParamCurve4: interop.Object;
 
-declare const kColorSyncFixedPointRange: interop.Pointer;
+declare const kColorSyncRenderingIntentRelative: interop.Object;
 
-declare const kColorSyncConversionParamCurve4: interop.Pointer;
+declare const kColorSyncSigGrayTRCTag: interop.Object;
 
-declare const kColorSyncRenderingIntentRelative: interop.Pointer;
+declare const kColorSyncTransformGamutCheck: interop.Object;
 
-declare const kColorSyncSigGrayTRCTag: interop.Pointer;
+declare const kColorSyncSigColorSpaceClass: interop.Object;
 
-declare const kColorSyncTransformGamutCheck: interop.Pointer;
-
-declare const kColorSyncSigColorSpaceClass: interop.Pointer;
-
-declare const kColorSyncSigRedColorantTag: interop.Pointer;
+declare const kColorSyncSigRedColorantTag: interop.Object;
 
 declare const kColorSyncByteOrder32Big: number;
 
-declare const kColorSyncSigRedTRCTag: interop.Pointer;
+declare const kColorSyncSigRedTRCTag: interop.Object;
 
-declare const kColorSyncHLGDerivative: interop.Pointer;
+declare const kColorSyncGenericLabProfile: interop.Object;
+
+declare const kColorSyncHLGDerivative: interop.Object;
+
+declare const kColorSyncSigProfileDescriptionTag: interop.Object;
 
 declare const ColorSyncAlphaInfo: {
   None: 0,
@@ -272,63 +272,65 @@ declare class ColorSyncMD5 {
 
 declare function ColorSyncProfileGetTypeID(): number;
 
-declare function ColorSyncProfileCreate(data: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCreate(data: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ColorSyncProfileCreateWithURL(url: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCreateWithURL(url: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ColorSyncProfileCreateWithName(name: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCreateWithName(name: interop.Object): interop.Object;
 
-declare function ColorSyncProfileCreateMutable(): interop.Pointer;
+declare function ColorSyncProfileCreateMutable(): interop.Object;
 
-declare function ColorSyncProfileCreateMutableCopy(prof: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCreateMutableCopy(prof: interop.Object): interop.Object;
 
-declare function ColorSyncProfileCreateLink(profileInfo: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCreateLink(profileInfo: interop.Object, options: interop.Object): interop.Object;
 
-declare function ColorSyncProfileVerify(prof: interop.PointerConvertible, errors: interop.PointerConvertible, warnings: interop.PointerConvertible): boolean;
+declare function ColorSyncProfileVerify(prof: interop.Object, errors: interop.PointerConvertible, warnings: interop.PointerConvertible): boolean;
 
-declare function ColorSyncProfileIsWideGamut(p1: interop.PointerConvertible): boolean;
+declare function ColorSyncProfileIsWideGamut(p1: interop.Object): boolean;
 
-declare function ColorSyncProfileIsMatrixBased(p1: interop.PointerConvertible): boolean;
+declare function ColorSyncProfileIsMatrixBased(p1: interop.Object): boolean;
 
-declare function ColorSyncProfileIsPQBased(p1: interop.PointerConvertible): boolean;
+declare function ColorSyncProfileIsPQBased(p1: interop.Object): boolean;
 
-declare function ColorSyncProfileIsHLGBased(p1: interop.PointerConvertible): boolean;
+declare function ColorSyncProfileIsHLGBased(p1: interop.Object): boolean;
 
-declare function ColorSyncProfileGetMD5(prof: interop.PointerConvertible): ColorSyncMD5;
+declare function ColorSyncProfileGetMD5(prof: interop.Object): ColorSyncMD5;
 
-declare function ColorSyncProfileCopyData(prof: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCopyData(prof: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ColorSyncProfileGetURL(prof: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileGetURL(prof: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ColorSyncProfileCopyHeader(prof: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCopyHeader(prof: interop.Object): interop.Object;
 
-declare function ColorSyncProfileSetHeader(prof: interop.PointerConvertible, header: interop.PointerConvertible): void;
+declare function ColorSyncProfileSetHeader(prof: interop.Object, header: interop.Object): void;
 
-declare function ColorSyncProfileCopyDescriptionString(prof: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCopyDescriptionString(prof: interop.Object): interop.Object;
 
-declare function ColorSyncProfileCopyTagSignatures(prof: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCopyTagSignatures(prof: interop.Object): interop.Object;
 
-declare function ColorSyncProfileContainsTag(prof: interop.PointerConvertible, signature: interop.PointerConvertible): boolean;
+declare function ColorSyncProfileContainsTag(prof: interop.Object, signature: interop.Object): boolean;
 
-declare function ColorSyncProfileCopyTag(prof: interop.PointerConvertible, signature: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncProfileCopyTag(prof: interop.Object, signature: interop.Object): interop.Object;
 
-declare function ColorSyncProfileSetTag(prof: interop.PointerConvertible, signature: interop.PointerConvertible, data: interop.PointerConvertible): void;
+declare function ColorSyncProfileSetTag(prof: interop.Object, signature: interop.Object, data: interop.Object): void;
 
-declare function ColorSyncProfileRemoveTag(prof: interop.PointerConvertible, signature: interop.PointerConvertible): void;
+declare function ColorSyncProfileRemoveTag(prof: interop.Object, signature: interop.Object): void;
 
 declare function ColorSyncIterateInstalledProfiles(callBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => boolean, seed: interop.PointerConvertible, userInfo: interop.PointerConvertible, error: interop.PointerConvertible): void;
 
 declare function ColorSyncTransformGetTypeID(): number;
 
-declare function ColorSyncTransformCreate(profileSequence: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncTransformCreate(profileSequence: interop.Object, options: interop.Object): interop.Object;
 
-declare function ColorSyncTransformCopyProperty(transform: interop.PointerConvertible, key: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncTransformCopyProperty(transform: interop.Object, key: interop.Object, options: interop.Object): interop.Object;
 
-declare function ColorSyncTransformSetProperty(transform: interop.PointerConvertible, key: interop.PointerConvertible, property: interop.PointerConvertible): void;
+declare function ColorSyncTransformSetProperty(transform: interop.Object, key: interop.Object, property: interop.Object): void;
 
-declare function ColorSyncTransformGetProfileSequence(transform: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncTransformGetProfileSequence(transform: interop.Object): interop.Object;
 
-declare function ColorSyncTransformConvert(transform: interop.PointerConvertible, width: number, height: number, dst: interop.PointerConvertible, dstDepth: interop.Enum<typeof ColorSyncDataDepth>, dstLayout: number, dstBytesPerRow: number, src: interop.PointerConvertible, srcDepth: interop.Enum<typeof ColorSyncDataDepth>, srcLayout: number, srcBytesPerRow: number, options: interop.PointerConvertible): boolean;
+declare function ColorSyncTransformConvert(transform: interop.Object, width: number, height: number, dst: interop.PointerConvertible, dstDepth: interop.Enum<typeof ColorSyncDataDepth>, dstLayout: number, dstBytesPerRow: number, src: interop.PointerConvertible, srcDepth: interop.Enum<typeof ColorSyncDataDepth>, srcLayout: number, srcBytesPerRow: number, options: interop.Object): boolean;
 
-declare function ColorSyncCreateCodeFragment(profileSequence: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function ColorSyncCreateCodeFragment(profileSequence: interop.Object, options: interop.Object): interop.Object;
+
+declare function ColorSyncAPIVersion(): number;
 

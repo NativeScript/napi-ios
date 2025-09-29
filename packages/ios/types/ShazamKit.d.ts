@@ -193,22 +193,6 @@ declare class SHSignatureGenerator extends NSObject {
   signature(): SHSignature;
 }
 
-declare class SHMatchedMediaItem extends SHMediaItem implements NSSecureCoding {
-  readonly frequencySkew: number;
-
-  readonly matchOffset: number;
-
-  readonly predictedCurrentMatchOffset: number;
-
-  readonly confidence: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class SHCustomCatalog extends SHCatalog {
   readonly dataRepresentation: NSData;
 
@@ -223,5 +207,21 @@ declare class SHCustomCatalog extends SHCatalog {
   init(): this;
 
   initWithDataRepresentationError(dataRepresentation: NSData, error: interop.PointerConvertible): this;
+}
+
+declare class SHMatchedMediaItem extends SHMediaItem implements NSSecureCoding {
+  readonly frequencySkew: number;
+
+  readonly matchOffset: number;
+
+  readonly predictedCurrentMatchOffset: number;
+
+  readonly confidence: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

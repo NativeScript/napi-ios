@@ -541,7 +541,7 @@ declare function nw_error_get_error_domain(error: NSObject): interop.Enum<typeof
 
 declare function nw_error_get_error_code(error: NSObject): number;
 
-declare function nw_error_copy_cf_error(error: NSObject): interop.Pointer;
+declare function nw_error_copy_cf_error(error: NSObject): interop.Object;
 
 declare function nw_browser_create(descriptor: NSObject, parameters: NSObject): NSObject;
 
@@ -1137,6 +1137,12 @@ declare interface OS_nw_interface extends NSObjectProtocol {
 declare class OS_nw_interface extends NativeObject implements OS_nw_interface {
 }
 
+declare interface OS_nw_listener extends NSObjectProtocol {
+}
+
+declare class OS_nw_listener extends NativeObject implements OS_nw_listener {
+}
+
 declare interface OS_nw_protocol_definition extends NSObjectProtocol {
 }
 
@@ -1195,12 +1201,6 @@ declare interface OS_nw_ethernet_channel extends NSObjectProtocol {
 }
 
 declare class OS_nw_ethernet_channel extends NativeObject implements OS_nw_ethernet_channel {
-}
-
-declare interface OS_nw_listener extends NSObjectProtocol {
-}
-
-declare class OS_nw_listener extends NativeObject implements OS_nw_listener {
 }
 
 declare interface OS_nw_connection extends NSObjectProtocol {

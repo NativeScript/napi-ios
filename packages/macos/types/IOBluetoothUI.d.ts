@@ -24,40 +24,6 @@ declare function IOBluetoothGetPairingController(): interop.Object;
 
 declare function IOBluetoothGetDeviceSelectorController(): interop.Object;
 
-declare class IOBluetoothPairingController extends NSWindowController {
-  static pairingController(): IOBluetoothPairingController;
-
-  runModal(): number;
-
-  getResults(): NSArray;
-
-  setOptions(options: number): void;
-
-  getOptions(): number;
-
-  setSearchAttributes(searchAttributes: interop.PointerConvertible): void;
-
-  getSearchAttributes(): interop.Pointer;
-
-  addAllowedUUID(allowedUUID: IOBluetoothSDPUUID): void;
-
-  addAllowedUUIDArray(allowedUUIDArray: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  clearAllowedUUIDs(): void;
-
-  setTitle(windowTitle: string): void;
-
-  getTitle(): string;
-
-  setDescriptionText(descriptionText: string): void;
-
-  getDescriptionText(): string;
-
-  setPrompt(prompt: string): void;
-
-  getPrompt(): string;
-}
-
 declare class IOBluetoothServiceBrowserController extends NSWindowController {
   static serviceBrowserController(inOptions: number): IOBluetoothServiceBrowserController;
 
@@ -131,6 +97,40 @@ declare class IOBluetoothObjectPushUIController extends NSWindowController {
   getDevice(): IOBluetoothDevice;
 
   isTransferInProgress(): boolean;
+}
+
+declare class IOBluetoothPairingController extends NSWindowController {
+  static pairingController(): IOBluetoothPairingController;
+
+  runModal(): number;
+
+  getResults(): NSArray;
+
+  setOptions(options: number): void;
+
+  getOptions(): number;
+
+  setSearchAttributes(searchAttributes: interop.PointerConvertible): void;
+
+  getSearchAttributes(): interop.Pointer;
+
+  addAllowedUUID(allowedUUID: IOBluetoothSDPUUID): void;
+
+  addAllowedUUIDArray(allowedUUIDArray: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  clearAllowedUUIDs(): void;
+
+  setTitle(windowTitle: string): void;
+
+  getTitle(): string;
+
+  setDescriptionText(descriptionText: string): void;
+
+  getDescriptionText(): string;
+
+  setPrompt(prompt: string): void;
+
+  getPrompt(): string;
 }
 
 declare class IOBluetoothAccessibilityIgnoredTextFieldCell extends NSTextFieldCell {

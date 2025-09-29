@@ -1,11 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kCGImagePropertyPNGDescription: interop.Pointer;
-
-declare const kCGImagePropertyExifSaturation: interop.Pointer;
-
-declare const kCGImagePropertyGroupMonoscopicImageLocation: interop.Pointer;
-
 declare const kCGImagePropertyDNGDefaultUserCrop: interop.Pointer;
 
 declare const kCGImagePropertyDNGLocalizedCameraModel: interop.Pointer;
@@ -42,6 +36,8 @@ declare const kCGImagePropertyExifSubsecTime: interop.Pointer;
 
 declare const kCGImagePropertyCIFFMeteringMode: interop.Pointer;
 
+declare const kCGImagePropertyPNGDescription: interop.Pointer;
+
 declare const kCGImagePropertyDNGCurrentICCProfile: interop.Pointer;
 
 declare const kCGImagePropertyDNGNewRawImageDigest: interop.Pointer;
@@ -54,7 +50,7 @@ declare const kCGImagePropertyIPTCDictionary: interop.Pointer;
 
 declare const kCGImagePropertyPNGPixelsAspectRatio: interop.Pointer;
 
-declare const kCGImagePropertyDNGChromaBlurRadius: interop.Pointer;
+declare const kCGImagePropertyDNGProfileCalibrationSignature: interop.Pointer;
 
 declare const kCGImagePropertyIPTCCredit: interop.Pointer;
 
@@ -72,6 +68,10 @@ declare const kCGImagePropertyAPNGUnclampedDelayTime: interop.Pointer;
 
 declare const kCGImagePropertyExifApertureValue: interop.Pointer;
 
+declare const kCGImagePropertyDNGChromaBlurRadius: interop.Pointer;
+
+declare const kCGImagePropertyIPTCExtTranscriptLinkLinkQualifier: interop.Pointer;
+
 declare const kCGImagePropertyDNGProfileCopyright: interop.Pointer;
 
 declare const kCGImagePropertyExifPixelYDimension: interop.Pointer;
@@ -79,8 +79,6 @@ declare const kCGImagePropertyExifPixelYDimension: interop.Pointer;
 declare const kCGImagePropertyExifSubjectDistRange: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtSeriesIdentifier: interop.Pointer;
-
-declare const kCGImagePropertyExifCompressedBitsPerPixel: interop.Pointer;
 
 declare const kCGImageSourceDecodeToSDR: interop.Pointer;
 
@@ -99,6 +97,8 @@ declare const kCGImagePropertyIPTCExtDataOnScreenRegionW: interop.Pointer;
 declare const kCGImagePropertyJFIFDensityUnit: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtPersonInImageDescription: interop.Pointer;
+
+declare const kCGImageAnimationLoopCount: interop.Pointer;
 
 declare const kCGImagePropertyExifColorSpace: interop.Pointer;
 
@@ -191,8 +191,6 @@ declare const kCGImagePropertyIPTCExtPersonInImageCharacteristic: interop.Pointe
 declare const kCGImagePropertyIPTCExtArtworkPhysicalDescription: interop.Pointer;
 
 declare const kCGImagePropertyHasAlpha: interop.Pointer;
-
-declare const kCGImagePropertyIPTCExtTranscriptLinkLinkQualifier: interop.Pointer;
 
 declare const kCGImagePropertyHeight: interop.Pointer;
 
@@ -758,11 +756,11 @@ declare const kCGImagePropertyExifImageUniqueID: interop.Pointer;
 
 declare const kCGImagePropertyExifDeviceSettingDescription: interop.Pointer;
 
+declare const kCGImagePropertyExifSaturation: interop.Pointer;
+
 declare const kCGImagePropertyExifSceneCaptureType: interop.Pointer;
 
 declare const kCGImagePropertyExifExposureMode: interop.Pointer;
-
-declare const kCGImageAnimationLoopCount: interop.Pointer;
 
 declare const kCGImagePropertyExifCFAPattern: interop.Pointer;
 
@@ -791,6 +789,8 @@ declare const kCGImagePropertyExifSubjectArea: interop.Pointer;
 declare const kCGImagePropertyExifMaxApertureValue: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtRatingRegionLocationName: interop.Pointer;
+
+declare const kCGImagePropertyExifCompressedBitsPerPixel: interop.Pointer;
 
 declare const kCGImagePropertyExifOffsetTimeDigitized: interop.Pointer;
 
@@ -918,9 +918,9 @@ declare const kCGImageSourceShouldCache: interop.Pointer;
 
 declare const kCGImageSourceTypeIdentifierHint: interop.Pointer;
 
-declare const kCFErrorDomainCGImageMetadata: interop.Pointer;
+declare const kCFErrorDomainCGImageMetadata: interop.Object;
 
-declare const kCGImageMetadataEnumerateRecursively: interop.Pointer;
+declare const kCGImageMetadataEnumerateRecursively: interop.Object;
 
 declare const kCGImageMetadataNamespaceIPTCExtension: interop.Pointer;
 
@@ -1081,8 +1081,6 @@ declare const kCGImagePropertyDNGOpcodeList3: interop.Pointer;
 declare const kCGImagePropertyIPTCExtLocationShown: interop.Pointer;
 
 declare const kCGImagePropertyMakerNikonQuality: interop.Pointer;
-
-declare const kCGImagePropertyDNGProfileCalibrationSignature: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtArtworkCreator: interop.Pointer;
 
@@ -1400,6 +1398,8 @@ declare const kCGImagePropertyMakerNikonLensAdapter: interop.Pointer;
 
 declare const kCGImagePropertyCIFFReleaseMethod: interop.Pointer;
 
+declare const kCGImagePropertyGroupMonoscopicImageLocation: interop.Pointer;
+
 declare const kCGImagePropertyIPTCExtContributorIdentifier: interop.Pointer;
 
 declare const kCGImagePropertyGIFLoopCount: interop.Pointer;
@@ -1570,117 +1570,117 @@ declare class CGImageMetadata {
 
 declare function CGImageMetadataGetTypeID(): number;
 
-declare function CGImageMetadataCreateMutable(): interop.Pointer;
+declare function CGImageMetadataCreateMutable(): interop.Object;
 
-declare function CGImageMetadataCreateMutableCopy(metadata: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCreateMutableCopy(metadata: interop.Object): interop.Object;
 
 declare function CGImageMetadataTagGetTypeID(): number;
 
-declare function CGImageMetadataTagCreate(xmlns: interop.PointerConvertible, prefix: interop.PointerConvertible, name: interop.PointerConvertible, type: interop.Enum<typeof CGImageMetadataType>, value: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataTagCreate(xmlns: interop.Object, prefix: interop.Object, name: interop.Object, type: interop.Enum<typeof CGImageMetadataType>, value: interop.Object): interop.Object;
 
-declare function CGImageMetadataTagCopyNamespace(tag: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataTagCopyNamespace(tag: interop.Object): interop.Object;
 
-declare function CGImageMetadataTagCopyPrefix(tag: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataTagCopyPrefix(tag: interop.Object): interop.Object;
 
-declare function CGImageMetadataTagCopyName(tag: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataTagCopyName(tag: interop.Object): interop.Object;
 
-declare function CGImageMetadataTagCopyValue(tag: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataTagCopyValue(tag: interop.Object): interop.Object;
 
-declare function CGImageMetadataTagGetType(tag: interop.PointerConvertible): interop.Enum<typeof CGImageMetadataType>;
+declare function CGImageMetadataTagGetType(tag: interop.Object): interop.Enum<typeof CGImageMetadataType>;
 
-declare function CGImageMetadataTagCopyQualifiers(tag: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataTagCopyQualifiers(tag: interop.Object): interop.Object;
 
-declare function CGImageMetadataCopyTags(metadata: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCopyTags(metadata: interop.Object): interop.Object;
 
-declare function CGImageMetadataCopyTagWithPath(metadata: interop.PointerConvertible, parent: interop.PointerConvertible, path: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCopyTagWithPath(metadata: interop.Object, parent: interop.Object, path: interop.Object): interop.Object;
 
-declare function CGImageMetadataCopyStringValueWithPath(metadata: interop.PointerConvertible, parent: interop.PointerConvertible, path: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCopyStringValueWithPath(metadata: interop.Object, parent: interop.Object, path: interop.Object): interop.Object;
 
-declare function CGImageMetadataRegisterNamespaceForPrefix(metadata: interop.PointerConvertible, xmlns: interop.PointerConvertible, prefix: interop.PointerConvertible, err: interop.PointerConvertible): boolean;
+declare function CGImageMetadataRegisterNamespaceForPrefix(metadata: interop.Object, xmlns: interop.Object, prefix: interop.Object, err: interop.PointerConvertible): boolean;
 
-declare function CGImageMetadataSetTagWithPath(metadata: interop.PointerConvertible, parent: interop.PointerConvertible, path: interop.PointerConvertible, tag: interop.PointerConvertible): boolean;
+declare function CGImageMetadataSetTagWithPath(metadata: interop.Object, parent: interop.Object, path: interop.Object, tag: interop.Object): boolean;
 
-declare function CGImageMetadataSetValueWithPath(metadata: interop.PointerConvertible, parent: interop.PointerConvertible, path: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+declare function CGImageMetadataSetValueWithPath(metadata: interop.Object, parent: interop.Object, path: interop.Object, value: interop.Object): boolean;
 
-declare function CGImageMetadataRemoveTagWithPath(metadata: interop.PointerConvertible, parent: interop.PointerConvertible, path: interop.PointerConvertible): boolean;
+declare function CGImageMetadataRemoveTagWithPath(metadata: interop.Object, parent: interop.Object, path: interop.Object): boolean;
 
-declare function CGImageMetadataEnumerateTagsUsingBlock(metadata: interop.PointerConvertible, rootPath: interop.PointerConvertible, options: interop.PointerConvertible, block: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => boolean): void;
+declare function CGImageMetadataEnumerateTagsUsingBlock(metadata: interop.Object, rootPath: interop.Object, options: interop.Object, block: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => boolean): void;
 
-declare function CGImageMetadataCopyTagMatchingImageProperty(metadata: interop.PointerConvertible, dictionaryName: interop.PointerConvertible, propertyName: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCopyTagMatchingImageProperty(metadata: interop.Object, dictionaryName: interop.Object, propertyName: interop.Object): interop.Object;
 
-declare function CGImageMetadataSetValueMatchingImageProperty(metadata: interop.PointerConvertible, dictionaryName: interop.PointerConvertible, propertyName: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+declare function CGImageMetadataSetValueMatchingImageProperty(metadata: interop.Object, dictionaryName: interop.Object, propertyName: interop.Object, value: interop.Object): boolean;
 
-declare function CGImageMetadataCreateXMPData(metadata: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCreateXMPData(metadata: interop.Object, options: interop.Object): interop.Object;
 
-declare function CGImageMetadataCreateFromXMPData(data: interop.PointerConvertible): interop.Pointer;
+declare function CGImageMetadataCreateFromXMPData(data: interop.Object): interop.Object;
 
 declare function CGImageSourceGetTypeID(): number;
 
-declare function CGImageSourceCopyTypeIdentifiers(): interop.Pointer;
+declare function CGImageSourceCopyTypeIdentifiers(): interop.Object;
 
-declare function CGImageSourceCreateWithDataProvider(provider: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCreateWithDataProvider(provider: interop.Object, options: interop.Object): interop.Object;
 
-declare function CGImageSourceCreateWithData(data: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCreateWithData(data: interop.Object, options: interop.Object): interop.Object;
 
-declare function CGImageSourceCreateWithURL(url: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCreateWithURL(url: interop.Object, options: interop.Object): interop.Object;
 
-declare function CGImageSourceGetType(isrc: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceGetType(isrc: interop.Object): interop.Object;
 
-declare function CGImageSourceGetCount(isrc: interop.PointerConvertible): number;
+declare function CGImageSourceGetCount(isrc: interop.Object): number;
 
-declare function CGImageSourceCopyProperties(isrc: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCopyProperties(isrc: interop.Object, options: interop.Object): interop.Object;
 
-declare function CGImageSourceCopyPropertiesAtIndex(isrc: interop.PointerConvertible, index: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCopyPropertiesAtIndex(isrc: interop.Object, index: number, options: interop.Object): interop.Object;
 
-declare function CGImageSourceCopyMetadataAtIndex(isrc: interop.PointerConvertible, index: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCopyMetadataAtIndex(isrc: interop.Object, index: number, options: interop.Object): interop.Object;
 
-declare function CGImageSourceCreateImageAtIndex(isrc: interop.PointerConvertible, index: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCreateImageAtIndex(isrc: interop.Object, index: number, options: interop.Object): interop.Object;
 
-declare function CGImageSourceRemoveCacheAtIndex(isrc: interop.PointerConvertible, index: number): void;
+declare function CGImageSourceRemoveCacheAtIndex(isrc: interop.Object, index: number): void;
 
-declare function CGImageSourceCreateThumbnailAtIndex(isrc: interop.PointerConvertible, index: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCreateThumbnailAtIndex(isrc: interop.Object, index: number, options: interop.Object): interop.Object;
 
-declare function CGImageSourceCreateIncremental(options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCreateIncremental(options: interop.Object): interop.Object;
 
-declare function CGImageSourceUpdateData(isrc: interop.PointerConvertible, data: interop.PointerConvertible, final: boolean): void;
+declare function CGImageSourceUpdateData(isrc: interop.Object, data: interop.Object, final: boolean): void;
 
-declare function CGImageSourceUpdateDataProvider(isrc: interop.PointerConvertible, provider: interop.PointerConvertible, final: boolean): void;
+declare function CGImageSourceUpdateDataProvider(isrc: interop.Object, provider: interop.Object, final: boolean): void;
 
-declare function CGImageSourceGetStatus(isrc: interop.PointerConvertible): interop.Enum<typeof CGImageSourceStatus>;
+declare function CGImageSourceGetStatus(isrc: interop.Object): interop.Enum<typeof CGImageSourceStatus>;
 
-declare function CGImageSourceGetStatusAtIndex(isrc: interop.PointerConvertible, index: number): interop.Enum<typeof CGImageSourceStatus>;
+declare function CGImageSourceGetStatusAtIndex(isrc: interop.Object, index: number): interop.Enum<typeof CGImageSourceStatus>;
 
-declare function CGImageSourceGetPrimaryImageIndex(isrc: interop.PointerConvertible): number;
+declare function CGImageSourceGetPrimaryImageIndex(isrc: interop.Object): number;
 
-declare function CGImageSourceCopyAuxiliaryDataInfoAtIndex(isrc: interop.PointerConvertible, index: number, auxiliaryImageDataType: interop.PointerConvertible): interop.Pointer;
+declare function CGImageSourceCopyAuxiliaryDataInfoAtIndex(isrc: interop.Object, index: number, auxiliaryImageDataType: interop.Object): interop.Object;
 
-declare function CGImageSourceSetAllowableTypes(allowableTypes: interop.PointerConvertible): number;
+declare function CGImageSourceSetAllowableTypes(allowableTypes: interop.Object): number;
 
 declare function CGImageDestinationGetTypeID(): number;
 
-declare function CGImageDestinationCopyTypeIdentifiers(): interop.Pointer;
+declare function CGImageDestinationCopyTypeIdentifiers(): interop.Object;
 
-declare function CGImageDestinationCreateWithDataConsumer(consumer: interop.PointerConvertible, type: interop.PointerConvertible, count: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageDestinationCreateWithDataConsumer(consumer: interop.Object, type: interop.Object, count: number, options: interop.Object): interop.Object;
 
-declare function CGImageDestinationCreateWithData(data: interop.PointerConvertible, type: interop.PointerConvertible, count: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageDestinationCreateWithData(data: interop.Object, type: interop.Object, count: number, options: interop.Object): interop.Object;
 
-declare function CGImageDestinationCreateWithURL(url: interop.PointerConvertible, type: interop.PointerConvertible, count: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CGImageDestinationCreateWithURL(url: interop.Object, type: interop.Object, count: number, options: interop.Object): interop.Object;
 
-declare function CGImageDestinationSetProperties(idst: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function CGImageDestinationSetProperties(idst: interop.Object, properties: interop.Object): void;
 
-declare function CGImageDestinationAddImage(idst: interop.PointerConvertible, image: interop.PointerConvertible, properties: interop.PointerConvertible): void;
+declare function CGImageDestinationAddImage(idst: interop.Object, image: interop.Object, properties: interop.Object): void;
 
-declare function CGImageDestinationAddImageFromSource(idst: interop.PointerConvertible, isrc: interop.PointerConvertible, index: number, properties: interop.PointerConvertible): void;
+declare function CGImageDestinationAddImageFromSource(idst: interop.Object, isrc: interop.Object, index: number, properties: interop.Object): void;
 
-declare function CGImageDestinationFinalize(idst: interop.PointerConvertible): boolean;
+declare function CGImageDestinationFinalize(idst: interop.Object): boolean;
 
-declare function CGImageDestinationAddImageAndMetadata(idst: interop.PointerConvertible, image: interop.PointerConvertible, metadata: interop.PointerConvertible, options: interop.PointerConvertible): void;
+declare function CGImageDestinationAddImageAndMetadata(idst: interop.Object, image: interop.Object, metadata: interop.Object, options: interop.Object): void;
 
-declare function CGImageDestinationCopyImageSource(idst: interop.PointerConvertible, isrc: interop.PointerConvertible, options: interop.PointerConvertible, err: interop.PointerConvertible): boolean;
+declare function CGImageDestinationCopyImageSource(idst: interop.Object, isrc: interop.Object, options: interop.Object, err: interop.PointerConvertible): boolean;
 
-declare function CGImageDestinationAddAuxiliaryDataInfo(idst: interop.PointerConvertible, auxiliaryImageDataType: interop.PointerConvertible, auxiliaryDataInfoDictionary: interop.PointerConvertible): void;
+declare function CGImageDestinationAddAuxiliaryDataInfo(idst: interop.Object, auxiliaryImageDataType: interop.Object, auxiliaryDataInfoDictionary: interop.Object): void;
 
-declare function CGAnimateImageAtURLWithBlock(url: interop.PointerConvertible, options: interop.PointerConvertible, block: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): number;
+declare function CGAnimateImageAtURLWithBlock(url: interop.Object, options: interop.Object, block: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): number;
 
-declare function CGAnimateImageDataWithBlock(data: interop.PointerConvertible, options: interop.PointerConvertible, block: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): number;
+declare function CGAnimateImageDataWithBlock(data: interop.Object, options: interop.Object, block: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): number;
 

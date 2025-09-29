@@ -92,68 +92,22 @@ declare interface MCSessionDelegate extends NSObjectProtocol {
 declare class MCSessionDelegate extends NativeObject implements MCSessionDelegate {
 }
 
-declare class MCNearbyServiceBrowser extends NSObject {
-  initWithPeerServiceType(myPeerID: MCPeerID, serviceType: string): this;
+declare class MCAdvertiserAssistant extends NSObject {
+  initWithServiceTypeDiscoveryInfoSession(serviceType: string, info: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, session: MCSession): this;
 
-  startBrowsingForPeers(): void;
+  start(): void;
 
-  stopBrowsingForPeers(): void;
+  stop(): void;
 
-  invitePeerToSessionWithContextTimeout(peerID: MCPeerID, session: MCSession, context: NSData | null, timeout: number): void;
+  delegate: MCAdvertiserAssistantDelegate;
 
-  delegate: MCNearbyServiceBrowserDelegate;
+  readonly session: MCSession;
 
-  readonly myPeerID: MCPeerID;
+  readonly discoveryInfo: NSDictionary;
 
   readonly serviceType: string;
 
-  setDelegate(delegate: MCNearbyServiceBrowserDelegate | null): void;
-}
-
-declare class MCSession extends NSObject {
-  initWithPeer(myPeerID: MCPeerID): this;
-
-  initWithPeerSecurityIdentityEncryptionPreference(myPeerID: MCPeerID, identity: NSArray<interop.Object> | Array<interop.Object> | null, encryptionPreference: interop.Enum<typeof MCEncryptionPreference>): this;
-
-  sendDataToPeersWithModeError(data: NSData, peerIDs: NSArray<interop.Object> | Array<interop.Object>, mode: interop.Enum<typeof MCSessionSendDataMode>, error: interop.PointerConvertible): boolean;
-
-  disconnect(): void;
-
-  sendResourceAtURLWithNameToPeerWithCompletionHandler(resourceURL: NSURL, resourceName: string, peerID: MCPeerID, completionHandler: (p1: NSError) => void | null): NSProgress;
-
-  startStreamWithNameToPeerError(streamName: string, peerID: MCPeerID, error: interop.PointerConvertible): NSOutputStream;
-
-  delegate: MCSessionDelegate;
-
-  readonly myPeerID: MCPeerID;
-
-  readonly securityIdentity: NSArray;
-
-  readonly encryptionPreference: interop.Enum<typeof MCEncryptionPreference>;
-
-  readonly connectedPeers: NSArray;
-
-  setDelegate(delegate: MCSessionDelegate | null): void;
-
-  nearbyConnectionDataForPeerWithCompletionHandler(peerID: MCPeerID, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
-
-  connectPeerWithNearbyConnectionData(peerID: MCPeerID, data: NSData): void;
-
-  cancelConnectPeer(peerID: MCPeerID): void;
-}
-
-declare class MCPeerID extends NSObject implements NSCopying, NSSecureCoding {
-  initWithDisplayName(myDisplayName: string): this;
-
-  readonly displayName: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  setDelegate(delegate: MCAdvertiserAssistantDelegate | null): void;
 }
 
 declare class MCBrowserViewController extends UIViewController implements MCNearbyServiceBrowserDelegate {
@@ -224,6 +178,38 @@ declare class MCBrowserViewController extends UIViewController implements MCNear
   readonly debugDescription: string;
 }
 
+declare class MCNearbyServiceBrowser extends NSObject {
+  initWithPeerServiceType(myPeerID: MCPeerID, serviceType: string): this;
+
+  startBrowsingForPeers(): void;
+
+  stopBrowsingForPeers(): void;
+
+  invitePeerToSessionWithContextTimeout(peerID: MCPeerID, session: MCSession, context: NSData | null, timeout: number): void;
+
+  delegate: MCNearbyServiceBrowserDelegate;
+
+  readonly myPeerID: MCPeerID;
+
+  readonly serviceType: string;
+
+  setDelegate(delegate: MCNearbyServiceBrowserDelegate | null): void;
+}
+
+declare class MCPeerID extends NSObject implements NSCopying, NSSecureCoding {
+  initWithDisplayName(myDisplayName: string): this;
+
+  readonly displayName: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class MCNearbyServiceAdvertiser extends NSObject {
   initWithPeerDiscoveryInfoServiceType(myPeerID: MCPeerID, info: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, serviceType: string): this;
 
@@ -242,21 +228,35 @@ declare class MCNearbyServiceAdvertiser extends NSObject {
   setDelegate(delegate: MCNearbyServiceAdvertiserDelegate | null): void;
 }
 
-declare class MCAdvertiserAssistant extends NSObject {
-  initWithServiceTypeDiscoveryInfoSession(serviceType: string, info: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, session: MCSession): this;
+declare class MCSession extends NSObject {
+  initWithPeer(myPeerID: MCPeerID): this;
 
-  start(): void;
+  initWithPeerSecurityIdentityEncryptionPreference(myPeerID: MCPeerID, identity: NSArray<interop.Object> | Array<interop.Object> | null, encryptionPreference: interop.Enum<typeof MCEncryptionPreference>): this;
 
-  stop(): void;
+  sendDataToPeersWithModeError(data: NSData, peerIDs: NSArray<interop.Object> | Array<interop.Object>, mode: interop.Enum<typeof MCSessionSendDataMode>, error: interop.PointerConvertible): boolean;
 
-  delegate: MCAdvertiserAssistantDelegate;
+  disconnect(): void;
 
-  readonly session: MCSession;
+  sendResourceAtURLWithNameToPeerWithCompletionHandler(resourceURL: NSURL, resourceName: string, peerID: MCPeerID, completionHandler: (p1: NSError) => void | null): NSProgress;
 
-  readonly discoveryInfo: NSDictionary;
+  startStreamWithNameToPeerError(streamName: string, peerID: MCPeerID, error: interop.PointerConvertible): NSOutputStream;
 
-  readonly serviceType: string;
+  delegate: MCSessionDelegate;
 
-  setDelegate(delegate: MCAdvertiserAssistantDelegate | null): void;
+  readonly myPeerID: MCPeerID;
+
+  readonly securityIdentity: NSArray;
+
+  readonly encryptionPreference: interop.Enum<typeof MCEncryptionPreference>;
+
+  readonly connectedPeers: NSArray;
+
+  setDelegate(delegate: MCSessionDelegate | null): void;
+
+  nearbyConnectionDataForPeerWithCompletionHandler(peerID: MCPeerID, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
+
+  connectPeerWithNearbyConnectionData(peerID: MCPeerID, data: NSData): void;
+
+  cancelConnectPeer(peerID: MCPeerID): void;
 }
 

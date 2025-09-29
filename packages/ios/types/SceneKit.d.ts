@@ -14,6 +14,8 @@ declare const SCNLightTypeProbe: string;
 
 declare const SCNSceneSourceConvertToYUpKey: string;
 
+declare const SCNParticlePropertyFrame: string;
+
 declare const SCNShaderModifierEntryPointFragment: string;
 
 declare const SCNGeometrySourceSemanticBoneIndices: string;
@@ -166,8 +168,6 @@ declare const SCNHitTestIgnoreHiddenNodesKey: string;
 
 declare const SCNSceneStartTimeAttributeKey: string;
 
-declare const SCNParticlePropertyFrame: string;
-
 declare const SCNPhysicsTestSearchModeClosest: string;
 
 declare const SCNPhysicsTestBackfaceCullingKey: string;
@@ -241,6 +241,11 @@ declare const SCNSceneSourceAnimationImportPolicyKey: string;
 declare const SCNLightingModelBlinn: string;
 
 declare const SCNHitTestFirstFoundOnlyKey: string;
+
+declare const SCNLightProbeType: {
+  Irradiance: 0,
+  Radiance: 1,
+};
 
 declare const SCNPhysicsFieldScope: {
   Inside: 0,
@@ -324,11 +329,6 @@ declare const SCNCullMode: {
 declare const SCNLightAreaType: {
   Rectangle: 1,
   Polygon: 4,
-};
-
-declare const SCNLightProbeType: {
-  Irradiance: 0,
-  Radiance: 1,
 };
 
 declare const SCNMovabilityHint: {
@@ -691,7 +691,7 @@ declare interface SCNSceneRenderer extends NSObjectProtocol {
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 
@@ -1022,6 +1022,38 @@ declare class SCNTechnique extends NSObject implements SCNAnimatable, NSCopying,
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class SCNTransformConstraint extends SCNConstraint {
+  static transformConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNMatrix4) => SCNMatrix4): InstanceType<This>;
+
+  static positionConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector3) => SCNVector3): InstanceType<This>;
+
+  static orientationConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector4) => SCNVector4): InstanceType<This>;
+}
+
+declare class SCNShape extends SCNGeometry {
+  static shapeWithPathExtrusionDepth<This extends abstract new (...args: any) => any>(this: This, path: UIBezierPath | null, extrusionDepth: number): InstanceType<This>;
+
+  path: UIBezierPath;
+
+  extrusionDepth: number;
+
+  chamferMode: interop.Enum<typeof SCNChamferMode>;
+
+  chamferRadius: number;
+
+  chamferProfile: UIBezierPath;
+
+  setPath(path: UIBezierPath | null): void;
+
+  setExtrusionDepth(extrusionDepth: number): void;
+
+  setChamferMode(chamferMode: interop.Enum<typeof SCNChamferMode>): void;
+
+  setChamferRadius(chamferRadius: number): void;
+
+  setChamferProfile(chamferProfile: UIBezierPath | null): void;
 }
 
 declare class SCNCone extends SCNGeometry {
@@ -1468,36 +1500,28 @@ declare class SCNReferenceNode extends SCNNode {
   isLoaded(): boolean;
 }
 
-declare class SCNHitTestResult extends NSObject {
-  readonly node: SCNNode;
+declare class SCNCapsule extends SCNGeometry {
+  static capsuleWithCapRadiusHeight<This extends abstract new (...args: any) => any>(this: This, capRadius: number, height: number): InstanceType<This>;
 
-  readonly geometryIndex: number;
+  capRadius: number;
 
-  readonly faceIndex: number;
+  height: number;
 
-  readonly localCoordinates: SCNVector3;
+  radialSegmentCount: number;
 
-  readonly worldCoordinates: SCNVector3;
+  heightSegmentCount: number;
 
-  readonly localNormal: SCNVector3;
+  capSegmentCount: number;
 
-  readonly worldNormal: SCNVector3;
+  setCapRadius(capRadius: number): void;
 
-  readonly modelTransform: SCNMatrix4;
+  setHeight(height: number): void;
 
-  readonly boneNode: SCNNode;
+  setRadialSegmentCount(radialSegmentCount: number): void;
 
-  textureCoordinatesWithMappingChannel(channel: number): CGPoint;
+  setHeightSegmentCount(heightSegmentCount: number): void;
 
-  readonly simdLocalCoordinates: unknown /* ext vector */;
-
-  readonly simdWorldCoordinates: unknown /* ext vector */;
-
-  readonly simdLocalNormal: unknown /* ext vector */;
-
-  readonly simdWorldNormal: unknown /* ext vector */;
-
-  readonly simdModelTransform: simd_float4x4;
+  setCapSegmentCount(capSegmentCount: number): void;
 }
 
 declare class SCNMaterial extends NSObject implements SCNAnimatable, SCNShadable, NSCopying, NSSecureCoding {
@@ -3351,7 +3375,7 @@ declare class SCNView extends UIView implements SCNSceneRenderer, SCNTechniqueSu
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 
@@ -3781,6 +3805,38 @@ declare class SCNFloor extends SCNGeometry {
   setReflectionResolutionScaleFactor(reflectionResolutionScaleFactor: number): void;
 }
 
+declare class SCNHitTestResult extends NSObject {
+  readonly node: SCNNode;
+
+  readonly geometryIndex: number;
+
+  readonly faceIndex: number;
+
+  readonly localCoordinates: SCNVector3;
+
+  readonly worldCoordinates: SCNVector3;
+
+  readonly localNormal: SCNVector3;
+
+  readonly worldNormal: SCNVector3;
+
+  readonly modelTransform: SCNMatrix4;
+
+  readonly boneNode: SCNNode;
+
+  textureCoordinatesWithMappingChannel(channel: number): CGPoint;
+
+  readonly simdLocalCoordinates: unknown /* ext vector */;
+
+  readonly simdWorldCoordinates: unknown /* ext vector */;
+
+  readonly simdLocalNormal: unknown /* ext vector */;
+
+  readonly simdWorldNormal: unknown /* ext vector */;
+
+  readonly simdModelTransform: simd_float4x4;
+}
+
 declare class SCNAvoidOccluderConstraint extends SCNConstraint {
   static avoidOccluderConstraintWithTarget<This extends abstract new (...args: any) => any>(this: This, target: SCNNode | null): InstanceType<This>;
 
@@ -3807,30 +3863,6 @@ declare class SCNBillboardConstraint extends SCNConstraint {
   freeAxes: interop.Enum<typeof SCNBillboardAxis>;
 
   setFreeAxes(freeAxes: interop.Enum<typeof SCNBillboardAxis>): void;
-}
-
-declare class SCNShape extends SCNGeometry {
-  static shapeWithPathExtrusionDepth<This extends abstract new (...args: any) => any>(this: This, path: UIBezierPath | null, extrusionDepth: number): InstanceType<This>;
-
-  path: UIBezierPath;
-
-  extrusionDepth: number;
-
-  chamferMode: interop.Enum<typeof SCNChamferMode>;
-
-  chamferRadius: number;
-
-  chamferProfile: UIBezierPath;
-
-  setPath(path: UIBezierPath | null): void;
-
-  setExtrusionDepth(extrusionDepth: number): void;
-
-  setChamferMode(chamferMode: interop.Enum<typeof SCNChamferMode>): void;
-
-  setChamferRadius(chamferRadius: number): void;
-
-  setChamferProfile(chamferProfile: UIBezierPath | null): void;
 }
 
 declare class SCNMaterialProperty extends NSObject implements SCNAnimatable, NSSecureCoding {
@@ -4041,14 +4073,6 @@ declare class SCNPhysicsVehicleWheel extends NSObject implements NSCopying, NSSe
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SCNTransformConstraint extends SCNConstraint {
-  static transformConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNMatrix4) => SCNMatrix4): InstanceType<This>;
-
-  static positionConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector3) => SCNVector3): InstanceType<This>;
-
-  static orientationConstraintInWorldSpaceWithBlock<This extends abstract new (...args: any) => any>(this: This, world: boolean, block: (p1: SCNNode, p2: SCNVector4) => SCNVector4): InstanceType<This>;
 }
 
 declare class SCNNode extends NSObject implements NSCopying, NSSecureCoding, SCNAnimatable, SCNActionable, SCNBoundingVolume {
@@ -4668,7 +4692,7 @@ declare class SCNRenderer extends NSObject implements SCNSceneRenderer, SCNTechn
 
   readonly renderingAPI: interop.Enum<typeof SCNRenderingAPI>;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly context: interop.Pointer;
 
@@ -5218,29 +5242,5 @@ declare class SCNMorpher extends NSObject implements SCNAnimatable, NSSecureCodi
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class SCNCapsule extends SCNGeometry {
-  static capsuleWithCapRadiusHeight<This extends abstract new (...args: any) => any>(this: This, capRadius: number, height: number): InstanceType<This>;
-
-  capRadius: number;
-
-  height: number;
-
-  radialSegmentCount: number;
-
-  heightSegmentCount: number;
-
-  capSegmentCount: number;
-
-  setCapRadius(capRadius: number): void;
-
-  setHeight(height: number): void;
-
-  setRadialSegmentCount(radialSegmentCount: number): void;
-
-  setHeightSegmentCount(heightSegmentCount: number): void;
-
-  setCapSegmentCount(capSegmentCount: number): void;
 }
 

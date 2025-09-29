@@ -76,8 +76,6 @@ declare const kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4: interop.Pointer;
 
 declare const kvImage_YpCbCrToARGBMatrix_ITU_R_601_4: interop.Pointer;
 
-declare const kvImageUseFP16Accumulator: number;
-
 declare const kvImageHDRContent: number;
 
 declare const kvImageNoAllocate: number;
@@ -143,6 +141,8 @@ declare const kvImageBufferTypeCode_ColorSpaceChannel9: number;
 declare const kvImageBufferTypeCode_ColorSpaceChannel14: number;
 
 declare const kvImageMemoryAllocationError: number;
+
+declare const kvImageUseFP16Accumulator: number;
 
 declare const _SparseNullMatrix_Complex_Double: SparseMatrix_Complex_Double;
 
@@ -899,7 +899,7 @@ declare class vImage_CGImageFormat {
   constructor(init?: vImage_CGImageFormat);
   bitsPerComponent: number;
   bitsPerPixel: number;
-  colorSpace: interop.Pointer;
+  colorSpace: interop.Object | null;
   bitmapInfo: interop.Enum<typeof CGBitmapInfo>;
   version: number;
   decode: interop.Pointer;
@@ -1479,12 +1479,6 @@ declare class DenseVector_Complex_Double {
   data: interop.Pointer;
 }
 
-declare class DenseVector_Double {
-  constructor(init?: DenseVector_Double);
-  count: number;
-  data: interop.Pointer;
-}
-
 declare class SparseMatrix_Float {
   constructor(init?: SparseMatrix_Float);
   structure: SparseMatrixStructure;
@@ -1594,6 +1588,12 @@ declare class BNNSFilterParameters {
   n_threads: number;
   alloc_memory: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
   free_memory: (p1: interop.PointerConvertible) => void | null;
+}
+
+declare class DenseVector_Double {
+  constructor(init?: DenseVector_Double);
+  count: number;
+  data: interop.Pointer;
 }
 
 declare class sparse_m_double {
@@ -1822,7 +1822,7 @@ declare class BNNSVectorDescriptor {
 declare class SparseIterativeMethod {
   constructor(init?: SparseIterativeMethod);
   method: number;
-  options: unnamed_15547191806039512122;
+  options: unnamed_11692908426398789471;
 }
 
 declare class SparseMatrix_Complex_Double {
@@ -2025,6 +2025,22 @@ declare class BNNSLayerParametersCropResize {
   method: interop.Enum<typeof BNNSInterpolationMethod>;
 }
 
+type unnamed_11692908426398789471Descriptor = 
+  | { base: _SparseIterativeMethodBaseOptions }
+  | { cg: SparseCGOptions }
+  | { gmres: SparseGMRESOptions }
+  | { lsmr: SparseLSMROptions }
+  | { padding: unknown /* const array */ };
+
+declare class unnamed_11692908426398789471 {
+  constructor(init?: unnamed_11692908426398789471Descriptor);
+  base: _SparseIterativeMethodBaseOptions;
+  cg: SparseCGOptions;
+  gmres: SparseGMRESOptions;
+  lsmr: SparseLSMROptions;
+  padding: unknown /* const array */;
+}
+
 type unnamed_5048876362657550829Descriptor = 
   | { tensor: interop.PointerConvertible }
   | { descriptor: interop.PointerConvertible }
@@ -2035,22 +2051,6 @@ declare class unnamed_5048876362657550829 {
   tensor: interop.Pointer;
   descriptor: interop.Pointer;
   data_ptr: interop.Pointer;
-}
-
-type unnamed_15547191806039512122Descriptor = 
-  | { base: _SparseIterativeMethodBaseOptions }
-  | { cg: SparseCGOptions }
-  | { gmres: SparseGMRESOptions }
-  | { lsmr: SparseLSMROptions }
-  | { padding: unknown /* const array */ };
-
-declare class unnamed_15547191806039512122 {
-  constructor(init?: unnamed_15547191806039512122Descriptor);
-  base: _SparseIterativeMethodBaseOptions;
-  cg: SparseCGOptions;
-  gmres: SparseGMRESOptions;
-  lsmr: SparseLSMROptions;
-  padding: unknown /* const array */;
 }
 
 declare function vceilf(p1: unknown /* vector */): unknown /* vector */;
@@ -8799,19 +8799,19 @@ declare function vImageCGImageFormat_GetComponentCount(format: interop.PointerCo
 
 declare function vImageCGImageFormat_IsEqual(f1: interop.PointerConvertible, f2: interop.PointerConvertible): number;
 
-declare function vImageBuffer_InitWithCGImage(buf: interop.PointerConvertible, format: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, image: interop.PointerConvertible, flags: number): number;
+declare function vImageBuffer_InitWithCGImage(buf: interop.PointerConvertible, format: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, image: interop.Object, flags: number): number;
 
-declare function vImageCreateCGImageFromBuffer(buf: interop.PointerConvertible, format: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, userData: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageCreateCGImageFromBuffer(buf: interop.PointerConvertible, format: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, userData: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Object;
 
-declare function vImageConverter_Retain(converter: interop.PointerConvertible): void;
+declare function vImageConverter_Retain(converter: interop.Object): void;
 
-declare function vImageConverter_Release(converter: interop.PointerConvertible): void;
+declare function vImageConverter_Release(converter: interop.Object): void;
 
-declare function vImageConverter_CreateWithCGImageFormat(srcFormat: interop.PointerConvertible, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_CreateWithCGImageFormat(srcFormat: interop.PointerConvertible, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Object;
 
-declare function vImageConverter_CreateWithColorSyncCodeFragment(codeFragment: interop.PointerConvertible, srcFormat: interop.PointerConvertible, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_CreateWithColorSyncCodeFragment(codeFragment: interop.Object, srcFormat: interop.PointerConvertible, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Object;
 
-declare function vImageConverter_CreateWithCGColorConversionInfo(colorConversionInfoRef: interop.PointerConvertible, sFormat: interop.PointerConvertible, dFormat: interop.PointerConvertible, bg: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_CreateWithCGColorConversionInfo(colorConversionInfoRef: interop.PointerConvertible, sFormat: interop.PointerConvertible, dFormat: interop.PointerConvertible, bg: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Object;
 
 declare function vImageConverter_MustOperateOutOfPlace(converter: interop.PointerConvertible, srcs: interop.PointerConvertible, dests: interop.PointerConvertible, flags: number): number;
 
@@ -8819,63 +8819,63 @@ declare function vImageConverter_GetNumberOfSourceBuffers(converter: interop.Poi
 
 declare function vImageConverter_GetNumberOfDestinationBuffers(converter: interop.PointerConvertible): number;
 
-declare function vImageConverter_GetSourceBufferOrder(converter: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_GetSourceBufferOrder(converter: interop.Object): interop.Pointer;
 
-declare function vImageConverter_GetDestinationBufferOrder(converter: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_GetDestinationBufferOrder(converter: interop.Object): interop.Pointer;
 
 declare function vImageConvert_AnyToAny(converter: interop.PointerConvertible, srcs: interop.PointerConvertible, dests: interop.PointerConvertible, tempBuffer: interop.PointerConvertible, flags: number): number;
 
-declare function vImageBuffer_InitWithCVPixelBuffer(buffer: interop.PointerConvertible, desiredFormat: interop.PointerConvertible, cvPixelBuffer: interop.PointerConvertible, cvImageFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number): number;
+declare function vImageBuffer_InitWithCVPixelBuffer(buffer: interop.PointerConvertible, desiredFormat: interop.PointerConvertible, cvPixelBuffer: interop.Object, cvImageFormat: interop.Object, backgroundColor: interop.PointerConvertible, flags: number): number;
 
-declare function vImageBuffer_CopyToCVPixelBuffer(buffer: interop.PointerConvertible, bufferFormat: interop.PointerConvertible, cvPixelBuffer: interop.PointerConvertible, cvImageFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number): number;
+declare function vImageBuffer_CopyToCVPixelBuffer(buffer: interop.PointerConvertible, bufferFormat: interop.PointerConvertible, cvPixelBuffer: interop.Object, cvImageFormat: interop.Object, backgroundColor: interop.PointerConvertible, flags: number): number;
 
-declare function vImageCVImageFormat_CreateWithCVPixelBuffer(buffer: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_CreateWithCVPixelBuffer(buffer: interop.Object): interop.Object;
 
-declare function vImageCVImageFormat_Create(imageFormatType: number, matrix: interop.PointerConvertible, cvImageBufferChromaLocation: interop.PointerConvertible, baseColorspace: interop.PointerConvertible, alphaIsOneHint: number): interop.Pointer;
+declare function vImageCVImageFormat_Create(imageFormatType: number, matrix: interop.PointerConvertible, cvImageBufferChromaLocation: interop.Object, baseColorspace: interop.Object, alphaIsOneHint: number): interop.Object;
 
-declare function vImageCVImageFormat_Copy(format: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_Copy(format: interop.Object): interop.Object;
 
-declare function vImageCVImageFormat_Retain(fmt: interop.PointerConvertible): void;
+declare function vImageCVImageFormat_Retain(fmt: interop.Object): void;
 
-declare function vImageCVImageFormat_Release(fmt: interop.PointerConvertible): void;
+declare function vImageCVImageFormat_Release(fmt: interop.Object): void;
 
-declare function vImageCVImageFormat_GetFormatCode(format: interop.PointerConvertible): number;
+declare function vImageCVImageFormat_GetFormatCode(format: interop.Object): number;
 
-declare function vImageCVImageFormat_GetChannelCount(format: interop.PointerConvertible): number;
+declare function vImageCVImageFormat_GetChannelCount(format: interop.Object): number;
 
-declare function vImageCVImageFormat_GetChannelNames(format: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_GetChannelNames(format: interop.Object): interop.Pointer;
 
-declare function vImageCVImageFormat_GetColorSpace(format: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_GetColorSpace(format: interop.Object): interop.Object;
 
-declare function vImageCVImageFormat_SetColorSpace(format: interop.PointerConvertible, colorspace: interop.PointerConvertible): number;
+declare function vImageCVImageFormat_SetColorSpace(format: interop.Object, colorspace: interop.Object): number;
 
-declare function vImageCVImageFormat_GetChromaSiting(format: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_GetChromaSiting(format: interop.Object): interop.Object;
 
-declare function vImageCVImageFormat_SetChromaSiting(format: interop.PointerConvertible, siting: interop.PointerConvertible): number;
+declare function vImageCVImageFormat_SetChromaSiting(format: interop.Object, siting: interop.Object): number;
 
-declare function vImageCVImageFormat_GetConversionMatrix(format: interop.PointerConvertible, outType: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_GetConversionMatrix(format: interop.Object, outType: interop.PointerConvertible): interop.Pointer;
 
-declare function vImageCVImageFormat_CopyConversionMatrix(format: interop.PointerConvertible, matrix: interop.PointerConvertible, inType: number): number;
+declare function vImageCVImageFormat_CopyConversionMatrix(format: interop.Object, matrix: interop.PointerConvertible, inType: number): number;
 
-declare function vImageCVImageFormat_GetAlphaHint(format: interop.PointerConvertible): number;
+declare function vImageCVImageFormat_GetAlphaHint(format: interop.Object): number;
 
-declare function vImageCVImageFormat_SetAlphaHint(format: interop.PointerConvertible, alphaIsOne: number): number;
+declare function vImageCVImageFormat_SetAlphaHint(format: interop.Object, alphaIsOne: number): number;
 
-declare function vImageCVImageFormat_GetChannelDescription(format: interop.PointerConvertible, type: number): interop.Pointer;
+declare function vImageCVImageFormat_GetChannelDescription(format: interop.Object, type: number): interop.Pointer;
 
-declare function vImageCVImageFormat_CopyChannelDescription(format: interop.PointerConvertible, desc: interop.PointerConvertible, type: number): number;
+declare function vImageCVImageFormat_CopyChannelDescription(format: interop.Object, desc: interop.PointerConvertible, type: number): number;
 
-declare function vImageCVImageFormat_GetUserData(format: interop.PointerConvertible): interop.Pointer;
+declare function vImageCVImageFormat_GetUserData(format: interop.Object): interop.Pointer;
 
-declare function vImageCVImageFormat_SetUserData(format: interop.PointerConvertible, userData: interop.PointerConvertible, userDataReleaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function vImageCVImageFormat_SetUserData(format: interop.Object, userData: interop.PointerConvertible, userDataReleaseCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function vImageCreateRGBColorSpaceWithPrimariesAndTransferFunction(primaries: interop.PointerConvertible, tf: interop.PointerConvertible, intent: interop.Enum<typeof CGColorRenderingIntent>, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageCreateRGBColorSpaceWithPrimariesAndTransferFunction(primaries: interop.PointerConvertible, tf: interop.PointerConvertible, intent: interop.Enum<typeof CGColorRenderingIntent>, flags: number, error: interop.PointerConvertible): interop.Object;
 
-declare function vImageCreateMonochromeColorSpaceWithWhitePointAndTransferFunction(whitePoint: interop.PointerConvertible, tf: interop.PointerConvertible, intent: interop.Enum<typeof CGColorRenderingIntent>, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageCreateMonochromeColorSpaceWithWhitePointAndTransferFunction(whitePoint: interop.PointerConvertible, tf: interop.PointerConvertible, intent: interop.Enum<typeof CGColorRenderingIntent>, flags: number, error: interop.PointerConvertible): interop.Object;
 
-declare function vImageConverter_CreateForCGToCVImageFormat(srcFormat: interop.PointerConvertible, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_CreateForCGToCVImageFormat(srcFormat: interop.PointerConvertible, destFormat: interop.Object, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Object;
 
-declare function vImageConverter_CreateForCVToCGImageFormat(srcFormat: interop.PointerConvertible, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Pointer;
+declare function vImageConverter_CreateForCVToCGImageFormat(srcFormat: interop.Object, destFormat: interop.PointerConvertible, backgroundColor: interop.PointerConvertible, flags: number, error: interop.PointerConvertible): interop.Object;
 
 declare function vImageBuffer_InitForCopyToCVPixelBuffer(buffers: interop.PointerConvertible, converter: interop.PointerConvertible, pixelBuffer: interop.PointerConvertible, flags: number): number;
 

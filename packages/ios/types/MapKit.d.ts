@@ -24,8 +24,6 @@ declare const MKPointOfInterestCategoryWinery: string;
 
 declare const MKPointOfInterestCategorySwimming: string;
 
-declare const MKPointOfInterestCategorySurfing: string;
-
 declare const MKPointOfInterestCategoryStore: string;
 
 declare const MKPointOfInterestCategorySpa: string;
@@ -82,9 +80,9 @@ declare const MKMapRectNull: MKMapRect;
 
 declare const MKMapSizeWorld: MKMapSize;
 
-declare const MKLaunchOptionsMapTypeKey: string;
-
 declare const MKErrorDomain: string;
+
+declare const MKPointOfInterestCategorySurfing: string;
 
 declare const MKLaunchOptionsMapSpanKey: string;
 
@@ -157,6 +155,8 @@ declare const MKPointOfInterestCategoryNationalPark: string;
 declare const MKPointOfInterestCategoryRockClimbing: string;
 
 declare const MKLaunchOptionsShowsTrafficKey: string;
+
+declare const MKLaunchOptionsMapTypeKey: string;
 
 declare const MKAnnotationCalloutInfoDidChangeNotification: string;
 
@@ -316,14 +316,6 @@ declare const MKAddressRepresentationsContextStyle: {
   Full: 2,
 };
 
-declare const MKAnnotationViewDragState: {
-  None: 0,
-  Starting: 1,
-  Dragging: 2,
-  Canceling: 3,
-  Ending: 4,
-};
-
 declare const MKOverlayLevel: {
   Roads: 0,
   Labels: 1,
@@ -338,6 +330,14 @@ declare const MKFeatureVisibility: {
 declare const MKStandardMapEmphasisStyle: {
   Default: 0,
   Muted: 1,
+};
+
+declare const MKAnnotationViewDragState: {
+  None: 0,
+  Starting: 1,
+  Dragging: 2,
+  Canceling: 3,
+  Ending: 4,
 };
 
 declare const MKMapFeatureType: {
@@ -574,66 +574,6 @@ declare interface MKMapViewDelegate extends NSObjectProtocol {
 declare class MKMapViewDelegate extends NativeObject implements MKMapViewDelegate {
 }
 
-declare class MKPolygonView extends MKOverlayPathView {
-  initWithPolygon(polygon: MKPolygon): this;
-
-  readonly polygon: MKPolygon;
-}
-
-declare class MKMapItemAnnotation extends NSObject implements MKAnnotation {
-  initWithMapItem(mapItem: MKMapItem): this;
-
-  readonly mapItem: MKMapItem;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  readonly title: string;
-
-  readonly subtitle: string;
-
-  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
 declare class MKMultiPoint extends MKShape {
   points(): interop.Pointer;
 
@@ -708,10 +648,6 @@ declare class MKLookAroundSnapshotter extends NSObject {
   isLoading(): boolean;
 }
 
-declare class MKLookAroundSnapshot extends NSObject {
-  readonly image: UIImage;
-}
-
 declare class MKLookAroundSceneRequest extends NSObject {
   initWithCoordinate(coordinate: CLLocationCoordinate2D): this;
 
@@ -758,30 +694,6 @@ declare class MKCircleView extends MKOverlayPathView {
   initWithCircle(circle: MKCircle): this;
 
   readonly circle: MKCircle;
-}
-
-declare class MKImageryMapConfiguration extends MKMapConfiguration {
-  init(): this;
-
-  initWithElevationStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>): this;
-}
-
-declare class MKMapCameraBoundary extends NSObject implements NSSecureCoding, NSCopying {
-  initWithMapRect(mapRect: MKMapRect): this;
-
-  initWithCoordinateRegion(region: MKCoordinateRegion): this;
-
-  initWithCoder(coder: NSCoder): this;
-
-  readonly mapRect: MKMapRect;
-
-  readonly region: MKCoordinateRegion;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MKTileOverlay extends NSObject implements MKOverlay {
@@ -910,18 +822,17 @@ declare class MKOverlayPathRenderer extends MKOverlayRenderer {
 
   createPath(): void;
 
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
   invalidatePath(): void;
 
-  applyStrokePropertiesToContextAtZoomScale(context: interop.PointerConvertible, zoomScale: number): void;
+  applyStrokePropertiesToContextAtZoomScale(context: interop.Object, zoomScale: number): void;
 
-  applyFillPropertiesToContextAtZoomScale(context: interop.PointerConvertible, zoomScale: number): void;
+  applyFillPropertiesToContextAtZoomScale(context: interop.Object, zoomScale: number): void;
 
-  strokePathInContext(path: interop.PointerConvertible, context: interop.PointerConvertible): void;
+  strokePathInContext(path: interop.Object, context: interop.Object): void;
 
-  fillPathInContext(path: interop.PointerConvertible, context: interop.PointerConvertible): void;
+  fillPathInContext(path: interop.Object, context: interop.Object): void;
 
   setFillColor(fillColor: UIColor | null): void;
 
@@ -941,19 +852,61 @@ declare class MKOverlayPathRenderer extends MKOverlayRenderer {
 
   setShouldRasterize(shouldRasterize: boolean): void;
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object | null): void;
 }
 
-declare class MKCompassButton extends UIView {
-  static compassButtonWithMapView<This extends abstract new (...args: any) => any>(this: This, mapView: MKMapView | null): InstanceType<This>;
+declare class MKMapItemAnnotation extends NSObject implements MKAnnotation {
+  initWithMapItem(mapItem: MKMapItem): this;
 
-  mapView: MKMapView;
+  readonly mapItem: MKMapItem;
 
-  compassVisibility: interop.Enum<typeof MKFeatureVisibility>;
+  readonly coordinate: CLLocationCoordinate2D;
 
-  setMapView(mapView: MKMapView | null): void;
+  readonly title: string;
 
-  setCompassVisibility(compassVisibility: interop.Enum<typeof MKFeatureVisibility>): void;
+  readonly subtitle: string;
+
+  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class MKClusterAnnotation extends NSObject implements MKAnnotation {
@@ -1433,10 +1386,6 @@ declare class MKMapItemDetailSelectionAccessoryPresentationStyle extends NSObjec
   static readonly openInMaps: MKMapItemDetailSelectionAccessoryPresentationStyle;
 }
 
-declare class MKSelectionAccessory extends NSObject {
-  static mapItemDetailWithPresentationStyle(presentationStyle: MKMapItemDetailSelectionAccessoryPresentationStyle): MKSelectionAccessory;
-}
-
 declare class MKOverlayRenderer extends NSObject {
   initWithOverlay(overlay: MKOverlay): this;
 
@@ -1452,7 +1401,7 @@ declare class MKOverlayRenderer extends NSObject {
 
   canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
 
-  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.PointerConvertible): void;
+  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
 
   setNeedsDisplay(): void;
 
@@ -2031,20 +1980,6 @@ declare class MKGradientPolylineRenderer extends MKPolylineRenderer {
   setColorsAtLocations(colors: NSArray<interop.Object> | Array<interop.Object>, locations: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
-declare class MKLookAroundSnapshotOptions extends NSObject {
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  size: CGSize;
-
-  traitCollection: UITraitCollection;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
-
-  setSize(size: CGSize): void;
-
-  setTraitCollection(traitCollection: UITraitCollection): void;
-}
-
 // @ts-ignore ClassDecl.tsIgnore
 declare class MKAnnotationView extends UIView {
   initWithAnnotationReuseIdentifier(annotation: MKAnnotation | null, reuseIdentifier: string | null): this;
@@ -2169,18 +2104,17 @@ declare class MKOverlayPathView extends MKOverlayView {
 
   createPath(): void;
 
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
   invalidatePath(): void;
 
-  applyStrokePropertiesToContextAtZoomScale(context: interop.PointerConvertible, zoomScale: number): void;
+  applyStrokePropertiesToContextAtZoomScale(context: interop.Object, zoomScale: number): void;
 
-  applyFillPropertiesToContextAtZoomScale(context: interop.PointerConvertible, zoomScale: number): void;
+  applyFillPropertiesToContextAtZoomScale(context: interop.Object, zoomScale: number): void;
 
-  strokePathInContext(path: interop.PointerConvertible, context: interop.PointerConvertible): void;
+  strokePathInContext(path: interop.Object, context: interop.Object): void;
 
-  fillPathInContext(path: interop.PointerConvertible, context: interop.PointerConvertible): void;
+  fillPathInContext(path: interop.Object, context: interop.Object): void;
 
   setFillColor(fillColor: UIColor): void;
 
@@ -2198,7 +2132,7 @@ declare class MKOverlayPathView extends MKOverlayView {
 
   setLineDashPattern(lineDashPattern: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object): void;
 }
 
 declare class MKMapSnapshotter extends NSObject {
@@ -2229,6 +2163,64 @@ declare class MKScaleView extends UIView {
   setScaleVisibility(scaleVisibility: interop.Enum<typeof MKFeatureVisibility>): void;
 
   setLegendAlignment(legendAlignment: interop.Enum<typeof MKScaleViewAlignment>): void;
+}
+
+declare class MKLookAroundSnapshot extends NSObject {
+  readonly image: UIImage;
+}
+
+declare class MKCompassButton extends UIView {
+  static compassButtonWithMapView<This extends abstract new (...args: any) => any>(this: This, mapView: MKMapView | null): InstanceType<This>;
+
+  mapView: MKMapView;
+
+  compassVisibility: interop.Enum<typeof MKFeatureVisibility>;
+
+  setMapView(mapView: MKMapView | null): void;
+
+  setCompassVisibility(compassVisibility: interop.Enum<typeof MKFeatureVisibility>): void;
+}
+
+declare class MKSelectionAccessory extends NSObject {
+  static mapItemDetailWithPresentationStyle(presentationStyle: MKMapItemDetailSelectionAccessoryPresentationStyle): MKSelectionAccessory;
+}
+
+declare class MKImageryMapConfiguration extends MKMapConfiguration {
+  init(): this;
+
+  initWithElevationStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>): this;
+}
+
+declare class MKLookAroundSnapshotOptions extends NSObject {
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  size: CGSize;
+
+  traitCollection: UITraitCollection;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
+
+  setSize(size: CGSize): void;
+
+  setTraitCollection(traitCollection: UITraitCollection): void;
+}
+
+declare class MKMapCameraBoundary extends NSObject implements NSSecureCoding, NSCopying {
+  initWithMapRect(mapRect: MKMapRect): this;
+
+  initWithCoordinateRegion(region: MKCoordinateRegion): this;
+
+  initWithCoder(coder: NSCoder): this;
+
+  readonly mapRect: MKMapRect;
+
+  readonly region: MKCoordinateRegion;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MKAddressRepresentations extends NSObject {
@@ -2448,6 +2440,12 @@ declare class MKTileOverlayRenderer extends MKOverlayRenderer {
   reloadData(): void;
 }
 
+declare class MKPolygonView extends MKOverlayPathView {
+  initWithPolygon(polygon: MKPolygon): this;
+
+  readonly polygon: MKPolygon;
+}
+
 declare class MKMapFeatureAnnotation extends NSObject implements MKAnnotation {
   readonly featureType: interop.Enum<typeof MKMapFeatureType>;
 
@@ -2519,7 +2517,7 @@ declare class MKOverlayView extends UIView {
 
   canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
 
-  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.PointerConvertible): void;
+  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
 
   setNeedsDisplayInMapRect(mapRect: MKMapRect): void;
 

@@ -82,6 +82,14 @@ declare class vmpktdesc {
   vm_flags: number;
 }
 
+declare class vmnet_network {
+  constructor(init?: vmnet_network);
+}
+
+declare class vmnet_network_configuration {
+  constructor(init?: vmnet_network_configuration);
+}
+
 declare function vmnet_start_interface(interface_desc: NSObject, queue: NSObject, handler: (p1: interop.Enum<typeof vmnet_return_t>, p2: NSObject) => void): interop.Pointer;
 
 declare function vmnet_interface_set_event_callback(interface: interop.PointerConvertible, event_mask: interop.Enum<typeof interface_event_t>, queue: NSObject, callback: (p1: interop.Enum<typeof interface_event_t>, p2: NSObject) => void): interop.Enum<typeof vmnet_return_t>;
@@ -109,4 +117,40 @@ declare function vmnet_ip_port_forwarding_rule_get_details(rule: NSObject, proto
 declare function vmnet_interface_get_ip_port_forwarding_rules(interface: interop.PointerConvertible, address_family: number, handler: (p1: NSObject) => void): interop.Enum<typeof vmnet_return_t>;
 
 declare function vmnet_copy_shared_interface_list(): NSObject;
+
+declare function vmnet_network_configuration_create(mode: interop.Enum<typeof operating_modes_t>, status: interop.PointerConvertible): interop.Pointer;
+
+declare function vmnet_network_create(configuration: interop.PointerConvertible, status: interop.PointerConvertible): interop.Pointer;
+
+declare function vmnet_network_get_ipv4_subnet(network: interop.PointerConvertible, subnet: interop.PointerConvertible, mask: interop.PointerConvertible): void;
+
+declare function vmnet_network_get_ipv6_prefix(network: interop.PointerConvertible, prefix: interop.PointerConvertible, prefix_len: interop.PointerConvertible): void;
+
+declare function vmnet_network_copy_serialization(network: interop.PointerConvertible, status: interop.PointerConvertible): NSObject;
+
+declare function vmnet_network_create_with_serialization(network: NSObject, status: interop.PointerConvertible): interop.Pointer;
+
+declare function vmnet_interface_start_with_network(network: interop.PointerConvertible, interface_desc: NSObject, queue: NSObject, start_block: (p1: interop.Enum<typeof vmnet_return_t>, p2: NSObject) => void): interop.Pointer;
+
+declare function vmnet_network_configuration_set_external_interface(config: interop.PointerConvertible, interface_name: string): interop.Enum<typeof vmnet_return_t>;
+
+declare function vmnet_network_configuration_disable_nat44(config: interop.PointerConvertible): void;
+
+declare function vmnet_network_configuration_disable_nat66(config: interop.PointerConvertible): void;
+
+declare function vmnet_network_configuration_disable_dhcp(config: interop.PointerConvertible): void;
+
+declare function vmnet_network_configuration_disable_dns_proxy(config: interop.PointerConvertible): void;
+
+declare function vmnet_network_configuration_disable_router_advertisement(config: interop.PointerConvertible): void;
+
+declare function vmnet_network_configuration_set_ipv4_subnet(config: interop.PointerConvertible, subnet_addr: interop.PointerConvertible, subnet_mask: interop.PointerConvertible): interop.Enum<typeof vmnet_return_t>;
+
+declare function vmnet_network_configuration_set_ipv6_prefix(config: interop.PointerConvertible, prefix: interop.PointerConvertible, len: number): interop.Enum<typeof vmnet_return_t>;
+
+declare function vmnet_network_configuration_add_port_forwarding_rule(config: interop.PointerConvertible, protocol: number, address_family: number, internal_port: number, external_port: number, internal_address: interop.PointerConvertible): interop.Enum<typeof vmnet_return_t>;
+
+declare function vmnet_network_configuration_add_dhcp_reservation(config: interop.PointerConvertible, client: interop.PointerConvertible, reservation: interop.PointerConvertible): interop.Enum<typeof vmnet_return_t>;
+
+declare function vmnet_network_configuration_set_mtu(config: interop.PointerConvertible, mtu: number): interop.Enum<typeof vmnet_return_t>;
 

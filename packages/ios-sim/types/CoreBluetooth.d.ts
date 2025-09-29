@@ -123,6 +123,13 @@ declare const CBConnectionEvent: {
   Connected: 1,
 };
 
+declare const CBManagerAuthorization: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  AllowedAlways: 3,
+};
+
 declare const CBCentralManagerState: {
   Unknown: 0,
   Resetting: 1,
@@ -130,13 +137,6 @@ declare const CBCentralManagerState: {
   Unauthorized: 3,
   PoweredOff: 4,
   PoweredOn: 5,
-};
-
-declare const CBManagerAuthorization: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  AllowedAlways: 3,
 };
 
 declare const CBCharacteristicProperties: {
@@ -298,14 +298,6 @@ declare interface CBPeripheralDelegate extends NSObjectProtocol {
 declare class CBPeripheralDelegate extends NativeObject implements CBPeripheralDelegate {
 }
 
-declare class CBCentral extends CBPeer {
-  readonly maximumUpdateValueLength: number;
-}
-
-declare class CBMutableDescriptor extends CBDescriptor {
-  initWithTypeValue(UUID: CBUUID, value: interop.Object | null): this;
-}
-
 declare class CBCharacteristic extends CBAttribute {
   readonly service: CBService | null;
 
@@ -329,11 +321,15 @@ declare class CBUUID extends NSObject implements NSCopying {
 
   static UUIDWithData(theData: NSData): CBUUID;
 
-  static UUIDWithCFUUID(theUUID: interop.PointerConvertible): CBUUID;
+  static UUIDWithCFUUID(theUUID: interop.Object): CBUUID;
 
   static UUIDWithNSUUID(theUUID: NSUUID): CBUUID;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CBMutableDescriptor extends CBDescriptor {
+  initWithTypeValue(UUID: CBUUID, value: interop.Object | null): this;
 }
 
 declare class CBService extends CBAttribute {
@@ -344,6 +340,10 @@ declare class CBService extends CBAttribute {
   readonly includedServices: NSArray;
 
   readonly characteristics: NSArray;
+}
+
+declare class CBCentral extends CBPeer {
+  readonly maximumUpdateValueLength: number;
 }
 
 declare class CBPeripheral extends CBPeer {

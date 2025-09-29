@@ -22,28 +22,6 @@ declare interface MXMetricManagerSubscriber extends NSObjectProtocol {
 declare class MXMetricManagerSubscriber extends NativeObject implements MXMetricManagerSubscriber {
 }
 
-declare class MXSignpostIntervalData extends NSObject implements NSSecureCoding {
-  readonly histogrammedSignpostDuration: MXHistogram;
-
-  readonly cumulativeCPUTime: NSMeasurement;
-
-  readonly averageMemory: MXAverage;
-
-  readonly cumulativeLogicalWrites: NSMeasurement;
-
-  readonly cumulativeHitchTimeRatio: NSMeasurement;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MXUnitAveragePixelLuminance extends NSDimension {
-  static readonly apl: MXUnitAveragePixelLuminance;
-}
-
 declare class MXMetric extends NSObject implements NSSecureCoding {
   JSONRepresentation(): NSData;
 
@@ -58,18 +36,8 @@ declare class MXMetric extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class MXAverage<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
-  readonly averageMeasurement: NSMeasurement;
-
-  readonly sampleCount: number;
-
-  readonly standardDeviation: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+declare class MXUnitAveragePixelLuminance extends NSDimension {
+  static readonly apl: MXUnitAveragePixelLuminance;
 }
 
 declare class MXCellularConditionMetric extends MXMetric {
@@ -102,6 +70,20 @@ declare class MXDiagnosticPayload extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class MXAverage<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
+  readonly averageMeasurement: NSMeasurement;
+
+  readonly sampleCount: number;
+
+  readonly standardDeviation: number;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class MXMemoryMetric extends MXMetric {
   readonly peakMemoryUsage: NSMeasurement;
 
@@ -110,6 +92,20 @@ declare class MXMemoryMetric extends MXMetric {
 
 declare class MXCallStackTree extends NSObject implements NSSecureCoding {
   JSONRepresentation(): NSData;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class MXHistogramBucket<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
+  readonly bucketStart: NSMeasurement;
+
+  readonly bucketEnd: NSMeasurement;
+
+  readonly bucketCount: number;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -172,20 +168,6 @@ declare class MXNetworkTransferMetric extends MXMetric {
   readonly cumulativeCellularUpload: NSMeasurement;
 
   readonly cumulativeCellularDownload: NSMeasurement;
-}
-
-declare class MXHistogramBucket<UnitType = interop.Object> extends NSObject implements NSSecureCoding {
-  readonly bucketStart: NSMeasurement;
-
-  readonly bucketEnd: NSMeasurement;
-
-  readonly bucketCount: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class MXDiskWriteExceptionDiagnostic extends MXDiagnostic {
@@ -510,6 +492,24 @@ declare class MXMetaData extends NSObject implements NSSecureCoding {
 
 declare class MXDisplayMetric extends MXMetric {
   readonly averagePixelLuminance: MXAverage;
+}
+
+declare class MXSignpostIntervalData extends NSObject implements NSSecureCoding {
+  readonly histogrammedSignpostDuration: MXHistogram;
+
+  readonly cumulativeCPUTime: NSMeasurement;
+
+  readonly averageMemory: MXAverage;
+
+  readonly cumulativeLogicalWrites: NSMeasurement;
+
+  readonly cumulativeHitchTimeRatio: NSMeasurement;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class MXAppLaunchDiagnostic extends MXDiagnostic {

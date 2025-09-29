@@ -8,11 +8,6 @@ declare const TCThrottleOrientation: {
   Horizontal: 1,
 };
 
-declare const TCControlContentsDpadElementStyle: {
-  Circle: 0,
-  Pentagon: 1,
-};
-
 declare const TCControlContentsDpadDirection: {
   Up: 0,
   Down: 1,
@@ -52,6 +47,11 @@ declare const TCControlLayoutAnchor: {
   BottomLeft: 6,
   BottomCenter: 7,
   BottomRight: 8,
+};
+
+declare const TCControlContentsDpadElementStyle: {
+  Circle: 0,
+  Pentagon: 1,
 };
 
 declare interface TCControl extends NSObjectProtocol, TCControlLayout {
@@ -598,6 +598,36 @@ declare class TCTouchController extends NSObject {
   isConnected(): boolean;
 }
 
+declare class TCControlImage extends NSObject {
+  initWithTextureSize(texture: MTLTexture, size: CGSize): this;
+
+  initWithTextureSizeHighlightTextureOffsetTintColor(texture: MTLTexture, size: CGSize, highlightTexture: MTLTexture | null, offset: CGPoint, tintColor: interop.Object): this;
+
+  initWithCGImageSizeDevice(cgImage: interop.Object, size: CGSize, device: MTLDevice): this;
+
+  initWithUIImageSizeDevice(uiImage: UIImage, size: CGSize, device: MTLDevice): this;
+
+  texture: MTLTexture;
+
+  highlightTexture: MTLTexture;
+
+  size: CGSize;
+
+  offset: CGPoint;
+
+  tintColor: interop.Object;
+
+  setTexture(texture: MTLTexture): void;
+
+  setHighlightTexture(highlightTexture: MTLTexture | null): void;
+
+  setSize(size: CGSize): void;
+
+  setOffset(offset: CGPoint): void;
+
+  setTintColor(tintColor: interop.Object): void;
+}
+
 declare class TCThumbstickDescriptor extends NSObject {
   label: TCControlLabel;
 
@@ -648,37 +678,6 @@ declare class TCThumbstickDescriptor extends NSObject {
   setColliderShape(colliderShape: interop.Enum<typeof TCColliderShape>): void;
 
   setHighlightDuration(highlightDuration: number): void;
-}
-
-declare class TCControlImage extends NSObject {
-  initWithTextureSize(texture: MTLTexture, size: CGSize): this;
-
-  initWithTextureSizeHighlightTextureOffsetTintColor(texture: MTLTexture, size: CGSize, highlightTexture: MTLTexture | null, offset: CGPoint, tintColor: interop.PointerConvertible): this;
-
-  initWithCGImageSizeDevice(cgImage: interop.PointerConvertible, size: CGSize, device: MTLDevice): this;
-
-  initWithUIImageSizeDevice(uiImage: UIImage, size: CGSize, device: MTLDevice): this;
-
-  texture: MTLTexture;
-
-  highlightTexture: MTLTexture;
-
-  size: CGSize;
-
-  offset: CGPoint;
-
-  get tintColor(): interop.Pointer;
-  set tintColor(value: interop.PointerConvertible);
-
-  setTexture(texture: MTLTexture): void;
-
-  setHighlightTexture(highlightTexture: MTLTexture | null): void;
-
-  setSize(size: CGSize): void;
-
-  setOffset(offset: CGPoint): void;
-
-  setTintColor(tintColor: interop.PointerConvertible): void;
 }
 
 declare class TCThrottle extends NSObject implements TCControl, TCControlLayout {

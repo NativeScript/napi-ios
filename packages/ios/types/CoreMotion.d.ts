@@ -112,19 +112,19 @@ declare class CMMagneticField {
   z: number;
 }
 
+declare class CMAcceleration {
+  constructor(init?: CMAcceleration);
+  x: number;
+  y: number;
+  z: number;
+}
+
 declare class CMQuaternion {
   constructor(init?: CMQuaternion);
   x: number;
   y: number;
   z: number;
   w: number;
-}
-
-declare class CMAcceleration {
-  constructor(init?: CMAcceleration);
-  x: number;
-  y: number;
-  z: number;
 }
 
 declare class CMRotationMatrix {
@@ -191,10 +191,6 @@ declare class CMStepCounter extends NSObject {
   startStepCountingUpdatesToQueueUpdateOnWithHandler(queue: NSOperationQueue, stepCounts: number, handler: (p1: number, p2: NSDate, p3: NSError) => void): void;
 
   stopStepCountingUpdates(): void;
-}
-
-declare class CMRecordedRotationRateData extends CMRotationRateData {
-  readonly startDate: NSDate;
 }
 
 declare class CMPedometer extends NSObject {
@@ -325,12 +321,6 @@ declare class CMDeviceMotion extends CMLogItem {
   readonly sensorLocation: interop.Enum<typeof CMDeviceMotionSensorLocation>;
 }
 
-declare class CMAmbientPressureData extends CMLogItem {
-  readonly pressure: NSMeasurement;
-
-  readonly temperature: NSMeasurement;
-}
-
 declare class CMWaterSubmersionMeasurement extends NSObject implements NSSecureCoding, NSCopying {
   readonly date: NSDate;
 
@@ -351,14 +341,6 @@ declare class CMWaterSubmersionMeasurement extends NSObject implements NSSecureC
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class CMAbsoluteAltitudeData extends CMLogItem {
-  readonly altitude: number;
-
-  readonly accuracy: number;
-
-  readonly precision: number;
-}
-
 declare class CMMotionActivity extends CMLogItem {
   readonly confidence: interop.Enum<typeof CMMotionActivityConfidence>;
 
@@ -375,6 +357,12 @@ declare class CMMotionActivity extends CMLogItem {
   readonly automotive: boolean;
 
   readonly cycling: boolean;
+}
+
+declare class CMAltitudeData extends CMLogItem {
+  readonly relativeAltitude: NSNumber;
+
+  readonly pressure: NSNumber;
 }
 
 declare class CMHeadphoneActivityManager extends NSObject {
@@ -471,6 +459,51 @@ declare class CMBatchedSensorManager extends NSObject {
   isDeviceMotionActive(): boolean;
 }
 
+declare class CMHeadphoneMotionManager extends NSObject {
+  static authorizationStatus(): interop.Enum<typeof CMAuthorizationStatus>;
+
+  delegate: CMHeadphoneMotionManagerDelegate;
+
+  readonly connectionStatusActive: boolean;
+
+  readonly deviceMotionAvailable: boolean;
+
+  readonly deviceMotionActive: boolean;
+
+  readonly deviceMotion: CMDeviceMotion;
+
+  startDeviceMotionUpdates(): void;
+
+  startDeviceMotionUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMDeviceMotion, p2: NSError) => void): void;
+
+  stopDeviceMotionUpdates(): void;
+
+  startConnectionStatusUpdates(): void;
+
+  stopConnectionStatusUpdates(): void;
+
+  setDelegate(delegate: CMHeadphoneMotionManagerDelegate | null): void;
+
+  isConnectionStatusActive(): boolean;
+
+  isDeviceMotionAvailable(): boolean;
+
+  isDeviceMotionActive(): boolean;
+}
+
+declare class CMAmbientPressureData extends CMLogItem {
+  readonly pressure: NSMeasurement;
+
+  readonly temperature: NSMeasurement;
+}
+
+declare class CMSensorDataList extends NSObject implements NSFastEnumeration {
+  countByEnumeratingWithStateObjectsCount(state: interop.PointerConvertible, buffer: interop.PointerConvertible, len: number): number;
+
+  readonly [Symbol.iterator]: () => Iterator<any>;
+
+}
+
 declare class CMWaterTemperature extends NSObject implements NSSecureCoding, NSCopying {
   readonly date: NSDate;
 
@@ -519,6 +552,14 @@ declare class CMPedometerData extends NSObject implements NSSecureCoding, NSCopy
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class CMAbsoluteAltitudeData extends CMLogItem {
+  readonly altitude: number;
+
+  readonly accuracy: number;
+
+  readonly precision: number;
+}
+
 declare class CMRotationRateData extends CMLogItem {
   readonly rotationRate: CMRotationRate;
 }
@@ -535,12 +576,6 @@ declare class CMHighFrequencyHeartRateData extends CMLogItem {
   readonly confidence: interop.Enum<typeof CMHighFrequencyHeartRateDataConfidence>;
 
   readonly date: NSDate;
-}
-
-declare class CMAltitudeData extends CMLogItem {
-  readonly relativeAltitude: NSNumber;
-
-  readonly pressure: NSNumber;
 }
 
 declare class CMOdometerData extends NSObject implements NSSecureCoding, NSCopying {
@@ -595,38 +630,6 @@ declare class CMSensorRecorder extends NSObject {
   recordAccelerometerForDuration(duration: number): void;
 }
 
-declare class CMHeadphoneMotionManager extends NSObject {
-  static authorizationStatus(): interop.Enum<typeof CMAuthorizationStatus>;
-
-  delegate: CMHeadphoneMotionManagerDelegate;
-
-  readonly connectionStatusActive: boolean;
-
-  readonly deviceMotionAvailable: boolean;
-
-  readonly deviceMotionActive: boolean;
-
-  readonly deviceMotion: CMDeviceMotion;
-
-  startDeviceMotionUpdates(): void;
-
-  startDeviceMotionUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMDeviceMotion, p2: NSError) => void): void;
-
-  stopDeviceMotionUpdates(): void;
-
-  startConnectionStatusUpdates(): void;
-
-  stopConnectionStatusUpdates(): void;
-
-  setDelegate(delegate: CMHeadphoneMotionManagerDelegate | null): void;
-
-  isConnectionStatusActive(): boolean;
-
-  isDeviceMotionAvailable(): boolean;
-
-  isDeviceMotionActive(): boolean;
-}
-
 declare class CMWaterSubmersionManager extends NSObject {
   delegate: CMWaterSubmersionManagerDelegate;
 
@@ -653,13 +656,6 @@ declare class CMAltimeter extends NSObject {
   startAbsoluteAltitudeUpdatesToQueueWithHandler(queue: NSOperationQueue, handler: (p1: CMAbsoluteAltitudeData, p2: NSError) => void): void;
 
   stopAbsoluteAltitudeUpdates(): void;
-}
-
-declare class CMSensorDataList extends NSObject implements NSFastEnumeration {
-  countByEnumeratingWithStateObjectsCount(state: interop.PointerConvertible, buffer: interop.PointerConvertible, len: number): number;
-
-  readonly [Symbol.iterator]: () => Iterator<any>;
-
 }
 
 declare class CMMotionManager extends NSObject {
@@ -754,5 +750,9 @@ declare class CMMotionManager extends NSObject {
   isDeviceMotionActive(): boolean;
 
   setShowsDeviceMovementDisplay(showsDeviceMovementDisplay: boolean): void;
+}
+
+declare class CMRecordedRotationRateData extends CMRotationRateData {
+  readonly startDate: NSDate;
 }
 

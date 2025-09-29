@@ -116,6 +116,18 @@ declare interface BAManagedDownloaderExtension extends BADownloaderExtension {
 declare class BAManagedDownloaderExtension extends NativeObject implements BAManagedDownloaderExtension {
 }
 
+declare class BAAppExtensionInfo extends NSObject implements NSSecureCoding {
+  readonly restrictedDownloadSizeRemaining: NSNumber;
+
+  readonly restrictedEssentialDownloadSizeRemaining: NSNumber;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class BADownloadManager extends NSObject {
   static readonly sharedManager: BADownloadManager;
 
@@ -136,18 +148,6 @@ declare class BADownloadManager extends NSObject {
   cancelDownloadError(download: BADownload, error: interop.PointerConvertible): boolean;
 
   setDelegate(delegate: BADownloadManagerDelegate): void;
-}
-
-declare class BAAppExtensionInfo extends NSObject implements NSSecureCoding {
-  readonly restrictedDownloadSizeRemaining: NSNumber;
-
-  readonly restrictedEssentialDownloadSizeRemaining: NSNumber;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class BAAssetPackManager extends NSObject {

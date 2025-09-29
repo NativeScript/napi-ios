@@ -153,28 +153,6 @@ declare class ENManager extends NSObject {
   setDiagnosisKeysAvailableHandler(diagnosisKeysAvailableHandler: (p1: NSArray<interop.Object> | Array<interop.Object>) => void | null): void;
 }
 
-declare class ENScanInstance extends NSObject {
-  readonly minimumAttenuation: number;
-
-  readonly typicalAttenuation: number;
-
-  readonly secondsSinceLastScan: number;
-}
-
-declare class ENExposureWindow extends NSObject {
-  readonly calibrationConfidence: interop.Enum<typeof ENCalibrationConfidence>;
-
-  readonly date: NSDate;
-
-  readonly diagnosisReportType: interop.Enum<typeof ENDiagnosisReportType>;
-
-  readonly infectiousness: interop.Enum<typeof ENInfectiousness>;
-
-  readonly scanInstances: NSArray;
-
-  readonly variantOfConcernType: interop.Enum<typeof ENVariantOfConcernType>;
-}
-
 declare class ENExposureDetectionSummary extends NSObject {
   readonly attenuationDurations: NSArray;
 
@@ -211,6 +189,20 @@ declare class ENTemporaryExposureKey extends NSObject {
   setTransmissionRiskLevel(transmissionRiskLevel: number): void;
 }
 
+declare class ENExposureWindow extends NSObject {
+  readonly calibrationConfidence: interop.Enum<typeof ENCalibrationConfidence>;
+
+  readonly date: NSDate;
+
+  readonly diagnosisReportType: interop.Enum<typeof ENDiagnosisReportType>;
+
+  readonly infectiousness: interop.Enum<typeof ENInfectiousness>;
+
+  readonly scanInstances: NSArray;
+
+  readonly variantOfConcernType: interop.Enum<typeof ENVariantOfConcernType>;
+}
+
 declare class ENExposureDaySummary extends NSObject {
   readonly date: NSDate;
 
@@ -223,6 +215,14 @@ declare class ENExposureDaySummary extends NSObject {
   readonly selfReportedSummary: ENExposureSummaryItem;
 
   readonly daySummary: ENExposureSummaryItem;
+}
+
+declare class ENScanInstance extends NSObject {
+  readonly minimumAttenuation: number;
+
+  readonly typicalAttenuation: number;
+
+  readonly secondsSinceLastScan: number;
 }
 
 declare class ENExposureSummaryItem extends NSObject {

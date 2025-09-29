@@ -22,12 +22,6 @@ declare const TKSmartCardPINJustification: {
   Right: 1,
 };
 
-declare const TKSmartCardPINEncoding: {
-  Binary: 0,
-  ASCII: 1,
-  BCD: 2,
-};
-
 declare const TKSmartCardProtocol: {
   None: 0,
   T0: 1,
@@ -63,6 +57,12 @@ declare const TKSmartCardPINCharset: {
   Numeric: 0,
   Alphanumeric: 1,
   UpperAlphanumeric: 2,
+};
+
+declare const TKSmartCardPINEncoding: {
+  Binary: 0,
+  ASCII: 1,
+  BCD: 2,
 };
 
 declare const TKSmartCardPINCompletion: {
@@ -157,28 +157,6 @@ declare class TKTokenWatcher extends NSObject {
 declare class TKSmartCardTokenDriver extends TKTokenDriver {
 }
 
-declare class TKTokenSmartCardPINAuthOperation extends TKTokenAuthOperation {
-  PINFormat: TKSmartCardPINFormat;
-
-  APDUTemplate: NSData;
-
-  PINByteOffset: number;
-
-  smartCard: TKSmartCard;
-
-  PIN: string;
-
-  setPINFormat(PINFormat: TKSmartCardPINFormat): void;
-
-  setAPDUTemplate(APDUTemplate: NSData | null): void;
-
-  setPINByteOffset(PINByteOffset: number): void;
-
-  setSmartCard(smartCard: TKSmartCard | null): void;
-
-  setPIN(PIN: string | null): void;
-}
-
 declare class TKTokenConfiguration extends NSObject {
   readonly instanceID: string;
 
@@ -196,18 +174,8 @@ declare class TKTokenConfiguration extends NSObject {
   setKeychainItems(keychainItems: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
-declare class TKTokenKeychainContents extends NSObject {
-  fillWithItems(items: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  readonly items: NSArray;
-
-  keyForObjectIDError(objectID: interop.Object, error: interop.PointerConvertible): TKTokenKeychainKey;
-
-  certificateForObjectIDError(objectID: interop.Object, error: interop.PointerConvertible): TKTokenKeychainCertificate;
-}
-
 declare class TKTokenKeychainCertificate extends TKTokenKeychainItem {
-  initWithCertificateObjectID(certificateRef: interop.PointerConvertible, objectID: interop.Object): this;
+  initWithCertificateObjectID(certificateRef: interop.Object, objectID: interop.Object): this;
 
   readonly data: NSData;
 }
@@ -400,6 +368,18 @@ declare class TKTokenAuthOperation extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class TKSmartCardToken extends TKToken {
+  initWithSmartCardAIDInstanceIDTokenDriver(smartCard: TKSmartCard, AID: NSData | null, instanceID: string, tokenDriver: TKSmartCardTokenDriver): this;
+
+  readonly AID: NSData;
+}
+
+declare class TKSmartCardTokenSession extends TKTokenSession {
+  readonly smartCard: TKSmartCard;
+
+  getSmartCardWithError(error: interop.PointerConvertible): TKSmartCard;
+}
+
 declare class TKSimpleTLVRecord extends TKTLVRecord {
   initWithTagValue(tag: number, value: NSData): this;
 }
@@ -410,18 +390,42 @@ declare class TKTokenPasswordAuthOperation extends TKTokenAuthOperation {
   setPassword(password: string | null): void;
 }
 
-declare class TKTokenWatcherTokenInfo extends NSObject {
-  readonly tokenID: string;
+declare class TKTokenSmartCardPINAuthOperation extends TKTokenAuthOperation {
+  PINFormat: TKSmartCardPINFormat;
 
-  readonly slotName: string;
+  APDUTemplate: NSData;
 
-  readonly driverName: string;
+  PINByteOffset: number;
+
+  smartCard: TKSmartCard;
+
+  PIN: string;
+
+  setPINFormat(PINFormat: TKSmartCardPINFormat): void;
+
+  setAPDUTemplate(APDUTemplate: NSData | null): void;
+
+  setPINByteOffset(PINByteOffset: number): void;
+
+  setSmartCard(smartCard: TKSmartCard | null): void;
+
+  setPIN(PIN: string | null): void;
 }
 
-declare class TKSmartCardTokenSession extends TKTokenSession {
-  readonly smartCard: TKSmartCard;
+declare class TKTokenKeyExchangeParameters extends NSObject {
+  readonly requestedSize: number;
 
-  getSmartCardWithError(error: interop.PointerConvertible): TKSmartCard;
+  readonly sharedInfo: NSData;
+}
+
+declare class TKTokenKeychainContents extends NSObject {
+  fillWithItems(items: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  readonly items: NSArray;
+
+  keyForObjectIDError(objectID: interop.Object, error: interop.PointerConvertible): TKTokenKeychainKey;
+
+  certificateForObjectIDError(objectID: interop.Object, error: interop.PointerConvertible): TKTokenKeychainCertificate;
 }
 
 declare class TKBERTLVRecord extends TKTLVRecord {
@@ -454,12 +458,6 @@ declare class TKCompactTLVRecord extends TKTLVRecord {
   initWithTagValue(tag: number, value: NSData): this;
 }
 
-declare class TKTokenKeyExchangeParameters extends NSObject {
-  readonly requestedSize: number;
-
-  readonly sharedInfo: NSData;
-}
-
 declare class TKToken extends NSObject {
   initWithTokenDriverInstanceID(tokenDriver: TKTokenDriver, instanceID: string): this;
 
@@ -472,6 +470,14 @@ declare class TKToken extends NSObject {
   readonly keychainContents: TKTokenKeychainContents;
 
   setDelegate(delegate: TKTokenDelegate | null): void;
+}
+
+declare class TKTokenWatcherTokenInfo extends NSObject {
+  readonly tokenID: string;
+
+  readonly slotName: string;
+
+  readonly driverName: string;
 }
 
 declare class TKTokenKeychainItem extends NSObject {
@@ -490,7 +496,7 @@ declare class TKTokenKeychainItem extends NSObject {
 }
 
 declare class TKTokenKeychainKey extends TKTokenKeychainItem {
-  initWithCertificateObjectID(certificateRef: interop.PointerConvertible, objectID: interop.Object): this;
+  initWithCertificateObjectID(certificateRef: interop.Object | null, objectID: interop.Object): this;
 
   keyType: string;
 
@@ -576,12 +582,6 @@ declare class TKSmartCardUserInteractionForPINOperation extends TKSmartCardUserI
   setResultSW(resultSW: number): void;
 
   setResultData(resultData: NSData | null): void;
-}
-
-declare class TKSmartCardToken extends TKToken {
-  initWithSmartCardAIDInstanceIDTokenDriver(smartCard: TKSmartCard, AID: NSData | null, instanceID: string, tokenDriver: TKSmartCardTokenDriver): this;
-
-  readonly AID: NSData;
 }
 
 declare class TKSmartCardUserInteractionForSecurePINVerification extends TKSmartCardUserInteractionForPINOperation {

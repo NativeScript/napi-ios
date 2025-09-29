@@ -1,7 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kUTTypeVCard: interop.Pointer;
-
 declare const kUTTypeReferenceURLKey: interop.Pointer;
 
 declare const kUTTypeConformsToKey: interop.Pointer;
@@ -11,6 +9,8 @@ declare const kUTImportedTypeDeclarationsKey: interop.Pointer;
 declare const kUTTypeInkText: interop.Pointer;
 
 declare const kUTTypeInternetLocation: interop.Pointer;
+
+declare const kUTTypeVCard: interop.Pointer;
 
 declare const kUTTypeSpreadsheet: interop.Pointer;
 
@@ -78,8 +78,6 @@ declare const kUTTypeURL: interop.Pointer;
 
 declare const kUTTypeAliasFile: interop.Pointer;
 
-declare const kUTTypeBookmark: interop.Pointer;
-
 declare const kUTTypePresentation: interop.Pointer;
 
 declare const kUTExportedTypeDeclarationsKey: interop.Pointer;
@@ -111,6 +109,8 @@ declare const kUTTypeUTF8TabSeparatedText: interop.Pointer;
 declare const kUTTypeMountPoint: interop.Pointer;
 
 declare const kUTTypeMPEG2TransportStream: interop.Pointer;
+
+declare const kUTTypeBookmark: interop.Pointer;
 
 declare const kUTTypeJavaClass: interop.Pointer;
 
@@ -278,25 +278,25 @@ declare const kUTTypeIconFileKey: interop.Pointer;
 
 declare const kUTTypeIdentifierKey: interop.Pointer;
 
-declare function UTTypeCreatePreferredIdentifierForTag(inTagClass: interop.PointerConvertible, inTag: interop.PointerConvertible, inConformingToUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCreatePreferredIdentifierForTag(inTagClass: interop.Object, inTag: interop.Object, inConformingToUTI: interop.Object): interop.Object;
 
-declare function UTTypeCreateAllIdentifiersForTag(inTagClass: interop.PointerConvertible, inTag: interop.PointerConvertible, inConformingToUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCreateAllIdentifiersForTag(inTagClass: interop.Object, inTag: interop.Object, inConformingToUTI: interop.Object): interop.Object;
 
-declare function UTTypeCopyPreferredTagWithClass(inUTI: interop.PointerConvertible, inTagClass: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyPreferredTagWithClass(inUTI: interop.Object, inTagClass: interop.Object): interop.Object;
 
-declare function UTTypeCopyAllTagsWithClass(inUTI: interop.PointerConvertible, inTagClass: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyAllTagsWithClass(inUTI: interop.Object, inTagClass: interop.Object): interop.Object;
 
-declare function UTTypeEqual(inUTI1: interop.PointerConvertible, inUTI2: interop.PointerConvertible): number;
+declare function UTTypeEqual(inUTI1: interop.Object, inUTI2: interop.Object): number;
 
-declare function UTTypeConformsTo(inUTI: interop.PointerConvertible, inConformsToUTI: interop.PointerConvertible): number;
+declare function UTTypeConformsTo(inUTI: interop.Object, inConformsToUTI: interop.Object): number;
 
-declare function UTTypeCopyDescription(inUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyDescription(inUTI: interop.Object): interop.Object;
 
-declare function UTTypeIsDeclared(inUTI: interop.PointerConvertible): number;
+declare function UTTypeIsDeclared(inUTI: interop.Object): number;
 
-declare function UTTypeIsDynamic(inUTI: interop.PointerConvertible): number;
+declare function UTTypeIsDynamic(inUTI: interop.Object): number;
 
-declare function UTTypeCopyDeclaration(inUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyDeclaration(inUTI: interop.Object): interop.Object;
 
-declare function UTTypeCopyDeclaringBundleURL(inUTI: interop.PointerConvertible): interop.Pointer;
+declare function UTTypeCopyDeclaringBundleURL(inUTI: interop.Object): interop.Object;
 

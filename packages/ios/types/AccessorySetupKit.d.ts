@@ -72,40 +72,6 @@ declare const ASDiscoveryDescriptorWiFiAwareServiceRole: {
   Publisher: 20,
 };
 
-declare class ASPickerDisplaySettings extends NSObject {
-  static readonly defaultSettings: ASPickerDisplaySettings;
-
-  discoveryTimeout: number;
-
-  setDiscoveryTimeout(discoveryTimeout: number): void;
-}
-
-declare class ASMigrationDisplayItem extends ASPickerDisplayItem {
-  peripheralIdentifier: NSUUID;
-
-  hotspotSSID: string;
-
-  setPeripheralIdentifier(peripheralIdentifier: NSUUID | null): void;
-
-  setHotspotSSID(hotspotSSID: string | null): void;
-}
-
-declare class ASAccessoryEvent extends NSObject {
-  readonly eventType: interop.Enum<typeof ASAccessoryEventType>;
-
-  readonly accessory: ASAccessory;
-
-  readonly error: NSError;
-}
-
-declare class ASPropertyCompareString extends NSObject {
-  readonly string: string;
-
-  readonly compareOptions: interop.Enum<typeof NSStringCompareOptions>;
-
-  initWithStringCompareOptions(string: string, compareOptions: interop.Enum<typeof NSStringCompareOptions>): this;
-}
-
 declare class ASDiscoveryDescriptor extends NSObject {
   supportedOptions: interop.Enum<typeof ASAccessorySupportOptions>;
 
@@ -172,40 +138,6 @@ declare class ASDiscoveryDescriptor extends NSObject {
   setWifiAwareVendorNameMatch(wifiAwareVendorNameMatch: ASPropertyCompareString): void;
 }
 
-declare class ASAccessory extends NSObject {
-  readonly state: interop.Enum<typeof ASAccessoryState>;
-
-  readonly bluetoothIdentifier: NSUUID;
-
-  readonly bluetoothTransportBridgingIdentifier: NSData;
-
-  readonly displayName: string;
-
-  readonly SSID: string;
-
-  readonly wifiAwarePairedDeviceID: number;
-
-  readonly descriptor: ASDiscoveryDescriptor;
-}
-
-declare class ASPickerDisplayItem extends NSObject {
-  readonly name: string;
-
-  readonly productImage: UIImage;
-
-  readonly descriptor: ASDiscoveryDescriptor;
-
-  renameOptions: interop.Enum<typeof ASAccessoryRenameOptions>;
-
-  setupOptions: interop.Enum<typeof ASPickerDisplayItemSetupOptions>;
-
-  initWithNameProductImageDescriptor(name: string, productImage: UIImage, descriptor: ASDiscoveryDescriptor): this;
-
-  setRenameOptions(renameOptions: interop.Enum<typeof ASAccessoryRenameOptions>): void;
-
-  setSetupOptions(setupOptions: interop.Enum<typeof ASPickerDisplayItemSetupOptions>): void;
-}
-
 declare class ASAccessorySettings extends NSObject {
   static readonly defaultSettings: ASAccessorySettings;
 
@@ -242,5 +174,73 @@ declare class ASAccessorySession extends NSObject {
   updateAuthorizationDescriptorCompletionHandler(accessory: ASAccessory, descriptor: ASDiscoveryDescriptor, completionHandler: (p1: NSError) => void | null): void;
 
   setPickerDisplaySettings(pickerDisplaySettings: ASPickerDisplaySettings): void;
+}
+
+declare class ASAccessoryEvent extends NSObject {
+  readonly eventType: interop.Enum<typeof ASAccessoryEventType>;
+
+  readonly accessory: ASAccessory;
+
+  readonly error: NSError;
+}
+
+declare class ASAccessory extends NSObject {
+  readonly state: interop.Enum<typeof ASAccessoryState>;
+
+  readonly bluetoothIdentifier: NSUUID;
+
+  readonly bluetoothTransportBridgingIdentifier: NSData;
+
+  readonly displayName: string;
+
+  readonly SSID: string;
+
+  readonly wifiAwarePairedDeviceID: number;
+
+  readonly descriptor: ASDiscoveryDescriptor;
+}
+
+declare class ASMigrationDisplayItem extends ASPickerDisplayItem {
+  peripheralIdentifier: NSUUID;
+
+  hotspotSSID: string;
+
+  setPeripheralIdentifier(peripheralIdentifier: NSUUID | null): void;
+
+  setHotspotSSID(hotspotSSID: string | null): void;
+}
+
+declare class ASPickerDisplaySettings extends NSObject {
+  static readonly defaultSettings: ASPickerDisplaySettings;
+
+  discoveryTimeout: number;
+
+  setDiscoveryTimeout(discoveryTimeout: number): void;
+}
+
+declare class ASPropertyCompareString extends NSObject {
+  readonly string: string;
+
+  readonly compareOptions: interop.Enum<typeof NSStringCompareOptions>;
+
+  initWithStringCompareOptions(string: string, compareOptions: interop.Enum<typeof NSStringCompareOptions>): this;
+}
+
+declare class ASPickerDisplayItem extends NSObject {
+  readonly name: string;
+
+  readonly productImage: UIImage;
+
+  readonly descriptor: ASDiscoveryDescriptor;
+
+  renameOptions: interop.Enum<typeof ASAccessoryRenameOptions>;
+
+  setupOptions: interop.Enum<typeof ASPickerDisplayItemSetupOptions>;
+
+  initWithNameProductImageDescriptor(name: string, productImage: UIImage, descriptor: ASDiscoveryDescriptor): this;
+
+  setRenameOptions(renameOptions: interop.Enum<typeof ASAccessoryRenameOptions>): void;
+
+  setSetupOptions(setupOptions: interop.Enum<typeof ASPickerDisplayItemSetupOptions>): void;
 }
 

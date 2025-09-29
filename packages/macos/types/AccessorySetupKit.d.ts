@@ -1,5 +1,11 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const ASPickerDisplaySettingsDiscoveryTimeoutLong: number;
+
+declare const ASPickerDisplaySettingsDiscoveryTimeoutShort: number;
+
+declare const ASPickerDisplaySettingsDiscoveryTimeoutMedium: number;
+
 declare const ASErrorDomain: string;
 
 declare const ASPickerDisplayItemSetupOptions: {
@@ -16,6 +22,11 @@ declare const ASAccessorySupportOptions: {
   PairingLE: 2,
   TransportBridging: 4,
   HID: 8,
+};
+
+declare const ASDiscoveryDescriptorWiFiAwareServiceRole: {
+  Subscriber: 10,
+  Publisher: 20,
 };
 
 declare const ASAccessoryEventType: {

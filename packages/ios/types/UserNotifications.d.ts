@@ -156,18 +156,6 @@ declare class UNUserNotificationCenter extends NSObject {
   setDelegate(delegate: UNUserNotificationCenterDelegate | null): void;
 }
 
-declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
-  readonly repeats: boolean;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class UNNotificationServiceExtension extends NSObject {
   didReceiveNotificationRequestWithContentHandler(request: UNNotificationRequest, contentHandler: (p1: UNNotificationContent) => void): void;
 
@@ -359,34 +347,6 @@ declare class UNNotificationAction extends NSObject implements NSCopying, NSSecu
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class UNNotificationAttachment extends NSObject implements NSCopying, NSSecureCoding {
-  readonly identifier: string;
-
-  readonly URL: NSURL;
-
-  readonly type: string;
-
-  static attachmentWithIdentifierURLOptionsError<This extends abstract new (...args: any) => any>(this: This, identifier: string, URL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
-  readonly region: CLRegion;
-
-  static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
-}
-
-declare class UNTextInputNotificationResponse extends UNNotificationResponse {
-  readonly userText: string;
-}
-
 // @ts-ignore ClassDecl.tsIgnore
 declare class UNMutableNotificationContent extends UNNotificationContent {
   // @ts-ignore MemberDecl.tsIgnore
@@ -472,6 +432,34 @@ declare class UNMutableNotificationContent extends UNNotificationContent {
   setRelevanceScore(relevanceScore: number): void;
 
   setFilterCriteria(filterCriteria: string | null): void;
+}
+
+declare class UNNotificationAttachment extends NSObject implements NSCopying, NSSecureCoding {
+  readonly identifier: string;
+
+  readonly URL: NSURL;
+
+  readonly type: string;
+
+  static attachmentWithIdentifierURLOptionsError<This extends abstract new (...args: any) => any>(this: This, identifier: string, URL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): InstanceType<This>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class UNTextInputNotificationResponse extends UNNotificationResponse {
+  readonly userText: string;
+}
+
+declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
+  readonly region: CLRegion;
+
+  static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
 }
 
 declare class UNNotificationContent extends NSObject implements NSCopying, NSMutableCopying, NSSecureCoding {
@@ -584,5 +572,17 @@ declare class UNTextInputNotificationAction extends UNNotificationAction {
   readonly textInputButtonTitle: string;
 
   readonly textInputPlaceholder: string;
+}
+
+declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
+  readonly repeats: boolean;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

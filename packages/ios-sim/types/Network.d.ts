@@ -54,15 +54,6 @@ declare const nw_report_resolution_protocol_t: {
   nw_report_resolution_protocol_https: 4,
 };
 
-declare const nw_service_class_t: {
-  nw_service_class_best_effort: 0,
-  nw_service_class_background: 1,
-  nw_service_class_interactive_video: 2,
-  nw_service_class_interactive_voice: 3,
-  nw_service_class_responsive_data: 4,
-  nw_service_class_signaling: 5,
-};
-
 declare const nw_endpoint_type_t: {
   nw_endpoint_type_invalid: 0,
   nw_endpoint_type_address: 1,
@@ -265,6 +256,15 @@ declare const nw_ws_opcode_t: {
 declare const nw_ws_version_t: {
   nw_ws_version_invalid: 0,
   nw_ws_version_13: 1,
+};
+
+declare const nw_service_class_t: {
+  nw_service_class_best_effort: 0,
+  nw_service_class_background: 1,
+  nw_service_class_interactive_video: 2,
+  nw_service_class_interactive_voice: 3,
+  nw_service_class_responsive_data: 4,
+  nw_service_class_signaling: 5,
 };
 
 declare const nw_ws_response_status_t: {
@@ -541,7 +541,7 @@ declare function nw_error_get_error_domain(error: NSObject): interop.Enum<typeof
 
 declare function nw_error_get_error_code(error: NSObject): number;
 
-declare function nw_error_copy_cf_error(error: NSObject): interop.Pointer;
+declare function nw_error_copy_cf_error(error: NSObject): interop.Object;
 
 declare function nw_browser_create(descriptor: NSObject, parameters: NSObject): NSObject;
 
@@ -1137,6 +1137,12 @@ declare interface OS_nw_interface extends NSObjectProtocol {
 declare class OS_nw_interface extends NativeObject implements OS_nw_interface {
 }
 
+declare interface OS_nw_listener extends NSObjectProtocol {
+}
+
+declare class OS_nw_listener extends NativeObject implements OS_nw_listener {
+}
+
 declare interface OS_nw_protocol_definition extends NSObjectProtocol {
 }
 
@@ -1201,12 +1207,6 @@ declare interface OS_nw_ethernet_channel extends NSObjectProtocol {
 }
 
 declare class OS_nw_ethernet_channel extends NativeObject implements OS_nw_ethernet_channel {
-}
-
-declare interface OS_nw_listener extends NSObjectProtocol {
-}
-
-declare class OS_nw_listener extends NativeObject implements OS_nw_listener {
 }
 
 declare interface OS_nw_connection extends NSObjectProtocol {

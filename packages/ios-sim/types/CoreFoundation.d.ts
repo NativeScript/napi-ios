@@ -4,7 +4,7 @@ declare const kCFErrorUnderlyingErrorKey: interop.Pointer;
 
 declare const kCFURLVolumeSupportsSymbolicLinksKey: interop.Pointer;
 
-declare const kCFStreamSocketSecurityLevelNegotiatedSSL: interop.Pointer;
+declare const kCFStreamSocketSecurityLevelNegotiatedSSL: interop.Object;
 
 declare const kCFTeluguCalendar: interop.Pointer;
 
@@ -27,6 +27,8 @@ declare const kCFLocaleAlternateQuotationBeginDelimiterKey: interop.Pointer;
 declare const kCFURLVolumeURLForRemountingKey: interop.Pointer;
 
 declare const kCFVietnameseCalendar: interop.Pointer;
+
+declare const kCFMessagePortSuccess: number;
 
 declare const kCFURLFileResourceTypeUnknown: interop.Pointer;
 
@@ -80,7 +82,7 @@ declare const kCFURLGenerationIdentifierKey: interop.Pointer;
 
 declare const kCFURLFileProtectionCompleteUntilFirstUserAuthentication: interop.Pointer;
 
-declare const kCFStreamSocketSecurityLevelNone: interop.Pointer;
+declare const kCFStreamSocketSecurityLevelNone: interop.Object;
 
 declare const kCFErrorLocalizedFailureKey: interop.Pointer;
 
@@ -136,7 +138,7 @@ declare const kCFURLFileProtectionCompleteWhenUserInactive: interop.Pointer;
 
 declare const kCFURLCanonicalPathKey: interop.Pointer;
 
-declare const kCFStreamSocketSecurityLevelSSLv2: interop.Pointer;
+declare const kCFStreamSocketSecurityLevelSSLv2: interop.Object;
 
 declare const kCFURLVolumeIsEncryptedKey: interop.Pointer;
 
@@ -230,7 +232,7 @@ declare const kCFSocketNameKey: interop.Pointer;
 
 declare const kCFPreferencesAnyUser: interop.Pointer;
 
-declare const kCFStreamPropertyShouldCloseNativeSocket: interop.Pointer;
+declare const kCFStreamPropertyShouldCloseNativeSocket: interop.Object;
 
 declare const kCFAllocatorMallocZone: interop.Pointer;
 
@@ -262,7 +264,7 @@ declare const kCFURLIsUserImmutableKey: interop.Pointer;
 
 declare const kCFDateFormatterMonthSymbols: interop.Pointer;
 
-declare const kCFStreamSocketSOCKSVersion5: interop.Pointer;
+declare const kCFStreamSocketSOCKSVersion5: interop.Object;
 
 declare const kCFVikramCalendar: interop.Pointer;
 
@@ -278,7 +280,7 @@ declare const kCFURLIsSystemImmutableKey: interop.Pointer;
 
 declare const kCFDateFormatterShortStandaloneQuarterSymbols: interop.Pointer;
 
-declare const kCFStreamPropertySOCKSUser: interop.Pointer;
+declare const kCFStreamPropertySOCKSUser: interop.Object;
 
 declare const kCFPreferencesCurrentHost: interop.Pointer;
 
@@ -300,8 +302,6 @@ declare const kCFURLEffectiveIconKey: interop.Pointer;
 
 declare const kCFNumberFormatterIsLenient: interop.Pointer;
 
-declare const kCFMessagePortSuccess: number;
-
 declare const kCFStringTokenizerUnitWord: number;
 
 declare const kCFStreamPropertySocketRemotePortNumber: interop.Pointer;
@@ -310,7 +310,7 @@ declare const kCFDateFormatterStandaloneQuarterSymbols: interop.Pointer;
 
 declare const kCFURLVolumeSupportsImmutableFilesKey: interop.Pointer;
 
-declare const kCFStreamPropertySOCKSVersion: interop.Pointer;
+declare const kCFStreamPropertySOCKSVersion: interop.Object;
 
 declare const kCFAbsoluteTimeIntervalSince1904: number;
 
@@ -348,7 +348,7 @@ declare const kCFURLIsReadableKey: interop.Pointer;
 
 declare const kCFLocaleCalendarIdentifier: interop.Pointer;
 
-declare const kCFStreamSocketSOCKSVersion4: interop.Pointer;
+declare const kCFStreamSocketSOCKSVersion4: interop.Object;
 
 declare const kCFURLUbiquitousItemPercentDownloadedKey: interop.Pointer;
 
@@ -412,13 +412,13 @@ declare const kCFURLFilePOSIXMode: interop.Pointer;
 
 declare const kCFPropertyListReadUnknownVersionError: number;
 
-declare const kCFStreamSocketSecurityLevelSSLv3: interop.Pointer;
+declare const kCFStreamSocketSecurityLevelSSLv3: interop.Object;
 
-declare const kCFStreamPropertySOCKSPassword: interop.Pointer;
+declare const kCFStreamPropertySOCKSPassword: interop.Object;
 
-declare const kCFStreamPropertySOCKSProxyPort: interop.Pointer;
+declare const kCFStreamPropertySOCKSProxyPort: interop.Object;
 
-declare const kCFStreamPropertySOCKSProxyHost: interop.Pointer;
+declare const kCFStreamPropertySOCKSProxyHost: interop.Object;
 
 declare const kCFStreamPropertySocketRemoteHostName: interop.Pointer;
 
@@ -534,7 +534,7 @@ declare const kCFPreferencesCurrentUser: interop.Pointer;
 
 declare const kCFBooleanFalse: interop.Pointer;
 
-declare const kCFStreamPropertySOCKSProxy: interop.Pointer;
+declare const kCFStreamPropertySOCKSProxy: interop.Object;
 
 declare const kCFNumberFormatterMinFractionDigits: interop.Pointer;
 
@@ -688,7 +688,7 @@ declare const kCFNumberPositiveInfinity: interop.Pointer;
 
 declare const kCFURLVolumeAvailableCapacityForOpportunisticUsageKey: interop.Pointer;
 
-declare const kCFStreamSocketSecurityLevelTLSv1: interop.Pointer;
+declare const kCFStreamSocketSecurityLevelTLSv1: interop.Object;
 
 declare const kCFTimeZoneSystemTimeZoneDidChangeNotification: interop.Pointer;
 
@@ -754,7 +754,7 @@ declare const kCFBuddhistCalendar: interop.Pointer;
 
 declare const kCFDateFormatterAMSymbol: interop.Pointer;
 
-declare const kCFStreamPropertySocketSecurityLevel: interop.Pointer;
+declare const kCFStreamPropertySocketSecurityLevel: interop.Object;
 
 declare const kCFErrorDomainPOSIX: interop.Pointer;
 
@@ -781,6 +781,24 @@ declare const CFURLBookmarkCreationOptions: {
   SuitableForBookmarkFile: 1024,
   WithoutImplicitSecurityScope: 536870912,
   PreferFileIDResolutionMask: 256,
+};
+
+declare const CFCharacterSetPredefinedSet: {
+  Control: 1,
+  Whitespace: 2,
+  WhitespaceAndNewline: 3,
+  DecimalDigit: 4,
+  Letter: 5,
+  LowercaseLetter: 6,
+  UppercaseLetter: 7,
+  NonBase: 8,
+  Decomposable: 9,
+  AlphaNumeric: 10,
+  Punctuation: 11,
+  CapitalizedLetter: 13,
+  Symbol: 14,
+  Newline: 15,
+  Illegal: 12,
 };
 
 declare const CFStringNormalizationForm: {
@@ -1185,24 +1203,6 @@ declare const CFNumberType: {
   Max: 16,
 };
 
-declare const CFCharacterSetPredefinedSet: {
-  Control: 1,
-  Whitespace: 2,
-  WhitespaceAndNewline: 3,
-  DecimalDigit: 4,
-  Letter: 5,
-  LowercaseLetter: 6,
-  UppercaseLetter: 7,
-  NonBase: 8,
-  Decomposable: 9,
-  AlphaNumeric: 10,
-  Punctuation: 11,
-  CapitalizedLetter: 13,
-  Symbol: 14,
-  Newline: 15,
-  Illegal: 12,
-};
-
 declare const CFStreamErrorDomain: {
   Custom: -1,
   POSIX: 1,
@@ -1311,7 +1311,7 @@ declare class CFSocketSignature {
   protocolFamily: number;
   socketType: number;
   protocol: number;
-  address: interop.Pointer;
+  address: interop.Object | null;
 }
 
 declare class CFRunLoopSourceContext {
@@ -1367,7 +1367,7 @@ declare class CGAffineTransformComponents {
 declare class CFStringInlineBuffer {
   constructor(init?: CFStringInlineBuffer);
   buffer: unknown /* const array */;
-  theString: interop.Pointer;
+  theString: interop.Object | null;
   directUniCharBuffer: interop.Pointer;
   directCStringBuffer: string | null;
   rangeToBuffer: CFRange;
@@ -1755,571 +1755,571 @@ declare function CFNullGetTypeID(): number;
 
 declare function CFAllocatorGetTypeID(): number;
 
-declare function CFAllocatorSetDefault(allocator: interop.PointerConvertible): void;
+declare function CFAllocatorSetDefault(allocator: interop.Object): void;
 
-declare function CFAllocatorGetDefault(): interop.Pointer;
+declare function CFAllocatorGetDefault(): interop.Object;
 
-declare function CFAllocatorCreate(allocator: interop.PointerConvertible, context: interop.PointerConvertible): interop.Pointer;
+declare function CFAllocatorCreate(allocator: interop.Object, context: interop.PointerConvertible): interop.Object;
 
-declare function CFAllocatorAllocateTyped(allocator: interop.PointerConvertible, size: number, descriptor: number, hint: number): interop.Pointer;
+declare function CFAllocatorAllocateTyped(allocator: interop.Object, size: number, descriptor: number, hint: number): interop.Pointer;
 
-declare function CFAllocatorReallocateTyped(allocator: interop.PointerConvertible, ptr: interop.PointerConvertible, newsize: number, descriptor: number, hint: number): interop.Pointer;
+declare function CFAllocatorReallocateTyped(allocator: interop.Object, ptr: interop.PointerConvertible, newsize: number, descriptor: number, hint: number): interop.Pointer;
 
-declare function CFAllocatorAllocateBytes(allocator: interop.PointerConvertible, size: number, hint: number): interop.Pointer;
+declare function CFAllocatorAllocateBytes(allocator: interop.Object, size: number, hint: number): interop.Pointer;
 
-declare function CFAllocatorReallocateBytes(allocator: interop.PointerConvertible, ptr: interop.PointerConvertible, newsize: number, hint: number): interop.Pointer;
+declare function CFAllocatorReallocateBytes(allocator: interop.Object, ptr: interop.PointerConvertible, newsize: number, hint: number): interop.Pointer;
 
-declare function CFAllocatorAllocate(allocator: interop.PointerConvertible, size: number, hint: number): interop.Pointer;
+declare function CFAllocatorAllocate(allocator: interop.Object, size: number, hint: number): interop.Pointer;
 
-declare function CFAllocatorReallocate(allocator: interop.PointerConvertible, ptr: interop.PointerConvertible, newsize: number, hint: number): interop.Pointer;
+declare function CFAllocatorReallocate(allocator: interop.Object, ptr: interop.PointerConvertible, newsize: number, hint: number): interop.Pointer;
 
-declare function CFAllocatorDeallocate(allocator: interop.PointerConvertible, ptr: interop.PointerConvertible): void;
+declare function CFAllocatorDeallocate(allocator: interop.Object, ptr: interop.PointerConvertible): void;
 
-declare function CFAllocatorGetPreferredSizeForSize(allocator: interop.PointerConvertible, size: number, hint: number): number;
+declare function CFAllocatorGetPreferredSizeForSize(allocator: interop.Object, size: number, hint: number): number;
 
-declare function CFAllocatorGetContext(allocator: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFAllocatorGetContext(allocator: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFGetTypeID(cf: interop.PointerConvertible): number;
+declare function CFGetTypeID(cf: interop.Object): number;
 
-declare function CFCopyTypeIDDescription(type_id: number): interop.Pointer;
+declare function CFCopyTypeIDDescription(type_id: number): interop.Object;
 
-declare function CFRetain(cf: interop.PointerConvertible): interop.Pointer;
+declare function CFRetain(cf: interop.Object): interop.Object;
 
-declare function CFRelease(cf: interop.PointerConvertible): void;
+declare function CFRelease(cf: interop.Object): void;
 
-declare function CFAutorelease(arg: interop.PointerConvertible): interop.Pointer;
+declare function CFAutorelease(arg: interop.Object): interop.Object;
 
-declare function CFGetRetainCount(cf: interop.PointerConvertible): number;
+declare function CFGetRetainCount(cf: interop.Object): number;
 
-declare function CFEqual(cf1: interop.PointerConvertible, cf2: interop.PointerConvertible): number;
+declare function CFEqual(cf1: interop.Object, cf2: interop.Object): number;
 
-declare function CFHash(cf: interop.PointerConvertible): number;
+declare function CFHash(cf: interop.Object): number;
 
-declare function CFCopyDescription(cf: interop.PointerConvertible): interop.Pointer;
+declare function CFCopyDescription(cf: interop.Object): interop.Object;
 
-declare function CFGetAllocator(cf: interop.PointerConvertible): interop.Pointer;
+declare function CFGetAllocator(cf: interop.Object): interop.Object;
 
-declare function CFMakeCollectable(cf: interop.PointerConvertible): interop.Pointer;
+declare function CFMakeCollectable(cf: interop.Object): interop.Object;
 
 declare function CFArrayGetTypeID(): number;
 
-declare function CFArrayCreate(allocator: interop.PointerConvertible, values: interop.PointerConvertible, numValues: number, callBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFArrayCreate(allocator: interop.Object, values: interop.PointerConvertible, numValues: number, callBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFArrayCreateCopy(allocator: interop.PointerConvertible, theArray: interop.PointerConvertible): interop.Pointer;
+declare function CFArrayCreateCopy(allocator: interop.Object, theArray: interop.Object): interop.Object;
 
-declare function CFArrayCreateMutable(allocator: interop.PointerConvertible, capacity: number, callBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFArrayCreateMutable(allocator: interop.Object, capacity: number, callBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFArrayCreateMutableCopy(allocator: interop.PointerConvertible, capacity: number, theArray: interop.PointerConvertible): interop.Pointer;
+declare function CFArrayCreateMutableCopy(allocator: interop.Object, capacity: number, theArray: interop.Object): interop.Object;
 
-declare function CFArrayGetCount(theArray: interop.PointerConvertible): number;
+declare function CFArrayGetCount(theArray: interop.Object): number;
 
-declare function CFArrayGetCountOfValue(theArray: interop.PointerConvertible, range: CFRange, value: interop.PointerConvertible): number;
+declare function CFArrayGetCountOfValue(theArray: interop.Object, range: CFRange, value: interop.PointerConvertible): number;
 
-declare function CFArrayContainsValue(theArray: interop.PointerConvertible, range: CFRange, value: interop.PointerConvertible): number;
+declare function CFArrayContainsValue(theArray: interop.Object, range: CFRange, value: interop.PointerConvertible): number;
 
-declare function CFArrayGetValueAtIndex(theArray: interop.PointerConvertible, idx: number): interop.Pointer;
+declare function CFArrayGetValueAtIndex(theArray: interop.Object, idx: number): interop.Pointer;
 
-declare function CFArrayGetValues(theArray: interop.PointerConvertible, range: CFRange, values: interop.PointerConvertible): void;
+declare function CFArrayGetValues(theArray: interop.Object, range: CFRange, values: interop.PointerConvertible): void;
 
-declare function CFArrayApplyFunction(theArray: interop.PointerConvertible, range: CFRange, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function CFArrayApplyFunction(theArray: interop.Object, range: CFRange, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function CFArrayGetFirstIndexOfValue(theArray: interop.PointerConvertible, range: CFRange, value: interop.PointerConvertible): number;
+declare function CFArrayGetFirstIndexOfValue(theArray: interop.Object, range: CFRange, value: interop.PointerConvertible): number;
 
-declare function CFArrayGetLastIndexOfValue(theArray: interop.PointerConvertible, range: CFRange, value: interop.PointerConvertible): number;
+declare function CFArrayGetLastIndexOfValue(theArray: interop.Object, range: CFRange, value: interop.PointerConvertible): number;
 
-declare function CFArrayBSearchValues(theArray: interop.PointerConvertible, range: CFRange, value: interop.PointerConvertible, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): number;
+declare function CFArrayBSearchValues(theArray: interop.Object, range: CFRange, value: interop.PointerConvertible, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): number;
 
-declare function CFArrayAppendValue(theArray: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFArrayAppendValue(theArray: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFArrayInsertValueAtIndex(theArray: interop.PointerConvertible, idx: number, value: interop.PointerConvertible): void;
+declare function CFArrayInsertValueAtIndex(theArray: interop.Object, idx: number, value: interop.PointerConvertible): void;
 
-declare function CFArraySetValueAtIndex(theArray: interop.PointerConvertible, idx: number, value: interop.PointerConvertible): void;
+declare function CFArraySetValueAtIndex(theArray: interop.Object, idx: number, value: interop.PointerConvertible): void;
 
-declare function CFArrayRemoveValueAtIndex(theArray: interop.PointerConvertible, idx: number): void;
+declare function CFArrayRemoveValueAtIndex(theArray: interop.Object, idx: number): void;
 
-declare function CFArrayRemoveAllValues(theArray: interop.PointerConvertible): void;
+declare function CFArrayRemoveAllValues(theArray: interop.Object): void;
 
-declare function CFArrayReplaceValues(theArray: interop.PointerConvertible, range: CFRange, newValues: interop.PointerConvertible, newCount: number): void;
+declare function CFArrayReplaceValues(theArray: interop.Object, range: CFRange, newValues: interop.PointerConvertible, newCount: number): void;
 
-declare function CFArrayExchangeValuesAtIndices(theArray: interop.PointerConvertible, idx1: number, idx2: number): void;
+declare function CFArrayExchangeValuesAtIndices(theArray: interop.Object, idx1: number, idx2: number): void;
 
-declare function CFArraySortValues(theArray: interop.PointerConvertible, range: CFRange, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): void;
+declare function CFArraySortValues(theArray: interop.Object, range: CFRange, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): void;
 
-declare function CFArrayAppendArray(theArray: interop.PointerConvertible, otherArray: interop.PointerConvertible, otherRange: CFRange): void;
+declare function CFArrayAppendArray(theArray: interop.Object, otherArray: interop.Object, otherRange: CFRange): void;
 
 declare function CFBagGetTypeID(): number;
 
-declare function CFBagCreate(allocator: interop.PointerConvertible, values: interop.PointerConvertible, numValues: number, callBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFBagCreate(allocator: interop.Object, values: interop.PointerConvertible, numValues: number, callBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFBagCreateCopy(allocator: interop.PointerConvertible, theBag: interop.PointerConvertible): interop.Pointer;
+declare function CFBagCreateCopy(allocator: interop.Object, theBag: interop.Object): interop.Object;
 
-declare function CFBagCreateMutable(allocator: interop.PointerConvertible, capacity: number, callBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFBagCreateMutable(allocator: interop.Object, capacity: number, callBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFBagCreateMutableCopy(allocator: interop.PointerConvertible, capacity: number, theBag: interop.PointerConvertible): interop.Pointer;
+declare function CFBagCreateMutableCopy(allocator: interop.Object, capacity: number, theBag: interop.Object): interop.Object;
 
-declare function CFBagGetCount(theBag: interop.PointerConvertible): number;
+declare function CFBagGetCount(theBag: interop.Object): number;
 
-declare function CFBagGetCountOfValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFBagGetCountOfValue(theBag: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFBagContainsValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFBagContainsValue(theBag: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFBagGetValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): interop.Pointer;
+declare function CFBagGetValue(theBag: interop.Object, value: interop.PointerConvertible): interop.Pointer;
 
-declare function CFBagGetValueIfPresent(theBag: interop.PointerConvertible, candidate: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFBagGetValueIfPresent(theBag: interop.Object, candidate: interop.PointerConvertible, value: interop.PointerConvertible): number;
 
-declare function CFBagGetValues(theBag: interop.PointerConvertible, values: interop.PointerConvertible): void;
+declare function CFBagGetValues(theBag: interop.Object, values: interop.PointerConvertible): void;
 
-declare function CFBagApplyFunction(theBag: interop.PointerConvertible, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function CFBagApplyFunction(theBag: interop.Object, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function CFBagAddValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFBagAddValue(theBag: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFBagReplaceValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFBagReplaceValue(theBag: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFBagSetValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFBagSetValue(theBag: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFBagRemoveValue(theBag: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFBagRemoveValue(theBag: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFBagRemoveAllValues(theBag: interop.PointerConvertible): void;
+declare function CFBagRemoveAllValues(theBag: interop.Object): void;
 
 declare function CFBinaryHeapGetTypeID(): number;
 
-declare function CFBinaryHeapCreate(allocator: interop.PointerConvertible, capacity: number, callBacks: interop.PointerConvertible, compareContext: interop.PointerConvertible): interop.Pointer;
+declare function CFBinaryHeapCreate(allocator: interop.Object, capacity: number, callBacks: interop.PointerConvertible, compareContext: interop.PointerConvertible): interop.Object;
 
-declare function CFBinaryHeapCreateCopy(allocator: interop.PointerConvertible, capacity: number, heap: interop.PointerConvertible): interop.Pointer;
+declare function CFBinaryHeapCreateCopy(allocator: interop.Object, capacity: number, heap: interop.Object): interop.Object;
 
-declare function CFBinaryHeapGetCount(heap: interop.PointerConvertible): number;
+declare function CFBinaryHeapGetCount(heap: interop.Object): number;
 
-declare function CFBinaryHeapGetCountOfValue(heap: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFBinaryHeapGetCountOfValue(heap: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFBinaryHeapContainsValue(heap: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFBinaryHeapContainsValue(heap: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFBinaryHeapGetMinimum(heap: interop.PointerConvertible): interop.Pointer;
+declare function CFBinaryHeapGetMinimum(heap: interop.Object): interop.Pointer;
 
-declare function CFBinaryHeapGetMinimumIfPresent(heap: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFBinaryHeapGetMinimumIfPresent(heap: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFBinaryHeapGetValues(heap: interop.PointerConvertible, values: interop.PointerConvertible): void;
+declare function CFBinaryHeapGetValues(heap: interop.Object, values: interop.PointerConvertible): void;
 
-declare function CFBinaryHeapApplyFunction(heap: interop.PointerConvertible, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function CFBinaryHeapApplyFunction(heap: interop.Object, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function CFBinaryHeapAddValue(heap: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFBinaryHeapAddValue(heap: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFBinaryHeapRemoveMinimumValue(heap: interop.PointerConvertible): void;
+declare function CFBinaryHeapRemoveMinimumValue(heap: interop.Object): void;
 
-declare function CFBinaryHeapRemoveAllValues(heap: interop.PointerConvertible): void;
+declare function CFBinaryHeapRemoveAllValues(heap: interop.Object): void;
 
 declare function CFBitVectorGetTypeID(): number;
 
-declare function CFBitVectorCreate(allocator: interop.PointerConvertible, bytes: interop.PointerConvertible, numBits: number): interop.Pointer;
+declare function CFBitVectorCreate(allocator: interop.Object, bytes: interop.PointerConvertible, numBits: number): interop.Object;
 
-declare function CFBitVectorCreateCopy(allocator: interop.PointerConvertible, bv: interop.PointerConvertible): interop.Pointer;
+declare function CFBitVectorCreateCopy(allocator: interop.Object, bv: interop.Object): interop.Object;
 
-declare function CFBitVectorCreateMutable(allocator: interop.PointerConvertible, capacity: number): interop.Pointer;
+declare function CFBitVectorCreateMutable(allocator: interop.Object, capacity: number): interop.Object;
 
-declare function CFBitVectorCreateMutableCopy(allocator: interop.PointerConvertible, capacity: number, bv: interop.PointerConvertible): interop.Pointer;
+declare function CFBitVectorCreateMutableCopy(allocator: interop.Object, capacity: number, bv: interop.Object): interop.Object;
 
-declare function CFBitVectorGetCount(bv: interop.PointerConvertible): number;
+declare function CFBitVectorGetCount(bv: interop.Object): number;
 
-declare function CFBitVectorGetCountOfBit(bv: interop.PointerConvertible, range: CFRange, value: number): number;
+declare function CFBitVectorGetCountOfBit(bv: interop.Object, range: CFRange, value: number): number;
 
-declare function CFBitVectorContainsBit(bv: interop.PointerConvertible, range: CFRange, value: number): number;
+declare function CFBitVectorContainsBit(bv: interop.Object, range: CFRange, value: number): number;
 
-declare function CFBitVectorGetBitAtIndex(bv: interop.PointerConvertible, idx: number): number;
+declare function CFBitVectorGetBitAtIndex(bv: interop.Object, idx: number): number;
 
-declare function CFBitVectorGetBits(bv: interop.PointerConvertible, range: CFRange, bytes: interop.PointerConvertible): void;
+declare function CFBitVectorGetBits(bv: interop.Object, range: CFRange, bytes: interop.PointerConvertible): void;
 
-declare function CFBitVectorGetFirstIndexOfBit(bv: interop.PointerConvertible, range: CFRange, value: number): number;
+declare function CFBitVectorGetFirstIndexOfBit(bv: interop.Object, range: CFRange, value: number): number;
 
-declare function CFBitVectorGetLastIndexOfBit(bv: interop.PointerConvertible, range: CFRange, value: number): number;
+declare function CFBitVectorGetLastIndexOfBit(bv: interop.Object, range: CFRange, value: number): number;
 
-declare function CFBitVectorSetCount(bv: interop.PointerConvertible, count: number): void;
+declare function CFBitVectorSetCount(bv: interop.Object, count: number): void;
 
-declare function CFBitVectorFlipBitAtIndex(bv: interop.PointerConvertible, idx: number): void;
+declare function CFBitVectorFlipBitAtIndex(bv: interop.Object, idx: number): void;
 
-declare function CFBitVectorFlipBits(bv: interop.PointerConvertible, range: CFRange): void;
+declare function CFBitVectorFlipBits(bv: interop.Object, range: CFRange): void;
 
-declare function CFBitVectorSetBitAtIndex(bv: interop.PointerConvertible, idx: number, value: number): void;
+declare function CFBitVectorSetBitAtIndex(bv: interop.Object, idx: number, value: number): void;
 
-declare function CFBitVectorSetBits(bv: interop.PointerConvertible, range: CFRange, value: number): void;
+declare function CFBitVectorSetBits(bv: interop.Object, range: CFRange, value: number): void;
 
-declare function CFBitVectorSetAllBits(bv: interop.PointerConvertible, value: number): void;
+declare function CFBitVectorSetAllBits(bv: interop.Object, value: number): void;
 
 declare function CFDictionaryGetTypeID(): number;
 
-declare function CFDictionaryCreate(allocator: interop.PointerConvertible, keys: interop.PointerConvertible, values: interop.PointerConvertible, numValues: number, keyCallBacks: interop.PointerConvertible, valueCallBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFDictionaryCreate(allocator: interop.Object, keys: interop.PointerConvertible, values: interop.PointerConvertible, numValues: number, keyCallBacks: interop.PointerConvertible, valueCallBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFDictionaryCreateCopy(allocator: interop.PointerConvertible, theDict: interop.PointerConvertible): interop.Pointer;
+declare function CFDictionaryCreateCopy(allocator: interop.Object, theDict: interop.Object): interop.Object;
 
-declare function CFDictionaryCreateMutable(allocator: interop.PointerConvertible, capacity: number, keyCallBacks: interop.PointerConvertible, valueCallBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFDictionaryCreateMutable(allocator: interop.Object, capacity: number, keyCallBacks: interop.PointerConvertible, valueCallBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFDictionaryCreateMutableCopy(allocator: interop.PointerConvertible, capacity: number, theDict: interop.PointerConvertible): interop.Pointer;
+declare function CFDictionaryCreateMutableCopy(allocator: interop.Object, capacity: number, theDict: interop.Object): interop.Object;
 
-declare function CFDictionaryGetCount(theDict: interop.PointerConvertible): number;
+declare function CFDictionaryGetCount(theDict: interop.Object): number;
 
-declare function CFDictionaryGetCountOfKey(theDict: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function CFDictionaryGetCountOfKey(theDict: interop.Object, key: interop.PointerConvertible): number;
 
-declare function CFDictionaryGetCountOfValue(theDict: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFDictionaryGetCountOfValue(theDict: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFDictionaryContainsKey(theDict: interop.PointerConvertible, key: interop.PointerConvertible): number;
+declare function CFDictionaryContainsKey(theDict: interop.Object, key: interop.PointerConvertible): number;
 
-declare function CFDictionaryContainsValue(theDict: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFDictionaryContainsValue(theDict: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFDictionaryGetValue(theDict: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function CFDictionaryGetValue(theDict: interop.Object, key: interop.PointerConvertible): interop.Pointer;
 
-declare function CFDictionaryGetValueIfPresent(theDict: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFDictionaryGetValueIfPresent(theDict: interop.Object, key: interop.PointerConvertible, value: interop.PointerConvertible): number;
 
-declare function CFDictionaryGetKeysAndValues(theDict: interop.PointerConvertible, keys: interop.PointerConvertible, values: interop.PointerConvertible): void;
+declare function CFDictionaryGetKeysAndValues(theDict: interop.Object, keys: interop.PointerConvertible, values: interop.PointerConvertible): void;
 
-declare function CFDictionaryApplyFunction(theDict: interop.PointerConvertible, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function CFDictionaryApplyFunction(theDict: interop.Object, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function CFDictionaryAddValue(theDict: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFDictionaryAddValue(theDict: interop.Object, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
 
-declare function CFDictionarySetValue(theDict: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFDictionarySetValue(theDict: interop.Object, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
 
-declare function CFDictionaryReplaceValue(theDict: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFDictionaryReplaceValue(theDict: interop.Object, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
 
-declare function CFDictionaryRemoveValue(theDict: interop.PointerConvertible, key: interop.PointerConvertible): void;
+declare function CFDictionaryRemoveValue(theDict: interop.Object, key: interop.PointerConvertible): void;
 
-declare function CFDictionaryRemoveAllValues(theDict: interop.PointerConvertible): void;
+declare function CFDictionaryRemoveAllValues(theDict: interop.Object): void;
 
 declare function CFNotificationCenterGetTypeID(): number;
 
-declare function CFNotificationCenterGetLocalCenter(): interop.Pointer;
+declare function CFNotificationCenterGetLocalCenter(): interop.Object;
 
-declare function CFNotificationCenterGetDarwinNotifyCenter(): interop.Pointer;
+declare function CFNotificationCenterGetDarwinNotifyCenter(): interop.Object;
 
-declare function CFNotificationCenterAddObserver(center: interop.PointerConvertible, observer: interop.PointerConvertible, callBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, name: interop.PointerConvertible, object: interop.PointerConvertible, suspensionBehavior: interop.Enum<typeof CFNotificationSuspensionBehavior>): void;
+declare function CFNotificationCenterAddObserver(center: interop.Object, observer: interop.PointerConvertible, callBack: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, name: interop.Object, object: interop.PointerConvertible, suspensionBehavior: interop.Enum<typeof CFNotificationSuspensionBehavior>): void;
 
-declare function CFNotificationCenterRemoveObserver(center: interop.PointerConvertible, observer: interop.PointerConvertible, name: interop.PointerConvertible, object: interop.PointerConvertible): void;
+declare function CFNotificationCenterRemoveObserver(center: interop.Object, observer: interop.PointerConvertible, name: interop.PointerConvertible, object: interop.PointerConvertible): void;
 
-declare function CFNotificationCenterRemoveEveryObserver(center: interop.PointerConvertible, observer: interop.PointerConvertible): void;
+declare function CFNotificationCenterRemoveEveryObserver(center: interop.Object, observer: interop.PointerConvertible): void;
 
-declare function CFNotificationCenterPostNotification(center: interop.PointerConvertible, name: interop.PointerConvertible, object: interop.PointerConvertible, userInfo: interop.PointerConvertible, deliverImmediately: number): void;
+declare function CFNotificationCenterPostNotification(center: interop.Object, name: interop.PointerConvertible, object: interop.PointerConvertible, userInfo: interop.Object, deliverImmediately: number): void;
 
-declare function CFNotificationCenterPostNotificationWithOptions(center: interop.PointerConvertible, name: interop.PointerConvertible, object: interop.PointerConvertible, userInfo: interop.PointerConvertible, options: number): void;
+declare function CFNotificationCenterPostNotificationWithOptions(center: interop.Object, name: interop.PointerConvertible, object: interop.PointerConvertible, userInfo: interop.Object, options: number): void;
 
 declare function CFLocaleGetTypeID(): number;
 
-declare function CFLocaleGetSystem(): interop.Pointer;
+declare function CFLocaleGetSystem(): interop.Object;
 
-declare function CFLocaleCopyCurrent(): interop.Pointer;
+declare function CFLocaleCopyCurrent(): interop.Object;
 
-declare function CFLocaleCopyAvailableLocaleIdentifiers(): interop.Pointer;
+declare function CFLocaleCopyAvailableLocaleIdentifiers(): interop.Object;
 
-declare function CFLocaleCopyISOLanguageCodes(): interop.Pointer;
+declare function CFLocaleCopyISOLanguageCodes(): interop.Object;
 
-declare function CFLocaleCopyISOCountryCodes(): interop.Pointer;
+declare function CFLocaleCopyISOCountryCodes(): interop.Object;
 
-declare function CFLocaleCopyISOCurrencyCodes(): interop.Pointer;
+declare function CFLocaleCopyISOCurrencyCodes(): interop.Object;
 
-declare function CFLocaleCopyCommonISOCurrencyCodes(): interop.Pointer;
+declare function CFLocaleCopyCommonISOCurrencyCodes(): interop.Object;
 
-declare function CFLocaleCopyPreferredLanguages(): interop.Pointer;
+declare function CFLocaleCopyPreferredLanguages(): interop.Object;
 
-declare function CFLocaleCreateCanonicalLanguageIdentifierFromString(allocator: interop.PointerConvertible, localeIdentifier: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCreateCanonicalLanguageIdentifierFromString(allocator: interop.Object, localeIdentifier: interop.Object): interop.Pointer;
 
-declare function CFLocaleCreateCanonicalLocaleIdentifierFromString(allocator: interop.PointerConvertible, localeIdentifier: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCreateCanonicalLocaleIdentifierFromString(allocator: interop.Object, localeIdentifier: interop.Object): interop.Pointer;
 
-declare function CFLocaleCreateCanonicalLocaleIdentifierFromScriptManagerCodes(allocator: interop.PointerConvertible, lcode: number, rcode: number): interop.Pointer;
+declare function CFLocaleCreateCanonicalLocaleIdentifierFromScriptManagerCodes(allocator: interop.Object, lcode: number, rcode: number): interop.Pointer;
 
-declare function CFLocaleCreateLocaleIdentifierFromWindowsLocaleCode(allocator: interop.PointerConvertible, lcid: number): interop.Pointer;
+declare function CFLocaleCreateLocaleIdentifierFromWindowsLocaleCode(allocator: interop.Object, lcid: number): interop.Pointer;
 
 declare function CFLocaleGetWindowsLocaleCodeFromLocaleIdentifier(localeIdentifier: interop.PointerConvertible): number;
 
-declare function CFLocaleGetLanguageCharacterDirection(isoLangCode: interop.PointerConvertible): interop.Enum<typeof CFLocaleLanguageDirection>;
+declare function CFLocaleGetLanguageCharacterDirection(isoLangCode: interop.Object): interop.Enum<typeof CFLocaleLanguageDirection>;
 
-declare function CFLocaleGetLanguageLineDirection(isoLangCode: interop.PointerConvertible): interop.Enum<typeof CFLocaleLanguageDirection>;
+declare function CFLocaleGetLanguageLineDirection(isoLangCode: interop.Object): interop.Enum<typeof CFLocaleLanguageDirection>;
 
-declare function CFLocaleCreateComponentsFromLocaleIdentifier(allocator: interop.PointerConvertible, localeID: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCreateComponentsFromLocaleIdentifier(allocator: interop.Object, localeID: interop.PointerConvertible): interop.Object;
 
-declare function CFLocaleCreateLocaleIdentifierFromComponents(allocator: interop.PointerConvertible, dictionary: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCreateLocaleIdentifierFromComponents(allocator: interop.Object, dictionary: interop.Object): interop.Pointer;
 
-declare function CFLocaleCreate(allocator: interop.PointerConvertible, localeIdentifier: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCreate(allocator: interop.Object, localeIdentifier: interop.PointerConvertible): interop.Object;
 
-declare function CFLocaleCreateCopy(allocator: interop.PointerConvertible, locale: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCreateCopy(allocator: interop.Object, locale: interop.Object): interop.Object;
 
-declare function CFLocaleGetIdentifier(locale: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleGetIdentifier(locale: interop.Object): interop.Pointer;
 
-declare function CFLocaleGetValue(locale: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleGetValue(locale: interop.Object, key: interop.PointerConvertible): interop.Object;
 
-declare function CFLocaleCopyDisplayNameForPropertyValue(displayLocale: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): interop.Pointer;
+declare function CFLocaleCopyDisplayNameForPropertyValue(displayLocale: interop.Object, key: interop.PointerConvertible, value: interop.Object): interop.Object;
 
 declare function CFAbsoluteTimeGetCurrent(): number;
 
 declare function CFDateGetTypeID(): number;
 
-declare function CFDateCreate(allocator: interop.PointerConvertible, at: number): interop.Pointer;
+declare function CFDateCreate(allocator: interop.Object, at: number): interop.Object;
 
-declare function CFDateGetAbsoluteTime(theDate: interop.PointerConvertible): number;
+declare function CFDateGetAbsoluteTime(theDate: interop.Object): number;
 
-declare function CFDateGetTimeIntervalSinceDate(theDate: interop.PointerConvertible, otherDate: interop.PointerConvertible): number;
+declare function CFDateGetTimeIntervalSinceDate(theDate: interop.Object, otherDate: interop.Object): number;
 
-declare function CFDateCompare(theDate: interop.PointerConvertible, otherDate: interop.PointerConvertible, context: interop.PointerConvertible): interop.Enum<typeof CFComparisonResult>;
+declare function CFDateCompare(theDate: interop.Object, otherDate: interop.Object, context: interop.PointerConvertible): interop.Enum<typeof CFComparisonResult>;
 
 declare function CFGregorianDateIsValid(gdate: CFGregorianDate, unitFlags: number): number;
 
-declare function CFGregorianDateGetAbsoluteTime(gdate: CFGregorianDate, tz: interop.PointerConvertible): number;
+declare function CFGregorianDateGetAbsoluteTime(gdate: CFGregorianDate, tz: interop.Object): number;
 
-declare function CFAbsoluteTimeGetGregorianDate(at: number, tz: interop.PointerConvertible): CFGregorianDate;
+declare function CFAbsoluteTimeGetGregorianDate(at: number, tz: interop.Object): CFGregorianDate;
 
-declare function CFAbsoluteTimeAddGregorianUnits(at: number, tz: interop.PointerConvertible, units: CFGregorianUnits): number;
+declare function CFAbsoluteTimeAddGregorianUnits(at: number, tz: interop.Object, units: CFGregorianUnits): number;
 
-declare function CFAbsoluteTimeGetDifferenceAsGregorianUnits(at1: number, at2: number, tz: interop.PointerConvertible, unitFlags: number): CFGregorianUnits;
+declare function CFAbsoluteTimeGetDifferenceAsGregorianUnits(at1: number, at2: number, tz: interop.Object, unitFlags: number): CFGregorianUnits;
 
-declare function CFAbsoluteTimeGetDayOfWeek(at: number, tz: interop.PointerConvertible): number;
+declare function CFAbsoluteTimeGetDayOfWeek(at: number, tz: interop.Object): number;
 
-declare function CFAbsoluteTimeGetDayOfYear(at: number, tz: interop.PointerConvertible): number;
+declare function CFAbsoluteTimeGetDayOfYear(at: number, tz: interop.Object): number;
 
-declare function CFAbsoluteTimeGetWeekOfYear(at: number, tz: interop.PointerConvertible): number;
+declare function CFAbsoluteTimeGetWeekOfYear(at: number, tz: interop.Object): number;
 
 declare function CFDataGetTypeID(): number;
 
-declare function CFDataCreate(allocator: interop.PointerConvertible, bytes: interop.PointerConvertible, length: number): interop.Pointer;
+declare function CFDataCreate(allocator: interop.Object, bytes: interop.PointerConvertible, length: number): interop.Object;
 
-declare function CFDataCreateWithBytesNoCopy(allocator: interop.PointerConvertible, bytes: interop.PointerConvertible, length: number, bytesDeallocator: interop.PointerConvertible): interop.Pointer;
+declare function CFDataCreateWithBytesNoCopy(allocator: interop.Object, bytes: interop.PointerConvertible, length: number, bytesDeallocator: interop.Object): interop.Object;
 
-declare function CFDataCreateCopy(allocator: interop.PointerConvertible, theData: interop.PointerConvertible): interop.Pointer;
+declare function CFDataCreateCopy(allocator: interop.Object, theData: interop.Object): interop.Object;
 
-declare function CFDataCreateMutable(allocator: interop.PointerConvertible, capacity: number): interop.Pointer;
+declare function CFDataCreateMutable(allocator: interop.Object, capacity: number): interop.Object;
 
-declare function CFDataCreateMutableCopy(allocator: interop.PointerConvertible, capacity: number, theData: interop.PointerConvertible): interop.Pointer;
+declare function CFDataCreateMutableCopy(allocator: interop.Object, capacity: number, theData: interop.Object): interop.Object;
 
-declare function CFDataGetLength(theData: interop.PointerConvertible): number;
+declare function CFDataGetLength(theData: interop.Object): number;
 
-declare function CFDataGetBytePtr(theData: interop.PointerConvertible): interop.Pointer;
+declare function CFDataGetBytePtr(theData: interop.Object): interop.Pointer;
 
-declare function CFDataGetMutableBytePtr(theData: interop.PointerConvertible): interop.Pointer;
+declare function CFDataGetMutableBytePtr(theData: interop.Object): interop.Pointer;
 
-declare function CFDataGetBytes(theData: interop.PointerConvertible, range: CFRange, buffer: interop.PointerConvertible): void;
+declare function CFDataGetBytes(theData: interop.Object, range: CFRange, buffer: interop.PointerConvertible): void;
 
-declare function CFDataSetLength(theData: interop.PointerConvertible, length: number): void;
+declare function CFDataSetLength(theData: interop.Object, length: number): void;
 
-declare function CFDataIncreaseLength(theData: interop.PointerConvertible, extraLength: number): void;
+declare function CFDataIncreaseLength(theData: interop.Object, extraLength: number): void;
 
-declare function CFDataAppendBytes(theData: interop.PointerConvertible, bytes: interop.PointerConvertible, length: number): void;
+declare function CFDataAppendBytes(theData: interop.Object, bytes: interop.PointerConvertible, length: number): void;
 
-declare function CFDataReplaceBytes(theData: interop.PointerConvertible, range: CFRange, newBytes: interop.PointerConvertible, newLength: number): void;
+declare function CFDataReplaceBytes(theData: interop.Object, range: CFRange, newBytes: interop.PointerConvertible, newLength: number): void;
 
-declare function CFDataDeleteBytes(theData: interop.PointerConvertible, range: CFRange): void;
+declare function CFDataDeleteBytes(theData: interop.Object, range: CFRange): void;
 
-declare function CFDataFind(theData: interop.PointerConvertible, dataToFind: interop.PointerConvertible, searchRange: CFRange, compareOptions: interop.Enum<typeof CFDataSearchFlags>): CFRange;
+declare function CFDataFind(theData: interop.Object, dataToFind: interop.Object, searchRange: CFRange, compareOptions: interop.Enum<typeof CFDataSearchFlags>): CFRange;
 
 declare function CFCharacterSetGetTypeID(): number;
 
-declare function CFCharacterSetGetPredefined(theSetIdentifier: interop.Enum<typeof CFCharacterSetPredefinedSet>): interop.Pointer;
+declare function CFCharacterSetGetPredefined(theSetIdentifier: interop.Enum<typeof CFCharacterSetPredefinedSet>): interop.Object;
 
-declare function CFCharacterSetCreateWithCharactersInRange(alloc: interop.PointerConvertible, theRange: CFRange): interop.Pointer;
+declare function CFCharacterSetCreateWithCharactersInRange(alloc: interop.Object, theRange: CFRange): interop.Object;
 
-declare function CFCharacterSetCreateWithCharactersInString(alloc: interop.PointerConvertible, theString: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateWithCharactersInString(alloc: interop.Object, theString: interop.Object): interop.Object;
 
-declare function CFCharacterSetCreateWithBitmapRepresentation(alloc: interop.PointerConvertible, theData: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateWithBitmapRepresentation(alloc: interop.Object, theData: interop.Object): interop.Object;
 
-declare function CFCharacterSetCreateInvertedSet(alloc: interop.PointerConvertible, theSet: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateInvertedSet(alloc: interop.Object, theSet: interop.Object): interop.Object;
 
-declare function CFCharacterSetIsSupersetOfSet(theSet: interop.PointerConvertible, theOtherset: interop.PointerConvertible): number;
+declare function CFCharacterSetIsSupersetOfSet(theSet: interop.Object, theOtherset: interop.Object): number;
 
-declare function CFCharacterSetHasMemberInPlane(theSet: interop.PointerConvertible, thePlane: number): number;
+declare function CFCharacterSetHasMemberInPlane(theSet: interop.Object, thePlane: number): number;
 
-declare function CFCharacterSetCreateMutable(alloc: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateMutable(alloc: interop.Object): interop.Object;
 
-declare function CFCharacterSetCreateCopy(alloc: interop.PointerConvertible, theSet: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateCopy(alloc: interop.Object, theSet: interop.Object): interop.Object;
 
-declare function CFCharacterSetCreateMutableCopy(alloc: interop.PointerConvertible, theSet: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateMutableCopy(alloc: interop.Object, theSet: interop.Object): interop.Object;
 
-declare function CFCharacterSetIsCharacterMember(theSet: interop.PointerConvertible, theChar: number): number;
+declare function CFCharacterSetIsCharacterMember(theSet: interop.Object, theChar: number): number;
 
-declare function CFCharacterSetIsLongCharacterMember(theSet: interop.PointerConvertible, theChar: number): number;
+declare function CFCharacterSetIsLongCharacterMember(theSet: interop.Object, theChar: number): number;
 
-declare function CFCharacterSetCreateBitmapRepresentation(alloc: interop.PointerConvertible, theSet: interop.PointerConvertible): interop.Pointer;
+declare function CFCharacterSetCreateBitmapRepresentation(alloc: interop.Object, theSet: interop.Object): interop.Object;
 
-declare function CFCharacterSetAddCharactersInRange(theSet: interop.PointerConvertible, theRange: CFRange): void;
+declare function CFCharacterSetAddCharactersInRange(theSet: interop.Object, theRange: CFRange): void;
 
-declare function CFCharacterSetRemoveCharactersInRange(theSet: interop.PointerConvertible, theRange: CFRange): void;
+declare function CFCharacterSetRemoveCharactersInRange(theSet: interop.Object, theRange: CFRange): void;
 
-declare function CFCharacterSetAddCharactersInString(theSet: interop.PointerConvertible, theString: interop.PointerConvertible): void;
+declare function CFCharacterSetAddCharactersInString(theSet: interop.Object, theString: interop.Object): void;
 
-declare function CFCharacterSetRemoveCharactersInString(theSet: interop.PointerConvertible, theString: interop.PointerConvertible): void;
+declare function CFCharacterSetRemoveCharactersInString(theSet: interop.Object, theString: interop.Object): void;
 
-declare function CFCharacterSetUnion(theSet: interop.PointerConvertible, theOtherSet: interop.PointerConvertible): void;
+declare function CFCharacterSetUnion(theSet: interop.Object, theOtherSet: interop.Object): void;
 
-declare function CFCharacterSetIntersect(theSet: interop.PointerConvertible, theOtherSet: interop.PointerConvertible): void;
+declare function CFCharacterSetIntersect(theSet: interop.Object, theOtherSet: interop.Object): void;
 
-declare function CFCharacterSetInvert(theSet: interop.PointerConvertible): void;
+declare function CFCharacterSetInvert(theSet: interop.Object): void;
 
 declare function CFErrorGetTypeID(): number;
 
-declare function CFErrorCreate(allocator: interop.PointerConvertible, domain: interop.PointerConvertible, code: number, userInfo: interop.PointerConvertible): interop.Pointer;
+declare function CFErrorCreate(allocator: interop.Object, domain: interop.PointerConvertible, code: number, userInfo: interop.Object): interop.Object;
 
-declare function CFErrorCreateWithUserInfoKeysAndValues(allocator: interop.PointerConvertible, domain: interop.PointerConvertible, code: number, userInfoKeys: interop.PointerConvertible, userInfoValues: interop.PointerConvertible, numUserInfoValues: number): interop.Pointer;
+declare function CFErrorCreateWithUserInfoKeysAndValues(allocator: interop.Object, domain: interop.PointerConvertible, code: number, userInfoKeys: interop.PointerConvertible, userInfoValues: interop.PointerConvertible, numUserInfoValues: number): interop.Object;
 
-declare function CFErrorGetDomain(err: interop.PointerConvertible): interop.Pointer;
+declare function CFErrorGetDomain(err: interop.Object): interop.Pointer;
 
-declare function CFErrorGetCode(err: interop.PointerConvertible): number;
+declare function CFErrorGetCode(err: interop.Object): number;
 
-declare function CFErrorCopyUserInfo(err: interop.PointerConvertible): interop.Pointer;
+declare function CFErrorCopyUserInfo(err: interop.Object): interop.Object;
 
-declare function CFErrorCopyDescription(err: interop.PointerConvertible): interop.Pointer;
+declare function CFErrorCopyDescription(err: interop.Object): interop.Object;
 
-declare function CFErrorCopyFailureReason(err: interop.PointerConvertible): interop.Pointer;
+declare function CFErrorCopyFailureReason(err: interop.Object): interop.Object;
 
-declare function CFErrorCopyRecoverySuggestion(err: interop.PointerConvertible): interop.Pointer;
+declare function CFErrorCopyRecoverySuggestion(err: interop.Object): interop.Object;
 
 declare function CFStringGetTypeID(): number;
 
-declare function CFStringCreateWithPascalString(alloc: interop.PointerConvertible, pStr: interop.PointerConvertible, encoding: number): interop.Pointer;
+declare function CFStringCreateWithPascalString(alloc: interop.Object, pStr: interop.PointerConvertible, encoding: number): interop.Object;
 
-declare function CFStringCreateWithCString(alloc: interop.PointerConvertible, cStr: string, encoding: number): interop.Pointer;
+declare function CFStringCreateWithCString(alloc: interop.Object, cStr: string, encoding: number): interop.Object;
 
-declare function CFStringCreateWithBytes(alloc: interop.PointerConvertible, bytes: interop.PointerConvertible, numBytes: number, encoding: number, isExternalRepresentation: number): interop.Pointer;
+declare function CFStringCreateWithBytes(alloc: interop.Object, bytes: interop.PointerConvertible, numBytes: number, encoding: number, isExternalRepresentation: number): interop.Object;
 
-declare function CFStringCreateWithCharacters(alloc: interop.PointerConvertible, chars: interop.PointerConvertible, numChars: number): interop.Pointer;
+declare function CFStringCreateWithCharacters(alloc: interop.Object, chars: interop.PointerConvertible, numChars: number): interop.Object;
 
-declare function CFStringCreateWithPascalStringNoCopy(alloc: interop.PointerConvertible, pStr: interop.PointerConvertible, encoding: number, contentsDeallocator: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateWithPascalStringNoCopy(alloc: interop.Object, pStr: interop.PointerConvertible, encoding: number, contentsDeallocator: interop.Object): interop.Object;
 
-declare function CFStringCreateWithCStringNoCopy(alloc: interop.PointerConvertible, cStr: string, encoding: number, contentsDeallocator: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateWithCStringNoCopy(alloc: interop.Object, cStr: string, encoding: number, contentsDeallocator: interop.Object): interop.Object;
 
-declare function CFStringCreateWithBytesNoCopy(alloc: interop.PointerConvertible, bytes: interop.PointerConvertible, numBytes: number, encoding: number, isExternalRepresentation: number, contentsDeallocator: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateWithBytesNoCopy(alloc: interop.Object, bytes: interop.PointerConvertible, numBytes: number, encoding: number, isExternalRepresentation: number, contentsDeallocator: interop.Object): interop.Object;
 
-declare function CFStringCreateWithCharactersNoCopy(alloc: interop.PointerConvertible, chars: interop.PointerConvertible, numChars: number, contentsDeallocator: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateWithCharactersNoCopy(alloc: interop.Object, chars: interop.PointerConvertible, numChars: number, contentsDeallocator: interop.Object): interop.Object;
 
-declare function CFStringCreateWithSubstring(alloc: interop.PointerConvertible, str: interop.PointerConvertible, range: CFRange): interop.Pointer;
+declare function CFStringCreateWithSubstring(alloc: interop.Object, str: interop.Object, range: CFRange): interop.Object;
 
-declare function CFStringCreateCopy(alloc: interop.PointerConvertible, theString: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateCopy(alloc: interop.Object, theString: interop.Object): interop.Object;
 
-declare function CFStringCreateWithFormat(alloc: interop.PointerConvertible, formatOptions: interop.PointerConvertible, format: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateWithFormat(alloc: interop.Object, formatOptions: interop.Object, format: interop.Object): interop.Object;
 
-declare function CFStringCreateWithFormatAndArguments(alloc: interop.PointerConvertible, formatOptions: interop.PointerConvertible, format: interop.PointerConvertible, arguments$: string): interop.Pointer;
+declare function CFStringCreateWithFormatAndArguments(alloc: interop.Object, formatOptions: interop.Object, format: interop.Object, arguments$: string): interop.Object;
 
-declare function CFStringCreateStringWithValidatedFormat(alloc: interop.PointerConvertible, formatOptions: interop.PointerConvertible, validFormatSpecifiers: interop.PointerConvertible, format: interop.PointerConvertible, errorPtr: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateStringWithValidatedFormat(alloc: interop.Object, formatOptions: interop.Object, validFormatSpecifiers: interop.Object, format: interop.Object, errorPtr: interop.PointerConvertible): interop.Object;
 
-declare function CFStringCreateStringWithValidatedFormatAndArguments(alloc: interop.PointerConvertible, formatOptions: interop.PointerConvertible, validFormatSpecifiers: interop.PointerConvertible, format: interop.PointerConvertible, arguments$: string, errorPtr: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateStringWithValidatedFormatAndArguments(alloc: interop.Object, formatOptions: interop.Object, validFormatSpecifiers: interop.Object, format: interop.Object, arguments$: string, errorPtr: interop.PointerConvertible): interop.Object;
 
-declare function CFStringCreateMutable(alloc: interop.PointerConvertible, maxLength: number): interop.Pointer;
+declare function CFStringCreateMutable(alloc: interop.Object, maxLength: number): interop.Object;
 
-declare function CFStringCreateMutableCopy(alloc: interop.PointerConvertible, maxLength: number, theString: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateMutableCopy(alloc: interop.Object, maxLength: number, theString: interop.Object): interop.Object;
 
-declare function CFStringCreateMutableWithExternalCharactersNoCopy(alloc: interop.PointerConvertible, chars: interop.PointerConvertible, numChars: number, capacity: number, externalCharactersAllocator: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateMutableWithExternalCharactersNoCopy(alloc: interop.Object, chars: interop.PointerConvertible, numChars: number, capacity: number, externalCharactersAllocator: interop.Object): interop.Object;
 
-declare function CFStringGetLength(theString: interop.PointerConvertible): number;
+declare function CFStringGetLength(theString: interop.Object): number;
 
-declare function CFStringGetCharacterAtIndex(theString: interop.PointerConvertible, idx: number): number;
+declare function CFStringGetCharacterAtIndex(theString: interop.Object, idx: number): number;
 
-declare function CFStringGetCharacters(theString: interop.PointerConvertible, range: CFRange, buffer: interop.PointerConvertible): void;
+declare function CFStringGetCharacters(theString: interop.Object, range: CFRange, buffer: interop.PointerConvertible): void;
 
-declare function CFStringGetPascalString(theString: interop.PointerConvertible, buffer: interop.PointerConvertible, bufferSize: number, encoding: number): number;
+declare function CFStringGetPascalString(theString: interop.Object, buffer: interop.PointerConvertible, bufferSize: number, encoding: number): number;
 
-declare function CFStringGetCString(theString: interop.PointerConvertible, buffer: string, bufferSize: number, encoding: number): number;
+declare function CFStringGetCString(theString: interop.Object, buffer: string, bufferSize: number, encoding: number): number;
 
-declare function CFStringGetPascalStringPtr(theString: interop.PointerConvertible, encoding: number): interop.Pointer;
+declare function CFStringGetPascalStringPtr(theString: interop.Object, encoding: number): interop.Pointer;
 
-declare function CFStringGetCStringPtr(theString: interop.PointerConvertible, encoding: number): string;
+declare function CFStringGetCStringPtr(theString: interop.Object, encoding: number): string;
 
-declare function CFStringGetCharactersPtr(theString: interop.PointerConvertible): interop.Pointer;
+declare function CFStringGetCharactersPtr(theString: interop.Object): interop.Pointer;
 
-declare function CFStringGetBytes(theString: interop.PointerConvertible, range: CFRange, encoding: number, lossByte: number, isExternalRepresentation: number, buffer: interop.PointerConvertible, maxBufLen: number, usedBufLen: interop.PointerConvertible): number;
+declare function CFStringGetBytes(theString: interop.Object, range: CFRange, encoding: number, lossByte: number, isExternalRepresentation: number, buffer: interop.PointerConvertible, maxBufLen: number, usedBufLen: interop.PointerConvertible): number;
 
-declare function CFStringCreateFromExternalRepresentation(alloc: interop.PointerConvertible, data: interop.PointerConvertible, encoding: number): interop.Pointer;
+declare function CFStringCreateFromExternalRepresentation(alloc: interop.Object, data: interop.Object, encoding: number): interop.Object;
 
-declare function CFStringCreateExternalRepresentation(alloc: interop.PointerConvertible, theString: interop.PointerConvertible, encoding: number, lossByte: number): interop.Pointer;
+declare function CFStringCreateExternalRepresentation(alloc: interop.Object, theString: interop.Object, encoding: number, lossByte: number): interop.Object;
 
-declare function CFStringGetSmallestEncoding(theString: interop.PointerConvertible): number;
+declare function CFStringGetSmallestEncoding(theString: interop.Object): number;
 
-declare function CFStringGetFastestEncoding(theString: interop.PointerConvertible): number;
+declare function CFStringGetFastestEncoding(theString: interop.Object): number;
 
 declare function CFStringGetSystemEncoding(): number;
 
 declare function CFStringGetMaximumSizeForEncoding(length: number, encoding: number): number;
 
-declare function CFStringGetFileSystemRepresentation(string: interop.PointerConvertible, buffer: string, maxBufLen: number): number;
+declare function CFStringGetFileSystemRepresentation(string: interop.Object, buffer: string, maxBufLen: number): number;
 
-declare function CFStringGetMaximumSizeOfFileSystemRepresentation(string: interop.PointerConvertible): number;
+declare function CFStringGetMaximumSizeOfFileSystemRepresentation(string: interop.Object): number;
 
-declare function CFStringCreateWithFileSystemRepresentation(alloc: interop.PointerConvertible, buffer: string): interop.Pointer;
+declare function CFStringCreateWithFileSystemRepresentation(alloc: interop.Object, buffer: string): interop.Object;
 
-declare function CFStringCompareWithOptionsAndLocale(theString1: interop.PointerConvertible, theString2: interop.PointerConvertible, rangeToCompare: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>, locale: interop.PointerConvertible): interop.Enum<typeof CFComparisonResult>;
+declare function CFStringCompareWithOptionsAndLocale(theString1: interop.Object, theString2: interop.Object, rangeToCompare: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>, locale: interop.Object): interop.Enum<typeof CFComparisonResult>;
 
-declare function CFStringCompareWithOptions(theString1: interop.PointerConvertible, theString2: interop.PointerConvertible, rangeToCompare: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>): interop.Enum<typeof CFComparisonResult>;
+declare function CFStringCompareWithOptions(theString1: interop.Object, theString2: interop.Object, rangeToCompare: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>): interop.Enum<typeof CFComparisonResult>;
 
-declare function CFStringCompare(theString1: interop.PointerConvertible, theString2: interop.PointerConvertible, compareOptions: interop.Enum<typeof CFStringCompareFlags>): interop.Enum<typeof CFComparisonResult>;
+declare function CFStringCompare(theString1: interop.Object, theString2: interop.Object, compareOptions: interop.Enum<typeof CFStringCompareFlags>): interop.Enum<typeof CFComparisonResult>;
 
-declare function CFStringFindWithOptionsAndLocale(theString: interop.PointerConvertible, stringToFind: interop.PointerConvertible, rangeToSearch: CFRange, searchOptions: interop.Enum<typeof CFStringCompareFlags>, locale: interop.PointerConvertible, result: interop.PointerConvertible): number;
+declare function CFStringFindWithOptionsAndLocale(theString: interop.Object, stringToFind: interop.Object, rangeToSearch: CFRange, searchOptions: interop.Enum<typeof CFStringCompareFlags>, locale: interop.Object, result: interop.PointerConvertible): number;
 
-declare function CFStringFindWithOptions(theString: interop.PointerConvertible, stringToFind: interop.PointerConvertible, rangeToSearch: CFRange, searchOptions: interop.Enum<typeof CFStringCompareFlags>, result: interop.PointerConvertible): number;
+declare function CFStringFindWithOptions(theString: interop.Object, stringToFind: interop.Object, rangeToSearch: CFRange, searchOptions: interop.Enum<typeof CFStringCompareFlags>, result: interop.PointerConvertible): number;
 
-declare function CFStringCreateArrayWithFindResults(alloc: interop.PointerConvertible, theString: interop.PointerConvertible, stringToFind: interop.PointerConvertible, rangeToSearch: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>): interop.Pointer;
+declare function CFStringCreateArrayWithFindResults(alloc: interop.Object, theString: interop.Object, stringToFind: interop.Object, rangeToSearch: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>): interop.Object;
 
-declare function CFStringFind(theString: interop.PointerConvertible, stringToFind: interop.PointerConvertible, compareOptions: interop.Enum<typeof CFStringCompareFlags>): CFRange;
+declare function CFStringFind(theString: interop.Object, stringToFind: interop.Object, compareOptions: interop.Enum<typeof CFStringCompareFlags>): CFRange;
 
-declare function CFStringHasPrefix(theString: interop.PointerConvertible, prefix: interop.PointerConvertible): number;
+declare function CFStringHasPrefix(theString: interop.Object, prefix: interop.Object): number;
 
-declare function CFStringHasSuffix(theString: interop.PointerConvertible, suffix: interop.PointerConvertible): number;
+declare function CFStringHasSuffix(theString: interop.Object, suffix: interop.Object): number;
 
-declare function CFStringGetRangeOfComposedCharactersAtIndex(theString: interop.PointerConvertible, theIndex: number): CFRange;
+declare function CFStringGetRangeOfComposedCharactersAtIndex(theString: interop.Object, theIndex: number): CFRange;
 
-declare function CFStringFindCharacterFromSet(theString: interop.PointerConvertible, theSet: interop.PointerConvertible, rangeToSearch: CFRange, searchOptions: interop.Enum<typeof CFStringCompareFlags>, result: interop.PointerConvertible): number;
+declare function CFStringFindCharacterFromSet(theString: interop.Object, theSet: interop.Object, rangeToSearch: CFRange, searchOptions: interop.Enum<typeof CFStringCompareFlags>, result: interop.PointerConvertible): number;
 
-declare function CFStringGetLineBounds(theString: interop.PointerConvertible, range: CFRange, lineBeginIndex: interop.PointerConvertible, lineEndIndex: interop.PointerConvertible, contentsEndIndex: interop.PointerConvertible): void;
+declare function CFStringGetLineBounds(theString: interop.Object, range: CFRange, lineBeginIndex: interop.PointerConvertible, lineEndIndex: interop.PointerConvertible, contentsEndIndex: interop.PointerConvertible): void;
 
-declare function CFStringGetParagraphBounds(string: interop.PointerConvertible, range: CFRange, parBeginIndex: interop.PointerConvertible, parEndIndex: interop.PointerConvertible, contentsEndIndex: interop.PointerConvertible): void;
+declare function CFStringGetParagraphBounds(string: interop.Object, range: CFRange, parBeginIndex: interop.PointerConvertible, parEndIndex: interop.PointerConvertible, contentsEndIndex: interop.PointerConvertible): void;
 
-declare function CFStringGetHyphenationLocationBeforeIndex(string: interop.PointerConvertible, location: number, limitRange: CFRange, options: number, locale: interop.PointerConvertible, character: interop.PointerConvertible): number;
+declare function CFStringGetHyphenationLocationBeforeIndex(string: interop.Object, location: number, limitRange: CFRange, options: number, locale: interop.Object, character: interop.PointerConvertible): number;
 
-declare function CFStringIsHyphenationAvailableForLocale(locale: interop.PointerConvertible): number;
+declare function CFStringIsHyphenationAvailableForLocale(locale: interop.Object): number;
 
-declare function CFStringCreateByCombiningStrings(alloc: interop.PointerConvertible, theArray: interop.PointerConvertible, separatorString: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateByCombiningStrings(alloc: interop.Object, theArray: interop.Object, separatorString: interop.Object): interop.Object;
 
-declare function CFStringCreateArrayBySeparatingStrings(alloc: interop.PointerConvertible, theString: interop.PointerConvertible, separatorString: interop.PointerConvertible): interop.Pointer;
+declare function CFStringCreateArrayBySeparatingStrings(alloc: interop.Object, theString: interop.Object, separatorString: interop.Object): interop.Object;
 
-declare function CFStringGetIntValue(str: interop.PointerConvertible): number;
+declare function CFStringGetIntValue(str: interop.Object): number;
 
-declare function CFStringGetDoubleValue(str: interop.PointerConvertible): number;
+declare function CFStringGetDoubleValue(str: interop.Object): number;
 
-declare function CFStringAppend(theString: interop.PointerConvertible, appendedString: interop.PointerConvertible): void;
+declare function CFStringAppend(theString: interop.Object, appendedString: interop.Object): void;
 
-declare function CFStringAppendCharacters(theString: interop.PointerConvertible, chars: interop.PointerConvertible, numChars: number): void;
+declare function CFStringAppendCharacters(theString: interop.Object, chars: interop.PointerConvertible, numChars: number): void;
 
-declare function CFStringAppendPascalString(theString: interop.PointerConvertible, pStr: interop.PointerConvertible, encoding: number): void;
+declare function CFStringAppendPascalString(theString: interop.Object, pStr: interop.PointerConvertible, encoding: number): void;
 
-declare function CFStringAppendCString(theString: interop.PointerConvertible, cStr: string, encoding: number): void;
+declare function CFStringAppendCString(theString: interop.Object, cStr: string, encoding: number): void;
 
-declare function CFStringAppendFormat(theString: interop.PointerConvertible, formatOptions: interop.PointerConvertible, format: interop.PointerConvertible): void;
+declare function CFStringAppendFormat(theString: interop.Object, formatOptions: interop.Object, format: interop.Object): void;
 
-declare function CFStringAppendFormatAndArguments(theString: interop.PointerConvertible, formatOptions: interop.PointerConvertible, format: interop.PointerConvertible, arguments$: string): void;
+declare function CFStringAppendFormatAndArguments(theString: interop.Object, formatOptions: interop.Object, format: interop.Object, arguments$: string): void;
 
-declare function CFStringInsert(str: interop.PointerConvertible, idx: number, insertedStr: interop.PointerConvertible): void;
+declare function CFStringInsert(str: interop.Object, idx: number, insertedStr: interop.Object): void;
 
-declare function CFStringDelete(theString: interop.PointerConvertible, range: CFRange): void;
+declare function CFStringDelete(theString: interop.Object, range: CFRange): void;
 
-declare function CFStringReplace(theString: interop.PointerConvertible, range: CFRange, replacement: interop.PointerConvertible): void;
+declare function CFStringReplace(theString: interop.Object, range: CFRange, replacement: interop.Object): void;
 
-declare function CFStringReplaceAll(theString: interop.PointerConvertible, replacement: interop.PointerConvertible): void;
+declare function CFStringReplaceAll(theString: interop.Object, replacement: interop.Object): void;
 
-declare function CFStringFindAndReplace(theString: interop.PointerConvertible, stringToFind: interop.PointerConvertible, replacementString: interop.PointerConvertible, rangeToSearch: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>): number;
+declare function CFStringFindAndReplace(theString: interop.Object, stringToFind: interop.Object, replacementString: interop.Object, rangeToSearch: CFRange, compareOptions: interop.Enum<typeof CFStringCompareFlags>): number;
 
-declare function CFStringSetExternalCharactersNoCopy(theString: interop.PointerConvertible, chars: interop.PointerConvertible, length: number, capacity: number): void;
+declare function CFStringSetExternalCharactersNoCopy(theString: interop.Object, chars: interop.PointerConvertible, length: number, capacity: number): void;
 
-declare function CFStringPad(theString: interop.PointerConvertible, padString: interop.PointerConvertible, length: number, indexIntoPad: number): void;
+declare function CFStringPad(theString: interop.Object, padString: interop.Object, length: number, indexIntoPad: number): void;
 
-declare function CFStringTrim(theString: interop.PointerConvertible, trimString: interop.PointerConvertible): void;
+declare function CFStringTrim(theString: interop.Object, trimString: interop.Object): void;
 
-declare function CFStringTrimWhitespace(theString: interop.PointerConvertible): void;
+declare function CFStringTrimWhitespace(theString: interop.Object): void;
 
-declare function CFStringLowercase(theString: interop.PointerConvertible, locale: interop.PointerConvertible): void;
+declare function CFStringLowercase(theString: interop.Object, locale: interop.Object): void;
 
-declare function CFStringUppercase(theString: interop.PointerConvertible, locale: interop.PointerConvertible): void;
+declare function CFStringUppercase(theString: interop.Object, locale: interop.Object): void;
 
-declare function CFStringCapitalize(theString: interop.PointerConvertible, locale: interop.PointerConvertible): void;
+declare function CFStringCapitalize(theString: interop.Object, locale: interop.Object): void;
 
-declare function CFStringNormalize(theString: interop.PointerConvertible, theForm: interop.Enum<typeof CFStringNormalizationForm>): void;
+declare function CFStringNormalize(theString: interop.Object, theForm: interop.Enum<typeof CFStringNormalizationForm>): void;
 
-declare function CFStringFold(theString: interop.PointerConvertible, theFlags: interop.Enum<typeof CFStringCompareFlags>, theLocale: interop.PointerConvertible): void;
+declare function CFStringFold(theString: interop.Object, theFlags: interop.Enum<typeof CFStringCompareFlags>, theLocale: interop.Object): void;
 
-declare function CFStringTransform(string: interop.PointerConvertible, range: interop.PointerConvertible, transform: interop.PointerConvertible, reverse: number): number;
+declare function CFStringTransform(string: interop.Object, range: interop.PointerConvertible, transform: interop.Object, reverse: number): number;
 
 declare function CFStringIsEncodingAvailable(encoding: number): number;
 
 declare function CFStringGetListOfAvailableEncodings(): interop.Pointer;
 
-declare function CFStringGetNameOfEncoding(encoding: number): interop.Pointer;
+declare function CFStringGetNameOfEncoding(encoding: number): interop.Object;
 
 declare function CFStringConvertEncodingToNSStringEncoding(encoding: number): number;
 
@@ -2329,471 +2329,471 @@ declare function CFStringConvertEncodingToWindowsCodepage(encoding: number): num
 
 declare function CFStringConvertWindowsCodepageToEncoding(codepage: number): number;
 
-declare function CFStringConvertIANACharSetNameToEncoding(theString: interop.PointerConvertible): number;
+declare function CFStringConvertIANACharSetNameToEncoding(theString: interop.Object): number;
 
-declare function CFStringConvertEncodingToIANACharSetName(encoding: number): interop.Pointer;
+declare function CFStringConvertEncodingToIANACharSetName(encoding: number): interop.Object;
 
 declare function CFStringGetMostCompatibleMacStringEncoding(encoding: number): number;
 
-declare function CFShow(obj: interop.PointerConvertible): void;
+declare function CFShow(obj: interop.Object): void;
 
-declare function CFShowStr(str: interop.PointerConvertible): void;
+declare function CFShowStr(str: interop.Object): void;
 
-declare function __CFStringMakeConstantString(cStr: string): interop.Pointer;
+declare function __CFStringMakeConstantString(cStr: string): interop.Object;
 
 declare function CFTimeZoneGetTypeID(): number;
 
-declare function CFTimeZoneCopySystem(): interop.Pointer;
+declare function CFTimeZoneCopySystem(): interop.Object;
 
 declare function CFTimeZoneResetSystem(): void;
 
-declare function CFTimeZoneCopyDefault(): interop.Pointer;
+declare function CFTimeZoneCopyDefault(): interop.Object;
 
-declare function CFTimeZoneSetDefault(tz: interop.PointerConvertible): void;
+declare function CFTimeZoneSetDefault(tz: interop.Object): void;
 
-declare function CFTimeZoneCopyKnownNames(): interop.Pointer;
+declare function CFTimeZoneCopyKnownNames(): interop.Object;
 
-declare function CFTimeZoneCopyAbbreviationDictionary(): interop.Pointer;
+declare function CFTimeZoneCopyAbbreviationDictionary(): interop.Object;
 
-declare function CFTimeZoneSetAbbreviationDictionary(dict: interop.PointerConvertible): void;
+declare function CFTimeZoneSetAbbreviationDictionary(dict: interop.Object): void;
 
-declare function CFTimeZoneCreate(allocator: interop.PointerConvertible, name: interop.PointerConvertible, data: interop.PointerConvertible): interop.Pointer;
+declare function CFTimeZoneCreate(allocator: interop.Object, name: interop.Object, data: interop.Object): interop.Object;
 
-declare function CFTimeZoneCreateWithTimeIntervalFromGMT(allocator: interop.PointerConvertible, ti: number): interop.Pointer;
+declare function CFTimeZoneCreateWithTimeIntervalFromGMT(allocator: interop.Object, ti: number): interop.Object;
 
-declare function CFTimeZoneCreateWithName(allocator: interop.PointerConvertible, name: interop.PointerConvertible, tryAbbrev: number): interop.Pointer;
+declare function CFTimeZoneCreateWithName(allocator: interop.Object, name: interop.Object, tryAbbrev: number): interop.Object;
 
-declare function CFTimeZoneGetName(tz: interop.PointerConvertible): interop.Pointer;
+declare function CFTimeZoneGetName(tz: interop.Object): interop.Object;
 
-declare function CFTimeZoneGetData(tz: interop.PointerConvertible): interop.Pointer;
+declare function CFTimeZoneGetData(tz: interop.Object): interop.Object;
 
-declare function CFTimeZoneGetSecondsFromGMT(tz: interop.PointerConvertible, at: number): number;
+declare function CFTimeZoneGetSecondsFromGMT(tz: interop.Object, at: number): number;
 
-declare function CFTimeZoneCopyAbbreviation(tz: interop.PointerConvertible, at: number): interop.Pointer;
+declare function CFTimeZoneCopyAbbreviation(tz: interop.Object, at: number): interop.Object;
 
-declare function CFTimeZoneIsDaylightSavingTime(tz: interop.PointerConvertible, at: number): number;
+declare function CFTimeZoneIsDaylightSavingTime(tz: interop.Object, at: number): number;
 
-declare function CFTimeZoneGetDaylightSavingTimeOffset(tz: interop.PointerConvertible, at: number): number;
+declare function CFTimeZoneGetDaylightSavingTimeOffset(tz: interop.Object, at: number): number;
 
-declare function CFTimeZoneGetNextDaylightSavingTimeTransition(tz: interop.PointerConvertible, at: number): number;
+declare function CFTimeZoneGetNextDaylightSavingTimeTransition(tz: interop.Object, at: number): number;
 
-declare function CFTimeZoneCopyLocalizedName(tz: interop.PointerConvertible, style: interop.Enum<typeof CFTimeZoneNameStyle>, locale: interop.PointerConvertible): interop.Pointer;
+declare function CFTimeZoneCopyLocalizedName(tz: interop.Object, style: interop.Enum<typeof CFTimeZoneNameStyle>, locale: interop.Object): interop.Object;
 
 declare function CFCalendarGetTypeID(): number;
 
-declare function CFCalendarCopyCurrent(): interop.Pointer;
+declare function CFCalendarCopyCurrent(): interop.Object;
 
-declare function CFCalendarCreateWithIdentifier(allocator: interop.PointerConvertible, identifier: interop.PointerConvertible): interop.Pointer;
+declare function CFCalendarCreateWithIdentifier(allocator: interop.Object, identifier: interop.PointerConvertible): interop.Object;
 
-declare function CFCalendarGetIdentifier(calendar: interop.PointerConvertible): interop.Pointer;
+declare function CFCalendarGetIdentifier(calendar: interop.Object): interop.Pointer;
 
-declare function CFCalendarCopyLocale(calendar: interop.PointerConvertible): interop.Pointer;
+declare function CFCalendarCopyLocale(calendar: interop.Object): interop.Object;
 
-declare function CFCalendarSetLocale(calendar: interop.PointerConvertible, locale: interop.PointerConvertible): void;
+declare function CFCalendarSetLocale(calendar: interop.Object, locale: interop.Object): void;
 
-declare function CFCalendarCopyTimeZone(calendar: interop.PointerConvertible): interop.Pointer;
+declare function CFCalendarCopyTimeZone(calendar: interop.Object): interop.Object;
 
-declare function CFCalendarSetTimeZone(calendar: interop.PointerConvertible, tz: interop.PointerConvertible): void;
+declare function CFCalendarSetTimeZone(calendar: interop.Object, tz: interop.Object): void;
 
-declare function CFCalendarGetFirstWeekday(calendar: interop.PointerConvertible): number;
+declare function CFCalendarGetFirstWeekday(calendar: interop.Object): number;
 
-declare function CFCalendarSetFirstWeekday(calendar: interop.PointerConvertible, wkdy: number): void;
+declare function CFCalendarSetFirstWeekday(calendar: interop.Object, wkdy: number): void;
 
-declare function CFCalendarGetMinimumDaysInFirstWeek(calendar: interop.PointerConvertible): number;
+declare function CFCalendarGetMinimumDaysInFirstWeek(calendar: interop.Object): number;
 
-declare function CFCalendarSetMinimumDaysInFirstWeek(calendar: interop.PointerConvertible, mwd: number): void;
+declare function CFCalendarSetMinimumDaysInFirstWeek(calendar: interop.Object, mwd: number): void;
 
-declare function CFCalendarGetMinimumRangeOfUnit(calendar: interop.PointerConvertible, unit: interop.Enum<typeof CFCalendarUnit>): CFRange;
+declare function CFCalendarGetMinimumRangeOfUnit(calendar: interop.Object, unit: interop.Enum<typeof CFCalendarUnit>): CFRange;
 
-declare function CFCalendarGetMaximumRangeOfUnit(calendar: interop.PointerConvertible, unit: interop.Enum<typeof CFCalendarUnit>): CFRange;
+declare function CFCalendarGetMaximumRangeOfUnit(calendar: interop.Object, unit: interop.Enum<typeof CFCalendarUnit>): CFRange;
 
-declare function CFCalendarGetRangeOfUnit(calendar: interop.PointerConvertible, smallerUnit: interop.Enum<typeof CFCalendarUnit>, biggerUnit: interop.Enum<typeof CFCalendarUnit>, at: number): CFRange;
+declare function CFCalendarGetRangeOfUnit(calendar: interop.Object, smallerUnit: interop.Enum<typeof CFCalendarUnit>, biggerUnit: interop.Enum<typeof CFCalendarUnit>, at: number): CFRange;
 
-declare function CFCalendarGetOrdinalityOfUnit(calendar: interop.PointerConvertible, smallerUnit: interop.Enum<typeof CFCalendarUnit>, biggerUnit: interop.Enum<typeof CFCalendarUnit>, at: number): number;
+declare function CFCalendarGetOrdinalityOfUnit(calendar: interop.Object, smallerUnit: interop.Enum<typeof CFCalendarUnit>, biggerUnit: interop.Enum<typeof CFCalendarUnit>, at: number): number;
 
-declare function CFCalendarGetTimeRangeOfUnit(calendar: interop.PointerConvertible, unit: interop.Enum<typeof CFCalendarUnit>, at: number, startp: interop.PointerConvertible, tip: interop.PointerConvertible): number;
+declare function CFCalendarGetTimeRangeOfUnit(calendar: interop.Object, unit: interop.Enum<typeof CFCalendarUnit>, at: number, startp: interop.PointerConvertible, tip: interop.PointerConvertible): number;
 
-declare function CFCalendarComposeAbsoluteTime(calendar: interop.PointerConvertible, at: interop.PointerConvertible, componentDesc: string): number;
+declare function CFCalendarComposeAbsoluteTime(calendar: interop.Object, at: interop.PointerConvertible, componentDesc: string): number;
 
-declare function CFCalendarDecomposeAbsoluteTime(calendar: interop.PointerConvertible, at: number, componentDesc: string): number;
+declare function CFCalendarDecomposeAbsoluteTime(calendar: interop.Object, at: number, componentDesc: string): number;
 
-declare function CFCalendarAddComponents(calendar: interop.PointerConvertible, at: interop.PointerConvertible, options: number, componentDesc: string): number;
+declare function CFCalendarAddComponents(calendar: interop.Object, at: interop.PointerConvertible, options: number, componentDesc: string): number;
 
-declare function CFCalendarGetComponentDifference(calendar: interop.PointerConvertible, startingAT: number, resultAT: number, options: number, componentDesc: string): number;
+declare function CFCalendarGetComponentDifference(calendar: interop.Object, startingAT: number, resultAT: number, options: number, componentDesc: string): number;
 
-declare function CFDateFormatterCreateDateFormatFromTemplate(allocator: interop.PointerConvertible, tmplate: interop.PointerConvertible, options: number, locale: interop.PointerConvertible): interop.Pointer;
+declare function CFDateFormatterCreateDateFormatFromTemplate(allocator: interop.Object, tmplate: interop.Object, options: number, locale: interop.Object): interop.Object;
 
 declare function CFDateFormatterGetTypeID(): number;
 
-declare function CFDateFormatterCreateISO8601Formatter(allocator: interop.PointerConvertible, formatOptions: interop.Enum<typeof CFISO8601DateFormatOptions>): interop.Pointer;
+declare function CFDateFormatterCreateISO8601Formatter(allocator: interop.Object, formatOptions: interop.Enum<typeof CFISO8601DateFormatOptions>): interop.Object;
 
-declare function CFDateFormatterCreate(allocator: interop.PointerConvertible, locale: interop.PointerConvertible, dateStyle: interop.Enum<typeof CFDateFormatterStyle>, timeStyle: interop.Enum<typeof CFDateFormatterStyle>): interop.Pointer;
+declare function CFDateFormatterCreate(allocator: interop.Object, locale: interop.Object, dateStyle: interop.Enum<typeof CFDateFormatterStyle>, timeStyle: interop.Enum<typeof CFDateFormatterStyle>): interop.Object;
 
-declare function CFDateFormatterGetLocale(formatter: interop.PointerConvertible): interop.Pointer;
+declare function CFDateFormatterGetLocale(formatter: interop.Object): interop.Object;
 
-declare function CFDateFormatterGetDateStyle(formatter: interop.PointerConvertible): interop.Enum<typeof CFDateFormatterStyle>;
+declare function CFDateFormatterGetDateStyle(formatter: interop.Object): interop.Enum<typeof CFDateFormatterStyle>;
 
-declare function CFDateFormatterGetTimeStyle(formatter: interop.PointerConvertible): interop.Enum<typeof CFDateFormatterStyle>;
+declare function CFDateFormatterGetTimeStyle(formatter: interop.Object): interop.Enum<typeof CFDateFormatterStyle>;
 
-declare function CFDateFormatterGetFormat(formatter: interop.PointerConvertible): interop.Pointer;
+declare function CFDateFormatterGetFormat(formatter: interop.Object): interop.Object;
 
-declare function CFDateFormatterSetFormat(formatter: interop.PointerConvertible, formatString: interop.PointerConvertible): void;
+declare function CFDateFormatterSetFormat(formatter: interop.Object, formatString: interop.Object): void;
 
-declare function CFDateFormatterCreateStringWithDate(allocator: interop.PointerConvertible, formatter: interop.PointerConvertible, date: interop.PointerConvertible): interop.Pointer;
+declare function CFDateFormatterCreateStringWithDate(allocator: interop.Object, formatter: interop.Object, date: interop.Object): interop.Object;
 
-declare function CFDateFormatterCreateStringWithAbsoluteTime(allocator: interop.PointerConvertible, formatter: interop.PointerConvertible, at: number): interop.Pointer;
+declare function CFDateFormatterCreateStringWithAbsoluteTime(allocator: interop.Object, formatter: interop.Object, at: number): interop.Object;
 
-declare function CFDateFormatterCreateDateFromString(allocator: interop.PointerConvertible, formatter: interop.PointerConvertible, string: interop.PointerConvertible, rangep: interop.PointerConvertible): interop.Pointer;
+declare function CFDateFormatterCreateDateFromString(allocator: interop.Object, formatter: interop.Object, string: interop.Object, rangep: interop.PointerConvertible): interop.Object;
 
-declare function CFDateFormatterGetAbsoluteTimeFromString(formatter: interop.PointerConvertible, string: interop.PointerConvertible, rangep: interop.PointerConvertible, atp: interop.PointerConvertible): number;
+declare function CFDateFormatterGetAbsoluteTimeFromString(formatter: interop.Object, string: interop.Object, rangep: interop.PointerConvertible, atp: interop.PointerConvertible): number;
 
-declare function CFDateFormatterSetProperty(formatter: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFDateFormatterSetProperty(formatter: interop.Object, key: interop.Object, value: interop.Object): void;
 
-declare function CFDateFormatterCopyProperty(formatter: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function CFDateFormatterCopyProperty(formatter: interop.Object, key: interop.PointerConvertible): interop.Object;
 
 declare function CFBooleanGetTypeID(): number;
 
-declare function CFBooleanGetValue(boolean: interop.PointerConvertible): number;
+declare function CFBooleanGetValue(boolean: interop.Object): number;
 
 declare function CFNumberGetTypeID(): number;
 
-declare function CFNumberCreate(allocator: interop.PointerConvertible, theType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): interop.Pointer;
+declare function CFNumberCreate(allocator: interop.Object, theType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): interop.Object;
 
-declare function CFNumberGetType(number: interop.PointerConvertible): interop.Enum<typeof CFNumberType>;
+declare function CFNumberGetType(number: interop.Object): interop.Enum<typeof CFNumberType>;
 
-declare function CFNumberGetByteSize(number: interop.PointerConvertible): number;
+declare function CFNumberGetByteSize(number: interop.Object): number;
 
-declare function CFNumberIsFloatType(number: interop.PointerConvertible): number;
+declare function CFNumberIsFloatType(number: interop.Object): number;
 
-declare function CFNumberGetValue(number: interop.PointerConvertible, theType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): number;
+declare function CFNumberGetValue(number: interop.Object, theType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): number;
 
-declare function CFNumberCompare(number: interop.PointerConvertible, otherNumber: interop.PointerConvertible, context: interop.PointerConvertible): interop.Enum<typeof CFComparisonResult>;
+declare function CFNumberCompare(number: interop.Object, otherNumber: interop.Object, context: interop.PointerConvertible): interop.Enum<typeof CFComparisonResult>;
 
 declare function CFNumberFormatterGetTypeID(): number;
 
-declare function CFNumberFormatterCreate(allocator: interop.PointerConvertible, locale: interop.PointerConvertible, style: interop.Enum<typeof CFNumberFormatterStyle>): interop.Pointer;
+declare function CFNumberFormatterCreate(allocator: interop.Object, locale: interop.Object, style: interop.Enum<typeof CFNumberFormatterStyle>): interop.Object;
 
-declare function CFNumberFormatterGetLocale(formatter: interop.PointerConvertible): interop.Pointer;
+declare function CFNumberFormatterGetLocale(formatter: interop.Object): interop.Object;
 
-declare function CFNumberFormatterGetStyle(formatter: interop.PointerConvertible): interop.Enum<typeof CFNumberFormatterStyle>;
+declare function CFNumberFormatterGetStyle(formatter: interop.Object): interop.Enum<typeof CFNumberFormatterStyle>;
 
-declare function CFNumberFormatterGetFormat(formatter: interop.PointerConvertible): interop.Pointer;
+declare function CFNumberFormatterGetFormat(formatter: interop.Object): interop.Object;
 
-declare function CFNumberFormatterSetFormat(formatter: interop.PointerConvertible, formatString: interop.PointerConvertible): void;
+declare function CFNumberFormatterSetFormat(formatter: interop.Object, formatString: interop.Object): void;
 
-declare function CFNumberFormatterCreateStringWithNumber(allocator: interop.PointerConvertible, formatter: interop.PointerConvertible, number: interop.PointerConvertible): interop.Pointer;
+declare function CFNumberFormatterCreateStringWithNumber(allocator: interop.Object, formatter: interop.Object, number: interop.Object): interop.Object;
 
-declare function CFNumberFormatterCreateStringWithValue(allocator: interop.PointerConvertible, formatter: interop.PointerConvertible, numberType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): interop.Pointer;
+declare function CFNumberFormatterCreateStringWithValue(allocator: interop.Object, formatter: interop.Object, numberType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): interop.Object;
 
-declare function CFNumberFormatterCreateNumberFromString(allocator: interop.PointerConvertible, formatter: interop.PointerConvertible, string: interop.PointerConvertible, rangep: interop.PointerConvertible, options: number): interop.Pointer;
+declare function CFNumberFormatterCreateNumberFromString(allocator: interop.Object, formatter: interop.Object, string: interop.Object, rangep: interop.PointerConvertible, options: number): interop.Object;
 
-declare function CFNumberFormatterGetValueFromString(formatter: interop.PointerConvertible, string: interop.PointerConvertible, rangep: interop.PointerConvertible, numberType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): number;
+declare function CFNumberFormatterGetValueFromString(formatter: interop.Object, string: interop.Object, rangep: interop.PointerConvertible, numberType: interop.Enum<typeof CFNumberType>, valuePtr: interop.PointerConvertible): number;
 
-declare function CFNumberFormatterSetProperty(formatter: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFNumberFormatterSetProperty(formatter: interop.Object, key: interop.PointerConvertible, value: interop.Object): void;
 
-declare function CFNumberFormatterCopyProperty(formatter: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function CFNumberFormatterCopyProperty(formatter: interop.Object, key: interop.PointerConvertible): interop.Object;
 
-declare function CFNumberFormatterGetDecimalInfoForCurrencyCode(currencyCode: interop.PointerConvertible, defaultFractionDigits: interop.PointerConvertible, roundingIncrement: interop.PointerConvertible): number;
+declare function CFNumberFormatterGetDecimalInfoForCurrencyCode(currencyCode: interop.Object, defaultFractionDigits: interop.PointerConvertible, roundingIncrement: interop.PointerConvertible): number;
 
-declare function CFPreferencesCopyAppValue(key: interop.PointerConvertible, applicationID: interop.PointerConvertible): interop.Pointer;
+declare function CFPreferencesCopyAppValue(key: interop.Object, applicationID: interop.Object): interop.Object;
 
-declare function CFPreferencesGetAppBooleanValue(key: interop.PointerConvertible, applicationID: interop.PointerConvertible, keyExistsAndHasValidFormat: interop.PointerConvertible): number;
+declare function CFPreferencesGetAppBooleanValue(key: interop.Object, applicationID: interop.Object, keyExistsAndHasValidFormat: interop.PointerConvertible): number;
 
-declare function CFPreferencesGetAppIntegerValue(key: interop.PointerConvertible, applicationID: interop.PointerConvertible, keyExistsAndHasValidFormat: interop.PointerConvertible): number;
+declare function CFPreferencesGetAppIntegerValue(key: interop.Object, applicationID: interop.Object, keyExistsAndHasValidFormat: interop.PointerConvertible): number;
 
-declare function CFPreferencesSetAppValue(key: interop.PointerConvertible, value: interop.PointerConvertible, applicationID: interop.PointerConvertible): void;
+declare function CFPreferencesSetAppValue(key: interop.Object, value: interop.Object, applicationID: interop.Object): void;
 
-declare function CFPreferencesAddSuitePreferencesToApp(applicationID: interop.PointerConvertible, suiteID: interop.PointerConvertible): void;
+declare function CFPreferencesAddSuitePreferencesToApp(applicationID: interop.Object, suiteID: interop.Object): void;
 
-declare function CFPreferencesRemoveSuitePreferencesFromApp(applicationID: interop.PointerConvertible, suiteID: interop.PointerConvertible): void;
+declare function CFPreferencesRemoveSuitePreferencesFromApp(applicationID: interop.Object, suiteID: interop.Object): void;
 
-declare function CFPreferencesAppSynchronize(applicationID: interop.PointerConvertible): number;
+declare function CFPreferencesAppSynchronize(applicationID: interop.Object): number;
 
-declare function CFPreferencesCopyValue(key: interop.PointerConvertible, applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible): interop.Pointer;
+declare function CFPreferencesCopyValue(key: interop.Object, applicationID: interop.Object, userName: interop.Object, hostName: interop.Object): interop.Object;
 
-declare function CFPreferencesCopyMultiple(keysToFetch: interop.PointerConvertible, applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible): interop.Pointer;
+declare function CFPreferencesCopyMultiple(keysToFetch: interop.Object, applicationID: interop.Object, userName: interop.Object, hostName: interop.Object): interop.Object;
 
-declare function CFPreferencesSetValue(key: interop.PointerConvertible, value: interop.PointerConvertible, applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible): void;
+declare function CFPreferencesSetValue(key: interop.Object, value: interop.Object, applicationID: interop.Object, userName: interop.Object, hostName: interop.Object): void;
 
-declare function CFPreferencesSetMultiple(keysToSet: interop.PointerConvertible, keysToRemove: interop.PointerConvertible, applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible): void;
+declare function CFPreferencesSetMultiple(keysToSet: interop.Object, keysToRemove: interop.Object, applicationID: interop.Object, userName: interop.Object, hostName: interop.Object): void;
 
-declare function CFPreferencesSynchronize(applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible): number;
+declare function CFPreferencesSynchronize(applicationID: interop.Object, userName: interop.Object, hostName: interop.Object): number;
 
-declare function CFPreferencesCopyApplicationList(userName: interop.PointerConvertible, hostName: interop.PointerConvertible): interop.Pointer;
+declare function CFPreferencesCopyApplicationList(userName: interop.Object, hostName: interop.Object): interop.Object;
 
-declare function CFPreferencesCopyKeyList(applicationID: interop.PointerConvertible, userName: interop.PointerConvertible, hostName: interop.PointerConvertible): interop.Pointer;
+declare function CFPreferencesCopyKeyList(applicationID: interop.Object, userName: interop.Object, hostName: interop.Object): interop.Object;
 
-declare function CFPreferencesAppValueIsForced(key: interop.PointerConvertible, applicationID: interop.PointerConvertible): number;
+declare function CFPreferencesAppValueIsForced(key: interop.Object, applicationID: interop.Object): number;
 
 declare function CFURLGetTypeID(): number;
 
-declare function CFURLCreateWithBytes(allocator: interop.PointerConvertible, URLBytes: interop.PointerConvertible, length: number, encoding: number, baseURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateWithBytes(allocator: interop.Object, URLBytes: interop.PointerConvertible, length: number, encoding: number, baseURL: interop.Object): interop.Object;
 
-declare function CFURLCreateData(allocator: interop.PointerConvertible, url: interop.PointerConvertible, encoding: number, escapeWhitespace: number): interop.Pointer;
+declare function CFURLCreateData(allocator: interop.Object, url: interop.Object, encoding: number, escapeWhitespace: number): interop.Object;
 
-declare function CFURLCreateWithString(allocator: interop.PointerConvertible, URLString: interop.PointerConvertible, baseURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateWithString(allocator: interop.Object, URLString: interop.Object, baseURL: interop.Object): interop.Object;
 
-declare function CFURLCreateAbsoluteURLWithBytes(alloc: interop.PointerConvertible, relativeURLBytes: interop.PointerConvertible, length: number, encoding: number, baseURL: interop.PointerConvertible, useCompatibilityMode: number): interop.Pointer;
+declare function CFURLCreateAbsoluteURLWithBytes(alloc: interop.Object, relativeURLBytes: interop.PointerConvertible, length: number, encoding: number, baseURL: interop.Object, useCompatibilityMode: number): interop.Object;
 
-declare function CFURLCreateWithFileSystemPath(allocator: interop.PointerConvertible, filePath: interop.PointerConvertible, pathStyle: interop.Enum<typeof CFURLPathStyle>, isDirectory: number): interop.Pointer;
+declare function CFURLCreateWithFileSystemPath(allocator: interop.Object, filePath: interop.Object, pathStyle: interop.Enum<typeof CFURLPathStyle>, isDirectory: number): interop.Object;
 
-declare function CFURLCreateFromFileSystemRepresentation(allocator: interop.PointerConvertible, buffer: interop.PointerConvertible, bufLen: number, isDirectory: number): interop.Pointer;
+declare function CFURLCreateFromFileSystemRepresentation(allocator: interop.Object, buffer: interop.PointerConvertible, bufLen: number, isDirectory: number): interop.Object;
 
-declare function CFURLCreateWithFileSystemPathRelativeToBase(allocator: interop.PointerConvertible, filePath: interop.PointerConvertible, pathStyle: interop.Enum<typeof CFURLPathStyle>, isDirectory: number, baseURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateWithFileSystemPathRelativeToBase(allocator: interop.Object, filePath: interop.Object, pathStyle: interop.Enum<typeof CFURLPathStyle>, isDirectory: number, baseURL: interop.Object): interop.Object;
 
-declare function CFURLCreateFromFileSystemRepresentationRelativeToBase(allocator: interop.PointerConvertible, buffer: interop.PointerConvertible, bufLen: number, isDirectory: number, baseURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateFromFileSystemRepresentationRelativeToBase(allocator: interop.Object, buffer: interop.PointerConvertible, bufLen: number, isDirectory: number, baseURL: interop.Object): interop.Object;
 
-declare function CFURLGetFileSystemRepresentation(url: interop.PointerConvertible, resolveAgainstBase: number, buffer: interop.PointerConvertible, maxBufLen: number): number;
+declare function CFURLGetFileSystemRepresentation(url: interop.Object, resolveAgainstBase: number, buffer: interop.PointerConvertible, maxBufLen: number): number;
 
-declare function CFURLCopyAbsoluteURL(relativeURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyAbsoluteURL(relativeURL: interop.Object): interop.Object;
 
-declare function CFURLGetString(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLGetString(anURL: interop.Object): interop.Object;
 
-declare function CFURLGetBaseURL(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLGetBaseURL(anURL: interop.Object): interop.Object;
 
-declare function CFURLCanBeDecomposed(anURL: interop.PointerConvertible): number;
+declare function CFURLCanBeDecomposed(anURL: interop.Object): number;
 
-declare function CFURLCopyScheme(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyScheme(anURL: interop.Object): interop.Object;
 
-declare function CFURLCopyNetLocation(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyNetLocation(anURL: interop.Object): interop.Object;
 
-declare function CFURLCopyPath(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyPath(anURL: interop.Object): interop.Object;
 
-declare function CFURLCopyStrictPath(anURL: interop.PointerConvertible, isAbsolute: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyStrictPath(anURL: interop.Object, isAbsolute: interop.PointerConvertible): interop.Object;
 
-declare function CFURLCopyFileSystemPath(anURL: interop.PointerConvertible, pathStyle: interop.Enum<typeof CFURLPathStyle>): interop.Pointer;
+declare function CFURLCopyFileSystemPath(anURL: interop.Object, pathStyle: interop.Enum<typeof CFURLPathStyle>): interop.Object;
 
-declare function CFURLHasDirectoryPath(anURL: interop.PointerConvertible): number;
+declare function CFURLHasDirectoryPath(anURL: interop.Object): number;
 
-declare function CFURLCopyResourceSpecifier(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyResourceSpecifier(anURL: interop.Object): interop.Object;
 
-declare function CFURLCopyHostName(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyHostName(anURL: interop.Object): interop.Object;
 
-declare function CFURLGetPortNumber(anURL: interop.PointerConvertible): number;
+declare function CFURLGetPortNumber(anURL: interop.Object): number;
 
-declare function CFURLCopyUserName(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyUserName(anURL: interop.Object): interop.Object;
 
-declare function CFURLCopyPassword(anURL: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyPassword(anURL: interop.Object): interop.Object;
 
-declare function CFURLCopyParameterString(anURL: interop.PointerConvertible, charactersToLeaveEscaped: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyParameterString(anURL: interop.Object, charactersToLeaveEscaped: interop.Object): interop.Object;
 
-declare function CFURLCopyQueryString(anURL: interop.PointerConvertible, charactersToLeaveEscaped: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyQueryString(anURL: interop.Object, charactersToLeaveEscaped: interop.Object): interop.Object;
 
-declare function CFURLCopyFragment(anURL: interop.PointerConvertible, charactersToLeaveEscaped: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyFragment(anURL: interop.Object, charactersToLeaveEscaped: interop.Object): interop.Object;
 
-declare function CFURLCopyLastPathComponent(url: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyLastPathComponent(url: interop.Object): interop.Object;
 
-declare function CFURLCopyPathExtension(url: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyPathExtension(url: interop.Object): interop.Object;
 
-declare function CFURLCreateCopyAppendingPathComponent(allocator: interop.PointerConvertible, url: interop.PointerConvertible, pathComponent: interop.PointerConvertible, isDirectory: number): interop.Pointer;
+declare function CFURLCreateCopyAppendingPathComponent(allocator: interop.Object, url: interop.Object, pathComponent: interop.Object, isDirectory: number): interop.Object;
 
-declare function CFURLCreateCopyDeletingLastPathComponent(allocator: interop.PointerConvertible, url: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateCopyDeletingLastPathComponent(allocator: interop.Object, url: interop.Object): interop.Object;
 
-declare function CFURLCreateCopyAppendingPathExtension(allocator: interop.PointerConvertible, url: interop.PointerConvertible, extension: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateCopyAppendingPathExtension(allocator: interop.Object, url: interop.Object, extension: interop.Object): interop.Object;
 
-declare function CFURLCreateCopyDeletingPathExtension(allocator: interop.PointerConvertible, url: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateCopyDeletingPathExtension(allocator: interop.Object, url: interop.Object): interop.Object;
 
-declare function CFURLGetBytes(url: interop.PointerConvertible, buffer: interop.PointerConvertible, bufferLength: number): number;
+declare function CFURLGetBytes(url: interop.Object, buffer: interop.PointerConvertible, bufferLength: number): number;
 
-declare function CFURLGetByteRangeForComponent(url: interop.PointerConvertible, component: interop.Enum<typeof CFURLComponentType>, rangeIncludingSeparators: interop.PointerConvertible): CFRange;
+declare function CFURLGetByteRangeForComponent(url: interop.Object, component: interop.Enum<typeof CFURLComponentType>, rangeIncludingSeparators: interop.PointerConvertible): CFRange;
 
-declare function CFURLCreateStringByReplacingPercentEscapes(allocator: interop.PointerConvertible, originalString: interop.PointerConvertible, charactersToLeaveEscaped: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateStringByReplacingPercentEscapes(allocator: interop.Object, originalString: interop.Object, charactersToLeaveEscaped: interop.Object): interop.Object;
 
-declare function CFURLCreateStringByReplacingPercentEscapesUsingEncoding(allocator: interop.PointerConvertible, origString: interop.PointerConvertible, charsToLeaveEscaped: interop.PointerConvertible, encoding: number): interop.Pointer;
+declare function CFURLCreateStringByReplacingPercentEscapesUsingEncoding(allocator: interop.Object, origString: interop.Object, charsToLeaveEscaped: interop.Object, encoding: number): interop.Object;
 
-declare function CFURLCreateStringByAddingPercentEscapes(allocator: interop.PointerConvertible, originalString: interop.PointerConvertible, charactersToLeaveUnescaped: interop.PointerConvertible, legalURLCharactersToBeEscaped: interop.PointerConvertible, encoding: number): interop.Pointer;
+declare function CFURLCreateStringByAddingPercentEscapes(allocator: interop.Object, originalString: interop.Object, charactersToLeaveUnescaped: interop.Object, legalURLCharactersToBeEscaped: interop.Object, encoding: number): interop.Object;
 
-declare function CFURLIsFileReferenceURL(url: interop.PointerConvertible): number;
+declare function CFURLIsFileReferenceURL(url: interop.Object): number;
 
-declare function CFURLCreateFileReferenceURL(allocator: interop.PointerConvertible, url: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateFileReferenceURL(allocator: interop.Object, url: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function CFURLCreateFilePathURL(allocator: interop.PointerConvertible, url: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateFilePathURL(allocator: interop.Object, url: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function CFURLCreateFromFSRef(allocator: interop.PointerConvertible, fsRef: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateFromFSRef(allocator: interop.Object, fsRef: interop.PointerConvertible): interop.Object;
 
-declare function CFURLGetFSRef(url: interop.PointerConvertible, fsRef: interop.PointerConvertible): number;
+declare function CFURLGetFSRef(url: interop.Object, fsRef: interop.PointerConvertible): number;
 
-declare function CFURLCopyResourcePropertyForKey(url: interop.PointerConvertible, key: interop.PointerConvertible, propertyValueTypeRefPtr: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CFURLCopyResourcePropertyForKey(url: interop.Object, key: interop.Object, propertyValueTypeRefPtr: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
-declare function CFURLCopyResourcePropertiesForKeys(url: interop.PointerConvertible, keys: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCopyResourcePropertiesForKeys(url: interop.Object, keys: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function CFURLSetResourcePropertyForKey(url: interop.PointerConvertible, key: interop.PointerConvertible, propertyValue: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CFURLSetResourcePropertyForKey(url: interop.Object, key: interop.Object, propertyValue: interop.Object, error: interop.PointerConvertible): number;
 
-declare function CFURLSetResourcePropertiesForKeys(url: interop.PointerConvertible, keyedPropertyValues: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CFURLSetResourcePropertiesForKeys(url: interop.Object, keyedPropertyValues: interop.Object, error: interop.PointerConvertible): number;
 
-declare function CFURLClearResourcePropertyCacheForKey(url: interop.PointerConvertible, key: interop.PointerConvertible): void;
+declare function CFURLClearResourcePropertyCacheForKey(url: interop.Object, key: interop.Object): void;
 
-declare function CFURLClearResourcePropertyCache(url: interop.PointerConvertible): void;
+declare function CFURLClearResourcePropertyCache(url: interop.Object): void;
 
-declare function CFURLSetTemporaryResourcePropertyForKey(url: interop.PointerConvertible, key: interop.PointerConvertible, propertyValue: interop.PointerConvertible): void;
+declare function CFURLSetTemporaryResourcePropertyForKey(url: interop.Object, key: interop.Object, propertyValue: interop.Object): void;
 
-declare function CFURLResourceIsReachable(url: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CFURLResourceIsReachable(url: interop.Object, error: interop.PointerConvertible): number;
 
-declare function CFURLCreateBookmarkData(allocator: interop.PointerConvertible, url: interop.PointerConvertible, options: interop.Enum<typeof CFURLBookmarkCreationOptions>, resourcePropertiesToInclude: interop.PointerConvertible, relativeToURL: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateBookmarkData(allocator: interop.Object, url: interop.Object, options: interop.Enum<typeof CFURLBookmarkCreationOptions>, resourcePropertiesToInclude: interop.Object, relativeToURL: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function CFURLCreateByResolvingBookmarkData(allocator: interop.PointerConvertible, bookmark: interop.PointerConvertible, options: interop.Enum<typeof CFURLBookmarkResolutionOptions>, relativeToURL: interop.PointerConvertible, resourcePropertiesToInclude: interop.PointerConvertible, isStale: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateByResolvingBookmarkData(allocator: interop.Object, bookmark: interop.Object, options: interop.Enum<typeof CFURLBookmarkResolutionOptions>, relativeToURL: interop.Object, resourcePropertiesToInclude: interop.Object, isStale: interop.PointerConvertible, error: interop.PointerConvertible): interop.Object;
 
-declare function CFURLCreateResourcePropertiesForKeysFromBookmarkData(allocator: interop.PointerConvertible, resourcePropertiesToReturn: interop.PointerConvertible, bookmark: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateResourcePropertiesForKeysFromBookmarkData(allocator: interop.Object, resourcePropertiesToReturn: interop.Object, bookmark: interop.Object): interop.Object;
 
-declare function CFURLCreateResourcePropertyForKeyFromBookmarkData(allocator: interop.PointerConvertible, resourcePropertyKey: interop.PointerConvertible, bookmark: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateResourcePropertyForKeyFromBookmarkData(allocator: interop.Object, resourcePropertyKey: interop.Object, bookmark: interop.Object): interop.Object;
 
-declare function CFURLCreateBookmarkDataFromFile(allocator: interop.PointerConvertible, fileURL: interop.PointerConvertible, errorRef: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreateBookmarkDataFromFile(allocator: interop.Object, fileURL: interop.Object, errorRef: interop.PointerConvertible): interop.Object;
 
-declare function CFURLWriteBookmarkDataToFile(bookmarkRef: interop.PointerConvertible, fileURL: interop.PointerConvertible, options: number, errorRef: interop.PointerConvertible): number;
+declare function CFURLWriteBookmarkDataToFile(bookmarkRef: interop.Object, fileURL: interop.Object, options: number, errorRef: interop.PointerConvertible): number;
 
-declare function CFURLStartAccessingSecurityScopedResource(url: interop.PointerConvertible): number;
+declare function CFURLStartAccessingSecurityScopedResource(url: interop.Object): number;
 
-declare function CFURLStopAccessingSecurityScopedResource(url: interop.PointerConvertible): void;
+declare function CFURLStopAccessingSecurityScopedResource(url: interop.Object): void;
 
 declare function CFRunLoopGetTypeID(): number;
 
-declare function CFRunLoopGetCurrent(): interop.Pointer;
+declare function CFRunLoopGetCurrent(): interop.Object;
 
-declare function CFRunLoopGetMain(): interop.Pointer;
+declare function CFRunLoopGetMain(): interop.Object;
 
-declare function CFRunLoopCopyCurrentMode(rl: interop.PointerConvertible): interop.Pointer;
+declare function CFRunLoopCopyCurrentMode(rl: interop.Object): interop.Pointer;
 
-declare function CFRunLoopCopyAllModes(rl: interop.PointerConvertible): interop.Pointer;
+declare function CFRunLoopCopyAllModes(rl: interop.Object): interop.Object;
 
-declare function CFRunLoopAddCommonMode(rl: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopAddCommonMode(rl: interop.Object, mode: interop.PointerConvertible): void;
 
-declare function CFRunLoopGetNextTimerFireDate(rl: interop.PointerConvertible, mode: interop.PointerConvertible): number;
+declare function CFRunLoopGetNextTimerFireDate(rl: interop.Object, mode: interop.PointerConvertible): number;
 
 declare function CFRunLoopRun(): void;
 
 declare function CFRunLoopRunInMode(mode: interop.PointerConvertible, seconds: number, returnAfterSourceHandled: number): interop.Enum<typeof CFRunLoopRunResult>;
 
-declare function CFRunLoopIsWaiting(rl: interop.PointerConvertible): number;
+declare function CFRunLoopIsWaiting(rl: interop.Object): number;
 
-declare function CFRunLoopWakeUp(rl: interop.PointerConvertible): void;
+declare function CFRunLoopWakeUp(rl: interop.Object): void;
 
-declare function CFRunLoopStop(rl: interop.PointerConvertible): void;
+declare function CFRunLoopStop(rl: interop.Object): void;
 
-declare function CFRunLoopPerformBlock(rl: interop.PointerConvertible, mode: interop.PointerConvertible, block: () => void): void;
+declare function CFRunLoopPerformBlock(rl: interop.Object, mode: interop.Object, block: () => void): void;
 
-declare function CFRunLoopContainsSource(rl: interop.PointerConvertible, source: interop.PointerConvertible, mode: interop.PointerConvertible): number;
+declare function CFRunLoopContainsSource(rl: interop.Object, source: interop.Object, mode: interop.PointerConvertible): number;
 
-declare function CFRunLoopAddSource(rl: interop.PointerConvertible, source: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopAddSource(rl: interop.Object, source: interop.Object, mode: interop.PointerConvertible): void;
 
-declare function CFRunLoopRemoveSource(rl: interop.PointerConvertible, source: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopRemoveSource(rl: interop.Object, source: interop.Object, mode: interop.PointerConvertible): void;
 
-declare function CFRunLoopContainsObserver(rl: interop.PointerConvertible, observer: interop.PointerConvertible, mode: interop.PointerConvertible): number;
+declare function CFRunLoopContainsObserver(rl: interop.Object, observer: interop.Object, mode: interop.PointerConvertible): number;
 
-declare function CFRunLoopAddObserver(rl: interop.PointerConvertible, observer: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopAddObserver(rl: interop.Object, observer: interop.Object, mode: interop.PointerConvertible): void;
 
-declare function CFRunLoopRemoveObserver(rl: interop.PointerConvertible, observer: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopRemoveObserver(rl: interop.Object, observer: interop.Object, mode: interop.PointerConvertible): void;
 
-declare function CFRunLoopContainsTimer(rl: interop.PointerConvertible, timer: interop.PointerConvertible, mode: interop.PointerConvertible): number;
+declare function CFRunLoopContainsTimer(rl: interop.Object, timer: interop.Object, mode: interop.PointerConvertible): number;
 
-declare function CFRunLoopAddTimer(rl: interop.PointerConvertible, timer: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopAddTimer(rl: interop.Object, timer: interop.Object, mode: interop.PointerConvertible): void;
 
-declare function CFRunLoopRemoveTimer(rl: interop.PointerConvertible, timer: interop.PointerConvertible, mode: interop.PointerConvertible): void;
+declare function CFRunLoopRemoveTimer(rl: interop.Object, timer: interop.Object, mode: interop.PointerConvertible): void;
 
 declare function CFRunLoopSourceGetTypeID(): number;
 
-declare function CFRunLoopSourceCreate(allocator: interop.PointerConvertible, order: number, context: interop.PointerConvertible): interop.Pointer;
+declare function CFRunLoopSourceCreate(allocator: interop.Object, order: number, context: interop.PointerConvertible): interop.Object;
 
-declare function CFRunLoopSourceGetOrder(source: interop.PointerConvertible): number;
+declare function CFRunLoopSourceGetOrder(source: interop.Object): number;
 
-declare function CFRunLoopSourceInvalidate(source: interop.PointerConvertible): void;
+declare function CFRunLoopSourceInvalidate(source: interop.Object): void;
 
-declare function CFRunLoopSourceIsValid(source: interop.PointerConvertible): number;
+declare function CFRunLoopSourceIsValid(source: interop.Object): number;
 
-declare function CFRunLoopSourceGetContext(source: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFRunLoopSourceGetContext(source: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFRunLoopSourceSignal(source: interop.PointerConvertible): void;
+declare function CFRunLoopSourceSignal(source: interop.Object): void;
 
 declare function CFRunLoopObserverGetTypeID(): number;
 
-declare function CFRunLoopObserverCreate(allocator: interop.PointerConvertible, activities: number, repeats: number, order: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFRunLoopActivity>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function CFRunLoopObserverCreate(allocator: interop.Object, activities: number, repeats: number, order: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFRunLoopActivity>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function CFRunLoopObserverCreateWithHandler(allocator: interop.PointerConvertible, activities: number, repeats: number, order: number, block: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFRunLoopActivity>) => void): interop.Pointer;
+declare function CFRunLoopObserverCreateWithHandler(allocator: interop.Object, activities: number, repeats: number, order: number, block: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFRunLoopActivity>) => void): interop.Object;
 
-declare function CFRunLoopObserverGetActivities(observer: interop.PointerConvertible): number;
+declare function CFRunLoopObserverGetActivities(observer: interop.Object): number;
 
-declare function CFRunLoopObserverDoesRepeat(observer: interop.PointerConvertible): number;
+declare function CFRunLoopObserverDoesRepeat(observer: interop.Object): number;
 
-declare function CFRunLoopObserverGetOrder(observer: interop.PointerConvertible): number;
+declare function CFRunLoopObserverGetOrder(observer: interop.Object): number;
 
-declare function CFRunLoopObserverInvalidate(observer: interop.PointerConvertible): void;
+declare function CFRunLoopObserverInvalidate(observer: interop.Object): void;
 
-declare function CFRunLoopObserverIsValid(observer: interop.PointerConvertible): number;
+declare function CFRunLoopObserverIsValid(observer: interop.Object): number;
 
-declare function CFRunLoopObserverGetContext(observer: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFRunLoopObserverGetContext(observer: interop.Object, context: interop.PointerConvertible): void;
 
 declare function CFRunLoopTimerGetTypeID(): number;
 
-declare function CFRunLoopTimerCreate(allocator: interop.PointerConvertible, fireDate: number, interval: number, flags: number, order: number, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function CFRunLoopTimerCreate(allocator: interop.Object, fireDate: number, interval: number, flags: number, order: number, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function CFRunLoopTimerCreateWithHandler(allocator: interop.PointerConvertible, fireDate: number, interval: number, flags: number, order: number, block: (p1: interop.PointerConvertible) => void): interop.Pointer;
+declare function CFRunLoopTimerCreateWithHandler(allocator: interop.Object, fireDate: number, interval: number, flags: number, order: number, block: (p1: interop.PointerConvertible) => void): interop.Object;
 
-declare function CFRunLoopTimerGetNextFireDate(timer: interop.PointerConvertible): number;
+declare function CFRunLoopTimerGetNextFireDate(timer: interop.Object): number;
 
-declare function CFRunLoopTimerSetNextFireDate(timer: interop.PointerConvertible, fireDate: number): void;
+declare function CFRunLoopTimerSetNextFireDate(timer: interop.Object, fireDate: number): void;
 
-declare function CFRunLoopTimerGetInterval(timer: interop.PointerConvertible): number;
+declare function CFRunLoopTimerGetInterval(timer: interop.Object): number;
 
-declare function CFRunLoopTimerDoesRepeat(timer: interop.PointerConvertible): number;
+declare function CFRunLoopTimerDoesRepeat(timer: interop.Object): number;
 
-declare function CFRunLoopTimerGetOrder(timer: interop.PointerConvertible): number;
+declare function CFRunLoopTimerGetOrder(timer: interop.Object): number;
 
-declare function CFRunLoopTimerInvalidate(timer: interop.PointerConvertible): void;
+declare function CFRunLoopTimerInvalidate(timer: interop.Object): void;
 
-declare function CFRunLoopTimerIsValid(timer: interop.PointerConvertible): number;
+declare function CFRunLoopTimerIsValid(timer: interop.Object): number;
 
-declare function CFRunLoopTimerGetContext(timer: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFRunLoopTimerGetContext(timer: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFRunLoopTimerGetTolerance(timer: interop.PointerConvertible): number;
+declare function CFRunLoopTimerGetTolerance(timer: interop.Object): number;
 
-declare function CFRunLoopTimerSetTolerance(timer: interop.PointerConvertible, tolerance: number): void;
+declare function CFRunLoopTimerSetTolerance(timer: interop.Object, tolerance: number): void;
 
 declare function CFSocketGetTypeID(): number;
 
-declare function CFSocketCreate(allocator: interop.PointerConvertible, protocolFamily: number, socketType: number, protocol: number, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function CFSocketCreate(allocator: interop.Object, protocolFamily: number, socketType: number, protocol: number, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function CFSocketCreateWithNative(allocator: interop.PointerConvertible, sock: number, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function CFSocketCreateWithNative(allocator: interop.Object, sock: number, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function CFSocketCreateWithSocketSignature(allocator: interop.PointerConvertible, signature: interop.PointerConvertible, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function CFSocketCreateWithSocketSignature(allocator: interop.Object, signature: interop.PointerConvertible, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function CFSocketCreateConnectedToSocketSignature(allocator: interop.PointerConvertible, signature: interop.PointerConvertible, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible, timeout: number): interop.Pointer;
+declare function CFSocketCreateConnectedToSocketSignature(allocator: interop.Object, signature: interop.PointerConvertible, callBackTypes: number, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFSocketCallBackType>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void, context: interop.PointerConvertible, timeout: number): interop.Object;
 
-declare function CFSocketSetAddress(s: interop.PointerConvertible, address: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
+declare function CFSocketSetAddress(s: interop.Object, address: interop.Object): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketConnectToAddress(s: interop.PointerConvertible, address: interop.PointerConvertible, timeout: number): interop.Enum<typeof CFSocketError>;
+declare function CFSocketConnectToAddress(s: interop.Object, address: interop.Object, timeout: number): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketInvalidate(s: interop.PointerConvertible): void;
+declare function CFSocketInvalidate(s: interop.Object): void;
 
-declare function CFSocketIsValid(s: interop.PointerConvertible): number;
+declare function CFSocketIsValid(s: interop.Object): number;
 
-declare function CFSocketCopyAddress(s: interop.PointerConvertible): interop.Pointer;
+declare function CFSocketCopyAddress(s: interop.Object): interop.Object;
 
-declare function CFSocketCopyPeerAddress(s: interop.PointerConvertible): interop.Pointer;
+declare function CFSocketCopyPeerAddress(s: interop.Object): interop.Object;
 
-declare function CFSocketGetContext(s: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFSocketGetContext(s: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFSocketGetNative(s: interop.PointerConvertible): number;
+declare function CFSocketGetNative(s: interop.Object): number;
 
-declare function CFSocketCreateRunLoopSource(allocator: interop.PointerConvertible, s: interop.PointerConvertible, order: number): interop.Pointer;
+declare function CFSocketCreateRunLoopSource(allocator: interop.Object, s: interop.Object, order: number): interop.Object;
 
-declare function CFSocketGetSocketFlags(s: interop.PointerConvertible): number;
+declare function CFSocketGetSocketFlags(s: interop.Object): number;
 
-declare function CFSocketSetSocketFlags(s: interop.PointerConvertible, flags: number): void;
+declare function CFSocketSetSocketFlags(s: interop.Object, flags: number): void;
 
-declare function CFSocketDisableCallBacks(s: interop.PointerConvertible, callBackTypes: number): void;
+declare function CFSocketDisableCallBacks(s: interop.Object, callBackTypes: number): void;
 
-declare function CFSocketEnableCallBacks(s: interop.PointerConvertible, callBackTypes: number): void;
+declare function CFSocketEnableCallBacks(s: interop.Object, callBackTypes: number): void;
 
-declare function CFSocketSendData(s: interop.PointerConvertible, address: interop.PointerConvertible, data: interop.PointerConvertible, timeout: number): interop.Enum<typeof CFSocketError>;
+declare function CFSocketSendData(s: interop.Object, address: interop.Object, data: interop.Object, timeout: number): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketRegisterValue(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.PointerConvertible, value: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
+declare function CFSocketRegisterValue(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.Object, value: interop.Object): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketCopyRegisteredValue(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.PointerConvertible, value: interop.PointerConvertible, nameServerAddress: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
+declare function CFSocketCopyRegisteredValue(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.Object, value: interop.PointerConvertible, nameServerAddress: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketRegisterSocketSignature(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.PointerConvertible, signature: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
+declare function CFSocketRegisterSocketSignature(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.Object, signature: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketCopyRegisteredSocketSignature(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.PointerConvertible, signature: interop.PointerConvertible, nameServerAddress: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
+declare function CFSocketCopyRegisteredSocketSignature(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.Object, signature: interop.PointerConvertible, nameServerAddress: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
 
-declare function CFSocketUnregister(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.PointerConvertible): interop.Enum<typeof CFSocketError>;
+declare function CFSocketUnregister(nameServerSignature: interop.PointerConvertible, timeout: number, name: interop.Object): interop.Enum<typeof CFSocketError>;
 
 declare function CFSocketSetDefaultNameRegistryPortNumber(port: number): void;
 
@@ -2803,507 +2803,507 @@ declare function CFReadStreamGetTypeID(): number;
 
 declare function CFWriteStreamGetTypeID(): number;
 
-declare function CFReadStreamCreateWithBytesNoCopy(alloc: interop.PointerConvertible, bytes: interop.PointerConvertible, length: number, bytesDeallocator: interop.PointerConvertible): interop.Pointer;
+declare function CFReadStreamCreateWithBytesNoCopy(alloc: interop.Object, bytes: interop.PointerConvertible, length: number, bytesDeallocator: interop.Object): interop.Object;
 
-declare function CFWriteStreamCreateWithBuffer(alloc: interop.PointerConvertible, buffer: interop.PointerConvertible, bufferCapacity: number): interop.Pointer;
+declare function CFWriteStreamCreateWithBuffer(alloc: interop.Object, buffer: interop.PointerConvertible, bufferCapacity: number): interop.Object;
 
-declare function CFWriteStreamCreateWithAllocatedBuffers(alloc: interop.PointerConvertible, bufferAllocator: interop.PointerConvertible): interop.Pointer;
+declare function CFWriteStreamCreateWithAllocatedBuffers(alloc: interop.Object, bufferAllocator: interop.Object): interop.Object;
 
-declare function CFReadStreamCreateWithFile(alloc: interop.PointerConvertible, fileURL: interop.PointerConvertible): interop.Pointer;
+declare function CFReadStreamCreateWithFile(alloc: interop.Object, fileURL: interop.Object): interop.Object;
 
-declare function CFWriteStreamCreateWithFile(alloc: interop.PointerConvertible, fileURL: interop.PointerConvertible): interop.Pointer;
+declare function CFWriteStreamCreateWithFile(alloc: interop.Object, fileURL: interop.Object): interop.Object;
 
-declare function CFStreamCreateBoundPair(alloc: interop.PointerConvertible, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible, transferBufferSize: number): void;
+declare function CFStreamCreateBoundPair(alloc: interop.Object, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible, transferBufferSize: number): void;
 
-declare function CFStreamCreatePairWithSocket(alloc: interop.PointerConvertible, sock: number, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
+declare function CFStreamCreatePairWithSocket(alloc: interop.Object, sock: number, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
 
-declare function CFStreamCreatePairWithSocketToHost(alloc: interop.PointerConvertible, host: interop.PointerConvertible, port: number, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
+declare function CFStreamCreatePairWithSocketToHost(alloc: interop.Object, host: interop.Object, port: number, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
 
-declare function CFStreamCreatePairWithPeerSocketSignature(alloc: interop.PointerConvertible, signature: interop.PointerConvertible, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
+declare function CFStreamCreatePairWithPeerSocketSignature(alloc: interop.Object, signature: interop.PointerConvertible, readStream: interop.PointerConvertible, writeStream: interop.PointerConvertible): void;
 
-declare function CFReadStreamGetStatus(stream: interop.PointerConvertible): interop.Enum<typeof CFStreamStatus>;
+declare function CFReadStreamGetStatus(stream: interop.Object): interop.Enum<typeof CFStreamStatus>;
 
-declare function CFWriteStreamGetStatus(stream: interop.PointerConvertible): interop.Enum<typeof CFStreamStatus>;
+declare function CFWriteStreamGetStatus(stream: interop.Object): interop.Enum<typeof CFStreamStatus>;
 
-declare function CFReadStreamCopyError(stream: interop.PointerConvertible): interop.Pointer;
+declare function CFReadStreamCopyError(stream: interop.Object): interop.Object;
 
-declare function CFWriteStreamCopyError(stream: interop.PointerConvertible): interop.Pointer;
+declare function CFWriteStreamCopyError(stream: interop.Object): interop.Object;
 
-declare function CFReadStreamOpen(stream: interop.PointerConvertible): number;
+declare function CFReadStreamOpen(stream: interop.Object): number;
 
-declare function CFWriteStreamOpen(stream: interop.PointerConvertible): number;
+declare function CFWriteStreamOpen(stream: interop.Object): number;
 
-declare function CFReadStreamClose(stream: interop.PointerConvertible): void;
+declare function CFReadStreamClose(stream: interop.Object): void;
 
-declare function CFWriteStreamClose(stream: interop.PointerConvertible): void;
+declare function CFWriteStreamClose(stream: interop.Object): void;
 
-declare function CFReadStreamHasBytesAvailable(stream: interop.PointerConvertible): number;
+declare function CFReadStreamHasBytesAvailable(stream: interop.Object): number;
 
-declare function CFReadStreamRead(stream: interop.PointerConvertible, buffer: interop.PointerConvertible, bufferLength: number): number;
+declare function CFReadStreamRead(stream: interop.Object, buffer: interop.PointerConvertible, bufferLength: number): number;
 
-declare function CFReadStreamGetBuffer(stream: interop.PointerConvertible, maxBytesToRead: number, numBytesRead: interop.PointerConvertible): interop.Pointer;
+declare function CFReadStreamGetBuffer(stream: interop.Object, maxBytesToRead: number, numBytesRead: interop.PointerConvertible): interop.Pointer;
 
-declare function CFWriteStreamCanAcceptBytes(stream: interop.PointerConvertible): number;
+declare function CFWriteStreamCanAcceptBytes(stream: interop.Object): number;
 
-declare function CFWriteStreamWrite(stream: interop.PointerConvertible, buffer: interop.PointerConvertible, bufferLength: number): number;
+declare function CFWriteStreamWrite(stream: interop.Object, buffer: interop.PointerConvertible, bufferLength: number): number;
 
-declare function CFReadStreamCopyProperty(stream: interop.PointerConvertible, propertyName: interop.PointerConvertible): interop.Pointer;
+declare function CFReadStreamCopyProperty(stream: interop.Object, propertyName: interop.PointerConvertible): interop.Object;
 
-declare function CFWriteStreamCopyProperty(stream: interop.PointerConvertible, propertyName: interop.PointerConvertible): interop.Pointer;
+declare function CFWriteStreamCopyProperty(stream: interop.Object, propertyName: interop.PointerConvertible): interop.Object;
 
-declare function CFReadStreamSetProperty(stream: interop.PointerConvertible, propertyName: interop.PointerConvertible, propertyValue: interop.PointerConvertible): number;
+declare function CFReadStreamSetProperty(stream: interop.Object, propertyName: interop.PointerConvertible, propertyValue: interop.Object): number;
 
-declare function CFWriteStreamSetProperty(stream: interop.PointerConvertible, propertyName: interop.PointerConvertible, propertyValue: interop.PointerConvertible): number;
+declare function CFWriteStreamSetProperty(stream: interop.Object, propertyName: interop.PointerConvertible, propertyValue: interop.Object): number;
 
-declare function CFReadStreamSetClient(stream: interop.PointerConvertible, streamEvents: number, clientCB: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFStreamEventType>, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
+declare function CFReadStreamSetClient(stream: interop.Object, streamEvents: number, clientCB: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFStreamEventType>, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
 
-declare function CFWriteStreamSetClient(stream: interop.PointerConvertible, streamEvents: number, clientCB: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFStreamEventType>, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
+declare function CFWriteStreamSetClient(stream: interop.Object, streamEvents: number, clientCB: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFStreamEventType>, p3: interop.PointerConvertible) => void, clientContext: interop.PointerConvertible): number;
 
-declare function CFReadStreamScheduleWithRunLoop(stream: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function CFReadStreamScheduleWithRunLoop(stream: interop.Object, runLoop: interop.Object, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFWriteStreamScheduleWithRunLoop(stream: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function CFWriteStreamScheduleWithRunLoop(stream: interop.Object, runLoop: interop.Object, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFReadStreamUnscheduleFromRunLoop(stream: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function CFReadStreamUnscheduleFromRunLoop(stream: interop.Object, runLoop: interop.Object, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFWriteStreamUnscheduleFromRunLoop(stream: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): void;
+declare function CFWriteStreamUnscheduleFromRunLoop(stream: interop.Object, runLoop: interop.Object, runLoopMode: interop.PointerConvertible): void;
 
-declare function CFReadStreamSetDispatchQueue(stream: interop.PointerConvertible, q: NSObject): void;
+declare function CFReadStreamSetDispatchQueue(stream: interop.Object, q: NSObject): void;
 
-declare function CFWriteStreamSetDispatchQueue(stream: interop.PointerConvertible, q: NSObject): void;
+declare function CFWriteStreamSetDispatchQueue(stream: interop.Object, q: NSObject): void;
 
-declare function CFReadStreamCopyDispatchQueue(stream: interop.PointerConvertible): NSObject;
+declare function CFReadStreamCopyDispatchQueue(stream: interop.Object): NSObject;
 
-declare function CFWriteStreamCopyDispatchQueue(stream: interop.PointerConvertible): NSObject;
+declare function CFWriteStreamCopyDispatchQueue(stream: interop.Object): NSObject;
 
-declare function CFReadStreamGetError(stream: interop.PointerConvertible): CFStreamError;
+declare function CFReadStreamGetError(stream: interop.Object): CFStreamError;
 
-declare function CFWriteStreamGetError(stream: interop.PointerConvertible): CFStreamError;
+declare function CFWriteStreamGetError(stream: interop.Object): CFStreamError;
 
-declare function CFPropertyListCreateFromXMLData(allocator: interop.PointerConvertible, xmlData: interop.PointerConvertible, mutabilityOption: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function CFPropertyListCreateFromXMLData(allocator: interop.Object, xmlData: interop.Object, mutabilityOption: number, errorString: interop.PointerConvertible): interop.Object;
 
-declare function CFPropertyListCreateXMLData(allocator: interop.PointerConvertible, propertyList: interop.PointerConvertible): interop.Pointer;
+declare function CFPropertyListCreateXMLData(allocator: interop.Object, propertyList: interop.Object): interop.Object;
 
-declare function CFPropertyListCreateDeepCopy(allocator: interop.PointerConvertible, propertyList: interop.PointerConvertible, mutabilityOption: number): interop.Pointer;
+declare function CFPropertyListCreateDeepCopy(allocator: interop.Object, propertyList: interop.Object, mutabilityOption: number): interop.Object;
 
-declare function CFPropertyListIsValid(plist: interop.PointerConvertible, format: interop.Enum<typeof CFPropertyListFormat>): number;
+declare function CFPropertyListIsValid(plist: interop.Object, format: interop.Enum<typeof CFPropertyListFormat>): number;
 
-declare function CFPropertyListWriteToStream(propertyList: interop.PointerConvertible, stream: interop.PointerConvertible, format: interop.Enum<typeof CFPropertyListFormat>, errorString: interop.PointerConvertible): number;
+declare function CFPropertyListWriteToStream(propertyList: interop.Object, stream: interop.Object, format: interop.Enum<typeof CFPropertyListFormat>, errorString: interop.PointerConvertible): number;
 
-declare function CFPropertyListCreateFromStream(allocator: interop.PointerConvertible, stream: interop.PointerConvertible, streamLength: number, mutabilityOption: number, format: interop.PointerConvertible, errorString: interop.PointerConvertible): interop.Pointer;
+declare function CFPropertyListCreateFromStream(allocator: interop.Object, stream: interop.Object, streamLength: number, mutabilityOption: number, format: interop.PointerConvertible, errorString: interop.PointerConvertible): interop.Object;
 
-declare function CFPropertyListCreateWithData(allocator: interop.PointerConvertible, data: interop.PointerConvertible, options: number, format: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFPropertyListCreateWithData(allocator: interop.Object, data: interop.Object, options: number, format: interop.PointerConvertible, error: interop.PointerConvertible): interop.Object;
 
-declare function CFPropertyListCreateWithStream(allocator: interop.PointerConvertible, stream: interop.PointerConvertible, streamLength: number, options: number, format: interop.PointerConvertible, error: interop.PointerConvertible): interop.Pointer;
+declare function CFPropertyListCreateWithStream(allocator: interop.Object, stream: interop.Object, streamLength: number, options: number, format: interop.PointerConvertible, error: interop.PointerConvertible): interop.Object;
 
-declare function CFPropertyListWrite(propertyList: interop.PointerConvertible, stream: interop.PointerConvertible, format: interop.Enum<typeof CFPropertyListFormat>, options: number, error: interop.PointerConvertible): number;
+declare function CFPropertyListWrite(propertyList: interop.Object, stream: interop.Object, format: interop.Enum<typeof CFPropertyListFormat>, options: number, error: interop.PointerConvertible): number;
 
-declare function CFPropertyListCreateData(allocator: interop.PointerConvertible, propertyList: interop.PointerConvertible, format: interop.Enum<typeof CFPropertyListFormat>, options: number, error: interop.PointerConvertible): interop.Pointer;
+declare function CFPropertyListCreateData(allocator: interop.Object, propertyList: interop.Object, format: interop.Enum<typeof CFPropertyListFormat>, options: number, error: interop.PointerConvertible): interop.Object;
 
 declare function CFSetGetTypeID(): number;
 
-declare function CFSetCreate(allocator: interop.PointerConvertible, values: interop.PointerConvertible, numValues: number, callBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFSetCreate(allocator: interop.Object, values: interop.PointerConvertible, numValues: number, callBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFSetCreateCopy(allocator: interop.PointerConvertible, theSet: interop.PointerConvertible): interop.Pointer;
+declare function CFSetCreateCopy(allocator: interop.Object, theSet: interop.Object): interop.Object;
 
-declare function CFSetCreateMutable(allocator: interop.PointerConvertible, capacity: number, callBacks: interop.PointerConvertible): interop.Pointer;
+declare function CFSetCreateMutable(allocator: interop.Object, capacity: number, callBacks: interop.PointerConvertible): interop.Object;
 
-declare function CFSetCreateMutableCopy(allocator: interop.PointerConvertible, capacity: number, theSet: interop.PointerConvertible): interop.Pointer;
+declare function CFSetCreateMutableCopy(allocator: interop.Object, capacity: number, theSet: interop.Object): interop.Object;
 
-declare function CFSetGetCount(theSet: interop.PointerConvertible): number;
+declare function CFSetGetCount(theSet: interop.Object): number;
 
-declare function CFSetGetCountOfValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFSetGetCountOfValue(theSet: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFSetContainsValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFSetContainsValue(theSet: interop.Object, value: interop.PointerConvertible): number;
 
-declare function CFSetGetValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): interop.Pointer;
+declare function CFSetGetValue(theSet: interop.Object, value: interop.PointerConvertible): interop.Pointer;
 
-declare function CFSetGetValueIfPresent(theSet: interop.PointerConvertible, candidate: interop.PointerConvertible, value: interop.PointerConvertible): number;
+declare function CFSetGetValueIfPresent(theSet: interop.Object, candidate: interop.PointerConvertible, value: interop.PointerConvertible): number;
 
-declare function CFSetGetValues(theSet: interop.PointerConvertible, values: interop.PointerConvertible): void;
+declare function CFSetGetValues(theSet: interop.Object, values: interop.PointerConvertible): void;
 
-declare function CFSetApplyFunction(theSet: interop.PointerConvertible, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function CFSetApplyFunction(theSet: interop.Object, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function CFSetAddValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFSetAddValue(theSet: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFSetReplaceValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFSetReplaceValue(theSet: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFSetSetValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFSetSetValue(theSet: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFSetRemoveValue(theSet: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFSetRemoveValue(theSet: interop.Object, value: interop.PointerConvertible): void;
 
-declare function CFSetRemoveAllValues(theSet: interop.PointerConvertible): void;
+declare function CFSetRemoveAllValues(theSet: interop.Object): void;
 
 declare function CFTreeGetTypeID(): number;
 
-declare function CFTreeCreate(allocator: interop.PointerConvertible, context: interop.PointerConvertible): interop.Pointer;
+declare function CFTreeCreate(allocator: interop.Object, context: interop.PointerConvertible): interop.Object;
 
-declare function CFTreeGetParent(tree: interop.PointerConvertible): interop.Pointer;
+declare function CFTreeGetParent(tree: interop.Object): interop.Object;
 
-declare function CFTreeGetNextSibling(tree: interop.PointerConvertible): interop.Pointer;
+declare function CFTreeGetNextSibling(tree: interop.Object): interop.Object;
 
-declare function CFTreeGetFirstChild(tree: interop.PointerConvertible): interop.Pointer;
+declare function CFTreeGetFirstChild(tree: interop.Object): interop.Object;
 
-declare function CFTreeGetContext(tree: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFTreeGetContext(tree: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFTreeGetChildCount(tree: interop.PointerConvertible): number;
+declare function CFTreeGetChildCount(tree: interop.Object): number;
 
-declare function CFTreeGetChildAtIndex(tree: interop.PointerConvertible, idx: number): interop.Pointer;
+declare function CFTreeGetChildAtIndex(tree: interop.Object, idx: number): interop.Object;
 
-declare function CFTreeGetChildren(tree: interop.PointerConvertible, children: interop.PointerConvertible): void;
+declare function CFTreeGetChildren(tree: interop.Object, children: interop.PointerConvertible): void;
 
-declare function CFTreeApplyFunctionToChildren(tree: interop.PointerConvertible, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
+declare function CFTreeApplyFunctionToChildren(tree: interop.Object, applier: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
-declare function CFTreeFindRoot(tree: interop.PointerConvertible): interop.Pointer;
+declare function CFTreeFindRoot(tree: interop.Object): interop.Object;
 
-declare function CFTreeSetContext(tree: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFTreeSetContext(tree: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFTreePrependChild(tree: interop.PointerConvertible, newChild: interop.PointerConvertible): void;
+declare function CFTreePrependChild(tree: interop.Object, newChild: interop.Object): void;
 
-declare function CFTreeAppendChild(tree: interop.PointerConvertible, newChild: interop.PointerConvertible): void;
+declare function CFTreeAppendChild(tree: interop.Object, newChild: interop.Object): void;
 
-declare function CFTreeInsertSibling(tree: interop.PointerConvertible, newSibling: interop.PointerConvertible): void;
+declare function CFTreeInsertSibling(tree: interop.Object, newSibling: interop.Object): void;
 
-declare function CFTreeRemove(tree: interop.PointerConvertible): void;
+declare function CFTreeRemove(tree: interop.Object): void;
 
-declare function CFTreeRemoveAllChildren(tree: interop.PointerConvertible): void;
+declare function CFTreeRemoveAllChildren(tree: interop.Object): void;
 
-declare function CFTreeSortChildren(tree: interop.PointerConvertible, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): void;
+declare function CFTreeSortChildren(tree: interop.Object, comparator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, context: interop.PointerConvertible): void;
 
-declare function CFURLCreateDataAndPropertiesFromResource(alloc: interop.PointerConvertible, url: interop.PointerConvertible, resourceData: interop.PointerConvertible, properties: interop.PointerConvertible, desiredProperties: interop.PointerConvertible, errorCode: interop.PointerConvertible): number;
+declare function CFURLCreateDataAndPropertiesFromResource(alloc: interop.Object, url: interop.Object, resourceData: interop.PointerConvertible, properties: interop.PointerConvertible, desiredProperties: interop.Object, errorCode: interop.PointerConvertible): number;
 
-declare function CFURLWriteDataAndPropertiesToResource(url: interop.PointerConvertible, dataToWrite: interop.PointerConvertible, propertiesToWrite: interop.PointerConvertible, errorCode: interop.PointerConvertible): number;
+declare function CFURLWriteDataAndPropertiesToResource(url: interop.Object, dataToWrite: interop.Object, propertiesToWrite: interop.Object, errorCode: interop.PointerConvertible): number;
 
-declare function CFURLDestroyResource(url: interop.PointerConvertible, errorCode: interop.PointerConvertible): number;
+declare function CFURLDestroyResource(url: interop.Object, errorCode: interop.PointerConvertible): number;
 
-declare function CFURLCreatePropertyFromResource(alloc: interop.PointerConvertible, url: interop.PointerConvertible, property: interop.PointerConvertible, errorCode: interop.PointerConvertible): interop.Pointer;
+declare function CFURLCreatePropertyFromResource(alloc: interop.Object, url: interop.Object, property: interop.Object, errorCode: interop.PointerConvertible): interop.Object;
 
 declare function CFUUIDGetTypeID(): number;
 
-declare function CFUUIDCreate(alloc: interop.PointerConvertible): interop.Pointer;
+declare function CFUUIDCreate(alloc: interop.Object): interop.Object;
 
-declare function CFUUIDCreateWithBytes(alloc: interop.PointerConvertible, byte0: number, byte1: number, byte2: number, byte3: number, byte4: number, byte5: number, byte6: number, byte7: number, byte8: number, byte9: number, byte10: number, byte11: number, byte12: number, byte13: number, byte14: number, byte15: number): interop.Pointer;
+declare function CFUUIDCreateWithBytes(alloc: interop.Object, byte0: number, byte1: number, byte2: number, byte3: number, byte4: number, byte5: number, byte6: number, byte7: number, byte8: number, byte9: number, byte10: number, byte11: number, byte12: number, byte13: number, byte14: number, byte15: number): interop.Object;
 
-declare function CFUUIDCreateFromString(alloc: interop.PointerConvertible, uuidStr: interop.PointerConvertible): interop.Pointer;
+declare function CFUUIDCreateFromString(alloc: interop.Object, uuidStr: interop.Object): interop.Object;
 
-declare function CFUUIDCreateString(alloc: interop.PointerConvertible, uuid: interop.PointerConvertible): interop.Pointer;
+declare function CFUUIDCreateString(alloc: interop.Object, uuid: interop.Object): interop.Object;
 
-declare function CFUUIDGetConstantUUIDWithBytes(alloc: interop.PointerConvertible, byte0: number, byte1: number, byte2: number, byte3: number, byte4: number, byte5: number, byte6: number, byte7: number, byte8: number, byte9: number, byte10: number, byte11: number, byte12: number, byte13: number, byte14: number, byte15: number): interop.Pointer;
+declare function CFUUIDGetConstantUUIDWithBytes(alloc: interop.Object, byte0: number, byte1: number, byte2: number, byte3: number, byte4: number, byte5: number, byte6: number, byte7: number, byte8: number, byte9: number, byte10: number, byte11: number, byte12: number, byte13: number, byte14: number, byte15: number): interop.Object;
 
-declare function CFUUIDGetUUIDBytes(uuid: interop.PointerConvertible): CFUUIDBytes;
+declare function CFUUIDGetUUIDBytes(uuid: interop.Object): CFUUIDBytes;
 
-declare function CFUUIDCreateFromUUIDBytes(alloc: interop.PointerConvertible, bytes: CFUUIDBytes): interop.Pointer;
+declare function CFUUIDCreateFromUUIDBytes(alloc: interop.Object, bytes: CFUUIDBytes): interop.Object;
 
-declare function CFCopyHomeDirectoryURL(): interop.Pointer;
+declare function CFCopyHomeDirectoryURL(): interop.Object;
 
-declare function CFBundleGetMainBundle(): interop.Pointer;
+declare function CFBundleGetMainBundle(): interop.Object;
 
-declare function CFBundleGetBundleWithIdentifier(bundleID: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetBundleWithIdentifier(bundleID: interop.Object): interop.Object;
 
-declare function CFBundleGetAllBundles(): interop.Pointer;
+declare function CFBundleGetAllBundles(): interop.Object;
 
 declare function CFBundleGetTypeID(): number;
 
-declare function CFBundleCreate(allocator: interop.PointerConvertible, bundleURL: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCreate(allocator: interop.Object, bundleURL: interop.Object): interop.Object;
 
-declare function CFBundleCreateBundlesFromDirectory(allocator: interop.PointerConvertible, directoryURL: interop.PointerConvertible, bundleType: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCreateBundlesFromDirectory(allocator: interop.Object, directoryURL: interop.Object, bundleType: interop.Object): interop.Object;
 
-declare function CFBundleCopyBundleURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyBundleURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleGetValueForInfoDictionaryKey(bundle: interop.PointerConvertible, key: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetValueForInfoDictionaryKey(bundle: interop.Object, key: interop.Object): interop.Object;
 
-declare function CFBundleGetInfoDictionary(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetInfoDictionary(bundle: interop.Object): interop.Object;
 
-declare function CFBundleGetLocalInfoDictionary(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetLocalInfoDictionary(bundle: interop.Object): interop.Object;
 
-declare function CFBundleGetPackageInfo(bundle: interop.PointerConvertible, packageType: interop.PointerConvertible, packageCreator: interop.PointerConvertible): void;
+declare function CFBundleGetPackageInfo(bundle: interop.Object, packageType: interop.PointerConvertible, packageCreator: interop.PointerConvertible): void;
 
-declare function CFBundleGetIdentifier(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetIdentifier(bundle: interop.Object): interop.Object;
 
-declare function CFBundleGetVersionNumber(bundle: interop.PointerConvertible): number;
+declare function CFBundleGetVersionNumber(bundle: interop.Object): number;
 
-declare function CFBundleGetDevelopmentRegion(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetDevelopmentRegion(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopySupportFilesDirectoryURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopySupportFilesDirectoryURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopyResourcesDirectoryURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourcesDirectoryURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopyPrivateFrameworksURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyPrivateFrameworksURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopySharedFrameworksURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopySharedFrameworksURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopySharedSupportURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopySharedSupportURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopyBuiltInPlugInsURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyBuiltInPlugInsURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopyInfoDictionaryInDirectory(bundleURL: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyInfoDictionaryInDirectory(bundleURL: interop.Object): interop.Object;
 
-declare function CFBundleGetPackageInfoInDirectory(url: interop.PointerConvertible, packageType: interop.PointerConvertible, packageCreator: interop.PointerConvertible): number;
+declare function CFBundleGetPackageInfoInDirectory(url: interop.Object, packageType: interop.PointerConvertible, packageCreator: interop.PointerConvertible): number;
 
-declare function CFBundleCopyResourceURL(bundle: interop.PointerConvertible, resourceName: interop.PointerConvertible, resourceType: interop.PointerConvertible, subDirName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourceURL(bundle: interop.Object, resourceName: interop.Object, resourceType: interop.Object, subDirName: interop.Object): interop.Object;
 
-declare function CFBundleCopyResourceURLsOfType(bundle: interop.PointerConvertible, resourceType: interop.PointerConvertible, subDirName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourceURLsOfType(bundle: interop.Object, resourceType: interop.Object, subDirName: interop.Object): interop.Object;
 
-declare function CFBundleCopyLocalizedString(bundle: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, tableName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyLocalizedString(bundle: interop.Object, key: interop.Object, value: interop.Object, tableName: interop.Object): interop.Object;
 
-declare function CFBundleCopyLocalizedStringForLocalizations(bundle: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, tableName: interop.PointerConvertible, localizations: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyLocalizedStringForLocalizations(bundle: interop.Object, key: interop.Object, value: interop.Object, tableName: interop.Object, localizations: interop.Object): interop.Object;
 
-declare function CFBundleCopyResourceURLInDirectory(bundleURL: interop.PointerConvertible, resourceName: interop.PointerConvertible, resourceType: interop.PointerConvertible, subDirName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourceURLInDirectory(bundleURL: interop.Object, resourceName: interop.Object, resourceType: interop.Object, subDirName: interop.Object): interop.Object;
 
-declare function CFBundleCopyResourceURLsOfTypeInDirectory(bundleURL: interop.PointerConvertible, resourceType: interop.PointerConvertible, subDirName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourceURLsOfTypeInDirectory(bundleURL: interop.Object, resourceType: interop.Object, subDirName: interop.Object): interop.Object;
 
-declare function CFBundleCopyBundleLocalizations(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyBundleLocalizations(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopyPreferredLocalizationsFromArray(locArray: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyPreferredLocalizationsFromArray(locArray: interop.Object): interop.Object;
 
-declare function CFBundleCopyLocalizationsForPreferences(locArray: interop.PointerConvertible, prefArray: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyLocalizationsForPreferences(locArray: interop.Object, prefArray: interop.Object): interop.Object;
 
-declare function CFBundleCopyResourceURLForLocalization(bundle: interop.PointerConvertible, resourceName: interop.PointerConvertible, resourceType: interop.PointerConvertible, subDirName: interop.PointerConvertible, localizationName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourceURLForLocalization(bundle: interop.Object, resourceName: interop.Object, resourceType: interop.Object, subDirName: interop.Object, localizationName: interop.Object): interop.Object;
 
-declare function CFBundleCopyResourceURLsOfTypeForLocalization(bundle: interop.PointerConvertible, resourceType: interop.PointerConvertible, subDirName: interop.PointerConvertible, localizationName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyResourceURLsOfTypeForLocalization(bundle: interop.Object, resourceType: interop.Object, subDirName: interop.Object, localizationName: interop.Object): interop.Object;
 
-declare function CFBundleCopyInfoDictionaryForURL(url: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyInfoDictionaryForURL(url: interop.Object): interop.Object;
 
-declare function CFBundleCopyLocalizationsForURL(url: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyLocalizationsForURL(url: interop.Object): interop.Object;
 
-declare function CFBundleCopyExecutableArchitecturesForURL(url: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyExecutableArchitecturesForURL(url: interop.Object): interop.Object;
 
-declare function CFBundleCopyExecutableURL(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyExecutableURL(bundle: interop.Object): interop.Object;
 
-declare function CFBundleCopyExecutableArchitectures(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyExecutableArchitectures(bundle: interop.Object): interop.Object;
 
-declare function CFBundlePreflightExecutable(bundle: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CFBundlePreflightExecutable(bundle: interop.Object, error: interop.PointerConvertible): number;
 
-declare function CFBundleLoadExecutableAndReturnError(bundle: interop.PointerConvertible, error: interop.PointerConvertible): number;
+declare function CFBundleLoadExecutableAndReturnError(bundle: interop.Object, error: interop.PointerConvertible): number;
 
-declare function CFBundleLoadExecutable(bundle: interop.PointerConvertible): number;
+declare function CFBundleLoadExecutable(bundle: interop.Object): number;
 
-declare function CFBundleIsExecutableLoaded(bundle: interop.PointerConvertible): number;
+declare function CFBundleIsExecutableLoaded(bundle: interop.Object): number;
 
-declare function CFBundleUnloadExecutable(bundle: interop.PointerConvertible): void;
+declare function CFBundleUnloadExecutable(bundle: interop.Object): void;
 
-declare function CFBundleGetFunctionPointerForName(bundle: interop.PointerConvertible, functionName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetFunctionPointerForName(bundle: interop.Object, functionName: interop.Object): interop.Pointer;
 
-declare function CFBundleGetFunctionPointersForNames(bundle: interop.PointerConvertible, functionNames: interop.PointerConvertible, ftbl: interop.Pointer): void;
+declare function CFBundleGetFunctionPointersForNames(bundle: interop.Object, functionNames: interop.Object, ftbl: interop.Pointer): void;
 
-declare function CFBundleGetDataPointerForName(bundle: interop.PointerConvertible, symbolName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetDataPointerForName(bundle: interop.Object, symbolName: interop.Object): interop.Pointer;
 
-declare function CFBundleGetDataPointersForNames(bundle: interop.PointerConvertible, symbolNames: interop.PointerConvertible, stbl: interop.Pointer): void;
+declare function CFBundleGetDataPointersForNames(bundle: interop.Object, symbolNames: interop.Object, stbl: interop.Pointer): void;
 
-declare function CFBundleCopyAuxiliaryExecutableURL(bundle: interop.PointerConvertible, executableName: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleCopyAuxiliaryExecutableURL(bundle: interop.Object, executableName: interop.Object): interop.Object;
 
-declare function CFBundleGetPlugIn(bundle: interop.PointerConvertible): interop.Pointer;
+declare function CFBundleGetPlugIn(bundle: interop.Object): interop.Object;
 
 declare function CFMessagePortGetTypeID(): number;
 
-declare function CFMessagePortCreateLocal(allocator: interop.PointerConvertible, name: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible, shouldFreeInfo: interop.PointerConvertible): interop.Pointer;
+declare function CFMessagePortCreateLocal(allocator: interop.Object, name: interop.Object, callout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer, context: interop.PointerConvertible, shouldFreeInfo: interop.PointerConvertible): interop.Object;
 
-declare function CFMessagePortCreateRemote(allocator: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+declare function CFMessagePortCreateRemote(allocator: interop.Object, name: interop.Object): interop.Object;
 
-declare function CFMessagePortIsRemote(ms: interop.PointerConvertible): number;
+declare function CFMessagePortIsRemote(ms: interop.Object): number;
 
-declare function CFMessagePortGetName(ms: interop.PointerConvertible): interop.Pointer;
+declare function CFMessagePortGetName(ms: interop.Object): interop.Object;
 
-declare function CFMessagePortSetName(ms: interop.PointerConvertible, newName: interop.PointerConvertible): number;
+declare function CFMessagePortSetName(ms: interop.Object, newName: interop.Object): number;
 
-declare function CFMessagePortGetContext(ms: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFMessagePortGetContext(ms: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFMessagePortInvalidate(ms: interop.PointerConvertible): void;
+declare function CFMessagePortInvalidate(ms: interop.Object): void;
 
-declare function CFMessagePortIsValid(ms: interop.PointerConvertible): number;
+declare function CFMessagePortIsValid(ms: interop.Object): number;
 
-declare function CFMessagePortGetInvalidationCallBack(ms: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void;
+declare function CFMessagePortGetInvalidationCallBack(ms: interop.Object): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void;
 
-declare function CFMessagePortSetInvalidationCallBack(ms: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
+declare function CFMessagePortSetInvalidationCallBack(ms: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
 
-declare function CFMessagePortSendRequest(remote: interop.PointerConvertible, msgid: number, data: interop.PointerConvertible, sendTimeout: number, rcvTimeout: number, replyMode: interop.PointerConvertible, returnData: interop.PointerConvertible): number;
+declare function CFMessagePortSendRequest(remote: interop.Object, msgid: number, data: interop.Object, sendTimeout: number, rcvTimeout: number, replyMode: interop.Object, returnData: interop.PointerConvertible): number;
 
-declare function CFMessagePortCreateRunLoopSource(allocator: interop.PointerConvertible, local: interop.PointerConvertible, order: number): interop.Pointer;
+declare function CFMessagePortCreateRunLoopSource(allocator: interop.Object, local: interop.Object, order: number): interop.Object;
 
-declare function CFMessagePortSetDispatchQueue(ms: interop.PointerConvertible, queue: NSObject): void;
+declare function CFMessagePortSetDispatchQueue(ms: interop.Object, queue: NSObject): void;
 
 declare function CFPlugInGetTypeID(): number;
 
-declare function CFPlugInCreate(allocator: interop.PointerConvertible, plugInURL: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInCreate(allocator: interop.Object, plugInURL: interop.Object): interop.Object;
 
-declare function CFPlugInGetBundle(plugIn: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInGetBundle(plugIn: interop.Object): interop.Object;
 
-declare function CFPlugInSetLoadOnDemand(plugIn: interop.PointerConvertible, flag: number): void;
+declare function CFPlugInSetLoadOnDemand(plugIn: interop.Object, flag: number): void;
 
-declare function CFPlugInIsLoadOnDemand(plugIn: interop.PointerConvertible): number;
+declare function CFPlugInIsLoadOnDemand(plugIn: interop.Object): number;
 
-declare function CFPlugInFindFactoriesForPlugInType(typeUUID: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInFindFactoriesForPlugInType(typeUUID: interop.Object): interop.Object;
 
-declare function CFPlugInFindFactoriesForPlugInTypeInPlugIn(typeUUID: interop.PointerConvertible, plugIn: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInFindFactoriesForPlugInTypeInPlugIn(typeUUID: interop.Object, plugIn: interop.Object): interop.Object;
 
-declare function CFPlugInInstanceCreate(allocator: interop.PointerConvertible, factoryUUID: interop.PointerConvertible, typeUUID: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInInstanceCreate(allocator: interop.Object, factoryUUID: interop.Object, typeUUID: interop.Object): interop.Pointer;
 
-declare function CFPlugInRegisterFactoryFunction(factoryUUID: interop.PointerConvertible, func: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer): number;
+declare function CFPlugInRegisterFactoryFunction(factoryUUID: interop.Object, func: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer): number;
 
-declare function CFPlugInRegisterFactoryFunctionByName(factoryUUID: interop.PointerConvertible, plugIn: interop.PointerConvertible, functionName: interop.PointerConvertible): number;
+declare function CFPlugInRegisterFactoryFunctionByName(factoryUUID: interop.Object, plugIn: interop.Object, functionName: interop.Object): number;
 
-declare function CFPlugInUnregisterFactory(factoryUUID: interop.PointerConvertible): number;
+declare function CFPlugInUnregisterFactory(factoryUUID: interop.Object): number;
 
-declare function CFPlugInRegisterPlugInType(factoryUUID: interop.PointerConvertible, typeUUID: interop.PointerConvertible): number;
+declare function CFPlugInRegisterPlugInType(factoryUUID: interop.Object, typeUUID: interop.Object): number;
 
-declare function CFPlugInUnregisterPlugInType(factoryUUID: interop.PointerConvertible, typeUUID: interop.PointerConvertible): number;
+declare function CFPlugInUnregisterPlugInType(factoryUUID: interop.Object, typeUUID: interop.Object): number;
 
-declare function CFPlugInAddInstanceForFactory(factoryID: interop.PointerConvertible): void;
+declare function CFPlugInAddInstanceForFactory(factoryID: interop.Object): void;
 
-declare function CFPlugInRemoveInstanceForFactory(factoryID: interop.PointerConvertible): void;
+declare function CFPlugInRemoveInstanceForFactory(factoryID: interop.Object): void;
 
-declare function CFPlugInInstanceGetInterfaceFunctionTable(instance: interop.PointerConvertible, interfaceName: interop.PointerConvertible, ftbl: interop.PointerConvertible): number;
+declare function CFPlugInInstanceGetInterfaceFunctionTable(instance: interop.Object, interfaceName: interop.Object, ftbl: interop.PointerConvertible): number;
 
-declare function CFPlugInInstanceGetFactoryName(instance: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInInstanceGetFactoryName(instance: interop.Object): interop.Object;
 
-declare function CFPlugInInstanceGetInstanceData(instance: interop.PointerConvertible): interop.Pointer;
+declare function CFPlugInInstanceGetInstanceData(instance: interop.Object): interop.Pointer;
 
 declare function CFPlugInInstanceGetTypeID(): number;
 
-declare function CFPlugInInstanceCreateWithInstanceDataSize(allocator: interop.PointerConvertible, instanceDataSize: number, deallocateInstanceFunction: (p1: interop.PointerConvertible) => void, factoryName: interop.PointerConvertible, getInterfaceFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): interop.Pointer;
+declare function CFPlugInInstanceCreateWithInstanceDataSize(allocator: interop.Object, instanceDataSize: number, deallocateInstanceFunction: (p1: interop.PointerConvertible) => void, factoryName: interop.Object, getInterfaceFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number): interop.Object;
 
 declare function CFMachPortGetTypeID(): number;
 
-declare function CFMachPortCreate(allocator: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible, shouldFreeInfo: interop.PointerConvertible): interop.Pointer;
+declare function CFMachPortCreate(allocator: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible, shouldFreeInfo: interop.PointerConvertible): interop.Object;
 
-declare function CFMachPortCreateWithPort(allocator: interop.PointerConvertible, portNum: number, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible, shouldFreeInfo: interop.PointerConvertible): interop.Pointer;
+declare function CFMachPortCreateWithPort(allocator: interop.Object, portNum: number, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void, context: interop.PointerConvertible, shouldFreeInfo: interop.PointerConvertible): interop.Object;
 
-declare function CFMachPortGetPort(port: interop.PointerConvertible): number;
+declare function CFMachPortGetPort(port: interop.Object): number;
 
-declare function CFMachPortGetContext(port: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFMachPortGetContext(port: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFMachPortInvalidate(port: interop.PointerConvertible): void;
+declare function CFMachPortInvalidate(port: interop.Object): void;
 
-declare function CFMachPortIsValid(port: interop.PointerConvertible): number;
+declare function CFMachPortIsValid(port: interop.Object): number;
 
-declare function CFMachPortGetInvalidationCallBack(port: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void;
+declare function CFMachPortGetInvalidationCallBack(port: interop.Object): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void;
 
-declare function CFMachPortSetInvalidationCallBack(port: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
+declare function CFMachPortSetInvalidationCallBack(port: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): void;
 
-declare function CFMachPortCreateRunLoopSource(allocator: interop.PointerConvertible, port: interop.PointerConvertible, order: number): interop.Pointer;
+declare function CFMachPortCreateRunLoopSource(allocator: interop.Object, port: interop.Object, order: number): interop.Object;
 
 declare function CFAttributedStringGetTypeID(): number;
 
-declare function CFAttributedStringCreate(alloc: interop.PointerConvertible, str: interop.PointerConvertible, attributes: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringCreate(alloc: interop.Object, str: interop.Object, attributes: interop.Object): interop.Object;
 
-declare function CFAttributedStringCreateWithSubstring(alloc: interop.PointerConvertible, aStr: interop.PointerConvertible, range: CFRange): interop.Pointer;
+declare function CFAttributedStringCreateWithSubstring(alloc: interop.Object, aStr: interop.Object, range: CFRange): interop.Object;
 
-declare function CFAttributedStringCreateCopy(alloc: interop.PointerConvertible, aStr: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringCreateCopy(alloc: interop.Object, aStr: interop.Object): interop.Object;
 
-declare function CFAttributedStringGetString(aStr: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringGetString(aStr: interop.Object): interop.Object;
 
-declare function CFAttributedStringGetLength(aStr: interop.PointerConvertible): number;
+declare function CFAttributedStringGetLength(aStr: interop.Object): number;
 
-declare function CFAttributedStringGetAttributes(aStr: interop.PointerConvertible, loc: number, effectiveRange: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringGetAttributes(aStr: interop.Object, loc: number, effectiveRange: interop.PointerConvertible): interop.Object;
 
-declare function CFAttributedStringGetAttribute(aStr: interop.PointerConvertible, loc: number, attrName: interop.PointerConvertible, effectiveRange: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringGetAttribute(aStr: interop.Object, loc: number, attrName: interop.Object, effectiveRange: interop.PointerConvertible): interop.Object;
 
-declare function CFAttributedStringGetAttributesAndLongestEffectiveRange(aStr: interop.PointerConvertible, loc: number, inRange: CFRange, longestEffectiveRange: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringGetAttributesAndLongestEffectiveRange(aStr: interop.Object, loc: number, inRange: CFRange, longestEffectiveRange: interop.PointerConvertible): interop.Object;
 
-declare function CFAttributedStringGetAttributeAndLongestEffectiveRange(aStr: interop.PointerConvertible, loc: number, attrName: interop.PointerConvertible, inRange: CFRange, longestEffectiveRange: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringGetAttributeAndLongestEffectiveRange(aStr: interop.Object, loc: number, attrName: interop.Object, inRange: CFRange, longestEffectiveRange: interop.PointerConvertible): interop.Object;
 
-declare function CFAttributedStringCreateMutableCopy(alloc: interop.PointerConvertible, maxLength: number, aStr: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringCreateMutableCopy(alloc: interop.Object, maxLength: number, aStr: interop.Object): interop.Object;
 
-declare function CFAttributedStringCreateMutable(alloc: interop.PointerConvertible, maxLength: number): interop.Pointer;
+declare function CFAttributedStringCreateMutable(alloc: interop.Object, maxLength: number): interop.Object;
 
-declare function CFAttributedStringReplaceString(aStr: interop.PointerConvertible, range: CFRange, replacement: interop.PointerConvertible): void;
+declare function CFAttributedStringReplaceString(aStr: interop.Object, range: CFRange, replacement: interop.Object): void;
 
-declare function CFAttributedStringGetMutableString(aStr: interop.PointerConvertible): interop.Pointer;
+declare function CFAttributedStringGetMutableString(aStr: interop.Object): interop.Object;
 
-declare function CFAttributedStringSetAttributes(aStr: interop.PointerConvertible, range: CFRange, replacement: interop.PointerConvertible, clearOtherAttributes: number): void;
+declare function CFAttributedStringSetAttributes(aStr: interop.Object, range: CFRange, replacement: interop.Object, clearOtherAttributes: number): void;
 
-declare function CFAttributedStringSetAttribute(aStr: interop.PointerConvertible, range: CFRange, attrName: interop.PointerConvertible, value: interop.PointerConvertible): void;
+declare function CFAttributedStringSetAttribute(aStr: interop.Object, range: CFRange, attrName: interop.Object, value: interop.Object): void;
 
-declare function CFAttributedStringRemoveAttribute(aStr: interop.PointerConvertible, range: CFRange, attrName: interop.PointerConvertible): void;
+declare function CFAttributedStringRemoveAttribute(aStr: interop.Object, range: CFRange, attrName: interop.Object): void;
 
-declare function CFAttributedStringReplaceAttributedString(aStr: interop.PointerConvertible, range: CFRange, replacement: interop.PointerConvertible): void;
+declare function CFAttributedStringReplaceAttributedString(aStr: interop.Object, range: CFRange, replacement: interop.Object): void;
 
-declare function CFAttributedStringBeginEditing(aStr: interop.PointerConvertible): void;
+declare function CFAttributedStringBeginEditing(aStr: interop.Object): void;
 
-declare function CFAttributedStringEndEditing(aStr: interop.PointerConvertible): void;
+declare function CFAttributedStringEndEditing(aStr: interop.Object): void;
 
-declare function CFAttributedStringGetBidiLevelsAndResolvedDirections(attributedString: interop.PointerConvertible, range: CFRange, baseDirection: number, bidiLevels: interop.PointerConvertible, baseDirections: interop.PointerConvertible): boolean;
+declare function CFAttributedStringGetBidiLevelsAndResolvedDirections(attributedString: interop.Object, range: CFRange, baseDirection: number, bidiLevels: interop.PointerConvertible, baseDirections: interop.PointerConvertible): boolean;
 
-declare function CFAttributedStringGetStatisticalWritingDirections(attributedString: interop.PointerConvertible, range: CFRange, baseDirection: number, bidiLevels: interop.PointerConvertible, baseDirections: interop.PointerConvertible): boolean;
+declare function CFAttributedStringGetStatisticalWritingDirections(attributedString: interop.Object, range: CFRange, baseDirection: number, bidiLevels: interop.PointerConvertible, baseDirections: interop.PointerConvertible): boolean;
 
 declare function CFURLEnumeratorGetTypeID(): number;
 
-declare function CFURLEnumeratorCreateForDirectoryURL(alloc: interop.PointerConvertible, directoryURL: interop.PointerConvertible, option: interop.Enum<typeof CFURLEnumeratorOptions>, propertyKeys: interop.PointerConvertible): interop.Pointer;
+declare function CFURLEnumeratorCreateForDirectoryURL(alloc: interop.Object, directoryURL: interop.Object, option: interop.Enum<typeof CFURLEnumeratorOptions>, propertyKeys: interop.Object): interop.Object;
 
-declare function CFURLEnumeratorCreateForMountedVolumes(alloc: interop.PointerConvertible, option: interop.Enum<typeof CFURLEnumeratorOptions>, propertyKeys: interop.PointerConvertible): interop.Pointer;
+declare function CFURLEnumeratorCreateForMountedVolumes(alloc: interop.Object, option: interop.Enum<typeof CFURLEnumeratorOptions>, propertyKeys: interop.Object): interop.Object;
 
-declare function CFURLEnumeratorGetNextURL(enumerator: interop.PointerConvertible, url: interop.PointerConvertible, error: interop.PointerConvertible): interop.Enum<typeof CFURLEnumeratorResult>;
+declare function CFURLEnumeratorGetNextURL(enumerator: interop.Object, url: interop.PointerConvertible, error: interop.PointerConvertible): interop.Enum<typeof CFURLEnumeratorResult>;
 
-declare function CFURLEnumeratorSkipDescendents(enumerator: interop.PointerConvertible): void;
+declare function CFURLEnumeratorSkipDescendents(enumerator: interop.Object): void;
 
-declare function CFURLEnumeratorGetDescendentLevel(enumerator: interop.PointerConvertible): number;
+declare function CFURLEnumeratorGetDescendentLevel(enumerator: interop.Object): number;
 
-declare function CFURLEnumeratorGetSourceDidChange(enumerator: interop.PointerConvertible): number;
+declare function CFURLEnumeratorGetSourceDidChange(enumerator: interop.Object): number;
 
 declare function CFFileSecurityGetTypeID(): number;
 
-declare function CFFileSecurityCreate(allocator: interop.PointerConvertible): interop.Pointer;
+declare function CFFileSecurityCreate(allocator: interop.Object): interop.Object;
 
-declare function CFFileSecurityCreateCopy(allocator: interop.PointerConvertible, fileSec: interop.PointerConvertible): interop.Pointer;
+declare function CFFileSecurityCreateCopy(allocator: interop.Object, fileSec: interop.Object): interop.Object;
 
-declare function CFFileSecurityCopyOwnerUUID(fileSec: interop.PointerConvertible, ownerUUID: interop.PointerConvertible): number;
+declare function CFFileSecurityCopyOwnerUUID(fileSec: interop.Object, ownerUUID: interop.PointerConvertible): number;
 
-declare function CFFileSecuritySetOwnerUUID(fileSec: interop.PointerConvertible, ownerUUID: interop.PointerConvertible): number;
+declare function CFFileSecuritySetOwnerUUID(fileSec: interop.Object, ownerUUID: interop.Object): number;
 
-declare function CFFileSecurityCopyGroupUUID(fileSec: interop.PointerConvertible, groupUUID: interop.PointerConvertible): number;
+declare function CFFileSecurityCopyGroupUUID(fileSec: interop.Object, groupUUID: interop.PointerConvertible): number;
 
-declare function CFFileSecuritySetGroupUUID(fileSec: interop.PointerConvertible, groupUUID: interop.PointerConvertible): number;
+declare function CFFileSecuritySetGroupUUID(fileSec: interop.Object, groupUUID: interop.Object): number;
 
-declare function CFFileSecurityCopyAccessControlList(fileSec: interop.PointerConvertible, accessControlList: interop.PointerConvertible): number;
+declare function CFFileSecurityCopyAccessControlList(fileSec: interop.Object, accessControlList: interop.PointerConvertible): number;
 
-declare function CFFileSecuritySetAccessControlList(fileSec: interop.PointerConvertible, accessControlList: interop.PointerConvertible): number;
+declare function CFFileSecuritySetAccessControlList(fileSec: interop.Object, accessControlList: interop.PointerConvertible): number;
 
-declare function CFFileSecurityGetOwner(fileSec: interop.PointerConvertible, owner: interop.PointerConvertible): number;
+declare function CFFileSecurityGetOwner(fileSec: interop.Object, owner: interop.PointerConvertible): number;
 
-declare function CFFileSecuritySetOwner(fileSec: interop.PointerConvertible, owner: number): number;
+declare function CFFileSecuritySetOwner(fileSec: interop.Object, owner: number): number;
 
-declare function CFFileSecurityGetGroup(fileSec: interop.PointerConvertible, group: interop.PointerConvertible): number;
+declare function CFFileSecurityGetGroup(fileSec: interop.Object, group: interop.PointerConvertible): number;
 
-declare function CFFileSecuritySetGroup(fileSec: interop.PointerConvertible, group: number): number;
+declare function CFFileSecuritySetGroup(fileSec: interop.Object, group: number): number;
 
-declare function CFFileSecurityGetMode(fileSec: interop.PointerConvertible, mode: interop.PointerConvertible): number;
+declare function CFFileSecurityGetMode(fileSec: interop.Object, mode: interop.PointerConvertible): number;
 
-declare function CFFileSecuritySetMode(fileSec: interop.PointerConvertible, mode: number): number;
+declare function CFFileSecuritySetMode(fileSec: interop.Object, mode: number): number;
 
-declare function CFFileSecurityClearProperties(fileSec: interop.PointerConvertible, clearPropertyMask: interop.Enum<typeof CFFileSecurityClearOptions>): number;
+declare function CFFileSecurityClearProperties(fileSec: interop.Object, clearPropertyMask: interop.Enum<typeof CFFileSecurityClearOptions>): number;
 
-declare function CFStringTokenizerCopyBestStringLanguage(string: interop.PointerConvertible, range: CFRange): interop.Pointer;
+declare function CFStringTokenizerCopyBestStringLanguage(string: interop.Object, range: CFRange): interop.Object;
 
 declare function CFStringTokenizerGetTypeID(): number;
 
-declare function CFStringTokenizerCreate(alloc: interop.PointerConvertible, string: interop.PointerConvertible, range: CFRange, options: number, locale: interop.PointerConvertible): interop.Pointer;
+declare function CFStringTokenizerCreate(alloc: interop.Object, string: interop.Object, range: CFRange, options: number, locale: interop.Object): interop.Object;
 
-declare function CFStringTokenizerSetString(tokenizer: interop.PointerConvertible, string: interop.PointerConvertible, range: CFRange): void;
+declare function CFStringTokenizerSetString(tokenizer: interop.Object, string: interop.Object, range: CFRange): void;
 
-declare function CFStringTokenizerGoToTokenAtIndex(tokenizer: interop.PointerConvertible, index: number): interop.Enum<typeof CFStringTokenizerTokenType>;
+declare function CFStringTokenizerGoToTokenAtIndex(tokenizer: interop.Object, index: number): interop.Enum<typeof CFStringTokenizerTokenType>;
 
-declare function CFStringTokenizerAdvanceToNextToken(tokenizer: interop.PointerConvertible): interop.Enum<typeof CFStringTokenizerTokenType>;
+declare function CFStringTokenizerAdvanceToNextToken(tokenizer: interop.Object): interop.Enum<typeof CFStringTokenizerTokenType>;
 
-declare function CFStringTokenizerGetCurrentTokenRange(tokenizer: interop.PointerConvertible): CFRange;
+declare function CFStringTokenizerGetCurrentTokenRange(tokenizer: interop.Object): CFRange;
 
-declare function CFStringTokenizerCopyCurrentTokenAttribute(tokenizer: interop.PointerConvertible, attribute: number): interop.Pointer;
+declare function CFStringTokenizerCopyCurrentTokenAttribute(tokenizer: interop.Object, attribute: number): interop.Object;
 
-declare function CFStringTokenizerGetCurrentSubTokens(tokenizer: interop.PointerConvertible, ranges: interop.PointerConvertible, maxRangeLength: number, derivedSubTokens: interop.PointerConvertible): number;
+declare function CFStringTokenizerGetCurrentSubTokens(tokenizer: interop.Object, ranges: interop.PointerConvertible, maxRangeLength: number, derivedSubTokens: interop.Object): number;
 
 declare function CFFileDescriptorGetTypeID(): number;
 
-declare function CFFileDescriptorCreate(allocator: interop.PointerConvertible, fd: number, closeOnInvalidate: number, callout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Pointer;
+declare function CFFileDescriptorCreate(allocator: interop.Object, fd: number, closeOnInvalidate: number, callout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): interop.Object;
 
-declare function CFFileDescriptorGetNativeDescriptor(f: interop.PointerConvertible): number;
+declare function CFFileDescriptorGetNativeDescriptor(f: interop.Object): number;
 
-declare function CFFileDescriptorGetContext(f: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CFFileDescriptorGetContext(f: interop.Object, context: interop.PointerConvertible): void;
 
-declare function CFFileDescriptorEnableCallBacks(f: interop.PointerConvertible, callBackTypes: number): void;
+declare function CFFileDescriptorEnableCallBacks(f: interop.Object, callBackTypes: number): void;
 
-declare function CFFileDescriptorDisableCallBacks(f: interop.PointerConvertible, callBackTypes: number): void;
+declare function CFFileDescriptorDisableCallBacks(f: interop.Object, callBackTypes: number): void;
 
-declare function CFFileDescriptorInvalidate(f: interop.PointerConvertible): void;
+declare function CFFileDescriptorInvalidate(f: interop.Object): void;
 
-declare function CFFileDescriptorIsValid(f: interop.PointerConvertible): number;
+declare function CFFileDescriptorIsValid(f: interop.Object): number;
 
-declare function CFFileDescriptorCreateRunLoopSource(allocator: interop.PointerConvertible, f: interop.PointerConvertible, order: number): interop.Pointer;
+declare function CFFileDescriptorCreateRunLoopSource(allocator: interop.Object, f: interop.Object, order: number): interop.Object;
 

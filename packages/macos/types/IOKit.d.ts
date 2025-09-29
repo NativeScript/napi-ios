@@ -192,8 +192,6 @@ declare const kUSBBillboardAltModeConfigSuccess: number;
 
 declare const kUSBBillboardConfigUnsuccessful: number;
 
-declare const kUSBBillboardConfigNotAttempted: number;
-
 declare const kUSBBillboardVConnReserved: number;
 
 declare const kUSBBillboardVConn6Watt: number;
@@ -203,8 +201,6 @@ declare const kUSBBillboardVConn1P5Watt: number;
 declare const kUSBSuperSpeedSupportsLS: number;
 
 declare const kUSBImplicitFeedbackDataIsocUsageType: number;
-
-declare const kUSBDataIsocUsageType: number;
 
 declare const kUSBNoSynchronizationIsocSyncType: number;
 
@@ -824,8 +820,6 @@ declare const kMMCCmd_TEST_UNIT_READY: number;
 
 declare const kMMCCmd_SYNCHRONIZE_CACHE: number;
 
-declare const kMMCCmd_STOP_PLAY_SCAN: number;
-
 declare const kMMCCmd_START_STOP_UNIT: number;
 
 declare const kMMCCmd_SET_STREAMING: number;
@@ -1166,8 +1160,6 @@ declare const kSCSICmd_WRITE_12: number;
 
 declare const kSCSICmd_WRITE_10: number;
 
-declare const kSCSICmd_WRITE_6: number;
-
 declare const kSCSICmd_VOLUME_SET_OUT: number;
 
 declare const kSCSICmd_VERIFY_12: number;
@@ -1281,6 +1273,10 @@ declare const kSCSICmd_PLAY_AUDIO_TRACK_INDEX: number;
 declare const kSCSICmd_PLAY_AUDIO_MSF: number;
 
 declare const kSCSICmd_PLAY_AUDIO_12: number;
+
+declare const kSCSICmd_ATA_PASS_THROUGH_EXT: number;
+
+declare const kSCSICmd_ATA_PASS_THROUGH: number;
 
 declare const kSCSICmd_MODE_SENSE_10: number;
 
@@ -1576,8 +1572,6 @@ declare const kCDFeaturesWriteOnceBit: number;
 
 declare const kMessageFoundMedia: number;
 
-declare const kMessageDeterminingMediaPresence: number;
-
 declare const kMessageTrayStateChangeRequestRejected: number;
 
 declare const kFWSBP2UnsolicitedStatus: number;
@@ -1650,8 +1644,6 @@ declare const kIOPMThermalLevelCritical: number;
 
 declare const kIOPMThermalLevelNormal: number;
 
-declare const kIOPSAdapterErrorFlagDeviceNeedsToBeRepositioned: number;
-
 declare const kIOPSAdapterErrorFlagForeignObjectDetected: number;
 
 declare const kIOPSAdapterErrorFlagInsufficientAvailablePower: number;
@@ -1713,6 +1705,8 @@ declare const kInflowForciblyEnabledBit: number;
 declare const kClamshellSleepBit: number;
 
 declare const kClamshellStateBit: number;
+
+declare const kIOPMDriverAssertionForceFullWakeupBit: number;
 
 declare const kIOPMDriverAssertionNetworkKeepAliveActiveBit: number;
 
@@ -2162,8 +2156,6 @@ declare const kPanelTFTConnect: number;
 
 declare const kPanelConnect: number;
 
-declare const kFastCheckForDDC: number;
-
 declare const kOverrideConnection: number;
 
 declare const kConnectionInactive: number;
@@ -2448,8 +2440,6 @@ declare const kHIDUsage_BCS_ConvertUPC_EToA: number;
 
 declare const kHIDUsage_BCS_GRWTIBeep_LampAfterTransmit: number;
 
-declare const kHIDUsage_BCS_GRWTIAfterDecode: number;
-
 declare const kHIDUsage_BCS_GoodReadWhenToWrite: number;
 
 declare const kHIDUsage_BCS_SoundNotOnFileBeep: number;
@@ -2475,8 +2465,6 @@ declare const kHIDUsage_BCS_TriggerModeLaserOnWhilePulled: number;
 declare const kHIDUsage_BCS_TriggerModeContinuousLaserOn: number;
 
 declare const kHIDUsage_BCS_TriggerModeBlinkingLaserOn: number;
-
-declare const kHIDUsage_BCS_TriggerState: number;
 
 declare const kHIDUsage_BCS_InitiateBarcodeRead: number;
 
@@ -2617,8 +2605,6 @@ declare const kHIDUsage_BS_BatterySupported: number;
 declare const kHIDUsage_BS_OKToUse: number;
 
 declare const kHIDUsage_BS_OutputConnection: number;
-
-declare const kHIDUsage_BS_ConnectionToSMBus: number;
 
 declare const kHIDUsage_BS_OptionalMfgFunction4: number;
 
@@ -2970,8 +2956,6 @@ declare const kHIDUsage_Snsr_Property_SensorStatus: number;
 
 declare const kHIDUsage_Snsr_Property_FriendlyName: number;
 
-declare const kHIDUsage_Snsr_Property: number;
-
 declare const kHIDUsage_Snsr_Event_SensorEvent_ComplexTrigger: number;
 
 declare const kHIDUsage_Snsr_Event_SensorEvent_ZeroThresholdCrossUp: number;
@@ -3027,6 +3011,10 @@ declare const kHIDUsage_Snsr_Orientation_Distance2D: number;
 declare const kHIDUsage_Snsr_Orientation_Inclinometer1D: number;
 
 declare const kHIDUsage_Snsr_Orientation_Compass3D: number;
+
+declare const kHIDUsage_Snsr_Motion_LinearAccelerometer: number;
+
+declare const kHIDUsage_Snsr_Motion_GravityVector: number;
 
 declare const kHIDUsage_Snsr_Motion_Gyrometer3D: number;
 
@@ -3107,8 +3095,6 @@ declare const kHIDUsage_AD_CursorPositionReport: number;
 declare const kHIDUsage_AD_VerticalScroll: number;
 
 declare const kHIDUsage_AD_DisplayEnable: number;
-
-declare const kHIDUsage_AD_ClearDisplay: number;
 
 declare const kHIDUsage_AD_DataReadBack: number;
 
@@ -3315,8 +3301,6 @@ declare const kHIDUsage_Dig_Armature: number;
 declare const kHIDUsage_Dig_CoordinateMeasuringMachine: number;
 
 declare const kHIDUsage_Dig_TouchPad: number;
-
-declare const kHIDUsage_Dig_TouchScreen: number;
 
 declare const kHIDUsage_Csmr_ContactStatusFlag: number;
 
@@ -3602,8 +3586,6 @@ declare const kHIDUsage_Csmr_SubChannelIncrement: number;
 
 declare const kHIDUsage_Csmr_SubChannel: number;
 
-declare const kHIDUsage_Csmr_ChannelTop: number;
-
 declare const kHIDUsage_Csmr_ChannelSide: number;
 
 declare const kHIDUsage_Csmr_ChannelCenterFront: number;
@@ -3633,8 +3615,6 @@ declare const kHIDUsage_Csmr_RoomTemperature: number;
 declare const kHIDUsage_Csmr_LightIlluminationLevel: number;
 
 declare const kHIDUsage_Csmr_LightEnable: number;
-
-declare const kHIDUsage_Csmr_Slow: number;
 
 declare const kHIDUsage_Csmr_ExtendedPlay: number;
 
@@ -3872,8 +3852,6 @@ declare const kHIDUsage_Ord_Instance65535: number;
 
 declare const kHIDUsage_Ord_Instance3: number;
 
-declare const kHIDUsage_Button_65535: number;
-
 declare const kHIDUsage_Button_254: number;
 
 declare const kHIDUsage_Button_253: number;
@@ -3983,8 +3961,6 @@ declare const kHIDUsage_Button_176: number;
 declare const kHIDUsage_Button_175: number;
 
 declare const kHIDUsage_Button_171: number;
-
-declare const kHIDUsage_Button_170: number;
 
 declare const kHIDUsage_Button_167: number;
 
@@ -4169,6 +4145,18 @@ declare const kHIDUsage_LED_Player4: number;
 declare const kHIDUsage_LED_Player2: number;
 
 declare const kHIDUsage_LED_PlayerIndicator: number;
+
+declare const kHIDUsage_LED_LEDIntensity: number;
+
+declare const kHIDUsage_LED_BlueLEDChannel: number;
+
+declare const kHIDUsage_LED_RedLEDChannel: number;
+
+declare const kHIDUsage_LED_RGB_LED: number;
+
+declare const kHIDUsage_Button_65535: number;
+
+declare const kHIDUsage_LED_GoodStatus: number;
 
 declare const kHIDUsage_LED_SystemSuspend: number;
 
@@ -4432,6 +4420,8 @@ declare const kHIDUsage_KeyboardC: number;
 
 declare const kHIDUsage_KeyboardA: number;
 
+declare const kHIDUsage_GenDevControls_BatteryStrength: number;
+
 declare const kHIDUsage_Game_Reserved: number;
 
 declare const kHIDUsage_Game_GamepadFormFitting: number;
@@ -4439,8 +4429,6 @@ declare const kHIDUsage_Game_GamepadFormFitting: number;
 declare const kHIDUsage_Game_GamepadFormFitting_Compatibility: number;
 
 declare const kHIDUsage_Game_GunSafety: number;
-
-declare const kHIDUsage_Game_GunBurst: number;
 
 declare const kIOUSBDeviceStatusSelfPowered: number;
 
@@ -4586,8 +4574,6 @@ declare const kHIDUsage_GD_SystemDisplayToggleLCDAutoscale: number;
 
 declare const kHIDUsage_GD_SystemDisplayDual: number;
 
-declare const kHIDUsage_GD_SystemDisplayBoth: number;
-
 declare const kHIDUsage_GD_SystemDisplayExternal: number;
 
 declare const kHIDUsage_GD_SystemDisplayInternal: number;
@@ -4623,8 +4609,6 @@ declare const kHIDUsage_GD_DPadUp: number;
 declare const kHIDUsage_GD_SystemMenuDown: number;
 
 declare const kHIDUsage_GD_SystemMenuUp: number;
-
-declare const kHIDUsage_GD_SystemMenuExit: number;
 
 declare const kHIDUsage_GD_SystemContextMenu: number;
 
@@ -5276,8 +5260,6 @@ declare const kIOAudioChannelLabel_LeftSurroundDirect: number;
 
 declare const kIOAudioChannelLabel_RightCenter: number;
 
-declare const kIOAudioChannelLabel_RightSurround: number;
-
 declare const kIOAudioChannelLabel_LFEScreen: number;
 
 declare const kHIDUsage_Button_248: number;
@@ -5468,10 +5450,6 @@ declare const kHIDUsage_GD_WirelessRadioButton: number;
 
 declare const kIOAudioLevelControlSubTypePRAMVolume: number;
 
-declare const kHIDUsage_Keypad9: number;
-
-declare const kIOAudioLevelControlSubTypeVolume: number;
-
 declare const kIOAudioControlTypeJack: number;
 
 declare const kHIDPage_GenericDeviceControls: number;
@@ -5584,6 +5562,8 @@ declare const kHIDUsage_BCS_EnableCheckDigitTransmit: number;
 
 declare const kHIDUsage_Sprt_LoftWedge: number;
 
+declare const kSCSICmd_WRITE_6: number;
+
 declare const kATAOperationTypePowerManagement: number;
 
 declare const kSSCSeqCmd_COMPARE: number;
@@ -5597,6 +5577,12 @@ declare const kIOI2CBusTypeI2C: number;
 declare const kSENSE_KEY_ILLEGAL_REQUEST: number;
 
 declare const kHIDUsage_BCS_PDF_417: number;
+
+declare const kHIDUsage_Keypad9: number;
+
+declare const kIOAudioLevelControlSubTypeVolume: number;
+
+declare const kHIDUsage_BS_ConnectionToSMBus: number;
 
 declare const kHIDUsage_Csmr_RepeatFromMark: number;
 
@@ -5620,6 +5606,8 @@ declare const kSCSICmd_XPWRITE: number;
 
 declare const kUSBAnyDesc: number;
 
+declare const kIOPMDriverAssertionForceWakeupBit: number;
+
 declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkReservedPhase: number;
 
 declare const kHIDUsage_Tfon_PhoneKey4: number;
@@ -5635,42 +5623,6 @@ declare const kSPCCmd_SEND_DIAGNOSTICS: number;
 declare const kHIDUsage_Snsr_Event_SensorState_Initializing: number;
 
 declare const kHIDUsage_Csmr_ChannelFront: number;
-
-declare const kIOUSBSuperSpeedHubCharacteristicsPowerSwitchingGanged: number;
-
-declare const kHIDUsage_Snsr_Data_Light_ConsumerIRSentenceReceive: number;
-
-declare const kFWAVCAsyncPlug8: number;
-
-declare const kHIDUsage_Game_GamepadTrigger: number;
-
-declare const kIOMediumIEEE80211Manual: number;
-
-declare const kHIDUsage_BCS_UPC_EANControlReport: number;
-
-declare const kHIDUsage_VR_Vest: number;
-
-declare const kHIDUsage_Button_228: number;
-
-declare const kFWResponsePending: number;
-
-declare const kHIDUsage_Dig_Puck: number;
-
-declare const kSCSICmd_SEND_DVD_STRUCTURE: number;
-
-declare const kHIDUsage_Snsr_Data_Location_SatellitesInView: number;
-
-declare const kHIDUsage_Button_44: number;
-
-declare const kINQUIRY_Page80_PageCode: number;
-
-declare const kDPMSSyncMask: number;
-
-declare const kIOBlitDestFramebuffer: number;
-
-declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCountPhase: number;
-
-declare const EMBEDDED_SYNTHESIZER: number;
 
 declare const kHIDUsage_Csmr_MediaSelectWWW: number;
 
@@ -5992,8 +5944,6 @@ declare const kHIDUsage_PID_DeadBand: number;
 
 declare const kIOVideoFeatureControlClassIDExposure: number;
 
-declare const kSSCSeqCmd_MOVE_MEDIUM_ATTACHED: number;
-
 declare const kMMCCmd_READ_TOC_PMA_ATIP: number;
 
 declare const kHIDUsage_LED_SendCalls: number;
@@ -6021,8 +5971,6 @@ declare const kHIDUsage_BCS_RawScannedDataReport: number;
 declare const kSCSICmd_MODE_SELECT_10: number;
 
 declare const kHIDUsage_Csmr_ALLANOrWANBrowser: number;
-
-declare const kHIDUsage_KeyboardEscape: number;
 
 declare const kRangeSupportsSeperateSyncsBit: number;
 
@@ -6184,8 +6132,6 @@ declare const kHIDUsage_Csmr_ACSubscript: number;
 
 declare const kHIDUsage_Csmr_ACSendOrReceive: number;
 
-declare const kHIDUsage_LED_IndicatorFastBlink: number;
-
 declare const kRangeSupportsVSyncSerrationMask: number;
 
 declare const kHIDUsage_Button_34: number;
@@ -6233,8 +6179,6 @@ declare const kUSBStream0: number;
 declare const kHIDUsage_Csmr_ALPowerStatus: number;
 
 declare const kINQUIRY_PageB1_PageCode: number;
-
-declare const kFireWireCommandUseCopy: number;
 
 declare const kHIDUsage_KeyboardReturn: number;
 
@@ -6352,6 +6296,10 @@ declare const kHIDUsage_WD_ScaleStatusRequiresRezeroing: number;
 
 declare const kIOPMNotPowerManaged: number;
 
+declare const kHIDUsage_BCS_TriggerState: number;
+
+declare const kFireWireCommandUseCopy: number;
+
 declare const kHIDUsage_AD_CursorMode: number;
 
 declare const kIOPMProModeEngaged: number;
@@ -6393,6 +6341,10 @@ declare const kAppleVendorID: number;
 declare const kDVDStructureFormatCopyrightInfo: number;
 
 declare const kHIDUsage_BCS_BarSpaceData: number;
+
+declare const kIOPSAdapterErrorFlagDeviceNeedsToBeRepositioned: number;
+
+declare const kHIDUsage_Csmr_ChannelTop: number;
 
 declare const kHIDUsage_GD_SystemDisplayToggleMode: number;
 
@@ -6558,6 +6510,8 @@ declare const kUSBBillboardVConn2Watt: number;
 
 declare const kHIDUsage_Snsr_Property_Location_DesiredAccuracy: number;
 
+declare const kFastCheckForDDC: number;
+
 declare const kModeNotGraphicsQuality: number;
 
 declare const kUSBHubCountExceededNotificationType: number;
@@ -6652,29 +6606,73 @@ declare const kIOAudioChannelLabel_LeftSurround: number;
 
 declare const kConfigModuleSpecIdKey: number;
 
-declare const kHIDUsage_Csmr_ACNumberedList: number;
-
-declare const kIOPostedWrite: number;
-
-declare const kDVDMediaTypePlusR: number;
+declare const kHIDUsage_LED_Repeat: number;
 
 declare const kHIDUsage_BCS_Check: number;
 
-declare const kHIDUsage_Button_61: number;
+declare const kMMCCmd_STOP_PLAY_SCAN: number;
 
-declare const kMMCCmd_REPAIR_TRACK: number;
+declare const kHIDUsage_GD_SystemMenuExit: number;
+
+declare const kHIDUsage_KeyboardEscape: number;
 
 declare const kHIDUsage_PID_OpEffectStartSolo: number;
+
+declare const kHIDUsage_Button_137: number;
 
 declare const kUSBDataClass: number;
 
 declare const kHIDPage_BarCodeScanner: number;
 
-declare const kSSCSeqCmd_SPACE: number;
+declare const kHIDUsage_Snsr_Property_ReportingState: number;
 
-declare const kIOHIDStandardTypeISO: number;
+declare const kHIDUsage_Button_97: number;
+
+declare const kHIDUsage_Button_170: number;
+
+declare const kMMCCmd_SEEK_6: number;
 
 declare const kHIDUsage_Csmr_AC: number;
+
+declare const kHIDUsage_BCS_EAN2_3LabelControlReport: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsPowerSwitchingGanged: number;
+
+declare const kHIDUsage_Snsr_Data_Light_ConsumerIRSentenceReceive: number;
+
+declare const kFWAVCAsyncPlug8: number;
+
+declare const kHIDUsage_Game_GamepadTrigger: number;
+
+declare const kIOMediumIEEE80211Manual: number;
+
+declare const kHIDUsage_BCS_UPC_EANControlReport: number;
+
+declare const kHIDUsage_VR_Vest: number;
+
+declare const kHIDUsage_Button_228: number;
+
+declare const kFWResponsePending: number;
+
+declare const kHIDUsage_Dig_Puck: number;
+
+declare const kSCSICmd_SEND_DVD_STRUCTURE: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInView: number;
+
+declare const kHIDUsage_Button_44: number;
+
+declare const kINQUIRY_Page80_PageCode: number;
+
+declare const kDPMSSyncMask: number;
+
+declare const kIOBlitDestFramebuffer: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCountPhase: number;
+
+declare const EMBEDDED_SYNTHESIZER: number;
+
+declare const kHIDUsage_Button_130: number;
 
 declare const kHIDUsage_Snsr_Location_Triangulation: number;
 
@@ -6686,6 +6684,8 @@ declare const kSPCCmd_COPY: number;
 
 declare const kSPCCmd_MODE_SENSE_10: number;
 
+declare const kHIDUsage_Csmr_ACNumberedList: number;
+
 declare const kREPORT_LUNS_ADDRESS_DEVICE_TYPE_SPECIFIC: number;
 
 declare const kATASMARTSelfTestStatusNoError: number;
@@ -6695,6 +6695,8 @@ declare const kIOPMSoftSleep: number;
 declare const INPUT_MICROPHONE: number;
 
 declare const kIOAudioControlChannelIDAll: number;
+
+declare const kIOAudioSelectorControlSelectionValueSPDIF: number;
 
 declare const kHIDUsage_MSR_Track3Length: number;
 
@@ -6723,6 +6725,8 @@ declare const kHIDUsage_BCS_BarCodePresentSensor: number;
 declare const kHIDUsage_BD_BrailleKeyboardDot7: number;
 
 declare const kHIDUsage_Button_155: number;
+
+declare const kHIDUsage_LED_IndicatorOrange: number;
 
 declare const kMMCCmd_MODE_SELECT_6: number;
 
@@ -6874,8 +6878,6 @@ declare const kINQUIRY_Page83_AssociationTargetPort: number;
 
 declare const kIOScaleRotateFlags: number;
 
-declare const kHIDUsage_PID_PoolAlignment: number;
-
 declare const kConfigUnitDirectoryKey: number;
 
 declare const kCDFeaturesTestWriteMask: number;
@@ -6928,6 +6930,8 @@ declare const kIOHIDKeyboardPhysicalLayoutTypeUnknown: number;
 
 declare const kIOHIDStandardTypeUnspecified: number;
 
+declare const kIOHIDStandardTypeISO: number;
+
 declare const kIOHIDStandardTypeANSI: number;
 
 declare const kHIDUsage_PD_ChargerID: number;
@@ -6964,13 +6968,19 @@ declare const kUSBStandard: number;
 
 declare const kHIDUsage_KeyboardRightAlt: number;
 
+declare const kHIDUsage_Snsr_Biometric_HeartRate: number;
+
 declare const kHIDUsage_VR_AnimatronicDevice: number;
+
+declare const kMMCCmd_REPAIR_TRACK: number;
 
 declare const kHIDUsage_PID_Phase: number;
 
 declare const kIOMediumEthernet10Base2: number;
 
 declare const kCSRRegisterSpaceBaseAddressLo: number;
+
+declare const kHIDUsage_Button_61: number;
 
 declare const kAnalogSignalLevel_0700_0000: number;
 
@@ -6989,6 +6999,8 @@ declare const kHIDUsage_KeyboardCloseBracket: number;
 declare const kIOAudioControlTypeSelector: number;
 
 declare const kHIDUsage_BCS_TriggerReport: number;
+
+declare const kHIDUsage_Game_GunBurst: number;
 
 declare const kHIDUsage_PD_BadCount: number;
 
@@ -7018,8 +7030,6 @@ declare const kConfigEntryKeyValuePhase: number;
 
 declare const kHIDUsage_GD_WirelessRadioSliderSwitch: number;
 
-declare const kHIDUsage_Button_130: number;
-
 declare const kTransparentEncodedPixel: number;
 
 declare const kHIDUsage_BD_BrailleRockerPress: number;
@@ -7033,8 +7043,6 @@ declare const kHIDUsage_BCS_ConvertEAN8To13Type: number;
 declare const kHIDUsage_Snsr_Data_Orientation_DistanceZAxis: number;
 
 declare const kHIDUsage_LED_NumLock: number;
-
-declare const kFWDCLOpFlagPhase: number;
 
 declare const kRangeSupportsVSyncSerrationBit: number;
 
@@ -7110,8 +7118,6 @@ declare const kUSBRFControllerSubClass: number;
 
 declare const kIOAudioChannelLabel_TopBackCenter: number;
 
-declare const kIOBlitTypeOperationTypeMask: number;
-
 declare const kIOTimingIDApple_1024x768_75hz: number;
 
 declare const kGenericLCD: number;
@@ -7153,6 +7159,8 @@ declare const kIORangeColorimetryNotSupported: number;
 declare const kUSBDeviceCapability: number;
 
 declare const kHIDUsage_KeyboardInternational7: number;
+
+declare const kHIDUsage_PID_PoolAlignment: number;
 
 declare const kHIDUsage_BS_CycleCount: number;
 
@@ -7230,9 +7238,13 @@ declare const kCSRBusManagerID: number;
 
 declare const kHIDUsage_Csmr_VolumeIncrement: number;
 
+declare const kIOAudioChannelLabel_RightSurround: number;
+
 declare const kHIDUsage_BS_AverageCurrent: number;
 
 declare const kUSBBulk: number;
+
+declare const kHIDUsage_Haptics_WaveformRelease: number;
 
 declare const EXTERNAL_MADI: number;
 
@@ -7330,6 +7342,8 @@ declare const kNanosecondScale: number;
 
 declare const kIOAudioDeviceTransportTypeBluetooth: number;
 
+declare const kDVDMediaTypePlusR: number;
+
 declare const kHIDUsage_PID_AttackTime: number;
 
 declare const INPUT_NULL: number;
@@ -7337,6 +7351,8 @@ declare const INPUT_NULL: number;
 declare const kPowerStateReducedPower1: number;
 
 declare const kIOColorimetryAdobeRGB: number;
+
+declare const kHIDUsage_LED_SystemMicrophoneMute: number;
 
 declare const kHIDUsage_Snsr_Modifier_ThresholdHigh: number;
 
@@ -7516,6 +7532,8 @@ declare const kINQUIRY_PERIPHERAL_TYPE_Mask: number;
 
 declare const kHIDUsage_Snsr_Property_Time_ArmAlarm: number;
 
+declare const kIOPMSystemCapabilityAOT: number;
+
 declare const kUSBbEndpointAddressMask: number;
 
 declare const kHIDUsage_PID_Period: number;
@@ -7557,6 +7575,12 @@ declare const kHIDUsage_Csmr_ACIndentyIncrease: number;
 declare const kHIDUsage_BCS_CheckDigitEnableStandard2of5USS: number;
 
 declare const kHIDUsage_Csmr_ALMessageStatus: number;
+
+declare const kMessageDeterminingMediaPresence: number;
+
+declare const kHIDUsage_Csmr_MediaSelection: number;
+
+declare const kUSBDataIsocUsageType: number;
 
 declare const kHIDUsage_Snsr_Property_Mechanical_BackwardVibrationSpeed: number;
 
@@ -8016,8 +8040,6 @@ declare const kHIDUsage_Snsr_Property_ResponseCurve: number;
 
 declare const kIORangePixelEncodingRGB444: number;
 
-declare const kIORangePixelEncodingNotSupported: number;
-
 declare const kIOTimingRangeV1: number;
 
 declare const kCSRRegisterSpaceBaseAddressHi: number;
@@ -8158,8 +8180,6 @@ declare const kIOMonoDirectPixels: number;
 
 declare const kIORGBDirectPixels: number;
 
-declare const kIOCLUTPixels: number;
-
 declare const kIOMaxPixelBits: number;
 
 declare const kIODisplayModeIDReservedBase: number;
@@ -8266,8 +8286,6 @@ declare const kMMCCmd_RESERVE_6: number;
 
 declare const kINQUIRY_Byte6_ENCSERV_Mask: number;
 
-declare const kConfigUnitLocationKey: number;
-
 declare const kHIDUsage_Csmr_FunctionButtons: number;
 
 declare const kHIDUsage_Snsr_Electrical_Resistance: number;
@@ -8346,7 +8364,25 @@ declare const kHIDUsage_Snsr_Biometric_HumanProximity: number;
 
 declare const kHIDUsage_Csmr_ACSaveAndClose: number;
 
+declare const kHIDUsage_AD_ClearDisplay: number;
+
+declare const kFWDCLOpFlagPhase: number;
+
+declare const kMMCCmd_RELEASE_10: number;
+
+declare const kIORangePixelEncodingNotSupported: number;
+
+declare const kUSBBillboardConfigNotAttempted: number;
+
+declare const kHIDUsage_Dig_MultiplePointDigitizer: number;
+
+declare const kHIDUsage_Snsr_Property: number;
+
+declare const kHIDUsage_LED_IndicatorFastBlink: number;
+
 declare const kIOPMWillAckLater: number;
+
+declare const kHIDUsage_Csmr_ACAllCaps: number;
 
 declare const kIOBlitSourceSolid: number;
 
@@ -8372,9 +8408,11 @@ declare const kHIDUsage_Tfon_StoreNumber: number;
 
 declare const kHIDUsage_KeyboardInternational4: number;
 
-declare const kHIDUsage_Button_127: number;
+declare const kIOBlitTypeOperationTypeMask: number;
 
 declare const kSCSICmd_SEND_CUE_SHEET: number;
+
+declare const kHIDUsage_Csmr_ACDistributeV: number;
 
 declare const kHIDUsage_KeyboardClear: number;
 
@@ -8385,6 +8423,8 @@ declare const kMMCCmd_READ_MASTER_CUE: number;
 declare const kHIDUsage_Button_203: number;
 
 declare const kIOCatalogKextdActive: number;
+
+declare const kHIDUsage_Csmr_ACScrollDown: number;
 
 declare const kIORangeDynamicRangeNotSupported: number;
 
@@ -8401,6 +8441,8 @@ declare const kHIDUsage_Snsr_Mechanical_MultivalueSwitch: number;
 declare const kSBCModePageFlexibleDisk_TRDY_Bit: number;
 
 declare const kIOTimingIDSMPTE240M_60hz: number;
+
+declare const kIODeferCLUTSetAttribute: number;
 
 declare const kSCSIServiceAction_XDREAD_32: number;
 
@@ -8522,6 +8564,8 @@ declare const kConnectionColorDepthsSupported: number;
 
 declare const kINQUIRY_Page83_CodeSetReserved: number;
 
+declare const kIOCLUTPixels: number;
+
 declare const kIOUSBUSB20ExtensionCapabilityBESLDPhase: number;
 
 declare const kUSB100mAAvailable: number;
@@ -8574,8 +8618,6 @@ declare const kIOUSBSuperSpeedHubCharacteristicsPowerSwitchingMask: number;
 
 declare const kHIDUsage_Button_209: number;
 
-declare const kHIDUsage_Csmr_ACDistributeV: number;
-
 declare const kMMCCmd_VERIFY_12: number;
 
 declare const kHardwareDrive: number;
@@ -8600,8 +8642,6 @@ declare const kHIDUsage_Snsr_Motion_Accelerometer2D: number;
 
 declare const kHIDUsage_Sim_Elevator: number;
 
-declare const kHIDUsage_Dig_MultiplePointDigitizer: number;
-
 declare const kDisplayModeStretchedFlag: number;
 
 declare const kHIDUsage_BS_ResetToZero: number;
@@ -8618,15 +8658,11 @@ declare const kIOFBBitRateHBR2: number;
 
 declare const kSENSE_KEY_BLANK_CHECK: number;
 
-declare const kHIDUsage_Button_95: number;
-
 declare const kIOUSBDeviceRequestGetInterface: number;
 
 declare const kConnectionProbe: number;
 
 declare const kConfigBusInfoBlockLengthPhase: number;
-
-declare const kHIDUsage_Button_97: number;
 
 declare const kHIDUsage_Snsr_Event_SensorEvent_ChangeSensitivity: number;
 
@@ -8804,9 +8840,11 @@ declare const kATAEnableUltraDMAModeMask: number;
 
 declare const kIOFBCurrentShmemVersion: number;
 
-declare const kMMCCmd_COPY: number;
+declare const kIOMediumIEEE80211OptionAdhoc: number;
 
-declare const kIONUCGetNetworkDataHandleIndex: number;
+declare const kFWCommandInterfaceForceBlockRequest: number;
+
+declare const kDCLNuDCLLeaderOp: number;
 
 declare const timingApplePAL_FFconv: number;
 
@@ -8876,6 +8914,8 @@ declare const kINQUIRY_Byte7_VS_Mask: number;
 
 declare const kIORGBSignedFloatingPointPixels: number;
 
+declare const kMMCCmd_COPY: number;
+
 declare const kHIDUsage_Tfon_PhoneKey6: number;
 
 declare const kDVDFeaturesHDReadMask: number;
@@ -8919,6 +8959,8 @@ declare const kHIDUsage_Snsr_Data_Location_CountryOrRegion: number;
 declare const kUSBBillboardUnspecifiedError: number;
 
 declare const kHIDUsage_Snsr_Data_Motion_AngularVelocityXAxis: number;
+
+declare const kSSCSeqCmd_MOVE_MEDIUM_ATTACHED: number;
 
 declare const kINQUIRY_PERIPHERAL_QUALIFIER_Mask: number;
 
@@ -8986,8 +9028,6 @@ declare const kHIDUsage_LED_Shift: number;
 
 declare const kIOUSBVendorIDApple: number;
 
-declare const kFWCommandInterfaceForceBlockRequest: number;
-
 declare const kHardwareWakeToDoze: number;
 
 declare const kHIDUsage_PD_Initialized: number;
@@ -9001,8 +9041,6 @@ declare const kIORangeColorimetryWGRGB: number;
 declare const kIOMediumIEEE80211DS5: number;
 
 declare const kHIDUsage_BCS_HeaterPresent: number;
-
-declare const kIOMediumIEEE80211OptionAdhoc: number;
 
 declare const kSyncOnGreenMask: number;
 
@@ -9088,8 +9126,6 @@ declare const kATAIdentifyConfiguration: number;
 
 declare const kIOSyncOnRed: number;
 
-declare const kHIDUsage_Csmr_MediaSelectTV: number;
-
 declare const kIOVideoFeatureControlClassIDBrightness: number;
 
 declare const kUSBDeviceSpeedHigh: number;
@@ -9111,8 +9147,6 @@ declare const kInvertingEncodingShift: number;
 declare const kATASupportsAdvancedPowerManagementBit: number;
 
 declare const kSBCCmd_WRITE_12: number;
-
-declare const kIODeferCLUTSetAttribute: number;
 
 declare const kINQUIRY_PERIPHERAL_RMB_MediumFixed: number;
 
@@ -9145,6 +9179,8 @@ declare const kIOFBBitRateHBR: number;
 declare const kIOTimingIDVESA_1024x768_60hz: number;
 
 declare const kHIDUsage_Button_240: number;
+
+declare const kHIDUsage_Snsr_Data_Biometric_HeartRate: number;
 
 declare const kHIDUsage_Haptics_AutoTriggerAssociatedControl: number;
 
@@ -9382,6 +9418,8 @@ declare const kHIDUsage_BD_BraillePanRight: number;
 
 declare const kHIDUsage_Button_255: number;
 
+declare const kHIDUsage_Button_127: number;
+
 declare const TELEPHONY_PHONE_LINE: number;
 
 declare const kHIDUsage_Dig_3DDigitizer: number;
@@ -9395,6 +9433,8 @@ declare const kHIDUsage_Button_216: number;
 declare const kRemoveableMediaMask: number;
 
 declare const kHIDUsage_Csmr_SlowTracking: number;
+
+declare const kHIDUsage_Button_95: number;
 
 declare const kHIDUsage_Snsr_Property_ReportingState_WakeThresholdEvents: number;
 
@@ -9570,8 +9610,6 @@ declare const kHIDUsage_Button_19: number;
 
 declare const kHIDUsage_Dig_TabletFunctionKeys: number;
 
-declare const kHIDUsage_Haptics_WaveformRelease: number;
-
 declare const kDVDCPRMRegion2: number;
 
 declare const kScaleRotate90Mask: number;
@@ -9606,8 +9644,6 @@ declare const kIO16BE4444PixelFormat: number;
 
 declare const kIOFBOnlineInterruptType: number;
 
-declare const kDCLNuDCLLeaderOp: number;
-
 declare const kIOMediaStateBusy: number;
 
 declare const kHIDUsage_GD_Dial: number;
@@ -9623,6 +9659,8 @@ declare const kIOVRAMSaveAttribute: number;
 declare const kConnectionFlushParameters: number;
 
 declare const kIOBlitSourceFramebuffer: number;
+
+declare const kHIDUsage_LED_WarningStatus: number;
 
 declare const kIOAudioSMPTETimeType30Drop: number;
 
@@ -9688,7 +9726,11 @@ declare const kHIDPage_PID: number;
 
 declare const kHIDUsage_KeyboardR: number;
 
+declare const kHIDUsage_LED_GreenLEDChannel: number;
+
 declare const kIOAudioSelectorControlSelectionValueCD: number;
+
+declare const kHIDUsage_Button_142: number;
 
 declare const kSCCCmd_SPARE_OUT: number;
 
@@ -9756,8 +9798,6 @@ declare const kSCSIUntaggedTaskIdentifier: number;
 
 declare const kSCCCmd_RESERVE_10: number;
 
-declare const kHIDUsage_BCS_EAN2_3LabelControlReport: number;
-
 declare const kHIDUsage_Snsr_Data_Custom_Value: number;
 
 declare const kConnectionVideoBest: number;
@@ -9799,6 +9839,8 @@ declare const kHIDUsage_Button_14: number;
 declare const EXTERNAL_SPDIF_INTERFACE: number;
 
 declare const kFWBIBLinkSpeedPhase: number;
+
+declare const kHIDUsage_LED_IndicatorBlue: number;
 
 declare const kHIDUsage_Csmr_ALLogoff: number;
 
@@ -9946,8 +9988,6 @@ declare const kHIDUsage_Snsr_Orientation_Inclinometer3D: number;
 
 declare const kSCSICmd_SET_READ_AHEAD: number;
 
-declare const kHIDUsage_Csmr_ACAllCaps: number;
-
 declare const kHIDPage_Arcade: number;
 
 declare const kSBCCmd_MODE_SELECT_6: number;
@@ -9987,6 +10027,8 @@ declare const kHIDUsage_AD_ErrNotaloadablecharacter: number;
 declare const kHIDUsage_PD_PowerSummary: number;
 
 declare const kIODisplayDitherTemporal: number;
+
+declare const kConfigUnitLocationKey: number;
 
 declare const spGammaDir: number;
 
@@ -10204,6 +10246,8 @@ declare const kHIDUsage_Snsr_Data_Location_FixTypeNoFix: number;
 
 declare const kHIDUsage_Sim_FlightStick: number;
 
+declare const kHIDUsage_Csmr_MediaSelectTV: number;
+
 declare const kHIDUsage_Snsr_Other_Custom: number;
 
 declare const kATASupportsPowerManagementMask: number;
@@ -10236,7 +10280,11 @@ declare const kSCCCmd_MODE_SELECT_10: number;
 
 declare const kHIDUsage_Dig_CapacitiveHeatMapProtocolVersion: number;
 
-declare const kCDMediaTypeR: number;
+declare const kIOUSBDeviceRequestGetDescriptor: number;
+
+declare const kHIDUsage_KeyboardLANG5: number;
+
+declare const kHRConnect: number;
 
 declare const kHIDUsage_LED_Player7: number;
 
@@ -10466,8 +10514,6 @@ declare const kIODigitalSignal: number;
 
 declare const kDVDMediaTypeHDRAM: number;
 
-declare const kIOTimingIDVESA_800x600_85hz: number;
-
 declare const kIOMediaAttributeRemovableMask: number;
 
 declare const kIOInterlacedCEATiming: number;
@@ -10696,8 +10742,6 @@ declare const kConfigUnitSpecAppleA27: number;
 
 declare const INPUT_MODEM_AUDIO: number;
 
-declare const kHIDUsage_Csmr_MediaSelection: number;
-
 declare const kSBCCmd_XDWRITE: number;
 
 declare const kMessageTrayStateChangeRequestAccepted: number;
@@ -10764,10 +10808,6 @@ declare const kSBCCmd_WRITE_LONG: number;
 
 declare const kHIDUsage_BCS_CheckDigitCode99Enable: number;
 
-declare const kIOUSBDeviceRequestGetDescriptor: number;
-
-declare const kHIDUsage_KeyboardLANG5: number;
-
 declare const kHIDUsage_Snsr_Data_Time: number;
 
 declare const kSCSICmd_LOCK_UNLOCK_CACHE: number;
@@ -10808,6 +10848,8 @@ declare const kUSBBillboardVConn1Watt: number;
 
 declare const kHIDUsage_Sprt_StickFaceAngle: number;
 
+declare const kIOTimingIDVESA_800x600_85hz: number;
+
 declare const kHIDUsage_PID_ET_SawtoothDown: number;
 
 declare const kHIDUsage_Csmr_ALEntertainmentContentBrowser: number;
@@ -10841,8 +10883,6 @@ declare const kHIDUsage_Tfon_PhoneKey3: number;
 declare const kHIDUsage_PD_DelayBeforeShutdown: number;
 
 declare const kIOFBNS_GenerationMask: number;
-
-declare const kHIDUsage_Csmr_ACScrollDown: number;
 
 declare const TELEPHONY_TELEPHONE: number;
 
@@ -10885,8 +10925,6 @@ declare const cscSetPowerState: number;
 declare const kDVDFeaturesHDRWMask: number;
 
 declare const kSPCProcCmd_SEND_DIAGNOSTICS: number;
-
-declare const kIODisplayDitherSpatial: number;
 
 declare const kIOCatalogResetDefault: number;
 
@@ -11000,8 +11038,6 @@ declare const kHIDUsage_BCS_FirstDiscreteLengthToDecode: number;
 
 declare const kHIDUsage_Csmr_ACJustifyCenterH: number;
 
-declare const kHRConnect: number;
-
 declare const kStandbyTimerBit: number;
 
 declare const kHIDUsage_BCS_TriOptic: number;
@@ -11013,8 +11049,6 @@ declare const kUSBHubClass: number;
 declare const kIOBlitTypeLines: number;
 
 declare const kHIDUsage_Csmr_Snapshot: number;
-
-declare const kHIDUsage_Button_137: number;
 
 declare const kSBCModePageCaching_DEMAND_READ_Mask: number;
 
@@ -11054,6 +11088,8 @@ declare const kHIDUsage_PID_DownloadForceSample: number;
 
 declare const kIOTimingIDVESA_1280x1024_75hz: number;
 
+declare const kCDMediaTypeR: number;
+
 declare const kScaleInvertYMask: number;
 
 declare const kModeShowNow: number;
@@ -11073,6 +11109,8 @@ declare const kSENSE_FILEMARK_Mask: number;
 declare const cscSavePreferredConfiguration: number;
 
 declare const kConfigLeafDirLength: number;
+
+declare const kHIDUsage_Dig_TouchScreen: number;
 
 declare const kSBCWOCmd_SEEK_10: number;
 
@@ -11112,8 +11150,6 @@ declare const kHIDUsage_PID_MoveLength: number;
 
 declare const kMMCCmd_RELEASE_6: number;
 
-declare const kHIDUsage_Button_142: number;
-
 declare const kHIDUsage_WD_WeightUnitPound: number;
 
 declare const kIOUSBSuperSpeedPlusDeviceCapabilityReserved: number;
@@ -11129,6 +11165,8 @@ declare const kHIDUsage_Sim_SpaceshipSimulationDevice: number;
 declare const kHIDUsage_Csmr_ACOpen: number;
 
 declare const kUSBRqTypeMask: number;
+
+declare const kHIDUsage_Tfon_PhoneKeyPound: number;
 
 declare const kIOAudioStreamAlignmentLowByte: number;
 
@@ -11220,8 +11258,6 @@ declare const kATAIdentifyModelNumber: number;
 
 declare const kHIDUsage_Csmr_KeyboardFormFactor: number;
 
-declare const kHIDUsage_Csmr_PlayOrPause: number;
-
 declare const kHIDUsage_Snsr_Data_Orientation_Tilt: number;
 
 declare const kSSCPrinterCmd_REPORT_LUNS: number;
@@ -11233,10 +11269,6 @@ declare const kHIDUsage_BCS_Standard2of5IATA: number;
 declare const kDVDFeaturesPlusRWMask: number;
 
 declare const kSPCProcCmd_TEST_UNIT_READY: number;
-
-declare const kIOPMThermalLevelWarning: number;
-
-declare const kIOAudioChannelLabel_Center: number;
 
 declare const kHIDUsage_Snsr_Event_SensorEvent_PropertyChanged: number;
 
@@ -11267,6 +11299,8 @@ declare const kIOTimingIDVESA_1920x1440_75hz: number;
 declare const kDigitalSignalBit: number;
 
 declare const kSBCWOCmd_READ_12: number;
+
+declare const kHIDUsage_Csmr_Slow: number;
 
 declare const kHIDUsage_Snsr_Event_SensorEvent_LowThresholdCrossDown: number;
 
@@ -11334,6 +11368,8 @@ declare const kINQUIRY_Page83_IdentifierTypeRelativePortIdentifier: number;
 
 declare const kHIDUsage_Button_179: number;
 
+declare const kIOAudioChannelLabel_Center: number;
+
 declare const kCDFeaturesTAOWriteMask: number;
 
 declare const kRangeSupportsCompositeSyncBit: number;
@@ -11368,8 +11404,6 @@ declare const kATAForceUnitAccessFeatureMask: number;
 
 declare const kHIDUsage_Sim_TrackControl: number;
 
-declare const kHIDUsage_KeyboardX: number;
-
 declare const kHIDUsage_Snsr_Data_Scanner_NFCSentenceReceive: number;
 
 declare const kHIDUsage_Csmr_ChannelSurround: number;
@@ -11381,6 +11415,12 @@ declare const kSCSICmd_REQUEST_SENSE: number;
 declare const kHIDUsage_Csmr_ALAudioPlayer: number;
 
 declare const kIOPMAuxPowerOn: number;
+
+declare const kHIDUsage_WD_ScaleStatisticsReport: number;
+
+declare const kIOMapPostedWrite: number;
+
+declare const kHIDUsage_GD_SystemDisplayBoth: number;
 
 declare const kINQUIRY_Byte7_SYNC_Mask: number;
 
@@ -11400,13 +11440,7 @@ declare const kDisplaySubPixelLayoutQuadGBL: number;
 
 declare const kIOBlitTypeSourceKeyColorNotEqual: number;
 
-declare const kHIDUsage_WD_ScaleStatisticsReport: number;
-
-declare const kIOMapPostedWrite: number;
-
 declare const kHIDUsage_PID_BlockHandle: number;
-
-declare const kIOAudioSelectorControlSelectionValueSPDIF: number;
 
 declare const kSENSE_KEY_NO_SENSE: number;
 
@@ -11420,6 +11454,8 @@ declare const kHIDUsage_Csmr_ContactRecordActive: number;
 
 declare const kCDFeaturesReWriteableMask: number;
 
+declare const kHIDUsage_BCS_GRWTIAfterDecode: number;
+
 declare const kAnalogSignalLevel_1000_0400: number;
 
 declare const kSCSIDataTransfer_FromTargetToInitiator: number;
@@ -11428,9 +11464,15 @@ declare const kUSBRqSetAddress: number;
 
 declare const kDisplaySubPixelShapeRectangular: number;
 
+declare const kIOPMThermalLevelWarning: number;
+
+declare const kHIDUsage_Csmr_PlayOrPause: number;
+
 declare const kHIDUsage_GD_MultiAxisController: number;
 
 declare const kIOInterestCalloutFuncIndex: number;
+
+declare const kSSCSeqCmd_SPACE: number;
 
 declare const kHIDUsage_Snsr_Data_Location_City: number;
 
@@ -11480,6 +11522,8 @@ declare const kHIDUsage_LED_DoNotDisturb: number;
 
 declare const kIOUSBSuperSpeedHubCharacteristicsOverCurrentGlobal: number;
 
+declare const kIOPostedWrite: number;
+
 declare const kHIDUsage_BCS_Code32: number;
 
 declare const EMBEDDED_MINIDISK: number;
@@ -11520,6 +11564,10 @@ declare const kIOAudioControlTypeToggle: number;
 
 declare const kIOStreamMethodGetMode: number;
 
+declare const kFWAVCAsyncPlug1: number;
+
+declare const kMMCCmd_RESERVE_10: number;
+
 declare const kIOFBLinkVoltageLevel2: number;
 
 declare const kHIDUsage_Csmr_ALOnlineActivityBrowswer: number;
@@ -11538,6 +11586,12 @@ declare const kIODisplayNeedsCEAUnderscan: number;
 
 declare const kHIDUsage_Haptics_SimpleHapticController: number;
 
+declare const kIOMediumIEEE80211None: number;
+
+declare const kIOTimingIDVESA_1024x768_75hz: number;
+
+declare const cscGetInterrupt: number;
+
 declare const kIOAudioSMPTETimeType5994Drop: number;
 
 declare const kCSRNodeIDPhase: number;
@@ -11551,6 +11605,8 @@ declare const timingSMPTE240M_60hz: number;
 declare const kHIDUsage_LED_CapsLock: number;
 
 declare const kUSBDeviceCapabilitySuperSpeedUSB: number;
+
+declare const kIODisplayDitherSpatial: number;
 
 declare const kSBCCmd_PERSISTENT_RESERVE_IN: number;
 
@@ -11594,7 +11650,11 @@ declare const kIOFBNS_Sleep: number;
 
 declare const kHIDUsage_Snsr_Property_PowerState_D3_Sleep: number;
 
+declare const kATAIdentifyCurrentMultipleSectors: number;
+
 declare const kIOUSBDeviceRequestSetConfiguration: number;
+
+declare const kHIDUsage_KeyboardX: number;
 
 declare const kHIDUsage_Button_109: number;
 
@@ -11615,8 +11675,6 @@ declare const cscKillIO: number;
 declare const kUSBRqSetFeature: number;
 
 declare const kCDTrackInfoAddressTypeTrackNumber: number;
-
-declare const cscGetInterrupt: number;
 
 declare const kUSB20ExtensionLPMSupported: number;
 
@@ -11736,8 +11794,6 @@ declare const kHIDUsage_Button_60: number;
 
 declare const kHIDUsage_Snsr_Property_PowerState_Undefined: number;
 
-declare const kATAIdentifyCurrentMultipleSectors: number;
-
 declare const kDisplayModeValidFlag: number;
 
 declare const kSCSICmd_SEARCH_DATA_LOW_10: number;
@@ -11786,8 +11842,6 @@ declare const kSPCCmd_RECEIVE_COPY_RESULTS: number;
 
 declare const kPMPowerSource: number;
 
-declare const kHIDUsage_Tfon_PhoneKeyPound: number;
-
 declare const kESCSeven19Inch: number;
 
 declare const kMillisecondScale: number;
@@ -11795,8 +11849,6 @@ declare const kMillisecondScale: number;
 declare const kATASMARTSelfTestStatusInterruptedByReset: number;
 
 declare const kSCSICmd_PREFETCH: number;
-
-declare const kIOTimingIDVESA_1024x768_75hz: number;
 
 declare const kIONetworkFeatureMultiPages: number;
 
@@ -11824,11 +11876,11 @@ declare const kHIDUsage_PID_EffectBlockIndex: number;
 
 declare const kHIDPage_Scale: number;
 
-declare const kIOPMSystemCapabilityDidChange: number;
+declare const kIOUSBEndpointDescriptorTransferTypePhase: number;
 
-declare const kIOMapCacheMask: number;
+declare const kHIDUsage_GD_AssistiveControlCompatible: number;
 
-declare const kHIDUsage_LED_Repeat: number;
+declare const kIONUCGetNetworkDataHandleIndex: number;
 
 declare const kHIDUsage_Snsr_Property_Mechanical: number;
 
@@ -11908,10 +11960,6 @@ declare const kSPCProcCmd_READ_BUFFER: number;
 
 declare const kHIDUsage_Game_NewGame: number;
 
-declare const kIOMediumIEEE80211None: number;
-
-declare const kIOUSBEndpointDescriptorTransferTypePhase: number;
-
 declare const kUSBScrollLockKey: number;
 
 declare const kSSCSeqCmd_VERIFY_6: number;
@@ -11920,9 +11968,9 @@ declare const kIOColorimetryBT601: number;
 
 declare const kIOPMBroadcastAggressiveness: number;
 
-declare const kMMCCmd_RESERVE_10: number;
-
 declare const kCSRBusDependentRegistersBaseAddress: number;
+
+declare const kIOPMSystemCapabilityDidChange: number;
 
 declare const kSPCCmd_PERSISTENT_RESERVE_OUT: number;
 
@@ -11966,8 +12014,6 @@ declare const kATAPhysicalSectorSizeMask: number;
 
 declare const kHIDUsage_Snsr_Orientation_Compass2D: number;
 
-declare const kFWAVCAsyncPlug1: number;
-
 declare const kINQUIRY_PERIPHERAL_TYPE_EnclosureServicesSESDevice: number;
 
 declare const kScaleStretchOnlyMask: number;
@@ -11992,8 +12038,6 @@ declare const kSGCCmd_LOG_SENSE: number;
 
 declare const kIOAnalogSetupExpected: number;
 
-declare const kHIDUsage_Snsr_Property_ReportingState: number;
-
 declare const kHIDUsage_BCS_ChannelCode: number;
 
 declare const kSMCCmd_READ_ELEMENT_STATUS: number;
@@ -12010,8 +12054,6 @@ declare const kHIDUsage_Button_80: number;
 
 declare const kATAPhysicalLogicalEnabledBit0: number;
 
-declare const kMMCCmd_SEEK_6: number;
-
 declare const kHIDUsage_Snsr_Property_Manufacturer: number;
 
 declare const kHIDUsage_LED_ExternalPowerConnected: number;
@@ -12024,8 +12066,6 @@ declare const kHIDUsage_Snsr_Sensor: number;
 
 declare const kIOUSBSuperSpeedEndpointCompanionDescriptorMaxBurst: number;
 
-declare const kMMCCmd_RELEASE_10: number;
-
 declare const kHIDUsage_Game_3DGameController: number;
 
 declare const kIOMapAnywhere: number;
@@ -12034,11 +12074,11 @@ declare const kHIDUsage_GD_Ry: number;
 
 declare const kHIDUsage_Button_204: number;
 
+declare const kIOMapCacheMask: number;
+
 declare const kHIDUsage_Csmr_ACCollapseAll: number;
 
 declare const kHIDUsage_Csmr_ALEmailReader: number;
-
-declare const kHIDUsage_GD_AssistiveControlCompatible: number;
 
 declare const kDVDCPRMRegion1: number;
 
@@ -12047,6 +12087,75 @@ declare const kHIDUsage_Snsr_Data_Motion_AccelerationAxisZ: number;
 declare const kIOAsyncCalloutFuncIndex: number;
 
 declare const kHIDUsage_Button_239: number;
+
+declare const _IOAudioEngineMemory: {
+  Status: 0,
+  Sample: 1,
+  Mix: 2,
+  BytesInInput: 3,
+  BytesInOutput: 4,
+};
+
+declare const IOHIDReportType: {
+  Input: 0,
+  Output: 1,
+  Feature: 2,
+  Count: 3,
+};
+
+declare const IOHIDButtonModes: {
+  BothLeftClicks: 0,
+  ReverseLeftRightClicks: 1,
+  EnableRightClick: 2,
+};
+
+declare const IOHIDUserDeviceOptions: {
+  IOHIDUserDeviceOptionsCreateOnActivate: 1,
+};
+
+declare const NXMouseButton: {
+  One: 0,
+  Left: 1,
+  Right: 2,
+};
+
+declare const SCSITaskStatus: {
+  GOOD: 0,
+  CHECK_CONDITION: 2,
+  CONDITION_MET: 4,
+  BUSY: 8,
+  INTERMEDIATE: 16,
+  INTERMEDIATE_CONDITION_MET: 20,
+  RESERVATION_CONFLICT: 24,
+  TASK_SET_FULL: 40,
+  ACA_ACTIVE: 48,
+  TaskTimeoutOccurred: 1,
+  ProtocolTimeoutOccurred: 2,
+  DeviceNotResponding: 3,
+  DeviceNotPresent: 4,
+  DeliveryFailure: 5,
+  No_Status: 255,
+};
+
+declare const IOFWDCLNotificationType: {
+  DCLInvalid: 0,
+  DCLUpdate: 1,
+  DCLModify: 2,
+  NuDCLModify: 3,
+  NuDCLModifyJump: 4,
+  NuDCLUpdate: 5,
+};
+
+declare const tIOUSBTopology: {
+  TopologyHost: 1,
+  TopologyRootPort: 2,
+  Topology1Hub: 3,
+  Topology2Hub: 4,
+  Topology3Hub: 5,
+  Topology4Hub: 6,
+  Topology5Hub: 7,
+  TopologyTierLimit: 7,
+};
 
 declare const kUSBHostConnectorType: {
   BTypeAConnector: 0,
@@ -12146,17 +12255,6 @@ declare const tIOUSB30DeviceNotificationType: {
   BusIntervalAdjustment: 3,
   HostRoleRequest: 4,
   SublinkSpeed: 5,
-};
-
-declare const tIOUSBTopology: {
-  TopologyHost: 1,
-  TopologyRootPort: 2,
-  Topology1Hub: 3,
-  Topology2Hub: 4,
-  Topology3Hub: 5,
-  Topology4Hub: 6,
-  Topology5Hub: 7,
-  TopologyTierLimit: 7,
 };
 
 declare const tIOUSB30BusCurrent: {
@@ -12290,24 +12388,6 @@ declare const IOStreamMode: {
   InputOutput: 2,
 };
 
-declare const SCSITaskStatus: {
-  GOOD: 0,
-  CHECK_CONDITION: 2,
-  CONDITION_MET: 4,
-  BUSY: 8,
-  INTERMEDIATE: 16,
-  INTERMEDIATE_CONDITION_MET: 20,
-  RESERVATION_CONFLICT: 24,
-  TASK_SET_FULL: 40,
-  ACA_ACTIVE: 48,
-  TaskTimeoutOccurred: 1,
-  ProtocolTimeoutOccurred: 2,
-  DeviceNotResponding: 3,
-  DeviceNotPresent: 4,
-  DeliveryFailure: 5,
-  No_Status: 255,
-};
-
 declare const SCSITaskState: {
   NEW_TASK: 0,
   ENABLED: 1,
@@ -12336,10 +12416,6 @@ declare const IOPSLowBatteryWarningLevel: {
 
 declare const tIOUSBLanguageID: {
   kIOUSBLanguageIDEnglishUS: 1033,
-};
-
-declare const IOHIDUserDeviceOptions: {
-  IOHIDUserDeviceOptionsCreateOnActivate: 1,
 };
 
 declare const IOHIDAccessType: {
@@ -12449,23 +12525,6 @@ declare const IOFWWriteFlags: {
 declare const NuDCLFlags: {
   Dynamic: 2,
   UpdateBeforeCallback: 4,
-};
-
-declare const IOFWDCLNotificationType: {
-  DCLInvalid: 0,
-  DCLUpdate: 1,
-  DCLModify: 2,
-  NuDCLModify: 3,
-  NuDCLModifyJump: 4,
-  NuDCLUpdate: 5,
-};
-
-declare const IOFWIsochPortOptions: {
-  PortDefaultOptions: 0,
-  PortUseSeparateKernelThread: 2,
-  EnableRobustness: 4,
-  BigEndianUpdates: 8,
-  RequireLastContext: 16,
 };
 
 declare const IOFWIsochResourceFlags: {
@@ -12603,14 +12662,6 @@ declare const _IOAudioEngineTraps: {
   kIOAudioEngineTrapPerformClientIO: 0,
 };
 
-declare const _IOAudioEngineMemory: {
-  Status: 0,
-  Sample: 1,
-  Mix: 2,
-  BytesInInput: 3,
-  BytesInOutput: 4,
-};
-
 declare const IOURLError: {
   Unknown: -10,
   UnknownScheme: -11,
@@ -12648,6 +12699,21 @@ declare const _IOAudioEngineNotifications: {
   ResumedNotification: 6,
 };
 
+declare const CDSectorType: {
+  Unknown: 0,
+  CDDA: 1,
+  Mode1: 2,
+  Mode2: 3,
+  Mode2Form1: 4,
+  Mode2Form2: 5,
+  Count: 6,
+};
+
+declare const _IOAudioStreamDirection: {
+  Output: 0,
+  Input: 1,
+};
+
 declare const tIOUSBDeviceRequestTypeValue: {
   Standard: 0,
   Class: 1,
@@ -12659,6 +12725,12 @@ declare const tIOUSBDeviceRequestRecipientValue: {
   Interface: 1,
   Endpoint: 2,
   Other: 3,
+};
+
+declare const IOHIDServiceSensorControlOptions: {
+  Decimation: 1,
+  Aggregation: 2,
+  DispatchControl: 4,
 };
 
 declare const _IOAudioEngineState: {
@@ -12687,35 +12759,6 @@ declare const IOHIDElementType: {
 declare const IOHIDElementCommitDirection: {
   In: 0,
   Out: 1,
-};
-
-declare const CDSectorType: {
-  Unknown: 0,
-  CDDA: 1,
-  Mode1: 2,
-  Mode2: 3,
-  Mode2Form1: 4,
-  Mode2Form2: 5,
-  Count: 6,
-};
-
-declare const IOHIDReportType: {
-  Input: 0,
-  Output: 1,
-  Feature: 2,
-  Count: 3,
-};
-
-declare const NXMouseButton: {
-  One: 0,
-  Left: 1,
-  Right: 2,
-};
-
-declare const IOHIDButtonModes: {
-  BothLeftClicks: 0,
-  ReverseLeftRightClicks: 1,
-  EnableRightClick: 2,
 };
 
 declare const eIOAccelSurfaceModeBits: {
@@ -12767,6 +12810,14 @@ declare const USBLowLatencyBufferType: {
 declare const evsioEVSIOCCSIndices: {
   X: 0,
   Y: 1,
+};
+
+declare const IOFWIsochPortOptions: {
+  PortDefaultOptions: 0,
+  PortUseSeparateKernelThread: 2,
+  EnableRobustness: 4,
+  BigEndianUpdates: 8,
+  RequireLastContext: 16,
 };
 
 declare const eIOAcceleratorClientTypes: {
@@ -12833,11 +12884,6 @@ declare const CDSectorSize: {
   Whole: 2352,
 };
 
-declare const _IOAudioStreamDirection: {
-  Output: 0,
-  Input: 1,
-};
-
 declare const _IOAudioEngineCalls: {
   RegisterClientBuffer: 0,
   UnregisterClientBuffer: 1,
@@ -12858,25 +12904,8 @@ declare const tIOUSBHostPortType: {
   Internal: 2,
   Accessory: 3,
   ExpressCard: 4,
-  Count: 5,
-};
-
-declare const tIOUSBEndpointType: {
-  Control: 0,
-  Isochronous: 1,
-  Bulk: 2,
-  Interrupt: 3,
-};
-
-declare const USBPowerRequestTypes: {
-  DuringSleep: 0,
-  DuringWake: 1,
-  RequestWakeRelease: 2,
-  RequestSleepRelease: 3,
-  RequestWakeReallocate: 4,
-  RequestSleepReallocate: 5,
-  DuringWakeRevocable: 6,
-  DuringWakeUSB3: 7,
+  C: 5,
+  Unknown: 6,
 };
 
 declare const tIOUSB30HubExtStatus: {
@@ -12888,6 +12917,13 @@ declare const tIOUSB30HubExtStatus: {
   RxLaneCountPhase: 8,
   TxLaneCount: 61440,
   TxLaneCountPhase: 12,
+};
+
+declare const tIOUSBEndpointType: {
+  Control: 0,
+  Isochronous: 1,
+  Bulk: 2,
+  Interrupt: 3,
 };
 
 declare const tIOUSB30LinkStateTimeout: {
@@ -12931,6 +12967,17 @@ declare const IOAVCUnitTypes: {
   NumSubUnitTypes: 32,
 };
 
+declare const USBPowerRequestTypes: {
+  DuringSleep: 0,
+  DuringWake: 1,
+  RequestWakeRelease: 2,
+  RequestSleepRelease: 3,
+  RequestWakeReallocate: 4,
+  RequestSleepReallocate: 5,
+  DuringWakeRevocable: 6,
+  DuringWakeUSB3: 7,
+};
+
 declare const IODirection: {
   None: 0,
   In: 1,
@@ -12938,13 +12985,13 @@ declare const IODirection: {
   InOut: 3,
 };
 
+declare const USBClassSpecificDesc: {
+  kUSBClassSpecificDescriptor: 36,
+};
+
 declare const HIDReportCommandType: {
   Set: 0,
   Get: 1,
-};
-
-declare const USBClassSpecificDesc: {
-  kUSBClassSpecificDescriptor: 36,
 };
 
 declare const tIOUSB30HubPortStatusCode: {
@@ -13785,15 +13832,6 @@ declare class IOUSBDevReqOOLTO {
   completionTimeout: number;
 }
 
-declare class IOUSBBulkPipeReq {
-  constructor(init?: IOUSBBulkPipeReq);
-  pipeRef: number;
-  buf: interop.Pointer;
-  size: number;
-  noDataTimeout: number;
-  completionTimeout: number;
-}
-
 declare class IOUSBDevRequestTO {
   constructor(init?: IOUSBDevRequestTO);
   bmRequestType: number;
@@ -13816,14 +13854,6 @@ declare class IOUSBDevRequest {
   wLength: number;
   pData: interop.Pointer;
   wLenDone: number;
-}
-
-declare class IOUSBFindEndpointRequest {
-  constructor(init?: IOUSBFindEndpointRequest);
-  type: number;
-  direction: number;
-  maxPacketSize: number;
-  interval: number;
 }
 
 declare class IOUSBMatch {
@@ -13886,11 +13916,31 @@ declare class IOUSBCompletionWithTimeStamp {
   parameter: interop.Pointer;
 }
 
+declare class IOUSBLowLatencyIsocFrame {
+  constructor(init?: IOUSBLowLatencyIsocFrame);
+  frStatus: number;
+  frReqCount: number;
+  frActCount: number;
+  frTimeStamp: UnsignedWide;
+}
+
 declare class IOUSBIsocFrame {
   constructor(init?: IOUSBIsocFrame);
   frStatus: number;
   frReqCount: number;
   frActCount: number;
+}
+
+declare class IOUSBHIDDescriptor {
+  constructor(init?: IOUSBHIDDescriptor);
+  descLen: number;
+  descType: number;
+  descVersNum: number;
+  hidCountryCode: number;
+  hidNumDescriptors: number;
+  hidDescriptorType: number;
+  hidDescriptorLengthLo: number;
+  hidDescriptorLengthHi: number;
 }
 
 declare class IOUSBSuperSpeedHubDescriptor {
@@ -14198,17 +14248,16 @@ declare class CDTOC {
   descriptors: unknown /* const array */;
 }
 
-declare class unnamed_460673535765896742 {
-  constructor(init?: unnamed_460673535765896742);
-  index: number;
-  number: number;
+declare class unnamed_17464621307155594590 {
+  constructor(init?: unnamed_17464621307155594590);
   time: CDMSF;
+  track: unnamed_10669153243747207100;
 }
 
 declare class CDAudioStatus {
   constructor(init?: CDAudioStatus);
   status: number;
-  position: unnamed_3491161830549889545;
+  position: unnamed_17464621307155594590;
 }
 
 declare class CDMSF {
@@ -15147,6 +15196,11 @@ declare class VDSwitchInfoRec {
   csReserved: number;
 }
 
+declare class unnamed_1948574872100089302 {
+  constructor(init?: unnamed_1948574872100089302);
+  csGTable: string | null;
+}
+
 declare class VDFlagRecord {
   constructor(init?: VDFlagRecord);
   csMode: number;
@@ -15205,6 +15259,24 @@ declare class IOHIDDeviceTransactionInterface {
   getValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
   commit: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, p4: interop.PointerConvertible, p5: number) => number | null;
   clear: (p1: interop.PointerConvertible, p2: number) => number | null;
+}
+
+declare class IOHIDDeviceQueueInterface {
+  constructor(init?: IOHIDDeviceQueueInterface);
+  _reserved: interop.Pointer;
+  QueryInterface: (p1: interop.PointerConvertible, p2: CFUUIDBytes, p3: interop.PointerConvertible) => number | null;
+  AddRef: (p1: interop.PointerConvertible) => number | null;
+  Release: (p1: interop.PointerConvertible) => number | null;
+  getAsyncEventSource: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  setDepth: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
+  getDepth: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  addElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  removeElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  containsElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
+  start: (p1: interop.PointerConvertible, p2: number) => number | null;
+  stop: (p1: interop.PointerConvertible, p2: number) => number | null;
+  setValueAvailableCallback: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => number | null;
+  copyNextValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
 }
 
 declare class __IOHIDTransaction {
@@ -15318,7 +15390,7 @@ declare class StdFBShmem_t {
   reservedB: unknown /* const array */;
   cursorSize: unknown /* const array */;
   hotSpot: unknown /* const array */;
-  cursor: unnamed_17682291181876859174;
+  cursor: unnamed_12847566531770991247;
 }
 
 declare class IOGraphicsAcceleratorInterfaceStruct {
@@ -15352,7 +15424,7 @@ declare class IOGraphicsAcceleratorInterfaceStruct {
 
 declare class IOBlitSurfaceStruct {
   constructor(init?: IOBlitSurfaceStruct);
-  memory: unnamed_16483864855605376039;
+  memory: unnamed_17923855300358106514;
   pixelFormat: number;
   size: IOBlitRectangleStruct;
   rowBytes: number;
@@ -15477,6 +15549,29 @@ declare class IOFireWireDCLCommandPoolInterface_t {
   GetSize: (p1: interop.PointerConvertible) => number | null;
   SetSize: (p1: interop.PointerConvertible, p2: number) => number | null;
   GetBytesRemaining: (p1: interop.PointerConvertible) => number | null;
+}
+
+declare class IOFireWireIsochChannelInterface_t {
+  constructor(init?: IOFireWireIsochChannelInterface_t);
+  _reserved: interop.Pointer;
+  QueryInterface: (p1: interop.PointerConvertible, p2: CFUUIDBytes, p3: interop.PointerConvertible) => number | null;
+  AddRef: (p1: interop.PointerConvertible) => number | null;
+  Release: (p1: interop.PointerConvertible) => number | null;
+  revision: number;
+  version: number;
+  SetTalker: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  AddListener: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  AllocateChannel: (p1: interop.PointerConvertible) => number | null;
+  ReleaseChannel: (p1: interop.PointerConvertible) => number | null;
+  Start: (p1: interop.PointerConvertible) => number | null;
+  Stop: (p1: interop.PointerConvertible) => number | null;
+  SetChannelForceStopHandler: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: number) => void) => (p1: interop.PointerConvertible, p2: number) => void | null;
+  SetRefCon: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  GetRefCon: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  NotificationIsOn: (p1: interop.PointerConvertible) => number | null;
+  TurnOnNotification: (p1: interop.PointerConvertible) => number | null;
+  TurnOffNotification: (p1: interop.PointerConvertible) => void | null;
+  ClientCommandIsComplete: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
 }
 
 declare class IOFireWireCompareSwapCommandInterface_v3_t {
@@ -16526,6 +16621,29 @@ declare class IOUSBInterfaceStruct400 {
   GetBusFrameNumberWithTime: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
 }
 
+declare class IOUSBBulkPipeReq {
+  constructor(init?: IOUSBBulkPipeReq);
+  pipeRef: number;
+  buf: interop.Pointer;
+  size: number;
+  noDataTimeout: number;
+  completionTimeout: number;
+}
+
+declare class _evOffsets {
+  constructor(init?: _evOffsets);
+  evGlobalsOffset: number;
+  evShmemOffset: number;
+}
+
+declare class VDPrivateSelectorDataRec {
+  constructor(init?: VDPrivateSelectorDataRec);
+  privateParameters: interop.Pointer;
+  privateParametersSize: number;
+  privateResults: interop.Pointer;
+  privateResultsSize: number;
+}
+
 declare class IOUSBGetFrameStruct {
   constructor(init?: IOUSBGetFrameStruct);
   frame: number;
@@ -16538,6 +16656,21 @@ declare class __IOHIDValue {
 
 declare class __IOHIDManager {
   constructor(init?: __IOHIDManager);
+}
+
+declare class IODetailedTimingInformationV1 {
+  constructor(init?: IODetailedTimingInformationV1);
+  pixelClock: number;
+  horizontalActive: number;
+  horizontalBlanking: number;
+  horizontalBorder: number;
+  horizontalSyncOffset: number;
+  horizontalSyncWidth: number;
+  verticalActive: number;
+  verticalBlanking: number;
+  verticalBorder: number;
+  verticalSyncOffset: number;
+  verticalSyncWidth: number;
 }
 
 declare class IOFireWireSBP2LibLUNInterface {
@@ -16660,47 +16793,6 @@ declare class ModeParameterBlockDescriptor {
   BLOCK_LENGTH: unknown /* const array */;
 }
 
-declare class VDDetailedTimingRec {
-  constructor(init?: VDDetailedTimingRec);
-  csTimingSize: number;
-  csTimingType: number;
-  csTimingVersion: number;
-  csTimingReserved: number;
-  csDisplayModeID: number;
-  csDisplayModeSeed: number;
-  csDisplayModeState: number;
-  csDisplayModeAlias: number;
-  csSignalConfig: number;
-  csSignalLevels: number;
-  csPixelClock: number;
-  csMinPixelClock: number;
-  csMaxPixelClock: number;
-  csHorizontalActive: number;
-  csHorizontalBlanking: number;
-  csHorizontalSyncOffset: number;
-  csHorizontalSyncPulseWidth: number;
-  csVerticalActive: number;
-  csVerticalBlanking: number;
-  csVerticalSyncOffset: number;
-  csVerticalSyncPulseWidth: number;
-  csHorizontalBorderLeft: number;
-  csHorizontalBorderRight: number;
-  csVerticalBorderTop: number;
-  csVerticalBorderBottom: number;
-  csHorizontalSyncConfig: number;
-  csHorizontalSyncLevel: number;
-  csVerticalSyncConfig: number;
-  csVerticalSyncLevel: number;
-  csNumLinks: number;
-  csReserved2: number;
-  csReserved3: number;
-  csReserved4: number;
-  csReserved5: number;
-  csReserved6: number;
-  csReserved7: number;
-  csReserved8: number;
-}
-
 declare class IOUSBDeviceCapabilityBillboardAltConfig {
   constructor(init?: IOUSBDeviceCapabilityBillboardAltConfig);
   wSVID: number;
@@ -16761,14 +16853,15 @@ declare class IOUSB30HubPortStatusExt {
   dwExtPortStatus: number;
 }
 
-declare class unnamed_17370825806570330423 {
-  constructor(init?: unnamed_17370825806570330423);
-  x: number;
-  y: number;
+declare class unnamed_5759232563165710455 {
+  constructor(init?: unnamed_5759232563165710455);
+  reserved: number;
+  subType: number;
+  misc: unnamed_11666218996679898393;
 }
 
-declare class unnamed_17310486651322119148 {
-  constructor(init?: unnamed_17310486651322119148);
+declare class unnamed_7971714628260465398 {
+  constructor(init?: unnamed_7971714628260465398);
   vendorID: number;
   tabletID: number;
   pointerID: number;
@@ -16784,21 +16877,43 @@ declare class unnamed_17310486651322119148 {
   reserved2: unknown /* const array */;
 }
 
-declare class unnamed_15297976000823265817 {
-  constructor(init?: unnamed_15297976000823265817);
+declare class unnamed_2435892573090321970 {
+  constructor(init?: unnamed_2435892573090321970);
   x: number;
   y: number;
 }
 
-declare class unnamed_6828668004108393438 {
-  constructor(init?: unnamed_6828668004108393438);
-  reserved: number;
-  subType: number;
-  misc: unnamed_17455471598632752506;
+declare class unnamed_4619205928367467519 {
+  constructor(init?: unnamed_4619205928367467519);
+  deltaAxis1: number;
+  deltaAxis2: number;
+  deltaAxis3: number;
+  reserved1: number;
+  fixedDeltaAxis1: number;
+  fixedDeltaAxis2: number;
+  fixedDeltaAxis3: number;
+  pointDeltaAxis1: number;
+  pointDeltaAxis2: number;
+  pointDeltaAxis3: number;
+  reserved8: unknown /* const array */;
 }
 
-declare class unnamed_18396874505247208707 {
-  constructor(init?: unnamed_18396874505247208707);
+declare class unnamed_9873895420725477293 {
+  constructor(init?: unnamed_9873895420725477293);
+  reserved: number;
+  eventNum: number;
+  trackingNum: number;
+  userData: number;
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: number;
+  reserved6: unknown /* const array */;
+}
+
+declare class unnamed_5100795372900712712 {
+  constructor(init?: unnamed_5100795372900712712);
   origCharSet: number;
   repeat: number;
   charSet: number;
@@ -16811,6 +16926,20 @@ declare class unnamed_18396874505247208707 {
   reserved3: number;
   reserved4: number;
   reserved5: unknown /* const array */;
+}
+
+declare class unnamed_13441805532002983772 {
+  constructor(init?: unnamed_13441805532002983772);
+  subx: number;
+  suby: number;
+  eventNum: number;
+  click: number;
+  pressure: number;
+  buttonNumber: number;
+  subType: number;
+  reserved2: number;
+  reserved3: number;
+  tablet: unnamed_15250897639706774685;
 }
 
 declare class _NXTabletProximityData {
@@ -16827,6 +16956,12 @@ declare class _NXTabletProximityData {
   pointerType: number;
   enterProximity: number;
   reserved1: number;
+}
+
+declare class unnamed_9468096681639338463 {
+  constructor(init?: unnamed_9468096681639338463);
+  x: number;
+  y: number;
 }
 
 declare class _NXPoint {
@@ -17037,7 +17172,7 @@ declare class _NXTabletPointData {
   z: number;
   buttons: number;
   pressure: number;
-  tilt: unnamed_17267042973017687128;
+  tilt: unnamed_9468096681639338463;
   rotation: number;
   tangentialPressure: number;
   deviceID: number;
@@ -17080,6 +17215,23 @@ declare class IOFireWireAsyncStreamCommandInterface_t {
   SetTagBits: (p1: interop.PointerConvertible, p2: number) => void | null;
 }
 
+declare class unnamed_9603799558256710164 {
+  constructor(init?: unnamed_9603799558256710164);
+  x: number;
+  y: number;
+  z: number;
+  buttons: number;
+  pressure: number;
+  tilt: unnamed_2435892573090321970;
+  rotation: number;
+  tangentialPressure: number;
+  deviceID: number;
+  vendor1: number;
+  vendor2: number;
+  vendor3: number;
+  reserved: unknown /* const array */;
+}
+
 declare class IOUSBDeviceQualifierDescriptor {
   constructor(init?: IOUSBDeviceQualifierDescriptor);
   bLength: number;
@@ -17109,6 +17261,14 @@ declare class dk_dvd_read_structure_t {
   reserved0080: unknown /* const array */;
   bufferLength: number;
   buffer: interop.Pointer;
+}
+
+declare class IOUSBFindEndpointRequest {
+  constructor(init?: IOUSBFindEndpointRequest);
+  type: number;
+  direction: number;
+  maxPacketSize: number;
+  interval: number;
 }
 
 declare class VDDefMode {
@@ -17165,6 +17325,18 @@ declare class VDSizeInfo {
   csVPos: number;
 }
 
+declare class unnamed_175957732564600561 {
+  constructor(init?: unnamed_175957732564600561);
+  dx: number;
+  dy: number;
+  subx: number;
+  suby: number;
+  subType: number;
+  reserved1: number;
+  reserved2: number;
+  tablet: unnamed_2601017340886590716;
+}
+
 declare class IOFireWireLibPHYPacketListenerInterface_t {
   constructor(init?: IOFireWireLibPHYPacketListenerInterface_t);
   _reserved: interop.Pointer;
@@ -17205,10 +17377,11 @@ declare class Block0 {
   sbReserved: unknown /* const array */;
 }
 
-declare class unnamed_3491161830549889545 {
-  constructor(init?: unnamed_3491161830549889545);
+declare class unnamed_10669153243747207100 {
+  constructor(init?: unnamed_10669153243747207100);
+  index: number;
+  number: number;
   time: CDMSF;
-  track: unnamed_460673535765896742;
 }
 
 declare class IODot3CollEntry {
@@ -17226,7 +17399,7 @@ declare class IOAccelSurfaceScaling {
 declare class _NXEvent {
   constructor(init?: _NXEvent);
   type: number;
-  location: unnamed_17370825806570330423;
+  location: unnamed_12561953416154083337;
   time: number;
   flags: number;
   window: number;
@@ -17288,18 +17461,6 @@ declare class IOPhysicalRange {
   constructor(init?: IOPhysicalRange);
   address: number;
   length: number;
-}
-
-declare class unnamed_8233482887367681716 {
-  constructor(init?: unnamed_8233482887367681716);
-  dx: number;
-  dy: number;
-  subx: number;
-  suby: number;
-  subType: number;
-  reserved1: number;
-  reserved2: number;
-  tablet: unnamed_5613967386771284927;
 }
 
 declare class IOUSBDeviceStruct500 {
@@ -17483,7 +17644,7 @@ declare class IOTimingInformation {
   constructor(init?: IOTimingInformation);
   appleTimingID: number;
   flags: number;
-  detailedInfo: unnamed_3807285232668356829;
+  detailedInfo: unnamed_14650194066440877064;
 }
 
 declare class IOAsyncCompletionContent {
@@ -17567,14 +17728,6 @@ declare class IOFireWireAVCLibConsumerInterface {
   setPortFlags: (p1: interop.PointerConvertible, p2: number) => void | null;
   clearPortFlags: (p1: interop.PointerConvertible, p2: number) => void | null;
   getPortFlags: (p1: interop.PointerConvertible) => number | null;
-}
-
-declare class VDPrivateSelectorDataRec {
-  constructor(init?: VDPrivateSelectorDataRec);
-  privateParameters: interop.Pointer;
-  privateParametersSize: number;
-  privateResults: interop.Pointer;
-  privateResultsSize: number;
 }
 
 declare class IOFireWireNuDCLPoolInterface_t {
@@ -17787,6 +17940,12 @@ declare class IOUSBDeviceStruct400 {
   GetExtraPowerAllocated: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
 }
 
+declare class unnamed_12561953416154083337 {
+  constructor(init?: unnamed_12561953416154083337);
+  x: number;
+  y: number;
+}
+
 declare class FWSBP2LogoutCompleteParams {
   constructor(init?: FWSBP2LogoutCompleteParams);
   refCon: interop.Pointer;
@@ -17884,24 +18043,13 @@ declare class ATASMARTLogDirectory {
   entries: unknown /* const array */;
 }
 
+declare class __IOHIDUserDevice {
+  constructor(init?: __IOHIDUserDevice);
+}
+
 declare class VDEntryRecord {
   constructor(init?: VDEntryRecord);
   csTable: string | null;
-}
-
-declare class IODetailedTimingInformationV1 {
-  constructor(init?: IODetailedTimingInformationV1);
-  pixelClock: number;
-  horizontalActive: number;
-  horizontalBlanking: number;
-  horizontalBorder: number;
-  horizontalSyncOffset: number;
-  horizontalSyncWidth: number;
-  verticalActive: number;
-  verticalBlanking: number;
-  verticalBorder: number;
-  verticalSyncOffset: number;
-  verticalSyncWidth: number;
 }
 
 declare class IONamedValue {
@@ -17916,14 +18064,6 @@ declare class SCSICmd_INQUIRY_Page83_Header {
   PAGE_CODE: number;
   RESERVED: number;
   PAGE_LENGTH: number;
-}
-
-declare class IOColorEntry {
-  constructor(init?: IOColorEntry);
-  index: number;
-  red: number;
-  green: number;
-  blue: number;
 }
 
 declare class DVDKey1Info {
@@ -17941,6 +18081,14 @@ declare class DCLCallProcStruct {
   opcode: number;
   proc: (p1: interop.PointerConvertible) => void | null;
   procData: interop.Pointer;
+}
+
+declare class IOColorEntry {
+  constructor(init?: IOColorEntry);
+  index: number;
+  red: number;
+  green: number;
+  blue: number;
 }
 
 declare class IOUSBDeviceStruct320 {
@@ -17992,27 +18140,45 @@ declare class IOUSBDeviceStruct320 {
   GetExtraPowerAllocated: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
 }
 
-declare class IOFireWireIsochChannelInterface_t {
-  constructor(init?: IOFireWireIsochChannelInterface_t);
-  _reserved: interop.Pointer;
-  QueryInterface: (p1: interop.PointerConvertible, p2: CFUUIDBytes, p3: interop.PointerConvertible) => number | null;
-  AddRef: (p1: interop.PointerConvertible) => number | null;
-  Release: (p1: interop.PointerConvertible) => number | null;
-  revision: number;
-  version: number;
-  SetTalker: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  AddListener: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  AllocateChannel: (p1: interop.PointerConvertible) => number | null;
-  ReleaseChannel: (p1: interop.PointerConvertible) => number | null;
-  Start: (p1: interop.PointerConvertible) => number | null;
-  Stop: (p1: interop.PointerConvertible) => number | null;
-  SetChannelForceStopHandler: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: number) => void) => (p1: interop.PointerConvertible, p2: number) => void | null;
-  SetRefCon: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  GetRefCon: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  NotificationIsOn: (p1: interop.PointerConvertible) => number | null;
-  TurnOnNotification: (p1: interop.PointerConvertible) => number | null;
-  TurnOffNotification: (p1: interop.PointerConvertible) => void | null;
-  ClientCommandIsComplete: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
+declare class VDDetailedTimingRec {
+  constructor(init?: VDDetailedTimingRec);
+  csTimingSize: number;
+  csTimingType: number;
+  csTimingVersion: number;
+  csTimingReserved: number;
+  csDisplayModeID: number;
+  csDisplayModeSeed: number;
+  csDisplayModeState: number;
+  csDisplayModeAlias: number;
+  csSignalConfig: number;
+  csSignalLevels: number;
+  csPixelClock: number;
+  csMinPixelClock: number;
+  csMaxPixelClock: number;
+  csHorizontalActive: number;
+  csHorizontalBlanking: number;
+  csHorizontalSyncOffset: number;
+  csHorizontalSyncPulseWidth: number;
+  csVerticalActive: number;
+  csVerticalBlanking: number;
+  csVerticalSyncOffset: number;
+  csVerticalSyncPulseWidth: number;
+  csHorizontalBorderLeft: number;
+  csHorizontalBorderRight: number;
+  csVerticalBorderTop: number;
+  csVerticalBorderBottom: number;
+  csHorizontalSyncConfig: number;
+  csHorizontalSyncLevel: number;
+  csVerticalSyncConfig: number;
+  csVerticalSyncLevel: number;
+  csNumLinks: number;
+  csReserved2: number;
+  csReserved3: number;
+  csReserved4: number;
+  csReserved5: number;
+  csReserved6: number;
+  csReserved7: number;
+  csReserved8: number;
 }
 
 declare class IOUSBCompletion {
@@ -18036,10 +18202,6 @@ declare class _IOAudioSampleIntervalDescriptor {
   constructor(init?: _IOAudioSampleIntervalDescriptor);
   sampleIntervalHi: number;
   sampleIntervalLo: number;
-}
-
-declare class __IOHIDUserDevice {
-  constructor(init?: __IOHIDUserDevice);
 }
 
 declare class IOBlitCopyRectanglesStruct {
@@ -18149,7 +18311,7 @@ declare class dk_cd_read_toc_t {
   format: number;
   formatAsTime: number;
   reserved0016: unknown /* const array */;
-  address: unnamed_14286597759475765675;
+  address: unnamed_10910005987556194291;
   reserved0064: unknown /* const array */;
   bufferLength: number;
   buffer: interop.Pointer;
@@ -18506,23 +18668,6 @@ declare class VDHardwareCursorDrawStateRec {
   csReserved2: number;
 }
 
-declare class unnamed_7833810970019570953 {
-  constructor(init?: unnamed_7833810970019570953);
-  x: number;
-  y: number;
-  z: number;
-  buttons: number;
-  pressure: number;
-  tilt: unnamed_15297976000823265817;
-  rotation: number;
-  tangentialPressure: number;
-  deviceID: number;
-  vendor1: number;
-  vendor2: number;
-  vendor3: number;
-  reserved: unknown /* const array */;
-}
-
 declare class _IODataQueueAppendix {
   constructor(init?: _IODataQueueAppendix);
   version: number;
@@ -18682,32 +18827,6 @@ declare class VDConfigurationFeatureListRec {
   csReserved2: number;
 }
 
-declare class IOUSBHIDDescriptor {
-  constructor(init?: IOUSBHIDDescriptor);
-  descLen: number;
-  descType: number;
-  descVersNum: number;
-  hidCountryCode: number;
-  hidNumDescriptors: number;
-  hidDescriptorType: number;
-  hidDescriptorLengthLo: number;
-  hidDescriptorLengthHi: number;
-}
-
-declare class unnamed_4783533912553459323 {
-  constructor(init?: unnamed_4783533912553459323);
-  subx: number;
-  suby: number;
-  eventNum: number;
-  click: number;
-  pressure: number;
-  buttonNumber: number;
-  subType: number;
-  reserved2: number;
-  reserved3: number;
-  tablet: unnamed_4749128171598381113;
-}
-
 declare class IODot3StatsEntry {
   constructor(init?: IODot3StatsEntry);
   alignmentErrors: number;
@@ -18765,20 +18884,6 @@ declare class dk_dvd_read_disc_info_t {
   reserved0000: unknown /* const array */;
   bufferLength: number;
   buffer: interop.Pointer;
-}
-
-declare class unnamed_7977083725579770850 {
-  constructor(init?: unnamed_7977083725579770850);
-  reserved: number;
-  eventNum: number;
-  trackingNum: number;
-  userData: number;
-  reserved1: number;
-  reserved2: number;
-  reserved3: number;
-  reserved4: number;
-  reserved5: number;
-  reserved6: unknown /* const array */;
 }
 
 declare class IONotificationPort {
@@ -18976,32 +19081,11 @@ declare class _NXEventExtension {
   audit: audit_token_t;
 }
 
-declare class _evOffsets {
-  constructor(init?: _evOffsets);
-  evGlobalsOffset: number;
-  evShmemOffset: number;
-}
-
 declare class IOHIDCompletion {
   constructor(init?: IOHIDCompletion);
   target: interop.Pointer;
   action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
   parameter: interop.Pointer;
-}
-
-declare class unnamed_5611854780683013027 {
-  constructor(init?: unnamed_5611854780683013027);
-  deltaAxis1: number;
-  deltaAxis2: number;
-  deltaAxis3: number;
-  reserved1: number;
-  fixedDeltaAxis1: number;
-  fixedDeltaAxis2: number;
-  fixedDeltaAxis3: number;
-  pointDeltaAxis1: number;
-  pointDeltaAxis2: number;
-  pointDeltaAxis3: number;
-  reserved8: unknown /* const array */;
 }
 
 declare class IOUSBInterfaceStruct700 {
@@ -19279,12 +19363,6 @@ declare class DDMap {
   ddType: number;
 }
 
-declare class unnamed_17267042973017687128 {
-  constructor(init?: unnamed_17267042973017687128);
-  x: number;
-  y: number;
-}
-
 declare class DVDPhysicalFormatInfo {
   constructor(init?: DVDPhysicalFormatInfo);
   dataLength: unknown /* const array */;
@@ -19358,11 +19436,6 @@ declare class VDSetEntryRecord {
   csCount: number;
 }
 
-declare class unnamed_326357253605771481 {
-  constructor(init?: unnamed_326357253605771481);
-  csGTable: string | null;
-}
-
 declare class evioLLEvent {
   constructor(init?: evioLLEvent);
   setCursor: number;
@@ -19426,14 +19499,6 @@ declare class MMCDeviceInterface {
   ReadDiscInformationV2: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
   ReadTrackInformationV2: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
   SetStreaming: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-}
-
-declare class IOUSBLowLatencyIsocFrame {
-  constructor(init?: IOUSBLowLatencyIsocFrame);
-  frStatus: number;
-  frReqCount: number;
-  frActCount: number;
-  frTimeStamp: UnsignedWide;
 }
 
 declare class dk_bd_read_disc_info_t {
@@ -19573,58 +19638,36 @@ declare class UserExportDCLCallProcStruct {
   procData: number;
 }
 
-declare class IOHIDDeviceQueueInterface {
-  constructor(init?: IOHIDDeviceQueueInterface);
-  _reserved: interop.Pointer;
-  QueryInterface: (p1: interop.PointerConvertible, p2: CFUUIDBytes, p3: interop.PointerConvertible) => number | null;
-  AddRef: (p1: interop.PointerConvertible) => number | null;
-  Release: (p1: interop.PointerConvertible) => number | null;
-  getAsyncEventSource: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  setDepth: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
-  getDepth: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  addElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  removeElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  containsElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
-  start: (p1: interop.PointerConvertible, p2: number) => number | null;
-  stop: (p1: interop.PointerConvertible, p2: number) => number | null;
-  setValueAvailableCallback: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => number | null;
-  copyNextValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
-}
-
 declare class _IOBlitMemory {
   constructor(init?: _IOBlitMemory);
 }
 
-type unnamed_14286597759475765675Descriptor = 
+type unnamed_15250897639706774685Descriptor = 
+  | { point: _NXTabletPointData }
+  | { proximity: _NXTabletProximityData };
+
+declare class unnamed_15250897639706774685 {
+  constructor(init?: unnamed_15250897639706774685Descriptor);
+  point: _NXTabletPointData;
+  proximity: _NXTabletProximityData;
+}
+
+type unnamed_10910005987556194291Descriptor = 
   | { session: number }
   | { track: number };
 
-declare class unnamed_14286597759475765675 {
-  constructor(init?: unnamed_14286597759475765675Descriptor);
+declare class unnamed_10910005987556194291 {
+  constructor(init?: unnamed_10910005987556194291Descriptor);
   session: number;
   track: number;
 }
 
-type unnamed_17682291181876859174Descriptor = 
-  | { bw: bm12Cursor }
-  | { bw8: bm18Cursor }
-  | { rgb: bm34Cursor }
-  | { rgb24: bm38Cursor };
-
-declare class unnamed_17682291181876859174 {
-  constructor(init?: unnamed_17682291181876859174Descriptor);
-  bw: bm12Cursor;
-  bw8: bm18Cursor;
-  rgb: bm34Cursor;
-  rgb24: bm38Cursor;
-}
-
-type unnamed_16483864855605376039Descriptor = 
+type unnamed_17923855300358106514Descriptor = 
   | { bytes: interop.PointerConvertible }
   | { ref: interop.PointerConvertible };
 
-declare class unnamed_16483864855605376039 {
-  constructor(init?: unnamed_16483864855605376039Descriptor);
+declare class unnamed_17923855300358106514 {
+  constructor(init?: unnamed_17923855300358106514Descriptor);
   bytes: interop.Pointer;
   ref: interop.Pointer;
 }
@@ -19639,62 +19682,38 @@ declare class IOUSBHIDData {
   mouse: IOUSBMouseData;
 }
 
-type unnamed_17455471598632752506Descriptor = 
-  | { F: unknown /* const array */ }
-  | { L: unknown /* const array */ }
-  | { S: unknown /* const array */ }
-  | { C: unknown /* const array */ };
-
-declare class unnamed_17455471598632752506 {
-  constructor(init?: unnamed_17455471598632752506Descriptor);
-  F: unknown /* const array */;
-  L: unknown /* const array */;
-  S: unknown /* const array */;
-  C: unknown /* const array */;
-}
-
-type unnamed_5613967386771284927Descriptor = 
+type unnamed_2601017340886590716Descriptor = 
   | { point: _NXTabletPointData }
   | { proximity: _NXTabletProximityData };
 
-declare class unnamed_5613967386771284927 {
-  constructor(init?: unnamed_5613967386771284927Descriptor);
+declare class unnamed_2601017340886590716 {
+  constructor(init?: unnamed_2601017340886590716Descriptor);
   point: _NXTabletPointData;
   proximity: _NXTabletProximityData;
 }
 
 type NXEventDataDescriptor = 
-  | { mouse: unnamed_4783533912553459323 }
-  | { mouseMove: unnamed_8233482887367681716 }
-  | { key: unnamed_18396874505247208707 }
-  | { tracking: unnamed_7977083725579770850 }
-  | { scrollWheel: unnamed_5611854780683013027 }
-  | { zoom: unnamed_5611854780683013027 }
-  | { compound: unnamed_6828668004108393438 }
-  | { tablet: unnamed_7833810970019570953 }
-  | { proximity: unnamed_17310486651322119148 };
+  | { mouse: unnamed_13441805532002983772 }
+  | { mouseMove: unnamed_175957732564600561 }
+  | { key: unnamed_5100795372900712712 }
+  | { tracking: unnamed_9873895420725477293 }
+  | { scrollWheel: unnamed_4619205928367467519 }
+  | { zoom: unnamed_4619205928367467519 }
+  | { compound: unnamed_5759232563165710455 }
+  | { tablet: unnamed_9603799558256710164 }
+  | { proximity: unnamed_7971714628260465398 };
 
 declare class NXEventData {
   constructor(init?: NXEventDataDescriptor);
-  mouse: unnamed_4783533912553459323;
-  mouseMove: unnamed_8233482887367681716;
-  key: unnamed_18396874505247208707;
-  tracking: unnamed_7977083725579770850;
-  scrollWheel: unnamed_5611854780683013027;
-  zoom: unnamed_5611854780683013027;
-  compound: unnamed_6828668004108393438;
-  tablet: unnamed_7833810970019570953;
-  proximity: unnamed_17310486651322119148;
-}
-
-type unnamed_3807285232668356829Descriptor = 
-  | { v1: IODetailedTimingInformationV1 }
-  | { v2: IODetailedTimingInformationV2 };
-
-declare class unnamed_3807285232668356829 {
-  constructor(init?: unnamed_3807285232668356829Descriptor);
-  v1: IODetailedTimingInformationV1;
-  v2: IODetailedTimingInformationV2;
+  mouse: unnamed_13441805532002983772;
+  mouseMove: unnamed_175957732564600561;
+  key: unnamed_5100795372900712712;
+  tracking: unnamed_9873895420725477293;
+  scrollWheel: unnamed_4619205928367467519;
+  zoom: unnamed_4619205928367467519;
+  compound: unnamed_5759232563165710455;
+  tablet: unnamed_9603799558256710164;
+  proximity: unnamed_7971714628260465398;
 }
 
 type IOFBHDRMetaDataDescriptor = 
@@ -19705,14 +19724,42 @@ declare class IOFBHDRMetaData {
   v1: IOFBHDRMetaDataV1;
 }
 
-type unnamed_4749128171598381113Descriptor = 
-  | { point: _NXTabletPointData }
-  | { proximity: _NXTabletProximityData };
+type unnamed_12847566531770991247Descriptor = 
+  | { bw: bm12Cursor }
+  | { bw8: bm18Cursor }
+  | { rgb: bm34Cursor }
+  | { rgb24: bm38Cursor };
 
-declare class unnamed_4749128171598381113 {
-  constructor(init?: unnamed_4749128171598381113Descriptor);
-  point: _NXTabletPointData;
-  proximity: _NXTabletProximityData;
+declare class unnamed_12847566531770991247 {
+  constructor(init?: unnamed_12847566531770991247Descriptor);
+  bw: bm12Cursor;
+  bw8: bm18Cursor;
+  rgb: bm34Cursor;
+  rgb24: bm38Cursor;
+}
+
+type unnamed_14650194066440877064Descriptor = 
+  | { v1: IODetailedTimingInformationV1 }
+  | { v2: IODetailedTimingInformationV2 };
+
+declare class unnamed_14650194066440877064 {
+  constructor(init?: unnamed_14650194066440877064Descriptor);
+  v1: IODetailedTimingInformationV1;
+  v2: IODetailedTimingInformationV2;
+}
+
+type unnamed_11666218996679898393Descriptor = 
+  | { F: unknown /* const array */ }
+  | { L: unknown /* const array */ }
+  | { S: unknown /* const array */ }
+  | { C: unknown /* const array */ };
+
+declare class unnamed_11666218996679898393 {
+  constructor(init?: unnamed_11666218996679898393Descriptor);
+  F: unknown /* const array */;
+  L: unknown /* const array */;
+  S: unknown /* const array */;
+  C: unknown /* const array */;
 }
 
 declare function IOMainPort(bootstrapPort: number, mainPort: interop.PointerConvertible): number;

@@ -60,26 +60,6 @@ declare interface SFSpeechRecognitionTaskDelegate extends NSObjectProtocol {
 declare class SFSpeechRecognitionTaskDelegate extends NativeObject implements SFSpeechRecognitionTaskDelegate {
 }
 
-declare class SFSpeechRecognitionMetadata extends NSObject implements NSCopying, NSSecureCoding {
-  readonly speakingRate: number;
-
-  readonly averagePauseDuration: number;
-
-  readonly speechStartTimestamp: number;
-
-  readonly speechDuration: number;
-
-  readonly voiceAnalytics: SFVoiceAnalytics;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class SFVoiceAnalytics extends NSObject implements NSCopying, NSSecureCoding {
   readonly jitter: SFAcousticFeature;
 
@@ -261,6 +241,26 @@ declare class SFSpeechRecognitionRequest extends NSObject {
   setCustomizedLanguageModel(customizedLanguageModel: SFSpeechLanguageModelConfiguration | null): void;
 }
 
+declare class SFSpeechRecognitionMetadata extends NSObject implements NSCopying, NSSecureCoding {
+  readonly speakingRate: number;
+
+  readonly averagePauseDuration: number;
+
+  readonly speechStartTimestamp: number;
+
+  readonly speechDuration: number;
+
+  readonly voiceAnalytics: SFVoiceAnalytics;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class SFSpeechLanguageModel extends NSObject {
   static prepareCustomLanguageModelForUrlClientIdentifierConfigurationCompletion(asset: NSURL, clientIdentifier: string, configuration: SFSpeechLanguageModelConfiguration, completion: (p1: NSError) => void | null): void;
 
@@ -304,7 +304,7 @@ declare class SFSpeechAudioBufferRecognitionRequest extends SFSpeechRecognitionR
 
   appendAudioPCMBuffer(audioPCMBuffer: AVAudioPCMBuffer): void;
 
-  appendAudioSampleBuffer(sampleBuffer: interop.PointerConvertible): void;
+  appendAudioSampleBuffer(sampleBuffer: interop.Object): void;
 
   endAudio(): void;
 }

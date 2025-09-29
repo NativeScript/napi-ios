@@ -96,6 +96,20 @@ declare interface PTChannelManagerDelegate extends NSObjectProtocol {
 declare class PTChannelManagerDelegate extends NativeObject implements PTChannelManagerDelegate {
 }
 
+declare class PTPushResult extends NSObject {
+  static readonly leaveChannelPushResult: PTPushResult;
+
+  static pushResultForActiveRemoteParticipant(participant: PTParticipant): PTPushResult;
+}
+
+declare class PTParticipant extends NSObject {
+  readonly name: string;
+
+  readonly image: UIImage;
+
+  initWithNameImage(name: string, image: UIImage | null): this;
+}
+
 declare class PTChannelManager extends NSObject {
   static channelManagerWithDelegateRestorationDelegateCompletionHandler(delegate: PTChannelManagerDelegate, restorationDelegate: PTChannelRestorationDelegate, completionHandler: (p1: PTChannelManager, p2: NSError) => void | null): void;
 
@@ -120,25 +134,11 @@ declare class PTChannelManager extends NSObject {
   setAccessoryButtonEventsEnabledForChannelUUIDCompletionHandler(enabled: boolean, channelUUID: NSUUID, completionHandler: (p1: NSError) => void | null): void;
 }
 
-declare class PTPushResult extends NSObject {
-  static readonly leaveChannelPushResult: PTPushResult;
-
-  static pushResultForActiveRemoteParticipant(participant: PTParticipant): PTPushResult;
-}
-
 declare class PTChannelDescriptor extends NSObject {
   initWithNameImage(name: string, image: UIImage | null): this;
 
   readonly name: string;
 
   readonly image: UIImage;
-}
-
-declare class PTParticipant extends NSObject {
-  readonly name: string;
-
-  readonly image: UIImage;
-
-  initWithNameImage(name: string, image: UIImage | null): this;
 }
 

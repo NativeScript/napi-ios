@@ -1,6 +1,8 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const kIOSurfaceColorSpace: interop.Pointer;
+
 declare const IOSurfacePropertyAllocSizeKey: string;
 
 declare const IOSurfacePropertyKeyName: string;
@@ -127,8 +129,6 @@ declare const kIOSurfacePlaneBytesPerRow: interop.Pointer;
 
 declare const kIOSurfacePlaneComponentNames: interop.Pointer;
 
-declare const kIOSurfaceColorSpace: interop.Pointer;
-
 declare const kIOSurfaceBytesPerElement: interop.Pointer;
 
 declare const kIOSurfaceBytesPerRow: interop.Pointer;
@@ -138,6 +138,19 @@ declare const IOSurfacePropertyKeyPlaneHeight: string;
 declare const kIOSurfacePlaneBytesPerElement: interop.Pointer;
 
 declare const kIOSurfaceMapWriteThruCache: number;
+
+declare const IOSurfaceSubsampling: {
+  SubsamplingUnknown: 0,
+  SubsamplingNone: 1,
+  Subsampling422: 2,
+  Subsampling420: 3,
+  Subsampling411: 4,
+};
+
+declare const IOSurfaceLockOptions: {
+  ReadOnly: 1,
+  AvoidSync: 2,
+};
 
 declare const IOSurfacePurgeabilityState: {
   NonVolatile: 0,
@@ -155,19 +168,6 @@ declare const IOSurfaceComponentName: {
   Luma: 5,
   ChromaRed: 6,
   ChromaBlue: 7,
-};
-
-declare const IOSurfaceSubsampling: {
-  SubsamplingUnknown: 0,
-  SubsamplingNone: 1,
-  Subsampling422: 2,
-  Subsampling420: 3,
-  Subsampling411: 4,
-};
-
-declare const IOSurfaceLockOptions: {
-  ReadOnly: 1,
-  AvoidSync: 2,
 };
 
 declare const IOSurfaceComponentRange: {

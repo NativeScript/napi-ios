@@ -1,6 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const MediaSetupVersionString: interop.Pointer;
+
+declare const MediaSetupVersionNumber: number;
+
 declare interface MSAuthenticationPresentationContext extends NSObjectProtocol {
   presentationAnchor(): UIWindow | null;
 }

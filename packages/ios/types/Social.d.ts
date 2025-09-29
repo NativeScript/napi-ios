@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
+/// <reference path="./Runtime.d.ts" />
 
 declare const SLServiceTypeFacebook: string;
 
@@ -24,24 +24,26 @@ declare const SLRequestMethod: {
   PUT: 3,
 };
 
-declare class SLComposeSheetConfigurationItem extends NSObject {
-  init(): this;
+declare class SLComposeViewController extends UIViewController {
+  static isAvailableForServiceType(serviceType: string): boolean;
 
-  title: string;
+  static composeViewControllerForServiceType(serviceType: string): SLComposeViewController;
 
-  value: string;
+  readonly serviceType: string;
 
-  valuePending: boolean;
+  setInitialText(text: string): boolean;
 
-  tapHandler: () => void;
+  addImage(image: UIImage): boolean;
 
-  setTitle(title: string): void;
+  removeAllImages(): boolean;
 
-  setValue(value: string): void;
+  addURL(url: NSURL): boolean;
 
-  setValuePending(valuePending: boolean): void;
+  removeAllURLs(): boolean;
 
-  setTapHandler(tapHandler: () => void): void;
+  completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void;
+
+  setCompletionHandler(completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void): void;
 }
 
 declare class SLRequest extends NSObject {
@@ -62,6 +64,26 @@ declare class SLRequest extends NSObject {
   performRequestWithHandler(handler: (p1: NSData, p2: NSHTTPURLResponse, p3: NSError) => void): void;
 
   setAccount(account: ACAccount): void;
+}
+
+declare class SLComposeSheetConfigurationItem extends NSObject {
+  init(): this;
+
+  title: string;
+
+  value: string;
+
+  valuePending: boolean;
+
+  tapHandler: () => void;
+
+  setTitle(title: string): void;
+
+  setValue(value: string): void;
+
+  setValuePending(valuePending: boolean): void;
+
+  setTapHandler(tapHandler: () => void): void;
 }
 
 declare class SLComposeServiceViewController extends UIViewController implements UITextViewDelegate {
@@ -226,27 +248,5 @@ declare class SLComposeServiceViewController extends UIViewController implements
   scrollViewDidScrollToTop(scrollView: UIScrollView): void;
 
   scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
-}
-
-declare class SLComposeViewController extends UIViewController {
-  static isAvailableForServiceType(serviceType: string): boolean;
-
-  static composeViewControllerForServiceType(serviceType: string): SLComposeViewController;
-
-  readonly serviceType: string;
-
-  setInitialText(text: string): boolean;
-
-  addImage(image: UIImage): boolean;
-
-  removeAllImages(): boolean;
-
-  addURL(url: NSURL): boolean;
-
-  removeAllURLs(): boolean;
-
-  completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void;
-
-  setCompletionHandler(completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void): void;
 }
 

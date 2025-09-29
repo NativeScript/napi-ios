@@ -2,8 +2,6 @@
 
 declare const kKERNNotesRequested: number;
 
-declare const kCTLigatureAttributeName: interop.Pointer;
-
 declare const kCTFontCharacterSetAttribute: interop.Pointer;
 
 declare const kFontEsperantoLanguage: number;
@@ -654,6 +652,8 @@ declare const kCTParagraphStyleAttributeName: interop.Pointer;
 
 declare const kCTForegroundColorAttributeName: interop.Pointer;
 
+declare const kCTLigatureAttributeName: interop.Pointer;
+
 declare const kCTForegroundColorFromContextAttributeName: interop.Pointer;
 
 declare const kCTFontAttributeName: interop.Pointer;
@@ -727,8 +727,6 @@ declare const kCTFontTableAnkr: number;
 declare const kCTFontTableVVAR: number;
 
 declare const kCTFontTableVORG: number;
-
-declare const kCTFontTableVDMX: number;
 
 declare const kCTFontTableSVG: number;
 
@@ -846,8 +844,6 @@ declare const kFontTeluguLanguage: number;
 
 declare const kSTLigActionMask: number;
 
-declare const kFontMalayRomanLanguage: number;
-
 declare const kFontMicrosoftPlatform: number;
 
 declare const kLogosOnSelector: number;
@@ -864,13 +860,15 @@ declare const kIdeographicAltThreeSelector: number;
 
 declare const kFontExtendedArabicScript: number;
 
-declare const kAllTypeFeaturesOnSelector: number;
-
 declare const kCTStrokeColorAttributeName: interop.Pointer;
+
+declare const kCTFontTableVDMX: number;
 
 declare const kMORTLigFormOffsetShift: number;
 
 declare const kDesignLevel1Selector: number;
+
+declare const kFontMalayRomanLanguage: number;
 
 declare const kFontKurdishLanguage: number;
 
@@ -889,6 +887,8 @@ declare const kKERNNotApplied: number;
 declare const kMonospacedNumbersSelector: number;
 
 declare const kSmartQuotesOffSelector: number;
+
+declare const kAllTypeFeaturesOnSelector: number;
 
 declare const kCTFontVariationAxisHiddenKey: interop.Pointer;
 
@@ -1320,6 +1320,8 @@ declare const kPROPLDirectionClass: number;
 
 declare const kJUSTpcDuctilityAction: number;
 
+declare const kLogosOffSelector: number;
+
 declare const kFontSerbianLanguage: number;
 
 declare const kCTFontVariationAxisMaximumValueKey: interop.Pointer;
@@ -1377,8 +1379,6 @@ declare const kFontKirghizLanguage: number;
 declare const kDefaultCJKRomanSelector: number;
 
 declare const kStylisticAltThirteenOnSelector: number;
-
-declare const kLogosOffSelector: number;
 
 declare const kCTFontDownloadableAttribute: interop.Pointer;
 
@@ -1939,11 +1939,6 @@ declare const CTUnderlineStyleModifiers: {
   DashDotDot: 1024,
 };
 
-declare const CTFramePathFillRule: {
-  EvenOdd: 0,
-  WindingNumber: 1,
-};
-
 declare const CTFontDescriptorMatchingState: {
   DidBegin: 0,
   DidFinish: 1,
@@ -1954,6 +1949,11 @@ declare const CTFontDescriptorMatchingState: {
   DidFinishDownloading: 6,
   DidMatch: 7,
   DidFailWithError: 8,
+};
+
+declare const CTFramePathFillRule: {
+  EvenOdd: 0,
+  WindingNumber: 1,
 };
 
 declare const CTRubyOverhang: {
@@ -2389,14 +2389,6 @@ declare class KerxTableHeader {
   firstSubtable: unknown /* const array */;
 }
 
-declare class KernSubtableHeader {
-  constructor(init?: KernSubtableHeader);
-  length: number;
-  stInfo: number;
-  tupleIndex: number;
-  fsHeader: KernFormatSpecificHeader;
-}
-
 declare class KernSimpleArrayHeader {
   constructor(init?: KernSimpleArrayHeader);
   rowWidth: number;
@@ -2637,6 +2629,14 @@ declare class __CTFont {
 
 declare class __CTFontDescriptor {
   constructor(init?: __CTFontDescriptor);
+}
+
+declare class KernSubtableHeader {
+  constructor(init?: KernSubtableHeader);
+  length: number;
+  stInfo: number;
+  tupleIndex: number;
+  fsHeader: KernFormatSpecificHeader;
 }
 
 declare class PropLookupSingle {
@@ -3147,378 +3147,378 @@ declare class MorxSpecificSubtable {
 
 declare function CTParagraphStyleGetTypeID(): number;
 
-declare function CTParagraphStyleCreate(settings: interop.PointerConvertible, settingCount: number): interop.Pointer;
+declare function CTParagraphStyleCreate(settings: interop.PointerConvertible, settingCount: number): interop.Object;
 
-declare function CTParagraphStyleCreateCopy(paragraphStyle: interop.PointerConvertible): interop.Pointer;
+declare function CTParagraphStyleCreateCopy(paragraphStyle: interop.Object): interop.Object;
 
-declare function CTParagraphStyleGetValueForSpecifier(paragraphStyle: interop.PointerConvertible, spec: interop.Enum<typeof CTParagraphStyleSpecifier>, valueBufferSize: number, valueBuffer: interop.PointerConvertible): boolean;
+declare function CTParagraphStyleGetValueForSpecifier(paragraphStyle: interop.Object, spec: interop.Enum<typeof CTParagraphStyleSpecifier>, valueBufferSize: number, valueBuffer: interop.PointerConvertible): boolean;
 
 declare function CTRunGetTypeID(): number;
 
-declare function CTRunGetGlyphCount(run: interop.PointerConvertible): number;
+declare function CTRunGetGlyphCount(run: interop.Object): number;
 
-declare function CTRunGetAttributes(run: interop.PointerConvertible): interop.Pointer;
+declare function CTRunGetAttributes(run: interop.Object): interop.Object;
 
-declare function CTRunGetStatus(run: interop.PointerConvertible): interop.Enum<typeof CTRunStatus>;
+declare function CTRunGetStatus(run: interop.Object): interop.Enum<typeof CTRunStatus>;
 
-declare function CTRunGetGlyphsPtr(run: interop.PointerConvertible): interop.Pointer;
+declare function CTRunGetGlyphsPtr(run: interop.Object): interop.Pointer;
 
-declare function CTRunGetGlyphs(run: interop.PointerConvertible, range: CFRange, buffer: interop.PointerConvertible): void;
+declare function CTRunGetGlyphs(run: interop.Object, range: CFRange, buffer: interop.PointerConvertible): void;
 
-declare function CTRunGetPositionsPtr(run: interop.PointerConvertible): interop.Pointer;
+declare function CTRunGetPositionsPtr(run: interop.Object): interop.Pointer;
 
-declare function CTRunGetPositions(run: interop.PointerConvertible, range: CFRange, buffer: interop.PointerConvertible): void;
+declare function CTRunGetPositions(run: interop.Object, range: CFRange, buffer: interop.PointerConvertible): void;
 
-declare function CTRunGetAdvancesPtr(run: interop.PointerConvertible): interop.Pointer;
+declare function CTRunGetAdvancesPtr(run: interop.Object): interop.Pointer;
 
-declare function CTRunGetAdvances(run: interop.PointerConvertible, range: CFRange, buffer: interop.PointerConvertible): void;
+declare function CTRunGetAdvances(run: interop.Object, range: CFRange, buffer: interop.PointerConvertible): void;
 
-declare function CTRunGetStringIndicesPtr(run: interop.PointerConvertible): interop.Pointer;
+declare function CTRunGetStringIndicesPtr(run: interop.Object): interop.Pointer;
 
-declare function CTRunGetStringIndices(run: interop.PointerConvertible, range: CFRange, buffer: interop.PointerConvertible): void;
+declare function CTRunGetStringIndices(run: interop.Object, range: CFRange, buffer: interop.PointerConvertible): void;
 
-declare function CTRunGetStringRange(run: interop.PointerConvertible): CFRange;
+declare function CTRunGetStringRange(run: interop.Object): CFRange;
 
-declare function CTRunGetTypographicBounds(run: interop.PointerConvertible, range: CFRange, ascent: interop.PointerConvertible, descent: interop.PointerConvertible, leading: interop.PointerConvertible): number;
+declare function CTRunGetTypographicBounds(run: interop.Object, range: CFRange, ascent: interop.PointerConvertible, descent: interop.PointerConvertible, leading: interop.PointerConvertible): number;
 
-declare function CTRunGetImageBounds(run: interop.PointerConvertible, context: interop.PointerConvertible, range: CFRange): CGRect;
+declare function CTRunGetImageBounds(run: interop.Object, context: interop.Object, range: CFRange): CGRect;
 
-declare function CTRunGetTextMatrix(run: interop.PointerConvertible): CGAffineTransform;
+declare function CTRunGetTextMatrix(run: interop.Object): CGAffineTransform;
 
-declare function CTRunGetBaseAdvancesAndOrigins(runRef: interop.PointerConvertible, range: CFRange, advancesBuffer: interop.PointerConvertible, originsBuffer: interop.PointerConvertible): void;
+declare function CTRunGetBaseAdvancesAndOrigins(runRef: interop.Object, range: CFRange, advancesBuffer: interop.PointerConvertible, originsBuffer: interop.PointerConvertible): void;
 
-declare function CTRunDraw(run: interop.PointerConvertible, context: interop.PointerConvertible, range: CFRange): void;
+declare function CTRunDraw(run: interop.Object, context: interop.Object, range: CFRange): void;
 
 declare function CTRunDelegateGetTypeID(): number;
 
-declare function CTRunDelegateCreate(callbacks: interop.PointerConvertible, refCon: interop.PointerConvertible): interop.Pointer;
+declare function CTRunDelegateCreate(callbacks: interop.PointerConvertible, refCon: interop.PointerConvertible): interop.Object;
 
-declare function CTRunDelegateGetRefCon(runDelegate: interop.PointerConvertible): interop.Pointer;
+declare function CTRunDelegateGetRefCon(runDelegate: interop.Object): interop.Pointer;
 
 declare function CTFontDescriptorGetTypeID(): number;
 
-declare function CTFontDescriptorCreateWithNameAndSize(name: interop.PointerConvertible, size: number): interop.Pointer;
+declare function CTFontDescriptorCreateWithNameAndSize(name: interop.Object, size: number): interop.Object;
 
-declare function CTFontDescriptorCreateWithAttributes(attributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCreateWithAttributes(attributes: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCreateCopyWithAttributes(original: interop.PointerConvertible, attributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCreateCopyWithAttributes(original: interop.Object, attributes: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCreateCopyWithFamily(original: interop.PointerConvertible, family: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCreateCopyWithFamily(original: interop.Object, family: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCreateCopyWithSymbolicTraits(original: interop.PointerConvertible, symTraitValue: interop.Enum<typeof CTFontSymbolicTraits>, symTraitMask: interop.Enum<typeof CTFontSymbolicTraits>): interop.Pointer;
+declare function CTFontDescriptorCreateCopyWithSymbolicTraits(original: interop.Object, symTraitValue: interop.Enum<typeof CTFontSymbolicTraits>, symTraitMask: interop.Enum<typeof CTFontSymbolicTraits>): interop.Object;
 
-declare function CTFontDescriptorCreateCopyWithVariation(original: interop.PointerConvertible, variationIdentifier: interop.PointerConvertible, variationValue: number): interop.Pointer;
+declare function CTFontDescriptorCreateCopyWithVariation(original: interop.Object, variationIdentifier: interop.Object, variationValue: number): interop.Object;
 
-declare function CTFontDescriptorCreateCopyWithFeature(original: interop.PointerConvertible, featureTypeIdentifier: interop.PointerConvertible, featureSelectorIdentifier: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCreateCopyWithFeature(original: interop.Object, featureTypeIdentifier: interop.Object, featureSelectorIdentifier: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCreateMatchingFontDescriptors(descriptor: interop.PointerConvertible, mandatoryAttributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCreateMatchingFontDescriptors(descriptor: interop.Object, mandatoryAttributes: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCreateMatchingFontDescriptor(descriptor: interop.PointerConvertible, mandatoryAttributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCreateMatchingFontDescriptor(descriptor: interop.Object, mandatoryAttributes: interop.Object): interop.Object;
 
-declare function CTFontDescriptorMatchFontDescriptorsWithProgressHandler(descriptors: interop.PointerConvertible, mandatoryAttributes: interop.PointerConvertible, progressBlock: (p1: interop.Enum<typeof CTFontDescriptorMatchingState>, p2: interop.PointerConvertible) => boolean): boolean;
+declare function CTFontDescriptorMatchFontDescriptorsWithProgressHandler(descriptors: interop.Object, mandatoryAttributes: interop.Object, progressBlock: (p1: interop.Enum<typeof CTFontDescriptorMatchingState>, p2: interop.PointerConvertible) => boolean): boolean;
 
-declare function CTFontDescriptorCopyAttributes(descriptor: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCopyAttributes(descriptor: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCopyAttribute(descriptor: interop.PointerConvertible, attribute: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCopyAttribute(descriptor: interop.Object, attribute: interop.Object): interop.Object;
 
-declare function CTFontDescriptorCopyLocalizedAttribute(descriptor: interop.PointerConvertible, attribute: interop.PointerConvertible, language: interop.PointerConvertible): interop.Pointer;
+declare function CTFontDescriptorCopyLocalizedAttribute(descriptor: interop.Object, attribute: interop.Object, language: interop.PointerConvertible): interop.Object;
 
 declare function CTFontGetTypeID(): number;
 
-declare function CTFontCreateWithName(name: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateWithName(name: interop.Object, size: number, matrix: interop.PointerConvertible): interop.Object;
 
-declare function CTFontCreateWithFontDescriptor(descriptor: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateWithFontDescriptor(descriptor: interop.Object, size: number, matrix: interop.PointerConvertible): interop.Object;
 
-declare function CTFontCreateWithNameAndOptions(name: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible, options: interop.Enum<typeof CTFontOptions>): interop.Pointer;
+declare function CTFontCreateWithNameAndOptions(name: interop.Object, size: number, matrix: interop.PointerConvertible, options: interop.Enum<typeof CTFontOptions>): interop.Object;
 
-declare function CTFontCreateWithFontDescriptorAndOptions(descriptor: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible, options: interop.Enum<typeof CTFontOptions>): interop.Pointer;
+declare function CTFontCreateWithFontDescriptorAndOptions(descriptor: interop.Object, size: number, matrix: interop.PointerConvertible, options: interop.Enum<typeof CTFontOptions>): interop.Object;
 
-declare function CTFontCreateUIFontForLanguage(uiType: interop.Enum<typeof CTFontUIFontType>, size: number, language: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateUIFontForLanguage(uiType: interop.Enum<typeof CTFontUIFontType>, size: number, language: interop.Object): interop.Object;
 
-declare function CTFontCreateCopyWithAttributes(font: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible, attributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateCopyWithAttributes(font: interop.Object, size: number, matrix: interop.PointerConvertible, attributes: interop.Object): interop.Object;
 
-declare function CTFontCreateCopyWithSymbolicTraits(font: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible, symTraitValue: interop.Enum<typeof CTFontSymbolicTraits>, symTraitMask: interop.Enum<typeof CTFontSymbolicTraits>): interop.Pointer;
+declare function CTFontCreateCopyWithSymbolicTraits(font: interop.Object, size: number, matrix: interop.PointerConvertible, symTraitValue: interop.Enum<typeof CTFontSymbolicTraits>, symTraitMask: interop.Enum<typeof CTFontSymbolicTraits>): interop.Object;
 
-declare function CTFontCreateCopyWithFamily(font: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible, family: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateCopyWithFamily(font: interop.Object, size: number, matrix: interop.PointerConvertible, family: interop.Object): interop.Object;
 
-declare function CTFontCreateForString(currentFont: interop.PointerConvertible, string: interop.PointerConvertible, range: CFRange): interop.Pointer;
+declare function CTFontCreateForString(currentFont: interop.Object, string: interop.Object, range: CFRange): interop.Object;
 
-declare function CTFontCreateForStringWithLanguage(currentFont: interop.PointerConvertible, string: interop.PointerConvertible, range: CFRange, language: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateForStringWithLanguage(currentFont: interop.Object, string: interop.Object, range: CFRange, language: interop.Object): interop.Object;
 
-declare function CTFontCopyFontDescriptor(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyFontDescriptor(font: interop.Object): interop.Object;
 
-declare function CTFontCopyAttribute(font: interop.PointerConvertible, attribute: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyAttribute(font: interop.Object, attribute: interop.Object): interop.Object;
 
-declare function CTFontGetSize(font: interop.PointerConvertible): number;
+declare function CTFontGetSize(font: interop.Object): number;
 
-declare function CTFontGetMatrix(font: interop.PointerConvertible): CGAffineTransform;
+declare function CTFontGetMatrix(font: interop.Object): CGAffineTransform;
 
-declare function CTFontGetSymbolicTraits(font: interop.PointerConvertible): interop.Enum<typeof CTFontSymbolicTraits>;
+declare function CTFontGetSymbolicTraits(font: interop.Object): interop.Enum<typeof CTFontSymbolicTraits>;
 
-declare function CTFontCopyTraits(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyTraits(font: interop.Object): interop.Object;
 
-declare function CTFontCopyDefaultCascadeListForLanguages(font: interop.PointerConvertible, languagePrefList: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyDefaultCascadeListForLanguages(font: interop.Object, languagePrefList: interop.Object): interop.Object;
 
-declare function CTFontCopyPostScriptName(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyPostScriptName(font: interop.Object): interop.Object;
 
-declare function CTFontCopyFamilyName(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyFamilyName(font: interop.Object): interop.Object;
 
-declare function CTFontCopyFullName(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyFullName(font: interop.Object): interop.Object;
 
-declare function CTFontCopyDisplayName(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyDisplayName(font: interop.Object): interop.Object;
 
-declare function CTFontCopyName(font: interop.PointerConvertible, nameKey: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyName(font: interop.Object, nameKey: interop.Object): interop.Object;
 
-declare function CTFontCopyLocalizedName(font: interop.PointerConvertible, nameKey: interop.PointerConvertible, actualLanguage: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyLocalizedName(font: interop.Object, nameKey: interop.Object, actualLanguage: interop.PointerConvertible): interop.Object;
 
-declare function CTFontCopyCharacterSet(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyCharacterSet(font: interop.Object): interop.Object;
 
-declare function CTFontGetStringEncoding(font: interop.PointerConvertible): number;
+declare function CTFontGetStringEncoding(font: interop.Object): number;
 
-declare function CTFontCopySupportedLanguages(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopySupportedLanguages(font: interop.Object): interop.Object;
 
-declare function CTFontGetGlyphsForCharacters(font: interop.PointerConvertible, characters: interop.PointerConvertible, glyphs: interop.PointerConvertible, count: number): boolean;
+declare function CTFontGetGlyphsForCharacters(font: interop.Object, characters: interop.PointerConvertible, glyphs: interop.PointerConvertible, count: number): boolean;
 
-declare function CTFontGetAscent(font: interop.PointerConvertible): number;
+declare function CTFontGetAscent(font: interop.Object): number;
 
-declare function CTFontGetDescent(font: interop.PointerConvertible): number;
+declare function CTFontGetDescent(font: interop.Object): number;
 
-declare function CTFontGetLeading(font: interop.PointerConvertible): number;
+declare function CTFontGetLeading(font: interop.Object): number;
 
-declare function CTFontGetUnitsPerEm(font: interop.PointerConvertible): number;
+declare function CTFontGetUnitsPerEm(font: interop.Object): number;
 
-declare function CTFontGetGlyphCount(font: interop.PointerConvertible): number;
+declare function CTFontGetGlyphCount(font: interop.Object): number;
 
-declare function CTFontGetBoundingBox(font: interop.PointerConvertible): CGRect;
+declare function CTFontGetBoundingBox(font: interop.Object): CGRect;
 
-declare function CTFontGetUnderlinePosition(font: interop.PointerConvertible): number;
+declare function CTFontGetUnderlinePosition(font: interop.Object): number;
 
-declare function CTFontGetUnderlineThickness(font: interop.PointerConvertible): number;
+declare function CTFontGetUnderlineThickness(font: interop.Object): number;
 
-declare function CTFontGetSlantAngle(font: interop.PointerConvertible): number;
+declare function CTFontGetSlantAngle(font: interop.Object): number;
 
-declare function CTFontGetCapHeight(font: interop.PointerConvertible): number;
+declare function CTFontGetCapHeight(font: interop.Object): number;
 
-declare function CTFontGetXHeight(font: interop.PointerConvertible): number;
+declare function CTFontGetXHeight(font: interop.Object): number;
 
-declare function CTFontGetGlyphWithName(font: interop.PointerConvertible, glyphName: interop.PointerConvertible): number;
+declare function CTFontGetGlyphWithName(font: interop.Object, glyphName: interop.Object): number;
 
-declare function CTFontCopyNameForGlyph(font: interop.PointerConvertible, glyph: number): interop.Pointer;
+declare function CTFontCopyNameForGlyph(font: interop.Object, glyph: number): interop.Object;
 
-declare function CTFontGetBoundingRectsForGlyphs(font: interop.PointerConvertible, orientation: interop.Enum<typeof CTFontOrientation>, glyphs: interop.PointerConvertible, boundingRects: interop.PointerConvertible, count: number): CGRect;
+declare function CTFontGetBoundingRectsForGlyphs(font: interop.Object, orientation: interop.Enum<typeof CTFontOrientation>, glyphs: interop.PointerConvertible, boundingRects: interop.PointerConvertible, count: number): CGRect;
 
-declare function CTFontGetOpticalBoundsForGlyphs(font: interop.PointerConvertible, glyphs: interop.PointerConvertible, boundingRects: interop.PointerConvertible, count: number, options: number): CGRect;
+declare function CTFontGetOpticalBoundsForGlyphs(font: interop.Object, glyphs: interop.PointerConvertible, boundingRects: interop.PointerConvertible, count: number, options: number): CGRect;
 
-declare function CTFontGetAdvancesForGlyphs(font: interop.PointerConvertible, orientation: interop.Enum<typeof CTFontOrientation>, glyphs: interop.PointerConvertible, advances: interop.PointerConvertible, count: number): number;
+declare function CTFontGetAdvancesForGlyphs(font: interop.Object, orientation: interop.Enum<typeof CTFontOrientation>, glyphs: interop.PointerConvertible, advances: interop.PointerConvertible, count: number): number;
 
-declare function CTFontGetVerticalTranslationsForGlyphs(font: interop.PointerConvertible, glyphs: interop.PointerConvertible, translations: interop.PointerConvertible, count: number): void;
+declare function CTFontGetVerticalTranslationsForGlyphs(font: interop.Object, glyphs: interop.PointerConvertible, translations: interop.PointerConvertible, count: number): void;
 
-declare function CTFontCreatePathForGlyph(font: interop.PointerConvertible, glyph: number, matrix: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreatePathForGlyph(font: interop.Object, glyph: number, matrix: interop.PointerConvertible): interop.Object;
 
-declare function CTFontCopyVariationAxes(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyVariationAxes(font: interop.Object): interop.Object;
 
-declare function CTFontCopyVariation(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyVariation(font: interop.Object): interop.Object;
 
-declare function CTFontCopyFeatures(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyFeatures(font: interop.Object): interop.Object;
 
-declare function CTFontCopyFeatureSettings(font: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyFeatureSettings(font: interop.Object): interop.Object;
 
-declare function CTFontCopyGraphicsFont(font: interop.PointerConvertible, attributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCopyGraphicsFont(font: interop.Object, attributes: interop.PointerConvertible): interop.Object;
 
-declare function CTFontCreateWithGraphicsFont(graphicsFont: interop.PointerConvertible, size: number, matrix: interop.PointerConvertible, attributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCreateWithGraphicsFont(graphicsFont: interop.Object, size: number, matrix: interop.PointerConvertible, attributes: interop.Object): interop.Object;
 
-declare function CTFontCopyAvailableTables(font: interop.PointerConvertible, options: interop.Enum<typeof CTFontTableOptions>): interop.Pointer;
+declare function CTFontCopyAvailableTables(font: interop.Object, options: interop.Enum<typeof CTFontTableOptions>): interop.Object;
 
-declare function CTFontHasTable(font: interop.PointerConvertible, tag: number): boolean;
+declare function CTFontHasTable(font: interop.Object, tag: number): boolean;
 
-declare function CTFontCopyTable(font: interop.PointerConvertible, table: number, options: interop.Enum<typeof CTFontTableOptions>): interop.Pointer;
+declare function CTFontCopyTable(font: interop.Object, table: number, options: interop.Enum<typeof CTFontTableOptions>): interop.Object;
 
-declare function CTFontDrawGlyphs(font: interop.PointerConvertible, glyphs: interop.PointerConvertible, positions: interop.PointerConvertible, count: number, context: interop.PointerConvertible): void;
+declare function CTFontDrawGlyphs(font: interop.Object, glyphs: interop.PointerConvertible, positions: interop.PointerConvertible, count: number, context: interop.Object): void;
 
-declare function CTFontGetLigatureCaretPositions(font: interop.PointerConvertible, glyph: number, positions: interop.PointerConvertible, maxPositions: number): number;
+declare function CTFontGetLigatureCaretPositions(font: interop.Object, glyph: number, positions: interop.PointerConvertible, maxPositions: number): number;
 
-declare function CTFontGetTypographicBoundsForAdaptiveImageProvider(font: interop.PointerConvertible, provider: CTAdaptiveImageProviding): CGRect;
+declare function CTFontGetTypographicBoundsForAdaptiveImageProvider(font: interop.Object, provider: CTAdaptiveImageProviding): CGRect;
 
-declare function CTFontDrawImageFromAdaptiveImageProviderAtPoint(font: interop.PointerConvertible, provider: CTAdaptiveImageProviding, point: CGPoint, context: interop.PointerConvertible): void;
+declare function CTFontDrawImageFromAdaptiveImageProviderAtPoint(font: interop.Object, provider: CTAdaptiveImageProviding, point: CGPoint, context: interop.Object): void;
 
 declare function CTFontCollectionGetTypeID(): number;
 
-declare function CTFontCollectionCreateFromAvailableFonts(options: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCollectionCreateFromAvailableFonts(options: interop.Object): interop.Object;
 
-declare function CTFontCollectionCreateWithFontDescriptors(queryDescriptors: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCollectionCreateWithFontDescriptors(queryDescriptors: interop.Object, options: interop.Object): interop.Object;
 
-declare function CTFontCollectionCreateCopyWithFontDescriptors(original: interop.PointerConvertible, queryDescriptors: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCollectionCreateCopyWithFontDescriptors(original: interop.Object, queryDescriptors: interop.Object, options: interop.Object): interop.Object;
 
-declare function CTFontCollectionCreateMatchingFontDescriptors(collection: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCollectionCreateMatchingFontDescriptors(collection: interop.Object): interop.Object;
 
-declare function CTFontCollectionCreateMatchingFontDescriptorsSortedWithCallback(collection: interop.PointerConvertible, sortCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, refCon: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCollectionCreateMatchingFontDescriptorsSortedWithCallback(collection: interop.Object, sortCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult>, refCon: interop.PointerConvertible): interop.Object;
 
-declare function CTFontCollectionCreateMatchingFontDescriptorsWithOptions(collection: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CTFontCollectionCreateMatchingFontDescriptorsWithOptions(collection: interop.Object, options: interop.Object): interop.Object;
 
-declare function CTFontCollectionCopyFontAttribute(collection: interop.PointerConvertible, attributeName: interop.PointerConvertible, options: interop.Enum<typeof CTFontCollectionCopyOptions>): interop.Pointer;
+declare function CTFontCollectionCopyFontAttribute(collection: interop.Object, attributeName: interop.Object, options: interop.Enum<typeof CTFontCollectionCopyOptions>): interop.Object;
 
-declare function CTFontCollectionCopyFontAttributes(collection: interop.PointerConvertible, attributeNames: interop.PointerConvertible, options: interop.Enum<typeof CTFontCollectionCopyOptions>): interop.Pointer;
+declare function CTFontCollectionCopyFontAttributes(collection: interop.Object, attributeNames: interop.Object, options: interop.Enum<typeof CTFontCollectionCopyOptions>): interop.Object;
 
-declare function CTFontManagerCopyAvailablePostScriptNames(): interop.Pointer;
+declare function CTFontManagerCopyAvailablePostScriptNames(): interop.Object;
 
-declare function CTFontManagerCopyAvailableFontFamilyNames(): interop.Pointer;
+declare function CTFontManagerCopyAvailableFontFamilyNames(): interop.Object;
 
-declare function CTFontManagerCreateFontDescriptorsFromURL(fileURL: interop.PointerConvertible): interop.Pointer;
+declare function CTFontManagerCreateFontDescriptorsFromURL(fileURL: interop.Object): interop.Object;
 
-declare function CTFontManagerCreateFontDescriptorFromData(data: interop.PointerConvertible): interop.Pointer;
+declare function CTFontManagerCreateFontDescriptorFromData(data: interop.Object): interop.Object;
 
-declare function CTFontManagerCreateFontDescriptorsFromData(data: interop.PointerConvertible): interop.Pointer;
+declare function CTFontManagerCreateFontDescriptorsFromData(data: interop.Object): interop.Object;
 
-declare function CTFontManagerRegisterFontsForURL(fontURL: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, error: interop.PointerConvertible): boolean;
+declare function CTFontManagerRegisterFontsForURL(fontURL: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, error: interop.PointerConvertible): boolean;
 
-declare function CTFontManagerUnregisterFontsForURL(fontURL: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, error: interop.PointerConvertible): boolean;
+declare function CTFontManagerUnregisterFontsForURL(fontURL: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, error: interop.PointerConvertible): boolean;
 
-declare function CTFontManagerRegisterGraphicsFont(font: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function CTFontManagerRegisterGraphicsFont(font: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function CTFontManagerUnregisterGraphicsFont(font: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+declare function CTFontManagerUnregisterGraphicsFont(font: interop.Object, error: interop.PointerConvertible): boolean;
 
-declare function CTFontManagerRegisterFontsForURLs(fontURLs: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, errors: interop.PointerConvertible): boolean;
+declare function CTFontManagerRegisterFontsForURLs(fontURLs: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, errors: interop.PointerConvertible): boolean;
 
-declare function CTFontManagerUnregisterFontsForURLs(fontURLs: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, errors: interop.PointerConvertible): boolean;
+declare function CTFontManagerUnregisterFontsForURLs(fontURLs: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, errors: interop.PointerConvertible): boolean;
 
-declare function CTFontManagerRegisterFontURLs(fontURLs: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
+declare function CTFontManagerRegisterFontURLs(fontURLs: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
 
-declare function CTFontManagerUnregisterFontURLs(fontURLs: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
+declare function CTFontManagerUnregisterFontURLs(fontURLs: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
 
-declare function CTFontManagerRegisterFontDescriptors(fontDescriptors: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
+declare function CTFontManagerRegisterFontDescriptors(fontDescriptors: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
 
-declare function CTFontManagerUnregisterFontDescriptors(fontDescriptors: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
+declare function CTFontManagerUnregisterFontDescriptors(fontDescriptors: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
 
-declare function CTFontManagerRegisterFontsWithAssetNames(fontAssetNames: interop.PointerConvertible, bundle: interop.PointerConvertible, scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
+declare function CTFontManagerRegisterFontsWithAssetNames(fontAssetNames: interop.Object, bundle: interop.Object, scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean, registrationHandler: (p1: interop.PointerConvertible, p2: boolean) => boolean): void;
 
-declare function CTFontManagerCopyRegisteredFontDescriptors(scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean): interop.Pointer;
+declare function CTFontManagerCopyRegisteredFontDescriptors(scope: interop.Enum<typeof CTFontManagerScope>, enabled: boolean): interop.Object;
 
-declare function CTFontManagerRequestFonts(fontDescriptors: interop.PointerConvertible, completionHandler: (p1: interop.PointerConvertible) => void): void;
+declare function CTFontManagerRequestFonts(fontDescriptors: interop.Object, completionHandler: (p1: interop.PointerConvertible) => void): void;
 
 declare function CTFrameGetTypeID(): number;
 
-declare function CTFrameGetStringRange(frame: interop.PointerConvertible): CFRange;
+declare function CTFrameGetStringRange(frame: interop.Object): CFRange;
 
-declare function CTFrameGetVisibleStringRange(frame: interop.PointerConvertible): CFRange;
+declare function CTFrameGetVisibleStringRange(frame: interop.Object): CFRange;
 
-declare function CTFrameGetPath(frame: interop.PointerConvertible): interop.Pointer;
+declare function CTFrameGetPath(frame: interop.Object): interop.Object;
 
-declare function CTFrameGetFrameAttributes(frame: interop.PointerConvertible): interop.Pointer;
+declare function CTFrameGetFrameAttributes(frame: interop.Object): interop.Object;
 
-declare function CTFrameGetLines(frame: interop.PointerConvertible): interop.Pointer;
+declare function CTFrameGetLines(frame: interop.Object): interop.Object;
 
-declare function CTFrameGetLineOrigins(frame: interop.PointerConvertible, range: CFRange, origins: interop.PointerConvertible): void;
+declare function CTFrameGetLineOrigins(frame: interop.Object, range: CFRange, origins: interop.PointerConvertible): void;
 
-declare function CTFrameDraw(frame: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CTFrameDraw(frame: interop.Object, context: interop.Object): void;
 
 declare function CTLineGetTypeID(): number;
 
-declare function CTLineCreateWithAttributedString(attrString: interop.PointerConvertible): interop.Pointer;
+declare function CTLineCreateWithAttributedString(attrString: interop.Object): interop.Object;
 
-declare function CTLineCreateTruncatedLine(line: interop.PointerConvertible, width: number, truncationType: interop.Enum<typeof CTLineTruncationType>, truncationToken: interop.PointerConvertible): interop.Pointer;
+declare function CTLineCreateTruncatedLine(line: interop.Object, width: number, truncationType: interop.Enum<typeof CTLineTruncationType>, truncationToken: interop.Object): interop.Object;
 
-declare function CTLineCreateJustifiedLine(line: interop.PointerConvertible, justificationFactor: number, justificationWidth: number): interop.Pointer;
+declare function CTLineCreateJustifiedLine(line: interop.Object, justificationFactor: number, justificationWidth: number): interop.Object;
 
-declare function CTLineGetGlyphCount(line: interop.PointerConvertible): number;
+declare function CTLineGetGlyphCount(line: interop.Object): number;
 
-declare function CTLineGetGlyphRuns(line: interop.PointerConvertible): interop.Pointer;
+declare function CTLineGetGlyphRuns(line: interop.Object): interop.Object;
 
-declare function CTLineGetStringRange(line: interop.PointerConvertible): CFRange;
+declare function CTLineGetStringRange(line: interop.Object): CFRange;
 
-declare function CTLineGetPenOffsetForFlush(line: interop.PointerConvertible, flushFactor: number, flushWidth: number): number;
+declare function CTLineGetPenOffsetForFlush(line: interop.Object, flushFactor: number, flushWidth: number): number;
 
-declare function CTLineDraw(line: interop.PointerConvertible, context: interop.PointerConvertible): void;
+declare function CTLineDraw(line: interop.Object, context: interop.Object): void;
 
-declare function CTLineGetTypographicBounds(line: interop.PointerConvertible, ascent: interop.PointerConvertible, descent: interop.PointerConvertible, leading: interop.PointerConvertible): number;
+declare function CTLineGetTypographicBounds(line: interop.Object, ascent: interop.PointerConvertible, descent: interop.PointerConvertible, leading: interop.PointerConvertible): number;
 
-declare function CTLineGetBoundsWithOptions(line: interop.PointerConvertible, options: interop.Enum<typeof CTLineBoundsOptions>): CGRect;
+declare function CTLineGetBoundsWithOptions(line: interop.Object, options: interop.Enum<typeof CTLineBoundsOptions>): CGRect;
 
-declare function CTLineGetTrailingWhitespaceWidth(line: interop.PointerConvertible): number;
+declare function CTLineGetTrailingWhitespaceWidth(line: interop.Object): number;
 
-declare function CTLineGetImageBounds(line: interop.PointerConvertible, context: interop.PointerConvertible): CGRect;
+declare function CTLineGetImageBounds(line: interop.Object, context: interop.Object): CGRect;
 
-declare function CTLineGetStringIndexForPosition(line: interop.PointerConvertible, position: CGPoint): number;
+declare function CTLineGetStringIndexForPosition(line: interop.Object, position: CGPoint): number;
 
-declare function CTLineGetOffsetForStringIndex(line: interop.PointerConvertible, charIndex: number, secondaryOffset: interop.PointerConvertible): number;
+declare function CTLineGetOffsetForStringIndex(line: interop.Object, charIndex: number, secondaryOffset: interop.PointerConvertible): number;
 
-declare function CTLineEnumerateCaretOffsets(line: interop.PointerConvertible, block: (p1: number, p2: number, p3: boolean, p4: interop.PointerConvertible) => void): void;
+declare function CTLineEnumerateCaretOffsets(line: interop.Object, block: (p1: number, p2: number, p3: boolean, p4: interop.PointerConvertible) => void): void;
 
 declare function CTTypesetterGetTypeID(): number;
 
-declare function CTTypesetterCreateWithAttributedString(string: interop.PointerConvertible): interop.Pointer;
+declare function CTTypesetterCreateWithAttributedString(string: interop.Object): interop.Object;
 
-declare function CTTypesetterCreateWithAttributedStringAndOptions(string: interop.PointerConvertible, options: interop.PointerConvertible): interop.Pointer;
+declare function CTTypesetterCreateWithAttributedStringAndOptions(string: interop.Object, options: interop.Object): interop.Object;
 
-declare function CTTypesetterCreateLineWithOffset(typesetter: interop.PointerConvertible, stringRange: CFRange, offset: number): interop.Pointer;
+declare function CTTypesetterCreateLineWithOffset(typesetter: interop.Object, stringRange: CFRange, offset: number): interop.Object;
 
-declare function CTTypesetterCreateLine(typesetter: interop.PointerConvertible, stringRange: CFRange): interop.Pointer;
+declare function CTTypesetterCreateLine(typesetter: interop.Object, stringRange: CFRange): interop.Object;
 
-declare function CTTypesetterSuggestLineBreakWithOffset(typesetter: interop.PointerConvertible, startIndex: number, width: number, offset: number): number;
+declare function CTTypesetterSuggestLineBreakWithOffset(typesetter: interop.Object, startIndex: number, width: number, offset: number): number;
 
-declare function CTTypesetterSuggestLineBreak(typesetter: interop.PointerConvertible, startIndex: number, width: number): number;
+declare function CTTypesetterSuggestLineBreak(typesetter: interop.Object, startIndex: number, width: number): number;
 
-declare function CTTypesetterSuggestClusterBreakWithOffset(typesetter: interop.PointerConvertible, startIndex: number, width: number, offset: number): number;
+declare function CTTypesetterSuggestClusterBreakWithOffset(typesetter: interop.Object, startIndex: number, width: number, offset: number): number;
 
-declare function CTTypesetterSuggestClusterBreak(typesetter: interop.PointerConvertible, startIndex: number, width: number): number;
+declare function CTTypesetterSuggestClusterBreak(typesetter: interop.Object, startIndex: number, width: number): number;
 
 declare function CTFramesetterGetTypeID(): number;
 
-declare function CTFramesetterCreateWithTypesetter(typesetter: interop.PointerConvertible): interop.Pointer;
+declare function CTFramesetterCreateWithTypesetter(typesetter: interop.Object): interop.Object;
 
-declare function CTFramesetterCreateWithAttributedString(attrString: interop.PointerConvertible): interop.Pointer;
+declare function CTFramesetterCreateWithAttributedString(attrString: interop.Object): interop.Object;
 
-declare function CTFramesetterCreateFrame(framesetter: interop.PointerConvertible, stringRange: CFRange, path: interop.PointerConvertible, frameAttributes: interop.PointerConvertible): interop.Pointer;
+declare function CTFramesetterCreateFrame(framesetter: interop.Object, stringRange: CFRange, path: interop.Object, frameAttributes: interop.Object): interop.Object;
 
-declare function CTFramesetterGetTypesetter(framesetter: interop.PointerConvertible): interop.Pointer;
+declare function CTFramesetterGetTypesetter(framesetter: interop.Object): interop.Object;
 
-declare function CTFramesetterSuggestFrameSizeWithConstraints(framesetter: interop.PointerConvertible, stringRange: CFRange, frameAttributes: interop.PointerConvertible, constraints: CGSize, fitRange: interop.PointerConvertible): CGSize;
+declare function CTFramesetterSuggestFrameSizeWithConstraints(framesetter: interop.Object, stringRange: CFRange, frameAttributes: interop.Object, constraints: CGSize, fitRange: interop.PointerConvertible): CGSize;
 
 declare function CTGlyphInfoGetTypeID(): number;
 
-declare function CTGlyphInfoCreateWithGlyphName(glyphName: interop.PointerConvertible, font: interop.PointerConvertible, baseString: interop.PointerConvertible): interop.Pointer;
+declare function CTGlyphInfoCreateWithGlyphName(glyphName: interop.Object, font: interop.Object, baseString: interop.Object): interop.Object;
 
-declare function CTGlyphInfoCreateWithGlyph(glyph: number, font: interop.PointerConvertible, baseString: interop.PointerConvertible): interop.Pointer;
+declare function CTGlyphInfoCreateWithGlyph(glyph: number, font: interop.Object, baseString: interop.Object): interop.Object;
 
-declare function CTGlyphInfoCreateWithCharacterIdentifier(cid: number, collection: interop.Enum<typeof CTCharacterCollection>, baseString: interop.PointerConvertible): interop.Pointer;
+declare function CTGlyphInfoCreateWithCharacterIdentifier(cid: number, collection: interop.Enum<typeof CTCharacterCollection>, baseString: interop.Object): interop.Object;
 
-declare function CTGlyphInfoGetGlyphName(glyphInfo: interop.PointerConvertible): interop.Pointer;
+declare function CTGlyphInfoGetGlyphName(glyphInfo: interop.Object): interop.Object;
 
-declare function CTGlyphInfoGetGlyph(glyphInfo: interop.PointerConvertible): number;
+declare function CTGlyphInfoGetGlyph(glyphInfo: interop.Object): number;
 
-declare function CTGlyphInfoGetCharacterIdentifier(glyphInfo: interop.PointerConvertible): number;
+declare function CTGlyphInfoGetCharacterIdentifier(glyphInfo: interop.Object): number;
 
-declare function CTGlyphInfoGetCharacterCollection(glyphInfo: interop.PointerConvertible): interop.Enum<typeof CTCharacterCollection>;
+declare function CTGlyphInfoGetCharacterCollection(glyphInfo: interop.Object): interop.Enum<typeof CTCharacterCollection>;
 
 declare function CTRubyAnnotationGetTypeID(): number;
 
-declare function CTRubyAnnotationCreate(alignment: interop.Enum<typeof CTRubyAlignment>, overhang: interop.Enum<typeof CTRubyOverhang>, sizeFactor: number, text: interop.PointerConvertible): interop.Pointer;
+declare function CTRubyAnnotationCreate(alignment: interop.Enum<typeof CTRubyAlignment>, overhang: interop.Enum<typeof CTRubyOverhang>, sizeFactor: number, text: interop.PointerConvertible): interop.Object;
 
-declare function CTRubyAnnotationCreateWithAttributes(alignment: interop.Enum<typeof CTRubyAlignment>, overhang: interop.Enum<typeof CTRubyOverhang>, position: interop.Enum<typeof CTRubyPosition>, string: interop.PointerConvertible, attributes: interop.PointerConvertible): interop.Pointer;
+declare function CTRubyAnnotationCreateWithAttributes(alignment: interop.Enum<typeof CTRubyAlignment>, overhang: interop.Enum<typeof CTRubyOverhang>, position: interop.Enum<typeof CTRubyPosition>, string: interop.Object, attributes: interop.Object): interop.Object;
 
-declare function CTRubyAnnotationCreateCopy(rubyAnnotation: interop.PointerConvertible): interop.Pointer;
+declare function CTRubyAnnotationCreateCopy(rubyAnnotation: interop.Object): interop.Object;
 
-declare function CTRubyAnnotationGetAlignment(rubyAnnotation: interop.PointerConvertible): interop.Enum<typeof CTRubyAlignment>;
+declare function CTRubyAnnotationGetAlignment(rubyAnnotation: interop.Object): interop.Enum<typeof CTRubyAlignment>;
 
-declare function CTRubyAnnotationGetOverhang(rubyAnnotation: interop.PointerConvertible): interop.Enum<typeof CTRubyOverhang>;
+declare function CTRubyAnnotationGetOverhang(rubyAnnotation: interop.Object): interop.Enum<typeof CTRubyOverhang>;
 
-declare function CTRubyAnnotationGetSizeFactor(rubyAnnotation: interop.PointerConvertible): number;
+declare function CTRubyAnnotationGetSizeFactor(rubyAnnotation: interop.Object): number;
 
-declare function CTRubyAnnotationGetTextForPosition(rubyAnnotation: interop.PointerConvertible, position: interop.Enum<typeof CTRubyPosition>): interop.Pointer;
+declare function CTRubyAnnotationGetTextForPosition(rubyAnnotation: interop.Object, position: interop.Enum<typeof CTRubyPosition>): interop.Object;
 
 declare function CTTextTabGetTypeID(): number;
 
-declare function CTTextTabCreate(alignment: interop.Enum<typeof CTTextAlignment>, location: number, options: interop.PointerConvertible): interop.Pointer;
+declare function CTTextTabCreate(alignment: interop.Enum<typeof CTTextAlignment>, location: number, options: interop.Object): interop.Object;
 
-declare function CTTextTabGetAlignment(tab: interop.PointerConvertible): interop.Enum<typeof CTTextAlignment>;
+declare function CTTextTabGetAlignment(tab: interop.Object): interop.Enum<typeof CTTextAlignment>;
 
-declare function CTTextTabGetLocation(tab: interop.PointerConvertible): number;
+declare function CTTextTabGetLocation(tab: interop.Object): number;
 
-declare function CTTextTabGetOptions(tab: interop.PointerConvertible): interop.Pointer;
+declare function CTTextTabGetOptions(tab: interop.Object): interop.Object;
 
 declare function CTGetCoreTextVersion(): number;
 
 declare interface CTAdaptiveImageProviding {
-  imageForProposedSizeScaleFactorImageOffsetImageSize(proposedSize: CGSize, scaleFactor: number, outImageOffset: interop.PointerConvertible, outImageSize: interop.PointerConvertible): interop.Pointer;
+  imageForProposedSizeScaleFactorImageOffsetImageSize(proposedSize: CGSize, scaleFactor: number, outImageOffset: interop.PointerConvertible, outImageSize: interop.PointerConvertible): interop.Object | null;
 }
 
 declare class CTAdaptiveImageProviding extends NativeObject implements CTAdaptiveImageProviding {

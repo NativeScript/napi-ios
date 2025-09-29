@@ -258,24 +258,6 @@ declare interface SKRequestDelegate extends NSObjectProtocol {
 declare class SKRequestDelegate extends NativeObject implements SKRequestDelegate {
 }
 
-declare class SKPaymentTransaction extends NSObject {
-  readonly error: NSError;
-
-  readonly originalTransaction: SKPaymentTransaction;
-
-  readonly payment: SKPayment;
-
-  readonly downloads: NSArray;
-
-  readonly transactionDate: NSDate;
-
-  readonly transactionIdentifier: string;
-
-  readonly transactionReceipt: NSData;
-
-  readonly transactionState: interop.Enum<typeof SKPaymentTransactionState>;
-}
-
 declare class SKOverlayConfiguration extends NSObject {
 }
 
@@ -387,6 +369,24 @@ declare class SKProductSubscriptionPeriod extends NSObject {
   readonly numberOfUnits: number;
 
   readonly unit: interop.Enum<typeof SKProductPeriodUnit>;
+}
+
+declare class SKPaymentTransaction extends NSObject {
+  readonly error: NSError;
+
+  readonly originalTransaction: SKPaymentTransaction;
+
+  readonly payment: SKPayment;
+
+  readonly downloads: NSArray;
+
+  readonly transactionDate: NSDate;
+
+  readonly transactionIdentifier: string;
+
+  readonly transactionReceipt: NSData;
+
+  readonly transactionState: interop.Enum<typeof SKPaymentTransactionState>;
 }
 
 declare class SKPaymentQueue extends NSObject {

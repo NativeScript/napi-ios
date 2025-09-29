@@ -1,14 +1,8 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kAudioChannelLabel_TopCenterSurround: number;
-
-declare const kAudioChannelLayoutTag_Mono: number;
-
 declare const kAudioChannelLayoutTag_MPEG_3_0_B: number;
 
 declare const kAudioChannelLayoutTag_CICP_10: number;
-
-declare const kAudioChannelLabel_Ambisonic_Y: number;
 
 declare const kAudioChannelLayoutTag_MPEG_5_0_C: number;
 
@@ -37,6 +31,8 @@ declare const kAudioChannelLabel_Discrete_6: number;
 declare const kAudioChannelLabel_Unused: number;
 
 declare const kAudioChannelLayoutTag_Logic_5_1_D: number;
+
+declare const kAudioFormatFlagIsBigEndian: number;
 
 declare const kAudioChannelLabel_HOA_ACN_12: number;
 
@@ -268,6 +264,8 @@ declare const kAudioChannelLayoutTag_XY: number;
 
 declare const kAudioChannelLayoutTag_StereoHeadphones: number;
 
+declare const kAudioChannelLayoutTag_Mono: number;
+
 declare const kAudioChannelLabel_HOA_ACN_15: number;
 
 declare const kAudioChannelLabel_HOA_ACN_14: number;
@@ -304,6 +302,8 @@ declare const kAudioChannelLabel_MS_Side: number;
 
 declare const kAudioChannelLabel_Ambisonic_Z: number;
 
+declare const kAudioChannelLabel_Ambisonic_Y: number;
+
 declare const kAudioChannelLabel_RightBackSurround: number;
 
 declare const kAudioChannelLabel_LFE3: number;
@@ -327,6 +327,8 @@ declare const kAudioChannelLabel_TopBackCenter: number;
 declare const kAudioChannelLabel_TopBackLeft: number;
 
 declare const kAudioChannelLabel_VerticalHeightCenter: number;
+
+declare const kAudioChannelLabel_TopCenterSurround: number;
 
 declare const kAudioChannelLayoutTag_UseChannelDescriptions: number;
 
@@ -359,8 +361,6 @@ declare const kAudioFormatFlagsAreAllClear: number;
 declare const kAudioFormatFlagIsAlignedHigh: number;
 
 declare const kAudioFormatFlagIsSignedInteger: number;
-
-declare const kAudioFormatFlagIsBigEndian: number;
 
 declare const kAudioFormatOpus: number;
 

@@ -53,24 +53,6 @@ declare interface EKCalendarChooserDelegate extends NSObjectProtocol {
 declare class EKCalendarChooserDelegate extends NativeObject implements EKCalendarChooserDelegate {
 }
 
-declare class EKEventViewController extends UIViewController {
-  delegate: EKEventViewDelegate;
-
-  event: EKEvent;
-
-  allowsEditing: boolean;
-
-  allowsCalendarPreview: boolean;
-
-  setDelegate(delegate: EKEventViewDelegate): void;
-
-  setEvent(event: EKEvent): void;
-
-  setAllowsEditing(allowsEditing: boolean): void;
-
-  setAllowsCalendarPreview(allowsCalendarPreview: boolean): void;
-}
-
 declare class EKEventEditViewController extends UINavigationController {
   editViewDelegate: EKEventEditViewDelegate;
 
@@ -109,5 +91,23 @@ declare class EKCalendarChooser extends UIViewController {
   setShowsCancelButton(showsCancelButton: boolean): void;
 
   setSelectedCalendars(selectedCalendars: NSSet): void;
+}
+
+declare class EKEventViewController extends UIViewController {
+  delegate: EKEventViewDelegate;
+
+  event: EKEvent;
+
+  allowsEditing: boolean;
+
+  allowsCalendarPreview: boolean;
+
+  setDelegate(delegate: EKEventViewDelegate): void;
+
+  setEvent(event: EKEvent): void;
+
+  setAllowsEditing(allowsEditing: boolean): void;
+
+  setAllowsCalendarPreview(allowsCalendarPreview: boolean): void;
 }
 

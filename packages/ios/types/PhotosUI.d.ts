@@ -19,16 +19,16 @@ declare const PHLivePhotoViewPlaybackStyle: {
   Hint: 2,
 };
 
-declare const PHLivePhotoBadgeOptions: {
-  OverContent: 1,
-  LiveOff: 2,
-};
-
 declare const PHPickerConfigurationSelection: {
   Default: 0,
   Ordered: 1,
   Continuous: 2,
   ContinuousAndOrdered: 3,
+};
+
+declare const PHLivePhotoBadgeOptions: {
+  OverContent: 1,
+  LiveOff: 2,
 };
 
 declare const PHPickerCapabilities: {
@@ -39,21 +39,6 @@ declare const PHPickerCapabilities: {
   SelectionActions: 8,
   SensitivityAnalysisIntervention: 16,
 };
-
-declare interface PHContentEditingController extends NSObjectProtocol {
-  canHandleAdjustmentData(adjustmentData: PHAdjustmentData): boolean;
-
-  startContentEditingWithInputPlaceholderImage(contentEditingInput: PHContentEditingInput, placeholderImage: UIImage): void;
-
-  finishContentEditingWithCompletionHandler(completionHandler: (p1: PHContentEditingOutput) => void | null): void;
-
-  cancelContentEditing(): void;
-
-  readonly shouldShowCancelConfirmation: boolean;
-}
-
-declare class PHContentEditingController extends NativeObject implements PHContentEditingController {
-}
 
 declare interface PHPickerViewControllerDelegate extends NSObjectProtocol {
   pickerDidFinishPicking(picker: PHPickerViewController, results: NSArray<interop.Object> | Array<interop.Object>): void;
@@ -73,6 +58,21 @@ declare interface PHLivePhotoViewDelegate extends NSObjectProtocol {
 }
 
 declare class PHLivePhotoViewDelegate extends NativeObject implements PHLivePhotoViewDelegate {
+}
+
+declare interface PHContentEditingController extends NSObjectProtocol {
+  canHandleAdjustmentData(adjustmentData: PHAdjustmentData): boolean;
+
+  startContentEditingWithInputPlaceholderImage(contentEditingInput: PHContentEditingInput, placeholderImage: UIImage): void;
+
+  finishContentEditingWithCompletionHandler(completionHandler: (p1: PHContentEditingOutput) => void | null): void;
+
+  cancelContentEditing(): void;
+
+  readonly shouldShowCancelConfirmation: boolean;
+}
+
+declare class PHContentEditingController extends NativeObject implements PHContentEditingController {
 }
 
 declare class PHPickerViewController extends UIViewController {

@@ -256,28 +256,6 @@ declare class MPSGraphLSTMDescriptor extends MPSGraphObject implements NSCopying
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MPSGraphSingleGateRNNDescriptor extends MPSGraphObject implements NSCopying {
-  reverse: boolean;
-
-  bidirectional: boolean;
-
-  training: boolean;
-
-  activation: interop.Enum<typeof MPSGraphRNNActivation>;
-
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  setReverse(reverse: boolean): void;
-
-  setBidirectional(bidirectional: boolean): void;
-
-  setTraining(training: boolean): void;
-
-  setActivation(activation: interop.Enum<typeof MPSGraphRNNActivation>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MPSGraphPooling4DOpDescriptor extends MPSGraphObject implements NSCopying {
   get kernelSizes(): NSArray;
   set kernelSizes(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -1456,6 +1434,28 @@ declare class MPSGraphFFTDescriptor extends MPSGraphObject implements NSCopying 
   setScalingMode(scalingMode: interop.Enum<typeof MPSGraphFFTScalingMode>): void;
 
   setRoundToOddHermitean(roundToOddHermitean: boolean): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MPSGraphSingleGateRNNDescriptor extends MPSGraphObject implements NSCopying {
+  reverse: boolean;
+
+  bidirectional: boolean;
+
+  training: boolean;
+
+  activation: interop.Enum<typeof MPSGraphRNNActivation>;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setReverse(reverse: boolean): void;
+
+  setBidirectional(bidirectional: boolean): void;
+
+  setTraining(training: boolean): void;
+
+  setActivation(activation: interop.Enum<typeof MPSGraphRNNActivation>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }

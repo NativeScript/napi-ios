@@ -1707,8 +1707,7 @@ declare interface CIColorCurves extends CIFilterProtocol {
 
   curvesDomain: CIVector;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   setInputImage(inputImage: CIImage | null): void;
 
@@ -1716,7 +1715,7 @@ declare interface CIColorCurves extends CIFilterProtocol {
 
   setCurvesDomain(curvesDomain: CIVector): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 }
 
 declare class CIColorCurves extends NativeObject implements CIColorCurves {
@@ -1731,8 +1730,7 @@ declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
 
   extrapolate: boolean;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   setInputImage(inputImage: CIImage | null): void;
 
@@ -1742,7 +1740,7 @@ declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
 
   setExtrapolate(extrapolate: boolean): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 }
 
 declare class CIColorCubeWithColorSpace extends NativeObject implements CIColorCubeWithColorSpace {
@@ -2258,6 +2256,15 @@ declare interface CILanczosScaleTransform extends CIFilterProtocol {
 declare class CILanczosScaleTransform extends NativeObject implements CILanczosScaleTransform {
 }
 
+declare interface CIKeystoneCorrectionVertical extends CIFourCoordinateGeometryFilter {
+  focalLength: number;
+
+  setFocalLength(focalLength: number): void;
+}
+
+declare class CIKeystoneCorrectionVertical extends NativeObject implements CIKeystoneCorrectionVertical {
+}
+
 declare interface CIKeystoneCorrectionCombined extends CIFourCoordinateGeometryFilter {
   focalLength: number;
 
@@ -2265,6 +2272,102 @@ declare interface CIKeystoneCorrectionCombined extends CIFourCoordinateGeometryF
 }
 
 declare class CIKeystoneCorrectionCombined extends NativeObject implements CIKeystoneCorrectionCombined {
+}
+
+declare interface CIEdgePreserveUpsample extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  smallImage: CIImage;
+
+  spatialSigma: number;
+
+  lumaSigma: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setSmallImage(smallImage: CIImage | null): void;
+
+  setSpatialSigma(spatialSigma: number): void;
+
+  setLumaSigma(lumaSigma: number): void;
+}
+
+declare class CIEdgePreserveUpsample extends NativeObject implements CIEdgePreserveUpsample {
+}
+
+declare interface CIBicubicScaleTransform extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  scale: number;
+
+  aspectRatio: number;
+
+  parameterB: number;
+
+  parameterC: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setScale(scale: number): void;
+
+  setAspectRatio(aspectRatio: number): void;
+
+  setParameterB(parameterB: number): void;
+
+  setParameterC(parameterC: number): void;
+}
+
+declare class CIBicubicScaleTransform extends NativeObject implements CIBicubicScaleTransform {
+}
+
+declare interface CIFourfoldReflectedTile extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  angle: number;
+
+  width: number;
+
+  acuteAngle: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setAngle(angle: number): void;
+
+  setWidth(width: number): void;
+
+  setAcuteAngle(acuteAngle: number): void;
+}
+
+declare class CIFourfoldReflectedTile extends NativeObject implements CIFourfoldReflectedTile {
+}
+
+declare interface CIFourCoordinateGeometryFilter extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  topLeft: CGPoint;
+
+  topRight: CGPoint;
+
+  bottomRight: CGPoint;
+
+  bottomLeft: CGPoint;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setTopLeft(topLeft: CGPoint): void;
+
+  setTopRight(topRight: CGPoint): void;
+
+  setBottomRight(bottomRight: CGPoint): void;
+
+  setBottomLeft(bottomLeft: CGPoint): void;
+}
+
+declare class CIFourCoordinateGeometryFilter extends NativeObject implements CIFourCoordinateGeometryFilter {
 }
 
 declare interface CIHatchedScreen extends CIFilterProtocol {
@@ -2290,6 +2393,31 @@ declare interface CIHatchedScreen extends CIFilterProtocol {
 }
 
 declare class CIHatchedScreen extends NativeObject implements CIHatchedScreen {
+}
+
+declare interface CIDotScreen extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  angle: number;
+
+  width: number;
+
+  sharpness: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setAngle(angle: number): void;
+
+  setWidth(width: number): void;
+
+  setSharpness(sharpness: number): void;
+}
+
+declare class CIDotScreen extends NativeObject implements CIDotScreen {
 }
 
 declare interface CICMYKHalftone extends CIFilterProtocol {
@@ -2371,6 +2499,23 @@ declare interface CICircularScreen extends CIFilterProtocol {
 declare class CICircularScreen extends NativeObject implements CICircularScreen {
 }
 
+declare interface CIUnsharpMask extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  radius: number;
+
+  intensity: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setRadius(radius: number): void;
+
+  setIntensity(intensity: number): void;
+}
+
+declare class CIUnsharpMask extends NativeObject implements CIUnsharpMask {
+}
+
 declare interface CISharpenLuminance extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2386,6 +2531,27 @@ declare interface CISharpenLuminance extends CIFilterProtocol {
 }
 
 declare class CISharpenLuminance extends NativeObject implements CISharpenLuminance {
+}
+
+declare interface CISmoothLinearGradient extends CIFilterProtocol {
+  point0: CGPoint;
+
+  point1: CGPoint;
+
+  color0: CIColor;
+
+  color1: CIColor;
+
+  setPoint0(point0: CGPoint): void;
+
+  setPoint1(point1: CGPoint): void;
+
+  setColor0(color0: CIColor): void;
+
+  setColor1(color1: CIColor): void;
+}
+
+declare class CISmoothLinearGradient extends NativeObject implements CISmoothLinearGradient {
 }
 
 declare interface CISignedDistanceGradientFromRedMask extends CIFilterProtocol {
@@ -2559,8 +2725,7 @@ declare interface CIColorCubesMixedWithMask extends CIFilterProtocol {
 
   cube1Data: NSData;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   extrapolate: boolean;
 
@@ -2574,7 +2739,7 @@ declare interface CIColorCubesMixedWithMask extends CIFilterProtocol {
 
   setCube1Data(cube1Data: NSData): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 
   setExtrapolate(extrapolate: boolean): void;
 }
@@ -2618,31 +2783,6 @@ declare interface CIGaussianBlur extends CIFilterProtocol {
 }
 
 declare class CIGaussianBlur extends NativeObject implements CIGaussianBlur {
-}
-
-declare interface CIBicubicScaleTransform extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  scale: number;
-
-  aspectRatio: number;
-
-  parameterB: number;
-
-  parameterC: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setScale(scale: number): void;
-
-  setAspectRatio(aspectRatio: number): void;
-
-  setParameterB(parameterB: number): void;
-
-  setParameterC(parameterC: number): void;
-}
-
-declare class CIBicubicScaleTransform extends NativeObject implements CIBicubicScaleTransform {
 }
 
 declare interface CIAreaMaximumAlpha extends CIAreaReductionFilter {
@@ -2706,56 +2846,6 @@ declare interface CICircleSplashDistortion extends CIFilterProtocol {
 }
 
 declare class CICircleSplashDistortion extends NativeObject implements CICircleSplashDistortion {
-}
-
-declare interface CIFourfoldReflectedTile extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  center: CGPoint;
-
-  angle: number;
-
-  width: number;
-
-  acuteAngle: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setCenter(center: CGPoint): void;
-
-  setAngle(angle: number): void;
-
-  setWidth(width: number): void;
-
-  setAcuteAngle(acuteAngle: number): void;
-}
-
-declare class CIFourfoldReflectedTile extends NativeObject implements CIFourfoldReflectedTile {
-}
-
-declare interface CIFourCoordinateGeometryFilter extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  topLeft: CGPoint;
-
-  topRight: CGPoint;
-
-  bottomRight: CGPoint;
-
-  bottomLeft: CGPoint;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setTopLeft(topLeft: CGPoint): void;
-
-  setTopRight(topRight: CGPoint): void;
-
-  setBottomRight(bottomRight: CGPoint): void;
-
-  setBottomLeft(bottomLeft: CGPoint): void;
-}
-
-declare class CIFourCoordinateGeometryFilter extends NativeObject implements CIFourCoordinateGeometryFilter {
 }
 
 declare interface CITextImageGenerator extends CIFilterProtocol {
@@ -3353,31 +3443,6 @@ declare interface CITriangleTile extends CIFilterProtocol {
 declare class CITriangleTile extends NativeObject implements CITriangleTile {
 }
 
-declare interface CIDotScreen extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  center: CGPoint;
-
-  angle: number;
-
-  width: number;
-
-  sharpness: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setCenter(center: CGPoint): void;
-
-  setAngle(angle: number): void;
-
-  setWidth(width: number): void;
-
-  setSharpness(sharpness: number): void;
-}
-
-declare class CIDotScreen extends NativeObject implements CIDotScreen {
-}
-
 declare interface CIBoxBlur extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3459,15 +3524,6 @@ declare interface CIAreaReductionFilter extends CIFilterProtocol {
 declare class CIAreaReductionFilter extends NativeObject implements CIAreaReductionFilter {
 }
 
-declare interface CIKeystoneCorrectionHorizontal extends CIFourCoordinateGeometryFilter {
-  focalLength: number;
-
-  setFocalLength(focalLength: number): void;
-}
-
-declare class CIKeystoneCorrectionHorizontal extends NativeObject implements CIKeystoneCorrectionHorizontal {
-}
-
 declare interface CIAreaMinMaxRed extends CIAreaReductionFilter {
 }
 
@@ -3514,23 +3570,6 @@ declare interface CIDepthToDisparity extends CIFilterProtocol {
 }
 
 declare class CIDepthToDisparity extends NativeObject implements CIDepthToDisparity {
-}
-
-declare interface CIUnsharpMask extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  radius: number;
-
-  intensity: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRadius(radius: number): void;
-
-  setIntensity(intensity: number): void;
-}
-
-declare class CIUnsharpMask extends NativeObject implements CIUnsharpMask {
 }
 
 declare interface CIAreaMinimumAlpha extends CIAreaReductionFilter {
@@ -3626,27 +3665,6 @@ declare interface CIAreaMinimum extends CIAreaReductionFilter {
 declare class CIAreaMinimum extends NativeObject implements CIAreaMinimum {
 }
 
-declare interface CISmoothLinearGradient extends CIFilterProtocol {
-  point0: CGPoint;
-
-  point1: CGPoint;
-
-  color0: CIColor;
-
-  color1: CIColor;
-
-  setPoint0(point0: CGPoint): void;
-
-  setPoint1(point1: CGPoint): void;
-
-  setColor0(color0: CIColor): void;
-
-  setColor1(color1: CIColor): void;
-}
-
-declare class CISmoothLinearGradient extends NativeObject implements CISmoothLinearGradient {
-}
-
 declare interface CIPersonSegmentation extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3686,6 +3704,15 @@ declare interface CISaliencyMap extends CIFilterProtocol {
 declare class CISaliencyMap extends NativeObject implements CISaliencyMap {
 }
 
+declare interface CIKeystoneCorrectionHorizontal extends CIFourCoordinateGeometryFilter {
+  focalLength: number;
+
+  setFocalLength(focalLength: number): void;
+}
+
+declare class CIKeystoneCorrectionHorizontal extends NativeObject implements CIKeystoneCorrectionHorizontal {
+}
+
 declare interface CISystemToneMap extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3712,9 +3739,9 @@ declare interface CIImageProcessorOutput {
 
   readonly baseAddress: interop.Pointer;
 
-  readonly surface: interop.Pointer;
+  readonly surface: interop.Object;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   readonly metalTexture: MTLTexture;
 
@@ -3857,9 +3884,9 @@ declare interface CIImageProcessorInput {
 
   readonly baseAddress: interop.Pointer;
 
-  readonly surface: interop.Pointer;
+  readonly surface: interop.Object;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   readonly metalTexture: MTLTexture;
 
@@ -3937,8 +3964,7 @@ declare interface CIHueSaturationValueGradient extends CIFilterProtocol {
 
   dither: number;
 
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
+  colorSpace: interop.Object;
 
   setValue(value: number): void;
 
@@ -3948,7 +3974,7 @@ declare interface CIHueSaturationValueGradient extends CIFilterProtocol {
 
   setDither(dither: number): void;
 
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
+  setColorSpace(colorSpace: interop.Object | null): void;
 }
 
 declare class CIHueSaturationValueGradient extends NativeObject implements CIHueSaturationValueGradient {
@@ -4059,27 +4085,6 @@ declare interface CITwirlDistortion extends CIFilterProtocol {
 declare class CITwirlDistortion extends NativeObject implements CITwirlDistortion {
 }
 
-declare interface CIEdgePreserveUpsample extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  smallImage: CIImage;
-
-  spatialSigma: number;
-
-  lumaSigma: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setSmallImage(smallImage: CIImage | null): void;
-
-  setSpatialSigma(spatialSigma: number): void;
-
-  setLumaSigma(lumaSigma: number): void;
-}
-
-declare class CIEdgePreserveUpsample extends NativeObject implements CIEdgePreserveUpsample {
-}
-
 declare interface CIStretchCrop extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -4101,94 +4106,222 @@ declare interface CIStretchCrop extends CIFilterProtocol {
 declare class CIStretchCrop extends NativeObject implements CIStretchCrop {
 }
 
-declare interface CIKeystoneCorrectionVertical extends CIFourCoordinateGeometryFilter {
-  focalLength: number;
+declare class CIKernel extends NSObject {
+  static kernelsWithString(string: string): NSArray;
 
-  setFocalLength(focalLength: number): void;
+  static kernelsWithMetalStringError(source: string, error: interop.PointerConvertible): NSArray;
+
+  static kernelWithString<This extends abstract new (...args: any) => any>(this: This, string: string): InstanceType<This>;
+
+  static kernelWithFunctionNameFromMetalLibraryDataError<This extends abstract new (...args: any) => any>(this: This, name: string, data: NSData, error: interop.PointerConvertible): InstanceType<This>;
+
+  static kernelWithFunctionNameFromMetalLibraryDataOutputPixelFormatError<This extends abstract new (...args: any) => any>(this: This, name: string, data: NSData, format: number, error: interop.PointerConvertible): InstanceType<This>;
+
+  static kernelNamesFromMetalLibraryData(data: NSData): NSArray;
+
+  readonly name: string;
+
+  setROISelector(method: string): void;
+
+  applyWithExtentRoiCallbackArguments(extent: CGRect, callback: (p1: number, p2: CGRect) => CGRect, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
 }
 
-declare class CIKeystoneCorrectionVertical extends NativeObject implements CIKeystoneCorrectionVertical {
+declare class CIRAWFilter extends CIFilter {
+  static readonly supportedCameraModels: NSArray;
+
+  readonly supportedDecoderVersions: NSArray;
+
+  readonly nativeSize: CGSize;
+
+  readonly properties: NSDictionary;
+
+  orientation: interop.Enum<typeof CGImagePropertyOrientation>;
+
+  draftModeEnabled: boolean;
+
+  decoderVersion: string;
+
+  scaleFactor: number;
+
+  exposure: number;
+
+  baselineExposure: number;
+
+  shadowBias: number;
+
+  boostAmount: number;
+
+  boostShadowAmount: number;
+
+  readonly highlightRecoverySupported: boolean;
+
+  highlightRecoveryEnabled: boolean;
+
+  gamutMappingEnabled: boolean;
+
+  readonly lensCorrectionSupported: boolean;
+
+  lensCorrectionEnabled: boolean;
+
+  readonly luminanceNoiseReductionSupported: boolean;
+
+  luminanceNoiseReductionAmount: number;
+
+  readonly colorNoiseReductionSupported: boolean;
+
+  colorNoiseReductionAmount: number;
+
+  readonly sharpnessSupported: boolean;
+
+  sharpnessAmount: number;
+
+  readonly contrastSupported: boolean;
+
+  contrastAmount: number;
+
+  readonly detailSupported: boolean;
+
+  detailAmount: number;
+
+  readonly moireReductionSupported: boolean;
+
+  moireReductionAmount: number;
+
+  readonly localToneMapSupported: boolean;
+
+  localToneMapAmount: number;
+
+  extendedDynamicRangeAmount: number;
+
+  neutralChromaticity: CGPoint;
+
+  neutralLocation: CGPoint;
+
+  neutralTemperature: number;
+
+  neutralTint: number;
+
+  linearSpaceFilter: CIFilter;
+
+  readonly previewImage: CIImage;
+
+  readonly portraitEffectsMatte: CIImage;
+
+  readonly semanticSegmentationSkinMatte: CIImage;
+
+  readonly semanticSegmentationHairMatte: CIImage;
+
+  readonly semanticSegmentationGlassesMatte: CIImage;
+
+  readonly semanticSegmentationSkyMatte: CIImage;
+
+  readonly semanticSegmentationTeethMatte: CIImage;
+
+  static filterWithImageURL<This extends abstract new (...args: any) => any>(this: This, url: NSURL): InstanceType<This>;
+
+  static filterWithImageDataIdentifierHint<This extends abstract new (...args: any) => any>(this: This, data: NSData, identifierHint: string | null): InstanceType<This>;
+
+  static filterWithCVPixelBufferProperties<This extends abstract new (...args: any) => any>(this: This, buffer: interop.Object, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): InstanceType<This>;
+
+  setOrientation(orientation: interop.Enum<typeof CGImagePropertyOrientation>): void;
+
+  isDraftModeEnabled(): boolean;
+
+  setDraftModeEnabled(draftModeEnabled: boolean): void;
+
+  setDecoderVersion(decoderVersion: string): void;
+
+  setScaleFactor(scaleFactor: number): void;
+
+  setExposure(exposure: number): void;
+
+  setBaselineExposure(baselineExposure: number): void;
+
+  setShadowBias(shadowBias: number): void;
+
+  setBoostAmount(boostAmount: number): void;
+
+  setBoostShadowAmount(boostShadowAmount: number): void;
+
+  isHighlightRecoverySupported(): boolean;
+
+  isHighlightRecoveryEnabled(): boolean;
+
+  setHighlightRecoveryEnabled(highlightRecoveryEnabled: boolean): void;
+
+  isGamutMappingEnabled(): boolean;
+
+  setGamutMappingEnabled(gamutMappingEnabled: boolean): void;
+
+  isLensCorrectionSupported(): boolean;
+
+  isLensCorrectionEnabled(): boolean;
+
+  setLensCorrectionEnabled(lensCorrectionEnabled: boolean): void;
+
+  isLuminanceNoiseReductionSupported(): boolean;
+
+  setLuminanceNoiseReductionAmount(luminanceNoiseReductionAmount: number): void;
+
+  isColorNoiseReductionSupported(): boolean;
+
+  setColorNoiseReductionAmount(colorNoiseReductionAmount: number): void;
+
+  isSharpnessSupported(): boolean;
+
+  setSharpnessAmount(sharpnessAmount: number): void;
+
+  isContrastSupported(): boolean;
+
+  setContrastAmount(contrastAmount: number): void;
+
+  isDetailSupported(): boolean;
+
+  setDetailAmount(detailAmount: number): void;
+
+  isMoireReductionSupported(): boolean;
+
+  setMoireReductionAmount(moireReductionAmount: number): void;
+
+  isLocalToneMapSupported(): boolean;
+
+  setLocalToneMapAmount(localToneMapAmount: number): void;
+
+  setExtendedDynamicRangeAmount(extendedDynamicRangeAmount: number): void;
+
+  setNeutralChromaticity(neutralChromaticity: CGPoint): void;
+
+  setNeutralLocation(neutralLocation: CGPoint): void;
+
+  setNeutralTemperature(neutralTemperature: number): void;
+
+  setNeutralTint(neutralTint: number): void;
+
+  setLinearSpaceFilter(linearSpaceFilter: CIFilter | null): void;
 }
 
-declare class CIAztecCodeDescriptor extends CIBarcodeDescriptor {
-  readonly errorCorrectedPayload: NSData;
+declare class CITextFeature extends CIFeature {
+  readonly bounds: CGRect;
 
-  readonly isCompact: boolean;
+  readonly topLeft: CGPoint;
 
-  readonly layerCount: number;
+  readonly topRight: CGPoint;
 
-  readonly dataCodewordCount: number;
+  readonly bottomLeft: CGPoint;
 
-  initWithPayloadIsCompactLayerCountDataCodewordCount(errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): this;
+  readonly bottomRight: CGPoint;
 
-  static descriptorWithPayloadIsCompactLayerCountDataCodewordCount<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): InstanceType<This>;
-}
-
-declare class CIRenderDestination extends NSObject {
-  initWithPixelBuffer(pixelBuffer: interop.PointerConvertible): this;
-
-  initWithIOSurface(surface: IOSurface): this;
-
-  initWithMTLTextureCommandBuffer(texture: MTLTexture, commandBuffer: MTLCommandBuffer | null): this;
-
-  initWithWidthHeightPixelFormatCommandBufferMtlTextureProvider(width: number, height: number, pixelFormat: interop.Enum<typeof MTLPixelFormat>, commandBuffer: MTLCommandBuffer | null, block: () => MTLTexture | null): this;
-
-  initWithGLTextureTargetWidthHeight(texture: number, target: number, width: number, height: number): this;
-
-  initWithBitmapDataWidthHeightBytesPerRowFormat(data: interop.PointerConvertible, width: number, height: number, bytesPerRow: number, format: number): this;
-
-  readonly width: number;
-
-  readonly height: number;
-
-  alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>;
-
-  flipped: boolean;
-
-  dithered: boolean;
-
-  clamped: boolean;
-
-  get colorSpace(): interop.Pointer;
-  set colorSpace(value: interop.PointerConvertible);
-
-  blendKernel: CIBlendKernel;
-
-  blendsInDestinationColorSpace: boolean;
-
-  captureTraceURL: NSURL;
-
-  setAlphaMode(alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>): void;
-
-  isFlipped(): boolean;
-
-  setFlipped(flipped: boolean): void;
-
-  isDithered(): boolean;
-
-  setDithered(dithered: boolean): void;
-
-  isClamped(): boolean;
-
-  setClamped(clamped: boolean): void;
-
-  setColorSpace(colorSpace: interop.PointerConvertible): void;
-
-  setBlendKernel(blendKernel: CIBlendKernel | null): void;
-
-  setBlendsInDestinationColorSpace(blendsInDestinationColorSpace: boolean): void;
-
-  setCaptureTraceURL(captureTraceURL: NSURL): void;
+  readonly subFeatures: NSArray;
 }
 
 declare class CIImageAccumulator extends NSObject {
   static imageAccumulatorWithExtentFormat<This extends abstract new (...args: any) => any>(this: This, extent: CGRect, format: number): InstanceType<This>;
 
-  static imageAccumulatorWithExtentFormatColorSpace<This extends abstract new (...args: any) => any>(this: This, extent: CGRect, format: number, colorSpace: interop.PointerConvertible): InstanceType<This>;
+  static imageAccumulatorWithExtentFormatColorSpace<This extends abstract new (...args: any) => any>(this: This, extent: CGRect, format: number, colorSpace: interop.Object): InstanceType<This>;
 
   initWithExtentFormat(extent: CGRect, format: number): this;
 
-  initWithExtentFormatColorSpace(extent: CGRect, format: number, colorSpace: interop.PointerConvertible): this;
+  initWithExtentFormatColorSpace(extent: CGRect, format: number, colorSpace: interop.Object): this;
 
   readonly extent: CGRect;
 
@@ -4233,6 +4366,10 @@ declare class CIRectangleFeature extends CIFeature {
   readonly bottomLeft: CGPoint;
 
   readonly bottomRight: CGPoint;
+}
+
+declare class CIRenderTask extends NSObject {
+  waitUntilCompletedAndReturnError(error: interop.PointerConvertible): CIRenderInfo;
 }
 
 declare class CIFaceFeature extends CIFeature {
@@ -4284,27 +4421,27 @@ declare class CIPDF417CodeDescriptor extends CIBarcodeDescriptor {
 }
 
 declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
-  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, color: interop.PointerConvertible): InstanceType<This>;
+  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, color: interop.Object): InstanceType<This>;
 
   static colorWithRedGreenBlueAlpha<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number): InstanceType<This>;
 
   static colorWithRedGreenBlue<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number): InstanceType<This>;
 
-  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number, colorSpace: interop.PointerConvertible): InstanceType<This>;
+  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number, colorSpace: interop.Object): InstanceType<This>;
 
-  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, colorSpace: interop.PointerConvertible): InstanceType<This>;
+  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, colorSpace: interop.Object): InstanceType<This>;
 
   static colorWithString<This extends abstract new (...args: any) => any>(this: This, representation: string): InstanceType<This>;
 
-  initWithCGColor(color: interop.PointerConvertible): this;
+  initWithCGColor(color: interop.Object): this;
 
   initWithRedGreenBlueAlpha(red: number, green: number, blue: number, alpha: number): this;
 
   initWithRedGreenBlue(red: number, green: number, blue: number): this;
 
-  initWithRedGreenBlueAlphaColorSpace(red: number, green: number, blue: number, alpha: number, colorSpace: interop.PointerConvertible): this;
+  initWithRedGreenBlueAlphaColorSpace(red: number, green: number, blue: number, alpha: number, colorSpace: interop.Object): this;
 
-  initWithRedGreenBlueColorSpace(red: number, green: number, blue: number, colorSpace: interop.PointerConvertible): this;
+  initWithRedGreenBlueColorSpace(red: number, green: number, blue: number, colorSpace: interop.Object): this;
 
   readonly numberOfComponents: number;
 
@@ -4312,7 +4449,7 @@ declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
 
   readonly alpha: number;
 
-  readonly colorSpace: interop.Pointer;
+  readonly colorSpace: interop.Object;
 
   readonly red: number;
 
@@ -4351,26 +4488,6 @@ declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class CIKernel extends NSObject {
-  static kernelsWithString(string: string): NSArray;
-
-  static kernelsWithMetalStringError(source: string, error: interop.PointerConvertible): NSArray;
-
-  static kernelWithString<This extends abstract new (...args: any) => any>(this: This, string: string): InstanceType<This>;
-
-  static kernelWithFunctionNameFromMetalLibraryDataError<This extends abstract new (...args: any) => any>(this: This, name: string, data: NSData, error: interop.PointerConvertible): InstanceType<This>;
-
-  static kernelWithFunctionNameFromMetalLibraryDataOutputPixelFormatError<This extends abstract new (...args: any) => any>(this: This, name: string, data: NSData, format: number, error: interop.PointerConvertible): InstanceType<This>;
-
-  static kernelNamesFromMetalLibraryData(data: NSData): NSArray;
-
-  readonly name: string;
-
-  setROISelector(method: string): void;
-
-  applyWithExtentRoiCallbackArguments(extent: CGRect, callback: (p1: number, p2: CGRect) => CGRect, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
 }
 
 declare class CIColorKernel extends CIKernel {
@@ -4516,7 +4633,7 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
 
   static filterWithImageDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
 
-  static filterWithCVPixelBufferPropertiesOptions(pixelBuffer: interop.PointerConvertible, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
+  static filterWithCVPixelBufferPropertiesOptions(pixelBuffer: interop.Object, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
 
   static supportedRawCameraModels(): NSArray;
 
@@ -5061,6 +5178,62 @@ declare class CIWarpKernel extends CIKernel {
   applyWithExtentRoiCallbackInputImageArguments(extent: CGRect, callback: (p1: number, p2: CGRect) => CGRect, image: CIImage, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
 }
 
+declare class CIRenderDestination extends NSObject {
+  initWithPixelBuffer(pixelBuffer: interop.Object): this;
+
+  initWithIOSurface(surface: IOSurface): this;
+
+  initWithMTLTextureCommandBuffer(texture: MTLTexture, commandBuffer: MTLCommandBuffer | null): this;
+
+  initWithWidthHeightPixelFormatCommandBufferMtlTextureProvider(width: number, height: number, pixelFormat: interop.Enum<typeof MTLPixelFormat>, commandBuffer: MTLCommandBuffer | null, block: () => MTLTexture | null): this;
+
+  initWithGLTextureTargetWidthHeight(texture: number, target: number, width: number, height: number): this;
+
+  initWithBitmapDataWidthHeightBytesPerRowFormat(data: interop.PointerConvertible, width: number, height: number, bytesPerRow: number, format: number): this;
+
+  readonly width: number;
+
+  readonly height: number;
+
+  alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>;
+
+  flipped: boolean;
+
+  dithered: boolean;
+
+  clamped: boolean;
+
+  colorSpace: interop.Object;
+
+  blendKernel: CIBlendKernel;
+
+  blendsInDestinationColorSpace: boolean;
+
+  captureTraceURL: NSURL;
+
+  setAlphaMode(alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>): void;
+
+  isFlipped(): boolean;
+
+  setFlipped(flipped: boolean): void;
+
+  isDithered(): boolean;
+
+  setDithered(dithered: boolean): void;
+
+  isClamped(): boolean;
+
+  setClamped(clamped: boolean): void;
+
+  setColorSpace(colorSpace: interop.Object | null): void;
+
+  setBlendKernel(blendKernel: CIBlendKernel | null): void;
+
+  setBlendsInDestinationColorSpace(blendsInDestinationColorSpace: boolean): void;
+
+  setCaptureTraceURL(captureTraceURL: NSURL): void;
+}
+
 declare class CIQRCodeDescriptor extends CIBarcodeDescriptor {
   readonly errorCorrectedPayload: NSData;
 
@@ -5085,24 +5258,6 @@ declare class CIBarcodeDescriptor extends NSObject implements NSSecureCoding, NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class CIRenderTask extends NSObject {
-  waitUntilCompletedAndReturnError(error: interop.PointerConvertible): CIRenderInfo;
-}
-
-declare class CITextFeature extends CIFeature {
-  readonly bounds: CGRect;
-
-  readonly topLeft: CGPoint;
-
-  readonly topRight: CGPoint;
-
-  readonly bottomLeft: CGPoint;
-
-  readonly bottomRight: CGPoint;
-
-  readonly subFeatures: NSArray;
-}
-
 declare class CIDetector extends NSObject {
   static detectorOfTypeContextOptions(type: string, context: CIContext | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIDetector;
 
@@ -5112,15 +5267,15 @@ declare class CIDetector extends NSObject {
 }
 
 declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
-  static imageWithCGImage(image: interop.PointerConvertible): CIImage;
+  static imageWithCGImage(image: interop.Object): CIImage;
 
-  static imageWithCGImageOptions(image: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCGImageOptions(image: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCGImageSourceIndexOptions(source: interop.PointerConvertible, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCGImageSourceIndexOptions(source: interop.Object, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.PointerConvertible): CIImage;
+  static imageWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.Object | null): CIImage;
 
-  static imageWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.PointerConvertible): CIImage;
+  static imageWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.Object | null): CIImage;
 
   static imageWithMTLTextureOptions(texture: MTLTexture, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
@@ -5132,17 +5287,17 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   static imageWithDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCVImageBuffer(imageBuffer: interop.PointerConvertible): CIImage;
+  static imageWithCVImageBuffer(imageBuffer: interop.Object): CIImage;
 
-  static imageWithCVImageBufferOptions(imageBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCVImageBufferOptions(imageBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithCVPixelBuffer(pixelBuffer: interop.PointerConvertible): CIImage;
+  static imageWithCVPixelBuffer(pixelBuffer: interop.Object): CIImage;
 
-  static imageWithCVPixelBufferOptions(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithCVPixelBufferOptions(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  static imageWithIOSurface(surface: interop.PointerConvertible): CIImage;
+  static imageWithIOSurface(surface: interop.Object): CIImage;
 
-  static imageWithIOSurfaceOptions(surface: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithIOSurfaceOptions(surface: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
   static imageWithColor(color: CIColor): CIImage;
 
@@ -5168,19 +5323,19 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   static readonly clearImage: CIImage;
 
-  initWithCGImage(image: interop.PointerConvertible): this;
+  initWithCGImage(image: interop.Object): this;
 
-  initWithCGImageOptions(image: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCGImageOptions(image: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCGImageSourceIndexOptions(source: interop.PointerConvertible, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCGImageSourceIndexOptions(source: interop.Object, index: number, dict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   initWithData(data: NSData): this;
 
   initWithDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.PointerConvertible): this;
+  initWithBitmapDataBytesPerRowSizeFormatColorSpace(data: NSData, bytesPerRow: number, size: CGSize, format: number, colorSpace: interop.Object | null): this;
 
-  initWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.PointerConvertible): this;
+  initWithTextureSizeFlippedColorSpace(name: number, size: CGSize, flipped: boolean, colorSpace: interop.Object | null): this;
 
   initWithMTLTextureOptions(texture: MTLTexture, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
@@ -5188,17 +5343,17 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   initWithContentsOfURLOptions(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithIOSurface(surface: interop.PointerConvertible): this;
+  initWithIOSurface(surface: interop.Object): this;
 
-  initWithIOSurfaceOptions(surface: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithIOSurfaceOptions(surface: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCVImageBuffer(imageBuffer: interop.PointerConvertible): this;
+  initWithCVImageBuffer(imageBuffer: interop.Object): this;
 
-  initWithCVImageBufferOptions(imageBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCVImageBufferOptions(imageBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithCVPixelBuffer(pixelBuffer: interop.PointerConvertible): this;
+  initWithCVPixelBuffer(pixelBuffer: interop.Object): this;
 
-  initWithCVPixelBufferOptions(pixelBuffer: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithCVPixelBufferOptions(pixelBuffer: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   initWithColor(color: CIColor): this;
 
@@ -5226,9 +5381,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   imageByApplyingFilter(filterName: string): CIImage;
 
-  imageByColorMatchingColorSpaceToWorkingSpace(colorSpace: interop.PointerConvertible): CIImage;
+  imageByColorMatchingColorSpaceToWorkingSpace(colorSpace: interop.Object): CIImage;
 
-  imageByColorMatchingWorkingSpaceToColorSpace(colorSpace: interop.PointerConvertible): CIImage;
+  imageByColorMatchingWorkingSpaceToColorSpace(colorSpace: interop.Object): CIImage;
 
   imageByPremultiplyingAlpha(): CIImage;
 
@@ -5264,15 +5419,15 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   readonly url: NSURL;
 
-  readonly colorSpace: interop.Pointer;
+  readonly colorSpace: interop.Object;
 
   readonly contentHeadroom: number;
 
   readonly contentAverageLightLevel: number;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
-  readonly CGImage: interop.Pointer;
+  readonly CGImage: interop.Object;
 
   readonly metalTexture: MTLTexture;
 
@@ -5318,9 +5473,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   static imageWithSemanticSegmentationMatte<This extends abstract new (...args: any) => any>(this: This, matte: AVSemanticSegmentationMatte): InstanceType<This>;
 
-  static imageWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  initWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   initWithImage(image: UIImage): this;
 
@@ -5335,8 +5490,22 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class CIAztecCodeDescriptor extends CIBarcodeDescriptor {
+  readonly errorCorrectedPayload: NSData;
+
+  readonly isCompact: boolean;
+
+  readonly layerCount: number;
+
+  readonly dataCodewordCount: number;
+
+  initWithPayloadIsCompactLayerCountDataCodewordCount(errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): this;
+
+  static descriptorWithPayloadIsCompactLayerCountDataCodewordCount<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): InstanceType<This>;
+}
+
 declare class CIContext extends NSObject {
-  static contextWithCGContextOptions(cgctx: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
+  static contextWithCGContextOptions(cgctx: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
   static contextWithOptions(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
@@ -5358,7 +5527,7 @@ declare class CIContext extends NSObject {
 
   static contextWithMTLCommandQueueOptions(commandQueue: MTLCommandQueue, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIContext;
 
-  readonly workingColorSpace: interop.Pointer;
+  readonly workingColorSpace: interop.Object;
 
   readonly workingFormat: number;
 
@@ -5366,15 +5535,15 @@ declare class CIContext extends NSObject {
 
   drawImageInRectFromRect(image: CIImage, inRect: CGRect, fromRect: CGRect): void;
 
-  renderToBitmapRowBytesBoundsFormatColorSpace(image: CIImage, data: interop.PointerConvertible, rowBytes: number, bounds: CGRect, format: number, colorSpace: interop.PointerConvertible): void;
+  renderToBitmapRowBytesBoundsFormatColorSpace(image: CIImage, data: interop.PointerConvertible, rowBytes: number, bounds: CGRect, format: number, colorSpace: interop.Object | null): void;
 
-  renderToIOSurfaceBoundsColorSpace(image: CIImage, surface: interop.PointerConvertible, bounds: CGRect, colorSpace: interop.PointerConvertible): void;
+  renderToIOSurfaceBoundsColorSpace(image: CIImage, surface: interop.Object, bounds: CGRect, colorSpace: interop.Object | null): void;
 
-  renderToCVPixelBuffer(image: CIImage, buffer: interop.PointerConvertible): void;
+  renderToCVPixelBuffer(image: CIImage, buffer: interop.Object): void;
 
-  renderToCVPixelBufferBoundsColorSpace(image: CIImage, buffer: interop.PointerConvertible, bounds: CGRect, colorSpace: interop.PointerConvertible): void;
+  renderToCVPixelBufferBoundsColorSpace(image: CIImage, buffer: interop.Object, bounds: CGRect, colorSpace: interop.Object | null): void;
 
-  renderToMTLTextureCommandBufferBoundsColorSpace(image: CIImage, texture: MTLTexture, commandBuffer: MTLCommandBuffer | null, bounds: CGRect, colorSpace: interop.PointerConvertible): void;
+  renderToMTLTextureCommandBufferBoundsColorSpace(image: CIImage, texture: MTLTexture, commandBuffer: MTLCommandBuffer | null, bounds: CGRect, colorSpace: interop.Object): void;
 
   clearCaches(): void;
 
@@ -5382,43 +5551,43 @@ declare class CIContext extends NSObject {
 
   outputImageMaximumSize(): CGSize;
 
-  createCGImageFromRect(image: CIImage, fromRect: CGRect): interop.Pointer;
+  createCGImageFromRect(image: CIImage, fromRect: CGRect): interop.Object;
 
-  createCGImageFromRectFormatColorSpace(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.PointerConvertible): interop.Pointer;
+  createCGImageFromRectFormatColorSpace(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null): interop.Object;
 
-  createCGImageFromRectFormatColorSpaceDeferred(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.PointerConvertible, deferred: boolean): interop.Pointer;
+  createCGImageFromRectFormatColorSpaceDeferred(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean): interop.Object;
 
-  createCGImageFromRectFormatColorSpaceDeferredCalculateHDRStats(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.PointerConvertible, deferred: boolean, calculateHDRStats: boolean): interop.Pointer;
+  createCGImageFromRectFormatColorSpaceDeferredCalculateHDRStats(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean, calculateHDRStats: boolean): interop.Object;
 
-  calculateHDRStatsForIOSurface(surface: interop.PointerConvertible): void;
+  calculateHDRStatsForIOSurface(surface: interop.Object): void;
 
-  calculateHDRStatsForCVPixelBuffer(buffer: interop.PointerConvertible): void;
+  calculateHDRStatsForCVPixelBuffer(buffer: interop.Object): void;
 
-  calculateHDRStatsForCGImage(cgimage: interop.PointerConvertible): interop.Pointer;
+  calculateHDRStatsForCGImage(cgimage: interop.Object): interop.Object;
 
   calculateHDRStatsForImage(image: CIImage): CIImage;
 
-  TIFFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  TIFFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
-  JPEGRepresentationOfImageColorSpaceOptions(image: CIImage, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  JPEGRepresentationOfImageColorSpaceOptions(image: CIImage, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
-  HEIFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  HEIFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
-  HEIF10RepresentationOfImageColorSpaceOptionsError(image: CIImage, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): NSData;
+  HEIF10RepresentationOfImageColorSpaceOptionsError(image: CIImage, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): NSData;
 
-  PNGRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
+  PNGRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
   OpenEXRRepresentationOfImageOptionsError(image: CIImage, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): NSData;
 
-  writeTIFFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeTIFFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writePNGRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writePNGRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writeJPEGRepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeJPEGRepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writeHEIFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeHEIFRepresentationOfImageToURLFormatColorSpaceOptionsError(image: CIImage, url: NSURL, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
-  writeHEIF10RepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.PointerConvertible, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
+  writeHEIF10RepresentationOfImageToURLColorSpaceOptionsError(image: CIImage, url: NSURL, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
   writeOpenEXRRepresentationOfImageToURLOptionsError(image: CIImage, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, errorPtr: interop.PointerConvertible): boolean;
 
@@ -5446,7 +5615,7 @@ declare class CIBlendKernel extends CIColorKernel {
 
   applyWithForegroundBackground(foreground: CIImage, background: CIImage): CIImage;
 
-  applyWithForegroundBackgroundColorSpace(foreground: CIImage, background: CIImage, colorSpace: interop.PointerConvertible): CIImage;
+  applyWithForegroundBackgroundColorSpace(foreground: CIImage, background: CIImage, colorSpace: interop.Object): CIImage;
 
   static readonly componentAdd: CIBlendKernel;
 
@@ -5529,180 +5698,6 @@ declare class CIBlendKernel extends CIColorKernel {
   static readonly darkerColor: CIBlendKernel;
 
   static readonly lighterColor: CIBlendKernel;
-}
-
-declare class CIRAWFilter extends CIFilter {
-  static readonly supportedCameraModels: NSArray;
-
-  readonly supportedDecoderVersions: NSArray;
-
-  readonly nativeSize: CGSize;
-
-  readonly properties: NSDictionary;
-
-  orientation: interop.Enum<typeof CGImagePropertyOrientation>;
-
-  draftModeEnabled: boolean;
-
-  decoderVersion: string;
-
-  scaleFactor: number;
-
-  exposure: number;
-
-  baselineExposure: number;
-
-  shadowBias: number;
-
-  boostAmount: number;
-
-  boostShadowAmount: number;
-
-  readonly highlightRecoverySupported: boolean;
-
-  highlightRecoveryEnabled: boolean;
-
-  gamutMappingEnabled: boolean;
-
-  readonly lensCorrectionSupported: boolean;
-
-  lensCorrectionEnabled: boolean;
-
-  readonly luminanceNoiseReductionSupported: boolean;
-
-  luminanceNoiseReductionAmount: number;
-
-  readonly colorNoiseReductionSupported: boolean;
-
-  colorNoiseReductionAmount: number;
-
-  readonly sharpnessSupported: boolean;
-
-  sharpnessAmount: number;
-
-  readonly contrastSupported: boolean;
-
-  contrastAmount: number;
-
-  readonly detailSupported: boolean;
-
-  detailAmount: number;
-
-  readonly moireReductionSupported: boolean;
-
-  moireReductionAmount: number;
-
-  readonly localToneMapSupported: boolean;
-
-  localToneMapAmount: number;
-
-  extendedDynamicRangeAmount: number;
-
-  neutralChromaticity: CGPoint;
-
-  neutralLocation: CGPoint;
-
-  neutralTemperature: number;
-
-  neutralTint: number;
-
-  linearSpaceFilter: CIFilter;
-
-  readonly previewImage: CIImage;
-
-  readonly portraitEffectsMatte: CIImage;
-
-  readonly semanticSegmentationSkinMatte: CIImage;
-
-  readonly semanticSegmentationHairMatte: CIImage;
-
-  readonly semanticSegmentationGlassesMatte: CIImage;
-
-  readonly semanticSegmentationSkyMatte: CIImage;
-
-  readonly semanticSegmentationTeethMatte: CIImage;
-
-  static filterWithImageURL<This extends abstract new (...args: any) => any>(this: This, url: NSURL): InstanceType<This>;
-
-  static filterWithImageDataIdentifierHint<This extends abstract new (...args: any) => any>(this: This, data: NSData, identifierHint: string | null): InstanceType<This>;
-
-  static filterWithCVPixelBufferProperties<This extends abstract new (...args: any) => any>(this: This, buffer: interop.PointerConvertible, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): InstanceType<This>;
-
-  setOrientation(orientation: interop.Enum<typeof CGImagePropertyOrientation>): void;
-
-  isDraftModeEnabled(): boolean;
-
-  setDraftModeEnabled(draftModeEnabled: boolean): void;
-
-  setDecoderVersion(decoderVersion: string): void;
-
-  setScaleFactor(scaleFactor: number): void;
-
-  setExposure(exposure: number): void;
-
-  setBaselineExposure(baselineExposure: number): void;
-
-  setShadowBias(shadowBias: number): void;
-
-  setBoostAmount(boostAmount: number): void;
-
-  setBoostShadowAmount(boostShadowAmount: number): void;
-
-  isHighlightRecoverySupported(): boolean;
-
-  isHighlightRecoveryEnabled(): boolean;
-
-  setHighlightRecoveryEnabled(highlightRecoveryEnabled: boolean): void;
-
-  isGamutMappingEnabled(): boolean;
-
-  setGamutMappingEnabled(gamutMappingEnabled: boolean): void;
-
-  isLensCorrectionSupported(): boolean;
-
-  isLensCorrectionEnabled(): boolean;
-
-  setLensCorrectionEnabled(lensCorrectionEnabled: boolean): void;
-
-  isLuminanceNoiseReductionSupported(): boolean;
-
-  setLuminanceNoiseReductionAmount(luminanceNoiseReductionAmount: number): void;
-
-  isColorNoiseReductionSupported(): boolean;
-
-  setColorNoiseReductionAmount(colorNoiseReductionAmount: number): void;
-
-  isSharpnessSupported(): boolean;
-
-  setSharpnessAmount(sharpnessAmount: number): void;
-
-  isContrastSupported(): boolean;
-
-  setContrastAmount(contrastAmount: number): void;
-
-  isDetailSupported(): boolean;
-
-  setDetailAmount(detailAmount: number): void;
-
-  isMoireReductionSupported(): boolean;
-
-  setMoireReductionAmount(moireReductionAmount: number): void;
-
-  isLocalToneMapSupported(): boolean;
-
-  setLocalToneMapAmount(localToneMapAmount: number): void;
-
-  setExtendedDynamicRangeAmount(extendedDynamicRangeAmount: number): void;
-
-  setNeutralChromaticity(neutralChromaticity: CGPoint): void;
-
-  setNeutralLocation(neutralLocation: CGPoint): void;
-
-  setNeutralTemperature(neutralTemperature: number): void;
-
-  setNeutralTint(neutralTint: number): void;
-
-  setLinearSpaceFilter(linearSpaceFilter: CIFilter | null): void;
 }
 
 declare class CIQRCodeFeature extends CIFeature implements NSSecureCoding, NSCopying {

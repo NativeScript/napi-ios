@@ -109,6 +109,13 @@ declare const CWErr: {
   kCWErr: -3931,
 };
 
+declare const CWChannelBand: {
+  BandUnknown: 0,
+  Band2GHz: 1,
+  Band5GHz: 2,
+  Band6GHz: 3,
+};
+
 declare const CWSecurity: {
   None: 0,
   WEP: 1,
@@ -127,13 +134,6 @@ declare const CWSecurity: {
   OWE: 14,
   OWETransition: 15,
   Unknown: 9223372036854775807,
-};
-
-declare const CWChannelBand: {
-  BandUnknown: 0,
-  Band2GHz: 1,
-  Band5GHz: 2,
-  Band6GHz: 3,
 };
 
 declare const CWPHYMode: {
@@ -387,42 +387,6 @@ declare class CWInterface extends NSObject {
   commitConfigurationAuthorizationError(configuration: CWConfiguration, authorization: SFAuthorization | null, error: interop.PointerConvertible): boolean;
 }
 
-declare class CWNetwork extends NSObject implements NSCopying, NSSecureCoding {
-  readonly ssid: string;
-
-  readonly ssidData: NSData;
-
-  readonly bssid: string;
-
-  readonly wlanChannel: CWChannel;
-
-  readonly rssiValue: number;
-
-  readonly noiseMeasurement: number;
-
-  readonly informationElementData: NSData;
-
-  readonly countryCode: string;
-
-  readonly beaconInterval: number;
-
-  readonly ibss: boolean;
-
-  isEqualToNetwork(network: CWNetwork): boolean;
-
-  supportsSecurity(security: interop.Enum<typeof CWSecurity>): boolean;
-
-  supportsPHYMode(phyMode: interop.Enum<typeof CWPHYMode>): boolean;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class CWWiFiClient extends NSObject {
   delegate: interop.Object;
 
@@ -460,5 +424,41 @@ declare class CWMutableNetworkProfile extends CWNetworkProfile {
   setSsidData(ssidData: NSData): void;
 
   setSecurity(security: interop.Enum<typeof CWSecurity>): void;
+}
+
+declare class CWNetwork extends NSObject implements NSCopying, NSSecureCoding {
+  readonly ssid: string;
+
+  readonly ssidData: NSData;
+
+  readonly bssid: string;
+
+  readonly wlanChannel: CWChannel;
+
+  readonly rssiValue: number;
+
+  readonly noiseMeasurement: number;
+
+  readonly informationElementData: NSData;
+
+  readonly countryCode: string;
+
+  readonly beaconInterval: number;
+
+  readonly ibss: boolean;
+
+  isEqualToNetwork(network: CWNetwork): boolean;
+
+  supportsSecurity(security: interop.Enum<typeof CWSecurity>): boolean;
+
+  supportsPHYMode(phyMode: interop.Enum<typeof CWPHYMode>): boolean;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

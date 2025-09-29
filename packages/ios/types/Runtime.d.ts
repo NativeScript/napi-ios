@@ -1,16 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const UNW_LOONGARCH_F1: number;
-
-declare const UTEXT_PROVIDER_HAS_META_DATA: number;
-
 declare const UNW_ARM_R6: number;
 
 declare const UNW_PPC64_F7: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R11: number;
-
-declare const UNW_MIPS_F17: number;
 
 declare const kDNSServiceFlagsBrowseDomains: number;
 
@@ -82,8 +76,6 @@ declare const UNW_OR1K_R15: number;
 
 declare const UNW_VE_V57: number;
 
-declare const UNW_SPARC_L1: number;
-
 declare const averunnable: loadavg;
 
 declare const kDNSServiceErr_NATPortMappingUnsupported: number;
@@ -138,6 +130,14 @@ declare const UNW_MIPS_R28: number;
 
 declare const UNW_PPC64_F26: number;
 
+declare const UNW_AARCH64_X8: number;
+
+declare const _dispatch_data_destructor_free: () => void;
+
+declare const UNW_MIPS_F17: number;
+
+declare const UNW_SPARC_L1: number;
+
 declare const UNW_VE_V4: number;
 
 declare const UNW_VE_VL: number;
@@ -158,8 +158,6 @@ declare const kDNSServiceErr_NoRouter: number;
 
 declare const kDNSServiceFlagsForceMulticast: number;
 
-declare const UNW_ARM64_X10: number;
-
 declare const UNW_LOONGARCH_F11: number;
 
 declare const UNW_ARM_WR12: number;
@@ -169,6 +167,8 @@ declare const kDNSServiceFlagsAutoTrigger: number;
 declare const UNW_RISCV_F0: number;
 
 declare const kDNSServiceType_SPF: number;
+
+declare const UNW_SPARC_G3: number;
 
 declare const UNW_PPC64_F14: number;
 
@@ -266,8 +266,6 @@ declare const UNW_ARM64_D0: number;
 
 declare const kDNSServiceFlagsUnique: number;
 
-declare const UNW_X86_64_R10: number;
-
 declare const UNW_EINVALIDIP: number;
 
 declare const OSLittleEndian: number;
@@ -337,8 +335,6 @@ declare const UNW_VE_S5: number;
 declare const tzname: interop.Pointer;
 
 declare const UNW_VE_S20: number;
-
-declare const UNW_RISCV_X12: number;
 
 declare const UNW_PPC64_CR6: number;
 
@@ -501,8 +497,6 @@ declare const UNW_LOONGARCH_F8: number;
 declare const kDNSServiceType_MAILA: number;
 
 declare const UNW_MIPS_F19: number;
-
-declare const UNW_VE_V44: number;
 
 declare const UNW_VE_S2: number;
 
@@ -703,6 +697,8 @@ declare const UNW_ARM_WR0: number;
 declare const UNW_MIPS_R10: number;
 
 declare const UNW_LOONGARCH_F24: number;
+
+declare const UNW_X86_64_R10: number;
 
 declare const UNW_VE_S48: number;
 
@@ -1138,6 +1134,8 @@ declare const UNW_ARM_D3: number;
 
 declare const UNW_S390X_R13: number;
 
+declare const UNW_AARCH64_V13: number;
+
 declare const UNW_MIPS_F29: number;
 
 declare const UNW_RISCV_F6: number;
@@ -1430,8 +1428,6 @@ declare const UNW_ARM_WC2: number;
 
 declare const UNW_ARM64_X22: number;
 
-declare const UNW_AARCH64_V13: number;
-
 declare const UNW_PPC_F17: number;
 
 declare const UNW_EINVAL: number;
@@ -1599,6 +1595,8 @@ declare const UNW_OR1K_R5: number;
 declare const UNW_VE_S16: number;
 
 declare const UNW_VE_S45: number;
+
+declare const UNW_VE_V44: number;
 
 declare const kDNSServiceType_MAILB: number;
 
@@ -1800,6 +1798,8 @@ declare const UNW_LOONGARCH_F4: number;
 
 declare const kDNSServiceFlagsValidateOptional: number;
 
+declare const UNW_LOONGARCH_F1: number;
+
 declare const UNW_LOONGARCH_F0: number;
 
 declare const UNW_LOONGARCH_R31: number;
@@ -1870,6 +1870,8 @@ declare const UNW_HEXAGON_R0: number;
 
 declare const UNW_S390X_R4: number;
 
+declare const UNW_RISCV_X12: number;
+
 declare const UNW_VE_V60: number;
 
 declare const UNW_S390X_F14: number;
@@ -1929,8 +1931,6 @@ declare const UNW_VE_V21: number;
 declare const UNW_PPC64_R24: number;
 
 declare const UNWIND_ARM64_FRAME_D12_D13_PAIR: number;
-
-declare const _dispatch_data_destructor_free: () => void;
 
 declare const UNW_S390X_F13: number;
 
@@ -2244,8 +2244,6 @@ declare const UNW_ARM_WR10: number;
 
 declare const UNW_ARM_WC0: number;
 
-declare const UNW_AARCH64_X8: number;
-
 declare const UNW_ARM_WR4: number;
 
 declare const UNW_VE_V43: number;
@@ -2261,6 +2259,8 @@ declare const DYLD_CHAINED_PTR_ARM64E_FIRMWARE: number;
 declare const UNWIND_ARM_FRAME_FIRST_PUSH_R4: number;
 
 declare const UNW_ARM_S25: number;
+
+declare const UTEXT_PROVIDER_HAS_META_DATA: number;
 
 declare const UNW_SPARC_L6: number;
 
@@ -2784,6 +2784,8 @@ declare const UNW_EUNSPEC: number;
 
 declare const UNW_RISCV_F16: number;
 
+declare const UNW_ARM64_X10: number;
+
 declare const UNW_RISCV_F17: number;
 
 declare const UNW_PPC_V18: number;
@@ -2845,8 +2847,6 @@ declare const UNW_PPC64_F1: number;
 declare const NDR_record: NDR_record_t;
 
 declare const UNW_PPC64_VS33: number;
-
-declare const UNW_SPARC_G3: number;
 
 declare const _xpc_bool_true: _xpc_bool_s;
 
@@ -3419,6 +3419,14 @@ declare const UEastAsianWidth: {
   COUNT: 6,
 };
 
+declare const sysdir_search_path_domain_mask_t: {
+  USER: 1,
+  LOCAL: 2,
+  NETWORK: 4,
+  SYSTEM: 8,
+  ALL: 65535,
+};
+
 declare const objc_AssociationPolicy: {
   ASSIGN: 0,
   RETAIN_NONATOMIC: 1,
@@ -3597,6 +3605,15 @@ declare const malloc_type_callsite_flags_v0_t: {
   ARRAY: 2,
 };
 
+declare const qos_class_t: {
+  USER_INTERACTIVE: 33,
+  USER_INITIATED: 25,
+  DEFAULT: 21,
+  UTILITY: 17,
+  BACKGROUND: 9,
+  UNSPECIFIED: 0,
+};
+
 declare const dispatch_block_flags_t: {
   BARRIER: 1,
   DETACHED: 2,
@@ -3604,14 +3621,6 @@ declare const dispatch_block_flags_t: {
   NO_QOS_CLASS: 8,
   INHERIT_QOS_CLASS: 16,
   ENFORCE_QOS_CLASS: 32,
-};
-
-declare const UNumericType: {
-  NONE: 0,
-  DECIMAL: 1,
-  DIGIT: 2,
-  NUMERIC: 3,
-  COUNT: 4,
 };
 
 declare const ipc_info_object_type_t: {
@@ -4090,6 +4099,14 @@ declare const USentenceBreak: {
   COUNT: 15,
 };
 
+declare const UNumericType: {
+  NONE: 0,
+  DECIMAL: 1,
+  DIGIT: 2,
+  NUMERIC: 3,
+  COUNT: 4,
+};
+
 declare const ifnet_interface_advisory_version: {
   N_1: 1,
   N_2: 2,
@@ -4176,14 +4193,6 @@ declare const acl_perm_t: {
   WRITE_SECURITY: 4096,
   CHANGE_OWNER: 8192,
   SYNCHRONIZE: 1048576,
-};
-
-declare const sysdir_search_path_domain_mask_t: {
-  USER: 1,
-  LOCAL: 2,
-  NETWORK: 4,
-  SYSTEM: 8,
-  ALL: 65535,
 };
 
 declare const sysdir_search_path_directory_t: {
@@ -4853,15 +4862,6 @@ declare const filesec_property_t: {
   GRPUUID: 6,
   ACL_RAW: 100,
   ACL_ALLOCSIZE: 101,
-};
-
-declare const qos_class_t: {
-  USER_INTERACTIVE: 33,
-  USER_INITIATED: 25,
-  DEFAULT: 21,
-  UTILITY: 17,
-  BACKGROUND: 9,
-  UNSPECIFIED: 0,
 };
 
 declare const os_log_type_t: {
@@ -33812,12 +33812,6 @@ declare interface OS_dispatch_queue_concurrent extends OS_dispatch_queue {
 declare class OS_dispatch_queue_concurrent extends NativeObject implements OS_dispatch_queue_concurrent {
 }
 
-declare interface OS_dispatch_queue extends OS_dispatch_object {
-}
-
-declare class OS_dispatch_queue extends NativeObject implements OS_dispatch_queue {
-}
-
 declare interface OS_os_workgroup_parallelProtocol {
 }
 
@@ -33981,6 +33975,12 @@ declare interface OS_os_activity extends NSObjectProtocol {
 }
 
 declare class OS_os_activity extends NativeObject implements OS_os_activity {
+}
+
+declare interface OS_dispatch_queue extends OS_dispatch_object {
+}
+
+declare class OS_dispatch_queue extends NativeObject implements OS_dispatch_queue {
 }
 
 declare class OS_object extends NSObject {

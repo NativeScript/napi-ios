@@ -8,11 +8,6 @@ declare const TCThrottleOrientation: {
   Horizontal: 1,
 };
 
-declare const TCControlContentsDpadElementStyle: {
-  Circle: 0,
-  Pentagon: 1,
-};
-
 declare const TCControlContentsDpadDirection: {
   Up: 0,
   Down: 1,
@@ -52,6 +47,11 @@ declare const TCControlLayoutAnchor: {
   BottomLeft: 6,
   BottomCenter: 7,
   BottomRight: 8,
+};
+
+declare const TCControlContentsDpadElementStyle: {
+  Circle: 0,
+  Pentagon: 1,
 };
 
 declare interface TCControl extends NSObjectProtocol, TCControlLayout {
@@ -598,58 +598,6 @@ declare class TCTouchController extends NSObject {
   isConnected(): boolean;
 }
 
-declare class TCThumbstickDescriptor extends NSObject {
-  label: TCControlLabel;
-
-  backgroundContents: TCControlContents;
-
-  stickContents: TCControlContents;
-
-  hidesWhenNotPressed: boolean;
-
-  stickSize: CGSize;
-
-  size: CGSize;
-
-  anchor: interop.Enum<typeof TCControlLayoutAnchor>;
-
-  anchorCoordinateSystem: interop.Enum<typeof TCControlLayoutAnchorCoordinateSystem>;
-
-  offset: CGPoint;
-
-  zIndex: number;
-
-  colliderShape: interop.Enum<typeof TCColliderShape>;
-
-  highlightDuration: number;
-
-  init(): this;
-
-  setLabel(label: TCControlLabel): void;
-
-  setBackgroundContents(backgroundContents: TCControlContents | null): void;
-
-  setStickContents(stickContents: TCControlContents | null): void;
-
-  setHidesWhenNotPressed(hidesWhenNotPressed: boolean): void;
-
-  setStickSize(stickSize: CGSize): void;
-
-  setSize(size: CGSize): void;
-
-  setAnchor(anchor: interop.Enum<typeof TCControlLayoutAnchor>): void;
-
-  setAnchorCoordinateSystem(anchorCoordinateSystem: interop.Enum<typeof TCControlLayoutAnchorCoordinateSystem>): void;
-
-  setOffset(offset: CGPoint): void;
-
-  setZIndex(zIndex: number): void;
-
-  setColliderShape(colliderShape: interop.Enum<typeof TCColliderShape>): void;
-
-  setHighlightDuration(highlightDuration: number): void;
-}
-
 declare class TCSwitch extends NSObject implements TCControl, TCControlLayout {
   contents: TCControlContents;
 
@@ -753,9 +701,9 @@ declare class TCSwitch extends NSObject implements TCControl, TCControlLayout {
 declare class TCControlImage extends NSObject {
   initWithTextureSize(texture: MTLTexture, size: CGSize): this;
 
-  initWithTextureSizeHighlightTextureOffsetTintColor(texture: MTLTexture, size: CGSize, highlightTexture: MTLTexture | null, offset: CGPoint, tintColor: interop.PointerConvertible): this;
+  initWithTextureSizeHighlightTextureOffsetTintColor(texture: MTLTexture, size: CGSize, highlightTexture: MTLTexture | null, offset: CGPoint, tintColor: interop.Object): this;
 
-  initWithCGImageSizeDevice(cgImage: interop.PointerConvertible, size: CGSize, device: MTLDevice): this;
+  initWithCGImageSizeDevice(cgImage: interop.Object, size: CGSize, device: MTLDevice): this;
 
   initWithUIImageSizeDevice(uiImage: UIImage, size: CGSize, device: MTLDevice): this;
 
@@ -767,8 +715,7 @@ declare class TCControlImage extends NSObject {
 
   offset: CGPoint;
 
-  get tintColor(): interop.Pointer;
-  set tintColor(value: interop.PointerConvertible);
+  tintColor: interop.Object;
 
   setTexture(texture: MTLTexture): void;
 
@@ -778,7 +725,59 @@ declare class TCControlImage extends NSObject {
 
   setOffset(offset: CGPoint): void;
 
-  setTintColor(tintColor: interop.PointerConvertible): void;
+  setTintColor(tintColor: interop.Object): void;
+}
+
+declare class TCThumbstickDescriptor extends NSObject {
+  label: TCControlLabel;
+
+  backgroundContents: TCControlContents;
+
+  stickContents: TCControlContents;
+
+  hidesWhenNotPressed: boolean;
+
+  stickSize: CGSize;
+
+  size: CGSize;
+
+  anchor: interop.Enum<typeof TCControlLayoutAnchor>;
+
+  anchorCoordinateSystem: interop.Enum<typeof TCControlLayoutAnchorCoordinateSystem>;
+
+  offset: CGPoint;
+
+  zIndex: number;
+
+  colliderShape: interop.Enum<typeof TCColliderShape>;
+
+  highlightDuration: number;
+
+  init(): this;
+
+  setLabel(label: TCControlLabel): void;
+
+  setBackgroundContents(backgroundContents: TCControlContents | null): void;
+
+  setStickContents(stickContents: TCControlContents | null): void;
+
+  setHidesWhenNotPressed(hidesWhenNotPressed: boolean): void;
+
+  setStickSize(stickSize: CGSize): void;
+
+  setSize(size: CGSize): void;
+
+  setAnchor(anchor: interop.Enum<typeof TCControlLayoutAnchor>): void;
+
+  setAnchorCoordinateSystem(anchorCoordinateSystem: interop.Enum<typeof TCControlLayoutAnchorCoordinateSystem>): void;
+
+  setOffset(offset: CGPoint): void;
+
+  setZIndex(zIndex: number): void;
+
+  setColliderShape(colliderShape: interop.Enum<typeof TCColliderShape>): void;
+
+  setHighlightDuration(highlightDuration: number): void;
 }
 
 declare class TCThrottle extends NSObject implements TCControl, TCControlLayout {

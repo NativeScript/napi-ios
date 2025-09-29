@@ -134,9 +134,6 @@ declare class AVInterstitialTimeRange extends NSObject implements NSCopying, NSS
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class AVPictureInPictureVideoCallViewController extends UIViewController {
-}
-
 declare class AVCaptureEventInteraction extends NSObject implements UIInteraction {
   initWithEventHandler(handler: (p1: AVCaptureEvent) => void): this;
 
@@ -455,6 +452,9 @@ declare class AVPlayerViewController extends UIViewController {
   setSpeeds(speeds: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setPreferredDisplayDynamicRange(preferredDisplayDynamicRange: interop.Enum<typeof AVDisplayDynamicRange>): void;
+}
+
+declare class AVPictureInPictureVideoCallViewController extends UIViewController {
 }
 
 declare class AVPlaybackSpeed extends NSObject {

@@ -277,46 +277,6 @@ declare interface PHPhotoLibraryAvailabilityObserver extends NSObjectProtocol {
 declare class PHPhotoLibraryAvailabilityObserver extends NativeObject implements PHPhotoLibraryAvailabilityObserver {
 }
 
-declare class PHAssetChangeRequest extends PHChangeRequest {
-  static creationRequestForAssetFromImage<This extends abstract new (...args: any) => any>(this: This, image: UIImage): InstanceType<This>;
-
-  static creationRequestForAssetFromImageAtFileURL<This extends abstract new (...args: any) => any>(this: This, fileURL: NSURL): InstanceType<This>;
-
-  static creationRequestForAssetFromVideoAtFileURL<This extends abstract new (...args: any) => any>(this: This, fileURL: NSURL): InstanceType<This>;
-
-  readonly placeholderForCreatedAsset: PHObjectPlaceholder;
-
-  static deleteAssets(assets: NSFastEnumeration): void;
-
-  static changeRequestForAsset<This extends abstract new (...args: any) => any>(this: This, asset: PHAsset): InstanceType<This>;
-
-  creationDate: NSDate;
-
-  location: CLLocation;
-
-  favorite: boolean;
-
-  hidden: boolean;
-
-  contentEditingOutput: PHContentEditingOutput;
-
-  revertAssetContentToOriginal(): void;
-
-  setCreationDate(creationDate: NSDate | null): void;
-
-  setLocation(location: CLLocation | null): void;
-
-  isFavorite(): boolean;
-
-  setFavorite(favorite: boolean): void;
-
-  isHidden(): boolean;
-
-  setHidden(hidden: boolean): void;
-
-  setContentEditingOutput(contentEditingOutput: PHContentEditingOutput | null): void;
-}
-
 declare class PHFetchOptions extends NSObject implements NSCopying {
   predicate: NSPredicate;
 
@@ -348,22 +308,6 @@ declare class PHFetchOptions extends NSObject implements NSCopying {
   setWantsIncrementalChangeDetails(wantsIncrementalChangeDetails: boolean): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class PHLivePhoto extends NSObject implements NSCopying, NSSecureCoding {
-  readonly size: CGSize;
-
-  static requestLivePhotoWithResourceFileURLsPlaceholderImageTargetSizeContentModeResultHandler(fileURLs: NSArray<interop.Object> | Array<interop.Object>, image: UIImage | null, targetSize: CGSize, contentMode: interop.Enum<typeof PHImageContentMode>, resultHandler: (p1: PHLivePhoto, p2: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => void | null): number;
-
-  static cancelLivePhotoRequestWithRequestID(requestID: number): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class PHFetchResultChangeDetails<ObjectType = interop.Object> extends NSObject {
@@ -640,16 +584,6 @@ declare class PHPersistentChange extends NSObject {
   changeDetailsForObjectTypeError(objectType: interop.Enum<typeof PHObjectType>, error: interop.PointerConvertible): PHPersistentObjectChangeDetails;
 }
 
-declare class PHObjectChangeDetails<ObjectType = interop.Object> extends NSObject {
-  readonly objectBeforeChanges: ObjectType;
-
-  readonly objectAfterChanges: ObjectType;
-
-  readonly assetContentChanged: boolean;
-
-  readonly objectWasDeleted: boolean;
-}
-
 declare class PHFetchResult<ObjectType = interop.Object> extends NSObject implements NSCopying, NSFastEnumeration {
   readonly count: number;
 
@@ -735,6 +669,16 @@ declare class PHLocalIdentifierMapping extends NSObject {
   readonly error: NSError;
 }
 
+declare class PHObjectChangeDetails<ObjectType = interop.Object> extends NSObject {
+  readonly objectBeforeChanges: ObjectType;
+
+  readonly objectAfterChanges: ObjectType;
+
+  readonly assetContentChanged: boolean;
+
+  readonly objectWasDeleted: boolean;
+}
+
 declare class PHLivePhotoRequestOptions extends NSObject implements NSCopying {
   version: interop.Enum<typeof PHImageRequestOptionsVersion>;
 
@@ -757,7 +701,63 @@ declare class PHLivePhotoRequestOptions extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class PHLivePhoto extends NSObject implements NSCopying, NSSecureCoding {
+  readonly size: CGSize;
+
+  static requestLivePhotoWithResourceFileURLsPlaceholderImageTargetSizeContentModeResultHandler(fileURLs: NSArray<interop.Object> | Array<interop.Object>, image: UIImage | null, targetSize: CGSize, contentMode: interop.Enum<typeof PHImageContentMode>, resultHandler: (p1: PHLivePhoto, p2: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => void | null): number;
+
+  static cancelLivePhotoRequestWithRequestID(requestID: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class PHChangeRequest extends NSObject {
+}
+
+declare class PHAssetChangeRequest extends PHChangeRequest {
+  static creationRequestForAssetFromImage<This extends abstract new (...args: any) => any>(this: This, image: UIImage): InstanceType<This>;
+
+  static creationRequestForAssetFromImageAtFileURL<This extends abstract new (...args: any) => any>(this: This, fileURL: NSURL): InstanceType<This>;
+
+  static creationRequestForAssetFromVideoAtFileURL<This extends abstract new (...args: any) => any>(this: This, fileURL: NSURL): InstanceType<This>;
+
+  readonly placeholderForCreatedAsset: PHObjectPlaceholder;
+
+  static deleteAssets(assets: NSFastEnumeration): void;
+
+  static changeRequestForAsset<This extends abstract new (...args: any) => any>(this: This, asset: PHAsset): InstanceType<This>;
+
+  creationDate: NSDate;
+
+  location: CLLocation;
+
+  favorite: boolean;
+
+  hidden: boolean;
+
+  contentEditingOutput: PHContentEditingOutput;
+
+  revertAssetContentToOriginal(): void;
+
+  setCreationDate(creationDate: NSDate | null): void;
+
+  setLocation(location: CLLocation | null): void;
+
+  isFavorite(): boolean;
+
+  setFavorite(favorite: boolean): void;
+
+  isHidden(): boolean;
+
+  setHidden(hidden: boolean): void;
+
+  setContentEditingOutput(contentEditingOutput: PHContentEditingOutput | null): void;
 }
 
 declare class PHCollectionList extends PHCollection {

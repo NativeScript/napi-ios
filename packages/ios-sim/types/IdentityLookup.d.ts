@@ -82,16 +82,6 @@ declare class ILClassificationRequest extends NSObject implements NSSecureCoding
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ILCallClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
-  readonly callCommunications: NSArray;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class ILClassificationResponse extends NSObject implements NSSecureCoding {
   readonly action: interop.Enum<typeof ILClassificationAction>;
 
@@ -161,6 +151,16 @@ declare class ILMessageFilterQueryRequest extends NSObject implements NSSecureCo
   readonly messageBody: string;
 
   readonly receiverISOCountryCode: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class ILCallClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
+  readonly callCommunications: NSArray;
 
   static readonly supportsSecureCoding: boolean;
 

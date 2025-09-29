@@ -9,15 +9,6 @@ declare const kCLErrorUserInfoAlternateRegionKey: string;
 
 declare const kCLErrorDomain: string;
 
-declare const CLAuthorizationStatus: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  AuthorizedAlways: 3,
-  AuthorizedWhenInUse: 4,
-  Authorized: 3,
-};
-
 declare const CLServiceSessionAuthorizationRequirement: {
   None: 0,
   WhenInUse: 1,
@@ -98,6 +89,15 @@ declare const CLError: {
   HistoricalLocationError: 19,
 };
 
+declare const CLAuthorizationStatus: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  AuthorizedAlways: 3,
+  AuthorizedWhenInUse: 4,
+  Authorized: 3,
+};
+
 declare const CLLocationPushServiceError: {
   Unknown: 0,
   MissingPushExtension: 1,
@@ -158,42 +158,6 @@ declare interface CLLocationManagerDelegate extends NSObjectProtocol {
 }
 
 declare class CLLocationManagerDelegate extends NativeObject implements CLLocationManagerDelegate {
-}
-
-declare class CLMonitoringEvent extends NSObject implements NSSecureCoding {
-  readonly identifier: string;
-
-  readonly refinement: CLCondition | null;
-
-  readonly state: interop.Enum<typeof CLMonitoringState>;
-
-  readonly date: NSDate;
-
-  readonly authorizationDenied: boolean;
-
-  readonly authorizationDeniedGlobally: boolean;
-
-  readonly authorizationRestricted: boolean;
-
-  readonly insufficientlyInUse: boolean;
-
-  readonly accuracyLimited: boolean;
-
-  readonly conditionUnsupported: boolean;
-
-  readonly conditionLimitExceeded: boolean;
-
-  readonly persistenceUnavailable: boolean;
-
-  readonly serviceSessionRequired: boolean;
-
-  readonly authorizationRequestInProgress: boolean;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class CLGeocoder extends NSObject {
@@ -476,6 +440,42 @@ declare class CLMonitoringRecord extends NSObject implements NSSecureCoding {
   readonly condition: CLCondition;
 
   readonly lastEvent: CLMonitoringEvent;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CLMonitoringEvent extends NSObject implements NSSecureCoding {
+  readonly identifier: string;
+
+  readonly refinement: CLCondition | null;
+
+  readonly state: interop.Enum<typeof CLMonitoringState>;
+
+  readonly date: NSDate;
+
+  readonly authorizationDenied: boolean;
+
+  readonly authorizationDeniedGlobally: boolean;
+
+  readonly authorizationRestricted: boolean;
+
+  readonly insufficientlyInUse: boolean;
+
+  readonly accuracyLimited: boolean;
+
+  readonly conditionUnsupported: boolean;
+
+  readonly conditionLimitExceeded: boolean;
+
+  readonly persistenceUnavailable: boolean;
+
+  readonly serviceSessionRequired: boolean;
+
+  readonly authorizationRequestInProgress: boolean;
 
   static readonly supportsSecureCoding: boolean;
 

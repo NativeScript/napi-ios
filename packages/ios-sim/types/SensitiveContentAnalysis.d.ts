@@ -19,11 +19,11 @@ declare class SCVideoStreamAnalyzer extends NSObject {
 
   initWithParticipantUUIDStreamDirectionError(participantUUID: string, streamDirection: interop.Enum<typeof SCVideoStreamAnalyzerStreamDirection>, error: interop.PointerConvertible): this;
 
-  analyzePixelBuffer(pixelBuffer: interop.PointerConvertible): void;
+  analyzePixelBuffer(pixelBuffer: interop.Object): void;
 
   setAnalysisChangedHandler(analysisChangedHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void): void;
 
-  beginAnalysisOfDecompressionSessionError(decompressionSession: interop.PointerConvertible, error: interop.PointerConvertible): boolean;
+  beginAnalysisOfDecompressionSessionError(decompressionSession: interop.Object, error: interop.PointerConvertible): boolean;
 
   beginAnalysisOfCaptureDeviceInputError(captureDeviceInput: AVCaptureDeviceInput, error: interop.PointerConvertible): boolean;
 
@@ -39,7 +39,7 @@ declare class SCSensitivityAnalyzer extends NSObject {
 
   analyzeImageFileCompletionHandler(fileURL: NSURL, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): void;
 
-  analyzeCGImageCompletionHandler(image: interop.PointerConvertible, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): void;
+  analyzeCGImageCompletionHandler(image: interop.Object, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): void;
 
   analyzeVideoFileCompletionHandler(fileURL: NSURL, completionHandler: (p1: SCSensitivityAnalysis, p2: NSError) => void | null): NSProgress;
 }

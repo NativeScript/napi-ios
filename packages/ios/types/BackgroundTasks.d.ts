@@ -3,16 +3,16 @@
 
 declare const BGTaskSchedulerErrorDomain: string;
 
+declare const BGContinuedProcessingTaskRequestResources: {
+  Default: 0,
+  GPU: 1,
+};
+
 declare const BGTaskSchedulerErrorCode: {
   Unavailable: 1,
   TooManyPendingTaskRequests: 2,
   NotPermitted: 3,
   ImmediateRunIneligible: 4,
-};
-
-declare const BGContinuedProcessingTaskRequestResources: {
-  Default: 0,
-  GPU: 1,
 };
 
 declare const BGContinuedProcessingTaskRequestSubmissionStrategy: {
@@ -81,6 +81,12 @@ declare class BGProcessingTaskRequest extends BGTaskRequest {
   setRequiresExternalPower(requiresExternalPower: boolean): void;
 }
 
+declare class BGHealthResearchTaskRequest extends BGProcessingTaskRequest {
+  protectionTypeOfRequiredData: string;
+
+  setProtectionTypeOfRequiredData(protectionTypeOfRequiredData: string): void;
+}
+
 declare class BGTaskRequest extends NSObject implements NSCopying {
   readonly identifier: string;
 
@@ -89,12 +95,6 @@ declare class BGTaskRequest extends NSObject implements NSCopying {
   setEarliestBeginDate(earliestBeginDate: NSDate | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class BGHealthResearchTaskRequest extends BGProcessingTaskRequest {
-  protectionTypeOfRequiredData: string;
-
-  setProtectionTypeOfRequiredData(protectionTypeOfRequiredData: string): void;
 }
 
 declare class BGAppRefreshTaskRequest extends BGTaskRequest {

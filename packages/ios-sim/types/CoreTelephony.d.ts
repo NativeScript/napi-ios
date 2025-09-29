@@ -7,8 +7,6 @@ declare const CTCallStateConnected: string;
 
 declare const CTCallStateIncoming: string;
 
-declare const CTCallStateDialing: string;
-
 declare const CTSubscriberTokenRefreshed: string;
 
 declare const CTRadioAccessTechnologyNRNSA: string;
@@ -46,6 +44,8 @@ declare const CTRadioAccessTechnologyCDMAEVDORevA: string;
 declare const CTRadioAccessTechnologyCDMAEVDORevB: string;
 
 declare const CTRadioAccessTechnologyGPRS: string;
+
+declare const CTCallStateDialing: string;
 
 declare const CTCellularPlanCapability: {
   Only: 0,
@@ -91,16 +91,16 @@ declare class CTCellularPlanStatus extends NSObject {
   static checkValidityOfTokenCompletionHandler(token: string, completionHandler: (p1: boolean, p2: NSError) => void | null): void;
 }
 
-declare class CTCellularPlanProvisioning extends NSObject {
-  readonly supportsEmbeddedSIM: boolean;
+declare class CTCarrier extends NSObject {
+  readonly carrierName: string;
 
-  supportsCellularPlan(): boolean;
+  readonly mobileCountryCode: string;
 
-  addPlanWithCompletionHandler(request: CTCellularPlanProvisioningRequest, completionHandler: (p1: interop.Enum<typeof CTCellularPlanProvisioningAddPlanResult>) => void): void;
+  readonly mobileNetworkCode: string;
 
-  addPlanWithRequestPropertiesCompletionHandler(request: CTCellularPlanProvisioningRequest, properties: CTCellularPlanProperties | null, completionHandler: (p1: interop.Enum<typeof CTCellularPlanProvisioningAddPlanResult>) => void): void;
+  readonly isoCountryCode: string;
 
-  updateCellularPlanPropertiesCompletionHandler(properties: CTCellularPlanProperties, completionHandler: (p1: NSError) => void | null): void;
+  readonly allowsVOIP: boolean;
 }
 
 declare class CTCall extends NSObject {
@@ -109,12 +109,10 @@ declare class CTCall extends NSObject {
   readonly callID: string;
 }
 
-declare class CTCallCenter extends NSObject {
-  readonly currentCalls: NSSet;
+declare class CTSubscriberInfo extends NSObject {
+  static subscribers(): NSArray;
 
-  callEventHandler: (p1: CTCall) => void;
-
-  setCallEventHandler(callEventHandler: (p1: CTCall) => void): void;
+  static subscriber(): CTSubscriber;
 }
 
 declare class CTSubscriber extends NSObject {
@@ -131,77 +129,6 @@ declare class CTSubscriber extends NSObject {
   isSIMInserted(): boolean;
 
   setDelegate(delegate: CTSubscriberDelegate): void;
-}
-
-declare class CTCellularPlanProperties extends NSObject implements NSSecureCoding {
-  associatedIccid: string;
-
-  simCapability: interop.Enum<typeof CTCellularPlanCapability>;
-
-  get supportedRegionCodes(): NSArray;
-  set supportedRegionCodes(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setAssociatedIccid(associatedIccid: string | null): void;
-
-  setSimCapability(simCapability: interop.Enum<typeof CTCellularPlanCapability>): void;
-
-  setSupportedRegionCodes(supportedRegionCodes: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CTTelephonyNetworkInfo extends NSObject {
-  readonly dataServiceIdentifier: string;
-
-  delegate: CTTelephonyNetworkInfoDelegate;
-
-  readonly serviceSubscriberCellularProviders: NSDictionary;
-
-  readonly subscriberCellularProvider: CTCarrier;
-
-  serviceSubscriberCellularProvidersDidUpdateNotifier: (p1: string) => void;
-
-  subscriberCellularProviderDidUpdateNotifier: (p1: CTCarrier) => void;
-
-  readonly serviceCurrentRadioAccessTechnology: NSDictionary;
-
-  readonly currentRadioAccessTechnology: string;
-
-  setDelegate(delegate: CTTelephonyNetworkInfoDelegate | null): void;
-
-  setServiceSubscriberCellularProvidersDidUpdateNotifier(serviceSubscriberCellularProvidersDidUpdateNotifier: (p1: string) => void | null): void;
-
-  setSubscriberCellularProviderDidUpdateNotifier(subscriberCellularProviderDidUpdateNotifier: (p1: CTCarrier) => void): void;
-}
-
-declare class CTCarrier extends NSObject {
-  readonly carrierName: string;
-
-  readonly mobileCountryCode: string;
-
-  readonly mobileNetworkCode: string;
-
-  readonly isoCountryCode: string;
-
-  readonly allowsVOIP: boolean;
-}
-
-declare class CTCellularData extends NSObject {
-  cellularDataRestrictionDidUpdateNotifier: (p1: interop.Enum<typeof CTCellularDataRestrictedState>) => void;
-
-  readonly restrictedState: interop.Enum<typeof CTCellularDataRestrictedState>;
-
-  setCellularDataRestrictionDidUpdateNotifier(cellularDataRestrictionDidUpdateNotifier: (p1: interop.Enum<typeof CTCellularDataRestrictedState>) => void): void;
-}
-
-declare class CTSubscriberInfo extends NSObject {
-  static subscribers(): NSArray;
-
-  static subscriber(): CTSubscriber;
 }
 
 declare class CTCellularPlanProvisioningRequest extends NSObject implements NSSecureCoding {
@@ -234,5 +161,78 @@ declare class CTCellularPlanProvisioningRequest extends NSObject implements NSSe
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class CTCellularData extends NSObject {
+  cellularDataRestrictionDidUpdateNotifier: (p1: interop.Enum<typeof CTCellularDataRestrictedState>) => void;
+
+  readonly restrictedState: interop.Enum<typeof CTCellularDataRestrictedState>;
+
+  setCellularDataRestrictionDidUpdateNotifier(cellularDataRestrictionDidUpdateNotifier: (p1: interop.Enum<typeof CTCellularDataRestrictedState>) => void): void;
+}
+
+declare class CTTelephonyNetworkInfo extends NSObject {
+  readonly dataServiceIdentifier: string;
+
+  delegate: CTTelephonyNetworkInfoDelegate;
+
+  readonly serviceSubscriberCellularProviders: NSDictionary;
+
+  readonly subscriberCellularProvider: CTCarrier;
+
+  serviceSubscriberCellularProvidersDidUpdateNotifier: (p1: string) => void;
+
+  subscriberCellularProviderDidUpdateNotifier: (p1: CTCarrier) => void;
+
+  readonly serviceCurrentRadioAccessTechnology: NSDictionary;
+
+  readonly currentRadioAccessTechnology: string;
+
+  setDelegate(delegate: CTTelephonyNetworkInfoDelegate | null): void;
+
+  setServiceSubscriberCellularProvidersDidUpdateNotifier(serviceSubscriberCellularProvidersDidUpdateNotifier: (p1: string) => void | null): void;
+
+  setSubscriberCellularProviderDidUpdateNotifier(subscriberCellularProviderDidUpdateNotifier: (p1: CTCarrier) => void): void;
+}
+
+declare class CTCellularPlanProvisioning extends NSObject {
+  readonly supportsEmbeddedSIM: boolean;
+
+  supportsCellularPlan(): boolean;
+
+  addPlanWithCompletionHandler(request: CTCellularPlanProvisioningRequest, completionHandler: (p1: interop.Enum<typeof CTCellularPlanProvisioningAddPlanResult>) => void): void;
+
+  addPlanWithRequestPropertiesCompletionHandler(request: CTCellularPlanProvisioningRequest, properties: CTCellularPlanProperties | null, completionHandler: (p1: interop.Enum<typeof CTCellularPlanProvisioningAddPlanResult>) => void): void;
+
+  updateCellularPlanPropertiesCompletionHandler(properties: CTCellularPlanProperties, completionHandler: (p1: NSError) => void | null): void;
+}
+
+declare class CTCellularPlanProperties extends NSObject implements NSSecureCoding {
+  associatedIccid: string;
+
+  simCapability: interop.Enum<typeof CTCellularPlanCapability>;
+
+  get supportedRegionCodes(): NSArray;
+  set supportedRegionCodes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setAssociatedIccid(associatedIccid: string | null): void;
+
+  setSimCapability(simCapability: interop.Enum<typeof CTCellularPlanCapability>): void;
+
+  setSupportedRegionCodes(supportedRegionCodes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CTCallCenter extends NSObject {
+  readonly currentCalls: NSSet;
+
+  callEventHandler: (p1: CTCall) => void;
+
+  setCallEventHandler(callEventHandler: (p1: CTCall) => void): void;
 }
 

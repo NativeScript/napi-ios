@@ -60,30 +60,6 @@ declare interface MSStickerBrowserViewDataSource extends NSObjectProtocol {
 declare class MSStickerBrowserViewDataSource extends NativeObject implements MSStickerBrowserViewDataSource {
 }
 
-declare class MSStickerBrowserView extends UIView {
-  initWithFrame(frame: CGRect): this;
-
-  initWithFrameStickerSize(frame: CGRect, stickerSize: interop.Enum<typeof MSStickerSize>): this;
-
-  readonly stickerSize: interop.Enum<typeof MSStickerSize>;
-
-  dataSource: MSStickerBrowserViewDataSource;
-
-  contentOffset: CGPoint;
-
-  contentInset: UIEdgeInsets;
-
-  setContentOffsetAnimated(contentOffset: CGPoint, animated: boolean): void;
-
-  reloadData(): void;
-
-  setDataSource(dataSource: MSStickerBrowserViewDataSource | null): void;
-
-  setContentOffset(contentOffset: CGPoint): void;
-
-  setContentInset(contentInset: UIEdgeInsets): void;
-}
-
 declare class MSSession extends NSObject implements NSSecureCoding {
   static readonly supportsSecureCoding: boolean;
 
@@ -228,6 +204,30 @@ declare class MSMessageTemplateLayout extends MSMessageLayout {
   setImageTitle(imageTitle: string | null): void;
 
   setImageSubtitle(imageSubtitle: string | null): void;
+}
+
+declare class MSStickerBrowserView extends UIView {
+  initWithFrame(frame: CGRect): this;
+
+  initWithFrameStickerSize(frame: CGRect, stickerSize: interop.Enum<typeof MSStickerSize>): this;
+
+  readonly stickerSize: interop.Enum<typeof MSStickerSize>;
+
+  dataSource: MSStickerBrowserViewDataSource;
+
+  contentOffset: CGPoint;
+
+  contentInset: UIEdgeInsets;
+
+  setContentOffsetAnimated(contentOffset: CGPoint, animated: boolean): void;
+
+  reloadData(): void;
+
+  setDataSource(dataSource: MSStickerBrowserViewDataSource | null): void;
+
+  setContentOffset(contentOffset: CGPoint): void;
+
+  setContentInset(contentInset: UIEdgeInsets): void;
 }
 
 declare class MSStickerBrowserViewController extends UIViewController implements MSStickerBrowserViewDataSource {

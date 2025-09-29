@@ -1,13 +1,13 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const UTTypeSystemPreferencesPane: UTType;
-
 declare const UTTypeHEIC: UTType;
 
 declare const UTTypeCHeader: UTType;
 
 declare const UTTypeImage: UTType;
+
+declare const UTTypePlainText: UTType;
 
 declare const UTTypeICNS: UTType;
 
@@ -24,6 +24,8 @@ declare const UTTypeSwiftSource: UTType;
 declare const UTTypeUSD: UTType;
 
 declare const UTTypeVCard: UTType;
+
+declare const UTTypePluginBundle: UTType;
 
 declare const UTTypeFileURL: UTType;
 
@@ -64,8 +66,6 @@ declare const UTTypeXPCService: UTType;
 declare const UTTypeQuickLookGenerator: UTType;
 
 declare const UTTypeSpotlightImporter: UTType;
-
-declare const UTTypePluginBundle: UTType;
 
 declare const UTTypeBundle: UTType;
 
@@ -249,8 +249,6 @@ declare const UTTypeTabSeparatedText: UTType;
 
 declare const UTTypeHEICS: UTType;
 
-declare const UTTypePlainText: UTType;
-
 declare const UTTypeTarArchive: UTType;
 
 declare const UTTypeAppleProtectedMPEG4Video: UTType;
@@ -280,6 +278,8 @@ declare const UTTypeTIFF: UTType;
 declare const UTTypeInternetLocation: UTType;
 
 declare const UTTypeCompositeContent: UTType;
+
+declare const UTTypeSystemPreferencesPane: UTType;
 
 declare const UTTypeRTFD: UTType;
 

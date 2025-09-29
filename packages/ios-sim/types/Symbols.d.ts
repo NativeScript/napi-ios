@@ -73,6 +73,16 @@ declare class NSSymbolEffectOptionsRepeatBehavior extends NSObject implements NS
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NSSymbolContentTransition extends NSObject implements NSCopying, NSSecureCoding {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class NSSymbolDrawOnEffect extends NSSymbolEffect {
   static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -166,16 +176,6 @@ declare class NSSymbolAutomaticContentTransition extends NSSymbolContentTransiti
 }
 
 declare class NSSymbolMagicReplaceContentTransition extends NSSymbolContentTransition {
-}
-
-declare class NSSymbolContentTransition extends NSObject implements NSCopying, NSSecureCoding {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NSSymbolDisappearEffect extends NSSymbolEffect {

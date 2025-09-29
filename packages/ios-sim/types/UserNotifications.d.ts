@@ -156,18 +156,6 @@ declare class UNUserNotificationCenter extends NSObject {
   setDelegate(delegate: UNUserNotificationCenterDelegate | null): void;
 }
 
-declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
-  readonly repeats: boolean;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class UNNotificationServiceExtension extends NSObject {
   didReceiveNotificationRequestWithContentHandler(request: UNNotificationRequest, contentHandler: (p1: UNNotificationContent) => void): void;
 
@@ -377,6 +365,10 @@ declare class UNNotificationAttachment extends NSObject implements NSCopying, NS
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class UNTextInputNotificationResponse extends UNNotificationResponse {
+  readonly userText: string;
+}
+
 declare class UNNotificationContent extends NSObject implements NSCopying, NSMutableCopying, NSSecureCoding {
   readonly attachments: NSArray;
 
@@ -516,10 +508,6 @@ declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
   static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
 }
 
-declare class UNTextInputNotificationResponse extends UNNotificationResponse {
-  readonly userText: string;
-}
-
 declare class UNNotificationSettings extends NSObject implements NSCopying, NSSecureCoding {
   readonly authorizationStatus: interop.Enum<typeof UNAuthorizationStatus>;
 
@@ -584,5 +572,17 @@ declare class UNTextInputNotificationAction extends UNNotificationAction {
   readonly textInputButtonTitle: string;
 
   readonly textInputPlaceholder: string;
+}
+
+declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
+  readonly repeats: boolean;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

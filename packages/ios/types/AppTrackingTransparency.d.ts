@@ -1,6 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const AppTrackingTransparencyVersionString: interop.Pointer;
+
+declare const AppTrackingTransparencyVersionNumber: number;
+
 declare const ATTrackingManagerAuthorizationStatus: {
   NotDetermined: 0,
   Restricted: 1,

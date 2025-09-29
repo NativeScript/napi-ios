@@ -194,7 +194,7 @@ declare class LAContext extends NSObject {
 
   isCredentialSet(type: interop.Enum<typeof LACredentialType>): boolean;
 
-  evaluateAccessControlOperationLocalizedReasonReply(accessControl: interop.PointerConvertible, operation: interop.Enum<typeof LAAccessControlOperation>, localizedReason: string, reply: (p1: boolean, p2: NSError) => void | null): void;
+  evaluateAccessControlOperationLocalizedReasonReply(accessControl: interop.Object, operation: interop.Enum<typeof LAAccessControlOperation>, localizedReason: string, reply: (p1: boolean, p2: NSError) => void | null): void;
 
   localizedFallbackTitle: string;
 
@@ -241,20 +241,20 @@ declare class LAEnvironment extends NSObject {
   readonly state: LAEnvironmentState;
 }
 
-declare class LADomainStateCompanion extends NSObject {
-  readonly availableCompanionTypes: NSSet;
-
-  readonly stateHash: NSData;
-
-  stateHashForCompanionType(companionType: interop.Enum<typeof LACompanionType>): NSData | null;
-}
-
 declare class LAEnvironmentMechanism extends NSObject {
   readonly isUsable: boolean;
 
   readonly localizedName: string;
 
   readonly iconSystemName: string;
+}
+
+declare class LADomainStateCompanion extends NSObject {
+  readonly availableCompanionTypes: NSSet;
+
+  readonly stateHash: NSData;
+
+  stateHashForCompanionType(companionType: interop.Enum<typeof LACompanionType>): NSData | null;
 }
 
 declare class LAEnvironmentState extends NSObject implements NSCopying {

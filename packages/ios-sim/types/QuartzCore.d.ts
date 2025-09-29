@@ -11,6 +11,8 @@ declare const kCAGravityResizeAspectFill: string;
 
 declare const kCAContentsFormatRGBA8Uint: string;
 
+declare const CAFrameRateRangeDefault: CAFrameRateRange;
+
 declare const kCALineJoinMiter: string;
 
 declare const CADynamicRangeStandard: string;
@@ -158,8 +160,6 @@ declare const kCAFillModeForwards: string;
 declare const kCAEmitterLayerOldestFirst: string;
 
 declare const kCAValueFunctionRotateY: string;
-
-declare const CAFrameRateRangeDefault: CAFrameRateRange;
 
 declare const kCAGradientLayerConic: string;
 
@@ -372,7 +372,7 @@ declare class CAMetalDrawable extends NativeObject implements CAMetalDrawable {
 declare interface CALayerDelegate extends NSObjectProtocol {
   displayLayer?(layer: CALayer): void;
 
-  drawLayerInContext?(layer: CALayer, ctx: interop.PointerConvertible): void;
+  drawLayerInContext?(layer: CALayer, ctx: interop.Object): void;
 
   layerWillDraw?(layer: CALayer): void;
 
@@ -384,40 +384,6 @@ declare interface CALayerDelegate extends NSObjectProtocol {
 declare class CALayerDelegate extends NativeObject implements CALayerDelegate {
 }
 
-declare class CADisplayLink extends NSObject {
-  static displayLinkWithTargetSelector(target: interop.Object, sel: string): CADisplayLink;
-
-  addToRunLoopForMode(runloop: NSRunLoop, mode: string): void;
-
-  removeFromRunLoopForMode(runloop: NSRunLoop, mode: string): void;
-
-  invalidate(): void;
-
-  readonly timestamp: number;
-
-  readonly duration: number;
-
-  readonly targetTimestamp: number;
-
-  paused: boolean;
-
-  frameInterval: number;
-
-  preferredFramesPerSecond: number;
-
-  preferredFrameRateRange: CAFrameRateRange;
-
-  isPaused(): boolean;
-
-  setPaused(paused: boolean): void;
-
-  setFrameInterval(frameInterval: number): void;
-
-  setPreferredFramesPerSecond(preferredFramesPerSecond: number): void;
-
-  setPreferredFrameRateRange(preferredFrameRateRange: CAFrameRateRange): void;
-}
-
 declare class CAEAGLLayer extends CALayer implements EAGLDrawable {
   presentsWithTransaction: boolean;
 
@@ -427,6 +393,38 @@ declare class CAEAGLLayer extends CALayer implements EAGLDrawable {
   set drawableProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
   setDrawableProperties(drawableProperties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+}
+
+declare class CAMetalDisplayLinkUpdate extends NSObject {
+  readonly drawable: CAMetalDrawable;
+
+  readonly targetTimestamp: number;
+
+  readonly targetPresentationTimestamp: number;
+}
+
+declare class CAGradientLayer extends CALayer {
+  get colors(): NSArray;
+  set colors(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get locations(): NSArray;
+  set locations(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  startPoint: CGPoint;
+
+  endPoint: CGPoint;
+
+  type: string;
+
+  setColors(colors: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setLocations(locations: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setStartPoint(startPoint: CGPoint): void;
+
+  setEndPoint(endPoint: CGPoint): void;
+
+  setType(type: string): void;
 }
 
 declare class CAMetalLayer extends CALayer {
@@ -446,8 +444,7 @@ declare class CAMetalLayer extends CALayer {
 
   presentsWithTransaction: boolean;
 
-  get colorspace(): interop.Pointer;
-  set colorspace(value: interop.PointerConvertible);
+  colorspace: interop.Object;
 
   wantsExtendedDynamicRangeContent: boolean;
 
@@ -472,7 +469,7 @@ declare class CAMetalLayer extends CALayer {
 
   setPresentsWithTransaction(presentsWithTransaction: boolean): void;
 
-  setColorspace(colorspace: interop.PointerConvertible): void;
+  setColorspace(colorspace: interop.Object | null): void;
 
   setWantsExtendedDynamicRangeContent(wantsExtendedDynamicRangeContent: boolean): void;
 
@@ -487,8 +484,7 @@ declare class CAKeyframeAnimation extends CAPropertyAnimation {
   get values(): NSArray;
   set values(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
   get keyTimes(): NSArray;
   set keyTimes(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -511,7 +507,7 @@ declare class CAKeyframeAnimation extends CAPropertyAnimation {
 
   setValues(values: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object | null): void;
 
   setKeyTimes(keyTimes: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
@@ -580,14 +576,6 @@ declare class CAEDRMetadata extends NSObject implements NSCopying, NSSecureCodin
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class CAMetalDisplayLinkUpdate extends NSObject {
-  readonly drawable: CAMetalDrawable;
-
-  readonly targetTimestamp: number;
-
-  readonly targetPresentationTimestamp: number;
-}
-
 declare class CAMetalDisplayLink extends NSObject {
   initWithMetalLayer(layer: CAMetalLayer): this;
 
@@ -639,8 +627,7 @@ declare class CAReplicatorLayer extends CALayer {
 
   instanceTransform: CATransform3D;
 
-  get instanceColor(): interop.Pointer;
-  set instanceColor(value: interop.PointerConvertible);
+  instanceColor: interop.Object;
 
   instanceRedOffset: number;
 
@@ -658,7 +645,7 @@ declare class CAReplicatorLayer extends CALayer {
 
   setInstanceTransform(instanceTransform: CATransform3D): void;
 
-  setInstanceColor(instanceColor: interop.PointerConvertible): void;
+  setInstanceColor(instanceColor: interop.Object | null): void;
 
   setInstanceRedOffset(instanceRedOffset: number): void;
 
@@ -711,40 +698,14 @@ declare class CATransaction extends NSObject {
   static setValueForKey(anObject: interop.Object | null, key: string): void;
 }
 
-declare class CAGradientLayer extends CALayer {
-  get colors(): NSArray;
-  set colors(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get locations(): NSArray;
-  set locations(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  startPoint: CGPoint;
-
-  endPoint: CGPoint;
-
-  type: string;
-
-  setColors(colors: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setLocations(locations: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setStartPoint(startPoint: CGPoint): void;
-
-  setEndPoint(endPoint: CGPoint): void;
-
-  setType(type: string): void;
-}
-
 declare class CATextLayer extends CALayer {
   string: interop.Object;
 
-  get font(): interop.Pointer;
-  set font(value: interop.PointerConvertible);
+  font: interop.Object;
 
   fontSize: number;
 
-  get foregroundColor(): interop.Pointer;
-  set foregroundColor(value: interop.PointerConvertible);
+  foregroundColor: interop.Object;
 
   wrapped: boolean;
 
@@ -756,11 +717,11 @@ declare class CATextLayer extends CALayer {
 
   setString(string: interop.Object | null): void;
 
-  setFont(font: interop.PointerConvertible): void;
+  setFont(font: interop.Object | null): void;
 
   setFontSize(fontSize: number): void;
 
-  setForegroundColor(foregroundColor: interop.PointerConvertible): void;
+  setForegroundColor(foregroundColor: interop.Object | null): void;
 
   isWrapped(): boolean;
 
@@ -793,16 +754,13 @@ declare class CATiledLayer extends CALayer {
 }
 
 declare class CAShapeLayer extends CALayer {
-  get path(): interop.Pointer;
-  set path(value: interop.PointerConvertible);
+  path: interop.Object;
 
-  get fillColor(): interop.Pointer;
-  set fillColor(value: interop.PointerConvertible);
+  fillColor: interop.Object;
 
   fillRule: string;
 
-  get strokeColor(): interop.Pointer;
-  set strokeColor(value: interop.PointerConvertible);
+  strokeColor: interop.Object;
 
   strokeStart: number;
 
@@ -821,13 +779,13 @@ declare class CAShapeLayer extends CALayer {
   get lineDashPattern(): NSArray;
   set lineDashPattern(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  setPath(path: interop.PointerConvertible): void;
+  setPath(path: interop.Object | null): void;
 
-  setFillColor(fillColor: interop.PointerConvertible): void;
+  setFillColor(fillColor: interop.Object | null): void;
 
   setFillRule(fillRule: string): void;
 
-  setStrokeColor(strokeColor: interop.PointerConvertible): void;
+  setStrokeColor(strokeColor: interop.Object | null): void;
 
   setStrokeStart(strokeStart: number): void;
 
@@ -996,8 +954,7 @@ declare class CAEmitterCell extends NSObject implements NSSecureCoding, CAMediaT
 
   spinRange: number;
 
-  get color(): interop.Pointer;
-  set color(value: interop.PointerConvertible);
+  color: interop.Object;
 
   redRange: number;
 
@@ -1071,7 +1028,7 @@ declare class CAEmitterCell extends NSObject implements NSSecureCoding, CAMediaT
 
   setSpinRange(spinRange: number): void;
 
-  setColor(color: interop.PointerConvertible): void;
+  setColor(color: interop.Object | null): void;
 
   setRedRange(redRange: number): void;
 
@@ -1142,6 +1099,40 @@ declare class CAEmitterCell extends NSObject implements NSSecureCoding, CAMediaT
   setAutoreverses(autoreverses: boolean): void;
 
   setFillMode(fillMode: string): void;
+}
+
+declare class CADisplayLink extends NSObject {
+  static displayLinkWithTargetSelector(target: interop.Object, sel: string): CADisplayLink;
+
+  addToRunLoopForMode(runloop: NSRunLoop, mode: string): void;
+
+  removeFromRunLoopForMode(runloop: NSRunLoop, mode: string): void;
+
+  invalidate(): void;
+
+  readonly timestamp: number;
+
+  readonly duration: number;
+
+  readonly targetTimestamp: number;
+
+  paused: boolean;
+
+  frameInterval: number;
+
+  preferredFramesPerSecond: number;
+
+  preferredFrameRateRange: CAFrameRateRange;
+
+  isPaused(): boolean;
+
+  setPaused(paused: boolean): void;
+
+  setFrameInterval(frameInterval: number): void;
+
+  setPreferredFramesPerSecond(preferredFramesPerSecond: number): void;
+
+  setPreferredFrameRateRange(preferredFrameRateRange: CAFrameRateRange): void;
 }
 
 declare class CAAnimationGroup extends CAAnimation {
@@ -1299,16 +1290,15 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   drawsAsynchronously: boolean;
 
-  drawInContext(ctx: interop.PointerConvertible): void;
+  drawInContext(ctx: interop.Object): void;
 
-  renderInContext(ctx: interop.PointerConvertible): void;
+  renderInContext(ctx: interop.Object): void;
 
   edgeAntialiasingMask: interop.Enum<typeof CAEdgeAntialiasingMask>;
 
   allowsEdgeAntialiasing: boolean;
 
-  get backgroundColor(): interop.Pointer;
-  set backgroundColor(value: interop.PointerConvertible);
+  backgroundColor: interop.Object;
 
   cornerRadius: number;
 
@@ -1320,8 +1310,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   borderWidth: number;
 
-  get borderColor(): interop.Pointer;
-  set borderColor(value: interop.PointerConvertible);
+  borderColor: interop.Object;
 
   opacity: number;
 
@@ -1339,8 +1328,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   rasterizationScale: number;
 
-  get shadowColor(): interop.Pointer;
-  set shadowColor(value: interop.PointerConvertible);
+  shadowColor: interop.Object;
 
   shadowOpacity: number;
 
@@ -1348,8 +1336,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   shadowRadius: number;
 
-  get shadowPath(): interop.Pointer;
-  set shadowPath(value: interop.PointerConvertible);
+  shadowPath: interop.Object;
 
   preferredFrameSize(): CGSize;
 
@@ -1457,7 +1444,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setAllowsEdgeAntialiasing(allowsEdgeAntialiasing: boolean): void;
 
-  setBackgroundColor(backgroundColor: interop.PointerConvertible): void;
+  setBackgroundColor(backgroundColor: interop.Object | null): void;
 
   setCornerRadius(cornerRadius: number): void;
 
@@ -1467,7 +1454,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setBorderWidth(borderWidth: number): void;
 
-  setBorderColor(borderColor: interop.PointerConvertible): void;
+  setBorderColor(borderColor: interop.Object | null): void;
 
   setOpacity(opacity: number): void;
 
@@ -1483,7 +1470,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setRasterizationScale(rasterizationScale: number): void;
 
-  setShadowColor(shadowColor: interop.PointerConvertible): void;
+  setShadowColor(shadowColor: interop.Object | null): void;
 
   setShadowOpacity(shadowOpacity: number): void;
 
@@ -1491,7 +1478,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setShadowRadius(shadowRadius: number): void;
 
-  setShadowPath(shadowPath: interop.PointerConvertible): void;
+  setShadowPath(shadowPath: interop.Object | null): void;
 
   setActions(actions: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 

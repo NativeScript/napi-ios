@@ -3,13 +3,13 @@
 
 declare const PHASESpatialCategoryLateReverb: string;
 
-declare const PHASESpatialCategoryEarlyReflections: string;
-
 declare const PHASESpatialCategoryDirectPathTransmission: string;
 
 declare const PHASEAssetErrorDomain: string;
 
 declare const PHASESoundEventErrorDomain: string;
+
+declare const PHASESpatialCategoryEarlyReflections: string;
 
 declare const PHASEErrorDomain: string;
 
@@ -98,11 +98,6 @@ declare const PHASERenderingState: {
   Paused: 2,
 };
 
-declare const PHASEUpdateMode: {
-  Automatic: 0,
-  Manual: 1,
-};
-
 declare const PHASECullOption: {
   Terminate: 0,
   SleepWakeAtZero: 1,
@@ -116,6 +111,11 @@ declare const PHASEPushStreamBufferOptions: {
   Loops: 2,
   Interrupts: 4,
   InterruptsAtLoop: 8,
+};
+
+declare const PHASEUpdateMode: {
+  Automatic: 0,
+  Manual: 1,
 };
 
 declare const PHASEReverbPreset: {
@@ -170,14 +170,6 @@ declare const PHASESpatializationMode: {
   AlwaysUseBinaural: 1,
   AlwaysUseChannelBased: 2,
 };
-
-declare class PHASESpatialPipeline extends NSObject {
-  initWithFlags(flags: interop.Enum<typeof PHASESpatialPipelineFlags>): this;
-
-  readonly flags: interop.Enum<typeof PHASESpatialPipelineFlags>;
-
-  readonly entries: NSDictionary;
-}
 
 declare class PHASESource extends PHASEObject {
   initWithEngine(engine: PHASEEngine): this;
@@ -533,22 +525,6 @@ declare class PHASEAsset extends NSObject {
   readonly identifier: string;
 }
 
-declare class PHASEOccluder extends PHASEObject {
-  initWithEngineShapes(engine: PHASEEngine, shapes: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly shapes: NSArray;
-}
-
-declare class PHASEContainerNodeDefinition extends PHASESoundEventNodeDefinition {
-  init(): this;
-
-  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  initWithIdentifier(identifier: string): this;
-
-  addSubtree(subtree: PHASESoundEventNodeDefinition): void;
-}
-
 declare class PHASEConeDirectivityModelSubbandParameters extends NSObject {
   init(): this;
 
@@ -573,36 +549,6 @@ declare class PHASEShapeElement extends NSObject {
   setMaterial(material: PHASEMaterial | null): void;
 }
 
-declare class PHASEObject extends NSObject implements NSCopying {
-  initWithEngine(engine: PHASEEngine): this;
-
-  addChildError(child: PHASEObject, error: interop.PointerConvertible): boolean;
-
-  removeChild(child: PHASEObject): void;
-
-  removeChildren(): void;
-
-  readonly parent: PHASEObject;
-
-  readonly children: NSArray;
-
-  static readonly right: unknown /* ext vector */;
-
-  static readonly up: unknown /* ext vector */;
-
-  static readonly forward: unknown /* ext vector */;
-
-  transform: simd_float4x4;
-
-  worldTransform: simd_float4x4;
-
-  setTransform(transform: simd_float4x4): void;
-
-  setWorldTransform(worldTransform: simd_float4x4): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class PHASEPushStreamNodeDefinition extends PHASEGeneratorNodeDefinition {
   initWithMixerDefinitionFormatIdentifier(mixerDefinition: PHASEMixerDefinition, format: AVAudioFormat, identifier: string): this;
 
@@ -613,12 +559,6 @@ declare class PHASEPushStreamNodeDefinition extends PHASEGeneratorNodeDefinition
   normalize: boolean;
 
   setNormalize(normalize: boolean): void;
-}
-
-declare class PHASEDistanceModelParameters extends NSObject {
-  fadeOutParameters: PHASEDistanceModelFadeOutParameters;
-
-  setFadeOutParameters(fadeOutParameters: PHASEDistanceModelFadeOutParameters | null): void;
 }
 
 declare class PHASEGroup extends NSObject {
@@ -657,6 +597,94 @@ declare class PHASEGroup extends NSObject {
   isMuted(): boolean;
 
   isSoloed(): boolean;
+}
+
+declare class PHASEDucker extends NSObject {
+  initWithEngineSourceGroupsTargetGroupsGainAttackTimeReleaseTimeAttackCurveReleaseCurve(engine: PHASEEngine, sourceGroups: NSSet, targetGroups: NSSet, gain: number, attackTime: number, releaseTime: number, attackCurve: interop.Enum<typeof PHASECurveType>, releaseCurve: interop.Enum<typeof PHASECurveType>): this;
+
+  activate(): void;
+
+  deactivate(): void;
+
+  readonly sourceGroups: NSSet;
+
+  readonly targetGroups: NSSet;
+
+  readonly active: boolean;
+
+  readonly gain: number;
+
+  readonly attackTime: number;
+
+  readonly releaseTime: number;
+
+  readonly attackCurve: interop.Enum<typeof PHASECurveType>;
+
+  readonly releaseCurve: interop.Enum<typeof PHASECurveType>;
+
+  readonly identifier: string;
+
+  isActive(): boolean;
+}
+
+declare class PHASEObject extends NSObject implements NSCopying {
+  initWithEngine(engine: PHASEEngine): this;
+
+  addChildError(child: PHASEObject, error: interop.PointerConvertible): boolean;
+
+  removeChild(child: PHASEObject): void;
+
+  removeChildren(): void;
+
+  readonly parent: PHASEObject;
+
+  readonly children: NSArray;
+
+  static readonly right: unknown /* ext vector */;
+
+  static readonly up: unknown /* ext vector */;
+
+  static readonly forward: unknown /* ext vector */;
+
+  transform: simd_float4x4;
+
+  worldTransform: simd_float4x4;
+
+  setTransform(transform: simd_float4x4): void;
+
+  setWorldTransform(worldTransform: simd_float4x4): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PHASEDistanceModelParameters extends NSObject {
+  fadeOutParameters: PHASEDistanceModelFadeOutParameters;
+
+  setFadeOutParameters(fadeOutParameters: PHASEDistanceModelFadeOutParameters | null): void;
+}
+
+declare class PHASESpatialPipeline extends NSObject {
+  initWithFlags(flags: interop.Enum<typeof PHASESpatialPipelineFlags>): this;
+
+  readonly flags: interop.Enum<typeof PHASESpatialPipelineFlags>;
+
+  readonly entries: NSDictionary;
+}
+
+declare class PHASEOccluder extends PHASEObject {
+  initWithEngineShapes(engine: PHASEEngine, shapes: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly shapes: NSArray;
+}
+
+declare class PHASEContainerNodeDefinition extends PHASESoundEventNodeDefinition {
+  init(): this;
+
+  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  initWithIdentifier(identifier: string): this;
+
+  addSubtree(subtree: PHASESoundEventNodeDefinition): void;
 }
 
 declare class PHASEStreamNode extends NSObject {
@@ -756,6 +784,12 @@ declare class PHASESpatialPipelineEntry extends NSObject {
   setSendLevelMetaParameterDefinition(sendLevelMetaParameterDefinition: PHASENumberMetaParameterDefinition | null): void;
 }
 
+declare class PHASECardioidDirectivityModelParameters extends PHASEDirectivityModelParameters {
+  initWithSubbandParameters(subbandParameters: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly subbandParameters: NSArray;
+}
+
 declare class PHASEMixerDefinition extends PHASEDefinition {
   gain: number;
 
@@ -806,40 +840,6 @@ declare class PHASEAmbientMixerDefinition extends PHASEMixerDefinition {
   readonly orientation: simd_quatf;
 
   readonly inputChannelLayout: AVAudioChannelLayout;
-}
-
-declare class PHASEDucker extends NSObject {
-  initWithEngineSourceGroupsTargetGroupsGainAttackTimeReleaseTimeAttackCurveReleaseCurve(engine: PHASEEngine, sourceGroups: NSSet, targetGroups: NSSet, gain: number, attackTime: number, releaseTime: number, attackCurve: interop.Enum<typeof PHASECurveType>, releaseCurve: interop.Enum<typeof PHASECurveType>): this;
-
-  activate(): void;
-
-  deactivate(): void;
-
-  readonly sourceGroups: NSSet;
-
-  readonly targetGroups: NSSet;
-
-  readonly active: boolean;
-
-  readonly gain: number;
-
-  readonly attackTime: number;
-
-  readonly releaseTime: number;
-
-  readonly attackCurve: interop.Enum<typeof PHASECurveType>;
-
-  readonly releaseCurve: interop.Enum<typeof PHASECurveType>;
-
-  readonly identifier: string;
-
-  isActive(): boolean;
-}
-
-declare class PHASECardioidDirectivityModelParameters extends PHASEDirectivityModelParameters {
-  initWithSubbandParameters(subbandParameters: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly subbandParameters: NSArray;
 }
 
 declare class PHASEShape extends NSObject implements NSCopying {

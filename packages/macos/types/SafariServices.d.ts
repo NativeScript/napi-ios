@@ -12,6 +12,12 @@ declare const SFErrorDomain: string;
 
 declare const SFExtensionMessageKey: string;
 
+declare const SFErrorCode: {
+  NoExtensionFound: 1,
+  NoAttachmentFound: 2,
+  LoadingInterrupted: 3,
+};
+
 declare const SFSafariServicesVersion: {
   Version10_0: 0,
   Version10_1: 1,
@@ -19,12 +25,6 @@ declare const SFSafariServicesVersion: {
   Version12_0: 3,
   Version12_1: 4,
   Version13_0: 5,
-};
-
-declare const SFErrorCode: {
-  NoExtensionFound: 1,
-  NoAttachmentFound: 2,
-  LoadingInterrupted: 3,
 };
 
 declare interface SFSafariExtensionHandling extends NSObjectProtocol {
@@ -54,12 +54,6 @@ declare interface SFSafariExtensionHandling extends NSObjectProtocol {
 }
 
 declare class SFSafariExtensionHandling extends NativeObject implements SFSafariExtensionHandling {
-}
-
-declare class SFContentBlockerState extends NSObject {
-  readonly enabled: boolean;
-
-  isEnabled(): boolean;
 }
 
 declare class SFSafariTab extends NSObject implements NSCopying, NSSecureCoding {
@@ -196,6 +190,12 @@ declare class SFSafariExtensionState extends NSObject {
 
 declare class SFSafariExtensionManager extends NSObject {
   static getStateOfSafariExtensionWithIdentifierCompletionHandler(identifier: string, completionHandler: (p1: SFSafariExtensionState, p2: NSError) => void | null): void;
+}
+
+declare class SFContentBlockerState extends NSObject {
+  readonly enabled: boolean;
+
+  isEnabled(): boolean;
 }
 
 declare class SFContentBlockerManager extends NSObject {

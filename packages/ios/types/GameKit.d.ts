@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./UIKit.d.ts" />
 /// <reference path="./Runtime.d.ts" />
+/// <reference path="./UIKit.d.ts" />
 
 declare const GKPlayerAuthenticationDidChangeNotificationName: string;
 
@@ -318,13 +318,6 @@ declare const GKLeaderboardType: {
   Recurring: 1,
 };
 
-declare interface GKGameActivityListener {
-  playerWantsToPlayGameActivityCompletionHandler?(player: GKPlayer, activity: GKGameActivity, completionHandler: (p1: boolean) => void): void;
-}
-
-declare class GKGameActivityListener extends NativeObject implements GKGameActivityListener {
-}
-
 declare interface GKTurnBasedMatchmakerViewControllerDelegate extends NSObjectProtocol {
   turnBasedMatchmakerViewControllerWasCancelled(viewController: GKTurnBasedMatchmakerViewController): void;
 
@@ -535,6 +528,13 @@ declare interface GKLocalPlayerListener extends GKChallengeListener, GKGameActiv
 declare class GKLocalPlayerListener extends NativeObject implements GKLocalPlayerListener {
 }
 
+declare interface GKGameActivityListener {
+  playerWantsToPlayGameActivityCompletionHandler?(player: GKPlayer, activity: GKGameActivity, completionHandler: (p1: boolean) => void): void;
+}
+
+declare class GKGameActivityListener extends NativeObject implements GKGameActivityListener {
+}
+
 declare interface GKAchievementViewControllerDelegate extends NSObjectProtocol {
   achievementViewControllerDidFinish(viewController: GKAchievementViewController): void;
 }
@@ -560,22 +560,6 @@ declare interface GKFriendRequestComposeViewControllerDelegate {
 }
 
 declare class GKFriendRequestComposeViewControllerDelegate extends NativeObject implements GKFriendRequestComposeViewControllerDelegate {
-}
-
-declare class GKFriendRequestComposeViewController extends UINavigationController {
-  static maxNumberOfRecipients(): number;
-
-  setMessage(message: string | null): void;
-
-  addRecipientPlayers(players: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  addRecipientsWithPlayerIDs(playerIDs: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  addRecipientsWithEmailAddresses(emailAddresses: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  composeViewDelegate: GKFriendRequestComposeViewControllerDelegate;
-
-  setComposeViewDelegate(composeViewDelegate: GKFriendRequestComposeViewControllerDelegate | null): void;
 }
 
 declare class GKTurnBasedParticipant extends NSObject {
@@ -696,6 +680,44 @@ declare class GKLeaderboard extends NSObject {
   isLoading(): boolean;
 
   loadImageWithCompletionHandler(completionHandler: (p1: UIImage, p2: NSError) => void | null): void;
+}
+
+declare class GKMatchmakerViewController extends UINavigationController {
+  matchmakerDelegate: GKMatchmakerViewControllerDelegate;
+
+  readonly matchRequest: GKMatchRequest;
+
+  hosted: boolean;
+
+  matchmakingMode: interop.Enum<typeof GKMatchmakingMode>;
+
+  canStartWithMinimumPlayers: boolean;
+
+  initWithMatchRequest(request: GKMatchRequest): this;
+
+  initWithInvite(invite: GKInvite): this;
+
+  addPlayersToMatch(match: GKMatch): void;
+
+  setHostedPlayerDidConnect(player: GKPlayer, connected: boolean): void;
+
+  defaultInvitationMessage: string;
+
+  setMatchmakerDelegate(matchmakerDelegate: GKMatchmakerViewControllerDelegate | null): void;
+
+  isHosted(): boolean;
+
+  setHosted(hosted: boolean): void;
+
+  setMatchmakingMode(matchmakingMode: interop.Enum<typeof GKMatchmakingMode>): void;
+
+  setCanStartWithMinimumPlayers(canStartWithMinimumPlayers: boolean): void;
+
+  setDefaultInvitationMessage(defaultInvitationMessage: string | null): void;
+
+  setHostedPlayerConnected(playerID: string, connected: boolean): void;
+
+  setHostedPlayerReady(playerID: string): void;
 }
 
 declare class GKLeaderboardEntry extends NSObject {
@@ -838,44 +860,6 @@ declare class GKNotificationBanner extends NSObject {
   static showBannerWithTitleMessageCompletionHandler(title: string | null, message: string | null, completionHandler: () => void | null): void;
 
   static showBannerWithTitleMessageDurationCompletionHandler(title: string | null, message: string | null, duration: number, completionHandler: () => void | null): void;
-}
-
-declare class GKMatchmakerViewController extends UINavigationController {
-  matchmakerDelegate: GKMatchmakerViewControllerDelegate;
-
-  readonly matchRequest: GKMatchRequest;
-
-  hosted: boolean;
-
-  matchmakingMode: interop.Enum<typeof GKMatchmakingMode>;
-
-  canStartWithMinimumPlayers: boolean;
-
-  initWithMatchRequest(request: GKMatchRequest): this;
-
-  initWithInvite(invite: GKInvite): this;
-
-  addPlayersToMatch(match: GKMatch): void;
-
-  setHostedPlayerDidConnect(player: GKPlayer, connected: boolean): void;
-
-  defaultInvitationMessage: string;
-
-  setMatchmakerDelegate(matchmakerDelegate: GKMatchmakerViewControllerDelegate | null): void;
-
-  isHosted(): boolean;
-
-  setHosted(hosted: boolean): void;
-
-  setMatchmakingMode(matchmakingMode: interop.Enum<typeof GKMatchmakingMode>): void;
-
-  setCanStartWithMinimumPlayers(canStartWithMinimumPlayers: boolean): void;
-
-  setDefaultInvitationMessage(defaultInvitationMessage: string | null): void;
-
-  setHostedPlayerConnected(playerID: string, connected: boolean): void;
-
-  setHostedPlayerReady(playerID: string): void;
 }
 
 declare class GKMatchmaker extends NSObject {
@@ -1233,6 +1217,22 @@ declare class GKGameActivity extends NSObject {
   findPlayersForHostedMatchWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
 
   static checkPendingGameActivityExistenceWithCompletionHandler(completionHandler: (p1: boolean) => void): void;
+}
+
+declare class GKFriendRequestComposeViewController extends UINavigationController {
+  static maxNumberOfRecipients(): number;
+
+  setMessage(message: string | null): void;
+
+  addRecipientPlayers(players: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  addRecipientsWithPlayerIDs(playerIDs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  addRecipientsWithEmailAddresses(emailAddresses: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  composeViewDelegate: GKFriendRequestComposeViewControllerDelegate;
+
+  setComposeViewDelegate(composeViewDelegate: GKFriendRequestComposeViewControllerDelegate | null): void;
 }
 
 declare class GKChallengeEventHandler extends NSObject {

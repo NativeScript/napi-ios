@@ -17,10 +17,21 @@ declare const VSErrorDomain: string;
 
 declare const VSAccountProviderAuthenticationSchemeAPI: string;
 
+declare const VSUserAccountType: {
+  Free: 0,
+  Paid: 1,
+};
+
 declare const VSSubscriptionAccessLevel: {
   Unknown: 0,
   FreeWithAccount: 1,
   Paid: 2,
+};
+
+declare const VSAutoSignInAuthorization: {
+  NotDetermined: 0,
+  Granted: 1,
+  Denied: 2,
 };
 
 declare const VSOriginatingDeviceCategory: {
@@ -51,11 +62,6 @@ declare const VSErrorCode: {
   Unsupported: 7,
 };
 
-declare const VSUserAccountType: {
-  Free: 0,
-  Paid: 1,
-};
-
 declare interface VSAccountManagerDelegate extends NSObjectProtocol {
   accountManagerShouldAuthenticateAccountProviderWithIdentifier?(accountManager: VSAccountManager, accountProviderIdentifier: string): boolean;
 }
@@ -69,6 +75,10 @@ declare class VSUserAccountManager extends NSObject {
   updateUserAccountCompletion(account: VSUserAccount, completion: (p1: NSError) => void | null): void;
 
   queryUserAccountsWithOptionsCompletion(options: interop.Enum<typeof VSUserAccountQueryOptions>, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  queryAutoSignInTokenWithCompletionHandler(completion: (p1: VSAutoSignInToken, p2: NSError) => void | null): void;
+
+  deleteAutoSignInTokenWithCompletionHandler(completion: (p1: NSError) => void | null): void;
 }
 
 declare class VSAccountMetadataRequest extends NSObject {
@@ -150,6 +160,18 @@ declare class VSAccountApplicationProvider extends NSObject {
   readonly localizedDisplayName: string;
 
   readonly identifier: string;
+}
+
+declare class VSAutoSignInToken extends NSObject implements NSSecureCoding {
+  readonly authorization: interop.Enum<typeof VSAutoSignInAuthorization>;
+
+  readonly value: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class VSSubscription extends NSObject {
@@ -241,14 +263,14 @@ declare class VSUserAccount extends NSObject {
   setAppleSubscription(appleSubscription: VSAppleSubscription | null): void;
 }
 
+declare class VSAccountManagerResult extends NSObject {
+  cancel(): void;
+}
+
 declare class VSAccountManager extends NSObject {
   delegate: VSAccountManagerDelegate | null;
 
   setDelegate(delegate: VSAccountManagerDelegate | null): void;
-}
-
-declare class VSAccountManagerResult extends NSObject {
-  cancel(): void;
 }
 
 declare class VSAccountProviderResponse extends NSObject {

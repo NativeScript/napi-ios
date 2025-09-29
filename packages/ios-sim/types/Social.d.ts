@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
+/// <reference path="./Runtime.d.ts" />
 
 declare const SLServiceTypeFacebook: string;
 
@@ -24,24 +24,26 @@ declare const SLRequestMethod: {
   PUT: 3,
 };
 
-declare class SLComposeSheetConfigurationItem extends NSObject {
-  init(): this;
+declare class SLComposeViewController extends UIViewController {
+  static isAvailableForServiceType(serviceType: string): boolean;
 
-  title: string;
+  static composeViewControllerForServiceType(serviceType: string): SLComposeViewController;
 
-  value: string;
+  readonly serviceType: string;
 
-  valuePending: boolean;
+  setInitialText(text: string): boolean;
 
-  tapHandler: () => void;
+  addImage(image: UIImage): boolean;
 
-  setTitle(title: string): void;
+  removeAllImages(): boolean;
 
-  setValue(value: string): void;
+  addURL(url: NSURL): boolean;
 
-  setValuePending(valuePending: boolean): void;
+  removeAllURLs(): boolean;
 
-  setTapHandler(tapHandler: () => void): void;
+  completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void;
+
+  setCompletionHandler(completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void): void;
 }
 
 declare class SLRequest extends NSObject {
@@ -228,25 +230,23 @@ declare class SLComposeServiceViewController extends UIViewController implements
   scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
 }
 
-declare class SLComposeViewController extends UIViewController {
-  static isAvailableForServiceType(serviceType: string): boolean;
+declare class SLComposeSheetConfigurationItem extends NSObject {
+  init(): this;
 
-  static composeViewControllerForServiceType(serviceType: string): SLComposeViewController;
+  title: string;
 
-  readonly serviceType: string;
+  value: string;
 
-  setInitialText(text: string): boolean;
+  valuePending: boolean;
 
-  addImage(image: UIImage): boolean;
+  tapHandler: () => void;
 
-  removeAllImages(): boolean;
+  setTitle(title: string): void;
 
-  addURL(url: NSURL): boolean;
+  setValue(value: string): void;
 
-  removeAllURLs(): boolean;
+  setValuePending(valuePending: boolean): void;
 
-  completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void;
-
-  setCompletionHandler(completionHandler: (p1: interop.Enum<typeof SLComposeViewControllerResult>) => void): void;
+  setTapHandler(tapHandler: () => void): void;
 }
 

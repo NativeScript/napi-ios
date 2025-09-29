@@ -74,25 +74,6 @@ declare interface SFAddToHomeScreenActivityItem extends NSObjectProtocol {
 declare class SFAddToHomeScreenActivityItem extends NativeObject implements SFAddToHomeScreenActivityItem {
 }
 
-declare class SFContentBlockerState extends NSObject {
-  readonly enabled: boolean;
-
-  isEnabled(): boolean;
-}
-
-declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
-  initWithManifest(manifest: BEWebAppManifest): this;
-
-  readonly manifest: BEWebAppManifest;
-
-  get websiteCookies(): NSArray;
-  set websiteCookies(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setWebsiteCookies(websiteCookies: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class SFSafariViewControllerDataStore extends NSObject {
   static readonly defaultDataStore: SFSafariViewControllerDataStore;
 
@@ -157,8 +138,27 @@ declare class SFAuthenticationSession extends NSObject {
   cancel(): void;
 }
 
+declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
+  initWithManifest(manifest: BEWebAppManifest): this;
+
+  readonly manifest: BEWebAppManifest;
+
+  get websiteCookies(): NSArray;
+  set websiteCookies(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setWebsiteCookies(websiteCookies: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class SFSafariSettings extends NSObject {
   static openExportBrowsingDataSettingsWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
+}
+
+declare class SFContentBlockerState extends NSObject {
+  readonly enabled: boolean;
+
+  isEnabled(): boolean;
 }
 
 declare class SSReadingList extends NSObject {

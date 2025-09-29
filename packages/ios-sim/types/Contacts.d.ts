@@ -14,13 +14,13 @@ declare const CNLabelContactRelationBrotherInLawYoungerSistersHusband: string;
 
 declare const CNLabelContactRelationCousinMothersSistersSon: string;
 
-declare const CNLabelContactRelationElderBrotherInLaw: string;
-
 declare const CNLabelContactRelationYoungerSister: string;
 
 declare const CNLabelContactRelationCousinParentsSiblingsChild: string;
 
 declare const CNLabelContactRelationCousinMothersBrothersSon: string;
+
+declare const CNLabelContactRelationElderBrotherInLaw: string;
 
 declare const CNSocialProfileServiceMySpace: string;
 
@@ -494,6 +494,8 @@ declare const CNLabelContactRelationGrandniece: string;
 
 declare const CNLabelContactRelationGrandnephew: string;
 
+declare const CNContactTypeKey: string;
+
 declare const CNLabelContactRelationGirlfriend: string;
 
 declare const CNLabelContactRelationParent: string;
@@ -601,8 +603,6 @@ declare const CNLabelContactRelationFatherInLaw: string;
 declare const CNContactMiddleNameKey: string;
 
 declare const CNContactPhoneticMiddleNameKey: string;
-
-declare const CNContactTypeKey: string;
 
 declare const CNLabelContactRelationGranddaughterSonsDaughter: string;
 
@@ -730,10 +730,6 @@ declare interface CNChangeHistoryEventVisitor extends NSObjectProtocol {
 declare class CNChangeHistoryEventVisitor extends NativeObject implements CNChangeHistoryEventVisitor {
 }
 
-declare class CNChangeHistoryDeleteContactEvent extends CNChangeHistoryEvent {
-  readonly contactIdentifier: string;
-}
-
 declare class CNContactsUserDefaults extends NSObject {
   static sharedDefaults<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -742,12 +738,67 @@ declare class CNContactsUserDefaults extends NSObject {
   readonly countryCode: string;
 }
 
+declare class CNChangeHistoryDeleteContactEvent extends CNChangeHistoryEvent {
+  readonly contactIdentifier: string;
+}
+
 declare class CNContactVCardSerialization extends NSObject {
   static descriptorForRequiredKeys(): CNKeyDescriptor;
 
   static dataWithContactsError(contacts: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): NSData;
 
   static contactsWithDataError(data: NSData, error: interop.PointerConvertible): NSArray;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class CNMutablePostalAddress extends CNPostalAddress {
+  // @ts-ignore MemberDecl.tsIgnore
+  street: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  subLocality: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  city: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  subAdministrativeArea: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  state: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  postalCode: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  country: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  ISOCountryCode: string;
+
+  setStreet(street: string): void;
+
+  setSubLocality(subLocality: string): void;
+
+  setCity(city: string): void;
+
+  setSubAdministrativeArea(subAdministrativeArea: string): void;
+
+  setState(state: string): void;
+
+  setPostalCode(postalCode: string): void;
+
+  setCountry(country: string): void;
+
+  setISOCountryCode(ISOCountryCode: string): void;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class CNMutableGroup extends CNGroup {
+  // @ts-ignore MemberDecl.tsIgnore
+  name: string;
+
+  setName(name: string): void;
 }
 
 declare class CNContactProperty extends NSObject implements NSCopying, NSSecureCoding {
@@ -804,14 +855,6 @@ declare class CNContainer extends NSObject implements NSCopying, NSSecureCoding 
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class CNMutableGroup extends CNGroup {
-  // @ts-ignore MemberDecl.tsIgnore
-  name: string;
-
-  setName(name: string): void;
 }
 
 declare class CNPhoneNumber extends NSObject implements NSCopying, NSSecureCoding {
@@ -1201,49 +1244,6 @@ declare class CNChangeHistoryAddGroupEvent extends CNChangeHistoryEvent {
   readonly group: CNGroup;
 
   readonly containerIdentifier: string;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class CNMutablePostalAddress extends CNPostalAddress {
-  // @ts-ignore MemberDecl.tsIgnore
-  street: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  subLocality: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  city: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  subAdministrativeArea: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  state: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  postalCode: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  country: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  ISOCountryCode: string;
-
-  setStreet(street: string): void;
-
-  setSubLocality(subLocality: string): void;
-
-  setCity(city: string): void;
-
-  setSubAdministrativeArea(subAdministrativeArea: string): void;
-
-  setState(state: string): void;
-
-  setPostalCode(postalCode: string): void;
-
-  setCountry(country: string): void;
-
-  setISOCountryCode(ISOCountryCode: string): void;
 }
 
 declare class CNSocialProfile extends NSObject implements NSCopying, NSSecureCoding {

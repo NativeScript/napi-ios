@@ -1,32 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare class NSSymbolWiggleEffect extends NSSymbolEffect {
-  static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleClockwiseEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleCounterClockwiseEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleLeftEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleRightEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleUpEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleDownEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleForwardEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleBackwardEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static wiggleCustomAngleEffect<This extends abstract new (...args: any) => any>(this: This, angle: number): InstanceType<This>;
-
-  effectWithByLayer(): this;
-
-  effectWithWholeSymbol(): this;
-}
-
 declare class NSSymbolDrawOffEffect extends NSSymbolEffect {
   static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -73,6 +47,16 @@ declare class NSSymbolEffectOptionsRepeatBehavior extends NSObject implements NS
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NSSymbolContentTransition extends NSObject implements NSCopying, NSSecureCoding {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class NSSymbolDrawOnEffect extends NSSymbolEffect {
   static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -101,6 +85,32 @@ declare class NSSymbolBreatheEffect extends NSSymbolEffect {
   static breathePulseEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
   static breathePlainEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  effectWithByLayer(): this;
+
+  effectWithWholeSymbol(): this;
+}
+
+declare class NSSymbolWiggleEffect extends NSSymbolEffect {
+  static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleClockwiseEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleCounterClockwiseEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleLeftEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleRightEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleUpEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleDownEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleForwardEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleBackwardEffect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static wiggleCustomAngleEffect<This extends abstract new (...args: any) => any>(this: This, angle: number): InstanceType<This>;
 
   effectWithByLayer(): this;
 
@@ -166,16 +176,6 @@ declare class NSSymbolAutomaticContentTransition extends NSSymbolContentTransiti
 }
 
 declare class NSSymbolMagicReplaceContentTransition extends NSSymbolContentTransition {
-}
-
-declare class NSSymbolContentTransition extends NSObject implements NSCopying, NSSecureCoding {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NSSymbolDisappearEffect extends NSSymbolEffect {

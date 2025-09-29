@@ -94,6 +94,8 @@ declare const kIOMatchingCalloutRefconIndex: number;
 
 declare const kIOAsyncCalloutRefconIndex: number;
 
+declare const kIOCopybackInnerCache: number;
+
 declare const kIOWriteCombineCache: number;
 
 declare const kIODefaultMemoryType: number;
@@ -103,8 +105,6 @@ declare const kIOPostedWrite: number;
 declare const kOSAsyncRef64Size: number;
 
 declare const kOSAsyncCompleteMessageID: number;
-
-declare const kIOCopybackInnerCache: number;
 
 declare const kIOServiceMessageNotificationType: number;
 
@@ -258,13 +258,13 @@ declare function IODataQueueEnqueue(dataQueue: interop.PointerConvertible, data:
 
 declare function IODataQueueSetNotificationPort(dataQueue: interop.PointerConvertible, notifyPort: number): number;
 
-declare function IOCFUnserialize(buffer: string, allocator: interop.PointerConvertible, options: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function IOCFUnserialize(buffer: string, allocator: interop.Object, options: number, errorString: interop.PointerConvertible): interop.Object;
 
-declare function IOCFUnserializeBinary(buffer: string, bufferSize: number, allocator: interop.PointerConvertible, options: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function IOCFUnserializeBinary(buffer: string, bufferSize: number, allocator: interop.Object, options: number, errorString: interop.PointerConvertible): interop.Object;
 
-declare function IOCFUnserializeWithSize(buffer: string, bufferSize: number, allocator: interop.PointerConvertible, options: number, errorString: interop.PointerConvertible): interop.Pointer;
+declare function IOCFUnserializeWithSize(buffer: string, bufferSize: number, allocator: interop.Object, options: number, errorString: interop.PointerConvertible): interop.Object;
 
-declare function IOCFSerialize(object: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IOCFSerialize(object: interop.Object, options: number): interop.Object;
 
 declare function IOMainPort(bootstrapPort: number, mainPort: interop.PointerConvertible): number;
 
@@ -272,7 +272,7 @@ declare function IONotificationPortCreate(mainPort: number): interop.Pointer;
 
 declare function IONotificationPortDestroy(notify: interop.PointerConvertible): void;
 
-declare function IONotificationPortGetRunLoopSource(notify: interop.PointerConvertible): interop.Pointer;
+declare function IONotificationPortGetRunLoopSource(notify: interop.PointerConvertible): interop.Object;
 
 declare function IONotificationPortGetMachPort(notify: interop.PointerConvertible): number;
 
@@ -290,11 +290,11 @@ declare function IOObjectRetain(object: number): number;
 
 declare function IOObjectGetClass(object: number, className: unknown /* const array */): number;
 
-declare function IOObjectCopyClass(object: number): interop.Pointer;
+declare function IOObjectCopyClass(object: number): interop.Object;
 
-declare function IOObjectCopySuperclassForClass(classname: interop.PointerConvertible): interop.Pointer;
+declare function IOObjectCopySuperclassForClass(classname: interop.Object): interop.Object;
 
-declare function IOObjectCopyBundleIdentifierForClass(classname: interop.PointerConvertible): interop.Pointer;
+declare function IOObjectCopyBundleIdentifierForClass(classname: interop.Object): interop.Object;
 
 declare function IOObjectConformsTo(object: number, className: unknown /* const array */): number;
 
@@ -312,15 +312,15 @@ declare function IOIteratorReset(iterator: number): void;
 
 declare function IOIteratorIsValid(iterator: number): number;
 
-declare function IOServiceGetMatchingService(mainPort: number, matching: interop.PointerConvertible): number;
+declare function IOServiceGetMatchingService(mainPort: number, matching: interop.Object): number;
 
-declare function IOServiceGetMatchingServices(mainPort: number, matching: interop.PointerConvertible, existing: interop.PointerConvertible): number;
+declare function IOServiceGetMatchingServices(mainPort: number, matching: interop.Object, existing: interop.PointerConvertible): number;
 
-declare function IOServiceAddMatchingNotification(notifyPort: interop.PointerConvertible, notificationType: unknown /* const array */, matching: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number) => void, refCon: interop.PointerConvertible, notification: interop.PointerConvertible): number;
+declare function IOServiceAddMatchingNotification(notifyPort: interop.PointerConvertible, notificationType: unknown /* const array */, matching: interop.Object, callback: (p1: interop.PointerConvertible, p2: number) => void, refCon: interop.PointerConvertible, notification: interop.PointerConvertible): number;
 
 declare function IOServiceAddInterestNotification(notifyPort: interop.PointerConvertible, service: number, interestType: unknown /* const array */, callback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, notification: interop.PointerConvertible): number;
 
-declare function IOServiceMatchPropertyTable(service: number, matching: interop.PointerConvertible, matches: interop.PointerConvertible): number;
+declare function IOServiceMatchPropertyTable(service: number, matching: interop.Object, matches: interop.PointerConvertible): number;
 
 declare function IOServiceGetBusyState(service: number, busyState: interop.PointerConvertible): number;
 
@@ -366,7 +366,7 @@ declare function IORegistryGetRootEntry(mainPort: number): number;
 
 declare function IORegistryEntryFromPath(mainPort: number, path: unknown /* const array */): number;
 
-declare function IORegistryEntryCopyFromPath(mainPort: number, path: interop.PointerConvertible): number;
+declare function IORegistryEntryCopyFromPath(mainPort: number, path: interop.Object): number;
 
 declare function IORegistryCreateIterator(mainPort: number, plane: unknown /* const array */, options: number, iterator: interop.PointerConvertible): number;
 
@@ -384,15 +384,15 @@ declare function IORegistryEntryGetLocationInPlane(entry: number, plane: unknown
 
 declare function IORegistryEntryGetPath(entry: number, plane: unknown /* const array */, path: unknown /* const array */): number;
 
-declare function IORegistryEntryCopyPath(entry: number, plane: unknown /* const array */): interop.Pointer;
+declare function IORegistryEntryCopyPath(entry: number, plane: unknown /* const array */): interop.Object;
 
 declare function IORegistryEntryGetRegistryEntryID(entry: number, entryID: interop.PointerConvertible): number;
 
-declare function IORegistryEntryCreateCFProperties(entry: number, properties: interop.PointerConvertible, allocator: interop.PointerConvertible, options: number): number;
+declare function IORegistryEntryCreateCFProperties(entry: number, properties: interop.PointerConvertible, allocator: interop.Object, options: number): number;
 
-declare function IORegistryEntryCreateCFProperty(entry: number, key: interop.PointerConvertible, allocator: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IORegistryEntryCreateCFProperty(entry: number, key: interop.Object, allocator: interop.Object, options: number): interop.Object;
 
-declare function IORegistryEntrySearchCFProperty(entry: number, plane: unknown /* const array */, key: interop.PointerConvertible, allocator: interop.PointerConvertible, options: number): interop.Pointer;
+declare function IORegistryEntrySearchCFProperty(entry: number, plane: unknown /* const array */, key: interop.Object, allocator: interop.Object, options: number): interop.Object;
 
 declare function IORegistryEntryGetChildIterator(entry: number, plane: unknown /* const array */, iterator: interop.PointerConvertible): number;
 
@@ -404,11 +404,11 @@ declare function IORegistryEntryGetParentEntry(entry: number, plane: unknown /* 
 
 declare function IORegistryEntryInPlane(entry: number, plane: unknown /* const array */): number;
 
-declare function IOServiceMatching(name: string): interop.Pointer;
+declare function IOServiceMatching(name: string): interop.Object;
 
-declare function IOServiceNameMatching(name: string): interop.Pointer;
+declare function IOServiceNameMatching(name: string): interop.Object;
 
-declare function IOBSDNameMatching(mainPort: number, options: number, bsdName: string): interop.Pointer;
+declare function IOBSDNameMatching(mainPort: number, options: number, bsdName: string): interop.Object;
 
-declare function IORegistryEntryIDMatching(entryID: number): interop.Pointer;
+declare function IORegistryEntryIDMatching(entryID: number): interop.Object;
 

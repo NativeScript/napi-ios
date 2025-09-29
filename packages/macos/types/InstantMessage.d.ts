@@ -83,43 +83,13 @@ declare const IMAVManagerURLToShareChangedNotification: string;
 
 declare const IMPersonStatusUnknown: number;
 
-declare const IMAVStartingUp: number;
-
 declare const IMMyStatusChangedNotification: string;
+
+declare const IMAVStartingUp: number;
 
 declare const IMPersonCapabilitiesKey: string;
 
 declare function IMComparePersonStatus(status: number, compareTo: number): interop.Enum<typeof NSComparisonResult>;
-
-declare class IMAVManager extends NSObject {
-  static sharedAVManager(): IMAVManager;
-
-  state(): number;
-
-  URLToShare(): NSURL;
-
-  setVideoDataSource(dataSource: interop.Object): void;
-
-  videoDataSource(): interop.Object;
-
-  setVideoOptimizationOptions(options: number): void;
-
-  videoOptimizationOptions(): number;
-
-  setNumberOfAudioChannels(count: number): void;
-
-  numberOfAudioChannels(): number;
-
-  audioDeviceUID(): string;
-
-  audioDeviceChannels(): NSArray;
-
-  controlBar(): IMAVControlBar;
-
-  start(): void;
-
-  stop(): void;
-}
 
 declare class IMService extends NSObject {
   static imageNameForStatus(status: number): string;
@@ -179,18 +149,6 @@ declare class IMAVButton extends IMAVControl {
   static muteButton(): IMAVButton;
 }
 
-declare class IMAVSlider extends IMAVControl {
-  minValue(): number;
-
-  setMinValue(aDouble: number): void;
-
-  maxValue(): number;
-
-  setMaxValue(aDouble: number): void;
-
-  static timeSlider(): IMAVSlider;
-}
-
 declare class IMAVControl extends NSObject {
   target(): interop.Object;
 
@@ -223,5 +181,47 @@ declare class IMAVControl extends NSObject {
   doubleValue(): number;
 
   setDoubleValue(aDouble: number): void;
+}
+
+declare class IMAVSlider extends IMAVControl {
+  minValue(): number;
+
+  setMinValue(aDouble: number): void;
+
+  maxValue(): number;
+
+  setMaxValue(aDouble: number): void;
+
+  static timeSlider(): IMAVSlider;
+}
+
+declare class IMAVManager extends NSObject {
+  static sharedAVManager(): IMAVManager;
+
+  state(): number;
+
+  URLToShare(): NSURL;
+
+  setVideoDataSource(dataSource: interop.Object): void;
+
+  videoDataSource(): interop.Object;
+
+  setVideoOptimizationOptions(options: number): void;
+
+  videoOptimizationOptions(): number;
+
+  setNumberOfAudioChannels(count: number): void;
+
+  numberOfAudioChannels(): number;
+
+  audioDeviceUID(): string;
+
+  audioDeviceChannels(): NSArray;
+
+  controlBar(): IMAVControlBar;
+
+  start(): void;
+
+  stop(): void;
 }
 

@@ -228,8 +228,6 @@ declare const AVSampleRateConverterAlgorithm_Normal: string;
 
 declare const AVAudioSessionMicrophoneInjectionIsAvailableKey: string;
 
-declare const AVAudioSessionPortCarAudio: string;
-
 declare const AVAudioSessionMediaServicesWereResetNotification: string;
 
 declare const AVAudioSessionCategoryRecord: string;
@@ -251,6 +249,8 @@ declare const AVEncoderAudioQualityKey: string;
 declare const AVSpeechSynthesisIPANotationAttribute: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyComments: string;
+
+declare const AVAudioSessionPortCarAudio: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyISRC: string;
 
@@ -885,20 +885,6 @@ declare interface AVSpeechSynthesizerDelegate extends NSObjectProtocol {
 declare class AVSpeechSynthesizerDelegate extends NativeObject implements AVSpeechSynthesizerDelegate {
 }
 
-declare class AVMusicUserEvent extends AVMusicEvent {
-  initWithData(data: NSData): this;
-
-  readonly sizeInBytes: number;
-}
-
-declare class AVMIDIChannelPressureEvent extends AVMIDIChannelEvent {
-  initWithChannelPressure(channel: number, pressure: number): this;
-
-  pressure: number;
-
-  setPressure(pressure: number): void;
-}
-
 declare class AVAudioUnitEQFilterParameters extends NSObject {
   filterType: interop.Enum<typeof AVAudioUnitEQFilterType>;
 
@@ -939,6 +925,236 @@ declare class AVParameterEvent extends AVMusicEvent {
   setElement(element: number): void;
 
   setValue(value: number): void;
+}
+
+declare class AVAudioInputNode extends AVAudioIONode implements AVAudioMixing {
+  setManualRenderingInputPCMFormatInputBlock(format: AVAudioFormat, block: (p1: number) => interop.Pointer): boolean;
+
+  voiceProcessingBypassed: boolean;
+
+  voiceProcessingAGCEnabled: boolean;
+
+  voiceProcessingInputMuted: boolean;
+
+  setMutedSpeechActivityEventListener(listenerBlock: (p1: interop.Enum<typeof AVAudioVoiceProcessingSpeechActivityEvent>) => void | null): boolean;
+
+  voiceProcessingOtherAudioDuckingConfiguration: AVAudioVoiceProcessingOtherAudioDuckingConfiguration;
+
+  isVoiceProcessingBypassed(): boolean;
+
+  setVoiceProcessingBypassed(voiceProcessingBypassed: boolean): void;
+
+  isVoiceProcessingAGCEnabled(): boolean;
+
+  setVoiceProcessingAGCEnabled(voiceProcessingAGCEnabled: boolean): void;
+
+  isVoiceProcessingInputMuted(): boolean;
+
+  setVoiceProcessingInputMuted(voiceProcessingInputMuted: boolean): void;
+
+  setVoiceProcessingOtherAudioDuckingConfiguration(voiceProcessingOtherAudioDuckingConfiguration: AVAudioVoiceProcessingOtherAudioDuckingConfiguration): void;
+
+  destinationForMixerBus(mixer: AVAudioNode, bus: number): AVAudioMixingDestination;
+
+  volume: number;
+
+  setVolume(volume: number): void;
+
+  pan: number;
+
+  setPan(pan: number): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  renderingAlgorithm: interop.Enum<typeof AVAudio3DMixingRenderingAlgorithm>;
+
+  sourceMode: interop.Enum<typeof AVAudio3DMixingSourceMode>;
+
+  pointSourceInHeadMode: interop.Enum<typeof AVAudio3DMixingPointSourceInHeadMode>;
+
+  rate: number;
+
+  reverbBlend: number;
+
+  obstruction: number;
+
+  occlusion: number;
+
+  position: AVAudio3DPoint;
+
+  setRenderingAlgorithm(renderingAlgorithm: interop.Enum<typeof AVAudio3DMixingRenderingAlgorithm>): void;
+
+  setSourceMode(sourceMode: interop.Enum<typeof AVAudio3DMixingSourceMode>): void;
+
+  setPointSourceInHeadMode(pointSourceInHeadMode: interop.Enum<typeof AVAudio3DMixingPointSourceInHeadMode>): void;
+
+  setRate(rate: number): void;
+
+  setReverbBlend(reverbBlend: number): void;
+
+  setObstruction(obstruction: number): void;
+
+  setOcclusion(occlusion: number): void;
+
+  setPosition(position: AVAudio3DPoint): void;
+}
+
+declare class AVMusicTrack extends NSObject {
+  destinationAudioUnit: AVAudioUnit;
+
+  destinationMIDIEndpoint: number;
+
+  loopRange: _AVBeatRange;
+
+  loopingEnabled: boolean;
+
+  numberOfLoops: number;
+
+  offsetTime: number;
+
+  muted: boolean;
+
+  soloed: boolean;
+
+  lengthInBeats: number;
+
+  lengthInSeconds: number;
+
+  readonly timeResolution: number;
+
+  setDestinationAudioUnit(destinationAudioUnit: AVAudioUnit | null): void;
+
+  setDestinationMIDIEndpoint(destinationMIDIEndpoint: number): void;
+
+  setLoopRange(loopRange: _AVBeatRange): void;
+
+  isLoopingEnabled(): boolean;
+
+  setLoopingEnabled(loopingEnabled: boolean): void;
+
+  setNumberOfLoops(numberOfLoops: number): void;
+
+  setOffsetTime(offsetTime: number): void;
+
+  isMuted(): boolean;
+
+  setMuted(muted: boolean): void;
+
+  isSoloed(): boolean;
+
+  setSoloed(soloed: boolean): void;
+
+  setLengthInBeats(lengthInBeats: number): void;
+
+  setLengthInSeconds(lengthInSeconds: number): void;
+
+  usesAutomatedParameters: boolean;
+
+  addEventAtBeat(event: AVMusicEvent, beat: number): void;
+
+  moveEventsInRangeByAmount(range: _AVBeatRange, beatAmount: number): void;
+
+  clearEventsInRange(range: _AVBeatRange): void;
+
+  cutEventsInRange(range: _AVBeatRange): void;
+
+  copyEventsInRangeFromTrackInsertAtBeat(range: _AVBeatRange, sourceTrack: AVMusicTrack, insertStartBeat: number): void;
+
+  copyAndMergeEventsInRangeFromTrackMergeAtBeat(range: _AVBeatRange, sourceTrack: AVMusicTrack, mergeStartBeat: number): void;
+
+  enumerateEventsInRangeUsingBlock(range: _AVBeatRange, block: (p1: AVMusicEvent, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): void;
+
+  setUsesAutomatedParameters(usesAutomatedParameters: boolean): void;
+}
+
+declare class AVAudioUnit extends AVAudioNode {
+  static instantiateWithComponentDescriptionOptionsCompletionHandler(audioComponentDescription: AudioComponentDescription, options: interop.Enum<typeof AudioComponentInstantiationOptions>, completionHandler: (p1: AVAudioUnit, p2: NSError) => void | null): void;
+
+  loadAudioUnitPresetAtURLError(url: NSURL, outError: interop.PointerConvertible): boolean;
+
+  readonly audioComponentDescription: AudioComponentDescription;
+
+  readonly audioUnit: interop.Pointer;
+
+  readonly AUAudioUnit: AUAudioUnit;
+
+  readonly name: string;
+
+  readonly manufacturerName: string;
+
+  readonly version: number;
+}
+
+declare class AVMusicUserEvent extends AVMusicEvent {
+  initWithData(data: NSData): this;
+
+  readonly sizeInBytes: number;
+}
+
+declare class AVMIDINoteEvent extends AVMusicEvent {
+  initWithChannelKeyVelocityDuration(channel: number, keyNum: number, velocity: number, duration: number): this;
+
+  channel: number;
+
+  key: number;
+
+  velocity: number;
+
+  duration: number;
+
+  setChannel(channel: number): void;
+
+  setKey(key: number): void;
+
+  setVelocity(velocity: number): void;
+
+  setDuration(duration: number): void;
+}
+
+declare class AVMIDIChannelPressureEvent extends AVMIDIChannelEvent {
+  initWithChannelPressure(channel: number, pressure: number): this;
+
+  pressure: number;
+
+  setPressure(pressure: number): void;
 }
 
 declare class AVMusicEvent extends NSObject {
@@ -1581,24 +1797,6 @@ declare class AVAudioUnitReverb extends AVAudioUnitEffect {
   setWetDryMix(wetDryMix: number): void;
 }
 
-declare class AVAudioUnit extends AVAudioNode {
-  static instantiateWithComponentDescriptionOptionsCompletionHandler(audioComponentDescription: AudioComponentDescription, options: interop.Enum<typeof AudioComponentInstantiationOptions>, completionHandler: (p1: AVAudioUnit, p2: NSError) => void | null): void;
-
-  loadAudioUnitPresetAtURLError(url: NSURL, outError: interop.PointerConvertible): boolean;
-
-  readonly audioComponentDescription: AudioComponentDescription;
-
-  readonly audioUnit: interop.Pointer;
-
-  readonly AUAudioUnit: AUAudioUnit;
-
-  readonly name: string;
-
-  readonly manufacturerName: string;
-
-  readonly version: number;
-}
-
 declare class AVAudioOutputNode extends AVAudioIONode {
 }
 
@@ -1715,26 +1913,6 @@ declare class AVAudioSessionPortExtensionBluetoothMicrophone extends NSObject {
   readonly highQualityRecording: AVAudioSessionCapability;
 
   readonly farFieldCapture: AVAudioSessionCapability;
-}
-
-declare class AVMIDINoteEvent extends AVMusicEvent {
-  initWithChannelKeyVelocityDuration(channel: number, keyNum: number, velocity: number, duration: number): this;
-
-  channel: number;
-
-  key: number;
-
-  velocity: number;
-
-  duration: number;
-
-  setChannel(channel: number): void;
-
-  setKey(key: number): void;
-
-  setVelocity(velocity: number): void;
-
-  setDuration(duration: number): void;
 }
 
 declare class AVAudioNode extends NSObject {
@@ -1865,18 +2043,6 @@ declare class AVAudioSequencer extends NSObject {
   isPlaying(): boolean;
 
   setRate(rate: number): void;
-}
-
-declare class AVAudioIONode extends AVAudioNode {
-  readonly presentationLatency: number;
-
-  readonly audioUnit: interop.Pointer;
-
-  readonly voiceProcessingEnabled: boolean;
-
-  setVoiceProcessingEnabledError(enabled: boolean, outError: interop.PointerConvertible): boolean;
-
-  isVoiceProcessingEnabled(): boolean;
 }
 
 declare class AVSpeechSynthesisVoice extends NSObject implements NSSecureCoding {
@@ -2174,7 +2340,7 @@ declare class AVAudioFormat extends NSObject implements NSSecureCoding {
 
   initWithSettings(settings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
 
-  initWithCMAudioFormatDescription(formatDescription: interop.PointerConvertible): this;
+  initWithCMAudioFormatDescription(formatDescription: interop.Object): this;
 
   isEqual(object: interop.Object): boolean;
 
@@ -2196,7 +2362,7 @@ declare class AVAudioFormat extends NSObject implements NSSecureCoding {
 
   readonly settings: NSDictionary;
 
-  readonly formatDescription: interop.Pointer;
+  readonly formatDescription: interop.Object;
 
   isStandard(): boolean;
 
@@ -2215,74 +2381,6 @@ declare class AVAudioUnitVarispeed extends AVAudioUnitTimeEffect {
   rate: number;
 
   setRate(rate: number): void;
-}
-
-declare class AVMusicTrack extends NSObject {
-  destinationAudioUnit: AVAudioUnit;
-
-  destinationMIDIEndpoint: number;
-
-  loopRange: _AVBeatRange;
-
-  loopingEnabled: boolean;
-
-  numberOfLoops: number;
-
-  offsetTime: number;
-
-  muted: boolean;
-
-  soloed: boolean;
-
-  lengthInBeats: number;
-
-  lengthInSeconds: number;
-
-  readonly timeResolution: number;
-
-  setDestinationAudioUnit(destinationAudioUnit: AVAudioUnit | null): void;
-
-  setDestinationMIDIEndpoint(destinationMIDIEndpoint: number): void;
-
-  setLoopRange(loopRange: _AVBeatRange): void;
-
-  isLoopingEnabled(): boolean;
-
-  setLoopingEnabled(loopingEnabled: boolean): void;
-
-  setNumberOfLoops(numberOfLoops: number): void;
-
-  setOffsetTime(offsetTime: number): void;
-
-  isMuted(): boolean;
-
-  setMuted(muted: boolean): void;
-
-  isSoloed(): boolean;
-
-  setSoloed(soloed: boolean): void;
-
-  setLengthInBeats(lengthInBeats: number): void;
-
-  setLengthInSeconds(lengthInSeconds: number): void;
-
-  usesAutomatedParameters: boolean;
-
-  addEventAtBeat(event: AVMusicEvent, beat: number): void;
-
-  moveEventsInRangeByAmount(range: _AVBeatRange, beatAmount: number): void;
-
-  clearEventsInRange(range: _AVBeatRange): void;
-
-  cutEventsInRange(range: _AVBeatRange): void;
-
-  copyEventsInRangeFromTrackInsertAtBeat(range: _AVBeatRange, sourceTrack: AVMusicTrack, insertStartBeat: number): void;
-
-  copyAndMergeEventsInRangeFromTrackMergeAtBeat(range: _AVBeatRange, sourceTrack: AVMusicTrack, mergeStartBeat: number): void;
-
-  enumerateEventsInRangeUsingBlock(range: _AVBeatRange, block: (p1: AVMusicEvent, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void): void;
-
-  setUsesAutomatedParameters(usesAutomatedParameters: boolean): void;
 }
 
 declare class AVAudioSinkNode extends AVAudioNode {
@@ -2348,116 +2446,6 @@ declare class AVAudioUnitEQ extends AVAudioUnitEffect {
   globalGain: number;
 
   setGlobalGain(globalGain: number): void;
-}
-
-declare class AVAudioInputNode extends AVAudioIONode implements AVAudioMixing {
-  setManualRenderingInputPCMFormatInputBlock(format: AVAudioFormat, block: (p1: number) => interop.Pointer): boolean;
-
-  voiceProcessingBypassed: boolean;
-
-  voiceProcessingAGCEnabled: boolean;
-
-  voiceProcessingInputMuted: boolean;
-
-  setMutedSpeechActivityEventListener(listenerBlock: (p1: interop.Enum<typeof AVAudioVoiceProcessingSpeechActivityEvent>) => void | null): boolean;
-
-  voiceProcessingOtherAudioDuckingConfiguration: AVAudioVoiceProcessingOtherAudioDuckingConfiguration;
-
-  isVoiceProcessingBypassed(): boolean;
-
-  setVoiceProcessingBypassed(voiceProcessingBypassed: boolean): void;
-
-  isVoiceProcessingAGCEnabled(): boolean;
-
-  setVoiceProcessingAGCEnabled(voiceProcessingAGCEnabled: boolean): void;
-
-  isVoiceProcessingInputMuted(): boolean;
-
-  setVoiceProcessingInputMuted(voiceProcessingInputMuted: boolean): void;
-
-  setVoiceProcessingOtherAudioDuckingConfiguration(voiceProcessingOtherAudioDuckingConfiguration: AVAudioVoiceProcessingOtherAudioDuckingConfiguration): void;
-
-  destinationForMixerBus(mixer: AVAudioNode, bus: number): AVAudioMixingDestination;
-
-  volume: number;
-
-  setVolume(volume: number): void;
-
-  pan: number;
-
-  setPan(pan: number): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  renderingAlgorithm: interop.Enum<typeof AVAudio3DMixingRenderingAlgorithm>;
-
-  sourceMode: interop.Enum<typeof AVAudio3DMixingSourceMode>;
-
-  pointSourceInHeadMode: interop.Enum<typeof AVAudio3DMixingPointSourceInHeadMode>;
-
-  rate: number;
-
-  reverbBlend: number;
-
-  obstruction: number;
-
-  occlusion: number;
-
-  position: AVAudio3DPoint;
-
-  setRenderingAlgorithm(renderingAlgorithm: interop.Enum<typeof AVAudio3DMixingRenderingAlgorithm>): void;
-
-  setSourceMode(sourceMode: interop.Enum<typeof AVAudio3DMixingSourceMode>): void;
-
-  setPointSourceInHeadMode(pointSourceInHeadMode: interop.Enum<typeof AVAudio3DMixingPointSourceInHeadMode>): void;
-
-  setRate(rate: number): void;
-
-  setReverbBlend(reverbBlend: number): void;
-
-  setObstruction(obstruction: number): void;
-
-  setOcclusion(occlusion: number): void;
-
-  setPosition(position: AVAudio3DPoint): void;
 }
 
 declare class AVAudioFile extends NSObject {
@@ -2972,6 +2960,18 @@ declare class AVAudioRecorder extends NSObject {
   setMeteringEnabled(meteringEnabled: boolean): void;
 
   setChannelAssignments(channelAssignments: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class AVAudioIONode extends AVAudioNode {
+  readonly presentationLatency: number;
+
+  readonly audioUnit: interop.Pointer;
+
+  readonly voiceProcessingEnabled: boolean;
+
+  setVoiceProcessingEnabledError(enabled: boolean, outError: interop.PointerConvertible): boolean;
+
+  isVoiceProcessingEnabled(): boolean;
 }
 
 declare class AVAudioConnectionPoint extends NSObject {

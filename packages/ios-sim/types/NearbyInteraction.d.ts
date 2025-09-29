@@ -232,9 +232,7 @@ declare class NINearbyPeerConfiguration extends NIConfiguration {
   setExtendedDistanceMeasurementEnabled(extendedDistanceMeasurementEnabled: boolean): void;
 }
 
-declare class NIDiscoveryToken extends NSObject implements NSCopying, NSSecureCoding {
-  readonly deviceCapabilities: NIDeviceCapability;
-
+declare class NIConfiguration extends NSObject implements NSCopying, NSSecureCoding {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
   static readonly supportsSecureCoding: boolean;
@@ -244,7 +242,9 @@ declare class NIDiscoveryToken extends NSObject implements NSCopying, NSSecureCo
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NIConfiguration extends NSObject implements NSCopying, NSSecureCoding {
+declare class NIDiscoveryToken extends NSObject implements NSCopying, NSSecureCoding {
+  readonly deviceCapabilities: NIDeviceCapability;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
   static readonly supportsSecureCoding: boolean;

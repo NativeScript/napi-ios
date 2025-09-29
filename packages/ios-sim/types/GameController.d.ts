@@ -64,8 +64,6 @@ declare const GCKeyCodeKeypadAsterisk: number;
 
 declare const GCKeyM: string;
 
-declare const GCKeyInternational4: string;
-
 declare const GCKeyCodeLANG3: number;
 
 declare const GCMouseDidBecomeCurrentNotification: string;
@@ -93,6 +91,8 @@ declare const GCInputDualShockTouchpadTwo: string;
 declare const GCKeyN: string;
 
 declare const GCKeyCodeF6: number;
+
+declare const GCKeyCodeF15: number;
 
 declare const GCKeyB: string;
 
@@ -382,6 +382,8 @@ declare const GCKeyV: string;
 
 declare const GCKeyCodeKeyK: number;
 
+declare const GCKeyInternational4: string;
+
 declare const GCKeyCodeInternational7: number;
 
 declare const GCKeyCodeF8: number;
@@ -626,8 +628,6 @@ declare const GCKeyCodeKeyC: number;
 
 declare const GCKeyF17: string;
 
-declare const GCKeyCodeF15: number;
-
 declare const GCInputThumbstick: string;
 
 declare const GCKeyF8: string;
@@ -689,6 +689,10 @@ declare const GCKeyLANG6: string;
 declare const GCKeyCodeKeyM: number;
 
 declare const GCKeyCodeLANG2: number;
+
+declare const GCMicroGamepadSnapshotDataVersion: {
+  GCMicroGamepadSnapshotDataVersion1: 256,
+};
 
 declare const GCExtendedGamepadSnapshotDataVersion: {
   Version1: 256,
@@ -753,10 +757,6 @@ declare const GCPhysicalInputSourceDirection: {
   Right: 2,
   Down: 4,
   Left: 8,
-};
-
-declare const GCMicroGamepadSnapshotDataVersion: {
-  GCMicroGamepadSnapshotDataVersion1: 256,
 };
 
 declare const GCDualSenseAdaptiveTriggerMode: {
@@ -1261,6 +1261,12 @@ declare class GCExtendedGamepadSnapshot extends GCExtendedGamepad {
   setSnapshotData(snapshotData: NSData): void;
 }
 
+declare class GCEventViewController extends UIViewController {
+  controllerUserInteractionEnabled: boolean;
+
+  setControllerUserInteractionEnabled(controllerUserInteractionEnabled: boolean): void;
+}
+
 declare class GCDeviceLight extends NSObject {
   color: GCColor;
 
@@ -1325,12 +1331,6 @@ declare class GCControllerInputState extends NSObject implements GCDevicePhysica
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-declare class GCEventViewController extends UIViewController {
-  controllerUserInteractionEnabled: boolean;
-
-  setControllerUserInteractionEnabled(controllerUserInteractionEnabled: boolean): void;
 }
 
 declare class GCVirtualController extends NSObject {

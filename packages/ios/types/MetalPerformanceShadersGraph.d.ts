@@ -115,10 +115,6 @@ declare const MPSGraphSparseStorageType: {
   SR: 2,
 };
 
-declare const MPSGraphExecutionStage: {
-  MPSGraphExecutionStageCompleted: 0,
-};
-
 declare const MPSGraphDeviceType: {
   MPSGraphDeviceTypeMetal: 0,
 };
@@ -160,6 +156,10 @@ declare const MPSGraphScatterMode: {
   Min: 4,
   Max: 5,
   Set: 6,
+};
+
+declare const MPSGraphExecutionStage: {
+  MPSGraphExecutionStageCompleted: 0,
 };
 
 declare class MPSGraphStencilOpDescriptor extends MPSGraphObject implements NSCopying {
@@ -250,28 +250,6 @@ declare class MPSGraphLSTMDescriptor extends MPSGraphObject implements NSCopying
   setCellGateActivation(cellGateActivation: interop.Enum<typeof MPSGraphRNNActivation>): void;
 
   setOutputGateActivation(outputGateActivation: interop.Enum<typeof MPSGraphRNNActivation>): void;
-
-  setActivation(activation: interop.Enum<typeof MPSGraphRNNActivation>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MPSGraphSingleGateRNNDescriptor extends MPSGraphObject implements NSCopying {
-  reverse: boolean;
-
-  bidirectional: boolean;
-
-  training: boolean;
-
-  activation: interop.Enum<typeof MPSGraphRNNActivation>;
-
-  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  setReverse(reverse: boolean): void;
-
-  setBidirectional(bidirectional: boolean): void;
-
-  setTraining(training: boolean): void;
 
   setActivation(activation: interop.Enum<typeof MPSGraphRNNActivation>): void;
 
@@ -1456,6 +1434,28 @@ declare class MPSGraphFFTDescriptor extends MPSGraphObject implements NSCopying 
   setScalingMode(scalingMode: interop.Enum<typeof MPSGraphFFTScalingMode>): void;
 
   setRoundToOddHermitean(roundToOddHermitean: boolean): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MPSGraphSingleGateRNNDescriptor extends MPSGraphObject implements NSCopying {
+  reverse: boolean;
+
+  bidirectional: boolean;
+
+  training: boolean;
+
+  activation: interop.Enum<typeof MPSGraphRNNActivation>;
+
+  static descriptor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  setReverse(reverse: boolean): void;
+
+  setBidirectional(bidirectional: boolean): void;
+
+  setTraining(training: boolean): void;
+
+  setActivation(activation: interop.Enum<typeof MPSGraphRNNActivation>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }

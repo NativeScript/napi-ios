@@ -64,8 +64,6 @@ declare const GCKeyCodeKeypadAsterisk: number;
 
 declare const GCKeyM: string;
 
-declare const GCKeyInternational4: string;
-
 declare const GCKeyCodeLANG3: number;
 
 declare const GCMouseDidBecomeCurrentNotification: string;
@@ -93,6 +91,8 @@ declare const GCInputDualShockTouchpadTwo: string;
 declare const GCKeyN: string;
 
 declare const GCKeyCodeF6: number;
+
+declare const GCKeyCodeF15: number;
 
 declare const GCKeyB: string;
 
@@ -382,6 +382,8 @@ declare const GCKeyV: string;
 
 declare const GCKeyCodeKeyK: number;
 
+declare const GCKeyInternational4: string;
+
 declare const GCKeyCodeInternational7: number;
 
 declare const GCKeyCodeF8: number;
@@ -626,8 +628,6 @@ declare const GCKeyCodeKeyC: number;
 
 declare const GCKeyF17: string;
 
-declare const GCKeyCodeF15: number;
-
 declare const GCInputThumbstick: string;
 
 declare const GCKeyF8: string;
@@ -734,6 +734,10 @@ declare const GCDevicePhysicalInputElementChange: {
   Changed: 1,
 };
 
+declare const GCMicroGamepadSnapshotDataVersion: {
+  GCMicroGamepadSnapshotDataVersion1: 256,
+};
+
 declare const GCUIEventTypes: {
   None: 0,
   Gamepad: 1,
@@ -761,10 +765,6 @@ declare const GCPhysicalInputSourceDirection: {
   Right: 2,
   Down: 4,
   Left: 8,
-};
-
-declare const GCMicroGamepadSnapshotDataVersion: {
-  GCMicroGamepadSnapshotDataVersion1: 256,
 };
 
 declare class GCGamepadSnapShotDataV100 {
@@ -1251,38 +1251,16 @@ declare interface GCPressedStateInput extends NSObjectProtocol {
 declare class GCPressedStateInput extends NativeObject implements GCPressedStateInput {
 }
 
-declare class GCExtendedGamepadSnapshot extends GCExtendedGamepad {
-  snapshotData: NSData;
+declare class GCEventViewController extends UIViewController {
+  controllerUserInteractionEnabled: boolean;
 
-  initWithSnapshotData(data: NSData): this;
-
-  initWithControllerSnapshotData(controller: GCController, data: NSData): this;
-
-  setSnapshotData(snapshotData: NSData): void;
+  setControllerUserInteractionEnabled(controllerUserInteractionEnabled: boolean): void;
 }
 
 declare class GCDeviceLight extends NSObject {
   color: GCColor;
 
   setColor(color: GCColor): void;
-}
-
-declare class GCVirtualController extends NSObject {
-  static virtualControllerWithConfiguration(configuration: GCVirtualControllerConfiguration): GCVirtualController;
-
-  initWithConfiguration(configuration: GCVirtualControllerConfiguration): this;
-
-  connectWithReplyHandler(reply: (p1: NSError) => void | null): void;
-
-  disconnect(): void;
-
-  readonly controller: GCController;
-
-  updateConfigurationForElementConfiguration(element: string, config: (p1: GCVirtualControllerElementConfiguration) => GCVirtualControllerElementConfiguration): void;
-
-  setValueForButtonElement(value: number, element: string): void;
-
-  setPositionForDirectionPadElement(position: CGPoint, element: string): void;
 }
 
 declare class GCControllerInputState extends NSObject implements GCDevicePhysicalInputState {
@@ -1345,6 +1323,24 @@ declare class GCControllerInputState extends NSObject implements GCDevicePhysica
   readonly debugDescription: string;
 }
 
+declare class GCVirtualController extends NSObject {
+  static virtualControllerWithConfiguration(configuration: GCVirtualControllerConfiguration): GCVirtualController;
+
+  initWithConfiguration(configuration: GCVirtualControllerConfiguration): this;
+
+  connectWithReplyHandler(reply: (p1: NSError) => void | null): void;
+
+  disconnect(): void;
+
+  readonly controller: GCController;
+
+  updateConfigurationForElementConfiguration(element: string, config: (p1: GCVirtualControllerElementConfiguration) => GCVirtualControllerElementConfiguration): void;
+
+  setValueForButtonElement(value: number, element: string): void;
+
+  setPositionForDirectionPadElement(position: CGPoint, element: string): void;
+}
+
 declare class GCEventInteraction extends NSObject {
   init(): this;
 
@@ -1355,12 +1351,6 @@ declare class GCEventInteraction extends NSObject {
   setHandledEventTypes(handledEventTypes: interop.Enum<typeof GCUIEventTypes>): void;
 
   setReceivesEventsInView(receivesEventsInView: boolean): void;
-}
-
-declare class GCEventViewController extends UIViewController {
-  controllerUserInteractionEnabled: boolean;
-
-  setControllerUserInteractionEnabled(controllerUserInteractionEnabled: boolean): void;
 }
 
 declare class GCMouse extends NSObject implements GCDevice {
@@ -1495,6 +1485,16 @@ declare class GCXboxGamepad extends GCExtendedGamepad {
   readonly paddleButton4: GCControllerButtonInput;
 
   readonly buttonShare: GCControllerButtonInput;
+}
+
+declare class GCExtendedGamepadSnapshot extends GCExtendedGamepad {
+  snapshotData: NSData;
+
+  initWithSnapshotData(data: NSData): this;
+
+  initWithControllerSnapshotData(controller: GCController, data: NSData): this;
+
+  setSnapshotData(snapshotData: NSData): void;
 }
 
 declare class GCGamepadSnapshot extends GCGamepad {

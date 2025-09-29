@@ -545,14 +545,6 @@ declare class MIDIUniversalMessage {
   reserved: unknown /* const array */;
 }
 
-declare class MIDIMessage_128 {
-  constructor(init?: MIDIMessage_128);
-  word0: number;
-  word1: number;
-  word2: number;
-  word3: number;
-}
-
 declare class MIDIMessage_96 {
   constructor(init?: MIDIMessage_96);
   word0: number;
@@ -584,6 +576,14 @@ declare class unnamed_15570620529831283699 {
   reserved: unknown /* const array */;
 }
 
+declare class MIDIMessage_128 {
+  constructor(init?: MIDIMessage_128);
+  word0: number;
+  word1: number;
+  word2: number;
+  word3: number;
+}
+
 declare class MIDIIOErrorNotification {
   constructor(init?: MIDIIOErrorNotification);
   messageID: interop.Enum<typeof MIDINotificationMessageID>;
@@ -598,7 +598,7 @@ declare class MIDIObjectPropertyChangeNotification {
   messageSize: number;
   object: number;
   objectType: interop.Enum<typeof MIDIObjectType>;
-  propertyName: interop.Pointer;
+  propertyName: interop.Object | null;
 }
 
 declare class MIDIObjectAddRemoveNotification {
@@ -899,19 +899,19 @@ declare class unnamed_9100408680999469159 {
   unknown: unnamed_4684939987172686346;
 }
 
-declare function MIDIClientCreate(name: interop.PointerConvertible, notifyProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, notifyRefCon: interop.PointerConvertible, outClient: interop.PointerConvertible): number;
+declare function MIDIClientCreate(name: interop.Object, notifyProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, notifyRefCon: interop.PointerConvertible, outClient: interop.PointerConvertible): number;
 
-declare function MIDIClientCreateWithBlock(name: interop.PointerConvertible, outClient: interop.PointerConvertible, notifyBlock: (p1: interop.PointerConvertible) => void): number;
+declare function MIDIClientCreateWithBlock(name: interop.Object, outClient: interop.PointerConvertible, notifyBlock: (p1: interop.PointerConvertible) => void): number;
 
 declare function MIDIClientDispose(client: number): number;
 
-declare function MIDIInputPortCreateWithProtocol(client: number, portName: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, outPort: interop.PointerConvertible, receiveBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIInputPortCreateWithProtocol(client: number, portName: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, outPort: interop.PointerConvertible, receiveBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDIInputPortCreate(client: number, portName: interop.PointerConvertible, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outPort: interop.PointerConvertible): number;
+declare function MIDIInputPortCreate(client: number, portName: interop.Object, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outPort: interop.PointerConvertible): number;
 
-declare function MIDIInputPortCreateWithBlock(client: number, portName: interop.PointerConvertible, outPort: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIInputPortCreateWithBlock(client: number, portName: interop.Object, outPort: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDIOutputPortCreate(client: number, portName: interop.PointerConvertible, outPort: interop.PointerConvertible): number;
+declare function MIDIOutputPortCreate(client: number, portName: interop.Object, outPort: interop.PointerConvertible): number;
 
 declare function MIDIPortDispose(port: number): number;
 
@@ -947,15 +947,15 @@ declare function MIDIGetDestination(destIndex0: number): number;
 
 declare function MIDIEndpointGetEntity(inEndpoint: number, outEntity: interop.PointerConvertible): number;
 
-declare function MIDIDestinationCreateWithProtocol(client: number, name: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIDestinationCreateWithProtocol(client: number, name: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDIDestinationCreate(client: number, name: interop.PointerConvertible, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outDest: interop.PointerConvertible): number;
+declare function MIDIDestinationCreate(client: number, name: interop.Object, readProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, refCon: interop.PointerConvertible, outDest: interop.PointerConvertible): number;
 
-declare function MIDIDestinationCreateWithBlock(client: number, name: interop.PointerConvertible, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
+declare function MIDIDestinationCreateWithBlock(client: number, name: interop.Object, outDest: interop.PointerConvertible, readBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
-declare function MIDISourceCreateWithProtocol(client: number, name: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, outSrc: interop.PointerConvertible): number;
+declare function MIDISourceCreateWithProtocol(client: number, name: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, outSrc: interop.PointerConvertible): number;
 
-declare function MIDISourceCreate(client: number, name: interop.PointerConvertible, outSrc: interop.PointerConvertible): number;
+declare function MIDISourceCreate(client: number, name: interop.Object, outSrc: interop.PointerConvertible): number;
 
 declare function MIDIEndpointDispose(endpt: number): number;
 
@@ -963,25 +963,25 @@ declare function MIDIGetNumberOfExternalDevices(): number;
 
 declare function MIDIGetExternalDevice(deviceIndex0: number): number;
 
-declare function MIDIObjectGetIntegerProperty(obj: number, propertyID: interop.PointerConvertible, outValue: interop.PointerConvertible): number;
+declare function MIDIObjectGetIntegerProperty(obj: number, propertyID: interop.Object, outValue: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetIntegerProperty(obj: number, propertyID: interop.PointerConvertible, value: number): number;
+declare function MIDIObjectSetIntegerProperty(obj: number, propertyID: interop.Object, value: number): number;
 
-declare function MIDIObjectGetStringProperty(obj: number, propertyID: interop.PointerConvertible, str: interop.PointerConvertible): number;
+declare function MIDIObjectGetStringProperty(obj: number, propertyID: interop.Object, str: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetStringProperty(obj: number, propertyID: interop.PointerConvertible, str: interop.PointerConvertible): number;
+declare function MIDIObjectSetStringProperty(obj: number, propertyID: interop.Object, str: interop.Object): number;
 
-declare function MIDIObjectGetDataProperty(obj: number, propertyID: interop.PointerConvertible, outData: interop.PointerConvertible): number;
+declare function MIDIObjectGetDataProperty(obj: number, propertyID: interop.Object, outData: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetDataProperty(obj: number, propertyID: interop.PointerConvertible, data: interop.PointerConvertible): number;
+declare function MIDIObjectSetDataProperty(obj: number, propertyID: interop.Object, data: interop.Object): number;
 
-declare function MIDIObjectGetDictionaryProperty(obj: number, propertyID: interop.PointerConvertible, outDict: interop.PointerConvertible): number;
+declare function MIDIObjectGetDictionaryProperty(obj: number, propertyID: interop.Object, outDict: interop.PointerConvertible): number;
 
-declare function MIDIObjectSetDictionaryProperty(obj: number, propertyID: interop.PointerConvertible, dict: interop.PointerConvertible): number;
+declare function MIDIObjectSetDictionaryProperty(obj: number, propertyID: interop.Object, dict: interop.Object): number;
 
 declare function MIDIObjectGetProperties(obj: number, outProperties: interop.PointerConvertible, deep: number): number;
 
-declare function MIDIObjectRemoveProperty(obj: number, propertyID: interop.PointerConvertible): number;
+declare function MIDIObjectRemoveProperty(obj: number, propertyID: interop.Object): number;
 
 declare function MIDIObjectFindByUniqueID(inUniqueID: number, outObject: interop.PointerConvertible, outObjectType: interop.PointerConvertible): number;
 
@@ -1013,9 +1013,9 @@ declare function MIDIPacketListInit(pktlist: interop.PointerConvertible): intero
 
 declare function MIDIPacketListAdd(pktlist: interop.PointerConvertible, listSize: number, curPacket: interop.PointerConvertible, time: number, nData: number, data: interop.PointerConvertible): interop.Pointer;
 
-declare function MIDIDeviceNewEntity(device: number, name: interop.PointerConvertible, protocol: interop.Enum<typeof MIDIProtocolID>, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
+declare function MIDIDeviceNewEntity(device: number, name: interop.Object, protocol: interop.Enum<typeof MIDIProtocolID>, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
 
-declare function MIDIDeviceAddEntity(device: number, name: interop.PointerConvertible, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
+declare function MIDIDeviceAddEntity(device: number, name: interop.Object, embedded: number, numSourceEndpoints: number, numDestinationEndpoints: number, newEntity: interop.PointerConvertible): number;
 
 declare function MIDIDeviceRemoveEntity(device: number, entity: number): number;
 
@@ -1029,21 +1029,21 @@ declare function MIDISetupAddExternalDevice(device: number): number;
 
 declare function MIDISetupRemoveExternalDevice(device: number): number;
 
-declare function MIDIExternalDeviceCreate(name: interop.PointerConvertible, manufacturer: interop.PointerConvertible, model: interop.PointerConvertible, outDevice: interop.PointerConvertible): number;
+declare function MIDIExternalDeviceCreate(name: interop.Object, manufacturer: interop.Object, model: interop.Object, outDevice: interop.PointerConvertible): number;
 
 declare function MIDIThruConnectionParamsInitialize(inConnectionParams: interop.PointerConvertible): void;
 
-declare function MIDIThruConnectionCreate(inPersistentOwnerID: interop.PointerConvertible, inConnectionParams: interop.PointerConvertible, outConnection: interop.PointerConvertible): number;
+declare function MIDIThruConnectionCreate(inPersistentOwnerID: interop.Object, inConnectionParams: interop.Object, outConnection: interop.PointerConvertible): number;
 
 declare function MIDIThruConnectionDispose(connection: number): number;
 
 declare function MIDIThruConnectionGetParams(connection: number, outConnectionParams: interop.PointerConvertible): number;
 
-declare function MIDIThruConnectionSetParams(connection: number, inConnectionParams: interop.PointerConvertible): number;
+declare function MIDIThruConnectionSetParams(connection: number, inConnectionParams: interop.Object): number;
 
-declare function MIDIThruConnectionFind(inPersistentOwnerID: interop.PointerConvertible, outConnectionList: interop.PointerConvertible): number;
+declare function MIDIThruConnectionFind(inPersistentOwnerID: interop.Object, outConnectionList: interop.PointerConvertible): number;
 
-declare function MIDIDeviceCreate(owner: interop.PointerConvertible, name: interop.PointerConvertible, manufacturer: interop.PointerConvertible, model: interop.PointerConvertible, outDevice: interop.PointerConvertible): number;
+declare function MIDIDeviceCreate(owner: interop.PointerConvertible, name: interop.Object, manufacturer: interop.Object, model: interop.Object, outDevice: interop.PointerConvertible): number;
 
 declare function MIDIDeviceDispose(device: number): number;
 
@@ -1059,7 +1059,7 @@ declare function MIDIEndpointSetRefCons(endpt: number, ref1: interop.PointerConv
 
 declare function MIDIEndpointGetRefCons(endpt: number, ref1: interop.PointerConvertible, ref2: interop.PointerConvertible): number;
 
-declare function MIDIGetDriverIORunLoop(): interop.Pointer;
+declare function MIDIGetDriverIORunLoop(): interop.Object;
 
 declare function MIDIGetDriverDeviceList(driver: interop.PointerConvertible): number;
 
@@ -1067,7 +1067,7 @@ declare function MIDIEventListForEachEvent(evtlist: interop.PointerConvertible, 
 
 declare function MIDIBluetoothDriverActivateAllConnections(): number;
 
-declare function MIDIBluetoothDriverDisconnect(uuid: interop.PointerConvertible): number;
+declare function MIDIBluetoothDriverDisconnect(uuid: interop.Object): number;
 
 declare interface MIDICIProfileResponderDelegate extends NSObjectProtocol {
   connectInitiatorWithDeviceInfo(initiatorMUID: NSNumber, deviceInfo: MIDICIDeviceInfo): boolean;

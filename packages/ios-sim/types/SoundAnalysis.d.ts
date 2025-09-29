@@ -111,32 +111,6 @@ declare class SNClassificationResult extends NSObject implements SNResult {
   readonly debugDescription: string;
 }
 
-declare class SNAudioStreamAnalyzer extends NSObject {
-  initWithFormat(format: AVAudioFormat): this;
-
-  addRequestWithObserverError(request: SNRequest, observer: SNResultsObserving, error: interop.PointerConvertible): boolean;
-
-  removeRequest(request: SNRequest): void;
-
-  removeAllRequests(): void;
-
-  analyzeAudioBufferAtAudioFramePosition(audioBuffer: AVAudioBuffer, audioFramePosition: number): void;
-
-  completeAnalysis(): void;
-}
-
-declare class SNTimeDurationConstraint extends NSObject {
-  readonly type: interop.Enum<typeof SNTimeDurationConstraintType>;
-
-  readonly enumeratedDurations: NSArray;
-
-  readonly durationRange: CMTimeRange;
-
-  initWithEnumeratedDurations(enumeratedDurations: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  initWithDurationRange(durationRange: CMTimeRange): this;
-}
-
 declare class SNClassifySoundRequest extends NSObject implements SNRequest {
   overlapFactor: number;
 
@@ -193,5 +167,31 @@ declare class SNClassifySoundRequest extends NSObject implements SNRequest {
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class SNAudioStreamAnalyzer extends NSObject {
+  initWithFormat(format: AVAudioFormat): this;
+
+  addRequestWithObserverError(request: SNRequest, observer: SNResultsObserving, error: interop.PointerConvertible): boolean;
+
+  removeRequest(request: SNRequest): void;
+
+  removeAllRequests(): void;
+
+  analyzeAudioBufferAtAudioFramePosition(audioBuffer: AVAudioBuffer, audioFramePosition: number): void;
+
+  completeAnalysis(): void;
+}
+
+declare class SNTimeDurationConstraint extends NSObject {
+  readonly type: interop.Enum<typeof SNTimeDurationConstraintType>;
+
+  readonly enumeratedDurations: NSArray;
+
+  readonly durationRange: CMTimeRange;
+
+  initWithEnumeratedDurations(enumeratedDurations: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  initWithDurationRange(durationRange: CMTimeRange): this;
 }
 

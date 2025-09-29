@@ -1,11 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
-/// <reference path="./QuartzCore.d.ts" />
 /// <reference path="./Foundation.d.ts" />
-
-declare const AVMetadataQuickTimeMetadataKeyPerformer: string;
-
-declare const AVMetadataQuickTimeMetadataKeyCameraISOSensitivity: string;
+/// <reference path="./QuartzCore.d.ts" />
 
 declare const AVMetadataIdentifierID3MetadataBand: string;
 
@@ -55,8 +51,6 @@ declare const AVMetadataiTunesMetadataKeyDescription: string;
 
 declare const AVMetadataIdentifierID3MetadataCommerical: string;
 
-declare const AVCaptureSessionPresetiFrame960x540: string;
-
 declare const AVMetadataID3MetadataKeyPositionSynchronization: string;
 
 declare const AVMetadataIdentifierID3MetadataSignature: string;
@@ -64,8 +58,6 @@ declare const AVMetadataIdentifierID3MetadataSignature: string;
 declare const AVMetadataKeySpaceiTunes: string;
 
 declare const AVMetadataQuickTimeMetadataKeyCameraFrameReadoutTime: string;
-
-declare const AVMetadataIdentifierQuickTimeUserDataCreationDate: string;
 
 declare const AVCaptureSessionInterruptionEndedNotification: string;
 
@@ -101,11 +93,13 @@ declare const AVMetadataiTunesMetadataKeyEncodingTool: string;
 
 declare const AVMetadataIdentifieriTunesMetadataCredits: string;
 
-declare const AVContentKeySystemFairPlayStreaming: string;
-
 declare const AVMetadataCommonKeyFormat: string;
 
 declare const AVCaptureSessionInterruptionReasonKey: string;
+
+declare const AVMetadataIdentifierQuickTimeUserDataCreationDate: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataDisplayName: string;
 
 declare const AVMetadataQuickTimeUserDataKeyOriginalSource: string;
 
@@ -648,8 +642,6 @@ declare const AVMetadataIdentifierID3MetadataTrackNumber: string;
 declare const AVMetadataIdentifierID3MetadataFileOwner: string;
 
 declare const AVMetadataIdentifierID3MetadataPrivate: string;
-
-declare const AVMetadataID3MetadataKeySynchronizedTempoCodes: string;
 
 declare const AVSampleBufferVideoRendererRequiresFlushToResumeDecodingDidChangeNotification: string;
 
@@ -1245,6 +1237,8 @@ declare const AVMediaTypeVideo: string;
 
 declare const AVAssetImageGeneratorDynamicRangePolicyForceSDR: string;
 
+declare const AVMetadataQuickTimeMetadataKeyPerformer: string;
+
 declare const AVContentKeyRequestShouldRandomizeDeviceIdentifierKey: string;
 
 declare const AVContentKeyRequestRequiresValidationDataInSecureTokenKey: string;
@@ -1258,6 +1252,8 @@ declare const AVContentKeySessionServerPlaybackContextOptionServerChallenge: str
 declare const AVContentKeySessionServerPlaybackContextOptionProtocolVersions: string;
 
 declare const AVContentKeySystemAuthorizationToken: string;
+
+declare const AVContentKeySystemFairPlayStreaming: string;
 
 declare const AVMetadataFormatHLSMetadata: string;
 
@@ -1411,8 +1407,6 @@ declare const AVMetadataIdentifierQuickTimeMetadataAlbum: string;
 
 declare const AVMetadataID3MetadataKeyLink: string;
 
-declare const AVMetadataIdentifierQuickTimeMetadataDisplayName: string;
-
 declare const AVContentKeyRequestRandomDeviceIdentifierSeedKey: string;
 
 declare const AVMetadataObjectTypeInterleaved2of5Code: string;
@@ -1474,6 +1468,8 @@ declare const AVMetadataID3MetadataKeyProducedNotice: string;
 declare const AVMetadataIdentifierQuickTimeMetadataOriginalArtist: string;
 
 declare const AVMetadataiTunesMetadataKeyBeatsPerMin: string;
+
+declare const AVMetadataID3MetadataKeySynchronizedTempoCodes: string;
 
 declare const AVPlaybackCoordinatorSuspensionReasonsDidChangeNotification: string;
 
@@ -1574,6 +1570,8 @@ declare const AVMetadataQuickTimeMetadataKeyLocationNote: string;
 declare const AVMovieShouldSupportAliasDataReferencesKey: string;
 
 declare const AVMetadataQuickTimeUserDataKeyInformation: string;
+
+declare const AVMetadataQuickTimeMetadataKeyCameraISOSensitivity: string;
 
 declare const AVMetadataIdentifierID3MetadataTermsOfUse: string;
 
@@ -1932,6 +1930,8 @@ declare const AVMetadataID3MetadataKeyBeatsPerMinute: string;
 declare const AVSampleBufferDisplayLayerReadyForDisplayDidChangeNotification: string;
 
 declare const AVMetadataiTunesMetadataKeyAuthor: string;
+
+declare const AVCaptureSessionPresetiFrame960x540: string;
 
 declare const AVMetadataQuickTimeMetadataKeyCredits: string;
 
@@ -2777,7 +2777,7 @@ declare class AVCaptionDimension {
   units: interop.Enum<typeof AVCaptionUnitsType>;
 }
 
-declare function AVSampleBufferAttachContentKey(sbuf: interop.PointerConvertible, contentKey: AVContentKey, outError: interop.PointerConvertible): boolean;
+declare function AVSampleBufferAttachContentKey(sbuf: interop.Object, contentKey: AVContentKey, outError: interop.PointerConvertible): boolean;
 
 declare function AVCaptionDimensionMake(value: number, units: interop.Enum<typeof AVCaptionUnitsType>): AVCaptionDimension;
 
@@ -2787,13 +2787,13 @@ declare function AVCaptionSizeMake(width: AVCaptionDimension, height: AVCaptionD
 
 declare function AVMakeRectWithAspectRatioInsideRect(aspectRatio: CGSize, boundingRect: CGRect): CGRect;
 
-declare function CMTagCollectionCreateWithVideoOutputPreset(allocator: interop.PointerConvertible, preset: interop.Enum<typeof CMTagCollectionVideoOutputPreset>, newCollectionOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreateWithVideoOutputPreset(allocator: interop.Object, preset: interop.Enum<typeof CMTagCollectionVideoOutputPreset>, newCollectionOut: interop.PointerConvertible): number;
 
 declare function AVCaptureReactionSystemImageNameForType(reactionType: string): string;
 
-declare function AVCaptureTimecodeCreateMetadataSampleBufferAssociatedWithPresentationTimeStamp(timecode: AVCaptureTimecode, presentationTimeStamp: CMTime): interop.Pointer;
+declare function AVCaptureTimecodeCreateMetadataSampleBufferAssociatedWithPresentationTimeStamp(timecode: AVCaptureTimecode, presentationTimeStamp: CMTime): interop.Object;
 
-declare function AVCaptureTimecodeCreateMetadataSampleBufferForDuration(timecode: AVCaptureTimecode, duration: CMTime): interop.Pointer;
+declare function AVCaptureTimecodeCreateMetadataSampleBufferForDuration(timecode: AVCaptureTimecode, duration: CMTime): interop.Object;
 
 declare function AVCaptureTimecodeAdvancedByFrames(timecode: AVCaptureTimecode, framesToAdd: number): AVCaptureTimecode;
 
@@ -2809,7 +2809,7 @@ declare class AVExternalSyncDeviceDelegate extends NativeObject implements AVExt
 declare interface AVCapturePhotoFileDataRepresentationCustomizer extends NSObjectProtocol {
   replacementMetadataForPhoto?(photo: AVCapturePhoto): NSDictionary;
 
-  replacementEmbeddedThumbnailPixelBufferWithPhotoFormatForPhoto?(replacementEmbeddedThumbnailPhotoFormatOut: interop.PointerConvertible, photo: AVCapturePhoto): interop.Pointer;
+  replacementEmbeddedThumbnailPixelBufferWithPhotoFormatForPhoto?(replacementEmbeddedThumbnailPhotoFormatOut: interop.PointerConvertible, photo: AVCapturePhoto): interop.Object;
 
   replacementDepthDataForPhoto?(photo: AVCapturePhoto): AVDepthData;
 
@@ -2842,9 +2842,9 @@ declare class AVCaptureDataOutputSynchronizerDelegate extends NativeObject imple
 }
 
 declare interface AVCaptureVideoDataOutputSampleBufferDelegate extends NSObjectProtocol {
-  captureOutputDidOutputSampleBufferFromConnection?(output: AVCaptureOutput, sampleBuffer: interop.PointerConvertible, connection: AVCaptureConnection): void;
+  captureOutputDidOutputSampleBufferFromConnection?(output: AVCaptureOutput, sampleBuffer: interop.Object, connection: AVCaptureConnection): void;
 
-  captureOutputDidDropSampleBufferFromConnection?(output: AVCaptureOutput, sampleBuffer: interop.PointerConvertible, connection: AVCaptureConnection): void;
+  captureOutputDidDropSampleBufferFromConnection?(output: AVCaptureOutput, sampleBuffer: interop.Object, connection: AVCaptureConnection): void;
 }
 
 declare class AVCaptureVideoDataOutputSampleBufferDelegate extends NativeObject implements AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -2860,7 +2860,7 @@ declare class AVCaptureDepthDataOutputDelegate extends NativeObject implements A
 }
 
 declare interface AVCaptureAudioDataOutputSampleBufferDelegate extends NSObjectProtocol {
-  captureOutputDidOutputSampleBufferFromConnection?(output: AVCaptureOutput, sampleBuffer: interop.PointerConvertible, connection: AVCaptureConnection): void;
+  captureOutputDidOutputSampleBufferFromConnection?(output: AVCaptureOutput, sampleBuffer: interop.Object, connection: AVCaptureConnection): void;
 }
 
 declare class AVCaptureAudioDataOutputSampleBufferDelegate extends NativeObject implements AVCaptureAudioDataOutputSampleBufferDelegate {
@@ -3018,9 +3018,9 @@ declare class AVAsynchronousKeyValueLoading extends NativeObject implements AVAs
 }
 
 declare interface AVQueuedSampleBufferRendering extends NSObjectProtocol {
-  readonly timebase: interop.Pointer;
+  readonly timebase: interop.Object;
 
-  enqueueSampleBuffer(sampleBuffer: interop.PointerConvertible): void;
+  enqueueSampleBuffer(sampleBuffer: interop.Object): void;
 
   flush(): void;
 
@@ -3049,9 +3049,9 @@ declare interface AVCapturePhotoCaptureDelegate extends NSObjectProtocol {
 
   captureOutputDidFinishCapturingDeferredPhotoProxyError?(output: AVCapturePhotoOutput, deferredPhotoProxy: AVCaptureDeferredPhotoProxy | null, error: NSError | null): void;
 
-  captureOutputDidFinishProcessingPhotoSampleBufferPreviewPhotoSampleBufferResolvedSettingsBracketSettingsError?(output: AVCapturePhotoOutput, photoSampleBuffer: interop.PointerConvertible, previewPhotoSampleBuffer: interop.PointerConvertible, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings | null, error: NSError | null): void;
+  captureOutputDidFinishProcessingPhotoSampleBufferPreviewPhotoSampleBufferResolvedSettingsBracketSettingsError?(output: AVCapturePhotoOutput, photoSampleBuffer: interop.Object | null, previewPhotoSampleBuffer: interop.Object | null, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings | null, error: NSError | null): void;
 
-  captureOutputDidFinishProcessingRawPhotoSampleBufferPreviewPhotoSampleBufferResolvedSettingsBracketSettingsError?(output: AVCapturePhotoOutput, rawSampleBuffer: interop.PointerConvertible, previewPhotoSampleBuffer: interop.PointerConvertible, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings | null, error: NSError | null): void;
+  captureOutputDidFinishProcessingRawPhotoSampleBufferPreviewPhotoSampleBufferResolvedSettingsBracketSettingsError?(output: AVCapturePhotoOutput, rawSampleBuffer: interop.Object | null, previewPhotoSampleBuffer: interop.Object | null, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings | null, error: NSError | null): void;
 
   captureOutputDidFinishRecordingLivePhotoMovieForEventualFileAtURLResolvedSettings?(output: AVCapturePhotoOutput, outputFileURL: NSURL, resolvedSettings: AVCaptureResolvedPhotoSettings): void;
 
@@ -3213,217 +3213,6 @@ declare interface AVVideoCompositionInstructionProtocol extends NSObjectProtocol
 declare class AVVideoCompositionInstructionProtocol extends NativeObject implements AVVideoCompositionInstructionProtocol {
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class AVMutableMetadataItem extends AVMetadataItem {
-  // @ts-ignore MemberDecl.tsIgnore
-  identifier: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  extendedLanguageTag: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  locale: NSLocale;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  time: CMTime;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  duration: CMTime;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  dataType: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  value: NSCopying;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  get extraAttributes(): NSDictionary;
-  // @ts-ignore MemberDecl.tsIgnore
-  set extraAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  static metadataItem(): AVMutableMetadataItem;
-
-  setIdentifier(identifier: string | null): void;
-
-  setExtendedLanguageTag(extendedLanguageTag: string | null): void;
-
-  setLocale(locale: NSLocale | null): void;
-
-  setTime(time: CMTime): void;
-
-  setDuration(duration: CMTime): void;
-
-  setDataType(dataType: string | null): void;
-
-  setValue(value: NSCopying | null): void;
-
-  setExtraAttributes(extraAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  startDate: NSDate;
-
-  setStartDate(startDate: NSDate | null): void;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  keySpace: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  key: NSCopying;
-
-  setKeySpace(keySpace: string | null): void;
-
-  setKey(key: NSCopying | null): void;
-}
-
-declare class AVPlayerInterstitialEvent extends NSObject implements NSCopying {
-  static interstitialEventWithPrimaryItemIdentifierTimeTemplateItemsRestrictionsResumptionOffsetPlayoutLimitUserDefinedAttributes<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, identifier: string | null, time: CMTime, templateItems: NSArray<interop.Object> | Array<interop.Object>, restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>, resumptionOffset: CMTime, playoutLimit: CMTime, userDefinedAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
-
-  static interstitialEventWithPrimaryItemIdentifierDateTemplateItemsRestrictionsResumptionOffsetPlayoutLimitUserDefinedAttributes<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, identifier: string | null, date: NSDate, templateItems: NSArray<interop.Object> | Array<interop.Object>, restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>, resumptionOffset: CMTime, playoutLimit: CMTime, userDefinedAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
-
-  static interstitialEventWithPrimaryItemTime<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, time: CMTime): InstanceType<This>;
-
-  static interstitialEventWithPrimaryItemDate<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, date: NSDate): InstanceType<This>;
-
-  readonly primaryItem: AVPlayerItem | null;
-
-  readonly identifier: string;
-
-  readonly time: CMTime;
-
-  readonly date: NSDate;
-
-  readonly templateItems: NSArray;
-
-  readonly restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>;
-
-  readonly resumptionOffset: CMTime;
-
-  readonly playoutLimit: CMTime;
-
-  readonly alignsStartWithPrimarySegmentBoundary: boolean;
-
-  readonly alignsResumptionWithPrimarySegmentBoundary: boolean;
-
-  readonly cue: string;
-
-  readonly willPlayOnce: boolean;
-
-  readonly userDefinedAttributes: NSDictionary;
-
-  readonly assetListResponse: NSDictionary;
-
-  readonly timelineOccupancy: interop.Enum<typeof AVPlayerInterstitialEventTimelineOccupancy>;
-
-  readonly supplementsPrimaryContent: boolean;
-
-  readonly contentMayVary: boolean;
-
-  readonly skipControlTimeRange: CMTimeRange;
-
-  readonly skipControlLocalizedLabelBundleKey: string;
-
-  plannedDuration: CMTime;
-
-  setPrimaryItem(primaryItem: AVPlayerItem | null): void;
-
-  setIdentifier(identifier: string): void;
-
-  setTime(time: CMTime): void;
-
-  setDate(date: NSDate | null): void;
-
-  setTemplateItems(templateItems: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setRestrictions(restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>): void;
-
-  setResumptionOffset(resumptionOffset: CMTime): void;
-
-  setPlayoutLimit(playoutLimit: CMTime): void;
-
-  setAlignsStartWithPrimarySegmentBoundary(alignsStartWithPrimarySegmentBoundary: boolean): void;
-
-  setAlignsResumptionWithPrimarySegmentBoundary(alignsResumptionWithPrimarySegmentBoundary: boolean): void;
-
-  setCue(cue: string): void;
-
-  setWillPlayOnce(willPlayOnce: boolean): void;
-
-  setUserDefinedAttributes(userDefinedAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setTimelineOccupancy(timelineOccupancy: interop.Enum<typeof AVPlayerInterstitialEventTimelineOccupancy>): void;
-
-  setSupplementsPrimaryContent(supplementsPrimaryContent: boolean): void;
-
-  setContentMayVary(contentMayVary: boolean): void;
-
-  setPlannedDuration(plannedDuration: CMTime): void;
-
-  setSkipControlTimeRange(skipControlTimeRange: CMTimeRange): void;
-
-  setSkipControlLocalizedLabelBundleKey(skipControlLocalizedLabelBundleKey: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class AVAssetWriterInputPixelBufferAdaptor extends NSObject {
-  static assetWriterInputPixelBufferAdaptorWithAssetWriterInputSourcePixelBufferAttributes<This extends abstract new (...args: any) => any>(this: This, input: AVAssetWriterInput, sourcePixelBufferAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
-
-  initWithAssetWriterInputSourcePixelBufferAttributes(input: AVAssetWriterInput, sourcePixelBufferAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
-
-  readonly assetWriterInput: AVAssetWriterInput;
-
-  readonly sourcePixelBufferAttributes: NSDictionary;
-
-  readonly pixelBufferPool: interop.Pointer;
-
-  appendPixelBufferWithPresentationTime(pixelBuffer: interop.PointerConvertible, presentationTime: CMTime): boolean;
-}
-
-declare class AVPlayerItemMediaDataCollector extends NSObject {
-}
-
-declare class AVPlayerItemRenderedLegibleOutput extends AVPlayerItemOutput {
-  initWithVideoDisplaySize(videoDisplaySize: CGSize): this;
-
-  setDelegateQueue(delegate: AVPlayerItemRenderedLegibleOutputPushDelegate | null, delegateQueue: NSObject | null): void;
-
-  readonly delegate: AVPlayerItemRenderedLegibleOutputPushDelegate;
-
-  readonly delegateQueue: NSObject;
-
-  advanceIntervalForDelegateInvocation: number;
-
-  videoDisplaySize: CGSize;
-
-  setAdvanceIntervalForDelegateInvocation(advanceIntervalForDelegateInvocation: number): void;
-
-  setVideoDisplaySize(videoDisplaySize: CGSize): void;
-}
-
-declare class AVMetricPlayerItemInitialLikelyToKeepUpEvent extends AVMetricPlayerItemLikelyToKeepUpEvent {
-  readonly playlistRequestEvents: NSArray;
-
-  readonly mediaSegmentRequestEvents: NSArray;
-
-  readonly contentKeyRequestEvents: NSArray;
-}
-
-declare class AVSemanticSegmentationMatte extends NSObject {
-  static semanticSegmentationMatteFromImageSourceAuxiliaryDataTypeDictionaryRepresentationError<This extends abstract new (...args: any) => any>(this: This, imageSourceAuxiliaryDataType: interop.PointerConvertible, imageSourceAuxiliaryDataInfoDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, outError: interop.PointerConvertible): InstanceType<This>;
-
-  readonly matteType: string;
-
-  semanticSegmentationMatteByApplyingExifOrientation(exifOrientation: interop.Enum<typeof CGImagePropertyOrientation>): this;
-
-  semanticSegmentationMatteByReplacingSemanticSegmentationMatteWithPixelBufferError(pixelBuffer: interop.PointerConvertible, outError: interop.PointerConvertible): this;
-
-  dictionaryRepresentationForAuxiliaryDataType(outAuxDataType: interop.PointerConvertible): NSDictionary;
-
-  readonly pixelFormatType: number;
-
-  readonly mattingImage: interop.Pointer;
-}
-
 declare class AVVideoComposition extends NSObject implements NSCopying, NSMutableCopying {
   static videoCompositionWithPropertiesOfAsset(asset: AVAsset): AVVideoComposition;
 
@@ -3486,7 +3275,7 @@ declare class AVPlayerLayer extends CALayer {
   get pixelBufferAttributes(): NSDictionary;
   set pixelBufferAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
-  copyDisplayedPixelBuffer(): interop.Pointer;
+  copyDisplayedPixelBuffer(): interop.Object;
 
   setPlayer(player: AVPlayer | null): void;
 
@@ -3545,16 +3334,10 @@ declare class AVPlayerItemIntegratedTimeline extends NSObject {
   removeTimeObserver(observer: AVPlayerItemIntegratedTimelineObserver): void;
 }
 
-declare class AVCaptureSystemExposureBiasSlider extends AVCaptureControl {
-  initWithDevice(device: AVCaptureDevice): this;
-
-  initWithDeviceAction(device: AVCaptureDevice, action: (p1: number) => void): this;
-}
-
 declare class AVExternalSyncDevice extends NSObject {
   readonly status: interop.Enum<typeof AVExternalSyncDeviceStatus>;
 
-  readonly clock: interop.Pointer;
+  readonly clock: interop.Object;
 
   signalCompensationDelay: CMTime;
 
@@ -3662,7 +3445,7 @@ declare class AVMutableCompositionTrack extends AVCompositionTrack {
 
   setSegments(segments: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
-  replaceFormatDescriptionWithFormatDescription(originalFormatDescription: interop.PointerConvertible, replacementFormatDescription: interop.PointerConvertible): void;
+  replaceFormatDescriptionWithFormatDescription(originalFormatDescription: interop.Object, replacementFormatDescription: interop.Object | null): void;
 }
 
 declare class AVQueuePlayer extends AVPlayer {
@@ -3694,19 +3477,17 @@ declare class AVOutputSettingsAssistant extends NSObject {
 
   readonly outputFileType: string;
 
-  get sourceAudioFormat(): interop.Pointer;
-  set sourceAudioFormat(value: interop.PointerConvertible);
+  sourceAudioFormat: interop.Object;
 
-  get sourceVideoFormat(): interop.Pointer;
-  set sourceVideoFormat(value: interop.PointerConvertible);
+  sourceVideoFormat: interop.Object;
 
   sourceVideoAverageFrameDuration: CMTime;
 
   sourceVideoMinFrameDuration: CMTime;
 
-  setSourceAudioFormat(sourceAudioFormat: interop.PointerConvertible): void;
+  setSourceAudioFormat(sourceAudioFormat: interop.Object | null): void;
 
-  setSourceVideoFormat(sourceVideoFormat: interop.PointerConvertible): void;
+  setSourceVideoFormat(sourceVideoFormat: interop.Object | null): void;
 
   setSourceVideoAverageFrameDuration(sourceVideoAverageFrameDuration: CMTime): void;
 
@@ -3720,12 +3501,6 @@ declare class AVMediaDataStorage extends NSObject {
   initWithURLOptions(URL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   URL(): NSURL;
-}
-
-declare class AVAssetSegmentReport extends NSObject {
-  readonly segmentType: interop.Enum<typeof AVAssetSegmentType>;
-
-  readonly trackReports: NSArray;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -3756,7 +3531,7 @@ declare class AVPersistableContentKeyRequest extends AVContentKeyRequest {
 }
 
 declare class AVSampleBufferRenderSynchronizer extends NSObject {
-  readonly timebase: interop.Pointer;
+  readonly timebase: interop.Object;
 
   rate: number;
 
@@ -3795,16 +3570,6 @@ declare class AVMovieTrack extends AVAssetTrack {
   readonly mediaDataStorage: AVMediaDataStorage;
 }
 
-declare class AVMetricHLSPlaylistRequestEvent extends AVMetricEvent {
-  readonly url: NSURL;
-
-  readonly isMultivariantPlaylist: boolean;
-
-  readonly mediaType: string;
-
-  readonly mediaResourceRequestEvent: AVMetricMediaResourceRequestEvent;
-}
-
 declare class AVAssetImageGenerator extends NSObject {
   readonly asset: AVAsset;
 
@@ -3828,7 +3593,7 @@ declare class AVAssetImageGenerator extends NSObject {
 
   initWithAsset(asset: AVAsset): this;
 
-  copyCGImageAtTimeActualTimeError(requestedTime: CMTime, actualTime: interop.PointerConvertible, outError: interop.PointerConvertible): interop.Pointer;
+  copyCGImageAtTimeActualTimeError(requestedTime: CMTime, actualTime: interop.PointerConvertible, outError: interop.PointerConvertible): interop.Object;
 
   generateCGImagesAsynchronouslyForTimesCompletionHandler(requestedTimes: NSArray<interop.Object> | Array<interop.Object>, handler: (p1: CMTime, p2: interop.PointerConvertible, p3: CMTime, p4: interop.Enum<typeof AVAssetImageGeneratorResult>, p5: NSError) => void): void;
 
@@ -3856,7 +3621,7 @@ declare class AVAudioMixInputParameters extends NSObject implements NSCopying, N
 
   readonly audioTimePitchAlgorithm: string;
 
-  readonly audioTapProcessor: interop.Pointer;
+  readonly audioTapProcessor: interop.Object;
 
   getVolumeRampForTimeStartVolumeEndVolumeTimeRange(time: CMTime, startVolume: interop.PointerConvertible, endVolume: interop.PointerConvertible, timeRange: interop.PointerConvertible): boolean;
 
@@ -3943,6 +3708,187 @@ declare class AVCaptureSlider extends AVCaptureControl {
   setProminentValues(prominentValues: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setAccessibilityIdentifier(accessibilityIdentifier: string | null): void;
+}
+
+declare class AVMetricHLSPlaylistRequestEvent extends AVMetricEvent {
+  readonly url: NSURL;
+
+  readonly isMultivariantPlaylist: boolean;
+
+  readonly mediaType: string;
+
+  readonly mediaResourceRequestEvent: AVMetricMediaResourceRequestEvent;
+}
+
+declare class AVMetricPlayerItemRateChangeEvent extends AVMetricEvent {
+  readonly rate: number;
+
+  readonly previousRate: number;
+
+  readonly variant: AVAssetVariant;
+}
+
+declare class AVPlayerVideoOutput extends NSObject {
+  initWithSpecification(specification: AVVideoOutputSpecification): this;
+
+  copyTaggedBufferGroupForHostTimePresentationTimeStampActiveConfiguration(hostTime: CMTime, presentationTimeStampOut: interop.PointerConvertible, activeConfigurationOut: interop.PointerConvertible): interop.Pointer;
+}
+
+declare class AVCaptureDeferredPhotoProxy extends AVCapturePhoto {
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class AVCompositionTrack extends AVAssetTrack {
+  readonly segments: NSArray;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  segmentForTrackTime(trackTime: CMTime): AVCompositionTrackSegment;
+
+  readonly formatDescriptionReplacements: NSArray;
+
+  hasMediaCharacteristic(mediaCharacteristic: string): boolean;
+
+  samplePresentationTimeForTrackTime(trackTime: CMTime): CMTime;
+
+  metadataForFormat(format: string): NSArray;
+
+  associatedTracksOfType(trackAssociationType: string): NSArray;
+}
+
+declare class AVPlayerItemTrack extends NSObject {
+  readonly assetTrack: AVAssetTrack;
+
+  enabled: boolean;
+
+  readonly currentVideoFrameRate: number;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
+}
+
+declare class AVCameraCalibrationData extends NSObject {
+  readonly intrinsicMatrix: simd_float3x3;
+
+  readonly intrinsicMatrixReferenceDimensions: CGSize;
+
+  readonly extrinsicMatrix: simd_float4x3;
+
+  readonly pixelSize: number;
+
+  readonly lensDistortionLookupTable: NSData;
+
+  readonly inverseLensDistortionLookupTable: NSData;
+
+  readonly lensDistortionCenter: CGPoint;
+}
+
+declare class AVPlayerInterstitialEvent extends NSObject implements NSCopying {
+  static interstitialEventWithPrimaryItemIdentifierTimeTemplateItemsRestrictionsResumptionOffsetPlayoutLimitUserDefinedAttributes<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, identifier: string | null, time: CMTime, templateItems: NSArray<interop.Object> | Array<interop.Object>, restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>, resumptionOffset: CMTime, playoutLimit: CMTime, userDefinedAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+
+  static interstitialEventWithPrimaryItemIdentifierDateTemplateItemsRestrictionsResumptionOffsetPlayoutLimitUserDefinedAttributes<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, identifier: string | null, date: NSDate, templateItems: NSArray<interop.Object> | Array<interop.Object>, restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>, resumptionOffset: CMTime, playoutLimit: CMTime, userDefinedAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+
+  static interstitialEventWithPrimaryItemTime<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, time: CMTime): InstanceType<This>;
+
+  static interstitialEventWithPrimaryItemDate<This extends abstract new (...args: any) => any>(this: This, primaryItem: AVPlayerItem, date: NSDate): InstanceType<This>;
+
+  readonly primaryItem: AVPlayerItem | null;
+
+  readonly identifier: string;
+
+  readonly time: CMTime;
+
+  readonly date: NSDate;
+
+  readonly templateItems: NSArray;
+
+  readonly restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>;
+
+  readonly resumptionOffset: CMTime;
+
+  readonly playoutLimit: CMTime;
+
+  readonly alignsStartWithPrimarySegmentBoundary: boolean;
+
+  readonly alignsResumptionWithPrimarySegmentBoundary: boolean;
+
+  readonly cue: string;
+
+  readonly willPlayOnce: boolean;
+
+  readonly userDefinedAttributes: NSDictionary;
+
+  readonly assetListResponse: NSDictionary;
+
+  readonly timelineOccupancy: interop.Enum<typeof AVPlayerInterstitialEventTimelineOccupancy>;
+
+  readonly supplementsPrimaryContent: boolean;
+
+  readonly contentMayVary: boolean;
+
+  readonly skipControlTimeRange: CMTimeRange;
+
+  readonly skipControlLocalizedLabelBundleKey: string;
+
+  plannedDuration: CMTime;
+
+  setPrimaryItem(primaryItem: AVPlayerItem | null): void;
+
+  setIdentifier(identifier: string): void;
+
+  setTime(time: CMTime): void;
+
+  setDate(date: NSDate | null): void;
+
+  setTemplateItems(templateItems: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setRestrictions(restrictions: interop.Enum<typeof AVPlayerInterstitialEventRestrictions>): void;
+
+  setResumptionOffset(resumptionOffset: CMTime): void;
+
+  setPlayoutLimit(playoutLimit: CMTime): void;
+
+  setAlignsStartWithPrimarySegmentBoundary(alignsStartWithPrimarySegmentBoundary: boolean): void;
+
+  setAlignsResumptionWithPrimarySegmentBoundary(alignsResumptionWithPrimarySegmentBoundary: boolean): void;
+
+  setCue(cue: string): void;
+
+  setWillPlayOnce(willPlayOnce: boolean): void;
+
+  setUserDefinedAttributes(userDefinedAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setTimelineOccupancy(timelineOccupancy: interop.Enum<typeof AVPlayerInterstitialEventTimelineOccupancy>): void;
+
+  setSupplementsPrimaryContent(supplementsPrimaryContent: boolean): void;
+
+  setContentMayVary(contentMayVary: boolean): void;
+
+  setPlannedDuration(plannedDuration: CMTime): void;
+
+  setSkipControlTimeRange(skipControlTimeRange: CMTimeRange): void;
+
+  setSkipControlLocalizedLabelBundleKey(skipControlLocalizedLabelBundleKey: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class AVCapturePhotoOutputReadinessCoordinator extends NSObject {
+  initWithPhotoOutput(photoOutput: AVCapturePhotoOutput): this;
+
+  delegate: AVCapturePhotoOutputReadinessCoordinatorDelegate;
+
+  readonly captureReadiness: interop.Enum<typeof AVCapturePhotoOutputCaptureReadiness>;
+
+  startTrackingCaptureRequestUsingPhotoSettings(settings: AVCapturePhotoSettings): void;
+
+  stopTrackingCaptureRequestUsingPhotoSettingsUniqueID(settingsUniqueID: number): void;
+
+  setDelegate(delegate: AVCapturePhotoOutputReadinessCoordinatorDelegate | null): void;
+}
+
+declare class AVMetadataDogHeadObject extends AVMetadataObject implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class AVCaptureFileOutput extends AVCaptureOutput {
@@ -4037,6 +3983,22 @@ declare class AVAssetResourceLoadingDataRequest extends NSObject {
   respondWithData(data: NSData): void;
 }
 
+declare class AVMetricPlayerItemInitialLikelyToKeepUpEvent extends AVMetricPlayerItemLikelyToKeepUpEvent {
+  readonly playlistRequestEvents: NSArray;
+
+  readonly mediaSegmentRequestEvents: NSArray;
+
+  readonly contentKeyRequestEvents: NSArray;
+}
+
+declare class AVAssetReaderSampleReferenceOutput extends AVAssetReaderOutput {
+  static assetReaderSampleReferenceOutputWithTrack<This extends abstract new (...args: any) => any>(this: This, track: AVAssetTrack): InstanceType<This>;
+
+  initWithTrack(track: AVAssetTrack): this;
+
+  readonly track: AVAssetTrack;
+}
+
 declare class AVCaptureDeviceRotationCoordinator extends NSObject {
   initWithDevicePreviewLayer(device: AVCaptureDevice, previewLayer: CALayer | null): this;
 
@@ -4054,11 +4016,11 @@ declare class AVCaptureInputPort extends NSObject {
 
   readonly mediaType: string;
 
-  readonly formatDescription: interop.Pointer;
+  readonly formatDescription: interop.Object;
 
   enabled: boolean;
 
-  readonly clock: interop.Pointer;
+  readonly clock: interop.Object;
 
   readonly sourceDeviceType: string;
 
@@ -4067,12 +4029,6 @@ declare class AVCaptureInputPort extends NSObject {
   isEnabled(): boolean;
 
   setEnabled(enabled: boolean): void;
-}
-
-declare class AVPlayerVideoOutput extends NSObject {
-  initWithSpecification(specification: AVVideoOutputSpecification): this;
-
-  copyTaggedBufferGroupForHostTimePresentationTimeStampActiveConfiguration(hostTime: CMTime, presentationTimeStampOut: interop.PointerConvertible, activeConfigurationOut: interop.PointerConvertible): interop.Pointer;
 }
 
 declare class AVMetadataFaceObject extends AVMetadataObject implements NSCopying {
@@ -4371,7 +4327,7 @@ declare class AVCaptureExternalDisplayConfigurator extends NSObject {
 }
 
 declare class AVCaptureSynchronizedSampleBufferData extends AVCaptureSynchronizedData {
-  readonly sampleBuffer: interop.Pointer;
+  readonly sampleBuffer: interop.Object;
 
   readonly sampleBufferWasDropped: boolean;
 
@@ -4475,7 +4431,7 @@ declare class AVCaptureStillImageOutput extends AVCaptureOutput {
 
   captureStillImageAsynchronouslyFromConnectionCompletionHandler(connection: AVCaptureConnection, handler: (p1: interop.PointerConvertible, p2: NSError) => void | null): void;
 
-  static jpegStillImageNSDataRepresentation(jpegSampleBuffer: interop.PointerConvertible): NSData;
+  static jpegStillImageNSDataRepresentation(jpegSampleBuffer: interop.Object): NSData;
 
   setOutputSettings(outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
@@ -4515,7 +4471,7 @@ declare class AVCaptureStillImageOutput extends AVCaptureOutput {
 }
 
 declare class AVRenderedCaptionImage extends NSObject {
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
   readonly position: CGPoint;
 }
@@ -4792,6 +4748,18 @@ declare class AVCaptureReactionEffectState extends NSObject {
   readonly endTime: CMTime;
 }
 
+declare class AVAssetDownloadURLSession extends NSURLSession {
+  static sessionWithConfigurationAssetDownloadDelegateDelegateQueue(configuration: NSURLSessionConfiguration, delegate: AVAssetDownloadDelegate | null, delegateQueue: NSOperationQueue | null): AVAssetDownloadURLSession;
+
+  assetDownloadTaskWithURLAssetDestinationURLOptions(URLAsset: AVURLAsset, destinationURL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): AVAssetDownloadTask;
+
+  assetDownloadTaskWithURLAssetAssetTitleAssetArtworkDataOptions(URLAsset: AVURLAsset, title: string, artworkData: NSData | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): AVAssetDownloadTask;
+
+  aggregateAssetDownloadTaskWithURLAssetMediaSelectionsAssetTitleAssetArtworkDataOptions(URLAsset: AVURLAsset, mediaSelections: NSArray<interop.Object> | Array<interop.Object>, title: string, artworkData: NSData | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): AVAggregateAssetDownloadTask;
+
+  assetDownloadTaskWithConfiguration(downloadConfiguration: AVAssetDownloadConfiguration): AVAssetDownloadTask;
+}
+
 declare class AVAssetWriterInputGroup extends AVMediaSelectionGroup {
   static assetWriterInputGroupWithInputsDefaultInput<This extends abstract new (...args: any) => any>(this: This, inputs: NSArray<interop.Object> | Array<interop.Object>, defaultInput: AVAssetWriterInput | null): InstanceType<This>;
 
@@ -4819,7 +4787,7 @@ declare class AVSampleBufferVideoRenderer extends NSObject implements AVQueuedSa
 
   flushWithRemovalOfDisplayedImageCompletionHandler(removeDisplayedImage: boolean, handler: () => void | null): void;
 
-  copyDisplayedPixelBuffer(): interop.Pointer;
+  copyDisplayedPixelBuffer(): interop.Object;
 
   expectMinimumUpcomingSampleBufferPresentationTime(minimumUpcomingPresentationTime: CMTime): void;
 
@@ -4831,9 +4799,9 @@ declare class AVSampleBufferVideoRenderer extends NSObject implements AVQueuedSa
 
   loadVideoPerformanceMetricsWithCompletionHandler(completionHandler: (p1: AVVideoPerformanceMetrics) => void | null): void;
 
-  readonly timebase: interop.Pointer;
+  readonly timebase: interop.Object;
 
-  enqueueSampleBuffer(sampleBuffer: interop.PointerConvertible): void;
+  enqueueSampleBuffer(sampleBuffer: interop.Object): void;
 
   flush(): void;
 
@@ -4903,38 +4871,37 @@ declare class AVSampleBufferGeneratorBatch extends NSObject {
 }
 
 declare class AVSampleBufferGenerator extends NSObject {
-  initWithAssetTimebase(asset: AVAsset, timebase: interop.PointerConvertible): this;
+  initWithAssetTimebase(asset: AVAsset, timebase: interop.Object | null): this;
 
-  createSampleBufferForRequestError(request: AVSampleBufferRequest, outError: interop.PointerConvertible): interop.Pointer;
+  createSampleBufferForRequestError(request: AVSampleBufferRequest, outError: interop.PointerConvertible): interop.Object;
 
   makeBatch(): AVSampleBufferGeneratorBatch;
 
-  createSampleBufferForRequestAddingToBatchError(request: AVSampleBufferRequest, batch: AVSampleBufferGeneratorBatch, outError: interop.PointerConvertible): interop.Pointer;
+  createSampleBufferForRequestAddingToBatchError(request: AVSampleBufferRequest, batch: AVSampleBufferGeneratorBatch, outError: interop.PointerConvertible): interop.Object;
 
-  static notifyOfDataReadyForSampleBufferCompletionHandler(sbuf: interop.PointerConvertible, completionHandler: (p1: boolean, p2: NSError) => void | null): void;
+  static notifyOfDataReadyForSampleBufferCompletionHandler(sbuf: interop.Object, completionHandler: (p1: boolean, p2: NSError) => void | null): void;
 }
 
 declare class AVSampleBufferDisplayLayer extends CALayer {
-  get controlTimebase(): interop.Pointer;
-  set controlTimebase(value: interop.PointerConvertible);
+  controlTimebase: interop.Object;
 
   videoGravity: string;
 
   readonly readyForDisplay: boolean;
 
-  setControlTimebase(controlTimebase: interop.PointerConvertible): void;
+  setControlTimebase(controlTimebase: interop.Object | null): void;
 
   setVideoGravity(videoGravity: string): void;
 
   isReadyForDisplay(): boolean;
 
-  readonly timebase: interop.Pointer;
+  readonly timebase: interop.Object;
 
   readonly status: interop.Enum<typeof AVQueuedSampleBufferRenderingStatus>;
 
   readonly error: NSError;
 
-  enqueueSampleBuffer(sampleBuffer: interop.PointerConvertible): void;
+  enqueueSampleBuffer(sampleBuffer: interop.Object): void;
 
   flush(): void;
 
@@ -5022,9 +4989,9 @@ declare class AVSampleBufferAudioRenderer extends NSObject implements AVQueuedSa
 
   flushFromSourceTimeCompletionHandler(time: CMTime, completionHandler: (p1: boolean) => void): void;
 
-  readonly timebase: interop.Pointer;
+  readonly timebase: interop.Object;
 
-  enqueueSampleBuffer(sampleBuffer: interop.PointerConvertible): void;
+  enqueueSampleBuffer(sampleBuffer: interop.Object): void;
 
   flush(): void;
 
@@ -5105,18 +5072,6 @@ declare class AVPlayerInterstitialEventController extends AVPlayerInterstitialEv
   setLocalizedStringsTableName(localizedStringsTableName: string | null): void;
 }
 
-declare class AVPlayerItemTrack extends NSObject {
-  readonly assetTrack: AVAssetTrack;
-
-  enabled: boolean;
-
-  readonly currentVideoFrameRate: number;
-
-  isEnabled(): boolean;
-
-  setEnabled(enabled: boolean): void;
-}
-
 declare class AVPlayerItemMetadataOutput extends AVPlayerItemOutput {
   initWithIdentifiers(identifiers: NSArray<interop.Object> | Array<interop.Object> | null): this;
 
@@ -5156,7 +5111,7 @@ declare class AVPlayerItemVideoOutput extends AVPlayerItemOutput {
 
   hasNewPixelBufferForItemTime(itemTime: CMTime): boolean;
 
-  copyPixelBufferForItemTimeItemTimeForDisplay(itemTime: CMTime, outItemTimeForDisplay: interop.PointerConvertible): interop.Pointer;
+  copyPixelBufferForItemTimeItemTimeForDisplay(itemTime: CMTime, outItemTimeForDisplay: interop.PointerConvertible): interop.Object;
 
   setDelegateQueue(delegate: AVPlayerItemOutputPullDelegate | null, delegateQueue: NSObject | null): void;
 
@@ -5480,12 +5435,11 @@ declare class AVPlayer extends NSObject {
 
   cancelPendingPrerolls(): void;
 
-  get sourceClock(): interop.Pointer;
-  set sourceClock(value: interop.PointerConvertible);
+  sourceClock: interop.Object;
 
   setAutomaticallyWaitsToMinimizeStalling(automaticallyWaitsToMinimizeStalling: boolean): void;
 
-  setSourceClock(sourceClock: interop.PointerConvertible): void;
+  setSourceClock(sourceClock: interop.Object | null): void;
 
   addPeriodicTimeObserverForIntervalQueueUsingBlock(interval: CMTime, queue: NSObject | null, block: (p1: CMTime) => void): interop.Object;
 
@@ -5573,14 +5527,13 @@ declare class AVPlayer extends NSObject {
 
   closedCaptionDisplayEnabled: boolean;
 
-  get masterClock(): interop.Pointer;
-  set masterClock(value: interop.PointerConvertible);
+  masterClock: interop.Object;
 
   isClosedCaptionDisplayEnabled(): boolean;
 
   setClosedCaptionDisplayEnabled(closedCaptionDisplayEnabled: boolean): void;
 
-  setMasterClock(masterClock: interop.PointerConvertible): void;
+  setMasterClock(masterClock: interop.Object): void;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -5891,9 +5844,9 @@ declare class AVCaption extends NSObject implements NSCopying, NSMutableCopying,
 
   readonly timeRange: CMTimeRange;
 
-  textColorAtIndexRange(index: number, outRange: interop.PointerConvertible): interop.Pointer;
+  textColorAtIndexRange(index: number, outRange: interop.PointerConvertible): interop.Object;
 
-  backgroundColorAtIndexRange(index: number, outRange: interop.PointerConvertible): interop.Pointer;
+  backgroundColorAtIndexRange(index: number, outRange: interop.PointerConvertible): interop.Object;
 
   fontWeightAtIndexRange(index: number, outRange: interop.PointerConvertible): interop.Enum<typeof AVCaptionFontWeight>;
 
@@ -6001,18 +5954,6 @@ declare class AVMutableAssetDownloadStorageManagementPolicy extends AVAssetDownl
   setPriority(priority: string): void;
 
   setExpirationDate(expirationDate: NSDate): void;
-}
-
-declare class AVAssetDownloadURLSession extends NSURLSession {
-  static sessionWithConfigurationAssetDownloadDelegateDelegateQueue(configuration: NSURLSessionConfiguration, delegate: AVAssetDownloadDelegate | null, delegateQueue: NSOperationQueue | null): AVAssetDownloadURLSession;
-
-  assetDownloadTaskWithURLAssetDestinationURLOptions(URLAsset: AVURLAsset, destinationURL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): AVAssetDownloadTask;
-
-  assetDownloadTaskWithURLAssetAssetTitleAssetArtworkDataOptions(URLAsset: AVURLAsset, title: string, artworkData: NSData | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): AVAssetDownloadTask;
-
-  aggregateAssetDownloadTaskWithURLAssetMediaSelectionsAssetTitleAssetArtworkDataOptions(URLAsset: AVURLAsset, mediaSelections: NSArray<interop.Object> | Array<interop.Object>, title: string, artworkData: NSData | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): AVAggregateAssetDownloadTask;
-
-  assetDownloadTaskWithConfiguration(downloadConfiguration: AVAssetDownloadConfiguration): AVAssetDownloadTask;
 }
 
 declare class AVAggregateAssetDownloadTask extends NSURLSessionTask {
@@ -6241,6 +6182,20 @@ declare class AVAssetWriterInputMetadataAdaptor extends NSObject {
   appendTimedMetadataGroup(timedMetadataGroup: AVTimedMetadataGroup): boolean;
 }
 
+declare class AVAssetWriterInputPixelBufferAdaptor extends NSObject {
+  static assetWriterInputPixelBufferAdaptorWithAssetWriterInputSourcePixelBufferAttributes<This extends abstract new (...args: any) => any>(this: This, input: AVAssetWriterInput, sourcePixelBufferAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
+
+  initWithAssetWriterInputSourcePixelBufferAttributes(input: AVAssetWriterInput, sourcePixelBufferAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+
+  readonly assetWriterInput: AVAssetWriterInput;
+
+  readonly sourcePixelBufferAttributes: NSDictionary;
+
+  readonly pixelBufferPool: interop.Object;
+
+  appendPixelBufferWithPresentationTime(pixelBuffer: interop.Object, presentationTime: CMTime): boolean;
+}
+
 declare class AVAssetWriterInputPassDescription extends NSObject {
   readonly sourceTimeRanges: NSArray;
 }
@@ -6248,17 +6203,17 @@ declare class AVAssetWriterInputPassDescription extends NSObject {
 declare class AVAssetWriterInput extends NSObject {
   static assetWriterInputWithMediaTypeOutputSettings<This extends abstract new (...args: any) => any>(this: This, mediaType: string, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
 
-  static assetWriterInputWithMediaTypeOutputSettingsSourceFormatHint<This extends abstract new (...args: any) => any>(this: This, mediaType: string, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, sourceFormatHint: interop.PointerConvertible): InstanceType<This>;
+  static assetWriterInputWithMediaTypeOutputSettingsSourceFormatHint<This extends abstract new (...args: any) => any>(this: This, mediaType: string, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, sourceFormatHint: interop.Object | null): InstanceType<This>;
 
   initWithMediaTypeOutputSettings(mediaType: string, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
-  initWithMediaTypeOutputSettingsSourceFormatHint(mediaType: string, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, sourceFormatHint: interop.PointerConvertible): this;
+  initWithMediaTypeOutputSettingsSourceFormatHint(mediaType: string, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, sourceFormatHint: interop.Object | null): this;
 
   readonly mediaType: string;
 
   readonly outputSettings: NSDictionary;
 
-  readonly sourceFormatHint: interop.Pointer;
+  readonly sourceFormatHint: interop.Object;
 
   get metadata(): NSArray;
   set metadata(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -6269,7 +6224,7 @@ declare class AVAssetWriterInput extends NSObject {
 
   requestMediaDataWhenReadyOnQueueUsingBlock(queue: NSObject, block: () => void): void;
 
-  appendSampleBuffer(sampleBuffer: interop.PointerConvertible): boolean;
+  appendSampleBuffer(sampleBuffer: interop.Object): boolean;
 
   markAsFinished(): void;
 
@@ -6350,12 +6305,18 @@ declare class AVAssetSegmentReportSampleInformation extends NSObject {
   readonly isSyncSample: boolean;
 }
 
+declare class AVAssetSegmentReport extends NSObject {
+  readonly segmentType: interop.Enum<typeof AVAssetSegmentType>;
+
+  readonly trackReports: NSArray;
+}
+
 declare class AVCaptureSpatialAudioMetadataSampleGenerator extends NSObject {
-  readonly timedMetadataSampleBufferFormatDescription: interop.Pointer;
+  readonly timedMetadataSampleBufferFormatDescription: interop.Object;
 
-  analyzeAudioSample(sbuf: interop.PointerConvertible): number;
+  analyzeAudioSample(sbuf: interop.Object): number;
 
-  newTimedMetadataSampleBufferAndResetAnalyzer(): interop.Pointer;
+  newTimedMetadataSampleBufferAndResetAnalyzer(): interop.Object;
 
   resetAnalyzer(): void;
 }
@@ -6505,7 +6466,7 @@ declare class AVAssetReaderOutput extends NSObject {
 
   alwaysCopiesSampleData: boolean;
 
-  copyNextSampleBuffer(): interop.Pointer;
+  copyNextSampleBuffer(): interop.Object;
 
   setAlwaysCopiesSampleData(alwaysCopiesSampleData: boolean): void;
 
@@ -6558,9 +6519,7 @@ declare class AVMutableVideoCompositionInstruction extends AVVideoCompositionIns
   timeRange: CMTimeRange;
 
   // @ts-ignore MemberDecl.tsIgnore
-  get backgroundColor(): interop.Pointer;
-  // @ts-ignore MemberDecl.tsIgnore
-  set backgroundColor(value: interop.PointerConvertible);
+  backgroundColor: interop.Object;
 
   // @ts-ignore MemberDecl.tsIgnore
   get layerInstructions(): NSArray;
@@ -6577,7 +6536,7 @@ declare class AVMutableVideoCompositionInstruction extends AVVideoCompositionIns
 
   setTimeRange(timeRange: CMTimeRange): void;
 
-  setBackgroundColor(backgroundColor: interop.PointerConvertible): void;
+  setBackgroundColor(backgroundColor: interop.Object | null): void;
 
   setLayerInstructions(layerInstructions: NSArray<interop.Object> | Array<interop.Object>): void;
 
@@ -6589,7 +6548,7 @@ declare class AVMutableVideoCompositionInstruction extends AVVideoCompositionIns
 declare class AVVideoCompositionInstruction extends NSObject implements NSSecureCoding, NSCopying, NSMutableCopying, AVVideoCompositionInstructionProtocol {
   readonly timeRange: CMTimeRange;
 
-  readonly backgroundColor: interop.Pointer;
+  readonly backgroundColor: interop.Object;
 
   readonly layerInstructions: NSArray;
 
@@ -6780,14 +6739,6 @@ declare class AVDateRangeMetadataGroup extends AVMetadataGroup implements NSCopy
   mutableCopyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class AVAssetReaderSampleReferenceOutput extends AVAssetReaderOutput {
-  static assetReaderSampleReferenceOutputWithTrack<This extends abstract new (...args: any) => any>(this: This, track: AVAssetTrack): InstanceType<This>;
-
-  initWithTrack(track: AVAssetTrack): this;
-
-  readonly track: AVAssetTrack;
-}
-
 declare class AVAssetCache extends NSObject {
   readonly playableOffline: boolean;
 
@@ -6876,14 +6827,6 @@ declare class AVContentKeyRequest extends NSObject {
   readonly renewsExpiringResponseData: boolean;
 }
 
-declare class AVMetricPlayerItemRateChangeEvent extends AVMetricEvent {
-  readonly rate: number;
-
-  readonly previousRate: number;
-
-  readonly variant: AVAssetVariant;
-}
-
 declare class AVPlayerItemSegment extends NSObject {
   readonly segmentType: interop.Enum<typeof AVPlayerItemSegmentType>;
 
@@ -6894,6 +6837,20 @@ declare class AVPlayerItemSegment extends NSObject {
   readonly startDate: NSDate;
 
   readonly interstitialEvent: AVPlayerInterstitialEvent;
+}
+
+declare class AVCapturePhotoBracketSettings extends AVCapturePhotoSettings {
+  static photoBracketSettingsWithRawPixelFormatTypeProcessedFormatBracketedSettings<This extends abstract new (...args: any) => any>(this: This, rawPixelFormatType: number, processedFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, bracketedSettings: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static photoBracketSettingsWithRawPixelFormatTypeRawFileTypeProcessedFormatProcessedFileTypeBracketedSettings<This extends abstract new (...args: any) => any>(this: This, rawPixelFormatType: number, rawFileType: string | null, processedFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, processedFileType: string | null, bracketedSettings: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  readonly bracketedSettings: NSArray;
+
+  lensStabilizationEnabled: boolean;
+
+  isLensStabilizationEnabled(): boolean;
+
+  setLensStabilizationEnabled(lensStabilizationEnabled: boolean): void;
 }
 
 declare class AVAssetResourceLoadingContentInformationRequest extends NSObject {
@@ -7440,22 +7397,6 @@ declare class AVFragmentedAsset extends AVURLAsset implements AVFragmentMinding 
   isAssociatedWithFragmentMinder(): boolean;
 }
 
-declare class AVCameraCalibrationData extends NSObject {
-  readonly intrinsicMatrix: simd_float3x3;
-
-  readonly intrinsicMatrixReferenceDimensions: CGSize;
-
-  readonly extrinsicMatrix: simd_float4x3;
-
-  readonly pixelSize: number;
-
-  readonly lensDistortionLookupTable: NSData;
-
-  readonly inverseLensDistortionLookupTable: NSData;
-
-  readonly lensDistortionCenter: CGPoint;
-}
-
 declare class AVAsynchronousVideoCompositionRequest extends NSObject implements NSCopying {
   readonly renderContext: AVVideoCompositionRenderContext;
 
@@ -7467,13 +7408,13 @@ declare class AVAsynchronousVideoCompositionRequest extends NSObject implements 
 
   readonly videoCompositionInstruction: AVVideoCompositionInstruction;
 
-  sourceFrameByTrackID(trackID: number): interop.Pointer;
+  sourceFrameByTrackID(trackID: number): interop.Object;
 
-  sourceSampleBufferByTrackID(trackID: number): interop.Pointer;
+  sourceSampleBufferByTrackID(trackID: number): interop.Object;
 
   sourceTimedMetadataByTrackID(trackID: number): AVTimedMetadataGroup;
 
-  finishWithComposedVideoFrame(composedVideoFrame: interop.PointerConvertible): void;
+  finishWithComposedVideoFrame(composedVideoFrame: interop.Object): void;
 
   finishWithError(error: NSError): void;
 
@@ -7483,7 +7424,7 @@ declare class AVAsynchronousVideoCompositionRequest extends NSObject implements 
 
   finishWithComposedTaggedBufferGroup(taggedBufferGroup: interop.PointerConvertible): void;
 
-  attachSpatialVideoConfigurationToPixelBuffer(spatialVideoConfiguration: AVSpatialVideoConfiguration | null, pixelBuffer: interop.PointerConvertible): void;
+  attachSpatialVideoConfigurationToPixelBuffer(spatialVideoConfiguration: AVSpatialVideoConfiguration | null, pixelBuffer: interop.Object): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -7569,7 +7510,7 @@ declare class AVSampleCursor extends NSObject implements NSCopying {
 
   readonly currentSampleDuration: CMTime;
 
-  copyCurrentSampleFormatDescription(): interop.Pointer;
+  copyCurrentSampleFormatDescription(): interop.Object;
 
   readonly currentSampleSyncInfo: AVSampleCursorSyncInfo;
 
@@ -7635,7 +7576,7 @@ declare class AVDepthData extends NSObject {
 
   depthDataByApplyingExifOrientation(exifOrientation: interop.Enum<typeof CGImagePropertyOrientation>): this;
 
-  depthDataByReplacingDepthDataMapWithPixelBufferError(pixelBuffer: interop.PointerConvertible, outError: interop.PointerConvertible): this;
+  depthDataByReplacingDepthDataMapWithPixelBufferError(pixelBuffer: interop.Object, outError: interop.PointerConvertible): this;
 
   readonly availableDepthDataTypes: NSArray;
 
@@ -7643,7 +7584,7 @@ declare class AVDepthData extends NSObject {
 
   readonly depthDataType: number;
 
-  readonly depthDataMap: interop.Pointer;
+  readonly depthDataMap: interop.Object;
 
   readonly depthDataQuality: interop.Enum<typeof AVDepthDataQuality>;
 
@@ -7900,7 +7841,7 @@ declare class AVSpatialVideoConfiguration extends NSObject {
 
   init(): this;
 
-  initWithFormatDescription(formatDescription: interop.PointerConvertible): this;
+  initWithFormatDescription(formatDescription: interop.Object): this;
 
   setCameraCalibrationDataLensCollection(cameraCalibrationDataLensCollection: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
@@ -8005,6 +7946,22 @@ declare class AVAssetTrack extends NSObject implements NSCopying, AVAsynchronous
   loadValuesAsynchronouslyForKeysCompletionHandler(keys: NSArray<interop.Object> | Array<interop.Object>, handler: () => void | null): void;
 }
 
+declare class AVSemanticSegmentationMatte extends NSObject {
+  static semanticSegmentationMatteFromImageSourceAuxiliaryDataTypeDictionaryRepresentationError<This extends abstract new (...args: any) => any>(this: This, imageSourceAuxiliaryDataType: interop.Object, imageSourceAuxiliaryDataInfoDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, outError: interop.PointerConvertible): InstanceType<This>;
+
+  readonly matteType: string;
+
+  semanticSegmentationMatteByApplyingExifOrientation(exifOrientation: interop.Enum<typeof CGImagePropertyOrientation>): this;
+
+  semanticSegmentationMatteByReplacingSemanticSegmentationMatteWithPixelBufferError(pixelBuffer: interop.Object, outError: interop.PointerConvertible): this;
+
+  dictionaryRepresentationForAuxiliaryDataType(outAuxDataType: interop.PointerConvertible): NSDictionary;
+
+  readonly pixelFormatType: number;
+
+  readonly mattingImage: interop.Object;
+}
+
 declare class AVAssetReaderTrackOutput extends AVAssetReaderOutput {
   static assetReaderTrackOutputWithTrackOutputSettings<This extends abstract new (...args: any) => any>(this: This, track: AVAssetTrack, outputSettings: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
 
@@ -8020,14 +7977,11 @@ declare class AVAssetReaderTrackOutput extends AVAssetReaderOutput {
 }
 
 declare class AVCaptureMetadataInput extends AVCaptureInput {
-  static metadataInputWithFormatDescriptionClock<This extends abstract new (...args: any) => any>(this: This, desc: interop.PointerConvertible, clock: interop.PointerConvertible): InstanceType<This>;
+  static metadataInputWithFormatDescriptionClock<This extends abstract new (...args: any) => any>(this: This, desc: interop.Object, clock: interop.Object): InstanceType<This>;
 
-  initWithFormatDescriptionClock(desc: interop.PointerConvertible, clock: interop.PointerConvertible): this;
+  initWithFormatDescriptionClock(desc: interop.Object, clock: interop.Object): this;
 
   appendTimedMetadataGroupError(metadata: AVTimedMetadataGroup, outError: interop.PointerConvertible): boolean;
-}
-
-declare class AVCaptureDeferredPhotoProxy extends AVCapturePhoto {
 }
 
 declare class AVPlayerItemErrorLogEvent extends NSObject implements NSCopying {
@@ -8145,9 +8099,9 @@ declare class AVCapturePhotoOutput extends AVCaptureOutput {
 
   readonly availableLivePhotoVideoCodecTypes: NSArray;
 
-  static JPEGPhotoDataRepresentationForJPEGSampleBufferPreviewPhotoSampleBuffer(JPEGSampleBuffer: interop.PointerConvertible, previewPhotoSampleBuffer: interop.PointerConvertible): NSData;
+  static JPEGPhotoDataRepresentationForJPEGSampleBufferPreviewPhotoSampleBuffer(JPEGSampleBuffer: interop.Object, previewPhotoSampleBuffer: interop.Object | null): NSData;
 
-  static DNGPhotoDataRepresentationForRawSampleBufferPreviewPhotoSampleBuffer(rawSampleBuffer: interop.PointerConvertible, previewPhotoSampleBuffer: interop.PointerConvertible): NSData;
+  static DNGPhotoDataRepresentationForRawSampleBufferPreviewPhotoSampleBuffer(rawSampleBuffer: interop.Object, previewPhotoSampleBuffer: interop.Object | null): NSData;
 
   readonly contentAwareDistortionCorrectionSupported: boolean;
 
@@ -8323,9 +8277,9 @@ declare class AVMutableCaption extends AVCaption {
 
   setTimeRange(timeRange: CMTimeRange): void;
 
-  setTextColorInRange(color: interop.PointerConvertible, range: _NSRange): void;
+  setTextColorInRange(color: interop.Object, range: _NSRange): void;
 
-  setBackgroundColorInRange(color: interop.PointerConvertible, range: _NSRange): void;
+  setBackgroundColorInRange(color: interop.Object, range: _NSRange): void;
 
   setFontWeightInRange(fontWeight: interop.Enum<typeof AVCaptionFontWeight>, range: _NSRange): void;
 
@@ -8371,24 +8325,6 @@ declare class AVMetadataHumanFullBodyObject extends AVMetadataBodyObject impleme
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class AVCompositionTrack extends AVAssetTrack {
-  readonly segments: NSArray;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  segmentForTrackTime(trackTime: CMTime): AVCompositionTrackSegment;
-
-  readonly formatDescriptionReplacements: NSArray;
-
-  hasMediaCharacteristic(mediaCharacteristic: string): boolean;
-
-  samplePresentationTimeForTrackTime(trackTime: CMTime): CMTime;
-
-  metadataForFormat(format: string): NSArray;
-
-  associatedTracksOfType(trackAssociationType: string): NSArray;
-}
-
 declare class AVMetadataHumanBodyObject extends AVMetadataBodyObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -8424,11 +8360,17 @@ declare class AVDelegatingPlaybackCoordinator extends AVPlaybackCoordinator {
 
   coordinateSeekToTimeOptions(time: CMTime, options: interop.Enum<typeof AVDelegatingPlaybackCoordinatorSeekOptions>): void;
 
-  transitionToItemWithIdentifierProposingInitialTimingBasedOnTimebase(itemIdentifier: string | null, snapshotTimebase: interop.PointerConvertible): void;
+  transitionToItemWithIdentifierProposingInitialTimingBasedOnTimebase(itemIdentifier: string | null, snapshotTimebase: interop.Object | null): void;
 
   readonly currentItemIdentifier: string;
 
   reapplyCurrentItemStateToPlaybackControlDelegate(): void;
+}
+
+declare class AVCaptureSystemExposureBiasSlider extends AVCaptureControl {
+  initWithDevice(device: AVCaptureDevice): this;
+
+  initWithDeviceAction(device: AVCaptureDevice, action: (p1: number) => void): this;
 }
 
 declare class AVAssetReader extends NSObject {
@@ -8547,13 +8489,13 @@ declare class AVPortraitEffectsMatte extends NSObject {
 
   portraitEffectsMatteByApplyingExifOrientation(exifOrientation: interop.Enum<typeof CGImagePropertyOrientation>): this;
 
-  portraitEffectsMatteByReplacingPortraitEffectsMatteWithPixelBufferError(pixelBuffer: interop.PointerConvertible, outError: interop.PointerConvertible): this;
+  portraitEffectsMatteByReplacingPortraitEffectsMatteWithPixelBufferError(pixelBuffer: interop.Object, outError: interop.PointerConvertible): this;
 
   dictionaryRepresentationForAuxiliaryDataType(outAuxDataType: interop.PointerConvertible): NSDictionary;
 
   readonly pixelFormatType: number;
 
-  readonly mattingImage: interop.Pointer;
+  readonly mattingImage: interop.Object;
 }
 
 declare class AVMediaSelection extends NSObject implements NSCopying, NSMutableCopying {
@@ -8601,6 +8543,27 @@ declare class AVMetadataDogBodyObject extends AVMetadataBodyObject implements NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class AVPlayerItemMediaDataCollector extends NSObject {
+}
+
+declare class AVPlayerItemRenderedLegibleOutput extends AVPlayerItemOutput {
+  initWithVideoDisplaySize(videoDisplaySize: CGSize): this;
+
+  setDelegateQueue(delegate: AVPlayerItemRenderedLegibleOutputPushDelegate | null, delegateQueue: NSObject | null): void;
+
+  readonly delegate: AVPlayerItemRenderedLegibleOutputPushDelegate;
+
+  readonly delegateQueue: NSObject;
+
+  advanceIntervalForDelegateInvocation: number;
+
+  videoDisplaySize: CGSize;
+
+  setAdvanceIntervalForDelegateInvocation(advanceIntervalForDelegateInvocation: number): void;
+
+  setVideoDisplaySize(videoDisplaySize: CGSize): void;
+}
+
 declare class AVAssetVariantVideoLayoutAttributes extends NSObject {
   readonly stereoViewComponents: interop.Enum<typeof CMStereoViewComponents>;
 
@@ -8611,6 +8574,18 @@ declare class AVPlaybackCoordinationMedium extends NSObject {
   init(): this;
 
   readonly connectedPlaybackCoordinators: NSArray;
+}
+
+declare class AVVideoPerformanceMetrics extends NSObject {
+  readonly totalNumberOfFrames: number;
+
+  readonly numberOfDroppedFrames: number;
+
+  readonly numberOfCorruptedFrames: number;
+
+  readonly numberOfFramesDisplayedUsingOptimizedCompositing: number;
+
+  readonly totalAccumulatedFrameDelay: number;
 }
 
 declare class AVMetricPlayerItemVariantSwitchStartEvent extends AVMetricEvent {
@@ -8653,20 +8628,6 @@ declare class AVMetadataMachineReadableCodeObject extends AVMetadataObject {
   readonly stringValue: string;
 
   readonly descriptor: CIBarcodeDescriptor;
-}
-
-declare class AVCapturePhotoBracketSettings extends AVCapturePhotoSettings {
-  static photoBracketSettingsWithRawPixelFormatTypeProcessedFormatBracketedSettings<This extends abstract new (...args: any) => any>(this: This, rawPixelFormatType: number, processedFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, bracketedSettings: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static photoBracketSettingsWithRawPixelFormatTypeRawFileTypeProcessedFormatProcessedFileTypeBracketedSettings<This extends abstract new (...args: any) => any>(this: This, rawPixelFormatType: number, rawFileType: string | null, processedFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, processedFileType: string | null, bracketedSettings: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  readonly bracketedSettings: NSArray;
-
-  lensStabilizationEnabled: boolean;
-
-  isLensStabilizationEnabled(): boolean;
-
-  setLensStabilizationEnabled(lensStabilizationEnabled: boolean): void;
 }
 
 declare class AVPlayerItem extends NSObject implements NSCopying {
@@ -8746,7 +8707,7 @@ declare class AVPlayerItem extends NSObject implements NSCopying {
 
   stepByCount(stepCount: number): void;
 
-  readonly timebase: interop.Pointer;
+  readonly timebase: interop.Object;
 
   setForwardPlaybackEndTime(forwardPlaybackEndTime: CMTime): void;
 
@@ -8919,6 +8880,68 @@ declare class AVMetricDownloadSummaryEvent extends AVMetricEvent {
   readonly variants: NSArray;
 }
 
+// @ts-ignore ClassDecl.tsIgnore
+declare class AVMutableMetadataItem extends AVMetadataItem {
+  // @ts-ignore MemberDecl.tsIgnore
+  identifier: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  extendedLanguageTag: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  locale: NSLocale;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  time: CMTime;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  duration: CMTime;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  dataType: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  value: NSCopying;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  get extraAttributes(): NSDictionary;
+  // @ts-ignore MemberDecl.tsIgnore
+  set extraAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  static metadataItem(): AVMutableMetadataItem;
+
+  setIdentifier(identifier: string | null): void;
+
+  setExtendedLanguageTag(extendedLanguageTag: string | null): void;
+
+  setLocale(locale: NSLocale | null): void;
+
+  setTime(time: CMTime): void;
+
+  setDuration(duration: CMTime): void;
+
+  setDataType(dataType: string | null): void;
+
+  setValue(value: NSCopying | null): void;
+
+  setExtraAttributes(extraAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  startDate: NSDate;
+
+  setStartDate(startDate: NSDate | null): void;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  keySpace: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  key: NSCopying;
+
+  setKeySpace(keySpace: string | null): void;
+
+  setKey(key: NSCopying | null): void;
+}
+
 declare class AVPlayerMediaSelectionCriteria extends NSObject {
   readonly preferredLanguages: NSArray;
 
@@ -8974,9 +8997,9 @@ declare class AVCapturePhoto extends NSObject {
 
   readonly rawPhoto: boolean;
 
-  readonly pixelBuffer: interop.Pointer;
+  readonly pixelBuffer: interop.Object;
 
-  readonly previewPixelBuffer: interop.Pointer;
+  readonly previewPixelBuffer: interop.Object;
 
   readonly embeddedThumbnailPhotoFormat: NSDictionary;
 
@@ -8996,7 +9019,7 @@ declare class AVCapturePhoto extends NSObject {
 
   readonly sourceDeviceType: string;
 
-  readonly constantColorConfidenceMap: interop.Pointer;
+  readonly constantColorConfidenceMap: interop.Object;
 
   readonly constantColorCenterWeightedMeanConfidenceLevel: number;
 
@@ -9010,11 +9033,11 @@ declare class AVCapturePhoto extends NSObject {
 
   fileDataRepresentationWithCustomizer(customizer: AVCapturePhotoFileDataRepresentationCustomizer): NSData;
 
-  fileDataRepresentationWithReplacementMetadataReplacementEmbeddedThumbnailPhotoFormatReplacementEmbeddedThumbnailPixelBufferReplacementDepthData(replacementMetadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, replacementEmbeddedThumbnailPhotoFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, replacementEmbeddedThumbnailPixelBuffer: interop.PointerConvertible, replacementDepthData: AVDepthData | null): NSData;
+  fileDataRepresentationWithReplacementMetadataReplacementEmbeddedThumbnailPhotoFormatReplacementEmbeddedThumbnailPixelBufferReplacementDepthData(replacementMetadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, replacementEmbeddedThumbnailPhotoFormat: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, replacementEmbeddedThumbnailPixelBuffer: interop.Object | null, replacementDepthData: AVDepthData | null): NSData;
 
-  CGImageRepresentation(): interop.Pointer;
+  CGImageRepresentation(): interop.Object;
 
-  previewCGImageRepresentation(): interop.Pointer;
+  previewCGImageRepresentation(): interop.Object;
 
   readonly bracketSettings: AVCaptureBracketedStillImageSettings;
 
@@ -9055,7 +9078,7 @@ declare class AVCaptionRenderer extends NSObject {
 
   captionSceneChangesInRange(consideredTimeRange: CMTimeRange): NSArray;
 
-  renderInContextForTime(ctx: interop.PointerConvertible, time: CMTime): void;
+  renderInContextForTime(ctx: interop.Object, time: CMTime): void;
 
   setCaptions(captions: NSArray<interop.Object> | Array<interop.Object>): void;
 
@@ -9107,7 +9130,7 @@ declare class AVVideoCompositionRenderContext extends NSObject {
 
   readonly videoComposition: AVVideoComposition;
 
-  newPixelBuffer(): interop.Pointer;
+  newPixelBuffer(): interop.Object;
 }
 
 declare class AVCaptureSynchronizedData extends NSObject {
@@ -9115,9 +9138,9 @@ declare class AVCaptureSynchronizedData extends NSObject {
 }
 
 declare class AVCompositionTrackFormatDescriptionReplacement extends NSObject implements NSSecureCoding {
-  readonly originalFormatDescription: interop.Pointer;
+  readonly originalFormatDescription: interop.Object;
 
-  readonly replacementFormatDescription: interop.Pointer;
+  readonly replacementFormatDescription: interop.Object;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -9203,9 +9226,9 @@ declare class AVCaptureSession extends NSObject {
 
   stopRunning(): void;
 
-  readonly synchronizationClock: interop.Pointer;
+  readonly synchronizationClock: interop.Object;
 
-  readonly masterClock: interop.Pointer;
+  readonly masterClock: interop.Object;
 
   readonly hardwareCost: number;
 
@@ -9251,13 +9274,13 @@ declare class AVCaptureSession extends NSObject {
 declare class AVTimedMetadataGroup extends AVMetadataGroup implements NSCopying, NSMutableCopying {
   initWithItemsTimeRange(items: NSArray<interop.Object> | Array<interop.Object>, timeRange: CMTimeRange): this;
 
-  initWithSampleBuffer(sampleBuffer: interop.PointerConvertible): this;
+  initWithSampleBuffer(sampleBuffer: interop.Object): this;
 
   readonly timeRange: CMTimeRange;
 
   readonly items: NSArray;
 
-  copyFormatDescription(): interop.Pointer;
+  copyFormatDescription(): interop.Object;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -9425,7 +9448,7 @@ declare class AVAssetWriterInputTaggedPixelBufferGroupAdaptor extends NSObject {
 
   readonly sourcePixelBufferAttributes: NSDictionary;
 
-  readonly pixelBufferPool: interop.Pointer;
+  readonly pixelBufferPool: interop.Object;
 
   appendTaggedPixelBufferGroupWithPresentationTime(taggedPixelBufferGroup: interop.PointerConvertible, presentationTime: CMTime): boolean;
 }
@@ -9446,9 +9469,7 @@ declare class AVMutableAudioMixInputParameters extends AVAudioMixInputParameters
   audioTimePitchAlgorithm: string;
 
   // @ts-ignore MemberDecl.tsIgnore
-  get audioTapProcessor(): interop.Pointer;
-  // @ts-ignore MemberDecl.tsIgnore
-  set audioTapProcessor(value: interop.PointerConvertible);
+  audioTapProcessor: interop.Object;
 
   setVolumeRampFromStartVolumeToEndVolumeTimeRange(startVolume: number, endVolume: number, timeRange: CMTimeRange): void;
 
@@ -9458,27 +9479,13 @@ declare class AVMutableAudioMixInputParameters extends AVAudioMixInputParameters
 
   setAudioTimePitchAlgorithm(audioTimePitchAlgorithm: string | null): void;
 
-  setAudioTapProcessor(audioTapProcessor: interop.PointerConvertible): void;
+  setAudioTapProcessor(audioTapProcessor: interop.Object): void;
 }
 
 declare class AVCaptureAudioChannel extends NSObject {
   readonly averagePowerLevel: number;
 
   readonly peakHoldLevel: number;
-}
-
-declare class AVCapturePhotoOutputReadinessCoordinator extends NSObject {
-  initWithPhotoOutput(photoOutput: AVCapturePhotoOutput): this;
-
-  delegate: AVCapturePhotoOutputReadinessCoordinatorDelegate;
-
-  readonly captureReadiness: interop.Enum<typeof AVCapturePhotoOutputCaptureReadiness>;
-
-  startTrackingCaptureRequestUsingPhotoSettings(settings: AVCapturePhotoSettings): void;
-
-  stopTrackingCaptureRequestUsingPhotoSettingsUniqueID(settingsUniqueID: number): void;
-
-  setDelegate(delegate: AVCapturePhotoOutputReadinessCoordinatorDelegate | null): void;
 }
 
 declare class AVMetricPlayerItemVariantSwitchEvent extends AVMetricEvent {
@@ -9515,18 +9522,6 @@ declare class AVAssetReaderAudioMixOutput extends AVAssetReaderOutput {
   setAudioTimePitchAlgorithm(audioTimePitchAlgorithm: string): void;
 }
 
-declare class AVVideoPerformanceMetrics extends NSObject {
-  readonly totalNumberOfFrames: number;
-
-  readonly numberOfDroppedFrames: number;
-
-  readonly numberOfCorruptedFrames: number;
-
-  readonly numberOfFramesDisplayedUsingOptimizedCompositing: number;
-
-  readonly totalAccumulatedFrameDelay: number;
-}
-
 declare class AVCaptureSynchronizedMetadataObjectData extends AVCaptureSynchronizedData {
   readonly metadataObjects: NSArray;
 }
@@ -9559,10 +9554,6 @@ declare class AVCaptureIndexPicker extends AVCaptureControl {
 
 declare class AVCaptureInput extends NSObject {
   readonly ports: NSArray;
-}
-
-declare class AVMetadataDogHeadObject extends AVMetadataObject implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -9672,9 +9663,9 @@ declare class AVMutableMovieTrack extends AVMovieTrack {
 
   removeTrackAssociationToTrackType(movieTrack: AVMovieTrack, trackAssociationType: string): void;
 
-  replaceFormatDescriptionWithFormatDescription(formatDescription: interop.PointerConvertible, newFormatDescription: interop.PointerConvertible): void;
+  replaceFormatDescriptionWithFormatDescription(formatDescription: interop.Object, newFormatDescription: interop.Object): void;
 
-  appendSampleBufferDecodeTimePresentationTimeError(sampleBuffer: interop.PointerConvertible, outDecodeTime: interop.PointerConvertible, outPresentationTime: interop.PointerConvertible, outError: interop.PointerConvertible): boolean;
+  appendSampleBufferDecodeTimePresentationTimeError(sampleBuffer: interop.Object, outDecodeTime: interop.PointerConvertible, outPresentationTime: interop.PointerConvertible, outError: interop.PointerConvertible): boolean;
 
   insertMediaTimeRangeIntoTimeRange(mediaTimeRange: CMTimeRange, trackTimeRange: CMTimeRange): boolean;
 
@@ -9722,7 +9713,7 @@ declare class AVCaptureExternalDisplayConfiguration extends NSObject {
 declare class AVCaptureDeviceFormat extends NSObject {
   readonly mediaType: string;
 
-  readonly formatDescription: interop.Pointer;
+  readonly formatDescription: interop.Object;
 
   readonly videoSupportedFrameRateRanges: NSArray;
 

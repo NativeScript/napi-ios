@@ -680,6 +680,30 @@ declare class BERenderingProcess extends NSObject {
   grantCapabilityErrorInvalidationHandler(capability: BEProcessCapability, error: interop.PointerConvertible, invalidationHandler: () => void): BEProcessCapabilityGrant;
 }
 
+declare class BELayerHierarchyHostingTransactionCoordinator extends NSObject implements NSSecureCoding {
+  static coordinatorWithError(error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
+
+  static coordinatorWithXPCRepresentationError(xpcRepresentation: NSObject | null, error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
+
+  createXPCRepresentation(): NSObject;
+
+  addLayerHierarchy(layerHierarchy: BELayerHierarchy): void;
+
+  addLayerHierarchyHostingView(hostingView: BELayerHierarchyHostingView): void;
+
+  commit(): void;
+
+  static coordinatorWithPortDataError(port: number, data: NSData, error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
+
+  encodeWithBlock(block: (p1: number, p2: NSData) => void): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class BELayerHierarchyHandle extends NSObject implements NSSecureCoding {
   static handleWithXPCRepresentationError(xpcRepresentation: NSObject | null, error: interop.PointerConvertible): BELayerHierarchyHandle;
 
@@ -744,30 +768,6 @@ declare class BETextDocumentContext extends NSObject {
   set autocorrectedRanges(value: NSArray<interop.Object> | Array<interop.Object>);
 
   setAutocorrectedRanges(autocorrectedRanges: NSArray<interop.Object> | Array<interop.Object>): void;
-}
-
-declare class BELayerHierarchyHostingTransactionCoordinator extends NSObject implements NSSecureCoding {
-  static coordinatorWithError(error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
-
-  static coordinatorWithXPCRepresentationError(xpcRepresentation: NSObject | null, error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
-
-  createXPCRepresentation(): NSObject;
-
-  addLayerHierarchy(layerHierarchy: BELayerHierarchy): void;
-
-  addLayerHierarchyHostingView(hostingView: BELayerHierarchyHostingView): void;
-
-  commit(): void;
-
-  static coordinatorWithPortDataError(port: number, data: NSData, error: interop.PointerConvertible): BELayerHierarchyHostingTransactionCoordinator;
-
-  encodeWithBlock(block: (p1: number, p2: NSData) => void): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class BELayerHierarchy extends NSObject {

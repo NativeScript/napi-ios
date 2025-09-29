@@ -1,7 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kCMFormatDescriptionKey_CleanApertureHorizontalOffset: interop.Pointer;
-
 declare const kCMBufferQueueTrigger_WhenMinPresentationTimeStampChanges: number;
 
 declare const kCMMuxedStreamType_MPEG2Program: number;
@@ -82,6 +80,10 @@ declare const kCMVideoCodecType_AppleProRes422HQ: number;
 
 declare const kCMTimebaseError_ReadOnly: number;
 
+declare const kCMMetadataBaseDataType_PointF32: interop.Pointer;
+
+declare const kCMMetadataIdentifierError_BadKeySpace: number;
+
 declare const kCMFormatDescriptionExtension_HasLeftStereoEyeView: interop.Pointer;
 
 declare const kCMSampleBufferConsumerNotification_BufferConsumed: interop.Pointer;
@@ -109,8 +111,6 @@ declare const kCMMetadataBaseDataType_PerspectiveTransformF64: interop.Pointer;
 declare const kCMMetadataBaseDataType_JSON: interop.Pointer;
 
 declare const kCMMetadataBaseDataType_RectF32: interop.Pointer;
-
-declare const kCMMetadataBaseDataType_PointF32: interop.Pointer;
 
 declare const kCMMetadataBaseDataType_UInt64: interop.Pointer;
 
@@ -159,8 +159,6 @@ declare const kCMMetadataDataTypeRegistryError_BadDataTypeIdentifier: number;
 declare const kCMMetadataDataTypeRegistryError_RequiredParameterMissing: number;
 
 declare const kCMMetadataDataTypeRegistryError_AllocationFailed: number;
-
-declare const kCMMetadataIdentifierError_BadKeySpace: number;
 
 declare const kCMMetadataIdentifierError_BadKeyLength: number;
 
@@ -260,6 +258,8 @@ declare const kCMClockError_MissingRequiredParameter: number;
 
 declare const kCMFormatDescriptionExtension_ViewPackingKind: interop.Pointer;
 
+declare const kCMSampleBufferAttachmentKey_TransitionID: interop.Pointer;
+
 declare const kCMMetadataDataTypeRegistryError_DataTypeAlreadyRegistered: number;
 
 declare const kCMMetadataIdentifier_QuickTimeMetadataDirection_Facing: interop.Pointer;
@@ -277,8 +277,6 @@ declare const kCMFormatDescriptionBridgeError_UnsupportedSampleDescriptionFlavor
 declare const kCMTextMarkupCharacterEdgeStyle_None: interop.Pointer;
 
 declare const kCMTextMarkupGenericFontName_MonospaceSansSerif: interop.Pointer;
-
-declare const kCMMetadataIdentifierError_BadIdentifier: number;
 
 declare const kCMVideoCodecType_AppleProRes422: number;
 
@@ -369,8 +367,6 @@ declare const kCMSampleBufferAttachmentKey_EmptyMedia: interop.Pointer;
 declare const kCMSampleBufferAttachmentKey_FillDiscontinuitiesWithSilence: interop.Pointer;
 
 declare const kCMSampleBufferAttachmentKey_Reverse: interop.Pointer;
-
-declare const kCMSampleBufferAttachmentKey_TransitionID: interop.Pointer;
 
 declare const kCMSampleAttachmentKey_AudioIndependentSampleDecoderRefreshCount: interop.Pointer;
 
@@ -836,7 +832,7 @@ declare const kCMImageDescriptionFlavor_ISOFamilyWithAppleExtensions: interop.Po
 
 declare const kCMFormatDescriptionExtension_FullRangeVideo: interop.Pointer;
 
-declare const kCMFormatDescriptionExtension_AmbientViewingEnvironment: interop.Pointer;
+declare const kCMFormatDescriptionExtension_AmbientViewingEnvironment: interop.Object;
 
 declare const kCMMetadataFormatType_Boxed: number;
 
@@ -914,6 +910,8 @@ declare const kCMSampleBufferLensStabilizationInfo_Unavailable: interop.Pointer;
 
 declare const kCMSampleBufferConduitNotificationParameter_MaxUpcomingOutputPTS: interop.Pointer;
 
+declare const kCMTextMarkupAttribute_ForegroundColorARGB: interop.Pointer;
+
 declare const kCMVideoCodecType_MPEG4Video: number;
 
 declare const kCMTextFormatDescriptionRect_Left: interop.Pointer;
@@ -927,6 +925,8 @@ declare const kCMFormatDescriptionChromaLocation_BottomLeft: interop.Pointer;
 declare const kCMMediaType_ClosedCaption: number;
 
 declare const kCMImageDescriptionFlavor_3GPFamily: interop.Pointer;
+
+declare const kCMMetadataIdentifierError_BadIdentifier: number;
 
 declare const kCMTextFormatDescriptionRect_Right: interop.Pointer;
 
@@ -1122,6 +1122,8 @@ declare const kCMBufferQueueTrigger_WhenDurationBecomesLessThanOrEqualTo: number
 
 declare const kCMFormatDescriptionProjectionKind_Equirectangular: interop.Pointer;
 
+declare const kCMFormatDescriptionKey_CleanApertureHorizontalOffset: interop.Pointer;
+
 declare const kCMBlockBufferNoErr: number;
 
 declare const kCMVideoCodecType_AV1: number;
@@ -1150,7 +1152,7 @@ declare const kCMMetadataIdentifier_QuickTimeMetadataDisplayMaskRectangleStereoL
 
 declare const kCMFormatDescriptionError_ValueNotAvailable: number;
 
-declare const kCMMemoryPoolOption_AgeOutPeriod: interop.Pointer;
+declare const kCMMemoryPoolOption_AgeOutPeriod: interop.Object;
 
 declare const kCMVideoCodecType_AppleProRes422Proxy: number;
 
@@ -1177,8 +1179,6 @@ declare const kCMTimeRangeInvalid: CMTimeRange;
 declare const kCMTimeIndefinite: CMTime;
 
 declare const kCMFormatDescriptionChromaLocation_DV420: interop.Pointer;
-
-declare const kCMTextMarkupAttribute_ForegroundColorARGB: interop.Pointer;
 
 declare const kCMClosedCaptionFormatType_CEA708: number;
 
@@ -1353,7 +1353,7 @@ declare class CMBufferHandlers {
   getDuration: (p1: interop.PointerConvertible) => CMTime | null;
   isDataReady: (p1: interop.PointerConvertible) => number | null;
   compare: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult> | null;
-  dataBecameReadyNotification: interop.Pointer;
+  dataBecameReadyNotification: interop.Object | null;
   getSize: (p1: interop.PointerConvertible) => number | null;
 }
 
@@ -1414,7 +1414,7 @@ declare class CMBufferCallbacks {
   getDuration: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => CMTime | null;
   isDataReady: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
   compare: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Enum<typeof CFComparisonResult> | null;
-  dataBecameReadyNotification: interop.Pointer;
+  dataBecameReadyNotification: interop.Object | null;
   getSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
 }
 
@@ -1482,247 +1482,247 @@ declare function CMTimeMaximum(time1: CMTime, time2: CMTime): CMTime;
 
 declare function CMTimeAbsoluteValue(time: CMTime): CMTime;
 
-declare function CMTimeCopyAsDictionary(time: CMTime, allocator: interop.PointerConvertible): interop.Pointer;
+declare function CMTimeCopyAsDictionary(time: CMTime, allocator: interop.Object): interop.Object;
 
-declare function CMTimeMakeFromDictionary(dictionaryRepresentation: interop.PointerConvertible): CMTime;
+declare function CMTimeMakeFromDictionary(dictionaryRepresentation: interop.Object): CMTime;
 
-declare function CMTimeCopyDescription(allocator: interop.PointerConvertible, time: CMTime): interop.Pointer;
+declare function CMTimeCopyDescription(allocator: interop.Object, time: CMTime): interop.Object;
 
 declare function CMTimeShow(time: CMTime): void;
 
-declare function CMSetAttachment(target: interop.PointerConvertible, key: interop.PointerConvertible, value: interop.PointerConvertible, attachmentMode: number): void;
+declare function CMSetAttachment(target: interop.Object, key: interop.Object, value: interop.Object, attachmentMode: number): void;
 
-declare function CMGetAttachment(target: interop.PointerConvertible, key: interop.PointerConvertible, attachmentModeOut: interop.PointerConvertible): interop.Pointer;
+declare function CMGetAttachment(target: interop.Object, key: interop.Object, attachmentModeOut: interop.PointerConvertible): interop.Object;
 
-declare function CMRemoveAttachment(target: interop.PointerConvertible, key: interop.PointerConvertible): void;
+declare function CMRemoveAttachment(target: interop.Object, key: interop.Object): void;
 
-declare function CMRemoveAllAttachments(target: interop.PointerConvertible): void;
+declare function CMRemoveAllAttachments(target: interop.Object): void;
 
-declare function CMCopyDictionaryOfAttachments(allocator: interop.PointerConvertible, target: interop.PointerConvertible, attachmentMode: number): interop.Pointer;
+declare function CMCopyDictionaryOfAttachments(allocator: interop.Object, target: interop.Object, attachmentMode: number): interop.Object;
 
-declare function CMSetAttachments(target: interop.PointerConvertible, theAttachments: interop.PointerConvertible, attachmentMode: number): void;
+declare function CMSetAttachments(target: interop.Object, theAttachments: interop.Object, attachmentMode: number): void;
 
-declare function CMPropagateAttachments(source: interop.PointerConvertible, destination: interop.PointerConvertible): void;
+declare function CMPropagateAttachments(source: interop.Object, destination: interop.Object): void;
 
-declare function CMBlockBufferCreateEmpty(structureAllocator: interop.PointerConvertible, subBlockCapacity: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
+declare function CMBlockBufferCreateEmpty(structureAllocator: interop.Object, subBlockCapacity: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
 
-declare function CMBlockBufferCreateWithMemoryBlock(structureAllocator: interop.PointerConvertible, memoryBlock: interop.PointerConvertible, blockLength: number, blockAllocator: interop.PointerConvertible, customBlockSource: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
+declare function CMBlockBufferCreateWithMemoryBlock(structureAllocator: interop.Object, memoryBlock: interop.PointerConvertible, blockLength: number, blockAllocator: interop.Object, customBlockSource: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
 
-declare function CMBlockBufferCreateWithBufferReference(structureAllocator: interop.PointerConvertible, bufferReference: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
+declare function CMBlockBufferCreateWithBufferReference(structureAllocator: interop.Object, bufferReference: interop.Object, offsetToData: number, dataLength: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
 
-declare function CMBlockBufferCreateContiguous(structureAllocator: interop.PointerConvertible, sourceBuffer: interop.PointerConvertible, blockAllocator: interop.PointerConvertible, customBlockSource: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
+declare function CMBlockBufferCreateContiguous(structureAllocator: interop.Object, sourceBuffer: interop.Object, blockAllocator: interop.Object, customBlockSource: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number, blockBufferOut: interop.PointerConvertible): number;
 
 declare function CMBlockBufferGetTypeID(): number;
 
-declare function CMBlockBufferAppendMemoryBlock(theBuffer: interop.PointerConvertible, memoryBlock: interop.PointerConvertible, blockLength: number, blockAllocator: interop.PointerConvertible, customBlockSource: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number): number;
+declare function CMBlockBufferAppendMemoryBlock(theBuffer: interop.Object, memoryBlock: interop.PointerConvertible, blockLength: number, blockAllocator: interop.Object, customBlockSource: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number): number;
 
-declare function CMBlockBufferAppendBufferReference(theBuffer: interop.PointerConvertible, targetBBuf: interop.PointerConvertible, offsetToData: number, dataLength: number, flags: number): number;
+declare function CMBlockBufferAppendBufferReference(theBuffer: interop.Object, targetBBuf: interop.Object, offsetToData: number, dataLength: number, flags: number): number;
 
-declare function CMBlockBufferAssureBlockMemory(theBuffer: interop.PointerConvertible): number;
+declare function CMBlockBufferAssureBlockMemory(theBuffer: interop.Object): number;
 
-declare function CMBlockBufferAccessDataBytes(theBuffer: interop.PointerConvertible, offset: number, length: number, temporaryBlock: interop.PointerConvertible, returnedPointerOut: interop.PointerConvertible): number;
+declare function CMBlockBufferAccessDataBytes(theBuffer: interop.Object, offset: number, length: number, temporaryBlock: interop.PointerConvertible, returnedPointerOut: interop.PointerConvertible): number;
 
-declare function CMBlockBufferCopyDataBytes(theSourceBuffer: interop.PointerConvertible, offsetToData: number, dataLength: number, destination: interop.PointerConvertible): number;
+declare function CMBlockBufferCopyDataBytes(theSourceBuffer: interop.Object, offsetToData: number, dataLength: number, destination: interop.PointerConvertible): number;
 
-declare function CMBlockBufferReplaceDataBytes(sourceBytes: interop.PointerConvertible, destinationBuffer: interop.PointerConvertible, offsetIntoDestination: number, dataLength: number): number;
+declare function CMBlockBufferReplaceDataBytes(sourceBytes: interop.PointerConvertible, destinationBuffer: interop.Object, offsetIntoDestination: number, dataLength: number): number;
 
-declare function CMBlockBufferFillDataBytes(fillByte: number, destinationBuffer: interop.PointerConvertible, offsetIntoDestination: number, dataLength: number): number;
+declare function CMBlockBufferFillDataBytes(fillByte: number, destinationBuffer: interop.Object, offsetIntoDestination: number, dataLength: number): number;
 
-declare function CMBlockBufferGetDataPointer(theBuffer: interop.PointerConvertible, offset: number, lengthAtOffsetOut: interop.PointerConvertible, totalLengthOut: interop.PointerConvertible, dataPointerOut: interop.PointerConvertible): number;
+declare function CMBlockBufferGetDataPointer(theBuffer: interop.Object, offset: number, lengthAtOffsetOut: interop.PointerConvertible, totalLengthOut: interop.PointerConvertible, dataPointerOut: interop.PointerConvertible): number;
 
-declare function CMBlockBufferGetDataLength(theBuffer: interop.PointerConvertible): number;
+declare function CMBlockBufferGetDataLength(theBuffer: interop.Object): number;
 
-declare function CMBlockBufferIsRangeContiguous(theBuffer: interop.PointerConvertible, offset: number, length: number): number;
+declare function CMBlockBufferIsRangeContiguous(theBuffer: interop.Object, offset: number, length: number): number;
 
-declare function CMBlockBufferIsEmpty(theBuffer: interop.PointerConvertible): number;
+declare function CMBlockBufferIsEmpty(theBuffer: interop.Object): number;
 
-declare function CMFormatDescriptionCreate(allocator: interop.PointerConvertible, mediaType: number, mediaSubType: number, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMFormatDescriptionCreate(allocator: interop.Object, mediaType: number, mediaSubType: number, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
 declare function CMFormatDescriptionGetTypeID(): number;
 
-declare function CMFormatDescriptionEqual(formatDescription: interop.PointerConvertible, otherFormatDescription: interop.PointerConvertible): number;
+declare function CMFormatDescriptionEqual(formatDescription: interop.Object, otherFormatDescription: interop.Object): number;
 
-declare function CMFormatDescriptionEqualIgnoringExtensionKeys(formatDescription: interop.PointerConvertible, otherFormatDescription: interop.PointerConvertible, formatDescriptionExtensionKeysToIgnore: interop.PointerConvertible, sampleDescriptionExtensionAtomKeysToIgnore: interop.PointerConvertible): number;
+declare function CMFormatDescriptionEqualIgnoringExtensionKeys(formatDescription: interop.Object, otherFormatDescription: interop.Object, formatDescriptionExtensionKeysToIgnore: interop.Object, sampleDescriptionExtensionAtomKeysToIgnore: interop.Object): number;
 
-declare function CMFormatDescriptionGetMediaType(desc: interop.PointerConvertible): number;
+declare function CMFormatDescriptionGetMediaType(desc: interop.Object): number;
 
-declare function CMFormatDescriptionGetMediaSubType(desc: interop.PointerConvertible): number;
+declare function CMFormatDescriptionGetMediaSubType(desc: interop.Object): number;
 
-declare function CMFormatDescriptionGetExtensions(desc: interop.PointerConvertible): interop.Pointer;
+declare function CMFormatDescriptionGetExtensions(desc: interop.Object): interop.Object;
 
-declare function CMFormatDescriptionGetExtension(desc: interop.PointerConvertible, extensionKey: interop.PointerConvertible): interop.Pointer;
+declare function CMFormatDescriptionGetExtension(desc: interop.Object, extensionKey: interop.Object): interop.Object;
 
-declare function CMAudioFormatDescriptionCreate(allocator: interop.PointerConvertible, asbd: interop.PointerConvertible, layoutSize: number, layout: interop.PointerConvertible, magicCookieSize: number, magicCookie: interop.PointerConvertible, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMAudioFormatDescriptionCreate(allocator: interop.Object, asbd: interop.PointerConvertible, layoutSize: number, layout: interop.PointerConvertible, magicCookieSize: number, magicCookie: interop.PointerConvertible, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMAudioFormatDescriptionGetStreamBasicDescription(desc: interop.PointerConvertible): interop.Pointer;
+declare function CMAudioFormatDescriptionGetStreamBasicDescription(desc: interop.Object): interop.Pointer;
 
-declare function CMAudioFormatDescriptionGetMagicCookie(desc: interop.PointerConvertible, sizeOut: interop.PointerConvertible): interop.Pointer;
+declare function CMAudioFormatDescriptionGetMagicCookie(desc: interop.Object, sizeOut: interop.PointerConvertible): interop.Pointer;
 
-declare function CMAudioFormatDescriptionGetChannelLayout(desc: interop.PointerConvertible, sizeOut: interop.PointerConvertible): interop.Pointer;
+declare function CMAudioFormatDescriptionGetChannelLayout(desc: interop.Object, sizeOut: interop.PointerConvertible): interop.Pointer;
 
-declare function CMAudioFormatDescriptionGetFormatList(desc: interop.PointerConvertible, sizeOut: interop.PointerConvertible): interop.Pointer;
+declare function CMAudioFormatDescriptionGetFormatList(desc: interop.Object, sizeOut: interop.PointerConvertible): interop.Pointer;
 
-declare function CMAudioFormatDescriptionGetRichestDecodableFormat(desc: interop.PointerConvertible): interop.Pointer;
+declare function CMAudioFormatDescriptionGetRichestDecodableFormat(desc: interop.Object): interop.Pointer;
 
-declare function CMAudioFormatDescriptionGetMostCompatibleFormat(desc: interop.PointerConvertible): interop.Pointer;
+declare function CMAudioFormatDescriptionGetMostCompatibleFormat(desc: interop.Object): interop.Pointer;
 
-declare function CMAudioFormatDescriptionCreateSummary(allocator: interop.PointerConvertible, formatDescriptionArray: interop.PointerConvertible, flags: number, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMAudioFormatDescriptionCreateSummary(allocator: interop.Object, formatDescriptionArray: interop.Object, flags: number, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMAudioFormatDescriptionEqual(formatDescription: interop.PointerConvertible, otherFormatDescription: interop.PointerConvertible, equalityMask: number, equalityMaskOut: interop.PointerConvertible): number;
+declare function CMAudioFormatDescriptionEqual(formatDescription: interop.Object, otherFormatDescription: interop.Object, equalityMask: number, equalityMaskOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionCreate(allocator: interop.PointerConvertible, codecType: number, width: number, height: number, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCreate(allocator: interop.Object, codecType: number, width: number, height: number, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionCreateForImageBuffer(allocator: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCreateForImageBuffer(allocator: interop.Object, imageBuffer: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionCreateFromH264ParameterSets(allocator: interop.PointerConvertible, parameterSetCount: number, parameterSetPointers: interop.PointerConvertible, parameterSetSizes: interop.PointerConvertible, NALUnitHeaderLength: number, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCreateFromH264ParameterSets(allocator: interop.Object, parameterSetCount: number, parameterSetPointers: interop.PointerConvertible, parameterSetSizes: interop.PointerConvertible, NALUnitHeaderLength: number, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionCreateFromHEVCParameterSets(allocator: interop.PointerConvertible, parameterSetCount: number, parameterSetPointers: interop.PointerConvertible, parameterSetSizes: interop.PointerConvertible, NALUnitHeaderLength: number, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCreateFromHEVCParameterSets(allocator: interop.Object, parameterSetCount: number, parameterSetPointers: interop.PointerConvertible, parameterSetSizes: interop.PointerConvertible, NALUnitHeaderLength: number, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionGetH264ParameterSetAtIndex(videoDesc: interop.PointerConvertible, parameterSetIndex: number, parameterSetPointerOut: interop.PointerConvertible, parameterSetSizeOut: interop.PointerConvertible, parameterSetCountOut: interop.PointerConvertible, NALUnitHeaderLengthOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionGetH264ParameterSetAtIndex(videoDesc: interop.Object, parameterSetIndex: number, parameterSetPointerOut: interop.PointerConvertible, parameterSetSizeOut: interop.PointerConvertible, parameterSetCountOut: interop.PointerConvertible, NALUnitHeaderLengthOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionGetHEVCParameterSetAtIndex(videoDesc: interop.PointerConvertible, parameterSetIndex: number, parameterSetPointerOut: interop.PointerConvertible, parameterSetSizeOut: interop.PointerConvertible, parameterSetCountOut: interop.PointerConvertible, NALUnitHeaderLengthOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionGetHEVCParameterSetAtIndex(videoDesc: interop.Object, parameterSetIndex: number, parameterSetPointerOut: interop.PointerConvertible, parameterSetSizeOut: interop.PointerConvertible, parameterSetCountOut: interop.PointerConvertible, NALUnitHeaderLengthOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionGetDimensions(videoDesc: interop.PointerConvertible): CMVideoDimensions;
+declare function CMVideoFormatDescriptionGetDimensions(videoDesc: interop.Object): CMVideoDimensions;
 
-declare function CMVideoFormatDescriptionGetPresentationDimensions(videoDesc: interop.PointerConvertible, usePixelAspectRatio: number, useCleanAperture: number): CGSize;
+declare function CMVideoFormatDescriptionGetPresentationDimensions(videoDesc: interop.Object, usePixelAspectRatio: number, useCleanAperture: number): CGSize;
 
-declare function CMVideoFormatDescriptionGetCleanAperture(videoDesc: interop.PointerConvertible, originIsAtTopLeft: number): CGRect;
+declare function CMVideoFormatDescriptionGetCleanAperture(videoDesc: interop.Object, originIsAtTopLeft: number): CGRect;
 
-declare function CMVideoFormatDescriptionGetExtensionKeysCommonWithImageBuffers(): interop.Pointer;
+declare function CMVideoFormatDescriptionGetExtensionKeysCommonWithImageBuffers(): interop.Object;
 
-declare function CMVideoFormatDescriptionMatchesImageBuffer(desc: interop.PointerConvertible, imageBuffer: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionMatchesImageBuffer(desc: interop.Object, imageBuffer: interop.Object): number;
 
-declare function CMVideoFormatDescriptionCopyTagCollectionArray(formatDescription: interop.PointerConvertible, tagCollectionsOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCopyTagCollectionArray(formatDescription: interop.Object, tagCollectionsOut: interop.PointerConvertible): number;
 
-declare function CMMuxedFormatDescriptionCreate(allocator: interop.PointerConvertible, muxType: number, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMuxedFormatDescriptionCreate(allocator: interop.Object, muxType: number, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionGetDisplayFlags(desc: interop.PointerConvertible, displayFlagsOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionGetDisplayFlags(desc: interop.Object, displayFlagsOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionGetJustification(desc: interop.PointerConvertible, horizontaJustificationlOut: interop.PointerConvertible, verticalJustificationOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionGetJustification(desc: interop.Object, horizontaJustificationlOut: interop.PointerConvertible, verticalJustificationOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionGetDefaultTextBox(desc: interop.PointerConvertible, originIsAtTopLeft: number, heightOfTextTrack: number, defaultTextBoxOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionGetDefaultTextBox(desc: interop.Object, originIsAtTopLeft: number, heightOfTextTrack: number, defaultTextBoxOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionGetDefaultStyle(desc: interop.PointerConvertible, localFontIDOut: interop.PointerConvertible, boldOut: interop.PointerConvertible, italicOut: interop.PointerConvertible, underlineOut: interop.PointerConvertible, fontSizeOut: interop.PointerConvertible, colorComponentsOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionGetDefaultStyle(desc: interop.Object, localFontIDOut: interop.PointerConvertible, boldOut: interop.PointerConvertible, italicOut: interop.PointerConvertible, underlineOut: interop.PointerConvertible, fontSizeOut: interop.PointerConvertible, colorComponentsOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionGetFontName(desc: interop.PointerConvertible, localFontID: number, fontNameOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionGetFontName(desc: interop.Object, localFontID: number, fontNameOut: interop.PointerConvertible): number;
 
-declare function CMTimeCodeFormatDescriptionCreate(allocator: interop.PointerConvertible, timeCodeFormatType: number, frameDuration: CMTime, frameQuanta: number, flags: number, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTimeCodeFormatDescriptionCreate(allocator: interop.Object, timeCodeFormatType: number, frameDuration: CMTime, frameQuanta: number, flags: number, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTimeCodeFormatDescriptionGetFrameDuration(timeCodeFormatDescription: interop.PointerConvertible): CMTime;
+declare function CMTimeCodeFormatDescriptionGetFrameDuration(timeCodeFormatDescription: interop.Object): CMTime;
 
-declare function CMTimeCodeFormatDescriptionGetFrameQuanta(timeCodeFormatDescription: interop.PointerConvertible): number;
+declare function CMTimeCodeFormatDescriptionGetFrameQuanta(timeCodeFormatDescription: interop.Object): number;
 
-declare function CMTimeCodeFormatDescriptionGetTimeCodeFlags(desc: interop.PointerConvertible): number;
+declare function CMTimeCodeFormatDescriptionGetTimeCodeFlags(desc: interop.Object): number;
 
-declare function CMMetadataFormatDescriptionCreateWithKeys(allocator: interop.PointerConvertible, metadataType: number, keys: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCreateWithKeys(allocator: interop.Object, metadataType: number, keys: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMMetadataFormatDescriptionCreateWithMetadataSpecifications(allocator: interop.PointerConvertible, metadataType: number, metadataSpecifications: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCreateWithMetadataSpecifications(allocator: interop.Object, metadataType: number, metadataSpecifications: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMMetadataFormatDescriptionCreateWithMetadataFormatDescriptionAndMetadataSpecifications(allocator: interop.PointerConvertible, sourceDescription: interop.PointerConvertible, metadataSpecifications: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCreateWithMetadataFormatDescriptionAndMetadataSpecifications(allocator: interop.Object, sourceDescription: interop.Object, metadataSpecifications: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMMetadataFormatDescriptionCreateByMergingMetadataFormatDescriptions(allocator: interop.PointerConvertible, sourceDescription: interop.PointerConvertible, otherSourceDescription: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCreateByMergingMetadataFormatDescriptions(allocator: interop.Object, sourceDescription: interop.Object, otherSourceDescription: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMMetadataFormatDescriptionGetKeyWithLocalID(desc: interop.PointerConvertible, localKeyID: number): interop.Pointer;
+declare function CMMetadataFormatDescriptionGetKeyWithLocalID(desc: interop.Object, localKeyID: number): interop.Object;
 
-declare function CMMetadataFormatDescriptionGetIdentifiers(desc: interop.PointerConvertible): interop.Pointer;
+declare function CMMetadataFormatDescriptionGetIdentifiers(desc: interop.Object): interop.Object;
 
-declare function CMSampleBufferCreate(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, dataReady: number, makeDataReadyCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, makeDataReadyRefcon: interop.PointerConvertible, formatDescription: interop.PointerConvertible, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreate(allocator: interop.Object, dataBuffer: interop.Object, dataReady: number, makeDataReadyCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, makeDataReadyRefcon: interop.PointerConvertible, formatDescription: interop.Object, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCreateWithMakeDataReadyHandler(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, dataReady: number, formatDescription: interop.PointerConvertible, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible, makeDataReadyHandler: (p1: interop.PointerConvertible) => number): number;
+declare function CMSampleBufferCreateWithMakeDataReadyHandler(allocator: interop.Object, dataBuffer: interop.Object, dataReady: number, formatDescription: interop.Object, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible, makeDataReadyHandler: (p1: interop.PointerConvertible) => number): number;
 
-declare function CMSampleBufferCreateReady(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, formatDescription: interop.PointerConvertible, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreateReady(allocator: interop.Object, dataBuffer: interop.Object, formatDescription: interop.Object, numSamples: number, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, numSampleSizeEntries: number, sampleSizeArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMAudioSampleBufferCreateWithPacketDescriptions(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, dataReady: number, makeDataReadyCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, makeDataReadyRefcon: interop.PointerConvertible, formatDescription: interop.PointerConvertible, numSamples: number, presentationTimeStamp: CMTime, packetDescriptions: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMAudioSampleBufferCreateWithPacketDescriptions(allocator: interop.Object, dataBuffer: interop.Object, dataReady: number, makeDataReadyCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, makeDataReadyRefcon: interop.PointerConvertible, formatDescription: interop.Object, numSamples: number, presentationTimeStamp: CMTime, packetDescriptions: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, dataReady: number, formatDescription: interop.PointerConvertible, numSamples: number, presentationTimeStamp: CMTime, packetDescriptions: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible, makeDataReadyHandler: (p1: interop.PointerConvertible) => number): number;
+declare function CMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler(allocator: interop.Object, dataBuffer: interop.Object, dataReady: number, formatDescription: interop.Object, numSamples: number, presentationTimeStamp: CMTime, packetDescriptions: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible, makeDataReadyHandler: (p1: interop.PointerConvertible) => number): number;
 
-declare function CMAudioSampleBufferCreateReadyWithPacketDescriptions(allocator: interop.PointerConvertible, dataBuffer: interop.PointerConvertible, formatDescription: interop.PointerConvertible, numSamples: number, presentationTimeStamp: CMTime, packetDescriptions: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMAudioSampleBufferCreateReadyWithPacketDescriptions(allocator: interop.Object, dataBuffer: interop.Object, formatDescription: interop.Object, numSamples: number, presentationTimeStamp: CMTime, packetDescriptions: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCreateForImageBuffer(allocator: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, dataReady: number, makeDataReadyCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, makeDataReadyRefcon: interop.PointerConvertible, formatDescription: interop.PointerConvertible, sampleTiming: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreateForImageBuffer(allocator: interop.Object, imageBuffer: interop.Object, dataReady: number, makeDataReadyCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, makeDataReadyRefcon: interop.PointerConvertible, formatDescription: interop.Object, sampleTiming: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCreateForImageBufferWithMakeDataReadyHandler(allocator: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, dataReady: number, formatDescription: interop.PointerConvertible, sampleTiming: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible, makeDataReadyHandler: (p1: interop.PointerConvertible) => number): number;
+declare function CMSampleBufferCreateForImageBufferWithMakeDataReadyHandler(allocator: interop.Object, imageBuffer: interop.Object, dataReady: number, formatDescription: interop.Object, sampleTiming: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible, makeDataReadyHandler: (p1: interop.PointerConvertible) => number): number;
 
-declare function CMSampleBufferCreateReadyWithImageBuffer(allocator: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, formatDescription: interop.PointerConvertible, sampleTiming: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreateReadyWithImageBuffer(allocator: interop.Object, imageBuffer: interop.Object, formatDescription: interop.Object, sampleTiming: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCreateCopy(allocator: interop.PointerConvertible, sbuf: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreateCopy(allocator: interop.Object, sbuf: interop.Object, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCreateCopyWithNewTiming(allocator: interop.PointerConvertible, originalSBuf: interop.PointerConvertible, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreateCopyWithNewTiming(allocator: interop.Object, originalSBuf: interop.Object, numSampleTimingEntries: number, sampleTimingArray: interop.PointerConvertible, sampleBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCopySampleBufferForRange(allocator: interop.PointerConvertible, sbuf: interop.PointerConvertible, sampleRange: CFRange, sampleBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCopySampleBufferForRange(allocator: interop.Object, sbuf: interop.Object, sampleRange: CFRange, sampleBufferOut: interop.PointerConvertible): number;
 
 declare function CMSampleBufferGetTypeID(): number;
 
-declare function CMSampleBufferSetDataBuffer(sbuf: interop.PointerConvertible, dataBuffer: interop.PointerConvertible): number;
+declare function CMSampleBufferSetDataBuffer(sbuf: interop.Object, dataBuffer: interop.Object): number;
 
-declare function CMSampleBufferGetDataBuffer(sbuf: interop.PointerConvertible): interop.Pointer;
+declare function CMSampleBufferGetDataBuffer(sbuf: interop.Object): interop.Object;
 
-declare function CMSampleBufferGetImageBuffer(sbuf: interop.PointerConvertible): interop.Pointer;
+declare function CMSampleBufferGetImageBuffer(sbuf: interop.Object): interop.Object;
 
-declare function CMSampleBufferSetDataBufferFromAudioBufferList(sbuf: interop.PointerConvertible, blockBufferStructureAllocator: interop.PointerConvertible, blockBufferBlockAllocator: interop.PointerConvertible, flags: number, bufferList: interop.PointerConvertible): number;
+declare function CMSampleBufferSetDataBufferFromAudioBufferList(sbuf: interop.Object, blockBufferStructureAllocator: interop.Object, blockBufferBlockAllocator: interop.Object, flags: number, bufferList: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sbuf: interop.PointerConvertible, bufferListSizeNeededOut: interop.PointerConvertible, bufferListOut: interop.PointerConvertible, bufferListSize: number, blockBufferStructureAllocator: interop.PointerConvertible, blockBufferBlockAllocator: interop.PointerConvertible, flags: number, blockBufferOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sbuf: interop.Object, bufferListSizeNeededOut: interop.PointerConvertible, bufferListOut: interop.PointerConvertible, bufferListSize: number, blockBufferStructureAllocator: interop.Object, blockBufferBlockAllocator: interop.Object, flags: number, blockBufferOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetAudioStreamPacketDescriptions(sbuf: interop.PointerConvertible, packetDescriptionsSize: number, packetDescriptionsOut: interop.PointerConvertible, packetDescriptionsSizeNeededOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetAudioStreamPacketDescriptions(sbuf: interop.Object, packetDescriptionsSize: number, packetDescriptionsOut: interop.PointerConvertible, packetDescriptionsSizeNeededOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetAudioStreamPacketDescriptionsPtr(sbuf: interop.PointerConvertible, packetDescriptionsPointerOut: interop.PointerConvertible, packetDescriptionsSizeOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetAudioStreamPacketDescriptionsPtr(sbuf: interop.Object, packetDescriptionsPointerOut: interop.PointerConvertible, packetDescriptionsSizeOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCopyPCMDataIntoAudioBufferList(sbuf: interop.PointerConvertible, frameOffset: number, numFrames: number, bufferList: interop.PointerConvertible): number;
+declare function CMSampleBufferCopyPCMDataIntoAudioBufferList(sbuf: interop.Object, frameOffset: number, numFrames: number, bufferList: interop.PointerConvertible): number;
 
-declare function CMSampleBufferSetDataReady(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferSetDataReady(sbuf: interop.Object): number;
 
-declare function CMSampleBufferDataIsReady(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferDataIsReady(sbuf: interop.Object): number;
 
-declare function CMSampleBufferSetDataFailed(sbuf: interop.PointerConvertible, status: number): number;
+declare function CMSampleBufferSetDataFailed(sbuf: interop.Object, status: number): number;
 
-declare function CMSampleBufferHasDataFailed(sbuf: interop.PointerConvertible, statusOut: interop.PointerConvertible): number;
+declare function CMSampleBufferHasDataFailed(sbuf: interop.Object, statusOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferMakeDataReady(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferMakeDataReady(sbuf: interop.Object): number;
 
-declare function CMSampleBufferTrackDataReadiness(sbuf: interop.PointerConvertible, sampleBufferToTrack: interop.PointerConvertible): number;
+declare function CMSampleBufferTrackDataReadiness(sbuf: interop.Object, sampleBufferToTrack: interop.Object): number;
 
-declare function CMSampleBufferInvalidate(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferInvalidate(sbuf: interop.Object): number;
 
-declare function CMSampleBufferSetInvalidateCallback(sbuf: interop.PointerConvertible, invalidateCallback: (p1: interop.PointerConvertible, p2: number) => void, invalidateRefCon: number): number;
+declare function CMSampleBufferSetInvalidateCallback(sbuf: interop.Object, invalidateCallback: (p1: interop.PointerConvertible, p2: number) => void, invalidateRefCon: number): number;
 
-declare function CMSampleBufferSetInvalidateHandler(sbuf: interop.PointerConvertible, invalidateHandler: (p1: interop.PointerConvertible) => void): number;
+declare function CMSampleBufferSetInvalidateHandler(sbuf: interop.Object, invalidateHandler: (p1: interop.PointerConvertible) => void): number;
 
-declare function CMSampleBufferIsValid(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferIsValid(sbuf: interop.Object): number;
 
-declare function CMSampleBufferGetNumSamples(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferGetNumSamples(sbuf: interop.Object): number;
 
-declare function CMSampleBufferGetDuration(sbuf: interop.PointerConvertible): CMTime;
+declare function CMSampleBufferGetDuration(sbuf: interop.Object): CMTime;
 
-declare function CMSampleBufferGetPresentationTimeStamp(sbuf: interop.PointerConvertible): CMTime;
+declare function CMSampleBufferGetPresentationTimeStamp(sbuf: interop.Object): CMTime;
 
-declare function CMSampleBufferGetDecodeTimeStamp(sbuf: interop.PointerConvertible): CMTime;
+declare function CMSampleBufferGetDecodeTimeStamp(sbuf: interop.Object): CMTime;
 
-declare function CMSampleBufferGetOutputDuration(sbuf: interop.PointerConvertible): CMTime;
+declare function CMSampleBufferGetOutputDuration(sbuf: interop.Object): CMTime;
 
-declare function CMSampleBufferGetOutputPresentationTimeStamp(sbuf: interop.PointerConvertible): CMTime;
+declare function CMSampleBufferGetOutputPresentationTimeStamp(sbuf: interop.Object): CMTime;
 
-declare function CMSampleBufferSetOutputPresentationTimeStamp(sbuf: interop.PointerConvertible, outputPresentationTimeStamp: CMTime): number;
+declare function CMSampleBufferSetOutputPresentationTimeStamp(sbuf: interop.Object, outputPresentationTimeStamp: CMTime): number;
 
-declare function CMSampleBufferGetOutputDecodeTimeStamp(sbuf: interop.PointerConvertible): CMTime;
+declare function CMSampleBufferGetOutputDecodeTimeStamp(sbuf: interop.Object): CMTime;
 
-declare function CMSampleBufferGetSampleTimingInfoArray(sbuf: interop.PointerConvertible, numSampleTimingEntries: number, timingArrayOut: interop.PointerConvertible, timingArrayEntriesNeededOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetSampleTimingInfoArray(sbuf: interop.Object, numSampleTimingEntries: number, timingArrayOut: interop.PointerConvertible, timingArrayEntriesNeededOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetOutputSampleTimingInfoArray(sbuf: interop.PointerConvertible, timingArrayEntries: number, timingArrayOut: interop.PointerConvertible, timingArrayEntriesNeededOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetOutputSampleTimingInfoArray(sbuf: interop.Object, timingArrayEntries: number, timingArrayOut: interop.PointerConvertible, timingArrayEntriesNeededOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetSampleTimingInfo(sbuf: interop.PointerConvertible, sampleIndex: number, timingInfoOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetSampleTimingInfo(sbuf: interop.Object, sampleIndex: number, timingInfoOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetSampleSizeArray(sbuf: interop.PointerConvertible, sizeArrayEntries: number, sizeArrayOut: interop.PointerConvertible, sizeArrayEntriesNeededOut: interop.PointerConvertible): number;
+declare function CMSampleBufferGetSampleSizeArray(sbuf: interop.Object, sizeArrayEntries: number, sizeArrayOut: interop.PointerConvertible, sizeArrayEntriesNeededOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetSampleSize(sbuf: interop.PointerConvertible, sampleIndex: number): number;
+declare function CMSampleBufferGetSampleSize(sbuf: interop.Object, sampleIndex: number): number;
 
-declare function CMSampleBufferGetTotalSampleSize(sbuf: interop.PointerConvertible): number;
+declare function CMSampleBufferGetTotalSampleSize(sbuf: interop.Object): number;
 
-declare function CMSampleBufferGetFormatDescription(sbuf: interop.PointerConvertible): interop.Pointer;
+declare function CMSampleBufferGetFormatDescription(sbuf: interop.Object): interop.Object;
 
-declare function CMSampleBufferGetSampleAttachmentsArray(sbuf: interop.PointerConvertible, createIfNecessary: number): interop.Pointer;
+declare function CMSampleBufferGetSampleAttachmentsArray(sbuf: interop.Object, createIfNecessary: number): interop.Object;
 
-declare function CMSampleBufferCallForEachSample(sbuf: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number, refcon: interop.PointerConvertible): number;
+declare function CMSampleBufferCallForEachSample(sbuf: interop.Object, callback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number, refcon: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCallBlockForEachSample(sbuf: interop.PointerConvertible, handler: (p1: interop.PointerConvertible, p2: number) => number): number;
+declare function CMSampleBufferCallBlockForEachSample(sbuf: interop.Object, handler: (p1: interop.PointerConvertible, p2: number) => number): number;
 
 declare function CMTagGetValueDataType(tag: CMTag): interop.Enum<typeof CMTagDataType>;
 
@@ -1756,11 +1756,11 @@ declare function CMTagCompare(tag1: CMTag, tag2: CMTag): interop.Enum<typeof CFC
 
 declare function CMTagHash(tag: CMTag): number;
 
-declare function CMTagCopyDescription(allocator: interop.PointerConvertible, tag: CMTag): interop.Pointer;
+declare function CMTagCopyDescription(allocator: interop.Object, tag: CMTag): interop.Object;
 
-declare function CMTagCopyAsDictionary(tag: CMTag, allocator: interop.PointerConvertible): interop.Pointer;
+declare function CMTagCopyAsDictionary(tag: CMTag, allocator: interop.Object): interop.Object;
 
-declare function CMTagMakeFromDictionary(dict: interop.PointerConvertible): CMTag;
+declare function CMTagMakeFromDictionary(dict: interop.Object): CMTag;
 
 declare function CMTimeRangeMake(start: CMTime, duration: CMTime): CMTimeRange;
 
@@ -1786,11 +1786,11 @@ declare function CMTimeFoldIntoRange(time: CMTime, foldRange: CMTimeRange): CMTi
 
 declare function CMTimeRangeFromTimeToTime(start: CMTime, end: CMTime): CMTimeRange;
 
-declare function CMTimeRangeCopyAsDictionary(range: CMTimeRange, allocator: interop.PointerConvertible): interop.Pointer;
+declare function CMTimeRangeCopyAsDictionary(range: CMTimeRange, allocator: interop.Object): interop.Object;
 
-declare function CMTimeRangeMakeFromDictionary(dictionaryRepresentation: interop.PointerConvertible): CMTimeRange;
+declare function CMTimeRangeMakeFromDictionary(dictionaryRepresentation: interop.Object): CMTimeRange;
 
-declare function CMTimeRangeCopyDescription(allocator: interop.PointerConvertible, range: CMTimeRange): interop.Pointer;
+declare function CMTimeRangeCopyDescription(allocator: interop.Object, range: CMTimeRange): interop.Object;
 
 declare function CMTimeRangeShow(range: CMTimeRange): void;
 
@@ -1798,25 +1798,25 @@ declare function CMTimeMappingMake(source: CMTimeRange, target: CMTimeRange): CM
 
 declare function CMTimeMappingMakeEmpty(target: CMTimeRange): CMTimeMapping;
 
-declare function CMTimeMappingCopyAsDictionary(mapping: CMTimeMapping, allocator: interop.PointerConvertible): interop.Pointer;
+declare function CMTimeMappingCopyAsDictionary(mapping: CMTimeMapping, allocator: interop.Object): interop.Object;
 
-declare function CMTimeMappingMakeFromDictionary(dictionaryRepresentation: interop.PointerConvertible): CMTimeMapping;
+declare function CMTimeMappingMakeFromDictionary(dictionaryRepresentation: interop.Object): CMTimeMapping;
 
-declare function CMTimeMappingCopyDescription(allocator: interop.PointerConvertible, mapping: CMTimeMapping): interop.Pointer;
+declare function CMTimeMappingCopyDescription(allocator: interop.Object, mapping: CMTimeMapping): interop.Object;
 
 declare function CMTimeMappingShow(mapping: CMTimeMapping): void;
 
 declare function CMTagCollectionGetTypeID(): number;
 
-declare function CMTagCollectionCreate(allocator: interop.PointerConvertible, tags: interop.PointerConvertible, tagCount: number, newCollectionOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreate(allocator: interop.Object, tags: interop.PointerConvertible, tagCount: number, newCollectionOut: interop.PointerConvertible): number;
 
-declare function CMTagCollectionCreateMutable(allocator: interop.PointerConvertible, capacity: number, newMutableCollectionOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreateMutable(allocator: interop.Object, capacity: number, newMutableCollectionOut: interop.PointerConvertible): number;
 
-declare function CMTagCollectionCreateCopy(tagCollection: interop.PointerConvertible, allocator: interop.PointerConvertible, newCollectionCopyOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreateCopy(tagCollection: interop.PointerConvertible, allocator: interop.Object, newCollectionCopyOut: interop.PointerConvertible): number;
 
-declare function CMTagCollectionCreateMutableCopy(tagCollection: interop.PointerConvertible, allocator: interop.PointerConvertible, newMutableCollectionCopyOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreateMutableCopy(tagCollection: interop.PointerConvertible, allocator: interop.Object, newMutableCollectionCopyOut: interop.PointerConvertible): number;
 
-declare function CMTagCollectionCopyDescription(allocator: interop.PointerConvertible, tagCollection: interop.PointerConvertible): interop.Pointer;
+declare function CMTagCollectionCopyDescription(allocator: interop.Object, tagCollection: interop.PointerConvertible): interop.Object;
 
 declare function CMTagCollectionGetCount(tagCollection: interop.PointerConvertible): number;
 
@@ -1838,7 +1838,7 @@ declare function CMTagCollectionCountTagsWithFilterFunction(tagCollection: inter
 
 declare function CMTagCollectionGetTagsWithFilterFunction(tagCollection: interop.PointerConvertible, tagBuffer: interop.PointerConvertible, tagBufferCount: number, numberOfTagsCopied: interop.PointerConvertible, filter: (p1: CMTag, p2: interop.PointerConvertible) => number, context: interop.PointerConvertible): number;
 
-declare function CMTagCollectionCopyTagsOfCategories(allocator: interop.PointerConvertible, tagCollection: interop.PointerConvertible, categories: interop.PointerConvertible, categoriesCount: number, collectionWithTagsOfCategories: interop.PointerConvertible): number;
+declare function CMTagCollectionCopyTagsOfCategories(allocator: interop.Object, tagCollection: interop.PointerConvertible, categories: interop.PointerConvertible, categoriesCount: number, collectionWithTagsOfCategories: interop.PointerConvertible): number;
 
 declare function CMTagCollectionApply(tagCollection: interop.PointerConvertible, applier: (p1: CMTag, p2: interop.PointerConvertible) => void, context: interop.PointerConvertible): void;
 
@@ -1866,193 +1866,193 @@ declare function CMTagCollectionAddTagsFromCollection(tagCollection: interop.Poi
 
 declare function CMTagCollectionAddTagsFromArray(tagCollection: interop.PointerConvertible, tags: interop.PointerConvertible, tagCount: number): number;
 
-declare function CMTagCollectionCopyAsDictionary(tagCollection: interop.PointerConvertible, allocator: interop.PointerConvertible): interop.Pointer;
+declare function CMTagCollectionCopyAsDictionary(tagCollection: interop.PointerConvertible, allocator: interop.Object): interop.Object;
 
-declare function CMTagCollectionCreateFromDictionary(dict: interop.PointerConvertible, allocator: interop.PointerConvertible, newCollectionOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreateFromDictionary(dict: interop.Object, allocator: interop.Object, newCollectionOut: interop.PointerConvertible): number;
 
-declare function CMTagCollectionCopyAsData(tagCollection: interop.PointerConvertible, allocator: interop.PointerConvertible): interop.Pointer;
+declare function CMTagCollectionCopyAsData(tagCollection: interop.PointerConvertible, allocator: interop.Object): interop.Object;
 
-declare function CMTagCollectionCreateFromData(data: interop.PointerConvertible, allocator: interop.PointerConvertible, newCollectionOut: interop.PointerConvertible): number;
+declare function CMTagCollectionCreateFromData(data: interop.Object, allocator: interop.Object, newCollectionOut: interop.PointerConvertible): number;
 
 declare function CMTaggedBufferGroupGetTypeID(): number;
 
-declare function CMTaggedBufferGroupCreate(allocator: interop.PointerConvertible, tagCollections: interop.PointerConvertible, buffers: interop.PointerConvertible, groupOut: interop.PointerConvertible): number;
+declare function CMTaggedBufferGroupCreate(allocator: interop.Object, tagCollections: interop.Object, buffers: interop.Object, groupOut: interop.PointerConvertible): number;
 
-declare function CMTaggedBufferGroupCreateCombined(allocator: interop.PointerConvertible, taggedBufferGroups: interop.PointerConvertible, groupOut: interop.PointerConvertible): number;
+declare function CMTaggedBufferGroupCreateCombined(allocator: interop.Object, taggedBufferGroups: interop.Object, groupOut: interop.PointerConvertible): number;
 
 declare function CMTaggedBufferGroupGetCount(group: interop.PointerConvertible): number;
 
 declare function CMTaggedBufferGroupGetTagCollectionAtIndex(group: interop.PointerConvertible, index: number): interop.Pointer;
 
-declare function CMTaggedBufferGroupGetCVPixelBufferAtIndex(group: interop.PointerConvertible, index: number): interop.Pointer;
+declare function CMTaggedBufferGroupGetCVPixelBufferAtIndex(group: interop.PointerConvertible, index: number): interop.Object;
 
-declare function CMTaggedBufferGroupGetCVPixelBufferForTag(group: interop.PointerConvertible, tag: CMTag, indexOut: interop.PointerConvertible): interop.Pointer;
+declare function CMTaggedBufferGroupGetCVPixelBufferForTag(group: interop.PointerConvertible, tag: CMTag, indexOut: interop.PointerConvertible): interop.Object;
 
-declare function CMTaggedBufferGroupGetCVPixelBufferForTagCollection(group: interop.PointerConvertible, tagCollection: interop.PointerConvertible, indexOut: interop.PointerConvertible): interop.Pointer;
+declare function CMTaggedBufferGroupGetCVPixelBufferForTagCollection(group: interop.PointerConvertible, tagCollection: interop.PointerConvertible, indexOut: interop.PointerConvertible): interop.Object;
 
-declare function CMTaggedBufferGroupGetCMSampleBufferAtIndex(group: interop.PointerConvertible, index: number): interop.Pointer;
+declare function CMTaggedBufferGroupGetCMSampleBufferAtIndex(group: interop.PointerConvertible, index: number): interop.Object;
 
-declare function CMTaggedBufferGroupGetCMSampleBufferForTag(group: interop.PointerConvertible, tag: CMTag, indexOut: interop.PointerConvertible): interop.Pointer;
+declare function CMTaggedBufferGroupGetCMSampleBufferForTag(group: interop.PointerConvertible, tag: CMTag, indexOut: interop.PointerConvertible): interop.Object;
 
-declare function CMTaggedBufferGroupGetCMSampleBufferForTagCollection(group: interop.PointerConvertible, tagCollection: interop.PointerConvertible, indexOut: interop.PointerConvertible): interop.Pointer;
+declare function CMTaggedBufferGroupGetCMSampleBufferForTagCollection(group: interop.PointerConvertible, tagCollection: interop.PointerConvertible, indexOut: interop.PointerConvertible): interop.Object;
 
 declare function CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(group: interop.PointerConvertible, tagCollection: interop.PointerConvertible): number;
 
-declare function CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup(allocator: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup(allocator: interop.Object, taggedBufferGroup: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions(allocator: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible, extensions: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions(allocator: interop.Object, taggedBufferGroup: interop.PointerConvertible, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
 declare function CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(desc: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible): number;
 
-declare function CMSampleBufferCreateForTaggedBufferGroup(allocator: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible, sbufPTS: CMTime, sbufDuration: CMTime, formatDescription: interop.PointerConvertible, sBufOut: interop.PointerConvertible): number;
+declare function CMSampleBufferCreateForTaggedBufferGroup(allocator: interop.Object, taggedBufferGroup: interop.PointerConvertible, sbufPTS: CMTime, sbufDuration: CMTime, formatDescription: interop.PointerConvertible, sBufOut: interop.PointerConvertible): number;
 
-declare function CMSampleBufferGetTaggedBufferGroup(sbuf: interop.PointerConvertible): interop.Pointer;
+declare function CMSampleBufferGetTaggedBufferGroup(sbuf: interop.Object): interop.Pointer;
 
 declare function CMClockGetTypeID(): number;
 
-declare function CMClockGetHostTimeClock(): interop.Pointer;
+declare function CMClockGetHostTimeClock(): interop.Object;
 
 declare function CMClockConvertHostTimeToSystemUnits(hostTime: CMTime): number;
 
 declare function CMClockMakeHostTimeFromSystemUnits(hostTime: number): CMTime;
 
-declare function CMClockGetTime(clock: interop.PointerConvertible): CMTime;
+declare function CMClockGetTime(clock: interop.Object): CMTime;
 
-declare function CMClockGetAnchorTime(clock: interop.PointerConvertible, clockTimeOut: interop.PointerConvertible, referenceClockTimeOut: interop.PointerConvertible): number;
+declare function CMClockGetAnchorTime(clock: interop.Object, clockTimeOut: interop.PointerConvertible, referenceClockTimeOut: interop.PointerConvertible): number;
 
-declare function CMClockMightDrift(clock: interop.PointerConvertible, otherClock: interop.PointerConvertible): number;
+declare function CMClockMightDrift(clock: interop.Object, otherClock: interop.Object): number;
 
-declare function CMClockInvalidate(clock: interop.PointerConvertible): void;
+declare function CMClockInvalidate(clock: interop.Object): void;
 
 declare function CMTimebaseGetTypeID(): number;
 
-declare function CMTimebaseCreateWithMasterClock(allocator: interop.PointerConvertible, masterClock: interop.PointerConvertible, timebaseOut: interop.PointerConvertible): number;
+declare function CMTimebaseCreateWithMasterClock(allocator: interop.Object, masterClock: interop.Object, timebaseOut: interop.PointerConvertible): number;
 
-declare function CMTimebaseCreateWithMasterTimebase(allocator: interop.PointerConvertible, masterTimebase: interop.PointerConvertible, timebaseOut: interop.PointerConvertible): number;
+declare function CMTimebaseCreateWithMasterTimebase(allocator: interop.Object, masterTimebase: interop.Object, timebaseOut: interop.PointerConvertible): number;
 
-declare function CMTimebaseCopyMasterTimebase(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseCopyMasterTimebase(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseCopyMasterClock(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseCopyMasterClock(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseCopyMaster(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseCopyMaster(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseCopyUltimateMasterClock(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseCopyUltimateMasterClock(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseGetMasterTimebase(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseGetMasterTimebase(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseGetMasterClock(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseGetMasterClock(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseGetMaster(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseGetMaster(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseGetUltimateMasterClock(timebase: interop.PointerConvertible): interop.Pointer;
+declare function CMTimebaseGetUltimateMasterClock(timebase: interop.Object): interop.Object;
 
-declare function CMTimebaseSetMasterClock(timebase: interop.PointerConvertible, newMasterClock: interop.PointerConvertible): number;
+declare function CMTimebaseSetMasterClock(timebase: interop.Object, newMasterClock: interop.Object): number;
 
-declare function CMTimebaseSetMasterTimebase(timebase: interop.PointerConvertible, newMasterTimebase: interop.PointerConvertible): number;
+declare function CMTimebaseSetMasterTimebase(timebase: interop.Object, newMasterTimebase: interop.Object): number;
 
-declare function CMTimebaseGetTime(timebase: interop.PointerConvertible): CMTime;
+declare function CMTimebaseGetTime(timebase: interop.Object): CMTime;
 
-declare function CMTimebaseGetTimeWithTimeScale(timebase: interop.PointerConvertible, timescale: number, method: interop.Enum<typeof CMTimeRoundingMethod>): CMTime;
+declare function CMTimebaseGetTimeWithTimeScale(timebase: interop.Object, timescale: number, method: interop.Enum<typeof CMTimeRoundingMethod>): CMTime;
 
-declare function CMTimebaseSetTime(timebase: interop.PointerConvertible, time: CMTime): number;
+declare function CMTimebaseSetTime(timebase: interop.Object, time: CMTime): number;
 
-declare function CMTimebaseSetAnchorTime(timebase: interop.PointerConvertible, timebaseTime: CMTime, immediateSourceTime: CMTime): number;
+declare function CMTimebaseSetAnchorTime(timebase: interop.Object, timebaseTime: CMTime, immediateSourceTime: CMTime): number;
 
-declare function CMTimebaseGetRate(timebase: interop.PointerConvertible): number;
+declare function CMTimebaseGetRate(timebase: interop.Object): number;
 
-declare function CMTimebaseGetTimeAndRate(timebase: interop.PointerConvertible, timeOut: interop.PointerConvertible, rateOut: interop.PointerConvertible): number;
+declare function CMTimebaseGetTimeAndRate(timebase: interop.Object, timeOut: interop.PointerConvertible, rateOut: interop.PointerConvertible): number;
 
-declare function CMTimebaseSetRate(timebase: interop.PointerConvertible, rate: number): number;
+declare function CMTimebaseSetRate(timebase: interop.Object, rate: number): number;
 
-declare function CMTimebaseSetRateAndAnchorTime(timebase: interop.PointerConvertible, rate: number, timebaseTime: CMTime, immediateSourceTime: CMTime): number;
+declare function CMTimebaseSetRateAndAnchorTime(timebase: interop.Object, rate: number, timebaseTime: CMTime, immediateSourceTime: CMTime): number;
 
-declare function CMTimebaseGetEffectiveRate(timebase: interop.PointerConvertible): number;
+declare function CMTimebaseGetEffectiveRate(timebase: interop.Object): number;
 
-declare function CMTimebaseAddTimer(timebase: interop.PointerConvertible, timer: interop.PointerConvertible, runloop: interop.PointerConvertible): number;
+declare function CMTimebaseAddTimer(timebase: interop.Object, timer: interop.Object, runloop: interop.Object): number;
 
-declare function CMTimebaseRemoveTimer(timebase: interop.PointerConvertible, timer: interop.PointerConvertible): number;
+declare function CMTimebaseRemoveTimer(timebase: interop.Object, timer: interop.Object): number;
 
-declare function CMTimebaseSetTimerNextFireTime(timebase: interop.PointerConvertible, timer: interop.PointerConvertible, fireTime: CMTime, flags: number): number;
+declare function CMTimebaseSetTimerNextFireTime(timebase: interop.Object, timer: interop.Object, fireTime: CMTime, flags: number): number;
 
-declare function CMTimebaseSetTimerToFireImmediately(timebase: interop.PointerConvertible, timer: interop.PointerConvertible): number;
+declare function CMTimebaseSetTimerToFireImmediately(timebase: interop.Object, timer: interop.Object): number;
 
-declare function CMTimebaseAddTimerDispatchSource(timebase: interop.PointerConvertible, timerSource: NSObject): number;
+declare function CMTimebaseAddTimerDispatchSource(timebase: interop.Object, timerSource: NSObject): number;
 
-declare function CMTimebaseRemoveTimerDispatchSource(timebase: interop.PointerConvertible, timerSource: NSObject): number;
+declare function CMTimebaseRemoveTimerDispatchSource(timebase: interop.Object, timerSource: NSObject): number;
 
-declare function CMTimebaseSetTimerDispatchSourceNextFireTime(timebase: interop.PointerConvertible, timerSource: NSObject, fireTime: CMTime, flags: number): number;
+declare function CMTimebaseSetTimerDispatchSourceNextFireTime(timebase: interop.Object, timerSource: NSObject, fireTime: CMTime, flags: number): number;
 
-declare function CMTimebaseSetTimerDispatchSourceToFireImmediately(timebase: interop.PointerConvertible, timerSource: NSObject): number;
+declare function CMTimebaseSetTimerDispatchSourceToFireImmediately(timebase: interop.Object, timerSource: NSObject): number;
 
-declare function CMSyncGetRelativeRate(ofClockOrTimebase: interop.PointerConvertible, relativeToClockOrTimebase: interop.PointerConvertible): number;
+declare function CMSyncGetRelativeRate(ofClockOrTimebase: interop.Object, relativeToClockOrTimebase: interop.Object): number;
 
-declare function CMSyncGetRelativeRateAndAnchorTime(ofClockOrTimebase: interop.PointerConvertible, relativeToClockOrTimebase: interop.PointerConvertible, outRelativeRate: interop.PointerConvertible, outOfClockOrTimebaseAnchorTime: interop.PointerConvertible, outRelativeToClockOrTimebaseAnchorTime: interop.PointerConvertible): number;
+declare function CMSyncGetRelativeRateAndAnchorTime(ofClockOrTimebase: interop.Object, relativeToClockOrTimebase: interop.Object, outRelativeRate: interop.PointerConvertible, outOfClockOrTimebaseAnchorTime: interop.PointerConvertible, outRelativeToClockOrTimebaseAnchorTime: interop.PointerConvertible): number;
 
-declare function CMSyncConvertTime(time: CMTime, fromClockOrTimebase: interop.PointerConvertible, toClockOrTimebase: interop.PointerConvertible): CMTime;
+declare function CMSyncConvertTime(time: CMTime, fromClockOrTimebase: interop.Object, toClockOrTimebase: interop.Object): CMTime;
 
-declare function CMSyncMightDrift(clockOrTimebase1: interop.PointerConvertible, clockOrTimebase2: interop.PointerConvertible): number;
+declare function CMSyncMightDrift(clockOrTimebase1: interop.Object, clockOrTimebase2: interop.Object): number;
 
-declare function CMSyncGetTime(clockOrTimebase: interop.PointerConvertible): CMTime;
+declare function CMSyncGetTime(clockOrTimebase: interop.Object): CMTime;
 
-declare function CMTimebaseNotificationBarrier(timebase: interop.PointerConvertible): number;
+declare function CMTimebaseNotificationBarrier(timebase: interop.Object): number;
 
-declare function CMVideoFormatDescriptionCreateFromBigEndianImageDescriptionData(allocator: interop.PointerConvertible, imageDescriptionData: interop.PointerConvertible, size: number, stringEncoding: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCreateFromBigEndianImageDescriptionData(allocator: interop.Object, imageDescriptionData: interop.PointerConvertible, size: number, stringEncoding: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionCreateFromBigEndianImageDescriptionBlockBuffer(allocator: interop.PointerConvertible, imageDescriptionBlockBuffer: interop.PointerConvertible, stringEncoding: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCreateFromBigEndianImageDescriptionBlockBuffer(allocator: interop.Object, imageDescriptionBlockBuffer: interop.Object, stringEncoding: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMVideoFormatDescriptionCopyAsBigEndianImageDescriptionBlockBuffer(allocator: interop.PointerConvertible, videoFormatDescription: interop.PointerConvertible, stringEncoding: number, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
+declare function CMVideoFormatDescriptionCopyAsBigEndianImageDescriptionBlockBuffer(allocator: interop.Object, videoFormatDescription: interop.Object, stringEncoding: number, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
 
 declare function CMSwapBigEndianImageDescriptionToHost(imageDescriptionData: interop.PointerConvertible, imageDescriptionSize: number): number;
 
 declare function CMSwapHostEndianImageDescriptionToBig(imageDescriptionData: interop.PointerConvertible, imageDescriptionSize: number): number;
 
-declare function CMAudioFormatDescriptionCreateFromBigEndianSoundDescriptionData(allocator: interop.PointerConvertible, soundDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMAudioFormatDescriptionCreateFromBigEndianSoundDescriptionData(allocator: interop.Object, soundDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMAudioFormatDescriptionCreateFromBigEndianSoundDescriptionBlockBuffer(allocator: interop.PointerConvertible, soundDescriptionBlockBuffer: interop.PointerConvertible, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMAudioFormatDescriptionCreateFromBigEndianSoundDescriptionBlockBuffer(allocator: interop.Object, soundDescriptionBlockBuffer: interop.Object, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMAudioFormatDescriptionCopyAsBigEndianSoundDescriptionBlockBuffer(allocator: interop.PointerConvertible, audioFormatDescription: interop.PointerConvertible, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
+declare function CMAudioFormatDescriptionCopyAsBigEndianSoundDescriptionBlockBuffer(allocator: interop.Object, audioFormatDescription: interop.Object, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
 
-declare function CMDoesBigEndianSoundDescriptionRequireLegacyCBRSampleTableLayout(soundDescriptionBlockBuffer: interop.PointerConvertible, flavor: interop.PointerConvertible): number;
+declare function CMDoesBigEndianSoundDescriptionRequireLegacyCBRSampleTableLayout(soundDescriptionBlockBuffer: interop.Object, flavor: interop.PointerConvertible): number;
 
 declare function CMSwapBigEndianSoundDescriptionToHost(soundDescriptionData: interop.PointerConvertible, soundDescriptionSize: number): number;
 
 declare function CMSwapHostEndianSoundDescriptionToBig(soundDescriptionData: interop.PointerConvertible, soundDescriptionSize: number): number;
 
-declare function CMTextFormatDescriptionCreateFromBigEndianTextDescriptionData(allocator: interop.PointerConvertible, textDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, mediaType: number, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionCreateFromBigEndianTextDescriptionData(allocator: interop.Object, textDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, mediaType: number, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionCreateFromBigEndianTextDescriptionBlockBuffer(allocator: interop.PointerConvertible, textDescriptionBlockBuffer: interop.PointerConvertible, flavor: interop.PointerConvertible, mediaType: number, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionCreateFromBigEndianTextDescriptionBlockBuffer(allocator: interop.Object, textDescriptionBlockBuffer: interop.Object, flavor: interop.PointerConvertible, mediaType: number, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTextFormatDescriptionCopyAsBigEndianTextDescriptionBlockBuffer(allocator: interop.PointerConvertible, textFormatDescription: interop.PointerConvertible, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
+declare function CMTextFormatDescriptionCopyAsBigEndianTextDescriptionBlockBuffer(allocator: interop.Object, textFormatDescription: interop.Object, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
 
 declare function CMSwapBigEndianTextDescriptionToHost(textDescriptionData: interop.PointerConvertible, textDescriptionSize: number): number;
 
 declare function CMSwapHostEndianTextDescriptionToBig(textDescriptionData: interop.PointerConvertible, textDescriptionSize: number): number;
 
-declare function CMClosedCaptionFormatDescriptionCreateFromBigEndianClosedCaptionDescriptionData(allocator: interop.PointerConvertible, closedCaptionDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMClosedCaptionFormatDescriptionCreateFromBigEndianClosedCaptionDescriptionData(allocator: interop.Object, closedCaptionDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMClosedCaptionFormatDescriptionCreateFromBigEndianClosedCaptionDescriptionBlockBuffer(allocator: interop.PointerConvertible, closedCaptionDescriptionBlockBuffer: interop.PointerConvertible, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMClosedCaptionFormatDescriptionCreateFromBigEndianClosedCaptionDescriptionBlockBuffer(allocator: interop.Object, closedCaptionDescriptionBlockBuffer: interop.Object, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMClosedCaptionFormatDescriptionCopyAsBigEndianClosedCaptionDescriptionBlockBuffer(allocator: interop.PointerConvertible, closedCaptionFormatDescription: interop.PointerConvertible, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
+declare function CMClosedCaptionFormatDescriptionCopyAsBigEndianClosedCaptionDescriptionBlockBuffer(allocator: interop.Object, closedCaptionFormatDescription: interop.Object, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
 
 declare function CMSwapBigEndianClosedCaptionDescriptionToHost(closedCaptionDescriptionData: interop.PointerConvertible, closedCaptionDescriptionSize: number): number;
 
 declare function CMSwapHostEndianClosedCaptionDescriptionToBig(closedCaptionDescriptionData: interop.PointerConvertible, closedCaptionDescriptionSize: number): number;
 
-declare function CMTimeCodeFormatDescriptionCreateFromBigEndianTimeCodeDescriptionData(allocator: interop.PointerConvertible, timeCodeDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTimeCodeFormatDescriptionCreateFromBigEndianTimeCodeDescriptionData(allocator: interop.Object, timeCodeDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTimeCodeFormatDescriptionCreateFromBigEndianTimeCodeDescriptionBlockBuffer(allocator: interop.PointerConvertible, timeCodeDescriptionBlockBuffer: interop.PointerConvertible, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMTimeCodeFormatDescriptionCreateFromBigEndianTimeCodeDescriptionBlockBuffer(allocator: interop.Object, timeCodeDescriptionBlockBuffer: interop.Object, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMTimeCodeFormatDescriptionCopyAsBigEndianTimeCodeDescriptionBlockBuffer(allocator: interop.PointerConvertible, timeCodeFormatDescription: interop.PointerConvertible, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
+declare function CMTimeCodeFormatDescriptionCopyAsBigEndianTimeCodeDescriptionBlockBuffer(allocator: interop.Object, timeCodeFormatDescription: interop.Object, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
 
 declare function CMSwapBigEndianTimeCodeDescriptionToHost(timeCodeDescriptionData: interop.PointerConvertible, timeCodeDescriptionSize: number): number;
 
 declare function CMSwapHostEndianTimeCodeDescriptionToBig(timeCodeDescriptionData: interop.PointerConvertible, timeCodeDescriptionSize: number): number;
 
-declare function CMMetadataFormatDescriptionCreateFromBigEndianMetadataDescriptionData(allocator: interop.PointerConvertible, metadataDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCreateFromBigEndianMetadataDescriptionData(allocator: interop.Object, metadataDescriptionData: interop.PointerConvertible, size: number, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMMetadataFormatDescriptionCreateFromBigEndianMetadataDescriptionBlockBuffer(allocator: interop.PointerConvertible, metadataDescriptionBlockBuffer: interop.PointerConvertible, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCreateFromBigEndianMetadataDescriptionBlockBuffer(allocator: interop.Object, metadataDescriptionBlockBuffer: interop.Object, flavor: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
 
-declare function CMMetadataFormatDescriptionCopyAsBigEndianMetadataDescriptionBlockBuffer(allocator: interop.PointerConvertible, metadataFormatDescription: interop.PointerConvertible, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
+declare function CMMetadataFormatDescriptionCopyAsBigEndianMetadataDescriptionBlockBuffer(allocator: interop.Object, metadataFormatDescription: interop.Object, flavor: interop.PointerConvertible, blockBufferOut: interop.PointerConvertible): number;
 
 declare function CMSwapBigEndianMetadataDescriptionToHost(metadataDescriptionData: interop.PointerConvertible, metadataDescriptionSize: number): number;
 
@@ -2062,119 +2062,119 @@ declare function CMBufferQueueGetCallbacksForUnsortedSampleBuffers(): interop.Po
 
 declare function CMBufferQueueGetCallbacksForSampleBuffersSortedByOutputPTS(): interop.Pointer;
 
-declare function CMBufferQueueCreate(allocator: interop.PointerConvertible, capacity: number, callbacks: interop.PointerConvertible, queueOut: interop.PointerConvertible): number;
+declare function CMBufferQueueCreate(allocator: interop.Object, capacity: number, callbacks: interop.PointerConvertible, queueOut: interop.PointerConvertible): number;
 
-declare function CMBufferQueueCreateWithHandlers(allocator: interop.PointerConvertible, capacity: number, handlers: interop.PointerConvertible, queueOut: interop.PointerConvertible): number;
+declare function CMBufferQueueCreateWithHandlers(allocator: interop.Object, capacity: number, handlers: interop.PointerConvertible, queueOut: interop.PointerConvertible): number;
 
 declare function CMBufferQueueGetTypeID(): number;
 
-declare function CMBufferQueueEnqueue(queue: interop.PointerConvertible, buf: interop.PointerConvertible): number;
+declare function CMBufferQueueEnqueue(queue: interop.Object, buf: interop.Object): number;
 
-declare function CMBufferQueueDequeueAndRetain(queue: interop.PointerConvertible): interop.Pointer;
+declare function CMBufferQueueDequeueAndRetain(queue: interop.Object): interop.Object;
 
-declare function CMBufferQueueDequeueIfDataReadyAndRetain(queue: interop.PointerConvertible): interop.Pointer;
+declare function CMBufferQueueDequeueIfDataReadyAndRetain(queue: interop.Object): interop.Object;
 
-declare function CMBufferQueueGetHead(queue: interop.PointerConvertible): interop.Pointer;
+declare function CMBufferQueueGetHead(queue: interop.Object): interop.Object;
 
-declare function CMBufferQueueCopyHead(queue: interop.PointerConvertible): interop.Pointer;
+declare function CMBufferQueueCopyHead(queue: interop.Object): interop.Object;
 
-declare function CMBufferQueueIsEmpty(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueIsEmpty(queue: interop.Object): number;
 
-declare function CMBufferQueueMarkEndOfData(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueMarkEndOfData(queue: interop.Object): number;
 
-declare function CMBufferQueueContainsEndOfData(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueContainsEndOfData(queue: interop.Object): number;
 
-declare function CMBufferQueueIsAtEndOfData(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueIsAtEndOfData(queue: interop.Object): number;
 
-declare function CMBufferQueueReset(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueReset(queue: interop.Object): number;
 
-declare function CMBufferQueueResetWithCallback(queue: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, refcon: interop.PointerConvertible): number;
+declare function CMBufferQueueResetWithCallback(queue: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, refcon: interop.PointerConvertible): number;
 
-declare function CMBufferQueueGetBufferCount(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueGetBufferCount(queue: interop.Object): number;
 
-declare function CMBufferQueueGetDuration(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetDuration(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetMinDecodeTimeStamp(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetMinDecodeTimeStamp(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetFirstDecodeTimeStamp(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetFirstDecodeTimeStamp(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetMinPresentationTimeStamp(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetMinPresentationTimeStamp(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetFirstPresentationTimeStamp(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetFirstPresentationTimeStamp(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetMaxPresentationTimeStamp(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetMaxPresentationTimeStamp(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetEndPresentationTimeStamp(queue: interop.PointerConvertible): CMTime;
+declare function CMBufferQueueGetEndPresentationTimeStamp(queue: interop.Object): CMTime;
 
-declare function CMBufferQueueGetTotalSize(queue: interop.PointerConvertible): number;
+declare function CMBufferQueueGetTotalSize(queue: interop.Object): number;
 
-declare function CMBufferQueueInstallTrigger(queue: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, refcon: interop.PointerConvertible, condition: number, time: CMTime, triggerTokenOut: interop.PointerConvertible): number;
+declare function CMBufferQueueInstallTrigger(queue: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, refcon: interop.PointerConvertible, condition: number, time: CMTime, triggerTokenOut: interop.PointerConvertible): number;
 
-declare function CMBufferQueueInstallTriggerWithIntegerThreshold(queue: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, refcon: interop.PointerConvertible, condition: number, threshold: number, triggerTokenOut: interop.PointerConvertible): number;
+declare function CMBufferQueueInstallTriggerWithIntegerThreshold(queue: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, refcon: interop.PointerConvertible, condition: number, threshold: number, triggerTokenOut: interop.PointerConvertible): number;
 
-declare function CMBufferQueueInstallTriggerHandler(queue: interop.PointerConvertible, condition: number, time: CMTime, triggerTokenOut: interop.PointerConvertible, handler: (p1: interop.PointerConvertible) => void): number;
+declare function CMBufferQueueInstallTriggerHandler(queue: interop.Object, condition: number, time: CMTime, triggerTokenOut: interop.PointerConvertible, handler: (p1: interop.PointerConvertible) => void): number;
 
-declare function CMBufferQueueInstallTriggerHandlerWithIntegerThreshold(queue: interop.PointerConvertible, condition: number, threshold: number, triggerTokenOut: interop.PointerConvertible, handler: (p1: interop.PointerConvertible) => void): number;
+declare function CMBufferQueueInstallTriggerHandlerWithIntegerThreshold(queue: interop.Object, condition: number, threshold: number, triggerTokenOut: interop.PointerConvertible, handler: (p1: interop.PointerConvertible) => void): number;
 
-declare function CMBufferQueueRemoveTrigger(queue: interop.PointerConvertible, triggerToken: interop.PointerConvertible): number;
+declare function CMBufferQueueRemoveTrigger(queue: interop.Object, triggerToken: interop.PointerConvertible): number;
 
-declare function CMBufferQueueTestTrigger(queue: interop.PointerConvertible, triggerToken: interop.PointerConvertible): number;
+declare function CMBufferQueueTestTrigger(queue: interop.Object, triggerToken: interop.PointerConvertible): number;
 
-declare function CMBufferQueueCallForEachBuffer(queue: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, refcon: interop.PointerConvertible): number;
+declare function CMBufferQueueCallForEachBuffer(queue: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, refcon: interop.PointerConvertible): number;
 
-declare function CMBufferQueueSetValidationCallback(queue: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, refcon: interop.PointerConvertible): number;
+declare function CMBufferQueueSetValidationCallback(queue: interop.Object, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, refcon: interop.PointerConvertible): number;
 
-declare function CMBufferQueueSetValidationHandler(queue: interop.PointerConvertible, handler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): number;
+declare function CMBufferQueueSetValidationHandler(queue: interop.Object, handler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): number;
 
 declare function CMSimpleQueueGetTypeID(): number;
 
-declare function CMSimpleQueueCreate(allocator: interop.PointerConvertible, capacity: number, queueOut: interop.PointerConvertible): number;
+declare function CMSimpleQueueCreate(allocator: interop.Object, capacity: number, queueOut: interop.PointerConvertible): number;
 
-declare function CMSimpleQueueEnqueue(queue: interop.PointerConvertible, element: interop.PointerConvertible): number;
+declare function CMSimpleQueueEnqueue(queue: interop.Object, element: interop.PointerConvertible): number;
 
-declare function CMSimpleQueueDequeue(queue: interop.PointerConvertible): interop.Pointer;
+declare function CMSimpleQueueDequeue(queue: interop.Object): interop.Pointer;
 
-declare function CMSimpleQueueGetHead(queue: interop.PointerConvertible): interop.Pointer;
+declare function CMSimpleQueueGetHead(queue: interop.Object): interop.Pointer;
 
-declare function CMSimpleQueueReset(queue: interop.PointerConvertible): number;
+declare function CMSimpleQueueReset(queue: interop.Object): number;
 
-declare function CMSimpleQueueGetCapacity(queue: interop.PointerConvertible): number;
+declare function CMSimpleQueueGetCapacity(queue: interop.Object): number;
 
-declare function CMSimpleQueueGetCount(queue: interop.PointerConvertible): number;
+declare function CMSimpleQueueGetCount(queue: interop.Object): number;
 
 declare function CMMemoryPoolGetTypeID(): number;
 
-declare function CMMemoryPoolCreate(options: interop.PointerConvertible): interop.Pointer;
+declare function CMMemoryPoolCreate(options: interop.Object): interop.Object;
 
-declare function CMMemoryPoolGetAllocator(pool: interop.PointerConvertible): interop.Pointer;
+declare function CMMemoryPoolGetAllocator(pool: interop.Object): interop.Object;
 
-declare function CMMemoryPoolFlush(pool: interop.PointerConvertible): void;
+declare function CMMemoryPoolFlush(pool: interop.Object): void;
 
-declare function CMMemoryPoolInvalidate(pool: interop.PointerConvertible): void;
+declare function CMMemoryPoolInvalidate(pool: interop.Object): void;
 
-declare function CMMetadataCreateIdentifierForKeyAndKeySpace(allocator: interop.PointerConvertible, key: interop.PointerConvertible, keySpace: interop.PointerConvertible, identifierOut: interop.PointerConvertible): number;
+declare function CMMetadataCreateIdentifierForKeyAndKeySpace(allocator: interop.Object, key: interop.Object, keySpace: interop.Object, identifierOut: interop.PointerConvertible): number;
 
-declare function CMMetadataCreateKeyFromIdentifier(allocator: interop.PointerConvertible, identifier: interop.PointerConvertible, keyOut: interop.PointerConvertible): number;
+declare function CMMetadataCreateKeyFromIdentifier(allocator: interop.Object, identifier: interop.Object, keyOut: interop.PointerConvertible): number;
 
-declare function CMMetadataCreateKeyFromIdentifierAsCFData(allocator: interop.PointerConvertible, identifier: interop.PointerConvertible, keyOut: interop.PointerConvertible): number;
+declare function CMMetadataCreateKeyFromIdentifierAsCFData(allocator: interop.Object, identifier: interop.Object, keyOut: interop.PointerConvertible): number;
 
-declare function CMMetadataCreateKeySpaceFromIdentifier(allocator: interop.PointerConvertible, identifier: interop.PointerConvertible, keySpaceOut: interop.PointerConvertible): number;
+declare function CMMetadataCreateKeySpaceFromIdentifier(allocator: interop.Object, identifier: interop.Object, keySpaceOut: interop.PointerConvertible): number;
 
-declare function CMMetadataDataTypeRegistryRegisterDataType(dataType: interop.PointerConvertible, description: interop.PointerConvertible, conformingDataTypes: interop.PointerConvertible): number;
+declare function CMMetadataDataTypeRegistryRegisterDataType(dataType: interop.Object, description: interop.Object, conformingDataTypes: interop.Object): number;
 
-declare function CMMetadataDataTypeRegistryDataTypeIsRegistered(dataType: interop.PointerConvertible): number;
+declare function CMMetadataDataTypeRegistryDataTypeIsRegistered(dataType: interop.Object): number;
 
-declare function CMMetadataDataTypeRegistryGetDataTypeDescription(dataType: interop.PointerConvertible): interop.Pointer;
+declare function CMMetadataDataTypeRegistryGetDataTypeDescription(dataType: interop.Object): interop.Object;
 
-declare function CMMetadataDataTypeRegistryGetConformingDataTypes(dataType: interop.PointerConvertible): interop.Pointer;
+declare function CMMetadataDataTypeRegistryGetConformingDataTypes(dataType: interop.Object): interop.Object;
 
-declare function CMMetadataDataTypeRegistryDataTypeConformsToDataType(dataType: interop.PointerConvertible, conformsToDataType: interop.PointerConvertible): number;
+declare function CMMetadataDataTypeRegistryDataTypeConformsToDataType(dataType: interop.Object, conformsToDataType: interop.Object): number;
 
-declare function CMMetadataDataTypeRegistryGetBaseDataTypes(): interop.Pointer;
+declare function CMMetadataDataTypeRegistryGetBaseDataTypes(): interop.Object;
 
-declare function CMMetadataDataTypeRegistryDataTypeIsBaseDataType(dataType: interop.PointerConvertible): number;
+declare function CMMetadataDataTypeRegistryDataTypeIsBaseDataType(dataType: interop.Object): number;
 
-declare function CMMetadataDataTypeRegistryGetBaseDataTypeForConformingDataType(dataType: interop.PointerConvertible): interop.Pointer;
+declare function CMMetadataDataTypeRegistryGetBaseDataTypeForConformingDataType(dataType: interop.Object): interop.Object;
 
-declare function CMAudioClockCreate(allocator: interop.PointerConvertible, clockOut: interop.PointerConvertible): number;
+declare function CMAudioClockCreate(allocator: interop.Object, clockOut: interop.PointerConvertible): number;
 

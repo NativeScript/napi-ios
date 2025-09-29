@@ -87,8 +87,6 @@ declare const NLLanguageSinhalese: string;
 
 declare const NLLanguageSimplifiedChinese: string;
 
-declare const NLLanguageRussian: string;
-
 declare const NLLanguagePortuguese: string;
 
 declare const NLLanguagePolish: string;
@@ -122,6 +120,8 @@ declare const NLLanguageFinnish: string;
 declare const NLTagSchemeLexicalClass: string;
 
 declare const NLLanguageBulgarian: string;
+
+declare const NLLanguageRussian: string;
 
 declare const NLLanguageIcelandic: string;
 
@@ -414,6 +414,26 @@ declare class NLModelConfiguration extends NSObject implements NSCopying, NSSecu
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NLTokenizer extends NSObject {
+  initWithUnit(unit: interop.Enum<typeof NLTokenUnit>): this;
+
+  readonly unit: interop.Enum<typeof NLTokenUnit>;
+
+  string: string;
+
+  setLanguage(language: string): void;
+
+  tokenRangeAtIndex(characterIndex: number): _NSRange;
+
+  tokenRangeForRange(range: _NSRange): _NSRange;
+
+  tokensForRange(range: _NSRange): NSArray;
+
+  enumerateTokensInRangeUsingBlock(range: _NSRange, block: (p1: _NSRange, p2: interop.Enum<typeof NLTokenizerAttributes>, p3: interop.PointerConvertible) => void): void;
+
+  setString(string: string | null): void;
+}
+
 declare class NLGazetteer extends NSObject {
   static gazetteerWithContentsOfURLError<This extends abstract new (...args: any) => any>(this: This, url: NSURL, error: interop.PointerConvertible): InstanceType<This>;
 
@@ -484,26 +504,6 @@ declare class NLEmbedding extends NSObject {
   static currentSentenceEmbeddingRevisionForLanguage(language: string): number;
 
   static writeEmbeddingForDictionaryLanguageRevisionToURLError(dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, language: string | null, revision: number, url: NSURL, error: interop.PointerConvertible): boolean;
-}
-
-declare class NLTokenizer extends NSObject {
-  initWithUnit(unit: interop.Enum<typeof NLTokenUnit>): this;
-
-  readonly unit: interop.Enum<typeof NLTokenUnit>;
-
-  string: string;
-
-  setLanguage(language: string): void;
-
-  tokenRangeAtIndex(characterIndex: number): _NSRange;
-
-  tokenRangeForRange(range: _NSRange): _NSRange;
-
-  tokensForRange(range: _NSRange): NSArray;
-
-  enumerateTokensInRangeUsingBlock(range: _NSRange, block: (p1: _NSRange, p2: interop.Enum<typeof NLTokenizerAttributes>, p3: interop.PointerConvertible) => void): void;
-
-  setString(string: string | null): void;
 }
 
 declare class NLLanguageRecognizer extends NSObject {

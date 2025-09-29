@@ -111,11 +111,11 @@ declare const ITLibMediaItemPropertyLyricsContentRating: string;
 
 declare const ITLibMediaItemPropertyIsVideo: string;
 
-declare const ITLibMediaItemPropertyVideoSeries: string;
-
 declare const ITLibMediaItemPropertyStartTime: string;
 
 declare const ITLibMediaItemPropertySortArtistName: string;
+
+declare const ITLibMediaItemPropertyVideoSeries: string;
 
 declare const ITLibMediaItemPropertyKind: string;
 
@@ -172,6 +172,14 @@ declare const ITLibExportFeature: {
   ITLibExportFeatureNone: 0,
 };
 
+declare const ITLibPlaylistKind: {
+  Regular: 0,
+  Smart: 1,
+  Genius: 2,
+  Folder: 3,
+  GeniusMix: 4,
+};
+
 declare const ITLibMediaItemPlayStatus: {
   None: 0,
   PartiallyPlayed: 1,
@@ -185,31 +193,22 @@ declare const ITLibMediaItemLocationType: {
   Remote: 3,
 };
 
+declare const ITLibArtworkFormat: {
+  None: 0,
+  Bitmap: 1,
+  JPEG: 2,
+  JPEG2000: 3,
+  GIF: 4,
+  PNG: 5,
+  BMP: 6,
+  TIFF: 7,
+  PICT: 8,
+};
+
 declare const ITLibMediaItemLyricsContentRating: {
   None: 0,
   Explicit: 1,
   Clean: 2,
-};
-
-declare const ITLibMediaItemMediaKind: {
-  KindUnknown: 1,
-  KindSong: 2,
-  KindMovie: 3,
-  KindPodcast: 4,
-  KindAudiobook: 5,
-  KindPDFBooklet: 6,
-  KindMusicVideo: 7,
-  KindTVShow: 8,
-  KindInteractiveBooklet: 9,
-  KindHomeVideo: 12,
-  KindRingtone: 14,
-  KindDigitalBooklet: 15,
-  KindIOSApplication: 16,
-  KindVoiceMemo: 17,
-  KindiTunesU: 18,
-  KindBook: 19,
-  KindPDFBook: 20,
-  KindAlertTone: 21,
 };
 
 declare const ITLibDistinguishedPlaylistKind: {
@@ -238,24 +237,25 @@ declare const ITLibDistinguishedPlaylistKind: {
   KindMusicShowsAndMovies: 53,
 };
 
-declare const ITLibPlaylistKind: {
-  Regular: 0,
-  Smart: 1,
-  Genius: 2,
-  Folder: 3,
-  GeniusMix: 4,
-};
-
-declare const ITLibArtworkFormat: {
-  None: 0,
-  Bitmap: 1,
-  JPEG: 2,
-  JPEG2000: 3,
-  GIF: 4,
-  PNG: 5,
-  BMP: 6,
-  TIFF: 7,
-  PICT: 8,
+declare const ITLibMediaItemMediaKind: {
+  KindUnknown: 1,
+  KindSong: 2,
+  KindMovie: 3,
+  KindPodcast: 4,
+  KindAudiobook: 5,
+  KindPDFBooklet: 6,
+  KindMusicVideo: 7,
+  KindTVShow: 8,
+  KindInteractiveBooklet: 9,
+  KindHomeVideo: 12,
+  KindRingtone: 14,
+  KindDigitalBooklet: 15,
+  KindIOSApplication: 16,
+  KindVoiceMemo: 17,
+  KindiTunesU: 18,
+  KindBook: 19,
+  KindPDFBook: 20,
+  KindAlertTone: 21,
 };
 
 declare class ITLibrary extends NSObject {

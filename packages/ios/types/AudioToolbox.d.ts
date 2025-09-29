@@ -1,11 +1,9 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kAudioFormatProperty_FormatIsEncrypted: number;
-
-declare const kAudioConverterQuality_Low: number;
-
 declare const kAudioServicesNoError: number;
+
+declare const kCAFMarkerType_TrackEnd: number;
 
 declare const kCAF_PeakChunkID: number;
 
@@ -65,8 +63,6 @@ declare const kAudioFileStreamError_IllegalOperation: number;
 
 declare const kCAFMarkerType_TrackStart: number;
 
-declare const kAudioFilePropertyByteToPacket: number;
-
 declare const kAudioUnitErr_IllegalInstrument: number;
 
 declare const kAudioConverterPrimeInfo: number;
@@ -100,6 +96,14 @@ declare const kAppleSoftwareAudioCodecManufacturer: number;
 declare const k3DMixerParam_PostAveragePower: number;
 
 declare const kAudioOutputUnitProperty_StartTimestampsAtZero: number;
+
+declare const kAudioFileBadPropertySizeError: number;
+
+declare const kAudioFilePropertyByteToPacket: number;
+
+declare const kReverbParam_FilterFrequency: number;
+
+declare const kAudioFileStreamProperty_PacketToFrame: number;
 
 declare const kCAF_SMPTE_TimeType2398: number;
 
@@ -228,6 +232,8 @@ declare const kExtAudioFileProperty_FileLengthFrames: number;
 declare const kExtAudioFileProperty_FileMaxPacketSize: number;
 
 declare const kExtAudioFileProperty_AudioConverter: number;
+
+declare const kAudioUnitProperty_IsInterAppConnected: number;
 
 declare const kExtAudioFileProperty_FileChannelLayout: number;
 
@@ -543,8 +549,6 @@ declare const kAudioFileStreamProperty_PacketToRollDistance: number;
 
 declare const kAudioFileStreamProperty_FrameToPacket: number;
 
-declare const kAudioFileStreamProperty_PacketToFrame: number;
-
 declare const kAudioFileStreamProperty_AudioDataPacketCount: number;
 
 declare const kAudioFileStreamProperty_MagicCookieData: number;
@@ -582,8 +586,6 @@ declare const kAudioFilePropertyUseAudioTrack: number;
 declare const kAudioFilePropertyAlbumArtwork: number;
 
 declare const kAudioFilePropertySourceBitDepth: number;
-
-declare const kCAFMarkerType_TrackEnd: number;
 
 declare const kAudioFilePropertyID3Tag: number;
 
@@ -684,6 +686,8 @@ declare const kAudioConverterSampleRateConverterComplexity_Normal: number;
 declare const kAudioConverterSampleRateConverterComplexity_Linear: number;
 
 declare const kAudioConverterQuality_Min: number;
+
+declare const kAudioConverterQuality_Low: number;
 
 declare const kAudioConverterQuality_Medium: number;
 
@@ -1513,8 +1517,6 @@ declare const kAudioUnitProperty_3DMixerDistanceAtten: number;
 
 declare const kAudioConverterPropertyBitDepthHint: number;
 
-declare const kReverbParam_FilterFrequency: number;
-
 declare const kSpatialMixerParam_ObstructionAttenuation: number;
 
 declare const kAudioConverterCompressionMagicCookie: number;
@@ -1659,8 +1661,6 @@ declare const kAudioUnitProperty_SupportedNumChannels: number;
 
 declare const kAudioSessionProperty_AudioRoute: number;
 
-declare const kAudioFileBadPropertySizeError: number;
-
 declare const kAudioCodecContentSource_Reserved: number;
 
 declare const kAudioFileAIFFType: number;
@@ -1736,6 +1736,8 @@ declare const kAudioUnitType_RemoteInstrument: number;
 declare const kAudioCodecContentSource_AppleCapture_Spatial_Enhanced: number;
 
 declare const kAudioCodecPropertyAdjustCompressionProfile: number;
+
+declare const kAudioFormatProperty_FormatIsEncrypted: number;
 
 declare const kAUGroupParameterID_DataEntry_LSB: number;
 
@@ -2096,8 +2098,6 @@ declare const kAudioCodecPropertyDynamicRangeControlConfiguration: number;
 declare const kAUSoundIsolationParam_SoundToIsolate: number;
 
 declare const kDynamicsProcessorParam_CompressionAmount: number;
-
-declare const kAudioUnitProperty_IsInterAppConnected: number;
 
 declare const kAUGraphErr_InvalidAudioUnit: number;
 
@@ -2678,7 +2678,7 @@ declare class AUPresetEvent {
   constructor(init?: AUPresetEvent);
   scope: number;
   element: number;
-  preset: interop.Pointer;
+  preset: interop.Object | null;
 }
 
 declare class ExtendedTempoEvent {
@@ -2934,7 +2934,7 @@ declare class AudioFramePacketTranslation {
 declare class AudioFileRegion {
   constructor(init?: AudioFileRegion);
   mRegionID: number;
-  mName: interop.Pointer;
+  mName: interop.Object | null;
   mFlags: interop.Enum<typeof AudioFileRegionFlags>;
   mNumberMarkers: number;
   mMarkers: unknown /* const array */;
@@ -2950,7 +2950,7 @@ declare class AudioFileMarkerList {
 declare class AudioFileMarker {
   constructor(init?: AudioFileMarker);
   mFramePosition: number;
-  mName: interop.Pointer;
+  mName: interop.Object | null;
   mMarkerID: number;
   mSMPTETime: AudioFile_SMPTE_Time;
   mType: number;
@@ -3025,7 +3025,7 @@ declare class AURecordedParameterEvent {
 
 declare class AUSamplerInstrumentData {
   constructor(init?: AUSamplerInstrumentData);
-  fileURL: interop.Pointer;
+  fileURL: interop.Object | null;
   instrumentType: number;
   bankMSB: number;
   bankLSB: number;
@@ -3048,7 +3048,7 @@ declare class AudioUnitMeterClipping {
 
 declare class AUSamplerBankPresetData {
   constructor(init?: AUSamplerBankPresetData);
-  bankURL: interop.Pointer;
+  bankURL: interop.Object | null;
   bankMSB: number;
   bankLSB: number;
   presetID: number;
@@ -3070,7 +3070,7 @@ declare class AudioOutputUnitStartAtTimeParams {
 declare class AudioUnitParameterValueFromString {
   constructor(init?: AudioUnitParameterValueFromString);
   inParamID: number;
-  inString: interop.Pointer;
+  inString: interop.Object | null;
   outValue: number;
 }
 
@@ -3078,22 +3078,22 @@ declare class AudioUnitParameterStringFromValue {
   constructor(init?: AudioUnitParameterStringFromValue);
   inParamID: number;
   inValue: interop.Pointer;
-  outString: interop.Pointer;
+  outString: interop.Object | null;
 }
 
 declare class AudioUnitParameterNameInfo {
   constructor(init?: AudioUnitParameterNameInfo);
   inID: number;
   inDesiredLength: number;
-  outName: interop.Pointer;
+  outName: interop.Object | null;
 }
 
 declare class AudioUnitParameterInfo {
   constructor(init?: AudioUnitParameterInfo);
   name: unknown /* const array */;
-  unitName: interop.Pointer;
+  unitName: interop.Object | null;
   clumpID: number;
-  cfNameString: interop.Pointer;
+  cfNameString: interop.Object | null;
   unit: interop.Enum<typeof AudioUnitParameterUnit>;
   minValue: number;
   maxValue: number;
@@ -3282,7 +3282,7 @@ declare class AudioUnitProperty {
 declare class AUPreset {
   constructor(init?: AUPreset);
   presetNumber: number;
-  presetName: interop.Pointer;
+  presetName: interop.Object | null;
 }
 
 declare class CAFOverviewSample {
@@ -3313,7 +3313,7 @@ declare class CAF_SMPTE_Time {
 
 declare class AudioQueueChannelAssignment {
   constructor(init?: AudioQueueChannelAssignment);
-  mDeviceUID: interop.Pointer;
+  mDeviceUID: interop.Object | null;
   mChannelNumber: number;
 }
 
@@ -3534,13 +3534,13 @@ declare function AudioComponentInstanceGetComponent(inInstance: interop.PointerC
 
 declare function AudioComponentInstanceCanDo(inInstance: interop.PointerConvertible, inSelectorID: number): number;
 
-declare function AudioComponentRegister(inDesc: interop.PointerConvertible, inName: interop.PointerConvertible, inVersion: number, inFactory: (p1: interop.PointerConvertible) => interop.Pointer): interop.Pointer;
+declare function AudioComponentRegister(inDesc: interop.PointerConvertible, inName: interop.Object, inVersion: number, inFactory: (p1: interop.PointerConvertible) => interop.Pointer): interop.Pointer;
 
 declare function AudioComponentCopyConfigurationInfo(inComponent: interop.PointerConvertible, outConfigurationInfo: interop.PointerConvertible): number;
 
-declare function AudioComponentValidate(inComponent: interop.PointerConvertible, inValidationParameters: interop.PointerConvertible, outValidationResult: interop.PointerConvertible): number;
+declare function AudioComponentValidate(inComponent: interop.PointerConvertible, inValidationParameters: interop.Object, outValidationResult: interop.PointerConvertible): number;
 
-declare function AudioComponentValidateWithResults(inComponent: interop.PointerConvertible, inValidationParameters: interop.PointerConvertible, inCompletionHandler: (p1: interop.Enum<typeof AudioComponentValidationResult>, p2: interop.PointerConvertible) => void): number;
+declare function AudioComponentValidateWithResults(inComponent: interop.PointerConvertible, inValidationParameters: interop.Object, inCompletionHandler: (p1: interop.Enum<typeof AudioComponentValidationResult>, p2: interop.PointerConvertible) => void): number;
 
 declare function AudioCodecGetPropertyInfo(inCodec: interop.PointerConvertible, inPropertyID: number, outSize: interop.PointerConvertible, outWritable: interop.PointerConvertible): number;
 
@@ -3594,7 +3594,7 @@ declare function AudioUnitProcessMultiple(inUnit: interop.PointerConvertible, io
 
 declare function AudioUnitReset(inUnit: interop.PointerConvertible, inScope: number, inElement: number): number;
 
-declare function AudioOutputUnitPublish(inDesc: interop.PointerConvertible, inName: interop.PointerConvertible, inVersion: number, inOutputUnit: interop.PointerConvertible): number;
+declare function AudioOutputUnitPublish(inDesc: interop.PointerConvertible, inName: interop.Object, inVersion: number, inOutputUnit: interop.PointerConvertible): number;
 
 declare function AudioOutputUnitGetHostIcon(au: interop.PointerConvertible, desiredPointSize: number): UIImage;
 
@@ -3604,9 +3604,9 @@ declare function AudioComponentGetLastActiveTime(comp: interop.PointerConvertibl
 
 declare function AudioComponentCopyIcon(comp: interop.PointerConvertible): UIImage;
 
-declare function AudioUnitExtensionSetComponentList(extensionIdentifier: interop.PointerConvertible, audioComponentInfo: interop.PointerConvertible): number;
+declare function AudioUnitExtensionSetComponentList(extensionIdentifier: interop.Object, audioComponentInfo: interop.Object): number;
 
-declare function AudioUnitExtensionCopyComponentList(extensionIdentifier: interop.PointerConvertible): interop.Pointer;
+declare function AudioUnitExtensionCopyComponentList(extensionIdentifier: interop.Object): interop.Object;
 
 declare function AudioOutputUnitStart(ci: interop.PointerConvertible): number;
 
@@ -3708,9 +3708,9 @@ declare function AudioConverterFillComplexBufferWithPacketDependencies(inAudioCo
 
 declare function AudioConverterConvertComplexBuffer(inAudioConverter: interop.PointerConvertible, inNumberPCMFrames: number, inInputData: interop.PointerConvertible, outOutputData: interop.PointerConvertible): number;
 
-declare function AudioFileCreateWithURL(inFileRef: interop.PointerConvertible, inFileType: number, inFormat: interop.PointerConvertible, inFlags: interop.Enum<typeof AudioFileFlags>, outAudioFile: interop.PointerConvertible): number;
+declare function AudioFileCreateWithURL(inFileRef: interop.Object, inFileType: number, inFormat: interop.PointerConvertible, inFlags: interop.Enum<typeof AudioFileFlags>, outAudioFile: interop.PointerConvertible): number;
 
-declare function AudioFileOpenURL(inFileRef: interop.PointerConvertible, inPermissions: interop.Enum<typeof AudioFilePermissions>, inFileTypeHint: number, outAudioFile: interop.PointerConvertible): number;
+declare function AudioFileOpenURL(inFileRef: interop.Object, inPermissions: interop.Enum<typeof AudioFilePermissions>, inFileTypeHint: number, outAudioFile: interop.PointerConvertible): number;
 
 declare function AudioFileInitializeWithCallbacks(inClientData: interop.PointerConvertible, inReadFunc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number, inWriteFunc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number, inGetSizeFunc: (p1: interop.PointerConvertible) => number, inSetSizeFunc: (p1: interop.PointerConvertible, p2: number) => number, inFileType: number, inFormat: interop.PointerConvertible, inFlags: interop.Enum<typeof AudioFileFlags>, outAudioFile: interop.PointerConvertible): number;
 
@@ -3774,9 +3774,9 @@ declare function AudioFormatGetPropertyInfo(inPropertyID: number, inSpecifierSiz
 
 declare function AudioFormatGetProperty(inPropertyID: number, inSpecifierSize: number, inSpecifier: interop.PointerConvertible, ioPropertyDataSize: interop.PointerConvertible, outPropertyData: interop.PointerConvertible): number;
 
-declare function AudioQueueNewOutput(inFormat: interop.PointerConvertible, inCallbackProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, inUserData: interop.PointerConvertible, inCallbackRunLoop: interop.PointerConvertible, inCallbackRunLoopMode: interop.PointerConvertible, inFlags: number, outAQ: interop.PointerConvertible): number;
+declare function AudioQueueNewOutput(inFormat: interop.PointerConvertible, inCallbackProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, inUserData: interop.PointerConvertible, inCallbackRunLoop: interop.Object, inCallbackRunLoopMode: interop.Object, inFlags: number, outAQ: interop.PointerConvertible): number;
 
-declare function AudioQueueNewInput(inFormat: interop.PointerConvertible, inCallbackProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible) => void, inUserData: interop.PointerConvertible, inCallbackRunLoop: interop.PointerConvertible, inCallbackRunLoopMode: interop.PointerConvertible, inFlags: number, outAQ: interop.PointerConvertible): number;
+declare function AudioQueueNewInput(inFormat: interop.PointerConvertible, inCallbackProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible) => void, inUserData: interop.PointerConvertible, inCallbackRunLoop: interop.Object, inCallbackRunLoopMode: interop.Object, inFlags: number, outAQ: interop.PointerConvertible): number;
 
 declare function AudioQueueNewOutputWithDispatchQueue(outAQ: interop.PointerConvertible, inFormat: interop.PointerConvertible, inFlags: number, inCallbackDispatchQueue: NSObject, inCallbackBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void): number;
 
@@ -3844,7 +3844,7 @@ declare function AudioQueueProcessingTapGetSourceAudio(inAQTap: interop.PointerC
 
 declare function AudioQueueProcessingTapGetQueueTime(inAQTap: interop.PointerConvertible, outQueueSampleTime: interop.PointerConvertible, outQueueFrameCount: interop.PointerConvertible): number;
 
-declare function AudioSessionInitialize(inRunLoop: interop.PointerConvertible, inRunLoopMode: interop.PointerConvertible, inInterruptionListener: (p1: interop.PointerConvertible, p2: number) => void, inClientData: interop.PointerConvertible): number;
+declare function AudioSessionInitialize(inRunLoop: interop.Object, inRunLoopMode: interop.Object, inInterruptionListener: (p1: interop.PointerConvertible, p2: number) => void, inClientData: interop.PointerConvertible): number;
 
 declare function AudioSessionSetActive(active: number): number;
 
@@ -3862,7 +3862,7 @@ declare function AudioSessionRemovePropertyListener(inID: number): number;
 
 declare function AudioSessionRemovePropertyListenerWithUserData(inID: number, inProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => void, inClientData: interop.PointerConvertible): number;
 
-declare function AudioServicesCreateSystemSoundID(inFileURL: interop.PointerConvertible, outSystemSoundID: interop.PointerConvertible): number;
+declare function AudioServicesCreateSystemSoundID(inFileURL: interop.Object, outSystemSoundID: interop.PointerConvertible): number;
 
 declare function AudioServicesDisposeSystemSoundID(inSystemSoundID: number): number;
 
@@ -3880,13 +3880,13 @@ declare function AudioServicesPlayAlertSound(inSystemSoundID: number): void;
 
 declare function AudioServicesPlaySystemSound(inSystemSoundID: number): void;
 
-declare function AudioServicesAddSystemSoundCompletion(inSystemSoundID: number, inRunLoop: interop.PointerConvertible, inRunLoopMode: interop.PointerConvertible, inCompletionRoutine: (p1: number, p2: interop.PointerConvertible) => void, inClientData: interop.PointerConvertible): number;
+declare function AudioServicesAddSystemSoundCompletion(inSystemSoundID: number, inRunLoop: interop.Object, inRunLoopMode: interop.Object, inCompletionRoutine: (p1: number, p2: interop.PointerConvertible) => void, inClientData: interop.PointerConvertible): number;
 
 declare function AudioServicesRemoveSystemSoundCompletion(inSystemSoundID: number): void;
 
 declare function AUListenerCreateWithDispatchQueue(outListener: interop.PointerConvertible, inNotificationInterval: number, inDispatchQueue: NSObject, inBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void): number;
 
-declare function AUListenerCreate(inProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void, inUserData: interop.PointerConvertible, inRunLoop: interop.PointerConvertible, inRunLoopMode: interop.PointerConvertible, inNotificationInterval: number, outListener: interop.PointerConvertible): number;
+declare function AUListenerCreate(inProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void, inUserData: interop.PointerConvertible, inRunLoop: interop.Object, inRunLoopMode: interop.Object, inNotificationInterval: number, outListener: interop.PointerConvertible): number;
 
 declare function AUListenerDispose(inListener: interop.PointerConvertible): number;
 
@@ -3900,7 +3900,7 @@ declare function AUParameterListenerNotify(inSendingListener: interop.PointerCon
 
 declare function AUEventListenerCreateWithDispatchQueue(outListener: interop.PointerConvertible, inNotificationInterval: number, inValueChangeGranularity: number, inDispatchQueue: NSObject, inBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void): number;
 
-declare function AUEventListenerCreate(inProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => void, inUserData: interop.PointerConvertible, inRunLoop: interop.PointerConvertible, inRunLoopMode: interop.PointerConvertible, inNotificationInterval: number, inValueChangeGranularity: number, outListener: interop.PointerConvertible): number;
+declare function AUEventListenerCreate(inProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => void, inUserData: interop.PointerConvertible, inRunLoop: interop.Object, inRunLoopMode: interop.Object, inNotificationInterval: number, inValueChangeGranularity: number, outListener: interop.PointerConvertible): number;
 
 declare function AUEventListenerAddEventType(inListener: interop.PointerConvertible, inObject: interop.PointerConvertible, inEvent: interop.PointerConvertible): number;
 
@@ -3920,11 +3920,11 @@ declare function CAShow(inObject: interop.PointerConvertible): void;
 
 declare function CAShowFile(inObject: interop.PointerConvertible, inFile: interop.PointerConvertible): void;
 
-declare function ExtAudioFileOpenURL(inURL: interop.PointerConvertible, outExtAudioFile: interop.PointerConvertible): number;
+declare function ExtAudioFileOpenURL(inURL: interop.Object, outExtAudioFile: interop.PointerConvertible): number;
 
 declare function ExtAudioFileWrapAudioFileID(inFileID: interop.PointerConvertible, inForWriting: number, outExtAudioFile: interop.PointerConvertible): number;
 
-declare function ExtAudioFileCreateWithURL(inURL: interop.PointerConvertible, inFileType: number, inStreamDesc: interop.PointerConvertible, inChannelLayout: interop.PointerConvertible, inFlags: number, outExtAudioFile: interop.PointerConvertible): number;
+declare function ExtAudioFileCreateWithURL(inURL: interop.Object, inFileType: number, inStreamDesc: interop.PointerConvertible, inChannelLayout: interop.PointerConvertible, inFlags: number, outExtAudioFile: interop.PointerConvertible): number;
 
 declare function ExtAudioFileDispose(inExtAudioFile: interop.PointerConvertible): number;
 
@@ -3998,11 +3998,11 @@ declare function MusicSequenceSetSequenceType(inSequence: interop.PointerConvert
 
 declare function MusicSequenceGetSequenceType(inSequence: interop.PointerConvertible, outType: interop.PointerConvertible): number;
 
-declare function MusicSequenceFileLoad(inSequence: interop.PointerConvertible, inFileRef: interop.PointerConvertible, inFileTypeHint: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceLoadFlags>): number;
+declare function MusicSequenceFileLoad(inSequence: interop.PointerConvertible, inFileRef: interop.Object, inFileTypeHint: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceLoadFlags>): number;
 
-declare function MusicSequenceFileLoadData(inSequence: interop.PointerConvertible, inData: interop.PointerConvertible, inFileTypeHint: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceLoadFlags>): number;
+declare function MusicSequenceFileLoadData(inSequence: interop.PointerConvertible, inData: interop.Object, inFileTypeHint: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceLoadFlags>): number;
 
-declare function MusicSequenceFileCreate(inSequence: interop.PointerConvertible, inFileRef: interop.PointerConvertible, inFileType: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceFileFlags>, inResolution: number): number;
+declare function MusicSequenceFileCreate(inSequence: interop.PointerConvertible, inFileRef: interop.Object, inFileType: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceFileFlags>, inResolution: number): number;
 
 declare function MusicSequenceFileCreateData(inSequence: interop.PointerConvertible, inFileType: interop.Enum<typeof MusicSequenceFileTypeID>, inFlags: interop.Enum<typeof MusicSequenceFileFlags>, inResolution: number, outData: interop.PointerConvertible): number;
 
@@ -4018,7 +4018,7 @@ declare function MusicSequenceBeatsToBarBeatTime(inSequence: interop.PointerConv
 
 declare function MusicSequenceBarBeatTimeToBeats(inSequence: interop.PointerConvertible, inBarBeatTime: interop.PointerConvertible, outBeats: interop.PointerConvertible): number;
 
-declare function MusicSequenceGetInfoDictionary(inSequence: interop.PointerConvertible): interop.Pointer;
+declare function MusicSequenceGetInfoDictionary(inSequence: interop.PointerConvertible): interop.Object;
 
 declare function MusicTrackGetSequence(inTrack: interop.PointerConvertible, outSequence: interop.PointerConvertible): number;
 
@@ -4086,9 +4086,9 @@ declare function MusicEventIteratorHasNextEvent(inIterator: interop.PointerConve
 
 declare function MusicEventIteratorHasCurrentEvent(inIterator: interop.PointerConvertible, outHasCurEvent: interop.PointerConvertible): number;
 
-declare function CopyNameFromSoundBank(inURL: interop.PointerConvertible, outName: interop.PointerConvertible): number;
+declare function CopyNameFromSoundBank(inURL: interop.Object, outName: interop.PointerConvertible): number;
 
-declare function CopyInstrumentInfoFromSoundBank(inURL: interop.PointerConvertible, outInstrumentInfo: interop.PointerConvertible): number;
+declare function CopyInstrumentInfoFromSoundBank(inURL: interop.Object, outInstrumentInfo: interop.PointerConvertible): number;
 
 declare interface AUAudioUnitFactory extends NSExtensionRequestHandling {
   createAudioUnitWithComponentDescriptionError(desc: AudioComponentDescription, error: interop.PointerConvertible): AUAudioUnit;
@@ -4144,6 +4144,49 @@ declare class AUParameterNode extends NSObject {
   setImplementorValueFromStringCallback(implementorValueFromStringCallback: (p1: AUParameter, p2: string) => number): void;
 
   setImplementorDisplayNameWithLengthCallback(implementorDisplayNameWithLengthCallback: (p1: AUParameterNode, p2: number) => string): void;
+}
+
+declare class AUAudioUnitBus extends NSObject {
+  readonly format: AVAudioFormat;
+
+  setFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): boolean;
+
+  shouldAllocateBuffer: boolean;
+
+  enabled: boolean;
+
+  name: string;
+
+  readonly index: number;
+
+  readonly busType: interop.Enum<typeof AUAudioUnitBusType>;
+
+  readonly ownerAudioUnit: AUAudioUnit;
+
+  readonly supportedChannelLayoutTags: NSArray;
+
+  contextPresentationLatency: number;
+
+  setShouldAllocateBuffer(shouldAllocateBuffer: boolean): void;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
+
+  setName(name: string | null): void;
+
+  setContextPresentationLatency(contextPresentationLatency: number): void;
+
+  initWithFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): this;
+
+  get supportedChannelCounts(): NSArray;
+  set supportedChannelCounts(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  maximumChannelCount: number;
+
+  setSupportedChannelCounts(supportedChannelCounts: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setMaximumChannelCount(maximumChannelCount: number): void;
 }
 
 declare class AUAudioUnitV2Bridge extends AUAudioUnit {
@@ -4245,49 +4288,6 @@ declare class AUParameter extends AUParameterNode implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class AUAudioUnitBus extends NSObject {
-  readonly format: AVAudioFormat;
-
-  setFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): boolean;
-
-  shouldAllocateBuffer: boolean;
-
-  enabled: boolean;
-
-  name: string;
-
-  readonly index: number;
-
-  readonly busType: interop.Enum<typeof AUAudioUnitBusType>;
-
-  readonly ownerAudioUnit: AUAudioUnit;
-
-  readonly supportedChannelLayoutTags: NSArray;
-
-  contextPresentationLatency: number;
-
-  setShouldAllocateBuffer(shouldAllocateBuffer: boolean): void;
-
-  isEnabled(): boolean;
-
-  setEnabled(enabled: boolean): void;
-
-  setName(name: string | null): void;
-
-  setContextPresentationLatency(contextPresentationLatency: number): void;
-
-  initWithFormatError(format: AVAudioFormat, outError: interop.PointerConvertible): this;
-
-  get supportedChannelCounts(): NSArray;
-  set supportedChannelCounts(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  maximumChannelCount: number;
-
-  setSupportedChannelCounts(supportedChannelCounts: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setMaximumChannelCount(maximumChannelCount: number): void;
 }
 
 declare class AUAudioUnit extends NSObject {

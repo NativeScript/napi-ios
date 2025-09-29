@@ -176,10 +176,6 @@ declare class VSAccountMetadata extends NSObject {
   readonly accountProviderResponse: VSAccountProviderResponse;
 }
 
-declare class VSAccountManagerResult extends NSObject {
-  cancel(): void;
-}
-
 declare class VSAccountApplicationProvider extends NSObject {
   initWithLocalizedDisplayNameIdentifier(localizedDisplayName: string, identifier: string): this;
 
@@ -205,6 +201,10 @@ declare class VSSubscription extends NSObject {
   setTierIdentifiers(tierIdentifiers: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
   setBillingIdentifier(billingIdentifier: string | null): void;
+}
+
+declare class VSAccountManagerResult extends NSObject {
+  cancel(): void;
 }
 
 declare class VSUserAccount extends NSObject {

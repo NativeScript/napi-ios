@@ -1,6 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
-/// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
+/// <reference path="./Runtime.d.ts" />
 
 declare const PDFAnnotationKeyBorder: string;
 
@@ -64,8 +64,6 @@ declare const PDFAnnotationLineEndingStyleSquare: string;
 
 declare const PDFAnnotationWidgetSubtypeSignature: string;
 
-declare const PDFAnnotationWidgetSubtypeButton: string;
-
 declare const PDFAnnotationSubtypeStamp: string;
 
 declare const PDFAnnotationSubtypeStrikeOut: string;
@@ -105,6 +103,8 @@ declare const PDFAnnotationWidgetSubtypeChoice: string;
 declare const PDFDocumentDidEndPageFindNotification: string;
 
 declare const PDFAppearanceCharacteristicsKeyRotation: string;
+
+declare const PDFAnnotationWidgetSubtypeButton: string;
 
 declare const PDFAnnotationKeySubtype: string;
 
@@ -441,44 +441,6 @@ declare interface PDFPageOverlayViewProvider extends NSObjectProtocol {
 declare class PDFPageOverlayViewProvider extends NativeObject implements PDFPageOverlayViewProvider {
 }
 
-declare class PDFSelection extends NSObject implements NSCopying {
-  initWithDocument(document: PDFDocument): this;
-
-  readonly pages: NSArray;
-
-  color: UIColor;
-
-  readonly string: string;
-
-  readonly attributedString: NSAttributedString;
-
-  boundsForPage(page: PDFPage): CGRect;
-
-  numberOfTextRangesOnPage(page: PDFPage): number;
-
-  rangeAtIndexOnPage(index: number, page: PDFPage): _NSRange;
-
-  selectionsByLine(): NSArray;
-
-  addSelection(selection: PDFSelection): void;
-
-  addSelections(selections: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  extendSelectionAtEnd(succeed: number): void;
-
-  extendSelectionAtStart(precede: number): void;
-
-  extendSelectionForLineBoundaries(): void;
-
-  drawForPageActive(page: PDFPage, active: boolean): void;
-
-  drawForPageWithBoxActive(page: PDFPage, box: interop.Enum<typeof PDFDisplayBox>, active: boolean): void;
-
-  setColor(color: UIColor): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 // @ts-ignore ClassDecl.tsIgnore
 declare class PDFView extends UIView implements UIGestureRecognizerDelegate, UIFindInteractionDelegate {
   document: PDFDocument;
@@ -584,9 +546,9 @@ declare class PDFView extends UIView implements UIGestureRecognizerDelegate, UIF
   get highlightedSelections(): NSArray;
   set highlightedSelections(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  drawPageToContext(page: PDFPage, context: interop.PointerConvertible): void;
+  drawPageToContext(page: PDFPage, context: interop.Object): void;
 
-  drawPagePostToContext(page: PDFPage, context: interop.PointerConvertible): void;
+  drawPagePostToContext(page: PDFPage, context: interop.Object): void;
 
   // @ts-ignore MemberDecl.tsIgnore
   copy(sender: interop.Object | null): void;
@@ -758,6 +720,44 @@ declare class PDFThumbnailView extends UIView implements NSCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class PDFSelection extends NSObject implements NSCopying {
+  initWithDocument(document: PDFDocument): this;
+
+  readonly pages: NSArray;
+
+  color: UIColor;
+
+  readonly string: string;
+
+  readonly attributedString: NSAttributedString;
+
+  boundsForPage(page: PDFPage): CGRect;
+
+  numberOfTextRangesOnPage(page: PDFPage): number;
+
+  rangeAtIndexOnPage(index: number, page: PDFPage): _NSRange;
+
+  selectionsByLine(): NSArray;
+
+  addSelection(selection: PDFSelection): void;
+
+  addSelections(selections: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  extendSelectionAtEnd(succeed: number): void;
+
+  extendSelectionAtStart(precede: number): void;
+
+  extendSelectionForLineBoundaries(): void;
+
+  drawForPageActive(page: PDFPage, active: boolean): void;
+
+  drawForPageWithBoxActive(page: PDFPage, box: interop.Enum<typeof PDFDisplayBox>, active: boolean): void;
+
+  setColor(color: UIColor): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class PDFOutline extends NSObject {
   init(): this;
 
@@ -801,7 +801,7 @@ declare class PDFDocument extends NSObject implements NSCopying {
 
   readonly documentURL: NSURL;
 
-  readonly documentRef: interop.Pointer;
+  readonly documentRef: interop.Object;
 
   get documentAttributes(): NSDictionary;
   set documentAttributes(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
@@ -922,7 +922,7 @@ declare class PDFPage extends NSObject implements NSCopying {
 
   readonly document: PDFDocument;
 
-  readonly pageRef: interop.Pointer;
+  readonly pageRef: interop.Object;
 
   readonly label: string;
 
@@ -944,9 +944,9 @@ declare class PDFPage extends NSObject implements NSCopying {
 
   transformForBox(box: interop.Enum<typeof PDFDisplayBox>): CGAffineTransform;
 
-  drawWithBoxToContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.PointerConvertible): void;
+  drawWithBoxToContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.Object): void;
 
-  transformContextForBox(context: interop.PointerConvertible, box: interop.Enum<typeof PDFDisplayBox>): void;
+  transformContextForBox(context: interop.Object, box: interop.Enum<typeof PDFDisplayBox>): void;
 
   thumbnailOfSizeForBox(size: CGSize, box: interop.Enum<typeof PDFDisplayBox>): UIImage;
 
@@ -979,24 +979,6 @@ declare class PDFPage extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class PDFActionRemoteGoTo extends PDFAction implements NSCopying {
-  initWithPageIndexAtPointFileURL(pageIndex: number, point: CGPoint, url: NSURL): this;
-
-  pageIndex: number;
-
-  point: CGPoint;
-
-  URL: NSURL;
-
-  setPageIndex(pageIndex: number): void;
-
-  setPoint(point: CGPoint): void;
-
-  setURL(URL: NSURL): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class PDFActionNamed extends PDFAction implements NSCopying {
   initWithName(name: interop.Enum<typeof PDFActionNamedName>): this;
 
@@ -1019,6 +1001,24 @@ declare class PDFActionURL extends PDFAction implements NSCopying {
   URL: NSURL;
 
   setURL(URL: NSURL | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PDFActionRemoteGoTo extends PDFAction implements NSCopying {
+  initWithPageIndexAtPointFileURL(pageIndex: number, point: CGPoint, url: NSURL): this;
+
+  pageIndex: number;
+
+  point: CGPoint;
+
+  URL: NSURL;
+
+  setPageIndex(pageIndex: number): void;
+
+  setPoint(point: CGPoint): void;
+
+  setURL(URL: NSURL): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -1098,7 +1098,7 @@ declare class PDFAnnotation extends NSObject implements NSCopying, NSCoding {
 
   highlighted: boolean;
 
-  drawWithBoxInContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.PointerConvertible): void;
+  drawWithBoxInContext(box: interop.Enum<typeof PDFDisplayBox>, context: interop.Object): void;
 
   setValueForAnnotationKey(value: interop.Object, key: string): boolean;
 

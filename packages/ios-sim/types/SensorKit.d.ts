@@ -335,188 +335,6 @@ declare interface SRSensorReaderDelegate extends NSObjectProtocol {
 declare class SRSensorReaderDelegate extends NativeObject implements SRSensorReaderDelegate {
 }
 
-declare class SRFaceMetrics extends NSObject implements NSCopying, NSSecureCoding {
-  readonly version: string;
-
-  readonly sessionIdentifier: string;
-
-  readonly context: interop.Enum<typeof SRFaceMetricsContext>;
-
-  readonly wholeFaceExpressions: NSArray;
-
-  readonly partialFaceExpressions: NSArray;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class SRKeyboardMetrics extends NSObject {
-  readonly duration: number;
-
-  readonly keyboardIdentifier: string;
-
-  readonly version: string;
-
-  readonly width: NSMeasurement;
-
-  readonly height: NSMeasurement;
-
-  readonly inputModes: NSArray;
-
-  readonly sessionIdentifiers: NSArray;
-
-  readonly totalWords: number;
-
-  readonly totalAlteredWords: number;
-
-  readonly totalTaps: number;
-
-  readonly totalDrags: number;
-
-  readonly totalDeletes: number;
-
-  readonly totalEmojis: number;
-
-  readonly totalPaths: number;
-
-  readonly totalPathTime: number;
-
-  readonly totalPathLength: NSMeasurement;
-
-  readonly totalAutoCorrections: number;
-
-  readonly totalSpaceCorrections: number;
-
-  readonly totalRetroCorrections: number;
-
-  readonly totalTranspositionCorrections: number;
-
-  readonly totalInsertKeyCorrections: number;
-
-  readonly totalSkipTouchCorrections: number;
-
-  readonly totalNearKeyCorrections: number;
-
-  readonly totalSubstitutionCorrections: number;
-
-  readonly totalHitTestCorrections: number;
-
-  readonly totalTypingDuration: number;
-
-  readonly upErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly downErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly spaceUpErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly spaceDownErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly deleteUpErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly deleteDownErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyUpErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyDownErrorDistance: SRKeyboardProbabilityMetric;
-
-  readonly touchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly spaceTouchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly deleteTouchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyTouchDownUp: SRKeyboardProbabilityMetric;
-
-  readonly touchDownDown: SRKeyboardProbabilityMetric;
-
-  readonly touchUpDown: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToPrediction: SRKeyboardProbabilityMetric;
-
-  readonly shortWordCharKeyToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToAnyTapKey: SRKeyboardProbabilityMetric;
-
-  readonly anyTapToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToSpaceKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToDeleteKey: SRKeyboardProbabilityMetric;
-
-  readonly deleteToSpaceKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToSpaceKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToShiftKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly spaceToPredictionKey: SRKeyboardProbabilityMetric;
-
-  readonly deleteToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToDelete: SRKeyboardProbabilityMetric;
-
-  readonly deleteToDelete: SRKeyboardProbabilityMetric;
-
-  readonly deleteToShiftKey: SRKeyboardProbabilityMetric;
-
-  readonly deleteToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly anyTapToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly planeChangeToAnyTap: SRKeyboardProbabilityMetric;
-
-  readonly charKeyToPlaneChangeKey: SRKeyboardProbabilityMetric;
-
-  readonly planeChangeKeyToCharKey: SRKeyboardProbabilityMetric;
-
-  readonly pathErrorDistanceRatio: NSArray;
-
-  readonly deleteToPath: SRKeyboardProbabilityMetric;
-
-  readonly pathToDelete: SRKeyboardProbabilityMetric;
-
-  readonly spaceToPath: SRKeyboardProbabilityMetric;
-
-  readonly pathToSpace: SRKeyboardProbabilityMetric;
-
-  readonly pathToPath: SRKeyboardProbabilityMetric;
-
-  readonly longWordUpErrorDistance: NSArray;
-
-  readonly longWordDownErrorDistance: NSArray;
-
-  readonly longWordTouchDownUp: NSArray;
-
-  readonly longWordTouchDownDown: NSArray;
-
-  readonly longWordTouchUpDown: NSArray;
-
-  readonly deleteToDeletes: NSArray;
-
-  readonly totalPauses: number;
-
-  readonly totalPathPauses: number;
-
-  readonly typingSpeed: number;
-
-  readonly pathTypingSpeed: number;
-
-  readonly totalTypingEpisodes: number;
-
-  wordCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
-
-  emojiCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
-}
-
 declare class SRAudioLevel extends NSObject implements NSCopying, NSSecureCoding {
   readonly timeRange: CMTimeRange;
 
@@ -761,20 +579,16 @@ declare class SRElectrocardiogramSession extends NSObject implements NSCopying, 
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SRSpeechExpression extends NSObject implements NSCopying, NSSecureCoding {
+declare class SRFaceMetrics extends NSObject implements NSCopying, NSSecureCoding {
   readonly version: string;
 
-  readonly timeRange: CMTimeRange;
+  readonly sessionIdentifier: string;
 
-  readonly confidence: number;
+  readonly context: interop.Enum<typeof SRFaceMetricsContext>;
 
-  readonly mood: number;
+  readonly wholeFaceExpressions: NSArray;
 
-  readonly valence: number;
-
-  readonly activation: number;
-
-  readonly dominance: number;
+  readonly partialFaceExpressions: NSArray;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -835,10 +649,6 @@ declare class SRWristTemperature extends NSObject implements NSCopying, NSSecure
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class SRKeyboardProbabilityMetric<UnitType = interop.Object> extends NSObject {
-  readonly distributionSampleValues: NSArray;
-}
-
 declare class SRMessagesUsageReport extends NSObject {
   readonly duration: number;
 
@@ -851,12 +661,6 @@ declare class SRMessagesUsageReport extends NSObject {
 
 declare class SRWebUsage extends NSObject {
   readonly totalUsageTime: number;
-}
-
-declare class SRNotificationUsage extends NSObject {
-  readonly bundleIdentifier: string;
-
-  readonly event: interop.Enum<typeof SRNotificationEvent>;
 }
 
 declare class SRDeviceUsageReport extends NSObject {
@@ -911,6 +715,40 @@ declare class SRFetchRequest extends NSObject {
   setTo(to: number): void;
 
   setDevice(device: SRDevice): void;
+}
+
+declare class SRNotificationUsage extends NSObject {
+  readonly bundleIdentifier: string;
+
+  readonly event: interop.Enum<typeof SRNotificationEvent>;
+}
+
+declare class SRKeyboardProbabilityMetric<UnitType = interop.Object> extends NSObject {
+  readonly distributionSampleValues: NSArray;
+}
+
+declare class SRSpeechExpression extends NSObject implements NSCopying, NSSecureCoding {
+  readonly version: string;
+
+  readonly timeRange: CMTimeRange;
+
+  readonly confidence: number;
+
+  readonly mood: number;
+
+  readonly valence: number;
+
+  readonly activation: number;
+
+  readonly dominance: number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SRSpeechMetrics extends NSObject implements NSCopying, NSSecureCoding {
@@ -1029,6 +867,168 @@ declare class SRDeletionRecord extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class SRKeyboardMetrics extends NSObject {
+  readonly duration: number;
+
+  readonly keyboardIdentifier: string;
+
+  readonly version: string;
+
+  readonly width: NSMeasurement;
+
+  readonly height: NSMeasurement;
+
+  readonly inputModes: NSArray;
+
+  readonly sessionIdentifiers: NSArray;
+
+  readonly totalWords: number;
+
+  readonly totalAlteredWords: number;
+
+  readonly totalTaps: number;
+
+  readonly totalDrags: number;
+
+  readonly totalDeletes: number;
+
+  readonly totalEmojis: number;
+
+  readonly totalPaths: number;
+
+  readonly totalPathTime: number;
+
+  readonly totalPathLength: NSMeasurement;
+
+  readonly totalAutoCorrections: number;
+
+  readonly totalSpaceCorrections: number;
+
+  readonly totalRetroCorrections: number;
+
+  readonly totalTranspositionCorrections: number;
+
+  readonly totalInsertKeyCorrections: number;
+
+  readonly totalSkipTouchCorrections: number;
+
+  readonly totalNearKeyCorrections: number;
+
+  readonly totalSubstitutionCorrections: number;
+
+  readonly totalHitTestCorrections: number;
+
+  readonly totalTypingDuration: number;
+
+  readonly upErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly downErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly spaceUpErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly spaceDownErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly deleteUpErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly deleteDownErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyUpErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyDownErrorDistance: SRKeyboardProbabilityMetric;
+
+  readonly touchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly spaceTouchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly deleteTouchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyTouchDownUp: SRKeyboardProbabilityMetric;
+
+  readonly touchDownDown: SRKeyboardProbabilityMetric;
+
+  readonly touchUpDown: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToPrediction: SRKeyboardProbabilityMetric;
+
+  readonly shortWordCharKeyToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToAnyTapKey: SRKeyboardProbabilityMetric;
+
+  readonly anyTapToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToSpaceKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToDeleteKey: SRKeyboardProbabilityMetric;
+
+  readonly deleteToSpaceKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToSpaceKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToShiftKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly spaceToPredictionKey: SRKeyboardProbabilityMetric;
+
+  readonly deleteToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToDelete: SRKeyboardProbabilityMetric;
+
+  readonly deleteToDelete: SRKeyboardProbabilityMetric;
+
+  readonly deleteToShiftKey: SRKeyboardProbabilityMetric;
+
+  readonly deleteToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly anyTapToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly planeChangeToAnyTap: SRKeyboardProbabilityMetric;
+
+  readonly charKeyToPlaneChangeKey: SRKeyboardProbabilityMetric;
+
+  readonly planeChangeKeyToCharKey: SRKeyboardProbabilityMetric;
+
+  readonly pathErrorDistanceRatio: NSArray;
+
+  readonly deleteToPath: SRKeyboardProbabilityMetric;
+
+  readonly pathToDelete: SRKeyboardProbabilityMetric;
+
+  readonly spaceToPath: SRKeyboardProbabilityMetric;
+
+  readonly pathToSpace: SRKeyboardProbabilityMetric;
+
+  readonly pathToPath: SRKeyboardProbabilityMetric;
+
+  readonly longWordUpErrorDistance: NSArray;
+
+  readonly longWordDownErrorDistance: NSArray;
+
+  readonly longWordTouchDownUp: NSArray;
+
+  readonly longWordTouchDownDown: NSArray;
+
+  readonly longWordTouchUpDown: NSArray;
+
+  readonly deleteToDeletes: NSArray;
+
+  readonly totalPauses: number;
+
+  readonly totalPathPauses: number;
+
+  readonly typingSpeed: number;
+
+  readonly pathTypingSpeed: number;
+
+  readonly totalTypingEpisodes: number;
+
+  wordCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
+
+  emojiCountForSentimentCategory(category: interop.Enum<typeof SRKeyboardMetricsSentimentCategory>): number;
 }
 
 declare class SRApplicationUsage extends NSObject {

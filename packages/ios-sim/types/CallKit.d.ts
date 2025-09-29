@@ -254,18 +254,6 @@ declare class CXPlayDTMFCallAction extends CXCallAction {
   setType(type: interop.Enum<typeof CXPlayDTMFCallActionType>): void;
 }
 
-declare class CXSetMutedCallAction extends CXCallAction {
-  initWithCallUUIDMuted(callUUID: NSUUID, muted: boolean): this;
-
-  initWithCoder(aDecoder: NSCoder): this;
-
-  muted: boolean;
-
-  isMuted(): boolean;
-
-  setMuted(muted: boolean): void;
-}
-
 declare class CXSetHeldCallAction extends CXCallAction {
   initWithCallUUIDOnHold(callUUID: NSUUID, onHold: boolean): this;
 
@@ -386,20 +374,22 @@ declare class CXCallDirectoryManager extends NSObject {
   openSettingsWithCompletionHandler(completion: (p1: NSError) => void | null): void;
 }
 
-declare class CXSetGroupCallAction extends CXCallAction {
-  initWithCallUUIDCallUUIDToGroupWith(callUUID: NSUUID, callUUIDToGroupWith: NSUUID | null): this;
-
-  initWithCoder(aDecoder: NSCoder): this;
-
-  callUUIDToGroupWith: NSUUID;
-
-  setCallUUIDToGroupWith(callUUIDToGroupWith: NSUUID | null): void;
-}
-
 declare class CXCallObserver extends NSObject {
   readonly calls: NSArray;
 
   setDelegateQueue(delegate: CXCallObserverDelegate | null, queue: NSObject | null): void;
+}
+
+declare class CXSetMutedCallAction extends CXCallAction {
+  initWithCallUUIDMuted(callUUID: NSUUID, muted: boolean): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  muted: boolean;
+
+  isMuted(): boolean;
+
+  setMuted(muted: boolean): void;
 }
 
 declare class CXSetTranslatingCallAction extends CXCallAction implements NSSecureCoding {
@@ -450,6 +440,16 @@ declare class CXCallUpdate extends NSObject implements NSCopying {
   setHasVideo(hasVideo: boolean): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CXSetGroupCallAction extends CXCallAction {
+  initWithCallUUIDCallUUIDToGroupWith(callUUID: NSUUID, callUUIDToGroupWith: NSUUID | null): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  callUUIDToGroupWith: NSUUID;
+
+  setCallUUIDToGroupWith(callUUIDToGroupWith: NSUUID | null): void;
 }
 
 declare class CXProvider extends NSObject {

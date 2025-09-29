@@ -203,8 +203,6 @@ declare const kVTProfileLevel_MP4V_Simple_L0: interop.Pointer;
 
 declare const kVTProfileLevel_H264_ConstrainedHigh_AutoLevel: interop.Pointer;
 
-declare const kVTProfileLevel_H264_High_AutoLevel: interop.Pointer;
-
 declare const kVTProfileLevel_H264_High_5_2: interop.Pointer;
 
 declare const kVTProfileLevel_H264_High_5_1: interop.Pointer;
@@ -303,13 +301,9 @@ declare const kVTVideoEncoderList_IsHardwareAccelerated: interop.Pointer;
 
 declare const kVTCompressionPropertyCameraCalibrationKey_LensDomain: interop.Pointer;
 
-declare const kVTDecompressionPropertyKey_AllowBitstreamToChangeFrameDimensions: interop.Pointer;
+declare const kVTSampleAttachmentQualityMetricsKey_ChromaBlueMeanSquaredError: interop.Pointer;
 
 declare const kVTDecompressionProperty_DeinterlaceMode_Temporal: interop.Pointer;
-
-declare const kVTPropertyShouldBeSerializedKey: interop.Pointer;
-
-declare const kVTSampleAttachmentQualityMetricsKey_ChromaBlueMeanSquaredError: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: interop.Pointer;
 
@@ -329,7 +323,7 @@ declare const kVTDecompressionPropertyKey_GeneratePerFrameHDRDisplayMetadata: in
 
 declare const kVTVideoDecoderSpecification_PreferredDecoderGPURegistryID: interop.Pointer;
 
-declare const kVTDecompressionPropertyKey_PixelFormatsWithReducedResolutionSupport: interop.Pointer;
+declare const kVTDecompressionPropertyKey_AllowBitstreamToChangeFrameDimensions: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_SupportedPixelFormatsOrderedByPerformance: interop.Pointer;
 
@@ -431,6 +425,10 @@ declare const kVTFormatDescriptionChangeNotSupportedErr: number;
 
 declare const kVTEncodeFrameOptionKey_BaseFrameQP: interop.Pointer;
 
+declare const kVTDecompressionPropertyKey_PixelFormatsWithReducedResolutionSupport: interop.Pointer;
+
+declare const kVTProfileLevel_H264_High_AutoLevel: interop.Pointer;
+
 declare const kVTDecompressionPropertyKey_MaxOutputPresentationTimeStampOfFramesBeingDecoded: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Baseline_4_2: interop.Pointer;
@@ -448,6 +446,8 @@ declare const kVTEncodeFrameOptionKey_AcknowledgedLTRTokens: interop.Pointer;
 declare const kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_ContentLightLevelInfo: interop.Pointer;
+
+declare const kVTPropertyShouldBeSerializedKey: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_MinAllowedFrameQP: interop.Pointer;
 
@@ -651,8 +651,6 @@ declare const kVTCompressionPropertyKey_HasLeftStereoEyeView: interop.Pointer;
 
 declare const kVTH264EntropyMode_CABAC: interop.Pointer;
 
-declare const kVTVideoDecoderSpecification_EnableHardwareAcceleratedVideoDecoder: interop.Pointer;
-
 declare const kVTMotionEstimationSessionCreationOption_UseMultiPassSearch: interop.Pointer;
 
 declare const kVTProfileLevel_HEVC_Monochrome10_AutoLevel: interop.Pointer;
@@ -670,6 +668,8 @@ declare const kVTFrameSiloInvalidTimeRangeErr: number;
 declare const kVTDecompressionResolutionKey_Height: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Main_4_0: interop.Pointer;
+
+declare const kVTVideoDecoderSpecification_EnableHardwareAcceleratedVideoDecoder: interop.Pointer;
 
 declare const VTFrameProcessorError: {
   UnknownError: -19730,
@@ -770,131 +770,131 @@ declare class OpaqueVTHDRPerFrameMetadataGenerationSession {
   constructor(init?: OpaqueVTHDRPerFrameMetadataGenerationSession);
 }
 
-declare function VTSessionCopySupportedPropertyDictionary(session: interop.PointerConvertible, supportedPropertyDictionaryOut: interop.PointerConvertible): number;
+declare function VTSessionCopySupportedPropertyDictionary(session: interop.Object, supportedPropertyDictionaryOut: interop.PointerConvertible): number;
 
-declare function VTSessionSetProperty(session: interop.PointerConvertible, propertyKey: interop.PointerConvertible, propertyValue: interop.PointerConvertible): number;
+declare function VTSessionSetProperty(session: interop.Object, propertyKey: interop.Object, propertyValue: interop.Object): number;
 
-declare function VTSessionCopyProperty(session: interop.PointerConvertible, propertyKey: interop.PointerConvertible, allocator: interop.PointerConvertible, propertyValueOut: interop.PointerConvertible): number;
+declare function VTSessionCopyProperty(session: interop.Object, propertyKey: interop.Object, allocator: interop.Object, propertyValueOut: interop.PointerConvertible): number;
 
-declare function VTSessionSetProperties(session: interop.PointerConvertible, propertyDictionary: interop.PointerConvertible): number;
+declare function VTSessionSetProperties(session: interop.Object, propertyDictionary: interop.Object): number;
 
-declare function VTSessionCopySerializableProperties(session: interop.PointerConvertible, allocator: interop.PointerConvertible, dictionaryOut: interop.PointerConvertible): number;
+declare function VTSessionCopySerializableProperties(session: interop.Object, allocator: interop.Object, dictionaryOut: interop.PointerConvertible): number;
 
-declare function VTDecompressionSessionCreate(allocator: interop.PointerConvertible, videoFormatDescription: interop.PointerConvertible, videoDecoderSpecification: interop.PointerConvertible, destinationImageBufferAttributes: interop.PointerConvertible, outputCallback: interop.PointerConvertible, decompressionSessionOut: interop.PointerConvertible): number;
+declare function VTDecompressionSessionCreate(allocator: interop.Object, videoFormatDescription: interop.Object, videoDecoderSpecification: interop.Object, destinationImageBufferAttributes: interop.Object, outputCallback: interop.PointerConvertible, decompressionSessionOut: interop.PointerConvertible): number;
 
-declare function VTDecompressionSessionInvalidate(session: interop.PointerConvertible): void;
+declare function VTDecompressionSessionInvalidate(session: interop.Object): void;
 
 declare function VTDecompressionSessionGetTypeID(): number;
 
-declare function VTDecompressionSessionDecodeFrame(session: interop.PointerConvertible, sampleBuffer: interop.PointerConvertible, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, sourceFrameRefCon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
+declare function VTDecompressionSessionDecodeFrame(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, sourceFrameRefCon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
 
-declare function VTDecompressionSessionDecodeFrameWithOutputHandler(session: interop.PointerConvertible, sampleBuffer: interop.PointerConvertible, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: CMTime, p5: CMTime) => void): number;
+declare function VTDecompressionSessionDecodeFrameWithOutputHandler(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: CMTime, p5: CMTime) => void): number;
 
-declare function VTDecompressionSessionFinishDelayedFrames(session: interop.PointerConvertible): number;
+declare function VTDecompressionSessionFinishDelayedFrames(session: interop.Object): number;
 
-declare function VTDecompressionSessionCanAcceptFormatDescription(session: interop.PointerConvertible, newFormatDesc: interop.PointerConvertible): number;
+declare function VTDecompressionSessionCanAcceptFormatDescription(session: interop.Object, newFormatDesc: interop.Object): number;
 
-declare function VTDecompressionSessionWaitForAsynchronousFrames(session: interop.PointerConvertible): number;
+declare function VTDecompressionSessionWaitForAsynchronousFrames(session: interop.Object): number;
 
-declare function VTDecompressionSessionCopyBlackPixelBuffer(session: interop.PointerConvertible, pixelBufferOut: interop.PointerConvertible): number;
+declare function VTDecompressionSessionCopyBlackPixelBuffer(session: interop.Object, pixelBufferOut: interop.PointerConvertible): number;
 
 declare function VTIsHardwareDecodeSupported(codecType: number): number;
 
 declare function VTIsStereoMVHEVCDecodeSupported(): number;
 
-declare function VTDecompressionSessionSetMultiImageCallback(decompressionSession: interop.PointerConvertible, outputMultiImageCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.Enum<typeof VTDecodeInfoFlags>, p5: interop.PointerConvertible, p6: CMTime, p7: CMTime) => void, outputMultiImageRefcon: interop.PointerConvertible): number;
+declare function VTDecompressionSessionSetMultiImageCallback(decompressionSession: interop.Object, outputMultiImageCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.Enum<typeof VTDecodeInfoFlags>, p5: interop.PointerConvertible, p6: CMTime, p7: CMTime) => void, outputMultiImageRefcon: interop.PointerConvertible): number;
 
-declare function VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(session: interop.PointerConvertible, sampleBuffer: interop.PointerConvertible, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, infoFlagsOut: interop.PointerConvertible, multiImageCapableOutputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: CMTime, p6: CMTime) => void): number;
+declare function VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, infoFlagsOut: interop.PointerConvertible, multiImageCapableOutputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: CMTime, p6: CMTime) => void): number;
 
-declare function VTDecompressionSessionDecodeFrameWithOptions(session: interop.PointerConvertible, sampleBuffer: interop.PointerConvertible, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, frameOptions: interop.PointerConvertible, sourceFrameRefCon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
+declare function VTDecompressionSessionDecodeFrameWithOptions(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, frameOptions: interop.Object, sourceFrameRefCon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
 
-declare function VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler(session: interop.PointerConvertible, sampleBuffer: interop.PointerConvertible, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, frameOptions: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: CMTime, p5: CMTime) => void): number;
+declare function VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, frameOptions: interop.Object, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: CMTime, p5: CMTime) => void): number;
 
-declare function VTCompressionSessionCreate(allocator: interop.PointerConvertible, width: number, height: number, codecType: number, encoderSpecification: interop.PointerConvertible, sourceImageBufferAttributes: interop.PointerConvertible, compressedDataAllocator: interop.PointerConvertible, outputCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.Enum<typeof VTEncodeInfoFlags>, p5: interop.PointerConvertible) => void, outputCallbackRefCon: interop.PointerConvertible, compressionSessionOut: interop.PointerConvertible): number;
+declare function VTCompressionSessionCreate(allocator: interop.Object, width: number, height: number, codecType: number, encoderSpecification: interop.Object, sourceImageBufferAttributes: interop.Object, compressedDataAllocator: interop.Object, outputCallback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.Enum<typeof VTEncodeInfoFlags>, p5: interop.PointerConvertible) => void, outputCallbackRefCon: interop.PointerConvertible, compressionSessionOut: interop.PointerConvertible): number;
 
-declare function VTCompressionSessionInvalidate(session: interop.PointerConvertible): void;
+declare function VTCompressionSessionInvalidate(session: interop.Object): void;
 
 declare function VTCompressionSessionGetTypeID(): number;
 
-declare function VTCompressionSessionGetPixelBufferPool(session: interop.PointerConvertible): interop.Pointer;
+declare function VTCompressionSessionGetPixelBufferPool(session: interop.Object): interop.Object;
 
-declare function VTCompressionSessionPrepareToEncodeFrames(session: interop.PointerConvertible): number;
+declare function VTCompressionSessionPrepareToEncodeFrames(session: interop.Object): number;
 
-declare function VTCompressionSessionEncodeFrame(session: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.PointerConvertible, sourceFrameRefcon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
+declare function VTCompressionSessionEncodeFrame(session: interop.Object, imageBuffer: interop.Object, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.Object, sourceFrameRefcon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
 
-declare function VTCompressionSessionEncodeFrameWithOutputHandler(session: interop.PointerConvertible, imageBuffer: interop.PointerConvertible, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTEncodeInfoFlags>, p3: interop.PointerConvertible) => void): number;
+declare function VTCompressionSessionEncodeFrameWithOutputHandler(session: interop.Object, imageBuffer: interop.Object, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.Object, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTEncodeInfoFlags>, p3: interop.PointerConvertible) => void): number;
 
-declare function VTCompressionSessionCompleteFrames(session: interop.PointerConvertible, completeUntilPresentationTimeStamp: CMTime): number;
+declare function VTCompressionSessionCompleteFrames(session: interop.Object, completeUntilPresentationTimeStamp: CMTime): number;
 
 declare function VTIsStereoMVHEVCEncodeSupported(): number;
 
-declare function VTCompressionSessionEncodeMultiImageFrame(session: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.PointerConvertible, sourceFrameRefcon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
+declare function VTCompressionSessionEncodeMultiImageFrame(session: interop.Object, taggedBufferGroup: interop.PointerConvertible, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.Object, sourceFrameRefcon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
 
-declare function VTCompressionSessionEncodeMultiImageFrameWithOutputHandler(session: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTEncodeInfoFlags>, p3: interop.PointerConvertible) => void): number;
+declare function VTCompressionSessionEncodeMultiImageFrameWithOutputHandler(session: interop.Object, taggedBufferGroup: interop.PointerConvertible, presentationTimeStamp: CMTime, duration: CMTime, frameProperties: interop.Object, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTEncodeInfoFlags>, p3: interop.PointerConvertible) => void): number;
 
-declare function VTCompressionSessionBeginPass(session: interop.PointerConvertible, beginPassFlags: interop.Enum<typeof VTCompressionSessionOptionFlags>, reserved: interop.PointerConvertible): number;
+declare function VTCompressionSessionBeginPass(session: interop.Object, beginPassFlags: interop.Enum<typeof VTCompressionSessionOptionFlags>, reserved: interop.PointerConvertible): number;
 
-declare function VTCompressionSessionEndPass(session: interop.PointerConvertible, furtherPassesRequestedOut: interop.PointerConvertible, reserved: interop.PointerConvertible): number;
+declare function VTCompressionSessionEndPass(session: interop.Object, furtherPassesRequestedOut: interop.PointerConvertible, reserved: interop.PointerConvertible): number;
 
-declare function VTCompressionSessionGetTimeRangesForNextPass(session: interop.PointerConvertible, timeRangeCountOut: interop.PointerConvertible, timeRangeArrayOut: interop.PointerConvertible): number;
+declare function VTCompressionSessionGetTimeRangesForNextPass(session: interop.Object, timeRangeCountOut: interop.PointerConvertible, timeRangeArrayOut: interop.PointerConvertible): number;
 
 declare function VTFrameSiloGetTypeID(): number;
 
-declare function VTFrameSiloCreate(allocator: interop.PointerConvertible, fileURL: interop.PointerConvertible, timeRange: CMTimeRange, options: interop.PointerConvertible, frameSiloOut: interop.PointerConvertible): number;
+declare function VTFrameSiloCreate(allocator: interop.Object, fileURL: interop.Object, timeRange: CMTimeRange, options: interop.Object, frameSiloOut: interop.PointerConvertible): number;
 
-declare function VTFrameSiloAddSampleBuffer(silo: interop.PointerConvertible, sampleBuffer: interop.PointerConvertible): number;
+declare function VTFrameSiloAddSampleBuffer(silo: interop.Object, sampleBuffer: interop.Object): number;
 
-declare function VTFrameSiloSetTimeRangesForNextPass(silo: interop.PointerConvertible, timeRangeCount: number, timeRangeArray: interop.PointerConvertible): number;
+declare function VTFrameSiloSetTimeRangesForNextPass(silo: interop.Object, timeRangeCount: number, timeRangeArray: interop.PointerConvertible): number;
 
-declare function VTFrameSiloGetProgressOfCurrentPass(silo: interop.PointerConvertible, progressOut: interop.PointerConvertible): number;
+declare function VTFrameSiloGetProgressOfCurrentPass(silo: interop.Object, progressOut: interop.PointerConvertible): number;
 
-declare function VTFrameSiloCallFunctionForEachSampleBuffer(silo: interop.PointerConvertible, timeRange: CMTimeRange, refcon: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): number;
+declare function VTFrameSiloCallFunctionForEachSampleBuffer(silo: interop.Object, timeRange: CMTimeRange, refcon: interop.PointerConvertible, callback: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): number;
 
-declare function VTFrameSiloCallBlockForEachSampleBuffer(silo: interop.PointerConvertible, timeRange: CMTimeRange, handler: (p1: interop.PointerConvertible) => number): number;
+declare function VTFrameSiloCallBlockForEachSampleBuffer(silo: interop.Object, timeRange: CMTimeRange, handler: (p1: interop.PointerConvertible) => number): number;
 
 declare function VTMultiPassStorageGetTypeID(): number;
 
-declare function VTMultiPassStorageCreate(allocator: interop.PointerConvertible, fileURL: interop.PointerConvertible, timeRange: CMTimeRange, options: interop.PointerConvertible, multiPassStorageOut: interop.PointerConvertible): number;
+declare function VTMultiPassStorageCreate(allocator: interop.Object, fileURL: interop.Object, timeRange: CMTimeRange, options: interop.Object, multiPassStorageOut: interop.PointerConvertible): number;
 
-declare function VTMultiPassStorageClose(multiPassStorage: interop.PointerConvertible): number;
+declare function VTMultiPassStorageClose(multiPassStorage: interop.Object): number;
 
-declare function VTCopyVideoEncoderList(options: interop.PointerConvertible, listOfVideoEncodersOut: interop.PointerConvertible): number;
+declare function VTCopyVideoEncoderList(options: interop.Object, listOfVideoEncodersOut: interop.PointerConvertible): number;
 
-declare function VTCopySupportedPropertyDictionaryForEncoder(width: number, height: number, codecType: number, encoderSpecification: interop.PointerConvertible, encoderIDOut: interop.PointerConvertible, supportedPropertiesOut: interop.PointerConvertible): number;
+declare function VTCopySupportedPropertyDictionaryForEncoder(width: number, height: number, codecType: number, encoderSpecification: interop.Object, encoderIDOut: interop.PointerConvertible, supportedPropertiesOut: interop.PointerConvertible): number;
 
-declare function VTCreateCGImageFromCVPixelBuffer(pixelBuffer: interop.PointerConvertible, options: interop.PointerConvertible, imageOut: interop.PointerConvertible): number;
+declare function VTCreateCGImageFromCVPixelBuffer(pixelBuffer: interop.Object, options: interop.Object, imageOut: interop.PointerConvertible): number;
 
-declare function VTPixelTransferSessionCreate(allocator: interop.PointerConvertible, pixelTransferSessionOut: interop.PointerConvertible): number;
+declare function VTPixelTransferSessionCreate(allocator: interop.Object, pixelTransferSessionOut: interop.PointerConvertible): number;
 
-declare function VTPixelTransferSessionInvalidate(session: interop.PointerConvertible): void;
+declare function VTPixelTransferSessionInvalidate(session: interop.Object): void;
 
 declare function VTPixelTransferSessionGetTypeID(): number;
 
-declare function VTPixelTransferSessionTransferImage(session: interop.PointerConvertible, sourceBuffer: interop.PointerConvertible, destinationBuffer: interop.PointerConvertible): number;
+declare function VTPixelTransferSessionTransferImage(session: interop.Object, sourceBuffer: interop.Object, destinationBuffer: interop.Object): number;
 
-declare function VTPixelRotationSessionCreate(allocator: interop.PointerConvertible, pixelRotationSessionOut: interop.PointerConvertible): number;
+declare function VTPixelRotationSessionCreate(allocator: interop.Object, pixelRotationSessionOut: interop.PointerConvertible): number;
 
 declare function VTPixelRotationSessionInvalidate(session: interop.PointerConvertible): void;
 
 declare function VTPixelRotationSessionGetTypeID(): number;
 
-declare function VTPixelRotationSessionRotateImage(session: interop.PointerConvertible, sourceBuffer: interop.PointerConvertible, destinationBuffer: interop.PointerConvertible): number;
+declare function VTPixelRotationSessionRotateImage(session: interop.PointerConvertible, sourceBuffer: interop.Object, destinationBuffer: interop.Object): number;
 
 declare function VTHDRPerFrameMetadataGenerationSessionGetTypeID(): number;
 
-declare function VTHDRPerFrameMetadataGenerationSessionCreate(allocator: interop.PointerConvertible, framesPerSecond: number, options: interop.PointerConvertible, hdrPerFrameMetadataGenerationSessionOut: interop.PointerConvertible): number;
+declare function VTHDRPerFrameMetadataGenerationSessionCreate(allocator: interop.Object, framesPerSecond: number, options: interop.Object, hdrPerFrameMetadataGenerationSessionOut: interop.PointerConvertible): number;
 
-declare function VTHDRPerFrameMetadataGenerationSessionAttachMetadata(hdrPerFrameMetadataGenerationSession: interop.PointerConvertible, pixelBuffer: interop.PointerConvertible, sceneChange: number): number;
+declare function VTHDRPerFrameMetadataGenerationSessionAttachMetadata(hdrPerFrameMetadataGenerationSession: interop.PointerConvertible, pixelBuffer: interop.Object, sceneChange: number): number;
 
 declare function VTMotionEstimationSessionGetTypeID(): number;
 
-declare function VTMotionEstimationSessionCreate(allocator: interop.PointerConvertible, motionVectorProcessorSelectionOptions: interop.PointerConvertible, width: number, height: number, motionEstimationSessionOut: interop.PointerConvertible): number;
+declare function VTMotionEstimationSessionCreate(allocator: interop.Object, motionVectorProcessorSelectionOptions: interop.Object, width: number, height: number, motionEstimationSessionOut: interop.PointerConvertible): number;
 
 declare function VTMotionEstimationSessionCopySourcePixelBufferAttributes(motionEstimationSession: interop.PointerConvertible, attributesOut: interop.PointerConvertible): number;
 
 declare function VTMotionEstimationSessionInvalidate(session: interop.PointerConvertible): void;
 
-declare function VTMotionEstimationSessionEstimateMotionVectors(session: interop.PointerConvertible, referenceImage: interop.PointerConvertible, currentImage: interop.PointerConvertible, motionEstimationFrameFlags: interop.Enum<typeof VTMotionEstimationFrameFlags>, additionalFrameOptions: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTMotionEstimationInfoFlags>, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void): number;
+declare function VTMotionEstimationSessionEstimateMotionVectors(session: interop.PointerConvertible, referenceImage: interop.Object, currentImage: interop.Object, motionEstimationFrameFlags: interop.Enum<typeof VTMotionEstimationFrameFlags>, additionalFrameOptions: interop.Object, outputHandler: (p1: number, p2: interop.Enum<typeof VTMotionEstimationInfoFlags>, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void): number;
 
 declare function VTMotionEstimationSessionCompleteFrames(session: interop.PointerConvertible): number;
 
@@ -949,17 +949,17 @@ declare class VTFrameProcessor extends NSObject {
 }
 
 declare class VTFrameProcessorOpticalFlow extends NSObject {
-  initWithForwardFlowBackwardFlow(forwardFlow: interop.PointerConvertible, backwardFlow: interop.PointerConvertible): this;
+  initWithForwardFlowBackwardFlow(forwardFlow: interop.Object, backwardFlow: interop.Object): this;
 
-  readonly forwardFlow: interop.Pointer;
+  readonly forwardFlow: interop.Object;
 
-  readonly backwardFlow: interop.Pointer;
+  readonly backwardFlow: interop.Object;
 }
 
 declare class VTFrameProcessorFrame extends NSObject {
-  initWithBufferPresentationTimeStamp(buffer: interop.PointerConvertible, presentationTimeStamp: CMTime): this;
+  initWithBufferPresentationTimeStamp(buffer: interop.Object, presentationTimeStamp: CMTime): this;
 
-  readonly buffer: interop.Pointer;
+  readonly buffer: interop.Object;
 
   readonly presentationTimeStamp: CMTime;
 }

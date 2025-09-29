@@ -19,16 +19,16 @@ declare const PHLivePhotoViewPlaybackStyle: {
   Hint: 2,
 };
 
-declare const PHLivePhotoBadgeOptions: {
-  OverContent: 1,
-  LiveOff: 2,
-};
-
 declare const PHPickerConfigurationSelection: {
   Default: 0,
   Ordered: 1,
   Continuous: 2,
   ContinuousAndOrdered: 3,
+};
+
+declare const PHLivePhotoBadgeOptions: {
+  OverContent: 1,
+  LiveOff: 2,
 };
 
 declare const PHPickerCapabilities: {

@@ -12,8 +12,6 @@ declare const ARBlendShapeLocationMouthFrownRight: string;
 
 declare const ARSCNDebugOptionShowFeaturePoints: interop.Enum<typeof SCNDebugOptions>;
 
-declare const ARSCNDebugOptionShowWorldOrigin: interop.Enum<typeof SCNDebugOptions>;
-
 declare const ARReferenceObjectArchiveExtension: string;
 
 declare const ARBlendShapeLocationTongueOut: string;
@@ -69,6 +67,8 @@ declare const ARSkeletonJointNameLeftShoulder: string;
 declare const ARSkeletonJointNameRightFoot: string;
 
 declare const ARSkeletonJointNameLeftHand: string;
+
+declare const ARSCNDebugOptionShowWorldOrigin: interop.Enum<typeof SCNDebugOptions>;
 
 declare const ARSkeletonJointNameHead: string;
 
@@ -259,13 +259,6 @@ declare const ARTrackingState: {
   Normal: 2,
 };
 
-declare const ARPlaneClassificationStatus: {
-  NotAvailable: 0,
-  Undetermined: 1,
-  Unknown: 2,
-  Known: 3,
-};
-
 declare const ARConfidenceLevel: {
   Low: 0,
   Medium: 1,
@@ -298,6 +291,13 @@ declare const ARSceneReconstruction: {
   None: 0,
   Mesh: 1,
   MeshWithClassification: 3,
+};
+
+declare const ARPlaneClassificationStatus: {
+  NotAvailable: 0,
+  Undetermined: 1,
+  Unknown: 2,
+  Known: 3,
 };
 
 declare const ARMeshClassification: {
@@ -407,7 +407,7 @@ declare interface ARSessionObserver extends NSObjectProtocol {
 
   sessionShouldAttemptRelocalization?(session: ARSession): boolean;
 
-  sessionDidOutputAudioSampleBuffer?(session: ARSession, audioSampleBuffer: interop.PointerConvertible): void;
+  sessionDidOutputAudioSampleBuffer?(session: ARSession, audioSampleBuffer: interop.Object): void;
 
   sessionDidOutputCollaborationData?(session: ARSession, data: ARCollaborationData): void;
 
@@ -442,18 +442,86 @@ declare interface ARSessionProviding extends NSObjectProtocol {
 declare class ARSessionProviding extends NativeObject implements ARSessionProviding {
 }
 
-declare class ARLightEstimate extends NSObject {
-  readonly ambientIntensity: number;
-
-  readonly ambientColorTemperature: number;
-}
-
 declare class ARMatteGenerator extends NSObject {
   initWithDeviceMatteResolution(device: MTLDevice, matteResolution: interop.Enum<typeof ARMatteResolution>): this;
 
   generateMatteFromFrameCommandBuffer(frame: ARFrame, commandBuffer: MTLCommandBuffer): MTLTexture;
 
   generateDilatedDepthFromFrameCommandBuffer(frame: ARFrame, commandBuffer: MTLCommandBuffer): MTLTexture;
+}
+
+declare class ARWorldTrackingConfiguration extends ARConfiguration {
+  autoFocusEnabled: boolean;
+
+  environmentTexturing: interop.Enum<typeof AREnvironmentTexturing>;
+
+  wantsHDREnvironmentTextures: boolean;
+
+  planeDetection: interop.Enum<typeof ARPlaneDetection>;
+
+  initialWorldMap: ARWorldMap;
+
+  detectionImages: NSSet;
+
+  automaticImageScaleEstimationEnabled: boolean;
+
+  maximumNumberOfTrackedImages: number;
+
+  detectionObjects: NSSet;
+
+  collaborationEnabled: boolean;
+
+  static readonly supportsUserFaceTracking: boolean;
+
+  userFaceTrackingEnabled: boolean;
+
+  appClipCodeTrackingEnabled: boolean;
+
+  static readonly supportsAppClipCodeTracking: boolean;
+
+  static supportsSceneReconstruction(sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>): boolean;
+
+  sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>;
+
+  init(): this;
+
+  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  isAutoFocusEnabled(): boolean;
+
+  setAutoFocusEnabled(autoFocusEnabled: boolean): void;
+
+  setEnvironmentTexturing(environmentTexturing: interop.Enum<typeof AREnvironmentTexturing>): void;
+
+  setWantsHDREnvironmentTextures(wantsHDREnvironmentTextures: boolean): void;
+
+  setPlaneDetection(planeDetection: interop.Enum<typeof ARPlaneDetection>): void;
+
+  setInitialWorldMap(initialWorldMap: ARWorldMap): void;
+
+  setDetectionImages(detectionImages: NSSet | null): void;
+
+  setAutomaticImageScaleEstimationEnabled(automaticImageScaleEstimationEnabled: boolean): void;
+
+  setMaximumNumberOfTrackedImages(maximumNumberOfTrackedImages: number): void;
+
+  setDetectionObjects(detectionObjects: NSSet): void;
+
+  isCollaborationEnabled(): boolean;
+
+  setCollaborationEnabled(collaborationEnabled: boolean): void;
+
+  setUserFaceTrackingEnabled(userFaceTrackingEnabled: boolean): void;
+
+  setAppClipCodeTrackingEnabled(appClipCodeTrackingEnabled: boolean): void;
+
+  setSceneReconstruction(sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>): void;
+}
+
+declare class ARLightEstimate extends NSObject {
+  readonly ambientIntensity: number;
+
+  readonly ambientColorTemperature: number;
 }
 
 declare class ARCoachingOverlayView extends UIView {
@@ -629,9 +697,9 @@ declare class ARReferenceImage extends NSObject {
 
   validateWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
 
-  initWithCGImageOrientationPhysicalWidth(image: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
+  initWithCGImageOrientationPhysicalWidth(image: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
 
-  initWithPixelBufferOrientationPhysicalWidth(pixelBuffer: interop.PointerConvertible, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
+  initWithPixelBufferOrientationPhysicalWidth(pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
 
   static referenceImagesInGroupNamedBundle(name: string, bundle: NSBundle | null): NSSet;
 
@@ -762,7 +830,7 @@ declare class ARDirectionalLightEstimate extends ARLightEstimate {
 declare class ARFrame extends NSObject implements NSCopying {
   readonly timestamp: number;
 
-  readonly capturedImage: interop.Pointer;
+  readonly capturedImage: interop.Object;
 
   readonly exifData: NSDictionary;
 
@@ -784,9 +852,9 @@ declare class ARFrame extends NSObject implements NSCopying {
 
   readonly worldMappingStatus: interop.Enum<typeof ARWorldMappingStatus>;
 
-  readonly segmentationBuffer: interop.Pointer;
+  readonly segmentationBuffer: interop.Object;
 
-  readonly estimatedDepthData: interop.Pointer;
+  readonly estimatedDepthData: interop.Object;
 
   readonly detectedBody: ARBody2D;
 
@@ -1114,9 +1182,9 @@ declare class ARSkeletonDefinition extends NSObject {
 }
 
 declare class ARDepthData extends NSObject {
-  readonly depthMap: interop.Pointer;
+  readonly depthMap: interop.Object;
 
-  readonly confidenceMap: interop.Pointer;
+  readonly confidenceMap: interop.Object;
 }
 
 declare class ARAnchor extends NSObject implements ARAnchorCopying, NSSecureCoding {
@@ -1543,74 +1611,6 @@ declare class ARSkeleton3D extends ARSkeleton {
   modelTransformForJointName(jointName: string): simd_float4x4;
 
   localTransformForJointName(jointName: string): simd_float4x4;
-}
-
-declare class ARWorldTrackingConfiguration extends ARConfiguration {
-  autoFocusEnabled: boolean;
-
-  environmentTexturing: interop.Enum<typeof AREnvironmentTexturing>;
-
-  wantsHDREnvironmentTextures: boolean;
-
-  planeDetection: interop.Enum<typeof ARPlaneDetection>;
-
-  initialWorldMap: ARWorldMap;
-
-  detectionImages: NSSet;
-
-  automaticImageScaleEstimationEnabled: boolean;
-
-  maximumNumberOfTrackedImages: number;
-
-  detectionObjects: NSSet;
-
-  collaborationEnabled: boolean;
-
-  static readonly supportsUserFaceTracking: boolean;
-
-  userFaceTrackingEnabled: boolean;
-
-  appClipCodeTrackingEnabled: boolean;
-
-  static readonly supportsAppClipCodeTracking: boolean;
-
-  static supportsSceneReconstruction(sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>): boolean;
-
-  sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>;
-
-  init(): this;
-
-  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  isAutoFocusEnabled(): boolean;
-
-  setAutoFocusEnabled(autoFocusEnabled: boolean): void;
-
-  setEnvironmentTexturing(environmentTexturing: interop.Enum<typeof AREnvironmentTexturing>): void;
-
-  setWantsHDREnvironmentTextures(wantsHDREnvironmentTextures: boolean): void;
-
-  setPlaneDetection(planeDetection: interop.Enum<typeof ARPlaneDetection>): void;
-
-  setInitialWorldMap(initialWorldMap: ARWorldMap): void;
-
-  setDetectionImages(detectionImages: NSSet | null): void;
-
-  setAutomaticImageScaleEstimationEnabled(automaticImageScaleEstimationEnabled: boolean): void;
-
-  setMaximumNumberOfTrackedImages(maximumNumberOfTrackedImages: number): void;
-
-  setDetectionObjects(detectionObjects: NSSet): void;
-
-  isCollaborationEnabled(): boolean;
-
-  setCollaborationEnabled(collaborationEnabled: boolean): void;
-
-  setUserFaceTrackingEnabled(userFaceTrackingEnabled: boolean): void;
-
-  setAppClipCodeTrackingEnabled(appClipCodeTrackingEnabled: boolean): void;
-
-  setSceneReconstruction(sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>): void;
 }
 
 declare class ARWorldMap extends NSObject implements NSCopying, NSSecureCoding {

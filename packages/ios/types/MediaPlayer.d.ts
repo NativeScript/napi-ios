@@ -14,8 +14,6 @@ declare const MPMediaItemPropertyHasProtectedAsset: string;
 
 declare const MPMoviePlayerReadyForDisplayDidChangeNotification: string;
 
-declare const MPLanguageOptionCharacteristicIsMainProgramContent: string;
-
 declare const MPMediaItemPropertyPodcastPersistentID: string;
 
 declare const MPMoviePlayerLoadStateDidChangeNotification: string;
@@ -31,6 +29,8 @@ declare const MPLanguageOptionCharacteristicLanguageTranslation: string;
 declare const MPLanguageOptionCharacteristicTranscribesSpokenDialog: string;
 
 declare const MPLanguageOptionCharacteristicIsAuxiliaryContent: string;
+
+declare const MPLanguageOptionCharacteristicIsMainProgramContent: string;
 
 declare const MPNowPlayingInfoPropertyAdTimeRanges: string;
 
@@ -516,22 +516,6 @@ declare interface MPMediaPlayback {
 declare class MPMediaPlayback extends NativeObject implements MPMediaPlayback {
 }
 
-declare class MPSkipIntervalCommand extends MPRemoteCommand {
-  get preferredIntervals(): NSArray;
-  set preferredIntervals(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setPreferredIntervals(preferredIntervals: NSArray<interop.Object> | Array<interop.Object>): void;
-}
-
-declare class MPChangeShuffleModeCommand extends MPRemoteCommand {
-  currentShuffleType: interop.Enum<typeof MPShuffleType>;
-
-  setCurrentShuffleType(currentShuffleType: interop.Enum<typeof MPShuffleType>): void;
-}
-
-declare class MPChangePlaybackPositionCommand extends MPRemoteCommand {
-}
-
 declare class MPSeekCommandEvent extends MPRemoteCommandEvent {
   readonly type: interop.Enum<typeof MPSeekCommandEventType>;
 }
@@ -612,10 +596,6 @@ declare class MPChangePlaybackRateCommandEvent extends MPRemoteCommandEvent {
   readonly playbackRate: number;
 }
 
-declare class MPRatingCommandEvent extends MPRemoteCommandEvent {
-  readonly rating: number;
-}
-
 declare class MPSkipIntervalCommandEvent extends MPRemoteCommandEvent {
   readonly interval: number;
 }
@@ -674,6 +654,9 @@ declare class MPChangeRepeatModeCommand extends MPRemoteCommand {
   currentRepeatType: interop.Enum<typeof MPRepeatType>;
 
   setCurrentRepeatType(currentRepeatType: interop.Enum<typeof MPRepeatType>): void;
+}
+
+declare class MPChangePlaybackPositionCommand extends MPRemoteCommand {
 }
 
 declare class MPChangePlaybackRateCommand extends MPRemoteCommand {
@@ -782,10 +765,6 @@ declare class MPNowPlayingInfoCenter extends NSObject {
   setNowPlayingInfo(nowPlayingInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 
   setPlaybackState(playbackState: interop.Enum<typeof MPNowPlayingPlaybackState>): void;
-}
-
-declare class MPMusicPlayerControllerQueue extends NSObject {
-  readonly items: NSArray;
 }
 
 declare class MPMusicPlayerPlayParametersQueueDescriptor extends MPMusicPlayerQueueDescriptor {
@@ -985,20 +964,6 @@ declare class MPMoviePlayerController extends NSObject implements MPMediaPlaybac
   setCurrentPlaybackRate(currentPlaybackRate: number): void;
 }
 
-declare class MPMediaQuerySection extends NSObject implements NSSecureCoding, NSCopying {
-  readonly title: string;
-
-  readonly range: _NSRange;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MPMediaPlaylistCreationMetadata extends NSObject {
   initWithName(name: string): this;
 
@@ -1105,6 +1070,41 @@ declare class MPContentItem extends NSObject {
   isPlayable(): boolean;
 
   setPlayable(playable: boolean): void;
+}
+
+declare class MPMediaQuerySection extends NSObject implements NSSecureCoding, NSCopying {
+  readonly title: string;
+
+  readonly range: _NSRange;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MPChangeShuffleModeCommand extends MPRemoteCommand {
+  currentShuffleType: interop.Enum<typeof MPShuffleType>;
+
+  setCurrentShuffleType(currentShuffleType: interop.Enum<typeof MPShuffleType>): void;
+}
+
+declare class MPMusicPlayerControllerQueue extends NSObject {
+  readonly items: NSArray;
+}
+
+declare class MPRatingCommandEvent extends MPRemoteCommandEvent {
+  readonly rating: number;
+}
+
+declare class MPSkipIntervalCommand extends MPRemoteCommand {
+  get preferredIntervals(): NSArray;
+  set preferredIntervals(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setPreferredIntervals(preferredIntervals: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
 declare class MPPlayableContentManager extends NSObject {

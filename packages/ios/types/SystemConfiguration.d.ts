@@ -18,17 +18,55 @@ declare const kSCBondStatusNoPartner: number;
 
 declare const kSCBondStatusOK: number;
 
+declare const kSCStatusReachabilityUnknown: number;
+
+declare const kSCStatusStale: number;
+
+declare const kSCStatusNoConfigFile: number;
+
+declare const kSCStatusPrefsBusy: number;
+
+declare const kSCStatusNoPrefsSession: number;
+
+declare const kSCStatusNotifierActive: number;
+
+declare const kSCStatusNoStoreSession: number;
+
+declare const kSCStatusNeedLock: number;
+
+declare const kSCStatusLocked: number;
+
+declare const kSCStatusInvalidArgument: number;
+
+declare const kSCStatusKeyExists: number;
+
+declare const kSCStatusOK: number;
+
+declare const kSCStatusNoLink: number;
+
 declare const kCNNetworkInfoKeyBSSID: interop.Pointer;
 
 declare const kSCNetworkFlagsTransientConnection: number;
+
+declare const kSCStatusAccessError: number;
+
+declare const kSCStatusMaxLink: number;
 
 declare const kSCBondStatusLinkInvalid: number;
 
 declare const kSCBondStatusUnknown: number;
 
+declare const kCFErrorDomainSystemConfiguration: interop.Pointer;
+
+declare const kSCStatusNoStoreServer: number;
+
 declare const kSCNetworkFlagsConnectionAutomatic: number;
 
+declare const kSCStatusFailed: number;
+
 declare const kCNNetworkInfoKeySSIDData: interop.Pointer;
+
+declare const kSCStatusNoKey: number;
 
 declare const SCNetworkReachabilityFlags: {
   TransientConnection: 1,
@@ -144,31 +182,37 @@ declare class SCNetworkConnectionContext {
   copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
-declare function SCNetworkReachabilityCreateWithAddress(allocator: interop.PointerConvertible, address: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkReachabilityCreateWithAddress(allocator: interop.Object, address: interop.PointerConvertible): interop.Object;
 
-declare function SCNetworkReachabilityCreateWithAddressPair(allocator: interop.PointerConvertible, localAddress: interop.PointerConvertible, remoteAddress: interop.PointerConvertible): interop.Pointer;
+declare function SCNetworkReachabilityCreateWithAddressPair(allocator: interop.Object, localAddress: interop.PointerConvertible, remoteAddress: interop.PointerConvertible): interop.Object;
 
-declare function SCNetworkReachabilityCreateWithName(allocator: interop.PointerConvertible, nodename: string): interop.Pointer;
+declare function SCNetworkReachabilityCreateWithName(allocator: interop.Object, nodename: string): interop.Object;
 
 declare function SCNetworkReachabilityGetTypeID(): number;
 
-declare function SCNetworkReachabilityGetFlags(target: interop.PointerConvertible, flags: interop.PointerConvertible): number;
+declare function SCNetworkReachabilityGetFlags(target: interop.Object, flags: interop.PointerConvertible): number;
 
-declare function SCNetworkReachabilitySetCallback(target: interop.PointerConvertible, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCNetworkReachabilityFlags>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
+declare function SCNetworkReachabilitySetCallback(target: interop.Object, callout: (p1: interop.PointerConvertible, p2: interop.Enum<typeof SCNetworkReachabilityFlags>, p3: interop.PointerConvertible) => void, context: interop.PointerConvertible): number;
 
-declare function SCNetworkReachabilityScheduleWithRunLoop(target: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCNetworkReachabilityScheduleWithRunLoop(target: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCNetworkReachabilityUnscheduleFromRunLoop(target: interop.PointerConvertible, runLoop: interop.PointerConvertible, runLoopMode: interop.PointerConvertible): number;
+declare function SCNetworkReachabilityUnscheduleFromRunLoop(target: interop.Object, runLoop: interop.Object, runLoopMode: interop.Object): number;
 
-declare function SCNetworkReachabilitySetDispatchQueue(target: interop.PointerConvertible, queue: NSObject): number;
+declare function SCNetworkReachabilitySetDispatchQueue(target: interop.Object, queue: NSObject): number;
 
-declare function CNSetSupportedSSIDs(ssidArray: interop.PointerConvertible): number;
+declare function SCCopyLastError(): interop.Object;
 
-declare function CNMarkPortalOnline(interfaceName: interop.PointerConvertible): number;
+declare function SCError(): number;
 
-declare function CNMarkPortalOffline(interfaceName: interop.PointerConvertible): number;
+declare function SCErrorString(status: number): string;
 
-declare function CNCopySupportedInterfaces(): interop.Pointer;
+declare function CNSetSupportedSSIDs(ssidArray: interop.Object): number;
 
-declare function CNCopyCurrentNetworkInfo(interfaceName: interop.PointerConvertible): interop.Pointer;
+declare function CNMarkPortalOnline(interfaceName: interop.Object): number;
+
+declare function CNMarkPortalOffline(interfaceName: interop.Object): number;
+
+declare function CNCopySupportedInterfaces(): interop.Object;
+
+declare function CNCopyCurrentNetworkInfo(interfaceName: interop.Object): interop.Object;
 

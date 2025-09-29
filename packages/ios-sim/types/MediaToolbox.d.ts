@@ -27,13 +27,13 @@ declare class opaqueMTAudioProcessingTap {
 
 declare function MTAudioProcessingTapGetTypeID(): number;
 
-declare function MTAudioProcessingTapCreate(allocator: interop.PointerConvertible, callbacks: interop.PointerConvertible, flags: number, tapOut: interop.PointerConvertible): number;
+declare function MTAudioProcessingTapCreate(allocator: interop.Object, callbacks: interop.PointerConvertible, flags: number, tapOut: interop.PointerConvertible): number;
 
-declare function MTAudioProcessingTapGetStorage(tap: interop.PointerConvertible): interop.Pointer;
+declare function MTAudioProcessingTapGetStorage(tap: interop.Object): interop.Pointer;
 
-declare function MTAudioProcessingTapGetSourceAudio(tap: interop.PointerConvertible, numberFrames: number, bufferListInOut: interop.PointerConvertible, flagsOut: interop.PointerConvertible, timeRangeOut: interop.PointerConvertible, numberFramesOut: interop.PointerConvertible): number;
+declare function MTAudioProcessingTapGetSourceAudio(tap: interop.Object, numberFrames: number, bufferListInOut: interop.PointerConvertible, flagsOut: interop.PointerConvertible, timeRangeOut: interop.PointerConvertible, numberFramesOut: interop.PointerConvertible): number;
 
-declare function MTCopyLocalizedNameForMediaType(mediaType: number): interop.Pointer;
+declare function MTCopyLocalizedNameForMediaType(mediaType: number): interop.Object;
 
-declare function MTCopyLocalizedNameForMediaSubType(mediaType: number, mediaSubType: number): interop.Pointer;
+declare function MTCopyLocalizedNameForMediaSubType(mediaType: number, mediaSubType: number): interop.Object;
 

@@ -160,42 +160,6 @@ declare interface CLLocationManagerDelegate extends NSObjectProtocol {
 declare class CLLocationManagerDelegate extends NativeObject implements CLLocationManagerDelegate {
 }
 
-declare class CLMonitoringEvent extends NSObject implements NSSecureCoding {
-  readonly identifier: string;
-
-  readonly refinement: CLCondition | null;
-
-  readonly state: interop.Enum<typeof CLMonitoringState>;
-
-  readonly date: NSDate;
-
-  readonly authorizationDenied: boolean;
-
-  readonly authorizationDeniedGlobally: boolean;
-
-  readonly authorizationRestricted: boolean;
-
-  readonly insufficientlyInUse: boolean;
-
-  readonly accuracyLimited: boolean;
-
-  readonly conditionUnsupported: boolean;
-
-  readonly conditionLimitExceeded: boolean;
-
-  readonly persistenceUnavailable: boolean;
-
-  readonly serviceSessionRequired: boolean;
-
-  readonly authorizationRequestInProgress: boolean;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class CLGeocoder extends NSObject {
   readonly geocoding: boolean;
 
@@ -470,6 +434,42 @@ declare class CLMonitorConfiguration extends NSObject {
   readonly eventHandler: (p1: CLMonitor, p2: CLMonitoringEvent) => void;
 
   static configWithMonitorNameQueueEventHandler(name: string, queue: NSObject, eventHandler: (p1: CLMonitor, p2: CLMonitoringEvent) => void): CLMonitorConfiguration;
+}
+
+declare class CLMonitoringEvent extends NSObject implements NSSecureCoding {
+  readonly identifier: string;
+
+  readonly refinement: CLCondition | null;
+
+  readonly state: interop.Enum<typeof CLMonitoringState>;
+
+  readonly date: NSDate;
+
+  readonly authorizationDenied: boolean;
+
+  readonly authorizationDeniedGlobally: boolean;
+
+  readonly authorizationRestricted: boolean;
+
+  readonly insufficientlyInUse: boolean;
+
+  readonly accuracyLimited: boolean;
+
+  readonly conditionUnsupported: boolean;
+
+  readonly conditionLimitExceeded: boolean;
+
+  readonly persistenceUnavailable: boolean;
+
+  readonly serviceSessionRequired: boolean;
+
+  readonly authorizationRequestInProgress: boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class CLLocationUpdater extends NSObject {
