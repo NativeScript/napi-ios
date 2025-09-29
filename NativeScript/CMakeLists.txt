@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Metadata
-
 project(NativeScript CXX OBJCXX)
 
 set(NAME NativeScript)
@@ -17,7 +16,6 @@ set(COMMON_FLAGS "-O3 -Wno-shorten-64-to-32")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
 
 # Arguments
-
 set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C bridge")
 set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runtime")
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
@@ -56,6 +54,10 @@ elseif(TARGET_PLATFORM STREQUAL "macos")
   set(TARGET_PLATFORM_SPEC "macos-arm64_x86_64")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_PLATFORM_MACOS")
 
+  # Unlike "ios", "macos" doesn't seem to produce a NativeScript.framework.dSYM
+  # by default. We can produce it by setting these variables.
+  set(CMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")
+  set(CMAKE_XCODE_ATTRIBUTE_DWARF_DSYM_FOLDER_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>")
 else()
   message(FATAL_ERROR "Unknown target platform: ${TARGET_PLATFORM}")
   return()
@@ -87,18 +89,16 @@ endif()
 if(ENABLE_JS_RUNTIME)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_JS_RUNTIME")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_JS_RUNTIME")
-elseif(TARGET_PLATFORM_MACOS)
-  # If building a generic library for macOS, we'll build a dylib instead of a framework
-  unset(BUILD_FRAMEWORK)
+else()
   set(GENERIC_NAPI TRUE)
 endif()
 
 message(STATUS "TARGET_PLATFORM = ${TARGET_PLATFORM}")
 message(STATUS "TARGET_ENGINE = ${TARGET_ENGINE}")
 message(STATUS "ENABLE_JS_RUNTIME = ${ENABLE_JS_RUNTIME}")
+message(STATUS "GENERIC_NAPI = ${GENERIC_NAPI}")
 
 # Set up sources
-
 include_directories(
   ./
   ../metadata-generator/include
@@ -201,12 +201,14 @@ if(ENABLE_JS_RUNTIME)
     )
 
     set(SOURCE_FILES ${SOURCE_FILES}
+
       # quickjs
       napi/quickjs/source/cutils.c
       napi/quickjs/source/libregexp.c
       napi/quickjs/source/libbf.c
       napi/quickjs/source/libunicode.c
       napi/quickjs/source/quickjs.c
+
       # napi
       napi/quickjs/quickjs-api.c
       napi/quickjs/jsr.cpp
@@ -223,7 +225,6 @@ if(ENABLE_JS_RUNTIME)
       napi/jsc/jsc-api.cpp
       napi/jsc/jsr.cpp
     )
-
   endif()
 else()
   include_directories(
@@ -239,7 +240,6 @@ if(BUILD_CLI_BINARY)
 endif()
 
 # Find SDK
-
 find_program(XCODEBUILD_EXECUTABLE xcodebuild)
 
 if(METADATA_SIZE EQUAL 0)
@@ -265,7 +265,6 @@ set(CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT_INT}" CACHE INTERNAL "")
 message(STATUS "SDK = ${CMAKE_OSX_SYSROOT}")
 
 # Build targets
-
 if(BUILD_CLI_BINARY)
   add_executable(${NAME} ${SOURCE_FILES})
 else()
@@ -301,11 +300,22 @@ endif()
 
 if(TARGET_PLATFORM_MACOS)
   # add_custom_command(TARGET ${NAME} POST_BUILD
-  #   COMMAND /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string ${CMAKE_OSX_DEPLOYMENT_TARGET}" $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
+  # COMMAND /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string ${CMAKE_OSX_DEPLOYMENT_TARGET}" $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
   # )
 
+  # Convert the Info.plist from binary format to XML format.
+  # This seemed to unblock a build error when using in React Native.
+  add_custom_command(TARGET ${NAME} POST_BUILD
+    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
+  )
   set(METADATA_FILE "metadata.macos.nsmd")
 elseif(TARGET_PLATFORM_IOS)
+  # Convert the Info.plist from binary format to XML format.
+  # This seemed to unblock a build error when using in React Native.
+  add_custom_command(TARGET ${NAME} POST_BUILD
+    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Info.plist
+  )
+
   if(TARGET_PLATFORM_SIM)
     set(METADATA_FILE "metadata.ios-sim.nsmd")
   else()
@@ -362,7 +372,7 @@ if(TARGET_ENGINE_JSC)
 endif()
 
 if(TARGET_ENGINE_V8)
-  if (TARGET_PLATFORM_MACOS)
+  if(TARGET_PLATFORM_MACOS)
     target_link_directories(
       ${NAME}
       PRIVATE
@@ -414,12 +424,12 @@ if(TARGET_ENGINE_QUICKJS)
   )
 endif()
 
-# if (GENERIC_NAPI)
-target_link_options(
-  ${NAME}
-  PRIVATE
-  "-Wl"
-  "-undefined"
-  "dynamic_lookup"
-)
-# endif()
+if(GENERIC_NAPI)
+  target_link_options(
+    ${NAME}
+    PRIVATE
+    "-Wl"
+    "-undefined"
+    "dynamic_lookup"
+  )
+endif()
