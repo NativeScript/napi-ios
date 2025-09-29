@@ -73,11 +73,6 @@ declare const SKCloudServiceAuthorizationStatus: {
   Authorized: 3,
 };
 
-declare const SKProductDiscountType: {
-  Introductory: 0,
-  Subscription: 1,
-};
-
 declare const SKDownloadState: {
   Waiting: 0,
   Active: 1,
@@ -92,6 +87,11 @@ declare const SKProductPeriodUnit: {
   Week: 1,
   Month: 2,
   Year: 3,
+};
+
+declare const SKProductDiscountType: {
+  Introductory: 0,
+  Subscription: 1,
 };
 
 declare const SKProductDiscountPaymentMode: {
@@ -109,6 +109,13 @@ declare const SKPaymentTransactionState: {
 };
 
 declare function SKTerminateForInvalidReceipt(): void;
+
+declare interface SKProductsRequestDelegate extends SKRequestDelegate {
+  productsRequestDidReceiveResponse(request: SKProductsRequest, response: SKProductsResponse): void;
+}
+
+declare class SKProductsRequestDelegate extends NativeObject implements SKProductsRequestDelegate {
+}
 
 declare interface SKPaymentTransactionObserver extends NSObjectProtocol {
   paymentQueueUpdatedTransactions(queue: SKPaymentQueue, transactions: NSArray<interop.Object> | Array<interop.Object>): void;
@@ -145,19 +152,6 @@ declare interface SKStoreProductViewControllerDelegate extends NSObjectProtocol 
 }
 
 declare class SKStoreProductViewControllerDelegate extends NativeObject implements SKStoreProductViewControllerDelegate {
-}
-
-declare interface SKProductsRequestDelegate extends SKRequestDelegate {
-  productsRequestDidReceiveResponse(request: SKProductsRequest, response: SKProductsResponse): void;
-}
-
-declare class SKProductsRequestDelegate extends NativeObject implements SKProductsRequestDelegate {
-}
-
-declare interface SKDownloaderExtension extends BAManagedDownloaderExtension {
-}
-
-declare class SKDownloaderExtension extends NativeObject implements SKDownloaderExtension {
 }
 
 declare interface SKPaymentQueueDelegate extends NSObjectProtocol {
@@ -355,39 +349,6 @@ declare class SKArcadeService extends NSObject {
   static repairArcadeApp(): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class SKMutablePayment extends SKPayment {
-  // @ts-ignore MemberDecl.tsIgnore
-  applicationUsername: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  paymentDiscount: SKPaymentDiscount;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  productIdentifier: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  quantity: number;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  requestData: NSData;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  simulatesAskToBuyInSandbox: boolean;
-
-  setApplicationUsername(applicationUsername: string | null): void;
-
-  setPaymentDiscount(paymentDiscount: SKPaymentDiscount | null): void;
-
-  setProductIdentifier(productIdentifier: string): void;
-
-  setQuantity(quantity: number): void;
-
-  setRequestData(requestData: NSData | null): void;
-
-  setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): void;
-}
-
 declare class SKPayment extends NSObject implements NSCopying, NSMutableCopying {
   static paymentWithProduct<This extends abstract new (...args: any) => any>(this: This, product: SKProduct): InstanceType<This>;
 
@@ -451,5 +412,38 @@ declare class SKProduct extends NSObject {
   readonly subscriptionGroupIdentifier: string;
 
   readonly discounts: NSArray;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class SKMutablePayment extends SKPayment {
+  // @ts-ignore MemberDecl.tsIgnore
+  applicationUsername: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  paymentDiscount: SKPaymentDiscount;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  productIdentifier: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  quantity: number;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  requestData: NSData;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  simulatesAskToBuyInSandbox: boolean;
+
+  setApplicationUsername(applicationUsername: string | null): void;
+
+  setPaymentDiscount(paymentDiscount: SKPaymentDiscount | null): void;
+
+  setProductIdentifier(productIdentifier: string): void;
+
+  setQuantity(quantity: number): void;
+
+  setRequestData(requestData: NSData | null): void;
+
+  setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): void;
 }
 

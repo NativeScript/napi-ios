@@ -20,6 +20,8 @@ declare const kColorSyncTransformProfileSequnce: interop.Object;
 
 declare const kColorSyncTransformDstSpace: interop.Object;
 
+declare const kColorSyncTransformSrcSpace: interop.Object;
+
 declare const kColorSyncTransformCreator: interop.Object;
 
 declare const kColorSyncNormalQuality: interop.Object;
@@ -60,8 +62,6 @@ declare const kColorSyncByteOrderDefault: number;
 
 declare const kColorSyncByteOrderMask: number;
 
-declare const kColorSyncAlphaInfoMask: number;
-
 declare const kColorSyncProfileCacheSeed: interop.Object;
 
 declare const kColorSyncSigMediaWhitePointTag: interop.Object;
@@ -70,13 +70,13 @@ declare const kColorSyncSigViewingCondDescTag: interop.Object;
 
 declare const kColorSyncSigTechnologyTag: interop.Object;
 
-declare const kColorSyncSigInputClass: interop.Object;
-
 declare const kColorSyncSigProfileSequenceDescTag: interop.Object;
 
 declare const kColorSyncSigOutputClass: interop.Object;
 
 declare const kColorSyncSigPreview2Tag: interop.Object;
+
+declare const kColorSyncSigPreview0Tag: interop.Object;
 
 declare const kColorSyncSigNamedColorClass: interop.Object;
 
@@ -101,6 +101,8 @@ declare const kColorSyncSigBToA1Tag: interop.Object;
 declare const kColorSyncSigAToB2Tag: interop.Object;
 
 declare const kColorSyncSigAToB0Tag: interop.Object;
+
+declare const kColorSyncProfileDescription: interop.Object;
 
 declare const kColorSyncProfilePCS: interop.Object;
 
@@ -129,8 +131,6 @@ declare const kColorSyncSRGBProfile: interop.Object;
 declare const kColorSyncTransformCodeFragmentType: interop.Object;
 
 declare const kColorSyncPQDerivative: interop.Object;
-
-declare const kColorSyncProfileIsValid: interop.Object;
 
 declare const kColorSyncSigMediaBlackPointTag: interop.Object;
 
@@ -162,17 +162,25 @@ declare const kColorSyncSigCopyrightTag: interop.Object;
 
 declare const kColorSyncSigGrayData: interop.Object;
 
-declare const kColorSyncTransformSrcSpace: interop.Object;
-
 declare const kColorSyncSigBlueColorantTag: interop.Object;
 
 declare const kColorSyncITUR709Profile: interop.Object;
 
 declare const kColorSyncSigCmykData: interop.Object;
 
+declare const kColorSyncSigRedColorantTag: interop.Object;
+
 declare const kColorSyncSigBlueTRCTag: interop.Object;
 
+declare const kColorSyncSigInputClass: interop.Object;
+
+declare const kColorSyncProfileIsValid: interop.Object;
+
+declare const kColorSyncSigRedTRCTag: interop.Object;
+
 declare const kColorSyncBlackPointCompensation: interop.Object;
+
+declare const kColorSyncTransformCodeFragmentMD5: interop.Object;
 
 declare const kColorSyncHDRDerivative: interop.Object;
 
@@ -180,15 +188,11 @@ declare const kColorSyncConvertUseExtendedRange: interop.Object;
 
 declare const kColorSyncConversionGridPoints: interop.Object;
 
-declare const kColorSyncTransformCodeFragmentMD5: interop.Object;
-
 declare const kColorSyncProfileColorSpace: interop.Object;
 
 declare const kColorSyncGenericGrayGamma22Profile: interop.Object;
 
 declare const kColorSyncConversion1DLut: interop.Object;
-
-declare const kColorSyncProfileDescription: interop.Object;
 
 declare const kColorSyncDraftQuality: interop.Object;
 
@@ -196,7 +200,7 @@ declare const kColorSyncRenderingIntentPerceptual: interop.Object;
 
 declare const kColorSyncSigViewingConditionsTag: interop.Object;
 
-declare const kColorSyncSigPreview0Tag: interop.Object;
+declare const kColorSyncConversionParamCurve4: interop.Object;
 
 declare const kColorSyncGenericRGBProfile: interop.Object;
 
@@ -214,11 +218,11 @@ declare const kColorSyncWebSafeColorsProfile: interop.Object;
 
 declare const kColorSyncSigDeviceModelDescTag: interop.Object;
 
-declare const kColorSyncSigBToA2Tag: interop.Object;
+declare const kColorSyncAlphaInfoMask: number;
 
 declare const kColorSyncFixedPointRange: interop.Object;
 
-declare const kColorSyncConversionParamCurve4: interop.Object;
+declare const kColorSyncSigBToA2Tag: interop.Object;
 
 declare const kColorSyncRenderingIntentRelative: interop.Object;
 
@@ -228,11 +232,7 @@ declare const kColorSyncTransformGamutCheck: interop.Object;
 
 declare const kColorSyncSigColorSpaceClass: interop.Object;
 
-declare const kColorSyncSigRedColorantTag: interop.Object;
-
 declare const kColorSyncByteOrder32Big: number;
-
-declare const kColorSyncSigRedTRCTag: interop.Object;
 
 declare const kColorSyncGenericLabProfile: interop.Object;
 

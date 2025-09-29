@@ -23,8 +23,6 @@ declare const kCIFilterGeneratorExportedKey: string;
 
 declare const CIRAWDecoderVersion8DNG: string;
 
-declare const CIRAWDecoderVersion9: string;
-
 declare const CIRAWDecoderVersionNone: string;
 
 declare const kCIInputLinearSpaceFilter: string;
@@ -32,6 +30,8 @@ declare const kCIInputLinearSpaceFilter: string;
 declare const kCIInputEnableEDRModeKey: string;
 
 declare const kCIInputNoiseReductionContrastAmountKey: string;
+
+declare const kCIInputNoiseReductionSharpnessAmountKey: string;
 
 declare const kCIInputMoireAmountKey: string;
 
@@ -81,10 +81,6 @@ declare const CIDetectorTypeQRCode: string;
 
 declare const CIDetectorTypeFace: string;
 
-declare const kCIDynamicRangeStandard: string;
-
-declare const kCIInputPaletteImageKey: string;
-
 declare const kCIInputTargetImageKey: string;
 
 declare const kCIInputShadingImageKey: string;
@@ -93,15 +89,9 @@ declare const kCIInputMaskImageKey: string;
 
 declare const kCIInputGradientImageKey: string;
 
-declare const kCIInputBiasVectorKey: string;
-
 declare const kCIInputBiasKey: string;
 
 declare const kCIInputBrightnessKey: string;
-
-declare const kCIInputColorSpaceKey: string;
-
-declare const kCIInputColor0Key: string;
 
 declare const kCIInputColorKey: string;
 
@@ -110,10 +100,6 @@ declare const kCIInputSaturationKey: string;
 declare const kCIInputEVKey: string;
 
 declare const kCIInputIntensityKey: string;
-
-declare const kCIInputRadius1Key: string;
-
-declare const kCIInputRadius0Key: string;
 
 declare const kCIInputCenterKey: string;
 
@@ -221,8 +207,6 @@ declare const kCIAttributeTypeInteger: string;
 
 declare const kCICategoryStylize: string;
 
-declare const kCIDynamicRangeConstrainedHigh: string;
-
 declare const kCIInputDecoderVersionKey: string;
 
 declare const kCIImageAutoAdjustRedEye: string;
@@ -237,13 +221,9 @@ declare const kCIImageApplyOrientationProperty: string;
 
 declare const kCIImageCacheImmediately: string;
 
-declare const kCIImageContentAverageLightLevel: string;
-
 declare const kCIImageExpandToHDR: string;
 
 declare const kCIImageToneMapHDRtoSDR: string;
-
-declare const kCIImageApplyCleanAperture: string;
 
 declare const kCIFormatLAf: number;
 
@@ -270,8 +250,6 @@ declare const kCIFormatRGBXh: number;
 declare const kCIFormatRGBAh: number;
 
 declare const kCIFormatABGR8: number;
-
-declare const kCIFormatRGBX8: number;
 
 declare const kCIFormatRGBA8: number;
 
@@ -337,13 +315,9 @@ declare const kCIImageAuxiliaryDisparity: string;
 
 declare const kCIInputAngleKey: string;
 
-declare const kCIInputNoiseReductionSharpnessAmountKey: string;
-
 declare const kCIInputBackgroundImageKey: string;
 
 declare const kCIInputNoiseReductionAmountKey: string;
-
-declare const kCIDynamicRangeHigh: string;
 
 declare const kCICategoryReduction: string;
 
@@ -356,8 +330,6 @@ declare const kCIAttributeFilterDisplayName: string;
 declare const CIRAWDecoderVersion6: string;
 
 declare const kCIFormatL16: number;
-
-declare const kCIInputExtrapolateKey: string;
 
 declare const kCIInputColorNoiseReductionAmountKey: string;
 
@@ -374,10 +346,6 @@ declare const kCIImageColorSpace: string;
 declare const kCIInputVersionKey: string;
 
 declare const kCIImageAuxiliarySemanticSegmentationHairMatte: string;
-
-declare const kCIInputCountKey: string;
-
-declare const CIRAWDecoderVersion7: string;
 
 declare const kCIFormatRGBA16: number;
 
@@ -415,8 +383,6 @@ declare const kCIAttributeTypeDistance: string;
 
 declare const kCIContextWorkingColorSpace: string;
 
-declare const kCIInputBacksideImageKey: string;
-
 declare const kCIImageTextureFormat: string;
 
 declare const kCIInputSharpnessKey: string;
@@ -441,11 +407,15 @@ declare const kCIInputEnableVendorLensCorrectionKey: string;
 
 declare const kCIImageAuxiliarySemanticSegmentationSkyMatte: string;
 
+declare const kCIInputNeutralTintKey: string;
+
 declare const CIRAWDecoderVersion7DNG: string;
 
 declare const kCIUISetBasic: string;
 
 declare const kCICategoryBlur: string;
+
+declare const kCIImageAuxiliarySemanticSegmentationSkinMatte: string;
 
 declare const kCICategoryHighDynamicRange: string;
 
@@ -461,15 +431,7 @@ declare const kCIFormatLf: number;
 
 declare const kCICategoryStillImage: string;
 
-declare const kCIContextCVMetalTextureCache: string;
-
-declare const kCIAttributeTypePosition: string;
-
-declare const kCIInputPoint1Key: string;
-
 declare const kCIInputRefractionKey: string;
-
-declare const kCIInputThresholdKey: string;
 
 declare const CIFeatureTypeQRCode: string;
 
@@ -485,12 +447,6 @@ declare const kCIApplyOptionUserInfo: string;
 
 declare const kCICategoryNonSquarePixels: string;
 
-declare const kCIInputNeutralTintKey: string;
-
-declare const kCIImageAuxiliarySemanticSegmentationSkinMatte: string;
-
-declare const CIRAWDecoderVersion9DNG: string;
-
 declare const kCIImageProperties: string;
 
 declare const kCIUISetAdvanced: string;
@@ -499,17 +455,19 @@ declare const kCIPropertiesKey: string;
 
 declare const kCIInputNoiseReductionDetailAmountKey: string;
 
-declare const kCIInputPerceptualKey: string;
-
 declare const kCIUISetIntermediate: string;
 
 declare const kCIImageAutoAdjustCrop: string;
+
+declare const CIRAWDecoderVersion7: string;
 
 declare const kCISamplerWrapClamp: string;
 
 declare const kCIImageAutoAdjustLevel: string;
 
 declare const kCISamplerFilterNearest: string;
+
+declare const kCICategoryHalftoneEffect: string;
 
 declare const kCIContextWorkingFormat: string;
 
@@ -521,13 +479,7 @@ declare const kCIActiveKeys: string;
 
 declare const kCIFormatAh: number;
 
-declare const kCIInputColor1Key: string;
-
-declare const kCICategoryHalftoneEffect: string;
-
-declare const kCIInputPoint0Key: string;
-
-declare const kCIImageRepresentationHDRGainMapAsRGB: string;
+declare const kCIAttributeTypePosition: string;
 
 declare const kCIImageProviderUserInfo: string;
 
@@ -539,6 +491,12 @@ declare const kCIFormatRGB10: number;
 
 declare const kCIImageRepresentationHDRGainMapImage: string;
 
+declare const CIRenderDestinationAlphaMode: {
+  None: 0,
+  Premultiplied: 1,
+  Unpremultiplied: 2,
+};
+
 declare const CIDataMatrixCodeECCVersion: {
   Version000: 0,
   Version050: 50,
@@ -546,12 +504,6 @@ declare const CIDataMatrixCodeECCVersion: {
   Version100: 100,
   Version140: 140,
   Version200: 200,
-};
-
-declare const CIRenderDestinationAlphaMode: {
-  None: 0,
-  Premultiplied: 1,
-  Unpremultiplied: 2,
 };
 
 declare const CIQRCodeErrorCorrectionLevel: {
@@ -655,10 +607,21 @@ declare interface CIAreaBoundsRed extends CIAreaReductionFilter {
 declare class CIAreaBoundsRed extends NativeObject implements CIAreaBoundsRed {
 }
 
-declare interface CIAreaAverageMaximumRed extends CIAreaReductionFilter {
+declare interface CIZoomBlur extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  amount: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setAmount(amount: number): void;
 }
 
-declare class CIAreaAverageMaximumRed extends NativeObject implements CIAreaAverageMaximumRed {
+declare class CIZoomBlur extends NativeObject implements CIZoomBlur {
 }
 
 declare interface CIMorphologyRectangleMaximum extends CIFilterProtocol {
@@ -1041,57 +1004,16 @@ declare interface CIRoundedRectangleGenerator extends CIFilterProtocol {
 
   radius: number;
 
-  smoothness: number;
-
   color: CIColor;
 
   setExtent(extent: CGRect): void;
 
   setRadius(radius: number): void;
 
-  setSmoothness(smoothness: number): void;
-
   setColor(color: CIColor): void;
 }
 
 declare class CIRoundedRectangleGenerator extends NativeObject implements CIRoundedRectangleGenerator {
-}
-
-declare interface CIRoundedQRCodeGenerator extends CIFilterProtocol {
-  message: NSData;
-
-  correctionLevel: string;
-
-  scale: number;
-
-  roundedMarkers: number;
-
-  roundedData: boolean;
-
-  centerSpaceSize: number;
-
-  color0: CIColor;
-
-  color1: CIColor;
-
-  setMessage(message: NSData): void;
-
-  setCorrectionLevel(correctionLevel: string): void;
-
-  setScale(scale: number): void;
-
-  setRoundedMarkers(roundedMarkers: number): void;
-
-  setRoundedData(roundedData: boolean): void;
-
-  setCenterSpaceSize(centerSpaceSize: number): void;
-
-  setColor0(color0: CIColor): void;
-
-  setColor1(color1: CIColor): void;
-}
-
-declare class CIRoundedQRCodeGenerator extends NativeObject implements CIRoundedQRCodeGenerator {
 }
 
 declare interface CIRandomGenerator extends CIFilterProtocol {
@@ -1251,31 +1173,6 @@ declare interface CICheckerboardGenerator extends CIFilterProtocol {
 }
 
 declare class CICheckerboardGenerator extends NativeObject implements CICheckerboardGenerator {
-}
-
-declare interface CIBlurredRoundedRectangleGenerator extends CIFilterProtocol {
-  extent: CGRect;
-
-  radius: number;
-
-  smoothness: number;
-
-  sigma: number;
-
-  color: CIColor;
-
-  setExtent(extent: CGRect): void;
-
-  setRadius(radius: number): void;
-
-  setSmoothness(smoothness: number): void;
-
-  setSigma(sigma: number): void;
-
-  setColor(color: CIColor): void;
-}
-
-declare class CIBlurredRoundedRectangleGenerator extends NativeObject implements CIBlurredRoundedRectangleGenerator {
 }
 
 declare interface CIBarcodeGenerator extends CIFilterProtocol {
@@ -1501,10 +1398,12 @@ declare interface CINinePartTiled extends CIFilterProtocol {
 declare class CINinePartTiled extends NativeObject implements CINinePartTiled {
 }
 
-declare interface CIHoleDistortion extends CIFilterProtocol {
+declare interface CILightTunnel extends CIFilterProtocol {
   inputImage: CIImage;
 
   center: CGPoint;
+
+  rotation: number;
 
   radius: number;
 
@@ -1512,10 +1411,12 @@ declare interface CIHoleDistortion extends CIFilterProtocol {
 
   setCenter(center: CGPoint): void;
 
+  setRotation(rotation: number): void;
+
   setRadius(radius: number): void;
 }
 
-declare class CIHoleDistortion extends NativeObject implements CIHoleDistortion {
+declare class CILightTunnel extends NativeObject implements CILightTunnel {
 }
 
 declare interface CIGlassLozenge extends CIFilterProtocol {
@@ -1574,40 +1475,6 @@ declare interface CIDroste extends CIFilterProtocol {
 }
 
 declare class CIDroste extends NativeObject implements CIDroste {
-}
-
-declare interface CICode128BarcodeGenerator extends CIFilterProtocol {
-  message: NSData;
-
-  quietSpace: number;
-
-  barcodeHeight: number;
-
-  setMessage(message: NSData): void;
-
-  setQuietSpace(quietSpace: number): void;
-
-  setBarcodeHeight(barcodeHeight: number): void;
-}
-
-declare class CICode128BarcodeGenerator extends NativeObject implements CICode128BarcodeGenerator {
-}
-
-declare interface CIDisplacementDistortion extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  displacementImage: CIImage;
-
-  scale: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setDisplacementImage(displacementImage: CIImage | null): void;
-
-  setScale(scale: number): void;
-}
-
-declare class CIDisplacementDistortion extends NativeObject implements CIDisplacementDistortion {
 }
 
 declare interface CICircularWrap extends CIFilterProtocol {
@@ -1711,21 +1578,13 @@ declare interface CIXRay extends CIFilterProtocol {
 declare class CIXRay extends NativeObject implements CIXRay {
 }
 
-declare interface CIVignette extends CIFilterProtocol {
+declare interface CIThermal extends CIFilterProtocol {
   inputImage: CIImage;
 
-  intensity: number;
-
-  radius: number;
-
   setInputImage(inputImage: CIImage | null): void;
-
-  setIntensity(intensity: number): void;
-
-  setRadius(radius: number): void;
 }
 
-declare class CIVignette extends NativeObject implements CIVignette {
+declare class CIThermal extends NativeObject implements CIThermal {
 }
 
 declare interface CISepiaTone extends CIFilterProtocol {
@@ -1739,6 +1598,27 @@ declare interface CISepiaTone extends CIFilterProtocol {
 }
 
 declare class CISepiaTone extends NativeObject implements CISepiaTone {
+}
+
+declare interface CINinePartStretched extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  breakpoint0: CGPoint;
+
+  breakpoint1: CGPoint;
+
+  growAmount: CGPoint;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setBreakpoint0(breakpoint0: CGPoint): void;
+
+  setBreakpoint1(breakpoint1: CGPoint): void;
+
+  setGrowAmount(growAmount: CGPoint): void;
+}
+
+declare class CINinePartStretched extends NativeObject implements CINinePartStretched {
 }
 
 declare interface CIGlassDistortion extends CIFilterProtocol {
@@ -1775,41 +1655,6 @@ declare interface CIPhotoEffect extends CIFilterProtocol {
 declare class CIPhotoEffect extends NativeObject implements CIPhotoEffect {
 }
 
-declare interface CIPalettize extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  paletteImage: CIImage;
-
-  perceptual: boolean;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setPaletteImage(paletteImage: CIImage | null): void;
-
-  setPerceptual(perceptual: boolean): void;
-}
-
-declare class CIPalettize extends NativeObject implements CIPalettize {
-}
-
-declare interface CIMinimumComponent extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CIMinimumComponent extends NativeObject implements CIMinimumComponent {
-}
-
-declare interface CIMaximumComponent extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CIMaximumComponent extends NativeObject implements CIMaximumComponent {
-}
-
 declare interface CIMaskToAlpha extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -1817,49 +1662,6 @@ declare interface CIMaskToAlpha extends CIFilterProtocol {
 }
 
 declare class CIMaskToAlpha extends NativeObject implements CIMaskToAlpha {
-}
-
-declare interface CILabDeltaE extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  image2: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setImage2(image2: CIImage | null): void;
-}
-
-declare class CILabDeltaE extends NativeObject implements CILabDeltaE {
-}
-
-declare interface CIFalseColor extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  color0: CIColor;
-
-  color1: CIColor;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setColor0(color0: CIColor): void;
-
-  setColor1(color1: CIColor): void;
-}
-
-declare class CIFalseColor extends NativeObject implements CIFalseColor {
-}
-
-declare interface CIDither extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  intensity: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setIntensity(intensity: number): void;
-}
-
-declare class CIDither extends NativeObject implements CIDither {
 }
 
 declare interface CIConvertLab extends CIFilterProtocol {
@@ -1888,23 +1690,6 @@ declare interface CIColorPosterize extends CIFilterProtocol {
 declare class CIColorPosterize extends NativeObject implements CIColorPosterize {
 }
 
-declare interface CIColorMonochrome extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  color: CIColor;
-
-  intensity: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setColor(color: CIColor): void;
-
-  setIntensity(intensity: number): void;
-}
-
-declare class CIColorMonochrome extends NativeObject implements CIColorMonochrome {
-}
-
 declare interface CIColorCurves extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -1926,29 +1711,42 @@ declare interface CIColorCurves extends CIFilterProtocol {
 declare class CIColorCurves extends NativeObject implements CIColorCurves {
 }
 
-declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
+declare interface CIBloom extends CIFilterProtocol {
   inputImage: CIImage;
 
-  cubeDimension: number;
+  radius: number;
 
-  cubeData: NSData;
-
-  extrapolate: boolean;
-
-  colorSpace: interop.Object;
+  intensity: number;
 
   setInputImage(inputImage: CIImage | null): void;
 
-  setCubeDimension(cubeDimension: number): void;
+  setRadius(radius: number): void;
 
-  setCubeData(cubeData: NSData): void;
-
-  setExtrapolate(extrapolate: boolean): void;
-
-  setColorSpace(colorSpace: interop.Object | null): void;
+  setIntensity(intensity: number): void;
 }
 
-declare class CIColorCubeWithColorSpace extends NativeObject implements CIColorCubeWithColorSpace {
+declare class CIBloom extends NativeObject implements CIBloom {
+}
+
+declare interface CIColorCrossPolynomial extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  redCoefficients: CIVector;
+
+  greenCoefficients: CIVector;
+
+  blueCoefficients: CIVector;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setRedCoefficients(redCoefficients: CIVector): void;
+
+  setGreenCoefficients(greenCoefficients: CIVector): void;
+
+  setBlueCoefficients(blueCoefficients: CIVector): void;
+}
+
+declare class CIColorCrossPolynomial extends NativeObject implements CIColorCrossPolynomial {
 }
 
 declare interface CIWhitePointAdjust extends CIFilterProtocol {
@@ -1964,34 +1762,46 @@ declare interface CIWhitePointAdjust extends CIFilterProtocol {
 declare class CIWhitePointAdjust extends NativeObject implements CIWhitePointAdjust {
 }
 
-declare interface CIMorphologyMinimum extends CIFilterProtocol {
+declare interface CIVibrance extends CIFilterProtocol {
   inputImage: CIImage;
 
-  radius: number;
+  amount: number;
 
   setInputImage(inputImage: CIImage | null): void;
 
-  setRadius(radius: number): void;
+  setAmount(amount: number): void;
 }
 
-declare class CIMorphologyMinimum extends NativeObject implements CIMorphologyMinimum {
+declare class CIVibrance extends NativeObject implements CIVibrance {
 }
 
-declare interface CIToneMapHeadroom extends CIFilterProtocol {
+declare interface CIToneCurve extends CIFilterProtocol {
   inputImage: CIImage;
 
-  sourceHeadroom: number;
+  point0: CGPoint;
 
-  targetHeadroom: number;
+  point1: CGPoint;
+
+  point2: CGPoint;
+
+  point3: CGPoint;
+
+  point4: CGPoint;
 
   setInputImage(inputImage: CIImage | null): void;
 
-  setSourceHeadroom(sourceHeadroom: number): void;
+  setPoint0(point0: CGPoint): void;
 
-  setTargetHeadroom(targetHeadroom: number): void;
+  setPoint1(point1: CGPoint): void;
+
+  setPoint2(point2: CGPoint): void;
+
+  setPoint3(point3: CGPoint): void;
+
+  setPoint4(point4: CGPoint): void;
 }
 
-declare class CIToneMapHeadroom extends NativeObject implements CIToneMapHeadroom {
+declare class CIToneCurve extends NativeObject implements CIToneCurve {
 }
 
 declare interface CITemperatureAndTint extends CIFilterProtocol {
@@ -2011,23 +1821,6 @@ declare interface CITemperatureAndTint extends CIFilterProtocol {
 declare class CITemperatureAndTint extends NativeObject implements CITemperatureAndTint {
 }
 
-declare interface CISystemToneMap extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  displayHeadroom: number;
-
-  preferredDynamicRange: string;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setDisplayHeadroom(displayHeadroom: number): void;
-
-  setPreferredDynamicRange(preferredDynamicRange: string | null): void;
-}
-
-declare class CISystemToneMap extends NativeObject implements CISystemToneMap {
-}
-
 declare interface CISRGBToneCurveToLinear extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2035,6 +1828,15 @@ declare interface CISRGBToneCurveToLinear extends CIFilterProtocol {
 }
 
 declare class CISRGBToneCurveToLinear extends NativeObject implements CISRGBToneCurveToLinear {
+}
+
+declare interface CILinearToSRGBToneCurve extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+}
+
+declare class CILinearToSRGBToneCurve extends NativeObject implements CILinearToSRGBToneCurve {
 }
 
 declare interface CIHueAdjust extends CIFilterProtocol {
@@ -2050,17 +1852,22 @@ declare interface CIHueAdjust extends CIFilterProtocol {
 declare class CIHueAdjust extends NativeObject implements CIHueAdjust {
 }
 
-declare interface CIGammaAdjust extends CIFilterProtocol {
+declare interface CIDepthToDisparity extends CIFilterProtocol {
   inputImage: CIImage;
 
-  power: number;
-
   setInputImage(inputImage: CIImage | null): void;
-
-  setPower(power: number): void;
 }
 
-declare class CIGammaAdjust extends NativeObject implements CIGammaAdjust {
+declare class CIDepthToDisparity extends NativeObject implements CIDepthToDisparity {
+}
+
+declare interface CIColorThresholdOtsu extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+}
+
+declare class CIColorThresholdOtsu extends NativeObject implements CIColorThresholdOtsu {
 }
 
 declare interface CIColorThreshold extends CIFilterProtocol {
@@ -2076,114 +1883,6 @@ declare interface CIColorThreshold extends CIFilterProtocol {
 declare class CIColorThreshold extends NativeObject implements CIColorThreshold {
 }
 
-declare interface CIColorPolynomial extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  redCoefficients: CIVector;
-
-  greenCoefficients: CIVector;
-
-  blueCoefficients: CIVector;
-
-  alphaCoefficients: CIVector;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRedCoefficients(redCoefficients: CIVector): void;
-
-  setGreenCoefficients(greenCoefficients: CIVector): void;
-
-  setBlueCoefficients(blueCoefficients: CIVector): void;
-
-  setAlphaCoefficients(alphaCoefficients: CIVector): void;
-}
-
-declare class CIColorPolynomial extends NativeObject implements CIColorPolynomial {
-}
-
-declare interface CIStarShineGenerator extends CIFilterProtocol {
-  center: CGPoint;
-
-  color: CIColor;
-
-  radius: number;
-
-  crossScale: number;
-
-  crossAngle: number;
-
-  crossOpacity: number;
-
-  crossWidth: number;
-
-  epsilon: number;
-
-  setCenter(center: CGPoint): void;
-
-  setColor(color: CIColor): void;
-
-  setRadius(radius: number): void;
-
-  setCrossScale(crossScale: number): void;
-
-  setCrossAngle(crossAngle: number): void;
-
-  setCrossOpacity(crossOpacity: number): void;
-
-  setCrossWidth(crossWidth: number): void;
-
-  setEpsilon(epsilon: number): void;
-}
-
-declare class CIStarShineGenerator extends NativeObject implements CIStarShineGenerator {
-}
-
-declare interface CIColorMatrix extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  RVector: CIVector;
-
-  GVector: CIVector;
-
-  BVector: CIVector;
-
-  AVector: CIVector;
-
-  biasVector: CIVector;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRVector(RVector: CIVector): void;
-
-  setGVector(GVector: CIVector): void;
-
-  setBVector(BVector: CIVector): void;
-
-  setAVector(AVector: CIVector): void;
-
-  setBiasVector(biasVector: CIVector): void;
-}
-
-declare class CIColorMatrix extends NativeObject implements CIColorMatrix {
-}
-
-declare interface CIColorClamp extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  minComponents: CIVector;
-
-  maxComponents: CIVector;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setMinComponents(minComponents: CIVector): void;
-
-  setMaxComponents(maxComponents: CIVector): void;
-}
-
-declare class CIColorClamp extends NativeObject implements CIColorClamp {
-}
-
 declare interface CIColorAbsoluteDifference extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2195,19 +1894,6 @@ declare interface CIColorAbsoluteDifference extends CIFilterProtocol {
 }
 
 declare class CIColorAbsoluteDifference extends NativeObject implements CIColorAbsoluteDifference {
-}
-
-declare interface CICompositeOperation extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  backgroundImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setBackgroundImage(backgroundImage: CIImage | null): void;
-}
-
-declare class CICompositeOperation extends NativeObject implements CICompositeOperation {
 }
 
 declare interface CISwipeTransition extends CITransitionFilter {
@@ -2260,8 +1946,10 @@ declare interface CIRippleTransition extends CITransitionFilter {
 declare class CIRippleTransition extends NativeObject implements CIRippleTransition {
 }
 
-declare interface CIPageCurlWithShadowTransition extends CITransitionFilter {
+declare interface CIPageCurlTransition extends CITransitionFilter {
   backsideImage: CIImage;
+
+  shadingImage: CIImage;
 
   extent: CGRect;
 
@@ -2269,28 +1957,18 @@ declare interface CIPageCurlWithShadowTransition extends CITransitionFilter {
 
   radius: number;
 
-  shadowSize: number;
-
-  shadowAmount: number;
-
-  shadowExtent: CGRect;
-
   setBacksideImage(backsideImage: CIImage | null): void;
+
+  setShadingImage(shadingImage: CIImage | null): void;
 
   setExtent(extent: CGRect): void;
 
   setAngle(angle: number): void;
 
   setRadius(radius: number): void;
-
-  setShadowSize(shadowSize: number): void;
-
-  setShadowAmount(shadowAmount: number): void;
-
-  setShadowExtent(shadowExtent: CGRect): void;
 }
 
-declare class CIPageCurlWithShadowTransition extends NativeObject implements CIPageCurlWithShadowTransition {
+declare class CIPageCurlTransition extends NativeObject implements CIPageCurlTransition {
 }
 
 declare interface CIFlashTransition extends CITransitionFilter {
@@ -2510,6 +2188,23 @@ declare interface CIKeystoneCorrectionCombined extends CIFourCoordinateGeometryF
 declare class CIKeystoneCorrectionCombined extends NativeObject implements CIKeystoneCorrectionCombined {
 }
 
+declare interface CICircleSplashDistortion extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  radius: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setRadius(radius: number): void;
+}
+
+declare class CICircleSplashDistortion extends NativeObject implements CICircleSplashDistortion {
+}
+
 declare interface CIEdgePreserveUpsample extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2652,19 +2347,6 @@ declare interface CISmoothLinearGradient extends CIFilterProtocol {
 declare class CISmoothLinearGradient extends NativeObject implements CISmoothLinearGradient {
 }
 
-declare interface CISignedDistanceGradientFromRedMask extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  maximumDistance: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setMaximumDistance(maximumDistance: number): void;
-}
-
-declare class CISignedDistanceGradientFromRedMask extends NativeObject implements CISignedDistanceGradientFromRedMask {
-}
-
 declare interface CILinearGradient extends CIFilterProtocol {
   point0: CGPoint;
 
@@ -2707,19 +2389,6 @@ declare interface CIGaussianGradient extends CIFilterProtocol {
 declare class CIGaussianGradient extends NativeObject implements CIGaussianGradient {
 }
 
-declare interface CIDistanceGradientFromRedMask extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  maximumDistance: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setMaximumDistance(maximumDistance: number): void;
-}
-
-declare class CIDistanceGradientFromRedMask extends NativeObject implements CIDistanceGradientFromRedMask {
-}
-
 declare interface CISunbeamsGenerator extends CIFilterProtocol {
   center: CGPoint;
 
@@ -2751,39 +2420,6 @@ declare interface CISunbeamsGenerator extends CIFilterProtocol {
 }
 
 declare class CISunbeamsGenerator extends NativeObject implements CISunbeamsGenerator {
-}
-
-declare interface CIToneCurve extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  point0: CGPoint;
-
-  point1: CGPoint;
-
-  point2: CGPoint;
-
-  point3: CGPoint;
-
-  point4: CGPoint;
-
-  extrapolate: boolean;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setPoint0(point0: CGPoint): void;
-
-  setPoint1(point1: CGPoint): void;
-
-  setPoint2(point2: CGPoint): void;
-
-  setPoint3(point3: CGPoint): void;
-
-  setPoint4(point4: CGPoint): void;
-
-  setExtrapolate(extrapolate: boolean): void;
-}
-
-declare class CIToneCurve extends NativeObject implements CIToneCurve {
 }
 
 declare interface CIDissolveTransition extends CITransitionFilter {
@@ -2838,6 +2474,15 @@ declare interface CIFourfoldTranslatedTile extends CIFilterProtocol {
 declare class CIFourfoldTranslatedTile extends NativeObject implements CIFourfoldTranslatedTile {
 }
 
+declare interface CIColorInvert extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+}
+
+declare class CIColorInvert extends NativeObject implements CIColorInvert {
+}
+
 declare interface CIHistogramDisplay extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2880,30 +2525,29 @@ declare interface CIPinchDistortion extends CIFilterProtocol {
 declare class CIPinchDistortion extends NativeObject implements CIPinchDistortion {
 }
 
-declare interface CICircleSplashDistortion extends CIFilterProtocol {
+declare interface CIColorPolynomial extends CIFilterProtocol {
   inputImage: CIImage;
 
-  center: CGPoint;
+  redCoefficients: CIVector;
 
-  radius: number;
+  greenCoefficients: CIVector;
+
+  blueCoefficients: CIVector;
+
+  alphaCoefficients: CIVector;
 
   setInputImage(inputImage: CIImage | null): void;
 
-  setCenter(center: CGPoint): void;
+  setRedCoefficients(redCoefficients: CIVector): void;
 
-  setRadius(radius: number): void;
+  setGreenCoefficients(greenCoefficients: CIVector): void;
+
+  setBlueCoefficients(blueCoefficients: CIVector): void;
+
+  setAlphaCoefficients(alphaCoefficients: CIVector): void;
 }
 
-declare class CICircleSplashDistortion extends NativeObject implements CICircleSplashDistortion {
-}
-
-declare interface CIDepthToDisparity extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CIDepthToDisparity extends NativeObject implements CIDepthToDisparity {
+declare class CIColorPolynomial extends NativeObject implements CIColorPolynomial {
 }
 
 declare interface CIColorMap extends CIFilterProtocol {
@@ -2917,6 +2561,85 @@ declare interface CIColorMap extends CIFilterProtocol {
 }
 
 declare class CIColorMap extends NativeObject implements CIColorMap {
+}
+
+declare interface CIStarShineGenerator extends CIFilterProtocol {
+  center: CGPoint;
+
+  color: CIColor;
+
+  radius: number;
+
+  crossScale: number;
+
+  crossAngle: number;
+
+  crossOpacity: number;
+
+  crossWidth: number;
+
+  epsilon: number;
+
+  setCenter(center: CGPoint): void;
+
+  setColor(color: CIColor): void;
+
+  setRadius(radius: number): void;
+
+  setCrossScale(crossScale: number): void;
+
+  setCrossAngle(crossAngle: number): void;
+
+  setCrossOpacity(crossOpacity: number): void;
+
+  setCrossWidth(crossWidth: number): void;
+
+  setEpsilon(epsilon: number): void;
+}
+
+declare class CIStarShineGenerator extends NativeObject implements CIStarShineGenerator {
+}
+
+declare interface CIColorMatrix extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  RVector: CIVector;
+
+  GVector: CIVector;
+
+  BVector: CIVector;
+
+  AVector: CIVector;
+
+  biasVector: CIVector;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setRVector(RVector: CIVector): void;
+
+  setGVector(GVector: CIVector): void;
+
+  setBVector(BVector: CIVector): void;
+
+  setAVector(AVector: CIVector): void;
+
+  setBiasVector(biasVector: CIVector): void;
+}
+
+declare class CIColorMatrix extends NativeObject implements CIColorMatrix {
+}
+
+declare interface CIExposureAdjust extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  EV: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setEV(EV: number): void;
+}
+
+declare class CIExposureAdjust extends NativeObject implements CIExposureAdjust {
 }
 
 declare interface CIFourfoldReflectedTile extends CIFilterProtocol {
@@ -3011,26 +2734,55 @@ declare interface CIPaletteCentroid extends CIFilterProtocol {
 declare class CIPaletteCentroid extends NativeObject implements CIPaletteCentroid {
 }
 
+declare interface CIColorCubesMixedWithMask extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  maskImage: CIImage;
+
+  cubeDimension: number;
+
+  cube0Data: NSData;
+
+  cube1Data: NSData;
+
+  colorSpace: interop.Object;
+
+  extrapolate: boolean;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setMaskImage(maskImage: CIImage | null): void;
+
+  setCubeDimension(cubeDimension: number): void;
+
+  setCube0Data(cube0Data: NSData): void;
+
+  setCube1Data(cube1Data: NSData): void;
+
+  setColorSpace(colorSpace: interop.Object | null): void;
+
+  setExtrapolate(extrapolate: boolean): void;
+}
+
+declare class CIColorCubesMixedWithMask extends NativeObject implements CIColorCubesMixedWithMask {
+}
+
 declare interface CIRoundedRectangleStrokeGenerator extends CIFilterProtocol {
   extent: CGRect;
 
   radius: number;
 
-  smoothness: number;
+  width: number;
 
   color: CIColor;
-
-  width: number;
 
   setExtent(extent: CGRect): void;
 
   setRadius(radius: number): void;
 
-  setSmoothness(smoothness: number): void;
+  setWidth(width: number): void;
 
   setColor(color: CIColor): void;
-
-  setWidth(width: number): void;
 }
 
 declare class CIRoundedRectangleStrokeGenerator extends NativeObject implements CIRoundedRectangleStrokeGenerator {
@@ -3057,6 +2809,36 @@ declare interface CICircularScreen extends CIFilterProtocol {
 declare class CICircularScreen extends NativeObject implements CICircularScreen {
 }
 
+declare interface CILabDeltaE extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  image2: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setImage2(image2: CIImage | null): void;
+}
+
+declare class CILabDeltaE extends NativeObject implements CILabDeltaE {
+}
+
+declare interface CIFalseColor extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  color0: CIColor;
+
+  color1: CIColor;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setColor0(color0: CIColor): void;
+
+  setColor1(color1: CIColor): void;
+}
+
+declare class CIFalseColor extends NativeObject implements CIFalseColor {
+}
+
 declare interface CIDotScreen extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3080,6 +2862,40 @@ declare interface CIDotScreen extends CIFilterProtocol {
 }
 
 declare class CIDotScreen extends NativeObject implements CIDotScreen {
+}
+
+declare interface CICode128BarcodeGenerator extends CIFilterProtocol {
+  message: NSData;
+
+  quietSpace: number;
+
+  barcodeHeight: number;
+
+  setMessage(message: NSData): void;
+
+  setQuietSpace(quietSpace: number): void;
+
+  setBarcodeHeight(barcodeHeight: number): void;
+}
+
+declare class CICode128BarcodeGenerator extends NativeObject implements CICode128BarcodeGenerator {
+}
+
+declare interface CIDisplacementDistortion extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  displacementImage: CIImage;
+
+  scale: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setDisplacementImage(displacementImage: CIImage | null): void;
+
+  setScale(scale: number): void;
+}
+
+declare class CIDisplacementDistortion extends NativeObject implements CIDisplacementDistortion {
 }
 
 declare interface CIColorCube extends CIFilterProtocol {
@@ -3118,15 +2934,6 @@ declare interface CIBlurredRectangleGenerator extends CIFilterProtocol {
 }
 
 declare class CIBlurredRectangleGenerator extends NativeObject implements CIBlurredRectangleGenerator {
-}
-
-declare interface CIColorInvert extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CIColorInvert extends NativeObject implements CIColorInvert {
 }
 
 declare interface CIPersonSegmentation extends CIFilterProtocol {
@@ -3245,6 +3052,23 @@ declare interface CITriangleTile extends CIFilterProtocol {
 declare class CITriangleTile extends NativeObject implements CITriangleTile {
 }
 
+declare interface CIPalettize extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  paletteImage: CIImage;
+
+  perceptual: boolean;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setPaletteImage(paletteImage: CIImage | null): void;
+
+  setPerceptual(perceptual: boolean): void;
+}
+
+declare class CIPalettize extends NativeObject implements CIPalettize {
+}
+
 declare interface CIConvolution extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3262,75 +3086,21 @@ declare interface CIConvolution extends CIFilterProtocol {
 declare class CIConvolution extends NativeObject implements CIConvolution {
 }
 
-declare interface CILightTunnel extends CIFilterProtocol {
-  inputImage: CIImage;
+declare interface CIAttributedTextImageGenerator extends CIFilterProtocol {
+  text: NSAttributedString;
 
-  center: CGPoint;
+  scaleFactor: number;
 
-  rotation: number;
+  padding: number;
 
-  radius: number;
+  setText(text: NSAttributedString): void;
 
-  setInputImage(inputImage: CIImage | null): void;
+  setScaleFactor(scaleFactor: number): void;
 
-  setCenter(center: CGPoint): void;
-
-  setRotation(rotation: number): void;
-
-  setRadius(radius: number): void;
+  setPadding(padding: number): void;
 }
 
-declare class CILightTunnel extends NativeObject implements CILightTunnel {
-}
-
-declare interface CIBloom extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  radius: number;
-
-  intensity: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRadius(radius: number): void;
-
-  setIntensity(intensity: number): void;
-}
-
-declare class CIBloom extends NativeObject implements CIBloom {
-}
-
-declare interface CIColorCrossPolynomial extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  redCoefficients: CIVector;
-
-  greenCoefficients: CIVector;
-
-  blueCoefficients: CIVector;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRedCoefficients(redCoefficients: CIVector): void;
-
-  setGreenCoefficients(greenCoefficients: CIVector): void;
-
-  setBlueCoefficients(blueCoefficients: CIVector): void;
-}
-
-declare class CIColorCrossPolynomial extends NativeObject implements CIColorCrossPolynomial {
-}
-
-declare interface CIAreaAverage extends CIAreaReductionFilter {
-}
-
-declare class CIAreaAverage extends NativeObject implements CIAreaAverage {
-}
-
-declare interface CIAreaMinMax extends CIAreaReductionFilter {
-}
-
-declare class CIAreaMinMax extends NativeObject implements CIAreaMinMax {
+declare class CIAttributedTextImageGenerator extends NativeObject implements CIAttributedTextImageGenerator {
 }
 
 declare interface CIMedian extends CIFilterProtocol {
@@ -3397,6 +3167,19 @@ declare interface CIVignetteEffect extends CIFilterProtocol {
 declare class CIVignetteEffect extends NativeObject implements CIVignetteEffect {
 }
 
+declare interface CIBoxBlur extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  radius: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setRadius(radius: number): void;
+}
+
+declare class CIBoxBlur extends NativeObject implements CIBoxBlur {
+}
+
 declare interface CIStraighten extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3408,15 +3191,6 @@ declare interface CIStraighten extends CIFilterProtocol {
 }
 
 declare class CIStraighten extends NativeObject implements CIStraighten {
-}
-
-declare interface CISobelGradients extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CISobelGradients extends NativeObject implements CISobelGradients {
 }
 
 declare interface CIVortexDistortion extends CIFilterProtocol {
@@ -3479,6 +3253,50 @@ declare interface CIMeshGenerator extends CIFilterProtocol {
 declare class CIMeshGenerator extends NativeObject implements CIMeshGenerator {
 }
 
+declare interface CIAreaMinMax extends CIAreaReductionFilter {
+}
+
+declare class CIAreaMinMax extends NativeObject implements CIAreaMinMax {
+}
+
+declare interface CIGammaAdjust extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  power: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setPower(power: number): void;
+}
+
+declare class CIGammaAdjust extends NativeObject implements CIGammaAdjust {
+}
+
+declare interface CIHueSaturationValueGradient extends CIFilterProtocol {
+  value: number;
+
+  radius: number;
+
+  softness: number;
+
+  dither: number;
+
+  colorSpace: interop.Object;
+
+  setValue(value: number): void;
+
+  setRadius(radius: number): void;
+
+  setSoftness(softness: number): void;
+
+  setDither(dither: number): void;
+
+  setColorSpace(colorSpace: interop.Object | null): void;
+}
+
+declare class CIHueSaturationValueGradient extends NativeObject implements CIHueSaturationValueGradient {
+}
+
 declare interface CIDocumentEnhancer extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3490,6 +3308,19 @@ declare interface CIDocumentEnhancer extends CIFilterProtocol {
 }
 
 declare class CIDocumentEnhancer extends NativeObject implements CIDocumentEnhancer {
+}
+
+declare interface CICompositeOperation extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  backgroundImage: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setBackgroundImage(backgroundImage: CIImage | null): void;
+}
+
+declare class CICompositeOperation extends NativeObject implements CICompositeOperation {
 }
 
 declare interface CIBokehBlur extends CIFilterProtocol {
@@ -3515,6 +3346,31 @@ declare interface CIBokehBlur extends CIFilterProtocol {
 }
 
 declare class CIBokehBlur extends NativeObject implements CIBokehBlur {
+}
+
+declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  cubeDimension: number;
+
+  cubeData: NSData;
+
+  colorSpace: interop.Object;
+
+  extrapolate: boolean;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCubeDimension(cubeDimension: number): void;
+
+  setCubeData(cubeData: NSData): void;
+
+  setColorSpace(colorSpace: interop.Object | null): void;
+
+  setExtrapolate(extrapolate: boolean): void;
+}
+
+declare class CIColorCubeWithColorSpace extends NativeObject implements CIColorCubeWithColorSpace {
 }
 
 declare interface CIMorphologyRectangleMinimum extends CIFilterProtocol {
@@ -3552,15 +3408,6 @@ declare interface CIPerspectiveCorrection extends CIFourCoordinateGeometryFilter
 declare class CIPerspectiveCorrection extends NativeObject implements CIPerspectiveCorrection {
 }
 
-declare interface CILinearToSRGBToneCurve extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CILinearToSRGBToneCurve extends NativeObject implements CILinearToSRGBToneCurve {
-}
-
 declare interface CIImageProcessorOutput {
   readonly region: CGRect;
 
@@ -3582,6 +3429,23 @@ declare interface CIImageProcessorOutput {
 }
 
 declare class CIImageProcessorOutput extends NativeObject implements CIImageProcessorOutput {
+}
+
+declare interface CIVignette extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  intensity: number;
+
+  radius: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setIntensity(intensity: number): void;
+
+  setRadius(radius: number): void;
+}
+
+declare class CIVignette extends NativeObject implements CIVignette {
 }
 
 declare interface CIAffineClamp extends CIFilterProtocol {
@@ -3631,21 +3495,21 @@ declare interface CIGloom extends CIFilterProtocol {
 declare class CIGloom extends NativeObject implements CIGloom {
 }
 
-declare interface CIZoomBlur extends CIFilterProtocol {
+declare interface CIColorClamp extends CIFilterProtocol {
   inputImage: CIImage;
 
-  center: CGPoint;
+  minComponents: CIVector;
 
-  amount: number;
+  maxComponents: CIVector;
 
   setInputImage(inputImage: CIImage | null): void;
 
-  setCenter(center: CGPoint): void;
+  setMinComponents(minComponents: CIVector): void;
 
-  setAmount(amount: number): void;
+  setMaxComponents(maxComponents: CIVector): void;
 }
 
-declare class CIZoomBlur extends NativeObject implements CIZoomBlur {
+declare class CIColorClamp extends NativeObject implements CIColorClamp {
 }
 
 declare interface CIImageProcessorInput {
@@ -3673,13 +3537,43 @@ declare interface CIImageProcessorInput {
 declare class CIImageProcessorInput extends NativeObject implements CIImageProcessorInput {
 }
 
-declare interface CIColorThresholdOtsu extends CIFilterProtocol {
+declare interface CIMaximumComponent extends CIFilterProtocol {
   inputImage: CIImage;
 
   setInputImage(inputImage: CIImage | null): void;
 }
 
-declare class CIColorThresholdOtsu extends NativeObject implements CIColorThresholdOtsu {
+declare class CIMaximumComponent extends NativeObject implements CIMaximumComponent {
+}
+
+declare interface CIDither extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  intensity: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setIntensity(intensity: number): void;
+}
+
+declare class CIDither extends NativeObject implements CIDither {
+}
+
+declare interface CIHoleDistortion extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  radius: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setRadius(radius: number): void;
+}
+
+declare class CIHoleDistortion extends NativeObject implements CIHoleDistortion {
 }
 
 declare interface CIAreaReductionFilter extends CIFilterProtocol {
@@ -3693,19 +3587,6 @@ declare interface CIAreaReductionFilter extends CIFilterProtocol {
 }
 
 declare class CIAreaReductionFilter extends NativeObject implements CIAreaReductionFilter {
-}
-
-declare interface CIBoxBlur extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  radius: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRadius(radius: number): void;
-}
-
-declare class CIBoxBlur extends NativeObject implements CIBoxBlur {
 }
 
 declare interface CIModTransition extends CITransitionFilter {
@@ -3727,6 +3608,36 @@ declare interface CIModTransition extends CITransitionFilter {
 }
 
 declare class CIModTransition extends NativeObject implements CIModTransition {
+}
+
+declare interface CIMorphologyMinimum extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  radius: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setRadius(radius: number): void;
+}
+
+declare class CIMorphologyMinimum extends NativeObject implements CIMorphologyMinimum {
+}
+
+declare interface CIToneMapHeadroom extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  sourceHeadroom: number;
+
+  targetHeadroom: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setSourceHeadroom(sourceHeadroom: number): void;
+
+  setTargetHeadroom(targetHeadroom: number): void;
+}
+
+declare class CIToneMapHeadroom extends NativeObject implements CIToneMapHeadroom {
 }
 
 declare interface CIMotionBlur extends CIFilterProtocol {
@@ -3803,27 +3714,6 @@ declare interface CIRadialGradient extends CIFilterProtocol {
 declare class CIRadialGradient extends NativeObject implements CIRadialGradient {
 }
 
-declare interface CINinePartStretched extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  breakpoint0: CGPoint;
-
-  breakpoint1: CGPoint;
-
-  growAmount: CGPoint;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setBreakpoint0(breakpoint0: CGPoint): void;
-
-  setBreakpoint1(breakpoint1: CGPoint): void;
-
-  setGrowAmount(growAmount: CGPoint): void;
-}
-
-declare class CINinePartStretched extends NativeObject implements CINinePartStretched {
-}
-
 declare interface CIEdgeWork extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3865,52 +3755,6 @@ declare interface CIEdges extends CIFilterProtocol {
 }
 
 declare class CIEdges extends NativeObject implements CIEdges {
-}
-
-declare interface CIColorCubesMixedWithMask extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  maskImage: CIImage;
-
-  cubeDimension: number;
-
-  cube0Data: NSData;
-
-  cube1Data: NSData;
-
-  colorSpace: interop.Object;
-
-  extrapolate: boolean;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setMaskImage(maskImage: CIImage | null): void;
-
-  setCubeDimension(cubeDimension: number): void;
-
-  setCube0Data(cube0Data: NSData): void;
-
-  setCube1Data(cube1Data: NSData): void;
-
-  setColorSpace(colorSpace: interop.Object | null): void;
-
-  setExtrapolate(extrapolate: boolean): void;
-}
-
-declare class CIColorCubesMixedWithMask extends NativeObject implements CIColorCubesMixedWithMask {
-}
-
-declare interface CIExposureAdjust extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  EV: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setEV(EV: number): void;
-}
-
-declare class CIExposureAdjust extends NativeObject implements CIExposureAdjust {
 }
 
 declare interface CITwelvefoldReflectedTile extends CIFilterProtocol {
@@ -3963,10 +3807,25 @@ declare interface CICannyEdgeDetector extends CIFilterProtocol {
 declare class CICannyEdgeDetector extends NativeObject implements CICannyEdgeDetector {
 }
 
-declare interface CIPageCurlTransition extends CITransitionFilter {
-  backsideImage: CIImage;
+declare interface CIColorMonochrome extends CIFilterProtocol {
+  inputImage: CIImage;
 
-  shadingImage: CIImage;
+  color: CIColor;
+
+  intensity: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setColor(color: CIColor): void;
+
+  setIntensity(intensity: number): void;
+}
+
+declare class CIColorMonochrome extends NativeObject implements CIColorMonochrome {
+}
+
+declare interface CIPageCurlWithShadowTransition extends CITransitionFilter {
+  backsideImage: CIImage;
 
   extent: CGRect;
 
@@ -3974,27 +3833,28 @@ declare interface CIPageCurlTransition extends CITransitionFilter {
 
   radius: number;
 
-  setBacksideImage(backsideImage: CIImage | null): void;
+  shadowSize: number;
 
-  setShadingImage(shadingImage: CIImage | null): void;
+  shadowAmount: number;
+
+  shadowExtent: CGRect;
+
+  setBacksideImage(backsideImage: CIImage | null): void;
 
   setExtent(extent: CGRect): void;
 
   setAngle(angle: number): void;
 
   setRadius(radius: number): void;
+
+  setShadowSize(shadowSize: number): void;
+
+  setShadowAmount(shadowAmount: number): void;
+
+  setShadowExtent(shadowExtent: CGRect): void;
 }
 
-declare class CIPageCurlTransition extends NativeObject implements CIPageCurlTransition {
-}
-
-declare interface CIThermal extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CIThermal extends NativeObject implements CIThermal {
+declare class CIPageCurlWithShadowTransition extends NativeObject implements CIPageCurlWithShadowTransition {
 }
 
 declare interface CIDisparityToDepth extends CIFilterProtocol {
@@ -4004,31 +3864,6 @@ declare interface CIDisparityToDepth extends CIFilterProtocol {
 }
 
 declare class CIDisparityToDepth extends NativeObject implements CIDisparityToDepth {
-}
-
-declare interface CIHueSaturationValueGradient extends CIFilterProtocol {
-  value: number;
-
-  radius: number;
-
-  softness: number;
-
-  dither: number;
-
-  colorSpace: interop.Object;
-
-  setValue(value: number): void;
-
-  setRadius(radius: number): void;
-
-  setSoftness(softness: number): void;
-
-  setDither(dither: number): void;
-
-  setColorSpace(colorSpace: interop.Object | null): void;
-}
-
-declare class CIHueSaturationValueGradient extends NativeObject implements CIHueSaturationValueGradient {
 }
 
 declare interface CISharpenLuminance extends CIFilterProtocol {
@@ -4069,17 +3904,10 @@ declare interface CIKaleidoscope extends CIFilterProtocol {
 declare class CIKaleidoscope extends NativeObject implements CIKaleidoscope {
 }
 
-declare interface CIVibrance extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  amount: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setAmount(amount: number): void;
+declare interface CIAreaAverage extends CIAreaReductionFilter {
 }
 
-declare class CIVibrance extends NativeObject implements CIVibrance {
+declare class CIAreaAverage extends NativeObject implements CIAreaAverage {
 }
 
 declare interface CIBlendWithMask extends CIFilterProtocol {
@@ -4099,21 +3927,22 @@ declare interface CIBlendWithMask extends CIFilterProtocol {
 declare class CIBlendWithMask extends NativeObject implements CIBlendWithMask {
 }
 
-declare interface CIAttributedTextImageGenerator extends CIFilterProtocol {
-  text: NSAttributedString;
+declare interface CISobelGradients extends CIFilterProtocol {
+  inputImage: CIImage;
 
-  scaleFactor: number;
-
-  padding: number;
-
-  setText(text: NSAttributedString): void;
-
-  setScaleFactor(scaleFactor: number): void;
-
-  setPadding(padding: number): void;
+  setInputImage(inputImage: CIImage | null): void;
 }
 
-declare class CIAttributedTextImageGenerator extends NativeObject implements CIAttributedTextImageGenerator {
+declare class CISobelGradients extends NativeObject implements CISobelGradients {
+}
+
+declare interface CIMinimumComponent extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+}
+
+declare class CIMinimumComponent extends NativeObject implements CIMinimumComponent {
 }
 
 declare interface CIKeystoneCorrectionVertical extends CIFourCoordinateGeometryFilter {
@@ -4129,62 +3958,6 @@ declare interface CIAreaMaximumAlpha extends CIAreaReductionFilter {
 }
 
 declare class CIAreaMaximumAlpha extends NativeObject implements CIAreaMaximumAlpha {
-}
-
-declare class CIRenderDestination extends NSObject {
-  initWithPixelBuffer(pixelBuffer: interop.Object): this;
-
-  initWithIOSurface(surface: IOSurface): this;
-
-  initWithMTLTextureCommandBuffer(texture: MTLTexture, commandBuffer: MTLCommandBuffer | null): this;
-
-  initWithWidthHeightPixelFormatCommandBufferMtlTextureProvider(width: number, height: number, pixelFormat: interop.Enum<typeof MTLPixelFormat>, commandBuffer: MTLCommandBuffer | null, block: () => MTLTexture | null): this;
-
-  initWithGLTextureTargetWidthHeight(texture: number, target: number, width: number, height: number): this;
-
-  initWithBitmapDataWidthHeightBytesPerRowFormat(data: interop.PointerConvertible, width: number, height: number, bytesPerRow: number, format: number): this;
-
-  readonly width: number;
-
-  readonly height: number;
-
-  alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>;
-
-  flipped: boolean;
-
-  dithered: boolean;
-
-  clamped: boolean;
-
-  colorSpace: interop.Object;
-
-  blendKernel: CIBlendKernel;
-
-  blendsInDestinationColorSpace: boolean;
-
-  captureTraceURL: NSURL;
-
-  setAlphaMode(alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>): void;
-
-  isFlipped(): boolean;
-
-  setFlipped(flipped: boolean): void;
-
-  isDithered(): boolean;
-
-  setDithered(dithered: boolean): void;
-
-  isClamped(): boolean;
-
-  setClamped(clamped: boolean): void;
-
-  setColorSpace(colorSpace: interop.Object | null): void;
-
-  setBlendKernel(blendKernel: CIBlendKernel | null): void;
-
-  setBlendsInDestinationColorSpace(blendsInDestinationColorSpace: boolean): void;
-
-  setCaptureTraceURL(captureTraceURL: NSURL): void;
 }
 
 declare class CIQRCodeFeature extends CIFeature implements NSSecureCoding, NSCopying {
@@ -4272,6 +4045,32 @@ declare class CIKernel extends NSObject {
   applyWithExtentRoiCallbackArguments(extent: CGRect, callback: (p1: number, p2: CGRect) => CGRect, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
 }
 
+declare class CIPlugIn extends NSObject {
+  static loadAllPlugIns(): void;
+
+  static loadNonExecutablePlugIns(): void;
+
+  static loadPlugInAllowNonExecutable(url: NSURL, allowNonExecutable: boolean): void;
+
+  static loadPlugInAllowExecutableCode(url: NSURL, allowExecutableCode: boolean): void;
+
+  static loadNonExecutablePlugIn(url: NSURL): void;
+}
+
+declare class CITextFeature extends CIFeature {
+  readonly bounds: CGRect;
+
+  readonly topLeft: CGPoint;
+
+  readonly topRight: CGPoint;
+
+  readonly bottomLeft: CGPoint;
+
+  readonly bottomRight: CGPoint;
+
+  readonly subFeatures: NSArray;
+}
+
 declare class CIRAWFilter extends CIFilter {
   static readonly supportedCameraModels: NSArray;
 
@@ -4298,10 +4097,6 @@ declare class CIRAWFilter extends CIFilter {
   boostAmount: number;
 
   boostShadowAmount: number;
-
-  readonly highlightRecoverySupported: boolean;
-
-  highlightRecoveryEnabled: boolean;
 
   gamutMappingEnabled: boolean;
 
@@ -4389,12 +4184,6 @@ declare class CIRAWFilter extends CIFilter {
 
   setBoostShadowAmount(boostShadowAmount: number): void;
 
-  isHighlightRecoverySupported(): boolean;
-
-  isHighlightRecoveryEnabled(): boolean;
-
-  setHighlightRecoveryEnabled(highlightRecoveryEnabled: boolean): void;
-
   isGamutMappingEnabled(): boolean;
 
   setGamutMappingEnabled(gamutMappingEnabled: boolean): void;
@@ -4450,20 +4239,6 @@ declare class CIWarpKernel extends CIKernel {
   static kernelWithString<This extends abstract new (...args: any) => any>(this: This, string: string): InstanceType<This>;
 
   applyWithExtentRoiCallbackInputImageArguments(extent: CGRect, callback: (p1: number, p2: CGRect) => CGRect, image: CIImage, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
-}
-
-declare class CITextFeature extends CIFeature {
-  readonly bounds: CGRect;
-
-  readonly topLeft: CGPoint;
-
-  readonly topRight: CGPoint;
-
-  readonly bottomLeft: CGPoint;
-
-  readonly bottomRight: CGPoint;
-
-  readonly subFeatures: NSArray;
 }
 
 declare class CIPDF417CodeDescriptor extends CIBarcodeDescriptor {
@@ -4570,28 +4345,42 @@ declare class CIFaceFeature extends CIFeature {
   readonly rightEyeClosed: boolean;
 }
 
+declare class CIDataMatrixCodeDescriptor extends CIBarcodeDescriptor {
+  readonly errorCorrectedPayload: NSData;
+
+  readonly rowCount: number;
+
+  readonly columnCount: number;
+
+  readonly eccVersion: interop.Enum<typeof CIDataMatrixCodeECCVersion>;
+
+  initWithPayloadRowCountColumnCountEccVersion(errorCorrectedPayload: NSData, rowCount: number, columnCount: number, eccVersion: interop.Enum<typeof CIDataMatrixCodeECCVersion>): this;
+
+  static descriptorWithPayloadRowCountColumnCountEccVersion<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, rowCount: number, columnCount: number, eccVersion: interop.Enum<typeof CIDataMatrixCodeECCVersion>): InstanceType<This>;
+}
+
 declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
-  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, color: interop.Object): InstanceType<This>;
+  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, c: interop.Object): InstanceType<This>;
 
-  static colorWithRedGreenBlueAlpha<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number): InstanceType<This>;
+  static colorWithRedGreenBlueAlpha<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number): InstanceType<This>;
 
-  static colorWithRedGreenBlue<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number): InstanceType<This>;
+  static colorWithRedGreenBlue<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number): InstanceType<This>;
 
-  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number, colorSpace: interop.Object): InstanceType<This>;
+  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number, colorSpace: interop.Object): InstanceType<This>;
 
-  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, colorSpace: interop.Object): InstanceType<This>;
+  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, colorSpace: interop.Object): InstanceType<This>;
 
   static colorWithString<This extends abstract new (...args: any) => any>(this: This, representation: string): InstanceType<This>;
 
-  initWithCGColor(color: interop.Object): this;
+  initWithCGColor(c: interop.Object): this;
 
-  initWithRedGreenBlueAlpha(red: number, green: number, blue: number, alpha: number): this;
+  initWithRedGreenBlueAlpha(r: number, g: number, b: number, a: number): this;
 
-  initWithRedGreenBlue(red: number, green: number, blue: number): this;
+  initWithRedGreenBlue(r: number, g: number, b: number): this;
 
-  initWithRedGreenBlueAlphaColorSpace(red: number, green: number, blue: number, alpha: number, colorSpace: interop.Object): this;
+  initWithRedGreenBlueAlphaColorSpace(r: number, g: number, b: number, a: number, colorSpace: interop.Object): this;
 
-  initWithRedGreenBlueColorSpace(red: number, green: number, blue: number, colorSpace: interop.Object): this;
+  initWithRedGreenBlueColorSpace(r: number, g: number, b: number, colorSpace: interop.Object): this;
 
   readonly numberOfComponents: number;
 
@@ -4638,70 +4427,6 @@ declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class CIAztecCodeDescriptor extends CIBarcodeDescriptor {
-  readonly errorCorrectedPayload: NSData;
-
-  readonly isCompact: boolean;
-
-  readonly layerCount: number;
-
-  readonly dataCodewordCount: number;
-
-  initWithPayloadIsCompactLayerCountDataCodewordCount(errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): this;
-
-  static descriptorWithPayloadIsCompactLayerCountDataCodewordCount<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): InstanceType<This>;
-}
-
-declare class CIPlugIn extends NSObject {
-  static loadAllPlugIns(): void;
-
-  static loadNonExecutablePlugIns(): void;
-
-  static loadPlugInAllowNonExecutable(url: NSURL, allowNonExecutable: boolean): void;
-
-  static loadPlugInAllowExecutableCode(url: NSURL, allowExecutableCode: boolean): void;
-
-  static loadNonExecutablePlugIn(url: NSURL): void;
-}
-
-declare class CIDataMatrixCodeDescriptor extends CIBarcodeDescriptor {
-  readonly errorCorrectedPayload: NSData;
-
-  readonly rowCount: number;
-
-  readonly columnCount: number;
-
-  readonly eccVersion: interop.Enum<typeof CIDataMatrixCodeECCVersion>;
-
-  initWithPayloadRowCountColumnCountEccVersion(errorCorrectedPayload: NSData, rowCount: number, columnCount: number, eccVersion: interop.Enum<typeof CIDataMatrixCodeECCVersion>): this;
-
-  static descriptorWithPayloadRowCountColumnCountEccVersion<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, rowCount: number, columnCount: number, eccVersion: interop.Enum<typeof CIDataMatrixCodeECCVersion>): InstanceType<This>;
-}
-
-declare class CIImageProcessorKernel extends NSObject {
-  static processWithInputsArgumentsOutputError(inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, output: CIImageProcessorOutput, error: interop.PointerConvertible): boolean;
-
-  static roiForInputArgumentsOutputRect(inputIndex: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): CGRect;
-
-  static roiTileArrayForInputArgumentsOutputRect(inputIndex: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): NSArray;
-
-  static formatForInputAtIndex(inputIndex: number): number;
-
-  static readonly outputFormat: number;
-
-  static readonly outputIsOpaque: boolean;
-
-  static readonly synchronizeInputs: boolean;
-
-  static applyWithExtentInputsArgumentsError(extent: CGRect, inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): CIImage;
-
-  static processWithInputsArgumentsOutputsError(inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputs: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
-
-  static outputFormatAtIndexArguments(outputIndex: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): number;
-
-  static applyWithExtentsInputsArgumentsError(extents: NSArray<interop.Object> | Array<interop.Object>, inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): NSArray;
 }
 
 declare class CIBlendKernel extends CIColorKernel {
@@ -4794,6 +4519,38 @@ declare class CIBlendKernel extends CIColorKernel {
   static readonly lighterColor: CIBlendKernel;
 }
 
+declare class CIAztecCodeDescriptor extends CIBarcodeDescriptor {
+  readonly errorCorrectedPayload: NSData;
+
+  readonly isCompact: boolean;
+
+  readonly layerCount: number;
+
+  readonly dataCodewordCount: number;
+
+  initWithPayloadIsCompactLayerCountDataCodewordCount(errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): this;
+
+  static descriptorWithPayloadIsCompactLayerCountDataCodewordCount<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): InstanceType<This>;
+}
+
+declare class CIImageProcessorKernel extends NSObject {
+  static processWithInputsArgumentsOutputError(inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, output: CIImageProcessorOutput, error: interop.PointerConvertible): boolean;
+
+  static roiForInputArgumentsOutputRect(input: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): CGRect;
+
+  static roiTileArrayForInputArgumentsOutputRect(input: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): NSArray;
+
+  static formatForInputAtIndex(input: number): number;
+
+  static readonly outputFormat: number;
+
+  static readonly outputIsOpaque: boolean;
+
+  static readonly synchronizeInputs: boolean;
+
+  static applyWithExtentInputsArgumentsError(extent: CGRect, inputs: NSArray<interop.Object> | Array<interop.Object> | null, args: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): CIImage;
+}
+
 declare class CIColorKernel extends CIKernel {
   static kernelWithString<This extends abstract new (...args: any) => any>(this: This, string: string): InstanceType<This>;
 
@@ -4859,8 +4616,6 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
 
   viewForUIConfigurationExcludedKeys(inUIConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, inKeys: NSArray<interop.Object> | Array<interop.Object>): IKFilterUIView;
 
-  static distanceGradientFromRedMaskFilter(): CIFilter;
-
   static gaussianGradientFilter(): CIFilter;
 
   static hueSaturationValueGradientFilter(): CIFilter;
@@ -4868,8 +4623,6 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
   static linearGradientFilter(): CIFilter;
 
   static radialGradientFilter(): CIFilter;
-
-  static signedDistanceGradientFromRedMaskFilter(): CIFilter;
 
   static smoothLinearGradientFilter(): CIFilter;
 
@@ -5021,8 +4774,6 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
 
   static sRGBToneCurveToLinearFilter(): CIFilter;
 
-  static systemToneMapFilter(): CIFilter;
-
   static temperatureAndTintFilter(): CIFilter;
 
   static toneCurveFilter(): CIFilter;
@@ -5173,8 +4924,6 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
 
   static blurredRectangleGeneratorFilter(): CIFilter;
 
-  static blurredRoundedRectangleGeneratorFilter(): CIFilter;
-
   static checkerboardGeneratorFilter(): CIFilter;
 
   static code128BarcodeGeneratorFilter(): CIFilter;
@@ -5188,8 +4937,6 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
   static QRCodeGenerator(): CIFilter;
 
   static randomGeneratorFilter(): CIFilter;
-
-  static roundedQRCodeGeneratorFilter(): CIFilter;
 
   static roundedRectangleGeneratorFilter(): CIFilter;
 
@@ -5308,8 +5055,6 @@ declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
   static areaAlphaWeightedHistogramFilter(): CIFilter;
 
   static areaAverageFilter(): CIFilter;
-
-  static areaAverageMaximumRedFilter(): CIFilter;
 
   static areaBoundsRedFilter(): CIFilter;
 
@@ -5501,15 +5246,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   imageByInsertingIntermediate(): CIImage;
 
-  imageByInsertingTiledIntermediate(): CIImage;
-
   imageByApplyingGainMap(gainmap: CIImage): CIImage;
 
   imageByApplyingGainMapHeadroom(gainmap: CIImage, headroom: number): CIImage;
-
-  imageBySettingContentHeadroom(headroom: number): CIImage;
-
-  imageBySettingContentAverageLightLevel(average: number): CIImage;
 
   readonly extent: CGRect;
 
@@ -5524,8 +5263,6 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
   readonly colorSpace: interop.Object;
 
   readonly contentHeadroom: number;
-
-  readonly contentAverageLightLevel: number;
 
   readonly pixelBuffer: interop.Object;
 
@@ -5581,9 +5318,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   drawAtPointFromRectOperationFraction(point: CGPoint, fromRect: CGRect, op: interop.Enum<typeof NSCompositingOperation>, delta: number): void;
 
-  static imageWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  initWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -5645,7 +5382,7 @@ declare class CIVector extends NSObject implements NSCopying, NSSecureCoding {
 
   initWithCGRect(r: CGRect): this;
 
-  initWithCGAffineTransform(t: CGAffineTransform): this;
+  initWithCGAffineTransform(r: CGAffineTransform): this;
 
   initWithString(representation: string): this;
 
@@ -5676,6 +5413,58 @@ declare class CIVector extends NSObject implements NSCopying, NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class CIRenderDestination extends NSObject {
+  initWithPixelBuffer(pixelBuffer: interop.Object): this;
+
+  initWithIOSurface(surface: IOSurface): this;
+
+  initWithMTLTextureCommandBuffer(texture: MTLTexture, commandBuffer: MTLCommandBuffer | null): this;
+
+  initWithWidthHeightPixelFormatCommandBufferMtlTextureProvider(width: number, height: number, pixelFormat: interop.Enum<typeof MTLPixelFormat>, commandBuffer: MTLCommandBuffer | null, block: () => MTLTexture | null): this;
+
+  initWithGLTextureTargetWidthHeight(texture: number, target: number, width: number, height: number): this;
+
+  initWithBitmapDataWidthHeightBytesPerRowFormat(data: interop.PointerConvertible, width: number, height: number, bytesPerRow: number, format: number): this;
+
+  readonly width: number;
+
+  readonly height: number;
+
+  alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>;
+
+  flipped: boolean;
+
+  dithered: boolean;
+
+  clamped: boolean;
+
+  colorSpace: interop.Object;
+
+  blendKernel: CIBlendKernel;
+
+  blendsInDestinationColorSpace: boolean;
+
+  setAlphaMode(alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>): void;
+
+  isFlipped(): boolean;
+
+  setFlipped(flipped: boolean): void;
+
+  isDithered(): boolean;
+
+  setDithered(dithered: boolean): void;
+
+  isClamped(): boolean;
+
+  setClamped(clamped: boolean): void;
+
+  setColorSpace(colorSpace: interop.Object | null): void;
+
+  setBlendKernel(blendKernel: CIBlendKernel | null): void;
+
+  setBlendsInDestinationColorSpace(blendsInDestinationColorSpace: boolean): void;
 }
 
 declare class CISampler extends NSObject implements NSCopying {
@@ -5750,16 +5539,6 @@ declare class CIContext extends NSObject {
   createCGImageFromRectFormatColorSpace(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null): interop.Object;
 
   createCGImageFromRectFormatColorSpaceDeferred(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean): interop.Object;
-
-  createCGImageFromRectFormatColorSpaceDeferredCalculateHDRStats(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean, calculateHDRStats: boolean): interop.Object;
-
-  calculateHDRStatsForIOSurface(surface: interop.Object): void;
-
-  calculateHDRStatsForCVPixelBuffer(buffer: interop.Object): void;
-
-  calculateHDRStatsForCGImage(cgimage: interop.Object): interop.Object;
-
-  calculateHDRStatsForImage(image: CIImage): CIImage;
 
   static offlineGPUCount(): number;
 

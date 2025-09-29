@@ -2,8 +2,6 @@
 
 declare const kCMMetadataDataType_QuickTimeMetadataUUID: interop.Pointer;
 
-declare const kCMMetadataBaseDataType_ExtendedRasterRectangleValue: interop.Pointer;
-
 declare const kCMMetadataBaseDataType_JSON: interop.Pointer;
 
 declare const kCMMetadataBaseDataType_DimensionsF32: interop.Pointer;
@@ -29,14 +27,6 @@ declare const kCMMetadataBaseDataType_PNG: interop.Pointer;
 declare const kCMMetadataBaseDataType_JPEG: interop.Pointer;
 
 declare const kCMMetadataBaseDataType_UTF8: interop.Pointer;
-
-declare const kCMMetadataIdentifier_QuickTimeMetadataDisplayMaskRectangleStereoRight: interop.Pointer;
-
-declare const kCMMetadataIdentifier_QuickTimeMetadataDisplayMaskRectangleStereoLeft: interop.Pointer;
-
-declare const kCMMetadataIdentifier_QuickTimeMetadataDisplayMaskRectangleMono: interop.Pointer;
-
-declare const kCMMetadataIdentifier_QuickTimeMetadataSpatialAudioMix: interop.Pointer;
 
 declare const kCMMetadataIdentifier_QuickTimeMetadataSceneIlluminance: interop.Pointer;
 
@@ -134,6 +124,8 @@ declare const kCMBufferQueueTrigger_WhenReset: number;
 
 declare const kCMBufferQueueTrigger_WhenMaxPresentationTimeStampChanges: number;
 
+declare const kCMBufferQueueTrigger_WhenMinPresentationTimeStampChanges: number;
+
 declare const kCMBufferQueueTrigger_WhenDurationBecomesGreaterThanOrEqualTo: number;
 
 declare const kCMBufferQueueTrigger_WhenDurationBecomesGreaterThan: number;
@@ -194,39 +186,25 @@ declare const kCMMetadataIdentifier_QuickTimeMetadataDirection_Facing: interop.P
 
 declare const kCMSimpleQueueError_AllocationFailed: number;
 
-declare const kCMTagCollectionTagsArrayKey: interop.Pointer;
-
 declare const kCMSoundDescriptionFlavor_3GPFamily: interop.Pointer;
 
-declare const kCMTimeMappingTargetKey: interop.Pointer;
+declare const kCMTimeMappingInvalid: CMTimeMapping;
 
 declare const kCMTimeRangeStartKey: interop.Pointer;
 
 declare const kCMTimeRangeInvalid: CMTimeRange;
 
-declare const kCMTimeRangeZero: CMTimeRange;
+declare const kCMTagValueKey: interop.Pointer;
 
-declare const kCMTagCategoryKey: interop.Pointer;
+declare const kCMTagProjectionTypeEquirectangular: CMTag;
 
-declare const kCMTagPackingTypeOverUnder: CMTag;
-
-declare const kCMTagPackingTypeSideBySide: CMTag;
-
-declare const kCMTagPackingTypeNone: CMTag;
-
-declare const kCMTagProjectionTypeHalfEquirectangular: CMTag;
-
-declare const kCMTagProjectionTypeRectangular: CMTag;
-
-declare const kCMTagStereoInterpretationOrderReversed: CMTag;
+declare const kCMTagStereoLeftAndRightEye: CMTag;
 
 declare const kCMTagStereoRightEye: CMTag;
 
 declare const kCMTagMediaTypeMetadata: CMTag;
 
-declare const kCMTagMediaTypeVideo: CMTag;
-
-declare const kCMTagInvalid: CMTag;
+declare const kCMTagMediaSubTypeMebx: CMTag;
 
 declare const kCMSampleAttachmentKey_PostDecodeProcessingMetadata: interop.Pointer;
 
@@ -306,6 +284,10 @@ declare const kCMTimeCodeFlag_NegTimesOK: number;
 
 declare const kCMTimeCodeFlag_DropFrame: number;
 
+declare const kCMSampleAttachmentKey_HasRedundantCoding: interop.Pointer;
+
+declare const kCMSubtitleFormatType_WebVTT: number;
+
 declare const kCMTextFormatDescriptionStyle_Height: interop.Pointer;
 
 declare const kCMTextFormatDescriptionExtension_HorizontalJustification: interop.Pointer;
@@ -329,34 +311,6 @@ declare const kCMTextFormatType_3GText: number;
 declare const kCMClosedCaptionFormatType_ATSC: number;
 
 declare const kCMMuxedStreamType_MPEG2Program: number;
-
-declare const kCMFormatDescriptionExtension_ConvertedFromExternalSphericalTags: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibrationExtrinsicOriginSource_StereoCameraSystemBaseline: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibration_ExtrinsicOriginSource: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibration_IntrinsicMatrixReferenceDimensions: interop.Pointer;
-
-declare const kCMSampleAttachmentKey_HasRedundantCoding: interop.Pointer;
-
-declare const kCMSubtitleFormatType_WebVTT: number;
-
-declare const kCMFormatDescriptionCameraCalibration_IntrinsicMatrixProjectionOffset: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibration_IntrinsicMatrix: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibration_RadialAngleLimit: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibrationLensRole_Right: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibrationLensRole_Mono: interop.Pointer;
-
-declare const kCMFormatDescriptionCameraCalibrationLensAlgorithmKind_ParametricLens: interop.Pointer;
-
-declare const kCMBufferQueueTrigger_WhenMinPresentationTimeStampChanges: number;
-
-declare const kCMFormatDescriptionCameraCalibration_LensAlgorithmKind: interop.Pointer;
 
 declare const kCMFormatDescriptionExtension_ViewPackingKind: interop.Pointer;
 
@@ -409,6 +363,8 @@ declare const kCMMPEG2VideoProfile_XDCAM_HD_1080p25_VBR35: number;
 declare const kCMMPEG2VideoProfile_XDCAM_HD_1080i50_VBR35: number;
 
 declare const kCMMPEG2VideoProfile_HDV_1080p30: number;
+
+declare const kCMMPEG2VideoProfile_HDV_1080p25: number;
 
 declare const kCMMPEG2VideoProfile_HDV_1080i60: number;
 
@@ -582,6 +538,8 @@ declare const kCMFormatDescriptionExtension_VerbatimISOSampleEntry: interop.Poin
 
 declare const kCMTextJustification_centered: number;
 
+declare const kCMTagPackingTypeNone: CMTag;
+
 declare const kCMTextFormatDescriptionExtension_TextJustification: interop.Pointer;
 
 declare const kCMSampleAttachmentKey_PartialSync: interop.Pointer;
@@ -594,11 +552,15 @@ declare const kCMTimebaseNotificationKey_EventTime: interop.Pointer;
 
 declare const kCMBlockBufferCustomBlockSourceVersion: number;
 
+declare const kCMTagStereoInterpretationOrderReversed: CMTag;
+
 declare const kCMSampleBufferLensStabilizationInfo_Unavailable: interop.Pointer;
 
 declare const kCMVideoCodecType_AppleProResRAWHQ: number;
 
 declare const kCMBlockBufferPermitEmptyReferenceFlag: number;
+
+declare const kCMTagPackingTypeSideBySide: CMTag;
 
 declare const kCMTimebaseError_TimerIntervalTooShort: number;
 
@@ -644,8 +606,6 @@ declare const kCMTagStereoLeftEye: CMTag;
 
 declare const kCMMPEG2VideoProfile_HDV_720p50: number;
 
-declare const kCMTagProjectionTypeEquirectangular: CMTag;
-
 declare const kCMTextFormatDescriptionExtension_DefaultFontName: interop.Pointer;
 
 declare const kCMFormatDescriptionKey_PixelAspectRatioVerticalSpacing: interop.Pointer;
@@ -676,7 +636,11 @@ declare const kCMSampleBufferAttachmentKey_TransitionID: interop.Pointer;
 
 declare const kCMFormatDescriptionExtension_LogTransferFunction: interop.Pointer;
 
+declare const kCMTagProjectionTypeFisheye: CMTag;
+
 declare const kCMMediaType_Metadata: number;
+
+declare const kCMAudioCodecType_AAC_LCProtected: number;
 
 declare const kCMFormatDescriptionExtension_ICCProfile: interop.Pointer;
 
@@ -708,11 +672,7 @@ declare const kCMMPEG2VideoProfile_XDCAM_EX_1080i60_VBR35: number;
 
 declare const kCMFormatDescriptionKey_CleanApertureHorizontalOffsetRational: interop.Pointer;
 
-declare const kCMMetadataIdentifier_QuickTimeMetadataPresentationImmersiveMedia: interop.Pointer;
-
 declare const kCMFormatDescriptionExtensionKey_MetadataKeyTable: interop.Pointer;
-
-declare const kCMTimeMappingInvalid: CMTimeMapping;
 
 declare const kCMTagMediaTypeAudio: CMTag;
 
@@ -723,8 +683,6 @@ declare const kCMFormatDescriptionExtension_PixelAspectRatio: interop.Pointer;
 declare const kCMSampleBufferAttachmentKey_EmptyMedia: interop.Pointer;
 
 declare const kCMTextMarkupGenericFontName_Default: interop.Pointer;
-
-declare const kCMAudioCodecType_AAC_LCProtected: number;
 
 declare const kCMFormatDescriptionKey_PixelAspectRatioHorizontalSpacing: interop.Pointer;
 
@@ -744,8 +702,6 @@ declare const kCMMPEG2VideoProfile_XDCAM_EX_720p24_VBR35: number;
 
 declare const kCMTimingInfoInvalid: CMSampleTimingInfo;
 
-declare const kCMFormatDescriptionProjectionKind_AppleImmersiveVideo: interop.Pointer;
-
 declare const kCMTextDisplayFlag_continuousKaraoke: number;
 
 declare const kCMFormatDescriptionChromaLocation_TopLeft: interop.Pointer;
@@ -761,8 +717,6 @@ declare const kCMTextDisplayFlag_scrollDirection_bottomToTop: number;
 declare const kCMVideoCodecType_DisparityHEVC: number;
 
 declare const kCMFormatDescriptionChromaLocation_Bottom: interop.Pointer;
-
-declare const kCMTagProjectionTypeParametricImmersive: CMTag;
 
 declare const kCMFormatDescriptionExtension_StereoCameraBaseline: interop.Pointer;
 
@@ -792,7 +746,7 @@ declare const kCMTextDisplayFlag_allSubtitlesForced: number;
 
 declare const kCMMPEG2VideoProfile_HDV_720p24: number;
 
-declare const kCMFormatDescriptionCameraCalibration_LensDistortions: interop.Pointer;
+declare const kCMTagDataTypeKey: interop.Pointer;
 
 declare const kCMFormatDescriptionExtension_HorizontalDisparityAdjustment: interop.Pointer;
 
@@ -832,19 +786,9 @@ declare const kCMSampleBufferAttachmentKey_PermanentEmptyMedia: interop.Pointer;
 
 declare const kCMBufferQueueTrigger_WhenEndOfDataReached: number;
 
-declare const kCMFormatDescriptionCameraCalibration_LensFrameAdjustmentsPolynomialY: interop.Pointer;
-
 declare const kCMFormatDescriptionExtension_ColorPrimaries: interop.Pointer;
 
-declare const kCMSampleBufferDroppedFrameReason_OutOfBuffers: interop.Pointer;
-
-declare const kCMSampleAttachmentKey_HDR10PlusPerFrameData: interop.Pointer;
-
 declare const kCMMetadataBaseDataType_PointF32: interop.Pointer;
-
-declare const kCMTagStereoLeftAndRightEye: CMTag;
-
-declare const kCMFormatDescriptionCameraCalibration_LensRole: interop.Pointer;
 
 declare const kCMPixelFormat_422YpCbCr16: number;
 
@@ -870,8 +814,6 @@ declare const kCMFormatDescriptionColorPrimaries_P3_D65: interop.Pointer;
 
 declare const kCMTextFormatDescriptionExtension_VerticalJustification: interop.Pointer;
 
-declare const kCMFormatDescriptionCameraCalibration_LensFrameAdjustmentsPolynomialX: interop.Pointer;
-
 declare const kCMMetadataBaseDataType_Float64: interop.Pointer;
 
 declare const kCMTextDisplayFlag_forcedSubtitlesPresent: number;
@@ -882,9 +824,9 @@ declare const kCMFormatDescriptionFieldDetail_SpatialFirstLineLate: interop.Poin
 
 declare const kCMMetadataBaseDataType_UInt32: interop.Pointer;
 
-declare const kCMTagMediaSubTypeMebx: CMTag;
-
 declare const kCMFormatDescriptionChromaLocation_Center: interop.Pointer;
+
+declare const kCMTagPackingTypeOverUnder: CMTag;
 
 declare const kCMFormatDescriptionViewPackingKind_SideBySide: interop.Pointer;
 
@@ -903,6 +845,8 @@ declare const kCMSampleBufferAttachmentKey_TrimDurationAtEnd: interop.Pointer;
 declare const kCMFormatDescriptionChromaLocation_BottomLeft: interop.Pointer;
 
 declare const kCMVideoCodecType_MPEG4Video: number;
+
+declare const kCMTagProjectionTypeRectangular: CMTag;
 
 declare const kCMMetadataIdentifierError_BadKeyType: number;
 
@@ -930,6 +874,8 @@ declare const kCMPixelFormat_16BE555: number;
 
 declare const kCMFormatDescriptionTransferFunction_ITU_R_709_2: interop.Pointer;
 
+declare const kCMSampleBufferDroppedFrameReason_OutOfBuffers: interop.Pointer;
+
 declare const kCMTextDisplayFlag_scrollDirectionMask: number;
 
 declare const kCMTextDisplayFlag_scrollDirection_rightToLeft: number;
@@ -954,8 +900,6 @@ declare const kCMMetadataBaseDataType_AffineTransformF64: interop.Pointer;
 
 declare const kCMTextFormatType_QTText: number;
 
-declare const kCMTagProjectionTypeFisheye: CMTag;
-
 declare const kCMSampleBufferNotification_DataFailed: interop.Pointer;
 
 declare const kCMFormatDescriptionExtension_CleanAperture: interop.Pointer;
@@ -972,8 +916,6 @@ declare const kCMTextMarkupAlignmentType_Right: interop.Pointer;
 
 declare const kCMFormatDescriptionColorPrimaries_DCI_P3: interop.Pointer;
 
-declare const kCMFormatDescriptionExtension_CameraCalibrationDataLensCollection: interop.Pointer;
-
 declare const kCMFormatDescriptionExtension_OriginalCompressionSettings: interop.Pointer;
 
 declare const kCMFormatDescriptionColorPrimaries_ITU_R_2020: interop.Pointer;
@@ -985,8 +927,6 @@ declare const kCMMetadataFormatDescriptionKey_LanguageTag: interop.Pointer;
 declare const kCMMPEG2VideoProfile_HDV_720p30: number;
 
 declare const kCMVideoCodecType_AppleProRes4444: number;
-
-declare const kCMTagValueKey: interop.Pointer;
 
 declare const kCMMPEG2VideoProfile_XDCAM_HD_1080p24_VBR35: number;
 
@@ -1020,6 +960,8 @@ declare const kCMPixelFormat_422YpCbCr10: number;
 
 declare const kCMVideoCodecType_AppleProRes422HQ: number;
 
+declare const kCMTagProjectionTypeHalfEquirectangular: CMTag;
+
 declare const kCMBufferQueueError_BadTriggerDuration: number;
 
 declare const kCMMetadataFormatType_EMSG: number;
@@ -1029,8 +971,6 @@ declare const kCMFormatDescriptionTransferFunction_SMPTE_ST_2084_PQ: interop.Poi
 declare const kCMTimebaseError_InvalidParameter: number;
 
 declare const kCMTimeRangeDurationKey: interop.Pointer;
-
-declare const kCMMetadataBaseDataType_RasterRectangleValue: interop.Pointer;
 
 declare const kCMTextMarkupCharacterEdgeStyle_Raised: interop.Pointer;
 
@@ -1054,8 +994,6 @@ declare const kCMSimpleQueueError_QueueIsFull: number;
 
 declare const kCMFormatDescriptionAlphaChannelMode_StraightAlpha: interop.Pointer;
 
-declare const kCMFormatDescriptionCameraCalibration_LensDomain: interop.Pointer;
-
 declare const kCMMPEG2VideoProfile_HDV_1080p24: number;
 
 declare const kCMTextFormatDescriptionExtension_FontTable: interop.Pointer;
@@ -1066,8 +1004,6 @@ declare const kCMFormatDescriptionBridgeError_UnsupportedSampleDescriptionFlavor
 
 declare const kCMTagStereoNone: CMTag;
 
-declare const kCMFormatDescriptionCameraCalibrationLensDomain_Color: interop.Pointer;
-
 declare const kCMMetadataBaseDataType_GIF: interop.Pointer;
 
 declare const kCMTextMarkupGenericFontName_ProportionalSansSerif: interop.Pointer;
@@ -1075,8 +1011,6 @@ declare const kCMTextMarkupGenericFontName_ProportionalSansSerif: interop.Pointe
 declare const kCMTextDisplayFlag_fillTextRegion: number;
 
 declare const kCMSampleBufferError_ArrayTooSmall: number;
-
-declare const kCMFormatDescriptionCameraCalibration_ExtrinsicOrientationQuaternion: interop.Pointer;
 
 declare const kCMTimePositiveInfinity: CMTime;
 
@@ -1092,6 +1026,8 @@ declare const kCMVideoCodecType_DVCPro50NTSC: number;
 
 declare const kCMFormatDescriptionBridgeError_InvalidSerializedSampleDescription: number;
 
+declare const kCMTagCollectionTagsArrayKey: interop.Pointer;
+
 declare const kCMVideoCodecType_VP9: number;
 
 declare const kCMSampleBufferConduitNotification_UpcomingOutputPTSRangeChanged: interop.Pointer;
@@ -1099,6 +1035,8 @@ declare const kCMSampleBufferConduitNotification_UpcomingOutputPTSRangeChanged: 
 declare const kCMTimeCodeFormatType_Counter32: number;
 
 declare const kCMFormatDescriptionExtension_ContainsAlphaChannel: interop.Pointer;
+
+declare const kCMTimeRangeZero: CMTimeRange;
 
 declare const kCMMuxedStreamType_MPEG1System: number;
 
@@ -1122,17 +1060,19 @@ declare const kCMSampleBufferConduitNotificationParameter_ResumeTag: interop.Poi
 
 declare const kCMSampleBufferAttachmentKey_PostNotificationWhenConsumed: interop.Pointer;
 
+declare const kCMSampleAttachmentKey_HDR10PlusPerFrameData: interop.Pointer;
+
 declare const kCMHEVCTemporalLevelInfoKey_ProfileSpace: interop.Pointer;
 
 declare const kCMTextDisplayFlag_scrollDirection_topToBottom: number;
+
+declare const kCMTagCategoryKey: interop.Pointer;
 
 declare const kCMFormatDescriptionExtension_TransferFunction: interop.Pointer;
 
 declare const kCMTaggedBufferGroupFormatType_TaggedBufferGroup: number;
 
 declare const kCMMPEG2VideoProfile_XDCAM_EX_1080p24_VBR35: number;
-
-declare const kCMFormatDescriptionCameraCalibrationLensRole_Left: interop.Pointer;
 
 declare const kCMMPEG2VideoProfile_XDCAM_EX_720p60_VBR35: number;
 
@@ -1148,13 +1088,15 @@ declare const kCMSampleBufferDroppedFrameReason_FrameWasLate: interop.Pointer;
 
 declare const kCMVideoCodecType_DVCProPAL: number;
 
+declare const kCMTimeMappingTargetKey: interop.Pointer;
+
+declare const kCMFormatDescriptionExtension_BytesPerRow: interop.Pointer;
+
 declare const kCMSoundDescriptionFlavor_QuickTimeMovieV2: interop.Pointer;
 
 declare const kCMHEVCTemporalLevelInfoKey_ConstraintIndicatorFlags: interop.Pointer;
 
 declare const kCMMuxedStreamType_DV: number;
-
-declare const kCMFormatDescriptionCameraCalibration_LensIdentifier: interop.Pointer;
 
 declare const kCMTextMarkupAttribute_TextPositionPercentageRelativeToWritingDirection: interop.Pointer;
 
@@ -1180,9 +1122,9 @@ declare const kCMSampleBufferError_InvalidSampleData: number;
 
 declare const kCMVideoCodecType_H263: number;
 
-declare const kCMBufferQueueError_EnqueueAfterEndOfData: number;
+declare const kCMFormatDescriptionExtension_TemporalQuality: interop.Pointer;
 
-declare const kCMFormatDescriptionExtension_BytesPerRow: interop.Pointer;
+declare const kCMBufferQueueError_EnqueueAfterEndOfData: number;
 
 declare const kCMMetadataDataType_QuickTimeMetadataLocation_ISO6709: interop.Pointer;
 
@@ -1194,19 +1136,15 @@ declare const kCMClosedCaptionFormatType_CEA708: number;
 
 declare const kCMSampleBufferAttachmentKey_DroppedFrameReason: interop.Pointer;
 
-declare const kCMFormatDescriptionProjectionKind_ParametricImmersive: interop.Pointer;
-
 declare const kCMMetadataKeySpace_ISOUserData: interop.Pointer;
 
 declare const kCMAudioCodecType_AAC_AudibleProtected: number;
 
 declare const kCMPixelFormat_16LE565: number;
 
-declare const kCMFormatDescriptionExtension_TemporalQuality: interop.Pointer;
+declare const kCMTagInvalid: CMTag;
 
 declare const kCMFormatDescriptionAlphaChannelMode_PremultipliedAlpha: interop.Pointer;
-
-declare const kCMMPEG2VideoProfile_HDV_1080p25: number;
 
 declare const kCMSampleBufferConduitNotification_ResetOutput: interop.Pointer;
 
@@ -1234,13 +1172,13 @@ declare const kCMPersistentTrackID_Invalid: number;
 
 declare const kCMMetadataFormatDescriptionMetadataSpecificationKey_Identifier: interop.Pointer;
 
-declare const kCMTagDataTypeKey: interop.Pointer;
-
 declare const kCMSampleBufferError_BufferHasNoSampleSizes: number;
 
 declare const kCMPixelFormat_8IndexedGray_WhiteIsZero: number;
 
 declare const kCMMediaType_AuxiliaryPicture: number;
+
+declare const kCMTagMediaTypeVideo: CMTag;
 
 declare const kCMFormatDescriptionExtension_AuxiliaryTypeInfo: interop.Pointer;
 
@@ -1248,10 +1186,10 @@ declare const kCMMPEG2VideoProfile_XDCAM_HD_1080i60_VBR35: number;
 
 declare const kCMMetadataFormatDescriptionKey_DataType: interop.Pointer;
 
-declare const CMStereoViewComponents: {
-  None: 0,
-  LeftEye: 1,
-  RightEye: 2,
+declare const CMTaggedBufferGroupError: {
+  ParamErr: -15780,
+  AllocationFailed: -15781,
+  InternalError: -15782,
 };
 
 declare const CMPackingType: {
@@ -1260,18 +1198,11 @@ declare const CMPackingType: {
   OverUnder: 1870030194,
 };
 
-declare const CMTaggedBufferGroupError: {
-  ParamErr: -15780,
-  AllocationFailed: -15781,
-  InternalError: -15782,
-};
-
 declare const CMProjectionType: {
   Rectangular: 1919247220,
   Equirectangular: 1701934441,
   HalfEquirectangular: 1751478645,
   Fisheye: 1718186856,
-  ParametricImmersive: 1886546285,
 };
 
 declare const CMTagError: {
@@ -1289,6 +1220,14 @@ declare const CMTimeRoundingMethod: {
   Default: 1,
 };
 
+declare const CMTagDataType: {
+  Invalid: 0,
+  SInt64: 2,
+  Float64: 3,
+  OSType: 5,
+  Flags: 7,
+};
+
 declare const CMTimeFlags: {
   Valid: 1,
   HasBeenRounded: 2,
@@ -1298,12 +1237,10 @@ declare const CMTimeFlags: {
   ImpliedValueFlagsMask: 28,
 };
 
-declare const CMTagDataType: {
-  Invalid: 0,
-  SInt64: 2,
-  Float64: 3,
-  OSType: 5,
-  Flags: 7,
+declare const CMStereoViewComponents: {
+  None: 0,
+  LeftEye: 1,
+  RightEye: 2,
 };
 
 declare const CMTagCategory: {
@@ -1901,8 +1838,6 @@ declare function CMTaggedBufferGroupGetCMSampleBufferForTagCollection(group: int
 declare function CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(group: interop.PointerConvertible, tagCollection: interop.PointerConvertible): number;
 
 declare function CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup(allocator: interop.Object, taggedBufferGroup: interop.PointerConvertible, formatDescriptionOut: interop.PointerConvertible): number;
-
-declare function CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions(allocator: interop.Object, taggedBufferGroup: interop.PointerConvertible, extensions: interop.Object, formatDescriptionOut: interop.PointerConvertible): number;
 
 declare function CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(desc: interop.PointerConvertible, taggedBufferGroup: interop.PointerConvertible): number;
 

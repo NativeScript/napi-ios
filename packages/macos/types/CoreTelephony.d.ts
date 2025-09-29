@@ -6,11 +6,6 @@ declare const kCTErrorDomainNoError: number;
 
 declare const kCTErrorDomainMach: number;
 
-declare const CTCellularPlanCapability: {
-  Only: 0,
-  AndVoice: 1,
-};
-
 declare const CTCellularPlanProvisioningAddPlanResult: {
   Unknown: 0,
   Fail: 1,

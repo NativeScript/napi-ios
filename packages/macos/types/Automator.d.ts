@@ -99,10 +99,26 @@ declare class AMWorkflow extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class AMAppleScriptAction extends AMBundleAction {
-  script: OSAScript;
+declare class AMBundleAction extends AMAction implements NSCopying, NSSecureCoding {
+  awakeFromBundle(): void;
 
-  setScript(script: OSAScript | null): void;
+  readonly hasView: boolean;
+
+  readonly view: NSView;
+
+  readonly bundle: NSBundle;
+
+  parameters: NSMutableDictionary;
+
+  setParameters(parameters: NSMutableDictionary | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class AMAction extends NSObject {
@@ -165,6 +181,12 @@ declare class AMAction extends NSObject {
   isStopped(): boolean;
 }
 
+declare class AMAppleScriptAction extends AMBundleAction {
+  script: OSAScript;
+
+  setScript(script: OSAScript | null): void;
+}
+
 declare class AMShellScriptAction extends AMBundleAction {
   readonly remapLineEndings: boolean;
 
@@ -189,28 +211,6 @@ declare class AMWorkflowView extends NSView {
   setEditable(editable: boolean): void;
 
   setWorkflowController(workflowController: AMWorkflowController | null): void;
-}
-
-declare class AMBundleAction extends AMAction implements NSCopying, NSSecureCoding {
-  awakeFromBundle(): void;
-
-  readonly hasView: boolean;
-
-  readonly view: NSView;
-
-  readonly bundle: NSBundle;
-
-  parameters: NSMutableDictionary;
-
-  setParameters(parameters: NSMutableDictionary | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class AMWorkflowController extends NSController {

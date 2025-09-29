@@ -27,18 +27,6 @@ declare const GLKTextureLoaderOriginBottomLeft: string;
 
 declare const GLKTextureLoaderErrorDomain: string;
 
-declare const GLKTextureInfoOrigin: {
-  Unknown: 0,
-  TopLeft: 1,
-  BottomLeft: 2,
-};
-
-declare const GLKTextureInfoAlphaState: {
-  None: 0,
-  NonPremultiplied: 1,
-  Premultiplied: 2,
-};
-
 declare const GLKTextureLoaderError: {
   FileOrURLNotFound: 0,
   InvalidNSData: 1,
@@ -62,23 +50,10 @@ declare const GLKTextureLoaderError: {
   UnsupportedTextureTarget: 19,
 };
 
-declare const GLKVertexAttrib: {
-  Position: 0,
-  Normal: 1,
-  Color: 2,
-  TexCoord0: 3,
-  TexCoord1: 4,
-};
-
 declare const GLKFogMode: {
   Exp: 0,
   Exp2: 1,
   Linear: 2,
-};
-
-declare const GLKLightingType: {
-  Vertex: 0,
-  Pixel: 1,
 };
 
 declare const GLKTextureTarget: {
@@ -87,10 +62,35 @@ declare const GLKTextureTarget: {
   TargetCt: 2,
 };
 
+declare const GLKVertexAttrib: {
+  Position: 0,
+  Normal: 1,
+  Color: 2,
+  TexCoord0: 3,
+  TexCoord1: 4,
+};
+
+declare const GLKTextureInfoOrigin: {
+  Unknown: 0,
+  TopLeft: 1,
+  BottomLeft: 2,
+};
+
 declare const GLKTextureEnvMode: {
   Replace: 0,
   Modulate: 1,
   Decal: 2,
+};
+
+declare const GLKTextureInfoAlphaState: {
+  None: 0,
+  NonPremultiplied: 1,
+  Premultiplied: 2,
+};
+
+declare const GLKLightingType: {
+  Vertex: 0,
+  Pixel: 1,
 };
 
 declare class GLKEffectPropertyPrv {
@@ -101,31 +101,71 @@ declare class _GLKMatrixStack {
   constructor(init?: _GLKMatrixStack);
 }
 
-declare class unnamed_6709850948340095627 {
-  constructor(init?: unnamed_6709850948340095627);
+declare class unnamed_4340118264692572716 {
+  constructor(init?: unnamed_4340118264692572716);
+  v: _GLKVector3;
+  s: number;
+}
+
+declare class unnamed_7441134392189584296 {
+  constructor(init?: unnamed_7441134392189584296);
   x: number;
   y: number;
   z: number;
   w: number;
 }
 
-declare class unnamed_13021226450333645367 {
-  constructor(init?: unnamed_13021226450333645367);
+declare class unnamed_6098001155817091449 {
+  constructor(init?: unnamed_6098001155817091449);
   r: number;
   g: number;
   b: number;
   a: number;
 }
 
-declare class unnamed_11536144903521063482 {
-  constructor(init?: unnamed_11536144903521063482);
+declare class unnamed_5814871875344781407 {
+  constructor(init?: unnamed_5814871875344781407);
   s: number;
   t: number;
   p: number;
 }
 
-declare class unnamed_4301409454267012182 {
-  constructor(init?: unnamed_4301409454267012182);
+declare class unnamed_11182655840045691336 {
+  constructor(init?: unnamed_11182655840045691336);
+  r: number;
+  g: number;
+  b: number;
+}
+
+declare class unnamed_12336166838884148760 {
+  constructor(init?: unnamed_12336166838884148760);
+  x: number;
+  y: number;
+  z: number;
+}
+
+declare class unnamed_10694942570132747244 {
+  constructor(init?: unnamed_10694942570132747244);
+  s: number;
+  t: number;
+}
+
+declare class unnamed_9219172248061252020 {
+  constructor(init?: unnamed_9219172248061252020);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_3434959736976462309 {
+  constructor(init?: unnamed_3434959736976462309);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_11135210489574831852 {
+  constructor(init?: unnamed_11135210489574831852);
   m00: number;
   m01: number;
   m02: number;
@@ -137,38 +177,8 @@ declare class unnamed_4301409454267012182 {
   m22: number;
 }
 
-declare class unnamed_11207425384907004229 {
-  constructor(init?: unnamed_11207425384907004229);
-  m00: number;
-  m01: number;
-  m10: number;
-  m11: number;
-}
-
-declare class unnamed_14787106080537447687 {
-  constructor(init?: unnamed_14787106080537447687);
-  s: number;
-  t: number;
-  p: number;
-  q: number;
-}
-
-declare class unnamed_5430731160486306241 {
-  constructor(init?: unnamed_5430731160486306241);
-  x: number;
-  y: number;
-  z: number;
-}
-
-declare class unnamed_1635289748856265724 {
-  constructor(init?: unnamed_1635289748856265724);
-  r: number;
-  g: number;
-  b: number;
-}
-
-declare class unnamed_6898678727741797846 {
-  constructor(init?: unnamed_6898678727741797846);
+declare class unnamed_1451960628348023403 {
+  constructor(init?: unnamed_1451960628348023403);
   m00: number;
   m01: number;
   m02: number;
@@ -187,26 +197,6 @@ declare class unnamed_6898678727741797846 {
   m33: number;
 }
 
-declare class unnamed_5008373653079787460 {
-  constructor(init?: unnamed_5008373653079787460);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_17421728358688382732 {
-  constructor(init?: unnamed_17421728358688382732);
-  x: number;
-  y: number;
-}
-
-declare class unnamed_6997542199177186441 {
-  constructor(init?: unnamed_6997542199177186441);
-  v: _GLKVector3;
-  s: number;
-}
-
 declare class _GLKVertexAttributeParameters {
   constructor(init?: _GLKVertexAttributeParameters);
   type: number;
@@ -214,10 +204,20 @@ declare class _GLKVertexAttributeParameters {
   normalized: number;
 }
 
-declare class unnamed_4016935626715270488 {
-  constructor(init?: unnamed_4016935626715270488);
+declare class unnamed_7827863014682369709 {
+  constructor(init?: unnamed_7827863014682369709);
+  m00: number;
+  m01: number;
+  m10: number;
+  m11: number;
+}
+
+declare class unnamed_10207789714901716420 {
+  constructor(init?: unnamed_10207789714901716420);
   s: number;
   t: number;
+  p: number;
+  q: number;
 }
 
 type _GLKQuaternionDescriptor = 
@@ -244,28 +244,12 @@ declare class _GLKMatrix4 {
   m: unknown /* const array */;
 }
 
-type _GLKVector3Descriptor = 
-  | { v: unknown /* const array */ };
-
-declare class _GLKVector3 {
-  constructor(init?: _GLKVector3Descriptor);
-  v: unknown /* const array */;
-}
-
 type _GLKVector4Descriptor = 
   | { v: unknown /* const array */ };
 
 declare class _GLKVector4 {
   constructor(init?: _GLKVector4Descriptor);
   v: unknown /* const array */;
-}
-
-type _GLKMatrix3Descriptor = 
-  | { m: unknown /* const array */ };
-
-declare class _GLKMatrix3 {
-  constructor(init?: _GLKMatrix3Descriptor);
-  m: unknown /* const array */;
 }
 
 type _GLKMatrix2Descriptor = 
@@ -275,6 +259,22 @@ type _GLKMatrix2Descriptor =
 declare class _GLKMatrix2 {
   constructor(init?: _GLKMatrix2Descriptor);
   m2: unknown /* const array */;
+  m: unknown /* const array */;
+}
+
+type _GLKVector3Descriptor = 
+  | { v: unknown /* const array */ };
+
+declare class _GLKVector3 {
+  constructor(init?: _GLKVector3Descriptor);
+  v: unknown /* const array */;
+}
+
+type _GLKMatrix3Descriptor = 
+  | { m: unknown /* const array */ };
+
+declare class _GLKMatrix3 {
+  constructor(init?: _GLKMatrix3Descriptor);
   m: unknown /* const array */;
 }
 

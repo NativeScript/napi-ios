@@ -31,6 +31,25 @@ declare const UNNotificationPresentationOptions: {
   Banner: 16,
 };
 
+declare const UNNotificationSetting: {
+  NotSupported: 0,
+  Disabled: 1,
+  Enabled: 2,
+};
+
+declare const UNShowPreviewsSetting: {
+  Always: 0,
+  WhenAuthenticated: 1,
+  Never: 2,
+};
+
+declare const UNAuthorizationStatus: {
+  NotDetermined: 0,
+  Denied: 1,
+  Authorized: 2,
+  Provisional: 3,
+};
+
 declare const UNAuthorizationOptions: {
   Badge: 1,
   Sound: 2,
@@ -40,24 +59,6 @@ declare const UNAuthorizationOptions: {
   ProvidesAppNotificationSettings: 32,
   Provisional: 64,
   TimeSensitive: 256,
-};
-
-declare const UNShowPreviewsSetting: {
-  Always: 0,
-  WhenAuthenticated: 1,
-  Never: 2,
-};
-
-declare const UNNotificationCategoryOptions: {
-  CustomDismissAction: 1,
-  HiddenPreviewsShowTitle: 4,
-  HiddenPreviewsShowSubtitle: 8,
-};
-
-declare const UNNotificationActionOptions: {
-  AuthenticationRequired: 1,
-  Destructive: 2,
-  Foreground: 4,
 };
 
 declare const UNErrorCode: {
@@ -75,10 +76,16 @@ declare const UNErrorCode: {
   BadgeInputInvalid: 1600,
 };
 
-declare const UNNotificationSetting: {
-  NotSupported: 0,
-  Disabled: 1,
-  Enabled: 2,
+declare const UNNotificationCategoryOptions: {
+  CustomDismissAction: 1,
+  HiddenPreviewsShowTitle: 4,
+  HiddenPreviewsShowSubtitle: 8,
+};
+
+declare const UNNotificationActionOptions: {
+  AuthenticationRequired: 1,
+  Destructive: 2,
+  Foreground: 4,
 };
 
 declare const UNNotificationInterruptionLevel: {
@@ -86,13 +93,6 @@ declare const UNNotificationInterruptionLevel: {
   Active: 1,
   TimeSensitive: 2,
   Critical: 3,
-};
-
-declare const UNAuthorizationStatus: {
-  NotDetermined: 0,
-  Denied: 1,
-  Authorized: 2,
-  Provisional: 3,
 };
 
 declare const UNAlertStyle: {
@@ -192,6 +192,20 @@ declare class UNNotificationServiceExtension extends NSObject {
   didReceiveNotificationRequestWithContentHandler(request: UNNotificationRequest, contentHandler: (p1: UNNotificationContent) => void): void;
 
   serviceExtensionTimeWillExpire(): void;
+}
+
+declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
+  readonly notification: UNNotification;
+
+  readonly actionIdentifier: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class UNNotificationRequest extends NSObject implements NSCopying, NSSecureCoding {
@@ -433,20 +447,6 @@ declare class UNNotificationSound extends NSObject implements NSCopying, NSSecur
 
 declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {
   readonly repeats: boolean;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
-  readonly notification: UNNotification;
-
-  readonly actionIdentifier: string;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 

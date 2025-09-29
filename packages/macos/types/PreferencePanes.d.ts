@@ -5,11 +5,11 @@ declare const NSPrefPaneHelpMenuAnchorKey: string;
 
 declare const NSPrefPaneHelpMenuInfoPListKey: string;
 
+declare const NSPreferencePrefPaneIsAvailableNotification: string;
+
 declare const NSPreferencePaneSwitchToPaneNotification: string;
 
 declare const NSPreferencePaneCancelUnselectNotification: string;
-
-declare const NSPreferencePrefPaneIsAvailableNotification: string;
 
 declare const NSPreferencePaneDoUnselectNotification: string;
 

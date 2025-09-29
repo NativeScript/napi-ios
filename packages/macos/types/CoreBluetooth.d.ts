@@ -71,11 +71,6 @@ declare const CBCentralManagerOptionShowPowerAlertKey: string;
 
 declare const CBUUIDServerCharacteristicConfigurationString: string;
 
-declare const CBConnectionEvent: {
-  Disconnected: 0,
-  Connected: 1,
-};
-
 declare const CBAttributePermissions: {
   Readable: 1,
   Writeable: 2,
@@ -108,6 +103,11 @@ declare const CBPeripheralManagerState: {
   Unauthorized: 3,
   PoweredOff: 4,
   PoweredOn: 5,
+};
+
+declare const CBConnectionEvent: {
+  Disconnected: 0,
+  Connected: 1,
 };
 
 declare const CBCentralManagerState: {
@@ -354,6 +354,16 @@ declare class CBCharacteristic extends CBAttribute {
   readonly isNotifying: boolean;
 }
 
+declare class CBService extends CBAttribute {
+  readonly peripheral: CBPeripheral | null;
+
+  readonly isPrimary: boolean;
+
+  readonly includedServices: NSArray;
+
+  readonly characteristics: NSArray;
+}
+
 declare class CBPeer extends NSObject implements NSCopying {
   readonly identifier: NSUUID;
 
@@ -450,16 +460,6 @@ declare class CBCentralManager extends CBManager {
   cancelPeripheralConnection(peripheral: CBPeripheral): void;
 
   setDelegate(delegate: CBCentralManagerDelegate | null): void;
-}
-
-declare class CBService extends CBAttribute {
-  readonly peripheral: CBPeripheral | null;
-
-  readonly isPrimary: boolean;
-
-  readonly includedServices: NSArray;
-
-  readonly characteristics: NSArray;
 }
 
 // @ts-ignore ClassDecl.tsIgnore

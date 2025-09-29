@@ -1,12 +1,16 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const kCGImagePropertyCIFFRecordID: interop.Pointer;
+
+declare const kCGImagePropertyDNGProfileName: interop.Pointer;
+
+declare const kCGImagePropertyTIFFImageDescription: interop.Pointer;
+
 declare const kCGImagePropertyIPTCContentLocationCode: interop.Pointer;
 
 declare const kCGImagePropertyExifUserComment: interop.Pointer;
 
 declare const kCGImagePropertyGroupImageIsAlternateImage: interop.Pointer;
-
-declare const kCGImagePropertyIPTCExtGenreCvTermId: interop.Pointer;
 
 declare const kCGImagePropertyExifCompositeImage: interop.Pointer;
 
@@ -40,8 +44,6 @@ declare const kCGImagePropertyDNGProfileCalibrationSignature: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtArtworkCircaDateCreated: interop.Pointer;
 
-declare const kCGImagePropertyASTCBlockSize4x4: interop.Pointer;
-
 declare const kCGImagePropertyExifCustomRendered: interop.Pointer;
 
 declare const kCGImagePropertyIPTCScene: interop.Pointer;
@@ -61,6 +63,8 @@ declare const kCGImagePropertyGroupImageIsMonoscopicImage: interop.Pointer;
 declare const kCGImagePropertyIPTCExtLinkedEncRightsExpr: interop.Pointer;
 
 declare const kCGImagePropertyTIFFPrimaryChromaticities: interop.Pointer;
+
+declare const kCGImagePropertyIPTCExtDataOnScreenRegionUnit: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtRating: interop.Pointer;
 
@@ -99,8 +103,6 @@ declare const kCGImagePropertyPixelFormat: interop.Pointer;
 declare const kCGImageAnimationLoopCount: interop.Pointer;
 
 declare const kCGImageAnimationDelayTime: interop.Pointer;
-
-declare const kCGImageProviderPreferredTileHeight: interop.Pointer;
 
 declare const kIIOCameraModel_Intrinsics: interop.Pointer;
 
@@ -152,8 +154,6 @@ declare const kCGImagePropertyPNGCompressionFilter: interop.Pointer;
 
 declare const kCGImagePropertyOpenEXRAspectRatio: interop.Pointer;
 
-declare const kCGImagePropertyOpenEXRCompression: interop.Pointer;
-
 declare const kCGImagePropertyMakerCanonFirmware: interop.Pointer;
 
 declare const kCGImagePropertyMakerNikonShutterCount: interop.Pointer;
@@ -185,8 +185,6 @@ declare const kCGImagePropertyCIFFMeteringMode: interop.Pointer;
 declare const kCGImagePropertyCIFFImageSerialNumber: interop.Pointer;
 
 declare const kCGImagePropertyCIFFSelfTimingTime: interop.Pointer;
-
-declare const kCGImagePropertyCIFFRecordID: interop.Pointer;
 
 declare const kCGImagePropertyCIFFImageFileName: interop.Pointer;
 
@@ -380,6 +378,8 @@ declare const kCGImagePropertyIPTCExtLinkedEncodedRightsExprType: interop.Pointe
 
 declare const kCGImagePropertyIPTCExtIPTCLastEdited: interop.Pointer;
 
+declare const kCGImagePropertyIPTCExtGenreCvTermId: interop.Pointer;
+
 declare const kCGImagePropertyIPTCExtFeedIdentifier: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtEpisodeIdentifier: interop.Pointer;
@@ -397,8 +397,6 @@ declare const kCGImagePropertyIPTCExtDigitalSourceType: interop.Pointer;
 declare const kCGImagePropertyIPTCExtDigitalSourceFileType: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtDataOnScreenRegionX: interop.Pointer;
-
-declare const kCGImagePropertyIPTCExtDataOnScreenRegionUnit: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtDataOnScreenRegionText: interop.Pointer;
 
@@ -455,6 +453,8 @@ declare const kCGImagePropertyIPTCExtAboutCvTermCvId: interop.Pointer;
 declare const kCGImagePropertyIPTCLanguageIdentifier: interop.Pointer;
 
 declare const kCGImagePropertyIPTCImageType: interop.Pointer;
+
+declare const kCGImagePropertyIPTCWriterEditor: interop.Pointer;
 
 declare const kCGImagePropertyIPTCCopyrightNotice: interop.Pointer;
 
@@ -722,31 +722,19 @@ declare const kCGImagePropertyHEICSDictionary: interop.Pointer;
 
 declare const kCGImagePropertyTIFFDictionary: interop.Pointer;
 
-declare const kCGImageDestinationEncodeBaseColorSpace: interop.Pointer;
-
-declare const kCGImageDestinationEncodeIsBaseImage: interop.Pointer;
-
 declare const kCGImageDestinationEncodeRequestOptions: interop.Pointer;
 
 declare const kCGImageDestinationEncodeToISOHDR: interop.Pointer;
 
 declare const kCGImageDestinationEncodeRequest: interop.Pointer;
 
-declare const kCGImagePropertyBCFormat: interop.Pointer;
-
-declare const kCGImagePropertyPVREncoder: interop.Pointer;
-
-declare const kCGImagePropertyASTCEncoder: interop.Pointer;
-
-declare const kCGImagePropertyEncoder: interop.Pointer;
-
 declare const kCGImageMetadataShouldExcludeGPS: interop.Pointer;
 
 declare const kCGImageMetadataShouldExcludeXMP: interop.Pointer;
 
-declare const kCGImageDestinationLossyCompressionQuality: interop.Pointer;
+declare const kCGImageDestinationPreserveGainMap: interop.Pointer;
 
-declare const kCGComputeHDRStats: interop.Pointer;
+declare const kCGImageDestinationLossyCompressionQuality: interop.Pointer;
 
 declare const kCGImageSourceGenerateImageSpecificLumaScaling: interop.Pointer;
 
@@ -822,8 +810,6 @@ declare const kCGImagePropertyMakerNikonDictionary: interop.Pointer;
 
 declare const kCGImagePropertyMakerCanonOwnerName: interop.Pointer;
 
-declare const kCGImagePropertyTIFFImageDescription: interop.Pointer;
-
 declare const kCGImageAuxiliaryDataTypeSemanticSegmentationGlassesMatte: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtDopesheet: interop.Pointer;
@@ -842,15 +828,11 @@ declare const kCGImagePropertyDNGDefaultCropSize: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtWorkflowTagCvTermId: interop.Pointer;
 
-declare const kCGImagePropertyASTCBlockSize8x8: interop.Pointer;
-
 declare const kCGImagePropertyPNGSource: interop.Pointer;
 
 declare const kCGImagePropertyExifVersion: interop.Pointer;
 
 declare const kCGImagePropertyPNGDescription: interop.Pointer;
-
-declare const kCGImageDestinationEncodeGenerateGainMapWithBaseImage: interop.Pointer;
 
 declare const kCGImagePropertyIPTCBylineTitle: interop.Pointer;
 
@@ -875,12 +857,6 @@ declare const kCGImagePropertyWebPFrameInfoArray: interop.Pointer;
 declare const kCGImagePropertyImageCount: interop.Pointer;
 
 declare const kCGImageDestinationEncodeToSDR: interop.Pointer;
-
-declare const kCGImagePropertyIPTCWriterEditor: interop.Pointer;
-
-declare const kCGImagePropertyDNGProfileName: interop.Pointer;
-
-declare const kCGImageDestinationPreserveGainMap: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtArtworkContributionDescription: interop.Pointer;
 
@@ -958,8 +934,6 @@ declare const kCGImagePropertyHEICSCanvasPixelWidth: interop.Pointer;
 
 declare const kCGImagePropertyTIFFTileWidth: interop.Pointer;
 
-declare const kCGImagePropertyIPTCReferenceNumber: interop.Pointer;
-
 declare const kCGImagePropertyExifSourceExposureTimesOfCompositeImage: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtShownEventIdentifier: interop.Pointer;
@@ -985,8 +959,6 @@ declare const kCGImagePropertyPixelHeight: interop.Pointer;
 declare const kCGImagePropertyIPTCExtContributor: interop.Pointer;
 
 declare const kCGImagePropertyHEICSFrameInfoArray: interop.Pointer;
-
-declare const kCGImagePropertyBCEncoder: interop.Pointer;
 
 declare const kCGImagePropertyJFIFDensityUnit: interop.Pointer;
 
@@ -1046,8 +1018,6 @@ declare const kCGImagePropertyColorModelLab: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtSeriesIdentifier: interop.Pointer;
 
-declare const kCGImageDestinationEncodeGainMapSubsampleFactor: interop.Pointer;
-
 declare const kIIOCameraModelType_SimplifiedPinhole: interop.Pointer;
 
 declare const kCGImagePropertyDNGColorMatrix2: interop.Pointer;
@@ -1076,8 +1046,6 @@ declare const kCGImageProperty8BIMDictionary: interop.Pointer;
 
 declare const kCGImagePropertyExifAuxLensID: interop.Pointer;
 
-declare const kCGImageDestinationEncodeAlternateColorSpace: interop.Pointer;
-
 declare const kCGImagePropertyIPTCExtArtworkLicensorName: interop.Pointer;
 
 declare const kCGImagePropertyMakerCanonImageSerialNumber: interop.Pointer;
@@ -1100,8 +1068,6 @@ declare const kCGImagePropertyDNGColorimetricReference: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtLocationLocationName: interop.Pointer;
 
-declare const kCGImagePropertyCIFFLensModel: interop.Pointer;
-
 declare const kCGImagePropertyIPTCOriginalTransmissionReference: interop.Pointer;
 
 declare const kCGImagePropertyMakerNikonLensAdapter: interop.Pointer;
@@ -1113,8 +1079,6 @@ declare const kCGImagePropertyIPTCExtRatingRegionSublocation: interop.Pointer;
 declare const kCGImagePropertyDNGBayerGreenSplit: interop.Pointer;
 
 declare const kCGImagePropertyDNGMaskedAreas: interop.Pointer;
-
-declare const kCGImagePropertyASTCBlockSize: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtDataOnScreenRegionD: interop.Pointer;
 
@@ -1170,6 +1134,8 @@ declare const kCGImagePropertyExifMeteringMode: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtArtworkCopyrightNotice: interop.Pointer;
 
+declare const kCGImagePropertyIPTCReferenceNumber: interop.Pointer;
+
 declare const kCGImagePropertyDNGBaselineSharpness: interop.Pointer;
 
 declare const kIIOCameraExtrinsics_Rotation: interop.Pointer;
@@ -1200,8 +1166,6 @@ declare const kCGImagePropertyIPTCExtDataOnScreen: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtSeasonName: interop.Pointer;
 
-declare const kCGImagePropertyJFIFVersion: interop.Pointer;
-
 declare const kCGImagePropertyExifAuxLensModel: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtLocationProvinceState: interop.Pointer;
@@ -1225,8 +1189,6 @@ declare const kCGImagePropertyDNGRawDataUniqueID: interop.Pointer;
 declare const kCGImagePropertyIPTCExtRatingValueLogoLink: interop.Pointer;
 
 declare const kCGImagePropertyHEICSDelayTime: interop.Pointer;
-
-declare const kCGImageDestinationEncodeGainMapPixelFormatRequest: interop.Pointer;
 
 declare const kCGImagePropertyTIFFSoftware: interop.Pointer;
 
@@ -1263,6 +1225,8 @@ declare const kCGImagePropertyDNGAsShotWhiteXY: interop.Pointer;
 declare const kCGImagePropertyIPTCExtEpisode: interop.Pointer;
 
 declare const kCGImagePropertyGroupImageIsRightImage: interop.Pointer;
+
+declare const kCGImagePropertyJFIFVersion: interop.Pointer;
 
 declare const kCGImagePropertyDNGOriginalRawFileDigest: interop.Pointer;
 
@@ -1360,6 +1324,8 @@ declare const kCGImagePropertyGroups: interop.Pointer;
 
 declare const kCGImagePropertyMakerFujiDictionary: interop.Pointer;
 
+declare const kCGImagePropertyCIFFLensModel: interop.Pointer;
+
 declare const kCGImagePropertyIPTCExtArtworkSourceInvURL: interop.Pointer;
 
 declare const kCGImagePropertyColorModelCMYK: interop.Pointer;
@@ -1377,8 +1343,6 @@ declare const kCGImagePropertyIPTCExtSeriesName: interop.Pointer;
 declare const kCGImagePropertyIPTCDigitalCreationDate: interop.Pointer;
 
 declare const kCGImagePropertyMakerCanonFlashExposureComp: interop.Pointer;
-
-declare const kCGImageProviderPreferredTileWidth: interop.Pointer;
 
 declare const kCGImagePropertyWebPCanvasPixelHeight: interop.Pointer;
 
@@ -1468,8 +1432,6 @@ declare const kCGImagePropertyIPTCExtLocationSublocation: interop.Pointer;
 
 declare const kCGImagePropertyIPTCContactInfoPhones: interop.Pointer;
 
-declare const kCGImageDestinationEncodeBasePixelFormatRequest: interop.Pointer;
-
 declare const kCGImageAuxiliaryDataTypeSemanticSegmentationSkinMatte: interop.Pointer;
 
 declare const kCGImagePropertyIPTCExtLocationShown: interop.Pointer;
@@ -1500,33 +1462,6 @@ declare const kCGImagePropertyGroupImageIndexRight: interop.Pointer;
 
 declare const kCGImagePropertyGroupImageBaseline: interop.Pointer;
 
-declare const CGImagePropertyOrientation: {
-  Up: 1,
-  UpMirrored: 2,
-  Down: 3,
-  DownMirrored: 4,
-  LeftMirrored: 5,
-  Right: 6,
-  RightMirrored: 7,
-  Left: 8,
-};
-
-declare const CGImagePropertyTGACompression: {
-  None: 0,
-  RLE: 1,
-};
-
-declare const CGImageMetadataType: {
-  Invalid: -1,
-  Default: 0,
-  String: 1,
-  ArrayUnordered: 2,
-  ArrayOrdered: 3,
-  AlternateArray: 4,
-  AlternateText: 5,
-  Structure: 6,
-};
-
 declare const CGImageAnimationStatus: {
   ParameterError: -22140,
   CorruptInputImage: -22141,
@@ -1543,6 +1478,22 @@ declare const CGImageMetadataErrors: {
   PrefixConflict: 4,
 };
 
+declare const CGImagePropertyTGACompression: {
+  None: 0,
+  RLE: 1,
+};
+
+declare const CGImagePropertyOrientation: {
+  Up: 1,
+  UpMirrored: 2,
+  Down: 3,
+  DownMirrored: 4,
+  LeftMirrored: 5,
+  Right: 6,
+  RightMirrored: 7,
+  Left: 8,
+};
+
 declare const CGImageSourceStatus: {
   UnexpectedEOF: -5,
   InvalidData: -4,
@@ -1550,6 +1501,17 @@ declare const CGImageSourceStatus: {
   ReadingHeader: -2,
   Incomplete: -1,
   Complete: 0,
+};
+
+declare const CGImageMetadataType: {
+  Invalid: -1,
+  Default: 0,
+  String: 1,
+  ArrayUnordered: 2,
+  ArrayOrdered: 3,
+  AlternateArray: 4,
+  AlternateText: 5,
+  Structure: 6,
 };
 
 declare class CGImageMetadataTag {

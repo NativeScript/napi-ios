@@ -606,6 +606,10 @@ declare const kSCEntNetLink: interop.Pointer;
 
 declare const kSCValNetPPPAuthPromptAfter: interop.Pointer;
 
+declare const kSCPropUsersConsoleUserUID: interop.Pointer;
+
+declare const kSCPropNetModemHoldDisconnectOnAnswer: interop.Pointer;
+
 declare const kSCPropNetDNSSearchDomains: interop.Pointer;
 
 declare const kSCStatusKeyExists: number;
@@ -630,8 +634,6 @@ declare const kSCStatusLocked: number;
 
 declare const kSCPropNetDNSServerTimeout: interop.Pointer;
 
-declare const kSCPropNetModemHoldDisconnectOnAnswer: interop.Pointer;
-
 declare const kSCPropNetProxiesFTPPassive: interop.Pointer;
 
 declare const kSCValNetAirPortJoinModeRanked: interop.Pointer;
@@ -641,8 +643,6 @@ declare const kSCPropNetAirPortAllowNetCreation: interop.Pointer;
 declare const kSCEntUsersConsoleUser: interop.Pointer;
 
 declare const kSCEntNetDNS: interop.Pointer;
-
-declare const kSCPropUsersConsoleUserUID: interop.Pointer;
 
 declare const kSCPropNetLinkDetaching: interop.Pointer;
 
@@ -719,6 +719,15 @@ declare class __SCNetworkConnection {
   constructor(init?: __SCNetworkConnection);
 }
 
+declare class SCNetworkReachabilityContext {
+  constructor(init?: SCNetworkReachabilityContext);
+  version: number;
+  info: interop.Pointer;
+  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  release: (p1: interop.PointerConvertible) => void | null;
+  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
+}
+
 declare class __SCBondStatus {
   constructor(init?: __SCBondStatus);
 }
@@ -738,15 +747,6 @@ declare class __SCDynamicStore {
 
 declare class __SCNetworkReachability {
   constructor(init?: __SCNetworkReachability);
-}
-
-declare class SCNetworkReachabilityContext {
-  constructor(init?: SCNetworkReachabilityContext);
-  version: number;
-  info: interop.Pointer;
-  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  release: (p1: interop.PointerConvertible) => void | null;
-  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
 declare class __SCPreferences {

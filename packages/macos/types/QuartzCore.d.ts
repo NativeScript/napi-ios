@@ -81,12 +81,6 @@ declare const kCAGravityBottom: string;
 
 declare const kCAGravityCenter: string;
 
-declare const CADynamicRangeHigh: string;
-
-declare const CADynamicRangeConstrainedHigh: string;
-
-declare const CADynamicRangeAutomatic: string;
-
 declare const CAToneMapModeAutomatic: string;
 
 declare const kCAFillModeRemoved: string;
@@ -94,8 +88,6 @@ declare const kCAFillModeRemoved: string;
 declare const kCAFillModeBackwards: string;
 
 declare const kCAEmitterLayerSphere: string;
-
-declare const CADynamicRangeStandard: string;
 
 declare const kCAGravityTop: string;
 
@@ -193,8 +185,6 @@ declare const kCAAnimationRotateAuto: string;
 
 declare const kCARendererMetalCommandQueue: string;
 
-declare const kCAContentsFormatAutomatic: string;
-
 declare const kCAFilterNearest: string;
 
 declare const kCAEmitterLayerRectangle: string;
@@ -234,11 +224,14 @@ declare const CACornerMask: {
   MaxXMax: 8,
 };
 
-declare const CAEdgeAntialiasingMask: {
-  Left: 1,
-  Right: 2,
-  Bottom: 4,
-  Top: 8,
+declare const CAAutoresizingMask: {
+  NotSizable: 0,
+  MinXMargin: 1,
+  WidthSizable: 2,
+  MaxXMargin: 4,
+  MinYMargin: 8,
+  HeightSizable: 16,
+  MaxYMargin: 32,
 };
 
 declare const CAConstraintAttribute: {
@@ -252,14 +245,11 @@ declare const CAConstraintAttribute: {
   Height: 7,
 };
 
-declare const CAAutoresizingMask: {
-  NotSizable: 0,
-  MinXMargin: 1,
-  WidthSizable: 2,
-  MaxXMargin: 4,
-  MinYMargin: 8,
-  HeightSizable: 16,
-  MaxYMargin: 32,
+declare const CAEdgeAntialiasingMask: {
+  Left: 1,
+  Right: 2,
+  Bottom: 4,
+  Top: 8,
 };
 
 declare class CATransform3D {
@@ -416,6 +406,30 @@ declare interface CAMediaTiming {
 declare class CAMediaTiming extends NativeObject implements CAMediaTiming {
 }
 
+declare class CADisplayLink extends NSObject {
+  addToRunLoopForMode(runloop: NSRunLoop, mode: string): void;
+
+  removeFromRunLoopForMode(runloop: NSRunLoop, mode: string): void;
+
+  invalidate(): void;
+
+  readonly timestamp: number;
+
+  readonly duration: number;
+
+  readonly targetTimestamp: number;
+
+  paused: boolean;
+
+  preferredFrameRateRange: CAFrameRateRange;
+
+  isPaused(): boolean;
+
+  setPaused(paused: boolean): void;
+
+  setPreferredFrameRateRange(preferredFrameRateRange: CAFrameRateRange): void;
+}
+
 declare class CAMetalDisplayLinkUpdate extends NSObject {
   readonly drawable: CAMetalDrawable;
 
@@ -478,8 +492,6 @@ declare class CAMetalLayer extends CALayer {
   get developerHUDProperties(): NSDictionary;
   set developerHUDProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
-  readonly residencySet: MTLResidencySet;
-
   setDevice(device: MTLDevice | null): void;
 
   setPixelFormat(pixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
@@ -496,7 +508,7 @@ declare class CAMetalLayer extends CALayer {
 
   setWantsExtendedDynamicRangeContent(wantsExtendedDynamicRangeContent: boolean): void;
 
-  setEDRMetadata(EDRMetadata: CAEDRMetadata | null): void;
+  setEDRMetadata(EDRMetadata: CAEDRMetadata): void;
 
   setDisplaySyncEnabled(displaySyncEnabled: boolean): void;
 
@@ -653,20 +665,6 @@ declare class CAMetalDisplayLink extends NSObject {
   setPaused(paused: boolean): void;
 }
 
-declare class CABasicAnimation extends CAPropertyAnimation {
-  fromValue: interop.Object;
-
-  toValue: interop.Object;
-
-  byValue: interop.Object;
-
-  setFromValue(fromValue: interop.Object | null): void;
-
-  setToValue(toValue: interop.Object | null): void;
-
-  setByValue(byValue: interop.Object | null): void;
-}
-
 declare class CATransformLayer extends CALayer {
 }
 
@@ -755,7 +753,21 @@ declare class CATransition extends CAAnimation {
 
   setEndProgress(endProgress: number): void;
 
-  setFilter(filter: interop.Object): void;
+  setFilter(filter: interop.Object | null): void;
+}
+
+declare class CABasicAnimation extends CAPropertyAnimation {
+  fromValue: interop.Object;
+
+  toValue: interop.Object;
+
+  byValue: interop.Object;
+
+  setFromValue(fromValue: interop.Object | null): void;
+
+  setToValue(toValue: interop.Object | null): void;
+
+  setByValue(byValue: interop.Object | null): void;
 }
 
 declare class CAScrollLayer extends CALayer {
@@ -833,30 +845,6 @@ declare class CAMediaTimingFunction extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class CADisplayLink extends NSObject {
-  addToRunLoopForMode(runloop: NSRunLoop, mode: string): void;
-
-  removeFromRunLoopForMode(runloop: NSRunLoop, mode: string): void;
-
-  invalidate(): void;
-
-  readonly timestamp: number;
-
-  readonly duration: number;
-
-  readonly targetTimestamp: number;
-
-  paused: boolean;
-
-  preferredFrameRateRange: CAFrameRateRange;
-
-  isPaused(): boolean;
-
-  setPaused(paused: boolean): void;
-
-  setPreferredFrameRateRange(preferredFrameRateRange: CAFrameRateRange): void;
 }
 
 declare class CAPropertyAnimation extends CAAnimation {
@@ -1008,10 +996,6 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
   wantsExtendedDynamicRangeContent: boolean;
 
   toneMapMode: string;
-
-  preferredDynamicRange: string;
-
-  contentsHeadroom: number;
 
   minificationFilter: string;
 
@@ -1175,10 +1159,6 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setToneMapMode(toneMapMode: string): void;
 
-  setPreferredDynamicRange(preferredDynamicRange: string): void;
-
-  setContentsHeadroom(contentsHeadroom: number): void;
-
   setMinificationFilter(minificationFilter: string): void;
 
   setMagnificationFilter(magnificationFilter: string): void;
@@ -1235,7 +1215,7 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setAutoresizingMask(autoresizingMask: interop.Enum<typeof CAAutoresizingMask>): void;
 
-  setLayoutManager(layoutManager: CALayoutManager): void;
+  setLayoutManager(layoutManager: CALayoutManager | null): void;
 
   setActions(actions: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 

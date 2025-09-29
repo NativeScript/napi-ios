@@ -46,6 +46,8 @@ declare const NSValidationInvalidURIError: number;
 
 declare const NSValidationStringPatternMatchingError: number;
 
+declare const NSValidationDateTooSoonError: number;
+
 declare const NSValidationRelationshipExceedsMaximumCountError: number;
 
 declare const NSValidationRelationshipLacksMinimumCountError: number;
@@ -88,8 +90,6 @@ declare const NSInferMappingModelAutomaticallyOption: string;
 
 declare const NSMigratePersistentStoresAutomaticallyOption: string;
 
-declare const NSIgnorePersistentStoreVersioningOption: string;
-
 declare const NSSQLiteAnalyzeOption: string;
 
 declare const NSSQLitePragmasOption: string;
@@ -114,7 +114,7 @@ declare const NSMergeByPropertyStoreTrumpMergePolicy: interop.Object;
 
 declare const NSErrorMergePolicy: interop.Object;
 
-declare const NSRefreshedObjectIDsKey: string;
+declare const NSDeletedObjectIDsKey: string;
 
 declare const NSUpdatedObjectIDsKey: string;
 
@@ -140,21 +140,23 @@ declare const NSInferredMappingModelError: number;
 
 declare const NSPersistentStoreFileProtectionKey: string;
 
-declare const NSRefreshedObjectsKey: string;
+declare const NSValidationStringTooShortError: number;
 
-declare const NSManagedObjectContextWillSaveNotification: string;
+declare const NSPersistentStoreRemoveUbiquitousMetadataOption: string;
+
+declare const NSRefreshedObjectsKey: string;
 
 declare const NSStoreUUIDKey: string;
 
 declare const NSExternalRecordImportError: number;
+
+declare const NSManagedObjectContextDidSaveNotification: string;
 
 declare const NSPersistentCloudKitContainerEventUserInfoKey: string;
 
 declare const NSManagedObjectModelReferenceNotFoundError: number;
 
 declare const NSMergeByPropertyObjectTrumpMergePolicy: interop.Object;
-
-declare const NSSQLiteManualVacuumOption: string;
 
 declare const NSPersistentHistoryTrackingKey: string;
 
@@ -180,13 +182,19 @@ declare const NSDetailedErrorsKey: string;
 
 declare const NSValidationPredicateErrorKey: string;
 
+declare const NSInvalidatedObjectsKey: string;
+
 declare const NSPersistentStoreStagedMigrationManagerOptionKey: string;
 
 declare const NSPersistentStoreOSCompatibility: string;
 
+declare const NSDeletedObjectsKey: string;
+
 declare const NSMigrationEntityPolicyKey: string;
 
-declare const NSDeletedObjectsKey: string;
+declare const NSPersistentStoreUbiquitousContentURLKey: string;
+
+declare const NSSQLiteManualVacuumOption: string;
 
 declare const NSCoreDataCoreSpotlightExporter: string;
 
@@ -198,17 +206,15 @@ declare const NSValidationNumberTooLargeError: number;
 
 declare const NSPersistentHistoryTokenExpiredError: number;
 
-declare const NSPersistentStoreUbiquitousContentURLKey: string;
+declare const NSPersistentStoreInvalidTypeError: number;
+
+declare const NSMigrationMissingSourceModelError: number;
 
 declare const NSStoreModelVersionIdentifiersKey: string;
 
 declare const NSAffectedStoresErrorKey: string;
 
 declare const NSPersistentStoreForceDestroyOption: string;
-
-declare const NSValidationDateTooSoonError: number;
-
-declare const NSManagedObjectContextDidSaveNotification: string;
 
 declare const NSInvalidatedObjectIDsKey: string;
 
@@ -224,37 +230,29 @@ declare const NSValidationRelationshipDeniedDeleteError: number;
 
 declare const NSMigrationConstraintViolationError: number;
 
-declare const NSPersistentStoreRemoteChangeNotificationPostOptionKey: string;
-
-declare const NSDeletedObjectIDsKey: string;
-
 declare const NSValidationKeyErrorKey: string;
 
 declare const NSPersistentStoreURLKey: string;
 
-declare const NSValidationStringTooShortError: number;
+declare const NSPersistentStoreRemoteChangeNotificationPostOptionKey: string;
 
-declare const NSPersistentStoreRemoveUbiquitousMetadataOption: string;
+declare const NSIgnorePersistentStoreVersioningOption: string;
+
+declare const NSValidationNumberTooSmallError: number;
 
 declare const NSPersistentStoreTimeoutOption: string;
 
-declare const NSManagedObjectContextDidSaveObjectIDsNotification: string;
-
-declare const NSInvalidatedObjectsKey: string;
+declare const NSManagedObjectContextWillSaveNotification: string;
 
 declare const NSPersistentStoreIncompatibleVersionHashError: number;
 
 declare const NSManagedObjectExternalRelationshipError: number;
 
-declare const NSValidationNumberTooSmallError: number;
+declare const NSManagedObjectContextDidSaveObjectIDsNotification: string;
 
 declare const NSPersistentStoreUnsupportedRequestTypeError: number;
 
 declare const NSPersistentStoreCoordinatorStoresWillChangeNotification: string;
-
-declare const NSPersistentStoreInvalidTypeError: number;
-
-declare const NSMigrationMissingSourceModelError: number;
 
 declare const NSMigrationError: number;
 
@@ -262,11 +260,13 @@ declare const NSManagedObjectConstraintValidationError: number;
 
 declare const NSPersistentStoreSaveConflictsErrorKey: string;
 
-declare const NSPersistentStoreSaveError: number;
-
 declare const NSSQLiteError: number;
 
 declare const NSStagedMigrationBackwardMigrationError: number;
+
+declare const NSRefreshedObjectIDsKey: string;
+
+declare const NSPersistentStoreSaveError: number;
 
 declare const NSPersistentStoreUbiquitousPeerTokenOption: string;
 

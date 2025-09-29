@@ -1,20 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare class NSSymbolDrawOffEffect extends NSSymbolEffect {
-  static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  effectWithByLayer(): this;
-
-  effectWithWholeSymbol(): this;
-
-  effectWithIndividually(): this;
-
-  effectWithReversed(): this;
-
-  effectWithNonReversed(): this;
-}
-
 declare class NSSymbolEffectOptionsRepeatBehavior extends NSObject implements NSCopying, NSSecureCoding {
   static behaviorPeriodic<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -74,16 +60,6 @@ declare class NSSymbolAutomaticContentTransition extends NSSymbolContentTransiti
 }
 
 declare class NSSymbolMagicReplaceContentTransition extends NSSymbolContentTransition {
-}
-
-declare class NSSymbolDrawOnEffect extends NSSymbolEffect {
-  static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  effectWithByLayer(): this;
-
-  effectWithWholeSymbol(): this;
-
-  effectWithIndividually(): this;
 }
 
 declare class NSSymbolWiggleEffect extends NSSymbolEffect {

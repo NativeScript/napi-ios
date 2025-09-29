@@ -2,8 +2,6 @@
 
 declare const _nw_content_context_default_message: NSObject;
 
-declare const kNWErrorDomainWiFiAware: interop.Pointer;
-
 declare const kNWErrorDomainPOSIX: interop.Pointer;
 
 declare const nw_browse_result_change_result_removed: number;
@@ -38,30 +36,25 @@ declare const _nw_privacy_context_default_context: NSObject;
 
 declare const kNWErrorDomainTLS: interop.Pointer;
 
-declare const nw_interface_radio_type_t: {
-  nw_interface_radio_type_unknown: 0,
-  nw_interface_radio_type_wifi_b: 1,
-  nw_interface_radio_type_wifi_a: 2,
-  nw_interface_radio_type_wifi_g: 3,
-  nw_interface_radio_type_wifi_n: 4,
-  nw_interface_radio_type_wifi_ac: 5,
-  nw_interface_radio_type_wifi_ax: 6,
-  nw_interface_radio_type_cell_lte: 128,
-  nw_interface_radio_type_cell_endc_sub6: 129,
-  nw_interface_radio_type_cell_endc_mmw: 130,
-  nw_interface_radio_type_cell_nr_sa_sub6: 131,
-  nw_interface_radio_type_cell_nr_sa_mmw: 132,
-  nw_interface_radio_type_cell_wcdma: 133,
-  nw_interface_radio_type_cell_gsm: 134,
-  nw_interface_radio_type_cell_cdma: 135,
-  nw_interface_radio_type_cell_evdo: 136,
+declare const nw_endpoint_type_t: {
+  nw_endpoint_type_invalid: 0,
+  nw_endpoint_type_address: 1,
+  nw_endpoint_type_host: 2,
+  nw_endpoint_type_bonjour_service: 3,
+  nw_endpoint_type_url: 4,
 };
 
-declare const nw_link_quality_t: {
-  nw_link_quality_unknown: 0,
-  nw_link_quality_minimal: 10,
-  nw_link_quality_moderate: 20,
-  nw_link_quality_good: 30,
+declare const nw_connection_group_state_t: {
+  nw_connection_group_state_invalid: 0,
+  nw_connection_group_state_waiting: 1,
+  nw_connection_group_state_ready: 2,
+  nw_connection_group_state_failed: 3,
+  nw_connection_group_state_cancelled: 4,
+};
+
+declare const nw_ws_version_t: {
+  nw_ws_version_invalid: 0,
+  nw_ws_version_13: 1,
 };
 
 declare const nw_ws_opcode_t: {
@@ -74,9 +67,17 @@ declare const nw_ws_opcode_t: {
   nw_ws_opcode_pong: 10,
 };
 
-declare const nw_data_transfer_report_state_t: {
-  nw_data_transfer_report_state_collecting: 1,
-  nw_data_transfer_report_state_collected: 2,
+declare const nw_multipath_version_t: {
+  nw_multipath_version_unspecified: -1,
+  nw_multipath_version_0: 0,
+  nw_multipath_version_1: 1,
+};
+
+declare const nw_quic_stream_type_t: {
+  nw_quic_stream_type_unknown: 0,
+  nw_quic_stream_type_bidirectional: 1,
+  nw_quic_stream_type_unidirectional: 2,
+  nw_quic_stream_type_datagram: 3,
 };
 
 declare const nw_listener_state_t: {
@@ -94,78 +95,16 @@ declare const nw_ip_ecn_flag_t: {
   nw_ip_ecn_flag_ce: 3,
 };
 
-declare const nw_framer_start_result_t: {
-  nw_framer_start_result_ready: 1,
-  nw_framer_start_result_will_mark_ready: 2,
-};
-
-declare const nw_endpoint_type_t: {
-  nw_endpoint_type_invalid: 0,
-  nw_endpoint_type_address: 1,
-  nw_endpoint_type_host: 2,
-  nw_endpoint_type_bonjour_service: 3,
-  nw_endpoint_type_url: 4,
-};
-
-declare const nw_interface_type_t: {
-  nw_interface_type_other: 0,
-  nw_interface_type_wifi: 1,
-  nw_interface_type_cellular: 2,
-  nw_interface_type_wired: 3,
-  nw_interface_type_loopback: 4,
-};
-
-declare const nw_connection_group_state_t: {
-  nw_connection_group_state_invalid: 0,
-  nw_connection_group_state_waiting: 1,
-  nw_connection_group_state_ready: 2,
-  nw_connection_group_state_failed: 3,
-  nw_connection_group_state_cancelled: 4,
-};
-
-declare const nw_parameters_expired_dns_behavior_t: {
-  nw_parameters_expired_dns_behavior_default: 0,
-  nw_parameters_expired_dns_behavior_allow: 1,
-  nw_parameters_expired_dns_behavior_prohibit: 2,
-  nw_parameters_expired_dns_behavior_persistent: 3,
+declare const nw_ip_local_address_preference_t: {
+  nw_ip_local_address_preference_default: 0,
+  nw_ip_local_address_preference_temporary: 1,
+  nw_ip_local_address_preference_stable: 2,
 };
 
 declare const nw_ip_version_t: {
   nw_ip_version_any: 0,
   nw_ip_version_4: 4,
   nw_ip_version_6: 6,
-};
-
-declare const nw_browser_state_t: {
-  nw_browser_state_invalid: 0,
-  nw_browser_state_ready: 1,
-  nw_browser_state_failed: 2,
-  nw_browser_state_cancelled: 3,
-  nw_browser_state_waiting: 4,
-};
-
-declare const nw_ws_version_t: {
-  nw_ws_version_invalid: 0,
-  nw_ws_version_13: 1,
-};
-
-declare const nw_multipath_version_t: {
-  nw_multipath_version_unspecified: -1,
-  nw_multipath_version_0: 0,
-  nw_multipath_version_1: 1,
-};
-
-declare const nw_quic_stream_type_t: {
-  nw_quic_stream_type_unknown: 0,
-  nw_quic_stream_type_bidirectional: 1,
-  nw_quic_stream_type_unidirectional: 2,
-  nw_quic_stream_type_datagram: 3,
-};
-
-declare const nw_ip_local_address_preference_t: {
-  nw_ip_local_address_preference_default: 0,
-  nw_ip_local_address_preference_temporary: 1,
-  nw_ip_local_address_preference_stable: 2,
 };
 
 declare const nw_ethernet_channel_state_t: {
@@ -226,7 +165,13 @@ declare const nw_error_domain_t: {
   nw_error_domain_posix: 1,
   nw_error_domain_dns: 2,
   nw_error_domain_tls: 3,
-  nw_error_domain_wifi_aware: 4,
+};
+
+declare const nw_parameters_expired_dns_behavior_t: {
+  nw_parameters_expired_dns_behavior_default: 0,
+  nw_parameters_expired_dns_behavior_allow: 1,
+  nw_parameters_expired_dns_behavior_prohibit: 2,
+  nw_parameters_expired_dns_behavior_persistent: 3,
 };
 
 declare const nw_service_class_t: {
@@ -243,6 +188,33 @@ declare const nw_parameters_attribution_t: {
   nw_parameters_attribution_user: 2,
 };
 
+declare const nw_interface_radio_type_t: {
+  nw_interface_radio_type_unknown: 0,
+  nw_interface_radio_type_wifi_b: 1,
+  nw_interface_radio_type_wifi_a: 2,
+  nw_interface_radio_type_wifi_g: 3,
+  nw_interface_radio_type_wifi_n: 4,
+  nw_interface_radio_type_wifi_ac: 5,
+  nw_interface_radio_type_wifi_ax: 6,
+  nw_interface_radio_type_cell_lte: 128,
+  nw_interface_radio_type_cell_endc_sub6: 129,
+  nw_interface_radio_type_cell_endc_mmw: 130,
+  nw_interface_radio_type_cell_nr_sa_sub6: 131,
+  nw_interface_radio_type_cell_nr_sa_mmw: 132,
+  nw_interface_radio_type_cell_wcdma: 133,
+  nw_interface_radio_type_cell_gsm: 134,
+  nw_interface_radio_type_cell_cdma: 135,
+  nw_interface_radio_type_cell_evdo: 136,
+};
+
+declare const nw_interface_type_t: {
+  nw_interface_type_other: 0,
+  nw_interface_type_wifi: 1,
+  nw_interface_type_cellular: 2,
+  nw_interface_type_wired: 3,
+  nw_interface_type_loopback: 4,
+};
+
 declare const nw_txt_record_find_key_t: {
   nw_txt_record_find_key_invalid: 0,
   nw_txt_record_find_key_not_present: 1,
@@ -251,10 +223,9 @@ declare const nw_txt_record_find_key_t: {
   nw_txt_record_find_key_non_empty_value: 4,
 };
 
-declare const nw_ws_response_status_t: {
-  nw_ws_response_status_invalid: 0,
-  nw_ws_response_status_accept: 1,
-  nw_ws_response_status_reject: 2,
+declare const nw_data_transfer_report_state_t: {
+  nw_data_transfer_report_state_collecting: 1,
+  nw_data_transfer_report_state_collected: 2,
 };
 
 declare const nw_connection_state_t: {
@@ -271,6 +242,25 @@ declare const nw_multipath_service_t: {
   nw_multipath_service_handover: 1,
   nw_multipath_service_interactive: 2,
   nw_multipath_service_aggregate: 3,
+};
+
+declare const nw_browser_state_t: {
+  nw_browser_state_invalid: 0,
+  nw_browser_state_ready: 1,
+  nw_browser_state_failed: 2,
+  nw_browser_state_cancelled: 3,
+  nw_browser_state_waiting: 4,
+};
+
+declare const nw_ws_response_status_t: {
+  nw_ws_response_status_invalid: 0,
+  nw_ws_response_status_accept: 1,
+  nw_ws_response_status_reject: 2,
+};
+
+declare const nw_framer_start_result_t: {
+  nw_framer_start_result_ready: 1,
+  nw_framer_start_result_will_mark_ready: 2,
 };
 
 declare function nw_retain(obj: interop.PointerConvertible): interop.Pointer;
@@ -457,10 +447,6 @@ declare function nw_parameters_set_prohibit_constrained(parameters: NSObject, pr
 
 declare function nw_parameters_get_prohibit_constrained(parameters: NSObject): boolean;
 
-declare function nw_parameters_set_allow_ultra_constrained(parameters: NSObject, allow_ultra_constrained: boolean): void;
-
-declare function nw_parameters_get_allow_ultra_constrained(parameters: NSObject): boolean;
-
 declare function nw_parameters_set_reuse_local_address(parameters: NSObject, reuse_local_address: boolean): void;
 
 declare function nw_parameters_get_reuse_local_address(parameters: NSObject): boolean;
@@ -573,8 +559,6 @@ declare function nw_path_is_expensive(path: NSObject): boolean;
 
 declare function nw_path_is_constrained(path: NSObject): boolean;
 
-declare function nw_path_is_ultra_constrained(path: NSObject): boolean;
-
 declare function nw_path_has_ipv4(path: NSObject): boolean;
 
 declare function nw_path_has_ipv6(path: NSObject): boolean;
@@ -588,8 +572,6 @@ declare function nw_path_copy_effective_local_endpoint(path: NSObject): NSObject
 declare function nw_path_copy_effective_remote_endpoint(path: NSObject): NSObject;
 
 declare function nw_path_enumerate_gateways(path: NSObject, enumerate_block: (p1: NSObject) => boolean): void;
-
-declare function nw_path_get_link_quality(path: NSObject): interop.Enum<typeof nw_link_quality_t>;
 
 declare function nw_content_context_create(context_identifier: string): NSObject;
 
@@ -1155,16 +1137,16 @@ declare interface OS_nw_path extends NSObjectProtocol {
 declare class OS_nw_path extends NativeObject implements OS_nw_path {
 }
 
-declare interface OS_nw_establishment_report extends NSObjectProtocol {
-}
-
-declare class OS_nw_establishment_report extends NativeObject implements OS_nw_establishment_report {
-}
-
 declare interface OS_nw_browser extends NSObjectProtocol {
 }
 
 declare class OS_nw_browser extends NativeObject implements OS_nw_browser {
+}
+
+declare interface OS_nw_establishment_report extends NSObjectProtocol {
+}
+
+declare class OS_nw_establishment_report extends NativeObject implements OS_nw_establishment_report {
 }
 
 declare interface OS_nw_listener extends NSObjectProtocol {
@@ -1173,22 +1155,16 @@ declare interface OS_nw_listener extends NSObjectProtocol {
 declare class OS_nw_listener extends NativeObject implements OS_nw_listener {
 }
 
-declare interface OS_nw_data_transfer_report extends NSObjectProtocol {
+declare interface OS_nw_ws_response extends NSObjectProtocol {
 }
 
-declare class OS_nw_data_transfer_report extends NativeObject implements OS_nw_data_transfer_report {
+declare class OS_nw_ws_response extends NativeObject implements OS_nw_ws_response {
 }
 
 declare interface OS_nw_resolution_report extends NSObjectProtocol {
 }
 
 declare class OS_nw_resolution_report extends NativeObject implements OS_nw_resolution_report {
-}
-
-declare interface OS_nw_ws_response extends NSObjectProtocol {
-}
-
-declare class OS_nw_ws_response extends NativeObject implements OS_nw_ws_response {
 }
 
 declare interface OS_nw_ws_request extends NSObjectProtocol {
@@ -1243,6 +1219,12 @@ declare interface OS_nw_resolver_config extends NSObjectProtocol {
 }
 
 declare class OS_nw_resolver_config extends NativeObject implements OS_nw_resolver_config {
+}
+
+declare interface OS_nw_data_transfer_report extends NSObjectProtocol {
+}
+
+declare class OS_nw_data_transfer_report extends NativeObject implements OS_nw_data_transfer_report {
 }
 
 declare interface OS_nw_endpoint extends NSObjectProtocol {

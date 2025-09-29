@@ -17,6 +17,8 @@ declare const ACAccountTypeIdentifierTencentWeibo: string;
 
 declare const ACAccountTypeIdentifierSinaWeibo: string;
 
+declare const ACAccountTypeIdentifierTwitter: string;
+
 declare const ACFacebookAppIdKey: string;
 
 declare const ACAccountStoreDidChangeNotification: string;
@@ -24,8 +26,6 @@ declare const ACAccountStoreDidChangeNotification: string;
 declare const ACAccountTypeIdentifierFacebook: string;
 
 declare const ACFacebookAudienceFriends: string;
-
-declare const ACAccountTypeIdentifierTwitter: string;
 
 declare const ACErrorCode: {
   Unknown: 1,

@@ -1,10 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const CBAdvertisementDataServiceDataKey: string;
-
-declare const CBUUIDCharacteristicObservationScheduleString: string;
-
 declare const CBUUIDCharacteristicValidRangeString: string;
 
 declare const CBUUIDClientCharacteristicConfigurationString: string;
@@ -47,9 +43,9 @@ declare const CBConnectPeripheralOptionEnableAutoReconnect: string;
 
 declare const CBATTErrorDomain: string;
 
-declare const CBAdvertisementDataIsConnectable: string;
+declare const CBConnectPeripheralOptionNotifyOnConnectionKey: string;
 
-declare const CBConnectPeripheralOptionNotifyOnDisconnectionKey: string;
+declare const CBAdvertisementDataIsConnectable: string;
 
 declare const CBUUIDL2CAPPSMCharacteristicString: string;
 
@@ -59,17 +55,21 @@ declare const CBAdvertisementDataSolicitedServiceUUIDsKey: string;
 
 declare const CBAdvertisementDataOverflowServiceUUIDsKey: string;
 
-declare const CBConnectPeripheralOptionNotifyOnConnectionKey: string;
+declare const CBUUIDCharacteristicObservationScheduleString: string;
+
+declare const CBConnectPeripheralOptionNotifyOnDisconnectionKey: string;
+
+declare const CBUUIDServerCharacteristicConfigurationString: string;
 
 declare const CBConnectPeripheralOptionNotifyOnNotificationKey: string;
 
 declare const CBCentralManagerRestoredStateScanOptionsKey: string;
 
-declare const CBUUIDServerCharacteristicConfigurationString: string;
-
 declare const CBCentralManagerScanOptionSolicitedServiceUUIDsKey: string;
 
 declare const CBCentralManagerScanOptionAllowDuplicatesKey: string;
+
+declare const CBAdvertisementDataServiceDataKey: string;
 
 declare const CBErrorDomain: string;
 
@@ -183,13 +183,6 @@ declare const CBCentralManagerFeature: {
   CBCentralManagerFeatureExtendedScanAndConnect: 1,
 };
 
-declare const CBPeripheralManagerAuthorizationStatus: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  Authorized: 3,
-};
-
 declare const CBATTError: {
   Success: 0,
   InvalidHandle: 1,
@@ -209,6 +202,13 @@ declare const CBATTError: {
   InsufficientEncryption: 15,
   UnsupportedGroupType: 16,
   InsufficientResources: 17,
+};
+
+declare const CBPeripheralManagerAuthorizationStatus: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  Authorized: 3,
 };
 
 declare interface CBPeripheralManagerDelegate extends NSObjectProtocol {
@@ -447,18 +447,6 @@ declare class CBAttribute extends NSObject {
   readonly UUID: CBUUID;
 }
 
-declare class CBATTRequest extends NSObject {
-  readonly central: CBCentral;
-
-  readonly characteristic: CBCharacteristic;
-
-  readonly offset: number;
-
-  value: NSData;
-
-  setValue(value: NSData | null): void;
-}
-
 declare class CBCentralManager extends CBManager {
   delegate: CBCentralManagerDelegate;
 
@@ -499,6 +487,18 @@ declare class CBDescriptor extends CBAttribute {
   readonly characteristic: CBCharacteristic | null;
 
   readonly value: interop.Object;
+}
+
+declare class CBATTRequest extends NSObject {
+  readonly central: CBCentral;
+
+  readonly characteristic: CBCharacteristic;
+
+  readonly offset: number;
+
+  value: NSData;
+
+  setValue(value: NSData | null): void;
 }
 
 declare class CBL2CAPChannel extends NSObject {

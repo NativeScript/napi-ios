@@ -201,8 +201,6 @@ declare const DOM_ATTRIBUTE_NODE: number;
 
 declare const DOMException$: string;
 
-declare const WKWebsiteDataTypeScreenTime: string;
-
 declare const WKWebsiteDataTypeSearchFieldRecentSearches: string;
 
 declare const WKWebsiteDataTypeServiceWorkerRegistrations: string;
@@ -331,6 +329,8 @@ declare const WebMenuItemPDFAutoSize: number;
 
 declare const WebHistoryItemChangedNotification: string;
 
+declare const DOM_ALLOW_KEYBOARD_INPUT: number;
+
 declare const DOM_NONE: number;
 
 declare const WebPlugInContainerKey: string;
@@ -415,6 +415,8 @@ declare const DOM_CAPTURING_PHASE: number;
 
 declare const WebPlugInContainingElementKey: string;
 
+declare const WebPlugInAttributesKey: string;
+
 declare const WebMenuItemTagCopy: number;
 
 declare const DOM_CSS_IN: number;
@@ -430,8 +432,6 @@ declare const DOM_PROCESSING_INSTRUCTION_NODE: number;
 declare const WebHistoryItemsKey: string;
 
 declare const WebKitErrorBlockedPlugInVersion: number;
-
-declare const WKWebsiteDataTypeFileSystem: string;
 
 declare const DOM_SHOW_DOCUMENT: number;
 
@@ -469,8 +469,6 @@ declare const WebElementLinkTargetFrameKey: string;
 
 declare const DOM_CDATA_SECTION_NODE: number;
 
-declare const WebPlugInAttributesKey: string;
-
 declare const WKWebExtensionContextErrorDomain: string;
 
 declare const DOM_CSS_PC: number;
@@ -497,13 +495,13 @@ declare const WKWebsiteDataTypeDiskCache: string;
 
 declare const DOM_SHOW_COMMENT: number;
 
-declare const DOM_ALLOW_KEYBOARD_INPUT: number;
-
 declare const DOM_SHOW_CDATA_SECTION: number;
 
 declare const DOM_KEY_LOCATION_LEFT: number;
 
 declare const DOM_CSS_EXS: number;
+
+declare const WKWebsiteDataTypeFileSystem: string;
 
 declare const DOM_DOM_DELTA_PIXEL: number;
 
@@ -512,17 +510,6 @@ declare const DOM_FIRST_ORDERED_NODE_TYPE: number;
 declare const WebMenuItemPDFFacingPages: number;
 
 declare const DOM_DOCUMENT_POSITION_CONTAINED_BY: number;
-
-declare const WKDialogResult: {
-  ShowDefault: 1,
-  AskAgain: 2,
-  Handled: 3,
-};
-
-declare const WKDownloadPlaceholderPolicy: {
-  Disable: 0,
-  Enable: 1,
-};
 
 declare const WebCacheModel: {
   DocumentViewer: 0,
@@ -586,6 +573,12 @@ declare const WKWebExtensionError: {
   InvalidDeclarativeNetRequestEntry: 7,
   InvalidBackgroundPersistence: 8,
   InvalidArchive: 9,
+};
+
+declare const WKDialogResult: {
+  ShowDefault: 1,
+  AskAgain: 2,
+  Handled: 3,
 };
 
 declare const WKMediaCaptureType: {
@@ -682,6 +675,12 @@ declare const WKWebExtensionMatchPatternError: {
   InvalidPath: 4,
 };
 
+declare const WKPermissionDecision: {
+  Prompt: 0,
+  Grant: 1,
+  Deny: 2,
+};
+
 declare const WebDragSourceAction: {
   None: 0,
   DHTML: 1,
@@ -696,9 +695,9 @@ declare const WKUserScriptInjectionTime: {
   End: 1,
 };
 
-declare const WKDownloadRedirectPolicy: {
-  Cancel: 0,
-  Allow: 1,
+declare const WKDownloadPlaceholderPolicy: {
+  Disable: 0,
+  Enable: 1,
 };
 
 declare const WebNavigationType: {
@@ -708,19 +707,6 @@ declare const WebNavigationType: {
   Reload: 3,
   FormResubmitted: 4,
   Other: 5,
-};
-
-declare const WKPermissionDecision: {
-  Prompt: 0,
-  Grant: 1,
-  Deny: 2,
-};
-
-declare const WKWebpagePreferencesUpgradeToHTTPSPolicy: {
-  KeepAsRequested: 0,
-  AutomaticFallbackToHTTP: 1,
-  UserMediatedFallbackToHTTP: 2,
-  ErrorOnFailure: 3,
 };
 
 declare const WKWebExtensionMessagePortError: {
@@ -753,14 +739,15 @@ declare const WKNavigationActionPolicy: {
   Download: 2,
 };
 
+declare const WKDownloadRedirectPolicy: {
+  Cancel: 0,
+  Allow: 1,
+};
+
 declare const WKMediaCaptureState: {
   None: 0,
   Active: 1,
   Muted: 2,
-};
-
-declare const WKWebViewDataType: {
-  WKWebViewDataTypeSessionStorage: 1,
 };
 
 declare const DOMRangeExceptionCode: {
@@ -773,6 +760,13 @@ declare const WKWebExtensionWindowState: {
   Minimized: 1,
   Maximized: 2,
   Fullscreen: 3,
+};
+
+declare const WKWebpagePreferencesUpgradeToHTTPSPolicy: {
+  KeepAsRequested: 0,
+  AutomaticFallbackToHTTP: 1,
+  UserMediatedFallbackToHTTP: 2,
+  ErrorOnFailure: 3,
 };
 
 declare const WKNavigationResponsePolicy: {
@@ -1164,13 +1158,6 @@ declare interface WebDocumentRepresentation extends NSObjectProtocol {
 declare class WebDocumentRepresentation extends NativeObject implements WebDocumentRepresentation {
 }
 
-declare interface WebPlugInViewFactory extends NSObjectProtocol {
-}
-
-declare class WebPlugInViewFactory extends NativeObject implements WebPlugInViewFactory {
-  static plugInViewWithArguments(arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSView;
-}
-
 declare interface WebPolicyDecisionListener extends NSObjectProtocol {
   use(): void;
 
@@ -1217,82 +1204,11 @@ declare interface WebEditingDelegate extends NSObjectProtocol {
 declare class WebEditingDelegate extends NativeObject implements WebEditingDelegate {
 }
 
-declare interface WKHTTPCookieStoreObserver extends NSObjectProtocol {
-  cookiesDidChangeInCookieStore?(cookieStore: WKHTTPCookieStore): void;
+declare interface WebPlugInViewFactory extends NSObjectProtocol {
 }
 
-declare class WKHTTPCookieStoreObserver extends NativeObject implements WKHTTPCookieStoreObserver {
-}
-
-declare interface WebDocumentView extends NSObjectProtocol {
-  setDataSource(dataSource: WebDataSource): void;
-
-  dataSourceUpdated(dataSource: WebDataSource): void;
-
-  setNeedsLayout(flag: boolean): void;
-
-  layout(): void;
-
-  viewWillMoveToHostWindow(hostWindow: NSWindow): void;
-
-  viewDidMoveToHostWindow(): void;
-}
-
-declare class WebDocumentView extends NativeObject implements WebDocumentView {
-}
-
-declare interface WebFrameLoadDelegate extends NSObjectProtocol {
-  webViewDidStartProvisionalLoadForFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewDidReceiveServerRedirectForProvisionalLoadForFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewDidFailProvisionalLoadWithErrorForFrame?(sender: WebView, error: NSError, frame: WebFrame): void;
-
-  webViewDidCommitLoadForFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewDidReceiveTitleForFrame?(sender: WebView, title: string, frame: WebFrame): void;
-
-  webViewDidReceiveIconForFrame?(sender: WebView, image: NSImage, frame: WebFrame): void;
-
-  webViewDidFinishLoadForFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewDidFailLoadWithErrorForFrame?(sender: WebView, error: NSError, frame: WebFrame): void;
-
-  webViewDidChangeLocationWithinPageForFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewWillPerformClientRedirectToURLDelayFireDateForFrame?(sender: WebView, URL: NSURL, seconds: number, date: NSDate, frame: WebFrame): void;
-
-  webViewDidCancelClientRedirectForFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewWillCloseFrame?(sender: WebView, frame: WebFrame): void;
-
-  webViewDidClearWindowObjectForFrame?(webView: WebView, windowObject: WebScriptObject, frame: WebFrame): void;
-
-  webViewWindowScriptObjectAvailable?(webView: WebView, windowScriptObject: WebScriptObject): void;
-
-  webViewDidCreateJavaScriptContextForFrame?(webView: WebView, context: JSContext, frame: WebFrame): void;
-}
-
-declare class WebFrameLoadDelegate extends NativeObject implements WebFrameLoadDelegate {
-}
-
-declare interface WebDocumentText extends NSObjectProtocol {
-  supportsTextEncoding(): boolean;
-
-  string(): string;
-
-  attributedString(): NSAttributedString;
-
-  selectedString(): string;
-
-  selectedAttributedString(): NSAttributedString;
-
-  selectAll(): void;
-
-  deselectAll(): void;
-}
-
-declare class WebDocumentText extends NativeObject implements WebDocumentText {
+declare class WebPlugInViewFactory extends NativeObject implements WebPlugInViewFactory {
+  static plugInViewWithArguments(arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSView;
 }
 
 declare interface WebUIDelegate extends NSObjectProtocol {
@@ -1384,6 +1300,148 @@ declare interface WebUIDelegate extends NSObjectProtocol {
 }
 
 declare class WebUIDelegate extends NativeObject implements WebUIDelegate {
+}
+
+declare interface WKHTTPCookieStoreObserver extends NSObjectProtocol {
+  cookiesDidChangeInCookieStore?(cookieStore: WKHTTPCookieStore): void;
+}
+
+declare class WKHTTPCookieStoreObserver extends NativeObject implements WKHTTPCookieStoreObserver {
+}
+
+declare interface WebDocumentView extends NSObjectProtocol {
+  setDataSource(dataSource: WebDataSource): void;
+
+  dataSourceUpdated(dataSource: WebDataSource): void;
+
+  setNeedsLayout(flag: boolean): void;
+
+  layout(): void;
+
+  viewWillMoveToHostWindow(hostWindow: NSWindow): void;
+
+  viewDidMoveToHostWindow(): void;
+}
+
+declare class WebDocumentView extends NativeObject implements WebDocumentView {
+}
+
+declare interface WebFrameLoadDelegate extends NSObjectProtocol {
+  webViewDidStartProvisionalLoadForFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewDidReceiveServerRedirectForProvisionalLoadForFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewDidFailProvisionalLoadWithErrorForFrame?(sender: WebView, error: NSError, frame: WebFrame): void;
+
+  webViewDidCommitLoadForFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewDidReceiveTitleForFrame?(sender: WebView, title: string, frame: WebFrame): void;
+
+  webViewDidReceiveIconForFrame?(sender: WebView, image: NSImage, frame: WebFrame): void;
+
+  webViewDidFinishLoadForFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewDidFailLoadWithErrorForFrame?(sender: WebView, error: NSError, frame: WebFrame): void;
+
+  webViewDidChangeLocationWithinPageForFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewWillPerformClientRedirectToURLDelayFireDateForFrame?(sender: WebView, URL: NSURL, seconds: number, date: NSDate, frame: WebFrame): void;
+
+  webViewDidCancelClientRedirectForFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewWillCloseFrame?(sender: WebView, frame: WebFrame): void;
+
+  webViewDidClearWindowObjectForFrame?(webView: WebView, windowObject: WebScriptObject, frame: WebFrame): void;
+
+  webViewWindowScriptObjectAvailable?(webView: WebView, windowScriptObject: WebScriptObject): void;
+
+  webViewDidCreateJavaScriptContextForFrame?(webView: WebView, context: JSContext, frame: WebFrame): void;
+}
+
+declare class WebFrameLoadDelegate extends NativeObject implements WebFrameLoadDelegate {
+}
+
+declare interface WebDocumentText extends NSObjectProtocol {
+  supportsTextEncoding(): boolean;
+
+  string(): string;
+
+  attributedString(): NSAttributedString;
+
+  selectedString(): string;
+
+  selectedAttributedString(): NSAttributedString;
+
+  selectAll(): void;
+
+  deselectAll(): void;
+}
+
+declare class WebDocumentText extends NativeObject implements WebDocumentText {
+}
+
+declare class DOMHTMLBodyElement extends DOMHTMLElement {
+  aLink: string;
+
+  background: string;
+
+  bgColor: string;
+
+  link: string;
+
+  text: string;
+
+  vLink: string;
+
+  setALink(aLink: string): void;
+
+  setBackground(background: string): void;
+
+  setBgColor(bgColor: string): void;
+
+  setLink(link: string): void;
+
+  setText(text: string): void;
+
+  setVLink(vLink: string): void;
+}
+
+declare class WKBackForwardListItem extends NSObject {
+  readonly URL: NSURL;
+
+  readonly title: string;
+
+  readonly initialURL: NSURL;
+}
+
+declare class DOMHTMLScriptElement extends DOMHTMLElement {
+  text: string;
+
+  htmlFor: string;
+
+  event: string;
+
+  charset: string;
+
+  defer: boolean;
+
+  src: string;
+
+  type: string;
+
+  setText(text: string): void;
+
+  setHtmlFor(htmlFor: string): void;
+
+  setEvent(event: string): void;
+
+  setCharset(charset: string): void;
+
+  setDefer(defer: boolean): void;
+
+  setSrc(src: string): void;
+
+  setType(type: string): void;
 }
 
 declare class WebHistoryItem extends NSObject implements NSCopying {
@@ -1607,36 +1665,6 @@ declare class DOMHTMLTextAreaElement extends DOMHTMLElement {
   setSelectionEnd(selectionEnd: number): void;
 
   setAccessKey(accessKey: string): void;
-}
-
-declare class DOMHTMLScriptElement extends DOMHTMLElement {
-  text: string;
-
-  htmlFor: string;
-
-  event: string;
-
-  charset: string;
-
-  defer: boolean;
-
-  src: string;
-
-  type: string;
-
-  setText(text: string): void;
-
-  setHtmlFor(htmlFor: string): void;
-
-  setEvent(event: string): void;
-
-  setCharset(charset: string): void;
-
-  setDefer(defer: boolean): void;
-
-  setSrc(src: string): void;
-
-  setType(type: string): void;
 }
 
 declare class DOMHTMLQuoteElement extends DOMHTMLElement {
@@ -2187,6 +2215,10 @@ declare class DOMFile extends DOMBlob {
   readonly name: string;
 }
 
+declare class DOMBlob extends DOMObject {
+  readonly size: number;
+}
+
 declare class DOMRGBColor extends DOMObject {
   readonly red: DOMCSSPrimitiveValue;
 
@@ -2240,6 +2272,522 @@ declare class DOMCSSStyleRule extends DOMCSSRule {
   readonly style: DOMCSSStyleDeclaration;
 
   setSelectorText(selectorText: string): void;
+}
+
+declare class DOMCSSStyleDeclaration extends DOMObject {
+  cssText: string;
+
+  readonly length: number;
+
+  readonly parentRule: DOMCSSRule;
+
+  getPropertyValue(propertyName: string): string;
+
+  getPropertyCSSValue(propertyName: string): DOMCSSValue;
+
+  removeProperty(propertyName: string): string;
+
+  getPropertyPriority(propertyName: string): string;
+
+  setPropertyValuePriority(propertyName: string, value: string, priority: string): void;
+
+  item(index: number): string;
+
+  getPropertyShorthand(propertyName: string): string;
+
+  isPropertyImplicit(propertyName: string): boolean;
+
+  setCssText(cssText: string): void;
+
+  setProperty(propertyName: string, value: string, priority: string): void;
+
+  azimuth(): string;
+
+  setAzimuth(azimuth: string): void;
+
+  background(): string;
+
+  setBackground(background: string): void;
+
+  backgroundAttachment(): string;
+
+  setBackgroundAttachment(backgroundAttachment: string): void;
+
+  backgroundColor(): string;
+
+  setBackgroundColor(backgroundColor: string): void;
+
+  backgroundImage(): string;
+
+  setBackgroundImage(backgroundImage: string): void;
+
+  backgroundPosition(): string;
+
+  setBackgroundPosition(backgroundPosition: string): void;
+
+  backgroundRepeat(): string;
+
+  setBackgroundRepeat(backgroundRepeat: string): void;
+
+  border(): string;
+
+  setBorder(border: string): void;
+
+  borderCollapse(): string;
+
+  setBorderCollapse(borderCollapse: string): void;
+
+  borderColor(): string;
+
+  setBorderColor(borderColor: string): void;
+
+  borderSpacing(): string;
+
+  setBorderSpacing(borderSpacing: string): void;
+
+  borderStyle(): string;
+
+  setBorderStyle(borderStyle: string): void;
+
+  borderTop(): string;
+
+  setBorderTop(borderTop: string): void;
+
+  borderRight(): string;
+
+  setBorderRight(borderRight: string): void;
+
+  borderBottom(): string;
+
+  setBorderBottom(borderBottom: string): void;
+
+  borderLeft(): string;
+
+  setBorderLeft(borderLeft: string): void;
+
+  borderTopColor(): string;
+
+  setBorderTopColor(borderTopColor: string): void;
+
+  borderRightColor(): string;
+
+  setBorderRightColor(borderRightColor: string): void;
+
+  borderBottomColor(): string;
+
+  setBorderBottomColor(borderBottomColor: string): void;
+
+  borderLeftColor(): string;
+
+  setBorderLeftColor(borderLeftColor: string): void;
+
+  borderTopStyle(): string;
+
+  setBorderTopStyle(borderTopStyle: string): void;
+
+  borderRightStyle(): string;
+
+  setBorderRightStyle(borderRightStyle: string): void;
+
+  borderBottomStyle(): string;
+
+  setBorderBottomStyle(borderBottomStyle: string): void;
+
+  borderLeftStyle(): string;
+
+  setBorderLeftStyle(borderLeftStyle: string): void;
+
+  borderTopWidth(): string;
+
+  setBorderTopWidth(borderTopWidth: string): void;
+
+  borderRightWidth(): string;
+
+  setBorderRightWidth(borderRightWidth: string): void;
+
+  borderBottomWidth(): string;
+
+  setBorderBottomWidth(borderBottomWidth: string): void;
+
+  borderLeftWidth(): string;
+
+  setBorderLeftWidth(borderLeftWidth: string): void;
+
+  borderWidth(): string;
+
+  setBorderWidth(borderWidth: string): void;
+
+  bottom(): string;
+
+  setBottom(bottom: string): void;
+
+  captionSide(): string;
+
+  setCaptionSide(captionSide: string): void;
+
+  clear(): string;
+
+  setClear(clear: string): void;
+
+  clip(): string;
+
+  setClip(clip: string): void;
+
+  color(): string;
+
+  setColor(color: string): void;
+
+  content(): string;
+
+  setContent(content: string): void;
+
+  counterIncrement(): string;
+
+  setCounterIncrement(counterIncrement: string): void;
+
+  counterReset(): string;
+
+  setCounterReset(counterReset: string): void;
+
+  cue(): string;
+
+  setCue(cue: string): void;
+
+  cueAfter(): string;
+
+  setCueAfter(cueAfter: string): void;
+
+  cueBefore(): string;
+
+  setCueBefore(cueBefore: string): void;
+
+  cursor(): string;
+
+  setCursor(cursor: string): void;
+
+  direction(): string;
+
+  setDirection(direction: string): void;
+
+  display(): string;
+
+  setDisplay(display: string): void;
+
+  elevation(): string;
+
+  setElevation(elevation: string): void;
+
+  emptyCells(): string;
+
+  setEmptyCells(emptyCells: string): void;
+
+  cssFloat(): string;
+
+  setCssFloat(cssFloat: string): void;
+
+  font(): string;
+
+  setFont(font: string): void;
+
+  fontFamily(): string;
+
+  setFontFamily(fontFamily: string): void;
+
+  fontSize(): string;
+
+  setFontSize(fontSize: string): void;
+
+  fontSizeAdjust(): string;
+
+  setFontSizeAdjust(fontSizeAdjust: string): void;
+
+  fontStretch(): string;
+
+  setFontStretch(fontStretch: string): void;
+
+  fontStyle(): string;
+
+  setFontStyle(fontStyle: string): void;
+
+  fontVariant(): string;
+
+  setFontVariant(fontVariant: string): void;
+
+  fontWeight(): string;
+
+  setFontWeight(fontWeight: string): void;
+
+  height(): string;
+
+  setHeight(height: string): void;
+
+  left(): string;
+
+  setLeft(left: string): void;
+
+  letterSpacing(): string;
+
+  setLetterSpacing(letterSpacing: string): void;
+
+  lineHeight(): string;
+
+  setLineHeight(lineHeight: string): void;
+
+  listStyle(): string;
+
+  setListStyle(listStyle: string): void;
+
+  listStyleImage(): string;
+
+  setListStyleImage(listStyleImage: string): void;
+
+  listStylePosition(): string;
+
+  setListStylePosition(listStylePosition: string): void;
+
+  listStyleType(): string;
+
+  setListStyleType(listStyleType: string): void;
+
+  margin(): string;
+
+  setMargin(margin: string): void;
+
+  marginTop(): string;
+
+  setMarginTop(marginTop: string): void;
+
+  marginRight(): string;
+
+  setMarginRight(marginRight: string): void;
+
+  marginBottom(): string;
+
+  setMarginBottom(marginBottom: string): void;
+
+  marginLeft(): string;
+
+  setMarginLeft(marginLeft: string): void;
+
+  markerOffset(): string;
+
+  setMarkerOffset(markerOffset: string): void;
+
+  marks(): string;
+
+  setMarks(marks: string): void;
+
+  maxHeight(): string;
+
+  setMaxHeight(maxHeight: string): void;
+
+  maxWidth(): string;
+
+  setMaxWidth(maxWidth: string): void;
+
+  minHeight(): string;
+
+  setMinHeight(minHeight: string): void;
+
+  minWidth(): string;
+
+  setMinWidth(minWidth: string): void;
+
+  orphans(): string;
+
+  setOrphans(orphans: string): void;
+
+  outline(): string;
+
+  setOutline(outline: string): void;
+
+  outlineColor(): string;
+
+  setOutlineColor(outlineColor: string): void;
+
+  outlineStyle(): string;
+
+  setOutlineStyle(outlineStyle: string): void;
+
+  outlineWidth(): string;
+
+  setOutlineWidth(outlineWidth: string): void;
+
+  overflow(): string;
+
+  setOverflow(overflow: string): void;
+
+  padding(): string;
+
+  setPadding(padding: string): void;
+
+  paddingTop(): string;
+
+  setPaddingTop(paddingTop: string): void;
+
+  paddingRight(): string;
+
+  setPaddingRight(paddingRight: string): void;
+
+  paddingBottom(): string;
+
+  setPaddingBottom(paddingBottom: string): void;
+
+  paddingLeft(): string;
+
+  setPaddingLeft(paddingLeft: string): void;
+
+  page(): string;
+
+  setPage(page: string): void;
+
+  pageBreakAfter(): string;
+
+  setPageBreakAfter(pageBreakAfter: string): void;
+
+  pageBreakBefore(): string;
+
+  setPageBreakBefore(pageBreakBefore: string): void;
+
+  pageBreakInside(): string;
+
+  setPageBreakInside(pageBreakInside: string): void;
+
+  pause(): string;
+
+  setPause(pause: string): void;
+
+  pauseAfter(): string;
+
+  setPauseAfter(pauseAfter: string): void;
+
+  pauseBefore(): string;
+
+  setPauseBefore(pauseBefore: string): void;
+
+  pitch(): string;
+
+  setPitch(pitch: string): void;
+
+  pitchRange(): string;
+
+  setPitchRange(pitchRange: string): void;
+
+  playDuring(): string;
+
+  setPlayDuring(playDuring: string): void;
+
+  position(): string;
+
+  setPosition(position: string): void;
+
+  quotes(): string;
+
+  setQuotes(quotes: string): void;
+
+  richness(): string;
+
+  setRichness(richness: string): void;
+
+  right(): string;
+
+  setRight(right: string): void;
+
+  size(): string;
+
+  setSize(size: string): void;
+
+  speak(): string;
+
+  setSpeak(speak: string): void;
+
+  speakHeader(): string;
+
+  setSpeakHeader(speakHeader: string): void;
+
+  speakNumeral(): string;
+
+  setSpeakNumeral(speakNumeral: string): void;
+
+  speakPunctuation(): string;
+
+  setSpeakPunctuation(speakPunctuation: string): void;
+
+  speechRate(): string;
+
+  setSpeechRate(speechRate: string): void;
+
+  stress(): string;
+
+  setStress(stress: string): void;
+
+  tableLayout(): string;
+
+  setTableLayout(tableLayout: string): void;
+
+  textAlign(): string;
+
+  setTextAlign(textAlign: string): void;
+
+  textDecoration(): string;
+
+  setTextDecoration(textDecoration: string): void;
+
+  textIndent(): string;
+
+  setTextIndent(textIndent: string): void;
+
+  textShadow(): string;
+
+  setTextShadow(textShadow: string): void;
+
+  textTransform(): string;
+
+  setTextTransform(textTransform: string): void;
+
+  top(): string;
+
+  setTop(top: string): void;
+
+  unicodeBidi(): string;
+
+  setUnicodeBidi(unicodeBidi: string): void;
+
+  verticalAlign(): string;
+
+  setVerticalAlign(verticalAlign: string): void;
+
+  visibility(): string;
+
+  setVisibility(visibility: string): void;
+
+  voiceFamily(): string;
+
+  setVoiceFamily(voiceFamily: string): void;
+
+  volume(): string;
+
+  setVolume(volume: string): void;
+
+  whiteSpace(): string;
+
+  setWhiteSpace(whiteSpace: string): void;
+
+  widows(): string;
+
+  setWidows(widows: string): void;
+
+  width(): string;
+
+  setWidth(width: string): void;
+
+  wordSpacing(): string;
+
+  setWordSpacing(wordSpacing: string): void;
+
+  zIndex(): string;
+
+  setZIndex(zIndex: string): void;
 }
 
 declare class DOMCSSRuleList extends DOMObject {
@@ -2714,8 +3262,6 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
 
   allowsAirPlayForMediaPlayback: boolean;
 
-  showsSystemScreenTimeBlockingView: boolean;
-
   upgradeKnownHostsToHTTPS: boolean;
 
   mediaTypesRequiringUserActionForPlayback: interop.Enum<typeof WKAudiovisualMediaTypes>;
@@ -2734,6 +3280,8 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
 
   supportsAdaptiveImageGlyph: boolean;
 
+  writingToolsBehavior: interop.Enum<typeof NSWritingToolsBehavior>;
+
   setProcessPool(processPool: WKProcessPool): void;
 
   setPreferences(preferences: WKPreferences): void;
@@ -2750,8 +3298,6 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
 
   setAllowsAirPlayForMediaPlayback(allowsAirPlayForMediaPlayback: boolean): void;
 
-  setShowsSystemScreenTimeBlockingView(showsSystemScreenTimeBlockingView: boolean): void;
-
   setUpgradeKnownHostsToHTTPS(upgradeKnownHostsToHTTPS: boolean): void;
 
   setMediaTypesRequiringUserActionForPlayback(mediaTypesRequiringUserActionForPlayback: interop.Enum<typeof WKAudiovisualMediaTypes>): void;
@@ -2765,6 +3311,8 @@ declare class WKWebViewConfiguration extends NSObject implements NSSecureCoding,
   setUserInterfaceDirectionPolicy(userInterfaceDirectionPolicy: interop.Enum<typeof WKUserInterfaceDirectionPolicy>): void;
 
   setSupportsAdaptiveImageGlyph(supportsAdaptiveImageGlyph: boolean): void;
+
+  setWritingToolsBehavior(writingToolsBehavior: interop.Enum<typeof NSWritingToolsBehavior>): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -3314,8 +3862,6 @@ declare class WKHTTPCookieStore extends NSObject {
 
   setCookieCompletionHandler(cookie: NSHTTPCookie, completionHandler: () => void | null): void;
 
-  setCookiesCompletionHandler(cookies: NSArray<interop.Object> | Array<interop.Object>, completionHandler: () => void | null): void;
-
   deleteCookieCompletionHandler(cookie: NSHTTPCookie, completionHandler: () => void | null): void;
 
   addObserver(observer: WKHTTPCookieStoreObserver): void;
@@ -3440,8 +3986,6 @@ declare class WKWebView extends NSView {
 
   interactionState: interop.Object;
 
-  readonly isBlockedByScreenTime: boolean;
-
   loadSimulatedRequestResponseResponseData(request: NSURLRequest, response: NSURLResponse, data: NSData): WKNavigation;
 
   loadSimulatedRequestWithResponseResponseData(request: NSURLRequest, response: NSURLResponse, data: NSData): WKNavigation;
@@ -3469,12 +4013,6 @@ declare class WKWebView extends NSView {
   inspectable: boolean;
 
   readonly writingToolsActive: boolean;
-
-  fetchDataOfTypesCompletionHandler(dataTypes: interop.Enum<typeof WKWebViewDataType>, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
-
-  restoreDataCompletionHandler(data: NSData, completionHandler: (p1: NSError) => void | null): void;
-
-  obscuredContentInsets: NSEdgeInsets;
 
   setNavigationDelegate(navigationDelegate: WKNavigationDelegate | null): void;
 
@@ -3505,8 +4043,6 @@ declare class WKWebView extends NSView {
   setInspectable(inspectable: boolean): void;
 
   isWritingToolsActive(): boolean;
-
-  setObscuredContentInsets(obscuredContentInsets: NSEdgeInsets): void;
 
   readonly certificateChain: NSArray;
 }
@@ -3605,526 +4141,6 @@ declare class DOMHTMLMarqueeElement extends DOMHTMLElement {
   stop(): void;
 }
 
-declare class DOMCSSStyleDeclaration extends DOMObject {
-  cssText: string;
-
-  readonly length: number;
-
-  readonly parentRule: DOMCSSRule;
-
-  getPropertyValue(propertyName: string): string;
-
-  getPropertyCSSValue(propertyName: string): DOMCSSValue;
-
-  removeProperty(propertyName: string): string;
-
-  getPropertyPriority(propertyName: string): string;
-
-  setPropertyValuePriority(propertyName: string, value: string, priority: string): void;
-
-  item(index: number): string;
-
-  getPropertyShorthand(propertyName: string): string;
-
-  isPropertyImplicit(propertyName: string): boolean;
-
-  setCssText(cssText: string): void;
-
-  setProperty(propertyName: string, value: string, priority: string): void;
-
-  azimuth(): string;
-
-  setAzimuth(azimuth: string): void;
-
-  background(): string;
-
-  setBackground(background: string): void;
-
-  backgroundAttachment(): string;
-
-  setBackgroundAttachment(backgroundAttachment: string): void;
-
-  backgroundColor(): string;
-
-  setBackgroundColor(backgroundColor: string): void;
-
-  backgroundImage(): string;
-
-  setBackgroundImage(backgroundImage: string): void;
-
-  backgroundPosition(): string;
-
-  setBackgroundPosition(backgroundPosition: string): void;
-
-  backgroundRepeat(): string;
-
-  setBackgroundRepeat(backgroundRepeat: string): void;
-
-  border(): string;
-
-  setBorder(border: string): void;
-
-  borderCollapse(): string;
-
-  setBorderCollapse(borderCollapse: string): void;
-
-  borderColor(): string;
-
-  setBorderColor(borderColor: string): void;
-
-  borderSpacing(): string;
-
-  setBorderSpacing(borderSpacing: string): void;
-
-  borderStyle(): string;
-
-  setBorderStyle(borderStyle: string): void;
-
-  borderTop(): string;
-
-  setBorderTop(borderTop: string): void;
-
-  borderRight(): string;
-
-  setBorderRight(borderRight: string): void;
-
-  borderBottom(): string;
-
-  setBorderBottom(borderBottom: string): void;
-
-  borderLeft(): string;
-
-  setBorderLeft(borderLeft: string): void;
-
-  borderTopColor(): string;
-
-  setBorderTopColor(borderTopColor: string): void;
-
-  borderRightColor(): string;
-
-  setBorderRightColor(borderRightColor: string): void;
-
-  borderBottomColor(): string;
-
-  setBorderBottomColor(borderBottomColor: string): void;
-
-  borderLeftColor(): string;
-
-  setBorderLeftColor(borderLeftColor: string): void;
-
-  borderTopStyle(): string;
-
-  setBorderTopStyle(borderTopStyle: string): void;
-
-  borderRightStyle(): string;
-
-  setBorderRightStyle(borderRightStyle: string): void;
-
-  borderBottomStyle(): string;
-
-  setBorderBottomStyle(borderBottomStyle: string): void;
-
-  borderLeftStyle(): string;
-
-  setBorderLeftStyle(borderLeftStyle: string): void;
-
-  borderTopWidth(): string;
-
-  setBorderTopWidth(borderTopWidth: string): void;
-
-  borderRightWidth(): string;
-
-  setBorderRightWidth(borderRightWidth: string): void;
-
-  borderBottomWidth(): string;
-
-  setBorderBottomWidth(borderBottomWidth: string): void;
-
-  borderLeftWidth(): string;
-
-  setBorderLeftWidth(borderLeftWidth: string): void;
-
-  borderWidth(): string;
-
-  setBorderWidth(borderWidth: string): void;
-
-  bottom(): string;
-
-  setBottom(bottom: string): void;
-
-  captionSide(): string;
-
-  setCaptionSide(captionSide: string): void;
-
-  clear(): string;
-
-  setClear(clear: string): void;
-
-  clip(): string;
-
-  setClip(clip: string): void;
-
-  color(): string;
-
-  setColor(color: string): void;
-
-  content(): string;
-
-  setContent(content: string): void;
-
-  counterIncrement(): string;
-
-  setCounterIncrement(counterIncrement: string): void;
-
-  counterReset(): string;
-
-  setCounterReset(counterReset: string): void;
-
-  cue(): string;
-
-  setCue(cue: string): void;
-
-  cueAfter(): string;
-
-  setCueAfter(cueAfter: string): void;
-
-  cueBefore(): string;
-
-  setCueBefore(cueBefore: string): void;
-
-  cursor(): string;
-
-  setCursor(cursor: string): void;
-
-  direction(): string;
-
-  setDirection(direction: string): void;
-
-  display(): string;
-
-  setDisplay(display: string): void;
-
-  elevation(): string;
-
-  setElevation(elevation: string): void;
-
-  emptyCells(): string;
-
-  setEmptyCells(emptyCells: string): void;
-
-  cssFloat(): string;
-
-  setCssFloat(cssFloat: string): void;
-
-  font(): string;
-
-  setFont(font: string): void;
-
-  fontFamily(): string;
-
-  setFontFamily(fontFamily: string): void;
-
-  fontSize(): string;
-
-  setFontSize(fontSize: string): void;
-
-  fontSizeAdjust(): string;
-
-  setFontSizeAdjust(fontSizeAdjust: string): void;
-
-  fontStretch(): string;
-
-  setFontStretch(fontStretch: string): void;
-
-  fontStyle(): string;
-
-  setFontStyle(fontStyle: string): void;
-
-  fontVariant(): string;
-
-  setFontVariant(fontVariant: string): void;
-
-  fontWeight(): string;
-
-  setFontWeight(fontWeight: string): void;
-
-  height(): string;
-
-  setHeight(height: string): void;
-
-  left(): string;
-
-  setLeft(left: string): void;
-
-  letterSpacing(): string;
-
-  setLetterSpacing(letterSpacing: string): void;
-
-  lineHeight(): string;
-
-  setLineHeight(lineHeight: string): void;
-
-  listStyle(): string;
-
-  setListStyle(listStyle: string): void;
-
-  listStyleImage(): string;
-
-  setListStyleImage(listStyleImage: string): void;
-
-  listStylePosition(): string;
-
-  setListStylePosition(listStylePosition: string): void;
-
-  listStyleType(): string;
-
-  setListStyleType(listStyleType: string): void;
-
-  margin(): string;
-
-  setMargin(margin: string): void;
-
-  marginTop(): string;
-
-  setMarginTop(marginTop: string): void;
-
-  marginRight(): string;
-
-  setMarginRight(marginRight: string): void;
-
-  marginBottom(): string;
-
-  setMarginBottom(marginBottom: string): void;
-
-  marginLeft(): string;
-
-  setMarginLeft(marginLeft: string): void;
-
-  markerOffset(): string;
-
-  setMarkerOffset(markerOffset: string): void;
-
-  marks(): string;
-
-  setMarks(marks: string): void;
-
-  maxHeight(): string;
-
-  setMaxHeight(maxHeight: string): void;
-
-  maxWidth(): string;
-
-  setMaxWidth(maxWidth: string): void;
-
-  minHeight(): string;
-
-  setMinHeight(minHeight: string): void;
-
-  minWidth(): string;
-
-  setMinWidth(minWidth: string): void;
-
-  orphans(): string;
-
-  setOrphans(orphans: string): void;
-
-  outline(): string;
-
-  setOutline(outline: string): void;
-
-  outlineColor(): string;
-
-  setOutlineColor(outlineColor: string): void;
-
-  outlineStyle(): string;
-
-  setOutlineStyle(outlineStyle: string): void;
-
-  outlineWidth(): string;
-
-  setOutlineWidth(outlineWidth: string): void;
-
-  overflow(): string;
-
-  setOverflow(overflow: string): void;
-
-  padding(): string;
-
-  setPadding(padding: string): void;
-
-  paddingTop(): string;
-
-  setPaddingTop(paddingTop: string): void;
-
-  paddingRight(): string;
-
-  setPaddingRight(paddingRight: string): void;
-
-  paddingBottom(): string;
-
-  setPaddingBottom(paddingBottom: string): void;
-
-  paddingLeft(): string;
-
-  setPaddingLeft(paddingLeft: string): void;
-
-  page(): string;
-
-  setPage(page: string): void;
-
-  pageBreakAfter(): string;
-
-  setPageBreakAfter(pageBreakAfter: string): void;
-
-  pageBreakBefore(): string;
-
-  setPageBreakBefore(pageBreakBefore: string): void;
-
-  pageBreakInside(): string;
-
-  setPageBreakInside(pageBreakInside: string): void;
-
-  pause(): string;
-
-  setPause(pause: string): void;
-
-  pauseAfter(): string;
-
-  setPauseAfter(pauseAfter: string): void;
-
-  pauseBefore(): string;
-
-  setPauseBefore(pauseBefore: string): void;
-
-  pitch(): string;
-
-  setPitch(pitch: string): void;
-
-  pitchRange(): string;
-
-  setPitchRange(pitchRange: string): void;
-
-  playDuring(): string;
-
-  setPlayDuring(playDuring: string): void;
-
-  position(): string;
-
-  setPosition(position: string): void;
-
-  quotes(): string;
-
-  setQuotes(quotes: string): void;
-
-  richness(): string;
-
-  setRichness(richness: string): void;
-
-  right(): string;
-
-  setRight(right: string): void;
-
-  size(): string;
-
-  setSize(size: string): void;
-
-  speak(): string;
-
-  setSpeak(speak: string): void;
-
-  speakHeader(): string;
-
-  setSpeakHeader(speakHeader: string): void;
-
-  speakNumeral(): string;
-
-  setSpeakNumeral(speakNumeral: string): void;
-
-  speakPunctuation(): string;
-
-  setSpeakPunctuation(speakPunctuation: string): void;
-
-  speechRate(): string;
-
-  setSpeechRate(speechRate: string): void;
-
-  stress(): string;
-
-  setStress(stress: string): void;
-
-  tableLayout(): string;
-
-  setTableLayout(tableLayout: string): void;
-
-  textAlign(): string;
-
-  setTextAlign(textAlign: string): void;
-
-  textDecoration(): string;
-
-  setTextDecoration(textDecoration: string): void;
-
-  textIndent(): string;
-
-  setTextIndent(textIndent: string): void;
-
-  textShadow(): string;
-
-  setTextShadow(textShadow: string): void;
-
-  textTransform(): string;
-
-  setTextTransform(textTransform: string): void;
-
-  top(): string;
-
-  setTop(top: string): void;
-
-  unicodeBidi(): string;
-
-  setUnicodeBidi(unicodeBidi: string): void;
-
-  verticalAlign(): string;
-
-  setVerticalAlign(verticalAlign: string): void;
-
-  visibility(): string;
-
-  setVisibility(visibility: string): void;
-
-  voiceFamily(): string;
-
-  setVoiceFamily(voiceFamily: string): void;
-
-  volume(): string;
-
-  setVolume(volume: string): void;
-
-  whiteSpace(): string;
-
-  setWhiteSpace(whiteSpace: string): void;
-
-  widows(): string;
-
-  setWidows(widows: string): void;
-
-  width(): string;
-
-  setWidth(width: string): void;
-
-  wordSpacing(): string;
-
-  setWordSpacing(wordSpacing: string): void;
-
-  zIndex(): string;
-
-  setZIndex(zIndex: string): void;
-}
-
-declare class DOMBlob extends DOMObject {
-  readonly size: number;
-}
-
 declare class WebResource extends NSObject implements NSCoding, NSCopying {
   initWithDataURLMIMETypeTextEncodingNameFrameName(data: NSData, URL: NSURL, MIMEType: string, textEncodingName: string, frameName: string): this;
 
@@ -4185,76 +4201,6 @@ declare class DOMHTMLHtmlElement extends DOMHTMLElement {
   version: string;
 
   setVersion(version: string): void;
-}
-
-declare class DOMHTMLTableElement extends DOMHTMLElement {
-  caption: DOMHTMLTableCaptionElement;
-
-  tHead: DOMHTMLTableSectionElement;
-
-  tFoot: DOMHTMLTableSectionElement;
-
-  readonly rows: DOMHTMLCollection;
-
-  readonly tBodies: DOMHTMLCollection;
-
-  align: string;
-
-  bgColor: string;
-
-  border: string;
-
-  cellPadding: string;
-
-  cellSpacing: string;
-
-  frameBorders: string;
-
-  rules: string;
-
-  summary: string;
-
-  width: string;
-
-  createTHead(): DOMHTMLElement;
-
-  deleteTHead(): void;
-
-  createTFoot(): DOMHTMLElement;
-
-  deleteTFoot(): void;
-
-  createCaption(): DOMHTMLElement;
-
-  deleteCaption(): void;
-
-  insertRow(index: number): DOMHTMLElement;
-
-  deleteRow(index: number): void;
-
-  setCaption(caption: DOMHTMLTableCaptionElement): void;
-
-  setTHead(tHead: DOMHTMLTableSectionElement): void;
-
-  setTFoot(tFoot: DOMHTMLTableSectionElement): void;
-
-  setAlign(align: string): void;
-
-  setBgColor(bgColor: string): void;
-
-  setBorder(border: string): void;
-
-  setCellPadding(cellPadding: string): void;
-
-  setCellSpacing(cellSpacing: string): void;
-
-  setFrameBorders(frameBorders: string): void;
-
-  setRules(rules: string): void;
-
-  setSummary(summary: string): void;
-
-  setWidth(width: string): void;
 }
 
 declare class DOMHTMLTableRowElement extends DOMHTMLElement {
@@ -4375,13 +4321,13 @@ declare class DOMHTMLHeadingElement extends DOMHTMLElement {
   setAlign(align: string): void;
 }
 
-declare class DOMHTMLDListElement extends DOMHTMLElement {
+declare class DOMHTMLMenuElement extends DOMHTMLElement {
   compact: boolean;
 
   setCompact(compact: boolean): void;
 }
 
-declare class DOMHTMLMenuElement extends DOMHTMLElement {
+declare class DOMHTMLDListElement extends DOMHTMLElement {
   compact: boolean;
 
   setCompact(compact: boolean): void;
@@ -4571,6 +4517,18 @@ declare class DOMMouseEvent extends DOMUIEvent {
   initMouseEvent(type: string, canBubble: boolean, cancelable: boolean, view: DOMAbstractView, detail: number, screenX: number, screenY: number, clientX: number, clientY: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean, metaKey: boolean, button: number, relatedTarget: DOMEventTarget): this;
 }
 
+declare class DOMWheelEvent extends DOMMouseEvent {
+  readonly wheelDeltaX: number;
+
+  readonly wheelDeltaY: number;
+
+  readonly wheelDelta: number;
+
+  readonly isHorizontal: boolean;
+
+  initWheelEventWheelDeltaYViewScreenXScreenYClientXClientYCtrlKeyAltKeyShiftKeyMetaKey(wheelDeltaX: number, wheelDeltaY: number, view: DOMAbstractView, screenX: number, screenY: number, clientX: number, clientY: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean, metaKey: boolean): this;
+}
+
 declare class DOMMutationEvent extends DOMEvent {
   readonly relatedNode: DOMNode;
 
@@ -4702,10 +4660,6 @@ declare class WKWebsiteDataStore extends NSObject implements NSSecureCoding {
 
   readonly identifier: NSUUID;
 
-  fetchDataOfTypesCompletionHandler(dataTypes: NSSet, completionHandler: (p1: NSData, p2: NSError) => void | null): void;
-
-  restoreDataCompletionHandler(data: NSData, completionHandler: (p1: NSError) => void | null): void;
-
   static dataStoreForIdentifier(identifier: NSUUID): WKWebsiteDataStore;
 
   static removeDataStoreForIdentifierCompletionHandler(identifier: NSUUID, completionHandler: (p1: NSError) => void | null): void;
@@ -4820,6 +4774,28 @@ declare class DOMProcessingInstruction extends DOMCharacterData {
   readonly sheet: DOMStyleSheet;
 }
 
+declare class DOMCSSPrimitiveValue extends DOMCSSValue {
+  readonly primitiveType: number;
+
+  setFloatValueFloatValue(unitType: number, floatValue: number): void;
+
+  getFloatValue(unitType: number): number;
+
+  setStringValueStringValue(stringType: number, stringValue: string): void;
+
+  getStringValue(): string;
+
+  getCounterValue(): DOMCounter;
+
+  getRectValue(): DOMRect;
+
+  getRGBColorValue(): DOMRGBColor;
+
+  setFloatValue(unitType: number, floatValue: number): void;
+
+  setStringValue(stringType: number, stringValue: string): void;
+}
+
 declare class DOMHTMLOptGroupElement extends DOMHTMLElement {
   disabled: boolean;
 
@@ -4828,22 +4804,6 @@ declare class DOMHTMLOptGroupElement extends DOMHTMLElement {
   setDisabled(disabled: boolean): void;
 
   setLabel(label: string): void;
-}
-
-declare class WKProcessPool extends NSObject implements NSSecureCoding {
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class DOMEntity extends DOMNode {
-  readonly publicId: string;
-
-  readonly systemId: string;
-
-  readonly notationName: string;
 }
 
 declare class WKWebExtensionAction extends NSObject {
@@ -4892,6 +4852,16 @@ declare class DOMHTMLBaseFontElement extends DOMHTMLElement {
   setFace(face: string): void;
 
   setSize(size: string): void;
+}
+
+declare class WKContentWorld extends NSObject {
+  static readonly pageWorld: WKContentWorld;
+
+  static readonly defaultClientWorld: WKContentWorld;
+
+  static worldWithName(name: string): WKContentWorld;
+
+  readonly name: string;
 }
 
 declare class DOMHTMLImageElement extends DOMHTMLElement {
@@ -5246,46 +5216,68 @@ declare class WebView extends NSView {
   overWrite(sender: interop.Object): void;
 }
 
-declare class WKContentWorld extends NSObject {
-  static readonly pageWorld: WKContentWorld;
+declare class DOMHTMLAnchorElement extends DOMHTMLElement {
+  charset: string;
 
-  static readonly defaultClientWorld: WKContentWorld;
+  coords: string;
 
-  static worldWithName(name: string): WKContentWorld;
-
-  readonly name: string;
-}
-
-declare class DOMHTMLButtonElement extends DOMHTMLElement {
-  autofocus: boolean;
-
-  disabled: boolean;
-
-  readonly form: DOMHTMLFormElement;
-
-  type: string;
+  hreflang: string;
 
   name: string;
 
-  value: string;
+  rel: string;
 
-  readonly willValidate: boolean;
+  rev: string;
+
+  shape: string;
+
+  target: string;
+
+  type: string;
 
   accessKey: string;
 
-  click(): void;
+  readonly text: string;
 
-  setAutofocus(autofocus: boolean): void;
+  readonly absoluteLinkURL: NSURL;
 
-  setDisabled(disabled: boolean): void;
+  href: string;
 
-  setType(type: string): void;
+  readonly protocol: string;
+
+  readonly host: string;
+
+  readonly hostname: string;
+
+  readonly port: string;
+
+  readonly pathname: string;
+
+  readonly search: string;
+
+  readonly hashName: string;
+
+  setCharset(charset: string): void;
+
+  setCoords(coords: string): void;
+
+  setHreflang(hreflang: string): void;
 
   setName(name: string): void;
 
-  setValue(value: string): void;
+  setRel(rel: string): void;
+
+  setRev(rev: string): void;
+
+  setShape(shape: string): void;
+
+  setTarget(target: string): void;
+
+  setType(type: string): void;
 
   setAccessKey(accessKey: string): void;
+
+  setHref(href: string): void;
 }
 
 declare class DOMNamedNodeMap extends DOMObject {
@@ -5380,14 +5372,6 @@ declare class DOMRange extends DOMObject {
   readonly webArchive: WebArchive;
 
   readonly markupString: string;
-}
-
-declare class WKBackForwardListItem extends NSObject {
-  readonly URL: NSURL;
-
-  readonly title: string;
-
-  readonly initialURL: NSURL;
 }
 
 declare class WebArchive extends NSObject implements NSCoding, NSCopying {
@@ -5541,8 +5525,6 @@ declare class WKNavigationAction extends NSObject {
 
   readonly shouldPerformDownload: boolean;
 
-  readonly isContentRuleListRedirect: boolean;
-
   readonly modifierFlags: interop.Enum<typeof NSEventModifierFlags>;
 
   readonly buttonNumber: number;
@@ -5594,6 +5576,14 @@ declare class WebFrame extends NSObject {
   readonly javaScriptContext: JSContext;
 }
 
+declare class WKProcessPool extends NSObject implements NSSecureCoding {
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class DOMHTMLIFrameElement extends DOMHTMLElement {
   align: string;
 
@@ -5640,98 +5630,6 @@ declare class DOMHTMLIFrameElement extends DOMHTMLElement {
   setWidth(width: string): void;
 
   readonly contentFrame: WebFrame;
-}
-
-declare class WKWebsiteDataRecord extends NSObject {
-  readonly displayName: string;
-
-  readonly dataTypes: NSSet;
-}
-
-declare class DOMCSSPrimitiveValue extends DOMCSSValue {
-  readonly primitiveType: number;
-
-  setFloatValueFloatValue(unitType: number, floatValue: number): void;
-
-  getFloatValue(unitType: number): number;
-
-  setStringValueStringValue(stringType: number, stringValue: string): void;
-
-  getStringValue(): string;
-
-  getCounterValue(): DOMCounter;
-
-  getRectValue(): DOMRect;
-
-  getRGBColorValue(): DOMRGBColor;
-
-  setFloatValue(unitType: number, floatValue: number): void;
-
-  setStringValue(stringType: number, stringValue: string): void;
-}
-
-declare class DOMHTMLAnchorElement extends DOMHTMLElement {
-  charset: string;
-
-  coords: string;
-
-  hreflang: string;
-
-  name: string;
-
-  rel: string;
-
-  rev: string;
-
-  shape: string;
-
-  target: string;
-
-  type: string;
-
-  accessKey: string;
-
-  readonly text: string;
-
-  readonly absoluteLinkURL: NSURL;
-
-  href: string;
-
-  readonly protocol: string;
-
-  readonly host: string;
-
-  readonly hostname: string;
-
-  readonly port: string;
-
-  readonly pathname: string;
-
-  readonly search: string;
-
-  readonly hashName: string;
-
-  setCharset(charset: string): void;
-
-  setCoords(coords: string): void;
-
-  setHreflang(hreflang: string): void;
-
-  setName(name: string): void;
-
-  setRel(rel: string): void;
-
-  setRev(rev: string): void;
-
-  setShape(shape: string): void;
-
-  setTarget(target: string): void;
-
-  setType(type: string): void;
-
-  setAccessKey(accessKey: string): void;
-
-  setHref(href: string): void;
 }
 
 declare class DOMHTMLLinkElement extends DOMHTMLElement {
@@ -5818,6 +5716,82 @@ declare class DOMStyleSheetList extends DOMObject {
   item(index: number): DOMStyleSheet;
 }
 
+declare class DOMHTMLTableElement extends DOMHTMLElement {
+  caption: DOMHTMLTableCaptionElement;
+
+  tHead: DOMHTMLTableSectionElement;
+
+  tFoot: DOMHTMLTableSectionElement;
+
+  readonly rows: DOMHTMLCollection;
+
+  readonly tBodies: DOMHTMLCollection;
+
+  align: string;
+
+  bgColor: string;
+
+  border: string;
+
+  cellPadding: string;
+
+  cellSpacing: string;
+
+  frameBorders: string;
+
+  rules: string;
+
+  summary: string;
+
+  width: string;
+
+  createTHead(): DOMHTMLElement;
+
+  deleteTHead(): void;
+
+  createTFoot(): DOMHTMLElement;
+
+  deleteTFoot(): void;
+
+  createCaption(): DOMHTMLElement;
+
+  deleteCaption(): void;
+
+  insertRow(index: number): DOMHTMLElement;
+
+  deleteRow(index: number): void;
+
+  setCaption(caption: DOMHTMLTableCaptionElement): void;
+
+  setTHead(tHead: DOMHTMLTableSectionElement): void;
+
+  setTFoot(tFoot: DOMHTMLTableSectionElement): void;
+
+  setAlign(align: string): void;
+
+  setBgColor(bgColor: string): void;
+
+  setBorder(border: string): void;
+
+  setCellPadding(cellPadding: string): void;
+
+  setCellSpacing(cellSpacing: string): void;
+
+  setFrameBorders(frameBorders: string): void;
+
+  setRules(rules: string): void;
+
+  setSummary(summary: string): void;
+
+  setWidth(width: string): void;
+}
+
+declare class WKWebsiteDataRecord extends NSObject {
+  readonly displayName: string;
+
+  readonly dataTypes: NSSet;
+}
+
 declare class DOMHTMLUListElement extends DOMHTMLElement {
   compact: boolean;
 
@@ -5866,6 +5840,46 @@ declare class DOMKeyboardEvent extends DOMUIEvent {
   initKeyboardEventCanBubbleCancelableViewKeyIdentifierKeyLocationCtrlKeyAltKeyShiftKeyMetaKeyAltGraphKey(type: string, canBubble: boolean, cancelable: boolean, view: DOMAbstractView, keyIdentifier: string, keyLocation: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean, metaKey: boolean, altGraphKey: boolean): this;
 
   initKeyboardEventCanBubbleCancelableViewKeyIdentifierKeyLocationCtrlKeyAltKeyShiftKeyMetaKey(type: string, canBubble: boolean, cancelable: boolean, view: DOMAbstractView, keyIdentifier: string, keyLocation: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean, metaKey: boolean): this;
+}
+
+declare class DOMEntity extends DOMNode {
+  readonly publicId: string;
+
+  readonly systemId: string;
+
+  readonly notationName: string;
+}
+
+declare class DOMHTMLButtonElement extends DOMHTMLElement {
+  autofocus: boolean;
+
+  disabled: boolean;
+
+  readonly form: DOMHTMLFormElement;
+
+  type: string;
+
+  name: string;
+
+  value: string;
+
+  readonly willValidate: boolean;
+
+  accessKey: string;
+
+  click(): void;
+
+  setAutofocus(autofocus: boolean): void;
+
+  setDisabled(disabled: boolean): void;
+
+  setType(type: string): void;
+
+  setName(name: string): void;
+
+  setValue(value: string): void;
+
+  setAccessKey(accessKey: string): void;
 }
 
 declare class WKFindConfiguration extends NSObject implements NSCopying {
@@ -6255,46 +6269,8 @@ declare class DOMElement extends DOMNode {
   image(): NSImage;
 }
 
-declare class DOMHTMLBodyElement extends DOMHTMLElement {
-  aLink: string;
-
-  background: string;
-
-  bgColor: string;
-
-  link: string;
-
-  text: string;
-
-  vLink: string;
-
-  setALink(aLink: string): void;
-
-  setBackground(background: string): void;
-
-  setBgColor(bgColor: string): void;
-
-  setLink(link: string): void;
-
-  setText(text: string): void;
-
-  setVLink(vLink: string): void;
-}
-
 declare class DOMCSSCharsetRule extends DOMCSSRule {
   readonly encoding: string;
-}
-
-declare class DOMWheelEvent extends DOMMouseEvent {
-  readonly wheelDeltaX: number;
-
-  readonly wheelDeltaY: number;
-
-  readonly wheelDelta: number;
-
-  readonly isHorizontal: boolean;
-
-  initWheelEventWheelDeltaYViewScreenXScreenYClientXClientYCtrlKeyAltKeyShiftKeyMetaKey(wheelDeltaX: number, wheelDeltaY: number, view: DOMAbstractView, screenX: number, screenY: number, clientX: number, clientY: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean, metaKey: boolean): this;
 }
 
 declare class DOMHTMLMapElement extends DOMHTMLElement {

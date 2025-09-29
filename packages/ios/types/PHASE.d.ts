@@ -31,8 +31,7 @@ declare const PHASEPushStreamCompletionCallbackCondition: {
 };
 
 declare const PHASEAutomaticHeadTrackingFlags: {
-  Orientation: 1,
-  Position: 2,
+  PHASEAutomaticHeadTrackingFlagOrientation: 1,
 };
 
 declare const PHASECalibrationMode: {
@@ -218,8 +217,6 @@ declare class PHASEEngine extends NSObject {
 
   readonly activeGroupPreset: PHASEGroupPreset;
 
-  readonly lastRenderTime: AVAudioTime;
-
   setOutputSpatializationMode(outputSpatializationMode: interop.Enum<typeof PHASESpatializationMode>): void;
 
   setDefaultMedium(defaultMedium: PHASEMedium): void;
@@ -240,17 +237,11 @@ declare class PHASESoundEvent extends NSObject {
 
   startWithCompletion(handler: (p1: interop.Enum<typeof PHASESoundEventStartHandlerReason>) => void | null): void;
 
-  startAtTimeCompletion(when: AVAudioTime | null, handler: (p1: interop.Enum<typeof PHASESoundEventStartHandlerReason>) => void | null): void;
-
   seekToTimeCompletion(time: number, handler: (p1: interop.Enum<typeof PHASESoundEventSeekHandlerReason>) => void | null): void;
-
-  seekToTimeResumeAtEngineTimeCompletion(time: number, engineTime: AVAudioTime, handler: (p1: interop.Enum<typeof PHASESoundEventSeekHandlerReason>) => void | null): void;
 
   pause(): void;
 
   resume(): void;
-
-  resumeAtTime(time: AVAudioTime | null): void;
 
   stopAndInvalidate(): void;
 
@@ -358,6 +349,18 @@ declare class PHASEPullStreamNode extends PHASEStreamNode {
   setRenderBlock(renderBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number): void;
 }
 
+declare class PHASEPushStreamNodeDefinition extends PHASEGeneratorNodeDefinition {
+  initWithMixerDefinitionFormatIdentifier(mixerDefinition: PHASEMixerDefinition, format: AVAudioFormat, identifier: string): this;
+
+  initWithMixerDefinitionFormat(mixerDefinition: PHASEMixerDefinition, format: AVAudioFormat): this;
+
+  readonly format: AVAudioFormat;
+
+  normalize: boolean;
+
+  setNormalize(normalize: boolean): void;
+}
+
 declare class PHASERandomNodeDefinition extends PHASESoundEventNodeDefinition {
   init(): this;
 
@@ -434,6 +437,16 @@ declare class PHASESpatialMixerDefinition extends PHASEMixerDefinition {
   setListenerDirectivityModelParameters(listenerDirectivityModelParameters: PHASEDirectivityModelParameters | null): void;
 
   setSourceDirectivityModelParameters(sourceDirectivityModelParameters: PHASEDirectivityModelParameters | null): void;
+}
+
+declare class PHASEMappedMetaParameterDefinition extends PHASENumberMetaParameterDefinition {
+  initWithInputMetaParameterDefinitionEnvelopeIdentifier(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope, identifier: string): this;
+
+  initWithInputMetaParameterDefinitionEnvelope(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope): this;
+
+  readonly envelope: PHASEEnvelope;
+
+  readonly inputMetaParameterDefinition: PHASENumberMetaParameterDefinition;
 }
 
 declare class PHASEStringMetaParameterDefinition extends PHASEMetaParameterDefinition {
@@ -543,22 +556,26 @@ declare class PHASEConeDirectivityModelSubbandParameters extends NSObject {
   setOuterGain(outerGain: number): void;
 }
 
+declare class PHASEOccluder extends PHASEObject {
+  initWithEngineShapes(engine: PHASEEngine, shapes: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly shapes: NSArray;
+}
+
+declare class PHASEContainerNodeDefinition extends PHASESoundEventNodeDefinition {
+  init(): this;
+
+  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  initWithIdentifier(identifier: string): this;
+
+  addSubtree(subtree: PHASESoundEventNodeDefinition): void;
+}
+
 declare class PHASEShapeElement extends NSObject {
   material: PHASEMaterial;
 
   setMaterial(material: PHASEMaterial | null): void;
-}
-
-declare class PHASEPushStreamNodeDefinition extends PHASEGeneratorNodeDefinition {
-  initWithMixerDefinitionFormatIdentifier(mixerDefinition: PHASEMixerDefinition, format: AVAudioFormat, identifier: string): this;
-
-  initWithMixerDefinitionFormat(mixerDefinition: PHASEMixerDefinition, format: AVAudioFormat): this;
-
-  readonly format: AVAudioFormat;
-
-  normalize: boolean;
-
-  setNormalize(normalize: boolean): void;
 }
 
 declare class PHASEGroup extends NSObject {
@@ -671,22 +688,6 @@ declare class PHASESpatialPipeline extends NSObject {
   readonly entries: NSDictionary;
 }
 
-declare class PHASEOccluder extends PHASEObject {
-  initWithEngineShapes(engine: PHASEEngine, shapes: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly shapes: NSArray;
-}
-
-declare class PHASEContainerNodeDefinition extends PHASESoundEventNodeDefinition {
-  init(): this;
-
-  static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  initWithIdentifier(identifier: string): this;
-
-  addSubtree(subtree: PHASESoundEventNodeDefinition): void;
-}
-
 declare class PHASEStreamNode extends NSObject {
   readonly gainMetaParameter: PHASENumberMetaParameter;
 
@@ -695,10 +696,6 @@ declare class PHASEStreamNode extends NSObject {
   readonly mixer: PHASEMixer;
 
   readonly format: AVAudioFormat;
-}
-
-declare class PHASEMedium extends NSObject {
-  initWithEnginePreset(engine: PHASEEngine, preset: interop.Enum<typeof PHASEMediumPreset>): this;
 }
 
 declare class PHASEBlendNodeDefinition extends PHASESoundEventNodeDefinition {
@@ -721,6 +718,10 @@ declare class PHASEBlendNodeDefinition extends PHASESoundEventNodeDefinition {
   addRangeForInputValuesAboveFullGainAtValueFadeCurveTypeSubtree(value: number, fullGainAtValue: number, fadeCurveType: interop.Enum<typeof PHASECurveType>, subtree: PHASESoundEventNodeDefinition): void;
 
   addRangeWithEnvelopeSubtree(envelope: PHASEEnvelope, subtree: PHASESoundEventNodeDefinition): void;
+}
+
+declare class PHASEMedium extends NSObject {
+  initWithEnginePreset(engine: PHASEEngine, preset: interop.Enum<typeof PHASEMediumPreset>): this;
 }
 
 declare class PHASEEnvelopeDistanceModelParameters extends PHASEDistanceModelParameters {
@@ -869,15 +870,5 @@ declare class PHASESamplerNodeDefinition extends PHASEGeneratorNodeDefinition {
 }
 
 declare class PHASEDirectivityModelParameters extends NSObject {
-}
-
-declare class PHASEMappedMetaParameterDefinition extends PHASENumberMetaParameterDefinition {
-  initWithInputMetaParameterDefinitionEnvelopeIdentifier(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope, identifier: string): this;
-
-  initWithInputMetaParameterDefinitionEnvelope(inputMetaParameterDefinition: PHASENumberMetaParameterDefinition, envelope: PHASEEnvelope): this;
-
-  readonly envelope: PHASEEnvelope;
-
-  readonly inputMetaParameterDefinition: PHASENumberMetaParameterDefinition;
 }
 

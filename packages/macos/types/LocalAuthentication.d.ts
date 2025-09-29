@@ -37,19 +37,15 @@ declare const LAError: {
 declare const LAPolicy: {
   WithBiometrics: 1,
   LAPolicyDeviceOwnerAuthentication: 2,
-  WithCompanion: 3,
-  WithBiometricsOrCompanion: 4,
   WithWatch: 3,
+  WithCompanion: 3,
   WithBiometricsOrWatch: 4,
+  WithBiometricsOrCompanion: 4,
 };
 
 declare const LACredentialType: {
   ApplicationPassword: 0,
   SmartCardPIN: -3,
-};
-
-declare const LACompanionType: {
-  LACompanionTypeWatch: 1,
 };
 
 declare const LABiometryType: {
@@ -67,6 +63,10 @@ declare const LAAccessControlOperation: {
   UseKeySign: 3,
   UseKeyDecrypt: 4,
   UseKeyKeyExchange: 5,
+};
+
+declare const LACompanionType: {
+  LACompanionTypeWatch: 1,
 };
 
 declare interface LAEnvironmentObserver extends NSObjectProtocol {

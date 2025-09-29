@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
+declare const CSSuggestionHighlightAttributeName: string;
+
 declare const CSSearchQueryErrorDomain: string;
 
 declare const CSIndexErrorDomain: string;
@@ -29,8 +31,6 @@ declare const CSSearchQueryString: string;
 declare const CoreSpotlightVersionNumber: number;
 
 declare const CSQueryContinuationActionType: string;
-
-declare const CSSuggestionHighlightAttributeName: string;
 
 declare const CSMailboxDrafts: string;
 

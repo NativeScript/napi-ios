@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const VNHumanBodyPose3DObservationJointsGroupNameHead: string;
-
 declare const VNAnimalBodyPoseObservationJointNameRightEarBottom: string;
 
 declare const VNHumanBodyPoseObservationJointNameRightShoulder: string;
@@ -24,8 +22,6 @@ declare const VNAnimalBodyPoseObservationJointNameRightEarTop: string;
 declare const VNHumanBodyPose3DObservationJointNameLeftElbow: string;
 
 declare const VNErrorDomain: string;
-
-declare const VNGenerateForegroundInstanceMaskRequestRevision1: number;
 
 declare const VNHumanBodyPose3DObservationJointNameRightAnkle: string;
 
@@ -55,7 +51,7 @@ declare const VNHumanBodyPoseObservationJointsGroupNameFace: string;
 
 declare const VNHumanBodyPoseObservationJointNameRightAnkle: string;
 
-declare const VNHumanBodyPoseObservationJointNameRightHip: string;
+declare const VNHumanBodyPoseObservationJointNameLeftAnkle: string;
 
 declare const VNHumanBodyPoseObservationJointNameLeftHip: string;
 
@@ -78,6 +74,8 @@ declare const VNBodyLandmarkKeyRightKnee: string;
 declare const VNBodyLandmarkKeyLeftKnee: string;
 
 declare const VNBodyLandmarkKeyRightHip: string;
+
+declare const VNBodyLandmarkKeyRightElbow: string;
 
 declare const VNBodyLandmarkKeyLeftElbow: string;
 
@@ -147,6 +145,8 @@ declare const VNDetectBarcodesRequestRevision3: number;
 
 declare const VNDetectBarcodesRequestRevision2: number;
 
+declare const VNDetectBarcodesRequestRevision1: number;
+
 declare const VNClassifyImageRequestRevision2: number;
 
 declare const VNClassifyImageRequestRevision1: number;
@@ -191,23 +191,17 @@ declare const VNAnimalBodyPoseObservationJointNameRightBackKnee: string;
 
 declare const VNAnimalBodyPoseObservationJointNameLeftBackKnee: string;
 
+declare const VNAnimalBodyPoseObservationJointNameRightBackElbow: string;
+
 declare const VNAnimalBodyPoseObservationJointNameLeftBackElbow: string;
 
 declare const VNAnimalBodyPoseObservationJointNameRightFrontKnee: string;
 
 declare const VNAnimalBodyPoseObservationJointNameLeftFrontElbow: string;
 
-declare const VNAnimalBodyPoseObservationJointNameLeftEye: string;
-
 declare const VNAnimalBodyPoseObservationJointNameLeftEarBottom: string;
 
 declare const VNBarcodeSymbologyMicroQR: string;
-
-declare const VNBarcodeSymbologyMicroPDF417: string;
-
-declare const VNBarcodeSymbologyGS1DataBarLimited: string;
-
-declare const VNBarcodeSymbologyUPCE: string;
 
 declare const VNBarcodeSymbologyQR: string;
 
@@ -225,21 +219,25 @@ declare const VNBarcodeSymbologyCode39Checksum: string;
 
 declare const VNBarcodeSymbologyCode39: string;
 
+declare const VNBarcodeSymbologyGS1DataBarLimited: string;
+
 declare const VNHumanHandPoseObservationJointNameRingDIP: string;
 
 declare const VNHumanBodyPoseObservationJointNameLeftKnee: string;
 
 declare const VNComputeStagePostProcessing: string;
 
-declare const VNAnimalBodyPoseObservationJointNameLeftFrontPaw: string;
+declare const VNDetectFaceRectanglesRequestRevision3: number;
 
-declare const VNDetectBarcodesRequestRevision1: number;
+declare const VNAnimalBodyPoseObservationJointNameLeftFrontPaw: string;
 
 declare const VNBodyLandmarkKeyLeftHip: string;
 
+declare const VNGeneratePersonInstanceMaskRequestRevision1: number;
+
 declare const VNAnimalBodyPoseObservationJointNameRightEarMiddle: string;
 
-declare const VNGeneratePersonInstanceMaskRequestRevision1: number;
+declare const VNGenerateForegroundInstanceMaskRequestRevision1: number;
 
 declare const VNAnimalBodyPoseObservationJointNameNose: string;
 
@@ -279,6 +277,8 @@ declare const VNBarcodeSymbologyGS1DataBarExpanded: string;
 
 declare const VNAnimalBodyPoseObservationJointNameRightFrontElbow: string;
 
+declare const VNHumanBodyPose3DObservationJointsGroupNameHead: string;
+
 declare const VNGeneratePersonSegmentationRequestRevision1: number;
 
 declare const VNRecognizedPoint3DGroupKeyAll: string;
@@ -293,23 +293,27 @@ declare const VNHumanBodyPose3DObservationJointsGroupNameRightLeg: string;
 
 declare const VNBarcodeSymbologyDataMatrix: string;
 
-declare const VNAnimalBodyPoseObservationJointNameLeftEarTop: string;
+declare const VNComputeStageMain: string;
 
 declare const VNBarcodeSymbologyAztec: string;
-
-declare const VNAnimalBodyPoseObservationJointNameRightBackElbow: string;
 
 declare const VNVideoProcessingOptionTimeInterval: string;
 
 declare const VNBarcodeSymbologyCodabar: string;
 
+declare const VNHumanBodyPoseObservationJointNameRightHip: string;
+
+declare const VNBarcodeSymbologyUPCE: string;
+
+declare const VNAnimalBodyPoseObservationJointNameLeftEye: string;
+
+declare const VNImageOptionCIContext: string;
+
 declare const VNDetectTextRectanglesRequestRevision1: number;
 
-declare const VNComputeStageMain: string;
+declare const VNDetectTrajectoriesRequestRevision1: number;
 
-declare const VNDetectFaceRectanglesRequestRevision3: number;
-
-declare const VNDetectFaceCaptureQualityRequestRevision3: number;
+declare const VNHumanHandPoseObservationJointNameMiddleDIP: string;
 
 declare const VNBodyLandmarkKeyRightAnkle: string;
 
@@ -323,21 +327,15 @@ declare const VNBarcodeSymbologyGS1DataBar: string;
 
 declare const VNBodyLandmarkKeyLeftAnkle: string;
 
-declare const VNImageOptionCIContext: string;
-
 declare const VNBarcodeSymbologyCode39FullASCIIChecksum: string;
 
-declare const VNHumanHandPoseObservationJointNameIndexPIP: string;
+declare const VNHumanHandPoseObservationJointsGroupNameThumb: string;
 
-declare const VNHumanBodyPoseObservationJointNameLeftAnkle: string;
+declare const VNHumanHandPoseObservationJointNameIndexPIP: string;
 
 declare const VNHumanHandPoseObservationJointNameRingMCP: string;
 
 declare const VNHumanBodyPoseObservationJointNameRoot: string;
-
-declare const VNHumanHandPoseObservationJointsGroupNameThumb: string;
-
-declare const VNBodyLandmarkKeyRightElbow: string;
 
 declare const VNHumanBodyPose3DObservationJointsGroupNameRightArm: string;
 
@@ -391,9 +389,13 @@ declare const VNBarcodeSymbologyI2of5: string;
 
 declare const VNHumanHandPoseObservationJointsGroupNameAll: string;
 
+declare const VNBarcodeSymbologyMicroPDF417: string;
+
 declare const VNHumanBodyPose3DObservationJointsGroupNameLeftArm: string;
 
 declare const VNBodyLandmarkKeyLeftEye: string;
+
+declare const VNDetectFaceCaptureQualityRequestRevision3: number;
 
 declare const VNDetectFaceLandmarksRequestRevision3: number;
 
@@ -423,10 +425,6 @@ declare const VNBarcodeSymbologyMSIPlessey: string;
 
 declare const VNHumanHandPoseObservationJointNameMiddleTip: string;
 
-declare const VNDetectTrajectoriesRequestRevision1: number;
-
-declare const VNHumanHandPoseObservationJointNameMiddleDIP: string;
-
 declare const VNBodyLandmarkKeyLeftShoulder: string;
 
 declare const VNHumanBodyPoseObservationJointsGroupNameRightLeg: string;
@@ -436,6 +434,8 @@ declare const VNAnimalBodyPoseObservationJointNameLeftFrontKnee: string;
 declare const VNAnimalBodyPoseObservationJointNameTailTop: string;
 
 declare const VNHumanBodyPoseObservationJointNameNeck: string;
+
+declare const VNAnimalBodyPoseObservationJointNameLeftEarTop: string;
 
 declare const VNAnimalBodyPoseObservationJointNameRightEye: string;
 
@@ -605,6 +605,48 @@ declare interface VNRequestRevisionProviding {
 declare class VNRequestRevisionProviding extends NativeObject implements VNRequestRevisionProviding {
 }
 
+declare class VNGenerateOpticalFlowRequest extends VNTargetedImageRequest {
+  computationAccuracy: interop.Enum<typeof VNGenerateOpticalFlowRequestComputationAccuracy>;
+
+  outputPixelFormat: number;
+
+  keepNetworkOutput: boolean;
+
+  readonly results: NSArray;
+
+  setComputationAccuracy(computationAccuracy: interop.Enum<typeof VNGenerateOpticalFlowRequestComputationAccuracy>): void;
+
+  setOutputPixelFormat(outputPixelFormat: number): void;
+
+  setKeepNetworkOutput(keepNetworkOutput: boolean): void;
+}
+
+declare class VNCircle extends NSObject implements NSCopying, NSSecureCoding {
+  static readonly zeroCircle: VNCircle;
+
+  initWithCenterRadius(center: VNPoint, radius: number): this;
+
+  initWithCenterDiameter(center: VNPoint, diameter: number): this;
+
+  containsPoint(point: VNPoint): boolean;
+
+  containsPointInCircumferentialRingOfWidth(point: VNPoint, ringWidth: number): boolean;
+
+  readonly center: VNPoint;
+
+  readonly radius: number;
+
+  readonly diameter: number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class VNContour extends NSObject implements NSCopying, VNRequestRevisionProviding {
   readonly indexPath: NSIndexPath;
 
@@ -649,26 +691,26 @@ declare class VNBarcodeObservation extends VNRectangleObservation {
   readonly supplementalPayloadData: NSData;
 }
 
+declare class VNHumanBodyPoseObservation extends VNRecognizedPointsObservation {
+  readonly availableJointNames: NSArray;
+
+  readonly availableJointsGroupNames: NSArray;
+
+  recognizedPointForJointNameError(jointName: string, error: interop.PointerConvertible): VNRecognizedPoint;
+
+  recognizedPointsForJointsGroupNameError(jointsGroupName: string, error: interop.PointerConvertible): NSDictionary;
+}
+
 declare class VNSaliencyImageObservation extends VNPixelBufferObservation {
   readonly salientObjects: NSArray;
 }
 
-declare class VNCircle extends NSObject implements NSCopying, NSSecureCoding {
-  static readonly zeroCircle: VNCircle;
+declare class VNObservation extends NSObject implements NSCopying, NSSecureCoding, VNRequestRevisionProviding {
+  readonly uuid: NSUUID;
 
-  initWithCenterRadius(center: VNPoint, radius: number): this;
+  readonly confidence: number;
 
-  initWithCenterDiameter(center: VNPoint, diameter: number): this;
-
-  containsPoint(point: VNPoint): boolean;
-
-  containsPointInCircumferentialRingOfWidth(point: VNPoint, ringWidth: number): boolean;
-
-  readonly center: VNPoint;
-
-  readonly radius: number;
-
-  readonly diameter: number;
+  readonly timeRange: CMTimeRange;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -677,6 +719,8 @@ declare class VNCircle extends NSObject implements NSCopying, NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+
+  readonly requestRevision: number;
 }
 
 declare class VNCoreMLRequest extends VNImageBasedRequest {
@@ -689,20 +733,6 @@ declare class VNCoreMLRequest extends VNImageBasedRequest {
   initWithModelCompletionHandler(model: VNCoreMLModel, completionHandler: (p1: VNRequest, p2: NSError) => void | null): this;
 
   setImageCropAndScaleOption(imageCropAndScaleOption: interop.Enum<typeof VNImageCropAndScaleOption>): void;
-}
-
-declare class VNFaceLandmarks extends NSObject implements NSCopying, NSSecureCoding, VNRequestRevisionProviding {
-  readonly confidence: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  readonly requestRevision: number;
 }
 
 declare class VNCalculateImageAestheticsScoresRequest extends VNImageBasedRequest {
@@ -1126,6 +1156,28 @@ declare class VNImageAestheticsScoresObservation extends VNObservation {
   readonly overallScore: number;
 }
 
+declare class VNHumanBodyPose3DObservation extends VNRecognizedPoints3DObservation {
+  readonly heightEstimation: interop.Enum<typeof VNHumanBodyPose3DObservationHeightEstimation>;
+
+  readonly cameraOriginMatrix: simd_float4x4;
+
+  readonly availableJointsGroupNames: NSArray;
+
+  readonly availableJointNames: NSArray;
+
+  readonly bodyHeight: number;
+
+  recognizedPointsForJointsGroupNameError(jointsGroupName: string, error: interop.PointerConvertible): NSDictionary;
+
+  recognizedPointForJointNameError(jointName: string, error: interop.PointerConvertible): VNHumanBodyRecognizedPoint3D;
+
+  pointInImageForJointNameError(jointName: string, error: interop.PointerConvertible): VNPoint;
+
+  parentJointNameForJointName(jointName: string): string;
+
+  getCameraRelativePositionForJointNameError(modelPositionOut: interop.PointerConvertible, jointName: string, error: interop.PointerConvertible): boolean;
+}
+
 declare class VNRecognizedPoints3DObservation extends VNObservation {
   readonly availableKeys: NSArray;
 
@@ -1156,6 +1208,18 @@ declare class VNInstanceMaskObservation extends VNObservation {
   generateMaskedImageOfInstancesFromRequestHandlerCroppedToInstancesExtentError(instances: NSIndexSet, requestHandler: VNImageRequestHandler, cropResult: boolean, error: interop.PointerConvertible): interop.Object;
 
   generateScaledMaskForImageForInstancesFromRequestHandlerError(instances: NSIndexSet, requestHandler: VNImageRequestHandler, error: interop.PointerConvertible): interop.Object;
+}
+
+declare class VNRecognizedPointsObservation extends VNObservation {
+  readonly availableKeys: NSArray;
+
+  readonly availableGroupKeys: NSArray;
+
+  recognizedPointForKeyError(pointKey: string, error: interop.PointerConvertible): VNRecognizedPoint;
+
+  recognizedPointsForGroupKeyError(groupKey: string, error: interop.PointerConvertible): NSDictionary;
+
+  keypointsMultiArrayAndReturnError(error: interop.PointerConvertible): MLMultiArray;
 }
 
 declare class VNFeaturePrintObservation extends VNObservation {
@@ -1235,6 +1299,12 @@ declare class VNPixelBufferObservation extends VNObservation {
   readonly featureName: string;
 }
 
+declare class VNCoreMLFeatureValueObservation extends VNObservation {
+  readonly featureValue: MLFeatureValue;
+
+  readonly featureName: string;
+}
+
 declare class VNRecognizedObjectObservation extends VNDetectedObjectObservation {
   readonly labels: NSArray;
 }
@@ -1253,24 +1323,6 @@ declare class VNFaceObservation extends VNDetectedObjectObservation {
   readonly yaw: NSNumber;
 
   readonly pitch: NSNumber;
-}
-
-declare class VNObservation extends NSObject implements NSCopying, NSSecureCoding, VNRequestRevisionProviding {
-  readonly uuid: NSUUID;
-
-  readonly confidence: number;
-
-  readonly timeRange: CMTimeRange;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  readonly requestRevision: number;
 }
 
 declare class VNDetectedPoint extends VNPoint {
@@ -1349,32 +1401,18 @@ declare class VNFaceLandmarkRegion extends NSObject implements NSCopying, NSSecu
   readonly requestRevision: number;
 }
 
-declare class VNRecognizedPointsObservation extends VNObservation {
-  readonly availableKeys: NSArray;
+declare class VNFaceLandmarks extends NSObject implements NSCopying, NSSecureCoding, VNRequestRevisionProviding {
+  readonly confidence: number;
 
-  readonly availableGroupKeys: NSArray;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
-  recognizedPointForKeyError(pointKey: string, error: interop.PointerConvertible): VNRecognizedPoint;
+  static readonly supportsSecureCoding: boolean;
 
-  recognizedPointsForGroupKeyError(groupKey: string, error: interop.PointerConvertible): NSDictionary;
+  encodeWithCoder(coder: NSCoder): void;
 
-  keypointsMultiArrayAndReturnError(error: interop.PointerConvertible): MLMultiArray;
-}
+  initWithCoder(coder: NSCoder): this;
 
-declare class VNGenerateOpticalFlowRequest extends VNTargetedImageRequest {
-  computationAccuracy: interop.Enum<typeof VNGenerateOpticalFlowRequestComputationAccuracy>;
-
-  outputPixelFormat: number;
-
-  keepNetworkOutput: boolean;
-
-  readonly results: NSArray;
-
-  setComputationAccuracy(computationAccuracy: interop.Enum<typeof VNGenerateOpticalFlowRequestComputationAccuracy>): void;
-
-  setOutputPixelFormat(outputPixelFormat: number): void;
-
-  setKeepNetworkOutput(keepNetworkOutput: boolean): void;
+  readonly requestRevision: number;
 }
 
 declare class VNRecognizeTextRequest extends VNImageBasedRequest implements VNRequestProgressProviding {
@@ -1479,56 +1517,6 @@ declare class VNTrackingRequest extends VNImageBasedRequest {
   setLastFrame(lastFrame: boolean): void;
 }
 
-declare class VNCoreMLFeatureValueObservation extends VNObservation {
-  readonly featureValue: MLFeatureValue;
-
-  readonly featureName: string;
-}
-
-declare class VNHumanBodyRecognizedPoint3D extends VNRecognizedPoint3D {
-  readonly localPosition: simd_float4x4;
-
-  readonly parentJoint: string;
-}
-
-declare class VNVideoProcessorTimeIntervalCadence extends VNVideoProcessorCadence {
-  initWithTimeInterval(timeInterval: number): this;
-
-  readonly timeInterval: number;
-}
-
-declare class VNImageHomographicAlignmentObservation extends VNImageAlignmentObservation {
-  readonly warpTransform: simd_float3x3;
-}
-
-declare class VNHumanBodyPoseObservation extends VNRecognizedPointsObservation {
-  readonly availableJointNames: NSArray;
-
-  readonly availableJointsGroupNames: NSArray;
-
-  recognizedPointForJointNameError(jointName: string, error: interop.PointerConvertible): VNRecognizedPoint;
-
-  recognizedPointsForJointsGroupNameError(jointsGroupName: string, error: interop.PointerConvertible): NSDictionary;
-}
-
-declare class VNRecognizedPoint extends VNDetectedPoint {
-  readonly identifier: string;
-}
-
-declare class VNContoursObservation extends VNObservation {
-  readonly contourCount: number;
-
-  contourAtIndexError(contourIndex: number, error: interop.PointerConvertible): VNContour;
-
-  readonly topLevelContourCount: number;
-
-  readonly topLevelContours: NSArray;
-
-  contourAtIndexPathError(indexPath: NSIndexPath, error: interop.PointerConvertible): VNContour;
-
-  readonly normalizedPath: interop.Object;
-}
-
 declare class VNGeneratePersonSegmentationRequest extends VNStatefulRequest {
   static new<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -1547,6 +1535,40 @@ declare class VNGeneratePersonSegmentationRequest extends VNStatefulRequest {
   setQualityLevel(qualityLevel: interop.Enum<typeof VNGeneratePersonSegmentationRequestQualityLevel>): void;
 
   setOutputPixelFormat(outputPixelFormat: number): void;
+}
+
+declare class VNHumanBodyRecognizedPoint3D extends VNRecognizedPoint3D {
+  readonly localPosition: simd_float4x4;
+
+  readonly parentJoint: string;
+}
+
+declare class VNVideoProcessorTimeIntervalCadence extends VNVideoProcessorCadence {
+  initWithTimeInterval(timeInterval: number): this;
+
+  readonly timeInterval: number;
+}
+
+declare class VNImageHomographicAlignmentObservation extends VNImageAlignmentObservation {
+  readonly warpTransform: simd_float3x3;
+}
+
+declare class VNRecognizedPoint extends VNDetectedPoint {
+  readonly identifier: string;
+}
+
+declare class VNContoursObservation extends VNObservation {
+  readonly contourCount: number;
+
+  contourAtIndexError(contourIndex: number, error: interop.PointerConvertible): VNContour;
+
+  readonly topLevelContourCount: number;
+
+  readonly topLevelContours: NSArray;
+
+  contourAtIndexPathError(indexPath: NSIndexPath, error: interop.PointerConvertible): VNContour;
+
+  readonly normalizedPath: interop.Object;
 }
 
 declare class VNDetectBarcodesRequest extends VNImageBasedRequest {
@@ -1650,41 +1672,7 @@ declare class VNHumanHandPoseObservation extends VNRecognizedPointsObservation {
   readonly chirality: interop.Enum<typeof VNChirality>;
 }
 
-declare class VNHumanBodyPose3DObservation extends VNRecognizedPoints3DObservation {
-  readonly heightEstimation: interop.Enum<typeof VNHumanBodyPose3DObservationHeightEstimation>;
-
-  readonly cameraOriginMatrix: simd_float4x4;
-
-  readonly availableJointsGroupNames: NSArray;
-
-  readonly availableJointNames: NSArray;
-
-  readonly bodyHeight: number;
-
-  recognizedPointsForJointsGroupNameError(jointsGroupName: string, error: interop.PointerConvertible): NSDictionary;
-
-  recognizedPointForJointNameError(jointName: string, error: interop.PointerConvertible): VNHumanBodyRecognizedPoint3D;
-
-  pointInImageForJointNameError(jointName: string, error: interop.PointerConvertible): VNPoint;
-
-  parentJointNameForJointName(jointName: string): string;
-
-  getCameraRelativePositionForJointNameError(modelPositionOut: interop.PointerConvertible, jointName: string, error: interop.PointerConvertible): boolean;
-}
-
 declare class VNGeneratePersonInstanceMaskRequest extends VNImageBasedRequest {
-  readonly results: NSArray;
-}
-
-declare class VNDetectHumanBodyPoseRequest extends VNImageBasedRequest {
-  static supportedJointNamesForRevisionError(revision: number, error: interop.PointerConvertible): NSArray;
-
-  supportedJointNamesAndReturnError(error: interop.PointerConvertible): NSArray;
-
-  static supportedJointsGroupNamesForRevisionError(revision: number, error: interop.PointerConvertible): NSArray;
-
-  supportedJointsGroupNamesAndReturnError(error: interop.PointerConvertible): NSArray;
-
   readonly results: NSArray;
 }
 
@@ -1700,22 +1688,6 @@ declare class VNClassificationObservation extends VNObservation {
   hasMinimumRecallForPrecision(minimumRecall: number, precision: number): boolean;
 
   hasMinimumPrecisionForRecall(minimumPrecision: number, recall: number): boolean;
-}
-
-declare class VNVideoProcessor extends NSObject {
-  initWithURL(videoURL: NSURL): this;
-
-  addRequestProcessingOptionsError(request: VNRequest, processingOptions: VNVideoProcessorRequestProcessingOptions, error: interop.PointerConvertible): boolean;
-
-  addRequestWithProcessingOptionsError(request: VNRequest, processingOptions: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): boolean;
-
-  removeRequestError(request: VNRequest, error: interop.PointerConvertible): boolean;
-
-  analyzeTimeRangeError(timeRange: CMTimeRange, error: interop.PointerConvertible): boolean;
-
-  analyzeWithTimeRangeError(timeRange: CMTimeRange, error: interop.PointerConvertible): boolean;
-
-  cancel(): void;
 }
 
 declare class VNPoint extends NSObject implements NSCopying, NSSecureCoding {
@@ -1820,6 +1792,10 @@ declare class VNGeometryUtils extends NSObject {
   static calculatePerimeterForContourError(perimeter: interop.PointerConvertible, contour: VNContour, error: interop.PointerConvertible): boolean;
 }
 
+declare class VNDetectDocumentSegmentationRequest extends VNImageBasedRequest {
+  readonly results: NSArray;
+}
+
 declare class VNGenerateImageFeaturePrintRequest extends VNImageBasedRequest {
   imageCropAndScaleOption: interop.Enum<typeof VNImageCropAndScaleOption>;
 
@@ -1842,12 +1818,36 @@ declare class VNDetectedObjectObservation extends VNObservation {
   readonly globalSegmentationMask: VNPixelBufferObservation;
 }
 
-declare class VNDetectDocumentSegmentationRequest extends VNImageBasedRequest {
+declare class VNDetectAnimalBodyPoseRequest extends VNImageBasedRequest {
+  supportedJointNamesAndReturnError(error: interop.PointerConvertible): NSArray;
+
+  supportedJointsGroupNamesAndReturnError(error: interop.PointerConvertible): NSArray;
+
   readonly results: NSArray;
 }
 
-declare class VNDetectAnimalBodyPoseRequest extends VNImageBasedRequest {
+declare class VNVideoProcessor extends NSObject {
+  initWithURL(videoURL: NSURL): this;
+
+  addRequestProcessingOptionsError(request: VNRequest, processingOptions: VNVideoProcessorRequestProcessingOptions, error: interop.PointerConvertible): boolean;
+
+  addRequestWithProcessingOptionsError(request: VNRequest, processingOptions: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): boolean;
+
+  removeRequestError(request: VNRequest, error: interop.PointerConvertible): boolean;
+
+  analyzeTimeRangeError(timeRange: CMTimeRange, error: interop.PointerConvertible): boolean;
+
+  analyzeWithTimeRangeError(timeRange: CMTimeRange, error: interop.PointerConvertible): boolean;
+
+  cancel(): void;
+}
+
+declare class VNDetectHumanBodyPoseRequest extends VNImageBasedRequest {
+  static supportedJointNamesForRevisionError(revision: number, error: interop.PointerConvertible): NSArray;
+
   supportedJointNamesAndReturnError(error: interop.PointerConvertible): NSArray;
+
+  static supportedJointsGroupNamesForRevisionError(revision: number, error: interop.PointerConvertible): NSArray;
 
   supportedJointsGroupNamesAndReturnError(error: interop.PointerConvertible): NSArray;
 

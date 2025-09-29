@@ -1,9 +1,9 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const IntentsUIVersionString: interop.Pointer;
-
 declare const IntentsUIVersionNumber: number;
+
+declare const IntentsUIVersionString: interop.Pointer;
 
 declare const INUIInteractiveBehavior: {
   None: 0,

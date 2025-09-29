@@ -14,41 +14,35 @@ declare const kCFStreamPropertyConnectionIsExpensive: interop.Pointer;
 
 declare const kCFStreamErrorDomainHTTP: number;
 
-declare const kCFStreamErrorDomainNetServices: number;
-
 declare const kCFStreamSSLValidatesCertificateChain: interop.Pointer;
-
-declare const kCFNetworkProxiesHTTPProxy: interop.Pointer;
 
 declare const kCFStreamSSLAllowsExpiredCertificates: interop.Pointer;
 
 declare const kCFStreamSSLIsServer: interop.Pointer;
 
-declare const kCFStreamNetworkServiceType: interop.Pointer;
-
 declare const kCFStreamNetworkServiceTypeVoice: interop.Pointer;
 
 declare const kCFProxyTypeFTP: interop.Pointer;
 
-declare const kCFNetworkProxiesHTTPPort: interop.Pointer;
+declare const kCFStreamNetworkServiceType: interop.Pointer;
 
-declare const kCFStreamPropertyFTPProxyUser: interop.Pointer;
+declare const kCFNetworkProxiesHTTPPort: interop.Pointer;
 
 declare const kCFStreamPropertyFTPFileTransferOffset: interop.Pointer;
 
-declare const kCFStreamErrorSOCKS4IdentdFailed: number;
-
-declare const kCFStreamPropertyHTTPProxyHost: interop.Pointer;
-
-declare const kCFStreamErrorSOCKSSubDomainNone: number;
+declare const kCFStreamPropertySSLSettings: interop.Pointer;
 
 declare const kCFStreamSSLLevel: interop.Pointer;
 
+declare const kCFStreamPropertyHTTPFinalURL: interop.Pointer;
+
+declare const kCFHTTPVersion3_0: interop.Pointer;
+
+declare const kCFProxyUsernameKey: interop.Pointer;
+
 declare const kCFStreamPropertyFTPProxyPort: interop.Pointer;
 
-declare const kCFStreamPropertySSLSettings: interop.Pointer;
-
-declare const kCFStreamPropertySSLPeerCertificates: interop.Pointer;
+declare const kCFHTTPAuthenticationPassword: interop.Pointer;
 
 declare const kCFStreamErrorDomainSystemConfiguration: number;
 
@@ -59,8 +53,6 @@ declare const kCFFTPResourceName: interop.Pointer;
 declare const kCFProxyPasswordKey: interop.Pointer;
 
 declare const kCFStreamNetworkServiceTypeVideo: interop.Pointer;
-
-declare const kCFStreamPropertyHTTPFinalURL: interop.Pointer;
 
 declare const kCFStreamErrorDomainWinSock: number;
 
@@ -82,8 +74,6 @@ declare const kCFProxyTypeSOCKS: interop.Pointer;
 
 declare const kCFProxyTypeHTTPS: interop.Pointer;
 
-declare const kCFProxyUsernameKey: interop.Pointer;
-
 declare const kCFProxyAutoConfigurationJavaScriptKey: interop.Pointer;
 
 declare const kCFProxyHostNameKey: interop.Pointer;
@@ -91,8 +81,6 @@ declare const kCFProxyHostNameKey: interop.Pointer;
 declare const kCFProxyTypeKey: interop.Pointer;
 
 declare const kCFHTTPAuthenticationAccountDomain: interop.Pointer;
-
-declare const kCFHTTPAuthenticationPassword: interop.Pointer;
 
 declare const kCFHTTPAuthenticationUsername: interop.Pointer;
 
@@ -106,6 +94,8 @@ declare const kCFStreamPropertyHTTPSProxyHost: interop.Pointer;
 
 declare const kCFStreamPropertyHTTPProxyPort: interop.Pointer;
 
+declare const kCFStreamPropertyHTTPProxyHost: interop.Pointer;
+
 declare const kCFStreamPropertyHTTPFinalRequest: interop.Pointer;
 
 declare const kCFStreamPropertyHTTPResponseHeader: interop.Pointer;
@@ -116,8 +106,6 @@ declare const kCFHTTPAuthenticationSchemeKerberos: interop.Pointer;
 
 declare const kCFHTTPAuthenticationSchemeDigest: interop.Pointer;
 
-declare const kCFHTTPVersion3_0: interop.Pointer;
-
 declare const kCFHTTPVersion2_0: interop.Pointer;
 
 declare const kCFFTPResourceGroup: interop.Pointer;
@@ -127,6 +115,8 @@ declare const kCFFTPResourceOwner: interop.Pointer;
 declare const kCFFTPResourceMode: interop.Pointer;
 
 declare const kCFStreamPropertyFTPProxyPassword: interop.Pointer;
+
+declare const kCFStreamPropertyFTPProxyUser: interop.Pointer;
 
 declare const kCFStreamPropertyFTPProxyHost: interop.Pointer;
 
@@ -144,7 +134,11 @@ declare const kCFStreamSSLAllowsAnyRoot: interop.Pointer;
 
 declare const kCFStreamSSLAllowsExpiredRoots: interop.Pointer;
 
+declare const kCFStreamPropertySSLPeerCertificates: interop.Pointer;
+
 declare const kCFStreamPropertyProxyLocalBypass: interop.Pointer;
+
+declare const kCFStreamPropertyFTPUsePassiveMode: interop.Pointer;
 
 declare const kSOCKS5NoAcceptableMethod: number;
 
@@ -180,6 +174,8 @@ declare const kCFStreamPropertySSLPeerTrust: interop.Pointer;
 
 declare const kCFStreamPropertySSLContext: interop.Pointer;
 
+declare const kCFStreamErrorDomainNetServices: number;
+
 declare const kCFStreamErrorDomainMach: number;
 
 declare const kCFStreamErrorDomainNetDB: number;
@@ -196,9 +192,11 @@ declare const kCFErrorDomainCFNetwork: interop.Pointer;
 
 declare const kCFStreamPropertyHTTPSProxyPort: interop.Pointer;
 
-declare const kCFStreamPropertySocketRemoteNetService: interop.Pointer;
+declare const kCFStreamErrorSOCKSSubDomainNone: number;
 
-declare const kCFStreamPropertyFTPUsePassiveMode: interop.Pointer;
+declare const kCFURLErrorFailingURLErrorKey: interop.Pointer;
+
+declare const kCFStreamPropertySocketRemoteNetService: interop.Pointer;
 
 declare const kCFFTPResourceType: interop.Pointer;
 
@@ -236,7 +234,7 @@ declare const kCFProxyTypeHTTP: interop.Pointer;
 
 declare const kCFHTTPVersion1_0: interop.Pointer;
 
-declare const kCFURLErrorFailingURLErrorKey: interop.Pointer;
+declare const kCFNetworkProxiesHTTPProxy: interop.Pointer;
 
 declare const kCFHTTPAuthenticationSchemeBasic: interop.Pointer;
 
@@ -247,6 +245,8 @@ declare const kCFGetAddrInfoFailureKey: interop.Pointer;
 declare const kCFFTPResourceModDate: interop.Pointer;
 
 declare const kCFNetworkProxiesProxyAutoConfigURLString: interop.Pointer;
+
+declare const kCFStreamErrorSOCKS4IdentdFailed: number;
 
 declare const kCFProxyAutoConfigurationURLKey: interop.Pointer;
 

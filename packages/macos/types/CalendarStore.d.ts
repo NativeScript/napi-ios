@@ -277,6 +277,20 @@ declare class CalCalendarStore extends NSObject {
   static taskPredicateWithTasksCompletedSinceCalendars(completedSince: NSDate, calendars: NSArray<interop.Object> | Array<interop.Object>): NSPredicate;
 }
 
+declare class CalRecurrenceEnd extends NSObject implements NSCopying {
+  static recurrenceEndWithEndDate(endDate: NSDate): interop.Object;
+
+  static recurrenceEndWithOccurrenceCount(occurrenceCount: number): interop.Object;
+
+  readonly usesEndDate: boolean;
+
+  readonly endDate: NSDate;
+
+  readonly occurrenceCount: number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class CalTask extends CalCalendarItem {
   static task(): interop.Object;
 
@@ -295,20 +309,6 @@ declare class CalTask extends CalCalendarItem {
   setIsCompleted(isCompleted: boolean): void;
 
   setCompletedDate(completedDate: NSDate): void;
-}
-
-declare class CalRecurrenceEnd extends NSObject implements NSCopying {
-  static recurrenceEndWithEndDate(endDate: NSDate): interop.Object;
-
-  static recurrenceEndWithOccurrenceCount(occurrenceCount: number): interop.Object;
-
-  readonly usesEndDate: boolean;
-
-  readonly endDate: NSDate;
-
-  readonly occurrenceCount: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class CalRecurrenceRule extends NSObject implements NSCopying {

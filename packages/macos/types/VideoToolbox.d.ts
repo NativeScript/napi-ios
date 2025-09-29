@@ -3,10 +3,6 @@
 
 declare const VTFrameProcessorErrorDomain: string;
 
-declare const kVTMotionEstimationSessionCreationOption_MotionVectorSize: interop.Pointer;
-
-declare const kVTRAWProcessingPropertyKey_MetadataForSidecarFile: interop.Pointer;
-
 declare const kVTRAWProcessingPropertyKey_OutputColorAttachments: interop.Pointer;
 
 declare const kVTRAWProcessingParameter_CurrentValue: interop.Pointer;
@@ -51,6 +47,8 @@ declare const kVTPixelTransferPropertyKey_ScalingMode: interop.Pointer;
 
 declare const kVTExtensionProperties_CodecNameKey: interop.Pointer;
 
+declare const kVTExtensionProperties_ContainingBundleURLKey: interop.Pointer;
+
 declare const kVTExtensionProperties_ExtensionNameKey: interop.Pointer;
 
 declare const kVTVideoEncoderList_IsHardwareAccelerated: interop.Pointer;
@@ -60,6 +58,8 @@ declare const kVTVideoEncoderList_InstanceLimit: interop.Pointer;
 declare const kVTVideoEncoderList_PerformanceRating: interop.Pointer;
 
 declare const kVTVideoEncoderList_SupportedSelectionProperties: interop.Pointer;
+
+declare const kVTVideoEncoderList_GPURegistryID: interop.Pointer;
 
 declare const kVTVideoEncoderList_DisplayName: interop.Pointer;
 
@@ -173,47 +173,13 @@ declare const kVTQPModulationLevel_Default: number;
 
 declare const kVTCompressionPropertyKey_SpatialAdaptiveQPLevel: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_ExtrinsicOrientationQuaternion: interop.Pointer;
-
-declare const kVTCameraCalibrationExtrinsicOriginSource_StereoCameraSystemBaseline: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_ExtrinsicOriginSource: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_IntrinsicMatrixReferenceDimensions: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_IntrinsicMatrix: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_LensFrameAdjustmentsPolynomialX: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_RadialAngleLimit: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_LensDistortions: interop.Pointer;
-
-declare const kVTCameraCalibrationLensRole_Right: interop.Pointer;
-
-declare const kVTCameraCalibrationLensRole_Left: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_LensIdentifier: interop.Pointer;
-
-declare const kVTCompressionPropertyKey_CameraCalibrationDataLensCollection: interop.Pointer;
-
-declare const kVTViewPackingKind_OverUnder: interop.Pointer;
-
-declare const kVTViewPackingKind_SideBySide: interop.Pointer;
-
 declare const kVTCompressionPropertyKey_ViewPackingKind: interop.Pointer;
-
-declare const kVTProjectionKind_HalfEquirectangular: interop.Pointer;
-
-declare const kVTProjectionKind_Equirectangular: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_ProjectionKind: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_HasRightStereoEyeView: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_HorizontalDisparityAdjustment: interop.Pointer;
-
-declare const kVTHeroEye_Left: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs: interop.Pointer;
 
@@ -276,8 +242,6 @@ declare const kVTCompressionPropertyKey_MaximizePowerEfficiency: interop.Pointer
 declare const kVTCompressionPropertyKey_MaxH264SliceBytes: interop.Pointer;
 
 declare const kVTH264EntropyMode_CAVLC: interop.Pointer;
-
-declare const kVTHDRMetadataInsertionMode_RequestSDRRangePreservation: interop.Pointer;
 
 declare const kVTHDRMetadataInsertionMode_Auto: interop.Pointer;
 
@@ -343,10 +307,6 @@ declare const kVTProfileLevel_HEVC_Monochrome_AutoLevel: interop.Pointer;
 
 declare const kVTProfileLevel_HEVC_Main10_AutoLevel: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_VBVBufferDuration: interop.Pointer;
-
-declare const kVTCompressionPropertyKey_VariableBitRate: interop.Pointer;
-
 declare const kVTCompressionPropertyKey_EstimatedAverageBytesPerFrame: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_ConstantBitRate: interop.Pointer;
@@ -371,17 +331,15 @@ declare const kVTVideoEncoderList_EncoderName: interop.Pointer;
 
 declare const kVTDownsamplingMode_Decimate: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_ContentLightLevelInfo: interop.Pointer;
+declare const kVTPixelTransferPropertyKey_DestinationYCbCrMatrix: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_IntrinsicMatrixProjectionOffset: interop.Pointer;
+declare const kVTCompressionPropertyKey_ContentLightLevelInfo: interop.Pointer;
 
 declare const kVTRAWProcessingParameter_Description: interop.Pointer;
 
 declare const kVTColorCorrectionPixelTransferFailedErr: number;
 
 declare const kVTPropertyType_Enumeration: interop.Pointer;
-
-declare const kVTExtensionProperties_ContainingBundleURLKey: interop.Pointer;
 
 declare const kVTPixelTransferPropertyKey_DownsamplingMode: interop.Pointer;
 
@@ -394,8 +352,6 @@ declare const kVTMultiPassStorageInvalidErr: number;
 declare const kVTProfileLevel_H264_High_5_0: interop.Pointer;
 
 declare const kVTVideoDecoderNeedsRosettaErr: number;
-
-declare const kVTHeroEye_Right: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_ICCProfile: interop.Pointer;
 
@@ -415,15 +371,11 @@ declare const kVTHDRMetadataInsertionMode_None: interop.Pointer;
 
 declare const kVTProfileLevel_MP4V_Simple_L1: interop.Pointer;
 
+declare const kVTCompressionPropertyKey_ReferenceBufferCount: interop.Pointer;
+
 declare const kVTCompressionPropertyKey_H264EntropyMode: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_PixelBufferPoolIsShared: interop.Pointer;
-
-declare const kVTMotionEstimationSessionCreationOption_Label: interop.Pointer;
-
-declare const kVTCameraCalibrationLensRole_Mono: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_LensDomain: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_SuggestedQualityOfServiceTiers: interop.Pointer;
 
@@ -441,13 +393,7 @@ declare const kVTPixelRotationPropertyKey_FlipHorizontalOrientation: interop.Poi
 
 declare const kVTCompressionPropertyKey_PixelTransferProperties: interop.Pointer;
 
-declare const kVTPixelTransferPropertyKey_DestinationYCbCrMatrix: interop.Pointer;
-
-declare const kVTRAWProcessingParameterValueType_Boolean: interop.Pointer;
-
 declare const kVTDecompressionProperty_FieldMode_BottomFieldOnly: interop.Pointer;
-
-declare const kVTCompressionPreset_VideoConferencing: interop.Pointer;
 
 declare const kVTImageRotationNotSupportedErr: number;
 
@@ -457,13 +403,11 @@ declare const kVTPixelTransferPropertyKey_DestinationICCProfile: interop.Pointer
 
 declare const kVTProfileLevel_H264_Main_4_1: interop.Pointer;
 
+declare const kVTRAWProcessingParameterValueType_Boolean: interop.Pointer;
+
 declare const kVTRAWProcessingParameter_ListArray: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_OnlyTheseFrames: interop.Pointer;
-
-declare const kVTCameraCalibrationLensDomain_Color: interop.Pointer;
-
-declare const kVTProjectionKind_Rectilinear: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_PixelBufferPool: interop.Pointer;
 
@@ -483,15 +427,11 @@ declare const kVTCompressionPropertyKey_TransferFunction: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Main_4_0: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_LensAlgorithmKind: interop.Pointer;
-
 declare const kVTCompressionPropertyKey_PreserveAlphaChannel: interop.Pointer;
 
 declare const kVTProfileLevel_H263_Profile0_Level45: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_OutputBitDepth: interop.Pointer;
-
-declare const kVTCompressionPropertyCameraCalibrationKey_LensRole: interop.Pointer;
 
 declare const kVTVideoDecoderBadDataErr: number;
 
@@ -511,15 +451,9 @@ declare const kVTProfileLevel_H264_Main_3_0: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_MinOutputPresentationTimeStampOfFramesBeingDecoded: interop.Pointer;
 
-declare const kVTMotionEstimationSessionCreationOption_UseMultiPassSearch: interop.Pointer;
-
-declare const kVTCompressionPropertyKey_SupportedPresetDictionaries: interop.Pointer;
-
 declare const kVTProfileLevel_H264_High_4_0: interop.Pointer;
 
 declare const kVTMultiPassStorageCreationOption_DoNotDelete: interop.Pointer;
-
-declare const kVTDecodeFrameOptionKey_ContentAnalyzerCropRectangle: interop.Pointer;
 
 declare const kVTRAWProcessingParameter_Enabled: interop.Pointer;
 
@@ -531,15 +465,11 @@ declare const kVTVideoEncoderSpecification_PreferredEncoderGPURegistryID: intero
 
 declare const kVTCompressionPropertyKey_MasteringDisplayColorVolume: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_ReferenceBufferCount: interop.Pointer;
-
 declare const kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_ContentHasInterframeDependencies: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_AllowBitstreamToChangeFrameDimensions: interop.Pointer;
-
-declare const kVTCompressionPropertyKey_VBVInitialDelayPercentage: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_AllowOpenGOP: interop.Pointer;
 
@@ -558,8 +488,6 @@ declare const kVTHDRPerFrameMetadataGenerationHDRFormatType_DolbyVision: interop
 declare const kVTH264EntropyMode_CABAC: interop.Pointer;
 
 declare const kVTRAWProcessingParameter_Name: interop.Pointer;
-
-declare const kVTCompressionPreset_Balanced: interop.Pointer;
 
 declare const kVTVideoEncoderList_QualityRating: interop.Pointer;
 
@@ -585,8 +513,6 @@ declare const kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimu
 
 declare const kVTPixelTransferNotSupportedErr: number;
 
-declare const kVTCompressionPropertyKey_VBVMaxBitRate: interop.Pointer;
-
 declare const kVTExtensionProperties_ContainingBundleNameKey: interop.Pointer;
 
 declare const kVTCouldNotOutputTaggedBufferGroupErr: number;
@@ -600,8 +526,6 @@ declare const kVTPropertyTypeKey: interop.Pointer;
 declare const kVTPixelRotationPropertyKey_FlipVerticalOrientation: interop.Pointer;
 
 declare const kVTFrameSiloInvalidTimeStampErr: number;
-
-declare const kVTVideoEncoderList_GPURegistryID: interop.Pointer;
 
 declare const kVTRAWProcessingParameterValueType_Float: interop.Pointer;
 
@@ -633,8 +557,6 @@ declare const kVTPropertyType_Number: interop.Pointer;
 
 declare const kVTScalingMode_Normal: interop.Pointer;
 
-declare const kVTCompressionPreset_HighQuality: interop.Pointer;
-
 declare const kVTEncodeFrameOptionKey_BaseFrameQP: interop.Pointer;
 
 declare const kVTDecompressionProperty_DeinterlaceMode_Temporal: interop.Pointer;
@@ -663,8 +585,6 @@ declare const kVTCouldNotCreateColorCorrectionDataErr: number;
 
 declare const kVTCompressionPropertyKey_HorizontalFieldOfView: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_LensFrameAdjustmentsPolynomialY: interop.Pointer;
-
 declare const kVTCompressionPropertyKey_ExpectedDuration: interop.Pointer;
 
 declare const kVTProfileLevel_MP4V_AdvancedSimple_L4: interop.Pointer;
@@ -683,17 +603,11 @@ declare const kVTVideoEncoderList_CodecName: interop.Pointer;
 
 declare const kVTEncodeFrameOptionKey_ForceLTRRefresh: interop.Pointer;
 
-declare const kVTVideoEncoderAutoWhiteBalanceNotLockedErr: number;
-
 declare const kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel: interop.Pointer;
-
-declare const kVTCameraCalibrationLensAlgorithmKind_ParametricLens: interop.Pointer;
 
 declare const kVTVideoEncoderMVHEVCVideoLayerIDsMismatchErr: number;
 
 declare const kVTDecompressionPropertyKey_ReducedCoefficientDecode: interop.Pointer;
-
-declare const kVTCompressionPreset_HighSpeed: interop.Pointer;
 
 declare const kVTSampleAttachmentQualityMetricsKey_LumaMeanSquaredError: interop.Pointer;
 
@@ -715,11 +629,9 @@ declare const kVTProfileLevel_H264_Main_5_1: interop.Pointer;
 
 declare const kVTDecompressionProperty_FieldMode_TopFieldOnly: interop.Pointer;
 
-declare const kVTDecompressionPropertyKey_PixelFormatsWithReducedResolutionSupport: interop.Pointer;
-
-declare const kVTDecodeFrameOptionKey_ContentAnalyzerRotation: interop.Pointer;
-
 declare const kVTDecompressionPropertyKey_PixelTransferProperties: interop.Pointer;
+
+declare const kVTDecompressionPropertyKey_PixelFormatsWithReducedResolutionSupport: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_GammaLevel: interop.Pointer;
 
@@ -731,42 +643,13 @@ declare const kVTCompressionPropertyKey_PixelBufferPoolIsShared: interop.Pointer
 
 declare const kVTProfileLevel_H264_Baseline_3_2: interop.Pointer;
 
-declare const kVTProjectionKind_ParametricImmersive: interop.Pointer;
+declare const kVTDecompressionResolutionKey_Height: interop.Pointer;
 
 declare const kVTCouldNotFindExtensionErr: number;
 
 declare const kVTProfileLevel_MP4V_Simple_L0: interop.Pointer;
 
 declare const kVTUnlimitedFrameDelayCount: number;
-
-declare const kVTDecompressionResolutionKey_Height: interop.Pointer;
-
-declare const VTSuperResolutionScalerConfigurationModelStatus: {
-  DownloadRequired: 0,
-  Downloading: 1,
-  Ready: 2,
-};
-
-declare const VTOpticalFlowConfigurationRevision: {
-  VTOpticalFlowConfigurationRevision1: 1,
-};
-
-declare const VTMotionEstimationFrameFlags: {
-  kVTMotionEstimationFrameFlags_CurrentBufferWillBeNextReferenceBuffer: 1,
-};
-
-declare const VTFrameRateConversionConfigurationRevision: {
-  VTFrameRateConversionConfigurationRevision1: 1,
-};
-
-declare const VTSuperResolutionScalerParametersSubmissionMode: {
-  Random: 1,
-  Sequential: 2,
-};
-
-declare const VTSuperResolutionScalerConfigurationQualityPrioritization: {
-  VTSuperResolutionScalerConfigurationQualityPrioritizationNormal: 1,
-};
 
 declare const VTOpticalFlowParametersSubmissionMode: {
   Random: 1,
@@ -776,6 +659,10 @@ declare const VTOpticalFlowParametersSubmissionMode: {
 declare const VTOpticalFlowConfigurationQualityPrioritization: {
   Normal: 1,
   Quality: 2,
+};
+
+declare const VTFrameRateConversionConfigurationRevision: {
+  VTFrameRateConversionConfigurationRevision1: 1,
 };
 
 declare const VTFrameRateConversionConfigurationQualityPrioritization: {
@@ -806,11 +693,6 @@ declare const VTFrameProcessorError: {
   ProcessingError: -19740,
   InvalidParameterError: -19741,
   InvalidFrameTiming: -19742,
-  AssetDownloadFailed: -19743,
-};
-
-declare const VTMotionEstimationInfoFlags: {
-  kVTMotionEstimationInfoFlags_Reserved0: 1,
 };
 
 declare const VTDecodeFrameFlags: {
@@ -820,21 +702,17 @@ declare const VTDecodeFrameFlags: {
   Frame_EnableTemporalProcessing: 8,
 };
 
-declare const VTDecodeInfoFlags: {
-  Asynchronous: 1,
-  FrameDropped: 2,
-  ImageBufferModifiable: 4,
-  SkippedLeadingFrameDropped: 8,
-  FrameInterrupted: 16,
-};
-
-declare const VTSuperResolutionScalerConfigurationInputType: {
-  Video: 1,
-  Image: 2,
+declare const VTOpticalFlowConfigurationRevision: {
+  VTOpticalFlowConfigurationRevision1: 1,
 };
 
 declare const VTCompressionSessionOptionFlags: {
   kVTCompressionSessionBeginFinalPass: 1,
+};
+
+declare const VTEncodeInfoFlags: {
+  Asynchronous: 1,
+  FrameDropped: 2,
 };
 
 declare const VTFrameRateConversionParametersSubmissionMode: {
@@ -848,18 +726,12 @@ declare const VTMotionBlurParametersSubmissionMode: {
   Sequential: 2,
 };
 
-declare const VTSuperResolutionScalerConfigurationRevision: {
-  VTSuperResolutionScalerConfigurationRevision1: 1,
-};
-
-declare const VTEncodeInfoFlags: {
+declare const VTDecodeInfoFlags: {
   Asynchronous: 1,
   FrameDropped: 2,
+  ImageBufferModifiable: 4,
+  SkippedLeadingFrameDropped: 8,
 };
-
-declare class OpaqueVTMotionEstimationSession {
-  constructor(init?: OpaqueVTMotionEstimationSession);
-}
 
 declare class OpaqueVTMultiPassStorage {
   constructor(init?: OpaqueVTMultiPassStorage);
@@ -975,10 +847,6 @@ declare function VTDecompressionSessionSetMultiImageCallback(decompressionSessio
 
 declare function VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, infoFlagsOut: interop.PointerConvertible, multiImageCapableOutputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: CMTime, p6: CMTime) => void): number;
 
-declare function VTDecompressionSessionDecodeFrameWithOptions(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, frameOptions: interop.Object, sourceFrameRefCon: interop.PointerConvertible, infoFlagsOut: interop.PointerConvertible): number;
-
-declare function VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler(session: interop.Object, sampleBuffer: interop.Object, decodeFlags: interop.Enum<typeof VTDecodeFrameFlags>, frameOptions: interop.Object, infoFlagsOut: interop.PointerConvertible, outputHandler: (p1: number, p2: interop.Enum<typeof VTDecodeInfoFlags>, p3: interop.PointerConvertible, p4: CMTime, p5: CMTime) => void): number;
-
 declare function VTFrameSiloGetTypeID(): number;
 
 declare function VTFrameSiloCreate(allocator: interop.Object, fileURL: interop.Object, timeRange: CMTimeRange, options: interop.Object, frameSiloOut: interop.PointerConvertible): number;
@@ -1033,8 +901,6 @@ declare function VTRAWProcessingSessionInvalidate(session: interop.PointerConver
 
 declare function VTRAWProcessingSessionGetTypeID(): number;
 
-declare function VTRAWProcessingSessionSetParameterChangedHandler(session: interop.PointerConvertible, parameterChangeHandler: (p1: interop.PointerConvertible) => void): number;
-
 declare function VTRAWProcessingSessionSetParameterChangedHander(session: interop.PointerConvertible, parameterChangeHandler: (p1: interop.PointerConvertible) => void): number;
 
 declare function VTRAWProcessingSessionProcessFrame(session: interop.PointerConvertible, inputPixelBuffer: interop.Object, frameOptions: interop.Object, outputHandler: (p1: number, p2: interop.PointerConvertible) => void): number;
@@ -1055,24 +921,8 @@ declare function VTHDRPerFrameMetadataGenerationSessionCreate(allocator: interop
 
 declare function VTHDRPerFrameMetadataGenerationSessionAttachMetadata(hdrPerFrameMetadataGenerationSession: interop.PointerConvertible, pixelBuffer: interop.Object, sceneChange: number): number;
 
-declare function VTMotionEstimationSessionGetTypeID(): number;
-
-declare function VTMotionEstimationSessionCreate(allocator: interop.Object, motionVectorProcessorSelectionOptions: interop.Object, width: number, height: number, motionEstimationSessionOut: interop.PointerConvertible): number;
-
-declare function VTMotionEstimationSessionCopySourcePixelBufferAttributes(motionEstimationSession: interop.PointerConvertible, attributesOut: interop.PointerConvertible): number;
-
-declare function VTMotionEstimationSessionInvalidate(session: interop.PointerConvertible): void;
-
-declare function VTMotionEstimationSessionEstimateMotionVectors(session: interop.PointerConvertible, referenceImage: interop.Object, currentImage: interop.Object, motionEstimationFrameFlags: interop.Enum<typeof VTMotionEstimationFrameFlags>, additionalFrameOptions: interop.Object, outputHandler: (p1: number, p2: interop.Enum<typeof VTMotionEstimationInfoFlags>, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void): number;
-
-declare function VTMotionEstimationSessionCompleteFrames(session: interop.PointerConvertible): number;
-
 declare interface VTFrameProcessorParameters extends NSObjectProtocol {
   readonly sourceFrame: VTFrameProcessorFrame;
-
-  readonly destinationFrame?: VTFrameProcessorFrame;
-
-  readonly destinationFrames?: NSArray;
 }
 
 declare class VTFrameProcessorParameters extends NativeObject implements VTFrameProcessorParameters {
@@ -1092,13 +942,11 @@ declare interface VTFrameProcessorConfiguration extends NSObjectProtocol {
 }
 
 declare class VTFrameProcessorConfiguration extends NativeObject implements VTFrameProcessorConfiguration {
-  static readonly supported: boolean;
+  static readonly processorSupported: number;
 
   static readonly maximumDimensions: CMVideoDimensions;
 
   static readonly minimumDimensions: CMVideoDimensions;
-
-  static isSupported(): boolean;
 }
 
 declare class VTFrameProcessorOpticalFlow extends NSObject {
@@ -1107,186 +955,6 @@ declare class VTFrameProcessorOpticalFlow extends NSObject {
   readonly forwardFlow: interop.Object;
 
   readonly backwardFlow: interop.Object;
-}
-
-declare class VTSuperResolutionScalerParameters extends NSObject implements VTFrameProcessorParameters {
-  initWithSourceFramePreviousFramePreviousOutputFrameOpticalFlowSubmissionModeDestinationFrame(sourceFrame: VTFrameProcessorFrame, previousFrame: VTFrameProcessorFrame | null, previousOutputFrame: VTFrameProcessorFrame | null, opticalFlow: VTFrameProcessorOpticalFlow | null, submissionMode: interop.Enum<typeof VTSuperResolutionScalerParametersSubmissionMode>, destinationFrame: VTFrameProcessorFrame): this;
-
-  readonly sourceFrame: VTFrameProcessorFrame;
-
-  readonly previousFrame: VTFrameProcessorFrame;
-
-  readonly previousOutputFrame: VTFrameProcessorFrame;
-
-  readonly opticalFlow: VTFrameProcessorOpticalFlow;
-
-  readonly submissionMode: interop.Enum<typeof VTSuperResolutionScalerParametersSubmissionMode>;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
-
-  readonly destinationFrames: NSArray;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTLowLatencyFrameInterpolationParameters extends NSObject implements VTFrameProcessorParameters {
-  initWithSourceFramePreviousFrameInterpolationPhaseDestinationFrames(sourceFrame: VTFrameProcessorFrame, previousFrame: VTFrameProcessorFrame, interpolationPhase: NSArray<interop.Object> | Array<interop.Object>, destinationFrames: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly sourceFrame: VTFrameProcessorFrame;
-
-  readonly previousFrame: VTFrameProcessorFrame;
-
-  readonly interpolationPhase: NSArray;
-
-  readonly destinationFrames: NSArray;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTTemporalNoiseFilterConfiguration extends NSObject implements VTFrameProcessorConfiguration {
-  initWithFrameWidthFrameHeightSourcePixelFormat(frameWidth: number, frameHeight: number, sourcePixelFormat: number): this;
-
-  readonly frameWidth: number;
-
-  readonly frameHeight: number;
-
-  readonly frameSupportedPixelFormats: NSArray;
-
-  readonly sourcePixelBufferAttributes: NSDictionary;
-
-  readonly destinationPixelBufferAttributes: NSDictionary;
-
-  readonly nextFrameCount: number;
-
-  readonly previousFrameCount: number;
-
-  static readonly supportedSourcePixelFormats: NSArray;
-
-  static readonly maximumDimensions: CMVideoDimensions;
-
-  static readonly minimumDimensions: CMVideoDimensions;
-
-  static readonly supported: boolean;
-
-  static isSupported(): boolean;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class VTOpticalFlowParameters extends NSObject implements VTFrameProcessorParameters {
@@ -1299,10 +967,6 @@ declare class VTOpticalFlowParameters extends NSObject implements VTFrameProcess
   readonly submissionMode: interop.Enum<typeof VTOpticalFlowParametersSubmissionMode>;
 
   readonly destinationOpticalFlow: VTFrameProcessorOpticalFlow;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
-
-  readonly destinationFrames: NSArray;
 
   isEqual(object: interop.Object): boolean;
 
@@ -1368,11 +1032,7 @@ declare class VTFrameRateConversionConfiguration extends NSObject implements VTF
 
   readonly destinationPixelBufferAttributes: NSDictionary;
 
-  static readonly supported: boolean;
-
   static readonly processorSupported: number;
-
-  static isSupported(): boolean;
 
   readonly nextFrameCount: number;
 
@@ -1431,68 +1091,6 @@ declare class VTFrameProcessorFrame extends NSObject {
   readonly presentationTimeStamp: CMTime;
 }
 
-declare class VTTemporalNoiseFilterParameters extends NSObject implements VTFrameProcessorParameters {
-  initWithSourceFrameNextFramesPreviousFramesDestinationFrameFilterStrengthHasDiscontinuity(sourceFrame: VTFrameProcessorFrame, nextFrames: NSArray<interop.Object> | Array<interop.Object>, previousFrames: NSArray<interop.Object> | Array<interop.Object>, destinationFrame: VTFrameProcessorFrame, filterStrength: number, hasDiscontinuity: number): this;
-
-  readonly sourceFrame: VTFrameProcessorFrame;
-
-  readonly nextFrames: NSArray;
-
-  readonly previousFrames: NSArray;
-
-  filterStrength: number;
-
-  hasDiscontinuity: boolean;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
-
-  setFilterStrength(filterStrength: number): void;
-
-  setHasDiscontinuity(hasDiscontinuity: boolean): void;
-
-  readonly destinationFrames: NSArray;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
 declare class VTFrameRateConversionParameters extends NSObject implements VTFrameProcessorParameters {
   initWithSourceFrameNextFrameOpticalFlowInterpolationPhaseSubmissionModeDestinationFrames(sourceFrame: VTFrameProcessorFrame, nextFrame: VTFrameProcessorFrame, opticalFlow: VTFrameProcessorOpticalFlow | null, interpolationPhase: NSArray<interop.Object> | Array<interop.Object>, submissionMode: interop.Enum<typeof VTFrameRateConversionParametersSubmissionMode>, destinationFrame: NSArray<interop.Object> | Array<interop.Object>): this;
 
@@ -1507,8 +1105,6 @@ declare class VTFrameRateConversionParameters extends NSObject implements VTFram
   readonly submissionMode: interop.Enum<typeof VTFrameRateConversionParametersSubmissionMode>;
 
   readonly destinationFrames: NSArray;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
 
   isEqual(object: interop.Object): boolean;
 
@@ -1560,25 +1156,85 @@ declare class VTFrameProcessor extends NSObject {
 
   processWithParametersCompletionHandler(parameters: VTFrameProcessorParameters, completionHandler: (p1: VTFrameProcessorParameters, p2: NSError) => void | null): void;
 
-  processWithParametersFrameOutputHandler(parameters: VTFrameProcessorParameters, frameOutputHandler: (p1: VTFrameProcessorParameters, p2: CMTime, p3: boolean, p4: NSError) => void | null): void;
-
   processWithCommandBufferParameters(commandBuffer: MTLCommandBuffer, parameters: VTFrameProcessorParameters): void;
 
   endSession(): void;
 }
 
-declare class VTLowLatencyFrameInterpolationConfiguration extends NSObject implements VTFrameProcessorConfiguration {
-  initWithFrameWidthFrameHeightNumberOfInterpolatedFrames(frameWidth: number, frameHeight: number, numberOfInterpolatedFrames: number): this;
+declare class VTMotionBlurParameters extends NSObject implements VTFrameProcessorParameters {
+  initWithSourceFrameNextFramePreviousFrameNextOpticalFlowPreviousOpticalFlowMotionBlurStrengthSubmissionModeDestinationFrame(sourceFrame: VTFrameProcessorFrame, nextFrame: VTFrameProcessorFrame | null, previousFrame: VTFrameProcessorFrame | null, nextOpticalFlow: VTFrameProcessorOpticalFlow | null, previousOpticalFlow: VTFrameProcessorOpticalFlow | null, motionBlurStrength: number, submissionMode: interop.Enum<typeof VTMotionBlurParametersSubmissionMode>, destinationFrame: VTFrameProcessorFrame): this;
 
-  initWithFrameWidthFrameHeightSpatialScaleFactor(frameWidth: number, frameHeight: number, spatialScaleFactor: number): this;
+  readonly sourceFrame: VTFrameProcessorFrame;
+
+  readonly nextFrame: VTFrameProcessorFrame;
+
+  readonly previousFrame: VTFrameProcessorFrame;
+
+  readonly nextOpticalFlow: VTFrameProcessorOpticalFlow;
+
+  readonly previousOpticalFlow: VTFrameProcessorOpticalFlow;
+
+  readonly motionBlurStrength: number;
+
+  readonly submissionMode: interop.Enum<typeof VTMotionBlurParametersSubmissionMode>;
+
+  readonly destinationFrame: VTFrameProcessorFrame;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+declare class VTOpticalFlowConfiguration extends NSObject implements VTFrameProcessorConfiguration {
+  initWithFrameWidthFrameHeightQualityPrioritizationRevision(frameWidth: number, frameHeight: number, qualityPrioritization: interop.Enum<typeof VTOpticalFlowConfigurationQualityPrioritization>, revision: interop.Enum<typeof VTOpticalFlowConfigurationRevision>): this;
 
   readonly frameWidth: number;
 
   readonly frameHeight: number;
 
-  readonly spatialScaleFactor: number;
+  readonly qualityPrioritization: interop.Enum<typeof VTOpticalFlowConfigurationQualityPrioritization>;
 
-  readonly numberOfInterpolatedFrames: number;
+  readonly revision: interop.Enum<typeof VTOpticalFlowConfigurationRevision>;
+
+  static readonly supportedRevisions: NSIndexSet;
+
+  static readonly defaultRevision: interop.Enum<typeof VTOpticalFlowConfigurationRevision>;
 
   readonly frameSupportedPixelFormats: NSArray;
 
@@ -1586,9 +1242,7 @@ declare class VTLowLatencyFrameInterpolationConfiguration extends NSObject imple
 
   readonly destinationPixelBufferAttributes: NSDictionary;
 
-  static readonly supported: boolean;
-
-  static isSupported(): boolean;
+  static readonly processorSupported: number;
 
   readonly nextFrameCount: number;
 
@@ -1662,12 +1316,8 @@ declare class VTMotionBlurConfiguration extends NSObject implements VTFrameProce
 
   readonly destinationPixelBufferAttributes: NSDictionary;
 
-  static readonly supported: boolean;
-
   static readonly processorSupported: number;
 
-  static isSupported(): boolean;
-
   readonly nextFrameCount: number;
 
   readonly previousFrameCount: number;
@@ -1675,354 +1325,6 @@ declare class VTMotionBlurConfiguration extends NSObject implements VTFrameProce
   static readonly maximumDimensions: CMVideoDimensions;
 
   static readonly minimumDimensions: CMVideoDimensions;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTLowLatencySuperResolutionScalerConfiguration extends NSObject implements VTFrameProcessorConfiguration {
-  initWithFrameWidthFrameHeightScaleFactor(frameWidth: number, frameHeight: number, scaleFactor: number): this;
-
-  readonly frameWidth: number;
-
-  readonly frameHeight: number;
-
-  readonly frameSupportedPixelFormats: NSArray;
-
-  readonly sourcePixelBufferAttributes: NSDictionary;
-
-  readonly destinationPixelBufferAttributes: NSDictionary;
-
-  readonly scaleFactor: number;
-
-  static readonly maximumDimensions: CMVideoDimensions;
-
-  static readonly minimumDimensions: CMVideoDimensions;
-
-  static readonly supported: boolean;
-
-  static supportedScaleFactorsForFrameWidthFrameHeight(frameWidth: number, frameHeight: number): NSArray;
-
-  static isSupported(): boolean;
-
-  readonly nextFrameCount: number;
-
-  readonly previousFrameCount: number;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTMotionBlurParameters extends NSObject implements VTFrameProcessorParameters {
-  initWithSourceFrameNextFramePreviousFrameNextOpticalFlowPreviousOpticalFlowMotionBlurStrengthSubmissionModeDestinationFrame(sourceFrame: VTFrameProcessorFrame, nextFrame: VTFrameProcessorFrame | null, previousFrame: VTFrameProcessorFrame | null, nextOpticalFlow: VTFrameProcessorOpticalFlow | null, previousOpticalFlow: VTFrameProcessorOpticalFlow | null, motionBlurStrength: number, submissionMode: interop.Enum<typeof VTMotionBlurParametersSubmissionMode>, destinationFrame: VTFrameProcessorFrame): this;
-
-  readonly sourceFrame: VTFrameProcessorFrame;
-
-  readonly nextFrame: VTFrameProcessorFrame;
-
-  readonly previousFrame: VTFrameProcessorFrame;
-
-  readonly nextOpticalFlow: VTFrameProcessorOpticalFlow;
-
-  readonly previousOpticalFlow: VTFrameProcessorOpticalFlow;
-
-  readonly motionBlurStrength: number;
-
-  readonly submissionMode: interop.Enum<typeof VTMotionBlurParametersSubmissionMode>;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
-
-  readonly destinationFrames: NSArray;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTOpticalFlowConfiguration extends NSObject implements VTFrameProcessorConfiguration {
-  initWithFrameWidthFrameHeightQualityPrioritizationRevision(frameWidth: number, frameHeight: number, qualityPrioritization: interop.Enum<typeof VTOpticalFlowConfigurationQualityPrioritization>, revision: interop.Enum<typeof VTOpticalFlowConfigurationRevision>): this;
-
-  readonly frameWidth: number;
-
-  readonly frameHeight: number;
-
-  readonly qualityPrioritization: interop.Enum<typeof VTOpticalFlowConfigurationQualityPrioritization>;
-
-  readonly revision: interop.Enum<typeof VTOpticalFlowConfigurationRevision>;
-
-  static readonly supportedRevisions: NSIndexSet;
-
-  static readonly defaultRevision: interop.Enum<typeof VTOpticalFlowConfigurationRevision>;
-
-  readonly frameSupportedPixelFormats: NSArray;
-
-  readonly sourcePixelBufferAttributes: NSDictionary;
-
-  readonly destinationPixelBufferAttributes: NSDictionary;
-
-  static readonly supported: boolean;
-
-  static readonly processorSupported: number;
-
-  static isSupported(): boolean;
-
-  readonly nextFrameCount: number;
-
-  readonly previousFrameCount: number;
-
-  static readonly maximumDimensions: CMVideoDimensions;
-
-  static readonly minimumDimensions: CMVideoDimensions;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTSuperResolutionScalerConfiguration extends NSObject implements VTFrameProcessorConfiguration {
-  initWithFrameWidthFrameHeightScaleFactorInputTypeUsePrecomputedFlowQualityPrioritizationRevision(frameWidth: number, frameHeight: number, scaleFactor: number, inputType: interop.Enum<typeof VTSuperResolutionScalerConfigurationInputType>, usePrecomputedFlow: boolean, qualityPrioritization: interop.Enum<typeof VTSuperResolutionScalerConfigurationQualityPrioritization>, revision: interop.Enum<typeof VTSuperResolutionScalerConfigurationRevision>): this;
-
-  readonly frameWidth: number;
-
-  readonly frameHeight: number;
-
-  readonly inputType: interop.Enum<typeof VTSuperResolutionScalerConfigurationInputType>;
-
-  readonly precomputedFlow: boolean;
-
-  readonly scaleFactor: number;
-
-  readonly qualityPrioritization: interop.Enum<typeof VTSuperResolutionScalerConfigurationQualityPrioritization>;
-
-  readonly revision: interop.Enum<typeof VTSuperResolutionScalerConfigurationRevision>;
-
-  static readonly supportedRevisions: NSIndexSet;
-
-  static readonly defaultRevision: interop.Enum<typeof VTSuperResolutionScalerConfigurationRevision>;
-
-  readonly frameSupportedPixelFormats: NSArray;
-
-  readonly sourcePixelBufferAttributes: NSDictionary;
-
-  readonly destinationPixelBufferAttributes: NSDictionary;
-
-  readonly configurationModelStatus: interop.Enum<typeof VTSuperResolutionScalerConfigurationModelStatus>;
-
-  downloadConfigurationModelWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
-
-  readonly configurationModelPercentageAvailable: number;
-
-  static readonly supported: boolean;
-
-  static readonly supportedScaleFactors: NSArray;
-
-  usesPrecomputedFlow(): boolean;
-
-  static isSupported(): boolean;
-
-  readonly nextFrameCount: number;
-
-  readonly previousFrameCount: number;
-
-  static readonly maximumDimensions: CMVideoDimensions;
-
-  static readonly minimumDimensions: CMVideoDimensions;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class VTLowLatencySuperResolutionScalerParameters extends NSObject implements VTFrameProcessorParameters {
-  initWithSourceFrameDestinationFrame(sourceFrame: VTFrameProcessorFrame, destinationFrame: VTFrameProcessorFrame): this;
-
-  readonly sourceFrame: VTFrameProcessorFrame;
-
-  readonly destinationFrame: VTFrameProcessorFrame;
-
-  readonly destinationFrames: NSArray;
 
   isEqual(object: interop.Object): boolean;
 

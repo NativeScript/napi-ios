@@ -34,8 +34,6 @@ declare const SFErrorCode: {
   NoExtensionFound: 1,
   NoAttachmentFound: 2,
   LoadingInterrupted: 3,
-  InternalError: 4,
-  MissingEntitlement: 5,
 };
 
 declare const SSReadingListErrorCode: {
@@ -93,7 +91,7 @@ declare class SFSafariViewController extends UIViewController {
 
   static prewarmConnectionsToURLs(URLs: NSArray<interop.Object> | Array<interop.Object>): SFSafariViewControllerPrewarmingToken;
 
-  setDelegate(delegate: SFSafariViewControllerDelegate): void;
+  setDelegate(delegate: SFSafariViewControllerDelegate | null): void;
 
   setPreferredBarTintColor(preferredBarTintColor: UIColor): void;
 
@@ -149,10 +147,6 @@ declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
   setWebsiteCookies(websiteCookies: NSArray<interop.Object> | Array<interop.Object>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class SFSafariSettings extends NSObject {
-  static openExportBrowsingDataSettingsWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
 }
 
 declare class SFContentBlockerState extends NSObject {

@@ -139,6 +139,8 @@ declare const MLiMovieEventGroupTypeIdentifier: string;
 
 declare const MLPhotosPanoramasGroupTypeIdentifier: string;
 
+declare const MLApertureFolderAlbumTypeIdentifier: string;
+
 declare const MLApertureUserSmartAlbumTypeIdentifier: string;
 
 declare const MLMediaObjectBitRateKey: string;
@@ -173,8 +175,6 @@ declare const MLMediaObjectKindKey: string;
 
 declare const MLMediaObjectAlbumKey: string;
 
-declare const MLiPhotoLastViewedEventAlbumTypeIdentifier: string;
-
 declare const MLMediaSourceAppDefinedFoldersIdentifier: string;
 
 declare const MLLogicBouncesGroupTypeIdentifier: string;
@@ -201,8 +201,6 @@ declare const MLLogicProjectsGroupTypeIdentifier: string;
 
 declare const MLAperturePlacesCountryAlbumTypeIdentifier: string;
 
-declare const MLiTunesGeniusPlaylistTypeIdentifier: string;
-
 declare const MLMediaObjectChannelCountKey: string;
 
 declare const MLMediaObjectCommentsKey: string;
@@ -212,6 +210,8 @@ declare const MLiTunesPlaylistTypeIdentifier: string;
 declare const MLPhotosRootGroupTypeIdentifier: string;
 
 declare const MLFinalCutFolderGroupTypeIdentifier: string;
+
+declare const MLiTunesRootGroupTypeIdentifier: string;
 
 declare const MLiMovieRootGroupTypeIdentifier: string;
 
@@ -223,7 +223,7 @@ declare const MLPhotosLivePhotosGroupTypeIdentifier: string;
 
 declare const MLPhotosFacesAlbumTypeIdentifier: string;
 
-declare const MLiTunesRootGroupTypeIdentifier: string;
+declare const MLiPhotoLastViewedEventAlbumTypeIdentifier: string;
 
 declare const MLPhotosAlbumTypeIdentifier: string;
 
@@ -255,6 +255,8 @@ declare const MLiPhotoEventsFolderTypeIdentifier: string;
 
 declare const MLMediaSourceLogicIdentifier: string;
 
+declare const MLiTunesGeniusPlaylistTypeIdentifier: string;
+
 declare const MLiTunesPodcastPlaylistTypeIdentifier: string;
 
 declare const MLiPhotoFacesAlbumTypeIdentifier: string;
@@ -266,8 +268,6 @@ declare const MLApertureSmugMugAlbumTypeIdentifier: string;
 declare const MLiPhotoPlacesCountryAlbumTypeIdentifier: string;
 
 declare const MLPhotosSloMoGroupTypeIdentifier: string;
-
-declare const MLApertureFolderAlbumTypeIdentifier: string;
 
 declare const MLAperturePlacesProvinceAlbumTypeIdentifier: string;
 
@@ -281,6 +281,8 @@ declare const MLApertureLastNMonthsAlbumTypeIdentifier: string;
 
 declare const MLiTunesTVShowsPlaylistTypeIdentifier: string;
 
+declare const MLiTunesMusicVideosPlaylistTypeIdentifier: string;
+
 declare const MLPhotosLongExposureGroupTypeIdentifier: string;
 
 declare const MLiMovieEventCalendarGroupTypeIdentifier: string;
@@ -290,8 +292,6 @@ declare const MLMediaSourcePhotoBoothIdentifier: string;
 declare const MLPhotosFolderTypeIdentifier: string;
 
 declare const MLApertureFacebookAlbumTypeIdentifier: string;
-
-declare const MLiTunesMusicVideosPlaylistTypeIdentifier: string;
 
 declare const MLiPhotoRootGroupTypeIdentifier: string;
 

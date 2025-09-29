@@ -3,6 +3,8 @@
 
 declare const ISyncInvalidArgumentsException: string;
 
+declare const ISyncInvalidSchemaException: string;
+
 declare const ISyncSessionDriverFatalError: number;
 
 declare const ISyncSessionDriverRegistrationError: number;
@@ -40,8 +42,6 @@ declare const ISyncChangePropertyClear: string;
 declare const ISyncChangePropertySet: string;
 
 declare const ISyncInvalidEntityException: string;
-
-declare const ISyncInvalidSchemaException: string;
 
 declare const ISyncClientTypeDevice: string;
 
@@ -318,12 +318,6 @@ declare class ISyncFilter extends NSObject {
   static filterMatchingAtLeastOneFilter(filters: NSArray<interop.Object> | Array<interop.Object>): ISyncFiltering;
 }
 
-declare class ISyncRecordReference extends NSObject implements NSCoding {
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class ISyncSessionDriver extends NSObject {
   static sessionDriverWithDataSource(dataSource: ISyncSessionDriverDataSource): ISyncSessionDriver;
 
@@ -348,6 +342,12 @@ declare class ISyncSessionDriver extends NSObject {
   session(): ISyncSession;
 
   finishSyncing(): void;
+}
+
+declare class ISyncRecordReference extends NSObject implements NSCoding {
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ISyncManager extends NSObject {

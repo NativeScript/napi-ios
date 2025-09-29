@@ -3,19 +3,6 @@
 
 declare const SAErrorDomain: string;
 
-declare const SAEmergencyResponseManagerVoiceCallStatus: {
-  Dialing: 0,
-  Active: 1,
-  Disconnected: 2,
-  Failed: 3,
-};
-
-declare const SAAuthorizationStatus: {
-  NotDetermined: 0,
-  Denied: 1,
-  Authorized: 2,
-};
-
 declare const SAErrorCode: {
   NotAuthorized: 1,
   NotAllowed: 2,
@@ -26,6 +13,19 @@ declare const SAErrorCode: {
 declare const SACrashDetectionEventResponse: {
   Attempted: 0,
   Disabled: 1,
+};
+
+declare const SAAuthorizationStatus: {
+  NotDetermined: 0,
+  Denied: 1,
+  Authorized: 2,
+};
+
+declare const SAEmergencyResponseManagerVoiceCallStatus: {
+  Dialing: 0,
+  Active: 1,
+  Disconnected: 2,
+  Failed: 3,
 };
 
 declare interface SAEmergencyResponseDelegate extends NSObjectProtocol {

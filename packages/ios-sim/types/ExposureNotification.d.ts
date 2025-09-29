@@ -3,33 +3,33 @@
 
 declare const ENRiskWeightMax: number;
 
+declare const ENRiskWeightDefaultV2: number;
+
 declare const ENRiskWeightDefault: number;
 
 declare const ENRiskScoreMin: number;
 
 declare const ENRiskLevelValueMax: number;
 
+declare const ENRiskLevelMin: number;
+
 declare const ENDaysSinceOnsetOfSymptomsUnknown: number;
 
 declare const ENErrorDomain: string;
 
-declare const ENRiskWeightDefaultV2: number;
-
 declare const ENRiskLevelMax: number;
 
-declare const ENRiskLevelMin: number;
+declare const ENAttenuationMin: number;
 
 declare const ENRiskLevelValueMin: number;
 
 declare const ENAttenuationMax: number;
 
-declare const ENAttenuationMin: number;
-
 declare const ENRiskWeightMin: number;
 
-declare const ENRiskScoreMax: number;
-
 declare const ENRiskWeightMaxV2: number;
+
+declare const ENRiskScoreMax: number;
 
 declare const ENStatus: {
   Unknown: 0,

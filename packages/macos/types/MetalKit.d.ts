@@ -98,8 +98,6 @@ declare class MTKView extends NSView implements NSCoding, CALayerDelegate {
 
   readonly currentRenderPassDescriptor: MTLRenderPassDescriptor;
 
-  readonly currentMTL4RenderPassDescriptor: MTL4RenderPassDescriptor;
-
   preferredFramesPerSecond: number;
 
   enableSetNeedsDisplay: boolean;
@@ -267,70 +265,6 @@ declare class MTKMesh extends NSObject {
   setName(name: string): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class MTKMeshBuffer extends NSObject implements MDLMeshBuffer, MDLNamed {
-  readonly length: number;
-
-  readonly allocator: MTKMeshBufferAllocator;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly zone: MDLMeshBufferZone;
-
-  readonly buffer: MTLBuffer;
-
-  readonly offset: number;
-
-  readonly type: interop.Enum<typeof MDLMeshBufferType>;
-
-  fillDataOffset(data: NSData, offset: number): void;
-
-  map(): MDLMeshBufferMap;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  name: string;
-
-  setName(name: string): void;
-}
-
 declare class MTKSubmesh extends NSObject {
   readonly primitiveType: interop.Enum<typeof MTLPrimitiveType>;
 
@@ -403,5 +337,69 @@ declare class MTKMeshBufferAllocator extends NSObject implements MDLMeshBufferAl
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class MTKMeshBuffer extends NSObject implements MDLMeshBuffer, MDLNamed {
+  readonly length: number;
+
+  readonly allocator: MTKMeshBufferAllocator;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  readonly zone: MDLMeshBufferZone;
+
+  readonly buffer: MTLBuffer;
+
+  readonly offset: number;
+
+  readonly type: interop.Enum<typeof MDLMeshBufferType>;
+
+  fillDataOffset(data: NSData, offset: number): void;
+
+  map(): MDLMeshBufferMap;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  name: string;
+
+  setName(name: string): void;
 }
 

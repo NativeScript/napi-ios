@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kIOSurfacePlaneBytesPerElement: interop.Pointer;
-
 declare const kIOSurfacePlaneSize: interop.Pointer;
 
 declare const kIOSurfacePlaneInfo: interop.Pointer;
@@ -21,21 +19,21 @@ declare const kIOSurfaceDefaultCache: number;
 
 declare const kIOSurfaceHeight: interop.Pointer;
 
-declare const kIOSurfaceICCProfile: interop.Pointer;
-
-declare const kIOSurfacePixelSizeCastingAllowed: interop.Pointer;
+declare const IOSurfacePropertyKeyCacheMode: string;
 
 declare const kIOSurfaceColorSpace: interop.Pointer;
 
-declare const kIOSurfacePlaneComponentTypes: interop.Pointer;
+declare const IOSurfacePropertyKeyPlaneBytesPerRow: string;
+
+declare const kIOSurfaceMapInhibitCache: number;
 
 declare const kIOSurfaceElementWidth: interop.Pointer;
+
+declare const kIOSurfaceWidth: interop.Pointer;
 
 declare const IOSurfacePropertyKeyPixelSizeCastingAllowed: string;
 
 declare const IOSurfacePropertyKeyPixelFormat: string;
-
-declare const IOSurfacePropertyKeyCacheMode: string;
 
 declare const IOSurfacePropertyKeyPlaneElementHeight: string;
 
@@ -43,7 +41,7 @@ declare const IOSurfacePropertyKeyPlaneBytesPerElement: string;
 
 declare const IOSurfacePropertyKeyPlaneBase: string;
 
-declare const IOSurfacePropertyKeyPlaneBytesPerRow: string;
+declare const IOSurfacePropertyKeyPlaneSize: string;
 
 declare const IOSurfacePropertyKeyPlaneHeight: string;
 
@@ -65,13 +63,21 @@ declare const kIOSurfaceBytesPerElement: interop.Pointer;
 
 declare const kIOSurfacePlaneElementWidth: interop.Pointer;
 
+declare const kIOSurfaceICCProfile: interop.Pointer;
+
+declare const kIOSurfacePlaneComponentTypes: interop.Pointer;
+
 declare const kIOSurfacePlaneComponentBitOffsets: interop.Pointer;
 
 declare const kIOSurfacePlaneComponentBitDepths: interop.Pointer;
 
+declare const kIOSurfacePixelSizeCastingAllowed: interop.Pointer;
+
 declare const kIOSurfacePixelFormat: interop.Pointer;
 
 declare const kIOSurfaceCacheMode: interop.Pointer;
+
+declare const kIOSurfacePlaneBytesPerElement: interop.Pointer;
 
 declare const kIOSurfacePlaneWidth: interop.Pointer;
 
@@ -83,7 +89,7 @@ declare const kIOSurfaceMapDefaultCache: number;
 
 declare const kIOSurfaceWriteThruCache: number;
 
-declare const IOSurfacePropertyKeyPlaneSize: string;
+declare const IOSurfacePropertyAllocSizeKey: string;
 
 declare const kIOSurfaceSubsampling: interop.Pointer;
 
@@ -97,6 +103,8 @@ declare const IOSurfacePropertyKeyPlaneElementWidth: string;
 
 declare const kIOSurfaceContentHeadroom: interop.Pointer;
 
+declare const kIOSurfaceElementHeight: interop.Pointer;
+
 declare const IOSurfacePropertyKeyOffset: string;
 
 declare const kIOSurfaceWriteCombineCache: number;
@@ -109,48 +117,33 @@ declare const kIOSurfaceIsGlobal: interop.Pointer;
 
 declare const IOSurfacePropertyKeyHeight: string;
 
-declare const kIOSurfaceCopybackInnerCache: number;
-
 declare const kIOSurfacePlaneBase: interop.Pointer;
 
 declare const kIOSurfacePlaneHeight: interop.Pointer;
 
 declare const kIOSurfaceAllocSize: interop.Pointer;
 
-declare const kIOSurfaceWidth: interop.Pointer;
-
 declare const kIOSurfaceInhibitCache: number;
 
 declare const kIOSurfaceMapCopybackInnerCache: number;
-
-declare const kIOSurfaceMapCacheShift: number;
-
-declare const kIOSurfaceMapInhibitCache: number;
 
 declare const IOSurfacePropertyKeyPlaneOffset: string;
 
 declare const IOSurfacePropertyKeyAllocSize: string;
 
-declare const kIOSurfaceElementHeight: interop.Pointer;
+declare const kIOSurfaceCopybackInnerCache: number;
 
 declare const kIOSurfaceMapWriteCombineCache: number;
 
-declare const kIOSurfaceCopybackCache: number;
+declare const kIOSurfaceMapCacheShift: number;
 
-declare const IOSurfacePropertyAllocSizeKey: string;
+declare const kIOSurfaceCopybackCache: number;
 
 declare const IOSurfacePurgeabilityState: {
   NonVolatile: 0,
   Volatile: 1,
   Empty: 2,
   KeepCurrent: 3,
-};
-
-declare const IOSurfaceComponentRange: {
-  Unknown: 0,
-  FullRange: 1,
-  VideoRange: 2,
-  WideRange: 3,
 };
 
 declare const IOSurfaceComponentType: {
@@ -187,6 +180,13 @@ declare const IOSurfaceMemoryLedgerTags: {
   Media: 3,
   Graphics: 4,
   Neural: 5,
+};
+
+declare const IOSurfaceComponentRange: {
+  Unknown: 0,
+  FullRange: 1,
+  VideoRange: 2,
+  WideRange: 3,
 };
 
 declare const IOSurfaceSubsampling: {

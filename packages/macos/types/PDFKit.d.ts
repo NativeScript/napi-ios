@@ -42,6 +42,8 @@ declare const PDFDocumentSubjectAttribute: string;
 
 declare const PDFDocumentAuthorAttribute: string;
 
+declare const PDFDocumentPageIndexKey: string;
+
 declare const PDFDocumentDidBeginPageWriteNotification: string;
 
 declare const PDFDocumentDidBeginWriteNotification: string;
@@ -204,8 +206,6 @@ declare const PDFAppearanceCharacteristicsKeyCaption: string;
 
 declare const PDFAnnotationKeyWidgetTextLabelUI: string;
 
-declare const PDFDocumentPageIndexKey: string;
-
 declare const PDFAnnotationTextIconTypeHelp: string;
 
 declare const PDFAnnotationKeyAction: string;
@@ -221,8 +221,6 @@ declare const PDFAnnotationTextIconTypeParagraph: string;
 declare const PDFPageImageInitializationOptionMediaBox: string;
 
 declare const PDFAnnotationSubtypeFreeText: string;
-
-declare const PDFAnnotationKeyWidgetRolloverCaption: string;
 
 declare const kPDFAnnotationKey_IconName: string;
 
@@ -254,13 +252,15 @@ declare const PDFAnnotationKeyInklist: string;
 
 declare const PDFViewDocumentChangedNotification: string;
 
+declare const PDFAnnotationTextIconTypeKey: string;
+
 declare const PDFAnnotationLineEndingStyleNone: string;
 
 declare const PDFAnnotationKeyWidgetRotation: string;
 
-declare const PDFViewDisplayModeChangedNotification: string;
+declare const PDFAnnotationKeyWidgetRolloverCaption: string;
 
-declare const PDFAnnotationTextIconTypeKey: string;
+declare const PDFViewDisplayModeChangedNotification: string;
 
 declare const PDFAppearanceCharacteristicsKeyRolloverCaption: string;
 
@@ -358,6 +358,12 @@ declare const PDFAccessPermissions: {
   FormFieldEntry: 128,
 };
 
+declare const PDFPrintScalingMode: {
+  None: 0,
+  ToFit: 1,
+  DownToFit: 2,
+};
+
 declare const PDFLineStyle: {
   None: 0,
   Square: 1,
@@ -438,12 +444,6 @@ declare const PDFWidgetCellState: {
   Mixed: -1,
   Off: 0,
   On: 1,
-};
-
-declare const PDFPrintScalingMode: {
-  None: 0,
-  ToFit: 1,
-  DownToFit: 2,
 };
 
 declare const PDFDisplayDirection: {
@@ -559,6 +559,26 @@ declare class PDFSelection extends NSObject implements NSCopying {
 }
 
 // @ts-ignore ClassDecl.tsIgnore
+declare class PDFAnnotationMarkup extends PDFAnnotation implements NSCopying, NSCoding {
+  get quadrilateralPoints(): NSArray;
+  set quadrilateralPoints(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setQuadrilateralPoints(points: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  markupType: interop.Enum<typeof PDFMarkupType>;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setMarkupType(type: interop.Enum<typeof PDFMarkupType>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationTextWidget extends PDFAnnotation implements NSCopying {
   stringValue(): string;
 
@@ -634,26 +654,6 @@ declare class PDFAnnotationPopup extends PDFAnnotation implements NSCopying, NSC
   isOpen(): boolean;
 
   setIsOpen(isOpen: boolean): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class PDFAnnotationMarkup extends PDFAnnotation implements NSCopying, NSCoding {
-  get quadrilateralPoints(): NSArray;
-  set quadrilateralPoints(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setQuadrilateralPoints(points: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  markupType: interop.Enum<typeof PDFMarkupType>;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setMarkupType(type: interop.Enum<typeof PDFMarkupType>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -1136,6 +1136,31 @@ declare class PDFDestination extends NSObject implements NSCopying {
   setZoom(zoom: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class PDFBorder extends NSObject implements NSCopying, NSCoding {
+  style: interop.Enum<typeof PDFBorderStyle>;
+
+  lineWidth: number;
+
+  get dashPattern(): NSArray;
+  set dashPattern(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  readonly borderKeyValues: NSDictionary;
+
+  drawInRect(rect: CGRect): void;
+
+  setStyle(style: interop.Enum<typeof PDFBorderStyle>): void;
+
+  setLineWidth(lineWidth: number): void;
+
+  setDashPattern(dashPattern: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class PDFAnnotation extends NSObject implements NSCopying, NSCoding {
@@ -1622,31 +1647,6 @@ declare class PDFAnnotationSquare extends PDFAnnotation implements NSCopying, NS
 
   // @ts-ignore MemberDecl.tsIgnore
   setInteriorColor(color: NSColor): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class PDFBorder extends NSObject implements NSCopying, NSCoding {
-  style: interop.Enum<typeof PDFBorderStyle>;
-
-  lineWidth: number;
-
-  get dashPattern(): NSArray;
-  set dashPattern(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  readonly borderKeyValues: NSDictionary;
-
-  drawInRect(rect: CGRect): void;
-
-  setStyle(style: interop.Enum<typeof PDFBorderStyle>): void;
-
-  setLineWidth(lineWidth: number): void;
-
-  setDashPattern(dashPattern: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 

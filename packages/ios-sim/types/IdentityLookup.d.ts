@@ -180,16 +180,6 @@ declare class ILMessageFilterCapabilitiesQueryRequest extends NSObject implement
 declare class ILMessageFilterExtension extends NSObject {
 }
 
-declare class ILMessageClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
-  readonly messageCommunications: NSArray;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureCoding {
   action: interop.Enum<typeof ILMessageFilterAction>;
 
@@ -198,6 +188,16 @@ declare class ILMessageFilterQueryResponse extends NSObject implements NSSecureC
   setAction(action: interop.Enum<typeof ILMessageFilterAction>): void;
 
   setSubAction(subAction: interop.Enum<typeof ILMessageFilterSubAction>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class ILMessageClassificationRequest extends ILClassificationRequest implements NSSecureCoding {
+  readonly messageCommunications: NSArray;
 
   static readonly supportsSecureCoding: boolean;
 

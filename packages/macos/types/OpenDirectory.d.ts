@@ -187,6 +187,8 @@ declare const kODAttributeTypeGroupMembership: string;
 
 declare const kODAttributeTypeGroupMembers: string;
 
+declare const kODAttributeTypeGroup: string;
+
 declare const kODAttributeTypeEMailContacts: string;
 
 declare const kODAttributeTypeDNSName: string;
@@ -405,8 +407,6 @@ declare const kODAttributeTypeCountry: string;
 
 declare const kODSessionProxyPassword: interop.Pointer;
 
-declare const kODAttributeTypeGroup: string;
-
 declare const ODTrustTypeUsingCredentials: string;
 
 declare const kODSessionProxyPort: interop.Pointer;
@@ -450,6 +450,8 @@ declare const kODPolicyTypePasswordMaximumNumberOfCharacters: string;
 declare const kODAttributeTypeExpire: string;
 
 declare const kODAttributeTypeNameSuffix: string;
+
+declare const kODAttributeTypeSMBGroupRID: string;
 
 declare const kODAttributeTypeTimeToLive: string;
 
@@ -651,6 +653,8 @@ declare const kODAttributeTypeSMBScriptPath: string;
 
 declare const kODAttributeTypeSearchPath: string;
 
+declare const kODRecordTypeServices: string;
+
 declare const kODAttributeTypeNFSHomeDirectory: string;
 
 declare const kODAttributeTypeContactGUID: string;
@@ -680,8 +684,6 @@ declare const kODAttributeTypeState: string;
 declare const kODModuleConfigOptionPacketSigning: interop.Pointer;
 
 declare const kODAttributeTypePicture: string;
-
-declare const kODRecordTypeServices: string;
 
 declare const kODAttributeTypeCity: string;
 
@@ -780,8 +782,6 @@ declare const kODAttributeTypePrimaryNTDomain: string;
 declare const kODRecordTypePresetGroups: string;
 
 declare const kODPolicyCategoryPasswordChange: string;
-
-declare const kODAttributeTypeSMBGroupRID: string;
 
 declare const kODAttributeTypeVFSOpts: string;
 

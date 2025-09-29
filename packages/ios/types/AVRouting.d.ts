@@ -20,12 +20,6 @@ declare interface AVCustomRoutingControllerDelegate extends NSObjectProtocol {
 declare class AVCustomRoutingControllerDelegate extends NativeObject implements AVCustomRoutingControllerDelegate {
 }
 
-declare interface AVRoutingPlaybackParticipant {
-}
-
-declare class AVRoutingPlaybackParticipant extends NativeObject implements AVRoutingPlaybackParticipant {
-}
-
 declare class AVCustomRoutingActionItem extends NSObject {
   type: UTType;
 
@@ -66,14 +60,6 @@ declare class AVCustomRoutingController extends NSObject {
   setKnownRouteIPs(knownRouteIPs: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setCustomActionItems(customActionItems: NSArray<interop.Object> | Array<interop.Object>): void;
-}
-
-declare class AVRoutingPlaybackArbiter extends NSObject {
-  static sharedRoutingPlaybackArbiter(): AVRoutingPlaybackArbiter;
-
-  preferredParticipantForExternalPlayback: AVRoutingPlaybackParticipant;
-
-  setPreferredParticipantForExternalPlayback(preferredParticipantForExternalPlayback: AVRoutingPlaybackParticipant | null): void;
 }
 
 declare class AVCustomDeviceRoute extends NSObject {

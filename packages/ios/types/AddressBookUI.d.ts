@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const ABPersonBirthdayProperty: string;
-
 declare const ABPersonPostalAddressesProperty: string;
 
 declare const ABPersonPhoneNumbersProperty: string;
@@ -21,11 +19,15 @@ declare const ABPersonMiddleNameProperty: string;
 
 declare const ABPersonNamePrefixProperty: string;
 
+declare const ABPersonBirthdayProperty: string;
+
 declare const ABPersonDepartmentNameProperty: string;
 
 declare const ABPersonGivenNameProperty: string;
 
 declare const ABPersonJobTitleProperty: string;
+
+declare const ABPersonSocialProfilesProperty: string;
 
 declare const ABPersonPhoneticMiddleNameProperty: string;
 
@@ -44,8 +46,6 @@ declare const ABPersonNameSuffixProperty: string;
 declare const ABPersonNoteProperty: string;
 
 declare const ABPersonUrlAddressesProperty: string;
-
-declare const ABPersonSocialProfilesProperty: string;
 
 declare function ABCreateStringWithAddressDictionary(address: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, addCountryName: boolean): string;
 
@@ -114,6 +114,24 @@ declare class ABPeoplePickerNavigationController extends UINavigationController 
   setPredicateForSelectionOfProperty(predicateForSelectionOfProperty: NSPredicate): void;
 }
 
+declare class ABNewPersonViewController extends UIViewController {
+  newPersonViewDelegate: ABNewPersonViewControllerDelegate;
+
+  addressBook: interop.Object;
+
+  displayedPerson: interop.Object;
+
+  parentGroup: interop.Object;
+
+  setNewPersonViewDelegate(newPersonViewDelegate: ABNewPersonViewControllerDelegate | null): void;
+
+  setAddressBook(addressBook: interop.Object | null): void;
+
+  setDisplayedPerson(displayedPerson: interop.Object | null): void;
+
+  setParentGroup(parentGroup: interop.Object | null): void;
+}
+
 declare class ABPersonViewController extends UIViewController implements UIViewControllerRestoration {
   personViewDelegate: ABPersonViewControllerDelegate;
 
@@ -147,24 +165,6 @@ declare class ABPersonViewController extends UIViewController implements UIViewC
   setShouldShowLinkedPeople(shouldShowLinkedPeople: boolean): void;
 
   static viewControllerWithRestorationIdentifierPathCoder(identifierComponents: NSArray<interop.Object> | Array<interop.Object>, coder: NSCoder): UIViewController;
-}
-
-declare class ABNewPersonViewController extends UIViewController {
-  newPersonViewDelegate: ABNewPersonViewControllerDelegate;
-
-  addressBook: interop.Object;
-
-  displayedPerson: interop.Object;
-
-  parentGroup: interop.Object;
-
-  setNewPersonViewDelegate(newPersonViewDelegate: ABNewPersonViewControllerDelegate | null): void;
-
-  setAddressBook(addressBook: interop.Object | null): void;
-
-  setDisplayedPerson(displayedPerson: interop.Object | null): void;
-
-  setParentGroup(parentGroup: interop.Object | null): void;
 }
 
 declare class ABUnknownPersonViewController extends UIViewController {

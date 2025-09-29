@@ -45,6 +45,12 @@ declare class DDMatchEmailAddress extends DDMatch {
   readonly label: string;
 }
 
+declare class DDMatchMoneyAmount extends DDMatch {
+  readonly currency: string;
+
+  readonly amount: number;
+}
+
 declare class DDMatchPhoneNumber extends DDMatch {
   readonly phoneNumber: string;
 
@@ -53,12 +59,6 @@ declare class DDMatchPhoneNumber extends DDMatch {
 
 declare class DDMatch extends NSObject {
   readonly matchedString: string;
-}
-
-declare class DDMatchMoneyAmount extends DDMatch {
-  readonly currency: string;
-
-  readonly amount: number;
 }
 
 declare class DDMatchLink extends DDMatch {

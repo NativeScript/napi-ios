@@ -59,6 +59,14 @@ declare class SFCertificatePanel extends NSPanel {
   certificateView(): SFCertificateView;
 }
 
+declare class SFKeychainSettingsPanel extends NSPanel {
+  static sharedKeychainSettingsPanel(): SFKeychainSettingsPanel;
+
+  runModalForSettingsKeychain(settings: interop.PointerConvertible, keychain: interop.Object): number;
+
+  beginSheetForWindowModalDelegateDidEndSelectorContextInfoSettingsKeychain(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, settings: interop.PointerConvertible, keychain: interop.Object): void;
+}
+
 declare class SFChooseIdentityTableCellView extends NSTableCellView {
   issuerTextField: NSTextField;
 
@@ -173,14 +181,6 @@ declare class SFCertificateView extends NSVisualEffectView {
   setPoliciesDisclosed(disclosed: boolean): void;
 
   policiesDisclosed(): boolean;
-}
-
-declare class SFKeychainSettingsPanel extends NSPanel {
-  static sharedKeychainSettingsPanel(): SFKeychainSettingsPanel;
-
-  runModalForSettingsKeychain(settings: interop.PointerConvertible, keychain: interop.Object): number;
-
-  beginSheetForWindowModalDelegateDidEndSelectorContextInfoSettingsKeychain(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, settings: interop.PointerConvertible, keychain: interop.Object): void;
 }
 
 // @ts-ignore ClassDecl.tsIgnore

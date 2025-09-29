@@ -27,11 +27,15 @@ declare const JSPropertyDescriptorValueKey: string;
 
 declare const JSPropertyDescriptorWritableKey: string;
 
-declare const JSRelationCondition: {
+declare const JSType: {
   Undefined: 0,
-  Equal: 1,
-  GreaterThan: 2,
-  LessThan: 3,
+  Null: 1,
+  Boolean: 2,
+  Number: 3,
+  String: 4,
+  Object: 5,
+  Symbol: 6,
+  BigInt: 7,
 };
 
 declare const JSTypedArrayType: {
@@ -50,15 +54,11 @@ declare const JSTypedArrayType: {
   BigUint64Array: 12,
 };
 
-declare const JSType: {
+declare const JSRelationCondition: {
   Undefined: 0,
-  Null: 1,
-  Boolean: 2,
-  Number: 3,
-  String: 4,
-  Object: 5,
-  Symbol: 6,
-  BigInt: 7,
+  Equal: 1,
+  GreaterThan: 2,
+  LessThan: 3,
 };
 
 declare class JSClassDefinition {
@@ -82,6 +82,14 @@ declare class JSClassDefinition {
   convertToType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof JSType>, p4: interop.PointerConvertible) => interop.Pointer | null;
 }
 
+declare class JSStaticValue {
+  constructor(init?: JSStaticValue);
+  name: string | null;
+  getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
+  setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
+  attributes: number;
+}
+
 declare class OpaqueJSPropertyNameAccumulator {
   constructor(init?: OpaqueJSPropertyNameAccumulator);
 }
@@ -92,14 +100,6 @@ declare class OpaqueJSContext {
 
 declare class OpaqueJSClass {
   constructor(init?: OpaqueJSClass);
-}
-
-declare class JSStaticValue {
-  constructor(init?: JSStaticValue);
-  name: string | null;
-  getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
-  setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
-  attributes: number;
 }
 
 declare class OpaqueJSString {

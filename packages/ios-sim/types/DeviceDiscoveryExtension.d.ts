@@ -26,11 +26,6 @@ declare const DDErrorCode: {
   Next: 350007,
 };
 
-declare const DDDeviceWiFiAwareServiceRole: {
-  Subscriber: 10,
-  Publisher: 20,
-};
-
 declare const DDDeviceMediaPlaybackState: {
   NoContent: 0,
   Paused: 1,
@@ -63,7 +58,6 @@ declare const DDDeviceState: {
 declare const DDDeviceSupports: {
   PairingLE: 2,
   TransportBridging: 4,
-  HID: 8,
 };
 
 declare function DDDeviceProtocolToString(inValue: interop.Enum<typeof DDDeviceProtocol>): string;
@@ -117,14 +111,6 @@ declare class DDDevice extends NSObject {
 
   url: NSURL;
 
-  wifiAwareServiceName: string;
-
-  wifiAwareServiceRole: interop.Enum<typeof DDDeviceWiFiAwareServiceRole>;
-
-  wifiAwareModelName: string;
-
-  wifiAwareVendorName: string;
-
   setDeviceSupports(deviceSupports: interop.Enum<typeof DDDeviceSupports>): void;
 
   setBluetoothIdentifier(bluetoothIdentifier: NSUUID | null): void;
@@ -158,14 +144,6 @@ declare class DDDevice extends NSObject {
   setTxtRecordData(txtRecordData: NSData): void;
 
   setUrl(url: NSURL): void;
-
-  setWifiAwareServiceName(wifiAwareServiceName: string): void;
-
-  setWifiAwareServiceRole(wifiAwareServiceRole: interop.Enum<typeof DDDeviceWiFiAwareServiceRole>): void;
-
-  setWifiAwareModelName(wifiAwareModelName: string): void;
-
-  setWifiAwareVendorName(wifiAwareVendorName: string): void;
 }
 
 declare class DDDeviceEvent extends NSObject {

@@ -23,8 +23,6 @@ declare const UTTypeMessage: UTType;
 
 declare const UTTypeDatabase: UTType;
 
-declare const UTTypeSpreadsheet: UTType;
-
 declare const UTTypeTarArchive: UTType;
 
 declare const UTTypeAppleArchive: UTType;
@@ -35,17 +33,11 @@ declare const UTTypeGZIP: UTType;
 
 declare const UTTypeArchive: UTType;
 
-declare const UTTypeSystemPreferencesPane: UTType;
-
-declare const UTTypeUnixExecutable: UTType;
-
 declare const UTTypeApplicationBundle: UTType;
 
 declare const UTTypeApplication: UTType;
 
 declare const UTTypeFramework: UTType;
-
-declare const UTTypeQuickLookGenerator: UTType;
 
 declare const UTTypePluginBundle: UTType;
 
@@ -55,8 +47,6 @@ declare const UTTypeVolume: UTType;
 
 declare const UTTypeM3UPlaylist: UTType;
 
-declare const UTTypeWAV: UTType;
-
 declare const UTTypeAVI: UTType;
 
 declare const UTTypeAppleProtectedMPEG4Video: UTType;
@@ -65,13 +55,11 @@ declare const UTTypeMP3: UTType;
 
 declare const UTTypeMPEG2TransportStream: UTType;
 
+declare const UTTypeMPEG2Video: UTType;
+
 declare const UTTypeMPEG: UTType;
 
-declare const UTTypeQuickTimeMovie: UTType;
-
 declare const UTTypeAudiovisualContent: UTType;
-
-declare const UTTypeARReferenceObject: UTType;
 
 declare const UTTypeSceneKitScene: UTType;
 
@@ -87,8 +75,6 @@ declare const UTTypeJPEGXL: UTType;
 
 declare const UTTypeDNG: UTType;
 
-declare const UTTypeEXR: UTType;
-
 declare const UTTypeWebP: UTType;
 
 declare const UTTypeHEICS: UTType;
@@ -101,8 +87,6 @@ declare const UTTypeRAWImage: UTType;
 
 declare const UTTypeICO: UTType;
 
-declare const UTTypeBMP: UTType;
-
 declare const UTTypeICNS: UTType;
 
 declare const UTTypePNG: UTType;
@@ -112,8 +96,6 @@ declare const UTTypeGIF: UTType;
 declare const UTTypeJPEG: UTType;
 
 declare const UTTypeImage: UTType;
-
-declare const UTTypeWebArchive: UTType;
 
 declare const UTTypeFlatRTFD: UTType;
 
@@ -151,8 +133,6 @@ declare const UTTypeSwiftSource: UTType;
 
 declare const UTTypeObjectiveCSource: UTType;
 
-declare const UTTypeCSource: UTType;
-
 declare const UTTypeCSS: UTType;
 
 declare const UTTypeXML: UTType;
@@ -169,17 +149,11 @@ declare const UTTypePlainText: UTType;
 
 declare const UTTypeText: UTType;
 
-declare const UTTypeFileURL: UTType;
-
 declare const UTTypeURL: UTType;
 
 declare const UTTypeURLBookmarkData: UTType;
 
-declare const UTTypeAliasFile: UTType;
-
 declare const UTTypeSymbolicLink: UTType;
-
-declare const UTTypeDirectory: UTType;
 
 declare const UTTypeData: UTType;
 
@@ -187,13 +161,41 @@ declare const UTTypeDiskImage: UTType;
 
 declare const UTTypeCompositeContent: UTType;
 
-declare const UTTagClassFilenameExtension: string;
+declare const UTTypeDirectory: UTType;
+
+declare const UTTypeSystemPreferencesPane: UTType;
+
+declare const UTTypeFileURL: UTType;
+
+declare const UTTypeUnixExecutable: UTType;
+
+declare const UTTypeEXR: UTType;
+
+declare const UTTypeAliasFile: UTType;
+
+declare const UTTypeWAV: UTType;
+
+declare const UTTypeCSource: UTType;
+
+declare const UTTypeSpreadsheet: UTType;
+
+declare const UTTypeWebArchive: UTType;
+
+declare const UTTypeQuickLookGenerator: UTType;
+
+declare const UTTypeARReferenceObject: UTType;
+
+declare const UTTypeQuickTimeMovie: UTType;
+
+declare const UTTagClassMIMEType: string;
 
 declare const UTTypeHEIF: UTType;
 
 declare const UTTypeUTF8TabSeparatedText: UTType;
 
 declare const UTTypeFolder: UTType;
+
+declare const UTTypeBMP: UTType;
 
 declare const UTTypeCalendarEvent: UTType;
 
@@ -210,6 +212,8 @@ declare const UTTypePerlScript: UTType;
 declare const UTTypeEPUB: UTType;
 
 declare const UTTypeAIFF: UTType;
+
+declare const UTTagClassFilenameExtension: string;
 
 declare const UTTypeVCard: UTType;
 
@@ -253,8 +257,6 @@ declare const UTTypeMountPoint: UTType;
 
 declare const UTTypeEXE: UTType;
 
-declare const UTTypeMPEG2Video: UTType;
-
 declare const UTTypeZIP: UTType;
 
 declare const UTTypePHPScript: UTType;
@@ -262,8 +264,6 @@ declare const UTTypePHPScript: UTType;
 declare const UTTypeDelimitedText: UTType;
 
 declare const UTTypeVideo: UTType;
-
-declare const UTTagClassMIMEType: string;
 
 declare const UTTypeSpotlightImporter: UTType;
 

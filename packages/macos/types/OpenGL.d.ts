@@ -48,6 +48,20 @@ declare const kCGLRendererGeForce2MXID: number;
 
 declare const kCGLRendererGeForce8xxxID: number;
 
+declare const _CGLOpenGLProfile: {
+  Version_Legacy: 4096,
+  Version_3_2_Core: 12800,
+  Version_GL3_Core: 12800,
+  Version_GL4_Core: 16640,
+};
+
+declare const _CGLGPURestartStatus: {
+  None: 0,
+  Caused: 1,
+  Blacklisted: 2,
+  Denied: 2,
+};
+
 declare const _CGLError: {
   NoError: 0,
   BadAttribute: 10000,
@@ -68,13 +82,6 @@ declare const _CGLError: {
   BadCodeModule: 10015,
   BadAlloc: 10016,
   BadConnection: 10017,
-};
-
-declare const _CGLOpenGLProfile: {
-  Version_Legacy: 4096,
-  Version_3_2_Core: 12800,
-  Version_GL3_Core: 12800,
-  Version_GL4_Core: 16640,
 };
 
 declare const _CGLContextParameter: {
@@ -99,13 +106,6 @@ declare const _CGLContextParameter: {
   SupportGPURestart: 319,
   SupportSeparateAddressSpace: 320,
   ContextPriorityRequest: 608,
-};
-
-declare const _CGLGPURestartStatus: {
-  None: 0,
-  Caused: 1,
-  Blacklisted: 2,
-  Denied: 2,
 };
 
 declare const _CGLGlobalOption: {

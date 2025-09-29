@@ -508,6 +508,22 @@ declare class UNLocationNotificationTrigger extends UNNotificationTrigger {
   static triggerWithRegionRepeats<This extends abstract new (...args: any) => any>(this: This, region: CLRegion, repeats: boolean): InstanceType<This>;
 }
 
+declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
+  readonly notification: UNNotification;
+
+  readonly actionIdentifier: string;
+
+  readonly targetScene: UIScene;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class UNNotificationSettings extends NSObject implements NSCopying, NSSecureCoding {
   readonly authorizationStatus: interop.Enum<typeof UNAuthorizationStatus>;
 
@@ -538,22 +554,6 @@ declare class UNNotificationSettings extends NSObject implements NSCopying, NSSe
   readonly scheduledDeliverySetting: interop.Enum<typeof UNNotificationSetting>;
 
   readonly directMessagesSetting: interop.Enum<typeof UNNotificationSetting>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class UNNotificationResponse extends NSObject implements NSCopying, NSSecureCoding {
-  readonly notification: UNNotification;
-
-  readonly actionIdentifier: string;
-
-  readonly targetScene: UIScene;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
