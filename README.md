@@ -1,3 +1,11 @@
+> [!NOTE]  
+> The instructions below detail how to get started developing NativeScript's V8-based iOS runtime, `@nativescript/ios`.
+>
+> If you are interested in building the standalone Node-API libraries, instructions for those can be found as follows:
+>
+> - `@nativescript/ios-node-api`: [packages/ios/README.md](packages/ios/README.md)
+> - `@nativescript/macos-node-api`: [packages/macos/README.md](packages/macos/README.md)
+
 # Getting Started
 
 **Prerequisites**:

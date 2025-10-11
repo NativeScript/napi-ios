@@ -15,8 +15,7 @@
     "types"
   ],
   "scripts": {
-    "build": "deno task build",
-    "prepublishOnly": "rimraf build && npm run build"
+    "build": "cd ../.. && ./build_all_react_native.sh"
   },
   "keywords": [
     "iOS",
