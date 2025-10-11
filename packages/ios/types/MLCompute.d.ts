@@ -149,12 +149,9 @@ declare const MLCDataType: {
   Count: 10,
 };
 
-declare const MLCRandomInitializerType: {
-  Invalid: 0,
-  Uniform: 1,
-  GlorotUniform: 2,
-  Xavier: 3,
-  Count: 4,
+declare const MLCSoftmaxOperation: {
+  MLCSoftmaxOperationSoftmax: 0,
+  Log: 1,
 };
 
 declare const MLCPoolingType: {
@@ -164,9 +161,12 @@ declare const MLCPoolingType: {
   Count: 4,
 };
 
-declare const MLCSoftmaxOperation: {
-  MLCSoftmaxOperationSoftmax: 0,
-  Log: 1,
+declare const MLCRandomInitializerType: {
+  Invalid: 0,
+  Uniform: 1,
+  GlorotUniform: 2,
+  Xavier: 3,
+  Count: 4,
 };
 
 declare const MLCDeviceType: {
@@ -847,30 +847,6 @@ declare class MLCYOLOLossLayer extends MLCLossLayer {
   static layerWithDescriptor<This extends abstract new (...args: any) => any>(this: This, lossDescriptor: MLCYOLOLossDescriptor): InstanceType<This>;
 }
 
-declare class MLCMultiheadAttentionDescriptor extends NSObject implements NSCopying {
-  readonly modelDimension: number;
-
-  readonly keyDimension: number;
-
-  readonly valueDimension: number;
-
-  readonly headCount: number;
-
-  readonly dropout: number;
-
-  readonly hasBiases: boolean;
-
-  readonly hasAttentionBiases: boolean;
-
-  readonly addsZeroAttention: boolean;
-
-  static descriptorWithModelDimensionKeyDimensionValueDimensionHeadCountDropoutHasBiasesHasAttentionBiasesAddsZeroAttention<This extends abstract new (...args: any) => any>(this: This, modelDimension: number, keyDimension: number, valueDimension: number, headCount: number, dropout: number, hasBiases: boolean, hasAttentionBiases: boolean, addsZeroAttention: boolean): InstanceType<This> | null;
-
-  static descriptorWithModelDimensionHeadCount<This extends abstract new (...args: any) => any>(this: This, modelDimension: number, headCount: number): InstanceType<This>;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MLCGroupNormalizationLayer extends MLCLayer {
   readonly featureChannelCount: number;
 
@@ -919,12 +895,6 @@ declare class MLCLSTMLayer extends MLCLayer {
   static layerWithDescriptorInputWeightsHiddenWeightsPeepholeWeightsBiasesGateActivationsOutputResultActivation<This extends abstract new (...args: any) => any>(this: This, descriptor: MLCLSTMDescriptor, inputWeights: NSArray<interop.Object> | Array<interop.Object>, hiddenWeights: NSArray<interop.Object> | Array<interop.Object>, peepholeWeights: NSArray<interop.Object> | Array<interop.Object> | null, biases: NSArray<interop.Object> | Array<interop.Object> | null, gateActivations: NSArray<interop.Object> | Array<interop.Object>, outputResultActivation: MLCActivationDescriptor): InstanceType<This> | null;
 }
 
-declare class MLCReshapeLayer extends MLCLayer {
-  readonly shape: NSArray;
-
-  static layerWithShape<This extends abstract new (...args: any) => any>(this: This, shape: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This> | null;
-}
-
 declare class MLCMatMulDescriptor extends NSObject implements NSCopying {
   readonly alpha: number;
 
@@ -939,10 +909,42 @@ declare class MLCMatMulDescriptor extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MLCTransposeLayer extends MLCLayer {
-  readonly dimensions: NSArray;
+declare class MLCReshapeLayer extends MLCLayer {
+  readonly shape: NSArray;
 
-  static layerWithDimensions<This extends abstract new (...args: any) => any>(this: This, dimensions: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This> | null;
+  static layerWithShape<This extends abstract new (...args: any) => any>(this: This, shape: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This> | null;
+}
+
+declare class MLCMultiheadAttentionDescriptor extends NSObject implements NSCopying {
+  readonly modelDimension: number;
+
+  readonly keyDimension: number;
+
+  readonly valueDimension: number;
+
+  readonly headCount: number;
+
+  readonly dropout: number;
+
+  readonly hasBiases: boolean;
+
+  readonly hasAttentionBiases: boolean;
+
+  readonly addsZeroAttention: boolean;
+
+  static descriptorWithModelDimensionKeyDimensionValueDimensionHeadCountDropoutHasBiasesHasAttentionBiasesAddsZeroAttention<This extends abstract new (...args: any) => any>(this: This, modelDimension: number, keyDimension: number, valueDimension: number, headCount: number, dropout: number, hasBiases: boolean, hasAttentionBiases: boolean, addsZeroAttention: boolean): InstanceType<This> | null;
+
+  static descriptorWithModelDimensionHeadCount<This extends abstract new (...args: any) => any>(this: This, modelDimension: number, headCount: number): InstanceType<This>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MLCConcatenationLayer extends MLCLayer {
+  readonly dimension: number;
+
+  static layer<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static layerWithDimension<This extends abstract new (...args: any) => any>(this: This, dimension: number): InstanceType<This>;
 }
 
 declare class MLCFullyConnectedLayer extends MLCLayer {
@@ -1227,14 +1229,6 @@ declare class MLCLossDescriptor extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MLCConcatenationLayer extends MLCLayer {
-  readonly dimension: number;
-
-  static layer<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static layerWithDimension<This extends abstract new (...args: any) => any>(this: This, dimension: number): InstanceType<This>;
-}
-
 declare class MLCRMSPropOptimizer extends MLCOptimizer implements NSCopying {
   readonly momentumScale: number;
 
@@ -1277,6 +1271,12 @@ declare class MLCBatchNormalizationLayer extends MLCLayer {
   static layerWithFeatureChannelCountMeanVarianceBetaGammaVarianceEpsilon<This extends abstract new (...args: any) => any>(this: This, featureChannelCount: number, mean: MLCTensor, variance: MLCTensor, beta: MLCTensor | null, gamma: MLCTensor | null, varianceEpsilon: number): InstanceType<This> | null;
 
   static layerWithFeatureChannelCountMeanVarianceBetaGammaVarianceEpsilonMomentum<This extends abstract new (...args: any) => any>(this: This, featureChannelCount: number, mean: MLCTensor, variance: MLCTensor, beta: MLCTensor | null, gamma: MLCTensor | null, varianceEpsilon: number, momentum: number): InstanceType<This> | null;
+}
+
+declare class MLCTransposeLayer extends MLCLayer {
+  readonly dimensions: NSArray;
+
+  static layerWithDimensions<This extends abstract new (...args: any) => any>(this: This, dimensions: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This> | null;
 }
 
 declare class MLCPoolingDescriptor extends NSObject implements NSCopying {

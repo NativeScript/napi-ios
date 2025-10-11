@@ -116,8 +116,6 @@ declare const rb_eSignal: number;
 
 declare const rb_eRuntimeError: number;
 
-declare const rb_cIO: number;
-
 declare const rb_eTypeError: number;
 
 declare const rb_eSystemCallError: number;
@@ -129,6 +127,8 @@ declare const rb_eFatal: number;
 declare const OnigSyntaxPosixBasic: OnigSyntaxType;
 
 declare const rb_eSecurityError: number;
+
+declare const rb_cIO: number;
 
 declare const ruby_copyright: interop.Pointer;
 
@@ -226,40 +226,11 @@ declare const rb_eNotImpError: number;
 
 declare const rb_mWaitWritable: number;
 
-declare const ruby_fl_type: {
-  FL_WB_PROTECTED: 32,
-  FL_PROMOTED0: 32,
-  FL_PROMOTED1: 64,
-  FL_PROMOTED: 96,
-  FL_FINALIZE: 128,
-  FL_TAINT: 256,
-  FL_UNTRUSTED: 256,
-  FL_EXIVAR: 1024,
-  FL_FREEZE: 2048,
-  FL_USHIFT: 12,
-  FL_USER0: 4096,
-  FL_USER1: 8192,
-  FL_USER2: 16384,
-  FL_USER3: 32768,
-  FL_USER4: 65536,
-  FL_USER5: 131072,
-  FL_USER6: 262144,
-  FL_USER7: 524288,
-  FL_USER8: 1048576,
-  FL_USER9: 2097152,
-  FL_USER10: 4194304,
-  FL_USER11: 8388608,
-  FL_USER12: 16777216,
-  FL_USER13: 33554432,
-  FL_USER14: 67108864,
-  FL_USER15: 134217728,
-  FL_USER16: 268435456,
-  FL_USER17: 536870912,
-  FL_USER18: 1073741824,
-  FL_USER19: -2147483648,
-  ELTS_SHARED: 16384,
-  FL_DUPPED: 1311,
-  FL_SINGLETON: 4096,
+declare const st_retval: {
+  CONTINUE: 0,
+  STOP: 1,
+  DELETE: 2,
+  CHECK: 3,
 };
 
 declare const ruby_rarray_flags: {
@@ -316,11 +287,40 @@ declare const ruby_value_type: {
   MASK: 31,
 };
 
-declare const st_retval: {
-  CONTINUE: 0,
-  STOP: 1,
-  DELETE: 2,
-  CHECK: 3,
+declare const ruby_fl_type: {
+  FL_WB_PROTECTED: 32,
+  FL_PROMOTED0: 32,
+  FL_PROMOTED1: 64,
+  FL_PROMOTED: 96,
+  FL_FINALIZE: 128,
+  FL_TAINT: 256,
+  FL_UNTRUSTED: 256,
+  FL_EXIVAR: 1024,
+  FL_FREEZE: 2048,
+  FL_USHIFT: 12,
+  FL_USER0: 4096,
+  FL_USER1: 8192,
+  FL_USER2: 16384,
+  FL_USER3: 32768,
+  FL_USER4: 65536,
+  FL_USER5: 131072,
+  FL_USER6: 262144,
+  FL_USER7: 524288,
+  FL_USER8: 1048576,
+  FL_USER9: 2097152,
+  FL_USER10: 4194304,
+  FL_USER11: 8388608,
+  FL_USER12: 16777216,
+  FL_USER13: 33554432,
+  FL_USER14: 67108864,
+  FL_USER15: 134217728,
+  FL_USER16: 268435456,
+  FL_USER17: 536870912,
+  FL_USER18: 1073741824,
+  FL_USER19: -2147483648,
+  ELTS_SHARED: 16384,
+  FL_DUPPED: 1311,
+  FL_SINGLETON: 4096,
 };
 
 declare const ruby_econv_flag_type: {
@@ -355,6 +355,11 @@ declare const rb_econv_result_t: {
   econv_finished: 4,
   econv_after_output: 5,
   econv_incomplete_input: 6,
+};
+
+declare const rb_io_wait_readwrite: {
+  READ: 0,
+  WRIT: 1,
 };
 
 declare const ruby_special_consts: {
@@ -396,11 +401,6 @@ declare const ruby_rmodule_flags: {
   IS_REFINEMENT: 32768,
   INCLUDED_INTO_REFINEMENT: 65536,
   ENUM_END: 65537,
-};
-
-declare const rb_io_wait_readwrite: {
-  READ: 0,
-  WRIT: 1,
 };
 
 declare class rb_io_enc_t {
@@ -563,14 +563,6 @@ declare class rb_global_variable {
   constructor(init?: rb_global_variable);
 }
 
-declare class unnamed_2247573277379321427 {
-  constructor(init?: unnamed_2247573277379321427);
-  dmark: (p1: interop.PointerConvertible) => void | null;
-  dfree: (p1: interop.PointerConvertible) => void | null;
-  dsize: (p1: interop.PointerConvertible) => number | null;
-  reserved: unknown /* const array */;
-}
-
 declare class RData {
   constructor(init?: RData);
   basic: RBasic;
@@ -653,36 +645,49 @@ declare class RRegexp {
   usecnt: number;
 }
 
-declare class unnamed_12149393806796386288 {
-  constructor(init?: unnamed_12149393806796386288);
-  len: number;
-  aux: unnamed_16164568970053054442;
-  ptr: interop.Pointer;
-}
-
 declare class RArray {
   constructor(init?: RArray);
   basic: RBasic;
-  as: unnamed_12972846311717882985;
-}
-
-declare class unnamed_5549488302985633295 {
-  constructor(init?: unnamed_5549488302985633295);
-  len: number;
-  ptr: string | null;
-  aux: unnamed_6546137323448125394;
+  as: unnamed_8947326465846909553;
 }
 
 declare class RString {
   constructor(init?: RString);
   basic: RBasic;
-  as: unnamed_17421652256511995457;
+  as: unnamed_5811631881619703303;
+}
+
+declare class unnamed_9071603155498430573 {
+  constructor(init?: unnamed_9071603155498430573);
+  numiv: number;
+  ivptr: interop.Pointer;
+  iv_index_tbl: interop.Pointer;
 }
 
 declare class RObject {
   constructor(init?: RObject);
   basic: RBasic;
-  as: unnamed_17959043844529870877;
+  as: unnamed_10013601549612586129;
+}
+
+declare class RClassDeprecated {
+  constructor(init?: RClassDeprecated);
+  basic: RBasic;
+}
+
+declare class unnamed_8252383207716883408 {
+  constructor(init?: unnamed_8252383207716883408);
+  dmark: (p1: interop.PointerConvertible) => void | null;
+  dfree: (p1: interop.PointerConvertible) => void | null;
+  dsize: (p1: interop.PointerConvertible) => number | null;
+  reserved: unknown /* const array */;
+}
+
+declare class unnamed_10844333523920063151 {
+  constructor(init?: unnamed_10844333523920063151);
+  len: number;
+  aux: unnamed_8417304171698770295;
+  ptr: interop.Pointer;
 }
 
 declare class OnigCaptureTreeNodeStruct {
@@ -705,12 +710,11 @@ declare class OnigCompileInfo {
   case_fold_flag: number;
 }
 
-declare class RTypedData {
-  constructor(init?: RTypedData);
-  basic: RBasic;
-  type: interop.Pointer;
-  typed_flag: number;
-  data: interop.Pointer;
+declare class unnamed_10999803535462308628 {
+  constructor(init?: unnamed_10999803535462308628);
+  len: number;
+  ptr: string | null;
+  aux: unnamed_8416264486544584876;
 }
 
 declare class OnigRepeatRange {
@@ -722,7 +726,7 @@ declare class OnigRepeatRange {
 declare class rb_data_type_struct {
   constructor(init?: rb_data_type_struct);
   wrap_struct_name: string | null;
-  function: unnamed_2247573277379321427;
+  function: unnamed_8252383207716883408;
   parent: interop.Pointer;
   data: interop.Pointer;
   flags: number;
@@ -732,20 +736,16 @@ declare class rb_debug_inspector_struct {
   constructor(init?: rb_debug_inspector_struct);
 }
 
-declare class unnamed_5851121338036403874 {
-  constructor(init?: unnamed_5851121338036403874);
-  numiv: number;
-  ivptr: interop.Pointer;
-  iv_index_tbl: interop.Pointer;
-}
-
 declare class rb_econv_t {
   constructor(init?: rb_econv_t);
 }
 
-declare class RClassDeprecated {
-  constructor(init?: RClassDeprecated);
+declare class RTypedData {
+  constructor(init?: RTypedData);
   basic: RBasic;
+  type: interop.Pointer;
+  typed_flag: number;
+  data: interop.Pointer;
 }
 
 declare class rb_vm_struct {
@@ -758,53 +758,53 @@ declare class RBasic {
   klass: number;
 }
 
-type unnamed_16164568970053054442Descriptor = 
+type unnamed_8417304171698770295Descriptor = 
   | { capa: number }
   | { shared: number };
 
-declare class unnamed_16164568970053054442 {
-  constructor(init?: unnamed_16164568970053054442Descriptor);
+declare class unnamed_8417304171698770295 {
+  constructor(init?: unnamed_8417304171698770295Descriptor);
   capa: number;
   shared: number;
 }
 
-type unnamed_17421652256511995457Descriptor = 
-  | { heap: unnamed_5549488302985633295 }
-  | { ary: unknown /* const array */ };
-
-declare class unnamed_17421652256511995457 {
-  constructor(init?: unnamed_17421652256511995457Descriptor);
-  heap: unnamed_5549488302985633295;
-  ary: unknown /* const array */;
-}
-
-type unnamed_17959043844529870877Descriptor = 
-  | { heap: unnamed_5851121338036403874 }
-  | { ary: unknown /* const array */ };
-
-declare class unnamed_17959043844529870877 {
-  constructor(init?: unnamed_17959043844529870877Descriptor);
-  heap: unnamed_5851121338036403874;
-  ary: unknown /* const array */;
-}
-
-type unnamed_6546137323448125394Descriptor = 
+type unnamed_8416264486544584876Descriptor = 
   | { capa: number }
   | { shared: number };
 
-declare class unnamed_6546137323448125394 {
-  constructor(init?: unnamed_6546137323448125394Descriptor);
+declare class unnamed_8416264486544584876 {
+  constructor(init?: unnamed_8416264486544584876Descriptor);
   capa: number;
   shared: number;
 }
 
-type unnamed_12972846311717882985Descriptor = 
-  | { heap: unnamed_12149393806796386288 }
+type unnamed_5811631881619703303Descriptor = 
+  | { heap: unnamed_10999803535462308628 }
   | { ary: unknown /* const array */ };
 
-declare class unnamed_12972846311717882985 {
-  constructor(init?: unnamed_12972846311717882985Descriptor);
-  heap: unnamed_12149393806796386288;
+declare class unnamed_5811631881619703303 {
+  constructor(init?: unnamed_5811631881619703303Descriptor);
+  heap: unnamed_10999803535462308628;
+  ary: unknown /* const array */;
+}
+
+type unnamed_10013601549612586129Descriptor = 
+  | { heap: unnamed_9071603155498430573 }
+  | { ary: unknown /* const array */ };
+
+declare class unnamed_10013601549612586129 {
+  constructor(init?: unnamed_10013601549612586129Descriptor);
+  heap: unnamed_9071603155498430573;
+  ary: unknown /* const array */;
+}
+
+type unnamed_8947326465846909553Descriptor = 
+  | { heap: unnamed_10844333523920063151 }
+  | { ary: unknown /* const array */ };
+
+declare class unnamed_8947326465846909553 {
+  constructor(init?: unnamed_8947326465846909553Descriptor);
+  heap: unnamed_10844333523920063151;
   ary: unknown /* const array */;
 }
 

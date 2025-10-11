@@ -163,6 +163,56 @@ declare class CLSDataStore extends NSObject {
   fetchActivityForURLCompletion(url: NSURL, completion: (p1: CLSActivity, p2: NSError) => void | null): void;
 }
 
+declare class CLSBinaryItem extends CLSActivityItem {
+  value: boolean;
+
+  readonly valueType: interop.Enum<typeof CLSBinaryValueType>;
+
+  initWithIdentifierTitleType(identifier: string, title: string, valueType: interop.Enum<typeof CLSBinaryValueType>): this;
+
+  setValue(value: boolean): void;
+}
+
+declare class CLSObject extends NSObject implements NSSecureCoding {
+  readonly dateCreated: NSDate;
+
+  readonly dateLastModified: NSDate;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class CLSActivity extends CLSObject {
+  progress: number;
+
+  readonly duration: number;
+
+  primaryActivityItem: CLSActivityItem;
+
+  addProgressRangeFromStartToEnd(start: number, end: number): void;
+
+  addAdditionalActivityItem(activityItem: CLSActivityItem): void;
+
+  readonly additionalActivityItems: NSArray;
+
+  setProgress(progress: number): void;
+
+  setPrimaryActivityItem(primaryActivityItem: CLSActivityItem | null): void;
+
+  readonly started: boolean;
+
+  start(): void;
+
+  stop(): void;
+
+  removeAllActivityItems(): void;
+
+  isStarted(): boolean;
+}
+
 declare class CLSContext extends CLSObject {
   readonly identifierPath: NSArray;
 
@@ -247,55 +297,5 @@ declare class CLSContext extends CLSObject {
   readonly currentActivity: CLSActivity;
 
   createNewActivity(): CLSActivity;
-}
-
-declare class CLSBinaryItem extends CLSActivityItem {
-  value: boolean;
-
-  readonly valueType: interop.Enum<typeof CLSBinaryValueType>;
-
-  initWithIdentifierTitleType(identifier: string, title: string, valueType: interop.Enum<typeof CLSBinaryValueType>): this;
-
-  setValue(value: boolean): void;
-}
-
-declare class CLSObject extends NSObject implements NSSecureCoding {
-  readonly dateCreated: NSDate;
-
-  readonly dateLastModified: NSDate;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CLSActivity extends CLSObject {
-  progress: number;
-
-  readonly duration: number;
-
-  primaryActivityItem: CLSActivityItem;
-
-  addProgressRangeFromStartToEnd(start: number, end: number): void;
-
-  addAdditionalActivityItem(activityItem: CLSActivityItem): void;
-
-  readonly additionalActivityItems: NSArray;
-
-  setProgress(progress: number): void;
-
-  setPrimaryActivityItem(primaryActivityItem: CLSActivityItem | null): void;
-
-  readonly started: boolean;
-
-  start(): void;
-
-  stop(): void;
-
-  removeAllActivityItems(): void;
-
-  isStarted(): boolean;
 }
 

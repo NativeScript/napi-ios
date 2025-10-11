@@ -418,8 +418,6 @@ declare const CNLabelContactRelationCousinFathersBrothersSon: string;
 
 declare const CNPostalAddressPropertyAttribute: string;
 
-declare const CNLabelContactRelationYoungerSisterInLaw: string;
-
 declare const CNErrorUserInfoValidationErrorsKey: string;
 
 declare const CNLabelContactRelationDaughterInLaw: string;
@@ -457,6 +455,8 @@ declare const CNLabelContactRelationYoungestBrother: string;
 declare const CNLabelContactRelationGreatGrandchildOrSiblingsGrandchild: string;
 
 declare const CNLabelContactRelationGrandnephew: string;
+
+declare const CNLabelContactRelationYoungerSisterInLaw: string;
 
 declare const CNContactDepartmentNameKey: string;
 
@@ -576,11 +576,11 @@ declare const CNContactPreviousFamilyNameKey: string;
 
 declare const CNLabelContactRelationSon: string;
 
-declare const CNLabelContactRelationYoungerCousinFathersSistersDaughter: string;
-
 declare const CNInstantMessageServiceGaduGadu: string;
 
 declare const CNLabelContactRelationGranddaughterOrNiece: string;
+
+declare const CNLabelContactRelationYoungerCousinFathersSistersDaughter: string;
 
 declare const CNLabelContactRelationSibling: string;
 
@@ -620,6 +620,20 @@ declare const CNLabelContactRelationBrotherInLawHusbandsBrother: string;
 
 declare const CNContactNoteKey: string;
 
+declare const CNContactSortOrder: {
+  None: 0,
+  UserDefault: 1,
+  GivenName: 2,
+  FamilyName: 3,
+};
+
+declare const CNContainerType: {
+  Unassigned: 0,
+  Local: 1,
+  Exchange: 2,
+  CardDAV: 3,
+};
+
 declare const CNContactType: {
   Person: 0,
   Organization: 1,
@@ -635,18 +649,8 @@ declare const CNContactDisplayNameOrder: {
   FamilyNameFirst: 2,
 };
 
-declare const CNContactSortOrder: {
-  None: 0,
-  UserDefault: 1,
-  GivenName: 2,
-  FamilyName: 3,
-};
-
-declare const CNContainerType: {
-  Unassigned: 0,
-  Local: 1,
-  Exchange: 2,
-  CardDAV: 3,
+declare const CNPostalAddressFormatterStyle: {
+  CNPostalAddressFormatterStyleMailingAddress: 0,
 };
 
 declare const CNAuthorizationStatus: {
@@ -692,10 +696,6 @@ declare const CNContactFormatterStyle: {
   Phonetic: 1,
 };
 
-declare const CNPostalAddressFormatterStyle: {
-  CNPostalAddressFormatterStyleMailingAddress: 0,
-};
-
 declare interface CNKeyDescriptor extends NSObjectProtocol, NSSecureCoding, NSCopying {
 }
 
@@ -727,10 +727,6 @@ declare interface CNChangeHistoryEventVisitor extends NSObjectProtocol {
 }
 
 declare class CNChangeHistoryEventVisitor extends NativeObject implements CNChangeHistoryEventVisitor {
-}
-
-declare class CNChangeHistoryDeleteContactEvent extends CNChangeHistoryEvent {
-  readonly contactIdentifier: string;
 }
 
 declare class CNContactFormatter extends NSFormatter implements NSSecureCoding {
@@ -1144,6 +1140,10 @@ declare class CNChangeHistoryAddContactEvent extends CNChangeHistoryEvent {
   readonly containerIdentifier: string;
 }
 
+declare class CNChangeHistoryDeleteContactEvent extends CNChangeHistoryEvent {
+  readonly contactIdentifier: string;
+}
+
 declare class CNContactFetchRequest extends CNFetchRequest implements NSSecureCoding {
   initWithKeysToFetch(keysToFetch: NSArray<interop.Object> | Array<interop.Object>): this;
 
@@ -1253,6 +1253,26 @@ declare class CNSaveRequest extends NSObject {
   setTransactionAuthor(transactionAuthor: string | null): void;
 
   setShouldRefetchContacts(shouldRefetchContacts: boolean): void;
+}
+
+declare class CNInstantMessageAddress extends NSObject implements NSCopying, NSSecureCoding {
+  readonly username: string;
+
+  readonly service: string;
+
+  initWithUsernameService(username: string, service: string): this;
+
+  static localizedStringForKey(key: string): string;
+
+  static localizedStringForService(service: string): string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class CNChangeHistoryFetchRequest extends CNFetchRequest implements NSSecureCoding {
@@ -1469,25 +1489,5 @@ declare class CNContactStore extends NSObject {
   readonly currentHistoryToken: NSData;
 
   defaultContainerIdentifier(): string;
-}
-
-declare class CNInstantMessageAddress extends NSObject implements NSCopying, NSSecureCoding {
-  readonly username: string;
-
-  readonly service: string;
-
-  initWithUsernameService(username: string, service: string): this;
-
-  static localizedStringForKey(key: string): string;
-
-  static localizedStringForService(service: string): string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 

@@ -16,17 +16,6 @@ declare interface QLPreviewPanelDataSource {
 declare class QLPreviewPanelDataSource extends NativeObject implements QLPreviewPanelDataSource {
 }
 
-declare interface QLPreviewPanelDelegate extends NSWindowDelegate {
-  previewPanelHandleEvent?(panel: QLPreviewPanel, event: NSEvent): boolean;
-
-  previewPanelSourceFrameOnScreenForPreviewItem?(panel: QLPreviewPanel, item: QLPreviewItem): CGRect;
-
-  previewPanelTransitionImageForPreviewItemContentRect?(panel: QLPreviewPanel, item: QLPreviewItem, contentRect: interop.PointerConvertible): interop.Object;
-}
-
-declare class QLPreviewPanelDelegate extends NativeObject implements QLPreviewPanelDelegate {
-}
-
 declare interface QLPreviewItem extends NSObjectProtocol {
   readonly previewItemURL: NSURL;
 
@@ -47,6 +36,40 @@ declare interface QLPreviewingController extends NSObjectProtocol {
 }
 
 declare class QLPreviewingController extends NativeObject implements QLPreviewingController {
+}
+
+declare interface QLPreviewPanelDelegate extends NSWindowDelegate {
+  previewPanelHandleEvent?(panel: QLPreviewPanel, event: NSEvent): boolean;
+
+  previewPanelSourceFrameOnScreenForPreviewItem?(panel: QLPreviewPanel, item: QLPreviewItem): CGRect;
+
+  previewPanelTransitionImageForPreviewItemContentRect?(panel: QLPreviewPanel, item: QLPreviewItem, contentRect: interop.PointerConvertible): interop.Object;
+}
+
+declare class QLPreviewPanelDelegate extends NativeObject implements QLPreviewPanelDelegate {
+}
+
+declare class QLPreviewReply extends NSObject {
+  stringEncoding: number;
+
+  get attachments(): NSDictionary;
+  set attachments(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  title: string;
+
+  initWithContextSizeIsBitmapDrawingBlock(contextSize: CGSize, isBitmap: boolean, drawingBlock: (p1: interop.PointerConvertible, p2: QLPreviewReply, p3: interop.PointerConvertible) => boolean | null): this;
+
+  initWithFileURL(fileURL: NSURL): this;
+
+  initWithDataOfContentTypeContentSizeDataCreationBlock(contentType: UTType, contentSize: CGSize, dataCreationBlock: (p1: QLPreviewReply, p2: interop.PointerConvertible) => NSData | null): this;
+
+  setStringEncoding(stringEncoding: number): void;
+
+  setAttachments(attachments: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setTitle(title: string): void;
+
+  initForPDFWithPageSizeDocumentCreationBlock(defaultPageSize: CGSize, documentCreationBlock: (p1: QLPreviewReply, p2: interop.PointerConvertible) => PDFDocument | null): this;
 }
 
 declare class QLPreviewReplyAttachment extends NSObject {
@@ -83,6 +106,49 @@ declare class QLPreviewView extends NSView {
   setShouldCloseWithWindow(shouldCloseWithWindow: boolean): void;
 
   setAutostarts(autostarts: boolean): void;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class QLPreviewPanel extends NSPanel {
+  static sharedPreviewPanel(): QLPreviewPanel;
+
+  static sharedPreviewPanelExists(): boolean;
+
+  readonly currentController: interop.Object;
+
+  updateController(): void;
+
+  dataSource: QLPreviewPanelDataSource;
+
+  reloadData(): void;
+
+  refreshCurrentPreviewItem(): void;
+
+  currentPreviewItemIndex: number;
+
+  readonly currentPreviewItem: QLPreviewItem;
+
+  displayState: interop.Object;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  delegate: interop.Object;
+
+  enterFullScreenModeWithOptions(screen: NSScreen, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
+
+  exitFullScreenModeWithOptions(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  readonly inFullScreenMode: boolean;
+
+  setDataSource(dataSource: QLPreviewPanelDataSource): void;
+
+  setCurrentPreviewItemIndex(currentPreviewItemIndex: number): void;
+
+  setDisplayState(displayState: interop.Object): void;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: interop.Object): void;
+
+  isInFullScreenMode(): boolean;
 }
 
 declare class QLPreviewProvider extends NSObject implements NSExtensionRequestHandling {
@@ -129,73 +195,7 @@ declare class QLPreviewProvider extends NSObject implements NSExtensionRequestHa
   readonly debugDescription: string;
 }
 
-declare class QLPreviewReply extends NSObject {
-  stringEncoding: number;
-
-  get attachments(): NSDictionary;
-  set attachments(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  title: string;
-
-  initWithContextSizeIsBitmapDrawingBlock(contextSize: CGSize, isBitmap: boolean, drawingBlock: (p1: interop.PointerConvertible, p2: QLPreviewReply, p3: interop.PointerConvertible) => boolean | null): this;
-
-  initWithFileURL(fileURL: NSURL): this;
-
-  initWithDataOfContentTypeContentSizeDataCreationBlock(contentType: UTType, contentSize: CGSize, dataCreationBlock: (p1: QLPreviewReply, p2: interop.PointerConvertible) => NSData | null): this;
-
-  setStringEncoding(stringEncoding: number): void;
-
-  setAttachments(attachments: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setTitle(title: string): void;
-
-  initForPDFWithPageSizeDocumentCreationBlock(defaultPageSize: CGSize, documentCreationBlock: (p1: QLPreviewReply, p2: interop.PointerConvertible) => PDFDocument | null): this;
-}
-
 declare class QLFilePreviewRequest extends NSObject {
   readonly fileURL: NSURL;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class QLPreviewPanel extends NSPanel {
-  static sharedPreviewPanel(): QLPreviewPanel;
-
-  static sharedPreviewPanelExists(): boolean;
-
-  readonly currentController: interop.Object;
-
-  updateController(): void;
-
-  dataSource: QLPreviewPanelDataSource;
-
-  reloadData(): void;
-
-  refreshCurrentPreviewItem(): void;
-
-  currentPreviewItemIndex: number;
-
-  readonly currentPreviewItem: QLPreviewItem;
-
-  displayState: interop.Object;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  delegate: interop.Object;
-
-  enterFullScreenModeWithOptions(screen: NSScreen, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
-
-  exitFullScreenModeWithOptions(options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  readonly inFullScreenMode: boolean;
-
-  setDataSource(dataSource: QLPreviewPanelDataSource): void;
-
-  setCurrentPreviewItemIndex(currentPreviewItemIndex: number): void;
-
-  setDisplayState(displayState: interop.Object): void;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setDelegate(delegate: interop.Object): void;
-
-  isInFullScreenMode(): boolean;
 }
 

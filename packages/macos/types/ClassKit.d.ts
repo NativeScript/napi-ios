@@ -37,14 +37,6 @@ declare const CLSErrorCodeDomain: string;
 
 declare const CLSPredicateKeyPathUniversalLinkURL: string;
 
-declare const CLSProgressReportingCapabilityKind: {
-  Duration: 0,
-  Percent: 1,
-  Binary: 2,
-  Quantity: 3,
-  Score: 4,
-};
-
 declare const CLSContextType: {
   None: 0,
   App: 1,
@@ -64,6 +56,14 @@ declare const CLSContextType: {
   Video: 15,
   Course: 16,
   Custom: 17,
+};
+
+declare const CLSProgressReportingCapabilityKind: {
+  Duration: 0,
+  Percent: 1,
+  Binary: 2,
+  Quantity: 3,
+  Score: 4,
 };
 
 declare const CLSBinaryValueType: {

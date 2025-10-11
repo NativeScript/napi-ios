@@ -12,7 +12,7 @@ declare const MKAnnotationViewZPriorityDefaultSelected: number;
 
 declare const MKFeatureDisplayPriorityDefaultLow: number;
 
-declare const MKLaunchOptionsMapSpanKey: string;
+declare const MKLaunchOptionsDirectionsModeTransit: string;
 
 declare const MKLaunchOptionsDirectionsModeWalking: string;
 
@@ -27,8 +27,6 @@ declare const MKPointOfInterestCategorySwimming: string;
 declare const MKPointOfInterestCategoryStore: string;
 
 declare const MKPointOfInterestCategorySpa: string;
-
-declare const MKPointOfInterestCategorySkiing: string;
 
 declare const MKPointOfInterestCategorySkating: string;
 
@@ -64,6 +62,8 @@ declare const MKPointOfInterestCategoryGasStation: string;
 
 declare const MKPointOfInterestCategoryFoodMarket: string;
 
+declare const MKPointOfInterestCategoryFitnessCenter: string;
+
 declare const MKPointOfInterestCategoryCarRental: string;
 
 declare const MKPointOfInterestCategoryCafe: string;
@@ -84,11 +84,11 @@ declare const MKErrorDomain: string;
 
 declare const MKPointOfInterestCategorySurfing: string;
 
+declare const MKLaunchOptionsMapSpanKey: string;
+
 declare const MKPointOfInterestCategorySkatePark: string;
 
 declare const MKPointOfInterestCategoryHiking: string;
-
-declare const MKPointOfInterestCategoryDistillery: string;
 
 declare const MKPointOfInterestCategoryTennis: string;
 
@@ -104,6 +104,8 @@ declare const MKPointOfInterestCategoryLibrary: string;
 
 declare const MKPointOfInterestCategoryParking: string;
 
+declare const MKPointOfInterestCategorySkiing: string;
+
 declare const MKPointOfInterestCategoryFairground: string;
 
 declare const MKPointOfInterestCategoryKayaking: string;
@@ -111,6 +113,8 @@ declare const MKPointOfInterestCategoryKayaking: string;
 declare const MKPointOfInterestCategoryTheater: string;
 
 declare const MKPointOfInterestCategorySchool: string;
+
+declare const MKLaunchOptionsDirectionsModeCycling: string;
 
 declare const MKPointOfInterestCategoryBrewery: string;
 
@@ -120,13 +124,13 @@ declare const MKPointOfInterestCategoryAirport: string;
 
 declare const MKPointOfInterestCategoryGoKart: string;
 
+declare const MKPointOfInterestCategoryDistillery: string;
+
 declare const MKPointOfInterestCategoryAmusementPark: string;
 
 declare const MKPointsOfInterestRequestMaxRadius: number;
 
 declare const MKMapItemTypeIdentifier: string;
-
-declare const MKPointOfInterestCategoryAquarium: string;
 
 declare const MKPointOfInterestCategoryBank: string;
 
@@ -134,13 +138,15 @@ declare const MKPointOfInterestCategoryUniversity: string;
 
 declare const MKPointOfInterestCategoryBaseball: string;
 
+declare const MKAnnotationViewZPriorityMax: number;
+
 declare const MKPointOfInterestCategoryStadium: string;
 
 declare const MKPointOfInterestCategoryFishing: string;
 
 declare const MKFeatureDisplayPriorityRequired: number;
 
-declare const MKLaunchOptionsDirectionsModeDriving: string;
+declare const MKPointOfInterestCategoryAquarium: string;
 
 declare const MKPointOfInterestCategoryEVCharger: string;
 
@@ -166,8 +172,6 @@ declare const MKPointOfInterestCategoryNightlife: string;
 
 declare const MKLaunchOptionsMapCenterKey: string;
 
-declare const MKPointOfInterestCategoryRestroom: string;
-
 declare const MKPointOfInterestCategoryCampground: string;
 
 declare const MKPointOfInterestCategoryAutomotiveRepair: string;
@@ -180,21 +184,19 @@ declare const MKAnnotationViewZPriorityMin: number;
 
 declare const MKLaunchOptionsCameraKey: string;
 
+declare const MKPointOfInterestCategoryLaundry: string;
+
 declare const MKPointOfInterestCategoryBowling: string;
 
 declare const MKPointOfInterestCategoryCastle: string;
 
 declare const MKPointOfInterestCategoryMuseum: string;
 
-declare const MKAnnotationViewZPriorityMax: number;
+declare const MKLaunchOptionsDirectionsModeDriving: string;
 
-declare const MKPointOfInterestCategoryFitnessCenter: string;
+declare const MKPointOfInterestCategoryRestroom: string;
 
 declare const MKMapCameraZoomDefault: number;
-
-declare const MKPointOfInterestCategoryLaundry: string;
-
-declare const MKLaunchOptionsDirectionsModeTransit: string;
 
 declare const MKPointOfInterestCategoryHotel: string;
 
@@ -208,46 +210,6 @@ declare const MKLookAroundBadgePosition: {
   TopLeading: 0,
   TopTrailing: 1,
   BottomTrailing: 2,
-};
-
-declare const MKScaleViewAlignment: {
-  Leading: 0,
-  Trailing: 1,
-};
-
-declare const MKMapElevationStyle: {
-  Flat: 0,
-  Realistic: 1,
-};
-
-declare const MKDirectionsRoutePreference: {
-  Any: 0,
-  Avoid: 1,
-};
-
-declare const MKDirectionsTransportType: {
-  Automobile: 1,
-  Walking: 2,
-  Transit: 4,
-  Any: 268435455,
-};
-
-declare const MKLocalSearchCompleterResultType: {
-  Address: 1,
-  PointOfInterest: 2,
-  Query: 4,
-  PhysicalFeature: 8,
-};
-
-declare const MKSearchCompletionFilterType: {
-  AndQueries: 0,
-  Only: 1,
-};
-
-declare const MKLocalSearchResultType: {
-  Address: 1,
-  PointOfInterest: 2,
-  PhysicalFeature: 4,
 };
 
 declare const MKPinAnnotationColor: {
@@ -268,15 +230,57 @@ declare const MKUserTrackingMode: {
   FollowWithHeading: 2,
 };
 
+declare const MKAnnotationViewCollisionMode: {
+  Rectangle: 0,
+  Circle: 1,
+  None: 2,
+};
+
+declare const MKMapElevationStyle: {
+  Flat: 0,
+  Realistic: 1,
+};
+
+declare const MKLocalSearchCompleterResultType: {
+  Address: 1,
+  PointOfInterest: 2,
+  Query: 4,
+  PhysicalFeature: 8,
+};
+
+declare const MKSearchCompletionFilterType: {
+  AndQueries: 0,
+  Only: 1,
+};
+
+declare const MKLocalSearchResultType: {
+  Address: 1,
+  PointOfInterest: 2,
+  PhysicalFeature: 4,
+};
+
+declare const MKDistanceFormatterUnitStyle: {
+  Default: 0,
+  Abbreviated: 1,
+  Full: 2,
+};
+
+declare const MKDirectionsRoutePreference: {
+  Any: 0,
+  Avoid: 1,
+};
+
+declare const MKDirectionsTransportType: {
+  Automobile: 1,
+  Walking: 2,
+  Transit: 4,
+  Cycling: 8,
+  Any: 268435455,
+};
+
 declare const MKLocalSearchRegionPriority: {
   Default: 0,
   Required: 1,
-};
-
-declare const MKFeatureVisibility: {
-  Adaptive: 0,
-  Hidden: 1,
-  Visible: 2,
 };
 
 declare const MKErrorCode: {
@@ -288,6 +292,15 @@ declare const MKErrorCode: {
   DecodingFailed: 6,
 };
 
+declare const MKMapType: {
+  Standard: 0,
+  Satellite: 1,
+  Hybrid: 2,
+  SatelliteFlyover: 3,
+  HybridFlyover: 4,
+  MutedStandard: 5,
+};
+
 declare const MKAddressFilterOption: {
   Country: 1,
   AdministrativeArea: 2,
@@ -297,16 +310,26 @@ declare const MKAddressFilterOption: {
   PostalCode: 32,
 };
 
-declare const MKDistanceFormatterUnitStyle: {
-  Default: 0,
-  Abbreviated: 1,
+declare const MKAddressRepresentationsContextStyle: {
+  Automatic: 0,
+  Short: 1,
   Full: 2,
 };
 
-declare const MKAnnotationViewCollisionMode: {
-  Rectangle: 0,
-  Circle: 1,
-  None: 2,
+declare const MKOverlayLevel: {
+  Roads: 0,
+  Labels: 1,
+};
+
+declare const MKFeatureVisibility: {
+  Adaptive: 0,
+  Hidden: 1,
+  Visible: 2,
+};
+
+declare const MKStandardMapEmphasisStyle: {
+  Default: 0,
+  Muted: 1,
 };
 
 declare const MKAnnotationViewDragState: {
@@ -317,42 +340,29 @@ declare const MKAnnotationViewDragState: {
   Ending: 4,
 };
 
-declare const MKDistanceFormatterUnits: {
-  Default: 0,
-  Metric: 1,
-  Imperial: 2,
-  ImperialWithYards: 3,
-};
-
-declare const MKMapType: {
-  Standard: 0,
-  Satellite: 1,
-  Hybrid: 2,
-  SatelliteFlyover: 3,
-  HybridFlyover: 4,
-  MutedStandard: 5,
-};
-
-declare const MKOverlayLevel: {
-  Roads: 0,
-  Labels: 1,
-};
-
-declare const MKStandardMapEmphasisStyle: {
-  Default: 0,
-  Muted: 1,
-};
-
 declare const MKMapFeatureType: {
   PointOfInterest: 0,
   Territory: 1,
   PhysicalFeature: 2,
 };
 
+declare const MKScaleViewAlignment: {
+  Leading: 0,
+  Trailing: 1,
+  Center: 2,
+};
+
 declare const MKMapItemDetailSelectionAccessoryCalloutStyle: {
   Automatic: 0,
   Full: 1,
   Compact: 2,
+};
+
+declare const MKDistanceFormatterUnits: {
+  Default: 0,
+  Metric: 1,
+  Imperial: 2,
+  ImperialWithYards: 3,
 };
 
 declare class MKTileOverlayPath {
@@ -585,6 +595,12 @@ declare class MKMapItem extends NSObject {
 
   readonly isCurrentLocation: boolean;
 
+  readonly location: CLLocation;
+
+  readonly address: MKAddress;
+
+  readonly addressRepresentations: MKAddressRepresentations;
+
   name: string;
 
   phoneNumber: string;
@@ -598,6 +614,8 @@ declare class MKMapItem extends NSObject {
   static mapItemForCurrentLocation(): MKMapItem;
 
   initWithPlacemark(placemark: MKPlacemark): this;
+
+  initWithLocationAddress(location: CLLocation, address: MKAddress | null): this;
 
   openInMapsWithLaunchOptions(launchOptions: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): boolean;
 
@@ -615,31 +633,7 @@ declare class MKMapItem extends NSObject {
 
   setTimeZone(timeZone: NSTimeZone): void;
 
-  setPointOfInterestCategory(pointOfInterestCategory: string): void;
-}
-
-declare class MKMapItemRequest extends NSObject {
-  initWithMapItemIdentifier(identifier: MKMapItemIdentifier): this;
-
-  initWithMapFeatureAnnotation(mapFeatureAnnotation: MKMapFeatureAnnotation): this;
-
-  getMapItemWithCompletionHandler(completionHandler: (p1: MKMapItem, p2: NSError) => void | null): void;
-
-  cancel(): void;
-
-  readonly mapItemIdentifier: MKMapItemIdentifier;
-
-  readonly mapFeatureAnnotation: MKMapFeatureAnnotation;
-
-  readonly featureAnnotation: MKMapFeatureAnnotation;
-
-  readonly cancelled: boolean;
-
-  readonly loading: boolean;
-
-  isCancelled(): boolean;
-
-  isLoading(): boolean;
+  setPointOfInterestCategory(pointOfInterestCategory: string | null): void;
 }
 
 declare class MKLookAroundSnapshotter extends NSObject {
@@ -700,96 +694,6 @@ declare class MKCircleView extends MKOverlayPathView {
   initWithCircle(circle: MKCircle): this;
 
   readonly circle: MKCircle;
-}
-
-declare class MKPolygonView extends MKOverlayPathView {
-  initWithPolygon(polygon: MKPolygon): this;
-
-  readonly polygon: MKPolygon;
-}
-
-declare class MKStandardMapConfiguration extends MKMapConfiguration {
-  init(): this;
-
-  initWithElevationStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>): this;
-
-  initWithElevationStyleEmphasisStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>, emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>): this;
-
-  initWithEmphasisStyle(emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>): this;
-
-  emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>;
-
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  showsTraffic: boolean;
-
-  setEmphasisStyle(emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>): void;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
-
-  setShowsTraffic(showsTraffic: boolean): void;
-}
-
-declare class MKMapConfiguration extends NSObject implements NSSecureCoding, NSCopying {
-  elevationStyle: interop.Enum<typeof MKMapElevationStyle>;
-
-  setElevationStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MKGeoJSONFeature extends NSObject implements MKGeoJSONObject {
-  readonly identifier: string;
-
-  readonly properties: NSData;
-
-  readonly geometry: NSArray;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class MKTileOverlay extends NSObject implements MKOverlay {
@@ -876,228 +780,6 @@ declare class MKTileOverlay extends NSObject implements MKOverlay {
   readonly debugDescription: string;
 }
 
-declare class MKMapSnapshot extends NSObject {
-  readonly image: UIImage;
-
-  pointForCoordinate(coordinate: CLLocationCoordinate2D): CGPoint;
-
-  readonly traitCollection: UITraitCollection;
-}
-
-declare class MKMapSnapshotOptions extends NSObject implements NSCopying {
-  preferredConfiguration: MKMapConfiguration;
-
-  camera: MKMapCamera;
-
-  mapRect: MKMapRect;
-
-  region: MKCoordinateRegion;
-
-  mapType: interop.Enum<typeof MKMapType>;
-
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  showsPointsOfInterest: boolean;
-
-  showsBuildings: boolean;
-
-  size: CGSize;
-
-  scale: number;
-
-  traitCollection: UITraitCollection;
-
-  setPreferredConfiguration(preferredConfiguration: MKMapConfiguration): void;
-
-  setCamera(camera: MKMapCamera): void;
-
-  setMapRect(mapRect: MKMapRect): void;
-
-  setRegion(region: MKCoordinateRegion): void;
-
-  setMapType(mapType: interop.Enum<typeof MKMapType>): void;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter): void;
-
-  setShowsPointsOfInterest(showsPointsOfInterest: boolean): void;
-
-  setShowsBuildings(showsBuildings: boolean): void;
-
-  setSize(size: CGSize): void;
-
-  setScale(scale: number): void;
-
-  setTraitCollection(traitCollection: UITraitCollection): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MKRouteStep extends NSObject {
-  readonly instructions: string;
-
-  readonly notice: string;
-
-  readonly polyline: MKPolyline;
-
-  readonly distance: number;
-
-  readonly transportType: interop.Enum<typeof MKDirectionsTransportType>;
-}
-
-declare class MKRoute extends NSObject {
-  readonly name: string;
-
-  readonly advisoryNotices: NSArray;
-
-  readonly distance: number;
-
-  readonly expectedTravelTime: number;
-
-  readonly transportType: interop.Enum<typeof MKDirectionsTransportType>;
-
-  readonly polyline: MKPolyline;
-
-  readonly steps: NSArray;
-
-  readonly hasTolls: boolean;
-
-  readonly hasHighways: boolean;
-}
-
-declare class MKDirectionsRequest extends NSObject {
-  source: MKMapItem;
-
-  setSource(source: MKMapItem | null): void;
-
-  destination: MKMapItem;
-
-  setDestination(destination: MKMapItem | null): void;
-
-  transportType: interop.Enum<typeof MKDirectionsTransportType>;
-
-  requestsAlternateRoutes: boolean;
-
-  departureDate: NSDate;
-
-  arrivalDate: NSDate;
-
-  tollPreference: interop.Enum<typeof MKDirectionsRoutePreference>;
-
-  highwayPreference: interop.Enum<typeof MKDirectionsRoutePreference>;
-
-  setTransportType(transportType: interop.Enum<typeof MKDirectionsTransportType>): void;
-
-  setRequestsAlternateRoutes(requestsAlternateRoutes: boolean): void;
-
-  setDepartureDate(departureDate: NSDate): void;
-
-  setArrivalDate(arrivalDate: NSDate): void;
-
-  setTollPreference(tollPreference: interop.Enum<typeof MKDirectionsRoutePreference>): void;
-
-  setHighwayPreference(highwayPreference: interop.Enum<typeof MKDirectionsRoutePreference>): void;
-
-  initWithContentsOfURL(url: NSURL): this;
-
-  static isDirectionsRequestURL(url: NSURL): boolean;
-}
-
-declare class MKLocalSearchCompleter extends NSObject {
-  queryFragment: string;
-
-  region: MKCoordinateRegion;
-
-  regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>;
-
-  filterType: interop.Enum<typeof MKSearchCompletionFilterType>;
-
-  resultTypes: interop.Enum<typeof MKLocalSearchCompleterResultType>;
-
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  addressFilter: MKAddressFilter;
-
-  delegate: MKLocalSearchCompleterDelegate;
-
-  readonly results: NSArray;
-
-  readonly searching: boolean;
-
-  cancel(): void;
-
-  setQueryFragment(queryFragment: string): void;
-
-  setRegion(region: MKCoordinateRegion): void;
-
-  setRegionPriority(regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>): void;
-
-  setFilterType(filterType: interop.Enum<typeof MKSearchCompletionFilterType>): void;
-
-  setResultTypes(resultTypes: interop.Enum<typeof MKLocalSearchCompleterResultType>): void;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter): void;
-
-  setAddressFilter(addressFilter: MKAddressFilter): void;
-
-  setDelegate(delegate: MKLocalSearchCompleterDelegate | null): void;
-
-  isSearching(): boolean;
-}
-
-declare class MKLocalSearchRequest extends NSObject implements NSCopying {
-  init(): this;
-
-  initWithNaturalLanguageQuery(naturalLanguageQuery: string): this;
-
-  initWithNaturalLanguageQueryRegion(naturalLanguageQuery: string, region: MKCoordinateRegion): this;
-
-  naturalLanguageQuery: string;
-
-  region: MKCoordinateRegion;
-
-  regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>;
-
-  resultTypes: interop.Enum<typeof MKLocalSearchResultType>;
-
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  addressFilter: MKAddressFilter;
-
-  setNaturalLanguageQuery(naturalLanguageQuery: string | null): void;
-
-  setRegion(region: MKCoordinateRegion): void;
-
-  setRegionPriority(regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>): void;
-
-  setResultTypes(resultTypes: interop.Enum<typeof MKLocalSearchResultType>): void;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter): void;
-
-  setAddressFilter(addressFilter: MKAddressFilter): void;
-
-  initWithCompletion(completion: MKLocalSearchCompletion): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MKLocalPointsOfInterestRequest extends NSObject implements NSCopying {
-  initWithCenterCoordinateRadius(coordinate: CLLocationCoordinate2D, radius: number): this;
-
-  initWithCoordinateRegion(region: MKCoordinateRegion): this;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  readonly radius: number;
-
-  readonly region: MKCoordinateRegion;
-
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MKCircleRenderer extends MKOverlayPathRenderer {
   initWithCircle(circle: MKCircle): this;
 
@@ -1116,132 +798,6 @@ declare class MKMultiPolylineRenderer extends MKOverlayPathRenderer {
   initWithMultiPolyline(multiPolyline: MKMultiPolyline): this;
 
   readonly multiPolyline: MKMultiPolyline;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class MKMultiPolyline extends MKShape implements MKOverlay {
-  initWithPolylines(polylines: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly polylines: NSArray;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  readonly boundingMapRect: MKMapRect;
-
-  intersectsMapRect(mapRect: MKMapRect): boolean;
-
-  canReplaceMapContent: boolean;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly title: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly subtitle: string;
-
-  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class MKPolyline extends MKMultiPoint implements MKOverlay {
-  static polylineWithPointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number): InstanceType<This>;
-
-  static polylineWithCoordinatesCount<This extends abstract new (...args: any) => any>(this: This, coords: interop.PointerConvertible, count: number): InstanceType<This>;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  readonly boundingMapRect: MKMapRect;
-
-  intersectsMapRect(mapRect: MKMapRect): boolean;
-
-  canReplaceMapContent: boolean;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly title: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly subtitle: string;
-
-  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class MKOverlayPathRenderer extends MKOverlayRenderer {
@@ -1299,69 +855,6 @@ declare class MKOverlayPathRenderer extends MKOverlayRenderer {
   setPath(path: interop.Object | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class MKMultiPolygon extends MKShape implements MKOverlay {
-  initWithPolygons(polygons: NSArray<interop.Object> | Array<interop.Object>): this;
-
-  readonly polygons: NSArray;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  readonly boundingMapRect: MKMapRect;
-
-  intersectsMapRect(mapRect: MKMapRect): boolean;
-
-  canReplaceMapContent: boolean;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly title: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  readonly subtitle: string;
-
-  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
 declare class MKMapItemAnnotation extends NSObject implements MKAnnotation {
   initWithMapItem(mapItem: MKMapItem): this;
 
@@ -1414,21 +907,6 @@ declare class MKMapItemAnnotation extends NSObject implements MKAnnotation {
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class MKPointAnnotation extends MKShape {
-  init(): this;
-
-  initWithCoordinate(coordinate: CLLocationCoordinate2D): this;
-
-  initWithCoordinateTitleSubtitle(coordinate: CLLocationCoordinate2D, title: string | null, subtitle: string | null): this;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  coordinate: CLLocationCoordinate2D;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setCoordinate(coordinate: CLLocationCoordinate2D): void;
 }
 
 declare class MKClusterAnnotation extends NSObject implements MKAnnotation {
@@ -1583,6 +1061,106 @@ declare class MKMarkerAnnotationView extends MKAnnotationView {
   setSelectedGlyphImage(selectedGlyphImage: UIImage): void;
 
   setAnimatesWhenAdded(animatesWhenAdded: boolean): void;
+}
+
+declare class MKStandardMapConfiguration extends MKMapConfiguration {
+  init(): this;
+
+  initWithElevationStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>): this;
+
+  initWithElevationStyleEmphasisStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>, emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>): this;
+
+  initWithEmphasisStyle(emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>): this;
+
+  emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>;
+
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  showsTraffic: boolean;
+
+  setEmphasisStyle(emphasisStyle: interop.Enum<typeof MKStandardMapEmphasisStyle>): void;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
+
+  setShowsTraffic(showsTraffic: boolean): void;
+}
+
+declare class MKReverseGeocodingRequest extends NSObject {
+  readonly cancelled: boolean;
+
+  readonly loading: boolean;
+
+  readonly location: CLLocation;
+
+  preferredLocale: NSLocale;
+
+  initWithLocation(location: CLLocation): this;
+
+  getMapItemsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  cancel(): void;
+
+  isCancelled(): boolean;
+
+  isLoading(): boolean;
+
+  setPreferredLocale(preferredLocale: NSLocale | null): void;
+}
+
+declare class MKMapSnapshot extends NSObject {
+  readonly image: UIImage;
+
+  pointForCoordinate(coordinate: CLLocationCoordinate2D): CGPoint;
+
+  readonly traitCollection: UITraitCollection;
+}
+
+declare class MKMapSnapshotOptions extends NSObject implements NSCopying {
+  preferredConfiguration: MKMapConfiguration;
+
+  camera: MKMapCamera;
+
+  mapRect: MKMapRect;
+
+  region: MKCoordinateRegion;
+
+  mapType: interop.Enum<typeof MKMapType>;
+
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  showsPointsOfInterest: boolean;
+
+  showsBuildings: boolean;
+
+  size: CGSize;
+
+  scale: number;
+
+  traitCollection: UITraitCollection;
+
+  setPreferredConfiguration(preferredConfiguration: MKMapConfiguration): void;
+
+  setCamera(camera: MKMapCamera): void;
+
+  setMapRect(mapRect: MKMapRect): void;
+
+  setRegion(region: MKCoordinateRegion): void;
+
+  setMapType(mapType: interop.Enum<typeof MKMapType>): void;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter): void;
+
+  setShowsPointsOfInterest(showsPointsOfInterest: boolean): void;
+
+  setShowsBuildings(showsBuildings: boolean): void;
+
+  setSize(size: CGSize): void;
+
+  setScale(scale: number): void;
+
+  setTraitCollection(traitCollection: UITraitCollection): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MKMapView extends UIView implements NSCoding {
@@ -1808,17 +1386,204 @@ declare class MKMapItemDetailSelectionAccessoryPresentationStyle extends NSObjec
   static readonly openInMaps: MKMapItemDetailSelectionAccessoryPresentationStyle;
 }
 
-declare class MKMapFeatureAnnotation extends NSObject implements MKAnnotation {
-  readonly featureType: interop.Enum<typeof MKMapFeatureType>;
+declare class MKOverlayRenderer extends NSObject {
+  initWithOverlay(overlay: MKOverlay): this;
 
-  readonly iconStyle: MKIconStyle;
+  readonly overlay: MKOverlay;
 
-  readonly pointOfInterestCategory: string;
+  pointForMapPoint(mapPoint: MKMapPoint): CGPoint;
+
+  mapPointForPoint(point: CGPoint): MKMapPoint;
+
+  rectForMapRect(mapRect: MKMapRect): CGRect;
+
+  mapRectForRect(rect: CGRect): MKMapRect;
+
+  canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
+
+  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
+
+  setNeedsDisplay(): void;
+
+  setNeedsDisplayInMapRect(mapRect: MKMapRect): void;
+
+  setNeedsDisplayInMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): void;
+
+  alpha: number;
+
+  readonly contentScaleFactor: number;
+
+  blendMode: interop.Enum<typeof CGBlendMode>;
+
+  setAlpha(alpha: number): void;
+
+  setBlendMode(blendMode: interop.Enum<typeof CGBlendMode>): void;
+}
+
+declare class MKMapItemRequest extends NSObject {
+  initWithMapItemIdentifier(identifier: MKMapItemIdentifier): this;
+
+  initWithMapFeatureAnnotation(mapFeatureAnnotation: MKMapFeatureAnnotation): this;
+
+  getMapItemWithCompletionHandler(completionHandler: (p1: MKMapItem, p2: NSError) => void | null): void;
+
+  cancel(): void;
+
+  readonly mapItemIdentifier: MKMapItemIdentifier;
+
+  readonly mapFeatureAnnotation: MKMapFeatureAnnotation;
+
+  readonly featureAnnotation: MKMapFeatureAnnotation;
+
+  readonly cancelled: boolean;
+
+  readonly loading: boolean;
+
+  isCancelled(): boolean;
+
+  isLoading(): boolean;
+}
+
+declare class MKMapConfiguration extends NSObject implements NSSecureCoding, NSCopying {
+  elevationStyle: interop.Enum<typeof MKMapElevationStyle>;
+
+  setElevationStyle(elevationStyle: interop.Enum<typeof MKMapElevationStyle>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MKLocalSearchCompleter extends NSObject {
+  queryFragment: string;
+
+  region: MKCoordinateRegion;
+
+  regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>;
+
+  filterType: interop.Enum<typeof MKSearchCompletionFilterType>;
+
+  resultTypes: interop.Enum<typeof MKLocalSearchCompleterResultType>;
+
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  addressFilter: MKAddressFilter;
+
+  delegate: MKLocalSearchCompleterDelegate;
+
+  readonly results: NSArray;
+
+  readonly searching: boolean;
+
+  cancel(): void;
+
+  setQueryFragment(queryFragment: string): void;
+
+  setRegion(region: MKCoordinateRegion): void;
+
+  setRegionPriority(regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>): void;
+
+  setFilterType(filterType: interop.Enum<typeof MKSearchCompletionFilterType>): void;
+
+  setResultTypes(resultTypes: interop.Enum<typeof MKLocalSearchCompleterResultType>): void;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
+
+  setAddressFilter(addressFilter: MKAddressFilter | null): void;
+
+  setDelegate(delegate: MKLocalSearchCompleterDelegate | null): void;
+
+  isSearching(): boolean;
+}
+
+declare class MKLocalPointsOfInterestRequest extends NSObject implements NSCopying {
+  initWithCenterCoordinateRadius(coordinate: CLLocationCoordinate2D, radius: number): this;
+
+  initWithCoordinateRegion(region: MKCoordinateRegion): this;
 
   readonly coordinate: CLLocationCoordinate2D;
 
+  readonly radius: number;
+
+  readonly region: MKCoordinateRegion;
+
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MKGeoJSONFeature extends NSObject implements MKGeoJSONObject {
+  readonly identifier: string;
+
+  readonly properties: NSData;
+
+  readonly geometry: NSArray;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class MKMultiPolygon extends MKShape implements MKOverlay {
+  initWithPolygons(polygons: NSArray<interop.Object> | Array<interop.Object>): this;
+
+  readonly polygons: NSArray;
+
+  readonly coordinate: CLLocationCoordinate2D;
+
+  readonly boundingMapRect: MKMapRect;
+
+  intersectsMapRect(mapRect: MKMapRect): boolean;
+
+  canReplaceMapContent: boolean;
+
+  // @ts-ignore MemberDecl.tsIgnore
   readonly title: string;
 
+  // @ts-ignore MemberDecl.tsIgnore
   readonly subtitle: string;
 
   setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
@@ -1864,38 +1629,259 @@ declare class MKMapFeatureAnnotation extends NSObject implements MKAnnotation {
   readonly debugDescription: string;
 }
 
-declare class MKOverlayRenderer extends NSObject {
-  initWithOverlay(overlay: MKOverlay): this;
+// @ts-ignore ClassDecl.tsIgnore
+declare class MKMultiPolyline extends MKShape implements MKOverlay {
+  initWithPolylines(polylines: NSArray<interop.Object> | Array<interop.Object>): this;
 
-  readonly overlay: MKOverlay;
+  readonly polylines: NSArray;
 
-  pointForMapPoint(mapPoint: MKMapPoint): CGPoint;
+  readonly coordinate: CLLocationCoordinate2D;
 
-  mapPointForPoint(point: CGPoint): MKMapPoint;
+  readonly boundingMapRect: MKMapRect;
 
-  rectForMapRect(mapRect: MKMapRect): CGRect;
+  intersectsMapRect(mapRect: MKMapRect): boolean;
 
-  mapRectForRect(rect: CGRect): MKMapRect;
+  canReplaceMapContent: boolean;
 
-  canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
+  // @ts-ignore MemberDecl.tsIgnore
+  readonly title: string;
 
-  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
+  // @ts-ignore MemberDecl.tsIgnore
+  readonly subtitle: string;
 
-  setNeedsDisplay(): void;
+  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
 
-  setNeedsDisplayInMapRect(mapRect: MKMapRect): void;
+  isEqual(object: interop.Object): boolean;
 
-  setNeedsDisplayInMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): void;
+  readonly hash: number;
 
-  alpha: number;
+  readonly superclass: interop.Object;
 
-  readonly contentScaleFactor: number;
+  class(): interop.Object;
 
-  blendMode: interop.Enum<typeof CGBlendMode>;
+  self(): this;
 
-  setAlpha(alpha: number): void;
+  performSelector(aSelector: string): interop.Object;
 
-  setBlendMode(blendMode: interop.Enum<typeof CGBlendMode>): void;
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class MKPolyline extends MKMultiPoint implements MKOverlay {
+  static polylineWithPointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number): InstanceType<This>;
+
+  static polylineWithCoordinatesCount<This extends abstract new (...args: any) => any>(this: This, coords: interop.PointerConvertible, count: number): InstanceType<This>;
+
+  readonly coordinate: CLLocationCoordinate2D;
+
+  readonly boundingMapRect: MKMapRect;
+
+  intersectsMapRect(mapRect: MKMapRect): boolean;
+
+  canReplaceMapContent: boolean;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  readonly title: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  readonly subtitle: string;
+
+  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class MKPointAnnotation extends MKShape {
+  init(): this;
+
+  initWithCoordinate(coordinate: CLLocationCoordinate2D): this;
+
+  initWithCoordinateTitleSubtitle(coordinate: CLLocationCoordinate2D, title: string | null, subtitle: string | null): this;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  coordinate: CLLocationCoordinate2D;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setCoordinate(coordinate: CLLocationCoordinate2D): void;
+}
+
+declare class MKGeocodingRequest extends NSObject {
+  readonly cancelled: boolean;
+
+  readonly loading: boolean;
+
+  readonly addressString: string;
+
+  region: MKCoordinateRegion;
+
+  preferredLocale: NSLocale;
+
+  initWithAddressString(addressString: string): this;
+
+  getMapItemsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  cancel(): void;
+
+  isCancelled(): boolean;
+
+  isLoading(): boolean;
+
+  setRegion(region: MKCoordinateRegion): void;
+
+  setPreferredLocale(preferredLocale: NSLocale | null): void;
+}
+
+declare class MKDistanceFormatter extends NSFormatter {
+  stringFromDistance(distance: number): string;
+
+  distanceFromString(distance: string): number;
+
+  locale: NSLocale;
+
+  units: interop.Enum<typeof MKDistanceFormatterUnits>;
+
+  unitStyle: interop.Enum<typeof MKDistanceFormatterUnitStyle>;
+
+  setLocale(locale: NSLocale | null): void;
+
+  setUnits(units: interop.Enum<typeof MKDistanceFormatterUnits>): void;
+
+  setUnitStyle(unitStyle: interop.Enum<typeof MKDistanceFormatterUnitStyle>): void;
+}
+
+declare class MKRouteStep extends NSObject {
+  readonly instructions: string;
+
+  readonly notice: string;
+
+  readonly polyline: MKPolyline;
+
+  readonly distance: number;
+
+  readonly transportType: interop.Enum<typeof MKDirectionsTransportType>;
+}
+
+declare class MKRoute extends NSObject {
+  readonly name: string;
+
+  readonly advisoryNotices: NSArray;
+
+  readonly distance: number;
+
+  readonly expectedTravelTime: number;
+
+  readonly transportType: interop.Enum<typeof MKDirectionsTransportType>;
+
+  readonly polyline: MKPolyline;
+
+  readonly steps: NSArray;
+
+  readonly hasTolls: boolean;
+
+  readonly hasHighways: boolean;
+}
+
+declare class MKDirectionsRequest extends NSObject {
+  source: MKMapItem;
+
+  setSource(source: MKMapItem | null): void;
+
+  destination: MKMapItem;
+
+  setDestination(destination: MKMapItem | null): void;
+
+  transportType: interop.Enum<typeof MKDirectionsTransportType>;
+
+  requestsAlternateRoutes: boolean;
+
+  departureDate: NSDate;
+
+  arrivalDate: NSDate;
+
+  tollPreference: interop.Enum<typeof MKDirectionsRoutePreference>;
+
+  highwayPreference: interop.Enum<typeof MKDirectionsRoutePreference>;
+
+  setTransportType(transportType: interop.Enum<typeof MKDirectionsTransportType>): void;
+
+  setRequestsAlternateRoutes(requestsAlternateRoutes: boolean): void;
+
+  setDepartureDate(departureDate: NSDate): void;
+
+  setArrivalDate(arrivalDate: NSDate): void;
+
+  setTollPreference(tollPreference: interop.Enum<typeof MKDirectionsRoutePreference>): void;
+
+  setHighwayPreference(highwayPreference: interop.Enum<typeof MKDirectionsRoutePreference>): void;
+
+  initWithContentsOfURL(url: NSURL): this;
+
+  static isDirectionsRequestURL(url: NSURL): boolean;
 }
 
 declare class MKAddressFilter extends NSObject implements NSSecureCoding, NSCopying {
@@ -1918,24 +1904,6 @@ declare class MKAddressFilter extends NSObject implements NSSecureCoding, NSCopy
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MKDistanceFormatter extends NSFormatter {
-  stringFromDistance(distance: number): string;
-
-  distanceFromString(distance: string): number;
-
-  locale: NSLocale;
-
-  units: interop.Enum<typeof MKDistanceFormatterUnits>;
-
-  unitStyle: interop.Enum<typeof MKDistanceFormatterUnitStyle>;
-
-  setLocale(locale: NSLocale | null): void;
-
-  setUnits(units: interop.Enum<typeof MKDistanceFormatterUnits>): void;
-
-  setUnitStyle(unitStyle: interop.Enum<typeof MKDistanceFormatterUnitStyle>): void;
 }
 
 declare class MKMapCameraZoomRange extends NSObject implements NSSecureCoding, NSCopying {
@@ -2255,6 +2223,313 @@ declare class MKMapCameraBoundary extends NSObject implements NSSecureCoding, NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MKAddressRepresentations extends NSObject {
+  fullAddressIncludingRegionSingleLine(includingRegion: boolean, singleLine: boolean): string;
+
+  readonly cityName: string;
+
+  readonly cityWithContext: string;
+
+  cityWithContextUsingStyle(style: interop.Enum<typeof MKAddressRepresentationsContextStyle>): string;
+
+  readonly regionName: string;
+
+  readonly regionCode: string;
+}
+
+declare class MKMapItemDetailViewController extends UIViewController {
+  mapItem: MKMapItem;
+
+  delegate: MKMapItemDetailViewControllerDelegate;
+
+  initWithMapItemDisplaysMap(mapItem: MKMapItem | null, displaysMap: boolean): this;
+
+  initWithMapItem(mapItem: MKMapItem | null): this;
+
+  setMapItem(mapItem: MKMapItem | null): void;
+
+  setDelegate(delegate: MKMapItemDetailViewControllerDelegate | null): void;
+}
+
+declare class MKShape extends NSObject implements MKAnnotation {
+  title: string;
+
+  subtitle: string;
+
+  setTitle(title: string | null): void;
+
+  setSubtitle(subtitle: string | null): void;
+
+  readonly coordinate: CLLocationCoordinate2D;
+
+  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+declare class MKAddress extends NSObject {
+  initWithFullAddressShortAddress(fullAddress: string, shortAddress: string | null): this;
+
+  readonly fullAddress: string;
+
+  readonly shortAddress: string;
+}
+
+declare class MKDirections extends NSObject {
+  initWithRequest(request: MKDirectionsRequest): this;
+
+  calculateDirectionsWithCompletionHandler(completionHandler: (p1: MKDirectionsResponse, p2: NSError) => void): void;
+
+  calculateETAWithCompletionHandler(completionHandler: (p1: MKETAResponse, p2: NSError) => void): void;
+
+  cancel(): void;
+
+  readonly calculating: boolean;
+
+  isCalculating(): boolean;
+}
+
+declare class MKGeodesicPolyline extends MKPolyline {
+  static polylineWithPointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number): InstanceType<This>;
+
+  static polylineWithCoordinatesCount<This extends abstract new (...args: any) => any>(this: This, coords: interop.PointerConvertible, count: number): InstanceType<This>;
+}
+
+declare class MKLookAroundViewController extends UIViewController implements NSSecureCoding, NSCoding {
+  initWithScene(scene: MKLookAroundScene): this;
+
+  initWithNibNameBundle(nibNameOrNil: string | null, nibBundleOrNil: NSBundle | null): this;
+
+  initWithCoder(coder: NSCoder): this;
+
+  delegate: MKLookAroundViewControllerDelegate;
+
+  scene: MKLookAroundScene;
+
+  navigationEnabled: boolean;
+
+  showsRoadLabels: boolean;
+
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  badgePosition: interop.Enum<typeof MKLookAroundBadgePosition>;
+
+  setDelegate(delegate: MKLookAroundViewControllerDelegate | null): void;
+
+  setScene(scene: MKLookAroundScene | null): void;
+
+  isNavigationEnabled(): boolean;
+
+  setNavigationEnabled(navigationEnabled: boolean): void;
+
+  setShowsRoadLabels(showsRoadLabels: boolean): void;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
+
+  setBadgePosition(badgePosition: interop.Enum<typeof MKLookAroundBadgePosition>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+}
+
+declare class MKPolygonRenderer extends MKOverlayPathRenderer {
+  initWithPolygon(polygon: MKPolygon): this;
+
+  readonly polygon: MKPolygon;
+
+  strokeStart: number;
+
+  strokeEnd: number;
+
+  setStrokeStart(strokeStart: number): void;
+
+  setStrokeEnd(strokeEnd: number): void;
+}
+
+declare class MKLocalSearchRequest extends NSObject implements NSCopying {
+  init(): this;
+
+  initWithNaturalLanguageQuery(naturalLanguageQuery: string): this;
+
+  initWithNaturalLanguageQueryRegion(naturalLanguageQuery: string, region: MKCoordinateRegion): this;
+
+  naturalLanguageQuery: string;
+
+  region: MKCoordinateRegion;
+
+  regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>;
+
+  resultTypes: interop.Enum<typeof MKLocalSearchResultType>;
+
+  pointOfInterestFilter: MKPointOfInterestFilter;
+
+  addressFilter: MKAddressFilter;
+
+  setNaturalLanguageQuery(naturalLanguageQuery: string | null): void;
+
+  setRegion(region: MKCoordinateRegion): void;
+
+  setRegionPriority(regionPriority: interop.Enum<typeof MKLocalSearchRegionPriority>): void;
+
+  setResultTypes(resultTypes: interop.Enum<typeof MKLocalSearchResultType>): void;
+
+  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
+
+  setAddressFilter(addressFilter: MKAddressFilter | null): void;
+
+  initWithCompletion(completion: MKLocalSearchCompletion): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MKUserLocationView extends MKAnnotationView {
+}
+
+declare class MKLocalSearchCompletion extends NSObject {
+  readonly title: string;
+
+  readonly titleHighlightRanges: NSArray;
+
+  readonly subtitle: string;
+
+  readonly subtitleHighlightRanges: NSArray;
+}
+
+declare class MKTileOverlayRenderer extends MKOverlayRenderer {
+  initWithTileOverlay(overlay: MKTileOverlay): this;
+
+  reloadData(): void;
+}
+
+declare class MKPolygonView extends MKOverlayPathView {
+  initWithPolygon(polygon: MKPolygon): this;
+
+  readonly polygon: MKPolygon;
+}
+
+declare class MKMapFeatureAnnotation extends NSObject implements MKAnnotation {
+  readonly featureType: interop.Enum<typeof MKMapFeatureType>;
+
+  readonly iconStyle: MKIconStyle;
+
+  readonly pointOfInterestCategory: string;
+
+  readonly coordinate: CLLocationCoordinate2D;
+
+  readonly title: string;
+
+  readonly subtitle: string;
+
+  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+declare class MKOverlayView extends UIView {
+  initWithOverlay(overlay: MKOverlay): this;
+
+  readonly overlay: MKOverlay;
+
+  pointForMapPoint(mapPoint: MKMapPoint): CGPoint;
+
+  mapPointForPoint(point: CGPoint): MKMapPoint;
+
+  rectForMapRect(mapRect: MKMapRect): CGRect;
+
+  mapRectForRect(rect: CGRect): MKMapRect;
+
+  canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
+
+  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
+
+  setNeedsDisplayInMapRect(mapRect: MKMapRect): void;
+
+  setNeedsDisplayInMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): void;
+}
+
+declare class MKIconStyle extends NSObject {
+  readonly backgroundColor: UIColor;
+
+  readonly image: UIImage;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class MKPolygon extends MKMultiPoint implements MKOverlay {
   static polygonWithPointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number): InstanceType<This>;
@@ -2324,157 +2599,10 @@ declare class MKPolygon extends MKMultiPoint implements MKOverlay {
   readonly debugDescription: string;
 }
 
-declare class MKMapItemDetailViewController extends UIViewController {
-  mapItem: MKMapItem;
-
-  delegate: MKMapItemDetailViewControllerDelegate;
-
-  initWithMapItemDisplaysMap(mapItem: MKMapItem | null, displaysMap: boolean): this;
-
-  initWithMapItem(mapItem: MKMapItem | null): this;
-
-  setMapItem(mapItem: MKMapItem | null): void;
-
-  setDelegate(delegate: MKMapItemDetailViewControllerDelegate | null): void;
-}
-
-declare class MKPolygonRenderer extends MKOverlayPathRenderer {
-  initWithPolygon(polygon: MKPolygon): this;
-
-  readonly polygon: MKPolygon;
-
-  strokeStart: number;
-
-  strokeEnd: number;
-
-  setStrokeStart(strokeStart: number): void;
-
-  setStrokeEnd(strokeEnd: number): void;
-}
-
-declare class MKDirections extends NSObject {
-  initWithRequest(request: MKDirectionsRequest): this;
-
-  calculateDirectionsWithCompletionHandler(completionHandler: (p1: MKDirectionsResponse, p2: NSError) => void): void;
-
-  calculateETAWithCompletionHandler(completionHandler: (p1: MKETAResponse, p2: NSError) => void): void;
-
-  cancel(): void;
-
-  readonly calculating: boolean;
-
-  isCalculating(): boolean;
-}
-
 declare class MKLocalSearchResponse extends NSObject {
   readonly mapItems: NSArray;
 
   readonly boundingRegion: MKCoordinateRegion;
-}
-
-declare class MKLookAroundViewController extends UIViewController implements NSSecureCoding, NSCoding {
-  initWithScene(scene: MKLookAroundScene): this;
-
-  initWithNibNameBundle(nibNameOrNil: string | null, nibBundleOrNil: NSBundle | null): this;
-
-  initWithCoder(coder: NSCoder): this;
-
-  delegate: MKLookAroundViewControllerDelegate;
-
-  scene: MKLookAroundScene;
-
-  navigationEnabled: boolean;
-
-  showsRoadLabels: boolean;
-
-  pointOfInterestFilter: MKPointOfInterestFilter;
-
-  badgePosition: interop.Enum<typeof MKLookAroundBadgePosition>;
-
-  setDelegate(delegate: MKLookAroundViewControllerDelegate | null): void;
-
-  setScene(scene: MKLookAroundScene | null): void;
-
-  isNavigationEnabled(): boolean;
-
-  setNavigationEnabled(navigationEnabled: boolean): void;
-
-  setShowsRoadLabels(showsRoadLabels: boolean): void;
-
-  setPointOfInterestFilter(pointOfInterestFilter: MKPointOfInterestFilter | null): void;
-
-  setBadgePosition(badgePosition: interop.Enum<typeof MKLookAroundBadgePosition>): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-}
-
-declare class MKUserLocationView extends MKAnnotationView {
-}
-
-declare class MKLocalSearchCompletion extends NSObject {
-  readonly title: string;
-
-  readonly titleHighlightRanges: NSArray;
-
-  readonly subtitle: string;
-
-  readonly subtitleHighlightRanges: NSArray;
-}
-
-declare class MKTileOverlayRenderer extends MKOverlayRenderer {
-  initWithTileOverlay(overlay: MKTileOverlay): this;
-
-  reloadData(): void;
-}
-
-declare class MKOverlayView extends UIView {
-  initWithOverlay(overlay: MKOverlay): this;
-
-  readonly overlay: MKOverlay;
-
-  pointForMapPoint(mapPoint: MKMapPoint): CGPoint;
-
-  mapPointForPoint(point: CGPoint): MKMapPoint;
-
-  rectForMapRect(mapRect: MKMapRect): CGRect;
-
-  mapRectForRect(rect: CGRect): MKMapRect;
-
-  canDrawMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): boolean;
-
-  drawMapRectZoomScaleInContext(mapRect: MKMapRect, zoomScale: number, context: interop.Object): void;
-
-  setNeedsDisplayInMapRect(mapRect: MKMapRect): void;
-
-  setNeedsDisplayInMapRectZoomScale(mapRect: MKMapRect, zoomScale: number): void;
-}
-
-declare class MKIconStyle extends NSObject {
-  readonly backgroundColor: UIColor;
-
-  readonly image: UIImage;
-}
-
-declare class MKPinAnnotationView extends MKAnnotationView {
-  static redPinColor(): UIColor;
-
-  static greenPinColor(): UIColor;
-
-  static purplePinColor(): UIColor;
-
-  pinTintColor: UIColor;
-
-  animatesDrop: boolean;
-
-  pinColor: interop.Enum<typeof MKPinAnnotationColor>;
-
-  setPinTintColor(pinTintColor: UIColor | null): void;
-
-  setAnimatesDrop(animatesDrop: boolean): void;
-
-  setPinColor(pinColor: interop.Enum<typeof MKPinAnnotationColor>): void;
 }
 
 declare class MKLocalSearch extends NSObject {
@@ -2489,6 +2617,20 @@ declare class MKLocalSearch extends NSObject {
   readonly searching: boolean;
 
   isSearching(): boolean;
+}
+
+declare class MKPolylineRenderer extends MKOverlayPathRenderer {
+  initWithPolyline(polyline: MKPolyline): this;
+
+  readonly polyline: MKPolyline;
+
+  strokeStart: number;
+
+  strokeEnd: number;
+
+  setStrokeStart(strokeStart: number): void;
+
+  setStrokeEnd(strokeEnd: number): void;
 }
 
 declare class MKETAResponse extends NSObject {
@@ -2525,66 +2667,6 @@ declare class MKReverseGeocoder extends NSObject {
   setDelegate(delegate: MKReverseGeocoderDelegate): void;
 
   isQuerying(): boolean;
-}
-
-declare class MKShape extends NSObject implements MKAnnotation {
-  title: string;
-
-  subtitle: string;
-
-  setTitle(title: string | null): void;
-
-  setSubtitle(subtitle: string | null): void;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class MKGeodesicPolyline extends MKPolyline {
-  static polylineWithPointsCount<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number): InstanceType<This>;
-
-  static polylineWithCoordinatesCount<This extends abstract new (...args: any) => any>(this: This, coords: interop.PointerConvertible, count: number): InstanceType<This>;
 }
 
 declare class MKPointOfInterestFilter extends NSObject implements NSSecureCoding, NSCopying {
@@ -2695,6 +2777,26 @@ declare class MKPlacemark extends CLPlacemark implements MKAnnotation {
   readonly debugDescription: string;
 }
 
+declare class MKPinAnnotationView extends MKAnnotationView {
+  static redPinColor(): UIColor;
+
+  static greenPinColor(): UIColor;
+
+  static purplePinColor(): UIColor;
+
+  pinTintColor: UIColor;
+
+  animatesDrop: boolean;
+
+  pinColor: interop.Enum<typeof MKPinAnnotationColor>;
+
+  setPinTintColor(pinTintColor: UIColor | null): void;
+
+  setAnimatesDrop(animatesDrop: boolean): void;
+
+  setPinColor(pinColor: interop.Enum<typeof MKPinAnnotationColor>): void;
+}
+
 declare class MKPolylineView extends MKOverlayPathView {
   initWithPolyline(polyline: MKPolyline): this;
 
@@ -2703,20 +2805,6 @@ declare class MKPolylineView extends MKOverlayPathView {
 
 declare class MKGeoJSONDecoder extends NSObject {
   geoJSONObjectsWithDataError(data: NSData, errorPtr: interop.PointerConvertible): NSArray | null;
-}
-
-declare class MKPolylineRenderer extends MKOverlayPathRenderer {
-  initWithPolyline(polyline: MKPolyline): this;
-
-  readonly polyline: MKPolyline;
-
-  strokeStart: number;
-
-  strokeEnd: number;
-
-  setStrokeStart(strokeStart: number): void;
-
-  setStrokeEnd(strokeEnd: number): void;
 }
 
 declare class MKMultiPolygonRenderer extends MKOverlayPathRenderer {

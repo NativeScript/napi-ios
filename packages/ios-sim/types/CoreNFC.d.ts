@@ -1,9 +1,9 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const NFCTagResponseUnexpectedLengthErrorKey: string;
-
 declare const NFCISO15693TagResponseErrorKey: string;
+
+declare const NFCTagResponseUnexpectedLengthErrorKey: string;
 
 declare const NFCErrorDomain: string;
 
@@ -96,6 +96,8 @@ declare const NFCReaderError: {
   ReaderErrorInvalidParameterLength: 4,
   ReaderErrorParameterOutOfBound: 5,
   ReaderErrorRadioDisabled: 6,
+  ReaderErrorIneligible: 7,
+  ReaderErrorAccessNotAccepted: 8,
   ReaderTransceiveErrorTagConnectionLost: 100,
   ReaderTransceiveErrorRetryExceeded: 101,
   ReaderTransceiveErrorTagResponseError: 102,
@@ -124,13 +126,6 @@ declare const NFCISO15693ResponseFlag: {
   WaitTimeExtension: 64,
 };
 
-declare const NFCFeliCaEncryptionId: {
-  NFCFeliCaEncryptionIdA: 79,
-  NFCFeliCaEncryptionIdAES_D: 65,
-  EncryptionIdA: 79,
-  EncryptionIdAES_D: 65,
-};
-
 declare const NFCVASErrorCode: {
   NFCVASErrorCodeSuccess: 36864,
   NFCVASErrorCodeDataNotFound: 27267,
@@ -148,6 +143,13 @@ declare const NFCVASErrorCode: {
   VASErrorCodeUserIntervention: 27012,
   VASErrorCodeIncorrectData: 27264,
   VASErrorCodeUnsupportedApplicationVersion: 25408,
+};
+
+declare const NFCFeliCaEncryptionId: {
+  NFCFeliCaEncryptionIdA: 79,
+  NFCFeliCaEncryptionIdAES_D: 65,
+  EncryptionIdA: 79,
+  EncryptionIdAES_D: 65,
 };
 
 declare interface NFCReaderSessionProtocol extends NSObjectProtocol {
@@ -582,6 +584,10 @@ declare class NFCISO15693CustomCommandConfiguration extends NFCTagCommandConfigu
   setCustomCommandCode(customCommandCode: number): void;
 
   setRequestParameters(requestParameters: NSData): void;
+}
+
+declare class NFCPaymentTagReaderSession extends NFCTagReaderSession {
+  initWithDelegateQueue(delegate: NFCTagReaderSessionDelegate, queue: NSObject | null): this;
 }
 
 declare class NFCISO15693ReaderSession extends NFCReaderSession {

@@ -2,6 +2,8 @@
 
 declare const kIORegistryIterateRecursively: number;
 
+declare const kOSAsyncRefSize: number;
+
 declare const kOSAsyncRefCount: number;
 
 declare const kOSAsyncRef64Count: number;
@@ -31,6 +33,8 @@ declare const kNanosecondScale: number;
 declare const kIOMapGuardedSmall: number;
 
 declare const kIOMapGuardedMask: number;
+
+declare const kIOMapPostedCombinedReordered: number;
 
 declare const kIOMapPostedReordered: number;
 
@@ -80,8 +84,6 @@ declare const kIOInterestCalloutServiceIndex: number;
 
 declare const kFirstIOKitNotificationType: number;
 
-declare const kIOCopybackInnerCache: number;
-
 declare const kIOAsyncReservedIndex: number;
 
 declare const kIOMaxBusStall5usec: number;
@@ -91,6 +93,8 @@ declare const kIOMaxBusStallNone: number;
 declare const kIOMatchingCalloutRefconIndex: number;
 
 declare const kIOAsyncCalloutRefconIndex: number;
+
+declare const kIOCopybackInnerCache: number;
 
 declare const kIOWriteCombineCache: number;
 
@@ -104,23 +108,15 @@ declare const kOSAsyncCompleteMessageID: number;
 
 declare const kIOServiceMessageNotificationType: number;
 
-declare const kIOPostedCombinedReordered: number;
-
-declare const kIOAsyncCalloutCount: number;
-
-declare const kIOMapUserOptionsMask: number;
-
 declare const kIOCFSerializeToBinary: number;
 
 declare const kIOMapOverwrite: number;
 
-declare const kOSAsyncRefSize: number;
-
-declare const kIOMapPostedCombinedReordered: number;
-
 declare const kLastIOKitNotificationType: number;
 
 declare const kIODefaultCache: number;
+
+declare const kIOMapUserOptionsMask: number;
 
 declare const kIORegistryIterateParents: number;
 
@@ -156,11 +152,15 @@ declare const kIOMaxBusStall30usec: number;
 
 declare const kIOCopybackCache: number;
 
+declare const kIOAsyncCalloutCount: number;
+
 declare const kIOKitNoticationTypeMask: number;
 
 declare const kMillisecondScale: number;
 
 declare const kIOMaxBusStall20usec: number;
+
+declare const kIOPostedCombinedReordered: number;
 
 declare const kIOMaxBusStall10usec: number;
 

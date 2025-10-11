@@ -4,14 +4,14 @@
 
 declare const VZErrorDomain: string;
 
-declare const VZMacAuxiliaryStorageInitializationOptions: {
-  VZMacAuxiliaryStorageInitializationOptionAllowOverwrite: 1,
-};
-
 declare const VZDiskImageCachingMode: {
   Automatic: 0,
   Uncached: 1,
   Cached: 2,
+};
+
+declare const VZMacAuxiliaryStorageInitializationOptions: {
+  VZMacAuxiliaryStorageInitializationOptionAllowOverwrite: 1,
 };
 
 declare const VZVirtualMachineState: {
@@ -42,6 +42,12 @@ declare const VZDiskImageSynchronizationMode: {
   None: 3,
 };
 
+declare const VZLinuxRosettaAvailability: {
+  NotSupported: 0,
+  NotInstalled: 1,
+  Installed: 2,
+};
+
 declare const VZErrorCode: {
   Internal: 1,
   InvalidVirtualMachineConfiguration: 2,
@@ -70,12 +76,6 @@ declare const VZErrorCode: {
   DeviceNotFound: 30004,
 };
 
-declare const VZLinuxRosettaAvailability: {
-  NotSupported: 0,
-  NotInstalled: 1,
-  Installed: 2,
-};
-
 declare interface VZVirtioSocketListenerDelegate extends NSObjectProtocol {
   listenerShouldAcceptNewConnectionFromSocketDevice?(listener: VZVirtioSocketListener, connection: VZVirtioSocketConnection, socketDevice: VZVirtioSocketDevice): boolean;
 }
@@ -99,17 +99,6 @@ declare interface VZNetworkBlockDeviceStorageDeviceAttachmentDelegate extends NS
 }
 
 declare class VZNetworkBlockDeviceStorageDeviceAttachmentDelegate extends NativeObject implements VZNetworkBlockDeviceStorageDeviceAttachmentDelegate {
-}
-
-declare interface VZVirtualMachineDelegate extends NSObjectProtocol {
-  guestDidStopVirtualMachine?(virtualMachine: VZVirtualMachine): void;
-
-  virtualMachineDidStopWithError?(virtualMachine: VZVirtualMachine, error: NSError): void;
-
-  virtualMachineNetworkDeviceAttachmentWasDisconnectedWithError?(virtualMachine: VZVirtualMachine, networkDevice: VZNetworkDevice, error: NSError): void;
-}
-
-declare class VZVirtualMachineDelegate extends NativeObject implements VZVirtualMachineDelegate {
 }
 
 declare interface VZUSBDevice extends NSObjectProtocol {
@@ -137,6 +126,17 @@ declare interface VZUSBDeviceConfiguration extends NSObjectProtocol {
 }
 
 declare class VZUSBDeviceConfiguration extends NativeObject implements VZUSBDeviceConfiguration {
+}
+
+declare interface VZVirtualMachineDelegate extends NSObjectProtocol {
+  guestDidStopVirtualMachine?(virtualMachine: VZVirtualMachine): void;
+
+  virtualMachineDidStopWithError?(virtualMachine: VZVirtualMachine, error: NSError): void;
+
+  virtualMachineNetworkDeviceAttachmentWasDisconnectedWithError?(virtualMachine: VZVirtualMachine, networkDevice: VZNetworkDevice, error: NSError): void;
+}
+
+declare class VZVirtualMachineDelegate extends NativeObject implements VZVirtualMachineDelegate {
 }
 
 declare class VZSharedDirectory extends NSObject {
@@ -219,10 +219,6 @@ declare class VZVirtioSocketListener extends NSObject {
 }
 
 declare class VZVirtioSocketDeviceConfiguration extends VZSocketDeviceConfiguration {
-  init(): this;
-}
-
-declare class VZVirtioNetworkDeviceConfiguration extends VZNetworkDeviceConfiguration {
   init(): this;
 }
 
@@ -605,6 +601,20 @@ declare class VZAudioDeviceConfiguration extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class VZVirtioTraditionalMemoryBalloonDevice extends VZMemoryBalloonDevice {
+  targetVirtualMachineMemorySize: number;
+
+  setTargetVirtualMachineMemorySize(targetVirtualMachineMemorySize: number): void;
+}
+
+declare class VZBridgedNetworkInterface extends NSObject {
+  static readonly networkInterfaces: NSArray;
+
+  readonly identifier: string;
+
+  readonly localizedDisplayName: string;
+}
+
 declare class VZMacGraphicsDisplayConfiguration extends VZGraphicsDisplayConfiguration {
   initWithWidthInPixelsHeightInPixelsPixelsPerInch(widthInPixels: number, heightInPixels: number, pixelsPerInch: number): this;
 
@@ -623,18 +633,8 @@ declare class VZMacGraphicsDisplayConfiguration extends VZGraphicsDisplayConfigu
   setPixelsPerInch(pixelsPerInch: number): void;
 }
 
-declare class VZVirtioTraditionalMemoryBalloonDevice extends VZMemoryBalloonDevice {
-  targetVirtualMachineMemorySize: number;
-
-  setTargetVirtualMachineMemorySize(targetVirtualMachineMemorySize: number): void;
-}
-
-declare class VZBridgedNetworkInterface extends NSObject {
-  static readonly networkInterfaces: NSArray;
-
-  readonly identifier: string;
-
-  readonly localizedDisplayName: string;
+declare class VZVirtioNetworkDeviceConfiguration extends VZNetworkDeviceConfiguration {
+  init(): this;
 }
 
 declare class VZXHCIController extends VZUSBController {
@@ -914,31 +914,10 @@ declare class VZDirectorySharingDeviceConfiguration extends NSObject implements 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class VZVirtioSocketDevice extends VZSocketDevice {
-  setSocketListenerForPort(listener: VZVirtioSocketListener, port: number): void;
+declare class VZVmnetNetworkDeviceAttachment extends VZNetworkDeviceAttachment {
+  initWithNetwork(network: interop.PointerConvertible): this;
 
-  removeSocketListenerForPort(port: number): void;
-
-  connectToPortCompletionHandler(port: number, completionHandler: (p1: VZVirtioSocketConnection, p2: NSError) => void | null): void;
-}
-
-declare class VZMacOSVirtualMachineStartOptions extends VZVirtualMachineStartOptions {
-  startUpFromMacOSRecovery: boolean;
-
-  setStartUpFromMacOSRecovery(startUpFromMacOSRecovery: boolean): void;
-}
-
-declare class VZAudioOutputStreamSink extends NSObject {
-}
-
-declare class VZMacAuxiliaryStorage extends NSObject {
-  initWithURL(URL: NSURL): this;
-
-  initCreatingStorageAtURLHardwareModelOptionsError(URL: NSURL, hardwareModel: VZMacHardwareModel, options: interop.Enum<typeof VZMacAuxiliaryStorageInitializationOptions>, error: interop.PointerConvertible): this;
-
-  readonly URL: NSURL;
-
-  initWithContentsOfURL(URL: NSURL): this;
+  readonly network: interop.Pointer;
 }
 
 declare class VZVirtioFileSystemDeviceConfiguration extends VZDirectorySharingDeviceConfiguration {
@@ -957,6 +936,16 @@ declare class VZVirtioFileSystemDeviceConfiguration extends VZDirectorySharingDe
   setShare(share: VZDirectoryShare | null): void;
 }
 
+declare class VZMacAuxiliaryStorage extends NSObject {
+  initWithURL(URL: NSURL): this;
+
+  initCreatingStorageAtURLHardwareModelOptionsError(URL: NSURL, hardwareModel: VZMacHardwareModel, options: interop.Enum<typeof VZMacAuxiliaryStorageInitializationOptions>, error: interop.PointerConvertible): this;
+
+  readonly URL: NSURL;
+
+  initWithContentsOfURL(URL: NSURL): this;
+}
+
 declare class VZVirtioSocketConnection extends NSObject {
   readonly destinationPort: number;
 
@@ -965,6 +954,12 @@ declare class VZVirtioSocketConnection extends NSObject {
   readonly fileDescriptor: number;
 
   close(): void;
+}
+
+declare class VZMacOSVirtualMachineStartOptions extends VZVirtualMachineStartOptions {
+  startUpFromMacOSRecovery: boolean;
+
+  setStartUpFromMacOSRecovery(startUpFromMacOSRecovery: boolean): void;
 }
 
 declare class VZMacGraphicsDisplay extends VZGraphicsDisplay {
@@ -995,12 +990,7 @@ declare class VZLinuxRosettaAbstractSocketCachingOptions extends VZLinuxRosettaC
   static readonly maximumNameLength: number;
 }
 
-declare class VZMacOSConfigurationRequirements extends NSObject {
-  readonly hardwareModel: VZMacHardwareModel;
-
-  readonly minimumSupportedCPUCount: number;
-
-  readonly minimumSupportedMemorySize: number;
+declare class VZAudioOutputStreamSink extends NSObject {
 }
 
 declare class VZVirtioConsoleDeviceConfiguration extends VZConsoleDeviceConfiguration {
@@ -1012,6 +1002,14 @@ declare class VZVirtioConsoleDeviceConfiguration extends VZConsoleDeviceConfigur
 declare class VZDirectorySharingDevice extends NSObject {
 }
 
+declare class VZVirtioSocketDevice extends VZSocketDevice {
+  setSocketListenerForPort(listener: VZVirtioSocketListener, port: number): void;
+
+  removeSocketListenerForPort(port: number): void;
+
+  connectToPortCompletionHandler(port: number, completionHandler: (p1: VZVirtioSocketConnection, p2: NSError) => void | null): void;
+}
+
 declare class VZGraphicsDisplayConfiguration extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -1020,6 +1018,8 @@ declare class VZVirtualMachine extends NSObject {
   initWithConfiguration(configuration: VZVirtualMachineConfiguration): this;
 
   initWithConfigurationQueue(configuration: VZVirtualMachineConfiguration, queue: NSObject): this;
+
+  readonly queue: NSObject;
 
   static readonly supported: boolean;
 
@@ -1072,6 +1072,18 @@ declare class VZVirtualMachine extends NSObject {
   setDelegate(delegate: VZVirtualMachineDelegate | null): void;
 }
 
+declare class VZMacOSInstaller extends NSObject {
+  initWithVirtualMachineRestoreImageURL(virtualMachine: VZVirtualMachine, restoreImageFileURL: NSURL): this;
+
+  installWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
+
+  readonly progress: NSProgress;
+
+  readonly virtualMachine: VZVirtualMachine;
+
+  readonly restoreImageURL: NSURL;
+}
+
 declare class VZVirtioTraditionalMemoryBalloonDeviceConfiguration extends VZMemoryBalloonDeviceConfiguration {
   init(): this;
 }
@@ -1080,6 +1092,14 @@ declare class VZDirectoryShare extends NSObject {
 }
 
 declare class VZMacGraphicsDevice extends VZGraphicsDevice {
+}
+
+declare class VZMacOSConfigurationRequirements extends NSObject {
+  readonly hardwareModel: VZMacHardwareModel;
+
+  readonly minimumSupportedCPUCount: number;
+
+  readonly minimumSupportedMemorySize: number;
 }
 
 declare class VZNATNetworkDeviceAttachment extends VZNetworkDeviceAttachment {
@@ -1107,18 +1127,6 @@ declare class VZGraphicsDisplay extends NSObject {
   addObserver(observer: VZGraphicsDisplayObserver): void;
 
   removeObserver(observer: VZGraphicsDisplayObserver): void;
-}
-
-declare class VZMacOSInstaller extends NSObject {
-  initWithVirtualMachineRestoreImageURL(virtualMachine: VZVirtualMachine, restoreImageFileURL: NSURL): this;
-
-  installWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
-
-  readonly progress: NSProgress;
-
-  readonly virtualMachine: VZVirtualMachine;
-
-  readonly restoreImageURL: NSURL;
 }
 
 declare class VZMacPlatformConfiguration extends VZPlatformConfiguration {

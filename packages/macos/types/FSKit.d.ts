@@ -18,6 +18,22 @@ declare const FSExtentType: {
   ZeroFill: 1,
 };
 
+declare const FSVolumeOpenModes: {
+  Read: 1,
+  Write: 2,
+};
+
+declare const FSBlockmapFlags: {
+  Read: 256,
+  Write: 512,
+};
+
+declare const FSCompleteIOFlags: {
+  Read: 256,
+  Write: 512,
+  Async: 1024,
+};
+
 declare const FSPreallocateFlags: {
   Contiguous: 2,
   All: 4,
@@ -43,13 +59,6 @@ declare const FSMatchResult: {
   Recognized: 1,
   UsableButLimited: 2,
   Usable: 3,
-};
-
-declare const FSContainerState: {
-  NotReady: 0,
-  Blocked: 1,
-  Ready: 2,
-  Active: 3,
 };
 
 declare const FSAccessMask: {
@@ -89,19 +98,14 @@ declare const FSItemDeactivationOptions: {
   ForPreallocatedItems: 2,
 };
 
-declare const FSCompleteIOFlags: {
-  Read: 256,
-  Write: 512,
-  Async: 1024,
+declare const FSSyncFlags: {
+  FSSyncFlagsWait: 1,
+  No: 2,
+  D: 4,
 };
 
 declare const FSDeactivateOptions: {
   FSDeactivateOptionsForce: 1,
-};
-
-declare const FSVolumeOpenModes: {
-  Read: 1,
-  Write: 2,
 };
 
 declare const FSItemType: {
@@ -115,16 +119,17 @@ declare const FSItemType: {
   Socket: 7,
 };
 
-declare const FSSyncFlags: {
-  FSSyncFlagsWait: 1,
-  No: 2,
-  D: 4,
-};
-
 declare const FSItemID: {
   Invalid: 0,
   ParentOfRoot: 1,
   RootDirectory: 2,
+};
+
+declare const FSContainerState: {
+  NotReady: 0,
+  Blocked: 1,
+  Ready: 2,
+  Active: 3,
 };
 
 declare const FSItemAttribute: {
@@ -146,11 +151,6 @@ declare const FSItemAttribute: {
   AddedTime: 32768,
   SupportsLimitedXAttrs: 65536,
   InhibitKernelOffloadedIO: 131072,
-};
-
-declare const FSBlockmapFlags: {
-  Read: 256,
-  Write: 512,
 };
 
 declare function fs_errorForPOSIXError(p1: number): NSError;
@@ -235,6 +235,8 @@ declare interface FSVolumeOperations extends NSObjectProtocol, FSVolumePathConfO
 
   readonly volumeStatistics: FSStatFSResult;
 
+  enableOpenUnlinkEmulation?: boolean;
+
   mountWithOptionsReplyHandler(options: FSTaskOptions, reply: (p1: NSError) => void | null): void;
 
   unmountWithReplyHandler(reply: () => void): void;
@@ -266,6 +268,8 @@ declare interface FSVolumeOperations extends NSObjectProtocol, FSVolumePathConfO
   activateWithOptionsReplyHandler(options: FSTaskOptions, reply: (p1: FSItem, p2: NSError) => void | null): void;
 
   deactivateWithOptionsReplyHandler(options: interop.Enum<typeof FSDeactivateOptions>, reply: (p1: NSError) => void | null): void;
+
+  setEnableOpenUnlinkEmulation?(enableOpenUnlinkEmulation: boolean): void;
 }
 
 declare class FSVolumeOperations extends NativeObject implements FSVolumeOperations {
@@ -292,9 +296,9 @@ declare class FSFileSystemBase extends NativeObject implements FSFileSystemBase 
 }
 
 declare interface FSUnaryFileSystemOperations extends NSObjectProtocol {
-  probeResourceReplyHandler(resource: FSResource, replyHandler: (p1: FSProbeResult, p2: NSError) => void | null): void;
+  probeResourceReplyHandler(resource: FSResource, reply: (p1: FSProbeResult, p2: NSError) => void | null): void;
 
-  loadResourceOptionsReplyHandler(resource: FSResource, options: FSTaskOptions, replyHandler: (p1: FSVolume, p2: NSError) => void | null): void;
+  loadResourceOptionsReplyHandler(resource: FSResource, options: FSTaskOptions, reply: (p1: FSVolume, p2: NSError) => void | null): void;
 
   unloadResourceOptionsReplyHandler(resource: FSResource, options: FSTaskOptions, reply: (p1: NSError) => void | null): void;
 
@@ -356,38 +360,6 @@ declare interface FSVolumeOpenCloseOperations extends NSObjectProtocol {
 }
 
 declare class FSVolumeOpenCloseOperations extends NativeObject implements FSVolumeOpenCloseOperations {
-}
-
-declare class FSFileName extends NSObject implements NSSecureCoding, NSCopying {
-  readonly data: NSData;
-
-  readonly string: string;
-
-  readonly debugDescription: string;
-
-  initWithCString(name: string): this;
-
-  initWithBytesLength(bytes: string, length: number): this;
-
-  initWithData(name: NSData): this;
-
-  initWithString(name: string): this;
-
-  static nameWithCString<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
-
-  static nameWithBytesLength<This extends abstract new (...args: any) => any>(this: This, bytes: string, length: number): InstanceType<This>;
-
-  static nameWithData<This extends abstract new (...args: any) => any>(this: This, name: NSData): InstanceType<This>;
-
-  static nameWithString<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class FSExtentPacker extends NSObject {
@@ -462,141 +434,62 @@ declare class FSUnaryFileSystem extends NSObject implements FSFileSystemBase {
   readonly debugDescription: string;
 }
 
-declare class FSVolume extends NSObject {
-  readonly volumeID: FSVolumeIdentifier;
+declare class FSStatFSResult extends NSObject implements NSSecureCoding {
+  blockSize: number;
 
-  name: FSFileName;
+  ioSize: number;
 
-  initWithVolumeIDVolumeName(volumeID: FSVolumeIdentifier, volumeName: FSFileName): this;
+  totalBlocks: number;
 
-  setName(name: FSFileName): void;
-}
+  availableBlocks: number;
 
-declare class FSDirectoryEntryPacker extends NSObject {
-  packEntryWithNameItemTypeItemIDNextCookieAttributes(name: FSFileName, itemType: interop.Enum<typeof FSItemType>, itemID: interop.Enum<typeof FSItemID>, nextCookie: number, attributes: FSItemAttributes | null): boolean;
-}
+  freeBlocks: number;
 
-declare class FSBlockDeviceResource extends FSResource {
-  readonly BSDName: string;
+  usedBlocks: number;
 
-  readonly writable: boolean;
+  totalBytes: number;
 
-  readonly blockSize: number;
+  availableBytes: number;
 
-  readonly blockCount: number;
+  freeBytes: number;
 
-  readonly physicalBlockSize: number;
+  usedBytes: number;
 
-  readIntoStartingAtLengthCompletionHandler(buffer: interop.PointerConvertible, offset: number, length: number, completionHandler: (p1: number, p2: NSError) => void | null): void;
+  totalFiles: number;
 
-  readIntoStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): number;
+  freeFiles: number;
 
-  writeFromStartingAtLengthCompletionHandler(buffer: interop.PointerConvertible, offset: number, length: number, completionHandler: (p1: number, p2: NSError) => void | null): void;
+  fileSystemSubType: number;
 
-  writeFromStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): number;
+  readonly fileSystemTypeName: string;
 
-  metadataReadIntoStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): boolean;
+  initWithFileSystemTypeName(fileSystemTypeName: string): this;
 
-  metadataWriteFromStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): boolean;
+  setBlockSize(blockSize: number): void;
 
-  delayedMetadataWriteFromStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): boolean;
+  setIoSize(ioSize: number): void;
 
-  metadataFlushWithError(error: interop.PointerConvertible): boolean;
+  setTotalBlocks(totalBlocks: number): void;
 
-  asynchronousMetadataFlushWithError(error: interop.PointerConvertible): boolean;
+  setAvailableBlocks(availableBlocks: number): void;
 
-  metadataClearWithDelayedWritesError(rangesToClear: NSArray<interop.Object> | Array<interop.Object>, withDelayedWrites: boolean, error: interop.PointerConvertible): boolean;
+  setFreeBlocks(freeBlocks: number): void;
 
-  metadataPurgeError(rangesToPurge: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
+  setUsedBlocks(usedBlocks: number): void;
 
-  isWritable(): boolean;
-}
+  setTotalBytes(totalBytes: number): void;
 
-declare class FSMetadataRange extends NSObject {
-  readonly startOffset: number;
+  setAvailableBytes(availableBytes: number): void;
 
-  readonly segmentLength: number;
+  setFreeBytes(freeBytes: number): void;
 
-  readonly segmentCount: number;
+  setUsedBytes(usedBytes: number): void;
 
-  initWithOffsetSegmentLengthSegmentCount(startOffset: number, segmentLength: number, segmentCount: number): this;
+  setTotalFiles(totalFiles: number): void;
 
-  static rangeWithOffsetSegmentLengthSegmentCount<This extends abstract new (...args: any) => any>(this: This, startOffset: number, segmentLength: number, segmentCount: number): InstanceType<This>;
-}
+  setFreeFiles(freeFiles: number): void;
 
-declare class FSTaskOptions extends NSObject {
-  readonly taskOptions: NSArray;
-
-  urlForOption(option: string): NSURL | null;
-}
-
-declare class FSTask extends NSObject {
-  logMessage(str: string): void;
-
-  didCompleteWithError(error: NSError | null): void;
-}
-
-declare class FSItem extends NSObject {
-}
-
-declare class FSContainerIdentifier extends FSEntityIdentifier {
-  readonly volumeIdentifier: FSVolumeIdentifier;
-}
-
-declare class FSEntityIdentifier extends NSObject implements NSCopying, NSSecureCoding {
-  init(): this;
-
-  initWithUUID(uuid: NSUUID): this;
-
-  initWithUUIDQualifier(uuid: NSUUID, qualifier: number): this;
-
-  initWithUUIDData(uuid: NSUUID, qualifierData: NSData): this;
-
-  uuid: NSUUID;
-
-  qualifier: NSData;
-
-  setUuid(uuid: NSUUID): void;
-
-  setQualifier(qualifier: NSData | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class FSMutableFileDataBuffer extends NSObject {
-  readonly length: number;
-
-  mutableBytes(): interop.Pointer;
-}
-
-declare class FSItemGetAttributesRequest extends NSObject implements NSSecureCoding {
-  wantedAttributes: interop.Enum<typeof FSItemAttribute>;
-
-  isAttributeWanted(attribute: interop.Enum<typeof FSItemAttribute>): boolean;
-
-  setWantedAttributes(wantedAttributes: interop.Enum<typeof FSItemAttribute>): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class FSResource extends NSObject implements NSSecureCoding {
-  readonly revoked: boolean;
-
-  makeProxy(): this;
-
-  revoke(): void;
-
-  isRevoked(): boolean;
+  setFileSystemSubType(fileSystemSubType: number): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -693,10 +586,230 @@ declare class FSVolumeSupportedCapabilities extends NSObject implements NSSecure
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class FSVolumeIdentifier extends FSEntityIdentifier {
+}
+
+declare class FSProbeResult extends NSObject implements NSSecureCoding {
+  readonly result: interop.Enum<typeof FSMatchResult>;
+
+  readonly name: string;
+
+  readonly containerID: FSContainerIdentifier;
+
+  static readonly notRecognizedProbeResult: FSProbeResult;
+
+  static recognizedProbeResultWithNameContainerID<This extends abstract new (...args: any) => any>(this: This, name: string, containerID: FSContainerIdentifier): InstanceType<This>;
+
+  static readonly usableButLimitedProbeResult: FSProbeResult;
+
+  static usableButLimitedProbeResultWithNameContainerID<This extends abstract new (...args: any) => any>(this: This, name: string, containerID: FSContainerIdentifier): InstanceType<This>;
+
+  static usableProbeResultWithNameContainerID<This extends abstract new (...args: any) => any>(this: This, name: string, containerID: FSContainerIdentifier): InstanceType<This>;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class FSGenericURLResource extends FSResource {
+  readonly url: NSURL;
+
+  initWithURL(url: NSURL): this;
+}
+
+declare class FSBlockDeviceResource extends FSResource {
+  readonly BSDName: string;
+
+  readonly writable: boolean;
+
+  readonly blockSize: number;
+
+  readonly blockCount: number;
+
+  readonly physicalBlockSize: number;
+
+  readIntoStartingAtLengthCompletionHandler(buffer: interop.PointerConvertible, offset: number, length: number, completionHandler: (p1: number, p2: NSError) => void | null): void;
+
+  readIntoStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): number;
+
+  writeFromStartingAtLengthCompletionHandler(buffer: interop.PointerConvertible, offset: number, length: number, completionHandler: (p1: number, p2: NSError) => void | null): void;
+
+  writeFromStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): number;
+
+  metadataReadIntoStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): boolean;
+
+  metadataWriteFromStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): boolean;
+
+  delayedMetadataWriteFromStartingAtLengthError(buffer: interop.PointerConvertible, offset: number, length: number, error: interop.PointerConvertible): boolean;
+
+  metadataFlushWithError(error: interop.PointerConvertible): boolean;
+
+  asynchronousMetadataFlushWithError(error: interop.PointerConvertible): boolean;
+
+  metadataClearWithDelayedWritesError(rangesToClear: NSArray<interop.Object> | Array<interop.Object>, withDelayedWrites: boolean, error: interop.PointerConvertible): boolean;
+
+  metadataPurgeError(rangesToPurge: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
+
+  isWritable(): boolean;
+}
+
+declare class FSMetadataRange extends NSObject {
+  readonly startOffset: number;
+
+  readonly segmentLength: number;
+
+  readonly segmentCount: number;
+
+  initWithOffsetSegmentLengthSegmentCount(startOffset: number, segmentLength: number, segmentCount: number): this;
+
+  static rangeWithOffsetSegmentLengthSegmentCount<This extends abstract new (...args: any) => any>(this: This, startOffset: number, segmentLength: number, segmentCount: number): InstanceType<This>;
+}
+
+declare class FSTaskOptions extends NSObject {
+  readonly taskOptions: NSArray;
+
+  urlForOption(option: string): NSURL | null;
+}
+
+declare class FSItemGetAttributesRequest extends NSObject implements NSSecureCoding {
+  wantedAttributes: interop.Enum<typeof FSItemAttribute>;
+
+  isAttributeWanted(attribute: interop.Enum<typeof FSItemAttribute>): boolean;
+
+  setWantedAttributes(wantedAttributes: interop.Enum<typeof FSItemAttribute>): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class FSItemSetAttributesRequest extends FSItemAttributes {
+  consumedAttributes: interop.Enum<typeof FSItemAttribute>;
+
+  wasAttributeConsumed(attribute: interop.Enum<typeof FSItemAttribute>): boolean;
+
+  setConsumedAttributes(consumedAttributes: interop.Enum<typeof FSItemAttribute>): void;
+}
+
+declare class FSFileName extends NSObject implements NSSecureCoding, NSCopying {
+  readonly data: NSData;
+
+  readonly string: string;
+
+  readonly debugDescription: string;
+
+  initWithCString(name: string): this;
+
+  initWithBytesLength(bytes: string, length: number): this;
+
+  initWithData(name: NSData): this;
+
+  initWithString(name: string): this;
+
+  static nameWithCString<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
+
+  static nameWithBytesLength<This extends abstract new (...args: any) => any>(this: This, bytes: string, length: number): InstanceType<This>;
+
+  static nameWithData<This extends abstract new (...args: any) => any>(this: This, name: NSData): InstanceType<This>;
+
+  static nameWithString<This extends abstract new (...args: any) => any>(this: This, name: string): InstanceType<This>;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class FSContainerIdentifier extends FSEntityIdentifier {
+  readonly volumeIdentifier: FSVolumeIdentifier;
+}
+
+declare class FSEntityIdentifier extends NSObject implements NSCopying, NSSecureCoding {
+  init(): this;
+
+  initWithUUID(uuid: NSUUID): this;
+
+  initWithUUIDQualifier(uuid: NSUUID, qualifier: number): this;
+
+  initWithUUIDData(uuid: NSUUID, qualifierData: NSData): this;
+
+  uuid: NSUUID;
+
+  qualifier: NSData;
+
+  setUuid(uuid: NSUUID): void;
+
+  setQualifier(qualifier: NSData | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class FSClient extends NSObject {
   static readonly sharedInstance: FSClient;
 
   fetchInstalledExtensionsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+}
+
+declare class FSResource extends NSObject implements NSSecureCoding {
+  readonly revoked: boolean;
+
+  makeProxy(): this;
+
+  revoke(): void;
+
+  isRevoked(): boolean;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class FSPathURLResource extends FSResource {
+  readonly url: NSURL;
+
+  initWithURLWritable(URL: NSURL, writable: boolean): this;
+
+  readonly writable: boolean;
+
+  isWritable(): boolean;
+}
+
+declare class FSTask extends NSObject {
+  logMessage(str: string): void;
+
+  didCompleteWithError(error: NSError | null): void;
+
+  cancellationHandler: () => NSError | null;
+
+  setCancellationHandler(cancellationHandler: () => NSError | null): void;
+}
+
+declare class FSMutableFileDataBuffer extends NSObject {
+  readonly length: number;
+
+  mutableBytes(): interop.Pointer;
+}
+
+declare class FSItem extends NSObject {
+}
+
+declare class FSDirectoryEntryPacker extends NSObject {
+  packEntryWithNameItemTypeItemIDNextCookieAttributes(name: FSFileName, itemType: interop.Enum<typeof FSItemType>, itemID: interop.Enum<typeof FSItemID>, nextCookie: number, attributes: FSItemAttributes | null): boolean;
 }
 
 declare class FSItemAttributes extends NSObject implements NSSecureCoding {
@@ -793,102 +906,13 @@ declare class FSModuleIdentity extends NSObject {
   isEnabled(): boolean;
 }
 
-declare class FSStatFSResult extends NSObject implements NSSecureCoding {
-  blockSize: number;
+declare class FSVolume extends NSObject {
+  readonly volumeID: FSVolumeIdentifier;
 
-  ioSize: number;
+  name: FSFileName;
 
-  totalBlocks: number;
+  initWithVolumeIDVolumeName(volumeID: FSVolumeIdentifier, volumeName: FSFileName): this;
 
-  availableBlocks: number;
-
-  freeBlocks: number;
-
-  usedBlocks: number;
-
-  totalBytes: number;
-
-  availableBytes: number;
-
-  freeBytes: number;
-
-  usedBytes: number;
-
-  totalFiles: number;
-
-  freeFiles: number;
-
-  fileSystemSubType: number;
-
-  readonly fileSystemTypeName: string;
-
-  initWithFileSystemTypeName(fileSystemTypeName: string): this;
-
-  setBlockSize(blockSize: number): void;
-
-  setIoSize(ioSize: number): void;
-
-  setTotalBlocks(totalBlocks: number): void;
-
-  setAvailableBlocks(availableBlocks: number): void;
-
-  setFreeBlocks(freeBlocks: number): void;
-
-  setUsedBlocks(usedBlocks: number): void;
-
-  setTotalBytes(totalBytes: number): void;
-
-  setAvailableBytes(availableBytes: number): void;
-
-  setFreeBytes(freeBytes: number): void;
-
-  setUsedBytes(usedBytes: number): void;
-
-  setTotalFiles(totalFiles: number): void;
-
-  setFreeFiles(freeFiles: number): void;
-
-  setFileSystemSubType(fileSystemSubType: number): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class FSProbeResult extends NSObject implements NSSecureCoding {
-  readonly result: interop.Enum<typeof FSMatchResult>;
-
-  readonly name: string;
-
-  readonly containerID: FSContainerIdentifier;
-
-  static readonly notRecognizedProbeResult: FSProbeResult;
-
-  static recognizedProbeResultWithNameContainerID<This extends abstract new (...args: any) => any>(this: This, name: string, containerID: FSContainerIdentifier): InstanceType<This>;
-
-  static readonly usableButLimitedProbeResult: FSProbeResult;
-
-  static usableButLimitedProbeResultWithNameContainerID<This extends abstract new (...args: any) => any>(this: This, name: string, containerID: FSContainerIdentifier): InstanceType<This>;
-
-  static usableProbeResultWithNameContainerID<This extends abstract new (...args: any) => any>(this: This, name: string, containerID: FSContainerIdentifier): InstanceType<This>;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class FSVolumeIdentifier extends FSEntityIdentifier {
-}
-
-declare class FSItemSetAttributesRequest extends FSItemAttributes {
-  consumedAttributes: interop.Enum<typeof FSItemAttribute>;
-
-  wasAttributeConsumed(attribute: interop.Enum<typeof FSItemAttribute>): boolean;
-
-  setConsumedAttributes(consumedAttributes: interop.Enum<typeof FSItemAttribute>): void;
+  setName(name: FSFileName): void;
 }
 

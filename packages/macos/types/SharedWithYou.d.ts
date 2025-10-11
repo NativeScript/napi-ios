@@ -6,6 +6,13 @@ declare const SWCollaborationMetadataTypeIdentifier: string;
 
 declare const NSPasteboardTypeCollaborationMetadata: string;
 
+declare const SWHighlightPersistenceEventTrigger: {
+  Created: 1,
+  Deleted: 2,
+  Renamed: 3,
+  Moved: 4,
+};
+
 declare const SWAttributionViewHorizontalAlignment: {
   Default: 0,
   Leading: 1,
@@ -16,13 +23,6 @@ declare const SWAttributionViewHorizontalAlignment: {
 declare const SWAttributionViewDisplayContext: {
   Summary: 0,
   Detail: 1,
-};
-
-declare const SWHighlightPersistenceEventTrigger: {
-  Created: 1,
-  Deleted: 2,
-  Renamed: 3,
-  Moved: 4,
 };
 
 declare const SWHighlightChangeEventTrigger: {
@@ -37,15 +37,15 @@ declare const SWHighlightCenterErrorCode: {
   AccessDenied: 3,
 };
 
+declare const SWHighlightMembershipEventTrigger: {
+  Added: 1,
+  Removed: 2,
+};
+
 declare const SWAttributionViewBackgroundStyle: {
   Default: 0,
   Color: 1,
   Material: 2,
-};
-
-declare const SWHighlightMembershipEventTrigger: {
-  Added: 1,
-  Removed: 2,
 };
 
 declare interface SWCollaborationViewDelegate extends NSObjectProtocol {

@@ -2,6 +2,11 @@
 
 declare const HV_ALLOCATE_DEFAULT: number;
 
+declare const hv_ipa_granule_t: {
+  E_4: 0,
+  E_16: 1,
+};
+
 declare const hv_sme_p_reg_t: {
   G_0: 0,
   G_1: 1,
@@ -1648,103 +1653,6 @@ declare const hv_gic_distributor_reg_t: {
   PIDR2: -24,
 };
 
-declare const hv_gic_icc_reg_t: {
-  PMR_EL1: -15824,
-  BPR0_EL1: -14781,
-  AP0R0_EL1: -14780,
-  AP1R0_EL1: -14776,
-  RPR_EL1: -14757,
-  BPR1_EL1: -14749,
-  CTLR_EL1: -14748,
-  SRE_EL1: -14747,
-  IGRPEN0_EL1: -14746,
-  IGRPEN1_EL1: -14745,
-  SRE_EL2: -6579,
-};
-
-declare const hv_sme_z_reg_t: {
-  G_0: 0,
-  G_1: 1,
-  G_2: 2,
-  G_3: 3,
-  G_4: 4,
-  G_5: 5,
-  G_6: 6,
-  G_7: 7,
-  G_8: 8,
-  G_9: 9,
-  G_10: 10,
-  G_11: 11,
-  G_12: 12,
-  G_13: 13,
-  G_14: 14,
-  G_15: 15,
-  G_16: 16,
-  G_17: 17,
-  G_18: 18,
-  G_19: 19,
-  G_20: 20,
-  G_21: 21,
-  G_22: 22,
-  G_23: 23,
-  G_24: 24,
-  G_25: 25,
-  G_26: 26,
-  G_27: 27,
-  G_28: 28,
-  G_29: 29,
-  G_30: 30,
-  G_31: 31,
-};
-
-declare const hv_cache_type_t: {
-  DATA: 0,
-  INSTRUCTION: 1,
-};
-
-declare const hv_boot_state: {
-  INIT: 0,
-  SIPI: 1,
-  RUNNING: 2,
-};
-
-declare const hv_interrupt_type_t: {
-  IR: 0,
-  FI: 1,
-};
-
-declare const hv_gic_msi_reg_t: {
-  TYPE: 8,
-  SET_SPI_NS: 64,
-};
-
-declare const hv_gic_ich_reg_t: {
-  AP0R0_: -6592,
-  AP1R0_: -6584,
-  HCR_: -6568,
-  VTR_: -6567,
-  MISR_: -6566,
-  EISR_: -6565,
-  ELRSR_: -6563,
-  VMCR_: -6561,
-  LR0_: -6560,
-  LR1_: -6559,
-  LR2_: -6558,
-  LR3_: -6557,
-  LR4_: -6556,
-  LR5_: -6555,
-  LR6_: -6554,
-  LR7_: -6553,
-  LR8_: -6552,
-  LR9_: -6551,
-  LR10_: -6550,
-  LR11_: -6549,
-  LR12_: -6548,
-  LR13_: -6547,
-  LR14_: -6546,
-  LR15_: -6545,
-};
-
 declare const hv_sys_reg_t: {
   DBGBVR0_EL1: -32764,
   DBGBCR0_EL1: -32763,
@@ -1881,7 +1789,7 @@ declare const hv_sys_reg_t: {
   HCR_EL2: -8056,
   HPFAR_EL2: -7420,
   MAIR_EL2: -6896,
-  MDCR_EL2: -8167,
+  MDCR_EL2: -8055,
   SCTLR_EL2: -8064,
   SPSR_EL2: -7680,
   SP_EL2: -3576,
@@ -1894,6 +1802,114 @@ declare const hv_sys_reg_t: {
   VPIDR_EL2: -8192,
   VTCR_EL2: -7926,
   VTTBR_EL2: -7928,
+};
+
+declare const hv_gic_icc_reg_t: {
+  PMR_EL1: -15824,
+  BPR0_EL1: -14781,
+  AP0R0_EL1: -14780,
+  AP1R0_EL1: -14776,
+  RPR_EL1: -14757,
+  BPR1_EL1: -14749,
+  CTLR_EL1: -14748,
+  SRE_EL1: -14747,
+  IGRPEN0_EL1: -14746,
+  IGRPEN1_EL1: -14745,
+  SRE_EL2: -6579,
+};
+
+declare const hv_sme_z_reg_t: {
+  G_0: 0,
+  G_1: 1,
+  G_2: 2,
+  G_3: 3,
+  G_4: 4,
+  G_5: 5,
+  G_6: 6,
+  G_7: 7,
+  G_8: 8,
+  G_9: 9,
+  G_10: 10,
+  G_11: 11,
+  G_12: 12,
+  G_13: 13,
+  G_14: 14,
+  G_15: 15,
+  G_16: 16,
+  G_17: 17,
+  G_18: 18,
+  G_19: 19,
+  G_20: 20,
+  G_21: 21,
+  G_22: 22,
+  G_23: 23,
+  G_24: 24,
+  G_25: 25,
+  G_26: 26,
+  G_27: 27,
+  G_28: 28,
+  G_29: 29,
+  G_30: 30,
+  G_31: 31,
+};
+
+declare const hv_cache_type_t: {
+  DATA: 0,
+  INSTRUCTION: 1,
+};
+
+declare const hv_interrupt_type_t: {
+  IR: 0,
+  FI: 1,
+};
+
+declare const hv_feature_reg_t: {
+  ID_AA64DFR0_EL1: 0,
+  ID_AA64DFR1_EL1: 1,
+  ID_AA64ISAR0_EL1: 2,
+  ID_AA64ISAR1_EL1: 3,
+  ID_AA64MMFR0_EL1: 4,
+  ID_AA64MMFR1_EL1: 5,
+  ID_AA64MMFR2_EL1: 6,
+  ID_AA64PFR0_EL1: 7,
+  ID_AA64PFR1_EL1: 8,
+  CTR_EL0: 9,
+  CLIDR_EL1: 10,
+  DCZID_EL0: 11,
+  ID_AA64SMFR0_EL1: 12,
+  ID_AA64ZFR0_EL1: 13,
+};
+
+declare const hv_gic_msi_reg_t: {
+  TYPE: 8,
+  SET_SPI_NS: 64,
+};
+
+declare const hv_gic_ich_reg_t: {
+  AP0R0_: -6592,
+  AP1R0_: -6584,
+  HCR_: -6568,
+  VTR_: -6567,
+  MISR_: -6566,
+  EISR_: -6565,
+  ELRSR_: -6563,
+  VMCR_: -6561,
+  LR0_: -6560,
+  LR1_: -6559,
+  LR2_: -6558,
+  LR3_: -6557,
+  LR4_: -6556,
+  LR5_: -6555,
+  LR6_: -6554,
+  LR7_: -6553,
+  LR8_: -6552,
+  LR9_: -6551,
+  LR10_: -6550,
+  LR11_: -6549,
+  LR12_: -6548,
+  LR13_: -6547,
+  LR14_: -6546,
+  LR15_: -6545,
 };
 
 declare const hv_simd_fp_reg_t: {
@@ -1931,23 +1947,6 @@ declare const hv_simd_fp_reg_t: {
   Q31: 31,
 };
 
-declare const hv_feature_reg_t: {
-  ID_AA64DFR0_EL1: 0,
-  ID_AA64DFR1_EL1: 1,
-  ID_AA64ISAR0_EL1: 2,
-  ID_AA64ISAR1_EL1: 3,
-  ID_AA64MMFR0_EL1: 4,
-  ID_AA64MMFR1_EL1: 5,
-  ID_AA64MMFR2_EL1: 6,
-  ID_AA64PFR0_EL1: 7,
-  ID_AA64PFR1_EL1: 8,
-  CTR_EL0: 9,
-  CLIDR_EL1: 10,
-  DCZID_EL0: 11,
-  ID_AA64SMFR0_EL1: 12,
-  ID_AA64ZFR0_EL1: 13,
-};
-
 declare class hv_vcpu_sme_state_t {
   constructor(init?: hv_vcpu_sme_state_t);
   streaming_sve_mode_enabled: boolean;
@@ -1960,83 +1959,11 @@ declare class hv_vcpu_exit_t {
   exception: hv_vcpu_exit_exception_t;
 }
 
-declare class hv_ioapic_state {
-  constructor(init?: hv_ioapic_state);
-  rtbl: unknown /* const array */;
-  irr: number;
-  ioa_id: number;
-  ioregsel: number;
-}
-
-declare class hv_atpic_state_ext_t {
-  constructor(init?: hv_atpic_state_ext_t);
-  version: number;
-  state: hv_atpic_state;
-}
-
-declare class hv_apic_state {
-  constructor(init?: hv_apic_state);
-  apic_gpa: number;
-  apic_controls: number;
-  tsc_deadline: number;
-  apic_id: number;
-  ver: number;
-  tpr: number;
-  apr: number;
-  ldr: number;
-  dfr: number;
-  svr: number;
-  isr: unknown /* const array */;
-  tmr: unknown /* const array */;
-  irr: unknown /* const array */;
-  esr: number;
-  lvt: unknown /* const array */;
-  icr: unknown /* const array */;
-  icr_timer: number;
-  dcr_timer: number;
-  ccr_timer: number;
-  esr_pending: number;
-  boot_state: interop.Enum<typeof hv_boot_state>;
-  aeoi: unknown /* const array */;
-}
-
-declare class hv_atpic_state {
-  constructor(init?: hv_atpic_state);
-  ready: boolean;
-  icw_num: number;
-  rd_cmd_reg: number;
-  aeoi: boolean;
-  poll: boolean;
-  rotate: boolean;
-  sfn: boolean;
-  irq_base: number;
-  request: number;
-  service: number;
-  mask: number;
-  smm: boolean;
-  last_request: number;
-  lowprio: number;
-  intr_raised: boolean;
-  elc: number;
-}
-
 declare class hv_vcpu_exit_exception_t {
   constructor(init?: hv_vcpu_exit_exception_t);
   syndrome: number;
   virtual_address: number;
   physical_address: number;
-}
-
-declare class hv_ioapic_state_ext_t {
-  constructor(init?: hv_ioapic_state_ext_t);
-  version: number;
-  state: hv_ioapic_state;
-}
-
-declare class hv_apic_state_ext_t {
-  constructor(init?: hv_apic_state_ext_t);
-  version: number;
-  state: hv_apic_state;
 }
 
 declare function hv_vm_allocate(uvap: interop.PointerConvertible, size: number, flags: number): number;
@@ -2210,6 +2137,12 @@ declare function hv_vm_config_get_el2_supported(el2_supported: interop.PointerCo
 declare function hv_vm_config_get_el2_enabled(config: NSObject, el2_enabled: interop.PointerConvertible): number;
 
 declare function hv_vm_config_set_el2_enabled(config: NSObject, el2_enabled: boolean): number;
+
+declare function hv_vm_config_get_default_ipa_granule(granule: interop.PointerConvertible): number;
+
+declare function hv_vm_config_get_ipa_granule(config: NSObject, granule: interop.PointerConvertible): number;
+
+declare function hv_vm_config_set_ipa_granule(config: NSObject, granule: interop.Enum<typeof hv_ipa_granule_t>): number;
 
 declare interface OS_hv_gic_config extends NSObjectProtocol {
 }

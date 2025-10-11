@@ -12,11 +12,7 @@ declare const ARBlendShapeLocationMouthFrownRight: string;
 
 declare const ARSCNDebugOptionShowFeaturePoints: interop.Enum<typeof SCNDebugOptions>;
 
-declare const ARSkeletonJointNameLeftShoulder: string;
-
-declare const ARSkeletonJointNameRightFoot: string;
-
-declare const ARSkeletonJointNameLeftHand: string;
+declare const ARReferenceObjectArchiveExtension: string;
 
 declare const ARBlendShapeLocationTongueOut: string;
 
@@ -27,8 +23,6 @@ declare const ARBlendShapeLocationMouthUpperUpLeft: string;
 declare const ARBlendShapeLocationMouthShrugLower: string;
 
 declare const ARBlendShapeLocationMouthRollUpper: string;
-
-declare const ARBlendShapeLocationMouthRollLower: string;
 
 declare const ARBlendShapeLocationMouthRight: string;
 
@@ -46,10 +40,6 @@ declare const ARBlendShapeLocationMouthDimpleLeft: string;
 
 declare const ARBlendShapeLocationJawForward: string;
 
-declare const ARBlendShapeLocationEyeWideRight: string;
-
-declare const ARBlendShapeLocationEyeWideLeft: string;
-
 declare const ARBlendShapeLocationEyeLookUpLeft: string;
 
 declare const ARBlendShapeLocationEyeLookOutRight: string;
@@ -64,9 +54,19 @@ declare const ARBlendShapeLocationBrowDownRight: string;
 
 declare const ARBlendShapeLocationBrowDownLeft: string;
 
-declare const ARReferenceObjectArchiveExtension: string;
-
 declare const ARErrorDomain: string;
+
+declare const ARBlendShapeLocationEyeWideRight: string;
+
+declare const ARBlendShapeLocationMouthRollLower: string;
+
+declare const ARSkeletonJointNameRightShoulder: string;
+
+declare const ARSkeletonJointNameLeftShoulder: string;
+
+declare const ARSkeletonJointNameRightFoot: string;
+
+declare const ARSkeletonJointNameLeftHand: string;
 
 declare const ARSCNDebugOptionShowWorldOrigin: interop.Enum<typeof SCNDebugOptions>;
 
@@ -86,6 +86,8 @@ declare const ARBlendShapeLocationBrowOuterUpRight: string;
 
 declare const ARBlendShapeLocationMouthUpperUpRight: string;
 
+declare const ARBlendShapeLocationMouthStretchRight: string;
+
 declare const ARBlendShapeLocationMouthFunnel: string;
 
 declare const ARBlendShapeLocationMouthSmileRight: string;
@@ -98,17 +100,15 @@ declare const ARSkeletonJointNameLeftFoot: string;
 
 declare const ARSkeletonJointNameRoot: string;
 
-declare const ARBlendShapeLocationMouthPucker: string;
-
 declare const ARBlendShapeLocationMouthStretchLeft: string;
 
 declare const ARBlendShapeLocationMouthSmileLeft: string;
 
-declare const ARBlendShapeLocationMouthStretchRight: string;
-
 declare const ARBlendShapeLocationBrowOuterUpLeft: string;
 
 declare const ARBlendShapeLocationEyeLookInRight: string;
+
+declare const ARBlendShapeLocationEyeWideLeft: string;
 
 declare const ARBlendShapeLocationMouthClose: string;
 
@@ -128,9 +128,9 @@ declare const ARBlendShapeLocationEyeLookDownLeft: string;
 
 declare const ARBlendShapeLocationJawLeft: string;
 
-declare const ARSkeletonJointNameRightShoulder: string;
-
 declare const ARBlendShapeLocationCheekSquintRight: string;
+
+declare const ARBlendShapeLocationMouthPucker: string;
 
 declare const ARHitTestResultType: {
   FeaturePoint: 1,
@@ -139,11 +139,6 @@ declare const ARHitTestResultType: {
   ExistingPlane: 8,
   ExistingPlaneUsingExtent: 16,
   ExistingPlaneUsingGeometry: 32,
-};
-
-declare const ARMatteResolution: {
-  Full: 0,
-  Half: 1,
 };
 
 declare const ARAppClipCodeURLDecodingState: {
@@ -166,6 +161,11 @@ declare const ARPlaneClassification: {
 declare const ARGeometryPrimitiveType: {
   Line: 0,
   Triangle: 1,
+};
+
+declare const ARMatteResolution: {
+  Full: 0,
+  Half: 1,
 };
 
 declare const ARWorldMappingStatus: {
@@ -329,12 +329,6 @@ declare const ARPlaneAnchorAlignment: {
   Vertical: 1,
 };
 
-declare const ARRaycastTarget: {
-  ExistingPlaneGeometry: 0,
-  ExistingPlaneInfinite: 1,
-  EstimatedPlane: 2,
-};
-
 declare const ARFrameSemantics: {
   None: 0,
   PersonSegmentation: 1,
@@ -342,6 +336,12 @@ declare const ARFrameSemantics: {
   BodyDetection: 4,
   SceneDepth: 8,
   SmoothedSceneDepth: 16,
+};
+
+declare const ARRaycastTarget: {
+  ExistingPlaneGeometry: 0,
+  ExistingPlaneInfinite: 1,
+  EstimatedPlane: 2,
 };
 
 declare function ARSkeletonJointNameForRecognizedPointKey(recognizedPointKey: string): string;
@@ -442,12 +442,6 @@ declare interface ARSessionProviding extends NSObjectProtocol {
 declare class ARSessionProviding extends NativeObject implements ARSessionProviding {
 }
 
-declare class ARLightEstimate extends NSObject {
-  readonly ambientIntensity: number;
-
-  readonly ambientColorTemperature: number;
-}
-
 declare class ARMatteGenerator extends NSObject {
   initWithDeviceMatteResolution(device: MTLDevice, matteResolution: interop.Enum<typeof ARMatteResolution>): this;
 
@@ -522,6 +516,12 @@ declare class ARWorldTrackingConfiguration extends ARConfiguration {
   setAppClipCodeTrackingEnabled(appClipCodeTrackingEnabled: boolean): void;
 
   setSceneReconstruction(sceneReconstruction: interop.Enum<typeof ARSceneReconstruction>): void;
+}
+
+declare class ARLightEstimate extends NSObject {
+  readonly ambientIntensity: number;
+
+  readonly ambientColorTemperature: number;
 }
 
 declare class ARCoachingOverlayView extends UIView {
@@ -606,74 +606,6 @@ declare class ARSKView extends SKView implements ARSessionProviding {
   readonly debugDescription: string;
 }
 
-declare class ARBodyAnchor extends ARAnchor implements ARTrackable {
-  readonly skeleton: ARSkeleton3D;
-
-  readonly estimatedScaleFactor: number;
-
-  readonly isTracked: boolean;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class ARBody2D extends NSObject {
-  readonly skeleton: ARSkeleton2D;
-}
-
-declare class ARSkeletonDefinition extends NSObject {
-  static readonly defaultBody3DSkeletonDefinition: ARSkeletonDefinition;
-
-  static readonly defaultBody2DSkeletonDefinition: ARSkeletonDefinition;
-
-  readonly jointCount: number;
-
-  readonly jointNames: NSArray;
-
-  readonly parentIndices: NSArray;
-
-  readonly neutralBodySkeleton3D: ARSkeleton3D;
-
-  indexForJointName(jointName: string): number;
-}
-
 declare class ARAppClipCodeAnchor extends ARAnchor implements ARTrackable {
   readonly url: NSURL;
 
@@ -722,6 +654,80 @@ declare class ARAppClipCodeAnchor extends ARAnchor implements ARTrackable {
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class ARReferenceObject extends NSObject implements NSSecureCoding {
+  name: string;
+
+  readonly center: unknown /* ext vector */;
+
+  readonly extent: unknown /* ext vector */;
+
+  readonly scale: unknown /* ext vector */;
+
+  readonly resourceGroupName: string;
+
+  readonly rawFeaturePoints: ARPointCloud;
+
+  static referenceObjectsInGroupNamedBundle(name: string, bundle: NSBundle | null): NSSet;
+
+  initWithArchiveURLError(url: NSURL, error: interop.PointerConvertible): this;
+
+  exportObjectToURLPreviewImageError(url: NSURL, previewImage: UIImage | null, error: interop.PointerConvertible): boolean;
+
+  referenceObjectByApplyingTransform(transform: simd_float4x4): ARReferenceObject;
+
+  referenceObjectByMergingObjectError(object: ARReferenceObject, error: interop.PointerConvertible): ARReferenceObject;
+
+  setName(name: string | null): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class ARReferenceImage extends NSObject {
+  name: string;
+
+  readonly physicalSize: CGSize;
+
+  readonly resourceGroupName: string;
+
+  validateWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
+
+  initWithCGImageOrientationPhysicalWidth(image: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
+
+  initWithPixelBufferOrientationPhysicalWidth(pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
+
+  static referenceImagesInGroupNamedBundle(name: string, bundle: NSBundle | null): NSSet;
+
+  setName(name: string | null): void;
+}
+
+declare class ARRaycastResult extends NSObject {
+  readonly worldTransform: simd_float4x4;
+
+  readonly target: interop.Enum<typeof ARRaycastTarget>;
+
+  readonly targetAlignment: interop.Enum<typeof ARRaycastTargetAlignment>;
+
+  readonly anchor: ARAnchor;
+}
+
+declare class ARPointCloud extends NSObject implements NSSecureCoding {
+  readonly count: number;
+
+  readonly points: interop.Pointer;
+
+  readonly identifiers: interop.Pointer;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ARPlaneGeometry extends NSObject implements NSSecureCoding {
@@ -813,114 +819,6 @@ declare class ARMeshAnchor extends ARAnchor {
   readonly geometry: ARMeshGeometry;
 }
 
-declare class ARFaceGeometry extends NSObject implements NSSecureCoding, NSCopying {
-  readonly vertexCount: number;
-
-  readonly vertices: interop.Pointer;
-
-  readonly textureCoordinateCount: number;
-
-  readonly textureCoordinates: interop.Pointer;
-
-  readonly triangleCount: number;
-
-  readonly triangleIndices: interop.Pointer;
-
-  initWithBlendShapes(blendShapes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class AREnvironmentProbeAnchor extends ARAnchor {
-  readonly environmentTexture: MTLTexture;
-
-  readonly extent: unknown /* ext vector */;
-
-  initWithTransformExtent(transform: simd_float4x4, extent: unknown /* ext vector */): this;
-
-  initWithNameTransformExtent(name: string, transform: simd_float4x4, extent: unknown /* ext vector */): this;
-}
-
-declare class ARReferenceObject extends NSObject implements NSSecureCoding {
-  name: string;
-
-  readonly center: unknown /* ext vector */;
-
-  readonly extent: unknown /* ext vector */;
-
-  readonly scale: unknown /* ext vector */;
-
-  readonly resourceGroupName: string;
-
-  readonly rawFeaturePoints: ARPointCloud;
-
-  static referenceObjectsInGroupNamedBundle(name: string, bundle: NSBundle | null): NSSet;
-
-  initWithArchiveURLError(url: NSURL, error: interop.PointerConvertible): this;
-
-  exportObjectToURLPreviewImageError(url: NSURL, previewImage: UIImage | null, error: interop.PointerConvertible): boolean;
-
-  referenceObjectByApplyingTransform(transform: simd_float4x4): ARReferenceObject;
-
-  referenceObjectByMergingObjectError(object: ARReferenceObject, error: interop.PointerConvertible): ARReferenceObject;
-
-  setName(name: string | null): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class ARReferenceImage extends NSObject {
-  name: string;
-
-  readonly physicalSize: CGSize;
-
-  readonly resourceGroupName: string;
-
-  validateWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
-
-  initWithCGImageOrientationPhysicalWidth(image: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
-
-  initWithPixelBufferOrientationPhysicalWidth(pixelBuffer: interop.Object, orientation: interop.Enum<typeof CGImagePropertyOrientation>, physicalWidth: number): this;
-
-  static referenceImagesInGroupNamedBundle(name: string, bundle: NSBundle | null): NSSet;
-
-  setName(name: string | null): void;
-}
-
-declare class ARRaycastResult extends NSObject {
-  readonly worldTransform: simd_float4x4;
-
-  readonly target: interop.Enum<typeof ARRaycastTarget>;
-
-  readonly targetAlignment: interop.Enum<typeof ARRaycastTargetAlignment>;
-
-  readonly anchor: ARAnchor;
-}
-
-declare class ARPointCloud extends NSObject implements NSSecureCoding {
-  readonly count: number;
-
-  readonly points: interop.Pointer;
-
-  readonly identifiers: interop.Pointer;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class ARDirectionalLightEstimate extends ARLightEstimate {
   readonly sphericalHarmonicsCoefficients: NSData;
 
@@ -987,6 +885,40 @@ declare class ARHitTestResult extends NSObject {
   readonly anchor: ARAnchor;
 }
 
+declare class ARFaceGeometry extends NSObject implements NSSecureCoding, NSCopying {
+  readonly vertexCount: number;
+
+  readonly vertices: interop.Pointer;
+
+  readonly textureCoordinateCount: number;
+
+  readonly textureCoordinates: interop.Pointer;
+
+  readonly triangleCount: number;
+
+  readonly triangleIndices: interop.Pointer;
+
+  initWithBlendShapes(blendShapes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): this;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class AREnvironmentProbeAnchor extends ARAnchor {
+  readonly environmentTexture: MTLTexture;
+
+  readonly extent: unknown /* ext vector */;
+
+  initWithTransformExtent(transform: simd_float4x4, extent: unknown /* ext vector */): this;
+
+  initWithNameTransformExtent(name: string, transform: simd_float4x4, extent: unknown /* ext vector */): this;
+}
+
 declare class ARSession extends NSObject {
   readonly identifier: NSUUID;
 
@@ -1023,6 +955,8 @@ declare class ARSession extends NSObject {
   getGeoLocationForPointCompletionHandler(position: unknown /* ext vector */, completionHandler: (p1: CLLocationCoordinate2D, p2: number, p3: NSError) => void | null): void;
 
   captureHighResolutionFrameWithCompletion(completion: (p1: ARFrame, p2: NSError) => void | null): void;
+
+  captureHighResolutionFrameUsingPhotoSettingsCompletion(photoSettings: AVCapturePhotoSettings | null, completion: (p1: ARFrame, p2: NSError) => void | null): void;
 
   setDelegate(delegate: ARSessionDelegate | null): void;
 
@@ -1165,6 +1099,74 @@ declare class ARCamera extends NSObject implements NSCopying {
   viewMatrixForOrientation(orientation: interop.Enum<typeof UIInterfaceOrientation>): simd_float4x4;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class ARBodyAnchor extends ARAnchor implements ARTrackable {
+  readonly skeleton: ARSkeleton3D;
+
+  readonly estimatedScaleFactor: number;
+
+  readonly isTracked: boolean;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
+declare class ARBody2D extends NSObject {
+  readonly skeleton: ARSkeleton2D;
+}
+
+declare class ARSkeletonDefinition extends NSObject {
+  static readonly defaultBody3DSkeletonDefinition: ARSkeletonDefinition;
+
+  static readonly defaultBody2DSkeletonDefinition: ARSkeletonDefinition;
+
+  readonly jointCount: number;
+
+  readonly jointNames: NSArray;
+
+  readonly parentIndices: NSArray;
+
+  readonly neutralBodySkeleton3D: ARSkeleton3D;
+
+  indexForJointName(jointName: string): number;
 }
 
 declare class ARDepthData extends NSObject {
@@ -1347,6 +1349,10 @@ declare class ARVideoFormat extends NSObject implements NSCopying {
   readonly isRecommendedForHighResolutionFrameCapturing: boolean;
 
   readonly videoHDRSupported: boolean;
+
+  readonly defaultColorSpace: interop.Enum<typeof AVCaptureColorSpace>;
+
+  readonly defaultPhotoSettings: AVCapturePhotoSettings;
 
   isVideoHDRSupported(): boolean;
 
@@ -1672,14 +1678,6 @@ declare class ARWorldMap extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ARSCNFaceGeometry extends SCNGeometry {
-  static faceGeometryWithDevice<This extends abstract new (...args: any) => any>(this: This, device: MTLDevice): InstanceType<This>;
-
-  static faceGeometryWithDeviceFillMesh<This extends abstract new (...args: any) => any>(this: This, device: MTLDevice, fillMesh: boolean): InstanceType<This>;
-
-  updateFromFaceGeometry(faceGeometry: ARFaceGeometry): void;
-}
-
 declare class AROrientationTrackingConfiguration extends ARConfiguration {
   autoFocusEnabled: boolean;
 
@@ -1692,60 +1690,12 @@ declare class AROrientationTrackingConfiguration extends ARConfiguration {
   setAutoFocusEnabled(autoFocusEnabled: boolean): void;
 }
 
-declare class ARQuickLookPreviewItem extends NSObject implements QLPreviewItem {
-  initWithFileAtURL(url: NSURL): this;
+declare class ARSCNFaceGeometry extends SCNGeometry {
+  static faceGeometryWithDevice<This extends abstract new (...args: any) => any>(this: This, device: MTLDevice): InstanceType<This>;
 
-  canonicalWebPageURL: NSURL;
+  static faceGeometryWithDeviceFillMesh<This extends abstract new (...args: any) => any>(this: This, device: MTLDevice, fillMesh: boolean): InstanceType<This>;
 
-  allowsContentScaling: boolean;
-
-  setCanonicalWebPageURL(canonicalWebPageURL: NSURL | null): void;
-
-  setAllowsContentScaling(allowsContentScaling: boolean): void;
-
-  readonly previewItemURL: NSURL;
-
-  readonly previewItemTitle: string;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
+  updateFromFaceGeometry(faceGeometry: ARFaceGeometry): void;
 }
 
 declare class ARSkeleton extends NSObject {

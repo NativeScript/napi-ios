@@ -30,7 +30,8 @@ declare const SFSpeechErrorCode: {
   AudioReadFailed: 2,
   UndefinedTemplateClassName: 7,
   MalformedSupplementalModel: 8,
-  Timeout: 10,
+  Timeout: 12,
+  MissingParameter: 13,
 };
 
 declare interface SFSpeechRecognizerDelegate extends NSObjectProtocol {
@@ -57,26 +58,6 @@ declare interface SFSpeechRecognitionTaskDelegate extends NSObjectProtocol {
 }
 
 declare class SFSpeechRecognitionTaskDelegate extends NativeObject implements SFSpeechRecognitionTaskDelegate {
-}
-
-declare class SFSpeechRecognitionMetadata extends NSObject implements NSCopying, NSSecureCoding {
-  readonly speakingRate: number;
-
-  readonly averagePauseDuration: number;
-
-  readonly speechStartTimestamp: number;
-
-  readonly speechDuration: number;
-
-  readonly voiceAnalytics: SFVoiceAnalytics;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SFVoiceAnalytics extends NSObject implements NSCopying, NSSecureCoding {
@@ -260,10 +241,34 @@ declare class SFSpeechRecognitionRequest extends NSObject {
   setCustomizedLanguageModel(customizedLanguageModel: SFSpeechLanguageModelConfiguration | null): void;
 }
 
+declare class SFSpeechRecognitionMetadata extends NSObject implements NSCopying, NSSecureCoding {
+  readonly speakingRate: number;
+
+  readonly averagePauseDuration: number;
+
+  readonly speechStartTimestamp: number;
+
+  readonly speechDuration: number;
+
+  readonly voiceAnalytics: SFVoiceAnalytics;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class SFSpeechLanguageModel extends NSObject {
   static prepareCustomLanguageModelForUrlClientIdentifierConfigurationCompletion(asset: NSURL, clientIdentifier: string, configuration: SFSpeechLanguageModelConfiguration, completion: (p1: NSError) => void | null): void;
 
   static prepareCustomLanguageModelForUrlClientIdentifierConfigurationIgnoresCacheCompletion(asset: NSURL, clientIdentifier: string, configuration: SFSpeechLanguageModelConfiguration, ignoresCache: boolean, completion: (p1: NSError) => void | null): void;
+
+  static prepareCustomLanguageModelForUrlConfigurationCompletion(asset: NSURL, configuration: SFSpeechLanguageModelConfiguration, completion: (p1: NSError) => void | null): void;
+
+  static prepareCustomLanguageModelForUrlConfigurationIgnoresCacheCompletion(asset: NSURL, configuration: SFSpeechLanguageModelConfiguration, ignoresCache: boolean, completion: (p1: NSError) => void | null): void;
 }
 
 declare class SFSpeechURLRecognitionRequest extends SFSpeechRecognitionRequest {
@@ -272,16 +277,26 @@ declare class SFSpeechURLRecognitionRequest extends SFSpeechRecognitionRequest {
   readonly URL: NSURL;
 }
 
-declare class SFSpeechLanguageModelConfiguration extends NSObject implements NSCopying {
+declare class SFSpeechLanguageModelConfiguration extends NSObject implements NSCopying, NSSecureCoding {
   readonly languageModel: NSURL;
 
   readonly vocabulary: NSURL;
+
+  readonly weight: NSNumber;
 
   initWithLanguageModel(languageModel: NSURL): this;
 
   initWithLanguageModelVocabulary(languageModel: NSURL, vocabulary: NSURL | null): this;
 
+  initWithLanguageModelVocabularyWeight(languageModel: NSURL, vocabulary: NSURL | null, weight: NSNumber | null): this;
+
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class SFSpeechAudioBufferRecognitionRequest extends SFSpeechRecognitionRequest {

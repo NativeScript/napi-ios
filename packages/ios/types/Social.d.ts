@@ -8,9 +8,9 @@ declare const SLServiceTypeTwitter: string;
 
 declare const SLServiceTypeLinkedIn: string;
 
-declare const SLServiceTypeSinaWeibo: string;
-
 declare const SLServiceTypeTencentWeibo: string;
+
+declare const SLServiceTypeSinaWeibo: string;
 
 declare const SLComposeViewControllerResult: {
   Cancelled: 0,
@@ -66,6 +66,26 @@ declare class SLRequest extends NSObject {
   setAccount(account: ACAccount): void;
 }
 
+declare class SLComposeSheetConfigurationItem extends NSObject {
+  init(): this;
+
+  title: string;
+
+  value: string;
+
+  valuePending: boolean;
+
+  tapHandler: () => void;
+
+  setTitle(title: string): void;
+
+  setValue(value: string): void;
+
+  setValuePending(valuePending: boolean): void;
+
+  setTapHandler(tapHandler: () => void): void;
+}
+
 declare class SLComposeServiceViewController extends UIViewController implements UITextViewDelegate {
   presentationAnimationDidFinish(): void;
 
@@ -115,11 +135,15 @@ declare class SLComposeServiceViewController extends UIViewController implements
 
   textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: _NSRange, text: string): boolean;
 
+  textViewShouldChangeTextInRangesReplacementText(textView: UITextView, ranges: NSArray<interop.Object> | Array<interop.Object>, text: string): boolean;
+
   textViewDidChange(textView: UITextView): void;
 
   textViewDidChangeSelection(textView: UITextView): void;
 
   textViewEditMenuForTextInRangeSuggestedActions(textView: UITextView, range: _NSRange, suggestedActions: NSArray<interop.Object> | Array<interop.Object>): UIMenu;
+
+  textViewEditMenuForTextInRangesSuggestedActions(textView: UITextView, ranges: NSArray<interop.Object> | Array<interop.Object>, suggestedActions: NSArray<interop.Object> | Array<interop.Object>): UIMenu;
 
   textViewWillPresentEditMenuWithAnimator(textView: UITextView, animator: UIEditMenuInteractionAnimating): void;
 
@@ -224,25 +248,5 @@ declare class SLComposeServiceViewController extends UIViewController implements
   scrollViewDidScrollToTop(scrollView: UIScrollView): void;
 
   scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
-}
-
-declare class SLComposeSheetConfigurationItem extends NSObject {
-  init(): this;
-
-  title: string;
-
-  value: string;
-
-  valuePending: boolean;
-
-  tapHandler: () => void;
-
-  setTitle(title: string): void;
-
-  setValue(value: string): void;
-
-  setValuePending(valuePending: boolean): void;
-
-  setTapHandler(tapHandler: () => void): void;
 }
 

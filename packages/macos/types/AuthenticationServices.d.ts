@@ -140,6 +140,13 @@ declare const ASWebAuthenticationSessionErrorCode: {
   PresentationContextInvalid: 3,
 };
 
+declare const ASAuthorizationAppleIDProviderCredentialState: {
+  Revoked: 0,
+  Authorized: 1,
+  NotFound: 2,
+  Transferred: 3,
+};
+
 declare const ASUserDetectionStatus: {
   Unsupported: 0,
   Unknown: 1,
@@ -151,6 +158,12 @@ declare const ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement: {
   Preferred: 1,
 };
 
+declare const ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState: {
+  Authorized: 0,
+  Denied: 1,
+  NotDetermined: 2,
+};
+
 declare const ASAuthorizationProviderExtensionRequestOptions: {
   None: 0,
   UserInteractionEnabled: 1,
@@ -159,13 +172,7 @@ declare const ASAuthorizationProviderExtensionRequestOptions: {
   RegistrationDeviceKeyMigration: 8,
   StrongerKeyAvailable: 16,
   UserKeyInvalid: 32,
-};
-
-declare const ASAuthorizationAppleIDProviderCredentialState: {
-  Revoked: 0,
-  Authorized: 1,
-  NotFound: 2,
-  Transferred: 3,
+  SetupAssistant: 64,
 };
 
 declare const ASUserAgeRange: {
@@ -189,29 +196,17 @@ declare const ASAuthorizationProviderExtensionRegistrationResult: {
   FailedNoRetry: 3,
 };
 
+declare const ASPublicKeyCredentialClientDataCrossOriginValue: {
+  NotSet: 0,
+  CrossOrigin: 1,
+  SameOriginWithAncestors: 2,
+};
+
 declare const ASAuthorizationAppleIDButtonType: {
   SignIn: 0,
   Continue: 1,
   SignUp: 2,
   Default: 0,
-};
-
-declare const ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState: {
-  Authorized: 0,
-  Denied: 1,
-  NotDetermined: 2,
-};
-
-declare const ASAuthorizationError: {
-  Unknown: 1000,
-  Canceled: 1001,
-  InvalidResponse: 1002,
-  NotHandled: 1003,
-  Failed: 1004,
-  NotInteractive: 1005,
-  MatchedExcludedCredential: 1006,
-  CredentialImport: 1007,
-  CredentialExport: 1008,
 };
 
 declare const ASAuthorizationProviderExtensionUserSecureEnclaveKeyBiometricPolicy: {
@@ -236,12 +231,6 @@ declare const ASCredentialIdentityStoreErrorCode: {
   StoreBusy: 2,
 };
 
-declare const ASPublicKeyCredentialClientDataCrossOriginValue: {
-  NotSet: 0,
-  CrossOrigin: 1,
-  SameOriginWithAncestors: 2,
-};
-
 declare const ASAuthorizationProviderExtensionFederationType: {
   None: 0,
   WSTrust: 1,
@@ -251,6 +240,20 @@ declare const ASAuthorizationProviderExtensionFederationType: {
 declare const ASAuthorizationPublicKeyCredentialAttachment: {
   ASAuthorizationPublicKeyCredentialAttachmentPlatform: 0,
   Cross: 1,
+};
+
+declare const ASAuthorizationError: {
+  Unknown: 1000,
+  Canceled: 1001,
+  InvalidResponse: 1002,
+  NotHandled: 1003,
+  Failed: 1004,
+  NotInteractive: 1005,
+  MatchedExcludedCredential: 1006,
+  CredentialImport: 1007,
+  CredentialExport: 1008,
+  PreferSignInWithApple: 1009,
+  DeviceNotConfiguredForPasskeyCreation: 1010,
 };
 
 declare function ASAuthorizationAllSupportedPublicKeyCredentialDescriptorTransports(): NSArray;
@@ -275,6 +278,10 @@ declare interface ASAuthorizationProviderExtensionRegistrationHandler extends NS
   readonly supportedUserSecureEnclaveKeySigningAlgorithms?: NSArray;
 
   keyWillRotateForKeyTypeNewKeyLoginManagerCompletion?(keyType: interop.Enum<typeof ASAuthorizationProviderExtensionKeyType>, newKey: interop.Object, loginManager: ASAuthorizationProviderExtensionLoginManager, completion: (p1: boolean) => void): void;
+
+  displayNamesForGroupsLoginManagerCompletion?(groups: NSArray<interop.Object> | Array<interop.Object>, loginManager: ASAuthorizationProviderExtensionLoginManager, completion: (p1: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => void): void;
+
+  profilePictureForUserUsingLoginManagerCompletion?(loginManager: ASAuthorizationProviderExtensionLoginManager, completion: (p1: NSData) => void): void;
 }
 
 declare class ASAuthorizationProviderExtensionRegistrationHandler extends NativeObject implements ASAuthorizationProviderExtensionRegistrationHandler {
@@ -462,13 +469,6 @@ declare interface ASWebAuthenticationPresentationContextProviding extends NSObje
 declare class ASWebAuthenticationPresentationContextProviding extends NativeObject implements ASWebAuthenticationPresentationContextProviding {
 }
 
-declare interface ASAuthorizationPublicKeyCredentialRegistration extends ASPublicKeyCredential {
-  readonly rawAttestationObject: NSData;
-}
-
-declare class ASAuthorizationPublicKeyCredentialRegistration extends NativeObject implements ASAuthorizationPublicKeyCredentialRegistration {
-}
-
 declare interface ASAuthorizationProviderExtensionAuthorizationRequestHandler extends NSObjectProtocol {
   beginAuthorizationWithRequest(request: ASAuthorizationProviderExtensionAuthorizationRequest): void;
 
@@ -496,6 +496,13 @@ declare interface ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider {
 }
 
 declare class ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider extends NativeObject implements ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider {
+}
+
+declare interface ASAuthorizationPublicKeyCredentialRegistration extends ASPublicKeyCredential {
+  readonly rawAttestationObject: NSData;
+}
+
+declare class ASAuthorizationPublicKeyCredentialRegistration extends NativeObject implements ASAuthorizationPublicKeyCredentialRegistration {
 }
 
 declare interface ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest {
@@ -1297,6 +1304,14 @@ declare class ASCredentialProviderViewController extends NSViewController {
   prepareInterfaceForPasskeyRegistration(registrationRequest: ASCredentialRequest): void;
 
   performPasskeyRegistrationWithoutUserInteractionIfPossible(registrationRequest: ASPasskeyCredentialRequest): void;
+
+  reportPublicKeyCredentialUpdateForRelyingPartyUserHandleNewName(relyingParty: string, userHandle: NSData, newName: string): void;
+
+  reportUnknownPublicKeyCredentialForRelyingPartyCredentialID(relyingParty: string, credentialID: NSData): void;
+
+  reportAllAcceptedPublicKeyCredentialsForRelyingPartyUserHandleAcceptedCredentialIDs(relyingParty: string, userHandle: NSData, acceptedCredentialIDs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  reportUnusedPasswordCredentialForDomainUserName(domain: string, userName: string): void;
 }
 
 declare class ASAuthorizationProviderExtensionAuthorizationRequest extends NSObject {
@@ -1915,20 +1930,34 @@ declare class ASPasswordCredential extends NSObject implements ASAuthorizationCr
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ASCredentialServiceIdentifier extends NSObject implements NSCopying, NSSecureCoding {
-  initWithIdentifierType(identifier: string, type: interop.Enum<typeof ASCredentialServiceIdentifierType>): this;
+declare class ASAuthorizationProviderExtensionKerberosMapping extends NSObject {
+  ticketKeyPath: string;
 
-  readonly identifier: string;
+  messageBufferKeyName: string;
 
-  readonly type: interop.Enum<typeof ASCredentialServiceIdentifierType>;
+  realmKeyName: string;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  serviceNameKeyName: string;
 
-  static readonly supportsSecureCoding: boolean;
+  clientNameKeyName: string;
 
-  encodeWithCoder(coder: NSCoder): void;
+  encryptionKeyTypeKeyName: string;
 
-  initWithCoder(coder: NSCoder): this;
+  sessionKeyKeyName: string;
+
+  setTicketKeyPath(ticketKeyPath: string | null): void;
+
+  setMessageBufferKeyName(messageBufferKeyName: string | null): void;
+
+  setRealmKeyName(realmKeyName: string | null): void;
+
+  setServiceNameKeyName(serviceNameKeyName: string | null): void;
+
+  setClientNameKeyName(clientNameKeyName: string | null): void;
+
+  setEncryptionKeyTypeKeyName(encryptionKeyTypeKeyName: string | null): void;
+
+  setSessionKeyKeyName(sessionKeyKeyName: string | null): void;
 }
 
 declare class ASAuthorizationWebBrowserPlatformPublicKeyCredential extends NSObject {
@@ -1988,76 +2017,6 @@ declare class ASAuthorizationController extends NSObject {
   setDelegate(delegate: ASAuthorizationControllerDelegate | null): void;
 
   setPresentationContextProvider(presentationContextProvider: ASAuthorizationControllerPresentationContextProviding): void;
-}
-
-declare class ASOneTimeCodeCredentialRequest extends NSObject implements ASCredentialRequest {
-  initWithCredentialIdentity(credentialIdentity: ASOneTimeCodeCredentialIdentity): this;
-
-  readonly type: interop.Enum<typeof ASCredentialRequestType>;
-
-  readonly credentialIdentity: ASCredentialIdentity;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class ASAuthorizationPublicKeyCredentialParameters extends NSObject implements NSSecureCoding, NSCopying {
-  initWithAlgorithm(algorithm: number): this;
-
-  readonly algorithm: number;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class ASAuthorizationPlatformPublicKeyCredentialAssertionRequest extends ASAuthorizationRequest implements ASAuthorizationPublicKeyCredentialAssertionRequest {
@@ -2125,6 +2084,76 @@ declare class ASAuthorizationPlatformPublicKeyCredentialAssertionRequest extends
   readonly description: string;
 
   readonly debugDescription: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class ASOneTimeCodeCredentialRequest extends NSObject implements ASCredentialRequest {
+  initWithCredentialIdentity(credentialIdentity: ASOneTimeCodeCredentialIdentity): this;
+
+  readonly type: interop.Enum<typeof ASCredentialRequestType>;
+
+  readonly credentialIdentity: ASCredentialIdentity;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class ASAuthorizationPublicKeyCredentialParameters extends NSObject implements NSSecureCoding, NSCopying {
+  initWithAlgorithm(algorithm: number): this;
+
+  readonly algorithm: number;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -2205,6 +2234,8 @@ declare class ASAuthorizationProviderExtensionLoginManager extends NSObject {
   readonly userRegistered: boolean;
 
   readonly registrationToken: string;
+
+  readonly authenticationMethod: interop.Enum<typeof ASAuthorizationProviderExtensionAuthenticationMethod>;
 
   readonly extensionData: NSDictionary;
 
@@ -2342,36 +2373,6 @@ declare class ASPasskeyAssertionCredential extends NSObject implements ASAuthori
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ASAuthorizationProviderExtensionKerberosMapping extends NSObject {
-  ticketKeyPath: string;
-
-  messageBufferKeyName: string;
-
-  realmKeyName: string;
-
-  serviceNameKeyName: string;
-
-  clientNameKeyName: string;
-
-  encryptionKeyTypeKeyName: string;
-
-  sessionKeyKeyName: string;
-
-  setTicketKeyPath(ticketKeyPath: string | null): void;
-
-  setMessageBufferKeyName(messageBufferKeyName: string | null): void;
-
-  setRealmKeyName(realmKeyName: string | null): void;
-
-  setServiceNameKeyName(serviceNameKeyName: string | null): void;
-
-  setClientNameKeyName(clientNameKeyName: string | null): void;
-
-  setEncryptionKeyTypeKeyName(encryptionKeyTypeKeyName: string | null): void;
-
-  setSessionKeyKeyName(sessionKeyKeyName: string | null): void;
-}
-
 declare class ASPasskeyRegistrationCredential extends NSObject implements ASAuthorizationCredential {
   initWithRelyingPartyClientDataHashCredentialIDAttestationObject(relyingParty: string, clientDataHash: NSData, credentialID: NSData, attestationObject: NSData): this;
 
@@ -2448,68 +2449,6 @@ declare class ASAuthorizationPublicKeyCredentialPRFRegistrationInput extends NSO
   readonly shouldCheckForSupport: boolean;
 
   readonly inputValues: ASAuthorizationPublicKeyCredentialPRFAssertionInputValues;
-}
-
-declare class ASAuthorizationPlatformPublicKeyCredentialRegistration extends NSObject implements ASAuthorizationPublicKeyCredentialRegistration {
-  readonly attachment: interop.Enum<typeof ASAuthorizationPublicKeyCredentialAttachment>;
-
-  readonly largeBlob: ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput;
-
-  readonly prf: ASAuthorizationPublicKeyCredentialPRFRegistrationOutput;
-
-  readonly rawAttestationObject: NSData;
-
-  readonly rawClientDataJSON: NSData;
-
-  readonly credentialID: NSData;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ASAuthorizationPublicKeyCredentialPRFRegistrationOutput extends NSObject {
@@ -2962,6 +2901,84 @@ declare class ASAuthorizationPublicKeyCredentialPRFAssertionOutput extends NSObj
   readonly first: NSData;
 
   readonly second: NSData;
+}
+
+declare class ASCredentialServiceIdentifier extends NSObject implements NSCopying, NSSecureCoding {
+  initWithIdentifierType(identifier: string, type: interop.Enum<typeof ASCredentialServiceIdentifierType>): this;
+
+  readonly identifier: string;
+
+  readonly type: interop.Enum<typeof ASCredentialServiceIdentifierType>;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class ASAuthorizationPlatformPublicKeyCredentialRegistration extends NSObject implements ASAuthorizationPublicKeyCredentialRegistration {
+  readonly attachment: interop.Enum<typeof ASAuthorizationPublicKeyCredentialAttachment>;
+
+  readonly largeBlob: ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput;
+
+  readonly prf: ASAuthorizationPublicKeyCredentialPRFRegistrationOutput;
+
+  readonly rawAttestationObject: NSData;
+
+  readonly rawClientDataJSON: NSData;
+
+  readonly credentialID: NSData;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ASAuthorizationPlatformPublicKeyCredentialProvider extends NSObject implements ASAuthorizationProvider {

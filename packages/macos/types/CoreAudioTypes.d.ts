@@ -1,7 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kAudioChannelLabel_TopBackRight: number;
-
 declare const kAudioFormatFlagsCanonical: number;
 
 declare const kAudioChannelLayoutTag_Unknown: number;
@@ -236,6 +234,8 @@ declare const kAudioChannelLabel_Mono: number;
 
 declare const kAudioChannelLabel_RearSurroundLeft: number;
 
+declare const kAudioChannelLabel_TopBackRight: number;
+
 declare const kAudioChannelLabel_VerticalHeightRight: number;
 
 declare const kAudioChannelLabel_VerticalHeightCenter: number;
@@ -249,8 +249,6 @@ declare const kAudioChannelLabel_LeftSurround: number;
 declare const kAudioChannelLabel_Center: number;
 
 declare const kAudioChannelLabel_UseCoordinates: number;
-
-declare const kAudioFormatFlagsAudioUnitCanonical: number;
 
 declare const kAppleLosslessFormatFlag_32BitSourceData: number;
 
@@ -389,6 +387,8 @@ declare const kAudioFormatMicrosoftGSM: number;
 declare const kAudioChannelLayoutTag_Logic_6_0_B: number;
 
 declare const kAppleLosslessFormatFlag_24BitSourceData: number;
+
+declare const kAudioFormatFlagsAudioUnitCanonical: number;
 
 declare const kAudioChannelLayoutTag_DVD_8: number;
 
@@ -558,8 +558,6 @@ declare const kAudioChannelLayoutTag_DTS_7_1: number;
 
 declare const kAudioChannelLayoutTag_WAVE_5_1_B: number;
 
-declare const kAudioChannelLayoutTag_AudioUnit_7_1: number;
-
 declare const kAudioChannelLabel_CenterSurround: number;
 
 declare const kAudioChannelLayoutTag_CICP_13: number;
@@ -583,6 +581,8 @@ declare const kAudioChannelLabel_Ambisonic_Y: number;
 declare const kAudioChannelLayoutTag_Logic_6_1_A: number;
 
 declare const kAudioChannelLayoutTag_CICP_4: number;
+
+declare const kAudioChannelLayoutTag_AudioUnit_7_1: number;
 
 declare const kAudioChannelLabel_RightSurround: number;
 
@@ -895,19 +895,6 @@ declare const AudioChannelBitmap: {
   RightTopRear: 67108864,
 };
 
-declare class AudioStreamBasicDescription {
-  constructor(init?: AudioStreamBasicDescription);
-  mSampleRate: number;
-  mFormatID: number;
-  mFormatFlags: number;
-  mBytesPerPacket: number;
-  mFramesPerPacket: number;
-  mBytesPerFrame: number;
-  mChannelsPerFrame: number;
-  mBitsPerChannel: number;
-  mReserved: number;
-}
-
 declare class AudioFormatListItem {
   constructor(init?: AudioFormatListItem);
   mASBD: AudioStreamBasicDescription;
@@ -932,6 +919,14 @@ declare class SMPTETime {
   mMinutes: number;
   mSeconds: number;
   mFrames: number;
+}
+
+declare class AudioStreamPacketDependencyDescription {
+  constructor(init?: AudioStreamPacketDependencyDescription);
+  mIsIndependentlyDecodable: number;
+  mPreRollCount: number;
+  mFlags: number;
+  mReserved: number;
 }
 
 declare class AudioValueRange {
@@ -976,6 +971,19 @@ declare class AudioClassDescription {
   mType: number;
   mSubType: number;
   mManufacturer: number;
+}
+
+declare class AudioStreamBasicDescription {
+  constructor(init?: AudioStreamBasicDescription);
+  mSampleRate: number;
+  mFormatID: number;
+  mFormatFlags: number;
+  mBytesPerPacket: number;
+  mFramesPerPacket: number;
+  mBytesPerFrame: number;
+  mChannelsPerFrame: number;
+  mBitsPerChannel: number;
+  mReserved: number;
 }
 
 declare class AudioValueTranslation {

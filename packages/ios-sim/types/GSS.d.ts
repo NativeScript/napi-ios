@@ -40,6 +40,8 @@ declare const __gss_c_nt_string_uid_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_nt_machine_uid_name_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_c_nt_user_name_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_pku2u_mechanism_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_ntlm_mechanism_oid_desc: gss_OID_desc_struct;
@@ -62,9 +64,9 @@ declare const __gss_c_ma_mech_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_cred_get_default_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_cred_diag_oid_desc: gss_OID_desc_struct;
+declare const __gss_c_cred_set_default_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_ntlm_reset_keys_oid_desc: gss_OID_desc_struct;
+declare const __gss_c_cred_diag_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ntlm_support_lm2_oid_desc: gss_OID_desc_struct;
 
@@ -76,11 +78,11 @@ declare const __gss_krb5_cred_no_ci_flags_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ntlm_force_v1_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_ntlm_v2_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_c_nt_dn_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_set_time_offset_x_oid_desc: gss_OID_desc_struct;
+
+declare const __gss_krb5_ccache_name_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_set_default_realm_x_oid_desc: gss_OID_desc_struct;
 
@@ -94,11 +96,11 @@ declare const __gss_krb5_get_subkey_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_export_lucid_context_x_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_krb5_register_acceptor_identity_x_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_scram_mechanism_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_not_dflt_mech_oid_desc: gss_OID_desc_struct;
+
+declare const __gss_c_nt_ntlm_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_plugin_register_x_oid_desc: gss_OID_desc_struct;
 
@@ -108,11 +110,17 @@ declare const __gss_c_peer_has_updated_spnego_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_mic_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_c_ma_oos_det_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_iakerb_mechanism_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_import_cred_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_send_to_kdc_x_oid_desc: gss_OID_desc_struct;
+
+declare const __gss_c_ntlm_v2_oid_desc: gss_OID_desc_struct;
+
+declare const __gss_krb5_register_acceptor_identity_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_ntlm_get_session_key_x_oid_desc: gss_OID_desc_struct;
 
@@ -124,25 +132,17 @@ declare const __gss_krb5_nt_principal_name_referral_oid_desc: gss_OID_desc_struc
 
 declare const __gss_c_inq_win2k_pac_x_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_cred_certificate_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_c_ma_mech_nego_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_cred_secidentity_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_prot_ready_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_nt_export_name_oid_desc: gss_OID_desc_struct;
+declare const __gss_krb5_export_lucid_context_v1_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ntlm_guest_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_nt_user_name_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_spnego_mechanism_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_ctx_pfs_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_krb5_export_lucid_context_v1_x_oid_desc: gss_OID_desc_struct;
+declare const __gss_c_cred_secidentity_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_auth_init_oid_desc: gss_OID_desc_struct;
 
@@ -152,9 +152,11 @@ declare const __gss_c_ma_mech_composite_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_sasl_mech_name_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_c_ctx_pfs_x_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_krb5_mechanism_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_cred_set_default_oid_desc: gss_OID_desc_struct;
+declare const __gss_c_nt_export_name_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ma_mech_concrete_oid_desc: gss_OID_desc_struct;
 
@@ -168,6 +170,8 @@ declare const __gss_c_ntlm_v1_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_cred_renew_oid_desc: gss_OID_desc_struct;
 
+declare const __gss_c_nt_hostbased_service_x_oid_desc: gss_OID_desc_struct;
+
 declare const __gss_krb5_get_initiator_subkey_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_ntlm_session_key_oid_desc: gss_OID_desc_struct;
@@ -180,25 +184,21 @@ declare const __gss_krb5_get_time_offset_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_set_dns_canonicalize_x_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_krb5_ccache_name_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_nt_hostbased_service_x_oid_desc: gss_OID_desc_struct;
-
-declare const __gss_c_ma_oos_det_oid_desc: gss_OID_desc_struct;
-
 declare const __gss_krb5_compat_des3_mic_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_copy_ccache_x_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_cred_heimbase_oid_desc: gss_OID_desc_struct;
+declare const __gss_c_ntlm_reset_keys_oid_desc: gss_OID_desc_struct;
 
-declare const __gss_c_nt_ntlm_oid_desc: gss_OID_desc_struct;
+declare const __gss_c_cred_heimbase_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_extract_authz_data_from_sec_context_x_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_c_cred_validate_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_get_tkt_flags_x_oid_desc: gss_OID_desc_struct;
+
+declare const __gss_c_cred_certificate_oid_desc: gss_OID_desc_struct;
 
 declare class gss_krb5_lucid_context_version {
   constructor(init?: gss_krb5_lucid_context_version);
@@ -215,6 +215,10 @@ declare class gss_krb5_lucid_context_v1 {
   protocol: number;
   rfc1964_kd: gss_krb5_rfc1964_keydata;
   cfx_kd: gss_krb5_cfx_keydata;
+}
+
+declare class krb5_ccache_data {
+  constructor(init?: krb5_ccache_data);
 }
 
 declare class gss_auth_identity {
@@ -277,10 +281,6 @@ declare class gss_iov_buffer_desc_struct {
   constructor(init?: gss_iov_buffer_desc_struct);
   type: number;
   buffer: gss_buffer_desc_struct;
-}
-
-declare class krb5_ccache_data {
-  constructor(init?: krb5_ccache_data);
 }
 
 declare class gss_krb5_cfx_keydata {

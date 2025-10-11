@@ -3,8 +3,6 @@
 
 declare const kCATransitionFromTop: string;
 
-declare const kCAEmitterLayerPoint: string;
-
 declare const kCAMediaTimingFunctionDefault: string;
 
 declare const kCAEmitterLayerOutline: string;
@@ -17,17 +15,25 @@ declare const CAFrameRateRangeDefault: CAFrameRateRange;
 
 declare const kCALineJoinMiter: string;
 
+declare const CADynamicRangeStandard: string;
+
 declare const kCATransitionFade: string;
 
 declare const kCAValueFunctionTranslateX: string;
 
 declare const kCALineCapButt: string;
 
+declare const CADynamicRangeHigh: string;
+
+declare const kCAValueFunctionRotateX: string;
+
 declare const kCAGravityLeft: string;
 
 declare const kCAFillRuleEvenOdd: string;
 
 declare const kCAFillRuleNonZero: string;
+
+declare const kCAEmitterLayerPoint: string;
 
 declare const kCAScrollBoth: string;
 
@@ -39,11 +45,13 @@ declare const kCAAnimationDiscrete: string;
 
 declare const kCAScrollHorizontally: string;
 
+declare const kCAGradientLayerRadial: string;
+
 declare const kCAAlignmentRight: string;
 
 declare const kCAMediaTimingFunctionEaseOut: string;
 
-declare const kCAAnimationRotateAutoReverse: string;
+declare const kCAAlignmentJustified: string;
 
 declare const kCAValueFunctionTranslateY: string;
 
@@ -85,9 +93,13 @@ declare const kCAEmitterLayerLine: string;
 
 declare const kCATransitionFromLeft: string;
 
+declare const kCATransitionPush: string;
+
 declare const kCATransitionMoveIn: string;
 
 declare const kCAAnimationRotateAuto: string;
+
+declare const kCAAnimationCubicPaced: string;
 
 declare const kCAAnimationLinear: string;
 
@@ -98,6 +110,8 @@ declare const kCAOnOrderOut: string;
 declare const kCACornerCurveCircular: string;
 
 declare const kCAFilterNearest: string;
+
+declare const kCAContentsFormatAutomatic: string;
 
 declare const kCAContentsFormatGray8Uint: string;
 
@@ -111,6 +125,10 @@ declare const kCAGravityTop: string;
 
 declare const kCAGravityCenter: string;
 
+declare const kCAAnimationRotateAutoReverse: string;
+
+declare const CADynamicRangeAutomatic: string;
+
 declare const CAToneMapModeNever: string;
 
 declare const kCAFillModeRemoved: string;
@@ -119,11 +137,9 @@ declare const kCAFillModeBoth: string;
 
 declare const kCAValueFunctionScaleY: string;
 
-declare const kCAMediaTimingFunctionLinear: string;
-
 declare const kCAEmitterLayerSurface: string;
 
-declare const kCAValueFunctionRotateX: string;
+declare const kCATransitionFromRight: string;
 
 declare const kCAValueFunctionRotateZ: string;
 
@@ -153,14 +169,6 @@ declare const kCAAlignmentCenter: string;
 
 declare const kCAAnimationPaced: string;
 
-declare const kCAGradientLayerRadial: string;
-
-declare const kCATransitionPush: string;
-
-declare const kCAAnimationCubicPaced: string;
-
-declare const kCATransitionFromRight: string;
-
 declare const kCAEmitterLayerCuboid: string;
 
 declare const kCAEmitterLayerRectangle: string;
@@ -173,6 +181,8 @@ declare const kCAEmitterLayerVolume: string;
 
 declare const kCAOnOrderIn: string;
 
+declare const CAToneMapModeIfSupported: string;
+
 declare const kCAAnimationCubic: string;
 
 declare const kCARendererMetalCommandQueue: string;
@@ -182,8 +192,6 @@ declare const kCAFilterTrilinear: string;
 declare const kCALineJoinRound: string;
 
 declare const kCATransitionFromBottom: string;
-
-declare const CAToneMapModeIfSupported: string;
 
 declare const kCAGravityRight: string;
 
@@ -197,13 +205,15 @@ declare const kCAAlignmentLeft: string;
 
 declare const kCAValueFunctionTranslate: string;
 
-declare const kCAAlignmentJustified: string;
-
 declare const kCAGravityBottom: string;
 
 declare const kCAGravityResize: string;
 
+declare const CADynamicRangeConstrainedHigh: string;
+
 declare const kCAValueFunctionTranslateZ: string;
+
+declare const kCAMediaTimingFunctionLinear: string;
 
 declare const kCAGravityTopLeft: string;
 
@@ -374,17 +384,6 @@ declare interface CALayerDelegate extends NSObjectProtocol {
 declare class CALayerDelegate extends NativeObject implements CALayerDelegate {
 }
 
-declare class CAEAGLLayer extends CALayer implements EAGLDrawable {
-  presentsWithTransaction: boolean;
-
-  setPresentsWithTransaction(presentsWithTransaction: boolean): void;
-
-  get drawableProperties(): NSDictionary;
-  set drawableProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  setDrawableProperties(drawableProperties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
-}
-
 declare class CAMetalDisplayLinkUpdate extends NSObject {
   readonly drawable: CAMetalDrawable;
 
@@ -445,6 +444,8 @@ declare class CAMetalLayer extends CALayer {
   get developerHUDProperties(): NSDictionary;
   set developerHUDProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
+  readonly residencySet: MTLResidencySet;
+
   setDevice(device: MTLDevice | null): void;
 
   setPixelFormat(pixelFormat: interop.Enum<typeof MTLPixelFormat>): void;
@@ -461,7 +462,7 @@ declare class CAMetalLayer extends CALayer {
 
   setWantsExtendedDynamicRangeContent(wantsExtendedDynamicRangeContent: boolean): void;
 
-  setEDRMetadata(EDRMetadata: CAEDRMetadata): void;
+  setEDRMetadata(EDRMetadata: CAEDRMetadata | null): void;
 
   setAllowsNextDrawableTimeout(allowsNextDrawableTimeout: boolean): void;
 
@@ -1154,6 +1155,17 @@ declare class CAPropertyAnimation extends CAAnimation {
   setValueFunction(valueFunction: CAValueFunction | null): void;
 }
 
+declare class CAEAGLLayer extends CALayer implements EAGLDrawable {
+  presentsWithTransaction: boolean;
+
+  setPresentsWithTransaction(presentsWithTransaction: boolean): void;
+
+  get drawableProperties(): NSDictionary;
+  set drawableProperties(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  setDrawableProperties(drawableProperties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+}
+
 declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming {
   static layer<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -1251,6 +1263,10 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
   wantsExtendedDynamicRangeContent: boolean;
 
   toneMapMode: string;
+
+  preferredDynamicRange: string;
+
+  contentsHeadroom: number;
 
   minificationFilter: string;
 
@@ -1406,6 +1422,10 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
 
   setToneMapMode(toneMapMode: string): void;
 
+  setPreferredDynamicRange(preferredDynamicRange: string): void;
+
+  setContentsHeadroom(contentsHeadroom: number): void;
+
   setMinificationFilter(minificationFilter: string): void;
 
   setMagnificationFilter(magnificationFilter: string): void;
@@ -1467,6 +1487,8 @@ declare class CALayer extends NSObject implements NSSecureCoding, CAMediaTiming 
   setDelegate(delegate: CALayerDelegate | null): void;
 
   setStyle(style: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  static layerWithRemoteClientId(client_id: number): CALayer;
 
   scrollPoint(p: CGPoint): void;
 

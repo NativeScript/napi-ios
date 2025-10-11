@@ -2,8 +2,6 @@
 
 declare const kCNNetworkInfoKeySSID: interop.Pointer;
 
-declare const kCFErrorDomainSystemConfiguration: interop.Pointer;
-
 declare const kSCNetworkFlagsIsDirect: number;
 
 declare const kSCNetworkFlagsIsLocalAddress: number;
@@ -13,6 +11,8 @@ declare const kSCNetworkFlagsInterventionRequired: number;
 declare const kSCNetworkFlagsConnectionRequired: number;
 
 declare const kSCNetworkFlagsReachable: number;
+
+declare const kSCBondStatusNotInActiveGroup: number;
 
 declare const kSCBondStatusNoPartner: number;
 
@@ -38,10 +38,6 @@ declare const kSCStatusLocked: number;
 
 declare const kSCStatusInvalidArgument: number;
 
-declare const kSCStatusFailed: number;
-
-declare const kSCBondStatusLinkInvalid: number;
-
 declare const kSCStatusKeyExists: number;
 
 declare const kSCStatusOK: number;
@@ -54,15 +50,19 @@ declare const kSCNetworkFlagsTransientConnection: number;
 
 declare const kSCStatusAccessError: number;
 
-declare const kSCBondStatusNotInActiveGroup: number;
+declare const kSCStatusMaxLink: number;
+
+declare const kSCBondStatusLinkInvalid: number;
 
 declare const kSCBondStatusUnknown: number;
 
-declare const kSCStatusMaxLink: number;
+declare const kCFErrorDomainSystemConfiguration: interop.Pointer;
 
 declare const kSCStatusNoStoreServer: number;
 
 declare const kSCNetworkFlagsConnectionAutomatic: number;
+
+declare const kSCStatusFailed: number;
 
 declare const kCNNetworkInfoKeySSIDData: interop.Pointer;
 

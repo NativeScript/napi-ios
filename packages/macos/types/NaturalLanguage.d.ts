@@ -243,11 +243,11 @@ declare const NLLanguageKhmer: string;
 
 declare const NLTagSchemeLemma: string;
 
-declare const NLTagOpenQuote: string;
-
 declare const NLLanguagePortuguese: string;
 
 declare const NLLanguageJapanese: string;
+
+declare const NLTagOpenQuote: string;
 
 declare const NLLanguageFinnish: string;
 
@@ -255,11 +255,11 @@ declare const NLScriptUndetermined: string;
 
 declare const NLTagDeterminer: string;
 
-declare const NLScriptGurmukhi: string;
-
 declare const NLLanguageMalayalam: string;
 
 declare const NLScriptThai: string;
+
+declare const NLScriptGurmukhi: string;
 
 declare const NLLanguageIcelandic: string;
 
@@ -432,18 +432,6 @@ declare class NLGazetteer extends NSObject {
   static writeGazetteerForDictionaryLanguageToURLError(dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, language: string | null, url: NSURL, error: interop.PointerConvertible): boolean;
 }
 
-declare class NLContextualEmbeddingResult extends NSObject {
-  readonly string: string;
-
-  readonly language: string;
-
-  readonly sequenceLength: number;
-
-  enumerateTokenVectorsInRangeUsingBlock(range: _NSRange, block: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: _NSRange, p3: interop.PointerConvertible) => void): void;
-
-  tokenVectorAtIndexTokenRange(characterIndex: number, tokenRange: interop.PointerConvertible): NSArray;
-}
-
 declare class NLEmbedding extends NSObject {
   static wordEmbeddingForLanguage(language: string): NLEmbedding;
 
@@ -498,24 +486,16 @@ declare class NLEmbedding extends NSObject {
   static writeEmbeddingForDictionaryLanguageRevisionToURLError(dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, language: string | null, revision: number, url: NSURL, error: interop.PointerConvertible): boolean;
 }
 
-declare class NLModelConfiguration extends NSObject implements NSCopying, NSSecureCoding {
-  readonly type: interop.Enum<typeof NLModelType>;
+declare class NLContextualEmbeddingResult extends NSObject {
+  readonly string: string;
 
   readonly language: string;
 
-  readonly revision: number;
+  readonly sequenceLength: number;
 
-  static supportedRevisionsForType(type: interop.Enum<typeof NLModelType>): NSIndexSet;
+  enumerateTokenVectorsInRangeUsingBlock(range: _NSRange, block: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: _NSRange, p3: interop.PointerConvertible) => void): void;
 
-  static currentRevisionForType(type: interop.Enum<typeof NLModelType>): number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  tokenVectorAtIndexTokenRange(characterIndex: number, tokenRange: interop.PointerConvertible): NSArray;
 }
 
 declare class NLLanguageRecognizer extends NSObject {
@@ -540,5 +520,25 @@ declare class NLLanguageRecognizer extends NSObject {
   setLanguageHints(languageHints: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 
   setLanguageConstraints(languageConstraints: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class NLModelConfiguration extends NSObject implements NSCopying, NSSecureCoding {
+  readonly type: interop.Enum<typeof NLModelType>;
+
+  readonly language: string;
+
+  readonly revision: number;
+
+  static supportedRevisionsForType(type: interop.Enum<typeof NLModelType>): NSIndexSet;
+
+  static currentRevisionForType(type: interop.Enum<typeof NLModelType>): number;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 

@@ -3,13 +3,11 @@
 /// <reference path="./Foundation.d.ts" />
 /// <reference path="./QuartzCore.d.ts" />
 
-declare const NSMinValueBinding: string;
-
-declare const NSFontVariationAxisMaximumValueKey: string;
-
 declare const NSImageNameBonjour: string;
 
 declare const NSApplicationDidFinishRestoringWindowsNotification: string;
+
+declare const NSAccessibilityAlternateUIVisibleAttribute: string;
 
 declare const NSF35FunctionKey: number;
 
@@ -22,8 +20,6 @@ declare const NSPasteboardTypeRTFD: string;
 declare const NSViewModeDocumentAttribute: string;
 
 declare const NSSelectionIndexPathsBinding: string;
-
-declare const NSFontWeightMedium: number;
 
 declare const NSUnderlinePatternDashDotDot: interop.Enum<typeof NSUnderlineStyle>;
 
@@ -66,6 +62,8 @@ declare const NSAccessibilityVerticalUnitsAttribute: string;
 declare const NSAccessibilityCriticalValueAttribute: string;
 
 declare const NSBeginFunctionKey: number;
+
+declare const NSAccessibilityHeadingLevel6SearchKey: string;
 
 declare const NSAccessibilityShowDefaultUIAction: string;
 
@@ -727,6 +725,8 @@ declare const NSRangeDateMode: interop.Enum<typeof NSDatePickerMode>;
 
 declare const NSGlyphAttributeInscribe: number;
 
+declare const NSDeviceBlackColorSpace: string;
+
 declare const NSAccessibilityCheckBoxRole: string;
 
 declare const NSShowInvisibleGlyphs: number;
@@ -734,6 +734,8 @@ declare const NSShowInvisibleGlyphs: number;
 declare const NSBadBitmapParametersException: string;
 
 declare const NSTypeIdentifierPhoneNumberText: string;
+
+declare const NSAccessibilityLeftTabStopMarkerTypeValue: string;
 
 declare const NSPaperSizeDocumentAttribute: string;
 
@@ -778,6 +780,8 @@ declare const NSFPSizeField: number;
 declare const NSFPRevertButton: number;
 
 declare const NSFontPanelAllModesMask: number;
+
+declare const NSAccessibilityTextFieldSearchKey: string;
 
 declare const NSFontPanelStandardModesMask: number;
 
@@ -851,13 +855,9 @@ declare const NSResetCursorRectsRunLoopOrdering: number;
 
 declare const NSModalResponseCancel: number;
 
-declare const NSAppKitVersionNumberWithDeferredWindowDisplaySupport: number;
-
 declare const NSFontCollectionRecentlyUsed: string;
 
 declare const NSFontCollectionFavorites: string;
-
-declare const NSFontCollectionUser: string;
 
 declare const NSFontCollectionAllFonts: string;
 
@@ -907,11 +907,15 @@ declare const NSFontWidthCondensed: number;
 
 declare const NSFontWeightBlack: number;
 
+declare const NSFontWeightMedium: number;
+
 declare const NSFontWeightLight: number;
 
 declare const NSFontFeatureSelectorIdentifierKey: string;
 
 declare const NSFontFeatureTypeIdentifierKey: string;
+
+declare const NSFontVariationAxisMaximumValueKey: string;
 
 declare const NSFontVariationAxisIdentifierKey: string;
 
@@ -987,6 +991,8 @@ declare const NSApplicationWillTerminateNotification: string;
 
 declare const NSApplicationWillUpdateNotification: string;
 
+declare const NSAccessibilityFrameSearchKey: string;
+
 declare const NSApplicationWillResignActiveNotification: string;
 
 declare const NSApplicationWillFinishLaunchingNotification: string;
@@ -1036,8 +1042,6 @@ declare const NSAppKitVersionNumber11_4: number;
 declare const NSAppKitVersionNumber11_3: number;
 
 declare const NSAppKitVersionNumber11_2: number;
-
-declare const NSAppKitVersionNumber11_1: number;
 
 declare const NSAppKitVersionNumber11_0: number;
 
@@ -1145,6 +1149,8 @@ declare const NSMixedStateImageBinding: string;
 
 declare const NSMinWidthBinding: string;
 
+declare const NSMinValueBinding: string;
+
 declare const NSMaxValueBinding: string;
 
 declare const NSMaximumRecentsBinding: string;
@@ -1178,8 +1184,6 @@ declare const NSDoubleClickTargetBinding: string;
 declare const NSDataBinding: string;
 
 declare const NSCriticalValueBinding: string;
-
-declare const NSContentWidthBinding: string;
 
 declare const NSContentValuesBinding: string;
 
@@ -1561,6 +1565,8 @@ declare const NSDisplayWindowRunLoopOrdering: number;
 
 declare const NSTextContentTypeNewPassword: string;
 
+declare const NSAccessibilityArticleSearchKey: string;
+
 declare const NSAccessibilityZoomButtonSubrole: string;
 
 declare const NSOpenGLPFAAllRenderers: number;
@@ -1643,15 +1649,21 @@ declare const NSValidatesImmediatelyBindingOption: string;
 
 declare const NSImageNamePreferencesGeneral: string;
 
+declare const NSAccessibilityYearMonthDateTimeComponentsFlag: number;
+
 declare const NSRulerViewUnitCentimeters: string;
 
 declare const NSOutlineViewDropOnItemIndex: number;
 
 declare const NSMouseEventSubtype: interop.Enum<typeof NSEventSubtype>;
 
+declare const NSAccessibilityStyleChangeSearchKey: string;
+
 declare const NSJPEG2000FileType: interop.Enum<typeof NSBitmapImageFileType>;
 
 declare const NSOutlineViewColumnDidResizeNotification: string;
+
+declare const NSAccessibilityCheckBoxSearchKey: string;
 
 declare const NSContentObjectsBinding: string;
 
@@ -1697,6 +1709,8 @@ declare const NSInitialKeyBinding: string;
 
 declare const NSAccessibilityFrontmostAttribute: string;
 
+declare const NSApplicationShouldEndSuppressingHighDynamicRangeContentNotification: string;
+
 declare const NSTextEncodingNameDocumentOption: string;
 
 declare const NSNonactivatingPanelMask: interop.Enum<typeof NSWindowStyleMask>;
@@ -1716,6 +1730,8 @@ declare const NSContentArrayBinding: string;
 declare const NSWindowDidChangeBackingPropertiesNotification: string;
 
 declare const NSPrintAllPages: string;
+
+declare const NSAccessibilityDraggingSourceDragBeganNotification: string;
 
 declare const NSLineToBezierPathElement: interop.Enum<typeof NSBezierPathElement>;
 
@@ -1738,8 +1754,6 @@ declare const NSGeneralPboard: string;
 declare const NSShiftKeyMask: interop.Enum<typeof NSEventModifierFlags>;
 
 declare const NSTextListMarkerUppercaseLatin: string;
-
-declare const NSPenUpperSideMask: interop.Enum<typeof NSEventButtonMask>;
 
 declare const NSTypeIdentifierTransitInformationText: string;
 
@@ -1797,6 +1811,8 @@ declare const NSPrintFaxNumber: string;
 
 declare const NSF7FunctionKey: number;
 
+declare const NSAccessibilityHeadingSearchKey: string;
+
 declare const NSColorPboardType: string;
 
 declare const NSApplicationLaunchIsDefaultLaunchKey: string;
@@ -1806,8 +1822,6 @@ declare const NSTextScalingDocumentAttribute: string;
 declare const NSAccessibilityPlaceholderValueAttribute: string;
 
 declare const NSPrintTopMargin: string;
-
-declare const NSOpenGLPFARendererID: number;
 
 declare const NSWindowDidChangeScreenNotification: string;
 
@@ -1850,6 +1864,8 @@ declare const NSTouchBarItemIdentifierTextList: string;
 declare const NSLayoutPriorityWindowSizeStayPut: number;
 
 declare const NSImageNameTouchBarUserGroupTemplate: string;
+
+declare const NSAccessibilityHourMinuteDateTimeComponentsFlag: number;
 
 declare const NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification: string;
 
@@ -1909,11 +1925,87 @@ declare const NSWorkspaceDesktopImageFillColorKey: string;
 
 declare const NSWorkspaceDesktopImageAllowClippingKey: string;
 
+declare const NSAccessibilityYearMonthDayDateTimeComponentsFlag: number;
+
+declare const NSAccessibilityHourMinuteSecondDateTimeComponentsFlag: number;
+
+declare const NSAccessibilityVisitedLinkSearchKey: string;
+
+declare const NSAccessibilityUnderlineSearchKey: string;
+
+declare const NSAccessibilityTextStateChangeTypeKey: string;
+
+declare const NSAccessibilityTableSearchKey: string;
+
+declare const NSAccessibilityTableSameLevelSearchKey: string;
+
+declare const NSAppKitVersionNumber11_1: number;
+
+declare const NSAccessibilitySameTypeSearchKey: string;
+
+declare const NSAccessibilityMisspelledWordSearchKey: string;
+
+declare const NSAccessibilityListSearchKey: string;
+
+declare const NSAccessibilityLinkSearchKey: string;
+
+declare const NSAccessibilityKeyboardFocusableSearchKey: string;
+
+declare const NSAccessibilityItalicFontSearchKey: string;
+
+declare const NSAccessibilityHeadingSameLevelSearchKey: string;
+
+declare const NSAccessibilityHeadingLevel3SearchKey: string;
+
+declare const NSAccessibilityProgressIndicatorRole: string;
+
+declare const NSAccessibilityHeadingLevel2SearchKey: string;
+
+declare const NSAccessibilityGraphicSearchKey: string;
+
+declare const NSPenUpperSideMask: interop.Enum<typeof NSEventButtonMask>;
+
+declare const NSAccessibilityFontColorChangeSearchKey: string;
+
+declare const NSAccessibilityFontChangeSearchKey: string;
+
+declare const NSAccessibilityDifferentTypeSearchKey: string;
+
+declare const NSContentWidthBinding: string;
+
+declare const NSAccessibilityButtonSearchKey: string;
+
+declare const NSAccessibilityBoldFontSearchKey: string;
+
+declare const NSAccessibilityBlockquoteSameLevelSearchKey: string;
+
+declare const NSAccessibilityAnyTypeSearchKey: string;
+
+declare const NSAccessibilitySearchResultRangeKey: string;
+
+declare const NSAccessibilitySearchResultElementKey: string;
+
+declare const NSAccessibilitySearchDirectionPrevious: string;
+
+declare const NSAccessibilitySearchTextKey: string;
+
+declare const NSApplicationShouldBeginSuppressingHighDynamicRangeContentNotification: string;
+
+declare const NSAccessibilitySearchResultsLimitKey: string;
+
+declare const NSAccessibilitySearchCurrentRangeKey: string;
+
+declare const NSAccessibilitySearchIdentifiersKey: string;
+
+declare const NSAccessibilityResultsForSearchPredicateParameterizedAttribute: string;
+
 declare const NSAccessibilityAnnouncementKey: string;
 
 declare const NSAccessibilityPriorityKey: string;
 
 declare const NSAccessibilityUIElementsKey: string;
+
+declare const NSAccessibilitySuggestionSubrole: string;
 
 declare const NSPasteboardNameDrag: string;
 
@@ -1960,6 +2052,8 @@ declare const NSAccessibilityMinimizeButtonSubrole: string;
 declare const NSAccessibilityCloseButtonSubrole: string;
 
 declare const NSAccessibilityLayoutAreaRole: string;
+
+declare const NSAccessibilityWebAreaRole: string;
 
 declare const NSAccessibilityPageRole: string;
 
@@ -2011,6 +2105,12 @@ declare const NSAccessibilityAnnouncementRequestedNotification: string;
 
 declare const NSAccessibilitySelectedChildrenMovedNotification: string;
 
+declare const NSAccessibilityDraggingDestinationDropNotAllowedNotification: string;
+
+declare const NSAccessibilityDraggingDestinationDropAllowedNotification: string;
+
+declare const NSAccessibilityTextInputMarkingSessionEndedNotification: string;
+
 declare const NSAccessibilityRowExpandedNotification: string;
 
 declare const NSAccessibilitySelectedChildrenChangedNotification: string;
@@ -2040,6 +2140,8 @@ declare const NSAccessibilityApplicationShownNotification: string;
 declare const NSAccessibilityApplicationActivatedNotification: string;
 
 declare const NSAccessibilityFocusedUIElementChangedNotification: string;
+
+declare const NSAccessibilityScrollToVisibleAction: string;
 
 declare const NSHyphenationFactorDocumentAttribute: string;
 
@@ -2147,7 +2249,19 @@ declare const NSLocalizedKeyDictionaryBinding: string;
 
 declare const NSAccessibilityAnnotationLocation: string;
 
+declare const NSUnifiedTitleAndToolbarWindowMask: interop.Enum<typeof NSWindowStyleMask>;
+
+declare const NSAccessibilityTextCompletionAttribute: string;
+
 declare const NSAccessibilityListItemLevelTextAttribute: string;
+
+declare const NSAccessibilityIndexForChildUIElementAttribute: string;
+
+declare const NSAccessibilityChildrenInNavigationOrderAttribute: string;
+
+declare const NSAccessibilityFontItalicAttribute: string;
+
+declare const NSAccessibilityFontBoldAttribute: string;
 
 declare const NSAccessibilityTextAlignmentAttribute: string;
 
@@ -2189,9 +2303,23 @@ declare const NSAccessibilityLinkedUIElementsAttribute: string;
 
 declare const NSAccessibilityTitleUIElementAttribute: string;
 
-declare const NSAccessibilityAlternateUIVisibleAttribute: string;
+declare const NSAccessibilityVisitedAttribute: string;
+
+declare const NSAccessibilityBlockQuoteLevelAttribute: string;
+
+declare const NSFontCollectionUser: string;
+
+declare const NSAccessibilityTextInputMarkedRangeAttribute: string;
+
+declare const NSAccessibilityEmbeddedImageDescriptionAttribute: string;
+
+declare const NSAccessibilityDateTimeComponentsAttribute: string;
+
+declare const NSAccessibilityAutoInteractableAttribute: string;
 
 declare const NSSquareLineCapStyle: interop.Enum<typeof NSLineCapStyle>;
+
+declare const NSAccessibilityHeadingLevelAttribute: string;
 
 declare const NSAccessibilityIndexAttribute: string;
 
@@ -2286,8 +2414,6 @@ declare const NSDarkGray: number;
 declare const NSLightGray: number;
 
 declare const NSWhite: number;
-
-declare const NSDeviceBlackColorSpace: string;
 
 declare const NSCalibratedBlackColorSpace: string;
 
@@ -2423,6 +2549,8 @@ declare const NSFontExpandedTrait: number;
 
 declare const NSPNGFileType: interop.Enum<typeof NSBitmapImageFileType>;
 
+declare const NSAccessibilityPathAttribute: string;
+
 declare const NSMacSimpleTextDocumentType: string;
 
 declare const NSFontWeightTrait: string;
@@ -2438,8 +2566,6 @@ declare const NSToolTipAttributeName: string;
 declare const NSVoiceDemoText: string;
 
 declare const NSCompositeSoftLight: interop.Enum<typeof NSCompositingOperation>;
-
-declare const NSSelectionIndexesBinding: string;
 
 declare const NSAccessibilityStyleRangeForIndexParameterizedAttribute: string;
 
@@ -2460,8 +2586,6 @@ declare const NSAccessibilityFocusedWindowChangedNotification: string;
 declare const NSDeviceRGBColorSpace: string;
 
 declare const NSAccessibilityVisibleChildrenAttribute: string;
-
-declare const NSUnifiedTitleAndToolbarWindowMask: interop.Enum<typeof NSWindowStyleMask>;
 
 declare const NSTextHighlightStyleDefault: string;
 
@@ -2491,6 +2615,8 @@ declare const NSToolbarCustomizeToolbarItemIdentifier: string;
 
 declare const NSF11FunctionKey: number;
 
+declare const NSAccessibilitySearchDirectionKey: string;
+
 declare const NSAccessibilitySplitterRole: string;
 
 declare const NSFontDescriptorSystemDesignRounded: string;
@@ -2506,6 +2632,8 @@ declare const NSAccessibilityActivationPointAttribute: string;
 declare const NSTextContentTypeCreditCardFamilyName: string;
 
 declare const NSFormFeedCharacter: number;
+
+declare const NSAccessibilitySearchDirectionNext: string;
 
 declare const NSPasteboardTypeColor: string;
 
@@ -2540,6 +2668,8 @@ declare const NSNonZeroWindingRule: interop.Enum<typeof NSWindingRule>;
 declare const NSOpenGLCPSwapRectangleEnable: interop.Enum<typeof NSOpenGLContextParameter>;
 
 declare const NSDeviceIsPrinter: string;
+
+declare const NSAccessibilityStaticTextSearchKey: string;
 
 declare const NSGrayColorSpaceModel: interop.Enum<typeof NSColorSpaceModel>;
 
@@ -2587,7 +2717,7 @@ declare const NSSpeechRecentSyncProperty: string;
 
 declare const NSSpeechErrorNewestCode: string;
 
-declare const NSAccessibilityRowCountAttribute: string;
+declare const NSBottomMarginDocumentAttribute: string;
 
 declare const NSAppearanceNameAccessibilityHighContrastDarkAqua: string;
 
@@ -2606,6 +2736,8 @@ declare const NSAccessibilityTextAttachmentSubrole: string;
 declare const NSModalResponseOK: number;
 
 declare const NSPrintSavePath: string;
+
+declare const NSAccessibilityRadioGroupSearchKey: string;
 
 declare const NSAccessibilityCreatedNotification: string;
 
@@ -2628,6 +2760,8 @@ declare const NSAccessibilityContainsProtectedContentAttribute: string;
 declare const NSAccessibilityDescriptionAttribute: string;
 
 declare const NSSharingServiceNamePostOnSinaWeibo: string;
+
+declare const NSAccessibilityRowCountAttribute: string;
 
 declare const NSFontOldStyleSerifsClass: number;
 
@@ -2685,6 +2819,8 @@ declare const NSSelectedIndexBinding: string;
 
 declare const NSImageNameApplicationIcon: string;
 
+declare const NSAccessibilityListMarkerRole: string;
+
 declare const NSImageNameTouchBarGoForwardTemplate: string;
 
 declare const NSDefaultTokenStyle: interop.Enum<typeof NSTokenStyle>;
@@ -2699,6 +2835,8 @@ declare const NSAccessibilityDisclosureTriangleRole: string;
 
 declare const NSF13FunctionKey: number;
 
+declare const NSSelectionIndexesBinding: string;
+
 declare const NSPrintJobSavingFileNameExtensionHidden: string;
 
 declare const NSApp: NSApplication;
@@ -2711,11 +2849,15 @@ declare const NSModalPanelWindowLevel: number;
 
 declare const NSFontTextStyleTitle1: string;
 
+declare const NSAccessibilityDateTimeAreaRole: string;
+
 declare const NSPauseFunctionKey: number;
 
 declare const NSF10FunctionKey: number;
 
 declare const NSTextHighlightColorSchemeOrange: string;
+
+declare const NSAccessibilityLiveRegionSearchKey: string;
 
 declare const NSServiceRequestTimedOutError: number;
 
@@ -2737,6 +2879,10 @@ declare const NSTextContentTypeStreetAddressLine2: string;
 
 declare const NSRuleEditorPredicateRightExpression: string;
 
+declare const NSExpansionAttributeName: string;
+
+declare const NSAccessibilityOutlineSearchKey: string;
+
 declare const NSAccessibilityRulerRole: string;
 
 declare const NSImageNameTouchBarExitFullScreenTemplate: string;
@@ -2751,8 +2897,6 @@ declare const NSSharingServiceNamePostImageOnFlickr: string;
 
 declare const NSAppKitVersionNumber13_4: number;
 
-declare const NSDefinitionPresentationTypeDictionaryApplication: string;
-
 declare const NSServiceMalformedServiceDictionaryError: number;
 
 declare const NSContentBinding: string;
@@ -2766,8 +2910,6 @@ declare const NSObservedObjectKey: string;
 declare const NSFontFreeformSerifsClass: number;
 
 declare const NSSpeechPhonemeInfoExample: string;
-
-declare const NSExpansionAttributeName: string;
 
 declare const NSSharingServiceNamePostOnLinkedIn: string;
 
@@ -2837,6 +2979,8 @@ declare const NSFontCollectionIncludeDisabledFontsOption: string;
 
 declare const NSAccessibilityPressAction: string;
 
+declare const NSAccessibilityHeadingLevel4SearchKey: string;
+
 declare const NSApplicationDidChangeOcclusionStateNotification: string;
 
 declare const NSParagraphSeparatorCharacter: number;
@@ -2872,6 +3016,8 @@ declare const NSAccessibilityMarkerValuesAttribute: string;
 declare const NSEnabledBinding: string;
 
 declare const NSGIFFileType: interop.Enum<typeof NSBitmapImageFileType>;
+
+declare const NSAccessibilitySearchResultLoaderKey: string;
 
 declare const NSSpeechErrorNewestCharacterOffset: string;
 
@@ -2943,6 +3089,8 @@ declare const NSTextCheckingGenerateInlinePredictionsKey: string;
 
 declare const NSStatusWindowLevel: number;
 
+declare const NSAccessibilityLanguageAttribute: string;
+
 declare const NSImageEXIFData: string;
 
 declare const NSImageNameTouchBarFastForwardTemplate: string;
@@ -2959,9 +3107,9 @@ declare const NSVoiceLanguage: string;
 
 declare const NSImageNameTouchBarEnterFullScreenTemplate: string;
 
-declare const NSOpenGLPFAClosestPolicy: number;
+declare const NSAppKitVersionNumberWithDeferredWindowDisplaySupport: number;
 
-declare const NSAccessibilityLeftTabStopMarkerTypeValue: string;
+declare const NSOpenGLPFAClosestPolicy: number;
 
 declare const NSAnimationProgressMark: string;
 
@@ -2970,6 +3118,8 @@ declare const NSAccessibilitySelectedChildrenAttribute: string;
 declare const NSAccessibilityVisibleCellsAttribute: string;
 
 declare const NSAppKitVersionNumber13_5: number;
+
+declare const NSAccessibilityIndexForChildUIElementInNavigationOrderAttribute: string;
 
 declare const NSAccessibilityUnitsAttribute: string;
 
@@ -2980,6 +3130,8 @@ declare const NSTextContentTypeEmailAddress: string;
 declare const NSUserActivityDocumentURLKey: string;
 
 declare const NSWindowSharingRequestAlreadyRequested: number;
+
+declare const NSAccessibilityDraggingDestinationDragAcceptedNotification: string;
 
 declare const NSSpeechModeLiteral: string;
 
@@ -3071,8 +3223,6 @@ declare const NSImageNameTouchBarPlayPauseTemplate: string;
 
 declare const NSAccessibilityWarningValueAttribute: string;
 
-declare const NSTextCheckingReferenceDateKey: string;
-
 declare const NSTabCharacter: number;
 
 declare const NSRulerViewUnitInches: string;
@@ -3095,6 +3245,8 @@ declare const NSFontWeightSemibold: number;
 
 declare const NSImageNameGoLeftTemplate: string;
 
+declare const NSAccessibilityAutocorrectionOccurredNotification: string;
+
 declare const NSAccessibilityURLAttribute: string;
 
 declare const NSAppKitVersionNumber10_3_5: number;
@@ -3113,6 +3265,8 @@ declare const NSAccessibilityNextContentsAttribute: string;
 
 declare const NSIllegalTextMovement: number;
 
+declare const NSAccessibilityUnvisitedLinkSearchKey: string;
+
 declare const NSRightMouseDraggedMask: interop.Enum<typeof NSEventMask>;
 
 declare const NSContentArrayForMultipleSelectionBinding: string;
@@ -3122,8 +3276,6 @@ declare const NSSpeechDictionaryPronunciations: string;
 declare const NSSharingServiceNamePostOnTwitter: string;
 
 declare const NSTabletPoint: interop.Enum<typeof NSEventType>;
-
-declare const NSBottomMarginDocumentAttribute: string;
 
 declare const NSFontIdentityMatrix: interop.Pointer;
 
@@ -3189,9 +3341,7 @@ declare const NSRecentSearchesBinding: string;
 
 declare const NSTextContentTypeFullStreetAddress: string;
 
-declare const NSPrintPagesPerSheet: string;
-
-declare const NSAppearanceNameAccessibilityHighContrastVibrantDark: string;
+declare const NSTIFFPboardType: string;
 
 declare const NSToolbarWritingToolsItemIdentifier: string;
 
@@ -3245,6 +3395,8 @@ declare const NSSpeechCommandDelimiterProperty: string;
 
 declare const NSPasteboardTypeFileURL: string;
 
+declare const NSAccessibilityLandmarkSearchKey: string;
+
 declare const NSPrintingCommunicationException: string;
 
 declare const NSTextEffectLetterpressStyle: string;
@@ -3254,10 +3406,6 @@ declare const NSRightMarginDocumentAttribute: string;
 declare const NSComboBoxSelectionIsChangingNotification: string;
 
 declare const NSAnimationProgressMarkNotification: string;
-
-declare const NSSpeechSynthesizerInfoProperty: string;
-
-declare const NSWindowDidChangeOcclusionStateNotification: string;
 
 declare const NSDrawerDidCloseNotification: string;
 
@@ -3302,8 +3450,6 @@ declare const NSNoInterfaceStyle: number;
 declare const NSFontBoldBinding: string;
 
 declare const NSAccessibilityAnnotationLabel: string;
-
-declare const NSFileTypeDocumentOption: string;
 
 declare const NSAppKitVersionNumber10_10_Max: number;
 
@@ -3405,6 +3551,8 @@ declare const NSTickMarkRight: interop.Enum<typeof NSTickMarkPosition>;
 
 declare const NSAccessibilityDeleteAction: string;
 
+declare const NSAccessibilitySearchCurrentElementKey: string;
+
 declare const NSWindowDidEnterFullScreenNotification: string;
 
 declare const NSUnderlinePatternDash: interop.Enum<typeof NSUnderlineStyle>;
@@ -3437,9 +3585,9 @@ declare const NSTouchEventSubtype: interop.Enum<typeof NSEventSubtype>;
 
 declare const NSSharingServiceErrorMaximum: number;
 
-declare const NSTouchBarItemPriorityLow: number;
+declare const NSAccessibilitySearchResultDescriptionOverrideKey: string;
 
-declare const NSAccessibilityProgressIndicatorRole: string;
+declare const NSTouchBarItemPriorityLow: number;
 
 declare const NSTextContentTypeStreetAddressLine1: string;
 
@@ -3447,13 +3595,19 @@ declare const NSTextContentTypeJobTitle: string;
 
 declare const NSAppearanceNameAccessibilityHighContrastAqua: string;
 
+declare const NSAccessibilityDraggingSourceDragEndedNotification: string;
+
 declare const NSCenterTextAlignment: interop.Enum<typeof NSTextAlignment>;
 
 declare const NSTextContentTypeCreditCardType: string;
 
+declare const NSAccessibilityControlSearchKey: string;
+
 declare const NSImageNameTouchBarGoUpTemplate: string;
 
 declare const NSAccessibilityCustomTextAttribute: string;
+
+declare const NSAccessibilityBlockquoteSearchKey: string;
 
 declare const NSAccessibilityException: string;
 
@@ -3478,8 +3632,6 @@ declare const NSAppKitVersionNumber10_11_1: number;
 declare const NSWindowSharingRequestNoEligibleSession: number;
 
 declare const NSControlTextDidChangeNotification: string;
-
-declare const NSTIFFPboardType: string;
 
 declare const NSApplicationDidBecomeActiveNotification: string;
 
@@ -3607,9 +3759,15 @@ declare const NSBackgroundStyleLight: interop.Enum<typeof NSBackgroundStyle>;
 
 declare const NSFullScreenModeAllScreens: string;
 
+declare const NSAppearanceNameAccessibilityHighContrastVibrantDark: string;
+
+declare const NSPrintPagesPerSheet: string;
+
 declare const NSAppKitVersionNumberWithDockTilePlugInSupport: number;
 
 declare const NSAccessibilityDialogSubrole: string;
+
+declare const NSAccessibilityHeadingLevel1SearchKey: string;
 
 declare const NSClockAndCalendarDatePickerStyle: interop.Enum<typeof NSDatePickerStyle>;
 
@@ -3619,15 +3777,17 @@ declare const NSAppKitVirtualMemoryException: string;
 
 declare const NSAccessibilityDecrementButtonAttribute: string;
 
+declare const NSAccessibilityHeadingRole: string;
+
 declare const NSMenuDidSendActionNotification: string;
 
 declare const NSControlTintDidChangeNotification: string;
 
+declare const NSAccessibilityUIElementsForSearchPredicateParameterizedAttribute: string;
+
 declare const NSFontNameAttribute: string;
 
-declare const NSImageNameTouchBarRecordStartTemplate: string;
-
-declare const NSAccessibilitySliderRole: string;
+declare const NSDefinitionPresentationTypeDictionaryApplication: string;
 
 declare const NSOtherMouseUp: interop.Enum<typeof NSEventType>;
 
@@ -3649,6 +3809,8 @@ declare const NSAccessibilityWindowMovedNotification: string;
 
 declare const NSAppearanceNameAqua: string;
 
+declare const NSAccessibilityVerticalScrollBarAttribute: string;
+
 declare const NSTextContentTypeFamilyName: string;
 
 declare const NSAccessibilityColumnTitlesAttribute: string;
@@ -3663,15 +3825,21 @@ declare const NSAccessibilityValueAttribute: string;
 
 declare const NSSortDescriptorsBinding: string;
 
+declare const NSAccessibilitySliderRole: string;
+
 declare const NSCompositeSourceAtop: interop.Enum<typeof NSCompositingOperation>;
 
-declare const NSAccessibilityVerticalScrollBarAttribute: string;
+declare const NSOpenGLPFARendererID: number;
 
 declare const NSTextContentTypeAddressCity: string;
 
 declare const NSSpeechPhonemeInfoOpcode: string;
 
 declare const NSAccessibilityFocusedWindowAttribute: string;
+
+declare const NSAccessibilityDraggingDestinationDragNotAcceptedNotification: string;
+
+declare const NSTextCheckingReferenceDateKey: string;
 
 declare const NSPPDIncludeStackOverflowException: string;
 
@@ -3727,9 +3895,13 @@ declare const NSFontWeightRegular: number;
 
 declare const NSViewAnimationStartFrameKey: string;
 
+declare const NSWindowDidChangeOcclusionStateNotification: string;
+
 declare const NSAccessibilityLanguageTextAttribute: string;
 
 declare const NSImageNameGoForwardTemplate: string;
+
+declare const NSAccessibilityHeadingLevel5SearchKey: string;
 
 declare const NSOpenGLCPReclaimResources: interop.Enum<typeof NSOpenGLContextParameter>;
 
@@ -3849,6 +4021,10 @@ declare const NSMarkedClauseSegmentAttributeName: string;
 
 declare const NSCompositeDestinationAtop: interop.Enum<typeof NSCompositingOperation>;
 
+declare const NSFileTypeDocumentOption: string;
+
+declare const NSSpeechSynthesizerInfoProperty: string;
+
 declare const NSInitialValueBinding: string;
 
 declare const NSAccessibilityMatteRole: string;
@@ -3872,6 +4048,8 @@ declare const NSAccessibilityLayoutPointForScreenPointParameterizedAttribute: st
 declare const NSThickerSquareBezelStyle: interop.Enum<typeof NSBezelStyle>;
 
 declare const NSControlStateValueOn: number;
+
+declare const NSImageNameTouchBarRecordStartTemplate: string;
 
 declare const NSF24FunctionKey: number;
 
@@ -3923,6 +4101,8 @@ declare const NSLinkAttributeName: string;
 
 declare const NSSearchFieldClearRecentsMenuItemTag: number;
 
+declare const NSAccessibilityTextInputMarkingSessionBeganNotification: string;
+
 declare const NSConditionallySetsHiddenBindingOption: string;
 
 declare const NSAccessibilityIdentifierAttribute: string;
@@ -3963,6 +4143,8 @@ declare const NSSharingServiceNameComposeEmail: string;
 
 declare const NSImageNameRevealFreestandingTemplate: string;
 
+declare const NSAccessibilityTextStateSyncKey: string;
+
 declare const NSFontPanelStrikethroughEffectModeMask: number;
 
 declare const NSImageNameFollowLinkFreestandingTemplate: string;
@@ -3993,6 +4175,8 @@ declare const NSInlineBezelStyle: interop.Enum<typeof NSBezelStyle>;
 
 declare const NSWorkspaceDestroyOperation: string;
 
+declare const NSAccessibilityPlainTextSearchKey: string;
+
 declare const NSAccessibilityRangeForPositionParameterizedAttribute: string;
 
 declare const NSHiddenBinding: string;
@@ -4007,32 +4191,311 @@ declare const NSAccessibilitySelectedTextRangeAttribute: string;
 
 declare const NSWorkspaceDesktopImageScalingKey: string;
 
-declare const NSTouchPhase: {
-  Began: 1,
-  Moved: 2,
-  Stationary: 4,
-  Ended: 8,
-  Cancelled: 16,
-  Touching: 7,
+declare const NSLineBreakMode: {
+  WordWrapping: 0,
+  CharWrapping: 1,
+  Clipping: 2,
+  TruncatingHead: 3,
+  TruncatingTail: 4,
+  TruncatingMiddle: 5,
+};
+
+declare const NSTableColumnResizingOptions: {
+  NoResizing: 0,
+  AutoresizingMask: 1,
+  UserResizingMask: 2,
+};
+
+declare const NSMenuSelectionMode: {
+  Automatic: 0,
+  SelectOne: 1,
+  SelectAny: 2,
+};
+
+declare const NSSplitViewItemBehavior: {
+  Default: 0,
+  Sidebar: 1,
+  ContentList: 2,
+  Inspector: 3,
+};
+
+declare const NSTypesetterControlCharacterAction: {
+  ZeroAdvancement: 1,
+  Whitespace: 2,
+  HorizontalTab: 4,
+  LineBreak: 8,
+  ParagraphBreak: 16,
+  ContainerBreak: 32,
+};
+
+declare const NSToolbarSizeMode: {
+  Default: 0,
+  Regular: 1,
+  Small: 2,
+};
+
+declare const NSWritingToolsBehavior: {
+  None: -1,
+  Default: 0,
+  Complete: 1,
+  Limited: 2,
+};
+
+declare const NSTickMarkPosition: {
+  Below: 0,
+  Above: 1,
+  Leading: 1,
+  Trailing: 0,
+};
+
+declare const NSCollectionViewItemHighlightState: {
+  None: 0,
+  ForSelection: 1,
+  ForDeselection: 2,
+  AsDropTarget: 3,
+};
+
+declare const NSTouchTypeMask: {
+  Direct: 1,
+  Indirect: 2,
+};
+
+declare const NSTableViewDropOperation: {
+  On: 0,
+  Above: 1,
+};
+
+declare const NSLineMovementDirection: {
+  DoesntMove: 0,
+  MovesLeft: 1,
+  MovesRight: 2,
+  MovesDown: 3,
+  MovesUp: 4,
+};
+
+declare const NSToolbarDisplayMode: {
+  Default: 0,
+  IconAndLabel: 1,
+  IconOnly: 2,
+  LabelOnly: 3,
+};
+
+declare const NSTextInputTraitType: {
+  Default: 0,
+  No: 1,
+  Yes: 2,
+};
+
+declare const NSWindowDepth: {
+  Twentyfour: 520,
+  Sixtyfour: 528,
+  Onehundredtwentyeight: 544,
+};
+
+declare const NSGlassEffectViewStyle: {
+  Regular: 0,
+  Clear: 1,
+};
+
+declare const NSWindowTabbingMode: {
+  Automatic: 0,
+  Preferred: 1,
+  Disallowed: 2,
+};
+
+declare const NSWindowCollectionBehavior: {
+  Default: 0,
+  CanJoinAllSpaces: 1,
+  MoveToActiveSpace: 2,
+  Managed: 4,
+  Transient: 8,
+  Stationary: 16,
+  ParticipatesInCycle: 32,
+  IgnoresCycle: 64,
+  FullScreenPrimary: 128,
+  FullScreenAuxiliary: 256,
+  FullScreenNone: 512,
+  FullScreenAllowsTiling: 2048,
+  FullScreenDisallowsTiling: 4096,
+  Primary: 65536,
+  Auxiliary: 131072,
+  CanJoinAllApplications: 262144,
+};
+
+declare const NSTextLayoutFragmentEnumerationOptions: {
+  None: 0,
+  Reverse: 1,
+  EstimatesSize: 2,
+  EnsuresLayout: 4,
+  EnsuresExtraLineFragment: 8,
+};
+
+declare const NSTableRowActionEdge: {
+  Leading: 0,
+  Trailing: 1,
+};
+
+declare const NSPasteboardWritingOptions: {
+  NSPasteboardWritingPromised: 512,
+};
+
+declare const NSToolbarItemStyle: {
+  Plain: 0,
+  Prominent: 1,
+};
+
+declare const NSEventButtonMask: {
+  Tip: 1,
+  LowerSide: 2,
+  UpperSide: 4,
+};
+
+declare const NSEventMask: {
+  LeftMouseDown: 2,
+  LeftMouseUp: 4,
+  RightMouseDown: 8,
+  RightMouseUp: 16,
+  MouseMoved: 32,
+  LeftMouseDragged: 64,
+  RightMouseDragged: 128,
+  MouseEntered: 256,
+  MouseExited: 512,
+  KeyDown: 1024,
+  KeyUp: 2048,
+  FlagsChanged: 4096,
+  AppKitDefined: 8192,
+  SystemDefined: 16384,
+  ApplicationDefined: 32768,
+  Periodic: 65536,
+  CursorUpdate: 131072,
+  ScrollWheel: 4194304,
+  TabletPoint: 8388608,
+  TabletProximity: 16777216,
+  OtherMouseDown: 33554432,
+  OtherMouseUp: 67108864,
+  OtherMouseDragged: 134217728,
+  Gesture: 536870912,
+  Magnify: 1073741824,
+  Swipe: 2147483648,
+  Rotate: 262144,
+  BeginGesture: 524288,
+  EndGesture: 1048576,
+  SmartMagnify: 4294967296,
+  Pressure: 17179869184,
+  DirectTouch: 137438953472,
+  ChangeMode: 274877906944,
+  MouseCancelled: 1099511627776,
   Any: -1,
 };
 
-declare const NSAccessibilitySortDirection: {
-  Unknown: 0,
-  Ascending: 1,
-  Descending: 2,
+declare const NSWindowAnimationBehavior: {
+  Default: 0,
+  None: 2,
+  DocumentWindow: 3,
+  UtilityWindow: 4,
+  AlertPanel: 5,
 };
 
-declare const NSTextMovement: {
-  Return: 16,
-  Tab: 17,
-  Backtab: 18,
-  Left: 19,
-  Right: 20,
-  Up: 21,
-  Down: 22,
-  Cancel: 23,
-  Other: 0,
+declare const NSControlSize: {
+  Regular: 0,
+  Small: 1,
+  Mini: 2,
+  Large: 3,
+  ExtraLarge: 4,
+};
+
+declare const NSTextSelectionNavigationDestination: {
+  Character: 0,
+  Word: 1,
+  Line: 2,
+  Sentence: 3,
+  Paragraph: 4,
+  Container: 5,
+  Document: 6,
+};
+
+declare const NSCursorFrameResizeDirections: {
+  Inward: 1,
+  Outward: 2,
+  All: 3,
+};
+
+declare const NSBitmapFormat: {
+  AlphaFirst: 1,
+  AlphaNonpremultiplied: 2,
+  FloatingPointSamples: 4,
+  SixteenBitLittleEndian: 256,
+  ThirtyTwoBitLittleEndian: 512,
+  SixteenBitBigEndian: 1024,
+  ThirtyTwoBitBigEndian: 2048,
+};
+
+declare const NSImageInterpolation: {
+  Default: 0,
+  None: 1,
+  Low: 2,
+  Medium: 4,
+  High: 3,
+};
+
+declare const NSFocusRingPlacement: {
+  Only: 0,
+  Below: 1,
+  Above: 2,
+};
+
+declare const NSTextStorageEditActions: {
+  Attributes: 1,
+  Characters: 2,
+};
+
+declare const NSDisplayGamut: {
+  SRGB: 1,
+  P3: 2,
+};
+
+declare const NSViewLayerContentsPlacement: {
+  ScaleAxesIndependently: 0,
+  ScaleProportionallyToFit: 1,
+  ScaleProportionallyToFill: 2,
+  Center: 3,
+  Top: 4,
+  TopRight: 5,
+  Right: 6,
+  BottomRight: 7,
+  Bottom: 8,
+  BottomLeft: 9,
+  Left: 10,
+  TopLeft: 11,
+};
+
+declare const NSDatePickerElementFlags: {
+  HourMinute: 12,
+  HourMinuteSecond: 14,
+  TimeZone: 16,
+  YearMonth: 192,
+  YearMonthDay: 224,
+  Era: 256,
+};
+
+declare const NSPopoverAppearance: {
+  Minimal: 0,
+  HUD: 1,
+};
+
+declare const NSScrollElasticity: {
+  Automatic: 0,
+  None: 1,
+  Allowed: 2,
+};
+
+declare const NSMenuProperties: {
+  Title: 1,
+  AttributedTitle: 2,
+  KeyEquivalent: 4,
+  Image: 8,
+  Enabled: 16,
+  AccessibilityDescription: 32,
 };
 
 declare const NSMenuItemBadgeType: {
@@ -4065,14 +4528,37 @@ declare const NSPrintingOrientation: {
   Landscape: 1,
 };
 
+declare const NSCellStyleMask: {
+  No: 0,
+  Contents: 1,
+  PushIn: 2,
+  ChangeGray: 4,
+  ChangeBackground: 8,
+};
+
 declare const NSWindowSharingType: {
   None: 0,
   ReadOnly: 1,
 };
 
+declare const NSPrintingPaginationMode: {
+  Automatic: 0,
+  Fit: 1,
+  Clip: 2,
+};
+
 declare const NSLayoutConstraintOrientation: {
   Horizontal: 0,
   Vertical: 1,
+};
+
+declare const NSDirectionalRectEdge: {
+  None: 0,
+  Top: 1,
+  Leading: 2,
+  Bottom: 4,
+  Trailing: 8,
+  All: 15,
 };
 
 declare const NSSpringLoadingOptions: {
@@ -4093,6 +4579,30 @@ declare const NSPrintPanelOptions: {
   Preview: 131072,
 };
 
+declare const NSTableViewSelectionHighlightStyle: {
+  None: -1,
+  Regular: 0,
+  SourceList: 1,
+};
+
+declare const NSPrintRenderingQuality: {
+  Best: 0,
+  Responsive: 1,
+};
+
+declare const NSTrackingAreaOptions: {
+  MouseEnteredAndExited: 1,
+  MouseMoved: 2,
+  CursorUpdate: 4,
+  ActiveWhenFirstResponder: 16,
+  ActiveInKeyWindow: 32,
+  ActiveInActiveApp: 64,
+  ActiveAlways: 128,
+  AssumeInside: 256,
+  InVisibleRect: 512,
+  EnabledDuringMouseDrag: 1024,
+};
+
 declare const NSBrowserDropOperation: {
   On: 0,
   Above: 1,
@@ -4103,10 +4613,20 @@ declare const NSDatePickerMode: {
   Range: 1,
 };
 
+declare const NSWorkspaceIconCreationOptions: {
+  ExcludeQuickDraw: 2,
+  Exclude10_4: 4,
+};
+
 declare const NSFocusRingType: {
   Default: 0,
   None: 1,
   Exterior: 2,
+};
+
+declare const NSTouchType: {
+  Direct: 0,
+  Indirect: 1,
 };
 
 declare const NSAnimationCurve: {
@@ -4114,11 +4634,6 @@ declare const NSAnimationCurve: {
   EaseIn: 1,
   EaseOut: 2,
   Linear: 3,
-};
-
-declare const NSTableRowActionEdge: {
-  Leading: 0,
-  Trailing: 1,
 };
 
 declare const NSTextTableLayoutAlgorithm: {
@@ -4153,6 +4668,13 @@ declare const NSCorrectionResponse: {
   Reverted: 5,
 };
 
+declare const NSLevelIndicatorStyle: {
+  Relevancy: 0,
+  ContinuousCapacity: 1,
+  DiscreteCapacity: 2,
+  Rating: 3,
+};
+
 declare const NSAccessibilityCustomRotorSearchDirection: {
   Previous: 0,
   Next: 1,
@@ -4162,6 +4684,11 @@ declare const NSLayoutRelation: {
   LessThanOr: -1,
   NSLayoutRelationEqual: 0,
   GreaterThanOr: 1,
+};
+
+declare const NSTextContentManagerEnumerationOptions: {
+  None: 0,
+  Reverse: 1,
 };
 
 declare const NSWritingToolsCoordinatorState: {
@@ -4178,6 +4705,18 @@ declare const NSGlyphProperty: {
   NonBaseCharacter: 8,
 };
 
+declare const NSViewControllerTransitionOptions: {
+  None: 0,
+  Crossfade: 1,
+  SlideUp: 16,
+  SlideDown: 32,
+  SlideLeft: 64,
+  SlideRight: 128,
+  SlideForward: 320,
+  SlideBackward: 384,
+  AllowUserInteraction: 4096,
+};
+
 declare const NSBackingStoreType: {
   Retained: 0,
   Nonretained: 1,
@@ -4187,6 +4726,11 @@ declare const NSBackingStoreType: {
 declare const NSTableViewRowActionStyle: {
   Regular: 0,
   Destructive: 1,
+};
+
+declare const NSTextFieldBezelStyle: {
+  Square: 0,
+  Rounded: 1,
 };
 
 declare const NSViewLayerContentsRedrawPolicy: {
@@ -4200,6 +4744,11 @@ declare const NSViewLayerContentsRedrawPolicy: {
 declare const NSMenuPresentationStyle: {
   Regular: 0,
   Palette: 1,
+};
+
+declare const NSScrubberMode: {
+  Fixed: 0,
+  Free: 1,
 };
 
 declare const NSLayoutAttribute: {
@@ -4219,6 +4768,30 @@ declare const NSLayoutAttribute: {
   NotAnAttribute: 0,
 };
 
+declare const NSHapticFeedbackPattern: {
+  Generic: 0,
+  Alignment: 1,
+  LevelChange: 2,
+};
+
+declare const NSColorRenderingIntent: {
+  Default: 0,
+  AbsoluteColorimetric: 1,
+  RelativeColorimetric: 2,
+  Perceptual: 3,
+  Saturation: 4,
+};
+
+declare const NSDocumentChangeType: {
+  Done: 0,
+  Undone: 1,
+  Redone: 5,
+  Cleared: 2,
+  ReadOtherContents: 3,
+  Autosaved: 4,
+  Discardable: 256,
+};
+
 declare const NSAccessibilityPriorityLevel: {
   Low: 10,
   Medium: 50,
@@ -4230,20 +4803,66 @@ declare const NSProgressIndicatorStyle: {
   Spinning: 1,
 };
 
+declare const NSWindowButton: {
+  Close: 0,
+  Miniaturize: 1,
+  Zoom: 2,
+  Toolbar: 3,
+  DocumentIcon: 4,
+  DocumentVersions: 6,
+};
+
+declare const NSTextBlockValueType: {
+  Absolute: 0,
+  Percentage: 1,
+};
+
 declare const NSWritingDirection: {
   Natural: -1,
   LeftToRight: 0,
   RightToLeft: 1,
 };
 
-declare const NSTouchTypeMask: {
-  Direct: 1,
-  Indirect: 2,
+declare const NSFontAssetRequestOptions: {
+  NSFontAssetRequestOptionUsesStandardUI: 1,
 };
 
-declare const NSComboButtonStyle: {
-  Split: 0,
-  Unified: 1,
+declare const NSStatusItemBehavior: {
+  RemovalAllowed: 2,
+  TerminationOnRemoval: 4,
+};
+
+declare const NSScrollerArrow: {
+  Increment: 0,
+  Decrement: 1,
+};
+
+declare const NSEventSubtype: {
+  WindowExposed: 0,
+  ApplicationActivated: 1,
+  ApplicationDeactivated: 2,
+  WindowMoved: 4,
+  ScreenChanged: 8,
+  PowerOff: 1,
+  MouseEvent: 0,
+  TabletPoint: 1,
+  TabletProximity: 2,
+  Touch: 3,
+};
+
+declare const NSWritingToolsCoordinatorContextScope: {
+  UserSelection: 0,
+  FullDocument: 1,
+  VisibleArea: 2,
+};
+
+declare const NSTextSelectionNavigationDirection: {
+  Forward: 0,
+  Backward: 1,
+  Right: 2,
+  Left: 3,
+  Up: 4,
+  Down: 5,
 };
 
 declare const NSVisualEffectBlendingMode: {
@@ -4273,6 +4892,21 @@ declare const NSButtonType: {
   MomentaryPushIn: 7,
   Accelerator: 8,
   MultiLevelAccelerator: 9,
+};
+
+declare const NSImageFrameStyle: {
+  None: 0,
+  Photo: 1,
+  GrayBezel: 2,
+  Groove: 3,
+  Button: 4,
+};
+
+declare const NSTextBlockVerticalAlignment: {
+  Top: 0,
+  Middle: 1,
+  Bottom: 2,
+  Baseline: 3,
 };
 
 declare const NSDatePickerStyle: {
@@ -4306,11 +4940,6 @@ declare const NSWritingToolsCoordinatorTextAnimation: {
   Translate: 9,
 };
 
-declare const NSWorkspaceIconCreationOptions: {
-  ExcludeQuickDraw: 2,
-  Exclude10_4: 4,
-};
-
 declare const NSWritingToolsCoordinatorTextUpdateReason: {
   Typing: 0,
   UndoRedo: 1,
@@ -4323,20 +4952,6 @@ declare const NSTextLayoutManagerSegmentOptions: {
   HeadSegmentExtended: 4,
   TailSegmentExtended: 8,
   UpstreamAffinity: 16,
-};
-
-declare const NSTextLayoutManagerSegmentType: {
-  Standard: 0,
-  Selection: 1,
-  Highlight: 2,
-};
-
-declare const NSTextLayoutFragmentEnumerationOptions: {
-  None: 0,
-  Reverse: 1,
-  EstimatesSize: 2,
-  EnsuresLayout: 4,
-  EnsuresExtraLineFragment: 8,
 };
 
 declare const NSTextSelectionNavigationLayoutOrientation: {
@@ -4353,15 +4968,6 @@ declare const NSTextSelectionNavigationModifier: {
   Extend: 1,
   Visual: 2,
   Multiple: 4,
-};
-
-declare const NSTextSelectionNavigationDirection: {
-  Forward: 0,
-  Backward: 1,
-  Right: 2,
-  Left: 3,
-  Up: 4,
-  Down: 5,
 };
 
 declare const NSTextSelectionAffinity: {
@@ -4383,10 +4989,13 @@ declare const NSHapticFeedbackPerformanceTime: {
   DrawCompleted: 2,
 };
 
-declare const NSHapticFeedbackPattern: {
-  Generic: 0,
-  Alignment: 1,
-  LevelChange: 2,
+declare const NSCollectionLayoutSectionOrthogonalScrollingBehavior: {
+  None: 0,
+  Continuous: 1,
+  ContinuousGroupLeadingBoundary: 2,
+  Paging: 3,
+  GroupPaging: 4,
+  GroupPagingCentered: 5,
 };
 
 declare const NSVisualEffectMaterial: {
@@ -4417,15 +5026,6 @@ declare const NSPathStyle: {
   NavigationBar: 1,
 };
 
-declare const NSDatePickerElementFlags: {
-  HourMinute: 12,
-  HourMinuteSecond: 14,
-  TimeZone: 16,
-  YearMonth: 192,
-  YearMonthDay: 224,
-  Era: 256,
-};
-
 declare const NSTextBlockDimension: {
   Width: 0,
   MinimumWidth: 1,
@@ -4433,17 +5033,6 @@ declare const NSTextBlockDimension: {
   Height: 4,
   MinimumHeight: 5,
   MaximumHeight: 6,
-};
-
-declare const NSWritingToolsCoordinatorContextScope: {
-  UserSelection: 0,
-  FullDocument: 1,
-  VisibleArea: 2,
-};
-
-declare const NSTextBlockValueType: {
-  Absolute: 0,
-  Percentage: 1,
 };
 
 declare const NSTextListOptions: {
@@ -4459,6 +5048,21 @@ declare const NSCharacterCollection: {
   AdobeKorea1: 5,
 };
 
+declare const NSTextInsertionIndicatorAutomaticModeOptions: {
+  EffectsView: 1,
+  WhileTracking: 2,
+};
+
+declare const NSPressureBehavior: {
+  Unknown: -1,
+  PrimaryDefault: 0,
+  PrimaryClick: 1,
+  PrimaryGeneric: 2,
+  PrimaryAccelerator: 3,
+  PrimaryDeepClick: 5,
+  PrimaryDeepDrag: 6,
+};
+
 declare const NSOpenGLGlobalOption: {
   FormatCacheSize: 501,
   ClearFormatCache: 502,
@@ -4472,11 +5076,6 @@ declare const NSDrawerState: {
   Opening: 1,
   Open: 2,
   Closing: 3,
-};
-
-declare const NSStatusItemBehavior: {
-  RemovalAllowed: 2,
-  TerminationOnRemoval: 4,
 };
 
 declare const NSBezierPathElement: {
@@ -4520,14 +5119,9 @@ declare const NSStringDrawingOptions: {
   UsesFontLeading: 2,
   UsesDeviceMetrics: 8,
   TruncatesLastVisibleLine: 32,
+  OptionsResolvesNaturalAlignmentWithBaseWritingDirection: 512,
   DisableScreenFontSubstitution: 4,
   OneShot: 16,
-};
-
-declare const NSTableColumnResizingOptions: {
-  NoResizing: 0,
-  AutoresizingMask: 1,
-  UserResizingMask: 2,
 };
 
 declare const NSFindPanelSubstringMatchType: {
@@ -4547,24 +5141,54 @@ declare const NSTableViewAnimationOptions: {
   SlideRight: 64,
 };
 
-declare const NSTableViewStyle: {
-  Automatic: 0,
-  FullWidth: 1,
-  Inset: 2,
-  SourceList: 3,
-  Plain: 4,
-};
-
-declare const NSTableViewSelectionHighlightStyle: {
+declare const NSTableViewDraggingDestinationFeedbackStyle: {
   None: -1,
   Regular: 0,
   SourceList: 1,
+  Gap: 2,
 };
 
-declare const NSToolbarSizeMode: {
-  Default: 0,
-  Regular: 1,
-  Small: 2,
+declare const NSTableViewRowSizeStyle: {
+  Default: -1,
+  Custom: 0,
+  Small: 1,
+  Medium: 2,
+  Large: 3,
+};
+
+declare const NSTableViewGridLineStyle: {
+  GridNone: 0,
+  SolidVerticalGridLineMask: 1,
+  SolidHorizontalGridLineMask: 2,
+  DashedHorizontalGridLineMask: 8,
+};
+
+declare const NSTableViewColumnAutoresizingStyle: {
+  NoColumnAutoresizing: 0,
+  UniformColumnAutoresizingStyle: 1,
+  SequentialColumnAutoresizingStyle: 2,
+  ReverseSequentialColumnAutoresizingStyle: 3,
+  LastColumnOnlyAutoresizingStyle: 4,
+  FirstColumnOnlyAutoresizingStyle: 5,
+};
+
+declare const NSFindPanelAction: {
+  ShowFindPanel: 1,
+  Next: 2,
+  Previous: 3,
+  ReplaceAll: 4,
+  Replace: 5,
+  ReplaceAndFind: 6,
+  SetFindString: 7,
+  ReplaceAllInSelection: 8,
+  SelectAll: 9,
+  SelectAllInSelection: 10,
+};
+
+declare const NSSelectionGranularity: {
+  Character: 0,
+  Word: 1,
+  Paragraph: 2,
 };
 
 declare const NSTokenStyle: {
@@ -4580,11 +5204,6 @@ declare const NSTextLayoutOrientation: {
   Vertical: 1,
 };
 
-declare const NSTextStorageEditActions: {
-  Attributes: 1,
-  Characters: 2,
-};
-
 declare const NSControlCharacterAction: {
   ZeroAdvancement: 1,
   Whitespace: 2,
@@ -4592,6 +5211,12 @@ declare const NSControlCharacterAction: {
   LineBreak: 8,
   ParagraphBreak: 16,
   ContainerBreak: 32,
+};
+
+declare const NSTextLayoutManagerSegmentType: {
+  Standard: 0,
+  Selection: 1,
+  Highlight: 2,
 };
 
 declare const NSTextScalingType: {
@@ -4602,16 +5227,6 @@ declare const NSTextScalingType: {
 declare const NSWritingDirectionFormatType: {
   Embedding: 0,
   Override: 2,
-};
-
-declare const NSPressureBehavior: {
-  Unknown: -1,
-  PrimaryDefault: 0,
-  PrimaryClick: 1,
-  PrimaryGeneric: 2,
-  PrimaryAccelerator: 3,
-  PrimaryDeepClick: 5,
-  PrimaryDeepDrag: 6,
 };
 
 declare const NSUnderlineStyle: {
@@ -4627,17 +5242,18 @@ declare const NSUnderlineStyle: {
   ByWord: 32768,
 };
 
-declare const NSTextFieldBezelStyle: {
-  Square: 0,
-  Rounded: 1,
-};
-
 declare const NSStackViewGravity: {
   Top: 1,
   Leading: 1,
   Center: 2,
   Bottom: 3,
   Trailing: 3,
+};
+
+declare const NSApplicationActivationPolicy: {
+  Regular: 0,
+  Accessory: 1,
+  Prohibited: 2,
 };
 
 declare const NSSharingCollaborationMode: {
@@ -4667,6 +5283,10 @@ declare const NSTextFinderMatchingType: {
   EndsWith: 3,
 };
 
+declare const NSApplicationOcclusionState: {
+  NSApplicationOcclusionStateVisible: 2,
+};
+
 declare const NSTextFinderAction: {
   ShowFindInterface: 1,
   NextMatch: 2,
@@ -4683,9 +5303,15 @@ declare const NSTextFinderAction: {
   HideReplaceInterface: 13,
 };
 
-declare const NSScrollerArrow: {
-  Increment: 0,
-  Decrement: 1,
+declare const NSAccessibilityRulerMarkerType: {
+  Unknown: 0,
+  TabStopLeft: 1,
+  TabStopRight: 2,
+  TabStopCenter: 3,
+  TabStopDecimal: 4,
+  IndentHead: 5,
+  IndentTail: 6,
+  IndentFirstLine: 7,
 };
 
 declare const NSScrollerPart: {
@@ -4722,17 +5348,6 @@ declare const NSPrintPanelResult: {
   Printed: 1,
 };
 
-declare const NSAnimationBlockingMode: {
-  Blocking: 0,
-  Nonblocking: 1,
-  NonblockingThreaded: 2,
-};
-
-declare const NSPrintRenderingQuality: {
-  Best: 0,
-  Responsive: 1,
-};
-
 declare const NSPrintingPageOrder: {
   Descending: -1,
   Special: 0,
@@ -4746,21 +5361,10 @@ declare const NSCorrectionIndicatorType: {
   Guesses: 2,
 };
 
-declare const NSTextInputTraitType: {
-  Default: 0,
-  No: 1,
-  Yes: 2,
-};
-
 declare const NSSharingContentScope: {
   Item: 0,
   Partial: 1,
   Full: 2,
-};
-
-declare const NSScrubberMode: {
-  Fixed: 0,
-  Free: 1,
 };
 
 declare const NSImageDynamicRange: {
@@ -4768,6 +5372,17 @@ declare const NSImageDynamicRange: {
   Standard: 0,
   ConstrainedHigh: 1,
   High: 2,
+};
+
+declare const NSApplicationActivationOptions: {
+  AllWindows: 1,
+  IgnoringOtherApps: 2,
+};
+
+declare const NSImageSymbolVariableValueMode: {
+  Automatic: 0,
+  Color: 1,
+  Draw: 2,
 };
 
 declare const NSCellImagePosition: {
@@ -4796,6 +5411,10 @@ declare const NSImageResizingMode: {
 declare const NSPageLayoutResult: {
   Cancelled: 0,
   Changed: 1,
+};
+
+declare const NSPasteboardContentsOptions: {
+  NSPasteboardContentsCurrentHostOnly: 1,
 };
 
 declare const NSLayoutFormatOptions: {
@@ -4828,18 +5447,16 @@ declare const NSColorWellStyle: {
   Expanded: 2,
 };
 
+declare const NSSpringLoadingHighlight: {
+  None: 0,
+  Standard: 1,
+  Emphasized: 2,
+};
+
 declare const NSTextBlockLayer: {
   Padding: -1,
   Border: 0,
   Margin: 1,
-};
-
-declare const NSLineMovementDirection: {
-  DoesntMove: 0,
-  MovesLeft: 1,
-  MovesRight: 2,
-  MovesDown: 3,
-  MovesUp: 4,
 };
 
 declare const NSBitmapImageFileType: {
@@ -4855,24 +5472,6 @@ declare const NSWindowBackingLocation: {
   Default: 0,
   VideoMemory: 1,
   MainMemory: 2,
-};
-
-declare const NSWindowTabbingMode: {
-  Automatic: 0,
-  Preferred: 1,
-  Disallowed: 2,
-};
-
-declare const NSWindowAnimationBehavior: {
-  Default: 0,
-  None: 2,
-  DocumentWindow: 3,
-  UtilityWindow: 4,
-  AlertPanel: 5,
-};
-
-declare const NSApplicationOcclusionState: {
-  NSApplicationOcclusionStateVisible: 2,
 };
 
 declare const NSFontTraitMask: {
@@ -4907,24 +5506,6 @@ declare const NSHorizontalDirections: {
   Left: 1,
   Right: 2,
   All: 3,
-};
-
-declare const NSCollectionLayoutSectionOrthogonalScrollingBehavior: {
-  None: 0,
-  Continuous: 1,
-  ContinuousGroupLeadingBoundary: 2,
-  Paging: 3,
-  GroupPaging: 4,
-  GroupPagingCentered: 5,
-};
-
-declare const NSDirectionalRectEdge: {
-  None: 0,
-  Top: 1,
-  Leading: 2,
-  Bottom: 4,
-  Trailing: 8,
-  All: 15,
 };
 
 declare const NSFontCollectionVisibility: {
@@ -4967,13 +5548,6 @@ declare const NSCollectionViewScrollPosition: {
   NearestVerticalEdge: 256,
 };
 
-declare const NSCollectionViewItemHighlightState: {
-  None: 0,
-  ForSelection: 1,
-  ForDeselection: 2,
-  AsDropTarget: 3,
-};
-
 declare const NSRemoteNotificationType: {
   None: 0,
   Badge: 1,
@@ -4981,9 +5555,11 @@ declare const NSRemoteNotificationType: {
   Alert: 4,
 };
 
-declare const NSPopoverAppearance: {
-  Minimal: 0,
-  HUD: 1,
+declare const NSTintProminence: {
+  Automatic: 0,
+  None: 1,
+  Primary: 2,
+  Secondary: 3,
 };
 
 declare const NSAlertStyle: {
@@ -5052,6 +5628,12 @@ declare const NSApplicationPresentationOptions: {
   DisableCursorLocationAssistance: 4096,
 };
 
+declare const NSViewLayoutRegionAdaptivityAxis: {
+  None: 0,
+  Horizontal: 1,
+  Vertical: 2,
+};
+
 declare const NSSaveOperationType: {
   Save: 0,
   SaveAs: 1,
@@ -5095,6 +5677,13 @@ declare const NSCollectionViewDropOperation: {
   Before: 1,
 };
 
+declare const NSLineBreakStrategy: {
+  None: 0,
+  PushOut: 1,
+  HangulWordPriority: 2,
+  Standard: 65535,
+};
+
 declare const NSPaperOrientation: {
   Portrait: 0,
   Landscape: 1,
@@ -5104,28 +5693,6 @@ declare const NSPrinterTableStatus: {
   OK: 0,
   NotFound: 1,
   Error: 2,
-};
-
-declare const NSMenuProperties: {
-  Title: 1,
-  AttributedTitle: 2,
-  KeyEquivalent: 4,
-  Image: 8,
-  Enabled: 16,
-  AccessibilityDescription: 32,
-};
-
-declare const NSMenuSelectionMode: {
-  Automatic: 0,
-  SelectOne: 1,
-  SelectAny: 2,
-};
-
-declare const NSControlSize: {
-  Regular: 0,
-  Small: 1,
-  Mini: 2,
-  Large: 3,
 };
 
 declare const NSImageScaling: {
@@ -5145,9 +5712,10 @@ declare const NSPasteboardAccessBehavior: {
   AlwaysDeny: 3,
 };
 
-declare const NSDisplayGamut: {
-  SRGB: 1,
-  P3: 2,
+declare const NSSpeechBoundary: {
+  Immediate: 0,
+  Word: 1,
+  Sentence: 2,
 };
 
 declare const NSCellAttribute: {
@@ -5174,6 +5742,18 @@ declare const NSCellType: {
   Null: 0,
   Text: 1,
   Image: 2,
+};
+
+declare const NSTextMovement: {
+  Return: 16,
+  Tab: 17,
+  Backtab: 18,
+  Left: 19,
+  Right: 20,
+  Up: 21,
+  Down: 22,
+  Cancel: 23,
+  Other: 0,
 };
 
 declare const NSBorderType: {
@@ -5207,12 +5787,6 @@ declare const NSUserInterfaceLayoutOrientation: {
 declare const NSUserInterfaceLayoutDirection: {
   LeftToRight: 0,
   RightToLeft: 1,
-};
-
-declare const NSSpringLoadingHighlight: {
-  None: 0,
-  Standard: 1,
-  Emphasized: 2,
 };
 
 declare const NSWindowStyleMask: {
@@ -5252,8 +5826,10 @@ declare const NSDragOperation: {
   All: 15,
 };
 
-declare const NSPasteboardWritingOptions: {
-  NSPasteboardWritingPromised: 512,
+declare const NSAnimationBlockingMode: {
+  Blocking: 0,
+  Nonblocking: 1,
+  NonblockingThreaded: 2,
 };
 
 declare const NSFontPanelModeMask: {
@@ -5270,12 +5846,6 @@ declare const NSFontPanelModeMask: {
   ModesMaskAllModes: 4294967295,
 };
 
-declare const NSEventGestureAxis: {
-  None: 0,
-  Horizontal: 1,
-  Vertical: 2,
-};
-
 declare const NSEventPhase: {
   None: 0,
   Began: 1,
@@ -5284,6 +5854,11 @@ declare const NSEventPhase: {
   Ended: 8,
   Cancelled: 16,
   MayBegin: 32,
+};
+
+declare const NSScrollerStyle: {
+  Legacy: 0,
+  Overlay: 1,
 };
 
 declare const NSEventType: {
@@ -5321,12 +5896,7 @@ declare const NSEventType: {
   Pressure: 34,
   DirectTouch: 37,
   ChangeMode: 38,
-};
-
-declare const NSCursorFrameResizeDirections: {
-  Inward: 1,
-  Outward: 2,
-  All: 3,
+  MouseCancelled: 40,
 };
 
 declare const NSTextCursorAccessoryPlacement: {
@@ -5339,21 +5909,6 @@ declare const NSTextCursorAccessoryPlacement: {
   OffscreenTop: 6,
   OffscreenRight: 7,
   OffscreenBottom: 8,
-};
-
-declare const NSCellStyleMask: {
-  No: 0,
-  Contents: 1,
-  PushIn: 2,
-  ChangeGray: 4,
-  ChangeBackground: 8,
-};
-
-declare const NSTickMarkPosition: {
-  Below: 0,
-  Above: 1,
-  Leading: 1,
-  Trailing: 0,
 };
 
 declare const NSTextAlignment: {
@@ -5376,10 +5931,11 @@ declare const NSEventModifierFlags: {
   DeviceIndependentFlagsMask: 4294901760,
 };
 
-declare const NSWindowDepth: {
-  Twentyfour: 520,
-  Sixtyfour: 528,
-  Onehundredtwentyeight: 544,
+declare const NSControlBorderShape: {
+  Automatic: 0,
+  Capsule: 1,
+  RoundedRectangle: 2,
+  Circle: 3,
 };
 
 declare const NSScrollViewFindBarPosition: {
@@ -5391,6 +5947,11 @@ declare const NSScrollViewFindBarPosition: {
 declare const NSRequestUserAttentionType: {
   Critical: 0,
   Informational: 10,
+};
+
+declare const NSSliderType: {
+  Linear: 0,
+  Circular: 1,
 };
 
 declare const NSUsableScrollerParts: {
@@ -5407,21 +5968,10 @@ declare const NSGradientType: {
   ConvexStrong: 4,
 };
 
-declare const NSWindowButton: {
-  Close: 0,
-  Miniaturize: 1,
-  Zoom: 2,
-  Toolbar: 3,
-  DocumentIcon: 4,
-  DocumentVersions: 6,
-};
-
-declare const NSImageFrameStyle: {
-  None: 0,
-  Photo: 1,
-  GrayBezel: 2,
-  Groove: 3,
-  Button: 4,
+declare const NSToolbarItemGroupSelectionMode: {
+  SelectOne: 0,
+  SelectAny: 1,
+  Momentary: 2,
 };
 
 declare const NSSpellingState: {
@@ -5435,30 +5985,9 @@ declare const NSTextInsertionIndicatorDisplayMode: {
   Visible: 2,
 };
 
-declare const NSPasteboardContentsOptions: {
-  NSPasteboardContentsCurrentHostOnly: 1,
-};
-
-declare const NSViewControllerTransitionOptions: {
-  None: 0,
-  Crossfade: 1,
-  SlideUp: 16,
-  SlideDown: 32,
-  SlideLeft: 64,
-  SlideRight: 128,
-  SlideForward: 320,
-  SlideBackward: 384,
-  AllowUserInteraction: 4096,
-};
-
 declare const NSRulerOrientation: {
   Horizontal: 0,
   Vertical: 1,
-};
-
-declare const NSTouchType: {
-  Direct: 0,
-  Indirect: 1,
 };
 
 declare const NSTextLayoutFragmentState: {
@@ -5481,12 +6010,6 @@ declare const NSWorkspaceLaunchOptions: {
   Default: 65536,
   AllowingClassicStartup: 131072,
   PreferringClassic: 262144,
-};
-
-declare const NSPrintingPaginationMode: {
-  Automatic: 0,
-  Fit: 1,
-  Clip: 2,
 };
 
 declare const NSWorkspaceAuthorizationType: {
@@ -5527,23 +6050,14 @@ declare const NSRuleEditorNestingMode: {
   Simple: 3,
 };
 
-declare const NSAccessibilityRulerMarkerType: {
-  Unknown: 0,
-  TabStopLeft: 1,
-  TabStopRight: 2,
-  TabStopCenter: 3,
-  TabStopDecimal: 4,
-  IndentHead: 5,
-  IndentTail: 6,
-  IndentFirstLine: 7,
-};
-
-declare const NSImageInterpolation: {
-  Default: 0,
-  None: 1,
-  Low: 2,
-  Medium: 4,
-  High: 3,
+declare const NSTouchPhase: {
+  Began: 1,
+  Moved: 2,
+  Stationary: 4,
+  Ended: 8,
+  Cancelled: 16,
+  Touching: 7,
+  Any: -1,
 };
 
 declare const NSStackViewDistribution: {
@@ -5553,11 +6067,6 @@ declare const NSStackViewDistribution: {
   FillProportionally: 2,
   EqualSpacing: 3,
   EqualCentering: 4,
-};
-
-declare const NSScrollerStyle: {
-  Legacy: 0,
-  Overlay: 1,
 };
 
 declare const NSSelectionAffinity: {
@@ -5581,6 +6090,12 @@ declare const NSGestureRecognizerState: {
   Recognized: 3,
 };
 
+declare const NSEventGestureAxis: {
+  None: 0,
+  Horizontal: 1,
+  Vertical: 2,
+};
+
 declare const NSImageRepLoadStatus: {
   UnknownType: -1,
   ReadingHeader: -2,
@@ -5601,48 +6116,10 @@ declare const NSAnimationEffect: {
   Poof: 10,
 };
 
-declare const NSToolbarDisplayMode: {
-  Default: 0,
-  IconAndLabel: 1,
-  IconOnly: 2,
-  LabelOnly: 3,
-};
-
-declare const NSFocusRingPlacement: {
-  Only: 0,
-  Below: 1,
-  Above: 2,
-};
-
 declare const NSAccessibilityOrientation: {
   Unknown: 0,
   Vertical: 1,
   Horizontal: 2,
-};
-
-declare const NSWindowCollectionBehavior: {
-  Default: 0,
-  CanJoinAllSpaces: 1,
-  MoveToActiveSpace: 2,
-  Managed: 4,
-  Transient: 8,
-  Stationary: 16,
-  ParticipatesInCycle: 32,
-  IgnoresCycle: 64,
-  FullScreenPrimary: 128,
-  FullScreenAuxiliary: 256,
-  FullScreenNone: 512,
-  FullScreenAllowsTiling: 2048,
-  FullScreenDisallowsTiling: 4096,
-  Primary: 65536,
-  Auxiliary: 131072,
-  CanJoinAllApplications: 262144,
-};
-
-declare const NSEventButtonMask: {
-  Tip: 1,
-  LowerSide: 2,
-  UpperSide: 4,
 };
 
 declare const NSWindowOrderingMode: {
@@ -5675,20 +6152,10 @@ declare const NSFontDescriptorSymbolicTraits: {
   ClassSymbolic: -1073741824,
 };
 
-declare const NSTextSelectionNavigationDestination: {
-  Character: 0,
-  Word: 1,
-  Line: 2,
-  Sentence: 3,
-  Paragraph: 4,
-  Container: 5,
-  Document: 6,
-};
-
-declare const NSAccessibilityAnnotationPosition: {
-  FullRange: 0,
-  Start: 1,
-  End: 2,
+declare const NSImageSymbolColorRenderingMode: {
+  Automatic: 0,
+  Flat: 1,
+  Gradient: 2,
 };
 
 declare const NSColorPanelOptions: {
@@ -5703,20 +6170,13 @@ declare const NSColorPanelOptions: {
   AllModes: 65535,
 };
 
-declare const NSTableViewRowSizeStyle: {
-  Default: -1,
-  Custom: 0,
-  Small: 1,
-  Medium: 2,
-  Large: 3,
-};
-
 declare const NSWritingToolsResultOptions: {
   Default: 0,
   PlainText: 1,
   RichText: 2,
   List: 4,
   Table: 8,
+  PresentationIntent: 16,
 };
 
 declare const NSBackgroundStyle: {
@@ -5724,12 +6184,6 @@ declare const NSBackgroundStyle: {
   Emphasized: 1,
   Raised: 2,
   Lowered: 3,
-};
-
-declare const NSApplicationActivationPolicy: {
-  Regular: 0,
-  Accessory: 1,
-  Prohibited: 2,
 };
 
 declare const NSCursorFrameResizePosition: {
@@ -5741,13 +6195,6 @@ declare const NSCursorFrameResizePosition: {
   TopRight: 9,
   BottomLeft: 6,
   BottomRight: 12,
-};
-
-declare const NSSplitViewItemBehavior: {
-  Default: 0,
-  Sidebar: 1,
-  ContentList: 2,
-  Inspector: 3,
 };
 
 declare const NSImageAlignment: {
@@ -5797,44 +6244,13 @@ declare const NSRuleEditorRowType: {
   Compound: 1,
 };
 
-declare const NSSpeechBoundary: {
-  Immediate: 0,
-  Word: 1,
-  Sentence: 2,
-};
-
-declare const NSTextBlockVerticalAlignment: {
-  Top: 0,
-  Middle: 1,
-  Bottom: 2,
-  Baseline: 3,
-};
-
-declare const NSWritingToolsBehavior: {
-  None: -1,
-  Default: 0,
-  Complete: 1,
-  Limited: 2,
-};
-
-declare const NSLevelIndicatorStyle: {
-  Relevancy: 0,
-  ContinuousCapacity: 1,
-  DiscreteCapacity: 2,
-  Rating: 3,
-};
-
-declare const NSTrackingAreaOptions: {
-  MouseEnteredAndExited: 1,
-  MouseMoved: 2,
-  CursorUpdate: 4,
-  ActiveWhenFirstResponder: 16,
-  ActiveInKeyWindow: 32,
-  ActiveInActiveApp: 64,
-  ActiveAlways: 128,
-  AssumeInside: 256,
-  InVisibleRect: 512,
-  EnabledDuringMouseDrag: 1024,
+declare const NSTypesetterBehavior: {
+  LatestBehavior: -1,
+  OriginalBehavior: 0,
+  Behavior_10_2_WithCompatibility: 1,
+  Behavior_10_2: 2,
+  Behavior_10_3: 3,
+  Behavior_10_4: 4,
 };
 
 declare const NSSegmentStyle: {
@@ -5853,30 +6269,14 @@ declare const NSEventSwipeTrackingOptions: {
   ClampGestureAmount: 2,
 };
 
-declare const NSTableViewDraggingDestinationFeedbackStyle: {
-  None: -1,
-  Regular: 0,
-  SourceList: 1,
-  Gap: 2,
-};
-
-declare const NSTableViewGridLineStyle: {
-  GridNone: 0,
-  SolidVerticalGridLineMask: 1,
-  SolidHorizontalGridLineMask: 2,
-  DashedHorizontalGridLineMask: 8,
-};
-
 declare const NSTabState: {
   Selected: 0,
   Background: 1,
   Pressed: 2,
 };
 
-declare const NSSelectionGranularity: {
-  Character: 0,
-  Word: 1,
-  Paragraph: 2,
+declare const NSMultibyteGlyphPacking: {
+  NSNativeShortGlyphPacking: 5,
 };
 
 declare const NSLevelIndicatorPlaceholderVisibility: {
@@ -5892,49 +6292,16 @@ declare const NSCellHitResult: {
   TrackableArea: 4,
 };
 
-declare const NSTypesetterControlCharacterAction: {
-  ZeroAdvancement: 1,
-  Whitespace: 2,
-  HorizontalTab: 4,
-  LineBreak: 8,
-  ParagraphBreak: 16,
-  ContainerBreak: 32,
-};
-
-declare const NSLineBreakMode: {
-  WordWrapping: 0,
-  CharWrapping: 1,
-  Clipping: 2,
-  TruncatingHead: 3,
-  TruncatingTail: 4,
-  TruncatingMiddle: 5,
-};
-
-declare const NSDocumentChangeType: {
-  Done: 0,
-  Undone: 1,
-  Redone: 5,
-  Cleared: 2,
-  ReadOtherContents: 3,
-  Autosaved: 4,
-  Discardable: 256,
-};
-
-declare const NSScrollElasticity: {
-  Automatic: 0,
-  None: 1,
-  Allowed: 2,
-};
-
 declare const NSFontCollectionOptions: {
   NSFontCollectionApplicationOnlyMask: 1,
 };
 
-declare const NSLineBreakStrategy: {
-  None: 0,
-  PushOut: 1,
-  HangulWordPriority: 2,
-  Standard: 65535,
+declare const NSTableViewStyle: {
+  Automatic: 0,
+  FullWidth: 1,
+  Inset: 2,
+  SourceList: 3,
+  Plain: 4,
 };
 
 declare const NSWindowTitleVisibility: {
@@ -5949,22 +6316,10 @@ declare const NSPasteboardReadingOptions: {
   KeyedArchive: 4,
 };
 
-declare const NSTextContentManagerEnumerationOptions: {
-  None: 0,
-  Reverse: 1,
-};
-
-declare const NSEventSubtype: {
-  WindowExposed: 0,
-  ApplicationActivated: 1,
-  ApplicationDeactivated: 2,
-  WindowMoved: 4,
-  ScreenChanged: 8,
-  PowerOff: 1,
-  MouseEvent: 0,
-  TabletPoint: 1,
-  TabletProximity: 2,
-  Touch: 3,
+declare const NSAccessibilitySortDirection: {
+  Unknown: 0,
+  Ascending: 1,
+  Descending: 2,
 };
 
 declare const NSWindowUserTabbingPreference: {
@@ -5999,6 +6354,7 @@ declare const NSBezelStyle: {
   AccessoryBar: 13,
   PushDisclosure: 14,
   Badge: 15,
+  Glass: 16,
   ShadowlessSquare: 6,
   TexturedSquare: 8,
   Rounded: 1,
@@ -6017,36 +6373,11 @@ declare const NSTabViewControllerTabStyle: {
   Unspecified: -1,
 };
 
-declare const NSControlTint: {
-  Default: 0,
-  Blue: 1,
-  Graphite: 6,
-  Clear: 7,
-};
-
-declare const NSWindowNumberListOptions: {
-  Applications: 1,
-  Spaces: 16,
-};
-
-declare const NSImageLoadStatus: {
-  Completed: 0,
-  Cancelled: 1,
-  InvalidData: 2,
-  UnexpectedEOF: 3,
-  ReadError: 4,
-};
-
 declare const NSSegmentSwitchTracking: {
   SelectOne: 0,
   SelectAny: 1,
   Momentary: 2,
   MomentaryAccelerator: 3,
-};
-
-declare const NSTextInsertionIndicatorAutomaticModeOptions: {
-  EffectsView: 1,
-  WhileTracking: 2,
 };
 
 declare const NSImageLayoutDirection: {
@@ -6073,43 +6404,6 @@ declare const NSAccessibilityUnits: {
   Centimeters: 2,
   Points: 3,
   Picas: 4,
-};
-
-declare const NSEventMask: {
-  LeftMouseDown: 2,
-  LeftMouseUp: 4,
-  RightMouseDown: 8,
-  RightMouseUp: 16,
-  MouseMoved: 32,
-  LeftMouseDragged: 64,
-  RightMouseDragged: 128,
-  MouseEntered: 256,
-  MouseExited: 512,
-  KeyDown: 1024,
-  KeyUp: 2048,
-  FlagsChanged: 4096,
-  AppKitDefined: 8192,
-  SystemDefined: 16384,
-  ApplicationDefined: 32768,
-  Periodic: 65536,
-  CursorUpdate: 131072,
-  ScrollWheel: 4194304,
-  TabletPoint: 8388608,
-  TabletProximity: 16777216,
-  OtherMouseDown: 33554432,
-  OtherMouseUp: 67108864,
-  OtherMouseDragged: 134217728,
-  Gesture: 536870912,
-  Magnify: 1073741824,
-  Swipe: 2147483648,
-  Rotate: 262144,
-  BeginGesture: 524288,
-  EndGesture: 1048576,
-  SmartMagnify: 4294967296,
-  Pressure: 17179869184,
-  DirectTouch: 137438953472,
-  ChangeMode: 274877906944,
-  Any: -1,
 };
 
 declare const NSCompositingOperation: {
@@ -6144,14 +6438,30 @@ declare const NSCompositingOperation: {
   Luminosity: 28,
 };
 
+declare const NSControlTint: {
+  Default: 0,
+  Blue: 1,
+  Graphite: 6,
+  Clear: 7,
+};
+
+declare const NSWindowNumberListOptions: {
+  Applications: 1,
+  Spaces: 16,
+};
+
+declare const NSImageLoadStatus: {
+  Completed: 0,
+  Cancelled: 1,
+  InvalidData: 2,
+  UnexpectedEOF: 3,
+  ReadError: 4,
+};
+
 declare const NSToolbarItemGroupControlRepresentation: {
   Automatic: 0,
   Expanded: 1,
   Collapsed: 2,
-};
-
-declare const NSFontAssetRequestOptions: {
-  NSFontAssetRequestOptionUsesStandardUI: 1,
 };
 
 declare const NSWritingToolsCoordinatorTextReplacementReason: {
@@ -6159,21 +6469,9 @@ declare const NSWritingToolsCoordinatorTextReplacementReason: {
   Noninteractive: 1,
 };
 
-declare const NSTableViewColumnAutoresizingStyle: {
-  NoColumnAutoresizing: 0,
-  UniformColumnAutoresizingStyle: 1,
-  SequentialColumnAutoresizingStyle: 2,
-  ReverseSequentialColumnAutoresizingStyle: 3,
-  LastColumnOnlyAutoresizingStyle: 4,
-  FirstColumnOnlyAutoresizingStyle: 5,
-};
-
-declare const NSColorRenderingIntent: {
-  Default: 0,
-  AbsoluteColorimetric: 1,
-  RelativeColorimetric: 2,
-  Perceptual: 3,
-  Saturation: 4,
+declare const NSComboButtonStyle: {
+  Split: 0,
+  Unified: 1,
 };
 
 declare const NSTitlePosition: {
@@ -6194,30 +6492,6 @@ declare const NSWindowToolbarStyle: {
   UnifiedCompact: 4,
 };
 
-declare const NSTypesetterBehavior: {
-  LatestBehavior: -1,
-  OriginalBehavior: 0,
-  Behavior_10_2_WithCompatibility: 1,
-  Behavior_10_2: 2,
-  Behavior_10_3: 3,
-  Behavior_10_4: 4,
-};
-
-declare const NSViewLayerContentsPlacement: {
-  ScaleAxesIndependently: 0,
-  ScaleProportionallyToFit: 1,
-  ScaleProportionallyToFill: 2,
-  Center: 3,
-  Top: 4,
-  TopRight: 5,
-  Right: 6,
-  BottomRight: 7,
-  Bottom: 8,
-  BottomLeft: 9,
-  Left: 10,
-  TopLeft: 11,
-};
-
 declare const NSColorPanelMode: {
   None: -1,
   Gray: 0,
@@ -6230,27 +6504,11 @@ declare const NSColorPanelMode: {
   Crayon: 7,
 };
 
-declare const NSBitmapFormat: {
-  AlphaFirst: 1,
-  AlphaNonpremultiplied: 2,
-  FloatingPointSamples: 4,
-  SixteenBitLittleEndian: 256,
-  ThirtyTwoBitLittleEndian: 512,
-  SixteenBitBigEndian: 1024,
-  ThirtyTwoBitBigEndian: 2048,
-};
-
 declare const NSLineSweepDirection: {
   Left: 0,
   Right: 1,
   Down: 2,
   Up: 3,
-};
-
-declare const NSToolbarItemGroupSelectionMode: {
-  SelectOne: 0,
-  SelectAny: 1,
-  Momentary: 2,
 };
 
 declare const NSScrollArrowPosition: {
@@ -6278,18 +6536,6 @@ declare const NSPageControllerTransitionStyle: {
   HorizontalStrip: 2,
 };
 
-declare const NSMatrixMode: {
-  Radio: 0,
-  Highlight: 1,
-  List: 2,
-  Track: 3,
-};
-
-declare const NSTableViewDropOperation: {
-  On: 0,
-  Above: 1,
-};
-
 declare const NSTitlebarSeparatorStyle: {
   Automatic: 0,
   None: 1,
@@ -6297,15 +6543,17 @@ declare const NSTitlebarSeparatorStyle: {
   Shadow: 3,
 };
 
+declare const NSMatrixMode: {
+  Radio: 0,
+  Highlight: 1,
+  List: 2,
+  Track: 3,
+};
+
 declare const NSBoxType: {
   Primary: 0,
   Separator: 2,
   Custom: 4,
-};
-
-declare const NSApplicationActivationOptions: {
-  AllWindows: 1,
-  IgnoringOtherApps: 2,
 };
 
 declare const NSColorSystemEffect: {
@@ -6331,26 +6579,10 @@ declare const NSWindingRule: {
   EvenOdd: 1,
 };
 
-declare const NSMultibyteGlyphPacking: {
-  NSNativeShortGlyphPacking: 5,
-};
-
-declare const NSSliderType: {
-  Linear: 0,
-  Circular: 1,
-};
-
-declare const NSFindPanelAction: {
-  ShowFindPanel: 1,
-  Next: 2,
-  Previous: 3,
-  ReplaceAll: 4,
-  Replace: 5,
-  ReplaceAndFind: 6,
-  SetFindString: 7,
-  ReplaceAllInSelection: 8,
-  SelectAll: 9,
-  SelectAllInSelection: 10,
+declare const NSAccessibilityAnnotationPosition: {
+  FullRange: 0,
+  Start: 1,
+  End: 2,
 };
 
 declare class NSDirectionalEdgeInsets {
@@ -6682,6 +6914,15 @@ declare interface NSToolbarItemValidation extends NSObjectProtocol {
 declare class NSToolbarItemValidation extends NativeObject implements NSToolbarItemValidation {
 }
 
+declare interface NSTextContentManagerDelegate extends NSObjectProtocol {
+  textContentManagerTextElementAtLocation?(textContentManager: NSTextContentManager, location: NSTextLocation): NSTextElement;
+
+  textContentManagerShouldEnumerateTextElementOptions?(textContentManager: NSTextContentManager, textElement: NSTextElement, options: interop.Enum<typeof NSTextContentManagerEnumerationOptions>): boolean;
+}
+
+declare class NSTextContentManagerDelegate extends NativeObject implements NSTextContentManagerDelegate {
+}
+
 declare interface NSCollectionViewDataSource extends NSObjectProtocol {
   collectionViewNumberOfItemsInSection(collectionView: NSCollectionView, section: number): number;
 
@@ -6693,6 +6934,98 @@ declare interface NSCollectionViewDataSource extends NSObjectProtocol {
 }
 
 declare class NSCollectionViewDataSource extends NativeObject implements NSCollectionViewDataSource {
+}
+
+declare interface NSPopoverDelegate extends NSObjectProtocol {
+  popoverShouldClose?(popover: NSPopover): boolean;
+
+  popoverShouldDetach?(popover: NSPopover): boolean;
+
+  popoverDidDetach?(popover: NSPopover): void;
+
+  detachableWindowForPopover?(popover: NSPopover): NSWindow;
+
+  popoverWillShow?(notification: NSNotification): void;
+
+  popoverDidShow?(notification: NSNotification): void;
+
+  popoverWillClose?(notification: NSNotification): void;
+
+  popoverDidClose?(notification: NSNotification): void;
+}
+
+declare class NSPopoverDelegate extends NativeObject implements NSPopoverDelegate {
+}
+
+declare interface NSTextViewDelegate extends NSTextDelegate {
+  textViewClickedOnLinkAtIndex?(textView: NSTextView, link: interop.Object, charIndex: number): boolean;
+
+  textViewClickedOnCellInRectAtIndex?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect, charIndex: number): void;
+
+  textViewDoubleClickedOnCellInRectAtIndex?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect, charIndex: number): void;
+
+  textViewDraggedCellInRectEventAtIndex?(view: NSTextView, cell: NSTextAttachmentCell, rect: CGRect, event: NSEvent, charIndex: number): void;
+
+  textViewWritablePasteboardTypesForCellAtIndex?(view: NSTextView, cell: NSTextAttachmentCell, charIndex: number): NSArray;
+
+  textViewWriteCellAtIndexToPasteboardType?(view: NSTextView, cell: NSTextAttachmentCell, charIndex: number, pboard: NSPasteboard, type: string): boolean;
+
+  textViewWillChangeSelectionFromCharacterRangeToCharacterRange?(textView: NSTextView, oldSelectedCharRange: _NSRange, newSelectedCharRange: _NSRange): _NSRange;
+
+  textViewWillChangeSelectionFromCharacterRangesToCharacterRanges?(textView: NSTextView, oldSelectedCharRanges: NSArray<interop.Object> | Array<interop.Object>, newSelectedCharRanges: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  textViewShouldChangeTextInRangesReplacementStrings?(textView: NSTextView, affectedRanges: NSArray<interop.Object> | Array<interop.Object>, replacementStrings: NSArray<interop.Object> | Array<interop.Object> | null): boolean;
+
+  textViewShouldChangeTypingAttributesToAttributes?(textView: NSTextView, oldTypingAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, newTypingAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSDictionary;
+
+  textViewDidChangeSelection?(notification: NSNotification): void;
+
+  textViewDidChangeTypingAttributes?(notification: NSNotification): void;
+
+  textViewWillDisplayToolTipForCharacterAtIndex?(textView: NSTextView, tooltip: string, characterIndex: number): string;
+
+  textViewCompletionsForPartialWordRangeIndexOfSelectedItem?(textView: NSTextView, words: NSArray<interop.Object> | Array<interop.Object>, charRange: _NSRange, index: interop.PointerConvertible): NSArray;
+
+  textViewShouldChangeTextInRangeReplacementString?(textView: NSTextView, affectedCharRange: _NSRange, replacementString: string | null): boolean;
+
+  textViewDoCommandBySelector?(textView: NSTextView, commandSelector: string): boolean;
+
+  textViewShouldSetSpellingStateRange?(textView: NSTextView, value: number, affectedCharRange: _NSRange): number;
+
+  textViewMenuForEventAtIndex?(view: NSTextView, menu: NSMenu, event: NSEvent, charIndex: number): NSMenu;
+
+  textViewWillCheckTextInRangeOptionsTypes?(view: NSTextView, range: _NSRange, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, checkingTypes: interop.PointerConvertible): NSDictionary;
+
+  textViewDidCheckTextInRangeTypesOptionsResultsOrthographyWordCount?(view: NSTextView, range: _NSRange, checkingTypes: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, results: NSArray<interop.Object> | Array<interop.Object>, orthography: NSOrthography, wordCount: number): NSArray;
+
+  textViewURLForContentsOfTextAttachmentAtIndex?(textView: NSTextView, textAttachment: NSTextAttachment, charIndex: number): NSURL;
+
+  textViewWillShowSharingServicePickerForItems?(textView: NSTextView, servicePicker: NSSharingServicePicker, items: NSArray<interop.Object> | Array<interop.Object>): NSSharingServicePicker;
+
+  undoManagerForTextView?(view: NSTextView): NSUndoManager;
+
+  textViewShouldUpdateTouchBarItemIdentifiers?(textView: NSTextView, identifiers: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  textViewCandidatesForSelectedRange?(textView: NSTextView, selectedRange: _NSRange): NSArray;
+
+  textViewShouldSelectCandidateAtIndex?(textView: NSTextView, index: number): boolean;
+
+  textViewWritingToolsWillBegin?(textView: NSTextView): void;
+
+  textViewWritingToolsDidEnd?(textView: NSTextView): void;
+
+  textViewWritingToolsIgnoredRangesInEnclosingRange?(textView: NSTextView, enclosingRange: _NSRange): NSArray;
+
+  textViewClickedOnLink?(textView: NSTextView, link: interop.Object): boolean;
+
+  textViewClickedOnCellInRect?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect): void;
+
+  textViewDoubleClickedOnCellInRect?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect): void;
+
+  textViewDraggedCellInRectEvent?(view: NSTextView, cell: NSTextAttachmentCell, rect: CGRect, event: NSEvent): void;
+}
+
+declare class NSTextViewDelegate extends NativeObject implements NSTextViewDelegate {
 }
 
 declare interface NSAccessibilityTable extends NSAccessibilityGroup {
@@ -7414,6 +7747,19 @@ declare interface NSSpeechSynthesizerDelegate extends NSObjectProtocol {
 declare class NSSpeechSynthesizerDelegate extends NativeObject implements NSSpeechSynthesizerDelegate {
 }
 
+declare interface NSAccessibilityElementProtocol extends NSObjectProtocol {
+  accessibilityFrame: CGRect;
+
+  accessibilityParent: interop.Object;
+
+  isAccessibilityFocused?(): boolean;
+
+  accessibilityIdentifier?: string;
+}
+
+declare class NSAccessibilityElementProtocol extends NativeObject implements NSAccessibilityElementProtocol {
+}
+
 declare interface NSDrawerDelegate extends NSObjectProtocol {
   drawerShouldOpen?(sender: NSDrawer): boolean;
 
@@ -7431,13 +7777,6 @@ declare interface NSDrawerDelegate extends NSObjectProtocol {
 }
 
 declare class NSDrawerDelegate extends NativeObject implements NSDrawerDelegate {
-}
-
-declare interface NSAccessibilityCheckBox extends NSAccessibilityButton {
-  accessibilityValue(): NSNumber;
-}
-
-declare class NSAccessibilityCheckBox extends NativeObject implements NSAccessibilityCheckBox {
 }
 
 declare interface NSMenuDelegate extends NSObjectProtocol {
@@ -7466,19 +7805,6 @@ declare interface NSWindowRestoration extends NSObjectProtocol {
 
 declare class NSWindowRestoration extends NativeObject implements NSWindowRestoration {
   static restoreWindowWithIdentifierStateCompletionHandler(identifier: string, state: NSCoder, completionHandler: (p1: NSWindow, p2: NSError) => void | null): void;
-}
-
-declare interface NSEditor extends NSObjectProtocol {
-  discardEditing(): void;
-
-  commitEditing(): boolean;
-
-  commitEditingWithDelegateDidCommitSelectorContextInfo(delegate: interop.Object | null, didCommitSelector: string | null, contextInfo: interop.PointerConvertible): void;
-
-  commitEditingAndReturnError(error: interop.PointerConvertible): boolean;
-}
-
-declare class NSEditor extends NativeObject implements NSEditor {
 }
 
 declare interface NSStackViewDelegate extends NSObjectProtocol {
@@ -7544,24 +7870,6 @@ declare interface NSScrubberDelegate extends NSObjectProtocol {
 declare class NSScrubberDelegate extends NativeObject implements NSScrubberDelegate {
 }
 
-declare interface NSPasteboardWriting extends NSObjectProtocol {
-  writableTypesForPasteboard(pasteboard: NSPasteboard): NSArray;
-
-  writingOptionsForTypePasteboard?(type: string, pasteboard: NSPasteboard): interop.Enum<typeof NSPasteboardWritingOptions>;
-
-  pasteboardPropertyListForType(type: string): interop.Object;
-}
-
-declare class NSPasteboardWriting extends NativeObject implements NSPasteboardWriting {
-}
-
-declare interface NSViewContentSelectionInfo extends NSObjectProtocol {
-  readonly selectionAnchorRect?: CGRect;
-}
-
-declare class NSViewContentSelectionInfo extends NativeObject implements NSViewContentSelectionInfo {
-}
-
 declare interface NSChangeSpelling {
   changeSpelling(sender: interop.Object | null): void;
 }
@@ -7584,19 +7892,6 @@ declare interface NSCollectionViewDelegateFlowLayout extends NSCollectionViewDel
 }
 
 declare class NSCollectionViewDelegateFlowLayout extends NativeObject implements NSCollectionViewDelegateFlowLayout {
-}
-
-declare interface NSAccessibilityElementProtocol extends NSObjectProtocol {
-  accessibilityFrame: CGRect;
-
-  accessibilityParent: interop.Object;
-
-  isAccessibilityFocused?(): boolean;
-
-  accessibilityIdentifier?: string;
-}
-
-declare class NSAccessibilityElementProtocol extends NativeObject implements NSAccessibilityElementProtocol {
 }
 
 declare interface NSAccessibilityProgressIndicator extends NSAccessibilityGroup {
@@ -7632,21 +7927,6 @@ declare interface NSTextViewportLayoutControllerDelegate extends NSObjectProtoco
 }
 
 declare class NSTextViewportLayoutControllerDelegate extends NativeObject implements NSTextViewportLayoutControllerDelegate {
-}
-
-declare interface NSImageDelegate extends NSObjectProtocol {
-  imageDidNotDrawInRect?(sender: NSImage, rect: CGRect): NSImage;
-
-  imageWillLoadRepresentation?(image: NSImage, rep: NSImageRep): void;
-
-  imageDidLoadRepresentationHeader?(image: NSImage, rep: NSImageRep): void;
-
-  imageDidLoadPartOfRepresentationWithValidRows?(image: NSImage, rep: NSImageRep, rows: number): void;
-
-  imageDidLoadRepresentationWithStatus?(image: NSImage, rep: NSImageRep, status: interop.Enum<typeof NSImageLoadStatus>): void;
-}
-
-declare class NSImageDelegate extends NativeObject implements NSImageDelegate {
 }
 
 declare interface NSTextInputTraits {
@@ -7777,6 +8057,34 @@ declare interface NSTableViewDelegate extends NSControlTextEditingDelegate {
 declare class NSTableViewDelegate extends NativeObject implements NSTableViewDelegate {
 }
 
+declare interface NSCollectionViewElement extends NSObjectProtocol, NSUserInterfaceItemIdentification {
+  prepareForReuse?(): void;
+
+  applyLayoutAttributes?(layoutAttributes: NSCollectionViewLayoutAttributes): void;
+
+  willTransitionFromLayoutToLayout?(oldLayout: NSCollectionViewLayout, newLayout: NSCollectionViewLayout): void;
+
+  didTransitionFromLayoutToLayout?(oldLayout: NSCollectionViewLayout, newLayout: NSCollectionViewLayout): void;
+
+  preferredLayoutAttributesFittingAttributes?(layoutAttributes: NSCollectionViewLayoutAttributes): NSCollectionViewLayoutAttributes;
+}
+
+declare class NSCollectionViewElement extends NativeObject implements NSCollectionViewElement {
+}
+
+declare interface NSEditor extends NSObjectProtocol {
+  discardEditing(): void;
+
+  commitEditing(): boolean;
+
+  commitEditingWithDelegateDidCommitSelectorContextInfo(delegate: interop.Object | null, didCommitSelector: string | null, contextInfo: interop.PointerConvertible): void;
+
+  commitEditingAndReturnError(error: interop.PointerConvertible): boolean;
+}
+
+declare class NSEditor extends NativeObject implements NSEditor {
+}
+
 declare interface NSSharingServicePickerTouchBarItemDelegate extends NSSharingServicePickerDelegate {
   itemsForSharingServicePickerTouchBarItem(pickerTouchBarItem: NSSharingServicePickerTouchBarItem): NSArray;
 }
@@ -7789,6 +8097,34 @@ declare interface NSViewToolTipOwner extends NSObjectProtocol {
 }
 
 declare class NSViewToolTipOwner extends NativeObject implements NSViewToolTipOwner {
+}
+
+declare interface NSUserInterfaceItemSearching extends NSObjectProtocol {
+  searchForItemsWithSearchStringResultLimitMatchedItemHandler(searchString: string, resultLimit: number, handleMatchedItems: (p1: NSArray<interop.Object> | Array<interop.Object>) => void): void;
+
+  localizedTitlesForItem(item: interop.Object): NSArray;
+
+  performActionForItem?(item: interop.Object): void;
+
+  showAllHelpTopicsForSearchString?(searchString: string): void;
+}
+
+declare class NSUserInterfaceItemSearching extends NativeObject implements NSUserInterfaceItemSearching {
+}
+
+declare interface NSDraggingSource extends NSObjectProtocol {
+  draggingSessionSourceOperationMaskForDraggingContext(session: NSDraggingSession, context: interop.Enum<typeof NSDraggingContext>): interop.Enum<typeof NSDragOperation>;
+
+  draggingSessionWillBeginAtPoint?(session: NSDraggingSession, screenPoint: CGPoint): void;
+
+  draggingSessionMovedToPoint?(session: NSDraggingSession, screenPoint: CGPoint): void;
+
+  draggingSessionEndedAtPointOperation?(session: NSDraggingSession, screenPoint: CGPoint, operation: interop.Enum<typeof NSDragOperation>): void;
+
+  ignoreModifierKeysForDraggingSession?(session: NSDraggingSession): boolean;
+}
+
+declare class NSDraggingSource extends NativeObject implements NSDraggingSource {
 }
 
 declare interface NSApplicationDelegate extends NSObjectProtocol {
@@ -8177,77 +8513,6 @@ declare interface NSTextDelegate extends NSObjectProtocol {
 declare class NSTextDelegate extends NativeObject implements NSTextDelegate {
 }
 
-declare interface NSTextViewDelegate extends NSTextDelegate {
-  textViewClickedOnLinkAtIndex?(textView: NSTextView, link: interop.Object, charIndex: number): boolean;
-
-  textViewClickedOnCellInRectAtIndex?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect, charIndex: number): void;
-
-  textViewDoubleClickedOnCellInRectAtIndex?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect, charIndex: number): void;
-
-  textViewDraggedCellInRectEventAtIndex?(view: NSTextView, cell: NSTextAttachmentCell, rect: CGRect, event: NSEvent, charIndex: number): void;
-
-  textViewWritablePasteboardTypesForCellAtIndex?(view: NSTextView, cell: NSTextAttachmentCell, charIndex: number): NSArray;
-
-  textViewWriteCellAtIndexToPasteboardType?(view: NSTextView, cell: NSTextAttachmentCell, charIndex: number, pboard: NSPasteboard, type: string): boolean;
-
-  textViewWillChangeSelectionFromCharacterRangeToCharacterRange?(textView: NSTextView, oldSelectedCharRange: _NSRange, newSelectedCharRange: _NSRange): _NSRange;
-
-  textViewWillChangeSelectionFromCharacterRangesToCharacterRanges?(textView: NSTextView, oldSelectedCharRanges: NSArray<interop.Object> | Array<interop.Object>, newSelectedCharRanges: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  textViewShouldChangeTextInRangesReplacementStrings?(textView: NSTextView, affectedRanges: NSArray<interop.Object> | Array<interop.Object>, replacementStrings: NSArray<interop.Object> | Array<interop.Object> | null): boolean;
-
-  textViewShouldChangeTypingAttributesToAttributes?(textView: NSTextView, oldTypingAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, newTypingAttributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSDictionary;
-
-  textViewDidChangeSelection?(notification: NSNotification): void;
-
-  textViewDidChangeTypingAttributes?(notification: NSNotification): void;
-
-  textViewWillDisplayToolTipForCharacterAtIndex?(textView: NSTextView, tooltip: string, characterIndex: number): string;
-
-  textViewCompletionsForPartialWordRangeIndexOfSelectedItem?(textView: NSTextView, words: NSArray<interop.Object> | Array<interop.Object>, charRange: _NSRange, index: interop.PointerConvertible): NSArray;
-
-  textViewShouldChangeTextInRangeReplacementString?(textView: NSTextView, affectedCharRange: _NSRange, replacementString: string | null): boolean;
-
-  textViewDoCommandBySelector?(textView: NSTextView, commandSelector: string): boolean;
-
-  textViewShouldSetSpellingStateRange?(textView: NSTextView, value: number, affectedCharRange: _NSRange): number;
-
-  textViewMenuForEventAtIndex?(view: NSTextView, menu: NSMenu, event: NSEvent, charIndex: number): NSMenu;
-
-  textViewWillCheckTextInRangeOptionsTypes?(view: NSTextView, range: _NSRange, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, checkingTypes: interop.PointerConvertible): NSDictionary;
-
-  textViewDidCheckTextInRangeTypesOptionsResultsOrthographyWordCount?(view: NSTextView, range: _NSRange, checkingTypes: number, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, results: NSArray<interop.Object> | Array<interop.Object>, orthography: NSOrthography, wordCount: number): NSArray;
-
-  textViewURLForContentsOfTextAttachmentAtIndex?(textView: NSTextView, textAttachment: NSTextAttachment, charIndex: number): NSURL;
-
-  textViewWillShowSharingServicePickerForItems?(textView: NSTextView, servicePicker: NSSharingServicePicker, items: NSArray<interop.Object> | Array<interop.Object>): NSSharingServicePicker;
-
-  undoManagerForTextView?(view: NSTextView): NSUndoManager;
-
-  textViewShouldUpdateTouchBarItemIdentifiers?(textView: NSTextView, identifiers: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  textViewCandidatesForSelectedRange?(textView: NSTextView, selectedRange: _NSRange): NSArray;
-
-  textViewShouldSelectCandidateAtIndex?(textView: NSTextView, index: number): boolean;
-
-  textViewWritingToolsWillBegin?(textView: NSTextView): void;
-
-  textViewWritingToolsDidEnd?(textView: NSTextView): void;
-
-  textViewWritingToolsIgnoredRangesInEnclosingRange?(textView: NSTextView, enclosingRange: _NSRange): NSArray;
-
-  textViewClickedOnLink?(textView: NSTextView, link: interop.Object): boolean;
-
-  textViewClickedOnCellInRect?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect): void;
-
-  textViewDoubleClickedOnCellInRect?(textView: NSTextView, cell: NSTextAttachmentCell, cellFrame: CGRect): void;
-
-  textViewDraggedCellInRectEvent?(view: NSTextView, cell: NSTextAttachmentCell, rect: CGRect, event: NSEvent): void;
-}
-
-declare class NSTextViewDelegate extends NativeObject implements NSTextViewDelegate {
-}
-
 declare interface NSScrubberDataSource extends NSObjectProtocol {
   numberOfItemsForScrubber(scrubber: NSScrubber): number;
 
@@ -8268,19 +8533,6 @@ declare interface NSPreviewRepresentableActivityItem extends NSObjectProtocol {
 }
 
 declare class NSPreviewRepresentableActivityItem extends NativeObject implements NSPreviewRepresentableActivityItem {
-}
-
-declare interface NSUserInterfaceItemSearching extends NSObjectProtocol {
-  searchForItemsWithSearchStringResultLimitMatchedItemHandler(searchString: string, resultLimit: number, handleMatchedItems: (p1: NSArray<interop.Object> | Array<interop.Object>) => void): void;
-
-  localizedTitlesForItem(item: interop.Object): NSArray;
-
-  performActionForItem?(item: interop.Object): void;
-
-  showAllHelpTopicsForSearchString?(searchString: string): void;
-}
-
-declare class NSUserInterfaceItemSearching extends NativeObject implements NSUserInterfaceItemSearching {
 }
 
 declare interface NSWritingToolsCoordinatorDelegate extends NSObjectProtocol {
@@ -8839,6 +9091,15 @@ declare interface NSPasteboardItemDataProvider extends NSObjectProtocol {
 declare class NSPasteboardItemDataProvider extends NativeObject implements NSPasteboardItemDataProvider {
 }
 
+declare interface NSEditorRegistration extends NSObjectProtocol {
+  objectDidBeginEditing?(editor: NSEditor): void;
+
+  objectDidEndEditing?(editor: NSEditor): void;
+}
+
+declare class NSEditorRegistration extends NativeObject implements NSEditorRegistration {
+}
+
 declare interface NSOpenSavePanelDelegate extends NSObjectProtocol {
   panelShouldEnableURL?(sender: interop.Object, url: NSURL): boolean;
 
@@ -8858,6 +9119,21 @@ declare interface NSOpenSavePanelDelegate extends NSObjectProtocol {
 }
 
 declare class NSOpenSavePanelDelegate extends NativeObject implements NSOpenSavePanelDelegate {
+}
+
+declare interface NSImageDelegate extends NSObjectProtocol {
+  imageDidNotDrawInRect?(sender: NSImage, rect: CGRect): NSImage;
+
+  imageWillLoadRepresentation?(image: NSImage, rep: NSImageRep): void;
+
+  imageDidLoadRepresentationHeader?(image: NSImage, rep: NSImageRep): void;
+
+  imageDidLoadPartOfRepresentationWithValidRows?(image: NSImage, rep: NSImageRep, rows: number): void;
+
+  imageDidLoadRepresentationWithStatus?(image: NSImage, rep: NSImageRep, status: interop.Enum<typeof NSImageLoadStatus>): void;
+}
+
+declare class NSImageDelegate extends NativeObject implements NSImageDelegate {
 }
 
 declare interface NSTextSelectionDataSource extends NSObjectProtocol {
@@ -9153,6 +9429,17 @@ declare interface NSAlertDelegate extends NSObjectProtocol {
 declare class NSAlertDelegate extends NativeObject implements NSAlertDelegate {
 }
 
+declare interface NSPasteboardWriting extends NSObjectProtocol {
+  writableTypesForPasteboard(pasteboard: NSPasteboard): NSArray;
+
+  writingOptionsForTypePasteboard?(type: string, pasteboard: NSPasteboard): interop.Enum<typeof NSPasteboardWritingOptions>;
+
+  pasteboardPropertyListForType(type: string): interop.Object;
+}
+
+declare class NSPasteboardWriting extends NativeObject implements NSPasteboardWriting {
+}
+
 declare interface NSPasteboardReading extends NSObjectProtocol {
   initWithPasteboardPropertyListOfType?(propertyList: interop.Object, type: string): this;
 }
@@ -9216,15 +9503,6 @@ declare interface NSUserInterfaceItemIdentification {
 declare class NSUserInterfaceItemIdentification extends NativeObject implements NSUserInterfaceItemIdentification {
 }
 
-declare interface NSEditorRegistration extends NSObjectProtocol {
-  objectDidBeginEditing?(editor: NSEditor): void;
-
-  objectDidEndEditing?(editor: NSEditor): void;
-}
-
-declare class NSEditorRegistration extends NativeObject implements NSEditorRegistration {
-}
-
 declare interface NSMenuItemValidation extends NSObjectProtocol {
   validateMenuItem(menuItem: NSMenuItem): boolean;
 }
@@ -9245,6 +9523,13 @@ declare interface NSAccessibilityOutline extends NSAccessibilityTable {
 }
 
 declare class NSAccessibilityOutline extends NativeObject implements NSAccessibilityOutline {
+}
+
+declare interface NSViewContentSelectionInfo extends NSObjectProtocol {
+  readonly selectionAnchorRect?: CGRect;
+}
+
+declare class NSViewContentSelectionInfo extends NativeObject implements NSViewContentSelectionInfo {
 }
 
 declare interface NSAccessibilityImage extends NSAccessibilityElementProtocol {
@@ -9294,21 +9579,6 @@ declare interface NSUserInterfaceValidations {
 declare class NSUserInterfaceValidations extends NativeObject implements NSUserInterfaceValidations {
 }
 
-declare interface NSDraggingSource extends NSObjectProtocol {
-  draggingSessionSourceOperationMaskForDraggingContext(session: NSDraggingSession, context: interop.Enum<typeof NSDraggingContext>): interop.Enum<typeof NSDragOperation>;
-
-  draggingSessionWillBeginAtPoint?(session: NSDraggingSession, screenPoint: CGPoint): void;
-
-  draggingSessionMovedToPoint?(session: NSDraggingSession, screenPoint: CGPoint): void;
-
-  draggingSessionEndedAtPointOperation?(session: NSDraggingSession, screenPoint: CGPoint, operation: interop.Enum<typeof NSDragOperation>): void;
-
-  ignoreModifierKeysForDraggingSession?(session: NSDraggingSession): boolean;
-}
-
-declare class NSDraggingSource extends NativeObject implements NSDraggingSource {
-}
-
 declare interface NSColorPickingCustom extends NSColorPickingDefault {
   supportsMode(mode: interop.Enum<typeof NSColorPanelMode>): boolean;
 
@@ -9327,36 +9597,6 @@ declare interface NSTouchBarDelegate extends NSObjectProtocol {
 }
 
 declare class NSTouchBarDelegate extends NativeObject implements NSTouchBarDelegate {
-}
-
-declare interface NSComboBoxDelegate extends NSTextFieldDelegate {
-  comboBoxWillPopUp?(notification: NSNotification): void;
-
-  comboBoxWillDismiss?(notification: NSNotification): void;
-
-  comboBoxSelectionDidChange?(notification: NSNotification): void;
-
-  comboBoxSelectionIsChanging?(notification: NSNotification): void;
-}
-
-declare class NSComboBoxDelegate extends NativeObject implements NSComboBoxDelegate {
-}
-
-declare interface NSPathControlDelegate extends NSObjectProtocol {
-  pathControlShouldDragItemWithPasteboard?(pathControl: NSPathControl, pathItem: NSPathControlItem, pasteboard: NSPasteboard): boolean;
-
-  pathControlShouldDragPathComponentCellWithPasteboard?(pathControl: NSPathControl, pathComponentCell: NSPathComponentCell, pasteboard: NSPasteboard): boolean;
-
-  pathControlValidateDrop?(pathControl: NSPathControl, info: NSDraggingInfo): interop.Enum<typeof NSDragOperation>;
-
-  pathControlAcceptDrop?(pathControl: NSPathControl, info: NSDraggingInfo): boolean;
-
-  pathControlWillDisplayOpenPanel?(pathControl: NSPathControl, openPanel: NSOpenPanel): void;
-
-  pathControlWillPopUpMenu?(pathControl: NSPathControl, menu: NSMenu): void;
-}
-
-declare class NSPathControlDelegate extends NativeObject implements NSPathControlDelegate {
 }
 
 declare interface NSAccessibilityElementLoading extends NSObjectProtocol {
@@ -9388,21 +9628,6 @@ declare interface NSAccessibilityContainsTransientUI extends NSAccessibilityElem
 declare class NSAccessibilityContainsTransientUI extends NativeObject implements NSAccessibilityContainsTransientUI {
 }
 
-declare interface NSCollectionViewElement extends NSObjectProtocol, NSUserInterfaceItemIdentification {
-  prepareForReuse?(): void;
-
-  applyLayoutAttributes?(layoutAttributes: NSCollectionViewLayoutAttributes): void;
-
-  willTransitionFromLayoutToLayout?(oldLayout: NSCollectionViewLayout, newLayout: NSCollectionViewLayout): void;
-
-  didTransitionFromLayoutToLayout?(oldLayout: NSCollectionViewLayout, newLayout: NSCollectionViewLayout): void;
-
-  preferredLayoutAttributesFittingAttributes?(layoutAttributes: NSCollectionViewLayoutAttributes): NSCollectionViewLayoutAttributes;
-}
-
-declare class NSCollectionViewElement extends NativeObject implements NSCollectionViewElement {
-}
-
 declare interface NSMatrixDelegate extends NSControlTextEditingDelegate {
 }
 
@@ -9423,6 +9648,17 @@ declare interface NSPrintPanelAccessorizing {
 }
 
 declare class NSPrintPanelAccessorizing extends NativeObject implements NSPrintPanelAccessorizing {
+}
+
+declare interface NSAppearanceCustomization extends NSObjectProtocol {
+  appearance: NSAppearance;
+
+  readonly effectiveAppearance: NSAppearance;
+
+  setAppearance(appearance: NSAppearance): void;
+}
+
+declare class NSAppearanceCustomization extends NativeObject implements NSAppearanceCustomization {
 }
 
 declare interface NSSplitViewDelegate extends NSObjectProtocol {
@@ -9725,25 +9961,34 @@ declare interface NSHapticFeedbackPerformer extends NSObjectProtocol {
 declare class NSHapticFeedbackPerformer extends NativeObject implements NSHapticFeedbackPerformer {
 }
 
-declare interface NSPopoverDelegate extends NSObjectProtocol {
-  popoverShouldClose?(popover: NSPopover): boolean;
+declare interface NSComboBoxDelegate extends NSTextFieldDelegate {
+  comboBoxWillPopUp?(notification: NSNotification): void;
 
-  popoverShouldDetach?(popover: NSPopover): boolean;
+  comboBoxWillDismiss?(notification: NSNotification): void;
 
-  popoverDidDetach?(popover: NSPopover): void;
+  comboBoxSelectionDidChange?(notification: NSNotification): void;
 
-  detachableWindowForPopover?(popover: NSPopover): NSWindow;
-
-  popoverWillShow?(notification: NSNotification): void;
-
-  popoverDidShow?(notification: NSNotification): void;
-
-  popoverWillClose?(notification: NSNotification): void;
-
-  popoverDidClose?(notification: NSNotification): void;
+  comboBoxSelectionIsChanging?(notification: NSNotification): void;
 }
 
-declare class NSPopoverDelegate extends NativeObject implements NSPopoverDelegate {
+declare class NSComboBoxDelegate extends NativeObject implements NSComboBoxDelegate {
+}
+
+declare interface NSPathControlDelegate extends NSObjectProtocol {
+  pathControlShouldDragItemWithPasteboard?(pathControl: NSPathControl, pathItem: NSPathControlItem, pasteboard: NSPasteboard): boolean;
+
+  pathControlShouldDragPathComponentCellWithPasteboard?(pathControl: NSPathControl, pathComponentCell: NSPathComponentCell, pasteboard: NSPasteboard): boolean;
+
+  pathControlValidateDrop?(pathControl: NSPathControl, info: NSDraggingInfo): interop.Enum<typeof NSDragOperation>;
+
+  pathControlAcceptDrop?(pathControl: NSPathControl, info: NSDraggingInfo): boolean;
+
+  pathControlWillDisplayOpenPanel?(pathControl: NSPathControl, openPanel: NSOpenPanel): void;
+
+  pathControlWillPopUpMenu?(pathControl: NSPathControl, menu: NSMenu): void;
+}
+
+declare class NSPathControlDelegate extends NativeObject implements NSPathControlDelegate {
 }
 
 declare interface NSComboBoxDataSource extends NSObjectProtocol {
@@ -9813,31 +10058,18 @@ declare interface NSCollectionLayoutVisibleItem extends NSObjectProtocol {
 declare class NSCollectionLayoutVisibleItem extends NativeObject implements NSCollectionLayoutVisibleItem {
 }
 
-declare interface NSTextContentManagerDelegate extends NSObjectProtocol {
-  textContentManagerTextElementAtLocation?(textContentManager: NSTextContentManager, location: NSTextLocation): NSTextElement;
-
-  textContentManagerShouldEnumerateTextElementOptions?(textContentManager: NSTextContentManager, textElement: NSTextElement, options: interop.Enum<typeof NSTextContentManagerEnumerationOptions>): boolean;
-}
-
-declare class NSTextContentManagerDelegate extends NativeObject implements NSTextContentManagerDelegate {
-}
-
-declare interface NSAppearanceCustomization extends NSObjectProtocol {
-  appearance: NSAppearance;
-
-  readonly effectiveAppearance: NSAppearance;
-
-  setAppearance(appearance: NSAppearance): void;
-}
-
-declare class NSAppearanceCustomization extends NativeObject implements NSAppearanceCustomization {
-}
-
 declare interface NSSoundDelegate extends NSObjectProtocol {
   soundDidFinishPlaying?(sound: NSSound, flag: boolean): void;
 }
 
 declare class NSSoundDelegate extends NativeObject implements NSSoundDelegate {
+}
+
+declare interface NSAccessibilityCheckBox extends NSAccessibilityButton {
+  accessibilityValue(): NSNumber;
+}
+
+declare class NSAccessibilityCheckBox extends NativeObject implements NSAccessibilityCheckBox {
 }
 
 declare interface NSTextContentStorageDelegate extends NSTextContentManagerDelegate {
@@ -10239,6 +10471,14 @@ declare class NSColor extends NSObject implements NSCopying, NSSecureCoding, NSP
 
   colorUsingColorSpace(space: NSColorSpace): NSColor;
 
+  static colorWithRedGreenBlueAlphaExposure(red: number, green: number, blue: number, alpha: number, exposure: number): NSColor;
+
+  static colorWithRedGreenBlueAlphaLinearExposure(red: number, green: number, blue: number, alpha: number, linearExposure: number): NSColor;
+
+  colorByApplyingContentHeadroom(contentHeadroom: number): NSColor;
+
+  readonly standardDynamicRangeColor: NSColor;
+
   static readonly blackColor: NSColor;
 
   static readonly darkGrayColor: NSColor;
@@ -10446,6 +10686,8 @@ declare class NSColor extends NSObject implements NSCopying, NSSecureCoding, NSP
   readonly patternImage: NSImage;
 
   readonly alphaComponent: number;
+
+  readonly linearExposure: number;
 
   static colorFromPasteboard(pasteBoard: NSPasteboard): NSColor;
 
@@ -11013,6 +11255,8 @@ declare class NSWritingToolsCoordinator extends NSObject {
 
   readonly resultOptions: interop.Enum<typeof NSWritingToolsResultOptions>;
 
+  includesTextListMarkers: boolean;
+
   updateRangeWithTextReasonForContextWithIdentifier(range: _NSRange, replacementText: NSAttributedString, reason: interop.Enum<typeof NSWritingToolsCoordinatorTextUpdateReason>, contextID: NSUUID): void;
 
   updateForReflowedTextInContextWithIdentifier(contextID: NSUUID): void;
@@ -11024,6 +11268,8 @@ declare class NSWritingToolsCoordinator extends NSObject {
   setPreferredBehavior(preferredBehavior: interop.Enum<typeof NSWritingToolsBehavior>): void;
 
   setPreferredResultOptions(preferredResultOptions: interop.Enum<typeof NSWritingToolsResultOptions>): void;
+
+  setIncludesTextListMarkers(includesTextListMarkers: boolean): void;
 }
 
 declare class NSCollectionViewUpdateItem extends NSObject {
@@ -11034,28 +11280,18 @@ declare class NSCollectionViewUpdateItem extends NSObject {
   readonly updateAction: interop.Enum<typeof NSCollectionUpdateAction>;
 }
 
-declare class NSNibControlConnector extends NSNibConnector {
-  establishConnection(): void;
-}
-
 declare class NSHapticFeedbackManager extends NSObject {
   static readonly defaultPerformer: NSHapticFeedbackPerformer;
 }
 
-declare class NSPDFImageRep extends NSImageRep {
-  static imageRepWithData<This extends abstract new (...args: any) => any>(this: This, pdfData: NSData): InstanceType<This>;
+declare class NSItemBadge extends NSObject {
+  static badgeWithCount(count: number): NSItemBadge;
 
-  initWithData(pdfData: NSData): this;
+  static badgeWithText(text: string): NSItemBadge;
 
-  readonly PDFRepresentation: NSData;
+  static indicatorBadge(): NSItemBadge;
 
-  readonly bounds: CGRect;
-
-  currentPage: number;
-
-  readonly pageCount: number;
-
-  setCurrentPage(currentPage: number): void;
+  readonly text: string;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -11176,18 +11412,20 @@ declare class NSProgressIndicator extends NSView implements NSAccessibilityProgr
   readonly debugDescription: string;
 }
 
-declare class NSAccessibilityCustomRotorSearchParameters extends NSObject {
-  currentItem: NSAccessibilityCustomRotorItemResult;
+declare class NSPDFImageRep extends NSImageRep {
+  static imageRepWithData<This extends abstract new (...args: any) => any>(this: This, pdfData: NSData): InstanceType<This>;
 
-  searchDirection: interop.Enum<typeof NSAccessibilityCustomRotorSearchDirection>;
+  initWithData(pdfData: NSData): this;
 
-  filterString: string;
+  readonly PDFRepresentation: NSData;
 
-  setCurrentItem(currentItem: NSAccessibilityCustomRotorItemResult | null): void;
+  readonly bounds: CGRect;
 
-  setSearchDirection(searchDirection: interop.Enum<typeof NSAccessibilityCustomRotorSearchDirection>): void;
+  currentPage: number;
 
-  setFilterString(filterString: string): void;
+  readonly pageCount: number;
+
+  setCurrentPage(currentPage: number): void;
 }
 
 declare class NSFont extends NSObject implements NSCopying, NSSecureCoding {
@@ -11604,11 +11842,92 @@ declare class NSFontAssetRequest extends NSObject implements NSProgressReporting
   readonly debugDescription: string;
 }
 
+declare class NSRulerView extends NSView {
+  static registerUnitWithNameAbbreviationUnitToPointsConversionFactorStepUpCycleStepDownCycle(unitName: string, abbreviation: string, conversionFactor: number, stepUpCycle: NSArray<interop.Object> | Array<interop.Object>, stepDownCycle: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  initWithScrollViewOrientation(scrollView: NSScrollView | null, orientation: interop.Enum<typeof NSRulerOrientation>): this;
+
+  scrollView: NSScrollView;
+
+  orientation: interop.Enum<typeof NSRulerOrientation>;
+
+  readonly baselineLocation: number;
+
+  readonly requiredThickness: number;
+
+  ruleThickness: number;
+
+  reservedThicknessForMarkers: number;
+
+  reservedThicknessForAccessoryView: number;
+
+  measurementUnits: string;
+
+  originOffset: number;
+
+  clientView: NSView;
+
+  addMarker(marker: NSRulerMarker): void;
+
+  removeMarker(marker: NSRulerMarker): void;
+
+  get markers(): NSArray;
+  set markers(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  trackMarkerWithMouseEvent(marker: NSRulerMarker, event: NSEvent): boolean;
+
+  accessoryView: NSView;
+
+  moveRulerlineFromLocationToLocation(oldLocation: number, newLocation: number): void;
+
+  invalidateHashMarks(): void;
+
+  drawHashMarksAndLabelsInRect(rect: CGRect): void;
+
+  drawMarkersInRect(rect: CGRect): void;
+
+  readonly flipped: boolean;
+
+  setScrollView(scrollView: NSScrollView | null): void;
+
+  setOrientation(orientation: interop.Enum<typeof NSRulerOrientation>): void;
+
+  setRuleThickness(ruleThickness: number): void;
+
+  setReservedThicknessForMarkers(reservedThicknessForMarkers: number): void;
+
+  setReservedThicknessForAccessoryView(reservedThicknessForAccessoryView: number): void;
+
+  setMeasurementUnits(measurementUnits: string): void;
+
+  setOriginOffset(originOffset: number): void;
+
+  setClientView(clientView: NSView | null): void;
+
+  setMarkers(markers: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setAccessoryView(accessoryView: NSView | null): void;
+
+  isFlipped(): boolean;
+}
+
 declare class NSPredicateEditor extends NSRuleEditor {
   get rowTemplates(): NSArray;
   set rowTemplates(value: NSArray<interop.Object> | Array<interop.Object>);
 
   setRowTemplates(rowTemplates: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class NSBackgroundExtensionView extends NSView {
+  contentView: NSView;
+
+  automaticallyPlacesContentView: boolean;
+
+  setContentView(contentView: NSView | null): void;
+
+  setAutomaticallyPlacesContentView(automaticallyPlacesContentView: boolean): void;
 }
 
 declare class NSTouch extends NSObject implements NSCopying {
@@ -12134,6 +12453,10 @@ declare class NSView extends NSResponder implements NSAnimatablePropertyContaine
 
   setAdditionalSafeAreaInsets(additionalSafeAreaInsets: NSEdgeInsets): void;
 
+  prefersCompactControlSizeMetrics: boolean;
+
+  setPrefersCompactControlSizeMetrics(prefersCompactControlSizeMetrics: boolean): void;
+
   addTrackingArea(trackingArea: NSTrackingArea): void;
 
   removeTrackingArea(trackingArea: NSTrackingArea): void;
@@ -12297,6 +12620,12 @@ declare class NSView extends NSResponder implements NSAnimatablePropertyContaine
   removeLayoutGuide(guide: NSLayoutGuide): void;
 
   readonly layoutGuides: NSArray;
+
+  layoutGuideForLayoutRegion(layoutRegion: NSViewLayoutRegion): NSLayoutGuide;
+
+  edgeInsetsForLayoutRegion(layoutRegion: NSViewLayoutRegion): NSEdgeInsets;
+
+  rectForLayoutRegion(layoutRegion: NSViewLayoutRegion): CGRect;
 
   rulerViewShouldMoveMarker(ruler: NSRulerView, marker: NSRulerMarker): boolean;
 
@@ -13667,6 +13996,120 @@ declare class NSCollectionLayoutSection extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+// @ts-ignore ClassDecl.tsIgnore
+declare class NSPathCell extends NSActionCell implements NSMenuItemValidation, NSOpenSavePanelDelegate {
+  pathStyle: interop.Enum<typeof NSPathStyle>;
+
+  URL: NSURL;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setObjectValue(obj: NSCopying | null): void;
+
+  get allowedTypes(): NSArray;
+  set allowedTypes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  delegate: NSPathCellDelegate;
+
+  static readonly pathComponentCellClass: interop.Object;
+
+  get pathComponentCells(): NSArray;
+  set pathComponentCells(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  rectOfPathComponentCellWithFrameInView(cell: NSPathComponentCell, frame: CGRect, view: NSView): CGRect;
+
+  pathComponentCellAtPointWithFrameInView(point: CGPoint, frame: CGRect, view: NSView): NSPathComponentCell;
+
+  readonly clickedPathComponentCell: NSPathComponentCell;
+
+  mouseEnteredWithFrameInView(event: NSEvent, frame: CGRect, view: NSView): void;
+
+  mouseExitedWithFrameInView(event: NSEvent, frame: CGRect, view: NSView): void;
+
+  doubleAction: string;
+
+  backgroundColor: NSColor;
+
+  placeholderString: string;
+
+  placeholderAttributedString: NSAttributedString;
+
+  setPathStyle(pathStyle: interop.Enum<typeof NSPathStyle>): void;
+
+  setURL(URL: NSURL | null): void;
+
+  setAllowedTypes(allowedTypes: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setDelegate(delegate: NSPathCellDelegate | null): void;
+
+  setPathComponentCells(pathComponentCells: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setDoubleAction(doubleAction: string | null): void;
+
+  setBackgroundColor(backgroundColor: NSColor | null): void;
+
+  setPlaceholderString(placeholderString: string | null): void;
+
+  setPlaceholderAttributedString(placeholderAttributedString: NSAttributedString | null): void;
+
+  validateMenuItem(menuItem: NSMenuItem): boolean;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  panelShouldEnableURL(sender: interop.Object, url: NSURL): boolean;
+
+  panelValidateURLError(sender: interop.Object, url: NSURL, outError: interop.PointerConvertible): boolean;
+
+  panelDidChangeToDirectoryURL(sender: interop.Object, url: NSURL | null): void;
+
+  panelUserEnteredFilenameConfirmed(sender: interop.Object, filename: string, okFlag: boolean): string;
+
+  panelWillExpand(sender: interop.Object, expanding: boolean): void;
+
+  panelSelectionDidChange(sender: interop.Object | null): void;
+
+  panelDisplayNameForType(sender: interop.Object, type: UTType): string;
+
+  panelDidSelectType(sender: interop.Object, type: UTType | null): void;
+}
+
 declare class NSPopover extends NSResponder implements NSAppearanceCustomization, NSAccessibilityElementProtocol, NSAccessibility {
   init(): this;
 
@@ -14481,6 +14924,66 @@ declare class NSPopUpButton extends NSButton {
   setAltersStateOfSelectedItem(altersStateOfSelectedItem: boolean): void;
 }
 
+declare class NSPathControl extends NSControl {
+  editable: boolean;
+
+  get allowedTypes(): NSArray;
+  set allowedTypes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  placeholderString: string;
+
+  placeholderAttributedString: NSAttributedString;
+
+  URL: NSURL;
+
+  doubleAction: string;
+
+  pathStyle: interop.Enum<typeof NSPathStyle>;
+
+  readonly clickedPathItem: NSPathControlItem;
+
+  get pathItems(): NSArray;
+  set pathItems(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  backgroundColor: NSColor;
+
+  delegate: NSPathControlDelegate;
+
+  setDraggingSourceOperationMaskForLocal(mask: interop.Enum<typeof NSDragOperation>, isLocal: boolean): void;
+
+  menu: NSMenu;
+
+  isEditable(): boolean;
+
+  setEditable(editable: boolean): void;
+
+  setAllowedTypes(allowedTypes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setPlaceholderString(placeholderString: string): void;
+
+  setPlaceholderAttributedString(placeholderAttributedString: NSAttributedString): void;
+
+  setURL(URL: NSURL | null): void;
+
+  setDoubleAction(doubleAction: string | null): void;
+
+  setPathStyle(pathStyle: interop.Enum<typeof NSPathStyle>): void;
+
+  setPathItems(pathItems: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBackgroundColor(backgroundColor: NSColor | null): void;
+
+  setDelegate(delegate: NSPathControlDelegate | null): void;
+
+  setMenu(menu: NSMenu | null): void;
+
+  clickedPathComponentCell(): NSPathComponentCell;
+
+  pathComponentCells(): NSArray;
+
+  setPathComponentCells(cells: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
 declare class NSImageRep extends NSObject implements NSCopying, NSCoding {
   init(): this;
 
@@ -14611,82 +15114,28 @@ declare class NSShadow extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class NSSearchField extends NSTextField {
-  readonly searchTextBounds: CGRect;
+declare class NSScrubberProportionalLayout extends NSScrubberLayout {
+  numberOfVisibleItems: number;
 
-  readonly searchButtonBounds: CGRect;
-
-  readonly cancelButtonBounds: CGRect;
-
-  get recentSearches(): NSArray;
-  set recentSearches(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  recentsAutosaveName: string;
-
-  searchMenuTemplate: NSMenu;
-
-  sendsWholeSearchString: boolean;
-
-  maximumRecents: number;
-
-  sendsSearchStringImmediately: boolean;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  delegate: NSSearchFieldDelegate;
-
-  setRecentSearches(recentSearches: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setRecentsAutosaveName(recentsAutosaveName: string | null): void;
-
-  setSearchMenuTemplate(searchMenuTemplate: NSMenu): void;
-
-  setSendsWholeSearchString(sendsWholeSearchString: boolean): void;
-
-  setMaximumRecents(maximumRecents: number): void;
-
-  setSendsSearchStringImmediately(sendsSearchStringImmediately: boolean): void;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setDelegate(delegate: NSSearchFieldDelegate): void;
-
-  rectForSearchTextWhenCentered(isCentered: boolean): CGRect;
-
-  rectForSearchButtonWhenCentered(isCentered: boolean): CGRect;
-
-  rectForCancelButtonWhenCentered(isCentered: boolean): CGRect;
-
-  centersPlaceholder: boolean;
-
-  setCentersPlaceholder(centersPlaceholder: boolean): void;
-}
-
-declare class NSCachedImageRep extends NSImageRep {
-  initWithWindowRect(win: NSWindow, rect: CGRect): this;
-
-  initWithSizeDepthSeparateAlpha(size: CGSize, depth: interop.Enum<typeof NSWindowDepth>, flag: boolean, alpha: boolean): this;
-
-  window(): NSWindow;
-
-  rect(): CGRect;
-}
-
-declare class NSNib extends NSObject implements NSCoding {
-  initWithNibNamedBundle(nibName: string, bundle: NSBundle | null): this;
-
-  initWithNibDataBundle(nibData: NSData, bundle: NSBundle | null): this;
-
-  instantiateWithOwnerTopLevelObjects(owner: interop.Object | null, topLevelObjects: interop.PointerConvertible): boolean;
-
-  initWithContentsOfURL(nibFileURL: NSURL): this;
-
-  instantiateNibWithExternalNameTable(externalNameTable: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
-
-  instantiateNibWithOwnerTopLevelObjects(owner: interop.Object, topLevelObjects: interop.PointerConvertible): boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
+  initWithNumberOfVisibleItems(numberOfVisibleItems: number): this;
 
   initWithCoder(coder: NSCoder): this;
+
+  setNumberOfVisibleItems(numberOfVisibleItems: number): void;
+}
+
+declare class NSStatusBar extends NSObject {
+  static readonly systemStatusBar: NSStatusBar;
+
+  statusItemWithLength(length: number): NSStatusItem;
+
+  removeStatusItem(item: NSStatusItem): void;
+
+  readonly vertical: boolean;
+
+  readonly thickness: number;
+
+  isVertical(): boolean;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -14961,6 +15410,8 @@ declare class NSScreen extends NSObject {
   readonly auxiliaryTopLeftArea: CGRect;
 
   readonly auxiliaryTopRightArea: CGRect;
+
+  readonly CGDirectDisplayID: number;
 
   readonly maximumExtendedDynamicRangeColorComponentValue: number;
 
@@ -15418,32 +15869,6 @@ declare class NSSliderAccessory extends NSObject implements NSCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NSWindowTabGroup extends NSObject {
-  readonly identifier: string;
-
-  readonly windows: NSArray;
-
-  overviewVisible: boolean;
-
-  readonly tabBarVisible: boolean;
-
-  selectedWindow: NSWindow | null;
-
-  addWindow(window: NSWindow): void;
-
-  insertWindowAtIndex(window: NSWindow, index: number): void;
-
-  removeWindow(window: NSWindow): void;
-
-  isOverviewVisible(): boolean;
-
-  setOverviewVisible(overviewVisible: boolean): void;
-
-  isTabBarVisible(): boolean;
-
-  setSelectedWindow(selectedWindow: NSWindow | null): void;
-}
-
 // @ts-ignore ClassDecl.tsIgnore
 declare class NSText extends NSView implements NSChangeSpelling, NSIgnoreMisspelledWords {
   initWithFrame(frameRect: CGRect): this;
@@ -15856,18 +16281,48 @@ declare class NSLayoutAnchor<AnchorType = interop.Object> extends NSObject imple
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class NSCollectionLayoutSpacing extends NSObject implements NSCopying {
-  static flexibleSpacing<This extends abstract new (...args: any) => any>(this: This, flexibleSpacing: number): InstanceType<This>;
+declare class NSWindowTabGroup extends NSObject {
+  readonly identifier: string;
 
-  static fixedSpacing<This extends abstract new (...args: any) => any>(this: This, fixedSpacing: number): InstanceType<This>;
+  readonly windows: NSArray;
 
-  readonly spacing: number;
+  overviewVisible: boolean;
 
-  readonly isFlexibleSpacing: boolean;
+  readonly tabBarVisible: boolean;
 
-  readonly isFixedSpacing: boolean;
+  selectedWindow: NSWindow | null;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  addWindow(window: NSWindow): void;
+
+  insertWindowAtIndex(window: NSWindow, index: number): void;
+
+  removeWindow(window: NSWindow): void;
+
+  isOverviewVisible(): boolean;
+
+  setOverviewVisible(overviewVisible: boolean): void;
+
+  isTabBarVisible(): boolean;
+
+  setSelectedWindow(selectedWindow: NSWindow | null): void;
+}
+
+declare class NSViewLayoutRegion extends NSObject {
+  static safeAreaLayoutRegionWithCornerAdaptation(adaptivityAxis: interop.Enum<typeof NSViewLayoutRegionAdaptivityAxis>): NSViewLayoutRegion;
+
+  static marginsLayoutRegionWithCornerAdaptation(adaptivityAxis: interop.Enum<typeof NSViewLayoutRegionAdaptivityAxis>): NSViewLayoutRegion;
+}
+
+declare class NSMovie extends NSObject implements NSCoding {
+  initWithCoder(coder: NSCoder): this;
+
+  init(): this;
+
+  initWithMovie(movie: interop.Object): this;
+
+  QTMovie(): interop.Object;
+
+  encodeWithCoder(coder: NSCoder): void;
 }
 
 declare class NSCollectionViewTransitionLayout extends NSCollectionViewLayout {
@@ -16716,120 +17171,174 @@ declare class NSBrowser extends NSControl {
   matrixInColumn(column: number): NSMatrix;
 }
 
-declare class NSPathControl extends NSControl {
-  editable: boolean;
+declare class NSBezierPath extends NSObject implements NSCopying, NSSecureCoding {
+  static bezierPath(): NSBezierPath;
 
-  get allowedTypes(): NSArray;
-  set allowedTypes(value: NSArray<interop.Object> | Array<interop.Object>);
+  static bezierPathWithRect(rect: CGRect): NSBezierPath;
 
-  placeholderString: string;
+  static bezierPathWithOvalInRect(rect: CGRect): NSBezierPath;
 
-  placeholderAttributedString: NSAttributedString;
+  static bezierPathWithRoundedRectXRadiusYRadius(rect: CGRect, xRadius: number, yRadius: number): NSBezierPath;
 
-  URL: NSURL;
+  static bezierPathWithCGPath(cgPath: interop.Object): NSBezierPath;
 
-  doubleAction: string;
+  CGPath: interop.Object;
 
-  pathStyle: interop.Enum<typeof NSPathStyle>;
+  static fillRect(rect: CGRect): void;
 
-  readonly clickedPathItem: NSPathControlItem;
+  static strokeRect(rect: CGRect): void;
 
-  get pathItems(): NSArray;
-  set pathItems(value: NSArray<interop.Object> | Array<interop.Object>);
+  static clipRect(rect: CGRect): void;
 
-  backgroundColor: NSColor;
+  static strokeLineFromPointToPoint(point1: CGPoint, point2: CGPoint): void;
 
-  delegate: NSPathControlDelegate;
+  static drawPackedGlyphsAtPoint(packedGlyphs: string, point: CGPoint): void;
 
-  setDraggingSourceOperationMaskForLocal(mask: interop.Enum<typeof NSDragOperation>, isLocal: boolean): void;
+  static defaultMiterLimit: number;
 
-  menu: NSMenu;
+  static defaultFlatness: number;
 
-  isEditable(): boolean;
+  static defaultWindingRule: interop.Enum<typeof NSWindingRule>;
 
-  setEditable(editable: boolean): void;
+  static defaultLineCapStyle: interop.Enum<typeof NSLineCapStyle>;
 
-  setAllowedTypes(allowedTypes: NSArray<interop.Object> | Array<interop.Object>): void;
+  static defaultLineJoinStyle: interop.Enum<typeof NSLineJoinStyle>;
 
-  setPlaceholderString(placeholderString: string): void;
+  static defaultLineWidth: number;
 
-  setPlaceholderAttributedString(placeholderAttributedString: NSAttributedString): void;
+  moveToPoint(point: CGPoint): void;
 
-  setURL(URL: NSURL | null): void;
+  lineToPoint(point: CGPoint): void;
 
-  setDoubleAction(doubleAction: string | null): void;
+  curveToPointControlPoint1ControlPoint2(endPoint: CGPoint, controlPoint1: CGPoint, controlPoint2: CGPoint): void;
 
-  setPathStyle(pathStyle: interop.Enum<typeof NSPathStyle>): void;
+  curveToPointControlPoint(endPoint: CGPoint, controlPoint: CGPoint): void;
 
-  setPathItems(pathItems: NSArray<interop.Object> | Array<interop.Object>): void;
+  closePath(): void;
 
-  setBackgroundColor(backgroundColor: NSColor | null): void;
+  removeAllPoints(): void;
 
-  setDelegate(delegate: NSPathControlDelegate | null): void;
+  relativeMoveToPoint(point: CGPoint): void;
 
-  setMenu(menu: NSMenu | null): void;
+  relativeLineToPoint(point: CGPoint): void;
 
-  clickedPathComponentCell(): NSPathComponentCell;
+  relativeCurveToPointControlPoint1ControlPoint2(endPoint: CGPoint, controlPoint1: CGPoint, controlPoint2: CGPoint): void;
 
-  pathComponentCells(): NSArray;
+  relativeCurveToPointControlPoint(endPoint: CGPoint, controlPoint: CGPoint): void;
 
-  setPathComponentCells(cells: NSArray<interop.Object> | Array<interop.Object>): void;
-}
+  lineWidth: number;
 
-declare class NSSplitView extends NSView {
-  vertical: boolean;
+  lineCapStyle: interop.Enum<typeof NSLineCapStyle>;
 
-  dividerStyle: interop.Enum<typeof NSSplitViewDividerStyle>;
+  lineJoinStyle: interop.Enum<typeof NSLineJoinStyle>;
 
-  autosaveName: string;
+  windingRule: interop.Enum<typeof NSWindingRule>;
 
-  delegate: NSSplitViewDelegate;
+  miterLimit: number;
 
-  drawDividerInRect(rect: CGRect): void;
+  flatness: number;
 
-  readonly dividerColor: NSColor;
+  getLineDashCountPhase(pattern: interop.PointerConvertible, count: interop.PointerConvertible, phase: interop.PointerConvertible): void;
 
-  readonly dividerThickness: number;
+  setLineDashCountPhase(pattern: interop.PointerConvertible, count: number, phase: number): void;
 
-  adjustSubviews(): void;
+  stroke(): void;
 
-  isSubviewCollapsed(subview: NSView): boolean;
+  fill(): void;
 
-  minPossiblePositionOfDividerAtIndex(dividerIndex: number): number;
+  addClip(): void;
 
-  maxPossiblePositionOfDividerAtIndex(dividerIndex: number): number;
+  setClip(): void;
 
-  setPositionOfDividerAtIndex(position: number, dividerIndex: number): void;
+  readonly bezierPathByFlatteningPath: NSBezierPath;
 
-  holdingPriorityForSubviewAtIndex(subviewIndex: number): number;
+  readonly bezierPathByReversingPath: NSBezierPath;
 
-  setHoldingPriorityForSubviewAtIndex(priority: number, subviewIndex: number): void;
+  transformUsingAffineTransform(transform: NSAffineTransform): void;
 
-  isVertical(): boolean;
+  readonly empty: boolean;
 
-  setVertical(vertical: boolean): void;
+  readonly currentPoint: CGPoint;
 
-  setDividerStyle(dividerStyle: interop.Enum<typeof NSSplitViewDividerStyle>): void;
+  readonly controlPointBounds: CGRect;
 
-  setAutosaveName(autosaveName: string): void;
+  readonly bounds: CGRect;
 
-  setDelegate(delegate: NSSplitViewDelegate | null): void;
+  readonly elementCount: number;
 
-  arrangesAllSubviews: boolean;
+  elementAtIndexAssociatedPoints(index: number, points: interop.PointerConvertible): interop.Enum<typeof NSBezierPathElement>;
 
-  readonly arrangedSubviews: NSArray;
+  elementAtIndex(index: number): interop.Enum<typeof NSBezierPathElement>;
 
-  addArrangedSubview(view: NSView): void;
+  setAssociatedPointsAtIndex(points: interop.PointerConvertible, index: number): void;
 
-  insertArrangedSubviewAtIndex(view: NSView, index: number): void;
+  appendBezierPath(path: NSBezierPath): void;
 
-  removeArrangedSubview(view: NSView): void;
+  appendBezierPathWithRect(rect: CGRect): void;
 
-  setArrangesAllSubviews(arrangesAllSubviews: boolean): void;
+  appendBezierPathWithPointsCount(points: interop.PointerConvertible, count: number): void;
 
-  setIsPaneSplitter(flag: boolean): void;
+  appendBezierPathWithOvalInRect(rect: CGRect): void;
 
-  isPaneSplitter(): boolean;
+  appendBezierPathWithArcWithCenterRadiusStartAngleEndAngleClockwise(center: CGPoint, radius: number, startAngle: number, endAngle: number, clockwise: boolean): void;
+
+  appendBezierPathWithArcWithCenterRadiusStartAngleEndAngle(center: CGPoint, radius: number, startAngle: number, endAngle: number): void;
+
+  appendBezierPathWithArcFromPointToPointRadius(point1: CGPoint, point2: CGPoint, radius: number): void;
+
+  appendBezierPathWithCGGlyphInFont(glyph: number, font: NSFont): void;
+
+  appendBezierPathWithCGGlyphsCountInFont(glyphs: interop.PointerConvertible, count: number, font: NSFont): void;
+
+  appendBezierPathWithRoundedRectXRadiusYRadius(rect: CGRect, xRadius: number, yRadius: number): void;
+
+  containsPoint(point: CGPoint): boolean;
+
+  setCGPath(CGPath: interop.Object): void;
+
+  static setDefaultMiterLimit(defaultMiterLimit: number): void;
+
+  static setDefaultFlatness(defaultFlatness: number): void;
+
+  static setDefaultWindingRule(defaultWindingRule: interop.Enum<typeof NSWindingRule>): void;
+
+  static setDefaultLineCapStyle(defaultLineCapStyle: interop.Enum<typeof NSLineCapStyle>): void;
+
+  static setDefaultLineJoinStyle(defaultLineJoinStyle: interop.Enum<typeof NSLineJoinStyle>): void;
+
+  static setDefaultLineWidth(defaultLineWidth: number): void;
+
+  setLineWidth(lineWidth: number): void;
+
+  setLineCapStyle(lineCapStyle: interop.Enum<typeof NSLineCapStyle>): void;
+
+  setLineJoinStyle(lineJoinStyle: interop.Enum<typeof NSLineJoinStyle>): void;
+
+  setWindingRule(windingRule: interop.Enum<typeof NSWindingRule>): void;
+
+  setMiterLimit(miterLimit: number): void;
+
+  setFlatness(flatness: number): void;
+
+  isEmpty(): boolean;
+
+  cachesBezierPath(): boolean;
+
+  setCachesBezierPath(flag: boolean): void;
+
+  appendBezierPathWithGlyphInFont(glyph: number, font: NSFont): void;
+
+  appendBezierPathWithGlyphsCountInFont(glyphs: interop.PointerConvertible, count: number, font: NSFont): void;
+
+  appendBezierPathWithPackedGlyphs(packedGlyphs: string): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NSTextInsertionIndicator extends NSView {
@@ -16848,130 +17357,6 @@ declare class NSTextInsertionIndicator extends NSView {
   setAutomaticModeOptions(automaticModeOptions: interop.Enum<typeof NSTextInsertionIndicatorAutomaticModeOptions>): void;
 
   setEffectsViewInserter(effectsViewInserter: (p1: NSView) => void | null): void;
-}
-
-declare class NSSound extends NSObject implements NSCopying, NSSecureCoding, NSPasteboardReading, NSPasteboardWriting {
-  static soundNamed(name: string): NSSound;
-
-  initWithContentsOfURLByReference(url: NSURL, byRef: boolean): this;
-
-  initWithContentsOfFileByReference(path: string, byRef: boolean): this;
-
-  initWithData(data: NSData): this;
-
-  setName(string: string | null): boolean;
-
-  readonly name: string;
-
-  static canInitWithPasteboard(pasteboard: NSPasteboard): boolean;
-
-  static readonly soundUnfilteredTypes: NSArray;
-
-  initWithPasteboard(pasteboard: NSPasteboard): this;
-
-  writeToPasteboard(pasteboard: NSPasteboard): void;
-
-  play(): boolean;
-
-  pause(): boolean;
-
-  resume(): boolean;
-
-  stop(): boolean;
-
-  readonly playing: boolean;
-
-  delegate: NSSoundDelegate;
-
-  readonly duration: number;
-
-  volume: number;
-
-  currentTime: number;
-
-  loops: boolean;
-
-  playbackDeviceIdentifier: string;
-
-  setChannelMapping(channelMapping: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  channelMapping(): NSArray;
-
-  isPlaying(): boolean;
-
-  setDelegate(delegate: NSSoundDelegate | null): void;
-
-  setVolume(volume: number): void;
-
-  setCurrentTime(currentTime: number): void;
-
-  setLoops(loops: boolean): void;
-
-  setPlaybackDeviceIdentifier(playbackDeviceIdentifier: string): void;
-
-  static soundUnfilteredFileTypes(): NSArray;
-
-  static soundUnfilteredPasteboardTypes(): NSArray;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  static readableTypesForPasteboard(pasteboard: NSPasteboard): NSArray;
-
-  static readingOptionsForTypePasteboard(type: string, pasteboard: NSPasteboard): interop.Enum<typeof NSPasteboardReadingOptions>;
-
-  initWithPasteboardPropertyListOfType(propertyList: interop.Object, type: string): this;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  writableTypesForPasteboard(pasteboard: NSPasteboard): NSArray;
-
-  writingOptionsForTypePasteboard(type: string, pasteboard: NSPasteboard): interop.Enum<typeof NSPasteboardWritingOptions>;
-
-  pasteboardPropertyListForType(type: string): interop.Object;
 }
 
 declare class NSTextCheckingController extends NSObject {
@@ -17026,6 +17411,56 @@ declare class NSLayoutYAxisAnchor extends NSLayoutAnchor {
   constraintLessThanOrEqualToSystemSpacingBelowAnchorMultiplier(anchor: NSLayoutYAxisAnchor, multiplier: number): NSLayoutConstraint;
 }
 
+// @ts-ignore ClassDecl.tsIgnore
+declare class NSSearchField extends NSTextField {
+  readonly searchTextBounds: CGRect;
+
+  readonly searchButtonBounds: CGRect;
+
+  readonly cancelButtonBounds: CGRect;
+
+  get recentSearches(): NSArray;
+  set recentSearches(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  recentsAutosaveName: string;
+
+  searchMenuTemplate: NSMenu;
+
+  sendsWholeSearchString: boolean;
+
+  maximumRecents: number;
+
+  sendsSearchStringImmediately: boolean;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  delegate: NSSearchFieldDelegate;
+
+  setRecentSearches(recentSearches: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setRecentsAutosaveName(recentsAutosaveName: string | null): void;
+
+  setSearchMenuTemplate(searchMenuTemplate: NSMenu): void;
+
+  setSendsWholeSearchString(sendsWholeSearchString: boolean): void;
+
+  setMaximumRecents(maximumRecents: number): void;
+
+  setSendsSearchStringImmediately(sendsSearchStringImmediately: boolean): void;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSSearchFieldDelegate): void;
+
+  rectForSearchTextWhenCentered(isCentered: boolean): CGRect;
+
+  rectForSearchButtonWhenCentered(isCentered: boolean): CGRect;
+
+  rectForCancelButtonWhenCentered(isCentered: boolean): CGRect;
+
+  centersPlaceholder: boolean;
+
+  setCentersPlaceholder(centersPlaceholder: boolean): void;
+}
+
 declare class NSPrintPanel extends NSObject {
   static printPanel(): NSPrintPanel;
 
@@ -17070,48 +17505,18 @@ declare class NSPrintPanel extends NSObject {
   finalWritePrintInfo(): void;
 }
 
-declare class NSColorPanel extends NSPanel {
-  static readonly sharedColorPanel: NSColorPanel;
+declare class NSCollectionLayoutSpacing extends NSObject implements NSCopying {
+  static flexibleSpacing<This extends abstract new (...args: any) => any>(this: This, flexibleSpacing: number): InstanceType<This>;
 
-  static readonly sharedColorPanelExists: boolean;
+  static fixedSpacing<This extends abstract new (...args: any) => any>(this: This, fixedSpacing: number): InstanceType<This>;
 
-  static dragColorWithEventFromView(color: NSColor, event: NSEvent, sourceView: NSView): boolean;
+  readonly spacing: number;
 
-  static setPickerMask(mask: interop.Enum<typeof NSColorPanelOptions>): void;
+  readonly isFlexibleSpacing: boolean;
 
-  static setPickerMode(mode: interop.Enum<typeof NSColorPanelMode>): void;
+  readonly isFixedSpacing: boolean;
 
-  accessoryView: NSView;
-
-  continuous: boolean;
-
-  showsAlpha: boolean;
-
-  mode: interop.Enum<typeof NSColorPanelMode>;
-
-  color: NSColor;
-
-  readonly alpha: number;
-
-  setAction(selector: string | null): void;
-
-  setTarget(target: interop.Object | null): void;
-
-  attachColorList(colorList: NSColorList): void;
-
-  detachColorList(colorList: NSColorList): void;
-
-  setAccessoryView(accessoryView: NSView | null): void;
-
-  isContinuous(): boolean;
-
-  setContinuous(continuous: boolean): void;
-
-  setShowsAlpha(showsAlpha: boolean): void;
-
-  setMode(mode: interop.Enum<typeof NSColorPanelMode>): void;
-
-  setColor(color: NSColor): void;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -17160,6 +17565,8 @@ declare class NSButton extends NSControl implements NSUserInterfaceValidations, 
 
   contentTintColor: NSColor;
 
+  tintProminence: interop.Enum<typeof NSTintProminence>;
+
   image: NSImage;
 
   alternateImage: NSImage;
@@ -17192,6 +17599,8 @@ declare class NSButton extends NSControl implements NSUserInterfaceValidations, 
   minimumSizeWithPrioritizedCompressionOptions(prioritizedOptions: NSArray<interop.Object> | Array<interop.Object>): CGSize;
 
   readonly activeCompressionOptions: NSUserInterfaceCompressionOptions;
+
+  borderShape: interop.Enum<typeof NSControlBorderShape>;
 
   setTitle(title: string): void;
 
@@ -17227,6 +17636,8 @@ declare class NSButton extends NSControl implements NSUserInterfaceValidations, 
 
   setContentTintColor(contentTintColor: NSColor): void;
 
+  setTintProminence(tintProminence: interop.Enum<typeof NSTintProminence>): void;
+
   setImage(image: NSImage | null): void;
 
   setAlternateImage(alternateImage: NSImage | null): void;
@@ -17246,6 +17657,8 @@ declare class NSButton extends NSControl implements NSUserInterfaceValidations, 
   setKeyEquivalent(keyEquivalent: string): void;
 
   setKeyEquivalentModifierMask(keyEquivalentModifierMask: interop.Enum<typeof NSEventModifierFlags>): void;
+
+  setBorderShape(borderShape: interop.Enum<typeof NSControlBorderShape>): void;
 
   setTitleWithMnemonic(stringWithAmpersand: string): void;
 
@@ -17547,6 +17960,8 @@ declare class NSTextLayoutManager extends NSObject implements NSSecureCoding, NS
 
   usesHyphenation: boolean;
 
+  resolvesNaturalAlignmentWithBaseWritingDirection: boolean;
+
   readonly textContentManager: NSTextContentManager;
 
   replaceTextContentManager(textContentManager: NSTextContentManager): void;
@@ -17605,6 +18020,8 @@ declare class NSTextLayoutManager extends NSObject implements NSSecureCoding, NS
   setLimitsLayoutForSuspiciousContents(limitsLayoutForSuspiciousContents: boolean): void;
 
   setUsesHyphenation(usesHyphenation: boolean): void;
+
+  setResolvesNaturalAlignmentWithBaseWritingDirection(resolvesNaturalAlignmentWithBaseWritingDirection: boolean): void;
 
   setTextContainer(textContainer: NSTextContainer | null): void;
 
@@ -18499,6 +18916,770 @@ declare class NSMenuItem extends NSObject implements NSCopying, NSCoding, NSVali
   setAccessibilityCustomActions(accessibilityCustomActions: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
+declare class NSColorPanel extends NSPanel {
+  static readonly sharedColorPanel: NSColorPanel;
+
+  static readonly sharedColorPanelExists: boolean;
+
+  static dragColorWithEventFromView(color: NSColor, event: NSEvent, sourceView: NSView): boolean;
+
+  static setPickerMask(mask: interop.Enum<typeof NSColorPanelOptions>): void;
+
+  static setPickerMode(mode: interop.Enum<typeof NSColorPanelMode>): void;
+
+  accessoryView: NSView;
+
+  continuous: boolean;
+
+  showsAlpha: boolean;
+
+  mode: interop.Enum<typeof NSColorPanelMode>;
+
+  color: NSColor;
+
+  readonly alpha: number;
+
+  setAction(selector: string | null): void;
+
+  setTarget(target: interop.Object | null): void;
+
+  attachColorList(colorList: NSColorList): void;
+
+  detachColorList(colorList: NSColorList): void;
+
+  maximumLinearExposure: number;
+
+  setAccessoryView(accessoryView: NSView | null): void;
+
+  isContinuous(): boolean;
+
+  setContinuous(continuous: boolean): void;
+
+  setShowsAlpha(showsAlpha: boolean): void;
+
+  setMode(mode: interop.Enum<typeof NSColorPanelMode>): void;
+
+  setColor(color: NSColor): void;
+
+  setMaximumLinearExposure(maximumLinearExposure: number): void;
+}
+
+declare class NSFontDescriptor extends NSObject implements NSCopying, NSSecureCoding {
+  readonly postscriptName: string;
+
+  readonly pointSize: number;
+
+  readonly matrix: NSAffineTransform;
+
+  readonly symbolicTraits: interop.Enum<typeof NSFontDescriptorSymbolicTraits>;
+
+  readonly requiresFontAssetRequest: boolean;
+
+  objectForKey(attribute: string): interop.Object;
+
+  readonly fontAttributes: NSDictionary;
+
+  static fontDescriptorWithFontAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): NSFontDescriptor;
+
+  static fontDescriptorWithNameSize(fontName: string, size: number): NSFontDescriptor;
+
+  static fontDescriptorWithNameMatrix(fontName: string, matrix: NSAffineTransform): NSFontDescriptor;
+
+  initWithFontAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+
+  matchingFontDescriptorsWithMandatoryKeys(mandatoryKeys: NSSet | null): NSArray;
+
+  matchingFontDescriptorWithMandatoryKeys(mandatoryKeys: NSSet | null): NSFontDescriptor;
+
+  fontDescriptorByAddingAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSFontDescriptor;
+
+  fontDescriptorWithSymbolicTraits(symbolicTraits: interop.Enum<typeof NSFontDescriptorSymbolicTraits>): NSFontDescriptor;
+
+  fontDescriptorWithSize(newPointSize: number): NSFontDescriptor;
+
+  fontDescriptorWithMatrix(matrix: NSAffineTransform): NSFontDescriptor;
+
+  fontDescriptorWithFace(newFace: string): NSFontDescriptor;
+
+  fontDescriptorWithFamily(newFamily: string): NSFontDescriptor;
+
+  fontDescriptorWithDesign(design: string): this;
+
+  static preferredFontDescriptorForTextStyleOptions(style: string, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSFontDescriptor;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class NSAccessibilityElement extends NSObject implements NSAccessibility {
+  static accessibilityElementWithRoleFrameLabelParent(role: string, frame: CGRect, label: string | null, parent: interop.Object | null): interop.Object;
+
+  accessibilityAddChildElement(childElement: NSAccessibilityElement): void;
+
+  accessibilityFrameInParentSpace: CGRect;
+
+  setAccessibilityFrameInParentSpace(accessibilityFrameInParentSpace: CGRect): void;
+
+  accessibilityElement: boolean;
+
+  accessibilityFrame: CGRect;
+
+  accessibilityFocused: boolean;
+
+  accessibilityActivationPoint: CGPoint;
+
+  accessibilityTopLevelUIElement: interop.Object;
+
+  accessibilityURL: NSURL;
+
+  accessibilityValue: interop.Object;
+
+  accessibilityValueDescription: string;
+
+  get accessibilityVisibleChildren(): NSArray;
+  set accessibilityVisibleChildren(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilitySubrole: string;
+
+  accessibilityTitle: string;
+
+  accessibilityTitleUIElement: interop.Object;
+
+  get accessibilityNextContents(): NSArray;
+  set accessibilityNextContents(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityOrientation: interop.Enum<typeof NSAccessibilityOrientation>;
+
+  accessibilityOverflowButton: interop.Object;
+
+  accessibilityParent: interop.Object;
+
+  accessibilityPlaceholderValue: string;
+
+  get accessibilityPreviousContents(): NSArray;
+  set accessibilityPreviousContents(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityRole: string;
+
+  accessibilityRoleDescription: string;
+
+  accessibilitySearchButton: interop.Object;
+
+  accessibilitySearchMenu: interop.Object;
+
+  accessibilitySelected: boolean;
+
+  get accessibilitySelectedChildren(): NSArray;
+  set accessibilitySelectedChildren(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityServesAsTitleForUIElements(): NSArray;
+  set accessibilityServesAsTitleForUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityShownMenu: interop.Object;
+
+  accessibilityMinValue: interop.Object;
+
+  accessibilityMaxValue: interop.Object;
+
+  get accessibilityLinkedUIElements(): NSArray;
+  set accessibilityLinkedUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityWindow: interop.Object;
+
+  accessibilityIdentifier: string;
+
+  accessibilityHelp: string;
+
+  accessibilityFilename: string;
+
+  accessibilityExpanded: boolean;
+
+  accessibilityEdited: boolean;
+
+  accessibilityEnabled: boolean;
+
+  get accessibilityChildren(): NSArray;
+  set accessibilityChildren(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityChildrenInNavigationOrder(): NSArray;
+  set accessibilityChildrenInNavigationOrder(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityClearButton: interop.Object;
+
+  accessibilityCancelButton: interop.Object;
+
+  accessibilityProtectedContent: boolean;
+
+  get accessibilityContents(): NSArray;
+  set accessibilityContents(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityLabel: string;
+
+  accessibilityAlternateUIVisible: boolean;
+
+  get accessibilitySharedFocusElements(): NSArray;
+  set accessibilitySharedFocusElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityRequired: boolean;
+
+  get accessibilityCustomRotors(): NSArray;
+  set accessibilityCustomRotors(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityUserInputLabels(): NSArray;
+  set accessibilityUserInputLabels(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityAttributedUserInputLabels(): NSArray;
+  set accessibilityAttributedUserInputLabels(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityApplicationFocusedUIElement: interop.Object;
+
+  accessibilityMainWindow: interop.Object;
+
+  accessibilityHidden: boolean;
+
+  accessibilityFrontmost: boolean;
+
+  accessibilityFocusedWindow: interop.Object;
+
+  get accessibilityWindows(): NSArray;
+  set accessibilityWindows(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityExtrasMenuBar: interop.Object;
+
+  accessibilityMenuBar: interop.Object;
+
+  get accessibilityColumnTitles(): NSArray;
+  set accessibilityColumnTitles(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityOrderedByRow: boolean;
+
+  accessibilityHorizontalUnits: interop.Enum<typeof NSAccessibilityUnits>;
+
+  accessibilityVerticalUnits: interop.Enum<typeof NSAccessibilityUnits>;
+
+  accessibilityHorizontalUnitDescription: string;
+
+  accessibilityVerticalUnitDescription: string;
+
+  accessibilityLayoutPointForScreenPoint(point: CGPoint): CGPoint;
+
+  accessibilityLayoutSizeForScreenSize(size: CGSize): CGSize;
+
+  accessibilityScreenPointForLayoutPoint(point: CGPoint): CGPoint;
+
+  accessibilityScreenSizeForLayoutSize(size: CGSize): CGSize;
+
+  get accessibilityHandles(): NSArray;
+  set accessibilityHandles(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityWarningValue: interop.Object;
+
+  accessibilityCriticalValue: interop.Object;
+
+  accessibilityDisclosed: boolean;
+
+  accessibilityDisclosedByRow: interop.Object;
+
+  accessibilityDisclosedRows: interop.Object;
+
+  accessibilityDisclosureLevel: number;
+
+  get accessibilityMarkerUIElements(): NSArray;
+  set accessibilityMarkerUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityMarkerValues: interop.Object;
+
+  accessibilityMarkerGroupUIElement: interop.Object;
+
+  accessibilityUnits: interop.Enum<typeof NSAccessibilityUnits>;
+
+  accessibilityUnitDescription: string;
+
+  accessibilityRulerMarkerType: interop.Enum<typeof NSAccessibilityRulerMarkerType>;
+
+  accessibilityMarkerTypeDescription: string;
+
+  accessibilityHorizontalScrollBar: interop.Object;
+
+  accessibilityVerticalScrollBar: interop.Object;
+
+  get accessibilityAllowedValues(): NSArray;
+  set accessibilityAllowedValues(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityLabelUIElements(): NSArray;
+  set accessibilityLabelUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityLabelValue: number;
+
+  get accessibilitySplitters(): NSArray;
+  set accessibilitySplitters(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityDecrementButton: interop.Object;
+
+  accessibilityIncrementButton: interop.Object;
+
+  get accessibilityTabs(): NSArray;
+  set accessibilityTabs(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityHeader: interop.Object;
+
+  accessibilityColumnCount: number;
+
+  accessibilityRowCount: number;
+
+  accessibilityIndex: number;
+
+  get accessibilityColumns(): NSArray;
+  set accessibilityColumns(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityRows(): NSArray;
+  set accessibilityRows(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityVisibleRows(): NSArray;
+  set accessibilityVisibleRows(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilitySelectedRows(): NSArray;
+  set accessibilitySelectedRows(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityVisibleColumns(): NSArray;
+  set accessibilityVisibleColumns(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilitySelectedColumns(): NSArray;
+  set accessibilitySelectedColumns(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilitySortDirection: interop.Enum<typeof NSAccessibilitySortDirection>;
+
+  get accessibilityRowHeaderUIElements(): NSArray;
+  set accessibilityRowHeaderUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilitySelectedCells(): NSArray;
+  set accessibilitySelectedCells(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityVisibleCells(): NSArray;
+  set accessibilityVisibleCells(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get accessibilityColumnHeaderUIElements(): NSArray;
+  set accessibilityColumnHeaderUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityCellForColumnRow(column: number, row: number): interop.Object;
+
+  accessibilityRowIndexRange: _NSRange;
+
+  accessibilityColumnIndexRange: _NSRange;
+
+  accessibilityInsertionPointLineNumber: number;
+
+  accessibilitySharedCharacterRange: _NSRange;
+
+  get accessibilitySharedTextUIElements(): NSArray;
+  set accessibilitySharedTextUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityVisibleCharacterRange: _NSRange;
+
+  accessibilityNumberOfCharacters: number;
+
+  accessibilitySelectedText: string;
+
+  accessibilitySelectedTextRange: _NSRange;
+
+  get accessibilitySelectedTextRanges(): NSArray;
+  set accessibilitySelectedTextRanges(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityAttributedStringForRange(range: _NSRange): NSAttributedString;
+
+  accessibilityRangeForLine(line: number): _NSRange;
+
+  accessibilityStringForRange(range: _NSRange): string;
+
+  accessibilityRangeForPosition(point: CGPoint): _NSRange;
+
+  accessibilityRangeForIndex(index: number): _NSRange;
+
+  accessibilityFrameForRange(range: _NSRange): CGRect;
+
+  accessibilityRTFForRange(range: _NSRange): NSData;
+
+  accessibilityStyleRangeForIndex(index: number): _NSRange;
+
+  accessibilityLineForIndex(index: number): number;
+
+  accessibilityToolbarButton: interop.Object;
+
+  accessibilityModal: boolean;
+
+  accessibilityProxy: interop.Object;
+
+  accessibilityMain: boolean;
+
+  accessibilityFullScreenButton: interop.Object;
+
+  accessibilityGrowArea: interop.Object;
+
+  accessibilityDocument: string;
+
+  accessibilityDefaultButton: interop.Object;
+
+  accessibilityCloseButton: interop.Object;
+
+  accessibilityZoomButton: interop.Object;
+
+  accessibilityMinimizeButton: interop.Object;
+
+  accessibilityMinimized: boolean;
+
+  get accessibilityCustomActions(): NSArray;
+  set accessibilityCustomActions(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  accessibilityPerformCancel(): boolean;
+
+  accessibilityPerformConfirm(): boolean;
+
+  accessibilityPerformDecrement(): boolean;
+
+  accessibilityPerformDelete(): boolean;
+
+  accessibilityPerformIncrement(): boolean;
+
+  accessibilityPerformPick(): boolean;
+
+  accessibilityPerformPress(): boolean;
+
+  accessibilityPerformRaise(): boolean;
+
+  accessibilityPerformShowAlternateUI(): boolean;
+
+  accessibilityPerformShowDefaultUI(): boolean;
+
+  accessibilityPerformShowMenu(): boolean;
+
+  isAccessibilitySelectorAllowed(selector: string): boolean;
+
+  isAccessibilityElement(): boolean;
+
+  setAccessibilityElement(accessibilityElement: boolean): void;
+
+  setAccessibilityFrame(accessibilityFrame: CGRect): void;
+
+  isAccessibilityFocused(): boolean;
+
+  setAccessibilityFocused(accessibilityFocused: boolean): void;
+
+  setAccessibilityActivationPoint(accessibilityActivationPoint: CGPoint): void;
+
+  setAccessibilityTopLevelUIElement(accessibilityTopLevelUIElement: interop.Object): void;
+
+  setAccessibilityURL(accessibilityURL: NSURL): void;
+
+  setAccessibilityValue(accessibilityValue: interop.Object): void;
+
+  setAccessibilityValueDescription(accessibilityValueDescription: string): void;
+
+  setAccessibilityVisibleChildren(accessibilityVisibleChildren: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilitySubrole(accessibilitySubrole: string): void;
+
+  setAccessibilityTitle(accessibilityTitle: string): void;
+
+  setAccessibilityTitleUIElement(accessibilityTitleUIElement: interop.Object): void;
+
+  setAccessibilityNextContents(accessibilityNextContents: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityOrientation(accessibilityOrientation: interop.Enum<typeof NSAccessibilityOrientation>): void;
+
+  setAccessibilityOverflowButton(accessibilityOverflowButton: interop.Object): void;
+
+  setAccessibilityParent(accessibilityParent: interop.Object): void;
+
+  setAccessibilityPlaceholderValue(accessibilityPlaceholderValue: string): void;
+
+  setAccessibilityPreviousContents(accessibilityPreviousContents: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityRole(accessibilityRole: string): void;
+
+  setAccessibilityRoleDescription(accessibilityRoleDescription: string): void;
+
+  setAccessibilitySearchButton(accessibilitySearchButton: interop.Object): void;
+
+  setAccessibilitySearchMenu(accessibilitySearchMenu: interop.Object): void;
+
+  isAccessibilitySelected(): boolean;
+
+  setAccessibilitySelected(accessibilitySelected: boolean): void;
+
+  setAccessibilitySelectedChildren(accessibilitySelectedChildren: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityServesAsTitleForUIElements(accessibilityServesAsTitleForUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityShownMenu(accessibilityShownMenu: interop.Object): void;
+
+  setAccessibilityMinValue(accessibilityMinValue: interop.Object): void;
+
+  setAccessibilityMaxValue(accessibilityMaxValue: interop.Object): void;
+
+  setAccessibilityLinkedUIElements(accessibilityLinkedUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityWindow(accessibilityWindow: interop.Object): void;
+
+  setAccessibilityIdentifier(accessibilityIdentifier: string): void;
+
+  setAccessibilityHelp(accessibilityHelp: string): void;
+
+  setAccessibilityFilename(accessibilityFilename: string): void;
+
+  isAccessibilityExpanded(): boolean;
+
+  setAccessibilityExpanded(accessibilityExpanded: boolean): void;
+
+  isAccessibilityEdited(): boolean;
+
+  setAccessibilityEdited(accessibilityEdited: boolean): void;
+
+  isAccessibilityEnabled(): boolean;
+
+  setAccessibilityEnabled(accessibilityEnabled: boolean): void;
+
+  setAccessibilityChildren(accessibilityChildren: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityChildrenInNavigationOrder(accessibilityChildrenInNavigationOrder: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityClearButton(accessibilityClearButton: interop.Object): void;
+
+  setAccessibilityCancelButton(accessibilityCancelButton: interop.Object): void;
+
+  isAccessibilityProtectedContent(): boolean;
+
+  setAccessibilityProtectedContent(accessibilityProtectedContent: boolean): void;
+
+  setAccessibilityContents(accessibilityContents: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityLabel(accessibilityLabel: string): void;
+
+  isAccessibilityAlternateUIVisible(): boolean;
+
+  setAccessibilityAlternateUIVisible(accessibilityAlternateUIVisible: boolean): void;
+
+  setAccessibilitySharedFocusElements(accessibilitySharedFocusElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  isAccessibilityRequired(): boolean;
+
+  setAccessibilityRequired(accessibilityRequired: boolean): void;
+
+  setAccessibilityCustomRotors(accessibilityCustomRotors: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityUserInputLabels(accessibilityUserInputLabels: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityAttributedUserInputLabels(accessibilityAttributedUserInputLabels: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityApplicationFocusedUIElement(accessibilityApplicationFocusedUIElement: interop.Object): void;
+
+  setAccessibilityMainWindow(accessibilityMainWindow: interop.Object): void;
+
+  isAccessibilityHidden(): boolean;
+
+  setAccessibilityHidden(accessibilityHidden: boolean): void;
+
+  isAccessibilityFrontmost(): boolean;
+
+  setAccessibilityFrontmost(accessibilityFrontmost: boolean): void;
+
+  setAccessibilityFocusedWindow(accessibilityFocusedWindow: interop.Object): void;
+
+  setAccessibilityWindows(accessibilityWindows: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityExtrasMenuBar(accessibilityExtrasMenuBar: interop.Object): void;
+
+  setAccessibilityMenuBar(accessibilityMenuBar: interop.Object): void;
+
+  setAccessibilityColumnTitles(accessibilityColumnTitles: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  isAccessibilityOrderedByRow(): boolean;
+
+  setAccessibilityOrderedByRow(accessibilityOrderedByRow: boolean): void;
+
+  setAccessibilityHorizontalUnits(accessibilityHorizontalUnits: interop.Enum<typeof NSAccessibilityUnits>): void;
+
+  setAccessibilityVerticalUnits(accessibilityVerticalUnits: interop.Enum<typeof NSAccessibilityUnits>): void;
+
+  setAccessibilityHorizontalUnitDescription(accessibilityHorizontalUnitDescription: string): void;
+
+  setAccessibilityVerticalUnitDescription(accessibilityVerticalUnitDescription: string): void;
+
+  setAccessibilityHandles(accessibilityHandles: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityWarningValue(accessibilityWarningValue: interop.Object): void;
+
+  setAccessibilityCriticalValue(accessibilityCriticalValue: interop.Object): void;
+
+  isAccessibilityDisclosed(): boolean;
+
+  setAccessibilityDisclosed(accessibilityDisclosed: boolean): void;
+
+  setAccessibilityDisclosedByRow(accessibilityDisclosedByRow: interop.Object): void;
+
+  setAccessibilityDisclosedRows(accessibilityDisclosedRows: interop.Object): void;
+
+  setAccessibilityDisclosureLevel(accessibilityDisclosureLevel: number): void;
+
+  setAccessibilityMarkerUIElements(accessibilityMarkerUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityMarkerValues(accessibilityMarkerValues: interop.Object): void;
+
+  setAccessibilityMarkerGroupUIElement(accessibilityMarkerGroupUIElement: interop.Object): void;
+
+  setAccessibilityUnits(accessibilityUnits: interop.Enum<typeof NSAccessibilityUnits>): void;
+
+  setAccessibilityUnitDescription(accessibilityUnitDescription: string): void;
+
+  setAccessibilityRulerMarkerType(accessibilityRulerMarkerType: interop.Enum<typeof NSAccessibilityRulerMarkerType>): void;
+
+  setAccessibilityMarkerTypeDescription(accessibilityMarkerTypeDescription: string): void;
+
+  setAccessibilityHorizontalScrollBar(accessibilityHorizontalScrollBar: interop.Object): void;
+
+  setAccessibilityVerticalScrollBar(accessibilityVerticalScrollBar: interop.Object): void;
+
+  setAccessibilityAllowedValues(accessibilityAllowedValues: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityLabelUIElements(accessibilityLabelUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityLabelValue(accessibilityLabelValue: number): void;
+
+  setAccessibilitySplitters(accessibilitySplitters: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityDecrementButton(accessibilityDecrementButton: interop.Object): void;
+
+  setAccessibilityIncrementButton(accessibilityIncrementButton: interop.Object): void;
+
+  setAccessibilityTabs(accessibilityTabs: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityHeader(accessibilityHeader: interop.Object): void;
+
+  setAccessibilityColumnCount(accessibilityColumnCount: number): void;
+
+  setAccessibilityRowCount(accessibilityRowCount: number): void;
+
+  setAccessibilityIndex(accessibilityIndex: number): void;
+
+  setAccessibilityColumns(accessibilityColumns: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityRows(accessibilityRows: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityVisibleRows(accessibilityVisibleRows: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilitySelectedRows(accessibilitySelectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityVisibleColumns(accessibilityVisibleColumns: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilitySelectedColumns(accessibilitySelectedColumns: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilitySortDirection(accessibilitySortDirection: interop.Enum<typeof NSAccessibilitySortDirection>): void;
+
+  setAccessibilityRowHeaderUIElements(accessibilityRowHeaderUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilitySelectedCells(accessibilitySelectedCells: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityVisibleCells(accessibilityVisibleCells: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityColumnHeaderUIElements(accessibilityColumnHeaderUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityRowIndexRange(accessibilityRowIndexRange: _NSRange): void;
+
+  setAccessibilityColumnIndexRange(accessibilityColumnIndexRange: _NSRange): void;
+
+  setAccessibilityInsertionPointLineNumber(accessibilityInsertionPointLineNumber: number): void;
+
+  setAccessibilitySharedCharacterRange(accessibilitySharedCharacterRange: _NSRange): void;
+
+  setAccessibilitySharedTextUIElements(accessibilitySharedTextUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityVisibleCharacterRange(accessibilityVisibleCharacterRange: _NSRange): void;
+
+  setAccessibilityNumberOfCharacters(accessibilityNumberOfCharacters: number): void;
+
+  setAccessibilitySelectedText(accessibilitySelectedText: string): void;
+
+  setAccessibilitySelectedTextRange(accessibilitySelectedTextRange: _NSRange): void;
+
+  setAccessibilitySelectedTextRanges(accessibilitySelectedTextRanges: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setAccessibilityToolbarButton(accessibilityToolbarButton: interop.Object): void;
+
+  isAccessibilityModal(): boolean;
+
+  setAccessibilityModal(accessibilityModal: boolean): void;
+
+  setAccessibilityProxy(accessibilityProxy: interop.Object): void;
+
+  isAccessibilityMain(): boolean;
+
+  setAccessibilityMain(accessibilityMain: boolean): void;
+
+  setAccessibilityFullScreenButton(accessibilityFullScreenButton: interop.Object): void;
+
+  setAccessibilityGrowArea(accessibilityGrowArea: interop.Object): void;
+
+  setAccessibilityDocument(accessibilityDocument: string): void;
+
+  setAccessibilityDefaultButton(accessibilityDefaultButton: interop.Object): void;
+
+  setAccessibilityCloseButton(accessibilityCloseButton: interop.Object): void;
+
+  setAccessibilityZoomButton(accessibilityZoomButton: interop.Object): void;
+
+  setAccessibilityMinimizeButton(accessibilityMinimizeButton: interop.Object): void;
+
+  isAccessibilityMinimized(): boolean;
+
+  setAccessibilityMinimized(accessibilityMinimized: boolean): void;
+
+  setAccessibilityCustomActions(accessibilityCustomActions: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class NSCollectionViewCompositionalLayoutConfiguration extends NSObject implements NSCopying {
   scrollDirection: interop.Enum<typeof NSCollectionViewScrollDirection>;
 
@@ -18606,9 +19787,6 @@ declare class NSBitmapImageRep extends NSImageRep implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class NSSecureTextField extends NSTextField {
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -19096,16 +20274,6 @@ declare class NSTableView extends NSControl implements NSUserInterfaceValidation
   accessibilityIdentifier: string;
 }
 
-declare class NSScrubberProportionalLayout extends NSScrubberLayout {
-  numberOfVisibleItems: number;
-
-  initWithNumberOfVisibleItems(numberOfVisibleItems: number): this;
-
-  initWithCoder(coder: NSCoder): this;
-
-  setNumberOfVisibleItems(numberOfVisibleItems: number): void;
-}
-
 declare class NSWindowController extends NSResponder implements NSSeguePerforming {
   initWithWindow(window: NSWindow | null): this;
 
@@ -19280,6 +20448,142 @@ declare class NSActionCell extends NSCell {
   setTag(tag: number): void;
 }
 
+declare class NSCachedImageRep extends NSImageRep {
+  initWithWindowRect(win: NSWindow, rect: CGRect): this;
+
+  initWithSizeDepthSeparateAlpha(size: CGSize, depth: interop.Enum<typeof NSWindowDepth>, flag: boolean, alpha: boolean): this;
+
+  window(): NSWindow;
+
+  rect(): CGRect;
+}
+
+declare class NSImageView extends NSControl implements NSAccessibilityImage, NSMenuItemValidation {
+  static imageViewWithImage<This extends abstract new (...args: any) => any>(this: This, image: NSImage): InstanceType<This>;
+
+  image: NSImage;
+
+  editable: boolean;
+
+  imageAlignment: interop.Enum<typeof NSImageAlignment>;
+
+  imageScaling: interop.Enum<typeof NSImageScaling>;
+
+  imageFrameStyle: interop.Enum<typeof NSImageFrameStyle>;
+
+  symbolConfiguration: NSImageSymbolConfiguration;
+
+  contentTintColor: NSColor;
+
+  animates: boolean;
+
+  allowsCutCopyPaste: boolean;
+
+  static defaultPreferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>;
+
+  preferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>;
+
+  readonly imageDynamicRange: interop.Enum<typeof NSImageDynamicRange>;
+
+  setImage(image: NSImage | null): void;
+
+  isEditable(): boolean;
+
+  setEditable(editable: boolean): void;
+
+  setImageAlignment(imageAlignment: interop.Enum<typeof NSImageAlignment>): void;
+
+  setImageScaling(imageScaling: interop.Enum<typeof NSImageScaling>): void;
+
+  setImageFrameStyle(imageFrameStyle: interop.Enum<typeof NSImageFrameStyle>): void;
+
+  setSymbolConfiguration(symbolConfiguration: NSImageSymbolConfiguration): void;
+
+  setContentTintColor(contentTintColor: NSColor): void;
+
+  setAnimates(animates: boolean): void;
+
+  setAllowsCutCopyPaste(allowsCutCopyPaste: boolean): void;
+
+  static setDefaultPreferredImageDynamicRange(defaultPreferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>): void;
+
+  setPreferredImageDynamicRange(preferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>): void;
+
+  addSymbolEffect(symbolEffect: NSSymbolEffect): void;
+
+  addSymbolEffectOptions(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions): void;
+
+  addSymbolEffectOptionsAnimated(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions, animated: boolean): void;
+
+  removeSymbolEffectOfType(symbolEffect: NSSymbolEffect): void;
+
+  removeSymbolEffectOfTypeOptions(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions): void;
+
+  removeSymbolEffectOfTypeOptionsAnimated(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions, animated: boolean): void;
+
+  removeAllSymbolEffects(): void;
+
+  removeAllSymbolEffectsWithOptions(options: NSSymbolEffectOptions): void;
+
+  removeAllSymbolEffectsWithOptionsAnimated(options: NSSymbolEffectOptions, animated: boolean): void;
+
+  setSymbolImageWithContentTransition(symbolImage: NSImage, transition: NSSymbolContentTransition): void;
+
+  setSymbolImageWithContentTransitionOptions(symbolImage: NSImage, transition: NSSymbolContentTransition, options: NSSymbolEffectOptions): void;
+
+  accessibilityLabel: string;
+
+  accessibilityFrame: CGRect;
+
+  accessibilityParent: interop.Object;
+
+  isAccessibilityFocused(): boolean;
+
+  accessibilityIdentifier: string;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  validateMenuItem(menuItem: NSMenuItem): boolean;
+}
+
 declare class NSController extends NSObject implements NSCoding, NSEditor, NSEditorRegistration {
   init(): this;
 
@@ -19344,357 +20648,105 @@ declare class NSController extends NSObject implements NSCoding, NSEditor, NSEdi
   readonly debugDescription: string;
 }
 
-declare class NSRulerView extends NSView {
-  static registerUnitWithNameAbbreviationUnitToPointsConversionFactorStepUpCycleStepDownCycle(unitName: string, abbreviation: string, conversionFactor: number, stepUpCycle: NSArray<interop.Object> | Array<interop.Object>, stepDownCycle: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  initWithScrollViewOrientation(scrollView: NSScrollView | null, orientation: interop.Enum<typeof NSRulerOrientation>): this;
-
-  scrollView: NSScrollView;
-
-  orientation: interop.Enum<typeof NSRulerOrientation>;
-
-  readonly baselineLocation: number;
-
-  readonly requiredThickness: number;
-
-  ruleThickness: number;
-
-  reservedThicknessForMarkers: number;
-
-  reservedThicknessForAccessoryView: number;
-
-  measurementUnits: string;
-
-  originOffset: number;
-
-  clientView: NSView;
-
-  addMarker(marker: NSRulerMarker): void;
-
-  removeMarker(marker: NSRulerMarker): void;
-
-  get markers(): NSArray;
-  set markers(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  trackMarkerWithMouseEvent(marker: NSRulerMarker, event: NSEvent): boolean;
-
-  accessoryView: NSView;
-
-  moveRulerlineFromLocationToLocation(oldLocation: number, newLocation: number): void;
-
-  invalidateHashMarks(): void;
-
-  drawHashMarksAndLabelsInRect(rect: CGRect): void;
-
-  drawMarkersInRect(rect: CGRect): void;
-
-  readonly flipped: boolean;
-
-  setScrollView(scrollView: NSScrollView | null): void;
-
-  setOrientation(orientation: interop.Enum<typeof NSRulerOrientation>): void;
-
-  setRuleThickness(ruleThickness: number): void;
-
-  setReservedThicknessForMarkers(reservedThicknessForMarkers: number): void;
-
-  setReservedThicknessForAccessoryView(reservedThicknessForAccessoryView: number): void;
-
-  setMeasurementUnits(measurementUnits: string): void;
-
-  setOriginOffset(originOffset: number): void;
-
-  setClientView(clientView: NSView | null): void;
-
-  setMarkers(markers: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setAccessoryView(accessoryView: NSView | null): void;
-
-  isFlipped(): boolean;
-}
-
-declare class NSSplitViewController extends NSViewController implements NSSplitViewDelegate, NSUserInterfaceValidations {
-  splitView: NSSplitView;
-
-  get splitViewItems(): NSArray;
-  set splitViewItems(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  addSplitViewItem(splitViewItem: NSSplitViewItem): void;
-
-  insertSplitViewItemAtIndex(splitViewItem: NSSplitViewItem, index: number): void;
-
-  removeSplitViewItem(splitViewItem: NSSplitViewItem): void;
-
-  splitViewItemForViewController(viewController: NSViewController): NSSplitViewItem;
-
-  minimumThicknessForInlineSidebars: number;
-
-  validateUserInterfaceItem(item: NSValidatedUserInterfaceItem): boolean;
-
-  viewDidLoad(): void;
-
-  splitViewCanCollapseSubview(splitView: NSSplitView, subview: NSView): boolean;
-
-  splitViewShouldCollapseSubviewForDoubleClickOnDividerAtIndex(splitView: NSSplitView, subview: NSView, dividerIndex: number): boolean;
-
-  splitViewShouldHideDividerAtIndex(splitView: NSSplitView, dividerIndex: number): boolean;
-
-  splitViewEffectiveRectForDrawnRectOfDividerAtIndex(splitView: NSSplitView, proposedEffectiveRect: CGRect, drawnRect: CGRect, dividerIndex: number): CGRect;
-
-  splitViewAdditionalEffectiveRectOfDividerAtIndex(splitView: NSSplitView, dividerIndex: number): CGRect;
-
-  setSplitView(splitView: NSSplitView): void;
-
-  setSplitViewItems(splitViewItems: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setMinimumThicknessForInlineSidebars(minimumThicknessForInlineSidebars: number): void;
-
-  toggleSidebar(sender: interop.Object | null): void;
-
-  toggleInspector(sender: interop.Object | null): void;
-
-  splitViewConstrainMinCoordinateOfSubviewAt(splitView: NSSplitView, proposedMinimumPosition: number, dividerIndex: number): number;
-
-  splitViewConstrainMaxCoordinateOfSubviewAt(splitView: NSSplitView, proposedMaximumPosition: number, dividerIndex: number): number;
-
-  splitViewConstrainSplitPositionOfSubviewAt(splitView: NSSplitView, proposedPosition: number, dividerIndex: number): number;
-
-  splitViewResizeSubviewsWithOldSize(splitView: NSSplitView, oldSize: CGSize): void;
-
-  splitViewShouldAdjustSizeOfSubview(splitView: NSSplitView, view: NSView): boolean;
-
-  splitViewWillResizeSubviews(notification: NSNotification): void;
-
-  splitViewDidResizeSubviews(notification: NSNotification): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-}
-
-declare class NSToolbarItem extends NSObject implements NSCopying {
-  initWithItemIdentifier(itemIdentifier: string): this;
-
-  readonly itemIdentifier: string;
-
-  readonly toolbar: NSToolbar;
-
-  label: string;
-
-  paletteLabel: string;
-
-  possibleLabels: NSSet;
-
-  toolTip: string;
-
-  menuFormRepresentation: NSMenuItem;
-
-  tag: number;
-
-  target: interop.Object;
-
-  action: string;
-
-  enabled: boolean;
-
-  image: NSImage;
-
-  title: string;
-
-  bordered: boolean;
-
-  navigational: boolean;
-
-  view: NSView;
-
-  readonly visible: boolean;
-
+declare class NSSplitViewItemAccessoryViewController extends NSViewController implements NSAnimatablePropertyContainer {
   hidden: boolean;
 
-  minSize: CGSize;
+  automaticallyAppliesContentInsets: boolean;
 
-  maxSize: CGSize;
+  viewWillAppear(): void;
 
-  visibilityPriority: number;
+  viewDidAppear(): void;
 
-  validate(): void;
+  viewWillDisappear(): void;
 
-  autovalidates: boolean;
-
-  readonly allowsDuplicatesInToolbar: boolean;
-
-  setLabel(label: string): void;
-
-  setPaletteLabel(paletteLabel: string): void;
-
-  setPossibleLabels(possibleLabels: NSSet): void;
-
-  setToolTip(toolTip: string | null): void;
-
-  setMenuFormRepresentation(menuFormRepresentation: NSMenuItem): void;
-
-  setTag(tag: number): void;
-
-  setTarget(target: interop.Object | null): void;
-
-  setAction(action: string | null): void;
-
-  isEnabled(): boolean;
-
-  setEnabled(enabled: boolean): void;
-
-  setImage(image: NSImage | null): void;
-
-  setTitle(title: string): void;
-
-  isBordered(): boolean;
-
-  setBordered(bordered: boolean): void;
-
-  isNavigational(): boolean;
-
-  setNavigational(navigational: boolean): void;
-
-  setView(view: NSView): void;
-
-  isVisible(): boolean;
+  viewDidDisappear(): void;
 
   isHidden(): boolean;
 
   setHidden(hidden: boolean): void;
 
-  setMinSize(minSize: CGSize): void;
+  setAutomaticallyAppliesContentInsets(automaticallyAppliesContentInsets: boolean): void;
 
-  setMaxSize(maxSize: CGSize): void;
+  animator(): this;
 
-  setVisibilityPriority(visibilityPriority: number): void;
+  get animations(): NSDictionary;
+  set animations(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
-  setAutovalidates(autovalidates: boolean): void;
+  animationForKey(key: string): interop.Object;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  static defaultAnimationForKey(key: string): interop.Object;
+
+  setAnimations(animations: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
-declare class NSSliderCell extends NSActionCell {
-  static readonly prefersTrackingUntilMouseUp: boolean;
+declare class NSATSTypesetter extends NSTypesetter {
+  static readonly sharedTypesetter: NSATSTypesetter;
 
-  minValue: number;
+  lineFragmentRectForProposedRectRemainingRect(proposedRect: CGRect, remainingRect: interop.PointerConvertible): CGRect;
 
-  maxValue: number;
+  usesFontLeading: boolean;
 
-  altIncrementValue: number;
+  typesetterBehavior: interop.Enum<typeof NSTypesetterBehavior>;
 
-  sliderType: interop.Enum<typeof NSSliderType>;
+  hyphenationFactor: number;
 
-  vertical: boolean;
+  lineFragmentPadding: number;
 
-  readonly trackRect: CGRect;
+  substituteFontForFont(originalFont: NSFont): NSFont;
 
-  readonly knobThickness: number;
+  textTabForGlyphLocationWritingDirectionMaxLocation(glyphLocation: number, direction: interop.Enum<typeof NSWritingDirection>, maxLocation: number): NSTextTab;
 
-  knobRectFlipped(flipped: boolean): CGRect;
+  bidiProcessingEnabled: boolean;
 
-  barRectFlipped(flipped: boolean): CGRect;
+  attributedString: NSAttributedString;
 
-  drawKnob(knobRect: CGRect): void;
+  setParagraphGlyphRangeSeparatorGlyphRange(paragraphRange: _NSRange, paragraphSeparatorRange: _NSRange): void;
 
-  drawBarInsideFlipped(rect: CGRect, flipped: boolean): void;
+  readonly paragraphGlyphRange: _NSRange;
 
-  setMinValue(minValue: number): void;
+  readonly paragraphSeparatorGlyphRange: _NSRange;
 
-  setMaxValue(maxValue: number): void;
+  layoutParagraphAtPoint(lineFragmentOrigin: interop.PointerConvertible): number;
 
-  setAltIncrementValue(altIncrementValue: number): void;
+  lineSpacingAfterGlyphAtIndexWithProposedLineFragmentRect(glyphIndex: number, rect: CGRect): number;
 
-  setSliderType(sliderType: interop.Enum<typeof NSSliderType>): void;
+  paragraphSpacingBeforeGlyphAtIndexWithProposedLineFragmentRect(glyphIndex: number, rect: CGRect): number;
 
-  isVertical(): boolean;
+  paragraphSpacingAfterGlyphAtIndexWithProposedLineFragmentRect(glyphIndex: number, rect: CGRect): number;
 
-  setVertical(vertical: boolean): void;
+  readonly layoutManager: NSLayoutManager;
 
-  numberOfTickMarks: number;
+  readonly currentTextContainer: NSTextContainer;
 
-  tickMarkPosition: interop.Enum<typeof NSTickMarkPosition>;
+  setHardInvalidationForGlyphRange(flag: boolean, glyphRange: _NSRange): void;
 
-  allowsTickMarkValuesOnly: boolean;
+  getLineFragmentRectUsedRectForParagraphSeparatorGlyphRangeAtProposedOrigin(lineFragmentRect: interop.PointerConvertible, lineFragmentUsedRect: interop.PointerConvertible, paragraphSeparatorGlyphRange: _NSRange, lineOrigin: CGPoint): void;
 
-  tickMarkValueAtIndex(index: number): number;
+  setUsesFontLeading(usesFontLeading: boolean): void;
 
-  rectOfTickMarkAtIndex(index: number): CGRect;
+  setTypesetterBehavior(typesetterBehavior: interop.Enum<typeof NSTypesetterBehavior>): void;
 
-  indexOfTickMarkAtPoint(point: CGPoint): number;
+  setHyphenationFactor(hyphenationFactor: number): void;
 
-  closestTickMarkValueToValue(value: number): number;
+  setLineFragmentPadding(lineFragmentPadding: number): void;
 
-  drawTickMarks(): void;
+  setBidiProcessingEnabled(bidiProcessingEnabled: boolean): void;
 
-  setNumberOfTickMarks(numberOfTickMarks: number): void;
+  setAttributedString(attributedString: NSAttributedString | null): void;
 
-  setTickMarkPosition(tickMarkPosition: interop.Enum<typeof NSTickMarkPosition>): void;
+  willSetLineFragmentRectForGlyphRangeUsedRectBaselineOffset(lineRect: interop.PointerConvertible, glyphRange: _NSRange, usedRect: interop.PointerConvertible, baselineOffset: interop.PointerConvertible): void;
 
-  setAllowsTickMarkValuesOnly(allowsTickMarkValuesOnly: boolean): void;
+  shouldBreakLineByWordBeforeCharacterAtIndex(charIndex: number): boolean;
 
-  setTitleCell(cell: NSCell): void;
+  shouldBreakLineByHyphenatingBeforeCharacterAtIndex(charIndex: number): boolean;
 
-  titleCell(): interop.Object;
+  hyphenationFactorForGlyphAtIndex(glyphIndex: number): number;
 
-  setTitleColor(newColor: NSColor): void;
+  hyphenCharacterForGlyphAtIndex(glyphIndex: number): number;
 
-  titleColor(): NSColor;
+  boundingBoxForControlGlyphAtIndexForTextContainerProposedLineFragmentGlyphPositionCharacterIndex(glyphIndex: number, textContainer: NSTextContainer, proposedRect: CGRect, glyphPosition: CGPoint, charIndex: number): CGRect;
 
-  setTitleFont(fontObj: NSFont): void;
-
-  titleFont(): NSFont;
-
-  title: string;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setTitle(string: string): void;
-
-  setKnobThickness(thickness: number): void;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setImage(backgroundImage: NSImage): void;
-
-  image: NSImage;
+  getGlyphsInRangeGlyphsCharacterIndexesGlyphInscriptionsElasticBits(glyphsRange: _NSRange, glyphBuffer: interop.PointerConvertible, charIndexBuffer: interop.PointerConvertible, inscribeBuffer: interop.PointerConvertible, elasticBuffer: interop.PointerConvertible): number;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -19833,6 +20885,261 @@ declare class NSPopUpButtonCell extends NSMenuItemCell implements NSMenuItemVali
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class NSToolbarItem extends NSObject implements NSCopying {
+  initWithItemIdentifier(itemIdentifier: string): this;
+
+  readonly itemIdentifier: string;
+
+  readonly toolbar: NSToolbar;
+
+  label: string;
+
+  paletteLabel: string;
+
+  possibleLabels: NSSet;
+
+  toolTip: string;
+
+  menuFormRepresentation: NSMenuItem;
+
+  tag: number;
+
+  target: interop.Object;
+
+  action: string;
+
+  enabled: boolean;
+
+  image: NSImage;
+
+  title: string;
+
+  bordered: boolean;
+
+  backgroundTintColor: NSColor;
+
+  style: interop.Enum<typeof NSToolbarItemStyle>;
+
+  navigational: boolean;
+
+  view: NSView;
+
+  readonly visible: boolean;
+
+  hidden: boolean;
+
+  minSize: CGSize;
+
+  maxSize: CGSize;
+
+  visibilityPriority: number;
+
+  badge: NSItemBadge;
+
+  validate(): void;
+
+  autovalidates: boolean;
+
+  readonly allowsDuplicatesInToolbar: boolean;
+
+  setLabel(label: string): void;
+
+  setPaletteLabel(paletteLabel: string): void;
+
+  setPossibleLabels(possibleLabels: NSSet): void;
+
+  setToolTip(toolTip: string | null): void;
+
+  setMenuFormRepresentation(menuFormRepresentation: NSMenuItem): void;
+
+  setTag(tag: number): void;
+
+  setTarget(target: interop.Object | null): void;
+
+  setAction(action: string | null): void;
+
+  isEnabled(): boolean;
+
+  setEnabled(enabled: boolean): void;
+
+  setImage(image: NSImage | null): void;
+
+  setTitle(title: string): void;
+
+  isBordered(): boolean;
+
+  setBordered(bordered: boolean): void;
+
+  setBackgroundTintColor(backgroundTintColor: NSColor): void;
+
+  setStyle(style: interop.Enum<typeof NSToolbarItemStyle>): void;
+
+  isNavigational(): boolean;
+
+  setNavigational(navigational: boolean): void;
+
+  setView(view: NSView): void;
+
+  isVisible(): boolean;
+
+  isHidden(): boolean;
+
+  setHidden(hidden: boolean): void;
+
+  setMinSize(minSize: CGSize): void;
+
+  setMaxSize(maxSize: CGSize): void;
+
+  setVisibilityPriority(visibilityPriority: number): void;
+
+  setBadge(badge: NSItemBadge): void;
+
+  setAutovalidates(autovalidates: boolean): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+// @ts-ignore ClassDecl.tsIgnore
+declare class NSSliderCell extends NSActionCell {
+  static readonly prefersTrackingUntilMouseUp: boolean;
+
+  minValue: number;
+
+  maxValue: number;
+
+  altIncrementValue: number;
+
+  sliderType: interop.Enum<typeof NSSliderType>;
+
+  vertical: boolean;
+
+  readonly trackRect: CGRect;
+
+  readonly knobThickness: number;
+
+  knobRectFlipped(flipped: boolean): CGRect;
+
+  barRectFlipped(flipped: boolean): CGRect;
+
+  drawKnob(knobRect: CGRect): void;
+
+  drawBarInsideFlipped(rect: CGRect, flipped: boolean): void;
+
+  setMinValue(minValue: number): void;
+
+  setMaxValue(maxValue: number): void;
+
+  setAltIncrementValue(altIncrementValue: number): void;
+
+  setSliderType(sliderType: interop.Enum<typeof NSSliderType>): void;
+
+  isVertical(): boolean;
+
+  setVertical(vertical: boolean): void;
+
+  numberOfTickMarks: number;
+
+  tickMarkPosition: interop.Enum<typeof NSTickMarkPosition>;
+
+  allowsTickMarkValuesOnly: boolean;
+
+  tickMarkValueAtIndex(index: number): number;
+
+  rectOfTickMarkAtIndex(index: number): CGRect;
+
+  indexOfTickMarkAtPoint(point: CGPoint): number;
+
+  closestTickMarkValueToValue(value: number): number;
+
+  drawTickMarks(): void;
+
+  setNumberOfTickMarks(numberOfTickMarks: number): void;
+
+  setTickMarkPosition(tickMarkPosition: interop.Enum<typeof NSTickMarkPosition>): void;
+
+  setAllowsTickMarkValuesOnly(allowsTickMarkValuesOnly: boolean): void;
+
+  setTitleCell(cell: NSCell): void;
+
+  titleCell(): interop.Object;
+
+  setTitleColor(newColor: NSColor): void;
+
+  titleColor(): NSColor;
+
+  setTitleFont(fontObj: NSFont): void;
+
+  titleFont(): NSFont;
+
+  title: string;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(string: string): void;
+
+  setKnobThickness(thickness: number): void;
+
+  // @ts-ignore MemberDecl.tsIgnore
+  setImage(backgroundImage: NSImage): void;
+
+  image: NSImage;
+}
+
+declare class NSSplitView extends NSView {
+  vertical: boolean;
+
+  dividerStyle: interop.Enum<typeof NSSplitViewDividerStyle>;
+
+  autosaveName: string;
+
+  delegate: NSSplitViewDelegate;
+
+  drawDividerInRect(rect: CGRect): void;
+
+  readonly dividerColor: NSColor;
+
+  readonly dividerThickness: number;
+
+  adjustSubviews(): void;
+
+  isSubviewCollapsed(subview: NSView): boolean;
+
+  minPossiblePositionOfDividerAtIndex(dividerIndex: number): number;
+
+  maxPossiblePositionOfDividerAtIndex(dividerIndex: number): number;
+
+  setPositionOfDividerAtIndex(position: number, dividerIndex: number): void;
+
+  holdingPriorityForSubviewAtIndex(subviewIndex: number): number;
+
+  setHoldingPriorityForSubviewAtIndex(priority: number, subviewIndex: number): void;
+
+  isVertical(): boolean;
+
+  setVertical(vertical: boolean): void;
+
+  setDividerStyle(dividerStyle: interop.Enum<typeof NSSplitViewDividerStyle>): void;
+
+  setAutosaveName(autosaveName: string): void;
+
+  setDelegate(delegate: NSSplitViewDelegate | null): void;
+
+  arrangesAllSubviews: boolean;
+
+  readonly arrangedSubviews: NSArray;
+
+  addArrangedSubview(view: NSView): void;
+
+  insertArrangedSubviewAtIndex(view: NSView, index: number): void;
+
+  removeArrangedSubview(view: NSView): void;
+
+  setArrangesAllSubviews(arrangesAllSubviews: boolean): void;
+
+  setIsPaneSplitter(flag: boolean): void;
+
+  isPaneSplitter(): boolean;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -20498,6 +21805,8 @@ declare class NSSegmentedControl extends NSControl implements NSUserInterfaceCom
 
   readonly activeCompressionOptions: NSUserInterfaceCompressionOptions;
 
+  borderShape: interop.Enum<typeof NSControlBorderShape>;
+
   setSegmentCount(segmentCount: number): void;
 
   setSelectedSegment(selectedSegment: number): void;
@@ -20513,6 +21822,8 @@ declare class NSSegmentedControl extends NSControl implements NSUserInterfaceCom
   setSelectedSegmentBezelColor(selectedSegmentBezelColor: NSColor): void;
 
   setSegmentDistribution(segmentDistribution: interop.Enum<typeof NSSegmentDistribution>): void;
+
+  setBorderShape(borderShape: interop.Enum<typeof NSControlBorderShape>): void;
 
   static segmentedControlWithLabelsTrackingModeTargetAction<This extends abstract new (...args: any) => any>(this: This, labels: NSArray<interop.Object> | Array<interop.Object>, trackingMode: interop.Enum<typeof NSSegmentSwitchTracking>, target: interop.Object | null, action: string | null): InstanceType<This>;
 
@@ -20710,6 +22021,8 @@ declare class NSTextContentStorage extends NSTextContentManager implements NSTex
   // @ts-ignore MemberDecl.tsIgnore
   delegate: NSTextContentStorageDelegate;
 
+  includesTextListMarkers: boolean;
+
   attributedString: NSAttributedString;
 
   attributedStringForTextElement(textElement: NSTextElement): NSAttributedString;
@@ -20724,6 +22037,8 @@ declare class NSTextContentStorage extends NSTextContentManager implements NSTex
 
   // @ts-ignore MemberDecl.tsIgnore
   setDelegate(delegate: NSTextContentStorageDelegate | null): void;
+
+  setIncludesTextListMarkers(includesTextListMarkers: boolean): void;
 
   setAttributedString(attributedString: NSAttributedString | null): void;
 
@@ -21265,6 +22580,24 @@ declare class NSLayoutManager extends NSObject implements NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 }
 
+declare class NSGlassEffectView extends NSView {
+  contentView: NSView;
+
+  cornerRadius: number;
+
+  tintColor: NSColor;
+
+  style: interop.Enum<typeof NSGlassEffectViewStyle>;
+
+  setContentView(contentView: NSView | null): void;
+
+  setCornerRadius(cornerRadius: number): void;
+
+  setTintColor(tintColor: NSColor | null): void;
+
+  setStyle(style: interop.Enum<typeof NSGlassEffectViewStyle>): void;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class NSPickerTouchBarItem extends NSTouchBarItem {
   static pickerTouchBarItemWithIdentifierLabelsSelectionModeTargetAction<This extends abstract new (...args: any) => any>(this: This, identifier: string, labels: NSArray<interop.Object> | Array<interop.Object>, selectionMode: interop.Enum<typeof NSPickerTouchBarItemSelectionMode>, target: interop.Object | null, action: string | null): InstanceType<This>;
@@ -21379,121 +22712,6 @@ declare class NSPressureConfiguration extends NSObject {
   set(): void;
 }
 
-declare class NSTabViewController extends NSViewController implements NSTabViewDelegate, NSToolbarDelegate {
-  tabStyle: interop.Enum<typeof NSTabViewControllerTabStyle>;
-
-  tabView: NSTabView;
-
-  transitionOptions: interop.Enum<typeof NSViewControllerTransitionOptions>;
-
-  canPropagateSelectedChildViewControllerTitle: boolean;
-
-  get tabViewItems(): NSArray;
-  set tabViewItems(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  selectedTabViewItemIndex: number;
-
-  addTabViewItem(tabViewItem: NSTabViewItem): void;
-
-  insertTabViewItemAtIndex(tabViewItem: NSTabViewItem, index: number): void;
-
-  removeTabViewItem(tabViewItem: NSTabViewItem): void;
-
-  tabViewItemForViewController(viewController: NSViewController): NSTabViewItem;
-
-  viewDidLoad(): void;
-
-  tabViewWillSelectTabViewItem(tabView: NSTabView, tabViewItem: NSTabViewItem | null): void;
-
-  tabViewDidSelectTabViewItem(tabView: NSTabView, tabViewItem: NSTabViewItem | null): void;
-
-  tabViewShouldSelectTabViewItem(tabView: NSTabView, tabViewItem: NSTabViewItem | null): boolean;
-
-  toolbarItemForItemIdentifierWillBeInsertedIntoToolbar(toolbar: NSToolbar, itemIdentifier: string, flag: boolean): NSToolbarItem;
-
-  toolbarDefaultItemIdentifiers(toolbar: NSToolbar): NSArray;
-
-  toolbarAllowedItemIdentifiers(toolbar: NSToolbar): NSArray;
-
-  toolbarSelectableItemIdentifiers(toolbar: NSToolbar): NSArray;
-
-  setTabStyle(tabStyle: interop.Enum<typeof NSTabViewControllerTabStyle>): void;
-
-  setTabView(tabView: NSTabView): void;
-
-  setTransitionOptions(transitionOptions: interop.Enum<typeof NSViewControllerTransitionOptions>): void;
-
-  setCanPropagateSelectedChildViewControllerTitle(canPropagateSelectedChildViewControllerTitle: boolean): void;
-
-  setTabViewItems(tabViewItems: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setSelectedTabViewItemIndex(selectedTabViewItemIndex: number): void;
-
-  tabViewDidChangeNumberOfTabViewItems(tabView: NSTabView): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  toolbarImmovableItemIdentifiers(toolbar: NSToolbar): NSSet;
-
-  toolbarItemIdentifierCanBeInsertedAtIndex(toolbar: NSToolbar, itemIdentifier: string, index: number): boolean;
-
-  toolbarWillAddItem(notification: NSNotification): void;
-
-  toolbarDidRemoveItem(notification: NSNotification): void;
-}
-
-declare class NSDataAsset extends NSObject implements NSCopying {
-  initWithName(name: string): this;
-
-  initWithNameBundle(name: string, bundle: NSBundle): this;
-
-  readonly name: string;
-
-  readonly data: NSData;
-
-  readonly typeIdentifier: string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class NSVisualEffectView extends NSView {
   material: interop.Enum<typeof NSVisualEffectMaterial>;
 
@@ -21524,6 +22742,68 @@ declare class NSVisualEffectView extends NSView {
   setEmphasized(emphasized: boolean): void;
 }
 
+declare class NSPrinter extends NSObject implements NSCopying, NSCoding {
+  static readonly printerNames: NSArray;
+
+  static readonly printerTypes: NSArray;
+
+  static printerWithName(name: string): NSPrinter;
+
+  static printerWithType(type: string): NSPrinter;
+
+  readonly name: string;
+
+  readonly type: string;
+
+  readonly languageLevel: number;
+
+  pageSizeForPaper(paperName: string): CGSize;
+
+  readonly deviceDescription: NSDictionary;
+
+  statusForTable(tableName: string): interop.Enum<typeof NSPrinterTableStatus>;
+
+  isKeyInTable(key: string | null, table: string): boolean;
+
+  booleanForKeyInTable(key: string | null, table: string): boolean;
+
+  floatForKeyInTable(key: string | null, table: string): number;
+
+  intForKeyInTable(key: string | null, table: string): number;
+
+  rectForKeyInTable(key: string | null, table: string): CGRect;
+
+  sizeForKeyInTable(key: string | null, table: string): CGSize;
+
+  stringForKeyInTable(key: string | null, table: string): string;
+
+  stringListForKeyInTable(key: string | null, table: string): NSArray;
+
+  imageRectForPaper(paperName: string | null): CGRect;
+
+  acceptsBinary(): boolean;
+
+  isColor(): boolean;
+
+  isFontAvailable(faceName: string | null): boolean;
+
+  isOutputStackInReverseOrder(): boolean;
+
+  static printerWithNameDomainIncludeUnavailable(name: string, domain: string | null, flag: boolean): NSPrinter;
+
+  domain(): string;
+
+  host(): string;
+
+  note(): string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class NSPathComponentCell extends NSTextFieldCell {
   image: NSImage;
 
@@ -21532,120 +22812,6 @@ declare class NSPathComponentCell extends NSTextFieldCell {
   setImage(image: NSImage | null): void;
 
   setURL(URL: NSURL | null): void;
-}
-
-// @ts-ignore ClassDecl.tsIgnore
-declare class NSPathCell extends NSActionCell implements NSMenuItemValidation, NSOpenSavePanelDelegate {
-  pathStyle: interop.Enum<typeof NSPathStyle>;
-
-  URL: NSURL;
-
-  // @ts-ignore MemberDecl.tsIgnore
-  setObjectValue(obj: NSCopying | null): void;
-
-  get allowedTypes(): NSArray;
-  set allowedTypes(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  delegate: NSPathCellDelegate;
-
-  static readonly pathComponentCellClass: interop.Object;
-
-  get pathComponentCells(): NSArray;
-  set pathComponentCells(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  rectOfPathComponentCellWithFrameInView(cell: NSPathComponentCell, frame: CGRect, view: NSView): CGRect;
-
-  pathComponentCellAtPointWithFrameInView(point: CGPoint, frame: CGRect, view: NSView): NSPathComponentCell;
-
-  readonly clickedPathComponentCell: NSPathComponentCell;
-
-  mouseEnteredWithFrameInView(event: NSEvent, frame: CGRect, view: NSView): void;
-
-  mouseExitedWithFrameInView(event: NSEvent, frame: CGRect, view: NSView): void;
-
-  doubleAction: string;
-
-  backgroundColor: NSColor;
-
-  placeholderString: string;
-
-  placeholderAttributedString: NSAttributedString;
-
-  setPathStyle(pathStyle: interop.Enum<typeof NSPathStyle>): void;
-
-  setURL(URL: NSURL | null): void;
-
-  setAllowedTypes(allowedTypes: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setDelegate(delegate: NSPathCellDelegate | null): void;
-
-  setPathComponentCells(pathComponentCells: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setDoubleAction(doubleAction: string | null): void;
-
-  setBackgroundColor(backgroundColor: NSColor | null): void;
-
-  setPlaceholderString(placeholderString: string | null): void;
-
-  setPlaceholderAttributedString(placeholderAttributedString: NSAttributedString | null): void;
-
-  validateMenuItem(menuItem: NSMenuItem): boolean;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  panelShouldEnableURL(sender: interop.Object, url: NSURL): boolean;
-
-  panelValidateURLError(sender: interop.Object, url: NSURL, outError: interop.PointerConvertible): boolean;
-
-  panelDidChangeToDirectoryURL(sender: interop.Object, url: NSURL | null): void;
-
-  panelUserEnteredFilenameConfirmed(sender: interop.Object, filename: string, okFlag: boolean): string;
-
-  panelWillExpand(sender: interop.Object, expanding: boolean): void;
-
-  panelSelectionDidChange(sender: interop.Object | null): void;
-
-  panelDisplayNameForType(sender: interop.Object, type: UTType): string;
-
-  panelDidSelectType(sender: interop.Object, type: UTType | null): void;
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -22576,76 +23742,6 @@ declare class NSFontCollection extends NSObject implements NSCopying, NSMutableC
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class NSATSTypesetter extends NSTypesetter {
-  static readonly sharedTypesetter: NSATSTypesetter;
-
-  lineFragmentRectForProposedRectRemainingRect(proposedRect: CGRect, remainingRect: interop.PointerConvertible): CGRect;
-
-  usesFontLeading: boolean;
-
-  typesetterBehavior: interop.Enum<typeof NSTypesetterBehavior>;
-
-  hyphenationFactor: number;
-
-  lineFragmentPadding: number;
-
-  substituteFontForFont(originalFont: NSFont): NSFont;
-
-  textTabForGlyphLocationWritingDirectionMaxLocation(glyphLocation: number, direction: interop.Enum<typeof NSWritingDirection>, maxLocation: number): NSTextTab;
-
-  bidiProcessingEnabled: boolean;
-
-  attributedString: NSAttributedString;
-
-  setParagraphGlyphRangeSeparatorGlyphRange(paragraphRange: _NSRange, paragraphSeparatorRange: _NSRange): void;
-
-  readonly paragraphGlyphRange: _NSRange;
-
-  readonly paragraphSeparatorGlyphRange: _NSRange;
-
-  layoutParagraphAtPoint(lineFragmentOrigin: interop.PointerConvertible): number;
-
-  lineSpacingAfterGlyphAtIndexWithProposedLineFragmentRect(glyphIndex: number, rect: CGRect): number;
-
-  paragraphSpacingBeforeGlyphAtIndexWithProposedLineFragmentRect(glyphIndex: number, rect: CGRect): number;
-
-  paragraphSpacingAfterGlyphAtIndexWithProposedLineFragmentRect(glyphIndex: number, rect: CGRect): number;
-
-  readonly layoutManager: NSLayoutManager;
-
-  readonly currentTextContainer: NSTextContainer;
-
-  setHardInvalidationForGlyphRange(flag: boolean, glyphRange: _NSRange): void;
-
-  getLineFragmentRectUsedRectForParagraphSeparatorGlyphRangeAtProposedOrigin(lineFragmentRect: interop.PointerConvertible, lineFragmentUsedRect: interop.PointerConvertible, paragraphSeparatorGlyphRange: _NSRange, lineOrigin: CGPoint): void;
-
-  setUsesFontLeading(usesFontLeading: boolean): void;
-
-  setTypesetterBehavior(typesetterBehavior: interop.Enum<typeof NSTypesetterBehavior>): void;
-
-  setHyphenationFactor(hyphenationFactor: number): void;
-
-  setLineFragmentPadding(lineFragmentPadding: number): void;
-
-  setBidiProcessingEnabled(bidiProcessingEnabled: boolean): void;
-
-  setAttributedString(attributedString: NSAttributedString | null): void;
-
-  willSetLineFragmentRectForGlyphRangeUsedRectBaselineOffset(lineRect: interop.PointerConvertible, glyphRange: _NSRange, usedRect: interop.PointerConvertible, baselineOffset: interop.PointerConvertible): void;
-
-  shouldBreakLineByWordBeforeCharacterAtIndex(charIndex: number): boolean;
-
-  shouldBreakLineByHyphenatingBeforeCharacterAtIndex(charIndex: number): boolean;
-
-  hyphenationFactorForGlyphAtIndex(glyphIndex: number): number;
-
-  hyphenCharacterForGlyphAtIndex(glyphIndex: number): number;
-
-  boundingBoxForControlGlyphAtIndexForTextContainerProposedLineFragmentGlyphPositionCharacterIndex(glyphIndex: number, textContainer: NSTextContainer, proposedRect: CGRect, glyphPosition: CGPoint, charIndex: number): CGRect;
-
-  getGlyphsInRangeGlyphsCharacterIndexesGlyphInscriptionsElasticBits(glyphsRange: _NSRange, glyphBuffer: interop.PointerConvertible, charIndexBuffer: interop.PointerConvertible, inscribeBuffer: interop.PointerConvertible, elasticBuffer: interop.PointerConvertible): number;
 }
 
 declare class NSGlyphInfo extends NSObject implements NSCopying, NSSecureCoding {
@@ -23728,18 +24824,6 @@ declare class NSDrawer extends NSResponder implements NSAccessibilityElementProt
   setAccessibilityCustomActions(accessibilityCustomActions: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
-declare class NSMovie extends NSObject implements NSCoding {
-  initWithCoder(coder: NSCoder): this;
-
-  init(): this;
-
-  initWithMovie(movie: interop.Object): this;
-
-  QTMovie(): interop.Object;
-
-  encodeWithCoder(coder: NSCoder): void;
-}
-
 // @ts-ignore ClassDecl.tsIgnore
 declare class NSCell extends NSObject implements NSCopying, NSCoding, NSUserInterfaceItemIdentification, NSAccessibilityElementProtocol, NSAccessibility {
   init(): this;
@@ -23840,6 +24924,8 @@ declare class NSCell extends NSObject implements NSCopying, NSCoding, NSUserInte
   titleRectForBounds(rect: CGRect): CGRect;
 
   drawingRectForBounds(rect: CGRect): CGRect;
+
+  static _bulletStringForStringBulletCharacter(string: string, bulletChar: number): string;
 
   readonly cellSize: CGSize;
 
@@ -24730,6 +25816,130 @@ declare class NSCell extends NSObject implements NSCopying, NSCoding, NSUserInte
   setAccessibilityCustomActions(accessibilityCustomActions: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
+declare class NSSound extends NSObject implements NSCopying, NSSecureCoding, NSPasteboardReading, NSPasteboardWriting {
+  static soundNamed(name: string): NSSound;
+
+  initWithContentsOfURLByReference(url: NSURL, byRef: boolean): this;
+
+  initWithContentsOfFileByReference(path: string, byRef: boolean): this;
+
+  initWithData(data: NSData): this;
+
+  setName(string: string | null): boolean;
+
+  readonly name: string;
+
+  static canInitWithPasteboard(pasteboard: NSPasteboard): boolean;
+
+  static readonly soundUnfilteredTypes: NSArray;
+
+  initWithPasteboard(pasteboard: NSPasteboard): this;
+
+  writeToPasteboard(pasteboard: NSPasteboard): void;
+
+  play(): boolean;
+
+  pause(): boolean;
+
+  resume(): boolean;
+
+  stop(): boolean;
+
+  readonly playing: boolean;
+
+  delegate: NSSoundDelegate;
+
+  readonly duration: number;
+
+  volume: number;
+
+  currentTime: number;
+
+  loops: boolean;
+
+  playbackDeviceIdentifier: string;
+
+  setChannelMapping(channelMapping: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  channelMapping(): NSArray;
+
+  isPlaying(): boolean;
+
+  setDelegate(delegate: NSSoundDelegate | null): void;
+
+  setVolume(volume: number): void;
+
+  setCurrentTime(currentTime: number): void;
+
+  setLoops(loops: boolean): void;
+
+  setPlaybackDeviceIdentifier(playbackDeviceIdentifier: string): void;
+
+  static soundUnfilteredFileTypes(): NSArray;
+
+  static soundUnfilteredPasteboardTypes(): NSArray;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  static readableTypesForPasteboard(pasteboard: NSPasteboard): NSArray;
+
+  static readingOptionsForTypePasteboard(type: string, pasteboard: NSPasteboard): interop.Enum<typeof NSPasteboardReadingOptions>;
+
+  initWithPasteboardPropertyListOfType(propertyList: interop.Object, type: string): this;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  writableTypesForPasteboard(pasteboard: NSPasteboard): NSArray;
+
+  writingOptionsForTypePasteboard(type: string, pasteboard: NSPasteboard): interop.Enum<typeof NSPasteboardWritingOptions>;
+
+  pasteboardPropertyListForType(type: string): interop.Object;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class NSControl extends NSView {
   initWithFrame(frameRect: CGRect): this;
@@ -24790,8 +26000,6 @@ declare class NSControl extends NSView {
   takeObjectValueFrom(sender: interop.Object | null): void;
 
   takeIntegerValueFrom(sender: interop.Object | null): void;
-
-  mouseDown(event: NSEvent): void;
 
   performClick(sender: interop.Object | null): void;
 
@@ -24987,20 +26195,6 @@ declare class NSStatusItem extends NSObject {
   setView(view: NSView): void;
 }
 
-declare class NSStatusBar extends NSObject {
-  static readonly systemStatusBar: NSStatusBar;
-
-  statusItemWithLength(length: number): NSStatusItem;
-
-  removeStatusItem(item: NSStatusItem): void;
-
-  readonly vertical: boolean;
-
-  readonly thickness: number;
-
-  isVertical(): boolean;
-}
-
 declare class NSRunningApplication extends NSObject {
   readonly terminated: boolean;
 
@@ -25131,6 +26325,121 @@ declare class NSOpenGLPixelFormat extends NSObject implements NSCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NSDataAsset extends NSObject implements NSCopying {
+  initWithName(name: string): this;
+
+  initWithNameBundle(name: string, bundle: NSBundle): this;
+
+  readonly name: string;
+
+  readonly data: NSData;
+
+  readonly typeIdentifier: string;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class NSTabViewController extends NSViewController implements NSTabViewDelegate, NSToolbarDelegate {
+  tabStyle: interop.Enum<typeof NSTabViewControllerTabStyle>;
+
+  tabView: NSTabView;
+
+  transitionOptions: interop.Enum<typeof NSViewControllerTransitionOptions>;
+
+  canPropagateSelectedChildViewControllerTitle: boolean;
+
+  get tabViewItems(): NSArray;
+  set tabViewItems(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  selectedTabViewItemIndex: number;
+
+  addTabViewItem(tabViewItem: NSTabViewItem): void;
+
+  insertTabViewItemAtIndex(tabViewItem: NSTabViewItem, index: number): void;
+
+  removeTabViewItem(tabViewItem: NSTabViewItem): void;
+
+  tabViewItemForViewController(viewController: NSViewController): NSTabViewItem;
+
+  viewDidLoad(): void;
+
+  tabViewWillSelectTabViewItem(tabView: NSTabView, tabViewItem: NSTabViewItem | null): void;
+
+  tabViewDidSelectTabViewItem(tabView: NSTabView, tabViewItem: NSTabViewItem | null): void;
+
+  tabViewShouldSelectTabViewItem(tabView: NSTabView, tabViewItem: NSTabViewItem | null): boolean;
+
+  toolbarItemForItemIdentifierWillBeInsertedIntoToolbar(toolbar: NSToolbar, itemIdentifier: string, flag: boolean): NSToolbarItem;
+
+  toolbarDefaultItemIdentifiers(toolbar: NSToolbar): NSArray;
+
+  toolbarAllowedItemIdentifiers(toolbar: NSToolbar): NSArray;
+
+  toolbarSelectableItemIdentifiers(toolbar: NSToolbar): NSArray;
+
+  setTabStyle(tabStyle: interop.Enum<typeof NSTabViewControllerTabStyle>): void;
+
+  setTabView(tabView: NSTabView): void;
+
+  setTransitionOptions(transitionOptions: interop.Enum<typeof NSViewControllerTransitionOptions>): void;
+
+  setCanPropagateSelectedChildViewControllerTitle(canPropagateSelectedChildViewControllerTitle: boolean): void;
+
+  setTabViewItems(tabViewItems: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setSelectedTabViewItemIndex(selectedTabViewItemIndex: number): void;
+
+  tabViewDidChangeNumberOfTabViewItems(tabView: NSTabView): void;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  toolbarImmovableItemIdentifiers(toolbar: NSToolbar): NSSet;
+
+  toolbarItemIdentifierCanBeInsertedAtIndex(toolbar: NSToolbar, itemIdentifier: string, index: number): boolean;
+
+  toolbarWillAddItem(notification: NSNotification): void;
+
+  toolbarDidRemoveItem(notification: NSNotification): void;
+}
+
 declare class NSSpeechRecognizer extends NSObject {
   init(): this;
 
@@ -25158,6 +26467,20 @@ declare class NSSpeechRecognizer extends NSObject {
   setListensInForegroundOnly(listensInForegroundOnly: boolean): void;
 
   setBlocksOtherRecognizers(blocksOtherRecognizers: boolean): void;
+}
+
+declare class NSWritingToolsCoordinatorAnimationParameters extends NSObject {
+  readonly duration: number;
+
+  readonly delay: number;
+
+  progressHandler: (p1: number) => void;
+
+  completionHandler: () => void;
+
+  setProgressHandler(progressHandler: (p1: number) => void | null): void;
+
+  setCompletionHandler(completionHandler: () => void | null): void;
 }
 
 declare class NSTextFieldCell extends NSActionCell {
@@ -25209,6 +26532,9 @@ declare class NSCollectionLayoutGroupCustomItem extends NSObject implements NSCo
   readonly zIndex: number;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class NSSecureTextField extends NSTextField {
 }
 
 // @ts-ignore ClassDecl.tsIgnore
@@ -26691,6 +28017,8 @@ declare class NSSlider extends NSControl implements NSAccessibilitySlider {
 
   maxValue: number;
 
+  neutralValue: number;
+
   altIncrementValue: number;
 
   readonly knobThickness: number;
@@ -26701,11 +28029,15 @@ declare class NSSlider extends NSControl implements NSAccessibilitySlider {
 
   trackFillColor: NSColor;
 
+  tintProminence: interop.Enum<typeof NSTintProminence>;
+
   setSliderType(sliderType: interop.Enum<typeof NSSliderType>): void;
 
   setMinValue(minValue: number): void;
 
   setMaxValue(maxValue: number): void;
+
+  setNeutralValue(neutralValue: number): void;
 
   setAltIncrementValue(altIncrementValue: number): void;
 
@@ -26714,6 +28046,8 @@ declare class NSSlider extends NSControl implements NSAccessibilitySlider {
   setVertical(vertical: boolean): void;
 
   setTrackFillColor(trackFillColor: NSColor): void;
+
+  setTintProminence(tintProminence: interop.Enum<typeof NSTintProminence>): void;
 
   numberOfTickMarks: number;
 
@@ -26816,6 +28150,20 @@ declare class NSSlider extends NSControl implements NSAccessibilitySlider {
   readonly description: string;
 
   readonly debugDescription: string;
+}
+
+declare class NSAccessibilityCustomRotorSearchParameters extends NSObject {
+  currentItem: NSAccessibilityCustomRotorItemResult;
+
+  searchDirection: interop.Enum<typeof NSAccessibilityCustomRotorSearchDirection>;
+
+  filterString: string;
+
+  setCurrentItem(currentItem: NSAccessibilityCustomRotorItemResult | null): void;
+
+  setSearchDirection(searchDirection: interop.Enum<typeof NSAccessibilityCustomRotorSearchDirection>): void;
+
+  setFilterString(filterString: string): void;
 }
 
 declare class NSSharingCollaborationModeRestriction extends NSObject implements NSSecureCoding, NSCopying {
@@ -27207,6 +28555,8 @@ declare class NSTextList extends NSObject implements NSSecureCoding, NSCopying {
 
   markerForItemNumber(itemNumber: number): string;
 
+  static readonly includesTextListMarkers: boolean;
+
   setStartingItemNumber(startingItemNumber: number): void;
 
   isOrdered(): boolean;
@@ -27323,6 +28673,26 @@ declare class NSSplitViewItem extends NSObject implements NSAnimatablePropertyCo
 
   titlebarSeparatorStyle: interop.Enum<typeof NSTitlebarSeparatorStyle>;
 
+  automaticallyAdjustsSafeAreaInsets: boolean;
+
+  get topAlignedAccessoryViewControllers(): NSArray;
+  set topAlignedAccessoryViewControllers(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  addTopAlignedAccessoryViewController(childViewController: NSSplitViewItemAccessoryViewController): void;
+
+  insertTopAlignedAccessoryViewControllerAtIndex(childViewController: NSSplitViewItemAccessoryViewController, index: number): void;
+
+  removeTopAlignedAccessoryViewControllerAtIndex(index: number): void;
+
+  get bottomAlignedAccessoryViewControllers(): NSArray;
+  set bottomAlignedAccessoryViewControllers(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  addBottomAlignedAccessoryViewController(childViewController: NSSplitViewItemAccessoryViewController): void;
+
+  insertBottomAlignedAccessoryViewControllerAtIndex(childViewController: NSSplitViewItemAccessoryViewController, index: number): void;
+
+  removeBottomAlignedAccessoryViewControllerAtIndex(index: number): void;
+
   setViewController(viewController: NSViewController): void;
 
   isCollapsed(): boolean;
@@ -27352,6 +28722,12 @@ declare class NSSplitViewItem extends NSObject implements NSAnimatablePropertyCo
   setAllowsFullHeightLayout(allowsFullHeightLayout: boolean): void;
 
   setTitlebarSeparatorStyle(titlebarSeparatorStyle: interop.Enum<typeof NSTitlebarSeparatorStyle>): void;
+
+  setAutomaticallyAdjustsSafeAreaInsets(automaticallyAdjustsSafeAreaInsets: boolean): void;
+
+  setTopAlignedAccessoryViewControllers(topAlignedAccessoryViewControllers: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBottomAlignedAccessoryViewControllers(bottomAlignedAccessoryViewControllers: NSArray<interop.Object> | Array<interop.Object>): void;
 
   animator(): this;
 
@@ -27413,6 +28789,10 @@ declare class NSTintConfiguration extends NSObject implements NSCopying, NSSecur
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NSNibControlConnector extends NSNibConnector {
+  establishConnection(): void;
+}
+
 declare class NSSharingServicePickerTouchBarItem extends NSTouchBarItem {
   delegate: NSSharingServicePickerTouchBarItemDelegate | null;
 
@@ -27449,146 +28829,6 @@ declare class NSScrubberLayoutAttributes extends NSObject implements NSCopying {
   setAlpha(alpha: number): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class NSWritingToolsCoordinatorAnimationParameters extends NSObject {
-  readonly duration: number;
-
-  readonly delay: number;
-
-  progressHandler: (p1: number) => void;
-
-  completionHandler: () => void;
-
-  setProgressHandler(progressHandler: (p1: number) => void | null): void;
-
-  setCompletionHandler(completionHandler: () => void | null): void;
-}
-
-declare class NSImageView extends NSControl implements NSAccessibilityImage, NSMenuItemValidation {
-  static imageViewWithImage<This extends abstract new (...args: any) => any>(this: This, image: NSImage): InstanceType<This>;
-
-  image: NSImage;
-
-  editable: boolean;
-
-  imageAlignment: interop.Enum<typeof NSImageAlignment>;
-
-  imageScaling: interop.Enum<typeof NSImageScaling>;
-
-  imageFrameStyle: interop.Enum<typeof NSImageFrameStyle>;
-
-  symbolConfiguration: NSImageSymbolConfiguration;
-
-  contentTintColor: NSColor;
-
-  animates: boolean;
-
-  allowsCutCopyPaste: boolean;
-
-  static defaultPreferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>;
-
-  preferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>;
-
-  readonly imageDynamicRange: interop.Enum<typeof NSImageDynamicRange>;
-
-  setImage(image: NSImage | null): void;
-
-  isEditable(): boolean;
-
-  setEditable(editable: boolean): void;
-
-  setImageAlignment(imageAlignment: interop.Enum<typeof NSImageAlignment>): void;
-
-  setImageScaling(imageScaling: interop.Enum<typeof NSImageScaling>): void;
-
-  setImageFrameStyle(imageFrameStyle: interop.Enum<typeof NSImageFrameStyle>): void;
-
-  setSymbolConfiguration(symbolConfiguration: NSImageSymbolConfiguration): void;
-
-  setContentTintColor(contentTintColor: NSColor): void;
-
-  setAnimates(animates: boolean): void;
-
-  setAllowsCutCopyPaste(allowsCutCopyPaste: boolean): void;
-
-  static setDefaultPreferredImageDynamicRange(defaultPreferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>): void;
-
-  setPreferredImageDynamicRange(preferredImageDynamicRange: interop.Enum<typeof NSImageDynamicRange>): void;
-
-  addSymbolEffect(symbolEffect: NSSymbolEffect): void;
-
-  addSymbolEffectOptions(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions): void;
-
-  addSymbolEffectOptionsAnimated(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions, animated: boolean): void;
-
-  removeSymbolEffectOfType(symbolEffect: NSSymbolEffect): void;
-
-  removeSymbolEffectOfTypeOptions(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions): void;
-
-  removeSymbolEffectOfTypeOptionsAnimated(symbolEffect: NSSymbolEffect, options: NSSymbolEffectOptions, animated: boolean): void;
-
-  removeAllSymbolEffects(): void;
-
-  removeAllSymbolEffectsWithOptions(options: NSSymbolEffectOptions): void;
-
-  removeAllSymbolEffectsWithOptionsAnimated(options: NSSymbolEffectOptions, animated: boolean): void;
-
-  setSymbolImageWithContentTransition(symbolImage: NSImage, transition: NSSymbolContentTransition): void;
-
-  setSymbolImageWithContentTransitionOptions(symbolImage: NSImage, transition: NSSymbolContentTransition, options: NSSymbolEffectOptions): void;
-
-  accessibilityLabel: string;
-
-  accessibilityFrame: CGRect;
-
-  accessibilityParent: interop.Object;
-
-  isAccessibilityFocused(): boolean;
-
-  accessibilityIdentifier: string;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  validateMenuItem(menuItem: NSMenuItem): boolean;
 }
 
 declare class NSCollectionViewLayoutInvalidationContext extends NSObject {
@@ -27740,6 +28980,10 @@ declare class NSImageSymbolConfiguration extends NSObject implements NSCopying, 
   static configurationWithPaletteColors<This extends abstract new (...args: any) => any>(this: This, paletteColors: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
   static configurationPreferringMulticolor<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static configurationWithVariableValueMode<This extends abstract new (...args: any) => any>(this: This, variableValueMode: interop.Enum<typeof NSImageSymbolVariableValueMode>): InstanceType<This>;
+
+  static configurationWithColorRenderingMode<This extends abstract new (...args: any) => any>(this: This, mode: interop.Enum<typeof NSImageSymbolColorRenderingMode>): InstanceType<This>;
 
   configurationByApplyingConfiguration(configuration: NSImageSymbolConfiguration): this;
 
@@ -28016,6 +29260,10 @@ declare class NSGestureRecognizer extends NSObject implements NSCoding {
 
   locationInView(view: NSView | null): CGPoint;
 
+  name: string;
+
+  readonly modifierFlags: interop.Enum<typeof NSEventModifierFlags>;
+
   setTarget(target: interop.Object | null): void;
 
   setAction(action: string | null): void;
@@ -28039,6 +29287,8 @@ declare class NSGestureRecognizer extends NSObject implements NSCoding {
   setDelaysMagnificationEvents(delaysMagnificationEvents: boolean): void;
 
   setDelaysRotationEvents(delaysRotationEvents: boolean): void;
+
+  setName(name: string): void;
 
   allowedTouchTypes: interop.Enum<typeof NSTouchTypeMask>;
 
@@ -28071,6 +29321,8 @@ declare class NSGestureRecognizer extends NSObject implements NSCoding {
   rightMouseDragged(event: NSEvent): void;
 
   otherMouseDragged(event: NSEvent): void;
+
+  mouseCancelled(event: NSEvent): void;
 
   keyDown(event: NSEvent): void;
 
@@ -28117,7 +29369,170 @@ declare class NSDraggingItem extends NSObject {
   setImageComponentsProvider(imageComponentsProvider: () => NSArray | null): void;
 }
 
+declare class NSColorSpace extends NSObject implements NSSecureCoding {
+  initWithICCProfileData(iccData: NSData): this;
+
+  readonly ICCProfileData: NSData;
+
+  initWithColorSyncProfile(prof: interop.PointerConvertible): this;
+
+  readonly colorSyncProfile: interop.Pointer;
+
+  initWithCGColorSpace(cgColorSpace: interop.Object): this;
+
+  readonly CGColorSpace: interop.Object;
+
+  readonly numberOfColorComponents: number;
+
+  readonly colorSpaceModel: interop.Enum<typeof NSColorSpaceModel>;
+
+  readonly localizedName: string;
+
+  static readonly sRGBColorSpace: NSColorSpace;
+
+  static readonly genericGamma22GrayColorSpace: NSColorSpace;
+
+  static readonly extendedSRGBColorSpace: NSColorSpace;
+
+  static readonly extendedGenericGamma22GrayColorSpace: NSColorSpace;
+
+  static readonly displayP3ColorSpace: NSColorSpace;
+
+  static readonly adobeRGB1998ColorSpace: NSColorSpace;
+
+  static readonly genericRGBColorSpace: NSColorSpace;
+
+  static readonly genericGrayColorSpace: NSColorSpace;
+
+  static readonly genericCMYKColorSpace: NSColorSpace;
+
+  static readonly deviceRGBColorSpace: NSColorSpace;
+
+  static readonly deviceGrayColorSpace: NSColorSpace;
+
+  static readonly deviceCMYKColorSpace: NSColorSpace;
+
+  static availableColorSpacesWithModel(model: interop.Enum<typeof NSColorSpaceModel>): NSArray;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
 declare class NSWorkspaceAuthorization extends NSObject {
+}
+
+declare class NSToolbar extends NSObject {
+  initWithIdentifier(identifier: string): this;
+
+  init(): this;
+
+  insertItemWithItemIdentifierAtIndex(itemIdentifier: string, index: number): void;
+
+  removeItemAtIndex(index: number): void;
+
+  removeItemWithItemIdentifier(itemIdentifier: string): void;
+
+  delegate: NSToolbarDelegate;
+
+  visible: boolean;
+
+  runCustomizationPalette(sender: interop.Object | null): void;
+
+  readonly customizationPaletteIsRunning: boolean;
+
+  displayMode: interop.Enum<typeof NSToolbarDisplayMode>;
+
+  selectedItemIdentifier: string;
+
+  allowsUserCustomization: boolean;
+
+  allowsDisplayModeCustomization: boolean;
+
+  readonly identifier: string;
+
+  readonly items: NSArray;
+
+  readonly visibleItems: NSArray;
+
+  get itemIdentifiers(): NSArray;
+  set itemIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  centeredItemIdentifiers: NSSet;
+
+  autosavesConfiguration: boolean;
+
+  validateVisibleItems(): void;
+
+  allowsExtensionItems: boolean;
+
+  setDelegate(delegate: NSToolbarDelegate | null): void;
+
+  isVisible(): boolean;
+
+  setVisible(visible: boolean): void;
+
+  setDisplayMode(displayMode: interop.Enum<typeof NSToolbarDisplayMode>): void;
+
+  setSelectedItemIdentifier(selectedItemIdentifier: string | null): void;
+
+  setAllowsUserCustomization(allowsUserCustomization: boolean): void;
+
+  setAllowsDisplayModeCustomization(allowsDisplayModeCustomization: boolean): void;
+
+  setItemIdentifiers(itemIdentifiers: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setCenteredItemIdentifiers(centeredItemIdentifiers: NSSet): void;
+
+  setAutosavesConfiguration(autosavesConfiguration: boolean): void;
+
+  setAllowsExtensionItems(allowsExtensionItems: boolean): void;
+
+  sizeMode: interop.Enum<typeof NSToolbarSizeMode>;
+
+  centeredItemIdentifier: string;
+
+  fullScreenAccessoryView: NSView;
+
+  fullScreenAccessoryViewMinHeight: number;
+
+  fullScreenAccessoryViewMaxHeight: number;
+
+  showsBaselineSeparator: boolean;
+
+  readonly configurationDictionary: NSDictionary;
+
+  setConfigurationFromDictionary(configDict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setSizeMode(sizeMode: interop.Enum<typeof NSToolbarSizeMode>): void;
+
+  setCenteredItemIdentifier(centeredItemIdentifier: string | null): void;
+
+  setFullScreenAccessoryView(fullScreenAccessoryView: NSView): void;
+
+  setFullScreenAccessoryViewMinHeight(fullScreenAccessoryViewMinHeight: number): void;
+
+  setFullScreenAccessoryViewMaxHeight(fullScreenAccessoryViewMaxHeight: number): void;
+
+  setShowsBaselineSeparator(showsBaselineSeparator: boolean): void;
+}
+
+declare class NSPathControlItem extends NSObject {
+  title: string;
+
+  attributedTitle: NSAttributedString;
+
+  image: NSImage;
+
+  readonly URL: NSURL;
+
+  setTitle(title: string): void;
+
+  setAttributedTitle(attributedTitle: NSAttributedString): void;
+
+  setImage(image: NSImage | null): void;
 }
 
 declare class NSColorWell extends NSControl {
@@ -28147,6 +29562,8 @@ declare class NSColorWell extends NSControl {
 
   supportsAlpha: boolean;
 
+  maximumLinearExposure: number;
+
   isActive(): boolean;
 
   isBordered(): boolean;
@@ -28164,6 +29581,8 @@ declare class NSColorWell extends NSControl {
   setPulldownAction(pulldownAction: string): void;
 
   setSupportsAlpha(supportsAlpha: boolean): void;
+
+  setMaximumLinearExposure(maximumLinearExposure: number): void;
 }
 
 declare class NSTextAlternatives extends NSObject implements NSSecureCoding {
@@ -29766,58 +31185,6 @@ declare class NSWindow extends NSResponder implements NSAnimatablePropertyContai
   setAccessibilityCustomActions(accessibilityCustomActions: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
-declare class NSFontDescriptor extends NSObject implements NSCopying, NSSecureCoding {
-  readonly postscriptName: string;
-
-  readonly pointSize: number;
-
-  readonly matrix: NSAffineTransform;
-
-  readonly symbolicTraits: interop.Enum<typeof NSFontDescriptorSymbolicTraits>;
-
-  readonly requiresFontAssetRequest: boolean;
-
-  objectForKey(attribute: string): interop.Object;
-
-  readonly fontAttributes: NSDictionary;
-
-  static fontDescriptorWithFontAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): NSFontDescriptor;
-
-  static fontDescriptorWithNameSize(fontName: string, size: number): NSFontDescriptor;
-
-  static fontDescriptorWithNameMatrix(fontName: string, matrix: NSAffineTransform): NSFontDescriptor;
-
-  initWithFontAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
-
-  matchingFontDescriptorsWithMandatoryKeys(mandatoryKeys: NSSet | null): NSArray;
-
-  matchingFontDescriptorWithMandatoryKeys(mandatoryKeys: NSSet | null): NSFontDescriptor;
-
-  fontDescriptorByAddingAttributes(attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSFontDescriptor;
-
-  fontDescriptorWithSymbolicTraits(symbolicTraits: interop.Enum<typeof NSFontDescriptorSymbolicTraits>): NSFontDescriptor;
-
-  fontDescriptorWithSize(newPointSize: number): NSFontDescriptor;
-
-  fontDescriptorWithMatrix(matrix: NSAffineTransform): NSFontDescriptor;
-
-  fontDescriptorWithFace(newFace: string): NSFontDescriptor;
-
-  fontDescriptorWithFamily(newFamily: string): NSFontDescriptor;
-
-  fontDescriptorWithDesign(design: string): this;
-
-  static preferredFontDescriptorForTextStyleOptions(style: string, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSFontDescriptor;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class NSScrubberItemView extends NSScrubberArrangedView {
 }
 
@@ -30175,6 +31542,8 @@ declare class NSApplication extends NSResponder implements NSUserInterfaceValida
   readonly hidden: boolean;
 
   readonly running: boolean;
+
+  readonly applicationShouldSuppressHighDynamicRangeContent: boolean;
 
   deactivate(): void;
 
@@ -31142,62 +32511,18 @@ declare class NSBindingSelectionMarker extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class NSPrinter extends NSObject implements NSCopying, NSCoding {
-  static readonly printerNames: NSArray;
+declare class NSNib extends NSObject implements NSCoding {
+  initWithNibNamedBundle(nibName: string, bundle: NSBundle | null): this;
 
-  static readonly printerTypes: NSArray;
+  initWithNibDataBundle(nibData: NSData, bundle: NSBundle | null): this;
 
-  static printerWithName(name: string): NSPrinter;
+  instantiateWithOwnerTopLevelObjects(owner: interop.Object | null, topLevelObjects: interop.PointerConvertible): boolean;
 
-  static printerWithType(type: string): NSPrinter;
+  initWithContentsOfURL(nibFileURL: NSURL): this;
 
-  readonly name: string;
+  instantiateNibWithExternalNameTable(externalNameTable: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
 
-  readonly type: string;
-
-  readonly languageLevel: number;
-
-  pageSizeForPaper(paperName: string): CGSize;
-
-  readonly deviceDescription: NSDictionary;
-
-  statusForTable(tableName: string): interop.Enum<typeof NSPrinterTableStatus>;
-
-  isKeyInTable(key: string | null, table: string): boolean;
-
-  booleanForKeyInTable(key: string | null, table: string): boolean;
-
-  floatForKeyInTable(key: string | null, table: string): number;
-
-  intForKeyInTable(key: string | null, table: string): number;
-
-  rectForKeyInTable(key: string | null, table: string): CGRect;
-
-  sizeForKeyInTable(key: string | null, table: string): CGSize;
-
-  stringForKeyInTable(key: string | null, table: string): string;
-
-  stringListForKeyInTable(key: string | null, table: string): NSArray;
-
-  imageRectForPaper(paperName: string | null): CGRect;
-
-  acceptsBinary(): boolean;
-
-  isColor(): boolean;
-
-  isFontAvailable(faceName: string | null): boolean;
-
-  isOutputStackInReverseOrder(): boolean;
-
-  static printerWithNameDomainIncludeUnavailable(name: string, domain: string | null, flag: boolean): NSPrinter;
-
-  domain(): string;
-
-  host(): string;
-
-  note(): string;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  instantiateNibWithOwnerTopLevelObjects(owner: interop.Object, topLevelObjects: interop.PointerConvertible): boolean;
 
   encodeWithCoder(coder: NSCoder): void;
 
@@ -31260,668 +32585,14 @@ declare class NSCollectionLayoutAnchor extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class NSAccessibilityElement extends NSObject implements NSAccessibility {
-  static accessibilityElementWithRoleFrameLabelParent(role: string, frame: CGRect, label: string | null, parent: interop.Object | null): interop.Object;
+declare class NSGlassEffectContainerView extends NSView {
+  contentView: NSView;
 
-  accessibilityAddChildElement(childElement: NSAccessibilityElement): void;
+  spacing: number;
 
-  accessibilityFrameInParentSpace: CGRect;
+  setContentView(contentView: NSView | null): void;
 
-  setAccessibilityFrameInParentSpace(accessibilityFrameInParentSpace: CGRect): void;
-
-  accessibilityElement: boolean;
-
-  accessibilityFrame: CGRect;
-
-  accessibilityFocused: boolean;
-
-  accessibilityActivationPoint: CGPoint;
-
-  accessibilityTopLevelUIElement: interop.Object;
-
-  accessibilityURL: NSURL;
-
-  accessibilityValue: interop.Object;
-
-  accessibilityValueDescription: string;
-
-  get accessibilityVisibleChildren(): NSArray;
-  set accessibilityVisibleChildren(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilitySubrole: string;
-
-  accessibilityTitle: string;
-
-  accessibilityTitleUIElement: interop.Object;
-
-  get accessibilityNextContents(): NSArray;
-  set accessibilityNextContents(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityOrientation: interop.Enum<typeof NSAccessibilityOrientation>;
-
-  accessibilityOverflowButton: interop.Object;
-
-  accessibilityParent: interop.Object;
-
-  accessibilityPlaceholderValue: string;
-
-  get accessibilityPreviousContents(): NSArray;
-  set accessibilityPreviousContents(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityRole: string;
-
-  accessibilityRoleDescription: string;
-
-  accessibilitySearchButton: interop.Object;
-
-  accessibilitySearchMenu: interop.Object;
-
-  accessibilitySelected: boolean;
-
-  get accessibilitySelectedChildren(): NSArray;
-  set accessibilitySelectedChildren(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityServesAsTitleForUIElements(): NSArray;
-  set accessibilityServesAsTitleForUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityShownMenu: interop.Object;
-
-  accessibilityMinValue: interop.Object;
-
-  accessibilityMaxValue: interop.Object;
-
-  get accessibilityLinkedUIElements(): NSArray;
-  set accessibilityLinkedUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityWindow: interop.Object;
-
-  accessibilityIdentifier: string;
-
-  accessibilityHelp: string;
-
-  accessibilityFilename: string;
-
-  accessibilityExpanded: boolean;
-
-  accessibilityEdited: boolean;
-
-  accessibilityEnabled: boolean;
-
-  get accessibilityChildren(): NSArray;
-  set accessibilityChildren(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityChildrenInNavigationOrder(): NSArray;
-  set accessibilityChildrenInNavigationOrder(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityClearButton: interop.Object;
-
-  accessibilityCancelButton: interop.Object;
-
-  accessibilityProtectedContent: boolean;
-
-  get accessibilityContents(): NSArray;
-  set accessibilityContents(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityLabel: string;
-
-  accessibilityAlternateUIVisible: boolean;
-
-  get accessibilitySharedFocusElements(): NSArray;
-  set accessibilitySharedFocusElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityRequired: boolean;
-
-  get accessibilityCustomRotors(): NSArray;
-  set accessibilityCustomRotors(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityUserInputLabels(): NSArray;
-  set accessibilityUserInputLabels(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityAttributedUserInputLabels(): NSArray;
-  set accessibilityAttributedUserInputLabels(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityApplicationFocusedUIElement: interop.Object;
-
-  accessibilityMainWindow: interop.Object;
-
-  accessibilityHidden: boolean;
-
-  accessibilityFrontmost: boolean;
-
-  accessibilityFocusedWindow: interop.Object;
-
-  get accessibilityWindows(): NSArray;
-  set accessibilityWindows(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityExtrasMenuBar: interop.Object;
-
-  accessibilityMenuBar: interop.Object;
-
-  get accessibilityColumnTitles(): NSArray;
-  set accessibilityColumnTitles(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityOrderedByRow: boolean;
-
-  accessibilityHorizontalUnits: interop.Enum<typeof NSAccessibilityUnits>;
-
-  accessibilityVerticalUnits: interop.Enum<typeof NSAccessibilityUnits>;
-
-  accessibilityHorizontalUnitDescription: string;
-
-  accessibilityVerticalUnitDescription: string;
-
-  accessibilityLayoutPointForScreenPoint(point: CGPoint): CGPoint;
-
-  accessibilityLayoutSizeForScreenSize(size: CGSize): CGSize;
-
-  accessibilityScreenPointForLayoutPoint(point: CGPoint): CGPoint;
-
-  accessibilityScreenSizeForLayoutSize(size: CGSize): CGSize;
-
-  get accessibilityHandles(): NSArray;
-  set accessibilityHandles(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityWarningValue: interop.Object;
-
-  accessibilityCriticalValue: interop.Object;
-
-  accessibilityDisclosed: boolean;
-
-  accessibilityDisclosedByRow: interop.Object;
-
-  accessibilityDisclosedRows: interop.Object;
-
-  accessibilityDisclosureLevel: number;
-
-  get accessibilityMarkerUIElements(): NSArray;
-  set accessibilityMarkerUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityMarkerValues: interop.Object;
-
-  accessibilityMarkerGroupUIElement: interop.Object;
-
-  accessibilityUnits: interop.Enum<typeof NSAccessibilityUnits>;
-
-  accessibilityUnitDescription: string;
-
-  accessibilityRulerMarkerType: interop.Enum<typeof NSAccessibilityRulerMarkerType>;
-
-  accessibilityMarkerTypeDescription: string;
-
-  accessibilityHorizontalScrollBar: interop.Object;
-
-  accessibilityVerticalScrollBar: interop.Object;
-
-  get accessibilityAllowedValues(): NSArray;
-  set accessibilityAllowedValues(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityLabelUIElements(): NSArray;
-  set accessibilityLabelUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityLabelValue: number;
-
-  get accessibilitySplitters(): NSArray;
-  set accessibilitySplitters(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityDecrementButton: interop.Object;
-
-  accessibilityIncrementButton: interop.Object;
-
-  get accessibilityTabs(): NSArray;
-  set accessibilityTabs(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityHeader: interop.Object;
-
-  accessibilityColumnCount: number;
-
-  accessibilityRowCount: number;
-
-  accessibilityIndex: number;
-
-  get accessibilityColumns(): NSArray;
-  set accessibilityColumns(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityRows(): NSArray;
-  set accessibilityRows(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityVisibleRows(): NSArray;
-  set accessibilityVisibleRows(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilitySelectedRows(): NSArray;
-  set accessibilitySelectedRows(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityVisibleColumns(): NSArray;
-  set accessibilityVisibleColumns(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilitySelectedColumns(): NSArray;
-  set accessibilitySelectedColumns(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilitySortDirection: interop.Enum<typeof NSAccessibilitySortDirection>;
-
-  get accessibilityRowHeaderUIElements(): NSArray;
-  set accessibilityRowHeaderUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilitySelectedCells(): NSArray;
-  set accessibilitySelectedCells(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityVisibleCells(): NSArray;
-  set accessibilityVisibleCells(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get accessibilityColumnHeaderUIElements(): NSArray;
-  set accessibilityColumnHeaderUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityCellForColumnRow(column: number, row: number): interop.Object;
-
-  accessibilityRowIndexRange: _NSRange;
-
-  accessibilityColumnIndexRange: _NSRange;
-
-  accessibilityInsertionPointLineNumber: number;
-
-  accessibilitySharedCharacterRange: _NSRange;
-
-  get accessibilitySharedTextUIElements(): NSArray;
-  set accessibilitySharedTextUIElements(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityVisibleCharacterRange: _NSRange;
-
-  accessibilityNumberOfCharacters: number;
-
-  accessibilitySelectedText: string;
-
-  accessibilitySelectedTextRange: _NSRange;
-
-  get accessibilitySelectedTextRanges(): NSArray;
-  set accessibilitySelectedTextRanges(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityAttributedStringForRange(range: _NSRange): NSAttributedString;
-
-  accessibilityRangeForLine(line: number): _NSRange;
-
-  accessibilityStringForRange(range: _NSRange): string;
-
-  accessibilityRangeForPosition(point: CGPoint): _NSRange;
-
-  accessibilityRangeForIndex(index: number): _NSRange;
-
-  accessibilityFrameForRange(range: _NSRange): CGRect;
-
-  accessibilityRTFForRange(range: _NSRange): NSData;
-
-  accessibilityStyleRangeForIndex(index: number): _NSRange;
-
-  accessibilityLineForIndex(index: number): number;
-
-  accessibilityToolbarButton: interop.Object;
-
-  accessibilityModal: boolean;
-
-  accessibilityProxy: interop.Object;
-
-  accessibilityMain: boolean;
-
-  accessibilityFullScreenButton: interop.Object;
-
-  accessibilityGrowArea: interop.Object;
-
-  accessibilityDocument: string;
-
-  accessibilityDefaultButton: interop.Object;
-
-  accessibilityCloseButton: interop.Object;
-
-  accessibilityZoomButton: interop.Object;
-
-  accessibilityMinimizeButton: interop.Object;
-
-  accessibilityMinimized: boolean;
-
-  get accessibilityCustomActions(): NSArray;
-  set accessibilityCustomActions(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  accessibilityPerformCancel(): boolean;
-
-  accessibilityPerformConfirm(): boolean;
-
-  accessibilityPerformDecrement(): boolean;
-
-  accessibilityPerformDelete(): boolean;
-
-  accessibilityPerformIncrement(): boolean;
-
-  accessibilityPerformPick(): boolean;
-
-  accessibilityPerformPress(): boolean;
-
-  accessibilityPerformRaise(): boolean;
-
-  accessibilityPerformShowAlternateUI(): boolean;
-
-  accessibilityPerformShowDefaultUI(): boolean;
-
-  accessibilityPerformShowMenu(): boolean;
-
-  isAccessibilitySelectorAllowed(selector: string): boolean;
-
-  isAccessibilityElement(): boolean;
-
-  setAccessibilityElement(accessibilityElement: boolean): void;
-
-  setAccessibilityFrame(accessibilityFrame: CGRect): void;
-
-  isAccessibilityFocused(): boolean;
-
-  setAccessibilityFocused(accessibilityFocused: boolean): void;
-
-  setAccessibilityActivationPoint(accessibilityActivationPoint: CGPoint): void;
-
-  setAccessibilityTopLevelUIElement(accessibilityTopLevelUIElement: interop.Object): void;
-
-  setAccessibilityURL(accessibilityURL: NSURL): void;
-
-  setAccessibilityValue(accessibilityValue: interop.Object): void;
-
-  setAccessibilityValueDescription(accessibilityValueDescription: string): void;
-
-  setAccessibilityVisibleChildren(accessibilityVisibleChildren: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilitySubrole(accessibilitySubrole: string): void;
-
-  setAccessibilityTitle(accessibilityTitle: string): void;
-
-  setAccessibilityTitleUIElement(accessibilityTitleUIElement: interop.Object): void;
-
-  setAccessibilityNextContents(accessibilityNextContents: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityOrientation(accessibilityOrientation: interop.Enum<typeof NSAccessibilityOrientation>): void;
-
-  setAccessibilityOverflowButton(accessibilityOverflowButton: interop.Object): void;
-
-  setAccessibilityParent(accessibilityParent: interop.Object): void;
-
-  setAccessibilityPlaceholderValue(accessibilityPlaceholderValue: string): void;
-
-  setAccessibilityPreviousContents(accessibilityPreviousContents: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityRole(accessibilityRole: string): void;
-
-  setAccessibilityRoleDescription(accessibilityRoleDescription: string): void;
-
-  setAccessibilitySearchButton(accessibilitySearchButton: interop.Object): void;
-
-  setAccessibilitySearchMenu(accessibilitySearchMenu: interop.Object): void;
-
-  isAccessibilitySelected(): boolean;
-
-  setAccessibilitySelected(accessibilitySelected: boolean): void;
-
-  setAccessibilitySelectedChildren(accessibilitySelectedChildren: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityServesAsTitleForUIElements(accessibilityServesAsTitleForUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityShownMenu(accessibilityShownMenu: interop.Object): void;
-
-  setAccessibilityMinValue(accessibilityMinValue: interop.Object): void;
-
-  setAccessibilityMaxValue(accessibilityMaxValue: interop.Object): void;
-
-  setAccessibilityLinkedUIElements(accessibilityLinkedUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityWindow(accessibilityWindow: interop.Object): void;
-
-  setAccessibilityIdentifier(accessibilityIdentifier: string): void;
-
-  setAccessibilityHelp(accessibilityHelp: string): void;
-
-  setAccessibilityFilename(accessibilityFilename: string): void;
-
-  isAccessibilityExpanded(): boolean;
-
-  setAccessibilityExpanded(accessibilityExpanded: boolean): void;
-
-  isAccessibilityEdited(): boolean;
-
-  setAccessibilityEdited(accessibilityEdited: boolean): void;
-
-  isAccessibilityEnabled(): boolean;
-
-  setAccessibilityEnabled(accessibilityEnabled: boolean): void;
-
-  setAccessibilityChildren(accessibilityChildren: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityChildrenInNavigationOrder(accessibilityChildrenInNavigationOrder: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityClearButton(accessibilityClearButton: interop.Object): void;
-
-  setAccessibilityCancelButton(accessibilityCancelButton: interop.Object): void;
-
-  isAccessibilityProtectedContent(): boolean;
-
-  setAccessibilityProtectedContent(accessibilityProtectedContent: boolean): void;
-
-  setAccessibilityContents(accessibilityContents: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityLabel(accessibilityLabel: string): void;
-
-  isAccessibilityAlternateUIVisible(): boolean;
-
-  setAccessibilityAlternateUIVisible(accessibilityAlternateUIVisible: boolean): void;
-
-  setAccessibilitySharedFocusElements(accessibilitySharedFocusElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  isAccessibilityRequired(): boolean;
-
-  setAccessibilityRequired(accessibilityRequired: boolean): void;
-
-  setAccessibilityCustomRotors(accessibilityCustomRotors: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityUserInputLabels(accessibilityUserInputLabels: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityAttributedUserInputLabels(accessibilityAttributedUserInputLabels: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityApplicationFocusedUIElement(accessibilityApplicationFocusedUIElement: interop.Object): void;
-
-  setAccessibilityMainWindow(accessibilityMainWindow: interop.Object): void;
-
-  isAccessibilityHidden(): boolean;
-
-  setAccessibilityHidden(accessibilityHidden: boolean): void;
-
-  isAccessibilityFrontmost(): boolean;
-
-  setAccessibilityFrontmost(accessibilityFrontmost: boolean): void;
-
-  setAccessibilityFocusedWindow(accessibilityFocusedWindow: interop.Object): void;
-
-  setAccessibilityWindows(accessibilityWindows: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityExtrasMenuBar(accessibilityExtrasMenuBar: interop.Object): void;
-
-  setAccessibilityMenuBar(accessibilityMenuBar: interop.Object): void;
-
-  setAccessibilityColumnTitles(accessibilityColumnTitles: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  isAccessibilityOrderedByRow(): boolean;
-
-  setAccessibilityOrderedByRow(accessibilityOrderedByRow: boolean): void;
-
-  setAccessibilityHorizontalUnits(accessibilityHorizontalUnits: interop.Enum<typeof NSAccessibilityUnits>): void;
-
-  setAccessibilityVerticalUnits(accessibilityVerticalUnits: interop.Enum<typeof NSAccessibilityUnits>): void;
-
-  setAccessibilityHorizontalUnitDescription(accessibilityHorizontalUnitDescription: string): void;
-
-  setAccessibilityVerticalUnitDescription(accessibilityVerticalUnitDescription: string): void;
-
-  setAccessibilityHandles(accessibilityHandles: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityWarningValue(accessibilityWarningValue: interop.Object): void;
-
-  setAccessibilityCriticalValue(accessibilityCriticalValue: interop.Object): void;
-
-  isAccessibilityDisclosed(): boolean;
-
-  setAccessibilityDisclosed(accessibilityDisclosed: boolean): void;
-
-  setAccessibilityDisclosedByRow(accessibilityDisclosedByRow: interop.Object): void;
-
-  setAccessibilityDisclosedRows(accessibilityDisclosedRows: interop.Object): void;
-
-  setAccessibilityDisclosureLevel(accessibilityDisclosureLevel: number): void;
-
-  setAccessibilityMarkerUIElements(accessibilityMarkerUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityMarkerValues(accessibilityMarkerValues: interop.Object): void;
-
-  setAccessibilityMarkerGroupUIElement(accessibilityMarkerGroupUIElement: interop.Object): void;
-
-  setAccessibilityUnits(accessibilityUnits: interop.Enum<typeof NSAccessibilityUnits>): void;
-
-  setAccessibilityUnitDescription(accessibilityUnitDescription: string): void;
-
-  setAccessibilityRulerMarkerType(accessibilityRulerMarkerType: interop.Enum<typeof NSAccessibilityRulerMarkerType>): void;
-
-  setAccessibilityMarkerTypeDescription(accessibilityMarkerTypeDescription: string): void;
-
-  setAccessibilityHorizontalScrollBar(accessibilityHorizontalScrollBar: interop.Object): void;
-
-  setAccessibilityVerticalScrollBar(accessibilityVerticalScrollBar: interop.Object): void;
-
-  setAccessibilityAllowedValues(accessibilityAllowedValues: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityLabelUIElements(accessibilityLabelUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityLabelValue(accessibilityLabelValue: number): void;
-
-  setAccessibilitySplitters(accessibilitySplitters: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityDecrementButton(accessibilityDecrementButton: interop.Object): void;
-
-  setAccessibilityIncrementButton(accessibilityIncrementButton: interop.Object): void;
-
-  setAccessibilityTabs(accessibilityTabs: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityHeader(accessibilityHeader: interop.Object): void;
-
-  setAccessibilityColumnCount(accessibilityColumnCount: number): void;
-
-  setAccessibilityRowCount(accessibilityRowCount: number): void;
-
-  setAccessibilityIndex(accessibilityIndex: number): void;
-
-  setAccessibilityColumns(accessibilityColumns: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityRows(accessibilityRows: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityVisibleRows(accessibilityVisibleRows: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilitySelectedRows(accessibilitySelectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityVisibleColumns(accessibilityVisibleColumns: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilitySelectedColumns(accessibilitySelectedColumns: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilitySortDirection(accessibilitySortDirection: interop.Enum<typeof NSAccessibilitySortDirection>): void;
-
-  setAccessibilityRowHeaderUIElements(accessibilityRowHeaderUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilitySelectedCells(accessibilitySelectedCells: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityVisibleCells(accessibilityVisibleCells: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityColumnHeaderUIElements(accessibilityColumnHeaderUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityRowIndexRange(accessibilityRowIndexRange: _NSRange): void;
-
-  setAccessibilityColumnIndexRange(accessibilityColumnIndexRange: _NSRange): void;
-
-  setAccessibilityInsertionPointLineNumber(accessibilityInsertionPointLineNumber: number): void;
-
-  setAccessibilitySharedCharacterRange(accessibilitySharedCharacterRange: _NSRange): void;
-
-  setAccessibilitySharedTextUIElements(accessibilitySharedTextUIElements: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityVisibleCharacterRange(accessibilityVisibleCharacterRange: _NSRange): void;
-
-  setAccessibilityNumberOfCharacters(accessibilityNumberOfCharacters: number): void;
-
-  setAccessibilitySelectedText(accessibilitySelectedText: string): void;
-
-  setAccessibilitySelectedTextRange(accessibilitySelectedTextRange: _NSRange): void;
-
-  setAccessibilitySelectedTextRanges(accessibilitySelectedTextRanges: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setAccessibilityToolbarButton(accessibilityToolbarButton: interop.Object): void;
-
-  isAccessibilityModal(): boolean;
-
-  setAccessibilityModal(accessibilityModal: boolean): void;
-
-  setAccessibilityProxy(accessibilityProxy: interop.Object): void;
-
-  isAccessibilityMain(): boolean;
-
-  setAccessibilityMain(accessibilityMain: boolean): void;
-
-  setAccessibilityFullScreenButton(accessibilityFullScreenButton: interop.Object): void;
-
-  setAccessibilityGrowArea(accessibilityGrowArea: interop.Object): void;
-
-  setAccessibilityDocument(accessibilityDocument: string): void;
-
-  setAccessibilityDefaultButton(accessibilityDefaultButton: interop.Object): void;
-
-  setAccessibilityCloseButton(accessibilityCloseButton: interop.Object): void;
-
-  setAccessibilityZoomButton(accessibilityZoomButton: interop.Object): void;
-
-  setAccessibilityMinimizeButton(accessibilityMinimizeButton: interop.Object): void;
-
-  isAccessibilityMinimized(): boolean;
-
-  setAccessibilityMinimized(accessibilityMinimized: boolean): void;
-
-  setAccessibilityCustomActions(accessibilityCustomActions: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
+  setSpacing(spacing: number): void;
 }
 
 declare class NSDockTile extends NSObject {
@@ -32034,58 +32705,6 @@ declare class NSPrintOperation extends NSObject {
   setShowPanels(flag: boolean): void;
 
   showPanels(): boolean;
-}
-
-declare class NSColorSpace extends NSObject implements NSSecureCoding {
-  initWithICCProfileData(iccData: NSData): this;
-
-  readonly ICCProfileData: NSData;
-
-  initWithColorSyncProfile(prof: interop.PointerConvertible): this;
-
-  readonly colorSyncProfile: interop.Pointer;
-
-  initWithCGColorSpace(cgColorSpace: interop.Object): this;
-
-  readonly CGColorSpace: interop.Object;
-
-  readonly numberOfColorComponents: number;
-
-  readonly colorSpaceModel: interop.Enum<typeof NSColorSpaceModel>;
-
-  readonly localizedName: string;
-
-  static readonly sRGBColorSpace: NSColorSpace;
-
-  static readonly genericGamma22GrayColorSpace: NSColorSpace;
-
-  static readonly extendedSRGBColorSpace: NSColorSpace;
-
-  static readonly extendedGenericGamma22GrayColorSpace: NSColorSpace;
-
-  static readonly displayP3ColorSpace: NSColorSpace;
-
-  static readonly adobeRGB1998ColorSpace: NSColorSpace;
-
-  static readonly genericRGBColorSpace: NSColorSpace;
-
-  static readonly genericGrayColorSpace: NSColorSpace;
-
-  static readonly genericCMYKColorSpace: NSColorSpace;
-
-  static readonly deviceRGBColorSpace: NSColorSpace;
-
-  static readonly deviceGrayColorSpace: NSColorSpace;
-
-  static readonly deviceCMYKColorSpace: NSColorSpace;
-
-  static availableColorSpacesWithModel(model: interop.Enum<typeof NSColorSpaceModel>): NSArray;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NSWorkspaceOpenConfiguration extends NSObject implements NSCopying {
@@ -34101,6 +34720,14 @@ declare class NSTextField extends NSControl implements NSUserInterfaceValidation
 
   allowsWritingToolsAffordance: boolean;
 
+  get placeholderStrings(): NSArray;
+  set placeholderStrings(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get placeholderAttributedStrings(): NSArray;
+  set placeholderAttributedStrings(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  resolvesNaturalAlignmentWithBaseWritingDirection: boolean;
+
   setPlaceholderString(placeholderString: string): void;
 
   setPlaceholderAttributedString(placeholderAttributedString: NSAttributedString): void;
@@ -34142,6 +34769,12 @@ declare class NSTextField extends NSControl implements NSUserInterfaceValidation
   setAllowsWritingTools(allowsWritingTools: boolean): void;
 
   setAllowsWritingToolsAffordance(allowsWritingToolsAffordance: boolean): void;
+
+  setPlaceholderStrings(placeholderStrings: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setPlaceholderAttributedStrings(placeholderAttributedStrings: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setResolvesNaturalAlignmentWithBaseWritingDirection(resolvesNaturalAlignmentWithBaseWritingDirection: boolean): void;
 
   automaticTextCompletionEnabled: boolean;
 
@@ -34762,117 +35395,6 @@ declare class NSStackView extends NSView {
   setHasEqualSpacing(hasEqualSpacing: boolean): void;
 }
 
-declare class NSToolbar extends NSObject {
-  initWithIdentifier(identifier: string): this;
-
-  init(): this;
-
-  insertItemWithItemIdentifierAtIndex(itemIdentifier: string, index: number): void;
-
-  removeItemAtIndex(index: number): void;
-
-  removeItemWithItemIdentifier(itemIdentifier: string): void;
-
-  delegate: NSToolbarDelegate;
-
-  visible: boolean;
-
-  runCustomizationPalette(sender: interop.Object | null): void;
-
-  readonly customizationPaletteIsRunning: boolean;
-
-  displayMode: interop.Enum<typeof NSToolbarDisplayMode>;
-
-  selectedItemIdentifier: string;
-
-  allowsUserCustomization: boolean;
-
-  allowsDisplayModeCustomization: boolean;
-
-  readonly identifier: string;
-
-  readonly items: NSArray;
-
-  readonly visibleItems: NSArray;
-
-  get itemIdentifiers(): NSArray;
-  set itemIdentifiers(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  centeredItemIdentifiers: NSSet;
-
-  autosavesConfiguration: boolean;
-
-  validateVisibleItems(): void;
-
-  allowsExtensionItems: boolean;
-
-  setDelegate(delegate: NSToolbarDelegate | null): void;
-
-  isVisible(): boolean;
-
-  setVisible(visible: boolean): void;
-
-  setDisplayMode(displayMode: interop.Enum<typeof NSToolbarDisplayMode>): void;
-
-  setSelectedItemIdentifier(selectedItemIdentifier: string | null): void;
-
-  setAllowsUserCustomization(allowsUserCustomization: boolean): void;
-
-  setAllowsDisplayModeCustomization(allowsDisplayModeCustomization: boolean): void;
-
-  setItemIdentifiers(itemIdentifiers: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setCenteredItemIdentifiers(centeredItemIdentifiers: NSSet): void;
-
-  setAutosavesConfiguration(autosavesConfiguration: boolean): void;
-
-  setAllowsExtensionItems(allowsExtensionItems: boolean): void;
-
-  sizeMode: interop.Enum<typeof NSToolbarSizeMode>;
-
-  centeredItemIdentifier: string;
-
-  fullScreenAccessoryView: NSView;
-
-  fullScreenAccessoryViewMinHeight: number;
-
-  fullScreenAccessoryViewMaxHeight: number;
-
-  showsBaselineSeparator: boolean;
-
-  readonly configurationDictionary: NSDictionary;
-
-  setConfigurationFromDictionary(configDict: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setSizeMode(sizeMode: interop.Enum<typeof NSToolbarSizeMode>): void;
-
-  setCenteredItemIdentifier(centeredItemIdentifier: string | null): void;
-
-  setFullScreenAccessoryView(fullScreenAccessoryView: NSView): void;
-
-  setFullScreenAccessoryViewMinHeight(fullScreenAccessoryViewMinHeight: number): void;
-
-  setFullScreenAccessoryViewMaxHeight(fullScreenAccessoryViewMaxHeight: number): void;
-
-  setShowsBaselineSeparator(showsBaselineSeparator: boolean): void;
-}
-
-declare class NSPathControlItem extends NSObject {
-  title: string;
-
-  attributedTitle: NSAttributedString;
-
-  image: NSImage;
-
-  readonly URL: NSURL;
-
-  setTitle(title: string): void;
-
-  setAttributedTitle(attributedTitle: NSAttributedString): void;
-
-  setImage(image: NSImage | null): void;
-}
-
 declare class NSResponder extends NSObject implements NSCoding {
   init(): this;
 
@@ -34901,6 +35423,8 @@ declare class NSResponder extends NSObject implements NSCoding {
   mouseMoved(event: NSEvent): void;
 
   mouseDragged(event: NSEvent): void;
+
+  mouseCancelled(event: NSEvent): void;
 
   scrollWheel(event: NSEvent): void;
 
@@ -35191,174 +35715,99 @@ declare class NSStringDrawingContext extends NSObject {
   setMinimumScaleFactor(minimumScaleFactor: number): void;
 }
 
-declare class NSBezierPath extends NSObject implements NSCopying, NSSecureCoding {
-  static bezierPath(): NSBezierPath;
+declare class NSSplitViewController extends NSViewController implements NSSplitViewDelegate, NSUserInterfaceValidations {
+  splitView: NSSplitView;
 
-  static bezierPathWithRect(rect: CGRect): NSBezierPath;
+  get splitViewItems(): NSArray;
+  set splitViewItems(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  static bezierPathWithOvalInRect(rect: CGRect): NSBezierPath;
+  addSplitViewItem(splitViewItem: NSSplitViewItem): void;
 
-  static bezierPathWithRoundedRectXRadiusYRadius(rect: CGRect, xRadius: number, yRadius: number): NSBezierPath;
+  insertSplitViewItemAtIndex(splitViewItem: NSSplitViewItem, index: number): void;
 
-  static bezierPathWithCGPath(cgPath: interop.Object): NSBezierPath;
+  removeSplitViewItem(splitViewItem: NSSplitViewItem): void;
 
-  CGPath: interop.Object;
+  splitViewItemForViewController(viewController: NSViewController): NSSplitViewItem;
 
-  static fillRect(rect: CGRect): void;
+  minimumThicknessForInlineSidebars: number;
 
-  static strokeRect(rect: CGRect): void;
+  validateUserInterfaceItem(item: NSValidatedUserInterfaceItem): boolean;
 
-  static clipRect(rect: CGRect): void;
+  viewDidLoad(): void;
 
-  static strokeLineFromPointToPoint(point1: CGPoint, point2: CGPoint): void;
+  splitViewCanCollapseSubview(splitView: NSSplitView, subview: NSView): boolean;
 
-  static drawPackedGlyphsAtPoint(packedGlyphs: string, point: CGPoint): void;
+  splitViewShouldCollapseSubviewForDoubleClickOnDividerAtIndex(splitView: NSSplitView, subview: NSView, dividerIndex: number): boolean;
 
-  static defaultMiterLimit: number;
+  splitViewShouldHideDividerAtIndex(splitView: NSSplitView, dividerIndex: number): boolean;
 
-  static defaultFlatness: number;
+  splitViewEffectiveRectForDrawnRectOfDividerAtIndex(splitView: NSSplitView, proposedEffectiveRect: CGRect, drawnRect: CGRect, dividerIndex: number): CGRect;
 
-  static defaultWindingRule: interop.Enum<typeof NSWindingRule>;
+  splitViewAdditionalEffectiveRectOfDividerAtIndex(splitView: NSSplitView, dividerIndex: number): CGRect;
 
-  static defaultLineCapStyle: interop.Enum<typeof NSLineCapStyle>;
+  setSplitView(splitView: NSSplitView): void;
 
-  static defaultLineJoinStyle: interop.Enum<typeof NSLineJoinStyle>;
+  setSplitViewItems(splitViewItems: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  static defaultLineWidth: number;
+  setMinimumThicknessForInlineSidebars(minimumThicknessForInlineSidebars: number): void;
 
-  moveToPoint(point: CGPoint): void;
+  toggleSidebar(sender: interop.Object | null): void;
 
-  lineToPoint(point: CGPoint): void;
+  toggleInspector(sender: interop.Object | null): void;
 
-  curveToPointControlPoint1ControlPoint2(endPoint: CGPoint, controlPoint1: CGPoint, controlPoint2: CGPoint): void;
+  splitViewConstrainMinCoordinateOfSubviewAt(splitView: NSSplitView, proposedMinimumPosition: number, dividerIndex: number): number;
 
-  curveToPointControlPoint(endPoint: CGPoint, controlPoint: CGPoint): void;
+  splitViewConstrainMaxCoordinateOfSubviewAt(splitView: NSSplitView, proposedMaximumPosition: number, dividerIndex: number): number;
 
-  closePath(): void;
+  splitViewConstrainSplitPositionOfSubviewAt(splitView: NSSplitView, proposedPosition: number, dividerIndex: number): number;
 
-  removeAllPoints(): void;
+  splitViewResizeSubviewsWithOldSize(splitView: NSSplitView, oldSize: CGSize): void;
 
-  relativeMoveToPoint(point: CGPoint): void;
+  splitViewShouldAdjustSizeOfSubview(splitView: NSSplitView, view: NSView): boolean;
 
-  relativeLineToPoint(point: CGPoint): void;
+  splitViewWillResizeSubviews(notification: NSNotification): void;
 
-  relativeCurveToPointControlPoint1ControlPoint2(endPoint: CGPoint, controlPoint1: CGPoint, controlPoint2: CGPoint): void;
+  splitViewDidResizeSubviews(notification: NSNotification): void;
 
-  relativeCurveToPointControlPoint(endPoint: CGPoint, controlPoint: CGPoint): void;
+  isEqual(object: interop.Object): boolean;
 
-  lineWidth: number;
+  readonly hash: number;
 
-  lineCapStyle: interop.Enum<typeof NSLineCapStyle>;
+  readonly superclass: interop.Object;
 
-  lineJoinStyle: interop.Enum<typeof NSLineJoinStyle>;
+  class(): interop.Object;
 
-  windingRule: interop.Enum<typeof NSWindingRule>;
+  self(): this;
 
-  miterLimit: number;
+  performSelector(aSelector: string): interop.Object;
 
-  flatness: number;
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
 
-  getLineDashCountPhase(pattern: interop.PointerConvertible, count: interop.PointerConvertible, phase: interop.PointerConvertible): void;
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
 
-  setLineDashCountPhase(pattern: interop.PointerConvertible, count: number, phase: number): void;
+  readonly isProxy: boolean;
 
-  stroke(): void;
+  isKindOfClass(aClass: interop.Object): boolean;
 
-  fill(): void;
+  isMemberOfClass(aClass: interop.Object): boolean;
 
-  addClip(): void;
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
 
-  setClip(): void;
+  respondsToSelector(aSelector: string): boolean;
 
-  readonly bezierPathByFlatteningPath: NSBezierPath;
+  retain(): this;
 
-  readonly bezierPathByReversingPath: NSBezierPath;
+  release(): void;
 
-  transformUsingAffineTransform(transform: NSAffineTransform): void;
+  autorelease(): this;
 
-  readonly empty: boolean;
+  retainCount(): number;
 
-  readonly currentPoint: CGPoint;
+  readonly zone: interop.Pointer;
 
-  readonly controlPointBounds: CGRect;
+  readonly description: string;
 
-  readonly bounds: CGRect;
-
-  readonly elementCount: number;
-
-  elementAtIndexAssociatedPoints(index: number, points: interop.PointerConvertible): interop.Enum<typeof NSBezierPathElement>;
-
-  elementAtIndex(index: number): interop.Enum<typeof NSBezierPathElement>;
-
-  setAssociatedPointsAtIndex(points: interop.PointerConvertible, index: number): void;
-
-  appendBezierPath(path: NSBezierPath): void;
-
-  appendBezierPathWithRect(rect: CGRect): void;
-
-  appendBezierPathWithPointsCount(points: interop.PointerConvertible, count: number): void;
-
-  appendBezierPathWithOvalInRect(rect: CGRect): void;
-
-  appendBezierPathWithArcWithCenterRadiusStartAngleEndAngleClockwise(center: CGPoint, radius: number, startAngle: number, endAngle: number, clockwise: boolean): void;
-
-  appendBezierPathWithArcWithCenterRadiusStartAngleEndAngle(center: CGPoint, radius: number, startAngle: number, endAngle: number): void;
-
-  appendBezierPathWithArcFromPointToPointRadius(point1: CGPoint, point2: CGPoint, radius: number): void;
-
-  appendBezierPathWithCGGlyphInFont(glyph: number, font: NSFont): void;
-
-  appendBezierPathWithCGGlyphsCountInFont(glyphs: interop.PointerConvertible, count: number, font: NSFont): void;
-
-  appendBezierPathWithRoundedRectXRadiusYRadius(rect: CGRect, xRadius: number, yRadius: number): void;
-
-  containsPoint(point: CGPoint): boolean;
-
-  setCGPath(CGPath: interop.Object): void;
-
-  static setDefaultMiterLimit(defaultMiterLimit: number): void;
-
-  static setDefaultFlatness(defaultFlatness: number): void;
-
-  static setDefaultWindingRule(defaultWindingRule: interop.Enum<typeof NSWindingRule>): void;
-
-  static setDefaultLineCapStyle(defaultLineCapStyle: interop.Enum<typeof NSLineCapStyle>): void;
-
-  static setDefaultLineJoinStyle(defaultLineJoinStyle: interop.Enum<typeof NSLineJoinStyle>): void;
-
-  static setDefaultLineWidth(defaultLineWidth: number): void;
-
-  setLineWidth(lineWidth: number): void;
-
-  setLineCapStyle(lineCapStyle: interop.Enum<typeof NSLineCapStyle>): void;
-
-  setLineJoinStyle(lineJoinStyle: interop.Enum<typeof NSLineJoinStyle>): void;
-
-  setWindingRule(windingRule: interop.Enum<typeof NSWindingRule>): void;
-
-  setMiterLimit(miterLimit: number): void;
-
-  setFlatness(flatness: number): void;
-
-  isEmpty(): boolean;
-
-  cachesBezierPath(): boolean;
-
-  setCachesBezierPath(flag: boolean): void;
-
-  appendBezierPathWithGlyphInFont(glyph: number, font: NSFont): void;
-
-  appendBezierPathWithGlyphsCountInFont(glyphs: interop.PointerConvertible, count: number, font: NSFont): void;
-
-  appendBezierPathWithPackedGlyphs(packedGlyphs: string): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
+  readonly debugDescription: string;
 }
 
 declare class NSCursor extends NSObject implements NSSecureCoding {

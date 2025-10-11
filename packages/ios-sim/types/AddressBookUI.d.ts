@@ -1,6 +1,8 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./UIKit.d.ts" />
 
+declare const ABPersonBirthdayProperty: string;
+
 declare const ABPersonPostalAddressesProperty: string;
 
 declare const ABPersonPhoneNumbersProperty: string;
@@ -19,15 +21,11 @@ declare const ABPersonMiddleNameProperty: string;
 
 declare const ABPersonNamePrefixProperty: string;
 
-declare const ABPersonBirthdayProperty: string;
-
 declare const ABPersonDepartmentNameProperty: string;
 
 declare const ABPersonGivenNameProperty: string;
 
 declare const ABPersonJobTitleProperty: string;
-
-declare const ABPersonSocialProfilesProperty: string;
 
 declare const ABPersonPhoneticMiddleNameProperty: string;
 
@@ -46,6 +44,8 @@ declare const ABPersonNameSuffixProperty: string;
 declare const ABPersonNoteProperty: string;
 
 declare const ABPersonUrlAddressesProperty: string;
+
+declare const ABPersonSocialProfilesProperty: string;
 
 declare function ABCreateStringWithAddressDictionary(address: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, addCountryName: boolean): string;
 
@@ -85,6 +85,33 @@ declare interface ABPeoplePickerNavigationControllerDelegate extends NSObjectPro
 }
 
 declare class ABPeoplePickerNavigationControllerDelegate extends NativeObject implements ABPeoplePickerNavigationControllerDelegate {
+}
+
+declare class ABPeoplePickerNavigationController extends UINavigationController {
+  peoplePickerDelegate: ABPeoplePickerNavigationControllerDelegate;
+
+  get displayedProperties(): NSArray;
+  set displayedProperties(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  addressBook: interop.Object;
+
+  predicateForEnablingPerson: NSPredicate;
+
+  predicateForSelectionOfPerson: NSPredicate;
+
+  predicateForSelectionOfProperty: NSPredicate;
+
+  setPeoplePickerDelegate(peoplePickerDelegate: ABPeoplePickerNavigationControllerDelegate | null): void;
+
+  setDisplayedProperties(displayedProperties: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setAddressBook(addressBook: interop.Object | null): void;
+
+  setPredicateForEnablingPerson(predicateForEnablingPerson: NSPredicate): void;
+
+  setPredicateForSelectionOfPerson(predicateForSelectionOfPerson: NSPredicate): void;
+
+  setPredicateForSelectionOfProperty(predicateForSelectionOfProperty: NSPredicate): void;
 }
 
 declare class ABNewPersonViewController extends UIViewController {
@@ -168,32 +195,5 @@ declare class ABUnknownPersonViewController extends UIViewController {
   setAllowsActions(allowsActions: boolean): void;
 
   setAllowsAddingToAddressBook(allowsAddingToAddressBook: boolean): void;
-}
-
-declare class ABPeoplePickerNavigationController extends UINavigationController {
-  peoplePickerDelegate: ABPeoplePickerNavigationControllerDelegate;
-
-  get displayedProperties(): NSArray;
-  set displayedProperties(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  addressBook: interop.Object;
-
-  predicateForEnablingPerson: NSPredicate;
-
-  predicateForSelectionOfPerson: NSPredicate;
-
-  predicateForSelectionOfProperty: NSPredicate;
-
-  setPeoplePickerDelegate(peoplePickerDelegate: ABPeoplePickerNavigationControllerDelegate | null): void;
-
-  setDisplayedProperties(displayedProperties: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setAddressBook(addressBook: interop.Object | null): void;
-
-  setPredicateForEnablingPerson(predicateForEnablingPerson: NSPredicate): void;
-
-  setPredicateForSelectionOfPerson(predicateForSelectionOfPerson: NSPredicate): void;
-
-  setPredicateForSelectionOfProperty(predicateForSelectionOfProperty: NSPredicate): void;
 }
 

@@ -1,9 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const cmXYZ48LSpace: number;
-
-declare const cmSigScreeningType: number;
-
 declare const kPMCoverPageAfter: number;
 
 declare const cmScreeningDescTag: number;
@@ -71,6 +67,8 @@ declare const cmBlueTRCTag: number;
 declare const notPasteboardOwnerErr: number;
 
 declare const kATSUTruncFeatNoSquishing: number;
+
+declare const kAXShadowTextAttribute: interop.Object;
 
 declare const kAXValueCGRectType: number;
 
@@ -558,6 +556,8 @@ declare const kPMUnlocked: number;
 
 declare const cmDeviceStateDeviceRsvdBits: number;
 
+declare const cmXYZ48LSpace: number;
+
 declare const cmParametricType4: number;
 
 declare const kSelectorAllSmallData: number;
@@ -655,8 +655,6 @@ declare const kProcessTransformToUIElementApplication: number;
 declare const kProcessTransformToForegroundApplication: number;
 
 declare const modeUseTextEditServices: number;
-
-declare const modeMultiLaunch: number;
 
 declare const modeDeskAccessory: number;
 
@@ -1060,8 +1058,6 @@ declare const cmParametricType3: number;
 
 declare const cmParametricType2: number;
 
-declare const cmSolaris: number;
-
 declare const cmMicrosoft: number;
 
 declare const cmNamedColorClass: number;
@@ -1187,8 +1183,6 @@ declare const cmSigNamedColorType: number;
 declare const cmSigMultiFunctB2AType: number;
 
 declare const cmSigMeasurementType: number;
-
-declare const cmSigLut16Type: number;
 
 declare const cmSigDateTimeType: number;
 
@@ -1330,8 +1324,6 @@ declare const kAlignVerticalCenter: number;
 
 declare const kSpeechAudioOutputFormatProperty: interop.Pointer;
 
-declare const kATSLineIgnoreFontLeading: number;
-
 declare const kATSUUseLineControlWidth: number;
 
 declare const kATSFontAutoActivationDefault: number;
@@ -1415,6 +1407,8 @@ declare const kATSLineDisableAutoAdjustDisplayPos: number;
 declare const kATSLineNoAntiAliasing: number;
 
 declare const kATSLineApplyAntiAliasing: number;
+
+declare const kATSLineIgnoreFontLeading: number;
 
 declare const kATSLineTabAdjustEnabled: number;
 
@@ -1519,6 +1513,10 @@ declare const k16BE565PixelFormat: number;
 declare const kPMShowPageAttributesPDE: number;
 
 declare const kPMUnknownColorSpaceModel: number;
+
+declare const modeMultiLaunch: number;
+
+declare const cmSolaris: number;
 
 declare const modeLaunchDontSwitch: number;
 
@@ -1643,8 +1641,6 @@ declare const kPMPluginNotFound: number;
 declare const kUYVY422PixelFormat: number;
 
 declare const kUseAtoB: number;
-
-declare const kAXShadowTextAttribute: interop.Object;
 
 declare const kATSULineDirectionTag: number;
 
@@ -1846,6 +1842,8 @@ declare const kDeviceToPCS: number;
 
 declare const kATSULayoutOperationCallbackStatusContinue: number;
 
+declare const cmSigScreeningType: number;
+
 declare const icConfigNotFoundErr: number;
 
 declare const cmTechnologyVideoCamera: number;
@@ -2000,8 +1998,6 @@ declare const kATSULineRotationTag: number;
 
 declare const kICMapNotIncomingMask: number;
 
-declare const k4IndexedPixelFormat: number;
-
 declare const kPMScalingPinTopLeft: number;
 
 declare const kTransformOpen: number;
@@ -2118,8 +2114,6 @@ declare const cmProfileMajorVersionMask: number;
 
 declare const kSetFrontProcessFrontWindowOnly: number;
 
-declare const cmLuvData: number;
-
 declare const kICMapNotOutgoingMask: number;
 
 declare const kTransformSelected: number;
@@ -2228,6 +2222,8 @@ declare const cmProfileDescriptionMLTag: number;
 
 declare const kSelectorAllHugeData: number;
 
+declare const cmLuvData: number;
+
 declare const kPMStatusFailed: number;
 
 declare const kATSULayoutOperationJustification: number;
@@ -2296,9 +2292,13 @@ declare const svLarge8Bit: number;
 
 declare const cm32_8ColorPacking: number;
 
+declare const kPMLayoutTopBottomRightLeft: number;
+
 declare const kAlignCenterRight: number;
 
 declare const kPMPrinterStopped: number;
+
+declare const soPitchBase: number;
 
 declare const cmOneBitDirectPacking: number;
 
@@ -2328,6 +2328,8 @@ declare const kPMCoverPageNone: number;
 
 declare const cmGrayASpace: number;
 
+declare const k4IndexedPixelFormat: number;
+
 declare const cmMCSix8Space: number;
 
 declare const kPMTicketTypeNotFound: number;
@@ -2339,8 +2341,6 @@ declare const cmBlackPointCompensation: number;
 declare const kSpeechErrorsProperty: interop.Pointer;
 
 declare const cmMeasurementTag: number;
-
-declare const soPitchBase: number;
 
 declare const kPMDestinationPrinter: number;
 
@@ -2355,8 +2355,6 @@ declare const kAXListItemPrefixTextAttribute: interop.Object;
 declare const cmBestMode: number;
 
 declare const kPMTicketIsLocked: number;
-
-declare const kPMLayoutTopBottomRightLeft: number;
 
 declare const kATSUQDBoldfaceTag: number;
 
@@ -2402,7 +2400,11 @@ declare const kTranslationFileTranslation: number;
 
 declare const kPMFeatureNotInstalled: number;
 
+declare const cmSigLut16Type: number;
+
 declare const icTruncatedErr: number;
+
+declare const k2IndexedGrayPixelFormat: number;
 
 declare const kATSULineHighlightCGColorTag: number;
 
@@ -2416,8 +2418,6 @@ declare const kPMShowInlineCopies: number;
 
 declare const kATSFlattenedFontSpecifierRawNameData: number;
 
-declare const kSelectorLarge8BitMask: number;
-
 declare const kATSOptionFlagsUseResourceFork: number;
 
 declare const cmCS1TRCTag: number;
@@ -2429,6 +2429,8 @@ declare const ttSelectedOpen: number;
 declare const kAXLinkTextAttribute: interop.Object;
 
 declare const cmAlphaLastPacking: number;
+
+declare const kSelectorLarge8BitMask: number;
 
 declare const kATSUStyleSingleLineCount: number;
 
@@ -2466,17 +2468,15 @@ declare const kPMPrinterIdle: number;
 
 declare const kATSUDirectDataStyleSettingATSUStyleSettingRefArray: number;
 
+declare const svMini4Bit: number;
+
 declare const kSpeechSynthesizerInfoVersion: interop.Pointer;
 
 declare const cmMCH5Data: number;
 
-declare const svMini4Bit: number;
-
 declare const cmTechnologyDyeSublimationPrinter: number;
 
 declare const kPMCloseFailed: number;
-
-declare const k2IndexedGrayPixelFormat: number;
 
 declare const cmGamutResult1Space: number;
 
@@ -2521,9 +2521,12 @@ declare const AXUnderlineStyle: {
   Double: 9,
 };
 
-declare const ATSFontNotifyAction: {
-  Fonts: 1,
-  Directories: 2,
+declare const AXMenuItemModifiers: {
+  None: 0,
+  Shift: 1,
+  Option: 2,
+  Control: 4,
+  NoCommand: 8,
 };
 
 declare const ATSFontNotifyOption: {
@@ -2546,12 +2549,13 @@ declare const AXPriority: {
   High: 90,
 };
 
-declare const AXMenuItemModifiers: {
-  None: 0,
-  Shift: 1,
-  Option: 2,
-  Control: 4,
-  NoCommand: 8,
+declare const ATSFontNotifyAction: {
+  Fonts: 1,
+  Directories: 2,
+};
+
+declare const ATSFontQueryMessageID: {
+  kATSQueryActivateFontMessage: 1635021665,
 };
 
 declare const AXError: {
@@ -2599,10 +2603,6 @@ declare const PasteboardSyncFlags: {
   ClientIsOwner: 2,
 };
 
-declare const ATSFontQueryMessageID: {
-  kATSQueryActivateFontMessage: 1635021665,
-};
-
 declare const ATSFontFilterSelector: {
   FontFilterSelectorUnspecified: 0,
   FontFilterSelectorGeneration: 3,
@@ -2637,6 +2637,13 @@ declare class FMInput {
   device: number;
   numer: Point;
   denom: Point;
+}
+
+declare class ATSFontFilter {
+  constructor(init?: ATSFontFilter);
+  version: number;
+  filterSelector: interop.Enum<typeof ATSFontFilterSelector>;
+  filter: unnamed_17149186175611802152;
 }
 
 declare class PhonemeInfo {
@@ -2788,14 +2795,6 @@ declare class PMResolution {
   vRes: number;
 }
 
-declare class PMRect {
-  constructor(init?: PMRect);
-  top: number;
-  left: number;
-  bottom: number;
-  right: number;
-}
-
 declare class OpaquePMPreset {
   constructor(init?: OpaquePMPreset);
 }
@@ -2888,15 +2887,6 @@ declare class LaunchParamBlockRec {
   launchAppParameters: interop.Pointer;
 }
 
-declare class unnamed_6606989257391460559 {
-  constructor(init?: unnamed_6606989257391460559);
-  what: number;
-  message: number;
-  when: number;
-  where: Point;
-  modifiers: number;
-}
-
 declare class ICServiceEntry {
   constructor(init?: ICServiceEntry);
   name: unknown /* const array */;
@@ -2937,6 +2927,10 @@ declare class MacPolygon {
   polySize: number;
   polyBBox: Rect;
   polyPoints: unknown /* const array */;
+}
+
+declare class OpaqueWindowPtr {
+  constructor(init?: OpaqueWindowPtr);
 }
 
 declare class Picture {
@@ -3101,7 +3095,7 @@ declare class CMMultiLocalizedUniCodeEntryRec {
 declare class CMVideoCardGamma {
   constructor(init?: CMVideoCardGamma);
   tagType: number;
-  u: unnamed_12297468414903056955;
+  u: unnamed_6947233698084301064;
 }
 
 declare class CMVideoCardGammaFormula {
@@ -3332,13 +3326,6 @@ declare class CMCMYColor {
   yellow: number;
 }
 
-declare class AsscEntry {
-  constructor(init?: AsscEntry);
-  fontSize: number;
-  fontStyle: number;
-  fontID: number;
-}
-
 declare class CMVideoCardGammaType {
   constructor(init?: CMVideoCardGammaType);
   typeDescriptor: number;
@@ -3356,13 +3343,6 @@ declare class ATSFontQuerySourceContext {
 
 declare class ATSFontNotificationInfoRef_ {
   constructor(init?: ATSFontNotificationInfoRef_);
-}
-
-declare class ATSFontFilter {
-  constructor(init?: ATSFontFilter);
-  version: number;
-  filterSelector: interop.Enum<typeof ATSFontFilterSelector>;
-  filter: unnamed_7485971455378661551;
 }
 
 declare class OpaqueTranslationRef {
@@ -3440,7 +3420,7 @@ declare class FMFilter {
   constructor(init?: FMFilter);
   format: number;
   selector: number;
-  filter: unnamed_17088283597344557533;
+  filter: unnamed_5545038100748528495;
 }
 
 declare class FMFontFamilyInstanceIterator {
@@ -3618,6 +3598,13 @@ declare class ICAppSpecList {
   appSpecs: unknown /* const array */;
 }
 
+declare class AsscEntry {
+  constructor(init?: AsscEntry);
+  fontSize: number;
+  fontStyle: number;
+  fontID: number;
+}
+
 declare class ATSJustWidthDeltaEntryOverride {
   constructor(init?: ATSJustWidthDeltaEntryOverride);
   beforeGrowLimit: number;
@@ -3626,10 +3613,6 @@ declare class ATSJustWidthDeltaEntryOverride {
   afterShrinkLimit: number;
   growFlags: number;
   shrinkFlags: number;
-}
-
-declare class OpaqueWindowPtr {
-  constructor(init?: OpaqueWindowPtr);
 }
 
 declare class ATSULayoutOperationOverrideSpecifier {
@@ -3761,6 +3744,10 @@ declare class OpaquePMPaper {
   constructor(init?: OpaquePMPaper);
 }
 
+declare class __AXObserver {
+  constructor(init?: __AXObserver);
+}
+
 declare class ATSUCaret {
   constructor(init?: ATSUCaret);
   fX: number;
@@ -3825,6 +3812,14 @@ declare class ICServices {
   constructor(init?: ICServices);
   count: number;
   services: unknown /* const array */;
+}
+
+declare class PMRect {
+  constructor(init?: PMRect);
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
 }
 
 declare class OpaquePMPrintSession {
@@ -3960,10 +3955,6 @@ declare class OpaqueRgnHandle {
   constructor(init?: OpaqueRgnHandle);
 }
 
-declare class __AXObserver {
-  constructor(init?: __AXObserver);
-}
-
 declare class CMMakeAndModelType {
   constructor(init?: CMMakeAndModelType);
   typeDescriptor: number;
@@ -4053,25 +4044,6 @@ declare class DelimiterInfo {
   constructor(init?: DelimiterInfo);
   startDelimiter: unknown /* const array */;
   endDelimiter: unknown /* const array */;
-}
-
-declare class ProcessInfoExtendedRec {
-  constructor(init?: ProcessInfoExtendedRec);
-  processInfoLength: number;
-  processName: interop.Pointer;
-  processNumber: ProcessSerialNumber;
-  processType: number;
-  processSignature: number;
-  processMode: number;
-  processLocation: string | null;
-  processSize: number;
-  processFreeMem: number;
-  processLauncher: ProcessSerialNumber;
-  processLaunchDate: number;
-  processActiveTime: number;
-  processAppRef: interop.Pointer;
-  processTempMemTotal: number;
-  processPurgeableTempMemTotal: number;
 }
 
 declare class CMUInt16ArrayType {
@@ -4172,6 +4144,15 @@ declare class CMDateTime {
   seconds: number;
 }
 
+declare class unnamed_18256575352276440105 {
+  constructor(init?: unnamed_18256575352276440105);
+  what: number;
+  message: number;
+  when: number;
+  where: Point;
+  modifiers: number;
+}
+
 declare class CMBufferLocation {
   constructor(init?: CMBufferLocation);
   buffer: interop.Pointer;
@@ -4180,9 +4161,28 @@ declare class CMBufferLocation {
 
 declare class AppParameters {
   constructor(init?: AppParameters);
-  theMsgEvent: unnamed_6606989257391460559;
+  theMsgEvent: unnamed_18256575352276440105;
   eventRefCon: number;
   messageLength: number;
+}
+
+declare class ProcessInfoExtendedRec {
+  constructor(init?: ProcessInfoExtendedRec);
+  processInfoLength: number;
+  processName: interop.Pointer;
+  processNumber: ProcessSerialNumber;
+  processType: number;
+  processSignature: number;
+  processMode: number;
+  processLocation: string | null;
+  processSize: number;
+  processFreeMem: number;
+  processLauncher: ProcessSerialNumber;
+  processLaunchDate: number;
+  processActiveTime: number;
+  processAppRef: interop.Pointer;
+  processTempMemTotal: number;
+  processPurgeableTempMemTotal: number;
 }
 
 declare class ATSFlatDataLineInfoHeader {
@@ -4264,15 +4264,15 @@ declare class CMAppleProfileHeader {
   cm4: CM4Header;
 }
 
-type unnamed_7485971455378661551Descriptor = 
+type unnamed_17149186175611802152Descriptor = 
   | { generationFilter: number }
   | { fontFamilyFilter: number }
   | { fontFamilyApplierFunctionFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
   | { fontApplierFunctionFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
   | { fontFileRefFilter: interop.PointerConvertible };
 
-declare class unnamed_7485971455378661551 {
-  constructor(init?: unnamed_7485971455378661551Descriptor);
+declare class unnamed_17149186175611802152 {
+  constructor(init?: unnamed_17149186175611802152Descriptor);
   generationFilter: number;
   fontFamilyFilter: number;
   fontFamilyApplierFunctionFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
@@ -4280,7 +4280,7 @@ declare class unnamed_7485971455378661551 {
   fontFileRefFilter: interop.Pointer;
 }
 
-type unnamed_17088283597344557533Descriptor = 
+type unnamed_5545038100748528495Descriptor = 
   | { fontTechnologyFilter: number }
   | { fontContainerFilter: ATSFSSpec }
   | { generationFilter: number }
@@ -4289,8 +4289,8 @@ type unnamed_17088283597344557533Descriptor =
   | { fontDirectoryFilter: FMFontDirectoryFilter }
   | { fontFileRefFilter: interop.PointerConvertible };
 
-declare class unnamed_17088283597344557533 {
-  constructor(init?: unnamed_17088283597344557533Descriptor);
+declare class unnamed_5545038100748528495 {
+  constructor(init?: unnamed_5545038100748528495Descriptor);
   fontTechnologyFilter: number;
   fontContainerFilter: ATSFSSpec;
   generationFilter: number;
@@ -4298,6 +4298,16 @@ declare class unnamed_17088283597344557533 {
   fontCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
   fontDirectoryFilter: FMFontDirectoryFilter;
   fontFileRefFilter: interop.Pointer;
+}
+
+type unnamed_6947233698084301064Descriptor = 
+  | { table: CMVideoCardGammaTable }
+  | { formula: CMVideoCardGammaFormula };
+
+declare class unnamed_6947233698084301064 {
+  constructor(init?: unnamed_6947233698084301064Descriptor);
+  table: CMVideoCardGammaTable;
+  formula: CMVideoCardGammaFormula;
 }
 
 type ATSUBackgroundDataDescriptor = 
@@ -4308,16 +4318,6 @@ declare class ATSUBackgroundData {
   constructor(init?: ATSUBackgroundDataDescriptor);
   backgroundColor: ATSURGBAlphaColor;
   backgroundUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
-}
-
-type unnamed_12297468414903056955Descriptor = 
-  | { table: CMVideoCardGammaTable }
-  | { formula: CMVideoCardGammaFormula };
-
-declare class unnamed_12297468414903056955 {
-  constructor(init?: unnamed_12297468414903056955Descriptor);
-  table: CMVideoCardGammaTable;
-  formula: CMVideoCardGammaFormula;
 }
 
 declare function ATSGetGeneration(): number;
@@ -4407,6 +4407,8 @@ declare function ATSFontGetGlobalAutoActivationSetting(): number;
 declare function ATSFontSetAutoActivationSettingForApplication(iSetting: number, iApplicationFileURL: interop.Object): number;
 
 declare function ATSFontGetAutoActivationSettingForApplication(iApplicationFileURL: interop.Object): number;
+
+declare function ColorSyncAPIVersion(): number;
 
 declare function HIShapeGetTypeID(): number;
 
@@ -5088,23 +5090,6 @@ declare function SpeechSynthesisRegisterModuleURL(url: interop.Object): number;
 
 declare function SpeechSynthesisUnregisterModuleURL(url: interop.Object): number;
 
-declare interface PDEPlugInCallbackProtocol {
-  printSession(): interop.Pointer;
-
-  printSettings(): interop.Pointer;
-
-  pageFormat(): interop.Pointer;
-
-  PMPrinter(): interop.Pointer;
-
-  ppdFile(): interop.Pointer;
-
-  willChangePPDOptionKeyValuePpdChoice(option: string, choice: string): boolean;
-}
-
-declare class PDEPlugInCallbackProtocol extends NativeObject implements PDEPlugInCallbackProtocol {
-}
-
 declare interface PDEPanel extends NSObjectProtocol {
   willShow(): void;
 
@@ -5134,6 +5119,23 @@ declare interface PDEPanel extends NSObjectProtocol {
 }
 
 declare class PDEPanel extends NativeObject implements PDEPanel {
+}
+
+declare interface PDEPlugInCallbackProtocol {
+  printSession(): interop.Pointer;
+
+  printSettings(): interop.Pointer;
+
+  pageFormat(): interop.Pointer;
+
+  PMPrinter(): interop.Pointer;
+
+  ppdFile(): interop.Pointer;
+
+  willChangePPDOptionKeyValuePpdChoice(option: string, choice: string): boolean;
+}
+
+declare class PDEPlugInCallbackProtocol extends NativeObject implements PDEPlugInCallbackProtocol {
 }
 
 declare interface PDEPlugIn extends NSObjectProtocol {

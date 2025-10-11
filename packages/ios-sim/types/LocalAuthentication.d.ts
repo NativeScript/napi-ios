@@ -31,7 +31,8 @@ declare const LAError: {
 };
 
 declare const LACompanionType: {
-  LACompanionTypeMac: 2,
+  Mac: 2,
+  Vision: 4,
 };
 
 declare const LACredentialType: {

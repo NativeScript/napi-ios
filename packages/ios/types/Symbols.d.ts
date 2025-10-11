@@ -1,6 +1,20 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare class NSSymbolDrawOffEffect extends NSSymbolEffect {
+  static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  effectWithByLayer(): this;
+
+  effectWithWholeSymbol(): this;
+
+  effectWithIndividually(): this;
+
+  effectWithReversed(): this;
+
+  effectWithNonReversed(): this;
+}
+
 declare class NSSymbolBounceEffect extends NSSymbolEffect {
   static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -41,6 +55,16 @@ declare class NSSymbolContentTransition extends NSObject implements NSCopying, N
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class NSSymbolDrawOnEffect extends NSSymbolEffect {
+  static effect<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  effectWithByLayer(): this;
+
+  effectWithWholeSymbol(): this;
+
+  effectWithIndividually(): this;
 }
 
 declare class NSSymbolScaleEffect extends NSSymbolEffect {

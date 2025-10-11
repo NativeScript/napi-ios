@@ -62,13 +62,13 @@ declare const kOBEXHeaderIDKeyType: interop.Object;
 
 declare const IOBluetoothL2CAPChannelTerminatedNotification: string;
 
-declare const IOBluetoothHostControllerPoweredOffNotification: string;
-
 declare const kOBEXHeaderIDKeyBody: interop.Object;
 
 declare const IOBluetoothHostControllerPoweredOnNotification: string;
 
 declare const IOBluetoothPDUUserData: string;
+
+declare const IOBluetoothHostControllerPoweredOffNotification: string;
 
 declare const kOBEXHeaderIDKeyAuthorizationChallenge: interop.Object;
 
@@ -79,12 +79,6 @@ declare const kOBEXHeaderIDKeyName: interop.Object;
 declare const kOBEXHeaderIDKeyByteSequence: interop.Object;
 
 declare const kOBEXHeaderIDKeyCount: interop.Object;
-
-declare const kBluetoothServiceClassMajorCapturing: number;
-
-declare const kBluetoothHCIEventMaskDefault: number;
-
-declare const kBluetoothHCIErrorSCOAirModeRejected: number;
 
 declare const kOBEXHeaderIDKeyEndOfBody: interop.Object;
 
@@ -203,6 +197,8 @@ declare const kBluetoothHCIErrorRoleChangeNotAllowed: number;
 declare const kBluetoothHCIErrorUnsupportedLMPParameterValue: number;
 
 declare const kBluetoothHCIErrorUnspecifiedError: number;
+
+declare const kBluetoothHCIErrorSCOAirModeRejected: number;
 
 declare const kBluetoothDeviceClassMinorPhoneCordless: number;
 
@@ -482,8 +478,6 @@ declare const kBluetoothHCICommandReadBestEffortFlushTimeout: number;
 
 declare const kBluetoothHCICommandReadEnhancedTransmitPowerLevel: number;
 
-declare const kBluetoothHCICommandWriteFlowControlMode: number;
-
 declare const kBluetoothHCICommandReadFlowControlMode: number;
 
 declare const kBluetoothHCICommandReadLocationData: number;
@@ -525,8 +519,6 @@ declare const kBluetoothHCICommandWriteNumberOfBroadcastRetransmissions: number;
 declare const kBluetoothHCICommandReadNumberOfBroadcastRetransmissions: number;
 
 declare const kBluetoothHCICommandWriteAutomaticFlushTimeout: number;
-
-declare const kBluetoothHCICommandReadAutomaticFlushTimeout: number;
 
 declare const kBluetoothHCICommandWriteVoiceSetting: number;
 
@@ -764,6 +756,8 @@ declare const kBluetoothEncryptionEnableOn: number;
 
 declare const kBluetoothEncryptionEnableOff: number;
 
+declare const kBluetoothConnectionHandleSerialDeviceReserved: number;
+
 declare const kBluetoothSDPUUID16MCAPControlChannel: number;
 
 declare const kBluetoothSDPUUID16CMPT: number;
@@ -813,8 +807,6 @@ declare const kBluetoothGAPAppearanceHumanInterfaceDeviceCardReader: number;
 declare const kBluetoothGAPAppearanceHumanInterfaceDeviceMouse: number;
 
 declare const kBluetoothGAPAppearanceGenericBarcodeScanner: number;
-
-declare const kBluetoothGAPAppearanceGenericMediaPlayer: number;
 
 declare const kBluetoothGAPAppearanceGenericRemoteControl: number;
 
@@ -892,6 +884,8 @@ declare const kBluetoothServiceClassMajorInformation: number;
 
 declare const kBluetoothServiceClassMajorTelephony: number;
 
+declare const kBluetoothServiceClassMajorCapturing: number;
+
 declare const kBluetoothServiceClassMajorRendering: number;
 
 declare const kBluetoothServiceClassMajorPositioning: number;
@@ -951,6 +945,8 @@ declare const kBluetoothDeviceClassMinorAudioLoudspeaker: number;
 declare const kBluetoothDeviceClassMinorPeripheral2RemoteControl: number;
 
 declare const kBluetoothHCIErrorConnectionTerminatedDueToMICFailure: number;
+
+declare const kBluetoothHCIEventMaskDefault: number;
 
 declare const kBluetoothServiceClassMajorLimitedDiscoverableMode: number;
 
@@ -1146,9 +1142,13 @@ declare const kBluetoothHCIEventModeChange: number;
 
 declare const kBluetoothHCICommandWritePageScanType: number;
 
+declare const kBluetoothHCICommandReadAutomaticFlushTimeout: number;
+
 declare const kBluetoothHCIEventSniffSubrating: number;
 
 declare const kBluetoothDeviceClassMinorWearableWristWatch: number;
+
+declare const kBluetoothHCICommandWriteFlowControlMode: number;
 
 declare const kBluetoothHCIEventMaskPageScanRepetitionModeChange: number;
 
@@ -1159,8 +1159,6 @@ declare const kBluetoothDeviceClassMajorComputer: number;
 declare const kBluetoothHCICommandLEExtendedCreateConnection: number;
 
 declare const kBluetoothHCIEventSynchronousConnectionComplete: number;
-
-declare const kBluetoothL2CAPFlushTimeoutEnd: number;
 
 declare const kBluetoothHCICommandRefreshEncryptionKey: number;
 
@@ -1175,6 +1173,8 @@ declare const kBluetoothHCIEventMaskInquiryResult: number;
 declare const kBluetoothHCICommandAuthenticationRequested: number;
 
 declare const kBluetoothAirModeULawLog: number;
+
+declare const kBluetoothGAPAppearanceGenericMediaPlayer: number;
 
 declare const kBluetoothHCIErrorInstantPassed: number;
 
@@ -1270,6 +1270,8 @@ declare const kBluetoothDeviceClassMinorToyRobot: number;
 
 declare const kBluetoothDeviceClassMajorPhone: number;
 
+declare const kBluetoothHCICommandDeleteReservedLTADDR: number;
+
 declare const kBluetoothHCICommandChangeLocalName: number;
 
 declare const kBluetoothKeyTypeLocalUnit: number;
@@ -1364,6 +1366,8 @@ declare const kBluetoothHCIEventSynchronousConnectionChanged: number;
 
 declare const kBluetoothL2CAPChannelConnectionLessData: number;
 
+declare const kBluetoothL2CAPFlushTimeoutEnd: number;
+
 declare const kBluetoothHCICommandRejectConnectionRequest: number;
 
 declare const kBluetoothServiceClassMajorObjectTransfer: number;
@@ -1377,8 +1381,6 @@ declare const kBluetoothACLLogicalChannelReserved: number;
 declare const kBluetoothHCICommandStartSynchronizationTrain: number;
 
 declare const kBluetoothHCIEventMaskCommandComplete: number;
-
-declare const kBluetoothDeviceClassMinorNone: number;
 
 declare const kBluetoothHCICommandWriteLEHostSupported: number;
 
@@ -1678,6 +1680,8 @@ declare const kBluetoothPacketTypeDH3: number;
 
 declare const kBluetoothHCISubEventLEReadLocalP256PublicKeyComplete: number;
 
+declare const kBluetoothDeviceClassMinorNone: number;
+
 declare const kBluetoothServiceClassMajorEnd: number;
 
 declare const IOBluetoothL2CAPChannelPublishedNotification: string;
@@ -1695,12 +1699,6 @@ declare const kBluetoothSDPUUID16UDP: number;
 declare const kBluetoothL2CAPTCICommandL2CA_GroupAddMember: number;
 
 declare const kMaximumNumberOfInquiryAccessCodes: number;
-
-declare const kBluetoothHCICommandReadBufferSize: number;
-
-declare const kBluetoothVoiceSettingAirCodingFormatULaw: number;
-
-declare const kBluetoothHCIErrorMaxNumberOfSCOConnectionsToADevice: number;
 
 declare const kBluetoothSDPUUID16HardcopyControlChannel: number;
 
@@ -1727,6 +1725,8 @@ declare const kBluetoothHCIErrorConnectionRejectedDueToNoSuitableChannelFound: n
 declare const kBluetoothHCIEventIOCapabilityRequest: number;
 
 declare const kBluetoothPacketTypeDH1: number;
+
+declare const kBluetoothHCICommandReadBufferSize: number;
 
 declare const kBluetoothHCICommandReadEncryptionKeySize: number;
 
@@ -1756,9 +1756,9 @@ declare const kBluetoothHCIErrorCommandDisallowed: number;
 
 declare const IOBluetoothHandsFreeCallStatus: string;
 
-declare const kBluetoothHCICommandReadAFHChannelAssessmentMode: number;
-
 declare const kBluetoothDeviceClassMinorPeripheral1Keyboard: number;
+
+declare const kBluetoothServiceClassMajorNone: number;
 
 declare const kBluetoothSDPErrorCodeInvalidRequestSyntax: number;
 
@@ -1786,6 +1786,10 @@ declare const kBluetoothHCICommandGroupLowEnergy: number;
 
 declare const kBluetoothSynchronousConnectionPacketType2EV5Omit: number;
 
+declare const kBluetoothVoiceSettingAirCodingFormatULaw: number;
+
+declare const kBluetoothHCIErrorMaxNumberOfSCOConnectionsToADevice: number;
+
 declare const kBluetoothHCICommandLESetAdvertiseEnable: number;
 
 declare const kBluetoothGAPAppearanceGenericPhone: number;
@@ -1803,6 +1807,8 @@ declare const kBluetoothHCISubEventLEEnhancedConnectionComplete: number;
 declare const kBluetoothHCIEventMaskReadRemoteSupportedFeaturesComplete: number;
 
 declare const kBluetoothHCIEventMaskEncryptionChange: number;
+
+declare const kBluetoothHCICommandReadAFHChannelAssessmentMode: number;
 
 declare const kBluetoothHCICommandSetConnectionlessPeripheralBroadcast: number;
 
@@ -1836,10 +1842,6 @@ declare const kBluetoothL2CAPPSMTCS_BIN_Cordless: number;
 
 declare const kBluetoothSDPDataElementTypeDataElementAlternative: number;
 
-declare const kBluetoothHCICommandDeleteReservedLTADDR: number;
-
-declare const kBluetoothServiceClassMajorNone: number;
-
 declare const kBluetoothHCICommandWriteExtendedInquiryResponse: number;
 
 declare const kBluetoothHCICommandLEAddDeviceToResolvingList: number;
@@ -1849,8 +1851,6 @@ declare const kBluetoothHCIEventAMPTestEnd: number;
 declare const kBluetoothHCIEventMaskReturnLinkKeys: number;
 
 declare const kBluetoothHCIErroneousDataReportingEnabled: number;
-
-declare const kBluetoothHCISubEventLEGenerateDHKeyComplete: number;
 
 declare const kBluetoothHCICommandShortRangeMode: number;
 
@@ -1878,6 +1878,8 @@ declare const kBluetoothHCICommandLERemoveDeviceFromWhiteList: number;
 
 declare const kBluetoothHCIEventReadClockOffsetComplete: number;
 
+declare const kBluetoothHCISubEventLEGenerateDHKeyComplete: number;
+
 declare const kBluetoothDeviceClassMinorComputerPalmSized: number;
 
 declare const kBluetoothDeviceClassMajorEnd: number;
@@ -1888,10 +1890,69 @@ declare const kFTSListingSizeKey: interop.Object;
 
 declare const kBluetoothHCIEventFlushOccurred: number;
 
-declare const BluetoothHCIPowerState: {
-  ON: 1,
-  OFF: 0,
-  Unintialized: 255,
+declare const BluetoothLEAdvertisingType: {
+  ConnectableUndirected: 0,
+  ConnectableDirected: 1,
+  DiscoverableUndirected: 2,
+  NonConnectableUndirected: 3,
+  ScanResponse: 4,
+};
+
+declare const ProtocolParameters: {
+  L2CAPPSM: 1,
+  RFCOMMChannel: 1,
+  TCPPort: 1,
+  UDPPort: 1,
+  BNEPVersion: 1,
+  BNEPSupportedNetworkPacketTypeList: 2,
+};
+
+declare const BluetoothL2CAPCommandCode: {
+  Reserved: 0,
+  CommandReject: 1,
+  ConnectionRequest: 2,
+  ConnectionResponse: 3,
+  ConfigureRequest: 4,
+  ConfigureResponse: 5,
+  DisconnectionRequest: 6,
+  DisconnectionResponse: 7,
+  EchoRequest: 8,
+  EchoResponse: 9,
+  InformationRequest: 10,
+  InformationResponse: 11,
+  CreateChannelRequest: 12,
+  CreateChannelResponse: 13,
+  MoveChannelRequest: 14,
+  MoveChannelResponse: 15,
+  MoveChannelConfirmation: 16,
+  MoveChannelConfirmationResponse: 17,
+  ConnectionParameterUpdateRequest: 18,
+  ConnectionParameterUpdateResponse: 19,
+  LECreditBasedConnectionRequest: 20,
+  LECreditBasedConnectionResponse: 21,
+  LEFlowControlCredit: 22,
+};
+
+declare const BluetoothLESecurityManagerUserInputCapability: {
+  NoInput: 1,
+  YesNo: 2,
+  Keyboard: 3,
+};
+
+declare const IOBluetoothHandsFreeCallHoldModes: {
+  Mode0: 1,
+  Mode1: 2,
+  Mode1idx: 4,
+  Mode2: 8,
+  Mode2idx: 16,
+  Mode3: 32,
+  Mode4: 64,
+};
+
+declare const IOBluetoothHandsFreeCodecID: {
+  DCVSD: 1,
+  DmSBC: 2,
+  DAACELD: -128,
 };
 
 declare const IOBluetoothHandsFreePDUMessageStatus: {
@@ -1900,84 +1961,6 @@ declare const IOBluetoothHandsFreePDUMessageStatus: {
   StoUnsent: 2,
   StoSent: 3,
   All: 4,
-};
-
-declare const IOBluetoothHandsFreeDeviceFeatures: {
-  None: 0,
-  ECAndOrNRFunction: 1,
-  ThreeWayCalling: 2,
-  CLIPresentation: 4,
-  VoiceRecognition: 8,
-  RemoteVolumeControl: 16,
-  EnhancedCallStatus: 32,
-  EnhancedCallControl: 64,
-  CodecNegotiation: 128,
-};
-
-declare const FTSFileType: {
-  Folder: 1,
-  File: 2,
-};
-
-declare const OBEXOpCodeSessionValues: {
-  CreateSession: 0,
-  CloseSession: 1,
-  SuspendSession: 2,
-  ResumeSession: 3,
-  SetTimeout: 4,
-};
-
-declare const OBEXRealmValues: {
-  ASCII: 0,
-  ISO88591: 1,
-  ISO88592: 2,
-  ISO88593: 3,
-  ISO88594: 4,
-  ISO88595: 5,
-  ISO88596: 6,
-  ISO88597: 7,
-  ISO88598: 8,
-  ISO88599: 9,
-  UNICODE: 255,
-};
-
-declare const OBEXErrorCodes: {
-  ErrorRangeMin: -21850,
-  ErrorRangeMax: -21899,
-  Success: 0,
-  GeneralError: -21850,
-  NoResourcesError: -21851,
-  UnsupportedError: -21852,
-  InternalError: -21853,
-  BadArgumentError: -21854,
-  TimeoutError: -21855,
-  BadRequestError: -21856,
-  CancelledError: -21857,
-  ForbiddenError: -21858,
-  UnauthorizedError: -21859,
-  NotAcceptableError: -21860,
-  ConflictError: -21861,
-  MethodNotAllowedError: -21862,
-  NotFoundError: -21863,
-  NotImplementedError: -21864,
-  PreconditionFailedError: -21865,
-  SessionBusyError: -21875,
-  SessionNotConnectedError: -21876,
-  SessionBadRequestError: -21877,
-  SessionBadResponseError: -21878,
-  SessionNoTransportError: -21879,
-  SessionTransportDiedError: -21880,
-  SessionTimeoutError: -21881,
-  SessionAlreadyConnectedError: -21882,
-};
-
-declare const IOBluetoothL2CAPChannelEventType: {
-  Data: 1,
-  OpenComplete: 2,
-  Closed: 3,
-  Reconfigured: 4,
-  WriteComplete: 5,
-  QueueSpaceAvailable: 6,
 };
 
 declare const SDPServiceClasses: {
@@ -2052,6 +2035,110 @@ declare const SDPServiceClasses: {
   GATT: 6145,
 };
 
+declare const BluetoothL2CAPConnectionStatus: {
+  NoInfoAvailable: 0,
+  AuthenticationPending: 1,
+  AuthorizationPending: 2,
+};
+
+declare const IOBluetoothDeviceSearchOptionsBits: {
+  None: 0,
+  AlwaysStartInquiry: 1,
+  DiscardCachedResults: 2,
+};
+
+declare const FTSFileType: {
+  Folder: 1,
+  File: 2,
+};
+
+declare const IOBluetoothHandsFreeAudioGatewayFeatures: {
+  None: 0,
+  ThreeWayCalling: 1,
+  ECAndOrNRFunction: 2,
+  VoiceRecognition: 4,
+  InBandRingTone: 8,
+  AttachedNumberToVoiceTag: 16,
+  RejectCallCapability: 32,
+  EnhancedCallStatus: 64,
+  EnhancedCallControl: 128,
+  ExtendedErrorResultCodes: 256,
+  CodecNegotiation: 512,
+};
+
+declare const IOBluetoothHandsFreeDeviceFeatures: {
+  None: 0,
+  ECAndOrNRFunction: 1,
+  ThreeWayCalling: 2,
+  CLIPresentation: 4,
+  VoiceRecognition: 8,
+  RemoteVolumeControl: 16,
+  EnhancedCallStatus: 32,
+  EnhancedCallControl: 64,
+  CodecNegotiation: 128,
+};
+
+declare const OBEXOpCodeSessionValues: {
+  CreateSession: 0,
+  CloseSession: 1,
+  SuspendSession: 2,
+  ResumeSession: 3,
+  SetTimeout: 4,
+};
+
+declare const OBEXRealmValues: {
+  ASCII: 0,
+  ISO88591: 1,
+  ISO88592: 2,
+  ISO88593: 3,
+  ISO88594: 4,
+  ISO88595: 5,
+  ISO88596: 6,
+  ISO88597: 7,
+  ISO88598: 8,
+  ISO88599: 9,
+  UNICODE: 255,
+};
+
+declare const OBEXErrorCodes: {
+  ErrorRangeMin: -21850,
+  ErrorRangeMax: -21899,
+  Success: 0,
+  GeneralError: -21850,
+  NoResourcesError: -21851,
+  UnsupportedError: -21852,
+  InternalError: -21853,
+  BadArgumentError: -21854,
+  TimeoutError: -21855,
+  BadRequestError: -21856,
+  CancelledError: -21857,
+  ForbiddenError: -21858,
+  UnauthorizedError: -21859,
+  NotAcceptableError: -21860,
+  ConflictError: -21861,
+  MethodNotAllowedError: -21862,
+  NotFoundError: -21863,
+  NotImplementedError: -21864,
+  PreconditionFailedError: -21865,
+  SessionBusyError: -21875,
+  SessionNotConnectedError: -21876,
+  SessionBadRequestError: -21877,
+  SessionBadResponseError: -21878,
+  SessionNoTransportError: -21879,
+  SessionTransportDiedError: -21880,
+  SessionTimeoutError: -21881,
+  SessionAlreadyConnectedError: -21882,
+};
+
+declare const IOBluetoothL2CAPChannelEventType: {
+  Data: 1,
+  OpenComplete: 2,
+  Closed: 3,
+  Reconfigured: 4,
+  WriteComplete: 5,
+  QueueSpaceAvailable: 6,
+};
+
 declare const OBEXPutFlagValues: {
   FlagNone: 0,
   FlagGoToParentDirFirst: 1,
@@ -2090,6 +2177,11 @@ declare const BluetoothAMPManagerCode: {
   AMPDisconnectPhysicalLinkResponse: 13,
 };
 
+declare const BluetoothHCIAFHChannelAssessmentModes: {
+  Disabled: 0,
+  Enabled: 1,
+};
+
 declare const OBEXHeaderIdentifiers: {
   Name: 1,
   Description: 5,
@@ -2117,12 +2209,6 @@ declare const OBEXHeaderIdentifiers: {
   OBEX13SessionParameters: 82,
   OBEX13SessionSequenceNumber: 147,
   OBEX13CreatorID: 207,
-};
-
-declare const BluetoothL2CAPConnectionStatus: {
-  NoInfoAvailable: 0,
-  AuthenticationPending: 1,
-  AuthorizationPending: 2,
 };
 
 declare const OBEXSessionEventTypes: {
@@ -2157,6 +2243,12 @@ declare const OBEXSessionParameterTags: {
   SessionOpcode: 5,
 };
 
+declare const IOBluetoothHandsFreeSMSSupport: {
+  Phase2: 1,
+  Phase2p: 2,
+  ManufactureSpecific: 4,
+};
+
 declare const BluetoothHCIHoldModeActivityStates: {
   MaintainCurrentPowerState: 0,
   SuspendPageScan: 1,
@@ -2170,6 +2262,13 @@ declare const BluetoothL2CAPInformationType: {
   FixedChannelsSupported: 3,
 };
 
+declare const BluetoothLESecurityManagerOOBData: {
+  AuthenticationDataNotPresent: 0,
+  AuthenticationDataPresent: 1,
+  DataReservedStart: 2,
+  DataReservedEnd: 255,
+};
+
 declare const IOBluetoothUserNotificationChannelDirection: {
   Any: 0,
   Incoming: 1,
@@ -2179,20 +2278,6 @@ declare const IOBluetoothUserNotificationChannelDirection: {
 declare const IOBluetoothDeviceSearchTypesBits: {
   Classic: 1,
   LE: 2,
-};
-
-declare const IOBluetoothDeviceSearchOptionsBits: {
-  None: 0,
-  AlwaysStartInquiry: 1,
-  DiscardCachedResults: 2,
-};
-
-declare const BluetoothLEAdvertisingType: {
-  ConnectableUndirected: 0,
-  ConnectableDirected: 1,
-  DiscoverableUndirected: 2,
-  NonConnectableUndirected: 3,
-  ScanResponse: 4,
 };
 
 declare const BluetoothLEScanDuplicateFilter: {
@@ -2227,6 +2312,12 @@ declare const BluetoothRFCOMMParityType: {
   Odd: 1,
   Even: 2,
   Max: 3,
+};
+
+declare const BluetoothHCIPowerState: {
+  ON: 1,
+  OFF: 0,
+  Unintialized: 255,
 };
 
 declare const BluetoothOOBDataPresenceValues: {
@@ -2360,22 +2451,9 @@ declare const BluetoothLESecurityManagerKeypressNotificationType: {
   ReservedEnd: 255,
 };
 
-declare const BluetoothLESecurityManagerOOBData: {
-  AuthenticationDataNotPresent: 0,
-  AuthenticationDataPresent: 1,
-  DataReservedStart: 2,
-  DataReservedEnd: 255,
-};
-
 declare const BluetoothLESecurityManagerUserOutputCapability: {
   No: 1,
   Numeric: 2,
-};
-
-declare const BluetoothLESecurityManagerUserInputCapability: {
-  NoInput: 1,
-  YesNo: 2,
-  Keyboard: 3,
 };
 
 declare const BluetoothL2CAPSupervisoryFuctionType: {
@@ -2439,30 +2517,18 @@ declare const BluetoothL2CAPSegmentationAndReassembly: {
   ContinuationOf: 3,
 };
 
-declare const BluetoothL2CAPCommandCode: {
-  Reserved: 0,
-  CommandReject: 1,
-  ConnectionRequest: 2,
-  ConnectionResponse: 3,
-  ConfigureRequest: 4,
-  ConfigureResponse: 5,
-  DisconnectionRequest: 6,
-  DisconnectionResponse: 7,
-  EchoRequest: 8,
-  EchoResponse: 9,
-  InformationRequest: 10,
-  InformationResponse: 11,
-  CreateChannelRequest: 12,
-  CreateChannelResponse: 13,
-  MoveChannelRequest: 14,
-  MoveChannelResponse: 15,
-  MoveChannelConfirmation: 16,
-  MoveChannelConfirmationResponse: 17,
-  ConnectionParameterUpdateRequest: 18,
-  ConnectionParameterUpdateResponse: 19,
-  LECreditBasedConnectionRequest: 20,
-  LECreditBasedConnectionResponse: 21,
-  LEFlowControlCredit: 22,
+declare const SDPAttributeDeviceIdentificationRecord: {
+  ServiceDescription: 1,
+  DocumentationURL: 10,
+  ClientExecutableURL: 11,
+  SpecificationID: 512,
+  VendorID: 513,
+  ProductID: 514,
+  Version: 515,
+  PrimaryRecord: 516,
+  VendorIDSource: 517,
+  ReservedRangeStart: 518,
+  ReservedRangeEnd: 767,
 };
 
 declare const BluetoothLMPVersions: {
@@ -2537,29 +2603,6 @@ declare const BluetoothHCIExtendedInquiryResponseDataTypes: {
   Type3DInformationData: 61,
   TypeManufacturerSpecificData: 255,
   TypeSlaveConnectionIntervalRange: 18,
-};
-
-declare const ProtocolParameters: {
-  L2CAPPSM: 1,
-  RFCOMMChannel: 1,
-  TCPPort: 1,
-  UDPPort: 1,
-  BNEPVersion: 1,
-  BNEPSupportedNetworkPacketTypeList: 2,
-};
-
-declare const SDPAttributeDeviceIdentificationRecord: {
-  ServiceDescription: 1,
-  DocumentationURL: 10,
-  ClientExecutableURL: 11,
-  SpecificationID: 512,
-  VendorID: 513,
-  ProductID: 514,
-  Version: 515,
-  PrimaryRecord: 516,
-  VendorIDSource: 517,
-  ReservedRangeStart: 518,
-  ReservedRangeEnd: 767,
 };
 
 declare const SDPAttributeIdentifierCodes: {
@@ -2907,6 +2950,11 @@ declare const BluetoothLESecurityManagerIOCapability: {
   ReservedEnd: 255,
 };
 
+declare const BluetoothLEConnectionInterval: {
+  Min: 6,
+  Max: 3200,
+};
+
 declare const BluetoothLEFeatureBits: {
   LEEncryption: 1,
   ConnectionParamsRequestProcedure: 2,
@@ -2922,16 +2970,6 @@ declare const BluetoothLEFeatureBits: {
 declare const BluetoothHCISCOFlowControlStates: {
   Disabled: 0,
   Enabled: 1,
-};
-
-declare const BluetoothHCIAFHChannelAssessmentModes: {
-  Disabled: 0,
-  Enabled: 1,
-};
-
-declare const BluetoothLEConnectionInterval: {
-  Min: 6,
-  Max: 3200,
 };
 
 declare const BluetoothHCITransmitReadPowerLevelTypes: {
@@ -2962,10 +3000,18 @@ declare const OBEXNonceFlagValues: {
   Flag7Reserved: 128,
 };
 
-declare const IOBluetoothHandsFreeSMSSupport: {
-  Phase2: 1,
-  Phase2p: 2,
-  ManufactureSpecific: 4,
+declare const BluetoothL2CAPInformationExtendedFeaturesMask: {
+  InformationNoExtendedFeatures: 0,
+  InformationFlowControlMode: 1,
+  InformationRetransmissionMode: 2,
+  InformationBidirectionalQoS: 4,
+  InformationEnhancedRetransmissionMode: 8,
+  InformationStreamingMode: 16,
+  InformationFCSOption: 32,
+  InformationExtendedFlowSpecification: 64,
+  InformationFixedChannels: 128,
+  InformationExtendedWindowSize: 256,
+  UnicastConnectionlessDataReception: 512,
 };
 
 declare const BluetoothHCIInquiryModes: {
@@ -2981,18 +3027,11 @@ declare const BluetoothHCIPageScanTypes: {
   ReservedEnd: 255,
 };
 
-declare const BluetoothL2CAPInformationExtendedFeaturesMask: {
-  InformationNoExtendedFeatures: 0,
-  InformationFlowControlMode: 1,
-  InformationRetransmissionMode: 2,
-  InformationBidirectionalQoS: 4,
-  InformationEnhancedRetransmissionMode: 8,
-  InformationStreamingMode: 16,
-  InformationFCSOption: 32,
-  InformationExtendedFlowSpecification: 64,
-  InformationFixedChannels: 128,
-  InformationExtendedWindowSize: 256,
-  UnicastConnectionlessDataReception: 512,
+declare const BluetoothHCIRetransmissionEffortTypes: {
+  None: 0,
+  AtLeastOneAndOptimizeForPower: 1,
+  AtLeastOneAndOptimizeLinkQuality: 2,
+  DontCare: 255,
 };
 
 declare const BluetoothFeatureBits: {
@@ -3229,20 +3268,6 @@ declare const BluetoothLESecurityManagerCommandCode: {
   ReservedEnd: 255,
 };
 
-declare const IOBluetoothHandsFreeAudioGatewayFeatures: {
-  None: 0,
-  ThreeWayCalling: 1,
-  ECAndOrNRFunction: 2,
-  VoiceRecognition: 4,
-  InBandRingTone: 8,
-  AttachedNumberToVoiceTag: 16,
-  RejectCallCapability: 32,
-  EnhancedCallStatus: 64,
-  EnhancedCallControl: 128,
-  ExtendedErrorResultCodes: 256,
-  CodecNegotiation: 512,
-};
-
 declare const BluetoothHCIReadStoredLinkKeysFlags: {
   ReturnLinkKeyForSpecifiedDeviceOnly: 0,
   ReadAllStoredLinkKeys: 1,
@@ -3254,23 +3279,10 @@ declare const BluetoothL2CAPCommandRejectReason: {
   InvalidCIDInRequest: 2,
 };
 
-declare const BluetoothHCIRetransmissionEffortTypes: {
-  None: 0,
-  AtLeastOneAndOptimizeForPower: 1,
-  AtLeastOneAndOptimizeLinkQuality: 2,
-  DontCare: 255,
-};
-
 declare const BluetoothLEScanFilter: {
   None: 0,
   Safelist: 1,
   Whitelist: 1,
-};
-
-declare const IOBluetoothHandsFreeCodecID: {
-  DCVSD: 1,
-  DmSBC: 2,
-  DAACELD: -128,
 };
 
 declare const BluetoothLESecurityManagerPairingFailedReasonCode: {
@@ -3291,16 +3303,6 @@ declare const BluetoothLESecurityManagerPairingFailedReasonCode: {
   CrossTransportKeyDerivationGenerationNotAllowed: 14,
   ReservedStart: 15,
   ReservedEnd: 255,
-};
-
-declare const IOBluetoothHandsFreeCallHoldModes: {
-  Mode0: 1,
-  Mode1: 2,
-  Mode1idx: 4,
-  Mode2: 8,
-  Mode2idx: 16,
-  Mode3: 32,
-  Mode4: 64,
 };
 
 declare const BluetoothHCILinkPolicySettingsValues: {
@@ -3326,7 +3328,7 @@ declare class OBEXSessionEvent {
   isEndOfEventData: number;
   reserved1: interop.Pointer;
   reserved2: interop.Pointer;
-  u: unnamed_17755484306999234212;
+  u: unnamed_9083567823978490011;
 }
 
 declare class OBEXSetPathCommandData {
@@ -3393,12 +3395,6 @@ declare class BluetoothHCIEventPageScanRepetitionModeChangeResults {
   pageScanRepetitionMode: number;
 }
 
-declare class BluetoothHCIStoredLinkKeysInfo {
-  constructor(init?: BluetoothHCIStoredLinkKeysInfo);
-  numLinkKeysRead: number;
-  maxNumLinkKeysAllowedInDevice: number;
-}
-
 declare class BluetoothHCIExtendedInquiryResponse {
   constructor(init?: BluetoothHCIExtendedInquiryResponse);
   data: unknown /* const array */;
@@ -3448,6 +3444,12 @@ declare class BluetoothHCIEventFlushOccurredResults {
 declare class BluetoothHCIEventChangeConnectionLinkKeyCompleteResults {
   constructor(init?: BluetoothHCIEventChangeConnectionLinkKeyCompleteResults);
   connectionHandle: number;
+}
+
+declare class unnamed_4215872962917694122 {
+  constructor(init?: unnamed_4215872962917694122);
+  deviceAddress: BluetoothDeviceAddress;
+  linkKey: BluetoothKey;
 }
 
 declare class BluetoothHCIEventReturnLinkKeysResults {
@@ -3557,19 +3559,6 @@ declare class BluetoothHCIInquiryResult {
   clockOffset: number;
 }
 
-declare class BluetoothTransportInfo {
-  constructor(init?: BluetoothTransportInfo);
-  productID: number;
-  vendorID: number;
-  type: number;
-  productName: unknown /* const array */;
-  vendorName: unknown /* const array */;
-  totalDataBytesSent: number;
-  totalSCOBytesSent: number;
-  totalDataBytesReceived: number;
-  totalSCOBytesReceived: number;
-}
-
 declare class BluetoothHCITransmitPowerLevelInfo {
   constructor(init?: BluetoothHCITransmitPowerLevelInfo);
   handle: number;
@@ -3603,6 +3592,33 @@ declare class BluetoothReadClockInfo {
 
 declare class BluetoothHCIEnhancedAcceptSynchronousConnectionRequestParams {
   constructor(init?: BluetoothHCIEnhancedAcceptSynchronousConnectionRequestParams);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSamplePayloadMSBPosition: number;
+  outputPCMSamplePayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  packetType: number;
+  retransmissionEffort: number;
+}
+
+declare class BluetoothHCIEnhancedSetupSynchronousConnectionParams {
+  constructor(init?: BluetoothHCIEnhancedSetupSynchronousConnectionParams);
   transmitBandwidth: number;
   receiveBandwidth: number;
   transmitCodingFormat: number;
@@ -3664,6 +3680,20 @@ declare class BluetoothIRK {
   data: unknown /* const array */;
 }
 
+declare class BluetoothHCIExtendedFeaturesInfo {
+  constructor(init?: BluetoothHCIExtendedFeaturesInfo);
+  page: number;
+  maxPage: number;
+  data: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventLinkKeyNotificationResults {
+  constructor(init?: BluetoothHCIEventLinkKeyNotificationResults);
+  deviceAddress: BluetoothDeviceAddress;
+  linkKey: BluetoothKey;
+  keyType: number;
+}
+
 declare class BluetoothHCIInquiryWithRSSIResults {
   constructor(init?: BluetoothHCIInquiryWithRSSIResults);
   results: unknown /* const array */;
@@ -3685,12 +3715,6 @@ declare class BluetoothRemoteHostSupportedFeaturesNotification {
   constructor(init?: BluetoothRemoteHostSupportedFeaturesNotification);
   deviceAddress: BluetoothDeviceAddress;
   hostSupportedFeatures: BluetoothHCISupportedFeatures;
-}
-
-declare class BluetoothHCIEventEncryptionChangeResults {
-  constructor(init?: BluetoothHCIEventEncryptionChangeResults);
-  connectionHandle: number;
-  enable: number;
 }
 
 declare class BluetoothHCIEventLEConnectionUpdateCompleteResults {
@@ -3811,18 +3835,10 @@ declare class BluetoothHCIEventRoleChangeResults {
   role: number;
 }
 
-declare class BluetoothHCIEventLinkKeyNotificationResults {
-  constructor(init?: BluetoothHCIEventLinkKeyNotificationResults);
-  deviceAddress: BluetoothDeviceAddress;
-  linkKey: BluetoothKey;
-  keyType: number;
-}
-
-declare class BluetoothHCIExtendedFeaturesInfo {
-  constructor(init?: BluetoothHCIExtendedFeaturesInfo);
-  page: number;
-  maxPage: number;
-  data: unknown /* const array */;
+declare class BluetoothHCIEventEncryptionChangeResults {
+  constructor(init?: BluetoothHCIEventEncryptionChangeResults);
+  connectionHandle: number;
+  enable: number;
 }
 
 declare class BluetoothHCIEventDataBufferOverflowResults {
@@ -3900,6 +3916,12 @@ declare class OBEXErrorData {
   dataLength: number;
 }
 
+declare class BluetoothHCIStoredLinkKeysInfo {
+  constructor(init?: BluetoothHCIStoredLinkKeysInfo);
+  numLinkKeysRead: number;
+  maxNumLinkKeysAllowedInDevice: number;
+}
+
 declare class BluetoothHCIInquiryWithRSSIResult {
   constructor(init?: BluetoothHCIInquiryWithRSSIResult);
   deviceAddress: BluetoothDeviceAddress;
@@ -3938,31 +3960,17 @@ declare class BluetoothEnhancedSynchronousConnectionInfo {
   packetType: number;
 }
 
-declare class BluetoothHCIEnhancedSetupSynchronousConnectionParams {
-  constructor(init?: BluetoothHCIEnhancedSetupSynchronousConnectionParams);
-  transmitBandwidth: number;
-  receiveBandwidth: number;
-  transmitCodingFormat: number;
-  receiveCodingFormat: number;
-  transmitCodecFrameSize: number;
-  receiveCodecFrameSize: number;
-  inputBandwidth: number;
-  outputBandwidth: number;
-  inputCodingFormat: number;
-  outputCodingFormat: number;
-  inputCodedDataSize: number;
-  outputCodedDataSize: number;
-  inputPCMDataFormat: number;
-  outputPCMDataFormat: number;
-  inputPCMSamplePayloadMSBPosition: number;
-  outputPCMSamplePayloadMSBPosition: number;
-  inputDataPath: number;
-  outputDataPath: number;
-  inputTransportUnitSize: number;
-  outputTransportUnitSize: number;
-  maxLatency: number;
-  packetType: number;
-  retransmissionEffort: number;
+declare class BluetoothTransportInfo {
+  constructor(init?: BluetoothTransportInfo);
+  productID: number;
+  vendorID: number;
+  type: number;
+  productName: unknown /* const array */;
+  vendorName: unknown /* const array */;
+  totalDataBytesSent: number;
+  totalSCOBytesSent: number;
+  totalDataBytesReceived: number;
+  totalSCOBytesReceived: number;
 }
 
 declare class BluetoothAFHHostChannelClassification {
@@ -3997,7 +4005,7 @@ declare class BluetoothHCIRequestCallbackInfo {
 declare class IOBluetoothL2CAPChannelEvent {
   constructor(init?: IOBluetoothL2CAPChannelEvent);
   eventType: interop.Enum<typeof IOBluetoothL2CAPChannelEventType>;
-  u: unnamed_11843560018784926152;
+  u: unnamed_2856488971555767183;
   status: number;
 }
 
@@ -4040,16 +4048,6 @@ declare class BluetoothHCIInquiryResults {
   constructor(init?: BluetoothHCIInquiryResults);
   results: unknown /* const array */;
   count: number;
-}
-
-declare class unnamed_6745017240202992945 {
-  constructor(init?: unnamed_6745017240202992945);
-  deviceAddress: BluetoothDeviceAddress;
-  linkKey: BluetoothKey;
-}
-
-declare class OpaqueOBEXSessionRef {
-  constructor(init?: OpaqueOBEXSessionRef);
 }
 
 declare class BluetoothHCIEventReadRemoteExtendedFeaturesResults {
@@ -4202,7 +4200,11 @@ declare class BluetoothHCIEventQoSViolationResults {
   connectionHandle: number;
 }
 
-type unnamed_17755484306999234212Descriptor = 
+declare class OpaqueOBEXSessionRef {
+  constructor(init?: OpaqueOBEXSessionRef);
+}
+
+type unnamed_9083567823978490011Descriptor = 
   | { connectCommandResponseData: OBEXConnectCommandResponseData }
   | { disconnectCommandResponseData: OBEXDisconnectCommandResponseData }
   | { putCommandResponseData: OBEXPutCommandResponseData }
@@ -4217,8 +4219,8 @@ type unnamed_17755484306999234212Descriptor =
   | { abortCommandData: OBEXAbortCommandData }
   | { errorData: OBEXErrorData };
 
-declare class unnamed_17755484306999234212 {
-  constructor(init?: unnamed_17755484306999234212Descriptor);
+declare class unnamed_9083567823978490011 {
+  constructor(init?: unnamed_9083567823978490011Descriptor);
   connectCommandResponseData: OBEXConnectCommandResponseData;
   disconnectCommandResponseData: OBEXDisconnectCommandResponseData;
   putCommandResponseData: OBEXPutCommandResponseData;
@@ -4234,13 +4236,13 @@ declare class unnamed_17755484306999234212 {
   errorData: OBEXErrorData;
 }
 
-type unnamed_11843560018784926152Descriptor = 
+type unnamed_2856488971555767183Descriptor = 
   | { data: IOBluetoothL2CAPChannelDataBlock }
   | { writeRefCon: interop.PointerConvertible }
   | { padding: unknown /* const array */ };
 
-declare class unnamed_11843560018784926152 {
-  constructor(init?: unnamed_11843560018784926152Descriptor);
+declare class unnamed_2856488971555767183 {
+  constructor(init?: unnamed_2856488971555767183Descriptor);
   data: IOBluetoothL2CAPChannelDataBlock;
   writeRefCon: interop.Pointer;
   padding: unknown /* const array */;
@@ -4374,6 +4376,27 @@ declare function IOBluetoothOBEXSessionCreateWithIncomingIOBluetoothRFCOMMChanne
 
 declare function IOBluetoothOBEXSessionOpenTransportConnection(inSessionRef: interop.PointerConvertible, inCallback: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void, inUserRefCon: interop.PointerConvertible): number;
 
+declare interface IOBluetoothDevicePairDelegate extends NSObjectProtocol {
+  devicePairingStarted?(sender: interop.Object): void;
+
+  devicePairingConnecting?(sender: interop.Object): void;
+
+  devicePairingConnected?(sender: interop.Object): void;
+
+  devicePairingPINCodeRequest?(sender: interop.Object): void;
+
+  devicePairingUserConfirmationRequestNumericValue?(sender: interop.Object, numericValue: number): void;
+
+  devicePairingUserPasskeyNotificationPasskey?(sender: interop.Object, passkey: number): void;
+
+  devicePairingFinishedError?(sender: interop.Object, error: number): void;
+
+  deviceSimplePairingCompleteStatus?(sender: interop.Object, status: number): void;
+}
+
+declare class IOBluetoothDevicePairDelegate extends NativeObject implements IOBluetoothDevicePairDelegate {
+}
+
 declare interface IOBluetoothHandsFreeDeviceDelegate extends IOBluetoothHandsFreeDelegate {
   handsFreeIsServiceAvailable?(device: IOBluetoothHandsFreeDevice, isServiceAvailable: NSNumber): void;
 
@@ -4463,27 +4486,6 @@ declare interface IOBluetoothL2CAPChannelDelegate {
 }
 
 declare class IOBluetoothL2CAPChannelDelegate extends NativeObject implements IOBluetoothL2CAPChannelDelegate {
-}
-
-declare interface IOBluetoothDevicePairDelegate extends NSObjectProtocol {
-  devicePairingStarted?(sender: interop.Object): void;
-
-  devicePairingConnecting?(sender: interop.Object): void;
-
-  devicePairingConnected?(sender: interop.Object): void;
-
-  devicePairingPINCodeRequest?(sender: interop.Object): void;
-
-  devicePairingUserConfirmationRequestNumericValue?(sender: interop.Object, numericValue: number): void;
-
-  devicePairingUserPasskeyNotificationPasskey?(sender: interop.Object, passkey: number): void;
-
-  devicePairingFinishedError?(sender: interop.Object, error: number): void;
-
-  deviceSimplePairingCompleteStatus?(sender: interop.Object, status: number): void;
-}
-
-declare class IOBluetoothDevicePairDelegate extends NativeObject implements IOBluetoothDevicePairDelegate {
 }
 
 declare interface IOBluetoothDeviceAsyncCallbacks {
@@ -5116,6 +5118,10 @@ declare class OBEXFileTransferServices extends NSObject {
   setDelegate(delegate: interop.Object): void;
 }
 
+declare class IOBluetoothUserNotification extends NSObject {
+  unregister(): void;
+}
+
 // @ts-ignore ClassDecl.tsIgnore
 declare class IOBluetoothHandsFreeDevice extends IOBluetoothHandsFree {
   // @ts-ignore MemberDecl.tsIgnore
@@ -5162,10 +5168,6 @@ declare class IOBluetoothHandsFreeDevice extends IOBluetoothHandsFree {
   sendATCommand(atCommand: string): void;
 
   sendATCommandTimeoutSelectorTarget(atCommand: string, timeout: number, selector: string, target: interop.Object): void;
-}
-
-declare class IOBluetoothUserNotification extends NSObject {
-  unregister(): void;
 }
 
 declare class IOBluetoothSDPServiceRecord extends NSObject implements NSCoding, NSSecureCoding {

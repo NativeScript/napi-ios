@@ -68,9 +68,9 @@ declare const kDVDLanguageCodeSesotho: number;
 
 declare const kDVDLanguageCodeAlbanian: number;
 
-declare const kDVDLanguageCodeSangro: number;
+declare const kDVDLanguageCodeSerboCroatian: number;
 
-declare const kDVDLanguageCodeSindhi: number;
+declare const kDVDLanguageCodeSangro: number;
 
 declare const kDVDLanguageCodeSanskrit: number;
 
@@ -198,8 +198,6 @@ declare const kDVDErrorNotAllowedDuringPlayback: number;
 
 declare const kDVDErrorUnknown: number;
 
-declare const kDVDLanguageCodeSerboCroatian: number;
-
 declare const kDVDLanguageCodeUrdu: number;
 
 declare const kDVDLanguageNoPreference: number;
@@ -246,8 +244,6 @@ declare const kDVDLanguageCodeSwahili: number;
 
 declare const kDVDAudioExtensionCodeDirectorsComment2: number;
 
-declare const kDVDSubpictureExtensionCodeCaptionBiggerSize: number;
-
 declare const kDVDTimeCodeElapsedSeconds: number;
 
 declare const kDVDLanguageCodeSinghalese: number;
@@ -288,9 +284,15 @@ declare const kDVDErrorWrongParam: number;
 
 declare const kDVDTimeCodeChapterElapsedSeconds: number;
 
+declare const kDVDLanguageCodeArmenian: number;
+
+declare const kDVDSubpictureExtensionCodeCaptionBiggerSize: number;
+
 declare const kDVDUOPPTTPlaySearch: number;
 
-declare const kDVDLanguageCodeArmenian: number;
+declare const kDVDLanguageCodeMaori: number;
+
+declare const kDVDLanguageCodeMarathi: number;
 
 declare const kDVDLanguageCodeWolof: number;
 
@@ -308,11 +310,7 @@ declare const kDVDLanguageCodeOccitan: number;
 
 declare const kDVDLanguageCodeBreton: number;
 
-declare const kDVDLanguageCodeMarathi: number;
-
 declare const kDVDLanguageCodeGuarani: number;
-
-declare const kDVDLanguageCodeMaori: number;
 
 declare const kDVDLanguageCodeInterlingua: number;
 
@@ -351,6 +349,8 @@ declare const kDVDLanguageCodeMacedonian: number;
 declare const kDVDLanguageCodeSerbian: number;
 
 declare const kDVDLanguageCodeShona: number;
+
+declare const kDVDLanguageCodeSindhi: number;
 
 declare const kDVDLanguageCodeTamil: number;
 
@@ -472,6 +472,14 @@ declare const kDVDLanguageCodeDutch: number;
 
 declare const kDVDLanguageCodeMalay: number;
 
+declare const DVDUserNavigation: {
+  MoveUp: 1,
+  MoveDown: 2,
+  MoveLeft: 3,
+  MoveRight: 4,
+  Enter: 5,
+};
+
 declare const DVDEventCode: {
   Title: 1,
   PTT: 2,
@@ -541,14 +549,6 @@ declare const DVDState: {
   Scanning: 5,
   Idle: 6,
   PlayingSlow: 7,
-};
-
-declare const DVDUserNavigation: {
-  MoveUp: 1,
-  MoveDown: 2,
-  MoveLeft: 3,
-  MoveRight: 4,
-  Enter: 5,
 };
 
 declare const DVDMenu: {

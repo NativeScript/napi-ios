@@ -50,11 +50,11 @@ declare const SKStorefrontIdentifierDidChangeNotification: string;
 
 declare const SKCloudServiceSetupOptionsCampaignTokenKey: string;
 
-declare const SKStoreProductParameterAdNetworkSourceIdentifier: string;
-
 declare const SKCloudServiceSetupOptionsAffiliateTokenKey: string;
 
 declare const SKANErrorDomain: string;
+
+declare const SKStoreProductParameterAdNetworkSourceIdentifier: string;
 
 declare const SKCloudServiceSetupOptionsMessageIdentifierKey: string;
 
@@ -162,17 +162,17 @@ declare const SKProductDiscountPaymentMode: {
   FreeTrial: 2,
 };
 
-declare const SKProductDiscountType: {
-  Introductory: 0,
-  Subscription: 1,
-};
-
 declare const SKPaymentTransactionState: {
   Purchasing: 0,
   Purchased: 1,
   Failed: 2,
   Restored: 3,
   Deferred: 4,
+};
+
+declare const SKProductDiscountType: {
+  Introductory: 0,
+  Subscription: 1,
 };
 
 declare function SKTerminateForInvalidReceipt(): void;
@@ -241,6 +241,12 @@ declare interface SKCloudServiceSetupViewControllerDelegate extends NSObjectProt
 }
 
 declare class SKCloudServiceSetupViewControllerDelegate extends NativeObject implements SKCloudServiceSetupViewControllerDelegate {
+}
+
+declare interface SKDownloaderExtension extends BAManagedDownloaderExtension {
+}
+
+declare class SKDownloaderExtension extends NativeObject implements SKDownloaderExtension {
 }
 
 declare interface SKRequestDelegate extends NSObjectProtocol {

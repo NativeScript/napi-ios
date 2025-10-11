@@ -61,11 +61,11 @@ declare const MTRSignedIntegerValueType: string;
 
 declare const MTROctetStringValueType: string;
 
+declare const MTRSizeThreadMasterKey: number;
+
 declare const MTRDeviceControllerRegistrationNodeIDKey: string;
 
 declare const MTRDataVersionKey: string;
-
-declare const MTRSizeThreadMasterKey: number;
 
 declare const MTRFloatValueType: string;
 
@@ -4564,16 +4564,6 @@ declare const MTRGeneralDiagnosticsHardwareFault: {
   TamperDetected: 10,
 };
 
-declare const MTRGeneralDiagnosticsBootReasonType: {
-  Unspecified: 0,
-  PowerOnReboot: 1,
-  BrownOutReset: 2,
-  SoftwareWatchdogReset: 3,
-  HardwareWatchdogReset: 4,
-  SoftwareUpdateCompleted: 5,
-  SoftwareReset: 6,
-};
-
 declare const MTRDiagnosticLogsLogsTransferProtocol: {
   ResponsePayload: 0,
   BDX: 1,
@@ -4700,22 +4690,6 @@ declare const MTRUnitLocalizationTempUnit: {
   Kelvin: 2,
 };
 
-declare const MTRTimeFormatLocalizationCalendarType: {
-  Buddhist: 0,
-  Chinese: 1,
-  Coptic: 2,
-  Ethiopian: 3,
-  Gregorian: 4,
-  Hebrew: 5,
-  Indian: 6,
-  Islamic: 7,
-  Japanese: 8,
-  Korean: 9,
-  Persian: 10,
-  Taiwanese: 11,
-  UseActiveLocale: -1,
-};
-
 declare const MTROtaSoftwareUpdateRequestorOTAUpdateState: {
   Unknown: 0,
   Idle: 1,
@@ -4747,15 +4721,6 @@ declare const MTROtaSoftwareUpdateProviderOTAApplyUpdateAction: {
   Proceed: 0,
   AwaitNextAction: 1,
   Discontinue: 2,
-};
-
-declare const MTRBasicInformationProductFinish: {
-  Other: 0,
-  Matte: 1,
-  Satin: 2,
-  Polished: 3,
-  Rugged: 4,
-  Fabric: 5,
 };
 
 declare const MTRActionsCommandBits: {
@@ -4812,14 +4777,6 @@ declare const MTRAccessControlAccessRestrictionType: {
   AttributeWrite: 1,
   Command: 2,
   Event: 3,
-};
-
-declare const MTRAccessControlEntryPrivilege: {
-  View: 1,
-  ProxyView: 2,
-  Operate: 3,
-  Manage: 4,
-  Administer: 5,
 };
 
 declare const MTRLevelControlOptions: {
@@ -5278,46 +5235,35 @@ declare const MTRGeneralDiagnosticsNetworkFaultType: {
   ConnectionFailed: 3,
 };
 
+declare const MTRPowerSourceBatChargeState: {
+  Unknown: 0,
+  IsCharging: 1,
+  IsAtFullCharge: 2,
+  IsNotCharging: 3,
+};
+
+declare const MTRPowerSourceBatChargeLevel: {
+  OK: 0,
+  Ok: 0,
+  Warning: 1,
+  Critical: 2,
+};
+
 declare const MTRTimeFormatLocalizationHourFormat: {
   Format12hr: 0,
   Format24hr: 1,
   FormatUseActiveLocale: -1,
 };
 
-declare const MTRGeneralDiagnosticsInterfaceType: {
-  Unspecified: 0,
-  WiFi: 1,
-  Ethernet: 2,
-  Cellular: 3,
-  Thread: 4,
+declare const MTRValveConfigurationAndControlFeature: {
+  TimeSync: 1,
+  Level: 2,
 };
 
 declare const MTRChannelStatus: {
   Success: 0,
   MultipleMatches: 1,
   NoMatches: 2,
-};
-
-declare const MTROvenModeModeTag: {
-  Auto: 0,
-  Quick: 1,
-  Quiet: 2,
-  LowNoise: 3,
-  LowEnergy: 4,
-  Vacation: 5,
-  Min: 6,
-  Max: 7,
-  Night: 8,
-  Day: 9,
-  Bake: 16384,
-  Convection: 16385,
-  Grill: 16386,
-  Roast: 16387,
-  Clean: 16388,
-  ConvectionBake: 16389,
-  ConvectionRoast: 16390,
-  Warming: 16391,
-  Proofing: 16392,
 };
 
 declare const MTRPowerSourceBatFault: {
@@ -5330,15 +5276,6 @@ declare const MTRPowerSourceBatFault: {
 declare const MTRWaterHeaterManagementBoostState: {
   Inactive: 0,
   Active: 1,
-};
-
-declare const MTRCarbonMonoxideConcentrationMeasurementFeature: {
-  NumericMeasurement: 1,
-  LevelIndication: 2,
-  MediumLevel: 4,
-  CriticalLevel: 8,
-  PeakMeasurement: 16,
-  AverageMeasurement: 32,
 };
 
 declare const MTRDeviceEnergyManagementESAType: {
@@ -5371,6 +5308,15 @@ declare const MTRDoorLockDlLockDataType: {
   Fingerprint: 8,
 };
 
+declare const MTRCarbonMonoxideConcentrationMeasurementFeature: {
+  NumericMeasurement: 1,
+  LevelIndication: 2,
+  MediumLevel: 4,
+  CriticalLevel: 8,
+  PeakMeasurement: 16,
+  AverageMeasurement: 32,
+};
+
 declare const MTRThermostatProgrammingOperationModeBitmap: {
   ScheduleActive: 1,
   AutoRecovery: 2,
@@ -5381,13 +5327,6 @@ declare const MTRAccessControlAuthMode: {
   PASE: 1,
   CASE: 2,
   Group: 3,
-};
-
-declare const MTRTestClusterBitmap32MaskMap: {
-  Val1: 1,
-  Val2: 2,
-  Val3: 4,
-  Val4: 1073741824,
 };
 
 declare const MTRActionsActionState: {
@@ -5434,19 +5373,6 @@ declare const MTRKeypadInputFeature: {
   NumberKeys: 4,
 };
 
-declare const MTRFanControlWindSupportMask: {
-  Sleep: 1,
-  Natural: 2,
-};
-
-declare const MTRDiagnosticLogsStatus: {
-  Success: 0,
-  Exhausted: 1,
-  NoLogs: 2,
-  Busy: 3,
-  Denied: 4,
-};
-
 declare const MTRDoorLockCredentialType: {
   ProgrammingPIN: 0,
   PIN: 1,
@@ -5476,19 +5402,6 @@ declare const MTREventPriority: {
   Debug: 0,
   Info: 1,
   Critical: 2,
-};
-
-declare const MTRTestClusterSimpleBitmap: {
-  A: 1,
-  B: 2,
-  C: 4,
-};
-
-declare const MTRDoorLockDlLocalProgrammingFeatures: {
-  AddUsersCredentialsSchedules: 1,
-  ModifyUsersCredentialsSchedules: 2,
-  ClearUsersCredentialsSchedules: 4,
-  AdjustLockSettings: 8,
 };
 
 declare const MTRPowerSourceFeature: {
@@ -5528,23 +5441,19 @@ declare const MTRRVCCleanModeModeTag: {
   Mop: 16386,
 };
 
-declare const MTRNitrogenDioxideConcentrationMeasurementMeasurementUnit: {
-  PPM: 0,
-  PPB: 1,
-  PPT: 2,
-  MGM3: 3,
-  UGM3: 4,
-  NGM3: 5,
-  PM3: 6,
-  BQM3: 7,
-};
-
 declare const MTRMediaPlaybackFeature: {
   AdvancedSeek: 1,
   VariableSpeed: 2,
   TextTracks: 4,
   AudioTracks: 8,
   AudioAdvance: 16,
+};
+
+declare const MTRDoorLockDlLocalProgrammingFeatures: {
+  AddUsersCredentialsSchedules: 1,
+  ModifyUsersCredentialsSchedules: 2,
+  ClearUsersCredentialsSchedules: 4,
+  AdjustLockSettings: 8,
 };
 
 declare const MTROTASoftwareUpdateProviderOTAApplyUpdateAction: {
@@ -5605,6 +5514,7 @@ declare const MTRInteractionErrorCode: {
   DataVersionMismatch: 146,
   Timeout: 148,
   Busy: 156,
+  AccessRestricted: 157,
   UnsupportedCluster: 195,
   NoUpstreamSubscription: 197,
   NeedsTimedInteraction: 198,
@@ -5616,9 +5526,28 @@ declare const MTRInteractionErrorCode: {
   NoCommandResponse: 204,
 };
 
+declare const MTRDiagnosticLogsStatus: {
+  Success: 0,
+  Exhausted: 1,
+  NoLogs: 2,
+  Busy: 3,
+  Denied: 4,
+};
+
 declare const MTRThermostatUserInterfaceConfigurationScheduleProgrammingVisibility: {
   Permitted: 0,
   Denied: 1,
+};
+
+declare const MTRNitrogenDioxideConcentrationMeasurementMeasurementUnit: {
+  PPM: 0,
+  PPB: 1,
+  PPT: 2,
+  MGM3: 3,
+  UGM3: 4,
+  NGM3: 5,
+  PM3: 6,
+  BQM3: 7,
 };
 
 declare const MTRIdentifyEffectVariant: {
@@ -5633,196 +5562,20 @@ declare const MTROTASoftwareUpdateRequestorChangeReason: {
   DelayByProvider: 4,
 };
 
-declare const MTRClusterIDType: {
-  Identify: 3,
-  Groups: 4,
-  OnOff: 6,
-  LevelControl: 8,
-  PulseWidthModulation: 28,
-  Descriptor: 29,
-  Binding: 30,
-  AccessControl: 31,
-  Actions: 37,
-  Basic: 40,
-  OtaSoftwareUpdateProvider: 41,
-  OtaSoftwareUpdateRequestor: 42,
-  LocalizationConfiguration: 43,
-  TimeFormatLocalization: 44,
-  UnitLocalization: 45,
-  PowerSourceConfiguration: 46,
-  PowerSource: 47,
-  GeneralCommissioning: 48,
-  NetworkCommissioning: 49,
-  DiagnosticLogs: 50,
-  GeneralDiagnostics: 51,
-  SoftwareDiagnostics: 52,
-  ThreadNetworkDiagnostics: 53,
-  WiFiNetworkDiagnostics: 54,
-  EthernetNetworkDiagnostics: 55,
-  TimeSynchronization: 56,
-  BridgedDeviceBasic: 57,
-  Switch: 59,
-  AdministratorCommissioning: 60,
-  OperationalCredentials: 62,
-  GroupKeyManagement: 63,
-  FixedLabel: 64,
-  UserLabel: 65,
-  BooleanState: 69,
-  ModeSelect: 80,
-  DoorLock: 257,
-  WindowCovering: 258,
-  PumpConfigurationAndControl: 512,
-  Thermostat: 513,
-  FanControl: 514,
-  ThermostatUserInterfaceConfiguration: 516,
-  ColorControl: 768,
-  BallastConfiguration: 769,
-  IlluminanceMeasurement: 1024,
-  TemperatureMeasurement: 1026,
-  PressureMeasurement: 1027,
-  FlowMeasurement: 1028,
-  RelativeHumidityMeasurement: 1029,
-  OccupancySensing: 1030,
-  WakeOnLan: 1283,
-  Channel: 1284,
-  TargetNavigator: 1285,
-  MediaPlayback: 1286,
-  MediaInput: 1287,
-  LowPower: 1288,
-  KeypadInput: 1289,
-  ContentLauncher: 1290,
-  AudioOutput: 1291,
-  ApplicationLauncher: 1292,
-  ApplicationBasic: 1293,
-  AccountLogin: 1294,
-  TestCluster: -918523,
-  IDTypeIdentify: 3,
-  IDTypeGroups: 4,
-  IDTypeOnOff: 6,
-  IDTypeLevelControl: 8,
-  IDTypePulseWidthModulation: 28,
-  IDTypeDescriptor: 29,
-  IDTypeBinding: 30,
-  IDTypeAccessControl: 31,
-  IDTypeActions: 37,
-  IDTypeBasicInformation: 40,
-  IDTypeOTASoftwareUpdateProvider: 41,
-  IDTypeOTASoftwareUpdateRequestor: 42,
-  IDTypeLocalizationConfiguration: 43,
-  IDTypeTimeFormatLocalization: 44,
-  IDTypeUnitLocalization: 45,
-  IDTypePowerSourceConfiguration: 46,
-  IDTypePowerSource: 47,
-  IDTypeGeneralCommissioning: 48,
-  IDTypeNetworkCommissioning: 49,
-  IDTypeDiagnosticLogs: 50,
-  IDTypeGeneralDiagnostics: 51,
-  IDTypeSoftwareDiagnostics: 52,
-  IDTypeThreadNetworkDiagnostics: 53,
-  IDTypeWiFiNetworkDiagnostics: 54,
-  IDTypeEthernetNetworkDiagnostics: 55,
-  IDTypeTimeSynchronization: 56,
-  IDTypeBridgedDeviceBasicInformation: 57,
-  IDTypeSwitch: 59,
-  IDTypeAdministratorCommissioning: 60,
-  IDTypeOperationalCredentials: 62,
-  IDTypeGroupKeyManagement: 63,
-  IDTypeFixedLabel: 64,
-  IDTypeUserLabel: 65,
-  IDTypeBooleanState: 69,
-  IDTypeICDManagement: 70,
-  IDTypeOvenCavityOperationalState: 72,
-  IDTypeOvenMode: 73,
-  IDTypeLaundryDryerControls: 74,
-  IDTypeModeSelect: 80,
-  IDTypeLaundryWasherMode: 81,
-  IDTypeRefrigeratorAndTemperatureControlledCabinetMode: 82,
-  IDTypeLaundryWasherControls: 83,
-  IDTypeRVCRunMode: 84,
-  IDTypeRVCCleanMode: 85,
-  IDTypeTemperatureControl: 86,
-  IDTypeRefrigeratorAlarm: 87,
-  IDTypeDishwasherMode: 89,
-  IDTypeAirQuality: 91,
-  IDTypeSmokeCOAlarm: 92,
-  IDTypeDishwasherAlarm: 93,
-  IDTypeMicrowaveOvenMode: 94,
-  IDTypeMicrowaveOvenControl: 95,
-  IDTypeOperationalState: 96,
-  IDTypeRVCOperationalState: 97,
-  IDTypeHEPAFilterMonitoring: 113,
-  IDTypeActivatedCarbonFilterMonitoring: 114,
-  IDTypeBooleanStateConfiguration: 128,
-  IDTypeValveConfigurationAndControl: 129,
-  IDTypeElectricalPowerMeasurement: 144,
-  IDTypeElectricalEnergyMeasurement: 145,
-  IDTypeWaterHeaterManagement: 148,
-  IDTypeMessages: 151,
-  IDTypeDeviceEnergyManagement: 152,
-  IDTypeEnergyEVSE: 153,
-  IDTypePowerTopology: 156,
-  IDTypeEnergyEVSEMode: 157,
-  IDTypeWaterHeaterMode: 158,
-  IDTypeDeviceEnergyManagementMode: 159,
-  IDTypeDoorLock: 257,
-  IDTypeWindowCovering: 258,
-  IDTypeServiceArea: 336,
-  IDTypePumpConfigurationAndControl: 512,
-  IDTypeThermostat: 513,
-  IDTypeFanControl: 514,
-  IDTypeThermostatUserInterfaceConfiguration: 516,
-  IDTypeColorControl: 768,
-  IDTypeBallastConfiguration: 769,
-  IDTypeIlluminanceMeasurement: 1024,
-  IDTypeTemperatureMeasurement: 1026,
-  IDTypePressureMeasurement: 1027,
-  IDTypeFlowMeasurement: 1028,
-  IDTypeRelativeHumidityMeasurement: 1029,
-  IDTypeOccupancySensing: 1030,
-  IDTypeCarbonMonoxideConcentrationMeasurement: 1036,
-  IDTypeCarbonDioxideConcentrationMeasurement: 1037,
-  IDTypeNitrogenDioxideConcentrationMeasurement: 1043,
-  IDTypeOzoneConcentrationMeasurement: 1045,
-  IDTypePM25ConcentrationMeasurement: 1066,
-  IDTypeFormaldehydeConcentrationMeasurement: 1067,
-  IDTypePM1ConcentrationMeasurement: 1068,
-  IDTypePM10ConcentrationMeasurement: 1069,
-  IDTypeTotalVolatileOrganicCompoundsConcentrationMeasurement: 1070,
-  IDTypeRadonConcentrationMeasurement: 1071,
-  IDTypeWiFiNetworkManagement: 1105,
-  IDTypeThreadBorderRouterManagement: 1106,
-  IDTypeThreadNetworkDirectory: 1107,
-  IDTypeWakeOnLAN: 1283,
-  IDTypeChannel: 1284,
-  IDTypeTargetNavigator: 1285,
-  IDTypeMediaPlayback: 1286,
-  IDTypeMediaInput: 1287,
-  IDTypeLowPower: 1288,
-  IDTypeKeypadInput: 1289,
-  IDTypeContentLauncher: 1290,
-  IDTypeAudioOutput: 1291,
-  IDTypeApplicationLauncher: 1292,
-  IDTypeApplicationBasic: 1293,
-  IDTypeAccountLogin: 1294,
-  IDTypeContentAppObserver: 1296,
-  IDTypeCommissionerControl: 1873,
-  IDTypeUnitTesting: -918523,
-  BarrierControl: 259,
-  IDTypeBarrierControl: 259,
-  BinaryInputBasic: 15,
-  IDTypeBinaryInputBasic: 15,
-  ElectricalMeasurement: 2820,
-  IDTypeElectricalMeasurement: 2820,
-  OnOffSwitchConfiguration: 7,
-  IDTypeOnOffSwitchConfiguration: 7,
-};
-
 declare const MTRDoorLockDlSupportedOperatingModes: {
   Normal: 1,
   Vacation: 2,
   Privacy: 4,
   NoRemoteLockUnlock: 8,
   Passage: 16,
+};
+
+declare const MTRAccessControlEntryPrivilege: {
+  View: 1,
+  ProxyView: 2,
+  Operate: 3,
+  Manage: 4,
+  Administer: 5,
 };
 
 declare const MTRICDManagementOperatingMode: {
@@ -5877,23 +5630,19 @@ declare const MTRSmokeCOAlarmAlarmState: {
   Critical: 2,
 };
 
+declare const MTRGeneralDiagnosticsBootReason: {
+  Unspecified: 0,
+  PowerOnReboot: 1,
+  BrownOutReset: 2,
+  SoftwareWatchdogReset: 3,
+  HardwareWatchdogReset: 4,
+  SoftwareUpdateCompleted: 5,
+  SoftwareReset: 6,
+};
+
 declare const MTRBooleanStateConfigurationAlarmModeBitmap: {
   Visual: 1,
   Audible: 2,
-};
-
-declare const MTRPowerSourceBatChargeState: {
-  Unknown: 0,
-  IsCharging: 1,
-  IsAtFullCharge: 2,
-  IsNotCharging: 3,
-};
-
-declare const MTRPowerSourceBatChargeLevel: {
-  OK: 0,
-  Ok: 0,
-  Warning: 1,
-  Critical: 2,
 };
 
 declare const MTRTotalVolatileOrganicCompoundsConcentrationMeasurementMeasurementMedium: {
@@ -6030,11 +5779,6 @@ declare const MTRGeneralDiagnosticsHardwareFaultType: {
   TamperDetected: 10,
 };
 
-declare const MTRValveConfigurationAndControlFeature: {
-  TimeSync: 1,
-  Level: 2,
-};
-
 declare const MTRDoorLockDlStatus: {
   Success: 0,
   Failure: 1,
@@ -6065,21 +5809,44 @@ declare const MTRDoorLockDlLockOperationType: {
   ForcedUserEvent: 3,
 };
 
-declare const MTRIdentifyEffectIdentifier: {
-  Blink: 0,
-  Breathe: 1,
-  Okay: 2,
-  ChannelChange: 11,
-  FinishEffect: -2,
-  StopEffect: -1,
-};
-
 declare const MTRMessagesFutureMessagePreference: {
   Allowed: 0,
   Increased: 1,
   Reduced: 2,
   Disallowed: 3,
   Banned: 4,
+};
+
+declare const MTROvenModeModeTag: {
+  Auto: 0,
+  Quick: 1,
+  Quiet: 2,
+  LowNoise: 3,
+  LowEnergy: 4,
+  Vacation: 5,
+  Min: 6,
+  Max: 7,
+  Night: 8,
+  Day: 9,
+  Bake: 16384,
+  Convection: 16385,
+  Grill: 16386,
+  Roast: 16387,
+  Clean: 16388,
+  ConvectionBake: 16389,
+  ConvectionRoast: 16390,
+  Warming: 16391,
+  Proofing: 16392,
+};
+
+declare const MTRMediaInputFeature: {
+  MTRMediaInputFeatureNameUpdates: 1,
+};
+
+declare const MTRTestClusterSimpleBitmap: {
+  A: 1,
+  B: 2,
+  C: 4,
 };
 
 declare const MTRThermostatSetpointAdjustMode: {
@@ -6105,17 +5872,12 @@ declare const MTREnergyEVSESupplyState: {
   DisabledDiagnostics: 4,
 };
 
-declare const MTRDoorLockDlUserType: {
-  Unrestricted: 0,
-  YearDaySchedule: 1,
-  WeekDaySchedule: 2,
-  Programming: 3,
-  NonAccess: 4,
-  Forced: 5,
-  Disposable: 6,
-  Expiring: 7,
-  ScheduleRestricted: 8,
-  RemoteOnly: 9,
+declare const MTRCarbonMonoxideConcentrationMeasurementLevelValue: {
+  Unknown: 0,
+  Low: 1,
+  Medium: 2,
+  High: 3,
+  Critical: 4,
 };
 
 declare const MTRThermostatSystemMode: {
@@ -6131,20 +5893,27 @@ declare const MTRThermostatSystemMode: {
   Sleep: 9,
 };
 
+declare const MTRWiFiNetworkDiagnosticsConnectionStatus: {
+  MTRWiFiNetworkDiagnosticsConnectionStatusConnected: 0,
+  Not: 1,
+};
+
+declare const MTROTASoftwareUpdateProviderStatus: {
+  UpdateAvailable: 0,
+  Busy: 1,
+  NotAvailable: 2,
+  DownloadProtocolNotSupported: 3,
+};
+
 declare const MTRColorControlOptionsBitmap: {
   MTRColorControlOptionsBitmapExecuteIfOff: 1,
 };
 
-declare const MTRDishwasherAlarmAlarmBitmap: {
-  MTRDishwasherAlarmAlarmBitmapDoorError: 4,
-};
-
-declare const MTRCarbonMonoxideConcentrationMeasurementLevelValue: {
-  Unknown: 0,
-  Low: 1,
-  Medium: 2,
-  High: 3,
-  Critical: 4,
+declare const MTROTASoftwareUpdateProviderOTAQueryStatus: {
+  UpdateAvailable: 0,
+  Busy: 1,
+  NotAvailable: 2,
+  DownloadProtocolNotSupported: 3,
 };
 
 declare const MTRDeviceEnergyManagementForecastUpdateReason: {
@@ -6153,15 +5922,18 @@ declare const MTRDeviceEnergyManagementForecastUpdateReason: {
   Grid: 2,
 };
 
-declare const MTRMediaInputFeature: {
-  MTRMediaInputFeatureNameUpdates: 1,
+declare const MTRDishwasherAlarmAlarmBitmap: {
+  MTRDishwasherAlarmAlarmBitmapDoorError: 4,
 };
 
-declare const MTROTASoftwareUpdateProviderOTAQueryStatus: {
-  UpdateAvailable: 0,
-  Busy: 1,
-  NotAvailable: 2,
-  DownloadProtocolNotSupported: 3,
+declare const MTRGeneralDiagnosticsBootReasonType: {
+  Unspecified: 0,
+  PowerOnReboot: 1,
+  BrownOutReset: 2,
+  SoftwareWatchdogReset: 3,
+  HardwareWatchdogReset: 4,
+  SoftwareUpdateCompleted: 5,
+  SoftwareReset: 6,
 };
 
 declare const MTREthernetNetworkDiagnosticsPHYRate: {
@@ -6191,16 +5963,6 @@ declare const MTRActivatedCarbonFilterMonitoringDegradationDirection: {
   Down: 1,
 };
 
-declare const MTRGeneralDiagnosticsBootReason: {
-  Unspecified: 0,
-  PowerOnReboot: 1,
-  BrownOutReset: 2,
-  SoftwareWatchdogReset: 3,
-  HardwareWatchdogReset: 4,
-  SoftwareUpdateCompleted: 5,
-  SoftwareReset: 6,
-};
-
 declare const MTRCarbonDioxideConcentrationMeasurementMeasurementUnit: {
   PPM: 0,
   PPB: 1,
@@ -6210,6 +5972,19 @@ declare const MTRCarbonDioxideConcentrationMeasurementMeasurementUnit: {
   NGM3: 5,
   PM3: 6,
   BQM3: 7,
+};
+
+declare const MTRDoorLockDlUserType: {
+  Unrestricted: 0,
+  YearDaySchedule: 1,
+  WeekDaySchedule: 2,
+  Programming: 3,
+  NonAccess: 4,
+  Forced: 5,
+  Disposable: 6,
+  Expiring: 7,
+  ScheduleRestricted: 8,
+  RemoteOnly: 9,
 };
 
 declare const MTRMicrowaveOvenModeModeTag: {
@@ -6237,6 +6012,31 @@ declare const MTRBooleanStateConfigurationFeature: {
 declare const MTRDeviceEnergyManagementAdjustmentCause: {
   Local: 0,
   Grid: 1,
+};
+
+declare const MTRDoorLockOperationSource: {
+  Unspecified: 0,
+  Manual: 1,
+  ProprietaryRemote: 2,
+  Keypad: 3,
+  Auto: 4,
+  Button: 5,
+  Schedule: 6,
+  Remote: 7,
+  RFID: 8,
+  Biometric: 9,
+  Aliro: 10,
+};
+
+declare const MTREventTimeType: {
+  SystemUpTime: 0,
+  TimestampDate: 1,
+};
+
+declare const MTRFanControlRockSupportMask: {
+  LeftRight: 1,
+  UpDown: 2,
+  Round: 4,
 };
 
 declare const MTRChannelType: {
@@ -6276,6 +6076,11 @@ declare const MTRTimeSynchronizationTimeSource: {
   Ptp: 15,
   GNSS: 16,
   Gnss: 16,
+};
+
+declare const MTRFanControlWindSupportMask: {
+  Sleep: 1,
+  Natural: 2,
 };
 
 declare const MTRColorControlStepMode: {
@@ -6388,6 +6193,32 @@ declare const MTRPowerSourceStatus: {
   Unavailable: 3,
 };
 
+declare const MTREnergyEVSEModeModeTag: {
+  Auto: 0,
+  Quick: 1,
+  Quiet: 2,
+  LowNoise: 3,
+  LowEnergy: 4,
+  Vacation: 5,
+  Min: 6,
+  Max: 7,
+  Night: 8,
+  Day: 9,
+  Manual: 16384,
+  TimeOfUse: 16385,
+  SolarCharging: 16386,
+  V2X: 16387,
+};
+
+declare const MTRBasicInformationProductFinish: {
+  Other: 0,
+  Matte: 1,
+  Satin: 2,
+  Polished: 3,
+  Rugged: 4,
+  Fabric: 5,
+};
+
 declare const MTRActivatedCarbonFilterMonitoringProductIdentifierType: {
   UPC: 0,
   GTIN8: 1,
@@ -6467,31 +6298,6 @@ declare const MTRGeneralDiagnosticsRadioFault: {
   EthernetFault: 6,
 };
 
-declare const MTRDoorLockOperationSource: {
-  Unspecified: 0,
-  Manual: 1,
-  ProprietaryRemote: 2,
-  Keypad: 3,
-  Auto: 4,
-  Button: 5,
-  Schedule: 6,
-  Remote: 7,
-  RFID: 8,
-  Biometric: 9,
-  Aliro: 10,
-};
-
-declare const MTREventTimeType: {
-  SystemUpTime: 0,
-  TimestampDate: 1,
-};
-
-declare const MTRFanControlRockSupportMask: {
-  LeftRight: 1,
-  UpDown: 2,
-  Round: 4,
-};
-
 declare const MTRActivatedCarbonFilterMonitoringFeature: {
   Condition: 1,
   Warning: 2,
@@ -6501,6 +6307,14 @@ declare const MTRActivatedCarbonFilterMonitoringFeature: {
 declare const MTRFanControlAirflowDirection: {
   Forward: 0,
   Reverse: 1,
+};
+
+declare const MTRGeneralDiagnosticsInterfaceType: {
+  Unspecified: 0,
+  WiFi: 1,
+  Ethernet: 2,
+  Cellular: 3,
+  Thread: 4,
 };
 
 declare const MTRDoorLockDlRFIDOperationEventMask: {
@@ -6524,6 +6338,22 @@ declare const MTRDoorLockDlKeypadProgrammingEventMask: {
 declare const MTRHEPAFilterMonitoringDegradationDirection: {
   Up: 0,
   Down: 1,
+};
+
+declare const MTRTimeFormatLocalizationCalendarType: {
+  Buddhist: 0,
+  Chinese: 1,
+  Coptic: 2,
+  Ethiopian: 3,
+  Gregorian: 4,
+  Hebrew: 5,
+  Indian: 6,
+  Islamic: 7,
+  Japanese: 8,
+  Korean: 9,
+  Persian: 10,
+  Taiwanese: 11,
+  UseActiveLocale: -1,
 };
 
 declare const MTREthernetNetworkDiagnosticsFeature: {
@@ -6552,31 +6382,6 @@ declare const MTRCarbonMonoxideConcentrationMeasurementMeasurementUnit: {
 declare const MTRThermostatPresetTypeFeaturesBitmap: {
   Automatic: 1,
   SupportsNames: 2,
-};
-
-declare const MTRPM10ConcentrationMeasurementFeature: {
-  NumericMeasurement: 1,
-  LevelIndication: 2,
-  MediumLevel: 4,
-  CriticalLevel: 8,
-  PeakMeasurement: 16,
-  AverageMeasurement: 32,
-};
-
-declare const MTRRVCRunModeModeTag: {
-  Auto: 0,
-  Quick: 1,
-  Quiet: 2,
-  LowNoise: 3,
-  LowEnergy: 4,
-  Vacation: 5,
-  Min: 6,
-  Max: 7,
-  Night: 8,
-  Day: 9,
-  Idle: 16384,
-  Cleaning: 16385,
-  Mapping: 16386,
 };
 
 declare const MTRColorControlColorLoopUpdateFlags: {
@@ -6704,7 +6509,6 @@ declare const MTRDeviceTypeIDType: {
   ExtendedColorLight: 269,
   WindowCovering: 514,
   WindowCoveringController: 515,
-  HeatingCoolingUnit: 768,
   Thermostat: 769,
   TemperatureSensor: 770,
   Pump: 771,
@@ -6746,23 +6550,6 @@ declare const MTRThermostatACErrorCodeBitmap: {
   OutdoorSensor: 4,
   CoilSensor: 8,
   Fan: 16,
-};
-
-declare const MTREnergyEVSEModeModeTag: {
-  Auto: 0,
-  Quick: 1,
-  Quiet: 2,
-  LowNoise: 3,
-  LowEnergy: 4,
-  Vacation: 5,
-  Min: 6,
-  Max: 7,
-  Night: 8,
-  Day: 9,
-  Manual: 16384,
-  TimeOfUse: 16385,
-  SolarCharging: 16386,
-  V2X: 16387,
 };
 
 declare const MTRServiceAreaSelectAreasStatus: {
@@ -6807,9 +6594,11 @@ declare const MTRWindowCoveringOperationalStatus: {
   Tilt: 48,
 };
 
-declare const MTRWiFiNetworkDiagnosticsConnectionStatus: {
-  MTRWiFiNetworkDiagnosticsConnectionStatusConnected: 0,
-  Not: 1,
+declare const MTRTestClusterBitmap32MaskMap: {
+  Val1: 1,
+  Val2: 2,
+  Val3: 4,
+  Val4: 1073741824,
 };
 
 declare const MTRTestClusterBitmap64MaskMap: {
@@ -6828,6 +6617,31 @@ declare const MTRDoorLockDlCredentialRuleMask: {
 declare const MTRDoorLockDlCredentialRule: {
   Single: 0,
   Tri: 2,
+};
+
+declare const MTRPM10ConcentrationMeasurementFeature: {
+  NumericMeasurement: 1,
+  LevelIndication: 2,
+  MediumLevel: 4,
+  CriticalLevel: 8,
+  PeakMeasurement: 16,
+  AverageMeasurement: 32,
+};
+
+declare const MTRRVCRunModeModeTag: {
+  Auto: 0,
+  Quick: 1,
+  Quiet: 2,
+  LowNoise: 3,
+  LowEnergy: 4,
+  Vacation: 5,
+  Min: 6,
+  Max: 7,
+  Night: 8,
+  Day: 9,
+  Idle: 16384,
+  Cleaning: 16385,
+  Mapping: 16386,
 };
 
 declare const MTRChannelRecordingFlagBitmap: {
@@ -6968,6 +6782,15 @@ declare const MTRTimeSynchronizationTimeZoneDatabase: {
   None: 2,
 };
 
+declare const MTRIdentifyEffectIdentifier: {
+  Blink: 0,
+  Breathe: 1,
+  Okay: 2,
+  ChannelChange: 11,
+  FinishEffect: -2,
+  StopEffect: -1,
+};
+
 declare const MTRDoorLockDlAlarmCode: {
   LockJammed: 0,
   LockFactoryReset: 1,
@@ -7104,18 +6927,6 @@ declare const MTRModeSelectFeature: {
   DEPONOFF: 1,
 };
 
-declare const MTRWaterHeaterManagementFeature: {
-  EnergyManagement: 1,
-  TankPercent: 2,
-};
-
-declare const MTRLaundryWasherControlsNumberOfRinses: {
-  None: 0,
-  Normal: 1,
-  Extra: 2,
-  Max: 3,
-};
-
 declare const MTRDataTypeLandmarkTag: {
   AirConditioner: 0,
   AirPurifier: 1,
@@ -7183,6 +6994,15 @@ declare const MTRElectricalEnergyMeasurementFeature: {
   Periodic: 8,
 };
 
+declare const MTRPumpConfigurationAndControlPumpControlMode: {
+  ConstantSpeed: 0,
+  ConstantPressure: 1,
+  ProportionalPressure: 2,
+  ConstantFlow: 3,
+  ConstantTemperature: 5,
+  Automatic: 7,
+};
+
 declare const MTRICDManagementUserActiveModeTriggerBitmap: {
   PowerCycle: 1,
   SettingsMenu: 2,
@@ -7201,13 +7021,6 @@ declare const MTRICDManagementUserActiveModeTriggerBitmap: {
   SetupButtonLightsBlink: 16384,
   SetupButtonTimes: 32768,
   AppDefinedButton: 65536,
-};
-
-declare const MTROTASoftwareUpdateProviderStatus: {
-  UpdateAvailable: 0,
-  Busy: 1,
-  NotAvailable: 2,
-  DownloadProtocolNotSupported: 3,
 };
 
 declare const MTRRVCOperationalStateErrorState: {
@@ -7246,15 +7059,6 @@ declare const MTROzoneConcentrationMeasurementMeasurementMedium: {
   Air: 0,
   Water: 1,
   Soil: 2,
-};
-
-declare const MTRPumpConfigurationAndControlPumpControlMode: {
-  ConstantSpeed: 0,
-  ConstantPressure: 1,
-  ProportionalPressure: 2,
-  ConstantFlow: 3,
-  ConstantTemperature: 5,
-  Automatic: 7,
 };
 
 declare const MTRDoorLockDlDefaultConfigurationRegister: {
@@ -7867,6 +7671,202 @@ declare const MTRDiagnosticLogsLogsStatus: {
   Denied: 4,
 };
 
+declare const MTRWaterHeaterManagementFeature: {
+  EnergyManagement: 1,
+  TankPercent: 2,
+};
+
+declare const MTRLaundryWasherControlsNumberOfRinses: {
+  None: 0,
+  Normal: 1,
+  Extra: 2,
+  Max: 3,
+};
+
+declare const MTRClusterIDType: {
+  Identify: 3,
+  Groups: 4,
+  OnOff: 6,
+  LevelControl: 8,
+  PulseWidthModulation: 28,
+  Descriptor: 29,
+  Binding: 30,
+  AccessControl: 31,
+  Actions: 37,
+  Basic: 40,
+  OtaSoftwareUpdateProvider: 41,
+  OtaSoftwareUpdateRequestor: 42,
+  LocalizationConfiguration: 43,
+  TimeFormatLocalization: 44,
+  UnitLocalization: 45,
+  PowerSourceConfiguration: 46,
+  PowerSource: 47,
+  GeneralCommissioning: 48,
+  NetworkCommissioning: 49,
+  DiagnosticLogs: 50,
+  GeneralDiagnostics: 51,
+  SoftwareDiagnostics: 52,
+  ThreadNetworkDiagnostics: 53,
+  WiFiNetworkDiagnostics: 54,
+  EthernetNetworkDiagnostics: 55,
+  TimeSynchronization: 56,
+  BridgedDeviceBasic: 57,
+  Switch: 59,
+  AdministratorCommissioning: 60,
+  OperationalCredentials: 62,
+  GroupKeyManagement: 63,
+  FixedLabel: 64,
+  UserLabel: 65,
+  BooleanState: 69,
+  ModeSelect: 80,
+  DoorLock: 257,
+  WindowCovering: 258,
+  PumpConfigurationAndControl: 512,
+  Thermostat: 513,
+  FanControl: 514,
+  ThermostatUserInterfaceConfiguration: 516,
+  ColorControl: 768,
+  BallastConfiguration: 769,
+  IlluminanceMeasurement: 1024,
+  TemperatureMeasurement: 1026,
+  PressureMeasurement: 1027,
+  FlowMeasurement: 1028,
+  RelativeHumidityMeasurement: 1029,
+  OccupancySensing: 1030,
+  WakeOnLan: 1283,
+  Channel: 1284,
+  TargetNavigator: 1285,
+  MediaPlayback: 1286,
+  MediaInput: 1287,
+  LowPower: 1288,
+  KeypadInput: 1289,
+  ContentLauncher: 1290,
+  AudioOutput: 1291,
+  ApplicationLauncher: 1292,
+  ApplicationBasic: 1293,
+  AccountLogin: 1294,
+  TestCluster: -918523,
+  IDTypeIdentify: 3,
+  IDTypeGroups: 4,
+  IDTypeOnOff: 6,
+  IDTypeLevelControl: 8,
+  IDTypePulseWidthModulation: 28,
+  IDTypeDescriptor: 29,
+  IDTypeBinding: 30,
+  IDTypeAccessControl: 31,
+  IDTypeActions: 37,
+  IDTypeBasicInformation: 40,
+  IDTypeOTASoftwareUpdateProvider: 41,
+  IDTypeOTASoftwareUpdateRequestor: 42,
+  IDTypeLocalizationConfiguration: 43,
+  IDTypeTimeFormatLocalization: 44,
+  IDTypeUnitLocalization: 45,
+  IDTypePowerSourceConfiguration: 46,
+  IDTypePowerSource: 47,
+  IDTypeGeneralCommissioning: 48,
+  IDTypeNetworkCommissioning: 49,
+  IDTypeDiagnosticLogs: 50,
+  IDTypeGeneralDiagnostics: 51,
+  IDTypeSoftwareDiagnostics: 52,
+  IDTypeThreadNetworkDiagnostics: 53,
+  IDTypeWiFiNetworkDiagnostics: 54,
+  IDTypeEthernetNetworkDiagnostics: 55,
+  IDTypeTimeSynchronization: 56,
+  IDTypeBridgedDeviceBasicInformation: 57,
+  IDTypeSwitch: 59,
+  IDTypeAdministratorCommissioning: 60,
+  IDTypeOperationalCredentials: 62,
+  IDTypeGroupKeyManagement: 63,
+  IDTypeFixedLabel: 64,
+  IDTypeUserLabel: 65,
+  IDTypeBooleanState: 69,
+  IDTypeICDManagement: 70,
+  IDTypeOvenCavityOperationalState: 72,
+  IDTypeOvenMode: 73,
+  IDTypeLaundryDryerControls: 74,
+  IDTypeModeSelect: 80,
+  IDTypeLaundryWasherMode: 81,
+  IDTypeRefrigeratorAndTemperatureControlledCabinetMode: 82,
+  IDTypeLaundryWasherControls: 83,
+  IDTypeRVCRunMode: 84,
+  IDTypeRVCCleanMode: 85,
+  IDTypeTemperatureControl: 86,
+  IDTypeRefrigeratorAlarm: 87,
+  IDTypeDishwasherMode: 89,
+  IDTypeAirQuality: 91,
+  IDTypeSmokeCOAlarm: 92,
+  IDTypeDishwasherAlarm: 93,
+  IDTypeMicrowaveOvenMode: 94,
+  IDTypeMicrowaveOvenControl: 95,
+  IDTypeOperationalState: 96,
+  IDTypeRVCOperationalState: 97,
+  IDTypeHEPAFilterMonitoring: 113,
+  IDTypeActivatedCarbonFilterMonitoring: 114,
+  IDTypeBooleanStateConfiguration: 128,
+  IDTypeValveConfigurationAndControl: 129,
+  IDTypeElectricalPowerMeasurement: 144,
+  IDTypeElectricalEnergyMeasurement: 145,
+  IDTypeWaterHeaterManagement: 148,
+  IDTypeMessages: 151,
+  IDTypeDeviceEnergyManagement: 152,
+  IDTypeEnergyEVSE: 153,
+  IDTypePowerTopology: 156,
+  IDTypeEnergyEVSEMode: 157,
+  IDTypeWaterHeaterMode: 158,
+  IDTypeDeviceEnergyManagementMode: 159,
+  IDTypeDoorLock: 257,
+  IDTypeWindowCovering: 258,
+  IDTypeServiceArea: 336,
+  IDTypePumpConfigurationAndControl: 512,
+  IDTypeThermostat: 513,
+  IDTypeFanControl: 514,
+  IDTypeThermostatUserInterfaceConfiguration: 516,
+  IDTypeColorControl: 768,
+  IDTypeBallastConfiguration: 769,
+  IDTypeIlluminanceMeasurement: 1024,
+  IDTypeTemperatureMeasurement: 1026,
+  IDTypePressureMeasurement: 1027,
+  IDTypeFlowMeasurement: 1028,
+  IDTypeRelativeHumidityMeasurement: 1029,
+  IDTypeOccupancySensing: 1030,
+  IDTypeCarbonMonoxideConcentrationMeasurement: 1036,
+  IDTypeCarbonDioxideConcentrationMeasurement: 1037,
+  IDTypeNitrogenDioxideConcentrationMeasurement: 1043,
+  IDTypeOzoneConcentrationMeasurement: 1045,
+  IDTypePM25ConcentrationMeasurement: 1066,
+  IDTypeFormaldehydeConcentrationMeasurement: 1067,
+  IDTypePM1ConcentrationMeasurement: 1068,
+  IDTypePM10ConcentrationMeasurement: 1069,
+  IDTypeTotalVolatileOrganicCompoundsConcentrationMeasurement: 1070,
+  IDTypeRadonConcentrationMeasurement: 1071,
+  IDTypeWiFiNetworkManagement: 1105,
+  IDTypeThreadBorderRouterManagement: 1106,
+  IDTypeThreadNetworkDirectory: 1107,
+  IDTypeWakeOnLAN: 1283,
+  IDTypeChannel: 1284,
+  IDTypeTargetNavigator: 1285,
+  IDTypeMediaPlayback: 1286,
+  IDTypeMediaInput: 1287,
+  IDTypeLowPower: 1288,
+  IDTypeKeypadInput: 1289,
+  IDTypeContentLauncher: 1290,
+  IDTypeAudioOutput: 1291,
+  IDTypeApplicationLauncher: 1292,
+  IDTypeApplicationBasic: 1293,
+  IDTypeAccountLogin: 1294,
+  IDTypeContentAppObserver: 1296,
+  IDTypeCommissionerControl: 1873,
+  IDTypeUnitTesting: -918523,
+  BarrierControl: 259,
+  IDTypeBarrierControl: 259,
+  BinaryInputBasic: 15,
+  IDTypeBinaryInputBasic: 15,
+  ElectricalMeasurement: 2820,
+  IDTypeElectricalMeasurement: 2820,
+  OnOffSwitchConfiguration: 7,
+  IDTypeOnOffSwitchConfiguration: 7,
+};
+
 declare function MTRClusterNameForID(clusterID: interop.Enum<typeof MTRClusterIDType>): string;
 
 declare function MTRAttributeNameForID(clusterID: interop.Enum<typeof MTRClusterIDType>, attributeID: interop.Enum<typeof MTRAttributeIDType>): string;
@@ -7882,6 +7882,40 @@ declare function MTRSetMessageReliabilityParameters(idleRetransmitMs: NSNumber, 
 declare function MTRDeviceControllerStorageClasses(): NSSet;
 
 declare function MTRSetLogCallback(logTypeThreshold: interop.Enum<typeof MTRLogType>, callback: (p1: interop.Enum<typeof MTRLogType>, p2: string, p3: string) => void): void;
+
+declare interface MTRXPCServerProtocol_MTRDeviceController extends NSObjectProtocol {
+  deviceControllerDeleteNodeID?(controller: NSUUID, nodeID: NSNumber): void;
+
+  deviceControllerRegisterNodeID?(controller: NSUUID, nodeID: NSNumber): void;
+
+  deviceControllerUnregisterNodeID?(controller: NSUUID, nodeID: NSNumber): void;
+
+  deviceControllerUpdateControllerConfiguration?(controller: NSUUID, controllerState: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  deviceControllerGetNodesWithStoredDataWithReply?(controller: NSUUID, reply: (p1: NSArray<interop.Object> | Array<interop.Object>) => void): void;
+}
+
+declare class MTRXPCServerProtocol_MTRDeviceController extends NativeObject implements MTRXPCServerProtocol_MTRDeviceController {
+}
+
+declare interface MTRXPCClientProtocol extends NSObjectProtocol, MTRXPCClientProtocol_MTRDevice, MTRXPCClientProtocol_MTRDeviceController {
+}
+
+declare class MTRXPCClientProtocol extends NativeObject implements MTRXPCClientProtocol {
+}
+
+declare interface MTRXPCClientProtocol_MTRDeviceController extends NSObjectProtocol {
+  controllerControllerConfigurationUpdated?(controller: NSUUID, configuration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+}
+
+declare class MTRXPCClientProtocol_MTRDeviceController extends NativeObject implements MTRXPCClientProtocol_MTRDeviceController {
+}
+
+declare interface MTRPersistentStorageDelegate extends MTRStorage {
+}
+
+declare class MTRPersistentStorageDelegate extends NativeObject implements MTRPersistentStorageDelegate {
+}
 
 declare interface MTRKeypair extends NSObjectProtocol {
   copyPublicKey?(): interop.Object;
@@ -7973,6 +8007,26 @@ declare interface MTRDeviceControllerServerProtocol extends NSObjectProtocol {
 declare class MTRDeviceControllerServerProtocol extends NativeObject implements MTRDeviceControllerServerProtocol {
 }
 
+declare interface MTRDeviceAttestationDelegate extends NSObjectProtocol {
+  deviceAttestationCompletedForControllerOpaqueDeviceHandleAttestationDeviceInfoError?(controller: MTRDeviceController, opaqueDeviceHandle: interop.PointerConvertible, attestationDeviceInfo: MTRDeviceAttestationDeviceInfo, error: NSError | null): void;
+
+  deviceAttestationFailedForControllerOpaqueDeviceHandleError?(controller: MTRDeviceController, opaqueDeviceHandle: interop.PointerConvertible, error: NSError): void;
+
+  deviceAttestationCompletedForDeviceAttestationDeviceInfoError?(controller: MTRDeviceController, device: interop.PointerConvertible, attestationDeviceInfo: MTRDeviceAttestationDeviceInfo, error: NSError | null): void;
+
+  deviceAttestationFailedForDeviceError?(controller: MTRDeviceController, device: interop.PointerConvertible, error: NSError): void;
+}
+
+declare class MTRDeviceAttestationDelegate extends NativeObject implements MTRDeviceAttestationDelegate {
+}
+
+declare interface MTRNOCChainIssuer extends NSObjectProtocol {
+  onNOCChainGenerationNeededAttestationInfoOnNOCChainGenerationComplete(csrInfo: CSRInfo, attestationInfo: AttestationInfo, onNOCChainGenerationComplete: (p1: NSData, p2: NSData, p3: NSData, p4: NSData, p5: NSNumber, p6: interop.PointerConvertible) => void): void;
+}
+
+declare class MTRNOCChainIssuer extends NativeObject implements MTRNOCChainIssuer {
+}
+
 declare interface MTROperationalCertificateIssuer {
   issueOperationalCertificateForRequestAttestationInfoControllerCompletion(csrInfo: MTROperationalCSRInfo, attestationInfo: MTRDeviceAttestationInfo, controller: MTRDeviceController, completion: (p1: MTROperationalCertificateChain, p2: NSError) => void | null): void;
 
@@ -7980,45 +8034,6 @@ declare interface MTROperationalCertificateIssuer {
 }
 
 declare class MTROperationalCertificateIssuer extends NativeObject implements MTROperationalCertificateIssuer {
-}
-
-declare interface MTRDeviceControllerStorageDelegate extends NSObjectProtocol {
-  controllerValueForKeySecurityLevelSharingType(controller: MTRDeviceController, key: string, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): NSSecureCoding;
-
-  controllerStoreValueForKeySecurityLevelSharingType(controller: MTRDeviceController, value: NSSecureCoding, key: string, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): boolean;
-
-  controllerRemoveValueForKeySecurityLevelSharingType(controller: MTRDeviceController, key: string, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): boolean;
-
-  valuesForControllerSecurityLevelSharingType?(controller: MTRDeviceController, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): NSDictionary;
-
-  controllerStoreValuesSecurityLevelSharingType?(controller: MTRDeviceController, values: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): boolean;
-}
-
-declare class MTRDeviceControllerStorageDelegate extends NativeObject implements MTRDeviceControllerStorageDelegate {
-}
-
-declare interface MTRCommissionableBrowserDelegate extends NSObjectProtocol {
-  controllerDidFindCommissionableDevice(controller: MTRDeviceController, device: MTRCommissionableBrowserResult): void;
-
-  controllerDidRemoveCommissionableDevice(controller: MTRDeviceController, device: MTRCommissionableBrowserResult): void;
-}
-
-declare class MTRCommissionableBrowserDelegate extends NativeObject implements MTRCommissionableBrowserDelegate {
-}
-
-declare interface MTRXPCServerProtocol_MTRDeviceController extends NSObjectProtocol {
-  deviceControllerDeleteNodeID?(controller: NSUUID, nodeID: NSNumber): void;
-
-  deviceControllerRegisterNodeID?(controller: NSUUID, nodeID: NSNumber): void;
-
-  deviceControllerUnregisterNodeID?(controller: NSUUID, nodeID: NSNumber): void;
-
-  deviceControllerUpdateControllerConfiguration?(controller: NSUUID, controllerState: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  deviceControllerGetNodesWithStoredDataWithReply?(controller: NSUUID, reply: (p1: NSArray<interop.Object> | Array<interop.Object>) => void): void;
-}
-
-declare class MTRXPCServerProtocol_MTRDeviceController extends NativeObject implements MTRXPCServerProtocol_MTRDeviceController {
 }
 
 declare interface MTRXPCServerProtocol_MTRDevice extends NSObjectProtocol {
@@ -8080,36 +8095,19 @@ declare interface MTRDevicePairingDelegate extends NSObjectProtocol {
 declare class MTRDevicePairingDelegate extends NativeObject implements MTRDevicePairingDelegate {
 }
 
-declare interface MTRDeviceAttestationDelegate extends NSObjectProtocol {
-  deviceAttestationCompletedForControllerOpaqueDeviceHandleAttestationDeviceInfoError?(controller: MTRDeviceController, opaqueDeviceHandle: interop.PointerConvertible, attestationDeviceInfo: MTRDeviceAttestationDeviceInfo, error: NSError | null): void;
+declare interface MTRDeviceControllerStorageDelegate extends NSObjectProtocol {
+  controllerValueForKeySecurityLevelSharingType(controller: MTRDeviceController, key: string, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): NSSecureCoding;
 
-  deviceAttestationFailedForControllerOpaqueDeviceHandleError?(controller: MTRDeviceController, opaqueDeviceHandle: interop.PointerConvertible, error: NSError): void;
+  controllerStoreValueForKeySecurityLevelSharingType(controller: MTRDeviceController, value: NSSecureCoding, key: string, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): boolean;
 
-  deviceAttestationCompletedForDeviceAttestationDeviceInfoError?(controller: MTRDeviceController, device: interop.PointerConvertible, attestationDeviceInfo: MTRDeviceAttestationDeviceInfo, error: NSError | null): void;
+  controllerRemoveValueForKeySecurityLevelSharingType(controller: MTRDeviceController, key: string, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): boolean;
 
-  deviceAttestationFailedForDeviceError?(controller: MTRDeviceController, device: interop.PointerConvertible, error: NSError): void;
+  valuesForControllerSecurityLevelSharingType?(controller: MTRDeviceController, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): NSDictionary;
+
+  controllerStoreValuesSecurityLevelSharingType?(controller: MTRDeviceController, values: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, securityLevel: interop.Enum<typeof MTRStorageSecurityLevel>, sharingType: interop.Enum<typeof MTRStorageSharingType>): boolean;
 }
 
-declare class MTRDeviceAttestationDelegate extends NativeObject implements MTRDeviceAttestationDelegate {
-}
-
-declare interface MTRXPCClientProtocol_MTRDevice extends NSObjectProtocol {
-  deviceStateChanged(nodeID: NSNumber, state: interop.Enum<typeof MTRDeviceState>): void;
-
-  deviceReceivedAttributeReport(nodeID: NSNumber, attributeReport: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  deviceReceivedEventReport(nodeID: NSNumber, eventReport: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  deviceBecameActive(nodeID: NSNumber): void;
-
-  deviceCachePrimed(nodeID: NSNumber): void;
-
-  deviceConfigurationChanged(nodeID: NSNumber): void;
-
-  deviceInternalStateUpdated(nodeID: NSNumber, dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-}
-
-declare class MTRXPCClientProtocol_MTRDevice extends NativeObject implements MTRXPCClientProtocol_MTRDevice {
+declare class MTRDeviceControllerStorageDelegate extends NativeObject implements MTRDeviceControllerStorageDelegate {
 }
 
 declare interface MTRDeviceControllerClientProtocol extends NSObjectProtocol {
@@ -8137,30 +8135,32 @@ declare interface MTRStorage extends NSObjectProtocol {
 declare class MTRStorage extends NativeObject implements MTRStorage {
 }
 
-declare interface MTRXPCClientProtocol extends NSObjectProtocol, MTRXPCClientProtocol_MTRDevice, MTRXPCClientProtocol_MTRDeviceController {
+declare interface MTRXPCClientProtocol_MTRDevice extends NSObjectProtocol {
+  deviceStateChanged(nodeID: NSNumber, state: interop.Enum<typeof MTRDeviceState>): void;
+
+  deviceReceivedAttributeReport(nodeID: NSNumber, attributeReport: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  deviceReceivedEventReport(nodeID: NSNumber, eventReport: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  deviceBecameActive(nodeID: NSNumber): void;
+
+  deviceCachePrimed(nodeID: NSNumber): void;
+
+  deviceConfigurationChanged(nodeID: NSNumber): void;
+
+  deviceInternalStateUpdated(nodeID: NSNumber, dictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
 }
 
-declare class MTRXPCClientProtocol extends NativeObject implements MTRXPCClientProtocol {
+declare class MTRXPCClientProtocol_MTRDevice extends NativeObject implements MTRXPCClientProtocol_MTRDevice {
 }
 
-declare interface MTRPersistentStorageDelegate extends MTRStorage {
+declare interface MTRCommissionableBrowserDelegate extends NSObjectProtocol {
+  controllerDidFindCommissionableDevice(controller: MTRDeviceController, device: MTRCommissionableBrowserResult): void;
+
+  controllerDidRemoveCommissionableDevice(controller: MTRDeviceController, device: MTRCommissionableBrowserResult): void;
 }
 
-declare class MTRPersistentStorageDelegate extends NativeObject implements MTRPersistentStorageDelegate {
-}
-
-declare interface MTRNOCChainIssuer extends NSObjectProtocol {
-  onNOCChainGenerationNeededAttestationInfoOnNOCChainGenerationComplete(csrInfo: CSRInfo, attestationInfo: AttestationInfo, onNOCChainGenerationComplete: (p1: NSData, p2: NSData, p3: NSData, p4: NSData, p5: NSNumber, p6: interop.PointerConvertible) => void): void;
-}
-
-declare class MTRNOCChainIssuer extends NativeObject implements MTRNOCChainIssuer {
-}
-
-declare interface MTRXPCClientProtocol_MTRDeviceController extends NSObjectProtocol {
-  controllerControllerConfigurationUpdated?(controller: NSUUID, configuration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-}
-
-declare class MTRXPCClientProtocol_MTRDeviceController extends NativeObject implements MTRXPCClientProtocol_MTRDeviceController {
+declare class MTRCommissionableBrowserDelegate extends NativeObject implements MTRCommissionableBrowserDelegate {
 }
 
 declare class MTROptionalQRCodeInfo extends NSObject {
@@ -8607,18 +8607,6 @@ declare class MTRClusterTestCluster extends MTRClusterUnitTesting {
 
 declare class MTRClusterBridgedDeviceBasic extends MTRClusterBridgedDeviceBasicInformation {
   initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
-}
-
-declare class MTRClusterOtaSoftwareUpdateRequestor extends MTRClusterOTASoftwareUpdateRequestor {
-  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
-
-  announceOtaProviderWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateRequestorClusterAnnounceOtaProviderParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  readAttributeDefaultOtaProvidersWithParams(params: MTRReadParams | null): NSDictionary;
-
-  writeAttributeDefaultOtaProvidersWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeDefaultOtaProvidersWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 }
 
 declare class MTRClusterBasic extends MTRClusterBasicInformation {
@@ -9549,42 +9537,6 @@ declare class MTRClusterPM10ConcentrationMeasurement extends MTRGenericCluster {
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTRClusterPM1ConcentrationMeasurement extends MTRGenericCluster {
-  readAttributeMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMinMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMaxMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePeakMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePeakMeasuredValueWindowWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageMeasuredValueWindowWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeUncertaintyWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasurementUnitWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasurementMediumWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeLevelValueWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
 declare class MTRClusterFormaldehydeConcentrationMeasurement extends MTRGenericCluster {
   readAttributeMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
 
@@ -10327,26 +10279,6 @@ declare class MTRClusterWaterHeaterMode extends MTRGenericCluster {
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTRClusterEnergyEVSEMode extends MTRGenericCluster {
-  changeToModeWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTREnergyEVSEModeClusterChangeToModeParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTREnergyEVSEModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
-
-  readAttributeSupportedModesWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeCurrentModeWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
 declare class MTRClusterWaterHeaterManagement extends MTRGenericCluster {
   boostWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRWaterHeaterManagementClusterBoostParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
 
@@ -10733,26 +10665,6 @@ declare class MTRClusterDishwasherMode extends MTRGenericCluster {
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTRClusterRefrigeratorAlarm extends MTRGenericCluster {
-  readAttributeMaskWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeStateWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeSupportedWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
 declare class MTRClusterTemperatureControl extends MTRGenericCluster {
   setTemperatureWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRTemperatureControlClusterSetTemperatureParams | null, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
 
@@ -10983,66 +10895,6 @@ declare class MTRClusterGroupKeyManagement extends MTRGenericCluster {
   keySetRemoveWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRGroupKeyManagementClusterKeySetRemoveParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 
   keySetReadAllIndicesWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRGroupKeyManagementClusterKeySetReadAllIndicesParams | null, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTRGroupKeyManagementClusterKeySetReadAllIndicesResponseParams, p2: NSError) => void | null): void;
-}
-
-declare class MTRClusterOperationalCredentials extends MTRGenericCluster {
-  attestationRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterAttestationRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterAttestationResponseParams, p2: NSError) => void | null): void;
-
-  certificateChainRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterCertificateChainRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterCertificateChainResponseParams, p2: NSError) => void | null): void;
-
-  CSRRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterCSRRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterCSRResponseParams, p2: NSError) => void | null): void;
-
-  addNOCWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterAddNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  updateNOCWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterUpdateNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  updateFabricLabelWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterUpdateFabricLabelParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  removeFabricWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterRemoveFabricParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  addTrustedRootCertificateWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterAddTrustedRootCertificateParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  readAttributeNOCsWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFabricsWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeSupportedFabricsWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeCommissionedFabricsWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeTrustedRootCertificatesWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeCurrentFabricIndexWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
-
-  attestationRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterAttestationRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterAttestationResponseParams, p2: NSError) => void | null): void;
-
-  certificateChainRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterCertificateChainRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterCertificateChainResponseParams, p2: NSError) => void | null): void;
-
-  CSRRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterCSRRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterCSRResponseParams, p2: NSError) => void | null): void;
-
-  addNOCWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterAddNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  updateNOCWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterUpdateNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  updateFabricLabelWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterUpdateFabricLabelParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  removeFabricWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterRemoveFabricParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
-
-  addTrustedRootCertificateWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterAddTrustedRootCertificateParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 }
 
 declare class MTRClusterAdministratorCommissioning extends MTRGenericCluster {
@@ -20977,54 +20829,6 @@ declare class MTRBaseClusterDishwasherMode extends MTRGenericBaseCluster {
   initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTRBaseClusterRVCCleanMode extends MTRGenericBaseCluster {
-  changeToModeWithParamsCompletion(params: MTRRVCCleanModeClusterChangeToModeParams, completion: (p1: MTRRVCCleanModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
-
-  readAttributeSupportedModesWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeSupportedModesWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeSupportedModesWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeCurrentModeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentModeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentModeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
 declare class MTRBaseClusterRVCRunMode extends MTRGenericBaseCluster {
   changeToModeWithParamsCompletion(params: MTRRVCRunModeClusterChangeToModeParams, completion: (p1: MTRRVCRunModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
 
@@ -23907,332 +23711,6 @@ declare class MTRBaseClusterDescriptor extends MTRGenericBaseCluster {
   static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 }
 
-declare class MTRBaseClusterLevelControl extends MTRGenericBaseCluster {
-  moveToLevelWithParamsCompletion(params: MTRLevelControlClusterMoveToLevelParams, completion: (p1: NSError) => void): void;
-
-  moveWithParamsCompletion(params: MTRLevelControlClusterMoveParams, completion: (p1: NSError) => void): void;
-
-  stepWithParamsCompletion(params: MTRLevelControlClusterStepParams, completion: (p1: NSError) => void): void;
-
-  stopWithParamsCompletion(params: MTRLevelControlClusterStopParams, completion: (p1: NSError) => void): void;
-
-  moveToLevelWithOnOffWithParamsCompletion(params: MTRLevelControlClusterMoveToLevelWithOnOffParams, completion: (p1: NSError) => void): void;
-
-  moveWithOnOffWithParamsCompletion(params: MTRLevelControlClusterMoveWithOnOffParams, completion: (p1: NSError) => void): void;
-
-  stepWithOnOffWithParamsCompletion(params: MTRLevelControlClusterStepWithOnOffParams, completion: (p1: NSError) => void): void;
-
-  stopWithOnOffWithParamsCompletion(params: MTRLevelControlClusterStopWithOnOffParams, completion: (p1: NSError) => void): void;
-
-  moveToClosestFrequencyWithParamsCompletion(params: MTRLevelControlClusterMoveToClosestFrequencyParams, completion: (p1: NSError) => void): void;
-
-  readAttributeCurrentLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRemainingTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRemainingTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRemainingTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMinLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMinLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMinLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMaxLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMaxLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMaxLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeCurrentFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMinFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMinFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMinFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMaxFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMaxFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMaxFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOptionsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOptionsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeOptionsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOptionsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOptionsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOnOffTransitionTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOnOffTransitionTimeWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeOnOffTransitionTimeWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOnOffTransitionTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOnOffTransitionTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOnLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOnLevelWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeOnLevelWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOnLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOnLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOnTransitionTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOnTransitionTimeWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeOnTransitionTimeWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOnTransitionTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOnTransitionTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOffTransitionTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOffTransitionTimeWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeOffTransitionTimeWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOffTransitionTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOffTransitionTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDefaultMoveRateWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeDefaultMoveRateWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeDefaultMoveRateWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeDefaultMoveRateWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDefaultMoveRateWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeStartUpCurrentLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeStartUpCurrentLevelWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeStartUpCurrentLevelWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeStartUpCurrentLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeStartUpCurrentLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  moveToLevelWithParamsCompletionHandler(params: MTRLevelControlClusterMoveToLevelParams, completionHandler: (p1: NSError) => void): void;
-
-  moveWithParamsCompletionHandler(params: MTRLevelControlClusterMoveParams, completionHandler: (p1: NSError) => void): void;
-
-  stepWithParamsCompletionHandler(params: MTRLevelControlClusterStepParams, completionHandler: (p1: NSError) => void): void;
-
-  stopWithParamsCompletionHandler(params: MTRLevelControlClusterStopParams, completionHandler: (p1: NSError) => void): void;
-
-  moveToLevelWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterMoveToLevelWithOnOffParams, completionHandler: (p1: NSError) => void): void;
-
-  moveWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterMoveWithOnOffParams, completionHandler: (p1: NSError) => void): void;
-
-  stepWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterStepWithOnOffParams, completionHandler: (p1: NSError) => void): void;
-
-  stopWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterStopWithOnOffParams, completionHandler: (p1: NSError) => void): void;
-
-  moveToClosestFrequencyWithParamsCompletionHandler(params: MTRLevelControlClusterMoveToClosestFrequencyParams, completionHandler: (p1: NSError) => void): void;
-
-  readAttributeCurrentLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRemainingTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRemainingTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRemainingTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMinLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMinLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMinLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMaxLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMaxLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMaxLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeCurrentFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMinFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMinFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMinFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMaxFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMaxFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMaxFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOptionsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOptionsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOptionsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOptionsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOptionsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOnOffTransitionTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOnOffTransitionTimeWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOnOffTransitionTimeWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOnOffTransitionTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOnOffTransitionTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOnLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOnLevelWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOnLevelWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOnLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOnLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOnTransitionTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOnTransitionTimeWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOnTransitionTimeWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOnTransitionTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOnTransitionTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOffTransitionTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOffTransitionTimeWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOffTransitionTimeWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOffTransitionTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOffTransitionTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDefaultMoveRateWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeDefaultMoveRateWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeDefaultMoveRateWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeDefaultMoveRateWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDefaultMoveRateWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeStartUpCurrentLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeStartUpCurrentLevelWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeStartUpCurrentLevelWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeStartUpCurrentLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeStartUpCurrentLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-}
-
 declare class MTRAttributeCacheContainer extends NSObject {
   readAttributeWithEndpointIdClusterIdAttributeIdClientQueueCompletion(endpointId: NSNumber | null, clusterId: NSNumber | null, attributeId: NSNumber | null, clientQueue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
 }
@@ -24895,18 +24373,6 @@ declare class MTRUnitTestingClusterTestStructArrayArgumentResponseParams extends
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRUnitTestingClusterTestUnknownCommandParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRTestClusterClusterTestAddArgumentsResponseParams extends MTRUnitTestingClusterTestAddArgumentsResponseParams {
   returnValue: NSNumber;
 
@@ -25282,18 +24748,6 @@ declare class MTRMediaPlaybackClusterFastForwardParams extends NSObject implemen
 }
 
 declare class MTRMediaPlaybackClusterNextParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRMediaPlaybackClusterStartOverParams extends NSObject implements NSCopying {
   timedInvokeTimeoutMs: NSNumber;
 
   serverSideProcessingTimeout: NSNumber;
@@ -26896,18 +26350,6 @@ declare class MTRDeviceEnergyManagementClusterCancelRequestParams extends NSObje
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRDeviceEnergyManagementClusterResumeRequestParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRDeviceEnergyManagementClusterStartTimeAdjustRequestParams extends NSObject implements NSCopying {
   requestedStartTime: NSNumber;
 
@@ -27621,6 +27063,32 @@ declare class MTRGeneralDiagnosticsClusterPayloadTestResponseParams extends NSOb
   initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
 
   setPayload(payload: NSData): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRGeneralDiagnosticsClusterPayloadTestRequestParams extends NSObject implements NSCopying {
+  enableKey: NSData;
+
+  value: NSNumber;
+
+  count: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setEnableKey(enableKey: NSData): void;
+
+  setValue(value: NSNumber): void;
+
+  getCount(): NSNumber;
+
+  setCount(count: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -28919,22 +28387,6 @@ declare class MTRGroupsClusterViewGroupParams extends NSObject implements NSCopy
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRIdentifyClusterIdentifyParams extends NSObject implements NSCopying {
-  identifyTime: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setIdentifyTime(identifyTime: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRTestClusterClusterTestFabricScopedEventEvent extends MTRUnitTestingClusterTestFabricScopedEventEvent {
   fabricIndex: NSNumber;
 
@@ -29083,43 +28535,6 @@ declare class MTRUnitTestingClusterNestedStruct extends NSObject implements NSCo
   setB(b: NSNumber): void;
 
   setC(c: MTRUnitTestingClusterSimpleStruct): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRUnitTestingClusterTestFabricScoped extends NSObject implements NSCopying {
-  fabricSensitiveInt8u: NSNumber;
-
-  optionalFabricSensitiveInt8u: NSNumber | null;
-
-  nullableFabricSensitiveInt8u: NSNumber | null;
-
-  nullableOptionalFabricSensitiveInt8u: NSNumber | null;
-
-  fabricSensitiveCharString: string;
-
-  fabricSensitiveStruct: MTRUnitTestingClusterSimpleStruct;
-
-  get fabricSensitiveInt8uList(): NSArray;
-  set fabricSensitiveInt8uList(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  fabricIndex: NSNumber;
-
-  setFabricSensitiveInt8u(fabricSensitiveInt8u: NSNumber): void;
-
-  setOptionalFabricSensitiveInt8u(optionalFabricSensitiveInt8u: NSNumber | null): void;
-
-  setNullableFabricSensitiveInt8u(nullableFabricSensitiveInt8u: NSNumber | null): void;
-
-  setNullableOptionalFabricSensitiveInt8u(nullableOptionalFabricSensitiveInt8u: NSNumber | null): void;
-
-  setFabricSensitiveCharString(fabricSensitiveCharString: string): void;
-
-  setFabricSensitiveStruct(fabricSensitiveStruct: MTRUnitTestingClusterSimpleStruct): void;
-
-  setFabricSensitiveInt8uList(fabricSensitiveInt8uList: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setFabricIndex(fabricIndex: NSNumber): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -29835,14 +29250,6 @@ declare class MTRThreadNetworkDirectoryClusterThreadNetworkStruct extends NSObje
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTROccupancySensingClusterOccupancyChangedEvent extends NSObject implements NSCopying {
-  occupancy: NSNumber;
-
-  setOccupancy(occupancy: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRThermostatClusterThermostatScheduleTransition extends MTRThermostatClusterWeeklyScheduleTransitionStruct {
   transitionTime: NSNumber;
 
@@ -30197,10 +29604,6 @@ declare class MTRClusterModeSelect extends MTRGenericCluster {
 }
 
 declare class MTRPumpConfigurationAndControlClusterSystemPressureHighEvent extends NSObject implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRPumpConfigurationAndControlClusterSystemPressureLowEvent extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -30881,14 +30284,6 @@ declare class MTRSmokeCOAlarmClusterAllClearEvent extends NSObject implements NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRSmokeCOAlarmClusterInterconnectCOAlarmEvent extends NSObject implements NSCopying {
-  alarmSeverityLevel: NSNumber;
-
-  setAlarmSeverityLevel(alarmSeverityLevel: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRSmokeCOAlarmClusterInterconnectSmokeAlarmEvent extends NSObject implements NSCopying {
   alarmSeverityLevel: NSNumber;
 
@@ -31393,14 +30788,6 @@ declare class MTRTimeSynchronizationClusterMissingTrustedTimeSourceEvent extends
 }
 
 declare class MTRTimeSynchronizationClusterTimeFailureEvent extends NSObject implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRTimeSynchronizationClusterDSTStatusEvent extends NSObject implements NSCopying {
-  dstOffsetActive: NSNumber;
-
-  setDstOffsetActive(dstOffsetActive: NSNumber): void;
-
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -32001,6 +31388,8 @@ declare class MTROtaSoftwareUpdateRequestorClusterVersionAppliedEvent extends MT
 }
 
 declare class MTRXPCDeviceControllerParameters extends MTRDeviceControllerAbstractParameters {
+  initWithXPCConnectionBlockUniqueIdentifier(xpcConnectionBlock: () => NSXPCConnection, uniqueIdentifier: NSUUID): this;
+
   initWithXPConnectionBlockUniqueIdentifier(xpcConnectionBlock: () => NSXPCConnection, uniqueIdentifier: NSUUID): this;
 
   readonly uniqueIdentifier: NSUUID;
@@ -32442,18 +31831,6 @@ declare class MTRDescriptorClusterDeviceTypeStruct extends NSObject implements N
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRDataTypeAtomicAttributeStatusStruct extends NSObject implements NSCopying {
-  attributeID: NSNumber;
-
-  statusCode: NSNumber;
-
-  setAttributeID(attributeID: NSNumber): void;
-
-  setStatusCode(statusCode: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRDataTypeLocationDescriptorStruct extends NSObject implements NSCopying {
   locationName: string;
 
@@ -32466,6 +31843,18 @@ declare class MTRDataTypeLocationDescriptorStruct extends NSObject implements NS
   setFloorNumber(floorNumber: NSNumber | null): void;
 
   setAreaType(areaType: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRDataTypeAtomicAttributeStatusStruct extends NSObject implements NSCopying {
+  attributeID: NSNumber;
+
+  statusCode: NSNumber;
+
+  setAttributeID(attributeID: NSNumber): void;
+
+  setStatusCode(statusCode: NSNumber): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -32997,72 +32386,6 @@ declare class MTRActionsClusterPauseActionWithDurationParams extends NSObject im
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRDevice extends NSObject {
-  static deviceWithNodeIDController(nodeID: NSNumber, controller: MTRDeviceController): MTRDevice;
-
-  readonly state: interop.Enum<typeof MTRDeviceState>;
-
-  readonly deviceCachePrimed: boolean;
-
-  readonly estimatedStartTime: NSDate;
-
-  readonly deviceController: MTRDeviceController;
-
-  readonly nodeID: NSNumber;
-
-  readonly estimatedSubscriptionLatency: NSNumber;
-
-  readonly vendorID: NSNumber;
-
-  readonly productID: NSNumber;
-
-  readonly networkCommissioningFeatures: interop.Enum<typeof MTRNetworkCommissioningFeature>;
-
-  setDelegateQueue(delegate: MTRDeviceDelegate, queue: NSObject): void;
-
-  addDelegateQueue(delegate: MTRDeviceDelegate, queue: NSObject): void;
-
-  addDelegateQueueInterestedPathsForAttributesInterestedPathsForEvents(delegate: MTRDeviceDelegate, queue: NSObject, interestedPathsForAttributes: NSArray<interop.Object> | Array<interop.Object> | null, interestedPathsForEvents: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  removeDelegate(delegate: MTRDeviceDelegate): void;
-
-  readAttributeWithEndpointIDClusterIDAttributeIDParams(endpointID: NSNumber, clusterID: NSNumber, attributeID: NSNumber, params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeWithEndpointIDClusterIDAttributeIDValueExpectedValueIntervalTimedWriteTimeout(endpointID: NSNumber, clusterID: NSNumber, attributeID: NSNumber, value: interop.Object, expectedValueInterval: NSNumber, timeout: NSNumber | null): void;
-
-  readAttributePaths(attributePaths: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  descriptorClusters(): NSDictionary;
-
-  invokeCommandWithEndpointIDClusterIDCommandIDCommandFieldsExpectedValuesExpectedValueIntervalQueueCompletion(endpointID: NSNumber, clusterID: NSNumber, commandID: NSNumber, commandFields: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueInterval: NSNumber | null, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  invokeCommandWithEndpointIDClusterIDCommandIDCommandFieldsExpectedValuesExpectedValueIntervalTimedInvokeTimeoutQueueCompletion(endpointID: NSNumber, clusterID: NSNumber, commandID: NSNumber, commandFields: interop.Object, expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueInterval: NSNumber | null, timeout: NSNumber | null, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  invokeCommandsQueueCompletion(commands: NSArray<interop.Object> | Array<interop.Object>, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-
-  openCommissioningWindowWithSetupPasscodeDiscriminatorDurationQueueCompletion(setupPasscode: NSNumber, discriminator: NSNumber, duration: NSNumber, queue: NSObject, completion: (p1: MTRSetupPayload, p2: NSError) => void): void;
-
-  openCommissioningWindowWithDiscriminatorDurationQueueCompletion(discriminator: NSNumber, duration: NSNumber, queue: NSObject, completion: (p1: MTRSetupPayload, p2: NSError) => void): void;
-
-  downloadLogOfTypeTimeoutQueueCompletion(type: interop.Enum<typeof MTRDiagnosticLogType>, timeout: number, queue: NSObject, completion: (p1: NSURL, p2: NSError) => void | null): void;
-
-  waitForAttributeValuesTimeoutQueueCompletion(values: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, timeout: number, queue: NSObject, completion: (p1: NSError) => void | null): MTRAttributeValueWaiter;
-
-  static deviceWithNodeIDDeviceController(nodeID: number, deviceController: MTRDeviceController): MTRDevice;
-
-  invokeCommandWithEndpointIDClusterIDCommandIDCommandFieldsExpectedValuesExpectedValueIntervalTimedInvokeTimeoutClientQueueCompletion(endpointID: NSNumber, clusterID: NSNumber, commandID: NSNumber, commandFields: interop.Object, expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueInterval: NSNumber | null, timeout: NSNumber | null, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
-}
-
-declare class MTROperationalStateClusterOperationalCommandResponseParams extends NSObject implements NSCopying {
-  commandResponseState: MTROperationalStateClusterErrorStateStruct;
-
-  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
-
-  setCommandResponseState(commandResponseState: MTROperationalStateClusterErrorStateStruct): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRBaseDevice extends NSObject {
   static deviceWithNodeIDController(nodeID: NSNumber, controller: MTRDeviceController): MTRBaseDevice;
 
@@ -33225,6 +32548,32 @@ declare class MTRTimeSynchronizationClusterTimeZoneStatusEvent extends NSObject 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTROtaSoftwareUpdateRequestorClusterProviderLocation extends MTROTASoftwareUpdateRequestorClusterProviderLocation {
+  providerNodeID: NSNumber;
+
+  endpoint: NSNumber;
+
+  fabricIndex: NSNumber;
+
+  setProviderNodeID(providerNodeID: NSNumber): void;
+
+  setEndpoint(endpoint: NSNumber): void;
+
+  setFabricIndex(fabricIndex: NSNumber): void;
+}
+
+declare class MTRAccessControlClusterAccessControlExtensionStruct extends NSObject implements NSCopying {
+  data: NSData;
+
+  fabricIndex: NSNumber;
+
+  setData(data: NSData): void;
+
+  setFabricIndex(fabricIndex: NSNumber): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRIdentifyClusterTriggerEffectParams extends NSObject implements NSCopying {
   effectIdentifier: NSNumber;
 
@@ -33292,6 +32641,62 @@ declare class MTRDoorLockClusterLockOperationEvent extends NSObject implements N
   setSourceNode(sourceNode: NSNumber | null): void;
 
   setCredentials(credentials: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRClusterICDManagement extends MTRGenericCluster {
+  registerClientWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRICDManagementClusterRegisterClientParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTRICDManagementClusterRegisterClientResponseParams, p2: NSError) => void | null): void;
+
+  unregisterClientWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRICDManagementClusterUnregisterClientParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  stayActiveRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRICDManagementClusterStayActiveRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTRICDManagementClusterStayActiveResponseParams, p2: NSError) => void | null): void;
+
+  readAttributeIdleModeDurationWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActiveModeDurationWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActiveModeThresholdWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRegisteredClientsWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeICDCounterWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClientsSupportedPerFabricWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeUserActiveModeTriggerHintWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeUserActiveModeTriggerInstructionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeOperatingModeWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMaximumCheckInBackOffWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRAccountLoginClusterGetSetupPINParams extends NSObject implements NSCopying {
+  tempAccountIdentifier: string;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTempAccountIdentifier(tempAccountIdentifier: string): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -34292,46 +33697,6 @@ declare class MTRDishwasherModeClusterModeTagStruct extends NSObject implements 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRClusterICDManagement extends MTRGenericCluster {
-  registerClientWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRICDManagementClusterRegisterClientParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTRICDManagementClusterRegisterClientResponseParams, p2: NSError) => void | null): void;
-
-  unregisterClientWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRICDManagementClusterUnregisterClientParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  stayActiveRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRICDManagementClusterStayActiveRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTRICDManagementClusterStayActiveResponseParams, p2: NSError) => void | null): void;
-
-  readAttributeIdleModeDurationWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActiveModeDurationWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActiveModeThresholdWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRegisteredClientsWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeICDCounterWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClientsSupportedPerFabricWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeUserActiveModeTriggerHintWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeUserActiveModeTriggerInstructionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeOperatingModeWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMaximumCheckInBackOffWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
 declare class MTRTestClusterClusterTimedInvokeRequestParams extends MTRUnitTestingClusterTimedInvokeRequestParams {
   timedInvokeTimeoutMs: NSNumber;
 
@@ -34786,26 +34151,6 @@ declare class MTRBaseClusterPowerSource extends MTRGenericBaseCluster {
   static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 }
 
-declare class MTRClusterOvenMode extends MTRGenericCluster {
-  changeToModeWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROvenModeClusterChangeToModeParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROvenModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
-
-  readAttributeSupportedModesWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeCurrentModeWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
 declare class MTRServiceAreaClusterSelectAreasResponseParams extends NSObject implements NSCopying {
   status: NSNumber;
 
@@ -35082,6 +34427,86 @@ declare class MTRMessagesClusterMessageStruct extends NSObject implements NSCopy
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRTimeSynchronizationClusterDSTStatusEvent extends NSObject implements NSCopying {
+  dstOffsetActive: NSNumber;
+
+  setDstOffsetActive(dstOffsetActive: NSNumber): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRUnitTestingClusterTestUnknownCommandParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRClusterOperationalCredentials extends MTRGenericCluster {
+  attestationRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterAttestationRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterAttestationResponseParams, p2: NSError) => void | null): void;
+
+  certificateChainRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterCertificateChainRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterCertificateChainResponseParams, p2: NSError) => void | null): void;
+
+  CSRRequestWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterCSRRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterCSRResponseParams, p2: NSError) => void | null): void;
+
+  addNOCWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterAddNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  updateNOCWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterUpdateNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  updateFabricLabelWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterUpdateFabricLabelParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  removeFabricWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterRemoveFabricParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  addTrustedRootCertificateWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROperationalCredentialsClusterAddTrustedRootCertificateParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  readAttributeNOCsWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFabricsWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeSupportedFabricsWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeCommissionedFabricsWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeTrustedRootCertificatesWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeCurrentFabricIndexWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
+
+  attestationRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterAttestationRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterAttestationResponseParams, p2: NSError) => void | null): void;
+
+  certificateChainRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterCertificateChainRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterCertificateChainResponseParams, p2: NSError) => void | null): void;
+
+  CSRRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterCSRRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterCSRResponseParams, p2: NSError) => void | null): void;
+
+  addNOCWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterAddNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  updateNOCWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterUpdateNOCParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  updateFabricLabelWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterUpdateFabricLabelParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  removeFabricWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterRemoveFabricParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROperationalCredentialsClusterNOCResponseParams, p2: NSError) => void | null): void;
+
+  addTrustedRootCertificateWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROperationalCredentialsClusterAddTrustedRootCertificateParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+}
+
 declare class MTRClusterAudioOutput extends MTRGenericCluster {
   selectOutputWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRAudioOutputClusterSelectOutputParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
 
@@ -35352,6 +34777,24 @@ declare class MTRSmokeCOAlarmClusterSmokeAlarmEvent extends NSObject implements 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRDeviceEnergyManagementModeClusterChangeToModeParams extends NSObject implements NSCopying {
+  newMode: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  getNewMode(): NSNumber;
+
+  setNewMode(newMode: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRChannelClusterLineupInfoStruct extends NSObject implements NSCopying {
   operatorName: string;
 
@@ -35372,44 +34815,10 @@ declare class MTRChannelClusterLineupInfoStruct extends NSObject implements NSCo
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRDeviceEnergyManagementModeClusterChangeToModeParams extends NSObject implements NSCopying {
-  newMode: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  getNewMode(): NSNumber;
-
-  setNewMode(newMode: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRBasicClusterMfgSpecificPingParams extends NSObject implements NSCopying {
   timedInvokeTimeoutMs: NSNumber;
 
   serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRTimeSynchronizationClusterSetDefaultNTPParams extends NSObject implements NSCopying {
-  defaultNTP: string | null;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setDefaultNTP(defaultNTP: string | null): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
@@ -36560,6 +35969,18 @@ declare class MTRClusterOccupancySensing extends MTRGenericCluster {
   writeAttributePirUnoccupiedToOccupiedThresholdWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
 
   writeAttributePirUnoccupiedToOccupiedThresholdWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+}
+
+declare class MTRActivatedCarbonFilterMonitoringClusterResetConditionParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTRAccessControlClusterTarget extends MTRAccessControlClusterAccessControlTargetStruct {
@@ -37721,36 +37142,6 @@ declare class MTRBaseClusterBasic extends MTRBaseClusterBasicInformation {
   static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 }
 
-declare class MTRValveConfigurationAndControlClusterCloseParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRRVCRunModeClusterChangeToModeParams extends NSObject implements NSCopying {
-  newMode: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  getNewMode(): NSNumber;
-
-  setNewMode(newMode: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRDoorLockClusterUnlockWithTimeoutParams extends NSObject implements NSCopying {
   timeout: NSNumber;
 
@@ -37810,10 +37201,6 @@ declare class MTRPumpConfigurationAndControlClusterAirDetectionEvent extends NSO
 }
 
 declare class MTRSmokeCOAlarmClusterHardwareFaultEvent extends NSObject implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRBridgedDeviceBasicInformationClusterShutDownEvent extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -39294,6 +38681,382 @@ declare class MTRMicrowaveOvenModeClusterModeTagStruct extends NSObject implemen
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRDevice extends NSObject {
+  static deviceWithNodeIDController(nodeID: NSNumber, controller: MTRDeviceController): MTRDevice;
+
+  readonly state: interop.Enum<typeof MTRDeviceState>;
+
+  readonly deviceCachePrimed: boolean;
+
+  readonly estimatedStartTime: NSDate;
+
+  readonly deviceController: MTRDeviceController;
+
+  readonly nodeID: NSNumber;
+
+  readonly estimatedSubscriptionLatency: NSNumber;
+
+  readonly vendorID: NSNumber;
+
+  readonly productID: NSNumber;
+
+  readonly networkCommissioningFeatures: interop.Enum<typeof MTRNetworkCommissioningFeature>;
+
+  setDelegateQueue(delegate: MTRDeviceDelegate, queue: NSObject): void;
+
+  addDelegateQueue(delegate: MTRDeviceDelegate, queue: NSObject): void;
+
+  addDelegateQueueInterestedPathsForAttributesInterestedPathsForEvents(delegate: MTRDeviceDelegate, queue: NSObject, interestedPathsForAttributes: NSArray<interop.Object> | Array<interop.Object> | null, interestedPathsForEvents: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  removeDelegate(delegate: MTRDeviceDelegate): void;
+
+  readAttributeWithEndpointIDClusterIDAttributeIDParams(endpointID: NSNumber, clusterID: NSNumber, attributeID: NSNumber, params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeWithEndpointIDClusterIDAttributeIDValueExpectedValueIntervalTimedWriteTimeout(endpointID: NSNumber, clusterID: NSNumber, attributeID: NSNumber, value: interop.Object, expectedValueInterval: NSNumber, timeout: NSNumber | null): void;
+
+  readAttributePaths(attributePaths: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  descriptorClusters(): NSDictionary;
+
+  invokeCommandWithEndpointIDClusterIDCommandIDCommandFieldsExpectedValuesExpectedValueIntervalQueueCompletion(endpointID: NSNumber, clusterID: NSNumber, commandID: NSNumber, commandFields: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueInterval: NSNumber | null, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  invokeCommandWithEndpointIDClusterIDCommandIDCommandFieldsExpectedValuesExpectedValueIntervalTimedInvokeTimeoutQueueCompletion(endpointID: NSNumber, clusterID: NSNumber, commandID: NSNumber, commandFields: interop.Object, expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueInterval: NSNumber | null, timeout: NSNumber | null, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  invokeCommandsQueueCompletion(commands: NSArray<interop.Object> | Array<interop.Object>, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+
+  openCommissioningWindowWithSetupPasscodeDiscriminatorDurationQueueCompletion(setupPasscode: NSNumber, discriminator: NSNumber, duration: NSNumber, queue: NSObject, completion: (p1: MTRSetupPayload, p2: NSError) => void): void;
+
+  openCommissioningWindowWithDiscriminatorDurationQueueCompletion(discriminator: NSNumber, duration: NSNumber, queue: NSObject, completion: (p1: MTRSetupPayload, p2: NSError) => void): void;
+
+  downloadLogOfTypeTimeoutQueueCompletion(type: interop.Enum<typeof MTRDiagnosticLogType>, timeout: number, queue: NSObject, completion: (p1: NSURL, p2: NSError) => void | null): void;
+
+  waitForAttributeValuesTimeoutQueueCompletion(values: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, timeout: number, queue: NSObject, completion: (p1: NSError) => void | null): MTRAttributeValueWaiter;
+
+  static deviceWithNodeIDDeviceController(nodeID: number, deviceController: MTRDeviceController): MTRDevice;
+
+  invokeCommandWithEndpointIDClusterIDCommandIDCommandFieldsExpectedValuesExpectedValueIntervalTimedInvokeTimeoutClientQueueCompletion(endpointID: NSNumber, clusterID: NSNumber, commandID: NSNumber, commandFields: interop.Object, expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueInterval: NSNumber | null, timeout: NSNumber | null, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void): void;
+}
+
+declare class MTRBaseClusterMediaInput extends MTRGenericBaseCluster {
+  selectInputWithParamsCompletion(params: MTRMediaInputClusterSelectInputParams, completion: (p1: NSError) => void): void;
+
+  showInputStatusWithParamsCompletion(params: MTRMediaInputClusterShowInputStatusParams | null, completion: (p1: NSError) => void): void;
+
+  showInputStatusWithCompletion(completion: (p1: NSError) => void): void;
+
+  hideInputStatusWithParamsCompletion(params: MTRMediaInputClusterHideInputStatusParams | null, completion: (p1: NSError) => void): void;
+
+  hideInputStatusWithCompletion(completion: (p1: NSError) => void): void;
+
+  renameInputWithParamsCompletion(params: MTRMediaInputClusterRenameInputParams, completion: (p1: NSError) => void): void;
+
+  readAttributeInputListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeInputListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeInputListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeCurrentInputWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentInputWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentInputWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  selectInputWithParamsCompletionHandler(params: MTRMediaInputClusterSelectInputParams, completionHandler: (p1: NSError) => void): void;
+
+  showInputStatusWithParamsCompletionHandler(params: MTRMediaInputClusterShowInputStatusParams | null, completionHandler: (p1: NSError) => void): void;
+
+  showInputStatusWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
+
+  hideInputStatusWithParamsCompletionHandler(params: MTRMediaInputClusterHideInputStatusParams | null, completionHandler: (p1: NSError) => void): void;
+
+  hideInputStatusWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
+
+  renameInputWithParamsCompletionHandler(params: MTRMediaInputClusterRenameInputParams, completionHandler: (p1: NSError) => void): void;
+
+  readAttributeInputListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeInputListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeInputListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeCurrentInputWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentInputWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentInputWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+}
+
+declare class MTRBaseClusterWaterHeaterMode extends MTRGenericBaseCluster {
+  changeToModeWithParamsCompletion(params: MTRWaterHeaterModeClusterChangeToModeParams, completion: (p1: MTRWaterHeaterModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
+
+  readAttributeSupportedModesWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeSupportedModesWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeSupportedModesWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeCurrentModeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentModeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentModeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRGeneralDiagnosticsClusterTestEventTriggerParams extends NSObject implements NSCopying {
+  enableKey: NSData;
+
+  eventTrigger: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setEnableKey(enableKey: NSData): void;
+
+  setEventTrigger(eventTrigger: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRDeviceType extends NSObject {
+  static deviceTypeForID(deviceTypeID: NSNumber): MTRDeviceType;
+
+  readonly id: NSNumber;
+
+  readonly name: string;
+
+  readonly isUtility: boolean;
+}
+
+declare class MTRDeviceControllerFactoryParams extends NSObject {
+  readonly storage: MTRStorage;
+
+  otaProviderDelegate: MTROTAProviderDelegate;
+
+  get productAttestationAuthorityCertificates(): NSArray;
+  set productAttestationAuthorityCertificates(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get certificationDeclarationCertificates(): NSArray;
+  set certificationDeclarationCertificates(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  port: NSNumber;
+
+  shouldStartServer: boolean;
+
+  initWithStorage(storage: MTRStorage): this;
+
+  setOtaProviderDelegate(otaProviderDelegate: MTROTAProviderDelegate | null): void;
+
+  setProductAttestationAuthorityCertificates(productAttestationAuthorityCertificates: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setCertificationDeclarationCertificates(certificationDeclarationCertificates: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setPort(port: NSNumber | null): void;
+
+  setShouldStartServer(shouldStartServer: boolean): void;
+}
+
+declare class MTRDoorLockClusterSetAliroReaderConfigParams extends NSObject implements NSCopying {
+  signingKey: NSData;
+
+  verificationKey: NSData;
+
+  groupIdentifier: NSData;
+
+  groupResolvingKey: NSData | null;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setSigningKey(signingKey: NSData): void;
+
+  setVerificationKey(verificationKey: NSData): void;
+
+  setGroupIdentifier(groupIdentifier: NSData): void;
+
+  setGroupResolvingKey(groupResolvingKey: NSData | null): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROperationalCredentialsClusterAddTrustedRootCertificateParams extends NSObject implements NSCopying {
+  rootCACertificate: NSData;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setRootCACertificate(rootCACertificate: NSData): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  rootCertificate: NSData;
+
+  setRootCertificate(rootCertificate: NSData): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeParams extends NSObject implements NSCopying {
+  newMode: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  getNewMode(): NSNumber;
+
+  setNewMode(newMode: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTREventRequestPath extends NSObject implements NSCopying, NSSecureCoding {
+  readonly endpoint: NSNumber;
+
+  readonly cluster: NSNumber;
+
+  readonly event: NSNumber;
+
+  static requestPathWithEndpointIDClusterIDEventID(endpointID: NSNumber | null, clusterID: NSNumber | null, eventID: NSNumber | null): MTREventRequestPath;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+}
+
+declare class MTRRVCOperationalStateClusterOperationCompletionEvent extends NSObject implements NSCopying {
+  completionErrorCode: NSNumber;
+
+  totalOperationalTime: NSNumber | null;
+
+  pausedTime: NSNumber | null;
+
+  setCompletionErrorCode(completionErrorCode: NSNumber): void;
+
+  setTotalOperationalTime(totalOperationalTime: NSNumber | null): void;
+
+  setPausedTime(pausedTime: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRThreadNetworkDiagnosticsClusterNetworkFaultChangeEvent extends NSObject implements NSCopying {
   get current(): NSArray;
   set current(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -39483,74 +39246,6 @@ declare class MTRGeneralDiagnosticsClusterRadioFaultChangeEvent extends NSObject
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRChannelClusterProgramStruct extends NSObject implements NSCopying {
-  identifier: string;
-
-  channel: MTRChannelClusterChannelInfoStruct;
-
-  startTime: NSNumber;
-
-  endTime: NSNumber;
-
-  title: string;
-
-  subtitle: string | null;
-
-  descriptionString: string | null;
-
-  get audioLanguages(): NSArray | null;
-  set audioLanguages(value: NSArray<interop.Object> | Array<interop.Object> | null);
-
-  get ratings(): NSArray | null;
-  set ratings(value: NSArray<interop.Object> | Array<interop.Object> | null);
-
-  releaseDate: string | null;
-
-  parentalGuidanceText: string | null;
-
-  recordingFlag: NSNumber | null;
-
-  seriesInfo: MTRChannelClusterSeriesInfoStruct | null;
-
-  get categoryList(): NSArray | null;
-  set categoryList(value: NSArray<interop.Object> | Array<interop.Object> | null);
-
-  get castList(): NSArray | null;
-  set castList(value: NSArray<interop.Object> | Array<interop.Object> | null);
-
-  setIdentifier(identifier: string): void;
-
-  setChannel(channel: MTRChannelClusterChannelInfoStruct): void;
-
-  setStartTime(startTime: NSNumber): void;
-
-  setEndTime(endTime: NSNumber): void;
-
-  setTitle(title: string): void;
-
-  setSubtitle(subtitle: string | null): void;
-
-  setDescriptionString(descriptionString: string | null): void;
-
-  setAudioLanguages(audioLanguages: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setRatings(ratings: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setReleaseDate(releaseDate: string | null): void;
-
-  setParentalGuidanceText(parentalGuidanceText: string | null): void;
-
-  setRecordingFlag(recordingFlag: NSNumber | null): void;
-
-  setSeriesInfo(seriesInfo: MTRChannelClusterSeriesInfoStruct | null): void;
-
-  setCategoryList(categoryList: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setCastList(castList: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRNetworkCommissioningClusterScanNetworksResponseParams extends NSObject implements NSCopying {
   networkingStatus: NSNumber;
 
@@ -39604,6 +39299,22 @@ declare class MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct exte
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRClusterOtaSoftwareUpdateRequestor extends MTRClusterOTASoftwareUpdateRequestor {
+  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
+
+  announceOtaProviderWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateRequestorClusterAnnounceOtaProviderParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  readAttributeDefaultOtaProvidersWithParams(params: MTRReadParams | null): NSDictionary;
+
+  writeAttributeDefaultOtaProvidersWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeDefaultOtaProvidersWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+}
+
+declare class MTRBridgedDeviceBasicInformationClusterShutDownEvent extends NSObject implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRMediaPlaybackClusterRewindParams extends NSObject implements NSCopying {
   audioAdvanceUnmuted: NSNumber | null;
 
@@ -39620,132 +39331,17 @@ declare class MTRMediaPlaybackClusterRewindParams extends NSObject implements NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRBaseClusterMediaInput extends MTRGenericBaseCluster {
-  selectInputWithParamsCompletion(params: MTRMediaInputClusterSelectInputParams, completion: (p1: NSError) => void): void;
-
-  showInputStatusWithParamsCompletion(params: MTRMediaInputClusterShowInputStatusParams | null, completion: (p1: NSError) => void): void;
-
-  showInputStatusWithCompletion(completion: (p1: NSError) => void): void;
-
-  hideInputStatusWithParamsCompletion(params: MTRMediaInputClusterHideInputStatusParams | null, completion: (p1: NSError) => void): void;
-
-  hideInputStatusWithCompletion(completion: (p1: NSError) => void): void;
-
-  renameInputWithParamsCompletion(params: MTRMediaInputClusterRenameInputParams, completion: (p1: NSError) => void): void;
-
-  readAttributeInputListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeInputListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeInputListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeCurrentInputWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentInputWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentInputWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  selectInputWithParamsCompletionHandler(params: MTRMediaInputClusterSelectInputParams, completionHandler: (p1: NSError) => void): void;
-
-  showInputStatusWithParamsCompletionHandler(params: MTRMediaInputClusterShowInputStatusParams | null, completionHandler: (p1: NSError) => void): void;
-
-  showInputStatusWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
-
-  hideInputStatusWithParamsCompletionHandler(params: MTRMediaInputClusterHideInputStatusParams | null, completionHandler: (p1: NSError) => void): void;
-
-  hideInputStatusWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
-
-  renameInputWithParamsCompletionHandler(params: MTRMediaInputClusterRenameInputParams, completionHandler: (p1: NSError) => void): void;
-
-  readAttributeInputListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeInputListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeInputListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeCurrentInputWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentInputWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentInputWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+declare class MTRApplicationBasicClusterApplicationBasicApplication extends MTRApplicationBasicClusterApplicationStruct {
 }
 
-declare class MTRGeneralDiagnosticsClusterTestEventTriggerParams extends NSObject implements NSCopying {
-  enableKey: NSData;
-
-  eventTrigger: NSNumber;
+declare class MTRDoorLockClusterGetHolidayScheduleParams extends NSObject implements NSCopying {
+  holidayIndex: NSNumber;
 
   timedInvokeTimeoutMs: NSNumber;
 
   serverSideProcessingTimeout: NSNumber;
 
-  setEnableKey(enableKey: NSData): void;
-
-  setEventTrigger(eventTrigger: NSNumber): void;
+  setHolidayIndex(holidayIndex: NSNumber): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
@@ -39754,64 +39350,18 @@ declare class MTRGeneralDiagnosticsClusterTestEventTriggerParams extends NSObjec
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRDeviceType extends NSObject {
-  static deviceTypeForID(deviceTypeID: NSNumber): MTRDeviceType;
+declare class MTRActionsClusterDisableActionParams extends NSObject implements NSCopying {
+  actionID: NSNumber;
 
-  readonly id: NSNumber;
-
-  readonly name: string;
-
-  readonly isUtility: boolean;
-}
-
-declare class MTRDeviceControllerFactoryParams extends NSObject {
-  readonly storage: MTRStorage;
-
-  otaProviderDelegate: MTROTAProviderDelegate;
-
-  get productAttestationAuthorityCertificates(): NSArray;
-  set productAttestationAuthorityCertificates(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get certificationDeclarationCertificates(): NSArray;
-  set certificationDeclarationCertificates(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  port: NSNumber;
-
-  shouldStartServer: boolean;
-
-  initWithStorage(storage: MTRStorage): this;
-
-  setOtaProviderDelegate(otaProviderDelegate: MTROTAProviderDelegate | null): void;
-
-  setProductAttestationAuthorityCertificates(productAttestationAuthorityCertificates: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setCertificationDeclarationCertificates(certificationDeclarationCertificates: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setPort(port: NSNumber | null): void;
-
-  setShouldStartServer(shouldStartServer: boolean): void;
-}
-
-declare class MTRDoorLockClusterSetAliroReaderConfigParams extends NSObject implements NSCopying {
-  signingKey: NSData;
-
-  verificationKey: NSData;
-
-  groupIdentifier: NSData;
-
-  groupResolvingKey: NSData | null;
+  invokeID: NSNumber | null;
 
   timedInvokeTimeoutMs: NSNumber;
 
   serverSideProcessingTimeout: NSNumber;
 
-  setSigningKey(signingKey: NSData): void;
+  setActionID(actionID: NSNumber): void;
 
-  setVerificationKey(verificationKey: NSData): void;
-
-  setGroupIdentifier(groupIdentifier: NSData): void;
-
-  setGroupResolvingKey(groupResolvingKey: NSData | null): void;
+  setInvokeID(invokeID: NSNumber | null): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
@@ -39820,8 +39370,8 @@ declare class MTRDoorLockClusterSetAliroReaderConfigParams extends NSObject impl
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRBaseClusterWaterHeaterMode extends MTRGenericBaseCluster {
-  changeToModeWithParamsCompletion(params: MTRWaterHeaterModeClusterChangeToModeParams, completion: (p1: MTRWaterHeaterModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
+declare class MTRBaseClusterRVCCleanMode extends MTRGenericBaseCluster {
+  changeToModeWithParamsCompletion(params: MTRRVCCleanModeClusterChangeToModeParams, completion: (p1: MTRRVCCleanModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
 
   readAttributeSupportedModesWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
 
@@ -39866,129 +39416,6 @@ declare class MTRBaseClusterWaterHeaterMode extends MTRGenericBaseCluster {
   static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
-declare class MTROperationalCredentialsClusterAddTrustedRootCertificateParams extends NSObject implements NSCopying {
-  rootCACertificate: NSData;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setRootCACertificate(rootCACertificate: NSData): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  rootCertificate: NSData;
-
-  setRootCertificate(rootCertificate: NSData): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeParams extends NSObject implements NSCopying {
-  newMode: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  getNewMode(): NSNumber;
-
-  setNewMode(newMode: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTREventRequestPath extends NSObject implements NSCopying, NSSecureCoding {
-  readonly endpoint: NSNumber;
-
-  readonly cluster: NSNumber;
-
-  readonly event: NSNumber;
-
-  static requestPathWithEndpointIDClusterIDEventID(endpointID: NSNumber | null, clusterID: NSNumber | null, eventID: NSNumber | null): MTREventRequestPath;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class MTRRVCOperationalStateClusterOperationCompletionEvent extends NSObject implements NSCopying {
-  completionErrorCode: NSNumber;
-
-  totalOperationalTime: NSNumber | null;
-
-  pausedTime: NSNumber | null;
-
-  setCompletionErrorCode(completionErrorCode: NSNumber): void;
-
-  setTotalOperationalTime(totalOperationalTime: NSNumber | null): void;
-
-  setPausedTime(pausedTime: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRApplicationBasicClusterApplicationBasicApplication extends MTRApplicationBasicClusterApplicationStruct {
-}
-
-declare class MTRDoorLockClusterGetHolidayScheduleParams extends NSObject implements NSCopying {
-  holidayIndex: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setHolidayIndex(holidayIndex: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRActivatedCarbonFilterMonitoringClusterResetConditionParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRActionsClusterDisableActionParams extends NSObject implements NSCopying {
-  actionID: NSNumber;
-
-  invokeID: NSNumber | null;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setActionID(actionID: NSNumber): void;
-
-  setInvokeID(invokeID: NSNumber | null): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent extends NSObject implements NSCopying {
@@ -40118,6 +39545,110 @@ declare class MTRNetworkCommissioningClusterConnectNetworkParams extends NSObjec
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRBaseClusterTemperatureControl extends MTRGenericBaseCluster {
+  setTemperatureWithParamsCompletion(params: MTRTemperatureControlClusterSetTemperatureParams | null, completion: (p1: NSError) => void): void;
+
+  setTemperatureWithCompletion(completion: (p1: NSError) => void): void;
+
+  readAttributeTemperatureSetpointWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTemperatureSetpointWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTemperatureSetpointWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMinTemperatureWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMinTemperatureWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMinTemperatureWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMaxTemperatureWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMaxTemperatureWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMaxTemperatureWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeStepWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeStepWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeStepWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeSelectedTemperatureLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeSelectedTemperatureLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeSelectedTemperatureLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeSupportedTemperatureLevelsWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeSupportedTemperatureLevelsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeSupportedTemperatureLevelsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRValveConfigurationAndControlClusterCloseParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRRVCRunModeClusterChangeToModeParams extends NSObject implements NSCopying {
+  newMode: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  getNewMode(): NSNumber;
+
+  setNewMode(newMode: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTREndpointInfo extends NSObject implements NSCopying, NSSecureCoding {
   readonly endpointID: NSNumber;
 
@@ -40150,44 +39681,77 @@ declare class MTRTestClusterClusterTestNullableOptionalRequestParams extends MTR
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 }
 
-declare class MTRUnitTestingClusterTestNullableOptionalResponseParams extends NSObject implements NSCopying {
-  wasPresent: NSNumber;
+declare class MTROperationalStateClusterOperationalCommandResponseParams extends NSObject implements NSCopying {
+  commandResponseState: MTROperationalStateClusterErrorStateStruct;
 
-  wasNull: NSNumber | null;
+  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
 
-  value: NSNumber | null;
+  setCommandResponseState(commandResponseState: MTROperationalStateClusterErrorStateStruct): void;
 
-  originalValue: NSNumber | null;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRMetrics extends NSObject {
+  readonly uniqueIdentifier: NSUUID;
+
+  readonly allKeys: NSArray;
+
+  metricDataForKey(key: string): MTRMetricData;
+}
+
+declare class MTRDoorLockClusterGetUserResponseParams extends NSObject implements NSCopying {
+  userIndex: NSNumber;
+
+  userName: string | null;
+
+  userUniqueID: NSNumber | null;
+
+  userStatus: NSNumber | null;
+
+  userType: NSNumber | null;
+
+  credentialRule: NSNumber | null;
+
+  get credentials(): NSArray | null;
+  set credentials(value: NSArray<interop.Object> | Array<interop.Object> | null);
+
+  creatorFabricIndex: NSNumber | null;
+
+  lastModifiedFabricIndex: NSNumber | null;
+
+  nextUserIndex: NSNumber | null;
 
   timedInvokeTimeoutMs: NSNumber;
 
   initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
 
-  setWasPresent(wasPresent: NSNumber): void;
+  setUserIndex(userIndex: NSNumber): void;
 
-  setWasNull(wasNull: NSNumber | null): void;
+  setUserName(userName: string | null): void;
 
-  setValue(value: NSNumber | null): void;
+  setUserUniqueID(userUniqueID: NSNumber | null): void;
 
-  setOriginalValue(originalValue: NSNumber | null): void;
+  setUserStatus(userStatus: NSNumber | null): void;
+
+  setUserType(userType: NSNumber | null): void;
+
+  setCredentialRule(credentialRule: NSNumber | null): void;
+
+  setCredentials(credentials: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setCreatorFabricIndex(creatorFabricIndex: NSNumber | null): void;
+
+  setLastModifiedFabricIndex(lastModifiedFabricIndex: NSNumber | null): void;
+
+  setNextUserIndex(nextUserIndex: NSNumber | null): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  userUniqueId: NSNumber | null;
+
+  setUserUniqueId(userUniqueId: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRTestClusterClusterTestNestedStructArgumentRequestParams extends MTRUnitTestingClusterTestNestedStructArgumentRequestParams {
-  arg1: MTRUnitTestingClusterNestedStruct;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setArg1(arg1: MTRUnitTestingClusterNestedStruct): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 }
 
 declare class MTRClusterOperationalState extends MTRGenericCluster {
@@ -40232,30 +39796,36 @@ declare class MTRClusterOperationalState extends MTRGenericCluster {
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTRNetworkCommissioningClusterWiFiInterfaceScanResult extends MTRNetworkCommissioningClusterWiFiInterfaceScanResultStruct {
-  security: NSNumber;
+declare class MTRDoorLockClusterLockUserChangeEvent extends NSObject implements NSCopying {
+  lockDataType: NSNumber;
 
-  ssid: NSData;
+  dataOperationType: NSNumber;
 
-  bssid: NSData;
+  operationSource: NSNumber;
 
-  channel: NSNumber;
+  userIndex: NSNumber | null;
 
-  wiFiBand: NSNumber;
+  fabricIndex: NSNumber | null;
 
-  rssi: NSNumber;
+  sourceNode: NSNumber | null;
 
-  setSecurity(security: NSNumber): void;
+  dataIndex: NSNumber | null;
 
-  setSsid(ssid: NSData): void;
+  setLockDataType(lockDataType: NSNumber): void;
 
-  setBssid(bssid: NSData): void;
+  setDataOperationType(dataOperationType: NSNumber): void;
 
-  setChannel(channel: NSNumber): void;
+  setOperationSource(operationSource: NSNumber): void;
 
-  setWiFiBand(wiFiBand: NSNumber): void;
+  setUserIndex(userIndex: NSNumber | null): void;
 
-  setRssi(rssi: NSNumber): void;
+  setFabricIndex(fabricIndex: NSNumber | null): void;
+
+  setSourceNode(sourceNode: NSNumber | null): void;
+
+  setDataIndex(dataIndex: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTRServiceAreaClusterMapStruct extends NSObject implements NSCopying {
@@ -40267,10 +39837,6 @@ declare class MTRServiceAreaClusterMapStruct extends NSObject implements NSCopyi
 
   setName(name: string): void;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRPumpConfigurationAndControlClusterPumpMotorFatalFailureEvent extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
@@ -40292,26 +39858,34 @@ declare class MTRGeneralDiagnosticsClusterBootReasonEvent extends NSObject imple
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRClusterOtaSoftwareUpdateProvider extends MTRClusterOTASoftwareUpdateProvider {
+declare class MTRClusterTimeFormatLocalization extends MTRGenericCluster {
+  readAttributeHourFormatWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeHourFormatWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeHourFormatWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeActiveCalendarTypeWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeActiveCalendarTypeWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeActiveCalendarTypeWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeSupportedCalendarTypesWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+
   initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
-
-  queryImageWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateProviderClusterQueryImageParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROtaSoftwareUpdateProviderClusterQueryImageResponseParams, p2: NSError) => void | null): void;
-
-  applyUpdateRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateProviderClusterApplyUpdateRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROtaSoftwareUpdateProviderClusterApplyUpdateResponseParams, p2: NSError) => void | null): void;
-
-  notifyUpdateAppliedWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-}
-
-declare class MTRDoorLockClusterClearAliroReaderConfigParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTRTestClusterClusterTestListInt8UArgumentRequestParams extends MTRUnitTestingClusterTestListInt8UArgumentRequestParams {
@@ -40359,6 +39933,16 @@ declare class MTRTimeSynchronizationClusterSetTrustedTimeSourceParams extends NS
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRTestClusterClusterBooleanResponseParams extends MTRUnitTestingClusterBooleanResponseParams {
+  value: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  setValue(value: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 }
 
 declare class MTRClusterDoorLock extends MTRGenericCluster {
@@ -40625,112 +40209,39 @@ declare class MTRClusterDoorLock extends MTRGenericCluster {
   clearCredentialWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRDoorLockClusterClearCredentialParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 }
 
-declare class MTRBaseClusterTemperatureControl extends MTRGenericBaseCluster {
-  setTemperatureWithParamsCompletion(params: MTRTemperatureControlClusterSetTemperatureParams | null, completion: (p1: NSError) => void): void;
+declare class MTRUnitTestingClusterTestFabricScoped extends NSObject implements NSCopying {
+  fabricSensitiveInt8u: NSNumber;
 
-  setTemperatureWithCompletion(completion: (p1: NSError) => void): void;
+  optionalFabricSensitiveInt8u: NSNumber | null;
 
-  readAttributeTemperatureSetpointWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  nullableFabricSensitiveInt8u: NSNumber | null;
 
-  subscribeAttributeTemperatureSetpointWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+  nullableOptionalFabricSensitiveInt8u: NSNumber | null;
 
-  static readAttributeTemperatureSetpointWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  fabricSensitiveCharString: string;
 
-  readAttributeMinTemperatureWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  fabricSensitiveStruct: MTRUnitTestingClusterSimpleStruct;
 
-  subscribeAttributeMinTemperatureWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+  get fabricSensitiveInt8uList(): NSArray;
+  set fabricSensitiveInt8uList(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  static readAttributeMinTemperatureWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  fabricIndex: NSNumber;
 
-  readAttributeMaxTemperatureWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  setFabricSensitiveInt8u(fabricSensitiveInt8u: NSNumber): void;
 
-  subscribeAttributeMaxTemperatureWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+  setOptionalFabricSensitiveInt8u(optionalFabricSensitiveInt8u: NSNumber | null): void;
 
-  static readAttributeMaxTemperatureWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  setNullableFabricSensitiveInt8u(nullableFabricSensitiveInt8u: NSNumber | null): void;
 
-  readAttributeStepWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  setNullableOptionalFabricSensitiveInt8u(nullableOptionalFabricSensitiveInt8u: NSNumber | null): void;
 
-  subscribeAttributeStepWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+  setFabricSensitiveCharString(fabricSensitiveCharString: string): void;
 
-  static readAttributeStepWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  setFabricSensitiveStruct(fabricSensitiveStruct: MTRUnitTestingClusterSimpleStruct): void;
 
-  readAttributeSelectedTemperatureLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+  setFabricSensitiveInt8uList(fabricSensitiveInt8uList: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  subscribeAttributeSelectedTemperatureLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeSelectedTemperatureLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeSupportedTemperatureLevelsWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeSupportedTemperatureLevelsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeSupportedTemperatureLevelsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
-declare class MTRAccountLoginClusterGetSetupPINParams extends NSObject implements NSCopying {
-  tempAccountIdentifier: string;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTempAccountIdentifier(tempAccountIdentifier: string): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRDishwasherAlarmClusterNotifyEvent extends NSObject implements NSCopying {
-  active: NSNumber;
-
-  inactive: NSNumber;
-
-  state: NSNumber;
-
-  mask: NSNumber;
-
-  setActive(active: NSNumber): void;
-
-  setInactive(inactive: NSNumber): void;
-
-  setState(state: NSNumber): void;
-
-  setMask(mask: NSNumber): void;
+  setFabricIndex(fabricIndex: NSNumber): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -40819,18 +40330,6 @@ declare class MTRDoorLockClusterLockDoorParams extends NSObject implements NSCop
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRHEPAFilterMonitoringClusterReplacementProductStruct extends NSObject implements NSCopying {
-  productIdentifierType: NSNumber;
-
-  productIdentifierValue: string;
-
-  setProductIdentifierType(productIdentifierType: NSNumber): void;
-
-  setProductIdentifierValue(productIdentifierValue: string): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -40977,6 +40476,18 @@ declare class MTRBaseClusterWaterHeaterManagement extends MTRGenericBaseCluster 
   initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
+declare class MTRHEPAFilterMonitoringClusterReplacementProductStruct extends NSObject implements NSCopying {
+  productIdentifierType: NSNumber;
+
+  productIdentifierValue: string;
+
+  setProductIdentifierType(productIdentifierType: NSNumber): void;
+
+  setProductIdentifierValue(productIdentifierValue: string): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTROvenCavityOperationalStateClusterOperationalStateStruct extends NSObject implements NSCopying {
   operationalStateID: NSNumber;
 
@@ -41093,21 +40604,24 @@ declare class MTRClusterNetworkCommissioning extends MTRGenericCluster {
   reorderNetworkWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRNetworkCommissioningClusterReorderNetworkParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTRNetworkCommissioningClusterNetworkConfigResponseParams, p2: NSError) => void | null): void;
 }
 
-declare class MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams extends NSObject implements NSCopying {
-  get arg1(): NSArray;
-  set arg1(value: NSArray<interop.Object> | Array<interop.Object>);
+declare class MTRClusterEnergyEVSEMode extends MTRGenericCluster {
+  changeToModeWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTREnergyEVSEModeClusterChangeToModeParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTREnergyEVSEModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
 
-  timedInvokeTimeoutMs: NSNumber;
+  readAttributeSupportedModesWithParams(params: MTRReadParams | null): NSDictionary | null;
 
-  serverSideProcessingTimeout: NSNumber;
+  readAttributeCurrentModeWithParams(params: MTRReadParams | null): NSDictionary | null;
 
-  setArg1(arg1: NSArray<interop.Object> | Array<interop.Object>): void;
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
 
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
 
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
 
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
 declare class MTRBaseClusterFixedLabel extends MTRGenericBaseCluster {
@@ -41214,6 +40728,38 @@ declare class MTRDoorLockClusterGetYearDayScheduleResponseParams extends NSObjec
   setLocalEndTime(localEndTime: NSNumber | null): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRDeviceEnergyManagementClusterResumeRequestParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRMessagesClusterMessageCompleteEvent extends NSObject implements NSCopying {
+  messageID: NSData;
+
+  responseID: NSNumber | null;
+
+  reply: string | null;
+
+  futureMessagesPreference: NSNumber | null;
+
+  setMessageID(messageID: NSData): void;
+
+  setResponseID(responseID: NSNumber | null): void;
+
+  setReply(reply: string | null): void;
+
+  setFutureMessagesPreference(futureMessagesPreference: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -41382,22 +40928,19 @@ declare class MTRGroupKeyManagementClusterKeySetRemoveParams extends NSObject im
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRMessagesClusterMessageCompleteEvent extends NSObject implements NSCopying {
-  messageID: NSData;
+declare class MTRUnitTestingClusterTestListNestedStructListArgumentRequestParams extends NSObject implements NSCopying {
+  get arg1(): NSArray;
+  set arg1(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  responseID: NSNumber | null;
+  timedInvokeTimeoutMs: NSNumber;
 
-  reply: string | null;
+  serverSideProcessingTimeout: NSNumber;
 
-  futureMessagesPreference: NSNumber | null;
+  setArg1(arg1: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  setMessageID(messageID: NSData): void;
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
-  setResponseID(responseID: NSNumber | null): void;
-
-  setReply(reply: string | null): void;
-
-  setFutureMessagesPreference(futureMessagesPreference: NSNumber | null): void;
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -41652,30 +41195,18 @@ declare class MTREnergyEVSEModeClusterChangeToModeResponseParams extends NSObjec
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTROtaSoftwareUpdateRequestorClusterProviderLocation extends MTROTASoftwareUpdateRequestorClusterProviderLocation {
-  providerNodeID: NSNumber;
-
-  endpoint: NSNumber;
-
-  fabricIndex: NSNumber;
-
-  setProviderNodeID(providerNodeID: NSNumber): void;
-
-  setEndpoint(endpoint: NSNumber): void;
-
-  setFabricIndex(fabricIndex: NSNumber): void;
+declare class MTRPumpConfigurationAndControlClusterPumpMotorFatalFailureEvent extends NSObject implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRAccessControlClusterAccessControlExtensionStruct extends NSObject implements NSCopying {
-  data: NSData;
+declare class MTRClusterOtaSoftwareUpdateProvider extends MTRClusterOTASoftwareUpdateProvider {
+  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
 
-  fabricIndex: NSNumber;
+  queryImageWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateProviderClusterQueryImageParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROtaSoftwareUpdateProviderClusterQueryImageResponseParams, p2: NSError) => void | null): void;
 
-  setData(data: NSData): void;
+  applyUpdateRequestWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateProviderClusterApplyUpdateRequestParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: MTROtaSoftwareUpdateProviderClusterApplyUpdateResponseParams, p2: NSError) => void | null): void;
 
-  setFabricIndex(fabricIndex: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  notifyUpdateAppliedWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 }
 
 declare class MTRElectricalEnergyMeasurementClusterCumulativeEnergyMeasuredEvent extends NSObject implements NSCopying {
@@ -41738,6 +41269,20 @@ declare class MTROvenModeClusterChangeToModeResponseParams extends NSObject impl
   setStatusText(statusText: string | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRTestClusterClusterTestNestedStructArgumentRequestParams extends MTRUnitTestingClusterTestNestedStructArgumentRequestParams {
+  arg1: MTRUnitTestingClusterNestedStruct;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setArg1(arg1: MTRUnitTestingClusterNestedStruct): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 }
 
 declare class MTRBaseClusterRadonConcentrationMeasurement extends MTRGenericBaseCluster {
@@ -42055,18 +41600,6 @@ declare class MTRTargetNavigatorClusterNavigateTargetResponseParams extends NSOb
   setData(data: string | null): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRElectricalMeasurementClusterGetProfileInfoCommandParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -43067,77 +42600,6 @@ declare class MTRTestClusterClusterTestEmitTestFabricScopedEventRequestParams ex
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 }
 
-declare class MTRColorControlClusterColorLoopSetParams extends NSObject implements NSCopying {
-  updateFlags: NSNumber;
-
-  action: NSNumber;
-
-  direction: NSNumber;
-
-  time: NSNumber;
-
-  startHue: NSNumber;
-
-  optionsMask: NSNumber;
-
-  optionsOverride: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setUpdateFlags(updateFlags: NSNumber): void;
-
-  setAction(action: NSNumber): void;
-
-  setDirection(direction: NSNumber): void;
-
-  setTime(time: NSNumber): void;
-
-  setStartHue(startHue: NSNumber): void;
-
-  setOptionsMask(optionsMask: NSNumber): void;
-
-  setOptionsOverride(optionsOverride: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRTestClusterClusterTestSpecificResponseParams extends MTRUnitTestingClusterTestSpecificResponseParams {
-  returnValue: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  setReturnValue(returnValue: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-}
-
-declare class MTRPumpConfigurationAndControlClusterSupplyVoltageHighEvent extends NSObject implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTROvenModeClusterModeOptionStruct extends NSObject implements NSCopying {
-  label: string;
-
-  mode: NSNumber;
-
-  get modeTags(): NSArray;
-  set modeTags(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setLabel(label: string): void;
-
-  setMode(mode: NSNumber): void;
-
-  setModeTags(modeTags: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRRefrigeratorAndTemperatureControlledCabinetModeClusterChangeToModeResponseParams extends NSObject implements NSCopying {
   status: NSNumber;
 
@@ -43338,12 +42800,119 @@ declare class MTRColorControlClusterMoveHueParams extends NSObject implements NS
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRMetrics extends NSObject {
-  readonly uniqueIdentifier: NSUUID;
+declare class MTRColorControlClusterColorLoopSetParams extends NSObject implements NSCopying {
+  updateFlags: NSNumber;
 
-  readonly allKeys: NSArray;
+  action: NSNumber;
 
-  metricDataForKey(key: string): MTRMetricData;
+  direction: NSNumber;
+
+  time: NSNumber;
+
+  startHue: NSNumber;
+
+  optionsMask: NSNumber;
+
+  optionsOverride: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setUpdateFlags(updateFlags: NSNumber): void;
+
+  setAction(action: NSNumber): void;
+
+  setDirection(direction: NSNumber): void;
+
+  setTime(time: NSNumber): void;
+
+  setStartHue(startHue: NSNumber): void;
+
+  setOptionsMask(optionsMask: NSNumber): void;
+
+  setOptionsOverride(optionsOverride: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRTestClusterClusterTestSpecificResponseParams extends MTRUnitTestingClusterTestSpecificResponseParams {
+  returnValue: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  setReturnValue(returnValue: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+}
+
+declare class MTRPumpConfigurationAndControlClusterSupplyVoltageHighEvent extends NSObject implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROvenModeClusterModeOptionStruct extends NSObject implements NSCopying {
+  label: string;
+
+  mode: NSNumber;
+
+  get modeTags(): NSArray;
+  set modeTags(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setLabel(label: string): void;
+
+  setMode(mode: NSNumber): void;
+
+  setModeTags(modeTags: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROccupancySensingClusterOccupancyChangedEvent extends NSObject implements NSCopying {
+  occupancy: NSNumber;
+
+  setOccupancy(occupancy: NSNumber): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRDishwasherAlarmClusterNotifyEvent extends NSObject implements NSCopying {
+  active: NSNumber;
+
+  inactive: NSNumber;
+
+  state: NSNumber;
+
+  mask: NSNumber;
+
+  setActive(active: NSNumber): void;
+
+  setInactive(inactive: NSNumber): void;
+
+  setState(state: NSNumber): void;
+
+  setMask(mask: NSNumber): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRTimeSynchronizationClusterSetDefaultNTPParams extends NSObject implements NSCopying {
+  defaultNTP: string | null;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setDefaultNTP(defaultNTP: string | null): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTRDeviceEnergyManagementClusterModifyForecastRequestParams extends NSObject implements NSCopying {
@@ -43765,6 +43334,74 @@ declare class MTRGroupsClusterGetGroupMembershipParams extends NSObject implemen
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRChannelClusterProgramStruct extends NSObject implements NSCopying {
+  identifier: string;
+
+  channel: MTRChannelClusterChannelInfoStruct;
+
+  startTime: NSNumber;
+
+  endTime: NSNumber;
+
+  title: string;
+
+  subtitle: string | null;
+
+  descriptionString: string | null;
+
+  get audioLanguages(): NSArray | null;
+  set audioLanguages(value: NSArray<interop.Object> | Array<interop.Object> | null);
+
+  get ratings(): NSArray | null;
+  set ratings(value: NSArray<interop.Object> | Array<interop.Object> | null);
+
+  releaseDate: string | null;
+
+  parentalGuidanceText: string | null;
+
+  recordingFlag: NSNumber | null;
+
+  seriesInfo: MTRChannelClusterSeriesInfoStruct | null;
+
+  get categoryList(): NSArray | null;
+  set categoryList(value: NSArray<interop.Object> | Array<interop.Object> | null);
+
+  get castList(): NSArray | null;
+  set castList(value: NSArray<interop.Object> | Array<interop.Object> | null);
+
+  setIdentifier(identifier: string): void;
+
+  setChannel(channel: MTRChannelClusterChannelInfoStruct): void;
+
+  setStartTime(startTime: NSNumber): void;
+
+  setEndTime(endTime: NSNumber): void;
+
+  setTitle(title: string): void;
+
+  setSubtitle(subtitle: string | null): void;
+
+  setDescriptionString(descriptionString: string | null): void;
+
+  setAudioLanguages(audioLanguages: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setRatings(ratings: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setReleaseDate(releaseDate: string | null): void;
+
+  setParentalGuidanceText(parentalGuidanceText: string | null): void;
+
+  setRecordingFlag(recordingFlag: NSNumber | null): void;
+
+  setSeriesInfo(seriesInfo: MTRChannelClusterSeriesInfoStruct | null): void;
+
+  setCategoryList(categoryList: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setCastList(castList: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRApplicationLauncherClusterLaunchAppParams extends NSObject implements NSCopying {
   application: MTRApplicationLauncherClusterApplicationStruct | null;
 
@@ -43781,6 +43418,52 @@ declare class MTRApplicationLauncherClusterLaunchAppParams extends NSObject impl
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRServerAttribute extends NSObject {
+  initReadonlyAttributeWithIDInitialValueRequiredPrivilege(attributeID: NSNumber, value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, requiredPrivilege: interop.Enum<typeof MTRAccessControlEntryPrivilege>): this;
+
+  setValue(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
+
+  static newFeatureMapAttributeWithInitialValue(value: NSNumber): MTRServerAttribute;
+
+  readonly attributeID: NSNumber;
+
+  readonly value: NSDictionary;
+
+  readonly requiredReadPrivilege: interop.Enum<typeof MTRAccessControlEntryPrivilege>;
+
+  readonly writable: boolean;
+
+  isWritable(): boolean;
+}
+
+declare class MTRClusterOvenMode extends MTRGenericCluster {
+  changeToModeWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTROvenModeClusterChangeToModeParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: MTROvenModeClusterChangeToModeResponseParams, p2: NSError) => void | null): void;
+
+  readAttributeSupportedModesWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeCurrentModeWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRSmokeCOAlarmClusterInterconnectCOAlarmEvent extends NSObject implements NSCopying {
+  alarmSeverityLevel: NSNumber;
+
+  setAlarmSeverityLevel(alarmSeverityLevel: NSNumber): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -43826,43 +43509,107 @@ declare class MTRUnitTestingClusterTestEmitTestEventResponseParams extends NSObj
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTREnergyEVSEModeClusterModeOptionStruct extends NSObject implements NSCopying {
-  label: string;
+declare class MTRUnitTestingClusterTestNullableOptionalResponseParams extends NSObject implements NSCopying {
+  wasPresent: NSNumber;
 
-  mode: NSNumber;
+  wasNull: NSNumber | null;
 
-  get modeTags(): NSArray;
-  set modeTags(value: NSArray<interop.Object> | Array<interop.Object>);
+  value: NSNumber | null;
 
-  setLabel(label: string): void;
+  originalValue: NSNumber | null;
 
-  setMode(mode: NSNumber): void;
+  timedInvokeTimeoutMs: NSNumber;
 
-  setModeTags(modeTags: NSArray<interop.Object> | Array<interop.Object>): void;
+  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
+
+  setWasPresent(wasPresent: NSNumber): void;
+
+  setWasNull(wasNull: NSNumber | null): void;
+
+  setValue(value: NSNumber | null): void;
+
+  setOriginalValue(originalValue: NSNumber | null): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTROperationalStateClusterOperationalErrorEvent extends NSObject implements NSCopying {
-  errorState: MTROperationalStateClusterErrorStateStruct;
+declare class MTRThreadNetworkDiagnosticsClusterOperationalDatasetComponents extends NSObject implements NSCopying {
+  activeTimestampPresent: NSNumber;
 
-  setErrorState(errorState: MTROperationalStateClusterErrorStateStruct): void;
+  pendingTimestampPresent: NSNumber;
+
+  masterKeyPresent: NSNumber;
+
+  networkNamePresent: NSNumber;
+
+  extendedPanIdPresent: NSNumber;
+
+  meshLocalPrefixPresent: NSNumber;
+
+  delayPresent: NSNumber;
+
+  panIdPresent: NSNumber;
+
+  channelPresent: NSNumber;
+
+  pskcPresent: NSNumber;
+
+  securityPolicyPresent: NSNumber;
+
+  channelMaskPresent: NSNumber;
+
+  setActiveTimestampPresent(activeTimestampPresent: NSNumber): void;
+
+  setPendingTimestampPresent(pendingTimestampPresent: NSNumber): void;
+
+  setMasterKeyPresent(masterKeyPresent: NSNumber): void;
+
+  setNetworkNamePresent(networkNamePresent: NSNumber): void;
+
+  setExtendedPanIdPresent(extendedPanIdPresent: NSNumber): void;
+
+  setMeshLocalPrefixPresent(meshLocalPrefixPresent: NSNumber): void;
+
+  setDelayPresent(delayPresent: NSNumber): void;
+
+  setPanIdPresent(panIdPresent: NSNumber): void;
+
+  setChannelPresent(channelPresent: NSNumber): void;
+
+  setPskcPresent(pskcPresent: NSNumber): void;
+
+  setSecurityPolicyPresent(securityPolicyPresent: NSNumber): void;
+
+  setChannelMaskPresent(channelMaskPresent: NSNumber): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRControllerFactory extends NSObject {
-  readonly isRunning: boolean;
+declare class MTRMediaPlaybackClusterStartOverParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
 
-  static sharedInstance(): MTRControllerFactory;
+  serverSideProcessingTimeout: NSNumber;
 
-  startup(startupParams: MTRControllerFactoryParams): boolean;
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
-  shutdown(): void;
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
-  startControllerOnExistingFabric(startupParams: MTRDeviceControllerStartupParams): MTRDeviceController | null;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
 
-  startControllerOnNewFabric(startupParams: MTRDeviceControllerStartupParams): MTRDeviceController | null;
+declare class MTRContentLauncherClusterContentSearchStruct extends NSObject implements NSCopying {
+  get parameterList(): NSArray;
+  set parameterList(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setParameterList(parameterList: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROnboardingPayloadParser extends NSObject {
+  static setupPayloadForOnboardingPayloadError(onboardingPayload: string, error: interop.PointerConvertible): MTRSetupPayload | null;
 }
 
 declare class MTRContentLauncherClusterAdditionalInfo extends MTRContentLauncherClusterAdditionalInfoStruct {
@@ -43873,36 +43620,6 @@ declare class MTRContentLauncherClusterAdditionalInfo extends MTRContentLauncher
   setName(name: string): void;
 
   setValue(value: string): void;
-}
-
-declare class MTRClusterLaundryWasherControls extends MTRGenericCluster {
-  readAttributeSpinSpeedsWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeSpinSpeedCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeSpinSpeedCurrentWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeSpinSpeedCurrentWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeNumberOfRinsesWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeNumberOfRinsesWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeNumberOfRinsesWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeSupportedRinsesWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
 declare class MTRBaseClusterElectricalEnergyMeasurement extends MTRGenericBaseCluster {
@@ -44215,6 +43932,60 @@ declare class MTRUnitTestingClusterTestSimpleArgumentRequestParams extends NSObj
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRClusterLaundryWasherControls extends MTRGenericCluster {
+  readAttributeSpinSpeedsWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeSpinSpeedCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeSpinSpeedCurrentWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeSpinSpeedCurrentWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeNumberOfRinsesWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeNumberOfRinsesWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeNumberOfRinsesWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeSupportedRinsesWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRClusterRefrigeratorAlarm extends MTRGenericCluster {
+  readAttributeMaskWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeStateWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeSupportedWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRPumpConfigurationAndControlClusterSystemPressureLowEvent extends NSObject implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRClusterFlowMeasurement extends MTRGenericCluster {
   readAttributeMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
 
@@ -44261,24 +44032,6 @@ declare class MTRClusterLocalizationConfiguration extends MTRGenericCluster {
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 
   initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
-}
-
-declare class MTRServerAttribute extends NSObject {
-  initReadonlyAttributeWithIDInitialValueRequiredPrivilege(attributeID: NSNumber, value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, requiredPrivilege: interop.Enum<typeof MTRAccessControlEntryPrivilege>): this;
-
-  setValue(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
-
-  static newFeatureMapAttributeWithInitialValue(value: NSNumber): MTRServerAttribute;
-
-  readonly attributeID: NSNumber;
-
-  readonly value: NSDictionary;
-
-  readonly requiredReadPrivilege: interop.Enum<typeof MTRAccessControlEntryPrivilege>;
-
-  readonly writable: boolean;
-
-  isWritable(): boolean;
 }
 
 declare class MTREnergyEVSEClusterGetTargetsResponseParams extends NSObject implements NSCopying {
@@ -44460,6 +44213,18 @@ declare class MTRWaterHeaterModeClusterChangeToModeResponseParams extends NSObje
   setStatus(status: NSNumber): void;
 
   setStatusText(statusText: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRDoorLockClusterClearAliroReaderConfigParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -45024,183 +44789,6 @@ declare class MTROperationalStateClusterOperationCompletionEvent extends NSObjec
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams extends MTROTASoftwareUpdateProviderClusterNotifyUpdateAppliedParams {
-  updateToken: NSData;
-
-  softwareVersion: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setUpdateToken(updateToken: NSData): void;
-
-  setSoftwareVersion(softwareVersion: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-}
-
-declare class MTRThermostatClusterAtomicResponseParams extends NSObject implements NSCopying {
-  statusCode: NSNumber;
-
-  get attributeStatus(): NSArray;
-  set attributeStatus(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  timeout: NSNumber | null;
-
-  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
-
-  setStatusCode(statusCode: NSNumber): void;
-
-  setAttributeStatus(attributeStatus: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setTimeout(timeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRBaseClusterBridgedDeviceBasic extends MTRBaseClusterBridgedDeviceBasicInformation {
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  readAttributeVendorNameWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeVendorNameWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeVendorNameWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeVendorIDWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeVendorIDWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeVendorIDWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeProductNameWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeProductNameWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeProductNameWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeNodeLabelWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeNodeLabelWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeNodeLabelWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeNodeLabelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeNodeLabelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeHardwareVersionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeHardwareVersionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeHardwareVersionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeHardwareVersionStringWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeHardwareVersionStringWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeHardwareVersionStringWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeSoftwareVersionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeSoftwareVersionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeSoftwareVersionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeSoftwareVersionStringWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeSoftwareVersionStringWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeSoftwareVersionStringWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeManufacturingDateWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeManufacturingDateWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeManufacturingDateWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributePartNumberWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributePartNumberWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributePartNumberWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeProductURLWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeProductURLWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeProductURLWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeProductLabelWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeProductLabelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeProductLabelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeSerialNumberWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeSerialNumberWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeSerialNumberWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeReachableWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReachableWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReachableWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeUniqueIDWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  subscribeAttributeUniqueIDWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeUniqueIDWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-}
-
-declare class MTRAccessControlClusterAccessRestrictionStruct extends NSObject implements NSCopying {
-  type: NSNumber;
-
-  id: NSNumber | null;
-
-  setType(type: NSNumber): void;
-
-  setId(id: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRThreadNetworkDirectoryClusterGetOperationalDatasetParams extends NSObject implements NSCopying {
   extendedPanID: NSData;
 
@@ -45215,6 +44803,20 @@ declare class MTRThreadNetworkDirectoryClusterGetOperationalDatasetParams extend
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRControllerFactory extends NSObject {
+  readonly isRunning: boolean;
+
+  static sharedInstance(): MTRControllerFactory;
+
+  startup(startupParams: MTRControllerFactoryParams): boolean;
+
+  shutdown(): void;
+
+  startControllerOnExistingFabric(startupParams: MTRDeviceControllerStartupParams): MTRDeviceController | null;
+
+  startControllerOnNewFabric(startupParams: MTRDeviceControllerStartupParams): MTRDeviceController | null;
 }
 
 declare class MTRClusterOzoneConcentrationMeasurement extends MTRGenericCluster {
@@ -45251,32 +44853,6 @@ declare class MTRClusterOzoneConcentrationMeasurement extends MTRGenericCluster 
   readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
 
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
-declare class MTRThreadOperationalDataset extends NSObject {
-  initWithNetworkNameExtendedPANIDMasterKeyPSKcChannelNumberPanID(networkName: string, extendedPANID: NSData, masterKey: NSData, PSKc: NSData, channelNumber: NSNumber, panID: NSData): this;
-
-  initWithData(data: NSData): this;
-
-  readonly networkName: string;
-
-  readonly extendedPANID: NSData;
-
-  readonly masterKey: NSData;
-
-  readonly PSKc: NSData;
-
-  readonly channelNumber: NSNumber;
-
-  readonly panID: NSData;
-
-  data(): NSData;
-
-  channel: number;
-
-  initWithNetworkNameExtendedPANIDMasterKeyPSKcChannelPanID(networkName: string, extendedPANID: NSData, masterKey: NSData, PSKc: NSData, channel: number, panID: NSData): this;
-
-  setChannel(channel: number): void;
 }
 
 declare class MTRWaterHeaterManagementClusterCancelBoostParams extends NSObject implements NSCopying {
@@ -46352,16 +45928,6 @@ declare class MTRClusterThreadNetworkDiagnostics extends MTRGenericCluster {
   readAttributeRouteTableListWithParams(params: MTRReadParams | null): NSDictionary;
 }
 
-declare class MTRTestClusterClusterBooleanResponseParams extends MTRUnitTestingClusterBooleanResponseParams {
-  value: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  setValue(value: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-}
-
 declare class MTRKeypadInputClusterSendKeyParams extends NSObject implements NSCopying {
   keyCode: NSNumber;
 
@@ -46376,36 +45942,6 @@ declare class MTRKeypadInputClusterSendKeyParams extends NSObject implements NSC
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRClusterTimeFormatLocalization extends MTRGenericCluster {
-  readAttributeHourFormatWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeHourFormatWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeHourFormatWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeActiveCalendarTypeWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeActiveCalendarTypeWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeActiveCalendarTypeWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeSupportedCalendarTypesWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
 }
 
 declare class MTRTimeSynchronizationClusterSetUtcTimeParams extends MTRTimeSynchronizationClusterSetUTCTimeParams {
@@ -46540,20 +46076,90 @@ declare class MTRDoorLockClusterGetWeekDayScheduleResponseParams extends NSObjec
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTRDoorLockClusterClearHolidayScheduleParams extends NSObject implements NSCopying {
-  holidayIndex: NSNumber;
+declare class MTRThreadNetworkDiagnosticsClusterNeighborTableStruct extends NSObject implements NSCopying {
+  extAddress: NSNumber;
 
-  timedInvokeTimeoutMs: NSNumber;
+  age: NSNumber;
 
-  serverSideProcessingTimeout: NSNumber;
+  rloc16: NSNumber;
 
-  setHolidayIndex(holidayIndex: NSNumber): void;
+  linkFrameCounter: NSNumber;
 
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+  mleFrameCounter: NSNumber;
 
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+  lqi: NSNumber;
+
+  averageRssi: NSNumber | null;
+
+  lastRssi: NSNumber | null;
+
+  frameErrorRate: NSNumber;
+
+  messageErrorRate: NSNumber;
+
+  rxOnWhenIdle: NSNumber;
+
+  fullThreadDevice: NSNumber;
+
+  fullNetworkData: NSNumber;
+
+  isChild: NSNumber;
+
+  setExtAddress(extAddress: NSNumber): void;
+
+  setAge(age: NSNumber): void;
+
+  setRloc16(rloc16: NSNumber): void;
+
+  setLinkFrameCounter(linkFrameCounter: NSNumber): void;
+
+  setMleFrameCounter(mleFrameCounter: NSNumber): void;
+
+  setLqi(lqi: NSNumber): void;
+
+  setAverageRssi(averageRssi: NSNumber | null): void;
+
+  setLastRssi(lastRssi: NSNumber | null): void;
+
+  setFrameErrorRate(frameErrorRate: NSNumber): void;
+
+  setMessageErrorRate(messageErrorRate: NSNumber): void;
+
+  setRxOnWhenIdle(rxOnWhenIdle: NSNumber): void;
+
+  setFullThreadDevice(fullThreadDevice: NSNumber): void;
+
+  setFullNetworkData(fullNetworkData: NSNumber): void;
+
+  setIsChild(isChild: NSNumber): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRNetworkCommissioningClusterWiFiInterfaceScanResult extends MTRNetworkCommissioningClusterWiFiInterfaceScanResultStruct {
+  security: NSNumber;
+
+  ssid: NSData;
+
+  bssid: NSData;
+
+  channel: NSNumber;
+
+  wiFiBand: NSNumber;
+
+  rssi: NSNumber;
+
+  setSecurity(security: NSNumber): void;
+
+  setSsid(ssid: NSData): void;
+
+  setBssid(bssid: NSData): void;
+
+  setChannel(channel: NSNumber): void;
+
+  setWiFiBand(wiFiBand: NSNumber): void;
+
+  setRssi(rssi: NSNumber): void;
 }
 
 declare class MTRWaterHeaterManagementClusterBoostParams extends NSObject implements NSCopying {
@@ -46669,6 +46275,84 @@ declare class MTRRVCOperationalStateClusterGoHomeParams extends NSObject impleme
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRClusterPM1ConcentrationMeasurement extends MTRGenericCluster {
+  readAttributeMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMinMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMaxMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePeakMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePeakMeasuredValueWindowWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageMeasuredValueWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageMeasuredValueWindowWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeUncertaintyWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasurementUnitWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasurementMediumWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeLevelValueWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+}
+
+declare class MTRDeviceStorageBehaviorConfiguration extends NSObject implements NSCopying {
+  static configurationWithDefaultStorageBehavior<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static configurationWithStorageBehaviorOptimizationDisabled<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static configurationWithReportToPersistenceDelayTimeReportToPersistenceDelayTimeMaxRecentReportTimesMaxCountTimeBetweenReportsTooShortThresholdTimeBetweenReportsTooShortMinThresholdReportToPersistenceDelayMaxMultiplierDeviceReportingExcessivelyIntervalThreshold<This extends abstract new (...args: any) => any>(this: This, reportToPersistenceDelayTime: number, reportToPersistenceDelayTimeMax: number, recentReportTimesMaxCount: number, timeBetweenReportsTooShortThreshold: number, timeBetweenReportsTooShortMinThreshold: number, reportToPersistenceDelayMaxMultiplier: number, deviceReportingExcessivelyIntervalThreshold: number): InstanceType<This>;
+
+  disableStorageBehaviorOptimization: boolean;
+
+  reportToPersistenceDelayTime: number;
+
+  reportToPersistenceDelayTimeMax: number;
+
+  recentReportTimesMaxCount: number;
+
+  timeBetweenReportsTooShortThreshold: number;
+
+  timeBetweenReportsTooShortMinThreshold: number;
+
+  reportToPersistenceDelayMaxMultiplier: number;
+
+  deviceReportingExcessivelyIntervalThreshold: number;
+
+  setDisableStorageBehaviorOptimization(disableStorageBehaviorOptimization: boolean): void;
+
+  setReportToPersistenceDelayTime(reportToPersistenceDelayTime: number): void;
+
+  setReportToPersistenceDelayTimeMax(reportToPersistenceDelayTimeMax: number): void;
+
+  setRecentReportTimesMaxCount(recentReportTimesMaxCount: number): void;
+
+  setTimeBetweenReportsTooShortThreshold(timeBetweenReportsTooShortThreshold: number): void;
+
+  setTimeBetweenReportsTooShortMinThreshold(timeBetweenReportsTooShortMinThreshold: number): void;
+
+  setReportToPersistenceDelayMaxMultiplier(reportToPersistenceDelayMaxMultiplier: number): void;
+
+  setDeviceReportingExcessivelyIntervalThreshold(deviceReportingExcessivelyIntervalThreshold: number): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTROperationalCSRInfo extends NSObject {
   readonly csr: NSData;
 
@@ -46685,6 +46369,332 @@ declare class MTROperationalCSRInfo extends NSObject {
   initWithCSRElementsTLVAttestationSignature(csrElementsTLV: NSData, attestationSignature: NSData): this;
 
   initWithCSRResponseParams(responseParams: MTROperationalCredentialsClusterCSRResponseParams): this;
+}
+
+declare class MTRBaseClusterLevelControl extends MTRGenericBaseCluster {
+  moveToLevelWithParamsCompletion(params: MTRLevelControlClusterMoveToLevelParams, completion: (p1: NSError) => void): void;
+
+  moveWithParamsCompletion(params: MTRLevelControlClusterMoveParams, completion: (p1: NSError) => void): void;
+
+  stepWithParamsCompletion(params: MTRLevelControlClusterStepParams, completion: (p1: NSError) => void): void;
+
+  stopWithParamsCompletion(params: MTRLevelControlClusterStopParams, completion: (p1: NSError) => void): void;
+
+  moveToLevelWithOnOffWithParamsCompletion(params: MTRLevelControlClusterMoveToLevelWithOnOffParams, completion: (p1: NSError) => void): void;
+
+  moveWithOnOffWithParamsCompletion(params: MTRLevelControlClusterMoveWithOnOffParams, completion: (p1: NSError) => void): void;
+
+  stepWithOnOffWithParamsCompletion(params: MTRLevelControlClusterStepWithOnOffParams, completion: (p1: NSError) => void): void;
+
+  stopWithOnOffWithParamsCompletion(params: MTRLevelControlClusterStopWithOnOffParams, completion: (p1: NSError) => void): void;
+
+  moveToClosestFrequencyWithParamsCompletion(params: MTRLevelControlClusterMoveToClosestFrequencyParams, completion: (p1: NSError) => void): void;
+
+  readAttributeCurrentLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRemainingTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRemainingTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRemainingTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMinLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMinLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMinLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMaxLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMaxLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMaxLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeCurrentFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMinFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMinFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMinFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMaxFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMaxFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMaxFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOptionsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOptionsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeOptionsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOptionsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOptionsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOnOffTransitionTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOnOffTransitionTimeWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeOnOffTransitionTimeWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOnOffTransitionTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOnOffTransitionTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOnLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOnLevelWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeOnLevelWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOnLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOnLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOnTransitionTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOnTransitionTimeWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeOnTransitionTimeWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOnTransitionTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOnTransitionTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOffTransitionTimeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOffTransitionTimeWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeOffTransitionTimeWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOffTransitionTimeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOffTransitionTimeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDefaultMoveRateWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeDefaultMoveRateWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeDefaultMoveRateWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeDefaultMoveRateWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDefaultMoveRateWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeStartUpCurrentLevelWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeStartUpCurrentLevelWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeStartUpCurrentLevelWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeStartUpCurrentLevelWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeStartUpCurrentLevelWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  moveToLevelWithParamsCompletionHandler(params: MTRLevelControlClusterMoveToLevelParams, completionHandler: (p1: NSError) => void): void;
+
+  moveWithParamsCompletionHandler(params: MTRLevelControlClusterMoveParams, completionHandler: (p1: NSError) => void): void;
+
+  stepWithParamsCompletionHandler(params: MTRLevelControlClusterStepParams, completionHandler: (p1: NSError) => void): void;
+
+  stopWithParamsCompletionHandler(params: MTRLevelControlClusterStopParams, completionHandler: (p1: NSError) => void): void;
+
+  moveToLevelWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterMoveToLevelWithOnOffParams, completionHandler: (p1: NSError) => void): void;
+
+  moveWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterMoveWithOnOffParams, completionHandler: (p1: NSError) => void): void;
+
+  stepWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterStepWithOnOffParams, completionHandler: (p1: NSError) => void): void;
+
+  stopWithOnOffWithParamsCompletionHandler(params: MTRLevelControlClusterStopWithOnOffParams, completionHandler: (p1: NSError) => void): void;
+
+  moveToClosestFrequencyWithParamsCompletionHandler(params: MTRLevelControlClusterMoveToClosestFrequencyParams, completionHandler: (p1: NSError) => void): void;
+
+  readAttributeCurrentLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRemainingTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRemainingTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRemainingTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMinLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMinLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMinLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMaxLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMaxLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMaxLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeCurrentFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMinFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMinFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMinFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMaxFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMaxFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMaxFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOptionsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOptionsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOptionsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOptionsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOptionsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOnOffTransitionTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOnOffTransitionTimeWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOnOffTransitionTimeWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOnOffTransitionTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOnOffTransitionTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOnLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOnLevelWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOnLevelWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOnLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOnLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOnTransitionTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOnTransitionTimeWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOnTransitionTimeWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOnTransitionTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOnTransitionTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOffTransitionTimeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOffTransitionTimeWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOffTransitionTimeWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOffTransitionTimeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOffTransitionTimeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDefaultMoveRateWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeDefaultMoveRateWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeDefaultMoveRateWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeDefaultMoveRateWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDefaultMoveRateWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeStartUpCurrentLevelWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeStartUpCurrentLevelWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeStartUpCurrentLevelWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeStartUpCurrentLevelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeStartUpCurrentLevelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 }
 
 declare class MTRPumpConfigurationAndControlClusterTurbineOperationEvent extends NSObject implements NSCopying {
@@ -46866,61 +46876,6 @@ declare class MTRChannelClusterPageTokenStruct extends NSObject implements NSCop
   setAfter(after: string | null): void;
 
   setBefore(before: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRDoorLockClusterGetUserResponseParams extends NSObject implements NSCopying {
-  userIndex: NSNumber;
-
-  userName: string | null;
-
-  userUniqueID: NSNumber | null;
-
-  userStatus: NSNumber | null;
-
-  userType: NSNumber | null;
-
-  credentialRule: NSNumber | null;
-
-  get credentials(): NSArray | null;
-  set credentials(value: NSArray<interop.Object> | Array<interop.Object> | null);
-
-  creatorFabricIndex: NSNumber | null;
-
-  lastModifiedFabricIndex: NSNumber | null;
-
-  nextUserIndex: NSNumber | null;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
-
-  setUserIndex(userIndex: NSNumber): void;
-
-  setUserName(userName: string | null): void;
-
-  setUserUniqueID(userUniqueID: NSNumber | null): void;
-
-  setUserStatus(userStatus: NSNumber | null): void;
-
-  setUserType(userType: NSNumber | null): void;
-
-  setCredentialRule(credentialRule: NSNumber | null): void;
-
-  setCredentials(credentials: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setCreatorFabricIndex(creatorFabricIndex: NSNumber | null): void;
-
-  setLastModifiedFabricIndex(lastModifiedFabricIndex: NSNumber | null): void;
-
-  setNextUserIndex(nextUserIndex: NSNumber | null): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  userUniqueId: NSNumber | null;
-
-  setUserUniqueId(userUniqueId: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -47131,54 +47086,18 @@ declare class MTRGeneralDiagnosticsClusterNetworkInterfaceType extends MTRGenera
   setType(type: NSNumber): void;
 }
 
-declare class MTRThreadNetworkDiagnosticsClusterOperationalDatasetComponents extends NSObject implements NSCopying {
-  activeTimestampPresent: NSNumber;
+declare class MTRIdentifyClusterIdentifyParams extends NSObject implements NSCopying {
+  identifyTime: NSNumber;
 
-  pendingTimestampPresent: NSNumber;
+  timedInvokeTimeoutMs: NSNumber;
 
-  masterKeyPresent: NSNumber;
+  serverSideProcessingTimeout: NSNumber;
 
-  networkNamePresent: NSNumber;
+  setIdentifyTime(identifyTime: NSNumber): void;
 
-  extendedPanIdPresent: NSNumber;
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
-  meshLocalPrefixPresent: NSNumber;
-
-  delayPresent: NSNumber;
-
-  panIdPresent: NSNumber;
-
-  channelPresent: NSNumber;
-
-  pskcPresent: NSNumber;
-
-  securityPolicyPresent: NSNumber;
-
-  channelMaskPresent: NSNumber;
-
-  setActiveTimestampPresent(activeTimestampPresent: NSNumber): void;
-
-  setPendingTimestampPresent(pendingTimestampPresent: NSNumber): void;
-
-  setMasterKeyPresent(masterKeyPresent: NSNumber): void;
-
-  setNetworkNamePresent(networkNamePresent: NSNumber): void;
-
-  setExtendedPanIdPresent(extendedPanIdPresent: NSNumber): void;
-
-  setMeshLocalPrefixPresent(meshLocalPrefixPresent: NSNumber): void;
-
-  setDelayPresent(delayPresent: NSNumber): void;
-
-  setPanIdPresent(panIdPresent: NSNumber): void;
-
-  setChannelPresent(channelPresent: NSNumber): void;
-
-  setPskcPresent(pskcPresent: NSNumber): void;
-
-  setSecurityPolicyPresent(securityPolicyPresent: NSNumber): void;
-
-  setChannelMaskPresent(channelMaskPresent: NSNumber): void;
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -47268,6 +47187,57 @@ declare class MTRDoorLockClusterGetCredentialStatusParams extends NSObject imple
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTREnergyEVSEModeClusterModeOptionStruct extends NSObject implements NSCopying {
+  label: string;
+
+  mode: NSNumber;
+
+  get modeTags(): NSArray;
+  set modeTags(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setLabel(label: string): void;
+
+  setMode(mode: NSNumber): void;
+
+  setModeTags(modeTags: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROperationalStateClusterOperationalErrorEvent extends NSObject implements NSCopying {
+  errorState: MTROperationalStateClusterErrorStateStruct;
+
+  setErrorState(errorState: MTROperationalStateClusterErrorStateStruct): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRThreadOperationalDataset extends NSObject {
+  initWithNetworkNameExtendedPANIDMasterKeyPSKcChannelNumberPanID(networkName: string, extendedPANID: NSData, masterKey: NSData, PSKc: NSData, channelNumber: NSNumber, panID: NSData): this;
+
+  initWithData(data: NSData): this;
+
+  readonly networkName: string;
+
+  readonly extendedPANID: NSData;
+
+  readonly masterKey: NSData;
+
+  readonly PSKc: NSData;
+
+  readonly channelNumber: NSNumber;
+
+  readonly panID: NSData;
+
+  data(): NSData;
+
+  channel: number;
+
+  initWithNetworkNameExtendedPANIDMasterKeyPSKcChannelPanID(networkName: string, extendedPANID: NSData, masterKey: NSData, PSKc: NSData, channel: number, panID: NSData): this;
+
+  setChannel(channel: number): void;
+}
+
 declare class MTRBaseClusterOtaSoftwareUpdateProvider extends MTRBaseClusterOTASoftwareUpdateProvider {
   initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
 
@@ -47320,6 +47290,24 @@ declare class MTRGeneralDiagnosticsClusterTimeSnapshotResponseParams extends NSO
   setPosixTimeMs(posixTimeMs: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams extends MTROTASoftwareUpdateProviderClusterNotifyUpdateAppliedParams {
+  updateToken: NSData;
+
+  softwareVersion: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setUpdateToken(updateToken: NSData): void;
+
+  setSoftwareVersion(softwareVersion: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 }
 
 declare class MTRClusterActions extends MTRGenericCluster {
@@ -47392,15 +47380,6 @@ declare class MTRClusterActions extends MTRGenericCluster {
   disableActionWithDurationWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRActionsClusterDisableActionWithDurationParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 }
 
-declare class MTRContentLauncherClusterContentSearchStruct extends NSObject implements NSCopying {
-  get parameterList(): NSArray;
-  set parameterList(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setParameterList(parameterList: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRMessagesClusterMessageResponseOptionStruct extends NSObject implements NSCopying {
   messageResponseID: NSNumber | null;
 
@@ -47421,38 +47400,6 @@ declare class MTRContentLauncherClusterStyleInformation extends MTRContentLaunch
   setColor(color: string | null): void;
 
   setSize(size: MTRContentLauncherClusterDimensionStruct | null): void;
-}
-
-declare class MTRDoorLockClusterLockUserChangeEvent extends NSObject implements NSCopying {
-  lockDataType: NSNumber;
-
-  dataOperationType: NSNumber;
-
-  operationSource: NSNumber;
-
-  userIndex: NSNumber | null;
-
-  fabricIndex: NSNumber | null;
-
-  sourceNode: NSNumber | null;
-
-  dataIndex: NSNumber | null;
-
-  setLockDataType(lockDataType: NSNumber): void;
-
-  setDataOperationType(dataOperationType: NSNumber): void;
-
-  setOperationSource(operationSource: NSNumber): void;
-
-  setUserIndex(userIndex: NSNumber | null): void;
-
-  setFabricIndex(fabricIndex: NSNumber | null): void;
-
-  setSourceNode(sourceNode: NSNumber | null): void;
-
-  setDataIndex(dataIndex: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class MTRClusterLowPower extends MTRGenericCluster {
@@ -47610,10 +47557,6 @@ declare class MTRModeSelectClusterModeOptionStruct extends NSObject implements N
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class MTROnboardingPayloadParser extends NSObject {
-  static setupPayloadForOnboardingPayloadError(onboardingPayload: string, error: interop.PointerConvertible): MTRSetupPayload | null;
-}
-
 declare class MTRMediaPlaybackClusterPreviousParams extends NSObject implements NSCopying {
   timedInvokeTimeoutMs: NSNumber;
 
@@ -47642,32 +47585,6 @@ declare class MTROTASoftwareUpdateRequestorClusterDownloadErrorEvent extends NSO
   setProgressPercent(progressPercent: NSNumber | null): void;
 
   setPlatformCode(platformCode: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRGeneralDiagnosticsClusterPayloadTestRequestParams extends NSObject implements NSCopying {
-  enableKey: NSData;
-
-  value: NSNumber;
-
-  count: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setEnableKey(enableKey: NSData): void;
-
-  setValue(value: NSNumber): void;
-
-  getCount(): NSNumber;
-
-  setCount(count: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -47750,44 +47667,173 @@ declare class MTRClusterPumpConfigurationAndControl extends MTRGenericCluster {
   initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
 }
 
-declare class MTRDeviceStorageBehaviorConfiguration extends NSObject implements NSCopying {
-  static configurationWithDefaultStorageBehavior<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+declare class MTRThermostatClusterAtomicResponseParams extends NSObject implements NSCopying {
+  statusCode: NSNumber;
 
-  static configurationWithStorageBehaviorOptimizationDisabled<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+  get attributeStatus(): NSArray;
+  set attributeStatus(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  static configurationWithReportToPersistenceDelayTimeReportToPersistenceDelayTimeMaxRecentReportTimesMaxCountTimeBetweenReportsTooShortThresholdTimeBetweenReportsTooShortMinThresholdReportToPersistenceDelayMaxMultiplierDeviceReportingExcessivelyIntervalThreshold<This extends abstract new (...args: any) => any>(this: This, reportToPersistenceDelayTime: number, reportToPersistenceDelayTimeMax: number, recentReportTimesMaxCount: number, timeBetweenReportsTooShortThreshold: number, timeBetweenReportsTooShortMinThreshold: number, reportToPersistenceDelayMaxMultiplier: number, deviceReportingExcessivelyIntervalThreshold: number): InstanceType<This>;
+  timeout: NSNumber | null;
 
-  disableStorageBehaviorOptimization: boolean;
+  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
 
-  reportToPersistenceDelayTime: number;
+  setStatusCode(statusCode: NSNumber): void;
 
-  reportToPersistenceDelayTimeMax: number;
+  setAttributeStatus(attributeStatus: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  recentReportTimesMaxCount: number;
+  setTimeout(timeout: NSNumber | null): void;
 
-  timeBetweenReportsTooShortThreshold: number;
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
 
-  timeBetweenReportsTooShortMinThreshold: number;
+declare class MTRBaseClusterBridgedDeviceBasic extends MTRBaseClusterBridgedDeviceBasicInformation {
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
 
-  reportToPersistenceDelayMaxMultiplier: number;
+  readAttributeVendorNameWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
 
-  deviceReportingExcessivelyIntervalThreshold: number;
+  subscribeAttributeVendorNameWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
 
-  setDisableStorageBehaviorOptimization(disableStorageBehaviorOptimization: boolean): void;
+  static readAttributeVendorNameWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
 
-  setReportToPersistenceDelayTime(reportToPersistenceDelayTime: number): void;
+  readAttributeVendorIDWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
-  setReportToPersistenceDelayTimeMax(reportToPersistenceDelayTimeMax: number): void;
+  subscribeAttributeVendorIDWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
-  setRecentReportTimesMaxCount(recentReportTimesMaxCount: number): void;
+  static readAttributeVendorIDWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
-  setTimeBetweenReportsTooShortThreshold(timeBetweenReportsTooShortThreshold: number): void;
+  readAttributeProductNameWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
 
-  setTimeBetweenReportsTooShortMinThreshold(timeBetweenReportsTooShortMinThreshold: number): void;
+  subscribeAttributeProductNameWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
 
-  setReportToPersistenceDelayMaxMultiplier(reportToPersistenceDelayMaxMultiplier: number): void;
+  static readAttributeProductNameWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
 
-  setDeviceReportingExcessivelyIntervalThreshold(deviceReportingExcessivelyIntervalThreshold: number): void;
+  readAttributeNodeLabelWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeNodeLabelWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeNodeLabelWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeNodeLabelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeNodeLabelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeHardwareVersionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeHardwareVersionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeHardwareVersionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeHardwareVersionStringWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeHardwareVersionStringWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeHardwareVersionStringWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeSoftwareVersionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeSoftwareVersionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeSoftwareVersionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeSoftwareVersionStringWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeSoftwareVersionStringWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeSoftwareVersionStringWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeManufacturingDateWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeManufacturingDateWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeManufacturingDateWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributePartNumberWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributePartNumberWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributePartNumberWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeProductURLWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeProductURLWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeProductURLWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeProductLabelWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeProductLabelWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeProductLabelWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeSerialNumberWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeSerialNumberWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeSerialNumberWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeReachableWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReachableWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReachableWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeUniqueIDWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  subscribeAttributeUniqueIDWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeUniqueIDWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+}
+
+declare class MTRAccessControlClusterAccessRestrictionStruct extends NSObject implements NSCopying {
+  type: NSNumber;
+
+  id: NSNumber | null;
+
+  setType(type: NSNumber): void;
+
+  setId(id: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRElectricalMeasurementClusterGetProfileInfoCommandParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -47804,6 +47850,22 @@ declare class MTRLevelControlClusterStopWithOnOffParams extends NSObject impleme
   setOptionsMask(optionsMask: NSNumber): void;
 
   setOptionsOverride(optionsOverride: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRDoorLockClusterClearHolidayScheduleParams extends NSObject implements NSCopying {
+  holidayIndex: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setHolidayIndex(holidayIndex: NSNumber): void;
 
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
@@ -47974,65 +48036,5 @@ declare class MTRClusterPowerTopology extends MTRGenericCluster {
   readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
 
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-}
-
-declare class MTRThreadNetworkDiagnosticsClusterNeighborTableStruct extends NSObject implements NSCopying {
-  extAddress: NSNumber;
-
-  age: NSNumber;
-
-  rloc16: NSNumber;
-
-  linkFrameCounter: NSNumber;
-
-  mleFrameCounter: NSNumber;
-
-  lqi: NSNumber;
-
-  averageRssi: NSNumber | null;
-
-  lastRssi: NSNumber | null;
-
-  frameErrorRate: NSNumber;
-
-  messageErrorRate: NSNumber;
-
-  rxOnWhenIdle: NSNumber;
-
-  fullThreadDevice: NSNumber;
-
-  fullNetworkData: NSNumber;
-
-  isChild: NSNumber;
-
-  setExtAddress(extAddress: NSNumber): void;
-
-  setAge(age: NSNumber): void;
-
-  setRloc16(rloc16: NSNumber): void;
-
-  setLinkFrameCounter(linkFrameCounter: NSNumber): void;
-
-  setMleFrameCounter(mleFrameCounter: NSNumber): void;
-
-  setLqi(lqi: NSNumber): void;
-
-  setAverageRssi(averageRssi: NSNumber | null): void;
-
-  setLastRssi(lastRssi: NSNumber | null): void;
-
-  setFrameErrorRate(frameErrorRate: NSNumber): void;
-
-  setMessageErrorRate(messageErrorRate: NSNumber): void;
-
-  setRxOnWhenIdle(rxOnWhenIdle: NSNumber): void;
-
-  setFullThreadDevice(fullThreadDevice: NSNumber): void;
-
-  setFullNetworkData(fullNetworkData: NSNumber): void;
-
-  setIsChild(isChild: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 

@@ -7,51 +7,6 @@ declare const kCLErrorUserInfoAlternateRegionKey: string;
 
 declare const kCLErrorDomain: string;
 
-declare const kCLLocationCoordinate2DInvalid: CLLocationCoordinate2D;
-
-declare const kCLLocationAccuracyKilometer: number;
-
-declare const kCLLocationAccuracyHundredMeters: number;
-
-declare const kCLLocationAccuracyNearestTenMeters: number;
-
-declare const kCLLocationAccuracyBest: number;
-
-declare const kCLLocationAccuracyBestForNavigation: number;
-
-declare const kCLLocationAccuracyThreeKilometers: number;
-
-declare const CLLocationDistanceMax: number;
-
-declare const kCLLocationAccuracyReduced: number;
-
-declare const kCLDistanceFilterNone: number;
-
-declare const CLTimeIntervalMax: number;
-
-declare const CLActivityType: {
-  Other: 1,
-  AutomotiveNavigation: 2,
-  Fitness: 3,
-  OtherNavigation: 4,
-  Airborne: 5,
-};
-
-declare const CLLiveUpdateConfiguration: {
-  Default: 0,
-  AutomotiveNavigation: 1,
-  OtherNavigation: 2,
-  Fitness: 3,
-  Airborne: 4,
-};
-
-declare const CLProximity: {
-  Unknown: 0,
-  Immediate: 1,
-  Near: 2,
-  Far: 3,
-};
-
 declare const CLDeviceOrientation: {
   Unknown: 0,
   Portrait: 1,
@@ -60,25 +15,6 @@ declare const CLDeviceOrientation: {
   LandscapeRight: 4,
   FaceUp: 5,
   FaceDown: 6,
-};
-
-declare const CLAuthorizationStatus: {
-  NotDetermined: 0,
-  Restricted: 1,
-  Denied: 2,
-  AuthorizedAlways: 3,
-  Authorized: 3,
-};
-
-declare const CLRegionState: {
-  Unknown: 0,
-  Inside: 1,
-  Outside: 2,
-};
-
-declare const CLAccuracyAuthorization: {
-  Full: 0,
-  Reduced: 1,
 };
 
 declare const CLError: {
@@ -104,6 +40,48 @@ declare const CLError: {
   HistoricalLocationError: 19,
 };
 
+declare const CLActivityType: {
+  Other: 1,
+  AutomotiveNavigation: 2,
+  Fitness: 3,
+  OtherNavigation: 4,
+  Airborne: 5,
+};
+
+declare const CLLiveUpdateConfiguration: {
+  Default: 0,
+  AutomotiveNavigation: 1,
+  OtherNavigation: 2,
+  Fitness: 3,
+  Airborne: 4,
+};
+
+declare const CLProximity: {
+  Unknown: 0,
+  Immediate: 1,
+  Near: 2,
+  Far: 3,
+};
+
+declare const CLAuthorizationStatus: {
+  NotDetermined: 0,
+  Restricted: 1,
+  Denied: 2,
+  AuthorizedAlways: 3,
+  Authorized: 3,
+};
+
+declare const CLRegionState: {
+  Unknown: 0,
+  Inside: 1,
+  Outside: 2,
+};
+
+declare const CLAccuracyAuthorization: {
+  Full: 0,
+  Reduced: 1,
+};
+
 declare const CLServiceSessionAuthorizationRequirement: {
   None: 0,
   WhenInUse: 1,
@@ -116,16 +94,6 @@ declare const CLMonitoringState: {
   Unsatisfied: 2,
   Unmonitored: 3,
 };
-
-declare class CLLocationCoordinate2D {
-  constructor(init?: CLLocationCoordinate2D);
-  latitude: number;
-  longitude: number;
-}
-
-declare function CLLocationCoordinate2DIsValid(coord: CLLocationCoordinate2D): boolean;
-
-declare function CLLocationCoordinate2DMake(latitude: number, longitude: number): CLLocationCoordinate2D;
 
 declare interface CLLocationManagerDelegate extends NSObjectProtocol {
   locationManagerDidUpdateToLocationFromLocation?(manager: CLLocationManager, newLocation: CLLocation, oldLocation: CLLocation): void;
@@ -388,18 +356,6 @@ declare class CLMonitorConfiguration extends NSObject {
   static configWithMonitorNameQueueEventHandler(name: string, queue: NSObject, eventHandler: (p1: CLMonitor, p2: CLMonitoringEvent) => void): CLMonitorConfiguration;
 }
 
-declare class CLMonitoringRecord extends NSObject implements NSSecureCoding {
-  readonly condition: CLCondition;
-
-  readonly lastEvent: CLMonitoringEvent;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class CLLocationUpdater extends NSObject {
   static liveUpdaterWithQueueHandler<This extends abstract new (...args: any) => any>(this: This, queue: NSObject, handler: (p1: CLUpdate) => void | null): InstanceType<This>;
 
@@ -570,18 +526,6 @@ declare class CLRegion extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class CLFloor extends NSObject implements NSCopying, NSSecureCoding {
-  readonly level: number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class CLGeocoder extends NSObject {
   readonly geocoding: boolean;
 
@@ -638,62 +582,10 @@ declare class CLBeaconRegion extends CLRegion {
   setNotifyEntryStateOnDisplay(notifyEntryStateOnDisplay: boolean): void;
 }
 
-declare class CLLocationSourceInformation extends NSObject implements NSCopying, NSSecureCoding {
-  initWithSoftwareSimulationStateAndExternalAccessoryState(isSoftware: boolean, isAccessory: boolean): this;
+declare class CLMonitoringRecord extends NSObject implements NSSecureCoding {
+  readonly condition: CLCondition;
 
-  readonly isSimulatedBySoftware: boolean;
-
-  readonly isProducedByAccessory: boolean;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class CLLocation extends NSObject implements NSCopying, NSSecureCoding {
-  initWithLatitudeLongitude(latitude: number, longitude: number): this;
-
-  initWithCoordinateAltitudeHorizontalAccuracyVerticalAccuracyTimestamp(coordinate: CLLocationCoordinate2D, altitude: number, hAccuracy: number, vAccuracy: number, timestamp: NSDate): this;
-
-  initWithCoordinateAltitudeHorizontalAccuracyVerticalAccuracyCourseSpeedTimestamp(coordinate: CLLocationCoordinate2D, altitude: number, hAccuracy: number, vAccuracy: number, course: number, speed: number, timestamp: NSDate): this;
-
-  initWithCoordinateAltitudeHorizontalAccuracyVerticalAccuracyCourseCourseAccuracySpeedSpeedAccuracyTimestamp(coordinate: CLLocationCoordinate2D, altitude: number, hAccuracy: number, vAccuracy: number, course: number, courseAccuracy: number, speed: number, speedAccuracy: number, timestamp: NSDate): this;
-
-  initWithCoordinateAltitudeHorizontalAccuracyVerticalAccuracyCourseCourseAccuracySpeedSpeedAccuracyTimestampSourceInfo(coordinate: CLLocationCoordinate2D, altitude: number, hAccuracy: number, vAccuracy: number, course: number, courseAccuracy: number, speed: number, speedAccuracy: number, timestamp: NSDate, sourceInfo: CLLocationSourceInformation): this;
-
-  readonly coordinate: CLLocationCoordinate2D;
-
-  readonly altitude: number;
-
-  readonly ellipsoidalAltitude: number;
-
-  readonly horizontalAccuracy: number;
-
-  readonly verticalAccuracy: number;
-
-  readonly course: number;
-
-  readonly courseAccuracy: number;
-
-  readonly speed: number;
-
-  readonly speedAccuracy: number;
-
-  readonly timestamp: NSDate;
-
-  readonly floor: CLFloor;
-
-  readonly sourceInformation: CLLocationSourceInformation;
-
-  getDistanceFrom(location: CLLocation): number;
-
-  distanceFromLocation(location: CLLocation): number;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+  readonly lastEvent: CLMonitoringEvent;
 
   static readonly supportsSecureCoding: boolean;
 

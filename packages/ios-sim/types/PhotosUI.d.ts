@@ -97,6 +97,12 @@ declare class PHPickerViewController extends UIViewController {
   setDelegate(delegate: PHPickerViewControllerDelegate): void;
 }
 
+declare class PHPickerResult extends NSObject {
+  readonly itemProvider: NSItemProvider;
+
+  readonly assetIdentifier: string;
+}
+
 declare class PHPickerFilter extends NSObject implements NSCopying {
   static readonly imagesFilter: PHPickerFilter;
 
@@ -131,12 +137,6 @@ declare class PHPickerFilter extends NSObject implements NSCopying {
   static notFilterOfSubfilter(subfilter: PHPickerFilter): PHPickerFilter;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class PHPickerResult extends NSObject {
-  readonly itemProvider: NSItemProvider;
-
-  readonly assetIdentifier: string;
 }
 
 declare class PHLivePhotoView extends UIView {

@@ -8,6 +8,7 @@ declare const CLKWatchFaceLibraryErrorCode: {
   InvalidFile: 2,
   PermissionDenied: 3,
   FaceNotAvailable: 4,
+  NoURL: 5,
 };
 
 declare class CLKWatchFaceLibrary extends NSObject {

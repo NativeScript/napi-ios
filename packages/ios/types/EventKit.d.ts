@@ -477,32 +477,6 @@ declare class EKVirtualConferenceRoomTypeDescriptor extends NSObject {
   readonly identifier: string;
 }
 
-declare class EKReminder extends EKCalendarItem {
-  static reminderWithEventStore(eventStore: EKEventStore): EKReminder;
-
-  startDateComponents: NSDateComponents;
-
-  dueDateComponents: NSDateComponents;
-
-  completed: boolean;
-
-  completionDate: NSDate;
-
-  priority: number;
-
-  setStartDateComponents(startDateComponents: NSDateComponents | null): void;
-
-  setDueDateComponents(dueDateComponents: NSDateComponents | null): void;
-
-  isCompleted(): boolean;
-
-  setCompleted(completed: boolean): void;
-
-  setCompletionDate(completionDate: NSDate | null): void;
-
-  setPriority(priority: number): void;
-}
-
 declare class EKEventStore extends NSObject {
   static authorizationStatusForEntityType(entityType: interop.Enum<typeof EKEntityType>): interop.Enum<typeof EKAuthorizationStatus>;
 
@@ -611,6 +585,32 @@ declare class EKRecurrenceRule extends EKObject implements NSCopying {
   setRecurrenceEnd(recurrenceEnd: EKRecurrenceEnd | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class EKReminder extends EKCalendarItem {
+  static reminderWithEventStore(eventStore: EKEventStore): EKReminder;
+
+  startDateComponents: NSDateComponents;
+
+  dueDateComponents: NSDateComponents;
+
+  completed: boolean;
+
+  completionDate: NSDate;
+
+  priority: number;
+
+  setStartDateComponents(startDateComponents: NSDateComponents | null): void;
+
+  setDueDateComponents(dueDateComponents: NSDateComponents | null): void;
+
+  isCompleted(): boolean;
+
+  setCompleted(completed: boolean): void;
+
+  setCompletionDate(completionDate: NSDate | null): void;
+
+  setPriority(priority: number): void;
 }
 
 declare class EKVirtualConferenceDescriptor extends NSObject {

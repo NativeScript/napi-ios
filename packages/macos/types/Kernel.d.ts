@@ -12,6 +12,8 @@ declare const enable_dklog_serial_output: boolean;
 
 declare const disable_iolog_serial_output: boolean;
 
+declare const uint32_t: number;
+
 declare const serialmode: number;
 
 declare const version: interop.Pointer;
@@ -106,6 +108,14 @@ declare const vDSP_IIRMonoRight: number;
 
 declare const vDSP_IIRStereo: number;
 
+declare const IOFastPathHIDLEDService: number;
+
+declare const IOFastPathHIDService: number;
+
+declare const IOHIDTimeSyncService: number;
+
+declare const IOFastPathField: number;
+
 declare const DigitizerTransducer: number;
 
 declare const kHIDDispatchOptionKeyboardNoRepeat: number;
@@ -123,8 +133,6 @@ declare const gOSAction_IOHIDEventService__CopyEventMetaClass: interop.Pointer;
 declare const OSAction_IOHIDEventService__SetUserProperties: number;
 
 declare const OSAction_IOHIDEventService__SetLED_Class: OSClassLoadInformation;
-
-declare const IOHIDEventServiceMetaClass: number;
 
 declare const kKeyMaskFn: number;
 
@@ -230,6 +238,8 @@ declare const bATAMediaChangeReq: number;
 
 declare const bATAMediaChanged: number;
 
+declare const bATABadBlock: number;
+
 declare const kATADefaultSectorSize: number;
 
 declare const IOBacklightDisplay: number;
@@ -297,6 +307,8 @@ declare const IOMultiMemoryDescriptor: number;
 declare const IONVRAMController: number;
 
 declare const IOGuardPageMemoryDescriptor: number;
+
+declare const IOHIDElementContainer: number;
 
 declare const IOHIDAsyncReportQueue: number;
 
@@ -398,110 +410,6 @@ declare const AppleUSBRequestPool: number;
 
 declare const AppleUSBHostController: number;
 
-declare const kSSHubPortSpeed5Gbps: number;
-
-declare const kSSHubPortLinkStateRecovery: number;
-
-declare const kSSHubPortLinkStatePolling: number;
-
-declare const kSSHubPortLinkStateRxDetect: number;
-
-declare const kUSBHSHubFlagsNumPortsShift: number;
-
-declare const kUSBHSHubFlagsMoreInfoMask: number;
-
-declare const kUSBHSHubFlagsMultiTTMask: number;
-
-declare const kSetPortFeature: number;
-
-declare const kSetHubFeature: number;
-
-declare const kGetPortStatus: number;
-
-declare const kGetHubDescriptor: number;
-
-declare const kGetPortState: number;
-
-declare const kClearHubFeature: number;
-
-declare const kPrdRootHubApple: number;
-
-declare const kHubPortIndicatorOff: number;
-
-declare const kHubPortIndicatorGreen: number;
-
-declare const kHubPortIndicatorAutomatic: number;
-
-declare const kHubPortSetPowerOff: number;
-
-declare const kHubPortIndicatorMask: number;
-
-declare const kHubTTThinkTimeMask: number;
-
-declare const kPerPortOverCurrentBit: number;
-
-declare const kCompoundDeviceBit: number;
-
-declare const kHubOverCurrentIndicatorChange: number;
-
-declare const kHubOverCurrentIndicator: number;
-
-declare const kHubLocalPowerStatus: number;
-
-declare const kHubPortStateChangeMask: number;
-
-declare const kSSHubPortChangeBHResetMask: number;
-
-declare const kHubPortTestMode: number;
-
-declare const kHubPortPower: number;
-
-declare const kHubPortBeingReset: number;
-
-declare const kHubPortConnection: number;
-
-declare const kSSHubPortChangeBHResetBit: number;
-
-declare const kSSHubPortStatusLinkStateShift: number;
-
-declare const kSSHubPortStatusOverCurrentBit: number;
-
-declare const kUSBHubPortBHResetChangeFeature: number;
-
-declare const kUSBHubPortBHPortResetFeature: number;
-
-declare const kUSBHubPortConfigErrorChangeFeature: number;
-
-declare const bATABadBlock: number;
-
-declare const kUSBHubPortU2TimeoutFeature: number;
-
-declare const kUSBHubPortU1TimeoutFeature: number;
-
-declare const kUSBHubPortLinkStateFeature: number;
-
-declare const kUSBHubPortIndicatorFeature: number;
-
-declare const kUSBHubPortResetChangeFeature: number;
-
-declare const kUSBHubPortOverCurrentChangeFeature: number;
-
-declare const kUSBHubPortSuspendChangeFeature: number;
-
-declare const kUSBHubPortConnectionChangeFeature: number;
-
-declare const kUSBHubPortLowSpeedFeature: number;
-
-declare const kUSBHubPortPowerFeature: number;
-
-declare const kUSBHubPortOverCurrentFeature: number;
-
-declare const kUSBHubPortSuspendFeature: number;
-
-declare const kUSBHubPortEnableFeature: number;
-
-declare const kUSBHubPortConnectionFeature: number;
-
 declare const IOUSBHostCITransferCompletionMessageData1TransferStructurePhase: number;
 
 declare const IOUSBHostCITransferCompletionMessageData1TransferStructure: number;
@@ -525,8 +433,6 @@ declare const IOUSBHostCIIsochronousTransferControlFrameNumber: number;
 declare const IOUSBHostCINormalTransferData1BufferPhase: number;
 
 declare const IOUSBHostCINormalTransferData1Buffer: number;
-
-declare const nconsops: number;
 
 declare const IOUSBHostCINormalTransferData0LengthPhase: number;
 
@@ -561,8 +467,6 @@ declare const IOUSBHostCIPortStatusCommandData1OvercurrentChange: number;
 declare const IOUSBHostCIPortStatusCommandData1SpeedPhase: number;
 
 declare const IOUSBHostCIPortStatusCommandData1LinkStatePhase: number;
-
-declare const IOUSBHostCIPortStatusCommandData1LinkState: number;
 
 declare const IOUSBHostCIPortStatusCommandData1Connected: number;
 
@@ -655,8 +559,6 @@ declare const kDeviceStatusRemoteWakeEnable: number;
 declare const kDeviceRequestSetSel: number;
 
 declare const kDeviceRequestSynchFrame: number;
-
-declare const kDeviceRequestGetInterface: number;
 
 declare const kDeviceRequestSetConfiguration: number;
 
@@ -860,15 +762,11 @@ declare const clutType: number;
 
 declare const kRegModifierMask: number;
 
-declare const kRegIterDescendants: number;
-
 declare const kSuperSpeedPlusDeviceCapabilitySublinkTypePhase: number;
 
 declare const kRegIterChildren: number;
 
 declare const kRegMaxPropertyNameLength: number;
-
-declare const kSSHubPortStatusLinkStateMask: number;
 
 declare const kRegPropertyNameTerminator: number;
 
@@ -1122,8 +1020,6 @@ declare const kIOPCIExpressPowerBudgetCapability: number;
 
 declare const kIOPCIExpressErrorReportingCapability: number;
 
-declare const kSSHubPortChangePortConfigErrMask: number;
-
 declare const kIOPCIFPBCapability: number;
 
 declare const kIOPCIMSIXCapability: number;
@@ -1252,10 +1148,6 @@ declare const kIOPCIStatusCapabilities: number;
 
 declare const kIOPCIStatusInterrupt: number;
 
-declare const IOHIDDeviceShim: number;
-
-declare const kIOPCICommandInterruptDisable: number;
-
 declare const kIOPCICommandSERR: number;
 
 declare const kIOPCICommandPaletteSnoop: number;
@@ -1264,11 +1156,45 @@ declare const kIOPCICommandBusMaster: number;
 
 declare const kIOPCICommandBusLead: number;
 
+declare const kIOPCIExpressCapabilityIDHierarchyID: number;
+
+declare const kIOPCIExpressCapabilityIDVFResizableBAR: number;
+
+declare const kIOPCIExpressCapabilityIDMPCIe: number;
+
+declare const kIOPCIExpressCapabilityIDDPC: number;
+
+declare const kIOPCIExpressCapabilityIDLNR: number;
+
+declare const kIOPCIExpressCapabilityIDPMUX: number;
+
+declare const kIOPCIExpressCapabilityIDSPCIe: number;
+
+declare const kIOPCIExpressCapabilityIDTPHRequester: number;
+
+declare const kIOPCIExpressCapabilityIDResizableBAR: number;
+
+declare const kIOPCIExpressCapabilityIDAMD: number;
+
+declare const kIOPCIExpressCapabilityIDPRI: number;
+
 declare const kIOPCIExpressCapabilityIDAlternativeRoutingID: number;
+
+declare const kIOPCIExpressCapabilityIDCAC: number;
+
+declare const kIOPCIExpressCapabilityIDVSEC: number;
+
+declare const kIOPCIExpressCapabilityIDRootComplexRegBlock: number;
+
+declare const kIOPCIExpressCapabilityIDMFVC: number;
 
 declare const kIOPCIExpressCapabilityIDDeviceSerialNumber: number;
 
 declare const kIOPCICapabilityIDFPB: number;
+
+declare const kIOPCICapabilityIDAF: number;
+
+declare const kIOPCICapabilityIDSATAConfiguration: number;
 
 declare const kIOPCICapabilityIDMSIX: number;
 
@@ -1382,8 +1308,6 @@ declare const kFWAsynchDestinationIDPhase: number;
 
 declare const kFWAsynchDestinationID: number;
 
-declare const kUSBHubOvercurrentShift: number;
-
 declare const kFWAsynchPriority: number;
 
 declare const kTIAsycnhRetryB: number;
@@ -1391,8 +1315,6 @@ declare const kTIAsycnhRetryB: number;
 declare const kFWAsynchRetryA: number;
 
 declare const kFWAsynchTTotal: number;
-
-declare const kFWPacketTCodePhase: number;
 
 declare const kFWSelfIDMore: number;
 
@@ -1453,10 +1375,6 @@ declare const kSelfIDPacketSize: number;
 declare const kFWPhyPacketPhyIDPhase: number;
 
 declare const kMaxWaitForValidSelfID: number;
-
-declare const kHubDelayNs: number;
-
-declare const IOFireWireUserClient: number;
 
 declare const IOFireWireIRM: number;
 
@@ -1566,6 +1484,52 @@ declare const SPTM_SUCCESS: number;
 
 declare const SPTM_N_PUBLIC_VIOLATIONS: number;
 
+declare const kAirshipDaleBasebandErrorPCILinkResumeFail: number;
+
+declare const kAirshipDaleBasebandErrorPCICplTimeout: number;
+
+declare const kAirshipDaleBasebandErrorPCIAER: number;
+
+declare const kAirshipDaleBasebandErrorPortEnableFailure: number;
+
+declare const kAirshipDaleBasebandDevicePowerOnTimedOut: number;
+
+declare const kAirshipDaleBasebandErrorRxGetCompletionFailure: number;
+
+declare const kAirshipDaleBasebandErrorTxGetCompletionFailure: number;
+
+declare const kAirshipDaleBasebandErrorRxEnqueueFailure: number;
+
+declare const kAirshipDaleBasebandErrorRxConsumeFailure: number;
+
+declare const kAirshipDaleBasebandErrorCCCIInvalidMessage: number;
+
+declare const kAirshipDaleBasebandErrorCCCIHandshakeTimeout: number;
+
+declare const kAirshipDaleBasebandErrorInvalidBootStage: number;
+
+declare const kDALEIPCBBTimeDomainNetwork: number;
+
+declare const kDALEIPCBBTimeDomainGNSS: number;
+
+declare const kAirshipDaleBasebandControlInterfaceErrorMsg: number;
+
+declare const kAirshipDaleBasebandTraceUserClientMax: number;
+
+declare const kAirshipDaleBasebandTraceUserClientClose: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientMax: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientGetDeviceTimeAsync: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientWriteAsync: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientWrite: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientRead: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientOpen: number;
+
 declare const IFNET_THROTTLE_OPPORTUNISTIC: number;
 
 declare const IFNET_THROTTLE_OFF: number;
@@ -1573,6 +1537,10 @@ declare const IFNET_THROTTLE_OFF: number;
 declare const IFNET_NPM_THRESH_GENERAL: number;
 
 declare const IFNET_NPM_THRESH_NEAR: number;
+
+declare const IFNET_SCHED_MODEL_FQ_CODEL_NEW_DM: number;
+
+declare const IFNET_SCHED_MODEL_FQ_CODEL_NEW: number;
 
 declare const IFNET_SCHED_MODEL_FQ_CODEL: number;
 
@@ -1612,8 +1580,6 @@ declare const IFNET_FAMILY_UTUN: number;
 
 declare const IFNET_FAMILY_FAITH: number;
 
-declare const IFNET_FAMILY_PPP: number;
-
 declare const IFNET_FAMILY_VLAN: number;
 
 declare const IFNET_FAMILY_LOOPBACK: number;
@@ -1631,8 +1597,6 @@ declare const oop_jit_conversion: unknown /* const array */;
 declare const CS_LINKAGE_APPLICATION_OOPJIT_TOTAL: number;
 
 declare const CS_LINKAGE_APPLICATION_OOPJIT_INVALID: number;
-
-declare const CS_LINKAGE_APPLICATION_OOPJIT: number;
 
 declare const CS_LINKAGE_APPLICATION_XOJIT: number;
 
@@ -1656,8 +1620,6 @@ declare const CS_SUPPL_SIGNER_TYPE_TRUSTCACHE: number;
 
 declare const CS_SUPPL_SIGNER_TYPE_UNKNOWN: number;
 
-declare const CS_SIGNER_TYPE_MAC_APP_STORE: number;
-
 declare const CS_SIGNER_TYPE_LEGACYVPN: number;
 
 declare const CS_SIGNER_TYPE_UNKNOWN: number;
@@ -1666,8 +1628,6 @@ declare const kIOPCIConfigAGPStatusOffset: number;
 
 declare const CS_CDHASH_LEN: number;
 
-declare const CS_SHA256_TRUNCATED_LEN: number;
-
 declare const CS_HASHTYPE_SHA256: number;
 
 declare const CSTYPE_INDEX_ENTITLEMENTS: number;
@@ -1675,6 +1635,8 @@ declare const CSTYPE_INDEX_ENTITLEMENTS: number;
 declare const CSTYPE_INDEX_REQUIREMENTS: number;
 
 declare const CSSLOT_SIGNATURESLOT: number;
+
+declare const kAirshipDaleBasebandTraceUserClientGetTraceInfo: number;
 
 declare const CSSLOT_ALTERNATE_CODEDIRECTORY_MAX: number;
 
@@ -1712,6 +1674,8 @@ declare const IOHIDElement: number;
 
 declare const IOUSBHostCITransferCompletionMessageControlStatus: number;
 
+declare const kAirshipDaleBasebandErrorTxConsumeFailure: number;
+
 declare const kFBOnlineInterruptServiceType: number;
 
 declare const kIOPCICapabilityIDAGP: number;
@@ -1725,8 +1689,6 @@ declare const kIOPCISlotStatusAttentionButtonPressed: number;
 declare const kIOPCIStatusFastBack2Back: number;
 
 declare const kIOPCIAERCapRootErrStatusOffset: number;
-
-declare const kUSBHubRqSetHubDepth: number;
 
 declare const kATAcmdWriteDMAExtended: number;
 
@@ -1742,17 +1704,19 @@ declare const kIODMAMapOptionOnChip: number;
 
 declare const IOHIPointing: number;
 
-declare const kSSHubPortStatusConnectionBit: number;
+declare const IFNET_FAMILY_PPP: number;
 
 declare const kPEPanicBegin: number;
 
 declare const IFNET_TSO_IPV6: number;
 
+declare const kDeviceRequestGetInterface: number;
+
+declare const CS_SHA256_TRUNCATED_LEN: number;
+
 declare const kDeviceRequestDirectionMask: number;
 
 declare const CS_VALIDATION_CATEGORY_LOCAL_SIGNING: number;
-
-declare const kNumPortBytes: number;
 
 declare const gFireWireVendor_Name: interop.Pointer;
 
@@ -2090,15 +2054,11 @@ declare const OSMetaClass: number;
 
 declare const kIOPCIStatusTargetAbortActive: number;
 
-declare const kHubPortIndicator: number;
-
 declare const kIOPCIExpressCapabilityIDL1PMSubstates: number;
 
 declare const MBUF_TYPE_FREE: number;
 
 declare const kPEPanicRestartCPUNoCallouts: number;
-
-declare const kHubPortEnabled: number;
 
 declare const catch_mach_exc_subsystem: catch_mach_exc_subsystem;
 
@@ -2114,9 +2074,9 @@ declare const kIOPCIMSICapability: number;
 
 declare const IOMbufNaturalMemoryCursor: number;
 
-declare const kSSHubPortChangePortConfigErrBit: number;
-
 declare const ecc_panic_physical_address: number;
+
+declare const kIOPCIExpressCapabilityIDRCECEndpointAssociation: number;
 
 declare const IFNET_FAMILY_ETHERNET: number;
 
@@ -2140,11 +2100,15 @@ declare const sock_data_filt_flag_oob: number;
 
 declare const kIOPCIConfigurationOffsetRevisionID: number;
 
+declare const kAirshipDaleBasebandErrorDevicePowerOffTimedOut: number;
+
 declare const IFNET_CSUM_IP: number;
 
 declare const IOUSBHostCIMessageControlType: number;
 
 declare const kFWConfigurationPacketID: number;
+
+declare const static_if_modified_keys: interop.Pointer;
 
 declare const gIOUserServerNameKey: interop.Pointer;
 
@@ -2166,8 +2130,6 @@ declare const IOUSBHostDevice_Class: OSClassLoadInformation;
 
 declare const kIOPCIExpressCapabilityIDLatencyTolerenceReporting: number;
 
-declare const kUSBHSHubFlagsTTThinkTimeMask: number;
-
 declare const IOBlockStorageDriver: number;
 
 declare const IOUSBHostPipe: number;
@@ -2184,11 +2146,11 @@ declare const kIOFBNotifyDidSleep: number;
 
 declare const kFWSelfIDPortStatusParent: number;
 
+declare const kAirshipDaleBasebandErrorMax: number;
+
 declare const SPTM_MAP_CODESIGN_ERROR: number;
 
 declare const gIOOpenInterest: interop.Pointer;
-
-declare const kHubPortSetPowerOn: number;
 
 declare const IOFramebuffer: number;
 
@@ -2204,11 +2166,17 @@ declare const debug_ivars_size: number;
 
 declare const kIOPCIConfigVendorID: number;
 
+declare const kAirshipDaleBasebandErrorPCIBadRequest: number;
+
 declare const kPCI2PCIOffsetUpperIORange: number;
+
+declare const kFWPacketTCodePhase: number;
 
 declare const gIOACPIPlane: interop.Pointer;
 
 declare const kIOServiceTerminateWithRematch: number;
+
+declare const kAirshipDaleBasebandControlUserClientMax: number;
 
 declare const IOSharedDataQueue: number;
 
@@ -2227,8 +2195,6 @@ declare const kIOPCIUncorrectableErrorBitPoisonedTLP: number;
 declare const gIODisplayManufacturerSpecificKey: interop.Pointer;
 
 declare const gIODisplayPowerStateKey: interop.Pointer;
-
-declare const kPCIPMCPMESupportFromD3Hot: number;
 
 declare const IOFireWireDeviceAux: number;
 
@@ -2253,8 +2219,6 @@ declare const CONSISTENT_DEBUG_PANIC_SOURCE_SK: number;
 declare const IOFWAddressSpaceAux: number;
 
 declare const kATAcmdSeek: number;
-
-declare const kUSBHSHubFlagsTTThinkTimeShift: number;
 
 declare const kIOStatistics: number;
 
@@ -2288,7 +2252,7 @@ declare const kKeyMaskPeriod: number;
 
 declare const kIOTrackingGetTracking: number;
 
-declare const kGetPortErrorCount: number;
+declare const kAirshipDaleBasebandErrorPCILinkDown: number;
 
 declare const DEBUG_HEADER_ENTRY_TXM: number;
 
@@ -2297,8 +2261,6 @@ declare const kFWPhyPacketIDPhase: number;
 declare const kFWTCodeLock: number;
 
 declare const IFNET_FAMILY_ANY: number;
-
-declare const kSSHubPortLinkStateU3: number;
 
 declare const kFWTCodePHYPacket: number;
 
@@ -2310,6 +2272,8 @@ declare const kIOPCICorrectableErrorBitReplayTimerTimeout: number;
 
 declare const debug_malloc_size: number;
 
+declare const kAirshipDaleBasebandErrorTxEnqueueFailure: number;
+
 declare const kATAcmdMediaEject: number;
 
 declare const mATABadBlock: number;
@@ -2317,8 +2281,6 @@ declare const mATABadBlock: number;
 declare const kFWSelfIDNPd: number;
 
 declare const gIONameMatchedKey: interop.Pointer;
-
-declare const kIOFBNotifyGroupID_Legacy: number;
 
 declare const mATASeekComplete: number;
 
@@ -2332,11 +2294,11 @@ declare const kEfiACPIReclaimMemory: number;
 
 declare const IOSCSIProtocolServices: number;
 
-declare const kHubPortOverCurrent: number;
-
 declare const kSuperSpeedEndpointCompanionDescriptorBulkReservedPhase: number;
 
 declare const gIODTBridgeModelKey: interop.Pointer;
+
+declare const kAirshipDaleBasebandControlUserClientClose: number;
 
 declare const nfs_ticks: number;
 
@@ -2349,8 +2311,6 @@ declare const kFWAsynchDestinationOffsetLow: number;
 declare const gIODeviceMemoryKey: interop.Pointer;
 
 declare const IOUSBHostCISetupTransferData1wIndex: number;
-
-declare const version_revision: number;
 
 declare const kIOACPIAddressSpaceIDPCIConfiguration: number;
 
@@ -2368,8 +2328,6 @@ declare const kOFVariablePermKernelOnly: number;
 
 declare const bATAUncorrectable: number;
 
-declare const kNoPowerSwitchingBit: number;
-
 declare const kFWSelfIDPortStatusNotPresent: number;
 
 declare const IFNET_FAMILY_MDECAP: number;
@@ -2382,15 +2340,19 @@ declare const IOFWSimpleContiguousPhysicalAddressSpace: number;
 
 declare const kIOAGPStateEnablePending: number;
 
+declare const kIOPCIExpressCapabilityIDMRIOV: number;
+
 declare const kKeyMaskCtrl: number;
 
-declare const kHubSupportsIndividualPortPower: number;
+declare const kAirshipDaleBasebandTraceUserClientOpen: number;
 
 declare const CSSLOT_LAUNCH_CONSTRAINT_RESPONSIBLE: number;
 
 declare const hv_support_available: number;
 
 declare const kIOPCICPCIResourceControlCapability: number;
+
+declare const kIOPCIExpressCapabilityIDAlternateProtocol: number;
 
 declare const IOUSBHostCISetupTransferData1bmRequestTypePhase: number;
 
@@ -2436,13 +2398,9 @@ declare const kFWAsynchSourceIDPhase: number;
 
 declare const kIOReturnOutputStall: number;
 
-declare const kSSHubPortLinkStateU2: number;
-
 declare const AVCCommandHandlerInfo: number;
 
 declare const gIOACPIUniqueIDKey: interop.Pointer;
-
-declare const kHubPortSuperSpeed: number;
 
 declare const gIODriverKitUserClientEntitlementsKey: interop.Pointer;
 
@@ -2506,13 +2464,11 @@ declare const CSMAGIC_EMBEDDED_LAUNCH_CONSTRAINT: number;
 
 declare const kIOACPIAddressSpaceIDSMBus: number;
 
-declare const kSSHubPortLinkStateComplianceMode: number;
-
 declare const kIOMemoryPurgeableVolatile: number;
 
-declare const kIOPCIConfigExpansionROMBase: number;
+declare const kIOPCICapabilityIDEnhancedAllocation: number;
 
-declare const kSSHubPortLinkStateSSDisabled: number;
+declare const kIOPCIConfigExpansionROMBase: number;
 
 declare const kFWSelfIDSelfPowered15W: number;
 
@@ -2524,7 +2480,7 @@ declare const kPingResponseTimeNs: number;
 
 declare const kHIDFeatureReport: number;
 
-declare const kHubSupportsGangPower: number;
+declare const kIOPCIExpressCapabilityIDATS: number;
 
 declare const kSuperSpeedDeviceCapabilityHighSpeed: number;
 
@@ -2536,13 +2492,13 @@ declare const CS_SUPPORTSSCATTER: number;
 
 declare const kKeyMaskLeftCommand: number;
 
-declare const kSSHubPortStatusSpeedMask: number;
-
 declare const kIOPCIIOSpace: number;
 
 declare const MBUF_TYPE_FTABLE: number;
 
 declare const kIOFBNotifyPriority_Min: number;
+
+declare const kIOPCIExpressCapabilityIDDVSEC: number;
 
 declare const kIOPCIAERCapErrSourceIDOffset: number;
 
@@ -2587,8 +2543,6 @@ declare const kFWAsynchAckSent: number;
 declare const kSuperSpeedPlusDeviceCapabilitySublinkMinSpeedId: number;
 
 declare const IOUSBHostCIPortCapabilitiesMessageControlPortNumber: number;
-
-declare const kSSHubPortLinkStateU0: number;
 
 declare const kDeviceStatusSelfPowered: number;
 
@@ -2648,9 +2602,9 @@ declare const kHV_ION_NONE: number;
 
 declare const IFNET_FAMILY_UNUSED_16: number;
 
-declare const kUSBHubPortRemoteWakeMaskFeature: number;
-
 declare const OSCollectionIterator: number;
+
+declare const kIOPCIExpressCapabilityIDReadinessTimeReporting: number;
 
 declare const kFWAsynchRt: number;
 
@@ -2712,8 +2666,6 @@ declare const kIOPreparationIDUnsupported: number;
 
 declare const kDeviceRequestDirectionPhase: number;
 
-declare const kUSBHubOverCurrentChangeFeature: number;
-
 declare const CS_SUPPORTSTEAMID: number;
 
 declare const IOMbufLittleMemoryCursor: number;
@@ -2728,8 +2680,6 @@ declare const kIOPCIResourceTypeMemory: number;
 
 declare const kFWSelfIDNPc: number;
 
-declare const kSSHubPortChangePortLinkStateBit: number;
-
 declare const kATAcmdDiagnostic: number;
 
 declare const kIOAGPDisableFeature8: number;
@@ -2740,9 +2690,9 @@ declare const kATANoErr: number;
 
 declare const MBUF_TYPE_DATA: number;
 
-declare const kIOPCIStatusSERRActive: number;
-
 declare const kFWSelfIDNPb: number;
+
+declare const kAirshipDaleBasebandControlInterfaceUserClientClose: number;
 
 declare const kIOPCIConfigurationOffsetBaseAddress4: number;
 
@@ -2776,11 +2726,15 @@ declare const kPCI2PCIIORange: number;
 
 declare const SPTM_SWITCH_ASID_TLBI_FLUSH: number;
 
+declare const bATADataCorrected: number;
+
 declare const kDeviceRequestTypeClass: number;
 
-declare const gIOServiceKey: interop.Pointer;
-
 declare const gIOKitDebug: number;
+
+declare const kIOKitDebugUserOptions: number;
+
+declare const version_revision: number;
 
 declare const kIOMemoryPurgeableVolatileGroup0: number;
 
@@ -2795,6 +2749,8 @@ declare const gIODisplayFadeTime3: number;
 declare const IOUSBHostCIEndpointCreateCommandData1DescriptorPhase: number;
 
 declare const kFWSelfID0Pwr: number;
+
+declare const kAirshipDaleBasebandControlUserClientOpen: number;
 
 declare const IOServiceStateNotificationEventSource: number;
 
@@ -2824,6 +2780,8 @@ declare const IOFWAsyncPHYCommand: number;
 
 declare const gIODisplayParametersTheatreModeKey: interop.Pointer;
 
+declare const IFNET_SCHED_MODEL_FQ_CODEL_DM: number;
+
 declare const gIODisplayBrightnessFadeKey: interop.Pointer;
 
 declare const IOHIDEventService_Class: OSClassLoadInformation;
@@ -2834,11 +2792,13 @@ declare const kIOFWSBP2DontUsePTPacketLimit: number;
 
 declare const kIOPCIConfigBaseAddress3: number;
 
-declare const kUSBHSHubCommandAddHub: number;
+declare const kAirshipDaleBasebandErrorDARTFailure: number;
 
 declare const osbuilder: interop.Pointer;
 
 declare const kIODirectionPrepareToPhys32: number;
+
+declare const kAirshipDaleBasebandErrorIpcSetTransportFailed: number;
 
 declare const kIOPCISlotCapabilitiesBitAttentionButtonPresent: number;
 
@@ -2848,9 +2808,9 @@ declare const IOPCI2PCIBridge: number;
 
 declare const telemetry_notification_subsystem: telemetry_notification_subsystem;
 
-declare const IOFWWriteCommand: number;
+declare const kIOPCIExpressCapabilityIDDataLinkFeature: number;
 
-declare const kPrdRootHubAppleSS: number;
+declare const IOFWWriteCommand: number;
 
 declare const task_access_subsystem: task_access_subsystem;
 
@@ -2873,6 +2833,8 @@ declare const OSObject: number;
 declare const kIOFBNotifyGroupID_ThirdParty: number;
 
 declare const kIOPCICapabilityIDPowerManagement: number;
+
+declare const CS_LINKAGE_APPLICATION_OOPJIT: number;
 
 declare const kFWSelfIDNPfPhase: number;
 
@@ -2920,6 +2882,8 @@ declare const gIOMatchedNotification: interop.Pointer;
 
 declare const kRegPropertyValueIsSavedToDisk: number;
 
+declare const kIOPCIExpressCapabilityIDSRIOV: number;
+
 declare const kIOPCIAERCapTLPPrefixLogDW3Offset: number;
 
 declare const kIOPCIConfigurationOffsetStatus: number;
@@ -2927,8 +2891,6 @@ declare const kIOPCIConfigurationOffsetStatus: number;
 declare const SPTM_UNMAP_FLUSH_PENDING: number;
 
 declare const IOFireWireAVCAsynchronousCommand: number;
-
-declare const kSSHubPortChangePortLinkStateMask: number;
 
 declare const kIOPCISlotStatusCommandCompleted: number;
 
@@ -2939,8 +2901,6 @@ declare const kIOPCIExpressCapabilityIDAccessControlServices: number;
 declare const gIOBSDKey: interop.Pointer;
 
 declare const IOATAReg8: number;
-
-declare const kIOUCVariableStructureSize: number;
 
 declare const kIOTimerEventSourceOptionsAllowReenter: number;
 
@@ -2974,6 +2934,8 @@ declare const kPCIPMCD1Support: number;
 
 declare const sock_evt_cantrecvmore: number;
 
+declare const kIOPCIExpressCapabilityIDMulticast: number;
+
 declare const kIOPCICapabilityIDPCIExpress: number;
 
 declare const kIOPCIAERCapUncErrSeverityOffset: number;
@@ -2990,7 +2952,7 @@ declare const kFWTCodeWriteResponse: number;
 
 declare const _MachineStateCount: interop.Pointer;
 
-declare const kSSHubPortLinkStateLoopBack: number;
+declare const IOFastPathHIDGyroService: number;
 
 declare const MBUF_CSUM_REQ_IP: number;
 
@@ -3056,8 +3018,6 @@ declare const kDeviceRequestTypeStandard: number;
 
 declare const kATAcmdWriteBuffer: number;
 
-declare const kNoOverCurrentBit: number;
-
 declare const IODCLTranslator: number;
 
 declare const kPEPanicRestartCPU: number;
@@ -3088,13 +3048,17 @@ declare const kFWIsochChannelUnknownCondition: number;
 
 declare const CS_LINKAGE_APPLICATION_XOJIT_PREVIEWS: number;
 
+declare const kHubDelayNs: number;
+
+declare const IOFireWireUserClient: number;
+
+declare const IOSCSIParallelInterfaceDevice: number;
+
 declare const kIOACPIAddressSpaceOpWrite: number;
 
 declare const debug_iomalloc_size: number;
 
 declare const kIOFBNotifyGroupID_AppleMCCSControl: number;
-
-declare const IOFireWireSBP2UserClient: number;
 
 declare const IOFWSendDCL: number;
 
@@ -3130,8 +3094,6 @@ declare const IOHIDEvent: number;
 
 declare const IOPCIATA: number;
 
-declare const kHubPortDebouncing: number;
-
 declare const kIOPCIAERCapHdrLogDW1Offset: number;
 
 declare const kATAcmdFormatTrack: number;
@@ -3140,13 +3102,9 @@ declare const kIOTimerEventSourceOptionsPriorityKernel: number;
 
 declare const MBUF_HASFCS: number;
 
-declare const kSSHubPortStatusEnabledMask: number;
-
 declare const kATAcmdReadDMAExtended: number;
 
 declare const kIODMAMapWriteAccess: number;
-
-declare const kUSBRootHubPollingRate: number;
 
 declare const kEfiBootServicesCode: number;
 
@@ -3155,6 +3113,8 @@ declare const IOAudioLevelControl: number;
 declare const kIOMemoryPurgeableVolatileGroup3: number;
 
 declare const IOSCSIParallelInterfaceController: number;
+
+declare const kRegIterDescendants: number;
 
 declare const IOUSBHostCICommandMessageData0StreamID: number;
 
@@ -3165,8 +3125,6 @@ declare const gIOUserClassKey: interop.Pointer;
 declare const MBUF_WAITOK: number;
 
 declare const kIOPCICapabilityIDCPCIResourceControl: number;
-
-declare const kHubPortLowSpeed: number;
 
 declare const bATACommandAborted: number;
 
@@ -3184,8 +3142,6 @@ declare const kSMEVectorCount: number;
 
 declare const kIOPreparationIDAlwaysPrepared: number;
 
-declare const kSSHubPortStatusEnabledBit: number;
-
 declare const kIOMemoryTypePhysical: number;
 
 declare const kATAQueueEmpty: number;
@@ -3193,8 +3149,6 @@ declare const kATAQueueEmpty: number;
 declare const gIOPathKey: interop.Pointer;
 
 declare const kUSBHostOpenOptionSelectAlternateSetting: number;
-
-declare const kSSHubPortStatusPowerBit: number;
 
 declare const kIOAGPRequestQueueMask: number;
 
@@ -3216,15 +3170,27 @@ declare const kIOFBNotifyGroupID_AppleHDAController: number;
 
 declare const kernel_task: number;
 
+declare const IOHIDEventServiceMetaClass: number;
+
+declare const IOUSBHostCIPortStatusCommandData1LinkState: number;
+
+declare const IOPCIDevice: number;
+
+declare const kAirshipDaleBasebandErrorIpcErrorOccurred: number;
+
 declare const kIOPCISlotCapabilitiesBitMRLSensorPresent: number;
 
 declare const IFNET_LQM_THRESH_OFF: number;
 
 declare const kBootDriverTypeMKEXT: number;
 
+declare const kIOPMRunModeFullWake: number;
+
 declare const bATATrack0NotFound: number;
 
 declare const IOUSBHostCICommandMessageControlStatusPhase: number;
+
+declare const CS_SIGNER_TYPE_MAC_APP_STORE: number;
 
 declare const kIOReportQuantityTemperature: number;
 
@@ -3234,9 +3200,13 @@ declare const kIOReportQuantityCPUInstrs: number;
 
 declare const gIOHIDEventServiceMetaClass: interop.Pointer;
 
+declare const kIOPCIExpressCapabilityIDFRSQueueing: number;
+
 declare const kIOMemoryPurgeableVolatileOrderingObsolete: number;
 
 declare const IOAudioStream: number;
+
+declare const kIOPCIExpressCapabilityIDRCLinkDeclaration: number;
 
 declare const IOWorkLoop: number;
 
@@ -3256,11 +3226,15 @@ declare const IOUSBHostCIDeviceCreateCommandData1DeviceAddress: number;
 
 declare const CS_HASHTYPE_SHA1: number;
 
+declare const IOFastPathUserClient: number;
+
 declare const kHIDDispatchOptionPhaseChanged: number;
 
 declare const IOPCIBridge: number;
 
 declare const kFWExtendedTCodeVendorDependent: number;
+
+declare const kIODKDisableIOPMSystemOffPhase2Allow: number;
 
 declare const kSuperSpeedDeviceCapabilitySupport5Gb: number;
 
@@ -3308,8 +3282,6 @@ declare const kIOMemoryAsReference: number;
 
 declare const IOUSBHostCICommandMessageData0StreamIDPhase: number;
 
-declare const kIOKitDebugUserOptions: number;
-
 declare const IOFWAsyncStreamReceiver: number;
 
 declare const kIOPCIConfigurationOffsetSubSystemID: number;
@@ -3346,8 +3318,6 @@ declare const OSAction_IOHIDEventService__CopyEventInterface: number;
 
 declare const kSOFTRESET: number;
 
-declare const kHubPortIndicatorBit: number;
-
 declare const kRegMaximumPropertyNameLength: number;
 
 declare const kIOPCISlotCapabilitiesBitNoCommandCompletedSupport: number;
@@ -3371,6 +3341,8 @@ declare const IOAudioTimeIntervalFilterIIR: number;
 declare const MBUF_TYPE_HEADER: number;
 
 declare const IOUSBHostCICommandMessageData0RootPortPhase: number;
+
+declare const gIOResourcesKey: interop.Pointer;
 
 declare const kPCI2PCISecondaryBus: number;
 
@@ -3397,6 +3369,8 @@ declare const IOFireWireNubAux: number;
 declare const kIOPCIAdapterHotRemovePending: number;
 
 declare const IOFWAsyncStreamCommand: number;
+
+declare const kIOUCVariableStructureSize: number;
 
 declare const gFireWireUnit_SW_Version: interop.Pointer;
 
@@ -3434,13 +3408,9 @@ declare const MBUF_CSUM_IP_GOOD: number;
 
 declare const kIOPCICommandMemorySpace: number;
 
-declare const kUSB3HubDescriptorType: number;
-
 declare const kIOMemoryPhysicallyContiguous: number;
 
 declare const kPCIPMCSPowerStateMask: number;
-
-declare const kHubPortSuperSpeedStateChangeMask: number;
 
 declare const kFWExtendedTCodeMaskSwap: number;
 
@@ -3450,7 +3420,7 @@ declare const kIOLogPower: number;
 
 declare const kIOMemoryPurgeableVolatileBehaviorLifo: number;
 
-declare const gIOResourcesKey: interop.Pointer;
+declare const kAirshipDaleBasebandTraceUserClientFlushTraceBuffers: number;
 
 declare const kIOPCILatencyUnsnooped: number;
 
@@ -3466,6 +3436,8 @@ declare const kFWAsynchTLabelPhase: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkMinSpeedIdPhase: number;
 
+declare const kIOPCIExpressCapabilityIDPASID: number;
+
 declare const kIOExternalMethodScalarOutputCountMax: number;
 
 declare const CS_VALIDATION_CATEGORY_TESTFLIGHT: number;
@@ -3476,7 +3448,7 @@ declare const IOUSBHostCIPortStatusCommandData1ConnectChange: number;
 
 declare const kSuperSpeedHubCharacteristicsOverCurrentGlobal: number;
 
-declare const kHubLocalPowerStatusChange: number;
+declare const kAirshipDaleBasebandTraceUserClientRegisterTraceBuffer: number;
 
 declare const IOUSBHostCIPortStatusPowered: number;
 
@@ -3518,9 +3490,11 @@ declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCount: number;
 
 declare const IOPowerConnection: number;
 
-declare const kPrdRootHubAppleE: number;
+declare const kAirshipDaleBasebandControlInterfaceUserClientReadAsync: number;
 
 declare const IOUSBHostCIEndpointResetCommandData1ClearState: number;
+
+declare const kAirshipDaleBasebandErrorIpcPowerOffTimedOut: number;
 
 declare const kIOPCIConfigInterruptLine: number;
 
@@ -3533,8 +3507,6 @@ declare const gIODisplaySpeakerSelectKey: interop.Pointer;
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedAttrCount: number;
 
 declare const kHIDDispatchOptionPointerNoAcceleration: number;
-
-declare const kIOPCIProbeOptionDone: number;
 
 declare const gIOBSDMinorKey: interop.Pointer;
 
@@ -3555,8 +3527,6 @@ declare const kIOMemorySetEncrypted: number;
 declare const kNVRAMProperty: number;
 
 declare const kIOFBNotifyEvent_WSAADefer: number;
-
-declare const IOFireWireSBP2LUN: number;
 
 declare const IOUSBHostCISetupTransferData1wValue: number;
 
@@ -3588,6 +3558,8 @@ declare const CS_LINKAGE_APPLICATION_OOPJIT_MLCOMPILER: number;
 
 declare const MBUF_EXT: number;
 
+declare const kIOPCIExpressCapabilityIDSFI: number;
+
 declare const kIOMemoryPurgeableVolatileOrderingNormal: number;
 
 declare const kFWSelfIDNPdPhase: number;
@@ -3596,11 +3568,13 @@ declare const IOPlatformExpert: number;
 
 declare const kIOTrackingCallSiteBTs: number;
 
+declare const kIOPCIExpressCapabilityIDLaneMarginingRx: number;
+
+declare const kIOPCIExpressCapabilityIDRCInternalLinkCtrl: number;
+
 declare const kIOTrackingLeakScanEnd: number;
 
 declare const CSSLOT_TICKETSLOT: number;
-
-declare const kSSHubPortStatusOverCurrentMask: number;
 
 declare const kIOServiceInactiveState: number;
 
@@ -3613,6 +3587,8 @@ declare const kHIDDispatchOptionScrollMomentumStart: number;
 declare const kHIDDispatchOptionPhaseBegan: number;
 
 declare const kIOPCIConfigBaseAddress1: number;
+
+declare const IOFastPathDescriptor: number;
 
 declare const IOUSBHostCIMessageControlValid: number;
 
@@ -3634,8 +3610,6 @@ declare const kIOFBNotifyEvent_DisplayDimsChange: number;
 
 declare const gIODisplayBrightnessProbeKey: interop.Pointer;
 
-declare const kSSHubPortStatusSpeedShift: number;
-
 declare const kIOTraceInterrupts: number;
 
 declare const kKeyMaskDelete: number;
@@ -3655,8 +3629,6 @@ declare const kIOFBNotifyGroupID_VendorNVIDIA: number;
 declare const kIOServiceRegisteredState: number;
 
 declare const kIOPCIProbeOptionEject: number;
-
-declare const kUSBHubPortEnableChangeFeature: number;
 
 declare const kIOPCIExpressVirtualChannelCapability: number;
 
@@ -3694,8 +3666,6 @@ declare const gFireWireNodeID: interop.Pointer;
 
 declare const IFNET_RSSI_UNKNOWN: number;
 
-declare const IOPCIDevice: number;
-
 declare const kPEHaltCPU: number;
 
 declare const kIOPCIAERCapRootErrCmdOffset: number;
@@ -3709,8 +3679,6 @@ declare const MBUF_FIRSTFRAG: number;
 declare const kIOMemoryPurgeableKeepCurrent: number;
 
 declare const kIOPCIUncorrectableErrorBitFlowControlProtocol: number;
-
-declare const kSSHubPortLinkStateU1: number;
 
 declare const kIOTimerEventSourceOptionsPriorityLow: number;
 
@@ -3764,8 +3732,6 @@ declare const kIOLogHibernate: number;
 
 declare const kIOFWSBP2FailsOnBusResetsDuringIO: number;
 
-declare const kUSBHubLocalPowerChangeFeature: number;
-
 declare const kFWSelfID0P0Phase: number;
 
 declare const kDeviceRequestSize: number;
@@ -3773,8 +3739,6 @@ declare const kDeviceRequestSize: number;
 declare const kIOAGPIdle: number;
 
 declare const kIOServiceDextRequirePowerForMatching: number;
-
-declare const kSSHubPortStatusPowerMask: number;
 
 declare const OSAction_IOHIDEventService__SetLEDMetaClass: number;
 
@@ -3788,7 +3752,7 @@ declare const SFLT_EXTENDED_REGISTRY: number;
 
 declare const kIOFBNotifyDidPowerOff: number;
 
-declare const kHubPortSuspend: number;
+declare const IOFastPathService: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedMantissaPhase: number;
 
@@ -3797,6 +3761,8 @@ declare const OSCollection: number;
 declare const IOATAIOReg16: number;
 
 declare const kEndpointDescriptorTransferTypeIsochronous: number;
+
+declare const kIOFBNotifyGroupID_Legacy: number;
 
 declare const OSAction_IOHIDEventService__SetUserPropertiesInterface: number;
 
@@ -3830,8 +3796,6 @@ declare const IOHIDEventQueue: number;
 
 declare const kIOACPIDevicePowerStateD0: number;
 
-declare const kUSBHubPortResetFeature: number;
-
 declare const kSuperSpeedPlusDeviceCapabilitySublinkDirectionRx: number;
 
 declare const kATAcmdReadExtended: number;
@@ -3853,8 +3817,6 @@ declare const gIOKitTrace: number;
 declare const kFWAsynchRtPhase: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSymmetry: number;
-
-declare const kUSBHubOvercurrentMask: number;
 
 declare const bATADCRnIntEnable: number;
 
@@ -3890,8 +3852,6 @@ declare const kOFVariablePermUserRead: number;
 
 declare const kUSB3LPMMaxU2PEL: number;
 
-declare const kIOPCIAERCapCorErrStatusOffset: number;
-
 declare const kEndpointDescriptorPacketSizeMultPhase: number;
 
 declare const gIOUserClientClassKey: interop.Pointer;
@@ -3906,8 +3866,6 @@ declare const receive_sysdiagnose_notification_subsystem: receive_sysdiagnose_no
 
 declare const kIOReportNotifyHubOnChange: number;
 
-declare const kHubTTThinkTimeShift: number;
-
 declare const kRegCStrMaxEntryNameLength: number;
 
 declare const kVCDarkBackground: number;
@@ -3918,31 +3876,19 @@ declare const kPEPanicSync: number;
 
 declare const kIOMemoryPurgeableVolatileGroup2: number;
 
-declare const IOUSBHostCIPortStatusConnectChange: number;
-
-declare const kIOPCIConfigurationOffsetSubSystemVendorID: number;
-
 declare const addressRangeErr: number;
 
 declare const kRegIterContinue: number;
 
-declare const kSetHubDepth: number;
-
 declare const gFireWireUnit_Spec_ID: interop.Pointer;
 
 declare const kIOMapperUncached: number;
-
-declare const kSSHubPortLinkStateHotReset: number;
 
 declare const kInterfaceStatusRemoteWakeEnable: number;
 
 declare const kIOPCIConfigLatencyTimer: number;
 
 declare const inUseErr: number;
-
-declare const kIOPCIExpressCapabilityIDErrorReporting: number;
-
-declare const kUSBHSHubFlagsNumPortsMask: number;
 
 declare const osrelease: interop.Pointer;
 
@@ -3964,7 +3910,7 @@ declare const kIOPCICommandIOSpace: number;
 
 declare const bATAIndex: number;
 
-declare const kSSHubPortLinkStateSSInactive: number;
+declare const kIOPCIExpressCapabilityIDDPA: number;
 
 declare const CSMAGIC_EMBEDDED_DER_ENTITLEMENTS: number;
 
@@ -4002,6 +3948,8 @@ declare const CS_SUPPORTSCODELIMIT64: number;
 
 declare const kKeyMaskUnknown: number;
 
+declare const kIOPCIExpressCapabilityIDPL16GTs: number;
+
 declare const OSInterface: number;
 
 declare const kIOTraceCompatBootArgs: number;
@@ -4014,8 +3962,6 @@ declare const kRegNoModifiers: number;
 
 declare const IOUSBHostCIPortStatusOvercurrentChange: number;
 
-declare const IOSCSIParallelInterfaceDevice: number;
-
 declare const kIOAGP2xDataRate: number;
 
 declare const CS_VALIDATION_CATEGORY_INVALID: number;
@@ -4027,10 +3973,6 @@ declare const IOUSBHostCITransferCompletionMessageControlStatusPhase: number;
 declare const kIOPCIUncorrectableErrorBitMalformedTLP: number;
 
 declare const version_stage: number;
-
-declare const kGetHub3Descriptor: number;
-
-declare const kHubPortIndicatorAmber: number;
 
 declare const IOFWIsochChannel: number;
 
@@ -4054,6 +3996,8 @@ declare const kIODKDisableEntitlementChecking: number;
 
 declare const kIOFBNotifyWSAAWillExitDefer: number;
 
+declare const kIOPCIExpressCapabilityIDVC_MFVCPresent: number;
+
 declare const hex2ascii_data: interop.Pointer;
 
 declare const kIOInterruptTypePCIMessagedX: number;
@@ -4071,8 +4015,6 @@ declare const kEfiBootServicesData: number;
 declare const CS_VALIDATION_CATEGORY_ROSETTA: number;
 
 declare const kIOPCIConfigurationOffsetCommand: number;
-
-declare const kUSBHubDescriptorType: number;
 
 declare const OSSerialize: number;
 
@@ -4100,8 +4042,6 @@ declare const kIOMemoryLedgerTagNeural: number;
 
 declare const kRegEntryNameTerminator: number;
 
-declare const kSetHubDescriptor: number;
-
 declare const kATAcmdReadMultiple: number;
 
 declare const kEndpointDescriptorPacketSizePhase: number;
@@ -4109,6 +4049,8 @@ declare const kEndpointDescriptorPacketSizePhase: number;
 declare const kIOTimerEventSourceOptionsPriorityWorkLoop: number;
 
 declare const kIODMAMapOptionUnmapped: number;
+
+declare const IOFireWireSBP2LUN: number;
 
 declare const gIOPathMatchKey: interop.Pointer;
 
@@ -4122,13 +4064,15 @@ declare const BPF_MODE_INPUT_OUTPUT: number;
 
 declare const IOAudioEngineUserClient: number;
 
+declare const kIOPCIExpressCapabilityIDNPEM: number;
+
 declare const IOFWUserVectorCommand: number;
 
 declare const IOUSBHostCIDoorbellStreamIDPhase: number;
 
-declare const kHubPortHighSpeed: number;
-
 declare const kEndpointDescriptorUsageTypeIsocFeedback: number;
+
+declare const kIOPCIAERCapCorErrStatusOffset: number;
 
 declare const CS_LINKAGE_APPLICATION_OOPJIT_PREVIEWS: number;
 
@@ -4144,21 +4088,19 @@ declare const kIODMAMapPagingPath: number;
 
 declare const IOUSBHostCICommandMessageData0DeviceAddressPhase: number;
 
-declare const kSSHubPortStatusResetBit: number;
-
 declare const IOUSBHostCIPortEventMessageData0PortNumber: number;
 
 declare const kIODKDisableCDHashChecking: number;
 
 declare const kFWSelfID0DelPhase: number;
 
+declare const kAirshipDaleBasebandErrorCCCIHandshakeError: number;
+
 declare const kIOFBNotifyEvent_Terminated: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkLSEPhase: number;
 
 declare const kEndpointDescriptorUsageTypeInterruptReserved1: number;
-
-declare const kHubPortBit14: number;
 
 declare const kDisabledInterruptState: number;
 
@@ -4169,8 +4111,6 @@ declare const kIOFBNotifyGroupID_AppleIOAccelDisplayPipe: number;
 declare const kIOOutputCommandMask: number;
 
 declare const IOUSBHostCISetupTransferData1wIndexPhase: number;
-
-declare const kUSBHubRqGetPortErrorCount: number;
 
 declare const kIOPCIAGPCapability: number;
 
@@ -4188,6 +4128,12 @@ declare const separateBusErr: number;
 
 declare const kPCI2PCIOffsetPrefetchUpperBase: number;
 
+declare const kIOPCIExpressCapabilityIDPL32GTs: number;
+
+declare const IOHIDDeviceShim: number;
+
+declare const kIOPCICommandInterruptDisable: number;
+
 declare const kIOUserNotifyMaxMessageSize: number;
 
 declare const gIOPriorityPowerStateInterest: interop.Pointer;
@@ -4196,15 +4142,13 @@ declare const kIOAGPGartInvalidate: number;
 
 declare const kIOPCIConfigurationOffsetMinimumGrant: number;
 
-declare const kGetHubStatus: number;
-
-declare const kUSBHSHubCommandRemoveHub: number;
-
 declare const IOFWIsochPort: number;
+
+declare const kPCIPMCPMESupportFromD3Hot: number;
 
 declare const IOStreamBuffer: number;
 
-declare const kUSBHubPortLinkStateChangeFeature: number;
+declare const kAirshipDaleBasebandControlErrorMsg: number;
 
 declare const gIODTTypeKey: interop.Pointer;
 
@@ -4248,8 +4192,6 @@ declare const kFWSelfID0P2: number;
 
 declare const MBUF_TSO_IPV6: number;
 
-declare const kUSBHubPortTestFeature: number;
-
 declare const osbuild_config: interop.Pointer;
 
 declare const MBUF_DONTWAIT: number;
@@ -4272,6 +4214,8 @@ declare const gIOUserUserClientKey: interop.Pointer;
 
 declare const kIOLogServiceTree: number;
 
+declare const gIOServiceKey: interop.Pointer;
+
 declare const bATADataRequest: number;
 
 declare const IODMACommand: number;
@@ -4279,6 +4223,8 @@ declare const IODMACommand: number;
 declare const kUSBHostVendorRequestCompletionTimeout: number;
 
 declare const CS_SUPPORTSEXECSEG: number;
+
+declare const kIOPCIProbeOptionDone: number;
 
 declare const kFWSelfID0P1: number;
 
@@ -4291,6 +4237,8 @@ declare const gIODisplayUsableLinearBrightnessKey: interop.Pointer;
 declare const IOUSBHostCIPortCapabilitiesMessageData0MaxPowerPhase: number;
 
 declare const kIODirectionCompleteWithDataValid: number;
+
+declare const kIOPCIStatusSERRActive: number;
 
 declare const kEndpointDescriptorUsageTypeInterruptNotification: number;
 
@@ -4320,13 +4268,13 @@ declare const kATAcmdDoorUnlock: number;
 
 declare const kPCI2PCIOffsetPrefetchMemoryRange: number;
 
+declare const kAirshipDaleBasebandErrorIpcPowerOnTimedOut: number;
+
 declare const kIOACPIBusNumberRange: number;
 
 declare const kHIDInputReport: number;
 
 declare const kFWAsynchExtendedTCodePhase: number;
-
-declare const kClearPortFeature: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkType: number;
 
@@ -4340,6 +4288,10 @@ declare const IORegistryEntry: number;
 
 declare const gIODisplayHorizontalSizeKey: interop.Pointer;
 
+declare const IOUSBHostCIPortStatusConnectChange: number;
+
+declare const kIOPCIConfigurationOffsetSubSystemVendorID: number;
+
 declare const kIterationDone: number;
 
 declare const kIOPCIConfigSubSystemVendorID: number;
@@ -4348,13 +4300,9 @@ declare const kFWSelfIDNPePhase: number;
 
 declare const kSuperSpeedEndpointCompanionDescriptorMaxBurst: number;
 
-declare const kPerPortSwitchingBit: number;
-
 declare const kIOPCIAERCapUncErrStatusOffset: number;
 
 declare const MBUF_TYPE_OOBDATA: number;
-
-declare const kSSHubPortStatusBeingResetMask: number;
 
 declare const kIOReportGetDimensions: number;
 
@@ -4371,8 +4319,6 @@ declare const CSMAGIC_REQUIREMENTS: number;
 declare const gFireWireProduct_Name: interop.Pointer;
 
 declare const SPTM_SWITCH_RCTX_FLUSH: number;
-
-declare const kUSBHubPortForceLinkPMAcceptFeature: number;
 
 declare const kRegNameSpaceModifierMask: number;
 
@@ -4412,9 +4358,9 @@ declare const CS_HASHTYPE_SHA384: number;
 
 declare const kIOReportTraceOnChange: number;
 
-declare const kIODirectionCompleteWithError: number;
+declare const kAirshipDaleBasebandErrorCreateInterfaceFailure: number;
 
-declare const bATADataCorrected: number;
+declare const kIOFBNotifyWSAAExitDefer: number;
 
 declare const kChipSetTypePowerExpress: number;
 
@@ -4436,9 +4382,13 @@ declare const gIODisplayCapabilityStringKey: interop.Pointer;
 
 declare const gIOHIDInterfaceMetaClass: interop.Pointer;
 
+declare const static_if_abi: number;
+
 declare const OSAction_IOHIDDevice__CompleteReportInterface: number;
 
 declare const kIODTExclusive: number;
+
+declare const kAirshipDaleBasebandErrorCCCIInternalError: number;
 
 declare const kIOLogCatalogue: number;
 
@@ -4456,7 +4406,7 @@ declare const MBUF_TYPE_PCB: number;
 
 declare const speclisth: unknown /* const array */;
 
-declare const kSSHubPortStatusConnectionMask: number;
+declare const kIODirectionCompleteWithError: number;
 
 declare const gIOUSBHostPipeMetaClass: interop.Pointer;
 
@@ -4470,6 +4420,8 @@ declare const kPCIPMCSPowerStateD1: number;
 
 declare const gIODisplayValueKey: interop.Pointer;
 
+declare const kIOPCIExpressCapabilityIDErrorReporting: number;
+
 declare const kIOPMPowerStateVersion2: number;
 
 declare const IODisplayParameterHandler: number;
@@ -4482,11 +4434,11 @@ declare const kPCI2PCIOffsetMemoryRange: number;
 
 declare const IOUSBHostCIEndpointUpdateCommandData1DescriptorPhase: number;
 
+declare const IOFastPathHIDAccelService: number;
+
 declare const IOUSBHostCIIsochronousTransferControlFrameNumberPhase: number;
 
 declare const IOATAReg32: number;
-
-declare const kIOFBNotifyWSAAExitDefer: number;
 
 declare const kIOUCScalarIScalarO: number;
 
@@ -4507,9 +4459,82 @@ declare const csselr_cache_type: {
   INSTR: 1,
 };
 
-declare const os_log_coproc_reg_t: {
-  os_log_coproc_register_memory: 0,
-  os_log_coproc_register_harvest_fs_ftab: 1,
+declare const airship_daleipc_ipc_error_flag: {
+  CHANNEL_SYNC_FAILURE: 1,
+  CLDMA_LINK_ERROR: 2,
+  DEVICE_SLEEP_FAILURE: 4,
+  DEVICE_SLEEP_EXIT_TIMEOUT: 8,
+  DOWNLINK_BUFFER_COUNT_LENGTH_ERROR: 16,
+  IO_TIMEOUT: 32,
+  CLDMA_RX_ERROR: 64,
+  CLDMA_TX_ERROR: 128,
+  SYSTEM_FAILURE: 256,
+  HOST_SLEEP_FAILURE: 512,
+  HOST_WAKE_FAILURE: 1024,
+  CHANNEL_UPDATE_FAILURE: 2048,
+  UPLINK_UPDATE_FAILURE: 4096,
+  CHANNEL_QUIESCE_FAILURE: 8192,
+  DOWNLINK_UPDATE_FAILURE: 16384,
+};
+
+declare const IOHIDKind: {
+  Unknown: 0,
+  Keyboard: 1,
+  RelativePointing: 2,
+};
+
+declare const daleipc_exec_stage: {
+  NODEV: 0,
+  ROM: 1,
+  PL: 2,
+  LK: 3,
+  MD: 4,
+  CCCI: 5,
+  OS: 6,
+  INVALID: 7,
+};
+
+declare const airship_acipc_memregion_state: {
+  UNAVAILABLE: 0,
+  AVAILABLE: 1,
+  MAPPING: 2,
+  MAPPED: 3,
+  UNMAPPING: 4,
+  LIMBO: 5,
+  DEAD_UNSETTLED: 6,
+  DEAD_SETTLED: 7,
+  EDISCONNECTED: 8,
+};
+
+declare const airship_acipc_io_result: {
+  SUCCESS: 0,
+  ERROR: 1,
+  OVERFLOW: 2,
+  CANCELED: 3,
+  RESET: 4,
+};
+
+declare const airship_acipc_tr_mode_t: {
+  STANDARD: 0,
+  BATCH: 1,
+};
+
+declare const airship_acipc_boot_image_response: {
+  NONE: 0,
+  SUCCESS: 1,
+  FAILURE: 2,
+  UNKNOWN: 3,
+  EDISCONNECT: 4,
+};
+
+declare const airship_acipc_boot_state_detail_flag: {
+  UNAVAILABLE_EXECSTAGE: 1,
+  DEAD_DEVICERESET: 2,
+  DEAD_EXECSTAGE: 4,
+};
+
+declare const airship_driver_user_client_type: {
+  kAirshipDriverUserClientTypeDaleTraceInterface: 4,
 };
 
 declare const kdebug_test_t: {
@@ -4579,6 +4604,15 @@ declare const ataSocketType: {
   SATA2Bay: 7,
 };
 
+declare const airship_monitor_comparator: {
+  EQ: 0,
+  NEQ: 1,
+  LT: 2,
+  LE: 3,
+  GT: 4,
+  GE: 5,
+};
+
 declare const IOFWAVCProtocolUserClientAsyncCommandCodes: {
   SetAVCRequestCallback: 18,
   AllocateInputPlug: 19,
@@ -4615,6 +4649,16 @@ declare const IOFWAVCUserClientAsyncCommandCodes: {
   NumAsyncCommands: 17,
 };
 
+declare const IOUSBHostCIDeviceSpeed: {
+  None: 0,
+  Full: 1,
+  Low: 2,
+  High: 3,
+  Super: 4,
+  SuperPlus: 5,
+  SuperPlusBy2: 6,
+};
+
 declare const tIsochronousTransactionOptions: {
   None: 0,
   Wrap: 1,
@@ -4622,21 +4666,6 @@ declare const tIsochronousTransactionOptions: {
 
 declare const tIsochronousTransferOptions: {
   kIsochronousTransferOptionsNone: 0,
-};
-
-declare const USBHubClassRequest: {
-  GetStatus: 0,
-  ClearFeature: 1,
-  GetState: 2,
-  SetFeature: 3,
-  Reserved2: 4,
-  SetAddress: 5,
-  GetDescriptor: 6,
-  SetDescriptor: 7,
-  GetConfig: 8,
-  SetConfig: 9,
-  GetInterface: 10,
-  SetInterface: 11,
 };
 
 declare const IOUSBHostCIDeviceState: {
@@ -4649,16 +4678,6 @@ declare const IOUSBHostCIControllerState: {
   Off: 0,
   Paused: 1,
   Active: 2,
-};
-
-declare const IOUSBHostCIDeviceSpeed: {
-  None: 0,
-  Full: 1,
-  Low: 2,
-  High: 3,
-  Super: 4,
-  SuperPlus: 5,
-  SuperPlusBy2: 6,
 };
 
 declare const IOUSBHostCIMessageStatus: {
@@ -4857,12 +4876,14 @@ declare const tIOPCILinkControlASPMBits: {
   L0sL1: 3,
 };
 
-declare const tIOPCIDeviceResetTypes: {
-  HotReset: 1,
-  WarmReset: 2,
-  WarmResetDisable: 4,
-  WarmResetEnable: 8,
-  FunctionReset: 16,
+declare const airship_acipc_boot_state: {
+  UNAVAILABLE: 0,
+  READY: 1,
+  IMAGE_SENT: 2,
+  IMAGE_DONE: 3,
+  DEAD_UNSETTLED: 4,
+  DEAD_SETTLED: 5,
+  EDISCONNECTED: 6,
 };
 
 declare const tIOPCILinkSpeed: {
@@ -4871,12 +4892,6 @@ declare const tIOPCILinkSpeed: {
   Speed_8_: 3,
   Speed_16_: 4,
   Speed_32_: 5,
-};
-
-declare const IOHIDKind: {
-  Unknown: 0,
-  Keyboard: 1,
-  RelativePointing: 2,
 };
 
 declare const IONVRAMOperation: {
@@ -4894,6 +4909,17 @@ declare const xnu_entry_routine_t: {
   BOOT_WARM: 2,
   BOOT_HIB: 3,
   PANIC: 4,
+};
+
+declare const darwin_gpu_role_t: {
+  UNKNOWN: 0,
+  ALLOW: 1,
+  DENY: 2,
+  BACKGROUND: 3,
+  UTILITY: 4,
+  UI_NON_FOCAL: 5,
+  UI: 6,
+  UI_FOCAL: 7,
 };
 
 declare const libsptm_refcnt_type_t: {
@@ -4978,6 +5004,41 @@ declare const backtrace_info_t: {
   I_TRUNCATED: 2,
 };
 
+declare const IOUSBHostCIPortState: {
+  Off: 0,
+  Powered: 1,
+  Suspended: 2,
+  Active: 3,
+};
+
+declare const IONVRAMVariableType: {
+  Boolean: 1,
+  Number: 2,
+  String: 3,
+  Data: 4,
+};
+
+declare const kcd_compression_type_t: {
+  NONE: 0,
+  ZLIB: 1,
+};
+
+declare const thread_selfcounts_kind_t: {
+  CPI: 1,
+  CPI_PER_PERF_LEVEL: 2,
+  TIME_CPI: 3,
+  TIME_CPI_PER_PERF_LEVEL: 4,
+  TIME_ENERGY_CPI: 5,
+  TIME_ENERGY_CPI_PER_PERF_LEVEL: 6,
+};
+
+declare const tDeviceRequestRecipient: {
+  Device: 0,
+  Interface: 1,
+  Endpoint: 2,
+  Other: 3,
+};
+
 declare const IOUSBHostCIExceptionType: {
   Unknown: 0,
   CapabilitiesInvalid: 1,
@@ -5009,6 +5070,49 @@ declare const telemetry_pmi: {
   CYCLES: 2,
 };
 
+declare const sptm_info_t: {
+  INFO_SPTM_ALLOWED_IO_RANGES: 0,
+  INFO_SPTM_ALLOWED_IO_RANGES_COUNT: 1,
+  INFO_SPTM_PMAP_IO_RANGES: 2,
+  INFO_SPTM_PMAP_IO_RANGES_COUNT: 3,
+  INFO_SPTM_IO_RANGES: 4,
+  INFO_SPTM_IO_RANGES_COUNT: 5,
+  MAX_SPTM_INFOS: 6,
+};
+
+declare const airship_daleipc_channel_sync_operation: {
+  CHANNEL_SYNC_FETCH_COMPLETION: 1,
+  UPLINK_SYNC_FETCH_COMPLETION: 2,
+  DOWNLINK_SYNC_FETCH_COMPLETION: 4,
+  NETWORK_CLOCK_UPDATE: 8,
+};
+
+declare const airship_acipc_memregion_state_detail_flag: {
+  UNAVAILABLE_EXECSTAGE: 1,
+  UNAVAILABLE_CONFLICT: 2,
+  DEAD_MAPREJECT: 4,
+  DEAD_BYREQUEST: 8,
+  DEAD_DEVICERESET: 16,
+  DEAD_EXECSTAGE: 32,
+};
+
+declare const airship_result: {
+  OK: 0,
+  ERROR: -536870212,
+  EBADARGUMENT: -536870206,
+  ECANCELED: -536870165,
+  ECANTMAP: -536870178,
+  EDISCONNECTED: -536870208,
+  EEXCLUSIVEACCESS: -536870203,
+  EIO: -536870198,
+  ENOTOPEN: -536870195,
+  ENOSPACE: -536870181,
+  ENOTPRIVILEGED: -536870207,
+  ENOTREADY: -536870184,
+  ETIMEOUT: -536870186,
+  EDEVICE: -536870167,
+};
+
 declare const ataRegMask: {
   bATAAltSDevC: 14,
   bATAStatusCmd: 7,
@@ -5028,6 +5132,20 @@ declare const ataRegMask: {
   mATASectorCnt: 4,
   mATAErrFeatures: 2,
   mATAData: 1,
+};
+
+declare const airship_driver_error: {
+  IpcErrorOccurred: 1,
+  IpcSetTransportFailed: 2,
+  IpcPowerOffTimedOut: 4,
+  IpcPowerOnTimedOut: 8,
+  DevicePowerOffTimedOut: 16,
+  DevicePowerOnTimedOut: 32,
+};
+
+declare const airship_resource_state: {
+  FREE: 0,
+  BUSY: 1,
 };
 
 declare const tDeviceRequestType: {
@@ -5063,6 +5181,11 @@ declare const mcc_ecc_version_t: {
   NUM_VERSIONS: 1,
 };
 
+declare const kdebug_emit_flags_t: {
+  FILTER_ONLY: 1,
+  NON_PROCESS: 2,
+};
+
 declare const IOFWAVCUserClientCommandCodes: {
   Open: 0,
   Close: 1,
@@ -5083,20 +5206,27 @@ declare const IOFWAVCUserClientCommandCodes: {
   NumCommands: 16,
 };
 
+declare const airship_acipc_cr_sync_operation: {
+  AIRSHIP_ACIPC_CR_SYNC_PROCESS_HI_UPDATE: 1,
+};
+
 declare const tUSBHostPortType: {
   Standard: 0,
   Captive: 1,
   Internal: 2,
   Accessory: 3,
   ExpressCard: 4,
-  Count: 5,
+  C: 5,
+  Unknown: 6,
 };
 
 declare const EXDisplayPipeIndicator: {
   CAM: 0,
   MIC: 1,
   MIC_ALT_ACCESSIBILITY: 2,
-  COUNT: 3,
+  CAM_ALT_FACEID: 3,
+  CAM_ALT_FACEID_DELAYED: 4,
+  COUNT: 5,
 };
 
 declare const kdebug_live_flags_t: {
@@ -5116,6 +5246,11 @@ declare const csselr_cache_level: {
   L5: 8,
   L6: 10,
   L7: 12,
+};
+
+declare const IOCircularDataQueueCreateOptions: {
+  Consumer: 1,
+  Producer: 2,
 };
 
 declare const tUSBHostPowerSourceType: {
@@ -5164,6 +5299,14 @@ declare const tDescriptorType: {
   SuperSpeedHub: 42,
   SuperSpeedUSBEndpointCompanion: 48,
   SuperSpeedPlusIsochronousEndpointCompanion: 49,
+};
+
+declare const cluster_type_t: {
+  CLUSTER_TYPE_INVALID: -1,
+  CLUSTER_TYPE_SMP: 0,
+  CLUSTER_TYPE_E: 1,
+  CLUSTER_TYPE_P: 2,
+  MAX_CPU_TYPES: 3,
 };
 
 declare const ataOpcode: {
@@ -5321,11 +5464,6 @@ declare const stackshot_flags_t: {
   SKIP_EXCLAVES: 17179869184,
 };
 
-declare const generic_snapshot_flags: {
-  User64_p: 1,
-  Kernel64_p: 2,
-};
-
 declare const micro_snapshot_flags: {
   InterruptRecord: 1,
   TimerArmingRecord: 2,
@@ -5334,6 +5472,19 @@ declare const micro_snapshot_flags: {
   PMIRecord: 16,
   MACFRecord: 32,
   KernelThread: 64,
+};
+
+declare const airship_acipc_ipc_error_flag: {
+  DEVICE_SIGNALLED: 1,
+  UNEXPECTED_TRANSPORT_REVOCATION: 2,
+  SYSTEM_FAILURE: 4,
+  UNEXPECTED_IPC_STATUS: 8,
+  UNEXPECTED_SLEEP_STATUS: 16,
+  RUNNING_TIMEOUT: 32,
+  BAD_TR_TI_UPDATE: 64,
+  BAD_INPLACE_COMPLETION: 128,
+  BAD_CR_HI_UPDATE: 256,
+  BAD_CD: 512,
 };
 
 declare const hvg_hcall_dump_option_t: {
@@ -5358,12 +5509,6 @@ declare const sptm_guest_stage1_tlb_op_t: {
   INVALID: 10,
 };
 
-declare const pal_hib_restore_stage_t: {
-  pal_hib_restore_stage_dram_pages: 0,
-  pal_hib_restore_stage_preview_pages: 1,
-  pal_hib_restore_stage_handoff_data: 2,
-};
-
 declare const lck_wake_action_t: {
   EFAULT: 0,
   O_NOT_TRANSFER_PUSH: 1,
@@ -5373,10 +5518,28 @@ declare const tIOPCIAccessOptions: {
   kIOPCIAccessLatencyTolerantHint: 1,
 };
 
+declare const os_log_coproc_reg_t: {
+  os_log_coproc_register_memory: 0,
+  os_log_coproc_register_harvest_fs_ftab: 1,
+};
+
+declare const generic_snapshot_flags: {
+  User64_p: 1,
+  Kernel64_p: 2,
+};
+
 declare const ataUnitID: {
   Invalid: -1,
   Device0: 0,
   Device1: 1,
+};
+
+declare const airship_daleipc_channel_state: {
+  UNAVAILABLE: 0,
+  AVAILABLE: 1,
+  STARTED: 2,
+  STOPPED: 3,
+  DEAD: 4,
 };
 
 declare const tUSBHostConnectorType: {
@@ -5393,6 +5556,12 @@ declare const tUSBHostConnectorType: {
   Proprietary: 255,
 };
 
+declare const airship_acipc_tr_sync_operation: {
+  FLUSH_TRANSFERS: 1,
+  PROCESS_TI_UPDATE: 2,
+  FETCH_COMPLETIONS: 4,
+};
+
 declare const IOUSBGetEndpointDescriptorOptions: {
   Original: 0,
   CurrentPolicy: 1,
@@ -5403,6 +5572,23 @@ declare const atapiConfig: {
   IRQPacket: 1,
   DRQFast: 16,
   Unknown: 17,
+};
+
+declare const airship_driver_power_state: {
+  ACTIVE: 0,
+  DEVICE_SLEEP: 1,
+  HOST_SLEEP: 2,
+  HOST_SLEEP_WAIT: 3,
+  HOST_WAKE_WAIT: 4,
+};
+
+declare const SCSIParallelFeature: {
+  WideDataTransfer: 0,
+  SynchronousDataTransfer: 1,
+  QuickArbitrationAndSelection: 2,
+  DoubleTransitionDataTransfers: 3,
+  InformationUnitTransfers: 4,
+  TotalFeatureCount: 5,
 };
 
 declare const tIOPCIDeviceResetOptions: {
@@ -5417,6 +5603,12 @@ declare const mach_assert_type_t: {
   T_3U: 3,
 };
 
+declare const pal_hib_restore_stage_t: {
+  pal_hib_restore_stage_dram_pages: 0,
+  pal_hib_restore_stage_preview_pages: 1,
+  pal_hib_restore_stage_handoff_data: 2,
+};
+
 declare const thread_call_priority_t: {
   HIGH: 0,
   KERNEL: 1,
@@ -5425,11 +5617,11 @@ declare const thread_call_priority_t: {
   KERNEL_HIGH: 4,
 };
 
-declare const tDeviceRequestRecipient: {
-  Device: 0,
-  Interface: 1,
-  Endpoint: 2,
-  Other: 3,
+declare const cs_launch_type_t: {
+  NONE: 0,
+  SYSTEM_SERVICE: 1,
+  SYSDIAGNOSE: 2,
+  APPLICATION: 3,
 };
 
 declare const tEndpointUsageType: {
@@ -5443,9 +5635,47 @@ declare const tEndpointUsageType: {
   IsocReserved: 3,
 };
 
-declare const kcd_compression_type_t: {
-  NONE: 0,
-  ZLIB: 1,
+declare const socd_client_trace_code_xnu_t: {
+  PANIC: 0,
+  START_IOKIT: 1,
+  PLATFORM_ACTION: 2,
+  PM_SET_POWER_STATE: 3,
+  PM_INFORM_POWER_CHANGE: 4,
+  STACKSHOT: 5,
+  PM_SET_POWER_STATE_ACK: 6,
+  PM_INFORM_POWER_CHANGE_ACK: 7,
+  KERNEL_STATE_PANIC: 8,
+  MAX: 9,
+};
+
+declare const SCSIParallelMessages: {
+  TASK_COMPLETE: 0,
+  EXTENDED_MESSAGE: 1,
+  SAVE_DATA_POINTER: 2,
+  RESTORE_POINTERS: 3,
+  DISCONNECT: 4,
+  INITIATOR_DETECTED_ERROR: 5,
+  MESSAGE_REJECT: 7,
+  NO_OPERATION: 8,
+  MESSAGE_PARITY_ERROR: 9,
+  IGNORE_WIDE_RESIDUE: 35,
+  QAS_REQUEST: 85,
+  IDENTIFY: 128,
+  MODIFY_DATA_POINTER: 0,
+  SYNCHONOUS_DATA_TRANSFER_REQUEST: 1,
+  WIDE_DATA_TRANSFER_REQUEST: 3,
+  PARALLEL_PROTOCOL_REQUEST: 4,
+  ACA: 36,
+  HEAD_OF_QUEUE: 33,
+  LINKED_COMMAND_COMPLETE: 10,
+  ORDERED: 34,
+  SIMPLE: 32,
+  ABORT_TASK: 13,
+  ABORT_TASK_SET: 6,
+  CLEAR_ACA: 22,
+  CLEAR_TASK_SET: 14,
+  LOGICAL_UNIT_RESET: 23,
+  TARGET_RESET: 12,
 };
 
 declare const tInternalUSBHostConnectionSpeed: {
@@ -5463,15 +5693,14 @@ declare const in6_clat46_evhdlr_code_t: {
   V6_ADDR_CONFFAIL: 1,
 };
 
-declare const IOUSBHostCIPortState: {
-  Off: 0,
-  Powered: 1,
-  Suspended: 2,
-  Active: 3,
-};
-
 declare const hv_volatile_state_t: {
   HV_DEBUG_STATE: 0,
+};
+
+declare const nfs_supported_kerberos_etypes: {
+  DES3_CBC_SHA1_KD: 16,
+  AES128_CTS_HMAC_SHA1_96: 17,
+  AES256_CTS_HMAC_SHA1_96: 18,
 };
 
 declare const IODebuggerLockState: {
@@ -5491,16 +5720,15 @@ declare const kdebug_flags_t: {
   BUFINIT: -2147483648,
 };
 
-declare const cluster_type_t: {
-  CLUSTER_TYPE_SMP: 0,
-  CLUSTER_TYPE_E: 1,
-  CLUSTER_TYPE_P: 2,
-  MAX_CPU_TYPES: 3,
-};
-
 declare const ex_cb_class_t: {
   ILLEGAL_INSTR_SET: 0,
   MAX: 1,
+};
+
+declare const _IOAudioDevicePowerState: {
+  Sleep: 0,
+  Idle: 1,
+  Active: 2,
 };
 
 declare const tEndpointSynchronizationType: {
@@ -5508,6 +5736,21 @@ declare const tEndpointSynchronizationType: {
   Asynchronous: 1,
   Adaptive: 2,
   Synchronous: 3,
+};
+
+declare const airship_buffer_direction: {
+  IN: 0,
+  OUT: 1,
+  INOUT: 2,
+};
+
+declare const ecc_flags_t: {
+  NONE: 0,
+  IS_CORRECTABLE: 1,
+  DB_CORRUPTED: 2,
+  IS_TEST_ERROR: 4,
+  DB_ONLY: 8,
+  REMOVE_ADDR: 16,
 };
 
 declare const nfstype: {
@@ -5589,6 +5832,34 @@ declare const lck_sleep_action_t: {
   SPIN_ALWAYS: 32,
 };
 
+declare const airship_acipc_ring_state_detail_flag: {
+  UNAVAILABLE_EXECSTAGE: 1,
+  UNAVAILABLE_CONFLICT: 2,
+  UNAVAILABLE_DEPENDENCY: 4,
+  DEAD_OPENREJECT: 8,
+  DEAD_BYREQUEST: 16,
+  DEAD_DEVICERESET: 32,
+  DEAD_EXECSTAGE: 64,
+};
+
+declare const cpu_event: {
+  CPU_BOOT_REQUESTED: 0,
+  CPU_BOOTED: 1,
+  CPU_ACTIVE: 2,
+  CLUSTER_ACTIVE: 3,
+  CPU_EXIT_REQUESTED: 4,
+  CPU_DOWN: 5,
+  CLUSTER_EXIT_REQUESTED: 6,
+  CPU_EXITED: 7,
+  PLATFORM_QUIESCE: 8,
+  PLATFORM_ACTIVE: 9,
+  PLATFORM_HALT_RESTART: 10,
+  PLATFORM_PANIC: 11,
+  PLATFORM_PANIC_SYNC: 12,
+  PLATFORM_PRE_SLEEP: 13,
+  PLATFORM_POST_RESUME: 14,
+};
+
 declare const kd_callback_type: {
   KDEBUG_ENABLED: 0,
   KDEBUG_DISABLED: 1,
@@ -5597,177 +5868,17 @@ declare const kd_callback_type: {
   SNAPSHOT_STATE: 4,
 };
 
+declare const tIOPCIDeviceResetTypes: {
+  HotReset: 1,
+  WarmReset: 2,
+  WarmResetDisable: 4,
+  WarmResetEnable: 8,
+  FunctionReset: 16,
+};
+
 declare const priority_queue_entry_sched_modifier_t: {
   NONE: 0,
   PREEMPTED: 1,
-};
-
-declare const if_netem_model_t: {
-  ULL: 0,
-  LC: 1,
-};
-
-declare const backtrace_flags_t: {
-  NONE: 0,
-  KERN_INTERRUPTED: 1,
-};
-
-declare const SCSIParallelFeature: {
-  WideDataTransfer: 0,
-  SynchronousDataTransfer: 1,
-  QuickArbitrationAndSelection: 2,
-  DoubleTransitionDataTransfers: 3,
-  InformationUnitTransfers: 4,
-  TotalFeatureCount: 5,
-};
-
-declare const cs_launch_type_t: {
-  NONE: 0,
-  SYSTEM_SERVICE: 1,
-  SYSDIAGNOSE: 2,
-  APPLICATION: 3,
-};
-
-declare const IONVRAMVariableType: {
-  Boolean: 1,
-  Number: 2,
-  String: 3,
-  Data: 4,
-};
-
-declare const socd_client_trace_class_t: {
-  XNU: 0,
-  WDT: 1,
-  MAX: 2,
-};
-
-declare const thread_selfcounts_kind_t: {
-  CPI: 1,
-  CPI_PER_PERF_LEVEL: 2,
-  TIME_CPI: 3,
-  TIME_CPI_PER_PERF_LEVEL: 4,
-  TIME_ENERGY_CPI: 5,
-  TIME_ENERGY_CPI_PER_PERF_LEVEL: 6,
-};
-
-declare const nfs_supported_kerberos_etypes: {
-  DES3_CBC_SHA1_KD: 16,
-  AES128_CTS_HMAC_SHA1_96: 17,
-  AES256_CTS_HMAC_SHA1_96: 18,
-};
-
-declare const EFI_RESET_TYPE: {
-  Cold: 0,
-  Warm: 1,
-  Shutdown: 2,
-};
-
-declare const tDeviceCapabilityType: {
-  Wireless: 1,
-  USB20Extension: 2,
-  SuperSpeed: 3,
-  ContainerID: 4,
-  Platform: 5,
-  PowerDelivery: 6,
-  BatteryInfo: 7,
-  PdConsumerPort: 8,
-  PdProviderPort: 9,
-  SuperSpeedPlus: 10,
-  PrecisionMeasurement: 11,
-  WirelessExt: 12,
-  Billboard: 13,
-  BillboardAltMode: 15,
-};
-
-declare const libsptm_cpu_state_t: {
-  SPTM_INTERRUPTED: 0,
-  PANIC_SPIN: 1,
-};
-
-declare const cpu_event: {
-  PU_BOOT_REQUESTED: 0,
-  PU_BOOTED: 1,
-  PU_ACTIVE: 2,
-  LUSTER_ACTIVE: 3,
-  PU_EXIT_REQUESTED: 4,
-  PU_DOWN: 5,
-  LUSTER_EXIT_REQUESTED: 6,
-  PU_EXITED: 7,
-};
-
-declare const hv_trap_type_t: {
-  ASK_: 0,
-  HREAD_: 1,
-};
-
-declare const gssd_nametype: {
-  STRING_NAME: 0,
-  EXPORT: 1,
-  ANONYMOUS: 2,
-  HOSTBASED: 3,
-  USER: 4,
-  MACHINE_UID: 5,
-  STRING_UID: 6,
-  KRB5_PRINCIPAL: 7,
-  KRB5_REFERRAL: 8,
-  NTLM_PRINCIPAL: 9,
-  NTLM_BLOB: 10,
-  UUID: 11,
-};
-
-declare const SCSIParallelMessages: {
-  TASK_COMPLETE: 0,
-  EXTENDED_MESSAGE: 1,
-  SAVE_DATA_POINTER: 2,
-  RESTORE_POINTERS: 3,
-  DISCONNECT: 4,
-  INITIATOR_DETECTED_ERROR: 5,
-  MESSAGE_REJECT: 7,
-  NO_OPERATION: 8,
-  MESSAGE_PARITY_ERROR: 9,
-  IGNORE_WIDE_RESIDUE: 35,
-  QAS_REQUEST: 85,
-  IDENTIFY: 128,
-  MODIFY_DATA_POINTER: 0,
-  SYNCHONOUS_DATA_TRANSFER_REQUEST: 1,
-  WIDE_DATA_TRANSFER_REQUEST: 3,
-  PARALLEL_PROTOCOL_REQUEST: 4,
-  ACA: 36,
-  HEAD_OF_QUEUE: 33,
-  LINKED_COMMAND_COMPLETE: 10,
-  ORDERED: 34,
-  SIMPLE: 32,
-  ABORT_TASK: 13,
-  ABORT_TASK_SET: 6,
-  CLEAR_ACA: 22,
-  CLEAR_TASK_SET: 14,
-  LOGICAL_UNIT_RESET: 23,
-  TARGET_RESET: 12,
-};
-
-declare const IOPCIMemoryRange: {
-  BAR0: 0,
-  BAR1: 1,
-  BAR2: 2,
-  BAR3: 3,
-  BAR4: 4,
-  BAR5: 5,
-  ExpansionROM: 6,
-};
-
-declare const _IOAudioDevicePowerState: {
-  Sleep: 0,
-  Idle: 1,
-  Active: 2,
-};
-
-declare const ecc_flags_t: {
-  NONE: 0,
-  IS_CORRECTABLE: 1,
-  DB_CORRUPTED: 2,
-  IS_TEST_ERROR: 4,
-  DB_ONLY: 8,
-  REMOVE_ADDR: 16,
 };
 
 declare const ataFlags: {
@@ -5801,25 +5912,118 @@ declare const ataFlags: {
   mATAFlagTFAccess: 1,
 };
 
+declare const airship_driver_power_target: {
+  ACTIVE: 0,
+  ACTIVE_PREVENTING_DEVICE_SLEEP: 1,
+  HOST_SLEEP: 2,
+};
+
+declare const airship_acipc_tr_enqueue_option: {
+  AIRSHIP_ACIPC_TR_ENQUEUE_OPTION_CHAIN: 1,
+};
+
+declare const if_netem_model_t: {
+  ULL: 0,
+  LC: 1,
+};
+
+declare const backtrace_flags_t: {
+  NONE: 0,
+  KERN_INTERRUPTED: 1,
+};
+
+declare const airship_acipc_cr_mirror_element_type: {
+  COMPLETION_RECORD: 0,
+  RAW_DESCRIPTOR: 1,
+};
+
+declare const socd_client_trace_class_t: {
+  XNU: 0,
+  WDT: 1,
+  SOC: 2,
+  MAX: 3,
+};
+
+declare const EFI_RESET_TYPE: {
+  Cold: 0,
+  Warm: 1,
+  Shutdown: 2,
+};
+
+declare const tDeviceCapabilityType: {
+  Wireless: 1,
+  USB20Extension: 2,
+  SuperSpeed: 3,
+  ContainerID: 4,
+  Platform: 5,
+  PowerDelivery: 6,
+  BatteryInfo: 7,
+  PdConsumerPort: 8,
+  PdProviderPort: 9,
+  SuperSpeedPlus: 10,
+  PrecisionMeasurement: 11,
+  WirelessExt: 12,
+  Billboard: 13,
+  BillboardAltMode: 15,
+};
+
+declare const libsptm_cpu_state_t: {
+  SPTM_INTERRUPTED: 0,
+  PANIC_SPIN: 1,
+};
+
+declare const hv_trap_type_t: {
+  ASK_: 0,
+  HREAD_: 1,
+};
+
+declare const IOPCISaveDeviceStateOptions: {
+  kPCIConfigShadowPermanent: -2147483648,
+};
+
+declare const gssd_nametype: {
+  STRING_NAME: 0,
+  EXPORT: 1,
+  ANONYMOUS: 2,
+  HOSTBASED: 3,
+  USER: 4,
+  MACHINE_UID: 5,
+  STRING_UID: 6,
+  KRB5_PRINCIPAL: 7,
+  KRB5_REFERRAL: 8,
+  NTLM_PRINCIPAL: 9,
+  NTLM_BLOB: 10,
+  UUID: 11,
+};
+
+declare const airship_acipc_ring_state: {
+  UNAVAILABLE: 0,
+  AVAILABLE: 1,
+  OPENING: 2,
+  OPEN: 3,
+  CLOSING: 4,
+  LIMBO: 5,
+  DEAD_UNSETTLED: 6,
+  DEAD_SETTLED: 7,
+  EDISCONNECTED: 8,
+};
+
+declare const IOPCIMemoryRange: {
+  BAR0: 0,
+  BAR1: 1,
+  BAR2: 2,
+  BAR3: 3,
+  BAR4: 4,
+  BAR5: 5,
+  ExpansionROM: 6,
+};
+
 declare const libsptm_error_t: {
   SUCCESS: 0,
   NOT_INITTED: 1,
   INVALID_ARG: 2,
   TYPE_MISMATCH: 3,
   FAILURE: 4,
-};
-
-declare const socd_client_trace_code_xnu_t: {
-  PANIC: 0,
-  START_IOKIT: 1,
-  PLATFORM_ACTION: 2,
-  PM_SET_POWER_STATE: 3,
-  PM_INFORM_POWER_CHANGE: 4,
-  STACKSHOT: 5,
-  PM_SET_POWER_STATE_ACK: 6,
-  PM_INFORM_POWER_CHANGE_ACK: 7,
-  KERNEL_STATE_PANIC: 8,
-  MAX: 9,
 };
 
 declare const EFI_MEMORY_TYPE: {
@@ -5844,6 +6048,10 @@ declare const TerminationState: {
   NotTerminated: 0,
   NeedsTermination: 1,
   Terminated: 2,
+};
+
+declare const airship_acipc_health_status_flag: {
+  AIRSHIP_ACIPC_HEALTH_STATUS_ERROR_DOORBELL_COORDINATOR: 1,
 };
 
 declare const kf_override_flag_t: {
@@ -5883,8 +6091,74 @@ declare const IOUSBHostCIEndpointState: {
   Active: 3,
 };
 
-declare const IOPCISaveDeviceStateOptions: {
-  kPCIConfigShadowPermanent: -2147483648,
+declare const sptm_frame_type_t: {
+  SPTM_UNTYPED: 0,
+  SPTM_UNUSED: 1,
+  SPTM_DEFAULT: 2,
+  SPTM_RO: 3,
+  SPTM_CODE: 4,
+  SPTM_TXM_CODE: 5,
+  SPTM_XNU_CODE: 6,
+  SPTM_XNU_CODE_DBG_RW: 7,
+  SPTM_KERNEL_ROOT_TABLE: 8,
+  SPTM_PAGE_TABLE: 9,
+  SPTM_IOMMU_BOOTSTRAP: 10,
+  XNU_DEFAULT: 11,
+  XNU_RO: 12,
+  XNU_RO_DBG_RW: 13,
+  XNU_USER_EXEC: 14,
+  XNU_USER_DEBUG: 15,
+  XNU_USER_JIT: 16,
+  XNU_USER_ROOT_TABLE: 17,
+  XNU_SHARED_ROOT_TABLE: 18,
+  XNU_PAGE_TABLE: 19,
+  XNU_PAGE_TABLE_SHARED: 20,
+  XNU_PAGE_TABLE_ROZONE: 21,
+  XNU_PAGE_TABLE_COMMPAGE: 22,
+  XNU_IOMMU: 23,
+  XNU_ROZONE: 24,
+  XNU_IO: 25,
+  XNU_PROTECTED_IO: 26,
+  XNU_COMMPAGE_RW: 27,
+  XNU_COMMPAGE_RO: 28,
+  XNU_COMMPAGE_RX: 29,
+  XNU_TAG_STORAGE: 30,
+  XNU_STAGE2_ROOT_TABLE: 31,
+  XNU_STAGE2_PAGE_TABLE: 32,
+  XNU_KERNEL_RESTRICTED: 33,
+  XNU_RESERVED_1: 34,
+  XNU_RESERVED_2: 35,
+  XNU_RESTRICTED_IO: 36,
+  XNU_RESTRICTED_IO_TELEMETRY: 37,
+  XNU_SUBPAGE_USER_ROOT_TABLES: 38,
+  TXM_DEFAULT: 39,
+  TXM_RO: 40,
+  TXM_RW: 41,
+  TXM_CPU_STACK: 42,
+  TXM_THREAD_STACK: 43,
+  TXM_ADDRESS_SPACE_TABLE: 44,
+  TXM_MALLOC_PAGE: 45,
+  TXM_FREE_LIST: 46,
+  TXM_SLAB_TRUST_CACHE: 47,
+  TXM_SLAB_PROFILE: 48,
+  TXM_SLAB_CODE_SIGNATURE: 49,
+  TXM_SLAB_CODE_REGION: 50,
+  TXM_SLAB_ADDRESS_SPACE: 51,
+  TXM_BUCKET_1024: 52,
+  TXM_BUCKET_2048: 53,
+  TXM_BUCKET_4096: 54,
+  TXM_BUCKET_8192: 55,
+  TXM_BULK_DATA: 56,
+  TXM_BULK_DATA_READ_ONLY: 57,
+  TXM_LOG: 58,
+  TXM_SEP_SECURE_CHANNEL: 59,
+  SK_DEFAULT: 60,
+  SK_SHARED_RO: 61,
+  SK_SHARED_RW: 62,
+  SK_IO: 63,
+  N_FRAME_TYPES: 64,
+  FRAME_TYPE_INVALID: 65,
+  FRAME_TYPE_ANY: 66,
 };
 
 declare const IOPCIBARType: {
@@ -5971,27 +6245,6 @@ declare class __Request__mach_gss_hold_cred_t {
   princCnt: number;
 }
 
-declare class __Request__mach_gss_init_sec_context_v2_t {
-  constructor(init?: __Request__mach_gss_init_sec_context_v2_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  intoken: mach_msg_ool_descriptor_t;
-  clnt_princ: mach_msg_ool_descriptor_t;
-  svc_princ: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  mech: interop.Enum<typeof gssd_mechtype>;
-  intokenCnt: number;
-  uid: number;
-  clnt_nt: interop.Enum<typeof gssd_nametype>;
-  clnt_princCnt: number;
-  svc_nt: interop.Enum<typeof gssd_nametype>;
-  svc_princCnt: number;
-  flags: number;
-  gssd_flags: number;
-  context: number;
-  cred_handle: number;
-}
-
 declare class __Request__mach_gss_log_error_t {
   constructor(init?: __Request__mach_gss_log_error_t);
   Head: mach_msg_header_t;
@@ -6005,21 +6258,6 @@ declare class __Request__mach_gss_log_error_t {
   source: unknown /* const array */;
   major_stat: number;
   minor_stat: number;
-}
-
-declare class __Request__mach_gss_accept_sec_context_t {
-  constructor(init?: __Request__mach_gss_accept_sec_context_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  intoken: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  intokenCnt: number;
-  svc_namestrOffset: number;
-  svc_namestrCnt: number;
-  svc_namestr: unknown /* const array */;
-  gssd_flags: number;
-  context: number;
-  cred_handle: number;
 }
 
 declare class __Request__mach_gss_init_sec_context_t {
@@ -6047,6 +6285,14 @@ declare class __OSMallocTag__ {
   constructor(init?: __OSMallocTag__);
 }
 
+declare class sha1_ctxt {
+  constructor(init?: sha1_ctxt);
+  h: unnamed_11444704629501519341;
+  c: unnamed_16186558334874051404;
+  m: unnamed_16283433901440427056;
+  count: number;
+}
+
 declare class in6_defrouter {
   constructor(init?: in6_defrouter);
   rtaddr: sockaddr_in6;
@@ -6055,16 +6301,6 @@ declare class in6_defrouter {
   rtlifetime: number;
   expire: number;
   if_index: number;
-}
-
-declare class unnamed_9095712689498340585 {
-  constructor(init?: unnamed_9095712689498340585);
-  coprocessor_core_debug: number;
-  coprocessor_secure_debug: number;
-  memory_mapped_core_debug: number;
-  coprocessor_trace_debug: number;
-  memory_mapped_trace_debug: number;
-  microcontroller_debug: number;
 }
 
 declare class arm_vfpsaved_state {
@@ -6166,33 +6402,11 @@ declare class __Reply__vfs_resolve_reparent_with_audit_token_t {
   RetCode: number;
 }
 
-declare class __Reply__vfs_resolve_file_with_audit_token_t {
-  constructor(init?: __Reply__vfs_resolve_file_with_audit_token_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class __Reply__vfs_resolve_dir_t {
   constructor(init?: __Reply__vfs_resolve_dir_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-}
-
-declare class __Reply__vfs_resolve_file_t {
-  constructor(init?: __Reply__vfs_resolve_file_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class __Reply__nspace_handle_t {
-  constructor(init?: __Reply__nspace_handle_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  handler_error: number;
 }
 
 declare class __Request__vfs_resolve_reparent_with_audit_token_t {
@@ -6224,6 +6438,13 @@ declare class __Request__nspace_handle_t {
   path: unknown /* const array */;
 }
 
+declare class __Reply__check_task_access_t {
+  constructor(init?: __Reply__check_task_access_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class __Request__find_code_signature_t {
   constructor(init?: __Request__find_code_signature_t);
   Head: mach_msg_header_t;
@@ -6245,11 +6466,11 @@ declare class __Reply__mcc_memory_error_notification_t {
   RetCode: number;
 }
 
-declare class __Reply__memory_error_notification_t {
-  constructor(init?: __Reply__memory_error_notification_t);
+declare class __Request__mcc_memory_error_notification_t {
+  constructor(init?: __Request__mcc_memory_error_notification_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
-  RetCode: number;
+  event: mcc_ecc_event_t;
 }
 
 declare class __Request__memory_error_notification_t {
@@ -6382,6 +6603,13 @@ declare class __Request__doubleagent_lookup_xattr_t {
   name: unknown /* const array */;
 }
 
+declare class __Reply__mach_notify_send_once_t {
+  constructor(init?: __Reply__mach_notify_send_once_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class __Reply__mach_notify_port_deleted_t {
   constructor(init?: __Reply__mach_notify_port_deleted_t);
   Head: mach_msg_header_t;
@@ -6404,6 +6632,71 @@ declare class console_ops {
 
 declare class ipc_object {
   constructor(init?: ipc_object);
+}
+
+declare class airship_daleipc_uplink_packet_completion {
+  constructor(init?: airship_daleipc_uplink_packet_completion);
+  size: number;
+  tag: number;
+  channel_id: number;
+}
+
+declare class daleipc_device_controller {
+  constructor(init?: daleipc_device_controller);
+}
+
+declare class daleipc_channel_controller {
+  constructor(init?: daleipc_channel_controller);
+}
+
+declare class airship_acipc_doorbell {
+  constructor(init?: airship_acipc_doorbell);
+}
+
+declare class __Request__mach_gss_accept_sec_context_t {
+  constructor(init?: __Request__mach_gss_accept_sec_context_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  intoken: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  intokenCnt: number;
+  svc_namestrOffset: number;
+  svc_namestrCnt: number;
+  svc_namestr: unknown /* const array */;
+  gssd_flags: number;
+  context: number;
+  cred_handle: number;
+}
+
+declare class airship_acipc_cr_mirror_element {
+  constructor(init?: airship_acipc_cr_mirror_element);
+  type: interop.Enum<typeof airship_acipc_cr_mirror_element_type>;
+  data: airship_acipc_cr_mirror_element_data;
+}
+
+declare class airship_acipc_cr_mirror_raw_descriptor {
+  constructor(init?: airship_acipc_cr_mirror_raw_descriptor);
+  bytes: unknown /* const array */;
+}
+
+declare class airship_acipc_cr {
+  constructor(init?: airship_acipc_cr);
+}
+
+declare class airship_acipc_tr {
+  constructor(init?: airship_acipc_tr);
+}
+
+declare class airship_interrupt {
+  constructor(init?: airship_interrupt);
+}
+
+declare class airship_client {
+  constructor(init?: airship_client);
+}
+
+declare class airship_device_transport {
+  constructor(init?: airship_device_transport);
 }
 
 declare class DTSavedScope {
@@ -6603,11 +6896,23 @@ declare class static_if_key_true {
   key: static_if_key;
 }
 
+declare class __Reply__lockd_ping_t {
+  constructor(init?: __Reply__lockd_ping_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class __Reply__lockd_request_t {
   constructor(init?: __Reply__lockd_request_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class __Request__lockd_shutdown_t {
+  constructor(init?: __Request__lockd_shutdown_t);
+  Head: mach_msg_header_t;
 }
 
 declare class __Request__lockd_ping_t {
@@ -6671,18 +6976,7 @@ declare class partition {
   p_fsize: number;
   p_fstype: number;
   p_frag: number;
-  __partition_u1: unnamed_8342763872275782762;
-}
-
-declare class __Request__lockd_shutdown_t {
-  constructor(init?: __Request__lockd_shutdown_t);
-  Head: mach_msg_header_t;
-}
-
-declare class unnamed_4704838454543889079 {
-  constructor(init?: unnamed_4704838454543889079);
-  un_d_boot0: string | null;
-  un_d_boot1: string | null;
+  __partition_u1: unnamed_6650140264646410345;
 }
 
 declare class disklabel {
@@ -6691,7 +6985,7 @@ declare class disklabel {
   d_type: number;
   d_subtype: number;
   d_typename: unknown /* const array */;
-  d_un: unnamed_6758359933996893212;
+  d_un: unnamed_14374843138598068828;
   d_secsize: number;
   d_nsectors: number;
   d_ntracks: number;
@@ -6716,6 +7010,12 @@ declare class disklabel {
   d_bbsize: number;
   d_sbsize: number;
   d_partitions: partition;
+}
+
+declare class unnamed_3271796597595602678 {
+  constructor(init?: unnamed_3271796597595602678);
+  tqe_next: interop.Pointer;
+  tqe_prev: interop.Pointer;
 }
 
 declare class timex {
@@ -6762,20 +7062,6 @@ declare class thsc_cpi {
   tcpi_cycles: number;
 }
 
-declare class cl_direct_read_lock {
-  constructor(init?: cl_direct_read_lock);
-}
-
-declare class ungraftdmg_args {
-  constructor(init?: ungraftdmg_args);
-  mountdir_l_: unknown /* const array */;
-  mountdir: number;
-  mountdir_r_: unknown /* const array */;
-  flags_l_: unknown /* const array */;
-  flags: number;
-  flags_r_: unknown /* const array */;
-}
-
 declare class mkfifoat_args {
   constructor(init?: mkfifoat_args);
   fd_l_: unknown /* const array */;
@@ -6787,6 +7073,22 @@ declare class mkfifoat_args {
   mode_l_: unknown /* const array */;
   mode: number;
   mode_r_: unknown /* const array */;
+}
+
+declare class map_with_linking_np_args {
+  constructor(init?: map_with_linking_np_args);
+  regions_l_: unknown /* const array */;
+  regions: number;
+  regions_r_: unknown /* const array */;
+  region_count_l_: unknown /* const array */;
+  region_count: number;
+  region_count_r_: unknown /* const array */;
+  link_info_l_: unknown /* const array */;
+  link_info: number;
+  link_info_r_: unknown /* const array */;
+  link_info_size_l_: unknown /* const array */;
+  link_info_size: number;
+  link_info_size_r_: unknown /* const array */;
 }
 
 declare class debug_syscall_reject_args {
@@ -6866,13 +7168,6 @@ declare class pwritev_args {
   offset_r_: unknown /* const array */;
 }
 
-declare class ntp_gettime_args {
-  constructor(init?: ntp_gettime_args);
-  ntvp_l_: unknown /* const array */;
-  ntvp: number;
-  ntvp_r_: unknown /* const array */;
-}
-
 declare class setattrlistat_args {
   constructor(init?: setattrlistat_args);
   fd_l_: unknown /* const array */;
@@ -6918,6 +7213,19 @@ declare class terminate_with_payload_args {
   reason_flags_l_: unknown /* const array */;
   reason_flags: number;
   reason_flags_r_: unknown /* const array */;
+}
+
+declare class ulock_wake_args {
+  constructor(init?: ulock_wake_args);
+  operation_l_: unknown /* const array */;
+  operation: number;
+  operation_r_: unknown /* const array */;
+  addr_l_: unknown /* const array */;
+  addr: number;
+  addr_r_: unknown /* const array */;
+  wake_value_l_: unknown /* const array */;
+  wake_value: number;
+  wake_value_r_: unknown /* const array */;
 }
 
 declare class getentropy_args {
@@ -6976,39 +7284,6 @@ declare class mach_eventlink_signal_args {
   signal_count_l_: unknown /* const array */;
   signal_count: number;
   signal_count_r_: unknown /* const array */;
-}
-
-declare class __Request__doubleagent_allocate_xattr_t {
-  constructor(init?: __Request__doubleagent_allocate_xattr_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  file_port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  file_size: number;
-  nameOffset: number;
-  nameCnt: number;
-  name: unknown /* const array */;
-  size: number;
-  options: number;
-}
-
-declare class guarded_pwrite_np_args {
-  constructor(init?: guarded_pwrite_np_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  guard_l_: unknown /* const array */;
-  guard: number;
-  guard_r_: unknown /* const array */;
-  buf_l_: unknown /* const array */;
-  buf: number;
-  buf_r_: unknown /* const array */;
-  nbyte_l_: unknown /* const array */;
-  nbyte: number;
-  nbyte_r_: unknown /* const array */;
-  offset_l_: unknown /* const array */;
-  offset: number;
-  offset_r_: unknown /* const array */;
 }
 
 declare class guarded_open_dprotected_np_args {
@@ -7222,6 +7497,28 @@ declare class sfi_ctl_args {
   out_time_r_: unknown /* const array */;
 }
 
+declare class telemetry_args {
+  constructor(init?: telemetry_args);
+  cmd_l_: unknown /* const array */;
+  cmd: number;
+  cmd_r_: unknown /* const array */;
+  deadline_l_: unknown /* const array */;
+  deadline: number;
+  deadline_r_: unknown /* const array */;
+  interval_l_: unknown /* const array */;
+  interval: number;
+  interval_r_: unknown /* const array */;
+  leeway_l_: unknown /* const array */;
+  leeway: number;
+  leeway_r_: unknown /* const array */;
+  arg4_l_: unknown /* const array */;
+  arg4: number;
+  arg4_r_: unknown /* const array */;
+  arg5_l_: unknown /* const array */;
+  arg5: number;
+  arg5_r_: unknown /* const array */;
+}
+
 declare class guarded_close_np_args {
   constructor(init?: guarded_close_np_args);
   fd_l_: unknown /* const array */;
@@ -7363,13 +7660,6 @@ declare class poll_nocancel_args {
   timeout_r_: unknown /* const array */;
 }
 
-declare class sigsuspend_nocancel_args {
-  constructor(init?: sigsuspend_nocancel_args);
-  mask_l_: unknown /* const array */;
-  mask: number;
-  mask_r_: unknown /* const array */;
-}
-
 declare class fsync_nocancel_args {
   constructor(init?: fsync_nocancel_args);
   fd_l_: unknown /* const array */;
@@ -7401,6 +7691,22 @@ declare class msync_nocancel_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
+}
+
+declare class wait4_nocancel_args {
+  constructor(init?: wait4_nocancel_args);
+  pid_l_: unknown /* const array */;
+  pid: number;
+  pid_r_: unknown /* const array */;
+  status_l_: unknown /* const array */;
+  status: number;
+  status_r_: unknown /* const array */;
+  options_l_: unknown /* const array */;
+  options: number;
+  options_r_: unknown /* const array */;
+  rusage_l_: unknown /* const array */;
+  rusage: number;
+  rusage_r_: unknown /* const array */;
 }
 
 declare class close_nocancel_args {
@@ -7514,6 +7820,16 @@ declare class auditon_args {
   length_r_: unknown /* const array */;
 }
 
+declare class statfs64_args {
+  constructor(init?: statfs64_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  buf_l_: unknown /* const array */;
+  buf: number;
+  buf_r_: unknown /* const array */;
+}
+
 declare class stat64_extended_args {
   constructor(init?: stat64_extended_args);
   path_l_: unknown /* const array */;
@@ -7535,6 +7851,16 @@ declare class lstat64_args {
   path_l_: unknown /* const array */;
   path: number;
   path_r_: unknown /* const array */;
+  ub_l_: unknown /* const array */;
+  ub: number;
+  ub_r_: unknown /* const array */;
+}
+
+declare class fstat64_args {
+  constructor(init?: fstat64_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
   ub_l_: unknown /* const array */;
   ub: number;
   ub_r_: unknown /* const array */;
@@ -7577,16 +7903,6 @@ declare class __sigwait_args {
   set_l_: unknown /* const array */;
   set: number;
   set_r_: unknown /* const array */;
-  sig_l_: unknown /* const array */;
-  sig: number;
-  sig_r_: unknown /* const array */;
-}
-
-declare class __pthread_kill_args {
-  constructor(init?: __pthread_kill_args);
-  thread_port_l_: unknown /* const array */;
-  thread_port: number;
-  thread_port_r_: unknown /* const array */;
   sig_l_: unknown /* const array */;
   sig: number;
   sig_r_: unknown /* const array */;
@@ -7762,6 +8078,16 @@ declare class stat_extended_args {
   xsecurity_size_r_: unknown /* const array */;
 }
 
+declare class umask_extended_args {
+  constructor(init?: umask_extended_args);
+  newmask_l_: unknown /* const array */;
+  newmask: number;
+  newmask_r_: unknown /* const array */;
+  xsecurity_l_: unknown /* const array */;
+  xsecurity: number;
+  xsecurity_r_: unknown /* const array */;
+}
+
 declare class sysctlbyname_args {
   constructor(init?: sysctlbyname_args);
   name_l_: unknown /* const array */;
@@ -7796,13 +8122,6 @@ declare class sem_unlink_args {
   name_l_: unknown /* const array */;
   name: number;
   name_r_: unknown /* const array */;
-}
-
-declare class sem_close_args {
-  constructor(init?: sem_close_args);
-  sem_l_: unknown /* const array */;
-  sem: number;
-  sem_r_: unknown /* const array */;
 }
 
 declare class minherit_args {
@@ -8045,6 +8364,22 @@ declare class mmap_args {
   pos_r_: unknown /* const array */;
 }
 
+declare class getdirentries_args {
+  constructor(init?: getdirentries_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  buf_l_: unknown /* const array */;
+  buf: number;
+  buf_r_: unknown /* const array */;
+  count_l_: unknown /* const array */;
+  count: number;
+  count_r_: unknown /* const array */;
+  basep_l_: unknown /* const array */;
+  basep: number;
+  basep_r_: unknown /* const array */;
+}
+
 declare class pathconf_args {
   constructor(init?: pathconf_args);
   path_l_: unknown /* const array */;
@@ -8104,32 +8439,6 @@ declare class panic_with_data_args {
   msg_r_: unknown /* const array */;
 }
 
-declare class setgid_args {
-  constructor(init?: setgid_args);
-  gid_l_: unknown /* const array */;
-  gid: number;
-  gid_r_: unknown /* const array */;
-}
-
-declare class kdebug_trace_args {
-  constructor(init?: kdebug_trace_args);
-  code_l_: unknown /* const array */;
-  code: number;
-  code_r_: unknown /* const array */;
-  arg1_l_: unknown /* const array */;
-  arg1: number;
-  arg1_r_: unknown /* const array */;
-  arg2_l_: unknown /* const array */;
-  arg2: number;
-  arg2_r_: unknown /* const array */;
-  arg3_l_: unknown /* const array */;
-  arg3: number;
-  arg3_r_: unknown /* const array */;
-  arg4_l_: unknown /* const array */;
-  arg4: number;
-  arg4_r_: unknown /* const array */;
-}
-
 declare class csops_audittoken_args {
   constructor(init?: csops_audittoken_args);
   pid_l_: unknown /* const array */;
@@ -8147,22 +8456,6 @@ declare class csops_audittoken_args {
   uaudittoken_l_: unknown /* const array */;
   uaudittoken: number;
   uaudittoken_r_: unknown /* const array */;
-}
-
-declare class quotactl_args {
-  constructor(init?: quotactl_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  cmd_l_: unknown /* const array */;
-  cmd: number;
-  cmd_r_: unknown /* const array */;
-  uid_l_: unknown /* const array */;
-  uid: number;
-  uid_r_: unknown /* const array */;
-  arg_l_: unknown /* const array */;
-  arg: number;
-  arg_r_: unknown /* const array */;
 }
 
 declare class unmount_args {
@@ -8209,13 +8502,6 @@ declare class pread_args {
   offset_l_: unknown /* const array */;
   offset: number;
   offset_r_: unknown /* const array */;
-}
-
-declare class setprivexec_args {
-  constructor(init?: setprivexec_args);
-  flag_l_: unknown /* const array */;
-  flag: number;
-  flag_r_: unknown /* const array */;
 }
 
 declare class setsid_args {
@@ -8304,16 +8590,6 @@ declare class readv_args {
   iovcnt_l_: unknown /* const array */;
   iovcnt: number;
   iovcnt_r_: unknown /* const array */;
-}
-
-declare class getrusage_args {
-  constructor(init?: getrusage_args);
-  who_l_: unknown /* const array */;
-  who: number;
-  who_r_: unknown /* const array */;
-  rusage_l_: unknown /* const array */;
-  rusage: number;
-  rusage_r_: unknown /* const array */;
 }
 
 declare class setpriority_args {
@@ -8474,13 +8750,6 @@ declare class sigpending_args {
   osv_r_: unknown /* const array */;
 }
 
-declare class acct_args {
-  constructor(init?: acct_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-}
-
 declare class setauid_args {
   constructor(init?: setauid_args);
   auid_l_: unknown /* const array */;
@@ -8499,6 +8768,11 @@ declare class sigaction_args {
   osa_l_: unknown /* const array */;
   osa: number;
   osa_r_: unknown /* const array */;
+}
+
+declare class getppid_args {
+  constructor(init?: getppid_args);
+  dummy: number;
 }
 
 declare class thread_selfcounts_args {
@@ -8531,6 +8805,16 @@ declare class setuid_args {
   uid_l_: unknown /* const array */;
   uid: number;
   uid_r_: unknown /* const array */;
+}
+
+declare class chmod_args {
+  constructor(init?: chmod_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  mode_l_: unknown /* const array */;
+  mode: number;
+  mode_r_: unknown /* const array */;
 }
 
 declare class __Request__nspace_resolve_cancel_t {
@@ -8570,29 +8854,6 @@ declare class close_args {
   fd_r_: unknown /* const array */;
 }
 
-declare class settid_args {
-  constructor(init?: settid_args);
-  uid_l_: unknown /* const array */;
-  uid: number;
-  uid_r_: unknown /* const array */;
-  gid_l_: unknown /* const array */;
-  gid: number;
-  gid_r_: unknown /* const array */;
-}
-
-declare class read_args {
-  constructor(init?: read_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  cbuf_l_: unknown /* const array */;
-  cbuf: number;
-  cbuf_r_: unknown /* const array */;
-  nbyte_l_: unknown /* const array */;
-  nbyte: number;
-  nbyte_r_: unknown /* const array */;
-}
-
 declare class fork_args {
   constructor(init?: fork_args);
   dummy: number;
@@ -8622,6 +8883,12 @@ declare class user_timespec {
 
 declare class user32_timeval {
   constructor(init?: user32_timeval);
+  tv_sec: number;
+  tv_usec: number;
+}
+
+declare class user64_timeval {
+  constructor(init?: user64_timeval);
   tv_sec: number;
   tv_usec: number;
 }
@@ -8663,64 +8930,36 @@ declare class nameidata {
   constructor(init?: nameidata);
 }
 
-declare class unnamed_2564118591499210473 {
-  constructor(init?: unnamed_2564118591499210473);
-  oldtss: sel;
+declare class unnamed_10245855161319644490 {
+  constructor(init?: unnamed_10245855161319644490);
   : number;
-  esp0: number;
-  ss0: sel;
+  tss: sel;
   : number;
-  esp1: number;
-  ss1: sel;
+  type: number;
+  dpl: number;
+  present: number;
   : number;
-  esp2: number;
-  ss2: sel;
-  : number;
-  cr3: number;
-  eip: number;
-  eflags: number;
-  eax: number;
-  ecx: number;
-  edx: number;
-  ebx: number;
-  esp: number;
-  ebp: number;
-  esi: number;
-  edi: number;
-  es: sel;
-  : number;
-  cs: sel;
-  : number;
-  ss: sel;
-  : number;
-  ds: sel;
-  : number;
-  fs: sel;
-  : number;
-  gs: sel;
-  : number;
-  ldt: sel;
-  : number;
-  t: number;
-  : number;
-  io_bmap: number;
 }
 
-declare class unnamed_17267578084634307405 {
-  constructor(init?: unnamed_17267578084634307405);
+declare class unnamed_6634344154655524512 {
+  constructor(init?: unnamed_6634344154655524512);
+  limit00: number;
+  base00: number;
+  base16: number;
+  type: number;
+  dpl: number;
+  present: number;
+  limit16: number;
+  : number;
+  granular: number;
+  base24: number;
+}
+
+declare class unnamed_10401702111739085484 {
+  constructor(init?: unnamed_10401702111739085484);
   rpl: number;
   ti: number;
   index: number;
-}
-
-declare class fstat64_args {
-  constructor(init?: fstat64_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  ub_l_: unknown /* const array */;
-  ub: number;
-  ub_r_: unknown /* const array */;
 }
 
 declare class __Reply__upl_abort_t {
@@ -8752,24 +8991,15 @@ declare class trap_gate {
   offset16: number;
 }
 
-declare class tcp_measure_bw_burst {
-  constructor(init?: tcp_measure_bw_burst);
-  min_burst_size: number;
-  max_burst_size: number;
-}
-
-declare class tcp_notify_ack_complete {
-  constructor(init?: tcp_notify_ack_complete);
-  notify_pending: number;
-  notify_complete_count: number;
-  notify_complete_id: unknown /* const array */;
-}
-
 declare class kev_netevent_clat46_data {
   constructor(init?: kev_netevent_clat46_data);
   clat46_event_code: interop.Enum<typeof in6_clat46_evhdlr_code_t>;
   epid: number;
   euuid: unknown /* const array */;
+}
+
+declare class opaque_ipfilter {
+  constructor(init?: opaque_ipfilter);
 }
 
 declare class ipf_filter {
@@ -8787,6 +9017,215 @@ declare class ipf_pktopts {
   ippo_mcast_ifnet: interop.Pointer;
   ippo_mcast_loop: number;
   ippo_mcast_ttl: number;
+}
+
+declare class mptcp_symptoms_ask_uuid {
+  constructor(init?: mptcp_symptoms_ask_uuid);
+  cmd: number;
+  uuid: unknown /* const array */;
+  priority: number;
+}
+
+declare class unnamed_16554362605418422834 {
+  constructor(init?: unnamed_16554362605418422834);
+  sa_wifi_status: number;
+  sa_cell_status: number;
+}
+
+declare class symptoms_advisory {
+  constructor(init?: symptoms_advisory);
+}
+
+declare class mptcp_flow {
+  constructor(init?: mptcp_flow);
+  flow_len: number;
+  flow_tcpci_offset: number;
+  flow_flags: number;
+  flow_cid: number;
+  flow_src: sockaddr_storage;
+  flow_dst: sockaddr_storage;
+  flow_relseq: number;
+  flow_soerror: number;
+  flow_probecnt: number;
+  flow_ci: conninfo_tcp;
+}
+
+declare class tcp_measure_bw_burst {
+  constructor(init?: tcp_measure_bw_burst);
+  min_burst_size: number;
+  max_burst_size: number;
+}
+
+declare class open_args {
+  constructor(init?: open_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  flags_l_: unknown /* const array */;
+  flags: number;
+  flags_r_: unknown /* const array */;
+  mode_l_: unknown /* const array */;
+  mode: number;
+  mode_r_: unknown /* const array */;
+}
+
+declare class tcp_info {
+  constructor(init?: tcp_info);
+  tcpi_state: number;
+  tcpi_options: number;
+  tcpi_snd_wscale: number;
+  tcpi_rcv_wscale: number;
+  tcpi_flags: number;
+  tcpi_rto: number;
+  tcpi_snd_mss: number;
+  tcpi_rcv_mss: number;
+  tcpi_rttcur: number;
+  tcpi_srtt: number;
+  tcpi_rttvar: number;
+  tcpi_rttbest: number;
+  tcpi_snd_ssthresh: number;
+  tcpi_snd_cwnd: number;
+  tcpi_rcv_space: number;
+  tcpi_snd_wnd: number;
+  tcpi_snd_nxt: number;
+  tcpi_rcv_nxt: number;
+  tcpi_last_outif: number;
+  tcpi_snd_sbbytes: number;
+  tcpi_txpackets: number;
+  tcpi_txbytes: number;
+  tcpi_txretransmitbytes: number;
+  tcpi_txunacked: number;
+  tcpi_rxpackets: number;
+  tcpi_rxbytes: number;
+  tcpi_rxduplicatebytes: number;
+  tcpi_rxoutoforderbytes: number;
+  tcpi_snd_bw: number;
+  tcpi_synrexmits: number;
+  tcpi_unused1: number;
+  tcpi_unused2: number;
+  tcpi_cell_rxpackets: number;
+  tcpi_cell_rxbytes: number;
+  tcpi_cell_txpackets: number;
+  tcpi_cell_txbytes: number;
+  tcpi_wifi_rxpackets: number;
+  tcpi_wifi_rxbytes: number;
+  tcpi_wifi_txpackets: number;
+  tcpi_wifi_txbytes: number;
+  tcpi_wired_rxpackets: number;
+  tcpi_wired_rxbytes: number;
+  tcpi_wired_txpackets: number;
+  tcpi_wired_txbytes: number;
+  tcpi_connstatus: tcp_conn_status;
+  tcpi_tfo_cookie_req: number;
+  tcpi_tfo_cookie_rcv: number;
+  tcpi_tfo_syn_loss: number;
+  tcpi_tfo_syn_data_sent: number;
+  tcpi_tfo_syn_data_acked: number;
+  tcpi_tfo_syn_data_rcv: number;
+  tcpi_tfo_cookie_req_rcv: number;
+  tcpi_tfo_cookie_sent: number;
+  tcpi_tfo_cookie_invalid: number;
+  tcpi_tfo_cookie_wrong: number;
+  tcpi_tfo_no_cookie_rcv: number;
+  tcpi_tfo_heuristics_disable: number;
+  tcpi_tfo_send_blackhole: number;
+  tcpi_tfo_recv_blackhole: number;
+  tcpi_tfo_onebyte_proxy: number;
+  tcpi_ecn_client_setup: number;
+  tcpi_ecn_server_setup: number;
+  tcpi_ecn_success: number;
+  tcpi_ecn_lost_syn: number;
+  tcpi_ecn_lost_synack: number;
+  tcpi_local_peer: number;
+  tcpi_if_cell: number;
+  tcpi_if_wifi: number;
+  tcpi_if_wired: number;
+  tcpi_if_wifi_infra: number;
+  tcpi_if_wifi_awdl: number;
+  tcpi_snd_background: number;
+  tcpi_rcv_background: number;
+  tcpi_l4s_enabled: number;
+  tcpi_ecn_recv_ce: number;
+  tcpi_ecn_recv_cwr: number;
+  tcpi_rcvoopack: number;
+  tcpi_pawsdrop: number;
+  tcpi_sack_recovery_episode: number;
+  tcpi_reordered_pkts: number;
+  tcpi_dsack_sent: number;
+  tcpi_dsack_recvd: number;
+  tcpi_flowhash: number;
+  tcpi_txretransmitpackets: number;
+  tcpi_rcv_srtt: number;
+  tcpi_client_accecn_state: number;
+  tcpi_server_accecn_state: number;
+  tcpi_ecn_capable_packets_sent: number;
+  tcpi_ecn_capable_packets_acked: number;
+  tcpi_ecn_capable_packets_marked: number;
+  tcpi_ecn_capable_packets_lost: number;
+  tcpi_received_ce_packets: number;
+  tcpi_received_ect0_bytes: number;
+  tcpi_received_ect1_bytes: number;
+  tcpi_received_ce_bytes: number;
+  tcpi_delivered_ect0_bytes: number;
+  tcpi_delivered_ect1_bytes: number;
+  tcpi_delivered_ce_bytes: number;
+  tcpi_flow_control_total_time: number;
+  tcpi_rcvwnd_limited_total_time: number;
+  tcpi_pacing_rate: number;
+  tcpi_max_pacing_rate: number;
+}
+
+declare class unnamed_6282570355603500895 {
+  constructor(init?: unnamed_6282570355603500895);
+  probe_activated: number;
+  write_probe_failed: number;
+  read_probe_failed: number;
+  conn_probe_failed: number;
+}
+
+declare class EXDisplayPipeHealthStats {
+  constructor(init?: EXDisplayPipeHealthStats);
+  globalhealth: number;
+  scldriver: number;
+  scadriver: number;
+  scaalgorithm: number;
+  pipe: number;
+  link: number;
+  brightness: number;
+  tconcrc: number;
+  tconhealth: number;
+  tconhpd: number;
+  dcptransporthealth: number;
+  silhealth: number;
+}
+
+declare class kdebug_trace_args {
+  constructor(init?: kdebug_trace_args);
+  code_l_: unknown /* const array */;
+  code: number;
+  code_r_: unknown /* const array */;
+  arg1_l_: unknown /* const array */;
+  arg1: number;
+  arg1_r_: unknown /* const array */;
+  arg2_l_: unknown /* const array */;
+  arg2: number;
+  arg2_r_: unknown /* const array */;
+  arg3_l_: unknown /* const array */;
+  arg3: number;
+  arg3_r_: unknown /* const array */;
+  arg4_l_: unknown /* const array */;
+  arg4: number;
+  arg4_r_: unknown /* const array */;
+}
+
+declare class unnamed_11654989967691793079 {
+  constructor(init?: unnamed_11654989967691793079);
+  prevTimebase: number;
+  prevTimestamp: number;
+  currTimebase: number;
+  currTimestamp: number;
+  timeDiff: number;
+  timebaseDiff: number;
 }
 
 declare class EXDisplayPipeStatus {
@@ -8839,6 +9278,16 @@ declare class IOHIDDigitizerStylusData {
   constructor(init?: IOHIDDigitizerStylusData);
 }
 
+declare class unnamed_1315594572584186897 {
+  constructor(init?: unnamed_1315594572584186897);
+  contextLock: number;
+  state: number;
+  owner: interop.Pointer;
+  version: number;
+  structSize: number;
+  reserved: unknown /* const array */;
+}
+
 declare class IOHIDInterface_LocalIVars {
   constructor(init?: IOHIDInterface_LocalIVars);
 }
@@ -8852,6 +9301,424 @@ declare class route_in6_old {
 
 declare class IOHIDInterface_IVars {
   constructor(init?: IOHIDInterface_IVars);
+}
+
+declare class unnamed_4405217834203024098 {
+  constructor(init?: unnamed_4405217834203024098);
+  connectionHandle: number;
+  randomNumber: unknown /* const array */;
+  ediv: number;
+}
+
+declare class unnamed_3744489281634571913 {
+  constructor(init?: unnamed_3744489281634571913);
+  length: number;
+  data: unknown /* const array */;
+}
+
+declare class unnamed_12873340176224763681 {
+  constructor(init?: unnamed_12873340176224763681);
+  connectionHandle: number;
+}
+
+declare class quotactl_args {
+  constructor(init?: quotactl_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  cmd_l_: unknown /* const array */;
+  cmd: number;
+  cmd_r_: unknown /* const array */;
+  uid_l_: unknown /* const array */;
+  uid: number;
+  uid_r_: unknown /* const array */;
+  arg_l_: unknown /* const array */;
+  arg: number;
+  arg_r_: unknown /* const array */;
+}
+
+declare class unnamed_6485530394947655174 {
+  constructor(init?: unnamed_6485530394947655174);
+  error: number;
+  connectionHandle: number;
+  page: number;
+  maxPage: number;
+  lmpFeatures: BluetoothHCISupportedFeatures;
+}
+
+declare class unnamed_14685552697123847232 {
+  constructor(init?: unnamed_14685552697123847232);
+  connectionHandle: number;
+  packetType: number;
+}
+
+declare class unnamed_6695955528974737229 {
+  constructor(init?: unnamed_6695955528974737229);
+  connectionHandle: number;
+  keyFlag: number;
+}
+
+declare class __pthread_kill_args {
+  constructor(init?: __pthread_kill_args);
+  thread_port_l_: unknown /* const array */;
+  thread_port: number;
+  thread_port_r_: unknown /* const array */;
+  sig_l_: unknown /* const array */;
+  sig: number;
+  sig_r_: unknown /* const array */;
+}
+
+declare class unnamed_6359250257130217676 {
+  constructor(init?: unnamed_6359250257130217676);
+  connectionHandle: number;
+}
+
+declare class unnamed_16133518678232883090 {
+  constructor(init?: unnamed_16133518678232883090);
+  deviceAddress: BluetoothDeviceAddress;
+  linkKey: BluetoothKey;
+}
+
+declare class unnamed_1915220244854016506 {
+  constructor(init?: unnamed_1915220244854016506);
+  numLinkKeys: number;
+  linkKeys: unknown /* const array */;
+}
+
+declare class unnamed_14545234515013782280 {
+  constructor(init?: unnamed_14545234515013782280);
+  connectionHandle: number;
+  maxSlots: number;
+}
+
+declare class unnamed_17721848110713871053 {
+  constructor(init?: unnamed_17721848110713871053);
+  connectionHandle: number;
+  clockOffset: number;
+}
+
+declare class sigsuspend_nocancel_args {
+  constructor(init?: sigsuspend_nocancel_args);
+  mask_l_: unknown /* const array */;
+  mask: number;
+  mask_r_: unknown /* const array */;
+}
+
+declare class unnamed_6892037542614408509 {
+  constructor(init?: unnamed_6892037542614408509);
+  connectionHandle: number;
+  supportedFeaturesInfo: BluetoothHCIExtendedFeaturesInfo;
+}
+
+declare class unnamed_13095299419804297735 {
+  constructor(init?: unnamed_13095299419804297735);
+  connectionHandle: number;
+  supportedFeatures: BluetoothHCISupportedFeatures;
+}
+
+declare class unnamed_8000284967430889214 {
+  constructor(init?: unnamed_8000284967430889214);
+  connectionHandle: number;
+  reason: number;
+}
+
+declare class unnamed_16146361739545037460 {
+  constructor(init?: unnamed_16146361739545037460);
+  connectionHandle: number;
+  connInterval: number;
+  connLatency: number;
+  supervisionTimeout: number;
+}
+
+declare class unnamed_3122674365946667703 {
+  constructor(init?: unnamed_3122674365946667703);
+  connectionHandle: number;
+  role: number;
+  peerAddressType: number;
+  peerAddress: BluetoothDeviceAddress;
+  localResolvablePrivateAddress: BluetoothDeviceAddress;
+  peerResolvablePrivateAddress: BluetoothDeviceAddress;
+  connInterval: number;
+  connLatency: number;
+  supervisionTimeout: number;
+  masterClockAccuracy: number;
+}
+
+declare class ntp_gettime_args {
+  constructor(init?: ntp_gettime_args);
+  ntvp_l_: unknown /* const array */;
+  ntvp: number;
+  ntvp_r_: unknown /* const array */;
+}
+
+declare class unnamed_10512273311661733268 {
+  constructor(init?: unnamed_10512273311661733268);
+  connectionHandle: number;
+  role: number;
+  peerAddressType: number;
+  peerAddress: BluetoothDeviceAddress;
+  connInterval: number;
+  connLatency: number;
+  supervisionTimeout: number;
+  masterClockAccuracy: number;
+}
+
+declare class unnamed_17379390117004970666 {
+  constructor(init?: unnamed_17379390117004970666);
+  connectionHandle: number;
+  deviceAddress: BluetoothDeviceAddress;
+  linkType: number;
+  encryptionMode: number;
+}
+
+declare class unnamed_825325064729843511 {
+  constructor(init?: unnamed_825325064729843511);
+  handle: number;
+  mode: number;
+  afhMap: unknown /* const array */;
+}
+
+declare class unnamed_13908932035459226953 {
+  constructor(init?: unnamed_13908932035459226953);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_9763661715145603623 {
+  constructor(init?: unnamed_9763661715145603623);
+  deviceAddress: BluetoothDeviceAddress;
+  notificationType: number;
+}
+
+declare class unnamed_14352815353189537517 {
+  constructor(init?: unnamed_14352815353189537517);
+  deviceAddress: BluetoothDeviceAddress;
+  passkey: number;
+}
+
+declare class unnamed_17760397736649477487 {
+  constructor(init?: unnamed_17760397736649477487);
+  hash: BluetoothHCISimplePairingOOBData;
+  randomizer: BluetoothHCISimplePairingOOBData;
+}
+
+declare class unnamed_11170576992091453114 {
+  constructor(init?: unnamed_11170576992091453114);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_8907571703094486488 {
+  constructor(init?: unnamed_8907571703094486488);
+  outFECRequired: number;
+  extendedInquiryResponse: BluetoothHCIExtendedInquiryResponse;
+}
+
+declare class unnamed_12184568112118927398 {
+  constructor(init?: unnamed_12184568112118927398);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_6656109843928510805 {
+  constructor(init?: unnamed_6656109843928510805);
+  results: unknown /* const array */;
+  count: number;
+}
+
+declare class unnamed_12004043623014703245 {
+  constructor(init?: unnamed_12004043623014703245);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+  reserved: number;
+  classOfDevice: number;
+  clockOffset: number;
+  RSSIValue: number;
+}
+
+declare class unnamed_9502991268943117136 {
+  constructor(init?: unnamed_9502991268943117136);
+  productID: number;
+  vendorID: number;
+  type: number;
+  productName: unknown /* const array */;
+  vendorName: unknown /* const array */;
+  totalDataBytesSent: number;
+  totalSCOBytesSent: number;
+  totalDataBytesReceived: number;
+  totalSCOBytesReceived: number;
+}
+
+declare class unnamed_5063178359264227978 {
+  constructor(init?: unnamed_5063178359264227978);
+  handle: number;
+  timeout: number;
+}
+
+declare class unnamed_174160992361959040 {
+  constructor(init?: unnamed_174160992361959040);
+  handle: number;
+  level: number;
+}
+
+declare class unnamed_8883058337753654942 {
+  constructor(init?: unnamed_8883058337753654942);
+  count: number;
+  codes: unknown /* const array */;
+}
+
+declare class unnamed_5695680544649957972 {
+  constructor(init?: unnamed_5695680544649957972);
+  ACLDataPacketLength: number;
+  SCODataPacketLength: number;
+  totalNumACLDataPackets: number;
+  totalNumSCODataPackets: number;
+}
+
+declare class unnamed_10563187139034436309 {
+  constructor(init?: unnamed_10563187139034436309);
+  manufacturerName: number;
+  lmpVersion: number;
+  lmpSubVersion: number;
+  hciVersion: number;
+  hciRevision: number;
+}
+
+declare class unnamed_17200267137875338337 {
+  constructor(init?: unnamed_17200267137875338337);
+  handle: number;
+  clock: number;
+  accuracy: number;
+}
+
+declare class unnamed_12771175986842419775 {
+  constructor(init?: unnamed_12771175986842419775);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSamplePayloadMSBPosition: number;
+  outputPCMSamplePayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  packetType: number;
+  retransmissionEffort: number;
+}
+
+declare class unnamed_7050890988361481334 {
+  constructor(init?: unnamed_7050890988361481334);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  maxLatency: number;
+  voiceSetting: number;
+  retransmissionEffort: number;
+  packetType: number;
+}
+
+declare class unnamed_9518647771440607728 {
+  constructor(init?: unnamed_9518647771440607728);
+  flags: number;
+  serviceType: number;
+  tokenRate: number;
+  peakBandwidth: number;
+  latency: number;
+  delayVariation: number;
+}
+
+declare class unnamed_17340048297115027307 {
+  constructor(init?: unnamed_17340048297115027307);
+  settings: number;
+  handle: number;
+}
+
+declare class unnamed_14655595527810739837 {
+  constructor(init?: unnamed_14655595527810739837);
+  handle: number;
+  keySize: number;
+}
+
+declare class unnamed_17049932793282015549 {
+  constructor(init?: unnamed_17049932793282015549);
+  handle: number;
+  RSSIValue: number;
+}
+
+declare class unnamed_17363652340809838133 {
+  constructor(init?: unnamed_17363652340809838133);
+  count: number;
+  handle: number;
+}
+
+declare class airship_buffer {
+  constructor(init?: airship_buffer);
+}
+
+declare class unnamed_1011781940521745346 {
+  constructor(init?: unnamed_1011781940521745346);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_15126106188599157768 {
+  constructor(init?: unnamed_15126106188599157768);
+  page: number;
+  maxPage: number;
+  data: unknown /* const array */;
+}
+
+declare class unnamed_12710453468875713864 {
+  constructor(init?: unnamed_12710453468875713864);
+  data: unknown /* const array */;
+}
+
+declare class cl_direct_read_lock {
+  constructor(init?: cl_direct_read_lock);
+}
+
+declare class ungraftdmg_args {
+  constructor(init?: ungraftdmg_args);
+  mountdir_l_: unknown /* const array */;
+  mountdir: number;
+  mountdir_r_: unknown /* const array */;
+  flags_l_: unknown /* const array */;
+  flags: number;
+  flags_r_: unknown /* const array */;
+}
+
+declare class unnamed_12722572568254980039 {
+  constructor(init?: unnamed_12722572568254980039);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_14485107667129898935 {
+  constructor(init?: unnamed_14485107667129898935);
+  data: unknown /* const array */;
+}
+
+declare class sem_close_args {
+  constructor(init?: sem_close_args);
+  sem_l_: unknown /* const array */;
+  sem: number;
+  sem_r_: unknown /* const array */;
+}
+
+declare class unnamed_2894202839658864712 {
+  constructor(init?: unnamed_2894202839658864712);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_9513934731600801000 {
+  constructor(init?: unnamed_9513934731600801000);
+  data: unknown /* const array */;
 }
 
 declare class searchfs_args {
@@ -8915,12 +9782,6 @@ declare class _AVCGetTargetPlugConnectionInParams {
   plugNum: number;
 }
 
-declare class _AVCConnectTargetPlugsOutParams {
-  constructor(init?: _AVCConnectTargetPlugsOutParams);
-  sourcePlugNum: number;
-  destPlugNum: number;
-}
-
 declare class IOAudioClientBufferExtendedInfo {
   constructor(init?: IOAudioClientBufferExtendedInfo);
   bufferSetID: number;
@@ -8945,13 +9806,6 @@ declare class IOHistReportInfo {
   constructor(init?: IOHistReportInfo);
   bucketWidth: number;
   elem: interop.Pointer;
-}
-
-declare class IOUSBHostHIDReportDescriptor {
-  constructor(init?: IOUSBHostHIDReportDescriptor);
-  hidDescriptorType: number;
-  hidDescriptorLengthLo: number;
-  hidDescriptorLengthHi: number;
 }
 
 declare class IOUSBHostInterface_IVars {
@@ -9045,26 +9899,6 @@ declare class IOUSBHostCompletion {
   owner: interop.Pointer;
   action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
   parameter: interop.Pointer;
-}
-
-declare class IOUSBHubStatus {
-  constructor(init?: IOUSBHubStatus);
-  statusFlags: number;
-  changeFlags: number;
-}
-
-declare class IOUSB3HubDescriptor {
-  constructor(init?: IOUSB3HubDescriptor);
-  length: number;
-  hubType: number;
-  numPorts: number;
-  characteristics: number;
-  powerOnToGood: number;
-  hubCurrent: number;
-  hubHdrDecLat: number;
-  hubDelay: number;
-  removablePortFlags: unknown /* const array */;
-  pwrCtlPortFlags: unknown /* const array */;
 }
 
 declare class IOUSBHostCIMessage {
@@ -9202,11 +10036,6 @@ declare class _VSLService {
   constructor(init?: _VSLService);
 }
 
-declare class IOBlockStorageWorkEndArgs {
-  constructor(init?: IOBlockStorageWorkEndArgs);
-  postCompletionTime: number;
-}
-
 declare class IOMbufQueue {
   constructor(init?: IOMbufQueue);
 }
@@ -9230,6 +10059,11 @@ declare class mbuf_stat {
   bigclusters: number;
   bigclfree: number;
   bigmclbytes: number;
+}
+
+declare class unnamed_4007094476083325336 {
+  constructor(init?: unnamed_4007094476083325336);
+  data: unknown /* const array */;
 }
 
 declare class RomScan {
@@ -9262,21 +10096,18 @@ declare class IONVRAMDescriptor {
   deviceNum: number;
 }
 
-declare class __Reply__mach_notify_send_once_t {
-  constructor(init?: __Reply__mach_notify_send_once_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
+declare class unnamed_12713508752774757029 {
+  constructor(init?: unnamed_12713508752774757029);
+  offset: number;
+  function: number;
+  device: number;
+  bus: number;
+  segment: number;
+  reserved: number;
 }
 
-declare class unnamed_11945940813504189419 {
-  constructor(init?: unnamed_11945940813504189419);
-  provider: interop.Pointer;
-  busNum: number;
-}
-
-declare class unnamed_618798630786262299 {
-  constructor(init?: unnamed_618798630786262299);
+declare class unnamed_3028334284839788733 {
+  constructor(init?: unnamed_3028334284839788733);
   device: interop.Pointer;
   op: number;
   result: interop.Pointer;
@@ -9292,6 +10123,19 @@ declare class IOPCIPhysicalAddress {
   lengthHi: number;
 }
 
+declare class unnamed_17672180226118855821 {
+  constructor(init?: unnamed_17672180226118855821);
+  registerNum: number;
+  functionNum: number;
+  deviceNum: number;
+  busNum: number;
+  space: number;
+  resv: number;
+  t: number;
+  prefetch: number;
+  reloc: number;
+}
+
 declare class IOPCIDevice_IVars {
   constructor(init?: IOPCIDevice_IVars);
 }
@@ -9300,28 +10144,28 @@ declare class ScrollAccelInfo {
   constructor(init?: ScrollAccelInfo);
 }
 
-declare class unnamed_9080744482574551317 {
-  constructor(init?: unnamed_9080744482574551317);
-  usageMin: number;
-  usageMax: number;
-  stringMin: number;
-  stringMax: number;
-  designatorMin: number;
-  designatorMax: number;
+declare class unnamed_2475899045996132323 {
+  constructor(init?: unnamed_2475899045996132323);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
 }
 
-declare class unnamed_14814337425775255178 {
-  constructor(init?: unnamed_14814337425775255178);
-  usageMin: number;
-  usageMax: number;
-  stringMin: number;
-  stringMax: number;
-  designatorMin: number;
-  designatorMax: number;
+declare class unnamed_10261520394563487748 {
+  constructor(init?: unnamed_10261520394563487748);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
 }
 
-declare class unnamed_9583911679515939392 {
-  constructor(init?: unnamed_9583911679515939392);
+declare class unnamed_13574595766822801905 {
+  constructor(init?: unnamed_13574595766822801905);
   usageMin: number;
   usageMax: number;
   stringMin: number;
@@ -9399,16 +10243,6 @@ declare class FWMultiIsochReceiveListenerParamsStruct {
   clientPacketReturnLatencyInFireWireCycles: number;
 }
 
-declare class unnamed_13088781654318928924 {
-  constructor(init?: unnamed_13088781654318928924);
-  prevTimebase: number;
-  prevTimestamp: number;
-  currTimebase: number;
-  currTimestamp: number;
-  timeDiff: number;
-  timebaseDiff: number;
-}
-
 declare class IOFWCmdQ {
   constructor(init?: IOFWCmdQ);
   fHead: interop.Pointer;
@@ -9442,17 +10276,26 @@ declare class debug_trailer {
   translated: number;
 }
 
+declare class unnamed_5864893492845929824 {
+  constructor(init?: unnamed_5864893492845929824);
+  paddr: number;
+  papt_pte_template: number;
+  num_mappings: number;
+  options: number;
+}
+
+declare class sptm_io_range_t {
+  constructor(init?: sptm_io_range_t);
+  addr: number;
+  len: number;
+  type: interop.Enum<typeof sptm_frame_type_t>;
+}
+
 declare class sptm_guest_dispatch_gpr_t {
   constructor(init?: sptm_guest_dispatch_gpr_t);
   x: unknown /* const array */;
   fp: number;
   lr: number;
-}
-
-declare class unnamed_12745640017860648577 {
-  constructor(init?: unnamed_12745640017860648577);
-  z: unknown /* const array */;
-  p: unknown /* const array */;
 }
 
 declare class sptm_guest_dispatch_vec_t {
@@ -9464,13 +10307,6 @@ declare class sptm_guest_dispatch_neon_t {
   cptr_el2: number;
   fpsr: number;
   fpcr: number;
-}
-
-declare class sptm_hibernation_args_xnu_t {
-  constructor(init?: sptm_hibernation_args_xnu_t);
-  hib_header_phys: number;
-  handoff_page_count: number;
-  handoff_pages: unknown /* const array */;
 }
 
 declare class debug_header {
@@ -9502,7 +10338,7 @@ declare class sptm_bootstrap_args_xnu_t {
   random_seed_length: number;
   sk_bootstrapped: boolean;
   sk_carveout_size: number;
-  sptm_variant: interop.Enum<typeof sptm_bootstrap_args_xnu_t::(unnamed at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/System/Library/Frameworks/Kernel.framework/Headers/platform/sptm/sptm_xnu.h:284:2)>;
+  sptm_variant: interop.Enum<typeof sptm_bootstrap_args_xnu_t::(unnamed at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk/System/Library/Frameworks/Kernel.framework/Headers/platform/sptm/sptm_xnu.h:323:2)>;
   xnu_triggered_panic: interop.Pointer;
   libsptm_state: sptm_client_state;
   auxkc_base: number;
@@ -9510,33 +10346,44 @@ declare class sptm_bootstrap_args_xnu_t {
   auxkc_end: number;
   timestamp_sk_bootstrap: number;
   timestamp_xnu_bootstrap: number;
+  timestamp_txm_bootstrap: number;
   reserved1: interop.Pointer;
   hib_scratch_page_paddr: number;
   sptm_pmap_io_ranges: number;
   sptm_pmap_io_ranges_count: number;
   sptm_pmap_io_filters: number;
   sptm_pmap_io_filters_count: number;
+  feature_flags: number;
 }
 
-declare class sptm_call_regs_t {
-  constructor(init?: sptm_call_regs_t);
-  x0: number;
-  x1: number;
-  x2: number;
-  x3: number;
-  x4: number;
-  x5: number;
-  x6: number;
-  x7: number;
-}
-
-declare class unnamed_12559714625289108682 {
-  constructor(init?: unnamed_12559714625289108682);
+declare class unnamed_2522939467278126486 {
+  constructor(init?: unnamed_2522939467278126486);
   sk_flags: number;
 }
 
 declare class sptm_retype_params_t {
   constructor(init?: sptm_retype_params_t);
+}
+
+declare class AirshipDaleBasebandTraceInfo {
+  constructor(init?: AirshipDaleBasebandTraceInfo);
+  version: number;
+  trace_code_count: number;
+  trace_code_size: number;
+  min_trace_buffer_size: number;
+  max_trace_buffer_size: number;
+  snapshot_buffer_size: number;
+  max_trace_buffers_in_flight: number;
+}
+
+declare class AirshipDaleBasebandDeviceTimeMeasurement {
+  constructor(init?: AirshipDaleBasebandDeviceTimeMeasurement);
+  seq: number;
+  duration: number;
+  ap_time: number;
+  frc_time: number;
+  host_begin_abs_time: number;
+  host_begin_continuous_time: number;
 }
 
 declare class cpuid_mwait_leaf_t {
@@ -9569,8 +10416,8 @@ declare class pfkeystat {
   sockerr: number;
 }
 
-declare class unnamed_15938541009525775535 {
-  constructor(init?: unnamed_15938541009525775535);
+declare class unnamed_13120103969405328411 {
+  constructor(init?: unnamed_13120103969405328411);
   xbb_base: string | null;
   xbb_size: number;
   xbb_len: number;
@@ -9578,7 +10425,7 @@ declare class unnamed_15938541009525775535 {
 
 declare class xdrbuf {
   constructor(init?: xdrbuf);
-  xb_u: unnamed_8773742881634497183;
+  xb_u: unnamed_11714727163374491480;
   xb_ptr: string | null;
   xb_left: number;
   xb_growsize: number;
@@ -9609,24 +10456,10 @@ declare class lockd_ans {
   la_fh: unknown /* const array */;
 }
 
-declare class __Reply__check_task_access_t {
-  constructor(init?: __Reply__check_task_access_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class unnamed_12647973589064199576 {
-  constructor(init?: unnamed_12647973589064199576);
+declare class unnamed_13569257746074412783 {
+  constructor(init?: unnamed_13569257746074412783);
   errs_common: unknown /* const array */;
   errs_unknown: number;
-}
-
-declare class unnamed_11430931021704111793 {
-  constructor(init?: unnamed_11430931021704111793);
-  nlm_lock: number;
-  nlm_test: number;
-  nlm_unlock: number;
 }
 
 declare class nfs_user_stat_path_rec {
@@ -9674,6 +10507,34 @@ declare class user_nfsd_args {
   namelen: number;
 }
 
+declare class user_nfs_args {
+  constructor(init?: user_nfs_args);
+  version: number;
+  addr: number;
+  addrlen: number;
+  sotype: number;
+  proto: number;
+  fh: number;
+  fhsize: number;
+  flags: number;
+  wsize: number;
+  rsize: number;
+  readdirsize: number;
+  timeo: number;
+  retrans: number;
+  maxgrouplist: number;
+  readahead: number;
+  leaseterm: number;
+  deadthresh: number;
+  hostname: number;
+  acregmin: number;
+  acregmax: number;
+  acdirmin: number;
+  acdirmax: number;
+  auth: number;
+  deadtimeout: number;
+}
+
 declare class nfs_args {
   constructor(init?: nfs_args);
   version: number;
@@ -9700,6 +10561,13 @@ declare class nfs_args {
   acdirmax: number;
   auth: number;
   deadtimeout: number;
+}
+
+declare class nfs_etype {
+  constructor(init?: nfs_etype);
+  count: number;
+  selected: number;
+  etypes: unknown /* const array */;
 }
 
 declare class nfs_fsid {
@@ -9798,15 +10666,6 @@ declare class kev_dl_node_absence {
   sdl_node_address: sockaddr_dl;
 }
 
-declare class if_qstatsreq {
-  constructor(init?: if_qstatsreq);
-  ifqr_name: unknown /* const array */;
-  ifqr_grp_idx: number;
-  ifqr_slot: number;
-  ifqr_buf: interop.Pointer;
-  ifqr_len: number;
-}
-
 declare class if_linkparamsreq {
   constructor(init?: if_linkparamsreq);
   iflpr_name: unknown /* const array */;
@@ -9877,20 +10736,6 @@ declare class vlanreq {
   constructor(init?: vlanreq);
   vlr_parent: unknown /* const array */;
   vlr_tag: number;
-}
-
-declare class rt_msghdr_common {
-  constructor(init?: rt_msghdr_common);
-  rtm_msglen: number;
-  rtm_version: number;
-  rtm_type: number;
-  rtm_index: number;
-  rtm_flags: number;
-  rtm_addrs: number;
-  rtm_pid: number;
-  rtm_seq: number;
-  rtm_errno: number;
-  rtm_use: number;
 }
 
 declare class kev_netevent_apnfallbk_data {
@@ -9972,6 +10817,35 @@ declare class ifnet_stat_increment_param {
 
 declare class kev_msg {
   constructor(init?: kev_msg);
+}
+
+declare class settid_args {
+  constructor(init?: settid_args);
+  uid_l_: unknown /* const array */;
+  uid: number;
+  uid_r_: unknown /* const array */;
+  gid_l_: unknown /* const array */;
+  gid: number;
+  gid_r_: unknown /* const array */;
+}
+
+declare class read_args {
+  constructor(init?: read_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  cbuf_l_: unknown /* const array */;
+  cbuf: number;
+  cbuf_r_: unknown /* const array */;
+  nbyte_l_: unknown /* const array */;
+  nbyte: number;
+  nbyte_r_: unknown /* const array */;
+}
+
+declare class bpf_setup_args {
+  constructor(init?: bpf_setup_args);
+  bsa_uuid: unknown /* const array */;
+  bsa_ifname: unknown /* const array */;
 }
 
 declare class gpu_descriptor {
@@ -10108,12 +10982,6 @@ declare class fairplay_subsystem {
 declare class priority_queue_deadline_max {
   constructor(init?: priority_queue_deadline_max);
   pq_root: interop.Pointer;
-}
-
-declare class unnamed_13762759033593481465 {
-  constructor(init?: unnamed_13762759033593481465);
-  iommu_id: number;
-  iommu_retype_params: number;
 }
 
 declare class priority_queue_deadline_min {
@@ -10317,112 +11185,91 @@ declare class DeviceQualifierDescriptor {
   bReserved: number;
 }
 
-declare class __Request__mcc_memory_error_notification_t {
-  constructor(init?: __Request__mcc_memory_error_notification_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  event: mcc_ecc_event_t;
+declare class EFI_SYSTEM_TABLE_32 {
+  constructor(init?: EFI_SYSTEM_TABLE_32);
+  Hdr: EFI_TABLE_HEADER;
+  FirmwareVendor: number;
+  FirmwareRevision: number;
+  ConsoleInHandle: number;
+  ConIn: number;
+  ConsoleOutHandle: number;
+  ConOut: number;
+  StandardErrorHandle: number;
+  StdErr: number;
+  RuntimeServices: number;
+  BootServices: number;
+  NumberOfTableEntries: number;
+  ConfigurationTable: number;
 }
 
-declare class ulock_wake_args {
-  constructor(init?: ulock_wake_args);
-  operation_l_: unknown /* const array */;
-  operation: number;
-  operation_r_: unknown /* const array */;
-  addr_l_: unknown /* const array */;
-  addr: number;
-  addr_r_: unknown /* const array */;
-  wake_value_l_: unknown /* const array */;
-  wake_value: number;
-  wake_value_r_: unknown /* const array */;
-}
-
-declare class __Reply__lockd_ping_t {
-  constructor(init?: __Reply__lockd_ping_t);
+declare class __Reply__vfs_resolve_file_t {
+  constructor(init?: __Reply__vfs_resolve_file_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
 }
 
-declare class wait4_nocancel_args {
-  constructor(init?: wait4_nocancel_args);
-  pid_l_: unknown /* const array */;
-  pid: number;
-  pid_r_: unknown /* const array */;
-  status_l_: unknown /* const array */;
-  status: number;
-  status_r_: unknown /* const array */;
+declare class setprivexec_args {
+  constructor(init?: setprivexec_args);
+  flag_l_: unknown /* const array */;
+  flag: number;
+  flag_r_: unknown /* const array */;
+}
+
+declare class tcp_notify_ack_complete {
+  constructor(init?: tcp_notify_ack_complete);
+  notify_pending: number;
+  notify_complete_count: number;
+  notify_complete_id: unknown /* const array */;
+}
+
+declare class daleipc_downlink_controller {
+  constructor(init?: daleipc_downlink_controller);
+}
+
+declare class __Reply__nspace_handle_t {
+  constructor(init?: __Reply__nspace_handle_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  handler_error: number;
+}
+
+declare class fsctl_args {
+  constructor(init?: fsctl_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  cmd_l_: unknown /* const array */;
+  cmd: number;
+  cmd_r_: unknown /* const array */;
+  data_l_: unknown /* const array */;
+  data: number;
+  data_r_: unknown /* const array */;
   options_l_: unknown /* const array */;
   options: number;
   options_r_: unknown /* const array */;
+}
+
+declare class getrusage_args {
+  constructor(init?: getrusage_args);
+  who_l_: unknown /* const array */;
+  who: number;
+  who_r_: unknown /* const array */;
   rusage_l_: unknown /* const array */;
   rusage: number;
   rusage_r_: unknown /* const array */;
 }
 
-declare class telemetry_args {
-  constructor(init?: telemetry_args);
-  cmd_l_: unknown /* const array */;
-  cmd: number;
-  cmd_r_: unknown /* const array */;
-  deadline_l_: unknown /* const array */;
-  deadline: number;
-  deadline_r_: unknown /* const array */;
-  interval_l_: unknown /* const array */;
-  interval: number;
-  interval_r_: unknown /* const array */;
-  leeway_l_: unknown /* const array */;
-  leeway: number;
-  leeway_r_: unknown /* const array */;
-  arg4_l_: unknown /* const array */;
-  arg4: number;
-  arg4_r_: unknown /* const array */;
-  arg5_l_: unknown /* const array */;
-  arg5: number;
-  arg5_r_: unknown /* const array */;
+declare class acct_args {
+  constructor(init?: acct_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
 }
 
-declare class nfs_etype {
-  constructor(init?: nfs_etype);
-  count: number;
-  selected: number;
-  etypes: unknown /* const array */;
-}
-
-declare class sha1_ctxt {
-  constructor(init?: sha1_ctxt);
-  h: unnamed_5310064096390035881;
-  c: unnamed_3987424655486713239;
-  m: unnamed_7329309170505040439;
-  count: number;
-}
-
-declare class user_nfs_args {
-  constructor(init?: user_nfs_args);
-  version: number;
-  addr: number;
-  addrlen: number;
-  sotype: number;
-  proto: number;
-  fh: number;
-  fhsize: number;
-  flags: number;
-  wsize: number;
-  rsize: number;
-  readdirsize: number;
-  timeo: number;
-  retrans: number;
-  maxgrouplist: number;
-  readahead: number;
-  leaseterm: number;
-  deadthresh: number;
-  hostname: number;
-  acregmin: number;
-  acregmax: number;
-  acdirmin: number;
-  acdirmax: number;
-  auth: number;
-  deadtimeout: number;
+declare class airship_acipc_memregion {
+  constructor(init?: airship_acipc_memregion);
 }
 
 declare class user32_itimerval {
@@ -10473,6 +11320,18 @@ declare class if_interface_state {
   interface_availability: number;
 }
 
+declare class unnamed_11273710022804791198 {
+  constructor(init?: unnamed_11273710022804791198);
+  connectionHandle: number;
+  usedFeatures: BluetoothHCISupportedFeatures;
+}
+
+declare class unnamed_10173792744354485346 {
+  constructor(init?: unnamed_10173792744354485346);
+  handle: number;
+  qualityValue: number;
+}
+
 declare class OpaqueDTPropertyIterator {
   constructor(init?: OpaqueDTPropertyIterator);
   entry: interop.Pointer;
@@ -10484,6 +11343,15 @@ declare class if_bandwidths {
   constructor(init?: if_bandwidths);
   eff_bw: number;
   max_bw: number;
+}
+
+declare class unnamed_9614755327984743019 {
+  constructor(init?: unnamed_9614755327984743019);
+  seqNum: bigint;
+  wrIndex: bigint;
+  generation: bigint;
+  rstStatus: bigint;
+  wrStatus: bigint;
 }
 
 declare class AsyncReportCall {
@@ -10518,16 +11386,6 @@ declare class xnu_saved_registers_t {
   sp: number;
 }
 
-declare class clock_reply_subsystem {
-  constructor(init?: clock_reply_subsystem);
-  server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  start: number;
-  end: number;
-  maxsize: number;
-  reserved: number;
-  routine: unknown /* const array */;
-}
-
 declare class flistxattr_args {
   constructor(init?: flistxattr_args);
   fd_l_: unknown /* const array */;
@@ -10544,38 +11402,16 @@ declare class flistxattr_args {
   options_r_: unknown /* const array */;
 }
 
-declare class unnamed_7422846035690987871 {
-  constructor(init?: unnamed_7422846035690987871);
-  revision: number;
-  variant: number;
-  : number;
-  se_imp: number;
-  pcsr_imp: number;
-  nsuhd_imp: number;
-  : number;
-  version: number;
-  ctx_cmps: number;
-  brps: number;
-  wrps: number;
+declare class unnamed_15009144603172126793 {
+  constructor(init?: unnamed_15009144603172126793);
+  iommu_id: number;
+  iommu_retype_params: number;
 }
 
 declare class IOFramebufferNotificationNotify {
   constructor(init?: IOFramebufferNotificationNotify);
   event: number;
   info: interop.Pointer;
-}
-
-declare class unnamed_14311326824718567520 {
-  constructor(init?: unnamed_14311326824718567520);
-  registerNum: number;
-  functionNum: number;
-  deviceNum: number;
-  busNum: number;
-  space: number;
-  resv: number;
-  t: number;
-  prefetch: number;
-  reloc: number;
 }
 
 declare class sem_post_args {
@@ -10585,14 +11421,11 @@ declare class sem_post_args {
   sem_r_: unknown /* const array */;
 }
 
-declare class chmod_args {
-  constructor(init?: chmod_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  mode_l_: unknown /* const array */;
-  mode: number;
-  mode_r_: unknown /* const array */;
+declare class IOUSBHostHIDReportDescriptor {
+  constructor(init?: IOUSBHostHIDReportDescriptor);
+  hidDescriptorType: number;
+  hidDescriptorLengthLo: number;
+  hidDescriptorLengthHi: number;
 }
 
 declare class __pthread_sigmask_args {
@@ -10663,18 +11496,6 @@ declare class EFI_TIME {
   TimeZone: number;
   Daylight: number;
   Pad2: number;
-}
-
-declare class unnamed_15300564944168276622 {
-  constructor(init?: unnamed_15300564944168276622);
-  indicator: interop.Enum<typeof EXDisplayPipeIndicator>;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  alpha: number;
-  enabled: boolean;
-  populated: boolean;
 }
 
 declare class __pthread_chdir_args {
@@ -10813,6 +11634,25 @@ declare class readv_nocancel_args {
   iovcnt_r_: unknown /* const array */;
 }
 
+declare class unnamed_5578380239689998826 {
+  constructor(init?: unnamed_5578380239689998826);
+  connectionHandle: number;
+  deviceAddress: BluetoothDeviceAddress;
+  role: number;
+}
+
+declare class ledger_entry_info_v2 {
+  constructor(init?: ledger_entry_info_v2);
+  lei_balance: number;
+  lei_credit: number;
+  lei_debit: number;
+  lei_limit: number;
+  lei_refill_period: number;
+  lei_last_refill: number;
+  lei_lifetime_max: number;
+  lei_reserved: unknown /* const array */;
+}
+
 declare class stack_snapshot_with_config_args {
   constructor(init?: stack_snapshot_with_config_args);
   stackshot_config_version_l_: unknown /* const array */;
@@ -10824,15 +11664,6 @@ declare class stack_snapshot_with_config_args {
   stackshot_config_size_l_: unknown /* const array */;
   stackshot_config_size: number;
   stackshot_config_size_r_: unknown /* const array */;
-}
-
-declare class unnamed_12792648478445238961 {
-  constructor(init?: unnamed_12792648478445238961);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  offset: number;
-  size: number;
-  abort_cond: number;
 }
 
 declare class kd_cpumap_header {
@@ -10851,6 +11682,12 @@ declare class flock_args {
   how_r_: unknown /* const array */;
 }
 
+declare class unnamed_4332635779667043713 {
+  constructor(init?: unnamed_4332635779667043713);
+  deviceAddress: BluetoothDeviceAddress;
+  deviceName: unknown /* const array */;
+}
+
 declare class nd_ifinfo {
   constructor(init?: nd_ifinfo);
   linkmtu: number;
@@ -10865,6 +11702,25 @@ declare class nd_ifinfo {
   randomseed0: unknown /* const array */;
   randomseed1: unknown /* const array */;
   randomid: unknown /* const array */;
+}
+
+declare class unnamed_17926074055869263541 {
+  constructor(init?: unnamed_17926074055869263541);
+  connectionHandle: number;
+  flags: number;
+  flowDirection: number;
+  serviceType: number;
+  tokenRate: number;
+  tokenBucketSize: number;
+  peakBandwidth: number;
+  accessLatency: number;
+}
+
+declare class AirshipDaleBasebandErrorInfo {
+  constructor(init?: AirshipDaleBasebandErrorInfo);
+  error: number;
+  param1: number;
+  param2: number;
 }
 
 declare class fmount_args {
@@ -10886,8 +11742,8 @@ declare class fmount_args {
 declare class info_tuple {
   constructor(init?: info_tuple);
   itpl_proto: number;
-  itpl_localaddr: unnamed_1494921128110780036;
-  itpl_remoteaddr: unnamed_7912544366884734115;
+  itpl_localaddr: unnamed_17232738562495190869;
+  itpl_remoteaddr: unnamed_3012503987243038479;
 }
 
 declare class chain_len_stats {
@@ -10918,131 +11774,9 @@ declare class __Reply__sysdiagnose_notification_with_audit_token_t {
   RetCode: number;
 }
 
-declare class statfs64_args {
-  constructor(init?: statfs64_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  buf_l_: unknown /* const array */;
-  buf: number;
-  buf_r_: unknown /* const array */;
-}
-
-declare class open_args {
-  constructor(init?: open_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  flags_l_: unknown /* const array */;
-  flags: number;
-  flags_r_: unknown /* const array */;
-  mode_l_: unknown /* const array */;
-  mode: number;
-  mode_r_: unknown /* const array */;
-}
-
-declare class tcp_info {
-  constructor(init?: tcp_info);
-  tcpi_state: number;
-  tcpi_options: number;
-  tcpi_snd_wscale: number;
-  tcpi_rcv_wscale: number;
-  tcpi_flags: number;
-  tcpi_rto: number;
-  tcpi_snd_mss: number;
-  tcpi_rcv_mss: number;
-  tcpi_rttcur: number;
-  tcpi_srtt: number;
-  tcpi_rttvar: number;
-  tcpi_rttbest: number;
-  tcpi_snd_ssthresh: number;
-  tcpi_snd_cwnd: number;
-  tcpi_rcv_space: number;
-  tcpi_snd_wnd: number;
-  tcpi_snd_nxt: number;
-  tcpi_rcv_nxt: number;
-  tcpi_last_outif: number;
-  tcpi_snd_sbbytes: number;
-  tcpi_txpackets: number;
-  tcpi_txbytes: number;
-  tcpi_txretransmitbytes: number;
-  tcpi_txunacked: number;
-  tcpi_rxpackets: number;
-  tcpi_rxbytes: number;
-  tcpi_rxduplicatebytes: number;
-  tcpi_rxoutoforderbytes: number;
-  tcpi_snd_bw: number;
-  tcpi_synrexmits: number;
-  tcpi_unused1: number;
-  tcpi_unused2: number;
-  tcpi_cell_rxpackets: number;
-  tcpi_cell_rxbytes: number;
-  tcpi_cell_txpackets: number;
-  tcpi_cell_txbytes: number;
-  tcpi_wifi_rxpackets: number;
-  tcpi_wifi_rxbytes: number;
-  tcpi_wifi_txpackets: number;
-  tcpi_wifi_txbytes: number;
-  tcpi_wired_rxpackets: number;
-  tcpi_wired_rxbytes: number;
-  tcpi_wired_txpackets: number;
-  tcpi_wired_txbytes: number;
-  tcpi_connstatus: tcp_conn_status;
-  tcpi_tfo_cookie_req: number;
-  tcpi_tfo_cookie_rcv: number;
-  tcpi_tfo_syn_loss: number;
-  tcpi_tfo_syn_data_sent: number;
-  tcpi_tfo_syn_data_acked: number;
-  tcpi_tfo_syn_data_rcv: number;
-  tcpi_tfo_cookie_req_rcv: number;
-  tcpi_tfo_cookie_sent: number;
-  tcpi_tfo_cookie_invalid: number;
-  tcpi_tfo_cookie_wrong: number;
-  tcpi_tfo_no_cookie_rcv: number;
-  tcpi_tfo_heuristics_disable: number;
-  tcpi_tfo_send_blackhole: number;
-  tcpi_tfo_recv_blackhole: number;
-  tcpi_tfo_onebyte_proxy: number;
-  tcpi_ecn_client_setup: number;
-  tcpi_ecn_server_setup: number;
-  tcpi_ecn_success: number;
-  tcpi_ecn_lost_syn: number;
-  tcpi_ecn_lost_synack: number;
-  tcpi_local_peer: number;
-  tcpi_if_cell: number;
-  tcpi_if_wifi: number;
-  tcpi_if_wired: number;
-  tcpi_if_wifi_infra: number;
-  tcpi_if_wifi_awdl: number;
-  tcpi_snd_background: number;
-  tcpi_rcv_background: number;
-  tcpi_l4s_enabled: number;
-  tcpi_ecn_recv_ce: number;
-  tcpi_ecn_recv_cwr: number;
-  tcpi_rcvoopack: number;
-  tcpi_pawsdrop: number;
-  tcpi_sack_recovery_episode: number;
-  tcpi_reordered_pkts: number;
-  tcpi_dsack_sent: number;
-  tcpi_dsack_recvd: number;
-  tcpi_flowhash: number;
-  tcpi_txretransmitpackets: number;
-  tcpi_rcv_srtt: number;
-  tcpi_client_accecn_state: number;
-  tcpi_server_accecn_state: number;
-  tcpi_ecn_capable_packets_sent: number;
-  tcpi_ecn_capable_packets_acked: number;
-  tcpi_ecn_capable_packets_marked: number;
-  tcpi_ecn_capable_packets_lost: number;
-  tcpi_received_ce_packets: number;
-  tcpi_received_ect0_bytes: number;
-  tcpi_received_ect1_bytes: number;
-  tcpi_received_ce_bytes: number;
-  tcpi_delivered_ect0_bytes: number;
-  tcpi_delivered_ect1_bytes: number;
-  tcpi_delivered_ce_bytes: number;
-  tcpi_flow_control_total_time: number;
-  tcpi_rcvwnd_limited_total_time: number;
+declare class IOBlockStorageWorkEndArgs {
+  constructor(init?: IOBlockStorageWorkEndArgs);
+  postCompletionTime: number;
 }
 
 declare class system_override_args {
@@ -11127,17 +11861,23 @@ declare class IOExternalMethodDispatch {
 
 declare class IOExternalTrap {
   constructor(init?: IOExternalTrap);
-  object: interop.Pointer;
+  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
   func: number;
 }
 
 declare class IOExternalMethod {
   constructor(init?: IOExternalMethod);
-  object: interop.Pointer;
+  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
   func: number;
   flags: number;
   count0: number;
   count1: number;
+}
+
+declare class unnamed_16523366994273171122 {
+  constructor(init?: unnamed_16523366994273171122);
+  connectionHandle: number;
+  setupParams: BluetoothHCIQualityOfServiceSetupParams;
 }
 
 declare class IOInterruptSourcePrivate {
@@ -11355,6 +12095,11 @@ declare class smrq_slink {
   next: __smrq_slink_t;
 }
 
+declare class __smrq_slink_t {
+  constructor(init?: __smrq_slink_t);
+  __smr_ptr: interop.Pointer;
+}
+
 declare class smr_node {
   constructor(init?: smr_node);
   smrn_next: interop.Pointer;
@@ -11377,14 +12122,6 @@ declare class efi_aurr_panic_header {
   efi_aurr_reset_log_offset: number;
   efi_aurr_reset_log_len: number;
   efi_aurr_panic_data: interop.Pointer;
-}
-
-declare class unnamed_12938094628172229546 {
-  constructor(init?: unnamed_12938094628172229546);
-  eph_x86_power_state: number;
-  eph_x86_efi_boot_state: number;
-  eph_x86_system_state: number;
-  eph_x86_unused_bits: number;
 }
 
 declare class _dyld_cache_image_text_info {
@@ -11432,6 +12169,13 @@ declare class task_snapshot {
   metadata_count: number;
   metadata_size: number;
   donating_pid_count: number;
+}
+
+declare class unnamed_1464565478962035867 {
+  constructor(init?: unnamed_1464565478962035867);
+  deviceAddress: BluetoothDeviceAddress;
+  linkKey: BluetoothKey;
+  keyType: number;
 }
 
 declare class cpuid_cache_desc_t {
@@ -11555,7 +12299,12 @@ declare class HIDValueCapabilities {
   units: number;
   startBit: number;
   pbVersion: number;
-  u: unnamed_7896722190555359158;
+  u: unnamed_6174747975915617679;
+}
+
+declare class kev_mptcp_data {
+  constructor(init?: kev_mptcp_data);
+  value: number;
 }
 
 declare class ifnet_demux_desc {
@@ -11563,6 +12312,12 @@ declare class ifnet_demux_desc {
   type: number;
   data: interop.Pointer;
   datalen: number;
+}
+
+declare class unnamed_6365138206929857170 {
+  constructor(init?: unnamed_6365138206929857170);
+  count: number;
+  codes: interop.Pointer;
 }
 
 declare class _cr0 {
@@ -11656,10 +12411,10 @@ declare class pivot_root_args {
   old_rootfs_path_after_r_: unknown /* const array */;
 }
 
-declare class IOUSBHubPortClearTTParam {
-  constructor(init?: IOUSBHubPortClearTTParam);
-  portNumber: number;
-  options: number;
+declare class unnamed_10137855456911653764 {
+  constructor(init?: unnamed_10137855456911653764);
+  connectionHandle: number;
+  enable: number;
 }
 
 declare class ml_processor_info {
@@ -11689,6 +12444,17 @@ declare class ml_processor_info {
   l3_cache_size: number;
 }
 
+declare class IOCircularDataQueueDescription {
+  constructor(init?: IOCircularDataQueueDescription);
+  sentinel: number;
+  allocMemSize: number;
+  entryDataSize: number;
+  memorySize: number;
+  numEntries: number;
+  dataSize: number;
+  padding: number;
+}
+
 declare class umask_args {
   constructor(init?: umask_args);
   newmask_l_: unknown /* const array */;
@@ -11696,11 +12462,29 @@ declare class umask_args {
   newmask_r_: unknown /* const array */;
 }
 
+declare class unnamed_1650381945006561587 {
+  constructor(init?: unnamed_1650381945006561587);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  offset: number;
+  size: number;
+  abort_cond: number;
+}
+
 declare class DeviceCapabilityDescriptor {
   constructor(init?: DeviceCapabilityDescriptor);
   bLength: number;
   bDescriptorType: number;
   bDevCapabilityType: number;
+}
+
+declare class if_qstatsreq {
+  constructor(init?: if_qstatsreq);
+  ifqr_name: unknown /* const array */;
+  ifqr_grp_idx: number;
+  ifqr_slot: number;
+  ifqr_buf: interop.Pointer;
+  ifqr_len: number;
 }
 
 declare class memory_error_notification_subsystem {
@@ -11804,24 +12588,6 @@ declare class process_policy_args {
   target_threadid_r_: unknown /* const array */;
 }
 
-declare class unnamed_10566943499454707593 {
-  constructor(init?: unnamed_10566943499454707593);
-  probe_activated: number;
-  write_probe_failed: number;
-  read_probe_failed: number;
-  conn_probe_failed: number;
-}
-
-declare class umask_extended_args {
-  constructor(init?: umask_extended_args);
-  newmask_l_: unknown /* const array */;
-  newmask: number;
-  newmask_r_: unknown /* const array */;
-  xsecurity_l_: unknown /* const array */;
-  xsecurity: number;
-  xsecurity_r_: unknown /* const array */;
-}
-
 declare class socd_client_hdr_t {
   constructor(init?: socd_client_hdr_t);
   version: number;
@@ -11830,19 +12596,18 @@ declare class socd_client_hdr_t {
   primary_kernelcache_uuid: unknown /* const array */;
 }
 
-declare class unnamed_18423933865848911700 {
-  constructor(init?: unnamed_18423933865848911700);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  page_listCnt: number;
-  page_list: unknown /* const array */;
-}
-
 declare class __Reply__mach_exception_raise_t {
   constructor(init?: __Reply__mach_exception_raise_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class unnamed_6429230732574079190 {
+  constructor(init?: unnamed_6429230732574079190);
+  deviceAddress: BluetoothDeviceAddress;
+  classOfDevice: number;
+  linkType: number;
 }
 
 declare class IOAudioClientBuffer {
@@ -11881,9 +12646,11 @@ declare class DebugKeyAction {
   parameter: interop.Pointer;
 }
 
-declare class getppid_args {
-  constructor(init?: getppid_args);
-  dummy: number;
+declare class unnamed_1928797655933787480 {
+  constructor(init?: unnamed_1928797655933787480);
+  connectionHandle: number;
+  mode: number;
+  modeInterval: number;
 }
 
 declare class setregid_args {
@@ -11973,6 +12740,11 @@ declare class sptm_client_state {
   max_cpus: number;
   percpu_xnu_saved_state: interop.Pointer;
   feature_flags: number;
+  allowed_io_frame_table: interop.Pointer;
+  sptm_n_allowed_io_ranges: number;
+  sptm_pmap_io_ranges: interop.Pointer;
+  sptm_pmap_io_ranges_count: number;
+  sptm_panicking_domain_id: interop.Pointer;
   reserved: unknown /* const array */;
 }
 
@@ -12019,7 +12791,7 @@ declare class nfsclntstats {
   biocache_readdirs: number;
   readdir_bios: number;
   rpccntv3: unknown /* const array */;
-  nlmcnt: unnamed_11430931021704111793;
+  nlmcnt: unnamed_16013633380207743845;
   opcntv4: unknown /* const array */;
   cbopcntv4: unknown /* const array */;
   rpcretries: number;
@@ -12029,7 +12801,22 @@ declare class nfsclntstats {
   rpcinvalid: number;
   pageins: number;
   pageouts: number;
-  nfs_errs: unnamed_2551840134916919793;
+  nfs_errs: unnamed_16383752996827423413;
+}
+
+declare class unnamed_11298389882924342544 {
+  constructor(init?: unnamed_11298389882924342544);
+  revision: number;
+  variant: number;
+  : number;
+  se_imp: number;
+  pcsr_imp: number;
+  nsuhd_imp: number;
+  : number;
+  version: number;
+  ctx_cmps: number;
+  brps: number;
+  wrps: number;
 }
 
 declare class fstatfs64_args {
@@ -12049,6 +12836,14 @@ declare class __pthread_canceled_args {
   action_r_: unknown /* const array */;
 }
 
+declare class unnamed_3786139793914571324 {
+  constructor(init?: unnamed_3786139793914571324);
+  deviceAddress: BluetoothDeviceAddress;
+  ioCapability: number;
+  OOBDataPresence: number;
+  authenticationRequirements: number;
+}
+
 declare class poll_args {
   constructor(init?: poll_args);
   fds_l_: unknown /* const array */;
@@ -12060,6 +12855,12 @@ declare class poll_args {
   timeout_l_: unknown /* const array */;
   timeout: number;
   timeout_r_: unknown /* const array */;
+}
+
+declare class unnamed_18225267902874970143 {
+  constructor(init?: unnamed_18225267902874970143);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
 }
 
 declare class smr {
@@ -12133,9 +12934,11 @@ declare class IOUSBIsochronousFrame {
 declare class static_if_key {
   constructor(init?: static_if_key);
   sik_enable_count: number;
-  sik_init_value: number;
+  sik_init_value: boolean;
+  sik_modified: boolean;
   sik_entries_count: number;
   sik_entries_head: interop.Pointer;
+  sik_modified_next: interop.Pointer;
 }
 
 declare class receive_sysdiagnose_notification_subsystem {
@@ -12155,12 +12958,6 @@ declare class __Reply__doubleagent_remove_xattr_t {
   RetCode: number;
   err: number;
   is_empty: number;
-}
-
-declare class IOUSBHubPortReEnumerateParam {
-  constructor(init?: IOUSBHubPortReEnumerateParam);
-  portNumber: number;
-  options: number;
 }
 
 declare class mach_assert_3x {
@@ -12185,45 +12982,37 @@ declare class static_if_entry {
   sie_link: number;
 }
 
-declare class unnamed_1324232133193790497 {
-  constructor(init?: unnamed_1324232133193790497);
-  debug_arch_version: number;
-  trace_extn_version: number;
-  perf_extn_version: number;
-  brps: number;
-  reserved0: number;
-  wrps: number;
-  reserved1: number;
-  ctx_cmps: number;
-  reserved32: number;
+declare class unnamed_3348046912707628850 {
+  constructor(init?: unnamed_3348046912707628850);
+  provider: interop.Pointer;
+  busNum: number;
 }
 
-declare class __Request__vfs_resolve_dir_with_audit_token_t {
-  constructor(init?: __Request__vfs_resolve_dir_with_audit_token_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  req_id: number;
-  op: number;
-  file_name: unknown /* const array */;
-  path: unknown /* const array */;
-  req_atoken: audit_token_t;
+declare class ip_px_smpx_s {
+  constructor(init?: ip_px_smpx_s);
+  array: interop.Pointer;
+  data: interop.Pointer;
+  datalen: number;
 }
 
-declare class EFI_SYSTEM_TABLE_32 {
-  constructor(init?: EFI_SYSTEM_TABLE_32);
-  Hdr: EFI_TABLE_HEADER;
-  FirmwareVendor: number;
-  FirmwareRevision: number;
-  ConsoleInHandle: number;
-  ConIn: number;
-  ConsoleOutHandle: number;
-  ConOut: number;
-  StandardErrorHandle: number;
-  StdErr: number;
-  RuntimeServices: number;
-  BootServices: number;
-  NumberOfTableEntries: number;
-  ConfigurationTable: number;
+declare class freadlink_args {
+  constructor(init?: freadlink_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  buf_l_: unknown /* const array */;
+  buf: number;
+  buf_r_: unknown /* const array */;
+  bufsize_l_: unknown /* const array */;
+  bufsize: number;
+  bufsize_r_: unknown /* const array */;
+}
+
+declare class ataRegisterImage {
+  constructor(init?: ataRegisterImage);
+  taskFile: ataTaskFile;
+  ataDataRegister: number;
+  ataAltSDevCReg: number;
 }
 
 declare class __Request__doubleagent_remove_xattr_t {
@@ -12236,6 +13025,13 @@ declare class __Request__doubleagent_remove_xattr_t {
   nameOffset: number;
   nameCnt: number;
   name: unknown /* const array */;
+}
+
+declare class unnamed_5627948592258299541 {
+  constructor(init?: unnamed_5627948592258299541);
+  error: number;
+  connectionHandle: number;
+  lmpFeatures: BluetoothHCISupportedFeatures;
 }
 
 declare class mincore_args {
@@ -12254,6 +13050,13 @@ declare class mincore_args {
 declare class mpsc_queue_chain {
   constructor(init?: mpsc_queue_chain);
   mpqc_next: unknown /* _Atomic(struct mpsc_queue_chain *) (CXTypeKind: 177) */;
+}
+
+declare class __Reply__vfs_resolve_file_with_audit_token_t {
+  constructor(init?: __Reply__vfs_resolve_file_with_audit_token_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class __Request__mach_exception_raise_state_identity_t {
@@ -12291,20 +13094,31 @@ declare class __lck_spin_t__ {
   constructor(init?: __lck_spin_t__);
 }
 
-declare class map_with_linking_np_args {
-  constructor(init?: map_with_linking_np_args);
-  regions_l_: unknown /* const array */;
-  regions: number;
-  regions_r_: unknown /* const array */;
-  region_count_l_: unknown /* const array */;
-  region_count: number;
-  region_count_r_: unknown /* const array */;
-  link_info_l_: unknown /* const array */;
-  link_info: number;
-  link_info_r_: unknown /* const array */;
-  link_info_size_l_: unknown /* const array */;
-  link_info_size: number;
-  link_info_size_r_: unknown /* const array */;
+declare class unnamed_4373168148114552859 {
+  constructor(init?: unnamed_4373168148114552859);
+  handle: number;
+  timeout: number;
+}
+
+declare class __Request__mach_gss_init_sec_context_v2_t {
+  constructor(init?: __Request__mach_gss_init_sec_context_v2_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  intoken: mach_msg_ool_descriptor_t;
+  clnt_princ: mach_msg_ool_descriptor_t;
+  svc_princ: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  mech: interop.Enum<typeof gssd_mechtype>;
+  intokenCnt: number;
+  uid: number;
+  clnt_nt: interop.Enum<typeof gssd_nametype>;
+  clnt_princCnt: number;
+  svc_nt: interop.Enum<typeof gssd_nametype>;
+  svc_princCnt: number;
+  flags: number;
+  gssd_flags: number;
+  context: number;
+  cred_handle: number;
 }
 
 declare class lz4_hash_entry_t {
@@ -12318,6 +13132,12 @@ declare class __Reply__kextd_ping_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class airship_daleipc_channel_transfer_completion {
+  constructor(init?: airship_daleipc_channel_transfer_completion);
+  size: number;
+  tag: number;
 }
 
 declare class vm_pressure_monitor_args {
@@ -12337,6 +13157,16 @@ declare class user64_timespec {
   constructor(init?: user64_timespec);
   tv_sec: number;
   tv_nsec: number;
+}
+
+declare class unnamed_8317762995543166574 {
+  constructor(init?: unnamed_8317762995543166574);
+  flags: number;
+  txWindowSize: number;
+  maxTransmit: number;
+  retransmissionTimeout: number;
+  monitorTimeout: number;
+  maxPDUPayloadSize: number;
 }
 
 declare class doubleagent_subsystem {
@@ -12489,6 +13319,15 @@ declare class ifnet_stats_param {
   no_protocol: number;
 }
 
+declare class airship_monitor {
+  constructor(init?: airship_monitor);
+}
+
+declare class unnamed_10995956406557057234 {
+  constructor(init?: unnamed_10995956406557057234);
+  data: unknown /* const array */;
+}
+
 declare class __Request__check_task_access_with_flavor_t {
   constructor(init?: __Request__check_task_access_with_flavor_t);
   Head: mach_msg_header_t;
@@ -12559,11 +13398,26 @@ declare class pselect_args {
   mask_r_: unknown /* const array */;
 }
 
+declare class daleipc_uplink_controller {
+  constructor(init?: daleipc_uplink_controller);
+}
+
+declare class unnamed_1054070753012500092 {
+  constructor(init?: unnamed_1054070753012500092);
+  connectionHandle: number;
+}
+
 declare class IOAudioClientBufferExtendedInfo64 {
   constructor(init?: IOAudioClientBufferExtendedInfo64);
   mAudioClientBufferExtended32: IOAudioClientBufferExtendedInfo;
   mUnmappedParamBuffer64: number;
   mNextExtended64: interop.Pointer;
+}
+
+declare class unnamed_10878146617443663444 {
+  constructor(init?: unnamed_10878146617443663444);
+  scanInterval: number;
+  scanWindow: number;
 }
 
 declare class nfsrvstats {
@@ -12576,7 +13430,7 @@ declare class nfsrvstats {
   srvcache_nonidemdonehits: number;
   srvcache_misses: number;
   srvvop_writes: number;
-  nfs_errs: unnamed_12647973589064199576;
+  nfs_errs: unnamed_13569257746074412783;
 }
 
 declare class EXDisplayPipeHealthReport {
@@ -12599,10 +13453,12 @@ declare class futimes_args {
   tptr_r_: unknown /* const array */;
 }
 
-declare class unnamed_17045385625278532589 {
-  constructor(init?: unnamed_17045385625278532589);
-  tqe_next: interop.Pointer;
-  tqe_prev: interop.Pointer;
+declare class unnamed_13710605761154041948 {
+  constructor(init?: unnamed_13710605761154041948);
+  connectionHandle: number;
+  lmpVersion: number;
+  manufacturerName: number;
+  lmpSubversion: number;
 }
 
 declare class __Request__mach_gss_unhold_cred_t {
@@ -12614,20 +13470,6 @@ declare class __Request__mach_gss_unhold_cred_t {
   mech: interop.Enum<typeof gssd_mechtype>;
   nt: interop.Enum<typeof gssd_nametype>;
   princCnt: number;
-}
-
-declare class unnamed_5728083243340431437 {
-  constructor(init?: unnamed_5728083243340431437);
-  limit00: number;
-  base00: number;
-  base16: number;
-  type: number;
-  dpl: number;
-  present: number;
-  limit16: number;
-  : number;
-  granular: number;
-  base24: number;
 }
 
 declare class log_data_args {
@@ -12644,6 +13486,33 @@ declare class log_data_args {
   size_l_: unknown /* const array */;
   size: number;
   size_r_: unknown /* const array */;
+}
+
+declare class unnamed_13971610946563607911 {
+  constructor(init?: unnamed_13971610946563607911);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSamplePayloadMSBPosition: number;
+  outputPCMSamplePayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  packetType: number;
+  retransmissionEffort: number;
 }
 
 declare class EXDisplayPipeSecureTEStatus {
@@ -12707,7 +13576,7 @@ declare class HIDButtonCapabilities {
   units: number;
   startBit: number;
   pbVersion: number;
-  u: unnamed_13211056233281394050;
+  u: unnamed_17870239474130978603;
 }
 
 declare class ntp_adjtime_args {
@@ -12739,9 +13608,24 @@ declare class open_extended_args {
   xsecurity_r_: unknown /* const array */;
 }
 
+declare class unnamed_3521018383531812804 {
+  constructor(init?: unnamed_3521018383531812804);
+  login: interop.Pointer;
+  generation: number;
+  status: number;
+  reconnectStatusBlock: interop.Pointer;
+  reconnectStatusBlockLength: number;
+}
+
 declare class _notifyMsg {
   constructor(init?: _notifyMsg);
   h: mach_msg_header_t;
+}
+
+declare class unnamed_10338689098814162510 {
+  constructor(init?: unnamed_10338689098814162510);
+  un_d_boot0: string | null;
+  un_d_boot1: string | null;
 }
 
 declare class thread_snapshot {
@@ -12851,6 +13735,13 @@ declare class oslog_coproc_reg_args {
   file_path_len_r_: unknown /* const array */;
 }
 
+declare class unnamed_16383752996827423413 {
+  constructor(init?: unnamed_16383752996827423413);
+  errs_common: unknown /* const array */;
+  errs_v4: unknown /* const array */;
+  errs_unknown: number;
+}
+
 declare class renameatx_np_args {
   constructor(init?: renameatx_np_args);
   fromfd_l_: unknown /* const array */;
@@ -12868,6 +13759,14 @@ declare class renameatx_np_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
+}
+
+declare class airship_acipc_cr_mirror_completion_record {
+  constructor(init?: airship_acipc_cr_mirror_completion_record);
+  desctype: number;
+  tr_id: number;
+  io_count: number;
+  first_tag: number;
 }
 
 declare class IOHistogramReportValues {
@@ -12948,6 +13847,23 @@ declare class kdebug_trace_string_args {
   str_r_: unknown /* const array */;
 }
 
+declare class unnamed_17393539693913510561 {
+  constructor(init?: unnamed_17393539693913510561);
+  numberOfReponses: number;
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+  reserved: number;
+  classOfDevice: number;
+  clockOffset: number;
+  RSSIValue: number;
+  extendedInquiryResponse: BluetoothHCIExtendedInquiryResponse;
+}
+
+declare class unnamed_10328243768668227060 {
+  constructor(init?: unnamed_10328243768668227060);
+  ifscope: number;
+}
+
 declare class _stickyKeys_ToggleInfo {
   constructor(init?: _stickyKeys_ToggleInfo);
   size: number;
@@ -12956,6 +13872,24 @@ declare class _stickyKeys_ToggleInfo {
   expireInterval: UnsignedWide;
   currentCount: number;
   deadlines: unknown /* const array */;
+}
+
+declare class unnamed_1064201811267050249 {
+  constructor(init?: unnamed_1064201811267050249);
+  debug_arch_version: number;
+  trace_extn_version: number;
+  perf_extn_version: number;
+  brps: number;
+  reserved0: number;
+  wrps: number;
+  reserved1: number;
+  ctx_cmps: number;
+  reserved32: number;
+}
+
+declare class unnamed_3848994726849950940 {
+  constructor(init?: unnamed_3848994726849950940);
+  sa_unused: number;
 }
 
 declare class if_netem_params {
@@ -12981,6 +13915,24 @@ declare class IOUSBHostBundledCompletion {
   owner: interop.Pointer;
   action: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void | null;
   parameter: interop.Pointer;
+}
+
+declare class unnamed_17808017554962453887 {
+  constructor(init?: unnamed_17808017554962453887);
+  eph_x86_power_state: number;
+  eph_x86_efi_boot_state: number;
+  eph_x86_system_state: number;
+  eph_x86_unused_bits: number;
+}
+
+declare class unnamed_15298435409180286407 {
+  constructor(init?: unnamed_15298435409180286407);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+  pageScanPeriodMode: number;
+  pageScanMode: number;
+  classOfDevice: number;
+  clockOffset: number;
 }
 
 declare class EFI_CONFIGURATION_TABLE_32 {
@@ -13015,14 +13967,6 @@ declare class kevent_id_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
-}
-
-declare class arm_debug_info_t {
-  constructor(init?: arm_debug_info_t);
-  memory_mapped_core_debug: number;
-  coprocessor_core_debug: number;
-  num_watchpoint_pairs: number;
-  num_breakpoint_pairs: number;
 }
 
 declare class __Reply__nspace_resolve_cancel_t {
@@ -13073,6 +14017,16 @@ declare class __mac_getfsstat_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class unnamed_1217890641751780249 {
+  constructor(init?: unnamed_1217890641751780249);
+  login: interop.Pointer;
+  generation: number;
+  status: number;
+  loginResponse: interop.Pointer;
+  statusBlock: interop.Pointer;
+  statusBlockLength: number;
+}
+
 declare class fchmodat_args {
   constructor(init?: fchmodat_args);
   fd_l_: unknown /* const array */;
@@ -13108,6 +14062,23 @@ declare class guarded_kqueue_np_args {
   guardflags_r_: unknown /* const array */;
 }
 
+declare class unnamed_16222007263645768418 {
+  constructor(init?: unnamed_16222007263645768418);
+  usageMin: number;
+  usageMax: number;
+  stringMin: number;
+  stringMax: number;
+  designatorMin: number;
+  designatorMax: number;
+}
+
+declare class getsid_args {
+  constructor(init?: getsid_args);
+  pid_l_: unknown /* const array */;
+  pid: number;
+  pid_r_: unknown /* const array */;
+}
+
 declare class fpathconf_args {
   constructor(init?: fpathconf_args);
   fd_l_: unknown /* const array */;
@@ -13116,16 +14087,6 @@ declare class fpathconf_args {
   name_l_: unknown /* const array */;
   name: number;
   name_r_: unknown /* const array */;
-}
-
-declare class unnamed_11317972567510655179 {
-  constructor(init?: unnamed_11317972567510655179);
-  offset: number;
-  function: number;
-  device: number;
-  bus: number;
-  segment: number;
-  reserved: number;
 }
 
 declare class SuperSpeedHubDescriptor {
@@ -13224,6 +14185,13 @@ declare class IOReportElement {
   values: IOReportElementValues;
 }
 
+declare class unnamed_6646578211250444178 {
+  constructor(init?: unnamed_6646578211250444178);
+  handle: number;
+  lmp_handle: number;
+  reserved: number;
+}
+
 declare class _lck_grp_attr_ {
   constructor(init?: _lck_grp_attr_);
 }
@@ -13285,7 +14253,7 @@ declare class sockaddr_inifscope {
   sin_family: number;
   sin_port: number;
   sin_addr: in_addr;
-  un: unnamed_10329767211207508473;
+  un: unnamed_3771936424973120145;
 }
 
 declare class IOStateReportInfo {
@@ -13293,6 +14261,16 @@ declare class IOStateReportInfo {
   curr_state: number;
   update_ts: number;
   elem: interop.Pointer;
+}
+
+declare class unnamed_3364203081172218251 {
+  constructor(init?: unnamed_3364203081172218251);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
 }
 
 declare class pread_nocancel_args {
@@ -13311,51 +14289,20 @@ declare class pread_nocancel_args {
   offset_r_: unknown /* const array */;
 }
 
+declare class unnamed_13100592752473707061 {
+  constructor(init?: unnamed_13100592752473707061);
+  login: interop.Pointer;
+  generation: number;
+  status: number;
+  statusBlock: interop.Pointer;
+  statusBlockLength: number;
+}
+
 declare class if_order {
   constructor(init?: if_order);
   ifo_count: number;
   ifo_reserved: number;
   ifo_ordered_indices: number;
-}
-
-declare class fileport_makeport_args {
-  constructor(init?: fileport_makeport_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  portnamep_l_: unknown /* const array */;
-  portnamep: number;
-  portnamep_r_: unknown /* const array */;
-}
-
-declare class rmdir_args {
-  constructor(init?: rmdir_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-}
-
-declare class IOUSBHubDescriptor {
-  constructor(init?: IOUSBHubDescriptor);
-  length: number;
-  hubType: number;
-  numPorts: number;
-  characteristics: number;
-  powerOnToGood: number;
-  hubCurrent: number;
-  removablePortFlags: unknown /* const array */;
-  pwrCtlPortFlags: unknown /* const array */;
-}
-
-declare class unnamed_7313855513637987328 {
-  constructor(init?: unnamed_7313855513637987328);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  offset: number;
-  size: number;
-  cntrl_flags: number;
-  page_listCnt: number;
-  page_list: unknown /* const array */;
 }
 
 declare class linkat_args {
@@ -13375,6 +14322,12 @@ declare class linkat_args {
   flag_l_: unknown /* const array */;
   flag: number;
   flag_r_: unknown /* const array */;
+}
+
+declare class unnamed_11520913712954248184 {
+  constructor(init?: unnamed_11520913712954248184);
+  deviceAddress: BluetoothDeviceAddress;
+  hostSupportedFeatures: BluetoothHCISupportedFeatures;
 }
 
 declare class lseek_args {
@@ -13437,32 +14390,31 @@ declare class fstat64_extended_args {
   xsecurity_size_r_: unknown /* const array */;
 }
 
-declare class __Reply__ktrace_background_available_t {
-  constructor(init?: __Reply__ktrace_background_available_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
+declare class IOCircularDataQueueEntryHeader {
+  constructor(init?: IOCircularDataQueueEntryHeader);
+  sentinel: number;
+  _pad: number;
+  data: unknown /* const array */;
 }
 
-declare class __pthread_fchdir_args {
-  constructor(init?: __pthread_fchdir_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
+declare class unnamed_7294244045061937404 {
+  constructor(init?: unnamed_7294244045061937404);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanMode: number;
 }
 
-declare class IOHIDDevice_IVars {
-  constructor(init?: IOHIDDevice_IVars);
+declare class __disable_threadsignal_args {
+  constructor(init?: __disable_threadsignal_args);
+  value_l_: unknown /* const array */;
+  value: number;
+  value_r_: unknown /* const array */;
 }
 
-declare class intrusive_osobject_retainer {
-  constructor(init?: intrusive_osobject_retainer);
-  retain: (p1: number) => void | null;
-}
-
-declare class __smrq_slink_t {
-  constructor(init?: __smrq_slink_t);
-  __smr_ptr: interop.Pointer;
+declare class revoke_args {
+  constructor(init?: revoke_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
 }
 
 declare class mknodat_args {
@@ -13498,19 +14450,6 @@ declare class nfsd_args {
   namelen: number;
 }
 
-declare class freadlink_args {
-  constructor(init?: freadlink_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  buf_l_: unknown /* const array */;
-  buf: number;
-  buf_r_: unknown /* const array */;
-  bufsize_l_: unknown /* const array */;
-  bufsize: number;
-  bufsize_r_: unknown /* const array */;
-}
-
 declare class undelete_args {
   constructor(init?: undelete_args);
   path_l_: unknown /* const array */;
@@ -13531,12 +14470,6 @@ declare class data_desc {
   stksz: number;
   granular: number;
   base24: number;
-}
-
-declare class unnamed_11354653764045844913 {
-  constructor(init?: unnamed_11354653764045844913);
-  attr_idx: number;
-  flags: number;
 }
 
 declare class chown_args {
@@ -13570,6 +14503,15 @@ declare class kqueue_args {
   dummy: number;
 }
 
+declare class unnamed_12637277973368066917 {
+  constructor(init?: unnamed_12637277973368066917);
+  connectionHandle: number;
+  maxTransmitLatency: number;
+  maxReceiveLatency: number;
+  minRemoteTimeout: number;
+  minLocalTimeout: number;
+}
+
 declare class SuperSpeedEndpointCompanionDescriptor {
   constructor(init?: SuperSpeedEndpointCompanionDescriptor);
   bLength: number;
@@ -13589,11 +14531,9 @@ declare class arcade_upcall_subsystem {
   routine: unknown /* const array */;
 }
 
-declare class __Request__fairplayd_arcade_request_t {
-  constructor(init?: __Request__fairplayd_arcade_request_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  arcade_reg_port: mach_msg_port_descriptor_t;
+declare class unnamed_5239407480510953743 {
+  constructor(init?: unnamed_5239407480510953743);
+  connectionHandle: number;
 }
 
 declare class __Reply__mach_notify_port_destroyed_t {
@@ -13629,6 +14569,16 @@ declare class rt_addrinfo_ext {
   rtix_next_tiny: number;
 }
 
+declare class bpf_comp_hdr {
+  constructor(init?: bpf_comp_hdr);
+  bh_tstamp: timeval32;
+  bh_caplen: number;
+  bh_datalen: number;
+  bh_hdrlen: number;
+  bh_complen: number;
+  bh_padding: number;
+}
+
 declare class dup_args {
   constructor(init?: dup_args);
   fd_l_: unknown /* const array */;
@@ -13636,8 +14586,41 @@ declare class dup_args {
   fd_r_: unknown /* const array */;
 }
 
-declare class opaque_ipfilter {
-  constructor(init?: opaque_ipfilter);
+declare class fileport_makeport_args {
+  constructor(init?: fileport_makeport_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  portnamep_l_: unknown /* const array */;
+  portnamep: number;
+  portnamep_r_: unknown /* const array */;
+}
+
+declare class rmdir_args {
+  constructor(init?: rmdir_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+}
+
+declare class unnamed_10844994020169998523 {
+  constructor(init?: unnamed_10844994020169998523);
+  deviceAddress: BluetoothDeviceAddress;
+  numericValue: number;
+}
+
+declare class setgid_args {
+  constructor(init?: setgid_args);
+  gid_l_: unknown /* const array */;
+  gid: number;
+  gid_r_: unknown /* const array */;
+}
+
+declare class __Request__fairplayd_arcade_request_t {
+  constructor(init?: __Request__fairplayd_arcade_request_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  arcade_reg_port: mach_msg_port_descriptor_t;
 }
 
 declare class munlock_args {
@@ -13682,6 +14665,13 @@ declare class EXDisplayPipeHealthRecord {
   health: boolean;
 }
 
+declare class IOCircularDataQueueMemory {
+  constructor(init?: IOCircularDataQueueMemory);
+  sentinel: number;
+  _padding: number;
+  entries: unknown /* const array */;
+}
+
 declare class syscp_ID_instructions_feat_1_reg {
   constructor(init?: syscp_ID_instructions_feat_1_reg);
   endianness_support: number;
@@ -13705,7 +14695,7 @@ declare class lockf {
   lf_vnode: interop.Pointer;
   lf_next: interop.Pointer;
   lf_blkhd: locklist;
-  lf_block: unnamed_17045385625278532589;
+  lf_block: unnamed_3271796597595602678;
   lf_owner: interop.Pointer;
 }
 
@@ -13714,13 +14704,52 @@ declare class getdtablesize_args {
   dummy: number;
 }
 
+declare class mptcp_symptoms_answer {
+  constructor(init?: mptcp_symptoms_answer);
+  advisory: symptoms_advisory;
+  uuid: unknown /* const array */;
+  rssi: number;
+}
+
 declare class IOExternalAsyncMethod {
   constructor(init?: IOExternalAsyncMethod);
-  object: interop.Pointer;
+  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
   func: number;
   flags: number;
   count0: number;
   count1: number;
+}
+
+declare class unnamed_8193567900268426915 {
+  constructor(init?: unnamed_8193567900268426915);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
+}
+
+declare class faccessat_args {
+  constructor(init?: faccessat_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  amode_l_: unknown /* const array */;
+  amode: number;
+  amode_r_: unknown /* const array */;
+  flag_l_: unknown /* const array */;
+  flag: number;
+  flag_r_: unknown /* const array */;
+}
+
+declare class _AVCConnectTargetPlugsOutParams {
+  constructor(init?: _AVCConnectTargetPlugsOutParams);
+  sourcePlugNum: number;
+  destPlugNum: number;
 }
 
 declare class net_qos_guideline_args {
@@ -13748,6 +14777,29 @@ declare class EfiMemoryRange {
   VirtualStart: number;
   NumberOfPages: number;
   Attribute: number;
+}
+
+declare class conninfo_mptcp {
+  constructor(init?: conninfo_mptcp);
+  mptcpci_len: number;
+  mptcpci_flow_offset: number;
+  mptcpci_nflows: number;
+  mptcpci_state: number;
+  mptcpci_mpte_flags: number;
+  mptcpci_flags: number;
+  mptcpci_ltoken: number;
+  mptcpci_rtoken: number;
+  mptcpci_notsent_lowat: number;
+  mptcpci_snduna: number;
+  mptcpci_sndnxt: number;
+  mptcpci_sndmax: number;
+  mptcpci_lidsn: number;
+  mptcpci_sndwnd: number;
+  mptcpci_rcvnxt: number;
+  mptcpci_ridsn: number;
+  mptcpci_rcvwnd: number;
+  mptcpci_mpte_addrid: number;
+  mptcpci_flows: unknown /* const array */;
 }
 
 declare class __CodeDirectory {
@@ -13882,7 +14934,7 @@ declare class bsdthread_terminate_args {
 declare class in6_ondireq {
   constructor(init?: in6_ondireq);
   ifname: unknown /* const array */;
-  ndi: unnamed_18262304326985252539;
+  ndi: unnamed_7506672353382092904;
 }
 
 declare class setgroups_args {
@@ -13924,6 +14976,17 @@ declare class thsc_time_energy_cpi {
   ttec_user_time_mach: number;
   ttec_system_time_mach: number;
   ttec_energy_nj: number;
+}
+
+declare class kev_dl_node_presence {
+  constructor(init?: kev_dl_node_presence);
+  link_data: net_event_data;
+  sin6_node_address: sockaddr_in6;
+  sdl_node_address: sockaddr_dl;
+  rssi: number;
+  link_quality_metric: number;
+  node_proximity_metric: number;
+  node_service_info: unknown /* const array */;
 }
 
 declare class _evScreen {
@@ -14008,21 +15071,26 @@ declare class OpaqueDTEntryIterator {
   currentIndex: number;
 }
 
-declare class unnamed_12934613476046009967 {
-  constructor(init?: unnamed_12934613476046009967);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
-}
-
 declare class trust_cache_entry1 {
   constructor(init?: trust_cache_entry1);
   cdhash: unknown /* const array */;
   hash_type: number;
   flags: number;
+}
+
+declare class rtstat_64 {
+  constructor(init?: rtstat_64);
+  rts_badredirect: number;
+  rts_dynamic: number;
+  rts_newgateway: number;
+  rts_unreach: number;
+  rts_wildcard: number;
+  rts_badrtgwroute: number;
+}
+
+declare class unnamed_11961482558713411480 {
+  constructor(init?: unnamed_11961482558713411480);
+  connectionHandle: number;
 }
 
 declare class getgid_args {
@@ -14083,11 +15151,32 @@ declare class fsync_args {
   fd_r_: unknown /* const array */;
 }
 
+declare class sptm_call_regs_t {
+  constructor(init?: sptm_call_regs_t);
+  x0: number;
+  x1: number;
+  x2: number;
+  x3: number;
+  x4: number;
+  x5: number;
+  x6: number;
+  x7: number;
+}
+
 declare class __Request__sysdiagnose_notification_t {
   constructor(init?: __Request__sysdiagnose_notification_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   flags: number;
+}
+
+declare class unnamed_17559510431102801758 {
+  constructor(init?: unnamed_17559510431102801758);
+  deviceAddress: BluetoothDeviceAddress;
+}
+
+declare class daleipc_network_clock_controller {
+  constructor(init?: daleipc_network_clock_controller);
 }
 
 declare class __Request__coalition_notification_t {
@@ -14096,6 +15185,16 @@ declare class __Request__coalition_notification_t {
   NDR: NDR_record_t;
   id: number;
   flags: number;
+}
+
+declare class receive_vfs_nspace_subsystem {
+  constructor(init?: receive_vfs_nspace_subsystem);
+  server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  start: number;
+  end: number;
+  maxsize: number;
+  reserved: number;
+  routine: unknown /* const array */;
 }
 
 declare class preadv_args {
@@ -14130,6 +15229,16 @@ declare class IOUSBHostPipe_LocalIVars {
   constructor(init?: IOUSBHostPipe_LocalIVars);
 }
 
+declare class clock_reply_subsystem {
+  constructor(init?: clock_reply_subsystem);
+  server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  start: number;
+  end: number;
+  maxsize: number;
+  reserved: number;
+  routine: unknown /* const array */;
+}
+
 declare class nfs_filehandle {
   constructor(init?: nfs_filehandle);
   nfh_len: number;
@@ -14145,23 +15254,10 @@ declare class IOAudioClientBuffer64 {
   mNextBuffer64: interop.Pointer;
 }
 
-declare class setattrlist_args {
-  constructor(init?: setattrlist_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  alist_l_: unknown /* const array */;
-  alist: number;
-  alist_r_: unknown /* const array */;
-  attributeBuffer_l_: unknown /* const array */;
-  attributeBuffer: number;
-  attributeBuffer_r_: unknown /* const array */;
-  bufferSize_l_: unknown /* const array */;
-  bufferSize: number;
-  bufferSize_r_: unknown /* const array */;
-  options_l_: unknown /* const array */;
-  options: number;
-  options_r_: unknown /* const array */;
+declare class unnamed_16984036581783024317 {
+  constructor(init?: unnamed_16984036581783024317);
+  ACLDataPacketLength: number;
+  totalNumACLDataPackets: number;
 }
 
 declare class getaudit_addr_args {
@@ -14208,7 +15304,7 @@ declare class HIDValueCaps {
   logicalMax: number;
   physicalMin: number;
   physicalMax: number;
-  u: unnamed_2072451022906363921;
+  u: unnamed_11897257300510808881;
 }
 
 declare class kd_cpumap {
@@ -14216,13 +15312,6 @@ declare class kd_cpumap {
   cpu_id: number;
   flags: number;
   name: unknown /* const array */;
-}
-
-declare class StringDescriptor {
-  constructor(init?: StringDescriptor);
-  bLength: number;
-  bDescriptorType: number;
-  bString: unknown /* const array */;
 }
 
 declare class getgroups_args {
@@ -14235,45 +15324,10 @@ declare class getgroups_args {
   gidset_r_: unknown /* const array */;
 }
 
-declare class __disable_threadsignal_args {
-  constructor(init?: __disable_threadsignal_args);
-  value_l_: unknown /* const array */;
-  value: number;
-  value_r_: unknown /* const array */;
-}
-
-declare class revoke_args {
-  constructor(init?: revoke_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-}
-
-declare class kev_dl_node_presence {
-  constructor(init?: kev_dl_node_presence);
-  link_data: net_event_data;
-  sin6_node_address: sockaddr_in6;
-  sdl_node_address: sockaddr_dl;
-  rssi: number;
-  link_quality_metric: number;
-  node_proximity_metric: number;
-  node_service_info: unknown /* const array */;
-}
-
-declare class fsctl_args {
-  constructor(init?: fsctl_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  cmd_l_: unknown /* const array */;
-  cmd: number;
-  cmd_r_: unknown /* const array */;
-  data_l_: unknown /* const array */;
-  data: number;
-  data_r_: unknown /* const array */;
-  options_l_: unknown /* const array */;
-  options: number;
-  options_r_: unknown /* const array */;
+declare class unnamed_15070889580481282394 {
+  constructor(init?: unnamed_15070889580481282394);
+  z: unknown /* const array */;
+  p: unknown /* const array */;
 }
 
 declare class DeviceTreeNodeProperty {
@@ -14357,6 +15411,15 @@ declare class IOACPIAddressSpaceDescriptor {
   reserved4: number;
 }
 
+declare class unnamed_6984174266375345627 {
+  constructor(init?: unnamed_6984174266375345627);
+  connectionHandle: number;
+  transmissionInterval: number;
+  retransmissionWindow: number;
+  receivePacketLength: number;
+  transmitPacketLength: number;
+}
+
 declare class OSObjectUserVars {
   constructor(init?: OSObjectUserVars);
 }
@@ -14386,6 +15449,12 @@ declare class macos_panic_header {
   mph_data: interop.Pointer;
 }
 
+declare class unnamed_7837601036402508668 {
+  constructor(init?: unnamed_7837601036402508668);
+  length: number;
+  data: unknown /* const array */;
+}
+
 declare class __Request__vfs_resolve_file_t {
   constructor(init?: __Request__vfs_resolve_file_t);
   Head: mach_msg_header_t;
@@ -14411,8 +15480,58 @@ declare class task_read_for_pid_args {
   t_r_: unknown /* const array */;
 }
 
+declare class unnamed_5027695301846269373 {
+  constructor(init?: unnamed_5027695301846269373);
+  results: unknown /* const array */;
+  count: number;
+}
+
+declare class unnamed_17714015121045366557 {
+  constructor(init?: unnamed_17714015121045366557);
+  data: unknown /* const array */;
+}
+
 declare class priority_queue {
   constructor(init?: priority_queue);
+}
+
+declare class unnamed_1254637360707554498 {
+  constructor(init?: unnamed_1254637360707554498);
+  registerNum: number;
+  functionNum: number;
+  deviceNum: number;
+  busNum: number;
+  registerNumExtended: number;
+  resv: number;
+}
+
+declare class in6_route_info {
+  constructor(init?: in6_route_info);
+  prefix: in6_addr;
+  prefixlen: number;
+  defrtrs: number;
+}
+
+declare class IOInterruptAccountingReporter {
+  constructor(init?: IOInterruptAccountingReporter);
+}
+
+declare class __pthread_fchdir_args {
+  constructor(init?: __pthread_fchdir_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+}
+
+declare class IOHIDDevice_IVars {
+  constructor(init?: IOHIDDevice_IVars);
+}
+
+declare class __Reply__memory_error_notification_t {
+  constructor(init?: __Reply__memory_error_notification_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class unlink_args {
@@ -14426,6 +15545,13 @@ declare class in6_ndireq {
   constructor(init?: in6_ndireq);
   ifname: unknown /* const array */;
   ndi: nd_ifinfo;
+}
+
+declare class fchdir_args {
+  constructor(init?: fchdir_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
 }
 
 declare class kdebug_trace64_args {
@@ -14489,6 +15615,13 @@ declare class __pthread_markcancel_args {
   thread_port_r_: unknown /* const array */;
 }
 
+declare class StringDescriptor {
+  constructor(init?: StringDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bString: unknown /* const array */;
+}
+
 declare class nfs_sec {
   constructor(init?: nfs_sec);
   count: number;
@@ -14516,6 +15649,15 @@ declare class setwgroups_args {
   guidset_l_: unknown /* const array */;
   guidset: number;
   guidset_r_: unknown /* const array */;
+}
+
+declare class unnamed_7918682949767724152 {
+  constructor(init?: unnamed_7918682949767724152);
+  userCallback: number;
+  userRefCon: number;
+  internalRefCon: number;
+  asyncIDRefCon: number;
+  reserved: number;
 }
 
 declare class __Reply__mach_voucher_attr_control_get_values_t {
@@ -14568,16 +15710,6 @@ declare class bsdthread_register_args {
   tsd_offset_r_: unknown /* const array */;
 }
 
-declare class rtstat_64 {
-  constructor(init?: rtstat_64);
-  rts_badredirect: number;
-  rts_dynamic: number;
-  rts_newgateway: number;
-  rts_unreach: number;
-  rts_wildcard: number;
-  rts_badrtgwroute: number;
-}
-
 declare class KeyAttribute {
   constructor(init?: KeyAttribute);
   _flags: number;
@@ -14598,6 +15730,17 @@ declare class copyfile_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
+}
+
+declare class bpf_comp_stats {
+  constructor(init?: bpf_comp_stats);
+  bcs_total_read: number;
+  bcs_total_size: number;
+  bcs_total_hdr_size: number;
+  bcs_count_no_common_prefix: number;
+  bcs_count_compressed_prefix: number;
+  bcs_total_compressed_prefix_size: number;
+  bcs_max_compressed_prefix_size: number;
 }
 
 declare class sflt_filter {
@@ -14647,6 +15790,30 @@ declare class setrlimit_args {
   rlp_r_: unknown /* const array */;
 }
 
+declare class unnamed_5606102264819608990 {
+  constructor(init?: unnamed_5606102264819608990);
+  transmitBandWidth: number;
+  receiveBandWidth: number;
+  maxLatency: number;
+  voiceSetting: number;
+  retransmissionEffort: number;
+  packetType: number;
+}
+
+declare class rt_msghdr_common {
+  constructor(init?: rt_msghdr_common);
+  rtm_msglen: number;
+  rtm_version: number;
+  rtm_type: number;
+  rtm_index: number;
+  rtm_flags: number;
+  rtm_addrs: number;
+  rtm_pid: number;
+  rtm_seq: number;
+  rtm_errno: number;
+  rtm_use: number;
+}
+
 declare class waitid_nocancel_args {
   constructor(init?: waitid_nocancel_args);
   idtype_l_: unknown /* const array */;
@@ -14663,30 +15830,11 @@ declare class waitid_nocancel_args {
   options_r_: unknown /* const array */;
 }
 
-declare class getdirentries_args {
-  constructor(init?: getdirentries_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  buf_l_: unknown /* const array */;
-  buf: number;
-  buf_r_: unknown /* const array */;
-  count_l_: unknown /* const array */;
-  count: number;
-  count_r_: unknown /* const array */;
-  basep_l_: unknown /* const array */;
-  basep: number;
-  basep_r_: unknown /* const array */;
-}
-
-declare class unnamed_4893889857185678644 {
-  constructor(init?: unnamed_4893889857185678644);
-  contextLock: number;
-  state: number;
-  owner: interop.Pointer;
-  version: number;
-  structSize: number;
-  reserved: unknown /* const array */;
+declare class __Reply__ktrace_background_available_t {
+  constructor(init?: __Reply__ktrace_background_available_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class if_netif_stats {
@@ -14723,6 +15871,16 @@ declare class IOExternalMethodArgumentsOpaque {
   constructor(init?: IOExternalMethodArgumentsOpaque);
 }
 
+declare class unnamed_13857940943358947447 {
+  constructor(init?: unnamed_13857940943358947447);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  maxLatency: number;
+  contentFormat: number;
+  retransmissionEffort: number;
+  packetType: number;
+}
+
 declare class fs_snapshot_args {
   constructor(init?: fs_snapshot_args);
   op_l_: unknown /* const array */;
@@ -14743,16 +15901,6 @@ declare class fs_snapshot_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
-}
-
-declare class unnamed_17976587708176571057 {
-  constructor(init?: unnamed_17976587708176571057);
-  login: interop.Pointer;
-  generation: number;
-  status: number;
-  loginResponse: interop.Pointer;
-  statusBlock: interop.Pointer;
-  statusBlockLength: number;
 }
 
 declare class nfs_export_stat_rec {
@@ -14845,18 +15993,16 @@ declare class kevent64_args {
   timeout_r_: unknown /* const array */;
 }
 
-declare class unnamed_18262304326985252539 {
-  constructor(init?: unnamed_18262304326985252539);
-  linkmtu: number;
-  maxmtu: number;
-  basereachable: number;
-  reachable: number;
-  retrans: number;
-  flags: number;
-  recalctm: number;
-  chlim: number;
-  receivedra: number;
-  collision_count: number;
+declare class unnamed_12636272579211584056 {
+  constructor(init?: unnamed_12636272579211584056);
+  indicator: interop.Enum<typeof EXDisplayPipeIndicator>;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  alpha: number;
+  enabled: boolean;
+  populated: boolean;
 }
 
 declare class embedded_panic_header {
@@ -14929,16 +16075,6 @@ declare class csops_args {
   usersize_r_: unknown /* const array */;
 }
 
-declare class receive_vfs_nspace_subsystem {
-  constructor(init?: receive_vfs_nspace_subsystem);
-  server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  start: number;
-  end: number;
-  maxsize: number;
-  reserved: number;
-  routine: unknown /* const array */;
-}
-
 declare class aio_error_args {
   constructor(init?: aio_error_args);
   aiocbp_l_: unknown /* const array */;
@@ -14998,6 +16134,15 @@ declare class i386_cpu_info {
   cpuid_xsave_leaf: unknown /* const array */;
 }
 
+declare class unnamed_9573910560995373467 {
+  constructor(init?: unnamed_9573910560995373467);
+  seqNum: bigint;
+  dataSize: bigint;
+  generation: bigint;
+  _reserved: bigint;
+  wrStatus: bigint;
+}
+
 declare class kdebug_typefilter_args {
   constructor(init?: kdebug_typefilter_args);
   addr_l_: unknown /* const array */;
@@ -15030,20 +16175,50 @@ declare class fremovexattr_args {
   options_r_: unknown /* const array */;
 }
 
+declare class __Request__vfs_resolve_dir_with_audit_token_t {
+  constructor(init?: __Request__vfs_resolve_dir_with_audit_token_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  req_id: number;
+  op: number;
+  file_name: unknown /* const array */;
+  path: unknown /* const array */;
+  req_atoken: audit_token_t;
+}
+
+declare class airship_acipc_tr_transfer_completion {
+  constructor(init?: airship_acipc_tr_transfer_completion);
+  io_result: interop.Enum<typeof airship_acipc_io_result>;
+  cr_id: number;
+  status_code: number;
+  descriptor_type: number;
+  size: number;
+  client_data: number;
+  last_completed_transfer: boolean;
+  last_in_chain: boolean;
+  next_tag: number;
+}
+
 declare class IOReportInterest {
   constructor(init?: IOReportInterest);
   provider_id: number;
   channel: IOReportChannel;
 }
 
-declare class unnamed_6241198219995377730 {
-  constructor(init?: unnamed_6241198219995377730);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
+declare class funmount_args {
+  constructor(init?: funmount_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  flags_l_: unknown /* const array */;
+  flags: number;
+  flags_r_: unknown /* const array */;
+}
+
+declare class unnamed_18045901316761299192 {
+  constructor(init?: unnamed_18045901316761299192);
+  role: number;
+  handle: number;
 }
 
 declare class fsetattrlist_args {
@@ -15112,6 +16287,25 @@ declare class BillboardAltModeCapabilityCompatibility {
   iAlternateModeString: number;
 }
 
+declare class bpf_hdr_ext {
+  constructor(init?: bpf_hdr_ext);
+  bh_tstamp: timeval32;
+  bh_caplen: number;
+  bh_datalen: number;
+  bh_hdrlen: number;
+  bh_complen: number;
+  bh_flags: number;
+  bh_pid: number;
+  bh_comm: unknown /* const array */;
+  bh_pktflags: number;
+  bh_trace_tag: number;
+  bh_svc: number;
+  bh_flowid: number;
+  bh_unsent_bytes: number;
+  bh_unsent_snd: number;
+  bh_comp_gencnt: number;
+}
+
 declare class _dyld_cache_header {
   constructor(init?: _dyld_cache_header);
   magic: unknown /* const array */;
@@ -15166,16 +16360,6 @@ declare class getegid_args {
 declare class __Request__mach_notify_send_once_t {
   constructor(init?: __Request__mach_notify_send_once_t);
   Head: mach_msg_header_t;
-}
-
-declare class unnamed_771077389581484964 {
-  constructor(init?: unnamed_771077389581484964);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
 }
 
 declare class IOKitDiagnosticsParameters {
@@ -15264,11 +16448,11 @@ declare class writev_args {
   iovcnt_r_: unknown /* const array */;
 }
 
-declare class fchdir_args {
-  constructor(init?: fchdir_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
+declare class IOCircularDataQueueMemoryCursor {
+  constructor(init?: IOCircularDataQueueMemoryCursor);
+  generation: number;
+  position: number;
+  sequenceNum: number;
 }
 
 declare class issetugid_args {
@@ -15363,19 +16547,19 @@ declare class ether_vlan_header {
   evl_proto: number;
 }
 
-declare class unnamed_2551840134916919793 {
-  constructor(init?: unnamed_2551840134916919793);
-  errs_common: unknown /* const array */;
-  errs_v4: unknown /* const array */;
-  errs_unknown: number;
-}
-
 declare class __Request__mach_gss_lookup_t {
   constructor(init?: __Request__mach_gss_lookup_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   uid: number;
   asid: number;
+}
+
+declare class unnamed_16013633380207743845 {
+  constructor(init?: unnamed_16013633380207743845);
+  nlm_lock: number;
+  nlm_test: number;
+  nlm_unlock: number;
 }
 
 declare class if_nsreq {
@@ -15406,6 +16590,34 @@ declare class aio_read_args {
   aiocbp_l_: unknown /* const array */;
   aiocbp: number;
   aiocbp_r_: unknown /* const array */;
+}
+
+declare class unnamed_9139678767609557297 {
+  constructor(init?: unnamed_9139678767609557297);
+  transmitBandWidth: number;
+  receiveBandWidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSampelPayloadMSBPosition: number;
+  outputPCMSampelPayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  voiceSetting: number;
+  retransmissionEffort: number;
+  packetType: number;
 }
 
 declare class oslog_coproc_args {
@@ -15446,6 +16658,16 @@ declare class nfserr_info {
   nei_index: number;
 }
 
+declare class objc_bp_assist_cfg_np_args {
+  constructor(init?: objc_bp_assist_cfg_np_args);
+  adr_l_: unknown /* const array */;
+  adr: number;
+  adr_r_: unknown /* const array */;
+  ctl_l_: unknown /* const array */;
+  ctl: number;
+  ctl_r_: unknown /* const array */;
+}
+
 declare class nosys_args {
   constructor(init?: nosys_args);
   dummy: number;
@@ -15460,14 +16682,6 @@ declare class sptm_guest_dispatch_sme_t {
 
 declare class IOUSBHostHIDDescriptor {
   constructor(init?: IOUSBHostHIDDescriptor);
-}
-
-declare class unnamed_9231379982078466858 {
-  constructor(init?: unnamed_9231379982078466858);
-  paddr: number;
-  papt_pte_template: number;
-  num_mappings: number;
-  options: number;
 }
 
 declare class user64_ntptimeval {
@@ -15485,6 +16699,35 @@ declare class sptm_trace_t {
   trace_type: number;
   dispatch_id: number;
   cpu_id: number;
+}
+
+declare class getrlimit_args {
+  constructor(init?: getrlimit_args);
+  which_l_: unknown /* const array */;
+  which: number;
+  which_r_: unknown /* const array */;
+  rlp_l_: unknown /* const array */;
+  rlp: number;
+  rlp_r_: unknown /* const array */;
+}
+
+declare class setattrlist_args {
+  constructor(init?: setattrlist_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  alist_l_: unknown /* const array */;
+  alist: number;
+  alist_r_: unknown /* const array */;
+  attributeBuffer_l_: unknown /* const array */;
+  attributeBuffer: number;
+  attributeBuffer_r_: unknown /* const array */;
+  bufferSize_l_: unknown /* const array */;
+  bufferSize: number;
+  bufferSize_r_: unknown /* const array */;
+  options_l_: unknown /* const array */;
+  options: number;
+  options_r_: unknown /* const array */;
 }
 
 declare class image_params {
@@ -15549,14 +16792,16 @@ declare class ataTaskFile {
   ataTFCommand: number;
 }
 
-declare class unnamed_12172249341660263692 {
-  constructor(init?: unnamed_12172249341660263692);
-  registerNum: number;
-  functionNum: number;
-  deviceNum: number;
-  busNum: number;
-  registerNumExtended: number;
-  resv: number;
+declare class unnamed_7443987149512840025 {
+  constructor(init?: unnamed_7443987149512840025);
+  connectionHandle: number;
+  deviceAddress: BluetoothDeviceAddress;
+  linkType: number;
+  transmissionInterval: number;
+  retransmissionWindow: number;
+  receivePacketLength: number;
+  transmitPacketLength: number;
+  airMode: number;
 }
 
 declare class in6_nbrinfo {
@@ -15607,6 +16852,11 @@ declare class workq_open_args {
   dummy: number;
 }
 
+declare class unnamed_15433866698738595994 {
+  constructor(init?: unnamed_15433866698738595994);
+  linkType: number;
+}
+
 declare class cpuid_tsc_leaf_t {
   constructor(init?: cpuid_tsc_leaf_t);
   numerator: number;
@@ -15618,14 +16868,52 @@ declare class audit_session_self_args {
   dummy: number;
 }
 
-declare class getrlimit_args {
-  constructor(init?: getrlimit_args);
-  which_l_: unknown /* const array */;
-  which: number;
-  which_r_: unknown /* const array */;
-  rlp_l_: unknown /* const array */;
-  rlp: number;
-  rlp_r_: unknown /* const array */;
+declare class unnamed_9302259702586539480 {
+  constructor(init?: unnamed_9302259702586539480);
+  oldtss: sel;
+  : number;
+  esp0: number;
+  ss0: sel;
+  : number;
+  esp1: number;
+  ss1: sel;
+  : number;
+  esp2: number;
+  ss2: sel;
+  : number;
+  cr3: number;
+  eip: number;
+  eflags: number;
+  eax: number;
+  ecx: number;
+  edx: number;
+  ebx: number;
+  esp: number;
+  ebp: number;
+  esi: number;
+  edi: number;
+  es: sel;
+  : number;
+  cs: sel;
+  : number;
+  ss: sel;
+  : number;
+  ds: sel;
+  : number;
+  fs: sel;
+  : number;
+  gs: sel;
+  : number;
+  ldt: sel;
+  : number;
+  t: number;
+  : number;
+  io_bmap: number;
+}
+
+declare class unnamed_5424080561640605351 {
+  constructor(init?: unnamed_5424080561640605351);
+  error: number;
 }
 
 declare class trust_cache_module1 {
@@ -15683,17 +16971,33 @@ declare class writev_nocancel_args {
   iovcnt_r_: unknown /* const array */;
 }
 
+declare class airship_driver {
+  constructor(init?: airship_driver);
+}
+
 declare class mpsc_queue_head {
   constructor(init?: mpsc_queue_head);
   mpqh_head: mpsc_queue_chain;
   mpqh_tail: unknown /* _Atomic(struct mpsc_queue_chain *) (CXTypeKind: 177) */;
 }
 
-declare class getsid_args {
-  constructor(init?: getsid_args);
-  pid_l_: unknown /* const array */;
-  pid: number;
-  pid_r_: unknown /* const array */;
+declare class arm_debug_info_t {
+  constructor(init?: arm_debug_info_t);
+  memory_mapped_core_debug: number;
+  coprocessor_core_debug: number;
+  num_watchpoint_pairs: number;
+  num_breakpoint_pairs: number;
+}
+
+declare class unnamed_16186450300110611679 {
+  constructor(init?: unnamed_16186450300110611679);
+  flags: number;
+  serviceType: number;
+  tokenRate: number;
+  tokenBucketSize: number;
+  peakBandwidth: number;
+  latency: number;
+  delayVariation: number;
 }
 
 declare class IOFBCursorControlCallouts {
@@ -15776,14 +17080,24 @@ declare class if_packet_stats {
   _reserved: unknown /* const array */;
 }
 
-declare class unnamed_17886372753141415949 {
-  constructor(init?: unnamed_17886372753141415949);
-  usageMin: number;
-  usageMax: number;
-  stringMin: number;
-  stringMax: number;
-  designatorMin: number;
-  designatorMax: number;
+declare class airship_daleipc_downlink_packet_completion {
+  constructor(init?: airship_daleipc_downlink_packet_completion);
+  tag: number;
+  data_length: number;
+  data_offset: number;
+  channel_id: number;
+  checksum: number;
+  protocol: number;
+  drop: number;
+  ignore: number;
+  error: number;
+  wake_packet: number;
+}
+
+declare class unnamed_12707122223376989547 {
+  constructor(init?: unnamed_12707122223376989547);
+  attr_idx: number;
+  flags: number;
 }
 
 declare class kpc_get_counters_remote {
@@ -15792,13 +17106,6 @@ declare class kpc_get_counters_remote {
   nb_counters: number;
   buf_stride: number;
   buf: interop.Pointer;
-}
-
-declare class ip_px_smpx_s {
-  constructor(init?: ip_px_smpx_s);
-  array: interop.Pointer;
-  data: interop.Pointer;
-  datalen: number;
 }
 
 declare class IOUSBHostDevice_IVars {
@@ -15931,6 +17238,16 @@ declare class IOExternalMethodArguments {
   __reserved: unknown /* const array */;
 }
 
+declare class unnamed_11975482992842642533 {
+  constructor(init?: unnamed_11975482992842642533);
+  usageMin: number;
+  usageMax: number;
+  stringMin: number;
+  stringMax: number;
+  designatorMin: number;
+  designatorMax: number;
+}
+
 declare class if_description {
   constructor(init?: if_description);
   ifd_maxlen: number;
@@ -15981,16 +17298,6 @@ declare class USB20ExtensionCapabilityDescriptor {
   bmAttributes: number;
 }
 
-declare class unnamed_2182386190748614651 {
-  constructor(init?: unnamed_2182386190748614651);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
-}
-
 declare class audit_triggers_subsystem {
   constructor(init?: audit_triggers_subsystem);
   server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
@@ -16022,19 +17329,37 @@ declare class nfs_specdata {
   specdata2: number;
 }
 
-declare class unnamed_5050809908783934309 {
-  constructor(init?: unnamed_5050809908783934309);
-  login: interop.Pointer;
-  generation: number;
-  status: number;
-  statusBlock: interop.Pointer;
-  statusBlockLength: number;
+declare class __Request__doubleagent_allocate_xattr_t {
+  constructor(init?: __Request__doubleagent_allocate_xattr_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  file_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  file_size: number;
+  nameOffset: number;
+  nameCnt: number;
+  name: unknown /* const array */;
+  size: number;
+  options: number;
 }
 
-declare class user64_timeval {
-  constructor(init?: user64_timeval);
-  tv_sec: number;
-  tv_usec: number;
+declare class guarded_pwrite_np_args {
+  constructor(init?: guarded_pwrite_np_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  guard_l_: unknown /* const array */;
+  guard: number;
+  guard_r_: unknown /* const array */;
+  buf_l_: unknown /* const array */;
+  buf: number;
+  buf_r_: unknown /* const array */;
+  nbyte_l_: unknown /* const array */;
+  nbyte: number;
+  nbyte_r_: unknown /* const array */;
+  offset_l_: unknown /* const array */;
+  offset: number;
+  offset_r_: unknown /* const array */;
 }
 
 declare class DeviceDescriptor {
@@ -16078,17 +17403,6 @@ declare class list_head {
   next: interop.Pointer;
 }
 
-declare class unnamed_15008395761146599159 {
-  constructor(init?: unnamed_15008395761146599159);
-  : number;
-  tss: sel;
-  : number;
-  type: number;
-  dpl: number;
-  present: number;
-  : number;
-}
-
 declare class componentname {
   constructor(init?: componentname);
 }
@@ -16106,6 +17420,20 @@ declare class if_nexusreq {
   ifnr_netif: unknown /* const array */;
   ifnr_flowswitch: unknown /* const array */;
   ifnr_reserved: unknown /* const array */;
+}
+
+declare class unnamed_7506672353382092904 {
+  constructor(init?: unnamed_7506672353382092904);
+  linkmtu: number;
+  maxmtu: number;
+  basereachable: number;
+  reachable: number;
+  retrans: number;
+  flags: number;
+  recalctm: number;
+  chlim: number;
+  receivedra: number;
+  collision_count: number;
 }
 
 declare class __Request__mach_voucher_attr_control_get_values_t {
@@ -16136,6 +17464,17 @@ declare class utimes_args {
   tptr_l_: unknown /* const array */;
   tptr: number;
   tptr_r_: unknown /* const array */;
+}
+
+declare class unnamed_230683991592103003 {
+  constructor(init?: unnamed_230683991592103003);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  offset: number;
+  size: number;
+  cntrl_flags: number;
+  page_listCnt: number;
+  page_list: unknown /* const array */;
 }
 
 declare class ifnet_stats_per_flow {
@@ -16193,6 +17532,16 @@ declare class fchown_args {
   gid_r_: unknown /* const array */;
 }
 
+declare class unnamed_3364053345864614681 {
+  constructor(init?: unnamed_3364053345864614681);
+  coprocessor_core_debug: number;
+  coprocessor_secure_debug: number;
+  memory_mapped_core_debug: number;
+  coprocessor_trace_debug: number;
+  memory_mapped_trace_debug: number;
+  microcontroller_debug: number;
+}
+
 declare class change_fdguard_np_args {
   constructor(init?: change_fdguard_np_args);
   fd_l_: unknown /* const array */;
@@ -16234,22 +17583,6 @@ declare class chmod_extended_args {
   xsecurity_r_: unknown /* const array */;
 }
 
-declare class faccessat_args {
-  constructor(init?: faccessat_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  amode_l_: unknown /* const array */;
-  amode: number;
-  amode_r_: unknown /* const array */;
-  flag_l_: unknown /* const array */;
-  flag: number;
-  flag_r_: unknown /* const array */;
-}
-
 declare class arm_feature_bits_t {
   constructor(init?: arm_feature_bits_t);
   el0_not_implemented: number;
@@ -16289,7 +17622,11 @@ declare class HIDButtonCaps {
   isDesignatorRange: number;
   isAbsolute: number;
   startBit: number;
-  u: unnamed_6528881243761198478;
+  u: unnamed_9604849382947085229;
+}
+
+declare class airship_acipc_boot {
+  constructor(init?: airship_acipc_boot);
 }
 
 declare class aio_cancel_args {
@@ -16346,18 +17683,19 @@ declare class wait4_args {
   rusage_r_: unknown /* const array */;
 }
 
-declare class ataRegisterImage {
-  constructor(init?: ataRegisterImage);
-  taskFile: ataTaskFile;
-  ataDataRegister: number;
-  ataAltSDevCReg: number;
-}
-
 declare class sem_wait_args {
   constructor(init?: sem_wait_args);
   sem_l_: unknown /* const array */;
   sem: number;
   sem_r_: unknown /* const array */;
+}
+
+declare class unnamed_1788228608663847795 {
+  constructor(init?: unnamed_1788228608663847795);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  page_listCnt: number;
+  page_list: unknown /* const array */;
 }
 
 declare class proc_rlimit_control_args {
@@ -16371,15 +17709,6 @@ declare class proc_rlimit_control_args {
   arg_l_: unknown /* const array */;
   arg: number;
   arg_r_: unknown /* const array */;
-}
-
-declare class unnamed_5186474435097227906 {
-  constructor(init?: unnamed_5186474435097227906);
-  login: interop.Pointer;
-  generation: number;
-  status: number;
-  reconnectStatusBlock: interop.Pointer;
-  reconnectStatusBlockLength: number;
 }
 
 declare class fclonefileat_args {
@@ -16418,6 +17747,22 @@ declare class ledger_template_info {
   lti_units: unknown /* const array */;
 }
 
+declare class unnamed_804236958011088931 {
+  constructor(init?: unnamed_804236958011088931);
+  usageMin: number;
+  usageMax: number;
+  stringMin: number;
+  stringMax: number;
+  designatorMin: number;
+  designatorMax: number;
+}
+
+declare class unnamed_3717948029633192216 {
+  constructor(init?: unnamed_3717948029633192216);
+  numLinkKeysRead: number;
+  maxNumLinkKeysAllowedInDevice: number;
+}
+
 declare class shm_open_args {
   constructor(init?: shm_open_args);
   name_l_: unknown /* const array */;
@@ -16435,16 +17780,6 @@ declare class smrq_stailq_head {
   constructor(init?: smrq_stailq_head);
   first: __smrq_slink_t;
   last: interop.Pointer;
-}
-
-declare class objc_bp_assist_cfg_np_args {
-  constructor(init?: objc_bp_assist_cfg_np_args);
-  adr_l_: unknown /* const array */;
-  adr: number;
-  adr_r_: unknown /* const array */;
-  ctl_l_: unknown /* const array */;
-  ctl: number;
-  ctl_r_: unknown /* const array */;
 }
 
 declare class IOHIDReportHandler {
@@ -16478,26 +17813,6 @@ declare class __Reply__mach_gss_init_sec_context_t {
   minor_stat: number;
 }
 
-declare class guarded_write_np_args {
-  constructor(init?: guarded_write_np_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  guard_l_: unknown /* const array */;
-  guard: number;
-  guard_r_: unknown /* const array */;
-  cbuf_l_: unknown /* const array */;
-  cbuf: number;
-  cbuf_r_: unknown /* const array */;
-  nbyte_l_: unknown /* const array */;
-  nbyte: number;
-  nbyte_r_: unknown /* const array */;
-}
-
-declare class IOInterruptAccountingReporter {
-  constructor(init?: IOInterruptAccountingReporter);
-}
-
 declare class select_nocancel_args {
   constructor(init?: select_nocancel_args);
   nd_l_: unknown /* const array */;
@@ -16517,9 +17832,48 @@ declare class select_nocancel_args {
   tv_r_: unknown /* const array */;
 }
 
-declare class unnamed_11673340915618280894 {
-  constructor(init?: unnamed_11673340915618280894);
-  ifscope: number;
+declare class xbpf_d {
+  constructor(init?: xbpf_d);
+  bd_structsize: number;
+  bd_dev_minor: number;
+  bd_sig: number;
+  bd_slen: number;
+  bd_hlen: number;
+  bd_bufsize: number;
+  bd_pid: number;
+  bd_promisc: number;
+  bd_immediate: number;
+  bd_hdrcmplt: number;
+  bd_async: number;
+  bd_headdrop: number;
+  bd_direction: number;
+  bh_compreq: number;
+  bh_compenabled: number;
+  bd_exthdr: number;
+  bd_trunc: number;
+  bd_pkthdrv2: number;
+  bd_batch_write: number;
+  bd_divert_in: number;
+  bd_padding: number;
+  bd_rcount: number;
+  bd_dcount: number;
+  bd_fcount: number;
+  bd_wcount: number;
+  bd_wdcount: number;
+  bd_ifname: unknown /* const array */;
+  bd_comp_count: number;
+  bd_comp_size: number;
+  bd_scnt: number;
+  bd_hcnt: number;
+  bd_read_count: number;
+  bd_fsize: number;
+}
+
+declare class IOCircularDataQueue {
+  constructor(init?: IOCircularDataQueue);
+  queueCursor: IOCircularDataQueueMemoryCursor;
+  OS_PTRAUTH_SIGNED_PTR: unknown /* struct IOCircularDataQueueMemory *() (CXTypeKind: 110) */;
+  queueHeaderShadow: IOCircularDataQueueDescription;
 }
 
 declare class getfsstat64_args {
@@ -16535,23 +17889,71 @@ declare class getfsstat64_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class guarded_write_np_args {
+  constructor(init?: guarded_write_np_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  guard_l_: unknown /* const array */;
+  guard: number;
+  guard_r_: unknown /* const array */;
+  cbuf_l_: unknown /* const array */;
+  cbuf: number;
+  cbuf_r_: unknown /* const array */;
+  nbyte_l_: unknown /* const array */;
+  nbyte: number;
+  nbyte_r_: unknown /* const array */;
+}
+
 type arm_cpuid_id_aa64dfr0_el1Descriptor = 
-  | { debug_feature: unnamed_1324232133193790497 }
+  | { debug_feature: unnamed_1064201811267050249 }
   | { value: number };
 
 declare class arm_cpuid_id_aa64dfr0_el1 {
   constructor(init?: arm_cpuid_id_aa64dfr0_el1Descriptor);
-  debug_feature: unnamed_1324232133193790497;
+  debug_feature: unnamed_1064201811267050249;
+  value: number;
+}
+
+type unnamed_16283433901440427056Descriptor = 
+  | { b8: unknown /* const array */ }
+  | { b32: unknown /* const array */ };
+
+declare class unnamed_16283433901440427056 {
+  constructor(init?: unnamed_16283433901440427056Descriptor);
+  b8: unknown /* const array */;
+  b32: unknown /* const array */;
+}
+
+type unnamed_16186558334874051404Descriptor = 
+  | { b8: unknown /* const array */ }
+  | { b32: unknown /* const array */ }
+  | { b64: unknown /* const array */ };
+
+declare class unnamed_16186558334874051404 {
+  constructor(init?: unnamed_16186558334874051404Descriptor);
+  b8: unknown /* const array */;
+  b32: unknown /* const array */;
+  b64: unknown /* const array */;
+}
+
+type arm_debug_dbgdidrDescriptor = 
+  | { debug_id: unnamed_11298389882924342544 }
+  | { value: number };
+
+declare class arm_debug_dbgdidr {
+  constructor(init?: arm_debug_dbgdidrDescriptor);
+  debug_id: unnamed_11298389882924342544;
   value: number;
 }
 
 type arm_cpuid_id_dfr0Descriptor = 
-  | { debug_feature: unnamed_9095712689498340585 }
+  | { debug_feature: unnamed_3364053345864614681 }
   | { value: number };
 
 declare class arm_cpuid_id_dfr0 {
   constructor(init?: arm_cpuid_id_dfr0Descriptor);
-  debug_feature: unnamed_9095712689498340585;
+  debug_feature: unnamed_3364053345864614681;
   value: number;
 }
 
@@ -16563,16 +17965,12 @@ declare class __ReplyUnion__kextd_kernel_request_subsystem {
   Reply_kextd_ping: __Reply__kextd_ping_t;
 }
 
-type __ReplyUnion__catch_exc_subsystemDescriptor = 
-  | { Reply_exception_raise: __Reply__exception_raise_t }
-  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
-  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
+type __RequestUnion__kextd_kernel_request_subsystemDescriptor = 
+  | { Request_kextd_ping: __Request__kextd_ping_t };
 
-declare class __ReplyUnion__catch_exc_subsystem {
-  constructor(init?: __ReplyUnion__catch_exc_subsystemDescriptor);
-  Reply_exception_raise: __Reply__exception_raise_t;
-  Reply_exception_raise_state: __Reply__exception_raise_state_t;
-  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
+declare class __RequestUnion__kextd_kernel_request_subsystem {
+  constructor(init?: __RequestUnion__kextd_kernel_request_subsystemDescriptor);
+  Request_kextd_ping: __Request__kextd_ping_t;
 }
 
 type __RequestUnion__catch_exc_subsystemDescriptor = 
@@ -16609,6 +18007,14 @@ declare class __RequestUnion__receive_vfs_nspace_subsystem {
   Request_vfs_resolve_reparent_with_audit_token: __Request__vfs_resolve_reparent_with_audit_token_t;
 }
 
+type __RequestUnion__arcade_upcall_subsystemDescriptor = 
+  | { Request_arcade_upcall: __Request__arcade_upcall_t };
+
+declare class __RequestUnion__arcade_upcall_subsystem {
+  constructor(init?: __RequestUnion__arcade_upcall_subsystemDescriptor);
+  Request_arcade_upcall: __Request__arcade_upcall_t;
+}
+
 type __RequestUnion__audit_triggers_subsystemDescriptor = 
   | { Request_audit_triggers: __Request__audit_triggers_t }
   | { Request_audit_analytics: __Request__audit_analytics_t };
@@ -16637,18 +18043,6 @@ declare class __RequestUnion__mach_voucher_attr_control_subsystem {
   constructor(init?: __RequestUnion__mach_voucher_attr_control_subsystemDescriptor);
   Request_mach_voucher_attr_control_get_values: __Request__mach_voucher_attr_control_get_values_t;
   Request_mach_voucher_attr_control_create_mach_voucher: __Request__mach_voucher_attr_control_create_mach_voucher_t;
-}
-
-type __ReplyUnion__catch_mach_exc_subsystemDescriptor = 
-  | { Reply_mach_exception_raise: __Reply__mach_exception_raise_t }
-  | { Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t }
-  | { Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t };
-
-declare class __ReplyUnion__catch_mach_exc_subsystem {
-  constructor(init?: __ReplyUnion__catch_mach_exc_subsystemDescriptor);
-  Reply_mach_exception_raise: __Reply__mach_exception_raise_t;
-  Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t;
-  Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t;
 }
 
 type __RequestUnion__catch_mach_exc_subsystemDescriptor = 
@@ -16707,24 +18101,6 @@ declare class __RequestUnion__task_access_subsystem {
   Request_check_task_access: __Request__check_task_access_t;
   Request_find_code_signature: __Request__find_code_signature_t;
   Request_check_task_access_with_flavor: __Request__check_task_access_with_flavor_t;
-}
-
-type __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor = 
-  | { Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t }
-  | { Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t };
-
-declare class __ReplyUnion__receive_sysdiagnose_notification_subsystem {
-  constructor(init?: __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor);
-  Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t;
-  Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t;
-}
-
-type __ReplyUnion__send_ktrace_background_subsystemDescriptor = 
-  | { Reply_send_ktrace_background_available: __Reply__ktrace_background_available_t };
-
-declare class __ReplyUnion__send_ktrace_background_subsystem {
-  constructor(init?: __ReplyUnion__send_ktrace_background_subsystemDescriptor);
-  Reply_send_ktrace_background_available: __Reply__ktrace_background_available_t;
 }
 
 type __RequestUnion__send_ktrace_background_subsystemDescriptor = 
@@ -16787,22 +18163,6 @@ declare class __ReplyUnion__fairplay_subsystem {
   Reply_fairplayd_arcade_request: __Reply__fairplayd_arcade_request_t;
 }
 
-type __RequestUnion__fairplay_subsystemDescriptor = 
-  | { Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t };
-
-declare class __RequestUnion__fairplay_subsystem {
-  constructor(init?: __RequestUnion__fairplay_subsystemDescriptor);
-  Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t;
-}
-
-type vm_addr_struct_tDescriptor = 
-  | { UNSAFE: number };
-
-declare class vm_addr_struct_t {
-  constructor(init?: vm_addr_struct_tDescriptor);
-  UNSAFE: number;
-}
-
 type __RequestUnion__gssd_mach_subsystemDescriptor = 
   | { Request_mach_gss_init_sec_context: __Request__mach_gss_init_sec_context_t }
   | { Request_mach_gss_accept_sec_context: __Request__mach_gss_accept_sec_context_t }
@@ -16855,6 +18215,22 @@ declare class __RequestUnion__doubleagent_subsystem {
   Request_doubleagent_remove_xattr: __Request__doubleagent_remove_xattr_t;
 }
 
+type __ReplyUnion__do_notify_subsystemDescriptor = 
+  | { Reply_mach_notify_port_deleted: __Reply__mach_notify_port_deleted_t }
+  | { Reply_mach_notify_port_destroyed: __Reply__mach_notify_port_destroyed_t }
+  | { Reply_mach_notify_no_senders: __Reply__mach_notify_no_senders_t }
+  | { Reply_mach_notify_send_once: __Reply__mach_notify_send_once_t }
+  | { Reply_mach_notify_dead_name: __Reply__mach_notify_dead_name_t };
+
+declare class __ReplyUnion__do_notify_subsystem {
+  constructor(init?: __ReplyUnion__do_notify_subsystemDescriptor);
+  Reply_mach_notify_port_deleted: __Reply__mach_notify_port_deleted_t;
+  Reply_mach_notify_port_destroyed: __Reply__mach_notify_port_destroyed_t;
+  Reply_mach_notify_no_senders: __Reply__mach_notify_no_senders_t;
+  Reply_mach_notify_send_once: __Reply__mach_notify_send_once_t;
+  Reply_mach_notify_dead_name: __Reply__mach_notify_dead_name_t;
+}
+
 type __RequestUnion__do_notify_subsystemDescriptor = 
   | { Request_mach_notify_port_deleted: __Request__mach_notify_port_deleted_t }
   | { Request_mach_notify_port_destroyed: __Request__mach_notify_port_destroyed_t }
@@ -16869,6 +18245,16 @@ declare class __RequestUnion__do_notify_subsystem {
   Request_mach_notify_no_senders: __Request__mach_notify_no_senders_t;
   Request_mach_notify_send_once: __Request__mach_notify_send_once_t;
   Request_mach_notify_dead_name: __Request__mach_notify_dead_name_t;
+}
+
+type airship_acipc_cr_mirror_element_dataDescriptor = 
+  | { completion_record: airship_acipc_cr_mirror_completion_record }
+  | { raw_descriptor: airship_acipc_cr_mirror_raw_descriptor };
+
+declare class airship_acipc_cr_mirror_element_data {
+  constructor(init?: airship_acipc_cr_mirror_element_dataDescriptor);
+  completion_record: airship_acipc_cr_mirror_completion_record;
+  raw_descriptor: airship_acipc_cr_mirror_raw_descriptor;
 }
 
 type __ReplyUnion__arcade_upcall_subsystemDescriptor = 
@@ -16927,6 +18313,16 @@ declare class __RequestUnion__lockd_mach_subsystem {
   Request_lockd_shutdown: __Request__lockd_shutdown_t;
 }
 
+type unnamed_14374843138598068828Descriptor = 
+  | { un_d_packname: unknown /* const array */ }
+  | { un_b: unnamed_10338689098814162510 };
+
+declare class unnamed_14374843138598068828 {
+  constructor(init?: unnamed_14374843138598068828Descriptor);
+  un_d_packname: unknown /* const array */;
+  un_b: unnamed_10338689098814162510;
+}
+
 type idt_entryDescriptor = 
   | { trap_gate: trap_gate }
   | { intr_gate: intr_gate }
@@ -16957,102 +18353,142 @@ declare class gdt_entry {
   task_state: tss_desc;
 }
 
-type unnamed_11141220794841329057Descriptor = 
-  | { pad_field: number };
+type sockaddr_in_4_6Descriptor = 
+  | { sa: sockaddr }
+  | { sah: __sockaddr_header }
+  | { sin: sockaddr_in }
+  | { sin6: sockaddr_in6 };
 
-declare class unnamed_11141220794841329057 {
-  constructor(init?: unnamed_11141220794841329057Descriptor);
-  pad_field: number;
+declare class sockaddr_in_4_6 {
+  constructor(init?: sockaddr_in_4_6Descriptor);
+  sa: sockaddr;
+  sah: __sockaddr_header;
+  sin: sockaddr_in;
+  sin6: sockaddr_in6;
 }
 
-type dt_entryDescriptor = 
-  | { code: code_desc }
-  | { data: data_desc }
-  | { ldt: ldt_desc }
-  | { task_state: tss_desc }
-  | { call_gate: call_gate }
-  | { trap_gate: trap_gate }
-  | { intr_gate: intr_gate }
-  | { task_gate: task_gate };
+type unnamed_12749400625580214499Descriptor = 
+  | { sa_nwk_status_int: number };
 
-declare class dt_entry {
-  constructor(init?: dt_entryDescriptor);
-  code: code_desc;
-  data: data_desc;
-  ldt: ldt_desc;
-  task_state: tss_desc;
-  call_gate: call_gate;
-  trap_gate: trap_gate;
-  intr_gate: intr_gate;
-  task_gate: task_gate;
+declare class unnamed_12749400625580214499 {
+  constructor(init?: unnamed_12749400625580214499Descriptor);
+  sa_nwk_status_int: number;
 }
 
-type unnamed_10329767211207508473Descriptor = 
-  | { sin_zero: unknown /* const array */ }
-  | { _in_index: unnamed_11673340915618280894 };
+type unnamed_3012503987243038479Descriptor = 
+  | { _itpl_sa: sockaddr }
+  | { _itpl_sah: __sockaddr_header }
+  | { _itpl_sin: sockaddr_in }
+  | { _itpl_sin6: sockaddr_in6 };
 
-declare class unnamed_10329767211207508473 {
-  constructor(init?: unnamed_10329767211207508473Descriptor);
-  sin_zero: unknown /* const array */;
-  _in_index: unnamed_11673340915618280894;
+declare class unnamed_3012503987243038479 {
+  constructor(init?: unnamed_3012503987243038479Descriptor);
+  _itpl_sa: sockaddr;
+  _itpl_sah: __sockaddr_header;
+  _itpl_sin: sockaddr_in;
+  _itpl_sin6: sockaddr_in6;
+}
+
+type unnamed_17232738562495190869Descriptor = 
+  | { _itpl_sa: sockaddr }
+  | { _itpl_sah: __sockaddr_header }
+  | { _itpl_sin: sockaddr_in }
+  | { _itpl_sin6: sockaddr_in6 };
+
+declare class unnamed_17232738562495190869 {
+  constructor(init?: unnamed_17232738562495190869Descriptor);
+  _itpl_sa: sockaddr;
+  _itpl_sah: __sockaddr_header;
+  _itpl_sin: sockaddr_in;
+  _itpl_sin6: sockaddr_in6;
+}
+
+type unnamed_11635418716625211500Descriptor = 
+  | { queueStateVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */ }
+  | { __queueState: IOCircularDataQueueState };
+
+declare class unnamed_11635418716625211500 {
+  constructor(init?: unnamed_11635418716625211500Descriptor);
+  queueStateVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */;
+  __queueState: IOCircularDataQueueState;
+}
+
+type IOCircularDataQueueStateDescriptor = 
+  | { val: bigint }
+  | { fields: unnamed_9614755327984743019 };
+
+declare class IOCircularDataQueueState {
+  constructor(init?: IOCircularDataQueueStateDescriptor);
+  val: bigint;
+  fields: unnamed_9614755327984743019;
+}
+
+type IOCircularDataQueueEntryHeaderInfoDescriptor = 
+  | { val: bigint }
+  | { fields: unnamed_9573910560995373467 };
+
+declare class IOCircularDataQueueEntryHeaderInfo {
+  constructor(init?: IOCircularDataQueueEntryHeaderInfoDescriptor);
+  val: bigint;
+  fields: unnamed_9573910560995373467;
 }
 
 type IOACPIAddressDescriptor = 
   | { addr64: number }
-  | { pci: unnamed_11317972567510655179 };
+  | { pci: unnamed_12713508752774757029 };
 
 declare class IOACPIAddress {
   constructor(init?: IOACPIAddressDescriptor);
   addr64: number;
-  pci: unnamed_11317972567510655179;
+  pci: unnamed_12713508752774757029;
 }
 
-type unnamed_13211056233281394050Descriptor = 
-  | { range: unnamed_14814337425775255178 }
-  | { notRange: unnamed_771077389581484964 };
+type IOPCIAddressSpaceDescriptor = 
+  | { bits: number }
+  | { s: unnamed_17672180226118855821 }
+  | { es: unnamed_1254637360707554498 };
 
-declare class unnamed_13211056233281394050 {
-  constructor(init?: unnamed_13211056233281394050Descriptor);
-  range: unnamed_14814337425775255178;
-  notRange: unnamed_771077389581484964;
+declare class IOPCIAddressSpace {
+  constructor(init?: IOPCIAddressSpaceDescriptor);
+  bits: number;
+  s: unnamed_17672180226118855821;
+  es: unnamed_1254637360707554498;
 }
 
-type unnamed_6528881243761198478Descriptor = 
-  | { range: unnamed_9583911679515939392 }
-  | { notRange: unnamed_6241198219995377730 };
+type unnamed_11897257300510808881Descriptor = 
+  | { range: unnamed_16222007263645768418 }
+  | { notRange: unnamed_10261520394563487748 };
 
-declare class unnamed_6528881243761198478 {
-  constructor(init?: unnamed_6528881243761198478Descriptor);
-  range: unnamed_9583911679515939392;
-  notRange: unnamed_6241198219995377730;
+declare class unnamed_11897257300510808881 {
+  constructor(init?: unnamed_11897257300510808881Descriptor);
+  range: unnamed_16222007263645768418;
+  notRange: unnamed_10261520394563487748;
 }
 
-type unnamed_3797668273375518160Descriptor = 
-  | { q: unknown /* const array */ };
+type unnamed_9604849382947085229Descriptor = 
+  | { range: unnamed_804236958011088931 }
+  | { notRange: unnamed_8193567900268426915 };
 
-declare class unnamed_3797668273375518160 {
-  constructor(init?: unnamed_3797668273375518160Descriptor);
-  q: unknown /* const array */;
+declare class unnamed_9604849382947085229 {
+  constructor(init?: unnamed_9604849382947085229Descriptor);
+  range: unnamed_804236958011088931;
+  notRange: unnamed_8193567900268426915;
 }
 
-type unnamed_16164845475044232237Descriptor = 
-  | { asid: number }
-  | { vmid: number };
+type unnamed_17503374868355305097Descriptor = 
+  | { params: unknown /* const array */ };
 
-declare class unnamed_16164845475044232237 {
-  constructor(init?: unnamed_16164845475044232237Descriptor);
-  asid: number;
-  vmid: number;
+declare class unnamed_17503374868355305097 {
+  constructor(init?: unnamed_17503374868355305097Descriptor);
+  params: unknown /* const array */;
 }
 
-type unnamed_3204879925854896158Descriptor = 
-  | { level: number }
-  | { raw: number };
+type unnamed_11714727163374491480Descriptor = 
+  | { xb_buffer: unnamed_13120103969405328411 };
 
-declare class unnamed_3204879925854896158 {
-  constructor(init?: unnamed_3204879925854896158Descriptor);
-  level: number;
-  raw: number;
+declare class unnamed_11714727163374491480 {
+  constructor(init?: unnamed_11714727163374491480Descriptor);
+  xb_buffer: unnamed_13120103969405328411;
 }
 
 type nfs_quadconvertDescriptor = 
@@ -17065,26 +18501,18 @@ declare class nfs_quadconvert {
   qval: number;
 }
 
-type unnamed_8773742881634497183Descriptor = 
-  | { xb_buffer: unnamed_15938541009525775535 };
-
-declare class unnamed_8773742881634497183 {
-  constructor(init?: unnamed_8773742881634497183Descriptor);
-  xb_buffer: unnamed_15938541009525775535;
-}
-
 type __RequestUnion__upl_subsystemDescriptor = 
   | { Request_upl_abort: __Request__upl_abort_t }
-  | { Request_upl_abort_range: unnamed_12792648478445238961 }
-  | { Request_upl_commit: unnamed_18423933865848911700 }
-  | { Request_upl_commit_range: unnamed_7313855513637987328 };
+  | { Request_upl_abort_range: unnamed_1650381945006561587 }
+  | { Request_upl_commit: unnamed_1788228608663847795 }
+  | { Request_upl_commit_range: unnamed_230683991592103003 };
 
 declare class __RequestUnion__upl_subsystem {
   constructor(init?: __RequestUnion__upl_subsystemDescriptor);
   Request_upl_abort: __Request__upl_abort_t;
-  Request_upl_abort_range: unnamed_12792648478445238961;
-  Request_upl_commit: unnamed_18423933865848911700;
-  Request_upl_commit_range: unnamed_7313855513637987328;
+  Request_upl_abort_range: unnamed_1650381945006561587;
+  Request_upl_commit: unnamed_1788228608663847795;
+  Request_upl_commit_range: unnamed_230683991592103003;
 }
 
 type __ReplyUnion__iocompressionstats_notification_subsystemDescriptor = 
@@ -17095,16 +18523,6 @@ declare class __ReplyUnion__iocompressionstats_notification_subsystem {
   Reply_iocompressionstats_notification: __Reply__iocompressionstats_notification_t;
 }
 
-type unnamed_7896722190555359158Descriptor = 
-  | { range: unnamed_17886372753141415949 }
-  | { notRange: unnamed_2182386190748614651 };
-
-declare class unnamed_7896722190555359158 {
-  constructor(init?: unnamed_7896722190555359158Descriptor);
-  range: unnamed_17886372753141415949;
-  notRange: unnamed_2182386190748614651;
-}
-
 type __ReplyUnion__audit_triggers_subsystemDescriptor = 
   | { Reply_audit_triggers: __Reply__audit_triggers_t }
   | { Reply_audit_analytics: __Reply__audit_analytics_t };
@@ -17113,6 +18531,24 @@ declare class __ReplyUnion__audit_triggers_subsystem {
   constructor(init?: __ReplyUnion__audit_triggers_subsystemDescriptor);
   Reply_audit_triggers: __Reply__audit_triggers_t;
   Reply_audit_analytics: __Reply__audit_analytics_t;
+}
+
+type unnamed_3771936424973120145Descriptor = 
+  | { sin_zero: unknown /* const array */ }
+  | { _in_index: unnamed_10328243768668227060 };
+
+declare class unnamed_3771936424973120145 {
+  constructor(init?: unnamed_3771936424973120145Descriptor);
+  sin_zero: unknown /* const array */;
+  _in_index: unnamed_10328243768668227060;
+}
+
+type __RequestUnion__coalition_notification_subsystemDescriptor = 
+  | { Request_coalition_notification: __Request__coalition_notification_t };
+
+declare class __RequestUnion__coalition_notification_subsystem {
+  constructor(init?: __RequestUnion__coalition_notification_subsystemDescriptor);
+  Request_coalition_notification: __Request__coalition_notification_t;
 }
 
 type ldt_entryDescriptor = 
@@ -17129,78 +18565,72 @@ declare class ldt_entry {
   task_gate: task_gate;
 }
 
-type unnamed_2072451022906363921Descriptor = 
-  | { range: unnamed_9080744482574551317 }
-  | { notRange: unnamed_12934613476046009967 };
+type __ReplyUnion__catch_mach_exc_subsystemDescriptor = 
+  | { Reply_mach_exception_raise: __Reply__mach_exception_raise_t }
+  | { Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t }
+  | { Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t };
 
-declare class unnamed_2072451022906363921 {
-  constructor(init?: unnamed_2072451022906363921Descriptor);
-  range: unnamed_9080744482574551317;
-  notRange: unnamed_12934613476046009967;
+declare class __ReplyUnion__catch_mach_exc_subsystem {
+  constructor(init?: __ReplyUnion__catch_mach_exc_subsystemDescriptor);
+  Reply_mach_exception_raise: __Reply__mach_exception_raise_t;
+  Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t;
+  Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t;
 }
 
 type sptm_update_disjoint_multipage_op_tDescriptor = 
-  | { per_paddr_header: unnamed_9231379982078466858 }
+  | { per_paddr_header: unnamed_5864893492845929824 }
   | { disjoint_op: sptm_disjoint_op_t };
 
 declare class sptm_update_disjoint_multipage_op_t {
   constructor(init?: sptm_update_disjoint_multipage_op_tDescriptor);
-  per_paddr_header: unnamed_9231379982078466858;
+  per_paddr_header: unnamed_5864893492845929824;
   disjoint_op: sptm_disjoint_op_t;
 }
 
-type arm_debug_dbgdidrDescriptor = 
-  | { debug_id: unnamed_7422846035690987871 }
-  | { value: number };
+type unnamed_6650140264646410345Descriptor = 
+  | { cpg: number }
+  | { sgs: number };
 
-declare class arm_debug_dbgdidr {
-  constructor(init?: arm_debug_dbgdidrDescriptor);
-  debug_id: unnamed_7422846035690987871;
-  value: number;
+declare class unnamed_6650140264646410345 {
+  constructor(init?: unnamed_6650140264646410345Descriptor);
+  cpg: number;
+  sgs: number;
 }
 
-type unnamed_7912544366884734115Descriptor = 
-  | { _itpl_sa: sockaddr }
-  | { _itpl_sah: __sockaddr_header }
-  | { _itpl_sin: sockaddr_in }
-  | { _itpl_sin6: sockaddr_in6 };
+type vm32_size_struct_tDescriptor = 
+  | { UNSAFE: number };
 
-declare class unnamed_7912544366884734115 {
-  constructor(init?: unnamed_7912544366884734115Descriptor);
-  _itpl_sa: sockaddr;
-  _itpl_sah: __sockaddr_header;
-  _itpl_sin: sockaddr_in;
-  _itpl_sin6: sockaddr_in6;
+declare class vm32_size_struct_t {
+  constructor(init?: vm32_size_struct_tDescriptor);
+  UNSAFE: number;
 }
 
-type __ReplyUnion__do_notify_subsystemDescriptor = 
-  | { Reply_mach_notify_port_deleted: __Reply__mach_notify_port_deleted_t }
-  | { Reply_mach_notify_port_destroyed: __Reply__mach_notify_port_destroyed_t }
-  | { Reply_mach_notify_no_senders: __Reply__mach_notify_no_senders_t }
-  | { Reply_mach_notify_send_once: __Reply__mach_notify_send_once_t }
-  | { Reply_mach_notify_dead_name: __Reply__mach_notify_dead_name_t };
+type __RequestUnion__fairplay_subsystemDescriptor = 
+  | { Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t };
 
-declare class __ReplyUnion__do_notify_subsystem {
-  constructor(init?: __ReplyUnion__do_notify_subsystemDescriptor);
-  Reply_mach_notify_port_deleted: __Reply__mach_notify_port_deleted_t;
-  Reply_mach_notify_port_destroyed: __Reply__mach_notify_port_destroyed_t;
-  Reply_mach_notify_no_senders: __Reply__mach_notify_no_senders_t;
-  Reply_mach_notify_send_once: __Reply__mach_notify_send_once_t;
-  Reply_mach_notify_dead_name: __Reply__mach_notify_dead_name_t;
+declare class __RequestUnion__fairplay_subsystem {
+  constructor(init?: __RequestUnion__fairplay_subsystemDescriptor);
+  Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t;
 }
 
-type unnamed_1494921128110780036Descriptor = 
-  | { _itpl_sa: sockaddr }
-  | { _itpl_sah: __sockaddr_header }
-  | { _itpl_sin: sockaddr_in }
-  | { _itpl_sin6: sockaddr_in6 };
+type unnamed_867739513131058950Descriptor = 
+  | { eph_x86_do_not_use: number };
 
-declare class unnamed_1494921128110780036 {
-  constructor(init?: unnamed_1494921128110780036Descriptor);
-  _itpl_sa: sockaddr;
-  _itpl_sah: __sockaddr_header;
-  _itpl_sin: sockaddr_in;
-  _itpl_sin6: sockaddr_in6;
+declare class unnamed_867739513131058950 {
+  constructor(init?: unnamed_867739513131058950Descriptor);
+  eph_x86_do_not_use: number;
+}
+
+type __ReplyUnion__catch_exc_subsystemDescriptor = 
+  | { Reply_exception_raise: __Reply__exception_raise_t }
+  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
+  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
+
+declare class __ReplyUnion__catch_exc_subsystem {
+  constructor(init?: __ReplyUnion__catch_exc_subsystemDescriptor);
+  Reply_exception_raise: __Reply__exception_raise_t;
+  Reply_exception_raise_state: __Reply__exception_raise_state_t;
+  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
 }
 
 type __RequestUnion__send_vfs_nspace_subsystemDescriptor = 
@@ -17225,50 +18655,12 @@ declare class __RequestUnion__send_vfs_nspace_subsystem {
   Request_send_vfs_resolve_reparent_with_audit_token: __Request__vfs_resolve_reparent_with_audit_token_t;
 }
 
-type unnamed_5310064096390035881Descriptor = 
-  | { b8: unknown /* const array */ }
-  | { b32: unknown /* const array */ };
+type unnamed_15850245440478902285Descriptor = 
+  | { sa_nwk_status: number };
 
-declare class unnamed_5310064096390035881 {
-  constructor(init?: unnamed_5310064096390035881Descriptor);
-  b8: unknown /* const array */;
-  b32: unknown /* const array */;
-}
-
-type unnamed_3987424655486713239Descriptor = 
-  | { b8: unknown /* const array */ }
-  | { b32: unknown /* const array */ }
-  | { b64: unknown /* const array */ };
-
-declare class unnamed_3987424655486713239 {
-  constructor(init?: unnamed_3987424655486713239Descriptor);
-  b8: unknown /* const array */;
-  b32: unknown /* const array */;
-  b64: unknown /* const array */;
-}
-
-type __RequestUnion__arcade_upcall_subsystemDescriptor = 
-  | { Request_arcade_upcall: __Request__arcade_upcall_t };
-
-declare class __RequestUnion__arcade_upcall_subsystem {
-  constructor(init?: __RequestUnion__arcade_upcall_subsystemDescriptor);
-  Request_arcade_upcall: __Request__arcade_upcall_t;
-}
-
-type unnamed_3808295380250391803Descriptor = 
-  | { eph_x86_do_not_use: number };
-
-declare class unnamed_3808295380250391803 {
-  constructor(init?: unnamed_3808295380250391803Descriptor);
-  eph_x86_do_not_use: number;
-}
-
-type vm_size_struct_tDescriptor = 
-  | { UNSAFE: number };
-
-declare class vm_size_struct_t {
-  constructor(init?: vm_size_struct_tDescriptor);
-  UNSAFE: number;
+declare class unnamed_15850245440478902285 {
+  constructor(init?: unnamed_15850245440478902285Descriptor);
+  sa_nwk_status: number;
 }
 
 type arm_feature0_reg_tDescriptor = 
@@ -17279,6 +18671,32 @@ declare class arm_feature0_reg_t {
   constructor(init?: arm_feature0_reg_tDescriptor);
   field: arm_feature_bits_t;
   value: number;
+}
+
+type unnamed_6687071577879841066Descriptor = 
+  | { headerInfoVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */ }
+  | { __headerInfo: IOCircularDataQueueEntryHeaderInfo };
+
+declare class unnamed_6687071577879841066 {
+  constructor(init?: unnamed_6687071577879841066Descriptor);
+  headerInfoVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */;
+  __headerInfo: IOCircularDataQueueEntryHeaderInfo;
+}
+
+type vm_size_struct_tDescriptor = 
+  | { UNSAFE: number };
+
+declare class vm_size_struct_t {
+  constructor(init?: vm_size_struct_tDescriptor);
+  UNSAFE: number;
+}
+
+type unnamed_17393587275662477423Descriptor = 
+  | { q: unknown /* const array */ };
+
+declare class unnamed_17393587275662477423 {
+  constructor(init?: unnamed_17393587275662477423Descriptor);
+  q: unknown /* const array */;
 }
 
 type __RequestUnion__iocompressionstats_notification_subsystemDescriptor = 
@@ -17321,44 +18739,32 @@ declare class __RequestUnion__receive_sysdiagnose_notification_subsystem {
   Request_sysdiagnose_notification_with_audit_token: __Request__sysdiagnose_notification_with_audit_token_t;
 }
 
-type vm32_size_struct_tDescriptor = 
-  | { UNSAFE: number };
+type unnamed_17870239474130978603Descriptor = 
+  | { range: unnamed_13574595766822801905 }
+  | { notRange: unnamed_3364203081172218251 };
 
-declare class vm32_size_struct_t {
-  constructor(init?: vm32_size_struct_tDescriptor);
-  UNSAFE: number;
+declare class unnamed_17870239474130978603 {
+  constructor(init?: unnamed_17870239474130978603Descriptor);
+  range: unnamed_13574595766822801905;
+  notRange: unnamed_3364203081172218251;
 }
 
-type __RequestUnion__coalition_notification_subsystemDescriptor = 
-  | { Request_coalition_notification: __Request__coalition_notification_t };
+type unnamed_9008164211909323487Descriptor = 
+  | { pad_field: number };
 
-declare class __RequestUnion__coalition_notification_subsystem {
-  constructor(init?: __RequestUnion__coalition_notification_subsystemDescriptor);
-  Request_coalition_notification: __Request__coalition_notification_t;
+declare class unnamed_9008164211909323487 {
+  constructor(init?: unnamed_9008164211909323487Descriptor);
+  pad_field: number;
 }
 
-type sockaddr_in_4_6Descriptor = 
-  | { sa: sockaddr }
-  | { sah: __sockaddr_header }
-  | { sin: sockaddr_in }
-  | { sin6: sockaddr_in6 };
+type unnamed_11444704629501519341Descriptor = 
+  | { b8: unknown /* const array */ }
+  | { b32: unknown /* const array */ };
 
-declare class sockaddr_in_4_6 {
-  constructor(init?: sockaddr_in_4_6Descriptor);
-  sa: sockaddr;
-  sah: __sockaddr_header;
-  sin: sockaddr_in;
-  sin6: sockaddr_in6;
-}
-
-type unnamed_6758359933996893212Descriptor = 
-  | { un_d_packname: unknown /* const array */ }
-  | { un_b: unnamed_4704838454543889079 };
-
-declare class unnamed_6758359933996893212 {
-  constructor(init?: unnamed_6758359933996893212Descriptor);
-  un_d_packname: unknown /* const array */;
-  un_b: unnamed_4704838454543889079;
+declare class unnamed_11444704629501519341 {
+  constructor(init?: unnamed_11444704629501519341Descriptor);
+  b8: unknown /* const array */;
+  b32: unknown /* const array */;
 }
 
 type __ReplyUnion__gssd_mach_subsystemDescriptor = 
@@ -17393,42 +18799,82 @@ declare class vm32_addr_struct_t {
   UNSAFE: number;
 }
 
-type __RequestUnion__kextd_kernel_request_subsystemDescriptor = 
-  | { Request_kextd_ping: __Request__kextd_ping_t };
+type dt_entryDescriptor = 
+  | { code: code_desc }
+  | { data: data_desc }
+  | { ldt: ldt_desc }
+  | { task_state: tss_desc }
+  | { call_gate: call_gate }
+  | { trap_gate: trap_gate }
+  | { intr_gate: intr_gate }
+  | { task_gate: task_gate };
 
-declare class __RequestUnion__kextd_kernel_request_subsystem {
-  constructor(init?: __RequestUnion__kextd_kernel_request_subsystemDescriptor);
-  Request_kextd_ping: __Request__kextd_ping_t;
+declare class dt_entry {
+  constructor(init?: dt_entryDescriptor);
+  code: code_desc;
+  data: data_desc;
+  ldt: ldt_desc;
+  task_state: tss_desc;
+  call_gate: call_gate;
+  trap_gate: trap_gate;
+  intr_gate: intr_gate;
+  task_gate: task_gate;
 }
 
-type unnamed_8342763872275782762Descriptor = 
-  | { cpg: number }
-  | { sgs: number };
+type __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor = 
+  | { Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t }
+  | { Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t };
 
-declare class unnamed_8342763872275782762 {
-  constructor(init?: unnamed_8342763872275782762Descriptor);
-  cpg: number;
-  sgs: number;
+declare class __ReplyUnion__receive_sysdiagnose_notification_subsystem {
+  constructor(init?: __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor);
+  Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t;
+  Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t;
 }
 
-type IOPCIAddressSpaceDescriptor = 
-  | { bits: number }
-  | { s: unnamed_14311326824718567520 }
-  | { es: unnamed_12172249341660263692 };
+type vm_addr_struct_tDescriptor = 
+  | { UNSAFE: number };
 
-declare class IOPCIAddressSpace {
-  constructor(init?: IOPCIAddressSpaceDescriptor);
-  bits: number;
-  s: unnamed_14311326824718567520;
-  es: unnamed_12172249341660263692;
+declare class vm_addr_struct_t {
+  constructor(init?: vm_addr_struct_tDescriptor);
+  UNSAFE: number;
 }
 
-type unnamed_3506708481958635193Descriptor = 
-  | { params: unknown /* const array */ };
+type unnamed_16803006733224326053Descriptor = 
+  | { asid: number }
+  | { vmid: number };
 
-declare class unnamed_3506708481958635193 {
-  constructor(init?: unnamed_3506708481958635193Descriptor);
-  params: unknown /* const array */;
+declare class unnamed_16803006733224326053 {
+  constructor(init?: unnamed_16803006733224326053Descriptor);
+  asid: number;
+  vmid: number;
+}
+
+type __ReplyUnion__send_ktrace_background_subsystemDescriptor = 
+  | { Reply_send_ktrace_background_available: __Reply__ktrace_background_available_t };
+
+declare class __ReplyUnion__send_ktrace_background_subsystem {
+  constructor(init?: __ReplyUnion__send_ktrace_background_subsystemDescriptor);
+  Reply_send_ktrace_background_available: __Reply__ktrace_background_available_t;
+}
+
+type unnamed_10414494865187495339Descriptor = 
+  | { level: number }
+  | { raw: number };
+
+declare class unnamed_10414494865187495339 {
+  constructor(init?: unnamed_10414494865187495339Descriptor);
+  level: number;
+  raw: number;
+}
+
+type unnamed_6174747975915617679Descriptor = 
+  | { range: unnamed_11975482992842642533 }
+  | { notRange: unnamed_2475899045996132323 };
+
+declare class unnamed_6174747975915617679 {
+  constructor(init?: unnamed_6174747975915617679Descriptor);
+  range: unnamed_11975482992842642533;
+  notRange: unnamed_2475899045996132323;
 }
 
 type __ReplyUnion__memory_error_notification_subsystemDescriptor = 
@@ -17439,16 +18885,6 @@ declare class __ReplyUnion__memory_error_notification_subsystem {
   constructor(init?: __ReplyUnion__memory_error_notification_subsystemDescriptor);
   Reply_memory_error_notification: __Reply__memory_error_notification_t;
   Reply_mcc_memory_error_notification: __Reply__mcc_memory_error_notification_t;
-}
-
-type unnamed_7329309170505040439Descriptor = 
-  | { b8: unknown /* const array */ }
-  | { b32: unknown /* const array */ };
-
-declare class unnamed_7329309170505040439 {
-  constructor(init?: unnamed_7329309170505040439Descriptor);
-  b8: unknown /* const array */;
-  b32: unknown /* const array */;
 }
 
 declare function panic(string: string): void;
@@ -17980,6 +19416,10 @@ declare function ml_report_minor_badness(badness_id: number): void;
 declare function cpu_event_register_callback(fn: (p1: interop.PointerConvertible, p2: interop.Enum<typeof cpu_event>, p3: number) => boolean, param: interop.PointerConvertible): void;
 
 declare function cpu_event_unregister_callback(fn: (p1: interop.PointerConvertible, p2: interop.Enum<typeof cpu_event>, p3: number) => boolean): void;
+
+declare function cpu_event_debug_log(event: interop.Enum<typeof cpu_event>, cpu_or_cluster: number): void;
+
+declare function dump_cpu_event_log(printf_func: (p1: string) => number): void;
 
 declare function ml_io_read(iovaddr: number, iovsz: number): number;
 
@@ -18997,7 +20437,7 @@ declare function host_vmxon(exclusive: number): number;
 
 declare function host_vmxoff(): void;
 
-declare function sptm_retype(paddr: number, current_type: number, new_type: number, retype_params: sptm_retype_params_t): void;
+declare function sptm_retype(paddr: number, current_type: interop.Enum<typeof sptm_frame_type_t>, new_type: interop.Enum<typeof sptm_frame_type_t>, retype_params: sptm_retype_params_t): void;
 
 declare function libsptm_init(statep: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
@@ -19011,9 +20451,11 @@ declare function sptm_get_paddr_type(paddr: number, frame_typep: interop.Pointer
 
 declare function sptm_paddr_is_last_mapping(paddr: number, refcnt_type: interop.Enum<typeof libsptm_refcnt_type_t>, is_lastp: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
-declare function sptm_triggered_panic(sptm_panicked: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
+declare function sptm_panic_source(panic_domain_id: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
 declare function sptm_get_cpu_state(sptm_logical_cpu_id: number, state_type: interop.Enum<typeof libsptm_cpu_state_t>, state: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
+
+declare function sptm_get_panicking_cpu_id(sptm_logical_cpu_id: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
 declare function sptm_features_available(features: number, available: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
@@ -19031,6 +20473,8 @@ declare function sptm_lockdown_xnu(): void;
 
 declare function sptm_init_xnu_fixups_complete(): void;
 
+declare function sptm_disable_kernel_mode_cpa2(): void;
+
 declare function sptm_xnu_panic_begin(): void;
 
 declare function sptm_map_page(root_pt_paddr: number, vaddr: number, new_pte: number): number;
@@ -19038,6 +20482,10 @@ declare function sptm_map_page(root_pt_paddr: number, vaddr: number, new_pte: nu
 declare function sptm_map_table(root_pt_paddr: number, vaddr: number, target_level: number, new_tte: number): void;
 
 declare function sptm_unmap_table(root_pt_paddr: number, vaddr: number, target_level: number): void;
+
+declare function sptm_surt_alloc(surt_frame: number, surt_index: number, attr_idx: number, flags: number, asid: number): void;
+
+declare function sptm_surt_free(surt_frame: number, surt_index: number): void;
 
 declare function sptm_update_region(root_pt_paddr: number, start_vaddr: number, num_mappings: number, pte_templates_pa: number, options: number): number;
 
@@ -19050,6 +20498,8 @@ declare function sptm_unmap_region(root_pt_paddr: number, start_vaddr: number, n
 declare function sptm_unmap_disjoint(paddr: number, disjoint_ops_pa: number, num_mappings: number): void;
 
 declare function sptm_configure_shared_region(shared_root_pt_paddr: number, start_vaddr: number, page_count: number): void;
+
+declare function sptm_set_shared_region(user_root_pt_paddr: number, shared_root_pt_paddr: number): void;
 
 declare function sptm_nest_region(user_root_pt_paddr: number, shared_root_pt_paddr: number, start_vaddr: number, page_count: number): void;
 
@@ -19101,6 +20551,8 @@ declare function sptm_trace_num_new_traces(sptm_cpu_id: number, prev_state: inte
 
 declare function sptm_copy_callee_saved_state(sptm_logical_cpu_id: number, regp: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
+declare function sptm_get_info(info: interop.Enum<typeof sptm_info_t>, arg: number, output: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
+
 declare function IOMalloc(size: number): interop.Pointer;
 
 declare function IOMallocZero(size: number): interop.Pointer;
@@ -19125,7 +20577,13 @@ declare function IOMallocData(size: number): interop.Pointer;
 
 declare function IOMallocZeroData(size: number): interop.Pointer;
 
+declare function IOMallocDataSharable(size: number): interop.Pointer;
+
+declare function IOMallocZeroDataSharable(size: number): interop.Pointer;
+
 declare function IOFreeData(address: interop.PointerConvertible, size: number): void;
+
+declare function IOFreeDataSharable(address: interop.PointerConvertible, size: number): void;
 
 declare function IOMappedRead8(address: number): number;
 
@@ -19321,6 +20779,40 @@ declare function IODTGetInterruptOptions(regEntry: interop.PointerConvertible, s
 
 declare function IONDRVLibrariesInitialize(provider: interop.PointerConvertible): number;
 
+declare function IOCircularDataQueueCreateWithEntries(options: interop.Enum<typeof IOCircularDataQueueCreateOptions>, numEntries: number, entrySize: number, pQueue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyMemoryDescriptor(queue: interop.PointerConvertible): interop.Pointer;
+
+declare function IOCircularDataQueueDestroy(pQueue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueEnqueue(queue: interop.PointerConvertible, data: interop.PointerConvertible, dataSize: number): number;
+
+declare function IOCircularDataQueueGetLatest(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyLatest(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetNext(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyNext(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetPrevious(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyPrevious(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueIsCurrentDataValid(queue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueSetCursorLatest(queue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetCurrent(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyCurrent(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetLatestWithBlock(queue: interop.PointerConvertible, handler: (p1: interop.PointerConvertible, p2: number) => void): number;
+
+declare function IOCircularDataQueueGetNextWithBlock(queue: interop.PointerConvertible, handler: (p1: interop.PointerConvertible, p2: number) => void): number;
+
+declare function IOCircularDataQueueGetPreviousWithBlock(queue: interop.PointerConvertible, handler: (p1: interop.PointerConvertible, p2: number) => void): number;
+
 declare function FWComputeCRC16(pQuads: interop.PointerConvertible, numQuads: number): number;
 
 declare function FWUpdateCRC16(crc16: number, quad: number): number;
@@ -19330,6 +20822,8 @@ declare function AddFWCycleTimeToFWCycleTime(cycleTime1: number, cycleTime2: num
 declare function SubtractFWCycleTimeFromFWCycleTime(cycleTime1: number, cycleTime2: number): number;
 
 declare function IOFWGetAbsoluteTime(result: interop.PointerConvertible): void;
+
+declare function mbuf_data_len(mbuf: interop.PointerConvertible, out_buf: interop.PointerConvertible, out_len: interop.PointerConvertible): number;
 
 declare function mbuf_data(mbuf: interop.PointerConvertible): interop.Pointer;
 
@@ -19588,6 +21082,74 @@ declare function IOAF_Float32ToNativeInt32(src: interop.PointerConvertible, dest
 declare function IOAF_Float32ToSwapInt32(src: interop.PointerConvertible, dest: interop.PointerConvertible, count: number): void;
 
 declare function IOAF_bcopy_WriteCombine(src: interop.PointerConvertible, dest: interop.PointerConvertible, count: number): void;
+
+declare function _isQueueMemoryCorrupted(queue: interop.PointerConvertible): boolean;
+
+declare function destroyQueueMem(queue: interop.PointerConvertible): number;
+
+declare function _reset(queue: interop.PointerConvertible): number;
+
+declare function _enqueueInternal(queue: interop.PointerConvertible, data: interop.PointerConvertible, dataSize: number, earlyExitForTesting: number): number;
+
+declare function enqueueQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, dataSize: number): number;
+
+declare function isDataEntryValidInQueueMem(queue: interop.PointerConvertible): number;
+
+declare function setCursorLatestInQueueMem(queue: interop.PointerConvertible): number;
+
+declare function _getLatestInQueueMemInternal(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible, copyMem: boolean): number;
+
+declare function getLatestInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function copyLatestInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function _getNextInQueueMemInternal(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible, copyMem: boolean): number;
+
+declare function getNextInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function copyNextInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function _getPrevInQueueMemInternal(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible, copyMem: boolean): number;
+
+declare function getPrevInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function copyPrevInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function _getCurrentInQueueMemInternal(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible, copyMem: boolean): number;
+
+declare function getCurrentInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function copyCurrentInQueueMem(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function _initCursor(queue: interop.PointerConvertible): void;
+
+declare function IOCircularDataQueueCreateWithEntries(options: interop.Enum<typeof IOCircularDataQueueCreateOptions>, numEntries: number, entrySize: number, pQueue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyMemoryDescriptor(queue: interop.PointerConvertible): interop.Pointer;
+
+declare function IOCircularDataQueueDestroy(pQueue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueEnqueue(queue: interop.PointerConvertible, data: interop.PointerConvertible, dataSize: number): number;
+
+declare function IOCircularDataQueueGetLatest(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyLatest(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetNext(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyNext(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetPrevious(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyPrevious(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueIsCurrentDataValid(queue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueSetCursorLatest(queue: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueGetCurrent(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
+
+declare function IOCircularDataQueueCopyCurrent(queue: interop.PointerConvertible, data: interop.PointerConvertible, size: interop.PointerConvertible): number;
 
 declare function vDSP_conv(vDSP_signal: interop.Pointer, vDSP_signalStride: number, vDSP_filter: interop.Pointer, vDSP_strideFilter: number, vDSP_result: interop.Pointer, vDSP_strideResult: number, vDSP_lenResult: number, vDSP_lenFilter: number, temp: string): void;
 
@@ -19914,6 +21476,8 @@ declare function statfs(p1: interop.PointerConvertible, p2: interop.PointerConve
 declare function fstatfs(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
 
 declare function unmount(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
+
+declare function funmount(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
 
 declare function quotactl(p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible): number;
 
@@ -20449,7 +22013,7 @@ declare function kernel_debug(debugid: number, arg1: number, arg2: number, arg3:
 
 declare function kernel_debug1(debugid: number, arg1: number, arg2: number, arg3: number, arg4: number, arg5: number): void;
 
-declare function kernel_debug_flags(debugid: number, arg1: number, arg2: number, arg3: number, arg4: number, flags: number): void;
+declare function kernel_debug_flags(debugid: number, arg1: number, arg2: number, arg3: number, arg4: number, flags: interop.Enum<typeof kdebug_emit_flags_t>): void;
 
 declare function kernel_debug_filtered(debugid: number, arg1: number, arg2: number, arg3: number, arg4: number): void;
 
@@ -20774,6 +22338,436 @@ declare function SecureDTInitPropertyIterator(entry: interop.PointerConvertible,
 declare function SecureDTIterateProperties(iterator: interop.PointerConvertible, foundProperty: interop.PointerConvertible): number;
 
 declare function SecureDTRestartPropertyIteration(iterator: interop.PointerConvertible): number;
+
+declare function airship_strerror(code: interop.Enum<typeof airship_result>): string;
+
+declare function airship_get_ipc_error_description(protocol: interop.PointerConvertible, error: number): string;
+
+declare function airship_device_transport_create_with_iopcidevice(device: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_device_transport_destroy(transport: interop.PointerConvertible): void;
+
+declare function airship_device_transport_suspend(transport: interop.PointerConvertible): void;
+
+declare function airship_device_transport_resume(transport: interop.PointerConvertible): void;
+
+declare function airship_driver_probe_device(transport: interop.PointerConvertible, vendor_id: number, device_id: number): interop.Pointer;
+
+declare function airship_driver_create(protocol: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_driver_destroy(driver: interop.PointerConvertible): void;
+
+declare function airship_driver_set_configuration(driver: interop.PointerConvertible, config: interop.PointerConvertible): void;
+
+declare function airship_driver_set_queue(driver: interop.PointerConvertible, role: interop.PointerConvertible, queue: interop.PointerConvertible): void;
+
+declare function airship_driver_set_exec_stage_change_handler(driver: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_driver_set_power_state_change_handler(driver: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_driver_set_ipc_error_handler(driver: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_driver_activate(driver: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_driver_enter_reset(driver: interop.PointerConvertible): void;
+
+declare function airship_driver_exit_reset(driver: interop.PointerConvertible): void;
+
+declare function airship_driver_set_transport(driver: interop.PointerConvertible, transport: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_driver_clear_transport(driver: interop.PointerConvertible): void;
+
+declare function airship_driver_get_exec_stage(driver: interop.PointerConvertible): number;
+
+declare function airship_driver_probe_exec_stage(driver: interop.PointerConvertible): void;
+
+declare function airship_driver_set_power_target(driver: interop.PointerConvertible, target: interop.Enum<typeof airship_driver_power_target>): void;
+
+declare function airship_driver_get_power_state(driver: interop.PointerConvertible): interop.Enum<typeof airship_driver_power_state>;
+
+declare function airship_driver_get_error_state(driver: interop.PointerConvertible): number;
+
+declare function airship_monitor_set_queue(monitor: interop.PointerConvertible, queue: interop.PointerConvertible): void;
+
+declare function airship_monitor_set_event_handler(monitor: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_monitor_set_cancel_handler(monitor: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_monitor_activate(monitor: interop.PointerConvertible): void;
+
+declare function airship_monitor_suspend(monitor: interop.PointerConvertible): void;
+
+declare function airship_monitor_resume(monitor: interop.PointerConvertible): void;
+
+declare function airship_monitor_cancel(monitor: interop.PointerConvertible): void;
+
+declare function airship_monitor_destroy(monitor: interop.PointerConvertible): void;
+
+declare function airship_monitor_wait(monitor: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_monitor_timedwait(monitor: interop.PointerConvertible, timeout_msec: number): interop.Enum<typeof airship_result>;
+
+declare function airship_monitor_wait_interruptible(monitor: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_monitor_timedwait_interruptible(monitor: interop.PointerConvertible, timeout_msec: number): interop.Enum<typeof airship_result>;
+
+declare function airship_monitor_set_criterion(monitor: interop.PointerConvertible, comparator: interop.Enum<typeof airship_monitor_comparator>, comparand: number, mask: number): void;
+
+declare function airship_client_create_direct(driver: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_client_destroy(client: interop.PointerConvertible): void;
+
+declare function airship_client_acquire_resource(client: interop.PointerConvertible, resource_name: interop.PointerConvertible, selector: number): interop.Enum<typeof airship_result>;
+
+declare function airship_client_release_resource(client: interop.PointerConvertible, resource_name: interop.PointerConvertible, selector: number): void;
+
+declare function airship_client_create_resource_monitor(client: interop.PointerConvertible, resource_name: interop.PointerConvertible, selector: number): interop.Pointer;
+
+declare function airship_client_create_exec_stage_monitor(client: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_client_get_exec_stage(client: interop.PointerConvertible): number;
+
+declare function airship_buffer_create(client: interop.PointerConvertible, size: number, dir: interop.Enum<typeof airship_buffer_direction>): interop.Pointer;
+
+declare function airship_buffer_create_with_iomd(client: interop.PointerConvertible, iomd: interop.PointerConvertible, dir: interop.Enum<typeof airship_buffer_direction>): interop.Pointer;
+
+declare function airship_buffer_destroy(buffer: interop.PointerConvertible): void;
+
+declare function airship_buffer_get_size(buffer: interop.PointerConvertible): number;
+
+declare function airship_buffer_get_addr(buffer: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_buffer_read(buffer: interop.PointerConvertible, dst: interop.PointerConvertible, offset: number, length: number): interop.Enum<typeof airship_result>;
+
+declare function airship_buffer_write(buffer: interop.PointerConvertible, src: interop.PointerConvertible, offset: number, length: number): interop.Enum<typeof airship_result>;
+
+declare function airship_buffer_map(buffer: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_interrupt_create(client: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): interop.Pointer;
+
+declare function airship_interrupt_destroy(interrupt: interop.PointerConvertible): void;
+
+declare function airship_interrupt_set_queue(interrupt: interop.PointerConvertible, queue: interop.PointerConvertible): void;
+
+declare function airship_interrupt_set_event_handler(interrupt: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_interrupt_set_cancel_handler(interrupt: interop.PointerConvertible, handler: () => void): void;
+
+declare function airship_interrupt_get_device_vector(interrupt: interop.PointerConvertible): number;
+
+declare function airship_interrupt_activate(interrupt: interop.PointerConvertible): void;
+
+declare function airship_interrupt_suspend(interrupt: interop.PointerConvertible): void;
+
+declare function airship_interrupt_resume(interrupt: interop.PointerConvertible): void;
+
+declare function airship_interrupt_cancel(interrupt: interop.PointerConvertible): void;
+
+declare function airship_acipc_get_ipc_error_description(error: number): string;
+
+declare function airship_acipc_get_health_status(client: interop.PointerConvertible, detail: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_boot_create(client: interop.PointerConvertible, name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_boot_destroy(boot: interop.PointerConvertible): void;
+
+declare function airship_acipc_boot_get_state(boot: interop.PointerConvertible, out_detail: interop.PointerConvertible): interop.Enum<typeof airship_acipc_boot_state>;
+
+declare function airship_acipc_boot_create_state_monitor(boot: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_boot_read_register(boot: interop.PointerConvertible, register_name: interop.PointerConvertible, register_offset: number, register_length: number, dst: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_boot_write_register(boot: interop.PointerConvertible, register_name: interop.PointerConvertible, register_offset: number, register_length: number, src: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_boot_send_image(boot: interop.PointerConvertible, image: interop.PointerConvertible, image_offset: number, image_length: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_boot_get_image_response(boot: interop.PointerConvertible, out_code: interop.PointerConvertible): interop.Enum<typeof airship_acipc_boot_image_response>;
+
+declare function airship_acipc_boot_probe_image_response(boot: interop.PointerConvertible): void;
+
+declare function airship_acipc_boot_reset(boot: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_create(client: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): interop.Pointer;
+
+declare function airship_acipc_tr_destroy(tr: interop.PointerConvertible): void;
+
+declare function airship_acipc_tr_get_size(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_set_size(tr: interop.PointerConvertible, count: number): void;
+
+declare function airship_acipc_tr_get_backing_ring_size(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_set_backing_ring_size(tr: interop.PointerConvertible, count: number): void;
+
+declare function airship_acipc_tr_get_transfer_footer_size(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_set_transfer_footer_size(tr: interop.PointerConvertible, length: number): void;
+
+declare function airship_acipc_tr_get_completion_footer_size(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_set_completion_footer_size(tr: interop.PointerConvertible, length: number): void;
+
+declare function airship_acipc_tr_get_nominal_transfer_size(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_get_completion_ring(tr: interop.PointerConvertible, out_selector: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_tr_set_completion_ring(tr: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): void;
+
+declare function airship_acipc_tr_get_completion_group(tr: interop.PointerConvertible, out_selector: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_tr_set_completion_group(tr: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): void;
+
+declare function airship_acipc_tr_get_out_of_order(tr: interop.PointerConvertible): boolean;
+
+declare function airship_acipc_tr_get_in_place(tr: interop.PointerConvertible): boolean;
+
+declare function airship_acipc_tr_set_open_clientdata(tr: interop.PointerConvertible, data: interop.PointerConvertible, length: number): void;
+
+declare function airship_acipc_tr_get_trid(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_get_name(tr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_tr_get_selector(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_set_doorbell_moderation(tr: interop.PointerConvertible, interval_usec: number, leeway_usec: number): void;
+
+declare function airship_acipc_tr_set_mode(tr: interop.PointerConvertible, mode: interop.Enum<typeof airship_acipc_tr_mode_t>): void;
+
+declare function airship_acipc_tr_set_interrupt(tr: interop.PointerConvertible, interrupt: interop.PointerConvertible, selector: number): void;
+
+declare function airship_acipc_tr_activate(tr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_get_state(tr: interop.PointerConvertible, out_detail: interop.PointerConvertible): interop.Enum<typeof airship_acipc_ring_state>;
+
+declare function airship_acipc_tr_create_state_monitor(tr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_tr_open(tr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_close(tr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_sync(tr: interop.PointerConvertible, flags: number): void;
+
+declare function airship_acipc_tr_create_sync_monitor(tr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_tr_reset(tr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_synthesize_reset_completions(tr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_disconnect(tr: interop.PointerConvertible): void;
+
+declare function airship_acipc_tr_enqueue_transfer(tr: interop.PointerConvertible, tag: number, flags: number, extbuf: interop.PointerConvertible, extbuf_offset: number, extbuf_length: number, header: interop.PointerConvertible, header_length: number, footer: interop.PointerConvertible, footer_length: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_get_free_space(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_create_free_space_monitor(tr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_tr_get_first_free_tag(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_get_transfer_completion(tr: interop.PointerConvertible, tag: number, out_completion: interop.PointerConvertible, out_header: interop.PointerConvertible, header_size: number, out_footer: interop.PointerConvertible, footer_size: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_tr_get_completed_transfer_count(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_get_first_completed_tag(tr: interop.PointerConvertible): number;
+
+declare function airship_acipc_tr_consume_transfers(tr: interop.PointerConvertible, tag: number, count: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_cr_create(client: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): interop.Pointer;
+
+declare function airship_acipc_cr_destroy(cr: interop.PointerConvertible): void;
+
+declare function airship_acipc_cr_get_backing_ring_size(cr: interop.PointerConvertible): number;
+
+declare function airship_acipc_cr_set_backing_ring_size(cr: interop.PointerConvertible, count: number): void;
+
+declare function airship_acipc_cr_get_footer_size(cr: interop.PointerConvertible): number;
+
+declare function airship_acipc_cr_set_footer_size(cr: interop.PointerConvertible, length: number): void;
+
+declare function airship_acipc_cr_get_completion_group(cr: interop.PointerConvertible, out_selector: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_cr_set_completion_group(cr: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): void;
+
+declare function airship_acipc_cr_get_mirror_enabled(cr: interop.PointerConvertible): boolean;
+
+declare function airship_acipc_cr_set_mirror_enabled(cr: interop.PointerConvertible, enable: boolean): void;
+
+declare function airship_acipc_cr_set_open_clientdata(cr: interop.PointerConvertible, data: interop.PointerConvertible, length: number): void;
+
+declare function airship_acipc_cr_get_crid(cr: interop.PointerConvertible): number;
+
+declare function airship_acipc_cr_get_name(cr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_cr_get_selector(cr: interop.PointerConvertible): number;
+
+declare function airship_acipc_cr_set_doorbell_moderation(cr: interop.PointerConvertible, interval_usec: number, leeway_usec: number): void;
+
+declare function airship_acipc_cr_set_interrupt(cr: interop.PointerConvertible, interrupt: interop.PointerConvertible, selector: number): void;
+
+declare function airship_acipc_cr_activate(cr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_cr_get_state(cr: interop.PointerConvertible, out_detail: interop.PointerConvertible): interop.Enum<typeof airship_acipc_ring_state>;
+
+declare function airship_acipc_cr_create_state_monitor(cr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_cr_open(cr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_cr_close(cr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_cr_reset(cr: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_cr_sync(cr: interop.PointerConvertible, flags: number): void;
+
+declare function airship_acipc_cr_create_sync_monitor(cr: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_cr_get_mirror_element(cr: interop.PointerConvertible, index: number, out_element: interop.PointerConvertible, out_header: interop.PointerConvertible, header_size: number, out_footer: interop.PointerConvertible, footer_size: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_cr_get_mirror_count(cr: interop.PointerConvertible): number;
+
+declare function airship_acipc_cr_consume_mirror_elements(cr: interop.PointerConvertible, count: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_memregion_create(client: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): interop.Pointer;
+
+declare function airship_acipc_memregion_destroy(region: interop.PointerConvertible): void;
+
+declare function airship_acipc_memregion_set_backing_memory(region: interop.PointerConvertible, buffer: interop.PointerConvertible, offset: number, length: number): void;
+
+declare function airship_acipc_memregion_set_map_clientdata(region: interop.PointerConvertible, data: interop.PointerConvertible, length: number): void;
+
+declare function airship_acipc_memregion_activate(region: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_memregion_get_state(region: interop.PointerConvertible, out_detail: interop.PointerConvertible): interop.Enum<typeof airship_acipc_memregion_state>;
+
+declare function airship_acipc_memregion_create_state_monitor(region: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_acipc_memregion_map(region: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_memregion_unmap(region: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_memregion_reset(region: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_create(client: interop.PointerConvertible, name: interop.PointerConvertible, selector: number): interop.Pointer;
+
+declare function airship_acipc_doorbell_destroy(doorbell: interop.PointerConvertible): void;
+
+declare function airship_acipc_doorbell_get_bank(doorbell: interop.PointerConvertible): number;
+
+declare function airship_acipc_doorbell_get_offset(doorbell: interop.PointerConvertible): number;
+
+declare function airship_acipc_doorbell_get_width(doorbell: interop.PointerConvertible): number;
+
+declare function airship_acipc_doorbell_activate(doorbell: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_open(doorbell: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_close(doorbell: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_schedule_update(doorbell: interop.PointerConvertible, interval_us: number, leeway_us: number, value: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_write(doorbell: interop.PointerConvertible, value: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_schedule_update_shared(doorbell: interop.PointerConvertible, interval_us: number, leeway_us: number): interop.Enum<typeof airship_result>;
+
+declare function airship_acipc_doorbell_write_shared(doorbell: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_get_ipc_error_description(error: number): string;
+
+declare function airship_daleipc_create_channel_controller(client: interop.PointerConvertible, channel_name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_channel_controller_destroy(channel_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_channel_controller_activate(channel_ctrl: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_channel_controller_create_sync_monitor(channel_ctrl: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_channel_controller_create_state_monitor(channel_ctrl: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_channel_controller_get_mtu_size(channel_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_channel_controller_get_channel_size(channel_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_channel_controller_get_free_space(channel_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_channel_controller_create_free_space_monitor(channel_ctrl: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_channel_controller_enqueue_transfer(channel_ctrl: interop.PointerConvertible, buffer: interop.PointerConvertible, offset: number, length: number, tag: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_channel_controller_sync(channel_ctrl: interop.PointerConvertible, flags: number): void;
+
+declare function airship_daleipc_channel_controller_get_completed_transfer_count(channel_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_channel_controller_get_transfer_completion(channel_ctrl: interop.PointerConvertible, index: number, out_completion: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_channel_controller_consume_transfers(channel_ctrl: interop.PointerConvertible, count: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_channel_controller_synthesize_reset_completions(channel_ctrl: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_create_uplink_controller(client: interop.PointerConvertible, channel_name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_uplink_controller_destroy(uplink_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_uplink_controller_activate(uplink_ctrl: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_uplink_controller_create_sync_monitor(uplink_ctrl: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_uplink_controller_get_free_space(uplink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_uplink_controller_enqueue_iosk_packet(uplink_ctrl: interop.PointerConvertible, extbuf: interop.PointerConvertible, extbuf_offset: number, length: number, tag: number, channel_id: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_uplink_controller_sync(uplink_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_uplink_controller_get_completed_packet_count(uplink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_uplink_controller_get_packet_completion(uplink_ctrl: interop.PointerConvertible, index: number, out_completion: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_uplink_controller_consume_packets(uplink_ctrl: interop.PointerConvertible, count: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_uplink_controller_synthesize_reset_completions(uplink_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_uplink_controller_get_channel_size(uplink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_create_downlink_controller(client: interop.PointerConvertible, channel_name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_downlink_controller_destroy(downlink_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_downlink_controller_activate(downlink_ctrl: interop.PointerConvertible, buffer_size: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_downlink_controller_create_sync_monitor(downlink_ctrl: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_downlink_controller_get_free_space(downlink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_downlink_controller_enqueue_iosk_packet_buffer(downlink_ctrl: interop.PointerConvertible, buffer: interop.PointerConvertible, tag: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_downlink_controller_sync(downlink_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_downlink_controller_get_completed_packet_count(downlink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_downlink_controller_get_packet_completion(downlink_ctrl: interop.PointerConvertible, index: number, out_completion: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_downlink_controller_consume_packets(downlink_ctrl: interop.PointerConvertible, count: number): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_downlink_controller_synthesize_reset_completions(downlink_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_downlink_controller_get_channel_size(downlink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_create_device_controller(client: interop.PointerConvertible, channel_name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_device_controller_destroy(device_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_device_controller_activate(device_ctrl: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_device_controller_get_device_timings(device_ctrl: interop.PointerConvertible, frc: interop.PointerConvertible, ap: interop.PointerConvertible, host_begin_abs: interop.PointerConvertible, host_end_abs: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_create_network_clock_controller(client: interop.PointerConvertible, channel_name: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_network_clock_controller_destroy(network_clock_ctrl: interop.PointerConvertible): void;
+
+declare function airship_daleipc_network_clock_controller_activate(network_clock_ctrl: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_network_clock_controller_create_clock_monitor(network_clock_ctrl: interop.PointerConvertible): interop.Pointer;
+
+declare function airship_daleipc_network_clock_controller_get_network_clock_updates(network_clock_ctrl: interop.PointerConvertible, frc: interop.PointerConvertible, ap: interop.PointerConvertible, host_begin_abs: interop.PointerConvertible, host_end_abs: interop.PointerConvertible): interop.Enum<typeof airship_result>;
+
+declare function airship_daleipc_network_clock_controller_reset(network_clock_ctrl: interop.PointerConvertible): void;
 
 declare function do_mach_notify_port_deleted(notify: number, name: number): number;
 

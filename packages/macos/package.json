@@ -4,16 +4,15 @@
   "description": "An embeddable, engine-agnostic NativeScript runtime for macOS based on Node-API",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NativeScript/runtime-node-api.git",
+    "url": "https://github.com/NativeScript/napi-ios.git",
     "directory": "packages/macos"
   },
   "main": "index.js",
   "typings": "index.d.ts",
   "type": "module",
   "files": [
-    "dist/macos/NativeScript.node",
+    "build/RelWithDebInfo/NativeScript.apple.node",
     "index.d.ts",
-    "lib",
     "types"
   ],
   "scripts": {

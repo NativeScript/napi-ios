@@ -103,6 +103,8 @@ declare const kAudioAggregateDevicePropertyTapList: number;
 
 declare const kAudioAggregateDevicePropertyActiveSubDeviceList: number;
 
+declare const kAudioDevicePropertyWantsControlsRestored: number;
+
 declare const kAudioDevicePropertySubVolumeScalarToDecibels: number;
 
 declare const kAudioDevicePropertySubVolumeDecibels: number;
@@ -423,8 +425,6 @@ declare const kAudioDeviceStartTimeDontConsultDeviceFlag: number;
 
 declare const kAudioHardwarePropertyPowerHint: number;
 
-declare const kAudioDevicePropertyTransportType: number;
-
 declare const kAudioStreamTerminalTypeTTY: number;
 
 declare const kAudioServerPlugInCustomPropertyDataTypeCFString: number;
@@ -555,6 +555,8 @@ declare const kAudioHardwarePropertyTranslateUIDToBox: number;
 
 declare const kAudioDevicePropertyChannelNumberNameCFString: number;
 
+declare const kAudioDevicePropertyTransportType: number;
+
 declare const kAudioSubDevicePropertyExtraLatency: number;
 
 declare const kAudioAggregateDriftCompensationMaxQuality: number;
@@ -594,6 +596,8 @@ declare const kAudioBoxPropertyHasVideo: number;
 declare const kAudioStreamPropertyLatency: number;
 
 declare const kAudioProcessPropertyPID: number;
+
+declare const kAudioDevicePropertyWantsStreamFormatsRestored: number;
 
 declare const kAudioDevicePropertyDeviceUID: number;
 
@@ -655,6 +659,8 @@ declare const kAudioPropertyWildcardPropertyID: number;
 
 declare const kAudioSelectorControlClassID: number;
 
+declare const kAudioBoxPropertyIsProtected: number;
+
 declare const kAudioClipLightControlClassID: number;
 
 declare const kAudioDevicePropertyPlayThruDestination: number;
@@ -715,21 +721,19 @@ declare const kAudioAggregateDriftCompensationLowQuality: number;
 
 declare const kAudioHardwarePropertyTranslateBundleIDToTransportManager: number;
 
+declare const kAudioDevicePropertyPlayThruDestinationNameForIDCFString: number;
+
 declare const kAudioDevicePropertyTalkback: number;
 
 declare const kAudioSubTapClassID: number;
 
 declare const kAudioServerPlugInCustomPropertyDataTypeNone: number;
 
-declare const kAudioDevicePropertyPlayThruDestinationNameForIDCFString: number;
-
 declare const kAudioObjectPropertySerialNumber: number;
 
 declare const kAudioDevicePropertySubVolumeDecibelsToScalar: number;
 
 declare const kAudioPlugInPropertyTranslateUIDToDevice: number;
-
-declare const kAudioBoxPropertyIsProtected: number;
 
 declare const kAudioPhaseInvertControlClassID: number;
 
@@ -903,12 +907,12 @@ declare class AudioServerPlugInClientInfo {
   mBundleID: interop.Object | null;
 }
 
-type unnamed_3944208891795786455Descriptor = 
+type unnamed_953133404600894789Descriptor = 
   | { mMainHostTicksPerFrame: number }
   | { mMasterHostTicksPerFrame: number };
 
-declare class unnamed_3944208891795786455 {
-  constructor(init?: unnamed_3944208891795786455Descriptor);
+declare class unnamed_953133404600894789 {
+  constructor(init?: unnamed_953133404600894789Descriptor);
   mMainHostTicksPerFrame: number;
   mMasterHostTicksPerFrame: number;
 }
@@ -1033,6 +1037,9 @@ declare class CATapDescription extends NSObject {
   get processes(): NSArray;
   set processes(value: NSArray<interop.Object> | Array<interop.Object>);
 
+  get bundleIDs(): NSArray;
+  set bundleIDs(value: NSArray<interop.Object> | Array<interop.Object>);
+
   mono: boolean;
 
   exclusive: boolean;
@@ -1040,6 +1047,8 @@ declare class CATapDescription extends NSObject {
   mixdown: boolean;
 
   privateTap: boolean;
+
+  processRestoreEnabled: boolean;
 
   muteBehavior: interop.Enum<typeof CATapMuteBehavior>;
 
@@ -1052,6 +1061,8 @@ declare class CATapDescription extends NSObject {
   setUUID(UUID: NSUUID): void;
 
   setProcesses(processes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setBundleIDs(bundleIDs: NSArray<interop.Object> | Array<interop.Object>): void;
 
   isMono(): boolean;
 
@@ -1068,6 +1079,10 @@ declare class CATapDescription extends NSObject {
   isPrivate(): boolean;
 
   setPrivate(privateTap: boolean): void;
+
+  isProcessRestoreEnabled(): boolean;
+
+  setProcessRestoreEnabled(processRestoreEnabled: boolean): void;
 
   isMuted(): interop.Enum<typeof CATapMuteBehavior>;
 

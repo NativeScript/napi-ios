@@ -193,14 +193,6 @@ declare class FFENVELOPE {
   dwFadeTime: number;
 }
 
-declare class FFCUSTOMFORCE {
-  constructor(init?: FFCUSTOMFORCE);
-  cChannels: number;
-  dwSamplePeriod: number;
-  cSamples: number;
-  rglForceData: interop.Pointer;
-}
-
 declare class FFCONDITION {
   constructor(init?: FFCONDITION);
   lOffset: number;
@@ -225,13 +217,21 @@ declare class FFRAMPFORCE {
   lEnd: number;
 }
 
-declare class FFCONSTANTFORCE {
-  constructor(init?: FFCONSTANTFORCE);
-  lMagnitude: number;
+declare class FFCUSTOMFORCE {
+  constructor(init?: FFCUSTOMFORCE);
+  cChannels: number;
+  dwSamplePeriod: number;
+  cSamples: number;
+  rglForceData: interop.Pointer;
 }
 
 declare class __FFDHIDDEN {
   constructor(init?: __FFDHIDDEN);
+}
+
+declare class FFCONSTANTFORCE {
+  constructor(init?: FFCONSTANTFORCE);
+  lMagnitude: number;
 }
 
 declare class FFEFFESCAPE {

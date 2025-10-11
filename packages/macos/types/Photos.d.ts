@@ -13,8 +13,6 @@ declare const PHInvalidImageRequestID: number;
 
 declare const PHContentEditingInputCancelledKey: string;
 
-declare const PHContentEditingInputResultIsInCloudKey: string;
-
 declare const PHLivePhotoInfoIsDegradedKey: string;
 
 declare const PHImageManagerMaximumSize: CGSize;
@@ -31,6 +29,8 @@ declare const PHLocalIdentifiersErrorKey: string;
 
 declare const PHLocalIdentifierNotFound: string;
 
+declare const PHContentEditingInputResultIsInCloudKey: string;
+
 declare const PHContentEditingInputErrorKey: string;
 
 declare const PHLivePhotoInfoCancelledKey: string;
@@ -41,11 +41,9 @@ declare const PHImageErrorKey: string;
 
 declare const PHLivePhotoEditingErrorDomain: string;
 
-declare const PHVideoRequestOptionsDeliveryMode: {
-  Automatic: 0,
-  HighQualityFormat: 1,
-  MediumQualityFormat: 2,
-  FastFormat: 3,
+declare const PHVideoRequestOptionsVersion: {
+  Current: 0,
+  Original: 1,
 };
 
 declare const PHImageRequestOptionsResizeMode: {
@@ -60,9 +58,20 @@ declare const PHImageRequestOptionsDeliveryMode: {
   FastFormat: 2,
 };
 
+declare const PHImageRequestOptionsVersion: {
+  Current: 0,
+  Unadjusted: 1,
+  Original: 2,
+};
+
 declare const PHLivePhotoEditingErrorCode: {
   Unknown: 0,
   Aborted: 1,
+};
+
+declare const PHLivePhotoFrameType: {
+  Photo: 0,
+  Video: 1,
 };
 
 declare const PHPhotosError: {
@@ -89,14 +98,55 @@ declare const PHPhotosError: {
   Invalid: -1,
 };
 
-declare const PHVideoRequestOptionsVersion: {
-  Current: 0,
-  Original: 1,
+declare const PHAccessLevel: {
+  AddOnly: 1,
+  ReadWrite: 2,
 };
 
-declare const PHLivePhotoFrameType: {
-  Photo: 0,
-  Video: 1,
+declare const PHVideoRequestOptionsDeliveryMode: {
+  Automatic: 0,
+  HighQualityFormat: 1,
+  MediumQualityFormat: 2,
+  FastFormat: 3,
+};
+
+declare const PHAssetCollectionSubtype: {
+  AlbumRegular: 2,
+  AlbumSyncedEvent: 3,
+  AlbumSyncedFaces: 4,
+  AlbumSyncedAlbum: 5,
+  AlbumImported: 6,
+  AlbumMyPhotoStream: 100,
+  AlbumCloudShared: 101,
+  SmartAlbumGeneric: 200,
+  SmartAlbumPanoramas: 201,
+  SmartAlbumVideos: 202,
+  SmartAlbumFavorites: 203,
+  SmartAlbumTimelapses: 204,
+  SmartAlbumAllHidden: 205,
+  SmartAlbumRecentlyAdded: 206,
+  SmartAlbumBursts: 207,
+  SmartAlbumSlomoVideos: 208,
+  SmartAlbumUserLibrary: 209,
+  SmartAlbumSelfPortraits: 210,
+  SmartAlbumScreenshots: 211,
+  SmartAlbumDepthEffect: 212,
+  SmartAlbumLivePhotos: 213,
+  SmartAlbumAnimated: 214,
+  SmartAlbumLongExposures: 215,
+  SmartAlbumUnableToUpload: 216,
+  SmartAlbumRAW: 217,
+  SmartAlbumCinematic: 218,
+  SmartAlbumSpatial: 219,
+  SmartAlbumScreenRecordings: 220,
+  Any: 9223372036854775807,
+};
+
+declare const PHCollectionListSubtype: {
+  RegularFolder: 100,
+  SmartFolderEvents: 200,
+  SmartFolderFaces: 201,
+  Any: 9223372036854775807,
 };
 
 declare const PHObjectType: {
@@ -123,6 +173,7 @@ declare const PHAssetMediaSubtype: {
   VideoStreamed: 65536,
   VideoHighFrameRate: 131072,
   VideoTimelapse: 262144,
+  VideoScreenRecording: 524288,
   VideoCinematic: 2097152,
 };
 
@@ -157,28 +208,16 @@ declare const PHImageContentMode: {
   Default: 0,
 };
 
-declare const PHAssetMediaType: {
-  Unknown: 0,
-  Image: 1,
-  Video: 2,
-  Audio: 3,
-};
-
 declare const PHAssetCollectionType: {
   PHAssetCollectionTypeAlbum: 1,
   Smart: 2,
 };
 
-declare const PHCollectionListSubtype: {
-  RegularFolder: 100,
-  SmartFolderEvents: 200,
-  SmartFolderFaces: 201,
-  Any: 9223372036854775807,
-};
-
-declare const PHCollectionListType: {
-  PHCollectionListTypeFolder: 2,
-  Smart: 3,
+declare const PHAssetMediaType: {
+  Unknown: 0,
+  Image: 1,
+  Video: 2,
+  Audio: 3,
 };
 
 declare const PHAuthorizationStatus: {
@@ -189,40 +228,9 @@ declare const PHAuthorizationStatus: {
   Limited: 4,
 };
 
-declare const PHAssetCollectionSubtype: {
-  AlbumRegular: 2,
-  AlbumSyncedEvent: 3,
-  AlbumSyncedFaces: 4,
-  AlbumSyncedAlbum: 5,
-  AlbumImported: 6,
-  AlbumMyPhotoStream: 100,
-  AlbumCloudShared: 101,
-  SmartAlbumGeneric: 200,
-  SmartAlbumPanoramas: 201,
-  SmartAlbumVideos: 202,
-  SmartAlbumFavorites: 203,
-  SmartAlbumTimelapses: 204,
-  SmartAlbumAllHidden: 205,
-  SmartAlbumRecentlyAdded: 206,
-  SmartAlbumBursts: 207,
-  SmartAlbumSlomoVideos: 208,
-  SmartAlbumUserLibrary: 209,
-  SmartAlbumSelfPortraits: 210,
-  SmartAlbumScreenshots: 211,
-  SmartAlbumDepthEffect: 212,
-  SmartAlbumLivePhotos: 213,
-  SmartAlbumAnimated: 214,
-  SmartAlbumLongExposures: 215,
-  SmartAlbumUnableToUpload: 216,
-  SmartAlbumRAW: 217,
-  SmartAlbumCinematic: 218,
-  SmartAlbumSpatial: 219,
-  Any: 9223372036854775807,
-};
-
-declare const PHAccessLevel: {
-  AddOnly: 1,
-  ReadWrite: 2,
+declare const PHCollectionListType: {
+  PHCollectionListTypeFolder: 2,
+  Smart: 3,
 };
 
 declare const PHAssetBurstSelectionType: {
@@ -245,12 +253,6 @@ declare const PHAssetResourceType: {
   AdjustmentBasePairedVideo: 11,
   AdjustmentBaseVideo: 12,
   PhotoProxy: 19,
-};
-
-declare const PHImageRequestOptionsVersion: {
-  Current: 0,
-  Unadjusted: 1,
-  Original: 2,
 };
 
 declare interface PHLivePhotoFrame {
@@ -311,9 +313,11 @@ declare class PHAssetResource extends NSObject {
 
   readonly assetLocalIdentifier: string;
 
-  readonly uniformTypeIdentifier: string;
-
   readonly originalFilename: string;
+
+  readonly contentType: UTType;
+
+  readonly uniformTypeIdentifier: string;
 
   readonly pixelWidth: number;
 
@@ -322,16 +326,6 @@ declare class PHAssetResource extends NSObject {
   static assetResourcesForAsset(asset: PHAsset): NSArray;
 
   static assetResourcesForLivePhoto(livePhoto: PHLivePhoto): NSArray;
-}
-
-declare class PHAssetResourceManager extends NSObject {
-  static defaultManager(): PHAssetResourceManager;
-
-  requestDataForAssetResourceOptionsDataReceivedHandlerCompletionHandler(resource: PHAssetResource, options: PHAssetResourceRequestOptions | null, handler: (p1: NSData) => void, completionHandler: (p1: NSError) => void | null): number;
-
-  writeDataForAssetResourceToFileOptionsCompletionHandler(resource: PHAssetResource, fileURL: NSURL, options: PHAssetResourceRequestOptions | null, completionHandler: (p1: NSError) => void | null): void;
-
-  cancelDataRequest(requestID: number): void;
 }
 
 declare class PHAssetResourceRequestOptions extends NSObject implements NSCopying {
@@ -506,6 +500,8 @@ declare class PHAsset extends PHObject {
 
   readonly mediaSubtypes: interop.Enum<typeof PHAssetMediaSubtype>;
 
+  readonly contentType: UTType;
+
   readonly pixelWidth: number;
 
   readonly pixelHeight: number;
@@ -513,6 +509,8 @@ declare class PHAsset extends PHObject {
   readonly creationDate: NSDate;
 
   readonly modificationDate: NSDate;
+
+  readonly addedDate: NSDate;
 
   readonly location: CLLocation;
 
@@ -628,11 +626,15 @@ declare class PHAdjustmentData extends NSObject {
 declare class PHAssetResourceCreationOptions extends NSObject implements NSCopying {
   originalFilename: string;
 
+  contentType: UTType;
+
   uniformTypeIdentifier: string;
 
   shouldMoveFile: boolean;
 
   setOriginalFilename(originalFilename: string | null): void;
+
+  setContentType(contentType: UTType | null): void;
 
   setUniformTypeIdentifier(uniformTypeIdentifier: string | null): void;
 
@@ -718,6 +720,8 @@ declare class PHContentEditingInput extends NSObject {
   readonly creationDate: NSDate;
 
   readonly location: CLLocation;
+
+  readonly contentType: UTType;
 
   readonly uniformTypeIdentifier: string;
 
@@ -914,6 +918,16 @@ declare class PHFetchResultChangeDetails<ObjectType = interop.Object> extends NS
   readonly hasMoves: boolean;
 
   static changeDetailsFromFetchResultToFetchResultChangedObjects<ObjectType, This extends abstract new (...args: any) => any>(this: This, fromResult: PHFetchResult, toResult: PHFetchResult, changedObjects: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+}
+
+declare class PHAssetResourceManager extends NSObject {
+  static defaultManager(): PHAssetResourceManager;
+
+  requestDataForAssetResourceOptionsDataReceivedHandlerCompletionHandler(resource: PHAssetResource, options: PHAssetResourceRequestOptions | null, handler: (p1: NSData) => void, completionHandler: (p1: NSError) => void | null): number;
+
+  writeDataForAssetResourceToFileOptionsCompletionHandler(resource: PHAssetResource, fileURL: NSURL, options: PHAssetResourceRequestOptions | null, completionHandler: (p1: NSError) => void | null): void;
+
+  cancelDataRequest(requestID: number): void;
 }
 
 declare class PHImageRequestOptions extends NSObject implements NSCopying {

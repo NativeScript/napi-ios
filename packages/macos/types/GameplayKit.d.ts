@@ -5,17 +5,17 @@ declare const GKGameModelMinScore: number;
 
 declare const GKGameModelMaxScore: number;
 
-declare const GKMeshGraphTriangulationMode: {
-  Vertices: 1,
-  Centers: 2,
-  EdgeMidpoints: 4,
-};
-
 declare const GKRTreeSplitStrategy: {
   Halve: 0,
   Linear: 1,
   Quadratic: 2,
   ReduceOverlap: 3,
+};
+
+declare const GKMeshGraphTriangulationMode: {
+  Vertices: 1,
+  Centers: 2,
+  EdgeMidpoints: 4,
 };
 
 declare class GKQuad {
@@ -295,9 +295,6 @@ declare class GKSKNodeComponent extends GKComponent implements GKAgentDelegate {
   readonly debugDescription: string;
 }
 
-declare class GKNoiseSource extends NSObject {
-}
-
 declare class GKEntity extends NSObject implements NSCopying, NSSecureCoding {
   static entity<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -372,10 +369,6 @@ declare class GKRandomSource extends NSObject implements GKRandom, NSSecureCodin
   encodeWithCoder(coder: NSCoder): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class GKQuadtreeNode extends NSObject {
-  readonly quad: GKQuad;
 }
 
 declare class GKNSPredicateRule extends GKRule {
@@ -971,6 +964,10 @@ declare class GKPolygonObstacle extends GKObstacle implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class GKQuadtreeNode extends NSObject {
+  readonly quad: GKQuad;
+}
+
 declare class GKMersenneTwisterRandomSource extends GKRandomSource {
   seed: number;
 
@@ -1144,6 +1141,22 @@ declare class GKARC4RandomSource extends GKRandomSource {
   setSeed(seed: NSData): void;
 }
 
+declare class GKState extends NSObject {
+  readonly stateMachine: GKStateMachine;
+
+  static state<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  init(): this;
+
+  isValidNextState(stateClass: interop.Object): boolean;
+
+  didEnterWithPreviousState(previousState: GKState | null): void;
+
+  updateWithDeltaTime(seconds: number): void;
+
+  willExitWithNextState(nextState: GKState): void;
+}
+
 declare class GKCircleObstacle extends GKObstacle {
   radius: number;
 
@@ -1193,22 +1206,6 @@ declare class GKGridGraph<NodeType = interop.Object> extends GKGraph {
 }
 
 declare class GKShuffledDistribution extends GKRandomDistribution {
-}
-
-declare class GKState extends NSObject {
-  readonly stateMachine: GKStateMachine;
-
-  static state<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  init(): this;
-
-  isValidNextState(stateClass: interop.Object): boolean;
-
-  didEnterWithPreviousState(previousState: GKState | null): void;
-
-  updateWithDeltaTime(seconds: number): void;
-
-  willExitWithNextState(nextState: GKState): void;
 }
 
 declare class GKObstacleGraph<NodeType = interop.Object> extends GKGraph {
@@ -1269,6 +1266,9 @@ declare class GKVoronoiNoiseSource extends GKNoiseSource {
   setDistanceEnabled(distanceEnabled: boolean): void;
 
   setSeed(seed: number): void;
+}
+
+declare class GKNoiseSource extends NSObject {
 }
 
 declare class GKCoherentNoiseSource extends GKNoiseSource {

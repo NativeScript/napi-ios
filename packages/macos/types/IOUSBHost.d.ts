@@ -29,11 +29,11 @@ declare const IOUSBHostMatchingPropertyKeyInterfaceClass: string;
 
 declare const IOUSBHostMatchingPropertyKeyProductID: string;
 
-declare const IOUSBHostMatchingPropertyKeySpeed: string;
-
 declare const IOUSBHostMatchingPropertyKeyInterfaceProtocol: string;
 
 declare const IOUSBHostMatchingPropertyKeyInterfaceNumber: string;
+
+declare const IOUSBHostMatchingPropertyKeySpeed: string;
 
 declare const IOUSBHostMatchingPropertyKeyVendorID: string;
 
@@ -49,18 +49,20 @@ declare const IOUSBHostMatchingPropertyKeyDeviceClass: string;
 
 declare const IOUSBHostPropertyKeyLocationID: string;
 
-declare const IOUSBHostAbortOption: {
-  Asynchronous: 0,
-  Synchronous: 1,
-};
-
-declare const IOUSBHostIsochronousTransferOptions: {
-  IOUSBHostIsochronousTransferOptionsNone: 0,
-};
-
 declare const IOUSBHostObjectDestroyOptions: {
   None: 0,
   DeviceSurrender: 1,
+};
+
+declare const IOUSBHostObjectInitOptions: {
+  None: 0,
+  DeviceCapture: 1,
+  DeviceSeize: 2,
+};
+
+declare const IOUSBHostAbortOption: {
+  Asynchronous: 0,
+  Synchronous: 1,
 };
 
 declare const IOUSBHostIsochronousTransactionOptions: {
@@ -68,10 +70,8 @@ declare const IOUSBHostIsochronousTransactionOptions: {
   Wrap: 1,
 };
 
-declare const IOUSBHostObjectInitOptions: {
-  None: 0,
-  DeviceCapture: 1,
-  DeviceSeize: 2,
+declare const IOUSBHostIsochronousTransferOptions: {
+  IOUSBHostIsochronousTransferOptionsNone: 0,
 };
 
 declare class IOUSBHostIOSourceDescriptors {
@@ -82,23 +82,23 @@ declare class IOUSBHostIOSourceDescriptors {
   sspCompanionDescriptor: IOUSBSuperSpeedPlusIsochronousEndpointCompanionDescriptor;
 }
 
-declare class unnamed_16090723775963643495 {
-  constructor(init?: unnamed_16090723775963643495);
-  status: number;
-  requestCount: number;
-  completeCount: number;
-  reserved: number;
-  timeStamp: number;
-}
-
-declare class unnamed_6583619471767549261 {
-  constructor(init?: unnamed_6583619471767549261);
+declare class unnamed_7407701229536316826 {
+  constructor(init?: unnamed_7407701229536316826);
   status: number;
   requestCount: number;
   offset: number;
   completeCount: number;
   timeStamp: number;
   options: interop.Enum<typeof IOUSBHostIsochronousTransactionOptions>;
+}
+
+declare class unnamed_14189960676606666940 {
+  constructor(init?: unnamed_14189960676606666940);
+  status: number;
+  requestCount: number;
+  completeCount: number;
+  reserved: number;
+  timeStamp: number;
 }
 
 declare function IOUSBGetNextDescriptor(configurationDescriptor: interop.PointerConvertible, currentDescriptor: interop.PointerConvertible): interop.Pointer;
@@ -307,6 +307,10 @@ declare class IOUSBHostObject extends NSObject {
   readonly deviceAddress: number;
 
   frameNumberWithTime(time: interop.PointerConvertible): number;
+
+  currentMicroframeWithTimeError(time: interop.PointerConvertible, error: interop.PointerConvertible): number;
+
+  referenceMicroframeWithTimeError(time: interop.PointerConvertible, error: interop.PointerConvertible): number;
 
   ioDataWithCapacityError(capacity: number, error: interop.PointerConvertible): NSMutableData;
 }

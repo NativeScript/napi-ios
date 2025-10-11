@@ -339,7 +339,7 @@ declare class cc_credentials_f {
 declare class cc_credentials_union {
   constructor(init?: cc_credentials_union);
   version: number;
-  credentials: unnamed_17982207632076097236;
+  credentials: unnamed_11984364579150877983;
 }
 
 declare class cc_ccache_iterator_d {
@@ -501,16 +501,6 @@ declare class cc_credentials_iterator_f {
   clone: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
 }
 
-type unnamed_17982207632076097236Descriptor = 
-  | { credentials_v4: interop.PointerConvertible }
-  | { credentials_v5: interop.PointerConvertible };
-
-declare class unnamed_17982207632076097236 {
-  constructor(init?: unnamed_17982207632076097236Descriptor);
-  credentials_v4: interop.Pointer;
-  credentials_v5: interop.Pointer;
-}
-
 type cred_ptr_union_compatDescriptor = 
   | { pV4Cred: interop.PointerConvertible }
   | { pV5Cred: interop.PointerConvertible };
@@ -519,6 +509,16 @@ declare class cred_ptr_union_compat {
   constructor(init?: cred_ptr_union_compatDescriptor);
   pV4Cred: interop.Pointer;
   pV5Cred: interop.Pointer;
+}
+
+type unnamed_11984364579150877983Descriptor = 
+  | { credentials_v4: interop.PointerConvertible }
+  | { credentials_v5: interop.PointerConvertible };
+
+declare class unnamed_11984364579150877983 {
+  constructor(init?: unnamed_11984364579150877983Descriptor);
+  credentials_v4: interop.Pointer;
+  credentials_v5: interop.Pointer;
 }
 
 declare function cc_initialize(out_context: interop.PointerConvertible, in_version: number, out_supported_version: interop.PointerConvertible, out_vendor: interop.PointerConvertible): number;

@@ -2,6 +2,18 @@
 /// <reference path="./Foundation.d.ts" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const OSLogEntrySignpostType: {
+  Undefined: 0,
+  IntervalBegin: 1,
+  IntervalEnd: 2,
+  Event: 3,
+};
+
+declare const OSLogStoreScope: {
+  System: 0,
+  CurrentProcessIdentifier: 1,
+};
+
 declare const OSLogMessageComponentArgumentCategory: {
   Undefined: 0,
   Data: 1,
@@ -11,17 +23,6 @@ declare const OSLogMessageComponentArgumentCategory: {
   UInt64: 5,
 };
 
-declare const OSLogEnumeratorOptions: {
-  OSLogEnumeratorReverse: 1,
-};
-
-declare const OSLogEntrySignpostType: {
-  Undefined: 0,
-  IntervalBegin: 1,
-  IntervalEnd: 2,
-  Event: 3,
-};
-
 declare const OSLogEntryLogLevel: {
   Undefined: 0,
   Debug: 1,
@@ -29,6 +30,10 @@ declare const OSLogEntryLogLevel: {
   Notice: 3,
   Error: 4,
   Fault: 5,
+};
+
+declare const OSLogEnumeratorOptions: {
+  OSLogEnumeratorReverse: 1,
 };
 
 declare const OSLogEntryStoreCategory: {
@@ -41,11 +46,6 @@ declare const OSLogEntryStoreCategory: {
   LongTerm7: 6,
   LongTerm14: 7,
   LongTerm30: 8,
-};
-
-declare const OSLogStoreScope: {
-  System: 0,
-  CurrentProcessIdentifier: 1,
 };
 
 declare interface OSLogEntryWithPayload {

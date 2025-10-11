@@ -8,6 +8,8 @@ declare const tkIntPlatStubsPtr: interop.Pointer;
 
 declare const tkMacOSXEmbedHandler: interop.Pointer;
 
+declare const tkPlatStubsPtr: interop.Pointer;
+
 declare const tkIntStubsPtr: interop.Pointer;
 
 declare const tkPredefBitmapTable: Tcl_HashTable;
@@ -36,6 +38,8 @@ declare const LU_CAPS: number;
 
 declare const Ttk_Box: number;
 
+declare const tkStubsPtr: interop.Pointer;
+
 declare const tkImgFmtGIF: Tk_PhotoImageFormat;
 
 declare const Ttk_ElementClass: number;
@@ -54,9 +58,9 @@ declare const tkBezierSmoothMethod: Tk_SmoothMethod;
 
 declare const tkOptionObjType: Tcl_ObjType;
 
-declare const Tcl_Obj: number;
-
 declare const tkBorderObjType: Tcl_ObjType;
+
+declare const Tcl_Obj: number;
 
 declare const tkBitmapImageType: Tk_ImageType;
 
@@ -64,11 +68,14 @@ declare const XClassHint: number;
 
 declare const tkTextIndexType: Tcl_ObjType;
 
-declare const tkIntXlibStubsPtr: interop.Pointer;
-
 declare const ttkStubsPtr: interop.Pointer;
 
 declare const tkHandleEventProc: (p1: interop.PointerConvertible) => void;
+
+declare const Ttk_Orient: {
+  HORIZONT: 0,
+  VERTIC: 1,
+};
 
 declare const ArrowDirection: {
   UP: 0,
@@ -98,9 +105,55 @@ declare const TTKStyleVersion2: {
   TK_STYLE_VERSION_2: 2,
 };
 
-declare const XIMStatusDataType: {
-  Text: 0,
-  Bitmap: 1,
+declare const Tk_State: {
+  NULL: -1,
+  ACTIVE: 0,
+  DISABLED: 1,
+  NORMAL: 2,
+  HIDDEN: 3,
+};
+
+declare const Tk_Justify: {
+  LEFT: 0,
+  RIGHT: 1,
+  CENTER: 2,
+};
+
+declare const Tk_Anchor: {
+  N: 0,
+  NE: 1,
+  E: 2,
+  SE: 3,
+  S: 4,
+  SW: 5,
+  W: 6,
+  NW: 7,
+  CENTER: 8,
+};
+
+declare const Tk_ConfigTypes: {
+  BOOLEAN: 0,
+  INT: 1,
+  DOUBLE: 2,
+  STRING: 3,
+  UID: 4,
+  COLOR: 5,
+  FONT: 6,
+  BITMAP: 7,
+  BORDER: 8,
+  RELIEF: 9,
+  CURSOR: 10,
+  ACTIVE_CURSOR: 11,
+  JUSTIFY: 12,
+  ANCHOR: 13,
+  SYNONYM: 14,
+  CAP_STYLE: 15,
+  JOIN_STYLE: 16,
+  PIXELS: 17,
+  MM: 18,
+  WINDOW: 19,
+  CUSTOM: 20,
+  END: 21,
 };
 
 declare const XIMCaretStyle: {
@@ -124,6 +177,11 @@ declare const XIMCaretDirection: {
   DontChange: 11,
 };
 
+declare const XIMStatusDataType: {
+  Text: 0,
+  Bitmap: 1,
+};
+
 declare const Ttk_Side: {
   LEFT: 0,
   TOP: 1,
@@ -131,16 +189,39 @@ declare const Ttk_Side: {
   BOTTOM: 3,
 };
 
+declare const Tk_OptionType: {
+  BOOLEAN: 0,
+  INT: 1,
+  DOUBLE: 2,
+  STRING: 3,
+  STRING_TABLE: 4,
+  COLOR: 5,
+  FONT: 6,
+  BITMAP: 7,
+  BORDER: 8,
+  RELIEF: 9,
+  CURSOR: 10,
+  JUSTIFY: 11,
+  ANCHOR: 12,
+  SYNONYM: 13,
+  PIXELS: 14,
+  WINDOW: 15,
+  END: 16,
+  CUSTOM: 17,
+  STYLE: 18,
+};
+
+declare const Tk_RestrictAction: {
+  DEFER_: 0,
+  PROCESS_: 1,
+  DISCARD_: 2,
+};
+
 declare const XICCEncodingStyle: {
   String: 0,
   CompoundText: 1,
   Text: 2,
   StdICCText: 3,
-};
-
-declare const Ttk_Orient: {
-  HORIZONT: 0,
-  VERTIC: 1,
 };
 
 declare class TkFont {
@@ -238,6 +319,10 @@ declare class TkMacOSXEmbedHandler {
   getOffsetProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
 }
 
+declare class TkPlatStubHooks {
+  constructor(init?: TkPlatStubHooks);
+}
+
 declare class TkIntStubHooks {
   constructor(init?: TkIntStubHooks);
 }
@@ -264,10 +349,6 @@ declare class TkDisplayFocusInfo {
 
 declare class TkWmInfo {
   constructor(init?: TkWmInfo);
-}
-
-declare class TkClipboardTarget {
-  constructor(init?: TkClipboardTarget);
 }
 
 declare class TkMainInfo {
@@ -308,7 +389,7 @@ declare class TkDisplay {
   modeModMask: number;
   metaModMask: number;
   altModMask: number;
-  lockUsage: interop.Enum<typeof TkDisplay::(unnamed at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/System/Library/Frameworks/Tk.framework/Headers/tk-private/tkInt.h:209:5)>;
+  lockUsage: interop.Enum<typeof TkDisplay::(unnamed at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk/System/Library/Frameworks/Tk.framework/Headers/tk-private/tkInt.h:209:5)>;
   numModKeyCodes: number;
   modKeyCodes: interop.Pointer;
   bitmapInit: number;
@@ -511,10 +592,612 @@ declare class TtkStubs {
   ttk_GetOrientFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
 }
 
+declare class TkStubs {
+  constructor(init?: TkStubs);
+  magic: number;
+  hooks: interop.Pointer;
+  tk_MainLoop: () => void | null;
+  tk_3DBorderColor: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_3DBorderGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
+  tk_3DHorizontalBevel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number) => void | null;
+  tk_3DVerticalBevel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
+  tk_AddOption: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => void | null;
+  tk_BindEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void | null;
+  tk_CanvasDrawableCoords: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
+  tk_CanvasEventuallyRedraw: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
+  tk_CanvasGetCoord: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
+  tk_CanvasGetTextInfo: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CanvasPsBitmap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number) => number | null;
+  tk_CanvasPsColor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_CanvasPsFont: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_CanvasPsPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
+  tk_CanvasPsStipple: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  tk_CanvasPsY: (p1: interop.PointerConvertible, p2: number) => number | null;
+  tk_CanvasSetStippleOrigin: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_CanvasTagsParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tk_CanvasTagsPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  tk_CanvasTkwin: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CanvasWindowCoords: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
+  tk_ChangeWindowAttributes: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
+  tk_CharBbox: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  tk_ClearSelection: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_ClipboardAppend: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: string) => number | null;
+  tk_ClipboardClear: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tk_ConfigureInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tk_ConfigureValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tk_ConfigureWidget: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: string, p7: number) => number | null;
+  tk_ConfigureWindow: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
+  tk_ComputeTextLayout: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.Enum<typeof Tk_Justify>, p6: number, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CoordsToWindow: (p1: number, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CreateBinding: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tk_CreateBindingTable: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CreateErrorHandler: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p6: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CreateEventHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
+  tk_CreateGenericHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p2: interop.PointerConvertible) => void | null;
+  tk_CreateImageType: (p1: interop.PointerConvertible) => void | null;
+  tk_CreateItemType: (p1: interop.PointerConvertible) => void | null;
+  tk_CreatePhotoImageFormat: (p1: interop.PointerConvertible) => void | null;
+  tk_CreateSelHandler: (p1: interop.PointerConvertible, p2: number, p3: number, p4: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number) => number, p5: interop.PointerConvertible, p6: number) => void | null;
+  tk_CreateWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => interop.Pointer | null;
+  tk_CreateWindowFromPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => interop.Pointer | null;
+  tk_DefineBitmap: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: number) => number | null;
+  tk_DefineCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_DeleteAllBindings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_DeleteBinding: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string) => number | null;
+  tk_DeleteBindingTable: (p1: interop.PointerConvertible) => void | null;
+  tk_DeleteErrorHandler: (p1: interop.PointerConvertible) => void | null;
+  tk_DeleteEventHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
+  tk_DeleteGenericHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p2: interop.PointerConvertible) => void | null;
+  tk_DeleteImage: (p1: interop.PointerConvertible, p2: string) => void | null;
+  tk_DeleteSelHandler: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_DestroyWindow: (p1: interop.PointerConvertible) => void | null;
+  tk_DisplayName: (p1: interop.PointerConvertible) => string | null;
+  tk_DistanceToTextLayout: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
+  tk_Draw3DPolygon: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number) => void | null;
+  tk_Draw3DRectangle: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
+  tk_DrawChars: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: number, p7: number, p8: number) => void | null;
+  tk_DrawFocusHighlight: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  tk_DrawTextLayout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number) => void | null;
+  tk_Fill3DPolygon: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number) => void | null;
+  tk_Fill3DRectangle: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
+  tk_FindPhoto: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tk_FontId: (p1: interop.PointerConvertible) => number | null;
+  tk_Free3DBorder: (p1: interop.PointerConvertible) => void | null;
+  tk_FreeBitmap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_FreeColor: (p1: interop.PointerConvertible) => void | null;
+  tk_FreeColormap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_FreeCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_FreeFont: (p1: interop.PointerConvertible) => void | null;
+  tk_FreeGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_FreeImage: (p1: interop.PointerConvertible) => void | null;
+  tk_FreeOptions: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => void | null;
+  tk_FreePixmap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_FreeTextLayout: (p1: interop.PointerConvertible) => void | null;
+  tk_FreeXId: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_GCForColor: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
+  tk_GeometryRequest: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_Get3DBorder: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
+  tk_GetAllBindings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_GetAnchor: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tk_GetAtomName: (p1: interop.PointerConvertible, p2: number) => string | null;
+  tk_GetBinding: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string) => string | null;
+  tk_GetBitmap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
+  tk_GetBitmapFromData: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: number) => number | null;
+  tk_GetCapStyle: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tk_GetColor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
+  tk_GetColorByValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetColormap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
+  tk_GetCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
+  tk_GetCursorFromData: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number, p6: number, p7: number, p8: number, p9: string, p10: string) => interop.Pointer | null;
+  tk_GetFont: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
+  tk_GetFontFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetFontMetrics: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_GetGC: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number) => void, p5: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetImageMasterData: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetItemTypes: () => interop.Pointer | null;
+  tk_GetJoinStyle: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tk_GetJustify: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tk_GetNumMainWindows: () => number | null;
+  tk_GetOption: (p1: interop.PointerConvertible, p2: string, p3: string) => string | null;
+  tk_GetPixels: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
+  tk_GetPixmap: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => number | null;
+  tk_GetRelief: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tk_GetRootCoords: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_GetScrollInfo: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  tk_GetScreenMM: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
+  tk_GetSelection: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number, p6: interop.PointerConvertible) => number | null;
+  tk_GetUid: (p1: string) => string | null;
+  tk_GetVisual: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetVRootGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
+  tk_Grab: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  tk_HandleEvent: (p1: interop.PointerConvertible) => void | null;
+  tk_IdToWindow: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
+  tk_ImageChanged: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number) => void | null;
+  tk_Init: (p1: interop.PointerConvertible) => number | null;
+  tk_InternAtom: (p1: interop.PointerConvertible, p2: string) => number | null;
+  tk_IntersectTextLayout: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => number | null;
+  tk_MaintainGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number) => void | null;
+  tk_MainWindow: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_MakeWindowExist: (p1: interop.PointerConvertible) => void | null;
+  tk_ManageGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_MapWindow: (p1: interop.PointerConvertible) => void | null;
+  tk_MeasureChars: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
+  tk_MoveResizeWindow: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
+  tk_MoveWindow: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_MoveToplevelWindow: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_NameOf3DBorder: (p1: interop.PointerConvertible) => string | null;
+  tk_NameOfAnchor: (p1: interop.Enum<typeof Tk_Anchor>) => string | null;
+  tk_NameOfBitmap: (p1: interop.PointerConvertible, p2: number) => string | null;
+  tk_NameOfCapStyle: (p1: number) => string | null;
+  tk_NameOfColor: (p1: interop.PointerConvertible) => string | null;
+  tk_NameOfCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
+  tk_NameOfFont: (p1: interop.PointerConvertible) => string | null;
+  tk_NameOfImage: (p1: interop.PointerConvertible) => string | null;
+  tk_NameOfJoinStyle: (p1: number) => string | null;
+  tk_NameOfJustify: (p1: interop.Enum<typeof Tk_Justify>) => string | null;
+  tk_NameOfRelief: (p1: number) => string | null;
+  tk_NameToWindow: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_OwnSelection: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
+  tk_ParseArgv: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: number) => number | null;
+  tk_PhotoPutBlock_NoComposite: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number) => void | null;
+  tk_PhotoPutZoomedBlock_NoComposite: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => void | null;
+  tk_PhotoGetImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tk_PhotoBlank: (p1: interop.PointerConvertible) => void | null;
+  tk_PhotoExpand_Panic: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_PhotoGetSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_PhotoSetSize_Panic: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_PointToChar: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
+  tk_PostscriptFontName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tk_PreserveColormap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_QueueWindowEvent: (p1: interop.PointerConvertible, p2: interop.Enum<typeof Tcl_QueuePosition>) => void | null;
+  tk_RedrawImage: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number) => void | null;
+  tk_ResizeWindow: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_RestackWindow: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  tk_RestrictEvents: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction>, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction> | null;
+  tk_SafeInit: (p1: interop.PointerConvertible) => number | null;
+  tk_SetAppName: (p1: interop.PointerConvertible, p2: string) => string | null;
+  tk_SetBackgroundFromBorder: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_SetClass: (p1: interop.PointerConvertible, p2: string) => void | null;
+  tk_SetGrid: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
+  tk_SetInternalBorder: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowBackground: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowBackgroundPixmap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowBorder: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowBorderWidth: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowBorderPixmap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowColormap: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tk_SetWindowVisual: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
+  tk_SizeOfBitmap: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
+  tk_SizeOfImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_StrictMotif: (p1: interop.PointerConvertible) => number | null;
+  tk_TextLayoutToPostscript: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_TextWidth: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
+  tk_UndefineCursor: (p1: interop.PointerConvertible) => void | null;
+  tk_UnderlineChars: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: number, p7: number, p8: number, p9: number) => void | null;
+  tk_UnderlineTextLayout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number) => void | null;
+  tk_Ungrab: (p1: interop.PointerConvertible) => void | null;
+  tk_UnmaintainGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_UnmapWindow: (p1: interop.PointerConvertible) => void | null;
+  tk_UnsetGrid: (p1: interop.PointerConvertible) => void | null;
+  tk_UpdatePointer: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => void | null;
+  tk_AllocBitmapFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_Alloc3DBorderFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_AllocColorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_AllocCursorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_AllocFontFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CreateOptionTable: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_DeleteOptionTable: (p1: interop.PointerConvertible) => void | null;
+  tk_Free3DBorderFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_FreeBitmapFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_FreeColorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_FreeConfigOptions: (p1: string, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_FreeSavedOptions: (p1: interop.PointerConvertible) => void | null;
+  tk_FreeCursorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_FreeFontFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_Get3DBorderFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetAnchorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_GetBitmapFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tk_GetColorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetCursorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetOptionInfo: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetOptionValue: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetJustifyFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_GetMMFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tk_GetPixelsFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tk_GetReliefFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_GetScrollInfoObj: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  tk_InitOptions: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tk_MainEx: (p1: number, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => number, p4: interop.PointerConvertible) => void | null;
+  tk_RestoreSavedOptions: (p1: interop.PointerConvertible) => void | null;
+  tk_SetOptions: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
+  tk_InitConsoleChannels: (p1: interop.PointerConvertible) => void | null;
+  tk_CreateConsoleWindow: (p1: interop.PointerConvertible) => number | null;
+  tk_CreateSmoothMethod: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  reserved218: interop.Pointer;
+  reserved219: interop.Pointer;
+  tk_GetDash: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tk_CreateOutline: (p1: interop.PointerConvertible) => void | null;
+  tk_DeleteOutline: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tk_ConfigOutlineGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tk_ChangeOutlineGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_ResetOutlineGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_CanvasPsOutline: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_SetTSOrigin: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  tk_CanvasGetCoordFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tk_CanvasSetOffset: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_DitherPhoto: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
+  tk_PostscriptBitmap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number) => number | null;
+  tk_PostscriptColor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_PostscriptFont: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tk_PostscriptImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number) => number | null;
+  tk_PostscriptPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
+  tk_PostscriptStipple: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
+  tk_PostscriptY: (p1: number, p2: interop.PointerConvertible) => number | null;
+  tk_PostscriptPhoto: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => number | null;
+  tk_CreateClientMessageHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number) => void | null;
+  tk_DeleteClientMessageHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number) => void | null;
+  tk_CreateAnonymousWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
+  tk_SetClassProcs: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tk_SetInternalBorderEx: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
+  tk_SetMinimumRequestSize: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
+  tk_SetCaretPos: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => void | null;
+  tk_PhotoPutBlock_Panic: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number) => void | null;
+  tk_PhotoPutZoomedBlock_Panic: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number) => void | null;
+  tk_CollapseMotionEvents: (p1: interop.PointerConvertible, p2: number) => number | null;
+  tk_RegisterStyleEngine: (p1: string, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetStyleEngine: (p1: string) => interop.Pointer | null;
+  tk_RegisterStyledElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tk_GetElementId: (p1: string) => number | null;
+  tk_CreateStyle: (p1: string, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetStyle: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tk_FreeStyle: (p1: interop.PointerConvertible) => void | null;
+  tk_NameOfStyle: (p1: interop.PointerConvertible) => string | null;
+  tk_AllocStyleFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetStyleFromObj: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_FreeStyleFromObj: (p1: interop.PointerConvertible) => void | null;
+  tk_GetStyledElement: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tk_GetElementSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible) => void | null;
+  tk_GetElementBox: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: interop.PointerConvertible, p11: interop.PointerConvertible, p12: interop.PointerConvertible, p13: interop.PointerConvertible) => void | null;
+  tk_GetElementBorderWidth: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
+  tk_DrawElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => void | null;
+  tk_PhotoExpand: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
+  tk_PhotoPutBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number) => number | null;
+  tk_PhotoPutZoomedBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number, p12: number) => number | null;
+  tk_PhotoSetSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
+  tk_GetUserInactiveTime: (p1: interop.PointerConvertible) => number | null;
+  tk_ResetUserInactiveTime: (p1: interop.PointerConvertible) => void | null;
+  tk_Interp: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tk_CreateOldImageType: (p1: interop.PointerConvertible) => void | null;
+  tk_CreateOldPhotoImageFormat: (p1: interop.PointerConvertible) => void | null;
+}
+
+declare class TkIntStubs {
+  constructor(init?: TkIntStubs);
+  magic: number;
+  hooks: interop.Pointer;
+  tkAllocWindow: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
+  tkBezierPoints: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
+  tkBezierScreenPoints: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void | null;
+  tkBindDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkBindEventProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkBindFree: (p1: interop.PointerConvertible) => void | null;
+  tkBindInit: (p1: interop.PointerConvertible) => void | null;
+  tkChangeEventWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkClipInit: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkComputeAnchor: (p1: interop.Enum<typeof Tk_Anchor>, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => void | null;
+  tkCopyAndGlobalEval: (p1: interop.PointerConvertible, p2: string) => number | null;
+  tkCreateBindingProcedure: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number) => number, p6: (p1: interop.PointerConvertible) => void, p7: interop.PointerConvertible) => number | null;
+  tkCreateCursorFromData: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: number, p6: number, p7: number, p8: XColor, p9: XColor) => interop.Pointer | null;
+  tkCreateFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: number, p6: string) => number | null;
+  tkCreateMainWindow: (p1: interop.PointerConvertible, p2: string, p3: string) => interop.Pointer | null;
+  tkCurrentTime: (p1: interop.PointerConvertible) => number | null;
+  tkDeleteAllImages: (p1: interop.PointerConvertible) => void | null;
+  tkDoConfigureNotify: (p1: interop.PointerConvertible) => void | null;
+  tkDrawInsetFocusHighlight: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void | null;
+  tkEventDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkFillPolygon: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => void | null;
+  tkFindStateNum: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: string) => number | null;
+  tkFindStateString: (p1: interop.PointerConvertible, p2: number) => string | null;
+  tkFocusDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkFocusFilterEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkFocusKeyEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tkFontPkgInit: (p1: interop.PointerConvertible) => void | null;
+  tkFontPkgFree: (p1: interop.PointerConvertible) => void | null;
+  tkFreeBindingTags: (p1: interop.PointerConvertible) => void | null;
+  tkpFreeCursor: (p1: interop.PointerConvertible) => void | null;
+  tkGetBitmapData: (p1: interop.PointerConvertible, p2: string, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => string | null;
+  tkGetButtPoints: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void | null;
+  tkGetCursorByName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
+  tkGetDefaultScreenName: (p1: interop.PointerConvertible, p2: string) => string | null;
+  tkGetDisplay: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkGetDisplayOf: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tkGetFocusWin: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkGetInterpNames: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkGetMiterPoints: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  tkGetPointerCoords: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  tkGetServerInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkGrabDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkGrabState: (p1: interop.PointerConvertible) => number | null;
+  tkIncludePoint: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkInOutEvents: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: interop.Enum<typeof Tcl_QueuePosition>) => void | null;
+  tkInstallFrameMenu: (p1: interop.PointerConvertible) => void | null;
+  tkKeysymToString: (p1: number) => string | null;
+  tkLineToArea: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tkLineToPoint: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  tkMakeBezierCurve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  tkMakeBezierPostscript: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
+  tkOptionClassChanged: (p1: interop.PointerConvertible) => void | null;
+  tkOptionDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkOvalToArea: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkOvalToPoint: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
+  tkpChangeFocus: (p1: interop.PointerConvertible, p2: number) => number | null;
+  tkpCloseDisplay: (p1: interop.PointerConvertible) => void | null;
+  tkpClaimFocus: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tkpDisplayWarning: (p1: string, p2: string) => void | null;
+  tkpGetAppName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkpGetOtherWindow: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkpGetWrapperWindow: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkpInit: (p1: interop.PointerConvertible) => number | null;
+  tkpInitializeMenuBindings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkpMakeContainer: (p1: interop.PointerConvertible) => void | null;
+  tkpMakeMenuWindow: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tkpMakeWindow: (p1: interop.PointerConvertible, p2: number) => number | null;
+  tkpMenuNotifyToplevelCreate: (p1: interop.PointerConvertible, p2: string) => void | null;
+  tkpOpenDisplay: (p1: string) => interop.Pointer | null;
+  tkPointerEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkPolygonToArea: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  tkPolygonToPoint: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  tkPositionInTree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkpRedirectKeyEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkpSetMainMenubar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => void | null;
+  tkpUseWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
+  tkpWindowWasRecentlyDeleted: (p1: number, p2: interop.PointerConvertible) => number | null;
+  tkQueueEventForAllChildren: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkReadBitmapFile: (p1: interop.PointerConvertible, p2: number, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
+  tkScrollWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: interop.PointerConvertible) => number | null;
+  tkSelDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkSelEventProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkSelInit: (p1: interop.PointerConvertible) => void | null;
+  tkSelPropProc: (p1: interop.PointerConvertible) => void | null;
+  reserved84: interop.Pointer;
+  tkSetWindowMenuBar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => void | null;
+  tkStringToKeysym: (p1: string) => number | null;
+  tkThickPolyLineToArea: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
+  tkWmAddToColormapWindows: (p1: interop.PointerConvertible) => void | null;
+  tkWmDeadWindow: (p1: interop.PointerConvertible) => void | null;
+  tkWmFocusToplevel: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkWmMapWindow: (p1: interop.PointerConvertible) => void | null;
+  tkWmNewWindow: (p1: interop.PointerConvertible) => void | null;
+  tkWmProtocolEventProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkWmRemoveFromColormapWindows: (p1: interop.PointerConvertible) => void | null;
+  tkWmRestackToplevel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
+  tkWmSetClass: (p1: interop.PointerConvertible) => void | null;
+  tkWmUnmapWindow: (p1: interop.PointerConvertible) => void | null;
+  tkDebugBitmap: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tkDebugBorder: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tkDebugCursor: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tkDebugColor: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tkDebugConfig: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tkDebugFont: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tkFindStateNumObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tkGetBitmapPredefTable: () => interop.Pointer | null;
+  tkGetDisplayList: () => interop.Pointer | null;
+  tkGetMainInfoList: () => interop.Pointer | null;
+  tkGetWindowFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  tkpGetString: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => string | null;
+  tkpGetSubFonts: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkpGetSystemDefault: (p1: interop.PointerConvertible, p2: string, p3: string) => interop.Pointer | null;
+  tkpMenuThreadInit: () => void | null;
+  reserved113: interop.Pointer;
+  reserved114: interop.Pointer;
+  reserved115: interop.Pointer;
+  reserved116: interop.Pointer;
+  reserved117: interop.Pointer;
+  reserved118: interop.Pointer;
+  reserved119: interop.Pointer;
+  reserved120: interop.Pointer;
+  reserved121: interop.Pointer;
+  reserved122: interop.Pointer;
+  reserved123: interop.Pointer;
+  reserved124: interop.Pointer;
+  reserved125: interop.Pointer;
+  reserved126: interop.Pointer;
+  reserved127: interop.Pointer;
+  reserved128: interop.Pointer;
+  reserved129: interop.Pointer;
+  reserved130: interop.Pointer;
+  reserved131: interop.Pointer;
+  reserved132: interop.Pointer;
+  reserved133: interop.Pointer;
+  reserved134: interop.Pointer;
+  tkpDrawHighlightBorder: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => void | null;
+  tkSetFocusWin: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tkpSetKeycodeAndState: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
+  tkpGetKeySym: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  tkpInitKeymapInfo: (p1: interop.PointerConvertible) => void | null;
+  tkPhotoGetValidRegion: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkWmStackorderToplevel: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  tkFocusFree: (p1: interop.PointerConvertible) => void | null;
+  tkClipCleanup: (p1: interop.PointerConvertible) => void | null;
+  tkGCCleanup: (p1: interop.PointerConvertible) => void | null;
+  reserved145: interop.Pointer;
+  tkStylePkgInit: (p1: interop.PointerConvertible) => void | null;
+  tkStylePkgFree: (p1: interop.PointerConvertible) => void | null;
+  tkToplevelWindowForCommand: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
+  tkGetOptionSpec: (p1: string, p2: interop.PointerConvertible) => interop.Pointer | null;
+  tkMakeRawCurve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  tkMakeRawCurvePostscript: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
+  tkpDrawFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void | null;
+  tkCreateThreadExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
+  tkDeleteThreadExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
+  reserved155: interop.Pointer;
+  tkpTestembedCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
+  tkpTesttextCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
+  reserved158: interop.Pointer;
+  reserved159: interop.Pointer;
+  reserved160: interop.Pointer;
+  reserved161: interop.Pointer;
+  reserved162: interop.Pointer;
+  reserved163: interop.Pointer;
+  reserved164: interop.Pointer;
+  reserved165: interop.Pointer;
+  reserved166: interop.Pointer;
+  reserved167: interop.Pointer;
+  reserved168: interop.Pointer;
+  tkStateParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tkStatePrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  tkCanvasDashParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tkCanvasDashPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  tkOffsetParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tkOffsetPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  tkPixelParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tkPixelPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  tkOrientParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tkOrientPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  tkSmoothParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  tkSmoothPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+}
+
+declare class Tk_ElementOptionSpec {
+  constructor(init?: Tk_ElementOptionSpec);
+  name: string | null;
+  type: interop.Enum<typeof Tk_OptionType>;
+}
+
+declare class Tk_ImageType {
+  constructor(init?: Tk_ImageType);
+  name: string | null;
+  createProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  getProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  displayProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
+  freeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  deleteProc: (p1: interop.PointerConvertible) => void | null;
+  postscriptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number) => number | null;
+  nextPtr: interop.Pointer;
+  reserved: string | null;
+}
+
+declare class Tk_ItemType {
+  constructor(init?: Tk_ItemType);
+  name: string | null;
+  itemSize: number;
+  createProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number | null;
+  configSpecs: interop.Pointer;
+  configProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: number) => number | null;
+  coordProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number | null;
+  deleteProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  displayProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number) => void | null;
+  alwaysRedraw: number;
+  pointProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  areaProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  postscriptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
+  scaleProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number) => void | null;
+  translateProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  indexProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: interop.PointerConvertible) => number | null;
+  icursorProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
+  selectionProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: number) => number | null;
+  insertProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string) => void | null;
+  dCharsProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  nextPtr: interop.Pointer;
+  reserved1: string | null;
+  reserved2: number;
+  reserved3: string | null;
+  reserved4: string | null;
+}
+
+declare class XVirtualEvent {
+  constructor(init?: XVirtualEvent);
+  type: number;
+  serial: number;
+  send_event: number;
+  display: interop.Pointer;
+  event: number;
+  root: number;
+  subwindow: number;
+  time: number;
+  x: number;
+  y: number;
+  x_root: number;
+  y_root: number;
+  state: number;
+  name: string | null;
+  same_screen: number;
+  user_data: interop.Pointer;
+}
+
+declare class Tk_ClassProcs {
+  constructor(init?: Tk_ClassProcs);
+  size: number;
+  worldChangedProc: (p1: interop.PointerConvertible) => void | null;
+  createProc: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  modalProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+}
+
+declare class Tk_FontMetrics {
+  constructor(init?: Tk_FontMetrics);
+  ascent: number;
+  descent: number;
+  linespace: number;
+}
+
+declare class TkOption {
+  constructor(init?: TkOption);
+}
+
+declare class Tk_SavedOption {
+  constructor(init?: Tk_SavedOption);
+  optionPtr: interop.Pointer;
+  valuePtr: interop.Pointer;
+  internalForm: number;
+}
+
+declare class Tk_OptionSpec {
+  constructor(init?: Tk_OptionSpec);
+  type: interop.Enum<typeof Tk_OptionType>;
+  optionName: string | null;
+  dbName: string | null;
+  dbClass: string | null;
+  defValue: string | null;
+  objOffset: number;
+  internalOffset: number;
+  flags: number;
+  clientData: interop.Pointer;
+  typeMask: number;
+}
+
+declare class Tk_StyleEngine_ {
+  constructor(init?: Tk_StyleEngine_);
+}
+
+declare class Tk_Style_ {
+  constructor(init?: Tk_Style_);
+}
+
+declare class Tk_Window_ {
+  constructor(init?: Tk_Window_);
+}
+
+declare class Tk_OptionTable_ {
+  constructor(init?: Tk_OptionTable_);
+}
+
+declare class Tk_Cursor_ {
+  constructor(init?: Tk_Cursor_);
+}
+
+declare class Tk_Canvas_ {
+  constructor(init?: Tk_Canvas_);
+}
+
+declare class Tk_BindingTable_ {
+  constructor(init?: Tk_BindingTable_);
+}
+
 declare class _XIMStatusDrawCallbackStruct {
   constructor(init?: _XIMStatusDrawCallbackStruct);
   type: interop.Enum<typeof XIMStatusDataType>;
-  data: unnamed_4832909701413217176;
+  data: unnamed_14461178624373966829;
 }
 
 declare class _XIMPreeditDrawCallbackStruct {
@@ -584,7 +1267,7 @@ declare class XClientMessageEvent {
   window: number;
   message_type: number;
   format: number;
-  data: unnamed_14199968436853847722;
+  data: unnamed_13200893692902755379;
 }
 
 declare class XSelectionEvent {
@@ -714,13 +1397,6 @@ declare class _XIMFilter {
   constructor(init?: _XIMFilter);
 }
 
-declare class unnamed_1843488119328023465 {
-  constructor(init?: unnamed_1843488119328023465);
-  defaultCCCs: string | null;
-  clientCmaps: string | null;
-  perVisualIntensityMaps: string | null;
-}
-
 declare class _XKeytrans {
   constructor(init?: _XKeytrans);
 }
@@ -731,16 +1407,6 @@ declare class _XLockInfo {
 
 declare class _XrmHashBucketRec {
   constructor(init?: _XrmHashBucketRec);
-}
-
-declare class XColor {
-  constructor(init?: XColor);
-  pixel: number;
-  red: number;
-  green: number;
-  blue: number;
-  flags: number;
-  pad: number;
 }
 
 declare class XHostAddress {
@@ -839,7 +1505,7 @@ declare class _XDisplay {
   mode_switch: number;
   context_db: interop.Pointer;
   error_vec: interop.Pointer;
-  cms: unnamed_1843488119328023465;
+  cms: unnamed_16538877205104190706;
   im_filters: interop.Pointer;
   qfree: interop.Pointer;
   next_event_serial_num: number;
@@ -854,8 +1520,8 @@ declare class _XExtData {
   private_data: string | null;
 }
 
-declare class unnamed_11692276042080515452 {
-  constructor(init?: unnamed_11692276042080515452);
+declare class unnamed_14383236484837822929 {
+  constructor(init?: unnamed_14383236484837822929);
   colormap: number;
   red_max: number;
   red_mult: number;
@@ -868,28 +1534,22 @@ declare class unnamed_11692276042080515452 {
   killid: number;
 }
 
-declare class unnamed_6996903127573615657 {
-  constructor(init?: unnamed_6996903127573615657);
-  visual: interop.Pointer;
-  visualid: number;
-  screen: number;
-  depth: number;
-  class: number;
-  red_mask: number;
-  green_mask: number;
-  blue_mask: number;
-  colormap_size: number;
-  bits_per_rgb: number;
-}
-
 declare class XClassHint {
   constructor(init?: XClassHint);
   res_name: string | null;
   res_class: string | null;
 }
 
-declare class unnamed_15824078094813179419 {
-  constructor(init?: unnamed_15824078094813179419);
+declare class unnamed_17485495249698911356 {
+  constructor(init?: unnamed_17485495249698911356);
+  value: interop.Pointer;
+  encoding: number;
+  format: number;
+  nitems: number;
+}
+
+declare class unnamed_1739132022643102539 {
+  constructor(init?: unnamed_1739132022643102539);
   flags: number;
   input: number;
   initial_state: number;
@@ -899,12 +1559,6 @@ declare class unnamed_15824078094813179419 {
   icon_y: number;
   icon_mask: number;
   window_group: number;
-}
-
-declare class unnamed_16362221333588553264 {
-  constructor(init?: unnamed_16362221333588553264);
-  x: number;
-  y: number;
 }
 
 declare class XSizeHints {
@@ -920,8 +1574,8 @@ declare class XSizeHints {
   max_height: number;
   width_inc: number;
   height_inc: number;
-  min_aspect: unnamed_16362221333588553264;
-  max_aspect: unnamed_16362221333588553264;
+  min_aspect: unnamed_16478190308515574018;
+  max_aspect: unnamed_16478190308515574018;
   base_width: number;
   base_height: number;
   win_gravity: number;
@@ -933,6 +1587,13 @@ declare class XExtCodes {
   major_opcode: number;
   first_event: number;
   first_error: number;
+}
+
+declare class Tk_TSOffset {
+  constructor(init?: Tk_TSOffset);
+  flags: number;
+  xoffset: number;
+  yoffset: number;
 }
 
 declare class XExposeEvent {
@@ -1009,6 +1670,15 @@ declare class Ttk_Padding {
   bottom: number;
 }
 
+declare class XActivateDeactivateEvent {
+  constructor(init?: XActivateDeactivateEvent);
+  type: number;
+  serial: number;
+  send_event: number;
+  display: interop.Pointer;
+  window: number;
+}
+
 declare class Screen {
   constructor(init?: Screen);
   ext_data: interop.Pointer;
@@ -1036,7 +1706,7 @@ declare class Screen {
 declare class TkpClipMask {
   constructor(init?: TkpClipMask);
   type: number;
-  value: unnamed_7374624010445545990;
+  value: unnamed_466373221483677888;
 }
 
 declare class XPoint {
@@ -1051,6 +1721,25 @@ declare class XModifierKeymap {
   modifiermap: interop.Pointer;
 }
 
+declare class Tk_ArgvInfo {
+  constructor(init?: Tk_ArgvInfo);
+  key: string | null;
+  type: number;
+  src: string | null;
+  dst: string | null;
+  help: string | null;
+}
+
+declare class Tk_ObjCustomOption {
+  constructor(init?: Tk_ObjCustomOption);
+  name: string | null;
+  setProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: number, p7: string, p8: number) => number | null;
+  getProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => interop.Pointer | null;
+  restoreProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => void | null;
+  freeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => void | null;
+  clientData: interop.Pointer;
+}
+
 declare class XSelectionClearEvent {
   constructor(init?: XSelectionClearEvent);
   type: number;
@@ -1062,18 +1751,16 @@ declare class XSelectionClearEvent {
   time: number;
 }
 
+declare class Tk_3DBorder_ {
+  constructor(init?: Tk_3DBorder_);
+}
+
 declare class XRectangle {
   constructor(init?: XRectangle);
   x: number;
   y: number;
   width: number;
   height: number;
-}
-
-declare class TkIntXlibStubs {
-  constructor(init?: TkIntXlibStubs);
-  magic: number;
-  hooks: interop.Pointer;
 }
 
 declare class XConfigureEvent {
@@ -1093,6 +1780,33 @@ declare class XConfigureEvent {
   override_redirect: number;
 }
 
+declare class Tk_TextLayout_ {
+  constructor(init?: Tk_TextLayout_);
+}
+
+declare class Tk_PhotoImageBlock {
+  constructor(init?: Tk_PhotoImageBlock);
+  pixelPtr: interop.Pointer;
+  width: number;
+  height: number;
+  pitch: number;
+  pixelSize: number;
+  offset: unknown /* const array */;
+}
+
+declare class Tk_SavedOptions {
+  constructor(init?: Tk_SavedOptions);
+  recordPtr: string | null;
+  tkwin: interop.Pointer;
+  numItems: number;
+  items: unknown /* const array */;
+  nextPtr: interop.Pointer;
+}
+
+declare class TkFontInfo {
+  constructor(init?: TkFontInfo);
+}
+
 declare class Ttk_ResourceCache_ {
   constructor(init?: Ttk_ResourceCache_);
 }
@@ -1107,14 +1821,6 @@ declare class XColormapEvent {
   colormap: number;
   new: number;
   state: number;
-}
-
-declare class unnamed_4349523988261055836 {
-  constructor(init?: unnamed_4349523988261055836);
-  value: interop.Pointer;
-  encoding: number;
-  format: number;
-  nitems: number;
 }
 
 declare class XAnyEvent {
@@ -1135,6 +1841,12 @@ declare class TtkEnsemble {
   name: string | null;
   command: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
   ensemble: interop.Pointer;
+}
+
+declare class Tk_Dash {
+  constructor(init?: Tk_Dash);
+  number: number;
+  pattern: unnamed_5647942776478080617;
 }
 
 declare class XVisibilityEvent {
@@ -1182,6 +1894,13 @@ declare class XIconSize {
   height_inc: number;
 }
 
+declare class Tk_GeomMgr {
+  constructor(init?: Tk_GeomMgr);
+  name: string | null;
+  requestProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  lostSlaveProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+}
+
 declare class XKeyEvent {
   constructor(init?: XKeyEvent);
   type: number;
@@ -1227,6 +1946,18 @@ declare class Ttk_LayoutNode_ {
   constructor(init?: Ttk_LayoutNode_);
 }
 
+declare class Tk_PhotoImageFormat {
+  constructor(init?: Tk_PhotoImageFormat);
+  name: string | null;
+  fileMatchProc: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  stringMatchProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  fileReadProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number) => number | null;
+  stringReadProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => number | null;
+  fileWriteProc: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  stringWriteProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  nextPtr: interop.Pointer;
+}
+
 declare class TkpGCCache {
   constructor(init?: TkpGCCache);
   cachedForeground: number;
@@ -1242,8 +1973,16 @@ declare class _XIMPreeditCaretCallbackStruct {
   style: interop.Enum<typeof XIMCaretStyle>;
 }
 
-declare class TkIntXlibStubHooks {
-  constructor(init?: TkIntXlibStubHooks);
+declare class Tk_ConfigSpec {
+  constructor(init?: Tk_ConfigSpec);
+  type: number;
+  argvName: string | null;
+  dbName: string | null;
+  dbClass: string | null;
+  defValue: string | null;
+  offset: number;
+  specFlags: number;
+  customPtr: interop.Pointer;
 }
 
 declare class _XExten {
@@ -1317,6 +2056,10 @@ declare class XGCValues {
   dashes: number;
 }
 
+declare class Tk_ErrorHandler_ {
+  constructor(init?: Tk_ErrorHandler_);
+}
+
 declare class Visual {
   constructor(init?: Visual);
   ext_data: interop.Pointer;
@@ -1327,10 +2070,6 @@ declare class Visual {
   blue_mask: number;
   bits_per_rgb: number;
   map_entries: number;
-}
-
-declare class TkFontInfo {
-  constructor(init?: TkFontInfo);
 }
 
 declare class XGravityEvent {
@@ -1366,12 +2105,48 @@ declare class XCrossingEvent {
   state: number;
 }
 
+declare class unnamed_16478190308515574018 {
+  constructor(init?: unnamed_16478190308515574018);
+  x: number;
+  y: number;
+}
+
 declare class TtkStubHooks {
   constructor(init?: TtkStubHooks);
 }
 
+declare class XMapEvent {
+  constructor(init?: XMapEvent);
+  type: number;
+  serial: number;
+  send_event: number;
+  display: interop.Pointer;
+  event: number;
+  window: number;
+  override_redirect: number;
+}
+
+declare class Tk_Image__ {
+  constructor(init?: Tk_Image__);
+}
+
 declare class TkpCursor_ {
   constructor(init?: TkpCursor_);
+}
+
+declare class Tk_ElementSpec {
+  constructor(init?: Tk_ElementSpec);
+  version: number;
+  name: string | null;
+  options: interop.Pointer;
+  getSize: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible) => void | null;
+  getBox: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: interop.PointerConvertible, p11: interop.PointerConvertible, p12: interop.PointerConvertible, p13: interop.PointerConvertible) => void | null;
+  getBorderWidth: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  draw: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => void | null;
+}
+
+declare class Tk_Font_ {
+  constructor(init?: Tk_Font_);
 }
 
 declare class XDestroyWindowEvent {
@@ -1399,6 +2174,34 @@ declare class XPixmapFormatValues {
   scanline_pad: number;
 }
 
+declare class XColor {
+  constructor(init?: XColor);
+  pixel: number;
+  red: number;
+  green: number;
+  blue: number;
+  flags: number;
+  pad: number;
+}
+
+declare class Tk_SmoothMethod {
+  constructor(init?: Tk_SmoothMethod);
+  name: string | null;
+  coordProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  postscriptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => void | null;
+}
+
+declare class Tk_CustomOption {
+  constructor(init?: Tk_CustomOption);
+  parseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
+  printProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
+  clientData: interop.Pointer;
+}
+
+declare class Tk_PostscriptInfo_ {
+  constructor(init?: Tk_PostscriptInfo_);
+}
+
 declare class XFontProp {
   constructor(init?: XFontProp);
   name: number;
@@ -1414,6 +2217,13 @@ declare class XUnmapEvent {
   event: number;
   window: number;
   from_configure: number;
+}
+
+declare class unnamed_16538877205104190706 {
+  constructor(init?: unnamed_16538877205104190706);
+  defaultCCCs: string | null;
+  clientCmaps: string | null;
+  perVisualIntensityMaps: string | null;
 }
 
 declare class XTimeCoord {
@@ -1451,12 +2261,81 @@ declare class funcs {
   add_pixel: (p1: interop.PointerConvertible, p2: number) => number | null;
 }
 
+declare class Tk_Item {
+  constructor(init?: Tk_Item);
+  id: number;
+  nextPtr: interop.Pointer;
+  staticTagSpace: unknown /* const array */;
+  tagPtr: interop.Pointer;
+  tagSpace: number;
+  numTags: number;
+  typePtr: interop.Pointer;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  prevPtr: interop.Pointer;
+  state: interop.Enum<typeof Tk_State>;
+  reserved1: string | null;
+  redraw_flags: number;
+}
+
 declare class TkXLFDAttributes {
   constructor(init?: TkXLFDAttributes);
   foundry: string | null;
   slant: number;
   setwidth: number;
   charset: string | null;
+}
+
+declare class TkStubHooks {
+  constructor(init?: TkStubHooks);
+  tkPlatStubs: interop.Pointer;
+  tkIntStubs: interop.Pointer;
+  tkIntPlatStubs: interop.Pointer;
+  tkIntXlibStubs: interop.Pointer;
+}
+
+declare class Tk_FakeWin {
+  constructor(init?: Tk_FakeWin);
+  display: interop.Pointer;
+  dummy1: string | null;
+  screenNum: number;
+  visual: interop.Pointer;
+  depth: number;
+  window: number;
+  dummy2: string | null;
+  dummy3: string | null;
+  parentPtr: interop.Pointer;
+  dummy4: string | null;
+  dummy5: string | null;
+  pathName: string | null;
+  nameUid: string | null;
+  classUid: string | null;
+  changes: XWindowChanges;
+  dummy6: number;
+  atts: XSetWindowAttributes;
+  dummy7: number;
+  flags: number;
+  dummy8: string | null;
+  dummy10: interop.Pointer;
+  dummy11: number;
+  dummy12: number;
+  dummy13: string | null;
+  dummy14: string | null;
+  dummy15: interop.Pointer;
+  reqWidth: number;
+  reqHeight: number;
+  internalBorderLeft: number;
+  dummy16: string | null;
+  dummy17: string | null;
+  dummy18: interop.Pointer;
+  dummy19: string | null;
+  internalBorderRight: number;
+  internalBorderTop: number;
+  internalBorderBottom: number;
+  minReqWidth: number;
+  minReqHeight: number;
 }
 
 declare class TkStateMap {
@@ -1467,10 +2346,6 @@ declare class TkStateMap {
 
 declare class TkSelectionInfo {
   constructor(init?: TkSelectionInfo);
-}
-
-declare class ElArray {
-  constructor(init?: ElArray);
 }
 
 declare class _XImage {
@@ -1494,6 +2369,10 @@ declare class _XImage {
   f: funcs;
 }
 
+declare class Tk_StyledElement_ {
+  constructor(init?: Tk_StyledElement_);
+}
+
 declare class XIMCallback {
   constructor(init?: XIMCallback);
   client_data: string | null;
@@ -1504,6 +2383,24 @@ declare class _XComposeStatus {
   constructor(init?: _XComposeStatus);
   compose_ptr: number;
   chars_matched: number;
+}
+
+declare class Tk_CanvasTextInfo {
+  constructor(init?: Tk_CanvasTextInfo);
+  selBorder: interop.Pointer;
+  selBorderWidth: number;
+  selFgColorPtr: interop.Pointer;
+  selItemPtr: interop.Pointer;
+  selectFirst: number;
+  selectLast: number;
+  anchorItemPtr: interop.Pointer;
+  selectAnchor: number;
+  insertBorder: interop.Pointer;
+  insertWidth: number;
+  insertBorderWidth: number;
+  focusItemPtr: interop.Pointer;
+  gotFocus: number;
+  cursorOn: number;
 }
 
 declare class XFontStruct {
@@ -1534,15 +2431,10 @@ declare class TkPredefBitmap {
   native: number;
 }
 
-declare class XMapEvent {
-  constructor(init?: XMapEvent);
-  type: number;
-  serial: number;
-  send_event: number;
-  display: interop.Pointer;
-  event: number;
-  window: number;
-  override_redirect: number;
+declare class TkPlatStubs {
+  constructor(init?: TkPlatStubs);
+  magic: number;
+  hooks: interop.Pointer;
 }
 
 declare class _XIMText {
@@ -1550,7 +2442,7 @@ declare class _XIMText {
   length: number;
   feedback: interop.Pointer;
   encoding_is_wchar: number;
-  string: unnamed_15897253141913602080;
+  string: unnamed_6138467059797537152;
 }
 
 declare class _XFreeFuncs {
@@ -1572,6 +2464,10 @@ declare class XWindowChanges {
   stack_mode: number;
 }
 
+declare class TkClipboardTarget {
+  constructor(init?: TkClipboardTarget);
+}
+
 declare class XPropertyEvent {
   constructor(init?: XPropertyEvent);
   type: number;
@@ -1590,6 +2486,26 @@ declare class _XDisplayAtoms {
 
 declare class _XSQEvent {
   constructor(init?: _XSQEvent);
+}
+
+declare class TkIntPlatStubs {
+  constructor(init?: TkIntPlatStubs);
+  magic: number;
+  hooks: interop.Pointer;
+  tkCreateXEventSource: () => void | null;
+  tkFreeWindowId: (p1: interop.PointerConvertible, p2: number) => void | null;
+  tkInitXId: (p1: interop.PointerConvertible) => void | null;
+  tkpCmapStressed: (p1: interop.PointerConvertible, p2: number) => number | null;
+  tkpSync: (p1: interop.PointerConvertible) => void | null;
+  tkUnixContainerId: (p1: interop.PointerConvertible) => number | null;
+  tkUnixDoOneXEvent: (p1: interop.PointerConvertible) => number | null;
+  tkUnixSetMenubar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  tkpScanWindowId: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
+  tkWmCleanup: (p1: interop.PointerConvertible) => void | null;
+  tkSendCleanup: (p1: interop.PointerConvertible) => void | null;
+  tkFreeXId: (p1: interop.PointerConvertible) => void | null;
+  tkpWmSetState: (p1: interop.PointerConvertible, p2: number) => number | null;
+  tkpTestsendCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
 }
 
 declare class XArc {
@@ -1644,6 +2560,10 @@ declare class XWindowAttributes {
   screen: interop.Pointer;
 }
 
+declare class ElArray {
+  constructor(init?: ElArray);
+}
+
 declare class XCirculateEvent {
   constructor(init?: XCirculateEvent);
   type: number;
@@ -1653,6 +2573,42 @@ declare class XCirculateEvent {
   event: number;
   window: number;
   place: number;
+}
+
+declare class Tk_Outline {
+  constructor(init?: Tk_Outline);
+  gc: interop.Pointer;
+  width: number;
+  activeWidth: number;
+  disabledWidth: number;
+  offset: number;
+  dash: Tk_Dash;
+  activeDash: Tk_Dash;
+  disabledDash: Tk_Dash;
+  reserved1: interop.Pointer;
+  reserved2: interop.Pointer;
+  reserved3: interop.Pointer;
+  tsoffset: Tk_TSOffset;
+  color: interop.Pointer;
+  activeColor: interop.Pointer;
+  disabledColor: interop.Pointer;
+  stipple: number;
+  activeStipple: number;
+  disabledStipple: number;
+}
+
+declare class unnamed_7469265493985640127 {
+  constructor(init?: unnamed_7469265493985640127);
+  visual: interop.Pointer;
+  visualid: number;
+  screen: number;
+  depth: number;
+  class: number;
+  red_mask: number;
+  green_mask: number;
+  blue_mask: number;
+  colormap_size: number;
+  bits_per_rgb: number;
 }
 
 declare class XReparentEvent {
@@ -1675,6 +2631,10 @@ declare class _XIM {
 
 declare class _XLockPtrs {
   constructor(init?: _XLockPtrs);
+}
+
+declare class Tk_ImageMaster_ {
+  constructor(init?: Tk_ImageMaster_);
 }
 
 declare class TkKeyEvent {
@@ -1705,24 +2665,14 @@ declare class XTextItem {
   font: number;
 }
 
-type unnamed_4832909701413217176Descriptor = 
-  | { text: interop.PointerConvertible }
-  | { bitmap: number };
+type unnamed_466373221483677888Descriptor = 
+  | { pixmap: number }
+  | { region: interop.PointerConvertible };
 
-declare class unnamed_4832909701413217176 {
-  constructor(init?: unnamed_4832909701413217176Descriptor);
-  text: interop.Pointer;
-  bitmap: number;
-}
-
-type unnamed_15897253141913602080Descriptor = 
-  | { multi_byte: string | null }
-  | { wide_char: interop.PointerConvertible };
-
-declare class unnamed_15897253141913602080 {
-  constructor(init?: unnamed_15897253141913602080Descriptor);
-  multi_byte: string | null;
-  wide_char: interop.Pointer;
+declare class unnamed_466373221483677888 {
+  constructor(init?: unnamed_466373221483677888Descriptor);
+  pixmap: number;
+  region: interop.Pointer;
 }
 
 type XEDataObjectDescriptor = 
@@ -1743,16 +2693,26 @@ declare class XEDataObject {
   font: interop.Pointer;
 }
 
-type unnamed_14199968436853847722Descriptor = 
+type unnamed_13200893692902755379Descriptor = 
   | { b: unknown /* const array */ }
   | { s: unknown /* const array */ }
   | { l: unknown /* const array */ };
 
-declare class unnamed_14199968436853847722 {
-  constructor(init?: unnamed_14199968436853847722Descriptor);
+declare class unnamed_13200893692902755379 {
+  constructor(init?: unnamed_13200893692902755379Descriptor);
   b: unknown /* const array */;
   s: unknown /* const array */;
   l: unknown /* const array */;
+}
+
+type unnamed_14461178624373966829Descriptor = 
+  | { text: interop.PointerConvertible }
+  | { bitmap: number };
+
+declare class unnamed_14461178624373966829 {
+  constructor(init?: unnamed_14461178624373966829Descriptor);
+  text: interop.Pointer;
+  bitmap: number;
 }
 
 type _XEventDescriptor = 
@@ -1827,14 +2787,24 @@ declare class _XEvent {
   pad: unknown /* const array */;
 }
 
-type unnamed_7374624010445545990Descriptor = 
-  | { pixmap: number }
-  | { region: interop.PointerConvertible };
+type unnamed_5647942776478080617Descriptor = 
+  | { pt: string | null }
+  | { array: unknown /* const array */ };
 
-declare class unnamed_7374624010445545990 {
-  constructor(init?: unnamed_7374624010445545990Descriptor);
-  pixmap: number;
-  region: interop.Pointer;
+declare class unnamed_5647942776478080617 {
+  constructor(init?: unnamed_5647942776478080617Descriptor);
+  pt: string | null;
+  array: unknown /* const array */;
+}
+
+type unnamed_6138467059797537152Descriptor = 
+  | { multi_byte: string | null }
+  | { wide_char: interop.PointerConvertible };
+
+declare class unnamed_6138467059797537152 {
+  constructor(init?: unnamed_6138467059797537152Descriptor);
+  multi_byte: string | null;
+  wide_char: interop.Pointer;
 }
 
 declare function XAllocIconSize(): interop.Pointer;
@@ -1962,6 +2932,554 @@ declare function XUnionRegion(): void;
 declare function XWMGeometry(): number;
 
 declare function XXorRegion(): void;
+
+declare function Tk_InitStubs(interp: interop.PointerConvertible, version: string, exact: number): string;
+
+declare function Tk_PkgInitStubsCheck(interp: interop.PointerConvertible, version: string, exact: number): string;
+
+declare function Tk_MainLoop(): void;
+
+declare function Tk_3DBorderColor(border: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_3DBorderGC(tkwin: interop.PointerConvertible, border: interop.PointerConvertible, which: number): interop.Pointer;
+
+declare function Tk_3DHorizontalBevel(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, leftIn: number, rightIn: number, topBevel: number, relief: number): void;
+
+declare function Tk_3DVerticalBevel(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, leftBevel: number, relief: number): void;
+
+declare function Tk_AddOption(tkwin: interop.PointerConvertible, name: string, value: string, priority: number): void;
+
+declare function Tk_BindEvent(bindingTable: interop.PointerConvertible, eventPtr: interop.PointerConvertible, tkwin: interop.PointerConvertible, numObjects: number, objectPtr: interop.PointerConvertible): void;
+
+declare function Tk_CanvasDrawableCoords(canvas: interop.PointerConvertible, x: number, y: number, drawableXPtr: interop.PointerConvertible, drawableYPtr: interop.PointerConvertible): void;
+
+declare function Tk_CanvasEventuallyRedraw(canvas: interop.PointerConvertible, x1: number, y1: number, x2: number, y2: number): void;
+
+declare function Tk_CanvasGetCoord(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, str: string, doublePtr: interop.PointerConvertible): number;
+
+declare function Tk_CanvasGetTextInfo(canvas: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CanvasPsBitmap(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, bitmap: number, x: number, y: number, width: number, height: number): number;
+
+declare function Tk_CanvasPsColor(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, colorPtr: interop.PointerConvertible): number;
+
+declare function Tk_CanvasPsFont(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, font: interop.PointerConvertible): number;
+
+declare function Tk_CanvasPsPath(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, coordPtr: interop.PointerConvertible, numPoints: number): void;
+
+declare function Tk_CanvasPsStipple(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, bitmap: number): number;
+
+declare function Tk_CanvasPsY(canvas: interop.PointerConvertible, y: number): number;
+
+declare function Tk_CanvasSetStippleOrigin(canvas: interop.PointerConvertible, gc: interop.PointerConvertible): void;
+
+declare function Tk_CanvasTagsParseProc(clientData: interop.PointerConvertible, interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, value: string, widgRec: string, offset: number): number;
+
+declare function Tk_CanvasTagsPrintProc(clientData: interop.PointerConvertible, tkwin: interop.PointerConvertible, widgRec: string, offset: number, freeProcPtr: interop.PointerConvertible): string;
+
+declare function Tk_CanvasTkwin(canvas: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CanvasWindowCoords(canvas: interop.PointerConvertible, x: number, y: number, screenXPtr: interop.PointerConvertible, screenYPtr: interop.PointerConvertible): void;
+
+declare function Tk_ChangeWindowAttributes(tkwin: interop.PointerConvertible, valueMask: number, attsPtr: interop.PointerConvertible): void;
+
+declare function Tk_CharBbox(layout: interop.PointerConvertible, index: number, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): number;
+
+declare function Tk_ClearSelection(tkwin: interop.PointerConvertible, selection: number): void;
+
+declare function Tk_ClipboardAppend(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, target: number, format: number, buffer: string): number;
+
+declare function Tk_ClipboardClear(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible): number;
+
+declare function Tk_ConfigureInfo(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, specs: interop.PointerConvertible, widgRec: string, argvName: string, flags: number): number;
+
+declare function Tk_ConfigureValue(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, specs: interop.PointerConvertible, widgRec: string, argvName: string, flags: number): number;
+
+declare function Tk_ConfigureWidget(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, specs: interop.PointerConvertible, argc: number, argv: interop.PointerConvertible, widgRec: string, flags: number): number;
+
+declare function Tk_ConfigureWindow(tkwin: interop.PointerConvertible, valueMask: number, valuePtr: interop.PointerConvertible): void;
+
+declare function Tk_ComputeTextLayout(font: interop.PointerConvertible, str: string, numChars: number, wrapLength: number, justify: interop.Enum<typeof Tk_Justify>, flags: number, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CoordsToWindow(rootX: number, rootY: number, tkwin: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CreateBinding(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible, eventStr: string, command: string, append: number): number;
+
+declare function Tk_CreateBindingTable(interp: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CreateErrorHandler(display: interop.PointerConvertible, errNum: number, request: number, minorCode: number, errorProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CreateEventHandler(token: interop.PointerConvertible, mask: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
+
+declare function Tk_CreateGenericHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): void;
+
+declare function Tk_CreateImageType(typePtr: interop.PointerConvertible): void;
+
+declare function Tk_CreateItemType(typePtr: interop.PointerConvertible): void;
+
+declare function Tk_CreatePhotoImageFormat(formatPtr: interop.PointerConvertible): void;
+
+declare function Tk_CreateSelHandler(tkwin: interop.PointerConvertible, selection: number, target: number, proc: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number) => number, clientData: interop.PointerConvertible, format: number): void;
+
+declare function Tk_CreateWindow(interp: interop.PointerConvertible, parent: interop.PointerConvertible, name: string, screenName: string): interop.Pointer;
+
+declare function Tk_CreateWindowFromPath(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, pathName: string, screenName: string): interop.Pointer;
+
+declare function Tk_DefineBitmap(interp: interop.PointerConvertible, name: string, source: string, width: number, height: number): number;
+
+declare function Tk_DefineCursor(window: interop.PointerConvertible, cursor: interop.PointerConvertible): void;
+
+declare function Tk_DeleteAllBindings(bindingTable: interop.PointerConvertible, object: interop.PointerConvertible): void;
+
+declare function Tk_DeleteBinding(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible, eventStr: string): number;
+
+declare function Tk_DeleteBindingTable(bindingTable: interop.PointerConvertible): void;
+
+declare function Tk_DeleteErrorHandler(handler: interop.PointerConvertible): void;
+
+declare function Tk_DeleteEventHandler(token: interop.PointerConvertible, mask: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
+
+declare function Tk_DeleteGenericHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): void;
+
+declare function Tk_DeleteImage(interp: interop.PointerConvertible, name: string): void;
+
+declare function Tk_DeleteSelHandler(tkwin: interop.PointerConvertible, selection: number, target: number): void;
+
+declare function Tk_DestroyWindow(tkwin: interop.PointerConvertible): void;
+
+declare function Tk_DisplayName(tkwin: interop.PointerConvertible): string;
+
+declare function Tk_DistanceToTextLayout(layout: interop.PointerConvertible, x: number, y: number): number;
+
+declare function Tk_Draw3DPolygon(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, pointPtr: interop.PointerConvertible, numPoints: number, borderWidth: number, leftRelief: number): void;
+
+declare function Tk_Draw3DRectangle(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, borderWidth: number, relief: number): void;
+
+declare function Tk_DrawChars(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, tkfont: interop.PointerConvertible, source: string, numBytes: number, x: number, y: number): void;
+
+declare function Tk_DrawFocusHighlight(tkwin: interop.PointerConvertible, gc: interop.PointerConvertible, width: number, drawable: number): void;
+
+declare function Tk_DrawTextLayout(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, layout: interop.PointerConvertible, x: number, y: number, firstChar: number, lastChar: number): void;
+
+declare function Tk_Fill3DPolygon(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, pointPtr: interop.PointerConvertible, numPoints: number, borderWidth: number, leftRelief: number): void;
+
+declare function Tk_Fill3DRectangle(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, borderWidth: number, relief: number): void;
+
+declare function Tk_FindPhoto(interp: interop.PointerConvertible, imageName: string): interop.Pointer;
+
+declare function Tk_FontId(font: interop.PointerConvertible): number;
+
+declare function Tk_Free3DBorder(border: interop.PointerConvertible): void;
+
+declare function Tk_FreeBitmap(display: interop.PointerConvertible, bitmap: number): void;
+
+declare function Tk_FreeColor(colorPtr: interop.PointerConvertible): void;
+
+declare function Tk_FreeColormap(display: interop.PointerConvertible, colormap: number): void;
+
+declare function Tk_FreeCursor(display: interop.PointerConvertible, cursor: interop.PointerConvertible): void;
+
+declare function Tk_FreeFont(f: interop.PointerConvertible): void;
+
+declare function Tk_FreeGC(display: interop.PointerConvertible, gc: interop.PointerConvertible): void;
+
+declare function Tk_FreeImage(image: interop.PointerConvertible): void;
+
+declare function Tk_FreeOptions(specs: interop.PointerConvertible, widgRec: string, display: interop.PointerConvertible, needFlags: number): void;
+
+declare function Tk_FreePixmap(display: interop.PointerConvertible, pixmap: number): void;
+
+declare function Tk_FreeTextLayout(textLayout: interop.PointerConvertible): void;
+
+declare function Tk_FreeXId(display: interop.PointerConvertible, xid: number): void;
+
+declare function Tk_GCForColor(colorPtr: interop.PointerConvertible, drawable: number): interop.Pointer;
+
+declare function Tk_GeometryRequest(tkwin: interop.PointerConvertible, reqWidth: number, reqHeight: number): void;
+
+declare function Tk_Get3DBorder(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, colorName: string): interop.Pointer;
+
+declare function Tk_GetAllBindings(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible): void;
+
+declare function Tk_GetAnchor(interp: interop.PointerConvertible, str: string, anchorPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetAtomName(tkwin: interop.PointerConvertible, atom: number): string;
+
+declare function Tk_GetBinding(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible, eventStr: string): string;
+
+declare function Tk_GetBitmap(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): number;
+
+declare function Tk_GetBitmapFromData(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, source: string, width: number, height: number): number;
+
+declare function Tk_GetCapStyle(interp: interop.PointerConvertible, str: string, capPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetColor(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, name: string): interop.Pointer;
+
+declare function Tk_GetColorByValue(tkwin: interop.PointerConvertible, colorPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetColormap(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): number;
+
+declare function Tk_GetCursor(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): interop.Pointer;
+
+declare function Tk_GetCursorFromData(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, source: string, mask: string, width: number, height: number, xHot: number, yHot: number, fg: string, bg: string): interop.Pointer;
+
+declare function Tk_GetFont(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): interop.Pointer;
+
+declare function Tk_GetFontFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetFontMetrics(font: interop.PointerConvertible, fmPtr: interop.PointerConvertible): void;
+
+declare function Tk_GetGC(tkwin: interop.PointerConvertible, valueMask: number, valuePtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetImage(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, name: string, changeProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number) => void, clientData: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetImageMasterData(interp: interop.PointerConvertible, name: string, typePtrPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetItemTypes(): interop.Pointer;
+
+declare function Tk_GetJoinStyle(interp: interop.PointerConvertible, str: string, joinPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetJustify(interp: interop.PointerConvertible, str: string, justifyPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetNumMainWindows(): number;
+
+declare function Tk_GetOption(tkwin: interop.PointerConvertible, name: string, className: string): string;
+
+declare function Tk_GetPixels(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string, intPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetPixmap(display: interop.PointerConvertible, d: number, width: number, height: number, depth: number): number;
+
+declare function Tk_GetRelief(interp: interop.PointerConvertible, name: string, reliefPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetRootCoords(tkwin: interop.PointerConvertible, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible): void;
+
+declare function Tk_GetScrollInfo(interp: interop.PointerConvertible, argc: number, argv: interop.PointerConvertible, dblPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetScreenMM(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string, doublePtr: interop.PointerConvertible): number;
+
+declare function Tk_GetSelection(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, selection: number, target: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number, clientData: interop.PointerConvertible): number;
+
+declare function Tk_GetUid(str: string): string;
+
+declare function Tk_GetVisual(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string, depthPtr: interop.PointerConvertible, colormapPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetVRootGeometry(tkwin: interop.PointerConvertible, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
+
+declare function Tk_Grab(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, grabGlobal: number): number;
+
+declare function Tk_HandleEvent(eventPtr: interop.PointerConvertible): void;
+
+declare function Tk_IdToWindow(display: interop.PointerConvertible, window: number): interop.Pointer;
+
+declare function Tk_ImageChanged(master: interop.PointerConvertible, x: number, y: number, width: number, height: number, imageWidth: number, imageHeight: number): void;
+
+declare function Tk_Init(interp: interop.PointerConvertible): number;
+
+declare function Tk_InternAtom(tkwin: interop.PointerConvertible, name: string): number;
+
+declare function Tk_IntersectTextLayout(layout: interop.PointerConvertible, x: number, y: number, width: number, height: number): number;
+
+declare function Tk_MaintainGeometry(slave: interop.PointerConvertible, master: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
+
+declare function Tk_MainWindow(interp: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_MakeWindowExist(tkwin: interop.PointerConvertible): void;
+
+declare function Tk_ManageGeometry(tkwin: interop.PointerConvertible, mgrPtr: interop.PointerConvertible, clientData: interop.PointerConvertible): void;
+
+declare function Tk_MapWindow(tkwin: interop.PointerConvertible): void;
+
+declare function Tk_MeasureChars(tkfont: interop.PointerConvertible, source: string, numBytes: number, maxPixels: number, flags: number, lengthPtr: interop.PointerConvertible): number;
+
+declare function Tk_MoveResizeWindow(tkwin: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
+
+declare function Tk_MoveWindow(tkwin: interop.PointerConvertible, x: number, y: number): void;
+
+declare function Tk_MoveToplevelWindow(tkwin: interop.PointerConvertible, x: number, y: number): void;
+
+declare function Tk_NameOf3DBorder(border: interop.PointerConvertible): string;
+
+declare function Tk_NameOfAnchor(anchor: interop.Enum<typeof Tk_Anchor>): string;
+
+declare function Tk_NameOfBitmap(display: interop.PointerConvertible, bitmap: number): string;
+
+declare function Tk_NameOfCapStyle(cap: number): string;
+
+declare function Tk_NameOfColor(colorPtr: interop.PointerConvertible): string;
+
+declare function Tk_NameOfCursor(display: interop.PointerConvertible, cursor: interop.PointerConvertible): string;
+
+declare function Tk_NameOfFont(font: interop.PointerConvertible): string;
+
+declare function Tk_NameOfImage(imageMaster: interop.PointerConvertible): string;
+
+declare function Tk_NameOfJoinStyle(join: number): string;
+
+declare function Tk_NameOfJustify(justify: interop.Enum<typeof Tk_Justify>): string;
+
+declare function Tk_NameOfRelief(relief: number): string;
+
+declare function Tk_NameToWindow(interp: interop.PointerConvertible, pathName: string, tkwin: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_OwnSelection(tkwin: interop.PointerConvertible, selection: number, proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
+
+declare function Tk_ParseArgv(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, argcPtr: interop.PointerConvertible, argv: interop.PointerConvertible, argTable: interop.PointerConvertible, flags: number): number;
+
+declare function Tk_PhotoPutBlock_NoComposite(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
+
+declare function Tk_PhotoPutZoomedBlock_NoComposite(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, zoomX: number, zoomY: number, subsampleX: number, subsampleY: number): void;
+
+declare function Tk_PhotoGetImage(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible): number;
+
+declare function Tk_PhotoBlank(handle: interop.PointerConvertible): void;
+
+declare function Tk_PhotoExpand_Panic(handle: interop.PointerConvertible, width: number, height: number): void;
+
+declare function Tk_PhotoGetSize(handle: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
+
+declare function Tk_PhotoSetSize_Panic(handle: interop.PointerConvertible, width: number, height: number): void;
+
+declare function Tk_PointToChar(layout: interop.PointerConvertible, x: number, y: number): number;
+
+declare function Tk_PostscriptFontName(tkfont: interop.PointerConvertible, dsPtr: interop.PointerConvertible): number;
+
+declare function Tk_PreserveColormap(display: interop.PointerConvertible, colormap: number): void;
+
+declare function Tk_QueueWindowEvent(eventPtr: interop.PointerConvertible, position: interop.Enum<typeof Tcl_QueuePosition>): void;
+
+declare function Tk_RedrawImage(image: interop.PointerConvertible, imageX: number, imageY: number, width: number, height: number, drawable: number, drawableX: number, drawableY: number): void;
+
+declare function Tk_ResizeWindow(tkwin: interop.PointerConvertible, width: number, height: number): void;
+
+declare function Tk_RestackWindow(tkwin: interop.PointerConvertible, aboveBelow: number, other: interop.PointerConvertible): number;
+
+declare function Tk_RestrictEvents(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction>, arg: interop.PointerConvertible, prevArgPtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction>;
+
+declare function Tk_SafeInit(interp: interop.PointerConvertible): number;
+
+declare function Tk_SetAppName(tkwin: interop.PointerConvertible, name: string): string;
+
+declare function Tk_SetBackgroundFromBorder(tkwin: interop.PointerConvertible, border: interop.PointerConvertible): void;
+
+declare function Tk_SetClass(tkwin: interop.PointerConvertible, className: string): void;
+
+declare function Tk_SetGrid(tkwin: interop.PointerConvertible, reqWidth: number, reqHeight: number, gridWidth: number, gridHeight: number): void;
+
+declare function Tk_SetInternalBorder(tkwin: interop.PointerConvertible, width: number): void;
+
+declare function Tk_SetWindowBackground(tkwin: interop.PointerConvertible, pixel: number): void;
+
+declare function Tk_SetWindowBackgroundPixmap(tkwin: interop.PointerConvertible, pixmap: number): void;
+
+declare function Tk_SetWindowBorder(tkwin: interop.PointerConvertible, pixel: number): void;
+
+declare function Tk_SetWindowBorderWidth(tkwin: interop.PointerConvertible, width: number): void;
+
+declare function Tk_SetWindowBorderPixmap(tkwin: interop.PointerConvertible, pixmap: number): void;
+
+declare function Tk_SetWindowColormap(tkwin: interop.PointerConvertible, colormap: number): void;
+
+declare function Tk_SetWindowVisual(tkwin: interop.PointerConvertible, visual: interop.PointerConvertible, depth: number, colormap: number): number;
+
+declare function Tk_SizeOfBitmap(display: interop.PointerConvertible, bitmap: number, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
+
+declare function Tk_SizeOfImage(image: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
+
+declare function Tk_StrictMotif(tkwin: interop.PointerConvertible): number;
+
+declare function Tk_TextLayoutToPostscript(interp: interop.PointerConvertible, layout: interop.PointerConvertible): void;
+
+declare function Tk_TextWidth(font: interop.PointerConvertible, str: string, numBytes: number): number;
+
+declare function Tk_UndefineCursor(window: interop.PointerConvertible): void;
+
+declare function Tk_UnderlineChars(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, tkfont: interop.PointerConvertible, source: string, x: number, y: number, firstByte: number, lastByte: number): void;
+
+declare function Tk_UnderlineTextLayout(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, layout: interop.PointerConvertible, x: number, y: number, underline: number): void;
+
+declare function Tk_Ungrab(tkwin: interop.PointerConvertible): void;
+
+declare function Tk_UnmaintainGeometry(slave: interop.PointerConvertible, master: interop.PointerConvertible): void;
+
+declare function Tk_UnmapWindow(tkwin: interop.PointerConvertible): void;
+
+declare function Tk_UnsetGrid(tkwin: interop.PointerConvertible): void;
+
+declare function Tk_UpdatePointer(tkwin: interop.PointerConvertible, x: number, y: number, state: number): void;
+
+declare function Tk_AllocBitmapFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
+
+declare function Tk_Alloc3DBorderFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_AllocColorFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_AllocCursorFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_AllocFontFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CreateOptionTable(interp: interop.PointerConvertible, templatePtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_DeleteOptionTable(optionTable: interop.PointerConvertible): void;
+
+declare function Tk_Free3DBorderFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
+
+declare function Tk_FreeBitmapFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
+
+declare function Tk_FreeColorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
+
+declare function Tk_FreeConfigOptions(recordPtr: string, optionToken: interop.PointerConvertible, tkwin: interop.PointerConvertible): void;
+
+declare function Tk_FreeSavedOptions(savePtr: interop.PointerConvertible): void;
+
+declare function Tk_FreeCursorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
+
+declare function Tk_FreeFontFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
+
+declare function Tk_Get3DBorderFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetAnchorFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, anchorPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetBitmapFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetColorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetCursorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetOptionInfo(interp: interop.PointerConvertible, recordPtr: string, optionTable: interop.PointerConvertible, namePtr: interop.PointerConvertible, tkwin: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetOptionValue(interp: interop.PointerConvertible, recordPtr: string, optionTable: interop.PointerConvertible, namePtr: interop.PointerConvertible, tkwin: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetJustifyFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, justifyPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetMMFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible, doublePtr: interop.PointerConvertible): number;
+
+declare function Tk_GetPixelsFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetReliefFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, resultPtr: interop.PointerConvertible): number;
+
+declare function Tk_GetScrollInfoObj(interp: interop.PointerConvertible, objc: number, objv: interop.Pointer, dblPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
+
+declare function Tk_InitOptions(interp: interop.PointerConvertible, recordPtr: string, optionToken: interop.PointerConvertible, tkwin: interop.PointerConvertible): number;
+
+declare function Tk_MainEx(argc: number, argv: interop.PointerConvertible, appInitProc: (p1: interop.PointerConvertible) => number, interp: interop.PointerConvertible): void;
+
+declare function Tk_RestoreSavedOptions(savePtr: interop.PointerConvertible): void;
+
+declare function Tk_SetOptions(interp: interop.PointerConvertible, recordPtr: string, optionTable: interop.PointerConvertible, objc: number, objv: interop.Pointer, tkwin: interop.PointerConvertible, savePtr: interop.PointerConvertible, maskPtr: interop.PointerConvertible): number;
+
+declare function Tk_InitConsoleChannels(interp: interop.PointerConvertible): void;
+
+declare function Tk_CreateConsoleWindow(interp: interop.PointerConvertible): number;
+
+declare function Tk_CreateSmoothMethod(interp: interop.PointerConvertible, method: interop.PointerConvertible): void;
+
+declare function Tk_GetDash(interp: interop.PointerConvertible, value: string, dash: interop.PointerConvertible): number;
+
+declare function Tk_CreateOutline(outline: interop.PointerConvertible): void;
+
+declare function Tk_DeleteOutline(display: interop.PointerConvertible, outline: interop.PointerConvertible): void;
+
+declare function Tk_ConfigOutlineGC(gcValues: interop.PointerConvertible, canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
+
+declare function Tk_ChangeOutlineGC(canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
+
+declare function Tk_ResetOutlineGC(canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
+
+declare function Tk_CanvasPsOutline(canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
+
+declare function Tk_SetTSOrigin(tkwin: interop.PointerConvertible, gc: interop.PointerConvertible, x: number, y: number): void;
+
+declare function Tk_CanvasGetCoordFromObj(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, obj: interop.PointerConvertible, doublePtr: interop.PointerConvertible): number;
+
+declare function Tk_CanvasSetOffset(canvas: interop.PointerConvertible, gc: interop.PointerConvertible, offset: interop.PointerConvertible): void;
+
+declare function Tk_DitherPhoto(handle: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
+
+declare function Tk_PostscriptBitmap(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, psInfo: interop.PointerConvertible, bitmap: number, startX: number, startY: number, width: number, height: number): number;
+
+declare function Tk_PostscriptColor(interp: interop.PointerConvertible, psInfo: interop.PointerConvertible, colorPtr: interop.PointerConvertible): number;
+
+declare function Tk_PostscriptFont(interp: interop.PointerConvertible, psInfo: interop.PointerConvertible, font: interop.PointerConvertible): number;
+
+declare function Tk_PostscriptImage(image: interop.PointerConvertible, interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, psinfo: interop.PointerConvertible, x: number, y: number, width: number, height: number, prepass: number): number;
+
+declare function Tk_PostscriptPath(interp: interop.PointerConvertible, psInfo: interop.PointerConvertible, coordPtr: interop.PointerConvertible, numPoints: number): void;
+
+declare function Tk_PostscriptStipple(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, psInfo: interop.PointerConvertible, bitmap: number): number;
+
+declare function Tk_PostscriptY(y: number, psInfo: interop.PointerConvertible): number;
+
+declare function Tk_PostscriptPhoto(interp: interop.PointerConvertible, blockPtr: interop.PointerConvertible, psInfo: interop.PointerConvertible, width: number, height: number): number;
+
+declare function Tk_CreateClientMessageHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): void;
+
+declare function Tk_DeleteClientMessageHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): void;
+
+declare function Tk_CreateAnonymousWindow(interp: interop.PointerConvertible, parent: interop.PointerConvertible, screenName: string): interop.Pointer;
+
+declare function Tk_SetClassProcs(tkwin: interop.PointerConvertible, procs: interop.PointerConvertible, instanceData: interop.PointerConvertible): void;
+
+declare function Tk_SetInternalBorderEx(tkwin: interop.PointerConvertible, left: number, right: number, top: number, bottom: number): void;
+
+declare function Tk_SetMinimumRequestSize(tkwin: interop.PointerConvertible, minWidth: number, minHeight: number): void;
+
+declare function Tk_SetCaretPos(tkwin: interop.PointerConvertible, x: number, y: number, height: number): void;
+
+declare function Tk_PhotoPutBlock_Panic(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, compRule: number): void;
+
+declare function Tk_PhotoPutZoomedBlock_Panic(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, zoomX: number, zoomY: number, subsampleX: number, subsampleY: number, compRule: number): void;
+
+declare function Tk_CollapseMotionEvents(display: interop.PointerConvertible, collapse: number): number;
+
+declare function Tk_RegisterStyleEngine(name: string, parent: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetStyleEngine(name: string): interop.Pointer;
+
+declare function Tk_RegisterStyledElement(engine: interop.PointerConvertible, templatePtr: interop.PointerConvertible): number;
+
+declare function Tk_GetElementId(name: string): number;
+
+declare function Tk_CreateStyle(name: string, engine: interop.PointerConvertible, clientData: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetStyle(interp: interop.PointerConvertible, name: string): interop.Pointer;
+
+declare function Tk_FreeStyle(style: interop.PointerConvertible): void;
+
+declare function Tk_NameOfStyle(style: interop.PointerConvertible): string;
+
+declare function Tk_AllocStyleFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetStyleFromObj(objPtr: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_FreeStyleFromObj(objPtr: interop.PointerConvertible): void;
+
+declare function Tk_GetStyledElement(style: interop.PointerConvertible, elementId: number, optionTable: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_GetElementSize(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible, width: number, height: number, inner: number, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
+
+declare function Tk_GetElementBox(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible, x: number, y: number, width: number, height: number, inner: number, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
+
+declare function Tk_GetElementBorderWidth(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible): number;
+
+declare function Tk_DrawElement(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible, d: number, x: number, y: number, width: number, height: number, state: number): void;
+
+declare function Tk_PhotoExpand(interp: interop.PointerConvertible, handle: interop.PointerConvertible, width: number, height: number): number;
+
+declare function Tk_PhotoPutBlock(interp: interop.PointerConvertible, handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, compRule: number): number;
+
+declare function Tk_PhotoPutZoomedBlock(interp: interop.PointerConvertible, handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, zoomX: number, zoomY: number, subsampleX: number, subsampleY: number, compRule: number): number;
+
+declare function Tk_PhotoSetSize(interp: interop.PointerConvertible, handle: interop.PointerConvertible, width: number, height: number): number;
+
+declare function Tk_GetUserInactiveTime(dpy: interop.PointerConvertible): number;
+
+declare function Tk_ResetUserInactiveTime(dpy: interop.PointerConvertible): void;
+
+declare function Tk_Interp(tkwin: interop.PointerConvertible): interop.Pointer;
+
+declare function Tk_CreateOldImageType(typePtr: interop.PointerConvertible): void;
+
+declare function Tk_CreateOldPhotoImageFormat(formatPtr: interop.PointerConvertible): void;
 
 declare function Ttk_RegisterCleanup(interp: interop.PointerConvertible, deleteData: interop.PointerConvertible, cleanupProc: interop.PointerConvertible): number;
 

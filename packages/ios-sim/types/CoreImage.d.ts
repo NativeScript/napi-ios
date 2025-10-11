@@ -1,7 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kCIInputExtentKey: string;
+declare const kCIFormatR8: number;
 
 declare const kCIContextName: string;
 
@@ -11,9 +11,15 @@ declare const kCIImageAuxiliaryDisparity: string;
 
 declare const kCIImageRepresentationAVDepthData: string;
 
+declare const kCIAttributeTypeImage: string;
+
 declare const kCIAttributeTypePosition3: string;
 
+declare const CIRAWDecoderVersion9DNG: string;
+
 declare const kCIInputNeutralChromaticityYKey: string;
+
+declare const kCIFormatLA8: number;
 
 declare const kCIInputSaturationKey: string;
 
@@ -31,13 +37,21 @@ declare const kCIFormatRGBX16: number;
 
 declare const kCICategoryStylize: string;
 
+declare const kCIContextCVMetalTextureCache: string;
+
 declare const kCIImageProviderTileSize: string;
 
 declare const CIDetectorImageOrientation: string;
 
 declare const kCIInputGradientImageKey: string;
 
+declare const kCIFormatRGBA16: number;
+
 declare const CIDetectorSmile: string;
+
+declare const kCIInputVersionKey: string;
+
+declare const kCIInputExtentKey: string;
 
 declare const kCIImageRepresentationPortraitEffectsMatteImage: string;
 
@@ -47,6 +61,8 @@ declare const kCIInputDepthImageKey: string;
 
 declare const kCIAttributeDescription: string;
 
+declare const kCIInputThresholdKey: string;
+
 declare const kCIFormatRGf: number;
 
 declare const kCICategoryTileEffect: string;
@@ -55,9 +71,15 @@ declare const kCIInputBoostShadowAmountKey: string;
 
 declare const kCICategoryBlur: string;
 
-declare const kCIInputNeutralChromaticityXKey: string;
-
 declare const kCIInputAngleKey: string;
+
+declare const kCIInputCenterKey: string;
+
+declare const kCIFormatR16: number;
+
+declare const kCIImageAutoAdjustRedEye: string;
+
+declare const kCIInputRadius1Key: string;
 
 declare const kCIInputShadingImageKey: string;
 
@@ -67,25 +89,19 @@ declare const kCIAttributeTypePosition: string;
 
 declare const kCIOutputImageKey: string;
 
-declare const kCISamplerFilterNearest: string;
-
-declare const kCIFormatARGB8: number;
-
-declare const kCIInputContrastKey: string;
+declare const kCIImageAuxiliaryHDRGainMap: string;
 
 declare const kCIAttributeTypeTransform: string;
 
-declare const kCIImageAuxiliaryHDRGainMap: string;
+declare const kCIInputColorSpaceKey: string;
 
 declare const kCICategoryGeometryAdjustment: string;
-
-declare const kCIAttributeFilterDisplayName: string;
-
-declare const kCIAttributeType: string;
 
 declare const CIRAWDecoderVersion6DNG: string;
 
 declare const CIRAWDecoderVersion7: string;
+
+declare const CIRAWDecoderVersion9: string;
 
 declare const kCIActiveKeys: string;
 
@@ -110,6 +126,8 @@ declare const kCIInputBaselineExposureKey: string;
 declare const kCIInputDecoderVersionKey: string;
 
 declare const kCISamplerFilterLinear: string;
+
+declare const kCISamplerFilterNearest: string;
 
 declare const kCISamplerWrapBlack: string;
 
@@ -137,21 +155,29 @@ declare const CIDetectorTypeText: string;
 
 declare const CIDetectorTypeRectangle: string;
 
+declare const kCIDynamicRangeStandard: string;
+
 declare const kCIInputTargetImageKey: string;
 
 declare const kCIInputMatteImageKey: string;
 
+declare const kCIInputPerceptualKey: string;
+
+declare const kCIInputContrastKey: string;
+
+declare const kCIInputColor0Key: string;
+
+declare const kCIInputRadius0Key: string;
+
 declare const kCIInputRadiusKey: string;
-
-declare const kCIFormatR16: number;
-
-declare const kCIInputCenterKey: string;
 
 declare const kCIUISetAdvanced: string;
 
 declare const kCIInputScaleKey: string;
 
 declare const kCIInputTransformKey: string;
+
+declare const kCIInputCountKey: string;
 
 declare const kCIInputImageKey: string;
 
@@ -191,9 +217,15 @@ declare const kCIAttributeMax: string;
 
 declare const kCIAttributeClass: string;
 
+declare const kCIAttributeFilterDisplayName: string;
+
+declare const kCIImageRepresentationHDRGainMapAsRGB: string;
+
 declare const kCIImageRepresentationSemanticSegmentationSkyMatteImage: string;
 
 declare const kCIImageRepresentationSemanticSegmentationSkinMatteImage: string;
+
+declare const kCIInputPoint1Key: string;
 
 declare const kCIImageRepresentationAVSemanticSegmentationMattes: string;
 
@@ -202,6 +234,10 @@ declare const kCIImageRepresentationAVPortraitEffectsMatte: string;
 declare const kCIContextMemoryLimit: string;
 
 declare const kCIContextAllowLowPower: string;
+
+declare const kCIInputNeutralLocationKey: string;
+
+declare const kCIContextPriorityRequestLow: string;
 
 declare const kCIContextUseSoftwareRenderer: string;
 
@@ -219,8 +255,6 @@ declare const kCIImageAutoAdjustLevel: string;
 
 declare const kCIImageAutoAdjustFeatures: string;
 
-declare const kCIImageAutoAdjustRedEye: string;
-
 declare const kCIImageAutoAdjustEnhance: string;
 
 declare const kCIImageAuxiliarySemanticSegmentationHairMatte: string;
@@ -231,9 +265,13 @@ declare const kCIImageApplyOrientationProperty: string;
 
 declare const kCIImageNearestSampling: string;
 
+declare const kCIImageContentAverageLightLevel: string;
+
 declare const kCIImageExpandToHDR: string;
 
 declare const kCIImageToneMapHDRtoSDR: string;
+
+declare const kCIImageApplyCleanAperture: string;
 
 declare const kCIImageColorSpace: string;
 
@@ -249,11 +287,9 @@ declare const kCIFormatRGh: number;
 
 declare const kCIFormatRG16: number;
 
-declare const kCIFormatR8: number;
-
-declare const kCIFormatRGBA16: number;
-
 declare const kCIFormatRGBAh: number;
+
+declare const kCIFormatARGB8: number;
 
 declare const CIRAWDecoderVersion6: string;
 
@@ -262,6 +298,8 @@ declare const kCISamplerColorSpace: string;
 declare const kCIUISetDevelopment: string;
 
 declare const kCIInputEnableChromaticNoiseTrackingKey: string;
+
+declare const kCIAttributeType: string;
 
 declare const CIRAWDecoderVersion7DNG: string;
 
@@ -273,27 +311,19 @@ declare const kCIFormatRGBXh: number;
 
 declare const kCIAttributeTypeCount: string;
 
-declare const kCIFormatRGBA8: number;
-
-declare const kCICategoryReduction: string;
-
 declare const kCIFormatA16: number;
+
+declare const kCIDynamicRangeHigh: string;
 
 declare const kCIFormatRGBAf: number;
 
 declare const kCIInputNeutralTintKey: string;
 
-declare const kCIFormatLA8: number;
-
 declare const kCIAttributeTypeTime: string;
 
 declare const kCIOutputNativeSizeKey: string;
 
-declare const CIRAWDecoderVersionNone: string;
-
-declare const kCIInputNeutralLocationKey: string;
-
-declare const kCIContextPriorityRequestLow: string;
+declare const kCIInputExtrapolateKey: string;
 
 declare const kCIImageAuxiliaryPortraitEffectsMatte: string;
 
@@ -305,11 +335,17 @@ declare const kCIInputBoostKey: string;
 
 declare const CIRAWDecoderVersion8DNG: string;
 
+declare const kCIInputNeutralChromaticityXKey: string;
+
 declare const kCIImageContentHeadroom: string;
 
 declare const kCIImageAuxiliarySemanticSegmentationSkyMatte: string;
 
 declare const kCIFormatABGR8: number;
+
+declare const kCIFormatRGBA8: number;
+
+declare const kCIInputBiasVectorKey: string;
 
 declare const kCIInputIgnoreImageOrientationKey: string;
 
@@ -324,6 +360,8 @@ declare const kCIAttributeTypeRectangle: string;
 declare const kCIFormatRG8: number;
 
 declare const kCICategoryNonSquarePixels: string;
+
+declare const kCIAttributeFilterAvailable_iOS: string;
 
 declare const kCIImageAuxiliaryDepth: string;
 
@@ -347,6 +385,8 @@ declare const kCIInputNeutralTemperatureKey: string;
 
 declare const kCICategoryGradient: string;
 
+declare const CIRAWDecoderVersionNone: string;
+
 declare const kCISamplerFilterMode: string;
 
 declare const kCIImageRepresentationSemanticSegmentationHairMatteImage: string;
@@ -367,6 +407,8 @@ declare const kCIInputLuminanceNoiseReductionAmountKey: string;
 
 declare const CIDetectorMinFeatureSize: string;
 
+declare const kCIInputColor1Key: string;
+
 declare const kCIFormatAh: number;
 
 declare const kCIImageRepresentationDisparityImage: string;
@@ -375,7 +417,7 @@ declare const CIDetectorTracking: string;
 
 declare const kCIInputWidthKey: string;
 
-declare const kCIInputVersionKey: string;
+declare const kCIInputBacksideImageKey: string;
 
 declare const kCIUISetIntermediate: string;
 
@@ -385,15 +427,13 @@ declare const kCISupportedDecoderVersionsKey: string;
 
 declare const kCIImageRepresentationHDRImage: string;
 
-declare const kCIAttributeFilterAvailable_iOS: string;
-
 declare const kCIFormatLAf: number;
+
+declare const kCIImageRepresentationHDRGainMapImage: string;
 
 declare const kCICategoryStillImage: string;
 
 declare const kCIImageAuxiliarySemanticSegmentationGlassesMatte: string;
-
-declare const kCICategoryCompositeOperation: string;
 
 declare const kCIFormatL8: number;
 
@@ -429,8 +469,6 @@ declare const kCIAttributeTypeColor: string;
 
 declare const kCIInputBackgroundImageKey: string;
 
-declare const kCIImageRepresentationHDRGainMapImage: string;
-
 declare const kCIInputEnableEDRModeKey: string;
 
 declare const CIDetectorNumberOfAngles: string;
@@ -449,7 +487,13 @@ declare const kCIAttributeDefault: string;
 
 declare const kCIAttributeTypeGradient: string;
 
+declare const kCICategoryCompositeOperation: string;
+
+declare const kCICategoryReduction: string;
+
 declare const CIDetectorTypeFace: string;
+
+declare const kCIInputPoint0Key: string;
 
 declare const kCIImageCacheImmediately: string;
 
@@ -459,17 +503,21 @@ declare const kCIAttributeTypeScalar: string;
 
 declare const kCIInputAllowDraftModeKey: string;
 
+declare const kCIDynamicRangeConstrainedHigh: string;
+
 declare const kCIInputSharpnessKey: string;
 
 declare const kCIInputLinearSpaceFilter: string;
 
+declare const kCIInputPaletteImageKey: string;
+
 declare const kCIInputIntensityKey: string;
+
+declare const kCIFormatRGBX8: number;
 
 declare const kCIFormatLAh: number;
 
 declare const kCIInputColorKey: string;
-
-declare const kCIAttributeTypeImage: string;
 
 declare const kCIAttributeIdentity: string;
 
@@ -554,6 +602,12 @@ declare interface CIAreaBoundsRed extends CIAreaReductionFilter {
 }
 
 declare class CIAreaBoundsRed extends NativeObject implements CIAreaBoundsRed {
+}
+
+declare interface CIAreaAverageMaximumRed extends CIAreaReductionFilter {
+}
+
+declare class CIAreaAverageMaximumRed extends NativeObject implements CIAreaAverageMaximumRed {
 }
 
 declare interface CIZoomBlur extends CIFilterProtocol {
@@ -987,11 +1041,15 @@ declare interface CIRoundedRectangleGenerator extends CIFilterProtocol {
 
   radius: number;
 
+  smoothness: number;
+
   color: CIColor;
 
   setExtent(extent: CGRect): void;
 
   setRadius(radius: number): void;
+
+  setSmoothness(smoothness: number): void;
 
   setColor(color: CIColor): void;
 }
@@ -1670,9 +1728,9 @@ declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
 
   cubeData: NSData;
 
-  colorSpace: interop.Object;
-
   extrapolate: boolean;
+
+  colorSpace: interop.Object;
 
   setInputImage(inputImage: CIImage | null): void;
 
@@ -1680,9 +1738,9 @@ declare interface CIColorCubeWithColorSpace extends CIFilterProtocol {
 
   setCubeData(cubeData: NSData): void;
 
-  setColorSpace(colorSpace: interop.Object | null): void;
-
   setExtrapolate(extrapolate: boolean): void;
+
+  setColorSpace(colorSpace: interop.Object | null): void;
 }
 
 declare class CIColorCubeWithColorSpace extends NativeObject implements CIColorCubeWithColorSpace {
@@ -1765,6 +1823,8 @@ declare interface CIToneCurve extends CIFilterProtocol {
 
   point4: CGPoint;
 
+  extrapolate: boolean;
+
   setInputImage(inputImage: CIImage | null): void;
 
   setPoint0(point0: CGPoint): void;
@@ -1776,6 +1836,8 @@ declare interface CIToneCurve extends CIFilterProtocol {
   setPoint3(point3: CGPoint): void;
 
   setPoint4(point4: CGPoint): void;
+
+  setExtrapolate(extrapolate: boolean): void;
 }
 
 declare class CIToneCurve extends NativeObject implements CIToneCurve {
@@ -1957,23 +2019,6 @@ declare interface CIColorMatrix extends CIFilterProtocol {
 }
 
 declare class CIColorMatrix extends NativeObject implements CIColorMatrix {
-}
-
-declare interface CIColorClamp extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  minComponents: CIVector;
-
-  maxComponents: CIVector;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setMinComponents(minComponents: CIVector): void;
-
-  setMaxComponents(maxComponents: CIVector): void;
-}
-
-declare class CIColorClamp extends NativeObject implements CIColorClamp {
 }
 
 declare interface CIColorAbsoluteDifference extends CIFilterProtocol {
@@ -2229,6 +2274,102 @@ declare interface CIKeystoneCorrectionCombined extends CIFourCoordinateGeometryF
 declare class CIKeystoneCorrectionCombined extends NativeObject implements CIKeystoneCorrectionCombined {
 }
 
+declare interface CIEdgePreserveUpsample extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  smallImage: CIImage;
+
+  spatialSigma: number;
+
+  lumaSigma: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setSmallImage(smallImage: CIImage | null): void;
+
+  setSpatialSigma(spatialSigma: number): void;
+
+  setLumaSigma(lumaSigma: number): void;
+}
+
+declare class CIEdgePreserveUpsample extends NativeObject implements CIEdgePreserveUpsample {
+}
+
+declare interface CIBicubicScaleTransform extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  scale: number;
+
+  aspectRatio: number;
+
+  parameterB: number;
+
+  parameterC: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setScale(scale: number): void;
+
+  setAspectRatio(aspectRatio: number): void;
+
+  setParameterB(parameterB: number): void;
+
+  setParameterC(parameterC: number): void;
+}
+
+declare class CIBicubicScaleTransform extends NativeObject implements CIBicubicScaleTransform {
+}
+
+declare interface CIFourfoldReflectedTile extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  angle: number;
+
+  width: number;
+
+  acuteAngle: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setAngle(angle: number): void;
+
+  setWidth(width: number): void;
+
+  setAcuteAngle(acuteAngle: number): void;
+}
+
+declare class CIFourfoldReflectedTile extends NativeObject implements CIFourfoldReflectedTile {
+}
+
+declare interface CIFourCoordinateGeometryFilter extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  topLeft: CGPoint;
+
+  topRight: CGPoint;
+
+  bottomRight: CGPoint;
+
+  bottomLeft: CGPoint;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setTopLeft(topLeft: CGPoint): void;
+
+  setTopRight(topRight: CGPoint): void;
+
+  setBottomRight(bottomRight: CGPoint): void;
+
+  setBottomLeft(bottomLeft: CGPoint): void;
+}
+
+declare class CIFourCoordinateGeometryFilter extends NativeObject implements CIFourCoordinateGeometryFilter {
+}
+
 declare interface CIHatchedScreen extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2252,6 +2393,31 @@ declare interface CIHatchedScreen extends CIFilterProtocol {
 }
 
 declare class CIHatchedScreen extends NativeObject implements CIHatchedScreen {
+}
+
+declare interface CIDotScreen extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  center: CGPoint;
+
+  angle: number;
+
+  width: number;
+
+  sharpness: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setCenter(center: CGPoint): void;
+
+  setAngle(angle: number): void;
+
+  setWidth(width: number): void;
+
+  setSharpness(sharpness: number): void;
+}
+
+declare class CIDotScreen extends NativeObject implements CIDotScreen {
 }
 
 declare interface CICMYKHalftone extends CIFilterProtocol {
@@ -2292,17 +2458,21 @@ declare interface CIRoundedRectangleStrokeGenerator extends CIFilterProtocol {
 
   radius: number;
 
-  width: number;
+  smoothness: number;
 
   color: CIColor;
+
+  width: number;
 
   setExtent(extent: CGRect): void;
 
   setRadius(radius: number): void;
 
-  setWidth(width: number): void;
+  setSmoothness(smoothness: number): void;
 
   setColor(color: CIColor): void;
+
+  setWidth(width: number): void;
 }
 
 declare class CIRoundedRectangleStrokeGenerator extends NativeObject implements CIRoundedRectangleStrokeGenerator {
@@ -2329,6 +2499,23 @@ declare interface CICircularScreen extends CIFilterProtocol {
 declare class CICircularScreen extends NativeObject implements CICircularScreen {
 }
 
+declare interface CIUnsharpMask extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  radius: number;
+
+  intensity: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setRadius(radius: number): void;
+
+  setIntensity(intensity: number): void;
+}
+
+declare class CIUnsharpMask extends NativeObject implements CIUnsharpMask {
+}
+
 declare interface CISharpenLuminance extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2344,6 +2531,40 @@ declare interface CISharpenLuminance extends CIFilterProtocol {
 }
 
 declare class CISharpenLuminance extends NativeObject implements CISharpenLuminance {
+}
+
+declare interface CISmoothLinearGradient extends CIFilterProtocol {
+  point0: CGPoint;
+
+  point1: CGPoint;
+
+  color0: CIColor;
+
+  color1: CIColor;
+
+  setPoint0(point0: CGPoint): void;
+
+  setPoint1(point1: CGPoint): void;
+
+  setColor0(color0: CIColor): void;
+
+  setColor1(color1: CIColor): void;
+}
+
+declare class CISmoothLinearGradient extends NativeObject implements CISmoothLinearGradient {
+}
+
+declare interface CISignedDistanceGradientFromRedMask extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  maximumDistance: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setMaximumDistance(maximumDistance: number): void;
+}
+
+declare class CISignedDistanceGradientFromRedMask extends NativeObject implements CISignedDistanceGradientFromRedMask {
 }
 
 declare interface CILinearGradient extends CIFilterProtocol {
@@ -2386,6 +2607,19 @@ declare interface CIGaussianGradient extends CIFilterProtocol {
 }
 
 declare class CIGaussianGradient extends NativeObject implements CIGaussianGradient {
+}
+
+declare interface CIDistanceGradientFromRedMask extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  maximumDistance: number;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setMaximumDistance(maximumDistance: number): void;
+}
+
+declare class CIDistanceGradientFromRedMask extends NativeObject implements CIDistanceGradientFromRedMask {
 }
 
 declare interface CISunbeamsGenerator extends CIFilterProtocol {
@@ -2457,15 +2691,6 @@ declare interface CIFourfoldTranslatedTile extends CIFilterProtocol {
 }
 
 declare class CIFourfoldTranslatedTile extends NativeObject implements CIFourfoldTranslatedTile {
-}
-
-declare interface CIColorInvert extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  setInputImage(inputImage: CIImage | null): void;
-}
-
-declare class CIColorInvert extends NativeObject implements CIColorInvert {
 }
 
 declare interface CIHistogramDisplay extends CIFilterProtocol {
@@ -2560,31 +2785,6 @@ declare interface CIGaussianBlur extends CIFilterProtocol {
 declare class CIGaussianBlur extends NativeObject implements CIGaussianBlur {
 }
 
-declare interface CIBicubicScaleTransform extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  scale: number;
-
-  aspectRatio: number;
-
-  parameterB: number;
-
-  parameterC: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setScale(scale: number): void;
-
-  setAspectRatio(aspectRatio: number): void;
-
-  setParameterB(parameterB: number): void;
-
-  setParameterC(parameterC: number): void;
-}
-
-declare class CIBicubicScaleTransform extends NativeObject implements CIBicubicScaleTransform {
-}
-
 declare interface CIAreaMaximumAlpha extends CIAreaReductionFilter {
 }
 
@@ -2614,6 +2814,23 @@ declare interface CIMaximumScaleTransform extends CIFilterProtocol {
 declare class CIMaximumScaleTransform extends NativeObject implements CIMaximumScaleTransform {
 }
 
+declare interface CIColorClamp extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  minComponents: CIVector;
+
+  maxComponents: CIVector;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setMinComponents(minComponents: CIVector): void;
+
+  setMaxComponents(maxComponents: CIVector): void;
+}
+
+declare class CIColorClamp extends NativeObject implements CIColorClamp {
+}
+
 declare interface CICircleSplashDistortion extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -2629,56 +2846,6 @@ declare interface CICircleSplashDistortion extends CIFilterProtocol {
 }
 
 declare class CICircleSplashDistortion extends NativeObject implements CICircleSplashDistortion {
-}
-
-declare interface CIFourfoldReflectedTile extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  center: CGPoint;
-
-  angle: number;
-
-  width: number;
-
-  acuteAngle: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setCenter(center: CGPoint): void;
-
-  setAngle(angle: number): void;
-
-  setWidth(width: number): void;
-
-  setAcuteAngle(acuteAngle: number): void;
-}
-
-declare class CIFourfoldReflectedTile extends NativeObject implements CIFourfoldReflectedTile {
-}
-
-declare interface CIFourCoordinateGeometryFilter extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  topLeft: CGPoint;
-
-  topRight: CGPoint;
-
-  bottomRight: CGPoint;
-
-  bottomLeft: CGPoint;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setTopLeft(topLeft: CGPoint): void;
-
-  setTopRight(topRight: CGPoint): void;
-
-  setBottomRight(bottomRight: CGPoint): void;
-
-  setBottomLeft(bottomLeft: CGPoint): void;
-}
-
-declare class CIFourCoordinateGeometryFilter extends NativeObject implements CIFourCoordinateGeometryFilter {
 }
 
 declare interface CITextImageGenerator extends CIFilterProtocol {
@@ -2742,6 +2909,15 @@ declare interface CIBlurredRectangleGenerator extends CIFilterProtocol {
 }
 
 declare class CIBlurredRectangleGenerator extends NativeObject implements CIBlurredRectangleGenerator {
+}
+
+declare interface CIColorInvert extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  setInputImage(inputImage: CIImage | null): void;
+}
+
+declare class CIColorInvert extends NativeObject implements CIColorInvert {
 }
 
 declare interface CIBloom extends CIFilterProtocol {
@@ -3127,6 +3303,43 @@ declare interface CISobelGradients extends CIFilterProtocol {
 declare class CISobelGradients extends NativeObject implements CISobelGradients {
 }
 
+declare interface CIRoundedQRCodeGenerator extends CIFilterProtocol {
+  message: NSData;
+
+  correctionLevel: string;
+
+  scale: number;
+
+  roundedMarkers: number;
+
+  roundedData: boolean;
+
+  centerSpaceSize: number;
+
+  color0: CIColor;
+
+  color1: CIColor;
+
+  setMessage(message: NSData): void;
+
+  setCorrectionLevel(correctionLevel: string): void;
+
+  setScale(scale: number): void;
+
+  setRoundedMarkers(roundedMarkers: number): void;
+
+  setRoundedData(roundedData: boolean): void;
+
+  setCenterSpaceSize(centerSpaceSize: number): void;
+
+  setColor0(color0: CIColor): void;
+
+  setColor1(color1: CIColor): void;
+}
+
+declare class CIRoundedQRCodeGenerator extends NativeObject implements CIRoundedQRCodeGenerator {
+}
+
 declare interface CIThermal extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3228,31 +3441,6 @@ declare interface CITriangleTile extends CIFilterProtocol {
 }
 
 declare class CITriangleTile extends NativeObject implements CITriangleTile {
-}
-
-declare interface CIDotScreen extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  center: CGPoint;
-
-  angle: number;
-
-  width: number;
-
-  sharpness: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setCenter(center: CGPoint): void;
-
-  setAngle(angle: number): void;
-
-  setWidth(width: number): void;
-
-  setSharpness(sharpness: number): void;
-}
-
-declare class CIDotScreen extends NativeObject implements CIDotScreen {
 }
 
 declare interface CIBoxBlur extends CIFilterProtocol {
@@ -3384,23 +3572,6 @@ declare interface CIDepthToDisparity extends CIFilterProtocol {
 declare class CIDepthToDisparity extends NativeObject implements CIDepthToDisparity {
 }
 
-declare interface CIUnsharpMask extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  radius: number;
-
-  intensity: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setRadius(radius: number): void;
-
-  setIntensity(intensity: number): void;
-}
-
-declare class CIUnsharpMask extends NativeObject implements CIUnsharpMask {
-}
-
 declare interface CIAreaMinimumAlpha extends CIAreaReductionFilter {
 }
 
@@ -3494,27 +3665,6 @@ declare interface CIAreaMinimum extends CIAreaReductionFilter {
 declare class CIAreaMinimum extends NativeObject implements CIAreaMinimum {
 }
 
-declare interface CISmoothLinearGradient extends CIFilterProtocol {
-  point0: CGPoint;
-
-  point1: CGPoint;
-
-  color0: CIColor;
-
-  color1: CIColor;
-
-  setPoint0(point0: CGPoint): void;
-
-  setPoint1(point1: CGPoint): void;
-
-  setColor0(color0: CIColor): void;
-
-  setColor1(color1: CIColor): void;
-}
-
-declare class CISmoothLinearGradient extends NativeObject implements CISmoothLinearGradient {
-}
-
 declare interface CIPersonSegmentation extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3561,6 +3711,23 @@ declare interface CIKeystoneCorrectionHorizontal extends CIFourCoordinateGeometr
 }
 
 declare class CIKeystoneCorrectionHorizontal extends NativeObject implements CIKeystoneCorrectionHorizontal {
+}
+
+declare interface CISystemToneMap extends CIFilterProtocol {
+  inputImage: CIImage;
+
+  displayHeadroom: number;
+
+  preferredDynamicRange: string;
+
+  setInputImage(inputImage: CIImage | null): void;
+
+  setDisplayHeadroom(displayHeadroom: number): void;
+
+  setPreferredDynamicRange(preferredDynamicRange: string | null): void;
+}
+
+declare class CISystemToneMap extends NativeObject implements CISystemToneMap {
 }
 
 declare interface CIImageProcessorOutput {
@@ -3847,6 +4014,31 @@ declare interface CILinearToSRGBToneCurve extends CIFilterProtocol {
 declare class CILinearToSRGBToneCurve extends NativeObject implements CILinearToSRGBToneCurve {
 }
 
+declare interface CIBlurredRoundedRectangleGenerator extends CIFilterProtocol {
+  extent: CGRect;
+
+  radius: number;
+
+  smoothness: number;
+
+  sigma: number;
+
+  color: CIColor;
+
+  setExtent(extent: CGRect): void;
+
+  setRadius(radius: number): void;
+
+  setSmoothness(smoothness: number): void;
+
+  setSigma(sigma: number): void;
+
+  setColor(color: CIColor): void;
+}
+
+declare class CIBlurredRoundedRectangleGenerator extends NativeObject implements CIBlurredRoundedRectangleGenerator {
+}
+
 declare interface CIVignetteEffect extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3893,27 +4085,6 @@ declare interface CITwirlDistortion extends CIFilterProtocol {
 declare class CITwirlDistortion extends NativeObject implements CITwirlDistortion {
 }
 
-declare interface CIEdgePreserveUpsample extends CIFilterProtocol {
-  inputImage: CIImage;
-
-  smallImage: CIImage;
-
-  spatialSigma: number;
-
-  lumaSigma: number;
-
-  setInputImage(inputImage: CIImage | null): void;
-
-  setSmallImage(smallImage: CIImage | null): void;
-
-  setSpatialSigma(spatialSigma: number): void;
-
-  setLumaSigma(lumaSigma: number): void;
-}
-
-declare class CIEdgePreserveUpsample extends NativeObject implements CIEdgePreserveUpsample {
-}
-
 declare interface CIStretchCrop extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3955,20 +4126,6 @@ declare class CIKernel extends NSObject {
   applyWithExtentRoiCallbackArguments(extent: CGRect, callback: (p1: number, p2: CGRect) => CGRect, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
 }
 
-declare class CITextFeature extends CIFeature {
-  readonly bounds: CGRect;
-
-  readonly topLeft: CGPoint;
-
-  readonly topRight: CGPoint;
-
-  readonly bottomLeft: CGPoint;
-
-  readonly bottomRight: CGPoint;
-
-  readonly subFeatures: NSArray;
-}
-
 declare class CIRAWFilter extends CIFilter {
   static readonly supportedCameraModels: NSArray;
 
@@ -3995,6 +4152,10 @@ declare class CIRAWFilter extends CIFilter {
   boostAmount: number;
 
   boostShadowAmount: number;
+
+  readonly highlightRecoverySupported: boolean;
+
+  highlightRecoveryEnabled: boolean;
 
   gamutMappingEnabled: boolean;
 
@@ -4082,6 +4243,12 @@ declare class CIRAWFilter extends CIFilter {
 
   setBoostShadowAmount(boostShadowAmount: number): void;
 
+  isHighlightRecoverySupported(): boolean;
+
+  isHighlightRecoveryEnabled(): boolean;
+
+  setHighlightRecoveryEnabled(highlightRecoveryEnabled: boolean): void;
+
   isGamutMappingEnabled(): boolean;
 
   setGamutMappingEnabled(gamutMappingEnabled: boolean): void;
@@ -4133,7 +4300,7 @@ declare class CIRAWFilter extends CIFilter {
   setLinearSpaceFilter(linearSpaceFilter: CIFilter | null): void;
 }
 
-declare class CIQRCodeFeature extends CIFeature implements NSSecureCoding, NSCopying {
+declare class CITextFeature extends CIFeature {
   readonly bounds: CGRect;
 
   readonly topLeft: CGPoint;
@@ -4144,67 +4311,7 @@ declare class CIQRCodeFeature extends CIFeature implements NSSecureCoding, NSCop
 
   readonly bottomRight: CGPoint;
 
-  readonly messageString: string;
-
-  readonly symbolDescriptor: CIQRCodeDescriptor;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class CIFaceFeature extends CIFeature {
-  readonly bounds: CGRect;
-
-  readonly hasLeftEyePosition: boolean;
-
-  readonly leftEyePosition: CGPoint;
-
-  readonly hasRightEyePosition: boolean;
-
-  readonly rightEyePosition: CGPoint;
-
-  readonly hasMouthPosition: boolean;
-
-  readonly mouthPosition: CGPoint;
-
-  readonly hasTrackingID: boolean;
-
-  readonly trackingID: number;
-
-  readonly hasTrackingFrameCount: boolean;
-
-  readonly trackingFrameCount: number;
-
-  readonly hasFaceAngle: boolean;
-
-  readonly faceAngle: number;
-
-  readonly hasSmile: boolean;
-
-  readonly leftEyeClosed: boolean;
-
-  readonly rightEyeClosed: boolean;
-}
-
-declare class CIRectangleFeature extends CIFeature {
-  readonly bounds: CGRect;
-
-  readonly topLeft: CGPoint;
-
-  readonly topRight: CGPoint;
-
-  readonly bottomLeft: CGPoint;
-
-  readonly bottomRight: CGPoint;
-}
-
-declare class CIRenderTask extends NSObject {
-  waitUntilCompletedAndReturnError(error: interop.PointerConvertible): CIRenderInfo;
+  readonly subFeatures: NSArray;
 }
 
 declare class CIImageAccumulator extends NSObject {
@@ -4249,22 +4356,54 @@ declare class CISampler extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-declare class CIImageProcessorKernel extends NSObject {
-  static processWithInputsArgumentsOutputError(inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, output: CIImageProcessorOutput, error: interop.PointerConvertible): boolean;
+declare class CIRectangleFeature extends CIFeature {
+  readonly bounds: CGRect;
 
-  static roiForInputArgumentsOutputRect(input: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): CGRect;
+  readonly topLeft: CGPoint;
 
-  static roiTileArrayForInputArgumentsOutputRect(input: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): NSArray;
+  readonly topRight: CGPoint;
 
-  static formatForInputAtIndex(input: number): number;
+  readonly bottomLeft: CGPoint;
 
-  static readonly outputFormat: number;
+  readonly bottomRight: CGPoint;
+}
 
-  static readonly outputIsOpaque: boolean;
+declare class CIRenderTask extends NSObject {
+  waitUntilCompletedAndReturnError(error: interop.PointerConvertible): CIRenderInfo;
+}
 
-  static readonly synchronizeInputs: boolean;
+declare class CIFaceFeature extends CIFeature {
+  readonly bounds: CGRect;
 
-  static applyWithExtentInputsArgumentsError(extent: CGRect, inputs: NSArray<interop.Object> | Array<interop.Object> | null, args: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): CIImage;
+  readonly hasLeftEyePosition: boolean;
+
+  readonly leftEyePosition: CGPoint;
+
+  readonly hasRightEyePosition: boolean;
+
+  readonly rightEyePosition: CGPoint;
+
+  readonly hasMouthPosition: boolean;
+
+  readonly mouthPosition: CGPoint;
+
+  readonly hasTrackingID: boolean;
+
+  readonly trackingID: number;
+
+  readonly hasTrackingFrameCount: boolean;
+
+  readonly trackingFrameCount: number;
+
+  readonly hasFaceAngle: boolean;
+
+  readonly faceAngle: number;
+
+  readonly hasSmile: boolean;
+
+  readonly leftEyeClosed: boolean;
+
+  readonly rightEyeClosed: boolean;
 }
 
 declare class CIPDF417CodeDescriptor extends CIBarcodeDescriptor {
@@ -4282,27 +4421,27 @@ declare class CIPDF417CodeDescriptor extends CIBarcodeDescriptor {
 }
 
 declare class CIColor extends NSObject implements NSSecureCoding, NSCopying {
-  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, c: interop.Object): InstanceType<This>;
+  static colorWithCGColor<This extends abstract new (...args: any) => any>(this: This, color: interop.Object): InstanceType<This>;
 
-  static colorWithRedGreenBlueAlpha<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number): InstanceType<This>;
+  static colorWithRedGreenBlueAlpha<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number): InstanceType<This>;
 
-  static colorWithRedGreenBlue<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number): InstanceType<This>;
+  static colorWithRedGreenBlue<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number): InstanceType<This>;
 
-  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, a: number, colorSpace: interop.Object): InstanceType<This>;
+  static colorWithRedGreenBlueAlphaColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, alpha: number, colorSpace: interop.Object): InstanceType<This>;
 
-  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, r: number, g: number, b: number, colorSpace: interop.Object): InstanceType<This>;
+  static colorWithRedGreenBlueColorSpace<This extends abstract new (...args: any) => any>(this: This, red: number, green: number, blue: number, colorSpace: interop.Object): InstanceType<This>;
 
   static colorWithString<This extends abstract new (...args: any) => any>(this: This, representation: string): InstanceType<This>;
 
-  initWithCGColor(c: interop.Object): this;
+  initWithCGColor(color: interop.Object): this;
 
-  initWithRedGreenBlueAlpha(r: number, g: number, b: number, a: number): this;
+  initWithRedGreenBlueAlpha(red: number, green: number, blue: number, alpha: number): this;
 
-  initWithRedGreenBlue(r: number, g: number, b: number): this;
+  initWithRedGreenBlue(red: number, green: number, blue: number): this;
 
-  initWithRedGreenBlueAlphaColorSpace(r: number, g: number, b: number, a: number, colorSpace: interop.Object): this;
+  initWithRedGreenBlueAlphaColorSpace(red: number, green: number, blue: number, alpha: number, colorSpace: interop.Object): this;
 
-  initWithRedGreenBlueColorSpace(r: number, g: number, b: number, colorSpace: interop.Object): this;
+  initWithRedGreenBlueColorSpace(red: number, green: number, blue: number, colorSpace: interop.Object): this;
 
   readonly numberOfComponents: number;
 
@@ -4357,20 +4496,6 @@ declare class CIColorKernel extends CIKernel {
   applyWithExtentArguments(extent: CGRect, args: NSArray<interop.Object> | Array<interop.Object> | null): CIImage;
 }
 
-declare class CIAztecCodeDescriptor extends CIBarcodeDescriptor {
-  readonly errorCorrectedPayload: NSData;
-
-  readonly isCompact: boolean;
-
-  readonly layerCount: number;
-
-  readonly dataCodewordCount: number;
-
-  initWithPayloadIsCompactLayerCountDataCodewordCount(errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): this;
-
-  static descriptorWithPayloadIsCompactLayerCountDataCodewordCount<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): InstanceType<This>;
-}
-
 declare class CIFeature extends NSObject {
   readonly type: string;
 
@@ -4410,7 +4535,7 @@ declare class CIVector extends NSObject implements NSCopying, NSSecureCoding {
 
   initWithCGRect(r: CGRect): this;
 
-  initWithCGAffineTransform(r: CGAffineTransform): this;
+  initWithCGAffineTransform(t: CGAffineTransform): this;
 
   initWithString(representation: string): this;
 
@@ -4465,6 +4590,540 @@ declare class CIFilterShape extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
+  readonly outputImage: CIImage;
+
+  name: string;
+
+  setName(aString: string): void;
+
+  readonly inputKeys: NSArray;
+
+  readonly outputKeys: NSArray;
+
+  setDefaults(): void;
+
+  readonly attributes: NSDictionary;
+
+  static filterWithName(name: string): CIFilter;
+
+  static filterWithNameKeysAndValues(name: string, key0: interop.Object): CIFilter;
+
+  static filterWithNameWithInputParameters(name: string, params: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIFilter;
+
+  static filterNamesInCategory(category: string | null): NSArray;
+
+  static filterNamesInCategories(categories: NSArray<interop.Object> | Array<interop.Object> | null): NSArray;
+
+  static registerFilterNameConstructorClassAttributes(name: string, anObject: CIFilterConstructor, attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  static localizedNameForFilterName(filterName: string): string;
+
+  static localizedNameForCategory(category: string): string;
+
+  static localizedDescriptionForFilterName(filterName: string): string;
+
+  static localizedReferenceDocumentationForFilterName(filterName: string): NSURL;
+
+  static serializedXMPFromFiltersInputImageExtent(filters: NSArray<interop.Object> | Array<interop.Object>, extent: CGRect): NSData;
+
+  static filterArrayFromSerializedXMPInputImageExtentError(xmpData: NSData, extent: CGRect, outError: interop.PointerConvertible): NSArray;
+
+  static filterWithImageURLOptions(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
+
+  static filterWithImageDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
+
+  static filterWithCVPixelBufferPropertiesOptions(pixelBuffer: interop.Object, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
+
+  static supportedRawCameraModels(): NSArray;
+
+  static distanceGradientFromRedMaskFilter(): CIFilter;
+
+  static gaussianGradientFilter(): CIFilter;
+
+  static hueSaturationValueGradientFilter(): CIFilter;
+
+  static linearGradientFilter(): CIFilter;
+
+  static radialGradientFilter(): CIFilter;
+
+  static signedDistanceGradientFromRedMaskFilter(): CIFilter;
+
+  static smoothLinearGradientFilter(): CIFilter;
+
+  static sharpenLuminanceFilter(): CIFilter;
+
+  static unsharpMaskFilter(): CIFilter;
+
+  static circularScreenFilter(): CIFilter;
+
+  static CMYKHalftone(): CIFilter;
+
+  static dotScreenFilter(): CIFilter;
+
+  static hatchedScreenFilter(): CIFilter;
+
+  static lineScreenFilter(): CIFilter;
+
+  static bicubicScaleTransformFilter(): CIFilter;
+
+  static edgePreserveUpsampleFilter(): CIFilter;
+
+  static keystoneCorrectionCombinedFilter(): CIFilter;
+
+  static keystoneCorrectionHorizontalFilter(): CIFilter;
+
+  static keystoneCorrectionVerticalFilter(): CIFilter;
+
+  static lanczosScaleTransformFilter(): CIFilter;
+
+  static maximumScaleTransformFilter(): CIFilter;
+
+  static perspectiveCorrectionFilter(): CIFilter;
+
+  static perspectiveRotateFilter(): CIFilter;
+
+  static perspectiveTransformFilter(): CIFilter;
+
+  static perspectiveTransformWithExtentFilter(): CIFilter;
+
+  static straightenFilter(): CIFilter;
+
+  static accordionFoldTransitionFilter(): CIFilter;
+
+  static barsSwipeTransitionFilter(): CIFilter;
+
+  static copyMachineTransitionFilter(): CIFilter;
+
+  static disintegrateWithMaskTransitionFilter(): CIFilter;
+
+  static dissolveTransitionFilter(): CIFilter;
+
+  static flashTransitionFilter(): CIFilter;
+
+  static modTransitionFilter(): CIFilter;
+
+  static pageCurlTransitionFilter(): CIFilter;
+
+  static pageCurlWithShadowTransitionFilter(): CIFilter;
+
+  static rippleTransitionFilter(): CIFilter;
+
+  static swipeTransitionFilter(): CIFilter;
+
+  static additionCompositingFilter(): CIFilter;
+
+  static colorBlendModeFilter(): CIFilter;
+
+  static colorBurnBlendModeFilter(): CIFilter;
+
+  static colorDodgeBlendModeFilter(): CIFilter;
+
+  static darkenBlendModeFilter(): CIFilter;
+
+  static differenceBlendModeFilter(): CIFilter;
+
+  static divideBlendModeFilter(): CIFilter;
+
+  static exclusionBlendModeFilter(): CIFilter;
+
+  static hardLightBlendModeFilter(): CIFilter;
+
+  static hueBlendModeFilter(): CIFilter;
+
+  static lightenBlendModeFilter(): CIFilter;
+
+  static linearBurnBlendModeFilter(): CIFilter;
+
+  static linearDodgeBlendModeFilter(): CIFilter;
+
+  static linearLightBlendModeFilter(): CIFilter;
+
+  static luminosityBlendModeFilter(): CIFilter;
+
+  static maximumCompositingFilter(): CIFilter;
+
+  static minimumCompositingFilter(): CIFilter;
+
+  static multiplyBlendModeFilter(): CIFilter;
+
+  static multiplyCompositingFilter(): CIFilter;
+
+  static overlayBlendModeFilter(): CIFilter;
+
+  static pinLightBlendModeFilter(): CIFilter;
+
+  static saturationBlendModeFilter(): CIFilter;
+
+  static screenBlendModeFilter(): CIFilter;
+
+  static softLightBlendModeFilter(): CIFilter;
+
+  static sourceAtopCompositingFilter(): CIFilter;
+
+  static sourceInCompositingFilter(): CIFilter;
+
+  static sourceOutCompositingFilter(): CIFilter;
+
+  static sourceOverCompositingFilter(): CIFilter;
+
+  static subtractBlendModeFilter(): CIFilter;
+
+  static vividLightBlendModeFilter(): CIFilter;
+
+  static colorAbsoluteDifferenceFilter(): CIFilter;
+
+  static colorClampFilter(): CIFilter;
+
+  static colorControlsFilter(): CIFilter;
+
+  static colorMatrixFilter(): CIFilter;
+
+  static colorPolynomialFilter(): CIFilter;
+
+  static colorThresholdFilter(): CIFilter;
+
+  static colorThresholdOtsuFilter(): CIFilter;
+
+  static depthToDisparityFilter(): CIFilter;
+
+  static disparityToDepthFilter(): CIFilter;
+
+  static exposureAdjustFilter(): CIFilter;
+
+  static gammaAdjustFilter(): CIFilter;
+
+  static hueAdjustFilter(): CIFilter;
+
+  static linearToSRGBToneCurveFilter(): CIFilter;
+
+  static sRGBToneCurveToLinearFilter(): CIFilter;
+
+  static systemToneMapFilter(): CIFilter;
+
+  static temperatureAndTintFilter(): CIFilter;
+
+  static toneCurveFilter(): CIFilter;
+
+  static toneMapHeadroomFilter(): CIFilter;
+
+  static vibranceFilter(): CIFilter;
+
+  static whitePointAdjustFilter(): CIFilter;
+
+  static colorCrossPolynomialFilter(): CIFilter;
+
+  static colorCubeFilter(): CIFilter;
+
+  static colorCubesMixedWithMaskFilter(): CIFilter;
+
+  static colorCubeWithColorSpaceFilter(): CIFilter;
+
+  static colorCurvesFilter(): CIFilter;
+
+  static colorInvertFilter(): CIFilter;
+
+  static colorMapFilter(): CIFilter;
+
+  static colorMonochromeFilter(): CIFilter;
+
+  static colorPosterizeFilter(): CIFilter;
+
+  static convertLabToRGBFilter(): CIFilter;
+
+  static convertRGBtoLabFilter(): CIFilter;
+
+  static ditherFilter(): CIFilter;
+
+  static documentEnhancerFilter(): CIFilter;
+
+  static falseColorFilter(): CIFilter;
+
+  static LabDeltaE(): CIFilter;
+
+  static maskToAlphaFilter(): CIFilter;
+
+  static maximumComponentFilter(): CIFilter;
+
+  static minimumComponentFilter(): CIFilter;
+
+  static paletteCentroidFilter(): CIFilter;
+
+  static palettizeFilter(): CIFilter;
+
+  static photoEffectChromeFilter(): CIFilter;
+
+  static photoEffectFadeFilter(): CIFilter;
+
+  static photoEffectInstantFilter(): CIFilter;
+
+  static photoEffectMonoFilter(): CIFilter;
+
+  static photoEffectNoirFilter(): CIFilter;
+
+  static photoEffectProcessFilter(): CIFilter;
+
+  static photoEffectTonalFilter(): CIFilter;
+
+  static photoEffectTransferFilter(): CIFilter;
+
+  static sepiaToneFilter(): CIFilter;
+
+  static thermalFilter(): CIFilter;
+
+  static vignetteFilter(): CIFilter;
+
+  static vignetteEffectFilter(): CIFilter;
+
+  static xRayFilter(): CIFilter;
+
+  static bumpDistortionFilter(): CIFilter;
+
+  static bumpDistortionLinearFilter(): CIFilter;
+
+  static circleSplashDistortionFilter(): CIFilter;
+
+  static circularWrapFilter(): CIFilter;
+
+  static displacementDistortionFilter(): CIFilter;
+
+  static drosteFilter(): CIFilter;
+
+  static glassDistortionFilter(): CIFilter;
+
+  static glassLozengeFilter(): CIFilter;
+
+  static holeDistortionFilter(): CIFilter;
+
+  static lightTunnelFilter(): CIFilter;
+
+  static ninePartStretchedFilter(): CIFilter;
+
+  static ninePartTiledFilter(): CIFilter;
+
+  static pinchDistortionFilter(): CIFilter;
+
+  static stretchCropFilter(): CIFilter;
+
+  static torusLensDistortionFilter(): CIFilter;
+
+  static twirlDistortionFilter(): CIFilter;
+
+  static vortexDistortionFilter(): CIFilter;
+
+  static affineClampFilter(): CIFilter;
+
+  static affineTileFilter(): CIFilter;
+
+  static eightfoldReflectedTileFilter(): CIFilter;
+
+  static fourfoldReflectedTileFilter(): CIFilter;
+
+  static fourfoldRotatedTileFilter(): CIFilter;
+
+  static fourfoldTranslatedTileFilter(): CIFilter;
+
+  static glideReflectedTileFilter(): CIFilter;
+
+  static kaleidoscopeFilter(): CIFilter;
+
+  static opTileFilter(): CIFilter;
+
+  static parallelogramTileFilter(): CIFilter;
+
+  static perspectiveTileFilter(): CIFilter;
+
+  static sixfoldReflectedTileFilter(): CIFilter;
+
+  static sixfoldRotatedTileFilter(): CIFilter;
+
+  static triangleKaleidoscopeFilter(): CIFilter;
+
+  static triangleTileFilter(): CIFilter;
+
+  static twelvefoldReflectedTileFilter(): CIFilter;
+
+  static attributedTextImageGeneratorFilter(): CIFilter;
+
+  static aztecCodeGeneratorFilter(): CIFilter;
+
+  static barcodeGeneratorFilter(): CIFilter;
+
+  static blurredRectangleGeneratorFilter(): CIFilter;
+
+  static blurredRoundedRectangleGeneratorFilter(): CIFilter;
+
+  static checkerboardGeneratorFilter(): CIFilter;
+
+  static code128BarcodeGeneratorFilter(): CIFilter;
+
+  static lenticularHaloGeneratorFilter(): CIFilter;
+
+  static meshGeneratorFilter(): CIFilter;
+
+  static PDF417BarcodeGenerator(): CIFilter;
+
+  static QRCodeGenerator(): CIFilter;
+
+  static randomGeneratorFilter(): CIFilter;
+
+  static roundedQRCodeGeneratorFilter(): CIFilter;
+
+  static roundedRectangleGeneratorFilter(): CIFilter;
+
+  static roundedRectangleStrokeGeneratorFilter(): CIFilter;
+
+  static starShineGeneratorFilter(): CIFilter;
+
+  static stripesGeneratorFilter(): CIFilter;
+
+  static sunbeamsGeneratorFilter(): CIFilter;
+
+  static textImageGeneratorFilter(): CIFilter;
+
+  static blendWithAlphaMaskFilter(): CIFilter;
+
+  static blendWithBlueMaskFilter(): CIFilter;
+
+  static blendWithMaskFilter(): CIFilter;
+
+  static blendWithRedMaskFilter(): CIFilter;
+
+  static bloomFilter(): CIFilter;
+
+  static cannyEdgeDetectorFilter(): CIFilter;
+
+  static comicEffectFilter(): CIFilter;
+
+  static convolution3X3Filter(): CIFilter;
+
+  static convolution5X5Filter(): CIFilter;
+
+  static convolution7X7Filter(): CIFilter;
+
+  static convolution9HorizontalFilter(): CIFilter;
+
+  static convolution9VerticalFilter(): CIFilter;
+
+  static convolutionRGB3X3Filter(): CIFilter;
+
+  static convolutionRGB5X5Filter(): CIFilter;
+
+  static convolutionRGB7X7Filter(): CIFilter;
+
+  static convolutionRGB9HorizontalFilter(): CIFilter;
+
+  static convolutionRGB9VerticalFilter(): CIFilter;
+
+  static coreMLModelFilter(): CIFilter;
+
+  static crystallizeFilter(): CIFilter;
+
+  static depthOfFieldFilter(): CIFilter;
+
+  static edgesFilter(): CIFilter;
+
+  static edgeWorkFilter(): CIFilter;
+
+  static gaborGradientsFilter(): CIFilter;
+
+  static gloomFilter(): CIFilter;
+
+  static heightFieldFromMaskFilter(): CIFilter;
+
+  static hexagonalPixellateFilter(): CIFilter;
+
+  static highlightShadowAdjustFilter(): CIFilter;
+
+  static lineOverlayFilter(): CIFilter;
+
+  static mixFilter(): CIFilter;
+
+  static personSegmentationFilter(): CIFilter;
+
+  static pixellateFilter(): CIFilter;
+
+  static pointillizeFilter(): CIFilter;
+
+  static saliencyMapFilter(): CIFilter;
+
+  static shadedMaterialFilter(): CIFilter;
+
+  static sobelGradientsFilter(): CIFilter;
+
+  static spotColorFilter(): CIFilter;
+
+  static spotLightFilter(): CIFilter;
+
+  static bokehBlurFilter(): CIFilter;
+
+  static boxBlurFilter(): CIFilter;
+
+  static discBlurFilter(): CIFilter;
+
+  static gaussianBlurFilter(): CIFilter;
+
+  static maskedVariableBlurFilter(): CIFilter;
+
+  static medianFilter(): CIFilter;
+
+  static morphologyGradientFilter(): CIFilter;
+
+  static morphologyMaximumFilter(): CIFilter;
+
+  static morphologyMinimumFilter(): CIFilter;
+
+  static morphologyRectangleMaximumFilter(): CIFilter;
+
+  static morphologyRectangleMinimumFilter(): CIFilter;
+
+  static motionBlurFilter(): CIFilter;
+
+  static noiseReductionFilter(): CIFilter;
+
+  static zoomBlurFilter(): CIFilter;
+
+  static areaAlphaWeightedHistogramFilter(): CIFilter;
+
+  static areaAverageFilter(): CIFilter;
+
+  static areaAverageMaximumRedFilter(): CIFilter;
+
+  static areaBoundsRedFilter(): CIFilter;
+
+  static areaHistogramFilter(): CIFilter;
+
+  static areaLogarithmicHistogramFilter(): CIFilter;
+
+  static areaMaximumFilter(): CIFilter;
+
+  static areaMaximumAlphaFilter(): CIFilter;
+
+  static areaMinimumFilter(): CIFilter;
+
+  static areaMinimumAlphaFilter(): CIFilter;
+
+  static areaMinMaxFilter(): CIFilter;
+
+  static areaMinMaxRedFilter(): CIFilter;
+
+  static columnAverageFilter(): CIFilter;
+
+  static histogramDisplayFilter(): CIFilter;
+
+  static KMeansFilter(): CIFilter;
+
+  static rowAverageFilter(): CIFilter;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class CIRenderInfo extends NSObject {
   readonly kernelExecutionTime: number;
 
@@ -4473,6 +5132,30 @@ declare class CIRenderInfo extends NSObject {
   readonly passCount: number;
 
   readonly pixelsProcessed: number;
+}
+
+declare class CIImageProcessorKernel extends NSObject {
+  static processWithInputsArgumentsOutputError(inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, output: CIImageProcessorOutput, error: interop.PointerConvertible): boolean;
+
+  static roiForInputArgumentsOutputRect(inputIndex: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): CGRect;
+
+  static roiTileArrayForInputArgumentsOutputRect(inputIndex: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputRect: CGRect): NSArray;
+
+  static formatForInputAtIndex(inputIndex: number): number;
+
+  static readonly outputFormat: number;
+
+  static readonly outputIsOpaque: boolean;
+
+  static readonly synchronizeInputs: boolean;
+
+  static applyWithExtentInputsArgumentsError(extent: CGRect, inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): CIImage;
+
+  static processWithInputsArgumentsOutputsError(inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputs: NSArray<interop.Object> | Array<interop.Object>, error: interop.PointerConvertible): boolean;
+
+  static outputFormatAtIndexArguments(outputIndex: number, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): number;
+
+  static applyWithExtentsInputsArgumentsError(extents: NSArray<interop.Object> | Array<interop.Object>, inputs: NSArray<interop.Object> | Array<interop.Object> | null, arguments$: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, error: interop.PointerConvertible): NSArray;
 }
 
 declare class CIDataMatrixCodeDescriptor extends CIBarcodeDescriptor {
@@ -4526,6 +5209,8 @@ declare class CIRenderDestination extends NSObject {
 
   blendsInDestinationColorSpace: boolean;
 
+  captureTraceURL: NSURL;
+
   setAlphaMode(alphaMode: interop.Enum<typeof CIRenderDestinationAlphaMode>): void;
 
   isFlipped(): boolean;
@@ -4545,6 +5230,8 @@ declare class CIRenderDestination extends NSObject {
   setBlendKernel(blendKernel: CIBlendKernel | null): void;
 
   setBlendsInDestinationColorSpace(blendsInDestinationColorSpace: boolean): void;
+
+  setCaptureTraceURL(captureTraceURL: NSURL): void;
 }
 
 declare class CIQRCodeDescriptor extends CIBarcodeDescriptor {
@@ -4714,9 +5401,15 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   imageByInsertingIntermediate(): CIImage;
 
+  imageByInsertingTiledIntermediate(): CIImage;
+
   imageByApplyingGainMap(gainmap: CIImage): CIImage;
 
   imageByApplyingGainMapHeadroom(gainmap: CIImage, headroom: number): CIImage;
+
+  imageBySettingContentHeadroom(headroom: number): CIImage;
+
+  imageBySettingContentAverageLightLevel(average: number): CIImage;
 
   readonly extent: CGRect;
 
@@ -4729,6 +5422,8 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
   readonly colorSpace: interop.Object;
 
   readonly contentHeadroom: number;
+
+  readonly contentAverageLightLevel: number;
 
   readonly pixelBuffer: interop.Object;
 
@@ -4778,9 +5473,9 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
 
   static imageWithSemanticSegmentationMatte<This extends abstract new (...args: any) => any>(this: This, matte: AVSemanticSegmentationMatte): InstanceType<This>;
 
-  static imageWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
+  static imageWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIImage;
 
-  initWithImageProviderSizeFormatColorSpaceOptions(p: interop.Object, width: number, height: number, f: number, cs: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
+  initWithImageProviderSizeFormatColorSpaceOptions(provider: interop.Object, width: number, height: number, format: number, colorSpace: interop.Object | null, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   initWithImage(image: UIImage): this;
 
@@ -4793,6 +5488,20 @@ declare class CIImage extends NSObject implements NSSecureCoding, NSCopying {
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class CIAztecCodeDescriptor extends CIBarcodeDescriptor {
+  readonly errorCorrectedPayload: NSData;
+
+  readonly isCompact: boolean;
+
+  readonly layerCount: number;
+
+  readonly dataCodewordCount: number;
+
+  initWithPayloadIsCompactLayerCountDataCodewordCount(errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): this;
+
+  static descriptorWithPayloadIsCompactLayerCountDataCodewordCount<This extends abstract new (...args: any) => any>(this: This, errorCorrectedPayload: NSData, isCompact: boolean, layerCount: number, dataCodewordCount: number): InstanceType<This>;
 }
 
 declare class CIContext extends NSObject {
@@ -4847,6 +5556,16 @@ declare class CIContext extends NSObject {
   createCGImageFromRectFormatColorSpace(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null): interop.Object;
 
   createCGImageFromRectFormatColorSpaceDeferred(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean): interop.Object;
+
+  createCGImageFromRectFormatColorSpaceDeferredCalculateHDRStats(image: CIImage, fromRect: CGRect, format: number, colorSpace: interop.Object | null, deferred: boolean, calculateHDRStats: boolean): interop.Object;
+
+  calculateHDRStatsForIOSurface(surface: interop.Object): void;
+
+  calculateHDRStatsForCVPixelBuffer(buffer: interop.Object): void;
+
+  calculateHDRStatsForCGImage(cgimage: interop.Object): interop.Object;
+
+  calculateHDRStatsForImage(image: CIImage): CIImage;
 
   TIFFRepresentationOfImageFormatColorSpaceOptions(image: CIImage, format: number, colorSpace: interop.Object, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): NSData;
 
@@ -4981,518 +5700,20 @@ declare class CIBlendKernel extends CIColorKernel {
   static readonly lighterColor: CIBlendKernel;
 }
 
-declare class CIFilter extends NSObject implements NSSecureCoding, NSCopying {
-  readonly outputImage: CIImage;
+declare class CIQRCodeFeature extends CIFeature implements NSSecureCoding, NSCopying {
+  readonly bounds: CGRect;
 
-  name: string;
+  readonly topLeft: CGPoint;
 
-  setName(aString: string): void;
+  readonly topRight: CGPoint;
 
-  readonly inputKeys: NSArray;
+  readonly bottomLeft: CGPoint;
 
-  readonly outputKeys: NSArray;
+  readonly bottomRight: CGPoint;
 
-  setDefaults(): void;
+  readonly messageString: string;
 
-  readonly attributes: NSDictionary;
-
-  static filterWithName(name: string): CIFilter;
-
-  static filterWithNameKeysAndValues(name: string, key0: interop.Object): CIFilter;
-
-  static filterWithNameWithInputParameters(name: string, params: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): CIFilter;
-
-  static filterNamesInCategory(category: string | null): NSArray;
-
-  static filterNamesInCategories(categories: NSArray<interop.Object> | Array<interop.Object> | null): NSArray;
-
-  static registerFilterNameConstructorClassAttributes(name: string, anObject: CIFilterConstructor, attributes: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  static localizedNameForFilterName(filterName: string): string;
-
-  static localizedNameForCategory(category: string): string;
-
-  static localizedDescriptionForFilterName(filterName: string): string;
-
-  static localizedReferenceDocumentationForFilterName(filterName: string): NSURL;
-
-  static serializedXMPFromFiltersInputImageExtent(filters: NSArray<interop.Object> | Array<interop.Object>, extent: CGRect): NSData;
-
-  static filterArrayFromSerializedXMPInputImageExtentError(xmpData: NSData, extent: CGRect, outError: interop.PointerConvertible): NSArray;
-
-  static filterWithImageURLOptions(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
-
-  static filterWithImageDataOptions(data: NSData, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
-
-  static filterWithCVPixelBufferPropertiesOptions(pixelBuffer: interop.Object, properties: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): CIFilter;
-
-  static supportedRawCameraModels(): NSArray;
-
-  static gaussianGradientFilter(): CIFilter;
-
-  static hueSaturationValueGradientFilter(): CIFilter;
-
-  static linearGradientFilter(): CIFilter;
-
-  static radialGradientFilter(): CIFilter;
-
-  static smoothLinearGradientFilter(): CIFilter;
-
-  static sharpenLuminanceFilter(): CIFilter;
-
-  static unsharpMaskFilter(): CIFilter;
-
-  static circularScreenFilter(): CIFilter;
-
-  static CMYKHalftone(): CIFilter;
-
-  static dotScreenFilter(): CIFilter;
-
-  static hatchedScreenFilter(): CIFilter;
-
-  static lineScreenFilter(): CIFilter;
-
-  static bicubicScaleTransformFilter(): CIFilter;
-
-  static edgePreserveUpsampleFilter(): CIFilter;
-
-  static keystoneCorrectionCombinedFilter(): CIFilter;
-
-  static keystoneCorrectionHorizontalFilter(): CIFilter;
-
-  static keystoneCorrectionVerticalFilter(): CIFilter;
-
-  static lanczosScaleTransformFilter(): CIFilter;
-
-  static maximumScaleTransformFilter(): CIFilter;
-
-  static perspectiveCorrectionFilter(): CIFilter;
-
-  static perspectiveRotateFilter(): CIFilter;
-
-  static perspectiveTransformFilter(): CIFilter;
-
-  static perspectiveTransformWithExtentFilter(): CIFilter;
-
-  static straightenFilter(): CIFilter;
-
-  static accordionFoldTransitionFilter(): CIFilter;
-
-  static barsSwipeTransitionFilter(): CIFilter;
-
-  static copyMachineTransitionFilter(): CIFilter;
-
-  static disintegrateWithMaskTransitionFilter(): CIFilter;
-
-  static dissolveTransitionFilter(): CIFilter;
-
-  static flashTransitionFilter(): CIFilter;
-
-  static modTransitionFilter(): CIFilter;
-
-  static pageCurlTransitionFilter(): CIFilter;
-
-  static pageCurlWithShadowTransitionFilter(): CIFilter;
-
-  static rippleTransitionFilter(): CIFilter;
-
-  static swipeTransitionFilter(): CIFilter;
-
-  static additionCompositingFilter(): CIFilter;
-
-  static colorBlendModeFilter(): CIFilter;
-
-  static colorBurnBlendModeFilter(): CIFilter;
-
-  static colorDodgeBlendModeFilter(): CIFilter;
-
-  static darkenBlendModeFilter(): CIFilter;
-
-  static differenceBlendModeFilter(): CIFilter;
-
-  static divideBlendModeFilter(): CIFilter;
-
-  static exclusionBlendModeFilter(): CIFilter;
-
-  static hardLightBlendModeFilter(): CIFilter;
-
-  static hueBlendModeFilter(): CIFilter;
-
-  static lightenBlendModeFilter(): CIFilter;
-
-  static linearBurnBlendModeFilter(): CIFilter;
-
-  static linearDodgeBlendModeFilter(): CIFilter;
-
-  static linearLightBlendModeFilter(): CIFilter;
-
-  static luminosityBlendModeFilter(): CIFilter;
-
-  static maximumCompositingFilter(): CIFilter;
-
-  static minimumCompositingFilter(): CIFilter;
-
-  static multiplyBlendModeFilter(): CIFilter;
-
-  static multiplyCompositingFilter(): CIFilter;
-
-  static overlayBlendModeFilter(): CIFilter;
-
-  static pinLightBlendModeFilter(): CIFilter;
-
-  static saturationBlendModeFilter(): CIFilter;
-
-  static screenBlendModeFilter(): CIFilter;
-
-  static softLightBlendModeFilter(): CIFilter;
-
-  static sourceAtopCompositingFilter(): CIFilter;
-
-  static sourceInCompositingFilter(): CIFilter;
-
-  static sourceOutCompositingFilter(): CIFilter;
-
-  static sourceOverCompositingFilter(): CIFilter;
-
-  static subtractBlendModeFilter(): CIFilter;
-
-  static vividLightBlendModeFilter(): CIFilter;
-
-  static colorAbsoluteDifferenceFilter(): CIFilter;
-
-  static colorClampFilter(): CIFilter;
-
-  static colorControlsFilter(): CIFilter;
-
-  static colorMatrixFilter(): CIFilter;
-
-  static colorPolynomialFilter(): CIFilter;
-
-  static colorThresholdFilter(): CIFilter;
-
-  static colorThresholdOtsuFilter(): CIFilter;
-
-  static depthToDisparityFilter(): CIFilter;
-
-  static disparityToDepthFilter(): CIFilter;
-
-  static exposureAdjustFilter(): CIFilter;
-
-  static gammaAdjustFilter(): CIFilter;
-
-  static hueAdjustFilter(): CIFilter;
-
-  static linearToSRGBToneCurveFilter(): CIFilter;
-
-  static sRGBToneCurveToLinearFilter(): CIFilter;
-
-  static temperatureAndTintFilter(): CIFilter;
-
-  static toneCurveFilter(): CIFilter;
-
-  static toneMapHeadroomFilter(): CIFilter;
-
-  static vibranceFilter(): CIFilter;
-
-  static whitePointAdjustFilter(): CIFilter;
-
-  static colorCrossPolynomialFilter(): CIFilter;
-
-  static colorCubeFilter(): CIFilter;
-
-  static colorCubesMixedWithMaskFilter(): CIFilter;
-
-  static colorCubeWithColorSpaceFilter(): CIFilter;
-
-  static colorCurvesFilter(): CIFilter;
-
-  static colorInvertFilter(): CIFilter;
-
-  static colorMapFilter(): CIFilter;
-
-  static colorMonochromeFilter(): CIFilter;
-
-  static colorPosterizeFilter(): CIFilter;
-
-  static convertLabToRGBFilter(): CIFilter;
-
-  static convertRGBtoLabFilter(): CIFilter;
-
-  static ditherFilter(): CIFilter;
-
-  static documentEnhancerFilter(): CIFilter;
-
-  static falseColorFilter(): CIFilter;
-
-  static LabDeltaE(): CIFilter;
-
-  static maskToAlphaFilter(): CIFilter;
-
-  static maximumComponentFilter(): CIFilter;
-
-  static minimumComponentFilter(): CIFilter;
-
-  static paletteCentroidFilter(): CIFilter;
-
-  static palettizeFilter(): CIFilter;
-
-  static photoEffectChromeFilter(): CIFilter;
-
-  static photoEffectFadeFilter(): CIFilter;
-
-  static photoEffectInstantFilter(): CIFilter;
-
-  static photoEffectMonoFilter(): CIFilter;
-
-  static photoEffectNoirFilter(): CIFilter;
-
-  static photoEffectProcessFilter(): CIFilter;
-
-  static photoEffectTonalFilter(): CIFilter;
-
-  static photoEffectTransferFilter(): CIFilter;
-
-  static sepiaToneFilter(): CIFilter;
-
-  static thermalFilter(): CIFilter;
-
-  static vignetteFilter(): CIFilter;
-
-  static vignetteEffectFilter(): CIFilter;
-
-  static xRayFilter(): CIFilter;
-
-  static bumpDistortionFilter(): CIFilter;
-
-  static bumpDistortionLinearFilter(): CIFilter;
-
-  static circleSplashDistortionFilter(): CIFilter;
-
-  static circularWrapFilter(): CIFilter;
-
-  static displacementDistortionFilter(): CIFilter;
-
-  static drosteFilter(): CIFilter;
-
-  static glassDistortionFilter(): CIFilter;
-
-  static glassLozengeFilter(): CIFilter;
-
-  static holeDistortionFilter(): CIFilter;
-
-  static lightTunnelFilter(): CIFilter;
-
-  static ninePartStretchedFilter(): CIFilter;
-
-  static ninePartTiledFilter(): CIFilter;
-
-  static pinchDistortionFilter(): CIFilter;
-
-  static stretchCropFilter(): CIFilter;
-
-  static torusLensDistortionFilter(): CIFilter;
-
-  static twirlDistortionFilter(): CIFilter;
-
-  static vortexDistortionFilter(): CIFilter;
-
-  static affineClampFilter(): CIFilter;
-
-  static affineTileFilter(): CIFilter;
-
-  static eightfoldReflectedTileFilter(): CIFilter;
-
-  static fourfoldReflectedTileFilter(): CIFilter;
-
-  static fourfoldRotatedTileFilter(): CIFilter;
-
-  static fourfoldTranslatedTileFilter(): CIFilter;
-
-  static glideReflectedTileFilter(): CIFilter;
-
-  static kaleidoscopeFilter(): CIFilter;
-
-  static opTileFilter(): CIFilter;
-
-  static parallelogramTileFilter(): CIFilter;
-
-  static perspectiveTileFilter(): CIFilter;
-
-  static sixfoldReflectedTileFilter(): CIFilter;
-
-  static sixfoldRotatedTileFilter(): CIFilter;
-
-  static triangleKaleidoscopeFilter(): CIFilter;
-
-  static triangleTileFilter(): CIFilter;
-
-  static twelvefoldReflectedTileFilter(): CIFilter;
-
-  static attributedTextImageGeneratorFilter(): CIFilter;
-
-  static aztecCodeGeneratorFilter(): CIFilter;
-
-  static barcodeGeneratorFilter(): CIFilter;
-
-  static blurredRectangleGeneratorFilter(): CIFilter;
-
-  static checkerboardGeneratorFilter(): CIFilter;
-
-  static code128BarcodeGeneratorFilter(): CIFilter;
-
-  static lenticularHaloGeneratorFilter(): CIFilter;
-
-  static meshGeneratorFilter(): CIFilter;
-
-  static PDF417BarcodeGenerator(): CIFilter;
-
-  static QRCodeGenerator(): CIFilter;
-
-  static randomGeneratorFilter(): CIFilter;
-
-  static roundedRectangleGeneratorFilter(): CIFilter;
-
-  static roundedRectangleStrokeGeneratorFilter(): CIFilter;
-
-  static starShineGeneratorFilter(): CIFilter;
-
-  static stripesGeneratorFilter(): CIFilter;
-
-  static sunbeamsGeneratorFilter(): CIFilter;
-
-  static textImageGeneratorFilter(): CIFilter;
-
-  static blendWithAlphaMaskFilter(): CIFilter;
-
-  static blendWithBlueMaskFilter(): CIFilter;
-
-  static blendWithMaskFilter(): CIFilter;
-
-  static blendWithRedMaskFilter(): CIFilter;
-
-  static bloomFilter(): CIFilter;
-
-  static cannyEdgeDetectorFilter(): CIFilter;
-
-  static comicEffectFilter(): CIFilter;
-
-  static convolution3X3Filter(): CIFilter;
-
-  static convolution5X5Filter(): CIFilter;
-
-  static convolution7X7Filter(): CIFilter;
-
-  static convolution9HorizontalFilter(): CIFilter;
-
-  static convolution9VerticalFilter(): CIFilter;
-
-  static convolutionRGB3X3Filter(): CIFilter;
-
-  static convolutionRGB5X5Filter(): CIFilter;
-
-  static convolutionRGB7X7Filter(): CIFilter;
-
-  static convolutionRGB9HorizontalFilter(): CIFilter;
-
-  static convolutionRGB9VerticalFilter(): CIFilter;
-
-  static coreMLModelFilter(): CIFilter;
-
-  static crystallizeFilter(): CIFilter;
-
-  static depthOfFieldFilter(): CIFilter;
-
-  static edgesFilter(): CIFilter;
-
-  static edgeWorkFilter(): CIFilter;
-
-  static gaborGradientsFilter(): CIFilter;
-
-  static gloomFilter(): CIFilter;
-
-  static heightFieldFromMaskFilter(): CIFilter;
-
-  static hexagonalPixellateFilter(): CIFilter;
-
-  static highlightShadowAdjustFilter(): CIFilter;
-
-  static lineOverlayFilter(): CIFilter;
-
-  static mixFilter(): CIFilter;
-
-  static personSegmentationFilter(): CIFilter;
-
-  static pixellateFilter(): CIFilter;
-
-  static pointillizeFilter(): CIFilter;
-
-  static saliencyMapFilter(): CIFilter;
-
-  static shadedMaterialFilter(): CIFilter;
-
-  static sobelGradientsFilter(): CIFilter;
-
-  static spotColorFilter(): CIFilter;
-
-  static spotLightFilter(): CIFilter;
-
-  static bokehBlurFilter(): CIFilter;
-
-  static boxBlurFilter(): CIFilter;
-
-  static discBlurFilter(): CIFilter;
-
-  static gaussianBlurFilter(): CIFilter;
-
-  static maskedVariableBlurFilter(): CIFilter;
-
-  static medianFilter(): CIFilter;
-
-  static morphologyGradientFilter(): CIFilter;
-
-  static morphologyMaximumFilter(): CIFilter;
-
-  static morphologyMinimumFilter(): CIFilter;
-
-  static morphologyRectangleMaximumFilter(): CIFilter;
-
-  static morphologyRectangleMinimumFilter(): CIFilter;
-
-  static motionBlurFilter(): CIFilter;
-
-  static noiseReductionFilter(): CIFilter;
-
-  static zoomBlurFilter(): CIFilter;
-
-  static areaAlphaWeightedHistogramFilter(): CIFilter;
-
-  static areaAverageFilter(): CIFilter;
-
-  static areaBoundsRedFilter(): CIFilter;
-
-  static areaHistogramFilter(): CIFilter;
-
-  static areaLogarithmicHistogramFilter(): CIFilter;
-
-  static areaMaximumFilter(): CIFilter;
-
-  static areaMaximumAlphaFilter(): CIFilter;
-
-  static areaMinimumFilter(): CIFilter;
-
-  static areaMinimumAlphaFilter(): CIFilter;
-
-  static areaMinMaxFilter(): CIFilter;
-
-  static areaMinMaxRedFilter(): CIFilter;
-
-  static columnAverageFilter(): CIFilter;
-
-  static histogramDisplayFilter(): CIFilter;
-
-  static KMeansFilter(): CIFilter;
-
-  static rowAverageFilter(): CIFilter;
+  readonly symbolDescriptor: CIQRCodeDescriptor;
 
   static readonly supportsSecureCoding: boolean;
 

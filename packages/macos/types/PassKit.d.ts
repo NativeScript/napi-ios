@@ -28,6 +28,8 @@ declare const PKContactFieldPhoneticName: string;
 
 declare const PKContactFieldPhoneNumber: string;
 
+declare const PKPaymentNetworkMyDebit: string;
+
 declare const PKPaymentNetworkTmoney: string;
 
 declare const PKPaymentNetworkWaon: string;
@@ -82,8 +84,6 @@ declare const PKPaymentNetworkMada: string;
 
 declare const PKPaymentNetworkAmex: string;
 
-declare const PKEncryptionSchemeRSA_V2: string;
-
 declare const PKPaymentNetworkDankort: string;
 
 declare const PKDisbursementErrorDomain: string;
@@ -120,21 +120,45 @@ declare const PKPaymentNetworkPagoBancomat: string;
 
 declare const PKPaymentNetworkInterac: string;
 
+declare const PKEncryptionSchemeRSA_V2: string;
+
 declare const PKPaymentNetworkMeeza: string;
 
 declare const PKPaymentNetworkBancomat: string;
 
 declare const PKPaymentNetworkChinaUnionPay: string;
 
+declare const PKVehicleConnectionSessionConnectionState: {
+  Disconnected: 0,
+  Connected: 1,
+  Connecting: 2,
+  FailedToConnect: 3,
+};
+
+declare const PKVehicleConnectionErrorCode: {
+  Unknown: 0,
+  SessionUnableToStart: 1,
+  SessionNotActive: 2,
+};
+
 declare const PKAddPaymentPassStyle: {
   Payment: 0,
   Access: 1,
 };
 
-declare const PKApplePayLaterAvailability: {
-  Available: 0,
-  UnavailableItemIneligible: 1,
-  UnavailableRecurringTransaction: 2,
+declare const PKShippingContactEditingMode: {
+  Available: 1,
+  StorePickup: 2,
+  Enabled: 1,
+};
+
+declare const PKAddressField: {
+  None: 0,
+  PostalAddress: 1,
+  Phone: 2,
+  Email: 4,
+  Name: 8,
+  All: 15,
 };
 
 declare const PKMerchantCapability: {
@@ -148,6 +172,36 @@ declare const PKMerchantCapability: {
 declare const PKPaymentSummaryItemType: {
   Final: 0,
   Pending: 1,
+};
+
+declare const PKPassLibraryAuthorizationStatus: {
+  NotDetermined: -1,
+  Denied: 0,
+  Authorized: 1,
+  Restricted: 2,
+};
+
+declare const PKPassLibraryCapability: {
+  PKPassLibraryCapabilityBackgroundAddPasses: 0,
+};
+
+declare const PKAutomaticPassPresentationSuppressionResult: {
+  NotSupported: 0,
+  AlreadyPresenting: 1,
+  Denied: 2,
+  Cancelled: 3,
+  Success: 4,
+};
+
+declare const PKPassLibraryAddPassesStatus: {
+  DidAdd: 0,
+  ShouldReview: 1,
+  DidCancelAdd: 2,
+};
+
+declare const PKShareSecureElementPassErrorCode: {
+  Unknown: 0,
+  Setup: 1,
 };
 
 declare const PKAddSecureElementPassErrorCode: {
@@ -167,20 +221,18 @@ declare const PKAddPaymentPassError: {
   SystemCancelled: 2,
 };
 
-declare const PKPaymentPassActivationState: {
-  Activated: 0,
-  RequiresActivation: 1,
-  Activating: 2,
-  Suspended: 3,
-  Deactivated: 4,
+declare const PKDisbursementErrorCode: {
+  Unknown: -1,
+  UnsupportedCard: 1,
+  RecipientContactInvalid: 2,
 };
 
-declare const PKSecureElementPassActivationState: {
-  Activated: 0,
-  RequiresActivation: 1,
-  Activating: 2,
-  Suspended: 3,
-  Deactivated: 4,
+declare const PKPassKitErrorCode: {
+  UnknownError: -1,
+  InvalidDataError: 1,
+  UnsupportedVersionError: 2,
+  InvalidSignature: 3,
+  NotEntitledError: 4,
 };
 
 declare const PKPassType: {
@@ -188,6 +240,12 @@ declare const PKPassType: {
   SecureElement: 1,
   Payment: 1,
   Any: -1,
+};
+
+declare const PKRadioTechnology: {
+  None: 0,
+  NFC: 1,
+  Bluetooth: 2,
 };
 
 declare const PKPaymentButtonType: {
@@ -210,82 +268,11 @@ declare const PKPaymentButtonType: {
   Continue: 16,
 };
 
-declare const PKBarcodeEventConfigurationDataType: {
-  Unknown: 0,
-  SigningKeyMaterial: 1,
-  SigningCertificate: 2,
-};
-
-declare const PKAutomaticPassPresentationSuppressionResult: {
-  NotSupported: 0,
-  AlreadyPresenting: 1,
-  Denied: 2,
-  Cancelled: 3,
-  Success: 4,
-};
-
-declare const PKRadioTechnology: {
-  None: 0,
-  NFC: 1,
-  Bluetooth: 2,
-};
-
 declare const PKPaymentButtonStyle: {
   White: 0,
   WhiteOutline: 1,
   Black: 2,
   Automatic: 3,
-};
-
-declare const PKPassKitErrorCode: {
-  UnknownError: -1,
-  InvalidDataError: 1,
-  UnsupportedVersionError: 2,
-  InvalidSignature: 3,
-  NotEntitledError: 4,
-};
-
-declare const PKAddressField: {
-  None: 0,
-  PostalAddress: 1,
-  Phone: 2,
-  Email: 4,
-  Name: 8,
-  All: 15,
-};
-
-declare const PKShareSecureElementPassErrorCode: {
-  Unknown: 0,
-  Setup: 1,
-};
-
-declare const PKVehicleConnectionSessionConnectionState: {
-  Disconnected: 0,
-  Connected: 1,
-  Connecting: 2,
-  FailedToConnect: 3,
-};
-
-declare const PKPaymentMethodType: {
-  Unknown: 0,
-  Debit: 1,
-  Credit: 2,
-  Prepaid: 3,
-  Store: 4,
-  EMoney: 5,
-};
-
-declare const PKShippingType: {
-  Shipping: 0,
-  Delivery: 1,
-  StorePickup: 2,
-  ServicePickup: 3,
-};
-
-declare const PKVehicleConnectionErrorCode: {
-  Unknown: 0,
-  SessionUnableToStart: 1,
-  SessionNotActive: 2,
 };
 
 declare const PKPaymentAuthorizationStatus: {
@@ -299,27 +286,18 @@ declare const PKPaymentAuthorizationStatus: {
   PINLockout: 7,
 };
 
-declare const PKPassLibraryAddPassesStatus: {
-  DidAdd: 0,
-  ShouldReview: 1,
-  DidCancelAdd: 2,
+declare const PKAddIdentityDocumentType: {
+  IDCard: 0,
+  MDL: 1,
+  PhotoID: 2,
 };
 
-declare const PKAddShareablePassConfigurationPrimaryAction: {
-  Add: 0,
-  Share: 1,
-};
-
-declare const PKShippingContactEditingMode: {
-  Available: 1,
-  StorePickup: 2,
-  Enabled: 1,
-};
-
-declare const PKDisbursementErrorCode: {
-  Unknown: -1,
-  UnsupportedCard: 1,
-  RecipientContactInvalid: 2,
+declare const PKPaymentPassActivationState: {
+  Activated: 0,
+  RequiresActivation: 1,
+  Activating: 2,
+  Suspended: 3,
+  Deactivated: 4,
 };
 
 declare const PKPaymentErrorCode: {
@@ -329,6 +307,47 @@ declare const PKPaymentErrorCode: {
   ShippingAddressUnserviceable: 3,
   CouponCodeInvalid: 4,
   CouponCodeExpired: 5,
+};
+
+declare const PKApplePayLaterAvailability: {
+  Available: 0,
+  UnavailableItemIneligible: 1,
+  UnavailableRecurringTransaction: 2,
+};
+
+declare const PKShippingType: {
+  Shipping: 0,
+  Delivery: 1,
+  StorePickup: 2,
+  ServicePickup: 3,
+};
+
+declare const PKBarcodeEventConfigurationDataType: {
+  Unknown: 0,
+  SigningKeyMaterial: 1,
+  SigningCertificate: 2,
+};
+
+declare const PKPaymentMethodType: {
+  Unknown: 0,
+  Debit: 1,
+  Credit: 2,
+  Prepaid: 3,
+  Store: 4,
+  EMoney: 5,
+};
+
+declare const PKAddShareablePassConfigurationPrimaryAction: {
+  Add: 0,
+  Share: 1,
+};
+
+declare const PKSecureElementPassActivationState: {
+  Activated: 0,
+  RequiresActivation: 1,
+  Activating: 2,
+  Suspended: 3,
+  Deactivated: 4,
 };
 
 declare interface PKPaymentAuthorizationViewControllerDelegate extends NSObjectProtocol {
@@ -411,6 +430,12 @@ declare interface PKVehicleConnectionDelegate extends NSObjectProtocol {
 declare class PKVehicleConnectionDelegate extends NativeObject implements PKVehicleConnectionDelegate {
 }
 
+declare class PKPassRelevantDate extends NSObject {
+  readonly interval: NSDateInterval;
+
+  readonly date: NSDate;
+}
+
 declare class PKVehicleConnectionSession extends NSObject {
   readonly delegate: PKVehicleConnectionDelegate | null;
 
@@ -456,7 +481,7 @@ declare class PKAddIdentityDocumentConfiguration extends PKAddSecureElementPassC
 declare class PKJapanIndividualNumberCardMetadata extends PKIdentityDocumentMetadata {
   initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardTemplateIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, preview: PKAddPassMetadataPreview): this;
 
-  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardConfigurationIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, preview: PKAddPassMetadataPreview): this;
+  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardConfigurationIdentifierPreview(credentialIdentifier: string, sharingInstanceIdentifier: string, cardConfigurationIdentifier: string, preview: PKAddPassMetadataPreview): this;
 
   authenticationPassword: string;
 
@@ -481,6 +506,10 @@ declare class PKIdentityDocumentMetadata extends NSObject {
   readonly cardConfigurationIdentifier: string;
 
   serverEnvironmentIdentifier: string;
+
+  readonly issuingCountryCode: string;
+
+  readonly documentType: interop.Enum<typeof PKAddIdentityDocumentType>;
 
   setServerEnvironmentIdentifier(serverEnvironmentIdentifier: string): void;
 }
@@ -814,6 +843,8 @@ declare class PKPaymentRequest extends NSObject {
 
   merchantIdentifier: string;
 
+  attributionIdentifier: string;
+
   countryCode: string;
 
   get supportedNetworks(): NSArray;
@@ -867,6 +898,8 @@ declare class PKPaymentRequest extends NSObject {
   applePayLaterAvailability: interop.Enum<typeof PKApplePayLaterAvailability>;
 
   setMerchantIdentifier(merchantIdentifier: string): void;
+
+  setAttributionIdentifier(attributionIdentifier: string): void;
 
   setCountryCode(countryCode: string): void;
 
@@ -1352,6 +1385,10 @@ declare class PKPassLibrary extends NSObject {
 
   serviceProviderDataForSecureElementPassCompletion(secureElementPass: PKSecureElementPass, completion: (p1: NSData, p2: NSError) => void | null): void;
 
+  authorizationStatusForCapability(capability: interop.Enum<typeof PKPassLibraryCapability>): interop.Enum<typeof PKPassLibraryAuthorizationStatus>;
+
+  requestAuthorizationForCapabilityCompletion(capability: interop.Enum<typeof PKPassLibraryCapability>, completion: (p1: interop.Enum<typeof PKPassLibraryAuthorizationStatus>) => void): void;
+
   isSecureElementPassActivationAvailable(): boolean;
 }
 
@@ -1434,6 +1471,12 @@ declare class PKDeferredPaymentSummaryItem extends PKPaymentSummaryItem {
   deferredDate: NSDate;
 
   setDeferredDate(deferredDate: NSDate): void;
+}
+
+declare class PKAddIdentityDocumentMetadata extends PKIdentityDocumentMetadata {
+  initWithProvisioningCredentialIdentifierSharingInstanceIdentifierCardTemplateIdentifierIssuingCountryCodeDocumentTypePreview(credentialIdentifier: string, sharingInstanceIdentifier: string, templateIdentifier: string, issuingCountryCode: string, documentType: interop.Enum<typeof PKAddIdentityDocumentType>, preview: PKAddPassMetadataPreview): this;
+
+  readonly preview: PKAddPassMetadataPreview;
 }
 
 declare class PKRecurringPaymentRequest extends NSObject {

@@ -70,8 +70,6 @@ declare const kICANotificationPercentDownloadedKey: interop.Pointer;
 
 declare const kICANotificationNumerOfImagesRemainingKey: interop.Pointer;
 
-declare const kICANotificationDataIsBigEndianKey: interop.Pointer;
-
 declare const kICANotificationImageDataKey: interop.Pointer;
 
 declare const kICANotificationDataKey: interop.Pointer;
@@ -250,6 +248,8 @@ declare const kICANotificationTypeUnreportedStatus: interop.Pointer;
 
 declare const kICAFrameworkInternalErr: number;
 
+declare const kICANotificationDataIsBigEndianKey: interop.Pointer;
+
 declare const kICADevicePropExposureTime: interop.Pointer;
 
 declare const kICAInvalidPropertyErr: number;
@@ -293,10 +293,6 @@ declare const kICAPropertyImageDPI: number;
 declare const kICANotificationClassKey: interop.Pointer;
 
 declare const kICADevicePropUndefined: interop.Pointer;
-
-declare const kAdjustCreationDate: number;
-
-declare const kICAExecutableArchitectureKey: interop.Pointer;
 
 declare const kICANotificationDeviceListICAObjectKey: interop.Pointer;
 
@@ -343,6 +339,8 @@ declare const kICAMessageCameraPassThrough: number;
 declare const kICADevicePropFlashMode: interop.Pointer;
 
 declare const kICAPropertyTypeNotFoundErr: number;
+
+declare const kICAExecutableArchitectureKey: interop.Pointer;
 
 declare const kICD_MetaData: number;
 
@@ -474,6 +472,8 @@ declare const kSetFileTypeAndCreator: number;
 
 declare const kICANotificationTypeProprietary: interop.Pointer;
 
+declare const kICAErrorKey: interop.Pointer;
+
 declare const kDeleteAfterDownload: number;
 
 declare const kICAFlagReadAccess: number;
@@ -489,8 +489,6 @@ declare const kICANotificationTypeScannerScanDone: interop.Pointer;
 declare const kICAUploadFileAsIs: number;
 
 declare const kICANotificationRawEventKey: interop.Pointer;
-
-declare const kICADevicePropFocusMeteringMode: interop.Pointer;
 
 declare const kICANotificationScannerDocumentNameKey: interop.Pointer;
 
@@ -508,9 +506,13 @@ declare const kICAFile: number;
 
 declare const kICAThumbnailFormatTIFF: number;
 
+declare const kAdjustCreationDate: number;
+
 declare const kICADeviceWebSharedKey: interop.Pointer;
 
 declare const kICADeviceScanner: number;
+
+declare const kICS_ThumbnailDataFormatPNG: number;
 
 declare const kICD_ThumbnailDataFormatPNG: number;
 
@@ -524,15 +526,13 @@ declare const kICANotificationTypeRequestObjectTransfer: interop.Pointer;
 
 declare const kICABluetoothTransportType: interop.Pointer;
 
+declare const kICADevicePropFocusMeteringMode: interop.Pointer;
+
 declare const kICAPropertyImageFNumber: number;
 
 declare const kICANotificationTypeScanProgressStatus: interop.Pointer;
 
-declare const kICAErrorKey: interop.Pointer;
-
 declare const kICAIndexOutOfRangeErr: number;
-
-declare const kICS_ThumbnailDataFormatPNG: number;
 
 declare const kICATCPIPTransportType: interop.Pointer;
 
@@ -616,12 +616,6 @@ declare class ObjectInfo {
   dataSize64: number;
 }
 
-declare class ICD_DisposeObjectPB {
-  constructor(init?: ICD_DisposeObjectPB);
-  header: ICDHeader;
-  object: number;
-}
-
 declare class ICD_NewObjectPB {
   constructor(init?: ICD_NewObjectPB);
   header: ICDHeader;
@@ -701,6 +695,15 @@ declare class ICADownloadFilePB {
   fileFSRef: interop.Pointer;
 }
 
+declare class ICACopyObjectDataPB {
+  constructor(init?: ICACopyObjectDataPB);
+  header: ICAHeader;
+  object: number;
+  startByte: number;
+  requestedSize: number;
+  data: interop.Pointer;
+}
+
 declare class ICACopyObjectThumbnailPB {
   constructor(init?: ICACopyObjectThumbnailPB);
   header: ICAHeader;
@@ -741,6 +744,12 @@ declare class ICAHeader {
   constructor(init?: ICAHeader);
   err: number;
   refcon: number;
+}
+
+declare class ICD_DisposeObjectPB {
+  constructor(init?: ICD_DisposeObjectPB);
+  header: ICDHeader;
+  object: number;
 }
 
 declare class ICD_Scannerscanner_callback_functions {
@@ -831,15 +840,6 @@ declare class ICAScannerCloseSessionPB {
   constructor(init?: ICAScannerCloseSessionPB);
   header: ICAHeader;
   sessionID: number;
-}
-
-declare class ICACopyObjectDataPB {
-  constructor(init?: ICACopyObjectDataPB);
-  header: ICAHeader;
-  object: number;
-  startByte: number;
-  requestedSize: number;
-  data: interop.Pointer;
 }
 
 declare class ICAObjectSendMessagePB {

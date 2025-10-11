@@ -2,27 +2,6 @@
 set -e
 source "$(dirname "$0")/build_utils.sh"
 
-function to_bool() {
-  local arg="$1"
-  case "$(echo "$arg" | tr '[:upper:]' '[:lower:]')" in
-    [0-9]+)
-      if [ $arg -eq 0 ]; then
-        echo false
-      else
-        echo true
-      fi
-      ;;
-    n|no|f|false) echo false ;;
-    y|yes|t|true) echo true ;;
-    * )
-      if [ -n "$arg" ]; then
-        echo "warning: invalid boolean argument ('$arg'). Expected true or false" >&2
-      fi
-      echo false
-      ;;
-  esac;
-}
-
 BUILD_CATALYST=$(to_bool ${BUILD_CATALYST:=false}) # disable by default for now
 BUILD_IPHONE=$(to_bool ${BUILD_IPHONE:=true})
 BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
@@ -74,6 +53,8 @@ mkdir -p $DIST/intermediates
 
 function cmake_build () {
   local platform="$1"
+  shift
+  local archs=("$@")
   local is_macos_cli=false
 
   if [ "$platform" == "macos-cli" ]; then
@@ -85,7 +66,7 @@ function cmake_build () {
 
   if $EMBED_METADATA || $is_macos_cli; then
 
-    for arch in x86_64 arm64; do
+    for arch in "${archs[@]}"; do
 
       METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd")))
 
@@ -101,42 +82,40 @@ function cmake_build () {
 if $BUILD_CATALYST; then
 checkpoint "Building NativeScript for Mac Catalyst"
 
-# cmake_build catalyst
+# cmake_build catalyst x86_64 arm64
 
 fi
 
 if $BUILD_SIMULATOR; then
-checkpoint "Building NativeScript for iphone simulators (multi-arch)"
+checkpoint "Building NativeScript for iPhone (simulator)"
 
-cmake_build ios-sim
+cmake_build ios-sim x86_64 arm64
 
 fi
 
 if $BUILD_IPHONE; then
-checkpoint "Building NativeScript for ARM64 device"
+checkpoint "Building NativeScript for iPhone (physical)"
 
-cmake_build ios
+cmake_build ios arm64
 
 fi
 
 if $BUILD_MACOS; then
 checkpoint "Building NativeScript for macOS"
 
-cmake_build macos
-
-cp "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/../packages/macos/dist/macos/NativeScript.node"
+cmake_build macos x86_64 arm64
 
 fi
 
 if $BUILD_VISION; then
 
-checkpoint "Building NativeScript for visionOS Device"
+checkpoint "Building NativeScript for visionOS (physical)"
 
-# cmake_build visionos
+# cmake_build visionos arm64
 
-checkpoint "Building NativeScript for visionOS Simulators"
+checkpoint "Building NativeScript for visionOS (simulator)"
 
-# cmake_build visionos-sim
+# cmake_build visionos-sim x86_64 arm64
 
 fi
 
@@ -144,7 +123,7 @@ if $BUILD_MACOS_CLI; then
 
 checkpoint "Building NativeScript for macOS CLI"
 
-cmake_build macos-cli
+cmake_build macos-cli x86_64 arm64
 
 fi
 
@@ -164,7 +143,6 @@ if $BUILD_IPHONE; then
                   -debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
 fi
 
-
 if $BUILD_VISION; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework"
                   -debug-symbols "$DIST/intermediates/visionos/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
@@ -174,20 +152,44 @@ if $BUILD_VISION; then
 fi
 
 if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
+  if [[ "$TARGET_ENGINE" == "none" ]]; then
+    checkpoint "Creating the XCFramework for iOS (NativeScript.apple.node)"
 
-checkpoint "Creating NativeScript.xcframework"
-OUTPUT_DIR="$DIST/NativeScript.xcframework"
-rm -rf $OUTPUT_DIR
-xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
+    # We adhere to the prebuilds standard as described here:
+    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
+    OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD/NativeScript.apple.node"
+    rm -rf $OUTPUT_DIR
+    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+  else
+    checkpoint "Creating NativeScript.xcframework"
 
+    OUTPUT_DIR="$DIST/NativeScript.xcframework"
+    rm -rf $OUTPUT_DIR
+    xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
+  fi
 fi
 
+# We're currently distributing two separate packages:
+# 1. UIKit-based (@nativescript/ios-node-api)
+# 2. AppKit-based (@nativescript/macos-node-api)
+# As such, there's no point bundling both UIKit-based and AppKit-based into a
+# single XCFramework.
 if $BUILD_MACOS; then
+  XCFRAMEWORKS=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
 
-checkpoint "Creating NativeScript.node"
+  if [[ "$TARGET_ENGINE" == "none" ]]; then
+    checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
 
-cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
-
+    # We adhere to the prebuilds standard as described here:
+    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
+    OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD/NativeScript.apple.node"
+    rm -rf $OUTPUT_DIR
+    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+  else
+    checkpoint "Creating NativeScript.node for macOS"
+    cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
+  fi
 fi
 
 if $BUILD_MACOS_CLI; then

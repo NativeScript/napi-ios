@@ -40,6 +40,12 @@ declare const OSAScriptErrorNumber: string;
 
 declare const OSAScriptErrorAppName: string;
 
+declare const OSAScriptState: {
+  Stopped: 0,
+  Running: 1,
+  Recording: 2,
+};
+
 declare const OSAStorageOptions: {
   Null: 0,
   PreventGetSource: 1,
@@ -47,12 +53,6 @@ declare const OSAStorageOptions: {
   DontSetScriptLocation: 16777216,
   StayOpenApplet: 268435456,
   ShowStartupScreen: 536870912,
-};
-
-declare const OSAScriptState: {
-  Stopped: 0,
-  Running: 1,
-  Recording: 2,
 };
 
 declare const OSALanguageFeatures: {

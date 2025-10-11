@@ -3,8 +3,6 @@
 
 declare const MAMusicHapticsManagerActiveStatusDidChangeNotification: string;
 
-declare const MAMediaCharacteristicDescribesVideoForAccessibility: interop.Pointer;
-
 declare const kMAAudibleMediaSettingsChangedNotification: interop.Pointer;
 
 declare const MAMediaCharacteristicTranscribesSpokenDialogForAccessibility: interop.Pointer;
@@ -14,6 +12,8 @@ declare const MAMediaCharacteristicDescribesMusicAndSoundForAccessibility: inter
 declare const kMACaptionAppearanceSettingsChangedNotification: interop.Pointer;
 
 declare const kMADimFlashingLightsChangedNotification: interop.Pointer;
+
+declare const MAMediaCharacteristicDescribesVideoForAccessibility: interop.Pointer;
 
 declare const MACaptionAppearanceFontStyle: {
   Default: 0,
@@ -84,6 +84,16 @@ declare function MACaptionAppearanceCopyFontDescriptorForStyle(domain: interop.E
 declare function MACaptionAppearanceGetRelativeCharacterSize(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): number;
 
 declare function MACaptionAppearanceGetTextEdgeStyle(domain: interop.Enum<typeof MACaptionAppearanceDomain>, behavior: interop.PointerConvertible): interop.Enum<typeof MACaptionAppearanceTextEdgeStyle>;
+
+declare function MACaptionAppearanceCopyProfileIDs(): interop.Object;
+
+declare function MACaptionAppearanceSetActiveProfileID(profileID: interop.Object): void;
+
+declare function MACaptionAppearanceCopyActiveProfileID(): interop.Object;
+
+declare function MACaptionAppearanceCopyProfileName(profileID: interop.Object): interop.Object;
+
+declare function MACaptionAppearanceExecuteBlockForProfileID(profileID: interop.Object, aBlock: () => void): void;
 
 declare function MAAudibleMediaCopyPreferredCharacteristics(): interop.Object;
 

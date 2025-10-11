@@ -9,6 +9,11 @@ declare const NSSystemExtensionUsageDescriptionKey: string;
 
 declare const OSBundleUsageDescriptionKey: string;
 
+declare const OSSystemExtensionReplacementAction: {
+  Cancel: 0,
+  Replace: 1,
+};
+
 declare const OSSystemExtensionErrorCode: {
   Unknown: 1,
   MissingEntitlement: 2,
@@ -28,11 +33,6 @@ declare const OSSystemExtensionErrorCode: {
 declare const OSSystemExtensionRequestResult: {
   Completed: 0,
   WillCompleteAfterReboot: 1,
-};
-
-declare const OSSystemExtensionReplacementAction: {
-  Cancel: 0,
-  Replace: 1,
 };
 
 declare interface OSSystemExtensionsWorkspaceObserver extends NSObjectProtocol {
@@ -59,14 +59,6 @@ declare interface OSSystemExtensionRequestDelegate extends NSObjectProtocol {
 }
 
 declare class OSSystemExtensionRequestDelegate extends NativeObject implements OSSystemExtensionRequestDelegate {
-}
-
-declare class OSSystemExtensionsWorkspace extends NSObject {
-  static readonly sharedWorkspace: OSSystemExtensionsWorkspace;
-
-  addObserverError(observer: OSSystemExtensionsWorkspaceObserver, error: interop.PointerConvertible): boolean;
-
-  removeObserver(observer: OSSystemExtensionsWorkspaceObserver): void;
 }
 
 declare class OSSystemExtensionInfo extends NSObject {
@@ -111,5 +103,13 @@ declare class OSSystemExtensionProperties extends NSObject {
   readonly isAwaitingUserApproval: boolean;
 
   readonly isUninstalling: boolean;
+}
+
+declare class OSSystemExtensionsWorkspace extends NSObject {
+  static readonly sharedWorkspace: OSSystemExtensionsWorkspace;
+
+  addObserverError(observer: OSSystemExtensionsWorkspaceObserver, error: interop.PointerConvertible): boolean;
+
+  removeObserver(observer: OSSystemExtensionsWorkspaceObserver): void;
 }
 

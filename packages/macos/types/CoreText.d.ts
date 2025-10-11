@@ -1,13 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kRubyKanaType: number;
-
-declare const kStylisticAlternativesType: number;
-
-declare const kTRAKUniformFormat: number;
-
-declare const kFontSpanishLanguage: number;
-
 declare const kAbbrevSquaredLigaturesOnSelector: number;
 
 declare const kFontDanishLanguage: number;
@@ -19,6 +11,8 @@ declare const kMORTraDxA: number;
 declare const kCTFontFeatureSampleTextKey: interop.Pointer;
 
 declare const kCaseSensitiveSpacingOnSelector: number;
+
+declare const kCTBaselineClassHanging: interop.Pointer;
 
 declare const kCTFontPriorityAttribute: interop.Pointer;
 
@@ -101,6 +95,8 @@ declare const kJUSTCurrentVersion: number;
 declare const kCanonicalCompositionOffSelector: number;
 
 declare const kFontMalayalamScript: number;
+
+declare const kRubyKanaType: number;
 
 declare const kUpperCaseSmallCapsSelector: number;
 
@@ -191,8 +187,6 @@ declare const kCTFramePathFillRuleAttributeName: interop.Pointer;
 declare const kCTFrameProgressionAttributeName: interop.Pointer;
 
 declare const kCTFontCollectionDisallowAutoActivationOption: interop.Pointer;
-
-declare const kCTBaselineClassHanging: interop.Pointer;
 
 declare const kCTBaselineClassIdeographicCentered: interop.Pointer;
 
@@ -614,6 +608,8 @@ declare const kKERNCurrentVersion: number;
 
 declare const kKERNTag: number;
 
+declare const kTRAKUniformFormat: number;
+
 declare const kTRAKCurrentVersion: number;
 
 declare const kPROPNumDirectionClasses: number;
@@ -635,8 +631,6 @@ declare const kPROPONDirectionClass: number;
 declare const kPROPWSDirectionClass: number;
 
 declare const kPROPSDirectionClass: number;
-
-declare const kPROPPSDirectionClass: number;
 
 declare const kPROPCSDirectionClass: number;
 
@@ -741,8 +735,6 @@ declare const kJUSTpcGlyphRepeatAddAction: number;
 declare const kJUSTpcDuctilityAction: number;
 
 declare const kJUSTpcConditionalAddAction: number;
-
-declare const kJUSTpcDecompositionAction: number;
 
 declare const kLCARCurrentVersion: number;
 
@@ -1056,6 +1048,8 @@ declare const kUpperCaseType: number;
 
 declare const kLowerCaseType: number;
 
+declare const kStylisticAlternativesType: number;
+
 declare const kCaseSensitiveLayoutType: number;
 
 declare const kItalicCJKRomanType: number;
@@ -1091,6 +1085,8 @@ declare const kCJKSymbolAltTwoSelector: number;
 declare const kHojoCharactersSelector: number;
 
 declare const kFontPunjabiLanguage: number;
+
+declare const kJUSTpcDecompositionAction: number;
 
 declare const kCTFontTableFeat: number;
 
@@ -1220,8 +1216,6 @@ declare const kKERNVertical: number;
 
 declare const kFontJapaneseLanguage: number;
 
-declare const kMORTraxAB: number;
-
 declare const kFontHebrewScript: number;
 
 declare const kJUSTpcUnconditionalAddAction: number;
@@ -1281,6 +1275,8 @@ declare const kFontRSymbolScript: number;
 declare const kJUSTNullPriority: number;
 
 declare const kDesignLevel2Selector: number;
+
+declare const kMORTraxAB: number;
 
 declare const kHyphensToEmDashOffSelector: number;
 
@@ -1424,6 +1420,8 @@ declare const kCTFontTableMATH: number;
 
 declare const kFontUnicodeDefaultSemantics: number;
 
+declare const kPROPPSDirectionClass: number;
+
 declare const kFontEsperantoLanguage: number;
 
 declare const kFontUniqueName: number;
@@ -1519,6 +1517,8 @@ declare const kKERNLineEndKerning: number;
 declare const kFontGuaraniLanguage: number;
 
 declare const kTypographicExtrasType: number;
+
+declare const kFontSpanishLanguage: number;
 
 declare const kPROPDirectionMask: number;
 
@@ -1660,6 +1660,8 @@ declare const kMORTLigLastAction: number;
 
 declare const kFontGreekScript: number;
 
+declare const kCTFontTableHead: number;
+
 declare const kHideDiacriticsSelector: number;
 
 declare const kCTRunDelegateCurrentVersion: number;
@@ -1697,8 +1699,6 @@ declare const kCTFontTableProp: number;
 declare const kCTBaselineClassAttributeName: interop.Pointer;
 
 declare const kCTFontTableMVAR: number;
-
-declare const kCTFontTableHead: number;
 
 declare const kKERXNoCrossKerning: number;
 
@@ -1822,39 +1822,6 @@ declare const kStylisticAltEighteenOnSelector: number;
 
 declare const kBSLNRomanBaseline: number;
 
-declare const CTLineTruncationType: {
-  Start: 0,
-  End: 1,
-  Middle: 2,
-};
-
-declare const CTFontTableOptions: {
-  NoOptions: 0,
-  ExcludeSynthetic: 1,
-};
-
-declare const CTParagraphStyleSpecifier: {
-  Alignment: 0,
-  FirstLineHeadIndent: 1,
-  HeadIndent: 2,
-  TailIndent: 3,
-  TabStops: 4,
-  DefaultTabInterval: 5,
-  LineBreakMode: 6,
-  LineHeightMultiple: 7,
-  MaximumLineHeight: 8,
-  MinimumLineHeight: 9,
-  LineSpacing: 10,
-  ParagraphSpacing: 11,
-  ParagraphSpacingBefore: 12,
-  BaseWritingDirection: 13,
-  MaximumLineSpacing: 14,
-  MinimumLineSpacing: 15,
-  LineSpacingAdjustment: 16,
-  LineBoundsOptions: 17,
-  Count: 18,
-};
-
 declare const CTUnderlineStyle: {
   None: 0,
   Single: 1,
@@ -1862,46 +1829,13 @@ declare const CTUnderlineStyle: {
   Double: 9,
 };
 
-declare const CTFontDescriptorMatchingState: {
-  DidBegin: 0,
-  DidFinish: 1,
-  WillBeginQuerying: 2,
-  Stalled: 3,
-  WillBeginDownloading: 4,
-  Downloading: 5,
-  DidFinishDownloading: 6,
-  DidMatch: 7,
-  DidFailWithError: 8,
-};
-
-declare const CTRubyPosition: {
-  Before: 0,
-  After: 1,
-  InterCharacter: 2,
-  Inline: 3,
-  Count: 4,
-};
-
-declare const CTLineBreakMode: {
-  WordWrapping: 0,
-  CharWrapping: 1,
-  Clipping: 2,
-  TruncatingHead: 3,
-  TruncatingTail: 4,
-  TruncatingMiddle: 5,
-};
-
-declare const CTTextAlignment: {
-  TextAlignmentLeft: 0,
-  TextAlignmentRight: 1,
-  TextAlignmentCenter: 2,
-  TextAlignmentJustified: 3,
-  TextAlignmentNatural: 4,
-  LeftTextAlignment: 0,
-  RightTextAlignment: 1,
-  CenterTextAlignment: 2,
-  JustifiedTextAlignment: 3,
-  NaturalTextAlignment: 4,
+declare const CTFontOrientation: {
+  OrientationDefault: 0,
+  OrientationHorizontal: 1,
+  OrientationVertical: 2,
+  DefaultOrientation: 0,
+  HorizontalOrientation: 1,
+  VerticalOrientation: 2,
 };
 
 declare const CTCharacterCollection: {
@@ -1919,36 +1853,13 @@ declare const CTCharacterCollection: {
   AdobeKorea1CharacterCollection: 5,
 };
 
-declare const CTRubyAlignment: {
-  Invalid: -1,
-  Auto: 0,
-  Start: 1,
-  Center: 2,
-  End: 3,
-  DistributeLetter: 4,
-  DistributeSpace: 5,
-  LineEdge: 6,
-};
-
-declare const CTLineBoundsOptions: {
-  ExcludeTypographicLeading: 1,
-  ExcludeTypographicShifts: 2,
-  UseHangingPunctuation: 4,
-  UseGlyphPathBounds: 8,
-  UseOpticalBounds: 16,
-  IncludeLanguageExtents: 32,
-};
-
-declare const CTFrameProgression: {
-  TopToBottom: 0,
-  RightToLeft: 1,
-  LeftToRight: 2,
-};
-
-declare const CTFontCollectionCopyOptions: {
-  DefaultOptions: 0,
-  Unique: 1,
-  StandardSort: 2,
+declare const CTLineBreakMode: {
+  WordWrapping: 0,
+  CharWrapping: 1,
+  Clipping: 2,
+  TruncatingHead: 3,
+  TruncatingTail: 4,
+  TruncatingMiddle: 5,
 };
 
 declare const CTFontUIFontType: {
@@ -2010,20 +1921,131 @@ declare const CTFontUIFontType: {
   ControlContentFontType: 26,
 };
 
+declare const CTFrameProgression: {
+  TopToBottom: 0,
+  RightToLeft: 1,
+  LeftToRight: 2,
+};
+
+declare const CTFontFormat: {
+  Unrecognized: 0,
+  OpenTypePostScript: 1,
+  OpenTypeTrueType: 2,
+  TrueType: 3,
+  PostScript: 4,
+  Bitmap: 5,
+};
+
+declare const CTFontStylisticClass: {
+  ClassUnknown: 0,
+  ClassOldStyleSerifs: 268435456,
+  ClassTransitionalSerifs: 536870912,
+  ClassModernSerifs: 805306368,
+  ClassClarendonSerifs: 1073741824,
+  ClassSlabSerifs: 1342177280,
+  ClassFreeformSerifs: 1879048192,
+  ClassSansSerif: -2147483648,
+  ClassOrnamentals: -1879048192,
+  ClassScripts: -1610612736,
+  ClassSymbolic: -1073741824,
+  UnknownClass: 0,
+  OldStyleSerifsClass: 268435456,
+  TransitionalSerifsClass: 536870912,
+  ModernSerifsClass: 805306368,
+  ClarendonSerifsClass: 1073741824,
+  SlabSerifsClass: 1342177280,
+  FreeformSerifsClass: 1879048192,
+  SansSerifClass: -2147483648,
+  OrnamentalsClass: -1879048192,
+  ScriptsClass: -1610612736,
+  SymbolicClass: -1073741824,
+};
+
+declare const CTLineTruncationType: {
+  Start: 0,
+  End: 1,
+  Middle: 2,
+};
+
+declare const CTFontTableOptions: {
+  NoOptions: 0,
+  ExcludeSynthetic: 1,
+};
+
+declare const CTParagraphStyleSpecifier: {
+  Alignment: 0,
+  FirstLineHeadIndent: 1,
+  HeadIndent: 2,
+  TailIndent: 3,
+  TabStops: 4,
+  DefaultTabInterval: 5,
+  LineBreakMode: 6,
+  LineHeightMultiple: 7,
+  MaximumLineHeight: 8,
+  MinimumLineHeight: 9,
+  LineSpacing: 10,
+  ParagraphSpacing: 11,
+  ParagraphSpacingBefore: 12,
+  BaseWritingDirection: 13,
+  MaximumLineSpacing: 14,
+  MinimumLineSpacing: 15,
+  LineSpacingAdjustment: 16,
+  LineBoundsOptions: 17,
+  Count: 18,
+};
+
+declare const CTRubyPosition: {
+  Before: 0,
+  After: 1,
+  InterCharacter: 2,
+  Inline: 3,
+  Count: 4,
+};
+
+declare const CTTextAlignment: {
+  TextAlignmentLeft: 0,
+  TextAlignmentRight: 1,
+  TextAlignmentCenter: 2,
+  TextAlignmentJustified: 3,
+  TextAlignmentNatural: 4,
+  LeftTextAlignment: 0,
+  RightTextAlignment: 1,
+  CenterTextAlignment: 2,
+  JustifiedTextAlignment: 3,
+  NaturalTextAlignment: 4,
+};
+
+declare const CTRubyAlignment: {
+  Invalid: -1,
+  Auto: 0,
+  Start: 1,
+  Center: 2,
+  End: 3,
+  DistributeLetter: 4,
+  DistributeSpace: 5,
+  LineEdge: 6,
+};
+
+declare const CTLineBoundsOptions: {
+  ExcludeTypographicLeading: 1,
+  ExcludeTypographicShifts: 2,
+  UseHangingPunctuation: 4,
+  UseGlyphPathBounds: 8,
+  UseOpticalBounds: 16,
+  IncludeLanguageExtents: 32,
+};
+
+declare const CTFontCollectionCopyOptions: {
+  DefaultOptions: 0,
+  Unique: 1,
+  StandardSort: 2,
+};
+
 declare const CTFontOptions: {
   Default: 0,
   PreventAutoActivation: 1,
   PreventAutoDownload: 2,
   PreferSystemFont: 4,
-};
-
-declare const CTFontOrientation: {
-  OrientationDefault: 0,
-  OrientationHorizontal: 1,
-  OrientationVertical: 2,
-  DefaultOrientation: 0,
-  HorizontalOrientation: 1,
-  VerticalOrientation: 2,
 };
 
 declare const CTFontSymbolicTraits: {
@@ -2060,31 +2082,6 @@ declare const CTFramePathFillRule: {
   WindingNumber: 1,
 };
 
-declare const CTFontStylisticClass: {
-  ClassUnknown: 0,
-  ClassOldStyleSerifs: 268435456,
-  ClassTransitionalSerifs: 536870912,
-  ClassModernSerifs: 805306368,
-  ClassClarendonSerifs: 1073741824,
-  ClassSlabSerifs: 1342177280,
-  ClassFreeformSerifs: 1879048192,
-  ClassSansSerif: -2147483648,
-  ClassOrnamentals: -1879048192,
-  ClassScripts: -1610612736,
-  ClassSymbolic: -1073741824,
-  UnknownClass: 0,
-  OldStyleSerifsClass: 268435456,
-  TransitionalSerifsClass: 536870912,
-  ModernSerifsClass: 805306368,
-  ClarendonSerifsClass: 1073741824,
-  SlabSerifsClass: 1342177280,
-  FreeformSerifsClass: 1879048192,
-  SansSerifClass: -2147483648,
-  OrnamentalsClass: -1879048192,
-  ScriptsClass: -1610612736,
-  SymbolicClass: -1073741824,
-};
-
 declare const CTFontManagerAutoActivationSetting: {
   Default: 0,
   Disabled: 1,
@@ -2092,29 +2089,16 @@ declare const CTFontManagerAutoActivationSetting: {
   PromptUser: 3,
 };
 
-declare const CTFontFormat: {
-  Unrecognized: 0,
-  OpenTypePostScript: 1,
-  OpenTypeTrueType: 2,
-  TrueType: 3,
-  PostScript: 4,
-  Bitmap: 5,
-};
-
-declare const CTFontManagerScope: {
-  None: 0,
-  Process: 1,
-  Persistent: 2,
-  Session: 3,
-  User: 2,
-};
-
-declare const CTUnderlineStyleModifiers: {
-  Solid: 0,
-  Dot: 256,
-  Dash: 512,
-  DashDot: 768,
-  DashDotDot: 1024,
+declare const CTFontDescriptorMatchingState: {
+  DidBegin: 0,
+  DidFinish: 1,
+  WillBeginQuerying: 2,
+  Stalled: 3,
+  WillBeginDownloading: 4,
+  Downloading: 5,
+  DidFinishDownloading: 6,
+  DidMatch: 7,
+  DidFailWithError: 8,
 };
 
 declare const CTFontManagerError: {
@@ -2135,6 +2119,22 @@ declare const CTFontManagerError: {
   DuplicatedName: 305,
   InvalidFilePath: 306,
   UnsupportedScope: 307,
+};
+
+declare const CTFontManagerScope: {
+  None: 0,
+  Process: 1,
+  Persistent: 2,
+  Session: 3,
+  User: 2,
+};
+
+declare const CTUnderlineStyleModifiers: {
+  Solid: 0,
+  Dot: 256,
+  Dash: 512,
+  DashDot: 768,
+  DashDotDot: 1024,
 };
 
 declare const CTRunStatus: {
@@ -2735,6 +2735,15 @@ declare class KerxIndexArrayHeader {
   kerningVectorOffset: number;
 }
 
+declare class STHeader {
+  constructor(init?: STHeader);
+  filler: number;
+  nClasses: number;
+  classTableOffset: number;
+  stateArrayOffset: number;
+  entryTableOffset: number;
+}
+
 declare class SFNTLookupArrayHeader {
   constructor(init?: SFNTLookupArrayHeader);
   lookupValues: unknown /* const array */;
@@ -2745,15 +2754,6 @@ declare class KerxTableHeader {
   version: number;
   nTables: number;
   firstSubtable: unknown /* const array */;
-}
-
-declare class STHeader {
-  constructor(init?: STHeader);
-  filler: number;
-  nClasses: number;
-  classTableOffset: number;
-  stateArrayOffset: number;
-  entryTableOffset: number;
 }
 
 declare class BslnFormat0Part {
@@ -3069,18 +3069,20 @@ declare class BslnFormatUnion {
   fmt3Part: BslnFormat3Part;
 }
 
-type KernFormatSpecificHeaderDescriptor = 
-  | { orderedList: KernOrderedListHeader }
-  | { stateTable: KernStateHeader }
-  | { simpleArray: KernSimpleArrayHeader }
-  | { indexArray: KernIndexArrayHeader };
+type SFNTLookupFormatSpecificHeaderDescriptor = 
+  | { theArray: SFNTLookupArrayHeader }
+  | { segment: SFNTLookupSegmentHeader }
+  | { single: SFNTLookupSingleHeader }
+  | { trimmedArray: SFNTLookupTrimmedArrayHeader }
+  | { vector: SFNTLookupVectorHeader };
 
-declare class KernFormatSpecificHeader {
-  constructor(init?: KernFormatSpecificHeaderDescriptor);
-  orderedList: KernOrderedListHeader;
-  stateTable: KernStateHeader;
-  simpleArray: KernSimpleArrayHeader;
-  indexArray: KernIndexArrayHeader;
+declare class SFNTLookupFormatSpecificHeader {
+  constructor(init?: SFNTLookupFormatSpecificHeaderDescriptor);
+  theArray: SFNTLookupArrayHeader;
+  segment: SFNTLookupSegmentHeader;
+  single: SFNTLookupSingleHeader;
+  trimmedArray: SFNTLookupTrimmedArrayHeader;
+  vector: SFNTLookupVectorHeader;
 }
 
 type MortSpecificSubtableDescriptor = 
@@ -3099,20 +3101,18 @@ declare class MortSpecificSubtable {
   insertion: MortInsertionSubtable;
 }
 
-type SFNTLookupFormatSpecificHeaderDescriptor = 
-  | { theArray: SFNTLookupArrayHeader }
-  | { segment: SFNTLookupSegmentHeader }
-  | { single: SFNTLookupSingleHeader }
-  | { trimmedArray: SFNTLookupTrimmedArrayHeader }
-  | { vector: SFNTLookupVectorHeader };
+type KernFormatSpecificHeaderDescriptor = 
+  | { orderedList: KernOrderedListHeader }
+  | { stateTable: KernStateHeader }
+  | { simpleArray: KernSimpleArrayHeader }
+  | { indexArray: KernIndexArrayHeader };
 
-declare class SFNTLookupFormatSpecificHeader {
-  constructor(init?: SFNTLookupFormatSpecificHeaderDescriptor);
-  theArray: SFNTLookupArrayHeader;
-  segment: SFNTLookupSegmentHeader;
-  single: SFNTLookupSingleHeader;
-  trimmedArray: SFNTLookupTrimmedArrayHeader;
-  vector: SFNTLookupVectorHeader;
+declare class KernFormatSpecificHeader {
+  constructor(init?: KernFormatSpecificHeaderDescriptor);
+  orderedList: KernOrderedListHeader;
+  stateTable: KernStateHeader;
+  simpleArray: KernSimpleArrayHeader;
+  indexArray: KernIndexArrayHeader;
 }
 
 type MorxSpecificSubtableDescriptor = 

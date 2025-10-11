@@ -120,6 +120,11 @@ declare const MLCDataType: {
   Count: 10,
 };
 
+declare const MLCSoftmaxOperation: {
+  MLCSoftmaxOperationSoftmax: 0,
+  Log: 1,
+};
+
 declare const MLCGraphCompilationOptions: {
   None: 0,
   DebugLayers: 1,
@@ -142,9 +147,17 @@ declare const MLCLSTMResultMode: {
   AndStates: 1,
 };
 
-declare const MLCSoftmaxOperation: {
-  MLCSoftmaxOperationSoftmax: 0,
-  Log: 1,
+declare const MLCLossType: {
+  MeanAbsoluteError: 0,
+  MeanSquaredError: 1,
+  SoftmaxCrossEntropy: 2,
+  SigmoidCrossEntropy: 3,
+  CategoricalCrossEntropy: 4,
+  Hinge: 5,
+  Huber: 6,
+  CosineDistance: 7,
+  Log: 8,
+  Count: 9,
 };
 
 declare const MLCRandomInitializerType: {
@@ -186,19 +199,6 @@ declare const MLCActivationType: {
   HardSwish: 19,
   Clamp: 20,
   Count: 21,
-};
-
-declare const MLCLossType: {
-  MeanAbsoluteError: 0,
-  MeanSquaredError: 1,
-  SoftmaxCrossEntropy: 2,
-  SigmoidCrossEntropy: 3,
-  CategoricalCrossEntropy: 4,
-  Hinge: 5,
-  Huber: 6,
-  CosineDistance: 7,
-  Log: 8,
-  Count: 9,
 };
 
 declare function MLCActivationTypeDebugDescription(activationType: interop.Enum<typeof MLCActivationType>): string;
@@ -791,12 +791,6 @@ declare class MLCLSTMLayer extends MLCLayer {
   static layerWithDescriptorInputWeightsHiddenWeightsPeepholeWeightsBiasesGateActivationsOutputResultActivation<This extends abstract new (...args: any) => any>(this: This, descriptor: MLCLSTMDescriptor, inputWeights: NSArray<interop.Object> | Array<interop.Object>, hiddenWeights: NSArray<interop.Object> | Array<interop.Object>, peepholeWeights: NSArray<interop.Object> | Array<interop.Object> | null, biases: NSArray<interop.Object> | Array<interop.Object> | null, gateActivations: NSArray<interop.Object> | Array<interop.Object>, outputResultActivation: MLCActivationDescriptor): InstanceType<This> | null;
 }
 
-declare class MLCReshapeLayer extends MLCLayer {
-  readonly shape: NSArray;
-
-  static layerWithShape<This extends abstract new (...args: any) => any>(this: This, shape: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This> | null;
-}
-
 declare class MLCMatMulDescriptor extends NSObject implements NSCopying {
   readonly alpha: number;
 
@@ -837,50 +831,18 @@ declare class MLCInferenceGraph extends MLCGraph {
   executeWithInputsDataLossLabelsDataLossLabelWeightsDataOutputsDataBatchSizeOptionsCompletionHandler(inputsData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, lossLabelsData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, lossLabelWeightsData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, outputsData: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, batchSize: number, options: interop.Enum<typeof MLCExecutionOptions>, completionHandler: (p1: MLCTensor, p2: NSError, p3: number) => void | null): boolean;
 }
 
-declare class MLCLossLayer extends MLCLayer {
-  readonly descriptor: MLCLossDescriptor;
+declare class MLCFullyConnectedLayer extends MLCLayer {
+  readonly descriptor: MLCConvolutionDescriptor;
 
   readonly weights: MLCTensor;
 
-  static layerWithDescriptor<This extends abstract new (...args: any) => any>(this: This, lossDescriptor: MLCLossDescriptor): InstanceType<This>;
+  readonly biases: MLCTensor;
 
-  static layerWithDescriptorWeights<This extends abstract new (...args: any) => any>(this: This, lossDescriptor: MLCLossDescriptor, weights: MLCTensor): InstanceType<This>;
+  readonly weightsParameter: MLCTensorParameter;
 
-  static softmaxCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weight: number): InstanceType<This>;
+  readonly biasesParameter: MLCTensorParameter;
 
-  static softmaxCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weights: MLCTensor | null): InstanceType<This>;
-
-  static categoricalCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weight: number): InstanceType<This>;
-
-  static categoricalCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weights: MLCTensor | null): InstanceType<This>;
-
-  static sigmoidCrossEntropyLossWithReductionTypeLabelSmoothingWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, weight: number): InstanceType<This>;
-
-  static sigmoidCrossEntropyLossWithReductionTypeLabelSmoothingWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, weights: MLCTensor | null): InstanceType<This>;
-
-  static logLossWithReductionTypeEpsilonWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, epsilon: number, weight: number): InstanceType<This>;
-
-  static logLossWithReductionTypeEpsilonWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, epsilon: number, weights: MLCTensor | null): InstanceType<This>;
-
-  static huberLossWithReductionTypeDeltaWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, delta: number, weight: number): InstanceType<This>;
-
-  static huberLossWithReductionTypeDeltaWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, delta: number, weights: MLCTensor | null): InstanceType<This>;
-
-  static meanAbsoluteErrorLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
-
-  static meanAbsoluteErrorLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
-
-  static meanSquaredErrorLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
-
-  static meanSquaredErrorLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
-
-  static hingeLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
-
-  static hingeLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
-
-  static cosineDistanceLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
-
-  static cosineDistanceLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
+  static layerWithWeightsBiasesDescriptor<This extends abstract new (...args: any) => any>(this: This, weights: MLCTensor, biases: MLCTensor | null, descriptor: MLCConvolutionDescriptor): InstanceType<This> | null;
 }
 
 declare class MLCAdamWOptimizer extends MLCOptimizer implements NSCopying {
@@ -899,20 +861,6 @@ declare class MLCAdamWOptimizer extends MLCOptimizer implements NSCopying {
   static optimizerWithDescriptorBeta1Beta2EpsilonUsesAMSGradTimeStep<This extends abstract new (...args: any) => any>(this: This, optimizerDescriptor: MLCOptimizerDescriptor, beta1: number, beta2: number, epsilon: number, usesAMSGrad: boolean, timeStep: number): InstanceType<This>;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MLCFullyConnectedLayer extends MLCLayer {
-  readonly descriptor: MLCConvolutionDescriptor;
-
-  readonly weights: MLCTensor;
-
-  readonly biases: MLCTensor;
-
-  readonly weightsParameter: MLCTensorParameter;
-
-  readonly biasesParameter: MLCTensorParameter;
-
-  static layerWithWeightsBiasesDescriptor<This extends abstract new (...args: any) => any>(this: This, weights: MLCTensor, biases: MLCTensor | null, descriptor: MLCConvolutionDescriptor): InstanceType<This> | null;
 }
 
 declare class MLCTensorOptimizerDeviceData extends NSObject implements NSCopying {
@@ -1055,6 +1003,52 @@ declare class MLCMultiheadAttentionLayer extends MLCLayer {
   readonly biasesParameters: NSArray;
 
   static layerWithDescriptorWeightsBiasesAttentionBiases<This extends abstract new (...args: any) => any>(this: This, descriptor: MLCMultiheadAttentionDescriptor, weights: NSArray<interop.Object> | Array<interop.Object>, biases: NSArray<interop.Object> | Array<interop.Object> | null, attentionBiases: NSArray<interop.Object> | Array<interop.Object> | null): InstanceType<This> | null;
+}
+
+declare class MLCLossLayer extends MLCLayer {
+  readonly descriptor: MLCLossDescriptor;
+
+  readonly weights: MLCTensor;
+
+  static layerWithDescriptor<This extends abstract new (...args: any) => any>(this: This, lossDescriptor: MLCLossDescriptor): InstanceType<This>;
+
+  static layerWithDescriptorWeights<This extends abstract new (...args: any) => any>(this: This, lossDescriptor: MLCLossDescriptor, weights: MLCTensor): InstanceType<This>;
+
+  static softmaxCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weight: number): InstanceType<This>;
+
+  static softmaxCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weights: MLCTensor | null): InstanceType<This>;
+
+  static categoricalCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weight: number): InstanceType<This>;
+
+  static categoricalCrossEntropyLossWithReductionTypeLabelSmoothingClassCountWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, classCount: number, weights: MLCTensor | null): InstanceType<This>;
+
+  static sigmoidCrossEntropyLossWithReductionTypeLabelSmoothingWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, weight: number): InstanceType<This>;
+
+  static sigmoidCrossEntropyLossWithReductionTypeLabelSmoothingWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, labelSmoothing: number, weights: MLCTensor | null): InstanceType<This>;
+
+  static logLossWithReductionTypeEpsilonWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, epsilon: number, weight: number): InstanceType<This>;
+
+  static logLossWithReductionTypeEpsilonWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, epsilon: number, weights: MLCTensor | null): InstanceType<This>;
+
+  static huberLossWithReductionTypeDeltaWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, delta: number, weight: number): InstanceType<This>;
+
+  static huberLossWithReductionTypeDeltaWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, delta: number, weights: MLCTensor | null): InstanceType<This>;
+
+  static meanAbsoluteErrorLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
+
+  static meanAbsoluteErrorLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
+
+  static meanSquaredErrorLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
+
+  static meanSquaredErrorLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
+
+  static hingeLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
+
+  static hingeLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
+
+  static cosineDistanceLossWithReductionTypeWeight<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weight: number): InstanceType<This>;
+
+  static cosineDistanceLossWithReductionTypeWeights<This extends abstract new (...args: any) => any>(this: This, reductionType: interop.Enum<typeof MLCReductionType>, weights: MLCTensor | null): InstanceType<This>;
 }
 
 declare class MLCTensorParameter extends NSObject {
@@ -1271,6 +1265,12 @@ declare class MLCTensorData extends NSObject {
   static dataWithImmutableBytesNoCopyLength<This extends abstract new (...args: any) => any>(this: This, bytes: interop.PointerConvertible, length: number): InstanceType<This>;
 
   static dataWithBytesNoCopyLengthDeallocator<This extends abstract new (...args: any) => any>(this: This, bytes: interop.PointerConvertible, length: number, deallocator: (p1: interop.PointerConvertible, p2: number) => void): InstanceType<This>;
+}
+
+declare class MLCReshapeLayer extends MLCLayer {
+  readonly shape: NSArray;
+
+  static layerWithShape<This extends abstract new (...args: any) => any>(this: This, shape: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This> | null;
 }
 
 declare class MLCPoolingLayer extends MLCLayer {

@@ -8,6 +8,15 @@ declare const QLPreviewItemEditingMode: {
   CreateCopy: 2,
 };
 
+declare interface QLPreviewItem extends NSObjectProtocol {
+  readonly previewItemURL: NSURL;
+
+  readonly previewItemTitle?: string;
+}
+
+declare class QLPreviewItem extends NativeObject implements QLPreviewItem {
+}
+
 declare interface QLPreviewControllerDataSource {
   numberOfPreviewItemsInPreviewController(controller: QLPreviewController): number;
 
@@ -51,15 +60,6 @@ declare interface QLPreviewingController extends NSObjectProtocol {
 declare class QLPreviewingController extends NativeObject implements QLPreviewingController {
 }
 
-declare interface QLPreviewItem extends NSObjectProtocol {
-  readonly previewItemURL: NSURL;
-
-  readonly previewItemTitle?: string;
-}
-
-declare class QLPreviewItem extends NativeObject implements QLPreviewItem {
-}
-
 declare class QLFilePreviewRequest extends NSObject {
   readonly fileURL: NSURL;
 }
@@ -84,6 +84,62 @@ declare class QLPreviewController extends UIViewController {
   setCurrentPreviewItemIndex(currentPreviewItemIndex: number): void;
 
   setDelegate(delegate: QLPreviewControllerDelegate | null): void;
+}
+
+declare class ARQuickLookPreviewItem extends NSObject implements QLPreviewItem {
+  initWithFileAtURL(url: NSURL): this;
+
+  canonicalWebPageURL: NSURL;
+
+  allowsContentScaling: boolean;
+
+  setCanonicalWebPageURL(canonicalWebPageURL: NSURL | null): void;
+
+  setAllowsContentScaling(allowsContentScaling: boolean): void;
+
+  readonly previewItemURL: NSURL;
+
+  readonly previewItemTitle: string;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
 }
 
 declare class QLPreviewReply extends NSObject {
@@ -119,6 +175,12 @@ declare class QLPreviewReplyAttachment extends NSObject {
 
 declare class QLPreviewSceneActivationConfiguration extends UIWindowSceneActivationConfiguration {
   initWithItemsAtURLsOptions(urls: NSArray<interop.Object> | Array<interop.Object>, options: QLPreviewSceneOptions | null): this;
+}
+
+declare class QLPreviewSceneOptions extends NSObject {
+  initialPreviewIndex: number;
+
+  setInitialPreviewIndex(initialPreviewIndex: number): void;
 }
 
 declare class QLPreviewProvider extends NSObject implements NSExtensionRequestHandling {
@@ -163,11 +225,5 @@ declare class QLPreviewProvider extends NSObject implements NSExtensionRequestHa
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-declare class QLPreviewSceneOptions extends NSObject {
-  initialPreviewIndex: number;
-
-  setInitialPreviewIndex(initialPreviewIndex: number): void;
 }
 

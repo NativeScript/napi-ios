@@ -978,6 +978,42 @@ declare class GKStateMachine extends NSObject {
   enterState(stateClass: interop.Object): boolean;
 }
 
+declare class GKObstacleGraph<NodeType = interop.Object> extends GKGraph {
+  readonly obstacles: NSArray;
+
+  readonly bufferRadius: number;
+
+  static graphWithObstaclesBufferRadius<NodeType, This extends abstract new (...args: any) => any>(this: This, obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number): InstanceType<This>;
+
+  initWithObstaclesBufferRadius(obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number): this;
+
+  static graphWithObstaclesBufferRadiusNodeClass<NodeType, This extends abstract new (...args: any) => any>(this: This, obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number, nodeClass: interop.Object): InstanceType<This>;
+
+  initWithObstaclesBufferRadiusNodeClass(obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number, nodeClass: interop.Object): this;
+
+  connectNodeUsingObstacles(node: NodeType): void;
+
+  connectNodeUsingObstaclesIgnoringObstacles(node: NodeType, obstaclesToIgnore: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  connectNodeUsingObstaclesIgnoringBufferRadiusOfObstacles(node: NodeType, obstaclesBufferRadiusToIgnore: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  addObstacles(obstacles: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  removeObstacles(obstacles: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  removeAllObstacles(): void;
+
+  nodesForObstacle(obstacle: GKPolygonObstacle): NSArray;
+
+  lockConnectionFromNodeToNode(startNode: NodeType, endNode: NodeType): void;
+
+  unlockConnectionFromNodeToNode(startNode: NodeType, endNode: NodeType): void;
+
+  isConnectionLockedFromNodeToNode(startNode: NodeType, endNode: NodeType): boolean;
+
+  classForGenericArgumentAtIndex(index: number): interop.Object;
+}
+
 declare class GKSphereObstacle extends GKObstacle {
   radius: number;
 
@@ -1016,38 +1052,6 @@ declare class GKQuadtree<ElementType = interop.Object> extends NSObject {
   removeElement(element: ElementType): boolean;
 
   removeElementWithNode(data: ElementType, node: GKQuadtreeNode): boolean;
-}
-
-declare class GKPath extends NSObject {
-  radius: number;
-
-  readonly numPoints: number;
-
-  cyclical: boolean;
-
-  static pathWithPointsCountRadiusCyclical<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): InstanceType<This>;
-
-  initWithPointsCountRadiusCyclical(points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): this;
-
-  static pathWithFloat3PointsCountRadiusCyclical<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): InstanceType<This>;
-
-  initWithFloat3PointsCountRadiusCyclical(points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): this;
-
-  static pathWithGraphNodesRadius<This extends abstract new (...args: any) => any>(this: This, graphNodes: NSArray<interop.Object> | Array<interop.Object>, radius: number): InstanceType<This>;
-
-  initWithGraphNodesRadius(graphNodes: NSArray<interop.Object> | Array<interop.Object>, radius: number): this;
-
-  pointAtIndex(index: number): unknown /* ext vector */;
-
-  float2AtIndex(index: number): unknown /* ext vector */;
-
-  float3AtIndex(index: number): unknown /* ext vector */;
-
-  setRadius(radius: number): void;
-
-  isCyclical(): boolean;
-
-  setCyclical(cyclical: boolean): void;
 }
 
 declare class GKScene extends NSObject implements NSCopying, NSSecureCoding {
@@ -1287,39 +1291,35 @@ declare class GKMeshGraph<NodeType = interop.Object> extends GKGraph {
 declare class GKShuffledDistribution extends GKRandomDistribution {
 }
 
-declare class GKObstacleGraph<NodeType = interop.Object> extends GKGraph {
-  readonly obstacles: NSArray;
+declare class GKPath extends NSObject {
+  radius: number;
 
-  readonly bufferRadius: number;
+  readonly numPoints: number;
 
-  static graphWithObstaclesBufferRadius<NodeType, This extends abstract new (...args: any) => any>(this: This, obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number): InstanceType<This>;
+  cyclical: boolean;
 
-  initWithObstaclesBufferRadius(obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number): this;
+  static pathWithPointsCountRadiusCyclical<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): InstanceType<This>;
 
-  static graphWithObstaclesBufferRadiusNodeClass<NodeType, This extends abstract new (...args: any) => any>(this: This, obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number, nodeClass: interop.Object): InstanceType<This>;
+  initWithPointsCountRadiusCyclical(points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): this;
 
-  initWithObstaclesBufferRadiusNodeClass(obstacles: NSArray<interop.Object> | Array<interop.Object>, bufferRadius: number, nodeClass: interop.Object): this;
+  static pathWithFloat3PointsCountRadiusCyclical<This extends abstract new (...args: any) => any>(this: This, points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): InstanceType<This>;
 
-  connectNodeUsingObstacles(node: NodeType): void;
+  initWithFloat3PointsCountRadiusCyclical(points: interop.PointerConvertible, count: number, radius: number, cyclical: boolean): this;
 
-  connectNodeUsingObstaclesIgnoringObstacles(node: NodeType, obstaclesToIgnore: NSArray<interop.Object> | Array<interop.Object>): void;
+  static pathWithGraphNodesRadius<This extends abstract new (...args: any) => any>(this: This, graphNodes: NSArray<interop.Object> | Array<interop.Object>, radius: number): InstanceType<This>;
 
-  connectNodeUsingObstaclesIgnoringBufferRadiusOfObstacles(node: NodeType, obstaclesBufferRadiusToIgnore: NSArray<interop.Object> | Array<interop.Object>): void;
+  initWithGraphNodesRadius(graphNodes: NSArray<interop.Object> | Array<interop.Object>, radius: number): this;
 
-  addObstacles(obstacles: NSArray<interop.Object> | Array<interop.Object>): void;
+  pointAtIndex(index: number): unknown /* ext vector */;
 
-  removeObstacles(obstacles: NSArray<interop.Object> | Array<interop.Object>): void;
+  float2AtIndex(index: number): unknown /* ext vector */;
 
-  removeAllObstacles(): void;
+  float3AtIndex(index: number): unknown /* ext vector */;
 
-  nodesForObstacle(obstacle: GKPolygonObstacle): NSArray;
+  setRadius(radius: number): void;
 
-  lockConnectionFromNodeToNode(startNode: NodeType, endNode: NodeType): void;
+  isCyclical(): boolean;
 
-  unlockConnectionFromNodeToNode(startNode: NodeType, endNode: NodeType): void;
-
-  isConnectionLockedFromNodeToNode(startNode: NodeType, endNode: NodeType): boolean;
-
-  classForGenericArgumentAtIndex(index: number): interop.Object;
+  setCyclical(cyclical: boolean): void;
 }
 

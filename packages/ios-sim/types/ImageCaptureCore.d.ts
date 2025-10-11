@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const ICAuthorizationStatusAuthorized: string;
-
 declare const ICAuthorizationStatusRestricted: string;
 
 declare const ICAuthorizationStatusNotDetermined: string;
@@ -16,6 +14,8 @@ declare const ICDeleteCanceled: string;
 declare const ICDeleteSuccessful: string;
 
 declare const ICCameraDeviceSupportsHEIF: string;
+
+declare const ICCameraDeviceCanAcceptPTPCommands: string;
 
 declare const ICCameraDeviceCanReceiveFile: string;
 
@@ -63,15 +63,15 @@ declare const ICSavedFilename: string;
 
 declare const ICTruncateAfterSuccessfulDownload: string;
 
-declare const ICDeleteErrorDeviceMissing: string;
-
-declare const ICCameraDeviceCanAcceptPTPCommands: string;
+declare const ICAuthorizationStatusAuthorized: string;
 
 declare const ICOverwrite: string;
 
 declare const ICDeviceLocationDescriptionBluetooth: string;
 
 declare const ICStatusNotificationKey: string;
+
+declare const ICDeleteErrorDeviceMissing: string;
 
 declare const ICDownloadsDirectoryURL: string;
 

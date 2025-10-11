@@ -17,9 +17,9 @@ declare const NEVPNErrorDomain: string;
 
 declare const NERelayErrorDomain: string;
 
-declare const NEVPNConnectionStartOptionUsername: string;
-
 declare const NEFilterErrorDomain: string;
+
+declare const NEVPNConnectionStartOptionUsername: string;
 
 declare const NEVPNConnectionStartOptionPassword: string;
 
@@ -34,6 +34,14 @@ declare const NEDNSSettingsConfigurationDidChangeNotification: string;
 declare const NEDNSSettingsErrorDomain: string;
 
 declare const NEAppProxyErrorDomain: string;
+
+declare const NEVPNIKEv2IntegrityAlgorithm: {
+  A96: 1,
+  A160: 2,
+  A256: 3,
+  A384: 4,
+  A512: 5,
+};
 
 declare const NWUDPSessionState: {
   Invalid: 0,
@@ -211,9 +219,25 @@ declare const NEFilterManagerError: {
   InternalError: 6,
 };
 
-declare const NEFilterManagerGrade: {
-  Firewall: 1,
-  Inspector: 2,
+declare const NEOnDemandRuleInterfaceType: {
+  Any: 0,
+  Ethernet: 1,
+  WiFi: 2,
+};
+
+declare const NEVPNIKEv2PostQuantumKeyExchangeMethod: {
+  MethodNone: 0,
+  Method36: 36,
+  Method37: 37,
+};
+
+declare const NEVPNIKEv2CertificateType: {
+  RSA: 1,
+  ECDSA256: 2,
+  ECDSA384: 3,
+  ECDSA521: 4,
+  Ed25519: 5,
+  RSAPSS: 6,
 };
 
 declare const NEOnDemandRuleAction: {
@@ -230,19 +254,15 @@ declare const NEVPNIKEv2TLSVersion: {
   Version1_2: 3,
 };
 
-declare const NEVPNIKEv2CertificateType: {
-  RSA: 1,
-  ECDSA256: 2,
-  ECDSA384: 3,
-  ECDSA521: 4,
-  Ed25519: 5,
-  RSAPSS: 6,
-};
-
 declare const NETrafficDirection: {
   Any: 0,
   Inbound: 1,
   Outbound: 2,
+};
+
+declare const NEFilterManagerGrade: {
+  Firewall: 1,
+  Inspector: 2,
 };
 
 declare const NEProviderStopReason: {
@@ -279,20 +299,10 @@ declare const NEDNSSettingsManagerError: {
   CannotBeRemoved: 4,
 };
 
-declare const NEFilterReportFrequency: {
-  None: 0,
-  Low: 1,
-  Medium: 2,
-  High: 3,
-};
-
-declare const NWTCPConnectionState: {
-  Invalid: 0,
-  Connecting: 1,
-  Waiting: 2,
-  Connected: 3,
-  Disconnected: 4,
-  Cancelled: 5,
+declare const NEURLFilterVerdict: {
+  Unknown: 1,
+  Allow: 2,
+  Deny: 3,
 };
 
 declare const NEVPNIKEv2DiffieHellmanGroup: {
@@ -312,18 +322,20 @@ declare const NEVPNIKEv2DiffieHellmanGroup: {
   Group32: 32,
 };
 
-declare const NEVPNIKEv2IntegrityAlgorithm: {
-  A96: 1,
-  A160: 2,
-  A256: 3,
-  A384: 4,
-  A512: 5,
+declare const NEFilterReportFrequency: {
+  None: 0,
+  Low: 1,
+  Medium: 2,
+  High: 3,
 };
 
-declare const NEOnDemandRuleInterfaceType: {
-  Any: 0,
-  Ethernet: 1,
-  WiFi: 2,
+declare const NWTCPConnectionState: {
+  Invalid: 0,
+  Connecting: 1,
+  Waiting: 2,
+  Connected: 3,
+  Disconnected: 4,
+  Cancelled: 5,
 };
 
 declare interface NWTCPConnectionAuthenticationDelegate extends NSObjectProtocol {
@@ -452,6 +464,8 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
 
   enablePFS: boolean;
 
+  allowPostQuantumKeyExchangeFallback: boolean;
+
   enableRevocationCheck: boolean;
 
   strictRevocationCheck: boolean;
@@ -480,6 +494,8 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
 
   setEnablePFS(enablePFS: boolean): void;
 
+  setAllowPostQuantumKeyExchangeFallback(allowPostQuantumKeyExchangeFallback: boolean): void;
+
   setEnableRevocationCheck(enableRevocationCheck: boolean): void;
 
   setStrictRevocationCheck(strictRevocationCheck: boolean): void;
@@ -491,17 +507,6 @@ declare class NEVPNProtocolIKEv2 extends NEVPNProtocolIPSec {
   setMtu(mtu: number): void;
 
   setPpkConfiguration(ppkConfiguration: NEVPNIKEv2PPKConfiguration): void;
-}
-
-declare class NETunnelProviderProtocol extends NEVPNProtocol {
-  get providerConfiguration(): NSDictionary;
-  set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  providerBundleIdentifier: string;
-
-  setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  setProviderBundleIdentifier(providerBundleIdentifier: string): void;
 }
 
 declare class NETransparentProxyNetworkSettings extends NETunnelNetworkSettings {
@@ -862,6 +867,9 @@ declare class NEVPNIKEv2SecurityAssociationParameters extends NSObject implement
 
   diffieHellmanGroup: interop.Enum<typeof NEVPNIKEv2DiffieHellmanGroup>;
 
+  get postQuantumKeyExchangeMethods(): NSArray;
+  set postQuantumKeyExchangeMethods(value: NSArray<interop.Object> | Array<interop.Object>);
+
   lifetimeMinutes: number;
 
   setEncryptionAlgorithm(encryptionAlgorithm: interop.Enum<typeof NEVPNIKEv2EncryptionAlgorithm>): void;
@@ -869,6 +877,8 @@ declare class NEVPNIKEv2SecurityAssociationParameters extends NSObject implement
   setIntegrityAlgorithm(integrityAlgorithm: interop.Enum<typeof NEVPNIKEv2IntegrityAlgorithm>): void;
 
   setDiffieHellmanGroup(diffieHellmanGroup: interop.Enum<typeof NEVPNIKEv2DiffieHellmanGroup>): void;
+
+  setPostQuantumKeyExchangeMethods(postQuantumKeyExchangeMethods: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setLifetimeMinutes(lifetimeMinutes: number): void;
 
@@ -929,6 +939,8 @@ declare class NERelayManager extends NSObject {
 
   UIToggleEnabled: boolean;
 
+  allowDNSFailover: boolean;
+
   get relays(): NSArray;
   set relays(value: NSArray<interop.Object> | Array<interop.Object>);
 
@@ -959,6 +971,10 @@ declare class NERelayManager extends NSObject {
 
   setUIToggleEnabled(UIToggleEnabled: boolean): void;
 
+  isDNSFailoverAllowed(): boolean;
+
+  setAllowDNSFailover(allowDNSFailover: boolean): void;
+
   setRelays(relays: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
   setMatchDomains(matchDomains: NSArray<interop.Object> | Array<interop.Object> | null): void;
@@ -970,6 +986,10 @@ declare class NERelayManager extends NSObject {
   setExcludedFQDNs(excludedFQDNs: NSArray<interop.Object> | Array<interop.Object> | null): void;
 
   setOnDemandRules(onDemandRules: NSArray<interop.Object> | Array<interop.Object> | null): void;
+}
+
+declare class NEURLFilter extends NSObject {
+  static verdictForURLCompletionHandler(url: NSURL, completionHandler: (p1: interop.Enum<typeof NEURLFilterVerdict>) => void): void;
 }
 
 declare class NEOnDemandRuleEvaluateConnection extends NEOnDemandRule {
@@ -1023,6 +1043,8 @@ declare class NEDNSSettings extends NSObject implements NSSecureCoding, NSCopyin
 
   matchDomainsNoSearch: boolean;
 
+  allowFailover: boolean;
+
   setSearchDomains(searchDomains: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setDomainName(domainName: string): void;
@@ -1030,6 +1052,8 @@ declare class NEDNSSettings extends NSObject implements NSSecureCoding, NSCopyin
   setMatchDomains(matchDomains: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setMatchDomainsNoSearch(matchDomainsNoSearch: boolean): void;
+
+  setAllowFailover(allowFailover: boolean): void;
 
   static readonly supportsSecureCoding: boolean;
 
@@ -1099,6 +1123,20 @@ declare class NEVPNManager extends NSObject {
   isEnabled(): boolean;
 
   setEnabled(enabled: boolean): void;
+}
+
+declare class NEVPNIKEv2PPKConfiguration extends NSObject implements NSCopying {
+  initWithIdentifierKeychainReference(identifier: string, keychainReference: NSData): this;
+
+  readonly identifier: string;
+
+  readonly keychainReference: NSData;
+
+  isMandatory: boolean;
+
+  setIsMandatory(isMandatory: boolean): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class NEFilterNewFlowVerdict extends NEFilterVerdict implements NSSecureCoding, NSCopying {
@@ -1220,16 +1258,6 @@ declare class NETunnelProvider extends NEProvider {
   reasserting: boolean;
 
   setReasserting(reasserting: boolean): void;
-}
-
-declare class NEDNSOverTLSSettings extends NEDNSSettings {
-  serverName: string;
-
-  identityReference: NSData;
-
-  setServerName(serverName: string): void;
-
-  setIdentityReference(identityReference: NSData): void;
 }
 
 declare class NERelay extends NSObject implements NSCopying, NSSecureCoding {
@@ -1410,20 +1438,6 @@ declare class NEVPNProtocolIPSec extends NEVPNProtocol {
   setRemoteIdentifier(remoteIdentifier: string): void;
 }
 
-declare class NEVPNIKEv2PPKConfiguration extends NSObject implements NSCopying {
-  initWithIdentifierKeychainReference(identifier: string, keychainReference: NSData): this;
-
-  readonly identifier: string;
-
-  readonly keychainReference: NSData;
-
-  isMandatory: boolean;
-
-  setIsMandatory(isMandatory: boolean): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class NEAppProxyFlow extends NSObject {
   openWithLocalFlowEndpointCompletionHandler(localEndpoint: NSObject | null, completionHandler: (p1: NSError) => void | null): void;
 
@@ -1568,6 +1582,16 @@ declare class NEAppRule extends NSObject implements NSSecureCoding, NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class NEDNSOverTLSSettings extends NEDNSSettings {
+  serverName: string;
+
+  identityReference: NSData;
+
+  setServerName(serverName: string): void;
+
+  setIdentityReference(identityReference: NSData): void;
+}
+
 declare class NWBonjourServiceEndpoint extends NWEndpoint {
   static endpointWithNameTypeDomain<This extends abstract new (...args: any) => any>(this: This, name: string, type: string, domain: string): InstanceType<This>;
 
@@ -1576,6 +1600,17 @@ declare class NWBonjourServiceEndpoint extends NWEndpoint {
   readonly type: string;
 
   readonly domain: string;
+}
+
+declare class NETunnelProviderProtocol extends NEVPNProtocol {
+  get providerConfiguration(): NSDictionary;
+  set providerConfiguration(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  providerBundleIdentifier: string;
+
+  setProviderConfiguration(providerConfiguration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  setProviderBundleIdentifier(providerBundleIdentifier: string): void;
 }
 
 declare class NEFilterSettings extends NSObject implements NSSecureCoding, NSCopying {

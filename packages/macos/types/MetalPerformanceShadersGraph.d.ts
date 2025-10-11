@@ -1,6 +1,28 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const MPSGraphPaddingMode: {
+  Constant: 0,
+  Reflect: 1,
+  Symmetric: 2,
+  ClampToEdge: 3,
+  Zero: 4,
+  Periodic: 5,
+  AntiPeriodic: 6,
+};
+
+declare const MPSGraphPoolingReturnIndicesMode: {
+  None: 0,
+  GlobalFlatten1D: 1,
+  GlobalFlatten2D: 2,
+  GlobalFlatten3D: 3,
+  GlobalFlatten4D: 4,
+  LocalFlatten1D: 5,
+  LocalFlatten2D: 6,
+  LocalFlatten3D: 7,
+  LocalFlatten4D: 8,
+};
+
 declare const MPSGraphNonMaximumSuppressionCoordinateMode: {
   CornersHeight: 0,
   CornersWidth: 1,
@@ -15,6 +37,13 @@ declare const MPSGraphLossReductionType: {
   Mean: 2,
 };
 
+declare const MPSGraphReducedPrecisionFastMath: {
+  None: 0,
+  AllowFP16Conv2DWinogradTransformIntermediate: 2,
+  AllowFP16Intermediates: 2,
+  Default: 0,
+};
+
 declare const MPSGraphReductionMode: {
   Min: 0,
   Max: 1,
@@ -22,14 +51,6 @@ declare const MPSGraphReductionMode: {
   Product: 3,
   ArgumentMin: 4,
   ArgumentMax: 5,
-};
-
-declare const MPSGraphPaddingStyle: {
-  Explicit: 0,
-  TF_VALID: 1,
-  TF_SAME: 2,
-  ExplicitOffset: 3,
-  ONNX_SAME_LOWER: 4,
 };
 
 declare const MPSGraphRandomDistribution: {
@@ -79,18 +100,6 @@ declare const MPSGraphDeviceType: {
   MPSGraphDeviceTypeMetal: 0,
 };
 
-declare const MPSGraphPoolingReturnIndicesMode: {
-  None: 0,
-  GlobalFlatten1D: 1,
-  GlobalFlatten2D: 2,
-  GlobalFlatten3D: 3,
-  GlobalFlatten4D: 4,
-  LocalFlatten1D: 5,
-  LocalFlatten2D: 6,
-  LocalFlatten3D: 7,
-  LocalFlatten4D: 8,
-};
-
 declare const MPSGraphDeploymentPlatform: {
   Mac: 0,
   I: 1,
@@ -103,15 +112,6 @@ declare const MPSGraphOptimizationProfile: {
   PowerEfficiency: 1,
 };
 
-declare const MPSGraphResizeNearestRoundingMode: {
-  RoundPreferCeil: 0,
-  RoundPreferFloor: 1,
-  Ceil: 2,
-  Floor: 3,
-  RoundToEven: 4,
-  RoundToOdd: 5,
-};
-
 declare const MPSGraphScatterMode: {
   Add: 0,
   Sub: 1,
@@ -120,6 +120,15 @@ declare const MPSGraphScatterMode: {
   Min: 4,
   Max: 5,
   Set: 6,
+};
+
+declare const MPSGraphResizeNearestRoundingMode: {
+  RoundPreferCeil: 0,
+  RoundPreferFloor: 1,
+  Ceil: 2,
+  Floor: 3,
+  RoundToEven: 4,
+  RoundToOdd: 5,
 };
 
 declare const MPSGraphFFTScalingMode: {
@@ -136,18 +145,16 @@ declare const MPSGraphRNNActivation: {
   HardSigmoid: 4,
 };
 
-declare const MPSGraphExecutionStage: {
-  MPSGraphExecutionStageCompleted: 0,
+declare const MPSGraphPaddingStyle: {
+  Explicit: 0,
+  TF_VALID: 1,
+  TF_SAME: 2,
+  ExplicitOffset: 3,
+  ONNX_SAME_LOWER: 4,
 };
 
-declare const MPSGraphPaddingMode: {
-  Constant: 0,
-  Reflect: 1,
-  Symmetric: 2,
-  ClampToEdge: 3,
-  Zero: 4,
-  Periodic: 5,
-  AntiPeriodic: 6,
+declare const MPSGraphExecutionStage: {
+  MPSGraphExecutionStageCompleted: 0,
 };
 
 declare const MPSGraphOptimization: {
@@ -1360,6 +1367,8 @@ declare class MPSGraphTensorData extends MPSGraphObject {
 
   initWithMPSImageBatch(imageBatch: NSArray<interop.Object> | Array<interop.Object>): this;
 
+  initWithMTLTensor(tensor: MTLTensor): this;
+
   mpsndarray(): MPSNDArray;
 }
 
@@ -1752,6 +1761,8 @@ declare class MPSGraphCompilationDescriptor extends MPSGraphObject implements NS
   get callables(): NSDictionary;
   set callables(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
 
+  reducedPrecisionFastMath: interop.Enum<typeof MPSGraphReducedPrecisionFastMath>;
+
   setOptimizationLevel(optimizationLevel: interop.Enum<typeof MPSGraphOptimization>): void;
 
   setWaitForCompilationCompletion(waitForCompilationCompletion: boolean): void;
@@ -1763,6 +1774,8 @@ declare class MPSGraphCompilationDescriptor extends MPSGraphObject implements NS
   setOptimizationProfile(optimizationProfile: interop.Enum<typeof MPSGraphOptimizationProfile>): void;
 
   setCallables(callables: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
+
+  setReducedPrecisionFastMath(reducedPrecisionFastMath: interop.Enum<typeof MPSGraphReducedPrecisionFastMath>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
