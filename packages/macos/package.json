@@ -11,7 +11,7 @@
   "typings": "index.d.ts",
   "type": "module",
   "files": [
-    "build/RelWithDebInfo/NativeScript.apple.node",
+    "build/RelWithDebInfo/NativeScript.xcframework",
     "index.d.ts",
     "types"
   ],

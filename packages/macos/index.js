@@ -6,7 +6,7 @@ if (typeof interop === "undefined") {
     // ===
 
     const path =
-      "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64_x86_64/NativeScript.framework/Versions/0.1.0/NativeScript";
+      "./build/RelWithDebInfo/NativeScript.xcframework/macos-arm64_x86_64/NativeScript.framework/Versions/0.1.0/NativeScript";
 
     let metaURL = import.meta.url;
     if (!metaURL.includes("://")) {
@@ -27,8 +27,10 @@ if (typeof interop === "undefined") {
     // If we're in a React Native-like environment
     // ===
 
-    // react-native-node-api/babel-plugin will rewrite this to:
-    //   module.exports = require("react-native-node-api").requireNodeAddon("-nativescript-macos-node-api—-NativeScript");
-    module.exports = require("./build/RelWithDebInfo/NativeScript.apple.node");
+    // Following https://github.com/callstackincubator/react-native-node-api/discussions/262:
+    // This leads to: @rpath/NativeScript.framework/NativeScript
+    module.exports = require("react-native-node-api").requireNodeAddon(
+      "NativeScript"
+    );
   }
 }

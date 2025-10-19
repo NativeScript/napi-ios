@@ -179,13 +179,14 @@ if $BUILD_MACOS; then
                   -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
 
   if [[ "$TARGET_ENGINE" == "none" ]]; then
-    checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
+    checkpoint "Creating the XCFramework for macOS (NativeScript.xcframework)"
 
-    # We adhere to the prebuilds standard as described here:
-    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
-    OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD/NativeScript.apple.node"
+    # We were unable to get the approach used for iOS to work, so instead use
+    # this alternative:
+    # https://github.com/callstackincubator/react-native-node-api/discussions/262#discussion-9012292
+    OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD/NativeScript.xcframework"
     rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+    xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
   else
     checkpoint "Creating NativeScript.node for macOS"
     cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
