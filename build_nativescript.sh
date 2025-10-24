@@ -79,6 +79,8 @@ function cmake_build () {
   cmake --build $DIST/intermediates/$platform --config $CONFIG_BUILD
 }
 
+TRIPLETS=()
+
 if $BUILD_CATALYST; then
 checkpoint "Building NativeScript for Mac Catalyst"
 
@@ -86,36 +88,51 @@ checkpoint "Building NativeScript for Mac Catalyst"
 
 fi
 
-if $BUILD_SIMULATOR; then
-checkpoint "Building NativeScript for iPhone (simulator)"
+if [[ $BUILD_SIMULATOR && "$TARGET_ENGINE" == "none" ]]; then
+  # TODO: Add x86_64-apple-ios-sim once supported
+  TRIPLETS+=("arm64-apple-ios-sim")
+elif $BUILD_SIMULATOR; then
+  checkpoint "Building NativeScript for iPhone (simulator)"
 
-cmake_build ios-sim x86_64 arm64
-
-fi
-
-if $BUILD_IPHONE; then
-checkpoint "Building NativeScript for iPhone (physical)"
-
-cmake_build ios arm64
+  cmake_build ios-sim x86_64 arm64
 
 fi
 
-if $BUILD_MACOS; then
-checkpoint "Building NativeScript for macOS"
+if [[ $BUILD_IPHONE && "$TARGET_ENGINE" == "none" ]]; then
+  TRIPLETS+=("arm64-apple-ios")
 
-cmake_build macos x86_64 arm64
+elif $BUILD_IPHONE; then
+  checkpoint "Building NativeScript for iPhone (physical)"
+
+  cmake_build ios arm64
 
 fi
 
-if $BUILD_VISION; then
+if [[ $BUILD_MACOS && "$TARGET_ENGINE" == "none" ]]; then
+  TRIPLETS+=("arm64;x86_64-apple-darwin")
 
-checkpoint "Building NativeScript for visionOS (physical)"
+elif $BUILD_MACOS; then
+  checkpoint "Building NativeScript for macOS"
+  cmake_build macos x86_64 arm64
 
-# cmake_build visionos arm64
+fi
 
-checkpoint "Building NativeScript for visionOS (simulator)"
+if [[ $BUILD_VISION && "$TARGET_ENGINE" == "none" ]]; then
+  # TRIPLETS+=("arm64-apple-visionos")
+  # TODO: Add x86_64-apple-visionos-sim once supported
+  # TRIPLETS+=("x86_64-apple-visionos-sim")
+  # TRIPLETS+=("arm64-apple-visionos-sim")
+  echo "Skipping visionOS prebuilds for React Native Node-API as they are not yet supported."
 
-# cmake_build visionos-sim x86_64 arm64
+elif $BUILD_VISION; then
+
+  checkpoint "Building NativeScript for visionOS (physical)"
+
+  # cmake_build visionos arm64
+
+  checkpoint "Building NativeScript for visionOS (simulator)"
+
+  # cmake_build visionos-sim x86_64 arm64
 
 fi
 
@@ -151,22 +168,26 @@ if $BUILD_VISION; then
                   -debug-symbols "$DIST/intermediates/visionos-sim/$CONFIG_BUILD-xros/NativeScript.framework.dSYM" )
 fi
 
-if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
-  if [[ "$TARGET_ENGINE" == "none" ]]; then
-    checkpoint "Creating the XCFramework for iOS (NativeScript.apple.node)"
+if [[ -n "${XCFRAMEWORKS[@]}" && "$TARGET_ENGINE" != "none" ]]; then
+  checkpoint "Creating NativeScript.xcframework"
 
-    # We adhere to the prebuilds standard as described here:
-    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
-    OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD/NativeScript.apple.node"
-    rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
-  else
-    checkpoint "Creating NativeScript.xcframework"
+  OUTPUT_DIR="$DIST/NativeScript.xcframework"
+  rm -rf $OUTPUT_DIR
+  xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
+fi
 
-    OUTPUT_DIR="$DIST/NativeScript.xcframework"
-    rm -rf $OUTPUT_DIR
-    xcodebuild -create-xcframework ${XCFRAMEWORKS[@]} -output "$OUTPUT_DIR"
-  fi
+if [[ -n "${TRIPLETS[@]}" &&  "$TARGET_ENGINE" == "none" ]]; then
+  checkpoint "Building NativeScript prebuilt for React Native Node-API (NativeScript.apple.node)"
+  
+  TRIPLET_ARGS=()
+  for triplet in "${TRIPLETS[@]}"; do
+    TRIPLET_ARGS+=(--triplet "$triplet")
+  done
+
+  # We adhere to the prebuilds standard as described here:
+  # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
+  OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD"
+  cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE "${TRIPLET_ARGS[@]}"
 fi
 
 # We're currently distributing two separate packages:
@@ -174,22 +195,19 @@ fi
 # 2. AppKit-based (@nativescript/macos-node-api)
 # As such, there's no point bundling both UIKit-based and AppKit-based into a
 # single XCFramework.
-if $BUILD_MACOS; then
+if [[ $BUILD_MACOS && "$TARGET_ENGINE" == "none" ]]; then
+  checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
+
+  OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD"
+  cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE --triplet 'arm64;x86_64-apple-darwin'
+
+elif $BUILD_MACOS; then
   XCFRAMEWORKS=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
                   -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
 
-  if [[ "$TARGET_ENGINE" == "none" ]]; then
-    checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
 
-    # We adhere to the prebuilds standard as described here:
-    # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
-    OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD/NativeScript.apple.node"
-    rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
-  else
-    checkpoint "Creating NativeScript.node for macOS"
-    cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
-  fi
+  checkpoint "Creating NativeScript.node for macOS"
+  cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
 fi
 
 if $BUILD_MACOS_CLI; then
