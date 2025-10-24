@@ -21,6 +21,14 @@ set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runti
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
 set(BUILD_CLI_BINARY OFF CACHE BOOL "Build the NativeScript CLI binary")
 
+if(CMAKE_OSX_SYSROOT STREQUAL "iphoneos")
+  set(TARGET_PLATFORM "ios")
+elseif(CMAKE_OSX_SYSROOT STREQUAL "iphonesimulator")
+  set(TARGET_PLATFORM "ios-sim")
+elseif(CMAKE_OSX_SYSROOT STREQUAL "macosx")
+  set(TARGET_PLATFORM "macos")
+endif()
+
 if(TARGET_PLATFORM STREQUAL "ios")
   set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "13.0")
   set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
@@ -305,16 +313,16 @@ if(TARGET_PLATFORM_MACOS)
 
   # Convert the Info.plist from binary format to XML format.
   # This seemed to unblock a build error when using in React Native.
-  add_custom_command(TARGET ${NAME} POST_BUILD
-    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
-  )
+  # add_custom_command(TARGET ${NAME} POST_BUILD
+  #   COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
+  # )
   set(METADATA_FILE "metadata.macos.nsmd")
 elseif(TARGET_PLATFORM_IOS)
   # Convert the Info.plist from binary format to XML format.
   # This seemed to unblock a build error when using in React Native.
-  add_custom_command(TARGET ${NAME} POST_BUILD
-    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Info.plist
-  )
+  # add_custom_command(TARGET ${NAME} POST_BUILD
+  #   COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Info.plist
+  # )
 
   if(TARGET_PLATFORM_SIM)
     set(METADATA_FILE "metadata.ios-sim.nsmd")
