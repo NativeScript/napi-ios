@@ -89,6 +89,51 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 }
 
 ObjCBridgeState::~ObjCBridgeState() {
+  // Clean up cached Cif objects
+  for (auto& pair : cifs) {
+    delete pair.second;
+  }
+  cifs.clear();
+
+  for (auto& pair : mdMethodSignatureCache) {
+    delete pair.second;
+  }
+  mdMethodSignatureCache.clear();
+
+  for (auto& pair : mdBlockSignatureCache) {
+    delete pair.second;
+  }
+  mdBlockSignatureCache.clear();
+
+  for (auto& pair : mdFunctionSignatureCache) {
+    delete pair.second;
+  }
+  mdFunctionSignatureCache.clear();
+
+  // Clean up ObjCClass objects
+  for (auto& pair : classes) {
+    delete pair.second;
+  }
+  classes.clear();
+
+  // Clean up ObjCProtocol objects
+  for (auto& pair : protocols) {
+    delete pair.second;
+  }
+  protocols.clear();
+
+  // Clean up StructInfo objects
+  for (auto& pair : structInfoCache) {
+    delete pair.second;
+  }
+  structInfoCache.clear();
+
+  // Clean up CFunction objects
+  for (auto& pair : cFunctionCache) {
+    delete pair.second;
+  }
+  cFunctionCache.clear();
+
   objc_autoreleasePoolPop(objc_autoreleasePool);
   delete metadata;
   dlclose(self_dl);

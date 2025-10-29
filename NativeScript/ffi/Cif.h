@@ -32,6 +32,8 @@ class Cif {
   Cif(napi_env env, std::string typeEncoding);
   Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
       bool isMethod = false, bool isBlock = false);
+  
+  ~Cif();
 };
 
 }  // namespace nativescript

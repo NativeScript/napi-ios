@@ -60,9 +60,8 @@ inline bool napiSupportsThreadsafeFunctions(void* dl) {
     return NULL;                                                           \
   }
 
-#define NAPI_ERROR_INFO                                                    \
-  const napi_extended_error_info* error_info =                             \
-      (napi_extended_error_info*)malloc(sizeof(napi_extended_error_info)); \
+#define NAPI_ERROR_INFO \
+  const napi_extended_error_info* error_info = nullptr; \
   napi_get_last_error_info(env, &error_info);
 
 #define NAPI_THROW_LAST_ERROR \

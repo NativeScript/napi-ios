@@ -60,15 +60,11 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
 
   napi_remove_wrap(env, callback, nullptr);
   napi_ref ref = nullptr;
-  // TODO: fix memory management of objc blocks here
-  // napi_wrap(env, callback, block, block_finalize, nullptr, &ref);
-  // if (ref == nullptr) {
-  // Deno doesn't handle napi_wrap properly.
-  ref = make_ref(env, callback, 1);
-  // } else {
-  //   uint32_t refCount;
-  //   napi_reference_ref(env, ref, &refCount);
-  // }
+  napi_wrap(env, callback, block, block_finalize, nullptr, &ref);
+  if (ref != nullptr) {
+    uint32_t refCount;
+    napi_reference_ref(env, ref, &refCount);
+  }
   closure->func = ref;
 
   auto bridgeState = ObjCBridgeState::InstanceData(env);
