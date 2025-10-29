@@ -45,12 +45,12 @@ elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(TARGET_PLATFORM_SPEC "ios-arm64_x86_64-simulator")
 
 elseif(TARGET_PLATFORM STREQUAL "macos")
-  set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.0")
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0")
+  set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.3")
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "13.3")
   set(LIBFFI_BUILD "macosx-universal")
   set(TARGET_PLATFORM_MACOS TRUE)
   set(SDK_NAME "macosx")
-  set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
   set(TARGET_PLATFORM_SPEC "macos-arm64_x86_64")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_PLATFORM_MACOS")
 
@@ -267,6 +267,7 @@ message(STATUS "SDK = ${CMAKE_OSX_SYSROOT}")
 # Build targets
 if(BUILD_CLI_BINARY)
   add_executable(${NAME} ${SOURCE_FILES})
+  set(BUILD_FRAMEWORK FALSE)
 else()
   add_library(
     ${NAME}
@@ -305,9 +306,11 @@ if(TARGET_PLATFORM_MACOS)
 
   # Convert the Info.plist from binary format to XML format.
   # This seemed to unblock a build error when using in React Native.
-  add_custom_command(TARGET ${NAME} POST_BUILD
-    COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
-  )
+  if (BUILD_FRAMEWORK)
+    add_custom_command(TARGET ${NAME} POST_BUILD
+      COMMAND plutil -convert xml1 $<TARGET_FILE_DIR:${NAME}>/Resources/Info.plist
+    )
+  endif()
   set(METADATA_FILE "metadata.macos.nsmd")
 elseif(TARGET_PLATFORM_IOS)
   # Convert the Info.plist from binary format to XML format.
