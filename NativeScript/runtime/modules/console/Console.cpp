@@ -89,7 +89,8 @@ std::string transformJSObject(napi_env env, napi_value object) {
   return JsonStringifyObject(env, object, false);
 }
 
-std::string buildStringFromArg(napi_env env, napi_value val, napi_value inspectSymbol) {
+std::string buildStringFromArg(napi_env env, napi_value val,
+                               napi_value inspectSymbol) {
   napi_valuetype type;
   napi_typeof(env, val, &type);
 
@@ -118,7 +119,8 @@ std::string buildStringFromArg(napi_env env, napi_value val, napi_value inspectS
       if (isStrictEqual) {
         arrayStr << "[Circular]";
       } else {
-        std::string elementString = buildStringFromArg(env, propertyValue, inspectSymbol);
+        std::string elementString =
+            buildStringFromArg(env, propertyValue, inspectSymbol);
         arrayStr << elementString;
       }
 
@@ -131,8 +133,10 @@ std::string buildStringFromArg(napi_env env, napi_value val, napi_value inspectS
     return arrayStr.str();
   } else if (type == napi_object) {
     napi_value inspectFunc = nullptr;
-    napi_status getInspectStatus = napi_get_property(env, val, inspectSymbol, &inspectFunc);
-    if (getInspectStatus == napi_ok && napi_util::is_of_type(env, inspectFunc, napi_function)) {
+    napi_status getInspectStatus =
+        napi_get_property(env, val, inspectSymbol, &inspectFunc);
+    if (getInspectStatus == napi_ok &&
+        napi_util::is_of_type(env, inspectFunc, napi_function)) {
       napi_value inspectedValue;
       napi_call_function(env, val, inspectFunc, 0, nullptr, &inspectedValue);
       return buildStringFromArg(env, inspectedValue, inspectSymbol);
@@ -158,8 +162,9 @@ std::string buildLogString(napi_env env, napi_callback_info info,
   napi_get_named_property(env, global, "Symbol", &Symbol);
   napi_get_named_property(env, Symbol, "for", &SymbolFor);
   napi_create_string_utf8(env, "nodejs.util.inspect.custom", NAPI_AUTO_LENGTH,
-                            &symbolDescription);
-  napi_call_function(env, global, SymbolFor, 1, &symbolDescription, &inspectSymbol);
+                          &symbolDescription);
+  napi_call_function(env, global, SymbolFor, 1, &symbolDescription,
+                     &inspectSymbol);
 
   std::stringstream ss;
 
@@ -247,7 +252,9 @@ JS_METHOD(Console::Log) {
     std::string logString = log.str();
 
 #ifdef __APPLE__
-#if TNS_HAVE_OS_LOG
+#if TARGET_OS_OSX
+    NSLog(CFSTR("%s"), logString.c_str());
+#elif TNS_HAVE_OS_LOG
     os_log(OS_LOG_DEFAULT, "%{public}s", logString.c_str());
 #else
     NSLog(CFSTR("%s"), logString.c_str());
