@@ -1,5 +1,6 @@
 #include "js_native_api.h"
 #include "js_native_api_types.h"
+#include "jsr.h"
 #ifdef __APPLE__
 
 #import <Foundation/Foundation.h>
@@ -36,6 +37,7 @@ JS_METHOD(Timers::SetTimeout) {
       timerWithTimeInterval:interval
                     repeats:NO
                       block:^(NSTimer* timer) {
+                        NapiScope scope(env);
                         napi_value global, callbackValue;
                         napi_get_global(env, &global);
                         napi_get_reference_value(env, callback, &callbackValue);
@@ -71,6 +73,7 @@ JS_METHOD(Timers::SetInterval) {
       timerWithTimeInterval:interval
                     repeats:YES
                       block:^(NSTimer* timer) {
+                        NapiScope scope(env);
                         napi_value global, callbackValue;
                         napi_get_global(env, &global);
                         napi_get_reference_value(env, callback, &callbackValue);
