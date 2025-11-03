@@ -60,13 +60,16 @@ inline bool napiSupportsThreadsafeFunctions(void* dl) {
     return NULL;                                                           \
   }
 
-#define NAPI_ERROR_INFO \
+#define NAPI_ERROR_INFO                                 \
   const napi_extended_error_info* error_info = nullptr; \
   napi_get_last_error_info(env, &error_info);
 
-#define NAPI_THROW_LAST_ERROR \
-  { NAPI_ERROR_INFO \
-    napi_throw_error(env, NULL, error_info ? error_info->error_message : "Unknown error"); }
+#define NAPI_THROW_LAST_ERROR                                                 \
+  {                                                                           \
+    NAPI_ERROR_INFO                                                           \
+    napi_throw_error(                                                         \
+        env, NULL, error_info ? error_info->error_message : "Unknown error"); \
+  }
 
 #ifndef DEBUG
 
