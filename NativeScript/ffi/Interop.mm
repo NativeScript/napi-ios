@@ -599,8 +599,16 @@ napi_value Pointer::create(napi_env env, void* data) {
   bool isInstance = false;
   napi_value jsPointer = get_ref_value(env, bridgeState->pointerClass);
   napi_value result;
-  napi_new_instance(env, jsPointer, 0, nullptr, &result);
+  napi_status status = napi_new_instance(env, jsPointer, 0, nullptr, &result);
+  
+  if (status != napi_ok) {
+    return nullptr;
+  }
+  
   Pointer* ptr = Pointer::unwrap(env, result);
+  if (ptr == nullptr) {
+    return nullptr;
+  }
 
   ptr->data = data;
   return result;

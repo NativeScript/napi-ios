@@ -191,12 +191,6 @@ Cif::~Cif() {
     free(argv);
   }
   if (avalues != nullptr) {
-    // Free individual argument values
-    for (int i = 2; i < cif.nargs; i++) {
-      if (avalues[i] != nullptr) {
-        free(avalues[i]);
-      }
-    }
     free(avalues);
   }
   if (shouldFree != nullptr) {
