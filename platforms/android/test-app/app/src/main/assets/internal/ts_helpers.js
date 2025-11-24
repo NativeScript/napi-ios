@@ -390,4 +390,77 @@
       },
     });
   }
+
+  const pendingUnhandledRejections = [];
+  const hasBeenNotifiedProperty = new WeakMap();
+  function emitPendingUnhandledRejections() {
+    while (pendingUnhandledRejections.length > 0) {
+      var promise = pendingUnhandledRejections.shift();
+      var reason = pendingUnhandledRejections.shift();
+      if (
+        hasBeenNotifiedProperty.get(promise) === false &&
+        globalThis.__onUncaughtError
+      ) {
+        globalThis.__onUncaughtError(reason);
+      }
+    }
+  }
+
+  function unhandledPromise(promise, reason) {
+    pendingUnhandledRejections.push(promise, reason);
+    __ns__setTimeout(() => {
+      emitPendingUnhandledRejections();
+    }, 1);
+  }
+
+  function handledPromise(promise) {
+    const hasBeenNotified = hasBeenNotifiedProperty.get(promise);
+    if (hasBeenNotified != undefined) {
+      hasBeenNotifiedProperty.delete(promise);
+    }
+  }
+
+  if (globalThis.__engine === "V8") {
+    // Only report errors for promise rejections that go unhandled.
+    globalThis.__v8UnhandledPromiseRejectionTracker = (
+      event,
+      promise,
+      reason
+    ) => {
+      if (event === globalThis.__promiseUnhandledEvent) {
+        hasBeenNotifiedProperty.set(promise, false);
+        const error = new Error(reason, {
+          cause: reason,
+        });
+        error.name = "Unhandled promise rejection";
+        unhandledPromise(promise, error);
+      } else {
+        handledPromise(promise);
+      }
+    };
+  } else if (globalThis.__engine === "QuickJS") {
+    globalThis.onUnhandledPromiseRejectionTracker = (
+      promise,
+      reason,
+      isHandled
+    ) => {
+
+      if (!isHandled) {
+        hasBeenNotifiedProperty.set(promise, false);
+        const error = new Error(reason, {
+          cause: reason,
+        });
+        error.name = "Unhandled promise rejection";
+        // Preserve original stack trace.
+        if (!promise.then["[[stack]]"]) {
+          promise.then["[[stack]]"] = error.stack;
+        } else {
+          error.stack = promise.then["[[stack]]"];
+        }
+        unhandledPromise(promise, error);
+      } else {
+        handledPromise(promise);
+      }
+    };
+  }
 })();
