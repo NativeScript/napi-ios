@@ -96,7 +96,7 @@ napi_status js_create_napi_env(napi_env *env, napi_runtime runtime) {
             v8::Local<v8::Context> context = isolate->GetCurrentContext();
             Local<Object> global = context->Global();
             Local<Value> callback = global->Get(context, String::NewFromUtf8(isolate,
-                                                                             "__v8UnhandledPromiseRejectionTracker").ToLocalChecked()).ToLocalChecked();
+                                                                             "onUnhandledPromiseRejectionTracker").ToLocalChecked()).ToLocalChecked();
             if (value.IsEmpty())
                 value = Undefined(isolate);
             Local<Value> args[] = {event, promise, value};

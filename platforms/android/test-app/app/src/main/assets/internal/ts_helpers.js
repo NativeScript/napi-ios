@@ -422,7 +422,7 @@
 
   if (globalThis.__engine === "V8") {
     // Only report errors for promise rejections that go unhandled.
-    globalThis.__v8UnhandledPromiseRejectionTracker = (
+    globalThis.onUnhandledPromiseRejectionTracker = (
       event,
       promise,
       reason
