@@ -104,9 +104,9 @@ if (QUICKJS)
             # quickjs
             src/main/cpp/napi/quickjs/source/cutils.c
             src/main/cpp/napi/quickjs/source/libregexp.c
-            src/main/cpp/napi/quickjs/source/libbf.c
             src/main/cpp/napi/quickjs/source/libunicode.c
             src/main/cpp/napi/quickjs/source/quickjs.c
+            src/main/cpp/napi/quickjs/source/dtoa.c
             # napi
             src/main/cpp/napi/quickjs/quickjs-api.c
             src/main/cpp/napi/quickjs/jsr.cpp

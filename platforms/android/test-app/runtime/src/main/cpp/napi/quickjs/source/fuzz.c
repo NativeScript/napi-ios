@@ -2,7 +2,6 @@
 #include "quickjs.h"
 #include "quickjs.c"
 #include "cutils.c"
-#include "libbf.c"
 #include "libregexp.c"
 #include "libunicode.c"
 #include <stdlib.h>
@@ -15,7 +14,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
     JSContext *ctx = JS_NewContext(rt);
     if (!ctx)
         exit(1);
-    JSValueConst val = JS_ReadObject(ctx, buf, len, /*flags*/0);
+    JSValue val = JS_ReadObject(ctx, buf, len, /*flags*/0);
     JS_FreeValue(ctx, val);
     JS_FreeContext(ctx);
     JS_FreeRuntime(rt);

@@ -43,7 +43,7 @@ extern "C" {
 #endif
 #if defined(__APPLE__)
 #include <malloc/malloc.h>
-#elif defined(__linux__) || defined(__ANDROID__) || defined(__CYGWIN__)
+#elif defined(__linux__) || defined(__ANDROID__) || defined(__CYGWIN__) || defined(__GLIBC__)
 #include <malloc.h>
 #elif defined(__FreeBSD__)
 #include <malloc_np.h>
@@ -53,6 +53,10 @@ extern "C" {
 #if !defined(_WIN32) && !defined(EMSCRIPTEN) && !defined(__wasi__)
 #include <errno.h>
 #include <pthread.h>
+#endif
+#if !defined(_WIN32)
+#include <limits.h>
+#include <unistd.h>
 #endif
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -94,7 +98,7 @@ extern "C" {
 #define container_of(ptr, type, member) ((type *)((uint8_t *)(ptr) - offsetof(type, member)))
 #endif
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__cplusplus)
 #define minimum_length(n) n
 #else
 #define minimum_length(n) static n
@@ -116,6 +120,14 @@ extern "C" {
   __attribute__((format(printf, format_param, dots_param)))
 #endif
 #endif
+#endif
+
+#if defined(PATH_MAX)
+# define JS__PATH_MAX PATH_MAX
+#elif defined(_WIN32)
+# define JS__PATH_MAX 32767
+#else
+# define JS__PATH_MAX 8192
 #endif
 
 void js__pstrcpy(char *buf, int buf_size, const char *str);
@@ -531,19 +543,29 @@ static inline uint8_t to_upper_ascii(uint8_t c) {
     return c >= 'a' && c <= 'z' ? c - 'a' + 'A' : c;
 }
 
-extern char const digits36[36];
-size_t u32toa(char buf[minimum_length(11)], uint32_t n);
-size_t i32toa(char buf[minimum_length(12)], int32_t n);
-size_t u64toa(char buf[minimum_length(21)], uint64_t n);
-size_t i64toa(char buf[minimum_length(22)], int64_t n);
-size_t u32toa_radix(char buf[minimum_length(33)], uint32_t n, unsigned int base);
-size_t i32toa_radix(char buf[minimum_length(34)], int32_t n, unsigned base);
-size_t u64toa_radix(char buf[minimum_length(65)], uint64_t n, unsigned int base);
-size_t i64toa_radix(char buf[minimum_length(66)], int64_t n, unsigned int base);
-
 void rqsort(void *base, size_t nmemb, size_t size,
             int (*cmp)(const void *, const void *, void *),
             void *arg);
+
+static inline uint64_t float64_as_uint64(double d)
+{
+    union {
+        double d;
+        uint64_t u64;
+    } u;
+    u.d = d;
+    return u.u64;
+}
+
+static inline double uint64_as_float64(uint64_t u64)
+{
+    union {
+        double d;
+        uint64_t u64;
+    } u;
+    u.u64 = u64;
+    return u.d;
+}
 
 int64_t js__gettimeofday_us(void);
 uint64_t js__hrtime_ns(void);
@@ -554,27 +576,37 @@ static inline size_t js__malloc_usable_size(const void *ptr)
     return malloc_size(ptr);
 #elif defined(_WIN32)
     return _msize((void *)ptr);
-#elif defined(__linux__) || defined(__ANDROID__) || defined(__CYGWIN__) || defined(__FreeBSD__)
+#elif defined(__linux__) || defined(__ANDROID__) || defined(__CYGWIN__) || defined(__FreeBSD__) || defined(__GLIBC__)
     return malloc_usable_size((void *)ptr);
 #else
     return 0;
 #endif
 }
 
+int js_exepath(char* buffer, size_t* size);
+
 /* Cross-platform threading APIs. */
 
-#if !defined(EMSCRIPTEN) && !defined(__wasi__)
+#if defined(EMSCRIPTEN) || defined(__wasi__)
+
+#define JS_HAVE_THREADS 0
+
+#else
+
+#define JS_HAVE_THREADS 1
 
 #if defined(_WIN32)
 #define JS_ONCE_INIT INIT_ONCE_STATIC_INIT
 typedef INIT_ONCE js_once_t;
 typedef CRITICAL_SECTION js_mutex_t;
 typedef CONDITION_VARIABLE js_cond_t;
+typedef HANDLE js_thread_t;
 #else
 #define JS_ONCE_INIT PTHREAD_ONCE_INIT
 typedef pthread_once_t js_once_t;
 typedef pthread_mutex_t js_mutex_t;
 typedef pthread_cond_t js_cond_t;
+typedef pthread_t js_thread_t;
 #endif
 
 void js_once(js_once_t *guard, void (*callback)(void));
@@ -591,7 +623,35 @@ void js_cond_broadcast(js_cond_t *cond);
 void js_cond_wait(js_cond_t *cond, js_mutex_t *mutex);
 int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout);
 
+enum {
+    JS_THREAD_CREATE_DETACHED = 1,
+};
+
+// creates threads with 2 MB stacks (glibc default)
+int js_thread_create(js_thread_t *thrd, void (*start)(void *), void *arg,
+                     int flags);
+int js_thread_join(js_thread_t thrd);
+
 #endif /* !defined(EMSCRIPTEN) && !defined(__wasi__) */
+
+// JS requires strict rounding behavior. Turn on 64-bits double precision
+// and disable x87 80-bits extended precision for intermediate floating-point
+// results. 0x300 is extended  precision, 0x200 is double precision.
+// Note that `*&cw` in the asm constraints looks redundant but isn't.
+#if defined(__i386__) && !defined(_MSC_VER)
+#define JS_X87_FPCW_SAVE_AND_ADJUST(cw)                                     \
+    unsigned short cw;                                                      \
+    __asm__ __volatile__("fnstcw %0" : "=m"(*&cw));                         \
+    do {                                                                    \
+        unsigned short t = 0x200 | (cw & ~0x300);                           \
+        __asm__ __volatile__("fldcw %0" : /*empty*/ : "m"(*&t));            \
+    } while (0)
+#define JS_X87_FPCW_RESTORE(cw)                                             \
+    __asm__ __volatile__("fldcw %0" : /*empty*/ : "m"(*&cw))
+#else
+#define JS_X87_FPCW_SAVE_AND_ADJUST(cw)
+#define JS_X87_FPCW_RESTORE(cw)
+#endif
 
 #ifdef __cplusplus
 } /* extern "C" { */
