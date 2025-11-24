@@ -154,6 +154,7 @@ DEF(brand, "<brand>")
 DEF(hash_constructor, "#constructor")
 DEF(as, "as")
 DEF(from, "from")
+DEF(fromAsync, "fromAsync")
 DEF(meta, "meta")
 DEF(_default_, "*default*")
 DEF(_star_, "*")
@@ -217,6 +218,7 @@ DEF(Set, "Set") /* Map + 1 */
 DEF(WeakMap, "WeakMap") /* Map + 2 */
 DEF(WeakSet, "WeakSet") /* Map + 3 */
 DEF(Iterator, "Iterator")
+DEF(IteratorConcat, "Iterator Concat")
 DEF(IteratorHelper, "Iterator Helper")
 DEF(IteratorWrap, "Iterator Wrap")
 DEF(Map_Iterator, "Map Iterator")
@@ -241,6 +243,7 @@ DEF(SyntaxError, "SyntaxError")
 DEF(TypeError, "TypeError")
 DEF(URIError, "URIError")
 DEF(InternalError, "InternalError")
+DEF(DOMException, "DOMException")
 DEF(CallSite, "CallSite")
 /* private symbols */
 DEF(Private_brand, "<brand>")
