@@ -420,6 +420,28 @@
     }
   }
 
+  function makeRejectionError(reason) {
+    const stringValue = Object.prototype.toString.call(reason);
+    if (
+      stringValue === "[object Error]" ||
+      reason instanceof Error ||
+      typeof reason === "object"
+    ) {
+      reason.message = `(Unhandled promise rejection): ${reason.message}`;
+      
+      if (!reason.stack) {
+        reason.stack = new Error("").stack;
+      }
+      return reason;
+    } else {
+      const error = new Error(reason, {
+        cause: reason,
+      });
+      error.message = `(Unhandled promise rejection): ${error.message}`;
+      return error;
+    }
+  }
+
   if (globalThis.__engine === "V8") {
     // Only report errors for promise rejections that go unhandled.
     globalThis.onUnhandledPromiseRejectionTracker = (
@@ -429,10 +451,7 @@
     ) => {
       if (event === globalThis.__promiseUnhandledEvent) {
         hasBeenNotifiedProperty.set(promise, false);
-        const error = new Error(reason, {
-          cause: reason,
-        });
-        error.name = "Unhandled promise rejection";
+        const error = makeRejectionError(reason);
         unhandledPromise(promise, error);
       } else {
         handledPromise(promise);
@@ -444,13 +463,9 @@
       reason,
       isHandled
     ) => {
-
       if (!isHandled) {
         hasBeenNotifiedProperty.set(promise, false);
-        const error = new Error(reason, {
-          cause: reason,
-        });
-        error.name = "Unhandled promise rejection";
+        const error = makeRejectionError(reason);
         // Preserve original stack trace.
         if (!promise.then["[[stack]]"]) {
           promise.then["[[stack]]"] = error.stack;
@@ -462,5 +477,12 @@
         handledPromise(promise);
       }
     };
+  } else if (globalThis.__engine === "Hermes") {
+    HermesInternal.enablePromiseRejectionTracker({
+      allRejections: true,
+      onUnhandled: function (id, error) {
+        globalThis.__onUncaughtError(makeRejectionError(error));
+      },
+    });
   }
 })();
