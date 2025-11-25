@@ -7,12 +7,14 @@
 #include <utime.h>
 #include "v8-fast-api-calls.h"
 #include "NativeScriptAssert.h"
+#include "native_api_util.h"
 
 using namespace v8;
 using namespace tns;
 
 tns::SimpleAllocator g_allocator;
-JSR::JSR(): isolate(nullptr) {
+
+JSR::JSR() : isolate(nullptr) {
     v8::Isolate::CreateParams create_params;
     create_params.array_buffer_allocator = &g_allocator;
 
@@ -24,9 +26,10 @@ JSR::JSR(): isolate(nullptr) {
     }
     isolate = v8::Isolate::New(create_params);
 }
+
 std::unique_ptr<v8::Platform> JSR::platform = nullptr;
 bool JSR::s_mainThreadInitialized = false;
-std::unordered_map<napi_env, JSR*> JSR::env_to_jsr_cache;
+std::unordered_map<napi_env, JSR *> JSR::env_to_jsr_cache;
 
 napi_status js_create_runtime(napi_runtime *runtime) {
     if (!runtime) return napi_invalid_arg;
@@ -35,7 +38,7 @@ napi_status js_create_runtime(napi_runtime *runtime) {
     return napi_ok;
 }
 
-napi_status js_set_runtime_flags(const char* flags) {
+napi_status js_set_runtime_flags(const char *flags) {
     V8::V8::SetFlagsFromString(flags);
     return napi_ok;
 }
@@ -62,9 +65,9 @@ napi_status js_unlock_env(napi_env env) {
     return napi_ok;
 }
 
-napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
+napi_status js_create_napi_env(napi_env *env, napi_runtime runtime) {
     if (env == nullptr) return napi_invalid_arg;
-    JSR* jsr = (JSR*) runtime;
+    JSR *jsr = (JSR *) runtime;
     // Must enter explictly
 #ifdef __V8_13__
     jsr->isolate->Enter();
@@ -74,6 +77,32 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
         v8::Local<v8::Context> context = v8::Context::New(jsr->isolate);
         *env = new napi_env__(context, NAPI_VERSION_EXPERIMENTAL);
         JSR::env_to_jsr_cache.insert(std::make_pair(*env, jsr));
+
+        Local<Object> global = context->Global();
+        global->Set(context,
+                    String::NewFromUtf8(jsr->isolate, "__promiseUnhandledEvent").ToLocalChecked(),
+                    Integer::New(jsr->isolate, PromiseRejectEvent::kPromiseRejectWithNoHandler));
+        global->Set(context,
+                    String::NewFromUtf8(jsr->isolate, "__promiseHandledEvent").ToLocalChecked(),
+                    Integer::New(jsr->isolate,
+                                 PromiseRejectEvent::kPromiseHandlerAddedAfterReject));
+
+        jsr->isolate->SetPromiseRejectCallback([](PromiseRejectMessage message) {
+            Local<Promise> promise = message.GetPromise();
+            Isolate *isolate = promise->GetIsolate();
+            Local<Value> value = message.GetValue();
+            Local<Integer> event = Integer::New(isolate, message.GetEvent());
+            v8::HandleScope handle_scope(isolate);
+            v8::Local<v8::Context> context = isolate->GetCurrentContext();
+            Local<Object> global = context->Global();
+            Local<Value> callback = global->Get(context, String::NewFromUtf8(isolate,
+                                                                             "onUnhandledPromiseRejectionTracker").ToLocalChecked()).ToLocalChecked();
+            if (value.IsEmpty())
+                value = Undefined(isolate);
+            Local<Value> args[] = {event, promise, value};
+            callback.As<Function>()->Call(context, global, 3, args);
+        });
+
         // Must exit explictly
 #ifdef __V8_13__
         jsr->isolate->Exit();
@@ -90,11 +119,11 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
 napi_status js_free_napi_env(napi_env env) {
     if (env == nullptr) return napi_invalid_arg;
     env->DeleteMe();
-    return  napi_ok;
+    return napi_ok;
 }
 
 napi_status js_free_runtime(napi_runtime runtime) {
-    JSR* jsr = (JSR*) runtime;
+    JSR *jsr = (JSR *) runtime;
     jsr->isolate->Dispose();
     delete jsr;
     return napi_ok;
@@ -118,23 +147,26 @@ napi_status js_get_engine_ptr(napi_env env, int64_t *engine_ptr) {
     return napi_ok;
 }
 
-napi_status js_adjust_external_memory(napi_env env, int64_t changeInBytes, int64_t* externalMemory) {
+napi_status
+js_adjust_external_memory(napi_env env, int64_t changeInBytes, int64_t *externalMemory) {
     *externalMemory = env->isolate->AdjustAmountOfExternalAllocatedMemory(changeInBytes);
     return napi_ok;
 }
 
 napi_status js_cache_script(napi_env env, const char *source, const char *file) {
-    v8::Local<v8::String> sourceString = v8::String::NewFromUtf8(env->isolate, source).ToLocalChecked();
+    v8::Local<v8::String> sourceString = v8::String::NewFromUtf8(env->isolate,
+                                                                 source).ToLocalChecked();
     v8::Local<v8::String> fileString = v8::String::NewFromUtf8(env->isolate, file).ToLocalChecked();
 #ifdef __V8_13__
     v8::ScriptOrigin origin(fileString);
 #else
-    v8::ScriptOrigin origin(env->isolate,fileString);
+    v8::ScriptOrigin origin(env->isolate, fileString);
 #endif
-    v8::Local<v8::Script> script = v8::Script::Compile(env->context(),sourceString, &origin).ToLocalChecked();
+    v8::Local<v8::Script> script = v8::Script::Compile(env->context(), sourceString,
+                                                       &origin).ToLocalChecked();
 
     Local<UnboundScript> unboundScript = script->GetUnboundScript();
-    ScriptCompiler::CachedData* cachedData = ScriptCompiler::CreateCodeCache(unboundScript);
+    ScriptCompiler::CachedData *cachedData = ScriptCompiler::CreateCodeCache(unboundScript);
 
     int length = cachedData->length;
     auto cachePath = std::string(file) + ".cache";
@@ -154,7 +186,8 @@ napi_status js_cache_script(napi_env env, const char *source, const char *file) 
     return napi_ok;
 }
 
-napi_status js_run_cached_script(napi_env env, const char * file, napi_value script, void* cache, napi_value *result) {
+napi_status js_run_cached_script(napi_env env, const char *file, napi_value script, void *cache,
+                                 napi_value *result) {
     auto cachePath = std::string(file) + ".cache";
     struct stat s_result;
     if (stat(cachePath.c_str(), &s_result) == 0) {
@@ -175,7 +208,8 @@ napi_status js_run_cached_script(napi_env env, const char * file, napi_value scr
         return napi_cannot_run_js;
     }
 
-    auto * cacheData = new ScriptCompiler::CachedData(reinterpret_cast<uint8_t*>(data), length, ScriptCompiler::CachedData::BufferOwned);
+    auto *cacheData = new ScriptCompiler::CachedData(reinterpret_cast<uint8_t *>(data), length,
+                                                     ScriptCompiler::CachedData::BufferOwned);
     std::string filePath = std::string("file://") + file;
 
     auto fullRequiredModulePathWithSchema = v8::String::NewFromUtf8(env->isolate, filePath.c_str());
@@ -183,11 +217,11 @@ napi_status js_run_cached_script(napi_env env, const char * file, napi_value scr
 #ifdef __V8_13__
     v8::ScriptOrigin origin(fullRequiredModulePathWithSchema.ToLocalChecked());
 #else
-    v8::ScriptOrigin origin(env->isolate,fullRequiredModulePathWithSchema.ToLocalChecked());
+    v8::ScriptOrigin origin(env->isolate, fullRequiredModulePathWithSchema.ToLocalChecked());
 #endif
 
     v8::Local<v8::String> scriptText;
-    memcpy(static_cast<void*>(&scriptText), &script, sizeof(script));
+    memcpy(static_cast<void *>(&scriptText), &script, sizeof(script));
 
     TryCatch tc(env->isolate);
 
@@ -206,7 +240,7 @@ napi_status js_run_cached_script(napi_env env, const char * file, napi_value scr
     return napi_ok;
 }
 
-napi_status js_get_runtime_version(napi_env env, napi_value* version) {
+napi_status js_get_runtime_version(napi_env env, napi_value *version) {
 
     napi_create_string_utf8(env, "V8", NAPI_AUTO_LENGTH, version);
 

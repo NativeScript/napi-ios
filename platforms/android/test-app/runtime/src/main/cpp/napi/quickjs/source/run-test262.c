@@ -35,12 +35,9 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <process.h>
-typedef HANDLE js_thread_t;
 #else
 #include <dirent.h>
-#include <pthread.h>
 #include <unistd.h>
-typedef pthread_t js_thread_t;
 #endif
 
 #include "cutils.h"
@@ -405,13 +402,22 @@ static int add_test_file(const char *filename)
 
 static void find_test_files(const char *path);
 
+static bool ispathsep(int c)
+{
+    return c == '/' || c == '\\';
+}
+
 static void consider_test_file(const char *path, const char *name, int is_dir)
 {
+    size_t pathlen;
     char s[1024];
 
     if (str_equal(name, ".") || str_equal(name, ".."))
         return;
-    snprintf(s, sizeof(s), "%s/%s", path, name);
+    pathlen = strlen(path);
+    while (pathlen > 0 && ispathsep(path[pathlen-1]))
+        pathlen--;
+    snprintf(s, sizeof(s), "%.*s/%s", (int)pathlen, path, name);
     if (is_dir)
         find_test_files(s);
     else
@@ -459,12 +465,12 @@ static void enumerate_tests(const char *path)
           namelist_cmp_indirect);
 }
 
-static JSValue js_print_262(JSContext *ctx, JSValue this_val,
-                        int argc, JSValue *argv)
+static JSValue js_print_262(JSContext *ctx, JSValueConst this_val,
+                            int argc, JSValueConst *argv)
 {
     ThreadLocalStorage *tls = JS_GetRuntimeOpaque(JS_GetRuntime(ctx));
     const char *s;
-    JSValue v;
+    JSValueConst v;
     int i;
 
     for (i = 0; i < argc; i++) {
@@ -473,9 +479,9 @@ static JSValue js_print_262(JSContext *ctx, JSValue this_val,
         // same logic as js_print in quickjs-libc.c
         if (local && !s && JS_IsObject(v)) {
             JS_FreeValue(ctx, JS_GetException(ctx));
-            v = JS_ToObjectString(ctx, v);
-            s = JS_ToCString(ctx, v);
-            JS_FreeValue(ctx, v);
+            JSValue t = JS_ToObjectString(ctx, v);
+            s = JS_ToCString(ctx, t);
+            JS_FreeValue(ctx, t);
         }
         if (!s)
             return JS_EXCEPTION;
@@ -500,15 +506,15 @@ static JSValue js_print_262(JSContext *ctx, JSValue this_val,
     return JS_UNDEFINED;
 }
 
-static JSValue js_detachArrayBuffer(JSContext *ctx, JSValue this_val,
-                                    int argc, JSValue *argv)
+static JSValue js_detachArrayBuffer(JSContext *ctx, JSValueConst this_val,
+                                    int argc, JSValueConst *argv)
 {
     JS_DetachArrayBuffer(ctx, argv[0]);
     return JS_UNDEFINED;
 }
 
-static JSValue js_evalScript_262(JSContext *ctx, JSValue this_val,
-                             int argc, JSValue *argv)
+static JSValue js_evalScript_262(JSContext *ctx, JSValueConst this_val,
+                             int argc, JSValueConst *argv)
 {
     const char *str;
     size_t len;
@@ -519,49 +525,6 @@ static JSValue js_evalScript_262(JSContext *ctx, JSValue this_val,
     ret = JS_Eval(ctx, str, len, "<evalScript>", JS_EVAL_TYPE_GLOBAL);
     JS_FreeCString(ctx, str);
     return ret;
-}
-
-static void start_thread(js_thread_t *thrd, void *(*start)(void *), void *arg)
-{
-    // musl libc gives threads 80 kb stacks, much smaller than
-    // JS_DEFAULT_STACK_SIZE (1 MB)
-    static const unsigned stacksize = 2 << 20; // 2 MB, glibc default
-#ifdef _WIN32
-    HANDLE h, cp;
-
-    cp = GetCurrentProcess();
-    h = (HANDLE)_beginthread((void (*)(void *))(void *)start, stacksize, arg);
-    if (!h)
-        fatal(1, "_beginthread error");
-    // _endthread() automatically closes the handle but we want to wait on
-    // it so make a copy. Race-y for very short-lived threads. Can be solved
-    // by switching to _beginthreadex(CREATE_SUSPENDED) but means changing
-    // |start| from __cdecl to __stdcall.
-    if (!DuplicateHandle(cp, h, cp, thrd, 0, false, DUPLICATE_SAME_ACCESS))
-        fatal(1, "DuplicateHandle error");
-#else
-    pthread_attr_t attr;
-
-    if (pthread_attr_init(&attr))
-        fatal(1, "pthread_attr_init");
-    if (pthread_attr_setstacksize(&attr, stacksize))
-        fatal(1, "pthread_attr_setstacksize");
-    if (pthread_create(thrd, &attr, start, arg))
-        fatal(1, "pthread_create error");
-    pthread_attr_destroy(&attr);
-#endif
-}
-
-static void join_thread(js_thread_t thrd)
-{
-#ifdef _WIN32
-    if (WaitForSingleObject(thrd, INFINITE))
-        fatal(1, "WaitForSingleObject error");
-    CloseHandle(thrd);
-#else
-    if (pthread_join(thrd, NULL))
-        fatal(1, "pthread_join error");
-#endif
 }
 
 static long cpu_count(void)
@@ -612,7 +575,7 @@ typedef struct {
 static JSValue add_helpers1(JSContext *ctx);
 static void add_helpers(JSContext *ctx);
 
-static void *agent_start(void *arg)
+static void agent_start(void *arg)
 {
     ThreadLocalStorage *tls;
     Test262Agent *agent;
@@ -673,7 +636,7 @@ static void *agent_start(void *arg)
                                             NULL, NULL, true);
                 args[1] = JS_NewInt32(ctx, agent->broadcast_val);
                 ret_val = JS_Call(ctx, agent->broadcast_func, JS_UNDEFINED,
-                                  2, args);
+                                  2, (JSValueConst *)args);
                 JS_FreeValue(ctx, args[0]);
                 JS_FreeValue(ctx, args[1]);
                 if (JS_IsException(ret_val))
@@ -688,11 +651,10 @@ static void *agent_start(void *arg)
 
     JS_FreeContext(ctx);
     JS_FreeRuntime(rt);
-    return NULL;
 }
 
-static JSValue js_agent_start(JSContext *ctx, JSValue this_val,
-                              int argc, JSValue *argv)
+static JSValue js_agent_start(JSContext *ctx, JSValueConst this_val,
+                              int argc, JSValueConst *argv)
 {
     ThreadLocalStorage *tls = JS_GetRuntimeOpaque(JS_GetRuntime(ctx));
     const char *script;
@@ -712,7 +674,7 @@ static JSValue js_agent_start(JSContext *ctx, JSValue this_val,
     agent->tls = tls;
     JS_FreeCString(ctx, script);
     list_add_tail(&agent->link, &tls->agent_list);
-    start_thread(&agent->tid, agent_start, agent);
+    js_thread_create(&agent->tid, agent_start, agent, /*flags*/0);
     return JS_UNDEFINED;
 }
 
@@ -724,15 +686,15 @@ static void js_agent_free(JSContext *ctx)
 
     list_for_each_safe(el, el1, &tls->agent_list) {
         agent = list_entry(el, Test262Agent, link);
-        join_thread(agent->tid);
+        js_thread_join(agent->tid);
         JS_FreeValue(ctx, agent->broadcast_sab);
         list_del(&agent->link);
         free(agent);
     }
 }
 
-static JSValue js_agent_leaving(JSContext *ctx, JSValue this_val,
-                                int argc, JSValue *argv)
+static JSValue js_agent_leaving(JSContext *ctx, JSValueConst this_val,
+                                int argc, JSValueConst *argv)
 {
     Test262Agent *agent = JS_GetContextOpaque(ctx);
     if (!agent)
@@ -753,11 +715,11 @@ static bool is_broadcast_pending(ThreadLocalStorage *tls)
     return false;
 }
 
-static JSValue js_agent_broadcast(JSContext *ctx, JSValue this_val,
-                                  int argc, JSValue *argv)
+static JSValue js_agent_broadcast(JSContext *ctx, JSValueConst this_val,
+                                  int argc, JSValueConst *argv)
 {
     ThreadLocalStorage *tls = JS_GetRuntimeOpaque(JS_GetRuntime(ctx));
-    JSValue sab = argv[0];
+    JSValueConst sab = argv[0];
     struct list_head *el;
     Test262Agent *agent;
     uint8_t *buf;
@@ -795,8 +757,8 @@ static JSValue js_agent_broadcast(JSContext *ctx, JSValue this_val,
     return JS_UNDEFINED;
 }
 
-static JSValue js_agent_receiveBroadcast(JSContext *ctx, JSValue this_val,
-                                         int argc, JSValue *argv)
+static JSValue js_agent_receiveBroadcast(JSContext *ctx, JSValueConst this_val,
+                                         int argc, JSValueConst *argv)
 {
     Test262Agent *agent = JS_GetContextOpaque(ctx);
     if (!agent)
@@ -808,8 +770,8 @@ static JSValue js_agent_receiveBroadcast(JSContext *ctx, JSValue this_val,
     return JS_UNDEFINED;
 }
 
-static JSValue js_agent_sleep(JSContext *ctx, JSValue this_val,
-                              int argc, JSValue *argv)
+static JSValue js_agent_sleep(JSContext *ctx, JSValueConst this_val,
+                              int argc, JSValueConst *argv)
 {
     uint32_t duration;
     if (JS_ToUint32(ctx, &duration, argv[0]))
@@ -833,14 +795,14 @@ static int64_t get_clock_ms(void)
 #endif
 }
 
-static JSValue js_agent_monotonicNow(JSContext *ctx, JSValue this_val,
-                                     int argc, JSValue *argv)
+static JSValue js_agent_monotonicNow(JSContext *ctx, JSValueConst this_val,
+                                     int argc, JSValueConst *argv)
 {
     return JS_NewInt64(ctx, get_clock_ms());
 }
 
-static JSValue js_agent_getReport(JSContext *ctx, JSValue this_val,
-                                  int argc, JSValue *argv)
+static JSValue js_agent_getReport(JSContext *ctx, JSValueConst this_val,
+                                  int argc, JSValueConst *argv)
 {
     ThreadLocalStorage *tls = JS_GetRuntimeOpaque(JS_GetRuntime(ctx));
     AgentReport *rep;
@@ -864,8 +826,8 @@ static JSValue js_agent_getReport(JSContext *ctx, JSValue this_val,
     return ret;
 }
 
-static JSValue js_agent_report(JSContext *ctx, JSValue this_val,
-                               int argc, JSValue *argv)
+static JSValue js_agent_report(JSContext *ctx, JSValueConst this_val,
+                               int argc, JSValueConst *argv)
 {
     ThreadLocalStorage *tls = JS_GetRuntimeOpaque(JS_GetRuntime(ctx));
     const char *str;
@@ -907,8 +869,8 @@ static JSValue js_new_agent(JSContext *ctx)
     return agent;
 }
 
-static JSValue js_createRealm(JSContext *ctx, JSValue this_val,
-                              int argc, JSValue *argv)
+static JSValue js_createRealm(JSContext *ctx, JSValueConst this_val,
+                              int argc, JSValueConst *argv)
 {
     JSContext *ctx1;
     JSValue ret;
@@ -922,8 +884,8 @@ static JSValue js_createRealm(JSContext *ctx, JSValue this_val,
     return ret;
 }
 
-static JSValue js_IsHTMLDDA(JSContext *ctx, JSValue this_val,
-                            int argc, JSValue *argv)
+static JSValue js_IsHTMLDDA(JSContext *ctx, JSValueConst this_val,
+                            int argc, JSValueConst *argv)
 {
     return JS_NULL;
 }
@@ -931,36 +893,33 @@ static JSValue js_IsHTMLDDA(JSContext *ctx, JSValue this_val,
 static JSValue add_helpers1(JSContext *ctx)
 {
     JSValue global_obj;
-    JSValue obj262, obj;
+    JSValue obj262, is_html_dda;
 
     global_obj = JS_GetGlobalObject(ctx);
 
     JS_SetPropertyStr(ctx, global_obj, "print",
                       JS_NewCFunction(ctx, js_print_262, "print", 1));
 
+    is_html_dda = JS_NewCFunction(ctx, js_IsHTMLDDA, "IsHTMLDDA", 0);
+    JS_SetIsHTMLDDA(ctx, is_html_dda);
+#define N 7
+    static const char *props[N] = {
+        "detachArrayBuffer", "evalScript", "codePointRange",
+        "agent", "global", "createRealm", "IsHTMLDDA",
+    };
+    JSValue values[N] = {
+        JS_NewCFunction(ctx, js_detachArrayBuffer, "detachArrayBuffer", 1),
+        JS_NewCFunction(ctx, js_evalScript_262, "evalScript", 1),
+        JS_NewCFunction(ctx, js_string_codePointRange, "codePointRange", 2),
+        js_new_agent(ctx),
+        JS_DupValue(ctx, global_obj),
+        JS_NewCFunction(ctx, js_createRealm, "createRealm", 0),
+        is_html_dda,
+    };
     /* $262 special object used by the tests */
-    obj262 = JS_NewObject(ctx);
-    JS_SetPropertyStr(ctx, obj262, "detachArrayBuffer",
-                      JS_NewCFunction(ctx, js_detachArrayBuffer,
-                                      "detachArrayBuffer", 1));
-    JS_SetPropertyStr(ctx, obj262, "evalScript",
-                      JS_NewCFunction(ctx, js_evalScript_262,
-                                      "evalScript", 1));
-    JS_SetPropertyStr(ctx, obj262, "codePointRange",
-                      JS_NewCFunction(ctx, js_string_codePointRange,
-                                      "codePointRange", 2));
-    JS_SetPropertyStr(ctx, obj262, "agent", js_new_agent(ctx));
-
-    JS_SetPropertyStr(ctx, obj262, "global",
-                      JS_DupValue(ctx, global_obj));
-    JS_SetPropertyStr(ctx, obj262, "createRealm",
-                      JS_NewCFunction(ctx, js_createRealm,
-                                      "createRealm", 0));
-    obj = JS_NewCFunction(ctx, js_IsHTMLDDA, "IsHTMLDDA", 0);
-    JS_SetIsHTMLDDA(ctx, obj);
-    JS_SetPropertyStr(ctx, obj262, "IsHTMLDDA", obj);
-
+    obj262 = JS_NewObjectFromStr(ctx, N, props, values);
     JS_SetPropertyStr(ctx, global_obj, "$262", JS_DupValue(ctx, obj262));
+#undef N
 
     JS_FreeValue(ctx, global_obj);
     return obj262;
@@ -1065,8 +1024,9 @@ void update_exclude_dirs(void)
     namelist_t *lp = &test_list;
     namelist_t *ep = &exclude_list;
     namelist_t *dp = &exclude_dir_list;
-    char *name;
+    char *name, *path;
     int i, j, count;
+    size_t include, exclude;
 
     /* split directpries from exclude_list */
     for (count = i = 0; i < ep->count; i++) {
@@ -1085,15 +1045,19 @@ void update_exclude_dirs(void)
     /* filter out excluded directories */
     for (count = i = 0; i < lp->count; i++) {
         name = lp->array[i];
+        include = exclude = 0;
         for (j = 0; j < dp->count; j++) {
-            if (has_prefix(name, dp->array[j])) {
-                test_excluded++;
-                free(name);
-                name = NULL;
-                break;
-            }
+            path = dp->array[j];
+            if (has_prefix(name, path))
+                exclude = strlen(path);
+            if (*path == '!' && has_prefix(name, &path[1]))
+                include = strlen(&path[1]);
         }
-        if (name) {
+        // most specific include/exclude wins
+        if (exclude > include) {
+            test_excluded++;
+            free(name);
+        } else {
             lp->array[count++] = name;
         }
     }
@@ -1425,8 +1389,8 @@ static int eval_buf(JSContext *ctx, const char *buf, size_t buf_len,
 
     if (JS_IsException(res_val)) {
         exception_val = JS_GetException(ctx);
-        is_error = JS_IsError(ctx, exception_val);
-        js_print_262(ctx, JS_NULL, 1, &exception_val);
+        is_error = JS_IsError(exception_val);
+        js_print_262(ctx, JS_NULL, 1, (JSValueConst *)&exception_val);
         if (is_error) {
             JSValue name, stack;
             const char *stack_str;
@@ -1546,7 +1510,7 @@ static int eval_buf(JSContext *ctx, const char *buf, size_t buf_len,
                 }
             }
         }
-        if (is_unexpected_error && verbose > 1) {
+        if (is_unexpected_error && verbose > 1 && JS_IsException(exception_val)) {
             JSValue val = JS_GetPropertyStr(ctx, exception_val, "stack");
             if (!JS_IsException(val) &&
                 !JS_IsUndefined(val) &&
@@ -1736,15 +1700,32 @@ void update_stats(JSRuntime *rt, const char *filename) {
     js_mutex_unlock(&stats_mutex);
 }
 
+static JSValue qjs_black_box(JSContext *ctx, JSValueConst this_val,
+                            int argc, JSValueConst argv[], int magic)
+{
+    return JS_NewInt32(ctx, js_std_cmd(magic, ctx, &argv[0]));
+}
+
+static const JSCFunctionListEntry qjs_methods[] = {
+    JS_CFUNC_MAGIC_DEF("getStringKind", 1, qjs_black_box, /*GetStringKind*/3),
+};
+
+static const JSCFunctionListEntry qjs_object =
+    JS_OBJECT_DEF("qjs", qjs_methods, countof(qjs_methods), JS_PROP_C_W_E);
+
 JSContext *JS_NewCustomContext(JSRuntime *rt)
 {
     JSContext *ctx;
+    JSValue obj;
 
     ctx = JS_NewContext(rt);
     if (ctx && local) {
         js_init_module_std(ctx, "qjs:std");
         js_init_module_os(ctx, "qjs:os");
         js_init_module_bjson(ctx, "qjs:bjson");
+        obj = JS_GetGlobalObject(ctx);
+        JS_SetPropertyFunctionList(ctx, obj, &qjs_object, 1);
+        JS_FreeValue(ctx, obj);
     }
     return ctx;
 }
@@ -1752,7 +1733,8 @@ JSContext *JS_NewCustomContext(JSRuntime *rt)
 int run_test_buf(ThreadLocalStorage *tls, const char *filename, char *harness,
                  namelist_t *ip, char *buf, size_t buf_len,
                  const char* error_type, int eval_flags, bool is_negative,
-                 bool is_async, bool can_block, int *msec)
+                 bool is_async, bool can_block, bool track_promise_rejections,
+                 int *msec)
 {
     JSRuntime *rt;
     JSContext *ctx;
@@ -1762,6 +1744,7 @@ int run_test_buf(ThreadLocalStorage *tls, const char *filename, char *harness,
     if (rt == NULL) {
         fatal(1, "JS_NewRuntime failure");
     }
+    JS_SetDumpFlags(rt, JS_DUMP_LEAKS);
     JS_SetRuntimeOpaque(rt, tls);
     js_std_init_handlers(rt);
     ctx = JS_NewCustomContext(rt);
@@ -1775,6 +1758,9 @@ int run_test_buf(ThreadLocalStorage *tls, const char *filename, char *harness,
 
     /* loader for ES6 modules */
     JS_SetModuleLoaderFunc(rt, NULL, js_module_loader_test, (void *) filename);
+
+    if (track_promise_rejections)
+        JS_SetHostPromiseRejectionTracker(rt, js_std_promise_rejection_tracker, NULL);
 
     add_helpers(ctx);
 
@@ -1822,6 +1808,7 @@ int run_test(ThreadLocalStorage *tls, const char *filename, int *msec)
     int ret, eval_flags, use_strict, use_nostrict;
     bool is_negative, is_nostrict, is_onlystrict, is_async, is_module, skip;
     bool detect_module = true;
+    bool track_promise_rejections = false;
     bool can_block;
     namelist_t include_list = { 0 }, *ip = &include_list;
 
@@ -1879,6 +1866,9 @@ int run_test(ThreadLocalStorage *tls, const char *filename, int *msec)
                 }
                 else if (str_equal(option, "qjs:no-detect-module")) {
                     detect_module = false;
+                }
+                else if (str_equal(option, "qjs:track-promise-rejections")) {
+                    track_promise_rejections = true;
                 }
                 else if (str_equal(option, "module")) {
                     is_module = true;
@@ -1974,12 +1964,13 @@ int run_test(ThreadLocalStorage *tls, const char *filename, int *msec)
         if (use_nostrict) {
             ret = run_test_buf(tls, filename, harness, ip, buf, buf_len,
                                error_type, eval_flags, is_negative, is_async,
-                               can_block, msec);
+                               can_block, track_promise_rejections, msec);
         }
         if (use_strict) {
             ret |= run_test_buf(tls, filename, harness, ip, buf, buf_len,
                                 error_type, eval_flags | JS_EVAL_FLAG_STRICT,
-                                is_negative, is_async, can_block, msec);
+                                is_negative, is_async, can_block,
+                                track_promise_rejections, msec);
         }
     }
     namelist_free(&include_list);
@@ -2007,6 +1998,7 @@ int run_test262_harness_test(ThreadLocalStorage *tls, const char *filename,
     if (rt == NULL) {
         fatal(1, "JS_NewRuntime failure");
     }
+    JS_SetDumpFlags(rt, JS_DUMP_LEAKS);
     JS_SetRuntimeOpaque(rt, tls);
     ctx = JS_NewContext(rt);
     if (ctx == NULL) {
@@ -2072,7 +2064,7 @@ int run_test262_harness_test(ThreadLocalStorage *tls, const char *filename,
 
 clock_t last_clock;
 
-void *show_progress(void *unused) {
+void show_progress(void *unused) {
     int interval = 1000*1000*1000 / 4; // 250 ms
 
     js_mutex_lock(&progress_mutex);
@@ -2085,7 +2077,6 @@ void *show_progress(void *unused) {
         fflush(stderr);
     }
     js_mutex_unlock(&progress_mutex);
-    return NULL;
 }
 
 enum { INCLUDE, EXCLUDE, SKIP };
@@ -2101,7 +2092,7 @@ int include_exclude_or_skip(int i) // naming is hard...
     return INCLUDE;
 }
 
-void *run_test_dir_list(void *arg)
+void run_test_dir_list(void *arg)
 {
     ThreadLocalStorage tls_s, *tls = &tls_s;
     const char *p;
@@ -2118,7 +2109,6 @@ void *run_test_dir_list(void *arg)
         if (verbose > 1 || (slow_test_threshold && msec >= slow_test_threshold))
             fprintf(stderr, "%s (%d ms)\n", p, msec);
     }
-    return NULL;
 }
 
 void help(void)
@@ -2163,6 +2153,7 @@ int main(int argc, char **argv)
     const char *ignore = "";
     bool is_test262_harness = false;
     bool is_module = false;
+    bool enable_progress = true;
 
     js_std_set_worker_new_context_func(JS_NewCustomContext);
 
@@ -2265,6 +2256,12 @@ int main(int argc, char **argv)
 
     update_exclude_dirs();
 
+#ifndef _WIN32
+    if (!isatty(STDOUT_FILENO)) {
+        enable_progress = false;
+    }
+#endif
+
     if (is_dir_list) {
         if (optind < argc && !isdigit((unsigned char)argv[optind][0])) {
             filename = argv[optind++];
@@ -2293,15 +2290,21 @@ int main(int argc, char **argv)
         }
         js_cond_init(&progress_cond);
         js_mutex_init(&progress_mutex);
-        start_thread(&progress_thread, show_progress, NULL);
+        if (enable_progress) {
+            js_thread_create(&progress_thread, show_progress, NULL, /*flags*/0);
+        }
+        for (i = 0; i < nthreads; i++) {
+            js_thread_create(&threads[i], run_test_dir_list,
+                             (void *)(uintptr_t)i, /*flags*/0);
+        }
         for (i = 0; i < nthreads; i++)
-            start_thread(&threads[i], run_test_dir_list, (void *)(uintptr_t)i);
-        for (i = 0; i < nthreads; i++)
-            join_thread(threads[i]);
+            js_thread_join(threads[i]);
         js_mutex_lock(&progress_mutex);
         js_cond_signal(&progress_cond);
         js_mutex_unlock(&progress_mutex);
-        join_thread(progress_thread);
+        if (enable_progress) {
+            js_thread_join(progress_thread);
+        }
         js_mutex_destroy(&progress_mutex);
         js_cond_destroy(&progress_cond);
     } else {

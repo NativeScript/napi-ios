@@ -31,6 +31,13 @@
 #if !defined(_MSC_VER)
 #include <sys/time.h>
 #endif
+#if defined(_WIN32)
+#include <windows.h>
+#include <process.h> // _beginthread
+#endif
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#endif
 
 #include "cutils.h"
 
@@ -95,6 +102,10 @@ int js__has_suffix(const char *str, const char *suffix)
 
 static void *dbuf_default_realloc(void *opaque, void *ptr, size_t size)
 {
+    if (unlikely(size == 0)) {
+        free(ptr);
+        return NULL;
+    }
     return realloc(ptr, size);
 }
 
@@ -579,258 +590,6 @@ overflow:
     return j;
 }
 
-/*--- integer to string conversions --*/
-
-/* All conversion functions:
-   - require a destination array `buf` of sufficient length
-   - write the string representation at the beginning of `buf`
-   - null terminate the string
-   - return the string length
- */
-
-/* 2 <= base <= 36 */
-char const digits36[36] = {
-    '0','1','2','3','4','5','6','7','8','9',
-    'a','b','c','d','e','f','g','h','i','j',
-    'k','l','m','n','o','p','q','r','s','t',
-    'u','v','w','x','y','z'
-};
-
-
-#define USE_SPECIAL_RADIX_10  1  // special case base 10 radix conversions
-#define USE_SINGLE_CASE_FAST  1  // special case single digit numbers
-
-/* using u32toa_shift variant */
-
-#define gen_digit(buf, c)  if (is_be()) \
-            buf = (buf >> 8) | ((uint64_t)(c) << ((sizeof(buf) - 1) * 8)); \
-        else \
-            buf = (buf << 8) | (c)
-
-static size_t u7toa_shift(char dest[minimum_length(8)], uint32_t n)
-{
-    size_t len = 1;
-    uint64_t buf = 0;
-    while (n >= 10) {
-        uint32_t quo = n % 10;
-        n /= 10;
-        gen_digit(buf, '0' + quo);
-        len++;
-    }
-    gen_digit(buf, '0' + n);
-    memcpy(dest, &buf, sizeof buf);
-    return len;
-}
-
-static size_t u07toa_shift(char dest[minimum_length(8)], uint32_t n, size_t len)
-{
-    size_t i;
-    dest += len;
-    dest[7] = '\0';
-    for (i = 7; i-- > 1;) {
-        uint32_t quo = n % 10;
-        n /= 10;
-        dest[i] = (char)('0' + quo);
-    }
-    dest[i] = (char)('0' + n);
-    return len + 7;
-}
-
-size_t u32toa(char buf[minimum_length(11)], uint32_t n)
-{
-#ifdef USE_SINGLE_CASE_FAST /* 10% */
-    if (n < 10) {
-        buf[0] = (char)('0' + n);
-        buf[1] = '\0';
-        return 1;
-    }
-#endif
-#define TEN_POW_7 10000000
-    if (n >= TEN_POW_7) {
-        uint32_t quo = n / TEN_POW_7;
-        n %= TEN_POW_7;
-        size_t len = u7toa_shift(buf, quo);
-        return u07toa_shift(buf, n, len);
-    }
-    return u7toa_shift(buf, n);
-}
-
-size_t u64toa(char buf[minimum_length(21)], uint64_t n)
-{
-    if (likely(n < 0x100000000))
-        return u32toa(buf, n);
-
-    size_t len;
-    if (n >= TEN_POW_7) {
-        uint64_t n1 = n / TEN_POW_7;
-        n %= TEN_POW_7;
-        if (n1 >= TEN_POW_7) {
-            uint32_t quo = n1 / TEN_POW_7;
-            n1 %= TEN_POW_7;
-            len = u7toa_shift(buf, quo);
-            len = u07toa_shift(buf, n1, len);
-        } else {
-            len = u7toa_shift(buf, n1);
-        }
-        return u07toa_shift(buf, n, len);
-    }
-    return u7toa_shift(buf, n);
-}
-
-size_t i32toa(char buf[minimum_length(12)], int32_t n)
-{
-    if (likely(n >= 0))
-        return u32toa(buf, n);
-
-    buf[0] = '-';
-    return 1 + u32toa(buf + 1, -(uint32_t)n);
-}
-
-size_t i64toa(char buf[minimum_length(22)], int64_t n)
-{
-    if (likely(n >= 0))
-        return u64toa(buf, n);
-
-    buf[0] = '-';
-    return 1 + u64toa(buf + 1, -(uint64_t)n);
-}
-
-/* using u32toa_radix_length variant */
-
-static uint8_t const radix_shift[64] = {
-    0, 0, 1, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
-    4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-};
-
-size_t u32toa_radix(char buf[minimum_length(33)], uint32_t n, unsigned base)
-{
-    int shift;
-
-#ifdef USE_SPECIAL_RADIX_10
-    if (likely(base == 10))
-        return u32toa(buf, n);
-#endif
-    if (n < base) {
-        buf[0] = digits36[n];
-        buf[1] = '\0';
-        return 1;
-    }
-    shift = radix_shift[base & 63];
-    if (shift) {
-        uint32_t mask = (1 << shift) - 1;
-        size_t len = (32 - clz32(n) + shift - 1) / shift;
-        size_t last = n & mask;
-        char *end = buf + len;
-        n >>= shift;
-        *end-- = '\0';
-        *end-- = digits36[last];
-        while (n >= base) {
-            size_t quo = n & mask;
-            n >>= shift;
-            *end-- = digits36[quo];
-        }
-        *end = digits36[n];
-        return len;
-    } else {
-        size_t len = 2;
-        size_t last = n % base;
-        n /= base;
-        uint32_t nbase = base;
-        while (n >= nbase) {
-            nbase *= base;
-            len++;
-        }
-        char *end = buf + len;
-        *end-- = '\0';
-        *end-- = digits36[last];
-        while (n >= base) {
-            size_t quo = n % base;
-            n /= base;
-            *end-- = digits36[quo];
-        }
-        *end = digits36[n];
-        return len;
-    }
-}
-
-size_t u64toa_radix(char buf[minimum_length(65)], uint64_t n, unsigned base)
-{
-    int shift;
-
-#ifdef USE_SPECIAL_RADIX_10
-    if (likely(base == 10))
-        return u64toa(buf, n);
-#endif
-    shift = radix_shift[base & 63];
-    if (shift) {
-        if (n < base) {
-            buf[0] = digits36[n];
-            buf[1] = '\0';
-            return 1;
-        }
-        uint64_t mask = (1 << shift) - 1;
-        size_t len = (64 - clz64(n) + shift - 1) / shift;
-        size_t last = n & mask;
-        char *end = buf + len;
-        n >>= shift;
-        *end-- = '\0';
-        *end-- = digits36[last];
-        while (n >= base) {
-            size_t quo = n & mask;
-            n >>= shift;
-            *end-- = digits36[quo];
-        }
-        *end = digits36[n];
-        return len;
-    } else {
-        if (likely(n < 0x100000000))
-            return u32toa_radix(buf, n, base);
-        size_t last = n % base;
-        n /= base;
-        uint64_t nbase = base;
-        size_t len = 2;
-        while (n >= nbase) {
-            nbase *= base;
-            len++;
-        }
-        char *end = buf + len;
-        *end-- = '\0';
-        *end-- = digits36[last];
-        while (n >= base) {
-            size_t quo = n % base;
-            n /= base;
-            *end-- = digits36[quo];
-        }
-        *end = digits36[n];
-        return len;
-    }
-}
-
-size_t i32toa_radix(char buf[minimum_length(34)], int32_t n, unsigned int base)
-{
-    if (likely(n >= 0))
-        return u32toa_radix(buf, n, base);
-
-    buf[0] = '-';
-    return 1 + u32toa_radix(buf + 1, -(uint32_t)n, base);
-}
-
-size_t i64toa_radix(char buf[minimum_length(66)], int64_t n, unsigned int base)
-{
-    if (likely(n >= 0))
-        return u64toa_radix(buf, n, base);
-
-    buf[0] = '-';
-    return 1 + u64toa_radix(buf + 1, -(uint64_t)n, base);
-}
-
-#undef gen_digit
-#undef TEN_POW_7
-#undef USE_SPECIAL_RADIX_10
-#undef USE_SINGLE_CASE_FAST
-
 /*---- sorting with opaque argument ----*/
 
 typedef void (*exchange_f)(void *a, void *b, size_t size);
@@ -1197,10 +956,112 @@ int64_t js__gettimeofday_us(void) {
     return ((int64_t)tv.tv_sec * 1000000) + tv.tv_usec;
 }
 
+#if defined(_WIN32)
+int js_exepath(char *buffer, size_t *size_ptr) {
+    int utf8_len, utf16_buffer_len, utf16_len;
+    WCHAR* utf16_buffer;
+
+    if (buffer == NULL || size_ptr == NULL || *size_ptr == 0)
+      return -1;
+
+    if (*size_ptr > 32768) {
+      /* Windows paths can never be longer than this. */
+      utf16_buffer_len = 32768;
+    } else {
+      utf16_buffer_len = (int)*size_ptr;
+    }
+
+    utf16_buffer = malloc(sizeof(WCHAR) * utf16_buffer_len);
+    if (!utf16_buffer)
+        return -1;
+
+    /* Get the path as UTF-16. */
+    utf16_len = GetModuleFileNameW(NULL, utf16_buffer, utf16_buffer_len);
+    if (utf16_len <= 0)
+      goto error;
+
+    /* Convert to UTF-8 */
+    utf8_len = WideCharToMultiByte(CP_UTF8,
+                                   0,
+                                   utf16_buffer,
+                                   -1,
+                                   buffer,
+                                   (int)*size_ptr,
+                                   NULL,
+                                   NULL);
+    if (utf8_len == 0)
+      goto error;
+
+    free(utf16_buffer);
+
+    /* utf8_len *does* include the terminating null at this point, but the
+     * returned size shouldn't. */
+    *size_ptr = utf8_len - 1;
+    return 0;
+
+error:
+    free(utf16_buffer);
+    return -1;
+}
+#elif defined(__APPLE__)
+int js_exepath(char *buffer, size_t *size) {
+    /* realpath(exepath) may be > PATH_MAX so double it to be on the safe side. */
+    char abspath[PATH_MAX * 2 + 1];
+    char exepath[PATH_MAX + 1];
+    uint32_t exepath_size;
+    size_t abspath_size;
+
+    if (buffer == NULL || size == NULL || *size == 0)
+        return -1;
+
+    exepath_size = sizeof(exepath);
+    if (_NSGetExecutablePath(exepath, &exepath_size))
+        return -1;
+
+    if (realpath(exepath, abspath) != abspath)
+        return -1;
+
+    abspath_size = strlen(abspath);
+    if (abspath_size == 0)
+        return -1;
+
+    *size -= 1;
+    if (*size > abspath_size)
+        *size = abspath_size;
+
+    memcpy(buffer, abspath, *size);
+    buffer[*size] = '\0';
+
+    return 0;
+}
+#elif defined(__linux__) || defined(__GNU__)
+int js_exepath(char *buffer, size_t *size) {
+    ssize_t n;
+
+    if (buffer == NULL || size == NULL || *size == 0)
+        return -1;
+
+    n = *size - 1;
+    if (n > 0)
+        n = readlink("/proc/self/exe", buffer, n);
+
+    if (n == -1)
+        return n;
+
+    buffer[n] = '\0';
+    *size = n;
+
+    return 0;
+}
+#else
+int js_exepath(char* buffer, size_t* size_ptr) {
+    return -1;
+}
+#endif
+
 /*--- Cross-platform threading APIs. ----*/
 
-#if !defined(EMSCRIPTEN) && !defined(__wasi__)
-
+#if JS_HAVE_THREADS
 #if defined(_WIN32)
 typedef void (*js__once_cb)(void);
 
@@ -1265,6 +1126,37 @@ int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout) {
     if (GetLastError() != ERROR_TIMEOUT)
         abort();
     return -1;
+}
+
+int js_thread_create(js_thread_t *thrd, void (*start)(void *), void *arg,
+                     int flags)
+{
+    HANDLE h, cp;
+
+    *thrd = INVALID_HANDLE_VALUE;
+    if (flags & ~JS_THREAD_CREATE_DETACHED)
+        return -1;
+    h = (HANDLE)_beginthread(start, /*stacksize*/2<<20, arg);
+    if (!h)
+        return -1;
+    if (flags & JS_THREAD_CREATE_DETACHED)
+        return 0;
+    // _endthread() automatically closes the handle but we want to wait on
+    // it so make a copy. Race-y for very short-lived threads. Can be solved
+    // by switching to _beginthreadex(CREATE_SUSPENDED) but means changing
+    // |start| from __cdecl to __stdcall.
+    cp = GetCurrentProcess();
+    if (DuplicateHandle(cp, h, cp, thrd, 0, FALSE, DUPLICATE_SAME_ACCESS))
+        return 0;
+    return -1;
+}
+
+int js_thread_join(js_thread_t thrd)
+{
+    if (WaitForSingleObject(thrd, INFINITE))
+        return -1;
+    CloseHandle(thrd);
+    return 0;
 }
 
 #else /* !defined(_WIN32) */
@@ -1407,9 +1299,43 @@ int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout) {
     return -1;
 }
 
-#endif
+int js_thread_create(js_thread_t *thrd, void (*start)(void *), void *arg,
+                     int flags)
+{
+    union {
+        void (*x)(void *);
+        void *(*f)(void *);
+    } u = {start};
+    pthread_attr_t attr;
+    int ret;
 
-#endif /* !defined(EMSCRIPTEN) && !defined(__wasi__) */
+    if (flags & ~JS_THREAD_CREATE_DETACHED)
+        return -1;
+    if (pthread_attr_init(&attr))
+        return -1;
+    ret = -1;
+    if (pthread_attr_setstacksize(&attr, 2<<20))
+        goto fail;
+    if (flags & JS_THREAD_CREATE_DETACHED)
+        if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED))
+            goto fail;
+    if (pthread_create(thrd, &attr, u.f, arg))
+        goto fail;
+    ret = 0;
+fail:
+    pthread_attr_destroy(&attr);
+    return ret;
+}
+
+int js_thread_join(js_thread_t thrd)
+{
+    if (pthread_join(thrd, NULL))
+        return -1;
+    return 0;
+}
+
+#endif /* !defined(_WIN32) */
+#endif /* JS_HAVE_THREADS */
 
 #ifdef __GNUC__
 #pragma GCC visibility pop
