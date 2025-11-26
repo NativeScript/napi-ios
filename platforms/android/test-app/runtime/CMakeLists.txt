@@ -98,25 +98,32 @@ file(GLOB_RECURSE MODULE_FILES
 
 set(SOURCES ${RUNTIME_FILES} ${MODULE_FILES})
 
-if (QUICKJS)
+if (QUICKJS OR QUICKJS_NG)
     add_subdirectory(${PROJECT_SOURCE_DIR}/src/main/cpp/napi/quickjs/mimalloc-dev mimalloc)
+
+    if (QUICKJS_NG)
+        set(QJS_SOURCE_DIR src/main/cpp/napi/quickjs/source_ng)
+    else()
+        set(QJS_SOURCE_DIR src/main/cpp/napi/quickjs/source)
+    endif()
+
     set(SOURCES ${SOURCES}
             # quickjs
-            src/main/cpp/napi/quickjs/source/cutils.c
-            src/main/cpp/napi/quickjs/source/libregexp.c
-            src/main/cpp/napi/quickjs/source/libunicode.c
-            src/main/cpp/napi/quickjs/source/quickjs.c
-            src/main/cpp/napi/quickjs/source/dtoa.c
+            ${QJS_SOURCE_DIR}/cutils.c
+            ${QJS_SOURCE_DIR}/libregexp.c
+            ${QJS_SOURCE_DIR}/libunicode.c
+            ${QJS_SOURCE_DIR}/quickjs.c
+            ${QJS_SOURCE_DIR}/dtoa.c
             # napi
             src/main/cpp/napi/quickjs/quickjs-api.c
             src/main/cpp/napi/quickjs/jsr.cpp
 
 
     )
+
     include_directories(
             src/main/cpp/napi/quickjs
-            src/main/cpp/napi/quickjs/source
-            src/main/cpp/napi/quickjs/napi-new
+            ${QJS_SOURCE_DIR}
             src/main/cpp/napi/common
             # mimalloc
             src/main/cpp/napi/quickjs/mimalloc-dev/include
@@ -325,8 +332,11 @@ if (PRIMJS)
     add_compile_definitions(NativeScript, PRIVATE __PRIMJS__)
 endif ()
 
-if (QUICKJS)
+if (QUICKJS OR QUICKJS_NG)
     add_compile_definitions(NativeScript, PRIVATE __QJS__)
+    if (QUICKJS_NG)
+        add_compile_definitions(NativeScript, PRIVATE __QJS_NG__)
+    endif ()
     if (USE_MIMALLOC)
         add_compile_definitions(NativeScript, PRIVATE USE_MIMALLOC)
     endif ()
