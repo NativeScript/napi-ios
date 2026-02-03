@@ -7217,7 +7217,10 @@ static BOOL is_backtrace_needed(JSContext *ctx, JSValueConst obj)
 
 JSValue JS_NewError(JSContext *ctx)
 {
-    return JS_NewObjectClass(ctx, JS_CLASS_ERROR);
+    JSValue error = JS_NewObjectClass(ctx, JS_CLASS_ERROR);
+    build_backtrace(ctx, error, NULL, 0, 0, 0);
+    return  error;
+
 }
 
 static JSValue JS_ThrowError2(JSContext *ctx, JSErrorEnum error_num,
