@@ -1085,7 +1085,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
                 napi_create_function(env, methodName.c_str(), methodName.size(), MethodCallback,
                                      callbackData, &method);
 
-                napi_set_named_property(env, prototype, methodName.c_str(), method);
+                napi_util::define_property_value(env, prototype, methodName.c_str(), method, napi_default_method);
                 lastMethodName = methodName;
                 collectedExtensionMethods.emplace(methodName, callbackData);
 
@@ -1112,7 +1112,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
                 napi_value method;
                 napi_create_function(env, methodName.c_str(), methodName.size(), MethodCallback,
                                      callbackData, &method);
-                napi_set_named_property(env, prototype, methodName.c_str(), method);
+                napi_util::define_property_value(env, prototype, methodName.c_str(), method, napi_default_method);
                 collectedExtensionMethods.emplace(methodName, callbackData);
             }
 
@@ -1199,7 +1199,8 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
             napi_value method;
             napi_create_function(env, methodName.c_str(), methodName.size(), MethodCallback,
                                  callbackData, &method);
-            napi_set_named_property(env, constructor, methodName.c_str(), method);
+
+            napi_util::define_property_value(env, constructor, methodName.c_str(), method, napi_default_method);
             lastMethodName = methodName;
         }
         callbackData->candidates.push_back(std::move(entry));
@@ -1234,6 +1235,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
                             ArgConverter::convertToJsString(env, tname));
 
     SetClassAccessor(env, constructor);
+
     return instanceMethodData;
 }
 
@@ -1992,7 +1994,7 @@ napi_value MetadataNode::MethodCallback(napi_env env, napi_callback_info info) {
 
 
         if (argc == 0 && methodName == PROP_KEY_VALUEOF) {
-            return jsThis;
+            return jsThis; 
         } else {
 //            Runtime::GetRuntime(env)->clearPendingError();
             bool isFromInterface = initialCallbackData->node->IsNodeTypeInterface();
