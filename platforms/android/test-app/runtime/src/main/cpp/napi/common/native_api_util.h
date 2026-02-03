@@ -166,6 +166,16 @@ namespace napi_util {
         return napi_define_properties(env, object, 1, &desc);
     }
 
+    inline napi_status define_property_value(napi_env env, napi_value object, const char *propertyName,
+                                       napi_value value = nullptr, napi_property_attributes attributes = napi_default_jsproperty, void *data = nullptr) {
+        return napi_util::define_property(env, object, propertyName, value, nullptr, nullptr, data, attributes);
+    }
+
+    inline napi_status define_property_get_set(napi_env env, napi_value object, const char *propertyName,
+                                       napi_callback getter, napi_callback setter, napi_property_attributes attributes = napi_default_jsproperty, void *data = nullptr) {
+        return napi_util::define_property(env, object, propertyName, nullptr, getter, setter, data, attributes);
+    }
+
     inline void setPrototypeOf(napi_env env, napi_value object, napi_value prototype) {
         napi_value global, global_object, set_proto;
 
