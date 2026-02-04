@@ -5,9 +5,7 @@ declare const MTLBinaryArchiveDomain: string;
 
 declare const MTLLogStateErrorDomain: string;
 
-declare const MTLLibraryErrorDomain: string;
-
-declare const MTLCaptureErrorDomain: string;
+declare const NSProcessPerformanceProfileDefault: number;
 
 declare const NSProcessInfoPerformanceProfileDidChangeNotification: string;
 
@@ -19,41 +17,43 @@ declare const MTLCounterErrorDomain: string;
 
 declare const MTLCommonCounterSetStatistic: string;
 
-declare const MTLCommonCounterPostTessellationVertexCycles: string;
-
 declare const MTLCommonCounterTotalCycles: string;
 
 declare const MTLCommonCounterClipperPrimitivesOut: string;
 
+declare const MTLCommonCounterTessellationCycles: string;
+
 declare const MTLCommonCounterClipperInvocations: string;
+
+declare const MTLCommonCounterPostTessellationVertexCycles: string;
 
 declare const MTLCommonCounterFragmentInvocations: string;
 
-declare const MTLAttributeStrideStatic: number;
-
 declare const MTLCommonCounterRenderTargetWriteCycles: string;
+
+declare const MTLLibraryErrorDomain: string;
 
 declare const MTLCommonCounterSetStageUtilization: string;
 
 declare const NSProcessPerformanceProfileSustained: number;
 
+declare const MTLAttributeStrideStatic: number;
+
 declare const MTLCommonCounterVertexCycles: string;
-
-declare const MTLCommonCounterTimestamp: string;
-
-declare const NSProcessPerformanceProfileDefault: number;
 
 declare const MTLCommandBufferEncoderInfoErrorKey: string;
 
 declare const MTLDynamicLibraryDomain: string;
 
-declare const MTLCommonCounterTessellationCycles: string;
-
 declare const MTLCommonCounterVertexInvocations: string;
+
+declare const MTLCaptureErrorDomain: string;
 
 declare const MTLCommonCounterPostTessellationVertexInvocations: string;
 
 declare const MTLCommonCounterTessellationInputPatches: string;
+
+declare const MTLCommonCounterTimestamp: string;
 
 declare const MTLCommonCounterFragmentCycles: string;
 

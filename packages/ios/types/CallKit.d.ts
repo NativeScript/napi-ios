@@ -8,9 +8,9 @@ declare const CXErrorDomainRequestTransaction: string;
 
 declare const CXErrorDomainIncomingCall: string;
 
-declare const CXErrorDomainNotificationServiceExtension: string;
-
 declare const CXErrorDomain: string;
+
+declare const CXErrorDomainNotificationServiceExtension: string;
 
 declare const CXCallDirectoryPhoneNumberMax: number;
 

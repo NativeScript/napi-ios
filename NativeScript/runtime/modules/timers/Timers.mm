@@ -15,9 +15,13 @@ JS_CLASS_INIT(Timers::Init) {
       napi_util::desc("setInterval", SetInterval),
       napi_util::desc("clearTimeout", ClearTimer),
       napi_util::desc("clearInterval", ClearTimer),
+      napi_util::desc("__ns__setTimeout", SetTimeout),
+      napi_util::desc("__ns__setInterval", SetInterval),
+      napi_util::desc("__ns__clearTimeout", ClearTimer),
+      napi_util::desc("__ns__clearInterval", ClearTimer),
   };
 
-  napi_define_properties(env, global, 4, properties);
+  napi_define_properties(env, global, 8, properties);
 }
 
 JS_METHOD(Timers::SetTimeout) {
@@ -42,14 +46,14 @@ JS_METHOD(Timers::SetTimeout) {
                         napi_get_global(env, &global);
                         napi_get_reference_value(env, callback, &callbackValue);
                         napi_call_function(env, global, callbackValue, 0, nullptr, nullptr);
-                        napi_delete_reference(env, callback);
+                        napi_reference_unref(env, callback, nullptr);
                         objc_setAssociatedObject(timer, "callback", nil, OBJC_ASSOCIATION_ASSIGN);
                       }];
 
   objc_setAssociatedObject(timer, "callback", (id)callback, OBJC_ASSOCIATION_ASSIGN);
 
   napi_value result;
-  napi_create_int64(env, (int64_t)timer, &result);
+  napi_create_external(env, timer, nullptr, nullptr, &result);
 
   [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 
@@ -83,7 +87,7 @@ JS_METHOD(Timers::SetInterval) {
   objc_setAssociatedObject(timer, "callback", (id)callback, OBJC_ASSOCIATION_ASSIGN);
 
   napi_value result;
-  napi_create_int64(env, (int64_t)timer, &result);
+  napi_create_external(env, timer, nullptr, nullptr, &result);
 
   [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 
@@ -95,11 +99,18 @@ JS_METHOD(Timers::ClearTimer) {
   napi_value argv[1];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
 
-  int64_t timer;
-  napi_get_value_int64(env, argv[0], &timer);
+  napi_valuetype type;
+  napi_typeof(env, argv[0], &type);
+  if (type != napi_external) {
+    return nullptr;
+  }
 
-  NSTimer* t = (NSTimer*)timer;
-  [t invalidate];
+  NSTimer* t = nullptr;
+  napi_get_value_external(env, argv[0], (void**)&t);
+
+  if (t != nullptr) {
+    [t invalidate];
+  }
 
   napi_ref callback = (napi_ref)objc_getAssociatedObject(t, "callback");
   if (callback != nil) {

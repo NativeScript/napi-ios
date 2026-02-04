@@ -7,41 +7,41 @@ declare const MDLVertexAttributeTangent: string;
 
 declare const MDLVertexAttributeShadingBasisV: string;
 
-declare const MDLVertexAttributeAnisotropy: string;
-
-declare const MDLVertexAttributeSubdivisionStencil: string;
-
-declare const MDLVertexAttributeShadingBasisU: string;
-
 declare const MDLVertexAttributePosition: string;
-
-declare const MDLVertexAttributeJointWeights: string;
-
-declare const MDLVertexAttributeEdgeCrease: string;
-
-declare const MDLVertexAttributeColor: string;
-
-declare const MDLVertexAttributeBinormal: string;
-
-declare const kUTTypeStereolithography: string;
-
-declare const kUTTypeUniversalSceneDescription: string;
-
-declare const kUTTypeUniversalSceneDescriptionMobile: string;
-
-declare const MDLVertexAttributeJointIndices: string;
-
-declare const MDLVertexAttributeTextureCoordinate: string;
-
-declare const kUTTypeAlembic: string;
-
-declare const MDLVertexAttributeOcclusionValue: string;
 
 declare const MDLVertexAttributeNormal: string;
 
+declare const MDLVertexAttributeJointWeights: string;
+
+declare const MDLVertexAttributeJointIndices: string;
+
+declare const MDLVertexAttributeEdgeCrease: string;
+
 declare const MDLVertexAttributeBitangent: string;
 
+declare const MDLVertexAttributeBinormal: string;
+
+declare const MDLVertexAttributeAnisotropy: string;
+
+declare const kUTTypeUniversalSceneDescriptionMobile: string;
+
+declare const kUTTypeUniversalSceneDescription: string;
+
 declare const kUTTypePolygon: string;
+
+declare const kUTTypeAlembic: string;
+
+declare const MDLVertexAttributeShadingBasisU: string;
+
+declare const MDLVertexAttributeColor: string;
+
+declare const MDLVertexAttributeTextureCoordinate: string;
+
+declare const MDLVertexAttributeSubdivisionStencil: string;
+
+declare const MDLVertexAttributeOcclusionValue: string;
+
+declare const kUTTypeStereolithography: string;
 
 declare const MDLTextureChannelEncoding: {
   UInt8: 1,

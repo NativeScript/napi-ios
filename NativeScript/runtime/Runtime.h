@@ -3,8 +3,6 @@
 
 #include <CoreFoundation/CFRunLoop.h>
 
-#include <vector>
-
 #include "js_native_api_types.h"
 #include "runtime/SpinLock.h"
 #include "runtime/modules/RuntimeModules.h"

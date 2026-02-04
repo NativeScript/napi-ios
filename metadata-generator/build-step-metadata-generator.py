@@ -162,6 +162,9 @@ def generate_metadata(arch):
         # -I. is needed for includes coming from clang's lib/clang/<version>/include/ directory when parsing modules
         generator_call.extend(["-I.", "-fmodules"])
 
+    print("Calling metadata generator with: ")
+    print(" ".join(generator_call))
+
     child_process = subprocess.Popen(generator_call, stderr=subprocess.PIPE, universal_newlines=True)
     sys.stdout.flush()
     error_stream_content = child_process.communicate()[1]

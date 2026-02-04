@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kCIFormatR8: number;
-
 declare const kCIContextName: string;
 
 declare const kCIFormatL16: number;
@@ -43,8 +41,6 @@ declare const CIDetectorImageOrientation: string;
 
 declare const kCIInputGradientImageKey: string;
 
-declare const kCIFormatRGBA16: number;
-
 declare const CIDetectorSmile: string;
 
 declare const kCIInputVersionKey: string;
@@ -73,31 +69,31 @@ declare const kCIInputNeutralChromaticityXKey: string;
 
 declare const kCIInputAngleKey: string;
 
-declare const kCIInputCenterKey: string;
-
-declare const kCIFormatR16: number;
-
-declare const kCIImageAutoAdjustRedEye: string;
-
-declare const kCIInputShadingImageKey: string;
-
-declare const kCIFormatRh: number;
-
-declare const kCIAttributeTypePosition: string;
+declare const kCIInputRadius0Key: string;
 
 declare const kCIOutputImageKey: string;
-
-declare const kCIImageAuxiliaryHDRGainMap: string;
 
 declare const kCIInputRadius1Key: string;
 
 declare const kCICategoryFilterGenerator: string;
 
+declare const kCIFormatARGB8: number;
+
+declare const kCIInputContrastKey: string;
+
+declare const kCIInputColor0Key: string;
+
 declare const kCIAttributeTypeTransform: string;
+
+declare const kCIImageAuxiliaryHDRGainMap: string;
 
 declare const kCIInputColorSpaceKey: string;
 
 declare const kCICategoryGeometryAdjustment: string;
+
+declare const kCIAttributeFilterDisplayName: string;
+
+declare const kCIAttributeType: string;
 
 declare const CIRAWDecoderVersion6DNG: string;
 
@@ -161,17 +157,17 @@ declare const kCIDynamicRangeStandard: string;
 
 declare const kCIInputTargetImageKey: string;
 
+declare const kCIInputShadingImageKey: string;
+
 declare const kCIInputMatteImageKey: string;
 
 declare const kCIInputPerceptualKey: string;
 
-declare const kCIInputContrastKey: string;
-
-declare const kCIInputColor0Key: string;
-
-declare const kCIInputRadius0Key: string;
-
 declare const kCIInputRadiusKey: string;
+
+declare const kCIFormatR16: number;
+
+declare const kCIInputCenterKey: string;
 
 declare const kCIUISetAdvanced: string;
 
@@ -201,6 +197,8 @@ declare const kCIAttributeTypeOpaqueColor: string;
 
 declare const kCIAttributeTypeOffset: string;
 
+declare const kCIAttributeTypePosition: string;
+
 declare const kCIAttributeTypeBoolean: string;
 
 declare const kCIUISetBasic: string;
@@ -219,8 +217,6 @@ declare const kCIAttributeMax: string;
 
 declare const kCIAttributeClass: string;
 
-declare const kCIAttributeFilterDisplayName: string;
-
 declare const kCIImageRepresentationHDRGainMapAsRGB: string;
 
 declare const kCIImageRepresentationSemanticSegmentationSkyMatteImage: string;
@@ -237,10 +233,6 @@ declare const kCIContextMemoryLimit: string;
 
 declare const kCIContextAllowLowPower: string;
 
-declare const kCIInputNeutralLocationKey: string;
-
-declare const kCIContextPriorityRequestLow: string;
-
 declare const kCIContextUseSoftwareRenderer: string;
 
 declare const kCIContextCacheIntermediates: string;
@@ -256,6 +248,8 @@ declare const kCIContextOutputColorSpace: string;
 declare const kCIImageAutoAdjustLevel: string;
 
 declare const kCIImageAutoAdjustFeatures: string;
+
+declare const kCIImageAutoAdjustRedEye: string;
 
 declare const kCIImageAutoAdjustEnhance: string;
 
@@ -289,9 +283,11 @@ declare const kCIFormatRGh: number;
 
 declare const kCIFormatRG16: number;
 
-declare const kCIFormatRGBAh: number;
+declare const kCIFormatR8: number;
 
-declare const kCIFormatARGB8: number;
+declare const kCIFormatRGBA16: number;
+
+declare const kCIFormatRGBAh: number;
 
 declare const CIRAWDecoderVersion6: string;
 
@@ -300,8 +296,6 @@ declare const kCISamplerColorSpace: string;
 declare const kCIUISetDevelopment: string;
 
 declare const kCIInputEnableChromaticNoiseTrackingKey: string;
-
-declare const kCIAttributeType: string;
 
 declare const CIRAWDecoderVersion7DNG: string;
 
@@ -312,6 +306,10 @@ declare const kCIInputEVKey: string;
 declare const kCIFormatRGBXh: number;
 
 declare const kCIAttributeTypeCount: string;
+
+declare const kCIFormatRGBA8: number;
+
+declare const kCICategoryReduction: string;
 
 declare const kCIFormatA16: number;
 
@@ -324,6 +322,12 @@ declare const kCIInputNeutralTintKey: string;
 declare const kCIAttributeTypeTime: string;
 
 declare const kCIOutputNativeSizeKey: string;
+
+declare const CIRAWDecoderVersionNone: string;
+
+declare const kCIInputNeutralLocationKey: string;
+
+declare const kCIContextPriorityRequestLow: string;
 
 declare const kCIInputExtrapolateKey: string;
 
@@ -342,8 +346,6 @@ declare const kCIImageContentHeadroom: string;
 declare const kCIImageAuxiliarySemanticSegmentationSkyMatte: string;
 
 declare const kCIFormatABGR8: number;
-
-declare const kCIFormatRGBA8: number;
 
 declare const kCIInputBiasVectorKey: string;
 
@@ -367,6 +369,8 @@ declare const kCIImageAuxiliaryDepth: string;
 
 declare const kCIFormatRGB10: number;
 
+declare const kCIFormatRh: number;
+
 declare const kCIAttributeDisplayName: string;
 
 declare const CIDetectorTypeQRCode: string;
@@ -384,8 +388,6 @@ declare const kCICategorySharpen: string;
 declare const kCIInputNeutralTemperatureKey: string;
 
 declare const kCICategoryGradient: string;
-
-declare const CIRAWDecoderVersionNone: string;
 
 declare const kCISamplerFilterMode: string;
 
@@ -407,8 +409,6 @@ declare const kCIInputLuminanceNoiseReductionAmountKey: string;
 
 declare const CIDetectorMinFeatureSize: string;
 
-declare const kCIInputColor1Key: string;
-
 declare const kCIFormatAh: number;
 
 declare const kCIImageRepresentationDisparityImage: string;
@@ -429,11 +429,11 @@ declare const kCIImageRepresentationHDRImage: string;
 
 declare const kCIFormatLAf: number;
 
-declare const kCIImageRepresentationHDRGainMapImage: string;
-
 declare const kCICategoryStillImage: string;
 
 declare const kCIImageAuxiliarySemanticSegmentationGlassesMatte: string;
+
+declare const kCICategoryCompositeOperation: string;
 
 declare const kCIFormatL8: number;
 
@@ -479,17 +479,17 @@ declare const kCIImageAuxiliarySemanticSegmentationTeethMatte: string;
 
 declare const kCIImageProviderUserInfo: string;
 
+declare const kCIInputColor1Key: string;
+
 declare const CIDetectorAccuracyLow: string;
+
+declare const kCIImageRepresentationHDRGainMapImage: string;
 
 declare const kCIInputTimeKey: string;
 
 declare const kCIAttributeDefault: string;
 
 declare const kCIAttributeTypeGradient: string;
-
-declare const kCICategoryCompositeOperation: string;
-
-declare const kCICategoryReduction: string;
 
 declare const CIDetectorTypeFace: string;
 

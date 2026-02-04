@@ -189,7 +189,11 @@ void convertMethodToPropertyIfNeeded(MemberDecl& member,
 
     if (memberInSuperclass->kind == member.kind &&
         memberInSuperclass->toString() != member.toString() && isSuperclass) {
-      member.tsIgnore = true;
+      if (member.kind == kMemberMethod) {
+        member.addOverloadFrom(*memberInSuperclass);
+      } else {
+        member.tsIgnore = true;
+      }
     }
 
     if (member.kind == kMemberProperty) return;

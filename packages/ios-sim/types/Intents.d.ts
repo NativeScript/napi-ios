@@ -83,23 +83,37 @@ declare const INSetMessageAttributeIntentIdentifier: string;
 
 declare const INSearchForMessagesIntentIdentifier: string;
 
-declare const INSendMessageIntentIdentifier: string;
+declare const INSetRadioStationIntentIdentifier: string;
 
 declare const INResumeWorkoutIntentIdentifier: string;
 
-declare const INSetProfileInCarIntentIdentifier: string;
+declare const INCancelWorkoutIntentIdentifier: string;
+
+declare const INPauseWorkoutIntentIdentifier: string;
+
+declare const INStartWorkoutIntentIdentifier: string;
+
+declare const INSaveProfileInCarIntentIdentifier: string;
 
 declare const INSetDefrosterSettingsInCarIntentIdentifier: string;
 
 declare const INSetClimateSettingsInCarIntentIdentifier: string;
 
-declare const INStartCallIntentIdentifier: string;
+declare const INSearchCallHistoryIntentIdentifier: string;
 
-declare const INCancelWorkoutIntentIdentifier: string;
+declare const INStartVideoCallIntentIdentifier: string;
+
+declare const INStartAudioCallIntentIdentifier: string;
+
+declare const INIntentErrorDomain: string;
 
 declare const IntentsVersionString: interop.Pointer;
 
-declare const INStartVideoCallIntentIdentifier: string;
+declare const IntentsVersionNumber: number;
+
+declare const INPersonHandleLabelHomeFax: string;
+
+declare const INEndWorkoutIntentIdentifier: string;
 
 declare const INPersonRelationshipSpouse: string;
 
@@ -109,45 +123,33 @@ declare const INSetSeatSettingsInCarIntentIdentifier: string;
 
 declare const INPersonRelationshipBrother: string;
 
-declare const INWorkoutNameIdentifierDance: string;
-
-declare const INAnswerCallIntentIdentifier: string;
-
 declare const INWorkoutNameIdentifierRun: string;
 
 declare const INPersonRelationshipDaughter: string;
 
-declare const INHangUpCallIntentIdentifier: string;
-
 declare const INPersonHandleLabelWork: string;
-
-declare const INSetAudioSourceInCarIntentIdentifier: string;
-
-declare const INIntentErrorDomain: string;
-
-declare const INEndWorkoutIntentIdentifier: string;
-
-declare const INSetRadioStationIntentIdentifier: string;
-
-declare const INSendPaymentIntentIdentifier: string;
 
 declare const INWorkoutNameIdentifierElliptical: string;
 
-declare const INSaveProfileInCarIntentIdentifier: string;
+declare const INAnswerCallIntentIdentifier: string;
+
+declare const INSetAudioSourceInCarIntentIdentifier: string;
 
 declare const INPersonRelationshipSister: string;
 
-declare const INPersonRelationshipFriend: string;
+declare const INSendPaymentIntentIdentifier: string;
 
-declare const INPauseWorkoutIntentIdentifier: string;
+declare const INPersonRelationshipFriend: string;
 
 declare const INPersonHandleLabelOther: string;
 
+declare const INStartCallIntentIdentifier: string;
+
 declare const INWorkoutNameIdentifierStairs: string;
 
-declare const INStartWorkoutIntentIdentifier: string;
+declare const INHangUpCallIntentIdentifier: string;
 
-declare const IntentsVersionNumber: number;
+declare const INSetProfileInCarIntentIdentifier: string;
 
 declare const INPersonHandleLabelMobile: string;
 
@@ -157,17 +159,15 @@ declare const INPersonRelationshipMother: string;
 
 declare const INPersonRelationshipFather: string;
 
-declare const INStartAudioCallIntentIdentifier: string;
-
-declare const INSearchCallHistoryIntentIdentifier: string;
-
 declare const INPersonHandleLabelPager: string;
+
+declare const INSendMessageIntentIdentifier: string;
 
 declare const INWorkoutNameIdentifierIndoorcycle: string;
 
-declare const INCarChargingConnectorTypeCCS2: string;
+declare const INWorkoutNameIdentifierDance: string;
 
-declare const INPersonHandleLabelHomeFax: string;
+declare const INCarChargingConnectorTypeCCS2: string;
 
 declare const INWorkoutNameIdentifierHike: string;
 
@@ -1726,12 +1726,6 @@ declare interface INPaymentsDomainHandling extends INSendPaymentIntentHandling, 
 declare class INPaymentsDomainHandling extends NativeObject implements INPaymentsDomainHandling {
 }
 
-declare interface INCarPlayDomainHandling extends INSetAudioSourceInCarIntentHandling, INSetClimateSettingsInCarIntentHandling, INSetDefrosterSettingsInCarIntentHandling, INSetSeatSettingsInCarIntentHandling, INSetProfileInCarIntentHandling, INSaveProfileInCarIntentHandling {
-}
-
-declare class INCarPlayDomainHandling extends NativeObject implements INCarPlayDomainHandling {
-}
-
 declare interface INGetVisualCodeIntentHandling extends NSObjectProtocol {
   handleGetVisualCodeCompletion(intent: INGetVisualCodeIntent, completion: (p1: INGetVisualCodeIntentResponse) => void): void;
 
@@ -2405,6 +2399,12 @@ declare interface INSaveProfileInCarIntentHandling extends NSObjectProtocol {
 }
 
 declare class INSaveProfileInCarIntentHandling extends NativeObject implements INSaveProfileInCarIntentHandling {
+}
+
+declare interface INCarPlayDomainHandling extends INSetAudioSourceInCarIntentHandling, INSetClimateSettingsInCarIntentHandling, INSetDefrosterSettingsInCarIntentHandling, INSetSeatSettingsInCarIntentHandling, INSetProfileInCarIntentHandling, INSaveProfileInCarIntentHandling {
+}
+
+declare class INCarPlayDomainHandling extends NativeObject implements INCarPlayDomainHandling {
 }
 
 declare interface INNotebookDomainHandling extends INCreateNoteIntentHandling, INAppendToNoteIntentHandling, INAddTasksIntentHandling, INCreateTaskListIntentHandling, INSetTaskAttributeIntentHandling, INSearchForNotebookItemsIntentHandling {

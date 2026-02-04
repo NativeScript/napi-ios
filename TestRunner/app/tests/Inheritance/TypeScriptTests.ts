@@ -151,22 +151,22 @@ class TSObject1 extends NSObject {
     public static ObjCProtocols = [TNSBaseProtocol2];
 }
 
-class TSDecoratedObject extends TNSDerivedInterface {
-    @ObjCMethod()
-    public voidSelector() {
-        TNSLog('voidSelector called');
-    }
+// class TSDecoratedObject extends TNSDerivedInterface {
+//     @ObjCMethod()
+//     public voidSelector() {
+//         TNSLog('voidSelector called');
+//     }
 
-    @ObjCMethod('variadicSelector:x:', NSObject)
-    public variadicSelectorX(@ObjCParam(NSString) a, @ObjCParam(interop.types.int32) b) {
-        TNSLog('variadicSelector:' + a + ' x:' + b + ' called');
-        return a;
-    }
+//     @ObjCMethod('variadicSelector:x:', NSObject)
+//     public variadicSelectorX(@ObjCParam(NSString) a, @ObjCParam(interop.types.int32) b) {
+//         TNSLog('variadicSelector:' + a + ' x:' + b + ' called');
+//         return a;
+//     }
 
-    static staticFunc(x) {
-        TNSLog('staticFunc:' + x + ' called');
-    }
-}
+//     static staticFunc(x) {
+//         TNSLog('staticFunc:' + x + ' called');
+//     }
+// }
 
 @ObjCClass(TNSBaseProtocol2)
 class TSDecoratedObject1 extends NSObject {

@@ -260,7 +260,7 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
 
 Closure::~Closure() {
   if (func != nullptr) {
-    napi_delete_reference(env, func);
+    napi_reference_unref(env, func, nullptr);
   }
 #ifndef ENABLE_JS_RUNTIME
   if (tsfn != nullptr) {

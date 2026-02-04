@@ -1,56 +1,74 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel6: number;
-
-declare const kRotate180DegreesCounterClockwise: number;
-
 declare const kvImageMatrixType_ARGBToYpCbCrMatrix: number;
 
 declare const kvImageMatrixType_None: number;
 
-declare const kvImageCVImageFormat_ChromaSiting: number;
+declare const kvImageCVImageFormat_AlphaIsOneHint: number;
+
+declare const kvImageCVImageFormat_ConversionMatrix: number;
+
+declare const kvImageCVImageFormat_NoError: number;
 
 declare const kvImageBufferTypeCode_LAB_B: number;
 
 declare const kvImageBufferTypeCode_LAB_A: number;
 
+declare const kvImageBufferTypeCode_LAB_L: number;
+
 declare const kvImageBufferTypeCode_XYZ_Y: number;
 
 declare const kvImageBufferTypeCode_CMYK_Black: number;
 
+declare const kvImageBufferTypeCode_CMYK_Yellow: number;
+
 declare const kvImageBufferTypeCode_CMYK_Magenta: number;
+
+declare const kvImageBufferTypeCode_CMYK_Cyan: number;
+
+declare const kvImageBufferTypeCode_RGB_Green: number;
+
+declare const kvImageBufferTypeCode_RGB_Red: number;
+
+declare const kvImageBufferTypeCode_Monochrome: number;
 
 declare const kvImageBufferTypeCode_UniqueFormatCount: number;
 
-declare const kvImageBufferTypeCode_Cr: number;
+declare const kvImageBufferTypeCode_Chunky: number;
+
+declare const kvImageBufferTypeCode_CGFormat: number;
 
 declare const kvImageBufferTypeCode_Cb: number;
 
-declare const kvImageBufferTypeCode_CVPixelBuffer_YCbCr: number;
+declare const kvImageBufferTypeCode_Luminance: number;
+
+declare const kvImageBufferTypeCode_Alpha: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel16: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel13: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel14: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel12: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel13: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel11: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel4: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel10: number;
+
+declare const kvImageBufferTypeCode_ColorSpaceChannel9: number;
+
+declare const kvImageBufferTypeCode_ColorSpaceChannel7: number;
+
+declare const kvImageBufferTypeCode_ColorSpaceChannel6: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel3: number;
-
-declare const kvImageBufferTypeCode_ColorSpaceChannel2: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel1: number;
 
 declare const kvImageBufferTypeCode_EndOfList: number;
 
-declare const kvImageDecodeArray_16Q12Format: interop.Pointer;
+declare const kvImageGamma_BT709_reverse_half_precision: number;
 
 declare const kvImageGamma_BT709_forward_half_precision: number;
-
-declare const kvImageGamma_9_over_11_half_precision: number;
 
 declare const kvImageGamma_11_over_9_half_precision: number;
 
@@ -58,237 +76,219 @@ declare const kvImageGamma_sRGB_reverse_half_precision: number;
 
 declare const kvImageGamma_5_over_11_half_precision: number;
 
-declare const kvImage_PNG_FILTER_VALUE_NONE: number;
+declare const kvImageGamma_5_over_9_half_precision: number;
 
-declare const kRotate0DegreesCounterClockwise: number;
+declare const kvImageGamma_UseGammaValue_half_precision: number;
 
-declare const kRotate90DegreesClockwise: number;
+declare const kvImageGamma_UseGammaValue: number;
+
+declare const kvImage_PNG_FILTER_VALUE_PAETH: number;
+
+declare const kvImage_PNG_FILTER_VALUE_AVG: number;
+
+declare const kvImage_PNG_FILTER_VALUE_UP: number;
+
+declare const kvImage_PNG_FILTER_VALUE_SUB: number;
+
+declare const kRotate180DegreesClockwise: number;
+
+declare const kRotate0DegreesClockwise: number;
 
 declare const kvImageConvert_OrderedNoiseShapeMask: number;
 
+declare const kvImageConvert_OrderedGaussianBlue: number;
+
 declare const kvImageConvert_DitherAtkinson: number;
-
-declare const kvImageConvert_DitherOrderedReproducible: number;
-
-declare const kvImageConvert_DitherOrdered: number;
 
 declare const kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4: interop.Pointer;
 
-declare const kvImage_YpCbCrToARGBMatrix_ITU_R_601_4: interop.Pointer;
+declare const kvImage_YpCbCrToARGBMatrix_ITU_R_709_2: interop.Pointer;
 
 declare const kvImageHDRContent: number;
 
 declare const kvImageNoAllocate: number;
 
-declare const kvImageDoNotTile: number;
+declare const kvImagePrintDiagnosticsToConsole: number;
+
+declare const kvImageGetTempBufferSize: number;
+
+declare const kvImageHighQualityResampling: number;
 
 declare const kvImageEdgeExtend: number;
 
+declare const kvImageCopyInPlace: number;
+
+declare const kvImageLeaveAlphaUnchanged: number;
+
+declare const kvImageNoFlags: number;
+
+declare const kvImageCoreVideoIsAbsent: number;
+
+declare const kvImageUnsupportedConversion: number;
+
+declare const kvImageInvalidCVImageFormat: number;
+
 declare const kvImageInvalidImageObject: number;
 
-declare const kvImageOutOfPlaceOperationRequired: number;
-
-declare const kvImageColorSyncIsAbsent: number;
+declare const kvImageInvalidImageFormat: number;
 
 declare const kvImageInvalidRowBytes: number;
-
-declare const kvImageUnknownFlagsBit: number;
 
 declare const kvImageInvalidParameter: number;
 
 declare const kvImageNullPointerArgument: number;
 
+declare const kvImageInvalidOffset_X: number;
+
 declare const kvImageInvalidEdgeStyle: number;
-
-declare const kvImageInvalidKernelSize: number;
-
-declare const kvImageRoiLargerThanInputBuffer: number;
 
 declare const kvImageInterpolationLinear: number;
 
 declare const _SparseNullMatrix_Complex_Float: SparseMatrix_Complex_Float;
 
-declare const _SparseDefaultSymbolicFactorOptions: SparseSymbolicFactorOptions;
+declare const _SparseNullMatrix_Complex_Double: SparseMatrix_Complex_Double;
 
-declare const FFT_FORWARD: number;
+declare const _SparseNullMatrix_Float: SparseMatrix_Float;
 
-declare const kFFTDirection_Forward: number;
-
-declare const kFFTDirection_Inverse: number;
-
-declare const kvImageGamma_sRGB_forward_half_precision: number;
-
-declare const FFT_RADIX5: number;
-
-declare const kvImageBufferTypeCode_RGB_Blue: number;
-
-declare const kvImageBufferTypeCode_Chroma: number;
-
-declare const kvImageGetTempBufferSize: number;
-
-declare const kFFTRadix2: number;
+declare const _SparseNullMatrix_Double: SparseMatrix_Double;
 
 declare const _SparseDefaultNumericFactorOptions_Complex_Double: SparseNumericFactorOptions;
 
+declare const _SparseDefaultNumericFactorOptions_Float: SparseNumericFactorOptions;
+
+declare const _SparseDefaultSymbolicFactorOptions: SparseSymbolicFactorOptions;
+
+declare const FFT_RADIX3: number;
+
+declare const FFT_RADIX2: number;
+
+declare const FFT_INVERSE: number;
+
+declare const FFT_FORWARD: number;
+
+declare const vDSP_HANN_NORM: number;
+
+declare const vDSP_HANN_DENORM: number;
+
+declare const vDSP_HALF_WINDOW: number;
+
+declare const kFFTRadix5: number;
+
+declare const kFFTRadix2: number;
+
+declare const kFFTDirection_Inverse: number;
+
+declare const kFFTDirection_Forward: number;
+
+declare const kvImageConvert_DitherOrderedReproducible: number;
+
+declare const kvImageGamma_sRGB_forward_half_precision: number;
+
+declare const kvImageBufferTypeCode_Chroma: number;
+
+declare const kRotate0DegreesCounterClockwise: number;
+
 declare const kvImageBufferTypeCode_ColorSpaceChannel8: number;
 
-declare const kvImageCVImageFormat_NoError: number;
-
-declare const kvImageCVImageFormat_ColorSpace: number;
-
-declare const kvImageBufferTypeCode_ColorSpaceChannel9: number;
-
-declare const kvImageBufferTypeCode_ColorSpaceChannel14: number;
+declare const kvImageBufferTypeCode_Cr: number;
 
 declare const kvImageMemoryAllocationError: number;
-
-declare const kvImageUseFP16Accumulator: number;
-
-declare const _SparseNullMatrix_Complex_Double: SparseMatrix_Complex_Double;
-
-declare const kvImageCVImageFormat_VideoChannelDescription: number;
-
-declare const kvImageBufferTypeCode_Monochrome: number;
-
-declare const kvImageBufferTypeCode_Alpha: number;
-
-declare const kvImageBufferTypeCode_XYZ_Z: number;
 
 declare const kRotate270DegreesClockwise: number;
 
 declare const kvImageBufferTypeCode_ColorSpaceChannel15: number;
 
-declare const kvImage_PNG_FILTER_VALUE_AVG: number;
-
-declare const FFT_INVERSE: number;
-
-declare const _SparseNullMatrix_Double: SparseMatrix_Double;
+declare const kvImageBufferTypeCode_CVPixelBuffer_YCbCr: number;
 
 declare const _SparseDefaultNumericFactorOptions_Double: SparseNumericFactorOptions;
 
-declare const kvImageGamma_UseGammaValue_half_precision: number;
+declare const kvImageColorSyncIsAbsent: number;
 
-declare const kvImage_PNG_FILTER_VALUE_UP: number;
-
-declare const kFFTRadix3: number;
-
-declare const kvImageCVImageFormat_ConversionMatrix: number;
+declare const kvImageDecodeArray_16Q12Format: interop.Pointer;
 
 declare const kvImageBackgroundColorFill: number;
 
-declare const kvImage_PNG_FILTER_VALUE_PAETH: number;
+declare const kvImageCVImageFormat_VideoChannelDescription: number;
 
-declare const kvImageBufferTypeCode_CMYK_Yellow: number;
+declare const kvImageBufferTypeCode_RGB_Blue: number;
 
 declare const kvImageGamma_9_over_5_half_precision: number;
 
-declare const kvImageCVImageFormat_AlphaIsOneHint: number;
+declare const kvImage_PNG_FILTER_VALUE_NONE: number;
 
-declare const kvImageGamma_5_over_9_half_precision: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel4: number;
 
-declare const kvImageConvert_DitherNone: number;
-
-declare const FFT_RADIX3: number;
-
-declare const kvImagePrintDiagnosticsToConsole: number;
-
-declare const kvImageBufferTypeCode_Luminance: number;
-
-declare const kvImageInvalidOffset_Y: number;
+declare const kFFTRadix3: number;
 
 declare const kvImageDoNotClamp: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel5: number;
+declare const kvImageGamma_9_over_11_half_precision: number;
 
-declare const vDSP_HANN_DENORM: number;
-
-declare const kvImage_ARGBToYpCbCrMatrix_ITU_R_709_2: interop.Pointer;
-
-declare const vDSP_HALF_WINDOW: number;
-
-declare const kvImageConvert_DitherFloydSteinberg: number;
+declare const kRotate180DegreesCounterClockwise: number;
 
 declare const kvImageNoError: number;
 
+declare const kvImageInvalidOffset_Y: number;
+
+declare const kvImageConvert_DitherNone: number;
+
 declare const kvImageInternalError: number;
-
-declare const vDSP_HANN_NORM: number;
-
-declare const kvImageLeaveAlphaUnchanged: number;
 
 declare const kRotate270DegreesCounterClockwise: number;
 
-declare const kvImageBufferTypeCode_Indexed: number;
+declare const kvImageConvert_DitherOrdered: number;
 
-declare const kvImage_PNG_FILTER_VALUE_SUB: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel12: number;
 
-declare const kvImageBufferSizeMismatch: number;
-
-declare const _SparseNullMatrix_Float: SparseMatrix_Float;
+declare const kvImageBufferTypeCode_ColorSpaceChannel2: number;
 
 declare const kvImageBufferTypeCode_XYZ_X: number;
 
+declare const kvImageDoNotTile: number;
+
 declare const kvImageConvert_OrderedUniformBlue: number;
 
-declare const kvImageGamma_BT709_reverse_half_precision: number;
-
-declare const kvImageConvert_OrderedGaussianBlue: number;
+declare const kvImageConvert_DitherFloydSteinberg: number;
 
 declare const kRotate90DegreesCounterClockwise: number;
 
-declare const kvImageBufferTypeCode_ColorSpaceChannel7: number;
+declare const kvImageBufferTypeCode_Indexed: number;
 
-declare const kvImageNoFlags: number;
+declare const kvImageRoiLargerThanInputBuffer: number;
 
-declare const kFFTRadix5: number;
-
-declare const kRotate0DegreesClockwise: number;
-
-declare const kvImageGamma_11_over_5_half_precision: number;
-
-declare const kvImageBufferTypeCode_RGB_Green: number;
+declare const kvImageBufferTypeCode_ColorSpaceChannel5: number;
 
 declare const _SparseDefaultNumericFactorOptions_Complex_Float: SparseNumericFactorOptions;
 
-declare const kvImageUnsupportedConversion: number;
+declare const kvImageBufferSizeMismatch: number;
 
-declare const kvImageBufferTypeCode_CMYK_Cyan: number;
-
-declare const kvImageInvalidCVImageFormat: number;
-
-declare const _SparseDefaultNumericFactorOptions_Float: SparseNumericFactorOptions;
-
-declare const kvImage_YpCbCrToARGBMatrix_ITU_R_709_2: interop.Pointer;
-
-declare const kvImageCopyInPlace: number;
-
-declare const kvImageGamma_UseGammaValue: number;
-
-declare const kvImageInvalidOffset_X: number;
-
-declare const kvImageBufferTypeCode_ColorSpaceChannel10: number;
-
-declare const kvImageInvalidImageFormat: number;
-
-declare const kvImageBufferTypeCode_CGFormat: number;
-
-declare const kvImageTruncateKernel: number;
-
-declare const kvImageCoreVideoIsAbsent: number;
-
-declare const kRotate180DegreesClockwise: number;
-
-declare const kvImageHighQualityResampling: number;
-
-declare const FFT_RADIX2: number;
-
-declare const kvImageBufferTypeCode_Chunky: number;
+declare const kvImageCVImageFormat_ChromaSiting: number;
 
 declare const kvImageInterpolationNearest: number;
 
-declare const kvImageBufferTypeCode_RGB_Red: number;
+declare const kRotate90DegreesClockwise: number;
 
-declare const kvImageBufferTypeCode_LAB_L: number;
+declare const kvImageBufferTypeCode_XYZ_Z: number;
+
+declare const FFT_RADIX5: number;
+
+declare const kvImageUnknownFlagsBit: number;
+
+declare const kvImageCVImageFormat_ColorSpace: number;
+
+declare const kvImageUseFP16Accumulator: number;
+
+declare const kvImage_ARGBToYpCbCrMatrix_ITU_R_709_2: interop.Pointer;
+
+declare const kvImageOutOfPlaceOperationRequired: number;
+
+declare const kvImage_YpCbCrToARGBMatrix_ITU_R_601_4: interop.Pointer;
+
+declare const kvImageTruncateKernel: number;
+
+declare const kvImageInvalidKernelSize: number;
+
+declare const kvImageGamma_11_over_5_half_precision: number;
 
 declare const vImage_InterpolationMethod: {
   No: 0,
@@ -296,19 +296,9 @@ declare const vImage_InterpolationMethod: {
   Half: 2,
 };
 
-declare const vImageYpCbCrType: {
-  Image422CbYpCrYp8: 0,
-  Image422YpCbYpCr8: 1,
-  Image422CbYpCrYp8_AA8: 2,
-  Image420Yp8_Cb8_Cr8: 3,
-  Image420Yp8_CbCr8: 4,
-  Image444AYpCbCr8: 5,
-  Image444CrYpCb8: 6,
-  Image444CbYpCrA8: 7,
-  Image444CrYpCb10: 8,
-  Image422CrYpCbYpCbYpCbYpCrYpCrYp10: 9,
-  Image422CbYpCrYp16: 13,
-  Image444AYpCbCr16: 14,
+declare const vImageMDTableUsageHint: {
+  Hint_16Q12: 1,
+  Hint_Float: 2,
 };
 
 declare const BNNSGraphOptimizationPreference: {
@@ -774,11 +764,6 @@ declare const BNNSRandomGeneratorMethod: {
   BNNSRandomGeneratorMethodAES_CTR: 0,
 };
 
-declare const vImageMDTableUsageHint: {
-  Hint_16Q12: 1,
-  Hint_Float: 2,
-};
-
 declare const SparseTriangle_t: {
   Upper: 0,
   Lower: 1,
@@ -788,6 +773,21 @@ declare const vImageARGBType: {
   B8888: 0,
   B16U: 1,
   B16Q12: 2,
+};
+
+declare const vImageYpCbCrType: {
+  Image422CbYpCrYp8: 0,
+  Image422YpCbYpCr8: 1,
+  Image422CbYpCrYp8_AA8: 2,
+  Image420Yp8_Cb8_Cr8: 3,
+  Image420Yp8_CbCr8: 4,
+  Image444AYpCbCr8: 5,
+  Image444CrYpCb8: 6,
+  Image444CbYpCrA8: 7,
+  Image444CrYpCb10: 8,
+  Image422CrYpCbYpCbYpCbYpCrYpCrYp10: 9,
+  Image422CbYpCrYp16: 13,
+  Image444AYpCbCr16: 14,
 };
 
 declare const SparseScaling_t: {

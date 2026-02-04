@@ -30,7 +30,7 @@ std::unique_ptr<Runtime> runtime_;
 }
 
 - (void)runMainApplication {
-  std::string spec = "./app/bundle.js";
+  std::string spec = "./app";
   runtime_->RunModule(spec);
   runtime_->RunLoop();
   Tasks::Drain();
@@ -61,6 +61,7 @@ std::unique_ptr<Runtime> runtime_;
     }
     RuntimeConfig.IsDebug = [config IsDebug];
     RuntimeConfig.LogToSystemConsole = [config LogToSystemConsole];
+    RuntimeConfig.CustomLogCallback = [config CustomLogCallback];
 
     runtime_ = std::make_unique<Runtime>();
 

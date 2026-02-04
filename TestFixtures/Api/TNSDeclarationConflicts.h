@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 @protocol TNSInterfaceProtocolConflict <NSObject>
 @end
 @protocol TNSInterfaceProtocolConflictProtocol <NSObject>

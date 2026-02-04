@@ -17,11 +17,11 @@ declare const AXTechnologyVoiceOver: string;
 
 declare const AXMFiHearingDeviceStreamingEarDidChangeNotification: string;
 
+declare const AXTechnologySwitchControl: string;
+
 declare const AXTechnologyHoverText: string;
 
 declare const AXAnimatedImagesEnabledDidChangeNotification: string;
-
-declare const AXTechnologySwitchControl: string;
 
 declare const AXFeatureOverrideSessionErrorDomain: string;
 

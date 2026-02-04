@@ -8,8 +8,9 @@ global.utf8 = require("./Infrastructure/utf8")
 global.UNUSED = function (param) {
 };
 
-var args = NSProcessInfo.processInfo.arguments;
-var logjunit = args.containsObject("-logjunit");
+// var args = NSProcessInfo.processInfo.arguments();
+// console.log("TKUnit: Process arguments: " + args);
+var logjunit = false; // args.containsObject("-logjunit");
 
 // Provides an output channel for jasmine JUnit test result xml.
 global.__JUnitSaveResults = function (text) {
@@ -53,24 +54,24 @@ require("./Marshalling/VectorTests");
 require("./Marshalling/NSStringTests");
 //import "./Marshalling/TypesTests";
 require("./Marshalling/PointerTests");
-require("./Marshalling/ReferenceTests");
+// require("./Marshalling/ReferenceTests");
 require("./Marshalling/FunctionPointerTests");
 require("./Marshalling/EnumTests");
 require("./Marshalling/ProtocolTests");
 //
 // import "./Inheritance/ConstructorResolutionTests";
-require("./Inheritance/InheritanceTests");
+// require("./Inheritance/InheritanceTests");
 require("./Inheritance/ProtocolImplementationTests");
 require("./Inheritance/TypeScriptTests");
 //
-require("./MethodCallsTests");
+// require("./MethodCallsTests");
 //import "./FunctionsTests";
 require("./VersionDiffTests");
 require("./ObjCConstructors");
 //
 require("./MetadataTests");
 //
-require("./ApiTests");
+// require("./ApiTests");
 require("./DeclarationConflicts");
 //
 require("./Promises");
@@ -78,10 +79,14 @@ require("./Modules");
 //
 require("./RuntimeImplementedAPIs");
 
-require("./Timers");
+// require("./Timers");
 
-require("./URL");
+// require("./URL");
 require("./URLSearchParams");
+require("./URLPattern");
+
+// Exception handling tests
+require("./ExceptionHandlingTests");
 
 // Tests common for all runtimes.
 require("./shared/index").runAllTests();

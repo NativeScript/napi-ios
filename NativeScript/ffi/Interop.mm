@@ -77,7 +77,8 @@ void registerInterop(napi_env env, napi_value global) {
 
   napi_value jsHelpers;
   napi_create_string_utf8(env, jsHelpersSource, NAPI_AUTO_LENGTH, &jsHelpers);
-  napi_run_script(env, jsHelpers, nullptr);
+  napi_value result;
+  napi_run_script(env, jsHelpers, &result);
 
   napi_value interop;
   napi_create_object(env, &interop);
@@ -351,15 +352,15 @@ napi_value interop_stringFromCString(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  void *data = nullptr;
+  void* data = nullptr;
 
   if (Pointer::isInstance(env, arg)) {
-    Pointer *ptr = Pointer::unwrap(env, arg);
+    Pointer* ptr = Pointer::unwrap(env, arg);
     data = ptr->data;
   }
 
   if (Reference::isInstance(env, arg)) {
-    Reference *ref = Reference::unwrap(env, arg);
+    Reference* ref = Reference::unwrap(env, arg);
     data = ref->data;
   }
 
@@ -368,9 +369,9 @@ napi_value interop_stringFromCString(napi_env env, napi_callback_info info) {
   if (data == nullptr) {
     napi_get_null(env, &result);
   } else {
-    napi_create_string_utf8(env, (const char *)data, NAPI_AUTO_LENGTH, &result);
+    napi_create_string_utf8(env, (const char*)data, NAPI_AUTO_LENGTH, &result);
   }
-  
+
   return result;
 }
 
@@ -600,11 +601,11 @@ napi_value Pointer::create(napi_env env, void* data) {
   napi_value jsPointer = get_ref_value(env, bridgeState->pointerClass);
   napi_value result;
   napi_status status = napi_new_instance(env, jsPointer, 0, nullptr, &result);
-  
+
   if (status != napi_ok) {
     return nullptr;
   }
-  
+
   Pointer* ptr = Pointer::unwrap(env, result);
   if (ptr == nullptr) {
     return nullptr;
@@ -934,7 +935,7 @@ napi_value FunctionReference::constructor(napi_env env, napi_callback_info info)
   return jsThis;
 }
 
-FunctionReference::~FunctionReference() { napi_delete_reference(env, ref); }
+FunctionReference::~FunctionReference() {}
 
 void* FunctionReference::getFunctionPointer(MDSectionOffset offset) {
   if (closure == nullptr) {

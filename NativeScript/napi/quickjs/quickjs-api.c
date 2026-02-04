@@ -3778,6 +3778,10 @@ napi_status napi_run_script(napi_env env,
     return qjs_execute_script(env, script, "<anonymous>", result);
 }
 
+napi_status napi_run_script_source(napi_env env, napi_value script, const char *source_url, napi_value *result) {
+    return qjs_execute_script(env, script, source_url, result);
+}
+
 
 void host_object_finalizer(JSRuntime *rt, JSValue value) {
     napi_env env = (napi_env) JS_GetRuntimeOpaque(rt);

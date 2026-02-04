@@ -48,5 +48,15 @@
   },
   "devDependencies": {
     "rimraf": "^6.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./*": {
+      "types": "./*.d.ts",
+      "default": "./index.js"
+    }
   }
 }

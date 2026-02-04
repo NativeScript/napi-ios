@@ -6,25 +6,25 @@ declare const CPMaximumMessageItemLeadingDetailTextImageSize: CGSize;
 
 declare const CPMaximumMessageItemImageSize: CGSize;
 
+declare const CPNavigationAlertMinimumDuration: number;
+
 declare const CPMaximumNumberOfGridImages: number;
 
 declare const CarPlayErrorDomain: string;
-
-declare const CPButtonMaximumImageSize: CGSize;
 
 declare const CPTemplateApplicationDashboardSceneSessionRoleApplication: string;
 
 declare const CPMaximumListSectionImageSize: CGSize;
 
-declare const CPTemplateApplicationSceneSessionRoleApplication: string;
-
 declare const CPGridTemplateMaximumItems: number;
 
-declare const CPNowPlayingButtonMaximumImageSize: CGSize;
+declare const CPButtonMaximumImageSize: CGSize;
 
 declare const CPTemplateApplicationInstrumentClusterSceneSessionRoleApplication: string;
 
-declare const CPNavigationAlertMinimumDuration: number;
+declare const CPNowPlayingButtonMaximumImageSize: CGSize;
+
+declare const CPTemplateApplicationSceneSessionRoleApplication: string;
 
 declare const CPMessageLeadingItem: {
   None: 0,
