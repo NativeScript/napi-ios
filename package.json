@@ -19,7 +19,6 @@
     "packages/*"
   ],
   "scripts": {
-    "prepare": "husky",
     "apply-patches": "./apply_patches.sh",
     "build-v8-source": "./build_v8_source.sh",
     "build-v8-source-catalyst": "./build_v8_source_catalyst.sh",
@@ -29,7 +28,10 @@
     "update-version": "./update_version.sh",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "version": "npm run changelog && git add CHANGELOG.md",
-    "metagen": "deno run -A scripts/metagen.ts"
+    "metagen": "node scripts/metagen.js",
+    "build-libffi": "node scripts/build_libffi.js",
+    "build-metagen": "./build_metadata_generator.sh",
+    "build": "./build_nativescript.sh --quickjs"
   },
   "license": "Apache-2.0",
   "devDependencies": {

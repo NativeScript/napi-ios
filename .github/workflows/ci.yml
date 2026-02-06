@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: 'recursive'
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Install libffi build tools
+        run: brew install autoconf automake libtool texinfo
+
+      - name: Build libffi
+        run: npm run build-libffi
+
+      - name: Build metadata generator
+        run: npm run build-metagen
+      
+      - name: Build NativeScript
+        run: npm run build
