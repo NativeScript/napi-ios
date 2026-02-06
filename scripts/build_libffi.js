@@ -7,12 +7,19 @@ const path = require("node:path");
 const archs = ["arm64", "x86_64"];
 
 async function main() {
-  const scriptDir = __dirname;
-  const libffiDir = path.resolve(scriptDir, "..", "libffi");
-  process.chdir(libffiDir);
+  const libffiDir = path.resolve(__dirname, "..", "libffi");
+  const libffiPath = (...parts) => path.join(libffiDir, ...parts);
+  const env = {
+    ...process.env,
+    CC: "clang",
+    CFLAGS: "-w",
+  };
 
-  process.env.CC = "clang";
-  process.env.CFLAGS = "-w";
+  try {
+    await fs.access(libffiPath("configure"));
+  } catch {
+    run("sh", ["./autogen.sh"], { cwd: libffiDir, env });
+  }
 
   const skipGenerateSource =
     Boolean(process.env.SKIP_GENERATE_SOURCE) ||
@@ -23,7 +30,7 @@ async function main() {
       run("python", [
         "generate-darwin-source-and-headers.py",
         `--only-${platform}`,
-      ]);
+      ], { cwd: libffiDir, env });
     }
   }
 
@@ -34,54 +41,57 @@ async function main() {
     "macosx-x86_64",
     "macosx-arm64",
   ]) {
-    run("make", ["-C", `build_${dir}`, "install"]);
+    run("make", ["-C", `build_${dir}`, "install"], { cwd: libffiDir, env });
   }
 
-  await prepareDir("prebuilt/iphoneos-arm64/include");
+  await prepareDir(libffiPath("prebuilt", "iphoneos-arm64", "include"));
   await fs.copyFile(
-    "build_iphoneos-arm64/include/ffi.h",
-    "prebuilt/iphoneos-arm64/include/ffi.h",
+    libffiPath("build_iphoneos-arm64", "include", "ffi.h"),
+    libffiPath("prebuilt", "iphoneos-arm64", "include", "ffi.h"),
   );
   await fs.copyFile(
-    "build_iphoneos-arm64/include/ffitarget.h",
-    "prebuilt/iphoneos-arm64/include/ffitarget.h",
+    libffiPath("build_iphoneos-arm64", "include", "ffitarget.h"),
+    libffiPath("prebuilt", "iphoneos-arm64", "include", "ffitarget.h"),
   );
   await fs.copyFile(
-    "build_iphoneos-arm64/.libs/libffi_convenience.a",
-    "prebuilt/iphoneos-arm64/libffi.a",
+    libffiPath("build_iphoneos-arm64", ".libs", "libffi_convenience.a"),
+    libffiPath("prebuilt", "iphoneos-arm64", "libffi.a"),
   );
 
-  await prepareDir("prebuilt/macosx-universal/include");
-  await combineHeaders("macosx");
+  await prepareDir(libffiPath("prebuilt", "macosx-universal", "include"));
+  await combineHeaders("macosx", libffiPath);
   run("lipo", [
     "-create",
     "-output",
     "prebuilt/macosx-universal/libffi.a",
     "build_macosx-x86_64/.libs/libffi_convenience.a",
     "build_macosx-arm64/.libs/libffi_convenience.a",
-  ]);
+  ], { cwd: libffiDir, env });
 
-  await prepareDir("prebuilt/iphonesimulator-universal/include");
+  await prepareDir(
+    libffiPath("prebuilt", "iphonesimulator-universal", "include"),
+  );
   run("lipo", [
     "-create",
     "-output",
     "prebuilt/iphonesimulator-universal/libffi.a",
     "build_iphonesimulator-x86_64/.libs/libffi_convenience.a",
     "build_iphonesimulator-arm64/.libs/libffi_convenience.a",
-  ]);
-  await combineHeaders("iphonesimulator");
+  ], { cwd: libffiDir, env });
+  await combineHeaders("iphonesimulator", libffiPath);
 }
 
-function run(command, args) {
+function run(command, args, options = {}) {
   console.log(`$ ${command} ${args.join(" ")}`);
   const result = spawnSync(command, args, {
     stdio: "inherit",
-    env: process.env,
+    env: options.env ?? process.env,
+    cwd: options.cwd,
   });
 
   if (result.status !== 0) {
     throw new Error(
-      `Command failed: ${command} ${args.join(" ")} (exit code ${result.status})`,
+      `Command failed: ${command} ${args.join(" ")} (exit code ${result.status})${options.cwd ? ` in ${options.cwd}` : ""}`,
     );
   }
 }
@@ -92,21 +102,21 @@ async function prepareDir(includePath) {
   await fs.mkdir(includePath, { recursive: true });
 }
 
-async function combineHeaders(target) {
+async function combineHeaders(target, libffiPath) {
   const ffi_h_arm64 = await fs.readFile(
-    `build_${target}-${archs[0]}/include/ffi.h`,
+    libffiPath(`build_${target}-${archs[0]}`, "include", "ffi.h"),
     "utf8",
   );
   const ffi_h_x86_64 = await fs.readFile(
-    `build_${target}-${archs[1]}/include/ffi.h`,
+    libffiPath(`build_${target}-${archs[1]}`, "include", "ffi.h"),
     "utf8",
   );
   const ffitarget_h_arm64 = await fs.readFile(
-    `build_${target}-${archs[0]}/include/ffitarget.h`,
+    libffiPath(`build_${target}-${archs[0]}`, "include", "ffitarget.h"),
     "utf8",
   );
   const ffitarget_h_x86_64 = await fs.readFile(
-    `build_${target}-${archs[1]}/include/ffitarget.h`,
+    libffiPath(`build_${target}-${archs[1]}`, "include", "ffitarget.h"),
     "utf8",
   );
 
@@ -134,9 +144,12 @@ async function combineHeaders(target) {
   #endif
   `;
 
-  await fs.writeFile(`prebuilt/${target}-universal/include/ffi.h`, ffi_h_universal);
   await fs.writeFile(
-    `prebuilt/${target}-universal/include/ffitarget.h`,
+    libffiPath("prebuilt", `${target}-universal`, "include", "ffi.h"),
+    ffi_h_universal,
+  );
+  await fs.writeFile(
+    libffiPath("prebuilt", `${target}-universal`, "include", "ffitarget.h"),
     ffitarget_h_universal,
   );
 }
