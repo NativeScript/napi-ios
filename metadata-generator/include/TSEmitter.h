@@ -18,7 +18,7 @@ class TSLines {
 public:
   TSLines() {}
 
-  void write(std::string value);
+  void write(const std::string& value);
   void newline();
   void enter();
   void exit();
@@ -48,7 +48,7 @@ public:
 
   std::string toString();
 
-  inline void import(std::string module) { imports.insert(module); }
+  inline void import(const std::string& module) { imports.insert(module); }
 
   MetadataFactory *factory = nullptr;
 
@@ -72,7 +72,7 @@ public:
 
   void resolveImports(TSFile &file);
 
-  void ensureFile(std::string framework);
+  TSFile& ensureFile(const std::string& framework);
 
   void write();
 

@@ -38,18 +38,24 @@ void MDMetadataWriter::write() {
   }
 
   for (MDResolvable &res : structResolvables) {
-    StructDecl &decl = factory.structs[res.name];
-    *res.offset = decl.mdOffset;
+    if (auto declIt = factory.structs.find(res.name);
+        declIt != factory.structs.end()) {
+      *res.offset = declIt->second.mdOffset;
+    }
   }
 
   for (MDResolvable &res : classResolvables) {
-    ClassDecl &decl = factory.classes[res.name];
-    *res.offset = decl.mdOffset;
+    if (auto declIt = factory.classes.find(res.name);
+        declIt != factory.classes.end()) {
+      *res.offset = declIt->second.mdOffset;
+    }
   }
 
   for (MDResolvable &res : protocolResolvables) {
-    ProtocolDecl &decl = factory.protocols[res.name];
-    *res.offset = decl.mdOffset;
+    if (auto declIt = factory.protocols.find(res.name);
+        declIt != factory.protocols.end()) {
+      *res.offset = declIt->second.mdOffset;
+    }
   }
 
   MDSignatureSerde serde;
@@ -156,95 +162,67 @@ std::pair<void *, size_t> MDMetadataWriter::serialize() {
   memcpy(data, &unionsOffset, sizeof(MDSectionOffset));
   ptr_add(&data, sizeof(MDSectionOffset));
 
-  MDSectionOffset offset = 0;
-
   // Strings
-  while (offset < strings.section_size) {
-    std::string str = strings[offset];
+  for (const auto& [_, str] : strings.orderedEntries) {
     size_t serializedSize = strings.serde.size(str);
     strings.serde.serialize(str, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Constants
-  offset = 0;
-  while (offset < constants.section_size) {
-    MDVariable *constant = constants[offset];
+  for (const auto& [_, constant] : constants.orderedEntries) {
     size_t serializedSize = constants.serde.size(constant);
     constants.serde.serialize(constant, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Enums
-  offset = 0;
-  while (offset < enums.section_size) {
-    MDEnum *enum_ = enums[offset];
+  for (const auto& [_, enum_] : enums.orderedEntries) {
     size_t serializedSize = enums.serde.size(enum_);
     enums.serde.serialize(enum_, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Signatures
-  offset = 0;
-  while (offset < signatures.section_size) {
-    MDSignature *signature = signatures[offset];
+  for (const auto& [_, signature] : signatures.orderedEntries) {
     size_t serializedSize = signatures.serde.size(signature);
     signatures.serde.serialize(signature, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Functions
-  offset = 0;
-  while (offset < functions.section_size) {
-    MDFunction *function = functions[offset];
+  for (const auto& [_, function] : functions.orderedEntries) {
     size_t serializedSize = functions.serde.size(function);
     functions.serde.serialize(function, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Protocols
-  offset = 0;
-  while (offset < protocols.section_size) {
-    MDProtocol *protocol = protocols[offset];
+  for (const auto& [_, protocol] : protocols.orderedEntries) {
     size_t serializedSize = protocols.serde.size(protocol);
     protocols.serde.serialize(protocol, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Classes
-  offset = 0;
-  while (offset < classes.section_size) {
-    MDClass *class_ = classes[offset];
+  for (const auto& [_, class_] : classes.orderedEntries) {
     size_t serializedSize = classes.serde.size(class_);
     classes.serde.serialize(class_, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Structs
-  offset = 0;
-  while (offset < structs.section_size) {
-    MDStruct *struct_ = structs[offset];
+  for (const auto& [_, struct_] : structs.orderedEntries) {
     size_t serializedSize = structs.serde.size(struct_);
     structs.serde.serialize(struct_, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Unions
-  offset = 0;
-  while (offset < unions.section_size) {
-    MDUnion *union_ = unions[offset];
+  for (const auto& [_, union_] : unions.orderedEntries) {
     size_t serializedSize = unions.serde.size(union_);
     unions.serde.serialize(union_, data);
     ptr_add(&data, serializedSize);
-    offset += serializedSize;
   }
 
   // Padding

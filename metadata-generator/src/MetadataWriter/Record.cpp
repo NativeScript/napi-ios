@@ -11,8 +11,9 @@ MDSectionOffset MDMetadataWriter::write(StructDecl &decl) {
 
   mdStruct->name = strings.add(decl.name, decl.name);
   mdStruct->size = decl.size;
+  mdStruct->fields.reserve(decl.fields.size());
 
-  for (StructFieldDecl &f : decl.fields) {
+  for (const StructFieldDecl &f : decl.fields) {
     MDStructField field;
     field.name = strings.add(f.name, f.name);
     field.offset = f.offset;
@@ -33,8 +34,9 @@ MDSectionOffset MDMetadataWriter::write(UnionDecl &decl) {
 
   mdUnion->name = strings.add(decl.name, decl.name);
   mdUnion->size = decl.size;
+  mdUnion->fields.reserve(decl.fields.size());
 
-  for (UnionFieldDecl &f : decl.fields) {
+  for (const UnionFieldDecl &f : decl.fields) {
     MDUnionField field;
     field.name = strings.add(f.name, f.name);
     field.type = getTypeInfo(f.type);
@@ -75,7 +77,7 @@ size_t MDStructSerde::size(MDStruct *value) {
   addsize(value->size);
   // Fields
   MDStructFieldSerde fieldSerde;
-  for (MDStructField field : value->fields) {
+  for (const MDStructField &field : value->fields) {
     size += fieldSerde.size(field);
   }
   if (value->fields.empty()) {
@@ -94,7 +96,7 @@ void MDStructSerde::serialize(MDStruct *value, void *data) {
   // Fields
   MDStructFieldSerde fieldSerde;
   for (size_t i = 0; i < value->fields.size(); i++) {
-    MDStructField field = value->fields[i];
+    const MDStructField &field = value->fields[i];
     fieldSerde.serialize(field, data);
     if (i != value->fields.size() - 1) {
       MDSectionOffset *serializedPtr = (MDSectionOffset *)data;
@@ -134,7 +136,7 @@ size_t MDUnionSerde::size(MDUnion *value) {
   addsize(value->size);
   // Fields
   MDUnionFieldSerde fieldSerde;
-  for (MDUnionField field : value->fields) {
+  for (const MDUnionField &field : value->fields) {
     size += fieldSerde.size(field);
   }
   return size;
@@ -148,7 +150,7 @@ void MDUnionSerde::serialize(MDUnion *value, void *data) {
   // Fields
   MDUnionFieldSerde fieldSerde;
   for (size_t i = 0; i < value->fields.size(); i++) {
-    MDUnionField field = value->fields[i];
+    const MDUnionField &field = value->fields[i];
     fieldSerde.serialize(field, data);
     if (i != value->fields.size() - 1) {
       MDSectionOffset *serializedPtr = (MDSectionOffset *)data;

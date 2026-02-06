@@ -1,10 +1,11 @@
 #include <assert.h>
+#include <unordered_set>
 
 #include "IR.h"
 #include "Util.h"
 #include "clang-c/Index.h"
 
-static const std::vector<std::string> KNOWN_BRIDGED_TYPES = {
+static const std::unordered_set<std::string> KNOWN_BRIDGED_TYPES = {
 #define CF_TYPE(NAME) #NAME,
 #define NON_CF_TYPE(NAME)
 #include "CFDatabase.def"
@@ -24,8 +25,7 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
   if (name.find(" _Nullable *") != std::string::npos) {
     std::string strippedName = name.substr(0, name.find(" _Nullable *"));
     strippedName = rtrim(strippedName);
-    if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(),
-                  strippedName) != KNOWN_BRIDGED_TYPES.end()) {
+    if (KNOWN_BRIDGED_TYPES.contains(strippedName)) {
       kind = kTypePointer;
       auto pointeeType = clang_getPointeeType(type);
       pointee = std::make_shared<TypeSpec>(pointeeType, classTypeParameters);
@@ -33,8 +33,7 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
     }
   }
 
-  if (std::find(KNOWN_BRIDGED_TYPES.begin(), KNOWN_BRIDGED_TYPES.end(), name) !=
-      KNOWN_BRIDGED_TYPES.end()) {
+  if (KNOWN_BRIDGED_TYPES.contains(name)) {
     kind = kTypeAnyObject;
     return;
   }
@@ -130,6 +129,9 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
         callbackReturn =
             std::make_shared<TypeSpec>(resultType, classTypeParameters);
         auto argc = clang_getNumArgTypes(pointeeType);
+        if (argc > 0) {
+          callbackArgs.reserve(static_cast<size_t>(argc));
+        }
         for (int i = 0; i < argc; i++) {
           auto argType = clang_getArgType(pointeeType, i);
           callbackArgs.emplace_back(argType, classTypeParameters);
@@ -152,6 +154,9 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
       callbackReturn =
           std::make_shared<TypeSpec>(resultType, classTypeParameters);
       auto argc = clang_getNumArgTypes(canonicalType);
+      if (argc > 0) {
+        callbackArgs.reserve(static_cast<size_t>(argc));
+      }
       for (int i = 0; i < argc; i++) {
         auto argType = clang_getArgType(canonicalType, i);
         callbackArgs.emplace_back(argType, classTypeParameters);
@@ -170,6 +175,9 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
       callbackReturn =
           std::make_shared<TypeSpec>(resultType, classTypeParameters);
       auto argc = clang_getNumArgTypes(pointeeType);
+      if (argc > 0) {
+        callbackArgs.reserve(static_cast<size_t>(argc));
+      }
       for (int i = 0; i < argc; i++) {
         auto argType = clang_getArgType(pointeeType, i);
         callbackArgs.emplace_back(argType, classTypeParameters);
@@ -270,7 +278,9 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
 
     default:
       kind = kTypeUnknown;
-      unknownInfo = clang_getCString(clang_getTypeSpelling(canonicalType));
+      CXString typeName = clang_getTypeSpelling(canonicalType);
+      unknownInfo = clang_getCString(typeName);
+      clang_disposeString(typeName);
       unknownInfo +=
           " (CXTypeKind: " + std::to_string(canonicalType.kind) + ")";
       break;

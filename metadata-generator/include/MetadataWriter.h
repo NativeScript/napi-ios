@@ -236,19 +236,22 @@ public:
   size_t section_size;
   S serde;
   std::unordered_map<std::string, MDSectionOffset> stringToKey;
+  std::vector<std::pair<MDSectionOffset, T>> orderedEntries;
 
   MDSection(S serde) : section_offset(0), section_size(0), serde(serde) {}
 
-  inline MDSectionOffset add(T value, std::string strKey) {
-    if (stringToKey.contains(strKey)) {
-      return stringToKey[strKey];
+  inline MDSectionOffset add(T value, const std::string& strKey) {
+    auto keyIt = stringToKey.find(strKey);
+    if (keyIt != stringToKey.end()) {
+      return keyIt->second;
     }
     MDSectionOffset key = (MDSectionOffset)section_offset;
     size_t valueSize = serde.size(value);
     section_offset += valueSize;
     section_size += valueSize;
-    this->insert(std::make_pair(key, value));
-    stringToKey.insert(std::make_pair(strKey, key));
+    this->emplace(key, value);
+    orderedEntries.emplace_back(key, value);
+    stringToKey.emplace(strKey, key);
     return key;
   }
 };
@@ -272,7 +275,7 @@ public:
         protocols(MDProtocolSerde()), classes(MDClassSerde()),
         structs(MDStructSerde()), unions(MDUnionSerde()) {}
 
-  MDTypeInfo *getTypeInfo(TypeSpec &type);
+  MDTypeInfo *getTypeInfo(const TypeSpec &type);
 
   MDMember *memberFromDecl(MemberDecl &decl);
 

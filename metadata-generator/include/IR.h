@@ -234,6 +234,7 @@ class MemberDecl {
 
   // Method overloads for TS emission (used to preserve superclass signatures).
   std::vector<MemberDecl> overloads;
+  std::vector<std::string> overloadSignatureKeys;
 
   void addOverloadFrom(const MemberDecl& member);
 };
@@ -248,7 +249,7 @@ class ClassDecl {
 
   ClassDecl(CXCursor cursor);
 
-  MemberDecl* getMemberNamed(std::string& name);
+  MemberDecl* getMemberNamed(const std::string& name);
 
   void postProcessMembers();
 
@@ -279,7 +280,7 @@ class ProtocolDecl {
 
   ProtocolDecl(CXCursor cursor);
 
-  MemberDecl* getMemberNamed(std::string& name);
+  MemberDecl* getMemberNamed(const std::string& name);
 
   void postProcessMembers();
 
@@ -376,10 +377,11 @@ class MetadataFactory {
   std::unordered_set<std::string> referencedProtocols;
 
   std::unordered_set<std::string> renamedProtocols;
-  std::unordered_set<std::string> missingClasses;
+ std::unordered_set<std::string> missingClasses;
 
  private:
   bool _checkAvailability = false;
+  std::unordered_map<std::string, bool> shouldProcessCache;
 
   std::unordered_map<std::string, EnumDecl> skippedEnums;
   std::unordered_map<std::string, StructDecl> skippedStructs;

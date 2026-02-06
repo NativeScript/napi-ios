@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
   std::string sdk;
   std::string frameworksDir;
 
-  std::string code = "";
+  std::string code;
 
   std::vector<std::string> args = {"-v",
                                    "-x",
@@ -36,8 +36,10 @@ int main(int argc, char** argv) {
                                    "-Wno-objc-property-no-attribute",
                                    "-std=gnu11",
                                    "-D__NATIVESCRIPT_METADATA_GENERATOR=1"};
+  args.reserve(args.size() + static_cast<size_t>(argc) * 2);
 
   std::unordered_set<std::string> includePaths;
+  includePaths.reserve(static_cast<size_t>(argc));
 
   bool Xclang = false;
   // bool verbose = false;
@@ -58,21 +60,33 @@ int main(int argc, char** argv) {
   std::cerr << "MetadataGenerator called with args: ";
 
   for (int i = 1; i < argc; i++) {
-    std::string arg = argv[i];
-    std::cerr << arg << " ";
+    std::cerr << argv[i] << " ";
   }
 
   std::cerr << std::endl;
 
+  auto addFramework = [&](const std::string& framework) {
+    if (frameworksDir.empty()) {
+      std::cerr << "framework= argument must be specified after sdk="
+                << std::endl;
+      std::exit(1);
+    }
+
+    std::string includePath = frameworksDir + "/" + framework + ".framework";
+    includePaths.emplace(includePath);
+    args.emplace_back("-I" + includePath + "/Headers");
+    code += "#import <" + framework + "/" + framework + ".h>\n";
+  };
+
   for (int i = 1; i < argc; i++) {
-    std::string arg = argv[i];
+    std::string arg(argv[i]);
 
     // clang arguments following Xclang delim
     if (arg == "Xclang") {
       Xclang = true;
       continue;
     } else if (Xclang) {
-      args.emplace_back(arg);
+      args.emplace_back(std::move(arg));
       continue;
     }
 
@@ -102,26 +116,13 @@ int main(int argc, char** argv) {
     } else if (arg == "-whitelist-modules") {
       whitelistModulesFile = argv[++i];
     } else if (arg.find("framework=") == 0) {
-      if (frameworksDir.empty()) {
-        std::cerr << "framework= argument must be specified after sdk="
-                  << std::endl;
-        std::exit(1);
-      }
-
-      std::string framework = arg.substr(10);
-      std::string includePath = frameworksDir + "/" + framework + ".framework";
-      includePaths.emplace(includePath);
-      args.emplace_back("-I" + includePath + "/Headers");
-      code += "#import <" + framework + "/" + framework + ".h>\n";
+      addFramework(arg.substr(10));
     } else if (arg.find("include=") == 0) {
-      std::string includeDir = arg.substr(8);
-      includePaths.emplace(includeDir);
+      includePaths.emplace(arg.substr(8));
     } else if (arg.find("headers=") == 0) {
-      std::string includeDir = arg.substr(8);
-      args.emplace_back("-I" + includeDir);
+      args.emplace_back("-I" + arg.substr(8));
     } else if (arg.find("import=") == 0) {
-      std::string import = arg.substr(7);
-      code += "#import " + import + "\n";
+      code += "#import " + arg.substr(7) + "\n";
     } else if (arg.find("sdk=") == 0) {
       sdk = arg.substr(4);
       args[2] = sdk;
@@ -129,43 +130,10 @@ int main(int argc, char** argv) {
       frameworksDir = sdk + "/System/Library/Frameworks";
       args.emplace_back("-F" + frameworksDir);
     } else if (arg.find("target=") == 0) {
-      std::string target = arg.substr(7);
       args.emplace_back("-target");
-      args.emplace_back(target);
-    } else if (arg.find("framework=") == 0) {
-      if (frameworksDir.empty()) {
-        std::cerr << "framework= argument must be specified after sdk="
-                  << std::endl;
-        std::exit(1);
-      }
-
-      std::string framework = arg.substr(10);
-      std::string includePath = frameworksDir + "/" + framework + ".framework";
-      includePaths.emplace(includePath);
-      args.emplace_back("-I" + includePath + "/Headers");
-      code += "#import <" + framework + "/" + framework + ".h>\n";
-    } else if (arg.find("include=") == 0) {
-      std::string includeDir = arg.substr(8);
-      includePaths.emplace(includeDir);
-    } else if (arg.find("headers=") == 0) {
-      std::string includeDir = arg.substr(8);
-      args.emplace_back("-I" + includeDir);
-    } else if (arg.find("import=") == 0) {
-      std::string import = arg.substr(7);
-      code += "#import " + import + "\n";
-    } else if (arg.find("sdk=") == 0) {
-      sdk = arg.substr(4);
-      args[2] = sdk;
-      args.emplace_back("-I" + sdk + "/usr/include");
-      frameworksDir = sdk + "/System/Library/Frameworks";
-      args.emplace_back("-F" + frameworksDir);
-    } else if (arg.find("target=") == 0) {
-      std::string target = arg.substr(7);
-      args.emplace_back("-target");
-      args.emplace_back(target);
+      args.emplace_back(arg.substr(7));
     } else if (arg.find("arg=") == 0) {
-      std::string argval = arg.substr(4);
-      args.emplace_back(argval);
+      args.emplace_back(arg.substr(4));
     } else if (arg.find("output=") == 0) {
       outputBinFile = arg.substr(7);
     } else if (arg.find("types=") == 0) {
@@ -192,15 +160,15 @@ int main(int argc, char** argv) {
   }
   
   // Use automatic umbrella header generation if manual one is empty
-  if (code == "") {
+  if (code.empty()) {
     std::vector<std::string> includePathsInner, frameworksInner;
     code = CreateUmbrellaHeader(args, includePathsInner, frameworksInner);
-    for (auto& includePath : includePathsInner) {
+    for (const auto& includePath : includePathsInner) {
       std::cerr << "Adding include path: " << includePath << std::endl;
       args.emplace_back("-idirafter" + includePath);
       includePaths.emplace(includePath);
     }
-    for (auto& framework : frameworksInner) {
+    for (const auto& framework : frameworksInner) {
       std::cerr << "Adding framework: " << framework << std::endl;
       args.emplace_back("-framework");
       args.emplace_back(framework);

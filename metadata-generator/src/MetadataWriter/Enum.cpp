@@ -10,8 +10,9 @@ void MDMetadataWriter::write(EnumDecl &decl) {
   MDEnum *mdEnum = new MDEnum();
 
   mdEnum->name = strings.add(decl.name, decl.name);
+  mdEnum->members.reserve(decl.constants.size());
 
-  for (EnumConstDecl &c : decl.constants) {
+  for (const EnumConstDecl &c : decl.constants) {
     MDEnumMember member;
     member.name = strings.add(c.name, c.name);
     member.value = c.value;
@@ -43,7 +44,9 @@ size_t MDEnumSerde::size(MDEnum *value) {
   addsize(value->name);
   // Members
   MDEnumMemberSerde memberSerde;
-  size += value->members.size() * memberSerde.size(&value->members[0]);
+  if (!value->members.empty()) {
+    size += value->members.size() * memberSerde.size(&value->members.front());
+  }
   return size;
 }
 
@@ -54,7 +57,7 @@ void MDEnumSerde::serialize(MDEnum *value, void *data) {
   size_t membersSize = value->members.size();
   MDEnumMemberSerde memberSerde;
   for (size_t i = 0; i < membersSize; i++) {
-    MDEnumMember member = value->members[i];
+    MDEnumMember &member = value->members[i];
     size_t memberSize = memberSerde.size(&member);
     memberSerde.serialize(&member, data);
     if (i != membersSize - 1) {

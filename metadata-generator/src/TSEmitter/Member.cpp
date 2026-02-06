@@ -13,6 +13,7 @@ std::string MemberDecl::toString() {
 static std::string signatureString(const MemberDecl& decl) {
   MemberDecl copy = decl;
   copy.overloads.clear();
+  copy.overloadSignatureKeys.clear();
   copy.tsIgnore = false;
   copy.optional = false;
   TSFile file;
@@ -28,17 +29,18 @@ void MemberDecl::addOverloadFrom(const MemberDecl& member) {
 
   MemberDecl overload = member;
   overload.overloads.clear();
+  overload.overloadSignatureKeys.clear();
   overload.tsIgnore = false;
   overload.optional = false;
 
   const std::string newSig = signatureString(overload);
-  for (const auto& existing : overloads) {
-    if (signatureString(existing) == newSig) {
-      return;
-    }
+  if (std::find(overloadSignatureKeys.begin(), overloadSignatureKeys.end(),
+                newSig) != overloadSignatureKeys.end()) {
+    return;
   }
 
-  overloads.emplace_back(overload);
+  overloadSignatureKeys.emplace_back(newSig);
+  overloads.emplace_back(std::move(overload));
 }
 
 void TSFile::write(MemberDecl &decl, bool isInterface,
@@ -87,12 +89,13 @@ void TSFile::write(MemberDecl &decl, bool isInterface,
         if (i > 0) {
           line += ", ";
         }
-        auto param = method.parameters[i];
-        if (paramNames.contains(param.name)) {
-          param.name += "_";
+        const auto& param = method.parameters[i];
+        std::string paramName = param.name;
+        if (paramNames.contains(paramName)) {
+          paramName += "_";
         }
-        paramNames.emplace(param.name);
-        line += param.name;
+        paramNames.emplace(paramName);
+        line += paramName;
         line += ": ";
         line += typeToString(param.type, method.isStatic, false);
       }

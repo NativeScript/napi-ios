@@ -7,8 +7,8 @@
 
 namespace metagen {
 
-MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
-  MDTypeInfo* info = new MDTypeInfo();
+MDTypeInfo* MDMetadataWriter::getTypeInfo(const TypeSpec& type) {
+  MDTypeInfo* info = new MDTypeInfo{};
 
   switch (type.kind) {
     case kTypeVoid:
@@ -73,8 +73,8 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
 
     case kTypeCallback: {
       MDSignature* sig = new MDSignature();
-      for (size_t i = 0; i < type.callbackArgs.size(); i++) {
-        auto arg = type.callbackArgs[i];
+      sig->arguments.reserve(type.callbackArgs.size());
+      for (const auto& arg : type.callbackArgs) {
         sig->arguments.emplace_back(getTypeInfo(arg));
       }
       sig->returnType = getTypeInfo(*type.callbackReturn);
@@ -87,8 +87,8 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
 
     case kTypeFunctionPointer: {
       MDSignature* sig = new MDSignature();
-      for (size_t i = 0; i < type.callbackArgs.size(); i++) {
-        auto arg = type.callbackArgs[i];
+      sig->arguments.reserve(type.callbackArgs.size());
+      for (const auto& arg : type.callbackArgs) {
         sig->arguments.emplace_back(getTypeInfo(arg));
       }
       sig->returnType = getTypeInfo(*type.callbackReturn);
@@ -197,6 +197,10 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(TypeSpec& type) {
 }
 
 size_t MDTypeInfoSerde::size(MDTypeInfo* value) {
+  if (value->size != 0) {
+    return value->size;
+  }
+
   size_t size = 0;
   // Kind
   addsize(value->kind);
@@ -240,6 +244,7 @@ size_t MDTypeInfoSerde::size(MDTypeInfo* value) {
       break;
   }
 
+  value->size = size;
   return size;
 }
 
@@ -252,8 +257,9 @@ void MDTypeInfoSerde::serialize(MDTypeInfo* value, void* data) {
       // Array size
       binwrite(value->arraySize);
       // Element type
+      const size_t elementSize = size(value->elementType);
       serialize(value->elementType, data);
-      ptr_add(&data, size(value->elementType));
+      ptr_add(&data, elementSize);
       break;
     }
 
@@ -303,8 +309,9 @@ void MDTypeInfoSerde::serialize(MDTypeInfo* value, void* data) {
 
     case mdTypePointer: {
       // Pointee type
+      const size_t pointeeSize = size(value->pointeeType);
       serialize(value->pointeeType, data);
-      ptr_add(&data, size(value->pointeeType));
+      ptr_add(&data, pointeeSize);
       break;
     }
 

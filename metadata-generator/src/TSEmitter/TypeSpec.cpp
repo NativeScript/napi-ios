@@ -50,7 +50,7 @@ std::string TSFile::typeToString(const TypeSpec& type, bool isStatic, bool isRet
     case kTypeCallback: {
       result = "(";
       for (size_t i = 0; i < type.callbackArgs.size(); i++) {
-        auto arg = type.callbackArgs[i];
+        const auto& arg = type.callbackArgs[i];
         result += "p";
         result += std::to_string(i + 1);
         result += ": ";

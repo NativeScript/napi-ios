@@ -23,13 +23,15 @@ MDSectionOffset MDMetadataWriter::write(ClassDecl &decl) {
     mdClass->superclass = MD_SECTION_OFFSET_NULL;
   }
 
+  mdClass->protocols.reserve(decl.protocolNames.size());
   for (const std::string &name : decl.protocolNames) {
-    if (factory.protocols.contains(name)) {
-      ProtocolDecl &protocolDecl = factory.protocols[name];
-      mdClass->protocols.push_back(write(protocolDecl));
+    auto protocolIt = factory.protocols.find(name);
+    if (protocolIt != factory.protocols.end()) {
+      mdClass->protocols.push_back(write(protocolIt->second));
     }
   }
 
+  mdClass->members.reserve(decl.members.size());
   for (MemberDecl &member : decl.members) {
     // Protocols are dynamically added to the class, so skip them here
     // They're solely here for TS classes to conform to TS interfaces.

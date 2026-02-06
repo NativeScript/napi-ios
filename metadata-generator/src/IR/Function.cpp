@@ -13,6 +13,9 @@ FunctionDecl::FunctionDecl(CXCursor cursor) {
   returnType = TypeSpec(clang_getResultType(cxtype));
 
   auto argc = clang_Cursor_getNumArguments(cursor);
+  if (argc > 0) {
+    parameters.reserve(static_cast<size_t>(argc));
+  }
 
   for (int i = 0; i < argc; i++) {
     ParameterDecl parameter;
@@ -25,7 +28,7 @@ FunctionDecl::FunctionDecl(CXCursor cursor) {
       parameter.name = "p" + std::to_string(i + 1);
     }
     parameter.type = TypeSpec(argType);
-    parameters.emplace_back(parameter);
+    parameters.emplace_back(std::move(parameter));
   }
 
   isVariadic = clang_Cursor_isVariadic(cursor);

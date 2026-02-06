@@ -90,7 +90,7 @@ ClassDecl::ClassDecl(CXCursor cursor) {
           case CXCursor_ObjCInstanceMethodDecl: {
             auto member = MemberDecl(cursor, &cls->typeParameters);
             member.parentClassName = cls->name;
-            cls->members.emplace_back(member);
+            cls->members.emplace_back(std::move(member));
             break;
           }
           default:
@@ -102,7 +102,7 @@ ClassDecl::ClassDecl(CXCursor cursor) {
       this);
 }
 
-MemberDecl* ClassDecl::getMemberNamed(std::string& name) {
+MemberDecl* ClassDecl::getMemberNamed(const std::string& name) {
   for (auto& member : members) {
     if (member.name == name) {
       return &member;
@@ -113,6 +113,7 @@ MemberDecl* ClassDecl::getMemberNamed(std::string& name) {
 
 void removeDuplicateMethods(std::vector<MemberDecl>& members) {
   std::vector<MemberDecl> filteredMembers;
+  filteredMembers.reserve(members.size());
 
   // Remove getter methods in favor of properties
 
@@ -154,23 +155,23 @@ void removeDuplicateMethods(std::vector<MemberDecl>& members) {
     filtered.insert(member.name);
   }
 
-  members = filteredMembers;
+  members = std::move(filteredMembers);
 }
 
 void MetadataFactory::processClassRefs() {
   while (!referencedClasses.empty()) {
-    std::unordered_set<std::string> refs = referencedClasses;
-    referencedClasses.clear();
+    std::unordered_set<std::string> refs;
+    refs.swap(referencedClasses);
 
     for (const std::string& name : refs) {
       if (classes.contains(name)) {
         continue;
       }
 
-      if (skippedClasses.contains(name)) {
-        ClassDecl decl = skippedClasses[name];
-        classes[name] = decl;
-        postProcessClass(classes[name]);
+      auto skippedIt = skippedClasses.find(name);
+      if (skippedIt != skippedClasses.end()) {
+        auto [inserted, _] = classes.try_emplace(name, skippedIt->second);
+        postProcessClass(inserted->second);
       } else {
         std::cerr << "ERROR: Unknown class " << name << std::endl;
         missingClasses.emplace(name);

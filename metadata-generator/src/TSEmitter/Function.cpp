@@ -12,7 +12,7 @@ void TSFile::write(FunctionDecl &decl) {
     if (i > 0) {
       line += ", ";
     }
-    auto param = decl.parameters[i];
+    const auto& param = decl.parameters[i];
     line += param.name;
     line += ": ";
     line += typeToString(param.type, false, false);
