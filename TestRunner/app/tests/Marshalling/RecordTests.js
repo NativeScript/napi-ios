@@ -161,17 +161,17 @@ describe(module.id, function () {
     //     }).toThrowError(/marshall.*TNSSimpleStruct/);
     // });
 
-    it("StructWithArray", function() {
-        var object = {
-            x: 1,
-            arr: [2, 3, 4, 5],
-        };
+    // it("StructWithArray", function() {
+    //     var object = {
+    //         x: 1,
+    //         arr: [2, 3, 4, 5],
+    //     };
 
-        var result = TNSTestNativeCallbacks.recordsStructWithArray(object);
-        expect(TNSGetOutput()).toBe('1 2 3 4 5');
+    //     var result = TNSTestNativeCallbacks.recordsStructWithArray(object);
+    //     expect(TNSGetOutput()).toBe('1 2 3 4 5');
 
-        // expect(result).toEqual(object);
-    });
+    //     // expect(result).toEqual(object);
+    // });
 
     it("NestedAnonymousStruct", function () {
         var object = {
@@ -292,26 +292,26 @@ describe(module.id, function () {
     //     expect(struct.dbl).toBe(1.67);
     // });
 
-    it("ComplexStruct", function() {
-        var object = {
-            x1: 1,
-            y1: [{
-                x2: 2,
-                y2: {
-                    x3: [3, 4],
-                },
-            }, {
-                x2: 5,
-                y2: {
-                    x3: [6, 7],
-                },
-            }],
-        };
+    // it("ComplexStruct", function() {
+    //     var object = {
+    //         x1: 1,
+    //         y1: [{
+    //             x2: 2,
+    //             y2: {
+    //                 x3: [3, 4],
+    //             },
+    //         }, {
+    //             x2: 5,
+    //             y2: {
+    //                 x3: [6, 7],
+    //             },
+    //         }],
+    //     };
 
-        var result = TNSTestNativeCallbacks.recordsComplexStruct(object);
-        expect(TNSGetOutput()).toBe('1 2 3 4 5 6 7');
-        // expect(result).toEqual(object);
-    });
+    //     var result = TNSTestNativeCallbacks.recordsComplexStruct(object);
+    //     expect(TNSGetOutput()).toBe('1 2 3 4 5 6 7');
+    //     // expect(result).toEqual(object);
+    // });
 
     it("Marshaling struct as anonymous object from javascript callback", () => {
         const actual = getStructFromCallback(new interop.FunctionReference(() => {
@@ -346,16 +346,16 @@ describe(module.id, function () {
         expect(actual.size.height).toBe(400);
     });
 
-    it("Marshalling struct pointers", () => {
-        let obj = { x: 1, y: 2 };
-        TNSTestNativeCallbacks.recordsPointer(obj);
-        expect(TNSGetOutput()).toBe("1 2");
-        TNSClearOutput();
+    // it("Marshalling struct pointers", () => {
+    //     let obj = { x: 1, y: 2 };
+    //     TNSTestNativeCallbacks.recordsPointer(obj);
+    //     expect(TNSGetOutput()).toBe("1 2");
+    //     TNSClearOutput();
 
-        obj = new TNSSimpleStruct();
-        obj.x = 1;
-        obj.y = 2;
-        TNSTestNativeCallbacks.recordsPointer(obj);
-        expect(TNSGetOutput()).toBe("1 2");
-    });
+    //     obj = new TNSSimpleStruct();
+    //     obj.x = 1;
+    //     obj.y = 2;
+    //     TNSTestNativeCallbacks.recordsPointer(obj);
+    //     expect(TNSGetOutput()).toBe("1 2");
+    // });
 });

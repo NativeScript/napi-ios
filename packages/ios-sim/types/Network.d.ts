@@ -2,8 +2,6 @@
 
 declare const nw_browse_result_change_interface_added: number;
 
-declare const nw_browse_result_change_txt_record_changed: number;
-
 declare const kNWErrorDomainTLS: interop.Pointer;
 
 declare const _nw_privacy_context_default_context: NSObject;
@@ -14,13 +12,13 @@ declare const kNWErrorDomainPOSIX: interop.Pointer;
 
 declare const _nw_data_transfer_report_all_paths: number;
 
-declare const nw_browse_result_change_result_removed: number;
-
 declare const _nw_content_context_default_stream: NSObject;
 
 declare const _nw_connection_send_idempotent_content: (p1: NSObject) => void;
 
 declare const kNWErrorDomainWiFiAware: interop.Pointer;
+
+declare const nw_browse_result_change_txt_record_changed: number;
 
 declare const nw_browse_result_change_interface_removed: number;
 
@@ -29,6 +27,8 @@ declare const nw_browse_result_change_result_added: number;
 declare const nw_browse_result_change_identical: number;
 
 declare const _nw_parameters_configure_protocol_disable: (p1: NSObject) => void;
+
+declare const nw_browse_result_change_result_removed: number;
 
 declare const _nw_content_context_final_send: NSObject;
 
@@ -125,14 +125,6 @@ declare const nw_multipath_service_t: {
   nw_multipath_service_aggregate: 3,
 };
 
-declare const nw_txt_record_find_key_t: {
-  nw_txt_record_find_key_invalid: 0,
-  nw_txt_record_find_key_not_present: 1,
-  nw_txt_record_find_key_no_value: 2,
-  nw_txt_record_find_key_empty_value: 3,
-  nw_txt_record_find_key_non_empty_value: 4,
-};
-
 declare const nw_quic_stream_type_t: {
   nw_quic_stream_type_unknown: 0,
   nw_quic_stream_type_bidirectional: 1,
@@ -226,6 +218,14 @@ declare const nw_interface_type_t: {
   nw_interface_type_cellular: 2,
   nw_interface_type_wired: 3,
   nw_interface_type_loopback: 4,
+};
+
+declare const nw_txt_record_find_key_t: {
+  nw_txt_record_find_key_invalid: 0,
+  nw_txt_record_find_key_not_present: 1,
+  nw_txt_record_find_key_no_value: 2,
+  nw_txt_record_find_key_empty_value: 3,
+  nw_txt_record_find_key_non_empty_value: 4,
 };
 
 declare const nw_ethernet_channel_state_t: {

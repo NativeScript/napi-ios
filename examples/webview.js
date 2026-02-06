@@ -1,6 +1,7 @@
 // @ts-check
 
 import "@nativescript/macos-node-api";
+import "@nativescript/macos-node-api/WebKit";
 
 objc.import("WebKit");
 

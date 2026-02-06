@@ -1,6 +1,10 @@
 // @ts-check
 
 import "@nativescript/macos-node-api";
+import "@nativescript/macos-node-api/SpriteKit";
+import "@nativescript/macos-node-api/GameController";
+import "@nativescript/macos-node-api/CoreFoundation";
+import "@nativescript/macos-node-api/CoreGraphics";
 
 objc.import("SpriteKit");
 objc.import("GameController");

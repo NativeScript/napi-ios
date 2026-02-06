@@ -397,24 +397,6 @@ declare class GKSCNNodeComponent extends GKComponent implements GKAgentDelegate 
   readonly debugDescription: string;
 }
 
-declare class GKComponent extends NSObject implements NSCopying, NSSecureCoding {
-  readonly entity: GKEntity;
-
-  updateWithDeltaTime(seconds: number): void;
-
-  didAddToEntity(): void;
-
-  willRemoveFromEntity(): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class GKObstacle extends NSObject {
 }
 
@@ -912,6 +894,24 @@ declare class GKComponentSystem<ComponentType = interop.Object> extends NSObject
 
   readonly [Symbol.iterator]: () => Iterator<ComponentType>;
 
+}
+
+declare class GKComponent extends NSObject implements NSCopying, NSSecureCoding {
+  readonly entity: GKEntity;
+
+  updateWithDeltaTime(seconds: number): void;
+
+  didAddToEntity(): void;
+
+  willRemoveFromEntity(): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class GKQuadtreeNode extends NSObject {

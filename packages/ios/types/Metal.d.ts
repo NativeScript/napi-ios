@@ -5,9 +5,7 @@ declare const MTLBinaryArchiveDomain: string;
 
 declare const MTLLogStateErrorDomain: string;
 
-declare const MTLIOErrorDomain: string;
-
-declare const MTLLibraryErrorDomain: string;
+declare const NSProcessPerformanceProfileDefault: number;
 
 declare const MTLCaptureErrorDomain: string;
 
@@ -23,35 +21,35 @@ declare const MTLCounterErrorDomain: string;
 
 declare const MTLCommonCounterSetStatistic: string;
 
-declare const MTLCommonCounterPostTessellationVertexCycles: string;
-
 declare const MTLCommonCounterTotalCycles: string;
 
 declare const MTLCommonCounterClipperPrimitivesOut: string;
 
+declare const MTLCommonCounterTessellationCycles: string;
+
 declare const MTLCommonCounterClipperInvocations: string;
+
+declare const MTLCommonCounterPostTessellationVertexCycles: string;
 
 declare const MTLCommonCounterFragmentInvocations: string;
 
-declare const MTLAttributeStrideStatic: number;
+declare const MTLIOErrorDomain: string;
 
 declare const MTLCommonCounterRenderTargetWriteCycles: string;
+
+declare const MTLLibraryErrorDomain: string;
 
 declare const MTLCommonCounterSetStageUtilization: string;
 
 declare const NSProcessPerformanceProfileSustained: number;
 
+declare const MTLAttributeStrideStatic: number;
+
 declare const MTLCommonCounterVertexCycles: string;
-
-declare const MTLCommonCounterTimestamp: string;
-
-declare const NSProcessPerformanceProfileDefault: number;
 
 declare const MTLCommandBufferEncoderInfoErrorKey: string;
 
 declare const MTLDynamicLibraryDomain: string;
-
-declare const MTLCommonCounterTessellationCycles: string;
 
 declare const MTLCommonCounterVertexInvocations: string;
 
@@ -59,17 +57,19 @@ declare const MTLCommonCounterPostTessellationVertexInvocations: string;
 
 declare const MTLCommonCounterTessellationInputPatches: string;
 
+declare const MTLCommonCounterTimestamp: string;
+
 declare const MTLCommonCounterFragmentCycles: string;
 
 declare const MTLBufferLayoutStrideDynamic: number;
+
+declare const MTLTensorDomain: string;
 
 declare const MTLCommonCounterComputeKernelInvocations: string;
 
 declare const MTLCommonCounterFragmentsPassed: string;
 
 declare const MTLCommonCounterSetTimestamp: string;
-
-declare const MTLTensorDomain: string;
 
 declare const MTLBlitOption: {
   None: 0,
@@ -2904,57 +2904,6 @@ declare interface MTLCommandBufferEncoderInfo extends NSObjectProtocol {
 declare class MTLCommandBufferEncoderInfo extends NativeObject implements MTLCommandBufferEncoderInfo {
 }
 
-declare interface MTL4Compiler extends NSObjectProtocol {
-  readonly device: MTLDevice;
-
-  readonly label: string;
-
-  readonly pipelineDataSetSerializer: MTL4PipelineDataSetSerializer;
-
-  newLibraryWithDescriptorError(descriptor: MTL4LibraryDescriptor, error: interop.PointerConvertible): MTLLibrary;
-
-  newDynamicLibraryError(library: MTLLibrary, error: interop.PointerConvertible): MTLDynamicLibrary;
-
-  newDynamicLibraryWithURLError(url: NSURL, error: interop.PointerConvertible): MTLDynamicLibrary;
-
-  newComputePipelineStateWithDescriptorCompilerTaskOptionsError(descriptor: MTL4ComputePipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLComputePipelineState;
-
-  newComputePipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsError(descriptor: MTL4ComputePipelineDescriptor, dynamicLinkingDescriptor: MTL4PipelineStageDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLComputePipelineState;
-
-  newRenderPipelineStateWithDescriptorCompilerTaskOptionsError(descriptor: MTL4PipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLRenderPipelineState;
-
-  newRenderPipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsError(descriptor: MTL4PipelineDescriptor, dynamicLinkingDescriptor: MTL4RenderPipelineDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLRenderPipelineState;
-
-  newRenderPipelineStateBySpecializationWithDescriptorPipelineError(descriptor: MTL4PipelineDescriptor, pipeline: MTLRenderPipelineState, error: interop.PointerConvertible): MTLRenderPipelineState;
-
-  newBinaryFunctionWithDescriptorCompilerTaskOptionsError(descriptor: MTL4BinaryFunctionDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTL4BinaryFunction;
-
-  newLibraryWithDescriptorCompletionHandler(descriptor: MTL4LibraryDescriptor, completionHandler: (p1: MTLLibrary, p2: NSError) => void): MTL4CompilerTask;
-
-  newDynamicLibraryCompletionHandler(library: MTLLibrary, completionHandler: (p1: MTLDynamicLibrary, p2: NSError) => void): MTL4CompilerTask;
-
-  newDynamicLibraryWithURLCompletionHandler(url: NSURL, completionHandler: (p1: MTLDynamicLibrary, p2: NSError) => void): MTL4CompilerTask;
-
-  newComputePipelineStateWithDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4ComputePipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLComputePipelineState, p2: NSError) => void): MTL4CompilerTask;
-
-  newComputePipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4ComputePipelineDescriptor, dynamicLinkingDescriptor: MTL4PipelineStageDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLComputePipelineState, p2: NSError) => void): MTL4CompilerTask;
-
-  newRenderPipelineStateWithDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4PipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLRenderPipelineState, p2: NSError) => void): MTL4CompilerTask;
-
-  newRenderPipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4PipelineDescriptor, dynamicLinkingDescriptor: MTL4RenderPipelineDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLRenderPipelineState, p2: NSError) => void): MTL4CompilerTask;
-
-  newRenderPipelineStateBySpecializationWithDescriptorPipelineCompletionHandler(descriptor: MTL4PipelineDescriptor, pipeline: MTLRenderPipelineState, completionHandler: (p1: MTLRenderPipelineState, p2: NSError) => void): MTL4CompilerTask;
-
-  newBinaryFunctionWithDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4BinaryFunctionDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTL4BinaryFunction, p2: NSError) => void): MTL4CompilerTask;
-
-  newMachineLearningPipelineStateWithDescriptorError(descriptor: MTL4MachineLearningPipelineDescriptor, error: interop.PointerConvertible): MTL4MachineLearningPipelineState;
-
-  newMachineLearningPipelineStateWithDescriptorCompletionHandler(descriptor: MTL4MachineLearningPipelineDescriptor, completionHandler: (p1: MTL4MachineLearningPipelineState, p2: NSError) => void): MTL4CompilerTask;
-}
-
-declare class MTL4Compiler extends NativeObject implements MTL4Compiler {
-}
-
 declare interface MTL4CompilerTask extends NSObjectProtocol {
   readonly compiler: MTL4Compiler;
 
@@ -3430,19 +3379,6 @@ declare interface MTLFunctionStitchingAttribute extends NSObjectProtocol {
 declare class MTLFunctionStitchingAttribute extends NativeObject implements MTLFunctionStitchingAttribute {
 }
 
-declare interface MTL4CommandAllocator extends NSObjectProtocol {
-  readonly device: MTLDevice;
-
-  readonly label: string;
-
-  allocatedSize(): number;
-
-  reset(): void;
-}
-
-declare class MTL4CommandAllocator extends NativeObject implements MTL4CommandAllocator {
-}
-
 declare interface MTLLogContainer extends NSObjectProtocol, NSFastEnumeration {
 }
 
@@ -3611,6 +3547,57 @@ declare interface MTLFence extends NSObjectProtocol {
 }
 
 declare class MTLFence extends NativeObject implements MTLFence {
+}
+
+declare interface MTL4Compiler extends NSObjectProtocol {
+  readonly device: MTLDevice;
+
+  readonly label: string;
+
+  readonly pipelineDataSetSerializer: MTL4PipelineDataSetSerializer;
+
+  newLibraryWithDescriptorError(descriptor: MTL4LibraryDescriptor, error: interop.PointerConvertible): MTLLibrary;
+
+  newDynamicLibraryError(library: MTLLibrary, error: interop.PointerConvertible): MTLDynamicLibrary;
+
+  newDynamicLibraryWithURLError(url: NSURL, error: interop.PointerConvertible): MTLDynamicLibrary;
+
+  newComputePipelineStateWithDescriptorCompilerTaskOptionsError(descriptor: MTL4ComputePipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLComputePipelineState;
+
+  newComputePipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsError(descriptor: MTL4ComputePipelineDescriptor, dynamicLinkingDescriptor: MTL4PipelineStageDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLComputePipelineState;
+
+  newRenderPipelineStateWithDescriptorCompilerTaskOptionsError(descriptor: MTL4PipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLRenderPipelineState;
+
+  newRenderPipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsError(descriptor: MTL4PipelineDescriptor, dynamicLinkingDescriptor: MTL4RenderPipelineDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTLRenderPipelineState;
+
+  newRenderPipelineStateBySpecializationWithDescriptorPipelineError(descriptor: MTL4PipelineDescriptor, pipeline: MTLRenderPipelineState, error: interop.PointerConvertible): MTLRenderPipelineState;
+
+  newBinaryFunctionWithDescriptorCompilerTaskOptionsError(descriptor: MTL4BinaryFunctionDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, error: interop.PointerConvertible): MTL4BinaryFunction;
+
+  newLibraryWithDescriptorCompletionHandler(descriptor: MTL4LibraryDescriptor, completionHandler: (p1: MTLLibrary, p2: NSError) => void): MTL4CompilerTask;
+
+  newDynamicLibraryCompletionHandler(library: MTLLibrary, completionHandler: (p1: MTLDynamicLibrary, p2: NSError) => void): MTL4CompilerTask;
+
+  newDynamicLibraryWithURLCompletionHandler(url: NSURL, completionHandler: (p1: MTLDynamicLibrary, p2: NSError) => void): MTL4CompilerTask;
+
+  newComputePipelineStateWithDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4ComputePipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLComputePipelineState, p2: NSError) => void): MTL4CompilerTask;
+
+  newComputePipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4ComputePipelineDescriptor, dynamicLinkingDescriptor: MTL4PipelineStageDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLComputePipelineState, p2: NSError) => void): MTL4CompilerTask;
+
+  newRenderPipelineStateWithDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4PipelineDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLRenderPipelineState, p2: NSError) => void): MTL4CompilerTask;
+
+  newRenderPipelineStateWithDescriptorDynamicLinkingDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4PipelineDescriptor, dynamicLinkingDescriptor: MTL4RenderPipelineDynamicLinkingDescriptor | null, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTLRenderPipelineState, p2: NSError) => void): MTL4CompilerTask;
+
+  newRenderPipelineStateBySpecializationWithDescriptorPipelineCompletionHandler(descriptor: MTL4PipelineDescriptor, pipeline: MTLRenderPipelineState, completionHandler: (p1: MTLRenderPipelineState, p2: NSError) => void): MTL4CompilerTask;
+
+  newBinaryFunctionWithDescriptorCompilerTaskOptionsCompletionHandler(descriptor: MTL4BinaryFunctionDescriptor, compilerTaskOptions: MTL4CompilerTaskOptions | null, completionHandler: (p1: MTL4BinaryFunction, p2: NSError) => void): MTL4CompilerTask;
+
+  newMachineLearningPipelineStateWithDescriptorError(descriptor: MTL4MachineLearningPipelineDescriptor, error: interop.PointerConvertible): MTL4MachineLearningPipelineState;
+
+  newMachineLearningPipelineStateWithDescriptorCompletionHandler(descriptor: MTL4MachineLearningPipelineDescriptor, completionHandler: (p1: MTL4MachineLearningPipelineState, p2: NSError) => void): MTL4CompilerTask;
+}
+
+declare class MTL4Compiler extends NativeObject implements MTL4Compiler {
 }
 
 declare interface MTLTensor extends MTLResource {
@@ -3790,6 +3777,19 @@ declare interface MTL4PipelineDataSetSerializer extends NSObjectProtocol {
 }
 
 declare class MTL4PipelineDataSetSerializer extends NativeObject implements MTL4PipelineDataSetSerializer {
+}
+
+declare interface MTL4CommandAllocator extends NSObjectProtocol {
+  readonly device: MTLDevice;
+
+  readonly label: string;
+
+  allocatedSize(): number;
+
+  reset(): void;
+}
+
+declare class MTL4CommandAllocator extends NativeObject implements MTL4CommandAllocator {
 }
 
 declare interface MTLTensorBinding extends MTLBinding {

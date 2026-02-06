@@ -5,6 +5,8 @@ declare const MLModelErrorDomain: string;
 
 declare const MLModelCreatorDefinedKey: string;
 
+declare const MLModelLicenseKey: string;
+
 declare const MLModelAuthorKey: string;
 
 declare const MLModelVersionStringKey: string;
@@ -14,8 +16,6 @@ declare const MLModelDescriptionKey: string;
 declare const MLFeatureValueImageOptionCropAndScale: string;
 
 declare const MLModelCollectionDidChangeNotification: string;
-
-declare const MLModelLicenseKey: string;
 
 declare const MLFeatureValueImageOptionCropRect: string;
 

@@ -13996,13 +13996,12 @@ declare class NSCollectionLayoutSection extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSPathCell extends NSActionCell implements NSMenuItemValidation, NSOpenSavePanelDelegate {
   pathStyle: interop.Enum<typeof NSPathStyle>;
 
   URL: NSURL;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setObjectValue(objectValue: interop.Object | null): void;
   setObjectValue(obj: NSCopying | null): void;
 
   get allowedTypes(): NSArray;
@@ -14830,7 +14829,6 @@ declare class NSMenuToolbarItem extends NSToolbarItem {
   setShowsIndicator(showsIndicator: boolean): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSPopUpButton extends NSButton {
   static popUpButtonWithMenuTargetAction<This extends abstract new (...args: any) => any>(this: This, menu: NSMenu, target: interop.Object | null, action: string | null): InstanceType<This>;
 
@@ -14894,7 +14892,7 @@ declare class NSPopUpButton extends NSButton {
 
   selectItemWithTag(tag: number): boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(title: string): void;
   setTitle(string: string): void;
 
   readonly selectedItem: NSMenuItem;
@@ -15138,7 +15136,6 @@ declare class NSStatusBar extends NSObject {
   isVertical(): boolean;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSScrollView extends NSView implements NSTextFinderBarContainer {
   initWithFrame(frameRect: CGRect): this;
 
@@ -15194,7 +15191,7 @@ declare class NSScrollView extends NSView implements NSTextFinderBarContainer {
 
   tile(): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  reflectScrolledClipView(clipView: NSClipView): void;
   reflectScrolledClipView(cView: NSClipView): void;
 
   scrollWheel(event: NSEvent): void;
@@ -15681,7 +15678,7 @@ declare class NSSavePanel extends NSPanel {
 
   setAccessoryView(accessoryView: NSView | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSWindowDelegate | null): void;
   setDelegate(delegate: NSOpenSavePanelDelegate | null): void;
 
   isExpanded(): boolean;
@@ -15698,7 +15695,7 @@ declare class NSSavePanel extends NSPanel {
 
   setPrompt(prompt: string | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(title: string): void;
   setTitle(title: string | null): void;
 
   setNameFieldLabel(nameFieldLabel: string | null): void;
@@ -15938,7 +15935,7 @@ declare class NSText extends NSView implements NSChangeSpelling, NSIgnoreMisspel
 
   sizeToFit(): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(sender: interop.Object | null): void;
 
   copyFont(sender: interop.Object | null): void;
@@ -16434,7 +16431,7 @@ declare class NSComboBox extends NSTextField {
 
   setCompletes(completes: boolean): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTextFieldDelegate | null): void;
   setDelegate(delegate: NSComboBoxDelegate | null): void;
 
   setDataSource(dataSource: NSComboBoxDataSource | null): void;
@@ -16472,19 +16469,19 @@ declare class NSTrackingArea extends NSObject implements NSCopying, NSCoding {
 
 // @ts-ignore ClassDecl.tsIgnore
 declare class NSMutableFontCollection extends NSFontCollection {
-  // @ts-ignore MemberDecl.tsIgnore
+  static fontCollectionWithDescriptors(queryDescriptors: NSArray<interop.Object> | Array<interop.Object>): NSFontCollection;
   static fontCollectionWithDescriptors(queryDescriptors: NSArray<interop.Object> | Array<interop.Object>): NSMutableFontCollection;
 
   // @ts-ignore MemberDecl.tsIgnore
   static readonly fontCollectionWithAllAvailableDescriptors: NSMutableFontCollection;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static fontCollectionWithLocale(locale: NSLocale): NSFontCollection;
   static fontCollectionWithLocale(locale: NSLocale): NSMutableFontCollection;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static fontCollectionWithName(name: string): NSFontCollection;
   static fontCollectionWithName(name: string): NSMutableFontCollection;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static fontCollectionWithNameVisibility(name: string, visibility: interop.Enum<typeof NSFontCollectionVisibility>): NSFontCollection;
   static fontCollectionWithNameVisibility(name: string, visibility: interop.Enum<typeof NSFontCollectionVisibility>): NSMutableFontCollection;
 
   // @ts-ignore MemberDecl.tsIgnore
@@ -16599,7 +16596,6 @@ declare class NSTreeController extends NSObjectController {
   setAlwaysUsesMultipleValuesMarker(alwaysUsesMultipleValuesMarker: boolean): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMenuItemCell extends NSButtonCell {
   initTextCell(string: string): this;
 
@@ -16623,7 +16619,7 @@ declare class NSMenuItemCell extends NSButtonCell {
 
   stateImageRectForBounds(cellFrame: CGRect): CGRect;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  titleRectForBounds(rect: CGRect): CGRect;
   titleRectForBounds(cellFrame: CGRect): CGRect;
 
   keyEquivalentRectForBounds(cellFrame: CGRect): CGRect;
@@ -16632,10 +16628,10 @@ declare class NSMenuItemCell extends NSButtonCell {
 
   drawStateImageWithFrameInView(cellFrame: CGRect, controlView: NSView): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  drawImageWithFrameInView(image: NSImage, frame: CGRect, controlView: NSView): void;
   drawImageWithFrameInView(cellFrame: CGRect, controlView: NSView): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  drawTitleWithFrameInView(title: NSAttributedString, frame: CGRect, controlView: NSView): CGRect;
   drawTitleWithFrameInView(cellFrame: CGRect, controlView: NSView): void;
 
   drawKeyEquivalentWithFrameInView(cellFrame: CGRect, controlView: NSView): void;
@@ -17447,7 +17443,7 @@ declare class NSSearchField extends NSTextField {
 
   setSendsSearchStringImmediately(sendsSearchStringImmediately: boolean): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTextFieldDelegate | null): void;
   setDelegate(delegate: NSSearchFieldDelegate): void;
 
   rectForSearchTextWhenCentered(isCentered: boolean): CGRect;
@@ -17519,7 +17515,6 @@ declare class NSCollectionLayoutSpacing extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSButton extends NSControl implements NSUserInterfaceValidations, NSAccessibilityButton, NSUserInterfaceCompression {
   static buttonWithTitleImageTargetAction<This extends abstract new (...args: any) => any>(this: This, title: string, image: NSImage, target: interop.Object | null, action: string | null): InstanceType<This>;
 
@@ -17591,7 +17586,7 @@ declare class NSButton extends NSControl implements NSUserInterfaceValidations, 
 
   keyEquivalentModifierMask: interop.Enum<typeof NSEventModifierFlags>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  performKeyEquivalent(event: NSEvent): boolean;
   performKeyEquivalent(key: NSEvent): boolean;
 
   compressWithPrioritizedCompressionOptions(prioritizedOptions: NSArray<interop.Object> | Array<interop.Object>): void;
@@ -19789,7 +19784,6 @@ declare class NSBitmapImageRep extends NSImageRep implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSTableView extends NSControl implements NSUserInterfaceValidations, NSTextViewDelegate, NSDraggingSource, NSAccessibilityTable {
   initWithFrame(frameRect: CGRect): this;
 
@@ -20236,7 +20230,7 @@ declare class NSTableView extends NSControl implements NSUserInterfaceValidation
   get accessibilitySelectedRows(): NSArray;
   set accessibilitySelectedRows(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAccessibilitySelectedRows(accessibilitySelectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
   setAccessibilitySelectedRows(selectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
 
   get accessibilityVisibleRows(): NSArray;
@@ -20749,7 +20743,6 @@ declare class NSATSTypesetter extends NSTypesetter {
   getGlyphsInRangeGlyphsCharacterIndexesGlyphInscriptionsElasticBits(glyphsRange: _NSRange, glyphBuffer: interop.PointerConvertible, charIndexBuffer: interop.PointerConvertible, inscribeBuffer: interop.PointerConvertible, elasticBuffer: interop.PointerConvertible): number;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSPopUpButtonCell extends NSMenuItemCell implements NSMenuItemValidation {
   initTextCellPullsDown(stringValue: string, pullDown: boolean): this;
 
@@ -20807,7 +20800,8 @@ declare class NSPopUpButtonCell extends NSMenuItemCell implements NSMenuItemVali
 
   selectItemWithTag(tag: number): boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(title: string | null): void;
+  setTitle(title: string): void;
   setTitle(string: string | null): void;
 
   readonly selectedItem: NSMenuItem;
@@ -21001,7 +20995,6 @@ declare class NSToolbarItem extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSSliderCell extends NSActionCell {
   static readonly prefersTrackingUntilMouseUp: boolean;
 
@@ -21075,12 +21068,12 @@ declare class NSSliderCell extends NSActionCell {
 
   title: string;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(title: string): void;
   setTitle(string: string): void;
 
   setKnobThickness(thickness: number): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setImage(image: NSImage | null): void;
   setImage(backgroundImage: NSImage): void;
 
   image: NSImage;
@@ -21142,17 +21135,16 @@ declare class NSSplitView extends NSView {
   isPaneSplitter(): boolean;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSTextAttachmentCell extends NSCell implements NSTextAttachmentCellProtocol {
-  // @ts-ignore MemberDecl.tsIgnore
+  drawWithFrameInView(cellFrame: CGRect, controlView: NSView): void;
   drawWithFrameInView(cellFrame: CGRect, controlView: NSView | null): void;
 
   wantsToTrackMouse(): boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  highlightWithFrameInView(flag: boolean, cellFrame: CGRect, controlView: NSView): void;
   highlightWithFrameInView(flag: boolean, cellFrame: CGRect, controlView: NSView | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackMouseInRectOfViewUntilMouseUp(event: NSEvent, cellFrame: CGRect, controlView: NSView, flag: boolean): boolean;
   trackMouseInRectOfViewUntilMouseUp(theEvent: NSEvent, cellFrame: CGRect, controlView: NSView | null, flag: boolean): boolean;
 
   readonly cellSize: CGSize;
@@ -21236,9 +21228,8 @@ declare class NSOpenGLLayer extends CAOpenGLLayer {
   setOpenGLContext(openGLContext: NSOpenGLContext | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSDictionaryController extends NSArrayController {
-  // @ts-ignore MemberDecl.tsIgnore
+  newObject(): interop.Object;
   newObject(): NSDictionaryControllerKeyValuePair;
 
   initialKey: string;
@@ -22035,7 +22026,7 @@ declare class NSTextContentStorage extends NSTextContentManager implements NSTex
 
   adjustedRangeFromRangeForEditingTextSelection(textRange: NSTextRange, forEditingTextSelection: boolean): NSTextRange;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTextContentManagerDelegate | null): void;
   setDelegate(delegate: NSTextContentStorageDelegate | null): void;
 
   setIncludesTextListMarkers(includesTextListMarkers: boolean): void;
@@ -23178,7 +23169,6 @@ declare class NSScrubber extends NSView {
   setBackgroundView(backgroundView: NSView | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSPersistentDocument extends NSDocument {
   managedObjectContext: NSManagedObjectContext;
 
@@ -23188,13 +23178,13 @@ declare class NSPersistentDocument extends NSDocument {
 
   persistentStoreTypeForFileType(fileType: string): string;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  writeToURLOfTypeForSaveOperationOriginalContentsURLError(url: NSURL, typeName: string, saveOperation: interop.Enum<typeof NSSaveOperationType>, absoluteOriginalContentsURL: NSURL | null, outError: interop.PointerConvertible): boolean;
   writeToURLOfTypeForSaveOperationOriginalContentsURLError(absoluteURL: NSURL, typeName: string, saveOperation: interop.Enum<typeof NSSaveOperationType>, absoluteOriginalContentsURL: NSURL | null, error: interop.PointerConvertible): boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  readFromURLOfTypeError(url: NSURL, typeName: string, outError: interop.PointerConvertible): boolean;
   readFromURLOfTypeError(absoluteURL: NSURL, typeName: string, error: interop.PointerConvertible): boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  revertToContentsOfURLOfTypeError(url: NSURL, typeName: string, outError: interop.PointerConvertible): boolean;
   revertToContentsOfURLOfTypeError(inAbsoluteURL: NSURL, inTypeName: string, outError: interop.PointerConvertible): boolean;
 
   setManagedObjectContext(managedObjectContext: NSManagedObjectContext | null): void;
@@ -26093,7 +26083,7 @@ declare class NSControl extends NSView {
 
   readonly selectedTag: number;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setNeedsDisplay(needsDisplay: boolean): void;
   setNeedsDisplay(): void;
 
   calcSize(): void;
@@ -26603,10 +26593,10 @@ declare class NSOutlineView extends NSTableView implements NSAccessibilityOutlin
 
   stronglyReferencesItems: boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTableViewDelegate | null): void;
   setDelegate(delegate: NSOutlineViewDelegate | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDataSource(dataSource: NSTableViewDataSource | null): void;
   setDataSource(dataSource: NSOutlineViewDataSource | null): void;
 
   setOutlineTableColumn(outlineTableColumn: NSTableColumn | null): void;
@@ -26631,7 +26621,8 @@ declare class NSOutlineView extends NSTableView implements NSAccessibilityOutlin
   get accessibilitySelectedRows(): NSArray;
   set accessibilitySelectedRows(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAccessibilitySelectedRows(selectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
+  setAccessibilitySelectedRows(accessibilitySelectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
   setAccessibilitySelectedRows(selectedRows: NSArray<interop.Object> | Array<interop.Object>): void;
 
   get accessibilityVisibleRows(): NSArray;
@@ -27009,7 +27000,7 @@ declare class NSTextView extends NSText implements NSColorChanging, NSMenuItemVa
   // @ts-ignore MemberDecl.tsIgnore
   rulerVisible: boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setSelectedRange(selectedRange: _NSRange): void;
   setSelectedRange(charRange: _NSRange): void;
 
   get allowedInputSourceLocales(): NSArray;
@@ -27063,7 +27054,7 @@ declare class NSTextView extends NSText implements NSColorChanging, NSMenuItemVa
 
   setUsesRolloverButtonForSelection(usesRolloverButtonForSelection: boolean): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTextDelegate | null): void;
   setDelegate(delegate: NSTextViewDelegate | null): void;
 
   isEditable(): boolean;
@@ -27082,7 +27073,7 @@ declare class NSTextView extends NSText implements NSColorChanging, NSMenuItemVa
 
   setDrawsBackground(drawsBackground: boolean): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setBackgroundColor(backgroundColor: NSColor | null): void;
   setBackgroundColor(backgroundColor: NSColor): void;
 
   isFieldEditor(): boolean;
@@ -27544,7 +27535,7 @@ declare class NSTextView extends NSText implements NSColorChanging, NSMenuItemVa
 
   accessibilityLineForIndex(index: number): number;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  accessibilityRangeForLine(line: number): _NSRange;
   accessibilityRangeForLine(lineNumber: number): _NSRange;
 
   accessibilityFrameForRange(range: _NSRange): CGRect;
@@ -27645,7 +27636,6 @@ declare class NSInputManager extends NSObject implements NSTextInput {
   validAttributesForMarkedText(): NSArray;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSComboButton extends NSControl {
   static comboButtonWithTitleMenuTargetAction<This extends abstract new (...args: any) => any>(this: This, title: string, menu: NSMenu | null, target: interop.Object | null, action: string | null): InstanceType<This>;
 
@@ -27669,7 +27659,7 @@ declare class NSComboButton extends NSControl {
 
   setImageScaling(imageScaling: interop.Enum<typeof NSImageScaling>): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setMenu(menu: NSMenu | null): void;
   setMenu(menu: NSMenu): void;
 
   setStyle(style: interop.Enum<typeof NSComboButtonStyle>): void;
@@ -27814,7 +27804,7 @@ declare class NSTokenField extends NSTextField {
 
   static readonly defaultTokenizingCharacterSet: NSCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTextFieldDelegate | null): void;
   setDelegate(delegate: NSTokenFieldDelegate | null): void;
 
   setTokenStyle(tokenStyle: interop.Enum<typeof NSTokenStyle>): void;
@@ -32859,9 +32849,8 @@ declare class NSGraphicsContext extends NSObject {
   static graphicsContextWithWindow(window: NSWindow): NSGraphicsContext;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSFormCell extends NSActionCell {
-  // @ts-ignore MemberDecl.tsIgnore
+  initTextCell(string: string): this;
   initTextCell(string: string | null): this;
 
   initWithCoder(coder: NSCoder): this;
@@ -34810,7 +34799,7 @@ declare class NSTextField extends NSControl implements NSUserInterfaceValidation
 
   accessibilityLineForIndex(index: number): number;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  accessibilityRangeForLine(line: number): _NSRange;
   accessibilityRangeForLine(lineNumber: number): _NSRange;
 
   accessibilityFrameForRange(range: _NSRange): CGRect;
@@ -35145,7 +35134,7 @@ declare class NSButtonCell extends NSActionCell {
 
   setShowsStateBy(showsStateBy: interop.Enum<typeof NSCellStyleMask>): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(title: string): void;
   setTitle(title: string | null): void;
 
   setAttributedTitle(attributedTitle: NSAttributedString): void;

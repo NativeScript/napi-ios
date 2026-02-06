@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 #include "ffi/NativeScriptException.h"
 #include "runtime/Bundle.h"
@@ -10,6 +11,7 @@
 #include "runtime/RuntimeConfig.h"
 #include "segappend.h"
 #include "ffi/Tasks.h"
+#include "BundleLoader.h"
 
 using namespace nativescript;
 
@@ -89,6 +91,13 @@ int main(int argc, char** argv) {
 
     bootFromBytecode(cwd, segmentData, bytecode_size);
   } else {
+    std::string mainPath = resolveMainPath();
+
+    if (!mainPath.empty()) {
+      bootFromModuleSpec(cwd, mainPath);
+      return 0;
+    }
+
     if (argc < 3) {
       std::cout << "Usage: " << argv[0] << " run <js file>" << std::endl;
       return 1;

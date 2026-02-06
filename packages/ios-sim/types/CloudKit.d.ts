@@ -38,9 +38,9 @@ declare const CKRecordModificationDateKey: string;
 
 declare const CKErrorDomain: string;
 
-declare const CKPartialErrorsByItemIDKey: string;
-
 declare const CKErrorUserDidResetEncryptedDataKey: string;
+
+declare const CKPartialErrorsByItemIDKey: string;
 
 declare const CKRecordChangedErrorServerRecordKey: string;
 

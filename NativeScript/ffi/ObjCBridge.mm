@@ -64,13 +64,21 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 
   self_dl = dlopen(nullptr, RTLD_NOW);
 
-  if (metadata_ptr) {
+  if (metadata_ptr && *((const char*)metadata_ptr) != '\0') {
+    #ifdef EMBED_METADATA_SIZE
+    NSLog(@"Ignoring metadata pointer due to embedded metadata");
+    metadata = new MDMetadataReader((void*)embedded_metadata);
+    #else
+    NSLog(@"Using metadata from pointer: %p", metadata_ptr);
     metadata = new MDMetadataReader((void*)metadata_ptr);
+    #endif
   } else {
 #ifdef EMBED_METADATA_SIZE
     if (metadata_path != nullptr) {
+      NSLog(@"Loading metadata from file: %s", metadata_path);
       metadata = loadMetadataFromFile(metadata_path);
     } else {
+      NSLog(@"Using embedded metadata");
       metadata = new MDMetadataReader((void*)embedded_metadata);
     }
 #else
@@ -85,7 +93,7 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 #endif
   }
 
-  objc_autoreleasePool = objc_autoreleasePoolPush();
+  // objc_autoreleasePool = objc_autoreleasePoolPush();
 }
 
 ObjCBridgeState::~ObjCBridgeState() {
@@ -134,7 +142,9 @@ ObjCBridgeState::~ObjCBridgeState() {
   }
   cFunctionCache.clear();
 
-  objc_autoreleasePoolPop(objc_autoreleasePool);
+  // if (objc_autoreleasePool != nullptr)
+  //   objc_autoreleasePoolPop(objc_autoreleasePool);
+
   delete metadata;
   dlclose(self_dl);
 }

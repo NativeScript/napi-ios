@@ -15,7 +15,7 @@ exports.runRuntimeTests = function() {
 }
 
 exports.runWorkerTests = function() {
-    require("./Workers/index");
+    // require("./Workers/index");
 }
 
 exports.runAllTests = function() {

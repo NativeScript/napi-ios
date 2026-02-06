@@ -92,6 +92,10 @@ declare const IOTimerDispatchSourceInterface: number;
 
 declare const IOTimerDispatchSource_Class: OSClassLoadInformation;
 
+declare const kIOTimerClockMachContinuousTime: number;
+
+declare const kIOTimerClockRealTime: number;
+
 declare const IOServiceNotificationDispatchSourceInterface: number;
 
 declare const IOServiceNotificationDispatchSourceMetaClass: number;
@@ -278,6 +282,8 @@ declare const kIOMemoryMapReadOnly: number;
 
 declare const IOCommandInterface: number;
 
+declare const kIOTimerClockMonotonicRaw: number;
+
 declare const IODispatchQueueInterface: number;
 
 declare const gOSBundleMetaClass: interop.Pointer;
@@ -316,6 +322,8 @@ declare const kOSArrayAppend: number;
 
 declare const IOInterruptDispatchSource: number;
 
+declare const kIOTimerClockUptimeRaw: number;
+
 declare const IOEventLinkMetaClass: number;
 
 declare const kIOUserClientScalarArrayCountMax: number;
@@ -330,6 +338,8 @@ declare const gOSDictionaryMetaClass: interop.Pointer;
 
 declare const OSArrayInterface: number;
 
+declare const kIOTimerClockWallTime: number;
+
 declare const kIOMemoryDirectionOutIn: number;
 
 declare const gIOBufferMemoryDescriptorMetaClass: interop.Pointer;
@@ -341,6 +351,8 @@ declare const IOUserClientMetaClass: number;
 declare const kIODispatchQueueMethodsNotSynchronized: number;
 
 declare const IOServiceMetaClass: number;
+
+declare const kIOTimerClockMachAbsoluteTime: number;
 
 declare const IOService: number;
 

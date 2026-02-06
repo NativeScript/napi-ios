@@ -1,6 +1,7 @@
 // @ts-check
 
-import "../index.js";
+import "@nativescript/macos-node-api";
+import "@nativescript/macos-node-api/Metal";
 
 objc.import("Metal");
 

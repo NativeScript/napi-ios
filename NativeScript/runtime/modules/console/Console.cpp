@@ -273,6 +273,10 @@ JS_METHOD(Console::Log) {
     }
 #endif
 
+    if (RuntimeConfig.CustomLogCallback) {
+      RuntimeConfig.CustomLogCallback(logString.c_str());
+    }
+
 #ifdef TARGET_ENGINE_V8
     v8_inspector::ConsoleAPIType method;
     switch (stream) {

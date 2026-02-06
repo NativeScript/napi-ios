@@ -1,4 +1,5 @@
 #import "TNSDeclarationConflicts.h"
+#import <Foundation/Foundation.h>
 
 @implementation TNSInterfaceProtocolConflict
 @end

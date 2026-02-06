@@ -27,8 +27,6 @@ declare const kVTPixelTransferPropertyKey_DestinationTransferFunction: interop.P
 
 declare const kVTPixelTransferPropertyKey_DestinationColorPrimaries: interop.Pointer;
 
-declare const kVTDownsamplingMode_Average: interop.Pointer;
-
 declare const kVTDownsamplingMode_Decimate: interop.Pointer;
 
 declare const kVTPixelTransferPropertyKey_DestinationPixelAspectRatio: interop.Pointer;
@@ -40,8 +38,6 @@ declare const kVTScalingMode_Trim: interop.Pointer;
 declare const kVTScalingMode_Letterbox: interop.Pointer;
 
 declare const kVTScalingMode_Normal: interop.Pointer;
-
-declare const kVTVideoEncoderList_SupportsFrameReordering: interop.Pointer;
 
 declare const kVTVideoEncoderList_InstanceLimit: interop.Pointer;
 
@@ -117,8 +113,6 @@ declare const kVTCompressionPropertyKey_EnableLTR: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_EncoderID: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_PixelTransferProperties: interop.Pointer;
-
 declare const kVTAlphaChannelMode_StraightAlpha: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_GammaLevel: interop.Pointer;
@@ -144,8 +138,6 @@ declare const kVTVideoEncoderSpecification_RequiredEncoderGPURegistryID: interop
 declare const kVTCompressionPropertyKey_UsingHardwareAcceleratedVideoEncoder: interop.Pointer;
 
 declare const kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder: interop.Pointer;
-
-declare const kVTSampleAttachmentQualityMetricsKey_LumaMeanSquaredError: interop.Pointer;
 
 declare const kVTSampleAttachmentKey_QualityMetrics: interop.Pointer;
 
@@ -193,8 +185,6 @@ declare const kVTProfileLevel_MP4V_Main_L4: interop.Pointer;
 
 declare const kVTProfileLevel_MP4V_Main_L3: interop.Pointer;
 
-declare const kVTProfileLevel_MP4V_Main_L2: interop.Pointer;
-
 declare const kVTProfileLevel_MP4V_Simple_L2: interop.Pointer;
 
 declare const kVTProfileLevel_MP4V_Simple_L1: interop.Pointer;
@@ -231,13 +221,7 @@ declare const kVTProfileLevel_H264_Main_4_1: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Main_3_1: interop.Pointer;
 
-declare const kVTProfileLevel_H264_Main_3_0: interop.Pointer;
-
-declare const kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel: interop.Pointer;
-
 declare const kVTProfileLevel_H264_Baseline_5_2: interop.Pointer;
-
-declare const kVTProfileLevel_H264_Baseline_5_0: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Baseline_4_1: interop.Pointer;
 
@@ -301,9 +285,9 @@ declare const kVTVideoEncoderList_IsHardwareAccelerated: interop.Pointer;
 
 declare const kVTCompressionPropertyCameraCalibrationKey_LensDomain: interop.Pointer;
 
-declare const kVTSampleAttachmentQualityMetricsKey_ChromaBlueMeanSquaredError: interop.Pointer;
+declare const kVTVideoEncoderList_CodecType: interop.Pointer;
 
-declare const kVTDecompressionProperty_DeinterlaceMode_Temporal: interop.Pointer;
+declare const kVTHDRMetadataInsertionMode_None: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: interop.Pointer;
 
@@ -312,8 +296,6 @@ declare const kVTCompressionPropertyKey_PixelAspectRatio: interop.Pointer;
 declare const kVTDecompressionPropertyKey_OnlyTheseFrames: interop.Pointer;
 
 declare const kVTMultiPassStorageInvalidErr: number;
-
-declare const kVTProfileLevel_HEVC_Monochrome_AutoLevel: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumDuration: interop.Pointer;
 
@@ -355,8 +337,6 @@ declare const kVTPropertyDocumentationKey: interop.Pointer;
 
 declare const kVTPropertySupportedValueMaximumKey: interop.Pointer;
 
-declare const kVTPropertySupportedValueMinimumKey: interop.Pointer;
-
 declare const kVTPropertyReadWriteStatus_ReadWrite: interop.Pointer;
 
 declare const kVTPropertyReadWriteStatus_ReadOnly: interop.Pointer;
@@ -386,8 +366,6 @@ declare const kVTVideoDecoderRemovedErr: number;
 declare const kVTColorCorrectionImageRotationFailedErr: number;
 
 declare const kVTPixelTransferNotPermittedErr: number;
-
-declare const kVTFrameSiloInvalidTimeStampErr: number;
 
 declare const kVTVideoEncoderAuthorizationErr: number;
 
@@ -445,13 +423,7 @@ declare const kVTEncodeFrameOptionKey_AcknowledgedLTRTokens: interop.Pointer;
 
 declare const kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_ContentLightLevelInfo: interop.Pointer;
-
-declare const kVTPropertyShouldBeSerializedKey: interop.Pointer;
-
 declare const kVTCompressionPropertyKey_MinAllowedFrameQP: interop.Pointer;
-
-declare const kVTVideoDecoderSpecification_RequiredDecoderGPURegistryID: interop.Pointer;
 
 declare const kVTPropertyType_Enumeration: interop.Pointer;
 
@@ -466,8 +438,6 @@ declare const kVTExtensionDisabledErr: number;
 declare const kVTCompressionPropertyKey_MoreFramesBeforeStart: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_VideoEncoderPixelBufferAttributes: interop.Pointer;
-
-declare const kVTCouldNotFindExtensionErr: number;
 
 declare const kVTVideoEncoderList_EncoderID: interop.Pointer;
 
@@ -511,11 +481,9 @@ declare const kVTDecompressionPropertyKey_ThreadCount: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Main_3_2: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_IntrinsicMatrixProjectionOffset: interop.Pointer;
+declare const kVTDecompressionPropertyKey_MaximizePowerEfficiency: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_HasRightStereoEyeView: interop.Pointer;
-
-declare const kVTCompressionPropertyKey_ViewPackingKind: interop.Pointer;
+declare const kVTProfileLevel_H264_High_4_2: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_SourceFrameCount: interop.Pointer;
 
@@ -529,6 +497,26 @@ declare const kVTRotation_180: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_AspectRatio16x9: interop.Pointer;
 
+declare const kVTSampleAttachmentQualityMetricsKey_LumaMeanSquaredError: interop.Pointer;
+
+declare const kVTCompressionPropertyCameraCalibrationKey_LensAlgorithmKind: interop.Pointer;
+
+declare const kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel: interop.Pointer;
+
+declare const kVTProfileLevel_MP4V_Simple_L3: interop.Pointer;
+
+declare const kVTDownsamplingMode_Average: interop.Pointer;
+
+declare const kVTHDRMetadataInsertionMode_RequestSDRRangePreservation: interop.Pointer;
+
+declare const kVTMotionEstimationSessionCreationOption_UseMultiPassSearch: interop.Pointer;
+
+declare const kVTProfileLevel_H264_Main_5_1: interop.Pointer;
+
+declare const kVTDecompressionProperty_DeinterlaceMode_Temporal: interop.Pointer;
+
+declare const kVTProfileLevel_HEVC_Monochrome_AutoLevel: interop.Pointer;
+
 declare const kVTCompressionPropertyKey_RealTime: interop.Pointer;
 
 declare const kVTDecompressionProperty_DeinterlaceMode_VerticalFilter: interop.Pointer;
@@ -539,15 +527,19 @@ declare const kVTDecompressionPropertyKey_PixelTransferProperties: interop.Point
 
 declare const kVTCompressionPropertyKey_SupportedPresetDictionaries: interop.Pointer;
 
-declare const kVTDecompressionProperty_OnlyTheseFrames_IFrames: interop.Pointer;
-
 declare const kVTCompressionPropertyKey_StereoCameraBaseline: interop.Pointer;
+
+declare const kVTCompressionPropertyKey_TransferFunction: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Baseline_5_1: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_ExtrinsicOriginSource: interop.Pointer;
+declare const kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs: interop.Pointer;
 
-declare const kVTEncodeFrameOptionKey_ForceLTRRefresh: interop.Pointer;
+declare const kVTViewPackingKind_SideBySide: interop.Pointer;
+
+declare const kVTCouldNotFindExtensionErr: number;
+
+declare const kVTCompressionPropertyCameraCalibrationKey_ExtrinsicOriginSource: interop.Pointer;
 
 declare const kVTColorCorrectionPixelTransferFailedErr: number;
 
@@ -557,23 +549,25 @@ declare const kVTMultiPassStorageIdentifierMismatchErr: number;
 
 declare const kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumFrameCount: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_TransferFunction: interop.Pointer;
+declare const kVTRotation_CW90: interop.Pointer;
+
+declare const kVTCompressionPropertyKey_PixelTransferProperties: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Baseline_4_0: interop.Pointer;
 
 declare const kVTVideoEncoderList_PerformanceRating: interop.Pointer;
 
+declare const kVTProfileLevel_MP4V_Main_L2: interop.Pointer;
+
 declare const kVTCompressionPropertyKey_PreserveDynamicHDRMetadata: interop.Pointer;
 
-declare const kVTCompressionPropertyKey_OutputBitDepth: interop.Pointer;
+declare const kVTVideoDecoderBadDataErr: number;
 
-declare const kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs: interop.Pointer;
+declare const kVTCompressionPropertyKey_OutputBitDepth: interop.Pointer;
 
 declare const kVTCouldNotFindVideoEncoderErr: number;
 
 declare const kVTDecompressionProperty_OnlyTheseFrames_AllFrames: interop.Pointer;
-
-declare const kVTViewPackingKind_SideBySide: interop.Pointer;
 
 declare const kVTPixelRotationNotSupportedErr: number;
 
@@ -581,15 +575,13 @@ declare const kVTCompressionPropertyKey_PreserveAlphaChannel: interop.Pointer;
 
 declare const kVTPropertyReadOnlyErr: number;
 
+declare const kVTEncodeFrameOptionKey_ForceLTRRefresh: interop.Pointer;
+
 declare const kVTCompressionPropertyKey_FieldCount: interop.Pointer;
 
 declare const kVTCompressionPropertyCameraCalibrationKey_LensFrameAdjustmentsPolynomialY: interop.Pointer;
 
-declare const kVTProfileLevel_H264_High_4_2: interop.Pointer;
-
 declare const kVTSessionMalfunctionErr: number;
-
-declare const kVTVideoEncoderList_CodecType: interop.Pointer;
 
 declare const kVTCameraCalibrationLensRole_Left: interop.Pointer;
 
@@ -601,17 +593,15 @@ declare const kVTProjectionKind_ParametricImmersive: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_MaxH264SliceBytes: interop.Pointer;
 
+declare const kVTCompressionPropertyCameraCalibrationKey_IntrinsicMatrixProjectionOffset: interop.Pointer;
+
 declare const kVTPixelTransferPropertyKey_DownsamplingMode: interop.Pointer;
 
-declare const kVTVideoDecoderBadDataErr: number;
-
-declare const kVTProfileLevel_H264_Main_5_1: interop.Pointer;
+declare const kVTVideoEncoderList_SupportsFrameReordering: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_NumberOfFramesBeingDecoded: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_FieldMode: interop.Pointer;
-
-declare const kVTRotation_CW90: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Baseline_AutoLevel: interop.Pointer;
 
@@ -623,27 +613,33 @@ declare const kVTPropertySupportedValueListKey: interop.Pointer;
 
 declare const kVTDecompressionResolutionKey_Width: interop.Pointer;
 
-declare const kVTDecompressionPropertyKey_ContentHasInterframeDependencies: interop.Pointer;
+declare const kVTPropertySupportedValueMinimumKey: interop.Pointer;
 
-declare const kVTHDRMetadataInsertionMode_RequestSDRRangePreservation: interop.Pointer;
+declare const kVTDecompressionPropertyKey_ContentHasInterframeDependencies: interop.Pointer;
 
 declare const kVTCompressionPropertyKey_MultiPassStorage: interop.Pointer;
 
+declare const kVTSampleAttachmentQualityMetricsKey_ChromaBlueMeanSquaredError: interop.Pointer;
+
 declare const kVTCompressionPropertyKey_H264EntropyMode: interop.Pointer;
+
+declare const kVTProfileLevel_H264_Main_3_0: interop.Pointer;
+
+declare const kVTFrameSiloInvalidTimeStampErr: number;
 
 declare const kVTProfileLevel_H264_High_5_0: interop.Pointer;
 
+declare const kVTCompressionPropertyKey_ContentLightLevelInfo: interop.Pointer;
+
 declare const kVTProfileLevel_H264_High_4_0: interop.Pointer;
 
-declare const kVTDecompressionPropertyKey_MaximizePowerEfficiency: interop.Pointer;
+declare const kVTCompressionPropertyKey_ViewPackingKind: interop.Pointer;
 
 declare const kVTDecompressionPropertyKey_RealTime: interop.Pointer;
 
-declare const kVTCompressionPropertyCameraCalibrationKey_LensAlgorithmKind: interop.Pointer;
-
-declare const kVTProfileLevel_MP4V_Simple_L3: interop.Pointer;
-
 declare const kVTVideoEncoderMalfunctionErr: number;
+
+declare const kVTDecompressionProperty_OnlyTheseFrames_IFrames: interop.Pointer;
 
 declare const kVTAlphaChannelMode_PremultipliedAlpha: interop.Pointer;
 
@@ -651,21 +647,25 @@ declare const kVTCompressionPropertyKey_HasLeftStereoEyeView: interop.Pointer;
 
 declare const kVTH264EntropyMode_CABAC: interop.Pointer;
 
-declare const kVTMotionEstimationSessionCreationOption_UseMultiPassSearch: interop.Pointer;
-
 declare const kVTProfileLevel_HEVC_Monochrome10_AutoLevel: interop.Pointer;
 
 declare const kVTDecompressionProperty_FieldMode_BottomFieldOnly: interop.Pointer;
 
-declare const kVTHDRMetadataInsertionMode_None: interop.Pointer;
+declare const kVTVideoDecoderSpecification_RequiredDecoderGPURegistryID: interop.Pointer;
 
 declare const kVTInvalidSessionErr: number;
+
+declare const kVTCompressionPropertyKey_HasRightStereoEyeView: interop.Pointer;
 
 declare const kVTScalingMode_CropSourceToCleanAperture: interop.Pointer;
 
 declare const kVTFrameSiloInvalidTimeRangeErr: number;
 
 declare const kVTDecompressionResolutionKey_Height: interop.Pointer;
+
+declare const kVTProfileLevel_H264_Baseline_5_0: interop.Pointer;
+
+declare const kVTPropertyShouldBeSerializedKey: interop.Pointer;
 
 declare const kVTProfileLevel_H264_Main_4_0: interop.Pointer;
 

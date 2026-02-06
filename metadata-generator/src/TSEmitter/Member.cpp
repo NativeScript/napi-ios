@@ -10,72 +10,110 @@ std::string MemberDecl::toString() {
   return file.toString();
 }
 
+static std::string signatureString(const MemberDecl& decl) {
+  MemberDecl copy = decl;
+  copy.overloads.clear();
+  copy.tsIgnore = false;
+  copy.optional = false;
+  TSFile file;
+  file.write(copy, false);
+  return file.toString();
+}
+
+void MemberDecl::addOverloadFrom(const MemberDecl& member) {
+  if (member.kind != kMemberMethod || member.name != name ||
+      member.isStatic != isStatic) {
+    return;
+  }
+
+  MemberDecl overload = member;
+  overload.overloads.clear();
+  overload.tsIgnore = false;
+  overload.optional = false;
+
+  const std::string newSig = signatureString(overload);
+  for (const auto& existing : overloads) {
+    if (signatureString(existing) == newSig) {
+      return;
+    }
+  }
+
+  overloads.emplace_back(overload);
+}
+
 void TSFile::write(MemberDecl &decl, bool isInterface,
                    std::vector<std::string> *classTypeParameters) {
   if (decl.kind == kMemberMethod) {
-    std::string line;
-    if (decl.isStatic) {
-      line += "static ";
-    }
-    line += decl.name;
-
-    bool staticReturnsThis =
-        decl.isStatic && decl.returnType.kind == kTypeInstanceObject;
-    if (staticReturnsThis) {
-      line += "<";
-      if (classTypeParameters != nullptr && !classTypeParameters->empty()) {
-        for (const std::string &param : *classTypeParameters) {
-          line += param + ", ";
-        }
+    auto writeSignature = [&](const MemberDecl& method) {
+      std::string line;
+      if (method.isStatic) {
+        line += "static ";
       }
-      line += "This extends abstract new (...args: any) => any>";
-    } else if (decl.isStatic && classTypeParameters != nullptr &&
-               !classTypeParameters->empty()) {
-      line += "<";
-      for (size_t i = 0; i < classTypeParameters->size(); i++) {
-        line += classTypeParameters->at(i);
-        if (i < classTypeParameters->size() - 1) {
+      line += method.name;
+
+      bool staticReturnsThis =
+          method.isStatic && method.returnType.kind == kTypeInstanceObject;
+      if (staticReturnsThis) {
+        line += "<";
+        if (classTypeParameters != nullptr && !classTypeParameters->empty()) {
+          for (const std::string &param : *classTypeParameters) {
+            line += param + ", ";
+          }
+        }
+        line += "This extends abstract new (...args: any) => any>";
+      } else if (method.isStatic && classTypeParameters != nullptr &&
+                 !classTypeParameters->empty()) {
+        line += "<";
+        for (size_t i = 0; i < classTypeParameters->size(); i++) {
+          line += classTypeParameters->at(i);
+          if (i < classTypeParameters->size() - 1) {
+            line += ", ";
+          }
+        }
+        line += ">";
+      }
+      if (isInterface && method.optional) {
+        line += "?";
+      }
+      line += "(";
+      if (staticReturnsThis) {
+        line += "this: This";
+        if (!method.parameters.empty()) {
           line += ", ";
         }
       }
-      line += ">";
-    }
-    if (isInterface && decl.optional) {
-      line += "?";
-    }
-    line += "(";
-    if (staticReturnsThis) {
-      line += "this: This";
-      if (!decl.parameters.empty()) {
-        line += ", ";
+      std::unordered_set<std::string> paramNames;
+      for (size_t i = 0; i < method.parameters.size(); i++) {
+        if (i > 0) {
+          line += ", ";
+        }
+        auto param = method.parameters[i];
+        if (paramNames.contains(param.name)) {
+          param.name += "_";
+        }
+        paramNames.emplace(param.name);
+        line += param.name;
+        line += ": ";
+        line += typeToString(param.type, method.isStatic, false);
       }
-    }
-    std::unordered_set<std::string> paramNames;
-    for (size_t i = 0; i < decl.parameters.size(); i++) {
-      if (i > 0) {
-        line += ", ";
-      }
-      auto param = decl.parameters[i];
-      if (paramNames.contains(param.name)) {
-        param.name += "_";
-      }
-      paramNames.emplace(param.name);
-      line += param.name;
-      line += ": ";
-      line += typeToString(param.type, decl.isStatic, false);
-    }
-    line += "): ";
-    line += typeToString(decl.returnType, decl.isStatic, true);
-    line += ";";
+      line += "): ";
+      line += typeToString(method.returnType, method.isStatic, true);
+      line += ";";
 
-    if (decl.tsIgnore) {
-      // Due to inconsistencies between Objective-C and TypeScript type
-      // systems, we have to use this annotation to prevent the TypeScript
-      // compiler from complaining about how one type doesn't satisfy another.
-      code.write("// @ts-ignore MemberDecl.tsIgnore");
-    }
+      if (method.tsIgnore) {
+        // Due to inconsistencies between Objective-C and TypeScript type
+        // systems, we have to use this annotation to prevent the TypeScript
+        // compiler from complaining about how one type doesn't satisfy another.
+        code.write("// @ts-ignore MemberDecl.tsIgnore");
+      }
 
-    code.write(line);
+      code.write(line);
+    };
+
+    for (const auto& overload : decl.overloads) {
+      writeSignature(overload);
+    }
+    writeSignature(decl);
   } else if (decl.kind == kMemberProperty) {
     auto getterType = typeToString(decl.propertyType, decl.isStatic, true);
     auto setterType = typeToString(decl.propertyType, decl.isStatic, false);

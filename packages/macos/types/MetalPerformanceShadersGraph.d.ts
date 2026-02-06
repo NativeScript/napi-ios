@@ -1728,7 +1728,6 @@ declare class MPSGraphDepthwiseConvolution3DOpDescriptor extends MPSGraphObject 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class MPSGraphShapedType extends MPSGraphType {
   get shape(): NSArray;
   set shape(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -1737,7 +1736,7 @@ declare class MPSGraphShapedType extends MPSGraphType {
 
   initWithShapeDataType(shape: NSArray<interop.Object> | Array<interop.Object> | null, dataType: interop.Enum<typeof MPSDataType>): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  isEqualTo(object: interop.Object | null): boolean;
   isEqualTo(object: MPSGraphShapedType | null): boolean;
 
   setShape(shape: NSArray<interop.Object> | Array<interop.Object> | null): void;

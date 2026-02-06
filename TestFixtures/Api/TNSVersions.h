@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 #define generateVersionDeclarations(V1, V2)                                                  \
   __attribute__((availability(ios, introduced = V1)))                                        \
       __attribute__((availability(visionos, introduced = V1))) @interface TNSInterface       \

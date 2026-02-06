@@ -794,9 +794,8 @@ declare class IKImageBrowserCell extends NSObject {
   layerForType(type: string): CALayer;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class IKImageBrowserView extends NSView implements NSDraggingSource {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithFrame(frameRect: CGRect): this;
   initWithFrame(frame: CGRect): this;
 
   dataSource: interop.Object;

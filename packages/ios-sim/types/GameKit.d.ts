@@ -2,17 +2,15 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const GKPlayerAuthenticationDidChangeNotificationName: string;
-
 declare const GKErrorDomain: string;
+
+declare const GKPlayerAuthenticationDidChangeNotificationName: string;
 
 declare const GKExchangeTimeoutDefault: number;
 
 declare const GKTurnTimeoutNone: number;
 
 declare const GKExchangeTimeoutNone: number;
-
-declare const GKSessionErrorDomain: string;
 
 declare const GKGameSessionErrorDomain: string;
 
@@ -21,6 +19,8 @@ declare const GKPlayerIDNoLongerAvailable: string;
 declare const GKVoiceChatServiceErrorDomain: string;
 
 declare const GKTurnTimeoutDefault: number;
+
+declare const GKSessionErrorDomain: string;
 
 declare const GKPlayerDidChangeNotificationName: string;
 

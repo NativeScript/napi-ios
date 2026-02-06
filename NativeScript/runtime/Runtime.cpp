@@ -43,13 +43,12 @@ Runtime::~Runtime() {
   modules_.DeInit();
 
   if (env_) {
-    napi_close_handle_scope(env_, globalScope_);
+     {
+       NapiScope scope(env_);
 
-    {
-      NapiScope scope(env_);
-
-      js_free_napi_env(env_);
-    }
+       napi_close_handle_scope(env_, globalScope_);
+       js_free_napi_env(env_);
+     }
 
     js_free_runtime(runtime_);
   }
@@ -123,8 +122,8 @@ void Runtime::Init(bool isWorker) {
   napi_create_string_utf8(env_, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env_, compatScript, &result);
 
-  #ifdef TARGET_ENGINE_V8
-  const char *PromiseProxyScript = R"(
+#ifdef TARGET_ENGINE_V8
+  const char* PromiseProxyScript = R"(
         // Ensure that Promise callbacks are executed on the
         // same thread on which they were created
         (() => {
@@ -193,18 +192,19 @@ void Runtime::Init(bool isWorker) {
         })();
     )";
 
-    napi_value promiseProxyScript;
-    napi_create_string_utf8(env_, PromiseProxyScript, NAPI_AUTO_LENGTH, &promiseProxyScript);
-    napi_run_script(env_, promiseProxyScript, &result);
-    #endif  // TARGET_ENGINE_V8
+  napi_value promiseProxyScript;
+  napi_create_string_utf8(env_, PromiseProxyScript, NAPI_AUTO_LENGTH,
+                          &promiseProxyScript);
+  napi_run_script(env_, promiseProxyScript, &result);
+#endif  // TARGET_ENGINE_V8
 
   if (isWorker) {
     napi_property_descriptor prop = napi_util::desc("self", global);
     napi_define_properties(env_, global, 1, &prop);
   }
 
-  napi_property_descriptor prop = napi_util::desc(
-      "__drainMicrotaskQueue", drainMicrotasks, nullptr);
+  napi_property_descriptor prop =
+      napi_util::desc("__drainMicrotaskQueue", drainMicrotasks, nullptr);
   napi_define_properties(env_, global, 1, &prop);
 
   modules_.Init(env_, global);

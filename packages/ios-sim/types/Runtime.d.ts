@@ -1,36 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const UNW_ARM_R6: number;
-
-declare const UNW_PPC64_F7: number;
-
-declare const UNWIND_ARM_FRAME_SECOND_PUSH_R11: number;
-
-declare const kDNSServiceFlagsBrowseDomains: number;
-
-declare const kDNSServiceType_NSEC3: number;
-
-declare const kUnknownType: number;
-
-declare const UNW_PPC64_VS62: number;
-
-declare const UNW_OR1K_R1: number;
-
-declare const UNW_AARCH64_X3: number;
-
-declare const UNW_HEXAGON_R20: number;
-
-declare const optarg: string;
-
-declare const UNWIND_X86_64_REG_R15: number;
-
-declare const UNW_ARM64_D1: number;
-
-declare const UNW_ARM_WC1: number;
-
 declare const UNW_VE_V0: number;
 
 declare const UNW_ARM64_X28: number;
+
+declare const UNW_HEXAGON_R20: number;
 
 declare const UNW_PPC64_V4: number;
 
@@ -64,13 +38,9 @@ declare const UNW_ARM_D14: number;
 
 declare const UNW_X86_EBX: number;
 
-declare const UNW_VE_V12: number;
-
 declare const UNW_LOONGARCH_F12: number;
 
 declare const UNW_AARCH64_X23: number;
-
-declare const UNW_ARM64_D15: number;
 
 declare const UNW_OR1K_R15: number;
 
@@ -87,8 +57,6 @@ declare const UNW_PPC64_VS61: number;
 declare const UNW_ARM_WR8: number;
 
 declare const optopt: number;
-
-declare const UNW_PPC64_V18: number;
 
 declare const dyld_error_kind_dylib_wrong_arch: number;
 
@@ -134,10 +102,6 @@ declare const UNW_AARCH64_X8: number;
 
 declare const _dispatch_data_destructor_free: () => void;
 
-declare const UNW_MIPS_F17: number;
-
-declare const UNW_SPARC_L1: number;
-
 declare const UNW_VE_V4: number;
 
 declare const UNW_VE_VL: number;
@@ -168,8 +132,6 @@ declare const UNW_RISCV_F0: number;
 
 declare const kDNSServiceType_SPF: number;
 
-declare const UNW_SPARC_G3: number;
-
 declare const UNW_PPC64_F14: number;
 
 declare const KERNEL_SECURITY_TOKEN: security_token_t;
@@ -180,13 +142,9 @@ declare const UNW_PPC64_VS28: number;
 
 declare const UNW_PPC64_VS40: number;
 
-declare const UNW_VE_VM1: number;
-
 declare const UNW_VE_S15: number;
 
 declare const UNW_PPC64_VS37: number;
-
-declare const _xpc_error_termination_imminent: _xpc_dictionary_s;
 
 declare const UNW_MIPS_R30: number;
 
@@ -210,29 +168,27 @@ declare const UNW_PPC_R20: number;
 
 declare const HV_ERROR: number;
 
-declare const UNW_ARM64_X23: number;
-
 declare const kDNSServiceType_MF: number;
 
 declare const UNW_PPC64_F15: number;
+
+declare const HV_SUCCESS: number;
 
 declare const UNW_PPC64_VS63: number;
 
 declare const UNW_MIPS_F21: number;
 
+declare const UNW_OR1K_R1: number;
+
 declare const kDNSServiceFlagsExpiredAnswer: number;
 
 declare const UNW_HEXAGON_R25: number;
 
-declare const UNW_RISCV_X3: number;
-
-declare const UNW_SPARC_G5: number;
+declare const UNWIND_ARM_FRAME_SECOND_PUSH_R11: number;
 
 declare const in6addr_loopback: in6_addr;
 
 declare const kDNSServiceType_UINFO: number;
-
-declare const UNW_VE_S0: number;
 
 declare const UNW_RISCV_X19: number;
 
@@ -248,8 +204,6 @@ declare const UNW_LOONGARCH_R24: number;
 
 declare const UNW_VE_V27: number;
 
-declare const UNW_PPC64_R26: number;
-
 declare const opterr: number;
 
 declare const kDNSServiceErr_Transient: number;
@@ -257,8 +211,6 @@ declare const kDNSServiceErr_Transient: number;
 declare const XPC_ACTIVITY_STATE_WAIT: number;
 
 declare const dyld_error_kind_dylib_version: number;
-
-declare const UNW_PPC_F24: number;
 
 declare const UNW_PPC64_F31: number;
 
@@ -306,8 +258,6 @@ declare const UNW_AARCH64_V28: number;
 
 declare const UNW_SPARC_L4: number;
 
-declare const kDNSServiceType_SIG: number;
-
 declare const UNW_X86_64_RCX: number;
 
 declare const UNW_LOONGARCH_R21: number;
@@ -322,8 +272,6 @@ declare const UNW_X86_64_RDX: number;
 
 declare const kDNSServiceType_LOC: number;
 
-declare const UNW_S390X_R14: number;
-
 declare const UNW_ARM_S29: number;
 
 declare const UNW_VE_V46: number;
@@ -335,8 +283,6 @@ declare const UNW_MIPS_F28: number;
 declare const UNW_VE_S5: number;
 
 declare const tzname: interop.Pointer;
-
-declare const UNW_VE_S20: number;
 
 declare const UNW_PPC64_CR6: number;
 
@@ -353,6 +299,8 @@ declare const kDNSServiceType_AFSDB: number;
 declare const UNW_AARCH64_X7: number;
 
 declare const UNW_PPC_V5: number;
+
+declare const UNW_AARCH64_X3: number;
 
 declare const UNW_VE_V19: number;
 
@@ -383,8 +331,6 @@ declare const OBJC_GENERATIONAL_COLLECTION: number;
 declare const UNW_ARM_S14: number;
 
 declare const extend: number;
-
-declare const UNW_VE_V39: number;
 
 declare const kDNSServiceType_MINFO: number;
 
@@ -422,101 +368,67 @@ declare const UNW_VE_VM9: number;
 
 declare const UNW_HEXAGON_R10: number;
 
-declare const UNW_RISCV_F24: number;
-
-declare const UNW_RISCV_F12: number;
-
-declare const UNW_PPC64_VS15: number;
-
 declare const kDNSServiceType_GID: number;
 
-declare const UIDNA_DEFAULT: number;
+declare const kDNSServiceErr_Invalid: number;
 
-declare const UNW_X86_64_XMM1: number;
+declare const UNW_MIPS_R15: number;
 
-declare const UNW_MIPS_R3: number;
+declare const UNW_PPC_R14: number;
 
-declare const kDNSServiceFlagsSecure: number;
+declare const DYLD_CHAINED_IMPORT_ADDEND: number;
 
-declare const matrix_identity_float3x3: simd_float3x3;
+declare const UNW_MIPS_F19: number;
+
+declare const _xpc_error_connection_interrupted: _xpc_dictionary_s;
 
 declare const UNW_EREADONLYREG: number;
 
-declare const kDNSServiceType_MX: number;
+declare const UNW_ARM_SP: number;
 
-declare const bootstrap_port: number;
+declare const UNW_LOONGARCH_F0: number;
 
-declare const UTEXT_MAGIC: number;
+declare const UNW_SPARC_I7: number;
 
-declare const UNW_RISCV_X20: number;
+declare const UNW_PPC_V0: number;
 
-declare const UNW_VE_V53: number;
+declare const UNW_X86_64_R14: number;
 
-declare const UNW_VE_S42: number;
+declare const UNW_ARM64_X31: number;
 
 declare const kDNSServiceFlagsShared: number;
 
 declare const kDNSServiceType_KEY: number;
 
-declare const UNW_PPC_CR6: number;
+declare const UNW_HEXAGON_R3: number;
 
-declare const kDNSServiceType_HINFO: number;
+declare const kDNSServiceType_TSIG: number;
 
-declare const vm_page_size: number;
+declare const UNW_S390X_R14: number;
 
-declare const UNW_VE_S23: number;
-
-declare const HV_MEMORY_EXEC: number;
-
-declare const kDNSServiceFlagsEnableDNSSEC: number;
-
-declare const UNW_HEXAGON_R31: number;
-
-declare const UNW_ARM_S28: number;
-
-declare const UNW_LOONGARCH_R0: number;
-
-declare const UNW_HEXAGON_R21: number;
+declare const _dispatch_data_destructor_munmap: () => void;
 
 declare const UNW_MIPS_R13: number;
 
-declare const UNW_RISCV_X14: number;
+declare const UNW_X86_64_R10: number;
 
 declare const UNW_LOONGARCH_R23: number;
-
-declare const UNW_VE_VM15: number;
-
-declare const UNW_LOONGARCH_F7: number;
-
-declare const UNW_RISCV_X31: number;
 
 declare const UNW_OR1K_R0: number;
 
 declare const UNW_ARM64_X21: number;
 
-declare const kDNSServiceType_RT: number;
-
-declare const UNWIND_X86_REG_EBP: number;
-
-declare const __fpcr_trap_invalid: number;
-
-declare const UNW_AARCH64_X2: number;
-
-declare const UNW_LOONGARCH_R20: number;
+declare const kDNSServiceType_TXT: number;
 
 declare const UNW_LOONGARCH_F8: number;
 
 declare const kDNSServiceType_MAILA: number;
-
-declare const UNW_MIPS_F19: number;
 
 declare const UNW_VE_S2: number;
 
 declare const UNW_SPARC_L5: number;
 
 declare const UNW_HEXAGON_R23: number;
-
-declare const UNW_ARM_S27: number;
 
 declare const UNW_AARCH64_X29: number;
 
@@ -534,11 +446,7 @@ declare const UNW_PPC_F30: number;
 
 declare const kDNSServiceType_DHCID: number;
 
-declare const UNW_ARM64_RA_SIGN_STATE: number;
-
 declare const UNWIND_X86_64_MODE_MASK: number;
-
-declare const UNW_PPC64_VS3: number;
 
 declare const UTEXT_PROVIDER_WRITABLE: number;
 
@@ -550,45 +458,89 @@ declare const UNWIND_ARM64_FRAME_D8_D9_PAIR: number;
 
 declare const UNW_LOONGARCH_F16: number;
 
+declare const kDNSServiceFlagsPrivateFive: number;
+
 declare const UNW_VE_S10: number;
 
-declare const UNW_PPC_V0: number;
+declare const kDNSServiceType_NULL: number;
 
-declare const UNW_X86_64_R14: number;
-
-declare const UNW_PPC64_R4: number;
+declare const UNW_PPC64_VS36: number;
 
 declare const UNW_PPC64_V7: number;
 
 declare const UNW_ARM_WR1: number;
 
-declare const kDNSServiceType_NULL: number;
+declare const UNW_ARM64_X23: number;
 
-declare const UNW_PPC64_V6: number;
+declare const UNW_PPC_CR7: number;
 
-declare const UNW_PPC64_VS36: number;
+declare const UNW_EUNSPEC: number;
 
-declare const UIDNA_USE_STD3_RULES: number;
+declare const kDNSServiceFlagsSecure: number;
 
-declare const UNW_S390X_R5: number;
+declare const matrix_identity_float3x3: simd_float3x3;
 
-declare const UNW_PPC_R10: number;
+declare const UNW_PPC_F13: number;
 
-declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
+declare const UNW_RISCV_F4: number;
+
+declare const UNW_PPC64_VS3: number;
+
+declare const _c_locale: interop.Pointer;
 
 declare const UNW_PPC64_VS35: number;
 
-declare const alphaStage: number;
+declare const UNW_ARM_WC3: number;
 
-declare const UNW_ARM64_X31: number;
+declare const UNW_RISCV_X15: number;
 
-declare const UNW_ARM64_D31: number;
+declare const UNWIND_X86_FRAMELESS_STACK_REG_COUNT: number;
 
-declare const UNW_VE_V52: number;
+declare const UNWIND_ARM64_MODE_DWARF: number;
 
-declare const UNW_OR1K_R25: number;
+declare const UNW_SPARC_I6: number;
 
-declare const UNW_PPC64_F17: number;
+declare const UNW_S390X_R6: number;
+
+declare const UNW_X86_64_RDI: number;
+
+declare const UNW_PPC64_VSCR: number;
+
+declare const UNW_MIPS_LO: number;
+
+declare const UNW_OR1K_R22: number;
+
+declare const UNW_MIPS_F10: number;
+
+declare const UNW_ARM_WR5: number;
+
+declare const UNW_OR1K_R11: number;
+
+declare const HV_UNSUPPORTED: number;
+
+declare const kDNSServiceFlagsThresholdOne: number;
+
+declare const DYLD_CHAINED_PTR_64_OFFSET: number;
+
+declare const UNW_PPC64_R7: number;
+
+declare const UNW_ARM_S27: number;
+
+declare const UNW_PPC64_V18: number;
+
+declare const UNW_ARM_S16: number;
+
+declare const UNW_VE_V59: number;
+
+declare const UNW_PPC_V17: number;
+
+declare const UNW_PPC64_V28: number;
+
+declare const UNW_VE_V58: number;
+
+declare const UNW_PPC64_V31: number;
+
+declare const UNW_X86_64_XMM11: number;
 
 declare const UNW_RISCV_F22: number;
 
@@ -602,33 +554,45 @@ declare const UNW_X86_EDI: number;
 
 declare const UNW_MIPS_R17: number;
 
-declare const OBJC_CLEAR_RESIDENT_STACK: number;
-
-declare const KERNEL_AUDIT_TOKEN: audit_token_t;
-
 declare const UNW_PPC64_R17: number;
 
 declare const UNWIND_X86_EBP_FRAME_REGISTERS: number;
 
-declare const UNW_ARM64_X26: number;
+declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
+
+declare const UNW_VE_VIXR: number;
+
+declare const UNW_VE_V39: number;
+
+declare const UNW_PPC64_VS15: number;
+
+declare const UNW_ARM64_D15: number;
+
+declare const UNW_VE_V12: number;
+
+declare const UNW_PPC_F4: number;
+
+declare const UNW_PPC_LR: number;
 
 declare const kDNSServiceFlagsUnicastResponse: number;
 
-declare const UNW_VE_S6: number;
+declare const _dispatch_source_type_proc: dispatch_source_type_s;
 
-declare const HV_SUCCESS: number;
+declare const UNW_ARM_D19: number;
+
+declare const UNW_ARM64_RA_SIGN_STATE: number;
+
+declare const OBJC_WAIT_UNTIL_DONE: number;
+
+declare const UNW_MIPS_F0: number;
+
+declare const KERNEL_AUDIT_TOKEN: audit_token_t;
 
 declare const UNW_MIPS_F26: number;
 
-declare const _dispatch_data_destructor_munmap: () => void;
-
 declare const UNW_RISCV_X8: number;
 
-declare const _xpc_error_connection_interrupted: _xpc_dictionary_s;
-
 declare const UNW_SPARC_I2: number;
-
-declare const UNW_HEXAGON_R3: number;
 
 declare const UNW_PPC64_VS48: number;
 
@@ -644,17 +608,19 @@ declare const UTEXT_PROVIDER_LENGTH_IS_EXPENSIVE: number;
 
 declare const UNWIND_X86_DWARF_SECTION_OFFSET: number;
 
+declare const UNW_VE_S6: number;
+
 declare const UNW_MIPS_F14: number;
 
 declare const UNW_LOONGARCH_R12: number;
 
 declare const UNW_AARCH64_X1: number;
 
-declare const _c_locale: interop.Pointer;
-
-declare const UNW_ARM_D19: number;
+declare const UNW_SPARC_O4: number;
 
 declare const UNW_PPC64_VS39: number;
+
+declare const kDNSServiceType_RT: number;
 
 declare const UNW_LOONGARCH_F23: number;
 
@@ -664,13 +630,7 @@ declare const UNW_PPC64_F23: number;
 
 declare const UNW_MIPS_F25: number;
 
-declare const _dispatch_source_type_proc: dispatch_source_type_s;
-
 declare const UNW_S390X_F10: number;
-
-declare const UNW_X86_64_RDI: number;
-
-declare const UNW_ARM_WR15: number;
 
 declare const UNW_ARM_R8: number;
 
@@ -681,6 +641,8 @@ declare const UNW_RISCV_F18: number;
 declare const UNW_PPC64_VRSAVE: number;
 
 declare const UNW_VE_VM14: number;
+
+declare const UNW_VE_S0: number;
 
 declare const UNW_VE_V31: number;
 
@@ -696,13 +658,13 @@ declare const UNW_ARM64_D26: number;
 
 declare const UNW_X86_64_XMM9: number;
 
+declare const UNW_HEXAGON_R21: number;
+
 declare const UNW_ARM_WR0: number;
 
 declare const UNW_MIPS_R10: number;
 
 declare const UNW_LOONGARCH_F24: number;
-
-declare const UNW_X86_64_R10: number;
 
 declare const UNW_VE_S48: number;
 
@@ -718,7 +680,15 @@ declare const UNW_PPC64_V15: number;
 
 declare const UNW_ARM_WR3: number;
 
+declare const UNW_VE_S19: number;
+
+declare const UNW_PPC64_VS57: number;
+
+declare const bootstrap_port: number;
+
 declare const UNW_X86_EBP: number;
+
+declare const UNW_PPC64_F7: number;
 
 declare const __fpsr_saturation: number;
 
@@ -730,15 +700,15 @@ declare const UNW_PPC_V7: number;
 
 declare const UNW_SPARC_I0: number;
 
-declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
+declare const UNW_ARM64_X17: number;
 
 declare const __fpcr_trap_denormal: number;
-
-declare const UNW_RISCV_F4: number;
 
 declare const kDNSServiceFlagsDefault: number;
 
 declare const UNW_RISCV_X21: number;
+
+declare const UNW_RISCV_X7: number;
 
 declare const UNW_ARM64_X7: number;
 
@@ -758,21 +728,31 @@ declare const UNW_VE_S17: number;
 
 declare const UNW_VE_S35: number;
 
+declare const UNW_PPC64_F17: number;
+
 declare const UNW_PPC64_V10: number;
 
-declare const UNW_S390X_F6: number;
+declare const UNW_SPARC_L1: number;
 
-declare const OBJC_WAIT_UNTIL_DONE: number;
+declare const UNW_S390X_F6: number;
 
 declare const UNWIND_ARM64_MODE_FRAME: number;
 
 declare const UNW_ARM_R11: number;
 
+declare const UNW_LOONGARCH_R20: number;
+
 declare const UNWIND_ARM_FRAME_D_REG_COUNT_MASK: number;
 
 declare const _xpc_type_error: _xpc_type_s;
 
-declare const UNW_PPC64_VSCR: number;
+declare const UNW_S390X_R5: number;
+
+declare const UIDNA_USE_STD3_RULES: number;
+
+declare const UNW_OR1K_R25: number;
+
+declare const UNW_ARM_IP: number;
 
 declare const UNWIND_X86_64_FRAMELESS_STACK_REG_PERMUTATION: number;
 
@@ -786,11 +766,19 @@ declare const UNW_MIPS_R16: number;
 
 declare const UNW_AARCH64_V23: number;
 
+declare const UNW_LOONGARCH_R19: number;
+
+declare const UNW_RISCV_X31: number;
+
 declare const UNW_AARCH64_V9: number;
+
+declare const UTEXT_MAGIC: number;
 
 declare const UNW_PPC64_R3: number;
 
-declare const eNoteExitReparentedDeprecated: number;
+declare const UNW_ARM_S8: number;
+
+declare const UNW_PPC_F5: number;
 
 declare const UNW_OR1K_R4: number;
 
@@ -808,6 +796,8 @@ declare const UNW_ARM_D10: number;
 
 declare const UNWIND_X86_MODE_EBP_FRAME: number;
 
+declare const UNW_PPC64_VS62: number;
+
 declare const UNW_PPC64_F8: number;
 
 declare const UNW_ARM64_X8: number;
@@ -818,9 +808,9 @@ declare const UNW_S390X_R10: number;
 
 declare const UIDNA_CHECK_BIDI: number;
 
-declare const UNW_ARM64_X30: number;
-
 declare const UNWIND_X86_64_REG_NONE: number;
+
+declare const UNW_PPC_R10: number;
 
 declare const kDNSServiceErr_ServiceNotRunning: number;
 
@@ -839,6 +829,8 @@ declare const UNW_MIPS_R31: number;
 declare const UNW_PPC64_V11: number;
 
 declare const UNW_MIPS_R11: number;
+
+declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
 
 declare const UNW_SPARC_O6: number;
 
@@ -862,10 +854,6 @@ declare const UNW_PPC_V25: number;
 
 declare const UNW_PPC64_V24: number;
 
-declare const UNW_VE_V58: number;
-
-declare const UNW_PPC64_V31: number;
-
 declare const UNW_PPC_R22: number;
 
 declare const _xpc_type_string: _xpc_type_s;
@@ -888,7 +876,7 @@ declare const UNW_VE_S58: number;
 
 declare const UNW_PPC_V15: number;
 
-declare const UNW_PPC64_V5: number;
+declare const UNW_MIPS_F30: number;
 
 declare const UNW_PPC64_R28: number;
 
@@ -896,9 +884,7 @@ declare const UNW_MIPS_F27: number;
 
 declare const UNW_ARM_WR11: number;
 
-declare const kDNSServiceFlagsPrivateFive: number;
-
-declare const UNW_AARCH64_RA_SIGN_STATE: number;
+declare const UNW_LOONGARCH_R0: number;
 
 declare const UNW_PPC64_F29: number;
 
@@ -908,11 +894,25 @@ declare const UNW_PPC64_R27: number;
 
 declare const _dispatch_source_type_data_or: dispatch_source_type_s;
 
-declare const UNW_PPC_CR7: number;
-
 declare const UNW_PPC_F1: number;
 
 declare const UNW_ARM_R10: number;
+
+declare const UNW_AARCH64_RA_SIGN_STATE: number;
+
+declare const UNW_SPARC_I5: number;
+
+declare const UNW_VE_V6: number;
+
+declare const UNW_ARM_WR15: number;
+
+declare const sqlite3_version: interop.Pointer;
+
+declare const UNW_RISCV_F27: number;
+
+declare const UNW_PPC64_VS13: number;
+
+declare const UNW_HEXAGON_R4: number;
 
 declare const matrix_identity_double4x4: simd_double4x4;
 
@@ -932,6 +932,8 @@ declare const UNW_ARM_R3: number;
 
 declare const UNW_RISCV_F30: number;
 
+declare const _xpc_type_endpoint: _xpc_type_s;
+
 declare const UNW_ARM_D25: number;
 
 declare const UNW_LOONGARCH_R10: number;
@@ -943,8 +945,6 @@ declare const UNW_ARM_R0: number;
 declare const UNW_PPC64_R2: number;
 
 declare const _xpc_bool_false: _xpc_bool_s;
-
-declare const UNW_RISCV_F27: number;
 
 declare const kDNSServiceFlagsReturnIntermediates: number;
 
@@ -960,6 +960,8 @@ declare const UNW_PPC64_VS9: number;
 
 declare const kDNSServiceType_TKEY: number;
 
+declare const suboptarg: string;
+
 declare const __fpcr_flush_to_zero: number;
 
 declare const UNW_S390X_F0: number;
@@ -970,15 +972,13 @@ declare const UNW_OR1K_R31: number;
 
 declare const UIDNA_ERROR_EMPTY_LABEL: number;
 
-declare const UNW_VE_S53: number;
-
 declare const kDNSServiceType_PTR: number;
 
 declare const UNW_PPC64_VS54: number;
 
-declare const UNW_PPC_R3: number;
+declare const _xpc_error_termination_imminent: _xpc_dictionary_s;
 
-declare const UNW_MIPS_R20: number;
+declare const UNW_PPC_R3: number;
 
 declare const UNW_PPC_CR3: number;
 
@@ -1014,8 +1014,6 @@ declare const UNW_PPC64_R1: number;
 
 declare const kDNSServiceFlagsNoAutoRename: number;
 
-declare const kDNSServiceErr_Invalid: number;
-
 declare const kDNSServiceAttributeAAAAFallback: DNSServiceAttribute_s;
 
 declare const _FE_DFL_ENV: fenv_t;
@@ -1023,8 +1021,6 @@ declare const _FE_DFL_ENV: fenv_t;
 declare const UNW_PPC64_R29: number;
 
 declare const UNW_ECROSSRASIGNING: number;
-
-declare const UNW_ARM_S16: number;
 
 declare const UNW_VE_V3: number;
 
@@ -1034,11 +1030,7 @@ declare const UNW_ARM64_D18: number;
 
 declare const UNW_X86_64_R11: number;
 
-declare const UNW_MIPS_F0: number;
-
 declare const _dispatch_source_type_read: dispatch_source_type_s;
-
-declare const UNW_ARM_SP: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R10: number;
 
@@ -1064,6 +1056,8 @@ declare const UNW_PPC_R25: number;
 
 declare const OSBigEndian: number;
 
+declare const HV_MEMORY_EXEC: number;
+
 declare const UNW_PPC64_VS47: number;
 
 declare const UNW_MIPS_F20: number;
@@ -1072,11 +1066,7 @@ declare const _dispatch_source_type_mach_send: dispatch_source_type_s;
 
 declare const UNW_PPC64_LR: number;
 
-declare const UNW_ARM_D1: number;
-
 declare const UNW_PPC64_TFHAR: number;
-
-declare const UNW_LOONGARCH_R19: number;
 
 declare const UNW_S390X_R2: number;
 
@@ -1100,19 +1090,13 @@ declare const kDNSServiceFlagsQueueRequest: number;
 
 declare const kDNSServiceErr_BadSig: number;
 
-declare const UNW_PPC64_V28: number;
-
 declare const signgam: number;
 
 declare const UNW_PPC_R29: number;
 
-declare const UNW_SPARC_I7: number;
-
 declare const UNW_LOONGARCH_F27: number;
 
 declare const _dispatch_source_type_signal: dispatch_source_type_s;
-
-declare const UNW_PPC64_VS13: number;
 
 declare const kDNSServiceFlagsSuppressUnusable: number;
 
@@ -1126,8 +1110,6 @@ declare const UNW_PPC64_R20: number;
 
 declare const UNW_PPC_V22: number;
 
-declare const UNW_LOONGARCH_F29: number;
-
 declare const kDNSServiceFlagsAllowRemoteQuery: number;
 
 declare const UNW_PPC_F20: number;
@@ -1137,8 +1119,6 @@ declare const UNW_ARM_D3: number;
 declare const UNW_S390X_R13: number;
 
 declare const UNW_AARCH64_V13: number;
-
-declare const UNW_MIPS_F29: number;
 
 declare const UNW_RISCV_F6: number;
 
@@ -1172,6 +1152,12 @@ declare const _NSConcreteStackBlock: unknown /* const array */;
 
 declare const UNW_HEXAGON_R8: number;
 
+declare const _dispatch_source_type_data_add: dispatch_source_type_s;
+
+declare const XPC_ACTIVITY_STATE_CHECK_IN: number;
+
+declare const UNW_AARCH64_X12: number;
+
 declare const DYLD_CHAINED_PTR_64: number;
 
 declare const UNW_MIPS_F3: number;
@@ -1182,7 +1168,11 @@ declare const UIDNA_CHECK_CONTEXTJ: number;
 
 declare const UNW_ARM_S6: number;
 
+declare const UNW_MIPS_R20: number;
+
 declare const kDNSServiceType_DS: number;
+
+declare const UNW_MIPS_F29: number;
 
 declare const UNW_X86_64_XMM6: number;
 
@@ -1200,11 +1190,11 @@ declare const UNW_ENOINFO: number;
 
 declare const kDNSServiceFlagsBackgroundTrafficClass: number;
 
-declare const UNW_MIPS_LO: number;
-
 declare const UNW_ARM64_D10: number;
 
 declare const UNW_HEXAGON_R11: number;
+
+declare const UNW_PPC64_VS25: number;
 
 declare const UNW_S390X_R9: number;
 
@@ -1234,6 +1224,8 @@ declare const UNW_SPARC_I1: number;
 
 declare const UNW_ARM64_X16: number;
 
+declare const UNW_ARM_D1: number;
+
 declare const _xpc_type_uint64: _xpc_type_s;
 
 declare const UNW_X86_64_RBP: number;
@@ -1244,21 +1236,19 @@ declare const UNW_SPARC_G1: number;
 
 declare const UNW_PPC_R12: number;
 
+declare const UNW_AARCH64_V27: number;
+
 declare const kDNSServiceType_NS: number;
 
 declare const _xpc_type_rich_error: _xpc_type_s;
 
 declare const kDNSServiceType_NSEC: number;
 
-declare const UNW_MIPS_F30: number;
-
 declare const UNW_S390X_F1: number;
 
 declare const UNW_PPC_R5: number;
 
 declare const UIDNA_ERROR_LABEL_TOO_LONG: number;
-
-declare const UNW_PPC_F13: number;
 
 declare const UNW_LOONGARCH_R7: number;
 
@@ -1270,8 +1260,6 @@ declare const kDNSServiceType_A: number;
 
 declare const UNW_ARM64_D14: number;
 
-declare const UNW_ARM_WC3: number;
-
 declare const UNW_VE_S7: number;
 
 declare const UNW_PPC_F7: number;
@@ -1280,15 +1268,17 @@ declare const matrix_identity_half4x4: simd_half4x4;
 
 declare const UNW_PPC64_V2: number;
 
-declare const UNW_ARM_D29: number;
+declare const UNW_AARCH64_V12: number;
 
-declare const kDNSServiceType_TXT: number;
+declare const UNW_ARM_D29: number;
 
 declare const UNW_LOONGARCH_R15: number;
 
 declare const UNW_ARM_D30: number;
 
 declare const kDNSServiceType_ANY: number;
+
+declare const UNW_ARM_S28: number;
 
 declare const UNW_LOONGARCH_R27: number;
 
@@ -1299,6 +1289,8 @@ declare const vm_kernel_page_mask: number;
 declare const UNW_MIPS_F4: number;
 
 declare const UNW_PPC64_VS26: number;
+
+declare const UNW_PPC64_R18: number;
 
 declare const UNW_MIPS_F2: number;
 
@@ -1322,33 +1314,37 @@ declare const UNW_VE_V62: number;
 
 declare const UNW_VE_V48: number;
 
-declare const UNW_RISCV_X7: number;
-
 declare const _xpc_type_double: _xpc_type_s;
 
 declare const DYLD_CHAINED_PTR_64_KERNEL_CACHE: number;
+
+declare const UNW_AARCH64_X15: number;
+
+declare const UNW_PPC64_R26: number;
 
 declare const kDNSServiceType_NSAP: number;
 
 declare const UNWIND_ARM64_FRAME_X19_X20_PAIR: number;
 
-declare const UNW_PPC64_R7: number;
-
 declare const UNW_PPC64_R6: number;
 
 declare const UNW_ARM_D6: number;
 
+declare const __stdinp: interop.Pointer;
+
+declare const UNW_X86_64_XMM1: number;
+
 declare const UNW_X86_EAX: number;
 
 declare const UNW_PPC_V24: number;
+
+declare const UNW_PPC64_R4: number;
 
 declare const UNW_ARM64_X29: number;
 
 declare const UTEXT_PROVIDER_OWNS_TEXT: number;
 
 declare const UNWIND_X86_64_REG_R13: number;
-
-declare const sqlite3_version: interop.Pointer;
 
 declare const kDNSServiceErr_NATPortMappingDisabled: number;
 
@@ -1366,19 +1362,13 @@ declare const UNW_VE_VM3: number;
 
 declare const UIDNA_ERROR_BIDI: number;
 
-declare const UNWIND_X86_64_REG_R12: number;
-
-declare const UNW_PPC64_VS14: number;
-
-declare const UIDNA_ERROR_CONTEXTO_PUNCTUATION: number;
-
-declare const UNW_PPC_CR4: number;
-
 declare const UNW_AARCH64_X13: number;
 
 declare const UNW_ARM_D28: number;
 
 declare const UNW_PPC_R1: number;
+
+declare const UIDNA_DEFAULT: number;
 
 declare const kDNSServiceType_OPT: number;
 
@@ -1386,11 +1376,11 @@ declare const UNW_LOONGARCH_R9: number;
 
 declare const kNilOptions: number;
 
-declare const DYLD_CHAINED_PTR_64_OFFSET: number;
-
 declare const _xpc_type_data: _xpc_type_s;
 
 declare const UNW_OR1K_R12: number;
+
+declare const UNW_ARM64_X30: number;
 
 declare const kDNSServiceErr_NATTraversal: number;
 
@@ -1402,27 +1392,21 @@ declare const UNW_AARCH64_X5: number;
 
 declare const UNW_VE_V47: number;
 
-declare const UNW_VE_S43: number;
-
 declare const UNW_PPC_F15: number;
 
 declare const UNW_ARM64_X0: number;
 
 declare const UNW_ARM64_D8: number;
 
+declare const UNW_ARM64_D20: number;
+
 declare const kDNSServiceType_DNSKEY: number;
 
 declare const UNW_PPC_CTR: number;
 
-declare const UNW_X86_64_RIP: number;
-
 declare const UNW_PPC_R7: number;
 
 declare const UNW_ARM64_D28: number;
-
-declare const UNW_OR1K_R11: number;
-
-declare const UNW_MIPS_R15: number;
 
 declare const UNW_ARM_WC2: number;
 
@@ -1436,9 +1420,17 @@ declare const UNW_PPC_F16: number;
 
 declare const UNW_PPC_V21: number;
 
+declare const UNW_VE_V53: number;
+
+declare const UNW_LOONGARCH_F7: number;
+
+declare const UNW_VE_VM15: number;
+
 declare const UNW_S390X_F8: number;
 
 declare const UNW_AARCH64_V5: number;
+
+declare const UNWIND_ARM_FRAME_FIRST_PUSH_R6: number;
 
 declare const _os_activity_current: os_activity_s;
 
@@ -1450,6 +1442,8 @@ declare const UNWIND_X86_64_REG_RBX: number;
 
 declare const UNW_PPC64_CR2: number;
 
+declare const UNW_PPC64_R31: number;
+
 declare const UNW_ARM_LR: number;
 
 declare const UNW_SPARC_O2: number;
@@ -1457,8 +1451,6 @@ declare const UNW_SPARC_O2: number;
 declare const UNW_VE_S25: number;
 
 declare const UNW_ARM64_X12: number;
-
-declare const UNW_ARM64_X17: number;
 
 declare const UNW_PPC64_VS2: number;
 
@@ -1486,6 +1478,10 @@ declare const UNW_ARM_S22: number;
 
 declare const kDNSServiceFlagsMoreComing: number;
 
+declare const kDNSServiceType_UNSPEC: number;
+
+declare const UNW_ARM64_D5: number;
+
 declare const UNW_PPC64_R0: number;
 
 declare const _xpc_type_date: _xpc_type_s;
@@ -1505,6 +1501,8 @@ declare const UNW_VE_V17: number;
 declare const UNW_ARM_D16: number;
 
 declare const UNW_LOONGARCH_F21: number;
+
+declare const kDNSServiceType_MX: number;
 
 declare const UNW_PPC64_V0: number;
 
@@ -1550,8 +1548,6 @@ declare const OBJC_EXHAUSTIVE_COLLECTION: number;
 
 declare const UNW_AARCH64_V1: number;
 
-declare const UNW_AARCH64_V12: number;
-
 declare const UNW_VE_S27: number;
 
 declare const UNW_RISCV_X25: number;
@@ -1564,15 +1560,15 @@ declare const UNW_VE_V28: number;
 
 declare const UNW_LOONGARCH_R22: number;
 
-declare const UNW_VE_S44: number;
+declare const UNW_ARM64_D1: number;
 
-declare const UNW_VE_S19: number;
+declare const UNW_ARM_WC1: number;
+
+declare const UNW_VE_S44: number;
 
 declare const UNW_X86_64_XMM4: number;
 
 declare const UNW_ARM64_LR: number;
-
-declare const kDNSServiceFlagsLongLivedQuery: number;
 
 declare const UNW_PPC64_F27: number;
 
@@ -1620,9 +1616,11 @@ declare const UNW_OR1K_R3: number;
 
 declare const UNW_MIPS_R8: number;
 
-declare const _mh_execute_header: mach_header_64;
+declare const UNW_PPC64_VS14: number;
 
-declare const UNWIND_ARM64_MODE_DWARF: number;
+declare const UIDNA_ERROR_CONTEXTO_PUNCTUATION: number;
+
+declare const _mh_execute_header: mach_header_64;
 
 declare const timezone: number;
 
@@ -1642,17 +1640,15 @@ declare const kDNSServiceType_RP: number;
 
 declare const XPC_ACTIVITY_STATE_CONTINUE: number;
 
-declare const UNW_RISCV_X15: number;
-
 declare const sys_nerr: number;
 
 declare const UNW_PPC64_VS56: number;
 
+declare const UNW_PPC64_V1: number;
+
 declare const UNW_PPC64_TEXASR: number;
 
 declare const UNW_PPC_AP: number;
-
-declare const kDNSServiceType_TSIG: number;
 
 declare const UNW_ESTOPUNWIND: number;
 
@@ -1664,11 +1660,15 @@ declare const UNW_VE_S62: number;
 
 declare const HV_EXISTS: number;
 
+declare const UNW_RISCV_X14: number;
+
 declare const kDNSServiceType_MR: number;
 
 declare const kDNSServiceFlagsAllowExpiredAnswers: number;
 
 declare const UNW_PPC64_V27: number;
+
+declare const UNW_AARCH64_X2: number;
 
 declare const UNW_PPC64_F20: number;
 
@@ -1686,13 +1686,9 @@ declare const kDNSServiceFlagsPrivateOne: number;
 
 declare const kDNSServiceType_SSHFP: number;
 
-declare const UNW_AARCH64_X31: number;
+declare const UNW_VE_VM6: number;
 
 declare const UNW_VE_V29: number;
-
-declare const UNW_PPC64_VS57: number;
-
-declare const UNWIND_X86_64_DWARF_SECTION_OFFSET: number;
 
 declare const UNW_PPC64_R12: number;
 
@@ -1707,8 +1703,6 @@ declare const UNW_ARM_WR6: number;
 declare const UNW_AARCH64_V7: number;
 
 declare const kDNSServiceType_IPSECKEY: number;
-
-declare const UNW_PPC_R18: number;
 
 declare const _os_log_disabled: os_log_s;
 
@@ -1743,8 +1737,6 @@ declare const UNW_PPC64_F5: number;
 declare const kDNSServiceProtocol_IPv6: number;
 
 declare const _dispatch_source_type_vnode: dispatch_source_type_s;
-
-declare const UNW_VE_S29: number;
 
 declare const UNW_VE_V32: number;
 
@@ -1800,23 +1792,17 @@ declare const kDNSServiceFlagsValidateOptional: number;
 
 declare const UNW_LOONGARCH_F1: number;
 
-declare const UNW_LOONGARCH_F0: number;
-
 declare const UNW_LOONGARCH_R31: number;
 
 declare const UNW_LOONGARCH_R29: number;
 
 declare const UNW_PPC64_V16: number;
 
-declare const __stdinp: interop.Pointer;
-
 declare const UNW_ARM_D31: number;
 
 declare const UNW_PPC_R23: number;
 
 declare const UNW_LOONGARCH_R26: number;
-
-declare const UNW_PPC64_V1: number;
 
 declare const UNW_PPC_F11: number;
 
@@ -1860,12 +1846,6 @@ declare const UNW_MIPS_F24: number;
 
 declare const UNW_S390X_R8: number;
 
-declare const UNW_SPARC_I6: number;
-
-declare const UNW_S390X_R6: number;
-
-declare const UNW_PPC_V1: number;
-
 declare const kDNSServiceErr_NoError: number;
 
 declare const UNW_HEXAGON_R0: number;
@@ -1873,6 +1853,8 @@ declare const UNW_HEXAGON_R0: number;
 declare const UNW_S390X_R4: number;
 
 declare const UNW_RISCV_X12: number;
+
+declare const __fpcr_trap_invalid: number;
 
 declare const UNW_VE_V60: number;
 
@@ -1886,8 +1868,6 @@ declare const UNW_S390X_R0: number;
 
 declare const UNW_VE_S54: number;
 
-declare const UNW_VE_VIXR: number;
-
 declare const UUID_NULL: unknown /* const array */;
 
 declare const UIDNA_CHECK_CONTEXTO: number;
@@ -1896,9 +1876,19 @@ declare const UNW_PPC_R8: number;
 
 declare const UNW_X86_64_XMM10: number;
 
+declare const UNW_VE_VM1: number;
+
 declare const UNW_VE_V61: number;
 
 declare const UNW_ARM_S17: number;
+
+declare const kDNSServiceFlagsEnableDNSSEC: number;
+
+declare const UNW_HEXAGON_R31: number;
+
+declare const UNW_ARM64_D31: number;
+
+declare const UNW_VE_V52: number;
 
 declare const UNW_VE_V45: number;
 
@@ -1913,10 +1903,6 @@ declare const kDNSServiceType_AAAA: number;
 declare const port_obj_table: interop.Pointer;
 
 declare const vm_page_shift: number;
-
-declare const kDNSServiceFlagsThresholdOne: number;
-
-declare const UNW_RISCV_F21: number;
 
 declare const UNW_VE_V24: number;
 
@@ -1950,13 +1936,15 @@ declare const UNW_VE_V7: number;
 
 declare const UNW_PPC64_F0: number;
 
-declare const UNW_VE_V6: number;
-
 declare const UNW_VE_V5: number;
 
 declare const UNWIND_X86_64_RBP_FRAME_REGISTERS: number;
 
 declare const UNW_VE_S59: number;
+
+declare const UNW_LOONGARCH_F14: number;
+
+declare const UNW_VE_S53: number;
 
 declare const UNW_VE_S51: number;
 
@@ -1986,11 +1974,11 @@ declare const UNW_VE_S24: number;
 
 declare const UNW_EBADVERSION: number;
 
+declare const UNW_VE_S23: number;
+
 declare const UNW_AARCH64_V17: number;
 
 declare const UNW_X86_64_XMM14: number;
-
-declare const UNW_SPARC_O4: number;
 
 declare const UNW_VE_S9: number;
 
@@ -2004,15 +1992,21 @@ declare const UNW_VE_V55: number;
 
 declare const UNW_RISCV_X0: number;
 
+declare const UNW_RISCV_F24: number;
+
 declare const UNW_RISCV_F19: number;
 
 declare const UNW_ARM64_X6: number;
+
+declare const vm_page_size: number;
 
 declare const UNW_HEXAGON_R26: number;
 
 declare const UNW_S390X_R3: number;
 
 declare const UNW_RISCV_F13: number;
+
+declare const UNW_RISCV_F12: number;
 
 declare const UNW_RISCV_F8: number;
 
@@ -2021,10 +2015,6 @@ declare const UNW_PPC64_F6: number;
 declare const UNW_RISCV_F3: number;
 
 declare const UNW_RISCV_X28: number;
-
-declare const UNW_PPC_LR: number;
-
-declare const UNW_PPC_F4: number;
 
 declare const UNW_RISCV_X18: number;
 
@@ -2052,8 +2042,6 @@ declare const UNW_RISCV_X10: number;
 
 declare const UNW_PPC_V20: number;
 
-declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
-
 declare const UNW_RISCV_X6: number;
 
 declare const UNW_MIPS_F23: number;
@@ -2066,6 +2054,8 @@ declare const UNW_ARM_S5: number;
 
 declare const UNW_HEXAGON_R24: number;
 
+declare const UNWIND_X86_64_REG_R15: number;
+
 declare const UNW_HEXAGON_R18: number;
 
 declare const UNW_VE_S61: number;
@@ -2074,7 +2064,7 @@ declare const UNW_ARM_S18: number;
 
 declare const UNW_HEXAGON_R5: number;
 
-declare const UNW_HEXAGON_R4: number;
+declare const UNW_AARCH64_X31: number;
 
 declare const UNW_ARM_S15: number;
 
@@ -2102,17 +2092,15 @@ declare const UNW_SPARC_G7: number;
 
 declare const UNW_SPARC_G6: number;
 
-declare const UNW_VE_V51: number;
+declare const UNW_SPARC_G5: number;
 
-declare const DYLD_CHAINED_IMPORT_ADDEND: number;
+declare const UNW_VE_V51: number;
 
 declare const UNW_RISCV_F31: number;
 
-declare const kDNSServiceType_UNSPEC: number;
-
-declare const UNW_ARM64_D5: number;
-
 declare const sys_signame: unknown /* const array */;
+
+declare const UNW_MIPS_F17: number;
 
 declare const UNW_RISCV_F15: number;
 
@@ -2130,13 +2118,7 @@ declare const UNW_PPC64_VS34: number;
 
 declare const UNW_RISCV_F28: number;
 
-declare const UNW_MIPS_F10: number;
-
 declare const DYLD_CHAINED_PTR_ARM64E_USERLAND24: number;
-
-declare const UNW_VE_V59: number;
-
-declare const UNW_PPC_V17: number;
 
 declare const kDNSServiceErr_NameConflict: number;
 
@@ -2168,6 +2150,8 @@ declare const UNW_LOONGARCH_F28: number;
 
 declare const UNW_MIPS_R5: number;
 
+declare const UNW_MIPS_R3: number;
+
 declare const kDNSServiceErr_Incompatible: number;
 
 declare const _dispatch_source_type_data_replace: dispatch_source_type_s;
@@ -2194,6 +2178,8 @@ declare const UNW_ARM64_D27: number;
 
 declare const UNW_OR1K_R8: number;
 
+declare const UNW_ARM_R6: number;
+
 declare const UNW_PPC_F27: number;
 
 declare const UNW_OR1K_R7: number;
@@ -2209,6 +2195,8 @@ declare const UNW_VE_V37: number;
 declare const kDNSServiceType_SVCB: number;
 
 declare const UNW_ARM_D17: number;
+
+declare const UNW_VE_S42: number;
 
 declare const UNW_VE_V56: number;
 
@@ -2226,6 +2214,10 @@ declare const UNW_ARM_D8: number;
 
 declare const UNW_ARM_D7: number;
 
+declare const UNW_RISCV_X3: number;
+
+declare const optarg: string;
+
 declare const UNW_PPC_F29: number;
 
 declare const UNW_ARM_D2: number;
@@ -2238,13 +2230,13 @@ declare const UNW_ARM_RA_AUTH_CODE: number;
 
 declare const UNW_ARM_S11: number;
 
-declare const UNW_ARM64_X3: number;
-
 declare const UNW_ARM_WR10: number;
 
 declare const UNW_ARM_WC0: number;
 
 declare const UNW_ARM_WR4: number;
+
+declare const _dispatch_source_type_write: dispatch_source_type_s;
 
 declare const UNW_VE_V43: number;
 
@@ -2278,15 +2270,11 @@ declare const UNW_AARCH64_X6: number;
 
 declare const UNW_ARM_S13: number;
 
-declare const UNW_ARM_S8: number;
-
 declare const _FE_DFL_DISABLE_DENORMS_ENV: fenv_t;
 
 declare const UNW_ARM_S7: number;
 
 declare const UNW_HEXAGON_R22: number;
-
-declare const UNW_PPC_F5: number;
 
 declare const UNW_ARM_S1: number;
 
@@ -2334,8 +2322,6 @@ declare const UNW_X86_64_R15: number;
 
 declare const UNW_ARM64_D24: number;
 
-declare const UNW_ARM64_D20: number;
-
 declare const UNW_ARM64_D17: number;
 
 declare const UNW_ARM64_D11: number;
@@ -2354,15 +2340,25 @@ declare const UNW_VE_V26: number;
 
 declare const UNW_ARM64_X27: number;
 
+declare const UNW_ARM64_X26: number;
+
+declare const UNW_RISCV_F21: number;
+
 declare const UNWIND_X86_REG_EDX: number;
 
 declare const UNW_PPC64_VS45: number;
 
+declare const UNW_PPC_CR4: number;
+
 declare const UNW_ARM64_X15: number;
+
+declare const OBJC_CLEAR_RESIDENT_STACK: number;
 
 declare const UNW_ARM64_X9: number;
 
 declare const UNW_VE_S36: number;
+
+declare const UNW_ARM64_X3: number;
 
 declare const UNW_PPC64_VS23: number;
 
@@ -2381,8 +2377,6 @@ declare const _DefaultRuneLocale: _RuneLocale;
 declare const UNW_AARCH64_V30: number;
 
 declare const UNW_PPC64_CR1: number;
-
-declare const UNW_AARCH64_V27: number;
 
 declare const UNW_PPC64_TFIAR: number;
 
@@ -2424,7 +2418,9 @@ declare const UNW_X86_64_XMM13: number;
 
 declare const UNW_AARCH64_V6: number;
 
-declare const _dispatch_source_type_write: dispatch_source_type_s;
+declare const UNWIND_X86_64_DWARF_SECTION_OFFSET: number;
+
+declare const UNWIND_X86_64_REG_R12: number;
 
 declare const UNW_RISCV_F20: number;
 
@@ -2464,15 +2460,13 @@ declare const _xpc_error_connection_invalid: _xpc_dictionary_s;
 
 declare const UNW_PPC_VRSAVE: number;
 
-declare const UNW_LOONGARCH_F14: number;
-
 declare const UNW_PPC64_V30: number;
 
 declare const UNW_PPC_F0: number;
 
 declare const kDNSServiceType_SOA: number;
 
-declare const UNW_ARM_IP: number;
+declare const kDNSServiceFlagsLongLivedQuery: number;
 
 declare const UNW_X86_64_XMM15: number;
 
@@ -2489,8 +2483,6 @@ declare const UNWIND_ARM64_FRAME_X27_X28_PAIR: number;
 declare const UNW_LOONGARCH_R8: number;
 
 declare const kDNSServiceErr_NoSuchKey: number;
-
-declare const UNW_PPC64_V3: number;
 
 declare const UNW_AARCH64_X0: number;
 
@@ -2514,9 +2506,9 @@ declare const UNW_RISCV_X30: number;
 
 declare const UNW_PPC64_F25: number;
 
-declare const sqlite3_temp_directory: string;
-
 declare const UNW_PPC64_V23: number;
+
+declare const UNW_X86_64_RIP: number;
 
 declare const UIDNA_ERROR_LABEL_HAS_DOT: number;
 
@@ -2528,6 +2520,8 @@ declare const UNWIND_X86_MODE_STACK_IMMD: number;
 
 declare const UNW_ARM64_X19: number;
 
+declare const UNW_PPC_CR6: number;
+
 declare const kDNSServiceFlagsWakeOnlyService: number;
 
 declare const kDNSServiceErr_BadState: number;
@@ -2536,23 +2530,21 @@ declare const kDNSServiceType_MD: number;
 
 declare const UIDNA_ERROR_LEADING_COMBINING_MARK: number;
 
-declare const UNW_ARM_WR5: number;
-
 declare const UNW_VE_S55: number;
+
+declare const UNW_PPC64_V5: number;
 
 declare const DYLD_CHAINED_IMPORT_ADDEND64: number;
 
-declare const UNW_VE_VM6: number;
-
 declare const kDNSServiceErr_NoAuth: number;
-
-declare const UNW_AARCH64_X15: number;
 
 declare const UNW_PPC64_CTR: number;
 
 declare const UNW_PPC64_F10: number;
 
 declare const UNW_PPC_R21: number;
+
+declare const UNW_PPC_F6: number;
 
 declare const UNW_VE_S28: number;
 
@@ -2586,6 +2578,8 @@ declare const UNW_PPC64_F12: number;
 
 declare const UNW_PPC64_F11: number;
 
+declare const UNW_PPC_F24: number;
+
 declare const UNW_VE_S12: number;
 
 declare const UNW_PPC64_F4: number;
@@ -2600,21 +2594,17 @@ declare const getdate_err: number;
 
 declare const UNWIND_X86_64_FRAMELESS_STACK_ADJUST: number;
 
-declare const UNW_PPC64_R31: number;
-
 declare const __stdoutp: interop.Pointer;
 
 declare const UNW_PPC64_VS58: number;
 
 declare const UNW_PPC64_R23: number;
 
-declare const UNW_X86_64_R13: number;
+declare const UIDNA_ERROR_DOMAIN_NAME_TOO_LONG: number;
 
 declare const UNW_PPC64_VS20: number;
 
 declare const UNW_PPC64_R19: number;
-
-declare const UNW_PPC64_R18: number;
 
 declare const UNW_X86_EDX: number;
 
@@ -2628,6 +2618,8 @@ declare const UNW_X86_64_XMM2: number;
 
 declare const UNW_RISCV_X16: number;
 
+declare const eNoteExitReparentedDeprecated: number;
+
 declare const UNW_PPC_V30: number;
 
 declare const kDNSServiceErr_NoSuchName: number;
@@ -2636,17 +2628,15 @@ declare const UNW_PPC_V23: number;
 
 declare const UNW_VE_V1: number;
 
+declare const UNW_VE_S33: number;
+
 declare const UNW_LOONGARCH_R2: number;
 
 declare const UNW_SPARC_O3: number;
 
 declare const UNW_ARM64_PC: number;
 
-declare const UNW_PPC_R14: number;
-
-declare const UNW_X86_64_XMM11: number;
-
-declare const UNW_PPC64_VS25: number;
+declare const sqlite3_temp_directory: string;
 
 declare const UNW_PPC64_VS59: number;
 
@@ -2666,6 +2656,8 @@ declare const UNW_HEXAGON_R16: number;
 
 declare const UNW_AARCH64_X19: number;
 
+declare const UNW_PPC_R18: number;
+
 declare const sys_siglist: unknown /* const array */;
 
 declare const UNW_VE_V41: number;
@@ -2682,8 +2674,6 @@ declare const UNW_PPC_MQ: number;
 
 declare const UNW_PPC_F26: number;
 
-declare const UNW_AARCH64_X12: number;
-
 declare const UNW_PPC_F22: number;
 
 declare const UNW_VE_S1: number;
@@ -2695,8 +2685,6 @@ declare const UNW_PPC_F10: number;
 declare const XPC_ACTIVITY_REQUIRE_HDD_SPINNING: string;
 
 declare const UNW_PPC_F18: number;
-
-declare const UNW_PPC_F6: number;
 
 declare const OSUnknownByteOrder: number;
 
@@ -2710,11 +2698,17 @@ declare const _xpc_error_peer_code_signing_requirement: _xpc_dictionary_s;
 
 declare const UNW_PPC64_VS42: number;
 
+declare const kDNSServiceFlagsBrowseDomains: number;
+
+declare const kDNSServiceType_NSEC3: number;
+
 declare const UNW_AARCH64_V3: number;
 
 declare const UNW_SPARC_L0: number;
 
 declare const _xpc_type_connection: _xpc_type_s;
+
+declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
 
 declare const UNW_SPARC_O0: number;
 
@@ -2746,8 +2740,6 @@ declare const betaStage: number;
 
 declare const UNW_X86_64_XMM8: number;
 
-declare const UNW_VE_S33: number;
-
 declare const UNW_X86_64_XMM5: number;
 
 declare const _dispatch_data_empty: dispatch_data_s;
@@ -2756,7 +2748,7 @@ declare const UNW_X86_64_R8: number;
 
 declare const UNW_X86_64_RSP: number;
 
-declare const UNW_OR1K_R22: number;
+declare const UNW_SPARC_G3: number;
 
 declare const UNW_PPC_R11: number;
 
@@ -2765,8 +2757,6 @@ declare const UNW_X86_ESP: number;
 declare const UNW_REG_IP: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E_SHARED_CACHE: number;
-
-declare const suboptarg: string;
 
 declare const UNW_EBADFRAME: number;
 
@@ -2779,8 +2769,6 @@ declare const UNWIND_X86_64_MODE_DWARF: number;
 declare const vm_kernel_page_shift: number;
 
 declare const UNW_PPC_XER: number;
-
-declare const UNW_EUNSPEC: number;
 
 declare const UNW_RISCV_F16: number;
 
@@ -2814,15 +2802,21 @@ declare const kDNSServiceFlagAnsweredFromCache: number;
 
 declare const UNW_PPC64_V8: number;
 
+declare const UNW_PPC64_V6: number;
+
 declare const UIDNA_ERROR_HYPHEN_3_4: number;
 
 declare const UNW_PPC64_F9: number;
 
 declare const kDNSServiceType_SRV: number;
 
+declare const UNW_VE_S20: number;
+
 declare const UNW_PPC64_F21: number;
 
 declare const UNW_HEXAGON_R2: number;
+
+declare const UNW_VE_S43: number;
 
 declare const shadow: number;
 
@@ -2831,6 +2825,8 @@ declare const UNWIND_ARM_FRAME_STACK_ADJUST_MASK: number;
 declare const UNWIND_ARM_MODE_FRAME: number;
 
 declare const UNW_X86_64_RSI: number;
+
+declare const UNW_RISCV_X20: number;
 
 declare const UNW_PPC_V13: number;
 
@@ -2846,7 +2842,11 @@ declare const UNW_PPC64_F1: number;
 
 declare const NDR_record: NDR_record_t;
 
+declare const UNW_PPC64_V3: number;
+
 declare const UNW_PPC64_VS33: number;
+
+declare const UNW_LOONGARCH_F29: number;
 
 declare const _xpc_bool_true: _xpc_bool_s;
 
@@ -2859,6 +2859,8 @@ declare const UNWIND_X86_REG_EBX: number;
 declare const UNW_AARCH64_V10: number;
 
 declare const UNWIND_X86_64_REG_R14: number;
+
+declare const UNW_PPC_V1: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E_SEGMENTED: number;
 
@@ -2884,13 +2886,19 @@ declare const vprintf_stderr_func: (p1: string, p2: string) => number;
 
 declare const kDNSServiceType_UID: number;
 
+declare const UNWIND_X86_REG_EBP: number;
+
 declare const outline: number;
+
+declare const kDNSServiceType_SIG: number;
 
 declare const h_errno: number;
 
 declare const UNW_PPC64_XER: number;
 
-declare const XPC_ACTIVITY_STATE_CHECK_IN: number;
+declare const kDNSServiceType_HINFO: number;
+
+declare const kUnknownType: number;
 
 declare const UNW_VE_S13: number;
 
@@ -2902,9 +2910,9 @@ declare const UNW_S390X_F7: number;
 
 declare const kDNSServiceErr_BadParam: number;
 
-declare const HV_UNSUPPORTED: number;
-
 declare const UNW_RISCV_X23: number;
+
+declare const alphaStage: number;
 
 declare const UIDNA_ALLOW_UNASSIGNED: number;
 
@@ -2912,13 +2920,11 @@ declare const UNW_LOONGARCH_R3: number;
 
 declare const UNW_MIPS_F18: number;
 
-declare const _xpc_type_endpoint: _xpc_type_s;
+declare const UNW_X86_64_R13: number;
 
 declare const sys_errlist: interop.Pointer;
 
 declare const UNW_PPC_V31: number;
-
-declare const UNWIND_ARM_FRAME_FIRST_PUSH_R6: number;
 
 declare const normal: number;
 
@@ -2927,8 +2933,6 @@ declare const UIDNA_ERROR_DISALLOWED: number;
 declare const UNW_ARM64_X2: number;
 
 declare const UIDNA_ERROR_LEADING_HYPHEN: number;
-
-declare const UIDNA_ERROR_DOMAIN_NAME_TOO_LONG: number;
 
 declare const _US_FORCE_UNWIND: number;
 
@@ -2942,11 +2946,11 @@ declare const UNW_VE_V10: number;
 
 declare const UNW_SPARC_I3: number;
 
-declare const UNWIND_X86_FRAMELESS_STACK_REG_COUNT: number;
-
 declare const _xpc_error_key_description: string;
 
 declare const UNWIND_ARM_MODE_MASK: number;
+
+declare const finalStage: number;
 
 declare const UTEXT_PROVIDER_STABLE_CHUNKS: number;
 
@@ -3028,19 +3032,15 @@ declare const UNW_OR1K_R9: number;
 
 declare const UNW_LOONGARCH_F31: number;
 
+declare const UNW_VE_S29: number;
+
 declare const UNW_PPC_V27: number;
 
 declare const bold: number;
 
 declare const UNW_X86_64_XMM7: number;
 
-declare const UNW_SPARC_I5: number;
-
 declare const UNW_HEXAGON_R14: number;
-
-declare const _dispatch_source_type_data_add: dispatch_source_type_s;
-
-declare const finalStage: number;
 
 declare const virtual_memory_guard_exception_code_t: {
   DEALLOC_GAP: 1,

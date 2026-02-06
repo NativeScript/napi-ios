@@ -4,6 +4,8 @@
 
 declare const PKIdentityErrorDomain: string;
 
+declare const PKMerchantCategoryCodeNone: number;
+
 declare const PKStoredValuePassBalanceTypeLoyaltyPoints: string;
 
 declare const PKStoredValuePassBalanceTypeCash: string;
@@ -74,6 +76,8 @@ declare const PKContactFieldName: string;
 
 declare const PKPaymentNetworkBancomat: string;
 
+declare const PKPassLibraryRemotePaymentPassesDidChangeNotification: string;
+
 declare const PKPaymentErrorDomain: string;
 
 declare const PKPaymentNetworkAmex: string;
@@ -88,15 +92,13 @@ declare const PKEncryptionSchemeRSA_V2: string;
 
 declare const PKPaymentNetworkBarcode: string;
 
+declare const PKPaymentNetworkBankAxept: string;
+
 declare const PKContactFieldPostalAddress: string;
 
 declare const PKPaymentNetworkCarteBancaire: string;
 
-declare const PKPassLibraryRemotePaymentPassesDidChangeNotification: string;
-
 declare const PKPaymentNetworkCarteBancaires: string;
-
-declare const PKPaymentNetworkCartesBancaires: string;
 
 declare const PKPassLibraryReplacementPassesUserInfoKey: string;
 
@@ -116,15 +118,13 @@ declare const PKPaymentNetworkWaon: string;
 
 declare const PKPaymentNetworkMyDebit: string;
 
-declare const PKPaymentNetworkBankAxept: string;
+declare const PKPaymentNetworkCartesBancaires: string;
 
-declare const PKMerchantCategoryCodeNone: number;
+declare const PKContactFieldPhoneticName: string;
 
 declare const PKEncryptionSchemeECC_V2: string;
 
 declare const PKShareSecureElementPassErrorDomain: string;
-
-declare const PKContactFieldPhoneticName: string;
 
 declare const PKContactFieldPhoneNumber: string;
 

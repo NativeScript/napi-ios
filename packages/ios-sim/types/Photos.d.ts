@@ -1,7 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const PHImageErrorKey: string;
+declare const PHImageResultRequestIDKey: string;
 
 declare const PHImageResultIsDegradedKey: string;
 
@@ -9,33 +9,33 @@ declare const PHImageResultIsInCloudKey: string;
 
 declare const PHImageManagerMaximumSize: CGSize;
 
-declare const PHInvalidImageRequestID: number;
-
-declare const PHLocalIdentifiersErrorKey: string;
-
-declare const PHLivePhotoInfoErrorKey: string;
-
-declare const PHImageResultRequestIDKey: string;
-
-declare const PHInvalidAssetResourceDataRequestID: number;
-
-declare const PHLivePhotoRequestIDInvalid: number;
-
-declare const PHContentEditingInputErrorKey: string;
+declare const PHLivePhotoShouldRenderAtPlaybackTime: string;
 
 declare const PHContentEditingInputCancelledKey: string;
 
+declare const PHContentEditingInputResultIsInCloudKey: string;
+
+declare const PHLivePhotoInfoCancelledKey: string;
+
 declare const PHLivePhotoInfoIsDegradedKey: string;
 
-declare const PHImageCancelledKey: string;
-
-declare const PHContentEditingInputResultIsInCloudKey: string;
+declare const PHLivePhotoRequestIDInvalid: number;
 
 declare const PHPhotosErrorDomain: string;
 
-declare const PHLivePhotoShouldRenderAtPlaybackTime: string;
+declare const PHLivePhotoInfoErrorKey: string;
 
-declare const PHLivePhotoInfoCancelledKey: string;
+declare const PHLocalIdentifiersErrorKey: string;
+
+declare const PHImageErrorKey: string;
+
+declare const PHInvalidAssetResourceDataRequestID: number;
+
+declare const PHInvalidImageRequestID: number;
+
+declare const PHImageCancelledKey: string;
+
+declare const PHContentEditingInputErrorKey: string;
 
 declare const PHVideoRequestOptionsDeliveryMode: {
   Automatic: 0,

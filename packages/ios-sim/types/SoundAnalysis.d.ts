@@ -1,9 +1,9 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const SNClassifierIdentifierVersion1: string;
-
 declare const SNErrorDomain: string;
+
+declare const SNClassifierIdentifierVersion1: string;
 
 declare const SNErrorCode: {
   UnknownError: 1,

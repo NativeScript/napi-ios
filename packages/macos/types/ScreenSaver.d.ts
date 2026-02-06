@@ -2,7 +2,6 @@
 /// <reference path="./AppKit.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class ScreenSaverView extends NSView {
   static backingStoreType(): interop.Enum<typeof NSBackingStoreType>;
 
@@ -18,7 +17,7 @@ declare class ScreenSaverView extends NSView {
 
   readonly animating: boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  drawRect(dirtyRect: CGRect): void;
   drawRect(rect: CGRect): void;
 
   animateOneFrame(): void;

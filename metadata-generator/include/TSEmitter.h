@@ -34,7 +34,7 @@ public:
   TSFile(std::string name, MetadataFactory *factory)
       : factory(factory), name(name) {}
 
-  std::string typeToString(TypeSpec &type, bool isStatic, bool isReturn);
+  std::string typeToString(const TypeSpec &type, bool isStatic, bool isReturn);
 
   void write(VariableDecl &decl);
   void write(EnumDecl &decl);
@@ -61,8 +61,14 @@ public:
 
 class TSEmitter {
 public:
-  TSEmitter(MetadataFactory &factory, std::string outDir)
-      : outDir(outDir), factory(factory) {}
+  struct Options {
+    Options() : indexMode("all") {}
+    std::string indexMode; // all | frameworks-list
+    std::vector<std::string> indexFrameworks;
+  };
+
+  TSEmitter(MetadataFactory &factory, std::string outDir, Options options = {})
+      : outDir(outDir), factory(factory), options(options) {}
 
   void resolveImports(TSFile &file);
 
@@ -73,6 +79,7 @@ public:
   std::string outDir;
   std::unordered_map<std::string, TSFile> files;
   MetadataFactory &factory;
+  Options options;
 };
 
 } // namespace metagen

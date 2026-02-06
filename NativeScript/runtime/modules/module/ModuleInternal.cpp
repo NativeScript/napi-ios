@@ -57,9 +57,9 @@ void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
 
 #ifdef V8_RUNTIME
   // Initialize ES module system for V8
-  // We need to get the V8 isolate from napi_env to properly initialize ES modules
-  // This is implementation-specific and may need adjustment based on the actual V8 NAPI binding
-  // v8impl::InitializeESModuleSystem(isolate);
+  // We need to get the V8 isolate from napi_env to properly initialize ES
+  // modules This is implementation-specific and may need adjustment based on
+  // the actual V8 NAPI binding v8impl::InitializeESModuleSystem(isolate);
 #endif
 
   const char* requireFactoryScript = R"(
@@ -173,15 +173,16 @@ napi_value ModuleInternal::Require(napi_env env, const std::string& moduleName,
   } else {
     // Check if this is an ES module by looking for __esModule property
     bool hasEsModuleProp;
-    napi_status status = napi_has_named_property(env, moduleObj, "__esModule", &hasEsModuleProp);
-    
+    napi_status status =
+        napi_has_named_property(env, moduleObj, "__esModule", &hasEsModuleProp);
+
     bool isEsModule = false;
     if (status == napi_ok && hasEsModuleProp) {
       napi_value esModuleFlag;
       napi_get_named_property(env, moduleObj, "__esModule", &esModuleFlag);
       napi_get_value_bool(env, esModuleFlag, &isEsModule);
     }
-    
+
     if (isEsModule) {
       // For ES modules, return the module namespace directly
       return moduleObj;
@@ -372,6 +373,9 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   std::filesystem::path moduleNamePath(moduleNameCopy);
   std::filesystem::path fullPath = baseDirPath / moduleNamePath;
 
+  // Normalize the path to remove redundant ./ sequences
+  fullPath = fullPath.lexically_normal();
+
   bool isDirectory = false;
   bool exists = std::filesystem::exists(fullPath);
 
@@ -383,7 +387,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
         !std::filesystem::is_directory(mjsFile)) {
       return mjsFile.string();
     }
-    
+
     // Then try .js for CommonJS
     std::filesystem::path jsFile = fullPath;
     jsFile = jsFile.replace_extension(".js");
@@ -403,7 +407,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
         return mjsPath.string();
       }
     }
-    
+
     // Try .js extension
     fullPath = fullPath.replace_extension(".js");
     exists = std::filesystem::exists(fullPath);
@@ -444,7 +448,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
     if (std::filesystem::exists(indexMjs)) {
       return indexMjs.string();
     }
-    
+
     // Then try index.js
     fullPath = fullPath.replace_extension(".js");
   } else {
@@ -453,7 +457,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
     if (std::filesystem::exists(indexMjs)) {
       return indexMjs.string();
     }
-    
+
     // Then try index.js
     fullPath /= "index.js";
   }
@@ -495,12 +499,9 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
       auto pos = moduleName.find(sys_lib);
       path = std::string(moduleName);
       path.replace(pos, sys_lib.length(), "");
-    } else if (moduleName.ends_with(".so") || moduleName.ends_with(".dylib")) {
-      path = "lib" + moduleName;
-    } else if (moduleName.ends_with(".node")) {
-      std::string libName = moduleName;
-      libName.replace(libName.find(".node"), 5, "");
-      path = "lib" + libName + ".so";
+    } else if (moduleName.ends_with(".so") || moduleName.ends_with(".dylib") ||
+               moduleName.ends_with(".node")) {
+      path = moduleName;
     } else {
       path = ResolvePath(env, baseDir, moduleName);
     }
@@ -508,8 +509,9 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
     auto it2 = m_loadedModules.find(path);
 
     if (it2 == m_loadedModules.end()) {
-      if (path.ends_with(".js") || path.ends_with(".mjs") || 
-          path.ends_with(".so") || path.ends_with((".dylib"))) {
+      if (path.ends_with(".js") || path.ends_with(".mjs") ||
+          path.ends_with(".so") || path.ends_with(".dylib") ||
+          path.ends_with(".node")) {
         isData = false;
         result = LoadModule(env, path, cachePathKey);
       } else if (path.ends_with(".json")) {
@@ -578,13 +580,14 @@ napi_value ModuleInternal::LoadModule(napi_env env,
   if (modulePath.ends_with(".mjs")) {
     // Handle ES modules
     napi_value esModuleResult = LoadESModule(env, modulePath);
-    
+
     // Mark the result as an ES module
     napi_value isESModuleFlag;
     napi_get_boolean(env, true, &isESModuleFlag);
     napi_set_named_property(env, esModuleResult, "__esModule", isESModuleFlag);
-    
-    // For ES modules, we return the namespace directly, not wrapped in a module object
+
+    // For ES modules, we return the namespace directly, not wrapped in a module
+    // object
     tempModule.SaveToCache();
     return esModuleResult;
   } else if (modulePath.ends_with(".js")) {
@@ -593,8 +596,8 @@ napi_value ModuleInternal::LoadModule(napi_env env,
 
     // napi_status status = js_execute_script(
     //     env, script, EnsureFileProtocol(modulePath).c_str(), &moduleFunc);
-    napi_status status = napi_run_script_source(
-        env, script, modulePath.c_str(), &moduleFunc);
+    napi_status status =
+        napi_run_script_source(env, script, modulePath.c_str(), &moduleFunc);
     if (status != napi_ok) {
       bool pendingException;
       napi_is_exception_pending(env, &pendingException);
@@ -609,7 +612,8 @@ napi_value ModuleInternal::LoadModule(napi_env env,
         throw NativeScriptException("Error running script " + modulePath);
       }
     }
-  } else if (modulePath.ends_with(".so") || modulePath.ends_with(".dylib")) {
+  } else if (modulePath.ends_with(".so") || modulePath.ends_with(".dylib") ||
+             modulePath.ends_with(".node")) {
     auto handle = dlopen(modulePath.c_str(), RTLD_NOW);
     if (handle == nullptr) {
       auto error = dlerror();
@@ -727,35 +731,42 @@ bool ModuleInternal::IsESModule(const std::string& path) {
 }
 
 napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
+#ifdef TARGET_ENGINE_V8
   try {
     // Get absolute path to ensure proper resolution
     std::filesystem::path absolutePath = std::filesystem::absolute(path);
     std::string absPath = absolutePath.string();
-    
+
     // Read the ES module source
     napi_value scriptContent = WrapModuleContent(env, absPath);
-    
+
     // Use the new napi_run_script_as_module function
     napi_value moduleNamespace;
-    napi_status status = napi_run_script_as_module(env, scriptContent, absPath.c_str(), &moduleNamespace);
-    
+    napi_status status = napi_run_script_as_module(
+        env, scriptContent, absPath.c_str(), &moduleNamespace);
+
     if (status != napi_ok) {
       bool pendingException;
       napi_is_exception_pending(env, &pendingException);
       if (pendingException) {
         napi_value error;
         napi_get_and_clear_last_exception(env, &error);
-        throw NativeScriptException(env, error, "Failed to load ES module " + absPath);
+        throw NativeScriptException(env, error,
+                                    "Failed to load ES module " + absPath);
       } else {
         throw NativeScriptException("Failed to load ES module " + absPath);
       }
     }
-    
+
     return moduleNamespace;
-    
+
   } catch (const std::exception& e) {
-    throw NativeScriptException("Failed to load ES module " + path + ": " + e.what());
+    throw NativeScriptException("Failed to load ES module " + path + ": " +
+                                e.what());
   }
+#else
+  throw NativeScriptException("ES Modules are not supported in this runtime.");
+#endif
 }
 
 napi_value ModuleInternal::WrapModuleContent(napi_env env,
@@ -771,7 +782,7 @@ napi_value ModuleInternal::WrapModuleContent(napi_env env,
   file.close();
 
   std::string result;
-  
+
   if (IsESModule(path)) {
     // For ES modules, return content as-is to preserve import/export syntax
     result = content;

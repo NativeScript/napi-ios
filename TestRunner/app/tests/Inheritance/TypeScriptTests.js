@@ -118,13 +118,13 @@ var TSDecoratedObject = (function (_super) {
     };
     return TSDecoratedObject;
 }(TNSDerivedInterface));
-__decorate([
-    ObjCMethod()
-], TSDecoratedObject.prototype, "voidSelector", null);
-__decorate([
-    ObjCMethod('variadicSelector:x:', NSObject),
-    __param(0, ObjCParam(NSString)), __param(1, ObjCParam(interop.types.int32))
-], TSDecoratedObject.prototype, "variadicSelectorX", null);
+// __decorate  ([
+//     ObjCMethod()
+// ], TSDecoratedObject.prototype, "voidSelector", null);
+// __decorate([
+//     ObjCMethod('variadicSelector:x:', NSObject),
+//     __param(0, ObjCParam(NSString)), __param(1, ObjCParam(interop.types.int32))
+// ], TSDecoratedObject.prototype, "variadicSelectorX", null);
 var TSDecoratedObject1 = (function (_super) {
     __extends(TSDecoratedObject1, _super);
     function TSDecoratedObject1() {

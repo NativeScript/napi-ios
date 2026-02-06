@@ -183,16 +183,16 @@ struct napi_env__ {
   }
 
   void CheckGCAccess() {
-    if (module_api_version == NAPI_VERSION_EXPERIMENTAL && in_gc_finalizer) {
-      v8impl::OnFatalError(
-          nullptr,
-          "Finalizer is calling a function that may affect GC state.\n"
-          "The finalizers are run directly from GC and must not affect GC "
-          "state.\n"
-          "Use `node_api_post_finalizer` from inside of the finalizer to work "
-          "around this issue.\n"
-          "It schedules the call as a new task in the event loop.");
-    }
+//    if (module_api_version == NAPI_VERSION_EXPERIMENTAL && in_gc_finalizer) {
+//      v8impl::OnFatalError(
+//          nullptr,
+//          "Finalizer is calling a function that may affect GC state.\n"
+//          "The finalizers are run directly from GC and must not affect GC "
+//          "state.\n"
+//          "Use `node_api_post_finalizer` from inside of the finalizer to work "
+//          "around this issue.\n"
+//          "It schedules the call as a new task in the event loop.");
+//    }
   }
 
   v8::Isolate* const isolate;  // Shortcut for context()->GetIsolate()

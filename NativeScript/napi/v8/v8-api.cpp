@@ -389,6 +389,14 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
         static_cast<v8impl::Reference*>(val.As<v8::External>()->Value());
   }
 
+  if (reference == nullptr) {
+    if (result != nullptr) {
+      *result = nullptr;
+    }
+    
+    return napi_invalid_arg;
+  }
+
   if (result) {
     *result = reference->Data();
   }

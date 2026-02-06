@@ -2,11 +2,9 @@
 /// <reference path="./UIKit.d.ts" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const PDFAnnotationKeyBorder: string;
-
-declare const PDFDocumentDidUnlockNotification: string;
-
 declare const PDFViewPageChangedNotification: string;
+
+declare const PDFAnnotationKeyBorder: string;
 
 declare const PDFAnnotationKeyContents: string;
 
@@ -34,8 +32,6 @@ declare const PDFDocumentOwnerPasswordOption: string;
 
 declare const PDFDocumentProducerAttribute: string;
 
-declare const PDFDocumentSubjectAttribute: string;
-
 declare const PDFDocumentTitleAttribute: string;
 
 declare const PDFDocumentPageIndexKey: string;
@@ -48,6 +44,8 @@ declare const PDFDocumentDidBeginPageFindNotification: string;
 
 declare const PDFDocumentDidEndFindNotification: string;
 
+declare const PDFDocumentDidUnlockNotification: string;
+
 declare const PDFBorderKeyLineWidth: string;
 
 declare const PDFAppearanceCharacteristicsKeyBorderColor: string;
@@ -55,8 +53,6 @@ declare const PDFAppearanceCharacteristicsKeyBorderColor: string;
 declare const PDFAnnotationHighlightingModePush: string;
 
 declare const PDFAnnotationTextIconTypeNote: string;
-
-declare const PDFAnnotationTextIconTypeKey: string;
 
 declare const PDFAnnotationTextIconTypeComment: string;
 
@@ -104,15 +100,11 @@ declare const PDFDocumentDidEndPageFindNotification: string;
 
 declare const PDFAppearanceCharacteristicsKeyRotation: string;
 
-declare const PDFAnnotationWidgetSubtypeButton: string;
-
 declare const PDFAnnotationKeySubtype: string;
 
 declare const PDFAnnotationKeyDefaultAppearance: string;
 
 declare const PDFAnnotationKeyHighlightingMode: string;
-
-declare const PDFAnnotationKeyPopup: string;
 
 declare const PDFBorderKeyDashPattern: string;
 
@@ -134,11 +126,9 @@ declare const PDFDocumentModificationDateAttribute: string;
 
 declare const PDFAnnotationKeyBorderStyle: string;
 
+declare const PDFDocumentSubjectAttribute: string;
+
 declare const PDFAnnotationKeyWidgetOptions: string;
-
-declare const PDFAnnotationKeyWidgetRolloverCaption: string;
-
-declare const PDFAnnotationKeyQuadding: string;
 
 declare const PDFViewAnnotationHitNotification: string;
 
@@ -150,7 +140,7 @@ declare const PDFAppearanceCharacteristicsKeyCaption: string;
 
 declare const PDFAnnotationLineEndingStyleDiamond: string;
 
-declare const PDFAnnotationTextIconTypeNewParagraph: string;
+declare const PDFAnnotationKeyQuadding: string;
 
 declare const PDFPageImageInitializationOptionRotation: string;
 
@@ -162,29 +152,33 @@ declare const PDFAnnotationSubtypeUnderline: string;
 
 declare const PDFAnnotationLineEndingStyleCircle: string;
 
+declare const PDFAnnotationKeyColor: string;
+
 declare const PDFDocumentDidBeginWriteNotification: string;
 
 declare const PDFAppearanceCharacteristicsKeyRolloverCaption: string;
 
+declare const PDFAnnotationKeyInteriorColor: string;
+
 declare const PDFAnnotationSubtypeInk: string;
 
-declare const PDFThumbnailViewDocumentEditedNotification: string;
-
-declare const PDFAnnotationWidgetSubtypeText: string;
+declare const PDFAnnotationSubtypeLink: string;
 
 declare const PDFAnnotationKeyAppearanceDictionary: string;
 
 declare const PDFAnnotationKeyWidgetBackgroundColor: string;
 
+declare const PDFDocumentUserPasswordOption: string;
+
+declare const PDFAnnotationKeyWidgetRolloverCaption: string;
+
 declare const PDFAnnotationKeyWidgetCaption: string;
 
-declare const PDFAnnotationKeyColor: string;
+declare const PDFAnnotationTextIconTypeNewParagraph: string;
 
 declare const PDFViewPrintPermissionNotification: string;
 
 declare const PDFAnnotationHighlightingModeNone: string;
-
-declare const PDFAnnotationSubtypeLink: string;
 
 declare const PDFAnnotationLineEndingStyleNone: string;
 
@@ -192,13 +186,17 @@ declare const PDFDocumentKeywordsAttribute: string;
 
 declare const PDFAnnotationSubtypeHighlight: string;
 
-declare const PDFAnnotationKeyInteriorColor: string;
+declare const PDFAnnotationWidgetSubtypeButton: string;
+
+declare const PDFAnnotationKeyWidgetBorderColor: string;
+
+declare const PDFThumbnailViewDocumentEditedNotification: string;
 
 declare const PDFAnnotationHighlightingModeOutline: string;
 
 declare const PDFViewScaleChangedNotification: string;
 
-declare const PDFDocumentUserPasswordOption: string;
+declare const PDFAnnotationWidgetSubtypeText: string;
 
 declare const PDFAnnotationKeyLineEndingStyles: string;
 
@@ -210,8 +208,6 @@ declare const PDFDocumentCreatorAttribute: string;
 
 declare const PDFAnnotationKeyWidgetDefaultValue: string;
 
-declare const PDFAnnotationKeyWidgetBorderColor: string;
-
 declare const PDFAnnotationLineEndingStyleClosedArrow: string;
 
 declare const PDFAppearanceCharacteristicsKeyDownCaption: string;
@@ -221,6 +217,8 @@ declare const PDFDocumentAuthorAttribute: string;
 declare const PDFPageImageInitializationOptionCompressionQuality: string;
 
 declare const PDFAnnotationKeyDate: string;
+
+declare const PDFAnnotationKeyPopup: string;
 
 declare const PDFAnnotationTextIconTypeParagraph: string;
 
@@ -232,17 +230,19 @@ declare const PDFAppearanceCharacteristicsKeyBackgroundColor: string;
 
 declare const PDFDocumentDidFindMatchNotification: string;
 
+declare const PDFAnnotationHighlightingModeInvert: string;
+
 declare const kPDFDestinationUnspecifiedValue: number;
 
 declare const PDFDocumentSaveImagesAsJPEGOption: string;
 
 declare const PDFAnnotationKeyParent: string;
 
+declare const PDFAnnotationTextIconTypeKey: string;
+
 declare const PDFViewDisplayModeChangedNotification: string;
 
 declare const PDFAnnotationKeyFlags: string;
-
-declare const PDFAnnotationHighlightingModeInvert: string;
 
 declare const PDFDocumentDidBeginPageWriteNotification: string;
 
@@ -367,15 +367,15 @@ declare const PDFWidgetCellState: {
   On: 1,
 };
 
+declare const PDFDisplayDirection: {
+  Vertical: 0,
+  Horizontal: 1,
+};
+
 declare const PDFSelectionGranularity: {
   Character: 0,
   Word: 1,
   Line: 2,
-};
-
-declare const PDFDisplayDirection: {
-  Vertical: 0,
-  Horizontal: 1,
 };
 
 declare const PDFAreaOfInterest: {

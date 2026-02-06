@@ -144,6 +144,12 @@ for (const arch in sdk.targets) {
     `types=${
       new URL(`../packages/${sdkName}/types`, import.meta.url).pathname
     }`,
+    ...(sdkName === "macos"
+      ? [
+        "ts-index-mode=frameworks-list",
+        "ts-index-frameworks=Foundation,AppKit",
+      ]
+      : []),
     "-verbose",
     "-output-bin",
     new URL(
