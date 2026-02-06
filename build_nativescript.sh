@@ -196,8 +196,13 @@ fi
 if [[ $BUILD_MACOS && "$TARGET_ENGINE" == "none" ]]; then
   checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
 
+  TRIPLET_ARGS=()
+  for triplet in "${TRIPLETS[@]}"; do
+    TRIPLET_ARGS+=(--triplet "$triplet")
+  done
+
   OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD"
-  cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE --triplet 'arm64;x86_64-apple-darwin'
+  cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE "${TRIPLET_ARGS[@]}"
 
 elif $BUILD_MACOS; then
   XCFRAMEWORKS=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
