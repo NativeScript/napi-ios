@@ -335,7 +335,7 @@ if(NOT METADATA_SIZE EQUAL 0)
   )
 
   add_custom_command(TARGET ${NAME} POST_BUILD
-    COMMAND deno run -A ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/write_metadata.ts $<TARGET_FILE:${NAME}> ${METADATA_FILE}
+    COMMAND node ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/write_metadata.js $<TARGET_FILE:${NAME}> ${METADATA_FILE}
   )
 
   add_custom_command(TARGET ${NAME} POST_BUILD
