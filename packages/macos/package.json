@@ -44,7 +44,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@nativescript/objc-node-api": ">=1.0.0-alpha.7"
+    "@nativescript/objc-node-api": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.0"

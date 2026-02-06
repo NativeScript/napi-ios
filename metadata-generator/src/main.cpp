@@ -17,8 +17,6 @@
 using namespace metagen;
 
 int main(int argc, char** argv) {
-  std::cout << "here -2" << std::endl;
-
   std::string sdk;
   std::string frameworksDir;
 
@@ -65,8 +63,6 @@ int main(int argc, char** argv) {
   }
 
   std::cerr << std::endl;
-
-  std::cout << "here -1" << std::endl;
 
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
@@ -194,9 +190,7 @@ int main(int argc, char** argv) {
       std::exit(1);
     }
   }
-
-  std::cout << "here 0" << std::endl;
-
+  
   // Use automatic umbrella header generation if manual one is empty
   if (code == "") {
     std::vector<std::string> includePathsInner, frameworksInner;

@@ -92,7 +92,6 @@ export class ViewController extends NSViewController {
       NSAutoresizingMaskOptions.WidthSizable |
       NSAutoresizingMaskOptions.HeightSizable;
 
-    // @tts-expect-error textView types are not fully compatible with NSView
     this.view.addSubview(textView);
   }
 }

@@ -45,7 +45,7 @@ export class ApplicationDelegate extends NSObject {
    * @param {NSView} sender
    */
   buttonClicked(sender) {
-    if (this.popover.isShown) {
+    if (this.popover.shown) {
       this.popover.performClose(sender);
     } else {
       this.popover.showRelativeToRectOfViewPreferredEdge(
@@ -88,10 +88,10 @@ export class ViewController extends NSViewController {
 
     imageView.centerXAnchor.constraintEqualToAnchor(
       this.view.centerXAnchor
-    ).isActive = true;
+    ).active = true;
     imageView.centerYAnchor.constraintEqualToAnchor(
       this.view.centerYAnchor
-    ).isActive = true;
+    ).active = true;
   }
 }
 
