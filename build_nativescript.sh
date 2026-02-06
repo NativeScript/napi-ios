@@ -185,7 +185,7 @@ if [[ -n "${TRIPLETS[@]}" &&  "$TARGET_ENGINE" == "none" ]]; then
   # We adhere to the prebuilds standard as described here:
   # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
   OUTPUT_DIR="packages/ios/build/$CONFIG_BUILD"
-  cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE "${TRIPLET_ARGS[@]}"
+  npx cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE "${TRIPLET_ARGS[@]}"
 fi
 
 # We're currently distributing two separate packages:
@@ -202,7 +202,7 @@ if [[ $BUILD_MACOS && "$TARGET_ENGINE" == "none" ]]; then
   done
 
   OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD"
-  cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE "${TRIPLET_ARGS[@]}"
+  npx cmake-rn --source ./NativeScript --build "$DIST/intermediates" --out "$OUTPUT_DIR" -D TARGET_ENGINE=$TARGET_ENGINE "${TRIPLET_ARGS[@]}"
 
 elif $BUILD_MACOS; then
   XCFRAMEWORKS=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
