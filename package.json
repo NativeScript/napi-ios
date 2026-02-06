@@ -34,7 +34,7 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "cmake-rn": "^0.5.1",
+    "cmake-rn": "^0.6.3",
     "conventional-changelog-cli": "^2.1.1",
     "dayjs": "^1.11.7",
     "husky": "^9.0.11",
