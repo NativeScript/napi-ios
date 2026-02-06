@@ -5,23 +5,26 @@ if (typeof interop === "undefined") {
     // If we're in a Node-like environment (e.g. Node.js, Deno, or Bun)
     // ===
 
-    const path =
-      "./build/RelWithDebInfo/NativeScript.xcframework/macos-arm64_x86_64/NativeScript.framework/Versions/0.1.0/NativeScript";
+    // Commenting out the below due to Metro hitting the following problem:
+    // > Unhandled JS Exception: import.meta is only valid inside modules.
 
-    let metaURL = import.meta.url;
-    if (!metaURL.includes("://")) {
-      metaURL = "file://" + metaURL;
-    }
+    // const path =
+    //   "./build/RelWithDebInfo/NativeScript.xcframework/macos-arm64_x86_64/NativeScript.framework/Versions/0.1.0/NativeScript";
 
-    const module = { exports: {} };
+    // let metaURL = import.meta.url;
+    // if (!metaURL.includes("://")) {
+    //   metaURL = "file://" + metaURL;
+    // }
 
-    // deno-lint-ignore no-process-globals
-    process.dlopen(module, new URL(path, metaURL).pathname);
+    // const module = { exports: {} };
 
-    module.exports.init(
-      // deno-lint-ignore no-process-globals
-      process.env.METADATA_PATH
-    );
+    // // deno-lint-ignore no-process-globals
+    // process.dlopen(module, new URL(path, metaURL).pathname);
+
+    // module.exports.init(
+    //   // deno-lint-ignore no-process-globals
+    //   process.env.METADATA_PATH
+    // );
   } else {
     // ===
     // If we're in a React Native-like environment
