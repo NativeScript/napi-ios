@@ -5,6 +5,43 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 
 const archs = ["arm64", "x86_64"];
+const buildTargets = [
+  {
+    dir: "build_iphoneos-arm64",
+    sdk: "iphoneos",
+    arch: "arm64",
+    host: "aarch64-apple-darwin13",
+    minVersionFlag: "-miphoneos-version-min=13.0",
+  },
+  {
+    dir: "build_iphonesimulator-x86_64",
+    sdk: "iphonesimulator",
+    arch: "x86_64",
+    host: "x86_64-apple-darwin13",
+    minVersionFlag: "-mios-simulator-version-min=13.0",
+  },
+  {
+    dir: "build_iphonesimulator-arm64",
+    sdk: "iphonesimulator",
+    arch: "arm64",
+    host: "aarch64-apple-darwin13",
+    minVersionFlag: "-mios-simulator-version-min=13.0",
+  },
+  {
+    dir: "build_macosx-x86_64",
+    sdk: "macosx",
+    arch: "x86_64",
+    host: "x86_64-apple-darwin13",
+    minVersionFlag: "-mmacosx-version-min=11.0",
+  },
+  {
+    dir: "build_macosx-arm64",
+    sdk: "macosx",
+    arch: "arm64",
+    host: "aarch64-apple-darwin13",
+    minVersionFlag: "-mmacosx-version-min=11.0",
+  },
+];
 
 async function main() {
   const libffiDir = path.resolve(__dirname, "..", "libffi");
@@ -26,22 +63,24 @@ async function main() {
     process.argv.includes("--skip-generate-source");
 
   if (!skipGenerateSource) {
-    for (const platform of ["ios", "osx"]) {
-      run("python", [
-        "generate-darwin-source-and-headers.py",
-        `--only-${platform}`,
-      ], { cwd: libffiDir, env });
+    for (const target of buildTargets) {
+      await configureBuildTarget(target, libffiPath, env);
     }
-  }
-
-  for (const dir of [
-    "iphoneos-arm64",
-    "iphonesimulator-x86_64",
-    "iphonesimulator-arm64",
-    "macosx-x86_64",
-    "macosx-arm64",
-  ]) {
-    run("make", ["-C", `build_${dir}`, "install"], { cwd: libffiDir, env });
+  } else {
+    for (const target of buildTargets) {
+      const configurePath = libffiPath(target.dir, "config.status");
+      try {
+        await fs.access(configurePath);
+      } catch {
+        throw new Error(
+          `Missing ${configurePath}. Re-run without --skip-generate-source to configure build directories.`,
+        );
+      }
+      run("make", [], {
+        cwd: libffiPath(target.dir),
+        env: buildTargetEnv(env, target),
+      });
+    }
   }
 
   await prepareDir(libffiPath("prebuilt", "iphoneos-arm64", "include"));
@@ -79,6 +118,26 @@ async function main() {
     "build_iphonesimulator-arm64/.libs/libffi_convenience.a",
   ], { cwd: libffiDir, env });
   await combineHeaders("iphonesimulator", libffiPath);
+}
+
+async function configureBuildTarget(target, libffiPath, baseEnv) {
+  const targetDir = libffiPath(target.dir);
+  await fs.rm(targetDir, { recursive: true, force: true });
+  await fs.mkdir(targetDir, { recursive: true });
+
+  const env = buildTargetEnv(baseEnv, target);
+
+  run("../configure", ["--host", target.host], { cwd: targetDir, env });
+  run("make", [], { cwd: targetDir, env });
+}
+
+function buildTargetEnv(baseEnv, target) {
+  return {
+    ...baseEnv,
+    CC: `xcrun -sdk ${target.sdk} clang -arch ${target.arch}`,
+    LD: `xcrun -sdk ${target.sdk} ld -arch ${target.arch}`,
+    CFLAGS: `${target.minVersionFlag} -w`,
+  };
 }
 
 function run(command, args, options = {}) {
