@@ -89,8 +89,8 @@ checkpoint "Building NativeScript for Mac Catalyst"
 fi
 
 if [[ $BUILD_SIMULATOR && "$TARGET_ENGINE" == "none" ]]; then
-  # TODO: Add x86_64-apple-ios-sim once supported
   TRIPLETS+=("arm64-apple-ios-sim")
+  TRIPLETS+=("x86_64-apple-ios-sim")
 elif $BUILD_SIMULATOR; then
   checkpoint "Building NativeScript for iPhone (simulator)"
 
@@ -118,10 +118,8 @@ elif $BUILD_MACOS; then
 fi
 
 if [[ $BUILD_VISION && "$TARGET_ENGINE" == "none" ]]; then
-  # TRIPLETS+=("arm64-apple-visionos")
-  # TODO: Add x86_64-apple-visionos-sim once supported
-  # TRIPLETS+=("x86_64-apple-visionos-sim")
   # TRIPLETS+=("arm64-apple-visionos-sim")
+  # TRIPLETS+=("x86_64-apple-visionos-sim")
   echo "Skipping visionOS prebuilds for React Native Node-API as they are not yet supported."
 
 elif $BUILD_VISION; then
