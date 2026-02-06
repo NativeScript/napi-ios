@@ -76,7 +76,7 @@ async function main() {
           `Missing ${configurePath}. Re-run without --skip-generate-source to configure build directories.`,
         );
       }
-      run("make", [], {
+      run("make", ["libffi_convenience.la"], {
         cwd: libffiPath(target.dir),
         env: buildTargetEnv(env, target),
       });
@@ -127,11 +127,11 @@ async function configureBuildTarget(target, libffiPath, baseEnv) {
 
   const env = buildTargetEnv(baseEnv, target);
 
-  run("../configure", ["--disable-docs", "--host", target.host], {
+  run("../configure", ["--disable-docs", "--disable-shared", "--host", target.host], {
     cwd: targetDir,
     env,
   });
-  run("make", [], { cwd: targetDir, env });
+  run("make", ["libffi_convenience.la"], { cwd: targetDir, env });
 }
 
 function buildTargetEnv(baseEnv, target) {
