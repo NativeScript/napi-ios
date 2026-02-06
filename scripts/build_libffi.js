@@ -127,7 +127,10 @@ async function configureBuildTarget(target, libffiPath, baseEnv) {
 
   const env = buildTargetEnv(baseEnv, target);
 
-  run("../configure", ["--host", target.host], { cwd: targetDir, env });
+  run("../configure", ["--disable-docs", "--host", target.host], {
+    cwd: targetDir,
+    env,
+  });
   run("make", [], { cwd: targetDir, env });
 }
 
@@ -137,6 +140,9 @@ function buildTargetEnv(baseEnv, target) {
     CC: `xcrun -sdk ${target.sdk} clang -arch ${target.arch}`,
     LD: `xcrun -sdk ${target.sdk} ld -arch ${target.arch}`,
     CFLAGS: `${target.minVersionFlag} -w`,
+    // Old libffi asm trips Apple clang's CFI handling on modern toolchains.
+    // Force configure to skip CFI pseudo-op usage in generated config headers.
+    gcc_cv_as_cfi_pseudo_op: "no",
   };
 }
 
