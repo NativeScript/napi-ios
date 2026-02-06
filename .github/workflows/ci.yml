@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Install libffi build tools
-        run: brew install autoconf automake libtool
+        run: brew install autoconf automake libtool texinfo
 
       - name: Build libffi
         run: npm run build-libffi
