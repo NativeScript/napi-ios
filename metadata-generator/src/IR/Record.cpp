@@ -26,7 +26,9 @@ StructDecl::StructDecl(CXCursor cursor) {
         switch (kind) {
         case CXCursor_FieldDecl: {
           StructFieldDecl field;
-          field.name = clang_getCString(clang_getCursorSpelling(cursor));
+          CXString cxName = clang_getCursorSpelling(cursor);
+          field.name = clang_getCString(cxName);
+          clang_disposeString(cxName);
           auto type = clang_getCursorType(cursor);
           field.type = TypeSpec(type);
           field.type.isNullable = true;
@@ -67,7 +69,9 @@ UnionDecl::UnionDecl(CXCursor cursor) {
         switch (kind) {
         case CXCursor_FieldDecl: {
           UnionFieldDecl field;
-          field.name = clang_getCString(clang_getCursorSpelling(cursor));
+          CXString cxName = clang_getCursorSpelling(cursor);
+          field.name = clang_getCString(cxName);
+          clang_disposeString(cxName);
           auto type = clang_getCursorType(cursor);
           field.type = TypeSpec(type);
           field.type.isNullable = true;
@@ -86,22 +90,22 @@ UnionDecl::UnionDecl(CXCursor cursor) {
 
 void MetadataFactory::processRecordRefs() {
   while (!referencedRecords.empty()) {
-    std::unordered_set<std::string> refs = referencedRecords;
-    referencedRecords.clear();
+    std::unordered_set<std::string> refs;
+    refs.swap(referencedRecords);
 
     for (const std::string &name : refs) {
       if (unions.contains(name) || structs.contains(name)) {
         continue;
       }
 
-      if (skippedStructs.contains(name)) {
-        StructDecl decl = skippedStructs[name];
-        structs[decl.name] = decl;
-        postProcessStruct(structs[decl.name]);
-      } else if (skippedUnions.contains(name)) {
-        UnionDecl decl = skippedUnions[name];
-        unions[decl.name] = decl;
-        postProcessUnion(unions[decl.name]);
+      auto skippedStructIt = skippedStructs.find(name);
+      if (skippedStructIt != skippedStructs.end()) {
+        auto [inserted, _] = structs.try_emplace(name, skippedStructIt->second);
+        postProcessStruct(inserted->second);
+      } else if (auto skippedUnionIt = skippedUnions.find(name);
+                 skippedUnionIt != skippedUnions.end()) {
+        auto [inserted, _] = unions.try_emplace(name, skippedUnionIt->second);
+        postProcessUnion(inserted->second);
       } else {
         std::cerr << "ERROR: Unknown record " << name << std::endl;
       }

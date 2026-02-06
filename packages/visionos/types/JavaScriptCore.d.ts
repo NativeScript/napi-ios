@@ -1,8 +1,11 @@
 /// <reference types="@nativescript/objc-node-api" />
-
-declare const JSPropertyDescriptorSetKey: string;
+/// <reference path="./Runtime.d.ts" />
 
 declare const JSPropertyDescriptorGetKey: string;
+
+declare const JSPropertyDescriptorConfigurableKey: string;
+
+declare const JSPropertyDescriptorWritableKey: string;
 
 declare const kJSClassDefinitionEmpty: JSClassDefinition;
 
@@ -12,19 +15,28 @@ declare const kJSPropertyAttributeDontDelete: number;
 
 declare const kJSPropertyAttributeDontEnum: number;
 
+declare const kJSPropertyAttributeNone: number;
+
+declare const JSPropertyDescriptorSetKey: string;
+
 declare const kJSPropertyAttributeReadOnly: number;
 
 declare const JSPropertyDescriptorValueKey: string;
 
 declare const JSPropertyDescriptorEnumerableKey: string;
 
-declare const JSPropertyDescriptorWritableKey: string;
-
-declare const JSPropertyDescriptorConfigurableKey: string;
-
-declare const kJSPropertyAttributeNone: number;
-
 declare const kJSClassAttributeNoAutomaticPrototype: number;
+
+declare const JSType: {
+  Undefined: 0,
+  Null: 1,
+  Boolean: 2,
+  Number: 3,
+  String: 4,
+  Object: 5,
+  Symbol: 6,
+  BigInt: 7,
+};
 
 declare const JSTypedArrayType: {
   Int8Array: 0,
@@ -42,40 +54,15 @@ declare const JSTypedArrayType: {
   BigUint64Array: 12,
 };
 
-declare const JSType: {
+declare const JSRelationCondition: {
   Undefined: 0,
-  Null: 1,
-  Boolean: 2,
-  Number: 3,
-  String: 4,
-  Object: 5,
+  Equal: 1,
+  GreaterThan: 2,
+  LessThan: 3,
 };
-
-declare class JSStaticFunction {
-  constructor(init?: JSStaticFunction);
-  name: string | null;
-  callAsFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Pointer | null;
-  attributes: number;
-}
-
-declare class OpaqueJSValue {
-  constructor(init?: OpaqueJSValue);
-}
-
-declare class OpaqueJSPropertyNameAccumulator {
-  constructor(init?: OpaqueJSPropertyNameAccumulator);
-}
-
-declare class OpaqueJSPropertyNameArray {
-  constructor(init?: OpaqueJSPropertyNameArray);
-}
 
 declare class OpaqueJSClass {
   constructor(init?: OpaqueJSClass);
-}
-
-declare class OpaqueJSString {
-  constructor(init?: OpaqueJSString);
 }
 
 declare class OpaqueJSContext {
@@ -86,12 +73,31 @@ declare class OpaqueJSContextGroup {
   constructor(init?: OpaqueJSContextGroup);
 }
 
+declare class OpaqueJSPropertyNameAccumulator {
+  constructor(init?: OpaqueJSPropertyNameAccumulator);
+}
+
 declare class JSStaticValue {
   constructor(init?: JSStaticValue);
   name: string | null;
   getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
   setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
   attributes: number;
+}
+
+declare class JSStaticFunction {
+  constructor(init?: JSStaticFunction);
+  name: string | null;
+  callAsFunction: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => interop.Pointer | null;
+  attributes: number;
+}
+
+declare class OpaqueJSString {
+  constructor(init?: OpaqueJSString);
+}
+
+declare class OpaqueJSValue {
+  constructor(init?: OpaqueJSValue);
 }
 
 declare class JSClassDefinition {
@@ -115,6 +121,10 @@ declare class JSClassDefinition {
   convertToType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof JSType>, p4: interop.PointerConvertible) => interop.Pointer | null;
 }
 
+declare class OpaqueJSPropertyNameArray {
+  constructor(init?: OpaqueJSPropertyNameArray);
+}
+
 declare function JSEvaluateScript(ctx: interop.PointerConvertible, script: interop.PointerConvertible, thisObject: interop.PointerConvertible, sourceURL: interop.PointerConvertible, startingLineNumber: number, exception: interop.PointerConvertible): interop.Pointer;
 
 declare function JSCheckScriptSyntax(ctx: interop.PointerConvertible, script: interop.PointerConvertible, sourceURL: interop.PointerConvertible, startingLineNumber: number, exception: interop.PointerConvertible): boolean;
@@ -133,15 +143,33 @@ declare function JSValueIsNumber(ctx: interop.PointerConvertible, value: interop
 
 declare function JSValueIsString(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
 
+declare function JSValueIsSymbol(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+
+declare function JSValueIsBigInt(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+
 declare function JSValueIsObject(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
 
 declare function JSValueIsObjectOfClass(ctx: interop.PointerConvertible, value: interop.PointerConvertible, jsClass: interop.PointerConvertible): boolean;
+
+declare function JSValueIsArray(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+
+declare function JSValueIsDate(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
+
+declare function JSValueGetTypedArrayType(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Enum<typeof JSTypedArrayType>;
 
 declare function JSValueIsEqual(ctx: interop.PointerConvertible, a: interop.PointerConvertible, b: interop.PointerConvertible, exception: interop.PointerConvertible): boolean;
 
 declare function JSValueIsStrictEqual(ctx: interop.PointerConvertible, a: interop.PointerConvertible, b: interop.PointerConvertible): boolean;
 
 declare function JSValueIsInstanceOfConstructor(ctx: interop.PointerConvertible, value: interop.PointerConvertible, constructor: interop.PointerConvertible, exception: interop.PointerConvertible): boolean;
+
+declare function JSValueCompare(ctx: interop.PointerConvertible, left: interop.PointerConvertible, right: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Enum<typeof JSRelationCondition>;
+
+declare function JSValueCompareInt64(ctx: interop.PointerConvertible, left: interop.PointerConvertible, right: number, exception: interop.PointerConvertible): interop.Enum<typeof JSRelationCondition>;
+
+declare function JSValueCompareUInt64(ctx: interop.PointerConvertible, left: interop.PointerConvertible, right: number, exception: interop.PointerConvertible): interop.Enum<typeof JSRelationCondition>;
+
+declare function JSValueCompareDouble(ctx: interop.PointerConvertible, left: interop.PointerConvertible, right: number, exception: interop.PointerConvertible): interop.Enum<typeof JSRelationCondition>;
 
 declare function JSValueMakeUndefined(ctx: interop.PointerConvertible): interop.Pointer;
 
@@ -153,9 +181,31 @@ declare function JSValueMakeNumber(ctx: interop.PointerConvertible, number: numb
 
 declare function JSValueMakeString(ctx: interop.PointerConvertible, string: interop.PointerConvertible): interop.Pointer;
 
+declare function JSValueMakeSymbol(ctx: interop.PointerConvertible, description: interop.PointerConvertible): interop.Pointer;
+
+declare function JSBigIntCreateWithDouble(ctx: interop.PointerConvertible, value: number, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSBigIntCreateWithInt64(ctx: interop.PointerConvertible, integer: number, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSBigIntCreateWithUInt64(ctx: interop.PointerConvertible, integer: number, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSBigIntCreateWithString(ctx: interop.PointerConvertible, string: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSValueMakeFromJSONString(ctx: interop.PointerConvertible, string: interop.PointerConvertible): interop.Pointer;
+
+declare function JSValueCreateJSONString(ctx: interop.PointerConvertible, value: interop.PointerConvertible, indent: number, exception: interop.PointerConvertible): interop.Pointer;
+
 declare function JSValueToBoolean(ctx: interop.PointerConvertible, value: interop.PointerConvertible): boolean;
 
 declare function JSValueToNumber(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSValueToInt32(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSValueToUInt32(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSValueToInt64(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSValueToUInt64(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): number;
 
 declare function JSValueToStringCopy(ctx: interop.PointerConvertible, value: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
 
@@ -177,6 +227,16 @@ declare function JSObjectMakeFunctionWithCallback(ctx: interop.PointerConvertibl
 
 declare function JSObjectMakeConstructor(ctx: interop.PointerConvertible, jsClass: interop.PointerConvertible, callAsConstructor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer): interop.Pointer;
 
+declare function JSObjectMakeArray(ctx: interop.PointerConvertible, argumentCount: number, arguments$: interop.Pointer, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeDate(ctx: interop.PointerConvertible, argumentCount: number, arguments$: interop.Pointer, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeError(ctx: interop.PointerConvertible, argumentCount: number, arguments$: interop.Pointer, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeRegExp(ctx: interop.PointerConvertible, argumentCount: number, arguments$: interop.Pointer, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeDeferredPromise(ctx: interop.PointerConvertible, resolve: interop.PointerConvertible, reject: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
 declare function JSObjectMakeFunction(ctx: interop.PointerConvertible, name: interop.PointerConvertible, parameterCount: number, parameterNames: interop.Pointer, body: interop.PointerConvertible, sourceURL: interop.PointerConvertible, startingLineNumber: number, exception: interop.PointerConvertible): interop.Pointer;
 
 declare function JSObjectGetPrototype(ctx: interop.PointerConvertible, object: interop.PointerConvertible): interop.Pointer;
@@ -190,6 +250,14 @@ declare function JSObjectGetProperty(ctx: interop.PointerConvertible, object: in
 declare function JSObjectSetProperty(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyName: interop.PointerConvertible, value: interop.PointerConvertible, attributes: number, exception: interop.PointerConvertible): void;
 
 declare function JSObjectDeleteProperty(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyName: interop.PointerConvertible, exception: interop.PointerConvertible): boolean;
+
+declare function JSObjectHasPropertyForKey(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyKey: interop.PointerConvertible, exception: interop.PointerConvertible): boolean;
+
+declare function JSObjectGetPropertyForKey(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyKey: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectSetPropertyForKey(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyKey: interop.PointerConvertible, value: interop.PointerConvertible, attributes: number, exception: interop.PointerConvertible): void;
+
+declare function JSObjectDeletePropertyForKey(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyKey: interop.PointerConvertible, exception: interop.PointerConvertible): boolean;
 
 declare function JSObjectGetPropertyAtIndex(ctx: interop.PointerConvertible, object: interop.PointerConvertible, propertyIndex: number, exception: interop.PointerConvertible): interop.Pointer;
 
@@ -219,11 +287,33 @@ declare function JSPropertyNameArrayGetNameAtIndex(array: interop.PointerConvert
 
 declare function JSPropertyNameAccumulatorAddName(accumulator: interop.PointerConvertible, propertyName: interop.PointerConvertible): void;
 
+declare function JSContextGroupCreate(): interop.Pointer;
+
+declare function JSContextGroupRetain(group: interop.PointerConvertible): interop.Pointer;
+
+declare function JSContextGroupRelease(group: interop.PointerConvertible): void;
+
+declare function JSGlobalContextCreate(globalObjectClass: interop.PointerConvertible): interop.Pointer;
+
+declare function JSGlobalContextCreateInGroup(group: interop.PointerConvertible, globalObjectClass: interop.PointerConvertible): interop.Pointer;
+
 declare function JSGlobalContextRetain(ctx: interop.PointerConvertible): interop.Pointer;
 
 declare function JSGlobalContextRelease(ctx: interop.PointerConvertible): void;
 
 declare function JSContextGetGlobalObject(ctx: interop.PointerConvertible): interop.Pointer;
+
+declare function JSContextGetGroup(ctx: interop.PointerConvertible): interop.Pointer;
+
+declare function JSContextGetGlobalContext(ctx: interop.PointerConvertible): interop.Pointer;
+
+declare function JSGlobalContextCopyName(ctx: interop.PointerConvertible): interop.Pointer;
+
+declare function JSGlobalContextSetName(ctx: interop.PointerConvertible, name: interop.PointerConvertible): void;
+
+declare function JSGlobalContextIsInspectable(ctx: interop.PointerConvertible): boolean;
+
+declare function JSGlobalContextSetInspectable(ctx: interop.PointerConvertible, inspectable: boolean): void;
 
 declare function JSStringCreateWithCharacters(chars: interop.PointerConvertible, numChars: number): interop.Pointer;
 
@@ -245,13 +335,253 @@ declare function JSStringIsEqual(a: interop.PointerConvertible, b: interop.Point
 
 declare function JSStringIsEqualToUTF8CString(a: interop.PointerConvertible, b: string): boolean;
 
-declare function JSStringCreateWithCFString(string: interop.PointerConvertible): interop.Pointer;
+declare function JSObjectMakeTypedArray(ctx: interop.PointerConvertible, arrayType: interop.Enum<typeof JSTypedArrayType>, length: number, exception: interop.PointerConvertible): interop.Pointer;
 
-declare function JSStringCopyCFString(alloc: interop.PointerConvertible, string: interop.PointerConvertible): interop.Pointer;
+declare function JSObjectMakeTypedArrayWithBytesNoCopy(ctx: interop.PointerConvertible, arrayType: interop.Enum<typeof JSTypedArrayType>, bytes: interop.PointerConvertible, byteLength: number, bytesDeallocator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, deallocatorContext: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeTypedArrayWithArrayBuffer(ctx: interop.PointerConvertible, arrayType: interop.Enum<typeof JSTypedArrayType>, buffer: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeTypedArrayWithArrayBufferAndOffset(ctx: interop.PointerConvertible, arrayType: interop.Enum<typeof JSTypedArrayType>, buffer: interop.PointerConvertible, byteOffset: number, length: number, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectGetTypedArrayBytesPtr(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectGetTypedArrayLength(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSObjectGetTypedArrayByteLength(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSObjectGetTypedArrayByteOffset(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSObjectGetTypedArrayBuffer(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectMakeArrayBufferWithBytesNoCopy(ctx: interop.PointerConvertible, bytes: interop.PointerConvertible, byteLength: number, bytesDeallocator: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, deallocatorContext: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectGetArrayBufferBytesPtr(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): interop.Pointer;
+
+declare function JSObjectGetArrayBufferByteLength(ctx: interop.PointerConvertible, object: interop.PointerConvertible, exception: interop.PointerConvertible): number;
+
+declare function JSStringCreateWithCFString(string: interop.Object): interop.Pointer;
+
+declare function JSStringCopyCFString(alloc: interop.Object, string: interop.PointerConvertible): interop.Object;
 
 declare interface JSExport {
 }
 
 declare class JSExport extends NativeObject implements JSExport {
+}
+
+declare class JSManagedValue extends NSObject {
+  static managedValueWithValue(value: JSValue): JSManagedValue;
+
+  static managedValueWithValueAndOwner(value: JSValue, owner: interop.Object): JSManagedValue;
+
+  initWithValue(value: JSValue): this;
+
+  readonly value: JSValue;
+}
+
+declare class JSValue extends NSObject {
+  readonly context: JSContext;
+
+  static valueWithObjectInContext(value: interop.Object, context: JSContext): JSValue;
+
+  static valueWithBoolInContext(value: boolean, context: JSContext): JSValue;
+
+  static valueWithDoubleInContext(value: number, context: JSContext): JSValue;
+
+  static valueWithInt32InContext(value: number, context: JSContext): JSValue;
+
+  static valueWithUInt32InContext(value: number, context: JSContext): JSValue;
+
+  static valueWithNewObjectInContext(context: JSContext): JSValue;
+
+  static valueWithNewArrayInContext(context: JSContext): JSValue;
+
+  static valueWithNewRegularExpressionFromPatternFlagsInContext(pattern: string, flags: string, context: JSContext): JSValue;
+
+  static valueWithNewErrorFromMessageInContext(message: string, context: JSContext): JSValue;
+
+  static valueWithNewPromiseInContextFromExecutor(context: JSContext, callback: (p1: JSValue, p2: JSValue) => void): JSValue;
+
+  static valueWithNewPromiseResolvedWithResultInContext(result: interop.Object, context: JSContext): JSValue;
+
+  static valueWithNewPromiseRejectedWithReasonInContext(reason: interop.Object, context: JSContext): JSValue;
+
+  static valueWithNewSymbolFromDescriptionInContext(description: string, context: JSContext): JSValue;
+
+  static valueWithNewBigIntFromStringInContext(string: string, context: JSContext): JSValue;
+
+  static valueWithNewBigIntFromInt64InContext(int64: number, context: JSContext): JSValue;
+
+  static valueWithNewBigIntFromUInt64InContext(uint64: number, context: JSContext): JSValue;
+
+  static valueWithNewBigIntFromDoubleInContext(value: number, context: JSContext): JSValue;
+
+  static valueWithNullInContext(context: JSContext): JSValue;
+
+  static valueWithUndefinedInContext(context: JSContext): JSValue;
+
+  toObject(): interop.Object;
+
+  toObjectOfClass(expectedClass: interop.Object): interop.Object;
+
+  toBool(): boolean;
+
+  toDouble(): number;
+
+  toInt32(): number;
+
+  toUInt32(): number;
+
+  toInt64(): number;
+
+  toUInt64(): number;
+
+  toNumber(): NSNumber;
+
+  toString(): string;
+
+  toDate(): NSDate;
+
+  toArray(): NSArray;
+
+  toDictionary(): NSDictionary;
+
+  readonly isUndefined: boolean;
+
+  readonly isNull: boolean;
+
+  readonly isBoolean: boolean;
+
+  readonly isNumber: boolean;
+
+  readonly isString: boolean;
+
+  readonly isObject: boolean;
+
+  readonly isArray: boolean;
+
+  readonly isDate: boolean;
+
+  readonly isSymbol: boolean;
+
+  readonly isBigInt: boolean;
+
+  isInstanceOf(value: interop.Object): boolean;
+
+  isEqualToObject(value: interop.Object): boolean;
+
+  isEqualWithTypeCoercionToObject(value: interop.Object): boolean;
+
+  compareJSValue(other: JSValue): interop.Enum<typeof JSRelationCondition>;
+
+  compareInt64(other: number): interop.Enum<typeof JSRelationCondition>;
+
+  compareUInt64(other: number): interop.Enum<typeof JSRelationCondition>;
+
+  compareDouble(other: number): interop.Enum<typeof JSRelationCondition>;
+
+  callWithArguments(arguments$: NSArray<interop.Object> | Array<interop.Object>): JSValue;
+
+  constructWithArguments(arguments$: NSArray<interop.Object> | Array<interop.Object>): JSValue;
+
+  invokeMethodWithArguments(method: string, arguments$: NSArray<interop.Object> | Array<interop.Object>): JSValue;
+
+  static valueWithPointInContext(point: CGPoint, context: JSContext): JSValue;
+
+  static valueWithRangeInContext(range: _NSRange, context: JSContext): JSValue;
+
+  static valueWithRectInContext(rect: CGRect, context: JSContext): JSValue;
+
+  static valueWithSizeInContext(size: CGSize, context: JSContext): JSValue;
+
+  toPoint(): CGPoint;
+
+  toRange(): _NSRange;
+
+  toRect(): CGRect;
+
+  toSize(): CGSize;
+
+  valueForProperty(property: interop.Object): JSValue;
+
+  setValueForProperty(value: interop.Object, property: interop.Object): void;
+
+  deleteProperty(property: interop.Object): boolean;
+
+  hasProperty(property: interop.Object): boolean;
+
+  definePropertyDescriptor(property: interop.Object, descriptor: interop.Object): void;
+
+  valueAtIndex(index: number): JSValue;
+
+  setValueAtIndex(value: interop.Object, index: number): void;
+
+  objectForKeyedSubscript(key: interop.Object): JSValue;
+
+  objectAtIndexedSubscript(index: number): JSValue;
+
+  setObjectForKeyedSubscript(object: interop.Object, key: interop.Object): void;
+
+  setObjectAtIndexedSubscript(object: interop.Object, index: number): void;
+
+  static valueWithJSValueRefInContext(value: interop.PointerConvertible, context: JSContext): JSValue;
+
+  readonly JSValueRef: interop.Pointer;
+}
+
+declare class JSContext extends NSObject {
+  init(): this;
+
+  initWithVirtualMachine(virtualMachine: JSVirtualMachine): this;
+
+  evaluateScript(script: string): JSValue;
+
+  evaluateScriptWithSourceURL(script: string, sourceURL: NSURL): JSValue;
+
+  static currentContext(): JSContext;
+
+  static currentCallee(): JSValue;
+
+  static currentThis(): JSValue;
+
+  static currentArguments(): NSArray;
+
+  readonly globalObject: JSValue;
+
+  exception: JSValue;
+
+  exceptionHandler: (p1: JSContext, p2: JSValue) => void;
+
+  readonly virtualMachine: JSVirtualMachine;
+
+  name: string;
+
+  inspectable: boolean;
+
+  setException(exception: JSValue): void;
+
+  setExceptionHandler(exceptionHandler: (p1: JSContext, p2: JSValue) => void): void;
+
+  setName(name: string): void;
+
+  isInspectable(): boolean;
+
+  setInspectable(inspectable: boolean): void;
+
+  objectForKeyedSubscript(key: interop.Object): JSValue;
+
+  setObjectForKeyedSubscript(object: interop.Object, key: NSObject): void;
+
+  static contextWithJSGlobalContextRef(jsGlobalContextRef: interop.PointerConvertible): JSContext;
+
+  readonly JSGlobalContextRef: interop.Pointer;
+}
+
+declare class JSVirtualMachine extends NSObject {
+  init(): this;
+
+  addManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
+
+  removeManagedReferenceWithOwner(object: interop.Object, owner: interop.Object): void;
 }
 

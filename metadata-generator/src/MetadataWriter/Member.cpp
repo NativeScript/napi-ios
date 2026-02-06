@@ -60,7 +60,8 @@ MDMember *MDMetadataWriter::memberFromDecl(MemberDecl &decl) {
 
     MDSignature *mdSignature = new MDSignature();
     mdSignature->returnType = getTypeInfo(decl.returnType);
-    for (auto param : decl.parameters) {
+    mdSignature->arguments.reserve(decl.parameters.size());
+    for (const auto& param : decl.parameters) {
       mdSignature->arguments.push_back(getTypeInfo(param.type));
     }
     mdSignature->isVariadic = decl.isVariadic;

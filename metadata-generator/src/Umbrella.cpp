@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <system_error>
+#include <unordered_set>
 #include <vector>
 
 inline void ltrim(std::string& s) {
@@ -28,17 +29,18 @@ inline bool isHeader(std::string& s) {
 
 inline bool isModueMap(std::string& s) { return s.ends_with(".modulemap"); }
 
-static void addIncludePath(std::string& path,
-                           std::vector<std::string>& includePaths) {
-  if (std::find(includePaths.begin(), includePaths.end(), path) ==
-      includePaths.end()) {
+static void addIncludePath(const std::string& path,
+                           std::vector<std::string>& includePaths,
+                           std::unordered_set<std::string>& includePathSet) {
+  if (includePathSet.emplace(path).second) {
     includePaths.push_back(path);
   }
 }
 
-static void addHeaderInclude(std::string& header,
-                             std::vector<std::string>& includes) {
-  if (std::find(includes.begin(), includes.end(), header) == includes.end() &&
+static void addHeaderInclude(const std::string& header,
+                             std::vector<std::string>& includes,
+                             std::unordered_set<std::string>& includeSet) {
+  if (includeSet.emplace(header).second &&
       !header.ends_with("umbrella-arm64.h") &&
       !header.ends_with("umbrella-x86_64.h") &&
       header.find("/platforms/ios/internal/") == std::string::npos &&
@@ -51,36 +53,42 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
     std::string dir, bool isFrameworksDir,
     std::vector<std::string>& umbrellaHeaders,
     std::vector<std::string>& includePaths,
-    std::vector<std::string>& frameworks, bool isUmbrella = false);
+    std::vector<std::string>& frameworks,
+    std::unordered_set<std::string>& umbrellaHeaderSet,
+    std::unordered_set<std::string>& includePathSet,
+    std::unordered_set<std::string>& frameworkSet, bool isUmbrella = false);
 
 static std::error_code CreateUmbrellaHeaderForAmbientModule(
     std::filesystem::path basePath, bool isFramework, std::string moduleMapPath,
     std::vector<std::string>& umbrellaHeaders,
     std::vector<std::string>& includePaths,
-    std::vector<std::string>& frameworks) {
+    std::vector<std::string>& frameworks,
+    std::unordered_set<std::string>& umbrellaHeaderSet,
+    std::unordered_set<std::string>& includePathSet,
+    std::unordered_set<std::string>& frameworkSet) {
   std::cerr << "Creating umbrella header for module map: " << moduleMapPath
             << " in " << basePath << std::endl;
 
   std::ifstream file(moduleMapPath);
 
   std::string basePathStr = basePath.string();
-  addIncludePath(basePathStr, includePaths);
+  addIncludePath(basePathStr, includePaths, includePathSet);
 
-  if (isFramework && std::find(frameworks.begin(), frameworks.end(),
-                               basePath) == frameworks.end()) {
+  if (isFramework && frameworkSet.emplace(basePathStr).second) {
     frameworks.push_back(basePath.string());
   }
 
   std::string line;
-  std::regex headerRegex(
+  static const std::regex headerRegex(
       R"((umbrella\s+header|header|umbrella|extern\s+module\s+[^"\s]+)\s+\"([^"]+)\")");
+  static const std::regex excludeHeaderRegex(R"(exclude\s+header)");
   std::smatch match, match2;
 
   std::vector<std::string> headers;
 
   while (std::getline(file, line)) {
     if (std::regex_search(line, match, headerRegex) &&
-        !std::regex_search(line, match2, std::regex(R"(exclude\s+header)"))) {
+        !std::regex_search(line, match2, excludeHeaderRegex)) {
       std::string header = match[2];
 
       // std::cerr << "Found header: " << header << std::endl;
@@ -92,25 +100,27 @@ static std::error_code CreateUmbrellaHeaderForAmbientModule(
         if (header.starts_with("/")) {
           headerPath = header;
           std::string headerPathOuter = headerPath.string();
-          addIncludePath(headerPathOuter, includePaths);
+          addIncludePath(headerPathOuter, includePaths, includePathSet);
         }
 
         if (std::filesystem::exists(headerPath)) {
           std::cerr << "Adding modulemap header: " << headerPath.string() << std::endl;
           std::string headerPathStr = headerPath.string();
-          addHeaderInclude(headerPathStr, umbrellaHeaders);
+          addHeaderInclude(headerPathStr, umbrellaHeaders, umbrellaHeaderSet);
         }
       } else if (isModueMap(header)) {
         std::filesystem::path moduleMapPath = basePath / header;
         if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(
                 basePath, isFramework, moduleMapPath.string(), umbrellaHeaders,
-                includePaths, frameworks))
+                includePaths, frameworks, umbrellaHeaderSet, includePathSet,
+                frameworkSet))
           return code;
       } else {
         std::filesystem::path headerDir = basePath / header;
         if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
                 headerDir.string(), false, umbrellaHeaders, includePaths,
-                frameworks, true))
+                frameworks, umbrellaHeaderSet, includePathSet, frameworkSet,
+                true))
           return code;
       }
     }
@@ -125,7 +135,10 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
     std::string dir, bool isFrameworksDir,
     std::vector<std::string>& umbrellaHeaders,
     std::vector<std::string>& includePaths,
-    std::vector<std::string>& frameworks, bool isUmbrella) {
+    std::vector<std::string>& frameworks,
+    std::unordered_set<std::string>& umbrellaHeaderSet,
+    std::unordered_set<std::string>& includePathSet,
+    std::unordered_set<std::string>& frameworkSet, bool isUmbrella) {
   if (dir.find("/usr/include/c++/") != std::string::npos) {
     return std::error_code();
   }
@@ -134,13 +147,13 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
     return std::error_code();
   }
 
-  addIncludePath(dir, includePaths);
+  addIncludePath(dir, includePaths, includePathSet);
 
   std::filesystem::path moduleMapPath = dir + "/module.modulemap";
   if (std::filesystem::exists(moduleMapPath) && !isUmbrella) {
     if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(
             dir, false, moduleMapPath.string(), umbrellaHeaders, includePaths,
-            frameworks)) {
+            frameworks, umbrellaHeaderSet, includePathSet, frameworkSet)) {
       return code;
     }
 
@@ -160,7 +173,8 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
           // include
           if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(
                   entry.path(), true, moduleMapPath.string(), umbrellaHeaders,
-                  includePaths, frameworks)) {
+                  includePaths, frameworks, umbrellaHeaderSet, includePathSet,
+                  frameworkSet)) {
             return code;
           }
           // If there is Modules but no module.modulemap, then its a Swift
@@ -170,7 +184,8 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
           std::filesystem::path headersPath = entry.path() / "Headers";
           if (std::filesystem::exists(headersPath)) {
             std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
-                headersPath, false, umbrellaHeaders, includePaths, frameworks);
+                headersPath, false, umbrellaHeaders, includePaths, frameworks,
+                umbrellaHeaderSet, includePathSet, frameworkSet);
             if (code) {
               return code;
             }
@@ -180,7 +195,8 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
         if (std::filesystem::exists(entry.path() / "Frameworks")) {
           if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
                   entry.path() / "Frameworks", true, umbrellaHeaders,
-                  includePaths, frameworks)) {
+                  includePaths, frameworks, umbrellaHeaderSet, includePathSet,
+                  frameworkSet)) {
             return code;
           }
         }
@@ -188,19 +204,21 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
         if (std::filesystem::exists(entry.path() / "SubFrameworks")) {
           if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
                   entry.path() / "SubFrameworks", true, umbrellaHeaders,
-                  includePaths, frameworks)) {
+                  includePaths, frameworks, umbrellaHeaderSet, includePathSet,
+                  frameworkSet)) {
             return code;
           }
         }
       } else if (!isFrameworksDir && !entry.is_symlink()) {
         // TODO: should it inherit isFrameworksDir? I think not
         if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
-                pathstring, false, umbrellaHeaders, includePaths, frameworks)) {
+                pathstring, false, umbrellaHeaders, includePaths, frameworks,
+                umbrellaHeaderSet, includePathSet, frameworkSet)) {
           return code;
         }
       }
     } else if (isHeader(pathstring)) {
-      addHeaderInclude(pathstring, umbrellaHeaders);
+      addHeaderInclude(pathstring, umbrellaHeaders, umbrellaHeaderSet);
     }
   }
 
@@ -212,6 +230,14 @@ static std::error_code CreateUmbrellaHeaderForAmbientModules(
     std::vector<std::string>& umbrellaHeaders,
     std::vector<std::string>& includePaths,
     std::vector<std::string>& frameworks) {
+  std::unordered_set<std::string> umbrellaHeaderSet;
+  std::unordered_set<std::string> includePathSet;
+  std::unordered_set<std::string> frameworkSet;
+
+  umbrellaHeaderSet.reserve(1024);
+  includePathSet.reserve(1024);
+  frameworkSet.reserve(256);
+
   std::stringstream cmd = {};
 
   cmd << "clang -v -E -x c /dev/null 2>&1";
@@ -263,18 +289,22 @@ static std::error_code CreateUmbrellaHeaderForAmbientModules(
       isFrameworksDir = true;
     }
     if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
-            path, isFrameworksDir, umbrellaHeaders, includePaths, frameworks)) {
+            path, isFrameworksDir, umbrellaHeaders, includePaths, frameworks,
+            umbrellaHeaderSet, includePathSet, frameworkSet)) {
       return code;
     }
   }
 
-  for (std::string arg : args) {
+  for (const std::string& arg : args) {
     if (arg.find("-fmodule-map-file=") == 0) {
       std::string moduleMapFile = arg.substr(18);
       std::filesystem::path moduleMapPath(moduleMapFile);
       if (std::filesystem::exists(moduleMapPath)) {
         std::cerr << "Found module map arg: " << moduleMapPath.string() << std::endl;
-        if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(moduleMapPath.parent_path(), false, moduleMapPath, umbrellaHeaders, includePaths, frameworks)) {
+        if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(
+                moduleMapPath.parent_path(), false, moduleMapPath,
+                umbrellaHeaders, includePaths, frameworks, umbrellaHeaderSet,
+                includePathSet, frameworkSet)) {
           return code;
         }
         std::cerr << "Added module map headers from: " << moduleMapPath.string() << std::endl;
@@ -289,7 +319,7 @@ static std::error_code CreateUmbrellaHeaderForAmbientModules(
 
 // Sort headers so that -Swift headers come last (see
 // https://github.com/NativeScript/ios-runtime/issues/1153)
-int headerPriority(std::string h) {
+int headerPriority(const std::string& h) {
   if (std::string::npos != h.find("-Swift")) {
     return 1;
   } else {
@@ -315,7 +345,7 @@ std::string CreateUmbrellaHeader(const std::vector<std::string>& clangArgs,
                    });
 
   std::stringstream umbrellaHeaderContents;
-  for (auto& h : umbrellaHeaders) {
+  for (const auto& h : umbrellaHeaders) {
     umbrellaHeaderContents << "#import \"" << h.c_str() << "\"" << std::endl;
   }
 

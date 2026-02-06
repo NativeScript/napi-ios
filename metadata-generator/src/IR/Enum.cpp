@@ -14,13 +14,13 @@ namespace metagen {
 // Basically, split the name into parts (assuming camel case), and then remove
 // the repeating parts from the beginning and end of the name.
 void transformEnumMemberNames(std::vector<EnumConstDecl> &members) {
-  std::vector<std::string> result;
   std::vector<std::vector<std::string>> parts;
+  parts.reserve(members.size());
   size_t skip_begin = 0, skip_end = 0;
   std::vector<std::string> largestPart;
 
-  for (auto part : members) {
-    auto split = splitCamelCase(part.name);
+  for (const auto& member : members) {
+    auto split = splitCamelCase(member.name);
     parts.emplace_back(split);
     if (split.size() > largestPart.size()) {
       largestPart = split;
@@ -30,7 +30,7 @@ void transformEnumMemberNames(std::vector<EnumConstDecl> &members) {
   skip_begin = skip_end = largestPart.size();
 
   for (size_t i = 0; i < parts.size(); i++) {
-    auto part = parts[i];
+    const auto& part = parts[i];
     size_t skip = 0;
 
     for (size_t j = 0; j < part.size(); j++) {
@@ -51,11 +51,12 @@ void transformEnumMemberNames(std::vector<EnumConstDecl> &members) {
 
     skip = 0;
 
-    for (size_t j = part.size() - 1; j >= 0; j--) {
-      if (j >= largestPart.size()) {
+    for (size_t k = 0; k < part.size(); k++) {
+      if (k >= largestPart.size()) {
         break;
       }
 
+      const size_t j = part.size() - 1 - k;
       if (part[j] == largestPart[largestPart.size() - 1 - skip]) {
         skip++;
       } else {
@@ -69,8 +70,9 @@ void transformEnumMemberNames(std::vector<EnumConstDecl> &members) {
   }
 
   for (size_t i = 0; i < members.size(); i++) {
-    auto part = parts[i];
-    std::string name = "";
+    const auto& part = parts[i];
+    std::string name;
+    name.reserve(members[i].name.size());
 
     for (size_t j = skip_begin; j < part.size() - skip_end; j++) {
       name += part[j];
@@ -132,20 +134,21 @@ EnumDecl::EnumDecl(CXCursor cursor) {
 }
 
 void MetadataFactory::processEnumRefs() {
-  for (const std::string &ref : referencedEnums) {
+  std::unordered_set<std::string> refs;
+  refs.swap(referencedEnums);
+
+  for (const std::string &ref : refs) {
     if (enums.contains(ref)) {
       continue;
     }
 
-    if (skippedEnums.contains(ref)) {
-      EnumDecl decl = skippedEnums[ref];
-      enums[decl.name] = decl;
+    auto skippedIt = skippedEnums.find(ref);
+    if (skippedIt != skippedEnums.end()) {
+      enums.insert_or_assign(skippedIt->second.name, skippedIt->second);
     } else {
       std::cerr << "processEnumRef: Enum " << ref << " not found" << std::endl;
     }
   }
-
-  referencedEnums.clear();
 }
 
 } // namespace metagen

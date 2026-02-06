@@ -3503,14 +3503,15 @@ declare class AVMediaDataStorage extends NSObject {
   URL(): NSURL;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class AVFragmentedMovie extends AVMovie implements AVFragmentMinding {
   readonly tracks: NSArray;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackWithTrackID(trackID: number): AVMovieTrack;
+  trackWithTrackID(trackID: number): AVAssetTrack;
   trackWithTrackID(trackID: number): AVFragmentedMovieTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVMovieTrack, p2: NSError) => void | null): void;
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVAssetTrack, p2: NSError) => void | null): void;
   loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVFragmentedMovieTrack, p2: NSError) => void | null): void;
 
   tracksWithMediaType(mediaType: string): NSArray;
@@ -3737,11 +3738,10 @@ declare class AVPlayerVideoOutput extends NSObject {
 declare class AVCaptureDeferredPhotoProxy extends AVCapturePhoto {
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class AVCompositionTrack extends AVAssetTrack {
   readonly segments: NSArray;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  segmentForTrackTime(trackTime: CMTime): AVAssetTrackSegment;
   segmentForTrackTime(trackTime: CMTime): AVCompositionTrackSegment;
 
   readonly formatDescriptionReplacements: NSArray;
@@ -5609,10 +5609,12 @@ declare class AVMutableMovie extends AVMovie {
 
   setMetadata(metadata: NSArray<interop.Object> | Array<interop.Object>): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackWithTrackID(trackID: number): AVMovieTrack;
+  trackWithTrackID(trackID: number): AVAssetTrack;
   trackWithTrackID(trackID: number): AVMutableMovieTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVMovieTrack, p2: NSError) => void | null): void;
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVAssetTrack, p2: NSError) => void | null): void;
   loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVMutableMovieTrack, p2: NSError) => void | null): void;
 
   tracksWithMediaType(mediaType: string): NSArray;
@@ -5634,7 +5636,6 @@ declare class AVMutableMovie extends AVMovie {
   unusedTrackID(): number;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class AVMovie extends AVAsset implements NSCopying, NSMutableCopying {
   static movieTypes(): NSArray;
 
@@ -5664,10 +5665,10 @@ declare class AVMovie extends AVAsset implements NSCopying, NSMutableCopying {
 
   isCompatibleWithFileType(fileType: string): boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackWithTrackID(trackID: number): AVAssetTrack;
   trackWithTrackID(trackID: number): AVMovieTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVAssetTrack, p2: NSError) => void | null): void;
   loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVMovieTrack, p2: NSError) => void | null): void;
 
   tracksWithMediaType(mediaType: string): NSArray;
@@ -5708,7 +5709,6 @@ declare class AVCompositionTrackSegment extends AVAssetTrackSegment {
   isEmpty(): boolean;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class AVComposition extends AVAsset implements NSMutableCopying {
   readonly tracks: NSArray;
 
@@ -5716,10 +5716,10 @@ declare class AVComposition extends AVAsset implements NSMutableCopying {
 
   readonly URLAssetInitializationOptions: NSDictionary;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackWithTrackID(trackID: number): AVAssetTrack;
   trackWithTrackID(trackID: number): AVCompositionTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVAssetTrack, p2: NSError) => void | null): void;
   loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVCompositionTrack, p2: NSError) => void | null): void;
 
   tracksWithMediaType(mediaType: string): NSArray;
@@ -6617,10 +6617,10 @@ declare class AVVideoCompositionInstruction extends NSObject implements NSSecure
 declare class AVMutableVideoComposition extends AVVideoComposition {
   static videoComposition(): AVMutableVideoComposition;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static videoCompositionWithPropertiesOfAsset(asset: AVAsset): AVVideoComposition;
   static videoCompositionWithPropertiesOfAsset(asset: AVAsset): AVMutableVideoComposition;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static videoCompositionWithPropertiesOfAssetCompletionHandler(asset: AVAsset, completionHandler: (p1: AVVideoComposition, p2: NSError) => void | null): void;
   static videoCompositionWithPropertiesOfAssetCompletionHandler(asset: AVAsset, completionHandler: (p1: AVMutableVideoComposition, p2: NSError) => void | null): void;
 
   static videoCompositionWithPropertiesOfAssetPrototypeInstruction(asset: AVAsset, prototypeInstruction: AVVideoCompositionInstruction): AVMutableVideoComposition;
@@ -6698,10 +6698,10 @@ declare class AVMutableVideoComposition extends AVVideoComposition {
 
   setPerFrameHDRDisplayMetadataPolicy(perFrameHDRDisplayMetadataPolicy: string): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static videoCompositionWithAssetApplyingCIFiltersWithHandler(asset: AVAsset, applier: (p1: AVAsynchronousCIImageFilteringRequest) => void): AVVideoComposition;
   static videoCompositionWithAssetApplyingCIFiltersWithHandler(asset: AVAsset, applier: (p1: AVAsynchronousCIImageFilteringRequest) => void): AVMutableVideoComposition;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static videoCompositionWithAssetApplyingCIFiltersWithHandlerCompletionHandler(asset: AVAsset, applier: (p1: AVAsynchronousCIImageFilteringRequest) => void, completionHandler: (p1: AVVideoComposition, p2: NSError) => void | null): void;
   static videoCompositionWithAssetApplyingCIFiltersWithHandlerCompletionHandler(asset: AVAsset, applier: (p1: AVAsynchronousCIImageFilteringRequest) => void, completionHandler: (p1: AVMutableVideoComposition, p2: NSError) => void | null): void;
 }
 
@@ -7372,16 +7372,15 @@ declare class AVCaptureDevice extends NSObject {
   isCameraLensSmudgeDetectionEnabled(): boolean;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class AVFragmentedAsset extends AVURLAsset implements AVFragmentMinding {
   static fragmentedAssetWithURLOptions<This extends abstract new (...args: any) => any>(this: This, URL: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): InstanceType<This>;
 
   readonly tracks: NSArray;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackWithTrackID(trackID: number): AVAssetTrack;
   trackWithTrackID(trackID: number): AVFragmentedAssetTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVAssetTrack, p2: NSError) => void | null): void;
   loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVFragmentedAssetTrack, p2: NSError) => void | null): void;
 
   tracksWithMediaType(mediaType: string): NSArray;
@@ -7626,10 +7625,12 @@ declare class AVMutableComposition extends AVComposition {
 
   mutableTrackCompatibleWithTrack(track: AVAssetTrack): AVMutableCompositionTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  trackWithTrackID(trackID: number): AVCompositionTrack;
+  trackWithTrackID(trackID: number): AVAssetTrack;
   trackWithTrackID(trackID: number): AVMutableCompositionTrack;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVCompositionTrack, p2: NSError) => void | null): void;
+  loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVAssetTrack, p2: NSError) => void | null): void;
   loadTrackWithTrackIDCompletionHandler(trackID: number, completionHandler: (p1: AVMutableCompositionTrack, p2: NSError) => void | null): void;
 
   tracksWithMediaType(mediaType: string): NSArray;

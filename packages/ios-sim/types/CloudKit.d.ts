@@ -801,7 +801,6 @@ declare class CKShareAccessRequester extends NSObject implements NSSecureCoding,
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class CKShare extends CKRecord implements NSSecureCoding, NSCopying {
   initWithRootRecord(rootRecord: CKRecord): this;
 
@@ -809,7 +808,7 @@ declare class CKShare extends CKRecord implements NSSecureCoding, NSCopying {
 
   initWithRecordZoneID(recordZoneID: CKRecordZoneID): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   publicPermission: interop.Enum<typeof CKShareParticipantPermission>;
@@ -936,11 +935,10 @@ declare class CKNotification extends NSObject {
   readonly category: string;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class CKLocationSortDescriptor extends NSSortDescriptor implements NSSecureCoding {
   initWithKeyRelativeLocation(key: string, relativeLocation: CLLocation): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   readonly relativeLocation: CLLocation;
@@ -1114,13 +1112,12 @@ declare class CKNotificationInfo extends NSObject implements NSSecureCoding, NSC
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class CKRecordZoneSubscription extends CKSubscription implements NSSecureCoding, NSCopying {
   initWithZoneID(zoneID: CKRecordZoneID): this;
 
   initWithZoneIDSubscriptionID(zoneID: CKRecordZoneID, subscriptionID: string): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   readonly zoneID: CKRecordZoneID;
@@ -1154,7 +1151,6 @@ declare class CKDiscoverAllUserIdentitiesOperation extends CKOperation {
   setDiscoverAllUserIdentitiesCompletionBlock(discoverAllUserIdentitiesCompletionBlock: (p1: NSError) => void | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class CKDatabaseSubscription extends CKSubscription implements NSSecureCoding, NSCopying {
   init(): this;
 
@@ -1162,7 +1158,7 @@ declare class CKDatabaseSubscription extends CKSubscription implements NSSecureC
 
   initWithSubscriptionID(subscriptionID: string): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   recordType: string;
@@ -1971,13 +1967,12 @@ declare class CKSyncEngineConfiguration extends NSObject {
   setSubscriptionID(subscriptionID: string | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class CKQuerySubscription extends CKSubscription implements NSSecureCoding, NSCopying {
   initWithRecordTypePredicateOptions(recordType: string, predicate: NSPredicate, querySubscriptionOptions: interop.Enum<typeof CKQuerySubscriptionOptions>): this;
 
   initWithRecordTypePredicateSubscriptionIDOptions(recordType: string, predicate: NSPredicate, subscriptionID: string, querySubscriptionOptions: interop.Enum<typeof CKQuerySubscriptionOptions>): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   readonly recordType: string;

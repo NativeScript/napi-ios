@@ -34,7 +34,7 @@ ProtocolDecl::ProtocolDecl(CXCursor cursor) {
         case CXCursor_ObjCInstanceMethodDecl: {
           auto member = MemberDecl(cursor);
           member.parentProtocolName = protocol->name;
-          protocol->members.emplace_back(member);
+          protocol->members.emplace_back(std::move(member));
           break;
         }
 
@@ -47,7 +47,7 @@ ProtocolDecl::ProtocolDecl(CXCursor cursor) {
       this);
 }
 
-MemberDecl *ProtocolDecl::getMemberNamed(std::string &name) {
+MemberDecl *ProtocolDecl::getMemberNamed(const std::string &name) {
   for (auto &member : members) {
     if (member.name == name) {
       return &member;
@@ -58,18 +58,18 @@ MemberDecl *ProtocolDecl::getMemberNamed(std::string &name) {
 
 void MetadataFactory::processProtocolRefs() {
   while (!referencedProtocols.empty()) {
-    std::unordered_set<std::string> refs = referencedProtocols;
-    referencedProtocols.clear();
+    std::unordered_set<std::string> refs;
+    refs.swap(referencedProtocols);
 
     for (const std::string &name : refs) {
       if (protocols.contains(name)) {
         continue;
       }
 
-      if (skippedProtocols.contains(name)) {
-        ProtocolDecl decl = skippedProtocols[name];
-        protocols[name] = decl;
-        postProcessProtocol(protocols[name]);
+      auto skippedIt = skippedProtocols.find(name);
+      if (skippedIt != skippedProtocols.end()) {
+        auto [inserted, _] = protocols.try_emplace(name, skippedIt->second);
+        postProcessProtocol(inserted->second);
       } else {
         std::cerr << "ERROR: Unknown protocol " << name << std::endl;
       }

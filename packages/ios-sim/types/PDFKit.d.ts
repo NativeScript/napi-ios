@@ -441,7 +441,6 @@ declare interface PDFPageOverlayViewProvider extends NSObjectProtocol {
 declare class PDFPageOverlayViewProvider extends NativeObject implements PDFPageOverlayViewProvider {
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFView extends UIView implements UIGestureRecognizerDelegate, UIFindInteractionDelegate {
   document: PDFDocument;
 
@@ -550,7 +549,8 @@ declare class PDFView extends UIView implements UIGestureRecognizerDelegate, UIF
 
   drawPagePostToContext(page: PDFPage, context: interop.Object): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(sender: interop.Object | null): void;
+  copy(): interop.Object;
   copy(sender: interop.Object | null): void;
 
   pageForPointNearest(point: CGPoint, nearest: boolean): PDFPage;
@@ -690,7 +690,6 @@ declare class PDFView extends UIView implements UIGestureRecognizerDelegate, UIF
   findInteractionDidEndFindSession(interaction: UIFindInteraction, session: UIFindSession): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFThumbnailView extends UIView implements NSCoding {
   PDFView: PDFView;
 
@@ -706,7 +705,7 @@ declare class PDFThumbnailView extends UIView implements NSCoding {
 
   setPDFView(PDFView: PDFView | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setBackgroundColor(backgroundColor: UIColor): void;
   setBackgroundColor(backgroundColor: UIColor | null): void;
 
   setThumbnailSize(thumbnailSize: CGSize): void;

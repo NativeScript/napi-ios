@@ -59,7 +59,7 @@ void CategoryDecl::processMembers(
         case CXCursor_ObjCInstanceMethodDecl: {
           auto member = MemberDecl(cursor, cls->_classTypeParameters);
           member.parentClassName = cls->className;
-          cls->members.emplace_back(member);
+          cls->members.emplace_back(std::move(member));
           break;
         }
 

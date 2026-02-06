@@ -39,6 +39,9 @@ MemberDecl::MemberDecl(CXCursor cursor,
         this);
 
     auto argc = clang_Cursor_getNumArguments(cursor);
+    if (argc > 0) {
+      parameters.reserve(static_cast<size_t>(argc));
+    }
 
     for (int i = 0; i < argc; i++) {
       ParameterDecl param;
@@ -54,7 +57,7 @@ MemberDecl::MemberDecl(CXCursor cursor,
       if (prettyPrint.find("Nullable") != std::string::npos) {
         param.type.isNullable = true;
       }
-      parameters.emplace_back(param);
+      parameters.emplace_back(std::move(param));
     }
 
     isVariadic = clang_Cursor_isVariadic(cursor);

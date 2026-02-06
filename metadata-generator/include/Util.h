@@ -5,8 +5,9 @@
 
 namespace metagen {
 
-inline std::string jsifySelector(std::string selector) {
+inline std::string jsifySelector(const std::string& selector) {
   std::string jsifiedSelector;
+  jsifiedSelector.reserve(selector.size());
   bool nextupper = false;
   for (auto c : selector) {
     if (c == ':') {
@@ -21,7 +22,7 @@ inline std::string jsifySelector(std::string selector) {
   return jsifiedSelector;
 }
 
-inline std::string jsifyName(std::string name) {
+inline std::string jsifyName(const std::string& name) {
   if (name == "arguments" || name == "function" || name == "DOMException") {
     return name + "$";
   } else {
@@ -29,13 +30,15 @@ inline std::string jsifyName(std::string name) {
   }
 }
 
-inline std::vector<std::string> splitCamelCase(std::string value) {
+inline std::vector<std::string> splitCamelCase(const std::string& value) {
   std::vector<std::string> result;
+  result.reserve(value.size() / 4 + 1);
 
-  std::string current = "";
+  std::string current;
+  current.reserve(value.size());
   for (auto c : value) {
     if (isupper(c)) {
-      if (current != "") {
+      if (!current.empty()) {
         result.emplace_back(current);
       }
       current = "";
@@ -43,7 +46,7 @@ inline std::vector<std::string> splitCamelCase(std::string value) {
     current += c;
   }
 
-  if (current != "") {
+  if (!current.empty()) {
     result.emplace_back(current);
   }
 
@@ -117,7 +120,7 @@ inline bool isAvailable(CXCursor cursor) {
          availability == CXAvailability_Deprecated;
 }
 
-inline bool isSelectorOwned(std::string selectorName) {
+inline bool isSelectorOwned(const std::string& selectorName) {
   return selectorName.find("copy") == 0 ||
          selectorName.find("mutableCopy") == 0 ||
          selectorName.find("new") == 0 || selectorName.find("alloc") == 0;

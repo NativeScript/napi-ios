@@ -5401,7 +5401,6 @@ declare class NSPersonNameComponentsFormatter extends NSFormatter {
   setLocale(locale: NSLocale | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSDecimalNumber extends NSNumber {
   initWithMantissaExponentIsNegative(mantissa: number, exponent: number, flag: boolean): this;
 
@@ -5459,7 +5458,7 @@ declare class NSDecimalNumber extends NSNumber {
 
   decimalNumberByRoundingAccordingToBehavior(behavior: NSDecimalNumberBehaviors | null): NSDecimalNumber;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  compare(otherNumber: NSNumber): interop.Enum<typeof NSComparisonResult>;
   compare(decimalNumber: NSNumber): interop.Enum<typeof NSComparisonResult>;
 
   static defaultBehavior: NSDecimalNumberBehaviors;
@@ -6525,7 +6524,6 @@ declare class NSComparisonPredicate extends NSPredicate {
   readonly options: interop.Enum<typeof NSComparisonPredicateOptions>;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSDictionary<KeyType = interop.Object, ObjectType = interop.Object> extends NSObject implements NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration {
   readonly count: number;
 
@@ -6653,7 +6651,7 @@ declare class NSDictionary<KeyType = interop.Object, ObjectType = interop.Object
 
   fileGroupOwnerAccountID(): NSNumber;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  valueForKey(key: string): interop.Object;
   valueForKey(key: string): ObjectType;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -7222,7 +7220,6 @@ declare class NSAttributedStringMarkdownSourcePosition extends NSObject implemen
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMutableArray<ObjectType = interop.Object> extends NSArray {
   addObject(anObject: ObjectType): void;
 
@@ -7284,10 +7281,10 @@ declare class NSMutableArray<ObjectType = interop.Object> extends NSArray {
 
   static arrayWithCapacity<ObjectType, This extends abstract new (...args: any) => any>(this: This, numItems: number): InstanceType<This>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static arrayWithContentsOfFile<ObjectType>(path: string): NSArray;
   static arrayWithContentsOfFile<ObjectType>(path: string): NSMutableArray;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static arrayWithContentsOfURL<ObjectType>(url: NSURL): NSArray;
   static arrayWithContentsOfURL<ObjectType>(url: NSURL): NSMutableArray;
 
   initWithContentsOfFile(path: string): this;
@@ -8895,7 +8892,6 @@ declare class NSHTTPURLResponse extends NSURLResponse {
   static localizedStringForStatusCode(statusCode: number): string;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMutableDictionary<KeyType = interop.Object, ObjectType = interop.Object> extends NSDictionary {
   removeObjectForKey(aKey: KeyType): void;
 
@@ -8919,10 +8915,10 @@ declare class NSMutableDictionary<KeyType = interop.Object, ObjectType = interop
 
   static dictionaryWithCapacity<KeyType, ObjectType, This extends abstract new (...args: any) => any>(this: This, numItems: number): InstanceType<This>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static dictionaryWithContentsOfFile<KeyType, ObjectType>(path: string): NSDictionary;
   static dictionaryWithContentsOfFile<KeyType, ObjectType>(path: string): NSMutableDictionary;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static dictionaryWithContentsOfURL<KeyType, ObjectType>(url: NSURL): NSDictionary;
   static dictionaryWithContentsOfURL<KeyType, ObjectType>(url: NSURL): NSMutableDictionary;
 
   initWithContentsOfFile(path: string): this;
@@ -8931,7 +8927,7 @@ declare class NSMutableDictionary<KeyType = interop.Object, ObjectType = interop
 
   static dictionaryWithSharedKeySet<KeyType, ObjectType>(keyset: interop.Object): NSMutableDictionary;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setValueForKey(value: interop.Object | null, key: string): void;
   setValueForKey(value: ObjectType | null, key: string): void;
 }
 
@@ -9080,16 +9076,15 @@ declare class NSPropertyListSerialization extends NSObject {
   static propertyListFromDataMutabilityOptionFormatErrorDescription(data: NSData, opt: interop.Enum<typeof NSPropertyListMutabilityOptions>, format: interop.PointerConvertible, errorString: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMachPort extends NSPort {
   static portWithMachPort(machPort: number): NSPort;
 
   initWithMachPort(machPort: number): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(anObject: NSPortDelegate | null): void;
   setDelegate(anObject: NSMachPortDelegate | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  delegate(): NSPortDelegate;
   delegate(): NSMachPortDelegate;
 
   static portWithMachPortOptions(machPort: number, f: interop.Enum<typeof NSMachPortOptions>): NSPort;
@@ -11011,16 +11006,16 @@ declare class NSMutableCharacterSet extends NSCharacterSet implements NSCopying,
   // @ts-ignore MemberDecl.tsIgnore
   static readonly newlineCharacterSet: NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithRange(aRange: _NSRange): NSCharacterSet;
   static characterSetWithRange(aRange: _NSRange): NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithCharactersInString(aString: string): NSCharacterSet;
   static characterSetWithCharactersInString(aString: string): NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithBitmapRepresentation(data: NSData): NSCharacterSet;
   static characterSetWithBitmapRepresentation(data: NSData): NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithContentsOfFile(fName: string): NSCharacterSet;
   static characterSetWithContentsOfFile(fName: string): NSMutableCharacterSet;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;

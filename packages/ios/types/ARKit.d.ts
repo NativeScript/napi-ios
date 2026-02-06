@@ -1390,12 +1390,12 @@ declare class ARSCNView extends SCNView implements ARSessionProviding {
 
   raycastQueryFromPointAllowingTargetAlignment(point: CGPoint, target: interop.Enum<typeof ARRaycastTarget>, alignment: interop.Enum<typeof ARRaycastTargetAlignment>): ARRaycastQuery;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: SCNSceneRendererDelegate | null): void;
   setDelegate(delegate: ARSCNViewDelegate | null): void;
 
   setSession(session: ARSession): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setScene(scene: SCNScene | null): void;
   setScene(scene: SCNScene): void;
 
   setAutomaticallyUpdatesLighting(automaticallyUpdatesLighting: boolean): void;

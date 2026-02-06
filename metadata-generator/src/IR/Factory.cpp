@@ -16,9 +16,6 @@ void MetadataFactory::process(CXCursor cursor, bool checkAvailability) {
       [](CXCursor cursor, CXCursor, CXClientData clientData) {
         auto state = (MetadataFactory*)clientData;
 
-        CXString name = clang_getCursorSpelling(cursor);
-        std::string nameStr = clang_getCString(name);
-
         if (state->_checkAvailability && !isAvailable(cursor)) {
           return CXChildVisit_Continue;
         }
@@ -93,13 +90,21 @@ bool MetadataFactory::shouldProcess(CXCursor cursor, bool required) {
   std::string fileNameStr = clang_getCString(fileName);
   clang_disposeString(fileName);
 
+  auto cached = shouldProcessCache.find(fileNameStr);
+  if (cached != shouldProcessCache.end()) {
+    return cached->second;
+  }
+
+  bool shouldInclude = false;
   for (const std::string& path : includePaths) {
     if (fileNameStr.find(path) != std::string::npos) {
-      return true;
+      shouldInclude = true;
+      break;
     }
   }
 
-  return false;
+  shouldProcessCache.emplace(std::move(fileNameStr), shouldInclude);
+  return shouldInclude;
 }
 
 void MetadataFactory::implementClassProtocols(
@@ -108,8 +113,9 @@ void MetadataFactory::implementClassProtocols(
     if (!decl.implementedProtocolNames.contains(name)) {
       decl.implementedProtocolNames.emplace(name);
 
-      if (this->protocols.contains(name)) {
-        ProtocolDecl& protocol = this->protocols[name];
+      auto protocolIt = this->protocols.find(name);
+      if (protocolIt != this->protocols.end()) {
+        ProtocolDecl& protocol = protocolIt->second;
         decl.protocolRefs.emplace_back(&protocol);
         protocol.implementerRefs.emplace_back(&decl);
         for (MemberDecl& member : protocol.members) {
@@ -186,32 +192,27 @@ void MetadataFactory::postProcess() {
   }
 
   for (const std::string& name : renamedProtocols) {
-    protocols[name + "Protocol"] = protocols[name];
-    protocols.erase(name);
+    auto node = protocols.extract(name);
+    if (!node.empty()) {
+      node.key() = name + "Protocol";
+      protocols.insert(std::move(node));
+    }
   }
 
   for (auto& kv : protocols) {
     ProtocolDecl& protocol = kv.second;
-    std::vector<std::string> protocolNames = protocol.protocolNames;
-    protocol.protocolNames.clear();
-    for (const std::string& name : protocolNames) {
+    for (std::string& name : protocol.protocolNames) {
       if (renamedProtocols.contains(name)) {
-        protocol.protocolNames.emplace_back(name + "Protocol");
-      } else {
-        protocol.protocolNames.emplace_back(name);
+        name += "Protocol";
       }
     }
   }
 
   for (auto& kv : classes) {
     ClassDecl& cls = kv.second;
-    std::vector<std::string> protocolNames = cls.protocolNames;
-    cls.protocolNames.clear();
-    for (const std::string& name : protocolNames) {
+    for (std::string& name : cls.protocolNames) {
       if (renamedProtocols.contains(name)) {
-        cls.protocolNames.emplace_back(name + "Protocol");
-      } else {
-        cls.protocolNames.emplace_back(name);
+        name += "Protocol";
       }
     }
   }
@@ -221,8 +222,8 @@ void MetadataFactory::postProcess() {
   for (auto& kv : protocols) {
     ProtocolDecl& protocol = kv.second;
     for (std::string& name : protocol.protocolNames) {
-      if (protocols.contains(name)) {
-        ProtocolDecl& ref = protocols[name];
+      if (auto refIt = protocols.find(name); refIt != protocols.end()) {
+        ProtocolDecl& ref = refIt->second;
         protocol.protocolRefs.emplace_back(&ref);
         ref.derivedProtocolRefs.emplace_back(&protocol);
       }
@@ -232,8 +233,9 @@ void MetadataFactory::postProcess() {
   for (auto& kv : classes) {
     ClassDecl& cls = kv.second;
 
-    if (classes.contains(cls.superClassName)) {
-      ClassDecl& ref = classes[cls.superClassName];
+    if (auto superIt = classes.find(cls.superClassName);
+        superIt != classes.end()) {
+      ClassDecl& ref = superIt->second;
       cls.superClassRef = &ref;
       ref.derivedClassRefs.emplace_back(&cls);
     }
@@ -274,8 +276,8 @@ void MetadataFactory::processVariable(CXCursor cursor) {
   if (!shouldProcess(cursor)) return;
 
   VariableDecl decl(cursor);
-  variables.emplace(decl.name, decl);
-  processType(variables[decl.name].type);
+  auto [it, _] = variables.try_emplace(decl.name, std::move(decl));
+  processType(it->second.type);
 }
 
 void MetadataFactory::processEnum(CXCursor cursor, bool required) {
@@ -286,13 +288,10 @@ void MetadataFactory::processEnum(CXCursor cursor, bool required) {
   }
 
   if (!shouldProcess(cursor, required)) {
-    if (skippedEnums.contains(decl.name)) {
-      EnumDecl& prev = skippedEnums[decl.name];
-      if (prev.constants.size() < decl.constants.size()) {
-        skippedEnums[decl.name] = decl;
-      }
-    } else {
-      skippedEnums[decl.name] = decl;
+    auto it = skippedEnums.find(decl.name);
+    if (it == skippedEnums.end() ||
+        it->second.constants.size() < decl.constants.size()) {
+      skippedEnums.insert_or_assign(decl.name, std::move(decl));
     }
     return;
   }
@@ -300,50 +299,46 @@ void MetadataFactory::processEnum(CXCursor cursor, bool required) {
   // If the enum is unnamed, we'll just push the constants as global
   // constants.
   if (decl.name == "") {
-    for (auto& constant : decl.constants) {
+    for (const auto& constant : decl.constants) {
       VariableDecl var(decl.framework, constant);
-      variables[var.name] = var;
+      variables.insert_or_assign(var.name, std::move(var));
     }
 
     return;
   }
 
-  if (enums.contains(decl.name)) {
-    EnumDecl& prev = enums[decl.name];
-    if (prev.constants.size() < decl.constants.size()) {
-      prev.constants = decl.constants;
+  auto enumIt = enums.find(decl.name);
+  if (enumIt != enums.end()) {
+    if (enumIt->second.constants.size() < decl.constants.size()) {
+      enumIt->second.constants = std::move(decl.constants);
     }
     return;
   }
 
-  enums.emplace(decl.name, decl);
+  enums.try_emplace(decl.name, std::move(decl));
 }
 
 void MetadataFactory::processStruct(CXCursor cursor, bool required) {
   StructDecl decl(cursor);
 
   if (!shouldProcess(cursor, required)) {
-    if (skippedStructs.contains(decl.name)) {
-      StructDecl& prev = skippedStructs[decl.name];
-      if (prev.fields.size() < decl.fields.size()) {
-        skippedStructs[decl.name] = decl;
-      }
-    } else {
-      skippedStructs[decl.name] = decl;
+    auto it = skippedStructs.find(decl.name);
+    if (it == skippedStructs.end() || it->second.fields.size() < decl.fields.size()) {
+      skippedStructs.insert_or_assign(decl.name, std::move(decl));
     }
     return;
   }
 
-  if (structs.contains(decl.name)) {
-    StructDecl& prev = structs[decl.name];
-    if (prev.fields.size() < decl.fields.size()) {
-      prev.fields = decl.fields;
+  auto it = structs.find(decl.name);
+  if (it != structs.end()) {
+    if (it->second.fields.size() < decl.fields.size()) {
+      it->second.fields = std::move(decl.fields);
     }
     process(cursor, true);
     return;
   }
 
-  structs.emplace(decl.name, decl);
+  structs.try_emplace(decl.name, std::move(decl));
   process(cursor, true);
 }
 
@@ -361,27 +356,23 @@ void MetadataFactory::processUnion(CXCursor cursor, bool required) {
   }
 
   if (!shouldProcess(cursor, required)) {
-    if (skippedUnions.contains(decl.name)) {
-      UnionDecl& prev = skippedUnions[decl.name];
-      if (prev.fields.size() < decl.fields.size()) {
-        skippedUnions[decl.name] = decl;
-      }
-    } else {
-      skippedUnions[decl.name] = decl;
+    auto it = skippedUnions.find(decl.name);
+    if (it == skippedUnions.end() || it->second.fields.size() < decl.fields.size()) {
+      skippedUnions.insert_or_assign(decl.name, std::move(decl));
     }
     return;
   }
 
-  if (unions.contains(decl.name)) {
-    UnionDecl& prev = unions[decl.name];
-    if (prev.fields.size() < decl.fields.size()) {
-      prev.fields = decl.fields;
+  auto it = unions.find(decl.name);
+  if (it != unions.end()) {
+    if (it->second.fields.size() < decl.fields.size()) {
+      it->second.fields = std::move(decl.fields);
     }
     process(cursor, true);
     return;
   }
 
-  unions.emplace(decl.name, decl);
+  unions.try_emplace(decl.name, std::move(decl));
   process(cursor, true);
 }
 
@@ -401,7 +392,7 @@ void MetadataFactory::processFunction(CXCursor cursor) {
   if (!shouldProcess(cursor)) return;
 
   FunctionDecl decl(cursor);
-  functions.emplace_back(decl);
+  functions.emplace_back(std::move(decl));
 }
 
 void MetadataFactory::postProcessFunction(FunctionDecl& decl) {
@@ -420,11 +411,11 @@ void MetadataFactory::processClass(CXCursor cursor, bool required) {
   ClassDecl decl(cursor);
 
   if (!shouldProcess(cursor, required)) {
-    skippedClasses[decl.name] = decl;
+    skippedClasses.insert_or_assign(decl.name, std::move(decl));
     return;
   }
 
-  classes.emplace(decl.name, decl);
+  classes.try_emplace(decl.name, std::move(decl));
 }
 
 void MetadataFactory::postProcessMember(MemberDecl& decl) {
@@ -462,11 +453,11 @@ void MetadataFactory::processProtocol(CXCursor cursor, bool required) {
   ProtocolDecl decl(cursor);
 
   if (!shouldProcess(cursor, required)) {
-    skippedProtocols[decl.name] = decl;
+    skippedProtocols.insert_or_assign(decl.name, std::move(decl));
     return;
   }
 
-  protocols.emplace(decl.name, decl);
+  protocols.try_emplace(decl.name, std::move(decl));
 }
 
 void MetadataFactory::postProcessProtocol(ProtocolDecl& decl) {
@@ -483,7 +474,7 @@ void MetadataFactory::processCategory(CXCursor cursor) {
   if (!shouldProcess(cursor)) return;
 
   CategoryDecl decl(cursor);
-  categories.emplace_back(decl);
+  categories.emplace_back(std::move(decl));
 }
 
 void MetadataFactory::postProcessCategory(CategoryDecl& decl) {

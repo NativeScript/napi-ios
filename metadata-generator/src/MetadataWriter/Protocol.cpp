@@ -11,13 +11,15 @@ MDSectionOffset MDMetadataWriter::write(ProtocolDecl &decl) {
 
   mdProtocol->name = strings.add(decl.name, decl.name);
 
+  mdProtocol->protocols.reserve(decl.protocolNames.size());
   for (const std::string &name : decl.protocolNames) {
-    if (factory.protocols.contains(name)) {
-      ProtocolDecl &protocolDecl = factory.protocols[name];
-      mdProtocol->protocols.push_back(write(protocolDecl));
+    auto protocolIt = factory.protocols.find(name);
+    if (protocolIt != factory.protocols.end()) {
+      mdProtocol->protocols.push_back(write(protocolIt->second));
     }
   }
 
+  mdProtocol->members.reserve(decl.members.size());
   for (MemberDecl &member : decl.members) {
     MDMember *mdMember = memberFromDecl(member);
     mdProtocol->members.push_back(mdMember);

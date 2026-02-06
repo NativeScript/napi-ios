@@ -1474,11 +1474,10 @@ declare class SCNPlane extends SCNGeometry {
   setCornerSegmentCount(cornerSegmentCount: number): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SCNReferenceNode extends SCNNode {
   initWithURL(referenceURL: NSURL): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static referenceNodeWithURL<This extends abstract new (...args: any) => any>(this: This, referenceURL: NSURL): InstanceType<This>;

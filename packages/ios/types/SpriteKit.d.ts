@@ -487,9 +487,8 @@ declare class SKTileGroupRule extends NSObject implements NSCopying, NSSecureCod
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKWarpGeometryGrid extends SKWarpGeometry implements NSSecureCoding {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static grid<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
@@ -1917,7 +1916,6 @@ declare class SKShader extends NSObject implements NSCopying, NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKTileMapNode extends SKNode implements NSCopying, NSSecureCoding {
   static tileMapNodeWithTileSetColumnsRowsTileSize<This extends abstract new (...args: any) => any>(this: This, tileSet: SKTileSet, columns: number, rows: number, tileSize: CGSize): InstanceType<This>;
 
@@ -2010,7 +2008,7 @@ declare class SKTileMapNode extends SKNode implements NSCopying, NSSecureCoding 
 
   encodeWithCoder(coder: NSCoder): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
   initWithCoder(coder: NSCoder): this;
 }
 
