@@ -304,7 +304,7 @@ declare class PKCanvasView extends UIScrollView implements PKToolPickerObserver 
 
   maximumSupportedContentVersion: interop.Enum<typeof PKContentVersion>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIScrollViewDelegate | null): void;
   setDelegate(delegate: PKCanvasViewDelegate | null): void;
 
   setDrawing(drawing: PKDrawing): void;

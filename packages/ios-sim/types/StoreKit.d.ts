@@ -682,7 +682,7 @@ declare class SKProductsRequest extends SKRequest {
   // @ts-ignore MemberDecl.tsIgnore
   delegate: SKProductsRequestDelegate;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: SKRequestDelegate | null): void;
   setDelegate(delegate: SKProductsRequestDelegate | null): void;
 }
 

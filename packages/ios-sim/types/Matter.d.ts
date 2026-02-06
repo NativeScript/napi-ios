@@ -28576,7 +28576,7 @@ declare class MTRTestClusterClusterTestEventEvent extends MTRUnitTestingClusterT
 
   setArg3(arg3: NSNumber): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setArg4(arg4: MTRUnitTestingClusterSimpleStruct): void;
   setArg4(arg4: MTRTestClusterClusterSimpleStruct): void;
 
   setArg5(arg5: NSArray<interop.Object> | Array<interop.Object>): void;
@@ -28679,7 +28679,7 @@ declare class MTRTestClusterClusterNestedStruct extends MTRUnitTestingClusterNes
 
   setB(b: NSNumber): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setC(c: MTRUnitTestingClusterSimpleStruct): void;
   setC(c: MTRTestClusterClusterSimpleStruct): void;
 }
 
@@ -32581,7 +32581,7 @@ declare class MTRTestClusterClusterNestedStructList extends MTRUnitTestingCluste
 
   setB(b: NSNumber): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setC(c: MTRUnitTestingClusterSimpleStruct): void;
   setC(c: MTRTestClusterClusterSimpleStruct): void;
 
   setD(d: NSArray<interop.Object> | Array<interop.Object>): void;
@@ -36880,7 +36880,7 @@ declare class MTRTestClusterClusterTestFabricScoped extends MTRUnitTestingCluste
 
   setFabricSensitiveCharString(fabricSensitiveCharString: string): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFabricSensitiveStruct(fabricSensitiveStruct: MTRUnitTestingClusterSimpleStruct): void;
   setFabricSensitiveStruct(fabricSensitiveStruct: MTRTestClusterClusterSimpleStruct): void;
 
   setFabricSensitiveInt8uList(fabricSensitiveInt8uList: NSArray<interop.Object> | Array<interop.Object>): void;
@@ -42389,13 +42389,13 @@ declare class MTRTestClusterClusterNullablesAndOptionalsStruct extends MTRUnitTe
 
   setNullableOptionalString(nullableOptionalString: string | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setNullableStruct(nullableStruct: MTRUnitTestingClusterSimpleStruct | null): void;
   setNullableStruct(nullableStruct: MTRTestClusterClusterSimpleStruct | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setOptionalStruct(optionalStruct: MTRUnitTestingClusterSimpleStruct | null): void;
   setOptionalStruct(optionalStruct: MTRTestClusterClusterSimpleStruct | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setNullableOptionalStruct(nullableOptionalStruct: MTRUnitTestingClusterSimpleStruct | null): void;
   setNullableOptionalStruct(nullableOptionalStruct: MTRTestClusterClusterSimpleStruct | null): void;
 
   setNullableList(nullableList: NSArray<interop.Object> | Array<interop.Object> | null): void;

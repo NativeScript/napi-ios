@@ -2316,7 +2316,7 @@ declare class CPTemplateApplicationScene extends UIScene {
 
   readonly contentStyle: interop.Enum<typeof UIUserInterfaceStyle>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UISceneDelegate | null): void;
   setDelegate(delegate: CPTemplateApplicationSceneDelegate | null): void;
 }
 
@@ -2329,7 +2329,7 @@ declare class CPTemplateApplicationInstrumentClusterScene extends UIScene {
 
   readonly contentStyle: interop.Enum<typeof UIUserInterfaceStyle>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UISceneDelegate | null): void;
   setDelegate(delegate: CPTemplateApplicationInstrumentClusterSceneDelegate | null): void;
 }
 
@@ -2418,7 +2418,7 @@ declare class CPTemplateApplicationDashboardScene extends UIScene {
 
   readonly dashboardWindow: UIWindow;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UISceneDelegate | null): void;
   setDelegate(delegate: CPTemplateApplicationDashboardSceneDelegate | null): void;
 }
 

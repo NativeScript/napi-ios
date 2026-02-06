@@ -8364,7 +8364,6 @@ declare class UISceneWindowingControlStyle extends NSObject {
   static readonly minimalStyle: UISceneWindowingControlStyle;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIResponder extends NSObject implements UIResponderStandardEditActions {
   readonly nextResponder: UIResponder;
 
@@ -8456,7 +8455,7 @@ declare class UIResponder extends NSObject implements UIResponderStandardEditAct
 
   cut(sender: interop.Object | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(sender: interop.Object | null): void;
 
   paste(sender: interop.Object | null): void;
@@ -10399,7 +10398,7 @@ declare class UITableView extends UIScrollView implements NSCoding, UIDataSource
 
   setDataSource(dataSource: UITableViewDataSource | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIScrollViewDelegate | null): void;
   setDelegate(delegate: UITableViewDelegate | null): void;
 
   setPrefetchDataSource(prefetchDataSource: UITableViewDataSourcePrefetching): void;
@@ -11731,7 +11730,6 @@ declare class UIDropProposal extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UITabBarItemAppearance extends NSObject implements NSCopying, NSSecureCoding {
   init(): this;
 
@@ -11739,7 +11737,7 @@ declare class UITabBarItemAppearance extends NSObject implements NSCopying, NSSe
 
   initWithCoder(coder: NSCoder): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(): this;
 
   configureWithDefaultForStyle(style: interop.Enum<typeof UITabBarItemAppearanceStyle>): void;
@@ -11793,9 +11791,8 @@ declare class UITapGestureRecognizer extends UIGestureRecognizer {
   setButtonMaskRequired(buttonMaskRequired: interop.Enum<typeof UIEventButtonMask>): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIGraphicsPDFRenderer extends UIGraphicsRenderer {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithBoundsFormat(bounds: CGRect, format: UIGraphicsRendererFormat): this;
   initWithBoundsFormat(bounds: CGRect, format: UIGraphicsPDFRendererFormat): this;
 
   writePDFToURLWithActionsError(url: NSURL, actions: (p1: UIGraphicsPDFRendererContext) => void, error: interop.PointerConvertible): boolean;
@@ -11914,7 +11911,7 @@ declare class UITextView extends UIScrollView implements UITextInput, UIContentS
 
   textFormattingConfiguration: UITextFormattingViewControllerConfiguration;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIScrollViewDelegate | null): void;
   setDelegate(delegate: UITextViewDelegate | null): void;
 
   setText(text: string | null): void;
@@ -12888,7 +12885,6 @@ declare class UIPencilInteractionSqueeze extends NSObject {
   readonly hoverPose: UIPencilHoverPose;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIAccessibilityElement extends UIResponder implements UIAccessibilityIdentification {
   initWithAccessibilityContainer(container: interop.Object): this;
 
@@ -12912,13 +12908,13 @@ declare class UIAccessibilityElement extends UIResponder implements UIAccessibil
 
   setIsAccessibilityElement(isAccessibilityElement: boolean): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAccessibilityLabel(accessibilityLabel: string): void;
   setAccessibilityLabel(accessibilityLabel: string | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAccessibilityHint(accessibilityHint: string): void;
   setAccessibilityHint(accessibilityHint: string | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAccessibilityValue(accessibilityValue: string): void;
   setAccessibilityValue(accessibilityValue: string | null): void;
 
   setAccessibilityFrame(accessibilityFrame: CGRect): void;
@@ -14628,7 +14624,7 @@ declare class UIPageControlTimerProgress extends UIPageControlProgress {
 
   durationForPage(page: number): number;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIPageControlProgressDelegate | null): void;
   setDelegate(delegate: UIPageControlTimerProgressDelegate | null): void;
 
   setResetsToInitialPageAfterEnd(resetsToInitialPageAfterEnd: boolean): void;
@@ -15817,13 +15813,12 @@ declare class UIViewPrintFormatter extends UIPrintFormatter {
   readonly view: UIView;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIGraphicsImageRenderer extends UIGraphicsRenderer {
   initWithSize(size: CGSize): this;
 
   initWithSizeFormat(size: CGSize, format: UIGraphicsImageRendererFormat): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithBoundsFormat(bounds: CGRect, format: UIGraphicsRendererFormat): this;
   initWithBoundsFormat(bounds: CGRect, format: UIGraphicsImageRendererFormat): this;
 
   imageWithActions(actions: (p1: UIGraphicsImageRendererContext) => void): UIImage;
@@ -15841,12 +15836,11 @@ declare class UIMarkupTextPrintFormatter extends UIPrintFormatter {
   setMarkupText(markupText: string | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIPointerStyle extends UIHoverStyle implements NSCopying {
   get accessories(): NSArray;
   set accessories(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static styleWithEffectShape<This extends abstract new (...args: any) => any>(this: This, effect: UIHoverEffect, shape: UIShape | null): InstanceType<This>;
   static styleWithEffectShape<This extends abstract new (...args: any) => any>(this: This, effect: UIPointerEffect, shape: UIPointerShape | null): InstanceType<This>;
 
   static styleWithShapeConstrainedAxes<This extends abstract new (...args: any) => any>(this: This, shape: UIPointerShape, axes: interop.Enum<typeof UIAxis>): InstanceType<This>;
@@ -16216,7 +16210,7 @@ declare class NSTextContentStorage extends NSTextContentManager implements NSTex
 
   adjustedRangeFromRangeForEditingTextSelection(textRange: NSTextRange, forEditingTextSelection: boolean): NSTextRange;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSTextContentManagerDelegate | null): void;
   setDelegate(delegate: NSTextContentStorageDelegate | null): void;
 
   setIncludesTextListMarkers(includesTextListMarkers: boolean): void;
@@ -17463,7 +17457,7 @@ declare class UIWindowSceneActivationAction extends UIAction {
 
   static actionWithIdentifierAlternateActionConfigurationProvider<This extends abstract new (...args: any) => any>(this: This, identifier: string | null, alternateAction: UIAction | null, configurationProvider: (p1: UIWindowSceneActivationAction) => UIWindowSceneActivationConfiguration): InstanceType<This>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setTitle(title: string): void;
   setTitle(title: string | null): void;
 }
 
@@ -17903,7 +17897,6 @@ declare class UITextItemMenuConfiguration extends NSObject {
   static configurationWithPreviewMenu<This extends abstract new (...args: any) => any>(this: This, preview: UITextItemMenuPreview | null, menu: UIMenu): InstanceType<This>;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UINavigationController extends UIViewController {
   initWithNavigationBarClassToolbarClass(navigationBarClass: interop.Object | null, toolbarClass: interop.Object | null): this;
 
@@ -17911,7 +17904,7 @@ declare class UINavigationController extends UIViewController {
 
   initWithNibNameBundle(nibNameOrNil: string | null, nibBundleOrNil: NSBundle | null): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   pushViewControllerAnimated(viewController: UIViewController, animated: boolean): void;
@@ -18655,7 +18648,7 @@ declare class UIPopoverPresentationController extends UIPresentationController {
 
   readonly adaptiveSheetPresentationController: UISheetPresentationController;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIAdaptivePresentationControllerDelegate | null): void;
   setDelegate(delegate: UIPopoverPresentationControllerDelegate | null): void;
 
   setPermittedArrowDirections(permittedArrowDirections: interop.Enum<typeof UIPopoverArrowDirection>): void;
@@ -18709,7 +18702,7 @@ declare class UISheetPresentationController extends UIPresentationController {
 
   animateChanges(changes: () => void): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIAdaptivePresentationControllerDelegate | null): void;
   setDelegate(delegate: UISheetPresentationControllerDelegate | null): void;
 
   setSourceView(sourceView: UIView | null): void;
@@ -18902,7 +18895,6 @@ declare class UIToolbarAppearance extends UIBarAppearance {
   setDoneButtonAppearance(doneButtonAppearance: UIBarButtonItemAppearance): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIBarAppearance extends NSObject implements NSCopying, NSSecureCoding {
   init(): this;
 
@@ -18914,7 +18906,7 @@ declare class UIBarAppearance extends NSObject implements NSCopying, NSSecureCod
 
   initWithCoder(coder: NSCoder): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(): this;
 
   configureWithDefaultBackground(): void;
@@ -20474,7 +20466,7 @@ declare class UIImagePickerController extends UINavigationController implements 
 
   cameraFlashMode: interop.Enum<typeof UIImagePickerControllerCameraFlashMode>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UINavigationControllerDelegate | null): void;
   setDelegate(delegate: UIImagePickerControllerDelegate | null): void;
 
   setSourceType(sourceType: interop.Enum<typeof UIImagePickerControllerSourceType>): void;
@@ -20507,7 +20499,8 @@ declare class UIImagePickerController extends UINavigationController implements 
 
   encodeWithCoder(coder: NSCoder): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(coder: NSCoder): this;
 }
 
@@ -21230,9 +21223,8 @@ declare class UIPointerShape extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UITargetedDragPreview extends UITargetedPreview {
-  // @ts-ignore MemberDecl.tsIgnore
+  retargetedPreviewWithTarget(newTarget: UIPreviewTarget): UITargetedPreview;
   retargetedPreviewWithTarget(newTarget: UIDragPreviewTarget): UITargetedDragPreview;
 
   static previewForURLTarget<This extends abstract new (...args: any) => any>(this: This, url: NSURL, target: UIDragPreviewTarget): InstanceType<This>;
@@ -25603,7 +25595,7 @@ declare class UICollectionView extends UIScrollView implements UIDataSourceTrans
 
   setCollectionViewLayout(collectionViewLayout: UICollectionViewLayout): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIScrollViewDelegate | null): void;
   setDelegate(delegate: UICollectionViewDelegate | null): void;
 
   setDataSource(dataSource: UICollectionViewDataSource | null): void;
@@ -26032,7 +26024,6 @@ declare class UIKey extends NSObject implements NSCopying, NSCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class UIBarButtonItemAppearance extends NSObject implements NSCopying, NSSecureCoding {
   init(): this;
 
@@ -26040,7 +26031,7 @@ declare class UIBarButtonItemAppearance extends NSObject implements NSCopying, N
 
   initWithCoder(coder: NSCoder): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(): this;
 
   configureWithDefaultForStyle(style: interop.Enum<typeof UIBarButtonItemStyle>): void;
@@ -28462,10 +28453,10 @@ declare class UIKeyCommand extends UICommand {
 
   setTitle(title: string): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setImage(image: UIImage | null): void;
   setImage(image: UIImage): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDiscoverabilityTitle(discoverabilityTitle: string | null): void;
   setDiscoverabilityTitle(discoverabilityTitle: string): void;
 
   setAttributes(attributes: interop.Enum<typeof UIMenuElementAttributes>): void;

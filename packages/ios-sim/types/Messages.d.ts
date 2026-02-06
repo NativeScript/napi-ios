@@ -74,7 +74,6 @@ declare class MSMessageLiveLayout extends MSMessageLayout {
   readonly alternateLayout: MSMessageTemplateLayout;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class MSMessage extends NSObject implements NSCopying, NSSecureCoding {
   init(): this;
 
@@ -106,7 +105,7 @@ declare class MSMessage extends NSObject implements NSCopying, NSSecureCoding {
 
   setShouldExpire(shouldExpire: boolean): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAccessibilityLabel(accessibilityLabel: string): void;
   setAccessibilityLabel(accessibilityLabel: string | null): void;
 
   setSummaryText(summaryText: string | null): void;

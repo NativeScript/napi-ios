@@ -636,7 +636,7 @@ declare class BEDragInteraction extends UIDragInteraction {
   // @ts-ignore MemberDecl.tsIgnore
   readonly delegate: BEDragInteractionDelegate;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithDelegate(delegate: UIDragInteractionDelegate): this;
   initWithDelegate(delegate: BEDragInteractionDelegate): this;
 }
 
@@ -747,7 +747,7 @@ declare class BEScrollView extends UIScrollView {
   // @ts-ignore MemberDecl.tsIgnore
   delegate: BEScrollViewDelegate;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: UIScrollViewDelegate | null): void;
   setDelegate(delegate: BEScrollViewDelegate | null): void;
 }
 

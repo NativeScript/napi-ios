@@ -896,7 +896,6 @@ declare class NSManagedObjectID extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSManagedObject extends NSObject {
   static readonly contextShouldIgnoreUnmodeledPropertyChanges: boolean;
 
@@ -940,10 +939,10 @@ declare class NSManagedObject extends NSObject {
 
   didChangeValueForKey(key: string): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  willChangeValueForKeyWithSetMutationUsingObjects(key: string, mutationKind: interop.Enum<typeof NSKeyValueSetMutationKind>, objects: NSSet): void;
   willChangeValueForKeyWithSetMutationUsingObjects(inKey: string, inMutationKind: interop.Enum<typeof NSKeyValueSetMutationKind>, inObjects: NSSet): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  didChangeValueForKeyWithSetMutationUsingObjects(key: string, mutationKind: interop.Enum<typeof NSKeyValueSetMutationKind>, objects: NSSet): void;
   didChangeValueForKeyWithSetMutationUsingObjects(inKey: string, inMutationKind: interop.Enum<typeof NSKeyValueSetMutationKind>, inObjects: NSSet): void;
 
   awakeFromFetch(): void;
@@ -976,7 +975,7 @@ declare class NSManagedObject extends NSObject {
 
   changedValuesForCurrentEvent(): NSDictionary;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  validateValueForKeyError(ioValue: interop.PointerConvertible, inKey: string, outError: interop.PointerConvertible): boolean;
   validateValueForKeyError(value: interop.PointerConvertible, key: string, error: interop.PointerConvertible): boolean;
 
   validateForDelete(error: interop.PointerConvertible): boolean;
@@ -1203,9 +1202,8 @@ declare class NSPropertyDescription extends NSObject implements NSCoding, NSCopy
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSAtomicStore extends NSPersistentStore {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithPersistentStoreCoordinatorConfigurationNameURLOptions(root: NSPersistentStoreCoordinator | null, name: string | null, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
   initWithPersistentStoreCoordinatorConfigurationNameURLOptions(coordinator: NSPersistentStoreCoordinator | null, configurationName: string | null, url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
   load(error: interop.PointerConvertible): boolean;

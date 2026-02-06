@@ -103,7 +103,7 @@ const sdks = {
     path: getSDKPath("xros"),
     frameworks: [...COMMON_FRAMEWORKS],
     targets: {
-      arm64: "arm64-apple-xros13.0",
+      arm64: "arm64-apple-xros26.0",
     },
     tnsTarget: "xros-arm64",
   },
@@ -111,7 +111,7 @@ const sdks = {
     path: getSDKPath("xrsimulator"),
     frameworks: [...COMMON_FRAMEWORKS],
     targets: {
-      arm64: "arm64-apple-xros13.0-simulator",
+      arm64: "arm64-apple-xros26.0-simulator",
     },
     tnsTarget: "xros-arm64_x86_64-simulator",
   },
@@ -147,7 +147,7 @@ async function main() {
             "ts-index-mode=frameworks-list",
             "ts-index-frameworks=Foundation,AppKit",
           ]
-        : []),
+        : ["ts-index-mode=all"]),
       "-verbose",
       "-output-bin",
       path.resolve(
