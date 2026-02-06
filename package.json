@@ -19,7 +19,6 @@
     "packages/*"
   ],
   "scripts": {
-    "prepare": "husky",
     "apply-patches": "./apply_patches.sh",
     "build-v8-source": "./build_v8_source.sh",
     "build-v8-source-catalyst": "./build_v8_source_catalyst.sh",
