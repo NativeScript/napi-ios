@@ -6356,7 +6356,6 @@ declare class NSURLCredentialStorage extends NSObject {
   setDefaultCredentialForProtectionSpaceTask(credential: NSURLCredential, protectionSpace: NSURLProtectionSpace, task: NSURLSessionTask): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSDecimalNumber extends NSNumber {
   initWithMantissaExponentIsNegative(mantissa: number, exponent: number, flag: boolean): this;
 
@@ -6414,7 +6413,7 @@ declare class NSDecimalNumber extends NSNumber {
 
   decimalNumberByRoundingAccordingToBehavior(behavior: NSDecimalNumberBehaviors | null): NSDecimalNumber;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  compare(otherNumber: NSNumber): interop.Enum<typeof NSComparisonResult>;
   compare(decimalNumber: NSNumber): interop.Enum<typeof NSComparisonResult>;
 
   static defaultBehavior: NSDecimalNumberBehaviors;
@@ -6994,7 +6993,6 @@ declare class NSConnection extends NSObject {
   isValid(): boolean;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSDictionary<KeyType = interop.Object, ObjectType = interop.Object> extends NSObject implements NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration {
   readonly count: number;
 
@@ -7122,7 +7120,7 @@ declare class NSDictionary<KeyType = interop.Object, ObjectType = interop.Object
 
   fileGroupOwnerAccountID(): NSNumber;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  valueForKey(key: string): interop.Object;
   valueForKey(key: string): ObjectType;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -7191,9 +7189,8 @@ declare class NSException extends NSObject implements NSCopying, NSSecureCoding 
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSScriptClassDescription extends NSClassDescription {
-  // @ts-ignore MemberDecl.tsIgnore
+  static classDescriptionForClass(aClass: interop.Object): NSClassDescription;
   static classDescriptionForClass(aClass: interop.Object): NSScriptClassDescription;
 
   initWithSuiteNameClassNameDictionary(suiteName: string, className: string, classDeclaration: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
@@ -8678,9 +8675,8 @@ declare class NSCompoundPredicate extends NSPredicate {
   static notPredicateWithSubpredicate(predicate: NSPredicate): NSCompoundPredicate;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSCloneCommand extends NSScriptCommand {
-  // @ts-ignore MemberDecl.tsIgnore
+  setReceiversSpecifier(receiversSpecifier: NSScriptObjectSpecifier | null): void;
   setReceiversSpecifier(receiversRef: NSScriptObjectSpecifier | null): void;
 
   readonly keySpecifier: NSScriptObjectSpecifier;
@@ -9116,9 +9112,8 @@ declare class NSOrderedSet<ObjectType = interop.Object> extends NSObject impleme
 
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSSetCommand extends NSScriptCommand {
-  // @ts-ignore MemberDecl.tsIgnore
+  setReceiversSpecifier(receiversSpecifier: NSScriptObjectSpecifier | null): void;
   setReceiversSpecifier(receiversRef: NSScriptObjectSpecifier | null): void;
 
   readonly keySpecifier: NSScriptObjectSpecifier;
@@ -10155,9 +10150,8 @@ declare class NSKeyedUnarchiver extends NSCoder {
   setDecodingFailurePolicy(decodingFailurePolicy: interop.Enum<typeof NSDecodingFailurePolicy>): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMoveCommand extends NSScriptCommand {
-  // @ts-ignore MemberDecl.tsIgnore
+  setReceiversSpecifier(receiversSpecifier: NSScriptObjectSpecifier | null): void;
   setReceiversSpecifier(receiversRef: NSScriptObjectSpecifier | null): void;
 
   readonly keySpecifier: NSScriptObjectSpecifier;
@@ -10481,9 +10475,8 @@ declare class NSMutableIndexSet extends NSIndexSet {
   shiftIndexesStartingAtIndexBy(index: number, delta: number): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSDeleteCommand extends NSScriptCommand {
-  // @ts-ignore MemberDecl.tsIgnore
+  setReceiversSpecifier(receiversSpecifier: NSScriptObjectSpecifier | null): void;
   setReceiversSpecifier(receiversRef: NSScriptObjectSpecifier | null): void;
 
   readonly keySpecifier: NSScriptObjectSpecifier;
@@ -10579,16 +10572,16 @@ declare class NSDistributedNotificationCenter extends NSNotificationCenter {
 
   suspended: boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  addObserverSelectorNameObject(observer: interop.Object, aSelector: string, aName: string | null, anObject: interop.Object | null): void;
   addObserverSelectorNameObject(observer: interop.Object, aSelector: string, aName: string | null, anObject: string | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  postNotificationNameObject(aName: string, anObject: interop.Object | null): void;
   postNotificationNameObject(aName: string, anObject: string | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  postNotificationNameObjectUserInfo(aName: string, anObject: interop.Object | null, aUserInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
   postNotificationNameObjectUserInfo(aName: string, anObject: string | null, aUserInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  removeObserverNameObject(observer: interop.Object, aName: string | null, anObject: interop.Object | null): void;
   removeObserverNameObject(observer: interop.Object, aName: string | null, anObject: string | null): void;
 
   setSuspended(suspended: boolean): void;
@@ -10996,7 +10989,6 @@ declare class NSLocale extends NSObject implements NSCopying, NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMutableArray<ObjectType = interop.Object> extends NSArray {
   addObject(anObject: ObjectType): void;
 
@@ -11058,10 +11050,10 @@ declare class NSMutableArray<ObjectType = interop.Object> extends NSArray {
 
   static arrayWithCapacity<ObjectType, This extends abstract new (...args: any) => any>(this: This, numItems: number): InstanceType<This>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static arrayWithContentsOfFile<ObjectType>(path: string): NSArray;
   static arrayWithContentsOfFile<ObjectType>(path: string): NSMutableArray;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static arrayWithContentsOfURL<ObjectType>(url: NSURL): NSArray;
   static arrayWithContentsOfURL<ObjectType>(url: NSURL): NSMutableArray;
 
   initWithContentsOfFile(path: string): this;
@@ -12792,7 +12784,6 @@ declare class NSRunLoop extends NSObject {
   cancelPerformSelectorsWithTarget(target: interop.Object): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMutableDictionary<KeyType = interop.Object, ObjectType = interop.Object> extends NSDictionary {
   removeObjectForKey(aKey: KeyType): void;
 
@@ -12816,10 +12807,10 @@ declare class NSMutableDictionary<KeyType = interop.Object, ObjectType = interop
 
   static dictionaryWithCapacity<KeyType, ObjectType, This extends abstract new (...args: any) => any>(this: This, numItems: number): InstanceType<This>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static dictionaryWithContentsOfFile<KeyType, ObjectType>(path: string): NSDictionary;
   static dictionaryWithContentsOfFile<KeyType, ObjectType>(path: string): NSMutableDictionary;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static dictionaryWithContentsOfURL<KeyType, ObjectType>(url: NSURL): NSDictionary;
   static dictionaryWithContentsOfURL<KeyType, ObjectType>(url: NSURL): NSMutableDictionary;
 
   initWithContentsOfFile(path: string): this;
@@ -12828,7 +12819,7 @@ declare class NSMutableDictionary<KeyType = interop.Object, ObjectType = interop
 
   static dictionaryWithSharedKeySet<KeyType, ObjectType>(keyset: interop.Object): NSMutableDictionary;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setValueForKey(value: interop.Object | null, key: string): void;
   setValueForKey(value: ObjectType | null, key: string): void;
 
   static dictionaryWithOBEXHeadersDataHeadersDataSize<KeyType, ObjectType, This extends abstract new (...args: any) => any>(this: This, inHeadersData: interop.PointerConvertible, inDataSize: number): InstanceType<This>;
@@ -13427,16 +13418,15 @@ declare class NSUnitArea extends NSDimension implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class NSMachPort extends NSPort {
   static portWithMachPort(machPort: number): NSPort;
 
   initWithMachPort(machPort: number): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(anObject: NSPortDelegate | null): void;
   setDelegate(anObject: NSMachPortDelegate | null): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  delegate(): NSPortDelegate;
   delegate(): NSMachPortDelegate;
 
   static portWithMachPortOptions(machPort: number, f: interop.Enum<typeof NSMachPortOptions>): NSPort;
@@ -15560,16 +15550,16 @@ declare class NSMutableCharacterSet extends NSCharacterSet implements NSCopying,
   // @ts-ignore MemberDecl.tsIgnore
   static readonly newlineCharacterSet: NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithRange(aRange: _NSRange): NSCharacterSet;
   static characterSetWithRange(aRange: _NSRange): NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithCharactersInString(aString: string): NSCharacterSet;
   static characterSetWithCharactersInString(aString: string): NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithBitmapRepresentation(data: NSData): NSCharacterSet;
   static characterSetWithBitmapRepresentation(data: NSData): NSMutableCharacterSet;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  static characterSetWithContentsOfFile(fName: string): NSCharacterSet;
   static characterSetWithContentsOfFile(fName: string): NSMutableCharacterSet;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;

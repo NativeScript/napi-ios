@@ -183,11 +183,10 @@ declare class SFKeychainSettingsPanel extends NSPanel {
   beginSheetForWindowModalDelegateDidEndSelectorContextInfoSettingsKeychain(docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible, settings: interop.PointerConvertible, keychain: interop.Object): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SFKeychainSavePanel extends NSSavePanel {
   static sharedKeychainSavePanel(): SFKeychainSavePanel;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  runModalForDirectoryFile(path: string | null, name: string | null): number;
   runModalForDirectoryFile(path: string, name: string): number;
 
   setPassword(password: string): void;
@@ -196,7 +195,7 @@ declare class SFKeychainSavePanel extends NSSavePanel {
 
   error(): NSError;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  beginSheetForDirectoryFileModalForWindowModalDelegateDidEndSelectorContextInfo(path: string | null, name: string | null, docWindow: NSWindow | null, delegate: interop.Object | null, didEndSelector: string | null, contextInfo: interop.PointerConvertible): void;
   beginSheetForDirectoryFileModalForWindowModalDelegateDidEndSelectorContextInfo(path: string, name: string, docWindow: NSWindow, delegate: interop.Object, didEndSelector: string, contextInfo: interop.PointerConvertible): void;
 }
 

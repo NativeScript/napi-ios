@@ -1,37 +1,53 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const SRSensorOdometer: string;
-
-declare const SRPhotoplethysmogramSampleUsageBackgroundSystem: string;
+declare const SRPhotoplethysmogramSampleUsageForegroundBloodOxygen: string;
 
 declare const SRPhotoplethysmogramSampleUsageDeepBreathing: string;
 
-declare const SRPhotoplethysmogramSampleUsageForegroundHeartRate: string;
-
 declare const SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise: string;
+
+declare const SRPhotoplethysmogramOpticalSampleConditionSignalSaturation: string;
 
 declare const SRDeviceUsageCategoryStickers: string;
 
+declare const SRDeviceUsageCategoryShopping: string;
+
+declare const SRDeviceUsageCategoryGraphicsAndDesign: string;
+
+declare const SRDeviceUsageCategoryDeveloperTools: string;
+
 declare const SRDeviceUsageCategoryFoodAndDrink: string;
+
+declare const SRDeviceUsageCategoryKids: string;
 
 declare const SRDeviceUsageCategoryCatalogs: string;
 
+declare const SRDeviceUsageCategoryNewsstand: string;
+
 declare const SRDeviceUsageCategoryMedical: string;
 
-declare const SRDeviceUsageCategoryFinance: string;
+declare const SRDeviceUsageCategoryBooks: string;
 
-declare const SRDeviceUsageCategoryHealthAndFitness: string;
+declare const SRDeviceUsageCategoryEducation: string;
+
+declare const SRDeviceUsageCategoryEntertainment: string;
 
 declare const SRDeviceUsageCategoryNavigation: string;
 
+declare const SRDeviceUsageCategoryPhotoAndVideo: string;
+
+declare const SRDeviceUsageCategoryReference: string;
+
+declare const SRDeviceUsageCategorySports: string;
+
 declare const SRDeviceUsageCategoryTravel: string;
+
+declare const SRDeviceUsageCategoryUtilities: string;
 
 declare const SRDeviceUsageCategoryWeather: string;
 
 declare const SRDeviceUsageCategoryGames: string;
-
-declare const SRErrorDomain: string;
 
 declare const SRSensorAcousticSettings: string;
 
@@ -39,83 +55,67 @@ declare const SRSensorPhotoplethysmogram: string;
 
 declare const SRSensorElectrocardiogram: string;
 
-declare const SRSensorMediaEvents: string;
+declare const SRSensorOdometer: string;
+
+declare const SRSensorFaceMetrics: string;
+
+declare const SRSensorTelephonySpeechMetrics: string;
 
 declare const SRSensorKeyboardMetrics: string;
 
+declare const SRSensorOnWristState: string;
+
+declare const SRSensorPhoneUsageReport: string;
+
+declare const SRSensorMessagesUsageReport: string;
+
+declare const SRSensorDeviceUsageReport: string;
+
 declare const SRSensorPedometerData: string;
+
+declare const SRSensorVisits: string;
 
 declare const SRSensorRotationRate: string;
 
 declare const SRSensorAccelerometer: string;
 
-declare const SRSensorMessagesUsageReport: string;
-
 declare const SRSensorAmbientLightSensor: string;
 
-declare const SRDeviceUsageCategoryProductivity: string;
+declare const SRPhotoplethysmogramSampleUsageForegroundHeartRate: string;
 
 declare const SRDeviceUsageCategoryBusiness: string;
 
-declare const SRDeviceUsageCategoryShopping: string;
-
-declare const SRDeviceUsageCategoryNewsstand: string;
-
 declare const SRDeviceUsageCategoryMusic: string;
 
-declare const SRDeviceUsageCategoryReference: string;
-
-declare const SRDeviceUsageCategoryDeveloperTools: string;
-
-declare const SRSensorDeviceUsageReport: string;
-
 declare const SRSensorSiriSpeechMetrics: string;
-
-declare const SRSensorFaceMetrics: string;
 
 declare const SRSensorWristTemperature: string;
 
 declare const SRDeviceUsageCategoryLifestyle: string;
 
-declare const SRDeviceUsageCategoryEntertainment: string;
-
-declare const SRDeviceUsageCategorySocialNetworking: string;
-
-declare const SRSensorAmbientPressure: string;
-
 declare const SRDeviceUsageCategoryMiscellaneous: string;
 
 declare const SRDeviceUsageCategoryNews: string;
 
-declare const SRDeviceUsageCategorySports: string;
-
-declare const SRPhotoplethysmogramOpticalSampleConditionSignalSaturation: string;
-
 declare const SRSensorHeartRate: string;
 
-declare const SRSensorTelephonySpeechMetrics: string;
+declare const SRSensorAmbientPressure: string;
 
-declare const SRDeviceUsageCategoryBooks: string;
-
-declare const SRPhotoplethysmogramSampleUsageForegroundBloodOxygen: string;
+declare const SRSensorMediaEvents: string;
 
 declare const SRSensorSleepSessions: string;
 
-declare const SRDeviceUsageCategoryKids: string;
+declare const SRDeviceUsageCategoryProductivity: string;
 
-declare const SRSensorPhoneUsageReport: string;
+declare const SRDeviceUsageCategoryFinance: string;
 
-declare const SRSensorOnWristState: string;
+declare const SRDeviceUsageCategoryHealthAndFitness: string;
 
-declare const SRDeviceUsageCategoryGraphicsAndDesign: string;
+declare const SRErrorDomain: string;
 
-declare const SRDeviceUsageCategoryUtilities: string;
+declare const SRPhotoplethysmogramSampleUsageBackgroundSystem: string;
 
-declare const SRDeviceUsageCategoryEducation: string;
-
-declare const SRDeviceUsageCategoryPhotoAndVideo: string;
-
-declare const SRSensorVisits: string;
+declare const SRDeviceUsageCategorySocialNetworking: string;
 
 declare const SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting: {
   Slight: 1,

@@ -957,11 +957,10 @@ declare class SCNPhysicsWorld extends NSObject implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SCNReferenceNode extends SCNNode {
   initWithURL(referenceURL: NSURL): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static referenceNodeWithURL<This extends abstract new (...args: any) => any>(this: This, referenceURL: NSURL): InstanceType<This>;
@@ -5042,7 +5041,7 @@ declare class SCNLayer extends CAOpenGLLayer implements SCNSceneRenderer, SCNTec
 
   setSceneTime(sceneTime: number): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: CALayerDelegate | null): void;
   setDelegate(delegate: SCNSceneRendererDelegate | null): void;
 
   isPlaying(): boolean;

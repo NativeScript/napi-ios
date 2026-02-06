@@ -231,6 +231,11 @@ class MemberDecl {
   bool optional;
 
   bool tsIgnore = false;
+
+  // Method overloads for TS emission (used to preserve superclass signatures).
+  std::vector<MemberDecl> overloads;
+
+  void addOverloadFrom(const MemberDecl& member);
 };
 
 void removeDuplicateMethods(std::vector<MemberDecl>& members);

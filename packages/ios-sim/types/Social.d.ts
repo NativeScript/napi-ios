@@ -8,9 +8,9 @@ declare const SLServiceTypeTwitter: string;
 
 declare const SLServiceTypeLinkedIn: string;
 
-declare const SLServiceTypeTencentWeibo: string;
-
 declare const SLServiceTypeSinaWeibo: string;
+
+declare const SLServiceTypeTencentWeibo: string;
 
 declare const SLComposeViewControllerResult: {
   Cancelled: 0,

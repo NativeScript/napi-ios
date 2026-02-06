@@ -3060,6 +3060,8 @@ declare const debug_iomalloc_size: number;
 
 declare const kIOFBNotifyGroupID_AppleMCCSControl: number;
 
+declare const IOFireWireSBP2UserClient: number;
+
 declare const IOFWSendDCL: number;
 
 declare const IOAudioEngine: number;
@@ -6691,6 +6693,10 @@ declare class airship_interrupt {
   constructor(init?: airship_interrupt);
 }
 
+declare class airship_buffer {
+  constructor(init?: airship_buffer);
+}
+
 declare class airship_client {
   constructor(init?: airship_client);
 }
@@ -7062,6 +7068,20 @@ declare class thsc_cpi {
   tcpi_cycles: number;
 }
 
+declare class cl_direct_read_lock {
+  constructor(init?: cl_direct_read_lock);
+}
+
+declare class ungraftdmg_args {
+  constructor(init?: ungraftdmg_args);
+  mountdir_l_: unknown /* const array */;
+  mountdir: number;
+  mountdir_r_: unknown /* const array */;
+  flags_l_: unknown /* const array */;
+  flags: number;
+  flags_r_: unknown /* const array */;
+}
+
 declare class mkfifoat_args {
   constructor(init?: mkfifoat_args);
   fd_l_: unknown /* const array */;
@@ -7166,6 +7186,13 @@ declare class pwritev_args {
   offset_l_: unknown /* const array */;
   offset: number;
   offset_r_: unknown /* const array */;
+}
+
+declare class ntp_gettime_args {
+  constructor(init?: ntp_gettime_args);
+  ntvp_l_: unknown /* const array */;
+  ntvp: number;
+  ntvp_r_: unknown /* const array */;
 }
 
 declare class setattrlistat_args {
@@ -7660,6 +7687,13 @@ declare class poll_nocancel_args {
   timeout_r_: unknown /* const array */;
 }
 
+declare class sigsuspend_nocancel_args {
+  constructor(init?: sigsuspend_nocancel_args);
+  mask_l_: unknown /* const array */;
+  mask: number;
+  mask_r_: unknown /* const array */;
+}
+
 declare class fsync_nocancel_args {
   constructor(init?: fsync_nocancel_args);
   fd_l_: unknown /* const array */;
@@ -7908,6 +7942,16 @@ declare class __sigwait_args {
   sig_r_: unknown /* const array */;
 }
 
+declare class __pthread_kill_args {
+  constructor(init?: __pthread_kill_args);
+  thread_port_l_: unknown /* const array */;
+  thread_port: number;
+  thread_port_r_: unknown /* const array */;
+  sig_l_: unknown /* const array */;
+  sig: number;
+  sig_r_: unknown /* const array */;
+}
+
 declare class munlockall_args {
   constructor(init?: munlockall_args);
   how_l_: unknown /* const array */;
@@ -8122,6 +8166,13 @@ declare class sem_unlink_args {
   name_l_: unknown /* const array */;
   name: number;
   name_r_: unknown /* const array */;
+}
+
+declare class sem_close_args {
+  constructor(init?: sem_close_args);
+  sem_l_: unknown /* const array */;
+  sem: number;
+  sem_r_: unknown /* const array */;
 }
 
 declare class minherit_args {
@@ -8456,6 +8507,22 @@ declare class csops_audittoken_args {
   uaudittoken_l_: unknown /* const array */;
   uaudittoken: number;
   uaudittoken_r_: unknown /* const array */;
+}
+
+declare class quotactl_args {
+  constructor(init?: quotactl_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  cmd_l_: unknown /* const array */;
+  cmd: number;
+  cmd_r_: unknown /* const array */;
+  uid_l_: unknown /* const array */;
+  uid: number;
+  uid_r_: unknown /* const array */;
+  arg_l_: unknown /* const array */;
+  arg: number;
+  arg_r_: unknown /* const array */;
 }
 
 declare class unmount_args {
@@ -9303,424 +9370,6 @@ declare class IOHIDInterface_IVars {
   constructor(init?: IOHIDInterface_IVars);
 }
 
-declare class unnamed_4405217834203024098 {
-  constructor(init?: unnamed_4405217834203024098);
-  connectionHandle: number;
-  randomNumber: unknown /* const array */;
-  ediv: number;
-}
-
-declare class unnamed_3744489281634571913 {
-  constructor(init?: unnamed_3744489281634571913);
-  length: number;
-  data: unknown /* const array */;
-}
-
-declare class unnamed_12873340176224763681 {
-  constructor(init?: unnamed_12873340176224763681);
-  connectionHandle: number;
-}
-
-declare class quotactl_args {
-  constructor(init?: quotactl_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  cmd_l_: unknown /* const array */;
-  cmd: number;
-  cmd_r_: unknown /* const array */;
-  uid_l_: unknown /* const array */;
-  uid: number;
-  uid_r_: unknown /* const array */;
-  arg_l_: unknown /* const array */;
-  arg: number;
-  arg_r_: unknown /* const array */;
-}
-
-declare class unnamed_6485530394947655174 {
-  constructor(init?: unnamed_6485530394947655174);
-  error: number;
-  connectionHandle: number;
-  page: number;
-  maxPage: number;
-  lmpFeatures: BluetoothHCISupportedFeatures;
-}
-
-declare class unnamed_14685552697123847232 {
-  constructor(init?: unnamed_14685552697123847232);
-  connectionHandle: number;
-  packetType: number;
-}
-
-declare class unnamed_6695955528974737229 {
-  constructor(init?: unnamed_6695955528974737229);
-  connectionHandle: number;
-  keyFlag: number;
-}
-
-declare class __pthread_kill_args {
-  constructor(init?: __pthread_kill_args);
-  thread_port_l_: unknown /* const array */;
-  thread_port: number;
-  thread_port_r_: unknown /* const array */;
-  sig_l_: unknown /* const array */;
-  sig: number;
-  sig_r_: unknown /* const array */;
-}
-
-declare class unnamed_6359250257130217676 {
-  constructor(init?: unnamed_6359250257130217676);
-  connectionHandle: number;
-}
-
-declare class unnamed_16133518678232883090 {
-  constructor(init?: unnamed_16133518678232883090);
-  deviceAddress: BluetoothDeviceAddress;
-  linkKey: BluetoothKey;
-}
-
-declare class unnamed_1915220244854016506 {
-  constructor(init?: unnamed_1915220244854016506);
-  numLinkKeys: number;
-  linkKeys: unknown /* const array */;
-}
-
-declare class unnamed_14545234515013782280 {
-  constructor(init?: unnamed_14545234515013782280);
-  connectionHandle: number;
-  maxSlots: number;
-}
-
-declare class unnamed_17721848110713871053 {
-  constructor(init?: unnamed_17721848110713871053);
-  connectionHandle: number;
-  clockOffset: number;
-}
-
-declare class sigsuspend_nocancel_args {
-  constructor(init?: sigsuspend_nocancel_args);
-  mask_l_: unknown /* const array */;
-  mask: number;
-  mask_r_: unknown /* const array */;
-}
-
-declare class unnamed_6892037542614408509 {
-  constructor(init?: unnamed_6892037542614408509);
-  connectionHandle: number;
-  supportedFeaturesInfo: BluetoothHCIExtendedFeaturesInfo;
-}
-
-declare class unnamed_13095299419804297735 {
-  constructor(init?: unnamed_13095299419804297735);
-  connectionHandle: number;
-  supportedFeatures: BluetoothHCISupportedFeatures;
-}
-
-declare class unnamed_8000284967430889214 {
-  constructor(init?: unnamed_8000284967430889214);
-  connectionHandle: number;
-  reason: number;
-}
-
-declare class unnamed_16146361739545037460 {
-  constructor(init?: unnamed_16146361739545037460);
-  connectionHandle: number;
-  connInterval: number;
-  connLatency: number;
-  supervisionTimeout: number;
-}
-
-declare class unnamed_3122674365946667703 {
-  constructor(init?: unnamed_3122674365946667703);
-  connectionHandle: number;
-  role: number;
-  peerAddressType: number;
-  peerAddress: BluetoothDeviceAddress;
-  localResolvablePrivateAddress: BluetoothDeviceAddress;
-  peerResolvablePrivateAddress: BluetoothDeviceAddress;
-  connInterval: number;
-  connLatency: number;
-  supervisionTimeout: number;
-  masterClockAccuracy: number;
-}
-
-declare class ntp_gettime_args {
-  constructor(init?: ntp_gettime_args);
-  ntvp_l_: unknown /* const array */;
-  ntvp: number;
-  ntvp_r_: unknown /* const array */;
-}
-
-declare class unnamed_10512273311661733268 {
-  constructor(init?: unnamed_10512273311661733268);
-  connectionHandle: number;
-  role: number;
-  peerAddressType: number;
-  peerAddress: BluetoothDeviceAddress;
-  connInterval: number;
-  connLatency: number;
-  supervisionTimeout: number;
-  masterClockAccuracy: number;
-}
-
-declare class unnamed_17379390117004970666 {
-  constructor(init?: unnamed_17379390117004970666);
-  connectionHandle: number;
-  deviceAddress: BluetoothDeviceAddress;
-  linkType: number;
-  encryptionMode: number;
-}
-
-declare class unnamed_825325064729843511 {
-  constructor(init?: unnamed_825325064729843511);
-  handle: number;
-  mode: number;
-  afhMap: unknown /* const array */;
-}
-
-declare class unnamed_13908932035459226953 {
-  constructor(init?: unnamed_13908932035459226953);
-  data: unknown /* const array */;
-}
-
-declare class unnamed_9763661715145603623 {
-  constructor(init?: unnamed_9763661715145603623);
-  deviceAddress: BluetoothDeviceAddress;
-  notificationType: number;
-}
-
-declare class unnamed_14352815353189537517 {
-  constructor(init?: unnamed_14352815353189537517);
-  deviceAddress: BluetoothDeviceAddress;
-  passkey: number;
-}
-
-declare class unnamed_17760397736649477487 {
-  constructor(init?: unnamed_17760397736649477487);
-  hash: BluetoothHCISimplePairingOOBData;
-  randomizer: BluetoothHCISimplePairingOOBData;
-}
-
-declare class unnamed_11170576992091453114 {
-  constructor(init?: unnamed_11170576992091453114);
-  data: unknown /* const array */;
-}
-
-declare class unnamed_8907571703094486488 {
-  constructor(init?: unnamed_8907571703094486488);
-  outFECRequired: number;
-  extendedInquiryResponse: BluetoothHCIExtendedInquiryResponse;
-}
-
-declare class unnamed_12184568112118927398 {
-  constructor(init?: unnamed_12184568112118927398);
-  data: unknown /* const array */;
-}
-
-declare class unnamed_6656109843928510805 {
-  constructor(init?: unnamed_6656109843928510805);
-  results: unknown /* const array */;
-  count: number;
-}
-
-declare class unnamed_12004043623014703245 {
-  constructor(init?: unnamed_12004043623014703245);
-  deviceAddress: BluetoothDeviceAddress;
-  pageScanRepetitionMode: number;
-  reserved: number;
-  classOfDevice: number;
-  clockOffset: number;
-  RSSIValue: number;
-}
-
-declare class unnamed_9502991268943117136 {
-  constructor(init?: unnamed_9502991268943117136);
-  productID: number;
-  vendorID: number;
-  type: number;
-  productName: unknown /* const array */;
-  vendorName: unknown /* const array */;
-  totalDataBytesSent: number;
-  totalSCOBytesSent: number;
-  totalDataBytesReceived: number;
-  totalSCOBytesReceived: number;
-}
-
-declare class unnamed_5063178359264227978 {
-  constructor(init?: unnamed_5063178359264227978);
-  handle: number;
-  timeout: number;
-}
-
-declare class unnamed_174160992361959040 {
-  constructor(init?: unnamed_174160992361959040);
-  handle: number;
-  level: number;
-}
-
-declare class unnamed_8883058337753654942 {
-  constructor(init?: unnamed_8883058337753654942);
-  count: number;
-  codes: unknown /* const array */;
-}
-
-declare class unnamed_5695680544649957972 {
-  constructor(init?: unnamed_5695680544649957972);
-  ACLDataPacketLength: number;
-  SCODataPacketLength: number;
-  totalNumACLDataPackets: number;
-  totalNumSCODataPackets: number;
-}
-
-declare class unnamed_10563187139034436309 {
-  constructor(init?: unnamed_10563187139034436309);
-  manufacturerName: number;
-  lmpVersion: number;
-  lmpSubVersion: number;
-  hciVersion: number;
-  hciRevision: number;
-}
-
-declare class unnamed_17200267137875338337 {
-  constructor(init?: unnamed_17200267137875338337);
-  handle: number;
-  clock: number;
-  accuracy: number;
-}
-
-declare class unnamed_12771175986842419775 {
-  constructor(init?: unnamed_12771175986842419775);
-  transmitBandwidth: number;
-  receiveBandwidth: number;
-  transmitCodingFormat: number;
-  receiveCodingFormat: number;
-  transmitCodecFrameSize: number;
-  receiveCodecFrameSize: number;
-  inputBandwidth: number;
-  outputBandwidth: number;
-  inputCodingFormat: number;
-  outputCodingFormat: number;
-  inputCodedDataSize: number;
-  outputCodedDataSize: number;
-  inputPCMDataFormat: number;
-  outputPCMDataFormat: number;
-  inputPCMSamplePayloadMSBPosition: number;
-  outputPCMSamplePayloadMSBPosition: number;
-  inputDataPath: number;
-  outputDataPath: number;
-  inputTransportUnitSize: number;
-  outputTransportUnitSize: number;
-  maxLatency: number;
-  packetType: number;
-  retransmissionEffort: number;
-}
-
-declare class unnamed_7050890988361481334 {
-  constructor(init?: unnamed_7050890988361481334);
-  transmitBandwidth: number;
-  receiveBandwidth: number;
-  maxLatency: number;
-  voiceSetting: number;
-  retransmissionEffort: number;
-  packetType: number;
-}
-
-declare class unnamed_9518647771440607728 {
-  constructor(init?: unnamed_9518647771440607728);
-  flags: number;
-  serviceType: number;
-  tokenRate: number;
-  peakBandwidth: number;
-  latency: number;
-  delayVariation: number;
-}
-
-declare class unnamed_17340048297115027307 {
-  constructor(init?: unnamed_17340048297115027307);
-  settings: number;
-  handle: number;
-}
-
-declare class unnamed_14655595527810739837 {
-  constructor(init?: unnamed_14655595527810739837);
-  handle: number;
-  keySize: number;
-}
-
-declare class unnamed_17049932793282015549 {
-  constructor(init?: unnamed_17049932793282015549);
-  handle: number;
-  RSSIValue: number;
-}
-
-declare class unnamed_17363652340809838133 {
-  constructor(init?: unnamed_17363652340809838133);
-  count: number;
-  handle: number;
-}
-
-declare class airship_buffer {
-  constructor(init?: airship_buffer);
-}
-
-declare class unnamed_1011781940521745346 {
-  constructor(init?: unnamed_1011781940521745346);
-  data: unknown /* const array */;
-}
-
-declare class unnamed_15126106188599157768 {
-  constructor(init?: unnamed_15126106188599157768);
-  page: number;
-  maxPage: number;
-  data: unknown /* const array */;
-}
-
-declare class unnamed_12710453468875713864 {
-  constructor(init?: unnamed_12710453468875713864);
-  data: unknown /* const array */;
-}
-
-declare class cl_direct_read_lock {
-  constructor(init?: cl_direct_read_lock);
-}
-
-declare class ungraftdmg_args {
-  constructor(init?: ungraftdmg_args);
-  mountdir_l_: unknown /* const array */;
-  mountdir: number;
-  mountdir_r_: unknown /* const array */;
-  flags_l_: unknown /* const array */;
-  flags: number;
-  flags_r_: unknown /* const array */;
-}
-
-declare class unnamed_12722572568254980039 {
-  constructor(init?: unnamed_12722572568254980039);
-  data: unknown /* const array */;
-}
-
-declare class unnamed_14485107667129898935 {
-  constructor(init?: unnamed_14485107667129898935);
-  data: unknown /* const array */;
-}
-
-declare class sem_close_args {
-  constructor(init?: sem_close_args);
-  sem_l_: unknown /* const array */;
-  sem: number;
-  sem_r_: unknown /* const array */;
-}
-
-declare class unnamed_2894202839658864712 {
-  constructor(init?: unnamed_2894202839658864712);
-  data: unknown /* const array */;
-}
-
-declare class unnamed_9513934731600801000 {
-  constructor(init?: unnamed_9513934731600801000);
-  data: unknown /* const array */;
-}
-
 declare class searchfs_args {
   constructor(init?: searchfs_args);
   path_l_: unknown /* const array */;
@@ -10059,11 +9708,6 @@ declare class mbuf_stat {
   bigclusters: number;
   bigclfree: number;
   bigmclbytes: number;
-}
-
-declare class unnamed_4007094476083325336 {
-  constructor(init?: unnamed_4007094476083325336);
-  data: unknown /* const array */;
 }
 
 declare class RomScan {
@@ -11320,18 +10964,6 @@ declare class if_interface_state {
   interface_availability: number;
 }
 
-declare class unnamed_11273710022804791198 {
-  constructor(init?: unnamed_11273710022804791198);
-  connectionHandle: number;
-  usedFeatures: BluetoothHCISupportedFeatures;
-}
-
-declare class unnamed_10173792744354485346 {
-  constructor(init?: unnamed_10173792744354485346);
-  handle: number;
-  qualityValue: number;
-}
-
 declare class OpaqueDTPropertyIterator {
   constructor(init?: OpaqueDTPropertyIterator);
   entry: interop.Pointer;
@@ -11634,13 +11266,6 @@ declare class readv_nocancel_args {
   iovcnt_r_: unknown /* const array */;
 }
 
-declare class unnamed_5578380239689998826 {
-  constructor(init?: unnamed_5578380239689998826);
-  connectionHandle: number;
-  deviceAddress: BluetoothDeviceAddress;
-  role: number;
-}
-
 declare class ledger_entry_info_v2 {
   constructor(init?: ledger_entry_info_v2);
   lei_balance: number;
@@ -11682,12 +11307,6 @@ declare class flock_args {
   how_r_: unknown /* const array */;
 }
 
-declare class unnamed_4332635779667043713 {
-  constructor(init?: unnamed_4332635779667043713);
-  deviceAddress: BluetoothDeviceAddress;
-  deviceName: unknown /* const array */;
-}
-
 declare class nd_ifinfo {
   constructor(init?: nd_ifinfo);
   linkmtu: number;
@@ -11702,18 +11321,6 @@ declare class nd_ifinfo {
   randomseed0: unknown /* const array */;
   randomseed1: unknown /* const array */;
   randomid: unknown /* const array */;
-}
-
-declare class unnamed_17926074055869263541 {
-  constructor(init?: unnamed_17926074055869263541);
-  connectionHandle: number;
-  flags: number;
-  flowDirection: number;
-  serviceType: number;
-  tokenRate: number;
-  tokenBucketSize: number;
-  peakBandwidth: number;
-  accessLatency: number;
 }
 
 declare class AirshipDaleBasebandErrorInfo {
@@ -11861,23 +11468,17 @@ declare class IOExternalMethodDispatch {
 
 declare class IOExternalTrap {
   constructor(init?: IOExternalTrap);
-  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  object: interop.Pointer;
   func: number;
 }
 
 declare class IOExternalMethod {
   constructor(init?: IOExternalMethod);
-  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  object: interop.Pointer;
   func: number;
   flags: number;
   count0: number;
   count1: number;
-}
-
-declare class unnamed_16523366994273171122 {
-  constructor(init?: unnamed_16523366994273171122);
-  connectionHandle: number;
-  setupParams: BluetoothHCIQualityOfServiceSetupParams;
 }
 
 declare class IOInterruptSourcePrivate {
@@ -12171,13 +11772,6 @@ declare class task_snapshot {
   donating_pid_count: number;
 }
 
-declare class unnamed_1464565478962035867 {
-  constructor(init?: unnamed_1464565478962035867);
-  deviceAddress: BluetoothDeviceAddress;
-  linkKey: BluetoothKey;
-  keyType: number;
-}
-
 declare class cpuid_cache_desc_t {
   constructor(init?: cpuid_cache_desc_t);
   value: number;
@@ -12314,12 +11908,6 @@ declare class ifnet_demux_desc {
   datalen: number;
 }
 
-declare class unnamed_6365138206929857170 {
-  constructor(init?: unnamed_6365138206929857170);
-  count: number;
-  codes: interop.Pointer;
-}
-
 declare class _cr0 {
   constructor(init?: _cr0);
   pe: number;
@@ -12409,12 +11997,6 @@ declare class pivot_root_args {
   old_rootfs_path_after_l_: unknown /* const array */;
   old_rootfs_path_after: number;
   old_rootfs_path_after_r_: unknown /* const array */;
-}
-
-declare class unnamed_10137855456911653764 {
-  constructor(init?: unnamed_10137855456911653764);
-  connectionHandle: number;
-  enable: number;
 }
 
 declare class ml_processor_info {
@@ -12603,13 +12185,6 @@ declare class __Reply__mach_exception_raise_t {
   RetCode: number;
 }
 
-declare class unnamed_6429230732574079190 {
-  constructor(init?: unnamed_6429230732574079190);
-  deviceAddress: BluetoothDeviceAddress;
-  classOfDevice: number;
-  linkType: number;
-}
-
 declare class IOAudioClientBuffer {
   constructor(init?: IOAudioClientBuffer);
   userClient: interop.Pointer;
@@ -12644,13 +12219,6 @@ declare class DebugKeyAction {
   mask: number;
   action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
   parameter: interop.Pointer;
-}
-
-declare class unnamed_1928797655933787480 {
-  constructor(init?: unnamed_1928797655933787480);
-  connectionHandle: number;
-  mode: number;
-  modeInterval: number;
 }
 
 declare class setregid_args {
@@ -12836,14 +12404,6 @@ declare class __pthread_canceled_args {
   action_r_: unknown /* const array */;
 }
 
-declare class unnamed_3786139793914571324 {
-  constructor(init?: unnamed_3786139793914571324);
-  deviceAddress: BluetoothDeviceAddress;
-  ioCapability: number;
-  OOBDataPresence: number;
-  authenticationRequirements: number;
-}
-
 declare class poll_args {
   constructor(init?: poll_args);
   fds_l_: unknown /* const array */;
@@ -12855,12 +12415,6 @@ declare class poll_args {
   timeout_l_: unknown /* const array */;
   timeout: number;
   timeout_r_: unknown /* const array */;
-}
-
-declare class unnamed_18225267902874970143 {
-  constructor(init?: unnamed_18225267902874970143);
-  deviceAddress: BluetoothDeviceAddress;
-  pageScanRepetitionMode: number;
 }
 
 declare class smr {
@@ -13027,13 +12581,6 @@ declare class __Request__doubleagent_remove_xattr_t {
   name: unknown /* const array */;
 }
 
-declare class unnamed_5627948592258299541 {
-  constructor(init?: unnamed_5627948592258299541);
-  error: number;
-  connectionHandle: number;
-  lmpFeatures: BluetoothHCISupportedFeatures;
-}
-
 declare class mincore_args {
   constructor(init?: mincore_args);
   addr_l_: unknown /* const array */;
@@ -13094,12 +12641,6 @@ declare class __lck_spin_t__ {
   constructor(init?: __lck_spin_t__);
 }
 
-declare class unnamed_4373168148114552859 {
-  constructor(init?: unnamed_4373168148114552859);
-  handle: number;
-  timeout: number;
-}
-
 declare class __Request__mach_gss_init_sec_context_v2_t {
   constructor(init?: __Request__mach_gss_init_sec_context_v2_t);
   Head: mach_msg_header_t;
@@ -13157,16 +12698,6 @@ declare class user64_timespec {
   constructor(init?: user64_timespec);
   tv_sec: number;
   tv_nsec: number;
-}
-
-declare class unnamed_8317762995543166574 {
-  constructor(init?: unnamed_8317762995543166574);
-  flags: number;
-  txWindowSize: number;
-  maxTransmit: number;
-  retransmissionTimeout: number;
-  monitorTimeout: number;
-  maxPDUPayloadSize: number;
 }
 
 declare class doubleagent_subsystem {
@@ -13323,11 +12854,6 @@ declare class airship_monitor {
   constructor(init?: airship_monitor);
 }
 
-declare class unnamed_10995956406557057234 {
-  constructor(init?: unnamed_10995956406557057234);
-  data: unknown /* const array */;
-}
-
 declare class __Request__check_task_access_with_flavor_t {
   constructor(init?: __Request__check_task_access_with_flavor_t);
   Head: mach_msg_header_t;
@@ -13402,22 +12928,11 @@ declare class daleipc_uplink_controller {
   constructor(init?: daleipc_uplink_controller);
 }
 
-declare class unnamed_1054070753012500092 {
-  constructor(init?: unnamed_1054070753012500092);
-  connectionHandle: number;
-}
-
 declare class IOAudioClientBufferExtendedInfo64 {
   constructor(init?: IOAudioClientBufferExtendedInfo64);
   mAudioClientBufferExtended32: IOAudioClientBufferExtendedInfo;
   mUnmappedParamBuffer64: number;
   mNextExtended64: interop.Pointer;
-}
-
-declare class unnamed_10878146617443663444 {
-  constructor(init?: unnamed_10878146617443663444);
-  scanInterval: number;
-  scanWindow: number;
 }
 
 declare class nfsrvstats {
@@ -13453,14 +12968,6 @@ declare class futimes_args {
   tptr_r_: unknown /* const array */;
 }
 
-declare class unnamed_13710605761154041948 {
-  constructor(init?: unnamed_13710605761154041948);
-  connectionHandle: number;
-  lmpVersion: number;
-  manufacturerName: number;
-  lmpSubversion: number;
-}
-
 declare class __Request__mach_gss_unhold_cred_t {
   constructor(init?: __Request__mach_gss_unhold_cred_t);
   Head: mach_msg_header_t;
@@ -13486,33 +12993,6 @@ declare class log_data_args {
   size_l_: unknown /* const array */;
   size: number;
   size_r_: unknown /* const array */;
-}
-
-declare class unnamed_13971610946563607911 {
-  constructor(init?: unnamed_13971610946563607911);
-  transmitBandwidth: number;
-  receiveBandwidth: number;
-  transmitCodingFormat: number;
-  receiveCodingFormat: number;
-  transmitCodecFrameSize: number;
-  receiveCodecFrameSize: number;
-  inputBandwidth: number;
-  outputBandwidth: number;
-  inputCodingFormat: number;
-  outputCodingFormat: number;
-  inputCodedDataSize: number;
-  outputCodedDataSize: number;
-  inputPCMDataFormat: number;
-  outputPCMDataFormat: number;
-  inputPCMSamplePayloadMSBPosition: number;
-  outputPCMSamplePayloadMSBPosition: number;
-  inputDataPath: number;
-  outputDataPath: number;
-  inputTransportUnitSize: number;
-  outputTransportUnitSize: number;
-  maxLatency: number;
-  packetType: number;
-  retransmissionEffort: number;
 }
 
 declare class EXDisplayPipeSecureTEStatus {
@@ -13847,18 +13327,6 @@ declare class kdebug_trace_string_args {
   str_r_: unknown /* const array */;
 }
 
-declare class unnamed_17393539693913510561 {
-  constructor(init?: unnamed_17393539693913510561);
-  numberOfReponses: number;
-  deviceAddress: BluetoothDeviceAddress;
-  pageScanRepetitionMode: number;
-  reserved: number;
-  classOfDevice: number;
-  clockOffset: number;
-  RSSIValue: number;
-  extendedInquiryResponse: BluetoothHCIExtendedInquiryResponse;
-}
-
 declare class unnamed_10328243768668227060 {
   constructor(init?: unnamed_10328243768668227060);
   ifscope: number;
@@ -13923,16 +13391,6 @@ declare class unnamed_17808017554962453887 {
   eph_x86_efi_boot_state: number;
   eph_x86_system_state: number;
   eph_x86_unused_bits: number;
-}
-
-declare class unnamed_15298435409180286407 {
-  constructor(init?: unnamed_15298435409180286407);
-  deviceAddress: BluetoothDeviceAddress;
-  pageScanRepetitionMode: number;
-  pageScanPeriodMode: number;
-  pageScanMode: number;
-  classOfDevice: number;
-  clockOffset: number;
 }
 
 declare class EFI_CONFIGURATION_TABLE_32 {
@@ -14185,13 +13643,6 @@ declare class IOReportElement {
   values: IOReportElementValues;
 }
 
-declare class unnamed_6646578211250444178 {
-  constructor(init?: unnamed_6646578211250444178);
-  handle: number;
-  lmp_handle: number;
-  reserved: number;
-}
-
 declare class _lck_grp_attr_ {
   constructor(init?: _lck_grp_attr_);
 }
@@ -14263,6 +13714,11 @@ declare class IOStateReportInfo {
   elem: interop.Pointer;
 }
 
+declare class intrusive_osobject_retainer {
+  constructor(init?: intrusive_osobject_retainer);
+  retain: (p1: number) => void | null;
+}
+
 declare class unnamed_3364203081172218251 {
   constructor(init?: unnamed_3364203081172218251);
   usage: number;
@@ -14322,12 +13778,6 @@ declare class linkat_args {
   flag_l_: unknown /* const array */;
   flag: number;
   flag_r_: unknown /* const array */;
-}
-
-declare class unnamed_11520913712954248184 {
-  constructor(init?: unnamed_11520913712954248184);
-  deviceAddress: BluetoothDeviceAddress;
-  hostSupportedFeatures: BluetoothHCISupportedFeatures;
 }
 
 declare class lseek_args {
@@ -14395,12 +13845,6 @@ declare class IOCircularDataQueueEntryHeader {
   sentinel: number;
   _pad: number;
   data: unknown /* const array */;
-}
-
-declare class unnamed_7294244045061937404 {
-  constructor(init?: unnamed_7294244045061937404);
-  deviceAddress: BluetoothDeviceAddress;
-  pageScanMode: number;
 }
 
 declare class __disable_threadsignal_args {
@@ -14503,15 +13947,6 @@ declare class kqueue_args {
   dummy: number;
 }
 
-declare class unnamed_12637277973368066917 {
-  constructor(init?: unnamed_12637277973368066917);
-  connectionHandle: number;
-  maxTransmitLatency: number;
-  maxReceiveLatency: number;
-  minRemoteTimeout: number;
-  minLocalTimeout: number;
-}
-
 declare class SuperSpeedEndpointCompanionDescriptor {
   constructor(init?: SuperSpeedEndpointCompanionDescriptor);
   bLength: number;
@@ -14529,11 +13964,6 @@ declare class arcade_upcall_subsystem {
   maxsize: number;
   reserved: number;
   routine: unknown /* const array */;
-}
-
-declare class unnamed_5239407480510953743 {
-  constructor(init?: unnamed_5239407480510953743);
-  connectionHandle: number;
 }
 
 declare class __Reply__mach_notify_port_destroyed_t {
@@ -14601,12 +14031,6 @@ declare class rmdir_args {
   path_l_: unknown /* const array */;
   path: number;
   path_r_: unknown /* const array */;
-}
-
-declare class unnamed_10844994020169998523 {
-  constructor(init?: unnamed_10844994020169998523);
-  deviceAddress: BluetoothDeviceAddress;
-  numericValue: number;
 }
 
 declare class setgid_args {
@@ -14713,7 +14137,7 @@ declare class mptcp_symptoms_answer {
 
 declare class IOExternalAsyncMethod {
   constructor(init?: IOExternalAsyncMethod);
-  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
+  object: interop.Pointer;
   func: number;
   flags: number;
   count0: number;
@@ -15088,11 +14512,6 @@ declare class rtstat_64 {
   rts_badrtgwroute: number;
 }
 
-declare class unnamed_11961482558713411480 {
-  constructor(init?: unnamed_11961482558713411480);
-  connectionHandle: number;
-}
-
 declare class getgid_args {
   constructor(init?: getgid_args);
   dummy: number;
@@ -15168,11 +14587,6 @@ declare class __Request__sysdiagnose_notification_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   flags: number;
-}
-
-declare class unnamed_17559510431102801758 {
-  constructor(init?: unnamed_17559510431102801758);
-  deviceAddress: BluetoothDeviceAddress;
 }
 
 declare class daleipc_network_clock_controller {
@@ -15252,12 +14666,6 @@ declare class IOAudioClientBuffer64 {
   mAudioClientBuffer32: IOAudioClientBuffer;
   mUnmappedSourceBuffer64: number;
   mNextBuffer64: interop.Pointer;
-}
-
-declare class unnamed_16984036581783024317 {
-  constructor(init?: unnamed_16984036581783024317);
-  ACLDataPacketLength: number;
-  totalNumACLDataPackets: number;
 }
 
 declare class getaudit_addr_args {
@@ -15411,15 +14819,6 @@ declare class IOACPIAddressSpaceDescriptor {
   reserved4: number;
 }
 
-declare class unnamed_6984174266375345627 {
-  constructor(init?: unnamed_6984174266375345627);
-  connectionHandle: number;
-  transmissionInterval: number;
-  retransmissionWindow: number;
-  receivePacketLength: number;
-  transmitPacketLength: number;
-}
-
 declare class OSObjectUserVars {
   constructor(init?: OSObjectUserVars);
 }
@@ -15449,12 +14848,6 @@ declare class macos_panic_header {
   mph_data: interop.Pointer;
 }
 
-declare class unnamed_7837601036402508668 {
-  constructor(init?: unnamed_7837601036402508668);
-  length: number;
-  data: unknown /* const array */;
-}
-
 declare class __Request__vfs_resolve_file_t {
   constructor(init?: __Request__vfs_resolve_file_t);
   Head: mach_msg_header_t;
@@ -15478,17 +14871,6 @@ declare class task_read_for_pid_args {
   t_l_: unknown /* const array */;
   t: number;
   t_r_: unknown /* const array */;
-}
-
-declare class unnamed_5027695301846269373 {
-  constructor(init?: unnamed_5027695301846269373);
-  results: unknown /* const array */;
-  count: number;
-}
-
-declare class unnamed_17714015121045366557 {
-  constructor(init?: unnamed_17714015121045366557);
-  data: unknown /* const array */;
 }
 
 declare class priority_queue {
@@ -15651,15 +15033,6 @@ declare class setwgroups_args {
   guidset_r_: unknown /* const array */;
 }
 
-declare class unnamed_7918682949767724152 {
-  constructor(init?: unnamed_7918682949767724152);
-  userCallback: number;
-  userRefCon: number;
-  internalRefCon: number;
-  asyncIDRefCon: number;
-  reserved: number;
-}
-
 declare class __Reply__mach_voucher_attr_control_get_values_t {
   constructor(init?: __Reply__mach_voucher_attr_control_get_values_t);
   Head: mach_msg_header_t;
@@ -15790,16 +15163,6 @@ declare class setrlimit_args {
   rlp_r_: unknown /* const array */;
 }
 
-declare class unnamed_5606102264819608990 {
-  constructor(init?: unnamed_5606102264819608990);
-  transmitBandWidth: number;
-  receiveBandWidth: number;
-  maxLatency: number;
-  voiceSetting: number;
-  retransmissionEffort: number;
-  packetType: number;
-}
-
 declare class rt_msghdr_common {
   constructor(init?: rt_msghdr_common);
   rtm_msglen: number;
@@ -15869,16 +15232,6 @@ declare class __Request__vfs_resolve_file_with_audit_token_t {
 
 declare class IOExternalMethodArgumentsOpaque {
   constructor(init?: IOExternalMethodArgumentsOpaque);
-}
-
-declare class unnamed_13857940943358947447 {
-  constructor(init?: unnamed_13857940943358947447);
-  transmitBandwidth: number;
-  receiveBandwidth: number;
-  maxLatency: number;
-  contentFormat: number;
-  retransmissionEffort: number;
-  packetType: number;
 }
 
 declare class fs_snapshot_args {
@@ -16213,12 +15566,6 @@ declare class funmount_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
-}
-
-declare class unnamed_18045901316761299192 {
-  constructor(init?: unnamed_18045901316761299192);
-  role: number;
-  handle: number;
 }
 
 declare class fsetattrlist_args {
@@ -16592,34 +15939,6 @@ declare class aio_read_args {
   aiocbp_r_: unknown /* const array */;
 }
 
-declare class unnamed_9139678767609557297 {
-  constructor(init?: unnamed_9139678767609557297);
-  transmitBandWidth: number;
-  receiveBandWidth: number;
-  transmitCodingFormat: number;
-  receiveCodingFormat: number;
-  transmitCodecFrameSize: number;
-  receiveCodecFrameSize: number;
-  inputBandwidth: number;
-  outputBandwidth: number;
-  inputCodingFormat: number;
-  outputCodingFormat: number;
-  inputCodedDataSize: number;
-  outputCodedDataSize: number;
-  inputPCMDataFormat: number;
-  outputPCMDataFormat: number;
-  inputPCMSampelPayloadMSBPosition: number;
-  outputPCMSampelPayloadMSBPosition: number;
-  inputDataPath: number;
-  outputDataPath: number;
-  inputTransportUnitSize: number;
-  outputTransportUnitSize: number;
-  maxLatency: number;
-  voiceSetting: number;
-  retransmissionEffort: number;
-  packetType: number;
-}
-
 declare class oslog_coproc_args {
   constructor(init?: oslog_coproc_args);
   buff_l_: unknown /* const array */;
@@ -16792,18 +16111,6 @@ declare class ataTaskFile {
   ataTFCommand: number;
 }
 
-declare class unnamed_7443987149512840025 {
-  constructor(init?: unnamed_7443987149512840025);
-  connectionHandle: number;
-  deviceAddress: BluetoothDeviceAddress;
-  linkType: number;
-  transmissionInterval: number;
-  retransmissionWindow: number;
-  receivePacketLength: number;
-  transmitPacketLength: number;
-  airMode: number;
-}
-
 declare class in6_nbrinfo {
   constructor(init?: in6_nbrinfo);
   ifname: unknown /* const array */;
@@ -16850,11 +16157,6 @@ declare class setegid_args {
 declare class workq_open_args {
   constructor(init?: workq_open_args);
   dummy: number;
-}
-
-declare class unnamed_15433866698738595994 {
-  constructor(init?: unnamed_15433866698738595994);
-  linkType: number;
 }
 
 declare class cpuid_tsc_leaf_t {
@@ -16909,11 +16211,6 @@ declare class unnamed_9302259702586539480 {
   t: number;
   : number;
   io_bmap: number;
-}
-
-declare class unnamed_5424080561640605351 {
-  constructor(init?: unnamed_5424080561640605351);
-  error: number;
 }
 
 declare class trust_cache_module1 {
@@ -16987,17 +16284,6 @@ declare class arm_debug_info_t {
   coprocessor_core_debug: number;
   num_watchpoint_pairs: number;
   num_breakpoint_pairs: number;
-}
-
-declare class unnamed_16186450300110611679 {
-  constructor(init?: unnamed_16186450300110611679);
-  flags: number;
-  serviceType: number;
-  tokenRate: number;
-  tokenBucketSize: number;
-  peakBandwidth: number;
-  latency: number;
-  delayVariation: number;
 }
 
 declare class IOFBCursorControlCallouts {
@@ -17755,12 +17041,6 @@ declare class unnamed_804236958011088931 {
   stringMax: number;
   designatorMin: number;
   designatorMax: number;
-}
-
-declare class unnamed_3717948029633192216 {
-  constructor(init?: unnamed_3717948029633192216);
-  numLinkKeysRead: number;
-  maxNumLinkKeysAllowedInDevice: number;
 }
 
 declare class shm_open_args {

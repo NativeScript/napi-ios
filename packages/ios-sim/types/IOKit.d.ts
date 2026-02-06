@@ -1,8 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const kIORegistryIterateParents: number;
+
 declare const kIORegistryIterateRecursively: number;
 
-declare const kOSAsyncRefSize: number;
+declare const kIOMainPortDefault: number;
 
 declare const kOSAsyncRefCount: number;
 
@@ -33,8 +35,6 @@ declare const kNanosecondScale: number;
 declare const kIOMapGuardedSmall: number;
 
 declare const kIOMapGuardedMask: number;
-
-declare const kIOMapPostedCombinedReordered: number;
 
 declare const kIOMapPostedReordered: number;
 
@@ -108,17 +108,23 @@ declare const kOSAsyncCompleteMessageID: number;
 
 declare const kIOServiceMessageNotificationType: number;
 
+declare const kIOPostedCombinedReordered: number;
+
+declare const kIOAsyncCalloutCount: number;
+
+declare const kIOMapUserOptionsMask: number;
+
 declare const kIOCFSerializeToBinary: number;
 
 declare const kIOMapOverwrite: number;
 
+declare const kOSAsyncRefSize: number;
+
+declare const kIOMapPostedCombinedReordered: number;
+
 declare const kLastIOKitNotificationType: number;
 
 declare const kIODefaultCache: number;
-
-declare const kIOMapUserOptionsMask: number;
-
-declare const kIORegistryIterateParents: number;
 
 declare const kIOInterestCalloutCount: number;
 
@@ -140,8 +146,6 @@ declare const kIOMapReadOnly: number;
 
 declare const kIOMapGuardedLarge: number;
 
-declare const kIOMainPortDefault: number;
-
 declare const kIOConnectMethodVarOutputSize: number;
 
 declare const kIOInterestCalloutFuncIndex: number;
@@ -152,15 +156,11 @@ declare const kIOMaxBusStall30usec: number;
 
 declare const kIOCopybackCache: number;
 
-declare const kIOAsyncCalloutCount: number;
-
 declare const kIOKitNoticationTypeMask: number;
 
 declare const kMillisecondScale: number;
 
 declare const kIOMaxBusStall20usec: number;
-
-declare const kIOPostedCombinedReordered: number;
 
 declare const kIOMaxBusStall10usec: number;
 

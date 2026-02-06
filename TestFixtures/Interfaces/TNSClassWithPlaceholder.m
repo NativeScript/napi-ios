@@ -27,17 +27,17 @@
 
 #pragma clang diagnostic pop
 
-- (instancetype)retain {
-    TNSLog(@"retain on placeholder called");
-
-    return [super retain];
-}
-
-- (oneway void)release {
-    [super release];
-
-    TNSLog(@"release on placeholder called");
-}
+//- (instancetype)retain {
+//    TNSLog(@"retain on placeholder called");
+//
+//    return [super retain];
+//}
+//
+//- (oneway void)release {
+//    [super release];
+//
+//    TNSLog(@"release on placeholder called");
+//}
 
 @end
 

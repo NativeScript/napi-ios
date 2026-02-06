@@ -452,3 +452,5 @@ declare function CGDisplayCreateUUIDFromDisplayID(displayID: number): interop.Ob
 
 declare function CGDisplayGetDisplayIDFromUUID(uuid: interop.Object): number;
 
+declare function ColorSyncAPIVersion(): number;
+

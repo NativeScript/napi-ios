@@ -98,16 +98,16 @@ declare const GLKTextureLoaderError: {
   UnsupportedTextureTarget: 19,
 };
 
-declare const GLKViewDrawableDepthFormat: {
-  FormatNone: 0,
-  Format16: 1,
-  Format24: 2,
-};
-
 declare const GLKTextureInfoAlphaState: {
   None: 0,
   NonPremultiplied: 1,
   Premultiplied: 2,
+};
+
+declare const GLKViewDrawableDepthFormat: {
+  FormatNone: 0,
+  Format16: 1,
+  Format24: 2,
 };
 
 declare const GLKViewDrawableColorFormat: {

@@ -58,3 +58,5 @@ v8_build
 /project-template-vision/__PROJECT_NAME__.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 
 .cache/
+
+SwiftBindgen

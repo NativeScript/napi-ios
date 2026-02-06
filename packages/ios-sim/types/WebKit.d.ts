@@ -84,6 +84,8 @@ declare const WKErrorDomain: string;
 
 declare const NSReadAccessURLDocumentOption: string;
 
+declare const WKWebsiteDataTypeDiskCache: string;
+
 declare const WKWebExtensionContextNotificationUserInfoKeyPermissions: string;
 
 declare const WKPreviewActionItemIdentifierCopy: string;
@@ -99,8 +101,6 @@ declare const WKWebExtensionMatchPatternErrorDomain: string;
 declare const WKWebsiteDataTypeOfflineWebApplicationCache: string;
 
 declare const WKWebsiteDataTypeHashSalt: string;
-
-declare const WKWebsiteDataTypeDiskCache: string;
 
 declare const WKWebExtensionPermissionContextMenus: string;
 

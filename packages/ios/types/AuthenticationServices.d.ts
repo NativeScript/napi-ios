@@ -19,8 +19,6 @@ declare const ASAuthorizationPublicKeyCredentialAttestationKindDirect: string;
 
 declare const ASAuthorizationPublicKeyCredentialAttestationKindNone: string;
 
-declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged: string;
-
 declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceRequired: string;
 
 declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferencePreferred: string;
@@ -43,7 +41,7 @@ declare const ASAuthorizationScopeEmail: string;
 
 declare const ASCredentialIdentityStoreErrorDomain: string;
 
-declare const ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB: string;
+declare const ASExtensionLocalizedFailureReasonErrorKey: string;
 
 declare const ASAuthorizationPublicKeyCredentialAttestationKindEnterprise: string;
 
@@ -53,9 +51,11 @@ declare const ASCOSEAlgorithmIdentifierES256: number;
 
 declare const ASExtensionErrorDomain: string;
 
-declare const ASExtensionLocalizedFailureReasonErrorKey: string;
-
 declare const ASAuthorizationScopeFullName: string;
+
+declare const ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB: string;
+
+declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged: string;
 
 declare const ASAuthorizationPublicKeyCredentialResidentKeyPreferenceRequired: string;
 

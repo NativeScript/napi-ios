@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kIOSurfacePlaneBytesPerElement: interop.Pointer;
-
 declare const kIOSurfacePlaneSize: interop.Pointer;
 
 declare const kIOSurfacePlaneInfo: interop.Pointer;
@@ -13,37 +11,33 @@ declare const kIOSurfacePlaneBytesPerRow: interop.Pointer;
 
 declare const kIOSurfacePlaneComponentRanges: interop.Pointer;
 
-declare const kIOSurfaceOffset: interop.Pointer;
-
 declare const IOSurfacePropertyKeyPlaneWidth: string;
 
 declare const kIOSurfaceDefaultCache: number;
 
 declare const kIOSurfaceHeight: interop.Pointer;
 
-declare const kIOSurfaceICCProfile: interop.Pointer;
-
-declare const kIOSurfacePixelSizeCastingAllowed: interop.Pointer;
+declare const IOSurfacePropertyKeyCacheMode: string;
 
 declare const kIOSurfaceColorSpace: interop.Pointer;
 
-declare const kIOSurfacePlaneComponentTypes: interop.Pointer;
+declare const IOSurfacePropertyKeyPlaneBytesPerRow: string;
+
+declare const kIOSurfaceMapInhibitCache: number;
 
 declare const kIOSurfaceElementWidth: interop.Pointer;
+
+declare const kIOSurfaceWidth: interop.Pointer;
 
 declare const IOSurfacePropertyKeyPixelSizeCastingAllowed: string;
 
 declare const IOSurfacePropertyKeyPixelFormat: string;
-
-declare const IOSurfacePropertyKeyCacheMode: string;
 
 declare const IOSurfacePropertyKeyPlaneElementHeight: string;
 
 declare const IOSurfacePropertyKeyPlaneBytesPerElement: string;
 
 declare const IOSurfacePropertyKeyPlaneBase: string;
-
-declare const IOSurfacePropertyKeyPlaneBytesPerRow: string;
 
 declare const IOSurfacePropertyKeyPlaneHeight: string;
 
@@ -65,13 +59,21 @@ declare const kIOSurfaceBytesPerElement: interop.Pointer;
 
 declare const kIOSurfacePlaneElementWidth: interop.Pointer;
 
+declare const kIOSurfaceICCProfile: interop.Pointer;
+
+declare const kIOSurfacePlaneComponentTypes: interop.Pointer;
+
 declare const kIOSurfacePlaneComponentBitOffsets: interop.Pointer;
 
 declare const kIOSurfacePlaneComponentBitDepths: interop.Pointer;
 
+declare const kIOSurfacePixelSizeCastingAllowed: interop.Pointer;
+
 declare const kIOSurfacePixelFormat: interop.Pointer;
 
 declare const kIOSurfaceCacheMode: interop.Pointer;
+
+declare const kIOSurfacePlaneBytesPerElement: interop.Pointer;
 
 declare const kIOSurfacePlaneWidth: interop.Pointer;
 
@@ -95,7 +97,11 @@ declare const kIOSurfaceMapWriteThruCache: number;
 
 declare const IOSurfacePropertyKeyPlaneElementWidth: string;
 
+declare const kIOSurfaceOffset: interop.Pointer;
+
 declare const kIOSurfaceContentHeadroom: interop.Pointer;
+
+declare const kIOSurfaceElementHeight: interop.Pointer;
 
 declare const IOSurfacePropertyKeyOffset: string;
 
@@ -117,21 +123,15 @@ declare const kIOSurfacePlaneHeight: interop.Pointer;
 
 declare const kIOSurfaceAllocSize: interop.Pointer;
 
-declare const kIOSurfaceWidth: interop.Pointer;
-
 declare const kIOSurfaceInhibitCache: number;
 
 declare const kIOSurfaceMapCopybackInnerCache: number;
 
 declare const kIOSurfaceMapCacheShift: number;
 
-declare const kIOSurfaceMapInhibitCache: number;
-
 declare const IOSurfacePropertyKeyPlaneOffset: string;
 
 declare const IOSurfacePropertyKeyAllocSize: string;
-
-declare const kIOSurfaceElementHeight: interop.Pointer;
 
 declare const kIOSurfaceMapWriteCombineCache: number;
 

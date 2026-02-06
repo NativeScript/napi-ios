@@ -102,17 +102,35 @@ void TSEmitter::write() {
     std::fclose(f);
   }
 
-  // Write index.d.ts
-  {
-    std::string name = outDir + "/index.d.ts";
-    auto f = std::fopen(name.c_str(), "w");
-    for (auto file : files) {
+  // Write index.d.ts based on options
+  std::vector<std::string> allFrameworks;
+  allFrameworks.reserve(files.size());
+  for (auto &file : files) {
+    allFrameworks.push_back(file.second.name);
+  }
+  std::sort(allFrameworks.begin(), allFrameworks.end());
+
+  std::vector<std::string> selectedFrameworks;
+  if (options.indexMode == "frameworks-list") {
+    selectedFrameworks = options.indexFrameworks;
+  } else {
+    selectedFrameworks = allFrameworks;
+  }
+
+  std::string name = outDir + "/index.d.ts";
+  auto f = std::fopen(name.c_str(), "w");
+  if (f != nullptr) {
+    for (auto &framework : selectedFrameworks) {
+      if (!files.contains(framework)) {
+        continue;
+      }
       std::string line = "/// <reference path=\"./";
-      line += file.second.name;
+      line += framework;
       line += ".d.ts\" />";
       std::fwrite(line.data(), 1, line.size(), f);
       std::fwrite("\n", 1, 1, f);
     }
+    std::fclose(f);
   }
 }
 

@@ -24,6 +24,7 @@ __attribute__((visibility("default")))
 @property BOOL LogToSystemConsole;
 @property int ArgumentsCount;
 @property(nonatomic) char** Arguments;
+@property(nonatomic) void (*CustomLogCallback)(const char* message);
 
 @end
 

@@ -64,13 +64,21 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 
   self_dl = dlopen(nullptr, RTLD_NOW);
 
-  if (metadata_ptr) {
+  if (metadata_ptr && *((const char*)metadata_ptr) != '\0') {
+    #ifdef EMBED_METADATA_SIZE
+    NSLog(@"Ignoring metadata pointer due to embedded metadata");
+    metadata = new MDMetadataReader((void*)embedded_metadata);
+    #else
+    NSLog(@"Using metadata from pointer: %p", metadata_ptr);
     metadata = new MDMetadataReader((void*)metadata_ptr);
+    #endif
   } else {
 #ifdef EMBED_METADATA_SIZE
     if (metadata_path != nullptr) {
+      NSLog(@"Loading metadata from file: %s", metadata_path);
       metadata = loadMetadataFromFile(metadata_path);
     } else {
+      NSLog(@"Using embedded metadata");
       metadata = new MDMetadataReader((void*)embedded_metadata);
     }
 #else
@@ -85,11 +93,58 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 #endif
   }
 
-  objc_autoreleasePool = objc_autoreleasePoolPush();
+  // objc_autoreleasePool = objc_autoreleasePoolPush();
 }
 
 ObjCBridgeState::~ObjCBridgeState() {
-  objc_autoreleasePoolPop(objc_autoreleasePool);
+  // Clean up cached Cif objects
+  for (auto& pair : cifs) {
+    delete pair.second;
+  }
+  cifs.clear();
+
+  for (auto& pair : mdMethodSignatureCache) {
+    delete pair.second;
+  }
+  mdMethodSignatureCache.clear();
+
+  for (auto& pair : mdBlockSignatureCache) {
+    delete pair.second;
+  }
+  mdBlockSignatureCache.clear();
+
+  for (auto& pair : mdFunctionSignatureCache) {
+    delete pair.second;
+  }
+  mdFunctionSignatureCache.clear();
+
+  // Clean up ObjCClass objects
+  for (auto& pair : classes) {
+    delete pair.second;
+  }
+  classes.clear();
+
+  // Clean up ObjCProtocol objects
+  for (auto& pair : protocols) {
+    delete pair.second;
+  }
+  protocols.clear();
+
+  // Clean up StructInfo objects
+  for (auto& pair : structInfoCache) {
+    delete pair.second;
+  }
+  structInfoCache.clear();
+
+  // Clean up CFunction objects
+  for (auto& pair : cFunctionCache) {
+    delete pair.second;
+  }
+  cFunctionCache.clear();
+
+  // if (objc_autoreleasePool != nullptr)
+  //   objc_autoreleasePoolPop(objc_autoreleasePool);
+
   delete metadata;
   dlclose(self_dl);
 }

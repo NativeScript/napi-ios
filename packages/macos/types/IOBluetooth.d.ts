@@ -4630,9 +4630,8 @@ declare class IOBluetoothSDPDataElement extends NSObject implements NSCoding, NS
   static readonly supportsSecureCoding: boolean;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class IOBluetoothHandsFreeAudioGateway extends IOBluetoothHandsFree {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithDeviceDelegate(device: IOBluetoothDevice, inDelegate: IOBluetoothHandsFreeDelegate): this;
   initWithDeviceDelegate(device: IOBluetoothDevice, inDelegate: interop.Object): this;
 
   createIndicatorMinMaxCurrentValue(indicatorName: string, minValue: number, maxValue: number, currentValue: number): void;
@@ -5122,9 +5121,8 @@ declare class IOBluetoothUserNotification extends NSObject {
   unregister(): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class IOBluetoothHandsFreeDevice extends IOBluetoothHandsFree {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithDeviceDelegate(device: IOBluetoothDevice, inDelegate: IOBluetoothHandsFreeDelegate): this;
   initWithDeviceDelegate(device: IOBluetoothDevice, delegate: interop.Object): this;
 
   dialNumber(aNumber: string): void;

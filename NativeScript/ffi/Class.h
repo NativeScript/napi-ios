@@ -22,6 +22,7 @@ void initFastEnumeratorIteratorFactory(napi_env env,
 NAPI_FUNCTION(registerClass);
 NAPI_FUNCTION(import);
 NAPI_FUNCTION(classGetter);
+NAPI_FUNCTION(BridgedConstructor);
 
 class ObjCBridgeState;
 

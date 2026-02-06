@@ -183,4 +183,19 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
   rvalueLength = cif.rtype->size;
 }
 
+Cif::~Cif() {
+  if (rvalue != nullptr) {
+    free(rvalue);
+  }
+  if (argv != nullptr) {
+    free(argv);
+  }
+  if (avalues != nullptr) {
+    free(avalues);
+  }
+  if (shouldFree != nullptr) {
+    free(shouldFree);
+  }
+}
+
 }  // namespace nativescript

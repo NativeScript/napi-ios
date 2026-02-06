@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
+#include <sstream>
 
 #include "IR.h"
 #include "Metadata.h"
@@ -50,17 +51,21 @@ int main(int argc, char** argv) {
   std::string docSetFile;
   std::string blacklistModulesFile;
   std::string whitelistModulesFile;
+  std::string tsIndexMode = "all";
+  std::vector<std::string> tsIndexFrameworks;
   // bool applyManualDtsChanges = true;
 
   std::cerr << "MetadataGenerator called with args: ";
 
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
-
     std::cerr << arg << " ";
-    if (i == argc - 1) {
-      std::cerr << std::endl;
-    }
+  }
+
+  std::cerr << std::endl;
+
+  for (int i = 1; i < argc; i++) {
+    std::string arg = argv[i];
 
     // clang arguments following Xclang delim
     if (arg == "Xclang") {
@@ -165,6 +170,17 @@ int main(int argc, char** argv) {
       outputBinFile = arg.substr(7);
     } else if (arg.find("types=") == 0) {
       outputDtsFolder = arg.substr(6);
+    } else if (arg.find("ts-index-mode=") == 0) {
+      tsIndexMode = arg.substr(14);
+    } else if (arg.find("ts-index-frameworks=") == 0) {
+      std::string list = arg.substr(20);
+      std::stringstream ss(list);
+      std::string item;
+      while (std::getline(ss, item, ',')) {
+        if (!item.empty()) {
+          tsIndexFrameworks.push_back(item);
+        }
+      }
     } else if (arg.find("arch=") == 0) {
       std::string arch = arg.substr(5);
       args.emplace_back("-arch");
@@ -174,7 +190,7 @@ int main(int argc, char** argv) {
       std::exit(1);
     }
   }
-
+  
   // Use automatic umbrella header generation if manual one is empty
   if (code == "") {
     std::vector<std::string> includePathsInner, frameworksInner;
@@ -241,7 +257,15 @@ int main(int argc, char** argv) {
   clang_disposeIndex(index);
 
   if (!outputDtsFolder.empty()) {
-    TSEmitter ts(factory, outputDtsFolder);
+    if (tsIndexMode == "frameworks-list" && tsIndexFrameworks.empty()) {
+      std::cerr << "ts-index-mode=frameworks-list requires ts-index-frameworks"
+                << std::endl;
+      std::exit(1);
+    }
+    TSEmitter::Options tsOptions;
+    tsOptions.indexMode = tsIndexMode;
+    tsOptions.indexFrameworks = tsIndexFrameworks;
+    TSEmitter ts(factory, outputDtsFolder, tsOptions);
     ts.write();
   }
 

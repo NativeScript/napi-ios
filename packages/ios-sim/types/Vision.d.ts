@@ -1,16 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const VNHumanBodyPose3DObservationJointsGroupNameHead: string;
-
-declare const VNAnimalBodyPoseObservationJointNameRightEarBottom: string;
-
-declare const VNHumanBodyPoseObservationJointNameRightShoulder: string;
-
-declare const VNHumanBodyPoseObservationJointNameRightKnee: string;
-
-declare const VNGenerateObjectnessBasedSaliencyImageRequestRevision1: number;
-
 declare const VNHumanBodyPoseObservationJointsGroupNameRightArm: string;
 
 declare const VNDetectContourRequestRevision1: number;
@@ -25,7 +15,7 @@ declare const VNHumanBodyPose3DObservationJointNameLeftElbow: string;
 
 declare const VNErrorDomain: string;
 
-declare const VNGenerateForegroundInstanceMaskRequestRevision1: number;
+declare const VNAnimalBodyPoseObservationJointNameRightEarBottom: string;
 
 declare const VNHumanBodyPose3DObservationJointNameRightAnkle: string;
 
@@ -55,7 +45,7 @@ declare const VNHumanBodyPoseObservationJointsGroupNameFace: string;
 
 declare const VNHumanBodyPoseObservationJointNameRightAnkle: string;
 
-declare const VNHumanBodyPoseObservationJointNameRightHip: string;
+declare const VNHumanBodyPoseObservationJointNameRightKnee: string;
 
 declare const VNHumanBodyPoseObservationJointNameLeftHip: string;
 
@@ -78,6 +68,8 @@ declare const VNBodyLandmarkKeyRightKnee: string;
 declare const VNBodyLandmarkKeyLeftKnee: string;
 
 declare const VNBodyLandmarkKeyRightHip: string;
+
+declare const VNBodyLandmarkKeyRightElbow: string;
 
 declare const VNBodyLandmarkKeyLeftElbow: string;
 
@@ -197,17 +189,11 @@ declare const VNAnimalBodyPoseObservationJointNameRightFrontKnee: string;
 
 declare const VNAnimalBodyPoseObservationJointNameLeftFrontElbow: string;
 
-declare const VNAnimalBodyPoseObservationJointNameLeftEye: string;
-
 declare const VNAnimalBodyPoseObservationJointNameLeftEarBottom: string;
 
 declare const VNBarcodeSymbologyMicroQR: string;
 
-declare const VNBarcodeSymbologyMicroPDF417: string;
-
 declare const VNBarcodeSymbologyGS1DataBarLimited: string;
-
-declare const VNBarcodeSymbologyUPCE: string;
 
 declare const VNBarcodeSymbologyQR: string;
 
@@ -240,6 +226,8 @@ declare const VNBodyLandmarkKeyLeftHip: string;
 declare const VNAnimalBodyPoseObservationJointNameRightEarMiddle: string;
 
 declare const VNGeneratePersonInstanceMaskRequestRevision1: number;
+
+declare const VNGenerateForegroundInstanceMaskRequestRevision1: number;
 
 declare const VNAnimalBodyPoseObservationJointNameNose: string;
 
@@ -279,6 +267,8 @@ declare const VNBarcodeSymbologyGS1DataBarExpanded: string;
 
 declare const VNAnimalBodyPoseObservationJointNameRightFrontElbow: string;
 
+declare const VNHumanBodyPose3DObservationJointsGroupNameHead: string;
+
 declare const VNGeneratePersonSegmentationRequestRevision1: number;
 
 declare const VNRecognizedPoint3DGroupKeyAll: string;
@@ -293,23 +283,31 @@ declare const VNHumanBodyPose3DObservationJointsGroupNameRightLeg: string;
 
 declare const VNBarcodeSymbologyDataMatrix: string;
 
-declare const VNAnimalBodyPoseObservationJointNameLeftEarTop: string;
+declare const VNComputeStageMain: string;
 
 declare const VNBarcodeSymbologyCodabar: string;
 
 declare const VNBarcodeSymbologyAztec: string;
 
-declare const VNAnimalBodyPoseObservationJointNameRightBackElbow: string;
-
 declare const VNVideoProcessingOptionTimeInterval: string;
 
-declare const VNDetectTextRectanglesRequestRevision1: number;
+declare const VNHumanBodyPoseObservationJointNameRightHip: string;
 
-declare const VNComputeStageMain: string;
+declare const VNBarcodeSymbologyUPCE: string;
+
+declare const VNAnimalBodyPoseObservationJointNameRightBackElbow: string;
 
 declare const VNDetectFaceRectanglesRequestRevision3: number;
 
-declare const VNDetectFaceCaptureQualityRequestRevision3: number;
+declare const VNAnimalBodyPoseObservationJointNameLeftEye: string;
+
+declare const VNImageOptionCIContext: string;
+
+declare const VNDetectTextRectanglesRequestRevision1: number;
+
+declare const VNDetectTrajectoriesRequestRevision1: number;
+
+declare const VNHumanHandPoseObservationJointNameMiddleDIP: string;
 
 declare const VNBodyLandmarkKeyRightAnkle: string;
 
@@ -323,8 +321,6 @@ declare const VNBarcodeSymbologyGS1DataBar: string;
 
 declare const VNBodyLandmarkKeyLeftAnkle: string;
 
-declare const VNImageOptionCIContext: string;
-
 declare const VNBarcodeSymbologyCode39FullASCIIChecksum: string;
 
 declare const VNHumanHandPoseObservationJointNameIndexPIP: string;
@@ -336,8 +332,6 @@ declare const VNHumanHandPoseObservationJointNameRingMCP: string;
 declare const VNHumanBodyPoseObservationJointNameRoot: string;
 
 declare const VNHumanHandPoseObservationJointsGroupNameThumb: string;
-
-declare const VNBodyLandmarkKeyRightElbow: string;
 
 declare const VNHumanBodyPose3DObservationJointsGroupNameRightArm: string;
 
@@ -377,6 +371,8 @@ declare const VNTrackRectangleRequestRevision1: number;
 
 declare const VNHumanHandPoseObservationJointNameRingPIP: string;
 
+declare const VNHumanBodyPoseObservationJointNameRightShoulder: string;
+
 declare const VNHumanBodyPose3DObservationJointNameLeftAnkle: string;
 
 declare const VNAnimalIdentifierCat: string;
@@ -391,9 +387,13 @@ declare const VNBarcodeSymbologyI2of5: string;
 
 declare const VNHumanHandPoseObservationJointsGroupNameAll: string;
 
+declare const VNBarcodeSymbologyMicroPDF417: string;
+
 declare const VNHumanBodyPose3DObservationJointsGroupNameLeftArm: string;
 
 declare const VNBodyLandmarkKeyLeftEye: string;
+
+declare const VNDetectFaceCaptureQualityRequestRevision3: number;
 
 declare const VNDetectFaceLandmarksRequestRevision3: number;
 
@@ -423,9 +423,7 @@ declare const VNBarcodeSymbologyMSIPlessey: string;
 
 declare const VNHumanHandPoseObservationJointNameMiddleTip: string;
 
-declare const VNDetectTrajectoriesRequestRevision1: number;
-
-declare const VNHumanHandPoseObservationJointNameMiddleDIP: string;
+declare const VNGenerateObjectnessBasedSaliencyImageRequestRevision1: number;
 
 declare const VNBodyLandmarkKeyLeftShoulder: string;
 
@@ -436,6 +434,8 @@ declare const VNAnimalBodyPoseObservationJointNameLeftFrontKnee: string;
 declare const VNAnimalBodyPoseObservationJointNameTailTop: string;
 
 declare const VNHumanBodyPoseObservationJointNameNeck: string;
+
+declare const VNAnimalBodyPoseObservationJointNameLeftEarTop: string;
 
 declare const VNAnimalBodyPoseObservationJointNameRightEye: string;
 

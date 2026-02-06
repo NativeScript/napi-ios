@@ -177,20 +177,21 @@ Closure::Closure(std::string encoding, bool isBlock) {
   int skipArgs = isBlock ? 1 : 0;
 
   ffi_type* rtype = this->returnType->type;
-  ffi_type** atypes = (ffi_type**)malloc(sizeof(ffi_type*) * (argc + skipArgs));
+  this->atypes = (ffi_type**)malloc(sizeof(ffi_type*) * (argc + skipArgs));
 
   if (isBlock) {
-    atypes[0] = &ffi_type_pointer;
+    this->atypes[0] = &ffi_type_pointer;
   }
 
   for (int i = 0; i < argc; i++) {
     const char* argenc = [signature getArgumentTypeAtIndex:i];
     auto argTypeInfo = TypeConv::Make(env, &argenc);
-    atypes[i + skipArgs] = argTypeInfo->type;
+    this->atypes[i + skipArgs] = argTypeInfo->type;
     this->argTypes.push_back(argTypeInfo);
   }
 
-  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, (int)argc + skipArgs, rtype, atypes);
+  ffi_status status =
+      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, (int)argc + skipArgs, rtype, this->atypes);
 
   if (status != FFI_OK) {
     std::cout << "ffi_prep_cif failed" << std::endl;
@@ -215,7 +216,6 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
   if (encoding != nullptr) returnType->encode(encoding);
 
   ffi_type* rtype = returnType->type;
-  ffi_type** atypes = nullptr;
 
   if (isMethod && encoding != nullptr) {
     const char* argenc = "@";
@@ -237,17 +237,17 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
   auto skipArgs = isBlock ? 1 : 0;
 
   if (!argTypes.empty() || isBlock) {
-    atypes = (ffi_type**)malloc(sizeof(ffi_type*) * (argTypes.size() + skipArgs));
+    this->atypes = (ffi_type**)malloc(sizeof(ffi_type*) * (argTypes.size() + skipArgs));
     if (isBlock) {
-      atypes[0] = &ffi_type_pointer;
+      this->atypes[0] = &ffi_type_pointer;
     }
     for (int i = 0; i < argTypes.size(); i++) {
-      atypes[i + skipArgs] = argTypes[i]->type;
+      this->atypes[i + skipArgs] = argTypes[i]->type;
     }
   }
 
   ffi_status status =
-      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argTypes.size() + skipArgs, rtype, atypes);
+      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argTypes.size() + skipArgs, rtype, this->atypes);
 
   if (status != FFI_OK) {
     std::cout << "Failed to prepare CIF, libffi returned error:" << status << std::endl;
@@ -260,13 +260,16 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
 
 Closure::~Closure() {
   if (func != nullptr) {
-    napi_delete_reference(env, func);
+    napi_reference_unref(env, func, nullptr);
   }
 #ifndef ENABLE_JS_RUNTIME
   if (tsfn != nullptr) {
     napi_release_threadsafe_function(tsfn, napi_tsfn_abort);
   }
 #endif  // ENABLE_JS_RUNTIME
+  if (atypes != nullptr) {
+    free(atypes);
+  }
   ffi_closure_free(closure);
 }
 

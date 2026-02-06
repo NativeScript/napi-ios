@@ -5,6 +5,7 @@
 #ifndef TEST_APP_JSR_H
 #define TEST_APP_JSR_H
 
+#include <memory>
 #include "SimpleAllocator.h"
 #include "jsr_common.h"
 #include "libplatform/libplatform.h"

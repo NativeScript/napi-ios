@@ -4962,7 +4962,6 @@ declare class DOMHTMLImageElement extends DOMHTMLElement {
   setLowsrc(lowsrc: string): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class WebView extends NSView {
   static canShowMIMEType(MIMEType: string): boolean;
 
@@ -5188,7 +5187,7 @@ declare class WebView extends NSView {
 
   applyStyle(style: DOMCSSStyleDeclaration): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(sender: interop.Object): void;
 
   cut(sender: interop.Object): void;
@@ -5205,14 +5204,14 @@ declare class WebView extends NSView {
 
   pasteAsRichText(sender: interop.Object): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  changeFont(sender: interop.Object | null): void;
   changeFont(sender: interop.Object): void;
 
   changeAttributes(sender: interop.Object): void;
 
   changeDocumentBackgroundColor(sender: interop.Object): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  changeColor(sender: interop.Object | null): void;
   changeColor(sender: interop.Object): void;
 
   alignCenter(sender: interop.Object): void;

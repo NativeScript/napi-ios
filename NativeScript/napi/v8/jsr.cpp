@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <ctime>
 #include <utime.h>
+#include "libplatform/libplatform.h"
 #include "v8-fast-api-calls.h"
 
 using namespace v8;
@@ -180,6 +181,10 @@ napi_status js_execute_script(napi_env env,
 }
 
 napi_status js_execute_pending_jobs(napi_env env) {
+    env->isolate->RequestGarbageCollectionForTesting(v8::Isolate::kFullGarbageCollection);
+    v8::platform::PumpMessageLoop(JSR::platform, env->isolate);
+    env->isolate->PerformMicrotaskCheckpoint();
+    env->isolate->ClearKeptObjects();
     env->isolate->PerformMicrotaskCheckpoint();
     return napi_ok;
 }

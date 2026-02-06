@@ -175,6 +175,7 @@ void WorkerImpl::PassUncaughtExceptionFromWorkerToMain(napi_env env, NativeScrip
       runtime->RuntimeLoop(),
       [this, ex]() {
         napi_env env = this->mainEnv_;
+        NapiScope scope(env);
         napi_value workerObj = this->poWorker_->GetValue();
         napi_value onError = napi_util::get_property(env, workerObj, "onerror");
 

@@ -558,7 +558,6 @@ declare class PDFSelection extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationTextWidget extends PDFAnnotation implements NSCopying {
   stringValue(): string;
 
@@ -570,7 +569,7 @@ declare class PDFAnnotationTextWidget extends PDFAnnotation implements NSCopying
 
   backgroundColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setBackgroundColor(backgroundColor: NSColor | null): void;
   setBackgroundColor(color: NSColor): void;
 
   rotation(): number;
@@ -579,12 +578,12 @@ declare class PDFAnnotationTextWidget extends PDFAnnotation implements NSCopying
 
   font: NSFont;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFont(font: NSFont | null): void;
   setFont(font: NSFont): void;
 
   fontColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFontColor(fontColor: NSColor | null): void;
   setFontColor(color: NSColor): void;
 
   alignment: interop.Enum<typeof NSTextAlignment>;
@@ -593,12 +592,12 @@ declare class PDFAnnotationTextWidget extends PDFAnnotation implements NSCopying
 
   maximumLength: number;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setMaximumLength(maximumLength: number): void;
   setMaximumLength(maxLen: number): void;
 
   fieldName: string;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFieldName(fieldName: string | null): void;
   setFieldName(name: string): void;
 
   isMultiline(): boolean;
@@ -608,11 +607,10 @@ declare class PDFAnnotationTextWidget extends PDFAnnotation implements NSCopying
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationText extends PDFAnnotation implements NSCopying, NSCoding {
   iconType: interop.Enum<typeof PDFTextAnnotationIconType>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setIconType(iconType: interop.Enum<typeof PDFTextAnnotationIconType>): void;
   setIconType(type: interop.Enum<typeof PDFTextAnnotationIconType>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -642,17 +640,16 @@ declare class PDFAnnotationPopup extends PDFAnnotation implements NSCopying, NSC
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationMarkup extends PDFAnnotation implements NSCopying, NSCoding {
   get quadrilateralPoints(): NSArray;
   set quadrilateralPoints(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setQuadrilateralPoints(quadrilateralPoints: NSArray<interop.Object> | Array<interop.Object> | null): void;
   setQuadrilateralPoints(points: NSArray<interop.Object> | Array<interop.Object>): void;
 
   markupType: interop.Enum<typeof PDFMarkupType>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setMarkupType(markupType: interop.Enum<typeof PDFMarkupType>): void;
   setMarkupType(type: interop.Enum<typeof PDFMarkupType>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -662,17 +659,15 @@ declare class PDFAnnotationMarkup extends PDFAnnotation implements NSCopying, NS
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationCircle extends PDFAnnotation implements NSCopying {
   interiorColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setInteriorColor(interiorColor: NSColor | null): void;
   setInteriorColor(color: NSColor): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFView extends NSView implements NSAnimationDelegate, NSMenuDelegate {
   document: PDFDocument;
 
@@ -779,7 +774,7 @@ declare class PDFView extends NSView implements NSAnimationDelegate, NSMenuDeleg
 
   drawPagePostToContext(page: PDFPage, context: interop.Object): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  copy(): interop.Object;
   copy(sender: interop.Object | null): void;
 
   printWithInfoAutoRotate(printInfo: NSPrintInfo, doRotate: boolean): void;
@@ -1437,7 +1432,6 @@ declare class PDFAction extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationChoiceWidget extends PDFAnnotation implements NSCopying {
   stringValue(): string;
 
@@ -1445,22 +1439,22 @@ declare class PDFAnnotationChoiceWidget extends PDFAnnotation implements NSCopyi
 
   backgroundColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setBackgroundColor(backgroundColor: NSColor | null): void;
   setBackgroundColor(color: NSColor): void;
 
   font: NSFont;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFont(font: NSFont | null): void;
   setFont(font: NSFont): void;
 
   fontColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFontColor(fontColor: NSColor | null): void;
   setFontColor(color: NSColor): void;
 
   fieldName: string;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFieldName(fieldName: string | null): void;
   setFieldName(name: string): void;
 
   isListChoice(): boolean;
@@ -1470,22 +1464,21 @@ declare class PDFAnnotationChoiceWidget extends PDFAnnotation implements NSCopyi
   get choices(): NSArray;
   set choices(value: NSArray<interop.Object> | Array<interop.Object>);
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setChoices(choices: NSArray<interop.Object> | Array<interop.Object> | null): void;
   setChoices(options: NSArray<interop.Object> | Array<interop.Object>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationLink extends PDFAnnotation implements NSCopying {
   destination: PDFDestination;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDestination(destination: PDFDestination | null): void;
   setDestination(destination: PDFDestination): void;
 
   URL: NSURL;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setURL(URL: NSURL | null): void;
   setURL(url: NSURL): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -1525,7 +1518,6 @@ declare class PDFAppearanceCharacteristics extends NSObject implements NSCopying
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationButtonWidget extends PDFAnnotation implements NSCopying {
   controlType(): interop.Enum<typeof PDFWidgetControlType>;
 
@@ -1537,32 +1529,32 @@ declare class PDFAnnotationButtonWidget extends PDFAnnotation implements NSCopyi
 
   backgroundColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setBackgroundColor(backgroundColor: NSColor | null): void;
   setBackgroundColor(color: NSColor): void;
 
   allowsToggleToOff: boolean;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setAllowsToggleToOff(allowsToggleToOff: boolean): void;
   setAllowsToggleToOff(allowOff: boolean): void;
 
   font: NSFont;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFont(font: NSFont | null): void;
   setFont(font: NSFont): void;
 
   fontColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFontColor(fontColor: NSColor | null): void;
   setFontColor(color: NSColor): void;
 
   caption: string;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setCaption(caption: string | null): void;
   setCaption(name: string): void;
 
   fieldName: string;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFieldName(fieldName: string | null): void;
   setFieldName(name: string): void;
 
   onStateValue(): string;
@@ -1572,31 +1564,30 @@ declare class PDFAnnotationButtonWidget extends PDFAnnotation implements NSCopyi
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationLine extends PDFAnnotation implements NSCopying, NSCoding {
   startPoint: CGPoint;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setStartPoint(startPoint: CGPoint): void;
   setStartPoint(point: CGPoint): void;
 
   endPoint: CGPoint;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setEndPoint(endPoint: CGPoint): void;
   setEndPoint(point: CGPoint): void;
 
   startLineStyle: interop.Enum<typeof PDFLineStyle>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setStartLineStyle(startLineStyle: interop.Enum<typeof PDFLineStyle>): void;
   setStartLineStyle(style: interop.Enum<typeof PDFLineStyle>): void;
 
   endLineStyle: interop.Enum<typeof PDFLineStyle>;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setEndLineStyle(endLineStyle: interop.Enum<typeof PDFLineStyle>): void;
   setEndLineStyle(style: interop.Enum<typeof PDFLineStyle>): void;
 
   interiorColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setInteriorColor(interiorColor: NSColor | null): void;
   setInteriorColor(color: NSColor): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -1616,11 +1607,10 @@ declare class PDFActionGoTo extends PDFAction implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationSquare extends PDFAnnotation implements NSCopying, NSCoding {
   interiorColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setInteriorColor(interiorColor: NSColor | null): void;
   setInteriorColor(color: NSColor): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
@@ -1752,16 +1742,15 @@ declare class PDFActionResetForm extends PDFAction implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class PDFAnnotationFreeText extends PDFAnnotation implements NSCopying, NSCoding {
   font: NSFont;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFont(font: NSFont | null): void;
   setFont(font: NSFont): void;
 
   fontColor: NSColor;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setFontColor(fontColor: NSColor | null): void;
   setFontColor(color: NSColor): void;
 
   alignment: interop.Enum<typeof NSTextAlignment>;

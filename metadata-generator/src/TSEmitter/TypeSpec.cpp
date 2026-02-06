@@ -3,7 +3,7 @@
 
 namespace metagen {
 
-std::string TSFile::typeToString(TypeSpec& type, bool isStatic, bool isReturn) {
+std::string TSFile::typeToString(const TypeSpec& type, bool isStatic, bool isReturn) {
   std::string result;
 
   switch (type.kind) {

@@ -148,10 +148,10 @@ export class SidebarViewController extends NSViewController {
       )
       : NSImageView.new();
 
-    text.isBordered = false;
+    text.bordered = false;
     text.drawsBackground = false;
     text.stringValue = item.title;
-    text.isEditable = false;
+    text.editable = false;
 
     const view = NSTableCellView.new();
 
@@ -257,10 +257,10 @@ export class ContentViewController extends NSViewController {
 
     label.stringValue = "Hello, macOS";
 
-    label.isBezeled = false;
+    label.bezeled = false;
     label.drawsBackground = false;
-    label.isEditable = false;
-    label.isSelectable = false;
+    label.editable = false;
+    label.selectable = false;
     label.alignment = NSTextAlignment.Center;
     label.translatesAutoresizingMaskIntoConstraints = false;
     label.textColor = NSColor.colorWithSRGBRedGreenBlueAlpha(1, 1, 1, 1);
@@ -300,10 +300,10 @@ export class ContentViewController extends NSViewController {
 
     vstack.centerXAnchor.constraintEqualToAnchor(
       view.centerXAnchor,
-    ).isActive = true;
+    ).active = true;
     vstack.centerYAnchor.constraintEqualToAnchor(
       view.centerYAnchor,
-    ).isActive = true;
+    ).active = true;
 
     this.view = view;
   }

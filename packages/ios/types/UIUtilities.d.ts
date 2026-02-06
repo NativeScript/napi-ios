@@ -1,12 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const UIAxis: {
-  Neither: 0,
-  Horizontal: 1,
-  Vertical: 2,
-  Both: 3,
-};
-
 declare const UIRectEdge: {
   None: 0,
   Top: 1,
@@ -14,6 +7,13 @@ declare const UIRectEdge: {
   Bottom: 4,
   Right: 8,
   All: 15,
+};
+
+declare const UIAxis: {
+  Neither: 0,
+  Horizontal: 1,
+  Vertical: 2,
+  Both: 3,
 };
 
 declare interface UICoordinateSpace extends NSObjectProtocol {

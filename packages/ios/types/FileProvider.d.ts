@@ -230,6 +230,13 @@ declare interface NSFileProviderCustomAction extends NSObjectProtocol {
 declare class NSFileProviderCustomAction extends NativeObject implements NSFileProviderCustomAction {
 }
 
+declare interface NSFileProviderIncrementalContentFetching extends NSObjectProtocol {
+  fetchContentsForItemWithIdentifierVersionUsingExistingContentsAtURLExistingVersionRequestCompletionHandler(itemIdentifier: string, requestedVersion: NSFileProviderItemVersion | null, existingContents: NSURL, existingVersion: NSFileProviderItemVersion, request: NSFileProviderRequest, completionHandler: (p1: NSURL, p2: NSFileProviderItem, p3: NSError) => void | null): NSProgress;
+}
+
+declare class NSFileProviderIncrementalContentFetching extends NativeObject implements NSFileProviderIncrementalContentFetching {
+}
+
 declare interface NSFileProviderReplicatedExtension extends NSObjectProtocol, NSFileProviderEnumerating {
   initWithDomain(domain: NSFileProviderDomain): this;
 
@@ -435,13 +442,6 @@ declare interface NSFileProviderTestingChildrenEnumeration extends NSFileProvide
 }
 
 declare class NSFileProviderTestingChildrenEnumeration extends NativeObject implements NSFileProviderTestingChildrenEnumeration {
-}
-
-declare interface NSFileProviderIncrementalContentFetching extends NSObjectProtocol {
-  fetchContentsForItemWithIdentifierVersionUsingExistingContentsAtURLExistingVersionRequestCompletionHandler(itemIdentifier: string, requestedVersion: NSFileProviderItemVersion | null, existingContents: NSURL, existingVersion: NSFileProviderItemVersion, request: NSFileProviderRequest, completionHandler: (p1: NSURL, p2: NSFileProviderItem, p3: NSError) => void | null): NSProgress;
-}
-
-declare class NSFileProviderIncrementalContentFetching extends NativeObject implements NSFileProviderIncrementalContentFetching {
 }
 
 declare interface NSFileProviderServiceSource {

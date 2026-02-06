@@ -109,6 +109,8 @@ declare const HKMedicationGeneralFormUnknown: string;
 
 declare const HKMedicationGeneralFormSuppository: string;
 
+declare const HKMedicationGeneralFormSpray: string;
+
 declare const HKMedicationGeneralFormPowder: string;
 
 declare const HKMedicationGeneralFormPatch: string;
@@ -161,8 +163,6 @@ declare const HKClinicalTypeIdentifierMedicationRecord: string;
 
 declare const HKClinicalTypeIdentifierLabResultRecord: string;
 
-declare const HKClinicalTypeIdentifierImmunizationRecord: string;
-
 declare const HKClinicalTypeIdentifierConditionRecord: string;
 
 declare const HKClinicalTypeIdentifierClinicalNoteRecord: string;
@@ -196,8 +196,6 @@ declare const HKCharacteristicTypeIdentifierDateOfBirth: string;
 declare const HKCharacteristicTypeIdentifierBloodType: string;
 
 declare const HKCharacteristicTypeIdentifierBiologicalSex: string;
-
-declare const HKCharacteristicTypeIdentifierActivityMoveMode: string;
 
 declare const HKCategoryTypeIdentifierVomiting: string;
 
@@ -259,8 +257,6 @@ declare const HKCategoryTypeIdentifierCervicalMucusQuality: string;
 
 declare const HKCategoryTypeIdentifierBleedingDuringPregnancy: string;
 
-declare const HKCategoryTypeIdentifierToothbrushingEvent: string;
-
 declare const HKCategoryTypeIdentifierHandwashingEvent: string;
 
 declare const HKCategoryTypeIdentifierAppleWalkingSteadinessEvent: string;
@@ -270,8 +266,6 @@ declare const HKCategoryTypeIdentifierMindfulSession: string;
 declare const HKCategoryTypeIdentifierLowHeartRateEvent: string;
 
 declare const HKCategoryTypeIdentifierIrregularHeartRhythmEvent: string;
-
-declare const HKCategoryTypeIdentifierHighHeartRateEvent: string;
 
 declare const HKCategoryTypeIdentifierHeadphoneAudioExposureEvent: string;
 
@@ -290,8 +284,6 @@ declare const HKQuantityTypeIdentifierPeakExpiratoryFlowRate: string;
 declare const HKQuantityTypeIdentifierOxygenSaturation: string;
 
 declare const HKQuantityTypeIdentifierInhalerUsage: string;
-
-declare const HKQuantityTypeIdentifierForcedVitalCapacity: string;
 
 declare const HKQuantityTypeIdentifierForcedExpiratoryVolume1: string;
 
@@ -335,8 +327,6 @@ declare const HKQuantityTypeIdentifierDietaryNiacin: string;
 
 declare const HKQuantityTypeIdentifierDietaryMolybdenum: string;
 
-declare const HKQuantityTypeIdentifierDietaryManganese: string;
-
 declare const HKQuantityTypeIdentifierDietaryMagnesium: string;
 
 declare const HKQuantityTypeIdentifierDietaryFolate: string;
@@ -350,8 +340,6 @@ declare const HKQuantityTypeIdentifierDietaryFatSaturated: string;
 declare const HKQuantityTypeIdentifierDietaryFatPolyunsaturated: string;
 
 declare const HKQuantityTypeIdentifierDietaryFatMonounsaturated: string;
-
-declare const HKQuantityTypeIdentifierDietaryCopper: string;
 
 declare const HKQuantityTypeIdentifierDietaryChromium: string;
 
@@ -368,8 +356,6 @@ declare const HKQuantityTypeIdentifierDietaryBiotin: string;
 declare const HKQuantityTypeIdentifierWalkingDoubleSupportPercentage: string;
 
 declare const HKQuantityTypeIdentifierWalkingAsymmetryPercentage: string;
-
-declare const HKQuantityTypeIdentifierStairDescentSpeed: string;
 
 declare const HKQuantityTypeIdentifierStairAscentSpeed: string;
 
@@ -417,11 +403,7 @@ declare const HKQuantityTypeIdentifierDistanceDownhillSnowSports: string;
 
 declare const HKQuantityTypeIdentifierDistanceCrossCountrySkiing: string;
 
-declare const HKQuantityTypeIdentifierCyclingSpeed: string;
-
 declare const HKQuantityTypeIdentifierCyclingPower: string;
-
-declare const HKQuantityTypeIdentifierCyclingFunctionalThresholdPower: string;
 
 declare const HKQuantityTypeIdentifierCrossCountrySkiingSpeed: string;
 
@@ -495,6 +477,8 @@ declare const HKPredicateKeyPathUUID: string;
 
 declare const HKPredicateKeyPathDateComponents: string;
 
+declare const HKCategoryTypeIdentifierChestTightnessOrPain: string;
+
 declare const HKPredicateKeyPathCDATitle: string;
 
 declare const HKMetadataKeySessionEstimate: string;
@@ -541,10 +525,6 @@ declare const HKQuantityTypeIdentifierHeadphoneAudioExposure: string;
 
 declare const HKPredicateKeyPathECGSymptomsStatus: string;
 
-declare const HKMetadataKeyBarometricPressure: string;
-
-declare const HKPredicateKeyPathWorkoutTotalFlightsClimbed: string;
-
 declare const HKQuantityTypeIdentifierWalkingStepLength: string;
 
 declare const HKQuantityTypeIdentifierRunningStrideLength: string;
@@ -587,17 +567,31 @@ declare const HKVisionPrescriptionTypeIdentifier: string;
 
 declare const HKCharacteristicTypeIdentifierWheelchairUse: string;
 
-declare const HKMetadataKeyAlgorithmVersion: string;
+declare const HKCategoryTypeIdentifierDiarrhea: string;
 
-declare const HKMetadataKeyVO2MaxValue: string;
-
-declare const HKMetadataKeyInsulinDeliveryReason: string;
-
-declare const HKPredicateKeyPathStartDate: string;
+declare const HKMetadataKeyCoachedWorkout: string;
 
 declare const HKMetadataKeyHeartRateRecoveryActivityDuration: string;
 
+declare const HKClinicalTypeIdentifierImmunizationRecord: string;
+
 declare const HKQuantityTypeIdentifierDietaryVitaminA: string;
+
+declare const HKQuantityTypeIdentifierStairDescentSpeed: string;
+
+declare const HKPredicateKeyPathSourceRevision: string;
+
+declare const HKQuantityTypeIdentifierDietaryEnergyConsumed: string;
+
+declare const HKQuantityTypeIdentifierAppleSleepingWristTemperature: string;
+
+declare const HKCharacteristicTypeIdentifierActivityMoveMode: string;
+
+declare const HKQuantityTypeIdentifierCyclingSpeed: string;
+
+declare const HKQuantityTypeIdentifierDietaryCopper: string;
+
+declare const HKPredicateKeyPathStartDate: string;
 
 declare const HKMetadataKeyElevationAscended: string;
 
@@ -605,7 +599,15 @@ declare const HKMetadataKeyAverageSpeed: string;
 
 declare const HKCategoryTypeIdentifierSinusCongestion: string;
 
+declare const HKMetadataKeyBarometricPressure: string;
+
+declare const HKCategoryTypeIdentifierHighHeartRateEvent: string;
+
+declare const HKQuantityTypeIdentifierStepCount: string;
+
 declare const HKDocumentTypeIdentifierCDA: string;
+
+declare const HKSampleSortIdentifierStartDate: string;
 
 declare const HKPredicateKeyPathEndDate: string;
 
@@ -623,23 +625,17 @@ declare const HKFHIRResourceTypeAllergyIntolerance: string;
 
 declare const HKMetadataKeyAverageMETs: string;
 
+declare const HKQuantityTypeIdentifierCyclingFunctionalThresholdPower: string;
+
 declare const HKQuantityTypeIdentifierRunningGroundContactTime: string;
 
 declare const HKPredicateKeyPathSum: string;
 
 declare const HKQuantityTypeIdentifierRestingHeartRate: string;
 
-declare const HKPredicateKeyPathSourceRevision: string;
-
 declare const HKQuantityTypeIdentifierDietaryVitaminC: string;
 
 declare const HKFHIRReleaseR4: string;
-
-declare const HKDevicePropertyKeyUDIDeviceIdentifier: string;
-
-declare const HKCategoryTypeIdentifierChestTightnessOrPain: string;
-
-declare const HKCategoryTypeIdentifierConstipation: string;
 
 declare const HKDevicePropertyKeyLocalIdentifier: string;
 
@@ -647,7 +643,7 @@ declare const HKPredicateKeyPathWorkoutActivityEndDate: string;
 
 declare const HKCategoryTypeIdentifierNausea: string;
 
-declare const HKMedicationGeneralFormSpray: string;
+declare const HKQuantityTypeIdentifierDietaryManganese: string;
 
 declare const HKMetadataKeyWeatherHumidity: string;
 
@@ -665,19 +661,17 @@ declare const HKPredicateKeyPathMostRecentEndDate: string;
 
 declare const HKMetadataKeyHeartRateRecoveryActivityType: string;
 
-declare const HKCategoryTypeIdentifierOvulationTestResult: string;
-
 declare const HKPredicateKeyPathWorkoutTotalDistance: string;
 
 declare const HKFHIRResourceTypeDocumentReference: string;
 
 declare const HKMedicationGeneralFormGel: string;
 
+declare const HKQuantityTypeIdentifierForcedVitalCapacity: string;
+
 declare const HKDevicePropertyKeySoftwareVersion: string;
 
 declare const HKMetadataKeyFoodType: string;
-
-declare const HKMetadataKeyCoachedWorkout: string;
 
 declare const HKQuantityTypeIdentifierFlightsClimbed: string;
 
@@ -691,8 +685,6 @@ declare const HKMetadataKeyDigitalSignature: string;
 
 declare const HKMedicationGeneralFormLotion: string;
 
-declare const HKQuantityTypeIdentifierDietaryEnergyConsumed: string;
-
 declare const HKCategoryTypeIdentifierNightSweats: string;
 
 declare const HKFHIRResourceTypeObservation: string;
@@ -703,6 +695,8 @@ declare const HKCategoryTypeIdentifierSkippedHeartbeat: string;
 
 declare const HKQuantityTypeIdentifierVO2Max: string;
 
+declare const HKDevicePropertyKeyUDIDeviceIdentifier: string;
+
 declare const HKPredicateKeyPathWorkoutTotalSwimmingStrokeCount: string;
 
 declare const HKQuantityTypeIdentifierNikeFuel: string;
@@ -711,7 +705,13 @@ declare const HKCategoryTypeIdentifierContraceptive: string;
 
 declare const HKMetadataKeyWaterSalinity: string;
 
+declare const HKCategoryTypeIdentifierToothbrushingEvent: string;
+
 declare const HKCategoryTypeIdentifierLowCardioFitnessEvent: string;
+
+declare const HKMetadataKeyVO2MaxValue: string;
+
+declare const HKCategoryTypeIdentifierConstipation: string;
 
 declare const HKCorrelationTypeIdentifierBloodPressure: string;
 
@@ -720,6 +720,8 @@ declare const HKCategoryTypeIdentifierPelvicPain: string;
 declare const HKCharacteristicTypeIdentifierFitzpatrickSkinType: string;
 
 declare const HKQuantityTypeIdentifierDistanceCycling: string;
+
+declare const HKMetadataKeyAlgorithmVersion: string;
 
 declare const HKQuantityTypeIdentifierElectrodermalActivity: string;
 
@@ -745,7 +747,9 @@ declare const HKCategoryTypeIdentifierBloating: string;
 
 declare const HKMetadataKeyDeviceSerialNumber: string;
 
-declare const HKQuantityTypeIdentifierStepCount: string;
+declare const HKMetadataKeyInsulinDeliveryReason: string;
+
+declare const HKCategoryTypeIdentifierOvulationTestResult: string;
 
 declare const HKMedicationGeneralFormDrops: string;
 
@@ -755,11 +759,7 @@ declare const HKErrorDomain: string;
 
 declare const HKMetadataKeyTimeZone: string;
 
-declare const HKQuantityTypeIdentifierAppleSleepingWristTemperature: string;
-
 declare const HKMetadataKeyIndoorBikeDistance: string;
-
-declare const HKCategoryTypeIdentifierDiarrhea: string;
 
 declare const HKClinicalTypeIdentifierAllergyRecord: string;
 
@@ -807,7 +807,7 @@ declare const HKQuantityTypeIdentifierWalkingHeartRateAverage: string;
 
 declare const HKPredicateKeyPathClinicalRecordFHIRResourceType: string;
 
-declare const HKSampleSortIdentifierStartDate: string;
+declare const HKPredicateKeyPathWorkoutTotalFlightsClimbed: string;
 
 declare const HKCategoryTypeIdentifierBladderIncontinence: string;
 

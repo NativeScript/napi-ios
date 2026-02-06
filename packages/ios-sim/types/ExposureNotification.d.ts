@@ -19,11 +19,11 @@ declare const ENRiskLevelMax: number;
 
 declare const ENRiskLevelMin: number;
 
+declare const ENAttenuationMin: number;
+
 declare const ENRiskLevelValueMin: number;
 
 declare const ENAttenuationMax: number;
-
-declare const ENAttenuationMin: number;
 
 declare const ENRiskWeightMin: number;
 

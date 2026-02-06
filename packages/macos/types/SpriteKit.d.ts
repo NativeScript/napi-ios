@@ -189,7 +189,6 @@ declare interface SKPhysicsContactDelegate extends NSObjectProtocol {
 declare class SKPhysicsContactDelegate extends NativeObject implements SKPhysicsContactDelegate {
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKSpriteNode extends SKNode implements SKWarpable {
   static spriteNodeWithTextureSize<This extends abstract new (...args: any) => any>(this: This, texture: SKTexture | null, size: CGSize): InstanceType<This>;
 
@@ -211,7 +210,7 @@ declare class SKSpriteNode extends SKNode implements SKWarpable {
 
   initWithColorSize(color: NSColor, size: CGSize): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   texture: SKTexture;
@@ -322,11 +321,10 @@ declare class SKSpriteNode extends SKNode implements SKWarpable {
   readonly debugDescription: string;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKNode extends NSResponder implements NSCopying, NSSecureCoding {
   init(): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static node<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
@@ -563,7 +561,6 @@ declare class SKLightNode extends SKNode {
   setCategoryBitMask(categoryBitMask: number): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKVideoNode extends SKNode {
   static videoNodeWithAVPlayer(player: AVPlayer): SKVideoNode;
 
@@ -585,7 +582,8 @@ declare class SKVideoNode extends SKNode {
 
   initWithURL(url: NSURL): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   play(): void;
@@ -690,9 +688,8 @@ declare class SKLabelNode extends SKNode {
   setBlendMode(blendMode: interop.Enum<typeof SKBlendMode>): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKWarpGeometryGrid extends SKWarpGeometry implements NSSecureCoding {
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static grid<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
@@ -1619,11 +1616,11 @@ declare class SKTransformNode extends SKNode {
   setYRotation(yRotation: number): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SK3DNode extends SKNode {
   initWithViewportSize(viewportSize: CGSize): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static nodeWithViewportSize<This extends abstract new (...args: any) => any>(this: This, viewportSize: CGSize): InstanceType<This>;
@@ -1665,13 +1662,13 @@ declare class SK3DNode extends SKNode {
   setAutoenablesDefaultLighting(autoenablesDefaultLighting: boolean): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKReferenceNode extends SKNode {
   initWithURL(url: NSURL | null): this;
 
   initWithFileNamed(fileName: string | null): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   static referenceNodeWithFileNamed<This extends abstract new (...args: any) => any>(this: This, fileName: string): InstanceType<This>;
@@ -1689,11 +1686,11 @@ declare class SKCropNode extends SKNode {
   setMaskNode(maskNode: SKNode | null): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKAudioNode extends SKNode implements NSSecureCoding {
   initWithAVAudioNode(node: AVAudioNode | null): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   initWithFileNamed(name: string): this;
@@ -1926,7 +1923,6 @@ declare class SKWarpGeometry extends NSObject implements NSCopying, NSSecureCodi
   initWithCoder(coder: NSCoder): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class SKTileMapNode extends SKNode implements NSCopying, NSSecureCoding {
   static tileMapNodeWithTileSetColumnsRowsTileSize<This extends abstract new (...args: any) => any>(this: This, tileSet: SKTileSet, columns: number, rows: number, tileSize: CGSize): InstanceType<This>;
 
@@ -2019,7 +2015,8 @@ declare class SKTileMapNode extends SKNode implements NSCopying, NSSecureCoding 
 
   encodeWithCoder(coder: NSCoder): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(aDecoder: NSCoder): this;
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(coder: NSCoder): this;
 }
 

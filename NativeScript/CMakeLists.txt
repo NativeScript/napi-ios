@@ -41,8 +41,8 @@ elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(TARGET_PLATFORM_IOS TRUE)
   set(TARGET_PLATFORM_SIM TRUE)
   set(SDK_NAME "iphonesimulator")
-  set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-  set(TARGET_PLATFORM_SPEC "ios-arm64_x86_64-simulator")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+  set(TARGET_PLATFORM_SPEC "ios-arm64-simulator")
 
 elseif(TARGET_PLATFORM STREQUAL "macos")
   set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.3")
@@ -236,6 +236,7 @@ if(BUILD_CLI_BINARY)
   set(SOURCE_FILES ${SOURCE_FILES}
     cli/main.cpp
     cli/segappend.cpp
+    cli/BundleLoader.mm
   )
 endif()
 

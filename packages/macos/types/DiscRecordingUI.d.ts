@@ -190,7 +190,6 @@ declare class DRBurnProgressPanel extends NSPanel {
   stopBurn(sender: interop.Object): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class DRSetupPanel extends NSPanel {
   initWithNibName(nibName: string): this;
 
@@ -206,7 +205,7 @@ declare class DRSetupPanel extends NSPanel {
 
   open(sender: interop.Object): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  close(): void;
   close(sender: interop.Object): void;
 
   deviceSelectionChanged(device: DRDevice): void;

@@ -15,9 +15,8 @@
     "name": "NativeScript Team",
     "email": "oss@nativescript.org"
   },
-  "directories": {},
-  "files": [
-    "**/*"
+  "workspaces": [
+    "packages/*"
   ],
   "scripts": {
     "prepare": "husky",

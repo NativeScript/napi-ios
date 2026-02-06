@@ -80,11 +80,10 @@ declare class QLPreviewReplyAttachment extends NSObject {
   initWithDataContentType(data: NSData, contentType: UTType): this;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class QLPreviewView extends NSView {
   initWithFrameStyle(frame: CGRect, style: interop.Enum<typeof QLPreviewViewStyle>): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithFrame(frameRect: CGRect): this;
   initWithFrame(frame: CGRect): this;
 
   previewItem: QLPreviewItem;
@@ -145,7 +144,7 @@ declare class QLPreviewPanel extends NSPanel {
 
   setDisplayState(displayState: interop.Object): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setDelegate(delegate: NSWindowDelegate | null): void;
   setDelegate(delegate: interop.Object): void;
 
   isInFullScreenMode(): boolean;

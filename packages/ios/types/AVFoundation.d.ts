@@ -3,22 +3,6 @@
 /// <reference path="./Foundation.d.ts" />
 /// <reference path="./QuartzCore.d.ts" />
 
-declare const AVMetadataIdentifierID3MetadataBand: string;
-
-declare const AVMetadataIdentifierQuickTimeMetadataCollectionUser: string;
-
-declare const AVCaptureSessionPresetPhoto: string;
-
-declare const AVMetadataID3MetadataKeyInvolvedPeopleList_v23: string;
-
-declare const AVMediaCharacteristicUsesWideGamutColorSpace: string;
-
-declare const AVVideoCodecKey: string;
-
-declare const AVPlayerRateDidChangeNotification: string;
-
-declare const AVMetadataiTunesMetadataKeyArtistID: string;
-
 declare const AVPlayerItemTimeJumpedOriginatingParticipantKey: string;
 
 declare const AVMetadataiTunesMetadataKeyArranger: string;
@@ -77,8 +61,6 @@ declare const AVMetadataIdentifieriTunesMetadataEQ: string;
 
 declare const AVMetadataCommonIdentifierSoftware: string;
 
-declare const AVMetadataID3MetadataKeyPartOfASet: string;
-
 declare const AVVideoProfileLevelKey: string;
 
 declare const AVMetadataCommonKeyCreationDate: string;
@@ -86,8 +68,6 @@ declare const AVMetadataCommonKeyCreationDate: string;
 declare const AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification: string;
 
 declare const AVMetadataID3MetadataKeyRelativeVolumeAdjustment2: string;
-
-declare const AVMetadataObjectTypeCode39Code: string;
 
 declare const AVMetadataiTunesMetadataKeyEncodingTool: string;
 
@@ -119,11 +99,11 @@ declare const AVMetadataIdentifierQuickTimeUserDataProducer: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataDetectedHumanBody: string;
 
-declare const AVMediaTypeHaptic: string;
-
 declare const AVCaptureSystemPressureLevelShutdown: string;
 
 declare const AVCaptureSystemPressureLevelSerious: string;
+
+declare const AVSemanticSegmentationMatteTypeHair: string;
 
 declare const AVSemanticSegmentationMatteTypeSkin: string;
 
@@ -215,6 +195,8 @@ declare const AVCaptureSessionPresetMedium: string;
 
 declare const AVCaptureSessionPresetHigh: string;
 
+declare const AVCaptureSessionPresetPhoto: string;
+
 declare const AVMetadataIdentifierQuickTimeMetadataDetectedSalientObject: string;
 
 declare const AVVideoPixelAspectRatioVerticalSpacingKey: string;
@@ -230,8 +212,6 @@ declare const AVSampleBufferRenderSynchronizerRateDidChangeNotification: string;
 declare const AVSampleBufferVideoRendererDidFailToDecodeNotification: string;
 
 declare const AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification: string;
-
-declare const AVSampleBufferDisplayLayerFailedToDecodeNotification: string;
 
 declare const AVSampleBufferAudioRendererFlushTimeKey: string;
 
@@ -252,8 +232,6 @@ declare const AVPlayerInterstitialEventMonitorInterstitialEventDidFinishDidPlayE
 declare const AVPlayerInterstitialEventMonitorInterstitialEventDidFinishNotification: string;
 
 declare const AVPlayerInterstitialEventMonitorCurrentEventSkippedEventKey: string;
-
-declare const AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeSkipControlLabelKey: string;
 
 declare const AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeStateKey: string;
 
@@ -361,8 +339,6 @@ declare const AVMetadataIdentifierID3MetadataOriginalReleaseYear: string;
 
 declare const AVMetadataIdentifierID3MetadataMediaType: string;
 
-declare const AVMetadataIdentifierID3MetadataLanguage: string;
-
 declare const AVMetadataIdentifierID3MetadataInitialKey: string;
 
 declare const AVMetadataIdentifierID3MetadataTitleDescription: string;
@@ -372,8 +348,6 @@ declare const AVMetadataIdentifierID3MetadataTime: string;
 declare const AVMetadataIdentifierID3MetadataFileType: string;
 
 declare const AVMetadataIdentifierID3MetadataLyricist: string;
-
-declare const AVMetadataIdentifierID3MetadataTaggingTime: string;
 
 declare const AVMetadataIdentifierID3MetadataReleaseTime: string;
 
@@ -413,8 +387,6 @@ declare const AVMetadataIdentifieriTunesMetadataPublisher: string;
 
 declare const AVMetadataIdentifieriTunesMetadataPerformer: string;
 
-declare const AVMetadataIdentifieriTunesMetadataRecordCompany: string;
-
 declare const AVMetadataIdentifieriTunesMetadataDirector: string;
 
 declare const AVMetadataIdentifieriTunesMetadataTrackNumber: string;
@@ -435,15 +407,11 @@ declare const AVMetadataIdentifieriTunesMetadataComposer: string;
 
 declare const AVMetadataIdentifieriTunesMetadataTrackSubTitle: string;
 
-declare const AVMetadataIdentifieriTunesMetadataUserGenre: string;
-
 declare const AVMetadataIdentifieriTunesMetadataEncodedBy: string;
 
 declare const AVMetadataIdentifieriTunesMetadataCopyright: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataLocationHorizontalAccuracyInMeters: string;
-
-declare const AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScoringVersion: string;
 
 declare const AVURLAssetURLRequestAttributionKey: string;
 
@@ -463,8 +431,6 @@ declare const AVMetadataIdentifierQuickTimeMetadataAccessibilityDescription: str
 
 declare const AVMetadataIdentifierQuickTimeMetadataContentIdentifier: string;
 
-declare const AVMetadataIdentifierQuickTimeMetadataDetectedDogBody: string;
-
 declare const AVMetadataIdentifierQuickTimeMetadataPreferredAffineTransform: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataDirectionFacing: string;
@@ -478,8 +444,6 @@ declare const AVMetadataIdentifierQuickTimeMetadataTitle: string;
 declare const AVMetadataIdentifierQuickTimeMetadataCameraIdentifier: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataPhonogramRights: string;
-
-declare const AVMetadataIdentifierQuickTimeMetadataCredits: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataPerformer: string;
 
@@ -511,8 +475,6 @@ declare const AVMetadataIdentifier3GPUserDataUserRating: string;
 
 declare const AVMetadataIdentifier3GPUserDataCollection: string;
 
-declare const AVMetadataIdentifier3GPUserDataDescription: string;
-
 declare const AVMetadataIdentifier3GPUserDataRecordingYear: string;
 
 declare const AVMetadataIdentifier3GPUserDataCopyright: string;
@@ -538,6 +500,8 @@ declare const AVMetadataIdentifierQuickTimeUserDataHostComputer: string;
 declare const AVMetadataIdentifierQuickTimeUserDataGenre: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataEncodedBy: string;
+
+declare const AVMetadataIdentifierQuickTimeUserDataDisclaimer: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataCopyright: string;
 
@@ -581,10 +545,6 @@ declare const AVErrorRecordingSuccessfullyFinishedKey: string;
 
 declare const AVErrorPIDKey: string;
 
-declare const AVOutputSettingsPresetHEVC3840x2160WithAlpha: string;
-
-declare const AVErrorDeviceKey: string;
-
 declare const AVCaptionUseDropFrameTimeCodeKey: string;
 
 declare const AVAssetDownloadedAssetEvictionPriorityDefault: string;
@@ -607,13 +567,7 @@ declare const AVMetadataIdentifierID3MetadataRecordingTime: string;
 
 declare const AVMetadataQuickTimeUserDataKeyDirector: string;
 
-declare const AVMetadataQuickTimeMetadataKeyCreationDate: string;
-
 declare const AVMetadataIdentifierID3MetadataSynchronizedTempoCodes: string;
-
-declare const AVMetadataIdentifierID3MetadataMusicianCreditsList: string;
-
-declare const AVMetadataIdentifierID3MetadataComments: string;
 
 declare const AVMetadataIdentifier3GPUserDataThumbnail: string;
 
@@ -626,6 +580,8 @@ declare const AVMetadataIdentifieriTunesMetadataAlbum: string;
 declare const AVCaptureWhiteBalanceTemperatureAndTintValuesFluorescent: AVCaptureWhiteBalanceTemperatureAndTintValues;
 
 declare const AVMetadataIdentifieriTunesMetadataEncodingTool: string;
+
+declare const AVMetadataiTunesMetadataKeyArtistID: string;
 
 declare const AVMetadataIdentifieriTunesMetadataConductor: string;
 
@@ -642,6 +598,8 @@ declare const AVMetadataIdentifierID3MetadataFileOwner: string;
 declare const AVMetadataIdentifierID3MetadataPrivate: string;
 
 declare const AVSampleBufferVideoRendererRequiresFlushToResumeDecodingDidChangeNotification: string;
+
+declare const AVPlayerRateDidChangeNotification: string;
 
 declare const AVMetadataCommonIdentifierTitle: string;
 
@@ -685,8 +643,6 @@ declare const AVMetadataiTunesMetadataKeyDiscCompilation: string;
 
 declare const AVMetadataCommonIdentifierContributor: string;
 
-declare const AVAssetPlaybackConfigurationOptionNonRectilinearProjection: string;
-
 declare const AVAssetPlaybackConfigurationOptionSpatialVideo: string;
 
 declare const AVAssetPlaybackConfigurationOptionStereoVideo: string;
@@ -702,8 +658,6 @@ declare const AVAssetTrackSegmentsDidChangeNotification: string;
 declare const AVAssetTrackTimeRangeDidChangeNotification: string;
 
 declare const AVTrackAssociationTypeMetadataReferent: string;
-
-declare const AVTrackAssociationTypeTimecode: string;
 
 declare const AVTrackAssociationTypeForcedSubtitlesOnly: string;
 
@@ -728,8 +682,6 @@ declare const AVAssetExportPresetAppleM4A: string;
 declare const AVAssetExportPresetMVHEVC1440x1440: string;
 
 declare const AVAssetExportPresetMVHEVC960x960: string;
-
-declare const AVAssetExportPresetHEVC7680x4320: string;
 
 declare const AVAssetExportPresetHEVC4320x2160: string;
 
@@ -835,8 +787,6 @@ declare const AVMetadataID3MetadataKeyCommerical: string;
 
 declare const AVVideoYCbCrMatrixKey: string;
 
-declare const AVVideoTransferFunction_IEC_sRGB: string;
-
 declare const AVVideoTransferFunction_SMPTE_ST_2084_PQ: string;
 
 declare const AVVideoColorPrimaries_ITU_R_2020: string;
@@ -869,6 +819,8 @@ declare const AVVideoCodecTypeAppleProRes422: string;
 
 declare const AVVideoCodecTypeJPEGXL: string;
 
+declare const AVVideoCodecKey: string;
+
 declare const AVMetadataExtraAttributeBaseURIKey: string;
 
 declare const AVMetadataExtraAttributeValueURIKey: string;
@@ -878,8 +830,6 @@ declare const AVMetadataQuickTimeMetadataKeyAlbum: string;
 declare const AVMetadataFormatUnknown: string;
 
 declare const AVMetadataKeySpaceHLSDateRange: string;
-
-declare const AVMetadataIcyMetadataKeyStreamTitle: string;
 
 declare const AVMetadataID3MetadataKeyUserURL: string;
 
@@ -955,21 +905,19 @@ declare const AVMetadataID3MetadataKeyComposer: string;
 
 declare const AVMetadataID3MetadataKeySynchronizedLyric: string;
 
-declare const AVMetadataID3MetadataKeySignature: string;
-
 declare const AVMetadataID3MetadataKeyRelativeVolumeAdjustment: string;
 
 declare const AVMetadataID3MetadataKeyOwnership: string;
 
 declare const AVMetadataID3MetadataKeyMusicCDIdentifier: string;
 
+declare const AVMetadataID3MetadataKeyGeneralEncapsulatedObject: string;
+
 declare const AVMetadataID3MetadataKeyEncryption: string;
 
 declare const AVMetadataID3MetadataKeyAudioEncryption: string;
 
 declare const AVMetadataiTunesMetadataKeyExecProducer: string;
-
-declare const AVMetadataiTunesMetadataKeyThanks: string;
 
 declare const AVMetadataiTunesMetadataKeySoloist: string;
 
@@ -1071,6 +1019,8 @@ declare const AVMetadataQuickTimeMetadataKeyPublisher: string;
 
 declare const AVMetadataQuickTimeMetadataKeyDirector: string;
 
+declare const AVMetadataQuickTimeMetadataKeyCreationDate: string;
+
 declare const AVMetadataQuickTimeMetadataKeyCopyright: string;
 
 declare const AVMetadataQuickTimeMetadataKeyAuthor: string;
@@ -1128,6 +1078,8 @@ declare const AVMetadataQuickTimeUserDataKeyEncodedBy: string;
 declare const AVMetadataQuickTimeUserDataKeyDescription: string;
 
 declare const AVMetadataQuickTimeUserDataKeyChapter: string;
+
+declare const AVMetadataQuickTimeUserDataKeyAuthor: string;
 
 declare const AVMetadataQuickTimeUserDataKeyArtist: string;
 
@@ -1201,10 +1153,6 @@ declare const AVMetadataQuickTimeMetadataKeyInformation: string;
 
 declare const AVMediaCharacteristicContainsOnlyForcedSubtitles: string;
 
-declare const AVMediaCharacteristicIsAuxiliaryContent: string;
-
-declare const AVMediaCharacteristicIsMainProgramContent: string;
-
 declare const AVMediaCharacteristicContainsAlphaChannel: string;
 
 declare const AVMediaCharacteristicContainsHDRVideo: string;
@@ -1218,6 +1166,8 @@ declare const AVMediaTypeDepthData: string;
 declare const AVMediaTypeMetadataObject: string;
 
 declare const AVVideoRangePQ: string;
+
+declare const AVMediaTypeHaptic: string;
 
 declare const AVMediaTypeMuxed: string;
 
@@ -1273,8 +1223,6 @@ declare const AVPlayerAvailableHDRModesDidChangeNotification: string;
 
 declare const AVAssetExportPresetLowQuality: string;
 
-declare const AVMetadataIdentifierQuickTimeMetadataDetectedCatBody: string;
-
 declare const AVMetadataQuickTimeUserDataKeyOriginalArtist: string;
 
 declare const AVMetadataIdentifierID3MetadataDate: string;
@@ -1282,6 +1230,8 @@ declare const AVMetadataIdentifierID3MetadataDate: string;
 declare const AVMetadataIdentifierID3MetadataLeadPerformer: string;
 
 declare const AVVideoApertureModeCleanAperture: string;
+
+declare const AVOutputSettingsPresetHEVC3840x2160WithAlpha: string;
 
 declare const AVMetadataIcyMetadataKeyStreamURL: string;
 
@@ -1315,6 +1265,8 @@ declare const AVMetadataIdentifierQuickTimeUserDataWriter: string;
 
 declare const AVMetadataIdentifierID3MetadataOriginalArtist: string;
 
+declare const AVAssetDownloadedAssetEvictionPriorityImportant: string;
+
 declare const AVAssetPlaybackConfigurationOptionStereoMultiviewVideo: string;
 
 declare const AVMetadataCommonIdentifierPublisher: string;
@@ -1323,9 +1275,27 @@ declare const AVMetadataIdentifieriTunesMetadataLinerNotes: string;
 
 declare const AVPlayerInterstitialEventMonitorInterstitialEventWasUnscheduledEventKey: string;
 
+declare const AVPlayerItemMediaSelectionDidChangeNotification: string;
+
+declare const AVVideoQualityKey: string;
+
+declare const AVCaptureSessionPreset1920x1080: string;
+
+declare const AVMetadataFormatID3Metadata: string;
+
+declare const AVCaptureLensPositionCurrent: number;
+
+declare const AVMetadataQuickTimeMetadataKeyRatingUser: string;
+
 declare const AVMetadataIdentifierQuickTimeMetadataComposer: string;
 
-declare const AVMetadataIdentifierID3MetadataPopularimeter: string;
+declare const AVMetadataObjectTypeEAN13Code: string;
+
+declare const AVMetadataQuickTimeUserDataKeyDisclaimer: string;
+
+declare const AVMetadataCommonIdentifierArtwork: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataCameraISOSensitivity: string;
 
 declare const AVMetadataIdentifieriTunesMetadataContentRating: string;
 
@@ -1333,53 +1303,69 @@ declare const AVMetadataQuickTimeMetadataKeyLocationBody: string;
 
 declare const AVMetadataIdentifieriTunesMetadataCoverArt: string;
 
-declare const AVMetadataID3MetadataKeyInternationalStandardRecordingCode: string;
+declare const AVMetadataIdentifieriTunesMetadataArtDirector: string;
 
-declare const AVMetadataIdentifierQuickTimeMetadataVideoOrientation: string;
+declare const AVMediaCharacteristicLanguageTranslation: string;
 
 declare const AVMetadataQuickTimeUserDataKeyGenre: string;
 
-declare const AVMetadataIdentifierID3MetadataCopyrightInformation: string;
+declare const AVVideoCleanApertureWidthKey: string;
+
+declare const AVMediaTypeAudio: string;
+
+declare const AVMetadataIdentifieriTunesMetadataAlbumArtist: string;
+
+declare const AVMetadataIdentifierID3MetadataMood: string;
 
 declare const AVMetadataIdentifieriTunesMetadataArranger: string;
 
+declare const AVMetadataQuickTimeMetadataKeyEncodedBy: string;
+
 declare const AVMetadataIdentifier3GPUserDataMediaRating: string;
 
-declare const AVMetadataFormatQuickTimeMetadata: string;
+declare const AVMetadataID3MetadataKeyMood: string;
+
+declare const AVMetadataIdentifierID3MetadataBeatsPerMinute: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataComment: string;
+
+declare const AVMetadataIdentifierQuickTimeUserDataLocationISO6709: string;
+
+declare const AVCaptureDeviceWasConnectedNotification: string;
 
 declare const AVVideoColorPrimaries_SMPTE_C: string;
 
 declare const AVLayerVideoGravityResize: string;
 
-declare const AVCaptureSessionInterruptionSystemPressureStateKey: string;
+declare const AVLayerVideoGravityResizeAspectFill: string;
 
-declare const AVMetadataiTunesMetadataKeyEQ: string;
+declare const AVLayerVideoGravityResizeAspect: string;
+
+declare const AVCoreAnimationBeginTimeAtZero: number;
 
 declare const AVMetadataIdentifierQuickTimeMetadataYear: string;
 
-declare const AVMetadataIdentifieriTunesMetadataArtDirector: string;
+declare const AVMetadataIdentifierID3MetadataInvolvedPeopleList_v24: string;
+
+declare const AVCaptionConversionWarningTypeExcessMediaData: string;
+
+declare const AVMetadataID3MetadataKeySynchronizedTempoCodes: string;
 
 declare const AVMetadataFormatISOUserData: string;
 
 declare const AVMetadataID3MetadataKeyConductor: string;
 
+declare const AVMetadataID3MetadataKeyMusicianCreditsList: string;
+
+declare const AVMetadataIdentifierID3MetadataBand: string;
+
+declare const AVMetadataIdentifierID3MetadataLength: string;
+
 declare const AVMetadataQuickTimeUserDataKeyWarning: string;
 
 declare const AVAudioTimePitchAlgorithmLowQualityZeroLatency: string;
 
-declare const AVMetadataIdentifierID3MetadataInvolvedPeopleList_v24: string;
-
-declare const AVVideoTransferFunctionKey: string;
-
 declare const AVFileTypeAppleiTT: string;
-
-declare const AVMetadataIdentifierID3MetadataMood: string;
-
-declare const AVCoordinatedPlaybackSuspensionReasonAudioSessionInterrupted: string;
-
-declare const AVMetadataIdentifieriTunesMetadataOriginalArtist: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataPublisher: string;
 
@@ -1393,15 +1379,51 @@ declare const AVMediaCharacteristicDubbedTranslation: string;
 
 declare const AVVideoTransferFunction_ITU_R_2100_HLG: string;
 
-declare const AVMetadataQuickTimeUserDataKeyTrack: string;
+declare const AVCoordinatedPlaybackSuspensionReasonAudioSessionInterrupted: string;
+
+declare const AVMetadataIdentifieriTunesMetadataOriginalArtist: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataDetectedDogBody: string;
+
+declare const AVMetadataQuickTimeMetadataKeyYear: string;
+
+declare const AVMetadataQuickTimeMetadataKeyComposer: string;
+
+declare const AVMetadataiTunesMetadataKeyConductor: string;
 
 declare const AVMetadataID3MetadataKeyMPEGLocationLookupTable: string;
 
-declare const AVSemanticSegmentationMatteTypeHair: string;
+declare const AVOutputSettingsPresetHEVC1920x1080WithAlpha: string;
 
-declare const AVMetadataQuickTimeMetadataKeyKeywords: string;
+declare const AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScoringVersion: string;
 
-declare const AVCaptureSessionPreset1920x1080: string;
+declare const AVErrorDeviceKey: string;
+
+declare const AVMetadataIdentifierID3MetadataTaggingTime: string;
+
+declare const AVCaptureReactionTypeThumbsDown: string;
+
+declare const AVMetadataIcyMetadataKeyStreamTitle: string;
+
+declare const AVCaptureReactionTypeBalloons: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataDetectedFace: string;
+
+declare const AVAssetExportPresetHEVC7680x4320: string;
+
+declare const AVMetadataFormatQuickTimeMetadata: string;
+
+declare const AVMetadataObjectTypeMicroPDF417Code: string;
+
+declare const AVMetadataObjectTypeFace: string;
+
+declare const AVAudioTimePitchAlgorithmVarispeed: string;
+
+declare const AVVideoTransferFunctionKey: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataDetectedCatBody: string;
+
+declare const AVMetadataQuickTimeMetadataKeyCameraLensModel: string;
 
 declare const AVMetadataiTunesMetadataKeyPhonogramRights: string;
 
@@ -1427,15 +1449,15 @@ declare const AVCaptureSessionPreset1280x720: string;
 
 declare const AVMetadataObjectTypeCodabarCode: string;
 
-declare const AVMediaTypeAudio: string;
+declare const AVMediaCharacteristicIsAuxiliaryContent: string;
 
-declare const AVMetadataQuickTimeUserDataKeyAuthor: string;
+declare const AVMetadataIdentifierID3MetadataLanguage: string;
 
-declare const AVMetadataIdentifierQuickTimeUserDataDisclaimer: string;
+declare const AVVideoTransferFunction_IEC_sRGB: string;
 
 declare const AVVideoExpectedSourceFrameRateKey: string;
 
-declare const AVAudioTimePitchAlgorithmVarispeed: string;
+declare const AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeSkipControlLabelKey: string;
 
 declare const AVMetadataExtraAttributeInfoKey: string;
 
@@ -1449,15 +1471,23 @@ declare const AVMetadataIdentifier3GPUserDataTitle: string;
 
 declare const AVSpatialCaptureDiscomfortReasonSubjectTooClose: string;
 
+declare const AVMetadataIdentifierID3MetadataPopularimeter: string;
+
 declare const AVMetadataIdentifieriTunesMetadataPhonogramRights: string;
 
 declare const AVMetadata3GPUserDataKeyDescription: string;
+
+declare const AVMetadataIdentifierID3MetadataComments: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataVideoOrientation: string;
 
 declare const AVMetadataQuickTimeMetadataKeyProducer: string;
 
 declare const AVMetadataObjectTypeDogHead: string;
 
 declare const AVMetadataID3MetadataKeySubTitle: string;
+
+declare const AVMetadataID3MetadataKeyInternationalStandardRecordingCode: string;
 
 declare const AVAssetExportPresetHEVC1920x1080WithAlpha: string;
 
@@ -1470,8 +1500,6 @@ declare const AVMetadataID3MetadataKeyProducedNotice: string;
 declare const AVMetadataIdentifierQuickTimeMetadataOriginalArtist: string;
 
 declare const AVMetadataiTunesMetadataKeyBeatsPerMin: string;
-
-declare const AVMetadataID3MetadataKeySynchronizedTempoCodes: string;
 
 declare const AVPlaybackCoordinatorSuspensionReasonsDidChangeNotification: string;
 
@@ -1487,11 +1515,9 @@ declare const AVCaptureSessionWasInterruptedNotification: string;
 
 declare const AVMetadataIdentifieriTunesMetadataSoloist: string;
 
-declare const AVMetadataQuickTimeMetadataKeyComposer: string;
-
-declare const AVMetadataiTunesMetadataKeyConductor: string;
-
 declare const AVMetadataCommonKeyRelation: string;
+
+declare const AVMetadataIdentifierID3MetadataMusicianCreditsList: string;
 
 declare const AVMetadataID3MetadataKeyEqualization: string;
 
@@ -1502,6 +1528,8 @@ declare const AVMetadataIdentifierQuickTimeMetadataCameraLensIrisFNumber: string
 declare const AVMediaCharacteristicEnhancesSpeechIntelligibility: string;
 
 declare const AVMetadata3GPUserDataKeyPerformer: string;
+
+declare const AVMediaCharacteristicUsesWideGamutColorSpace: string;
 
 declare const AVMetadataIdentifieriTunesMetadataSongName: string;
 
@@ -1517,9 +1545,9 @@ declare const AVCoordinatedPlaybackSuspensionReasonCoordinatedPlaybackNotPossibl
 
 declare const AVMetadataID3MetadataKeyContentGroupDescription: string;
 
-declare const AVMetadataIdentifierID3MetadataBeatsPerMinute: string;
-
 declare const AVMetadata3GPUserDataKeyMediaRating: string;
+
+declare const AVMetadataQuickTimeUserDataKeyTrack: string;
 
 declare const AVMetadataObjectTypeEAN8Code: string;
 
@@ -1549,13 +1577,9 @@ declare const AVVideoMaxKeyFrameIntervalKey: string;
 
 declare const AVMetadataiTunesMetadataKeyUserGenre: string;
 
-declare const AVMetadataIdentifierQuickTimeMetadataCameraISOSensitivity: string;
-
 declare const AVMetadataIdentifierID3MetadataOriginalAlbumTitle: string;
 
 declare const AVMetadataIdentifieriTunesMetadataPredefinedGenre: string;
-
-declare const AVMetadataIdentifierQuickTimeUserDataPerformers: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataCinematicVideoIntent: string;
 
@@ -1567,9 +1591,11 @@ declare const AVMetadataIdentifier3GPUserDataLocation: string;
 
 declare const AVAudioTimePitchAlgorithmSpectral: string;
 
+declare const AVMetadataID3MetadataKeyPartOfASet: string;
+
 declare const AVMetadataQuickTimeMetadataKeyLocationNote: string;
 
-declare const AVMovieShouldSupportAliasDataReferencesKey: string;
+declare const AVMetadataiTunesMetadataKeyEQ: string;
 
 declare const AVMetadataQuickTimeUserDataKeyInformation: string;
 
@@ -1581,13 +1607,19 @@ declare const AVMetadataIdentifier3GPUserDataKeywordList: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataFullName: string;
 
-declare const AVFileTypeHEIF: string;
-
 declare const AVMetadataQuickTimeMetadataKeyWhiteBalanceByCCTWhiteBalanceFactors: string;
 
-declare const AVCaptureDeviceTypeContinuityCamera: string;
+declare const AVFileTypeAIFF: string;
 
-declare const AVMediaCharacteristicLanguageTranslation: string;
+declare const AVTrackAssociationTypeTimecode: string;
+
+declare const AVMetadataiTunesMetadataKeyGenreID: string;
+
+declare const AVFileTypeHEIF: string;
+
+declare const AVMetadataIdentifierQuickTimeMetadataCredits: string;
+
+declare const AVCaptureDeviceTypeContinuityCamera: string;
 
 declare const AVCaptureSessionRuntimeErrorNotification: string;
 
@@ -1609,7 +1641,7 @@ declare const AVMetadataQuickTimeUserDataKeyKeywords: string;
 
 declare const AVFileTypeAVCI: string;
 
-declare const AVCaptureDeviceWasConnectedNotification: string;
+declare const AVMetadataIdentifierQuickTimeMetadataCollectionUser: string;
 
 declare const AVCaptureDeviceTypeBuiltInTripleCamera: string;
 
@@ -1621,15 +1653,21 @@ declare const AVMetadataID3MetadataKeyGroupIdentifier: string;
 
 declare const AVVideoH264EntropyModeCABAC: string;
 
+declare const AVMetadataIdentifierQuickTimeUserDataPerformers: string;
+
 declare const AVMetadataIdentifierQuickTimeMetadataSpatialOverCaptureQualityScore: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataCredits: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataAutoLivePhoto: string;
 
+declare const AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeEventKey: string;
+
 declare const AVMetadataCommonIdentifierCopyrights: string;
 
 declare const AVAssetExportPresetAppleProRes422LPCM: string;
+
+declare const AVAssetPlaybackConfigurationOptionNonRectilinearProjection: string;
 
 declare const AVPlayerInterstitialEventNoCue: string;
 
@@ -1639,13 +1677,13 @@ declare const AVMetadataObjectTypeMicroQRCode: string;
 
 declare const AVAssetExportPresetMVHEVC4320x4320: string;
 
-declare const AVMetadataQuickTimeMetadataKeyRatingUser: string;
-
 declare const AVMetadataIdentifierID3MetadataEncodedWith: string;
 
 declare const AVMetadataIdentifierID3MetadataInvolvedPeopleList_v23: string;
 
 declare const AVMetadataCommonKeySource: string;
+
+declare const AVMetadataID3MetadataKeySignature: string;
 
 declare const AVMetadataID3MetadataKeyTaggingTime: string;
 
@@ -1665,6 +1703,8 @@ declare const AVPlayerRateDidChangeReasonAppBackgrounded: string;
 
 declare const AVPlayerItemFailedToPlayToEndTimeNotification: string;
 
+declare const AVFragmentedMovieTrackSegmentsDidChangeNotification: string;
+
 declare const AVMetadataID3MetadataKeyPrivate: string;
 
 declare const AVMetadataQuickTimeMetadataKeyArranger: string;
@@ -1683,8 +1723,6 @@ declare const AVMetadataQuickTimeUserDataKeyCredits: string;
 
 declare const AVCaptureSessionPresetLow: string;
 
-declare const AVMetadataIdentifierQuickTimeUserDataLocationISO6709: string;
-
 declare const AVCaptureDeviceTypeBuiltInLiDARDepthCamera: string;
 
 declare const AVOutputSettingsPreset960x540: string;
@@ -1697,21 +1735,19 @@ declare const AVCaptureSessionPreset3840x2160: string;
 
 declare const AVMetadataCommonIdentifierFormat: string;
 
+declare const AVCaptureSessionInterruptionSystemPressureStateKey: string;
+
 declare const AVMetadataIdentifieriTunesMetadataAuthor: string;
 
 declare const AVVideoRangeSDR: string;
 
-declare const AVLayerVideoGravityResizeAspect: string;
+declare const AVSampleBufferDisplayLayerFailedToDecodeNotification: string;
 
 declare const AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeErrorKey: string;
 
 declare const AVMetadataID3MetadataKeyComments: string;
 
 declare const AVMetadataID3MetadataKeyEqualization2: string;
-
-declare const AVCaptureReactionTypeBalloons: string;
-
-declare const AVMetadataIdentifierQuickTimeMetadataDetectedFace: string;
 
 declare const AVFragmentedMovieContainsMovieFragmentsDidChangeNotification: string;
 
@@ -1721,19 +1757,13 @@ declare const AVMetadataQuickTimeMetadataKeyMake: string;
 
 declare const AVMediaCharacteristicMachineGenerated: string;
 
-declare const AVVideoHeightKey: string;
-
 declare const AVMetadataIdentifierID3MetadataOfficialArtistWebpage: string;
 
 declare const AVMetadata3GPUserDataKeyMediaClassification: string;
 
-declare const AVMetadataID3MetadataKeyMusicianCreditsList: string;
-
 declare const AVMetadataIdentifierISOUserDataDate: string;
 
 declare const AVCaptionConversionAdjustmentTypeTimeRange: string;
-
-declare const AVPlayerInterstitialEventMonitorCurrentEventSkippableStateDidChangeEventKey: string;
 
 declare const AVMetadataKeySpaceID3: string;
 
@@ -1753,10 +1783,6 @@ declare const AVMetadataIdentifieriTunesMetadataLyrics: string;
 
 declare const AVVideoH264EntropyModeCAVLC: string;
 
-declare const AVMetadataQuickTimeMetadataKeyEncodedBy: string;
-
-declare const AVMetadataQuickTimeUserDataKeyDisclaimer: string;
-
 declare const AVMetadataCommonIdentifierCreator: string;
 
 declare const AVMetadataQuickTimeUserDataKeyProducer: string;
@@ -1767,37 +1793,27 @@ declare const AVVideoProfileLevelH264High41: string;
 
 declare const AVMetadataID3MetadataKeyPopularimeter: string;
 
-declare const AVMetadataCommonIdentifierArtist: string;
+declare const AVMetadataiTunesMetadataKeyUserComment: string;
 
-declare const AVMetadataKeySpaceAudioFile: string;
+declare const AVMetadataCommonIdentifierArtist: string;
 
 declare const AVMetadataiTunesMetadataKeyCredits: string;
 
 declare const AVFileTypeProfileMPEG4CMAFCompliant: string;
 
-declare const AVMediaCharacteristicFrameBased: string;
-
-declare const AVMetadataObjectTypeMicroPDF417Code: string;
-
-declare const AVMetadataObjectTypeFace: string;
-
 declare const AVAssetExportPresetHEVCHighestQualityWithAlpha: string;
 
 declare const AVMetadataIdentifierID3MetadataOriginalFilename: string;
 
+declare const AVMetadataObjectTypeCode39Code: string;
+
 declare const AVMetadataQuickTimeMetadataKeySoftware: string;
 
-declare const AVCoreAnimationBeginTimeAtZero: number;
-
-declare const AVMetadataQuickTimeMetadataKeyYear: string;
+declare const AVVideoScalingModeResizeAspectFill: string;
 
 declare const AVCaptureDeviceWasDisconnectedNotification: string;
 
 declare const AVMetadataIdentifieriTunesMetadataArtistID: string;
-
-declare const AVCaptureReactionTypeThumbsDown: string;
-
-declare const AVPlayerItemMediaSelectionDidChangeNotification: string;
 
 declare const AVMetadataIdentifierID3MetadataSubTitle: string;
 
@@ -1813,15 +1829,13 @@ declare const AVCaptionMediaSubTypeKey: string;
 
 declare const AVPlayerRateDidChangeReasonKey: string;
 
-declare const AVVideoQualityKey: string;
-
 declare const AVMetadataQuickTimeMetadataKeyComment: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataMake: string;
 
-declare const AVMetadataFormatID3Metadata: string;
-
 declare const AVCaptureSessionPresetInputPriority: string;
+
+declare const AVMetadataID3MetadataKeyInvolvedPeopleList_v23: string;
 
 declare const AVVideoCodecJPEG: string;
 
@@ -1830,8 +1844,6 @@ declare const AVMediaCharacteristicLegible: string;
 declare const AVMetadataIdentifierID3MetadataOriginalLyricist: string;
 
 declare const AVErrorTimeKey: string;
-
-declare const AVVideoCodecTypeH264: string;
 
 declare const AVMetadataID3MetadataKeyPlayCounter: string;
 
@@ -1848,8 +1860,6 @@ declare const AVMetadataIdentifierID3MetadataLink: string;
 declare const AVMetadataCommonKeyCreator: string;
 
 declare const AVVideoCodecTypeAppleProRes422HQ: string;
-
-declare const AVVideoScalingModeResizeAspectFill: string;
 
 declare const AVMetadataiTunesMetadataKeyPlaylistID: string;
 
@@ -1871,6 +1881,8 @@ declare const AVSampleBufferDisplayLayerFailedToDecodeNotificationErrorKey: stri
 
 declare const AVCaptureSessionPreset352x288: string;
 
+declare const AVVideoHeightKey: string;
+
 declare const AVMetadataIdentifierID3MetadataUserText: string;
 
 declare const AVMetadataIdentifieriTunesMetadataOnlineExtras: string;
@@ -1879,13 +1891,19 @@ declare const AVURLAssetAllowsCellularAccessKey: string;
 
 declare const AVMetadataIdentifierID3MetadataTitleSortOrder: string;
 
-declare const AVMetadataIdentifierID3MetadataLength: string;
+declare const AVMetadataIdentifierID3MetadataCopyrightInformation: string;
+
+declare const AVMetadataIdentifieriTunesMetadataRecordCompany: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataTaggedCharacteristic: string;
 
 declare const AVMetadataID3MetadataKeyTermsOfUse: string;
 
 declare const AVAssetWasDefragmentedNotification: string;
+
+declare const AVMetadataQuickTimeMetadataKeyKeywords: string;
+
+declare const AVMediaCharacteristicIsMainProgramContent: string;
 
 declare const AVPlayerInterstitialEventMonitorInterstitialEventDidFinishEventKey: string;
 
@@ -1895,17 +1913,15 @@ declare const AVMetadataID3MetadataKeyOriginalReleaseYear: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScore: string;
 
-declare const AVAssetDownloadedAssetEvictionPriorityImportant: string;
-
 declare const AVMetadataIdentifierID3MetadataMPEGLocationLookupTable: string;
 
-declare const AVVideoCleanApertureWidthKey: string;
+declare const AVMetadataiTunesMetadataKeyThanks: string;
 
 declare const AVMetadataQuickTimeUserDataKeyComment: string;
 
 declare const AVMetadataIdentifieriTunesMetadataDescription: string;
 
-declare const AVMetadataCommonIdentifierArtwork: string;
+declare const AVMetadataIdentifier3GPUserDataDescription: string;
 
 declare const AVMetadataCommonKeyCopyrights: string;
 
@@ -1913,13 +1929,11 @@ declare const AVOutputSettingsPresetHEVC7680x4320: string;
 
 declare const AVMetadataCommonIdentifierAssetIdentifier: string;
 
-declare const AVCaptureLensPositionCurrent: number;
-
 declare const AVFileType3GPP2: string;
 
-declare const AVMetadataCommonKeyTitle: string;
+declare const AVVideoCodecTypeH264: string;
 
-declare const AVMetadataObjectTypeEAN13Code: string;
+declare const AVMetadataCommonKeyTitle: string;
 
 declare const AVMetadataID3MetadataKeyEncodedBy: string;
 
@@ -1951,8 +1965,6 @@ declare const AVVideoCodecTypeAppleProRes4444: string;
 
 declare const AVCaptureSystemPressureLevelNominal: string;
 
-declare const AVLayerVideoGravityResizeAspectFill: string;
-
 declare const AVSemanticSegmentationMatteTypeGlasses: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataOriginalSource: string;
@@ -1963,21 +1975,21 @@ declare const AVMetadataQuickTimeUserDataKeyAccessibilityDescription: string;
 
 declare const AVVideoCleanApertureHeightKey: string;
 
+declare const AVMovieShouldSupportAliasDataReferencesKey: string;
+
 declare const AVMetadataCommonKeyMake: string;
 
 declare const AVVideoCodecTypeHEVC: string;
 
 declare const AVCoordinatedPlaybackSuspensionReasonUserIsChangingCurrentTime: string;
 
-declare const AVMetadataID3MetadataKeyMood: string;
-
 declare const AVMetadataIdentifier3GPUserDataPerformer: string;
-
-declare const AVMetadataQuickTimeMetadataKeyCameraLensModel: string;
 
 declare const AVMetadataIdentifierID3MetadataContentType: string;
 
 declare const AVMetadataIdentifierIcyMetadataStreamURL: string;
+
+declare const AVMediaCharacteristicFrameBased: string;
 
 declare const AVMetadataQuickTimeMetadataKeyDisplayName: string;
 
@@ -1997,11 +2009,7 @@ declare const AVMetadataIdentifierID3MetadataContentGroupDescription: string;
 
 declare const AVVideoCleanApertureKey: string;
 
-declare const AVMetadataID3MetadataKeyGeneralEncapsulatedObject: string;
-
 declare const AVMetadata3GPUserDataKeyGenre: string;
-
-declare const AVMetadataIdentifieriTunesMetadataAlbumArtist: string;
 
 declare const AVMetadataIdentifierQuickTimeUserDataURLLink: string;
 
@@ -2015,11 +2023,11 @@ declare const AVFileTypeEnhancedAC3: string;
 
 declare const AVOutputSettingsPreset1920x1080: string;
 
-declare const AVFileTypeAIFF: string;
-
 declare const AVMetadataID3MetadataKeySeek: string;
 
 declare const AVVideoPixelAspectRatioKey: string;
+
+declare const AVMetadataKeySpaceAudioFile: string;
 
 declare const AVMetadataIdentifierID3MetadataPublisher: string;
 
@@ -2028,8 +2036,6 @@ declare const AVMetadataIdentifierID3MetadataOfficialPublisherWebpage: string;
 declare const AVMetadataISOUserDataKeyCopyright: string;
 
 declare const AVMetadataiTunesMetadataKeyEncodedBy: string;
-
-declare const AVOutputSettingsPresetHEVC1920x1080WithAlpha: string;
 
 declare const AVMetadataIdentifierID3MetadataPerformerSortOrder: string;
 
@@ -2051,8 +2057,6 @@ declare const AVMetadataIdentifierID3MetadataEncodedBy: string;
 
 declare const AVMetadataID3MetadataKeyFileType: string;
 
-declare const AVMetadataiTunesMetadataKeyGenreID: string;
-
 declare const AVMetadataID3MetadataKeyEventTimingCodes: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataCameraFocalLength35mmEquivalent: string;
@@ -2073,19 +2077,15 @@ declare const AVMetadataIdentifier3GPUserDataAlbumAndTrack: string;
 
 declare const AVSampleBufferAudioRendererWasFlushedAutomaticallyNotification: string;
 
-declare const AVFragmentedMovieTrackSegmentsDidChangeNotification: string;
-
 declare const AVErrorMediaTypeKey: string;
-
-declare const AVCaptionConversionWarningTypeExcessMediaData: string;
 
 declare const AVMetadataIdentifierID3MetadataAlbumSortOrder: string;
 
 declare const AVVideoCodecTypeHEVCWithAlpha: string;
 
-declare const AVMetadataIdentifierID3MetadataReverb: string;
+declare const AVMetadataIdentifieriTunesMetadataUserGenre: string;
 
-declare const AVMetadataiTunesMetadataKeyUserComment: string;
+declare const AVMetadataIdentifierID3MetadataReverb: string;
 
 declare const AVPlayerIntegratedTimelineSnapshotsOutOfSyncReasonSegmentsChanged: string;
 
@@ -8507,6 +8507,10 @@ declare class AVCaptionGrouper extends NSObject {
   flushAddedCaptionsIntoGroupsUpToTime(upToTime: CMTime): NSArray;
 }
 
+declare class AVMetadataDogBodyObject extends AVMetadataBodyObject implements NSCopying {
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class AVPlayerItemMediaDataCollector extends NSObject {
 }
 
@@ -8944,10 +8948,6 @@ declare class AVPlayerMediaSelectionCriteria extends NSObject {
   initWithPreferredLanguagesPreferredMediaCharacteristics(preferredLanguages: NSArray<interop.Object> | Array<interop.Object> | null, preferredMediaCharacteristics: NSArray<interop.Object> | Array<interop.Object> | null): this;
 
   initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics(principalMediaCharacteristics: NSArray<interop.Object> | Array<interop.Object> | null, preferredLanguages: NSArray<interop.Object> | Array<interop.Object> | null, preferredMediaCharacteristics: NSArray<interop.Object> | Array<interop.Object> | null): this;
-}
-
-declare class AVMetadataDogBodyObject extends AVMetadataBodyObject implements NSCopying {
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
 declare class AVAssetVariantAudioAttributes extends NSObject {

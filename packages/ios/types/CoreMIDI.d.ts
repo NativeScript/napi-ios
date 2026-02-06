@@ -89,8 +89,6 @@ declare const kMIDIPropertyName: interop.Pointer;
 
 declare const kMIDIUnknownError: number;
 
-declare const kMIDINotPermitted: number;
-
 declare const kMIDIObjectNotFound: number;
 
 declare const kMIDIWrongThread: number;
@@ -102,8 +100,6 @@ declare const kMIDIServerStartErr: number;
 declare const kMIDIMessageSendErr: number;
 
 declare const kMIDIWrongPropertyType: number;
-
-declare const kMIDIUnknownProperty: number;
 
 declare const kMIDINoConnection: number;
 
@@ -120,6 +116,8 @@ declare const kMIDIPropertyNameConfigurationDictionary: interop.Pointer;
 declare const kMIDIPropertyTransmitsBankSelectLSB: interop.Pointer;
 
 declare const kMIDIPropertyIsEmbeddedEntity: interop.Pointer;
+
+declare const kMIDIUnknownEndpoint: number;
 
 declare const kMIDINoCurrentSetup: number;
 
@@ -139,17 +137,17 @@ declare const kMIDIPropertyReceivesBankSelectLSB: interop.Pointer;
 
 declare const kMIDIPropertyUMPActiveGroupBitmap: interop.Pointer;
 
+declare const kMIDIPropertyImage: interop.Pointer;
+
 declare const kMIDIPropertyTransmitsProgramChanges: interop.Pointer;
 
 declare const kMIDI1UPMaxSysexSize: number;
-
-declare const kMIDIPropertyImage: interop.Pointer;
 
 declare const kMIDIPropertyReceivesClock: interop.Pointer;
 
 declare const kMIDIPropertyTransmitsClock: interop.Pointer;
 
-declare const kMIDIUnknownEndpoint: number;
+declare const kMIDIUnknownProperty: number;
 
 declare const kMIDIPropertyTransmitsNotes: interop.Pointer;
 
@@ -176,6 +174,8 @@ declare const MIDIUMPFunctionBlockWasUpdatedNotification: string;
 declare const MIDIChannelsWholePort: number;
 
 declare const kMIDIThruConnection_MaxEndpoints: number;
+
+declare const kMIDINotPermitted: number;
 
 declare const kMIDIPropertyIsMixer: interop.Pointer;
 

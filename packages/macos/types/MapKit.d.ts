@@ -1766,7 +1766,7 @@ declare class MKPointAnnotation extends MKShape {
   // @ts-ignore MemberDecl.tsIgnore
   coordinate: CLLocationCoordinate2D;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setCoordinate(newCoordinate: CLLocationCoordinate2D): void;
   setCoordinate(coordinate: CLLocationCoordinate2D): void;
 }
 
@@ -2084,11 +2084,10 @@ declare class MKGradientPolylineRenderer extends MKPolylineRenderer {
   setColorsAtLocations(colors: NSArray<interop.Object> | Array<interop.Object>, locations: NSArray<interop.Object> | Array<interop.Object>): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class MKAnnotationView extends NSView {
   initWithAnnotationReuseIdentifier(annotation: MKAnnotation | null, reuseIdentifier: string | null): this;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  initWithCoder(coder: NSCoder): this;
   initWithCoder(aDecoder: NSCoder): this;
 
   readonly reuseIdentifier: string;

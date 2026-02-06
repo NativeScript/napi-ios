@@ -7,7 +7,7 @@ id functionReturnsCFRetained() {
     return [[NSObject alloc] init];
 }
 CFTypeRef functionImplicitCreate() {
-    return [[NSObject alloc] init];
+    return (__bridge CFTypeRef) [[NSObject alloc] init];
 }
 id functionExplicitCreateNSObject() {
     return [[NSObject alloc] init];

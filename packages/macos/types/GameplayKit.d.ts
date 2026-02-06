@@ -1289,7 +1289,6 @@ declare class GKCoherentNoiseSource extends GKNoiseSource {
   setSeed(seed: number): void;
 }
 
-// @ts-ignore ClassDecl.tsIgnore
 declare class GKCompositeBehavior extends GKBehavior {
   readonly behaviorCount: number;
 
@@ -1305,13 +1304,13 @@ declare class GKCompositeBehavior extends GKBehavior {
 
   removeAllBehaviors(): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  objectAtIndexedSubscript(idx: number): GKGoal;
   objectAtIndexedSubscript(idx: number): GKBehavior;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  setObjectForKeyedSubscript(weight: NSNumber, goal: GKGoal): void;
   setObjectForKeyedSubscript(weight: NSNumber, behavior: GKBehavior): void;
 
-  // @ts-ignore MemberDecl.tsIgnore
+  objectForKeyedSubscript(goal: GKGoal): NSNumber;
   objectForKeyedSubscript(behavior: GKBehavior): NSNumber;
 }
 

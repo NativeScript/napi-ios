@@ -4408,8 +4408,6 @@ declare function ATSFontSetAutoActivationSettingForApplication(iSetting: number,
 
 declare function ATSFontGetAutoActivationSettingForApplication(iApplicationFileURL: interop.Object): number;
 
-declare function ColorSyncAPIVersion(): number;
-
 declare function HIShapeGetTypeID(): number;
 
 declare function HIShapeCreateEmpty(): interop.Object;

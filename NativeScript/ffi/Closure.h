@@ -37,6 +37,7 @@ class Closure {
   ffi_cif cif;
   ffi_closure* closure;
   void* fnptr;
+  ffi_type** atypes = nullptr;  // Track malloc'd atypes array
 
   std::shared_ptr<TypeConv> returnType;
   std::vector<std::shared_ptr<TypeConv>> argTypes;
