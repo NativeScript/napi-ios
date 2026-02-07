@@ -51,6 +51,26 @@ mkdir -p $DIST
 
 mkdir -p $DIST/intermediates
 
+function get_metadata_size () {
+  local platform="$1"
+  local is_macos_cli="$2"
+  shift 2
+  local archs=("$@")
+  local greatest_size=${METADATA_SIZE:-0}
+
+  if $EMBED_METADATA || $is_macos_cli; then
+    for arch in "${archs[@]}"; do
+      local metadata_file="./metadata-generator/metadata/metadata.$platform.$arch.nsmd"
+      local arch_size=$(stat -f%z "$metadata_file")
+      if [ "$arch_size" -gt "$greatest_size" ]; then
+        greatest_size=$arch_size
+      fi
+    done
+  fi
+
+  echo "$greatest_size"
+}
+
 function cmake_build () {
   local platform="$1"
   shift
@@ -64,15 +84,7 @@ function cmake_build () {
 
   mkdir -p $DIST/intermediates/$platform
 
-  if $EMBED_METADATA || $is_macos_cli; then
-
-    for arch in "${archs[@]}"; do
-
-      METADATA_SIZE=$(($METADATA_SIZE > $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd") ? $METADATA_SIZE : $(stat -f%z "./metadata-generator/metadata/metadata.$platform.$arch.nsmd")))
-
-    done
-
-  fi
+  METADATA_SIZE=$(get_metadata_size "$platform" "$is_macos_cli" "${archs[@]}")
 
   cmake -S=./NativeScript -B=$DIST/intermediates/$platform -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli
 
