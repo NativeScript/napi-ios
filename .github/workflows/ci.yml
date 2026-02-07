@@ -32,4 +32,4 @@ jobs:
         run: npm run build-metagen
       
       - name: Build NativeScript
-        run: npm run build
+        run: npm run build --quickjs
