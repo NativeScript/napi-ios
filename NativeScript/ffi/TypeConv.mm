@@ -841,6 +841,7 @@ class BlockTypeConv : public TypeConv {
           *res = nullptr;
           return;
         }
+        return;
       }
 
       case napi_function: {
@@ -856,6 +857,8 @@ class BlockTypeConv : public TypeConv {
         closure->env = env;
         id block = registerBlock(env, closure, value);
         *res = (void*)block;
+        *shouldFree = true;
+        *shouldFreeAny = true;
         return;
       }
 
@@ -866,12 +869,20 @@ class BlockTypeConv : public TypeConv {
     }
   }
 
+  void free(napi_env env, void* value) override {
+    if (value != nullptr) {
+      [(id)value release];
+    }
+  }
+
   void encode(std::string* encoding) override { *encoding += "^v"; }
 };
 
 void function_pointer_finalize(napi_env env, void* finalize_data, void* finalize_hint) {
-  Closure* closure = (Closure*)finalize_hint;
-  delete closure;
+  Closure* closure = static_cast<Closure*>(finalize_hint);
+  if (closure != nullptr) {
+    delete closure;
+  }
 }
 
 class FunctionPointerTypeConv : public TypeConv {

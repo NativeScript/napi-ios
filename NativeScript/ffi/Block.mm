@@ -6,6 +6,7 @@
 #include "js_native_api_types.h"
 #include "node_api_util.h"
 #include "objc/runtime.h"
+#include <cstring>
 
 struct Block_descriptor_1 {
   unsigned long int reserved;  // NULL
@@ -27,49 +28,79 @@ struct Block_literal_1 {
   nativescript::Closure* closure;
 };
 
-void block_copy(void* dest, void* src) {}
-void block_release(void* src) {}
+namespace {
+
+constexpr int kBlockNeedsFree = (1 << 24);
+constexpr int kBlockHasCopyDispose = (1 << 25);
+constexpr int kBlockRefCountOne = (1 << 1);
+
+void block_copy(void* dest, void* src) {
+  auto dst = static_cast<Block_literal_1*>(dest);
+  auto source = static_cast<Block_literal_1*>(src);
+  dst->closure = source->closure;
+}
+
+void block_release(void* src) {
+  auto block = static_cast<Block_literal_1*>(src);
+  if (block == nullptr) {
+    return;
+  }
+
+  if (block->closure != nullptr) {
+    delete block->closure;
+    block->closure = nullptr;
+  }
+}
+
+Block_descriptor_1 kBlockDescriptor = {
+    .reserved = 0,
+    .size = sizeof(Block_literal_1),
+    .copy_helper = block_copy,
+    .dispose_helper = block_release,
+    .signature = nullptr,
+};
+
+}  // namespace
 
 void block_finalize(napi_env env, void* data, void* hint) {
-  auto block = (Block_literal_1*)data;
-  delete block->closure;
-  delete block;
+  auto block = static_cast<Block_literal_1*>(data);
+  if (block == nullptr) {
+    return;
+  }
+
+  if (block->closure != nullptr) {
+    delete block->closure;
+    block->closure = nullptr;
+  }
+
+  free(block);
 }
 
 namespace nativescript {
 
+void* mallocBlockISA = nullptr;
 void* stackBlockISA = nullptr;
 
 id registerBlock(napi_env env, Closure* closure, napi_value callback) {
-  auto block = new Block_literal_1();
+  auto block = static_cast<Block_literal_1*>(malloc(sizeof(Block_literal_1)));
+  memset(block, 0, sizeof(Block_literal_1));
+
+  if (mallocBlockISA == nullptr) {
+    mallocBlockISA = dlsym(RTLD_DEFAULT, "_NSConcreteMallocBlock");
+  }
+
   if (stackBlockISA == nullptr) {
     stackBlockISA = dlsym(RTLD_DEFAULT, "_NSConcreteStackBlock");
   }
-  block->isa = stackBlockISA;
-  block->flags = (1 << 29) | (1 << 25);
+
+  block->isa = mallocBlockISA != nullptr ? mallocBlockISA : stackBlockISA;
+  block->flags = kBlockNeedsFree | kBlockHasCopyDispose | kBlockRefCountOne;
   block->reserved = 0;
   block->invoke = closure->fnptr;
-  block->descriptor = new Block_descriptor_1();
+  block->descriptor = &kBlockDescriptor;
   block->closure = closure;
 
-  block->descriptor->reserved = 0;
-  block->descriptor->size = sizeof(Block_literal_1);
-  block->descriptor->copy_helper = block_copy;
-  block->descriptor->dispose_helper = block_release;
-  block->descriptor->signature = nullptr;
-
-  napi_remove_wrap(env, callback, nullptr);
-  napi_ref ref = nullptr;
-  // TODO: fix memory management of objc blocks here
-  // napi_wrap(env, callback, block, block_finalize, nullptr, &ref);
-  // if (ref == nullptr) {
-  // Deno doesn't handle napi_wrap properly.
-  ref = make_ref(env, callback, 1);
-  // } else {
-  //   uint32_t refCount;
-  //   napi_reference_ref(env, ref, &refCount);
-  // }
-  closure->func = ref;
+  closure->func = make_ref(env, callback, 1);
 
   auto bridgeState = ObjCBridgeState::InstanceData(env);
 
