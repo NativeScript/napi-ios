@@ -9,6 +9,7 @@ BUILD_VISION=$(to_bool ${BUILD_VISION:=false}) # disable by default for now
 BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false}) # disable by default for now
 VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
+BUILD_MACOS_NODE_API=$(to_bool ${BUILD_MACOS_NODE_API:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebInfo
 
@@ -22,11 +23,13 @@ for arg in $@; do
     --sim|--simulator) BUILD_SIMULATOR=true ;;
     --no-sim|--no-simulator) BUILD_SIMULATOR=false ;;
     --iphone|--device) BUILD_IPHONE=true ;;
-    --no-iphone|--no-device) BUILD_IPHONE=false ;;
+    --no-iphone|--no-device|--no-phone|--no-ios) BUILD_IPHONE=false ;;
     --xr|--vision) BUILD_VISION=true ;;
     --no-xr|--no-vision) BUILD_VISION=false ;;
     --macos) BUILD_MACOS=true ;;
     --no-macos) BUILD_MACOS=false ;;
+    --macos-napi) BUILD_MACOS_NODE_API=true ;;
+    --no-macos-napi) BUILD_MACOS_NODE_API=false ;;
     --macos-cli) BUILD_MACOS_CLI=true ;;
     --no-macos-cli) BUILD_MACOS_CLI=false ;;
     --verbose|-v) VERBOSE=true ;;
@@ -35,7 +38,7 @@ for arg in $@; do
     --jsc) TARGET_ENGINE=jsc ;;
     --embed-metadata) EMBED_METADATA=true ;;
     --hermes) TARGET_ENGINE=hermes ;;
-    --no-engine) TARGET_ENGINE=none ;;
+    --no-engine|--generic-napi) TARGET_ENGINE=none ;;
     *) ;;
   esac
 done
@@ -62,9 +65,14 @@ function cmake_build () {
     is_macos_cli=true
   fi
 
+  if [ "$platform" == "macos-napi" ]; then
+    platform="macos"
+    is_macos_napi=true
+  fi
+
   mkdir -p $DIST/intermediates/$platform
 
-  if $EMBED_METADATA || $is_macos_cli; then
+  if $EMBED_METADATA || $is_macos_cli || $is_macos_napi; then
 
     for arch in "${archs[@]}"; do
 
@@ -74,7 +82,7 @@ function cmake_build () {
 
   fi
 
-  cmake -S=./NativeScript -B=$DIST/intermediates/$platform -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli
+  cmake -S=./NativeScript -B=$DIST/intermediates/$platform -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
 
   cmake --build $DIST/intermediates/$platform --config $CONFIG_BUILD
 }
@@ -127,6 +135,12 @@ cmake_build macos-cli x86_64 arm64
 
 fi
 
+if $BUILD_MACOS_NODE_API; then
+  checkpoint "Building NativeScript for macOS Node API"
+
+  cmake_build macos-napi x86_64 arm64
+fi
+
 XCFRAMEWORKS=()
 if $BUILD_CATALYST; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/catalyst/$CONFIG_BUILD-maccatalyst/NativeScript.framework"
@@ -141,6 +155,11 @@ fi
 if $BUILD_IPHONE; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework"
                   -debug-symbols "$DIST/intermediates/ios/$CONFIG_BUILD-iphoneos/NativeScript.framework.dSYM" )
+fi
+
+if $BUILD_MACOS; then
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
+                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
 fi
 
 if $BUILD_VISION; then
@@ -175,9 +194,6 @@ fi
 # As such, there's no point bundling both UIKit-based and AppKit-based into a
 # single XCFramework.
 if $BUILD_MACOS; then
-  XCFRAMEWORKS=( -framework "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework"
-                  -debug-symbols "$DIST/intermediates/macos/$CONFIG_BUILD/NativeScript.framework.dSYM" )
-
   if [[ "$TARGET_ENGINE" == "none" ]]; then
     checkpoint "Creating the XCFramework for macOS (NativeScript.apple.node)"
 
@@ -186,10 +202,12 @@ if $BUILD_MACOS; then
     OUTPUT_DIR="packages/macos/build/$CONFIG_BUILD/NativeScript.apple.node"
     rm -rf $OUTPUT_DIR
     deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
-  else
-    checkpoint "Creating NativeScript.node for macOS"
-    cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
   fi
+fi
+
+if $BUILD_MACOS_NODE_API; then
+  checkpoint "Creating NativeScript.node for macOS"
+  cp -r "$DIST/intermediates/macos/$CONFIG_BUILD/libNativeScript.dylib" "$DIST/NativeScript.node"
 fi
 
 if $BUILD_MACOS_CLI; then

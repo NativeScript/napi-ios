@@ -20,6 +20,11 @@ set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C br
 set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runtime")
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
 set(BUILD_CLI_BINARY OFF CACHE BOOL "Build the NativeScript CLI binary")
+set(BUILD_MACOS_NODE_API OFF CACHE BOOL "Build the NativeScript macOS Node API dylib")
+
+if (BUILD_MACOS_NODE_API)
+  set(BUILD_FRAMEWORK OFF)
+endif()
 
 if(TARGET_PLATFORM STREQUAL "ios")
   set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "13.0")
@@ -90,6 +95,10 @@ if(ENABLE_JS_RUNTIME)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_JS_RUNTIME")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_JS_RUNTIME")
 else()
+  set(GENERIC_NAPI TRUE)
+endif()
+
+if(BUILD_MACOS_NODE_API)
   set(GENERIC_NAPI TRUE)
 endif()
 

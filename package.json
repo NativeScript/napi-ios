@@ -28,10 +28,16 @@
     "update-version": "./update_version.sh",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "version": "npm run changelog && git add CHANGELOG.md",
-    "metagen": "node scripts/metagen.js",
     "build-libffi": "node scripts/build_libffi.js",
     "build-metagen": "./build_metadata_generator.sh",
-    "build": "./build_nativescript.sh --quickjs"
+    "metagen": "node scripts/metagen.js",
+    "build": "./build_nativescript.sh",
+    "build:ios": "./build_nativescript.sh --iphone --no-simulator",
+    "build:ios-sim": "./build_nativescript.sh --no-iphone --simulator",
+    "build:macos": "./build_nativescript.sh --macos --no-iphone --no-simulator",
+    "build:macos-cli": "./build_nativescript.sh --no-iphone --no-simulator --macos-cli",
+    "build:macos-napi": "./build_nativescript.sh --no-iphone --no-simulator --macos-napi",
+    "nsr": "./dist/nsr"
   },
   "license": "Apache-2.0",
   "devDependencies": {
