@@ -92,10 +92,6 @@ declare const IOTimerDispatchSourceInterface: number;
 
 declare const IOTimerDispatchSource_Class: OSClassLoadInformation;
 
-declare const kIOTimerClockMachContinuousTime: number;
-
-declare const kIOTimerClockRealTime: number;
-
 declare const IOServiceNotificationDispatchSourceInterface: number;
 
 declare const IOServiceNotificationDispatchSourceMetaClass: number;
@@ -127,8 +123,6 @@ declare const gIOWorkGroupMetaClass: interop.Pointer;
 declare const gOSSetMetaClass: interop.Pointer;
 
 declare const OSArrayMetaClass: number;
-
-declare const operator: interop.Pointer;
 
 declare const OSRetain: number;
 
@@ -254,6 +248,18 @@ declare const OSSerialization: number;
 
 declare const kIOUserClientAsyncArgumentsCountMax: number;
 
+declare const kOSClassCanRemote: number;
+
+declare const kIORPCMessageOnqueue: number;
+
+declare const kIORPCMessageObjectRefs: number;
+
+declare const kIORPCMessageLocalHost: number;
+
+declare const kIORPCMessageRemote: number;
+
+declare const kIORPCVersion190615Reply: number;
+
 declare const IOTimerDispatchSourceMetaClass: number;
 
 declare const IOSimpleReporter_Class: OSClassLoadInformation;
@@ -276,13 +282,15 @@ declare const kIODMACommandPerformOperationOptionZero: number;
 
 declare const OSNumberMetaClass: number;
 
+declare const kIORPCMessageSimpleReply: number;
+
 declare const kOSCollectionTypeSet: number;
+
+declare const kIORPCMessageIDKernel: number;
 
 declare const kIOMemoryMapReadOnly: number;
 
 declare const IOCommandInterface: number;
-
-declare const kIOTimerClockMonotonicRaw: number;
 
 declare const IODispatchQueueInterface: number;
 
@@ -314,6 +322,8 @@ declare const gOSOrderedSetMetaClass: interop.Pointer;
 
 declare const kIOEventLinkAssociateCurrentThread: number;
 
+declare const kIORPCVersion190615: number;
+
 declare const kIODMACommandPerformOperationOptionWrite: number;
 
 declare const IODMACommandMetaClass: number;
@@ -321,8 +331,6 @@ declare const IODMACommandMetaClass: number;
 declare const kOSArrayAppend: number;
 
 declare const IOInterruptDispatchSource: number;
-
-declare const kIOTimerClockUptimeRaw: number;
 
 declare const IOEventLinkMetaClass: number;
 
@@ -338,8 +346,6 @@ declare const gOSDictionaryMetaClass: interop.Pointer;
 
 declare const OSArrayInterface: number;
 
-declare const kIOTimerClockWallTime: number;
-
 declare const kIOMemoryDirectionOutIn: number;
 
 declare const gIOBufferMemoryDescriptorMetaClass: interop.Pointer;
@@ -351,8 +357,6 @@ declare const IOUserClientMetaClass: number;
 declare const kIODispatchQueueMethodsNotSynchronized: number;
 
 declare const IOServiceMetaClass: number;
-
-declare const kIOTimerClockMachAbsoluteTime: number;
 
 declare const IOService: number;
 
@@ -368,6 +372,8 @@ declare const IOBufferMemoryDescriptor_Class: OSClassLoadInformation;
 
 declare const gIOHistogramReporterMetaClass: interop.Pointer;
 
+declare const kNanosecondScale: number;
+
 declare const IOMemoryMapMetaClass: number;
 
 declare const OSMappedFileInterface: number;
@@ -379,6 +385,8 @@ declare const OSNumberInterface: number;
 declare const kIOMemoryMapCacheModeCopyback: number;
 
 declare const IOSimpleReporter: number;
+
+declare const kIOMaxBusStall30usec: number;
 
 declare const kIOEventLinkClockMachAbsoluteTime: number;
 
@@ -438,9 +446,19 @@ declare const OSSet: number;
 
 declare const kIOServiceSearchPropertyParents: number;
 
+declare const kIORPCMessageOneway: number;
+
 declare const OSDictionaryInterface: number;
 
+declare const kTickScale: number;
+
 declare const kIOUserClientMethodArgumentsCurrentVersion: number;
+
+declare const kIOMaxBusStall40usec: number;
+
+declare const kSecondScale: number;
+
+declare const kIOMaxBusStall10usec: number;
 
 declare const _kIOPMWakeEventSource: number;
 
@@ -456,11 +474,15 @@ declare const gOSBooleanMetaClass: interop.Pointer;
 
 declare const IOExtensiblePaniclog_Class: OSClassLoadInformation;
 
+declare const kIOMaxBusStallNone: number;
+
 declare const kIODMACommandPrepareForDMANoOptions: number;
 
 declare const IOVMPageSize: number;
 
 declare const kIOInterruptDispatchSourceTypeLevel: number;
+
+declare const kIOMaxBusStall5usec: number;
 
 declare const kIOInterruptSourceContinuousTime: number;
 
@@ -479,6 +501,8 @@ declare const kIOInterruptSourceIndexMask: number;
 declare const kOSCollectionTypeDictionary: number;
 
 declare const kIOServicePowerCapabilityLow: number;
+
+declare const kMicrosecondScale: number;
 
 declare const IOReportLegend: number;
 
@@ -504,6 +528,8 @@ declare const gIOCommandPoolMetaClass: interop.Pointer;
 
 declare const OSMappedFile: number;
 
+declare const kIORPCMessageKernel: number;
+
 declare const gIOEventLinkMetaClass: interop.Pointer;
 
 declare const kIOMemoryMapGuardedSmall: number;
@@ -515,6 +541,8 @@ declare const IOCommandPoolMetaClass: number;
 declare const kIOEventLinkAssociateOnWait: number;
 
 declare const IOEventLinkInterface: number;
+
+declare const kIOMaxBusStall25usec: number;
 
 declare const kIOMemoryMapCacheModeDefault: number;
 
@@ -542,6 +570,8 @@ declare const IOHistogramReporter_Class: OSClassLoadInformation;
 
 declare const OSSetInterface: number;
 
+declare const kIOConnectMethodVarOutputSize: number;
+
 declare const IOStateReporterMetaClass: number;
 
 declare const gIOServiceMetaClass: interop.Pointer;
@@ -560,11 +590,17 @@ declare const OSDictionary_Class: OSClassLoadInformation;
 
 declare const OSAdoptMemory: number;
 
+declare const kIOMaxBusStall20usec: number;
+
+declare const kMillisecondScale: number;
+
 declare const kIOInterruptDispatchSourceTypeEdge: number;
 
 declare const OSSet_Class: OSClassLoadInformation;
 
 declare const kIOMemoryMapCacheModeWriteThrough: number;
+
+declare const kIORPCMessageError: number;
 
 declare const OSContainer_Class: OSClassLoadInformation;
 
@@ -754,6 +790,10 @@ declare class IOReporter_IVars {
   : number;
 }
 
+declare class IORecursiveConditionLock {
+  constructor(init?: IORecursiveConditionLock);
+}
+
 declare class IORWLock {
   constructor(init?: IORWLock);
 }
@@ -825,10 +865,6 @@ declare class IOUserClientMethodArguments {
   __reserved: unknown /* const array */;
 }
 
-declare class OSActionWaitToken {
-  constructor(init?: OSActionWaitToken);
-}
-
 declare class IOMemoryMap_LocalIVars {
   constructor(init?: IOMemoryMap_LocalIVars);
 }
@@ -897,8 +933,58 @@ declare class __OSStringStatic {
   osString: interop.Pointer;
 }
 
+declare class OSActionWaitToken {
+  constructor(init?: OSActionWaitToken);
+}
+
 declare class IOMemoryMap_IVars {
   constructor(init?: IOMemoryMap_IVars);
+}
+
+declare class OSClassDescription {
+  constructor(init?: OSClassDescription);
+  descriptionSize: number;
+  name: unknown /* const array */;
+  superName: unknown /* const array */;
+  methodOptionsSize: number;
+  methodOptionsOffset: number;
+  metaMethodOptionsSize: number;
+  metaMethodOptionsOffset: number;
+  queueNamesSize: number;
+  queueNamesOffset: number;
+  methodNamesSize: number;
+  methodNamesOffset: number;
+  metaMethodNamesSize: number;
+  metaMethodNamesOffset: number;
+  flags: number;
+  resv1: unknown /* const array */;
+  methodOptions: unknown /* const array */;
+  metaMethodOptions: unknown /* const array */;
+  dispatchNames: unknown /* const array */;
+  methodNames: unknown /* const array */;
+  metaMethodNames: unknown /* const array */;
+}
+
+declare class IORPC {
+  constructor(init?: IORPC);
+  message: interop.Pointer;
+  reply: interop.Pointer;
+  sendSize: number;
+  replySize: number;
+}
+
+declare class IORPCMessageErrorReturnContent {
+  constructor(init?: IORPCMessageErrorReturnContent);
+  hdr: IORPCMessage;
+  result: number;
+  pad: number;
+}
+
+declare class IORPCMessageMach {
+  constructor(init?: IORPCMessageMach);
+  msgh: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  objects: unknown /* const array */;
 }
 
 declare class IOUserClient_LocalIVars {
@@ -931,6 +1017,12 @@ declare class IOBufferMemoryDescriptor_LocalIVars {
   constructor(init?: IOBufferMemoryDescriptor_LocalIVars);
 }
 
+declare class IORPCMessageErrorReturn {
+  constructor(init?: IORPCMessageErrorReturn);
+  mach: IORPCMessageMach;
+  content: IORPCMessageErrorReturnContent;
+}
+
 declare class OSNumber_LocalIVars {
   constructor(init?: OSNumber_LocalIVars);
 }
@@ -947,16 +1039,24 @@ declare class IODMACommand_LocalIVars {
   constructor(init?: IODMACommand_LocalIVars);
 }
 
-declare class IORecursiveConditionLock {
-  constructor(init?: IORecursiveConditionLock);
-}
-
 declare class OSAction_IOUserClient_KernelCompletion_LocalIVars {
   constructor(init?: OSAction_IOUserClient_KernelCompletion_LocalIVars);
 }
 
 declare class IOMemoryDescriptor_LocalIVars {
   constructor(init?: IOMemoryDescriptor_LocalIVars);
+}
+
+declare class IOVirtualRange {
+  constructor(init?: IOVirtualRange);
+  address: number;
+  length: number;
+}
+
+declare class IOPhysicalRange {
+  constructor(init?: IOPhysicalRange);
+  address: number;
+  length: number;
 }
 
 declare class OSAction_LocalIVars {
@@ -985,6 +1085,12 @@ declare class OSDictionary_LocalIVars {
 
 declare class OSArray_IVars {
   constructor(init?: OSArray_IVars);
+}
+
+declare class IONamedValue {
+  constructor(init?: IONamedValue);
+  value: number;
+  name: string | null;
 }
 
 declare class IOHistogramSegmentConfig {
@@ -1047,6 +1153,14 @@ declare class OSSerialization_IVars {
   constructor(init?: OSSerialization_IVars);
 }
 
+declare class IORPCMessage {
+  constructor(init?: IORPCMessage);
+  msgid: number;
+  flags: number;
+  objectRefs: number;
+  objects: unknown /* const array */;
+}
+
 declare class IOEventLink_IVars {
   constructor(init?: IOEventLink_IVars);
 }
@@ -1076,6 +1190,8 @@ declare class OSContainer_LocalIVars {
 declare class IOCommand_LocalIVars {
   constructor(init?: IOCommand_LocalIVars);
 }
+
+declare function IORPCMessageFromMach(msg: interop.PointerConvertible, reply: boolean): interop.Pointer;
 
 declare function OSObjectAllocate(meta: interop.PointerConvertible, pObject: interop.PointerConvertible): number;
 

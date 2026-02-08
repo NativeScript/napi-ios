@@ -488,12 +488,6 @@ declare class MPSRayOriginMinDistanceDirectionMaxDistance {
   maxDistance: number;
 }
 
-declare class MPSRayPackedOriginDirection {
-  constructor(init?: MPSRayPackedOriginDirection);
-  origin: _MPSPackedFloat3;
-  direction: _MPSPackedFloat3;
-}
-
 declare class MPSRayOriginDirection {
   constructor(init?: MPSRayOriginDirection);
   origin: unknown /* ext vector */;
@@ -614,17 +608,23 @@ declare class MPSOrigin {
   z: number;
 }
 
+declare class MPSRayPackedOriginDirection {
+  constructor(init?: MPSRayPackedOriginDirection);
+  origin: _MPSPackedFloat3;
+  direction: _MPSPackedFloat3;
+}
+
+declare class unnamed_5640936870131395195 {
+  constructor(init?: unnamed_5640936870131395195);
+  x: number;
+  y: number;
+  z: number;
+}
+
 declare class MPSImageReadWriteParams {
   constructor(init?: MPSImageReadWriteParams);
   featureChannelOffset: number;
   numberOfFeatureChannelsToReadWrite: number;
-}
-
-declare class unnamed_11789548311296372076 {
-  constructor(init?: unnamed_11789548311296372076);
-  x: number;
-  y: number;
-  z: number;
 }
 
 declare class MPSIntersectionDistancePrimitiveIndex {
@@ -713,11 +713,11 @@ declare class MPSImageKeypointRangeInfo {
   minimumThresholdValue: number;
 }
 
-type unnamed_10620872124143651772Descriptor = 
+type unnamed_3965896831809855799Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_10620872124143651772 {
-  constructor(init?: unnamed_10620872124143651772Descriptor);
+declare class unnamed_3965896831809855799 {
+  constructor(init?: unnamed_3965896831809855799Descriptor);
   elements: unknown /* const array */;
 }
 

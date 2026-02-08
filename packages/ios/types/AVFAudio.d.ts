@@ -2,21 +2,23 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./AudioToolbox.d.ts" />
 
+declare const AVAudioSessionSetActiveFlags_NotifyOthersOnDeactivation: number;
+
 declare const AVAudioUnitTypeOfflineEffect: string;
 
 declare const AVAudioSessionPolarPatternStereo: string;
 
-declare const AVAudioUnitTypeOutput: string;
+declare const AVAudioSessionModeGameChat: string;
 
 declare const AVSampleRateConverterAudioQualityKey: string;
 
 declare const AVAudioSessionPortAVB: string;
 
+declare const AVSpeechUtteranceDefaultSpeechRate: number;
+
 declare const AVAudioApplicationMuteStateKey: string;
 
 declare const AVSpeechSynthesisVoiceIdentifierAlex: string;
-
-declare const AVSpeechUtteranceDefaultSpeechRate: number;
 
 declare const AVSpeechUtteranceMaximumSpeechRate: number;
 
@@ -34,6 +36,8 @@ declare const AVAudioUnitTypeFormatConverter: string;
 
 declare const AVAudioUnitTypeMusicEffect: string;
 
+declare const AVAudioUnitTypeOutput: string;
+
 declare const AVAudioSequencerInfoDictionaryKeyYear: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyTitle: string;
@@ -49,6 +53,8 @@ declare const AVAudioSequencerInfoDictionaryKeyKeySignature: string;
 declare const AVAudioSequencerInfoDictionaryKeyGenre: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyEncodingApplication: string;
+
+declare const AVAudioSequencerInfoDictionaryKeyChannelLayout: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyArtist: string;
 
@@ -72,6 +78,8 @@ declare const AVAudioSessionAvailableInputsChangeNotification: string;
 
 declare const AVAudioSessionRenderingModeNewRenderingModeKey: string;
 
+declare const AVAudioSessionRouteChangePreviousRouteKey: string;
+
 declare const AVAudioSessionRouteChangeReasonKey: string;
 
 declare const AVAudioSessionInterruptionOptionKey: string;
@@ -92,6 +100,8 @@ declare const AVAudioSessionMediaServicesWereLostNotification: string;
 
 declare const AVAudioSessionInterruptionNotification: string;
 
+declare const AVAudioSessionModeShortFormVideo: string;
+
 declare const AVAudioSessionModeVoicePrompt: string;
 
 declare const AVAudioSessionModeVideoChat: string;
@@ -99,8 +109,6 @@ declare const AVAudioSessionModeVideoChat: string;
 declare const AVAudioSessionModeMoviePlayback: string;
 
 declare const AVAudioSessionModeVideoRecording: string;
-
-declare const AVAudioSessionModeGameChat: string;
 
 declare const AVAudioSessionModeVoiceChat: string;
 
@@ -113,6 +121,8 @@ declare const AVAudioSessionCategorySoloAmbient: string;
 declare const AVAudioSessionCategoryAmbient: string;
 
 declare const AVAudioSessionPortThunderbolt: string;
+
+declare const AVAudioSessionPortDisplayPort: string;
 
 declare const AVAudioSessionPortPCI: string;
 
@@ -172,6 +182,8 @@ declare const AVAudioUnitManufacturerNameApple: string;
 
 declare const AVAudioSessionSpatialPlaybackCapabilitiesChangedNotification: string;
 
+declare const AVAudioUnitComponentTagsDidChangeNotification: string;
+
 declare const AVAudioSessionPortFireWire: string;
 
 declare const AVAudioSessionPortHeadsetMic: string;
@@ -188,21 +200,11 @@ declare const AVSampleRateConverterAlgorithmKey: string;
 
 declare const AVLinearPCMIsNonInterleaved: string;
 
-declare const AVAudioSessionInterruptionTypeKey: string;
-
-declare const AVAudioSessionLocationLower: string;
-
-declare const AVEncoderBitRateStrategyKey: string;
-
-declare const AVAudioSequencerInfoDictionaryKeyTempo: string;
-
-declare const AVAudioSessionInterruptionFlags_ShouldResume: number;
-
 declare const AVSampleRateKey: string;
 
-declare const AVAudioSessionOrientationBottom: string;
+declare const AVAudioSessionInterruptionTypeKey: string;
 
-declare const AVAudioUnitComponentTagsDidChangeNotification: string;
+declare const AVAudioSequencerInfoDictionaryKeyTempo: string;
 
 declare const AVAudioSessionSilenceSecondaryAudioHintTypeKey: string;
 
@@ -220,21 +222,15 @@ declare const AVFormatIDKey: string;
 
 declare const AVAudioSessionRouteChangeNotification: string;
 
-declare const AVAudioSessionSetActiveFlags_NotifyOthersOnDeactivation: number;
-
 declare const AVAudioUnitComponentManagerRegistrationsChangedNotification: string;
 
 declare const AVSampleRateConverterAlgorithm_Normal: string;
 
 declare const AVAudioSessionMicrophoneInjectionIsAvailableKey: string;
 
-declare const AVAudioSessionRouteChangePreviousRouteKey: string;
-
 declare const AVAudioSessionMediaServicesWereResetNotification: string;
 
 declare const AVAudioSessionCategoryRecord: string;
-
-declare const AVAudioUnitTypeMIDIProcessor: string;
 
 declare const AVAudioSessionInterruptionWasSuspendedKey: string;
 
@@ -244,7 +240,11 @@ declare const AVAudioSessionPortHDMI: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyTrackNumber: string;
 
+declare const AVAudioSessionInterruptionFlags_ShouldResume: number;
+
 declare const AVAudioSessionCategoryPlayback: string;
+
+declare const AVEncoderAudioQualityKey: string;
 
 declare const AVSpeechSynthesisIPANotationAttribute: string;
 
@@ -256,27 +256,29 @@ declare const AVAudioSequencerInfoDictionaryKeyISRC: string;
 
 declare const AVAudioSessionPortBuiltInMic: string;
 
-declare const AVEncoderAudioQualityKey: string;
-
 declare const AVAudioSessionModeSpokenAudio: string;
 
 declare const AVAudioSequencerInfoDictionaryKeySourceEncoder: string;
 
 declare const AVAudioApplicationInputMuteStateChangeNotification: string;
 
-declare const AVAudioSessionPortDisplayPort: string;
+declare const AVAudioSessionLocationLower: string;
+
+declare const AVEncoderBitRateStrategyKey: string;
+
+declare const AVLinearPCMIsBigEndianKey: string;
 
 declare const AVLinearPCMBitDepthKey: string;
 
-declare const AVAudioSequencerInfoDictionaryKeyChannelLayout: string;
+declare const AVAudioUnitTypeMIDIProcessor: string;
 
 declare const AVAudioBitRateStrategy_Variable: string;
 
 declare const AVAudioSessionPolarPatternSubcardioid: string;
 
-declare const AVAudioSessionMicrophoneInjectionCapabilitiesChangeNotification: string;
+declare const AVAudioSessionOrientationBottom: string;
 
-declare const AVLinearPCMIsBigEndianKey: string;
+declare const AVAudioSessionMicrophoneInjectionCapabilitiesChangeNotification: string;
 
 declare const AVAudioSequencerInfoDictionaryKeyNominalBitRate: string;
 
@@ -288,13 +290,13 @@ declare const AVAudioSessionModeDefault: string;
 
 declare const AVAudioSessionInterruptionReasonKey: string;
 
-declare const AVAudioSessionModeShortFormVideo: string;
-
 declare const AVAudioUnitTypeGenerator: string;
 
 declare const AVSpeechSynthesisAvailableVoicesDidChangeNotification: string;
 
 declare const AVAudioSessionOrientationLeft: string;
+
+declare const AVAudioSessionModeDualRoute: string;
 
 declare const AVAudioEngineManualRenderingStatus: {
   Error: -1,
@@ -454,6 +456,7 @@ declare const AVAudioSessionCategoryOptions: {
   AllowBluetoothA2DP: 32,
   AllowAirPlay: 64,
   OverrideMutedMicrophoneInterruption: 128,
+  FarFieldInput: 262144,
   BluetoothHighQualityRecording: 524288,
 };
 

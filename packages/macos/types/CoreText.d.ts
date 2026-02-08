@@ -2121,20 +2121,20 @@ declare const CTFontManagerError: {
   UnsupportedScope: 307,
 };
 
-declare const CTFontManagerScope: {
-  None: 0,
-  Process: 1,
-  Persistent: 2,
-  Session: 3,
-  User: 2,
-};
-
 declare const CTUnderlineStyleModifiers: {
   Solid: 0,
   Dot: 256,
   Dash: 512,
   DashDot: 768,
   DashDotDot: 1024,
+};
+
+declare const CTFontManagerScope: {
+  None: 0,
+  Process: 1,
+  Persistent: 2,
+  Session: 3,
+  User: 2,
 };
 
 declare const CTRunStatus: {
@@ -2520,14 +2520,6 @@ declare class MortChain {
   featureEntries: unknown /* const array */;
 }
 
-declare class MortSubtable {
-  constructor(init?: MortSubtable);
-  length: number;
-  coverage: number;
-  flags: number;
-  u: MortSpecificSubtable;
-}
-
 declare class MortLigatureSubtable {
   constructor(init?: MortLigatureSubtable);
   header: STHeader;
@@ -2754,6 +2746,14 @@ declare class KerxTableHeader {
   version: number;
   nTables: number;
   firstSubtable: unknown /* const array */;
+}
+
+declare class MortSubtable {
+  constructor(init?: MortSubtable);
+  length: number;
+  coverage: number;
+  flags: number;
+  u: MortSpecificSubtable;
 }
 
 declare class BslnFormat0Part {
@@ -3101,20 +3101,6 @@ declare class MortSpecificSubtable {
   insertion: MortInsertionSubtable;
 }
 
-type KernFormatSpecificHeaderDescriptor = 
-  | { orderedList: KernOrderedListHeader }
-  | { stateTable: KernStateHeader }
-  | { simpleArray: KernSimpleArrayHeader }
-  | { indexArray: KernIndexArrayHeader };
-
-declare class KernFormatSpecificHeader {
-  constructor(init?: KernFormatSpecificHeaderDescriptor);
-  orderedList: KernOrderedListHeader;
-  stateTable: KernStateHeader;
-  simpleArray: KernSimpleArrayHeader;
-  indexArray: KernIndexArrayHeader;
-}
-
 type MorxSpecificSubtableDescriptor = 
   | { rearrangement: MorxRearrangementSubtable }
   | { contextual: MorxContextualSubtable }
@@ -3145,6 +3131,20 @@ declare class KerxFormatSpecificHeader {
   simpleArray: KerxSimpleArrayHeader;
   indexArray: KerxIndexArrayHeader;
   controlPoint: KerxControlPointHeader;
+}
+
+type KernFormatSpecificHeaderDescriptor = 
+  | { orderedList: KernOrderedListHeader }
+  | { stateTable: KernStateHeader }
+  | { simpleArray: KernSimpleArrayHeader }
+  | { indexArray: KernIndexArrayHeader };
+
+declare class KernFormatSpecificHeader {
+  constructor(init?: KernFormatSpecificHeaderDescriptor);
+  orderedList: KernOrderedListHeader;
+  stateTable: KernStateHeader;
+  simpleArray: KernSimpleArrayHeader;
+  indexArray: KernIndexArrayHeader;
 }
 
 declare function CTFontDescriptorGetTypeID(): number;

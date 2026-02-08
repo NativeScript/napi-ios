@@ -2,6 +2,8 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
+declare const PKInkTypeCrayon: string;
+
 declare const PKInkTypeWatercolor: string;
 
 declare const PKInkTypeMonoline: string;
@@ -15,8 +17,6 @@ declare const PKInkTypeReed: string;
 declare const PKAppleDrawingTypeIdentifier: interop.Pointer;
 
 declare const PKInkTypePen: string;
-
-declare const PKInkTypeCrayon: string;
 
 declare const PKInkTypeFountainPen: string;
 

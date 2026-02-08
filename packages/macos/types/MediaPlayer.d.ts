@@ -348,10 +348,6 @@ declare class MPNowPlayingInfoLanguageOption extends NSObject {
   readonly identifier: string;
 }
 
-declare class MPMediaItemAnimatedArtwork extends NSObject {
-  initWithArtworkIDPreviewImageRequestHandlerVideoAssetFileURLRequestHandler(artworkID: string, previewImageRequestHandler: (p1: CGSize, p2: (p1: NSImage) => void) => void | null, videoAssetFileURLRequestHandler: (p1: CGSize, p2: (p1: NSURL) => void) => void | null): this;
-}
-
 declare class MPContentItem extends NSObject {
   initWithIdentifier(identifier: string): this;
 
@@ -470,6 +466,10 @@ declare class MPRemoteCommandCenter extends NSObject {
   readonly bookmarkCommand: MPFeedbackCommand;
 
   static sharedCommandCenter(): MPRemoteCommandCenter;
+}
+
+declare class MPMediaItemAnimatedArtwork extends NSObject {
+  initWithArtworkIDPreviewImageRequestHandlerVideoAssetFileURLRequestHandler(artworkID: string, previewImageRequestHandler: (p1: CGSize, p2: (p1: NSImage) => void) => void | null, videoAssetFileURLRequestHandler: (p1: CGSize, p2: (p1: NSURL) => void) => void | null): this;
 }
 
 declare class MPNowPlayingInfoCenter extends NSObject {

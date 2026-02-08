@@ -98,16 +98,16 @@ declare const GLKTextureLoaderError: {
   UnsupportedTextureTarget: 19,
 };
 
-declare const GLKTextureInfoAlphaState: {
-  None: 0,
-  NonPremultiplied: 1,
-  Premultiplied: 2,
-};
-
 declare const GLKViewDrawableDepthFormat: {
   FormatNone: 0,
   Format16: 1,
   Format24: 2,
+};
+
+declare const GLKTextureInfoAlphaState: {
+  None: 0,
+  NonPremultiplied: 1,
+  Premultiplied: 2,
 };
 
 declare const GLKViewDrawableColorFormat: {
@@ -123,64 +123,50 @@ declare class _GLKVertexAttributeParameters {
   normalized: number;
 }
 
-declare class unnamed_18094170957475476935 {
-  constructor(init?: unnamed_18094170957475476935);
-  v: _GLKVector3;
+declare class unnamed_5023545227319032217 {
+  constructor(init?: unnamed_5023545227319032217);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+declare class unnamed_2305548050449625379 {
+  constructor(init?: unnamed_2305548050449625379);
   s: number;
+  t: number;
+  p: number;
+  q: number;
 }
 
-declare class unnamed_5659798772210334129 {
-  constructor(init?: unnamed_5659798772210334129);
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
-declare class unnamed_17348564539352706153 {
-  constructor(init?: unnamed_17348564539352706153);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_2047278679047152411 {
-  constructor(init?: unnamed_2047278679047152411);
-  x: number;
-  y: number;
-  z: number;
-}
-
-declare class unnamed_11686886931556847827 {
-  constructor(init?: unnamed_11686886931556847827);
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-declare class unnamed_1192552667148342979 {
-  constructor(init?: unnamed_1192552667148342979);
+declare class unnamed_17433585765900414483 {
+  constructor(init?: unnamed_17433585765900414483);
   r: number;
   g: number;
   b: number;
 }
 
-declare class unnamed_6807544281959445027 {
-  constructor(init?: unnamed_6807544281959445027);
-  m00: number;
-  m01: number;
-  m10: number;
-  m11: number;
+declare class unnamed_16042991727817574551 {
+  constructor(init?: unnamed_16042991727817574551);
+  x: number;
+  y: number;
+  z: number;
 }
 
-declare class GLKEffectPropertyPrv {
-  constructor(init?: GLKEffectPropertyPrv);
+declare class unnamed_13068341733929181296 {
+  constructor(init?: unnamed_13068341733929181296);
+  s: number;
+  t: number;
 }
 
-declare class unnamed_7463924302093681486 {
-  constructor(init?: unnamed_7463924302093681486);
+declare class unnamed_4920589880616673827 {
+  constructor(init?: unnamed_4920589880616673827);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_5303300203060213506 {
+  constructor(init?: unnamed_5303300203060213506);
   m00: number;
   m01: number;
   m02: number;
@@ -199,8 +185,16 @@ declare class unnamed_7463924302093681486 {
   m33: number;
 }
 
-declare class unnamed_17923455300862326536 {
-  constructor(init?: unnamed_17923455300862326536);
+declare class unnamed_16223354040290872429 {
+  constructor(init?: unnamed_16223354040290872429);
+  m00: number;
+  m01: number;
+  m10: number;
+  m11: number;
+}
+
+declare class unnamed_14214045654455162707 {
+  constructor(init?: unnamed_14214045654455162707);
   m00: number;
   m01: number;
   m02: number;
@@ -212,51 +206,57 @@ declare class unnamed_17923455300862326536 {
   m22: number;
 }
 
-declare class unnamed_573077059021530188 {
-  constructor(init?: unnamed_573077059021530188);
+declare class GLKEffectPropertyPrv {
+  constructor(init?: GLKEffectPropertyPrv);
+}
+
+declare class unnamed_10403438812395451734 {
+  constructor(init?: unnamed_10403438812395451734);
   s: number;
   t: number;
   p: number;
-  q: number;
-}
-
-declare class unnamed_15639879944884645408 {
-  constructor(init?: unnamed_15639879944884645408);
-  x: number;
-  y: number;
 }
 
 declare class _GLKMatrixStack {
   constructor(init?: _GLKMatrixStack);
 }
 
-declare class unnamed_513035917228633188 {
-  constructor(init?: unnamed_513035917228633188);
+declare class unnamed_9746271455610820323 {
+  constructor(init?: unnamed_9746271455610820323);
+  v: _GLKVector3;
   s: number;
-  t: number;
 }
 
-declare class unnamed_1553017956119699820 {
-  constructor(init?: unnamed_1553017956119699820);
-  s: number;
-  t: number;
-  p: number;
+declare class unnamed_18344827928917762455 {
+  constructor(init?: unnamed_18344827928917762455);
+  r: number;
+  g: number;
+  b: number;
+  a: number;
 }
 
-type _GLKMatrix4Descriptor = 
-  | { m: unknown /* const array */ };
-
-declare class _GLKMatrix4 {
-  constructor(init?: _GLKMatrix4Descriptor);
-  m: unknown /* const array */;
+declare class unnamed_17941822829258773357 {
+  constructor(init?: unnamed_17941822829258773357);
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
-type _GLKMatrix3Descriptor = 
-  | { m: unknown /* const array */ };
+type _GLKQuaternionDescriptor = 
+  | { q: unknown /* const array */ };
 
-declare class _GLKMatrix3 {
-  constructor(init?: _GLKMatrix3Descriptor);
-  m: unknown /* const array */;
+declare class _GLKQuaternion {
+  constructor(init?: _GLKQuaternionDescriptor);
+  q: unknown /* const array */;
+}
+
+type _GLKVector3Descriptor = 
+  | { v: unknown /* const array */ };
+
+declare class _GLKVector3 {
+  constructor(init?: _GLKVector3Descriptor);
+  v: unknown /* const array */;
 }
 
 type _GLKMatrix2Descriptor = 
@@ -277,20 +277,20 @@ declare class _GLKVector4 {
   v: unknown /* const array */;
 }
 
-type _GLKVector3Descriptor = 
-  | { v: unknown /* const array */ };
+type _GLKMatrix3Descriptor = 
+  | { m: unknown /* const array */ };
 
-declare class _GLKVector3 {
-  constructor(init?: _GLKVector3Descriptor);
-  v: unknown /* const array */;
+declare class _GLKMatrix3 {
+  constructor(init?: _GLKMatrix3Descriptor);
+  m: unknown /* const array */;
 }
 
-type _GLKQuaternionDescriptor = 
-  | { q: unknown /* const array */ };
+type _GLKMatrix4Descriptor = 
+  | { m: unknown /* const array */ };
 
-declare class _GLKQuaternion {
-  constructor(init?: _GLKQuaternionDescriptor);
-  q: unknown /* const array */;
+declare class _GLKMatrix4 {
+  constructor(init?: _GLKMatrix4Descriptor);
+  m: unknown /* const array */;
 }
 
 type _GLKVector2Descriptor = 

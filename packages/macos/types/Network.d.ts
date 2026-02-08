@@ -1143,12 +1143,6 @@ declare function nw_ws_response_enumerate_additional_headers(response: NSObject,
 
 declare function nw_ws_options_set_client_request_handler(options: NSObject, client_queue: NSObject, handler: (p1: NSObject) => NSObject): void;
 
-declare interface OS_nw_txt_record extends NSObjectProtocol {
-}
-
-declare class OS_nw_txt_record extends NativeObject implements OS_nw_txt_record {
-}
-
 declare interface OS_nw_path extends NSObjectProtocol {
 }
 
@@ -1285,6 +1279,12 @@ declare interface OS_nw_privacy_context extends NSObjectProtocol {
 }
 
 declare class OS_nw_privacy_context extends NativeObject implements OS_nw_privacy_context {
+}
+
+declare interface OS_nw_txt_record extends NSObjectProtocol {
+}
+
+declare class OS_nw_txt_record extends NativeObject implements OS_nw_txt_record {
 }
 
 declare interface OS_nw_protocol_options extends NSObjectProtocol {

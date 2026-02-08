@@ -52,6 +52,12 @@ declare const CKOwnerDefaultName: string;
 
 declare const CKShareThumbnailImageDataKey: string;
 
+declare const CKSyncEngineZoneDeletionReason: {
+  Deleted: 0,
+  Purged: 1,
+  EncryptedDataReset: 2,
+};
+
 declare const CKSyncEngineSyncReason: {
   Scheduled: 0,
   Manual: 1,
@@ -206,12 +212,6 @@ declare const CKSubscriptionType: {
   Query: 1,
   RecordZone: 2,
   Database: 3,
-};
-
-declare const CKSyncEngineZoneDeletionReason: {
-  Deleted: 0,
-  Purged: 1,
-  EncryptedDataReset: 2,
 };
 
 declare const CKErrorCode: {

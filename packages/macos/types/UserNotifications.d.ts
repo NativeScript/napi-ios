@@ -285,18 +285,18 @@ declare class UNNotification extends NSObject implements NSCopying, NSSecureCodi
 declare class UNPushNotificationTrigger extends UNNotificationTrigger {
 }
 
-declare class UNCalendarNotificationTrigger extends UNNotificationTrigger {
-  readonly dateComponents: NSDateComponents;
-
-  static triggerWithDateMatchingComponentsRepeats<This extends abstract new (...args: any) => any>(this: This, dateComponents: NSDateComponents, repeats: boolean): InstanceType<This>;
-
-  nextTriggerDate(): NSDate;
-}
-
 declare class UNTimeIntervalNotificationTrigger extends UNNotificationTrigger {
   readonly timeInterval: number;
 
   static triggerWithTimeIntervalRepeats<This extends abstract new (...args: any) => any>(this: This, timeInterval: number, repeats: boolean): InstanceType<This>;
+
+  nextTriggerDate(): NSDate;
+}
+
+declare class UNCalendarNotificationTrigger extends UNNotificationTrigger {
+  readonly dateComponents: NSDateComponents;
+
+  static triggerWithDateMatchingComponentsRepeats<This extends abstract new (...args: any) => any>(this: This, dateComponents: NSDateComponents, repeats: boolean): InstanceType<This>;
 
   nextTriggerDate(): NSDate;
 }

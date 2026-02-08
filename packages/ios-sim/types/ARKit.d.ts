@@ -60,6 +60,8 @@ declare const ARBlendShapeLocationEyeWideRight: string;
 
 declare const ARBlendShapeLocationMouthRollLower: string;
 
+declare const ARSkeletonJointNameRightShoulder: string;
+
 declare const ARSkeletonJointNameLeftShoulder: string;
 
 declare const ARSkeletonJointNameRightFoot: string;
@@ -84,6 +86,8 @@ declare const ARBlendShapeLocationBrowOuterUpRight: string;
 
 declare const ARBlendShapeLocationMouthUpperUpRight: string;
 
+declare const ARBlendShapeLocationMouthStretchRight: string;
+
 declare const ARBlendShapeLocationMouthFunnel: string;
 
 declare const ARBlendShapeLocationMouthSmileRight: string;
@@ -96,13 +100,9 @@ declare const ARSkeletonJointNameLeftFoot: string;
 
 declare const ARSkeletonJointNameRoot: string;
 
-declare const ARBlendShapeLocationMouthPucker: string;
-
 declare const ARBlendShapeLocationMouthStretchLeft: string;
 
 declare const ARBlendShapeLocationMouthSmileLeft: string;
-
-declare const ARBlendShapeLocationMouthStretchRight: string;
 
 declare const ARBlendShapeLocationBrowOuterUpLeft: string;
 
@@ -128,9 +128,9 @@ declare const ARBlendShapeLocationEyeLookDownLeft: string;
 
 declare const ARBlendShapeLocationJawLeft: string;
 
-declare const ARSkeletonJointNameRightShoulder: string;
-
 declare const ARBlendShapeLocationCheekSquintRight: string;
+
+declare const ARBlendShapeLocationMouthPucker: string;
 
 declare const ARHitTestResultType: {
   FeaturePoint: 1,

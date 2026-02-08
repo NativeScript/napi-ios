@@ -1,6 +1,8 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const AXShowBordersEnabledStatusDidChangeNotification: string;
+
 declare const AXAnimatedImagesEnabledDidChangeNotification: string;
 
 declare const AXTechnologyAutomation: string;
@@ -10,6 +12,8 @@ declare const AXTechnologyFullKeyboardAccess: string;
 declare const AXTechnologyVoiceOver: string;
 
 declare const AXTechnologySpeakScreen: string;
+
+declare const AXPrefersActionSliderAlternativeDidChangeNotification: string;
 
 declare const AXPrefersNonBlinkingTextInsertionIndicatorDidChangeNotification: string;
 
@@ -60,6 +64,10 @@ declare function AXAnimatedImagesEnabled(): boolean;
 declare function AXAssistiveAccessEnabled(): boolean;
 
 declare function AXPrefersNonBlinkingTextInsertionIndicator(): boolean;
+
+declare function AXPrefersActionSliderAlternative(): boolean;
+
+declare function AXShowBordersEnabled(): boolean;
 
 declare function AXOpenSettingsFeature(feature: interop.Enum<typeof AXSettingsFeature>, completionHandler: (p1: NSError) => void): void;
 

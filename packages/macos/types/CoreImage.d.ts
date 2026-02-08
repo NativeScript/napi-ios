@@ -2293,37 +2293,25 @@ declare interface CIPageCurlWithShadowTransition extends CITransitionFilter {
 declare class CIPageCurlWithShadowTransition extends NativeObject implements CIPageCurlWithShadowTransition {
 }
 
-declare interface CIFlashTransition extends CITransitionFilter {
+declare interface CIModTransition extends CITransitionFilter {
   center: CGPoint;
 
-  extent: CGRect;
+  angle: number;
 
-  color: CIColor;
+  radius: number;
 
-  maxStriationRadius: number;
-
-  striationStrength: number;
-
-  striationContrast: number;
-
-  fadeThreshold: number;
+  compression: number;
 
   setCenter(center: CGPoint): void;
 
-  setExtent(extent: CGRect): void;
+  setAngle(angle: number): void;
 
-  setColor(color: CIColor): void;
+  setRadius(radius: number): void;
 
-  setMaxStriationRadius(maxStriationRadius: number): void;
-
-  setStriationStrength(striationStrength: number): void;
-
-  setStriationContrast(striationContrast: number): void;
-
-  setFadeThreshold(fadeThreshold: number): void;
+  setCompression(compression: number): void;
 }
 
-declare class CIFlashTransition extends NativeObject implements CIFlashTransition {
+declare class CIModTransition extends NativeObject implements CIModTransition {
 }
 
 declare interface CIColorControls extends CIFilterProtocol {
@@ -3614,6 +3602,39 @@ declare interface CINoiseReduction extends CIFilterProtocol {
 declare class CINoiseReduction extends NativeObject implements CINoiseReduction {
 }
 
+declare interface CIFlashTransition extends CITransitionFilter {
+  center: CGPoint;
+
+  extent: CGRect;
+
+  color: CIColor;
+
+  maxStriationRadius: number;
+
+  striationStrength: number;
+
+  striationContrast: number;
+
+  fadeThreshold: number;
+
+  setCenter(center: CGPoint): void;
+
+  setExtent(extent: CGRect): void;
+
+  setColor(color: CIColor): void;
+
+  setMaxStriationRadius(maxStriationRadius: number): void;
+
+  setStriationStrength(striationStrength: number): void;
+
+  setStriationContrast(striationContrast: number): void;
+
+  setFadeThreshold(fadeThreshold: number): void;
+}
+
+declare class CIFlashTransition extends NativeObject implements CIFlashTransition {
+}
+
 declare interface CIGloom extends CIFilterProtocol {
   inputImage: CIImage;
 
@@ -3706,27 +3727,6 @@ declare interface CIBoxBlur extends CIFilterProtocol {
 }
 
 declare class CIBoxBlur extends NativeObject implements CIBoxBlur {
-}
-
-declare interface CIModTransition extends CITransitionFilter {
-  center: CGPoint;
-
-  angle: number;
-
-  radius: number;
-
-  compression: number;
-
-  setCenter(center: CGPoint): void;
-
-  setAngle(angle: number): void;
-
-  setRadius(radius: number): void;
-
-  setCompression(compression: number): void;
-}
-
-declare class CIModTransition extends NativeObject implements CIModTransition {
 }
 
 declare interface CIMotionBlur extends CIFilterProtocol {

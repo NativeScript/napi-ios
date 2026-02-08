@@ -5,8 +5,6 @@ declare const MLModelErrorDomain: string;
 
 declare const MLModelCreatorDefinedKey: string;
 
-declare const MLModelLicenseKey: string;
-
 declare const MLModelAuthorKey: string;
 
 declare const MLModelVersionStringKey: string;
@@ -16,6 +14,8 @@ declare const MLModelDescriptionKey: string;
 declare const MLFeatureValueImageOptionCropAndScale: string;
 
 declare const MLModelCollectionDidChangeNotification: string;
+
+declare const MLModelLicenseKey: string;
 
 declare const MLFeatureValueImageOptionCropRect: string;
 
@@ -181,6 +181,10 @@ declare class MLOptimizationHints extends NSObject implements NSCopying, NSSecur
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class MLUpdateProgressHandlers extends NSObject {
+  initForEventsProgressHandlerCompletionHandler(interestedEvents: interop.Enum<typeof MLUpdateProgressEvent>, progressHandler: (p1: MLUpdateContext) => void | null, completionHandler: (p1: MLUpdateContext) => void): this;
+}
+
 declare class MLModelStructureProgramFunction extends NSObject {
   readonly inputs: NSArray;
 
@@ -294,10 +298,6 @@ declare class MLModelCollectionEntry extends NSObject {
   readonly modelURL: NSURL;
 
   isEqualToModelCollectionEntry(entry: MLModelCollectionEntry): boolean;
-}
-
-declare class MLUpdateProgressHandlers extends NSObject {
-  initForEventsProgressHandlerCompletionHandler(interestedEvents: interop.Enum<typeof MLUpdateProgressEvent>, progressHandler: (p1: MLUpdateContext) => void | null, completionHandler: (p1: MLUpdateContext) => void): this;
 }
 
 declare class MLUpdateContext extends NSObject {

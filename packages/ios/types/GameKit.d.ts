@@ -2,15 +2,17 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const GKErrorDomain: string;
-
 declare const GKPlayerAuthenticationDidChangeNotificationName: string;
+
+declare const GKErrorDomain: string;
 
 declare const GKExchangeTimeoutDefault: number;
 
 declare const GKTurnTimeoutNone: number;
 
 declare const GKExchangeTimeoutNone: number;
+
+declare const GKSessionErrorDomain: string;
 
 declare const GKGameSessionErrorDomain: string;
 
@@ -19,8 +21,6 @@ declare const GKPlayerIDNoLongerAvailable: string;
 declare const GKVoiceChatServiceErrorDomain: string;
 
 declare const GKTurnTimeoutDefault: number;
-
-declare const GKSessionErrorDomain: string;
 
 declare const GKPlayerDidChangeNotificationName: string;
 
@@ -1422,6 +1422,8 @@ declare class GKAccessPoint extends NSObject {
 
   triggerAccessPointForFriendingWithHandler(handler: () => void | null): void;
 
+  triggerAccessPointForArcadeWithHandler(handler: () => void | null): void;
+
   isActive(): boolean;
 
   setActive(active: boolean): void;
@@ -1678,10 +1680,6 @@ declare class GKLocalPlayer extends GKPlayer {
 
   loadChallengableFriendsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
 
-  setDefaultLeaderboardIdentifierCompletionHandler(leaderboardIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
-
-  loadDefaultLeaderboardIdentifierWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
   fetchItemsForIdentityVerificationSignature(completionHandler: (p1: NSURL, p2: NSData, p3: NSData, p4: number, p5: NSError) => void | null): void;
 
   isAuthenticated(): boolean;
@@ -1707,6 +1705,10 @@ declare class GKLocalPlayer extends GKPlayer {
   loadFriendPlayersWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
 
   generateIdentityVerificationSignatureWithCompletionHandler(completionHandler: (p1: NSURL, p2: NSData, p3: NSData, p4: number, p5: NSError) => void | null): void;
+
+  loadDefaultLeaderboardIdentifierWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  setDefaultLeaderboardIdentifierCompletionHandler(leaderboardIdentifier: string, completionHandler: (p1: NSError) => void | null): void;
 
   loadFriendsWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
 

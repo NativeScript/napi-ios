@@ -1,6 +1,8 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const BAAssetPackIdentifierErrorKey: string;
+
 declare const BAManagedErrorDomain: string;
 
 declare const BAErrorDomain: string;
@@ -8,8 +10,6 @@ declare const BAErrorDomain: string;
 declare const BADownloaderPriorityMax: number;
 
 declare const BADownloaderPriorityMin: number;
-
-declare const BAAssetPackIdentifierErrorKey: string;
 
 declare const BADownloaderPriorityDefault: number;
 

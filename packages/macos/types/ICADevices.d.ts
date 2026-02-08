@@ -616,11 +616,9 @@ declare class ObjectInfo {
   dataSize64: number;
 }
 
-declare class ICD_NewObjectPB {
-  constructor(init?: ICD_NewObjectPB);
+declare class ICD_DisposeObjectPB {
+  constructor(init?: ICD_DisposeObjectPB);
   header: ICDHeader;
-  parentObject: number;
-  objectInfo: ICAObjectInfo;
   object: number;
 }
 
@@ -667,12 +665,6 @@ declare class ICAUnloadDeviceModulePB {
   constructor(init?: ICAUnloadDeviceModulePB);
   header: ICAHeader;
   deviceObject: number;
-}
-
-declare class ICALoadDeviceModulePB {
-  constructor(init?: ICALoadDeviceModulePB);
-  header: ICAHeader;
-  paramDictionary: interop.Object | null;
 }
 
 declare class ICAUploadFilePB {
@@ -746,12 +738,6 @@ declare class ICAHeader {
   refcon: number;
 }
 
-declare class ICD_DisposeObjectPB {
-  constructor(init?: ICD_DisposeObjectPB);
-  header: ICDHeader;
-  object: number;
-}
-
 declare class ICD_Scannerscanner_callback_functions {
   constructor(init?: ICD_Scannerscanner_callback_functions);
   f_ICD_ScannerOpenUSBDevice: (p1: number, p2: interop.PointerConvertible) => number | null;
@@ -801,6 +787,30 @@ declare class ICAPTPEventDataset {
   params: unknown /* const array */;
 }
 
+declare class ICD_ScannerStatusPB {
+  constructor(init?: ICD_ScannerStatusPB);
+  header: ICDHeader;
+  object: number;
+  objectInfo: ICAObjectInfo;
+  connectionID: number;
+  sessionID: number;
+  status: number;
+}
+
+declare class ICAScannerCloseSessionPB {
+  constructor(init?: ICAScannerCloseSessionPB);
+  header: ICAHeader;
+  sessionID: number;
+}
+
+declare class ICAObjectSendMessagePB {
+  constructor(init?: ICAObjectSendMessagePB);
+  header: ICAHeader;
+  object: number;
+  message: ICAMessage;
+  result: number;
+}
+
 declare class ICD_callback_functions {
   constructor(init?: ICD_callback_functions);
   f_ICD_OpenUSBDevice: (p1: number, p2: interop.PointerConvertible) => number | null;
@@ -826,30 +836,6 @@ declare class ICD_callback_functions {
   f_ICD_ReadFileData64: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number, p5: interop.PointerConvertible) => number | null;
 }
 
-declare class ICD_ScannerStatusPB {
-  constructor(init?: ICD_ScannerStatusPB);
-  header: ICDHeader;
-  object: number;
-  objectInfo: ICAObjectInfo;
-  connectionID: number;
-  sessionID: number;
-  status: number;
-}
-
-declare class ICAScannerCloseSessionPB {
-  constructor(init?: ICAScannerCloseSessionPB);
-  header: ICAHeader;
-  sessionID: number;
-}
-
-declare class ICAObjectSendMessagePB {
-  constructor(init?: ICAObjectSendMessagePB);
-  header: ICAHeader;
-  object: number;
-  message: ICAMessage;
-  result: number;
-}
-
 declare class ICARawFileHeader {
   constructor(init?: ICARawFileHeader);
   imageDataOffset: number;
@@ -865,6 +851,14 @@ declare class ICARawFileHeader {
   orientation: number;
   dpi: number;
   colorSyncModeStr: unknown /* const array */;
+}
+
+declare class ICD_NewObjectPB {
+  constructor(init?: ICD_NewObjectPB);
+  header: ICDHeader;
+  parentObject: number;
+  objectInfo: ICAObjectInfo;
+  object: number;
 }
 
 declare class ICAPTPPassThroughPB {
@@ -933,6 +927,12 @@ declare class ICASendNotificationPB {
   header: ICAHeader;
   notificationDictionary: interop.Object | null;
   replyCode: number;
+}
+
+declare class ICALoadDeviceModulePB {
+  constructor(init?: ICALoadDeviceModulePB);
+  header: ICAHeader;
+  paramDictionary: interop.Object | null;
 }
 
 declare class ICD_ScannerOpenSessionPB {

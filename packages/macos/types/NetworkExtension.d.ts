@@ -254,15 +254,15 @@ declare const NEVPNIKEv2TLSVersion: {
   Version1_2: 3,
 };
 
+declare const NEFilterManagerGrade: {
+  Firewall: 1,
+  Inspector: 2,
+};
+
 declare const NETrafficDirection: {
   Any: 0,
   Inbound: 1,
   Outbound: 2,
-};
-
-declare const NEFilterManagerGrade: {
-  Firewall: 1,
-  Inspector: 2,
 };
 
 declare const NEProviderStopReason: {

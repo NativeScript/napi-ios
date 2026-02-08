@@ -5,9 +5,13 @@ declare const kUTType3dObject: string;
 
 declare const MDLVertexAttributeTangent: string;
 
-declare const MDLVertexAttributeShadingBasisU: string;
+declare const MDLVertexAttributeShadingBasisV: string;
+
+declare const MDLVertexAttributeAnisotropy: string;
 
 declare const MDLVertexAttributeSubdivisionStencil: string;
+
+declare const MDLVertexAttributeShadingBasisU: string;
 
 declare const MDLVertexAttributePosition: string;
 
@@ -19,17 +23,15 @@ declare const MDLVertexAttributeColor: string;
 
 declare const MDLVertexAttributeBinormal: string;
 
-declare const MDLVertexAttributeAnisotropy: string;
-
 declare const kUTTypeStereolithography: string;
 
-declare const MDLVertexAttributeTextureCoordinate: string;
+declare const kUTTypeUniversalSceneDescription: string;
 
 declare const kUTTypeUniversalSceneDescriptionMobile: string;
 
-declare const MDLVertexAttributeShadingBasisV: string;
-
 declare const MDLVertexAttributeJointIndices: string;
+
+declare const MDLVertexAttributeTextureCoordinate: string;
 
 declare const kUTTypeAlembic: string;
 
@@ -38,8 +40,6 @@ declare const MDLVertexAttributeOcclusionValue: string;
 declare const MDLVertexAttributeNormal: string;
 
 declare const MDLVertexAttributeBitangent: string;
-
-declare const kUTTypeUniversalSceneDescription: string;
 
 declare const kUTTypePolygon: string;
 

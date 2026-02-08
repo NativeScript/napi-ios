@@ -3188,6 +3188,12 @@ declare class AudioFileFDFTable {
   mSetUserDataFDF: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
 }
 
+declare class MusicTrackLoopInfo {
+  constructor(init?: MusicTrackLoopInfo);
+  loopDuration: number;
+  numberOfLoops: number;
+}
+
 declare class OpaqueMusicEventIterator {
   constructor(init?: OpaqueMusicEventIterator);
 }
@@ -3346,7 +3352,7 @@ declare class CAF_UUID_ChunkHeader {
 declare class AudioUnitEvent {
   constructor(init?: AudioUnitEvent);
   mEventType: interop.Enum<typeof AudioUnitEventType>;
-  mArgument: unnamed_13947470721826386345;
+  mArgument: unnamed_16171059798322955512;
 }
 
 declare class AudioQueueChannelAssignment {
@@ -3420,7 +3426,7 @@ declare class AudioConverterPrimeInfo {
 declare class AUNodeInteraction {
   constructor(init?: AUNodeInteraction);
   nodeInteractionType: number;
-  nodeInteraction: unnamed_3130829713674069069;
+  nodeInteraction: unnamed_14496930269503365984;
 }
 
 declare class AUNodeRenderCallback {
@@ -3594,12 +3600,6 @@ declare class AudioUnitOtherPluginDesc {
   plugin: AudioClassDescription;
 }
 
-declare class unnamed_4074884453758864081 {
-  constructor(init?: unnamed_4074884453758864081);
-  inDistance: number;
-  outGain: number;
-}
-
 declare class AUParameterMIDIMapping {
   constructor(init?: AUParameterMIDIMapping);
   mScope: number;
@@ -3707,8 +3707,14 @@ declare class AudioUnitProperty {
   mElement: number;
 }
 
-declare class unnamed_2725107352729187408 {
-  constructor(init?: unnamed_2725107352729187408);
+declare class unnamed_10188705209075973754 {
+  constructor(init?: unnamed_10188705209075973754);
+  bufferOffset: number;
+  value: number;
+}
+
+declare class unnamed_11727281858413554041 {
+  constructor(init?: unnamed_11727281858413554041);
   startBufferOffset: number;
   durationInFrames: number;
   startValue: number;
@@ -3721,13 +3727,19 @@ declare class AudioUnitParameterEvent {
   element: number;
   parameter: number;
   eventType: interop.Enum<typeof AUParameterEventType>;
-  eventValues: unnamed_15254118604261026898;
+  eventValues: unnamed_9261407683723176217;
 }
 
 declare class AudioCodecMagicCookieInfo {
   constructor(init?: AudioCodecMagicCookieInfo);
   mMagicCookieSize: number;
   mMagicCookie: interop.Pointer;
+}
+
+declare class unnamed_14146872437778739159 {
+  constructor(init?: unnamed_14146872437778739159);
+  inDistance: number;
+  outGain: number;
 }
 
 declare class AudioQueueBuffer {
@@ -3870,19 +3882,13 @@ declare class CAClockTime {
   constructor(init?: CAClockTime);
   format: interop.Enum<typeof CAClockTimeFormat>;
   reserved: number;
-  time: unnamed_647876766729981141;
+  time: unnamed_1769515209430948737;
 }
 
 declare class AudioCodecPrimeInfo {
   constructor(init?: AudioCodecPrimeInfo);
   leadingFrames: number;
   trailingFrames: number;
-}
-
-declare class unnamed_15610093718085877846 {
-  constructor(init?: unnamed_15610093718085877846);
-  bufferOffset: number;
-  value: number;
 }
 
 declare class AudioUnitPresetMAS_SettingData {
@@ -3939,17 +3945,6 @@ declare class CAFAudioFormatListItem {
   mChannelLayoutTag: number;
 }
 
-declare class OpaqueAudioComponent {
-  constructor(init?: OpaqueAudioComponent);
-}
-
-declare class MIDIEventList {
-  constructor(init?: MIDIEventList);
-  protocol: interop.Enum<typeof MIDIProtocolID>;
-  numPackets: number;
-  packet: unknown /* const array */;
-}
-
 declare class CAFStringID {
   constructor(init?: CAFStringID);
   mStringID: number;
@@ -3990,6 +3985,13 @@ declare class MixerDistanceParams {
   mReferenceDistance: number;
   mMaxDistance: number;
   mMaxAttenuation: number;
+}
+
+declare class MIDIEventList {
+  constructor(init?: MIDIEventList);
+  protocol: interop.Enum<typeof MIDIProtocolID>;
+  numPackets: number;
+  packet: unknown /* const array */;
 }
 
 declare class CAFFileHeader {
@@ -4083,6 +4085,10 @@ declare class AudioUnitParameter {
   mElement: number;
 }
 
+declare class OpaqueAudioComponent {
+  constructor(init?: OpaqueAudioComponent);
+}
+
 declare class AudioFileMarker {
   constructor(init?: AudioFileMarker);
   mFramePosition: number;
@@ -4121,12 +4127,6 @@ declare class CAFChunkHeader {
   mChunkSize: number;
 }
 
-declare class MusicTrackLoopInfo {
-  constructor(init?: MusicTrackLoopInfo);
-  loopDuration: number;
-  numberOfLoops: number;
-}
-
 declare class OpaqueAudioFileID {
   constructor(init?: OpaqueAudioFileID);
 }
@@ -4138,28 +4138,22 @@ declare class CAMeterTrackEntry {
   meterDenom: number;
 }
 
-type unnamed_647876766729981141Descriptor = 
-  | { hostTime: number }
-  | { samples: number }
-  | { beats: number }
-  | { seconds: number }
-  | { smpte: SMPTETime };
+type unnamed_14496930269503365984Descriptor = 
+  | { connection: AudioUnitNodeConnection }
+  | { inputCallback: AUNodeRenderCallback };
 
-declare class unnamed_647876766729981141 {
-  constructor(init?: unnamed_647876766729981141Descriptor);
-  hostTime: number;
-  samples: number;
-  beats: number;
-  seconds: number;
-  smpte: SMPTETime;
+declare class unnamed_14496930269503365984 {
+  constructor(init?: unnamed_14496930269503365984Descriptor);
+  connection: AudioUnitNodeConnection;
+  inputCallback: AUNodeRenderCallback;
 }
 
-type unnamed_13947470721826386345Descriptor = 
+type unnamed_16171059798322955512Descriptor = 
   | { mParameter: AudioUnitParameter }
   | { mProperty: AudioUnitProperty };
 
-declare class unnamed_13947470721826386345 {
-  constructor(init?: unnamed_13947470721826386345Descriptor);
+declare class unnamed_16171059798322955512 {
+  constructor(init?: unnamed_16171059798322955512Descriptor);
   mParameter: AudioUnitParameter;
   mProperty: AudioUnitProperty;
 }
@@ -4178,24 +4172,30 @@ declare class AURenderEvent {
   MIDIEventsList: AUMIDIEventList;
 }
 
-type unnamed_15254118604261026898Descriptor = 
-  | { ramp: unnamed_2725107352729187408 }
-  | { immediate: unnamed_15610093718085877846 };
+type unnamed_9261407683723176217Descriptor = 
+  | { ramp: unnamed_11727281858413554041 }
+  | { immediate: unnamed_10188705209075973754 };
 
-declare class unnamed_15254118604261026898 {
-  constructor(init?: unnamed_15254118604261026898Descriptor);
-  ramp: unnamed_2725107352729187408;
-  immediate: unnamed_15610093718085877846;
+declare class unnamed_9261407683723176217 {
+  constructor(init?: unnamed_9261407683723176217Descriptor);
+  ramp: unnamed_11727281858413554041;
+  immediate: unnamed_10188705209075973754;
 }
 
-type unnamed_3130829713674069069Descriptor = 
-  | { connection: AudioUnitNodeConnection }
-  | { inputCallback: AUNodeRenderCallback };
+type unnamed_1769515209430948737Descriptor = 
+  | { hostTime: number }
+  | { samples: number }
+  | { beats: number }
+  | { seconds: number }
+  | { smpte: SMPTETime };
 
-declare class unnamed_3130829713674069069 {
-  constructor(init?: unnamed_3130829713674069069Descriptor);
-  connection: AudioUnitNodeConnection;
-  inputCallback: AUNodeRenderCallback;
+declare class unnamed_1769515209430948737 {
+  constructor(init?: unnamed_1769515209430948737Descriptor);
+  hostTime: number;
+  samples: number;
+  beats: number;
+  seconds: number;
+  smpte: SMPTETime;
 }
 
 declare function AudioComponentFindNext(inComponent: interop.PointerConvertible, inDesc: interop.PointerConvertible): interop.Pointer;

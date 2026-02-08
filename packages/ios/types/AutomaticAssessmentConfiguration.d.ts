@@ -51,6 +51,10 @@ declare class AEAssessmentConfiguration extends NSObject implements NSCopying {
 
   allowsDictation: boolean;
 
+  allowsAccessibilityLiveCaptions: boolean;
+
+  allowsAccessibilityReader: boolean;
+
   allowsAccessibilitySpeech: boolean;
 
   allowsAccessibilityTypingFeedback: boolean;
@@ -78,6 +82,10 @@ declare class AEAssessmentConfiguration extends NSObject implements NSCopying {
   setAllowsActivityContinuation(allowsActivityContinuation: boolean): void;
 
   setAllowsDictation(allowsDictation: boolean): void;
+
+  setAllowsAccessibilityLiveCaptions(allowsAccessibilityLiveCaptions: boolean): void;
+
+  setAllowsAccessibilityReader(allowsAccessibilityReader: boolean): void;
 
   setAllowsAccessibilitySpeech(allowsAccessibilitySpeech: boolean): void;
 

@@ -709,7 +709,7 @@ declare const AVVideoProfileLevelH264HighAutoLevel: string;
 
 declare const AVVideoProfileLevelH264High41: string;
 
-declare const AVVideoProfileLevelH264MainAutoLevel: string;
+declare const AVVideoProfileLevelH264High40: string;
 
 declare const AVVideoProfileLevelH264BaselineAutoLevel: string;
 
@@ -1193,6 +1193,8 @@ declare const AVMetadataObjectTypeSalientObject: string;
 
 declare const AVMetadata3GPUserDataKeyCollection: string;
 
+declare const AVVideoProfileLevelH264MainAutoLevel: string;
+
 declare const AVMetadataiTunesMetadataKeyEQ: string;
 
 declare const AVMetadataQuickTimeUserDataKeyInformation: string;
@@ -1350,6 +1352,8 @@ declare const AVMetadataiTunesMetadataKeyArtist: string;
 declare const AVCaptureDeviceTypeContinuityCamera: string;
 
 declare const AVCaptureReactionTypeThumbsDown: string;
+
+declare const AVFileTypeQuickTimeAudio: string;
 
 declare const AVMetadata3GPUserDataKeyRecordingYear: string;
 
@@ -1724,8 +1728,6 @@ declare const AVMetadataQuickTimeMetadataKeyCameraFrameReadoutTime: string;
 declare const AVMetadataIdentifierID3MetadataPayment: string;
 
 declare const AVMetadataID3MetadataKeySynchronizedLyric: string;
-
-declare const AVVideoProfileLevelH264High40: string;
 
 declare const AVMetadataIdentifierQuickTimeMetadataCameraLensModel: string;
 
@@ -4385,6 +4387,10 @@ declare class AVCaptureDeviceFormat extends NSObject {
   readonly videoFrameRateRangeForBackgroundReplacement: AVFrameRateRange;
 
   isBackgroundReplacementSupported(): boolean;
+
+  readonly edgeLightSupported: boolean;
+
+  isEdgeLightSupported(): boolean;
 
   readonly cinematicVideoCaptureSupported: boolean;
 
@@ -7444,6 +7450,14 @@ declare class AVCaptureDevice extends NSObject {
   static isStudioLightEnabled(): boolean;
 
   isStudioLightActive(): boolean;
+
+  static readonly edgeLightEnabled: boolean;
+
+  static readonly edgeLightActive: boolean;
+
+  static isEdgeLightEnabled(): boolean;
+
+  static isEdgeLightActive(): boolean;
 
   setCameraLensSmudgeDetectionEnabledDetectionInterval(cameraLensSmudgeDetectionEnabled: boolean, detectionInterval: CMTime): void;
 

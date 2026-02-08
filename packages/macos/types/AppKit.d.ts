@@ -6373,13 +6373,6 @@ declare const NSTabViewControllerTabStyle: {
   Unspecified: -1,
 };
 
-declare const NSSegmentSwitchTracking: {
-  SelectOne: 0,
-  SelectAny: 1,
-  Momentary: 2,
-  MomentaryAccelerator: 3,
-};
-
 declare const NSImageLayoutDirection: {
   Unspecified: -1,
   LeftToRight: 2,
@@ -6509,6 +6502,13 @@ declare const NSLineSweepDirection: {
   Right: 1,
   Down: 2,
   Up: 3,
+};
+
+declare const NSSegmentSwitchTracking: {
+  SelectOne: 0,
+  SelectAny: 1,
+  Momentary: 2,
+  MomentaryAccelerator: 3,
 };
 
 declare const NSScrollArrowPosition: {
@@ -11840,77 +11840,6 @@ declare class NSFontAssetRequest extends NSObject implements NSProgressReporting
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-declare class NSRulerView extends NSView {
-  static registerUnitWithNameAbbreviationUnitToPointsConversionFactorStepUpCycleStepDownCycle(unitName: string, abbreviation: string, conversionFactor: number, stepUpCycle: NSArray<interop.Object> | Array<interop.Object>, stepDownCycle: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  initWithScrollViewOrientation(scrollView: NSScrollView | null, orientation: interop.Enum<typeof NSRulerOrientation>): this;
-
-  scrollView: NSScrollView;
-
-  orientation: interop.Enum<typeof NSRulerOrientation>;
-
-  readonly baselineLocation: number;
-
-  readonly requiredThickness: number;
-
-  ruleThickness: number;
-
-  reservedThicknessForMarkers: number;
-
-  reservedThicknessForAccessoryView: number;
-
-  measurementUnits: string;
-
-  originOffset: number;
-
-  clientView: NSView;
-
-  addMarker(marker: NSRulerMarker): void;
-
-  removeMarker(marker: NSRulerMarker): void;
-
-  get markers(): NSArray;
-  set markers(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  trackMarkerWithMouseEvent(marker: NSRulerMarker, event: NSEvent): boolean;
-
-  accessoryView: NSView;
-
-  moveRulerlineFromLocationToLocation(oldLocation: number, newLocation: number): void;
-
-  invalidateHashMarks(): void;
-
-  drawHashMarksAndLabelsInRect(rect: CGRect): void;
-
-  drawMarkersInRect(rect: CGRect): void;
-
-  readonly flipped: boolean;
-
-  setScrollView(scrollView: NSScrollView | null): void;
-
-  setOrientation(orientation: interop.Enum<typeof NSRulerOrientation>): void;
-
-  setRuleThickness(ruleThickness: number): void;
-
-  setReservedThicknessForMarkers(reservedThicknessForMarkers: number): void;
-
-  setReservedThicknessForAccessoryView(reservedThicknessForAccessoryView: number): void;
-
-  setMeasurementUnits(measurementUnits: string): void;
-
-  setOriginOffset(originOffset: number): void;
-
-  setClientView(clientView: NSView | null): void;
-
-  setMarkers(markers: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setAccessoryView(accessoryView: NSView | null): void;
-
-  isFlipped(): boolean;
 }
 
 declare class NSPredicateEditor extends NSRuleEditor {
@@ -20642,6 +20571,77 @@ declare class NSController extends NSObject implements NSCoding, NSEditor, NSEdi
   readonly debugDescription: string;
 }
 
+declare class NSRulerView extends NSView {
+  static registerUnitWithNameAbbreviationUnitToPointsConversionFactorStepUpCycleStepDownCycle(unitName: string, abbreviation: string, conversionFactor: number, stepUpCycle: NSArray<interop.Object> | Array<interop.Object>, stepDownCycle: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  initWithScrollViewOrientation(scrollView: NSScrollView | null, orientation: interop.Enum<typeof NSRulerOrientation>): this;
+
+  scrollView: NSScrollView;
+
+  orientation: interop.Enum<typeof NSRulerOrientation>;
+
+  readonly baselineLocation: number;
+
+  readonly requiredThickness: number;
+
+  ruleThickness: number;
+
+  reservedThicknessForMarkers: number;
+
+  reservedThicknessForAccessoryView: number;
+
+  measurementUnits: string;
+
+  originOffset: number;
+
+  clientView: NSView;
+
+  addMarker(marker: NSRulerMarker): void;
+
+  removeMarker(marker: NSRulerMarker): void;
+
+  get markers(): NSArray;
+  set markers(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  trackMarkerWithMouseEvent(marker: NSRulerMarker, event: NSEvent): boolean;
+
+  accessoryView: NSView;
+
+  moveRulerlineFromLocationToLocation(oldLocation: number, newLocation: number): void;
+
+  invalidateHashMarks(): void;
+
+  drawHashMarksAndLabelsInRect(rect: CGRect): void;
+
+  drawMarkersInRect(rect: CGRect): void;
+
+  readonly flipped: boolean;
+
+  setScrollView(scrollView: NSScrollView | null): void;
+
+  setOrientation(orientation: interop.Enum<typeof NSRulerOrientation>): void;
+
+  setRuleThickness(ruleThickness: number): void;
+
+  setReservedThicknessForMarkers(reservedThicknessForMarkers: number): void;
+
+  setReservedThicknessForAccessoryView(reservedThicknessForAccessoryView: number): void;
+
+  setMeasurementUnits(measurementUnits: string): void;
+
+  setOriginOffset(originOffset: number): void;
+
+  setClientView(clientView: NSView | null): void;
+
+  setMarkers(markers: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setAccessoryView(accessoryView: NSView | null): void;
+
+  isFlipped(): boolean;
+}
+
 declare class NSSplitViewItemAccessoryViewController extends NSViewController implements NSAnimatablePropertyContainer {
   hidden: boolean;
 
@@ -20655,11 +20655,15 @@ declare class NSSplitViewItemAccessoryViewController extends NSViewController im
 
   viewDidDisappear(): void;
 
+  preferredScrollEdgeEffectStyle: NSScrollEdgeEffectStyle;
+
   isHidden(): boolean;
 
   setHidden(hidden: boolean): void;
 
   setAutomaticallyAppliesContentInsets(automaticallyAppliesContentInsets: boolean): void;
+
+  setPreferredScrollEdgeEffectStyle(preferredScrollEdgeEffectStyle: NSScrollEdgeEffectStyle): void;
 
   animator(): this;
 
@@ -22193,6 +22197,8 @@ declare class NSTitlebarAccessoryViewController extends NSViewController impleme
 
   viewDidDisappear(): void;
 
+  preferredScrollEdgeEffectStyle: NSScrollEdgeEffectStyle;
+
   setLayoutAttribute(layoutAttribute: interop.Enum<typeof NSLayoutAttribute>): void;
 
   setFullScreenMinHeight(fullScreenMinHeight: number): void;
@@ -22202,6 +22208,8 @@ declare class NSTitlebarAccessoryViewController extends NSViewController impleme
   setHidden(hidden: boolean): void;
 
   setAutomaticallyAdjustsSize(automaticallyAdjustsSize: boolean): void;
+
+  setPreferredScrollEdgeEffectStyle(preferredScrollEdgeEffectStyle: NSScrollEdgeEffectStyle): void;
 
   animationShouldStart(animation: NSAnimation): boolean;
 
@@ -28624,6 +28632,14 @@ declare class NSLayoutGuide extends NSObject implements NSCoding, NSUserInterfac
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class NSScrollEdgeEffectStyle extends NSObject {
+  static readonly automaticStyle: NSScrollEdgeEffectStyle;
+
+  static readonly softStyle: NSScrollEdgeEffectStyle;
+
+  static readonly hardStyle: NSScrollEdgeEffectStyle;
 }
 
 declare class NSSplitViewItem extends NSObject implements NSAnimatablePropertyContainer, NSCoding {

@@ -244,11 +244,6 @@ declare class TW_DECODEFUNCTION {
   SampleCount: TW_FIX32;
 }
 
-declare class TW_RGBRESPONSE {
-  constructor(init?: TW_RGBRESPONSE);
-  Response: unknown /* const array */;
-}
-
 declare class TW_TWUNKDSENTRYPARAMS {
   constructor(init?: TW_TWUNKDSENTRYPARAMS);
   destFlag: number;
@@ -309,6 +304,11 @@ declare class TW_CUSTOMDSDATA {
   hData: interop.Pointer;
 }
 
+declare class TW_RGBRESPONSE {
+  constructor(init?: TW_RGBRESPONSE);
+  Response: unknown /* const array */;
+}
+
 declare class TW_AUDIOINFO {
   constructor(init?: TW_AUDIOINFO);
   Name: unknown /* const array */;
@@ -351,15 +351,15 @@ declare class TW_STATUS {
 declare class TW_PENDINGXFERS {
   constructor(init?: TW_PENDINGXFERS);
   Count: number;
-  TW_JOBCONTROL: unnamed_15227971832212315252;
+  TW_JOBCONTROL: unnamed_14475009369635555657;
 }
 
-type unnamed_15227971832212315252Descriptor = 
+type unnamed_14475009369635555657Descriptor = 
   | { EOJ: number }
   | { Reserved: number };
 
-declare class unnamed_15227971832212315252 {
-  constructor(init?: unnamed_15227971832212315252Descriptor);
+declare class unnamed_14475009369635555657 {
+  constructor(init?: unnamed_14475009369635555657Descriptor);
   EOJ: number;
   Reserved: number;
 }

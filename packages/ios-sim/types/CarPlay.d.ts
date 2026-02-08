@@ -6,25 +6,25 @@ declare const CPMaximumMessageItemLeadingDetailTextImageSize: CGSize;
 
 declare const CPMaximumMessageItemImageSize: CGSize;
 
-declare const CPNavigationAlertMinimumDuration: number;
-
 declare const CPMaximumNumberOfGridImages: number;
 
 declare const CarPlayErrorDomain: string;
+
+declare const CPButtonMaximumImageSize: CGSize;
 
 declare const CPTemplateApplicationDashboardSceneSessionRoleApplication: string;
 
 declare const CPMaximumListSectionImageSize: CGSize;
 
+declare const CPTemplateApplicationSceneSessionRoleApplication: string;
+
 declare const CPGridTemplateMaximumItems: number;
-
-declare const CPButtonMaximumImageSize: CGSize;
-
-declare const CPTemplateApplicationInstrumentClusterSceneSessionRoleApplication: string;
 
 declare const CPNowPlayingButtonMaximumImageSize: CGSize;
 
-declare const CPTemplateApplicationSceneSessionRoleApplication: string;
+declare const CPTemplateApplicationInstrumentClusterSceneSessionRoleApplication: string;
+
+declare const CPNavigationAlertMinimumDuration: number;
 
 declare const CPMessageLeadingItem: {
   None: 0,
@@ -239,6 +239,14 @@ declare const CPListItemAccessoryType: {
   DisclosureIndicator: 1,
   Cloud: 2,
 };
+
+declare function NSStringFromCPManeuverType(maneuverType: interop.Enum<typeof CPManeuverType>): string;
+
+declare function NSStringFromCPJunctionType(junctionType: interop.Enum<typeof CPJunctionType>): string;
+
+declare function NSStringFromCPTrafficSide(trafficSide: interop.Enum<typeof CPTrafficSide>): string;
+
+declare function NSStringFromCPLaneStatus(laneStatus: interop.Enum<typeof CPLaneStatus>): string;
 
 declare interface CPTemplateApplicationSceneDelegate extends UISceneDelegate {
   templateApplicationSceneDidConnectInterfaceControllerToWindow?(templateApplicationScene: CPTemplateApplicationScene, interfaceController: CPInterfaceController, window: CPWindow): void;

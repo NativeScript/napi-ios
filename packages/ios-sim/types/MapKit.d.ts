@@ -4,49 +4,23 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const MKMapCameraZoomDefault: number;
-
-declare const MKAnnotationViewZPriorityMin: number;
+declare const MKMapViewDefaultClusterAnnotationViewReuseIdentifier: string;
 
 declare const MKAnnotationViewZPriorityDefaultUnselected: number;
 
-declare const MKAnnotationViewZPriorityMax: number;
+declare const MKAnnotationViewZPriorityDefaultSelected: number;
 
-declare const MKFeatureDisplayPriorityDefaultHigh: number;
-
-declare const MKFeatureDisplayPriorityRequired: number;
-
-declare const MKPointsOfInterestRequestMaxRadius: number;
-
-declare const MKLaunchOptionsCameraKey: string;
-
-declare const MKLaunchOptionsMapSpanKey: string;
-
-declare const MKLaunchOptionsMapCenterKey: string;
+declare const MKFeatureDisplayPriorityDefaultLow: number;
 
 declare const MKLaunchOptionsDirectionsModeTransit: string;
 
 declare const MKLaunchOptionsDirectionsModeWalking: string;
 
-declare const MKLaunchOptionsDirectionsModeDriving: string;
-
 declare const MKLaunchOptionsDirectionsModeDefault: string;
-
-declare const MKLaunchOptionsMapTypeKey: string;
-
-declare const MKLaunchOptionsDirectionsModeKey: string;
 
 declare const MKPointOfInterestCategoryZoo: string;
 
-declare const MKPointOfInterestCategoryVolleyball: string;
-
 declare const MKPointOfInterestCategoryWinery: string;
-
-declare const MKPointOfInterestCategoryUniversity: string;
-
-declare const MKPointOfInterestCategoryTheater: string;
-
-declare const MKPointOfInterestCategoryTennis: string;
 
 declare const MKPointOfInterestCategorySwimming: string;
 
@@ -54,71 +28,51 @@ declare const MKPointOfInterestCategoryStore: string;
 
 declare const MKPointOfInterestCategorySpa: string;
 
-declare const MKPointOfInterestCategorySoccer: string;
-
 declare const MKPointOfInterestCategorySkating: string;
-
-declare const MKPointOfInterestCategorySchool: string;
 
 declare const MKPointOfInterestCategoryRVPark: string;
 
-declare const MKPointOfInterestCategoryRestroom: string;
+declare const MKPointOfInterestCategoryPostOffice: string;
 
-declare const MKPointOfInterestCategoryRestaurant: string;
+declare const MKPointOfInterestCategoryPolice: string;
 
 declare const MKPointOfInterestCategoryPlanetarium: string;
-
-declare const MKPointOfInterestCategoryParking: string;
 
 declare const MKPointOfInterestCategoryPark: string;
 
 declare const MKPointOfInterestCategoryNationalMonument: string;
 
+declare const MKPointOfInterestCategoryMusicVenue: string;
+
+declare const MKPointOfInterestCategoryMovieTheater: string;
+
 declare const MKPointOfInterestCategoryMiniGolf: string;
+
+declare const MKPointOfInterestCategoryMarina: string;
 
 declare const MKPointOfInterestCategoryMailbox: string;
 
-declare const MKPointOfInterestCategoryLibrary: string;
-
 declare const MKPointOfInterestCategoryLandmark: string;
 
-declare const MKPointOfInterestCategoryKayaking: string;
-
 declare const MKPointOfInterestCategoryHospital: string;
-
-declare const MKPointOfInterestCategoryHiking: string;
 
 declare const MKPointOfInterestCategoryGolf: string;
 
 declare const MKPointOfInterestCategoryGasStation: string;
 
-declare const MKPointOfInterestCategoryFortress: string;
-
 declare const MKPointOfInterestCategoryFoodMarket: string;
 
 declare const MKPointOfInterestCategoryFitnessCenter: string;
 
-declare const MKPointOfInterestCategoryFireStation: string;
+declare const MKPointOfInterestCategoryCarRental: string;
 
-declare const MKPointOfInterestCategoryConventionCenter: string;
+declare const MKPointOfInterestCategoryCafe: string;
 
-declare const MKPointOfInterestCategoryCastle: string;
-
-declare const MKPointOfInterestCategoryBowling: string;
+declare const MKPointOfInterestCategoryBeauty: string;
 
 declare const MKPointOfInterestCategoryBeach: string;
 
-declare const MKPointOfInterestCategoryBasketball: string;
-
-declare const MKPointOfInterestCategoryBaseball: string;
-
 declare const MKPointOfInterestCategoryBakery: string;
-
-declare const MKPointOfInterestCategoryATM: string;
-
-declare const MKPointOfInterestCategoryAquarium: string;
-
-declare const MKPointOfInterestCategoryAmusementPark: string;
 
 declare const MKPointOfInterestCategoryAnimalService: string;
 
@@ -128,83 +82,129 @@ declare const MKMapSizeWorld: MKMapSize;
 
 declare const MKErrorDomain: string;
 
-declare const MKPointOfInterestCategoryPostOffice: string;
-
-declare const MKFeatureDisplayPriorityDefaultLow: number;
-
 declare const MKPointOfInterestCategorySurfing: string;
+
+declare const MKLaunchOptionsMapSpanKey: string;
 
 declare const MKPointOfInterestCategorySkatePark: string;
 
-declare const MKPointOfInterestCategoryMovieTheater: string;
+declare const MKPointOfInterestCategoryHiking: string;
 
-declare const MKPointOfInterestCategoryPolice: string;
+declare const MKPointOfInterestCategoryTennis: string;
+
+declare const MKPointOfInterestCategoryBasketball: string;
 
 declare const MKPointOfInterestCategoryPublicTransport: string;
 
+declare const MKPointOfInterestCategoryConventionCenter: string;
+
 declare const MKPointOfInterestCategoryPharmacy: string;
 
-declare const MKAnnotationViewZPriorityDefaultSelected: number;
+declare const MKPointOfInterestCategoryLibrary: string;
+
+declare const MKPointOfInterestCategoryParking: string;
+
+declare const MKPointOfInterestCategorySkiing: string;
+
+declare const MKPointOfInterestCategoryFairground: string;
+
+declare const MKPointOfInterestCategoryKayaking: string;
+
+declare const MKPointOfInterestCategoryTheater: string;
+
+declare const MKPointOfInterestCategorySchool: string;
 
 declare const MKLaunchOptionsDirectionsModeCycling: string;
+
+declare const MKPointOfInterestCategoryBrewery: string;
 
 declare const MKMapViewDefaultAnnotationViewReuseIdentifier: string;
 
 declare const MKPointOfInterestCategoryAirport: string;
 
+declare const MKPointOfInterestCategoryGoKart: string;
+
 declare const MKPointOfInterestCategoryDistillery: string;
+
+declare const MKPointOfInterestCategoryAmusementPark: string;
+
+declare const MKPointsOfInterestRequestMaxRadius: number;
 
 declare const MKMapItemTypeIdentifier: string;
 
 declare const MKPointOfInterestCategoryBank: string;
 
+declare const MKPointOfInterestCategoryUniversity: string;
+
+declare const MKPointOfInterestCategoryBaseball: string;
+
+declare const MKAnnotationViewZPriorityMax: number;
+
+declare const MKPointOfInterestCategoryStadium: string;
+
 declare const MKPointOfInterestCategoryFishing: string;
 
-declare const MKPointOfInterestCategoryMusicVenue: string;
+declare const MKFeatureDisplayPriorityRequired: number;
+
+declare const MKPointOfInterestCategoryAquarium: string;
 
 declare const MKPointOfInterestCategoryEVCharger: string;
 
 declare const MKPointOfInterestCategoryNationalPark: string;
 
+declare const MKPointOfInterestCategoryRockClimbing: string;
+
 declare const MKLaunchOptionsShowsTrafficKey: string;
 
-declare const MKPointOfInterestCategoryMarina: string;
+declare const MKLaunchOptionsMapTypeKey: string;
 
 declare const MKAnnotationCalloutInfoDidChangeNotification: string;
 
+declare const MKLaunchOptionsDirectionsModeKey: string;
+
+declare const MKPointOfInterestCategoryFortress: string;
+
 declare const MKMapRectWorld: MKMapRect;
 
-declare const MKPointOfInterestCategoryCafe: string;
+declare const MKFeatureDisplayPriorityDefaultHigh: number;
 
-declare const MKPointOfInterestCategorySkiing: string;
+declare const MKPointOfInterestCategoryNightlife: string;
 
-declare const MKPointOfInterestCategoryRockClimbing: string;
-
-declare const MKPointOfInterestCategoryBrewery: string;
-
-declare const MKMapViewDefaultClusterAnnotationViewReuseIdentifier: string;
+declare const MKLaunchOptionsMapCenterKey: string;
 
 declare const MKPointOfInterestCategoryCampground: string;
 
 declare const MKPointOfInterestCategoryAutomotiveRepair: string;
 
-declare const MKPointOfInterestCategoryFairground: string;
+declare const MKPointOfInterestCategoryVolleyball: string;
 
-declare const MKPointOfInterestCategoryMuseum: string;
+declare const MKPointOfInterestCategoryATM: string;
+
+declare const MKAnnotationViewZPriorityMin: number;
+
+declare const MKLaunchOptionsCameraKey: string;
 
 declare const MKPointOfInterestCategoryLaundry: string;
 
+declare const MKPointOfInterestCategoryBowling: string;
+
+declare const MKPointOfInterestCategoryCastle: string;
+
+declare const MKPointOfInterestCategoryMuseum: string;
+
+declare const MKLaunchOptionsDirectionsModeDriving: string;
+
+declare const MKPointOfInterestCategoryRestroom: string;
+
+declare const MKMapCameraZoomDefault: number;
+
 declare const MKPointOfInterestCategoryHotel: string;
 
-declare const MKPointOfInterestCategoryBeauty: string;
+declare const MKPointOfInterestCategoryFireStation: string;
 
-declare const MKPointOfInterestCategoryNightlife: string;
+declare const MKPointOfInterestCategorySoccer: string;
 
-declare const MKPointOfInterestCategoryCarRental: string;
-
-declare const MKPointOfInterestCategoryGoKart: string;
-
-declare const MKPointOfInterestCategoryStadium: string;
+declare const MKPointOfInterestCategoryRestaurant: string;
 
 declare const MKLookAroundBadgePosition: {
   TopLeading: 0,

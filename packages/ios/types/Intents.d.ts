@@ -93,27 +93,17 @@ declare const INPauseWorkoutIntentIdentifier: string;
 
 declare const INStartWorkoutIntentIdentifier: string;
 
-declare const INSaveProfileInCarIntentIdentifier: string;
+declare const INSetProfileInCarIntentIdentifier: string;
 
 declare const INSetDefrosterSettingsInCarIntentIdentifier: string;
 
 declare const INSetClimateSettingsInCarIntentIdentifier: string;
 
-declare const INSearchCallHistoryIntentIdentifier: string;
-
-declare const INStartVideoCallIntentIdentifier: string;
-
-declare const INStartAudioCallIntentIdentifier: string;
-
-declare const INIntentErrorDomain: string;
+declare const INStartCallIntentIdentifier: string;
 
 declare const IntentsVersionString: interop.Pointer;
 
-declare const IntentsVersionNumber: number;
-
-declare const INPersonHandleLabelHomeFax: string;
-
-declare const INEndWorkoutIntentIdentifier: string;
+declare const INStartVideoCallIntentIdentifier: string;
 
 declare const INPersonRelationshipSpouse: string;
 
@@ -123,33 +113,39 @@ declare const INSetSeatSettingsInCarIntentIdentifier: string;
 
 declare const INPersonRelationshipBrother: string;
 
+declare const INWorkoutNameIdentifierDance: string;
+
+declare const INAnswerCallIntentIdentifier: string;
+
 declare const INWorkoutNameIdentifierRun: string;
 
 declare const INPersonRelationshipDaughter: string;
 
+declare const INHangUpCallIntentIdentifier: string;
+
 declare const INPersonHandleLabelWork: string;
-
-declare const INWorkoutNameIdentifierElliptical: string;
-
-declare const INAnswerCallIntentIdentifier: string;
 
 declare const INSetAudioSourceInCarIntentIdentifier: string;
 
-declare const INPersonRelationshipSister: string;
+declare const INIntentErrorDomain: string;
+
+declare const INEndWorkoutIntentIdentifier: string;
 
 declare const INSendPaymentIntentIdentifier: string;
+
+declare const INWorkoutNameIdentifierElliptical: string;
+
+declare const INSaveProfileInCarIntentIdentifier: string;
+
+declare const INPersonRelationshipSister: string;
 
 declare const INPersonRelationshipFriend: string;
 
 declare const INPersonHandleLabelOther: string;
 
-declare const INStartCallIntentIdentifier: string;
-
 declare const INWorkoutNameIdentifierStairs: string;
 
-declare const INHangUpCallIntentIdentifier: string;
-
-declare const INSetProfileInCarIntentIdentifier: string;
+declare const IntentsVersionNumber: number;
 
 declare const INPersonHandleLabelMobile: string;
 
@@ -159,15 +155,19 @@ declare const INPersonRelationshipMother: string;
 
 declare const INPersonRelationshipFather: string;
 
+declare const INStartAudioCallIntentIdentifier: string;
+
+declare const INSearchCallHistoryIntentIdentifier: string;
+
 declare const INPersonHandleLabelPager: string;
 
 declare const INSendMessageIntentIdentifier: string;
 
 declare const INWorkoutNameIdentifierIndoorcycle: string;
 
-declare const INWorkoutNameIdentifierDance: string;
-
 declare const INCarChargingConnectorTypeCCS2: string;
+
+declare const INPersonHandleLabelHomeFax: string;
 
 declare const INWorkoutNameIdentifierHike: string;
 
@@ -1690,6 +1690,12 @@ declare interface INPaymentsDomainHandling extends INSendPaymentIntentHandling, 
 declare class INPaymentsDomainHandling extends NativeObject implements INPaymentsDomainHandling {
 }
 
+declare interface INCarPlayDomainHandling extends INSetAudioSourceInCarIntentHandling, INSetClimateSettingsInCarIntentHandling, INSetDefrosterSettingsInCarIntentHandling, INSetSeatSettingsInCarIntentHandling, INSetProfileInCarIntentHandling, INSaveProfileInCarIntentHandling {
+}
+
+declare class INCarPlayDomainHandling extends NativeObject implements INCarPlayDomainHandling {
+}
+
 declare interface INGetVisualCodeIntentHandling extends NSObjectProtocol {
   handleGetVisualCodeCompletion(intent: INGetVisualCodeIntent, completion: (p1: INGetVisualCodeIntentResponse) => void): void;
 
@@ -2464,12 +2470,6 @@ declare interface INAppendToNoteIntentHandling extends NSObjectProtocol {
 }
 
 declare class INAppendToNoteIntentHandling extends NativeObject implements INAppendToNoteIntentHandling {
-}
-
-declare interface INCarPlayDomainHandling extends INSetAudioSourceInCarIntentHandling, INSetClimateSettingsInCarIntentHandling, INSetDefrosterSettingsInCarIntentHandling, INSetSeatSettingsInCarIntentHandling, INSetProfileInCarIntentHandling, INSaveProfileInCarIntentHandling {
-}
-
-declare class INCarPlayDomainHandling extends NativeObject implements INCarPlayDomainHandling {
 }
 
 declare interface INGetRideStatusIntentHandling extends NSObjectProtocol {
@@ -3347,6 +3347,22 @@ declare class INEnergyResolutionResult extends INIntentResolutionResult {
   static disambiguationWithEnergyToDisambiguate<This extends abstract new (...args: any) => any>(this: This, energyToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
 
   static confirmationRequiredWithEnergyToConfirm<This extends abstract new (...args: any) => any>(this: This, energyToConfirm: NSMeasurement | null): InstanceType<This>;
+}
+
+declare class INSpeedResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedSpeed<This extends abstract new (...args: any) => any>(this: This, resolvedSpeed: NSMeasurement): InstanceType<This>;
+
+  static disambiguationWithSpeedToDisambiguate<This extends abstract new (...args: any) => any>(this: This, speedToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static confirmationRequiredWithSpeedToConfirm<This extends abstract new (...args: any) => any>(this: This, speedToConfirm: NSMeasurement | null): InstanceType<This>;
+}
+
+declare class INVolumeResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedVolume<This extends abstract new (...args: any) => any>(this: This, resolvedVolume: NSMeasurement): InstanceType<This>;
+
+  static disambiguationWithVolumeToDisambiguate<This extends abstract new (...args: any) => any>(this: This, volumeToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static confirmationRequiredWithVolumeToConfirm<This extends abstract new (...args: any) => any>(this: This, volumeToConfirm: NSMeasurement | null): InstanceType<This>;
 }
 
 declare class INSpeakableStringResolutionResult extends INIntentResolutionResult {
@@ -5180,14 +5196,6 @@ declare class INTrainReservation extends INReservation implements NSCopying, NSS
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class INDateComponentsRangeResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedDateComponentsRange<This extends abstract new (...args: any) => any>(this: This, resolvedDateComponentsRange: INDateComponentsRange): InstanceType<This>;
-
-  static disambiguationWithDateComponentsRangesToDisambiguate<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangesToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static confirmationRequiredWithDateComponentsRangeToConfirm<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangeToConfirm: INDateComponentsRange | null): InstanceType<This>;
-}
-
 declare class INRideCompletionStatus extends NSObject implements NSCopying, NSSecureCoding {
   static completed<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -5716,6 +5724,14 @@ declare class INSticker extends NSObject implements NSCopying, NSSecureCoding {
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
+}
+
+declare class INDateComponentsRangeResolutionResult extends INIntentResolutionResult {
+  static successWithResolvedDateComponentsRange<This extends abstract new (...args: any) => any>(this: This, resolvedDateComponentsRange: INDateComponentsRange): InstanceType<This>;
+
+  static disambiguationWithDateComponentsRangesToDisambiguate<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangesToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
+
+  static confirmationRequiredWithDateComponentsRangeToConfirm<This extends abstract new (...args: any) => any>(this: This, dateComponentsRangeToConfirm: INDateComponentsRange | null): InstanceType<This>;
 }
 
 declare class INSetClimateSettingsInCarIntent extends INIntent {
@@ -6727,14 +6743,6 @@ declare class INStringResolutionResult extends INIntentResolutionResult {
   static confirmationRequiredWithStringToConfirm<This extends abstract new (...args: any) => any>(this: This, stringToConfirm: string | null): InstanceType<This>;
 }
 
-declare class INSpeedResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedSpeed<This extends abstract new (...args: any) => any>(this: This, resolvedSpeed: NSMeasurement): InstanceType<This>;
-
-  static disambiguationWithSpeedToDisambiguate<This extends abstract new (...args: any) => any>(this: This, speedToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static confirmationRequiredWithSpeedToConfirm<This extends abstract new (...args: any) => any>(this: This, speedToConfirm: NSMeasurement | null): InstanceType<This>;
-}
-
 declare class INTrainTrip extends NSObject implements NSCopying, NSSecureCoding {
   initWithProviderTrainNameTrainNumberTripDurationDepartureStationLocationDeparturePlatformArrivalStationLocationArrivalPlatform(provider: string | null, trainName: string | null, trainNumber: string | null, tripDuration: INDateComponentsRange, departureStationLocation: CLPlacemark, departurePlatform: string | null, arrivalStationLocation: CLPlacemark, arrivalPlatform: string | null): this;
 
@@ -6793,14 +6801,6 @@ declare class INSetCarLockStatusIntent extends INIntent {
   readonly locked: NSNumber;
 
   readonly carName: INSpeakableString;
-}
-
-declare class INVolumeResolutionResult extends INIntentResolutionResult {
-  static successWithResolvedVolume<This extends abstract new (...args: any) => any>(this: This, resolvedVolume: NSMeasurement): InstanceType<This>;
-
-  static disambiguationWithVolumeToDisambiguate<This extends abstract new (...args: any) => any>(this: This, volumeToDisambiguate: NSArray<interop.Object> | Array<interop.Object>): InstanceType<This>;
-
-  static confirmationRequiredWithVolumeToConfirm<This extends abstract new (...args: any) => any>(this: This, volumeToConfirm: NSMeasurement | null): InstanceType<This>;
 }
 
 declare class INCarAudioSourceResolutionResult extends INIntentResolutionResult {

@@ -9,6 +9,8 @@ declare const UTTypeImage: UTType;
 
 declare const UTTypePlainText: UTType;
 
+declare const UTTypeICNS: UTType;
+
 declare const UTTypeLog: UTType;
 
 declare const UTTypeInternetShortcut: UTType;
@@ -67,6 +69,8 @@ declare const UTTypeSpotlightImporter: UTType;
 
 declare const UTTypeBundle: UTType;
 
+declare const UTTypeVolume: UTType;
+
 declare const UTTypeFolder: UTType;
 
 declare const UTTypeMIDI: UTType;
@@ -107,8 +111,6 @@ declare const UTTypeICO: UTType;
 
 declare const UTTypeBMP: UTType;
 
-declare const UTTypeICNS: UTType;
-
 declare const UTTypePNG: UTType;
 
 declare const UTTypeGIF: UTType;
@@ -147,9 +149,9 @@ declare const UTTypeRTF: UTType;
 
 declare const UTTypeUTF8TabSeparatedText: UTType;
 
-declare const UTTypeTabSeparatedText: UTType;
-
 declare const UTTypeCommaSeparatedText: UTType;
+
+declare const UTTypeDelimitedText: UTType;
 
 declare const UTTypeUTF16ExternalPlainText: UTType;
 
@@ -165,6 +167,8 @@ declare const UTTypeData: UTType;
 
 declare const UTTypeDiskImage: UTType;
 
+declare const UTTypeContent: UTType;
+
 declare const UTTagClassMIMEType: string;
 
 declare const UTTypeCPlusPlusSource: UTType;
@@ -173,11 +177,9 @@ declare const UTTypeAppleArchive: UTType;
 
 declare const UTTypeAHAP: UTType;
 
-declare const UTTypeDelimitedText: UTType;
+declare const UTTypeSpreadsheet: UTType;
 
-declare const UTTypePDF: UTType;
-
-declare const UTTypeWAV: UTType;
+declare const UTTypeURLBookmarkData: UTType;
 
 declare const UTTypeToDoItem: UTType;
 
@@ -185,15 +187,9 @@ declare const UTTypeCSS: UTType;
 
 declare const UTTypeWebP: UTType;
 
-declare const UTTypeContent: UTType;
-
-declare const UTTypeVolume: UTType;
-
 declare const UTTypeHEIF: UTType;
 
 declare const UTTypeDirectory: UTType;
-
-declare const UTTypeURLBookmarkData: UTType;
 
 declare const UTTypePythonScript: UTType;
 
@@ -241,11 +237,15 @@ declare const UTTypeCalendarEvent: UTType;
 
 declare const UTTypeMountPoint: UTType;
 
-declare const UTTypeSpreadsheet: UTType;
+declare const UTTypeWAV: UTType;
 
 declare const UTTypeAliasFile: UTType;
 
+declare const UTTypePDF: UTType;
+
 declare const UTTypeCPlusPlusHeader: UTType;
+
+declare const UTTypeTabSeparatedText: UTType;
 
 declare const UTTypeHEICS: UTType;
 

@@ -66,8 +66,6 @@ declare const kColorSyncConversionInpChan: interop.Object;
 
 declare const kColorSyncConversion3DLut: interop.Object;
 
-declare const kColorSyncTransformDstSpace: interop.Object;
-
 declare const kColorSyncTransformSrcSpace: interop.Object;
 
 declare const kColorSyncDraftQuality: interop.Object;
@@ -103,6 +101,10 @@ declare const kColorSyncByteOrderMask: number;
 declare const kColorSyncWaitForCacheReply: interop.Object;
 
 declare const kColorSyncProfileCacheSeed: interop.Object;
+
+declare const kColorSyncTransformDstSpace: interop.Object;
+
+declare const kColorSyncDoNotSubstituteProfiles: interop.Object;
 
 declare const kColorSyncProfileUserDomain: interop.Object;
 
@@ -352,6 +354,8 @@ declare function ColorSyncProfileCreate(data: interop.Object, error: interop.Poi
 
 declare function ColorSyncProfileCreateWithURL(url: interop.Object, error: interop.PointerConvertible): interop.Object;
 
+declare function ColorSyncProfileCreateWithURLAndOptions(url: interop.Object, options: interop.Object, error: interop.PointerConvertible): interop.Object;
+
 declare function ColorSyncProfileCreateWithName(name: interop.Object): interop.Object;
 
 declare function ColorSyncProfileCreateWithDisplayID(displayID: number): interop.Object;
@@ -376,11 +380,11 @@ declare function ColorSyncProfileIsHLGBased(p1: interop.Object): boolean;
 
 declare function ColorSyncProfileEstimateGammaWithDisplayID(displayID: number, error: interop.PointerConvertible): number;
 
-declare function ColorSyncProfileEstimateGamma(prof: interop.Object, error: interop.PointerConvertible): number;
-
 declare function ColorSyncProfileGetDisplayTransferFormulaFromVCGT(profile: interop.Object, redMin: interop.PointerConvertible, redMax: interop.PointerConvertible, redGamma: interop.PointerConvertible, greenMin: interop.PointerConvertible, greenMax: interop.PointerConvertible, greenGamma: interop.PointerConvertible, blueMin: interop.PointerConvertible, blueMax: interop.PointerConvertible, blueGamma: interop.PointerConvertible): boolean;
 
 declare function ColorSyncProfileCreateDisplayTransferTablesFromVCGT(profile: interop.Object, nSamplesPerChannel: interop.PointerConvertible): interop.Object;
+
+declare function ColorSyncProfileEstimateGamma(prof: interop.Object, error: interop.PointerConvertible): number;
 
 declare function ColorSyncProfileGetMD5(prof: interop.Object): ColorSyncMD5;
 
@@ -451,6 +455,4 @@ declare function ColorSyncIterateDeviceProfiles(callBack: (p1: interop.PointerCo
 declare function CGDisplayCreateUUIDFromDisplayID(displayID: number): interop.Object;
 
 declare function CGDisplayGetDisplayIDFromUUID(uuid: interop.Object): number;
-
-declare function ColorSyncAPIVersion(): number;
 

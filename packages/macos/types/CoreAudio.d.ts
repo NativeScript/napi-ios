@@ -907,12 +907,12 @@ declare class AudioServerPlugInClientInfo {
   mBundleID: interop.Object | null;
 }
 
-type unnamed_953133404600894789Descriptor = 
+type unnamed_14365698079061649787Descriptor = 
   | { mMainHostTicksPerFrame: number }
   | { mMasterHostTicksPerFrame: number };
 
-declare class unnamed_953133404600894789 {
-  constructor(init?: unnamed_953133404600894789Descriptor);
+declare class unnamed_14365698079061649787 {
+  constructor(init?: unnamed_14365698079061649787Descriptor);
   mMainHostTicksPerFrame: number;
   mMasterHostTicksPerFrame: number;
 }

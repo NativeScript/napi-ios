@@ -1162,6 +1162,8 @@ declare interface GCLinearInput extends NSObjectProtocol {
 
   readonly lastValueLatency: number;
 
+  readonly physicalExtents: GCPhysicalInputExtents;
+
   readonly sources: NSSet;
 
   setValueDidChangeHandler(valueDidChangeHandler: (p1: GCPhysicalInputElement, p2: GCLinearInput, p3: number) => void | null): void;
@@ -1249,6 +1251,17 @@ declare interface GCTouchedStateInput extends NSObjectProtocol {
 }
 
 declare class GCTouchedStateInput extends NativeObject implements GCTouchedStateInput {
+}
+
+declare interface GCPhysicalInputExtents extends NSObjectProtocol {
+  readonly scaledValue: number;
+
+  readonly minimumValue: number;
+
+  readonly maximumValue: number;
+}
+
+declare class GCPhysicalInputExtents extends NativeObject implements GCPhysicalInputExtents {
 }
 
 declare interface GCSwitchElementName extends GCPhysicalInputElementName {

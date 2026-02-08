@@ -72,6 +72,8 @@ declare const kABSourceTypeCardDAVSearch: number;
 
 declare const kABSourceTypeMobileMe: number;
 
+declare const kABSourceTypeExchangeGAL: number;
+
 declare const kABOperationNotPermittedByStoreError: number;
 
 declare const kABMultiIntegerPropertyType: number;
@@ -132,7 +134,7 @@ declare const kABOperationNotPermittedByUserError: number;
 
 declare const kABPersonSocialProfileServiceKey: interop.Pointer;
 
-declare const kABSourceTypeExchangeGAL: number;
+declare const kABPersonPhoneHomeFAXLabel: interop.Pointer;
 
 declare const kABPersonKindProperty: number;
 
@@ -144,13 +146,13 @@ declare const kABPersonSocialProfileServiceLinkedIn: interop.Pointer;
 
 declare const kABSourceTypeLocal: number;
 
-declare const kABPersonInstantMessageProperty: number;
-
-declare const kABPersonAlternateBirthdayIsLeapMonthKey: interop.Pointer;
+declare const kABPersonSocialProfileServiceGameCenter: interop.Pointer;
 
 declare const kABPersonInstantMessageServiceICQ: interop.Pointer;
 
-declare const kABPersonPhoneHomeFAXLabel: interop.Pointer;
+declare const kABPersonInstantMessageServiceSkype: interop.Pointer;
+
+declare const kABPersonAlternateBirthdayIsLeapMonthKey: interop.Pointer;
 
 declare const kABPersonAlternateBirthdayYearKey: interop.Pointer;
 
@@ -162,11 +164,11 @@ declare const kABPersonFirstNamePhoneticProperty: number;
 
 declare const kABOtherLabel: interop.Pointer;
 
+declare const kABPersonInstantMessageProperty: number;
+
 declare const kABSourceTypeLDAP: number;
 
 declare const kABPersonAddressStreetKey: interop.Pointer;
-
-declare const kABPersonInstantMessageServiceSkype: interop.Pointer;
 
 declare const kABPersonSocialProfileURLKey: interop.Pointer;
 
@@ -177,8 +179,6 @@ declare const kABSourceTypeProperty: number;
 declare const kABPersonAlternateBirthdayProperty: number;
 
 declare const kABPersonDepartmentProperty: number;
-
-declare const kABPersonSocialProfileServiceGameCenter: interop.Pointer;
 
 declare const kABPersonBrotherLabel: interop.Pointer;
 

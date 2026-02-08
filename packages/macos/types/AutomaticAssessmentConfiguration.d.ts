@@ -47,6 +47,14 @@ declare class AEAssessmentConfiguration extends NSObject implements NSCopying {
 
   allowsKeyboardShortcuts: boolean;
 
+  allowsAccessibilityKeyboard: boolean;
+
+  allowsAccessibilityLiveCaptions: boolean;
+
+  allowsAccessibilityReader: boolean;
+
+  allowsScreenshots: boolean;
+
   readonly mainParticipantConfiguration: AEAssessmentParticipantConfiguration;
 
   readonly configurationsByApplication: NSDictionary;
@@ -62,6 +70,14 @@ declare class AEAssessmentConfiguration extends NSObject implements NSCopying {
   setAllowsPredictiveKeyboard(allowsPredictiveKeyboard: boolean): void;
 
   setAllowsKeyboardShortcuts(allowsKeyboardShortcuts: boolean): void;
+
+  setAllowsAccessibilityKeyboard(allowsAccessibilityKeyboard: boolean): void;
+
+  setAllowsAccessibilityLiveCaptions(allowsAccessibilityLiveCaptions: boolean): void;
+
+  setAllowsAccessibilityReader(allowsAccessibilityReader: boolean): void;
+
+  setAllowsScreenshots(allowsScreenshots: boolean): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }

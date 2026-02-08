@@ -1340,15 +1340,6 @@ declare class MTLIndirectCommandBufferExecutionRange {
   length: number;
 }
 
-declare class MTL4UpdateSparseTextureMappingOperation {
-  constructor(init?: MTL4UpdateSparseTextureMappingOperation);
-  mode: interop.Enum<typeof MTLSparseTextureMappingMode>;
-  textureRegion: MTLRegion;
-  textureLevel: number;
-  textureSlice: number;
-  heapOffset: number;
-}
-
 declare class MTLAccelerationStructureInstanceDescriptor {
   constructor(init?: MTLAccelerationStructureInstanceDescriptor);
   transformationMatrix: _MTLPackedFloat4x3;
@@ -1364,13 +1355,6 @@ declare class MTLPackedFloatQuaternion {
   y: number;
   z: number;
   w: number;
-}
-
-declare class unnamed_5702030146212538067 {
-  constructor(init?: unnamed_5702030146212538067);
-  x: number;
-  y: number;
-  z: number;
 }
 
 declare class MTLTriangleTessellationFactorsHalf {
@@ -1433,6 +1417,15 @@ declare class MTL4UpdateSparseBufferMappingOperation {
   constructor(init?: MTL4UpdateSparseBufferMappingOperation);
   mode: interop.Enum<typeof MTLSparseTextureMappingMode>;
   bufferRange: _NSRange;
+  heapOffset: number;
+}
+
+declare class MTL4UpdateSparseTextureMappingOperation {
+  constructor(init?: MTL4UpdateSparseTextureMappingOperation);
+  mode: interop.Enum<typeof MTLSparseTextureMappingMode>;
+  textureRegion: MTLRegion;
+  textureLevel: number;
+  textureSlice: number;
   heapOffset: number;
 }
 
@@ -1567,12 +1560,6 @@ declare class MTLDrawPrimitivesIndirectArguments {
   baseInstance: number;
 }
 
-declare class MTLSizeAndAlign {
-  constructor(init?: MTLSizeAndAlign);
-  size: number;
-  align: number;
-}
-
 declare class _MTLPackedFloat4x3 {
   constructor(init?: _MTLPackedFloat4x3);
   columns: unknown /* const array */;
@@ -1623,12 +1610,25 @@ declare class MTLCounterResultTimestamp {
   timestamp: number;
 }
 
+declare class MTLSizeAndAlign {
+  constructor(init?: MTLSizeAndAlign);
+  size: number;
+  align: number;
+}
+
 declare class MTLTextureSwizzleChannels {
   constructor(init?: MTLTextureSwizzleChannels);
   red: interop.Enum<typeof MTLTextureSwizzle>;
   green: interop.Enum<typeof MTLTextureSwizzle>;
   blue: interop.Enum<typeof MTLTextureSwizzle>;
   alpha: interop.Enum<typeof MTLTextureSwizzle>;
+}
+
+declare class unnamed_13350057082008764827 {
+  constructor(init?: unnamed_13350057082008764827);
+  x: number;
+  y: number;
+  z: number;
 }
 
 declare class MTLAccelerationStructureMotionInstanceDescriptor {
@@ -1658,11 +1658,11 @@ declare class MTLMapIndirectArguments {
   sliceId: number;
 }
 
-type unnamed_12332662631098016591Descriptor = 
+type unnamed_1940084452792933035Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_12332662631098016591 {
-  constructor(init?: unnamed_12332662631098016591Descriptor);
+declare class unnamed_1940084452792933035 {
+  constructor(init?: unnamed_1940084452792933035Descriptor);
   elements: unknown /* const array */;
 }
 
@@ -7121,6 +7121,14 @@ declare class MTLTensorDescriptor extends NSObject implements NSCopying {
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTLTensorExtents extends NSObject {
+  initWithRankValues(rank: number, values: interop.PointerConvertible): this;
+
+  readonly rank: number;
+
+  extentAtDimensionIndex(dimensionIndex: number): number;
+}
+
 declare class MTLCaptureManager extends NSObject {
   static sharedCaptureManager(): MTLCaptureManager;
 
@@ -7502,6 +7510,8 @@ declare class MTLAttribute extends NSObject {
 
 declare class MTLFunctionReflection extends NSObject {
   readonly bindings: NSArray;
+
+  readonly userAnnotation: string;
 }
 
 declare class MTL4PipelineDataSetSerializerDescriptor extends NSObject implements NSCopying {
@@ -7546,14 +7556,6 @@ declare class MTLHeapDescriptor extends NSObject implements NSCopying {
   setMaxCompatiblePlacementSparsePageSize(maxCompatiblePlacementSparsePageSize: interop.Enum<typeof MTLSparsePageSize>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTLTensorExtents extends NSObject {
-  initWithRankValues(rank: number, values: interop.PointerConvertible): this;
-
-  readonly rank: number;
-
-  extentAtDimensionIndex(dimensionIndex: number): number;
 }
 
 declare class MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray extends NSObject {
