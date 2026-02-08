@@ -410,104 +410,6 @@ declare const AppleUSBRequestPool: number;
 
 declare const AppleUSBHostController: number;
 
-declare const IOUSBHostCITransferCompletionMessageData1TransferStructurePhase: number;
-
-declare const IOUSBHostCITransferCompletionMessageData1TransferStructure: number;
-
-declare const IOUSBHostCITransferCompletionMessageData0TransferLengthPhase: number;
-
-declare const IOUSBHostCITransferCompletionMessageControlEndpointAddressPhase: number;
-
-declare const IOUSBHostCITransferCompletionMessageControlEndpointAddress: number;
-
-declare const IOUSBHostCITransferCompletionMessageControlDeviceAddressPhase: number;
-
-declare const IOUSBHostCILinkData1TransferStructureAddress: number;
-
-declare const IOUSBHostCIIsochronousTransferData0LengthPhase: number;
-
-declare const IOUSBHostCIIsochronousTransferData0Length: number;
-
-declare const IOUSBHostCIIsochronousTransferControlFrameNumber: number;
-
-declare const IOUSBHostCINormalTransferData1BufferPhase: number;
-
-declare const IOUSBHostCINormalTransferData1Buffer: number;
-
-declare const IOUSBHostCINormalTransferData0LengthPhase: number;
-
-declare const IOUSBHostCINormalTransferData0Length: number;
-
-declare const IOUSBHostCISetupTransferData1wLengthPhase: number;
-
-declare const IOUSBHostCISetupTransferData1wLength: number;
-
-declare const IOUSBHostCISetupTransferData1wValuePhase: number;
-
-declare const IOUSBHostCISetupTransferData1bRequest: number;
-
-declare const IOUSBHostCIEndpointSetNextTransferCommandData1Address: number;
-
-declare const IOUSBHostCIEndpointCreateCommandData1Descriptor: number;
-
-declare const IOUSBHostCIDeviceUpdateCommandData1DescriptorAddress: number;
-
-declare const IOUSBHostCIDeviceCreateCommandData1DeviceAddressPhase: number;
-
-declare const IOUSBHostCIDeviceCreateCommandData0Route: number;
-
-declare const IOUSBHostCIDeviceCreateCommandData0RootPortPhase: number;
-
-declare const IOUSBHostCIPortStatusCommandData1ChangeMask: number;
-
-declare const IOUSBHostCIPortStatusCommandData1LinkStateChange: number;
-
-declare const IOUSBHostCIPortStatusCommandData1OvercurrentChange: number;
-
-declare const IOUSBHostCIPortStatusCommandData1SpeedPhase: number;
-
-declare const IOUSBHostCIPortStatusCommandData1LinkStatePhase: number;
-
-declare const IOUSBHostCIPortStatusCommandData1Connected: number;
-
-declare const IOUSBHostCIPortStatusCommandData1Powered: number;
-
-declare const IOUSBHostCIPortEventMessageData0PortNumberPhase: number;
-
-declare const IOUSBHostCICommandMessageData0EndpointAddressPhase: number;
-
-declare const IOUSBHostCICommandMessageData0DeviceAddress: number;
-
-declare const IOUSBHostCICommandMessageData0RootPort: number;
-
-declare const IOUSBHostCICommandMessageControlStatus: number;
-
-declare const IOUSBHostCIPortCapabilitiesMessageData0MaxPower: number;
-
-declare const IOUSBHostCIPortCapabilitiesMessageControlConnectorTypePhase: number;
-
-declare const IOUSBHostCIPortCapabilitiesMessageControlInternalConnector: number;
-
-declare const IOUSBHostCIPortCapabilitiesMessageControlPortNumberPhase: number;
-
-declare const IOUSBHostCICapabilitiesMessageData0CommandTimeoutThresholdPhase: number;
-
-declare const IOUSBHostCICapabilitiesMessageControlPortCountPhase: number;
-
-declare const IOUSBHostCIMessageControlNoResponse: number;
-
-declare const IOUSBHostCIMessageControlStatusPhase: number;
-
-declare const IOUSBHostCIDoorbellStreamID: number;
-
-declare const IOUSBHostCIDoorbellEndpointAddress: number;
-
-declare const IOUSBHostCIPortStatusLinkStateChange: number;
-
-declare const IOUSBHostCIPortStatusLinkState: number;
-
-declare const IOUSBHostCIPortStatusOvercurrent: number;
-
 declare const kUSB3LPMExtraDeviceEL: number;
 
 declare const kUSB3LPMMaxT3SEL: number;
@@ -1672,8 +1574,6 @@ declare const kIOPCIAERCapCapHeaderOffset: number;
 
 declare const IOHIDElement: number;
 
-declare const IOUSBHostCITransferCompletionMessageControlStatus: number;
-
 declare const kAirshipDaleBasebandErrorTxConsumeFailure: number;
 
 declare const kFBOnlineInterruptServiceType: number;
@@ -1748,6 +1648,8 @@ declare const kInterfaceSuspendLowPower: number;
 
 declare const kIOFWSBP2FailsOnAckBusy: number;
 
+declare const operator: interop.Pointer;
+
 declare const kIOFBNotifyEvent_Probed: number;
 
 declare const kHIDDispatchOptionPointerAbsolutToRelative: number;
@@ -1766,8 +1668,6 @@ declare const kIOUCStructIStructO: number;
 
 declare const kIOUCScalarIStructO: number;
 
-declare const IOUSBHostCIPortCapabilitiesMessageControlConnectorType: number;
-
 declare const kIOMemoryUnshared: number;
 
 declare const kIOMemoryHostPhysicallyContiguous: number;
@@ -1775,6 +1675,8 @@ declare const kIOMemoryHostPhysicallyContiguous: number;
 declare const kIOMemoryPurgeable: number;
 
 declare const kIOMemoryPageable: number;
+
+declare const IOVideoStream: number;
 
 declare const IOInterruptEventSource: number;
 
@@ -2052,63 +1954,1591 @@ declare const OSSymbol: number;
 
 declare const OSMetaClass: number;
 
+declare const kIOVideoDeviceMethodStopStream: number;
+
+declare const kIOVideoDeviceMethodStartStream: number;
+
+declare const kIOVideoDeviceMethodSetStreamFormat: number;
+
+declare const kIOVideoDeviceMethodCloseStream: number;
+
+declare const kIOVideoDeviceMethodClose: number;
+
+declare const kIOVideoFeatureControlClassIDOpticalFilter: number;
+
+declare const kIOVideoFeatureControlClassIDTemperature: number;
+
+declare const kIOVideoFeatureControlClassIDGamma: number;
+
+declare const kIOVideoFeatureControlClassIDWhiteBalanceV: number;
+
+declare const kIOVideoFeatureControlClassIDWhiteBalanceU: number;
+
+declare const kIOVideoFeatureControlClassIDShutter: number;
+
+declare const kIOVideoFeatureControlClassIDIris: number;
+
+declare const kIOVideoFeatureControlClassIDSharpness: number;
+
+declare const kIOVideoFeatureControlClassIDContrast: number;
+
+declare const kIOVideoFeatureControlClassIDSaturation: number;
+
+declare const kIOVideoFeatureControlClassIDHue: number;
+
+declare const kIOVideoFeatureControlClassIDWhiteLevel: number;
+
+declare const kIOVideoFeatureControlClassIDBlackLevel: number;
+
+declare const kIOVideoSelectorControlClassIDDataDestination: number;
+
+declare const kIOVideoBooleanControlClassIDDirection: number;
+
+declare const kIOVideoBooleanControlClassIDJack: number;
+
+declare const kIOVideoControlBaseClassIDSelector: number;
+
+declare const kIOVideoControlBaseClassIDBoolean: number;
+
+declare const kIOVideoControlScopeOutput: number;
+
+declare const kIOVideoControlScopeInput: number;
+
+declare const kIOVideoDeviceNotificationID_ControlValueChanged: number;
+
+declare const kXHCIUSB2RootHubAddress: number;
+
+declare const kUSBAddress_Mask: number;
+
+declare const kUSBSpeed_Shift: number;
+
 declare const kIOPCIStatusTargetAbortActive: number;
+
+declare const kUSBCUnsupportedTBCableNotificationType: number;
+
+declare const kUSBCUnsupportedTBPortNotificationType: number;
+
+declare const kUSBCTBUnsupportedNotificationType: number;
+
+declare const kUSBCTBNotEnoughPowerNotificationType: number;
+
+declare const kUSBUnsupportedNotificationType: number;
+
+declare const kUSBEndpointCountExceededNotificationType: number;
+
+declare const kUSBiOSDeviceNotEnoughPowerNotificationType: number;
+
+declare const kUSBIndividualOverCurrentNotificationType: number;
+
+declare const kUSBNotEnoughPowerNotificationType: number;
+
+declare const kUSBLowLatencyIsochTransferKey: number;
+
+declare const kUSBHighSpeedMicrosecondsInFrame: number;
+
+declare const kUSBDeviceSpeedSuperPlusBy2: number;
+
+declare const kUSBDeviceSpeedSuperPlus: number;
+
+declare const kUSBDeviceSpeedSuper: number;
+
+declare const kUSBDeviceSpeedLow: number;
+
+declare const kUSBDefaultControlNoDataTimeoutMS: number;
+
+declare const kIOUSBAnySubClass: number;
+
+declare const kIOUSBAnyClass: number;
+
+declare const addPacketShift: number;
+
+declare const kUSB_SSCompDesc_Isoc_Mult_Shift: number;
+
+declare const kUSB_SSCompDesc_Isoc_Mult_Mask: number;
+
+declare const kUSB_SSCompDesc_Bulk_MaxStreams_Shift: number;
+
+declare const kUSB_HSFSEPDesc_wMaxPacketSize_Mult_Shift: number;
+
+declare const kUSB_EPDesc_wMaxPacketSize_MPS_Shift: number;
+
+declare const kUSB_EPDesc_wMaxPacketSize_MPS_Mask: number;
+
+declare const kUSB_EPDesc_bmAttributes_UsageType_Mask: number;
+
+declare const kUSB_EPDesc_bmAttributes_SyncType_Shift: number;
+
+declare const kUSB_EPDesc_bmAttributes_SyncType_Mask: number;
+
+declare const kUSB_EPDesc_bmAttributes_TranType_Mask: number;
+
+declare const kIOUSBDeviceCapabilityDescriptorLengthMin: number;
+
+declare const kIOUSBDeviceCapabilityDescriptorType: number;
+
+declare const kSetInterfaceFeature: number;
+
+declare const kSetDescriptor: number;
+
+declare const kGetEndpointStatus: number;
+
+declare const kGetInterfaceStatus: number;
+
+declare const kGetInterface: number;
+
+declare const kGetConfiguration: number;
+
+declare const kClearEndpointFeature: number;
+
+declare const kUSBMaxHSIsocEndpointReqCount: number;
+
+declare const kUSBMaxFSIsocEndpointReqCount: number;
+
+declare const kUSBRqRecipientMask: number;
+
+declare const kUSBRqDirnMask: number;
+
+declare const kUSBRqDirnShift: number;
+
+declare const kUSBStreamIDAllStreamsMask: number;
+
+declare const kUSBAllStreams: number;
+
+declare const kUSBMaxStream: number;
+
+declare const kUSBUCRequestWithoutUSBNotificationMask: number;
 
 declare const kIOPCIExpressCapabilityIDL1PMSubstates: number;
 
+declare const kUSBNoPipeIdx: number;
+
+declare const kUSBDeviceMask: number;
+
+declare const kUSBInterfaceIDMask: number;
+
+declare const kUSBMaxInterfaces: number;
+
+declare const kUSBPipeIDMask: number;
+
+declare const kUSBDeviceIDMask: number;
+
+declare const kUSBMaxDevice: number;
+
 declare const MBUF_TYPE_FREE: number;
+
+declare const kUSBMaxDevices: number;
+
+declare const kUSBDeviceIDShift: number;
+
+declare const kUSBBillboardAdditinalInfoNoPower: number;
+
+declare const kUSBBillboardAltModeConfigSuccess: number;
+
+declare const kUSBBillboardConfigUnsuccessful: number;
+
+declare const kUSBBillboardVConnReserved: number;
+
+declare const kUSBBillboardVConn6Watt: number;
+
+declare const kUSBBillboardVConn1P5Watt: number;
+
+declare const kUSBSuperSpeedSupportsLS: number;
+
+declare const kUSBImplicitFeedbackDataIsocUsageType: number;
+
+declare const kUSBNoSynchronizationIsocSyncType: number;
+
+declare const kUSBNotificationInterruptUsageType: number;
+
+declare const kUSBEndpointbmAttributesUsageTypeShift: number;
+
+declare const kUSBEndpointbmAttributesUsageTypeMask: number;
+
+declare const kUSBEndpointbmAttributesSynchronizationTypeShift: number;
+
+declare const kUSBEndpointbmAttributesSynchronizationTypeMask: number;
+
+declare const kUSBEndpointbmAttributesTransferTypeMask: number;
+
+declare const kUSBEndpointDirectionIn: number;
+
+declare const kUSBEndpointDirectionOut: number;
+
+declare const kUSBbEndpointDirectionBit: number;
+
+declare const kUSBDFUManifestationTolerantBit: number;
+
+declare const kMSCProtocolControlBulk: number;
 
 declare const kPEPanicRestartCPUNoCallouts: number;
 
+declare const KUSBInterfaceAssociationDescriptorProtocol: number;
+
+declare const kUSBBluetoothProgrammingInterfaceProtocol: number;
+
+declare const kUSB2ComplianceDeviceProtocol: number;
+
+declare const kUSBVendorSpecificProtocol: number;
+
+declare const kHIDMouseInterfaceProtocol: number;
+
+declare const kUSBVideoInterfaceCollectionSubClass: number;
+
+declare const kUSBCommonClassSubClass: number;
+
+declare const kUSBCommEthernetNetworkingSubClass: number;
+
+declare const kUSBCommMultiChannelSubClass: number;
+
+declare const kUSBCommAbstractSubClass: number;
+
+declare const kUSBHIDBootInterfaceSubClass: number;
+
+declare const kUSBMassStorageQIC157SubClass: number;
+
+declare const kUSBMassStorageATAPISubClass: number;
+
+declare const kUSBTestMeasurementSubClass: number;
+
+declare const kUSBMIDIStreamingSubClass: number;
+
+declare const kUSBAudioStreamingSubClass: number;
+
+declare const kUSBAudioControlSubClass: number;
+
+declare const kUSBHubSubClass: number;
+
+declare const kUSBDisplayClass: number;
+
+declare const kUSBVendorSpecificInterfaceClass: number;
+
+declare const kUSBWirelessControllerInterfaceClass: number;
+
+declare const kUSBPersonalHealthcareInterfaceClass: number;
+
+declare const kUSBVideoInterfaceClass: number;
+
+declare const kUSBContentSecurityInterfaceClass: number;
+
+declare const kUSBMassStorageInterfaceClass: number;
+
+declare const kUSBImageInterfaceClass: number;
+
+declare const kUSBApplicationSpecificClass: number;
+
+declare const kUSBMiscellaneousClass: number;
+
+declare const kUSBWirelessControllerClass: number;
+
+declare const kUSBDiagnosticClass: number;
+
+declare const kUSBCommunicationClass: number;
+
+declare const kHIDBootProtocolValue: number;
+
+declare const kHIDRtFeatureReport: number;
+
+declare const kHIDRtInputReport: number;
+
+declare const kHIDRqSetProtocol: number;
+
+declare const kHIDRqSetReport: number;
+
+declare const kHIDRqGetReport: number;
+
+declare const kUSBRel30: number;
+
 declare const catch_mach_exc_subsystem: catch_mach_exc_subsystem;
+
+declare const kUSBRel20: number;
+
+declare const kUSB3MaxPowerPerPort: number;
+
+declare const kUSB150mA: number;
+
+declare const kUSB900mAAvailable: number;
+
+declare const kUSB2MaxPowerPerPort: number;
+
+declare const kUSBAtrRemoteWakeup: number;
+
+declare const kUSBAtrBusPowered: number;
+
+declare const kUSBLowPowerSuspendStateBit: number;
+
+declare const kUSBFunctionRemoteWakeupBit: number;
+
+declare const kUSBFunctionRemoteWakeCapableBit: number;
+
+declare const kUSBFeatureU2Enable: number;
+
+declare const kUSBDeviceCapabilityContainerID: number;
+
+declare const kUSBDeviceCapabilityWirelessUSB: number;
+
+declare const kUSBReportDesc: number;
+
+declare const kUSBHIDDesc: number;
+
+declare const kUSBOnTheGoDesc: number;
+
+declare const kUSBOtherSpeedConfDesc: number;
+
+declare const kUSBEndpointDesc: number;
+
+declare const kUSBInterfaceDesc: number;
+
+declare const kUSBDeviceDesc: number;
+
+declare const kUSBSetSel: number;
+
+declare const kUSBRqSyncFrame: number;
+
+declare const kUSBRqSetInterface: number;
+
+declare const kUSBRqGetConfig: number;
+
+declare const kUSBRqSetDescriptor: number;
+
+declare const kUSBEndpoint: number;
+
+declare const kUSBDevice: number;
 
 declare const gIODisplayFadeTime2Key: interop.Pointer;
 
+declare const kUSBAnyDirn: number;
+
+declare const kUSBNone: number;
+
+declare const kUSBIn: number;
+
+declare const kUSBAnyType: number;
+
+declare const kIOUSBInterfaceSuspendRemoteWakeEnable: number;
+
+declare const kIOUSBInterfaceSuspendLowPower: number;
+
+declare const IOUSBEndpointFeatureSelectorStall: number;
+
+declare const kIOUSBDeviceFeatureSelectorU2Enable: number;
+
+declare const IOUSBEndpointStatusHalt: number;
+
+declare const kIOUSBDeviceStatusU2Enable: number;
+
+declare const kIOUSBDeviceStatusRemoteWakeEnable: number;
+
+declare const kIOUSBDeviceRequestGetConfiguration: number;
+
+declare const kIOUSBDeviceRequestSetDescriptor: number;
+
+declare const kIOUSBDeviceRequestSetFeature: number;
+
+declare const kIOUSBDeviceRequestGetState: number;
+
+declare const kIOUSBDeviceRequestClearFeature: number;
+
+declare const kIOUSBDeviceRequestGetStatus: number;
+
+declare const kIOUSBSuperSpeedHubDelayMax: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsReserved: number;
+
 declare const kIOPCIExpressDeviceSerialNumberCapability: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsOverCurrentIndividual: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsCompoundDevice: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorIsocReservedPhase: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorIsocReserved: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorIsocMultPhase: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorBulkReservedPhase: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorBulkReserved: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorBulkMaxStreams: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorMaxBurstPhase: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkProtocolPhase: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSymmetry: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkType: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkLSEGbits: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkLSE: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedIdPhase: number;
 
 declare const OSOffset: number;
 
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedId: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilityMinRxLaneCount: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkMinSpeedIdPhase: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCount: number;
+
 declare const IOStreamUserClient: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedAttrCount: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilitySupport5Gb: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilitySupportFullSpeed: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilityFullSpeed: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilityLTM: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityBESLD: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityBESLValid: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityBESLSupport: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityLPM: number;
+
+declare const kIOUSBEndpointDescriptorReservedPhase: number;
+
+declare const kIOUSB30RetimerDepthLimit: number;
+
+declare const kIOUSBEndpointDescriptorReserved: number;
+
+declare const kIOUSBEndpointDescriptorPacketSizeMultPhase: number;
+
+declare const kIOUSBEndpointDescriptorPacketSize: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypeInterruptReserved1: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypeInterruptPeriodic: number;
+
+declare const kMSCProtocolBulkOnly: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypePhase: number;
+
+declare const kIOUSBEndpointDescriptorUsageType: number;
+
+declare const kIOUSBEndpointDescriptorSynchronizationTypeAdaptive: number;
+
+declare const kIOUSBEndpointDescriptorSynchronizationTypeAsynchronous: number;
+
+declare const kIOUSBEndpointDescriptorSynchronizationTypeNone: number;
+
+declare const kIOUSBEndpointDescriptorSynchronizationTypePhase: number;
+
+declare const kIOUSBEndpointDescriptorSynchronizationType: number;
 
 declare const kIOPCIMSICapability: number;
 
+declare const kIOUSBEndpointDescriptorTransferTypeInterrupt: number;
+
+declare const kIOUSBEndpointDescriptorTransferType: number;
+
+declare const kIOUSBEndpointDescriptorDirectionIn: number;
+
+declare const kIOUSBEndpointDescriptorDirectionOut: number;
+
+declare const kIOUSBEndpointDescriptorEndpointAddressReserved: number;
+
+declare const kIOUSBEndpointDescriptorNumber: number;
+
+declare const kIOUSBConfigurationDescriptorAttributeSelfPowered: number;
+
+declare const kIOUSBConfigurationDescriptorAttributeRemoteWakeCapable: number;
+
+declare const kIOUSBAppleVendorID: number;
+
+declare const kIOStreamEnqueueInputSyncTrap: number;
+
+declare const kIOStreamMethodSetMode: number;
+
+declare const kIOStreamMethodStart: number;
+
+declare const kIOStreamMethodClose: number;
+
+declare const kIOStreamOptionOpenExclusive: number;
+
+declare const kIOStreamPortTypeOutput: number;
+
+declare const kIOStreamMemoryTypeMask: number;
+
+declare const kIOStreamBufferIDMask: number;
+
 declare const IOMbufNaturalMemoryCursor: number;
+
+declare const kIOStreamMemoryTypeBufferData: number;
+
+declare const kATAOperationTypeSMS: number;
+
+declare const kATAOperationTypeSMART: number;
+
+declare const kATAOperationTypeFlushCache: number;
+
+declare const kATAOperationTypeWrite: number;
+
+declare const kATAEnablePIOModeMask: number;
+
+declare const kATAEnableMultiWordDMAModeMask: number;
+
+declare const kIOATADefaultPerformance: number;
+
+declare const kIOATAFeature48BitLBA: number;
+
+declare const kIOATAFeatureCompactFlash: number;
+
+declare const kATAValidLogicalSectorSizeMask: number;
+
+declare const kATAValidLogicalSectorSizeBit: number;
+
+declare const kATASupportsFlushCacheExtendedMask: number;
+
+declare const kATASupports48BitAddressingMask: number;
+
+declare const kATASupportsCompactFlashMask: number;
+
+declare const kATASupportsFlushCacheBit: number;
+
+declare const kATASupports48BitAddressingBit: number;
+
+declare const kATASupportsWriteCacheMask: number;
+
+declare const kATASupportsSMARTMask: number;
+
+declare const kATASupportsSMARTBit: number;
+
+declare const k5Minutes: number;
+
+declare const kIOATAMaxBlocksPerXfer: number;
+
+declare const kIOATAMaximumBlockCount16Bit: number;
+
+declare const kIOATAMaximumBlockCount8Bit: number;
+
+declare const kIOATASectorCount16Bit: number;
 
 declare const ecc_panic_physical_address: number;
 
+declare const kIOATASectorCount8Bit: number;
+
+declare const kATADefaultRetries: number;
+
+declare const kATAZeroRetries: number;
+
+declare const kATATimeout45Seconds: number;
+
+declare const kATATimeout30Seconds: number;
+
+declare const kSizeOfATARevisionString: number;
+
+declare const kSizeOfATAModelString: number;
+
+declare const kCurFieldsValidMask: number;
+
+declare const kExtFieldsValidBit: number;
+
+declare const kStandbySupportedMask: number;
+
+declare const kIORDYSupportedMask: number;
+
+declare const kDMADisableMask: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypeIsocFeedback: number;
+
+declare const kLBASupportedMask: number;
+
+declare const kDMASupportedMask: number;
+
+declare const kDMABit: number;
+
+declare const kNonMagneticDriveMask: number;
+
+declare const kRemoveableMediaBit: number;
+
+declare const kFixedDeviceBit: number;
+
+declare const kATAIdentifyIntegrity: number;
+
 declare const kIOPCIExpressCapabilityIDRCECEndpointAssociation: number;
+
+declare const kATAIdentifyLogicalSectorAlignment: number;
+
+declare const kATAIdentifyWordsPerLogicalSector2: number;
+
+declare const kATAIdentifyCommandsDefault: number;
+
+declare const kATAIdentifyCommandsEnabled: number;
+
+declare const kATAIdentifyCommandExtension2: number;
+
+declare const kATAIdentifyCommandSetSupported2: number;
+
+declare const kATAIdentifyCommandSetSupported: number;
+
+declare const kATAIdentifyQueueDepth: number;
+
+declare const kATAIdentifyMinPIOTimeWithIORDY: number;
+
+declare const kATAIdentifyRecommendedMultiWordDMATime: number;
 
 declare const IFNET_FAMILY_ETHERNET: number;
 
+declare const kATAIdentifyMinMultiWordDMATime: number;
+
+declare const kATAIdentifyAdvancedPIOModes: number;
+
+declare const kATAIdentifyMultiWordDMA: number;
+
+declare const kATAIdentifySingleWordDMA: number;
+
 declare const kDeviceStatusLTMEnable: number;
+
+declare const kATAIdentifyCurrentCapacity: number;
+
+declare const kATAIdentifyPIOTiming: number;
+
+declare const kCDTrackInfoAddressTypeLBA: number;
+
+declare const kCDTOCFormatATIP: number;
+
+declare const kCDTOCFormatPMA: number;
+
+declare const kCDMediaTypeMax: number;
+
+declare const kCDMediaTypeROM: number;
+
+declare const kCDMediaTypeUnknown: number;
 
 declare const kIOFBNotifyPriority_Max: number;
 
+declare const kDVDRZoneInfoAddressTypeLBA: number;
+
+declare const kDVDStructureFormatManufacturingInfo: number;
+
+declare const kDVDStructureFormatDiscKeyInfo: number;
+
+declare const kDVDStructureFormatPhysicalFormatInfo: number;
+
+declare const kDVDKeyFormatAGID_Invalidate: number;
+
+declare const kDVDKeyFormatTitleKey: number;
+
+declare const kDVDKeyFormatKey1: number;
+
+declare const kDVDKeyFormatChallengeKey: number;
+
+declare const kDVDKeyFormatAGID_CSS: number;
+
+declare const kDVDKeyClassRSSA: number;
+
+declare const kDVDBookTypePlusRW: number;
+
+declare const kDVDBookTypeHDRW: number;
+
+declare const kDVDBookTypeRAM: number;
+
+declare const kDVDBookTypeROM: number;
+
+declare const kDVDRegionalPlaybackControlSchemePhase2: number;
+
+declare const kDVDRegionalPlaybackControlSchemePhase1: number;
+
+declare const kDVDCPRMRegion6: number;
+
+declare const kDVDCPRMRegion5: number;
+
+declare const kDVDCPRMRegion3: number;
+
+declare const kDVDMediaTypeMax: number;
+
+declare const kDVDMediaTypeHDRW: number;
+
+declare const kDVDMediaTypePlusRW: number;
+
+declare const kDVDMediaTypeRW: number;
+
+declare const kDVDMediaTypeR: number;
+
+declare const kDVDMediaTypeROM: number;
+
+declare const kREPORT_LUNS_ADDRESS_METHOD_OFFSET: number;
+
+declare const kREPORT_LUNS_ADDRESS_METHOD_LOGICAL_UNIT: number;
+
 declare const MBUF_TYPE_SOCKET: number;
+
+declare const kREPORT_LUNS_ADDRESS_METHOD_FLAT_SPACE: number;
+
+declare const kSCSICDBSize_12Byte: number;
+
+declare const kSCSICDBSize_10Byte: number;
+
+declare const kSCSICDBSize_6Byte: number;
+
+declare const kRBCCmd_WRITE_BUFFER: number;
+
+declare const kRBCCmd_WRITE_10: number;
+
+declare const kRBCCmd_VERIFY_10: number;
+
+declare const kRBCCmd_START_STOP_UNIT: number;
+
+declare const kRBCCmd_FORMAT_UNIT: number;
+
+declare const kSESCmd_RESERVE_10: number;
+
+declare const kSESCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kSESCmd_MODE_SENSE_6: number;
+
+declare const kSESCmd_MODE_SELECT_6: number;
+
+declare const kSCCCmd_SEND_DIAGNOSTICS: number;
+
+declare const kSCCCmd_RESERVE_6: number;
+
+declare const kSCCCmd_RELEASE_10: number;
+
+declare const kSCCCmd_RELEASE_6: number;
+
+declare const kSCCCmd_REDUNDANCY_GROUP_OUT: number;
+
+declare const kSCCCmd_REDUNDANCY_GROUP_IN: number;
+
+declare const kSCCCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kSCCCmd_MODE_SELECT_6: number;
+
+declare const kSCCCmd_MAINTENANCE_IN: number;
+
+declare const kSMCCmd_RESERVE_ELEMENT_10: number;
+
+declare const kSMCCmd_RELEASE_ELEMENT_6: number;
+
+declare const kSMCCmd_POSITION_TO_ELEMENT: number;
+
+declare const kSMCCmd_MODE_SELECT_6: number;
+
+declare const kSMCCmd_INITIALIZE_ELEMENT_STATUS: number;
+
+declare const kSGCCmd_TEST_UNIT_READY: number;
+
+declare const kSGCCmd_SET_WINDOW: number;
+
+declare const kSGCCmd_REQUEST_SENSE: number;
+
+declare const kSGCCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kSGCCmd_OBJECT_POSITION: number;
+
+declare const kSGCCmd_MODE_SENSE_6: number;
+
+declare const kSGCCmd_LOG_SELECT: number;
+
+declare const kSGCCmd_GET_WINDOW: number;
+
+declare const kSGCCmd_GET_DATA_BUFFER_STATUS: number;
+
+declare const kSGCCmd_CHANGE_DEFINITION: number;
+
+declare const kMMCCmd_WRITE_BUFFER: number;
+
+declare const kMMCCmd_WRITE_AND_VERIFY_10: number;
+
+declare const kMMCCmd_WRITE_12: number;
+
+declare const kMMCCmd_WRITE_10: number;
+
+declare const kMMCCmd_TEST_UNIT_READY: number;
+
+declare const kMMCCmd_SYNCHRONIZE_CACHE: number;
 
 declare const IFNET_SCHED_MODEL_NORMAL: number;
 
+declare const kMMCCmd_START_STOP_UNIT: number;
+
+declare const kMMCCmd_SET_STREAMING: number;
+
+declare const kMMCCmd_SET_READ_AHEAD: number;
+
+declare const kMMCCmd_SET_LIMITS_12: number;
+
+declare const kMMCCmd_SET_LIMITS_10: number;
+
+declare const kMMCCmd_SET_CD_SPEED: number;
+
+declare const kMMCCmd_SEND_KEY: number;
+
+declare const kMMCCmd_SEND_DVD_STRUCTURE: number;
+
+declare const kMMCCmd_SEEK_10: number;
+
+declare const kMMCCmd_SEARCH_DATA_LOW_10: number;
+
+declare const kMMCCmd_SEARCH_DATA_HIGH_12: number;
+
+declare const kMMCCmd_SEARCH_DATA_EQUAL_10: number;
+
+declare const kMMCCmd_RESERVE_TRACK: number;
+
+declare const kMMCCmd_REQUEST_SENSE: number;
+
+declare const kMMCCmd_REPORT_KEY: number;
+
+declare const kMMCCmd_READ_LONG: number;
+
+declare const kMMCCmd_READ_CD_MSF: number;
+
+declare const kMMCCmd_READ_BUFFER: number;
+
+declare const kMMCCmd_READ_12: number;
+
+declare const kMMCCmd_READ_10: number;
+
+declare const kMMCCmd_PREVENT_ALLOW_MEDIUM_REMOVAL: number;
+
+declare const kMMCCmd_PREFETCH: number;
+
+declare const kMMCCmd_PLAY_AUDIO_12: number;
+
+declare const kMMCCmd_MODE_SENSE_10: number;
+
+declare const kMMCCmd_MODE_SENSE_6: number;
+
+declare const kMMCCmd_LOG_SELECT: number;
+
+declare const kMMCCmd_LOAD_UNLOAD_MEDIUM: number;
+
+declare const kMMCCmd_INQUIRY: number;
+
+declare const kMMCCmd_GET_EVENT_STATUS_NOTIFICATION: number;
+
+declare const kMMCCmd_GET_CONFIGURATION: number;
+
+declare const kMMCCmd_ERASE: number;
+
+declare const kMMCCmd_CHANGE_DEFINITION: number;
+
+declare const kMMCCmd_BLANK: number;
+
+declare const kSBCWOCmd_WRITE_LONG: number;
+
+declare const kSBCWOCmd_WRITE_BUFFER: number;
+
+declare const kSBCWOCmd_WRITE_AND_VERIFY_12: number;
+
+declare const kSBCWOCmd_WRITE_10: number;
+
+declare const kSBCWOCmd_SYNCHRONIZE_CACHE: number;
+
+declare const kSBCWOCmd_START_STOP_UNIT: number;
+
+declare const kSBCWOCmd_SET_LIMITS_12: number;
+
+declare const kUSBChipSmartCardInterfaceClass: number;
+
+declare const kSBCWOCmd_SEEK_6: number;
+
+declare const kSBCWOCmd_SEARCH_DATA_HIGH_12: number;
+
+declare const kSBCWOCmd_SEARCH_DATA_HIGH_10: number;
+
+declare const kSBCWOCmd_SEARCH_DATA_EQUAL_10: number;
+
+declare const kSBCWOCmd_REZERO_UNIT: number;
+
+declare const kSBCWOCmd_REQUEST_SENSE: number;
+
+declare const kSBCWOCmd_RELEASE_10: number;
+
+declare const kSBCWOCmd_RELEASE_6: number;
+
+declare const kSBCWOCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kSBCWOCmd_READ_LONG: number;
+
+declare const kSBCWOCmd_READ_6: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilityU2DevExitLatMax: number;
+
+declare const kSBCWOCmd_PREVENT_ALLOW_MEDIUM_REMOVAL: number;
+
+declare const kSBCWOCmd_PREFETCH: number;
+
+declare const kSBCWOCmd_MODE_SENSE_6: number;
+
+declare const kSBCWOCmd_MODE_SELECT_6: number;
+
+declare const kSBCWOCmd_MEDIUM_SCAN: number;
+
+declare const kSBCWOCmd_LOG_SENSE: number;
+
+declare const kSBCWOCmd_LOG_SELECT: number;
+
+declare const kSBCWOCmd_INQUIRY: number;
+
+declare const kSBCWOCmd_COMPARE: number;
+
+declare const kSPCProcCmd_WRITE_BUFFER: number;
+
+declare const kSPCProcCmd_RELEASE_6: number;
+
+declare const kSPCProcCmd_RELEASE_10: number;
+
+declare const kSPCProcCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kSPCProcCmd_RECEIVE: number;
+
+declare const kSPCProcCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kSPCProcCmd_EXTENDED_COPY: number;
+
+declare const kSPCProcCmd_COPY_AND_VERIFY: number;
+
+declare const kSSCPrinterCmd_WRITE_BUFFER: number;
+
+declare const kSSCPrinterCmd_SYNCHRONIZE_BUFFER: number;
+
+declare const kSSCPrinterCmd_SEND_DIAGNOSTICS: number;
+
 declare const mATAWriteFault: number;
+
+declare const kSSCPrinterCmd_RESERVE_10: number;
+
+declare const kSSCPrinterCmd_RESERVE_6: number;
+
+declare const kSSCPrinterCmd_REQUEST_SENSE: number;
+
+declare const kSSCPrinterCmd_RELEASE_6: number;
+
+declare const kSSCPrinterCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kSSCPrinterCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kSSCPrinterCmd_INQUIRY: number;
+
+declare const kSSCPrinterCmd_FORMAT: number;
+
+declare const kSSCPrinterCmd_COPY: number;
+
+declare const kATAIdentifyMultipleSectorCount: number;
+
+declare const kSSCPrinterCmd_CHANGE_DEFINITION: number;
+
+declare const kSSCSeqCmd_TEST_UNIT_READY: number;
+
+declare const kSSCSeqCmd_RESERVE_10: number;
+
+declare const kSSCSeqCmd_RESERVE_6: number;
+
+declare const kSSCSeqCmd_REPORT_DENSITY_SUPPORT: number;
+
+declare const kSSCSeqCmd_RELEASE_10: number;
+
+declare const kSSCSeqCmd_RELEASE_6: number;
+
+declare const kSSCSeqCmd_RECOVER_BUFFERED_DATA: number;
+
+declare const kSSCSeqCmd_READ_REVERSE: number;
+
+declare const kSSCSeqCmd_READ_6: number;
+
+declare const kSSCSeqCmd_PREVENT_ALLOW_MEDIUM_REMOVAL: number;
+
+declare const kSSCSeqCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kSSCSeqCmd_MODE_SENSE_10: number;
+
+declare const kSSCSeqCmd_MODE_SENSE_6: number;
+
+declare const kSSCSeqCmd_MODE_SELECT_10: number;
+
+declare const kSSCSeqCmd_LOG_SENSE: number;
+
+declare const kSSCSeqCmd_FORMAT_MEDIUM: number;
+
+declare const kSSCSeqCmd_ERASE: number;
+
+declare const kSSCSeqCmd_COPY_AND_VERIFY: number;
+
+declare const kSSCSeqCmd_COPY: number;
+
+declare const kSBCCmd_XDREAD: number;
+
+declare const kSBCCmd_WRITE_SAME: number;
+
+declare const kSBCCmd_WRITE_AND_VERIFY_10: number;
+
+declare const kSBCCmd_WRITE_10: number;
+
+declare const kSBCCmd_START_STOP_UNIT: number;
+
+declare const kSBCCmd_SET_LIMITS_12: number;
+
+declare const kSBCCmd_SET_LIMITS_10: number;
+
+declare const kSBCCmd_SEEK_10: number;
+
+declare const kSBCCmd_SEARCH_DATA_HIGH_10: number;
+
+declare const kSBCCmd_SEARCH_DATA_EQUAL_10: number;
+
+declare const kSBCCmd_RESERVE_6: number;
+
+declare const kSBCCmd_RELEASE_10: number;
+
+declare const kSBCCmd_RELEASE_6: number;
+
+declare const kSBCCmd_REGENERATE: number;
+
+declare const kSBCCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kSBCCmd_REBUILD: number;
+
+declare const kSBCCmd_REASSIGN_BLOCKS: number;
+
+declare const kSBCCmd_READ_GENERATION: number;
+
+declare const kSBCCmd_READ_DEFECT_DATA_12: number;
+
+declare const kSBCCmd_READ_DEFECT_DATA_10: number;
+
+declare const kSBCCmd_READ_BUFFER: number;
+
+declare const kSBCCmd_READ_12: number;
+
+declare const kSBCCmd_PREVENT_ALLOW_MEDIUM_REMOVAL: number;
+
+declare const kSBCCmd_MODE_SENSE_6: number;
+
+declare const kSBCCmd_MODE_SELECT_10: number;
+
+declare const kSBCCmd_INQUIRY: number;
+
+declare const kSBCCmd_COPY: number;
+
+declare const kSBCCmd_COMPARE: number;
+
+declare const kSBCCmd_CHANGE_DEFINITION: number;
+
+declare const kSPCCmd_WRITE_BUFFER: number;
+
+declare const kSPCCmd_RESERVE_6: number;
+
+declare const kSPCCmd_RESERVE_10: number;
+
+declare const kSPCCmd_RELEASE_6: number;
+
+declare const kSPCCmd_RELEASE_10: number;
+
+declare const kSPCCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kSPCCmd_READ_BUFFER: number;
+
+declare const kSPCCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kSPCCmd_MOVE_MEDIUM_ATTACHED: number;
+
+declare const kSPCCmd_MODE_SENSE_6: number;
+
+declare const kSPCCmd_MODE_SELECT_6: number;
+
+declare const kSPCCmd_LOG_SENSE: number;
+
+declare const kSPCCmd_COMPARE: number;
+
+declare const kSPCCmd_CHANGE_DEFINITION: number;
+
+declare const kSCSIServiceAction_WRITE_LONG_16: number;
+
+declare const kSCSIServiceAction_READ_CAPACITY_16: number;
+
+declare const kSCSIServiceAction_SET_DEVICE_IDENTIFIER: number;
+
+declare const kSCSIServiceAction_CHANGE_ALIASES: number;
+
+declare const kSCSIServiceAction_REPORT_TARGET_PORT_GROUPS: number;
+
+declare const kSCSIServiceAction_REPORT_SUPPORTED_OPERATION_CODES: number;
+
+declare const kSCSIServiceAction_REPORT_DEVICE_IDENTIFIER: number;
+
+declare const kSCSIServiceAction_REPORT_ALIASES: number;
+
+declare const kSCSIServiceAction_XPWRITE_32: number;
+
+declare const kSCSIServiceAction_WRITE_SAME_32: number;
+
+declare const kSCSIServiceAction_WRITE_32: number;
+
+declare const kSCSIServiceAction_VERIFY_32: number;
+
+declare const kSCSIServiceAction_READ_32: number;
+
+declare const kSCSICmdVariableLengthCDB: number;
+
+declare const kSCSICmd_XDWRITEREAD_10: number;
+
+declare const kSCSICmd_XDWRITE_EXTENDED: number;
+
+declare const kSCSICmd_XDREAD: number;
+
+declare const kSCSICmd_WRITE_SAME: number;
+
+declare const kSCSICmd_WRITE_LONG: number;
+
+declare const kUSBRel11: number;
+
+declare const kSCSICmd_WRITE_AND_VERIFY_16: number;
+
+declare const kSCSICmd_WRITE_AND_VERIFY_12: number;
+
+declare const kSCSICmd_WRITE_12: number;
+
+declare const kSCSICmd_WRITE_10: number;
+
+declare const kSCSICmd_VOLUME_SET_OUT: number;
+
+declare const kSCSICmd_VERIFY_12: number;
+
+declare const kSCSICmd_UNMAP: number;
+
+declare const kSCSICmd_UPDATE_BLOCK: number;
+
+declare const kSCSICmd_TEST_UNIT_READY: number;
+
+declare const kUSBMassStorageRBCSubClass: number;
+
+declare const kSCSICmd_SYNCHRONIZE_CACHE_16: number;
+
+declare const kSCSICmd_SYNCHRONIZE_CACHE: number;
+
+declare const kSCSICmd_START_STOP_UNIT: number;
+
+declare const kSCSICmd_SPARE_OUT: number;
+
+declare const kUSBStreamIDMask: number;
+
+declare const kSCSICmd_SPARE_IN: number;
+
+declare const kSCSICmd_SET_STREAMING: number;
+
+declare const kSCSICmd_SET_LIMITS_12: number;
+
+declare const kSCSICmd_SET_DEVICE_IDENTIFIER: number;
+
+declare const kSCSICmd_SET_CD_SPEED: number;
+
+declare const kSCSICmd_SERVICE_ACTION_OUT: number;
 
 declare const kEndpointFeatureSelectorStall: number;
 
+declare const kSCSICmd_SEND_OPC_INFORMATION: number;
+
+declare const kSCSICmd_SEND_EVENT: number;
+
+declare const kSCSICmd_SEND_DIAGNOSTICS: number;
+
+declare const kSCSICmd_SEEK_10: number;
+
+declare const kSCSICmd_SEEK_6: number;
+
+declare const kSCSICmd_SEARCH_DATA_HIGH_12: number;
+
+declare const kSCSICmd_SCAN_MMC: number;
+
+declare const kSCSICmd_REZERO_UNIT: number;
+
+declare const kSCSICmd_RESERVE_TRACK: number;
+
+declare const kSCSICmd_RESERVE_10: number;
+
+declare const kSCSICmd_RESERVE_6: number;
+
+declare const kSCSICmd_REPORT_KEY: number;
+
+declare const kSCSICmd_REPORT_DEVICE_IDENTIFIER: number;
+
+declare const kSCSICmd_REPAIR_TRACK: number;
+
+declare const kSCSICmd_RELEASE_10: number;
+
+declare const kSCSICmd_REGENERATE: number;
+
+declare const kSCSICmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kSCSICmd_RECEIVE: number;
+
+declare const kSCSICmd_REASSIGN_BLOCKS: number;
+
 declare const kUSB20ExtensionCapabilityBESLValid: number;
+
+declare const kSCSICmd_READ_UPDATED_BLOCK_10: number;
+
+declare const kSCSICmd_READ_TRACK_INFORMATION: number;
+
+declare const kSCSICmd_READ_TOC_PMA_ATIP: number;
+
+declare const kSCSICmd_READ_SUB_CHANNEL: number;
+
+declare const kSCSICmd_READ_MASTER_CUE: number;
+
+declare const kSCSICmd_READ_HEADER: number;
+
+declare const kSCSICmd_READ_GENERATION: number;
+
+declare const kSCSICmd_READ_FORMAT_CAPACITIES: number;
+
+declare const kSCSICmd_READ_DISC_STRUCTURE: number;
+
+declare const kSCSICmd_READ_DVD_STRUCTURE: number;
+
+declare const kSCSICmd_READ_DISC_INFORMATION: number;
+
+declare const kSCSICmd_READ_CD: number;
+
+declare const kSCSICmd_READ_BUFFER: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilityMinTxLaneCountPhase: number;
+
+declare const kSCSICmd_READ_ATTRIBUTE: number;
+
+declare const kSCSICmd_READ_10: number;
+
+declare const kSCSICmd_READ_6: number;
+
+declare const kSCSICmd_PLAY_RELATIVE_12: number;
+
+declare const kSCSICmd_PLAY_AUDIO_TRACK_INDEX: number;
+
+declare const kSCSICmd_PLAY_AUDIO_MSF: number;
+
+declare const kSCSICmd_PLAY_AUDIO_12: number;
+
+declare const kSCSICmd_ATA_PASS_THROUGH_EXT: number;
+
+declare const kSCSICmd_ATA_PASS_THROUGH: number;
+
+declare const kSCSICmd_MODE_SENSE_10: number;
+
+declare const kSCSICmd_MEDIUM_SCAN: number;
+
+declare const kSCSICmd_MECHANISM_STATUS: number;
+
+declare const kSCSICmd_MAINTENANCE_OUT: number;
+
+declare const kSCSICmd_LOCK_UNLOCK_CACHE_16: number;
+
+declare const kSCSICmd_GET_CONFIGURATION: number;
+
+declare const kSCSICmd_FORMAT_UNIT: number;
+
+declare const kSCSICmd_EXTENDED_COPY: number;
+
+declare const kSCSICmd_COPY_AND_VERIFY: number;
+
+declare const kSCSICmd_COPY: number;
+
+declare const kSCSICmd_CHANGE_DEFINITION: number;
 
 declare const kIOPCIConfigBIST: number;
 
+declare const kSCSICmd_ACCESS_CONTROL_IN: number;
+
 declare const sock_data_filt_flag_oob: number;
+
+declare const kSBCModePageCaching_FSW_Mask: number;
+
+declare const kSBCModePageCaching_LBCSS_Mask: number;
+
+declare const kSBCModePageCaching_VS2_Mask: number;
+
+declare const kSBCModePageCaching_LBCSS_Bit: number;
+
+declare const kSBCModePageCaching_DRA_Bit: number;
 
 declare const kIOPCIConfigurationOffsetRevisionID: number;
 
+declare const kSBCModePageCaching_VS2_Bit: number;
+
+declare const kSBCModePageCaching_VS1_Bit: number;
+
+declare const kSBCModePageCaching_DEMAND_WRITE_Mask: number;
+
+declare const kSBCModePageCaching_ABPF_Mask: number;
+
+declare const kSBCModePageCaching_CAP_Mask: number;
+
+declare const kSBCModePageCaching_DISC_Mask: number;
+
+declare const kSBCModePageCaching_SIZE_Mask: number;
+
+declare const kSBCModePageCaching_WCE_Mask: number;
+
+declare const kSBCModePageCaching_RCD_Mask: number;
+
+declare const kSBCModePageCaching_IC_Bit: number;
+
+declare const kSBCModePageCaching_WCE_Bit: number;
+
+declare const kSBCModePageCaching_RCD_Bit: number;
+
+declare const kSBCModePageFlexibleDisk_PIN_4_Mask: number;
+
+declare const kSBCModePageFlexibleDisk_PIN_1_Mask: number;
+
+declare const kSBCModePageFlexibleDisk_PIN_34_Mask: number;
+
+declare const kSBCModePageFlexibleDisk_PIN_2_Mask: number;
+
 declare const kAirshipDaleBasebandErrorDevicePowerOffTimedOut: number;
+
+declare const kSBCModePageFlexibleDisk_TRDY_Mask: number;
+
+declare const kSBCModePageFlexibleDisk_SSN_Bit: number;
+
+declare const kSBCModePageCachingCode: number;
+
+declare const kSBCModePageRigidDiskGeometryCode: number;
+
+declare const kSPCModePageAllPagesCode: number;
+
+declare const kModePageFormat_PS_Mask: number;
+
+declare const kModePageFormat_PAGE_CODE_Mask: number;
+
+declare const kModePageFormat_PS_Bit: number;
+
+declare const kModeSenseSBCDeviceSpecific_WriteProtectMask: number;
+
+declare const kModeSenseSBCDeviceSpecific_DPOFUAMask: number;
+
+declare const kModeSenseSBCDeviceSpecific_WriteProtectBit: number;
+
+declare const kModeSenseSBCDeviceSpecific_DPOFUABit: number;
+
+declare const kINQUIRY_PageC0_Features_HasSEP_LUN: number;
+
+declare const kSCSIProtocolIdentifier_SAS: number;
+
+declare const kSCSIProtocolIdentifier_iSCSI: number;
+
+declare const kSCSIProtocolIdentifier_RDMA: number;
+
+declare const kSCSIProtocolIdentifier_ParallelSCSI: number;
+
+declare const kSCSIProtocolIdentifier_FibreChannel: number;
+
+declare const kUSB_EPDesc_bmAttributes_UsageType_Shift: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeSCSINameString: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeMD5LogicalUnitIdentifier: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeTargetPortGroup: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeNAAIdentifier: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeVendorSpecific: number;
+
+declare const kINQUIRY_Page83_AssociationDevice: number;
+
+declare const kINQUIRY_Page83_CodeSetMask: number;
+
+declare const kINQUIRY_Page83_CodeSetBinaryData: number;
+
+declare const kINQUIRY_PageC1_PageCode: number;
+
+declare const kINQUIRY_PageB2_PageCode: number;
+
+declare const kINQUIRY_PageB0_PageCode: number;
+
+declare const kINQUIRY_Page89_PageCode: number;
+
+declare const kINQUIRY_VERSION_DESCRIPTOR_NVME: number;
+
+declare const kINQUIRY_Byte56_CLOCKING_Mask: number;
+
+declare const kSBCModePageCaching_CAP_Bit: number;
+
+declare const kINQUIRY_Byte56_QAS_Mask: number;
+
+declare const kINQUIRY_Byte56_IUS_Mask: number;
+
+declare const kINQUIRY_Byte56_QAS_Bit: number;
+
+declare const kINQUIRY_Byte56_Offset: number;
+
+declare const kINQUIRY_Byte7_RELADR_Mask: number;
+
+declare const kINQUIRY_Byte7_TRANDIS_Mask: number;
+
+declare const kINQUIRY_Byte7_LINKED_Bit: number;
+
+declare const kINQUIRY_Byte7_TRANDIS_Bit: number;
+
+declare const kINQUIRY_Byte6_ADDR16_Mask: number;
+
+declare const kINQUIRY_Byte6_BQUE_Bit: number;
+
+declare const kINQUIRY_Byte6_ADDR16_Bit: number;
+
+declare const kINQUIRY_Byte5_PROTECT_Mask: number;
+
+declare const kINQUIRY_Byte5_3PC_Mask: number;
+
+declare const kINQUIRY_Byte5_ImplicitTPGS_Mask: number;
 
 declare const IFNET_CSUM_IP: number;
 
-declare const IOUSBHostCIMessageControlType: number;
+declare const kINQUIRY_Byte5_ExplicitTPGS_Mask: number;
+
+declare const kINQUIRY_Byte5_SCCS_Mask: number;
+
+declare const kINQUIRY_Byte5_PROTECT_Bit: number;
+
+declare const kINQUIRY_Byte5_3PC_Bit: number;
+
+declare const kINQUIRY_Byte5_ImplicitTPGS_Bit: number;
+
+declare const kINQUIRY_Byte5_ExplicitTPGS_Bit: number;
+
+declare const kINQUIRY_Byte3_AERC_Mask: number;
+
+declare const kUSBCommDirectLineSubClass: number;
+
+declare const kINQUIRY_Byte3_NORMACA_Bit: number;
+
+declare const kINQUIRY_Byte3_HISUP_Bit: number;
+
+declare const kINQUIRY_ANSI_VERSION_SCSI_SPC_3_Compliant: number;
+
+declare const kINQUIRY_ANSI_VERSION_SCSI_SPC_2_Compliant: number;
+
+declare const kINQUIRY_ANSI_VERSION_SCSI_SPC_Compliant: number;
+
+declare const kINQUIRY_ANSI_VERSION_SCSI_1_Compliant: number;
+
+declare const kINQUIRY_ISO_IEC_VERSION_Mask: number;
+
+declare const kINQUIRY_PERIPHERAL_RMB_MediumRemovable: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_AutomationDriveInterface: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_CommunicationsSSCDevice: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_OpticalMemorySBCDevice: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_ScannerSCSI2Device: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_WriteOnceSBCDevice: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_PrinterSSCDevice: number;
+
+declare const kINQUIRY_PERIPHERAL_QUALIFIER_SupportedButNotConnected: number;
+
+declare const kINQUIRY_PRODUCT_REVISION_LEVEL_Length: number;
+
+declare const kINQUIRY_PRODUCT_IDENTIFICATION_Length: number;
+
+declare const kINQUIRY_VENDOR_IDENTIFICATION_Length: number;
+
+declare const kINQUIRY_StandardDataHeaderSize: number;
+
+declare const kSENSE_KEY_Mask: number;
+
+declare const kSENSE_KEY_MISCOMPARE: number;
+
+declare const kSENSE_KEY_ABORTED_COMMAND: number;
+
+declare const kUSBPhysicalDesc: number;
+
+declare const kSENSE_KEY_COPY_ABORTED: number;
+
+declare const kSENSE_KEY_UNIT_ATTENTION: number;
+
+declare const kSENSE_KEY_MEDIUM_ERROR: number;
+
+declare const kSENSE_KEY_NOT_READY: number;
+
+declare const kSENSE_ILI_Not_Set: number;
+
+declare const kSENSE_ILI_Set: number;
+
+declare const kSENSE_EOM_Set: number;
+
+declare const kSENSE_FILEMARK_Set: number;
+
+declare const kSENSE_RESPONSE_CODE_Deferred_Errors: number;
+
+declare const kSENSE_NOT_DATA_VALID: number;
+
+declare const kSenseDefaultSize: number;
+
+declare const kDiscStatusErasableMask: number;
+
+declare const kDiscStatusComplete: number;
+
+declare const kBDFeaturesWriteBit: number;
+
+declare const kDVDFeaturesHDRAMMask: number;
+
+declare const kDVDFeaturesHDRMask: number;
+
+declare const kDVDFeaturesPlusRMask: number;
+
+declare const kDVDFeaturesBUFWriteMask: number;
+
+declare const kDVDFeaturesTestWriteMask: number;
+
+declare const kDVDFeaturesReadStructuresMask: number;
+
+declare const kDVDFeaturesHDReadBit: number;
+
+declare const kDVDFeaturesPlusRWBit: number;
+
+declare const kDVDFeaturesTestWriteBit: number;
+
+declare const kDVDFeaturesReadStructuresBit: number;
+
+declare const kCDFeaturesSAOWriteMask: number;
+
+declare const kCDFeaturesPacketWriteMask: number;
+
+declare const kCDFeaturesWriteOnceMask: number;
+
+declare const kCDFeaturesAnalogAudioMask: number;
+
+declare const kCDFeaturesBUFWriteBit: number;
+
+declare const kCDFeaturesRawWriteBit: number;
+
+declare const kCDFeaturesSAOWriteBit: number;
+
+declare const kCDFeaturesCDDAStreamAccurateBit: number;
+
+declare const kCDFeaturesReWriteableBit: number;
+
+declare const kCDFeaturesWriteOnceBit: number;
 
 declare const kFWConfigurationPacketID: number;
 
+declare const kMessageFoundMedia: number;
+
+declare const kMessageTrayStateChangeRequestRejected: number;
+
+declare const kSSCSeqCmd_REQUEST_SENSE: number;
+
 declare const static_if_modified_keys: interop.Pointer;
+
+declare const kSCSIDataTransfer_NoDataTransfer: number;
 
 declare const gIOUserServerNameKey: interop.Pointer;
 
@@ -2124,155 +3554,3821 @@ declare const kSuperSpeedHubDelayMax: number;
 
 declare const kPACKET: number;
 
+declare const kDVIPowerSwitchActiveMask: number;
+
+declare const kDVIPowerSwitchSupportMask: number;
+
+declare const kMirrorUnclippedMirrorMask: number;
+
+declare const kMirrorAreMirroredMask: number;
+
+declare const kMirrorCanMirrorMask: number;
+
+declare const kMirrorCommonGammaMask: number;
+
 declare const gIODriverKitEntitlementKey: interop.Pointer;
+
+declare const kMirrorSameTimingOnlyMirrorMask: number;
+
+declare const kSetClutAtVBL: number;
+
+declare const kSetClutAtSetEntries: number;
+
+declare const kScaleRotate180Mask: number;
+
+declare const kScaleRotateFlagsMask: number;
+
+declare const kScaleCanRotateMask: number;
+
+declare const kScaleCanScaleInterlacedMask: number;
+
+declare const kScaleCanUpSamplePixelsMask: number;
+
+declare const kRangeSupportsSyncOnGreenBit: number;
+
+declare const kAnalogSignalLevel_0714_0286: number;
+
+declare const kInterlacedCEA861SyncModeBit: number;
+
+declare const kAnalogSetupExpectedBit: number;
+
+declare const kRangeSupportsSignal_0700_0000_Mask: number;
 
 declare const IOUSBHostDevice_Class: OSClassLoadInformation;
 
+declare const kRangeSupportsSignal_0714_0286_Mask: number;
+
+declare const kVideoBufferSizeErr: number;
+
+declare const kVideoI2CTransactionTypeErr: number;
+
+declare const kVideoI2CTransactionErr: number;
+
+declare const kVideoI2CReplyPendingErr: number;
+
+declare const kTimingChangeRestrictedErr: number;
+
+declare const kDMSModeFree: number;
+
+declare const kSyncDigitalHSyncPositiveMask: number;
+
+declare const kSyncDigitalVSyncPositiveMask: number;
+
+declare const kSyncDigitalSeperateMask: number;
+
+declare const kSyncDigitalCompositeSerrateMask: number;
+
+declare const kSPCCmd_TEST_UNIT_READY: number;
+
+declare const kSyncDigitalCompositeMask: number;
+
+declare const kSyncAnalogBipolarSRGBSyncMask: number;
+
+declare const kSyncAnalogBipolarSerrateMask: number;
+
+declare const kSyncAnalogBipolarMask: number;
+
+declare const kSyncAnalogCompositeRGBSyncMask: number;
+
+declare const kSyncAnalogCompositeSerrateMask: number;
+
+declare const kSyncAnalogCompositeMask: number;
+
+declare const kVideoUsageAddrSubAddrBit: number;
+
+declare const kVideoReplyMicroSecDelayBit: number;
+
+declare const kVideoDisplayPortNativeTypeMask: number;
+
+declare const kVideoNoTransactionType: number;
+
+declare const kVideoBusTypeInvalid: number;
+
+declare const kActivateConnection: number;
+
+declare const kGetConnectionCount: number;
+
+declare const kGammaTableIDSpecific: number;
+
+declare const kGammaTableIDNoMoreTables: number;
+
+declare const kGammaTableIDFindFirst: number;
+
+declare const kDisplayModeIDBootProgrammable: number;
+
+declare const kDisplayModeIDFindFirstProgrammable: number;
+
+declare const kDisplayModeIDFindFirstResolution: number;
+
+declare const kDisplayModeIDInvalid: number;
+
+declare const kDisplayModeIDCurrent: number;
+
+declare const kSixthDepthMode: number;
+
+declare const kFirstDepthMode: number;
+
+declare const kDepthMode4: number;
+
+declare const kDepthMode3: number;
+
+declare const kDepthMode2: number;
+
+declare const kDepthMode1: number;
+
+declare const kESCSevenDDC: number;
+
+declare const kESCSevenPALAlternate: number;
+
+declare const kESCSeven16Inch: number;
+
+declare const kESCSevenVGA: number;
+
+declare const kESCSevenNTSC: number;
+
+declare const kESCSevenPAL: number;
+
+declare const kESCSixStandard: number;
+
+declare const kESCFivePortrait: number;
+
 declare const kIOPCIExpressCapabilityIDLatencyTolerenceReporting: number;
+
+declare const kESCFourNTSC: number;
+
+declare const kESCThree21InchMono: number;
+
+declare const kESCTwo12Inch: number;
+
+declare const kESCZero21Inch: number;
+
+declare const kRSCSeven: number;
+
+declare const kRSCSix: number;
+
+declare const kRSCFive: number;
+
+declare const kRSCFour: number;
+
+declare const kRSCThree: number;
+
+declare const kLiveVideoPassThruMask: number;
+
+declare const kLiveVideoPassThru: number;
+
+declare const kConvolved: number;
+
+declare const kDPMSSyncSuspend: number;
+
+declare const kDPMSSyncStandby: number;
+
+declare const kVerticalSyncMask: number;
+
+declare const kTriStateSyncBit: number;
+
+declare const kNoSeparateSyncControlBit: number;
+
+declare const kEnableSyncOnRed: number;
+
+declare const kEnableSyncOnGreen: number;
+
+declare const kEnableSyncOnBlue: number;
+
+declare const kDisableCompositeSyncBit: number;
+
+declare const kDisableHorizontalSyncBit: number;
+
+declare const cscGetFeatureList: number;
+
+declare const cscGetMirror: number;
+
+declare const cscGetScalerInfo: number;
+
+declare const cscGetCommunicationInfo: number;
+
+declare const cscGetDetailedTiming: number;
+
+declare const cscGetTimingRanges: number;
+
+declare const cscGetClutBehavior: number;
+
+declare const cscGetPowerState: number;
+
+declare const cscGetConvolution: number;
+
+declare const cscGetHardwareCursorDrawState: number;
+
+declare const cscSupportsHardwareCursor: number;
+
+declare const cscRetrieveGammaTable: number;
+
+declare const cscGetGammaInfoList: number;
+
+declare const cscGetNextResolution: number;
+
+declare const cscGetConnection: number;
+
+declare const cscGetDefaultMode: number;
+
+declare const cscGetBaseAddr: number;
+
+declare const kUSBNotEnoughPowerNoACNotificationType: number;
+
+declare const cscGetMode: number;
+
+declare const cscUnusedCall: number;
+
+declare const cscSetFeatureConfiguration: number;
+
+declare const cscSetClutBehavior: number;
+
+declare const cscSetMultiConnect: number;
+
+declare const cscPrivateControlCall: number;
+
+declare const cscSetConvolution: number;
+
+declare const cscSetGray: number;
+
+declare const cscGrayScreen: number;
+
+declare const cscSetGamma: number;
+
+declare const cscSetEntries: number;
+
+declare const cscSetMode: number;
+
+declare const kSPCProcCmd_REPORT_LUNS: number;
+
+declare const kPowerStateSupportsReducedPower3BitMask: number;
+
+declare const kPowerStateSupportsReducedPower2BitMask: number;
+
+declare const kPowerStateSupportsReducedPower1BitMask: number;
+
+declare const kSBCWOCmd_VERIFY_10: number;
+
+declare const kPowerStateSupportsReducedPower1Bit: number;
+
+declare const kPowerStateSleepWaketoDozeMask: number;
+
+declare const kPowerStateSleepNoDPMSMask: number;
+
+declare const kPowerStateSleepForbiddenMask: number;
+
+declare const kPowerStateNeedsRefreshMask: number;
+
+declare const kDVDMediaTypeUnknown: number;
+
+declare const kPowerStateSleepWaketoDozeBit: number;
 
 declare const IOBlockStorageDriver: number;
 
+declare const kPowerStateSleepForbiddenBit: number;
+
+declare const kSBCWOCmd_READ_BUFFER: number;
+
+declare const kPowerStateSleepAwareBit: number;
+
+declare const kPowerStateReducedPower2: number;
+
+declare const kPowerStateReducedPowerMask: number;
+
+declare const kHardwarePark: number;
+
+declare const kHardwareWakeFromSuspend: number;
+
+declare const kHardwareWake: number;
+
+declare const kHardwareSleep: number;
+
+declare const kAVPowerStandby: number;
+
+declare const kAVPowerOff: number;
+
+declare const kResolutionHasMultipleDepthSizes: number;
+
+declare const kDepthDependentMask: number;
+
+declare const kDepthDependent: number;
+
+declare const kModeValidateAgainstDisplay: number;
+
+declare const kModeBuiltIn: number;
+
+declare const kModeNotPreset: number;
+
 declare const IOUSBHostPipe: number;
+
+declare const kModeSimulscan: number;
+
+declare const kModeShowNever: number;
+
+declare const kModeDefault: number;
+
+declare const kModeSafe: number;
+
+declare const kNoConnect: number;
+
+declare const cscReset: number;
+
+declare const kGenericCRT: number;
+
+declare const kColor19Connect: number;
+
+declare const kColor16Connect: number;
+
+declare const kMonoTwoPageConnect: number;
+
+declare const kPanelFSTNConnect: number;
+
+declare const kPALConnect: number;
+
+declare const kVGAConnect: number;
+
+declare const kMultiModeCRT1Connect: number;
+
+declare const kINQUIRY_Byte56_CLOCKING_ST_AND_DT: number;
+
+declare const kFixedModeCRTConnect: number;
 
 declare const EventElementCollection: number;
 
+declare const kPanelTFTConnect: number;
+
+declare const kPanelConnect: number;
+
+declare const kOverrideConnection: number;
+
+declare const kConnectionInactive: number;
+
+declare const kHasDDCConnection: number;
+
+declare const kReportsDDCConnection: number;
+
+declare const kTaggingInfoNonStandard: number;
+
+declare const kHasDirectConnection: number;
+
+declare const kAllModesSafe: number;
+
+declare const kAllModesValid: number;
+
+declare const timingSony_1900x1200_74hz: number;
+
+declare const timingApple21: number;
+
+declare const timingApple16: number;
+
+declare const timingApple15x: number;
+
+declare const timingApple15: number;
+
+declare const timingApple12x: number;
+
+declare const timingApple12: number;
+
+declare const timingSony_1920x1200_76hz: number;
+
 declare const kIOPCICPCIHotswapCapability: number;
+
+declare const timingSony_1920x1080_60hz: number;
+
+declare const timingSony_1600x1024_76hz: number;
+
+declare const timingFilmRate_48hz: number;
+
+declare const timingVESA_1856x1392_75hz: number;
+
+declare const timingVESA_1856x1392_60hz: number;
+
+declare const timingVESA_1792x1344_75hz: number;
+
+declare const timingVESA_1792x1344_60hz: number;
+
+declare const timingVESA_1600x1200_70hz: number;
+
+declare const timingVESA_1280x1024_85hz: number;
+
+declare const timingAppleNTSC_FFconv: number;
+
+declare const timingAppleNTSC_STconv: number;
+
+declare const timingAppleNTSC_FF: number;
+
+declare const timingVESA_1024x768_85hz: number;
+
+declare const timingVESA_1024x768_75hz: number;
+
+declare const timingVESA_1024x768_70hz: number;
+
+declare const timingVESA_1024x768_60hz: number;
+
+declare const timingVESA_800x600_85hz: number;
+
+declare const timingVESA_800x600_75hz: number;
+
+declare const timingVESA_800x600_72hz: number;
+
+declare const timingApple_832x624_75hz: number;
+
+declare const timingGTF_640x480_120hz: number;
+
+declare const timingVESA_640x480_85hz: number;
+
+declare const timingVESA_640x480_72hz: number;
+
+declare const timingApple_640x400_67hz: number;
+
+declare const timingApple_FixedRateLCD: number;
+
+declare const timingInvalid: number;
+
+declare const kDDCForceReadBit: number;
+
+declare const kDDCBlockTypeEDID: number;
+
+declare const kDetailedTimingFormat: number;
+
+declare const sixthVidMode: number;
+
+declare const secondVidMode: number;
+
+declare const kSBCCmd_READ_ELEMENT_STATUS_ATTACHED: number;
+
+declare const firstVidMode: number;
+
+declare const sixteenBitMode: number;
+
+declare const eightBitMode: number;
+
+declare const fourBitMode: number;
+
+declare const mVidParams: number;
+
+declare const mVertRefRate: number;
+
+declare const mPixelSize: number;
+
+declare const mPixelType: number;
+
+declare const mHRes: number;
+
+declare const mBounds: number;
+
+declare const kIOI2CBusNumberMask: number;
+
+declare const kIOI2CUseSubAddressCommFlag: number;
+
+declare const kIOI2CDisplayPortNativeTransactionType: number;
+
+declare const kIOI2CNoTransactionType: number;
+
+declare const kIOHIDOpenedByFastPathClient: number;
+
+declare const kIOHIDEventQueueTypeUser: number;
 
 declare const ApplePlatformExpert: number;
 
+declare const kIOHIDGlobalMemory: number;
+
+declare const kIOHIDParamConnectType: number;
+
+declare const kHIDUsage_FIDO_InputData: number;
+
+declare const kHIDUsage_FIDO_Undefined: number;
+
+declare const kHIDUsage_CC_Autofocus: number;
+
+declare const kHIDUsage_CC_Undefined: number;
+
+declare const kHIDUsage_MSR_Track3Data: number;
+
+declare const kHIDUsage_MSR_TrackData: number;
+
+declare const kHIDUsage_MSR_DeviceReadOnly: number;
+
+declare const kHIDUsage_MSR_Undefined: number;
+
+declare const kHIDUsage_WD_EnforcedZeroReturn: number;
+
+declare const kHIDUsage_WD_ZeroScale: number;
+
+declare const kHIDUsage_WD_ScaleStatusOverWeightLimit: number;
+
+declare const kHIDUsage_WD_ScaleStatusUnderZero: number;
+
+declare const kHIDUsage_WD_ScaleStatusWeightStable: number;
+
+declare const kHIDUsage_WD_ScaleStatusStableAtZero: number;
+
+declare const kHIDUsage_WD_ScaleStatusFault: number;
+
+declare const kHIDUsage_WD_RezeroCount: number;
+
+declare const kHIDUsage_WD_WeightUnitOunce: number;
+
+declare const kHIDUsage_WD_WeightUnitAvoirTon: number;
+
+declare const kHIDUsage_WD_WeightUnitMetricTon: number;
+
+declare const kHIDUsage_WD_WeightUnitTaels: number;
+
+declare const kHIDUsage_WD_WeightUnitCarats: number;
+
+declare const kHIDUsage_WD_WeightUnitKilogram: number;
+
+declare const kHIDUsage_WD_WeightUnitGram: number;
+
+declare const kHIDUsage_WD_WeightUnitMilligram: number;
+
+declare const kHIDUsage_WD_ScaleWeightLimitReport: number;
+
 declare const kIOKitDiagnosticsClientType: number;
+
+declare const kHIDUsage_WD_ScaleDataReport: number;
+
+declare const kHIDUsage_WD_ScaleAtrributeReport: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIVEnglish: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIVMetric: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIIILMetric: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIIMetric: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIMetric: number;
+
+declare const kHIDUsage_WD_WeighingDevice: number;
+
+declare const kHIDUsage_BCS_VeriCode: number;
+
+declare const kHIDUsage_BCS_SuperCode: number;
+
+declare const kHIDUsage_BCS_PosiCode: number;
+
+declare const kHIDUsage_BCS_Code49: number;
+
+declare const kHIDUsage_BCS_Code16: number;
+
+declare const kHIDUsage_BCS_DLMethodCheckInRange: number;
+
+declare const kHIDUsage_BCS_SecondDiscreteLengthToDecode: number;
+
+declare const kHIDUsage_BCS_MaximumLengthToDecode: number;
+
+declare const kHIDUsage_BCS_MinimumLengthToDecode: number;
+
+declare const kHIDUsage_BCS_RawDataPolarity: number;
+
+declare const kHIDUsage_BCS_SymbologyIdentifier3: number;
+
+declare const kHIDUsage_BCS_SymbologyIdentifier1: number;
+
+declare const kHIDUsage_BCS_CheckDigitCodabarEnable: number;
+
+declare const kHIDUsage_BCS_CheckDigitEnableOneMSIPlessey: number;
+
+declare const kHIDUsage_BCS_CheckDigitEnableStandard2of5OPCC: number;
+
+declare const kHIDUsage_BCS_CheckDigitDisable: number;
+
+declare const kHIDUsage_BCS_CheckDigit: number;
+
+declare const kHIDUsage_BCS_UCC_EAN_128: number;
+
+declare const kHIDUsage_BCS_ItalianPharmacyCode: number;
+
+declare const kHIDUsage_BCS_Interleaved2of5: number;
+
+declare const kHIDUsage_BCS_Code93: number;
+
+declare const kHIDUsage_BCS_Codabar: number;
+
+declare const kHIDUsage_BCS_ClearAllEAN2_3LabelDefinitions: number;
+
+declare const kHIDUsage_BCS_EAN13FlagDigit3: number;
+
+declare const kHIDUsage_BCS_EAN8FlagDigit2: number;
+
+declare const kHIDUsage_BCS_EAN8FlagDigit1: number;
+
+declare const kHIDUsage_BCS_EANThreeLabel: number;
+
+declare const kHIDUsage_BCS_CheckEnableEuropean4DigitPrice: number;
+
+declare const kHIDUsage_BCS_CheckEnable5DigitPrice: number;
 
 declare const kIOFBNotifyDidSleep: number;
 
+declare const kHIDUsage_BCS_PeriodicalIgnorePlus5: number;
+
+declare const kHIDUsage_BCS_PeriodicalIgnorePlus2: number;
+
+declare const kHIDUsage_BCS_PeriodicalOnlyDecodeWithPlus2: number;
+
+declare const kHIDUsage_BCS_PeriodicalAutoDiscriminatePlus2: number;
+
+declare const kHIDUsage_BCS_Periodical: number;
+
+declare const kHIDUsage_BCS_UPC_AWithP5Optional: number;
+
+declare const kHIDUsage_BCS_UPC_AWith128Optical: number;
+
+declare const kHIDUsage_BCS_UPC_AWith128Mandatory: number;
+
+declare const kHIDUsage_BCS_UPC_EANPeriodicals: number;
+
+declare const kHIDUsage_BCS_UPC_EANCouponCode: number;
+
+declare const kHIDUsage_BCS_EAN_99_P5_128_Optional: number;
+
+declare const kHIDUsage_BCS_ConvertUPC_EToA: number;
+
+declare const kHIDUsage_BCS_GRWTIBeep_LampAfterTransmit: number;
+
+declare const kHIDUsage_BCS_GoodReadWhenToWrite: number;
+
+declare const kHIDUsage_BCS_SoundNotOnFileBeep: number;
+
+declare const kHIDUsage_BCS_SoundErrorBeep: number;
+
+declare const kHIDUsage_BCS_GoodReadToneVolume: number;
+
+declare const kHIDUsage_BCS_GoodReadToneLength: number;
+
+declare const kHIDUsage_BCS_GoodReadLED: number;
+
+declare const kHIDUsage_BCS_GoodReadLampDuration: number;
+
+declare const kHIDUsage_BCS_AimDuration: number;
+
+declare const kHIDUsage_BCS_ScannerInRange: number;
+
+declare const kHIDUsage_BCS_ScannerInCradle: number;
+
+declare const kHIDUsage_BCS_TriggerModeLaserOnWhilePulled: number;
+
+declare const kHIDUsage_BCS_TriggerModeContinuousLaserOn: number;
+
+declare const kHIDUsage_BCS_TriggerModeBlinkingLaserOn: number;
+
+declare const kHIDUsage_BCS_InitiateBarcodeRead: number;
+
 declare const kFWSelfIDPortStatusParent: number;
+
+declare const kHIDUsage_BCS_PowerOnResetScanner: number;
+
+declare const kHIDUsage_BCS_MotorState: number;
+
+declare const kHIDUsage_BCS_LaserState: number;
+
+declare const kHIDUsage_BCS_BeeperState: number;
+
+declare const kHIDUsage_BCS_BarCodePresent: number;
 
 declare const kAirshipDaleBasebandErrorMax: number;
 
+declare const kHIDUsage_BCS_AimingLaserPattern: number;
+
 declare const SPTM_MAP_CODESIGN_ERROR: number;
+
+declare const kHIDUsage_BCS_ActiveTime: number;
+
+declare const kHIDUsage_BCS_PrefixProprietary: number;
+
+declare const kHIDUsage_BCS_PrefixNone: number;
+
+declare const kHIDUsage_BCS_DataPrefix: number;
+
+declare const kHIDUsage_BCS_ScannerReadConfidence: number;
+
+declare const kHIDUsage_BCS_FragmentDecoding: number;
+
+declare const kHIDUsage_BCS_ProximitySensor: number;
+
+declare const kHIDUsage_BCS_WaterResistant: number;
+
+declare const kHIDUsage_BCS_Triggerless: number;
+
+declare const kBDFeaturesReadBit: number;
+
+declare const kHIDUsage_BCS_ProgrammableBeeper: number;
+
+declare const kHIDUsage_BCS_IntrinsicallySafe: number;
+
+declare const kHIDUsage_BCS_FixedBeeper: number;
+
+declare const kHIDUsage_BCS_ErrorIndication: number;
+
+declare const kHIDUsage_BCS_Class2Laser: number;
+
+declare const kHIDUsage_BCS_Class1ALaser: number;
+
+declare const kHIDUsage_BCS_2DControlReport: number;
+
+declare const kHIDUsage_BCS_Code128ControlReport: number;
+
+declare const kHIDUsage_BCS_CodabarControlReport: number;
+
+declare const kHIDUsage_BCS_Standard2of5ControlReport: number;
+
+declare const kHIDUsage_BCS_Code39ControlReport: number;
+
+declare const kHIDUsage_BCS_ScannedDataReport: number;
+
+declare const kHIDUsage_BCS_AttributeReport: number;
+
+declare const kHIDUsage_BCS_CordlessScannerBase: number;
+
+declare const kPowerStateSleepCanPowerOffMask: number;
+
+declare const kHIDUsage_BCS_DumbBarCodeScanner: number;
+
+declare const kHIDUsage_BCS_BarCodeScanner: number;
+
+declare const kHIDUsage_BCS_BadgeReader: number;
+
+declare const kSBCCmd_WRITE_AND_VERIFY_12: number;
+
+declare const kHIDUsage_BCS_Undefined: number;
+
+declare const kHIDUsage_BS_MasterMode: number;
+
+declare const kHIDUsage_BS_VoltageNotRegulated: number;
+
+declare const kHIDUsage_BS_CurrentNotRegulated: number;
+
+declare const kHIDUsage_BS_CurrentOutOfRange: number;
+
+declare const kHIDUsage_BS_VoltageOutOfRange: number;
+
+declare const kHIDUsage_BS_ThermistorOverRange: number;
+
+declare const kHIDUsage_BS_AlarmInhibited: number;
+
+declare const kHIDUsage_BS_EnablePolling: number;
+
+declare const kHIDUsage_BS_iOEMInformation: number;
+
+declare const kHIDUsage_BS_CapacityGranularity2: number;
+
+declare const kHIDUsage_BS_WarningCapacityLimit: number;
+
+declare const kHIDUsage_BS_Rechargable: number;
+
+declare const kHIDUsage_BS_iDevicename: number;
+
+declare const kHIDUsage_BS_ManufacturerDate: number;
+
+declare const kHIDUsage_BS_ManufacturerData: number;
+
+declare const kHIDUsage_BS_SpecificationInfo: number;
+
+declare const kHIDUsage_BS_PrimaryBatterySupport: number;
+
+declare const kHIDUsage_BS_AverageTimeToFull: number;
+
+declare const kHIDUsage_BS_RunTimeToEmpty: number;
 
 declare const gIOOpenInterest: interop.Pointer;
 
+declare const kHIDUsage_BS_FullChargeCapacity: number;
+
+declare const kHIDUsage_BS_RemainingCapacity: number;
+
+declare const kHIDUsage_BS_NeedReplacement: number;
+
+declare const kHIDUsage_BS_ConditioningFlag: number;
+
+declare const kHIDUsage_BS_Charging: number;
+
+declare const kHIDUsage_BS_ChargeController: number;
+
+declare const kHIDUsage_BS_PrimaryBattery: number;
+
+declare const kHIDUsage_BS_CapacityMode: number;
+
+declare const kHIDUsage_BS_AtRate: number;
+
 declare const IOFramebuffer: number;
+
+declare const kHIDUsage_BS_RemainingCapacityLimit: number;
+
+declare const kHIDUsage_BS_ManufacturerAccess: number;
 
 declare const IOAudioToggleControl: number;
 
+declare const kHIDUsage_BS_BatterySupported: number;
+
+declare const kHIDUsage_BS_OKToUse: number;
+
+declare const kHIDUsage_BS_OutputConnection: number;
+
+declare const kHIDUsage_BS_OptionalMfgFunction4: number;
+
+declare const kHIDUsage_BS_OptionalMfgFunction3: number;
+
+declare const kHIDUsage_BS_OptionalMfgFunction2: number;
+
+declare const kHIDUsage_BS_OptionalMfgFunction1: number;
+
+declare const kMMCCmd_SEARCH_DATA_LOW_12: number;
+
+declare const kHIDUsage_BS_SMBSelectorInfo: number;
+
+declare const kHIDUsage_BS_SMBSelectorPresets: number;
+
+declare const kHIDUsage_BS_SMBSelectorState: number;
+
+declare const kHIDUsage_BS_SMBChargerMode: number;
+
+declare const kHIDUsage_BS_SMBAlarmWarning: number;
+
+declare const kHIDUsage_BS_SMBBatteryMode: number;
+
+declare const kHIDUsage_PD_iProduct: number;
+
+declare const kHIDUsage_PD_Tested: number;
+
+declare const kHIDUsage_PD_Buck: number;
+
 declare const kIOFBNotifyVRAMReady: number;
+
+declare const kHIDUsage_PD_Used: number;
 
 declare const kIOMemoryBufferPageable: number;
 
+declare const kHIDUsage_PD_Switchable: number;
+
+declare const kHIDUsage_PD_ShutdownImminent: number;
+
+declare const kHIDUsage_PD_ShutdownRequested: number;
+
+declare const kHIDUsage_PD_FrequencyOutOfRange: number;
+
+declare const kHIDUsage_PD_InternalFailure: number;
+
+declare const kHIDUsage_PD_Good: number;
+
+declare const kHIDUsage_PD_Present: number;
+
+declare const kHIDUsage_PD_ModuleReset: number;
+
+declare const kHIDUsage_PD_Test: number;
+
+declare const kHIDUsage_PD_DelayBeforeStartup: number;
+
+declare const kHIDUsage_PD_ToggleControl: number;
+
+declare const kHIDUsage_PD_SwitchOffControl: number;
+
+declare const kHIDUsage_PD_ConfigHumidity: number;
+
+declare const kHIDUsage_PD_ConfigPercentLoad: number;
+
+declare const kATAPhysicalLogicalEnabledValue: number;
+
+declare const kHIDUsage_PD_ConfigApparentPower: number;
+
+declare const kHIDUsage_PD_ConfigFrequency: number;
+
 declare const kIOPCIConfigAGPCommandOffset: number;
+
+declare const kHIDUsage_PD_ApparentPower: number;
+
+declare const kHIDUsage_PD_Current: number;
+
+declare const kHIDUsage_PD_GangID: number;
+
+declare const kHIDUsage_PD_Gang: number;
+
+declare const kHIDUsage_PD_OutletID: number;
+
+declare const kHIDUsage_PD_FlowID: number;
+
+declare const kHIDUsage_PD_OutputID: number;
+
+declare const kHIDUsage_PD_OutletSystem: number;
+
+declare const kHIDUsage_PD_BatteryID: number;
+
+declare const kHIDUsage_PD_Battery: number;
+
+declare const kHIDUsage_PD_BatterySystemID: number;
+
+declare const kHIDUsage_PD_PeripheralDevice: number;
+
+declare const kHIDUsage_PD_UPS: number;
+
+declare const kMMCCmd_CLOSE_TRACK_SESSION: number;
+
+declare const kHIDUsage_PD_PresentStatus: number;
+
+declare const kHIDUsage_PD_Undefined: number;
+
+declare const kHIDUsage_BD_BrailleRockerUp: number;
+
+declare const kHIDUsage_BD_BrailleDPadRight: number;
+
+declare const kHIDUsage_BD_BrailleDPadLeft: number;
+
+declare const kHIDUsage_BD_BrailleDPadDown: number;
 
 declare const debug_ivars_size: number;
 
+declare const kHIDUsage_BD_BrailleJoystickDown: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardLeftSpace: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot6: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot5: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot4: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot2: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot1: number;
+
+declare const kHIDUsage_BD_RowRouterKey: number;
+
+declare const kHIDUsage_BD_RouterSet2: number;
+
+declare const kHIDUsage_BD_ScreenReaderControl: number;
+
+declare const kHIDUsage_CC_Shutter: number;
+
+declare const kHIDUsage_BD_NumberOfBrailleCells: number;
+
+declare const kHIDUsage_BD_8DotBrailleCell: number;
+
+declare const kHIDUsage_BD_BrailleDisplay: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value6: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value4: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value2: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value1: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Usage: number;
+
+declare const kHIDUsage_Snsr_Property_Time_TimeTrimAdjustment: number;
+
+declare const kHIDUsage_Snsr_Property_Time_TimeZoneOffsetFromUTC: number;
+
+declare const kHIDUsage_Snsr_Property_Time: number;
+
+declare const kHIDUsage_Snsr_Data_Time_JulianDayOfYear: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Millisecond: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Minute: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Hour: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekSaturday: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekFriday: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekThursday: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekWednesday: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekMonday: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekSunday: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeek: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Day: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_PercentOfRange: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Period: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Inductance: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical: number;
+
+declare const kHIDUsage_Snsr_Property_Scanner: number;
+
+declare const kHIDUsage_Snsr_Data_Scanner_RFIDTag40Bit: number;
+
+declare const kHIDUsage_Snsr_Property_Light_ConsumerIRSentenceSend: number;
+
+declare const kHIDUsage_Snsr_Data_Light_ColorTemperature: number;
+
+declare const kHIDUsage_Snsr_Data_Light_Illuminance: number;
+
+declare const kHIDUsage_Snsr_Data_Biometric_HumanPresence: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_Weight: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_GaugePressure: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_BooleanSwitchState: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_MagneticFluxZAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_MagneticFluxXAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_RotationMatrix: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_TiltZAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_TiltYAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_TiltXAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_DistanceOutOfRange: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_Distance: number;
+
+declare const kHIDUsage_BCS_MSI_Plessey: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingMagneticNorth: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingCompensatedMagneticNorth: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingZAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_Intensity: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularVelocityZAxis: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_Acceleration: number;
+
+declare const kHIDUsage_Snsr_Property_Environmental: number;
+
+declare const kHIDUsage_Snsr_Data_Environmental_WindSpeed: number;
+
+declare const kHIDUsage_Snsr_Data_Environmental_WindDirection: number;
+
+declare const kMMCCmd_PLAY_AUDIO_10: number;
+
+declare const kHIDUsage_Snsr_Data_Environmental_RelativeHumidity: number;
+
+declare const kHIDUsage_Snsr_Property_Location_AccuracyLow: number;
+
+declare const kHIDUsage_Snsr_Property_Location_AccuracyHigh: number;
+
+declare const kHIDUsage_Snsr_Property_Location_AccuracyDefault: number;
+
+declare const kHIDUsage_Snsr_Data_Location_StateOrProvince: number;
+
+declare const kHIDUsage_Snsr_Data_Location_NMEASentence: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesUsedPRNs: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInViewSNRatios: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInViewPRNs: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInViewIDs: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInViewAzimuth: number;
+
+declare const kHIDUsage_Snsr_Data_Location_MagneticHeading: number;
+
+declare const kHIDUsage_Snsr_Data_Location_Longitude: number;
+
+declare const kHIDUsage_Snsr_Data_Location_PositionDilutionOfPrecision: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSStatusDataNotValid: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSStatusDataValid: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSStatus: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionModeDataNotValid: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionModeManualInput: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionModeEstimated: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionModeDGPS: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionMode: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSOperationModeAutomatic: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSOperationModeManual: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSOperationMode: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeManualInputMode: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeRealTimeKinematic: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeGPSPPSMode: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeDGPSSPSMode: number;
+
 declare const kIOPCIConfigVendorID: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeGPSSPSMode: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixType: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixQualityDGPS: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixQualityNoFix: number;
 
 declare const kAirshipDaleBasebandErrorPCIBadRequest: number;
 
+declare const kHIDUsage_Snsr_Data_Location_ErrorRadius: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AltitudeSeaLevelError: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AltitudeEllipsoidError: number;
+
+declare const kHIDUsage_Snsr_Data_Location_Reserved: number;
+
+declare const kHIDUsage_Snsr_Data_Location: number;
+
+declare const kHIDUsage_Snsr_Light_Illuminance: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState_D4_PowerOff: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState_D1_LowPower: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState_D0_FullPower: number;
+
+declare const kHIDUsage_Snsr_Property_ReportingState_WakeAllEvents: number;
+
+declare const kHIDUsage_Snsr_Property_ReportingState_WakeNoEvents: number;
+
+declare const kHIDUsage_Snsr_Property_ReportingState_ThresholdEvents: number;
+
+declare const kHIDUsage_Snsr_Property_ReportLatency: number;
+
+declare const kHIDUsage_Snsr_Property_SamplingRate: number;
+
+declare const kHIDUsage_Snsr_Property_Maximum: number;
+
 declare const kPCI2PCIOffsetUpperIORange: number;
+
+declare const kHIDUsage_Snsr_Property_ChangeSensitivityPercentRelative: number;
+
+declare const kHIDUsage_Snsr_Property_ChangeSensitivityAbsolute: number;
+
+declare const kHIDUsage_Snsr_Property_FirmwareVersion: number;
+
+declare const kHIDUsage_Snsr_Property_HardwareRevision: number;
+
+declare const kHIDUsage_Snsr_Property_SensorStatus: number;
+
+declare const kHIDUsage_Snsr_Property_FriendlyName: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_ComplexTrigger: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_ZeroThresholdCrossUp: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_HighThresholdCrossDown: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_HighThresholdCrossUp: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_RangeMaxReached: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_StateChanged: number;
+
+declare const kVideoNoTransactionTypeMask: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_Error: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_AccessDenied: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_Ready: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_Undefined: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState: number;
+
+declare const kHIDUsage_Snsr_Modifier_ChangeSensitivityPercentRelative: number;
+
+declare const kHIDUsage_Snsr_Modifier_FrequencyMax: number;
+
+declare const kHIDUsage_Snsr_Modifier_ReportInterval: number;
+
+declare const kHIDUsage_Snsr_Modifier_CalibrationOffset: number;
+
+declare const kHIDUsage_Snsr_Modifier_ThresholdLow: number;
+
+declare const kHIDUsage_Snsr_Modifier_Accuracy: number;
+
+declare const kHIDUsage_Snsr_Modifier_Min: number;
+
+declare const kHIDUsage_Snsr_Modifier_Max: number;
+
+declare const kHIDUsage_Snsr_Other_GenericEnumerator: number;
+
+declare const kHIDUsage_Snsr_Other: number;
+
+declare const kHIDUsage_Snsr_Scanner_Barcode: number;
+
+declare const kHIDUsage_Snsr_Orientation_InclinometerD: number;
+
+declare const kHIDUsage_Snsr_Orientation_DeviceOrientation: number;
+
+declare const kHIDUsage_Snsr_Orientation_Distance2D: number;
+
+declare const kHIDUsage_Snsr_Orientation_Inclinometer1D: number;
+
+declare const kHIDUsage_Snsr_Orientation_Compass3D: number;
 
 declare const kFWPacketTCodePhase: number;
 
+declare const kHIDUsage_Snsr_Motion_LinearAccelerometer: number;
+
+declare const kHIDUsage_Snsr_Motion_GravityVector: number;
+
+declare const kHIDUsage_Snsr_Motion_Gyrometer3D: number;
+
+declare const kHIDUsage_Snsr_Motion_Gyrometer2D: number;
+
+declare const kHIDUsage_BCS_EAN_13: number;
+
+declare const kHIDUsage_Snsr_Motion_Gyrometer1D: number;
+
+declare const kHIDUsage_Snsr_Motion_Accelerometer1D: number;
+
+declare const kHIDUsage_Snsr_Motion: number;
+
+declare const kHIDUsage_PD_iManufacturer: number;
+
+declare const kHIDUsage_Snsr_Mechanical_HallEffectSwitch: number;
+
+declare const kHIDUsage_Snsr_Mechanical_HapticVibrator: number;
+
+declare const kHIDUsage_Snsr_Mechanical_Force: number;
+
+declare const kHIDUsage_Snsr_Mechanical_BooleanSwitch: number;
+
+declare const kHIDUsage_Snsr_Mechanical: number;
+
+declare const kHIDUsage_Snsr_Location_Static: number;
+
+declare const kHIDUsage_Snsr_Location_Other: number;
+
+declare const kHIDUsage_Snsr_Location_Lookup: number;
+
+declare const kHIDUsage_Snsr_Location_Broadcast: number;
+
+declare const kHIDUsage_Snsr_Location: number;
+
+declare const kHIDUsage_Snsr_Light_ConsumerInfrared: number;
+
+declare const kHIDUsage_Snsr_Environmental_WindDirection: number;
+
 declare const gIOACPIPlane: interop.Pointer;
+
+declare const kHIDUsage_Snsr_Environmental_Temperature: number;
+
+declare const kHIDUsage_Snsr_Environmental_Humidity: number;
+
+declare const kHIDUsage_Snsr_Environmental: number;
 
 declare const kIOServiceTerminateWithRematch: number;
 
+declare const kMode3Mask: number;
+
+declare const kHIDUsage_Snsr_Electrical_Period: number;
+
+declare const kHIDUsage_Snsr_Electrical_Frequency: number;
+
+declare const kHIDUsage_Snsr_Electrical_Voltage: number;
+
+declare const kHIDUsage_Snsr_Electrical_Inductance: number;
+
 declare const kAirshipDaleBasebandControlUserClientMax: number;
+
+declare const kHIDUsage_Snsr_Electrical_Capacitance: number;
+
+declare const kSESCmd_SEND_DIAGNOSTICS: number;
+
+declare const kHIDUsage_Snsr_Biometric_HumanTouch: number;
+
+declare const kHIDUsage_Snsr_Biometric_HumanPresence: number;
+
+declare const kHIDUsage_Snsr_Biometric: number;
+
+declare const kHIDUsage_AD_UnicodeCharacterSet: number;
+
+declare const kHIDUsage_AD_CursorEnable: number;
+
+declare const kHIDUsage_AD_CursorPixelPositioning: number;
+
+declare const kHIDUsage_AD_Rows: number;
+
+declare const kHIDUsage_AD_Column: number;
+
+declare const kHIDUsage_AD_CursorPositionReport: number;
+
+declare const kHIDUsage_AD_VerticalScroll: number;
+
+declare const kHIDUsage_AD_DisplayEnable: number;
+
+declare const kHIDUsage_AD_DataReadBack: number;
+
+declare const kHIDUsage_PID_Reserved: number;
+
+declare const kHIDUsage_PID_CreateNewEffectReport: number;
+
+declare const kHIDUsage_PID_SharedParameterBlocks: number;
+
+declare const kHIDUsage_PID_ParameterBlockSize: number;
+
+declare const kHIDUsage_PID_StartDelay: number;
 
 declare const IOSharedDataQueue: number;
 
+declare const kHIDUsage_PID_ActuatorPower: number;
+
+declare const kHIDUsage_PID_SafetySwitch: number;
+
+declare const kHIDUsage_PID_DevicePaused: number;
+
+declare const kHIDUsage_PID_DC_DeviceReset: number;
+
+declare const kHIDUsage_PID_DC_DisableActuators: number;
+
+declare const kHIDUsage_PID_DeviceControl: number;
+
+declare const kHIDUsage_PID_DeviceControlReport: number;
+
+declare const kHIDUsage_PID_StateReport: number;
+
+declare const kHIDUsage_PID_BlockFreeReport: number;
+
+declare const kHIDUsage_PID_BlockLoadError: number;
+
+declare const kHIDRqSetIdle: number;
+
+declare const kHIDUsage_PID_BlockLoadFull: number;
+
+declare const kHIDUsage_PID_BlockLoadSuccess: number;
+
+declare const kHIDUsage_PID_MoveSource: number;
+
+declare const kHIDUsage_PID_PoolMoveReport: number;
+
+declare const kHIDUsage_PID_SimultaneousEffectsMax: number;
+
+declare const kHIDUsage_PID_ROM_EffectBlockCount: number;
+
+declare const kHIDUsage_PID_RAM_PoolSize: number;
+
+declare const kHIDUsage_PID_DeviceGain: number;
+
+declare const kHIDUsage_PID_DeviceGainReport: number;
+
+declare const kHIDUsage_PID_OpEffectStop: number;
+
+declare const kHIDUsage_PID_OpEffectStart: number;
+
+declare const kHIDUsage_PID_EffectOperationReport: number;
+
+declare const kHIDUsage_PID_RampEnd: number;
+
+declare const kHIDUsage_PID_RampStart: number;
+
+declare const kHIDUsage_PID_SetRampForceReport: number;
+
+declare const kHIDUsage_PID_Magnitude: number;
+
+declare const kHIDUsage_PID_SetCustomForceReport: number;
+
+declare const kHIDUsage_PID_CustomForceVendorDefinedData: number;
+
+declare const kHIDUsage_PID_PositiveSaturation: number;
+
 declare const IFNET_FAMILY_GIF: number;
 
-declare const IOUSBHostCISetupTransferData1bmRequestType: number;
+declare const kHIDUsage_PID_NegativeCoefficient: number;
+
+declare const kHIDUsage_PID_PositiveCoefficient: number;
+
+declare const kHIDUsage_PID_CP_Offset: number;
+
+declare const kHIDUsage_PID_FadeLevel: number;
+
+declare const kHIDUsage_PID_SetEnvelopeReport: number;
+
+declare const kHIDUsage_PID_BlockType: number;
+
+declare const kHIDUsage_PID_DirectionEnable: number;
+
+declare const kHIDUsage_PID_TriggerRepeatInterval: number;
+
+declare const kHIDUsage_PID_TriggerButton: number;
+
+declare const kHIDUsage_PID_Gain: number;
+
+declare const kHIDUsage_PID_SamplePeriod: number;
+
+declare const kHIDUsage_PID_Duration: number;
+
+declare const kHIDUsage_PID_ET_Friction: number;
+
+declare const kHIDUsage_PID_ET_Damper: number;
+
+declare const kHIDUsage_PID_ET_Spring: number;
+
+declare const kHIDUsage_PID_ET_SawtoothUp: number;
+
+declare const kHIDUsage_PID_ET_Triangle: number;
 
 declare const IFNET_CSUM_UDP: number;
 
+declare const kHIDUsage_PID_ET_Square: number;
+
+declare const kHIDUsage_PID_ET_CustomForceData: number;
+
+declare const kHIDUsage_PID_ET_ConstantForce: number;
+
+declare const kHIDUsage_PID_ROM_Flag: number;
+
+declare const kHIDUsage_PID_ParamBlockOffset: number;
+
+declare const kHIDUsage_PID_SetEffectReport: number;
+
+declare const kHIDUsage_Haptics_VendorWaveformFirst: number;
+
+declare const kHIDUsage_Haptics_WaveformRumbleContinuous: number;
+
+declare const kHIDUsage_Haptics_WaveformClick: number;
+
+declare const kHIDUsage_Haptics_WaveformStop: number;
+
+declare const kHIDUsage_Haptics_WaveformCutoffTime: number;
+
+declare const kHIDUsage_Haptics_RetriggerPeriod: number;
+
+declare const kHIDUsage_Haptics_RepeatCount: number;
+
+declare const kHIDUsage_Haptics_Intensity: number;
+
+declare const kHIDUsage_Haptics_ManualTrigger: number;
+
+declare const kHIDUsage_Haptics_AutoTrigger: number;
+
+declare const kHIDUsage_Haptics_DurationList: number;
+
+declare const kHIDUsage_Haptics_WaveformList: number;
+
+declare const kHIDUsage_Dig_ReportRate: number;
+
+declare const kHIDUsage_Dig_CapacitiveHeatMapFrameData: number;
+
+declare const kHIDUsage_Dig_CapacitiveHeatMapProtocolVendorID: number;
+
+declare const kHIDUsage_Dig_GestureCharacterEncodingUTF16BE: number;
+
+declare const kHIDUsage_Dig_GestureCharacterEncodingUTF16LE: number;
+
+declare const kHIDUsage_Dig_GestureCharacterDataLength: number;
+
+declare const kHIDUsage_Dig_GestureCharacterEnable: number;
+
+declare const kHIDUsage_Dig_RelativeScanTime: number;
+
+declare const kHIDUsage_Dig_ContactCountMaximum: number;
+
+declare const kHIDUsage_Dig_DeviceMode: number;
+
+declare const kHIDUsage_Dig_Width: number;
+
+declare const kHIDUsage_Dig_TouchValid: number;
+
+declare const kHIDUsage_Dig_TabletPick: number;
+
+declare const kHIDUsage_Dig_Twist: number;
+
+declare const kHIDUsage_Dig_Altitude: number;
+
+declare const kHIDUsage_Dig_Azimuth: number;
+
+declare const kHIDUsage_Dig_Invert: number;
+
+declare const kHIDUsage_Dig_TransducerIndex: number;
+
 declare const IFNET_LQM_THRESH_UNKNOWN: number;
+
+declare const kHIDUsage_Dig_Untouch: number;
+
+declare const kHIDUsage_Dig_InRange: number;
+
+declare const kHIDUsage_Dig_BarrelPressure: number;
+
+declare const kHIDUsage_BCS_PrefixAIMI: number;
+
+declare const kHIDUsage_Dig_TipPressure: number;
+
+declare const kHIDUsage_Dig_GestureCharacter: number;
+
+declare const kHIDUsage_Dig_DeviceSettings: number;
+
+declare const kHIDUsage_Dig_Finger: number;
+
+declare const kHIDUsage_Dig_DeviceConfiguration: number;
+
+declare const kINQUIRY_ANSI_VERSION_SCSI_2_Compliant: number;
+
+declare const kHIDUsage_Dig_FreeSpaceWand: number;
+
+declare const kHIDUsage_Dig_Armature: number;
+
+declare const kHIDUsage_Dig_CoordinateMeasuringMachine: number;
+
+declare const kHIDUsage_Dig_TouchPad: number;
+
+declare const kHIDUsage_Csmr_ContactStatusFlag: number;
+
+declare const kHIDUsage_Csmr_ContactSpeedDialNumber: number;
+
+declare const kHIDUsage_Csmr_ContactEmailMain: number;
+
+declare const kHIDUsage_Csmr_ContactPhoneNumberOther: number;
+
+declare const kHIDUsage_Csmr_ContactPhoneNumberFax: number;
+
+declare const kHIDUsage_Csmr_ContactPhoneNumberPager: number;
+
+declare const kHIDUsage_Csmr_ContactPhoneNumberBusiness: number;
+
+declare const kHIDUsage_Csmr_ContactFullName: number;
+
+declare const thirtyTwoBitMode: number;
+
+declare const kHIDUsage_Csmr_ContactNickname: number;
+
+declare const kHIDUsage_Csmr_ContactAdded: number;
+
+declare const kHIDUsage_Csmr_ContactEdited: number;
+
+declare const kHIDUsage_Csmr_KeyboardInputAssistCancel: number;
+
+declare const kHIDUsage_Csmr_KeyboardInputAssistNext: number;
+
+declare const kHIDUsage_Csmr_ImplementedKeyboardInputAssistControls: number;
+
+declare const kHIDUsage_Csmr_KeyboardIETFLanguageTagIndex: number;
+
+declare const kHIDUsage_Csmr_KeyboardPhysicalLayout: number;
+
+declare const kHIDUsage_Csmr_ExtendedKeyboardAttributesCollection: number;
+
+declare const kHIDUsage_Csmr_ACDesktopShowAllApplications: number;
+
+declare const kHIDUsage_Csmr_ACSoftKeyRight: number;
+
+declare const kHIDUsage_Csmr_ACSoftKeyLeft: number;
+
+declare const kHIDUsage_Csmr_ACNavigationGuidance: number;
+
+declare const kUSBFeatureEndpointStall: number;
+
+declare const kHIDUsage_Csmr_ACSplit: number;
+
+declare const kHIDUsage_Csmr_ACMerge: number;
+
+declare const kHIDUsage_Csmr_ACRename: number;
+
+declare const kFifthDepthMode: number;
+
+declare const kHIDUsage_Csmr_ACInsertSymbol: number;
+
+declare const kHIDUsage_BCS_NotOnFileIndication: number;
+
+declare const kHIDUsage_Csmr_ACInsertPicture: number;
+
+declare const kHIDUsage_Csmr_ACSetBorders: number;
+
+declare const kHIDUsage_Csmr_ACSend: number;
+
+declare const kHIDUsage_Csmr_ACReply: number;
+
+declare const kHIDUsage_Csmr_ACSendTo: number;
+
+declare const kHIDUsage_Csmr_ACSynchronize: number;
+
+declare const kHIDUsage_Csmr_ACResetAlarm: number;
+
+declare const kHIDUsage_Csmr_ACSnoozeAlarm: number;
+
+declare const kHIDUsage_Csmr_ACClearAlarm: number;
+
+declare const kHIDUsage_Csmr_ACSetAlarm: number;
+
+declare const kHIDUsage_Csmr_ACEditTimeZones: number;
+
+declare const kHIDUsage_Csmr_ACSelectTimeZone: number;
+
+declare const kHIDUsage_Csmr_ACSetClock: number;
+
+declare const kHIDUsage_Csmr_ACSortDescending: number;
+
+declare const kHIDUsage_BD_BrailleJoystickLeft: number;
+
+declare const kHIDUsage_Csmr_ACSortAscending: number;
+
+declare const kHIDUsage_Csmr_ACSort: number;
 
 declare const IOUserServerCheckInToken: number;
 
+declare const kHIDUsage_Csmr_ACSelectTable: number;
+
+declare const kHIDUsage_Csmr_ACSelectColumn: number;
+
+declare const kHIDUsage_Csmr_ACSelectParagraph: number;
+
+declare const kHIDUsage_Csmr_ACSelectSentence: number;
+
+declare const kHIDUsage_Csmr_ACViewComment: number;
+
+declare const kHIDUsage_Csmr_ACUnprotect: number;
+
+declare const kHIDUsage_Csmr_ACProtect: number;
+
+declare const kHIDUsage_Csmr_ACDelete: number;
+
+declare const kHIDUsage_Csmr_ACCollapse: number;
+
+declare const kHIDUsage_Csmr_ACAddToCart: number;
+
+declare const kHIDUsage_Csmr_ACCancel: number;
+
+declare const kHIDUsage_Csmr_ACNo: number;
+
+declare const kHIDUsage_Csmr_ACYes: number;
+
+declare const kHIDUsage_Csmr_ACPromote: number;
+
+declare const kHIDUsage_Csmr_ACBulletedList: number;
+
+declare const kHIDUsage_Csmr_ACRestartNumbering: number;
+
+declare const kHIDUsage_Csmr_ACJustifyBlockV: number;
+
+declare const kHIDUsage_Csmr_ACJustifyTop: number;
+
+declare const kHIDUsage_Csmr_ACJustifyRight: number;
+
+declare const kHIDUsage_Csmr_ACFontSelect: number;
+
+declare const kHIDUsage_Csmr_ACMirrorHorizontal: number;
+
+declare const kHIDUsage_Csmr_ACFlipVertical: number;
+
+declare const kHIDUsage_Csmr_ACFlipHorizontal: number;
+
+declare const kHIDUsage_Csmr_ACStrikethrough: number;
+
+declare const kHIDUsage_Csmr_ACUnderline: number;
+
+declare const kHIDUsage_Csmr_ACItalics: number;
+
+declare const kHIDUsage_Csmr_ACFormat: number;
+
 declare const kIOPCIUncorrectableErrorBitPoisonedTLP: number;
+
+declare const kHIDUsage_Snsr_Property_Environmental_ReferencePressure: number;
+
+declare const kHIDUsage_Csmr_ACTileVertically: number;
+
+declare const kHIDUsage_Csmr_ACTileHorizontally: number;
+
+declare const kHIDUsage_Csmr_ACPan: number;
+
+declare const kHIDUsage_Csmr_ACPanRight: number;
+
+declare const kHIDUsage_Csmr_ACPanLeft: number;
+
+declare const kHIDUsage_Csmr_ACScroll: number;
+
+declare const kHIDUsage_Csmr_ACScrollUp: number;
+
+declare const kHIDUsage_Csmr_ACZoomIn: number;
+
+declare const kHIDUsage_Csmr_ACSubscriptions: number;
 
 declare const gIODisplayManufacturerSpecificKey: interop.Pointer;
 
+declare const kHIDUsage_Csmr_ACHistory: number;
+
+declare const kHIDUsage_Csmr_ACBookmarks: number;
+
+declare const kHIDUsage_Csmr_ACPreviousLink: number;
+
+declare const kHIDUsage_Csmr_ACStop: number;
+
+declare const kHIDUsage_Csmr_ACHome: number;
+
+declare const kHIDUsage_Csmr_ACFindandReplace: number;
+
+declare const kHIDUsage_Csmr_ACFind: number;
+
+declare const kHIDUsage_Csmr_ACUndo: number;
+
+declare const kHIDUsage_Csmr_ACProperties: number;
+
+declare const kHIDUsage_Csmr_ACSave: number;
+
+declare const kHIDUsage_Csmr_ACMinimize: number;
+
+declare const kHIDUsage_Csmr_ACNew: number;
+
+declare const kHIDUsage_Csmr_ALNavigation: number;
+
+declare const kHIDUsage_Csmr_ALContactSync: number;
+
+declare const kHIDUsage_Csmr_ALCustomizedCorporateNewsBrowser: number;
+
+declare const kINQUIRY_ECMA_VERSION_Mask: number;
+
+declare const kHIDUsage_Csmr_ALMarketMonitorOrFinanceBrowser: number;
+
+declare const kHIDUsage_Csmr_ALSmartCardInformationOrHelp: number;
+
+declare const kHIDUsage_Csmr_ALOnlineCommunity: number;
+
+declare const kHIDUsage_Csmr_ALDigitalWallet: number;
+
+declare const kHIDUsage_Csmr_ALMovieBrowser: number;
+
+declare const kHIDUsage_Csmr_ALAudioBrowser: number;
+
+declare const kHIDUsage_Csmr_ALImageBrowser: number;
+
+declare const kHIDUsage_Csmr_ALFileBrowser: number;
+
+declare const kHIDUsage_Csmr_ALScreenSaver: number;
+
+declare const kHIDUsage_Csmr_ALEncryption: number;
+
 declare const gIODisplayPowerStateKey: interop.Pointer;
+
+declare const kHIDUsage_BCS_ParametersChanged: number;
+
+declare const kHIDUsage_Csmr_ALKeyboardLayout: number;
+
+declare const kHIDUsage_Csmr_ALGrammerCheck: number;
+
+declare const kHIDUsage_Csmr_ALSpellCheck: number;
+
+declare const kHIDUsage_Csmr_ALDictionary: number;
+
+declare const kHIDUsage_Csmr_ALDocuments: number;
+
+declare const kHIDUsage_Csmr_ALIntegratedHelpCenter: number;
+
+declare const kHIDUsage_Csmr_ALPreemptiveHaltTaskOrApplication: number;
+
+declare const kHIDUsage_Csmr_ALPreviousTaskOrApplication: number;
+
+declare const kHIDUsage_BCS_LockoutTime: number;
+
+declare const kHIDUsage_Csmr_ALCommandLineProcessorOrRun: number;
+
+declare const kHIDUsage_Csmr_ALTerminalLockOrScreensaver: number;
+
+declare const kHIDUsage_Csmr_VendorSpecificKeyboardPhysicalLayout: number;
+
+declare const kHIDUsage_Csmr_ALLogonOrLogoff: number;
+
+declare const kHIDUsage_Csmr_ALLogon: number;
+
+declare const kHIDUsage_Csmr_ALTelephonyOrDialer: number;
+
+declare const kHIDUsage_Csmr_ALNetworkChat: number;
+
+declare const kHIDUsage_Csmr_ALInternetBrowser: number;
+
+declare const kHIDUsage_Csmr_ALCalculator: number;
+
+declare const kHIDUsage_Csmr_ALLogOrJournalOrTimecard: number;
+
+declare const kHIDUsage_Csmr_ALContactsOrAddressBook: number;
+
+declare const kHIDUsage_Csmr_ALPresentationApp: number;
+
+declare const kHIDUsage_Csmr_ALGraphicsEditor: number;
+
+declare const kHIDUsage_Csmr_ALSpreadsheet: number;
+
+declare const kHIDUsage_Csmr_ALTextEditor: number;
+
+declare const kHIDUsage_Csmr_ALProgrammableButtonConfiguration: number;
+
+declare const kHIDUsage_Csmr_ALLaunchButtonConfigurationTool: number;
+
+declare const kHIDUsage_Csmr_AlternateAudioIncrement: number;
+
+declare const kHIDUsage_Csmr_SubChannelIncrement: number;
+
+declare const kHIDUsage_Csmr_SubChannel: number;
+
+declare const kHIDUsage_Csmr_ChannelSide: number;
+
+declare const kHIDUsage_Csmr_ChannelCenterFront: number;
+
+declare const kSBCWOCmd_WRITE_12: number;
+
+declare const kHIDUsage_Csmr_ChannelRight: number;
+
+declare const kHIDUsage_Csmr_ChannelLeft: number;
+
+declare const kHIDUsage_Csmr_SpeakerSystem: number;
+
+declare const kHIDUsage_BS_ThermistorUnderRange: number;
+
+declare const kHIDUsage_Csmr_BassDecrement: number;
+
+declare const kHIDUsage_Csmr_BalanceLeft: number;
+
+declare const kHIDUsage_Csmr_HoldupAlarm: number;
+
+declare const kHIDUsage_Csmr_Motion: number;
+
+declare const kHIDUsage_Csmr_FireAlarm: number;
+
+declare const kHIDUsage_Csmr_RoomTemperature: number;
+
+declare const kHIDUsage_Csmr_LightIlluminationLevel: number;
+
+declare const kHIDUsage_Csmr_LightEnable: number;
+
+declare const kHIDUsage_Csmr_ExtendedPlay: number;
+
+declare const kHIDUsage_Csmr_LongPlay: number;
+
+declare const kHIDUsage_Csmr_StandardPlay: number;
+
+declare const kHIDUsage_Csmr_PlaybackSpeed: number;
+
+declare const kHIDUsage_Csmr_Speed: number;
+
+declare const kHIDUsage_Csmr_VolumeDecrement: number;
+
+declare const kHIDUsage_Csmr_MPX: number;
+
+declare const kHIDUsage_Csmr_Bass: number;
+
+declare const kHIDUsage_Csmr_Mute: number;
+
+declare const kHIDUsage_Csmr_Volume: number;
+
+declare const kHIDUsage_Csmr_VoiceCommand: number;
+
+declare const kHIDUsage_BS_Maxerror: number;
+
+declare const kHIDUsage_Csmr_PlayOrSkip: number;
+
+declare const kHIDUsage_Csmr_StopOrEject: number;
+
+declare const kHIDUsage_Csmr_TrackingDecrement: number;
+
+declare const kHIDUsage_Csmr_CounterReset: number;
+
+declare const kHIDUsage_Csmr_SearchMarkBackwards: number;
+
+declare const kHIDUsage_Csmr_SearchMarkForward: number;
+
+declare const kHIDUsage_Csmr_ReturnToMark: number;
+
+declare const kHIDUsage_Csmr_ClearMark: number;
+
+declare const kHIDUsage_Csmr_FrameBack: number;
+
+declare const kHIDUsage_Csmr_FrameForward: number;
+
+declare const kHIDUsage_Csmr_TrackNormal: number;
+
+declare const kHIDUsage_Csmr_EnterDisc: number;
+
+declare const kHIDUsage_Csmr_RandomPlay: number;
 
 declare const IOFireWireDeviceAux: number;
 
+declare const kHIDUsage_Csmr_FastForward: number;
+
+declare const kHIDUsage_Csmr_Pause: number;
+
+declare const kHIDUsage_Csmr_Monthly: number;
+
+declare const kHIDUsage_Csmr_Daily: number;
+
+declare const kHIDUsage_Csmr_ChannelDecrement: number;
+
+declare const kHIDUsage_Csmr_ChannelIncrement: number;
+
+declare const kHIDUsage_Csmr_MediaSelectCall: number;
+
+declare const kHIDUsage_Csmr_MediaSelectHome: number;
+
+declare const kHIDUsage_Csmr_MediaSelectSecurity: number;
+
+declare const kHIDUsage_Csmr_MediaSelectSatellite: number;
+
+declare const kHIDUsage_Csmr_MediaSelectTape: number;
+
+declare const kHIDUsage_Csmr_Help: number;
+
+declare const kHIDUsage_Csmr_MediaSelectCD: number;
+
+declare const kHIDUsage_Csmr_MediaSelectMessages: number;
+
+declare const kHIDUsage_Csmr_MediaSelectVideoPhone: number;
+
+declare const kHIDUsage_Csmr_MediaSelectProgramGuide: number;
+
+declare const kHIDUsage_Csmr_MediaSelectDVD: number;
+
+declare const kHIDUsage_Csmr_MediaSelectComputer: number;
+
+declare const kHIDUsage_Csmr_Channel: number;
+
+declare const kHIDUsage_PD_Frequency: number;
+
+declare const kHIDUsage_Csmr_OrderMovie: number;
+
+declare const kHIDUsage_Csmr_EnterChannel: number;
+
+declare const kHIDUsage_Csmr_RecallLast: number;
+
+declare const kHIDUsage_Csmr_Selection: number;
+
 declare const kIOPCIDevicePowerStateCount: number;
+
+declare const kHIDUsage_Csmr_DisplayBrightnessSetAutoBrightness: number;
+
+declare const kHIDUsage_Csmr_DisplayBrightnessMaximum: number;
+
+declare const kHIDUsage_Csmr_DisplayBrightnessMinimum: number;
+
+declare const kHIDUsage_Csmr_DisplayBacklightToggle: number;
+
+declare const kHIDUsage_Csmr_DisplayBrightness: number;
+
+declare const kHIDUsage_Csmr_3DModeSelect: number;
+
+declare const kHIDUsage_Csmr_YellowMenuButton: number;
+
+declare const kHIDUsage_Csmr_RedMenuButton: number;
+
+declare const kHIDUsage_Csmr_PictureInPictureSwap: number;
+
+declare const kHIDUsage_Csmr_PictureInPictureToggle: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularVelocity: number;
+
+declare const kHIDUsage_Csmr_BroadcastMode: number;
+
+declare const kHIDUsage_Csmr_ClosedCaptionSelect: number;
+
+declare const kHIDUsage_Csmr_ClosedCaption: number;
+
+declare const kHIDUsage_Csmr_MenuValueDecrease: number;
+
+declare const kHIDUsage_Csmr_MenuEscape: number;
+
+declare const kHIDUsage_Csmr_MenuLeft: number;
+
+declare const kHIDUsage_Csmr_MenuPick: number;
+
+declare const kHIDUsage_Csmr_SleepMode: number;
+
+declare const kHIDUsage_Csmr_SleepAfter: number;
+
+declare const kHIDUsage_Csmr_Reset: number;
+
+declare const kSCSICmd_READ_CD_MSF: number;
+
+declare const kHIDUsage_Csmr_Power: number;
+
+declare const kSCSIServiceAction_SET_TARGET_PORT_GROUPS: number;
+
+declare const kHIDUsage_Csmr_Plus100: number;
+
+declare const kHIDUsage_Csmr_GraphicEqualizer: number;
+
+declare const kHIDUsage_Csmr_Headphone: number;
+
+declare const kHIDUsage_Csmr_Microphone: number;
+
+declare const kHIDUsage_Csmr_ProgrammableButtons: number;
+
+declare const kHIDUsage_Csmr_ConsumerControl: number;
+
+declare const kHIDUsage_TFon_Reserved: number;
+
+declare const kHIDUsage_Tfon_PhoneKeyStar: number;
+
+declare const kHIDUsage_Tfon_PhoneKey9: number;
+
+declare const kHIDUsage_Tfon_PhoneKey7: number;
+
+declare const kHIDUsage_Tfon_PhoneKey2: number;
 
 declare const kIOMemoryMapCopyOnWrite: number;
 
+declare const kHIDUsage_Tfon_PhoneKey1: number;
+
+declare const kHIDUsage_Tfon_PhoneKey0: number;
+
+declare const kHIDUsage_Tfon_ConfirmationTone2: number;
+
+declare const kHIDUsage_Tfon_ConfirmationTone1: number;
+
+declare const kHIDUsage_Tfon_PriorityRingback: number;
+
+declare const kHIDUsage_Tfon_InsideRingback: number;
+
+declare const kHIDUsage_Tfon_OutsideRingTone: number;
+
+declare const kHIDUsage_Tfon_InsideRingTone: number;
+
+declare const kHIDUsage_Tfon_OutsideDialTone: number;
+
+declare const kHIDUsage_Tfon_InsideDialTone: number;
+
+declare const kHIDUsage_Tfon_AnswerOnOrOff: number;
+
+declare const kHIDUsage_Tfon_ScreenCalls: number;
+
+declare const kHIDUsage_Tfon_RecallNumber: number;
+
+declare const kHIDUsage_Tfon_SpeedDial: number;
+
+declare const kHIDUsage_Tfon_CallerID: number;
+
+declare const kHIDUsage_Tfon_PhoneMute: number;
+
+declare const kHIDUsage_Tfon_Ring: number;
+
+declare const kHIDUsage_Tfon_RingEnable: number;
+
+declare const kHIDUsage_Tfon_Conference: number;
+
+declare const kHIDUsage_Tfon_Line: number;
+
+declare const kHIDUsage_Tfon_AlternateFunction: number;
+
+declare const kHIDUsage_Tfon_Transfer: number;
+
+declare const kHIDUsage_Tfon_Redial: number;
+
+declare const kHIDUsage_Tfon_Hold: number;
+
+declare const kHIDUsage_Tfon_Feature: number;
+
+declare const kHIDUsage_Tfon_Flash: number;
+
+declare const kHIDUsage_Tfon_HookSwitch: number;
+
+declare const kHIDUsage_Tfon_TelephonyKeyPad: number;
+
+declare const kSCSICmd_REPORT_LUNS: number;
+
+declare const kHIDUsage_Tfon_Headset: number;
+
+declare const kHIDUsage_Tfon_Handset: number;
+
+declare const kHIDUsage_Tfon_AnsweringMachine: number;
+
+declare const kHIDUsage_Ord_Instance65535: number;
+
+declare const kHIDUsage_Ord_Instance3: number;
+
+declare const kHIDUsage_Button_254: number;
+
+declare const kHIDUsage_Button_253: number;
+
+declare const kHIDUsage_Button_252: number;
+
+declare const kHIDUsage_Button_251: number;
+
+declare const kHIDUsage_Button_250: number;
+
+declare const kHIDUsage_Button_249: number;
+
+declare const kHIDUsage_Button_247: number;
+
+declare const kHIDUsage_Button_245: number;
+
+declare const kHIDUsage_Button_244: number;
+
 declare const kIOFBNotifyWillPowerOff: number;
+
+declare const kHIDUsage_Button_243: number;
+
+declare const kHIDUsage_Button_242: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_BooleanArray: number;
+
+declare const kHIDUsage_Button_238: number;
+
+declare const kHIDUsage_Button_237: number;
+
+declare const kHIDUsage_Button_236: number;
+
+declare const kHIDUsage_Button_232: number;
+
+declare const kHIDUsage_Button_231: number;
+
+declare const kHIDUsage_Button_230: number;
+
+declare const kHIDUsage_Button_229: number;
+
+declare const kHIDUsage_Button_227: number;
+
+declare const kHIDUsage_Button_225: number;
+
+declare const kHIDUsage_Button_224: number;
+
+declare const kHIDUsage_Button_222: number;
+
+declare const kHIDUsage_Button_221: number;
 
 declare const kIOPCIExpressCapabilityIDVirtualChannel: number;
 
+declare const kHIDUsage_Button_220: number;
+
+declare const kHIDUsage_Button_219: number;
+
+declare const kHIDUsage_Button_217: number;
+
+declare const kHIDUsage_Button_213: number;
+
+declare const kHIDUsage_Button_212: number;
+
 declare const BPF_MODE_DISABLED: number;
 
-declare const IOUSBHostCILinkData1TransferStructureAddressPhase: number;
+declare const kSCCCmd_REQUEST_SENSE: number;
+
+declare const kHIDUsage_Button_210: number;
+
+declare const kHIDUsage_Button_207: number;
+
+declare const kHIDUsage_Button_206: number;
+
+declare const kHIDUsage_Button_205: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityBESL: number;
+
+declare const kHIDUsage_Button_201: number;
+
+declare const kHIDUsage_Button_200: number;
+
+declare const kHIDUsage_Button_199: number;
+
+declare const kHIDUsage_Button_198: number;
+
+declare const kHIDUsage_Button_197: number;
+
+declare const kHIDUsage_Button_195: number;
+
+declare const kHIDUsage_Button_192: number;
+
+declare const kHIDUsage_Button_189: number;
 
 declare const IOMemoryCursor: number;
 
+declare const kHIDUsage_Button_188: number;
+
+declare const kHIDUsage_Button_187: number;
+
+declare const kHIDUsage_Button_186: number;
+
+declare const kHIDUsage_Button_185: number;
+
+declare const kHIDUsage_Button_184: number;
+
+declare const kHIDUsage_Button_182: number;
+
+declare const kSCSICmd_BLANK: number;
+
+declare const kHIDUsage_Button_181: number;
+
+declare const kHIDUsage_Button_180: number;
+
+declare const kHIDUsage_Button_176: number;
+
+declare const kHIDUsage_Button_175: number;
+
+declare const kHIDUsage_Button_171: number;
+
+declare const kHIDUsage_Button_167: number;
+
+declare const kHIDUsage_Button_166: number;
+
+declare const kHIDUsage_Button_165: number;
+
+declare const kHIDUsage_Button_161: number;
+
+declare const kHIDUsage_Button_158: number;
+
+declare const kHIDUsage_Button_156: number;
+
 declare const kIOFBNotifyGroupID_AppleGraphicsControl: number;
+
+declare const kHIDUsage_Button_150: number;
+
+declare const kHIDUsage_Button_149: number;
+
+declare const kHIDUsage_Button_148: number;
+
+declare const kHIDUsage_Button_146: number;
+
+declare const kHIDUsage_Button_145: number;
+
+declare const kHIDUsage_Button_141: number;
+
+declare const kHIDUsage_Button_139: number;
+
+declare const kHIDUsage_BCS_GoodDecodeIndication: number;
+
+declare const kHIDUsage_Button_136: number;
+
+declare const kHIDUsage_Button_134: number;
+
+declare const kHIDUsage_Button_133: number;
+
+declare const kHIDUsage_Button_131: number;
+
+declare const kHIDUsage_Button_128: number;
+
+declare const kHIDUsage_Button_125: number;
+
+declare const kHIDUsage_Button_124: number;
+
+declare const kHIDUsage_Button_121: number;
+
+declare const kHIDUsage_Button_117: number;
+
+declare const kHIDUsage_Button_115: number;
+
+declare const kHIDUsage_Button_113: number;
 
 declare const CONSISTENT_DEBUG_PANIC_SOURCE_SK: number;
 
+declare const kHIDUsage_Button_112: number;
+
+declare const kHIDUsage_Button_111: number;
+
+declare const kHIDUsage_Button_106: number;
+
+declare const kHIDUsage_Button_105: number;
+
+declare const kHIDUsage_Button_103: number;
+
+declare const kHIDUsage_Button_101: number;
+
+declare const kHIDUsage_Button_100: number;
+
+declare const kHIDUsage_Button_99: number;
+
+declare const kHIDUsage_Button_96: number;
+
+declare const kHIDUsage_Button_93: number;
+
+declare const kHIDUsage_Button_92: number;
+
+declare const kHIDUsage_Button_84: number;
+
 declare const IOFWAddressSpaceAux: number;
+
+declare const kHIDUsage_Button_83: number;
+
+declare const kHIDUsage_Button_79: number;
+
+declare const kHIDUsage_Button_78: number;
+
+declare const kHIDUsage_Button_74: number;
+
+declare const kHIDUsage_Button_72: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent: number;
+
+declare const kHIDUsage_Button_196: number;
+
+declare const kHIDUsage_Button_71: number;
+
+declare const kHIDUsage_Button_69: number;
+
+declare const kHIDUsage_Button_67: number;
+
+declare const kHIDUsage_Button_65: number;
+
+declare const kHIDUsage_Button_63: number;
+
+declare const kHIDUsage_Button_59: number;
+
+declare const kHIDUsage_Button_56: number;
+
+declare const kHIDUsage_Button_55: number;
+
+declare const kHIDUsage_Button_53: number;
+
+declare const kHIDUsage_Button_51: number;
+
+declare const kHIDUsage_Button_50: number;
+
+declare const kHIDUsage_Button_49: number;
+
+declare const kHIDUsage_Button_48: number;
+
+declare const kHIDUsage_Button_46: number;
+
+declare const kHIDUsage_Button_43: number;
+
+declare const kHIDUsage_Button_42: number;
+
+declare const kHIDUsage_Button_36: number;
+
+declare const kSCSIServiceAction_REPORT_SUPPORTED_TASK_MANAGEMENT_FUNCTIONS: number;
+
+declare const kHIDUsage_Button_35: number;
+
+declare const kHIDUsage_Button_33: number;
+
+declare const kDVDMediaTypeRAM: number;
+
+declare const kHIDUsage_Button_31: number;
+
+declare const kHIDUsage_Button_28: number;
+
+declare const kHIDUsage_Button_27: number;
+
+declare const kHIDUsage_Button_25: number;
+
+declare const kHIDUsage_Button_24: number;
+
+declare const kUSPrintingClassGetDeviceID: number;
+
+declare const kHIDUsage_Button_23: number;
+
+declare const kHIDUsage_Button_22: number;
+
+declare const kHIDUsage_Button_21: number;
+
+declare const kHIDUsage_Button_20: number;
+
+declare const kHIDUsage_Button_16: number;
+
+declare const kHIDUsage_Button_12: number;
+
+declare const kHIDUsage_Button_10: number;
+
+declare const kHIDUsage_Button_9: number;
+
+declare const kHIDUsage_Button_7: number;
+
+declare const kHIDUsage_Button_6: number;
+
+declare const kHIDUsage_Button_5: number;
+
+declare const kHIDUsage_Button_4: number;
+
+declare const kHIDUsage_Button_2: number;
+
+declare const kHIDUsage_LED_Reserved: number;
+
+declare const kHIDUsage_LED_Player6: number;
+
+declare const kCDFeaturesTestWriteBit: number;
+
+declare const kHIDUsage_LED_Player5: number;
+
+declare const kHIDUsage_LED_Player4: number;
+
+declare const kHIDUsage_LED_Player2: number;
+
+declare const kHIDUsage_LED_PlayerIndicator: number;
+
+declare const kHIDUsage_LED_LEDIntensity: number;
+
+declare const kHIDUsage_LED_BlueLEDChannel: number;
+
+declare const kHIDUsage_LED_RedLEDChannel: number;
+
+declare const kHIDUsage_LED_RGB_LED: number;
+
+declare const kHIDUsage_Button_65535: number;
+
+declare const kHIDUsage_LED_GoodStatus: number;
+
+declare const kHIDUsage_LED_SystemSuspend: number;
+
+declare const kHIDUsage_LED_IndicatorRed: number;
+
+declare const kHIDUsage_LED_UsageIndicatorColor: number;
+
+declare const kHIDUsage_LED_FastBlinkOnTime: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Year: number;
+
+declare const kHIDUsage_LED_FlashOnTime: number;
+
+declare const kHIDUsage_LED_IndicatorSlowBlink: number;
+
+declare const kHIDUsage_LED_IndicatorFlash: number;
+
+declare const kSCSIServiceAction_REPORT_PRIORITY: number;
+
+declare const kHIDUsage_LED_IndicatorOn: number;
+
+declare const kHIDUsage_LED_Error: number;
+
+declare const kHIDUsage_LED_Record: number;
+
+declare const kHIDUsage_LED_Play: number;
+
+declare const kHIDUsage_LED_FastForward: number;
+
+declare const kHIDUsage_LED_Stop: number;
+
+declare const kHIDUsage_LED_Remote: number;
+
+declare const kHIDUsage_LED_OffLine: number;
+
+declare const kHIDUsage_PD_Overload: number;
+
+declare const kHIDUsage_LED_StandBy: number;
+
+declare const kHIDUsage_LED_NightMode: number;
+
+declare const kHIDUsage_LED_Coverage: number;
+
+declare const kHIDUsage_LED_Microphone: number;
+
+declare const kHIDUsage_LED_Hold: number;
+
+declare const kHIDUsage_LED_BatteryOperation: number;
+
+declare const kHIDUsage_LED_DataMode: number;
 
 declare const kATAcmdSeek: number;
 
+declare const kHIDUsage_LED_MessageWaiting: number;
+
+declare const kHIDUsage_LED_Ring: number;
+
+declare const kHIDUsage_LED_RecordingFormatDetect: number;
+
+declare const kHIDUsage_LED_CLV: number;
+
+declare const kCDMediaTypeRW: number;
+
+declare const kHIDUsage_LED_Spinning: number;
+
+declare const kHIDUsage_LED_SamplingRateDetect: number;
+
+declare const kHIDUsage_LED_SurroundOn: number;
+
+declare const kHIDUsage_Csmr_ACSearch: number;
+
+declare const kHIDUsage_LED_SoundFieldOn: number;
+
+declare const kHIDUsage_KeyboardRightShift: number;
+
+declare const kHIDUsage_KeyboardLeftGUI: number;
+
+declare const kHIDUsage_KeyboardLeftShift: number;
+
+declare const kHIDUsage_KeyboardClearOrAgain: number;
+
+declare const kHIDUsage_KeyboardCancel: number;
+
+declare const kHIDUsage_KeyboardSysReqOrAttention: number;
+
+declare const kHIDUsage_KeyboardLANG6: number;
+
+declare const kHIDUsage_KeyboardLANG4: number;
+
+declare const kHIDUsage_KeyboardLANG3: number;
+
+declare const kHIDUsage_KeyboardLANG2: number;
+
+declare const kHIDUsage_KeyboardLANG1: number;
+
+declare const kATALogicalSectorAlignmentMask: number;
+
+declare const kHIDUsage_KeyboardInternational9: number;
+
+declare const kHIDUsage_KeyboardInternational8: number;
+
+declare const kHIDUsage_KeyboardInternational6: number;
+
+declare const kHIDUsage_KeyboardInternational5: number;
+
+declare const kHIDUsage_KeypadEqualSignAS400: number;
+
+declare const kHIDUsage_KeyboardLockingScrollLock: number;
+
+declare const kHIDUsage_KeyboardLockingNumLock: number;
+
+declare const kHIDUsage_KeyboardLockingCapsLock: number;
+
+declare const kHIDUsage_KeyboardVolumeDown: number;
+
+declare const kHIDUsage_KeyboardVolumeUp: number;
+
+declare const kHIDUsage_KeyboardMute: number;
+
+declare const kHIDUsage_KeyboardFind: number;
+
+declare const kHIDUsage_KeyboardPaste: number;
+
+declare const kHIDUsage_KeyboardCopy: number;
+
+declare const kHIDUsage_KeyboardUndo: number;
+
+declare const kHIDUsage_KeyboardMenu: number;
+
+declare const kHIDUsage_KeyboardHelp: number;
+
+declare const kHIDUsage_KeyboardF20: number;
+
+declare const kHIDUsage_KeyboardF17: number;
+
+declare const kDisableVerticalSyncBit: number;
+
+declare const kHIDUsage_KeyboardF16: number;
+
+declare const kHIDUsage_KeyboardF14: number;
+
+declare const kHIDUsage_KeyboardF13: number;
+
+declare const kHIDUsage_KeypadEqualSign: number;
+
+declare const kHIDUsage_KeyboardPower: number;
+
+declare const kHIDUsage_KeyboardNonUSBackslash: number;
+
+declare const kHIDUsage_KeypadPeriod: number;
+
+declare const kHIDUsage_Keypad7: number;
+
+declare const kHIDUsage_Keypad6: number;
+
 declare const kIOStatistics: number;
+
+declare const kHIDUsage_Keypad4: number;
+
+declare const kHIDUsage_LED_HeadSet: number;
+
+declare const kHIDUsage_Keypad3: number;
+
+declare const kHIDUsage_Keypad2: number;
+
+declare const kHIDUsage_Keypad1: number;
+
+declare const kHIDUsage_KeypadEnter: number;
+
+declare const kHIDUsage_KeypadHyphen: number;
+
+declare const kHIDUsage_KeypadAsterisk: number;
+
+declare const kHIDUsage_KeypadNumLock: number;
+
+declare const kHIDUsage_KeyboardUpArrow: number;
+
+declare const kHIDUsage_KeyboardDownArrow: number;
+
+declare const kHIDUsage_KeyboardLeftArrow: number;
+
+declare const kHIDUsage_KeyboardRightArrow: number;
+
+declare const kHIDUsage_KeyboardEnd: number;
+
+declare const kHIDUsage_KeyboardPageUp: number;
+
+declare const kHIDUsage_KeyboardHome: number;
+
+declare const kHIDUsage_KeyboardInsert: number;
+
+declare const kHIDUsage_KeyboardScrollLock: number;
+
+declare const kHIDUsage_KeyboardF11: number;
+
+declare const kHIDUsage_KeyboardF10: number;
+
+declare const kHIDUsage_KeyboardF9: number;
+
+declare const kHIDUsage_KeyboardF6: number;
+
+declare const kHIDUsage_KeyboardF4: number;
+
+declare const kHIDUsage_KeyboardF2: number;
+
+declare const kHIDUsage_KeyboardCapsLock: number;
+
+declare const kHIDUsage_KeyboardSlash: number;
+
+declare const kHIDUsage_KeyboardComma: number;
+
+declare const kHIDUsage_KeyboardGraveAccentAndTilde: number;
+
+declare const kHIDUsage_KeyboardSemicolon: number;
+
+declare const kMMCCmd_VERIFY_10: number;
+
+declare const kHIDUsage_KeyboardNonUSPound: number;
+
+declare const kHIDUsage_KeyboardHyphen: number;
+
+declare const kHIDUsage_KeyboardTab: number;
+
+declare const kHIDUsage_Keyboard7: number;
+
+declare const kHIDUsage_Keyboard6: number;
+
+declare const kHIDUsage_Csmr_MenuRight: number;
+
+declare const kHIDUsage_Keyboard3: number;
+
+declare const kHIDUsage_Csmr_TrebleDecrement: number;
+
+declare const kHIDUsage_Keyboard2: number;
+
+declare const kHIDUsage_KeyboardZ: number;
+
+declare const kHIDUsage_KeyboardY: number;
+
+declare const kHIDUsage_KeyboardU: number;
+
+declare const kHIDUsage_KeyboardS: number;
+
+declare const kHIDUsage_KeyboardQ: number;
+
+declare const kHIDUsage_KeyboardP: number;
+
+declare const kHIDUsage_KeyboardO: number;
+
+declare const kHIDUsage_KeyboardM: number;
+
+declare const kHIDUsage_KeyboardK: number;
+
+declare const kHIDUsage_KeyboardJ: number;
+
+declare const kHIDUsage_KeyboardH: number;
+
+declare const kHIDUsage_KeyboardG: number;
+
+declare const cscGetPageBase: number;
+
+declare const kHIDUsage_KeyboardD: number;
+
+declare const kHIDUsage_KeyboardC: number;
+
+declare const kHIDUsage_KeyboardA: number;
+
+declare const kHIDUsage_GenDevControls_BatteryStrength: number;
+
+declare const kHIDUsage_Game_Reserved: number;
+
+declare const kHIDUsage_Game_GamepadFormFitting: number;
+
+declare const kHIDUsage_Game_GamepadFormFitting_Compatibility: number;
+
+declare const kHIDUsage_Game_GunSafety: number;
+
+declare const kIOUSBDeviceStatusSelfPowered: number;
+
+declare const kHIDUsage_Game_GunBolt: number;
+
+declare const kHIDUsage_Game_SecondaryFlipper: number;
+
+declare const kHIDUsage_Game_Flipper: number;
+
+declare const kHIDUsage_Game_LeanForwardOrBackward: number;
+
+declare const kHIDUsage_Game_LeanRightOrLeft: number;
+
+declare const kHIDUsage_Game_MoveUpOrDown: number;
+
+declare const kHIDUsage_Game_MoveRightOrLeft: number;
+
+declare const kHIDUsage_Game_TurnRightOrLeft: number;
+
+declare const kHIDUsage_Game_GunDevice: number;
+
+declare const kHIDUsage_Sprt_5Wood: number;
+
+declare const kHIDUsage_Sprt_3Wood: number;
+
+declare const kHIDUsage_Sprt_1Wood: number;
+
+declare const kHIDUsage_Button_174: number;
+
+declare const kHIDUsage_Sprt_SandWedge: number;
+
+declare const kHIDUsage_Sprt_10Iron: number;
+
+declare const kHIDUsage_Sprt_9Iron: number;
+
+declare const kHIDUsage_Sprt_7Iron: number;
+
+declare const kHIDUsage_Sprt_5Iron: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Resistance: number;
+
+declare const kHIDUsage_Sprt_4Iron: number;
+
+declare const kHIDUsage_Sprt_StickHeight: number;
+
+declare const kHIDUsage_Sprt_Rate: number;
+
+declare const kHIDUsage_BCS_ParameterScanning: number;
+
+declare const kHIDUsage_Sprt_Slope: number;
 
 declare const SPTM_VARIANT_RELEASE: number;
 
+declare const kHIDUsage_Sprt_RowingMachine: number;
+
+declare const kHIDUsage_VR_StereoEnable: number;
+
+declare const kHIDUsage_VR_Oculometer: number;
+
+declare const kHIDUsage_VR_HeadMountedDisplay: number;
+
+declare const kHIDUsage_MSR_Track2Data: number;
+
+declare const kHIDUsage_VR_HeadTracker: number;
+
+declare const kHIDUsage_VR_Glove: number;
+
+declare const kHIDUsage_VR_Flexor: number;
+
+declare const kHIDUsage_VR_BodySuit: number;
+
 declare const kEndpointDescriptorDirectionIn: number;
+
+declare const kHIDUsage_VR_Belt: number;
+
+declare const kHIDUsage_Sim_FrontBrake: number;
+
+declare const kHIDUsage_Sim_HandleBars: number;
+
+declare const kHIDUsage_Sim_BicycleCrank: number;
+
+declare const kHIDUsage_Sim_DivePlane: number;
+
+declare const kHIDUsage_Sim_Accelerator: number;
+
+declare const kHIDUsage_Sim_WingFlaps: number;
+
+declare const kHIDUsage_Sim_Trigger: number;
+
+declare const kHIDUsage_Sim_ToeBrake: number;
+
+declare const kHIDUsage_Sim_LandingGear: number;
+
+declare const kHIDUsage_Sim_Throttle: number;
+
+declare const kHIDUsage_Sim_DiveBrake: number;
+
+declare const kHIDUsage_Sim_CollectiveControl: number;
+
+declare const kMMCCmd_FORMAT_UNIT: number;
+
+declare const kHIDUsage_Sim_ChaffRelease: number;
+
+declare const kHIDUsage_Sim_AutopilotEnable: number;
 
 declare const kSuperSpeedDeviceCapabilityLTM: number;
 
+declare const kSCSICmd_GET_PERFORMANCE: number;
+
+declare const kHIDUsage_Sim_AntiTorqueControl: number;
+
+declare const kHIDUsage_Sim_AileronTrim: number;
+
+declare const kHIDUsage_Sim_Aileron: number;
+
+declare const kHIDUsage_Sim_CyclicTrim: number;
+
+declare const kHIDUsage_Sim_CyclicControl: number;
+
+declare const kHIDUsage_Sim_FlightControlStick: number;
+
 declare const bin2bcd_data: interop.Pointer;
+
+declare const kHIDUsage_Sim_BicycleSimulationDevice: number;
+
+declare const kHIDUsage_Sim_HelicopterSimulationDevice: number;
+
+declare const kHIDUsage_Sim_SubmarineSimulationDevice: number;
+
+declare const kHIDUsage_Sim_FlightSimulationDevice: number;
+
+declare const kHIDUsage_GD_CallActiveLED: number;
+
+declare const kHIDUsage_GD_DockableDevicePrimaryUsageID: number;
+
+declare const kHIDUsage_GD_DockableDeviceVendorID: number;
+
+declare const kSCSICmd_WRITE_SAME_16: number;
+
+declare const kHIDUsage_GD_ControlEnable: number;
+
+declare const kHIDUsage_GD_SystemDisplayRotationLockSliderSwitch: number;
+
+declare const kHIDUsage_GD_ChassisEnclosure: number;
+
+declare const kHIDUsage_GD_CoolantCriticalLevel: number;
+
+declare const kHIDUsage_GD_SensorZone: number;
+
+declare const kHIDUsage_GD_SystemDisplayToggleLCDAutoscale: number;
+
+declare const kHIDUsage_GD_SystemDisplayDual: number;
+
+declare const kHIDUsage_GD_SystemDisplayExternal: number;
+
+declare const kHIDUsage_GD_SystemDisplayInternal: number;
+
+declare const kHIDUsage_GD_SystemHibernate: number;
+
+declare const kHIDUsage_GD_ApplicationDebuggerBreak: number;
+
+declare const kHIDUsage_GD_ApplicationBreak: number;
+
+declare const kHIDUsage_GD_SystemDebuggerBreak: number;
+
+declare const kHIDUsage_GD_SystemSetup: number;
+
+declare const kHIDUsage_GD_SystemUndock: number;
+
+declare const kHIDUsage_GD_SystemDismissNotification: number;
+
+declare const kHIDUsage_GD_SFShiftLockIndicator: number;
+
+declare const kHIDUsage_GD_SFShiftLock: number;
+
+declare const kHIDUsage_GD_PalmTrigger: number;
+
+declare const kHIDUsage_GD_IndexTrigger: number;
+
+declare const kHIDUsage_GD_DPadLeft: number;
+
+declare const kHIDUsage_GD_DPadRight: number;
+
+declare const kHIDUsage_GD_DPadUp: number;
+
+declare const kHIDUsage_GD_SystemMenuDown: number;
+
+declare const kHIDUsage_GD_SystemMenuUp: number;
+
+declare const kHIDUsage_GD_SystemContextMenu: number;
+
+declare const kHIDUsage_GD_SystemSleep: number;
+
+declare const kHIDUsage_GD_SystemPowerDown: number;
 
 declare const gIORematchPersonalityKey: interop.Pointer;
 
+declare const kHIDUsage_GD_SystemControl: number;
+
+declare const kHIDUsage_GD_Qw: number;
+
+declare const kSSCPrinterCmd_MODE_SENSE_6: number;
+
+declare const kHIDUsage_GD_Qy: number;
+
+declare const kHIDUsage_Snsr_Data_Location_Latitude: number;
+
+declare const kHIDUsage_GD_Qx: number;
+
+declare const kHIDUsage_GD_FeatureNotification: number;
+
+declare const kHIDUsage_GD_Vno: number;
+
+declare const kHIDUsage_GD_Vbrx: number;
+
+declare const kHIDUsage_GD_Vz: number;
+
+declare const kHIDUsage_GD_Vx: number;
+
+declare const kHIDUsage_GD_MotionWakeup: number;
+
+declare const kHIDUsage_GD_ByteCount: number;
+
+declare const kHIDUsage_GD_CountedBuffer: number;
+
+declare const kHIDUsage_GD_Wheel: number;
+
+declare const kHIDUsage_Sim_Reserved: number;
+
+declare const kHIDUsage_GD_Slider: number;
+
 declare const kSCSIPort_StatusOffline: number;
+
+declare const kHIDUsage_GD_Rz: number;
+
+declare const kHIDUsage_GD_Rx: number;
+
+declare const kHIDUsage_GD_Z: number;
+
+declare const kHIDUsage_GD_X: number;
+
+declare const kHIDUsage_GD_SpatialController: number;
+
+declare const kHIDUsage_GD_SystemMultiAxisController: number;
+
+declare const kHIDUsage_GD_TabletPCSystemControls: number;
+
+declare const kHIDUsage_GD_Keypad: number;
+
+declare const kHIDUsage_GD_Keyboard: number;
+
+declare const kHIDUsage_GD_Joystick: number;
+
+declare const kHIDUsage_GD_Mouse: number;
+
+declare const kHIDUsage_GD_Pointer: number;
+
+declare const kHIDUsage_Undefined: number;
+
+declare const kHIDPage_FIDO: number;
+
+declare const kHIDPage_CameraControl: number;
+
+declare const kHIDPage_MagneticStripeReader: number;
+
+declare const kHIDPage_WeighingDevice: number;
+
+declare const kHIDPage_PowerReserved2: number;
+
+declare const kHIDPage_PowerReserved: number;
+
+declare const kHIDPage_MonitorReserved: number;
+
+declare const kSBCWOCmd_MOVE_MEDIUM: number;
+
+declare const kHIDPage_MonitorEnumerated: number;
+
+declare const kHIDPage_Sensor: number;
 
 declare const IFNET_FAMILY_CELLULAR: number;
 
+declare const kHIDPage_AlphanumericDisplay: number;
+
+declare const kHIDPage_Unicode: number;
+
+declare const kHIDPage_Haptics: number;
+
+declare const kHIDPage_Digitizer: number;
+
+declare const kHIDPage_Game: number;
+
+declare const kHIDPage_GenericDesktop: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkProtocol: number;
+
+declare const kIOFBCursorMemory: number;
+
+declare const kIOFBShmemCursorNumFramesShift: number;
+
+declare const kIOFBShmemCursorNumFramesMask: number;
+
+declare const kIOFBTenPtOneShmemVersion: number;
+
+declare const kIOFBHardwareCursorInVRAM: number;
+
+declare const kIOFBHardwareCursorActive: number;
+
+declare const kIOFBCursorHWCapable: number;
+
+declare const kIOFBCursorImageNew: number;
+
+declare const kIOFBMaxCursorFrames: number;
+
+declare const kIOFBMaxCursorWidth: number;
+
+declare const kIOFBNumCursorFrames: number;
+
+declare const kIOBlitAllOptions: number;
+
+declare const kIOBlitBeamSyncSpin: number;
+
+declare const kIOBlitBeamSyncAlways: number;
+
+declare const kRangeSupportsSignal_1000_0400_Bit: number;
+
+declare const kIOBlitBeamSync: number;
+
+declare const kIOBlitSurfaceDestination: number;
+
+declare const kIOBlitBeamSyncSwaps: number;
+
+declare const kIOBlitHasCGSSurface: number;
+
+declare const kIOBlitFlushWithSwap: number;
+
+declare const kIOBlitWaitCheck: number;
+
+declare const kIOBlitWaitAll2D: number;
+
+declare const kIOBlitSynchronizeFlushHostWrites: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedMantissaPhase: number;
+
+declare const kIO128RGBAFloatPixelFormat: number;
+
+declare const kIO64RGBAFloatPixelFormat: number;
+
+declare const kIO16LE4444PixelFormat: number;
+
+declare const kIO2vuyPixelFormat: number;
+
+declare const kIOYVYU422PixelFormat: number;
+
+declare const kHIDUsage_FIDO_U2FDevice: number;
+
+declare const kIOYUV411PixelFormat: number;
+
+declare const kIOYVU9PixelFormat: number;
+
+declare const kIOYUVSPixelFormat: number;
+
+declare const kIO24BGRPixelFormat: number;
+
+declare const kIO16LE565PixelFormat: number;
+
+declare const kIO16LE5551PixelFormat: number;
+
+declare const kIO16LE555PixelFormat: number;
+
+declare const kIO8IndexedPixelFormat: number;
+
+declare const kIO2IndexedPixelFormat: number;
+
+declare const kIO1MonochromePixelFormat: number;
+
+declare const kIOBlitSourcePattern: number;
+
+declare const kIOBlitSourceOOLMemory: number;
+
+declare const kIOBlitHighlightOperation: number;
+
+declare const kIOBlitXorOperation: number;
+
+declare const kIOBlitCopyOperation: number;
+
+declare const kIOBlitTypeOperationType0: number;
+
+declare const kIOBlitTypeOperationShift: number;
+
+declare const kIOBlitTypeOperationMask: number;
+
+declare const kIOBlitTypeSourceKeyColorEqual: number;
+
+declare const kIOBlitTypeSourceKeyColorModeMask: number;
+
+declare const kIOBlitTypeScale: number;
+
+declare const kIOBlitTypeColorSpaceConvert: number;
+
+declare const kIOBlitTypeMonoExpand: number;
+
 declare const kATAcmdReadDMA: number;
+
+declare const kIOBlitTypeHideCursor: number;
+
+declare const kIOBlitTypeMoveCursor: number;
+
+declare const kIOBlitTypeCopyRegion: number;
+
+declare const kIOBlitTypeScanlines: number;
+
+declare const kIOBlitTypeRects: number;
+
+declare const kIOBlitTypeVerbMask: number;
+
+declare const kSGCCmd_SEND: number;
+
+declare const kIOFWSWVers_KPF: number;
+
+declare const kIOFWSpecID_AAPL: number;
+
+declare const kIOFWMustHaveGap63: number;
+
+declare const kIOFWMustNotBeRoot: number;
+
+declare const kIOFWMustBeRoot: number;
+
+declare const kIOFWDisablePhyOnSleep: number;
+
+declare const kIOFWEnableRetryOnAckD: number;
+
+declare const kIOFWDisableAllPhysicalAccess: number;
+
+declare const kIOFWDisablePhysicalAccess: number;
+
+declare const kFWMaxNodeHops: number;
+
+declare const kFWMaxBusses: number;
+
+declare const kFWBusManagerArbitrationTimeoutDuration: number;
+
+declare const kDCLPtrTimeStampOp: number;
+
+declare const kDCLTimeStampOp: number;
+
+declare const kDCLUpdateDCLListOp: number;
+
+declare const kDCLLabelOp: number;
+
+declare const kDCLCallProcOp: number;
+
+declare const kDCLReceivePacketOp: number;
+
+declare const kDCLReceivePacketStartOp: number;
+
+declare const timingVESA_1600x1200_80hz: number;
+
+declare const kDCLInvalidOp: number;
 
 declare const IOACPIPlatformExpert: number;
 
+declare const kFWDCLOpFlagMask: number;
+
+declare const kUSBBillboardVConn3Watt: number;
+
+declare const kFWDCLOpVendorDefinedFlag: number;
+
+declare const kFWDCLOpDynamicFlag: number;
+
+declare const kFWDCLSyBitsEvent: number;
+
 declare const kPEPanicDiagnosticsInProgress: number;
+
+declare const kFWIsochChannelDoNotResumeOnWake: number;
+
+declare const kFWIsochSy: number;
+
+declare const kFWIsochTCodePhase: number;
+
+declare const kFWIsochChanNumPhase: number;
+
+declare const kFWIsochChanNum: number;
+
+declare const kMMCCmd_PAUSE_RESUME: number;
+
+declare const kINQUIRY_Byte7_WBUS16_Bit: number;
+
+declare const kHIDUsage_PID_ActuatorOverrideSwitch: number;
+
+declare const kFWIsochTagPhase: number;
+
+declare const kFWIsochDataLengthPhase: number;
+
+declare const kConfigUnitSWVersIIDC101: number;
+
+declare const kConfigUnitSWVersMacintosh10: number;
+
+declare const kConfigUnitSpec1394TA1: number;
 
 declare const kIOPCICommandFastBack2Back: number;
 
+declare const kFWBIBLinkSpeed: number;
+
+declare const kFWBIBGenerationPhase: number;
+
+declare const kFWBIBGeneration: number;
+
+declare const kHIDUsage_AD_AlphanumericDisplay: number;
+
+declare const kFWBIBMaxROM: number;
+
+declare const kFWBIBMaxRec: number;
+
+declare const kFWBIBBmc: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Timestamp: number;
+
+declare const kFWBIBIsc: number;
+
+declare const kFWBIBCmc: number;
+
+declare const kHIDUsage_BS_SerialNumber: number;
+
+declare const kIOBlitUnlockWithSwap: number;
+
+declare const kFWBIBNodeUniqueIDLoAddress: number;
+
+declare const kFWBIBNodeUniqueIDHiAddress: number;
+
+declare const kFWBIBBusNameAddress: number;
+
+declare const kFWBIBHeaderAddress: number;
+
+declare const kFWBroadcastAddress: number;
+
+declare const kFWLocalBusAddress: number;
+
+declare const kFWLocalBusID: number;
+
+declare const kFWAddressNodeIDPhase: number;
+
+declare const kFWAddressBusIDPhase: number;
+
+declare const kFWAddressBusID: number;
+
+declare const kFWCSRStateGone: number;
+
+declare const kFCPCommandAddress: number;
+
+declare const kConfigBIBHeaderAddress: number;
+
+declare const kConfigROMBaseAddress: number;
+
+declare const kCSRChannelsAvailable31_0: number;
+
+declare const kCSRBandwidthAvailable: number;
+
+declare const kCSRBusyTimeout: number;
+
+declare const kCSRMessageResponseAddress: number;
+
+declare const kCSRClockInfo3Address: number;
+
+declare const kCSRClockInfo1Address: number;
+
+declare const kCSRClockInfo0Address: number;
+
+declare const kCSRClockStrobeArrivedMidAddress: number;
+
+declare const kHIDUsage_Snsr_Data_Light_Chromaticity: number;
+
+declare const kCSRClockTickPeriodLoAddress: number;
+
+declare const kCSRClockTickPeriodMidAddress: number;
+
+declare const kCSRClockValueMidAddress: number;
+
+declare const kCSRInterruptMaskAddress: number;
+
+declare const kCSRMemoryBoundLoAddress: number;
+
+declare const kCSRMemoryBaseLoAddress: number;
+
+declare const kHIDUsage_Csmr_ACDownload: number;
+
+declare const kCSRIndirectDataAddress: number;
+
+declare const kCSRIndirectAddressAddress: number;
+
+declare const kCSRResetStartAddress: number;
+
+declare const kCSRStateSetAddress: number;
+
+declare const kCSRPrivateSpaceBaseAddressHi: number;
+
+declare const kCSRInitialMemorySpaceBaseAddressLo: number;
+
+declare const kCSRInitialMemorySpaceBaseAddressHi: number;
+
+declare const kCSRNodeID: number;
+
+declare const kConfigLeafDirCRCPhase: number;
+
+declare const kHIDUsage_MSR_Track1Data: number;
+
+declare const kConfigLeafDirCRC: number;
+
+declare const kConfigLeafDirLengthPhase: number;
+
+declare const kConfigEntryValuePhase: number;
+
+declare const kConfigEntryKeyValue: number;
+
+declare const kConfigEntryKeyTypePhase: number;
+
+declare const kConfigEntryKeyType: number;
+
+declare const kConfigROMCRCValuePhase: number;
+
+declare const kConfigROMCRCLengthPhase: number;
+
+declare const kConfigROMCRCLength: number;
+
+declare const kCSRStateStateDead: number;
+
+declare const kHIDUsage_KeyboardDeleteOrBackspace: number;
+
+declare const kCSRStateStateInitializing: number;
+
+declare const kCSRStateStateRunning: number;
+
+declare const kCSRStateStatePhase: number;
+
+declare const kCSRStateELog: number;
+
+declare const kCSRStateBusDependPhase: number;
+
+declare const kCSRStateUnitDependPhase: number;
+
+declare const kCSRStateUnitDepend: number;
+
+declare const kHIDUsage_PD_OverCharged: number;
+
+declare const kConfigSBP2MAO: number;
+
+declare const kConfigSBP2LUN: number;
+
+declare const kConfigUnitSwVersionKey: number;
+
+declare const kConfigUnitSpecIdKey: number;
+
+declare const kConfigNodeUnitsExtentKey: number;
+
+declare const kConfigNodeUniqueIdKey: number;
+
+declare const kConfigNodeCapabilitiesKey: number;
+
+declare const kConfigNodeSpecIdKey: number;
+
+declare const kConfigNodeHwVersionKey: number;
+
+declare const kConfigModuleSwVersionKey: number;
+
+declare const kConfigModuleHwVersionKey: number;
+
+declare const kConfigTextualDescriptorKey: number;
+
+declare const kFWAckDataError: number;
+
+declare const kFWAckComplete: number;
+
+declare const kCSRStateBusDepend: number;
+
+declare const kFWAckTimeout: number;
+
+declare const kFWResponseBusResetError: number;
+
 declare const kIOMemoryKernelUserShared: number;
+
+declare const kFWResponseAddressError: number;
+
+declare const kFWResponseTypeError: number;
 
 declare const kIOAGPDisablePageSpans: number;
 
+declare const kFWAVCProducerMode_TOSS: number;
+
+declare const kFWAVCConsumerMode_LAST: number;
+
+declare const kFWAVCConsumerMode_MORE: number;
+
+declare const kFWAVCStateDeviceRemoved: number;
+
 declare const kKeyMaskPeriod: number;
+
+declare const kFWAVCStatePlugDisconnected: number;
+
+declare const kFWAVCStatePlugReconnected: number;
+
+declare const kFWAVCStateBusResumed: number;
+
+declare const kFWAVCStateBusSuspended: number;
+
+declare const kFWAVCAsyncPlug27: number;
+
+declare const kSBCWOCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kFWAVCAsyncPlug26: number;
+
+declare const kFWAVCAsyncPlug24: number;
+
+declare const kFWAVCAsyncPlug22: number;
+
+declare const kFWAVCAsyncPlug19: number;
+
+declare const kFWAVCAsyncPlug17: number;
+
+declare const kFWAVCAsyncPlug16: number;
+
+declare const kFWAVCAsyncPlug10: number;
+
+declare const kFWAVCAsyncPlug9: number;
+
+declare const kFWAVCAsyncPlug5: number;
+
+declare const kFWAVCAsyncPlug4: number;
+
+declare const kFWAVCAsyncPlug0: number;
+
+declare const kIOAudioChannelLabel_Discrete_65535: number;
+
+declare const kHIDUsage_Csmr_ACBold: number;
+
+declare const kIOAudioChannelLabel_Discrete_14: number;
+
+declare const kIOAudioChannelLabel_Discrete_13: number;
+
+declare const kIOAudioChannelLabel_Discrete_12: number;
+
+declare const kIOAudioChannelLabel_Discrete_10: number;
+
+declare const kIOAudioChannelLabel_Discrete_8: number;
+
+declare const kIOAudioChannelLabel_Discrete_7: number;
+
+declare const kIOAudioChannelLabel_Discrete_5: number;
+
+declare const kIOAudioChannelLabel_Discrete_4: number;
+
+declare const kIOAudioChannelLabel_Discrete_3: number;
+
+declare const kIOAudioChannelLabel_Discrete_2: number;
+
+declare const kIOAudioChannelLabel_Discrete_1: number;
+
+declare const kIOAudioChannelLabel_Discrete: number;
+
+declare const kIOAudioChannelLabel_ForeignLanguage: number;
+
+declare const kUSBFeatureU1Enable: number;
+
+declare const kIOAudioChannelLabel_ClickTrack: number;
+
+declare const kIOAudioChannelLabel_HeadphonesRight: number;
+
+declare const kIOAudioChannelLabel_HeadphonesLeft: number;
 
 declare const kIOTrackingGetTracking: number;
 
+declare const kIOAudioChannelLabel_XY_Y: number;
+
+declare const kIOAudioChannelLabel_XY_X: number;
+
+declare const kIOAudioChannelLabel_MS_Side: number;
+
+declare const kIOAudioChannelLabel_MS_Mid: number;
+
+declare const kSSCSeqCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kIOAudioChannelLabel_Ambisonic_Z: number;
+
+declare const kIOAudioChannelLabel_Ambisonic_Y: number;
+
+declare const kIOAudioChannelLabel_CenterTopRear: number;
+
+declare const kIOAudioChannelLabel_CenterTopMiddle: number;
+
+declare const kIOAudioChannelLabel_LeftTopMiddle: number;
+
+declare const kIOAudioChannelLabel_RightTopFront: number;
+
+declare const kIOAudioChannelLabel_CenterTopFront: number;
+
+declare const kHIDUsage_KeyboardI: number;
+
+declare const kIOAudioChannelLabel_Haptic: number;
+
+declare const kIOAudioChannelLabel_Mono: number;
+
+declare const kIOAudioChannelLabel_Narration: number;
+
+declare const kIOAudioChannelLabel_HearingImpaired: number;
+
+declare const kIOAudioChannelLabel_RightTotal: number;
+
+declare const kIOAudioChannelLabel_LeftTotal: number;
+
+declare const kIOAudioChannelLabel_LFE2: number;
+
+declare const kIOAudioChannelLabel_RightWide: number;
+
+declare const kIOAudioChannelLabel_RearSurroundRight: number;
+
+declare const kIOAudioChannelLabel_RearSurroundLeft: number;
+
+declare const kIOAudioChannelLabel_VerticalHeightRight: number;
+
+declare const kIOAudioChannelLabel_VerticalHeightCenter: number;
+
+declare const kIOAudioChannelLabel_VerticalHeightLeft: number;
+
+declare const kIOAudioChannelLabel_TopCenterSurround: number;
+
+declare const kIOAudioChannelLabel_RightSurroundDirect: number;
+
+declare const kIOAudioChannelLabel_LeftSurroundDirect: number;
+
+declare const kIOAudioChannelLabel_RightCenter: number;
+
+declare const kIOAudioChannelLabel_LFEScreen: number;
+
+declare const kHIDUsage_Button_248: number;
+
+declare const kIOAudioChannelLabel_Right: number;
+
+declare const kIOAudioChannelLabel_Left: number;
+
+declare const kIOAudioChannelLabel_UseCoordinates: number;
+
+declare const kIOAudioChannelLabel_Unused: number;
+
+declare const kIOAudioChannelLabel_Unknown: number;
+
+declare const PROCESSOR_GENERAL: number;
+
+declare const kHIDUsage_Csmr_SubChannelDecrement: number;
+
+declare const PROCESSOR_UNDEFINED: number;
+
+declare const EMBEDDED_DSS_AUDIO: number;
+
+declare const EMBEDDED_CABLE_TUNER_AUDIO: number;
+
+declare const EMBEDDED_TV_TUNER_AUDIO: number;
+
+declare const EMBEDDED_VIDEO_DISC_AUDIO: number;
+
+declare const kHIDUsage_BCS_Wand: number;
+
+declare const EMBEDDED_PHONOGRAPH: number;
+
+declare const EMBEDDED_ANALOG_TAPE: number;
+
+declare const EMBEDDED_DAT: number;
+
+declare const EMBEDDED_LEVEL_CALIBRATION_NOISE_SOURCE: number;
+
+declare const EXTERNAL_ADAT: number;
+
+declare const EXTERNAL_1394_DV_STREAM_SOUNDTRACK: number;
+
+declare const kIOUSBDeviceStatusU1Enable: number;
+
+declare const EXTERNAL_1394_DA_STREAM: number;
+
+declare const kHIDUsage_Csmr_Eject: number;
+
+declare const EXTERNAL_LEGACY_AUDIO_CONNECTOR: number;
+
+declare const EXTERNAL_LINE_CONNECTOR: number;
+
+declare const EXTERNAL_ANALOG_CONNECTOR: number;
+
+declare const EXTERNAL_UNDEFINED: number;
+
+declare const kHIDUsage_Button_153: number;
+
+declare const BIDIRECTIONAL_ECHO_SUPPRESSING_SPEAKERPHONE: number;
+
+declare const BIDIRECTIONAL_SPEAKERPHONE_NO_ECHO_REDX: number;
+
+declare const BIDIRECTIONAL_HANDSET: number;
+
+declare const BIDIRECTIONAL_UNDEFINED: number;
+
+declare const kHIDUsage_Keyboard1: number;
+
+declare const OUTPUT_COMMUNICATION_SPEAKER: number;
+
+declare const OUTPUT_ROOM_SPEAKER: number;
+
+declare const OUTPUT_DESKTOP_SPEAKER: number;
+
+declare const OUTPUT_HEADPHONES: number;
+
+declare const OUTPUT_SPEAKER: number;
+
+declare const OUTPUT_UNDEFINED: number;
+
 declare const kAirshipDaleBasebandErrorPCILinkDown: number;
+
+declare const INPUT_PROCESSING_MICROPHONE_ARRAY: number;
+
+declare const INPUT_MICROPHONE_ARRAY: number;
+
+declare const kSMCCmd_REQUEST_VOLUME_ELEMENT_ADDRESS: number;
+
+declare const INPUT_OMNIDIRECTIONAL_MICROPHONE: number;
 
 declare const DEBUG_HEADER_ENTRY_TXM: number;
 
+declare const kIOAudioDeviceTransportTypeHdmi: number;
+
+declare const kIOAudioDeviceTransportTypeDisplayPort: number;
+
+declare const kIOAudioDeviceTransportTypeOther: number;
+
+declare const kIOAudioDeviceTransportTypeWireless: number;
+
+declare const kUSBApplicationSpecificInterfaceClass: number;
+
+declare const kIOAudioDeviceTransportTypeNetwork: number;
+
+declare const kHIDUsage_Button_77: number;
+
+declare const kIOAudioDeviceTransportTypePCI: number;
+
+declare const kIOAudioDeviceTransportTypeBuiltIn: number;
+
+declare const kIOAudioLevelControlNegativeInfinity: number;
+
+declare const kIOAudioClockSelectorTypeOther: number;
+
+declare const kHIDUsage_MSR_Track2Length: number;
+
+declare const kIOAudioClockSelectorTypeVideo: number;
+
+declare const kIOAudioClockSelectorTypeSMPTE: number;
+
+declare const kIOAudioClockSelectorTypeADATOptical: number;
+
+declare const kRSCOne: number;
+
+declare const kIOAudioClockSelectorTypeAESEBU: number;
+
+declare const kIOAudioClockSelectorTypeInternal: number;
+
+declare const kIOAudioStreamNumericRepresentationSignedInt: number;
+
+declare const kIOAudioStreamSampleFormatTimeCode: number;
+
+declare const kIOAudioStreamSampleFormat1937MPEG2: number;
+
+declare const kIOAudioStreamSampleFormat1937MPEG1: number;
+
+declare const kIOAudioStreamSampleFormatAC3: number;
+
+declare const kIOAudioStreamSampleFormatMPEG: number;
+
+declare const kIOAudioSelectorControlSelectionValueLine: number;
+
+declare const kIOAudioSelectorControlSelectionValueInternalMicrophone: number;
+
+declare const kIOAudioSelectorControlSelectionValueHeadphones: number;
+
+declare const kIOAudioSelectorControlSelectionValueExternalSpeaker: number;
+
+declare const kIOAudioControlChannelIDDefaultSurroundLeft: number;
+
+declare const kIOAudioControlChannelIDDefaultRearCenter: number;
+
+declare const kIOAudioControlChannelIDDefaultFrontRightCenter: number;
+
+declare const kIOAudioControlChannelIDDefaultSub: number;
+
+declare const kIOAudioControlChannelIDDefaultRightRear: number;
+
+declare const kIOAudioControlChannelIDDefaultCenter: number;
+
+declare const kIOAudioControlChannelIDDefaultLeft: number;
+
+declare const kIOAudioControlChannelNumberInactive: number;
+
+declare const kIOAudioControlUsagePassThru: number;
+
+declare const kIOAudioControlUsageOutput: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelLevelInstrumentLevel: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelLevelMicLevel: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelLevelMinus10dBV: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelLevelPlus4dBu: number;
+
+declare const kIOAudioSelectorControlSubTypeDestination: number;
+
+declare const kIOAudioSelectorControlSubTypeInput: number;
+
+declare const kIOAudioSelectorControlSubTypeOutput: number;
+
+declare const kIOAudioToggleControlSubTypePhantomPower: number;
+
+declare const kIOAudioToggleControlSubTypeiSubAttach: number;
+
 declare const kFWPhyPacketIDPhase: number;
+
+declare const kIOAudioToggleControlSubTypeLFEMute: number;
+
+declare const kIOAudioToggleControlSubTypeSolo: number;
+
+declare const kHIDUsage_GD_WirelessRadioButton: number;
+
+declare const kIOAudioLevelControlSubTypePRAMVolume: number;
+
+declare const kIOAudioControlTypeJack: number;
+
+declare const kHIDPage_GenericDeviceControls: number;
+
+declare const kIOAudioInputPortSubTypeSPDIF: number;
+
+declare const kIOAudioInputPortSubTypeCD: number;
+
+declare const kHIDUsage_Sim_Weapons: number;
+
+declare const kIOAudioInputPortSubTypeExternalMicrophone: number;
+
+declare const kIOAudioInputPortSubTypeInternalMicrophone: number;
+
+declare const kIOAudioOutputPortSubTypeSPDIF: number;
+
+declare const kIOAudioOutputPortSubTypeLine: number;
+
+declare const kIOAudioOutputPortSubTypeHeadphones: number;
+
+declare const kIOAudioOutputPortSubTypeInternalSpeaker: number;
+
+declare const kIOAudioPortTypeProcessing: number;
+
+declare const kHIDUsage_BD_BrailleTopControls: number;
+
+declare const kIOAudioPortTypeOutput: number;
+
+declare const kIOAudioDeviceCanBeDefaultOutput: number;
+
+declare const kIOAudioDeviceCanBeDefaultInput: number;
+
+declare const kIOAudioTimeStampSMPTETimeValid: number;
 
 declare const kFWTCodeLock: number;
 
+declare const kIOAudioTimeStampHostTimeValid: number;
+
+declare const kIOAudioTimeStampSampleTimeValid: number;
+
+declare const kIOAudioSMPTETimeType50: number;
+
+declare const kIOAudioSMPTETimeType5994: number;
+
+declare const kIOAudioSMPTETimeType30: number;
+
+declare const kMMCCmd_GET_PERFORMANCE: number;
+
+declare const kIOCatalogModuleTerminate: number;
+
+declare const kIOCatalogModuleUnload: number;
+
+declare const kIOCatalogGetROMMkextList: number;
+
+declare const kIOCatalogGetCacheMissList: number;
+
 declare const IFNET_FAMILY_ANY: number;
+
+declare const kIOCatalogGetModuleDemandList: number;
+
+declare const kIOCatalogGetContents: number;
+
+declare const kIOCatalogResetDriversNoMatch: number;
+
+declare const kHIDNoInterfaceProtocol: number;
+
+declare const kIOCatalogKextdFinishedLaunching: number;
+
+declare const kHIDUsage_KeyboardBackslash: number;
+
+declare const kIOCatalogStartMatching__Removed: number;
+
+declare const kMMCCmd_READ_DISC_INFORMATION: number;
+
+declare const mPlaneBytes: number;
+
+declare const kHIDUsage_GD_WirelessRadioLED: number;
 
 declare const kFWTCodePHYPacket: number;
 
 declare const IOFWAsyncStreamReceivePort: number;
 
+declare const kIOAudioBuiltInSystemClockDomain: number;
+
+declare const kHIDUsage_Sprt_11Iron: number;
+
 declare const MBUF_LOOP: number;
 
 declare const kIOPCICorrectableErrorBitReplayTimerTimeout: number;
 
+declare const cscGrayPage: number;
+
+declare const kSGCCmd_MODE_SELECT_10: number;
+
+declare const kHIDUsage_Tfon_PhoneKey5: number;
+
 declare const debug_malloc_size: number;
 
+declare const kATAIdentifyCurrentSectors: number;
+
+declare const kSCSICmd_PREVENT_ALLOW_MEDIUM_REMOVAL: number;
+
 declare const kAirshipDaleBasebandErrorTxEnqueueFailure: number;
+
+declare const kHIDUsage_BD_BrailleLeftControls: number;
 
 declare const kATAcmdMediaEject: number;
 
@@ -2280,27 +7376,87 @@ declare const mATABadBlock: number;
 
 declare const kFWSelfIDNPd: number;
 
+declare const kSSCSeqCmd_REPORT_LUNS: number;
+
 declare const gIONameMatchedKey: interop.Pointer;
+
+declare const kUSB150mAAvailable: number;
+
+declare const kHIDUsage_BCS_EnableCheckDigitTransmit: number;
+
+declare const kHIDUsage_Sprt_LoftWedge: number;
+
+declare const kSCSICmd_WRITE_6: number;
+
+declare const kATAOperationTypePowerManagement: number;
+
+declare const kSSCSeqCmd_COMPARE: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot8: number;
 
 declare const mATASeekComplete: number;
 
+declare const kIOI2CBusTypeI2C: number;
+
+declare const kSENSE_KEY_ILLEGAL_REQUEST: number;
+
+declare const kHIDUsage_BCS_PDF_417: number;
+
 declare const gIODTModelKey: interop.Pointer;
+
+declare const kHIDUsage_Keypad9: number;
+
+declare const kIOAudioLevelControlSubTypeVolume: number;
+
+declare const kHIDUsage_BS_ConnectionToSMBus: number;
 
 declare const IOInterruptController: number;
 
+declare const kHIDUsage_Csmr_RepeatFromMark: number;
+
+declare const kUSBHIDClass: number;
+
+declare const kIOAudioClockSelectorTypeControl: number;
+
 declare const IOBigMemoryCursor: number;
+
+declare const kIOStreamMemoryTypeBufferControl: number;
 
 declare const kEfiACPIReclaimMemory: number;
 
+declare const kXHCISSRootHubAddress: number;
+
 declare const IOSCSIProtocolServices: number;
+
+declare const kHIDUsage_Keyboard9: number;
+
+declare const kIOUSBInterfaceStatusRemoteWakeCapable: number;
+
+declare const kIOAudioControlTypeLevel: number;
+
+declare const kHIDUsage_VR_Reserved: number;
+
+declare const kSCSICmd_XPWRITE: number;
 
 declare const kSuperSpeedEndpointCompanionDescriptorBulkReservedPhase: number;
 
 declare const gIODTBridgeModelKey: interop.Pointer;
 
+declare const kUSBAnyDesc: number;
+
 declare const kAirshipDaleBasebandControlUserClientClose: number;
 
 declare const nfs_ticks: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkReservedPhase: number;
+
+declare const kHIDUsage_Tfon_PhoneKey4: number;
+
+declare const EMBEDDED_RADIO_TRANSMITTER: number;
+
+declare const kATAWriteCacheEnabledBit: number;
+
+declare const kHIDUsage_Snsr_Property_Minimum: number;
 
 declare const kFWAsynchSpd: number;
 
@@ -2308,9 +7464,15 @@ declare const kIOFBNotifyProbed: number;
 
 declare const kFWAsynchDestinationOffsetLow: number;
 
+declare const kSPCCmd_SEND_DIAGNOSTICS: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_Initializing: number;
+
 declare const gIODeviceMemoryKey: interop.Pointer;
 
-declare const IOUSBHostCISetupTransferData1wIndex: number;
+declare const kHIDUsage_Csmr_ChannelFront: number;
+
+declare const kHIDUsage_Csmr_MediaSelectWWW: number;
 
 declare const kIOACPIAddressSpaceIDPCIConfiguration: number;
 
@@ -2318,7 +7480,11 @@ declare const kFWAsynchSpdPhase: number;
 
 declare const kIOMemoryTypeUIO: number;
 
+declare const kHIDUsage_BS_ThermistorHot: number;
+
 declare const IFNET_NPM_THRESH_FAR: number;
+
+declare const kINQUIRY_Page83_ProtocolIdentifierValidMask: number;
 
 declare const kIOMemoryLedgerTagMedia: number;
 
@@ -2326,79 +7492,251 @@ declare const kHIDDispatchOptionPhaseMayBegin: number;
 
 declare const kOFVariablePermKernelOnly: number;
 
+declare const kHIDUsage_KeyboardErrorUndefined: number;
+
+declare const kHIDUsage_BCS_Aiming_PointerMide: number;
+
+declare const kSPCProcCmd_RESERVE_6: number;
+
+declare const kHIDUsage_Snsr_Property_ConnectionType_Attached: number;
+
 declare const bATAUncorrectable: number;
+
+declare const kHIDUsage_PID_FadeTime: number;
 
 declare const kFWSelfIDPortStatusNotPresent: number;
 
+declare const kHIDUsage_Snsr_Property_Light: number;
+
+declare const kHIDUsage_Snsr_Data_Location_DifferentialGPSDataAge: number;
+
 declare const IFNET_FAMILY_MDECAP: number;
+
+declare const kFWIsochSyPhase: number;
+
+declare const kATAIdentifyExtendedInfoSupport: number;
 
 declare const kRegIterSubTrees: number;
 
+declare const kHIDUsage_PID_RAM_PoolAvailable: number;
+
+declare const kSBCCmd_RESERVE_10: number;
+
+declare const kHIDUsage_Button_39: number;
+
+declare const kHIDUsage_Sim_ElevatorTrim: number;
+
+declare const kHIDUsage_Snsr_Data_Time_DayOfWeekTuesday: number;
+
 declare const gIODisplayGreenGammaScaleKey: interop.Pointer;
+
+declare const kIO24RGBPixelFormat: number;
+
+declare const kCSRMessageRequestAddress: number;
+
+declare const kCSRArgumentHiAddress: number;
+
+declare const kHIDUsage_BS_BatteryPresent: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_Quaternion: number;
 
 declare const IOFWSimpleContiguousPhysicalAddressSpace: number;
 
+declare const kHIDUsage_Csmr_SelectDisc: number;
+
+declare const kHIDUsage_KeyboardF24: number;
+
+declare const kINQUIRY_Byte3_HISUP_Mask: number;
+
+declare const kUSBPeriodicInterruptUsageType: number;
+
+declare const kHIDUsage_Csmr_ACRedoOrRepeat: number;
+
+declare const EXTERNAL_DIGITAL_AUDIO_INTERFACE: number;
+
 declare const kIOAGPStateEnablePending: number;
 
+declare const kClearDeviceFeature: number;
+
+declare const kSBCCmd_READ_LONG: number;
+
+declare const kSBCCmd_LOG_SELECT: number;
+
+declare const kHIDUsage_Snsr_Property_Scanner_NFCSentenceSend: number;
+
+declare const kDVDBookTypeHDR: number;
+
+declare const kConfigRootDirectoryKey: number;
+
 declare const kIOPCIExpressCapabilityIDMRIOV: number;
+
+declare const kHIDUsage_Dig_Digitizer: number;
+
+declare const kMMCCmd_READ_CD: number;
+
+declare const kHIDRtOutputReport: number;
 
 declare const kKeyMaskCtrl: number;
 
 declare const kAirshipDaleBasebandTraceUserClientOpen: number;
 
+declare const kIOBlitSourceOOLPattern: number;
+
+declare const kSENSE_RESPONSE_CODE_Mask: number;
+
 declare const CSSLOT_LAUNCH_CONSTRAINT_RESPONSIBLE: number;
 
+declare const kINQUIRY_Page83_IdentifierTypeMask: number;
+
+declare const kHIDUsage_Button_68: number;
+
+declare const kHIDUsage_Csmr_ALControlPanel: number;
+
 declare const hv_support_available: number;
+
+declare const kHIDUsage_Button_215: number;
 
 declare const kIOPCICPCIResourceControlCapability: number;
 
 declare const kIOPCIExpressCapabilityIDAlternateProtocol: number;
 
-declare const IOUSBHostCISetupTransferData1bmRequestTypePhase: number;
-
 declare const kIOReportFormatSimple: number;
 
 declare const kIOAGP4xDataRate: number;
 
+declare const kSCSICmd_PREFETCH_16: number;
+
+declare const kIOAudioClockSelectorTypeADAT9Pin: number;
+
+declare const kSGCCmd_RELEASE_6: number;
+
+declare const kHIDUsage_BS_RemainingTimeLimitExpired: number;
+
 declare const kIOAGP1xDataRate: number;
+
+declare const kMMCCmd_READ_FORMAT_CAPACITIES: number;
+
+declare const kHIDUsage_PD_LowVoltageTransfer: number;
 
 declare const kIOPCISecureCapability: number;
 
+declare const kSCSICmd_XDWRITE: number;
+
 declare const CS_HASHTYPE_SHA256_TRUNCATED: number;
+
+declare const kBuiltInConnection: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingXAxis: number;
+
+declare const kHIDUsage_Csmr_ALCalendarOrSchedule: number;
 
 declare const IOFireWireUnit: number;
 
+declare const kIOVideoFeatureControlClassIDPowerLineFrequency: number;
+
+declare const kSCSICmd_ERASE_12: number;
+
 declare const gIOCompatibilityPropertiesKey: interop.Pointer;
+
+declare const kHIDUsage_Dig_Height: number;
 
 declare const kIOFBNotifyWillSleep: number;
 
+declare const kDisplayModeIDReservedBase: number;
+
+declare const kHIDUsage_Snsr_Property_ConnectionType: number;
+
+declare const kHIDUsage_Button_81: number;
+
 declare const CSSLOT_ALTERNATE_CODEDIRECTORIES: number;
+
+declare const kIO2IndexedGrayPixelFormat: number;
 
 declare const kDeviceFeatureSelectorLTMEnable: number;
 
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkDirectionRx: number;
+
+declare const kHIDUsage_KeyboardOpenBracket: number;
+
 declare const kIOPCICorrectableErrorBitBadDLLP: number;
+
+declare const kSyncFrame: number;
 
 declare const kHIDDispatchOptionPointerAffixToScreen: number;
 
+declare const kSCSICmd_LOAD_UNLOAD_MEDIUM: number;
+
+declare const kHIDUsage_PD_HighVoltageTransfer: number;
+
+declare const kHIDPage_MonitorVirtual: number;
+
+declare const cscGetDDCBlock: number;
+
 declare const IOFWUserReadQuadletCommand: number;
 
+declare const kHIDUsage_AD_FontData: number;
+
+declare const kATAIdentifyCurrentHeads: number;
+
+declare const kINQUIRY_Byte3_AERC_Bit: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkReserved: number;
+
+declare const timingVESA_1600x1200_65hz: number;
+
+declare const kHIDUsage_BCS_MirrorSpeedControl: number;
+
+declare const kSBCModePageCaching_FSW_Bit: number;
+
 declare const mATASectorSize: number;
+
+declare const kHIDUsage_PD_ActivePower: number;
 
 declare const gIODisplayMCCSVersionKey: interop.Pointer;
 
 declare const kUSBHostClassRequestCompletionTimeout: number;
 
+declare const kHIDUsage_Csmr_KeyboardInputAssistAccept: number;
+
+declare const kPowerStateFullPower: number;
+
+declare const kFWAVCAsyncPlug18: number;
+
+declare const kHIDUsage_Button_116: number;
+
 declare const kHV_ION_ANY_SIZE: number;
+
+declare const kHIDUsage_Csmr_MediaSelectCable: number;
+
+declare const kUSBATMNetworkingSubClass: number;
+
+declare const kHIDUsage_AD_CharacterReport: number;
 
 declare const kIOPCICommandMemWrInvalidate: number;
 
-declare const IOUSBHostCIDoorbellEndpointAddressPhase: number;
+declare const kSCSIProtocolIdentifier_SSA: number;
+
+declare const kSPCProcCmd_LOG_SELECT: number;
+
+declare const kConfigNodeMemoryExtentKey: number;
+
+declare const kHIDUsage_Csmr_ACDemote: number;
+
+declare const kHIDUsage_Csmr_AMOrPM: number;
+
+declare const cscSetHardwareCursor: number;
+
+declare const kUSPrintingClassGePortStatus: number;
 
 declare const kFWAsynchSourceIDPhase: number;
+
+declare const kUSBFeatureDeviceRemoteWakeup: number;
 
 declare const kIOReturnOutputStall: number;
 
 declare const AVCCommandHandlerInfo: number;
+
+declare const kHIDUsage_Tfon_PhoneDirectory: number;
 
 declare const gIOACPIUniqueIDKey: interop.Pointer;
 
@@ -2406,9 +7744,29 @@ declare const gIODriverKitUserClientEntitlementsKey: interop.Pointer;
 
 declare const kFBDisplayPowerStateMask: number;
 
+declare const kHIDUsage_BCS_PolarityNormalBarCode: number;
+
+declare const kHIDUsage_BCS_CheckEnable4DigitPrice: number;
+
+declare const kIOAudioDeviceTransportTypeVirtual: number;
+
+declare const kHIDUsage_Dig_ContactCount: number;
+
+declare const kSCCCmd_REPORT_LUNS: number;
+
+declare const kIOBlitTypeCopyRects: number;
+
+declare const kUSBCompositeSubClass: number;
+
 declare const kIOPCIConfigurationOffsetMaximumLatency: number;
 
 declare const IFNET_VLAN_TAGGING: number;
+
+declare const kHIDUsage_PID_Normal: number;
+
+declare const kHIDUsage_Snsr_Property_Resolution: number;
+
+declare const kHIDRqGetIdle: number;
 
 declare const kATAcmdFlushCache: number;
 
@@ -2418,9 +7776,29 @@ declare const kEndpointDescriptorReservedPhase: number;
 
 declare const kSuperSpeedEndpointCompanionDescriptorBulkReserved: number;
 
+declare const kHIDUsage_Snsr_Data_Mechanical_BooleanSwitchArrayStates: number;
+
+declare const kFWMaxNodesPerBus: number;
+
+declare const kIOAudioSelectorControlSubTypeClockSource: number;
+
 declare const kFWSelfID0P2Phase: number;
 
+declare const kHIDUsage_GD_SystemMenuSelect: number;
+
+declare const kConfigNodeVendorIdKey: number;
+
+declare const kSSCPrinterCmd_RECOVER_BUFFERED_DATA: number;
+
+declare const kHIDUsage_BCS_CheckDigitEnableInterleaved2of5USS: number;
+
+declare const kHIDUsage_GD_SystemSpeakerMute: number;
+
+declare const kHIDUsage_LED_Compose: number;
+
 declare const kFWSelfID0SPPhase: number;
+
+declare const kSBCModePageCaching_ABPF_Bit: number;
 
 declare const gIOBusyInterest: interop.Pointer;
 
@@ -2428,23 +7806,95 @@ declare const kSuccess: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedAttrCountPhase: number;
 
+declare const kSBCCmd_LOCK_UNLOCK_CACHE: number;
+
+declare const kIOUSBEndpointDescriptorTransferTypeBulk: number;
+
+declare const kHIDUsage_LED_LowCutFilter: number;
+
+declare const kSPCCmd_COPY_AND_VERIFY: number;
+
 declare const kRegPropertyValueIsSavedToNVRAM: number;
 
+declare const kHIDUsage_KeyboardLeftControl: number;
+
+declare const kHIDPage_Simulation: number;
+
+declare const kDigitalSignalMask: number;
+
 declare const kEndpointDescriptorSynchronizationTypeAdaptive: number;
+
+declare const kConfigUnitDependentInfoKey: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkAsymmetric: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkLSEKbits: number;
+
+declare const kHIDUsage_PID_CustomForceDataOffset: number;
+
+declare const kIOBlitReferenceSource: number;
+
+declare const kUSBPrintingInterfaceClass: number;
+
+declare const kIOAudioSelectorControlSelectionValueExternalMicrophone: number;
+
+declare const kFWBIBCycClkAcc: number;
+
+declare const timingVESA_640x480_60hz: number;
+
+declare const kHIDUsage_PID_DC_StopAllEffects: number;
+
+declare const kDCLSendPacketOp: number;
 
 declare const kUSB20ExtensionCapabilityBESLPhase: number;
 
 declare const IOFWPseudoAddressSpace: number;
 
+declare const kHIDUsage_Csmr_ACMirrorVertical: number;
+
 declare const kRootDomainSleepNotSupported: number;
 
 declare const kFWIsochChannelChannelNotAvailable: number;
 
+declare const kMMCCmd_MODE_SELECT_10: number;
+
 declare const kIOExternalMethodArgumentsCurrentVersion: number;
+
+declare const kHIDUsage_Sprt_StickFollowThrough: number;
+
+declare const kHIDUsage_Game_RollRightOrLeft: number;
+
+declare const kIOVideoDeviceMethodSetMode: number;
+
+declare const kDVDFeaturesRandomWriteableMask: number;
+
+declare const kHIDUsage_BCS_LaserOnTime: number;
+
+declare const kATAIdentifyLBACapacity: number;
+
+declare const kMirrorHAlignCenterMirrorMask: number;
+
+declare const kHIDUsage_Snsr_Electrical_Current: number;
+
+declare const kHIDUsage_LED_PaperOut: number;
+
+declare const kHIDUsage_PD_ChangedStatus: number;
+
+declare const kHIDUsage_PID_DeadBand: number;
+
+declare const kIOVideoFeatureControlClassIDExposure: number;
 
 declare const IODeviceMemory: number;
 
+declare const kMMCCmd_READ_TOC_PMA_ATIP: number;
+
+declare const kHIDUsage_LED_SendCalls: number;
+
 declare const kIOFWAVCAsyncCmdFreed: number;
+
+declare const kIOI2CBusTypeDisplayPort: number;
+
+declare const kSPCCmd_INQUIRY: number;
 
 declare const kIOPCIStatusTargetAbortCapable: number;
 
@@ -2452,69 +7902,247 @@ declare const kKUNCOtherResponse: number;
 
 declare const kIOTracePowerMgmt: number;
 
+declare const kHIDUsage_Csmr_ACKeyboardLayoutSelect: number;
+
+declare const kHIDUsage_LED_SlowBlinkOffTime: number;
+
+declare const kHIDUsage_BCS_UPC_EAN: number;
+
+declare const kSCSICmd_CLOSE_TRACK_SESSION: number;
+
 declare const gIODisplayMaxValueKey: interop.Pointer;
 
-declare const IOUSBHostCISetupTransferData1bRequestPhase: number;
+declare const kSBCModePageFlexibleDisk_MO_Bit: number;
+
+declare const kHIDUsage_BS_DesignCapacity: number;
+
+declare const kHIDUsage_BCS_RawScannedDataReport: number;
+
+declare const kSCSICmd_MODE_SELECT_10: number;
+
+declare const kHIDUsage_Csmr_ALLANOrWANBrowser: number;
 
 declare const kIOFBNotifyEvent_All: number;
+
+declare const kRangeSupportsSeperateSyncsBit: number;
+
+declare const kSBCWOCmd_SEARCH_DATA_LOW_10: number;
 
 declare const IOFWSyncer: number;
 
 declare const CSMAGIC_EMBEDDED_LAUNCH_CONSTRAINT: number;
 
+declare const kIOAudioControlChannelIDDefaultLeftRear: number;
+
+declare const BIDIRECTIONAL_ECHO_CANCELING_SPEAKERPHONE: number;
+
+declare const kUSBAsynchronousIsocSyncType: number;
+
 declare const kIOACPIAddressSpaceIDSMBus: number;
+
+declare const kHIDUsage_LED_Power: number;
+
+declare const kMMCCmd_SEARCH_DATA_HIGH_10: number;
+
+declare const kCSRClockValueHiAddress: number;
+
+declare const kFWCSRStateCMstr: number;
+
+declare const kSCSICmd_MODE_SELECT_6: number;
 
 declare const kIOMemoryPurgeableVolatile: number;
 
+declare const kCSRTestStartAddress: number;
+
+declare const kSCSIServiceAction_GET_LBA_STATUS: number;
+
+declare const kHIDUsage_Csmr_ALCheckbookOrFinance: number;
+
 declare const kIOPCICapabilityIDEnhancedAllocation: number;
+
+declare const kHIDUsage_Csmr_ACDesktopShowAllWindows: number;
+
+declare const kUSBMaxHSIsocFrameCount: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkMinSpeedId: number;
 
 declare const kIOPCIConfigExpansionROMBase: number;
 
+declare const kHIDUsage_LED_FastBlinkOffTime: number;
+
+declare const kHIDUsage_Game_PointofView: number;
+
+declare const kHIDUsage_Snsr_Undefined: number;
+
+declare const kDPMSSyncOff: number;
+
 declare const kFWSelfIDSelfPowered15W: number;
 
+declare const kHIDUsage_GD_SystemWarmRestart: number;
+
+declare const kUSBEndpointTransferTypeUCMask: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_ProcessorSPCDevice: number;
+
+declare const kSMCCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kHIDUsage_MSR_TrackJISLength: number;
+
 declare const kFWSelfIDBusPowered1W: number;
+
+declare const kHIDUsage_Tfon_Phone: number;
 
 declare const kIOPCIConfigurationOffsetBaseAddress1: number;
 
 declare const kPingResponseTimeNs: number;
 
+declare const kHIDUsage_Snsr_Orientation_DistanceD: number;
+
+declare const kHIDUsage_LED_Stereo: number;
+
+declare const kHIDUsage_Sim_FlareRelease: number;
+
+declare const kHIDUsage_Button_173: number;
+
 declare const kHIDFeatureReport: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_OpticalCardReaderOCRWDevice: number;
+
+declare const kHIDUsage_PD_PowerSummaryID: number;
+
+declare const kHIDUsage_Button_3: number;
+
+declare const kHIDUsage_Csmr_ACInsertFile: number;
+
+declare const kMirrorVAlignCenterMirrorMask: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelLevelMinus20dBV: number;
+
+declare const kHIDUsage_Csmr_ACGoTo: number;
+
+declare const cscGetEntries: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIMetricCL: number;
+
+declare const kHIDUsage_BS_InternalChargeController: number;
+
+declare const kHIDUsage_Button_58: number;
+
+declare const kIOVideoFeatureControlClassIDPan: number;
 
 declare const kIOPCIExpressCapabilityIDATS: number;
 
+declare const kHIDUsage_GD_Qz: number;
+
+declare const cscGetPageCnt: number;
+
+declare const kHIDUsage_Snsr_Motion_Gyrometer: number;
+
 declare const kSuperSpeedDeviceCapabilityHighSpeed: number;
+
+declare const kSCSICmd_STOP_PLAY_SCAN: number;
 
 declare const cablePowerInsufficientErr: number;
 
-declare const IOUSBHostCICapabilitiesMessageData0ConnectionLatencyPhase: number;
+declare const kSecondDepthMode: number;
 
 declare const CS_SUPPORTSSCATTER: number;
 
+declare const kHIDUsage_KeyboardInternational3: number;
+
 declare const kKeyMaskLeftCommand: number;
+
+declare const kIOCatalogRemoveKernelLinker__Removed: number;
+
+declare const kHIDUsage_BCS_Code128: number;
+
+declare const kMMCCmd_PLAY_AUDIO_TRACK_INDEX: number;
 
 declare const kIOPCIIOSpace: number;
 
 declare const MBUF_TYPE_FTABLE: number;
 
+declare const kHIDUsage_Button_241: number;
+
+declare const kExtFieldsValidMask: number;
+
+declare const kSCSICmd_READ_12: number;
+
 declare const kIOFBNotifyPriority_Min: number;
+
+declare const kIOAudioSMPTETimeRunning: number;
 
 declare const kIOPCIExpressCapabilityIDDVSEC: number;
 
+declare const kSCSICmd_PLAY_CD: number;
+
+declare const kUSBRqGetDescriptor: number;
+
+declare const kHIDUsage_Button_108: number;
+
+declare const kINQUIRY_Page83_AssociationMask: number;
+
+declare const kRangeSupportsCompositeSyncMask: number;
+
+declare const kHIDUsage_Csmr_ACPrintPreview: number;
+
+declare const kSBCCmd_SEND_DIAGNOSTICS: number;
+
 declare const kIOPCIAERCapErrSourceIDOffset: number;
+
+declare const kMMCCmd_PLAY_AUDIO_MSF: number;
+
+declare const kHIDUsage_LED_IndicatorOff: number;
 
 declare const mATADataRequest: number;
 
+declare const kIOAudioChannelLabel_RightTopRear: number;
+
 declare const IOHIDDevice_Class: OSClassLoadInformation;
+
+declare const kFixedDeviceMask: number;
 
 declare const kIOTimeOptionsWithLeeway: number;
 
+declare const kSBCModePageCaching_DRA_Mask: number;
+
+declare const kHIDUsage_KeyboardB: number;
+
+declare const kSBCModePageFlexibleDisk_MO_Mask: number;
+
+declare const kHIDUsage_Csmr_ACSubscript: number;
+
+declare const kHIDUsage_Csmr_ACSendOrReceive: number;
+
+declare const kRangeSupportsVSyncSerrationMask: number;
+
+declare const kHIDUsage_Button_34: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState_D2_Standby: number;
+
 declare const CS_HASH_MAX_SIZE: number;
+
+declare const kHIDUsage_BCS_CheckDigitEnableTwoMSIPlessey: number;
+
+declare const kHIDUsage_Tfon_Park: number;
 
 declare const IOServicePM: number;
 
+declare const kHIDUsage_Csmr_BassIncrement: number;
+
+declare const kHIDUsage_Csmr_ALNetworkConference: number;
+
+declare const kHIDUsage_BCS_SoundGoodReadBeep: number;
+
+declare const kSCSICmd_READ_16: number;
+
 declare const MBUF_CSUM_REQ_TCP: number;
 
+declare const kHIDUsage_Snsr_Data_Orientation_MagneticFluxYAxis: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSymmetryPhase: number;
+
+declare const kSSCSeqCmd_PERSISTENT_RESERVE_IN: number;
 
 declare const IOPCIDevice_Class: OSClassLoadInformation;
 
@@ -2526,11 +8154,25 @@ declare const IOMbufMemoryCursor: number;
 
 declare const kATAcmdWriteSame: number;
 
+declare const kHIDUsage_Csmr_ChannelUnknown: number;
+
 declare const cableVoltageTooLowErr: number;
 
 declare const IFNET_FAMILY_TUN: number;
 
+declare const cscSetDefaultMode: number;
+
+declare const kHIDUsage_Csmr_ModeStep: number;
+
 declare const gIOInterruptSpecifiersKey: interop.Pointer;
+
+declare const kDVDBookTypeHDROM: number;
+
+declare const kUSBSuperSpeedLTMCapable: number;
+
+declare const kUSBMassStorageClass: number;
+
+declare const kHIDUsage_Snsr_Modifier_ChangeSensitivityPercentRange: number;
 
 declare const MBUF_LASTFRAG: number;
 
@@ -2538,11 +8180,25 @@ declare const kUSBHostStandardRequestCompletionTimeout: number;
 
 declare const kOSRegistryModsMode: number;
 
+declare const kESCSixMSB3: number;
+
+declare const kUSBStream0: number;
+
+declare const kHIDUsage_Csmr_ALPowerStatus: number;
+
 declare const kFWAsynchAckSent: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkMinSpeedId: number;
 
-declare const IOUSBHostCIPortCapabilitiesMessageControlPortNumber: number;
+declare const kINQUIRY_PageB1_PageCode: number;
+
+declare const kHIDUsage_KeyboardReturn: number;
+
+declare const kC0DataMaxStringLen: number;
+
+declare const kIOAudioClockSelectorTypeTOSLink: number;
+
+declare const kIO32RGBAPixelFormat: number;
 
 declare const kDeviceStatusSelfPowered: number;
 
@@ -2550,17 +8206,55 @@ declare const kIOPCICapabilityIDVendorSpecific: number;
 
 declare const kIOTraceTimers: number;
 
+declare const kSBCWOCmd_MODE_SENSE_10: number;
+
+declare const kDVIPowerSwitchFeature: number;
+
 declare const kUSB2LPMMaxL1Timeout: number;
+
+declare const kHIDUsage_Snsr_Orientation_CompassD: number;
+
+declare const kHIDUsage_Csmr_Balance: number;
+
+declare const kDVDFeaturesCSSBit: number;
+
+declare const kHIDUsage_LED_Usage: number;
 
 declare const kIODMAMapOptionBypassed: number;
 
+declare const kHIDUsage_Button_76: number;
+
 declare const kIOPCIConfigStatus: number;
 
-declare const IOUSBHostCIIsochronousTransferData1Buffer: number;
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkTypePhase: number;
+
+declare const kIOI2CCombinedTransactionType: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_MediumChangerSMCDevice: number;
+
+declare const kATAIdentifyLogicalHeadCount: number;
 
 declare const version_prerelease_level: number;
 
+declare const kIOAudioNewClockDomain: number;
+
+declare const kHIDUsage_Button_94: number;
+
 declare const kEndpointDescriptorUsageTypeIsocData: number;
+
+declare const kUSBNotificationPreForcedSuspendBit: number;
+
+declare const kHIDUsage_Button_86: number;
+
+declare const kUSBFullSpeedMicrosecondsInFrame: number;
+
+declare const kMMCCmd_SCAN_MMC: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularPositionXAxis: number;
+
+declare const kHIDUsage_Button_52: number;
+
+declare const kHIDUsage_Csmr_ALContextawareDesktopAssistant: number;
 
 declare const kIOServiceFirstMatchState: number;
 
@@ -2568,43 +8262,143 @@ declare const IOFireWireSBP2Target: number;
 
 declare const kIOTimerEventSourceOptionsDefault: number;
 
+declare const cscGetModeTiming: number;
+
+declare const kSBCModePageRigidDiskGeometry_RPL_Mask: number;
+
+declare const kHIDUsage_GD_Y: number;
+
+declare const kHIDUsage_Csmr_ACExit: number;
+
+declare const kSMCCmd_MOVE_MEDIUM: number;
+
+declare const kFWAVCAsyncPlug21: number;
+
+declare const kHIDUsage_Button_169: number;
+
+declare const kUSBStringDesc: number;
+
+declare const kIOI2CDDCciReplyTransactionType: number;
+
+declare const kDVDKeyFormatRegionState: number;
+
+declare const kHIDUsage_Sprt_3Iron: number;
+
+declare const kSBCCmd_READ_10: number;
+
+declare const timingVESA_1280x960_85hz: number;
+
+declare const kHIDUsage_Button_13: number;
+
+declare const kHIDUsage_BCS_DecodeDataContinued: number;
+
 declare const kKeyMaskRightCommand: number;
 
-declare const IOUSBHostCIPortStatusConnected: number;
+declare const kHIDUsage_Sprt_BaseballBat: number;
+
+declare const kHIDUsage_Csmr_ALDigitalRightsManager: number;
 
 declare const kIOPCICommandSpecialCycles: number;
 
 declare const kDeviceRequestDirectionIn: number;
 
+declare const kHIDUsage_LED_Reverse: number;
+
+declare const kScaleCanSupportInsetMask: number;
+
 declare const kIOMemoryPurgeableVolatileGroup4: number;
 
 declare const CS_SUPPORTSLINKAGE: number;
+
+declare const kFourthDepthMode: number;
 
 declare const kFWSelfIDSelfPowered45W: number;
 
 declare const kIOLogMemory: number;
 
+declare const kSBCWOCmd_VERIFY_12: number;
+
+declare const kHIDUsage_Csmr_DisplayBrightnessDecrement: number;
+
+declare const kUncertainConnection: number;
+
 declare const spec_vnodeop_p: interop.Pointer;
+
+declare const kHIDUsage_Sim_TurretDirection: number;
+
+declare const kIOHIDServerConnectType: number;
 
 declare const kIOACPIFixedEventSleepButton: number;
 
+declare const kSBCWOCmd_TEST_UNIT_READY: number;
+
+declare const kIOUSBAnyProduct: number;
+
+declare const kSSCPrinterCmd_COMPARE: number;
+
+declare const kHIDUsage_WD_ScaleStatusRequiresRezeroing: number;
+
+declare const kHIDUsage_BCS_TriggerState: number;
+
+declare const kHIDUsage_AD_CursorMode: number;
+
 declare const kIOServiceFamilyCloseOptions: number;
+
+declare const kHIDUsage_KeyboardCrSelOrProps: number;
+
+declare const kHIDUsage_Csmr_Menu: number;
+
+declare const kHIDUsage_Button_154: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorBulkMaxStreamsPhase: number;
+
+declare const kHIDUsage_Snsr_Data_Location_HorizontalDilutionOfPrecision: number;
 
 declare const kSuperSpeedPlusDeviceCapabilityMinRxLaneCount: number;
 
+declare const kIOAudioChannelLabel_Ambisonic_W: number;
+
 declare const kIOAGPSideBandAddresssing: number;
 
-declare const IOUSBHostCIPortStatusSpeedPhase: number;
+declare const kSPCProcCmd_CHANGE_DEFINITION: number;
+
+declare const cscGetModeBaseAddress: number;
+
+declare const kATATimeout10Seconds: number;
+
+declare const kHIDUsage_GD_SystemDock: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_LowThresholdCrossUp: number;
+
+declare const timingApple_1152x870_75hz: number;
 
 declare const kUSB20ExtensionCapabilityBESL: number;
 
 declare const kHV_ION_NONE: number;
 
+declare const kHIDUsage_Csmr_ACClose: number;
+
+declare const kHIDUsage_BS_iManufacturerName: number;
+
+declare const kHIDUsage_Snsr_Data_Light_ChromaticityX: number;
+
+declare const kSPCCmd_REPORT_DEVICE_IDENTIFIER: number;
+
+declare const kAppleVendorID: number;
+
+declare const kDVDStructureFormatCopyrightInfo: number;
+
 declare const IFNET_FAMILY_UNUSED_16: number;
+
+declare const kHIDUsage_BCS_BarSpaceData: number;
+
+declare const kHIDUsage_Csmr_ChannelTop: number;
 
 declare const OSCollectionIterator: number;
 
 declare const kIOPCIExpressCapabilityIDReadinessTimeReporting: number;
+
+declare const kHIDUsage_GD_SystemDisplayToggleMode: number;
 
 declare const kFWAsynchRt: number;
 
@@ -2614,51 +8408,163 @@ declare const kNMIIntLevelMask: number;
 
 declare const gIODTPHandleKey: interop.Pointer;
 
+declare const kCSRMemoryBoundHiAddress: number;
+
+declare const cscGetPreferredConfiguration: number;
+
+declare const kHIDUsage_Button_129: number;
+
 declare const kIOKextSpinDump: number;
+
+declare const kHIDUsage_Sim_AirplaneSimulationDevice: number;
+
+declare const kHIDUsage_GD_AssistiveControl: number;
+
+declare const kDMSModeNotReady: number;
+
+declare const kIOVideoDeviceMethodOpen: number;
 
 declare const kFWSelfIDBusPowered6W: number;
 
+declare const kHIDUsage_BCS_USB_5_SlugCode: number;
+
+declare const kModelessConnect: number;
+
 declare const IOUSBHostPipeMetaClass: number;
 
+declare const kHIDUsage_Dig_Pen: number;
+
+declare const kHIDUsage_FIDO_OutputData: number;
+
+declare const kHIDUsage_LED_Rewind: number;
+
 declare const kHIDDispatchOptionPhaseEnded: number;
+
+declare const kHIDUsage_GD_Reserved: number;
+
+declare const kIOBlitSourceIsSame: number;
 
 declare const kDeviceRequestRecipientInterface: number;
 
 declare const kIOFBNotifyDidPowerOn: number;
 
+declare const kHIDUsage_Sprt_Reserved: number;
+
+declare const kHIDUsage_BCS_MaxiCode: number;
+
+declare const kHIDUsage_PD_AwaitingPower: number;
+
+declare const kHIDUsage_Csmr_ACDetachComment: number;
+
 declare const IOUSBHostPipe_Class: OSClassLoadInformation;
 
 declare const IFNET_LQM_THRESH_GOOD: number;
 
+declare const kHIDUsage_Csmr_Repeat: number;
+
 declare const kSuperSpeedPlusDeviceCapabilityMinTxLaneCountPhase: number;
 
+declare const kINQUIRY_Page83_ProtocolIdentifierValidBit: number;
+
+declare const kCSRStateOff: number;
+
 declare const gIODisplayLinearBrightnessProbeKey: interop.Pointer;
+
+declare const kMMCCmd_READ_CAPACITY: number;
+
+declare const kHIDUsage_BCS_UPC_E: number;
 
 declare const kATAcmdSetFeatures: number;
 
 declare const kIOMemorySharingTypeMask: number;
 
+declare const timingInvalid_SM_T24: number;
+
+declare const kINQUIRY_Page83_CodeSetASCIIData: number;
+
+declare const kConfigSBP2Revision: number;
+
+declare const kIOAudioChannelLabel_LeftWide: number;
+
+declare const kUSBInterface: number;
+
 declare const kATADevIntNoCmd: number;
+
+declare const kHIDUsage_KeyboardE: number;
+
+declare const kHIDUsage_BD_BrailleRow: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelHighPassFilter: number;
+
+declare const kSetAddress: number;
+
+declare const kTriStateSyncMask: number;
+
+declare const timingApplePAL_ST: number;
+
+declare const kHIDUsage_Snsr_Orientation_Inclinometer2D: number;
 
 declare const IOHIDEventDriver: number;
 
+declare const kIOCatalogRemoveDrivers: number;
+
+declare const kHIDUsage_PD_OutletSystemID: number;
+
+declare const kHIDUsage_BS_BattPackModelLevel: number;
+
 declare const kIOPCICommandParityError: number;
+
+declare const kSBCCmd_SYNCHRONIZE_CACHE: number;
+
+declare const TELEPHONY_UNDEFINED: number;
 
 declare const kIOPCIAdapterNotPresent: number;
 
 declare const gIODriverKitUserClientEntitlementCommunicatesWithDriversKey: interop.Pointer;
 
+declare const kMMCCmd_MECHANISM_STATUS: number;
+
 declare const DEBUG_HEADER_ENTRY_XNU: number;
+
+declare const mCmpCount: number;
 
 declare const kIOPCIResourceTypeCount: number;
 
+declare const kDVDFeaturesHDRWBit: number;
+
+declare const kSBCModePageCaching_MF_Bit: number;
+
+declare const mBaseOffset: number;
+
+declare const kHIDUsage_Button_143: number;
+
 declare const kUSBHostVendorRequestNoDataTimeout: number;
+
+declare const kHIDUsage_Csmr_DuressAlarm: number;
+
+declare const kSCSICmd_LOG_SELECT: number;
 
 declare const IOHIDKeyboard: number;
 
+declare const kHIDUsage_Csmr_ContactLastName: number;
+
+declare const kHIDUsage_Dig_SecondaryTipSwitch: number;
+
 declare const gIODisplayParametersKey: interop.Pointer;
 
+declare const kSSCSeqCmd_MODE_SELECT_6: number;
+
+declare const kFWAVCAsyncPlug7: number;
+
+declare const kHIDUsage_Csmr_SecurityEnable: number;
+
 declare const kUSB20ExtensionCapabilityBESLD: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularPosition: number;
+
+declare const kHIDUsage_Snsr_Data_Time_Second: number;
+
+declare const kIOAudioStreamByteOrderBigEndian: number;
 
 declare const kIOFBNotifyCaptureChange: number;
 
@@ -2666,9 +8572,55 @@ declare const kIOPreparationIDUnsupported: number;
 
 declare const kDeviceRequestDirectionPhase: number;
 
+declare const kUSBRqReserved2: number;
+
+declare const kHIDUsage_LED_Speaker: number;
+
+declare const kCSRStateStateTesting: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_Unknown: number;
+
+declare const kHIDUsage_Csmr_ContactEmailOther: number;
+
+declare const kHIDUsage_Snsr_Data_Location_TrueHeading: number;
+
+declare const kSyncOnBlueMask: number;
+
+declare const kHIDUsage_Csmr_ACPasteSpecial: number;
+
+declare const kHIDUsage_Button_135: number;
+
+declare const kHIDUsage_BS_SMBErrorCode: number;
+
+declare const kHIDUsage_Snsr_Property_Description: number;
+
+declare const kCSRSplitTimeoutLoAddress: number;
+
+declare const kHIDUsage_Csmr_ContactPhoneNumberPersonal: number;
+
+declare const kHIDUsage_Csmr_Aspect: number;
+
+declare const kHIDUsage_KeyboardF12: number;
+
 declare const CS_SUPPORTSTEAMID: number;
 
+declare const kHIDUsage_GD_SystemDisplayInvert: number;
+
+declare const kHIDUsage_Csmr_ScanPreviousTrack: number;
+
+declare const kUSBBillboardVConn2Watt: number;
+
+declare const kHIDUsage_Snsr_Property_Location_DesiredAccuracy: number;
+
+declare const kFastCheckForDDC: number;
+
 declare const IOMbufLittleMemoryCursor: number;
+
+declare const kModeNotGraphicsQuality: number;
+
+declare const kUSBHubCountExceededNotificationType: number;
+
+declare const kHIDUsage_Button_47: number;
 
 declare const kIOMemoryLedgerFlagNoFootprint: number;
 
@@ -2676,35 +8628,79 @@ declare const kATASetTransferMode: number;
 
 declare const kIODDCBlockTypeEDID: number;
 
+declare const kHIDUsage_BS_Level2: number;
+
+declare const kINQUIRY_Byte6_MCHNGR_Mask: number;
+
 declare const kIOPCIResourceTypeMemory: number;
+
+declare const kIOVideoFeatureControlClassIDZoom: number;
 
 declare const kFWSelfIDNPc: number;
 
+declare const kHIDUsage_Button_151: number;
+
 declare const kATAcmdDiagnostic: number;
 
+declare const kIOCatalogAddDrivers: number;
+
 declare const kIOAGPDisableFeature8: number;
+
+declare const kINQUIRY_PageC0_PageCode: number;
+
+declare const kHIDUsage_Sprt_StickTempo: number;
+
+declare const kUSBRqTypeShift: number;
 
 declare const kIOACPIDevicePowerStateD1: number;
 
 declare const kATANoErr: number;
 
+declare const kHIDUsage_Csmr_ScanNextTrack: number;
+
 declare const MBUF_TYPE_DATA: number;
+
+declare const kHIDUsage_Keypad8: number;
+
+declare const kHIDUsage_Haptics_WaveformVendorID: number;
+
+declare const kHIDUsage_KeyboardExSel: number;
 
 declare const kFWSelfIDNPb: number;
 
+declare const kUSBFeatureLTMEnable: number;
+
 declare const kAirshipDaleBasebandControlInterfaceUserClientClose: number;
+
+declare const kConfigModuleDependentInfoKey: number;
+
+declare const kINQUIRY_Byte56_CLOCKING_ONLY_DT: number;
+
+declare const kHIDUsage_Csmr_ACJustifyLeft: number;
 
 declare const kIOPCIConfigurationOffsetBaseAddress4: number;
 
+declare const kSCCCmd_SPARE_IN: number;
+
 declare const kIOMemoryLedgerTagDefault: number;
 
-declare const IOUSBHostCICapabilitiesMessageData0ConnectionLatency: number;
+declare const kPowerStateSleepWakeNeedsProbeBit: number;
+
+declare const kHIDUsage_Button_226: number;
 
 declare const kIOPCIDebugPortCapability: number;
+
+declare const kIOAudioChannelLabel_Discrete_11: number;
 
 declare const RGBDirect: number;
 
 declare const kIOServiceMatchedState: number;
+
+declare const kINQUIRY_ANSI_VERSION_NoClaimedConformance: number;
+
+declare const kHIDUsage_Button_120: number;
+
+declare const kSecondsInAMinute: number;
 
 declare const kIOMemoryTypeUPL: number;
 
@@ -2720,115 +8716,549 @@ declare const kIOPCIConfigurationOffsetBaseAddress5: number;
 
 declare const kIOACPIFixedEventPowerButton: number;
 
+declare const kUSBDiagnosticDeviceInterfaceClass: number;
+
 declare const IOLittleMemoryCursor: number;
 
 declare const kPCI2PCIIORange: number;
+
+declare const kMMCCmd_READ_BUFFER_CAPACITY: number;
+
+declare const kHIDUsage_KeyboardPrintScreen: number;
+
+declare const kFWAVCAsyncPlug6: number;
+
+declare const kHIDUsage_WD_DataWeight: number;
+
+declare const kHIDUsage_Snsr_Orientation_Distance1D: number;
+
+declare const kHIDUsage_Csmr_ACSelectObject: number;
+
+declare const kVideoI2CBusyErr: number;
+
+declare const kSESCmd_RELEASE_10: number;
+
+declare const kHIDUsage_Dig_ProgramChangeKeys: number;
+
+declare const kHIDUsage_Button_29: number;
+
+declare const kUSBPersonalHealthcareClass: number;
+
+declare const kSBCCmd_FORMAT_UNIT: number;
+
+declare const kSPCCmd_REQUEST_SENSE: number;
+
+declare const kIOAudioChannelLabel_LeftSurround: number;
+
+declare const kConfigModuleSpecIdKey: number;
 
 declare const SPTM_SWITCH_ASID_TLBI_FLUSH: number;
 
 declare const bATADataCorrected: number;
 
+declare const kHIDUsage_LED_Repeat: number;
+
 declare const kDeviceRequestTypeClass: number;
+
+declare const kHIDUsage_BCS_Check: number;
+
+declare const kMMCCmd_STOP_PLAY_SCAN: number;
+
+declare const kHIDUsage_GD_SystemMenuExit: number;
+
+declare const kHIDUsage_KeyboardEscape: number;
+
+declare const kHIDUsage_PID_OpEffectStartSolo: number;
 
 declare const gIOKitDebug: number;
 
+declare const kHIDUsage_Button_137: number;
+
+declare const kUSBDataClass: number;
+
+declare const kHIDPage_BarCodeScanner: number;
+
+declare const kHIDUsage_Snsr_Property_ReportingState: number;
+
+declare const kHIDUsage_Button_97: number;
+
+declare const kHIDUsage_Button_170: number;
+
+declare const kMMCCmd_SEEK_6: number;
+
+declare const kHIDUsage_Csmr_AC: number;
+
+declare const kHIDUsage_BCS_EAN2_3LabelControlReport: number;
+
 declare const kIOKitDebugUserOptions: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsPowerSwitchingGanged: number;
+
+declare const kHIDUsage_Snsr_Data_Light_ConsumerIRSentenceReceive: number;
+
+declare const kFWAVCAsyncPlug8: number;
+
+declare const kHIDUsage_Game_GamepadTrigger: number;
+
+declare const kHIDUsage_BCS_UPC_EANControlReport: number;
+
+declare const kHIDUsage_VR_Vest: number;
+
+declare const kHIDUsage_Button_228: number;
+
+declare const kFWResponsePending: number;
+
+declare const kHIDUsage_Dig_Puck: number;
+
+declare const kSCSICmd_SEND_DVD_STRUCTURE: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInView: number;
+
+declare const kHIDUsage_Button_44: number;
+
+declare const kINQUIRY_Page80_PageCode: number;
 
 declare const version_revision: number;
 
+declare const kDPMSSyncMask: number;
+
+declare const kIOBlitDestFramebuffer: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCountPhase: number;
+
+declare const EMBEDDED_SYNTHESIZER: number;
+
+declare const kHIDUsage_Button_130: number;
+
+declare const kIOPCIAERCapTLPPrefixLogDW1Offset: number;
+
+declare const kHIDUsage_Snsr_Location_Triangulation: number;
+
+declare const kHIDUsage_Button_144: number;
+
 declare const kIOMemoryPurgeableVolatileGroup0: number;
+
+declare const kIOAudioDeviceTransportTypeFireWire: number;
+
+declare const kSPCCmd_COPY: number;
+
+declare const kSPCCmd_MODE_SENSE_10: number;
+
+declare const kHIDUsage_Csmr_ACNumberedList: number;
 
 declare const kChipSetTypeCore2001: number;
 
 declare const IFNET_FAMILY_PVC: number;
 
+declare const kREPORT_LUNS_ADDRESS_DEVICE_TYPE_SPECIFIC: number;
+
 declare const gIODisplayAudioMuteAndScreenBlankKey: interop.Pointer;
 
 declare const gIODisplayFadeTime3: number;
 
-declare const IOUSBHostCIEndpointCreateCommandData1DescriptorPhase: number;
+declare const INPUT_MICROPHONE: number;
+
+declare const kIOAudioControlChannelIDAll: number;
 
 declare const kFWSelfID0Pwr: number;
+
+declare const kIOAudioSelectorControlSelectionValueSPDIF: number;
 
 declare const kAirshipDaleBasebandControlUserClientOpen: number;
 
 declare const IOServiceStateNotificationEventSource: number;
 
+declare const kHIDUsage_MSR_Track3Length: number;
+
 declare const kIOPCICapabilityIDCPCIHotswap: number;
+
+declare const kHIDUsage_LED_Player3: number;
+
+declare const kFWCSRStateLinkOff: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardRightSpace: number;
+
+declare const kMMCCmd_READ_TRACK_INFORMATION: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_DisconnectResp: number;
+
+declare const kHIDUsage_Csmr_ACReplyAll: number;
+
+declare const kIOAudioStreamSampleFormatLinearPCM: number;
 
 declare const IOHIDSystem: number;
 
+declare const kHIDUsage_Csmr_ACZoom: number;
+
+declare const kIOPixelEncodingYCbCr420: number;
+
+declare const kHIDUsage_Csmr_ACNextLink: number;
+
 declare const IOFixedPoint64: number;
+
+declare const kHIDUsage_Tfon_Drop: number;
+
+declare const kBluetoothHCICommandSetConnectionlessPeripheralBroadcastData: number;
+
+declare const kHIDUsage_BCS_BarCodePresentSensor: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot7: number;
+
+declare const kHIDUsage_Button_155: number;
+
+declare const kHIDUsage_LED_IndicatorOrange: number;
 
 declare const IOGraphicsDevice: number;
 
+declare const kMMCCmd_MODE_SELECT_6: number;
+
+declare const kTransparentEncoding: number;
+
 declare const AVCConnectionRecord: number;
+
+declare const kIOFBConnectInterruptType: number;
+
+declare const kHIDUsage_PID_NegativeSaturation: number;
+
+declare const kHFSUnusedNodeFixMask: number;
+
+declare const kSCSICmd_WRITE_ATTRIBUTE: number;
+
+declare const timingApple13x: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsPowerSwitchingIndividual: number;
+
+declare const mTable: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceKeyboard: number;
+
+declare const kIOStreamMemoryTypeOutputQueue: number;
+
+declare const kDepthMode6: number;
+
+declare const kBluetoothSDPPDUIDReserved: number;
+
+declare const kDeactivateConnection: number;
+
+declare const kHIDUsage_Snsr_Mechanical_Pressure: number;
+
+declare const kIOAudioStreamSampleFormatIEEEFloat: number;
+
+declare const kHIDUsage_BCS_EAN_8: number;
+
+declare const kHIDUsage_GenDevControls_BackgroundControls: number;
+
+declare const kHIDUsage_BS_SelectorRevision: number;
+
+declare const kHIDUsage_Sprt_StickSpeed: number;
+
+declare const kSCSICmd_READ_ELEMENT_STATUS_ATTACHED: number;
+
+declare const kIORangeColorimetryxvYCC: number;
+
+declare const kCDTrackInfoAddressTypeSessionNumber: number;
 
 declare const kIODDCTristate: number;
 
+declare const kHIDUsage_Csmr_KeyboardBrightnessIncrement: number;
+
+declare const kUSBSuperSpeedSupportsHS: number;
+
 declare const kKeyMaskAlt: number;
 
-declare const IOUSBHostCIPortStatusCommandData1Overcurrent: number;
+declare const kIOAudioStreamByteOrderLittleEndian: number;
+
+declare const kHIDUsage_Game_Bump: number;
+
+declare const kBluetoothVoiceSettingInputCodingMask: number;
+
+declare const kConfigModelIdKey: number;
+
+declare const kIOTimingIDApple_FixedRateLCD: number;
+
+declare const kIO32ARGBPixelFormat: number;
+
+declare const kHIDUsage_BCS_SymbologyIdentifier2: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeVendorID: number;
+
+declare const kHIDUsage_Snsr_Property_Time_TimeZoneName: number;
+
+declare const kBluetoothDeviceClassMajorUnclassified: number;
+
+declare const kIOFBBlueGammaScaleAttribute: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_WellKnownLogicalUnit: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2Gamepad: number;
+
+declare const kHIDUsage_Button_89: number;
+
+declare const kIODPEventMCCS: number;
+
+declare const kIOUSBEndpointDescriptorPacketSizeMult: number;
+
+declare const kHIDUsage_KeyboardRightControl: number;
+
+declare const kHIDUsage_BD_BrailleDPadUp: number;
 
 declare const kIOACPIFixedEventRealTimeClock: number;
 
 declare const gIODTAssociatedServiceKey: interop.Pointer;
 
+declare const kHIDUsage_BS_ThermistorCold: number;
+
+declare const kHIDUsage_BCS_UPC_E1: number;
+
+declare const kIOFBNS_Wake: number;
+
+declare const kSBCModePageFormatDeviceCode: number;
+
+declare const kMMCCmd_SEND_CUE_SHEET: number;
+
+declare const kIO64BGRAPixelFormat: number;
+
+declare const kFWAVCConsumerMode_LOST: number;
+
 declare const kIOAGPDisableFeature6: number;
 
 declare const IOFWAsyncPHYCommand: number;
 
+declare const cscProbeConnection: number;
+
+declare const kHIDUsage_Button_223: number;
+
 declare const gIODisplayParametersTheatreModeKey: interop.Pointer;
+
+declare const kConnectionColorMode: number;
 
 declare const IFNET_SCHED_MODEL_FQ_CODEL_DM: number;
 
+declare const kIO8IndexedGrayPixelFormat: number;
+
+declare const kIORGBSignedDirectPixels: number;
+
 declare const gIODisplayBrightnessFadeKey: interop.Pointer;
 
+declare const kHIDUsage_Snsr_Data_Environmental_AtmosphericPressure: number;
+
+declare const kATAIdentifyFirmwareRevision: number;
+
+declare const kIOAudioChannelLabel_DialogCentricMix: number;
+
 declare const IOHIDEventService_Class: OSClassLoadInformation;
+
+declare const kUSBDFUCanUploadBit: number;
+
+declare const kBluetoothSDPUUID16UDI_C_Plane: number;
 
 declare const IFNET_NPM_THRESH_UNKNOWN: number;
 
 declare const kIOFWSBP2DontUsePTPacketLimit: number;
 
+declare const kBluetoothLESecurityManagerNoBonding: number;
+
+declare const kDMSModeReady: number;
+
+declare const kHIDUsage_PID_ET_Sine: number;
+
+declare const timingAppleVGA: number;
+
+declare const kHIDUsage_Dig_ArticulatedArm: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilityHighSpeed: number;
+
+declare const kSSCPrinterCmd_TEST_UNIT_READY: number;
+
+declare const kATASupportsPowerManagementBit: number;
+
 declare const kIOPCIConfigBaseAddress3: number;
 
+declare const kHIDUsage_Csmr_ContactEmailPersonal: number;
+
 declare const kAirshipDaleBasebandErrorDARTFailure: number;
+
+declare const kSPCCmd_EXTENDED_COPY: number;
+
+declare const kBluetoothVoiceSettingInputCodingULawInputCoding: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIIIMetric: number;
+
+declare const kDVDKeyFormatKey2: number;
+
+declare const kSCSIServiceAction_XDWRITE_32: number;
+
+declare const kSCSICmd_SEARCH_DATA_LOW_12: number;
+
+declare const kCSRUnitsBoundLoAddress: number;
 
 declare const osbuilder: interop.Pointer;
 
 declare const kIODirectionPrepareToPhys32: number;
 
+declare const kDVDFeaturesHDRAMBit: number;
+
+declare const kHIDUsage_Sprt_Putter: number;
+
 declare const kAirshipDaleBasebandErrorIpcSetTransportFailed: number;
 
 declare const kIOPCISlotCapabilitiesBitAttentionButtonPresent: number;
 
+declare const kHIDUsage_BCS_BC412: number;
+
+declare const kFWResponseDataError: number;
+
+declare const kINQUIRY_Page83_AssociationTargetPort: number;
+
+declare const kIOScaleRotateFlags: number;
+
+declare const kConfigUnitDirectoryKey: number;
+
+declare const kCDFeaturesTestWriteMask: number;
+
+declare const kBluetoothHCICommandSetReservedLTADDR: number;
+
+declare const kIOAudioSMPTETimeType24: number;
+
+declare const kScaleRotate270Mask: number;
+
+declare const kSSCSeqCmd_LOCATE: number;
+
+declare const kHFSPlusAttrExtents: number;
+
+declare const kATASupportsFlushCacheExtendedBit: number;
+
+declare const kDVDBookTypeRW: number;
+
+declare const kHIDUsage_Csmr_Illumination: number;
+
 declare const kIOPCINextCapabilityOffset: number;
+
+declare const kHIDUsage_BCS_Misc1DControlReport: number;
+
+declare const kIORDYDisableBit: number;
+
+declare const kIOStreamMemoryTypeInputQueue: number;
 
 declare const IOPCI2PCIBridge: number;
 
+declare const kBluetoothL2CAPMTULowEnergyDefault: number;
+
+declare const kBluetoothHCICommandReadDefaultErroneousDataReporting: number;
+
 declare const telemetry_notification_subsystem: telemetry_notification_subsystem;
 
+declare const kHIDUsage_WD_ScaleStatusReport: number;
+
+declare const kHIDUsage_PD_PowerConverter: number;
+
+declare const kModeSenseParameterHeader10_LongLBABit: number;
+
+declare const kHIDUsage_Sim_FlightCommunications: number;
+
 declare const kIOPCIExpressCapabilityIDDataLinkFeature: number;
+
+declare const kHIDUsage_Keyboard5: number;
 
 declare const IOFWWriteCommand: number;
 
 declare const task_access_subsystem: task_access_subsystem;
 
+declare const kSBCCmd_READ_CAPACITY: number;
+
+declare const kBluetoothHCICommandQoSSetup: number;
+
+declare const kHIDUsage_BCS_NoReadMessage: number;
+
 declare const mATACommandAborted: number;
+
+declare const kIOHIDAccelerationAlgorithmTypeTable: number;
 
 declare const kVBLInterruptServiceType: number;
 
+declare const kFWAVCAsyncPlug20: number;
+
+declare const kIOHIDKeyboardPhysicalLayoutTypeVendor: number;
+
+declare const kIOHIDKeyboardPhysicalLayoutType104: number;
+
+declare const kIOHIDKeyboardPhysicalLayoutType102: number;
+
 declare const IORangeAllocator: number;
 
+declare const kIOHIDKeyboardPhysicalLayoutTypeUnknown: number;
+
+declare const kIOHIDStandardTypeUnspecified: number;
+
+declare const kIOHIDStandardTypeISO: number;
+
+declare const kIOHIDStandardTypeANSI: number;
+
+declare const kHIDUsage_PD_ChargerID: number;
+
+declare const kIOHIDReportOptionVariableSize: number;
+
+declare const kIOHIDReportOptionNotInterrupt: number;
+
+declare const kIOHIDValueOptionsUpdateElementValues: number;
+
+declare const kIOHIDValueOptionsFlagRelativeSimple: number;
+
+declare const kIOHIDValueScaleTypePhysical: number;
+
+declare const kIOHIDValueScaleTypeCalibrated: number;
+
+declare const kIOHIDElementFlagsBufferedByteMask: number;
+
+declare const kIOHIDElementFlagsNullStateMask: number;
+
+declare const kIOBlitOrOperation: number;
+
+declare const kIOHIDElementFlagsConstantMask: number;
+
 declare const CSSLOT_APPLICATION: number;
+
+declare const kHIDUsage_KeyboardSeparator: number;
+
+declare const kHIDUsage_BS_OptionalMfgFunction5: number;
+
+declare const kHIDUsage_Csmr_ALConsumerControlConfiguration: number;
+
+declare const kBluetoothHCICommandChangeConnectionPacketType: number;
+
+declare const kBluetoothSDPDataElementTypeUUID: number;
 
 declare const kFWSelfIDNN: number;
 
 declare const mATADataCorrected: number;
 
+declare const kHIDUsage_MSR_TrackJISData: number;
+
+declare const kUSBStandard: number;
+
+declare const kHIDUsage_KeyboardRightAlt: number;
+
+declare const kHIDUsage_Snsr_Biometric_HeartRate: number;
+
 declare const addressAlignmentErr: number;
 
+declare const kHIDUsage_VR_AnimatronicDevice: number;
+
 declare const OSObject: number;
+
+declare const kMMCCmd_REPAIR_TRACK: number;
+
+declare const kHIDUsage_PID_Phase: number;
+
+declare const kCSRRegisterSpaceBaseAddressLo: number;
+
+declare const kBluetoothHCIEventMaskChangeConnectionLinkKeyComplete: number;
+
+declare const kBluetoothSDPDataElementTypeReservedStart: number;
+
+declare const kHIDUsage_Button_61: number;
+
+declare const kAnalogSignalLevel_0700_0000: number;
 
 declare const kIOFBNotifyGroupID_ThirdParty: number;
 
@@ -2836,71 +9266,1019 @@ declare const kIOPCICapabilityIDPowerManagement: number;
 
 declare const CS_LINKAGE_APPLICATION_OOPJIT: number;
 
+declare const kSENSE_KEY_VENDOR_SPECIFIC: number;
+
+declare const kUSBVideoStreamingSubClass: number;
+
 declare const kFWSelfIDNPfPhase: number;
+
+declare const kHIDUsage_Snsr_Property_MaxFIFOEvents: number;
+
+declare const kPowerStateSleepWakeNeedsProbeMask: number;
+
+declare const kHIDUsage_KeyboardCloseBracket: number;
+
+declare const kBluetoothKeyTypeAuthenticatedCombination: number;
 
 declare const kIOPCICorrectableErrorBitReplayNumRollover: number;
 
+declare const kIOAudioControlTypeSelector: number;
+
+declare const kHFSVolumeHardwareLockMask: number;
+
+declare const kHIDUsage_BCS_TriggerReport: number;
+
+declare const kHIDUsage_Game_GunBurst: number;
+
+declare const kBluetoothSDPDataElementTypeURL: number;
+
+declare const kBluetoothSDPDataElementTypeDataElementSequence: number;
+
+declare const kBluetoothSDPDataElementTypeString: number;
+
+declare const kBluetoothSDPErrorCodeReserved: number;
+
+declare const kBluetoothSDPErrorCodeSuccess: number;
+
+declare const kBluetoothSDPPDUIDServiceSearchAttributeRequest: number;
+
+declare const kBluetoothSDPPDUIDServiceAttributeResponse: number;
+
+declare const kBluetoothSDPPDUIDServiceSearchResponse: number;
+
+declare const kBluetoothSDPPDUIDServiceSearchRequest: number;
+
+declare const kHIDUsage_PD_BadCount: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_ConfigResp: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_Ping: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_WriteData: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_GroupRemoveMember: number;
+
+declare const kHIDUsage_Csmr_Rewind: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_EnableCLT: number;
+
+declare const kVideoBusTypeDisplayPort: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_DisableCLT: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_DisconnectReq: number;
+
+declare const kUSBReprogrammableDiagnosticSubClass: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_ConnectReq: number;
+
+declare const kBluetoothL2CAPTCICommandReserved: number;
+
+declare const kBluetoothL2CAPTCIEventIDL2CA_ConfigInd: number;
+
+declare const kBluetoothHCITransportUSBProtocolCode: number;
+
+declare const kBluetoothHCITransportUSBSubClassCode: number;
+
+declare const kBluetoothHCITransportUSBClassCode: number;
+
+declare const kBluetoothHCIErrorConnectionFailedToBeEstablished: number;
+
+declare const kBluetoothHCIErrorDirectedAdvertisingTimeout: number;
+
+declare const kBluetoothHCIErrorHostBusyPairing: number;
+
+declare const kBluetoothHCIErrorSecureSimplePairingNotSupportedByHost: number;
+
+declare const kBluetoothHCIErrorExtendedInquiryResponseTooLarge: number;
+
+declare const kBluetoothHCIErrorParameterOutOfMandatoryRange: number;
+
+declare const kBluetoothHCIErrorInsufficientSecurity: number;
+
+declare const kBluetoothHCIErrorQoSUnacceptableParameter: number;
+
+declare const kBluetoothHCIErrorDifferentTransactionCollision: number;
+
+declare const kBluetoothHCIErrorHostRejectedUnacceptableDeviceAddress: number;
+
+declare const kBluetoothHCIErrorUnitKeyUsed: number;
+
+declare const kBluetoothHCIErrorLMPPDUNotAllowed: number;
+
+declare const kBluetoothHCIErrorRoleChangeNotAllowed: number;
+
+declare const kBluetoothHCIErrorUnsupportedLMPParameterValue: number;
+
+declare const kBluetoothHCIErrorUnspecifiedError: number;
+
+declare const kBluetoothHCIErrorSCOAirModeRejected: number;
+
+declare const kBluetoothDeviceClassMinorPhoneCordless: number;
+
+declare const kBluetoothHCIErrorSCOIntervalRejected: number;
+
+declare const kBluetoothHCIErrorUnknownLMPPDU: number;
+
 declare const IOFWUserObjectExporter: number;
+
+declare const kHIDUsage_Button_157: number;
+
+declare const kBluetoothDeviceClassMinorHealthUndefined: number;
+
+declare const kBluetoothHCIErrorPairingNotAllowed: number;
+
+declare const kBluetoothHCIErrorOtherEndTerminatedConnectionAboutToPowerOff: number;
+
+declare const kBluetoothHCIErrorOtherEndTerminatedConnectionLowResources: number;
+
+declare const kBluetoothHCIErrorInvalidHCICommandParameters: number;
+
+declare const kBluetoothHCIErrorUnsupportedFeatureOrParameterValue: number;
+
+declare const kBluetoothHCIErrorHostRejectedRemoteDeviceIsPersonal: number;
+
+declare const kBluetoothHCIErrorHostRejectedSecurityReasons: number;
+
+declare const kBluetoothHCIErrorACLConnectionAlreadyExists: number;
+
+declare const kHFSAttributesFileID: number;
+
+declare const kBluetoothHCIErrorMaxNumberOfConnections: number;
 
 declare const kIOPCIStatusUDF: number;
 
+declare const kBluetoothHCIErrorNoConnection: number;
+
+declare const kBluetoothHCIErrorSuccess: number;
+
+declare const kBluetoothHCIEventMaskPageScanModeChange: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AltitudeEllipsoid: number;
+
+declare const kBluetoothHCIEventMaskQoSViolation: number;
+
+declare const kBluetoothHCIEventMaskReadClockOffsetComplete: number;
+
+declare const kBluetoothHCIEventMaskMaxSlotsChange: number;
+
+declare const kBluetoothHCIEventMaskDataBufferOverflow: number;
+
+declare const kBluetoothHCIEventMaskLinkKeyRequest: number;
+
+declare const kBluetoothHCIEventMaskRoleChange: number;
+
+declare const kBluetoothHCIEventMaskFlushOccurred: number;
+
+declare const kBluetoothHCIEventMaskCommandStatus: number;
+
+declare const kBluetoothHCIEventMaskMasterLinkKeyComplete: number;
+
+declare const kBluetoothHCIEventMaskInquiryComplete: number;
+
+declare const kBluetoothHCIEventVendorSpecific: number;
+
+declare const kBluetoothHCIEventLogoTesting: number;
+
+declare const kBluetoothHCIEventShortRangeModeChangeComplete: number;
+
+declare const kBluetoothHCIEventNumberOfCompletedDataBlocks: number;
+
+declare const kBluetoothHCIEventPhysicalLinkLossEarlyWarning: number;
+
+declare const kBluetoothHCIErrorSCOOffsetRejected: number;
+
+declare const kHIDUsage_KeyboardInternational2: number;
+
+declare const kBluetoothHCIEventPhysicalLinkComplete: number;
+
+declare const kBluetoothHCIErrorConnectionTimeout: number;
+
+declare const kBluetoothHCISubEventLEScanTimeout: number;
+
+declare const kBluetoothHCISubEventLEPeriodicAdvertisingReport: number;
+
+declare const kBluetoothHCISubEventLEExtendedAdvertising: number;
+
+declare const kBluetoothHCISubEventLEDirectAdvertisingReport: number;
+
+declare const kBluetoothHCISubEventLELongTermKeyRequest: number;
+
+declare const kBluetoothHCISubEventLEReadRemoteUsedFeaturesComplete: number;
+
+declare const kBluetoothHCISubEventLEAdvertisingReport: number;
+
+declare const kHIDUsage_Csmr_ACJustifyBottom: number;
+
+declare const kBluetoothHCIEventRemoteHostSupportedFeaturesNotification: number;
+
+declare const kBluetoothHCIEventLinkSupervisionTimeoutChanged: number;
+
+declare const kBluetoothHCIEventUserConfirmationRequest: number;
+
+declare const kBluetoothHCIEventExtendedInquiryResult: number;
+
+declare const kBluetoothHCIEventInquiryResultWithRSSI: number;
+
+declare const kBluetoothHCIEventFlowSpecificationComplete: number;
+
+declare const kSuperSpeedBusBitMask: number;
+
+declare const kBluetoothHCIEventPageScanModeChange: number;
+
+declare const kBluetoothHCIEventQoSViolation: number;
+
+declare const kBluetoothHCIEventEnhancedFlushComplete: number;
+
+declare const kBluetoothHCIEventDataBufferOverflow: number;
+
+declare const kBluetoothHCIEventLinkKeyRequest: number;
+
+declare const kIOVideoDeviceNotificationID_ControlRangeChanged: number;
+
+declare const kBluetoothHCIEventRoleChange: number;
+
+declare const kBluetoothHCIEventCommandComplete: number;
+
+declare const kBluetoothHCIEventQoSSetupComplete: number;
+
+declare const kBluetoothHCIEventChangeConnectionLinkKeyComplete: number;
+
+declare const kBluetoothHCIEventEncryptionChange: number;
+
+declare const kBluetoothHCIEventDisconnectionComplete: number;
+
+declare const kBluetoothHCIEventConnectionRequest: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_ConfigReq: number;
+
+declare const kBluetoothAirModeTransparentData: number;
+
+declare const kBluetoothAirModeCVSD: number;
+
+declare const kBluetoothVoiceSettingAirCodingFormatALaw: number;
+
+declare const kBluetoothVoiceSettingAirCodingFormatMask: number;
+
+declare const kBluetoothVoiceSettingInputSampleSizeMask: number;
+
+declare const kSGCCmd_MODE_SENSE_10: number;
+
+declare const kBluetoothVoiceSettingInputCodingALawInputCoding: number;
+
+declare const kBluetoothHCIDataPacketMaxDataSize: number;
+
 declare const kSuperSpeedEndpointCompanionDescriptorSSPIsocCompanion: number;
+
+declare const kBluetoothHCIDataPacketHeaderSize: number;
+
+declare const kBluetoothHCIEventPacketMaxDataSize: number;
+
+declare const kSPCModePagePowerConditionCode: number;
+
+declare const kBluetoothHCICommandPacketMaxDataSize: number;
 
 declare const IOATABusCommand64: number;
 
+declare const kBluetoothHCICommandPacketHeaderSize: number;
+
+declare const kBluetoothHCILoopbackModeLocal: number;
+
+declare const kBluetoothHCICommandMax: number;
+
+declare const kBluetoothHCICommandGroupMax: number;
+
+declare const kBluetoothHCICommandGroupVendorSpecific: number;
+
+declare const kConfigEntryKeyValuePhase: number;
+
+declare const kBluetoothHCICommandGroupLogoTesting: number;
+
+declare const kBluetoothHCICommandLEReadRFPathCompensation: number;
+
+declare const kBluetoothHCICommandLEReadPeriodicAdvertiserListSize: number;
+
+declare const kBluetoothHCICommandLERemoveDeviceFromPeriodicAdvertiserList: number;
+
+declare const kBluetoothHCICommandLEAddDeviceToPeriodicAdvertiserList: number;
+
+declare const kBluetoothHCICommandLEPeriodicAdvertisingTerminateSync: number;
+
+declare const kBluetoothHCICommandLEPeriodicAdvertisingCreateSyncCancel: number;
+
+declare const kBluetoothHCICommandLESetExtendedScanParameters: number;
+
+declare const kBluetoothHCICommandLESetPeriodicAdvertisingEnable: number;
+
+declare const kBluetoothHCICommandLESetPeriodicAdvertisingData: number;
+
+declare const kBluetoothHCICommandLEClearAdvertisingSets: number;
+
+declare const kBluetoothHCICommandLERemoveAdvertisingSet: number;
+
+declare const kBluetoothHCICommandLEReadNumberofSupportedAdvertisingSets: number;
+
+declare const kBluetoothHCICommandLEReadMaximumAdvertisingDataLength: number;
+
+declare const kBluetoothHCICommandLESetExtendedAdvertisingParameters: number;
+
+declare const kBluetoothHCICommandLESetAdvertisingSetRandomAddress: number;
+
+declare const kBluetoothHCICommandLEEnhancedTransmitterTest: number;
+
+declare const kBluetoothVoiceSettingInputSampleSize16Bit: number;
+
+declare const kBluetoothHCICommandLESetPhy: number;
+
+declare const kBluetoothHCICommandLEReadPhy: number;
+
+declare const kBluetoothHCICommandLESetResolvablePrivateAddressTimeout: number;
+
+declare const kBluetoothHCICommandLEReadSuggestedDefaultDataLength: number;
+
 declare const kIOPCIConfigurationOffsetLatencyTimer: number;
+
+declare const kBluetoothHCICommandLESetDataLength: number;
+
+declare const kHIDUsage_GD_WirelessRadioSliderSwitch: number;
+
+declare const kBluetoothHCICommandLEStartEncryption: number;
+
+declare const kBluetoothHCICommandLERand: number;
+
+declare const kBluetoothHCICommandLEReadChannelMap: number;
+
+declare const kBluetoothHCIEventDisconnectionLogicalLinkComplete: number;
+
+declare const kBluetoothHCICommandLESetHostChannelClassification: number;
+
+declare const kBluetoothHCICommandLEConnectionUpdate: number;
+
+declare const kBluetoothHCICommandLEClearWhiteList: number;
+
+declare const kTransparentEncodedPixel: number;
+
+declare const kBluetoothHCICommandLESetScanResponseData: number;
+
+declare const kBluetoothHCICommandLESetAdvertisingData: number;
+
+declare const kHIDUsage_BD_BrailleRockerPress: number;
+
+declare const kBluetoothHCICommandLESetAdvertisingParameters: number;
+
+declare const kBluetoothHCICommandLESetRandomAddress: number;
+
+declare const kBluetoothHCICommandLEReadBufferSize: number;
 
 declare const bcd2bin_data: interop.Pointer;
 
+declare const kBluetoothHCICommandLESetEventMask: number;
+
+declare const kBluetoothHCICommandAMPTestEnd: number;
+
+declare const kHIDUsage_Snsr_Motion_Accelerometer: number;
+
+declare const kBluetoothHCICommandCreateConnectionCancel: number;
+
+declare const kBluetoothHCICommandEnableAMPReceiverReports: number;
+
 declare const IOUSBHostPipeInterface: number;
+
+declare const kBluetoothHCICommandEnableDeviceUnderTestMode: number;
+
+declare const kBluetoothHCICommandReadLoopbackMode: number;
+
+declare const kBluetoothHCICommandSetTriggeredClockCapture: number;
+
+declare const kBluetoothHCICommandReadLocalAMPInfo: number;
+
+declare const kBluetoothHCICommandReadClock: number;
+
+declare const kBluetoothHCICommandReadAFHMappings: number;
+
+declare const kBluetoothHCICommandReadRSSI: number;
+
+declare const kBluetoothHCICommandGroupStatus: number;
 
 declare const IOPCIConfigurator: number;
 
-declare const IOUSBHostCICommandMessageData0EndpointAddress: number;
+declare const kBluetoothHCICommandReadCountryCode: number;
+
+declare const kBluetoothHCICommandReadLocalExtendedFeatures: number;
+
+declare const kBluetoothHCICommandReadLocalSupportedFeatures: number;
+
+declare const kBluetoothHCICommandGroupInformational: number;
+
+declare const kBluetoothHCICommandWriteExtendedInquiryLength: number;
+
+declare const kBluetoothHCICommandReadExtendedInquiryLength: number;
+
+declare const kBluetoothHCICommandReadLocalOOBExtendedData: number;
+
+declare const kBluetoothHCICommandReadAuthenticatedPayloadTimeout: number;
+
+declare const kBluetoothHCICommandWriteSecureConnectionsHostSupport: number;
+
+declare const kBluetoothHCICommandReadSecureConnectionsHostSupport: number;
+
+declare const kBluetoothHCICommandWriteSynchronizationTrainParameters: number;
+
+declare const kBluetoothHCICommandReadSynchronizationTrainParameters: number;
+
+declare const kBluetoothHCICommandSetMWSPATTERNConfiguration: number;
+
+declare const kBluetoothHCICommandSetMWSChannelParameters: number;
 
 declare const mach_absolutetime_asleep: number;
 
+declare const kIOHIDElementFlagsNonLinearMask: number;
+
+declare const kBluetoothHCICommandWriteBestEffortFlushTimeout: number;
+
+declare const kBluetoothHCICommandReadBestEffortFlushTimeout: number;
+
 declare const kIOPCIConfigBaseAddress2: number;
+
+declare const kBluetoothHCICommandReadEnhancedTransmitPowerLevel: number;
+
+declare const kBluetoothHCICommandReadFlowControlMode: number;
+
+declare const kBluetoothHCICommandReadLocationData: number;
+
+declare const kBluetoothHCICommandEnhancedFlush: number;
+
+declare const kHIDUsage_BCS_ConvertEAN8To13Type: number;
+
+declare const kBluetoothHCICommandSendKeypressNotification: number;
+
+declare const kBluetoothHCICommandWriteInquiryResponseTransmitPower: number;
+
+declare const kBluetoothLEMaxTXTimeDefault: number;
+
+declare const kBluetoothHCICommandReadInquiryResponseTransmitPower: number;
+
+declare const kBluetoothHCICommandReadLocalOOBData: number;
+
+declare const kBluetoothHCICommandReadExtendedInquiryResponse: number;
+
+declare const kBluetoothHCICommandWriteAFHChannelAssessmentMode: number;
+
+declare const kBluetoothHCICommandReadPageScanType: number;
+
+declare const kBluetoothHCICommandWriteInquiryScanType: number;
+
+declare const kBluetoothHCICommandSetAFHClassification: number;
+
+declare const kBluetoothHCICommandReadPageScanMode: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_DistanceZAxis: number;
+
+declare const kBluetoothHCICommandReadLinkSupervisionTimeout: number;
+
+declare const kBluetoothHCICommandSetHostControllerToHostFlowControl: number;
+
+declare const kBluetoothHCICommandWriteSCOFlowControlEnable: number;
+
+declare const kBluetoothHCICommandReadSCOFlowControlEnable: number;
+
+declare const kBluetoothHCICommandWriteNumberOfBroadcastRetransmissions: number;
+
+declare const kHIDUsage_LED_NumLock: number;
+
+declare const kBluetoothHCICommandReadNumberOfBroadcastRetransmissions: number;
+
+declare const kBluetoothHCICommandWriteAutomaticFlushTimeout: number;
+
+declare const kBluetoothHCICommandWriteVoiceSetting: number;
+
+declare const kBluetoothHCICommandReadVoiceSetting: number;
+
+declare const kBluetoothHCICommandReadEncryptionMode: number;
+
+declare const kRangeSupportsVSyncSerrationBit: number;
+
+declare const kBluetoothHCICommandReadPageScanActivity: number;
 
 declare const kHIDDispatchOptionScrollMomentumContinue: number;
 
+declare const kBluetoothHCICommandReadScanEnable: number;
+
+declare const kBluetoothHCICommandReadPageTimeout: number;
+
+declare const kBluetoothHCICommandWriteConnectionAcceptTimeout: number;
+
+declare const kBluetoothHCICommandReadConnectionAcceptTimeout: number;
+
+declare const kBluetoothHCICommandReadLocalName: number;
+
+declare const kConnectionSupportsLLDDCSense: number;
+
+declare const kBluetoothHCICommandCreateNewUnitKey: number;
+
+declare const kBluetoothHCICommandWritePINType: number;
+
+declare const kBluetoothHCICommandFlush: number;
+
+declare const kBluetoothHCICommandSetEventMask: number;
+
+declare const kBluetoothHCICommandRejectSniffRequest: number;
+
+declare const kBluetoothHCICommandAcceptSniffRequest: number;
+
+declare const kBluetoothHCIEventConnectionComplete: number;
+
+declare const kBluetoothHCICommandSniffSubrating: number;
+
+declare const kBluetoothHCICommandFlowSpecification: number;
+
+declare const kBluetoothHCICommandReadLocalSupportedCodecs: number;
+
+declare const kBluetoothHCICommandReadLinkPolicySettings: number;
+
+declare const kBluetoothHCICommandSwitchRole: number;
+
+declare const kBluetoothHCICommandRoleDiscovery: number;
+
+declare const kBluetoothHCICommandExitParkMode: number;
+
+declare const kBluetoothDeviceClassMinorWearableGlasses: number;
+
+declare const kBluetoothHCICommandHoldMode: number;
+
+declare const kBluetoothHCICommandGroupLinkPolicy: number;
+
+declare const kBluetoothHCICommandSetConnectionlessSlaveBroadcast: number;
+
+declare const kBluetoothHCICommandRemoteOOBExtendedDataRequestReply: number;
+
+declare const kBluetoothHCICommandReceiveSynchronizationTrain: number;
+
+declare const kBluetoothHCICommandTruncatedPageCancel: number;
+
+declare const kHIDUsage_Button_38: number;
+
+declare const kBluetoothHCICommandTruncatedPage: number;
+
+declare const kBluetoothHCICommandEnhancedAcceptSynchronousConnectionRequest: number;
+
+declare const kBluetoothHCICommandEnhancedSetupSynchronousConnection: number;
+
+declare const kBluetoothHCICommandUserPasskeyRequestNegativeReply: number;
+
+declare const kBluetoothHCICommandUserConfirmationRequestNegativeReply: number;
+
+declare const kBluetoothHCICommandUserConfirmationRequestReply: number;
+
+declare const kBluetoothHCICommandIOCapabilityRequestReply: number;
+
+declare const kBluetoothHCICommandRemoteNameRequestCancel: number;
+
+declare const kBluetoothHCICommandReadClockOffset: number;
+
+declare const kBluetoothHCICommandRemoteNameRequest: number;
+
+declare const kBluetoothHCICommandMasterLinkKey: number;
+
+declare const kBluetoothHCICommandSetConnectionEncryption: number;
+
+declare const kBluetoothHCICommandLinkKeyRequestReply: number;
+
+declare const kBluetoothHCICommandAcceptConnectionRequest: number;
+
+declare const kBluetoothHCICommandAddSCOConnection: number;
+
+declare const kBluetoothHCICommandCreateConnection: number;
+
+declare const kBluetoothHCICommandExitPeriodicInquiryMode: number;
+
+declare const kHIDUsage_Button_110: number;
+
+declare const kBluetoothHCICommandPeriodicInquiryMode: number;
+
+declare const kBluetoothHCICommandInquiryCancel: number;
+
+declare const kBluetoothHCIErrorHostTimeout: number;
+
 declare const kIOPCICorrectableErrorBitHeaderLogOverflow: number;
+
+declare const kBluetoothHCICommandGroupLinkControl: number;
+
+declare const kBluetoothHCICommandNoOp: number;
+
+declare const kBluetoothHCIOpCodeNoOp: number;
+
+declare const kSMCCmd_MODE_SENSE_10: number;
+
+declare const kBluetoothLEMaxTXOctetsMax: number;
+
+declare const kBluetoothL2CAPQoSPeakBandwidthDefault: number;
+
+declare const kBluetoothL2CAPQoSTokenBucketSizeDefault: number;
+
+declare const kBluetoothL2CAPQoSTypeDefault: number;
+
+declare const kBluetoothL2CAPMTUDefault: number;
 
 declare const gIOACPIDeviceStatusKey: interop.Pointer;
 
+declare const kBluetoothL2CAPMTULowEnergyMax: number;
+
+declare const kBluetoothLETXOctetsDefault: number;
+
 declare const kDeviceRequestGetState: number;
+
+declare const kBluetoothLETXOctetsMin: number;
+
+declare const cscSetInterrupt: number;
+
+declare const kBluetoothLETXTimeMax: number;
+
+declare const kBluetoothLETXTimeMin: number;
+
+declare const kBluetoothL2CAPConfigurationOptionQoSLength: number;
+
+declare const kBluetoothL2CAPConfigurationOptionMTULength: number;
+
+declare const kBluetoothL2CAPInfoTypeMaxConnectionlessMTUSize: number;
+
+declare const kBluetoothL2CAPFlushTimeoutForever: number;
+
+declare const kBluetoothL2CAPChannelAMPTestManager: number;
+
+declare const kBluetoothL2CAPChannelMagicPairing: number;
+
+declare const kBluetoothL2CAPChannelLEAP: number;
+
+declare const kBluetoothL2CAPChannelReservedStart: number;
+
+declare const kBluetoothL2CAPChannelBREDRSecurityManager: number;
+
+declare const kBluetoothL2CAPChannelLESignalling: number;
 
 declare const IOUSBHostInterface: number;
 
+declare const kBluetoothHCIEventPhysicalLinkRecovery: number;
+
+declare const kBluetoothL2CAPChannelAttributeProtocol: number;
+
+declare const kBluetoothL2CAPChannelAMPManagerProtocol: number;
+
+declare const kBluetoothL2CAPChannelNull: number;
+
+declare const kBluetoothACLLogicalChannelL2CAPStart: number;
+
+declare const kBluetoothACLLogicalChannelL2CAPContinue: number;
+
+declare const kBluetoothL2CAPMaxPacketSize: number;
+
+declare const kBluetoothRoleRemainSlave: number;
+
+declare const kBluetoothRoleRemainPeripheral: number;
+
+declare const kBluetoothAllowRoleSwitch: number;
+
+declare const kBluetoothDontAllowRoleSwitch: number;
+
+declare const kBluetoothHCIErroneousDataReportingDisabled: number;
+
+declare const kBluetoothPageScanModeOptional3: number;
+
+declare const kBluetoothPageScanModeOptional2: number;
+
+declare const kBluetoothPageScanModeOptional1: number;
+
+declare const kHIDUsage_Snsr_Modifier_None: number;
+
+declare const kBluetoothPageScanPeriodModeP2: number;
+
+declare const kBluetoothPageScanRepetitionModeR2: number;
+
+declare const kBluetoothPageScanRepetitionModeR0: number;
+
+declare const kBluetoothGeneralInquiryAccessCodeIndex: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeEnd: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeFutureUse: number;
+
+declare const kBluetoothSynchronousConnectionPacketType3EV5Omit: number;
+
 declare const gIOHIDDeviceMetaClass: interop.Pointer;
+
+declare const kBluetoothSynchronousConnectionPacketType3EV3Omit: number;
+
+declare const kBluetoothSynchronousConnectionPacketType2EV3Omit: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeEV4: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeEV3: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeHV2: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeHV1: number;
+
+declare const kBluetoothPacketTypeEnd: number;
+
+declare const kBluetoothPacketTypeDM5: number;
+
+declare const kBluetoothPacketType2DH3Omit: number;
+
+declare const kHIDUsage_KeyboardF5: number;
+
+declare const kBluetoothPacketTypeHV3: number;
+
+declare const kUSBEndpointPropertiesVersion3: number;
+
+declare const kBluetoothPacketTypeHV1: number;
+
+declare const kBluetoothKeyTypeAuthenticatedCombinationP256: number;
+
+declare const kBluetoothKeyTypeUnauthenticatedCombinationP256: number;
+
+declare const kBluetoothKeyTypeChangedCombination: number;
 
 declare const kUSB3LPMU2AcceptOnly: number;
 
+declare const kBluetoothKeyTypeDebugCombination: number;
+
+declare const kBluetoothKeyFlagTemporary: number;
+
+declare const kBluetoothKeyFlagSemiPermanent: number;
+
+declare const kBluetoothEncryptionEnableBREDRAESCCM: number;
+
+declare const kBluetoothEncryptionEnableLEAESCCM: number;
+
+declare const kBluetoothEncryptionEnableBREDRE0: number;
+
+declare const kBluetoothEncryptionEnableOn: number;
+
+declare const kBluetoothEncryptionEnableOff: number;
+
+declare const kBluetoothConnectionHandleSerialDeviceReserved: number;
+
+declare const kBluetoothSDPUUID16MCAPControlChannel: number;
+
+declare const kConnectionEnableAudio: number;
+
+declare const kBluetoothSDPUUID16CMPT: number;
+
+declare const kBluetoothSDPUUID16HardcopyNotification: number;
+
+declare const kBluetoothSDPUUID16UPNP: number;
+
+declare const kBluetoothSDPUUID16BNEP: number;
+
+declare const kBluetoothSDPUUID16HTTP: number;
+
+declare const kBluetoothSDPUUID16FTP: number;
+
+declare const kBluetoothSDPUUID16IP: number;
+
+declare const kBluetoothSDPUUID16OBEX: number;
+
+declare const kBluetoothSDPUUID16ATT: number;
+
+declare const cscSetDetailedTiming: number;
+
+declare const kBluetoothSDPUUID16TCSBIN: number;
+
+declare const kBluetoothSDPUUID16RFCOMM: number;
+
+declare const kBluetoothL2CAPPSMAACP: number;
+
+declare const kBluetoothL2CAPPSMDynamicStart: number;
+
+declare const kBluetoothL2CAPPSMAVCTP_Browsing: number;
+
+declare const kHIDUsage_GD_CallMuteToggle: number;
+
+declare const kBluetoothL2CAPPSMAVDTP: number;
+
+declare const kBluetoothL2CAPPSMAVCTP: number;
+
+declare const kBluetoothL2CAPPSMHIDControl: number;
+
+declare const kHIDUsage_Csmr_KeyboardBrightnessDecrement: number;
+
+declare const kBluetoothL2CAPPSMTCS_BIN: number;
+
+declare const kBluetoothL2CAPPSMRFCOMM: number;
+
 declare const kEndpointDescriptorSynchronizationType: number;
+
+declare const kBluetoothL2CAPPSMSDP: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceDigitalPen: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceCardReader: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceMouse: number;
+
+declare const kBluetoothGAPAppearanceGenericBarcodeScanner: number;
+
+declare const kBluetoothGAPAppearanceGenericRemoteControl: number;
+
+declare const kBluetoothGAPAppearanceGenericClock: number;
+
+declare const kIOBlitColorSpaceTypes: number;
+
+declare const kBluetoothDeviceClassMinorEnd: number;
+
+declare const kBluetoothDeviceClassMinorAny: number;
+
+declare const kMMCCmd_SEARCH_DATA_EQUAL_12: number;
+
+declare const kBluetoothDeviceClassMinorHealthPulseOximeter: number;
+
+declare const kBluetoothDeviceClassMinorToyGame: number;
+
+declare const kHIDUsage_Ord_Instance4: number;
+
+declare const kBluetoothDeviceClassMinorToyVehicle: number;
+
+declare const kBluetoothDeviceClassMinorWearablePager: number;
+
+declare const kBluetoothDeviceClassMinorImaging1Scanner: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2AnyPointing: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2Joystick: number;
+
+declare const kBluetoothDeviceClassMinorAudioGamingToy: number;
+
+declare const kBluetoothDeviceClassMinorAudioVideoMonitor: number;
+
+declare const kBluetoothDeviceClassMinorAudioVideoCamera: number;
+
+declare const kBluetoothDeviceClassMinorAudioHiFi: number;
+
+declare const kBluetoothHCIEventMaxSlotsChange: number;
+
+declare const kBluetoothDeviceClassMinorAudioCar: number;
+
+declare const kBluetoothDeviceClassMinorAudioPortable: number;
+
+declare const kBluetoothDeviceClassMinorAudioHeadphones: number;
+
+declare const kBluetoothDeviceClassMinorAudioMicrophone: number;
+
+declare const kBluetoothDeviceClassMinorAudioHandsFree: number;
+
+declare const kBluetoothDeviceClassMinorAudioHeadset: number;
+
+declare const kINQUIRY_VERSION_DESCRIPTOR_SAT: number;
+
+declare const kBluetoothDeviceClassMinorAudioUnclassified: number;
+
+declare const kBluetoothHCIErrorCoarseClockAdjustmentRejected: number;
+
+declare const kBluetoothDeviceClassMinorPhoneWiredModemOrVoiceGateway: number;
+
+declare const kHIDUsage_KeyboardLeftAlt: number;
+
+declare const kBluetoothDeviceClassMinorPhoneSmartPhone: number;
+
+declare const kBluetoothLEMaxTXTimeMax: number;
+
+declare const kBluetoothDeviceClassMinorComputerWearable: number;
+
+declare const kBluetoothDeviceClassMinorComputerHandheld: number;
+
+declare const kBluetoothDeviceClassMinorComputerServer: number;
+
+declare const kBluetoothDeviceClassMinorComputerUnclassified: number;
+
+declare const kBluetoothDeviceClassMajorToy: number;
+
+declare const kBluetoothDeviceClassMajorWearable: number;
+
+declare const kBluetoothDeviceClassMajorLANAccessPoint: number;
+
+declare const kBluetoothDeviceClassMajorMiscellaneous: number;
+
+declare const kBluetoothServiceClassMajorAny: number;
+
+declare const kBluetoothServiceClassMajorInformation: number;
+
+declare const kBluetoothServiceClassMajorTelephony: number;
+
+declare const kBluetoothServiceClassMajorCapturing: number;
+
+declare const kBluetoothServiceClassMajorRendering: number;
+
+declare const kBluetoothServiceClassMajorPositioning: number;
+
+declare const kBluetoothServiceClassMajorReserved1: number;
+
+declare const kBluetoothDeviceClassMinorPhoneCommonISDNAccess: number;
 
 declare const gIOMatchedNotification: interop.Pointer;
 
 declare const kRegPropertyValueIsSavedToDisk: number;
 
+declare const kHIDUsage_Csmr_ALInstantMessaging: number;
+
+declare const kHIDUsage_Snsr_Data_Location_MagneticVariation: number;
+
+declare const kCDFeaturesBUFWriteMask: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2HandheldScanner: number;
+
+declare const kBluetoothGAPAppearanceGenericTag: number;
+
+declare const kINQUIRY_Byte7_CMDQUE_Mask: number;
+
 declare const kIOPCIExpressCapabilityIDSRIOV: number;
+
+declare const kSSCSeqCmd_READ_POSITION: number;
+
+declare const kBluetoothHCICommandReset: number;
 
 declare const kIOPCIAERCapTLPPrefixLogDW3Offset: number;
 
+declare const kHIDUsage_VR_HandTracker: number;
+
+declare const kFWDCLImmediateEvent: number;
+
+declare const kGetDescriptor: number;
+
+declare const kHIDUsage_KeyboardF3: number;
+
+declare const kIOBuiltinPanelPowerAttribute: number;
+
+declare const kBluetoothHCICommandSetEventMaskPageTwo: number;
+
+declare const kFWResponseComplete: number;
+
 declare const kIOPCIConfigurationOffsetStatus: number;
+
+declare const kVideoDDCciReplyTypeMask: number;
+
+declare const kUSBRFControllerSubClass: number;
+
+declare const kIOAudioChannelLabel_TopBackCenter: number;
+
+declare const kBluetoothSDPErrorCodeInvalidPDUSize: number;
+
+declare const kBluetoothHCIEventAMPStartTest: number;
+
+declare const kBluetoothHCIErrorPageTimeout: number;
 
 declare const SPTM_UNMAP_FLUSH_PENDING: number;
 
+declare const kIOTimingIDApple_1024x768_75hz: number;
+
+declare const kGenericLCD: number;
+
 declare const IOFireWireAVCAsynchronousCommand: number;
+
+declare const kSGCCmd_COPY_AND_VERIFY: number;
+
+declare const kIOAudioChannelLabel_TopBackRight: number;
+
+declare const kIOGDiagnoseGTraceType: number;
+
+declare const kBluetoothLETXOctetsMax: number;
+
+declare const kLBABit: number;
 
 declare const kIOPCISlotStatusCommandCompleted: number;
 
+declare const kBluetoothKeyTypeRemoteUnit: number;
+
 declare const MBUF_PKTHDR: number;
+
+declare const kSMCCmd_MODE_SENSE_6: number;
+
+declare const kHIDUsage_Csmr_PoliceAlarm: number;
+
+declare const kIOUSBDeviceRequestSetAddress: number;
+
+declare const kBluetoothDeviceClassMinorHealthBloodPressureMonitor: number;
 
 declare const kIOPCIExpressCapabilityIDAccessControlServices: number;
 
 declare const gIOBSDKey: interop.Pointer;
 
+declare const kHIDPage_Monitor: number;
+
+declare const kHIDUsage_Snsr_Orientation_Compass1D: number;
+
+declare const kHIDUsage_Csmr_FanEnable: number;
+
+declare const kSSCPrinterCmd_PRINT: number;
+
 declare const IOATAReg8: number;
+
+declare const kIOUSBEndpointDescriptorDirection: number;
+
+declare const kBluetoothHCIEventEncryptionKeyRefreshComplete: number;
+
+declare const kDisplaySubPixelConfigurationStripe: number;
+
+declare const kBluetoothHCICommandLEReadLocalSupportedFeatures: number;
 
 declare const kIOTimerEventSourceOptionsAllowReenter: number;
 
@@ -2908,53 +10286,267 @@ declare const gIODisplayBlueGammaScaleKey: interop.Pointer;
 
 declare const kFWSelfID0GapCntPhase: number;
 
+declare const kHIDUsage_GD_SystemWakeUp: number;
+
+declare const kFWAVCAsyncPlug15: number;
+
+declare const kUSB_SSCompDesc_Bulk_MaxStreams_Mask: number;
+
+declare const kIORangeColorimetryNotSupported: number;
+
+declare const kUSBDeviceCapability: number;
+
+declare const kHIDUsage_KeyboardInternational7: number;
+
+declare const kBluetoothHCICommandLESetExtendedScanEnable: number;
+
+declare const kHIDUsage_PID_PoolAlignment: number;
+
+declare const kHIDUsage_BS_CycleCount: number;
+
+declare const kHIDUsage_Game_Player: number;
+
+declare const kDisplayModeValidForMirroringFlag: number;
+
+declare const cscSetSync: number;
+
 declare const kEndpointStatusHalt: number;
 
 declare const kPCIPMCD2Support: number;
 
+declare const kIOStreamMethodSuspend: number;
+
+declare const kBluetoothL2CAPTCIEventIDL2CA_QoSViolationInd: number;
+
+declare const kDisplayModeValidForAirPlayFlag: number;
+
+declare const kBluetoothDeviceClassMinorAudioCamcorder: number;
+
+declare const kESCOnePortraitMono: number;
+
+declare const kBluetoothHCICommandReadFailedContactCounter: number;
+
+declare const kBluetoothHCIErrorUnsupportedRemoteFeature: number;
+
+declare const kBluetoothHCIEventUserPasskeyRequest: number;
+
 declare const kSCSIPort_StatusFailure: number;
+
+declare const kUnknownConnect: number;
 
 declare const kIOPCIVitalProductDataCapability: number;
 
+declare const kIOTimingIDVESA_1280x1024_60hz: number;
+
+declare const kHFSPlusCatalogKeyMinimumLength: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassGeneric: number;
+
+declare const kHIDUsage_Sim_ElectronicCountermeasures: number;
+
+declare const kBluetoothDeviceClassMinorImaging2Unclassified: number;
+
+declare const kHIDUsage_Csmr_ACFilter: number;
+
 declare const IOAGPDevice: number;
+
+declare const kHIDUsage_Game_GunSingleShot: number;
 
 declare const kIOReportQuantityTime: number;
 
+declare const timingApple13: number;
+
+declare const kUSBDefaultControlCompletionTimeoutMS: number;
+
+declare const kATAIdentifyMinPIOTime: number;
+
+declare const kHIDUsage_BCS_MicroPDF: number;
+
+declare const kIOBitsPerColorComponent16: number;
+
+declare const kHIDKeyboardInterfaceProtocol: number;
+
+declare const kIOWSAA_Accelerated: number;
+
 declare const kFWAsynchNew: number;
+
+declare const kIOAudioStreamNumericRepresentationUnsignedInt: number;
+
+declare const kBluetoothHCICommandLEEncrypt: number;
+
+declare const kHIDUsage_Dig_YTilt: number;
 
 declare const kSuperSpeedPlusDeviceCapabilityMinRxLaneCountPhase: number;
 
+declare const kBluetoothDeviceClassMinorPeripheral2DigitizerTablet: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceDigitizerTablet: number;
+
 declare const IFNET_LQM_THRESH_MINIMALLY_VIABLE: number;
 
+declare const kMMCCmd_READ_SUB_CHANNEL: number;
+
 declare const kRegIterRoot: number;
+
+declare const kHIDUsage_GD_DPadDown: number;
 
 declare const THREAD_CALL_OPTIONS_ONCE: number;
 
 declare const kPCIPMCD1Support: number;
 
+declare const kHIDUsage_Game_GamepadFireOrJump: number;
+
+declare const kRangeSupportsSignal_0700_0300_Mask: number;
+
+declare const kHIDUsage_Tfon_ReorderTone: number;
+
+declare const kHIDUsage_Csmr_ACInsertColumn: number;
+
+declare const kBluetoothGAPAppearanceGenericDisplay: number;
+
+declare const kHIDUsage_PID_EffectType: number;
+
 declare const sock_evt_cantrecvmore: number;
+
+declare const kBluetoothDeviceClassMinorAudioLoudspeaker: number;
+
+declare const timingApple1Kb: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2RemoteControl: number;
+
+declare const kUSBFunctionRemoteWakeEnableBit: number;
+
+declare const kIOAudioChannelLabel_Discrete_6: number;
+
+declare const kBluetoothHCIErrorConnectionTerminatedDueToMICFailure: number;
+
+declare const kCSRBusManagerID: number;
+
+declare const kHIDUsage_Csmr_VolumeIncrement: number;
 
 declare const kIOPCIExpressCapabilityIDMulticast: number;
 
+declare const kBluetoothHCIEventMaskDefault: number;
+
+declare const kIOAudioChannelLabel_RightSurround: number;
+
+declare const kBluetoothServiceClassMajorLimitedDiscoverableMode: number;
+
+declare const kBluetoothHCIErrorQoSRejected: number;
+
 declare const kIOPCICapabilityIDPCIExpress: number;
+
+declare const kHIDUsage_BS_AverageCurrent: number;
+
+declare const kUSBBulk: number;
+
+declare const kHIDUsage_Haptics_WaveformRelease: number;
+
+declare const kBluetoothHCIEventPacketHeaderSize: number;
+
+declare const EXTERNAL_MADI: number;
+
+declare const kHIDUsage_Game_PinballDevice: number;
+
+declare const kSPCProcCmd_RECEIVE_COPY_RESULTS: number;
+
+declare const kHIDUsage_BS_ChargerConnection: number;
+
+declare const kSCSICmd_PLAY_AUDIO_10: number;
+
+declare const kINQUIRY_Byte6_VS_Mask: number;
+
+declare const kFWAVCAsyncPlug25: number;
+
+declare const kHIDUsage_LED_UsageMultiModeIndicator: number;
+
+declare const kHIDUsage_Csmr_ALOnlineShoppingBrowswer: number;
 
 declare const kIOPCIAERCapUncErrSeverityOffset: number;
 
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorIsocMult: number;
+
+declare const kHIDUsage_Button_85: number;
+
+declare const kBluetoothL2CAPQoSLatencyDefault: number;
+
+declare const kIOUSBDeviceFeatureSelectorRemoteWakeup: number;
+
+declare const kHIDUsage_BCS_Colorcode: number;
+
+declare const EMBEDDED_DVD_AUDIO: number;
+
 declare const kIOBufferDescriptorMemoryFlags: number;
+
+declare const kSBCCmd_REPORT_LUNS: number;
+
+declare const kConfigROMCRCValue: number;
+
+declare const kBluetoothHCIMaxCommandPacketSize: number;
 
 declare const bATAIDNotFound: number;
 
+declare const kSSCSeqCmd_READ_ELEMENT_STATUS_ATTACHED: number;
+
+declare const kRBCCmd_READ_CAPACITY: number;
+
+declare const kHIDUsage_KeyboardT: number;
+
 declare const kIOAGPFastWrite: number;
+
+declare const kBluetoothHCIEventAuthenticationComplete: number;
+
+declare const kUSPrintingClassSoftReset: number;
+
+declare const timingApple_0x0_0hz_Offline: number;
+
+declare const kBluetoothHCICommandLEReadLocalP256PublicKey: number;
 
 declare const kPCI2PCIBridgeControl: number;
 
 declare const kFWTCodeWriteResponse: number;
 
+declare const kFWAVCAsyncPlug13: number;
+
+declare const kHorizontalSyncMask: number;
+
+declare const kHIDUsage_Csmr_MenuDown: number;
+
 declare const _MachineStateCount: interop.Pointer;
+
+declare const kHIDUsage_WD_ScaleScaleDevice: number;
+
+declare const kHIDUsage_KeyboardCut: number;
+
+declare const kBluetoothHCICommandLEReadAdvertisingChannelTxPower: number;
+
+declare const kHIDUsage_KeyboardF19: number;
+
+declare const kDVDFeaturesWriteOnceMask: number;
+
+declare const kBluetoothGAPAppearanceGenericCycling: number;
 
 declare const IOFastPathHIDGyroService: number;
 
 declare const MBUF_CSUM_REQ_IP: number;
+
+declare const kHIDUsage_Game_GunClip: number;
+
+declare const kIOAudioChannelLabel_Discrete_15: number;
+
+declare const kBluetoothDeviceClassMinorImaging1Display: number;
+
+declare const kHIDUsage_Keypad5: number;
+
+declare const kSENSE_KEY_DATA_PROTECT: number;
+
+declare const kSGCCmd_COMPARE: number;
+
+declare const kHIDUsage_Csmr_ACJustifyCenterV: number;
+
+declare const kBluetoothHCICommandAcceptSynchronousConnectionRequest: number;
+
+declare const kBluetoothHCICommandLEReadResolvingListSize: number;
 
 declare const kIOPCIConfigHeaderType: number;
 
@@ -2964,19 +10556,59 @@ declare const kFBChangedInterruptServiceType: number;
 
 declare const kFWAsynchDestinationOffsetHighPhase: number;
 
+declare const kInterlacedCEA861SyncModeMask: number;
+
+declare const kHIDUsage_Snsr_Data_Location_DifferentialReferenceStationID: number;
+
+declare const kIOAudioSMPTETimeType2997: number;
+
+declare const kSCCCmd_MAINTENANCE_OUT: number;
+
+declare const kSCSICmd_WRITE_BUFFER: number;
+
+declare const kIOAudioDeviceTransportTypeBluetooth: number;
+
 declare const kHIDDispatchOptionScrollNoAcceleration: number;
 
 declare const IOAudioDevice: number;
 
-declare const IOUSBHostCIEndpointSetNextTransferCommandData1AddressPhase: number;
+declare const kDVDMediaTypePlusR: number;
+
+declare const kHIDUsage_PID_AttackTime: number;
+
+declare const INPUT_NULL: number;
+
+declare const kBluetoothHCICommandLEReadSupportedStates: number;
+
+declare const kPowerStateReducedPower1: number;
 
 declare const IOFWReadCommand: number;
 
+declare const kIOColorimetryAdobeRGB: number;
+
 declare const notFoundErr: number;
+
+declare const kHIDUsage_LED_SystemMicrophoneMute: number;
+
+declare const kHIDUsage_Snsr_Modifier_ThresholdHigh: number;
+
+declare const kATAOperationTypeConfiguration: number;
+
+declare const kDVDMediaTypeHDROM: number;
+
+declare const kDiscStatusMask: number;
 
 declare const MBUF_TYPE_IFADDR: number;
 
 declare const kPCI2PCIOffsetIORange: number;
+
+declare const kDiscStatusOther: number;
+
+declare const kSCSICmd_VERIFY_10: number;
+
+declare const kBluetoothHCICommandWriteEncryptionMode: number;
+
+declare const kBluetoothGAPAppearanceGenericHumanInterfaceDevice: number;
 
 declare const kUSB3LPMMaxU2Timeout: number;
 
@@ -2984,67 +10616,323 @@ declare const kIOPCIConfigClassCode: number;
 
 declare const bATASeekComplete: number;
 
+declare const kIOUSBAnyProtocol: number;
+
 declare const IODCLProgram: number;
 
-declare const IOUSBHostCIIsochronousTransferData1BufferPhase: number;
+declare const kBluetoothHCICommandLEReadMaximumDataLength: number;
+
+declare const kBluetoothHCICommandReadPINType: number;
 
 declare const sock_evt_disconnected: number;
+
+declare const kHIDUsage_Game_Gun: number;
+
+declare const kBluetoothL2CAPPacketHeaderSize: number;
+
+declare const kBluetoothL2CAPChannelLEAS: number;
+
+declare const kBluetoothHCIEventRemoteOOBDataRequest: number;
+
+declare const kConnectionSyncEnable: number;
+
+declare const kHIDUsage_KeyboardN: number;
+
+declare const kFWAVCAsyncPlug2: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AltitudeAntennaSeaLevel: number;
+
+declare const timingVESA_1920x1440_60hz: number;
+
+declare const kIOStreamMethodGetBufferCount: number;
+
+declare const kDisplayModeAcceleratorBackedFlag: number;
+
+declare const kHIDUsage_Dig_BarrelSwitch: number;
 
 declare const IOGeneralMemoryDescriptor: number;
 
 declare const kSuperSpeedEndpointCompanionDescriptorIsocMultPhase: number;
 
+declare const kIOFBSharedConnectType: number;
+
 declare const gIODisplayFadeTime1Key: interop.Pointer;
+
+declare const kBluetoothDeviceClassMajorPeripheral: number;
+
+declare const kIO4IndexedGrayPixelFormat: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_DistanceXAxis: number;
 
 declare const kIOAGP4GbAddressing: number;
 
+declare const kHIDUsage_KeyboardRightGUI: number;
+
+declare const kFWAVCAsyncPlugAny: number;
+
+declare const kIOAudioLevelControlSubTypeLFEVolume: number;
+
 declare const IFNET_SCHED_MODEL_DRIVER_MANAGED: number;
+
+declare const kBluetoothL2CAPFlushTimeoutImmediate: number;
+
+declare const kBluetoothHCICommandLESetDefaultPhy: number;
+
+declare const kBluetoothGAPAppearanceGenericGlucoseMeter: number;
+
+declare const kHIDUsage_Csmr_ALDesktop: number;
+
+declare const kHIDUsage_Csmr_Assign: number;
+
+declare const kHIDUsage_Csmr_ACCopy: number;
+
+declare const kATAWriteCacheEnabledMask: number;
+
+declare const kHIDUsage_PID_EffectOperation: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Capacitance: number;
+
+declare const kHFSFastDevPinnedBit: number;
+
+declare const kIOAudioPortTypePassThru: number;
+
+declare const kUSBConfDesc: number;
+
+declare const kHIDUsage_Snsr_Data_Biometric_HumanTouchState: number;
 
 declare const IOUSBHostDeviceMetaClass: number;
 
+declare const kBluetoothHCICommandHostBufferSize: number;
+
+declare const kHIDUsage_WD_CalibrationCount: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularPositionYAxis: number;
+
 declare const IOPacketQueue: number;
+
+declare const kSPCCmd_REPORT_LUNS: number;
+
+declare const kBluetoothPacketTypeDV: number;
+
+declare const kIOATAMaxPowerSavings: number;
+
+declare const kBluetoothSDPPDUIDServiceAttributeRequest: number;
+
+declare const kHIDUsage_Haptics_WaveformBuzzContinuous: number;
+
+declare const kHIDUsage_GD_Start: number;
 
 declare const kFWSelfID0GapCnt: number;
 
 declare const kUSBHostDefaultControlCompletionTimeoutMS: number;
 
+declare const cscDoCommunication: number;
+
+declare const INPUT_DESKTOP_MICROPHONE: number;
+
+declare const kBluetoothHCICommandReadLEHostSupported: number;
+
+declare const kCSRTestStatusAddress: number;
+
+declare const kHIDUsage_BS_ChargerSelectorSupport: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Voltage: number;
+
+declare const kDisplayModeDefaultFlag: number;
+
 declare const kDTMaxEntryNameLength: number;
 
 declare const MBUF_MCAST: number;
 
+declare const kHIDUsage_Button_88: number;
+
+declare const kBluetoothHCIErrorLMPErrorTransactionCollision: number;
+
 declare const gIODriverKitUserClientEntitlementAllowAnyKey: interop.Pointer;
+
+declare const kHIDUsage_Button_30: number;
+
+declare const kHIDUsage_Csmr_ACNewWindow: number;
+
+declare const kHIDUsage_GD_CoolantLevel: number;
+
+declare const kATAForceUnitAccessFeatureBit: number;
+
+declare const kHIDUsage_AD_CharacterHeight: number;
 
 declare const kDeviceRequestTypeStandard: number;
 
+declare const kBluetoothSDPUUID16MCAPDataChannel: number;
+
+declare const kSCSICmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kBluetoothDeviceClassMinorImaging1Camera: number;
+
 declare const kATAcmdWriteBuffer: number;
+
+declare const kSBCWOCmd_READ_CAPACITY: number;
+
+declare const kFWAVCProducerMode_SEND: number;
 
 declare const IODCLTranslator: number;
 
+declare const kIOVideoDeviceMethodSetControlValue: number;
+
+declare const kIOHIDKeyboardPhysicalLayoutType106: number;
+
+declare const kHIDUsage_Button_211: number;
+
 declare const kPEPanicRestartCPU: number;
+
+declare const kHIDUsage_PID_IsochCustomForceEnable: number;
 
 declare const kThirdOrderRanking: number;
 
-declare const IOUSBHostCICapabilitiesMessageControlPortCount: number;
+declare const kHIDUsage_Snsr_Event_SensorEvent_FrequencyExceeded: number;
+
+declare const kHIDUsage_GD_SystemMenu: number;
+
+declare const kReportsHotPlugging: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_RangeMinReached: number;
+
+declare const kBluetoothHCICommandLERemoveDeviceFromResolvingList: number;
+
+declare const kIOFWLimitAsyncPacketSize: number;
+
+declare const kHIDUsage_KeyboardPeriod: number;
+
+declare const kIOAudioDeviceTransportTypeThunderbolt: number;
+
+declare const kHIDUsage_Csmr_ALProcessOrTaskManager: number;
+
+declare const kHIDUsage_PID_AxesEnable: number;
+
+declare const kIOBlitSynchronizeWaitBeamExit: number;
+
+declare const kSSCSeqCmd_WRITE_BUFFER: number;
+
+declare const kHIDUsage_Snsr_Data_Environmental_Temperature: number;
+
+declare const kUSBDFUCanDownloadBit: number;
+
+declare const kHIDUsage_BCS_CheckEnableEuropean5DigitPrice: number;
+
+declare const kHIDUsage_BCS_CheckDisablePrice: number;
+
+declare const kSyncDigitalCompositeMatchHSyncMask: number;
+
+declare const cscSetScaler: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeLogicalUnitGroup: number;
+
+declare const kFWAVCAsyncPlug12: number;
+
+declare const kBluetoothHCICommandReadLogicalLinkAcceptTimeout: number;
+
+declare const kCSRCoreRegistersBaseAddress: number;
+
+declare const kRangeSupportsSeperateSyncsMask: number;
+
+declare const kBluetoothDeviceClassMinorHealthDataDisplay: number;
+
+declare const kSBCWOCmd_PERSISTENT_RESERVE_OUT: number;
 
 declare const kIOPCISlotStatusPowerFaultDetected: number;
+
+declare const kINQUIRY_Byte6_BQUE_Mask: number;
+
+declare const kIOScaleStretchOnly: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_Mask: number;
 
 declare const IOPlatformIO: number;
 
 declare const kIOMemoryPurgeableVolatileBehaviorFifo: number;
 
+declare const kHIDUsage_Snsr_Property_Time_ArmAlarm: number;
+
+declare const kBluetoothHCIErrorInvalidLMPParameters: number;
+
+declare const kUSBbEndpointAddressMask: number;
+
+declare const kBluetoothHCICommandLELongTermKeyRequestReply: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeEV5: number;
+
+declare const kHIDUsage_PID_Period: number;
+
 declare const kSuperSpeedHubCharacteristicsPowerSwitchingIndividual: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_ZeroThresholdCrossDown: number;
+
+declare const kBluetoothLimitedInquiryAccessCodeIndex: number;
+
+declare const kIOTimingIDApplePAL_FF: number;
+
+declare const kBluetoothSDPDataElementTypeNil: number;
+
+declare const kMSCProtocolUSBAttachedSCSI: number;
+
+declare const kBluetoothHCICommandWritePageScanMode: number;
+
+declare const mCmpSize: number;
 
 declare const IOATAReg16: number;
 
+declare const kConfigUnitSWVersIIDC102: number;
+
+declare const kBluetoothHCICommandWriteAuthenticationEnable: number;
+
 declare const kIOUCForegroundOnly: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_Heading: number;
+
+declare const kHIDUsage_Tfon_OutsideRingback: number;
+
+declare const kHIDUsage_Csmr_ACBack: number;
+
+declare const kHIDUsage_Snsr_Data_Location_PostalCode: number;
+
+declare const kSBCWOCmd_MODE_SELECT_10: number;
 
 declare const kFWSBP2ConstraintForceDoubleBuffer: number;
 
 declare const kIOmemoryLedgerTagNetwork: number;
 
+declare const kBluetoothHCICommandWritePageTimeout: number;
+
+declare const kSCSICmd_WRITE_AND_VERIFY_10: number;
+
 declare const gOSAction_IOHIDEventService__SetUserPropertiesMetaClass: interop.Pointer;
 
 declare const kFWIsochChannelUnknownCondition: number;
+
+declare const timingSony_1920x1080_72hz: number;
+
+declare const kFWDCLCycleEvent: number;
+
+declare const kHIDUsage_Sim_Rudder: number;
+
+declare const kHIDUsage_Csmr_ALTaskOrProjectManager: number;
+
+declare const kIOKitNoticationTypeSizeAdjShift: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeNone: number;
+
+declare const kHIDUsage_Csmr_ACIndentyIncrease: number;
+
+declare const kBluetoothHCIEventAMPStatusChange: number;
+
+declare const kHIDUsage_BCS_CheckDigitEnableStandard2of5USS: number;
+
+declare const kBluetoothL2CAPChannelDynamicEnd: number;
+
+declare const kHIDUsage_Csmr_ALMessageStatus: number;
+
+declare const kMessageDeterminingMediaPresence: number;
+
+declare const kBluetoothHCIEventReturnLinkKeys: number;
 
 declare const CS_LINKAGE_APPLICATION_XOJIT_PREVIEWS: number;
 
@@ -3054,249 +10942,1509 @@ declare const IOFireWireUserClient: number;
 
 declare const IOSCSIParallelInterfaceDevice: number;
 
+declare const kHIDUsage_Csmr_MediaSelection: number;
+
+declare const kUSBDataIsocUsageType: number;
+
+declare const kHIDUsage_Snsr_Property_Mechanical_BackwardVibrationSpeed: number;
+
 declare const kIOACPIAddressSpaceOpWrite: number;
+
+declare const kHIDUsage_Csmr_Proximity: number;
+
+declare const kMMCCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kHIDUsage_WD_ScaleStatus: number;
+
+declare const kBluetoothPacketType3DH1Omit: number;
 
 declare const debug_iomalloc_size: number;
 
+declare const kHIDUsage_BCS_DecodedData: number;
+
 declare const kIOFBNotifyGroupID_AppleMCCSControl: number;
 
-declare const IOFireWireSBP2UserClient: number;
+declare const kHIDUsage_GD_Hatswitch: number;
+
+declare const kBluetoothL2CAPQoSTokenRateDefault: number;
+
+declare const kHIDUsage_BS_SMBChargerStatus: number;
+
+declare const kIOUSBDeviceFeatureSelectorU1Enable: number;
+
+declare const kBluetoothServiceClassMajorAudio: number;
+
+declare const kIOAudioSMPTETimeType2398: number;
+
+declare const kBluetoothHCICommandLESetScanEnable: number;
 
 declare const IOFWSendDCL: number;
 
+declare const kBluetoothL2CAPTCICommandL2CA_Reserved1: number;
+
+declare const kHIDUsage_PD_Output: number;
+
+declare const kHFSThreadExistsMask: number;
+
+declare const kHIDUsage_Csmr_ALWordProcessor: number;
+
+declare const kBluetoothGAPAppearanceGenericComputer: number;
+
+declare const kHIDUsage_Dig_GestureCharacterEncodingUTF8: number;
+
 declare const IOAudioEngine: number;
 
+declare const kHIDUsage_Sprt_9Wood: number;
+
+declare const kHIDUsage_Csmr_AL: number;
+
+declare const kHIDUsage_Csmr_ChannelCenter: number;
+
 declare const IOFireWireLocalNode: number;
+
+declare const kBluetoothDeviceClassMajorNone: number;
 
 declare const kIOTrackingLeakScanStart: number;
 
 declare const kFWSelfIDNPaPhase: number;
 
+declare const kHIDUsage_Csmr_ALDatabaseApp: number;
+
 declare const kUSB3LPMMaxU1PEL: number;
+
+declare const kUSBBOSDescriptor: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingYAxis: number;
+
+declare const timingApple1Ka: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkLSEMbits: number;
 
+declare const thirdVidMode: number;
+
+declare const kHIDUsage_BCS_SettingsReport: number;
+
+declare const kBluetoothHCIEventIOCapabilityResponse: number;
+
+declare const kHIDUsage_Snsr_Light: number;
+
+declare const kHIDUsage_Snsr_Time_RealTimeClock: number;
+
+declare const kSCSICmd_VendorSpecific_End: number;
+
+declare const kBluetoothDeviceClassMinorAudioReserved1: number;
+
+declare const kConnectionDisplayFlags: number;
+
+declare const kBluetoothSDPErrorCodeInvalidSDPVersion: number;
+
+declare const kHIDUsage_Sim_BarrelElevation: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilityLowSpeed: number;
+
+declare const kDeclROMtables: number;
+
+declare const kHIDUsage_BCS_DataLengthMethod: number;
+
+declare const kBluetoothHCICommandGroupHostController: number;
+
+declare const kIOScaleCanUpSamplePixels: number;
+
 declare const OSAction_IOHIDEventService__CopyEvent: number;
+
+declare const kDVDFeaturesCSSMask: number;
+
+declare const kATAIdentifyWordsPerLogicalSector1: number;
+
+declare const kUSB500mAAvailable: number;
 
 declare const IODisplayWrangler: number;
 
+declare const kBluetoothDeviceClassMinorAudioVideoConferencing: number;
+
+declare const kFWBadNodeID: number;
+
 declare const IOHIDPowerSource: number;
+
+declare const kHIDUsage_Snsr_Data_Location_Speed: number;
 
 declare const OSSerializer: number;
 
+declare const kBluetoothHCIErrorHardwareFailure: number;
+
+declare const kBluetoothHCICommandUserPasskeyRequestReply: number;
+
+declare const kIOAudioChannelLabel_LeftCenter: number;
+
+declare const kHIDUsage_BCS_CheckDigitEnableInterleaved2of5OPCC: number;
+
+declare const kBluetoothDeviceClassMajorAudio: number;
+
 declare const kVCLightBackground: number;
+
+declare const kIOAudioOutputPortSubTypeExternalSpeaker: number;
+
+declare const kFWIsochDataLength: number;
+
+declare const kHIDUsage_PD_ConfigActivePower: number;
+
+declare const kHIDUsage_Csmr_Play: number;
+
+declare const kSMCCmd_RESERVE_ELEMENT_6: number;
+
+declare const kBluetoothHCIEventMaskModeChange: number;
+
+declare const kIOUSBDeviceRequestSetInterface: number;
+
+declare const kHIDUsage_LED_OnLine: number;
+
+declare const kBluetoothHCIErrorHostRejectedLimitedResources: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeIEEE_EUI64: number;
+
+declare const kHIDUsage_BS_AtRateTimeToEmpty: number;
+
+declare const kHIDUsage_Button_40: number;
+
+declare const kINQUIRY_MaximumDataSize: number;
 
 declare const kDefaultProbeRanking: number;
 
+declare const kUSBAtrSelfPowered: number;
+
 declare const kBootROMTypeOldWorld: number;
+
+declare const kHIDUsage_GD_DoNotDisturb: number;
+
+declare const kIOBlitBlendOperation: number;
+
+declare const kSCSICmd_RECEIVE_COPY_RESULTS: number;
 
 declare const dad_enhanced: number;
 
+declare const kIOAudioSelectorControlSelectionValueNone: number;
+
 declare const IOHIDEvent: number;
+
+declare const kHIDUsage_Csmr_ACFontColor: number;
+
+declare const kHIDUsage_BCS_Interleaved2of5ControlReport: number;
+
+declare const kCSRUnitsBaseHiAddress: number;
+
+declare const kHIDUsage_KeyboardF22: number;
+
+declare const kBluetoothL2CAPChannelReservedEnd: number;
+
+declare const kHIDUsage_Button_152: number;
+
+declare const kHIDUsage_Csmr_ALThesaurus: number;
+
+declare const kIOHIDActivityUserIdle: number;
+
+declare const kCSRStateDReq: number;
 
 declare const IOPCIATA: number;
 
+declare const kUSBDFUSubClass: number;
+
+declare const kStereoSyncConnection: number;
+
+declare const kHIDUsage_GD_SystemMenuHelp: number;
+
+declare const kHIDUsage_BD_BrailleJoystickCenter: number;
+
+declare const kDVDFeaturesRandomWriteableBit: number;
+
+declare const kHIDUsage_Csmr_Once: number;
+
 declare const kIOPCIAERCapHdrLogDW1Offset: number;
+
+declare const kSCCCmd_PORT_STATUS: number;
+
+declare const kHIDPage_Sport: number;
+
+declare const kMSCProtocolControlBulkInterrupt: number;
 
 declare const kATAcmdFormatTrack: number;
 
+declare const kDisplaySubPixelShapeSquare: number;
+
+declare const kHIDUsage_Sprt_Oar: number;
+
+declare const kDisplaySubPixelShapeElliptical: number;
+
+declare const kDisplaySubPixelConfigurationStripeOffset: number;
+
+declare const kHIDUsage_Csmr_ACSuperscript: number;
+
+declare const kDisplaySubPixelConfigurationDelta: number;
+
+declare const kDisplaySubPixelConfigurationUndefined: number;
+
+declare const kIOCatalogResetDrivers: number;
+
+declare const kDisplaySubPixelLayoutBGR: number;
+
+declare const kDisplaySubPixelLayoutUndefined: number;
+
+declare const kDisplayProductIDGeneric: number;
+
+declare const kIOFBLinkScramblerAlternate: number;
+
+declare const kIOFBLinkScramblerNormal: number;
+
+declare const kIOFBLinkDownspreadMax: number;
+
+declare const kATAIdentifyCommandExtension1: number;
+
+declare const kIOFBLinkPreEmphasisLevel3: number;
+
+declare const kIOFBLinkPreEmphasisLevel1: number;
+
+declare const timingApplePAL_FF: number;
+
+declare const kIOFBLinkPreEmphasisLevel0: number;
+
+declare const kIOFBLinkVoltageLevel3: number;
+
+declare const kIOFBLinkVoltageLevel1: number;
+
 declare const kIOTimerEventSourceOptionsPriorityKernel: number;
 
+declare const kIOFBBitRateRBR: number;
+
+declare const kIOFBAVSignalTypeDVI: number;
+
+declare const kIOFBAVSignalTypeVGA: number;
+
 declare const MBUF_HASFCS: number;
+
+declare const kIOFBAVSignalTypeUnknown: number;
+
+declare const kIOHibernatePreviewUpdates: number;
+
+declare const kIOHibernatePreviewActive: number;
+
+declare const kIOTimingIDVESA_1360x768_60hz: number;
+
+declare const kIOTimingIDVESA_848x480_60hz: number;
+
+declare const kIOTimingIDSony_1920x1200_76hz: number;
+
+declare const kIOTimingIDSony_1920x1080_60hz: number;
+
+declare const kIOTimingIDSony_1600x1024_76hz: number;
+
+declare const kIOTimingIDFilmRate_48hz: number;
+
+declare const kIOTimingIDVESA_1920x1440_60hz: number;
+
+declare const kIOTimingIDVESA_1792x1344_75hz: number;
+
+declare const kIOTimingIDVESA_1600x1200_85hz: number;
+
+declare const kIOTimingIDVESA_1600x1200_80hz: number;
+
+declare const kIOTimingIDVESA_1600x1200_75hz: number;
+
+declare const kIOTimingIDVESA_1280x1024_85hz: number;
+
+declare const kIOTimingIDVESA_1280x960_75hz: number;
+
+declare const kIOTimingIDApplePAL_FFconv: number;
+
+declare const kIOTimingIDApplePAL_STconv: number;
+
+declare const kIOTimingIDApplePAL_ST: number;
+
+declare const kIOTimingIDAppleNTSC_FFconv: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_GroupCreate: number;
 
 declare const kATAcmdReadDMAExtended: number;
 
 declare const kIODMAMapWriteAccess: number;
 
+declare const kIOTimingIDApple_1152x870_75hz: number;
+
+declare const kIOTimingIDVESA_1152x864_75hz: number;
+
+declare const kSSCSeqCmd_CHANGE_DEFINITION: number;
+
+declare const kIOTimingIDVESA_1024x768_85hz: number;
+
+declare const kIOTimingIDVESA_800x600_75hz: number;
+
+declare const kIOTimingIDVESA_800x600_56hz: number;
+
+declare const kIOTimingIDApple_832x624_75hz: number;
+
+declare const kIOTimingIDApple_640x818_75hz: number;
+
+declare const kIOTimingIDApple_640x870_75hz: number;
+
+declare const kIOTimingIDVESA_640x480_72hz: number;
+
+declare const kBluetoothHCICommandReadClassOfDevice: number;
+
 declare const kEfiBootServicesCode: number;
+
+declare const kIOTimingIDApple_640x400_67hz: number;
+
+declare const kIOTimingIDApple_512x384_60hz: number;
+
+declare const kIOFBWakeInterruptType: number;
+
+declare const kIOFBMCCSInterruptType: number;
 
 declare const IOAudioLevelControl: number;
 
+declare const kUSB_EPDesc_MaxMPS: number;
+
+declare const kIOFBDisplayPortInterruptType: number;
+
+declare const kIOFBOfflineInterruptType: number;
+
 declare const kIOMemoryPurgeableVolatileGroup3: number;
+
+declare const kIOFBFrameInterruptType: number;
+
+declare const kIOFBHBLInterruptType: number;
+
+declare const kIOFBVBLInterruptType: number;
+
+declare const kHardwareCursorInfoMinorVersion: number;
+
+declare const kBluetoothHCIEventRemoteNameRequestComplete: number;
+
+declare const kInvertingEncoding: number;
+
+declare const kIODisplayAssertionConnectType: number;
+
+declare const kIODisplayPowerStateOn: number;
+
+declare const kIODisplayPowerStateMinUsable: number;
+
+declare const kIODisplayDitherYCbCr422Shift: number;
+
+declare const kIODisplayDitherYCbCr444Shift: number;
+
+declare const kIODisplayDitherRGBShift: number;
+
+declare const kIODisplayDitherFrameRateControl: number;
+
+declare const kIODisplayDitherDisable: number;
+
+declare const kIODisplayYCbCr422ColorComponentBits10: number;
 
 declare const IOSCSIParallelInterfaceController: number;
 
+declare const kIODisplayYCbCr422ColorComponentBits8: number;
+
+declare const kIODisplayYCbCr422ColorComponentBitsUnknown: number;
+
+declare const kIODisplayYCbCr444ColorComponentBits16: number;
+
+declare const kIODisplayYCbCr444ColorComponentBits14: number;
+
+declare const kIODisplayYCbCr444ColorComponentBits12: number;
+
+declare const kIODisplayYCbCr444ColorComponentBits10: number;
+
+declare const kIODisplayYCbCr444ColorComponentBits8: number;
+
+declare const kIODisplayYCbCr444ColorComponentBitsUnknown: number;
+
+declare const kIODisplayRGBColorComponentBits16: number;
+
+declare const kIODisplayRGBColorComponentBits14: number;
+
+declare const kIODisplayRGBColorComponentBits10: number;
+
+declare const kINQUIRY_Byte56_CLOCKING_ONLY_ST: number;
+
+declare const kIODisplayColorMode: number;
+
+declare const kHIDUsage_Csmr_DisplayBrightnessIncrement: number;
+
+declare const kIODPEventAutomatedTestRequest: number;
+
+declare const kIODPEventRemoteControlCommandPending: number;
+
+declare const kIODPEventForceRetrain: number;
+
+declare const kIODPEventIdle: number;
+
+declare const kIODPEventStart: number;
+
+declare const kIOWindowServerActiveAttribute: number;
+
+declare const kIOSyncOnGreen: number;
+
+declare const kIOSyncOnBlue: number;
+
+declare const kIOTriStateSyncs: number;
+
+declare const kIOVSyncDisable: number;
+
+declare const kIOConnectionStereoSync: number;
+
+declare const kConnectionStartOfFrameTime: number;
+
+declare const kBluetoothHCICommandSetMWSSignaling: number;
+
+declare const kIODisplayRGBColorComponentBits6: number;
+
+declare const kConnectionAudioStreaming: number;
+
+declare const kConnectionControllerDitherControl: number;
+
+declare const kConnectionColorModesSupported: number;
+
+declare const kConnectionPanelTimingDisable: number;
+
+declare const kConnectionHandleDisplayPortEvent: number;
+
+declare const kConnectionVBLMultiplier: number;
+
+declare const kConnectionGammaScale: number;
+
+declare const kBluetoothHCIEventMaskRemoteNameRequestComplete: number;
+
+declare const kConnectionGreenGammaScale: number;
+
+declare const kConnectionOverscan: number;
+
+declare const kConnectionDisplayParameterCount: number;
+
+declare const kConnectionChanged: number;
+
+declare const kConnectionCheckEnable: number;
+
+declare const kConnectionSupportsHLDDCSense: number;
+
+declare const kConnectionSyncFlags: number;
+
+declare const kConnectionFlags: number;
+
+declare const kAndConnections: number;
+
+declare const kOrConnections: number;
+
+declare const kIOScaleCanRotate: number;
+
+declare const kIOScaleCanSupportInset: number;
+
+declare const kIOScaleCanScaleInterlaced: number;
+
+declare const kIOScaleCanDownSamplePixels: number;
+
+declare const kUSBControl: number;
+
+declare const kIOAnalogSignalLevel_0714_0286: number;
+
+declare const kIOMultiAlignedTiming: number;
+
+declare const kIOPALTiming: number;
+
+declare const kIORangeSupportsInterlacedCEATimingWithConfirm: number;
+
+declare const kPowerStateSupportsReducedPower3Bit: number;
+
+declare const kBluetoothHCIErrorMACConnectionFailed: number;
+
+declare const kIORangeSupportsVSyncSerration: number;
+
+declare const kIORangeSupportsCompositeSync: number;
+
+declare const kIORangeSupportsSyncOnGreen: number;
+
+declare const kIORangeSupportsSignal_0714_0286: number;
+
+declare const kIORangeSupportsSignal_0700_0300: number;
+
+declare const kIORangeDynamicRangeDolbyTunnelMode: number;
+
+declare const kIORangeDynamicRangeSDR: number;
+
+declare const kHIDUsage_BS_AverageTimeToEmpty: number;
+
+declare const kIORangeColorimetryBT2020: number;
+
+declare const kIORangeColorimetryBT709: number;
+
+declare const kIORangeColorimetryBT601: number;
+
+declare const kIORangeColorimetryAdobeRGB: number;
+
+declare const kIORangeColorimetryDCIP3: number;
+
+declare const kIORangeColorimetrysRGB: number;
+
+declare const kIORangeColorimetryNativeRGB: number;
+
+declare const kIORangeBitsPerColorComponent12: number;
+
+declare const kIORangeBitsPerColorComponent6: number;
+
+declare const kIORangePixelEncodingYCbCr422: number;
+
+declare const kHIDUsage_Snsr_Property_ResponseCurve: number;
+
+declare const kIORangePixelEncodingRGB444: number;
+
+declare const kIOTimingRangeV1: number;
+
+declare const kCSRRegisterSpaceBaseAddressHi: number;
+
+declare const kIOWSAA_Hibernate: number;
+
+declare const kIOTimingRangeV2: number;
+
 declare const kRegIterDescendants: number;
 
-declare const IOUSBHostCICommandMessageData0StreamID: number;
+declare const kIODynamicRangeDolbyNormalMode: number;
+
+declare const kIODynamicRangeHDR10: number;
+
+declare const kIODynamicRangeSDR: number;
+
+declare const kIOColorimetryBT2100: number;
+
+declare const kIOColorimetryBT2020: number;
+
+declare const kConfigModuleVendorIdKey: number;
+
+declare const kIOColorimetryxvYCC: number;
+
+declare const kHIDUsage_Csmr_AlternateAudioDecrement: number;
+
+declare const kIOColorimetrysRGB: number;
+
+declare const kIOBitsPerColorComponentNotSupported: number;
+
+declare const kIOPixelEncodingRGB444: number;
+
+declare const kIOPixelEncodingNotSupported: number;
+
+declare const kIOScaleRotate180: number;
+
+declare const kIOScaleInvertY: number;
+
+declare const kIOScaleSwapAxes: number;
+
+declare const kIODetailedTimingValid: number;
+
+declare const kIOMirrorForced: number;
+
+declare const kIOMirrorDefault: number;
 
 declare const invalidIsochPortIDErr: number;
 
+declare const kIOUSBInterfaceStatusRemoteWakeEnable: number;
+
+declare const kIOMirrorHWClipped: number;
+
+declare const kIOFBNS_GenerationShift: number;
+
+declare const kIOFBNS_DisplayStateShift: number;
+
+declare const kIOFBNS_DisplayStateMask: number;
+
+declare const kIOFBNS_Dim: number;
+
+declare const kIOFBNS_Doze: number;
+
+declare const kIOFBNS_Rendezvous: number;
+
+declare const kHIDUsage_GD_SystemMenuLeft: number;
+
+declare const kIOWSAA_DriverOpen: number;
+
+declare const kIOWSAA_Sleep: number;
+
+declare const kIOScaleStretchToFit: number;
+
+declare const kIOWSAA_From_Accelerated: number;
+
+declare const kIOFBDisplayState_RestoredProfile: number;
+
+declare const kIOFBHDCPLimit_NoHDCP20Type1: number;
+
+declare const kIOFBHDCPLimit_NoHDCP20Type0: number;
+
+declare const kIOFBHDCPLimit_NoHDCP1x: number;
+
+declare const kIOFBHDRMetaDataAttribute: number;
+
+declare const kIOFBGreenGammaScaleAttribute: number;
+
+declare const kIOFBStop: number;
+
+declare const kIOFBLimitHDCPStateAttribute: number;
+
+declare const kIOFBLimitHDCPAttribute: number;
+
+declare const kIOFBVariableRefreshRate: number;
+
+declare const kIOClamshellStateAttribute: number;
+
+declare const kIOCursorControlAttribute: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypeInterruptNotification: number;
+
+declare const kIOPowerAttribute: number;
+
+declare const kSetCLUTWithLuminance: number;
+
+declare const kSetCLUTImmediately: number;
+
+declare const kSetCLUTByValue: number;
+
 declare const gIOUserClassKey: interop.Pointer;
+
+declare const kIOFBSystemAperture: number;
+
+declare const kFramebufferSupportsWritethruCache: number;
+
+declare const kBluetoothHCIErrorLMPResponseTimeout: number;
+
+declare const kFramebufferSupportsCopybackCache: number;
+
+declare const kDisplayModeSafeFlag: number;
+
+declare const kDisplayModeNativeFlag: number;
+
+declare const kDisplayModeValidateAgainstDisplay: number;
+
+declare const kDisplayModeNotGraphicsQualityFlag: number;
+
+declare const kDisplayModeNotPresetFlag: number;
 
 declare const MBUF_WAITOK: number;
 
+declare const kBluetoothHCISubEventLEConnectionUpdateComplete: number;
+
+declare const kDisplayModeRequiresPanFlag: number;
+
+declare const kDisplayModeNotResizeFlag: number;
+
+declare const kUSBAudioClass: number;
+
+declare const kHIDUsage_Snsr_Modifier_VendorDefined: number;
+
+declare const kDisplayModeNeverShowFlag: number;
+
+declare const kDisplayModeAlwaysShowFlag: number;
+
+declare const kDisplayModeSafetyFlags: number;
+
+declare const kIOMonoDirectPixels: number;
+
+declare const kIORGBDirectPixels: number;
+
+declare const kIOMaxPixelBits: number;
+
+declare const kIODisplayModeIDReservedBase: number;
+
+declare const kIODisplayModeIDBootProgrammable: number;
+
+declare const kDDCBlockSize: number;
+
+declare const kHIDUsage_Snsr_Scanner: number;
+
+declare const kIOAudioControlChannelIDDefaultSurroundRight: number;
+
+declare const kBluetoothHCIEventLEMetaEvent: number;
+
+declare const kIODynamicRangeTraditionalGammaHDR: number;
+
+declare const kUSBDFUAttributesMask: number;
+
+declare const kHIDUsage_LED_CAV: number;
+
 declare const kIOPCICapabilityIDCPCIResourceControl: number;
 
+declare const kHIDUsage_Snsr_Data_Biometric: number;
+
 declare const bATACommandAborted: number;
+
+declare const kPowerStateSupportsReducedPower2Bit: number;
+
+declare const kSGCCmd_READ: number;
+
+declare const kIOInterestCalloutRefconIndex: number;
+
+declare const kIOUSBEndpointDescriptorPacketSizePhase: number;
+
+declare const kCDFeaturesPacketWriteBit: number;
+
+declare const kReportsTagging: number;
 
 declare const kEndpointDescriptorTransferTypeBulk: number;
 
 declare const kFWAsynchPriorityPhase: number;
 
+declare const kHIDUsage_Csmr_KeyboardInputAssistNextGroup: number;
+
+declare const kHubSuperSpeedProtocol: number;
+
+declare const kSSCPrinterCmd_LOG_SELECT: number;
+
+declare const kIODisplayPowerStateOff: number;
+
+declare const kBTHeaderNode: number;
+
+declare const kBluetoothHCICommandLETestEnd: number;
+
+declare const kSMCCmd_EXCHANGE_MEDIUM: number;
+
 declare const kIOPCIConfigMinimumGrant: number;
+
+declare const kHIDUsage_BCS_DataMatrix: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_GroupClose: number;
+
+declare const kHIDUsage_Dig_DataValid: number;
+
+declare const kBTMapNode: number;
+
+declare const kBluetoothDeviceClassMinorPhoneCellular: number;
+
+declare const kSBCCmd_COPY_AND_VERIFY: number;
+
+declare const timingApple_640x870_75hz: number;
+
+declare const kBluetoothHCICommandReadLocalVersionInformation: number;
+
+declare const kBluetoothVoiceSettingAirCodingFormatCVSD: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_ObjectBasedStorageDevice: number;
+
+declare const kBluetoothLimitedInquiryAccessCodeLAPValue: number;
+
+declare const EMBEDDED_RADIO_RECEIVER: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_MultivalueSwitchValue: number;
+
+declare const kIODisplayDitherAll: number;
+
+declare const kHIDUsage_Dig_Stylus: number;
+
+declare const kHIDUsage_PD_ConfigCurrent: number;
+
+declare const kMirrorSameDepthOnlyMirrorMask: number;
+
+declare const kBluetoothHCICommandRemoteOOBDataRequestNegativeReply: number;
+
+declare const kINQUIRY_PageB1_Page_Length: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AddressLine2: number;
 
 declare const kHIDDispatchOptionPhaseCanceled: number;
 
+declare const kIOHIDValueScaleTypeExponent: number;
+
 declare const hv_callbacks: hv_callbacks_t;
+
+declare const kHFSHasLinkChainBit: number;
+
+declare const kHIDUsage_Csmr_ACFontSize: number;
+
+declare const kBluetoothHCICommandReadDataBlockSize: number;
 
 declare const kSMEVectorCount: number;
 
+declare const kHIDUsage_Tfon_Message: number;
+
+declare const kUSDebugDesc: number;
+
+declare const kINQUIRY_Byte7_Offset: number;
+
+declare const kSetDeviceFeature: number;
+
 declare const kIOPreparationIDAlwaysPrepared: number;
+
+declare const kConfigBusDependentInfoKey: number;
+
+declare const kSPCCmd_MODE_SELECT_10: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceBarcodeScanner: number;
+
+declare const kHIDUsage_BS_BatteryInsertion: number;
+
+declare const kIOAudioSMPTETimeType2997Drop: number;
+
+declare const kBluetoothHCICommandLEWriteRFPathCompensation: number;
 
 declare const kIOMemoryTypePhysical: number;
 
+declare const kBluetoothHCICommandReadStoredLinkKey: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral1Pointing: number;
+
+declare const kSetEndpointFeature: number;
+
+declare const kBluetoothHCICommandReadRemoteSupportedFeatures: number;
+
+declare const kIOStreamMethodStop: number;
+
+declare const kIOTimingIDApple_0x0_0hz_Offline: number;
+
+declare const kSPCProcCmd_RESERVE_10: number;
+
+declare const kBluetoothHCILoopbackModeRemote: number;
+
 declare const kATAQueueEmpty: number;
+
+declare const kBluetoothHCIEventPINCodeRequest: number;
 
 declare const gIOPathKey: interop.Pointer;
 
+declare const kMMCCmd_RESERVE_6: number;
+
 declare const kUSBHostOpenOptionSelectAlternateSetting: number;
+
+declare const kINQUIRY_Byte6_ENCSERV_Mask: number;
+
+declare const kHIDUsage_Csmr_FunctionButtons: number;
+
+declare const kHIDUsage_Snsr_Electrical_Resistance: number;
+
+declare const kIOFBLinkDownspreadNone: number;
 
 declare const kIOAGPRequestQueueMask: number;
 
+declare const kIOUSBVendorIDAppleComputer: number;
+
+declare const kSCSICmd_READ_CAPACITY: number;
+
+declare const kHIDUsage_GD_SystemColdRestart: number;
+
+declare const kATAIdentifyUltraDMASupported: number;
+
+declare const kIORangeDynamicRangeHDR10: number;
+
+declare const kBluetoothHCICommandWriteLocationData: number;
+
+declare const kIOHIDOptionsTypeMaskPrivate: number;
+
+declare const kHIDUsage_Button_62: number;
+
 declare const IOConfigDirectory: number;
+
+declare const kBluetoothSDPUUID16L2CAP: number;
+
+declare const kSCSICmd_COMPARE: number;
 
 declare const IOUSBHostDevice: number;
 
+declare const kSSCPrinterCmd_COPY_AND_VERIFY: number;
+
+declare const kHIDUsage_Button_160: number;
+
+declare const kFWAVCAsyncPlug29: number;
+
 declare const kIOWaitQuietPanics: number;
+
+declare const kHIDUsage_Snsr_Data_Biometric_HumanProximityOutOfRange: number;
+
+declare const kHIDUsage_Csmr_NumericKeyPad: number;
+
+declare const kHIDUsage_LED_Kana: number;
+
+declare const kUSB100mA: number;
+
+declare const kIOHIDElementFlagsVariableMask: number;
+
+declare const kHIDUsage_KeyboardSpacebar: number;
+
+declare const kBluetoothL2CAPChannelMagnet: number;
+
+declare const kRangeSupportsSignal_0714_0286_Bit: number;
+
+declare const kINQUIRY_Byte7_WBUS16_Mask: number;
+
+declare const kHIDUsage_Snsr_Property_Mechanical_ForwardVibrationSpeed: number;
+
+declare const kBluetoothHCICommandReadInquiryScanType: number;
+
+declare const kHIDUsage_Csmr_BlueMenuButton: number;
+
+declare const kHIDUsage_Tfon_DoNotDisturb: number;
 
 declare const IOFireWireUnitAux: number;
 
+declare const kHIDUsage_LED_OffHook: number;
+
+declare const kHFSVolumeSoftwareLockBit: number;
+
+declare const kHIDReportProtocolValue: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilityReservedPhase: number;
+
+declare const kIOVideoDeviceMethodSuspendStream: number;
+
+declare const kIOUYVY422PixelFormat: number;
+
+declare const twoBitMode: number;
+
+declare const kSCSICmd_GET_EVENT_STATUS_NOTIFICATION: number;
+
+declare const kBluetoothHCISubEventLEConnectionComplete: number;
+
+declare const kBluetoothHCICommandLERemoteConnectionParameterRequestReply: number;
+
 declare const kFWTCodeReadBlockResponse: number;
 
+declare const kIOWSAA_DeferStart: number;
+
 declare const OSAction_IOHIDEventService__SetUserProperties_Class: OSClassLoadInformation;
+
+declare const kIOAudioStreamSampleFormatMuLaw: number;
+
+declare const kIOUSBAnyVendor: number;
+
+declare const kHIDUsage_Snsr_Biometric_HumanProximity: number;
+
+declare const kBluetoothHCIEventModeChange: number;
 
 declare const VIOLATION_INVALID_IO_PADDR: number;
 
 declare const kIOFBNotifyGroupID_AppleHDAController: number;
 
+declare const kBluetoothHCICommandWritePageScanType: number;
+
 declare const kernel_task: number;
+
+declare const kHIDUsage_Csmr_ACSaveAndClose: number;
 
 declare const IOHIDEventServiceMetaClass: number;
 
-declare const IOUSBHostCIPortStatusCommandData1LinkState: number;
-
 declare const IOPCIDevice: number;
+
+declare const kHIDUsage_AD_ClearDisplay: number;
+
+declare const kFWDCLOpFlagPhase: number;
+
+declare const kBluetoothHCICommandReadAutomaticFlushTimeout: number;
+
+declare const kMMCCmd_RELEASE_10: number;
+
+declare const kIORangePixelEncodingNotSupported: number;
 
 declare const kAirshipDaleBasebandErrorIpcErrorOccurred: number;
 
+declare const kUSBBillboardConfigNotAttempted: number;
+
+declare const kHIDUsage_Dig_MultiplePointDigitizer: number;
+
+declare const kHIDUsage_Snsr_Property: number;
+
+declare const kHIDUsage_LED_IndicatorFastBlink: number;
+
+declare const kBluetoothHCIEventSniffSubrating: number;
+
+declare const kBluetoothDeviceClassMinorWearableWristWatch: number;
+
+declare const kHIDUsage_Csmr_ACAllCaps: number;
+
 declare const kIOPCISlotCapabilitiesBitMRLSensorPresent: number;
+
+declare const kIOBlitSourceSolid: number;
+
+declare const kHIDUsage_Dig_SurfaceSwitch: number;
 
 declare const IFNET_LQM_THRESH_OFF: number;
 
 declare const kBootDriverTypeMKEXT: number;
 
+declare const kBluetoothHCICommandWriteFlowControlMode: number;
+
+declare const kIOWSAA_Reserved: number;
+
+declare const kHIDUsage_KeyboardPOSTFail: number;
+
 declare const kIOPMRunModeFullWake: number;
 
 declare const bATATrack0NotFound: number;
 
-declare const IOUSBHostCICommandMessageControlStatusPhase: number;
+declare const kHardwareCursorInfoMajorVersion: number;
+
+declare const kINQUIRY_Page00_PageCode: number;
+
+declare const kUSBCommunicationControlInterfaceClass: number;
+
+declare const kHIDUsage_PID_SampleCount: number;
+
+declare const kBluetoothHCIEventMaskPageScanRepetitionModeChange: number;
+
+declare const kBluetoothHCICommandSetMWSTransportLayer: number;
 
 declare const CS_SIGNER_TYPE_MAC_APP_STORE: number;
 
+declare const kBluetoothDeviceClassMajorComputer: number;
+
+declare const kHIDUsage_Game_MoveForwardOrBackward: number;
+
+declare const kHIDUsage_Tfon_StoreNumber: number;
+
 declare const kIOReportQuantityTemperature: number;
+
+declare const kHIDUsage_KeyboardInternational4: number;
+
+declare const kBluetoothHCICommandLEExtendedCreateConnection: number;
+
+declare const kIOBlitTypeOperationTypeMask: number;
+
+declare const kBluetoothHCIEventSynchronousConnectionComplete: number;
+
+declare const kHFSExtentDensity: number;
 
 declare const MBUF_PROMISC: number;
 
+declare const kBluetoothHCICommandRefreshEncryptionKey: number;
+
+declare const kBluetoothHCICommandReadExtendedPageTimeout: number;
+
+declare const kBluetoothPageScanPeriodModeP0: number;
+
+declare const kBluetoothL2CAPPSMHIDInterrupt: number;
+
 declare const kIOReportQuantityCPUInstrs: number;
+
+declare const kSCSICmd_SEND_CUE_SHEET: number;
 
 declare const gIOHIDEventServiceMetaClass: interop.Pointer;
 
+declare const kHIDUsage_Csmr_ACDistributeV: number;
+
+declare const kHIDUsage_KeyboardClear: number;
+
+declare const kHIDUsage_BS_Undefined: number;
+
+declare const kMMCCmd_READ_MASTER_CUE: number;
+
+declare const kBluetoothHCIEventMaskInquiryResult: number;
+
+declare const kBluetoothHCICommandAuthenticationRequested: number;
+
+declare const kHIDUsage_Button_203: number;
+
+declare const kIOCatalogKextdActive: number;
+
+declare const kHIDUsage_Csmr_ACScrollDown: number;
+
+declare const kIORangeDynamicRangeNotSupported: number;
+
+declare const cscGetMultiConnect: number;
+
 declare const kIOPCIExpressCapabilityIDFRSQueueing: number;
+
+declare const kBluetoothAirModeULawLog: number;
+
+declare const kHIDUsage_Csmr_ACUpload: number;
+
+declare const kHIDUsage_Csmr_ClimateControlEnable: number;
+
+declare const kHIDUsage_BCS_Standard2of5: number;
+
+declare const kHIDUsage_Snsr_Mechanical_MultivalueSwitch: number;
+
+declare const kSBCModePageFlexibleDisk_TRDY_Bit: number;
 
 declare const kIOMemoryPurgeableVolatileOrderingObsolete: number;
 
 declare const IOAudioStream: number;
 
+declare const kIOTimingIDSMPTE240M_60hz: number;
+
+declare const kBluetoothGAPAppearanceGenericMediaPlayer: number;
+
+declare const kIODeferCLUTSetAttribute: number;
+
 declare const kIOPCIExpressCapabilityIDRCLinkDeclaration: number;
+
+declare const kSCSIServiceAction_XDREAD_32: number;
+
+declare const kHIDUsage_Csmr_MedicalAlarm: number;
+
+declare const kUSBSpeed_Mask: number;
+
+declare const kVideoDDCciReplyType: number;
+
+declare const kHIDUsage_Snsr_Environmental_WindSpeed: number;
+
+declare const kHIDUsage_Csmr_MediaSelectGames: number;
 
 declare const IOWorkLoop: number;
 
+declare const kSCSICmd_MODE_SENSE_6: number;
+
+declare const kHIDUsage_BS_AtRateOK: number;
+
+declare const kHIDUsage_LED_Pause: number;
+
+declare const kHIDUsage_Button_107: number;
+
+declare const kIOScaleRotate270: number;
+
+declare const kHIDUsage_GD_SystemAppMenu: number;
+
 declare const kATAcmdSleep: number;
+
+declare const kBluetoothHCIErrorInstantPassed: number;
+
+declare const kBluetoothHCIEventMasterLinkKeyComplete: number;
+
+declare const kINQUIRY_Byte7_SYNC_Bit: number;
+
+declare const kHardwareCursorDescriptorMinorVersion: number;
+
+declare const kBluetoothHCICommandReadDeviceAddress: number;
+
+declare const kHIDUsage_Csmr_Quit: number;
+
+declare const kCSRChannelsAvailable63_32: number;
+
+declare const kIOVideoFeatureControlClassIDGain: number;
+
+declare const kHardwareCursorDescriptorMajorVersion: number;
+
+declare const kDisplaySubPixelShapeUndefined: number;
+
+declare const kCDMediaTypeMin: number;
 
 declare const IOFireWireBus: number;
 
-declare const IOUSBHostCIPortStatusLinkStatePhase: number;
+declare const kBluetoothVoiceSettingInputDataFormatMask: number;
+
+declare const INPUT_UNDEFINED: number;
+
+declare const kSBCCmd_UPDATE_BLOCK: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Frequency: number;
+
+declare const kHIDUsage_Csmr_Still: number;
+
+declare const kUSB3HUBDesc: number;
+
+declare const kHIDUsage_Dig_LightPen: number;
+
+declare const kINQUIRY_Byte6_ENCSERV_Bit: number;
+
+declare const kHIDPage_Undefined: number;
+
+declare const kHIDUsage_Csmr_ALRemoteNetworkingOrISPConnect: number;
+
+declare const kIOBlitMemoryRequiresHostFlush: number;
 
 declare const noChannelsAvailableErr: number;
+
+declare const kHIDUsage_Csmr_ACInsertObject: number;
 
 declare const IOFireWireController: number;
 
 declare const kIOFBNotifyEvent_Notify: number;
 
-declare const IOUSBHostCIDeviceCreateCommandData1DeviceAddress: number;
+declare const kSENSE_FILEMARK_Not_Set: number;
+
+declare const kBluetoothPacketTypeAUX: number;
 
 declare const CS_HASHTYPE_SHA1: number;
 
+declare const kHIDUsage_Csmr_ALClock: number;
+
+declare const kHIDUsage_BCS_PeriodicalOnlyDecodeWithPlus5: number;
+
+declare const kFWAVCAsyncPlug23: number;
+
+declare const kHIDUsage_KeyboardSelect: number;
+
+declare const kHIDUsage_Snsr_Property_MinimumReportInterval: number;
+
+declare const mPageCnt: number;
+
+declare const kUSBMassStorageSFF8070iSubClass: number;
+
+declare const kSBCCmd_SEEK_6: number;
+
+declare const kSPCCmd_READ_ELEMENT_STATUS_ATTACHED: number;
+
 declare const IOFastPathUserClient: number;
+
+declare const kSyncInterlaceMask: number;
 
 declare const kHIDDispatchOptionPhaseChanged: number;
 
+declare const kBluetoothGAPAppearanceGenericRunningWalkingSensor: number;
+
+declare const kBluetoothHCICommandGroupTesting: number;
+
 declare const IOPCIBridge: number;
+
+declare const kFCPResponseAddress: number;
+
+declare const kIORangeColorimetryBT2100: number;
+
+declare const kHIDUsage_Button_122: number;
+
+declare const kHIDUsage_Csmr_ACCatalog: number;
+
+declare const kBluetoothHCICommandPINCodeRequestReply: number;
+
+declare const kFWAckBusyX: number;
+
+declare const kBluetoothHCISubEventLEChannelSelectionAlgorithm: number;
+
+declare const kIOBlitSourceDefault: number;
+
+declare const kBluetoothHCIEventMaskDisconnectionComplete: number;
+
+declare const kHIDUsage_BCS_ContactScanner: number;
+
+declare const kIOUSBDeviceRequestSetSel: number;
+
+declare const kThirdDepthMode: number;
 
 declare const kFWExtendedTCodeVendorDependent: number;
 
 declare const kIODKDisableIOPMSystemOffPhase2Allow: number;
 
+declare const kPowerStateReducedPower3: number;
+
 declare const kSuperSpeedDeviceCapabilitySupport5Gb: number;
+
+declare const kSCCCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kSPCCmd_PREVENT_ALLOW_MEDIUM_REMOVAL: number;
 
 declare const SPTM_UPDATE_DELAYED_TLBI: number;
 
 declare const kFWPhyPacketPhyID: number;
 
+declare const kIOAudioDeviceCanBeDefaultNothing: number;
+
 declare const kFWSelfIDNPf: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkDirectionTx: number;
+
+declare const kConnectionColorDepthsSupported: number;
+
+declare const kINQUIRY_Page83_CodeSetReserved: number;
+
+declare const kIOCLUTPixels: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityBESLDPhase: number;
 
 declare const kIOPCIDeviceOffState: number;
 
+declare const kBluetoothHCICommandReadHoldModeActivity: number;
+
 declare const disconnectedErr: number;
+
+declare const kUSB100mAAvailable: number;
+
+declare const kCSRMemoryBaseHiAddress: number;
+
+declare const kBluetoothGAPAppearanceGenericHeartrateSensor: number;
+
+declare const kConnectionPower: number;
+
+declare const kIODynamicRangeNotSupported: number;
+
+declare const kHIDUsage_Tfon_PhoneKeyA: number;
 
 declare const kIOPCIUncorrectableErrorBitReceiverOverflow: number;
 
+declare const kFWIsochTag: number;
+
+declare const kHIDUsage_WD_WeightUnitPennyweights: number;
+
 declare const gIOResourceIOKitKey: interop.Pointer;
+
+declare const kMirrorCanChangeTimingMask: number;
 
 declare const kIOPCISlotStatusElectromechanicalInterlockState: number;
 
 declare const IFNET_FAMILY_STF: number;
 
-declare const IOUSBHostCIDoorbellDeviceAddress: number;
+declare const kBluetoothPacketType3DM5Omit: number;
+
+declare const kIOStreamMethodOpen: number;
+
+declare const kHIDUsage_Csmr_Reserved: number;
+
+declare const kHIDUsage_Sprt_8Iron: number;
+
+declare const kPowerStateNeedsRefresh: number;
+
+declare const kFWBIBMaxROMPhase: number;
+
+declare const kUSBInterfaceIDShift: number;
+
+declare const kSESCmd_RELEASE_6: number;
+
+declare const kModeValid: number;
+
+declare const kHIDUsage_GD_SystemMainMenu: number;
+
+declare const kHIDUsage_AD_DisplayData: number;
+
+declare const kIOTimingIDVESA_640x480_60hz: number;
+
+declare const kBluetoothHCICommandReadDefaultLinkPolicySettings: number;
+
+declare const kBluetoothHCIEventNumberOfCompletedPackets: number;
+
+declare const kBluetoothHCIErroneousDataReportingReservedEnd: number;
 
 declare const kATADeviceError: number;
 
+declare const kHIDUsage_Snsr_Data_Motion_AngularPositionZAxis: number;
+
+declare const kIOHIDAccelerationAlgorithmTypeDefault: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkLSEGbits: number;
+
+declare const kBluetoothHCICommandSetConnectionlessSlaveBroadcastData: number;
+
+declare const kBluetoothHCICommandLEClearPeriodicAdvertiserList: number;
 
 declare const CSSLOT_LAUNCH_CONSTRAINT_PARENT: number;
 
 declare const kIOReportDisable: number;
 
+declare const kHIDUsage_AD_CharacterWidth: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsPowerSwitchingMask: number;
+
+declare const kHIDUsage_Button_209: number;
+
+declare const kMMCCmd_VERIFY_12: number;
+
+declare const kHardwareDrive: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_DataUpdated: number;
+
 declare const kIOFBNotifyHDACodecDidPowerOff: number;
 
-declare const IOUSBHostCIDeviceCreateCommandData0RootPort: number;
+declare const kDisplayModeIDNoMoreResolutions: number;
+
+declare const kSCSICmd_ERASE_10: number;
+
+declare const kHIDUsage_BCS_PreventReadOfBarcodes: number;
+
+declare const kIOCatalogAddDriversNoMatch: number;
 
 declare const kATAcmdRead: number;
 
+declare const kHIDUsage_PID_ROM_PoolSize: number;
+
+declare const kIOAsyncCalloutCount: number;
+
+declare const kHIDUsage_Snsr_Motion_Accelerometer2D: number;
+
+declare const kBluetoothHCICommandWriteLinkSupervisionTimeout: number;
+
+declare const kHIDUsage_Sim_Elevator: number;
+
 declare const kATAcmdIdleImmed: number;
+
+declare const kDisplayModeStretchedFlag: number;
+
+declare const kHIDUsage_BS_ResetToZero: number;
 
 declare const kATAInvalidDevID: number;
 
+declare const kSyncOnMask: number;
+
+declare const kSENSE_DATA_VALID: number;
+
 declare const kIOReportQuantityFrequency: number;
+
+declare const kRangeSupportsSignal_0700_0300_Bit: number;
+
+declare const kBluetoothHCICommandLESetExtendedScanResponseData: number;
+
+declare const kIOHIDElementFlagsWrapMask: number;
+
+declare const kIOFBBitRateHBR2: number;
+
+declare const kBluetoothHCIErrorKeyMissing: number;
+
+declare const kSENSE_KEY_BLANK_CHECK: number;
+
+declare const kBluetoothDeviceClassMinorImaging1Printer: number;
+
+declare const kIOUSBDeviceRequestGetInterface: number;
+
+declare const kConnectionProbe: number;
+
+declare const kConfigBusInfoBlockLengthPhase: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_ChangeSensitivity: number;
+
+declare const fourthVidMode: number;
+
+declare const kIOHIDKeyboardPhysicalLayoutType101: number;
 
 declare const kIOMemoryAsReference: number;
 
-declare const IOUSBHostCICommandMessageData0StreamIDPhase: number;
+declare const timingSony_1900x1200_76hz: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AccelerationAxisY: number;
+
+declare const kHIDUsage_PD_Humidity: number;
 
 declare const IOFWAsyncStreamReceiver: number;
 
+declare const kHIDUsage_Csmr_ACDistributeH: number;
+
 declare const kIOPCIConfigurationOffsetSubSystemID: number;
+
+declare const kHIDUsage_Button_32: number;
+
+declare const kRangeSupportsSignal_0700_0000_Bit: number;
+
+declare const kHIDUsage_PD_Input: number;
+
+declare const kIOFBTenPtTwoShmemVersion: number;
 
 declare const kIOFBNotifyWSAADidEnterDefer: number;
 
+declare const kHIDUsage_Snsr_Data_Custom: number;
+
+declare const kHIDPage_PowerDevice: number;
+
+declare const kOSAsyncRef64Count: number;
+
+declare const kBluetoothDeviceClassMajorImaging: number;
+
 declare const kIOMemoryPurgeableFaultOnAccess: number;
+
+declare const kHIDUsage_Tfon_ForwardCalls: number;
+
+declare const kBluetoothHCICommandWriteScanEnable: number;
+
+declare const kHIDUsage_Csmr_KeyboardInputAssistPreviousGroup: number;
+
+declare const kBluetoothHCIEventInquiryResult: number;
 
 declare const CS_SHA1_LEN: number;
 
 declare const AppleUSBHostResources: number;
 
+declare const timingVESA_800x600_60hz: number;
+
+declare const cscDrawHardwareCursor: number;
+
 declare const kRegPathNameTerminator: number;
+
+declare const kIOScalingInfoValid: number;
+
+declare const kHIDUsage_KeyboardPageDown: number;
 
 declare const kIOExternalMethodScalarInputCountMax: number;
 
@@ -3304,21 +12452,131 @@ declare const kSuperSpeedPlusDeviceCapabilitySublinkReserved: number;
 
 declare const bATAWriteFault: number;
 
+declare const kScaleStretchToFitMask: number;
+
+declare const kConnectionControllerDepthsSupported: number;
+
+declare const kHIDUsage_Snsr_Environmental_AtmosphericPressure: number;
+
+declare const kBluetoothHCIEventInquiryComplete: number;
+
 declare const kExtInt9_NMIIntSource: number;
+
+declare const kHIDUsage_GD_DockableDevicePrimaryUsagePage: number;
+
+declare const kBluetoothHCIEventMaskLoopbackCommand: number;
 
 declare const gFireWireSelfIDs: interop.Pointer;
 
+declare const kHIDUsage_PID_TypeSpecificBlockOffset: number;
+
+declare const kHIDUsage_Button_73: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2SensingDevice: number;
+
+declare const kHIDUsage_BD_BrailleRockerDown: number;
+
+declare const kHIDUsage_BCS_BooklandEAN: number;
+
+declare const kHIDUsage_KeypadPlus: number;
+
+declare const kIORangeSupportsInterlacedCEATiming: number;
+
+declare const kBluetoothLEMaxTXOctetsMin: number;
+
+declare const kBluetoothDeviceNameMaxLength: number;
+
+declare const kHIDUsage_BCS_EANTwoLabel: number;
+
+declare const kBluetoothVoiceSettingInputDataFormat1sComplement: number;
+
+declare const kDisplayModeInterlacedFlag: number;
+
+declare const kIOAudioSelectorControlSubTypeChannelNominalLineLevel: number;
+
+declare const kHIDUsage_AD_Columns: number;
+
+declare const kHFSBootVolumeInconsistentBit: number;
+
+declare const kBluetoothHCIErrorUnacceptableConnectionInterval: number;
+
+declare const kHIDUsage_AD_ASCIICharacterSet: number;
+
+declare const kBluetoothHCICommandWriteRemoteAMPASSOC: number;
+
 declare const kIOFBNotifyWSAAWillEnterDefer: number;
+
+declare const kIOHIDOptionsTypeSeizeDevice: number;
+
+declare const kATAIdentifyPhysicalLogicalSectorSize: number;
+
+declare const kHIDUsage_Button_235: number;
+
+declare const kDisplaySubPixelLayoutRGB: number;
+
+declare const kSBCModePageCaching_VS1_Mask: number;
+
+declare const kFWAVCAsyncPlug14: number;
+
+declare const kBluetoothPacketTypeDM3: number;
+
+declare const kBluetoothSDPPDUIDServiceSearchAttributeResponse: number;
+
+declare const kSSCPrinterCmd_MODE_SELECT_10: number;
+
+declare const kBluetoothHCICommandWriteClassOfDevice: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedIdPhase: number;
 
 declare const IOPCIDeviceMetaClass: number;
 
+declare const kHIDUsage_KeypadComma: number;
+
+declare const kHIDUsage_BCS_MotorTimeout: number;
+
 declare const AVCSubunitInfo: number;
 
 declare const OSAction_IOHIDEventService__CopyEventInterface: number;
 
+declare const kIOBlitFixedSource: number;
+
+declare const kBluetoothDeviceClassMajorAny: number;
+
+declare const timingVESA_1280x1024_60hz: number;
+
+declare const kBluetoothHCICommandHostNumberOfCompletedPackets: number;
+
 declare const kSOFTRESET: number;
+
+declare const kHIDUsage_Dig_Tap: number;
+
+declare const kBluetoothVoiceSettingPCMBitPositionMask: number;
+
+declare const kIOWSAA_StateMask: number;
+
+declare const kSCSICmd_WRITE_16: number;
+
+declare const kSGCCmd_COPY: number;
+
+declare const kBluetoothDeviceClassMinorPhoneUnclassified: number;
+
+declare const kAnalogSignalLevel_0700_0300: number;
+
+declare const kHIDUsage_PD_Flow: number;
+
+declare const kBluetoothSDPUUID16SDP: number;
+
+declare const kBluetoothHCIErroneousDataReportingReservedStart: number;
+
+declare const kIOFBServerConnectType: number;
+
+declare const kIODynamicRangeTraditionalGammaSDR: number;
+
+declare const kSSCPrinterCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkDirectionPhase: number;
+
+declare const kIOFBNS_UnDim: number;
 
 declare const kRegMaximumPropertyNameLength: number;
 
@@ -3326,13 +12584,49 @@ declare const kIOPCISlotCapabilitiesBitNoCommandCompletedSupport: number;
 
 declare const IOFWLocalIsochPort: number;
 
+declare const kSPCCmd_SET_DEVICE_IDENTIFIER: number;
+
 declare const kFWSelfID0PwrPhase: number;
+
+declare const kBluetoothHCICommandWriteHoldModeActivity: number;
+
+declare const kBluetoothHCICommandWriteSimplePairingMode: number;
+
+declare const kIOATAFeatureSMART: number;
+
+declare const kBluetoothDeviceClassMinorToyRobot: number;
+
+declare const kHIDUsage_Dig_Reserved: number;
 
 declare const kIODKEnable: number;
 
 declare const gIORegistryEntryPropertyKeysKey: interop.Pointer;
 
 declare const kDeviceRequestSetIsochronousDelay: number;
+
+declare const kHIDUsage_Snsr_Location_DeadReckoning: number;
+
+declare const kBluetoothDeviceClassMajorPhone: number;
+
+declare const kIOMirrorDefaultAttribute: number;
+
+declare const kIOHIDKeyboardPhysicalLayoutType103: number;
+
+declare const kINQUIRY_Byte6_VS_Bit: number;
+
+declare const kHIDUsage_Button_159: number;
+
+declare const kDVDBookTypeHDRAM: number;
+
+declare const kSBCModePageCaching_MF_Mask: number;
+
+declare const kIOWSAA_DeferEnd: number;
+
+declare const kHIDUsage_Csmr_ACAttachFile: number;
+
+declare const kCSRStateLost: number;
+
+declare const kConnectionBlueGammaScale: number;
 
 declare const gIODisplayVerticalPositionKey: interop.Pointer;
 
@@ -3342,11 +12636,35 @@ declare const IOAudioTimeIntervalFilterIIR: number;
 
 declare const MBUF_TYPE_HEADER: number;
 
-declare const IOUSBHostCICommandMessageData0RootPortPhase: number;
+declare const kHIDUsage_Snsr_Property_Time_DaylightSavingsTimeObserved: number;
+
+declare const kHIDUsage_Dig_GestureCharacterEncodingUTF32LE: number;
+
+declare const kSMCCmd_REQUEST_SENSE: number;
+
+declare const kINQUIRY_Page83_CodeSetUTF8Data: number;
+
+declare const kHIDUsage_WD_WeightUnitTroyOunce: number;
+
+declare const kIOHSyncDisable: number;
+
+declare const kHIDUsage_PID_DC_EnableActuators: number;
+
+declare const kATAEnableUltraDMAModeMask: number;
+
+declare const kIOFBCurrentShmemVersion: number;
 
 declare const gIOResourcesKey: interop.Pointer;
 
+declare const kDCLNuDCLLeaderOp: number;
+
 declare const kPCI2PCISecondaryBus: number;
+
+declare const kBluetoothHCICommandDeleteReservedLTADDR: number;
+
+declare const kHFSUnusedNodesFixDate: number;
+
+declare const timingApplePAL_FFconv: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCountPhase: number;
 
@@ -3354,13 +12672,31 @@ declare const IOFilterInterruptEventSource: number;
 
 declare const gIOConsoleSecurityInterest: interop.Pointer;
 
+declare const timingAppleSVGA: number;
+
 declare const IOPwrController: number;
+
+declare const kConfigGenerationKey: number;
 
 declare const kFWPhyConfigurationR: number;
 
+declare const kHIDUsage_Csmr_ACForwardMessage: number;
+
 declare const gIODisplayHorizontalPositionKey: interop.Pointer;
 
+declare const kDisplayModeTelevisionFlag: number;
+
 declare const IOFireWireControllerAux: number;
+
+declare const kBluetoothHCICommandChangeLocalName: number;
+
+declare const kBluetoothKeyTypeLocalUnit: number;
+
+declare const kIOWSAA_Unaccelerated: number;
+
+declare const kModeSenseParameterHeader10_LongLBAMask: number;
+
+declare const kHIDUsage_BCS_LongRangeScanner: number;
 
 declare const CS_SHA256_LEN: number;
 
@@ -3370,9 +12706,59 @@ declare const IOFireWireNubAux: number;
 
 declare const kIOPCIAdapterHotRemovePending: number;
 
+declare const kSBCWOCmd_RESERVE_6: number;
+
+declare const kBluetoothHCICommandReadInquiryScanActivity: number;
+
+declare const kHIDUsage_Csmr_Treble: number;
+
+declare const kHIDUsage_Sprt_1Iron: number;
+
+declare const kIOTimingIDApple_560x384_60hz: number;
+
+declare const kIOScaleCanBorderInsetOnly: number;
+
+declare const EMBEDDED_DCC: number;
+
+declare const kIOAsyncReservedCount: number;
+
+declare const kHIDUsage_BS_FullyDischarged: number;
+
+declare const kHIDUsage_BS_AtRateTimeToFull: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardDot3: number;
+
+declare const kIOKitNoticationTypeMask: number;
+
+declare const kSBCWOCmd_SET_LIMITS_10: number;
+
+declare const kIOFBLinkVoltageLevel0: number;
+
+declare const kBluetoothPacketTypeHV2: number;
+
+declare const kBluetoothHCICommandGetMWSTransportLayerConfiguration: number;
+
+declare const kDisplaySubPixelLayoutQuadGBR: number;
+
+declare const kSCSICDBSize_16Byte: number;
+
+declare const kVideoUsageAddrSubAddrMask: number;
+
+declare const kHIDUsage_PD_PercentLoad: number;
+
 declare const IOFWAsyncStreamCommand: number;
 
 declare const kIOUCVariableStructureSize: number;
+
+declare const kIOUSBDeviceFeatureSelectorTestMode: number;
+
+declare const kBluetoothHCICommandReadLocalSupportedCommands: number;
+
+declare const kConfigEntryValue: number;
+
+declare const kBluetoothHCIEventCommandStatus: number;
+
+declare const kDVDRZoneInfoAddressTypeBorderNumber: number;
 
 declare const gFireWireUnit_SW_Version: interop.Pointer;
 
@@ -3380,47 +12766,219 @@ declare const kEndpointDescriptorDirection: number;
 
 declare const CSSLOT_LAUNCH_CONSTRAINT_SELF: number;
 
+declare const IOVideoDevice: number;
+
+declare const kSCSICmd_SEARCH_DATA_EQUAL_12: number;
+
+declare const kINQUIRY_Byte7_VS_Mask: number;
+
+declare const kIORGBSignedFloatingPointPixels: number;
+
 declare const kPCIPMCSPowerStateD2: number;
+
+declare const kMMCCmd_COPY: number;
+
+declare const kHIDUsage_Tfon_PhoneKey6: number;
+
+declare const kDVDFeaturesHDReadMask: number;
 
 declare const kSuperSpeedDeviceCapabilityU2DevExitLatMax: number;
 
+declare const kHIDUsage_Button_233: number;
+
+declare const kUSBHIDInterfaceClass: number;
+
 declare const kIOPCIConfigDeviceID: number;
 
+declare const kHIDUsage_Snsr_Data_Location_FixTypeFloatRTK: number;
+
+declare const kCDFeaturesReadStructuresBit: number;
+
+declare const kUSBInterfaceAssociationDesc: number;
+
+declare const kHIDUsage_Csmr_ACResize: number;
+
+declare const kIOFBDisplayPortTrainingAttribute: number;
+
+declare const kSBCWOCmd_COPY_AND_VERIFY: number;
+
 declare const kUSBHostMaxDevices: number;
+
+declare const cscPrivateStatusCall: number;
+
+declare const kHIDUsage_LED_HighCutFilter: number;
+
+declare const kDVDMediaTypeHDR: number;
+
+declare const kCDTOCFormatTOC: number;
+
+declare const kSGCCmd_WRITE_BUFFER: number;
+
+declare const kIOColorimetryNativeRGB: number;
 
 declare const kIOTrackingLeaks: number;
 
 declare const kIOLogMatch: number;
 
+declare const kHIDUsage_Csmr_ACNormalView: number;
+
+declare const kIORangeBitsPerColorComponent10: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_Reserved2: number;
+
+declare const kHIDUsage_Snsr_Data_Location_CountryOrRegion: number;
+
+declare const kUSBBillboardUnspecifiedError: number;
+
 declare const CS_VALIDATION_CATEGORY_DEVELOPMENT: number;
+
+declare const kHFSHasSecurityBit: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularVelocityXAxis: number;
+
+declare const kBluetoothSDPErrorCodeInvalidContinuationState: number;
 
 declare const kIOPCICapabilityIDVitalProductData: number;
 
+declare const kSSCSeqCmd_MOVE_MEDIUM_ATTACHED: number;
+
 declare const kHIDFlag_StrictErrorChecking: number;
+
+declare const kBluetoothL2CAPFlushTimeoutDefault: number;
+
+declare const kINQUIRY_PERIPHERAL_QUALIFIER_Mask: number;
+
+declare const kIOBlitTypeDestKeyColorNotEqual: number;
 
 declare const IFNET_MULTIPAGES: number;
 
+declare const kSSCSeqCmd_WRITE_FILEMARKS: number;
+
+declare const kSCSICmd_INQUIRY: number;
+
+declare const kCSRStateAtn: number;
+
 declare const CONSISTENT_DEBUG_PANIC_SOURCE_TXM: number;
+
+declare const kBluetoothAirModeALawLog: number;
+
+declare const kDVDFeaturesReWriteableMask: number;
 
 declare const kIOPCIAdapterHotAddPending: number;
 
+declare const timingVESA_1600x1200_75hz: number;
+
+declare const kHIDUsage_BS_SMBBatteryStatus: number;
+
+declare const kIOTimingIDAppleNTSC_ST: number;
+
+declare const kSBCModePageCaching_DISC_Bit: number;
+
 declare const kIOPCIUncorrectableErrorBitTLPPrefixBlocked: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeAll: number;
 
 declare const MBUF_CSUM_IP_GOOD: number;
 
+declare const kIOFBDisplayState_PipelineBlack: number;
+
+declare const kUSBAdaptiveIsocSyncType: number;
+
+declare const cscGetGray: number;
+
+declare const kHFSPlusFileThreadRecord: number;
+
 declare const kIOPCICommandMemorySpace: number;
+
+declare const kBluetoothRoleBecomeCentral: number;
+
+declare const kINQUIRY_PERIPHERAL_RMB_BitMask: number;
+
+declare const kSBCCmd_XPWRITE: number;
+
+declare const kBluetoothHCIErrorOtherEndTerminatedConnectionUserEnded: number;
 
 declare const kIOMemoryPhysicallyContiguous: number;
 
+declare const cscGetScaler: number;
+
+declare const kBluetoothHCIErrorQoSNotSupported: number;
+
+declare const kIOUSBDeviceRequestSetIsochronousDelay: number;
+
+declare const kSymLinkFileType: number;
+
+declare const kBluetoothL2CAPConfigurationOptionRetransmissionAndFlowControlLength: number;
+
 declare const kPCIPMCSPowerStateMask: number;
+
+declare const kHIDUsage_Button_168: number;
+
+declare const kSBCCmd_LOG_SENSE: number;
+
+declare const kIOTimingIDAppleNTSC_FF: number;
+
+declare const kIORangeSupportsSeparateSyncs: number;
+
+declare const kHIDUsage_BCS_DLMethodReadAny: number;
+
+declare const kHIDUsage_Tfon_VoiceMail: number;
+
+declare const kIOVideoDeviceMethodCount: number;
+
+declare const cscSetMirror: number;
 
 declare const kFWExtendedTCodeMaskSwap: number;
 
+declare const kHIDUsage_Game_HeightOfPOV: number;
+
 declare const gIODisplayGammaScaleKey: interop.Pointer;
+
+declare const kHIDUsage_Csmr_ALAOrVCaptureOrPlayback: number;
 
 declare const kIOLogPower: number;
 
+declare const kHIDUsage_LED_Shift: number;
+
 declare const kIOMemoryPurgeableVolatileBehaviorLifo: number;
+
+declare const kIOUSBVendorIDApple: number;
+
+declare const kHardwareWakeToDoze: number;
+
+declare const kHIDUsage_PD_Initialized: number;
+
+declare const kHIDPage_VR: number;
+
+declare const kBluetoothHCIEventMaskNumberOfCompletedPackets: number;
+
+declare const kSSCPrinterCmd_MODE_SELECT_6: number;
+
+declare const kIORangeColorimetryWGRGB: number;
+
+declare const kHIDUsage_BCS_HeaterPresent: number;
+
+declare const kSyncOnGreenMask: number;
+
+declare const kHIDUsage_Csmr_DataOnScreen: number;
+
+declare const kHIDUsage_LED_ToneEnable: number;
+
+declare const kHIDUsage_Button_114: number;
+
+declare const kINQUIRY_Byte7_LINKED_Mask: number;
+
+declare const kHFSJMountVersion: number;
+
+declare const kHIDUsage_Csmr_ChannelLowFrequencyEnhancement: number;
+
+declare const kFWAVCAsyncPlug30: number;
+
+declare const kIOHIDElementFlagsNoPreferredMask: number;
+
+declare const kConnectionDisplayParameters: number;
+
+declare const kHIDUsage_Tfon_PhoneKey8: number;
 
 declare const kAirshipDaleBasebandTraceUserClientFlushTraceBuffers: number;
 
@@ -3428,91 +12986,467 @@ declare const kIOPCILatencyUnsnooped: number;
 
 declare const kHV_ION_ANY_VALUE: number;
 
+declare const kHIDUsage_Sim_SailingSimulationDevice: number;
+
 declare const gIOUserServerTagKey: interop.Pointer;
+
+declare const kConfigNodeSwVersionKey: number;
+
+declare const kSSCPrinterCmd_RELEASE_10: number;
+
+declare const kATASupportsCompactFlashBit: number;
+
+declare const kBluetoothHCICommandLEPeriodicAdvertisingCreateSync: number;
+
+declare const kHIDUsage_GD_Vbrz: number;
+
+declare const kHardwareWakeToDozeFromSuspend: number;
+
+declare const cscGetGamma: number;
 
 declare const sockopt_get: number;
 
+declare const kUSBMaxPipes: number;
+
+declare const kDisplayVendorIDUnknown: number;
+
+declare const kIOCatalogRemoveDriversNoMatch: number;
+
 declare const mATAAddressNotFound: number;
+
+declare const kSENSE_KEY_VOLUME_OVERFLOW: number;
+
+declare const kATAPhysicalLogicalEnabledBit1: number;
 
 declare const kFWAsynchTLabelPhase: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkMinSpeedIdPhase: number;
 
+declare const kHIDUsage_BS_iDeviceChemistry: number;
+
+declare const kIOColorimetryBT709: number;
+
+declare const kUSBMassStorageUFISubClass: number;
+
+declare const kHIDUsage_Snsr_Time: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilitySupportHighSpeed: number;
+
+declare const kIOHardwareCursorAttribute: number;
+
 declare const kIOPCIExpressCapabilityIDPASID: number;
 
 declare const kIOExternalMethodScalarOutputCountMax: number;
 
+declare const kConnectionSupportsAppleSense: number;
+
+declare const kHIDUsage_WD_ScaleScaleClassIIILEnglish: number;
+
+declare const kHIDUsage_PD_DelayBeforeReboot: number;
+
+declare const kIOAudioSMPTETimeType25: number;
+
+declare const kHFSPlusAttrInlineData: number;
+
+declare const kUSBVendor: number;
+
+declare const kHIDUsage_PID_DC_DeviceContinue: number;
+
+declare const kBluetoothL2CAPPSMDynamicEnd: number;
+
+declare const mVRes: number;
+
+declare const kATAIdentifyConfiguration: number;
+
 declare const CS_VALIDATION_CATEGORY_TESTFLIGHT: number;
+
+declare const kIOSyncOnRed: number;
+
+declare const kBluetoothHCIErrorAuthenticationFailure: number;
 
 declare const bATADriveReady: number;
 
-declare const IOUSBHostCIPortStatusCommandData1ConnectChange: number;
+declare const kIOVideoFeatureControlClassIDBrightness: number;
+
+declare const kUSBDeviceSpeedHigh: number;
+
+declare const kConfigNodeDependentInfoKey: number;
+
+declare const kBluetoothL2CAPTCIEventIDL2CA_TimeOutInd: number;
+
+declare const kHIDUsage_Snsr_Modifier_CalibrationMultiplier: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical: number;
+
+declare const kIOWSAA_NonConsoleDevice: number;
+
+declare const kIOAudioTimeStampRateScalarValid: number;
+
+declare const kHIDUsage_Button_75: number;
+
+declare const kInvertingEncodingShift: number;
+
+declare const kATASupportsAdvancedPowerManagementBit: number;
+
+declare const kSBCCmd_WRITE_12: number;
+
+declare const kINQUIRY_PERIPHERAL_RMB_MediumFixed: number;
+
+declare const kHIDUsage_Button_147: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_MagneticFlux: number;
+
+declare const kBluetoothHCICommandWriteDefaultErroneousDataReporting: number;
+
+declare const kPowerStateSleepAwareMask: number;
+
+declare const kHIDUsage_KeyboardAgain: number;
+
+declare const kSSCSeqCmd_READ_BUFFER: number;
+
+declare const kBluetoothHCICommandSetExternalFrameConfiguration: number;
+
+declare const kHIDUsage_BCS_EAN_99_128_Mandatory: number;
+
+declare const kBluetoothHCIErrorPairingWithUnitKeyNotSupported: number;
+
+declare const kCSRNodeIDsAddress: number;
+
+declare const kHIDUsage_GD_SystemDisplaySwap: number;
+
+declare const kHIDUsage_GD_DockableDeviceUniqueID: number;
+
+declare const kHIDUsage_BS_FullyCharged: number;
+
+declare const kSBCCmd_READ_UPDATED_BLOCK_10: number;
+
+declare const kIOFBBitRateHBR: number;
 
 declare const kSuperSpeedHubCharacteristicsOverCurrentGlobal: number;
 
+declare const kIOTimingIDVESA_1024x768_60hz: number;
+
+declare const kBluetoothHCICommandWriteLinkPolicySettings: number;
+
+declare const kHIDUsage_Button_240: number;
+
 declare const kAirshipDaleBasebandTraceUserClientRegisterTraceBuffer: number;
 
-declare const IOUSBHostCIPortStatusPowered: number;
+declare const kHIDUsage_Snsr_Data_Biometric_HeartRate: number;
+
+declare const kHIDUsage_Haptics_AutoTriggerAssociatedControl: number;
+
+declare const mVersion: number;
+
+declare const kSSCPrinterCmd_MODE_SENSE_10: number;
+
+declare const kESCSixMSB2: number;
+
+declare const kSGCCmd_SEND_DIAGNOSTICS: number;
+
+declare const kBluetoothHCICommandWriteSimplePairingDebugMode: number;
+
+declare const kFWBIBMaxRecPhase: number;
 
 declare const kEfiRuntimeServicesCode: number;
+
+declare const kClearInterfaceFeature: number;
+
+declare const kHIDUsage_Snsr_Property_ReportingState_NoEvents: number;
 
 declare const kDeviceRequestSetFeature: number;
 
 declare const kIOPMPowerStateVersion1: number;
 
+declare const kHIDPage_LEDs: number;
+
 declare const DEBUG_HEADER_CURRENT_VERSION: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesUsedCount: number;
+
+declare const kHIDUsage_LED_CameraOn: number;
+
+declare const kBluetoothHCIErrorPowerIsOFF: number;
+
+declare const kIO16BE565PixelFormat: number;
+
+declare const kHIDUsage_LED_CameraOff: number;
+
+declare const kIORangeSupportsSignal_1000_0400: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeSimulatorMode: number;
 
 declare const gIODisplayLinearBrightnessKey: interop.Pointer;
 
+declare const kFWAVCConsumerMode_LESS: number;
+
 declare const IOATAController: number;
+
+declare const kIOAnalogSignalLevel_0700_0300: number;
+
+declare const kBluetoothL2CAPTCIEventIDL2CA_ConnectInd: number;
 
 declare const kKeyMaskPower: number;
 
 declare const kFWSelfID0C: number;
 
+declare const kBluetoothHCICommandWriteLogicalLinkAcceptTimeout: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AddressLine1: number;
+
+declare const kBluetoothDeviceClassMinorAudioSetTopBox: number;
+
+declare const kHIDUsage_Dig_TipSwitch: number;
+
+declare const kSESCmd_MODE_SELECT_10: number;
+
+declare const kSCSICmd_SEND_KEY: number;
+
+declare const kDCLJumpOp: number;
+
+declare const kIOTimingIDAppleNTSC_STconv: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypeInterruptReserved2: number;
+
+declare const kCSRUnitsBoundHiAddress: number;
+
+declare const kSESCmd_MODE_SENSE_10: number;
+
 declare const kIOTraceIOService: number;
 
 declare const kSuperSpeedEndpointCompanionDescriptorMaxBurstPhase: number;
 
+declare const kHIDUsage_Snsr_Event_SensorEvent_PollResponse: number;
+
 declare const kIOLogDebugPower: number;
+
+declare const kSMCCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kBluetoothHCIEventConnectionPacketType: number;
 
 declare const kEfiMaxMemoryType: number;
 
+declare const kHIDUsage_KeyboardL: number;
+
+declare const kDVDRZoneInfoAddressTypeRZoneNumber: number;
+
+declare const kOSAsyncRefSize: number;
+
+declare const kOSAsyncRefCount: number;
+
+declare const kOSAsyncRef64Size: number;
+
+declare const kIOInterestCalloutCount: number;
+
 declare const kDataRotate0: number;
 
-declare const IOUSBHostCIDeviceUpdateCommandData1DescriptorAddressPhase: number;
+declare const kIOMatchingCalloutCount: number;
+
+declare const kIOAsyncCalloutRefconIndex: number;
+
+declare const kUSBNotificationPostForcedSuspendBit: number;
+
+declare const kIOAsyncReservedIndex: number;
+
+declare const kHIDUsage_Dig_Quality: number;
+
+declare const kOSNotificationMessageID: number;
+
+declare const kIOServicePublishNotificationType: number;
+
+declare const kIOSystemStateSleepDescriptionHibernateStateWakingFromHibernate: number;
+
+declare const kHIDUsage_PD_SwitchOnOff: number;
+
+declare const kIOCatalogServiceTerminate: number;
+
+declare const kBluetoothDeviceClassMinorAudioVideoDisplayAndLoudspeaker: number;
+
+declare const kBluetoothDeviceClassMinorWearableJacket: number;
+
+declare const kIOMatchingCalloutFuncIndex: number;
+
+declare const kSPCProcCmd_INQUIRY: number;
+
+declare const kBluetoothHCICommandParkMode: number;
+
+declare const kMMCCmd_COMPARE: number;
+
+declare const kSBCCmd_TEST_UNIT_READY: number;
 
 declare const kIOMemoryLedgerTagGraphics: number;
 
+declare const EMBEDDED_CD_PLAYER: number;
+
+declare const kHIDPage_BrailleDisplay: number;
+
+declare const kINQUIRY_Page83_AssociationTargetDevice: number;
+
+declare const kIOVideoFeatureControlClassIDTilt: number;
+
+declare const kFramebufferDisableAltivecAccess: number;
+
 declare const kIOPCISlotCapabilitiesBitHotPlugSurprise: number;
+
+declare const kHFSUnusedNodeFixBit: number;
+
+declare const kIOAudioControlUsageInput: number;
+
+declare const kBluetoothL2CAPQoSDelayVariationDefault: number;
+
+declare const kHIDUsage_BCS_ConvertUPCAToEAN_13: number;
+
+declare const kSSCSeqCmd_LOG_SELECT: number;
+
+declare const kHFSFileThreadRecord: number;
+
+declare const kUSBSuperSpeedSupportsSS: number;
+
+declare const kSetConfiguration: number;
+
+declare const kOSAsyncCompleteMessageID: number;
+
+declare const kBluetoothHCICommandLESetScanParameters: number;
+
+declare const kBluetoothPacketType2DH1Omit: number;
+
+declare const kINQUIRY_Byte6_MULTIP_Bit: number;
+
+declare const kHIDUsage_Dig_StereoPlotter: number;
+
+declare const kSCSICmd_LOG_SENSE: number;
+
+declare const kHIDUsage_LED_GenericIndicator: number;
 
 declare const IOFireWireDuplicateGUIDList: number;
 
+declare const kDisplayModeBuiltInFlag: number;
+
+declare const kSCSICmd_PAUSE_RESUME: number;
+
+declare const kIOPowerStateAttribute: number;
+
+declare const timingApple_640x480_67hz: number;
+
+declare const kHIDUsage_GD_CallMuteLED: number;
+
+declare const kIOStreamEnqueueInputTrap: number;
+
+declare const kBTVariableIndexKeysMask: number;
+
+declare const kIOFBNumCursorFramesShift: number;
+
+declare const kHFSVolumeJournaledMask: number;
+
+declare const cscGetScanProc: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedIdCount: number;
+
+declare const kESCSevenNoDisplay: number;
+
+declare const kHIDUsage_GD_SFShift: number;
+
+declare const kSCSICmd_VendorSpecific_Start: number;
+
+declare const kIOAudioStreamSampleFormatALaw: number;
+
+declare const kAVPowerOn: number;
+
+declare const kHIDUsage_GD_ResolutionMultiplier: number;
+
+declare const kBluetoothL2CAPChannelSecurityManager: number;
+
+declare const kHIDUsage_Snsr_Data_Scanner: number;
+
+declare const kINQUIRY_Byte5_ACC_Bit: number;
+
+declare const kBluetoothHCIErrorRepeatedAttempts: number;
+
+declare const kAnalogSetupExpectedMask: number;
+
+declare const kIORDYBit: number;
 
 declare const IOPowerConnection: number;
 
 declare const kAirshipDaleBasebandControlInterfaceUserClientReadAsync: number;
 
-declare const IOUSBHostCIEndpointResetCommandData1ClearState: number;
+declare const kIOTimingIDVESA_1856x1392_60hz: number;
+
+declare const kHIDUsage_Dig_CapacitiveHeatMapDigitizer: number;
+
+declare const kMultiModeCRT4Connect: number;
+
+declare const kIOYUVUPixelFormat: number;
+
+declare const kBluetoothHCICommandLEReadTransmitPower: number;
+
+declare const kSGCCmd_INQUIRY: number;
+
+declare const kVideoCombinedI2CTypeMask: number;
+
+declare const kHIDUsage_Csmr_Plus10: number;
+
+declare const kBluetoothHCIEventSynchronousConnectionChanged: number;
+
+declare const kHIDUsage_Tfon_ProgrammableButton: number;
+
+declare const kUSBInterrupt: number;
 
 declare const kAirshipDaleBasebandErrorIpcPowerOffTimedOut: number;
 
 declare const kIOPCIConfigInterruptLine: number;
 
+declare const kHIDUsage_Sim_FlightYoke: number;
+
 declare const kIOReportQuantityEventCount: number;
+
+declare const kBluetoothL2CAPChannelConnectionLessData: number;
 
 declare const kDeviceRequestSetInterface: number;
 
+declare const kHIDUsage_BD_6DotBrailleCell: number;
+
+declare const kSSCSeqCmd_INQUIRY: number;
+
 declare const gIODisplaySpeakerSelectKey: interop.Pointer;
+
+declare const kHIDUsage_BD_BraillePanRight: number;
+
+declare const kHIDUsage_Button_255: number;
+
+declare const kHIDUsage_Button_127: number;
+
+declare const kBluetoothL2CAPFlushTimeoutEnd: number;
+
+declare const TELEPHONY_PHONE_LINE: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedAttrCount: number;
 
 declare const kHIDDispatchOptionPointerNoAcceleration: number;
 
+declare const kHIDUsage_Dig_3DDigitizer: number;
+
+declare const kBluetoothHCICommandRejectConnectionRequest: number;
+
+declare const kBluetoothServiceClassMajorObjectTransfer: number;
+
 declare const gIOBSDMinorKey: interop.Pointer;
 
+declare const kIOAudioSelectorControlSelectionValueInternalSpeaker: number;
+
+declare const kHFSAllocationFileID: number;
+
+declare const kHIDUsage_Sim_RearBrake: number;
+
+declare const kHIDUsage_Button_216: number;
+
+declare const kRemoveableMediaMask: number;
+
+declare const kHIDUsage_Csmr_SlowTracking: number;
+
 declare const gIOPropertyExistsMatchKey: interop.Pointer;
+
+declare const kHIDUsage_Button_95: number;
 
 declare const vDSP_IIRMonoLeft: number;
 
@@ -3520,55 +13454,255 @@ declare const kSCSIPort_StatusOnline: number;
 
 declare const kSuperSpeedPlusDeviceCapabilityReservedPhase: number;
 
+declare const kHIDUsage_Snsr_Property_ReportingState_WakeThresholdEvents: number;
+
 declare const kIOFBNotifyClamshellChange: number;
+
+declare const kHIDUsage_Keyboard0: number;
 
 declare const kIOServiceRequired: number;
 
+declare const kIOUSBEndpointDescriptorTransferTypeIsochronous: number;
+
+declare const kDisplaySubPixelShapeOval: number;
+
+declare const kIOTimingIDVESA_1792x1344_60hz: number;
+
+declare const kCSRErrorLogBufferAddress: number;
+
+declare const kBluetoothHCIEventMaskLinkKeyNotification: number;
+
+declare const kBluetoothVoiceSettingInputDataFormatSignMagnitude: number;
+
+declare const kBluetoothACLLogicalChannelReserved: number;
+
 declare const kIOMemorySetEncrypted: number;
+
+declare const kBluetoothHCICommandStartSynchronizationTrain: number;
+
+declare const kBluetoothHCIEventMaskCommandComplete: number;
 
 declare const kNVRAMProperty: number;
 
 declare const kIOFBNotifyEvent_WSAADefer: number;
 
-declare const IOUSBHostCISetupTransferData1wValue: number;
+declare const kHIDUsage_Snsr_Property_SerialNumber: number;
 
 declare const kPCI2PCIPrefetchMemoryRange: number;
 
+declare const kIOAudioChannelLabel_Ambisonic_X: number;
+
+declare const kSBCModePageCaching_IC_Mask: number;
+
 declare const kpc_supported: boolean;
+
+declare const kBluetoothHCICommandWriteLEHostSupported: number;
+
+declare const kHIDUsage_BCS_GRWTINoBeep_LampUseAtAll: number;
+
+declare const kSCSIServiceAction_XDWRITEREAD_32: number;
+
+declare const kHIDUsage_BCS_UPC_A: number;
 
 declare const IODCLTranslateListen: number;
 
+declare const kHFSPlusMaxFileNameChars: number;
+
+declare const kIOAudioToggleControlSubTypeMute: number;
+
+declare const kDisplaySubPixelConfigurationQuad: number;
+
+declare const cscGetCurMode: number;
+
+declare const kIOGDiagnoseConnectType: number;
+
+declare const kHIDUsage_Csmr_VCRPlus: number;
+
+declare const kIOUSBDeviceRequestSynchFrame: number;
+
+declare const kINQUIRY_Byte6_Offset: number;
+
+declare const kDVDCPRMRegion4: number;
+
+declare const kHIDUsage_Sim_Clutch: number;
+
+declare const kConnectionControllerColorDepth: number;
+
+declare const kSPCCmd_LOG_SELECT: number;
+
+declare const kBluetoothHCICommandLEClearResolvingList: number;
+
 declare const kDeviceRequestRecipientEndpoint: number;
+
+declare const kSCSICmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kIOUSBUSB20ExtensionCapabilityBESLDValid: number;
+
+declare const kUSBDeviceQualifierDesc: number;
+
+declare const kIORangeBitsPerColorComponent16: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_SimplifiedDirectAccessRBCDevice: number;
 
 declare const kRegUniversalModifierMask: number;
 
+declare const kIOMonoInverseDirectPixels: number;
+
+declare const kHIDUsage_Csmr_ACSelectWord: number;
+
+declare const kHFSThreadExistsBit: number;
+
+declare const kBluetoothHCIEventLoopbackCommand: number;
+
+declare const kBluetoothHCICommandLESetExtendedAdvertisingData: number;
+
+declare const kCSRInterruptTargetAddress: number;
+
+declare const kHIDUsage_BS_ACPresent: number;
+
+declare const kBluetoothHCICommandLEReadLocalResolvableAddress: number;
+
+declare const kBluetoothDeviceClassMinorHealthHeartRateMonitor: number;
+
+declare const kHIDUsage_Snsr_Event: number;
+
+declare const kSBCWOCmd_WRITE_6: number;
+
+declare const kBluetoothHCICommandWritePageScanActivity: number;
+
 declare const gIOLocationMatchKey: interop.Pointer;
+
+declare const EMBEDDED_VCR_AUDIO: number;
+
+declare const kHIDUsage_Button_87: number;
 
 declare const gIOParentMatchKey: interop.Pointer;
 
+declare const kHIDUsage_KeyboardAlternateErase: number;
+
+declare const kBluetoothHCICommandReadPageScanPeriodMode: number;
+
+declare const kHIDUsage_GD_DockableDeviceObjectType: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingTrueNorth: number;
+
+declare const kHIDUsage_BCS_MSIPlesseyControlReport: number;
+
+declare const kHIDUsage_BD_RouterSet3: number;
+
+declare const kUSBNumLockKey: number;
+
+declare const kHFSRootFolderID: number;
+
+declare const kBluetoothHCIEventMaskAuthenticationComplete: number;
+
+declare const kUSBSynchronousIsocSyncType: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_Strain: number;
+
 declare const retryExceededErr: number;
+
+declare const kBluetoothPageScanRepetitionModeR1: number;
+
+declare const kINQUIRY_PERIPHERAL_QUALIFIER_NotSupported: number;
 
 declare const IFNET_FAMILY_FIREWIRE: number;
 
+declare const kIOUSBEndpointDescriptorUsageTypeIsocImplicit: number;
+
+declare const kHIDUsage_Snsr_Data_Light_ChromaticityY: number;
+
+declare const kINQUIRY_Page83_AssociationShift: number;
+
+declare const kHIDUsage_Csmr_Record: number;
+
 declare const kIOTimerEventSourceOptionsPriorityKernelHigh: number;
+
+declare const kDVDFeaturesWriteOnceBit: number;
+
+declare const kBluetoothHCICommandSetupSynchronousConnection: number;
 
 declare const kIOAGPInvalidGARTEntry: number;
 
+declare const kIO32ABGRPixelFormat: number;
+
 declare const kFWSelfIDNPe: number;
 
+declare const kHFSHasChildLinkMask: number;
+
+declare const kMirrorClippedMirrorMask: number;
+
+declare const kHFSBadBlockFileID: number;
+
+declare const kScaleCanBorderInsetOnlyMask: number;
+
 declare const CS_LINKAGE_APPLICATION_OOPJIT_MLCOMPILER: number;
+
+declare const kHIDUsage_Snsr_Property_ConnectionType_External: number;
+
+declare const kHIDUsage_Snsr_Data_Location_VerticalDilutionOfPrecision: number;
+
+declare const kBluetoothDeviceClassMinorHealthThermometer: number;
+
+declare const kMode3Bit: number;
+
+declare const kBluetoothL2CAPChannelEnd: number;
+
+declare const kBluetoothHCILoopbackModeOff: number;
+
+declare const kUSBTDMLowBatteryType: number;
+
+declare const kHIDUsage_Csmr_TrackingIncrement: number;
+
+declare const kHIDUsage_Csmr_ALResearchOrSearchBrowswer: number;
 
 declare const MBUF_EXT: number;
 
 declare const kIOPCIExpressCapabilityIDSFI: number;
 
+declare const kHIDUsage_KeyboardLANG9: number;
+
+declare const kModeInterlaced: number;
+
+declare const kIOInterestCalloutServiceIndex: number;
+
+declare const kBluetoothVoiceSettingAirCodingFormatTransparentData: number;
+
 declare const kIOMemoryPurgeableVolatileOrderingNormal: number;
 
+declare const kBluetoothPacketType3DH3Omit: number;
+
+declare const kBluetoothLESecurityManagerBonding: number;
+
+declare const kIOAudioChannelLabel_Discrete_0: number;
+
+declare const kIODisplayYCbCr444ColorComponentBits6: number;
+
+declare const kSMCCmd_MODE_SELECT_10: number;
+
 declare const kFWSelfIDNPdPhase: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_Force: number;
+
+declare const kIOAudioControlChannelIDDefaultRight: number;
+
+declare const kHIDUsage_Button_246: number;
 
 declare const IOPlatformExpert: number;
 
 declare const kIOTrackingCallSiteBTs: number;
+
+declare const kHIDUsage_Snsr_Data_Location_SatellitesInViewElevation: number;
+
+declare const kHIDUsage_PID_ET_Ramp: number;
+
+declare const kHFSVolumeNoCacheRequiredMask: number;
+
+declare const kCSRUnitsBaseLoAddress: number;
+
+declare const kHIDUsage_PD_Charger: number;
+
+declare const cscGetPages: number;
 
 declare const kIOPCIExpressCapabilityIDLaneMarginingRx: number;
 
@@ -3576,55 +13710,269 @@ declare const kIOPCIExpressCapabilityIDRCInternalLinkCtrl: number;
 
 declare const kIOTrackingLeakScanEnd: number;
 
+declare const timingVESA_1280x960_60hz: number;
+
+declare const kUSBDeviceSpeedFull: number;
+
+declare const kHIDUsage_Csmr_ACZoomOut: number;
+
+declare const kHFSContentProtectionMask: number;
+
+declare const kIOCapturedAttribute: number;
+
 declare const CSSLOT_TICKETSLOT: number;
+
+declare const kHIDUsage_Csmr_ACFullScreenView: number;
+
+declare const kATAIdentifyLogicalCylinderCount: number;
+
+declare const kBluetoothHCIEventMaskPINCodeRequest: number;
+
+declare const kBluetoothHCICommandDisconnect: number;
+
+declare const kHIDUsage_Keyboard4: number;
+
+declare const kHIDUsage_BD_BrailleJoystickUp: number;
+
+declare const kUSBBillBoardClass: number;
+
+declare const kHIDUsage_Button_19: number;
 
 declare const kIOServiceInactiveState: number;
 
+declare const kHIDUsage_Dig_TabletFunctionKeys: number;
+
+declare const kDVDCPRMRegion2: number;
+
 declare const kIOACPIMemoryRange: number;
+
+declare const kScaleRotate90Mask: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2GesturalInputDevice: number;
+
+declare const kBluetoothVoiceSettingInputCodingLinearInputCoding: number;
+
+declare const kIOKitNoticationMsgSizeMask: number;
+
+declare const kUSBMassStorageSCSISubClass: number;
+
+declare const kMMCCmd_READ_6: number;
 
 declare const kNMIIntMask: number;
 
+declare const kHIDUsage_AD_CharacterSpacingVertical: number;
+
 declare const kHIDDispatchOptionScrollMomentumStart: number;
+
+declare const kBluetoothHCIEventMaskReadRemoteVersionInformationComplete: number;
+
+declare const timingVESA_1600x1200_85hz: number;
+
+declare const kHIDUsage_BCS_BarCodeScannerCradle: number;
+
+declare const kMMCCmd_SEND_DIAGNOSTICS: number;
+
+declare const kFWIsochTCode: number;
+
+declare const kTransparentEncodingShift: number;
+
+declare const kHIDUsage_Sprt_StickHeelOrToe: number;
+
+declare const kIOUSBSuperSpeedDeviceCapability5Gb: number;
 
 declare const kHIDDispatchOptionPhaseBegan: number;
 
+declare const kIO16BE4444PixelFormat: number;
+
+declare const kIOFBOnlineInterruptType: number;
+
+declare const kHFSCatalogKeyMinimumLength: number;
+
+declare const kBluetoothHCIEventMaskNone: number;
+
 declare const kIOPCIConfigBaseAddress1: number;
+
+declare const kHIDUsage_GD_Dial: number;
+
+declare const kHIDUsage_BD_BraillePanLeft: number;
+
+declare const kFullPageConnect: number;
+
+declare const kBluetoothPacketTypeReserved1: number;
+
+declare const kDisplayModeValidForHiResFlag: number;
 
 declare const IOFastPathDescriptor: number;
 
-declare const IOUSBHostCIMessageControlValid: number;
+declare const kIOVRAMSaveAttribute: number;
+
+declare const kConnectionFlushParameters: number;
+
+declare const kIOBlitSourceFramebuffer: number;
+
+declare const kHIDUsage_LED_WarningStatus: number;
+
+declare const kIOAudioSMPTETimeType30Drop: number;
+
+declare const kIOServiceTerminatedNotificationType: number;
 
 declare const kVSLClamshellStateGestaltType: number;
 
+declare const kHIDUsage_BS_RelativeStateOfCharge: number;
+
+declare const kUSBCompositeClass: number;
+
+declare const kSCSICmd_REDUNDANCY_GROUP_IN: number;
+
 declare const SPTM_N_TRACES: number;
+
+declare const kHIDUsage_Snsr_Property_ChangeSensitivityPercentRange: number;
+
+declare const kHIDUsage_Csmr_ACJustifyBlockH: number;
+
+declare const kIOFBChangedInterruptType: number;
 
 declare const lz4_decode_scratch_size: number;
 
+declare const kHIDUsage_Button_15: number;
+
+declare const kBluetoothSDPDataElementTypeBoolean: number;
+
+declare const kHIDUsage_AD_FontReport: number;
+
+declare const kMessageMediaTypeDetermined: number;
+
+declare const kIODisplayRGBColorComponentBits8: number;
+
+declare const timingApple_1024x768_75hz: number;
+
+declare const kATASupportsAdvancedPowerManagementMask: number;
+
+declare const kIOUSBInterfaceFeatureSelectorSuspend: number;
+
+declare const kHIDUsage_PID_ActuatorsEnabled: number;
+
+declare const kHIDUsage_Snsr_Property_DevicePath: number;
+
+declare const kBluetoothHCIEventMaskHardwareError: number;
+
 declare const kDeviceRequestSetDescriptor: number;
+
+declare const kHIDUsage_Csmr_MenuValueIncrease: number;
+
+declare const kIOSystemStateSleepDescriptionHibernateStateInactive: number;
+
+declare const kHIDRqGetProtocol: number;
 
 declare const kSuperSpeedHubDecodeLatencyMax: number;
 
+declare const kHIDUsage_Csmr_ACUnlock: number;
+
+declare const kHIDUsage_PID_SetPeriodicReport: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_Speed: number;
+
+declare const kHIDUsage_Button_119: number;
+
 declare const gIODisplayPowerModeKey: interop.Pointer;
+
+declare const kHIDUsage_Csmr_ACIdleKeepAlive: number;
+
+declare const kHIDUsage_GD_RPM: number;
+
+declare const kUSBClass: number;
 
 declare const kIOPCIExpressLatencyTolerenceReportingCapability: number;
 
+declare const kUSBBillboardVConn5Watt: number;
+
 declare const kIOFBNotifyEvent_DisplayDimsChange: number;
+
+declare const kHIDPage_PID: number;
 
 declare const gIODisplayBrightnessProbeKey: interop.Pointer;
 
+declare const kHIDUsage_KeyboardR: number;
+
+declare const kBluetoothHCICommandWriteStoredLinkKey: number;
+
+declare const kBluetoothGAPAppearanceGenericWatch: number;
+
+declare const kHIDUsage_LED_GreenLEDChannel: number;
+
+declare const kBluetoothSynchronousConnectionPacketTypeHV3: number;
+
+declare const kIOAudioSelectorControlSelectionValueCD: number;
+
+declare const kHIDUsage_Button_142: number;
+
+declare const kSCCCmd_SPARE_OUT: number;
+
+declare const kJIJournalInFSMask: number;
+
+declare const kDVDFeaturesBUFWriteBit: number;
+
+declare const kSSCSeqCmd_LOAD_UNLOAD: number;
+
+declare const kIOFBDisplayPortLinkChangeInterruptType: number;
+
+declare const kIODPEventContentProtection: number;
+
+declare const kATAIdentifyCurrentCylinders: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AngularVelocityYAxis: number;
+
+declare const timingAppleNTSC_ST: number;
+
+declare const kIOMirrorAttribute: number;
+
 declare const kIOTraceInterrupts: number;
 
+declare const kBluetoothHCICommandRejectSynchronousConnectionRequest: number;
+
+declare const kIOFBNS_MessageMask: number;
+
 declare const kKeyMaskDelete: number;
+
+declare const kBluetoothVoiceSettingInputDataFormatUnsigned: number;
 
 declare const bATADCRReset: number;
 
 declare const kIOPCIConfigurationOffsetInterruptPin: number;
 
+declare const kColorTwoPageConnect: number;
+
+declare const kHIDUsage_BS_SMBChargerSpecInfo: number;
+
 declare const kRegIterSibling: number;
+
+declare const kSSCSeqCmd_READ_ELEMENT_STATUS: number;
+
+declare const kIODPEventSinkSpecific: number;
+
+declare const kSBCCmd_WRITE_6: number;
+
+declare const kIOTimingIDVESA_1600x1200_70hz: number;
 
 declare const kEfiLoaderCode: number;
 
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSymmetryPhase: number;
+
+declare const kATAIdentifyDriveCapabilities: number;
+
+declare const kBluetoothHCICommandGroupNoOp: number;
+
+declare const kHIDUsage_BS_Usenext: number;
+
+declare const kHIDUsage_KeyboardPause: number;
+
 declare const kEndpointDescriptorTransferTypeControl: number;
+
+declare const kIOAudioPortTypeMixer: number;
+
+declare const kHIDUsage_Snsr_Data_Location_AltitudeSeaLevel: number;
+
+declare const kHIDUsage_Ord_Instance2: number;
 
 declare const kIOFBNotifyGroupID_VendorNVIDIA: number;
 
@@ -3632,99 +13980,371 @@ declare const kIOServiceRegisteredState: number;
 
 declare const kIOPCIProbeOptionEject: number;
 
+declare const kHIDUsage_PID_PhysicalInterfaceDevice: number;
+
 declare const kIOPCIExpressVirtualChannelCapability: number;
+
+declare const kBluetoothHCICommandLEWriteSuggestedDefaultDataLength: number;
 
 declare const kFWSelfIDNPa: number;
 
+declare const kHIDUsage_Csmr_FanSpeed: number;
+
+declare const kHIDUsage_Button_54: number;
+
+declare const kBluetoothKeyTypeUnauthenticatedCombination: number;
+
+declare const kBluetoothL2CAPPSMNone: number;
+
+declare const kSCSIUntaggedTaskIdentifier: number;
+
+declare const kSCCCmd_RESERVE_10: number;
+
+declare const kBluetoothDeviceClassMinorAudioVCR: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value: number;
+
 declare const OSMetaClassBase: number;
+
+declare const kConnectionVideoBest: number;
 
 declare const IOAudioControlUserClient: number;
 
+declare const kBluetoothHCISubEventLEDataLengthChange: number;
+
+declare const kIOScaleRotate0: number;
+
 declare const kIOUCScalarIStructI: number;
 
-declare const IOUSBHostCIPortStatusChangeMask: number;
+declare const kHIDUsage_Csmr_ContactPhoneNumberMobile: number;
 
 declare const gIORegistryEntryDefaultLockingSetPropertiesKey: interop.Pointer;
+
+declare const kRangeSupportsSyncOnGreenMask: number;
+
+declare const kHIDUsage_Csmr_Mark: number;
 
 declare const OSAction_IOHIDEventService__SetLED: number;
 
 declare const kIOUCTypeMask: number;
 
+declare const kSCSICmd_MAINTENANCE_IN: number;
+
 declare const kIOPCIExpressCapabilityIDPowerBudget: number;
+
+declare const kUSBDeviceCapabilityBillboardAltMode: number;
+
+declare const kHIDUsage_Snsr_Scanner_NFC: number;
 
 declare const kDeviceFeatureSelectorU1Enable: number;
 
+declare const kBluetoothDeviceClassMinorToyController: number;
+
+declare const kHIDUsage_Button_91: number;
+
+declare const kBluetoothHCIErrorReservedSlotViolation: number;
+
+declare const kHIDUsage_Button_102: number;
+
 declare const gIODisplaySpeakerVolumeKey: interop.Pointer;
+
+declare const kIOAudioDeviceCanBeSystemOutput: number;
+
+declare const kHIDUsage_BCS_PolarityInvertedBarCode: number;
+
+declare const kIOAudioChannelLabel_RightTopMiddle: number;
+
+declare const kHIDUsage_Csmr_GenericGUIApplicationControls: number;
+
+declare const kHIDUsage_BS_InhibitCharge: number;
 
 declare const mATADriveReady: number;
 
+declare const kFWIsochChannelDefaultFlags: number;
+
+declare const kMirrorSameSizeOnlyMirrorMask: number;
+
+declare const kHIDUsage_Button_14: number;
+
+declare const kBluetoothHCICommandReadLMPHandle: number;
+
 declare const IOHIDEventServiceInterface: number;
+
+declare const EXTERNAL_SPDIF_INTERFACE: number;
+
+declare const kFWBIBLinkSpeedPhase: number;
 
 declare const VIOLATION_INVALID_RESTRICTED_IO_PADDR: number;
 
+declare const kHFSFileLockedBit: number;
+
 declare const kPCI2PCISecondaryLT: number;
+
+declare const kHIDUsage_LED_IndicatorBlue: number;
+
+declare const kHIDUsage_Csmr_ALLogoff: number;
+
+declare const kHIDUsage_Csmr_ACForward: number;
+
+declare const kHIDUsage_Csmr_ACSelectRow: number;
 
 declare const gFireWireNodeID: interop.Pointer;
 
+declare const kHIDUsage_Snsr_Property_Mechanical_VibrationState: number;
+
+declare const kHIDUsage_Snsr_Data_Light: number;
+
+declare const kIOBitsPerColorComponent8: number;
+
 declare const IFNET_RSSI_UNKNOWN: number;
+
+declare const kFWAckPending: number;
+
+declare const kHIDUsage_Snsr_Data_Environmental: number;
+
+declare const kHIDUsage_Csmr_ACInsertMode: number;
+
+declare const kBluetoothHCIErrorRoleSwitchPending: number;
 
 declare const kPEHaltCPU: number;
 
+declare const cscDirectSetEntries: number;
+
+declare const kHFSVolumeUnmountedBit: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_UnknownOrNoDeviceType: number;
+
+declare const kIOSyncPositivePolarity: number;
+
+declare const kATASupportsFlushCacheMask: number;
+
 declare const kIOPCIAERCapRootErrCmdOffset: number;
+
+declare const kHIDUsage_PID_ET_Inertia: number;
 
 declare const kDTMaxPropertyNameLength: number;
 
 declare const gIOMatchedServiceCountKey: interop.Pointer;
 
+declare const kUSB_HSFSEPDesc_wMaxPacketSize_Mult_Mask: number;
+
+declare const kHIDUsage_AD_Reserved: number;
+
+declare const kIOUSBFindInterfaceDontCare: number;
+
+declare const kUSBVendorSpecificClass: number;
+
+declare const kIOAudioChannelLabel_CenterSurround: number;
+
 declare const MBUF_FIRSTFRAG: number;
+
+declare const kIOAsyncCompletionNotificationType: number;
+
+declare const kHIDUsage_BCS_QRCode: number;
 
 declare const kIOMemoryPurgeableKeepCurrent: number;
 
 declare const kIOPCIUncorrectableErrorBitFlowControlProtocol: number;
 
+declare const kHIDUsage_BD_ScreenReaderIdentifier: number;
+
+declare const kHIDUsage_PD_InputID: number;
+
+declare const kIOAudioControlUsageCoreAudioProperty: number;
+
+declare const kUSBIrDABridgeSubClass: number;
+
+declare const kBluetoothL2CAPMTUSIG: number;
+
+declare const kSBCWOCmd_READ_10: number;
+
+declare const kIOUSBEndpointDescriptorTransferTypeControl: number;
+
 declare const kIOTimerEventSourceOptionsPriorityLow: number;
+
+declare const kHIDUsage_PID_BlockLoadReport: number;
+
+declare const kBluetoothL2CAPQoSFlagsDefault: number;
+
+declare const kHIDUsage_Button_37: number;
+
+declare const kATAPhysicalLogicalEnabledMask: number;
+
+declare const kIOHIDActivityDisplayOn: number;
 
 declare const kRootDomainSleepSupported: number;
 
+declare const kHIDUsage_Keypad0: number;
+
+declare const timingVESA_1280x1024_75hz: number;
+
+declare const kHIDUsage_Csmr_ACPaste: number;
+
 declare const kIOPCIConfigurationOffsetBaseAddress3: number;
+
+declare const kHIDUsage_PID_BlockLoadStatus: number;
 
 declare const kIODMAMapPageListFullyOccupied: number;
 
+declare const kUSBBillboardVConn4Watt: number;
+
+declare const kIOVideoSelectorControlClassIDDataSource: number;
+
+declare const kBluetoothHCISubEventLEPhyUpdateComplete: number;
+
+declare const kHIDUsage_BCS_ElectronicArticleSurveillanceNotification: number;
+
+declare const kHIDUsage_BS_PowerFail: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_GroupMembership: number;
+
+declare const kSCSICmd_REBUILD: number;
+
+declare const kHIDUsage_Snsr_Property_Model: number;
+
+declare const kHIDPage_KeyboardOrKeypad: number;
+
+declare const kFWResponseConflictError: number;
+
 declare const OSAction_IOHIDEventService__SetUserPropertiesMetaClass: number;
 
+declare const kHIDUsage_LED_Ready: number;
+
+declare const kHIDUsage_LED_Player1: number;
+
+declare const kSBCWOCmd_READ_ELEMENT_STATUS: number;
+
+declare const kBluetoothDeviceClassMinorAudioReserved2: number;
+
+declare const kSCSICmd_VOLUME_SET_IN: number;
+
+declare const kHIDUsage_Snsr_Scanner_RFID: number;
+
+declare const kIOAudioStreamAlignmentHighByte: number;
+
 declare const kIODMAMapFixedAddress: number;
+
+declare const kIOTimingIDVESA_800x600_72hz: number;
 
 declare const kIOPCIConfigurationOffsetVendorID: number;
 
 declare const IOFireWireROMCache: number;
 
+declare const kIOHIDElementFlagsRelativeMask: number;
+
+declare const kIORangePixelEncodingYCbCr444: number;
+
+declare const kSCSICmd_READ_BUFFER_CAPACITY: number;
+
+declare const kHIDUsage_Sprt_7Wood: number;
+
+declare const kBluetoothHCIEventSimplePairingComplete: number;
+
+declare const kSBCWOCmd_REASSIGN_BLOCKS: number;
+
 declare const kPCI2PCIOffsetSecondaryLT: number;
+
+declare const kATATimeout1Minute: number;
+
+declare const kIORangePixelEncodingYCbCr420: number;
+
+declare const kBluetoothDeviceClassMinorComputerDesktopWorkstation: number;
 
 declare const IOPCIHostBridgeData: number;
 
+declare const kUSBBillboardAdditinalInfoNoUSBPD: number;
+
+declare const kHIDUsage_LED_Forward: number;
+
+declare const kBluetoothDeviceClassMinorComputerLaptop: number;
+
 declare const kIOACPIAddressSpaceIDSystemIO: number;
+
+declare const kIOFBAVSignalTypeHDMI: number;
+
+declare const kHIDUsage_PD_ConfigTemperature: number;
+
+declare const kHIDUsage_Csmr_ACExpand: number;
+
+declare const kDDCForceReadMask: number;
+
+declare const kHIDUsage_WD_ScaleStatusInMotion: number;
+
+declare const kMMCCmd_SEND_EVENT: number;
 
 declare const kIOMemoryUseReserve: number;
 
 declare const kIOFBNotifyWSAADidExitDefer: number;
 
+declare const kSCSIProtocolIdentifier_None: number;
+
 declare const kUSBHostStandardRequestNoDataTimeout: number;
 
 declare const IOFWCommand: number;
 
+declare const kHIDUsage_Snsr_Orientation_Inclinometer3D: number;
+
+declare const kSCSICmd_SET_READ_AHEAD: number;
+
+declare const kHIDPage_Arcade: number;
+
+declare const kSBCCmd_MODE_SELECT_6: number;
+
 declare const gIODisplayParametersDefaultKey: interop.Pointer;
+
+declare const kCSRClockInfo2Address: number;
+
+declare const kSPCProcCmd_SEND: number;
 
 declare const OSAction_IOHIDEventService__SetLEDInterface: number;
 
+declare const kIOAudioSMPTETimeType60: number;
+
+declare const kHIDUsage_Csmr_ACLock: number;
+
 declare const gIODisplayUsageTimeKey: interop.Pointer;
+
+declare const kIOBlitTypeShowCursor: number;
+
+declare const kHIDUsage_PD_PowerSupply: number;
 
 declare const ostype: interop.Pointer;
 
+declare const kBluetoothHCIEventKeypressNotification: number;
+
 declare const VIOLATION_INVALID_DT_RANGE: number;
+
+declare const kIOAnalogSignalLevel_0700_0000: number;
+
+declare const kUSBGangOverCurrentNotificationType: number;
+
+declare const kBluetoothLEMaxTXTimeMin: number;
+
+declare const kATAIdentifyDriveCapabilitiesExtended: number;
+
+declare const kHIDUsage_MSR_Track1Length: number;
+
+declare const kIOFixedCLUTPixels: number;
 
 declare const IOHIDDevice: number;
 
 declare const kIOPCICapabilityIDMSI: number;
+
+declare const kDCLSkipCycleOp: number;
+
+declare const kHIDUsage_AD_ErrNotaloadablecharacter: number;
+
+declare const kBluetoothL2CAPMTUStart: number;
+
+declare const kHIDUsage_PD_PowerSummary: number;
+
+declare const kIODisplayDitherTemporal: number;
+
+declare const kConfigUnitLocationKey: number;
+
+declare const spGammaDir: number;
+
+declare const kBluetoothSDPErrorCodeInsufficientResources: number;
 
 declare const kHIDUnknownReport: number;
 
@@ -3732,281 +14352,1305 @@ declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedMantissa: number;
 
 declare const kIOLogHibernate: number;
 
+declare const kHIDUsage_BCS_PeriodicalAutoDiscriminatePlus5: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_Current: number;
+
 declare const kIOFWSBP2FailsOnBusResetsDuringIO: number;
+
+declare const kIOAudioClockSelectorTypeExternal: number;
+
+declare const kHIDUsage_Snsr_Data_Biometric_HumanProximityRange: number;
 
 declare const kFWSelfID0P0Phase: number;
 
+declare const kBTIndexNode: number;
+
 declare const kDeviceRequestSize: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkLSEBits: number;
+
+declare const kHIDPage_BatterySystem: number;
+
+declare const kHFSBinaryCompare: number;
+
+declare const kHIDUsage_PID_TypeSpecificBlockHandle: number;
+
+declare const kHIDUsage_PID_EffectPlaying: number;
+
+declare const kSSCPrinterCmd_READ_BUFFER: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilitySupportLowSpeed: number;
+
+declare const kHIDUsage_Button_177: number;
+
+declare const kIOYUV211PixelFormat: number;
+
+declare const kBluetoothHCICommandReadRemoteExtendedFeatures: number;
 
 declare const kIOAGPIdle: number;
 
+declare const kHIDUsage_Tfon_TonesOff: number;
+
 declare const kIOServiceDextRequirePowerForMatching: number;
+
+declare const kUSBCommClass: number;
+
+declare const kHFSAutoCandidateBit: number;
+
+declare const kHIDUsage_LED_EqualizerEnable: number;
+
+declare const kSBCModePageFlexibleDisk_SSN_Mask: number;
+
+declare const kHIDUsage_GD_Vbry: number;
+
+declare const cscGetVideoParameters: number;
+
+declare const kHIDUsage_Dig_GestureCharacterData: number;
 
 declare const OSAction_IOHIDEventService__SetLEDMetaClass: number;
 
 declare const kChipSetTypeCore99: number;
 
+declare const kBluetoothSDPErrorCodeInvalidServiceRecordHandle: number;
+
+declare const kUSBFeatureTestMode: number;
+
 declare const kIOPCIAERCapHdrLogDW0Offset: number;
 
 declare const kIOServiceTerminateWithRematchCurrentDext: number;
 
+declare const kIOUSBEndpointDescriptorUsageTypeIsocReserved: number;
+
+declare const kIO16BE555PixelFormat: number;
+
+declare const kIORangeBitsPerColorComponentNotSupported: number;
+
 declare const SFLT_EXTENDED_REGISTRY: number;
 
+declare const kHIDUsage_Snsr_Property_ReleaseData: number;
+
+declare const kConfigUnitSWVersIIDC100: number;
+
 declare const kIOFBNotifyDidPowerOff: number;
+
+declare const kUSBNotificationPreForcedResumeBit: number;
+
+declare const kSCCCmd_MODE_SENSE_10: number;
+
+declare const kSBCCmd_MOVE_MEDIUM_ATTACHED: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSymmetric: number;
+
+declare const kVideoDisplayPortNativeType: number;
+
+declare const kHIDUsage_BCS_EAN13FlagDigit1: number;
+
+declare const kUSBNoUserNotificationType: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_DirectAccessSBCDevice: number;
 
 declare const IOFastPathService: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedMantissaPhase: number;
 
+declare const kFWAVCConsumerMode_JUNK: number;
+
+declare const kConnectionEnable: number;
+
+declare const kHIDUsage_Tfon_LineBusyTone: number;
+
+declare const kBluetoothDeviceClassMinorWearableHelmet: number;
+
+declare const kHIDUsage_BS_ChargingIndicator: number;
+
+declare const kHIDUsage_Dig_WhiteBoard: number;
+
+declare const timingVESA_1600x1200_60hz: number;
+
+declare const kHIDUsage_Snsr_Property_Location_AccuracyMedium: number;
+
 declare const OSCollection: number;
 
+declare const kSBCCmd_XDWRITE_EXTENDED: number;
+
+declare const kSCSICmd_RELEASE_6: number;
+
+declare const kINQUIRY_RESPONSE_DATA_FORMAT_Mask: number;
+
 declare const IOATAIOReg16: number;
+
+declare const kMMCCmd_READ_HEADER: number;
 
 declare const kEndpointDescriptorTransferTypeIsochronous: number;
 
 declare const kIOFBNotifyGroupID_Legacy: number;
 
+declare const kHIDUsage_Csmr_ShowCounter: number;
+
+declare const kHIDUsage_Button_8: number;
+
 declare const OSAction_IOHIDEventService__SetUserPropertiesInterface: number;
+
+declare const cscSwitchMode: number;
 
 declare const IOFWBusCommand: number;
 
+declare const kIOFBShmemVersionMask: number;
+
 declare const IODCLTranslateTalk: number;
+
+declare const kHIDUsage_Button_193: number;
 
 declare const kPCI2PCIOffsetSubordinateBus: number;
 
-declare const IOUSBHostCIEndpointUpdateCommandData1Descriptor: number;
+declare const kBluetoothLETXTimeDefault: number;
+
+declare const kHIDUsage_Csmr_ALLocalMachineBrowser: number;
 
 declare const IFNET_FAMILY_BOND: number;
+
+declare const kSyncPositivePolarityMask: number;
+
+declare const kBluetoothPacketTypeDH5: number;
+
+declare const kIOAnalogSignalLevel_1000_0400: number;
+
+declare const kINQUIRY_Byte5_SCCS_Bit: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_ReadData: number;
+
+declare const kIOHIDNumLockState: number;
+
+declare const kIOUSBSuperSpeedDeviceCapabilityU1DevExitLatMax: number;
+
+declare const kHFSUnusedNodesFixExpandedDate: number;
 
 declare const kDeviceRequestRecipientOther: number;
 
 declare const mATAUncorrectable: number;
 
+declare const kBluetoothHCICommandExitSniffMode: number;
+
 declare const directType: number;
+
+declare const kHIDUsage_BS_BelowRemainingCapacityLimit: number;
 
 declare const current_task: number;
 
+declare const kHFSFileLockedMask: number;
+
+declare const kIOHIDElementFlagsVolativeMask: number;
+
+declare const kCDFeaturesRawWriteMask: number;
+
 declare const kHIDDispatchOptionDeliveryNotificationSuppress: number;
+
+declare const kHIDUsage_PID_Direction: number;
+
+declare const kHIDUsage_VR_DisplayEnable: number;
 
 declare const IOHIDDeviceElementContainer: number;
 
+declare const kHFSHasSecurityMask: number;
+
+declare const kChecksumValidCookie: number;
+
 declare const kIOPCIConfigurationOffsetCapabilitiesPtr: number;
 
+declare const kIOATAMaxPerformance: number;
+
+declare const kConnectionPostWake: number;
+
+declare const kBluetoothHCICommandWriteInquiryScanActivity: number;
+
+declare const kHIDUsage_Csmr_ACRefresh: number;
+
 declare const kIOFBNotifyEvent_OnlineChange: number;
+
+declare const kCSRArgumentLoAddress: number;
 
 declare const IOHIDEventQueue: number;
 
 declare const kIOACPIDevicePowerStateD0: number;
 
+declare const kSSCSeqCmd_SEND_DIAGNOSTICS: number;
+
+declare const kUSBCapsLockKey: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState: number;
+
+declare const kUSBRel10: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkDirectionRx: number;
+
+declare const kSCSIProtocolIdentifier_FireWire: number;
 
 declare const kATAcmdReadExtended: number;
 
+declare const kHIDUsage_PD_iserialNumber: number;
+
+declare const kBluetoothGeneralInquiryAccessCodeLAPValue: number;
+
+declare const kSCSIProtocolIdentifier_ADT: number;
+
+declare const kUSBSuperSpeedEndpointCompanion: number;
+
+declare const kHIDUsage_Button_132: number;
+
+declare const kHIDUsage_WD_Undefined: number;
+
 declare const kATAcmdReadVerify: number;
+
+declare const kBluetoothHCICommandLEReadRemoteUsedFeatures: number;
+
+declare const kIODisplayYCbCr422ColorComponentBits14: number;
+
+declare const kIOTimingIDSony_1920x1080_72hz: number;
+
+declare const kHIDPage_Telephony: number;
+
+declare const kDVDKeyFormatSetRegion: number;
+
+declare const kINQUIRY_Byte6_MULTIP_Mask: number;
 
 declare const kIODKDisablePM: number;
 
+declare const kHIDUsage_AD_StatNotReady: number;
+
+declare const kHIDUsage_LED_BatteryOK: number;
+
+declare const kBluetoothHCIEventUserPasskeyNotification: number;
+
+declare const kINQUIRY_Byte7_CMDQUE_Bit: number;
+
+declare const kHIDUsage_Snsr_Data_Motion: number;
+
+declare const kIOBlitWaitGlobal: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkDirectionPhase: number;
+
+declare const kATAMultipleLogicalSectorsBit: number;
+
+declare const kRBCCmd_SYNCHRONIZE_CACHE: number;
+
+declare const kHIDUsage_Ord_Instance1: number;
+
+declare const kBluetoothL2CAPPSMReservedEnd: number;
+
+declare const kIOBlitTypeDestKeyColorEqual: number;
 
 declare const CSSLOT_IDENTIFICATIONSLOT: number;
 
+declare const kHIDUsage_PD_OverTemperature: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeNoFix: number;
+
+declare const kHIDUsage_Sim_FlightStick: number;
+
+declare const kHIDUsage_Csmr_MediaSelectTV: number;
+
+declare const kHIDUsage_Snsr_Other_Custom: number;
+
+declare const kATASupportsPowerManagementMask: number;
+
+declare const kHIDUsage_Snsr_Property_ConnectionType_Integrated: number;
+
+declare const kHIDUsage_Csmr_MediaSelectTuner: number;
+
 declare const kIOACPIFixedEventPMTimer: number;
+
+declare const kHIDUsage_KeyboardPrior: number;
 
 declare const kIOPCIUncorrectableErrorBitACSViolation: number;
 
+declare const kHIDUsage_Dig_Eraser: number;
+
+declare const kHFSXVersion: number;
+
 declare const gIOKitTrace: number;
+
+declare const kIOHIDValueOptionsFlagPrevious: number;
+
+declare const kBluetoothHCIEventChannelSelected: number;
+
+declare const kHIDUsage_Snsr_Data_Environmental_Reserved: number;
+
+declare const kHIDUsage_BD_BrailleButtons: number;
+
+declare const kHIDUsage_Snsr_Modifier_PeriodMax: number;
 
 declare const kFWAsynchRtPhase: number;
 
+declare const kIsMonoDev: number;
+
+declare const kDVDFeaturesReWriteableBit: number;
+
+declare const kHIDUsage_LED_Conference: number;
+
+declare const kBluetoothHCICommandReadCurrentIACLAP: number;
+
+declare const kBluetoothHCIEventMaskQoSSetupComplete: number;
+
+declare const kHIDUsage_KeyboardF23: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSymmetry: number;
+
+declare const kSCCCmd_MODE_SELECT_10: number;
+
+declare const kHIDUsage_Dig_CapacitiveHeatMapProtocolVersion: number;
+
+declare const kIOUSBDeviceRequestGetDescriptor: number;
+
+declare const kHIDUsage_KeyboardLANG5: number;
+
+declare const kHRConnect: number;
+
+declare const kHIDUsage_LED_Player7: number;
+
+declare const kHIDUsage_GD_DockableDeviceDockingState: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_NoData: number;
+
+declare const kIOAudioChannelLabel_LeftTopRear: number;
+
+declare const kSBCCmd_SEARCH_DATA_LOW_10: number;
+
+declare const kVideoBusTypeI2C: number;
+
+declare const kHIDUsage_Snsr_Orientation: number;
+
+declare const kHIDUsage_Csmr_ALWirelessStatus: number;
+
+declare const kHIDUsage_WD_ScaleControlReport: number;
+
+declare const kHIDUsage_BCS_TriggerMode: number;
+
+declare const kHIDUsage_Csmr_MenuUp: number;
+
+declare const kDVDBookTypePlusRWDoubleLayer: number;
+
+declare const kDCLSendBufferOp: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value3: number;
+
+declare const kBluetoothHCICommandReadSimplePairingMode: number;
 
 declare const bATADCRnIntEnable: number;
 
 declare const kIOPCIUncorrectableErrorBitECRC: number;
 
+declare const kHFSCatExpandedTimesMask: number;
+
+declare const kHIDUsage_Snsr_Property_PersistentUniqueID: number;
+
+declare const kIOConnectionBuiltIn: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsOverCurrentMask: number;
+
+declare const kHIDUsage_PID_Offset: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceJoystick: number;
+
+declare const kIOAudioDeviceTransportTypeUSB: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkLSEPhase: number;
+
+declare const kSSCPrinterCmd_LOG_SENSE: number;
+
+declare const kBluetoothHCICommandLESetExtendedAdvertisingEnableCommand: number;
+
+declare const kIOAudioSMPTETimeValid: number;
+
 declare const kIOReportFormatHistogram: number;
+
+declare const kDCLSendPacketStartOp: number;
+
+declare const kMMCCmd_PLAY_RELATIVE_12: number;
+
+declare const kSSCPrinterCmd_STOP_PRINT: number;
 
 declare const kDataRotate90: number;
 
-declare const kIOPCIAERCapTLPPrefixLogDW1Offset: number;
+declare const kIODisplayDitherDefault: number;
+
+declare const kATAIdentifyMinorVersion: number;
+
+declare const kHIDUsage_Csmr_ACViewToggle: number;
+
+declare const kBluetoothL2CAPPSMUID_C_Plane: number;
+
+declare const kUSBFeedbackIsocUsageType: number;
+
+declare const kBluetoothL2CAPPSMReservedStart: number;
+
+declare const kHFSHasFolderCountBit: number;
 
 declare const kIOReportQuantityData: number;
 
+declare const kIOAudioControlChannelIDDefaultFrontLeftCenter: number;
+
 declare const kIOPCICapabilityIDHotplug: number;
+
+declare const kIOAudioToggleControlSubTypePhaseInvert: number;
 
 declare const IOFWPhysicalAddressSpaceAux: number;
 
 declare const bATABusy: number;
 
+declare const kBluetoothL2CAPPSMATT: number;
+
+declare const kBluetoothHCIEventReadRemoteSupportedFeaturesComplete: number;
+
+declare const EMBEDDED_MULTITRACK_RECORDER: number;
+
+declare const kHIDUsage_GD_SystemMenuRight: number;
+
+declare const kSENSE_KEY_HARDWARE_ERROR: number;
+
+declare const kIOHIDEventQueueTypeKernel: number;
+
+declare const kHIDUsage_Dig_GestureCharacterQuality: number;
+
+declare const kMMCCmd_PLAY_RELATIVE_10: number;
+
+declare const kHIDUsage_BD_RouterSet1: number;
+
+declare const EMBEDDED_EQUALIZATION_NOISE: number;
+
+declare const kHIDUsage_LED_UsageInUseIndicator: number;
+
+declare const kUSBCommCAPISubClass: number;
+
 declare const kFWSelfIDSelfPowered30W: number;
+
+declare const kHIDUsage_Button_214: number;
+
+declare const kSESCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kBluetoothGAPAppearanceGenericKeyring: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_PeriodExceeded: number;
+
+declare const kESCSixMSB1: number;
+
+declare const kSBCCmd_VERIFY_10: number;
+
+declare const kHIDUsage_BCS_NotOnFileVolume: number;
+
+declare const kIOTimingIDVESA_640x480_75hz: number;
+
+declare const kBluetoothDeviceClassMinorHealthScale: number;
+
+declare const kHIDUsage_Csmr_ContactMisc: number;
 
 declare const kEfiLoaderData: number;
 
+declare const kVideoReplyMicroSecDelayMask: number;
+
+declare const kConnectionIgnore: number;
+
 declare const IOHIDEventService: number;
+
+declare const kSGCCmd_MODE_SELECT_6: number;
 
 declare const IOWatchDogTimer: number;
 
+declare const kHIDUsage_GD_CoolantPump: number;
+
+declare const kSPCProcCmd_LOG_SENSE: number;
+
+declare const kHIDUsage_Button_194: number;
+
+declare const kSBCWOCmd_SEND_DIAGNOSTICS: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkReservedPhase: number;
+
+declare const kSBCModePageCaching_SIZE_Bit: number;
+
+declare const kFWAckBusyA: number;
 
 declare const kEfiPalCode: number;
 
 declare const kOFVariablePermUserRead: number;
 
+declare const kUSBHUBDesc: number;
+
+declare const kIOServiceMessageNotificationType: number;
+
+declare const kHFSAttributeDataFileID: number;
+
 declare const kUSB3LPMMaxU2PEL: number;
+
+declare const kHIDUsage_GD_DockableDeviceDisplayOcclusion: number;
+
+declare const kIOMirrorIsPrimary: number;
+
+declare const kMultiModeCRT3Connect: number;
+
+declare const kUSBEndPtShift: number;
+
+declare const kIOTimingIDVESA_1600x1200_65hz: number;
 
 declare const kEndpointDescriptorPacketSizeMultPhase: number;
 
+declare const kATAIdentifySerialNumber: number;
+
 declare const gIOUserClientClassKey: interop.Pointer;
+
+declare const kHIDUsage_Keyboard_Reserved: number;
 
 declare const kATAEnableReadAhead: number;
 
 declare const IOFWPhysicalAddressSpace: number;
 
+declare const kBluetoothSDPUUID16HIDP: number;
+
+declare const kFirstIOKitNotificationType: number;
+
 declare const kIOMemoryIncoherentIOFlush: number;
+
+declare const kBluetoothHCICommandReadInquiryMode: number;
 
 declare const receive_sysdiagnose_notification_subsystem: receive_sysdiagnose_notification_subsystem;
 
 declare const kIOReportNotifyHubOnChange: number;
 
+declare const kHIDUsage_Sim_AutomobileSimulationDevice: number;
+
+declare const kHIDUsage_Dig_DeviceIdentifier: number;
+
+declare const kBluetoothHCICommandWriteExtendedPageTimeout: number;
+
 declare const kRegCStrMaxEntryNameLength: number;
+
+declare const kIORangeDynamicRangeTraditionalGammaHDR: number;
 
 declare const kVCDarkBackground: number;
 
+declare const kHIDUsage_Haptics_WaveformNone: number;
+
+declare const kHIDUsage_Sprt_PowerWedge: number;
+
 declare const kFWAsynchRCodePhase: number;
+
+declare const fifthVidMode: number;
 
 declare const kPEPanicSync: number;
 
+declare const kBluetoothPageScanPeriodModeP1: number;
+
+declare const kBluetoothHCIEventMaskConnectionPacketTypeChanged: number;
+
+declare const kHFSPlusFileRecord: number;
+
+declare const kIODisplayYCbCr422ColorComponentBits12: number;
+
+declare const kNTSCConnect: number;
+
 declare const kIOMemoryPurgeableVolatileGroup2: number;
 
+declare const kFWAVCAsyncPlug3: number;
+
+declare const kSCCCmd_MODE_SENSE_6: number;
+
 declare const addressRangeErr: number;
+
+declare const kHIDUsage_Csmr_SurroundMode: number;
 
 declare const kRegIterContinue: number;
 
 declare const gFireWireUnit_Spec_ID: interop.Pointer;
 
+declare const kHIDUsage_Csmr_ALNextTaskOrApplication: number;
+
+declare const kJIJournalOnOtherDeviceMask: number;
+
+declare const kHIDUsage_Snsr_Mechanical_Strain: number;
+
+declare const kHIDUsage_Csmr_ContactEmailBusiness: number;
+
+declare const kGetDeviceStatus: number;
+
+declare const kHIDUsage_Snsr_Property_Accuracy: number;
+
+declare const kBluetoothHCIErrorConnectionTerminatedByLocalHost: number;
+
 declare const kIOMapperUncached: number;
+
+declare const kHIDUsage_GD_Vy: number;
+
+declare const kHIDUsage_Dig_Touch: number;
+
+declare const kSBCModePageFlexibleDiskCode: number;
+
+declare const kBluetoothHCICommandDeleteStoredLinkKey: number;
+
+declare const kHIDUsage_BCS_GoodReadToneFrequency: number;
+
+declare const kHIDUsage_PID_MoveDestination: number;
+
+declare const kBluetoothSDPDataElementTypeReservedEnd: number;
+
+declare const kBluetoothHCICommandLETransmitterTest: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_StorageArrayControllerSCC2Device: number;
+
+declare const kATAOperationTypeRead: number;
+
+declare const kSCSICmd_VERIFY_16: number;
+
+declare const kATAMultipleLogicalSectorsMask: number;
+
+declare const kHIDUsage_BD_Undefined: number;
+
+declare const kIODisplayYCbCr422ColorComponentBits16: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedAttrCountPhase: number;
+
+declare const kBluetoothLESecurityManagerReservedStart: number;
+
+declare const kIO32BGRAPixelFormat: number;
+
+declare const kBluetoothHCIEventReadRemoteVersionInformationComplete: number;
+
+declare const kHIDUsage_LED_CallPickup: number;
+
+declare const kScaleInvertXMask: number;
+
+declare const kHIDUsage_Tfon_SpeakerPhone: number;
+
+declare const kIOVideoControlBaseClassIDFeature: number;
+
+declare const kHIDUsage_AD_DisplayAttributesReport: number;
+
+declare const kIO1IndexedGrayPixelFormat: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionModeAutonomous: number;
+
+declare const kHIDUsage_Snsr_Data_Custom_Value5: number;
+
+declare const kIOHIDCapsLockState: number;
+
+declare const kIODigitalSignal: number;
+
+declare const kDVDMediaTypeHDRAM: number;
 
 declare const kInterfaceStatusRemoteWakeEnable: number;
 
+declare const kHFSPlusExtentKeyMaximumLength: number;
+
+declare const kIOInterlacedCEATiming: number;
+
+declare const timingApplePAL_STconv: number;
+
+declare const kIOAudioInputPortSubTypeLine: number;
+
 declare const kIOPCIConfigLatencyTimer: number;
+
+declare const kHIDUsage_Game_PitchUpOrDown: number;
+
+declare const BIDIRECTIONAL_HEADSET: number;
+
+declare const kHFSPlusCatalogKeyMaximumLength: number;
+
+declare const kIOWSAA_Transactional: number;
 
 declare const inUseErr: number;
 
+declare const kBluetoothServiceClassMajorReserved2: number;
+
+declare const kIOVideoControlScopePlayThrough: number;
+
+declare const kATAIdentifyMajorVersion: number;
+
+declare const kHFSPlusMountVersion: number;
+
+declare const kDVDFeaturesPlusRBit: number;
+
+declare const kDisplayModeSimulscanFlag: number;
+
 declare const osrelease: interop.Pointer;
+
+declare const kBluetoothHCIEventPageScanRepetitionModeChange: number;
+
+declare const kIOVideoControlScopeGlobal: number;
+
+declare const kBluetoothSDPUUID16AVCTP: number;
+
+declare const kHIDUsage_GD_SystemMicrophoneMute: number;
+
+declare const kBluetoothHCIErrorMemoryFull: number;
+
+declare const kHIDUsage_Csmr_BassBoost: number;
+
+declare const kHFSAutoCandidateMask: number;
+
+declare const kSGCCmd_RESERVE_6: number;
+
+declare const kIOWSAA_To_Accelerated: number;
+
+declare const kIOBlitWaitContext: number;
+
+declare const kIODisplayYCbCr422ColorComponentBits6: number;
 
 declare const kIOReturnOutputSuccess: number;
 
+declare const kBluetoothSDPUUID16WSP: number;
+
+declare const kIOFBDisplayState_Mask: number;
+
+declare const kBluetoothHCICommandWriteInquiryMode: number;
+
 declare const kIODDCLow: number;
 
+declare const kIOTimingIDVESA_1280x960_60hz: number;
+
+declare const kIOAudioStreamNumericRepresentationIEEE754Float: number;
+
+declare const kIOSystemPowerAttribute: number;
+
+declare const cscGetFeatureConfiguration: number;
+
+declare const kSCSICmd_SEND: number;
+
+declare const kSBCCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kIOFBMaxCursorDepth: number;
+
 declare const kIOPCIAdapterPresent: number;
+
+declare const kHIDUsage_Snsr_Electrical_Potentiometer: number;
+
+declare const kIOUSBHubDelayNs: number;
+
+declare const kHIDUsage_Sim_Steering: number;
+
+declare const kBluetoothHCICommandPINCodeRequestNegativeReply: number;
 
 declare const IODMAEventSource: number;
 
 declare const kVCDarkReboot: number;
 
+declare const timingVESA_800x600_56hz: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GPSSelectionModeSimulator: number;
+
+declare const kHIDUsage_Csmr_ACEdit: number;
+
+declare const kBTLeafNode: number;
+
+declare const kHFSVolumeJournaledBit: number;
+
 declare const kInterfaceStatusRemoteWakeCapable: number;
 
 declare const kIOFBNotifyEvent_ClamshellChange: number;
 
+declare const kIdentifyWordValidationMask: number;
+
+declare const kIOAudioTimeStampSampleHostTimeValid: number;
+
+declare const kCurFieldsValidBit: number;
+
+declare const kHIDUsage_KeyboardOper: number;
+
+declare const kPowerStateSleepNoDPMSBit: number;
+
 declare const kIOPCICommandIOSpace: number;
+
+declare const kBluetoothHCICommandLECreateConnection: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2DigitalPen: number;
 
 declare const bATAIndex: number;
 
+declare const kSESCmd_RECEIVE_DIAGNOSTICS_RESULTS: number;
+
 declare const kIOPCIExpressCapabilityIDDPA: number;
+
+declare const kHIDUsage_Csmr_KeyboardInputAssistPrevious: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_SequentialAccessSSCDevice: number;
+
+declare const kHIDUsage_Csmr_ALVirusProtection: number;
+
+declare const kRSCTwo: number;
+
+declare const kHIDUsage_BS_TerminateDischarge: number;
+
+declare const kSCSIServiceAction_SET_PRIORITY: number;
+
+declare const kHIDUsage_Csmr_ACViewClock: number;
 
 declare const CSMAGIC_EMBEDDED_DER_ENTITLEMENTS: number;
 
+declare const kSESCmd_REQUEST_SENSE: number;
+
+declare const kSyncPositivePolarityBit: number;
+
+declare const kHIDUsage_Sprt_GolfClub: number;
+
+declare const kBluetoothHCICommandSetEventFilter: number;
+
 declare const kUSBHostMaxPipes: number;
+
+declare const kBluetoothHCIErrorChannelClassificationNotSupported: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkAsymmetric: number;
 
-declare const IOUSBHostCITransferCompletionMessageControlDeviceAddress: number;
+declare const kHIDUsage_Dig_GestureCharacterEncoding: number;
+
+declare const kBluetoothHCISubEventLEAdvertisingSetTerminated: number;
 
 declare const IOFWAsyncStreamListener: number;
 
+declare const kBluetoothLimitedInquiryAccessCodeEnd: number;
+
+declare const kModeNotResize: number;
+
+declare const EXTERNAL_TDIF: number;
+
+declare const kBluetoothGAPAppearanceHumanInterfaceDeviceGamepad: number;
+
 declare const kIOPCIStatusPCI66: number;
+
+declare const kHIDUsage_Csmr_Loudness: number;
 
 declare const gIODisplayOverscanKey: interop.Pointer;
 
-declare const IOUSBHostCITransferCompletionMessageData0TransferLength: number;
+declare const kHIDUsage_Tfon_PhoneKeyB: number;
+
+declare const kIOTimingIDVESA_640x480_85hz: number;
+
+declare const kSENSE_EOM_Mask: number;
+
+declare const kIONTSCTiming: number;
+
+declare const kHIDPage_Consumer: number;
+
+declare const kBluetoothHCICommandGetLinkQuality: number;
+
+declare const kSBCCmd_REQUEST_SENSE: number;
+
+declare const kCDTOCFormatTEXT: number;
+
+declare const kIOPixelEncodingYCbCr444: number;
+
+declare const timingApple_560x384_60hz: number;
+
+declare const kIOColorimetryNotSupported: number;
+
+declare const kHIDUsage_Button_57: number;
+
+declare const kHIDUsage_Csmr_ApplicationLaunchButtons: number;
+
+declare const kUSBRqGetState: number;
 
 declare const OSAction_IOHIDEventService__CopyEventMetaClass: number;
 
 declare const kEndpointDescriptorSynchronizationTypePhase: number;
 
+declare const kHIDUsage_Snsr_Data_Orientation_HeadingCompensatedTrueNorth: number;
+
+declare const kHIDUsage_Csmr_Media: number;
+
+declare const kBluetoothL2CAPMTUMinimum: number;
+
+declare const kDVDKeyClassCSS_CPPM_CPRM: number;
+
+declare const kHIDUsage_Csmr_ACMaximize: number;
+
 declare const kIOPCISlotStatusMRLSensorState: number;
+
+declare const kBluetoothHCICommandWriteLoopbackMode: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_AccelerationAxisX: number;
+
+declare const kFWAVCAsyncPlug11: number;
+
+declare const kHIDUsage_Button_70: number;
+
+declare const kBluetoothHCICommandLESetAddressResolutionEnable: number;
+
+declare const kHIDUsage_Tfon_PhoneKeyD: number;
 
 declare const kUSB3LPMU2Disabled: number;
 
+declare const kHIDUsage_PID_CustomForceDataReport: number;
+
 declare const kIOACPIAddressSpaceIDEmbeddedController: number;
+
+declare const kFWBIBIrmc: number;
+
+declare const kBluetoothHCIErrorUnknownHCICommand: number;
 
 declare const kDeviceRequestTypePhase: number;
 
+declare const kHIDUsage_KeyboardV: number;
+
+declare const kHIDUsage_Button_202: number;
+
+declare const kDVDFeaturesHDRBit: number;
+
 declare const kIOSleepWakeWdogOff: number;
 
+declare const kHIDUsage_AD_HorizontalScroll: number;
+
 declare const kPEPanicDiagnosticsDone: number;
+
+declare const kSBCWOCmd_WRITE_AND_VERIFY_10: number;
+
+declare const kUSBAddress_Shift: number;
+
+declare const kSCSIServiceAction_READ_LONG_16: number;
+
+declare const kHIDUsage_BCS_DisableCheckDigitTransmit: number;
+
+declare const kHIDUsage_Button_123: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkDirection: number;
+
+declare const kHFSVolumeSparedBlocksBit: number;
+
+declare const kBluetoothHCIErrorMax: number;
+
+declare const kHIDUsage_GD_SystemBreak: number;
+
+declare const kHIDUsage_Sim_Brake: number;
 
 declare const CS_SUPPORTSCODELIMIT64: number;
 
 declare const kKeyMaskUnknown: number;
 
+declare const kFramebufferSupportsGammaCorrection: number;
+
 declare const kIOPCIExpressCapabilityIDPL16GTs: number;
 
+declare const kHIDUsage_LED_Mute: number;
+
+declare const kHIDUsage_Snsr_Data_Mechanical_AbsolutePressure: number;
+
+declare const kIOFBRedGammaScaleAttribute: number;
+
 declare const OSInterface: number;
+
+declare const kHIDUsage_Csmr_KeyboardKeyType: number;
 
 declare const kIOTraceCompatBootArgs: number;
 
 declare const gIOUserServerClassKey: interop.Pointer;
 
-declare const IOUSBHostCIDeviceCreateCommandData0RoutePhase: number;
+declare const kHIDUsage_Snsr_Data_Time_Month: number;
+
+declare const kHIDUsage_Csmr_ALVoicemail: number;
+
+declare const kSCSICmd_PLAY_RELATIVE_10: number;
+
+declare const kDependentConnection: number;
+
+declare const kIOStreamOptionOpenShared: number;
+
+declare const kBluetoothHCIEventHardwareError: number;
+
+declare const kUSBRqClearFeature: number;
+
+declare const kHIDUsage_Sim_TankSimulationDevice: number;
+
+declare const kBTBigKeysMask: number;
+
+declare const kSCSICmd_SERVICE_ACTION_IN: number;
+
+declare const kUSBDeviceCapabilityUSB20Extension: number;
+
+declare const kHFSVolumeUnmountedMask: number;
+
+declare const kHIDUsage_PD_Outlet: number;
+
+declare const kBluetoothHCICommandLESetPrivacyMode: number;
+
+declare const kINQUIRY_Byte7_VS_Bit: number;
+
+declare const kConfigUnitSpecAppleA27: number;
 
 declare const kRegNoModifiers: number;
 
-declare const IOUSBHostCIPortStatusOvercurrentChange: number;
+declare const INPUT_MODEM_AUDIO: number;
+
+declare const kSBCCmd_XDWRITE: number;
 
 declare const kIOAGP2xDataRate: number;
+
+declare const kBluetoothHCISubEventLEPeriodicAdvertisingSyncEstablished: number;
+
+declare const kBluetoothL2CAPChannelDynamicStart: number;
+
+declare const kMessageTrayStateChangeRequestAccepted: number;
+
+declare const kHIDUsage_Snsr_Data_Motion_State: number;
+
+declare const kBluetoothL2CAPChannelSignalling: number;
+
+declare const kIODynamicRangeDolbyTunnelMode: number;
+
+declare const kBluetoothHCIMaxDataPacketSize: number;
 
 declare const CS_VALIDATION_CATEGORY_INVALID: number;
 
 declare const kIOLogExclaves: number;
 
-declare const IOUSBHostCITransferCompletionMessageControlStatusPhase: number;
+declare const kSENSE_KEY_RECOVERED_ERROR: number;
+
+declare const kFWAckBusyB: number;
+
+declare const kSBCCmd_PREFETCH: number;
+
+declare const kHIDUsage_Snsr_Motion_MotionDetector: number;
+
+declare const kUSBDeviceCountExceededNotificationType: number;
+
+declare const kIOFBUserRequestProbe: number;
+
+declare const kHIDUsage_KeyboardF1: number;
+
+declare const kIOHIDQueueOptionsTypeEnqueueAll: number;
+
+declare const kMirrorCanChangePixelFormatMask: number;
+
+declare const kHIDUsage_Button_90: number;
+
+declare const kUSBDeviceCapabilityBillboard: number;
+
+declare const kHIDUsage_BS_AbsoluteStateOfCharge: number;
+
+declare const kHIDUsage_KeypadSlash: number;
+
+declare const kBluetoothHCICommandAMPTest: number;
+
+declare const kHIDUsage_PID_PoolReport: number;
+
+declare const kHIDUsage_Snsr_Data_Electrical_ElectricalPower: number;
 
 declare const kIOPCIUncorrectableErrorBitMalformedTLP: number;
 
+declare const kBluetoothHCICommandReadRemoteVersionInformation: number;
+
+declare const kModeRequiresPan: number;
+
+declare const kNonMagneticDriveBit: number;
+
+declare const kDVDBookTypeR: number;
+
 declare const version_stage: number;
+
+declare const kBluetoothHCICommandSniffMode: number;
+
+declare const kIOAudioSMPTETimeType60Drop: number;
+
+declare const kBluetoothHCIEventMaskConnectionComplete: number;
+
+declare const kDiscStatusIncomplete: number;
+
+declare const kScaleCanDownSamplePixelsMask: number;
+
+declare const kBluetoothHCICommandSetMWSScanFrequencyTable: number;
+
+declare const kIOBitsPerColorComponent12: number;
+
+declare const kSCSICmd_SEARCH_DATA_HIGH_10: number;
+
+declare const kUSBCommunicationDataInterfaceClass: number;
+
+declare const kSetInterface: number;
+
+declare const kHIDUsage_KeyboardReturnOrEnter: number;
+
+declare const kHIDUsage_Button_1: number;
+
+declare const kSBCCmd_WRITE_LONG: number;
+
+declare const kBluetoothSDPUUID16TCSAT: number;
+
+declare const kHIDUsage_BCS_CheckDigitCode99Enable: number;
+
+declare const kHIDUsage_Snsr_Data_Time: number;
 
 declare const IOFWIsochChannel: number;
 
+declare const kSCSICmd_LOCK_UNLOCK_CACHE: number;
+
+declare const kHFSVolumeInconsistentBit: number;
+
 declare const IOFWWriteQuadCommand: number;
+
+declare const kHIDUsage_PID_SetConditionReport: number;
+
+declare const OUTPUT_HEAD_MOUNTED_DISPLAY_AUDIO: number;
 
 declare const IOHIDPointing: number;
 
+declare const kUSBInterfacePowerDesc: number;
+
+declare const kHFSVolumeSoftwareLockMask: number;
+
+declare const kBluetoothHCIEventReadRemoteExtendedFeaturesComplete: number;
+
+declare const kBluetoothHCICommandChangeConnectionLinkKey: number;
+
+declare const kHIDUsage_Snsr_Mechanical_BooleanSwitchArray: number;
+
+declare const kBluetoothL2CAPConfigurationOptionFlushTimeoutLength: number;
+
 declare const audit_triggers_subsystem: audit_triggers_subsystem;
+
+declare const kHIDUsage_Button_183: number;
+
+declare const kSENSE_DATA_VALID_Mask: number;
 
 declare const kIOAGPDisableAGPWrites: number;
 
+declare const TELEPHONY_DOWN_LINE_PHONE: number;
+
+declare const kIOHIDOpenedByEventSystem: number;
+
+declare const kSCSIDataTransfer_FromInitiatorToTarget: number;
+
+declare const kHIDUsage_Sim_Ballast: number;
+
+declare const kHIDUsage_BCS_StatusReport: number;
+
+declare const kHFSHasAttributesMask: number;
+
+declare const kUSBRqSetConfig: number;
+
+declare const kINQUIRY_Page83_AssociationLogicalUnit: number;
+
+declare const kHIDUsage_KeyboardLANG8: number;
+
+declare const kHFSFastDevPinnedMask: number;
+
+declare const kHIDUsage_Dig_ContactIdentifier: number;
+
+declare const kBluetoothGAPAppearanceUnknown: number;
+
+declare const kUSBPRimeStream: number;
+
+declare const kBluetoothConnectionHandleNone: number;
+
 declare const kIOFBNotifyDidNotify: number;
+
+declare const kUSBBillboardVConn1Watt: number;
+
+declare const kBluetoothHCICommandLEAddDeviceToWhiteList: number;
 
 declare const kIOServiceSeize: number;
 
+declare const kHIDUsage_Sprt_StickFaceAngle: number;
+
+declare const kIOTimingIDVESA_800x600_85hz: number;
+
 declare const IFNET_FAMILY_DISC: number;
+
+declare const kHIDUsage_PID_ET_SawtoothDown: number;
+
+declare const kHIDUsage_Csmr_ALEntertainmentContentBrowser: number;
+
+declare const kHIDUsage_GD_SystemDisplayRotationLockButton: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixQuality: number;
+
+declare const kSCSICmd_SET_LIMITS_10: number;
+
+declare const timingVESA_640x480_75hz: number;
+
+declare const kBDFeaturesReadMask: number;
+
+declare const kHIDUsage_KeyboardInternational1: number;
 
 declare const CSMAGIC_EMBEDDED_ENTITLEMENTS: number;
 
+declare const kHIDUsage_KeyboardF15: number;
+
+declare const kModeStretched: number;
+
+declare const kUSBAudioInterfaceClass: number;
+
+declare const kSyncOnRedMask: number;
+
 declare const kIODKDisableEntitlementChecking: number;
+
+declare const kHIDUsage_Csmr_ACRotate: number;
 
 declare const kIOFBNotifyWSAAWillExitDefer: number;
 
+declare const kHIDUsage_Tfon_PhoneKey3: number;
+
+declare const kHIDUsage_PD_DelayBeforeShutdown: number;
+
+declare const kIOFBNS_GenerationMask: number;
+
+declare const TELEPHONY_TELEPHONE: number;
+
+declare const kBluetoothHCICommandLEEnhancedReceiverTest: number;
+
+declare const kHIDUsage_Button_41: number;
+
+declare const kHFSSigWord: number;
+
+declare const kPowerStateSleepCanPowerOffBit: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2Unclassified: number;
+
+declare const kHIDUsage_Sprt_Treadmill: number;
+
+declare const kSBCWOCmd_LOCK_UNLOCK_CACHE: number;
+
+declare const kBluetoothHCICommandLEReceiverTest: number;
+
+declare const kMaxAsyncArgs: number;
+
+declare const kHIDUsage_Button_104: number;
+
+declare const kHFSBogusExtentFileID: number;
+
 declare const kIOPCIExpressCapabilityIDVC_MFVCPresent: number;
+
+declare const kHIDUsage_Button_26: number;
 
 declare const hex2ascii_data: interop.Pointer;
 
+declare const kSENSE_EOM_Not_Set: number;
+
+declare const kUSBCommTelephoneSubClass: number;
+
+declare const kHIDUsage_PID_DeviceManagedPool: number;
+
+declare const kSBCCmd_WRITE_BUFFER: number;
+
 declare const kIOInterruptTypePCIMessagedX: number;
+
+declare const kHIDUsage_Button_162: number;
+
+declare const kBluetoothSDPUUID16Base: number;
+
+declare const EMBEDDED_UNDEFINED: number;
+
+declare const timingApple_640x818_75hz: number;
+
+declare const kHIDPage_Ordinal: number;
+
+declare const cscSetPowerState: number;
+
+declare const kDVDFeaturesHDRWMask: number;
+
+declare const kSPCProcCmd_SEND_DIAGNOSTICS: number;
 
 declare const kIODirectionPrepareNonCoherent: number;
 
+declare const kIOCatalogResetDefault: number;
+
 declare const IFNET_FAMILY_SLIP: number;
+
+declare const kIOAudioDeviceTransportTypeAVB: number;
 
 declare const kATAcmdMCAcknowledge: number;
 
@@ -4014,39 +15658,197 @@ declare const kIOReportQuantityCurrent: number;
 
 declare const kEfiBootServicesData: number;
 
+declare const kIODSCBlockPredEnable: number;
+
+declare const kBluetoothSDPUUID16HardcopyDataChannel: number;
+
+declare const kSBCWOCmd_RESERVE_10: number;
+
+declare const kHIDUsage_PID_AttackLevel: number;
+
+declare const kHIDUsage_Sim_Shifter: number;
+
+declare const kDVDKeyFormatAGID_CPRM: number;
+
+declare const kIdentifyWordValid: number;
+
+declare const kHIDUsage_PD_Voltage: number;
+
+declare const kConfigUnitPollMaskKey: number;
+
+declare const kBluetoothHCICommandWriteAuthenticatedPayloadTimeout: number;
+
+declare const kRangeSupportsSignal_1000_0400_Mask: number;
+
+declare const kHIDUsage_KeyboardExecute: number;
+
+declare const kBluetoothHCIEventAMPReceiverReport: number;
+
 declare const CS_VALIDATION_CATEGORY_ROSETTA: number;
 
 declare const kIOPCIConfigurationOffsetCommand: number;
 
+declare const kHIDUsage_AD_DisplayControlReport: number;
+
+declare const kHIDUsage_PD_AudibleAlarmControl: number;
+
+declare const timingApple19: number;
+
+declare const kFWBroadcastNodeID: number;
+
+declare const kSCSICmd_ACCESS_CONTROL_OUT: number;
+
+declare const kUSBbEndpointDirectionMask: number;
+
+declare const kIOHIDStandardTypeJIS: number;
+
+declare const kINQUIRY_PERIPHERAL_QUALIFIER_Connected: number;
+
+declare const kHIDUsage_BS_CapacityGranularity1: number;
+
+declare const kIOTimingIDVESA_1024x768_70hz: number;
+
+declare const kBluetoothHCICommandReadLocalAMPASSOC: number;
+
+declare const kHIDUsage_BS_RemainingTimeLimit: number;
+
+declare const kDepthMode5: number;
+
+declare const kHIDUsage_Button_178: number;
+
+declare const kIOTimingIDInvalid: number;
+
 declare const OSSerialize: number;
+
+declare const kHIDUsage_Snsr_Mechanical_Weight: number;
+
+declare const kConnectionRedGammaScale: number;
 
 declare const IOPCIMessagedInterruptController: number;
 
+declare const kBluetoothPacketType2DH5Omit: number;
+
 declare const kFWSelfID0I: number;
+
+declare const kHIDUsage_KeyboardF8: number;
+
+declare const kDCLReceiveBufferOp: number;
+
+declare const kCSRStateClearAddress: number;
+
+declare const kBluetoothHCIErrorRoleSwitchFailed: number;
+
+declare const kINQUIRY_Byte7_RELADR_Bit: number;
+
+declare const kCSRSplitTimeoutHiAddress: number;
+
+declare const kHIDUsage_BCS_EAN13FlagDigit2: number;
+
+declare const kHIDUsage_BD_BrailleRightControls: number;
+
+declare const kHIDUsage_WD_WeightUnit: number;
 
 declare const gIODriverKitRequiredEntitlementsKey: interop.Pointer;
 
+declare const kHIDUsage_BCS_ConstantElectronicArticleSurveillance: number;
+
 declare const kFWTCodeLockResponse: number;
+
+declare const kDVDBookTypePlusRDoubleLayer: number;
+
+declare const kBluetoothHCIEventMaskConnectionRequest: number;
+
+declare const kDiscStatusEmpty: number;
+
+declare const kESCThree21InchRadius: number;
+
+declare const kHIDUsage_KeyboardF7: number;
+
+declare const kBluetoothHCICommandRemoteOOBDataRequestReply: number;
+
+declare const kUSBNotificationPostForcedResumeBit: number;
+
+declare const kSCSICmd_MOVE_MEDIUM_ATTACHED: number;
 
 declare const cons_ops_index: number;
 
+declare const kHIDUsage_Snsr_Other_Generic: number;
+
+declare const kIOVideoDeviceMethodGetMode: number;
+
+declare const kHIDUsage_AD_StatReady: number;
+
 declare const kFWPhyPacketID: number;
+
+declare const kIORangeSupportsSignal_0700_0000: number;
+
+declare const kHIDUsage_Button_163: number;
 
 declare const IOFireWireMultiIsochReceivePacket: number;
 
+declare const kSBCCmd_READ_6: number;
+
+declare const kBluetoothServiceClassMajorNetworking: number;
+
+declare const kHIDUsage_BCS_AztecCode: number;
+
 declare const IOFireWireAVCTargetSpace: number;
+
+declare const kPCRBaseAddress: number;
 
 declare const channelNotAvailableErr: number;
 
+declare const kHIDUsage_BCS_FirstDiscreteLengthToDecode: number;
+
+declare const kBluetoothDeviceClassMinorHealthGlucoseMeter: number;
+
+declare const kHIDUsage_Csmr_ACJustifyCenterH: number;
+
 declare const kSuperSpeedDeviceCapabilityU1DevExitLatMax: number;
+
+declare const kBluetoothHCICommandLESetPeriodicAdvertisingParameters: number;
+
+declare const kStandbyTimerBit: number;
+
+declare const kHIDUsage_BCS_TriOptic: number;
 
 declare const kIOMemoryLedgerTagNeural: number;
 
+declare const kHIDUsage_Button_190: number;
+
+declare const kUSBHubClass: number;
+
 declare const kRegEntryNameTerminator: number;
+
+declare const kIOBlitTypeLines: number;
+
+declare const kHIDUsage_Csmr_Snapshot: number;
+
+declare const kSBCModePageCaching_DEMAND_READ_Mask: number;
+
+declare const kSBCWOCmd_SEARCH_DATA_EQUAL_12: number;
 
 declare const kATAcmdReadMultiple: number;
 
+declare const kBluetoothHCICommandLECreateConnectionCancel: number;
+
 declare const kEndpointDescriptorPacketSizePhase: number;
+
+declare const kHFSPlusCatalogMinNodeSize: number;
+
+declare const kHIDUsage_BS_TerminateCharge: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilityMinRxLaneCountPhase: number;
+
+declare const kBluetoothPacketTypeDH3: number;
+
+declare const kHIDUsage_Button_17: number;
+
+declare const kDisplaySubPixelShapeRound: number;
+
+declare const kBluetoothHCISubEventLEReadLocalP256PublicKeyComplete: number;
+
+declare const kIOCSyncDisable: number;
 
 declare const kIOTimerEventSourceOptionsPriorityWorkLoop: number;
 
@@ -4054,23 +15856,95 @@ declare const kIODMAMapOptionUnmapped: number;
 
 declare const IOFireWireSBP2LUN: number;
 
+declare const kBluetoothDeviceClassMinorNone: number;
+
+declare const kBluetoothServiceClassMajorEnd: number;
+
 declare const gIOPathMatchKey: interop.Pointer;
 
 declare const kIOFBNotifyDidChangeSpeed: number;
 
+declare const kHIDUsage_Csmr_Tracking: number;
+
+declare const kHIDUsage_Snsr_Light_AmbientLight: number;
+
+declare const kHIDUsage_PD_Boost: number;
+
+declare const kHIDUsage_AD_Row: number;
+
+declare const kHIDUsage_PD_iName: number;
+
+declare const kIONoSeparateSyncControl: number;
+
 declare const IFNET_VLAN_MTU: number;
+
+declare const kHIDUsage_BCS_KlasseEinsLaser: number;
+
+declare const kHIDUsage_PD_Temperature: number;
+
+declare const kHIDUsage_BCS_DLMethodCheckForDiscrete: number;
+
+declare const kHIDUsage_PID_DownloadForceSample: number;
+
+declare const kBluetoothACLLogicalChannelLMP: number;
+
+declare const kIOTimingIDVESA_1280x1024_75hz: number;
+
+declare const kSymLinkCreator: number;
+
+declare const kCDMediaTypeR: number;
+
+declare const kBluetoothSDPUUID16TCP: number;
+
+declare const kScaleInvertYMask: number;
+
+declare const kModeShowNow: number;
 
 declare const kIOReportQuantityInductance: number;
 
 declare const BPF_MODE_INPUT_OUTPUT: number;
 
+declare const kSBCWOCmd_CHANGE_DEFINITION: number;
+
+declare const kMMCCmd_READ_DISC_STRUCTURE: number;
+
+declare const kHIDUsage_Csmr_ACPrint: number;
+
 declare const IOAudioEngineUserClient: number;
+
+declare const kHFSVolumeSparedBlocksMask: number;
+
+declare const kHIDUsage_Button_118: number;
 
 declare const kIOPCIExpressCapabilityIDNPEM: number;
 
+declare const kSENSE_FILEMARK_Mask: number;
+
+declare const cscSavePreferredConfiguration: number;
+
+declare const kConfigLeafDirLength: number;
+
 declare const IOFWUserVectorCommand: number;
 
-declare const IOUSBHostCIDoorbellStreamIDPhase: number;
+declare const kHIDUsage_Dig_TouchScreen: number;
+
+declare const kSBCWOCmd_SEEK_10: number;
+
+declare const kDVDBookTypePlusR: number;
+
+declare const kIOUSBEndpointDescriptorUsageTypeIsocData: number;
+
+declare const kMMCCmd_PLAY_CD: number;
+
+declare const kSPCProcCmd_COMPARE: number;
+
+declare const kHIDUsage_GD_Select: number;
+
+declare const kIOServiceMatchedNotificationType: number;
+
+declare const kDPMSSyncOn: number;
+
+declare const kBluetoothHCICommandReadNumberOfSupportedIAC: number;
 
 declare const kEndpointDescriptorUsageTypeIsocFeedback: number;
 
@@ -4078,21 +15952,53 @@ declare const kIOPCIAERCapCorErrStatusOffset: number;
 
 declare const CS_LINKAGE_APPLICATION_OOPJIT_PREVIEWS: number;
 
+declare const kMultiModeCRT2Connect: number;
+
 declare const version_minor: number;
+
+declare const kBluetoothHCICommandWriteDefaultLinkPolicySettings: number;
 
 declare const kChipSetTypePowerStar: number;
 
+declare const kHFSPlusFolderThreadRecord: number;
+
+declare const kMMCCmd_READ_DVD_STRUCTURE: number;
+
+declare const kHIDUsage_Csmr_ACIndentyDecrease: number;
+
 declare const mATABusy: number;
+
+declare const kBluetoothSDPUUID16UDP: number;
+
+declare const kSCSICmd_READ_LONG: number;
+
+declare const mRowBytes: number;
+
+declare const kSPCProcCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kHIDPage_Button: number;
+
+declare const kIOATAFeaturePowerManagement: number;
 
 declare const kIOPCIUncorrectableErrorBitUnsupportedRequest: number;
 
 declare const kIODMAMapPagingPath: number;
 
-declare const IOUSBHostCICommandMessageData0DeviceAddressPhase: number;
+declare const kSCSICmd_READ_DEFECT_DATA_12: number;
 
-declare const IOUSBHostCIPortEventMessageData0PortNumber: number;
+declare const kHIDUsage_PID_MoveLength: number;
+
+declare const kMMCCmd_RELEASE_6: number;
+
+declare const kHFSMaxFileNameChars: number;
+
+declare const kHIDUsage_WD_WeightUnitPound: number;
 
 declare const kIODKDisableCDHashChecking: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilityReserved: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_GroupAddMember: number;
 
 declare const kFWSelfID0DelPhase: number;
 
@@ -4100,65 +16006,329 @@ declare const kAirshipDaleBasebandErrorCCCIHandshakeError: number;
 
 declare const kIOFBNotifyEvent_Terminated: number;
 
+declare const kSSCSeqCmd_MOVE_MEDIUM: number;
+
+declare const timingVESA_1280x960_75hz: number;
+
+declare const kMaximumNumberOfInquiryAccessCodes: number;
+
+declare const INPUT_PERSONAL_MICROPHONE: number;
+
+declare const kHIDUsage_Sim_SpaceshipSimulationDevice: number;
+
+declare const kHIDUsage_Csmr_ACOpen: number;
+
+declare const kUSBRqTypeMask: number;
+
 declare const kSuperSpeedPlusDeviceCapabilitySublinkLSEPhase: number;
+
+declare const kHIDUsage_Tfon_PhoneKeyPound: number;
 
 declare const kEndpointDescriptorUsageTypeInterruptReserved1: number;
 
+declare const kIOAudioStreamAlignmentLowByte: number;
+
+declare const kHFSFolderThreadRecord: number;
+
 declare const kDisabledInterruptState: number;
 
+declare const kINQUIRY_Byte56_IUS_Bit: number;
+
+declare const kHFSRootParentID: number;
+
+declare const kHFSHasChildLinkBit: number;
+
+declare const kHIDUsage_BCS_CodeOne: number;
+
+declare const kHIDUsage_AD_ScreenSaverDelay: number;
+
 declare const IOATABusInfo: number;
+
+declare const kBluetoothSDPUUID16HardcopyControlChannel: number;
+
+declare const kHFSMDBAttributesMask: number;
+
+declare const kHIDUsage_PID_LoopCount: number;
 
 declare const kIOFBNotifyGroupID_AppleIOAccelDisplayPipe: number;
 
 declare const kIOOutputCommandMask: number;
 
-declare const IOUSBHostCISetupTransferData1wIndexPhase: number;
+declare const kIOUSBUSB20ExtensionCapabilityBESLPhase: number;
+
+declare const OUTPUT_NULL: number;
+
+declare const kBluetoothLEMaxTXOctetsDefault: number;
+
+declare const kINQUIRY_Byte5_ACC_Mask: number;
+
+declare const kHIDUsage_LED_ScrollLock: number;
+
+declare const kIOAudioPortTypeInput: number;
+
+declare const kHIDUsage_KeyboardF18: number;
 
 declare const kIOPCIAGPCapability: number;
 
 declare const kFWTCodeReadQuadletResponse: number;
 
+declare const kIOMirrorIsMirrored: number;
+
+declare const kMMCCmd_SEND_OPC_INFORMATION: number;
+
 declare const kIODKLogIPC: number;
+
+declare const kCDFeaturesAnalogAudioBit: number;
+
+declare const kHIDUsage_Dig_BatteryStrength: number;
 
 declare const kIOMemoryTypeVirtual64: number;
 
 declare const kATAcmdReadLong: number;
 
+declare const kHIDUsage_AD_ScreenSaverEnable: number;
+
+declare const kBluetoothGAPAppearanceGenericEyeGlasses: number;
+
+declare const kHIDUsage_Csmr_Sleep: number;
+
+declare const kBluetoothHCIEventFlowSpecModifyComplete: number;
+
+declare const kHIDUsage_Button_164: number;
+
 declare const kHIDDispatchOptionScrollMomentumAny: number;
+
+declare const kBluetoothHCIEventLogicalLinkComplete: number;
+
+declare const kHIDUsage_Dig_XTilt: number;
+
+declare const kBluetoothDeviceClassMajorHealth: number;
+
+declare const kHIDUsage_BCS_ScannerDataAccuracy: number;
+
+declare const kBluetoothHCICommandReadAuthenticationEnable: number;
+
+declare const kIOFBHDCPLimit_AllowAll: number;
+
+declare const kHIDUsage_AD_FontReadBack: number;
+
+declare const kHIDUsage_Haptics_WaveformVendorPage: number;
+
+declare const kIOAudioChannelLabel_CenterSurroundDirect: number;
+
+declare const kHIDUsage_BCS_MultiRangeScanner: number;
+
+declare const kBluetoothVoiceSettingInputDataFormat2sComplement: number;
+
+declare const kIOAudioChannelLabel_TopBackLeft: number;
+
+declare const kHFSMaxAttrNameLen: number;
+
+declare const kBluetoothHCICommandSetConnectionlessPeripheralBroadcastReceive: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkLSEMbits: number;
+
+declare const kCDFeaturesCDDAStreamAccurateMask: number;
+
+declare const kBluetoothSDPUUID16AVDTP: number;
+
+declare const kBluetoothHCIErrorConnectionRejectedDueToNoSuitableChannelFound: number;
+
+declare const kCSRStateState: number;
+
+declare const kMMCCmd_LOG_SENSE: number;
+
+declare const kBluetoothHCIEventIOCapabilityRequest: number;
+
+declare const kSCSICmd_REDUNDANCY_GROUP_OUT: number;
+
+declare const kBluetoothPacketTypeDH1: number;
 
 declare const separateBusErr: number;
 
+declare const kHIDUsage_PD_VoltageOutOfRange: number;
+
+declare const kScaleSwapAxesMask: number;
+
+declare const kCompositeSyncMask: number;
+
+declare const kIOVideoFeatureControlClassIDBacklightCompensation: number;
+
+declare const kSSCSeqCmd_READ_BLOCK_LIMITS: number;
+
+declare const kBluetoothHCICommandReadBufferSize: number;
+
+declare const kHIDUsage_WD_ScaleStatusRequiresCalibration: number;
+
+declare const kHIDUsage_AD_CursorBlink: number;
+
 declare const kPCI2PCIOffsetPrefetchUpperBase: number;
 
+declare const kBluetoothHCICommandReadEncryptionKeySize: number;
+
+declare const kVideoCombinedI2CType: number;
+
+declare const kATAIdentifyModelNumber: number;
+
+declare const kHFSCaseFolding: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_GetInfo: number;
+
+declare const kHIDUsage_Csmr_KeyboardFormFactor: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_Tilt: number;
+
+declare const kSSCPrinterCmd_REPORT_LUNS: number;
+
 declare const kIOPCIExpressCapabilityIDPL32GTs: number;
+
+declare const kHIDUsage_Button_66: number;
 
 declare const IOHIDDeviceShim: number;
 
 declare const kIOPCICommandInterruptDisable: number;
 
+declare const kHIDUsage_BCS_Standard2of5IATA: number;
+
+declare const kBluetoothHCICommandLEReadPeerResolvableAddress: number;
+
+declare const kDVDFeaturesPlusRWMask: number;
+
+declare const kHFSHasDateAddedBit: number;
+
+declare const kSPCProcCmd_TEST_UNIT_READY: number;
+
 declare const kIOUserNotifyMaxMessageSize: number;
+
+declare const kBluetoothDeviceClassMinorToyDollActionFigure: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_PropertyChanged: number;
+
+declare const kHIDUsage_Button_138: number;
+
+declare const kATADefaultTimeout: number;
+
+declare const kHFSFolderRecord: number;
 
 declare const gIOPriorityPowerStateInterest: interop.Pointer;
 
+declare const kIOColorimetryWGRGB: number;
+
+declare const kFWBIBBusName: number;
+
+declare const kSBCWOCmd_SEARCH_DATA_LOW_12: number;
+
 declare const kIOAGPGartInvalidate: number;
+
+declare const kHIDUsage_Csmr_MediaSelectVCR: number;
+
+declare const kHIDUsage_Sim_WeaponsArm: number;
+
+declare const kHIDUsage_Button_126: number;
+
+declare const kBluetoothHCISubEventLERemoteConnectionParameterRequest: number;
+
+declare const kBluetoothHCICommandLinkKeyRequestNegativeReply: number;
 
 declare const kIOPCIConfigurationOffsetMinimumGrant: number;
 
+declare const kBluetoothHCICommandLEReadWhiteListSize: number;
+
+declare const kIOFBDisplayState: number;
+
+declare const kCSRBroadcastChannel: number;
+
+declare const kIOTimingIDVESA_1920x1440_75hz: number;
+
 declare const IOFWIsochPort: number;
+
+declare const kDigitalSignalBit: number;
+
+declare const kSBCWOCmd_READ_12: number;
 
 declare const kPCIPMCPMESupportFromD3Hot: number;
 
+declare const kHIDUsage_Csmr_Slow: number;
+
+declare const kHIDUsage_Snsr_Event_SensorEvent_LowThresholdCrossDown: number;
+
+declare const kHIDUsage_Snsr_Electrical: number;
+
+declare const kSESCmd_RESERVE_6: number;
+
+declare const kHIDUsage_Snsr_Motion_Accelerometer3D: number;
+
 declare const IOStreamBuffer: number;
+
+declare const kHIDUsage_Button_191: number;
+
+declare const kBluetoothHCIEventDisconnectionPhysicalLinkComplete: number;
+
+declare const kSSCPrinterCmd_SLEW_AND_PRINT: number;
+
+declare const kIOFBAVSignalTypeDP: number;
+
+declare const kHIDUsage_Button_64: number;
+
+declare const kHFSPlusFolderRecord: number;
 
 declare const kAirshipDaleBasebandControlErrorMsg: number;
 
+declare const kHFSPlusExtentDensity: number;
+
+declare const kIOHIDAccelerationAlgorithmTypeParametric: number;
+
+declare const kSGCCmd_PORT_STATUS: number;
+
+declare const kHIDUsage_PID_DC_DevicePause: number;
+
 declare const gIODTTypeKey: interop.Pointer;
+
+declare const kHIDUsage_Snsr_Modifier_ChangeSensitivityAbsolute: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkSpeedId: number;
 
+declare const kBluetoothSDPDataElementTypeSignedInt: number;
+
+declare const kHIDUsage_Csmr_Stop: number;
+
+declare const kSCSIServiceAction_WRITE_AND_VERIFY_32: number;
+
+declare const kIOScaleRotate90: number;
+
+declare const kHIDUsage_Haptics_VendorWaveformLast: number;
+
+declare const kSCSICmd_SEARCH_DATA_EQUAL_10: number;
+
+declare const kHFSPlusAttrForkData: number;
+
 declare const IORTCController: number;
 
-declare const IOUSBHostCIPortStatusCommandData1Speed: number;
+declare const kHIDUsage_KeyboardEqualSign: number;
+
+declare const kHIDUsage_Button_18: number;
+
+declare const kBluetoothHCICommandSetConnectionlessSlaveBroadcastReceive: number;
+
+declare const kIOStreamPortTypeInput: number;
+
+declare const kBluetoothHCIEventMaskAll: number;
+
+declare const kHIDUsage_AD_ErrFontdatacannotberead: number;
+
+declare const kIORangeDynamicRangeDolbyNormalMode: number;
+
+declare const kIOHIDOptionsTypeNone: number;
+
+declare const kSSCSeqCmd_REWIND: number;
+
+declare const kHIDUsage_Snsr_Data_Orientation_DistanceYAxis: number;
+
+declare const kHIDUsage_Snsr_Modifier_Resolution: number;
+
+declare const kHIDUsage_Haptics_WaveformPress: number;
+
+declare const kHFSFastDevCandidateMask: number;
 
 declare const AppleMacIO: number;
 
@@ -4166,7 +16336,21 @@ declare const kIODMAMapOptionDextOwner: number;
 
 declare const sock_evt_disconnecting: number;
 
+declare const kHIDUsage_WD_ScaleScaleClassIIIEnglish: number;
+
+declare const kCSRClockStrobeArrivedHiAddress: number;
+
 declare const kATATimeoutErr: number;
+
+declare const kIOBitsPerColorComponent6: number;
+
+declare const kBluetoothHCICommandIOCapabilityRequestNegativeReply: number;
+
+declare const kINQUIRY_Page83_IdentifierTypeRelativePortIdentifier: number;
+
+declare const kHIDUsage_Button_179: number;
+
+declare const kIOAudioChannelLabel_Center: number;
 
 declare const kIOPCIPCIXCapability: number;
 
@@ -4174,41 +16358,161 @@ declare const kIOPCIStatusMasterAbortActive: number;
 
 declare const kIOFBNotifyWillPowerOn: number;
 
+declare const kCDFeaturesTAOWriteMask: number;
+
+declare const kRangeSupportsCompositeSyncBit: number;
+
 declare const kKeyMaskComma: number;
 
 declare const kFWAsynchTLabel: number;
 
+declare const kHIDUsage_KeyboardF21: number;
+
 declare const CSSLOT_ALTERNATE_CODEDIRECTORY_LIMIT: number;
+
+declare const kBluetoothHCIErrorCommandDisallowed: number;
+
+declare const kHIDUsage_LED_BatteryLow: number;
 
 declare const IFNET_LRO_NUM_SEG: number;
 
 declare const kPCIPMCD3Support: number;
 
+declare const kINQUIRY_ANSI_VERSION_Mask: number;
+
+declare const timingVESA_1920x1440_75hz: number;
+
+declare const kHIDUsage_Button_234: number;
+
+declare const kHIDUsage_BCS_GoodReadLampIntensity: number;
+
+declare const kHIDUsage_LED_Player8: number;
+
+declare const kVideoDefaultBus: number;
+
+declare const kHIDUsage_Csmr_BalanceRight: number;
+
+declare const kHIDUsage_Snsr_Location_GPS: number;
+
 declare const kFWSelfIDNPcPhase: number;
+
+declare const kHIDUsage_BCS_TransmitCheckDigit: number;
+
+declare const kIOFBDisplayState_AlreadyActive: number;
+
+declare const kATAForceUnitAccessFeatureMask: number;
+
+declare const kHIDUsage_Sim_TrackControl: number;
+
+declare const kHIDUsage_Snsr_Data_Scanner_NFCSentenceReceive: number;
+
+declare const kHIDUsage_Csmr_ChannelSurround: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral1Keyboard: number;
+
+declare const kIOPixelEncodingYCbCr422: number;
+
+declare const kSCSICmd_REQUEST_SENSE: number;
 
 declare const gIOTerminatedNotification: interop.Pointer;
 
+declare const kHIDUsage_Csmr_ALAudioPlayer: number;
+
 declare const kIOFBNotifyTerminated: number;
+
+declare const kBluetoothServiceClassMajorNone: number;
+
+declare const kHIDUsage_WD_ScaleStatisticsReport: number;
+
+declare const kHIDUsage_GD_SystemDisplayBoth: number;
+
+declare const kINQUIRY_Byte7_SYNC_Mask: number;
+
+declare const kHIDUsage_Csmr_VCROrTV: number;
 
 declare const kFWSelfID0P2: number;
 
 declare const MBUF_TSO_IPV6: number;
 
+declare const kIORangeSupportsMultiAlignedTiming: number;
+
+declare const kHIDUsage_Csmr_TrebleIncrement: number;
+
 declare const osbuild_config: interop.Pointer;
 
 declare const MBUF_DONTWAIT: number;
 
+declare const kHIDUsage_Csmr_ContactFirstName: number;
+
+declare const kHIDUsage_Tfon_PriorityRingTone: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorSSPIsocCompanion: number;
+
+declare const kDisplaySubPixelLayoutQuadGBL: number;
+
+declare const kBluetoothSDPErrorCodeInvalidRequestSyntax: number;
+
+declare const kIOBlitTypeSourceKeyColorNotEqual: number;
+
 declare const IOMbufBigMemoryCursor: number;
+
+declare const kBluetoothL2CAPFlushTimeoutUseExisting: number;
+
+declare const kHFSPlusVersion: number;
+
+declare const kHIDUsage_PID_BlockHandle: number;
+
+declare const kSENSE_KEY_NO_SENSE: number;
+
+declare const kUSB_EPDesc_bmAttributes_TranType_Shift: number;
+
+declare const kBluetoothL2CAPTCICommandL2CA_ConnectResp: number;
 
 declare const kIOPCIConfigurationOffsetBaseAddress2: number;
 
+declare const kScaleRotate0Mask: number;
+
+declare const kHIDUsage_PD_PowerConverterID: number;
+
+declare const kHIDUsage_Csmr_ContactRecordActive: number;
+
+declare const kCDFeaturesReWriteableMask: number;
+
+declare const kHIDUsage_BCS_GRWTIAfterDecode: number;
+
+declare const kAnalogSignalLevel_1000_0400: number;
+
+declare const kSCSIDataTransfer_FromTargetToInitiator: number;
+
 declare const kIOPCIAERCapUncErrMaskOffset: number;
+
+declare const kBluetoothGAPAppearanceGenericBloodPressure: number;
+
+declare const kUSBRqSetAddress: number;
+
+declare const kDisplaySubPixelShapeRectangular: number;
+
+declare const kHIDUsage_Csmr_PlayOrPause: number;
+
+declare const kHIDUsage_GD_MultiAxisController: number;
+
+declare const kIOInterestCalloutFuncIndex: number;
 
 declare const kIOMemoryTypePhysical64: number;
 
 declare const kFWDebugIgnoreNodeNone: number;
 
-declare const IOUSBHostCIMessageControlTypePhase: number;
+declare const kBluetoothHCICommandReadTransmitPowerLevel: number;
+
+declare const kSSCSeqCmd_SPACE: number;
+
+declare const kHIDUsage_Snsr_Data_Location_City: number;
+
+declare const kBluetoothHCIErrorControllerBusy: number;
+
+declare const kATASupportsWriteCacheBit: number;
+
+declare const kHIDUsage_Snsr_Data_Location_GeoidalSeparation: number;
 
 declare const gIODisplayAmbientLightSensorKey: interop.Pointer;
 
@@ -4216,9 +16520,29 @@ declare const gIOUserUserClientKey: interop.Pointer;
 
 declare const kIOLogServiceTree: number;
 
+declare const kUSBTooManyDevicesAddress: number;
+
 declare const gIOServiceKey: interop.Pointer;
 
+declare const kIOBlitSourceMemory: number;
+
+declare const kIOColorimetryDCIP3: number;
+
+declare const kHardLinkFileType: number;
+
+declare const kHIDUsage_Tfon_MessageControls: number;
+
+declare const kSGCCmd_SCAN: number;
+
+declare const kHIDUsage_GD_Thumbstick: number;
+
+declare const kHIDUsage_BD_BrailleJoystickRight: number;
+
+declare const kHFSExpandedTimesBit: number;
+
 declare const bATADataRequest: number;
+
+declare const kBluetoothPacketTypeDM1: number;
 
 declare const IODMACommand: number;
 
@@ -4226,87 +16550,419 @@ declare const kUSBHostVendorRequestCompletionTimeout: number;
 
 declare const CS_SUPPORTSEXECSEG: number;
 
+declare const kHIDUsage_AD_CharacterSpacingHorizontal: number;
+
+declare const kHIDUsage_Csmr_GreenMenuButton: number;
+
+declare const kHIDUsage_KeyboardW: number;
+
+declare const kHFSHasLinkChainMask: number;
+
 declare const kIOPCIProbeOptionDone: number;
+
+declare const kIO4IndexedPixelFormat: number;
+
+declare const kBluetoothL2CAPTCIEventIDL2CA_DisconnectInd: number;
+
+declare const kHIDUsage_LED_PaperJam: number;
+
+declare const kHFSPlusExtentMinNodeSize: number;
 
 declare const kFWSelfID0P1: number;
 
-declare const IOUSBHostCIMessageControlStatus: number;
+declare const kAVPowerSuspend: number;
+
+declare const kHIDUsage_Csmr_ALOEMFeatureBrowser: number;
+
+declare const kBluetoothHCIMaxEventPacketSize: number;
 
 declare const kUSB3LPMMaxHostSchDelay: number;
 
+declare const kHFSHasFolderCountMask: number;
+
+declare const kBluetoothHCICommandGroupLowEnergy: number;
+
+declare const kHIDUsage_AD_DisplayStatus: number;
+
+declare const kConvolvedMask: number;
+
+declare const kBluetoothSynchronousConnectionPacketType2EV5Omit: number;
+
+declare const kIORangeSupportsVRR: number;
+
+declare const kHIDUsage_Snsr_Time_AlarmTimer: number;
+
+declare const kBluetoothVoiceSettingAirCodingFormatULaw: number;
+
+declare const kBluetoothHCIErrorMaxNumberOfSCOConnectionsToADevice: number;
+
+declare const kHIDUsage_LED_DoNotDisturb: number;
+
+declare const kIOUSBSuperSpeedHubCharacteristicsOverCurrentGlobal: number;
+
 declare const gIODisplayUsableLinearBrightnessKey: interop.Pointer;
 
-declare const IOUSBHostCIPortCapabilitiesMessageData0MaxPowerPhase: number;
+declare const kHIDUsage_BCS_Code32: number;
+
+declare const EMBEDDED_MINIDISK: number;
+
+declare const kBluetoothHCICommandLESetAdvertiseEnable: number;
+
+declare const kHIDUsage_KeyboardApplication: number;
+
+declare const kIOTimingIDVESA_1856x1392_75hz: number;
 
 declare const kIODirectionCompleteWithDataValid: number;
 
+declare const kUSBPhysicalInterfaceClass: number;
+
 declare const kIOPCIStatusSERRActive: number;
+
+declare const kConfigBIBBusNameAddress: number;
+
+declare const kIOTimingIDVESA_1280x960_85hz: number;
+
+declare const kUSBRqGetStatus: number;
 
 declare const kEndpointDescriptorUsageTypeInterruptNotification: number;
 
+declare const kFWAVCAsyncPlug28: number;
+
 declare const kIOPCIConfigCapabilitiesPtr: number;
+
+declare const kIORangeBitsPerColorComponent8: number;
+
+declare const kREPORT_LUNS_ADDRESS_METHOD_PERIPHERAL_DEVICE: number;
+
+declare const kHIDUsage_Button_11: number;
 
 declare const IORemoteConfigDirectory: number;
 
+declare const kVideoSimpleI2CType: number;
+
+declare const kHIDUsage_BS_Level3: number;
+
+declare const kRBCCmd_READ_10: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilitySublinkSpeedMantissa: number;
+
+declare const kIOUSBDeviceStatusLTMEnable: number;
+
+declare const kSPCProcCmd_COPY: number;
+
+declare const kBluetoothGAPAppearanceGenericPhone: number;
+
 declare const fixedType: number;
+
+declare const kIOAudioControlTypeToggle: number;
+
+declare const kIOStreamMethodGetMode: number;
+
+declare const kFWAVCAsyncPlug1: number;
+
+declare const kMMCCmd_RESERVE_10: number;
+
+declare const kIOFBLinkVoltageLevel2: number;
+
+declare const kHIDUsage_Csmr_ALOnlineActivityBrowswer: number;
 
 declare const kIOOutputStatusMask: number;
 
+declare const kINQUIRY_Byte6_MCHNGR_Bit: number;
+
+declare const kHIDUsage_LED_SlowBlinkOnTime: number;
+
+declare const kHIDUsage_Snsr_Orientation_Distance3D: number;
+
+declare const kHIDUsage_LED_Busy: number;
+
+declare const OUTPUT_LOW_FREQUENCY_EFFECTS_SPEAKER: number;
+
+declare const kIODisplayNeedsCEAUnderscan: number;
+
+declare const kHIDUsage_Haptics_SimpleHapticController: number;
+
+declare const kBluetoothL2CAPTCIEventIDReserved: number;
+
+declare const kIOTimingIDVESA_1024x768_75hz: number;
+
+declare const cscGetInterrupt: number;
+
+declare const kIOAudioSMPTETimeType5994Drop: number;
+
+declare const kBluetoothHCIErrorEncryptionModeNotAcceptable: number;
+
+declare const kBluetoothHCICommandResetFailedContactCounter: number;
+
+declare const kCSRNodeIDPhase: number;
+
 declare const mATADCRnIntEnable: number;
+
+declare const kInvertingEncodedPixel: number;
+
+declare const timingSMPTE240M_60hz: number;
+
+declare const kHIDUsage_LED_CapsLock: number;
+
+declare const kBluetoothRoleBecomeMaster: number;
+
+declare const kUSBDeviceCapabilitySuperSpeedUSB: number;
 
 declare const kUSB3LPMMaxU1SEL: number;
 
+declare const kIODisplayDitherSpatial: number;
+
+declare const kSBCCmd_PERSISTENT_RESERVE_IN: number;
+
+declare const kHIDUsage_BCS_Code39: number;
+
+declare const kBluetoothHCISubEventLEEnhancedConnectionComplete: number;
+
 declare const gIOCommandPoolSizeKey: interop.Pointer;
 
-declare const IOUSBHostCIDoorbellDeviceAddressPhase: number;
+declare const kHIDUsage_Sim_MotorcycleSimulationDevice: number;
+
+declare const kHIDUsage_BS_ChargerSpec: number;
+
+declare const kHFSHasDateAddedMask: number;
+
+declare const kIOUSBEndpointDescriptorDirectionPhase: number;
+
+declare const kHFSCatalogNodeIDsReusedBit: number;
 
 declare const osversion: interop.Pointer;
 
+declare const kSBCCmd_MODE_SENSE_10: number;
+
+declare const kIOVideoControlElementMaster: number;
+
+declare const kJIJournalNeedInitMask: number;
+
+declare const kSBCCmd_REZERO_UNIT: number;
+
+declare const kHIDUsage_BCS_AddEAN2_3LabelDefinition: number;
+
+declare const kRSCZero: number;
+
+declare const kSCSIProtocolIdentifier_ATAPI: number;
+
+declare const kIOTimingIDVESA_800x600_60hz: number;
+
+declare const kBluetoothHCIEventMaskReadRemoteSupportedFeaturesComplete: number;
+
+declare const kDVDKeyFormatAGID_CSS2: number;
+
+declare const kHIDUsage_Snsr_Electrical_Power: number;
+
 declare const mt_core_supported: boolean;
 
+declare const kHFSExtentKeyMaximumLength: number;
+
+declare const kIOVideoFeatureControlClassIDFocus: number;
+
+declare const kUSBNoStream: number;
+
 declare const ATATimerEventSource: number;
+
+declare const kHIDUsage_BCS_EAN8FlagDigit3: number;
 
 declare const kATAcmdDoorUnlock: number;
 
 declare const kPCI2PCIOffsetPrefetchMemoryRange: number;
 
+declare const kBluetoothHCIEventMaskEncryptionChange: number;
+
+declare const kIOAudioStreamSampleFormat1937AC3: number;
+
+declare const kIOFBNS_Sleep: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState_D3_Sleep: number;
+
+declare const kATAIdentifyCurrentMultipleSectors: number;
+
 declare const kAirshipDaleBasebandErrorIpcPowerOnTimedOut: number;
 
 declare const kIOACPIBusNumberRange: number;
 
+declare const kIOUSBDeviceRequestSetConfiguration: number;
+
+declare const kBluetoothHCICommandReadAFHChannelAssessmentMode: number;
+
+declare const kHIDUsage_KeyboardX: number;
+
+declare const kHIDUsage_Button_109: number;
+
+declare const kIOAudioChannelLabel_LeftTopFront: number;
+
 declare const kHIDInputReport: number;
 
+declare const kIOHIDEventSystemConnectType: number;
+
+declare const kIOBlitTypeDestKeyColorModeMask: number;
+
+declare const kConfigBusInfoBlockLength: number;
+
+declare const kIOTimingIDGTF_640x480_120hz: number;
+
+declare const kHIDUsage_Sim_MagicCarpetSimulationDevice: number;
+
 declare const kFWAsynchExtendedTCodePhase: number;
+
+declare const cscKillIO: number;
+
+declare const kUSBRqSetFeature: number;
+
+declare const kBluetoothHCICommandSetConnectionlessPeripheralBroadcast: number;
+
+declare const kBluetoothL2CAPPSMBNEP: number;
+
+declare const kCDTrackInfoAddressTypeTrackNumber: number;
+
+declare const kUSB20ExtensionLPMSupported: number;
+
+declare const kHIDUsage_BS_Discharging: number;
+
+declare const oneBitMode: number;
+
+declare const kBluetoothHCICommandLEGenerateDHKey: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral1Combo: number;
+
+declare const kCDFeaturesReadStructuresMask: number;
+
+declare const kUSBFeatureFunctionSuspend: number;
+
+declare const kHIDUsage_Sprt_StickType: number;
 
 declare const kSuperSpeedPlusDeviceCapabilitySublinkType: number;
 
 declare const AppleNMI: number;
 
-declare const IOUSBHostCIPortStatusSpeed: number;
+declare const kSPCProcCmd_REQUEST_SENSE: number;
+
+declare const kBluetoothKeyTypeCombination: number;
+
+declare const kHIDUsage_Button_208: number;
+
+declare const kBluetoothSDPErrorCodeReservedStart: number;
+
+declare const kHIDUsage_BCS_TransmitStart_Stop: number;
 
 declare const IFNET_HW_TIMESTAMP: number;
 
 declare const IORegistryEntry: number;
 
+declare const kVideoCannotMirrorErr: number;
+
 declare const gIODisplayHorizontalSizeKey: interop.Pointer;
 
-declare const IOUSBHostCIPortStatusConnectChange: number;
+declare const kINQUIRY_PERIPHERAL_TYPE_CDROM_MMCDevice: number;
+
+declare const kBluetoothHCISubEventLEScanRequestReceived: number;
+
+declare const kIOBlitSourceCGSSurface: number;
+
+declare const kFWBIBNodeCapabilitiesAddress: number;
+
+declare const kHIDUsage_LED_IndicatorGreen: number;
+
+declare const kINQUIRY_Byte3_NORMACA_Mask: number;
 
 declare const kIOPCIConfigurationOffsetSubSystemVendorID: number;
 
 declare const kIterationDone: number;
 
+declare const kHIDUsage_Keyboard8: number;
+
+declare const kIOAudioClockSelectorTypeSPDIF: number;
+
+declare const kHIDUsage_PD_SwitchOnControl: number;
+
+declare const kSGCCmd_READ_BUFFER: number;
+
+declare const kSBCWOCmd_COPY: number;
+
 declare const kIOPCIConfigSubSystemVendorID: number;
+
+declare const kSSCSeqCmd_WRITE_6: number;
 
 declare const kFWSelfIDNPePhase: number;
 
+declare const kHFSXSigWord: number;
+
+declare const kVideoSimpleI2CTypeMask: number;
+
+declare const kESCThree21InchMonoRadius: number;
+
+declare const kHFSDoNotFastDevPinBit: number;
+
+declare const kBTBadCloseMask: number;
+
+declare const kSENSE_RESPONSE_CODE_Current_Errors: number;
+
+declare const kDDCConnect: number;
+
 declare const kSuperSpeedEndpointCompanionDescriptorMaxBurst: number;
+
+declare const kHIDUsage_BCS_UltraCode: number;
+
+declare const kHIDUsage_LED_IndicatorAmber: number;
+
+declare const kIOTimingIDApple_640x480_67hz: number;
+
+declare const kHIDUsage_Snsr_Property_Location: number;
 
 declare const kIOPCIAERCapUncErrStatusOffset: number;
 
 declare const MBUF_TYPE_OOBDATA: number;
 
+declare const kBluetoothHCISubEventLEPeriodicAdvertisingSyncLost: number;
+
+declare const kHIDUsage_BCS_SetParameterDefaultValues: number;
+
+declare const kHIDUsage_BD_BrailleDPadCenter: number;
+
+declare const kHIDUsage_BD_BrailleKeyboardSpace: number;
+
+declare const kHIDPage_VendorDefinedStart: number;
+
+declare const kHIDUsage_Sim_SportsSimulationDevice: number;
+
+declare const kIOHIDEventNotification: number;
+
+declare const kHIDUsage_Dig_GestureCharacterEncodingUTF32BE: number;
+
+declare const kBluetoothHCICommandWritePageScanPeriodMode: number;
+
+declare const kHIDUsage_Csmr_ACCut: number;
+
+declare const kHIDUsage_Sprt_6Iron: number;
+
+declare const kUSBVideoControlSubClass: number;
+
+declare const kSBCModePageFlexibleDisk_SPC_Mask: number;
+
+declare const kIOUSBPingResponseTimeNs: number;
+
+declare const kHFSVolumeInconsistentMask: number;
+
+declare const kIOUSBSuperSpeedHubDecodeLatencyMax: number;
+
+declare const kHIDUsage_Csmr_ACExpandAll: number;
+
+declare const kIOI2CSimpleTransactionType: number;
+
+declare const kHIDUsage_BD_RouterKey: number;
+
+declare const kIOUSBEndpointDescriptorNumberPhase: number;
+
 declare const kIOReportGetDimensions: number;
+
+declare const spVidNamesDir: number;
+
+declare const kHIDUsage_Csmr_ALOEMHelp: number;
+
+declare const kFWAddressNodeID: number;
 
 declare const kIOPCIUncorrectableErrorBitDataLinkProtocol: number;
 
@@ -4314,41 +16970,125 @@ declare const kIODefaultProbeScore: number;
 
 declare const gIODisplayRotationKey: interop.Pointer;
 
+declare const kIOVideoDeviceMethodOpenStream: number;
+
+declare const kUSBIsoc: number;
+
 declare const kFWPacketTCode: number;
+
+declare const kBluetoothLESecurityManagerReservedEnd: number;
 
 declare const CSMAGIC_REQUIREMENTS: number;
 
 declare const gFireWireProduct_Name: interop.Pointer;
 
+declare const kHIDUsage_KeyboardOut: number;
+
+declare const kSENSE_ILI_Mask: number;
+
+declare const kHFSBootVolumeInconsistentMask: number;
+
+declare const kHIDUsage_KeyboardLANG7: number;
+
 declare const SPTM_SWITCH_RCTX_FLUSH: number;
+
+declare const kSCSICDBSize_Maximum: number;
+
+declare const kHIDUsage_Button_60: number;
+
+declare const kHIDUsage_Snsr_Property_PowerState_Undefined: number;
+
+declare const kHFSDoNotFastDevPinMask: number;
+
+declare const kDisplayModeValidFlag: number;
+
+declare const kSCSICmd_SEARCH_DATA_LOW_10: number;
+
+declare const kIOBlitFramebufferDestination: number;
+
+declare const kBluetoothHCICommandInquiry: number;
+
+declare const kBluetoothL2CAPPSMD2D: number;
 
 declare const kRegNameSpaceModifierMask: number;
 
+declare const kBluetoothHCICommandLELongTermKeyRequestNegativeReply: number;
+
 declare const CS_LINKAGE_APPLICATION_ROSETTA_AOT: number;
+
+declare const kBluetoothSDPPDUIDErrorResponse: number;
 
 declare const gIOUSBHostInterfaceMetaClass: interop.Pointer;
 
 declare const IOFWCompareAndSwapCommand: number;
 
+declare const kHIDUsage_Tfon_PhoneKeyC: number;
+
+declare const kSMCCmd_RELEASE_ELEMENT_10: number;
+
 declare const kSuperSpeedDeviceCapabilityFullSpeed: number;
+
+declare const kIOBlitWaitAll: number;
 
 declare const kEndpointDescriptorUsageTypePhase: number;
 
-declare const IOUSBHostCICapabilitiesMessageData0CommandTimeoutThreshold: number;
+declare const kUSBSetIsochDelay: number;
+
+declare const kBluetoothL2CAPPSMTCS_BIN_Cordless: number;
+
+declare const kHIDUsage_Snsr_Property_ReportInterval: number;
+
+declare const kIOAudioTimeStampWordClockTimeValid: number;
+
+declare const kBluetoothSDPDataElementTypeDataElementAlternative: number;
+
+declare const kHFSCatalogNodeIDsReusedMask: number;
+
+declare const kIODriverPowerAttribute: number;
+
+declare const kHIDUsage_WD_WeightUnitGrains: number;
 
 declare const kKUNCDefaultResponse: number;
 
+declare const kBDFeaturesWriteMask: number;
+
+declare const kHFSVolumeNoCacheRequiredBit: number;
+
+declare const kIOMatchingCalloutRefconIndex: number;
+
+declare const kHIDUsage_KeyboardErrorRollOver: number;
+
 declare const kRegIterParents: number;
 
+declare const kDCLSetTagSyncBitsOp: number;
+
 declare const kPCI2PCIMemoryRange: number;
+
+declare const kBluetoothHCICommandWriteExtendedInquiryResponse: number;
+
+declare const kHIDUsage_PD_CommunicationLost: number;
 
 declare const kIOLogKextMemory: number;
 
 declare const kIODirectionPrepareReserved1: number;
 
-declare const IOUSBHostCIIsochronousTransferControlASAP: number;
+declare const kFWBIBCycClkAccPhase: number;
+
+declare const kHIDUsage_BCS_HandsFreeScanning: number;
+
+declare const kBluetoothHCICommandLEAddDeviceToResolvingList: number;
+
+declare const kHIDUsage_PD_BatterySystem: number;
+
+declare const kSPCCmd_RECEIVE_COPY_RESULTS: number;
 
 declare const mATATrack0NotFound: number;
+
+declare const kBluetoothHCIEventAMPTestEnd: number;
+
+declare const kESCSeven19Inch: number;
+
+declare const kBluetoothHCIEventMaskReturnLinkKeys: number;
 
 declare const kIODisplayMaxPowerState: number;
 
@@ -4358,95 +17098,400 @@ declare const kKUNCCancelResponse: number;
 
 declare const CS_HASHTYPE_SHA384: number;
 
+declare const kBluetoothHCIErroneousDataReportingEnabled: number;
+
+declare const kSCSICmd_PREFETCH: number;
+
+declare const kHIDUsage_KeyboardQuote: number;
+
+declare const kHIDUsage_Csmr_ACInsertRow: number;
+
+declare const kHIDUsage_BCS_PowerupBeep: number;
+
 declare const kIOReportTraceOnChange: number;
+
+declare const kHIDUsage_BCS_FullASCIIConversion: number;
+
+declare const EMBEDDED_SATELLITE_RECEIVER_AUDIO: number;
+
+declare const kCSRPrivateSpaceBaseAddressLo: number;
+
+declare const kHIDUsage_KeyboardF: number;
+
+declare const kHIDUsage_Tfon_CallWaitingTone: number;
+
+declare const kHIDUsage_Button_45: number;
+
+declare const kIOAudioChannelLabel_Discrete_9: number;
+
+declare const kHIDUsage_PID_EffectBlockIndex: number;
+
+declare const kHIDPage_Scale: number;
+
+declare const kIOUSBEndpointDescriptorTransferTypePhase: number;
 
 declare const kAirshipDaleBasebandErrorCreateInterfaceFailure: number;
 
 declare const kIOFBNotifyWSAAExitDefer: number;
 
+declare const kHIDUsage_GD_AssistiveControlCompatible: number;
+
+declare const kBluetoothHCICommandShortRangeMode: number;
+
+declare const kHIDUsage_Snsr_Property_Mechanical: number;
+
+declare const kMMCCmd_COPY_AND_VERIFY: number;
+
 declare const kChipSetTypePowerExpress: number;
 
+declare const kHFSCatalogKeyMaximumLength: number;
+
+declare const kHFSVolumeHardwareLockBit: number;
+
+declare const kHIDUsage_PD_ConfigVoltage: number;
+
+declare const timingApple_512x384_60hz: number;
+
+declare const kLastIOKitNotificationType: number;
+
+declare const kHIDUsage_PID_SetConstantForceReport: number;
+
 declare const random_seed_prefix: unknown /* const array */;
+
+declare const kUSBOut: number;
+
+declare const kBluetoothVoiceSettingInputSampleSize8Bit: number;
+
+declare const kUSBSuperSpeedSupportsFS: number;
 
 declare const IOFireWireSerialBusProtocolTransport: number;
 
 declare const IFNET_TX_STATUS: number;
 
+declare const kIOUSBHubPort2PortExitLatencyNs: number;
+
+declare const kHIDUsage_Sprt_2Iron: number;
+
 declare const IOOutputQueue: number;
 
 declare const debug_container_malloc_size: number;
 
+declare const kSCSICmd_READ_DEFECT_DATA_10: number;
+
+declare const kHIDUsage_Csmr_ACBuyOrCheckout: number;
+
+declare const kIODisplayRGBColorComponentBits12: number;
+
+declare const kIOUSBEndpointDescriptorSynchronizationTypeSynchronous: number;
+
 declare const kEndpointDescriptorUsageTypeIsocImplicit: number;
+
+declare const kHIDUsage_Button_98: number;
+
+declare const kHIDUsage_Csmr_Weekly: number;
 
 declare const kFWTCodeReadQuadlet: number;
 
 declare const gIODisplayCapabilityStringKey: interop.Pointer;
 
+declare const kHFSContentProtectionBit: number;
+
 declare const gIOHIDInterfaceMetaClass: interop.Pointer;
 
 declare const static_if_abi: number;
 
+declare const kHFSPlusAttrMinNodeSize: number;
+
+declare const kIOATAFeatureAdvancedPowerManagement: number;
+
 declare const OSAction_IOHIDDevice__CompleteReportInterface: number;
 
+declare const kUSBPrintingClass: number;
+
+declare const kHIDUsage_PID_CustomForceData: number;
+
+declare const kHFSFastDevCandidateBit: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixQualityGPS: number;
+
+declare const kHIDUsage_Button_140: number;
+
 declare const kIODTExclusive: number;
+
+declare const kHIDUsage_Csmr_ALNewsreader: number;
+
+declare const kHIDUsage_Game_GunAutomatic: number;
+
+declare const kHFSHasAttributesBit: number;
+
+declare const kIODisplayRGBColorComponentBitsUnknown: number;
+
+declare const kHIDUsage_Button_82: number;
 
 declare const kAirshipDaleBasebandErrorCCCIInternalError: number;
 
 declare const kIOLogCatalogue: number;
 
+declare const kHIDUsage_BD_BrailleFaceControls: number;
+
 declare const CS_VALIDATION_CATEGORY_PLATFORM: number;
+
+declare const kHIDUsage_Button_172: number;
+
+declare const kBluetoothSDPDataElementTypeUnsignedInt: number;
 
 declare const bATAAddressNotFound: number;
 
+declare const kHFSFirstUserCatalogNodeID: number;
+
+declare const kHFSStartupFileID: number;
+
+declare const kHFSCatalogFileID: number;
+
+declare const kHFSExtentsFileID: number;
+
+declare const kIOTimingIDVESA_1600x1200_60hz: number;
+
 declare const kCheckLinkInTraining: number;
+
+declare const kFSKMountVersion: number;
+
+declare const kHFSExpandedTimesMask: number;
+
+declare const cscGetSync: number;
+
+declare const kHIDUsage_GD_GamePad: number;
+
+declare const kCDFeaturesTAOWriteBit: number;
+
+declare const kIOUSBSuperSpeedPlusDeviceCapabilityMinTxLaneCount: number;
 
 declare const IOFireWireAVCUnit: number;
 
+declare const kSCSIServiceAction_REPORT_PROVISIONING_INITIALIZATION_PATTERN: number;
+
+declare const kINQUIRY_Page83_PageCode: number;
+
 declare const IOATAIOReg8: number;
+
+declare const kDVDKeyFormatASF: number;
+
+declare const kUSBRqGetInterface: number;
+
+declare const kSPCProcCmd_READ_BUFFER: number;
 
 declare const MBUF_TYPE_PCB: number;
 
+declare const kHIDUsage_Game_NewGame: number;
+
 declare const speclisth: unknown /* const array */;
 
+declare const kBluetoothPageScanModeMandatory: number;
+
+declare const kUSBScrollLockKey: number;
+
+declare const kSSCSeqCmd_VERIFY_6: number;
+
+declare const kIOColorimetryBT601: number;
+
+declare const kCSRBusDependentRegistersBaseAddress: number;
+
 declare const kIODirectionCompleteWithError: number;
+
+declare const kSPCCmd_PERSISTENT_RESERVE_OUT: number;
+
+declare const kHIDUsage_KeyboardDeleteForward: number;
+
+declare const kIOSystemStateSleepDescriptionHibernateStateHibernating: number;
+
+declare const kHIDUsage_Snsr_Motion_Speedometer: number;
+
+declare const kDVDMediaTypeMin: number;
+
+declare const kFWAckTypeError: number;
+
+declare const kHIDUsage_BCS_CommitParametersToNVM: number;
+
+declare const kHIDUsage_BCS_TriggerModeLaserStaysOnAfterTriggerRelease: number;
+
+declare const kHFSRepairCatalogFileID: number;
+
+declare const kIOUSBDeviceFeatureSelectorLTMEnable: number;
 
 declare const gIOUSBHostPipeMetaClass: interop.Pointer;
 
 declare const kFWSelfIDPhyID: number;
 
+declare const kIORangeDynamicRangeTraditionalGammaSDR: number;
+
+declare const kHFSFileRecord: number;
+
+declare const kBluetoothSDPErrorCodeReservedEnd: number;
+
+declare const kHIDUsage_KeyboardStop: number;
+
 declare const IOFWDCL: number;
+
+declare const kHIDUsage_Button_218: number;
+
+declare const kIOScaleInvertX: number;
+
+declare const kHIDUsage_Csmr_ALAlarms: number;
+
+declare const kHIDUsage_Snsr_Event_SensorState_NotAvailable: number;
+
+declare const kUSBOther: number;
+
+declare const kATAIdentifySectorsPerTrack: number;
 
 declare const kEndpointDescriptorUsageTypeInterruptReserved2: number;
 
+declare const kHIDUsage_Csmr_MediaSelectTelephone: number;
+
+declare const kATAPhysicalSectorSizeMask: number;
+
 declare const kPCIPMCSPowerStateD1: number;
+
+declare const kHIDUsage_Snsr_Orientation_Compass2D: number;
 
 declare const gIODisplayValueKey: interop.Pointer;
 
+declare const kBluetoothHCICommandWriteCurrentIACLAP: number;
+
+declare const kINQUIRY_PERIPHERAL_TYPE_EnclosureServicesSESDevice: number;
+
+declare const kHFSCatExpandedTimesBit: number;
+
+declare const kScaleStretchOnlyMask: number;
+
+declare const kHIDUsage_BS_BroadcastToCharger: number;
+
+declare const kIOATAFeatureWriteCache: number;
+
 declare const kIOPCIExpressCapabilityIDErrorReporting: number;
 
+declare const mDevType: number;
+
+declare const kHFSPlusCreator: number;
+
 declare const kIOPMPowerStateVersion2: number;
+
+declare const kHIDUsage_WD_DataScaling: number;
+
+declare const kHIDUsage_Game_ShootBall: number;
+
+declare const kHIDUsage_Snsr_Property_ReportingState_AllEvents: number;
+
+declare const kHIDUsage_Csmr_ACAttachComment: number;
 
 declare const IODisplayParameterHandler: number;
 
 declare const kIODirectionOutIn: number;
 
+declare const kSGCCmd_LOG_SENSE: number;
+
+declare const kIOAnalogSetupExpected: number;
+
+declare const kBluetoothDeviceClassMinorPeripheral2CardReader: number;
+
+declare const kBluetoothHCICommandLERemoteConnectionParameterRequestNegativeReply: number;
+
+declare const kHIDUsage_BCS_ChannelCode: number;
+
+declare const kHFSPlusSigWord: number;
+
+declare const kSMCCmd_READ_ELEMENT_STATUS: number;
+
+declare const kIOHIDQueueOptionsTypeNone: number;
+
+declare const kHIDUsage_Csmr_ContactIndex: number;
+
+declare const kIOFBLinkPreEmphasisLevel2: number;
+
+declare const kBluetoothGAPAppearanceGenericThermometer: number;
+
+declare const kHIDUsage_Button_80: number;
+
 declare const IOStateNotificationItem: number;
+
+declare const kBluetoothHCIEventLinkKeyNotification: number;
+
+declare const kATAPhysicalLogicalEnabledBit0: number;
 
 declare const kPCI2PCIOffsetMemoryRange: number;
 
-declare const IOUSBHostCIEndpointUpdateCommandData1DescriptorPhase: number;
+declare const kHIDUsage_Snsr_Property_Manufacturer: number;
+
+declare const kBluetoothHCICommandLERemoveDeviceFromWhiteList: number;
+
+declare const kHIDUsage_LED_ExternalPowerConnected: number;
+
+declare const kIOBitsPerColorComponent10: number;
+
+declare const kHIDUsage_Snsr_Data_Location_FixTypeEstimated: number;
+
+declare const kHIDUsage_Snsr_Sensor: number;
+
+declare const kBluetoothHCIEventReadClockOffsetComplete: number;
+
+declare const kIOUSBSuperSpeedEndpointCompanionDescriptorMaxBurst: number;
 
 declare const IOFastPathHIDAccelService: number;
 
-declare const IOUSBHostCIIsochronousTransferControlFrameNumberPhase: number;
+declare const kHIDUsage_Game_3DGameController: number;
+
+declare const kHIDUsage_GD_Ry: number;
+
+declare const kHIDUsage_Button_204: number;
+
+declare const kHFSMaxVolumeNameChars: number;
+
+declare const kBluetoothHCISubEventLEGenerateDHKeyComplete: number;
+
+declare const kBluetoothDeviceClassMinorComputerPalmSized: number;
+
+declare const kHIDUsage_Csmr_ACCollapseAll: number;
+
+declare const kBluetoothDeviceClassMajorEnd: number;
 
 declare const IOATAReg32: number;
 
+declare const kHIDUsage_Csmr_ALEmailReader: number;
+
+declare const kBluetoothL2CAPMTUMaximum: number;
+
 declare const kIOUCScalarIScalarO: number;
+
+declare const kDVDCPRMRegion1: number;
 
 declare const kIOTrackingExcludeNames: number;
 
+declare const kHIDUsage_Snsr_Data_Motion_AccelerationAxisZ: number;
+
+declare const kIOAsyncCalloutFuncIndex: number;
+
+declare const kHIDUsage_Button_239: number;
+
 declare const IOPMrootDomain: number;
+
+declare const kBluetoothHCIEventFlushOccurred: number;
+
+declare const BluetoothLEAdvertisingType: {
+  ConnectableUndirected: 0,
+  ConnectableDirected: 1,
+  DiscoverableUndirected: 2,
+  NonConnectableUndirected: 3,
+  ScanResponse: 4,
+};
+
+declare const ProtocolParameters: {
+  L2CAPPSM: 1,
+  RFCOMMChannel: 1,
+  TCPPort: 1,
+  UDPPort: 1,
+  BNEPVersion: 1,
+  BNEPSupportedNetworkPacketTypeList: 2,
+};
 
 declare const gssd_mechtype: {
   NO_: -1,
@@ -4519,6 +17564,32 @@ declare const airship_acipc_io_result: {
 declare const airship_acipc_tr_mode_t: {
   STANDARD: 0,
   BATCH: 1,
+};
+
+declare const BluetoothL2CAPCommandCode: {
+  Reserved: 0,
+  CommandReject: 1,
+  ConnectionRequest: 2,
+  ConnectionResponse: 3,
+  ConfigureRequest: 4,
+  ConfigureResponse: 5,
+  DisconnectionRequest: 6,
+  DisconnectionResponse: 7,
+  EchoRequest: 8,
+  EchoResponse: 9,
+  InformationRequest: 10,
+  InformationResponse: 11,
+  CreateChannelRequest: 12,
+  CreateChannelResponse: 13,
+  MoveChannelRequest: 14,
+  MoveChannelResponse: 15,
+  MoveChannelConfirmation: 16,
+  MoveChannelConfirmationResponse: 17,
+  ConnectionParameterUpdateRequest: 18,
+  ConnectionParameterUpdateResponse: 19,
+  LECreditBasedConnectionRequest: 20,
+  LECreditBasedConnectionResponse: 21,
+  LEFlowControlCredit: 22,
 };
 
 declare const airship_acipc_boot_image_response: {
@@ -4651,16 +17722,6 @@ declare const IOFWAVCUserClientAsyncCommandCodes: {
   NumAsyncCommands: 17,
 };
 
-declare const IOUSBHostCIDeviceSpeed: {
-  None: 0,
-  Full: 1,
-  Low: 2,
-  High: 3,
-  Super: 4,
-  SuperPlus: 5,
-  SuperPlusBy2: 6,
-};
-
 declare const tIsochronousTransactionOptions: {
   None: 0,
   Wrap: 1,
@@ -4668,79 +17729,6 @@ declare const tIsochronousTransactionOptions: {
 
 declare const tIsochronousTransferOptions: {
   kIsochronousTransferOptionsNone: 0,
-};
-
-declare const IOUSBHostCIDeviceState: {
-  Destroyed: 0,
-  Paused: 1,
-  Active: 2,
-};
-
-declare const IOUSBHostCIControllerState: {
-  Off: 0,
-  Paused: 1,
-  Active: 2,
-};
-
-declare const IOUSBHostCIMessageStatus: {
-  Reserved: 0,
-  Success: 1,
-  Offline: 2,
-  NotPermitted: 3,
-  BadArgument: 4,
-  Timeout: 5,
-  NoResources: 6,
-  EndpointStopped: 7,
-  ProtocolError: 8,
-  TransactionError: 9,
-  OverrunError: 10,
-  StallError: 11,
-  MissedServiceError: 12,
-  Error: 13,
-};
-
-declare const IOUSBHostCIMessageType: {
-  ControllerCapabilities: 0,
-  PortCapabilities: 1,
-  PortEvent: 8,
-  FrameNumberUpdate: 9,
-  FrameTimestampUpdate: 10,
-  CommandMin: 16,
-  ControllerPowerOn: 16,
-  ControllerPowerOff: 17,
-  ControllerStart: 18,
-  ControllerPause: 19,
-  ControllerFrameNumber: 20,
-  PortPowerOn: 24,
-  PortPowerOff: 25,
-  PortResume: 26,
-  PortSuspend: 27,
-  PortReset: 28,
-  PortDisable: 29,
-  PortStatus: 30,
-  DeviceCreate: 32,
-  DeviceDestroy: 33,
-  DeviceStart: 34,
-  DevicePause: 35,
-  DeviceUpdate: 36,
-  EndpointCreate: 40,
-  EndpointDestroy: 41,
-  Endpoint_reserved_: 42,
-  EndpointPause: 43,
-  EndpointUpdate: 44,
-  EndpointReset: 45,
-  EndpointSetNextTransfer: 46,
-  CommandMax: 55,
-  SetupTransfer: 56,
-  NormalTransfer: 57,
-  StatusTransfer: 58,
-  IsochronousTransfer: 59,
-  Link: 60,
-  TransferComplete: 61,
-};
-
-declare const IOUSBHostCIUserClientVersion: {
-  IOUSBHostCIUserClientVersion100: 0,
 };
 
 declare const tUSBDeviceLPMStatus: {
@@ -5006,18 +17994,19 @@ declare const backtrace_info_t: {
   I_TRUNCATED: 2,
 };
 
-declare const IOUSBHostCIPortState: {
-  Off: 0,
-  Powered: 1,
-  Suspended: 2,
-  Active: 3,
-};
-
 declare const IONVRAMVariableType: {
   Boolean: 1,
   Number: 2,
   String: 3,
   Data: 4,
+};
+
+declare const _IOAudioEngineMemory: {
+  Status: 0,
+  Sample: 1,
+  Mix: 2,
+  BytesInInput: 3,
+  BytesInOutput: 4,
 };
 
 declare const kcd_compression_type_t: {
@@ -5041,22 +18030,6 @@ declare const tDeviceRequestRecipient: {
   Other: 3,
 };
 
-declare const IOUSBHostCIExceptionType: {
-  Unknown: 0,
-  CapabilitiesInvalid: 1,
-  Terminated: 2,
-  CommandReadCollision: 3,
-  CommandWriteFailed: 4,
-  CommandTimeout: 5,
-  CommandFailure: 6,
-  InterruptInvalid: 7,
-  InterruptOverflow: 8,
-  DoorbellReadCollision: 9,
-  DoorbellOverflow: 10,
-  ProtocolError: 11,
-  FrameUpdateError: 12,
-};
-
 declare const cache_type_t: {
   Lnone: 0,
   L1I: 1,
@@ -5064,6 +18037,12 @@ declare const cache_type_t: {
   L2U: 3,
   L3U: 4,
   LCACHE_MAX: 5,
+};
+
+declare const BluetoothLESecurityManagerUserInputCapability: {
+  NoInput: 1,
+  YesNo: 2,
+  Keyboard: 3,
 };
 
 declare const telemetry_pmi: {
@@ -5079,7 +18058,21 @@ declare const sptm_info_t: {
   INFO_SPTM_PMAP_IO_RANGES_COUNT: 3,
   INFO_SPTM_IO_RANGES: 4,
   INFO_SPTM_IO_RANGES_COUNT: 5,
-  MAX_SPTM_INFOS: 6,
+  INFO_SPTM_EVNT_CNTR_RETYPES: 6,
+  INFO_SPTM_EVNT_CNTR_SWWA_TLBI_ASID: 7,
+  INFO_SPTM_EVNT_CNTR_SWWA_TLBI_ALL: 8,
+  INFO_SPTM_EVNT_CNTR_UAT_UNMAP_PROCESSED: 9,
+  INFO_SPTM_EVNT_CNTR_UAT_UNMAP_MARKED: 10,
+  INFO_SPTM_EVNT_CNTR_UAT_UNMAP_UNMARKED: 11,
+  INFO_SPTM_EVNT_CNTR_SWWA_TLBI_ASID_ELIDED: 12,
+  MAX_SPTM_INFOS: 13,
+};
+
+declare const IOHIDReportType: {
+  Input: 0,
+  Output: 1,
+  Feature: 2,
+  Count: 3,
 };
 
 declare const airship_daleipc_channel_sync_operation: {
@@ -5096,6 +18089,12 @@ declare const airship_acipc_memregion_state_detail_flag: {
   DEAD_BYREQUEST: 8,
   DEAD_DEVICERESET: 16,
   DEAD_EXECSTAGE: 32,
+};
+
+declare const IOHIDButtonModes: {
+  BothLeftClicks: 0,
+  ReverseLeftRightClicks: 1,
+  EnableRightClick: 2,
 };
 
 declare const airship_result: {
@@ -5167,6 +18166,12 @@ declare const tUSBHostConnectionSpeed: {
   Count: 7,
 };
 
+declare const NXMouseButton: {
+  One: 0,
+  Left: 1,
+  Right: 2,
+};
+
 declare const tUSBLinkState: {
   U0: 0,
   U1: 1,
@@ -5208,6 +18213,24 @@ declare const IOFWAVCUserClientCommandCodes: {
   NumCommands: 16,
 };
 
+declare const SCSITaskStatus: {
+  GOOD: 0,
+  CHECK_CONDITION: 2,
+  CONDITION_MET: 4,
+  BUSY: 8,
+  INTERMEDIATE: 16,
+  INTERMEDIATE_CONDITION_MET: 20,
+  RESERVATION_CONFLICT: 24,
+  TASK_SET_FULL: 40,
+  ACA_ACTIVE: 48,
+  TaskTimeoutOccurred: 1,
+  ProtocolTimeoutOccurred: 2,
+  DeviceNotResponding: 3,
+  DeviceNotPresent: 4,
+  DeliveryFailure: 5,
+  No_Status: 255,
+};
+
 declare const airship_acipc_cr_sync_operation: {
   AIRSHIP_ACIPC_CR_SYNC_PROCESS_HI_UPDATE: 1,
 };
@@ -5220,6 +18243,78 @@ declare const tUSBHostPortType: {
   ExpressCard: 4,
   C: 5,
   Unknown: 6,
+};
+
+declare const SDPServiceClasses: {
+  ServiceDiscoveryServer: 4096,
+  BrowseGroupDescriptor: 4097,
+  PublicBrowseGroup: 4098,
+  SerialPort: 4353,
+  LANAccessUsingPPP: 4354,
+  DialupNetworking: 4355,
+  IrMCSync: 4356,
+  OBEXObjectPush: 4357,
+  OBEXFileTransfer: 4358,
+  IrMCSyncCommand: 4359,
+  Headset: 4360,
+  CordlessTelephony: 4361,
+  AudioSource: 4362,
+  AudioSink: 4363,
+  AVRemoteControlTarget: 4364,
+  AdvancedAudioDistribution: 4365,
+  AVRemoteControl: 4366,
+  AVRemoteControlController: 4367,
+  Intercom: 4368,
+  Fax: 4369,
+  HeadsetAudioGateway: 4370,
+  WAP: 4371,
+  WAPClient: 4372,
+  PANU: 4373,
+  NAP: 4374,
+  GN: 4375,
+  DirectPrinting: 4376,
+  ReferencePrinting: 4377,
+  Imaging: 4378,
+  ImagingResponder: 4379,
+  ImagingAutomaticArchive: 4380,
+  ImagingReferencedObjects: 4381,
+  HandsFree: 4382,
+  HandsFreeAudioGateway: 4383,
+  DirectPrintingReferenceObjectsService: 4384,
+  ReflectedUI: 4385,
+  BasicPrinting: 4386,
+  PrintingStatus: 4387,
+  HumanInterfaceDeviceService: 4388,
+  HardcopyCableReplacement: 4389,
+  HCR_Print: 4390,
+  HCR_Scan: 4391,
+  CommonISDNAccess: 4392,
+  VideoConferencingGW: 4393,
+  UDI_MT: 4394,
+  UDI_TA: 4395,
+  AudioVideo: 4396,
+  SIM_Access: 4397,
+  PhonebookAccess_PCE: 4398,
+  PhonebookAccess_PSE: 4399,
+  PhonebookAccess: 4400,
+  Headset_HS: 4401,
+  MessageAccessServer: 4402,
+  MessageNotificationServer: 4403,
+  MessageAccessProfile: 4404,
+  GlobalNavigationSatelliteSystem: 4405,
+  GlobalNavigationSatelliteSystemServer: 4406,
+  PnPInformation: 4608,
+  GenericNetworking: 4609,
+  GenericFileTransfer: 4610,
+  GenericAudio: 4611,
+  GenericTelephony: 4612,
+  VideoSource: 4867,
+  VideoSink: 4868,
+  VideoDistribution: 4869,
+  HealthDevice: 5120,
+  HealthDeviceSource: 5121,
+  HealthDeviceSink: 5122,
+  GATT: 6145,
 };
 
 declare const EXDisplayPipeIndicator: {
@@ -5255,26 +18350,19 @@ declare const IOCircularDataQueueCreateOptions: {
   Producer: 2,
 };
 
+declare const IOFWDCLNotificationType: {
+  DCLInvalid: 0,
+  DCLUpdate: 1,
+  DCLModify: 2,
+  NuDCLModify: 3,
+  NuDCLModifyJump: 4,
+  NuDCLUpdate: 5,
+};
+
 declare const tUSBHostPowerSourceType: {
   StaticPool: 0,
   SMC: 1,
   Hardware: 2,
-};
-
-declare const IOUSBHostCILinkState: {
-  U0: 0,
-  U1: 1,
-  U2: 2,
-  U3: 3,
-  Disabled: 4,
-  RxDetect: 5,
-  Inactive: 6,
-  Polling: 7,
-  Recovery: 8,
-  Reset: 9,
-  Compliance: 10,
-  Test: 11,
-  Resume: 15,
 };
 
 declare const NVRAMPartitionType: {
@@ -5301,6 +18389,17 @@ declare const tDescriptorType: {
   SuperSpeedHub: 42,
   SuperSpeedUSBEndpointCompanion: 48,
   SuperSpeedPlusIsochronousEndpointCompanion: 49,
+};
+
+declare const tIOUSBTopology: {
+  TopologyHost: 1,
+  TopologyRootPort: 2,
+  Topology1Hub: 3,
+  Topology2Hub: 4,
+  Topology3Hub: 5,
+  Topology4Hub: 6,
+  Topology5Hub: 7,
+  TopologyTierLimit: 7,
 };
 
 declare const cluster_type_t: {
@@ -5464,6 +18563,7 @@ declare const stackshot_flags_t: {
   INCLUDE_DRIVER_THREADS_IN_KERNEL: 4294967296,
   EXCLAVES: 8589934592,
   SKIP_EXCLAVES: 17179869184,
+  MTEINFO: 34359738368,
 };
 
 declare const micro_snapshot_flags: {
@@ -5474,6 +18574,243 @@ declare const micro_snapshot_flags: {
   PMIRecord: 16,
   MACFRecord: 32,
   KernelThread: 64,
+};
+
+declare const kUSBHostConnectorType: {
+  BTypeAConnector: 0,
+  BTypeMiniABConnector: 1,
+  BTypeExpressCard: 2,
+  B3TypeStdAConnector: 3,
+  B3TypeStdBConnector: 4,
+  B3TypeMicroBConnector: 5,
+  B3TypeMicroABConnector: 6,
+  B3TypePowerBConnector: 7,
+  BProprietaryConnector: 255,
+};
+
+declare const kUSBConnectable: {
+  Not: 0,
+  kUSBPortConnectable: 1,
+};
+
+declare const USBNotificationTypes: {
+  PreForcedSuspend: 1,
+  PostForcedSuspend: 2,
+  PreForcedResume: 4,
+  PostForcedResume: 8,
+};
+
+declare const USBDeviceInformationBits: {
+  DeviceIsCaptiveBit: 0,
+  DeviceIsAttachedToRootHubBit: 1,
+  DeviceIsInternalBit: 2,
+  DeviceIsConnectedBit: 3,
+  DeviceIsEnabledBit: 4,
+  DeviceIsSuspendedBit: 5,
+  DeviceIsInResetBit: 6,
+  DeviceOvercurrentBit: 7,
+  DevicePortIsInTestModeBit: 8,
+  DeviceIsRootHub: 9,
+  RootHubisBuiltIn: 10,
+  RootHubIsBuiltInBit: 10,
+  DeviceIsRemote: 11,
+  DeviceIsAttachedToEnclosure: 12,
+  DeviceIsOnThunderboltBit: 13,
+  DeviceIsCaptiveMask: 1,
+  DeviceIsAttachedToRootHubMask: 2,
+  DeviceIsInternalMask: 4,
+  DeviceIsConnectedMask: 8,
+  DeviceIsEnabledMask: 16,
+  DeviceIsSuspendedMask: 32,
+  DeviceIsInResetMask: 64,
+  DeviceOvercurrentMask: 128,
+  DevicePortIsInTestModeMask: 256,
+  DeviceIsRootHubMask: 512,
+  RootHubisBuiltInMask: 1024,
+  RootHubIsBuiltInMask: 1024,
+  DeviceIsRemoteMask: 2048,
+  DeviceIsAttachedToEnclosureMask: 4096,
+  DeviceIsOnThunderboltMask: 8192,
+};
+
+declare const tIOUSBHostPortStatus: {
+  PortTypeMask: 15,
+  PortTypePhase: 0,
+  PortTypeStandard: 0,
+  PortTypeCaptive: 1,
+  PortTypeInternal: 2,
+  PortTypeAccessory: 3,
+  PortTypeReserved: 240,
+  ConnectedSpeedMask: 1792,
+  ConnectedSpeedPhase: 8,
+  ConnectedSpeedNone: 0,
+  ConnectedSpeedFull: 256,
+  ConnectedSpeedLow: 512,
+  ConnectedSpeedHigh: 768,
+  ConnectedSpeedSuper: 1024,
+  ConnectedSpeedSuperPlus: 1280,
+  ConnectedSpeedSuperPlusBy2: 1536,
+  Resetting: 2048,
+  Enabled: 4096,
+  Suspended: 8192,
+  Overcurrent: 16384,
+  TestMode: 32768,
+};
+
+declare const tIOUSBHostConnectionSpeed: {
+  None: 0,
+  Full: 1,
+  Low: 2,
+  High: 3,
+  Super: 4,
+  SuperPlus: 5,
+  SuperPlusBy2: 6,
+  Count: 7,
+};
+
+declare const tIOUSB30DeviceNotificationType: {
+  FunctionWake: 1,
+  LatencyTolerance: 2,
+  BusIntervalAdjustment: 3,
+  HostRoleRequest: 4,
+  SublinkSpeed: 5,
+};
+
+declare const tIOUSB30BusCurrent: {
+  Minimum: 150,
+  Default: 900,
+  MaxPowerUnits: 8,
+};
+
+declare const tIOUSB20BusCurrent: {
+  Minimum: 100,
+  Default: 500,
+  MaxPowerUnits: 2,
+};
+
+declare const tIOUSBBusVoltage: {
+  kIOUSBBusVoltageDefault: 5,
+};
+
+declare const tIOUSBDeviceRequest: {
+  Size: 8,
+  DirectionMask: 128,
+  DirectionPhase: 7,
+  DirectionOut: 0,
+  DirectionIn: 128,
+  TypeMask: 96,
+  TypePhase: 5,
+  TypeStandard: 0,
+  TypeClass: 32,
+  TypeVendor: 64,
+  RecipientMask: 31,
+  RecipientPhase: 0,
+  RecipientDevice: 0,
+  RecipientInterface: 1,
+  RecipientEndpoint: 2,
+  RecipientOther: 3,
+};
+
+declare const tIOUSBDeviceRequestDirectionValue: {
+  Out: 0,
+  In: 1,
+};
+
+declare const tIOUSBDeviceCapabilityType: {
+  Wireless: 1,
+  USB20Extension: 2,
+  SuperSpeed: 3,
+  ContainerID: 4,
+  Platform: 5,
+  PowerDelivery: 6,
+  BatteryInfo: 7,
+  PdConsumerPort: 8,
+  PdProviderPort: 9,
+  SuperSpeedPlus: 10,
+  PrecisionMeasurement: 11,
+  WirelessExt: 12,
+  Billboard: 13,
+  BillboardAltMode: 15,
+};
+
+declare const BluetoothL2CAPConnectionStatus: {
+  NoInfoAvailable: 0,
+  AuthenticationPending: 1,
+  AuthorizationPending: 2,
+};
+
+declare const tIOUSBEndpointUsageType: {
+  Data: 0,
+  Feedback: 1,
+  Implicit: 2,
+};
+
+declare const tIOUSBEndpointSynchronizationType: {
+  None: 0,
+  Asynchronous: 1,
+  Adaptive: 2,
+  Synchronous: 3,
+};
+
+declare const tIOUSBEndpointDirection: {
+  Out: 0,
+  In: 1,
+  Unknown: 2,
+};
+
+declare const tIOUSBDescriptorSize: {
+  HeaderSize: 2,
+  SizeDevice: 18,
+  SizeConfiguration: 9,
+  SizeInterface: 9,
+  SizeEndpoint: 7,
+  SizeStringMinimum: 2,
+  SizeStringMaximum: 255,
+  SizeDeviceQualifier: 10,
+  SizeInterfaceAssociation: 8,
+  SizeBOS: 5,
+  SizeDeviceCapability: 3,
+  SizeUSB20ExtensionCapability: 7,
+  SizeSuperSpeedUSBDeviceCapability: 10,
+  SizeContainerIDCapability: 20,
+  SizeHubMinimum: 9,
+  SizeHubMaximum: 21,
+  SizeSuperSpeedHub: 12,
+  SizeSuperSpeedUSBEndpointCompanion: 6,
+  SizeSuperSpeedPlusIsochronousEndpointCompanion: 8,
+  SizeBillboardDeviceMinimum: 44,
+  SizeBillboardDeviceMaximum: 256,
+  SizePlatformECIDCapability: 28,
+  SizePlatformCapability: 20,
+};
+
+declare const tIOUSBDescriptorType: {
+  DescriptorTypeDevice: 1,
+  DescriptorTypeConfiguration: 2,
+  DescriptorTypeString: 3,
+  DescriptorTypeInterface: 4,
+  DescriptorTypeEndpoint: 5,
+  DescriptorTypeDeviceQualifier: 6,
+  DescriptorTypeOtherSpeedConfiguration: 7,
+  DescriptorTypeInterfacePower: 8,
+  DescriptorTypeOTG: 9,
+  DescriptorTypeDebug: 10,
+  DescriptorTypeInterfaceAssociation: 11,
+  DescriptorTypeBOS: 15,
+  DescriptorTypeDeviceCapability: 16,
+  DecriptorTypeHID: 33,
+  DecriptorTypeReport: 34,
+  DescriptorTypePhysical: 35,
+  DescriptorTypeHub: 41,
+  DescriptorTypeSuperSpeedHub: 42,
+  DescriptorTypeSuperSpeedUSBEndpointCompanion: 48,
+  DescriptorTypeSuperSpeedPlusIsochronousEndpointCompanion: 49,
+};
+
+declare const IOStreamMode: {
+  Input: 0,
+  Output: 1,
+  InputOutput: 2,
 };
 
 declare const airship_acipc_ipc_error_flag: {
@@ -5493,8 +18830,76 @@ declare const hvg_hcall_dump_option_t: {
   HVG_HCALL_DUMP_OPTION_REGULAR: 1,
 };
 
+declare const SCSITaskState: {
+  NEW_TASK: 0,
+  ENABLED: 1,
+  BLOCKED: 2,
+  DORMANT: 3,
+  ENDED: 4,
+};
+
+declare const SCSITaskAttribute: {
+  SIMPLE: 0,
+  ORDERED: 1,
+  HEAD_OF_QUEUE: 2,
+  ACA: 3,
+};
+
+declare const tIOUSBLanguageID: {
+  kIOUSBLanguageIDEnglishUS: 1033,
+};
+
+declare const eIOAccelSurfaceLockBits: {
+  Backing: 0,
+  Accel: 1,
+  DontCare: 2,
+  Mask: 3,
+};
+
+declare const eIOAccelSurfaceScaleBits: {
+  BeamSyncSwaps: 1,
+  FixedSource: 2,
+  Filtering: 240,
+  FilterDefault: 0,
+  FilterNone: 16,
+  FilterLinear: 32,
+};
+
+declare const eIOAccelSurfaceStateBits: {
+  None: 0,
+  IdleBit: 1,
+};
+
+declare const eIOAccelSurfaceMethods: {
+  SurfaceReadLockOptions: 0,
+  SurfaceReadUnlockOptions: 1,
+  SurfaceGetState: 2,
+  SurfaceWriteLockOptions: 3,
+  SurfaceWriteUnlockOptions: 4,
+  SurfaceRead: 5,
+  SurfaceSetShapeBacking: 6,
+  SurfaceSetIDMode: 7,
+  SurfaceSetScale: 8,
+  SurfaceSetShape: 9,
+  SurfaceFlush: 10,
+  SurfaceQueryLock: 11,
+  SurfaceReadLock: 12,
+  SurfaceReadUnlock: 13,
+  SurfaceWriteLock: 14,
+  SurfaceWriteUnlock: 15,
+  SurfaceControl: 16,
+  SurfaceSetShapeBackingAndLength: 17,
+  NumSurfaceMethods: 18,
+};
+
 declare const kdebug_coproc_flags_t: {
   KDCP_CONTINUOUS_TIME: 1,
+};
+
+declare const IOFWSecurityMode: {
+  Normal: 0,
+  Secure: 1,
+  SecurePermanent: 2,
 };
 
 declare const sptm_guest_stage1_tlb_op_t: {
@@ -5511,13 +18916,171 @@ declare const sptm_guest_stage1_tlb_op_t: {
   INVALID: 10,
 };
 
+declare const IOFWWriteFlags: {
+  FlagsNone: 0,
+  FlagsDeferredNotify: 1,
+  FastRetryOnBusy: 2,
+  BlockRequest: 4,
+};
+
+declare const NuDCLFlags: {
+  Dynamic: 2,
+  UpdateBeforeCallback: 4,
+};
+
 declare const lck_wake_action_t: {
   EFAULT: 0,
   O_NOT_TRANSFER_PUSH: 1,
 };
 
+declare const IOFWIsochResourceFlags: {
+  NeverMultiMode: 0,
+  AllowMultiMode: 1,
+  SuggestMultiMode: 2,
+  AlwaysMultiMode: 3,
+  DefaultIsochResourceFlags: 0,
+};
+
+declare const IOCSRKeyType: {
+  CSRImmediateKey: 0,
+  CSROffsetKey: 1,
+  CSRLeafKey: 2,
+  CSRDirectoryKey: 3,
+  InvalidCSRROMEntry: 255,
+};
+
+declare const IOConfigKeyType: {
+  ConfigImmediateKey: 0,
+  ConfigOffsetKey: 1,
+  ConfigLeafKey: 2,
+  ConfigDirectoryKey: 3,
+  InvalidConfigROMEntry: 255,
+};
+
+declare const IOFWSpeed: {
+  Speed100MBit: 0,
+  Speed200MBit: 1,
+  Speed400MBit: 2,
+  Speed800MBit: 3,
+  SpeedReserved: 3,
+  SpeedReserved1: 7,
+  SpeedUnknownMask: 128,
+  SpeedMaximum: 2147483647,
+  SpeedInvalid: -2147483648,
+};
+
+declare const IOFWAVCAsyncCommandState: {
+  PendingRequest: 0,
+  RequestSent: 1,
+  RequestFailed: 2,
+  WaitingForResponse: 3,
+  ReceivedInterimResponse: 4,
+  ReceivedFinalResponse: 5,
+  TimeOutBeforeResponse: 6,
+  BusReset: 7,
+  OutOfMemory: 8,
+  Canceled: 9,
+};
+
+declare const IOFWAVCSubunitPlugMessages: {
+  Connected: 0,
+  Disconnected: 1,
+  ConnectedPlugModified: 2,
+  SignalFormatModified: 3,
+};
+
+declare const IOFWAVCPlugTypes: {
+  SubunitSource: 0,
+  SubunitDest: 1,
+  IsochInput: 2,
+  IsochOutput: 3,
+  AsynchInput: 4,
+  AsynchOutput: 5,
+  ExternalInput: 6,
+  ExternalOutput: 7,
+};
+
+declare const IOAVCOpcodes: {
+  PlugInfoOpcode: 2,
+  OutputPlugSignalFormatOpcode: 24,
+  InputPlugSignalFormatOpcode: 25,
+  UnitInfoOpcode: 48,
+  SubunitInfoOpcode: 49,
+  ConnectionsOpcode: 34,
+  ConnectOpcode: 36,
+  DisconnectOpcode: 37,
+  PowerOpcode: 178,
+  SignalSourceOpcode: 26,
+  VendorDependentOpcode: 0,
+  OutputSignalModeOpcode: 120,
+  InputSignalModeOpcode: 121,
+  SignalModeSD525_60: 0,
+  SignalModeSDL525_60: 4,
+  SignalModeHD1125_60: 8,
+  SignalModeSD625_50: 128,
+  SignalModeSDL625_50: 132,
+  SignalModeHD1250_50: 136,
+  SignalModeDVCPro525_60: 120,
+  SignalModeDVCPro625_50: 248,
+  SignalModeDummyOperand: 255,
+  SignalModeMask_50: 128,
+  SignalModeMask_STYPE: 124,
+  SignalModeMask_SDL: 4,
+  SignalModeMask_DVCPro25: 120,
+};
+
+declare const IOAVCCommandResponse: {
+  ControlCommand: 0,
+  StatusInquiryCommand: 1,
+  SpecificInquiryCommand: 2,
+  NotifyCommand: 3,
+  GeneralInquiryCommand: 4,
+  NotImplementedStatus: 8,
+  AcceptedStatus: 9,
+  RejectedStatus: 10,
+  InTransitionStatus: 11,
+  ImplementedStatus: 12,
+  ChangedStatus: 13,
+  InterimStatus: 15,
+};
+
+declare const IOAVCFrameFields: {
+  CommandResponse: 0,
+  Address: 1,
+  Opcode: 2,
+  Operand0: 3,
+  Operand1: 4,
+  Operand2: 5,
+  Operand3: 6,
+  Operand4: 7,
+  Operand5: 8,
+  Operand6: 9,
+  Operand7: 10,
+  Operand8: 11,
+};
+
+declare const _IOAudioControlNotifications: {
+  Value: 0,
+  Range: 1,
+};
+
+declare const _IOAudioEngineTraps: {
+  kIOAudioEngineTrapPerformClientIO: 0,
+};
+
 declare const tIOPCIAccessOptions: {
   kIOPCIAccessLatencyTolerantHint: 1,
+};
+
+declare const CDSectorArea: {
+  Sync: 128,
+  Header: 32,
+  SubHeader: 64,
+  User: 16,
+  Auxiliary: 8,
+  ErrorFlags: 2,
+  SubChannel: 1,
+  SubChannelQ: 4,
 };
 
 declare const os_log_coproc_reg_t: {
@@ -5534,6 +19097,26 @@ declare const ataUnitID: {
   Invalid: -1,
   Device0: 0,
   Device1: 1,
+};
+
+declare const _IOAudioEngineNotifications: {
+  AllNotifications: 0,
+  StreamFormatChangeNotification: 1,
+  ChangeNotification: 2,
+  StartedNotification: 3,
+  StoppedNotification: 4,
+  PausedNotification: 5,
+  ResumedNotification: 6,
+};
+
+declare const CDSectorType: {
+  Unknown: 0,
+  CDDA: 1,
+  Mode1: 2,
+  Mode2: 3,
+  Mode2Form1: 4,
+  Mode2Form2: 5,
+  Count: 6,
 };
 
 declare const airship_daleipc_channel_state: {
@@ -5558,6 +19141,24 @@ declare const tUSBHostConnectorType: {
   Proprietary: 255,
 };
 
+declare const _IOAudioStreamDirection: {
+  Output: 0,
+  Input: 1,
+};
+
+declare const tIOUSBDeviceRequestTypeValue: {
+  Standard: 0,
+  Class: 1,
+  Vendor: 2,
+};
+
+declare const tIOUSBDeviceRequestRecipientValue: {
+  Device: 0,
+  Interface: 1,
+  Endpoint: 2,
+  Other: 3,
+};
+
 declare const airship_acipc_tr_sync_operation: {
   FLUSH_TRANSFERS: 1,
   PROCESS_TI_UPDATE: 2,
@@ -5574,6 +19175,35 @@ declare const atapiConfig: {
   IRQPacket: 1,
   DRQFast: 16,
   Unknown: 17,
+};
+
+declare const BluetoothAMPManagerCode: {
+  Reserved: 0,
+  AMPCommandReject: 1,
+  AMPDiscoverRequest: 2,
+  AMPDiscoverResponse: 3,
+  AMPChangeNotify: 4,
+  AMPChangeResponse: 5,
+  AMPGetInfoRequest: 6,
+  AMPGetInfoResponse: 7,
+  AMPGetAssocRequest: 8,
+  AMPGetAssocResponse: 9,
+  AMPCreatePhysicalLinkRequest: 10,
+  AMPCreatePhysicalLinkResponse: 11,
+  AMPDisconnectPhysicalLinkRequest: 12,
+  AMPDisconnectPhysicalLinkResponse: 13,
+};
+
+declare const _IOAudioEngineState: {
+  Stopped: 0,
+  Running: 1,
+  Paused: 2,
+  Resumed: 3,
+};
+
+declare const BluetoothHCIAFHChannelAssessmentModes: {
+  Disabled: 0,
+  Enabled: 1,
 };
 
 declare const airship_driver_power_state: {
@@ -5619,11 +19249,270 @@ declare const thread_call_priority_t: {
   KERNEL_HIGH: 4,
 };
 
+declare const IOHIDElementType: {
+  Input_Misc: 1,
+  Input_Button: 2,
+  Input_Axis: 3,
+  Input_ScanCodes: 4,
+  Input_NULL: 5,
+  Output: 129,
+  Feature: 257,
+  Collection: 513,
+};
+
+declare const IOHIDElementCommitDirection: {
+  In: 0,
+  Out: 1,
+};
+
+declare const BluetoothHCIPageScanModes: {
+  MandatoryPageScanMode: 0,
+  OptionalPageScanMode1: 1,
+  OptionalPageScanMode2: 2,
+  OptionalPageScanMode3: 3,
+};
+
+declare const eIOAccelSurfaceModeBits: {
+  ColorDepth1555: 3,
+  ColorDepth8888: 4,
+  ColorDepthYUV: 6,
+  ColorDepthYUV9: 7,
+  ColorDepthYUV12: 8,
+  ColorDepthYUV2: 9,
+  ColorDepthBGRA32: 10,
+  ColorDepth2101010: 15,
+  ColorDepthBits: 15,
+  StereoBit: 16,
+  WindowedBit: 32,
+  Surface2: 16384,
+  BeamSync: 32768,
+};
+
+declare const IOFWReadFlags: {
+  FlagsNone: 0,
+  BlockRequest: 4,
+  PingTime: 8,
+};
+
+declare const BTreeKeyLimits: {
+  kMaxKeyLength: 520,
+};
+
+declare const BluetoothHCIHoldModeActivityStates: {
+  MaintainCurrentPowerState: 0,
+  SuspendPageScan: 1,
+  SuspendInquiryScan: 2,
+  SuspendPeriodicInquiries: 3,
+};
+
+declare const evsioEVSIOSCSIndices: {
+  X: 0,
+  Y: 1,
+};
+
+declare const BluetoothL2CAPInformationType: {
+  ConnectionlessMTU: 1,
+  ExtendedFeatures: 2,
+  FixedChannelsSupported: 3,
+};
+
 declare const cs_launch_type_t: {
   NONE: 0,
   SYSTEM_SERVICE: 1,
   SYSDIAGNOSE: 2,
   APPLICATION: 3,
+};
+
+declare const BluetoothLESecurityManagerOOBData: {
+  AuthenticationDataNotPresent: 0,
+  AuthenticationDataPresent: 1,
+  DataReservedStart: 2,
+  DataReservedEnd: 255,
+};
+
+declare const eIOAccelSurfaceShapeBits: {
+  None: 0,
+  NonBlockingBit: 1,
+  NonSimpleBit: 2,
+  IdentityScaleBit: 4,
+  FrameSyncBit: 8,
+  BeamSyncBit: 16,
+  StaleBackingBit: 32,
+  AssemblyBit: 64,
+  WaitEnabledBit: 128,
+  BlockingBit: 1,
+};
+
+declare const USBLowLatencyBufferType: {
+  Write: 0,
+  Read: 1,
+  FrameList: 2,
+};
+
+declare const BluetoothLEScanDuplicateFilter: {
+  Disable: 0,
+  Enable: 1,
+};
+
+declare const evsioEVSIOCCSIndices: {
+  X: 0,
+  Y: 1,
+};
+
+declare const BluetoothLEScan: {
+  Disable: 0,
+  Enable: 1,
+};
+
+declare const BluetoothLEAddressType: {
+  Public: 0,
+  Random: 1,
+};
+
+declare const BluetoothLEScanType: {
+  Passive: 0,
+  Active: 1,
+};
+
+declare const BluetoothRFCOMMLineStatus: {
+  No: 0,
+  Overrun: 1,
+  Parity: 2,
+  Framing: 3,
+};
+
+declare const BluetoothRFCOMMParityType: {
+  No: 0,
+  Odd: 1,
+  Even: 2,
+  Max: 3,
+};
+
+declare const BluetoothHCIPowerState: {
+  ON: 1,
+  OFF: 0,
+  Unintialized: 255,
+};
+
+declare const BluetoothOOBDataPresenceValues: {
+  Not: 0,
+  FromRemoteDevice: 1,
+};
+
+declare const BluetoothSimplePairingDebugModes: {
+  Disabled: 0,
+  Enabled: 1,
+};
+
+declare const BluetoothHCIInquiryScanTypes: {
+  Standard: 0,
+  Interlaced: 1,
+  ReservedStart: 2,
+  ReservedEnd: 255,
+};
+
+declare const BluetoothHCIFECRequiredValues: {
+  kBluetoothHCIFECRequired: 0,
+  Not: 1,
+};
+
+declare const BluetoothTransportTypes: {
+  USB: 1,
+  PCCard: 2,
+  PCICard: 3,
+  UART: 4,
+  PCIe: 5,
+};
+
+declare const BluetoothHCIEncryptionModes: {
+  Disabled: 0,
+  OnlyForPointToPointPackets: 1,
+  ForBothPointToPointAndBroadcastPackets: 2,
+};
+
+declare const BluetoothHCIAuthentionEnableModes: {
+  Disabled: 0,
+  Enabled: 1,
+};
+
+declare const BluetoothHCIGeneralFlowControlStates: {
+  HostControllerToHostFlowControlOff: 0,
+  HCIACLDataPacketsOnHCISCODataPacketsOff: 1,
+  HCIACLDataPacketsOffHCISCODataPacketsOn: 2,
+  HCIACLDataPacketsOnHCISCODataPacketsOn: 3,
+};
+
+declare const BluetoothHCIPageScanPeriodModes: {
+  P0: 0,
+  P1: 1,
+  P2: 2,
+};
+
+declare const BluetoothHCIDeleteStoredLinkKeyFlags: {
+  KeyForSpecifiedDeviceOnly: 0,
+  AllStoredLinkKeys: 1,
+};
+
+declare const BluetoothHCIRoles: {
+  Central: 0,
+  Peripheral: 1,
+  Master: 0,
+  Slave: 1,
+};
+
+declare const BluetoothHCIConnectionModes: {
+  ActiveMode: 0,
+  HoldMode: 1,
+  SniffMode: 2,
+  ParkMode: 3,
+  ModeReservedForFutureUse: 4,
+};
+
+declare const BluetoothAMPDisconnectPhysicalLinkResponseStatus: {
+  Success: 0,
+  InvalidControllerID: 1,
+  NoPhysicalLink: 2,
+};
+
+declare const BluetoothAMPCreatePhysicalLinkResponseStatus: {
+  Success: 0,
+  InvalidControllerID: 1,
+  UnableToStartLinkCreation: 2,
+  CollisionOccurred: 3,
+  AMPDisconnectedPhysicalLinkRequestReceived: 4,
+  PhysicalLinkAlreadyExists: 5,
+  SecurityViolation: 6,
+};
+
+declare const BluetoothAMPGetAssocResponseStatus: {
+  Success: 0,
+  InvalidControllerID: 1,
+};
+
+declare const BluetoothAMPGetInfoResponseStatus: {
+  Success: 0,
+  InvalidControllerID: 1,
+};
+
+declare const BluetoothLinkTypes: {
+  SCOConnection: 0,
+  ACLConnection: 1,
+  ESCOConnection: 2,
+  LinkTypeNone: 255,
+};
+
+declare const BluetoothAMPDiscoverResponseControllerStatus: {
+  PoweredDown: 0,
+  BluetoothOnly: 1,
+  NoCapacity: 2,
+  LowCapacity: 3,
+  MediumCapacity: 4,
+  HighCapacity: 5,
+  FullCapacity: 6,
+};
+
+declare const BluetoothAMPCommandRejectReason: {
+  kBluetoothAMPManagerCommandRejectReasonCommandNotRecognized: 0,
 };
 
 declare const tEndpointUsageType: {
@@ -5635,6 +19524,518 @@ declare const tEndpointUsageType: {
   IsocFeedback: 1,
   IsocImplicit: 2,
   IsocReserved: 3,
+};
+
+declare const BluetoothLESecurityManagerKeypressNotificationType: {
+  PasskeyEntryStarted: 0,
+  PasskeyDigitEntered: 1,
+  PasskeyDigitErased: 2,
+  PasskeyCleared: 3,
+  PasskeyEntryCompleted: 4,
+  ReservedStart: 5,
+  ReservedEnd: 255,
+};
+
+declare const BluetoothLESecurityManagerUserOutputCapability: {
+  No: 1,
+  Numeric: 2,
+};
+
+declare const BluetoothL2CAPSupervisoryFuctionType: {
+  ReceiverReady: 0,
+  Reject: 1,
+  ReceiverNotReady: 2,
+  SelectiveReject: 3,
+};
+
+declare const BluetoothL2CAPQoSType: {
+  NoTraffic: 0,
+  BestEffort: 1,
+  Guaranteed: 2,
+};
+
+declare const BluetoothL2CAPInformationResult: {
+  Success: 0,
+  NotSupported: 1,
+};
+
+declare const BluetoothL2CAPConfigurationRetransmissionAndFlowControlFlags: {
+  BasicL2CAPModeFlag: 0,
+  RetransmissionModeFlag: 1,
+  FlowControlModeFlag: 2,
+  EnhancedRetransmissionMode: 3,
+  StreamingMode: 4,
+};
+
+declare const BluetoothL2CAPConfigurationOption: {
+  MTU: 1,
+  FlushTimeout: 2,
+  QoS: 3,
+  RetransmissionAndFlowControl: 4,
+  FrameCheckSequence: 5,
+  ExtendedFlowSpecification: 6,
+  ExtendedWindowSize: 7,
+};
+
+declare const BluetoothL2CAPConfigurationResult: {
+  Success: 0,
+  UnacceptableParams: 1,
+  Rejected: 2,
+  UnknownOptions: 3,
+};
+
+declare const BluetoothL2CAPConnectionResult: {
+  Successful: 0,
+  Pending: 1,
+  RefusedPSMNotSupported: 2,
+  RefusedSecurityBlock: 3,
+  RefusedNoResources: 4,
+  RefusedReserved: 5,
+  RefusedInvalidSourceCID: 6,
+  RefusedSourceCIDAlreadyAllocated: 7,
+};
+
+declare const BluetoothL2CAPSegmentationAndReassembly: {
+  Unsegmented: 0,
+  StartOf: 1,
+  EndOf: 2,
+  ContinuationOf: 3,
+};
+
+declare const SDPAttributeDeviceIdentificationRecord: {
+  ServiceDescription: 1,
+  DocumentationURL: 10,
+  ClientExecutableURL: 11,
+  SpecificationID: 512,
+  VendorID: 513,
+  ProductID: 514,
+  Version: 515,
+  PrimaryRecord: 516,
+  VendorIDSource: 517,
+  ReservedRangeStart: 518,
+  ReservedRangeEnd: 767,
+};
+
+declare const BluetoothLMPVersions: {
+  Specification1_0b: 0,
+  Specification1_1: 1,
+  Specification1_2: 2,
+  Specification2_0EDR: 3,
+  Specification2_1EDR: 4,
+  Specification3_0HS: 5,
+  Specification4_0: 6,
+  Specification4_1: 7,
+  Specification4_2: 8,
+  Specification5_0: 9,
+  Specification5_1: 10,
+  Specification5_2: 11,
+};
+
+declare const BluetoothHCIVersions: {
+  Specification1_0b: 0,
+  Specification1_1: 1,
+  Specification1_2: 2,
+  Specification2_0EDR: 3,
+  Specification2_1EDR: 4,
+  Specification3_0HS: 5,
+  Specification4_0: 6,
+  Specification4_1: 7,
+  Specification4_2: 8,
+  Specification5_0: 9,
+  Specification5_1: 10,
+  Specification5_2: 11,
+  Specification5_3: 12,
+};
+
+declare const BluetoothHCIExtendedInquiryResponseDataTypes: {
+  TypeFlags: 1,
+  Type16BitServiceClassUUIDsWithMoreAvailable: 2,
+  Type16BitServiceClassUUIDsCompleteList: 3,
+  Type32BitServiceClassUUIDsWithMoreAvailable: 4,
+  Type32BitServiceClassUUIDsCompleteList: 5,
+  Type128BitServiceClassUUIDsWithMoreAvailable: 6,
+  Type128BitServiceClassUUIDsCompleteList: 7,
+  TypeShortenedLocalName: 8,
+  TypeCompleteLocalName: 9,
+  TypeTransmitPowerLevel: 10,
+  TypeSSPOOBClassOfDevice: 13,
+  TypeSSPOOBSimplePairingHashC: 14,
+  TypeSSPOOBSimplePairingRandomizerR: 15,
+  TypeDeviceID: 16,
+  TypeSecurityManagerTKValue: 16,
+  TypeSecurityManagerOOBFlags: 17,
+  TypePeripheralConnectionIntervalRange: 18,
+  TypeServiceSolicitation16BitUUIDs: 20,
+  TypeServiceSolicitation128BitUUIDs: 21,
+  TypeServiceData: 22,
+  TypePublicTargetAddress: 23,
+  TypeRandomTargetAddress: 24,
+  TypeAppearance: 25,
+  TypeAdvertisingInterval: 26,
+  TypeLEBluetoothDeviceAddress: 27,
+  TypeLERole: 28,
+  TypeSimplePairingHash: 29,
+  TypeSimplePairingRandomizer: 30,
+  TypeServiceSolicitation32BitUUIDs: 31,
+  TypeServiceData32BitUUID: 32,
+  TypeServiceData128BitUUID: 33,
+  TypeSecureConnectionsConfirmationValue: 34,
+  TypeSecureConnectionsRandomValue: 35,
+  TypeURI: 36,
+  TypeIndoorPositioning: 37,
+  TypeTransportDiscoveryData: 38,
+  TypeCsisRsiData: 46,
+  Type3DInformationData: 61,
+  TypeManufacturerSpecificData: 255,
+  TypeSlaveConnectionIntervalRange: 18,
+};
+
+declare const SDPAttributeIdentifierCodes: {
+  ServiceRecordHandle: 0,
+  ServiceClassIDList: 1,
+  ServiceRecordState: 2,
+  ServiceID: 3,
+  ProtocolDescriptorList: 4,
+  BrowseGroupList: 5,
+  LanguageBaseAttributeIDList: 6,
+  ServiceInfoTimeToLive: 7,
+  ServiceAvailability: 8,
+  BluetoothProfileDescriptorList: 9,
+  DocumentationURL: 10,
+  ClientExecutableURL: 11,
+  IconURL: 12,
+  AdditionalProtocolsDescriptorList: 13,
+  VersionNumberList: 512,
+  ServiceDatabaseState: 513,
+  GroupID: 512,
+  IPSubnet: 512,
+  HIDReleaseNumber: 512,
+  HIDParserVersion: 513,
+  HIDDeviceSubclass: 514,
+  HIDCountryCode: 515,
+  HIDVirtualCable: 516,
+  HIDReconnectInitiate: 517,
+  HIDDescriptorList: 518,
+  HIDLangIDBaseList: 519,
+  HIDSDPDisable: 520,
+  HIDBatteryPower: 521,
+  HIDRemoteWake: 522,
+  HIDProfileVersion: 523,
+  HIDSupervisionTimeout: 524,
+  HIDNormallyConnectable: 525,
+  HIDBootDevice: 526,
+  HIDSSRHostMaxLatency: 527,
+  HIDSSRHostMinTimeout: 528,
+  ServiceVersion: 768,
+  ExternalNetwork: 769,
+  Network: 769,
+  SupportedDataStoresList: 769,
+  FaxClass1Support: 770,
+  RemoteAudioVolumeControl: 770,
+  FaxClass2_0Support: 771,
+  SupporterFormatsList: 771,
+  FaxClass2Support: 772,
+  AudioFeedbackSupport: 773,
+  NetworkAddress: 774,
+  WAPGateway: 775,
+  HomepageURL: 776,
+  WAPStackType: 777,
+  SecurityDescription: 778,
+  NetAccessType: 779,
+  MaxNetAccessRate: 780,
+  SupportedCapabilities: 784,
+  SupportedFeatures: 785,
+  SupportedFunctions: 786,
+  TotalImagingDataCapacity: 787,
+  ServiceName: 0,
+  ServiceDescription: 1,
+  ProviderName: 2,
+};
+
+declare const BluetoothCompanyIdentifers: {
+  IdentiferEricssonTechnologyLicensing: 0,
+  IdentiferNokiaMobilePhones: 1,
+  IdentiferIntel: 2,
+  IdentiferIBM: 3,
+  IdentiferToshiba: 4,
+  Identifer3Com: 5,
+  IdentiferMicrosoft: 6,
+  IdentiferLucent: 7,
+  IdentiferMotorola: 8,
+  IdentiferInfineonTechnologiesAG: 9,
+  IdentiferCambridgeSiliconRadio: 10,
+  IdentiferSiliconWave: 11,
+  IdentiferDigianswerAS: 12,
+  IdentiferTexasInstruments: 13,
+  IdentiferParthusTechnologies: 14,
+  IdentiferBroadcom: 15,
+  IdentiferMitelSemiconductor: 16,
+  IdentiferWidcomm: 17,
+  IdentiferZeevo: 18,
+  IdentiferAtmel: 19,
+  IdentiferMistubishiElectric: 20,
+  IdentiferRTXTelecom: 21,
+  IdentiferKCTechnology: 22,
+  IdentiferNewlogic: 23,
+  IdentiferTransilica: 24,
+  IdentiferRohdeandSchwarz: 25,
+  IdentiferTTPCom: 26,
+  IdentiferSigniaTechnologies: 27,
+  IdentiferConexantSystems: 28,
+  IdentiferQualcomm: 29,
+  IdentiferInventel: 30,
+  IdentiferAVMBerlin: 31,
+  IdentiferBandspeed: 32,
+  IdentiferMansella: 33,
+  IdentiferNEC: 34,
+  IdentiferWavePlusTechnology: 35,
+  IdentiferAlcatel: 36,
+  IdentiferPhilipsSemiconductor: 37,
+  IdentiferCTechnologies: 38,
+  IdentiferOpenInterface: 39,
+  IdentiferRFCMicroDevices: 40,
+  IdentiferHitachi: 41,
+  IdentiferSymbolTechnologies: 42,
+  IdentiferTenovis: 43,
+  IdentiferMacronixInternational: 44,
+  IdentiferGCTSemiconductor: 45,
+  IdentiferNorwoodSystems: 46,
+  IdentiferMewTelTechnology: 47,
+  IdentiferSTMicroelectronics: 48,
+  IdentiferSynopsys: 49,
+  IdentiferRedMCommunications: 50,
+  IdentiferCommil: 51,
+  IdentiferCATC: 52,
+  IdentiferEclipse: 53,
+  IdentiferRenesasTechnology: 54,
+  IdentiferMobilian: 55,
+  IdentiferTerax: 56,
+  IdentiferIntegratedSystemSolution: 57,
+  IdentiferMatsushitaElectricIndustrial: 58,
+  IdentiferGennum: 59,
+  IdentiferResearchInMotion: 60,
+  IdentiferIPextreme: 61,
+  IdentiferSystemsAndChips: 62,
+  IdentiferBluetoothSIG: 63,
+  IdentiferSeikoEpson: 64,
+  IdentiferIntegratedSiliconSolution: 65,
+  IdentiferCONWISETechnology: 66,
+  IdentiferParrotSA: 67,
+  IdentiferSocketCommunications: 68,
+  IdentiferAtherosCommunications: 69,
+  IdentiferMediaTek: 70,
+  IdentiferBluegiga: 71,
+  IdentiferMarvellTechnologyGroup: 72,
+  Identifer3DSP: 73,
+  IdentiferAccelSemiconductor: 74,
+  IdentiferContinentialAutomotiveSystems: 75,
+  IdentiferApple: 76,
+  IdentiferStaccatoCommunications: 77,
+  IdentiferAvagoTechnologies: 78,
+  IdentiferAPT: 79,
+  IdentiferSiRFTechnology: 80,
+  IdentiferTZeroTechnologies: 81,
+  IdentiferJandM: 82,
+  IdentiferFree2Move: 83,
+  Identifer3DiJoy: 84,
+  IdentiferPlantronics: 85,
+  IdentiferSonyEricssonMobileCommunications: 86,
+  IdentiferHarmonInternational: 87,
+  IdentiferVisio: 88,
+  IdentiferNordicSemiconductor: 89,
+  IdentiferEMMicroElectronicMarin: 90,
+  IdentiferRalinkTechnology: 91,
+  IdentiferBelkinInternational: 92,
+  IdentiferRealtekSemiconductor: 93,
+  IdentiferStonestreetOne: 94,
+  IdentiferWicentric: 95,
+  IdentiferRivieraWaves: 96,
+  IdentiferRDAMicroelectronics: 97,
+  IdentiferGibsonGuitars: 98,
+  IdentiferMiCommand: 99,
+  IdentiferBandXIInternational: 100,
+  IdentiferHewlettPackard: 101,
+  Identifer9SolutionsOy: 102,
+  IdentiferGNNetcom: 103,
+  IdentiferGeneralMotors: 104,
+  IdentiferAAndDEngineering: 105,
+  IdentiferMindTree: 106,
+  IdentiferPolarElectroOY: 107,
+  IdentiferBeautifulEnterprise: 108,
+  IdentiferBriarTek: 109,
+  IdentiferSummitDataCommunications: 110,
+  IdentiferSoundID: 111,
+  IdentiferMonster: 112,
+  IdentiferConnectBlueAB: 113,
+  IdentiferShangHaiSuperSmartElectronics: 114,
+  IdentiferGroupSense: 115,
+  IdentiferZomm: 116,
+  IdentiferSamsungElectronics: 117,
+  IdentiferCreativeTechnology: 118,
+  IdentiferLairdTechnologies: 119,
+  IdentiferNike: 120,
+  IdentiferLessWire: 121,
+  IdentiferMStarTechnologies: 122,
+  IdentiferHanlynnTechnologies: 123,
+  IdentiferAAndRCambridge: 124,
+  IdentiferSeersTechnology: 125,
+  IdentiferSportsTrackingTechnologies: 126,
+  IdentiferAutonetMobile: 127,
+  IdentiferDeLormePublishingCompany: 128,
+  IdentiferWuXiVimicro: 129,
+  IdentiferSennheiserCommunications: 130,
+  IdentiferTimeKeepingSystems: 131,
+  IdentiferLudusHelsinki: 132,
+  IdentiferBlueRadios: 133,
+  IdentiferEquinux: 134,
+  IdentiferGarminInternational: 135,
+  IdentiferEcotest: 136,
+  IdentiferGNResound: 137,
+  IdentiferJawbone: 138,
+  IdentiferTopconPositioningSystems: 139,
+  IdentiferGimbal: 140,
+  IdentiferZscanSoftware: 141,
+  IdentiferQuintic: 142,
+  IdentiferTelitWirelessSolutions: 143,
+  IdentiferFunaiElectric: 144,
+  IdentiferAdvancedPANMOBILSystems: 145,
+  IdentiferThinkOptics: 146,
+  IdentiferUniversalElectriconics: 147,
+  IdentiferAirohaTechnology: 148,
+  IdentiferNECLightning: 149,
+  IdentiferODMTechnology: 150,
+  IdentiferConnecteDevice: 151,
+  IdentiferZero1TV: 152,
+  IdentiferITechDynamicGlobalDistribution: 153,
+  IdentiferAlpwise: 154,
+  IdentiferJiangsuToppowerAutomotiveElectronics: 155,
+  IdentiferColorfy: 156,
+  IdentiferGeoforce: 157,
+  IdentiferBose: 158,
+  IdentiferSuuntoOy: 159,
+  IdentiferKensingtonComputerProductsGroup: 160,
+  IdentiferSRMedizinelektronik: 161,
+  IdentiferVertu: 162,
+  IdentiferMetaWatch: 163,
+  IdentiferLinak: 164,
+  IdentiferOTLDynamics: 165,
+  IdentiferPandaOcean: 166,
+  IdentiferVisteon: 167,
+  IdentiferARPDevicesUnlimited: 168,
+  IdentiferMagnetiMarelli: 169,
+  IdentiferCaenRFID: 170,
+  IdentiferIngenieurSystemgruppeZahn: 171,
+  IdentiferGreenThrottleGames: 172,
+  IdentiferPeterSystemtechnik: 173,
+  IdentiferOmegawave: 174,
+  IdentiferCinetix: 175,
+  IdentiferPassifSemiconductor: 176,
+  IdentiferSarisCyclingGroup: 177,
+  IdentiferBekey: 178,
+  IdentiferClarinoxTechnologies: 179,
+  IdentiferBDETechnology: 180,
+  IdentiferSwirlNetworks: 181,
+  IdentiferMesoInternational: 182,
+  IdentiferTreLab: 183,
+  IdentiferQualcommInnovationCenter: 184,
+  IdentiferJohnsonControls: 185,
+  IdentiferStarkeyLaboratories: 186,
+  IdentiferSPowerElectronics: 187,
+  IdentiferAceSensor: 188,
+  IdentiferAplix: 189,
+  IdentiferAAMPofAmerica: 190,
+  IdentiferStalmartTechnology: 191,
+  IdentiferAMICCOMElectronics: 192,
+  IdentiferShenzhenExcelsecuDataTechnology: 193,
+  IdentiferGeneq: 194,
+  IdentiferAdidas: 195,
+  IdentiferLGElectronics: 196,
+  IdentiferOnsetComputer: 197,
+  IdentiferSelflyBV: 198,
+  IdentiferQuupa: 199,
+  IdentiferGeLo: 200,
+  IdentiferEvluma: 201,
+  IdentiferMC10: 202,
+  IdentiferBinauricSE: 203,
+  IdentiferBeatsElectronics: 204,
+  IdentiferMicrochipTechnology: 205,
+  IdentiferElgatoSystems: 206,
+  IdentiferARCHOS: 207,
+  IdentiferDexcom: 208,
+  IdentiferPolarElectroEurope: 209,
+  IdentiferDialogSemiconductor: 210,
+  IdentiferTaixingbangTechnology: 211,
+  IdentiferKawantech: 212,
+  IdentiferAustcoCommunicationsSystems: 213,
+  IdentiferTimexGroup: 214,
+  IdentiferQualcommTechnologies: 215,
+  IdentiferQualcommConnectedExperiences: 216,
+  IdentiferVoyetraTurtleBeach: 217,
+  IdentifertxtrGMBH: 218,
+  IdentiferBiosentronics: 219,
+  IdentiferProctorAndGamble: 220,
+  IdentiferHosiden: 221,
+  IdentiferMusik: 222,
+  IdentiferMisfitWearables: 223,
+  IdentiferGoogle: 224,
+  IdentiferDanlers: 225,
+  IdentiferSemilink: 226,
+  IdentiferInMusicBrands: 227,
+  IdentiferLSResearch: 228,
+  IdentiferEdenSoftwareConsultants: 229,
+  IdentiferFreshtemp: 230,
+  IdentiferKSTechnologies: 231,
+  IdentiferACTSTechnologies: 232,
+  IdentiferVtrackSystems: 233,
+  IdentiferNielsenKellerman: 234,
+  IdentiferServerTechnology: 235,
+  IdentiferBioResearchAssociates: 236,
+  IdentiferJollyLogic: 237,
+  IdentiferAboveAverageOutcomes: 238,
+  IdentiferBitsplitters: 239,
+  IdentiferPayPal: 240,
+  IdentiferWitronTechnology: 241,
+  IdentiferMorseProject: 242,
+  IdentiferKentDisplays: 243,
+  IdentiferNautilus: 244,
+  IdentiferSmartifier: 245,
+  IdentiferElcometer: 246,
+  IdentiferVSNTechnologies: 247,
+  IdentiferAceUni: 248,
+  IdentiferStickNFind: 249,
+  IdentiferCrystalCode: 250,
+  IdentiferKOUKAMM: 251,
+  IdentiferDelphi: 252,
+  IdentiferValenceTech: 253,
+  IdentiferStanleyBlackAndDecker: 254,
+  IdentiferTypeProducts: 255,
+  IdentiferTomTomInternational: 256,
+  IdentiferFuGoo: 257,
+  IdentiferKeiser: 258,
+  IdentiferBangAndOlufson: 259,
+  IdentiferPLUSLocationSystems: 260,
+  IdentiferUbiquitousComputingTechnology: 261,
+  IdentiferInnovativeYachtterSolutions: 262,
+  IdentiferWilliamDemantHolding: 263,
+  IdentiferInteropIdentifier: 65535,
+};
+
+declare const BluetoothLESecurityManagerIOCapability: {
+  DisplayOnly: 0,
+  DisplayYesNo: 1,
+  KeyboardOnly: 2,
+  NoInputNoOutput: 3,
+  KeyboardDisplay: 4,
+  ReservedStart: 5,
+  ReservedEnd: 255,
+};
+
+declare const IOFWIsochPortOptions: {
+  PortDefaultOptions: 0,
+  PortUseSeparateKernelThread: 2,
+  EnableRobustness: 4,
+  BigEndianUpdates: 8,
+  RequireLastContext: 16,
 };
 
 declare const socd_client_trace_code_xnu_t: {
@@ -5680,6 +20081,17 @@ declare const SCSIParallelMessages: {
   TARGET_RESET: 12,
 };
 
+declare const BluetoothLEConnectionInterval: {
+  Min: 6,
+  Max: 3200,
+};
+
+declare const IOFWPhysicalAccessMode: {
+  Enabled: 0,
+  Disabled: 1,
+  DisabledForGeneration: 2,
+};
+
 declare const tInternalUSBHostConnectionSpeed: {
   Low: 0,
   Full: 1,
@@ -5695,8 +20107,32 @@ declare const in6_clat46_evhdlr_code_t: {
   V6_ADDR_CONFFAIL: 1,
 };
 
+declare const BluetoothLEFeatureBits: {
+  LEEncryption: 1,
+  ConnectionParamsRequestProcedure: 2,
+  ExtendedRejectIndication: 4,
+  PeripheralInitiatedFeaturesExchange: 8,
+  LEPing: 16,
+  LEDataPacketLengthExtension: 32,
+  LLPrivacy: 64,
+  ExtendedScannerFilterPolicies: 128,
+  SlaveInitiatedFeaturesExchange: 8,
+};
+
 declare const hv_volatile_state_t: {
   HV_DEBUG_STATE: 0,
+};
+
+declare const BluetoothHCISCOFlowControlStates: {
+  Disabled: 0,
+  Enabled: 1,
+};
+
+declare const tIOUSB30ResetTimeout: {
+  Minimum: 80,
+  Typical: 100,
+  Maximum: 120,
+  MaximumWithMargin: 150,
 };
 
 declare const nfs_supported_kerberos_etypes: {
@@ -5707,6 +20143,19 @@ declare const nfs_supported_kerberos_etypes: {
 
 declare const IODebuggerLockState: {
   kIODebuggerLockTaken: 1,
+};
+
+declare const SCSIServiceResponse: {
+  Request_In_Process: 0,
+  SERVICE_DELIVERY_OR_TARGET_FAILURE: 1,
+  TASK_COMPLETE: 2,
+  LINK_COMMAND_COMPLETE: 3,
+  FUNCTION_COMPLETE: 4,
+  FUNCTION_REJECTED: 5,
+};
+
+declare const eIOAccelSurfaceMemoryTypes: {
+  kIOAccelNumSurfaceMemoryTypes: 0,
 };
 
 declare const kdebug_flags_t: {
@@ -5733,11 +20182,46 @@ declare const _IOAudioDevicePowerState: {
   Active: 2,
 };
 
+declare const BluetoothHCITransmitReadPowerLevelTypes: {
+  Current: 0,
+  Maximum: 1,
+};
+
+declare const BluetoothAuthenticationRequirementsValues: {
+  NotRequired: 0,
+  Required: 1,
+  NotRequiredNoBonding: 0,
+  RequiredNoBonding: 1,
+  NotRequiredDedicatedBonding: 2,
+  RequiredDedicatedBonding: 3,
+  NotRequiredGeneralBonding: 4,
+  RequiredGeneralBonding: 5,
+};
+
 declare const tEndpointSynchronizationType: {
   None: 0,
   Asynchronous: 1,
   Adaptive: 2,
   Synchronous: 3,
+};
+
+declare const _IOAudioControlCalls: {
+  Set: 0,
+  Get: 1,
+};
+
+declare const BluetoothL2CAPInformationExtendedFeaturesMask: {
+  InformationNoExtendedFeatures: 0,
+  InformationFlowControlMode: 1,
+  InformationRetransmissionMode: 2,
+  InformationBidirectionalQoS: 4,
+  InformationEnhancedRetransmissionMode: 8,
+  InformationStreamingMode: 16,
+  InformationFCSOption: 32,
+  InformationExtendedFlowSpecification: 64,
+  InformationFixedChannels: 128,
+  InformationExtendedWindowSize: 256,
+  UnicastConnectionlessDataReception: 512,
 };
 
 declare const airship_buffer_direction: {
@@ -5755,6 +20239,12 @@ declare const ecc_flags_t: {
   REMOVE_ADDR: 16,
 };
 
+declare const BluetoothHCIInquiryModes: {
+  Standard: 0,
+  WithRSSI: 1,
+  WithRSSIOrExtendedInquiryResultFormat: 2,
+};
+
 declare const nfstype: {
   NON: 0,
   REG: 1,
@@ -5766,6 +20256,13 @@ declare const nfstype: {
   FIFO: 7,
   ATTRDIR: 8,
   NAMEDATTR: 9,
+};
+
+declare const BluetoothHCIPageScanTypes: {
+  Standard: 0,
+  Interlaced: 1,
+  ReservedStart: 2,
+  ReservedEnd: 255,
 };
 
 declare const IOFWSBP2UserClientCommandCodes: {
@@ -5834,6 +20331,102 @@ declare const lck_sleep_action_t: {
   SPIN_ALWAYS: 32,
 };
 
+declare const BluetoothHCIRetransmissionEffortTypes: {
+  None: 0,
+  AtLeastOneAndOptimizeForPower: 1,
+  AtLeastOneAndOptimizeLinkQuality: 2,
+  DontCare: 255,
+};
+
+declare const BluetoothFeatureBits: {
+  kBluetoothFeatureThreeSlotPackets: 1,
+  kBluetoothFeatureFiveSlotPackets: 2,
+  kBluetoothFeatureEncryption: 4,
+  kBluetoothFeatureSlotOffset: 8,
+  kBluetoothFeatureTimingAccuracy: 16,
+  kBluetoothFeatureSwitchRoles: 32,
+  kBluetoothFeatureHoldMode: 64,
+  kBluetoothFeatureSniffMode: 128,
+  kBluetoothFeatureParkMode: 1,
+  kBluetoothFeatureRSSI: 2,
+  kBluetoothFeaturePowerControlRequests: 2,
+  kBluetoothFeatureChannelQuality: 4,
+  kBluetoothFeatureSCOLink: 8,
+  kBluetoothFeatureHV2Packets: 16,
+  kBluetoothFeatureHV3Packets: 32,
+  kBluetoothFeatureULawLog: 64,
+  kBluetoothFeatureALawLog: 128,
+  kBluetoothFeatureCVSD: 1,
+  kBluetoothFeaturePagingScheme: 2,
+  kBluetoothFeaturePowerControl: 4,
+  kBluetoothFeatureTransparentSCOData: 8,
+  kBluetoothFeatureFlowControlLagBit0: 16,
+  kBluetoothFeatureFlowControlLagBit1: 32,
+  kBluetoothFeatureFlowControlLagBit2: 64,
+  kBluetoothFeatureBroadcastEncryption: 128,
+  kBluetoothFeatureScatterMode: 1,
+  kBluetoothFeatureEnhancedDataRateACL2MbpsMode: 2,
+  kBluetoothFeatureEnhancedDataRateACL3MbpsMode: 4,
+  kBluetoothFeatureEnhancedInquiryScan: 8,
+  kBluetoothFeatureInterlacedInquiryScan: 16,
+  kBluetoothFeatureInterlacedPageScan: 32,
+  kBluetoothFeatureRSSIWithInquiryResult: 64,
+  kBluetoothFeatureExtendedSCOLink: 128,
+  kBluetoothFeatureEV4Packets: 1,
+  kBluetoothFeatureEV5Packets: 2,
+  kBluetoothFeatureAbsenceMasks: 4,
+  kBluetoothFeatureAFHCapablePeripheral: 8,
+  kBluetoothFeatureAFHClassificationPeripheral: 16,
+  kBluetoothFeatureAliasAuhentication: 32,
+  kBluetoothFeatureLESupportedController: 64,
+  kBluetoothFeature3SlotEnhancedDataRateACLPackets: 128,
+  kBluetoothFeatureAFHCapableSlave: 8,
+  kBluetoothFeatureAFHClassificationSlave: 16,
+  kBluetoothFeature5SlotEnhancedDataRateACLPackets: 1,
+  kBluetoothFeatureSniffSubrating: 2,
+  kBluetoothFeaturePauseEncryption: 4,
+  kBluetoothFeatureAFHCapableMaster: 8,
+  kBluetoothFeatureAFHClassificationMaster: 16,
+  kBluetoothFeatureEnhancedDataRateeSCO2MbpsMode: 32,
+  kBluetoothFeatureEnhancedDataRateeSCO3MbpsMode: 64,
+  kBluetoothFeature3SlotEnhancedDataRateeSCOPackets: 128,
+  kBluetoothFeatureExtendedInquiryResponse: 1,
+  kBluetoothFeatureSecureSimplePairing: 8,
+  kBluetoothFeatureEncapsulatedPDU: 16,
+  kBluetoothFeatureErroneousDataReporting: 32,
+  kBluetoothFeatureNonFlushablePacketBoundaryFlag: 64,
+  kBluetoothFeatureLinkSupervisionTimeoutChangedEvent: 1,
+  kBluetoothFeatureInquiryTransmissionPowerLevel: 2,
+  kBluetoothFeatureExtendedFeatures: 128,
+  kBluetoothExtendedFeatureSimpleSecurePairingHostMode: 1,
+  kBluetoothExtendedFeatureLESupportedHostMode: 2,
+  kBluetoothExtendedFeatureLEAndBREDRToSameDeviceHostMode: 4,
+  KBluetoothExtendedFeatureSecureConnectionsHostMode: 8,
+  kBluetoothExtendedFeatureSecureConnectionsControllerSupport: 1,
+  kBluetoothExtendedFeaturePing: 2,
+  kBluetoothExtendedFeatureReserved: 4,
+  kBluetoothExtendedFeatureTrainNudging: 8,
+  kBluetoothExtendedFeatureSlotAvailabilityMask: 16,
+};
+
+declare const EvCmd: {
+  NOP: 0,
+  HIDE: 1,
+  SHOW: 2,
+  MOVE: 3,
+  LEVEL: 4,
+};
+
+declare const IOHIDElementCollectionType: {
+  Physical: 0,
+  Application: 1,
+  Logical: 2,
+  Report: 3,
+  NamedArray: 4,
+  UsageSwitch: 5,
+  UsageModifier: 6,
+};
+
 declare const airship_acipc_ring_state_detail_flag: {
   UNAVAILABLE_EXECSTAGE: 1,
   UNAVAILABLE_CONFLICT: 2,
@@ -5842,6 +20435,15 @@ declare const airship_acipc_ring_state_detail_flag: {
   DEAD_BYREQUEST: 16,
   DEAD_DEVICERESET: 32,
   DEAD_EXECSTAGE: 64,
+};
+
+declare const CDSectorSize: {
+  CDDA: 2352,
+  Mode1: 2048,
+  Mode2: 2336,
+  Mode2Form1: 2048,
+  Mode2Form2: 2328,
+  Whole: 2352,
 };
 
 declare const cpu_event: {
@@ -5870,12 +20472,43 @@ declare const kd_callback_type: {
   SNAPSHOT_STATE: 4,
 };
 
+declare const _IOAudioEngineCalls: {
+  RegisterClientBuffer: 0,
+  UnregisterClientBuffer: 1,
+  GetConnectionID: 2,
+  Start: 3,
+  Stop: 4,
+  GetNearestStartTime: 5,
+};
+
+declare const tIOUSB30TimingParameters: {
+  Default: 1000000,
+  Min: 125000,
+};
+
 declare const tIOPCIDeviceResetTypes: {
   HotReset: 1,
   WarmReset: 2,
   WarmResetDisable: 4,
   WarmResetEnable: 8,
   FunctionReset: 16,
+};
+
+declare const tIOUSBHostPortType: {
+  Standard: 0,
+  Captive: 1,
+  Internal: 2,
+  Accessory: 3,
+  ExpressCard: 4,
+  C: 5,
+  Unknown: 6,
+};
+
+declare const BluetoothHCIPageScanEnableStates: {
+  NoScansEnabled: 0,
+  InquiryScanEnabledPageScanDisabled: 1,
+  InquiryScanDisabledPageScanEnabled: 2,
+  InquiryScanEnabledPageScanEnabled: 3,
 };
 
 declare const priority_queue_entry_sched_modifier_t: {
@@ -5914,6 +20547,24 @@ declare const ataFlags: {
   mATAFlagTFAccess: 1,
 };
 
+declare const tIOUSB30HubExtStatus: {
+  RxSublinkSpeedID: 15,
+  RxSublinkSpeedIDPhase: 0,
+  TxSublinkSpeedID: 240,
+  TxSublinkSpeedIDPhase: 4,
+  RxLaneCount: 3840,
+  RxLaneCountPhase: 8,
+  TxLaneCount: 61440,
+  TxLaneCountPhase: 12,
+};
+
+declare const BluetoothIOCapabilities: {
+  DisplayOnly: 0,
+  DisplayYesNo: 1,
+  KeyboardOnly: 2,
+  NoInputNoOutput: 3,
+};
+
 declare const airship_driver_power_target: {
   ACTIVE: 0,
   ACTIVE_PREVENTING_DEVICE_SLEEP: 1,
@@ -5922,6 +20573,10 @@ declare const airship_driver_power_target: {
 
 declare const airship_acipc_tr_enqueue_option: {
   AIRSHIP_ACIPC_TR_ENQUEUE_OPTION_CHAIN: 1,
+};
+
+declare const BluetoothHCITimeoutValues: {
+  kDefaultPageTimeout: 10000,
 };
 
 declare const if_netem_model_t: {
@@ -5937,6 +20592,21 @@ declare const backtrace_flags_t: {
 declare const airship_acipc_cr_mirror_element_type: {
   COMPLETION_RECORD: 0,
   RAW_DESCRIPTOR: 1,
+};
+
+declare const BluetoothKeypressNotificationTypes: {
+  EntryStarted: 0,
+  DigitEntered: 1,
+  DigitErased: 2,
+  Cleared: 3,
+  EntryCompleted: 4,
+};
+
+declare const BluetoothLESecurityManagerKeyDistributionFormat: {
+  Encryption: 1,
+  ID: 2,
+  Sign: 4,
+  Link: 8,
 };
 
 declare const socd_client_trace_class_t: {
@@ -5972,6 +20642,13 @@ declare const tDeviceCapabilityType: {
 declare const libsptm_cpu_state_t: {
   SPTM_INTERRUPTED: 0,
   PANIC_SPIN: 1,
+};
+
+declare const tIOUSBEndpointType: {
+  Control: 0,
+  Isochronous: 1,
+  Bulk: 2,
+  Interrupt: 3,
 };
 
 declare const hv_trap_type_t: {
@@ -6010,6 +20687,26 @@ declare const airship_acipc_ring_state: {
   EDISCONNECTED: 8,
 };
 
+declare const BluetoothLESecurityManagerCommandCode: {
+  Reserved: 0,
+  PairingRequest: 1,
+  PairingResponse: 2,
+  PairingConfirm: 3,
+  PairingRandom: 4,
+  PairingFailed: 5,
+  EncryptionInfo: 6,
+  MasterIdentification: 7,
+  IdentityInfo: 8,
+  IdentityAddressInfo: 9,
+  SigningInfo: 10,
+  SecurityRequest: 11,
+  PairingPublicKey: 12,
+  PairingDHKeyCheck: 13,
+  PairingKeypressNotification: 14,
+  ReservedStart: 15,
+  ReservedEnd: 255,
+};
+
 declare const IOPCIMemoryRange: {
   BAR0: 0,
   BAR1: 1,
@@ -6020,12 +20717,101 @@ declare const IOPCIMemoryRange: {
   ExpansionROM: 6,
 };
 
+declare const BluetoothHCIReadStoredLinkKeysFlags: {
+  ReturnLinkKeyForSpecifiedDeviceOnly: 0,
+  ReadAllStoredLinkKeys: 1,
+};
+
+declare const BluetoothL2CAPCommandRejectReason: {
+  CommandNotUnderstood: 0,
+  SignallingMTUExceeded: 1,
+  InvalidCIDInRequest: 2,
+};
+
+declare const tIOUSB30LinkStateTimeout: {
+  LinkStateSSInactiveQuietTimeout: 12,
+  LinkStateRxDetectQuietTimeout: 12,
+  LinkStatePollingLFPSTimeout: 360,
+  LinkStatePollingActiveTimeout: 12,
+  LinkStatePollingConfigurationTimeout: 12,
+  LinkStatePollingIdleTimeout: 2,
+  LinkStateU0RecoveryTimeout: 1,
+  LinkStateU0LTimeout: 0,
+  LinkStateU1NoLFPSResponseTimeout: 2,
+  LinkStateU1PingTimeout: 300,
+  LinkStateU2NoLFPSResponseTimeout: 2,
+  LinKStateU2RxDetectDelay: 100,
+  LinkStateU3NoLFPSResponseTimeout: 10,
+  LinkStateU3WakeupRetryDelay: 100,
+  LinkStateU3RxDetectDelay: 100,
+  LinkStateRecoveryActiveTimeout: 12,
+  LinkStateRecoveryConfigurationTimeout: 6,
+  LinkStateRecoveryIdleTimeout: 2,
+  LinkStateLoopbackExitTimeout: 2,
+  LinkStateHotResetActiveTimeout: 12,
+  LinkStateHotResetExitTimeout: 2,
+  LinkStatePollingDeadline: 387,
+  LinkStateSSResumeDeadline: 130,
+  LinkStateRecoveryDeadline: 21,
+  LinkStateHotResetDeadline: 15,
+};
+
+declare const IOAVCUnitTypes: {
+  VideoMonitor: 0,
+  Audio: 1,
+  Printer: 2,
+  DiskRecorder: 3,
+  TapeRecorder: 4,
+  Tuner: 5,
+  VideoCamera: 7,
+  CameraStorage: 11,
+  VendorUnique: 28,
+  NumSubUnitTypes: 32,
+};
+
+declare const BluetoothLEScanFilter: {
+  None: 0,
+  Safelist: 1,
+  Whitelist: 1,
+};
+
 declare const libsptm_error_t: {
   SUCCESS: 0,
   NOT_INITTED: 1,
   INVALID_ARG: 2,
   TYPE_MISMATCH: 3,
   FAILURE: 4,
+};
+
+declare const BluetoothLESecurityManagerPairingFailedReasonCode: {
+  Reserved: 0,
+  PasskeyEntryFailed: 1,
+  OOBNotAvailbale: 2,
+  AuthenticationRequirements: 3,
+  ConfirmValueFailed: 4,
+  PairingNotSupported: 5,
+  EncryptionKeySize: 6,
+  CommandNotSupported: 7,
+  UnspecifiedReason: 8,
+  RepeatedAttempts: 9,
+  InvalidParameters: 10,
+  DHKeyCheckFailed: 11,
+  NumericComparisonFailed: 12,
+  BREDRPairingInProgress: 13,
+  CrossTransportKeyDerivationGenerationNotAllowed: 14,
+  ReservedStart: 15,
+  ReservedEnd: 255,
+};
+
+declare const USBPowerRequestTypes: {
+  DuringSleep: 0,
+  DuringWake: 1,
+  RequestWakeRelease: 2,
+  RequestSleepRelease: 3,
+  RequestWakeReallocate: 4,
+  RequestSleepReallocate: 5,
+  DuringWakeRevocable: 6,
+  DuringWakeUSB3: 7,
 };
 
 declare const EFI_MEMORY_TYPE: {
@@ -6056,6 +20842,24 @@ declare const airship_acipc_health_status_flag: {
   AIRSHIP_ACIPC_HEALTH_STATUS_ERROR_DOORBELL_COORDINATOR: 1,
 };
 
+declare const USBClassSpecificDesc: {
+  kUSBClassSpecificDescriptor: 36,
+};
+
+declare const HIDReportCommandType: {
+  Set: 0,
+  Get: 1,
+};
+
+declare const reloc_type_generic: {
+  VANILLA: 0,
+  PAIR: 1,
+  SECTDIFF: 2,
+  PB_LA_PTR: 3,
+  LOCAL_SECTDIFF: 4,
+  TLV: 5,
+};
+
 declare const kf_override_flag_t: {
   SERIAL_OVRD: 2,
   PMAPV_OVRD: 4,
@@ -6076,6 +20880,23 @@ declare const kf_override_flag_t: {
   DISABLE_PROCREF_TRACKING_OVRD: 131072,
 };
 
+declare const tIOUSB30HubPortStatusCode: {
+  Standard: 0,
+  PD: 1,
+  Ext: 2,
+  Count: 3,
+};
+
+declare const BluetoothHCILinkPolicySettingsValues: {
+  DisableAllLMModes: 0,
+  EnableCentralPeripheralSwitch: 1,
+  EnableHoldMode: 2,
+  EnableSniffMode: 4,
+  EnableParkMode: 8,
+  ReservedForFutureUse: 16,
+  EnableMasterSlaveSwitch: 1,
+};
+
 declare const hvg_hcall_code_t: {
   TRIGGER_DUMP: 1,
   SET_COREDUMP_DATA: 2,
@@ -6086,11 +20907,9 @@ declare const hvg_hcall_code_t: {
   COUNT: 7,
 };
 
-declare const IOUSBHostCIEndpointState: {
-  Destroyed: 0,
-  Halted: 1,
-  Paused: 2,
-  Active: 3,
+declare const BluetoothHCISimplePairingModes: {
+  NotSet: 0,
+  Enabled: 1,
 };
 
 declare const sptm_frame_type_t: {
@@ -6170,6 +20989,28 @@ declare const IOPCIBARType: {
   M32PF: 8,
   M64PF: 12,
 };
+
+declare const USBReEnumerateOptions: {
+  AddExtraResetTimeBit: 31,
+  ReEnumerateCaptureDeviceBit: 30,
+  ReEnumerateReleaseDeviceBit: 29,
+  AddExtraResetTimeMask: -2147483648,
+  ReEnumerateCaptureDeviceMask: 1073741824,
+  ReEnumerateReleaseDeviceMask: 536870912,
+};
+
+declare class unnamed_6945852128293241798 {
+  constructor(init?: unnamed_6945852128293241798);
+  debug_arch_version: number;
+  trace_extn_version: number;
+  perf_extn_version: number;
+  brps: number;
+  reserved0: number;
+  wrps: number;
+  reserved1: number;
+  ctx_cmps: number;
+  reserved32: number;
+}
 
 declare class __Reply__mach_gss_unhold_cred_t {
   constructor(init?: __Reply__mach_gss_unhold_cred_t);
@@ -6289,9 +21130,9 @@ declare class __OSMallocTag__ {
 
 declare class sha1_ctxt {
   constructor(init?: sha1_ctxt);
-  h: unnamed_11444704629501519341;
-  c: unnamed_16186558334874051404;
-  m: unnamed_16283433901440427056;
+  h: unnamed_17433309396994173141;
+  c: unnamed_951637897755275617;
+  m: unnamed_6826042517262330226;
   count: number;
 }
 
@@ -6303,6 +21144,21 @@ declare class in6_defrouter {
   rtlifetime: number;
   expire: number;
   if_index: number;
+}
+
+declare class unnamed_7289201672842071041 {
+  constructor(init?: unnamed_7289201672842071041);
+  revision: number;
+  variant: number;
+  : number;
+  se_imp: number;
+  pcsr_imp: number;
+  nsuhd_imp: number;
+  : number;
+  version: number;
+  ctx_cmps: number;
+  brps: number;
+  wrps: number;
 }
 
 declare class arm_vfpsaved_state {
@@ -6411,6 +21267,21 @@ declare class __Reply__vfs_resolve_dir_t {
   RetCode: number;
 }
 
+declare class __Reply__vfs_resolve_file_t {
+  constructor(init?: __Reply__vfs_resolve_file_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__nspace_handle_t {
+  constructor(init?: __Reply__nspace_handle_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  handler_error: number;
+}
+
 declare class __Request__vfs_resolve_reparent_with_audit_token_t {
   constructor(init?: __Request__vfs_resolve_reparent_with_audit_token_t);
   Head: mach_msg_header_t;
@@ -6461,13 +21332,6 @@ declare class __Request__sysdiagnose_notification_with_audit_token_t {
   flags: number;
 }
 
-declare class __Reply__mcc_memory_error_notification_t {
-  constructor(init?: __Reply__mcc_memory_error_notification_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class __Request__mcc_memory_error_notification_t {
   constructor(init?: __Request__mcc_memory_error_notification_t);
   Head: mach_msg_header_t;
@@ -6488,14 +21352,6 @@ declare class shared_region_range_np {
   srr_size: number;
 }
 
-declare class __Reply__upl_commit_range_t {
-  constructor(init?: __Reply__upl_commit_range_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  empty: number;
-}
-
 declare class __Reply__upl_commit_t {
   constructor(init?: __Reply__upl_commit_t);
   Head: mach_msg_header_t;
@@ -6509,6 +21365,14 @@ declare class __Reply__upl_abort_range_t {
   NDR: NDR_record_t;
   RetCode: number;
   empty: number;
+}
+
+declare class unnamed_2426400386901168830 {
+  constructor(init?: unnamed_2426400386901168830);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  page_listCnt: number;
+  page_list: unknown /* const array */;
 }
 
 declare class __Reply__telemetry_notification_t {
@@ -6575,15 +21439,6 @@ declare class __Reply__doubleagent_lookup_xattr_t {
   value_length: number;
 }
 
-declare class __Request__doubleagent_list_xattrs_t {
-  constructor(init?: __Request__doubleagent_list_xattrs_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  file_port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  file_size: number;
-}
-
 declare class __Reply__doubleagent_allocate_xattr_t {
   constructor(init?: __Reply__doubleagent_allocate_xattr_t);
   Head: mach_msg_header_t;
@@ -6645,6 +21500,10 @@ declare class airship_daleipc_uplink_packet_completion {
 
 declare class daleipc_device_controller {
   constructor(init?: daleipc_device_controller);
+}
+
+declare class daleipc_downlink_controller {
+  constructor(init?: daleipc_downlink_controller);
 }
 
 declare class daleipc_channel_controller {
@@ -6711,12 +21570,6 @@ declare class DTSavedScope {
   scope: interop.Pointer;
   entry: interop.Pointer;
   index: number;
-}
-
-declare class OpaqueDTEntry {
-  constructor(init?: OpaqueDTEntry);
-  nProperties: number;
-  nChildren: number;
 }
 
 declare class EFI_SYSTEM_TABLE_64 {
@@ -6916,11 +21769,6 @@ declare class __Reply__lockd_request_t {
   RetCode: number;
 }
 
-declare class __Request__lockd_shutdown_t {
-  constructor(init?: __Request__lockd_shutdown_t);
-  Head: mach_msg_header_t;
-}
-
 declare class __Request__lockd_ping_t {
   constructor(init?: __Request__lockd_ping_t);
   Head: mach_msg_header_t;
@@ -6949,15 +21797,6 @@ declare class kd_cpumap_ext {
   name: unknown /* const array */;
 }
 
-declare class kbufinfo_t {
-  constructor(init?: kbufinfo_t);
-  nkdbufs: number;
-  nolog: number;
-  flags: number;
-  nkdthreads: number;
-  bufid: number;
-}
-
 declare class thread {
   constructor(init?: thread);
 }
@@ -6982,7 +21821,13 @@ declare class partition {
   p_fsize: number;
   p_fstype: number;
   p_frag: number;
-  __partition_u1: unnamed_6650140264646410345;
+  __partition_u1: unnamed_5016616128961403802;
+}
+
+declare class unnamed_17436044154748145760 {
+  constructor(init?: unnamed_17436044154748145760);
+  un_d_boot0: string | null;
+  un_d_boot1: string | null;
 }
 
 declare class disklabel {
@@ -6991,7 +21836,7 @@ declare class disklabel {
   d_type: number;
   d_subtype: number;
   d_typename: unknown /* const array */;
-  d_un: unnamed_14374843138598068828;
+  d_un: unnamed_13164639886307440841;
   d_secsize: number;
   d_nsectors: number;
   d_ntracks: number;
@@ -7018,8 +21863,8 @@ declare class disklabel {
   d_partitions: partition;
 }
 
-declare class unnamed_3271796597595602678 {
-  constructor(init?: unnamed_3271796597595602678);
+declare class unnamed_14874861630647124959 {
+  constructor(init?: unnamed_14874861630647124959);
   tqe_next: interop.Pointer;
   tqe_prev: interop.Pointer;
 }
@@ -7054,14 +21899,6 @@ declare class ntptimeval {
   time_state: number;
 }
 
-declare class thsc_time_cpi {
-  constructor(init?: thsc_time_cpi);
-  ttci_instructions: number;
-  ttci_cycles: number;
-  ttci_user_time_mach: number;
-  ttci_system_time_mach: number;
-}
-
 declare class thsc_cpi {
   constructor(init?: thsc_cpi);
   tcpi_instructions: number;
@@ -7093,22 +21930,6 @@ declare class mkfifoat_args {
   mode_l_: unknown /* const array */;
   mode: number;
   mode_r_: unknown /* const array */;
-}
-
-declare class map_with_linking_np_args {
-  constructor(init?: map_with_linking_np_args);
-  regions_l_: unknown /* const array */;
-  regions: number;
-  regions_r_: unknown /* const array */;
-  region_count_l_: unknown /* const array */;
-  region_count: number;
-  region_count_r_: unknown /* const array */;
-  link_info_l_: unknown /* const array */;
-  link_info: number;
-  link_info_r_: unknown /* const array */;
-  link_info_size_l_: unknown /* const array */;
-  link_info_size: number;
-  link_info_size_r_: unknown /* const array */;
 }
 
 declare class debug_syscall_reject_args {
@@ -7255,16 +22076,6 @@ declare class ulock_wake_args {
   wake_value_r_: unknown /* const array */;
 }
 
-declare class getentropy_args {
-  constructor(init?: getentropy_args);
-  buffer_l_: unknown /* const array */;
-  buffer: number;
-  buffer_r_: unknown /* const array */;
-  size_l_: unknown /* const array */;
-  size: number;
-  size_r_: unknown /* const array */;
-}
-
 declare class work_interval_ctl_args {
   constructor(init?: work_interval_ctl_args);
   operation_l_: unknown /* const array */;
@@ -7311,6 +22122,39 @@ declare class mach_eventlink_signal_args {
   signal_count_l_: unknown /* const array */;
   signal_count: number;
   signal_count_r_: unknown /* const array */;
+}
+
+declare class __Request__doubleagent_allocate_xattr_t {
+  constructor(init?: __Request__doubleagent_allocate_xattr_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  file_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  file_size: number;
+  nameOffset: number;
+  nameCnt: number;
+  name: unknown /* const array */;
+  size: number;
+  options: number;
+}
+
+declare class guarded_pwrite_np_args {
+  constructor(init?: guarded_pwrite_np_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  guard_l_: unknown /* const array */;
+  guard: number;
+  guard_r_: unknown /* const array */;
+  buf_l_: unknown /* const array */;
+  buf: number;
+  buf_r_: unknown /* const array */;
+  nbyte_l_: unknown /* const array */;
+  nbyte: number;
+  nbyte_r_: unknown /* const array */;
+  offset_l_: unknown /* const array */;
+  offset: number;
+  offset_r_: unknown /* const array */;
 }
 
 declare class guarded_open_dprotected_np_args {
@@ -7597,13 +22441,6 @@ declare class pid_suspend_args {
 
 declare class fileport_makefd_args {
   constructor(init?: fileport_makefd_args);
-  port_l_: unknown /* const array */;
-  port: number;
-  port_r_: unknown /* const array */;
-}
-
-declare class audit_session_join_args {
-  constructor(init?: audit_session_join_args);
   port_l_: unknown /* const array */;
   port: number;
   port_r_: unknown /* const array */;
@@ -8201,6 +23038,22 @@ declare class initgroups_args {
   gmuid_r_: unknown /* const array */;
 }
 
+declare class fsctl_args {
+  constructor(init?: fsctl_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  cmd_l_: unknown /* const array */;
+  cmd: number;
+  cmd_r_: unknown /* const array */;
+  data_l_: unknown /* const array */;
+  data: number;
+  data_r_: unknown /* const array */;
+  options_l_: unknown /* const array */;
+  options: number;
+  options_r_: unknown /* const array */;
+}
+
 declare class listxattr_args {
   constructor(init?: listxattr_args);
   path_l_: unknown /* const array */;
@@ -8234,25 +23087,6 @@ declare class fgetxattr_args {
   position_l_: unknown /* const array */;
   position: number;
   position_r_: unknown /* const array */;
-  options_l_: unknown /* const array */;
-  options: number;
-  options_r_: unknown /* const array */;
-}
-
-declare class fgetattrlist_args {
-  constructor(init?: fgetattrlist_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  alist_l_: unknown /* const array */;
-  alist: number;
-  alist_r_: unknown /* const array */;
-  attributeBuffer_l_: unknown /* const array */;
-  attributeBuffer: number;
-  attributeBuffer_r_: unknown /* const array */;
-  bufferSize_l_: unknown /* const array */;
-  bufferSize: number;
-  bufferSize_r_: unknown /* const array */;
   options_l_: unknown /* const array */;
   options: number;
   options_r_: unknown /* const array */;
@@ -8490,6 +23324,25 @@ declare class panic_with_data_args {
   msg_r_: unknown /* const array */;
 }
 
+declare class kdebug_trace_args {
+  constructor(init?: kdebug_trace_args);
+  code_l_: unknown /* const array */;
+  code: number;
+  code_r_: unknown /* const array */;
+  arg1_l_: unknown /* const array */;
+  arg1: number;
+  arg1_r_: unknown /* const array */;
+  arg2_l_: unknown /* const array */;
+  arg2: number;
+  arg2_r_: unknown /* const array */;
+  arg3_l_: unknown /* const array */;
+  arg3: number;
+  arg3_r_: unknown /* const array */;
+  arg4_l_: unknown /* const array */;
+  arg4: number;
+  arg4_r_: unknown /* const array */;
+}
+
 declare class csops_audittoken_args {
   constructor(init?: csops_audittoken_args);
   pid_l_: unknown /* const array */;
@@ -8659,6 +23512,16 @@ declare class readv_args {
   iovcnt_r_: unknown /* const array */;
 }
 
+declare class getrusage_args {
+  constructor(init?: getrusage_args);
+  who_l_: unknown /* const array */;
+  who: number;
+  who_r_: unknown /* const array */;
+  rusage_l_: unknown /* const array */;
+  rusage: number;
+  rusage_r_: unknown /* const array */;
+}
+
 declare class setpriority_args {
   constructor(init?: setpriority_args);
   which_l_: unknown /* const array */;
@@ -8817,24 +23680,11 @@ declare class sigpending_args {
   osv_r_: unknown /* const array */;
 }
 
-declare class setauid_args {
-  constructor(init?: setauid_args);
-  auid_l_: unknown /* const array */;
-  auid: number;
-  auid_r_: unknown /* const array */;
-}
-
-declare class sigaction_args {
-  constructor(init?: sigaction_args);
-  signum_l_: unknown /* const array */;
-  signum: number;
-  signum_r_: unknown /* const array */;
-  nsa_l_: unknown /* const array */;
-  nsa: number;
-  nsa_r_: unknown /* const array */;
-  osa_l_: unknown /* const array */;
-  osa: number;
-  osa_r_: unknown /* const array */;
+declare class acct_args {
+  constructor(init?: acct_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
 }
 
 declare class getppid_args {
@@ -8981,35 +23831,14 @@ declare class user32_timex {
   stbcnt: number;
 }
 
-declare class user64_itimerval {
-  constructor(init?: user64_itimerval);
-  it_interval: number;
-  it_value: number;
-}
-
 declare class user32_timespec {
   constructor(init?: user32_timespec);
   tv_sec: number;
   tv_nsec: number;
 }
 
-declare class nameidata {
-  constructor(init?: nameidata);
-}
-
-declare class unnamed_10245855161319644490 {
-  constructor(init?: unnamed_10245855161319644490);
-  : number;
-  tss: sel;
-  : number;
-  type: number;
-  dpl: number;
-  present: number;
-  : number;
-}
-
-declare class unnamed_6634344154655524512 {
-  constructor(init?: unnamed_6634344154655524512);
+declare class unnamed_6240641052116276632 {
+  constructor(init?: unnamed_6240641052116276632);
   limit00: number;
   base00: number;
   base16: number;
@@ -9022,11 +23851,18 @@ declare class unnamed_6634344154655524512 {
   base24: number;
 }
 
-declare class unnamed_10401702111739085484 {
-  constructor(init?: unnamed_10401702111739085484);
+declare class unnamed_12100273196301862159 {
+  constructor(init?: unnamed_12100273196301862159);
   rpl: number;
   ti: number;
   index: number;
+}
+
+declare class setprivexec_args {
+  constructor(init?: setprivexec_args);
+  flag_l_: unknown /* const array */;
+  flag: number;
+  flag_r_: unknown /* const array */;
 }
 
 declare class __Reply__upl_abort_t {
@@ -9093,10 +23929,9 @@ declare class mptcp_symptoms_ask_uuid {
   priority: number;
 }
 
-declare class unnamed_16554362605418422834 {
-  constructor(init?: unnamed_16554362605418422834);
-  sa_wifi_status: number;
-  sa_cell_status: number;
+declare class unnamed_3531292859923827391 {
+  constructor(init?: unnamed_3531292859923827391);
+  sa_unused: number;
 }
 
 declare class symptoms_advisory {
@@ -9242,12 +24077,19 @@ declare class tcp_info {
   tcpi_max_pacing_rate: number;
 }
 
-declare class unnamed_6282570355603500895 {
-  constructor(init?: unnamed_6282570355603500895);
+declare class unnamed_8467147449765326096 {
+  constructor(init?: unnamed_8467147449765326096);
   probe_activated: number;
   write_probe_failed: number;
   read_probe_failed: number;
   conn_probe_failed: number;
+}
+
+declare class tcp_notify_ack_complete {
+  constructor(init?: tcp_notify_ack_complete);
+  notify_pending: number;
+  notify_complete_count: number;
+  notify_complete_id: unknown /* const array */;
 }
 
 declare class EXDisplayPipeHealthStats {
@@ -9264,35 +24106,53 @@ declare class EXDisplayPipeHealthStats {
   tconhpd: number;
   dcptransporthealth: number;
   silhealth: number;
+  periodicHealthCheck: number;
+  hwlinkfailures: number;
+  nonauthenticpanel: number;
+  sclDriverFailureTime: number;
+  scaDriverFailureTime: number;
+  scaAlgorithmFailureTime: number;
+  pipeFailureTime: number;
+  linkFailureTime: number;
+  globalHealthFailureTime: number;
+  hwlinkfailuresFailureTime: number;
+  silHealthFailureTime: number;
+  brightnessFailureTime: number;
+  tconCrcFailureTime: number;
+  tconHealthFailureTime: number;
+  tconHpdFailureTime: number;
+  dcpTransportHealthFailureTime: number;
+  nonauthenticpanelFailureTime: number;
+  scaFailuresBeyondThresh: number;
+  crcFailuresBeyondThresh: number;
+  globalHealthCp: number;
+  sclDriverCp: number;
+  scaDriverCp: number;
+  scaAlgorithmCp: number;
+  pipeCp: number;
+  linkCp: number;
+  brightnessCp: number;
+  tconCrcCp: number;
+  tconHealthCp: number;
+  tconHpdCp: number;
+  dcpTransportHealthCp: number;
+  silHealthCp: number;
+  hwlinkfailuresCp: number;
+  nonauthenticpanelCp: number;
+  averageSCAVariance: number;
+  averageCRCVariance: number;
 }
 
-declare class kdebug_trace_args {
-  constructor(init?: kdebug_trace_args);
-  code_l_: unknown /* const array */;
-  code: number;
-  code_r_: unknown /* const array */;
-  arg1_l_: unknown /* const array */;
-  arg1: number;
-  arg1_r_: unknown /* const array */;
-  arg2_l_: unknown /* const array */;
-  arg2: number;
-  arg2_r_: unknown /* const array */;
-  arg3_l_: unknown /* const array */;
-  arg3: number;
-  arg3_r_: unknown /* const array */;
-  arg4_l_: unknown /* const array */;
-  arg4: number;
-  arg4_r_: unknown /* const array */;
-}
-
-declare class unnamed_11654989967691793079 {
-  constructor(init?: unnamed_11654989967691793079);
-  prevTimebase: number;
-  prevTimestamp: number;
-  currTimebase: number;
-  currTimestamp: number;
-  timeDiff: number;
-  timebaseDiff: number;
+declare class unnamed_2909144051437091271 {
+  constructor(init?: unnamed_2909144051437091271);
+  indicator: interop.Enum<typeof EXDisplayPipeIndicator>;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  alpha: number;
+  enabled: boolean;
+  populated: boolean;
 }
 
 declare class EXDisplayPipeStatus {
@@ -9345,14 +24205,13 @@ declare class IOHIDDigitizerStylusData {
   constructor(init?: IOHIDDigitizerStylusData);
 }
 
-declare class unnamed_1315594572584186897 {
-  constructor(init?: unnamed_1315594572584186897);
-  contextLock: number;
-  state: number;
-  owner: interop.Pointer;
-  version: number;
-  structSize: number;
-  reserved: unknown /* const array */;
+declare class unnamed_15460216514130901306 {
+  constructor(init?: unnamed_15460216514130901306);
+  seqNum: bigint;
+  wrIndex: bigint;
+  generation: bigint;
+  rstStatus: bigint;
+  wrStatus: bigint;
 }
 
 declare class IOHIDInterface_LocalIVars {
@@ -9457,6 +24316,13 @@ declare class IOHistReportInfo {
   elem: interop.Pointer;
 }
 
+declare class IOUSBHostHIDReportDescriptor {
+  constructor(init?: IOUSBHostHIDReportDescriptor);
+  hidDescriptorType: number;
+  hidDescriptorLengthLo: number;
+  hidDescriptorLengthHi: number;
+}
+
 declare class IOUSBHostInterface_IVars {
   constructor(init?: IOUSBHostInterface_IVars);
 }
@@ -9548,13 +24414,6 @@ declare class IOUSBHostCompletion {
   owner: interop.Pointer;
   action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
   parameter: interop.Pointer;
-}
-
-declare class IOUSBHostCIMessage {
-  constructor(init?: IOUSBHostCIMessage);
-  control: number;
-  data0: number;
-  data1: number;
 }
 
 declare class DeviceRequestSetSELData {
@@ -9677,12 +24536,13 @@ declare class IOFBController {
   constructor(init?: IOFBController);
 }
 
-declare class OpaqueIOCommandID {
-  constructor(init?: OpaqueIOCommandID);
-}
-
 declare class _VSLService {
   constructor(init?: _VSLService);
+}
+
+declare class IOBlockStorageWorkEndArgs {
+  constructor(init?: IOBlockStorageWorkEndArgs);
+  postCompletionTime: number;
 }
 
 declare class IOMbufQueue {
@@ -9740,22 +24600,14 @@ declare class IONVRAMDescriptor {
   deviceNum: number;
 }
 
-declare class unnamed_12713508752774757029 {
-  constructor(init?: unnamed_12713508752774757029);
+declare class unnamed_1895135430156692473 {
+  constructor(init?: unnamed_1895135430156692473);
   offset: number;
   function: number;
   device: number;
   bus: number;
   segment: number;
   reserved: number;
-}
-
-declare class unnamed_3028334284839788733 {
-  constructor(init?: unnamed_3028334284839788733);
-  device: interop.Pointer;
-  op: number;
-  result: interop.Pointer;
-  arg: interop.Pointer;
 }
 
 declare class IOPCIPhysicalAddress {
@@ -9767,8 +24619,34 @@ declare class IOPCIPhysicalAddress {
   lengthHi: number;
 }
 
-declare class unnamed_17672180226118855821 {
-  constructor(init?: unnamed_17672180226118855821);
+declare class audit_session_join_args {
+  constructor(init?: audit_session_join_args);
+  port_l_: unknown /* const array */;
+  port: number;
+  port_r_: unknown /* const array */;
+}
+
+declare class unnamed_6861817109371243644 {
+  constructor(init?: unnamed_6861817109371243644);
+  registerNum: number;
+  functionNum: number;
+  deviceNum: number;
+  busNum: number;
+  registerNumExtended: number;
+  resv: number;
+}
+
+declare class __Request__doubleagent_list_xattrs_t {
+  constructor(init?: __Request__doubleagent_list_xattrs_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  file_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  file_size: number;
+}
+
+declare class unnamed_15844086107504012933 {
+  constructor(init?: unnamed_15844086107504012933);
   registerNum: number;
   functionNum: number;
   deviceNum: number;
@@ -9788,8 +24666,28 @@ declare class ScrollAccelInfo {
   constructor(init?: ScrollAccelInfo);
 }
 
-declare class unnamed_2475899045996132323 {
-  constructor(init?: unnamed_2475899045996132323);
+declare class setauid_args {
+  constructor(init?: setauid_args);
+  auid_l_: unknown /* const array */;
+  auid: number;
+  auid_r_: unknown /* const array */;
+}
+
+declare class sigaction_args {
+  constructor(init?: sigaction_args);
+  signum_l_: unknown /* const array */;
+  signum: number;
+  signum_r_: unknown /* const array */;
+  nsa_l_: unknown /* const array */;
+  nsa: number;
+  nsa_r_: unknown /* const array */;
+  osa_l_: unknown /* const array */;
+  osa: number;
+  osa_r_: unknown /* const array */;
+}
+
+declare class unnamed_6390395427154259457 {
+  constructor(init?: unnamed_6390395427154259457);
   usage: number;
   reserved1: number;
   stringIndex: number;
@@ -9798,18 +24696,26 @@ declare class unnamed_2475899045996132323 {
   reserved3: number;
 }
 
-declare class unnamed_10261520394563487748 {
-  constructor(init?: unnamed_10261520394563487748);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
+declare class thsc_time_cpi {
+  constructor(init?: thsc_time_cpi);
+  ttci_instructions: number;
+  ttci_cycles: number;
+  ttci_user_time_mach: number;
+  ttci_system_time_mach: number;
 }
 
-declare class unnamed_13574595766822801905 {
-  constructor(init?: unnamed_13574595766822801905);
+declare class unnamed_11084844908341771940 {
+  constructor(init?: unnamed_11084844908341771940);
+  usageMin: number;
+  usageMax: number;
+  stringMin: number;
+  stringMax: number;
+  designatorMin: number;
+  designatorMax: number;
+}
+
+declare class unnamed_8023499712531875969 {
+  constructor(init?: unnamed_8023499712531875969);
   usageMin: number;
   usageMax: number;
   stringMin: number;
@@ -9887,6 +24793,15 @@ declare class FWMultiIsochReceiveListenerParamsStruct {
   clientPacketReturnLatencyInFireWireCycles: number;
 }
 
+declare class unnamed_3267473309723189187 {
+  constructor(init?: unnamed_3267473309723189187);
+  login: interop.Pointer;
+  generation: number;
+  status: number;
+  reconnectStatusBlock: interop.Pointer;
+  reconnectStatusBlockLength: number;
+}
+
 declare class IOFWCmdQ {
   constructor(init?: IOFWCmdQ);
   fHead: interop.Pointer;
@@ -9920,8 +24835,24 @@ declare class debug_trailer {
   translated: number;
 }
 
-declare class unnamed_5864893492845929824 {
-  constructor(init?: unnamed_5864893492845929824);
+declare class map_with_linking_np_args {
+  constructor(init?: map_with_linking_np_args);
+  regions_l_: unknown /* const array */;
+  regions: number;
+  regions_r_: unknown /* const array */;
+  region_count_l_: unknown /* const array */;
+  region_count: number;
+  region_count_r_: unknown /* const array */;
+  link_info_l_: unknown /* const array */;
+  link_info: number;
+  link_info_r_: unknown /* const array */;
+  link_info_size_l_: unknown /* const array */;
+  link_info_size: number;
+  link_info_size_r_: unknown /* const array */;
+}
+
+declare class unnamed_16083841720106112854 {
+  constructor(init?: unnamed_16083841720106112854);
   paddr: number;
   papt_pte_template: number;
   num_mappings: number;
@@ -9940,6 +24871,17 @@ declare class sptm_guest_dispatch_gpr_t {
   x: unknown /* const array */;
   fp: number;
   lr: number;
+}
+
+declare class __Request__lockd_shutdown_t {
+  constructor(init?: __Request__lockd_shutdown_t);
+  Head: mach_msg_header_t;
+}
+
+declare class unnamed_1495838141360306218 {
+  constructor(init?: unnamed_1495838141360306218);
+  z: unknown /* const array */;
+  p: unknown /* const array */;
 }
 
 declare class sptm_guest_dispatch_vec_t {
@@ -9982,7 +24924,7 @@ declare class sptm_bootstrap_args_xnu_t {
   random_seed_length: number;
   sk_bootstrapped: boolean;
   sk_carveout_size: number;
-  sptm_variant: interop.Enum<typeof sptm_bootstrap_args_xnu_t::(unnamed at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk/System/Library/Frameworks/Kernel.framework/Headers/platform/sptm/sptm_xnu.h:323:2)>;
+  sptm_variant: interop.Enum<typeof sptm_bootstrap_args_xnu_t::(unnamed at /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/Kernel.framework/Headers/platform/sptm/sptm_xnu.h:325:2)>;
   xnu_triggered_panic: interop.Pointer;
   libsptm_state: sptm_client_state;
   auxkc_base: number;
@@ -10000,8 +24942,27 @@ declare class sptm_bootstrap_args_xnu_t {
   feature_flags: number;
 }
 
-declare class unnamed_2522939467278126486 {
-  constructor(init?: unnamed_2522939467278126486);
+declare class sptm_call_regs_t {
+  constructor(init?: sptm_call_regs_t);
+  x0: number;
+  x1: number;
+  x2: number;
+  x3: number;
+  x4: number;
+  x5: number;
+  x6: number;
+  x7: number;
+}
+
+declare class __Reply__mcc_memory_error_notification_t {
+  constructor(init?: __Reply__mcc_memory_error_notification_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class unnamed_16927366623664266359 {
+  constructor(init?: unnamed_16927366623664266359);
   sk_flags: number;
 }
 
@@ -10060,8 +25021,8 @@ declare class pfkeystat {
   sockerr: number;
 }
 
-declare class unnamed_13120103969405328411 {
-  constructor(init?: unnamed_13120103969405328411);
+declare class unnamed_4464297625279518389 {
+  constructor(init?: unnamed_4464297625279518389);
   xbb_base: string | null;
   xbb_size: number;
   xbb_len: number;
@@ -10069,7 +25030,7 @@ declare class unnamed_13120103969405328411 {
 
 declare class xdrbuf {
   constructor(init?: xdrbuf);
-  xb_u: unnamed_11714727163374491480;
+  xb_u: unnamed_370117740381083495;
   xb_ptr: string | null;
   xb_left: number;
   xb_growsize: number;
@@ -10100,8 +25061,8 @@ declare class lockd_ans {
   la_fh: unknown /* const array */;
 }
 
-declare class unnamed_13569257746074412783 {
-  constructor(init?: unnamed_13569257746074412783);
+declare class unnamed_14610755421846078866 {
+  constructor(init?: unnamed_14610755421846078866);
   errs_common: unknown /* const array */;
   errs_unknown: number;
 }
@@ -10133,6 +25094,16 @@ declare class nfs_export_args {
   nxa_flags: number;
   nxa_netcount: number;
   nxa_nets: number;
+}
+
+declare class unnamed_4581141342836548710 {
+  constructor(init?: unnamed_4581141342836548710);
+  login: interop.Pointer;
+  generation: number;
+  status: number;
+  loginResponse: interop.Pointer;
+  statusBlock: interop.Pointer;
+  statusBlockLength: number;
 }
 
 declare class nfs_export_net_args {
@@ -10177,6 +25148,14 @@ declare class user_nfs_args {
   acdirmax: number;
   auth: number;
   deadtimeout: number;
+}
+
+declare class unnamed_17400513089871981584 {
+  constructor(init?: unnamed_17400513089871981584);
+  device: interop.Pointer;
+  op: number;
+  result: interop.Pointer;
+  arg: interop.Pointer;
 }
 
 declare class nfs_args {
@@ -10380,6 +25359,20 @@ declare class vlanreq {
   constructor(init?: vlanreq);
   vlr_parent: unknown /* const array */;
   vlr_tag: number;
+}
+
+declare class rt_msghdr_common {
+  constructor(init?: rt_msghdr_common);
+  rtm_msglen: number;
+  rtm_version: number;
+  rtm_type: number;
+  rtm_index: number;
+  rtm_flags: number;
+  rtm_addrs: number;
+  rtm_pid: number;
+  rtm_seq: number;
+  rtm_errno: number;
+  rtm_use: number;
 }
 
 declare class kev_netevent_apnfallbk_data {
@@ -10588,11 +25581,6 @@ declare class hvg_hcall_vmcore_file {
   tag: unknown /* const array */;
 }
 
-declare class hvg_hcall_output {
-  constructor(init?: hvg_hcall_output);
-  regs: unknown /* const array */;
-}
-
 declare class getsgroups_args {
   constructor(init?: getsgroups_args);
   setlen_l_: unknown /* const array */;
@@ -10601,6 +25589,12 @@ declare class getsgroups_args {
   guidset_l_: unknown /* const array */;
   guidset: number;
   guidset_r_: unknown /* const array */;
+}
+
+declare class unnamed_16605679383456779209 {
+  constructor(init?: unnamed_16605679383456779209);
+  iommu_id: number;
+  iommu_retype_params: number;
 }
 
 declare class priority_queue_sched_max {
@@ -10799,10 +25793,6 @@ declare class __BlobIndex {
   offset: number;
 }
 
-declare class __throttle_info_handle {
-  constructor(init?: __throttle_info_handle);
-}
-
 declare class debug_syscall_reject_config_args {
   constructor(init?: debug_syscall_reject_config_args);
   packed_selectors1_l_: unknown /* const array */;
@@ -10846,70 +25836,62 @@ declare class EFI_SYSTEM_TABLE_32 {
   ConfigurationTable: number;
 }
 
-declare class __Reply__vfs_resolve_file_t {
-  constructor(init?: __Reply__vfs_resolve_file_t);
+declare class kbufinfo_t {
+  constructor(init?: kbufinfo_t);
+  nkdbufs: number;
+  nolog: number;
+  flags: number;
+  nkdthreads: number;
+  bufid: number;
+}
+
+declare class getentropy_args {
+  constructor(init?: getentropy_args);
+  buffer_l_: unknown /* const array */;
+  buffer: number;
+  buffer_r_: unknown /* const array */;
+  size_l_: unknown /* const array */;
+  size: number;
+  size_r_: unknown /* const array */;
+}
+
+declare class __Reply__upl_commit_range_t {
+  constructor(init?: __Reply__upl_commit_range_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+  empty: number;
 }
 
-declare class setprivexec_args {
-  constructor(init?: setprivexec_args);
-  flag_l_: unknown /* const array */;
-  flag: number;
-  flag_r_: unknown /* const array */;
-}
-
-declare class tcp_notify_ack_complete {
-  constructor(init?: tcp_notify_ack_complete);
-  notify_pending: number;
-  notify_complete_count: number;
-  notify_complete_id: unknown /* const array */;
-}
-
-declare class daleipc_downlink_controller {
-  constructor(init?: daleipc_downlink_controller);
-}
-
-declare class __Reply__nspace_handle_t {
-  constructor(init?: __Reply__nspace_handle_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  handler_error: number;
-}
-
-declare class fsctl_args {
-  constructor(init?: fsctl_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  cmd_l_: unknown /* const array */;
-  cmd: number;
-  cmd_r_: unknown /* const array */;
-  data_l_: unknown /* const array */;
-  data: number;
-  data_r_: unknown /* const array */;
+declare class fgetattrlist_args {
+  constructor(init?: fgetattrlist_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  alist_l_: unknown /* const array */;
+  alist: number;
+  alist_r_: unknown /* const array */;
+  attributeBuffer_l_: unknown /* const array */;
+  attributeBuffer: number;
+  attributeBuffer_r_: unknown /* const array */;
+  bufferSize_l_: unknown /* const array */;
+  bufferSize: number;
+  bufferSize_r_: unknown /* const array */;
   options_l_: unknown /* const array */;
   options: number;
   options_r_: unknown /* const array */;
 }
 
-declare class getrusage_args {
-  constructor(init?: getrusage_args);
-  who_l_: unknown /* const array */;
-  who: number;
-  who_r_: unknown /* const array */;
-  rusage_l_: unknown /* const array */;
-  rusage: number;
-  rusage_r_: unknown /* const array */;
+declare class __throttle_info_handle {
+  constructor(init?: __throttle_info_handle);
 }
 
-declare class acct_args {
-  constructor(init?: acct_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
+declare class nameidata {
+  constructor(init?: nameidata);
+}
+
+declare class OpaqueIOCommandID {
+  constructor(init?: OpaqueIOCommandID);
 }
 
 declare class airship_acipc_memregion {
@@ -10977,15 +25959,6 @@ declare class if_bandwidths {
   max_bw: number;
 }
 
-declare class unnamed_9614755327984743019 {
-  constructor(init?: unnamed_9614755327984743019);
-  seqNum: bigint;
-  wrIndex: bigint;
-  generation: bigint;
-  rstStatus: bigint;
-  wrStatus: bigint;
-}
-
 declare class AsyncReportCall {
   constructor(init?: AsyncReportCall);
 }
@@ -11018,6 +25991,26 @@ declare class xnu_saved_registers_t {
   sp: number;
 }
 
+declare class unnamed_10757934410702781344 {
+  constructor(init?: unnamed_10757934410702781344);
+  : number;
+  tss: sel;
+  : number;
+  type: number;
+  dpl: number;
+  present: number;
+  : number;
+}
+
+declare class unnamed_9083806881957308117 {
+  constructor(init?: unnamed_9083806881957308117);
+  seqNum: bigint;
+  dataSize: bigint;
+  generation: bigint;
+  _reserved: bigint;
+  wrStatus: bigint;
+}
+
 declare class flistxattr_args {
   constructor(init?: flistxattr_args);
   fd_l_: unknown /* const array */;
@@ -11034,12 +26027,6 @@ declare class flistxattr_args {
   options_r_: unknown /* const array */;
 }
 
-declare class unnamed_15009144603172126793 {
-  constructor(init?: unnamed_15009144603172126793);
-  iommu_id: number;
-  iommu_retype_params: number;
-}
-
 declare class IOFramebufferNotificationNotify {
   constructor(init?: IOFramebufferNotificationNotify);
   event: number;
@@ -11053,13 +26040,6 @@ declare class sem_post_args {
   sem_r_: unknown /* const array */;
 }
 
-declare class IOUSBHostHIDReportDescriptor {
-  constructor(init?: IOUSBHostHIDReportDescriptor);
-  hidDescriptorType: number;
-  hidDescriptorLengthLo: number;
-  hidDescriptorLengthHi: number;
-}
-
 declare class __pthread_sigmask_args {
   constructor(init?: __pthread_sigmask_args);
   how_l_: unknown /* const array */;
@@ -11071,13 +26051,6 @@ declare class __pthread_sigmask_args {
   oset_l_: unknown /* const array */;
   oset: number;
   oset_r_: unknown /* const array */;
-}
-
-declare class __Reply__audit_analytics_t {
-  constructor(init?: __Reply__audit_analytics_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class if_tcp_ecn_stat {
@@ -11349,8 +26322,8 @@ declare class fmount_args {
 declare class info_tuple {
   constructor(init?: info_tuple);
   itpl_proto: number;
-  itpl_localaddr: unnamed_17232738562495190869;
-  itpl_remoteaddr: unnamed_3012503987243038479;
+  itpl_localaddr: unnamed_13939879976096053167;
+  itpl_remoteaddr: unnamed_10444646476571369617;
 }
 
 declare class chain_len_stats {
@@ -11381,9 +26354,15 @@ declare class __Reply__sysdiagnose_notification_with_audit_token_t {
   RetCode: number;
 }
 
-declare class IOBlockStorageWorkEndArgs {
-  constructor(init?: IOBlockStorageWorkEndArgs);
-  postCompletionTime: number;
+declare class hvg_hcall_output {
+  constructor(init?: hvg_hcall_output);
+  regs: unknown /* const array */;
+}
+
+declare class user64_itimerval {
+  constructor(init?: user64_itimerval);
+  it_interval: number;
+  it_value: number;
 }
 
 declare class system_override_args {
@@ -11468,13 +26447,13 @@ declare class IOExternalMethodDispatch {
 
 declare class IOExternalTrap {
   constructor(init?: IOExternalTrap);
-  object: interop.Pointer;
+  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
   func: number;
 }
 
 declare class IOExternalMethod {
   constructor(init?: IOExternalMethod);
-  object: interop.Pointer;
+  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
   func: number;
   flags: number;
   count0: number;
@@ -11500,12 +26479,6 @@ declare class write_nocancel_args {
 
 declare class IOServiceStateChangeVars {
   constructor(init?: IOServiceStateChangeVars);
-}
-
-declare class IOReportChannelList {
-  constructor(init?: IOReportChannelList);
-  nchannels: number;
-  channels: interop.Pointer;
 }
 
 declare class IOReportChannel {
@@ -11686,11 +26659,6 @@ declare class smrq_slist_head {
   first: __smrq_slink_t;
 }
 
-declare class __smrq_link_t {
-  constructor(init?: __smrq_link_t);
-  __smr_ptr: interop.Pointer;
-}
-
 declare class smrq_slink {
   constructor(init?: smrq_slink);
   next: __smrq_slink_t;
@@ -11772,6 +26740,16 @@ declare class task_snapshot {
   donating_pid_count: number;
 }
 
+declare class IOVideoDeviceNotification {
+  constructor(init?: IOVideoDeviceNotification);
+  mObjectID: number;
+  mNotificationID: number;
+  mNotificationArgument1: number;
+  mNotificationArgument2: number;
+  mNotificationArgument3: number;
+  mNotificationArgument4: number;
+}
+
 declare class cpuid_cache_desc_t {
   constructor(init?: cpuid_cache_desc_t);
   value: number;
@@ -11779,6 +26757,40 @@ declare class cpuid_cache_desc_t {
   size: number;
   linesize: number;
   description: string | null;
+}
+
+declare class LowLatencyUserBufferInfoV3 {
+  constructor(init?: LowLatencyUserBufferInfoV3);
+  cookie: number;
+  bufferAddress: number;
+  bufferSize: number;
+  bufferType: number;
+  isPrepared: number;
+  mappedUHCIAddress: number;
+  nextBuffer: interop.Pointer;
+}
+
+declare class LowLatencyUserBufferInfo {
+  constructor(init?: LowLatencyUserBufferInfo);
+  cookie: number;
+  bufferAddress: interop.Pointer;
+  bufferSize: number;
+  bufferType: number;
+  isPrepared: number;
+  nextBuffer: interop.Pointer;
+}
+
+declare class IOUSBLowLatencyIsocStruct {
+  constructor(init?: IOUSBLowLatencyIsocStruct);
+  fPipe: number;
+  fBufSize: number;
+  fStartFrame: number;
+  fNumFrames: number;
+  fUpdateFrequency: number;
+  fDataBufferCookie: number;
+  fDataBufferOffset: number;
+  fFrameListBufferCookie: number;
+  fFrameListBufferOffset: number;
 }
 
 declare class kev_dl_issues {
@@ -11789,6 +26801,112 @@ declare class kev_dl_issues {
   info: unknown /* const array */;
 }
 
+declare class IOUSBIsocStruct {
+  constructor(init?: IOUSBIsocStruct);
+  fPipe: number;
+  fBuffer: interop.Pointer;
+  fBufSize: number;
+  fStartFrame: number;
+  fNumFrames: number;
+  fFrameCounts: interop.Pointer;
+}
+
+declare class IOUSBDevReqOOLTO {
+  constructor(init?: IOUSBDevReqOOLTO);
+  bmRequestType: number;
+  bRequest: number;
+  wValue: number;
+  wIndex: number;
+  wLength: number;
+  pData: interop.Pointer;
+  wLenDone: number;
+  pipeRef: number;
+  noDataTimeout: number;
+  completionTimeout: number;
+}
+
+declare class IOUSBBulkPipeReq {
+  constructor(init?: IOUSBBulkPipeReq);
+  pipeRef: number;
+  buf: interop.Pointer;
+  size: number;
+  noDataTimeout: number;
+  completionTimeout: number;
+}
+
+declare class IOUSBDevRequestTO {
+  constructor(init?: IOUSBDevRequestTO);
+  bmRequestType: number;
+  bRequest: number;
+  wValue: number;
+  wIndex: number;
+  wLength: number;
+  pData: interop.Pointer;
+  wLenDone: number;
+  noDataTimeout: number;
+  completionTimeout: number;
+}
+
+declare class IOUSBDevRequest {
+  constructor(init?: IOUSBDevRequest);
+  bmRequestType: number;
+  bRequest: number;
+  wValue: number;
+  wIndex: number;
+  wLength: number;
+  pData: interop.Pointer;
+  wLenDone: number;
+}
+
+declare class IOUSBMatch {
+  constructor(init?: IOUSBMatch);
+  usbClass: number;
+  usbSubClass: number;
+  usbProtocol: number;
+  usbVendor: number;
+  usbProduct: number;
+}
+
+declare class IOUSBEndpointProperties {
+  constructor(init?: IOUSBEndpointProperties);
+  bVersion: number;
+  bAlternateSetting: number;
+  bDirection: number;
+  bEndpointNumber: number;
+  bTransferType: number;
+  bUsageType: number;
+  bSyncType: number;
+  bInterval: number;
+  wMaxPacketSize: number;
+  bMaxBurst: number;
+  bMaxStreams: number;
+  bMult: number;
+  wBytesPerInterval: number;
+}
+
+declare class IOUSBKeyboardData {
+  constructor(init?: IOUSBKeyboardData);
+  keycount: number;
+  usbkeycode: unknown /* const array */;
+}
+
+declare class unnamed_2680670717399822504 {
+  constructor(init?: unnamed_2680670717399822504);
+  coprocessor_core_debug: number;
+  coprocessor_secure_debug: number;
+  memory_mapped_core_debug: number;
+  coprocessor_trace_debug: number;
+  memory_mapped_trace_debug: number;
+  microcontroller_debug: number;
+}
+
+declare class IOUSBMouseData {
+  constructor(init?: IOUSBMouseData);
+  buttons: number;
+  XDelta: number;
+  YDelta: number;
+}
+
 declare class _stickyKeys_ModifierInfo {
   constructor(init?: _stickyKeys_ModifierInfo);
   key: number;
@@ -11796,10 +26914,71 @@ declare class _stickyKeys_ModifierInfo {
   leftModBit: number;
 }
 
+declare class IOUSBLowLatencyIsocCompletion {
+  constructor(init?: IOUSBLowLatencyIsocCompletion);
+  target: interop.Pointer;
+  action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void | null;
+  parameter: interop.Pointer;
+}
+
 declare class nfs_stateid {
   constructor(init?: nfs_stateid);
   seqid: number;
   other: unknown /* const array */;
+}
+
+declare class IOUSBIsocCompletion {
+  constructor(init?: IOUSBIsocCompletion);
+  target: interop.Pointer;
+  action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void | null;
+  parameter: interop.Pointer;
+}
+
+declare class IOUSBCompletionWithTimeStamp {
+  constructor(init?: IOUSBCompletionWithTimeStamp);
+  target: interop.Pointer;
+  action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: UnsignedWide) => void | null;
+  parameter: interop.Pointer;
+}
+
+declare class IOUSBLowLatencyIsocFrame {
+  constructor(init?: IOUSBLowLatencyIsocFrame);
+  frStatus: number;
+  frReqCount: number;
+  frActCount: number;
+  frTimeStamp: UnsignedWide;
+}
+
+declare class IOUSBIsocFrame {
+  constructor(init?: IOUSBIsocFrame);
+  frStatus: number;
+  frReqCount: number;
+  frActCount: number;
+}
+
+declare class IOUSBHIDDescriptor {
+  constructor(init?: IOUSBHIDDescriptor);
+  descLen: number;
+  descType: number;
+  descVersNum: number;
+  hidCountryCode: number;
+  hidNumDescriptors: number;
+  hidDescriptorType: number;
+  hidDescriptorLengthLo: number;
+  hidDescriptorLengthHi: number;
+}
+
+declare class IOUSBSuperSpeedHubDescriptor {
+  constructor(init?: IOUSBSuperSpeedHubDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bNumberPorts: number;
+  wHubCharacteristics: number;
+  bPowerOnToPowerGood: number;
+  bHubControllerCurrent: number;
+  bHubDecodeLatency: number;
+  wHubDelay: number;
+  deviceRemovable: number;
 }
 
 declare class if_data_extended {
@@ -11809,6 +26988,73 @@ declare class if_data_extended {
   ifi_fpackets: number;
   ifi_fbytes: number;
   reserved: unknown /* const array */;
+}
+
+declare class IOUSB20HubDescriptor {
+  constructor(init?: IOUSB20HubDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bNumberPorts: number;
+  wHubCharacteristics: number;
+  bPowerOnToPowerGood: number;
+  bHubControllerCurrent: number;
+  deviceRemovable: unknown /* const array */;
+  reserved: unknown /* const array */;
+}
+
+declare class IOUSBSuperSpeedEndpointCompanionDescriptor {
+  constructor(init?: IOUSBSuperSpeedEndpointCompanionDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bMaxBurst: number;
+  bmAttributes: number;
+  wBytesPerInterval: number;
+}
+
+declare class IOUSBDeviceCapabilityBillboardAltMode {
+  constructor(init?: IOUSBDeviceCapabilityBillboardAltMode);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  bIndex: number;
+  dwAlternateModeVdo: number;
+}
+
+declare class IOUSBDeviceCapabilityBillboardAltConfigCompatibility {
+  constructor(init?: IOUSBDeviceCapabilityBillboardAltConfigCompatibility);
+  wSVID: number;
+  dwAlternateMode: number;
+  iAlternateModeString: number;
+}
+
+declare class IOUSBPlatformCapabilityDescriptor {
+  constructor(init?: IOUSBPlatformCapabilityDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  bReserved: number;
+  PlatformCapabilityUUID: unknown /* const array */;
+}
+
+declare class IOUSBDeviceCapabilityContainerID {
+  constructor(init?: IOUSBDeviceCapabilityContainerID);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  bReservedID: number;
+  containerID: unknown /* const array */;
+}
+
+declare class IOUSBDeviceCapabilitySuperSpeedUSB {
+  constructor(init?: IOUSBDeviceCapabilitySuperSpeedUSB);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  bmAttributes: number;
+  wSpeedsSupported: number;
+  bFunctionalitySupport: number;
+  bU1DevExitLat: number;
+  wU2DevExitLat: number;
 }
 
 declare class do_notify_subsystem {
@@ -11821,21 +27067,19 @@ declare class do_notify_subsystem {
   routine: unknown /* const array */;
 }
 
-declare class fdatasync_args {
-  constructor(init?: fdatasync_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
+declare class IOUSBBOSDescriptor {
+  constructor(init?: IOUSBBOSDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  wTotalLength: number;
+  bNumDeviceCaps: number;
 }
 
-declare class chflags_args {
-  constructor(init?: chflags_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  flags_l_: unknown /* const array */;
-  flags: number;
-  flags_r_: unknown /* const array */;
+declare class IOUSBStringDescriptor {
+  constructor(init?: IOUSBStringDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bString: unknown /* const array */;
 }
 
 declare class __semwait_signal_args {
@@ -11860,11 +27104,76 @@ declare class __semwait_signal_args {
   tv_nsec_r_: unknown /* const array */;
 }
 
+declare class IOUSBInterfaceDescriptor {
+  constructor(init?: IOUSBInterfaceDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bInterfaceNumber: number;
+  bAlternateSetting: number;
+  bNumEndpoints: number;
+  bInterfaceClass: number;
+  bInterfaceSubClass: number;
+  bInterfaceProtocol: number;
+  iInterface: number;
+}
+
+declare class IOUSBConfigurationDescriptor {
+  constructor(init?: IOUSBConfigurationDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  wTotalLength: number;
+  bNumInterfaces: number;
+  bConfigurationValue: number;
+  iConfiguration: number;
+  bmAttributes: number;
+  MaxPower: number;
+}
+
 declare class __Reply__coalition_notification_t {
   constructor(init?: __Reply__coalition_notification_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class IOUSBConfigurationDescHeader {
+  constructor(init?: IOUSBConfigurationDescHeader);
+  bLength: number;
+  bDescriptorType: number;
+  wTotalLength: number;
+}
+
+declare class IOUSBDeviceDescriptor {
+  constructor(init?: IOUSBDeviceDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bcdUSB: number;
+  bDeviceClass: number;
+  bDeviceSubClass: number;
+  bDeviceProtocol: number;
+  bMaxPacketSize0: number;
+  idVendor: number;
+  idProduct: number;
+  bcdDevice: number;
+  iManufacturer: number;
+  iProduct: number;
+  iSerialNumber: number;
+  bNumConfigurations: number;
+}
+
+declare class IOUSBDescriptorHeader {
+  constructor(init?: IOUSBDescriptorHeader);
+  bLength: number;
+  bDescriptorType: number;
+}
+
+declare class __IOStreamBufferQueue {
+  constructor(init?: __IOStreamBufferQueue);
+  entryCount: number;
+  headIndex: number;
+  tailIndex: number;
+  reserved: number;
+  queue: unknown /* const array */;
 }
 
 declare class IOUSBHostInterface_LocalIVars {
@@ -11893,7 +27202,7 @@ declare class HIDValueCapabilities {
   units: number;
   startBit: number;
   pbVersion: number;
-  u: unnamed_6174747975915617679;
+  u: unnamed_4352298141692769949;
 }
 
 declare class kev_mptcp_data {
@@ -11901,11 +27210,96 @@ declare class kev_mptcp_data {
   value: number;
 }
 
+declare class CDTrackInfo {
+  constructor(init?: CDTrackInfo);
+  dataLength: number;
+  trackNumberLSB: number;
+  sessionNumberLSB: number;
+  reserved: number;
+  trackMode: number;
+  copy: number;
+  damage: number;
+  reserved3: number;
+  dataMode: number;
+  fixedPacket: number;
+  packet: number;
+  blank: number;
+  reservedTrack: number;
+  nextWritableAddressValid: number;
+  lastRecordedAddressValid: number;
+  reserved5: number;
+  trackStartAddress: number;
+  nextWritableAddress: number;
+  freeBlocks: number;
+  fixedPacketSize: number;
+  trackSize: number;
+  lastRecordedAddress: number;
+  trackNumberMSB: number;
+  sessionNumberMSB: number;
+  reserved6: number;
+  reserved7: number;
+}
+
+declare class CDTEXT {
+  constructor(init?: CDTEXT);
+  dataLength: number;
+  reserved: number;
+  reserved2: number;
+  descriptors: unknown /* const array */;
+}
+
+declare class CDPMA {
+  constructor(init?: CDPMA);
+  dataLength: number;
+  reserved: number;
+  reserved2: number;
+  descriptors: unknown /* const array */;
+}
+
+declare class CDPMADescriptor {
+  constructor(init?: CDPMADescriptor);
+  reserved: number;
+  control: number;
+  adr: number;
+  tno: number;
+  point: number;
+  address: CDMSF;
+  zero: number;
+  p: CDMSF;
+}
+
 declare class ifnet_demux_desc {
   constructor(init?: ifnet_demux_desc);
   type: number;
   data: interop.Pointer;
   datalen: number;
+}
+
+declare class CDTOC {
+  constructor(init?: CDTOC);
+  length: number;
+  sessionFirst: number;
+  sessionLast: number;
+  descriptors: unknown /* const array */;
+}
+
+declare class unnamed_10755401588257002830 {
+  constructor(init?: unnamed_10755401588257002830);
+  time: CDMSF;
+  track: unnamed_8320231850072325219;
+}
+
+declare class CDAudioStatus {
+  constructor(init?: CDAudioStatus);
+  status: number;
+  position: unnamed_10755401588257002830;
+}
+
+declare class CDMSF {
+  constructor(init?: CDMSF);
+  minute: number;
+  second: number;
+  frame: number;
 }
 
 declare class _cr0 {
@@ -11924,6 +27318,131 @@ declare class _cr0 {
   nw: number;
   cd: number;
   pg: number;
+}
+
+declare class DVDRZoneInfo {
+  constructor(init?: DVDRZoneInfo);
+  dataLength: number;
+  rzoneNumberLSB: number;
+  borderNumberLSB: number;
+  reserved: number;
+  reserved2: number;
+  copy: number;
+  damage: number;
+  reserved3: number;
+  reserved4: number;
+  restrictedOverwrite: number;
+  incremental: number;
+  blank: number;
+  reservedRZone: number;
+  nextWritableAddressValid: number;
+  lastRecordedAddressValid: number;
+  reserved5: number;
+  rzoneStartAddress: number;
+  nextWritableAddress: number;
+  freeBlocks: number;
+  blockingFactor: number;
+  rzoneSize: number;
+  lastRecordedAddress: number;
+  rzoneNumberMSB: number;
+  borderNumberMSB: number;
+  reserved6: number;
+  reserved7: number;
+}
+
+declare class DVDDiscInfo {
+  constructor(init?: DVDDiscInfo);
+  dataLength: number;
+  discStatus: number;
+  stateOfLastBorder: number;
+  erasable: number;
+  reserved: number;
+  reserved2: number;
+  numberOfBordersLSB: number;
+  firstRZoneNumberInLastBorderLSB: number;
+  lastRZoneNumberInLastBorderLSB: number;
+  reserved3: number;
+  unrestrictedUse: number;
+  discBarCodeValid: number;
+  reserved4: number;
+  reserved5: number;
+  numberOfBordersMSB: number;
+  firstRZoneNumberInLastBorderMSB: number;
+  lastRZoneNumberInLastBorderMSB: number;
+  reserved6: unknown /* const array */;
+  reserved7: unknown /* const array */;
+  reserved8: unknown /* const array */;
+  discBarCode: unknown /* const array */;
+  reserved9: number;
+  numberOfOPCTableEntries: number;
+  opcTableEntries: unknown /* const array */;
+}
+
+declare class DVDRegionPlaybackControlInfo {
+  constructor(init?: DVDRegionPlaybackControlInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  numberUserResets: number;
+  numberVendorResets: number;
+  typeCode: number;
+  driveRegion: number;
+  rpcScheme: number;
+  reserved2: number;
+}
+
+declare class DVDAuthenticationSuccessFlagInfo {
+  constructor(init?: DVDAuthenticationSuccessFlagInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  reserved2: unknown /* const array */;
+  successFlag: number;
+  reservedBits: number;
+}
+
+declare class DVDTitleKeyInfo {
+  constructor(init?: DVDTitleKeyInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  CP_MOD: number;
+  CGMS: number;
+  CP_SEC: number;
+  CPM: number;
+  titleKeyValue: unknown /* const array */;
+  reserved2: unknown /* const array */;
+}
+
+declare class DVDKey2Info {
+  constructor(init?: DVDKey2Info);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  key2Value: unknown /* const array */;
+  reserved2: unknown /* const array */;
+}
+
+declare class DVDChallengeKeyInfo {
+  constructor(init?: DVDChallengeKeyInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  challengeKeyValue: unknown /* const array */;
+  reserved2: unknown /* const array */;
+}
+
+declare class DVDAuthenticationGrantIDInfo {
+  constructor(init?: DVDAuthenticationGrantIDInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  reserved2: unknown /* const array */;
+  reservedBits: number;
+  grantID: number;
+}
+
+declare class DVDCopyrightInfo {
+  constructor(init?: DVDCopyrightInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  copyrightProtectionSystemType: number;
+  regionMask: number;
+  reserved2: unknown /* const array */;
 }
 
 declare class bsdthread_create_args {
@@ -11945,11 +27464,214 @@ declare class bsdthread_create_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class unnamed_15482730760581942934 {
+  constructor(init?: unnamed_15482730760581942934);
+  login: interop.Pointer;
+  generation: number;
+  status: number;
+  statusBlock: interop.Pointer;
+  statusBlockLength: number;
+}
+
+declare class SCSICmd_REPORT_LUNS_Header {
+  constructor(init?: SCSICmd_REPORT_LUNS_Header);
+  LUN_LIST_LENGTH: number;
+  RESERVED: number;
+  LUN: unknown /* const array */;
+}
+
+declare class REPORT_LUNS_PERIPHERAL_DEVICE_ADDRESSING {
+  constructor(init?: REPORT_LUNS_PERIPHERAL_DEVICE_ADDRESSING);
+  TARGET_LUN: number;
+  BUS_IDENTIFIER: number;
+  reserved2: number;
+  reserved: number;
+}
+
+declare class REPORT_LUNS_LOGICAL_UNIT_ADDRESSING {
+  constructor(init?: REPORT_LUNS_LOGICAL_UNIT_ADDRESSING);
+  LUN: number;
+  BUS_NUMBER: number;
+  TARGET: number;
+  reserved2: number;
+  reserved: number;
+}
+
+declare class SCSICmd_REPORT_LUNS_LUN_ENTRY {
+  constructor(init?: SCSICmd_REPORT_LUNS_LUN_ENTRY);
+  FIRST_LEVEL_ADDRESSING: number;
+  SECOND_LEVEL_ADDRESSING: number;
+  THIRD_LEVEL_ADDRESSING: number;
+  FOURTH_LEVEL_ADDRESSING: number;
+}
+
+declare class SBCModePageCaching {
+  constructor(init?: SBCModePageCaching);
+  header: ModePageFormatHeader;
+  flags: number;
+  DEMAND_READ_WRITE_RETENTION_PRIORITY: number;
+  DISABLE_PREFETCH_TRANSFER_LENGTH: number;
+  MINIMUM_PREFETCH: number;
+  MAXIMUM_PREFETCH: number;
+  MAXIMUM_PREFETCH_CEILING: number;
+  flags2: number;
+  NUMBER_OF_CACHE_SEGMENTS: number;
+  CACHE_SEGMENT_SIZE: number;
+  RESERVED: number;
+  NON_CACHE_SEGMENT_SIZE: unknown /* const array */;
+}
+
+declare class SBCModePageRigidDiskGeometry {
+  constructor(init?: SBCModePageRigidDiskGeometry);
+  header: ModePageFormatHeader;
+  NUMBER_OF_CYLINDERS: unknown /* const array */;
+  NUMBER_OF_HEADS: number;
+  STARTING_CYLINDER_WRITE_PRECOMPENSATION: unknown /* const array */;
+  STARTING_CYLINDER_REDUCED_WRITE_CURRENT: unknown /* const array */;
+  DEVICE_STEP_RATE: number;
+  LANDING_ZONE_CYLINDER: unknown /* const array */;
+  RPL: number;
+  ROTATIONAL_OFFSET: number;
+  RESERVED: number;
+  MEDIUM_ROTATION_RATE: number;
+  RESERVED1: unknown /* const array */;
+}
+
+declare class SPCModePagePowerCondition {
+  constructor(init?: SPCModePagePowerCondition);
+  header: ModePageFormatHeader;
+  RESERVED: number;
+  IDLE_STANDBY: number;
+  IDLE_CONDITION_TIMER: number;
+  STANDBY_CONDITION_TIMER: number;
+}
+
+declare class ModePageFormatHeader {
+  constructor(init?: ModePageFormatHeader);
+  PS_PAGE_CODE: number;
+  PAGE_LENGTH: number;
+}
+
+declare class LongLBAModeParameterBlockDescriptor {
+  constructor(init?: LongLBAModeParameterBlockDescriptor);
+  NUMBER_OF_BLOCKS: number;
+  DENSITY_CODE: number;
+  RESERVED: unknown /* const array */;
+  BLOCK_LENGTH: number;
+}
+
+declare class DASDModeParameterBlockDescriptor {
+  constructor(init?: DASDModeParameterBlockDescriptor);
+  NUMBER_OF_BLOCKS: number;
+  DENSITY_CODE: number;
+  BLOCK_LENGTH: unknown /* const array */;
+}
+
+declare class SCSICmd_INQUIRY_PageC1_Data {
+  constructor(init?: SCSICmd_INQUIRY_PageC1_Data);
+  fHeader: SCSICmd_INQUIRY_PageCx_Header;
+  fTdmPowerRequirementsPageVersion: number;
+  fReserved1: number;
+  fReserved2: number;
+  fPowerRequired: number;
+}
+
 declare class __Reply__mach_notify_no_senders_t {
   constructor(init?: __Reply__mach_notify_no_senders_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class IOUSBDeviceCapabilityUSB2Extension {
+  constructor(init?: IOUSBDeviceCapabilityUSB2Extension);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  bmAttributes: number;
+}
+
+declare class SCSICmd_INQUIRY_PageC0_Data {
+  constructor(init?: SCSICmd_INQUIRY_PageC0_Data);
+  fHeader: SCSICmd_INQUIRY_PageCx_Header;
+  fTdmPageVersion: number;
+  fTdmProtocolVersion: number;
+  fReserved1: number;
+  fReserved2: number;
+  fMacModelId: unknown /* const array */;
+  fSerialNumber: unknown /* const array */;
+  fMaxReadSize: number;
+  fMaxWriteSize: number;
+  fNativeBlockSize: number;
+  fPreferredIOSize: number;
+  fFeatures: number;
+  fWorkArounds: number;
+  fEncryptionType: number;
+  fReserved3: unknown /* const array */;
+  fInstalledRAMSize: number;
+}
+
+declare class SCSICmd_INQUIRY_PageB2_Provisioning_Group_Descriptor {
+  constructor(init?: SCSICmd_INQUIRY_PageB2_Provisioning_Group_Descriptor);
+  DESIGNATION_DESCRIPTOR: unknown /* const array */;
+  RESERVED: unknown /* const array */;
+}
+
+declare class SCSICmd_INQUIRY_PageB1_Data {
+  constructor(init?: SCSICmd_INQUIRY_PageB1_Data);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  Reserved: number;
+  PAGE_LENGTH: number;
+  MEDIUM_ROTATION_RATE: number;
+  Reserved2: unknown /* const array */;
+}
+
+declare class SCSICmd_INQUIRY_PageB0_Data {
+  constructor(init?: SCSICmd_INQUIRY_PageB0_Data);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  PAGE_LENGTH: number;
+  WSNZ: number;
+  MAXIMUM_COMPARE_AND_WRITE_LENGTH: number;
+  OPTIMAL_TRANSFER_LENGTH_GRANULARITY: number;
+  MAXIMUM_TRANSFER_LENGTH: number;
+  OPTIMAL_TRANSFER_LENGTH: number;
+  MAXIMUM_PREFETCH_LENGTH: number;
+  MAXIMUM_UNMAP_LBA_COUNT: number;
+  MAXIMUM_UNMAP_BLOCK_DESCRIPTOR_COUNT: number;
+  OPTIMAL_UNMAP_GRANULARITY: number;
+  UNMAP_GRANULARITY_ALIGNMENT: number;
+  MAXIMUM_WRITE_SAME_LENGTH: number;
+  MAXIMUM_ATOMIC_TRANSFER_LENGTH: number;
+  ATOMIC_ALIGNMENT: number;
+  ATOMIC_TRANSFER_LENGTH_GRANULARITY: number;
+  MAXIMUM_ATOMIC_TRANSFER_LENGTH_WITH_ATOMIC_BOUNDARY: number;
+  MAXIMUM_ATOMIC_BOUNDARY_SIZE: number;
+}
+
+declare class SCSICmd_INQUIRY_Page83_Identification_Descriptor {
+  constructor(init?: SCSICmd_INQUIRY_Page83_Identification_Descriptor);
+  CODE_SET: number;
+  IDENTIFIER_TYPE: number;
+  RESERVED: number;
+  IDENTIFIER_LENGTH: number;
+  IDENTIFIER: number;
+}
+
+declare class SCSICmd_INQUIRY_Page00_Header_SPC_16 {
+  constructor(init?: SCSICmd_INQUIRY_Page00_Header_SPC_16);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  PAGE_LENGTH: number;
+}
+
+declare class SCSICmd_INQUIRY_Page00_Header {
+  constructor(init?: SCSICmd_INQUIRY_Page00_Header);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  RESERVED: number;
+  PAGE_LENGTH: number;
 }
 
 declare class access_args {
@@ -11962,6 +27684,134 @@ declare class access_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class SCSICmd_INQUIRY_StandardDataAll {
+  constructor(init?: SCSICmd_INQUIRY_StandardDataAll);
+  PERIPHERAL_DEVICE_TYPE: number;
+  RMB: number;
+  VERSION: number;
+  RESPONSE_DATA_FORMAT: number;
+  ADDITIONAL_LENGTH: number;
+  SCCSReserved: number;
+  flags1: number;
+  flags2: number;
+  VENDOR_IDENTIFICATION: unknown /* const array */;
+  PRODUCT_IDENTIFICATION: unknown /* const array */;
+  PRODUCT_REVISION_LEVEL: unknown /* const array */;
+  VendorSpecific1: unknown /* const array */;
+  flags3: number;
+  Reserved1: number;
+  VERSION_DESCRIPTOR: unknown /* const array */;
+  Reserved2: unknown /* const array */;
+  VendorSpecific2: unknown /* const array */;
+}
+
+declare class SCSICmd_INQUIRY_StandardData {
+  constructor(init?: SCSICmd_INQUIRY_StandardData);
+  PERIPHERAL_DEVICE_TYPE: number;
+  RMB: number;
+  VERSION: number;
+  RESPONSE_DATA_FORMAT: number;
+  ADDITIONAL_LENGTH: number;
+  SCCSReserved: number;
+  flags1: number;
+  flags2: number;
+  VENDOR_IDENTIFICATION: unknown /* const array */;
+  PRODUCT_IDENTIFICATION: unknown /* const array */;
+  PRODUCT_REVISION_LEVEL: unknown /* const array */;
+}
+
+declare class SCSI_Sense_Data {
+  constructor(init?: SCSI_Sense_Data);
+  VALID_RESPONSE_CODE: number;
+  SEGMENT_NUMBER: number;
+  SENSE_KEY: number;
+  INFORMATION_1: number;
+  INFORMATION_2: number;
+  INFORMATION_3: number;
+  INFORMATION_4: number;
+  ADDITIONAL_SENSE_LENGTH: number;
+  COMMAND_SPECIFIC_INFORMATION_1: number;
+  COMMAND_SPECIFIC_INFORMATION_2: number;
+  COMMAND_SPECIFIC_INFORMATION_3: number;
+  COMMAND_SPECIFIC_INFORMATION_4: number;
+  ADDITIONAL_SENSE_CODE: number;
+  ADDITIONAL_SENSE_CODE_QUALIFIER: number;
+  FIELD_REPLACEABLE_UNIT_CODE: number;
+  SKSV_SENSE_KEY_SPECIFIC_MSB: number;
+  SENSE_KEY_SPECIFIC_MID: number;
+  SENSE_KEY_SPECIFIC_LSB: number;
+}
+
+declare class DVDManufacturingInfo {
+  constructor(init?: DVDManufacturingInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  discManufacturingInfo: unknown /* const array */;
+}
+
+declare class IOEthernetStats {
+  constructor(init?: IOEthernetStats);
+  dot3StatsEntry: IODot3StatsEntry;
+  dot3CollEntry: IODot3CollEntry;
+  dot3RxExtraEntry: IODot3RxExtraEntry;
+  dot3TxExtraEntry: IODot3TxExtraEntry;
+}
+
+declare class IODot3RxExtraEntry {
+  constructor(init?: IODot3RxExtraEntry);
+  overruns: number;
+  watchdogTimeouts: number;
+  frameTooShorts: number;
+  collisionErrors: number;
+  phyErrors: number;
+  timeouts: number;
+  interrupts: number;
+  resets: number;
+  resourceErrors: number;
+  reserved: unknown /* const array */;
+}
+
+declare class VDConfigurationRec {
+  constructor(init?: VDConfigurationRec);
+  csConfigFeature: number;
+  csConfigSupport: number;
+  csConfigValue: number;
+  csReserved1: number;
+  csReserved2: number;
+}
+
+declare class VDMirrorRec {
+  constructor(init?: VDMirrorRec);
+  csMirrorSize: number;
+  csMirrorVersion: number;
+  csMirrorRequestID: number;
+  csMirrorResultID: number;
+  csMirrorFeatures: number;
+  csMirrorSupportedFlags: number;
+  csMirrorFlags: number;
+  csReserved1: number;
+  csReserved2: number;
+  csReserved3: number;
+  csReserved4: number;
+  csReserved5: number;
+}
+
+declare class VDScalerInfoRec {
+  constructor(init?: VDScalerInfoRec);
+  csScalerInfoSize: number;
+  csScalerInfoVersion: number;
+  csReserved1: number;
+  csReserved2: number;
+  csScalerFeatures: number;
+  csMaxHorizontalPixels: number;
+  csMaxVerticalPixels: number;
+  csReserved3: number;
+  csReserved4: number;
+  csReserved5: number;
+  csReserved6: number;
+  csReserved7: number;
+}
+
 declare class IOUSBHostIsochronousTransactionCompletion {
   constructor(init?: IOUSBHostIsochronousTransactionCompletion);
   owner: interop.Pointer;
@@ -11969,11 +27819,221 @@ declare class IOUSBHostIsochronousTransactionCompletion {
   parameter: interop.Pointer;
 }
 
+declare class VDScalerRec {
+  constructor(init?: VDScalerRec);
+  csScalerSize: number;
+  csScalerVersion: number;
+  csReserved1: number;
+  csReserved2: number;
+  csDisplayModeID: number;
+  csDisplayModeSeed: number;
+  csDisplayModeState: number;
+  csReserved3: number;
+  csScalerFlags: number;
+  csHorizontalPixels: number;
+  csVerticalPixels: number;
+  csHorizontalInset: number;
+  csVerticalInset: number;
+  csReserved6: number;
+  csReserved7: number;
+  csReserved8: number;
+}
+
+declare class VDDisplayTimingRangeRec {
+  constructor(init?: VDDisplayTimingRangeRec);
+  csRangeSize: number;
+  csRangeType: number;
+  csRangeVersion: number;
+  csRangeReserved: number;
+  csRangeBlockIndex: number;
+  csRangeGroup: number;
+  csRangeBlockCount: number;
+  csRangeFlags: number;
+  csMinPixelClock: number;
+  csMaxPixelClock: number;
+  csMaxPixelError: number;
+  csTimingRangeSyncFlags: number;
+  csTimingRangeSignalLevels: number;
+  csTimingRangeSupportedSignalConfigs: number;
+  csMinFrameRate: number;
+  csMaxFrameRate: number;
+  csMinLineRate: number;
+  csMaxLineRate: number;
+  csMaxHorizontalTotal: number;
+  csMaxVerticalTotal: number;
+  csMaxTotalReserved1: number;
+  csMaxTotalReserved2: number;
+  csCharSizeHorizontalActive: number;
+  csCharSizeHorizontalBlanking: number;
+  csCharSizeHorizontalSyncOffset: number;
+  csCharSizeHorizontalSyncPulse: number;
+  csCharSizeVerticalActive: number;
+  csCharSizeVerticalBlanking: number;
+  csCharSizeVerticalSyncOffset: number;
+  csCharSizeVerticalSyncPulse: number;
+  csCharSizeHorizontalBorderLeft: number;
+  csCharSizeHorizontalBorderRight: number;
+  csCharSizeVerticalBorderTop: number;
+  csCharSizeVerticalBorderBottom: number;
+  csCharSizeHorizontalTotal: number;
+  csCharSizeVerticalTotal: number;
+  csCharSizeReserved1: number;
+  csMinHorizontalActiveClocks: number;
+  csMaxHorizontalActiveClocks: number;
+  csMinHorizontalBlankingClocks: number;
+  csMaxHorizontalBlankingClocks: number;
+  csMinHorizontalSyncOffsetClocks: number;
+  csMaxHorizontalSyncOffsetClocks: number;
+  csMinHorizontalPulseWidthClocks: number;
+  csMaxHorizontalPulseWidthClocks: number;
+  csMinVerticalActiveClocks: number;
+  csMaxVerticalActiveClocks: number;
+  csMinVerticalBlankingClocks: number;
+  csMaxVerticalBlankingClocks: number;
+  csMinVerticalSyncOffsetClocks: number;
+  csMaxVerticalSyncOffsetClocks: number;
+  csMinVerticalPulseWidthClocks: number;
+  csMaxVerticalPulseWidthClocks: number;
+  csMinHorizontalBorderLeft: number;
+  csMaxHorizontalBorderLeft: number;
+  csMinHorizontalBorderRight: number;
+  csMaxHorizontalBorderRight: number;
+  csMinVerticalBorderTop: number;
+  csMaxVerticalBorderTop: number;
+  csMinVerticalBorderBottom: number;
+  csMaxVerticalBorderBottom: number;
+  csMaxNumLinks: number;
+  csMinLink0PixelClock: number;
+  csMaxLink0PixelClock: number;
+  csMinLink1PixelClock: number;
+  csMaxLink1PixelClock: number;
+  csReserved6: number;
+  csReserved7: number;
+  csReserved8: number;
+}
+
+declare class SBCModePageFlexibleDisk {
+  constructor(init?: SBCModePageFlexibleDisk);
+  header: ModePageFormatHeader;
+  TRANSFER_RATE: number;
+  NUMBER_OF_HEADS: number;
+  SECTORS_PER_TRACK: number;
+  DATA_BYTES_PER_SECTOR: number;
+  NUMBER_OF_CYLINDERS: number;
+  STARTING_CYLINDER_WRITE_PRECOMPENSATION: number;
+  STARTING_CYLINDER_REDUCED_WRITE_CURRENT: number;
+  DEVICE_STEP_RATE: number;
+  DEVICE_STEP_PULSE_WIDTH: number;
+  HEAD_SETTLE_DELAY: number;
+  MOTOR_ON_DELAY: number;
+  MOTOR_OFF_DELAY: number;
+  TRDY_SSN_MO: number;
+  SPC: number;
+  WRITE_COMPENSATION: number;
+  HEAD_LOAD_DELAY: number;
+  HEAD_UNLOAD_DELAY: number;
+  PIN_34_PIN_2: number;
+  PIN_4_PIN_1: number;
+  MEDIUM_ROTATION_RATE: number;
+  RESERVED: unknown /* const array */;
+}
+
+declare class VDDDCBlockRec {
+  constructor(init?: VDDDCBlockRec);
+  ddcBlockNumber: number;
+  ddcBlockType: number;
+  ddcFlags: number;
+  ddcReserved: number;
+  ddcBlockData: unknown /* const array */;
+}
+
 declare class pid_resume_args {
   constructor(init?: pid_resume_args);
   pid_l_: unknown /* const array */;
   pid: number;
   pid_r_: unknown /* const array */;
+}
+
+declare class VDPrivateSelectorRec {
+  constructor(init?: VDPrivateSelectorRec);
+  reserved: number;
+  data: unknown /* const array */;
+}
+
+declare class VDPowerStateRec {
+  constructor(init?: VDPowerStateRec);
+  powerState: number;
+  powerFlags: number;
+  powerReserved1: number;
+  powerReserved2: number;
+}
+
+declare class VDDrawHardwareCursorRec {
+  constructor(init?: VDDrawHardwareCursorRec);
+  csCursorX: number;
+  csCursorY: number;
+  csCursorVisible: number;
+  csReserved1: number;
+  csReserved2: number;
+}
+
+declare class VDSetHardwareCursorRec {
+  constructor(init?: VDSetHardwareCursorRec);
+  csCursorRef: interop.Pointer;
+  csReserved1: number;
+  csReserved2: number;
+}
+
+declare class VDRetrieveGammaRec {
+  constructor(init?: VDRetrieveGammaRec);
+  csGammaTableID: number;
+  csGammaTablePtr: interop.Pointer;
+}
+
+declare class VDGetGammaListRec {
+  constructor(init?: VDGetGammaListRec);
+  csPreviousGammaTableID: number;
+  csGammaTableID: number;
+  csGammaTableSize: number;
+  csGammaTableName: string | null;
+}
+
+declare class VDSettings {
+  constructor(init?: VDSettings);
+  csParamCnt: number;
+  csBrightMax: number;
+  csBrightDef: number;
+  csBrightVal: number;
+  csCntrstMax: number;
+  csCntrstDef: number;
+  csCntrstVal: number;
+  csTintMax: number;
+  csTintDef: number;
+  csTintVal: number;
+  csHueMax: number;
+  csHueDef: number;
+  csHueVal: number;
+  csHorizDef: number;
+  csHorizVal: number;
+  csHorizMax: number;
+  csVertDef: number;
+  csVertVal: number;
+  csVertMax: number;
+}
+
+declare class VDMultiConnectInfoRec {
+  constructor(init?: VDMultiConnectInfoRec);
+  csDisplayCountOrNumber: number;
+  csConnectInfo: VDDisplayConnectInfoRec;
+}
+
+declare class VDTimingInfoRec {
+  constructor(init?: VDTimingInfoRec);
+  csTimingMode: number;
+  csTimingReserved: number;
+  csTimingFormat: number;
+  csTimingData: number;
+  csTimingFlags: number;
 }
 
 declare class write_args {
@@ -11989,6 +28049,33 @@ declare class write_args {
   nbyte_r_: unknown /* const array */;
 }
 
+declare class VDSwitchInfoRec {
+  constructor(init?: VDSwitchInfoRec);
+  csMode: number;
+  csData: number;
+  csPage: number;
+  csBaseAddr: string | null;
+  csReserved: number;
+}
+
+declare class unnamed_17877509466613149080 {
+  constructor(init?: unnamed_17877509466613149080);
+  csGTable: string | null;
+}
+
+declare class unnamed_8320231850072325219 {
+  constructor(init?: unnamed_8320231850072325219);
+  index: number;
+  number: number;
+  time: CDMSF;
+}
+
+declare class VDFlagRecord {
+  constructor(init?: VDFlagRecord);
+  csMode: number;
+  filler: number;
+}
+
 declare class pivot_root_args {
   constructor(init?: pivot_root_args);
   new_rootfs_path_before_l_: unknown /* const array */;
@@ -11997,6 +28084,135 @@ declare class pivot_root_args {
   old_rootfs_path_after_l_: unknown /* const array */;
   old_rootfs_path_after: number;
   old_rootfs_path_after_r_: unknown /* const array */;
+}
+
+declare class VDGrayRecord {
+  constructor(init?: VDGrayRecord);
+  csMode: number;
+  filler: number;
+}
+
+declare class IOI2CBusTiming {
+  constructor(init?: IOI2CBusTiming);
+  bitTimeout: UnsignedWide;
+  byteTimeout: UnsignedWide;
+  acknowledgeTimeout: UnsignedWide;
+  startTimeout: UnsignedWide;
+  holdTime: UnsignedWide;
+  riseFallTime: UnsignedWide;
+  __reservedA: unknown /* const array */;
+}
+
+declare class IOI2CBuffer {
+  constructor(init?: IOI2CBuffer);
+}
+
+declare class _NXEQElStruct {
+  constructor(init?: _NXEQElStruct);
+  next: number;
+  sema: number;
+  event: _NXEvent;
+}
+
+declare class StdFBShmem_t {
+  constructor(init?: StdFBShmem_t);
+  cursorSema: number;
+  frame: number;
+  cursorShow: number;
+  cursorObscured: number;
+  shieldFlag: number;
+  shielded: number;
+  saveRect: IOGBounds;
+  shieldRect: IOGBounds;
+  cursorLoc: IOGPoint;
+  cursorRect: IOGBounds;
+  oldCursorRect: IOGBounds;
+  screenBounds: IOGBounds;
+  version: number;
+  structSize: number;
+  vblTime: UnsignedWide;
+  vblDelta: UnsignedWide;
+  vblCount: number;
+  reservedC: unknown /* const array */;
+  hardwareCursorFlags: unknown /* const array */;
+  hardwareCursorCapable: number;
+  hardwareCursorActive: number;
+  hardwareCursorShields: number;
+  reservedB: unknown /* const array */;
+  cursorSize: unknown /* const array */;
+  hotSpot: unknown /* const array */;
+  cursor: unnamed_17020950413718322227;
+}
+
+declare class IOBlitSurfaceStruct {
+  constructor(init?: IOBlitSurfaceStruct);
+  memory: unnamed_873136905003773988;
+  pixelFormat: number;
+  size: IOBlitRectangleStruct;
+  rowBytes: number;
+  byteOffset: number;
+  palette: interop.Pointer;
+  accessFlags: number;
+  interfaceRef: interop.Pointer;
+  more: unknown /* const array */;
+}
+
+declare class IOBlitCursorStruct {
+  constructor(init?: IOBlitCursorStruct);
+  operation: IOBlitOperationStruct;
+  rect: IOBlitRectangleStruct;
+}
+
+declare class IOBlitScanlinesStruct {
+  constructor(init?: IOBlitScanlinesStruct);
+  operation: IOBlitOperationStruct;
+  count: number;
+  y: number;
+  height: number;
+  x: unknown /* const array */;
+}
+
+declare class IOBlitCopyRectangleStruct {
+  constructor(init?: IOBlitCopyRectangleStruct);
+  sourceX: number;
+  sourceY: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+declare class IOBlitRectanglesStruct {
+  constructor(init?: IOBlitRectanglesStruct);
+  operation: IOBlitOperationStruct;
+  count: number;
+  rects: unknown /* const array */;
+}
+
+declare class IOBlitRectangleStruct {
+  constructor(init?: IOBlitRectangleStruct);
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+declare class IOBlitOperationStruct {
+  constructor(init?: IOBlitOperationStruct);
+  color0: number;
+  color1: number;
+  offsetX: number;
+  offsetY: number;
+  sourceKeyColor: number;
+  destKeyColor: number;
+  specific: unknown /* const array */;
+}
+
+declare class IOAccelDeviceRegion {
+  constructor(init?: IOAccelDeviceRegion);
+  num_rects: number;
+  bounds: IOAccelBounds;
+  rect: unknown /* const array */;
 }
 
 declare class ml_processor_info {
@@ -12026,6 +28242,115 @@ declare class ml_processor_info {
   l3_cache_size: number;
 }
 
+declare class VDSupportsHardwareCursorRec {
+  constructor(init?: VDSupportsHardwareCursorRec);
+  csSupportsHardwareCursor: number;
+  csReserved1: number;
+  csReserved2: number;
+}
+
+declare class IOFireWireSessionRefOpaqueStuct {
+  constructor(init?: IOFireWireSessionRefOpaqueStuct);
+}
+
+declare class __NuDCL {
+  constructor(init?: __NuDCL);
+}
+
+declare class UserExportDCLNuDCLLeader {
+  constructor(init?: UserExportDCLNuDCLLeader);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  program: number;
+}
+
+declare class UserExportDCLPtrTimeStampStruct {
+  constructor(init?: UserExportDCLPtrTimeStampStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  timeStampPtr: number;
+}
+
+declare class UserExportDCLTimeStampStruct {
+  constructor(init?: UserExportDCLTimeStampStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  timeStamp: number;
+}
+
+declare class UserExportDCLSetTagSyncBitsStruct {
+  constructor(init?: UserExportDCLSetTagSyncBitsStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  tagBits: number;
+  syncBits: number;
+}
+
+declare class UserExportDCLLabelStruct {
+  constructor(init?: UserExportDCLLabelStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+}
+
+declare class UserExportDCLTransferBufferStruct {
+  constructor(init?: UserExportDCLTransferBufferStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  buffer: number;
+  size: number;
+  packetSize: number;
+  reserved: number;
+  bufferOffset: number;
+}
+
+declare class UserExportDCLTransferPacketStruct {
+  constructor(init?: UserExportDCLTransferPacketStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  buffer: number;
+  size: number;
+}
+
+declare class DCLPtrTimeStampStruct {
+  constructor(init?: DCLPtrTimeStampStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  timeStampPtr: interop.Pointer;
+}
+
+declare class DCLUpdateDCLListStruct {
+  constructor(init?: DCLUpdateDCLListStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  dclCommandList: interop.Pointer;
+  numDCLCommands: number;
+}
+
+declare class DCLSetTagSyncBitsStruct {
+  constructor(init?: DCLSetTagSyncBitsStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  tagBits: number;
+  syncBits: number;
+}
+
 declare class IOCircularDataQueueDescription {
   constructor(init?: IOCircularDataQueueDescription);
   sentinel: number;
@@ -12037,6 +28362,42 @@ declare class IOCircularDataQueueDescription {
   padding: number;
 }
 
+declare class DCLLabelStruct {
+  constructor(init?: DCLLabelStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+}
+
+declare class DCLTransferBufferStruct {
+  constructor(init?: DCLTransferBufferStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  buffer: interop.Pointer;
+  size: number;
+  packetSize: number;
+  reserved: number;
+  bufferOffset: number;
+}
+
+declare class DCLTransferPacketStruct {
+  constructor(init?: DCLTransferPacketStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  buffer: interop.Pointer;
+  size: number;
+}
+
+declare class DCLCommandStruct {
+  constructor(init?: DCLCommandStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  operands: unknown /* const array */;
+}
+
 declare class umask_args {
   constructor(init?: umask_args);
   newmask_l_: unknown /* const array */;
@@ -12044,13 +28405,52 @@ declare class umask_args {
   newmask_r_: unknown /* const array */;
 }
 
-declare class unnamed_1650381945006561587 {
-  constructor(init?: unnamed_1650381945006561587);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  offset: number;
-  size: number;
-  abort_cond: number;
+declare class _IOAudioSampleRate {
+  constructor(init?: _IOAudioSampleRate);
+  whole: number;
+  fraction: number;
+}
+
+declare class _IOAudioSMPTETime {
+  constructor(init?: _IOAudioSMPTETime);
+  fSubframes: number;
+  fSubframeDivisor: number;
+  fCounter: number;
+  fType: number;
+  fFlags: number;
+  fHours: number;
+  fMinutes: number;
+  fSeconds: number;
+  fFrames: number;
+}
+
+declare class _IOAudioStreamFormatExtension {
+  constructor(init?: _IOAudioStreamFormatExtension);
+  fVersion: number;
+  fFlags: number;
+  fFramesPerPacket: number;
+  fBytesPerPacket: number;
+}
+
+declare class _IOAudioStreamFormat {
+  constructor(init?: _IOAudioStreamFormat);
+  fNumChannels: number;
+  fSampleFormat: number;
+  fNumericRepresentation: number;
+  fBitDepth: number;
+  fBitWidth: number;
+  fAlignment: number;
+  fByteOrder: number;
+  fIsMixable: number;
+  fDriverTag: number;
+}
+
+declare class _IOAudioEngineStatus {
+  constructor(init?: _IOAudioEngineStatus);
+  fVersion: number;
+  fCurrentLoopCount: number;
+  fLastLoopTime: volatile struct UnsignedWide;
+  fEraseHeadSampleFrame: number;
 }
 
 declare class DeviceCapabilityDescriptor {
@@ -12077,6 +28477,14 @@ declare class memory_error_notification_subsystem {
   maxsize: number;
   reserved: number;
   routine: unknown /* const array */;
+}
+
+declare class IOBlitCopyRegionStruct {
+  constructor(init?: IOBlitCopyRegionStruct);
+  operation: IOBlitOperationStruct;
+  deltaX: number;
+  deltaY: number;
+  region: interop.Pointer;
 }
 
 declare class ptrace_args {
@@ -12170,6 +28578,65 @@ declare class process_policy_args {
   target_threadid_r_: unknown /* const array */;
 }
 
+declare class unnamed_7377333717726146711 {
+  constructor(init?: unnamed_7377333717726146711);
+  oldtss: sel;
+  : number;
+  esp0: number;
+  ss0: sel;
+  : number;
+  esp1: number;
+  ss1: sel;
+  : number;
+  esp2: number;
+  ss2: sel;
+  : number;
+  cr3: number;
+  eip: number;
+  eflags: number;
+  eax: number;
+  ecx: number;
+  edx: number;
+  ebx: number;
+  esp: number;
+  ebp: number;
+  esi: number;
+  edi: number;
+  es: sel;
+  : number;
+  cs: sel;
+  : number;
+  ss: sel;
+  : number;
+  ds: sel;
+  : number;
+  fs: sel;
+  : number;
+  gs: sel;
+  : number;
+  ldt: sel;
+  : number;
+  t: number;
+  : number;
+  io_bmap: number;
+}
+
+declare class unnamed_9332256840806103734 {
+  constructor(init?: unnamed_9332256840806103734);
+  usageMin: number;
+  usageMax: number;
+  stringMin: number;
+  stringMax: number;
+  designatorMin: number;
+  designatorMax: number;
+}
+
+declare class IOReportChannelList {
+  constructor(init?: IOReportChannelList);
+  nchannels: number;
+  channels: interop.Pointer;
+}
+
 declare class socd_client_hdr_t {
   constructor(init?: socd_client_hdr_t);
   version: number;
@@ -12244,6 +28711,20 @@ declare class priority_queue_sched_stable_min {
   pq_root: interop.Pointer;
 }
 
+declare class _IODataQueueMemory {
+  constructor(init?: _IODataQueueMemory);
+  queueSize: number;
+  head: number;
+  tail: number;
+  queue: unknown /* const array */;
+}
+
+declare class _IODataQueueEntry {
+  constructor(init?: _IODataQueueEntry);
+  size: number;
+  data: unknown /* const array */;
+}
+
 declare class __semwait_signal_nocancel_args {
   constructor(init?: __semwait_signal_nocancel_args);
   cond_sem_l_: unknown /* const array */;
@@ -12264,6 +28745,22 @@ declare class __semwait_signal_nocancel_args {
   tv_nsec_l_: unknown /* const array */;
   tv_nsec: number;
   tv_nsec_r_: unknown /* const array */;
+}
+
+declare class VDCommunicationInfoRec {
+  constructor(init?: VDCommunicationInfoRec);
+  csBusID: number;
+  csBusType: number;
+  csMinBus: number;
+  csMaxBus: number;
+  csSupportedTypes: number;
+  csSupportedCommFlags: number;
+  csReserved2: number;
+  csReserved3: number;
+  csReserved4: number;
+  csReserved5: number;
+  csReserved6: number;
+  csReserved7: number;
 }
 
 declare class pipe_args {
@@ -12313,6 +28810,7 @@ declare class sptm_client_state {
   sptm_pmap_io_ranges: interop.Pointer;
   sptm_pmap_io_ranges_count: number;
   sptm_panicking_domain_id: interop.Pointer;
+  percpu_event_counters: interop.Pointer;
   reserved: unknown /* const array */;
 }
 
@@ -12338,6 +28836,12 @@ declare class OSAction_IOHIDEventService__SetUserProperties_IVars {
   constructor(init?: OSAction_IOHIDEventService__SetUserProperties_IVars);
 }
 
+declare class SCSICmd_INQUIRY_Page83_LogicalUnitGroup_Identifier {
+  constructor(init?: SCSICmd_INQUIRY_Page83_LogicalUnitGroup_Identifier);
+  RESERVED: number;
+  LOGICAL_UNIT_GROUP: number;
+}
+
 declare class nfsclntstats {
   constructor(init?: nfsclntstats);
   attrcache_hits: number;
@@ -12359,7 +28863,7 @@ declare class nfsclntstats {
   biocache_readdirs: number;
   readdir_bios: number;
   rpccntv3: unknown /* const array */;
-  nlmcnt: unnamed_16013633380207743845;
+  nlmcnt: unnamed_13377059047963619192;
   opcntv4: unknown /* const array */;
   cbopcntv4: unknown /* const array */;
   rpcretries: number;
@@ -12369,39 +28873,14 @@ declare class nfsclntstats {
   rpcinvalid: number;
   pageins: number;
   pageouts: number;
-  nfs_errs: unnamed_16383752996827423413;
+  nfs_errs: unnamed_15260950953776601072;
 }
 
-declare class unnamed_11298389882924342544 {
-  constructor(init?: unnamed_11298389882924342544);
-  revision: number;
-  variant: number;
-  : number;
-  se_imp: number;
-  pcsr_imp: number;
-  nsuhd_imp: number;
-  : number;
-  version: number;
-  ctx_cmps: number;
-  brps: number;
-  wrps: number;
-}
-
-declare class fstatfs64_args {
-  constructor(init?: fstatfs64_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  buf_l_: unknown /* const array */;
-  buf: number;
-  buf_r_: unknown /* const array */;
-}
-
-declare class __pthread_canceled_args {
-  constructor(init?: __pthread_canceled_args);
-  action_l_: unknown /* const array */;
-  action: number;
-  action_r_: unknown /* const array */;
+declare class IOBlitVerticesStruct {
+  constructor(init?: IOBlitVerticesStruct);
+  operation: IOBlitOperationStruct;
+  count: number;
+  vertices: unknown /* const array */;
 }
 
 declare class poll_args {
@@ -12419,6 +28898,18 @@ declare class poll_args {
 
 declare class smr {
   constructor(init?: smr);
+}
+
+declare class CDTEXTDescriptor {
+  constructor(init?: CDTEXTDescriptor);
+  packType: number;
+  trackNumber: number;
+  sequenceNumber: number;
+  characterPosition: number;
+  blockNumber: number;
+  doubleByteCharacterCode: number;
+  textData: unknown /* const array */;
+  reserved: unknown /* const array */;
 }
 
 declare class waitid_args {
@@ -12446,26 +28937,6 @@ declare class DeviceRequest {
   wLength: number;
 }
 
-declare class __Request__mach_voucher_attr_control_create_mach_voucher_t {
-  constructor(init?: __Request__mach_voucher_attr_control_create_mach_voucher_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  recipesCnt: number;
-  recipes: unknown /* const array */;
-}
-
-declare class call_gate {
-  constructor(init?: call_gate);
-  offset00: number;
-  seg: sel;
-  argcnt: number;
-  : number;
-  type: number;
-  dpl: number;
-  present: number;
-  offset16: number;
-}
-
 declare class reboot_args {
   constructor(init?: reboot_args);
   opt_l_: unknown /* const array */;
@@ -12483,6 +28954,14 @@ declare class IOUSBIsochronousFrame {
   completeCount: number;
   reserved: number;
   timeStamp: number;
+}
+
+declare class DCLNuDCLLeader {
+  constructor(init?: DCLNuDCLLeader);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  program: interop.Pointer;
 }
 
 declare class static_if_key {
@@ -12529,6 +29008,46 @@ declare class IOUSBHostIOSourceClientRecord {
   link: IOUSBHostIOSourceClientRecordLink;
 }
 
+declare class _evGlobals {
+  constructor(init?: _evGlobals);
+  cursorSema: number;
+  eNum: number;
+  buttons: number;
+  eventFlags: number;
+  VertRetraceClock: number;
+  cursorLoc: IOGPoint;
+  frame: number;
+  workBounds: IOGBounds;
+  mouseRect: IOGBounds;
+  version: number;
+  structSize: number;
+  lastFrame: number;
+  screenCursorFixed: __IOFixedPoint32;
+  desktopCursorFixed: __IOFixedPoint32;
+  reservedA: unknown /* const array */;
+  reserved: number;
+  updateCursorPositionFromFixed: number;
+  logCursorUpdates: number;
+  wantPressure: number;
+  wantPrecision: number;
+  dontWantCoalesce: number;
+  dontCoalesce: number;
+  mouseRectValid: number;
+  movedMask: number;
+  waitCursorSema: number;
+  AALastEventSent: number;
+  AALastEventConsumed: number;
+  waitCursorUp: number;
+  ctxtTimedOut: number;
+  waitCursorEnabled: number;
+  globalWaitCursorEnabled: number;
+  waitThreshold: number;
+  LLEHead: number;
+  LLETail: number;
+  LLELast: number;
+  lleq: unknown /* const array */;
+}
+
 declare class static_if_entry {
   constructor(init?: static_if_entry);
   sie_base: number;
@@ -12536,17 +29055,17 @@ declare class static_if_entry {
   sie_link: number;
 }
 
-declare class unnamed_3348046912707628850 {
-  constructor(init?: unnamed_3348046912707628850);
-  provider: interop.Pointer;
-  busNum: number;
-}
-
 declare class ip_px_smpx_s {
   constructor(init?: ip_px_smpx_s);
   array: interop.Pointer;
   data: interop.Pointer;
   datalen: number;
+}
+
+declare class _evOffsets {
+  constructor(init?: _evOffsets);
+  evGlobalsOffset: number;
+  evShmemOffset: number;
 }
 
 declare class freadlink_args {
@@ -12560,6 +29079,14 @@ declare class freadlink_args {
   bufsize_l_: unknown /* const array */;
   bufsize: number;
   bufsize_r_: unknown /* const array */;
+}
+
+declare class VDPrivateSelectorDataRec {
+  constructor(init?: VDPrivateSelectorDataRec);
+  privateParameters: interop.Pointer;
+  privateParametersSize: number;
+  privateResults: interop.Pointer;
+  privateResultsSize: number;
 }
 
 declare class ataRegisterImage {
@@ -12579,6 +29106,12 @@ declare class __Request__doubleagent_remove_xattr_t {
   nameOffset: number;
   nameCnt: number;
   name: unknown /* const array */;
+}
+
+declare class IOUSBGetFrameStruct {
+  constructor(init?: IOUSBGetFrameStruct);
+  frame: number;
+  timeStamp: UnsignedWide;
 }
 
 declare class mincore_args {
@@ -12641,6 +29174,45 @@ declare class __lck_spin_t__ {
   constructor(init?: __lck_spin_t__);
 }
 
+declare class BluetoothHCIEventPageScanRepetitionModeChangeResults {
+  constructor(init?: BluetoothHCIEventPageScanRepetitionModeChangeResults);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+}
+
+declare class HFSMasterDirectoryBlock {
+  constructor(init?: HFSMasterDirectoryBlock);
+  drSigWord: number;
+  drCrDate: number;
+  drLsMod: number;
+  drAtrb: number;
+  drNmFls: number;
+  drVBMSt: number;
+  drAllocPtr: number;
+  drNmAlBlks: number;
+  drAlBlkSiz: number;
+  drClpSiz: number;
+  drAlBlSt: number;
+  drNxtCNID: number;
+  drFreeBks: number;
+  drVN: unknown /* const array */;
+  drVolBkUp: number;
+  drVSeqNum: number;
+  drWrCnt: number;
+  drXTClpSiz: number;
+  drCTClpSiz: number;
+  drNmRtDirs: number;
+  drFilCnt: number;
+  drDirCnt: number;
+  drFndrInfo: unknown /* const array */;
+  drEmbedSigWord: number;
+  drEmbedExtent: HFSExtentDescriptor;
+  drXTFlSize: number;
+  drXTExtRec: unknown /* const array */;
+  drCTFlSize: number;
+  drCTExtRec: unknown /* const array */;
+}
+
 declare class __Request__mach_gss_init_sec_context_v2_t {
   constructor(init?: __Request__mach_gss_init_sec_context_v2_t);
   Head: mach_msg_header_t;
@@ -12694,10 +29266,72 @@ declare class vm_pressure_monitor_args {
   pages_reclaimed_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIExtendedInquiryResponse {
+  constructor(init?: BluetoothHCIExtendedInquiryResponse);
+  data: unknown /* const array */;
+}
+
 declare class user64_timespec {
   constructor(init?: user64_timespec);
   tv_sec: number;
   tv_nsec: number;
+}
+
+declare class IOFramebufferInformation {
+  constructor(init?: IOFramebufferInformation);
+  baseAddress: number;
+  activeWidth: number;
+  activeHeight: number;
+  bytesPerRow: number;
+  bytesPerPlane: number;
+  bitsPerPixel: number;
+  pixelType: number;
+  flags: number;
+  reserved: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventLELongTermKeyRequestResults {
+  constructor(init?: BluetoothHCIEventLELongTermKeyRequestResults);
+  connectionHandle: number;
+  randomNumber: unknown /* const array */;
+  ediv: number;
+}
+
+declare class BluetoothHCIEventLEMetaResults {
+  constructor(init?: BluetoothHCIEventLEMetaResults);
+  length: number;
+  data: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventSniffSubratingResults {
+  constructor(init?: BluetoothHCIEventSniffSubratingResults);
+  connectionHandle: number;
+  maxTransmitLatency: number;
+  maxReceiveLatency: number;
+  minRemoteTimeout: number;
+  minLocalTimeout: number;
+}
+
+declare class BluetoothHCIEventConnectionPacketTypeResults {
+  constructor(init?: BluetoothHCIEventConnectionPacketTypeResults);
+  connectionHandle: number;
+  packetType: number;
+}
+
+declare class BluetoothHCIEventFlushOccurredResults {
+  constructor(init?: BluetoothHCIEventFlushOccurredResults);
+  connectionHandle: number;
+}
+
+declare class BluetoothHCIEventChangeConnectionLinkKeyCompleteResults {
+  constructor(init?: BluetoothHCIEventChangeConnectionLinkKeyCompleteResults);
+  connectionHandle: number;
+}
+
+declare class BluetoothHCIEventReturnLinkKeysResults {
+  constructor(init?: BluetoothHCIEventReturnLinkKeysResults);
+  numLinkKeys: number;
+  linkKeys: unknown /* const array */;
 }
 
 declare class doubleagent_subsystem {
@@ -12708,6 +29342,144 @@ declare class doubleagent_subsystem {
   maxsize: number;
   reserved: number;
   routine: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventModeChangeResults {
+  constructor(init?: BluetoothHCIEventModeChangeResults);
+  connectionHandle: number;
+  mode: number;
+  modeInterval: number;
+}
+
+declare class BluetoothHCIEventConnectionRequestResults {
+  constructor(init?: BluetoothHCIEventConnectionRequestResults);
+  deviceAddress: BluetoothDeviceAddress;
+  classOfDevice: number;
+  linkType: number;
+}
+
+declare class BluetoothHCIEventReadRemoteVersionInfoResults {
+  constructor(init?: BluetoothHCIEventReadRemoteVersionInfoResults);
+  connectionHandle: number;
+  lmpVersion: number;
+  manufacturerName: number;
+  lmpSubversion: number;
+}
+
+declare class BluetoothHCIEventReadExtendedFeaturesResults {
+  constructor(init?: BluetoothHCIEventReadExtendedFeaturesResults);
+  connectionHandle: number;
+  supportedFeaturesInfo: BluetoothHCIExtendedFeaturesInfo;
+}
+
+declare class BluetoothHCIEventLEReadRemoteUsedFeaturesCompleteResults {
+  constructor(init?: BluetoothHCIEventLEReadRemoteUsedFeaturesCompleteResults);
+  connectionHandle: number;
+  usedFeatures: BluetoothHCISupportedFeatures;
+}
+
+declare class BluetoothHCIEventLEEnhancedConnectionCompleteResults {
+  constructor(init?: BluetoothHCIEventLEEnhancedConnectionCompleteResults);
+  connectionHandle: number;
+  role: number;
+  peerAddressType: number;
+  peerAddress: BluetoothDeviceAddress;
+  localResolvablePrivateAddress: BluetoothDeviceAddress;
+  peerResolvablePrivateAddress: BluetoothDeviceAddress;
+  connInterval: number;
+  connLatency: number;
+  supervisionTimeout: number;
+  masterClockAccuracy: number;
+}
+
+declare class BluetoothHCIEventSynchronousConnectionCompleteResults {
+  constructor(init?: BluetoothHCIEventSynchronousConnectionCompleteResults);
+  connectionHandle: number;
+  deviceAddress: BluetoothDeviceAddress;
+  linkType: number;
+  transmissionInterval: number;
+  retransmissionWindow: number;
+  receivePacketLength: number;
+  transmitPacketLength: number;
+  airMode: number;
+}
+
+declare class BluetoothAFHResults {
+  constructor(init?: BluetoothAFHResults);
+  handle: number;
+  mode: number;
+  afhMap: unknown /* const array */;
+}
+
+declare class BluetoothUserPasskeyNotification {
+  constructor(init?: BluetoothUserPasskeyNotification);
+  deviceAddress: BluetoothDeviceAddress;
+  passkey: number;
+}
+
+declare class BluetoothHCIExtendedInquiryResult {
+  constructor(init?: BluetoothHCIExtendedInquiryResult);
+  numberOfReponses: number;
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+  reserved: number;
+  classOfDevice: number;
+  clockOffset: number;
+  RSSIValue: number;
+  extendedInquiryResponse: BluetoothHCIExtendedInquiryResponse;
+}
+
+declare class BluetoothHCIReadExtendedInquiryResponseResults {
+  constructor(init?: BluetoothHCIReadExtendedInquiryResponseResults);
+  outFECRequired: number;
+  extendedInquiryResponse: BluetoothHCIExtendedInquiryResponse;
+}
+
+declare class BluetoothHCIInquiryResult {
+  constructor(init?: BluetoothHCIInquiryResult);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+  pageScanPeriodMode: number;
+  pageScanMode: number;
+  classOfDevice: number;
+  clockOffset: number;
+}
+
+declare class BluetoothTransportInfo {
+  constructor(init?: BluetoothTransportInfo);
+  productID: number;
+  vendorID: number;
+  type: number;
+  productName: unknown /* const array */;
+  vendorName: unknown /* const array */;
+  totalDataBytesSent: number;
+  totalSCOBytesSent: number;
+  totalDataBytesReceived: number;
+  totalSCOBytesReceived: number;
+}
+
+declare class BluetoothHCITransmitPowerLevelInfo {
+  constructor(init?: BluetoothHCITransmitPowerLevelInfo);
+  handle: number;
+  level: number;
+}
+
+declare class BluetoothHCILinkSupervisionTimeout {
+  constructor(init?: BluetoothHCILinkSupervisionTimeout);
+  handle: number;
+  timeout: number;
+}
+
+declare class BluetoothHCICurrentInquiryAccessCodesForWrite {
+  constructor(init?: BluetoothHCICurrentInquiryAccessCodesForWrite);
+  count: number;
+  codes: unknown /* const array */;
+}
+
+declare class BluetoothHCICurrentInquiryAccessCodes {
+  constructor(init?: BluetoothHCICurrentInquiryAccessCodes);
+  count: number;
+  codes: interop.Pointer;
 }
 
 declare class getfsstat_args {
@@ -12721,6 +29493,117 @@ declare class getfsstat_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
+}
+
+declare class BluetoothReadClockInfo {
+  constructor(init?: BluetoothReadClockInfo);
+  handle: number;
+  clock: number;
+  accuracy: number;
+}
+
+declare class BluetoothHCIEnhancedAcceptSynchronousConnectionRequestParams {
+  constructor(init?: BluetoothHCIEnhancedAcceptSynchronousConnectionRequestParams);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSamplePayloadMSBPosition: number;
+  outputPCMSamplePayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  packetType: number;
+  retransmissionEffort: number;
+}
+
+declare class BluetoothHCIEnhancedSetupSynchronousConnectionParams {
+  constructor(init?: BluetoothHCIEnhancedSetupSynchronousConnectionParams);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSamplePayloadMSBPosition: number;
+  outputPCMSamplePayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  packetType: number;
+  retransmissionEffort: number;
+}
+
+declare class BluetoothHCIAcceptSynchronousConnectionRequestParams {
+  constructor(init?: BluetoothHCIAcceptSynchronousConnectionRequestParams);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  maxLatency: number;
+  contentFormat: number;
+  retransmissionEffort: number;
+  packetType: number;
+}
+
+declare class BluetoothHCIQualityOfServiceSetupParams {
+  constructor(init?: BluetoothHCIQualityOfServiceSetupParams);
+  flags: number;
+  serviceType: number;
+  tokenRate: number;
+  peakBandwidth: number;
+  latency: number;
+  delayVariation: number;
+}
+
+declare class BluetoothHCIEncryptionKeySizeInfo {
+  constructor(init?: BluetoothHCIEncryptionKeySizeInfo);
+  handle: number;
+  keySize: number;
+}
+
+declare class BluetoothHCISupportedCommands {
+  constructor(init?: BluetoothHCISupportedCommands);
+  data: unknown /* const array */;
+}
+
+declare class BluetoothIRK {
+  constructor(init?: BluetoothIRK);
+  data: unknown /* const array */;
+}
+
+declare class BluetoothHCIExtendedFeaturesInfo {
+  constructor(init?: BluetoothHCIExtendedFeaturesInfo);
+  page: number;
+  maxPage: number;
+  data: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventLinkKeyNotificationResults {
+  constructor(init?: BluetoothHCIEventLinkKeyNotificationResults);
+  deviceAddress: BluetoothDeviceAddress;
+  linkKey: BluetoothKey;
+  keyType: number;
 }
 
 declare class vc_progress_user_options {
@@ -12745,6 +29628,20 @@ declare class IOPMPowerState {
   timeToLower: number;
   settleDownTime: number;
   powerDomainBudget: number;
+}
+
+declare class SCSICmd_INQUIRY_Page80_Header_SPC_16 {
+  constructor(init?: SCSICmd_INQUIRY_Page80_Header_SPC_16);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  PAGE_LENGTH: number;
+  PRODUCT_SERIAL_NUMBER: number;
+}
+
+declare class BluetoothHCIInquiryWithRSSIResults {
+  constructor(init?: BluetoothHCIInquiryWithRSSIResults);
+  results: unknown /* const array */;
+  count: number;
 }
 
 declare class readlink_args {
@@ -12785,6 +29682,35 @@ declare class nfs_uquad {
   nfsuquad: unknown /* const array */;
 }
 
+declare class bm34Cursor {
+  constructor(init?: bm34Cursor);
+  image: unknown /* const array */;
+  save: unknown /* const array */;
+}
+
+declare class unnamed_6638712209349923114 {
+  constructor(init?: unnamed_6638712209349923114);
+  eph_x86_power_state: number;
+  eph_x86_efi_boot_state: number;
+  eph_x86_system_state: number;
+  eph_x86_unused_bits: number;
+}
+
+declare class FWAddressStruct {
+  constructor(init?: FWAddressStruct);
+  nodeID: number;
+  addressHi: number;
+  addressLo: number;
+}
+
+declare class ModeParameterBlockDescriptor {
+  constructor(init?: ModeParameterBlockDescriptor);
+  DENSITY_CODE: number;
+  NUMBER_OF_BLOCKS: unknown /* const array */;
+  RESERVED: number;
+  BLOCK_LENGTH: unknown /* const array */;
+}
+
 declare class getattrlistat_args {
   constructor(init?: getattrlistat_args);
   fd_l_: unknown /* const array */;
@@ -12817,6 +29743,12 @@ declare class symlink_args {
   link_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIEventEncryptionChangeResults {
+  constructor(init?: BluetoothHCIEventEncryptionChangeResults);
+  connectionHandle: number;
+  enable: number;
+}
+
 declare class kd_buf {
   constructor(init?: kd_buf);
   timestamp: number;
@@ -12828,6 +29760,47 @@ declare class kd_buf {
   debugid: number;
   cpuid: number;
   unused: number;
+}
+
+declare class VDDetailedTimingRec {
+  constructor(init?: VDDetailedTimingRec);
+  csTimingSize: number;
+  csTimingType: number;
+  csTimingVersion: number;
+  csTimingReserved: number;
+  csDisplayModeID: number;
+  csDisplayModeSeed: number;
+  csDisplayModeState: number;
+  csDisplayModeAlias: number;
+  csSignalConfig: number;
+  csSignalLevels: number;
+  csPixelClock: number;
+  csMinPixelClock: number;
+  csMaxPixelClock: number;
+  csHorizontalActive: number;
+  csHorizontalBlanking: number;
+  csHorizontalSyncOffset: number;
+  csHorizontalSyncPulseWidth: number;
+  csVerticalActive: number;
+  csVerticalBlanking: number;
+  csVerticalSyncOffset: number;
+  csVerticalSyncPulseWidth: number;
+  csHorizontalBorderLeft: number;
+  csHorizontalBorderRight: number;
+  csVerticalBorderTop: number;
+  csVerticalBorderBottom: number;
+  csHorizontalSyncConfig: number;
+  csHorizontalSyncLevel: number;
+  csVerticalSyncConfig: number;
+  csVerticalSyncLevel: number;
+  csNumLinks: number;
+  csReserved2: number;
+  csReserved3: number;
+  csReserved4: number;
+  csReserved5: number;
+  csReserved6: number;
+  csReserved7: number;
+  csReserved8: number;
 }
 
 declare class conninfo_tcp {
@@ -12854,6 +29827,21 @@ declare class airship_monitor {
   constructor(init?: airship_monitor);
 }
 
+declare class IOUSBDeviceCapabilityBillboardAltConfig {
+  constructor(init?: IOUSBDeviceCapabilityBillboardAltConfig);
+  wSVID: number;
+  bAltenateMode: number;
+  iAlternateModeString: number;
+}
+
+declare class UASPipeDescriptor {
+  constructor(init?: UASPipeDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bPipeID: number;
+  bReserved: number;
+}
+
 declare class __Request__check_task_access_with_flavor_t {
   constructor(init?: __Request__check_task_access_with_flavor_t);
   Head: mach_msg_header_t;
@@ -12862,6 +29850,12 @@ declare class __Request__check_task_access_with_flavor_t {
   calling_gid: number;
   target_pid: number;
   flavor: number;
+}
+
+declare class BluetoothHCIAutomaticFlushTimeoutInfo {
+  constructor(init?: BluetoothHCIAutomaticFlushTimeoutInfo);
+  handle: number;
+  timeout: number;
 }
 
 declare class lstat64_extended_args {
@@ -12880,8 +29874,34 @@ declare class lstat64_extended_args {
   xsecurity_size_r_: unknown /* const array */;
 }
 
-declare class IOHIDEventService_LocalIVars {
-  constructor(init?: IOHIDEventService_LocalIVars);
+declare class __Request__kext_request_t {
+  constructor(init?: __Request__kext_request_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  request_data: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  user_log_flags: number;
+  request_dataCnt: number;
+}
+
+declare class SCSICmd_INQUIRY_Page80_Header {
+  constructor(init?: SCSICmd_INQUIRY_Page80_Header);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  RESERVED: number;
+  PAGE_LENGTH: number;
+  PRODUCT_SERIAL_NUMBER: number;
+}
+
+declare class BluetoothDeviceAddress {
+  constructor(init?: BluetoothDeviceAddress);
+  data: unknown /* const array */;
+}
+
+declare class unnamed_8340759031335007576 {
+  constructor(init?: unnamed_8340759031335007576);
+  provider: interop.Pointer;
+  busNum: number;
 }
 
 declare class __Request__check_task_access_t {
@@ -12891,6 +29911,20 @@ declare class __Request__check_task_access_t {
   calling_pid: number;
   calling_gid: number;
   target_pid: number;
+}
+
+declare class IOUSBDeviceCapabilityDescriptorHeader {
+  constructor(init?: IOUSBDeviceCapabilityDescriptorHeader);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+}
+
+declare class IOUSB30HubPortStatusExt {
+  constructor(init?: IOUSB30HubPortStatusExt);
+  wPortStatus: number;
+  wPortChange: number;
+  dwExtPortStatus: number;
 }
 
 declare class thread_selfusage_args {
@@ -12924,8 +29958,55 @@ declare class pselect_args {
   mask_r_: unknown /* const array */;
 }
 
+declare class BluetoothRemoteHostSupportedFeaturesNotification {
+  constructor(init?: BluetoothRemoteHostSupportedFeaturesNotification);
+  deviceAddress: BluetoothDeviceAddress;
+  hostSupportedFeatures: BluetoothHCISupportedFeatures;
+}
+
 declare class daleipc_uplink_controller {
   constructor(init?: daleipc_uplink_controller);
+}
+
+declare class unnamed_672362049614874403 {
+  constructor(init?: unnamed_672362049614874403);
+  x: number;
+  y: number;
+}
+
+declare class unnamed_10678294514709290597 {
+  constructor(init?: unnamed_10678294514709290597);
+  reserved: number;
+  subType: number;
+  misc: unnamed_11409871569097783565;
+}
+
+declare class unnamed_17859967344121413399 {
+  constructor(init?: unnamed_17859967344121413399);
+  reserved: number;
+  eventNum: number;
+  trackingNum: number;
+  userData: number;
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: number;
+  reserved6: unknown /* const array */;
+}
+
+declare class unnamed_6187887598941153445 {
+  constructor(init?: unnamed_6187887598941153445);
+  subx: number;
+  suby: number;
+  eventNum: number;
+  click: number;
+  pressure: number;
+  buttonNumber: number;
+  subType: number;
+  reserved2: number;
+  reserved3: number;
+  tablet: unnamed_4652766297264612399;
 }
 
 declare class IOAudioClientBufferExtendedInfo64 {
@@ -12933,6 +30014,130 @@ declare class IOAudioClientBufferExtendedInfo64 {
   mAudioClientBufferExtended32: IOAudioClientBufferExtendedInfo;
   mUnmappedParamBuffer64: number;
   mNextExtended64: interop.Pointer;
+}
+
+declare class _NXTabletProximityData {
+  constructor(init?: _NXTabletProximityData);
+  vendorID: number;
+  tabletID: number;
+  pointerID: number;
+  deviceID: number;
+  systemTabletID: number;
+  vendorPointerType: number;
+  pointerSerialNumber: number;
+  uniqueID: number;
+  capabilityMask: number;
+  pointerType: number;
+  enterProximity: number;
+  reserved1: number;
+}
+
+declare class unnamed_18380375210378964271 {
+  constructor(init?: unnamed_18380375210378964271);
+  x: number;
+  y: number;
+}
+
+declare class _NXPoint {
+  constructor(init?: _NXPoint);
+  x: number;
+  y: number;
+}
+
+declare class __IOFixedPoint32 {
+  constructor(init?: __IOFixedPoint32);
+  x: number;
+  y: number;
+}
+
+declare class evsioMouseScaling {
+  constructor(init?: evsioMouseScaling);
+  numScaleLevels: number;
+  scaleThresholds: unknown /* const array */;
+  scaleFactors: unknown /* const array */;
+}
+
+declare class evsioKeymapping {
+  constructor(init?: evsioKeymapping);
+  size: number;
+  mapping: string | null;
+}
+
+declare class IOGBounds {
+  constructor(init?: IOGBounds);
+  minx: number;
+  maxx: number;
+  miny: number;
+  maxy: number;
+}
+
+declare class IODisplayTimingRangeV1 {
+  constructor(init?: IODisplayTimingRangeV1);
+  __reservedA: unknown /* const array */;
+  version: number;
+  __reservedB: unknown /* const array */;
+  minPixelClock: number;
+  maxPixelClock: number;
+  maxPixelError: number;
+  supportedSyncFlags: number;
+  supportedSignalLevels: number;
+  supportedSignalConfigs: number;
+  minFrameRate: number;
+  maxFrameRate: number;
+  minLineRate: number;
+  maxLineRate: number;
+  maxHorizontalTotal: number;
+  maxVerticalTotal: number;
+  __reservedD: unknown /* const array */;
+  charSizeHorizontalActive: number;
+  charSizeHorizontalBlanking: number;
+  charSizeHorizontalSyncOffset: number;
+  charSizeHorizontalSyncPulse: number;
+  charSizeVerticalActive: number;
+  charSizeVerticalBlanking: number;
+  charSizeVerticalSyncOffset: number;
+  charSizeVerticalSyncPulse: number;
+  charSizeHorizontalBorderLeft: number;
+  charSizeHorizontalBorderRight: number;
+  charSizeVerticalBorderTop: number;
+  charSizeVerticalBorderBottom: number;
+  charSizeHorizontalTotal: number;
+  charSizeVerticalTotal: number;
+  __reservedE: number;
+  minHorizontalActiveClocks: number;
+  maxHorizontalActiveClocks: number;
+  minHorizontalBlankingClocks: number;
+  maxHorizontalBlankingClocks: number;
+  minHorizontalSyncOffsetClocks: number;
+  maxHorizontalSyncOffsetClocks: number;
+  minHorizontalPulseWidthClocks: number;
+  maxHorizontalPulseWidthClocks: number;
+  minVerticalActiveClocks: number;
+  maxVerticalActiveClocks: number;
+  minVerticalBlankingClocks: number;
+  maxVerticalBlankingClocks: number;
+  minVerticalSyncOffsetClocks: number;
+  maxVerticalSyncOffsetClocks: number;
+  minVerticalPulseWidthClocks: number;
+  maxVerticalPulseWidthClocks: number;
+  minHorizontalBorderLeft: number;
+  maxHorizontalBorderLeft: number;
+  minHorizontalBorderRight: number;
+  maxHorizontalBorderRight: number;
+  minVerticalBorderTop: number;
+  maxVerticalBorderTop: number;
+  minVerticalBorderBottom: number;
+  maxVerticalBorderBottom: number;
+  maxNumLinks: number;
+  minLink0PixelClock: number;
+  maxLink0PixelClock: number;
+  minLink1PixelClock: number;
+  maxLink1PixelClock: number;
+  supportedPixelEncoding: number;
+  supportedBitsPerColorComponent: number;
+  supportedColorimetryModes: number;
+  supportedDynamicRangeModes: number;
+  __reservedF: unknown /* const array */;
 }
 
 declare class nfsrvstats {
@@ -12945,7 +30150,85 @@ declare class nfsrvstats {
   srvcache_nonidemdonehits: number;
   srvcache_misses: number;
   srvvop_writes: number;
-  nfs_errs: unnamed_13569257746074412783;
+  nfs_errs: unnamed_14610755421846078866;
+}
+
+declare class IOFBDisplayModeDescription {
+  constructor(init?: IOFBDisplayModeDescription);
+  info: IODisplayModeInformation;
+  timingInfo: IOTimingInformation;
+}
+
+declare class IODetailedTimingInformationV2 {
+  constructor(init?: IODetailedTimingInformationV2);
+  __reservedA: unknown /* const array */;
+  horizontalScaledInset: number;
+  verticalScaledInset: number;
+  scalerFlags: number;
+  horizontalScaled: number;
+  verticalScaled: number;
+  signalConfig: number;
+  signalLevels: number;
+  pixelClock: number;
+  minPixelClock: number;
+  maxPixelClock: number;
+  horizontalActive: number;
+  horizontalBlanking: number;
+  horizontalSyncOffset: number;
+  horizontalSyncPulseWidth: number;
+  verticalActive: number;
+  verticalBlanking: number;
+  verticalSyncOffset: number;
+  verticalSyncPulseWidth: number;
+  horizontalBorderLeft: number;
+  horizontalBorderRight: number;
+  verticalBorderTop: number;
+  verticalBorderBottom: number;
+  horizontalSyncConfig: number;
+  horizontalSyncLevel: number;
+  verticalSyncConfig: number;
+  verticalSyncLevel: number;
+  numLinks: number;
+  verticalBlankingExtension: number;
+  pixelEncoding: number;
+  bitsPerColorComponent: number;
+  colorimetry: number;
+  dynamicRange: number;
+  dscCompressedBitsPerPixel: number;
+  dscSliceHeight: number;
+  dscSliceWidth: number;
+  verticalBlankingMaxStretchPerFrame: number;
+  verticalBlankingMaxShrinkPerFrame: number;
+  __reservedB: unknown /* const array */;
+}
+
+declare class IOFBHDRMetaDataV1 {
+  constructor(init?: IOFBHDRMetaDataV1);
+  displayPrimary_X0: number;
+  displayPrimary_Y0: number;
+  displayPrimary_X1: number;
+  displayPrimary_Y1: number;
+  displayPrimary_X2: number;
+  displayPrimary_Y2: number;
+  displayPrimary_X: number;
+  displayPrimary_Y: number;
+  desiredLuminance_Max: number;
+  desiredLuminance_Min: number;
+  desiredLightLevel_Avg: number;
+  desiredLightLevel_Max: number;
+  __reservedA: unknown /* const array */;
+}
+
+declare class IODisplayModeInformation {
+  constructor(init?: IODisplayModeInformation);
+  nominalWidth: number;
+  nominalHeight: number;
+  refreshRate: number;
+  maxDepthIndex: number;
+  flags: number;
+  imageWidth: number;
+  imageHeight: number;
+  reserved: unknown /* const array */;
 }
 
 declare class EXDisplayPipeHealthReport {
@@ -12956,6 +30239,30 @@ declare class EXDisplayPipeHealthReport {
   pipe_health: EXDisplayPipeHealthRecord;
   link_health: EXDisplayPipeHealthRecord;
   health: boolean;
+}
+
+declare class BluetoothHCIEventLEConnectionUpdateCompleteResults {
+  constructor(init?: BluetoothHCIEventLEConnectionUpdateCompleteResults);
+  connectionHandle: number;
+  connInterval: number;
+  connLatency: number;
+  supervisionTimeout: number;
+}
+
+declare class IOPixelInformation {
+  constructor(init?: IOPixelInformation);
+  bytesPerRow: number;
+  bytesPerPlane: number;
+  bitsPerPixel: number;
+  pixelType: number;
+  componentCount: number;
+  bitsPerComponent: number;
+  componentMasks: unknown /* const array */;
+  pixelFormat: unknown /* const array */;
+  flags: number;
+  activeWidth: number;
+  activeHeight: number;
+  reserved: unknown /* const array */;
 }
 
 declare class futimes_args {
@@ -12977,6 +30284,20 @@ declare class __Request__mach_gss_unhold_cred_t {
   mech: interop.Enum<typeof gssd_mechtype>;
   nt: interop.Enum<typeof gssd_nametype>;
   princCnt: number;
+}
+
+declare class __Request__host_security_create_task_token_t {
+  constructor(init?: __Request__host_security_create_task_token_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  parent_task: mach_msg_port_descriptor_t;
+  host: mach_msg_port_descriptor_t;
+  ledgers: mach_msg_ool_ports_descriptor_t;
+  NDR: NDR_record_t;
+  sec_token: security_token_t;
+  audit_token: audit_token_t;
+  ledgersCnt: number;
+  inherit_memory: number;
 }
 
 declare class log_data_args {
@@ -13031,6 +30352,22 @@ declare class thread_selfid_args {
   dummy: number;
 }
 
+declare class _NXTabletPointData {
+  constructor(init?: _NXTabletPointData);
+  x: number;
+  y: number;
+  z: number;
+  buttons: number;
+  pressure: number;
+  tilt: unnamed_18380375210378964271;
+  rotation: number;
+  tangentialPressure: number;
+  deviceID: number;
+  vendor1: number;
+  vendor2: number;
+  vendor3: number;
+}
+
 declare class IOInterruptAccountingData {
   constructor(init?: IOInterruptAccountingData);
 }
@@ -13056,7 +30393,7 @@ declare class HIDButtonCapabilities {
   units: number;
   startBit: number;
   pbVersion: number;
-  u: unnamed_17870239474130978603;
+  u: unnamed_14286404118290648721;
 }
 
 declare class ntp_adjtime_args {
@@ -13088,13 +30425,22 @@ declare class open_extended_args {
   xsecurity_r_: unknown /* const array */;
 }
 
-declare class unnamed_3521018383531812804 {
-  constructor(init?: unnamed_3521018383531812804);
-  login: interop.Pointer;
-  generation: number;
-  status: number;
-  reconnectStatusBlock: interop.Pointer;
-  reconnectStatusBlockLength: number;
+declare class BluetoothHCIEventFlowSpecificationData {
+  constructor(init?: BluetoothHCIEventFlowSpecificationData);
+  connectionHandle: number;
+  flags: number;
+  flowDirection: number;
+  serviceType: number;
+  tokenRate: number;
+  tokenBucketSize: number;
+  peakBandwidth: number;
+  accessLatency: number;
+}
+
+declare class _NXEventExt {
+  constructor(init?: _NXEventExt);
+  payload: _NXEvent;
+  extension: _NXEventExtension;
 }
 
 declare class _notifyMsg {
@@ -13102,10 +30448,103 @@ declare class _notifyMsg {
   h: mach_msg_header_t;
 }
 
-declare class unnamed_10338689098814162510 {
-  constructor(init?: unnamed_10338689098814162510);
-  un_d_boot0: string | null;
-  un_d_boot1: string | null;
+declare class __Request__host_reboot_t {
+  constructor(init?: __Request__host_reboot_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  options: number;
+}
+
+declare class IOUSBFindEndpointRequest {
+  constructor(init?: IOUSBFindEndpointRequest);
+  type: number;
+  direction: number;
+  maxPacketSize: number;
+  interval: number;
+}
+
+declare class unnamed_175931566836450068 {
+  constructor(init?: unnamed_175931566836450068);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  offset: number;
+  size: number;
+  abort_cond: number;
+}
+
+declare class VDDefMode {
+  constructor(init?: VDDefMode);
+  csID: number;
+  filler: number;
+}
+
+declare class BluetoothHCILEBufferSize {
+  constructor(init?: BluetoothHCILEBufferSize);
+  ACLDataPacketLength: number;
+  totalNumACLDataPackets: number;
+}
+
+declare class CDATIP {
+  constructor(init?: CDATIP);
+  dataLength: number;
+  reserved: unknown /* const array */;
+  referenceSpeed: number;
+  reserved3: number;
+  indicativeTargetWritingPower: number;
+  reserved2: number;
+  reserved5: number;
+  unrestrictedUse: number;
+  reserved4: number;
+  a3Valid: number;
+  a2Valid: number;
+  a1Valid: number;
+  discSubType: number;
+  discType: number;
+  reserved6: number;
+  reserved7: number;
+  startTimeOfLeadIn: CDMSF;
+  reserved8: number;
+  lastPossibleStartTimeOfLeadOut: CDMSF;
+  reserved9: number;
+  a1: unknown /* const array */;
+  reserved10: number;
+  a2: unknown /* const array */;
+  reserved11: number;
+  a3: unknown /* const array */;
+  reserved12: number;
+}
+
+declare class fdatasync_args {
+  constructor(init?: fdatasync_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+}
+
+declare class chflags_args {
+  constructor(init?: chflags_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  flags_l_: unknown /* const array */;
+  flags: number;
+  flags_r_: unknown /* const array */;
+}
+
+declare class IOUSBEndpointDescriptor {
+  constructor(init?: IOUSBEndpointDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bEndpointAddress: number;
+  bmAttributes: number;
+  wMaxPacketSize: number;
+  bInterval: number;
+}
+
+declare class unnamed_14395915689491040554 {
+  constructor(init?: unnamed_14395915689491040554);
+  deviceAddress: BluetoothDeviceAddress;
+  linkKey: BluetoothKey;
 }
 
 declare class thread_snapshot {
@@ -13152,6 +30591,23 @@ declare class __Reply__lockd_shutdown_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class __Request__host_set_special_port_t {
+  constructor(init?: __Request__host_set_special_port_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  which: number;
+}
+
+declare class VDSizeInfo {
+  constructor(init?: VDSizeInfo);
+  csHSize: number;
+  csHPos: number;
+  csVSize: number;
+  csVPos: number;
 }
 
 declare class __Request__lockd_request_t {
@@ -13215,13 +30671,6 @@ declare class oslog_coproc_reg_args {
   file_path_len_r_: unknown /* const array */;
 }
 
-declare class unnamed_16383752996827423413 {
-  constructor(init?: unnamed_16383752996827423413);
-  errs_common: unknown /* const array */;
-  errs_v4: unknown /* const array */;
-  errs_unknown: number;
-}
-
 declare class renameatx_np_args {
   constructor(init?: renameatx_np_args);
   fromfd_l_: unknown /* const array */;
@@ -13241,6 +30690,21 @@ declare class renameatx_np_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIEventConnectionCompleteResults {
+  constructor(init?: BluetoothHCIEventConnectionCompleteResults);
+  connectionHandle: number;
+  deviceAddress: BluetoothDeviceAddress;
+  linkType: number;
+  encryptionMode: number;
+}
+
+declare class _IOAudioStreamDataDescriptor {
+  constructor(init?: _IOAudioStreamDataDescriptor);
+  fVersion: number;
+  fNumberOfStreams: number;
+  fStreamLength: unknown /* const array */;
+}
+
 declare class airship_acipc_cr_mirror_completion_record {
   constructor(init?: airship_acipc_cr_mirror_completion_record);
   desctype: number;
@@ -13249,12 +30713,40 @@ declare class airship_acipc_cr_mirror_completion_record {
   first_tag: number;
 }
 
+declare class BluetoothHCIEventSimplePairingCompleteResults {
+  constructor(init?: BluetoothHCIEventSimplePairingCompleteResults);
+  deviceAddress: BluetoothDeviceAddress;
+}
+
 declare class IOHistogramReportValues {
   constructor(init?: IOHistogramReportValues);
   bucket_hits: number;
   bucket_min: number;
   bucket_max: number;
   bucket_sum: number;
+}
+
+declare class BluetoothSynchronousConnectionInfo {
+  constructor(init?: BluetoothSynchronousConnectionInfo);
+  transmitBandWidth: number;
+  receiveBandWidth: number;
+  maxLatency: number;
+  voiceSetting: number;
+  retransmissionEffort: number;
+  packetType: number;
+}
+
+declare class IODot3CollEntry {
+  constructor(init?: IODot3CollEntry);
+  collFrequencies: unknown /* const array */;
+}
+
+declare class BluetoothHCIBufferSize {
+  constructor(init?: BluetoothHCIBufferSize);
+  ACLDataPacketLength: number;
+  SCODataPacketLength: number;
+  totalNumACLDataPackets: number;
+  totalNumSCODataPackets: number;
 }
 
 declare class kern_work_interval_create_args {
@@ -13327,9 +30819,16 @@ declare class kdebug_trace_string_args {
   str_r_: unknown /* const array */;
 }
 
-declare class unnamed_10328243768668227060 {
-  constructor(init?: unnamed_10328243768668227060);
-  ifscope: number;
+declare class _NXEvent {
+  constructor(init?: _NXEvent);
+  type: number;
+  location: unnamed_672362049614874403;
+  time: number;
+  flags: number;
+  window: number;
+  service_id: number;
+  ext_pid: number;
+  data: NXEventData;
 }
 
 declare class _stickyKeys_ToggleInfo {
@@ -13340,24 +30839,6 @@ declare class _stickyKeys_ToggleInfo {
   expireInterval: UnsignedWide;
   currentCount: number;
   deadlines: unknown /* const array */;
-}
-
-declare class unnamed_1064201811267050249 {
-  constructor(init?: unnamed_1064201811267050249);
-  debug_arch_version: number;
-  trace_extn_version: number;
-  perf_extn_version: number;
-  brps: number;
-  reserved0: number;
-  wrps: number;
-  reserved1: number;
-  ctx_cmps: number;
-  reserved32: number;
-}
-
-declare class unnamed_3848994726849950940 {
-  constructor(init?: unnamed_3848994726849950940);
-  sa_unused: number;
 }
 
 declare class if_netem_params {
@@ -13385,12 +30866,62 @@ declare class IOUSBHostBundledCompletion {
   parameter: interop.Pointer;
 }
 
-declare class unnamed_17808017554962453887 {
-  constructor(init?: unnamed_17808017554962453887);
-  eph_x86_power_state: number;
-  eph_x86_efi_boot_state: number;
-  eph_x86_system_state: number;
-  eph_x86_unused_bits: number;
+declare class HFSPlusAttrInlineData {
+  constructor(init?: HFSPlusAttrInlineData);
+  recordType: number;
+  reserved: number;
+  logicalSize: number;
+  userData: unknown /* const array */;
+}
+
+declare class IOServiceInterestContent {
+  constructor(init?: IOServiceInterestContent);
+  messageType: number;
+  messageArgument: unknown /* const array */;
+}
+
+declare class IOServiceInterestContent64 {
+  constructor(init?: IOServiceInterestContent64);
+  messageType: number;
+  messageArgument: unknown /* const array */;
+}
+
+declare class OSNotificationHeader64 {
+  constructor(init?: OSNotificationHeader64);
+  size: number;
+  type: number;
+  reference: unknown /* const array */;
+  content: interop.Pointer;
+}
+
+declare class fstatfs64_args {
+  constructor(init?: fstatfs64_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  buf_l_: unknown /* const array */;
+  buf: number;
+  buf_r_: unknown /* const array */;
+}
+
+declare class __pthread_canceled_args {
+  constructor(init?: __pthread_canceled_args);
+  action_l_: unknown /* const array */;
+  action: number;
+  action_r_: unknown /* const array */;
+}
+
+declare class BluetoothHCISupportedFeatures {
+  constructor(init?: BluetoothHCISupportedFeatures);
+  data: unknown /* const array */;
+}
+
+declare class BluetoothIOCapabilityResponse {
+  constructor(init?: BluetoothIOCapabilityResponse);
+  deviceAddress: BluetoothDeviceAddress;
+  ioCapability: number;
+  OOBDataPresence: number;
+  authenticationRequirements: number;
 }
 
 declare class EFI_CONFIGURATION_TABLE_32 {
@@ -13434,6 +30965,17 @@ declare class __Reply__nspace_resolve_cancel_t {
   RetCode: number;
 }
 
+declare class BluetoothL2CAPQualityOfServiceOptions {
+  constructor(init?: BluetoothL2CAPQualityOfServiceOptions);
+  flags: number;
+  serviceType: number;
+  tokenRate: number;
+  tokenBucketSize: number;
+  peakBandwidth: number;
+  latency: number;
+  delayVariation: number;
+}
+
 declare class setxattr_args {
   constructor(init?: setxattr_args);
   path_l_: unknown /* const array */;
@@ -13456,6 +30998,15 @@ declare class setxattr_args {
   options_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIVersionInfo {
+  constructor(init?: BluetoothHCIVersionInfo);
+  manufacturerName: number;
+  lmpVersion: number;
+  lmpSubVersion: number;
+  hciVersion: number;
+  hciRevision: number;
+}
+
 declare class __mac_getfsstat_args {
   constructor(init?: __mac_getfsstat_args);
   buf_l_: unknown /* const array */;
@@ -13475,14 +31026,10 @@ declare class __mac_getfsstat_args {
   flags_r_: unknown /* const array */;
 }
 
-declare class unnamed_1217890641751780249 {
-  constructor(init?: unnamed_1217890641751780249);
-  login: interop.Pointer;
-  generation: number;
-  status: number;
-  loginResponse: interop.Pointer;
-  statusBlock: interop.Pointer;
-  statusBlockLength: number;
+declare class BluetoothHCIEventReadSupportedFeaturesResults {
+  constructor(init?: BluetoothHCIEventReadSupportedFeaturesResults);
+  connectionHandle: number;
+  supportedFeatures: BluetoothHCISupportedFeatures;
 }
 
 declare class fchmodat_args {
@@ -13520,21 +31067,28 @@ declare class guarded_kqueue_np_args {
   guardflags_r_: unknown /* const array */;
 }
 
-declare class unnamed_16222007263645768418 {
-  constructor(init?: unnamed_16222007263645768418);
-  usageMin: number;
-  usageMax: number;
-  stringMin: number;
-  stringMax: number;
-  designatorMin: number;
-  designatorMax: number;
+declare class BluetoothKey {
+  constructor(init?: BluetoothKey);
+  data: unknown /* const array */;
 }
 
-declare class getsid_args {
-  constructor(init?: getsid_args);
-  pid_l_: unknown /* const array */;
-  pid: number;
-  pid_r_: unknown /* const array */;
+declare class BluetoothHCIRSSIInfo {
+  constructor(init?: BluetoothHCIRSSIInfo);
+  handle: number;
+  RSSIValue: number;
+}
+
+declare class IOGPoint {
+  constructor(init?: IOGPoint);
+  x: number;
+  y: number;
+}
+
+declare class BluetoothHCIEventRoleChangeResults {
+  constructor(init?: BluetoothHCIEventRoleChangeResults);
+  connectionHandle: number;
+  deviceAddress: BluetoothDeviceAddress;
+  role: number;
 }
 
 declare class fpathconf_args {
@@ -13597,13 +31151,32 @@ declare class Key {
   isTopRow: unknown /* _Bool () (CXTypeKind: 110) */;
 }
 
+declare class IOBlitVertexStruct {
+  constructor(init?: IOBlitVertexStruct);
+  x: number;
+  y: number;
+}
+
 declare class vnode_attr {
   constructor(init?: vnode_attr);
+}
+
+declare class __Request__processor_set_policy_enable_t {
+  constructor(init?: __Request__processor_set_policy_enable_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  policy: number;
 }
 
 declare class priority_queue_sched_stable_max {
   constructor(init?: priority_queue_sched_stable_max);
   pq_root: interop.Pointer;
+}
+
+declare class VDSyncInfoRec {
+  constructor(init?: VDSyncInfoRec);
+  csMode: number;
+  csFlags: number;
 }
 
 declare class kevent_qos_args {
@@ -13643,6 +31216,19 @@ declare class IOReportElement {
   values: IOReportElementValues;
 }
 
+declare class IOGSize {
+  constructor(init?: IOGSize);
+  width: number;
+  height: number;
+}
+
+declare class __Reply__processor_assign_t {
+  constructor(init?: __Reply__processor_assign_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class _lck_grp_attr_ {
   constructor(init?: _lck_grp_attr_);
 }
@@ -13652,6 +31238,89 @@ declare class __Reply__mach_gss_lookup_t {
   Head: mach_msg_header_t;
   msgh_body: mach_msg_body_t;
   gssd_session_port: mach_msg_port_descriptor_t;
+}
+
+declare class IODisplayTimingRangeV2 {
+  constructor(init?: IODisplayTimingRangeV2);
+  __reservedA: unknown /* const array */;
+  version: number;
+  __reservedB: unknown /* const array */;
+  minPixelClock: number;
+  maxPixelClock: number;
+  maxPixelError: number;
+  supportedSyncFlags: number;
+  supportedSignalLevels: number;
+  supportedSignalConfigs: number;
+  minFrameRate: number;
+  maxFrameRate: number;
+  minLineRate: number;
+  maxLineRate: number;
+  maxHorizontalTotal: number;
+  maxVerticalTotal: number;
+  __reservedD: unknown /* const array */;
+  charSizeHorizontalActive: number;
+  charSizeHorizontalBlanking: number;
+  charSizeHorizontalSyncOffset: number;
+  charSizeHorizontalSyncPulse: number;
+  charSizeVerticalActive: number;
+  charSizeVerticalBlanking: number;
+  charSizeVerticalSyncOffset: number;
+  charSizeVerticalSyncPulse: number;
+  charSizeHorizontalBorderLeft: number;
+  charSizeHorizontalBorderRight: number;
+  charSizeVerticalBorderTop: number;
+  charSizeVerticalBorderBottom: number;
+  charSizeHorizontalTotal: number;
+  charSizeVerticalTotal: number;
+  __reservedE: number;
+  minHorizontalActiveClocks: number;
+  maxHorizontalActiveClocks: number;
+  minHorizontalBlankingClocks: number;
+  maxHorizontalBlankingClocks: number;
+  minHorizontalSyncOffsetClocks: number;
+  maxHorizontalSyncOffsetClocks: number;
+  minHorizontalPulseWidthClocks: number;
+  maxHorizontalPulseWidthClocks: number;
+  minVerticalActiveClocks: number;
+  maxVerticalActiveClocks: number;
+  minVerticalBlankingClocks: number;
+  maxVerticalBlankingClocks: number;
+  minVerticalSyncOffsetClocks: number;
+  maxVerticalSyncOffsetClocks: number;
+  minVerticalPulseWidthClocks: number;
+  maxVerticalPulseWidthClocks: number;
+  minHorizontalBorderLeft: number;
+  maxHorizontalBorderLeft: number;
+  minHorizontalBorderRight: number;
+  maxHorizontalBorderRight: number;
+  minVerticalBorderTop: number;
+  maxVerticalBorderTop: number;
+  minVerticalBorderBottom: number;
+  maxVerticalBorderBottom: number;
+  maxNumLinks: number;
+  minLink0PixelClock: number;
+  maxLink0PixelClock: number;
+  minLink1PixelClock: number;
+  maxLink1PixelClock: number;
+  supportedPixelEncoding: number;
+  supportedBitsPerColorComponent: number;
+  supportedColorimetryModes: number;
+  supportedDynamicRangeModes: number;
+  __reservedF: unknown /* const array */;
+  maxBandwidth: number;
+  dscMinSliceHeight: number;
+  dscMaxSliceHeight: number;
+  dscMinSliceWidth: number;
+  dscMaxSliceWidth: number;
+  dscMinSlicePerLine: number;
+  dscMaxSlicePerLine: number;
+  dscMinBPC: number;
+  dscMaxBPC: number;
+  dscMinBPP: number;
+  dscMaxBPP: number;
+  dscVBR: number;
+  dscBlockPredEnable: number;
+  __reservedC: unknown /* const array */;
 }
 
 declare class IOPCIDevice_LocalIVars {
@@ -13690,6 +31359,13 @@ declare class ffsctl_args {
   options_r_: unknown /* const array */;
 }
 
+declare class IOTimingInformation {
+  constructor(init?: IOTimingInformation);
+  appleTimingID: number;
+  flags: number;
+  detailedInfo: unnamed_7763811220117734030;
+}
+
 declare class AsyncPendingTrans {
   constructor(init?: AsyncPendingTrans);
   fHandler: interop.Pointer;
@@ -13698,13 +31374,47 @@ declare class AsyncPendingTrans {
   fInUse: boolean;
 }
 
+declare class IOAsyncCompletionContent {
+  constructor(init?: IOAsyncCompletionContent);
+  result: number;
+  args: interop.Pointer;
+}
+
+declare class unnamed_16303799009253413007 {
+  constructor(init?: unnamed_16303799009253413007);
+  vendorID: number;
+  tabletID: number;
+  pointerID: number;
+  deviceID: number;
+  systemTabletID: number;
+  vendorPointerType: number;
+  pointerSerialNumber: number;
+  uniqueID: number;
+  capabilityMask: number;
+  pointerType: number;
+  enterProximity: number;
+  reserved1: number;
+  reserved2: unknown /* const array */;
+}
+
+declare class LowLatencyUserBufferInfoV2 {
+  constructor(init?: LowLatencyUserBufferInfoV2);
+  cookie: number;
+  bufferAddress: interop.Pointer;
+  bufferSize: number;
+  bufferType: number;
+  isPrepared: number;
+  mappedUHCIAddress: interop.Pointer;
+  nextBuffer: interop.Pointer;
+}
+
 declare class sockaddr_inifscope {
   constructor(init?: sockaddr_inifscope);
   sin_len: number;
   sin_family: number;
   sin_port: number;
   sin_addr: in_addr;
-  un: unnamed_3771936424973120145;
+  un: unnamed_2232564682371069418;
 }
 
 declare class IOStateReportInfo {
@@ -13714,19 +31424,13 @@ declare class IOStateReportInfo {
   elem: interop.Pointer;
 }
 
-declare class intrusive_osobject_retainer {
-  constructor(init?: intrusive_osobject_retainer);
-  retain: (p1: number) => void | null;
-}
-
-declare class unnamed_3364203081172218251 {
-  constructor(init?: unnamed_3364203081172218251);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
+declare class evioSpecialKeyMsg {
+  constructor(init?: evioSpecialKeyMsg);
+  Head: mach_msg_header_t;
+  key: number;
+  direction: number;
+  flags: number;
+  level: number;
 }
 
 declare class pread_nocancel_args {
@@ -13745,13 +31449,20 @@ declare class pread_nocancel_args {
   offset_r_: unknown /* const array */;
 }
 
-declare class unnamed_13100592752473707061 {
-  constructor(init?: unnamed_13100592752473707061);
-  login: interop.Pointer;
-  generation: number;
-  status: number;
-  statusBlock: interop.Pointer;
-  statusBlockLength: number;
+declare class IOUSBDeviceCapabilityBillboard {
+  constructor(init?: IOUSBDeviceCapabilityBillboard);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  iAdditionalInfoURL: number;
+  bNumberOfAlternateModes: number;
+  bPreferredAlternateMode: number;
+  vCONNPower: number;
+  bmConfigured: unknown /* const array */;
+  bcdVersion: number;
+  bAdditionalFailureInfo: number;
+  bReserved: number;
+  pAltConfigurations: interop.Pointer;
 }
 
 declare class if_order {
@@ -13759,6 +31470,23 @@ declare class if_order {
   ifo_count: number;
   ifo_reserved: number;
   ifo_ordered_indices: number;
+}
+
+declare class fileport_makeport_args {
+  constructor(init?: fileport_makeport_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  portnamep_l_: unknown /* const array */;
+  portnamep: number;
+  portnamep_r_: unknown /* const array */;
+}
+
+declare class rmdir_args {
+  constructor(init?: rmdir_args);
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
 }
 
 declare class linkat_args {
@@ -13780,6 +31508,21 @@ declare class linkat_args {
   flag_r_: unknown /* const array */;
 }
 
+declare class __Reply__mach_memory_entry_get_page_counts_t {
+  constructor(init?: __Reply__mach_memory_entry_get_page_counts_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  resident_cnt: number;
+  dirty_cnt: number;
+  swapped_cnt: number;
+}
+
+declare class BluetoothHCIEventDataBufferOverflowResults {
+  constructor(init?: BluetoothHCIEventDataBufferOverflowResults);
+  linkType: number;
+}
+
 declare class lseek_args {
   constructor(init?: lseek_args);
   fd_l_: unknown /* const array */;
@@ -13791,6 +31534,16 @@ declare class lseek_args {
   whence_l_: unknown /* const array */;
   whence: number;
   whence_r_: unknown /* const array */;
+}
+
+declare class unnamed_9083664578469270211 {
+  constructor(init?: unnamed_9083664578469270211);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
 }
 
 declare class preadv_nocancel_args {
@@ -13807,6 +31560,16 @@ declare class preadv_nocancel_args {
   offset_l_: unknown /* const array */;
   offset: number;
   offset_r_: unknown /* const array */;
+}
+
+declare class BluetoothL2CAPRetransmissionAndFlowControlOptions {
+  constructor(init?: BluetoothL2CAPRetransmissionAndFlowControlOptions);
+  flags: number;
+  txWindowSize: number;
+  maxTransmit: number;
+  retransmissionTimeout: number;
+  monitorTimeout: number;
+  maxPDUPayloadSize: number;
 }
 
 declare class iocompressionstats_notification_subsystem {
@@ -13845,6 +31608,21 @@ declare class IOCircularDataQueueEntryHeader {
   sentinel: number;
   _pad: number;
   data: unknown /* const array */;
+}
+
+declare class __Request__processor_set_policy_disable_t {
+  constructor(init?: __Request__processor_set_policy_disable_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  policy: number;
+  change_threads: number;
+}
+
+declare class SCSICmd_INQUIRY_Page83_Header_SPC_16 {
+  constructor(init?: SCSICmd_INQUIRY_Page83_Header_SPC_16);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  PAGE_LENGTH: number;
 }
 
 declare class __disable_threadsignal_args {
@@ -13887,6 +31665,17 @@ declare class getwgroups_args {
   guidset_r_: unknown /* const array */;
 }
 
+declare class __Request__mach_vm_wire_t {
+  constructor(init?: __Request__mach_vm_wire_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  task: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  address: number;
+  size: number;
+  desired_access: number;
+}
+
 declare class nfsd_args {
   constructor(init?: nfsd_args);
   sock: number;
@@ -13916,6 +31705,29 @@ declare class data_desc {
   base24: number;
 }
 
+declare class unnamed_5084774997933103994 {
+  constructor(init?: unnamed_5084774997933103994);
+  origCharSet: number;
+  repeat: number;
+  charSet: number;
+  charCode: number;
+  keyCode: number;
+  origCharCode: number;
+  reserved1: number;
+  keyboardType: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventReadRemoteSupportedFeaturesResults {
+  constructor(init?: BluetoothHCIEventReadRemoteSupportedFeaturesResults);
+  error: number;
+  connectionHandle: number;
+  lmpFeatures: BluetoothHCISupportedFeatures;
+}
+
 declare class chown_args {
   constructor(init?: chown_args);
   path_l_: unknown /* const array */;
@@ -13927,6 +31739,28 @@ declare class chown_args {
   gid_l_: unknown /* const array */;
   gid: number;
   gid_r_: unknown /* const array */;
+}
+
+declare class _NXParsedKeyMapping_ {
+  constructor(init?: _NXParsedKeyMapping_);
+  shorts: number;
+  keyBits: unknown /* const array */;
+  maxMod: number;
+  modDefs: unknown /* const array */;
+  numDefs: number;
+  keyDefs: unknown /* const array */;
+  numSeqs: number;
+  seqDefs: unknown /* const array */;
+  numSpecialKeys: number;
+  specialKeys: unknown /* const array */;
+  mapping: interop.Pointer;
+  mappingLen: number;
+}
+
+declare class BluetoothHCIEventQoSSetupCompleteResults {
+  constructor(init?: BluetoothHCIEventQoSSetupCompleteResults);
+  connectionHandle: number;
+  setupParams: BluetoothHCIQualityOfServiceSetupParams;
 }
 
 declare class removexattr_args {
@@ -13942,9 +31776,52 @@ declare class removexattr_args {
   options_r_: unknown /* const array */;
 }
 
+declare class unnamed_17841331041868831329 {
+  constructor(init?: unnamed_17841331041868831329);
+  x: number;
+  y: number;
+  z: number;
+  buttons: number;
+  pressure: number;
+  tilt: unnamed_18061919316489120194;
+  rotation: number;
+  tangentialPressure: number;
+  deviceID: number;
+  vendor1: number;
+  vendor2: number;
+  vendor3: number;
+  reserved: unknown /* const array */;
+}
+
 declare class kqueue_args {
   constructor(init?: kqueue_args);
   dummy: number;
+}
+
+declare class __Request__host_set_exception_ports_t {
+  constructor(init?: __Request__host_set_exception_ports_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  new_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  exception_mask: number;
+  behavior: number;
+  new_flavor: number;
+}
+
+declare class unnamed_8937820884545876431 {
+  constructor(init?: unnamed_8937820884545876431);
+  deltaAxis1: number;
+  deltaAxis2: number;
+  deltaAxis3: number;
+  reserved1: number;
+  fixedDeltaAxis1: number;
+  fixedDeltaAxis2: number;
+  fixedDeltaAxis3: number;
+  pointDeltaAxis1: number;
+  pointDeltaAxis2: number;
+  pointDeltaAxis3: number;
+  reserved8: unknown /* const array */;
 }
 
 declare class SuperSpeedEndpointCompanionDescriptor {
@@ -13954,6 +31831,13 @@ declare class SuperSpeedEndpointCompanionDescriptor {
   bMaxBurst: number;
   bmAttributes: number;
   wBytesPerInterval: number;
+}
+
+declare class bm18Cursor {
+  constructor(init?: bm18Cursor);
+  image: unknown /* const array */;
+  mask: unknown /* const array */;
+  save: unknown /* const array */;
 }
 
 declare class arcade_upcall_subsystem {
@@ -13966,11 +31850,23 @@ declare class arcade_upcall_subsystem {
   routine: unknown /* const array */;
 }
 
+declare class __Request__fairplayd_arcade_request_t {
+  constructor(init?: __Request__fairplayd_arcade_request_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  arcade_reg_port: mach_msg_port_descriptor_t;
+}
+
 declare class __Reply__mach_notify_port_destroyed_t {
   constructor(init?: __Reply__mach_notify_port_destroyed_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class BluetoothSetEventMask {
+  constructor(init?: BluetoothSetEventMask);
+  data: unknown /* const array */;
 }
 
 declare class mach_eventlink_wait_until_args {
@@ -13999,6 +31895,35 @@ declare class rt_addrinfo_ext {
   rtix_next_tiny: number;
 }
 
+declare class BTHeaderRec {
+  constructor(init?: BTHeaderRec);
+  treeDepth: number;
+  rootNode: number;
+  leafRecords: number;
+  firstLeafNode: number;
+  lastLeafNode: number;
+  nodeSize: number;
+  maxKeyLength: number;
+  totalNodes: number;
+  freeNodes: number;
+  reserved1: number;
+  clumpSize: number;
+  btreeType: number;
+  keyCompareType: number;
+  attributes: number;
+  reserved3: unknown /* const array */;
+}
+
+declare class BTNodeDescriptor {
+  constructor(init?: BTNodeDescriptor);
+  fLink: number;
+  bLink: number;
+  kind: number;
+  height: number;
+  numRecords: number;
+  reserved: number;
+}
+
 declare class bpf_comp_hdr {
   constructor(init?: bpf_comp_hdr);
   bh_tstamp: timeval32;
@@ -14009,6 +31934,135 @@ declare class bpf_comp_hdr {
   bh_padding: number;
 }
 
+declare class HFSPlusVolumeHeader {
+  constructor(init?: HFSPlusVolumeHeader);
+  signature: number;
+  version: number;
+  attributes: number;
+  lastMountedVersion: number;
+  journalInfoBlock: number;
+  createDate: number;
+  modifyDate: number;
+  backupDate: number;
+  checkedDate: number;
+  fileCount: number;
+  folderCount: number;
+  blockSize: number;
+  totalBlocks: number;
+  freeBlocks: number;
+  nextAllocation: number;
+  rsrcClumpSize: number;
+  dataClumpSize: number;
+  nextCatalogID: number;
+  writeCount: number;
+  encodingsBitmap: number;
+  finderInfo: unknown /* const array */;
+  allocationFile: HFSPlusForkData;
+  extentsFile: HFSPlusForkData;
+  catalogFile: HFSPlusForkData;
+  attributesFile: HFSPlusForkData;
+  startupFile: HFSPlusForkData;
+}
+
+declare class HFSPlusAttrKey {
+  constructor(init?: HFSPlusAttrKey);
+  keyLength: number;
+  pad: number;
+  fileID: number;
+  startBlock: number;
+  attrNameLen: number;
+  attrName: unknown /* const array */;
+}
+
+declare class HFSPlusAttrData {
+  constructor(init?: HFSPlusAttrData);
+  recordType: number;
+  reserved: unknown /* const array */;
+  attrSize: number;
+  attrData: unknown /* const array */;
+}
+
+declare class HFSPlusAttrExtents {
+  constructor(init?: HFSPlusAttrExtents);
+  recordType: number;
+  reserved: number;
+  extents: unknown /* const array */;
+}
+
+declare class HFSPlusAttrForkData {
+  constructor(init?: HFSPlusAttrForkData);
+  recordType: number;
+  reserved: number;
+  theFork: HFSPlusForkData;
+}
+
+declare class HFSPlusCatalogThread {
+  constructor(init?: HFSPlusCatalogThread);
+  recordType: number;
+  reserved: number;
+  parentID: number;
+  nodeName: HFSUniStr255;
+}
+
+declare class HFSPlusCatalogFile {
+  constructor(init?: HFSPlusCatalogFile);
+  recordType: number;
+  flags: number;
+  reserved1: number;
+  fileID: number;
+  createDate: number;
+  contentModDate: number;
+  attributeModDate: number;
+  accessDate: number;
+  backupDate: number;
+  bsdInfo: HFSPlusBSDInfo;
+  userInfo: FndrFileInfo;
+  finderInfo: FndrOpaqueInfo;
+  textEncoding: number;
+  reserved2: number;
+  dataFork: HFSPlusForkData;
+  resourceFork: HFSPlusForkData;
+}
+
+declare class HFSPlusCatalogFolder {
+  constructor(init?: HFSPlusCatalogFolder);
+  recordType: number;
+  flags: number;
+  valence: number;
+  folderID: number;
+  createDate: number;
+  contentModDate: number;
+  attributeModDate: number;
+  accessDate: number;
+  backupDate: number;
+  bsdInfo: HFSPlusBSDInfo;
+  userInfo: FndrDirInfo;
+  finderInfo: FndrOpaqueInfo;
+  textEncoding: number;
+  folderCount: number;
+}
+
+declare class HFSCatalogFolder {
+  constructor(init?: HFSCatalogFolder);
+  recordType: number;
+  flags: number;
+  valence: number;
+  folderID: number;
+  createDate: number;
+  modifyDate: number;
+  backupDate: number;
+  userInfo: FndrDirInfo;
+  finderInfo: FndrOpaqueInfo;
+  reserved: unknown /* const array */;
+}
+
+declare class HFSPlusCatalogKey {
+  constructor(init?: HFSPlusCatalogKey);
+  keyLength: number;
+  parentID: number;
+  nodeName: HFSUniStr255;
+}
+
 declare class dup_args {
   constructor(init?: dup_args);
   fd_l_: unknown /* const array */;
@@ -14016,21 +32070,90 @@ declare class dup_args {
   fd_r_: unknown /* const array */;
 }
 
-declare class fileport_makeport_args {
-  constructor(init?: fileport_makeport_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  portnamep_l_: unknown /* const array */;
-  portnamep: number;
-  portnamep_r_: unknown /* const array */;
+declare class BluetoothHCIReadLocalOOBDataResults {
+  constructor(init?: BluetoothHCIReadLocalOOBDataResults);
+  hash: BluetoothHCISimplePairingOOBData;
+  randomizer: BluetoothHCISimplePairingOOBData;
 }
 
-declare class rmdir_args {
-  constructor(init?: rmdir_args);
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
+declare class HFSCatalogKey {
+  constructor(init?: HFSCatalogKey);
+  keyLength: number;
+  reserved: number;
+  parentID: number;
+  nodeName: unknown /* const array */;
+}
+
+declare class HFSPlusForkData {
+  constructor(init?: HFSPlusForkData);
+  logicalSize: number;
+  clumpSize: number;
+  totalBlocks: number;
+  extents: unknown /* const array */;
+}
+
+declare class FndrExtendedFileInfo {
+  constructor(init?: FndrExtendedFileInfo);
+  document_id: number;
+  date_added: number;
+  extended_flags: number;
+  reserved2: number;
+  write_gen_counter: number;
+}
+
+declare class FndrExtendedDirInfo {
+  constructor(init?: FndrExtendedDirInfo);
+  document_id: number;
+  date_added: number;
+  extended_flags: number;
+  reserved3: number;
+  write_gen_counter: number;
+}
+
+declare class FndrOpaqueInfo {
+  constructor(init?: FndrOpaqueInfo);
+  opaque: unknown /* const array */;
+}
+
+declare class unnamed_18326681734152913417 {
+  constructor(init?: unnamed_18326681734152913417);
+  v: number;
+  h: number;
+}
+
+declare class FndrDirInfo {
+  constructor(init?: FndrDirInfo);
+  frRect: unnamed_10533238589767310233;
+  frFlags: number;
+  frLocation: unnamed_18326681734152913417;
+  opaque: number;
+}
+
+declare class unnamed_6672479442286501257 {
+  constructor(init?: unnamed_6672479442286501257);
+  v: number;
+  h: number;
+}
+
+declare class FndrFileInfo {
+  constructor(init?: FndrFileInfo);
+  fdType: number;
+  fdCreator: number;
+  fdFlags: number;
+  fdLocation: unnamed_6672479442286501257;
+  opaque: number;
+}
+
+declare class HFSPlusExtentDescriptor {
+  constructor(init?: HFSPlusExtentDescriptor);
+  startBlock: number;
+  blockCount: number;
+}
+
+declare class HFSExtentDescriptor {
+  constructor(init?: HFSExtentDescriptor);
+  startBlock: number;
+  blockCount: number;
 }
 
 declare class setgid_args {
@@ -14040,11 +32163,17 @@ declare class setgid_args {
   gid_r_: unknown /* const array */;
 }
 
-declare class __Request__fairplayd_arcade_request_t {
-  constructor(init?: __Request__fairplayd_arcade_request_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  arcade_reg_port: mach_msg_port_descriptor_t;
+declare class IOUSBDeviceQualifierDescriptor {
+  constructor(init?: IOUSBDeviceQualifierDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bcdUSB: number;
+  bDeviceClass: number;
+  bDeviceSubClass: number;
+  bDeviceProtocol: number;
+  bMaxPacketSize0: number;
+  bNumConfigurations: number;
+  bReserved: number;
 }
 
 declare class munlock_args {
@@ -14070,6 +32199,11 @@ declare class tcp_conn_status {
   constructor(init?: tcp_conn_status);
 }
 
+declare class BluetoothHCIEventHardwareErrorResults {
+  constructor(init?: BluetoothHCIEventHardwareErrorResults);
+  error: number;
+}
+
 declare class sigprocmask_args {
   constructor(init?: sigprocmask_args);
   how_l_: unknown /* const array */;
@@ -14081,6 +32215,12 @@ declare class sigprocmask_args {
   omask_l_: unknown /* const array */;
   omask: number;
   omask_r_: unknown /* const array */;
+}
+
+declare class BluetoothUserConfirmationRequest {
+  constructor(init?: BluetoothUserConfirmationRequest);
+  deviceAddress: BluetoothDeviceAddress;
+  numericValue: number;
 }
 
 declare class EXDisplayPipeHealthRecord {
@@ -14096,6 +32236,12 @@ declare class IOCircularDataQueueMemory {
   entries: unknown /* const array */;
 }
 
+declare class BluetoothHCIEventPageScanModeChangeResults {
+  constructor(init?: BluetoothHCIEventPageScanModeChangeResults);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanMode: number;
+}
+
 declare class syscp_ID_instructions_feat_1_reg {
   constructor(init?: syscp_ID_instructions_feat_1_reg);
   endianness_support: number;
@@ -14106,6 +32252,24 @@ declare class syscp_ID_instructions_feat_1_reg {
   immediate_support: number;
   interworking_support: number;
   jazelle_support: number;
+}
+
+declare class NXEventSystemDeviceList {
+  constructor(init?: NXEventSystemDeviceList);
+  dev: unknown /* const array */;
+}
+
+declare class IOHardwareCursorInfo {
+  constructor(init?: IOHardwareCursorInfo);
+  majorVersion: number;
+  minorVersion: number;
+  cursorHeight: number;
+  cursorWidth: number;
+  colorMap: interop.Pointer;
+  hardwareCursorData: interop.Pointer;
+  cursorHotSpotX: number;
+  cursorHotSpotY: number;
+  reserved: unknown /* const array */;
 }
 
 declare class lockf {
@@ -14119,7 +32283,7 @@ declare class lockf {
   lf_vnode: interop.Pointer;
   lf_next: interop.Pointer;
   lf_blkhd: locklist;
-  lf_block: unnamed_3271796597595602678;
+  lf_block: unnamed_14874861630647124959;
   lf_owner: interop.Pointer;
 }
 
@@ -14137,43 +32301,40 @@ declare class mptcp_symptoms_answer {
 
 declare class IOExternalAsyncMethod {
   constructor(init?: IOExternalAsyncMethod);
-  object: interop.Pointer;
+  object: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
   func: number;
   flags: number;
   count0: number;
   count1: number;
 }
 
-declare class unnamed_8193567900268426915 {
-  constructor(init?: unnamed_8193567900268426915);
-  usage: number;
-  reserved1: number;
-  stringIndex: number;
-  reserved2: number;
-  designatorIndex: number;
-  reserved3: number;
-}
-
-declare class faccessat_args {
-  constructor(init?: faccessat_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  path_l_: unknown /* const array */;
-  path: number;
-  path_r_: unknown /* const array */;
-  amode_l_: unknown /* const array */;
-  amode: number;
-  amode_r_: unknown /* const array */;
-  flag_l_: unknown /* const array */;
-  flag: number;
-  flag_r_: unknown /* const array */;
+declare class BluetoothHCIInquiryAccessCode {
+  constructor(init?: BluetoothHCIInquiryAccessCode);
+  data: unknown /* const array */;
 }
 
 declare class _AVCConnectTargetPlugsOutParams {
   constructor(init?: _AVCConnectTargetPlugsOutParams);
   sourcePlugNum: number;
   destPlugNum: number;
+}
+
+declare class IOUSBDeviceRequestSetSELData {
+  constructor(init?: IOUSBDeviceRequestSetSELData);
+  u1Sel: number;
+  u1Pel: number;
+  u2Sel: number;
+  u2Pel: number;
+}
+
+declare class SPCModeParameterHeader10 {
+  constructor(init?: SPCModeParameterHeader10);
+  MODE_DATA_LENGTH: number;
+  MEDIUM_TYPE: number;
+  DEVICE_SPECIFIC_PARAMETER: number;
+  LONGLBA: number;
+  RESERVED: number;
+  BLOCK_DESCRIPTOR_LENGTH: number;
 }
 
 declare class net_qos_guideline_args {
@@ -14226,6 +32387,45 @@ declare class conninfo_mptcp {
   mptcpci_flows: unknown /* const array */;
 }
 
+declare class IOUSBDFUDescriptor {
+  constructor(init?: IOUSBDFUDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bmAttributes: number;
+  wDetachTimeout: number;
+  wTransferSize: number;
+}
+
+declare class CDDiscInfo {
+  constructor(init?: CDDiscInfo);
+  dataLength: number;
+  discStatus: number;
+  stateOfLastSession: number;
+  erasable: number;
+  reserved: number;
+  numberOfFirstTrack: number;
+  numberOfSessionsLSB: number;
+  firstTrackNumberInLastSessionLSB: number;
+  lastTrackNumberInLastSessionLSB: number;
+  reserved3: number;
+  unrestrictedUse: number;
+  discBarCodeValid: number;
+  discIdentificationValid: number;
+  discType: number;
+  numberOfSessionsMSB: number;
+  firstTrackNumberInLastSessionMSB: number;
+  lastTrackNumberInLastSessionMSB: number;
+  discIdentification: number;
+  reserved7: number;
+  lastSessionLeadInStartTime: CDMSF;
+  reserved8: number;
+  lastPossibleStartTimeOfLeadOut: CDMSF;
+  discBarCode: unknown /* const array */;
+  reserved9: number;
+  numberOfOPCTableEntries: number;
+  opcTableEntries: unknown /* const array */;
+}
+
 declare class __CodeDirectory {
   constructor(init?: __CodeDirectory);
   magic: number;
@@ -14265,6 +32465,18 @@ declare class __CodeDirectory {
   end_withLinkage: unknown /* const array */;
 }
 
+declare class IOUSBDeviceCapabilitySuperSpeedPlusUSB {
+  constructor(init?: IOUSBDeviceCapabilitySuperSpeedPlusUSB);
+  bLength: number;
+  bDescriptorType: number;
+  bDevCapabilityType: number;
+  bReserved: number;
+  bmAttributes: number;
+  wFunctionalitySupport: number;
+  wReserved: number;
+  bmSublinkSpeedAttr: interop.Pointer;
+}
+
 declare class if_rxpoll_stats {
   constructor(init?: if_rxpoll_stats);
   ifi_poll_off_req: number;
@@ -14288,6 +32500,18 @@ declare class if_rxpoll_stats {
   ifi_poll_bytes_hiwat: number;
   ifi_poll_packets_limit: number;
   ifi_poll_interval_time: number;
+}
+
+declare class __Request__mach_memory_entry_get_page_counts_t {
+  constructor(init?: __Request__mach_memory_entry_get_page_counts_t);
+  Head: mach_msg_header_t;
+}
+
+declare class __Request__mach_memory_entry_access_tracking_t {
+  constructor(init?: __Request__mach_memory_entry_access_tracking_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  access_tracking: number;
 }
 
 declare class mptcp_itf_stats {
@@ -14321,6 +32545,24 @@ declare class getlogin_args {
   namelen_r_: unknown /* const array */;
 }
 
+declare class __Reply__mach_voucher_debug_info_t {
+  constructor(init?: __Reply__mach_voucher_debug_info_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  recipesCnt: number;
+  recipes: unknown /* const array */;
+}
+
+declare class __Reply__mach_voucher_extract_all_attr_recipes_t {
+  constructor(init?: __Reply__mach_voucher_extract_all_attr_recipes_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  recipesCnt: number;
+  recipes: unknown /* const array */;
+}
+
 declare class __Reply__mach_voucher_attr_control_create_mach_voucher_t {
   constructor(init?: __Reply__mach_voucher_attr_control_create_mach_voucher_t);
   Head: mach_msg_header_t;
@@ -14328,10 +32570,75 @@ declare class __Reply__mach_voucher_attr_control_create_mach_voucher_t {
   voucher: mach_msg_port_descriptor_t;
 }
 
+declare class __Reply__mach_voucher_extract_attr_recipe_t {
+  constructor(init?: __Reply__mach_voucher_extract_attr_recipe_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  recipeCnt: number;
+  recipe: unknown /* const array */;
+}
+
+declare class __Reply__mach_voucher_extract_attr_content_t {
+  constructor(init?: __Reply__mach_voucher_extract_attr_content_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  contentCnt: number;
+  content: unknown /* const array */;
+}
+
 declare class DTMemoryMapRange {
   constructor(init?: DTMemoryMapRange);
   paddr: number;
   length: number;
+}
+
+declare class __Request__mach_voucher_debug_info_t {
+  constructor(init?: __Request__mach_voucher_debug_info_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  voucher_name: number;
+  recipesCnt: number;
+}
+
+declare class __Request__mach_voucher_attr_command_t {
+  constructor(init?: __Request__mach_voucher_attr_command_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  key: number;
+  command: number;
+  in_contentCnt: number;
+  in_content: unknown /* const array */;
+  out_contentCnt: number;
+}
+
+declare class __Request__mach_voucher_extract_attr_recipe_t {
+  constructor(init?: __Request__mach_voucher_extract_attr_recipe_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  key: number;
+  recipeCnt: number;
+}
+
+declare class __Reply__mach_exception_raise_state_t {
+  constructor(init?: __Reply__mach_exception_raise_state_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  flavor: number;
+  new_stateCnt: number;
+  new_state: unknown /* const array */;
+}
+
+declare class setrlimit_args {
+  constructor(init?: setrlimit_args);
+  which_l_: unknown /* const array */;
+  which: number;
+  which_r_: unknown /* const array */;
+  rlp_l_: unknown /* const array */;
+  rlp: number;
+  rlp_r_: unknown /* const array */;
 }
 
 declare class vfs_purge_args {
@@ -14355,10 +32662,24 @@ declare class bsdthread_terminate_args {
   sema_or_ulock_r_: unknown /* const array */;
 }
 
+declare class unnamed_9871792293288268858 {
+  constructor(init?: unnamed_9871792293288268858);
+  linkmtu: number;
+  maxmtu: number;
+  basereachable: number;
+  reachable: number;
+  retrans: number;
+  flags: number;
+  recalctm: number;
+  chlim: number;
+  receivedra: number;
+  collision_count: number;
+}
+
 declare class in6_ondireq {
   constructor(init?: in6_ondireq);
   ifname: unknown /* const array */;
-  ndi: unnamed_7506672353382092904;
+  ndi: unnamed_9871792293288268858;
 }
 
 declare class setgroups_args {
@@ -14402,6 +32723,22 @@ declare class thsc_time_energy_cpi {
   ttec_energy_nj: number;
 }
 
+declare class __Reply__clock_alarm_t {
+  constructor(init?: __Reply__clock_alarm_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__clock_get_attributes_t {
+  constructor(init?: __Reply__clock_get_attributes_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  clock_attrCnt: number;
+  clock_attr: unknown /* const array */;
+}
+
 declare class kev_dl_node_presence {
   constructor(init?: kev_dl_node_presence);
   link_data: net_event_data;
@@ -14424,6 +32761,11 @@ declare class __mach_bridge_remote_time_args {
   local_timestamp_r_: unknown /* const array */;
 }
 
+declare class VDEntryRecord {
+  constructor(init?: VDEntryRecord);
+  csTable: string | null;
+}
+
 declare class sfi_pidctl_args {
   constructor(init?: sfi_pidctl_args);
   operation_l_: unknown /* const array */;
@@ -14438,6 +32780,41 @@ declare class sfi_pidctl_args {
   out_sfi_flags_l_: unknown /* const array */;
   out_sfi_flags: number;
   out_sfi_flags_r_: unknown /* const array */;
+}
+
+declare class IODetailedTimingInformationV1 {
+  constructor(init?: IODetailedTimingInformationV1);
+  pixelClock: number;
+  horizontalActive: number;
+  horizontalBlanking: number;
+  horizontalBorder: number;
+  horizontalSyncOffset: number;
+  horizontalSyncWidth: number;
+  verticalActive: number;
+  verticalBlanking: number;
+  verticalBorder: number;
+  verticalSyncOffset: number;
+  verticalSyncWidth: number;
+}
+
+declare class __Reply__clock_set_time_t {
+  constructor(init?: __Reply__clock_set_time_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class BluetoothHCIStoredLinkKeysInfo {
+  constructor(init?: BluetoothHCIStoredLinkKeysInfo);
+  numLinkKeysRead: number;
+  maxNumLinkKeysAllowedInDevice: number;
+}
+
+declare class __Request__mach_voucher_extract_all_attr_recipes_t {
+  constructor(init?: __Request__mach_voucher_extract_all_attr_recipes_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  recipesCnt: number;
 }
 
 declare class __lck_attr__ {
@@ -14460,16 +32837,6 @@ declare class access_extended_args {
   uid_r_: unknown /* const array */;
 }
 
-declare class telemetry_notification_subsystem {
-  constructor(init?: telemetry_notification_subsystem);
-  server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  start: number;
-  end: number;
-  maxsize: number;
-  reserved: number;
-  routine: unknown /* const array */;
-}
-
 declare class mount_args {
   constructor(init?: mount_args);
   type_l_: unknown /* const array */;
@@ -14484,6 +32851,16 @@ declare class mount_args {
   data_l_: unknown /* const array */;
   data: number;
   data_r_: unknown /* const array */;
+}
+
+declare class HFSPlusBSDInfo {
+  constructor(init?: HFSPlusBSDInfo);
+  ownerID: number;
+  groupID: number;
+  adminFlags: number;
+  ownerFlags: number;
+  fileMode: number;
+  special: unnamed_12119481840643110804;
 }
 
 declare class OpaqueDTEntryIterator {
@@ -14534,11 +32911,27 @@ declare class usrctl_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class __Reply__processor_set_policy_control_t {
+  constructor(init?: __Reply__processor_set_policy_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class sigsuspend_args {
   constructor(init?: sigsuspend_args);
   mask_l_: unknown /* const array */;
   mask: number;
   mask_r_: unknown /* const array */;
+}
+
+declare class __Reply__host_processors_t {
+  constructor(init?: __Reply__host_processors_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  out_processor_list: mach_msg_ool_ports_descriptor_t;
+  NDR: NDR_record_t;
+  out_processor_listCnt: number;
 }
 
 declare class os_fault_with_payload_args {
@@ -14570,16 +32963,42 @@ declare class fsync_args {
   fd_r_: unknown /* const array */;
 }
 
-declare class sptm_call_regs_t {
-  constructor(init?: sptm_call_regs_t);
-  x0: number;
-  x1: number;
-  x2: number;
-  x3: number;
-  x4: number;
-  x5: number;
-  x6: number;
-  x7: number;
+declare class SCSICmd_INQUIRY_Page83_Header {
+  constructor(init?: SCSICmd_INQUIRY_Page83_Header);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  RESERVED: number;
+  PAGE_LENGTH: number;
+}
+
+declare class __Reply__processor_set_threads_t {
+  constructor(init?: __Reply__processor_set_threads_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  thread_list: mach_msg_ool_ports_descriptor_t;
+  NDR: NDR_record_t;
+  thread_listCnt: number;
+}
+
+declare class IOColorEntry {
+  constructor(init?: IOColorEntry);
+  index: number;
+  red: number;
+  green: number;
+  blue: number;
+}
+
+declare class __Request__processor_set_stack_usage_t {
+  constructor(init?: __Request__processor_set_stack_usage_t);
+  Head: mach_msg_header_t;
+}
+
+declare class DVDKey1Info {
+  constructor(init?: DVDKey1Info);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  key1Value: unknown /* const array */;
+  reserved2: unknown /* const array */;
 }
 
 declare class __Request__sysdiagnose_notification_t {
@@ -14587,6 +33006,35 @@ declare class __Request__sysdiagnose_notification_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   flags: number;
+}
+
+declare class unnamed_6659401567322203909 {
+  constructor(init?: unnamed_6659401567322203909);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
+}
+
+declare class DCLCallProcStruct {
+  constructor(init?: DCLCallProcStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  proc: (p1: interop.PointerConvertible) => void | null;
+  procData: interop.Pointer;
+}
+
+declare class BluetoothHCIInquiryWithRSSIResult {
+  constructor(init?: BluetoothHCIInquiryWithRSSIResult);
+  deviceAddress: BluetoothDeviceAddress;
+  pageScanRepetitionMode: number;
+  reserved: number;
+  classOfDevice: number;
+  clockOffset: number;
+  RSSIValue: number;
 }
 
 declare class daleipc_network_clock_controller {
@@ -14601,14 +33049,31 @@ declare class __Request__coalition_notification_t {
   flags: number;
 }
 
-declare class receive_vfs_nspace_subsystem {
-  constructor(init?: receive_vfs_nspace_subsystem);
+declare class __Reply__host_swap_exception_ports_t {
+  constructor(init?: __Reply__host_swap_exception_ports_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  old_handlerss: unknown /* const array */;
+  NDR: NDR_record_t;
+  masksCnt: number;
+  masks: unknown /* const array */;
+  old_behaviors: unknown /* const array */;
+  old_flavors: unknown /* const array */;
+}
+
+declare class telemetry_notification_subsystem {
+  constructor(init?: telemetry_notification_subsystem);
   server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
   start: number;
   end: number;
   maxsize: number;
   reserved: number;
   routine: unknown /* const array */;
+}
+
+declare class __smrq_link_t {
+  constructor(init?: __smrq_link_t);
+  __smr_ptr: interop.Pointer;
 }
 
 declare class preadv_args {
@@ -14643,6 +33108,13 @@ declare class IOUSBHostPipe_LocalIVars {
   constructor(init?: IOUSBHostPipe_LocalIVars);
 }
 
+declare class __Request__host_processor_set_priv_t {
+  constructor(init?: __Request__host_processor_set_priv_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  set_name: mach_msg_port_descriptor_t;
+}
+
 declare class clock_reply_subsystem {
   constructor(init?: clock_reply_subsystem);
   server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
@@ -14668,6 +33140,16 @@ declare class IOAudioClientBuffer64 {
   mNextBuffer64: interop.Pointer;
 }
 
+declare class aio_cancel_args {
+  constructor(init?: aio_cancel_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  aiocbp_l_: unknown /* const array */;
+  aiocbp: number;
+  aiocbp_r_: unknown /* const array */;
+}
+
 declare class getaudit_addr_args {
   constructor(init?: getaudit_addr_args);
   auditinfo_addr_l_: unknown /* const array */;
@@ -14684,6 +33166,45 @@ declare class netsvctype_dscp_map {
 
 declare class __lck_mtx_ext_t__ {
   constructor(init?: __lck_mtx_ext_t__);
+}
+
+declare class __Request__vm_allocate_cpm_t {
+  constructor(init?: __Request__vm_allocate_cpm_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  task: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  address: number;
+  size: number;
+  flags: number;
+}
+
+declare class BluetoothEnhancedSynchronousConnectionInfo {
+  constructor(init?: BluetoothEnhancedSynchronousConnectionInfo);
+  transmitBandWidth: number;
+  receiveBandWidth: number;
+  transmitCodingFormat: number;
+  receiveCodingFormat: number;
+  transmitCodecFrameSize: number;
+  receiveCodecFrameSize: number;
+  inputBandwidth: number;
+  outputBandwidth: number;
+  inputCodingFormat: number;
+  outputCodingFormat: number;
+  inputCodedDataSize: number;
+  outputCodedDataSize: number;
+  inputPCMDataFormat: number;
+  outputPCMDataFormat: number;
+  inputPCMSampelPayloadMSBPosition: number;
+  outputPCMSampelPayloadMSBPosition: number;
+  inputDataPath: number;
+  outputDataPath: number;
+  inputTransportUnitSize: number;
+  outputTransportUnitSize: number;
+  maxLatency: number;
+  voiceSetting: number;
+  retransmissionEffort: number;
+  packetType: number;
 }
 
 declare class aio_return_args {
@@ -14712,7 +33233,7 @@ declare class HIDValueCaps {
   logicalMax: number;
   physicalMin: number;
   physicalMax: number;
-  u: unnamed_11897257300510808881;
+  u: unnamed_11225586803141584598;
 }
 
 declare class kd_cpumap {
@@ -14732,16 +33253,107 @@ declare class getgroups_args {
   gidset_r_: unknown /* const array */;
 }
 
-declare class unnamed_15070889580481282394 {
-  constructor(init?: unnamed_15070889580481282394);
-  z: unknown /* const array */;
-  p: unknown /* const array */;
+declare class IOUSBCompletion {
+  constructor(init?: IOUSBCompletion);
+  target: interop.Pointer;
+  action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  parameter: interop.Pointer;
+}
+
+declare class UserExportDCLUpdateDCLListStruct {
+  constructor(init?: UserExportDCLUpdateDCLListStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  dclCommandList: number;
+  numDCLCommands: number;
+}
+
+declare class _IOAudioSampleIntervalDescriptor {
+  constructor(init?: _IOAudioSampleIntervalDescriptor);
+  sampleIntervalHi: number;
+  sampleIntervalLo: number;
+}
+
+declare class __Request__processor_set_tasks_with_flavor_t {
+  constructor(init?: __Request__processor_set_tasks_with_flavor_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+}
+
+declare class IOBlitCopyRectanglesStruct {
+  constructor(init?: IOBlitCopyRectanglesStruct);
+  operation: IOBlitOperationStruct;
+  count: number;
+  rects: unknown /* const array */;
+}
+
+declare class SBCModePageFormatDevice {
+  constructor(init?: SBCModePageFormatDevice);
+  header: ModePageFormatHeader;
+  TRACKS_PER_ZONE: number;
+  ALTERNATE_SECTORS_PER_ZONE: number;
+  ALTERNATE_TRACKS_PER_ZONE: number;
+  ALTERNATE_TRACKS_PER_LOGICAL_UNIT: number;
+  SECTORS_PER_TRACK: number;
+  DATA_BYTES_PER_PHYSICAL_SECTOR: number;
+  INTERLEAVE: number;
+  TRACK_SKEW_FACTOR: number;
+  CYLINDER_SKEW_FACTOR: number;
+  SSEC_HSEC_RMB_SURF: number;
+  RESERVED: unknown /* const array */;
 }
 
 declare class DeviceTreeNodeProperty {
   constructor(init?: DeviceTreeNodeProperty);
   name: unknown /* const array */;
   length: number;
+}
+
+declare class scattered_relocation_info {
+  constructor(init?: scattered_relocation_info);
+  r_address: number;
+  r_type: number;
+  r_length: number;
+  r_pcrel: number;
+  r_scattered: number;
+  r_value: number;
+}
+
+declare class unnamed_15880291133359805794 {
+  constructor(init?: unnamed_15880291133359805794);
+  sa_wifi_status: number;
+  sa_cell_status: number;
+}
+
+declare class relocation_info {
+  constructor(init?: relocation_info);
+  r_address: number;
+  r_symbolnum: number;
+  r_pcrel: number;
+  r_length: number;
+  r_extern: number;
+  r_type: number;
+}
+
+declare class unnamed_13504975043066652044 {
+  constructor(init?: unnamed_13504975043066652044);
+  usage: number;
+  reserved1: number;
+  stringIndex: number;
+  reserved2: number;
+  designatorIndex: number;
+  reserved3: number;
+}
+
+declare class IOVideoDeviceNotificationMessage {
+  constructor(init?: IOVideoDeviceNotificationMessage);
+  mMessageHeader: mach_msg_header_t;
+  mClientData: number;
+  mNumberNotifications: number;
+  mNotifications: unknown /* const array */;
 }
 
 declare class if_traffic_class {
@@ -14788,6 +33400,14 @@ declare class ifnet_attach_proto_param_v2 {
   send_arp: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
 }
 
+declare class SPCModeParameterHeader6 {
+  constructor(init?: SPCModeParameterHeader6);
+  MODE_DATA_LENGTH: number;
+  MEDIUM_TYPE: number;
+  DEVICE_SPECIFIC_PARAMETER: number;
+  BLOCK_DESCRIPTOR_LENGTH: number;
+}
+
 declare class backtrace_control {
   constructor(init?: backtrace_control);
   btc_flags: interop.Enum<typeof backtrace_flags_t>;
@@ -14796,6 +33416,21 @@ declare class backtrace_control {
   btc_user_copy: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
   btc_user_copy_context: interop.Pointer;
   btc_addr_offset: number;
+}
+
+declare class IOUSBHIDReportDesc {
+  constructor(init?: IOUSBHIDReportDesc);
+  hidDescriptorType: number;
+  hidDescriptorLengthLo: number;
+  hidDescriptorLengthHi: number;
+}
+
+declare class NXEventSystemDevice {
+  constructor(init?: NXEventSystemDevice);
+  interface: number;
+  interface_addr: number;
+  dev_type: number;
+  id: number;
 }
 
 declare class circle_queue_head {
@@ -14823,12 +33458,44 @@ declare class OSObjectUserVars {
   constructor(init?: OSObjectUserVars);
 }
 
+declare class DCLTimeStampStruct {
+  constructor(init?: DCLTimeStampStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  timeStamp: number;
+}
+
+declare class unnamed_12983830876191417618 {
+  constructor(init?: unnamed_12983830876191417618);
+  ifscope: number;
+}
+
+declare class __Reply__mach_memory_entry_ownership_t {
+  constructor(init?: __Reply__mach_memory_entry_ownership_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class BOSDescriptor {
   constructor(init?: BOSDescriptor);
   bLength: number;
   bDescriptorType: number;
   wTotalLength: number;
   bNumDeviceCaps: number;
+}
+
+declare class __Reply__host_get_exception_ports_t {
+  constructor(init?: __Reply__host_get_exception_ports_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  old_handlers: unknown /* const array */;
+  NDR: NDR_record_t;
+  masksCnt: number;
+  masks: unknown /* const array */;
+  old_behaviors: unknown /* const array */;
+  old_flavors: unknown /* const array */;
 }
 
 declare class macos_panic_header {
@@ -14846,6 +33513,22 @@ declare class macos_panic_header {
   mph_other_log_len: number;
   mph_roots_installed: number;
   mph_data: interop.Pointer;
+}
+
+declare class SCSICmd_INQUIRY_Page83_TargetPortGroup_Identifier {
+  constructor(init?: SCSICmd_INQUIRY_Page83_TargetPortGroup_Identifier);
+  RESERVED: number;
+  TARGET_PORT_GROUP: number;
+}
+
+declare class __Request__processor_set_tasks_t {
+  constructor(init?: __Request__processor_set_tasks_t);
+  Head: mach_msg_header_t;
+}
+
+declare class BluetoothAFHHostChannelClassification {
+  constructor(init?: BluetoothAFHHostChannelClassification);
+  data: unknown /* const array */;
 }
 
 declare class __Request__vfs_resolve_file_t {
@@ -14877,27 +33560,6 @@ declare class priority_queue {
   constructor(init?: priority_queue);
 }
 
-declare class unnamed_1254637360707554498 {
-  constructor(init?: unnamed_1254637360707554498);
-  registerNum: number;
-  functionNum: number;
-  deviceNum: number;
-  busNum: number;
-  registerNumExtended: number;
-  resv: number;
-}
-
-declare class in6_route_info {
-  constructor(init?: in6_route_info);
-  prefix: in6_addr;
-  prefixlen: number;
-  defrtrs: number;
-}
-
-declare class IOInterruptAccountingReporter {
-  constructor(init?: IOInterruptAccountingReporter);
-}
-
 declare class __pthread_fchdir_args {
   constructor(init?: __pthread_fchdir_args);
   fd_l_: unknown /* const array */;
@@ -14909,11 +33571,28 @@ declare class IOHIDDevice_IVars {
   constructor(init?: IOHIDDevice_IVars);
 }
 
+declare class JournalInfoBlock {
+  constructor(init?: JournalInfoBlock);
+  flags: number;
+  device_signature: unknown /* const array */;
+  offset: number;
+  size: number;
+  ext_jnl_uuid: unknown /* const array */;
+  machine_serial_num: unknown /* const array */;
+  reserved: unknown /* const array */;
+}
+
 declare class __Reply__memory_error_notification_t {
   constructor(init?: __Reply__memory_error_notification_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class BluetoothHCIFailedContactInfo {
+  constructor(init?: BluetoothHCIFailedContactInfo);
+  count: number;
+  handle: number;
 }
 
 declare class unlink_args {
@@ -14929,11 +33608,26 @@ declare class in6_ndireq {
   ndi: nd_ifinfo;
 }
 
+declare class _IOAudioNotificationMessage {
+  constructor(init?: _IOAudioNotificationMessage);
+  messageHeader: mach_msg_header_t;
+  type: number;
+  ref: number;
+  sender: interop.Pointer;
+}
+
 declare class fchdir_args {
   constructor(init?: fchdir_args);
   fd_l_: unknown /* const array */;
   fd: number;
   fd_r_: unknown /* const array */;
+}
+
+declare class __Reply__processor_set_policy_disable_t {
+  constructor(init?: __Reply__processor_set_policy_disable_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class kdebug_trace64_args {
@@ -14965,6 +33659,30 @@ declare class ipv6_prefix {
   constructor(init?: ipv6_prefix);
   ipv6_prefix: in6_addr;
   prefix_len: number;
+}
+
+declare class IOVideoStreamDescription {
+  constructor(init?: IOVideoStreamDescription);
+  mVideoCodecType: number;
+  mVideoCodecFlags: number;
+  mWidth: number;
+  mHeight: number;
+  mReserved1: number;
+  mReserved2: number;
+}
+
+declare class BluetoothPINCode {
+  constructor(init?: BluetoothPINCode);
+  data: unknown /* const array */;
+}
+
+declare class BluetoothHCIRequestCallbackInfo {
+  constructor(init?: BluetoothHCIRequestCallbackInfo);
+  userCallback: number;
+  userRefCon: number;
+  internalRefCon: number;
+  asyncIDRefCon: number;
+  reserved: number;
 }
 
 declare class getpgid_args {
@@ -15033,6 +33751,12 @@ declare class setwgroups_args {
   guidset_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIScanActivity {
+  constructor(init?: BluetoothHCIScanActivity);
+  scanInterval: number;
+  scanWindow: number;
+}
+
 declare class __Reply__mach_voucher_attr_control_get_values_t {
   constructor(init?: __Reply__mach_voucher_attr_control_get_values_t);
   Head: mach_msg_header_t;
@@ -15056,6 +33780,14 @@ declare class code_desc {
   opsz: number;
   granular: number;
   base24: number;
+}
+
+declare class OSNotificationHeader {
+  constructor(init?: OSNotificationHeader);
+  size: number;
+  type: number;
+  reference: unknown /* const array */;
+  content: interop.Pointer;
 }
 
 declare class bsdthread_register_args {
@@ -15143,38 +33875,15 @@ declare class _IORecursiveLock {
   constructor(init?: _IORecursiveLock);
 }
 
-declare class __Reply__mach_exception_raise_state_t {
-  constructor(init?: __Reply__mach_exception_raise_state_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  flavor: number;
-  new_stateCnt: number;
-  new_state: unknown /* const array */;
+declare class OpaqueDTEntry {
+  constructor(init?: OpaqueDTEntry);
+  nProperties: number;
+  nChildren: number;
 }
 
-declare class setrlimit_args {
-  constructor(init?: setrlimit_args);
-  which_l_: unknown /* const array */;
-  which: number;
-  which_r_: unknown /* const array */;
-  rlp_l_: unknown /* const array */;
-  rlp: number;
-  rlp_r_: unknown /* const array */;
-}
-
-declare class rt_msghdr_common {
-  constructor(init?: rt_msghdr_common);
-  rtm_msglen: number;
-  rtm_version: number;
-  rtm_type: number;
-  rtm_index: number;
-  rtm_flags: number;
-  rtm_addrs: number;
-  rtm_pid: number;
-  rtm_seq: number;
-  rtm_errno: number;
-  rtm_use: number;
+declare class BluetoothHCIEventAuthenticationCompleteResults {
+  constructor(init?: BluetoothHCIEventAuthenticationCompleteResults);
+  connectionHandle: number;
 }
 
 declare class waitid_nocancel_args {
@@ -15193,11 +33902,32 @@ declare class waitid_nocancel_args {
   options_r_: unknown /* const array */;
 }
 
+declare class __Reply__mach_voucher_attr_command_t {
+  constructor(init?: __Reply__mach_voucher_attr_command_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  out_contentCnt: number;
+  out_content: unknown /* const array */;
+}
+
 declare class __Reply__ktrace_background_available_t {
   constructor(init?: __Reply__ktrace_background_available_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class IOUSBDevReqOOL {
+  constructor(init?: IOUSBDevReqOOL);
+  bmRequestType: number;
+  bRequest: number;
+  wValue: number;
+  wIndex: number;
+  wLength: number;
+  pData: interop.Pointer;
+  wLenDone: number;
+  pipeRef: number;
 }
 
 declare class if_netif_stats {
@@ -15218,6 +33948,13 @@ declare class if_netif_stats {
   ifn_rx_mit_cfg_interval: number;
 }
 
+declare class __Reply__clock_set_attributes_t {
+  constructor(init?: __Reply__clock_set_attributes_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class __Request__vfs_resolve_file_with_audit_token_t {
   constructor(init?: __Request__vfs_resolve_file_with_audit_token_t);
   Head: mach_msg_header_t;
@@ -15228,6 +33965,15 @@ declare class __Request__vfs_resolve_file_with_audit_token_t {
   size: number;
   path: unknown /* const array */;
   req_atoken: audit_token_t;
+}
+
+declare class _IOAudioBufferDataDescriptor {
+  constructor(init?: _IOAudioBufferDataDescriptor);
+  fActualDataByteSize: number;
+  fActualNumSampleFrames: number;
+  fTotalDataByteSize: number;
+  fNominalDataByteSize: number;
+  fData: unknown /* const array */;
 }
 
 declare class IOExternalMethodArgumentsOpaque {
@@ -15254,6 +34000,27 @@ declare class fs_snapshot_args {
   flags_l_: unknown /* const array */;
   flags: number;
   flags_r_: unknown /* const array */;
+}
+
+declare class BluetoothHCISimplePairingOOBData {
+  constructor(init?: BluetoothHCISimplePairingOOBData);
+  data: unknown /* const array */;
+}
+
+declare class HFSExtentKey {
+  constructor(init?: HFSExtentKey);
+  keyLength: number;
+  forkType: number;
+  fileID: number;
+  startBlock: number;
+}
+
+declare class __Request__clock_get_attributes_t {
+  constructor(init?: __Request__clock_get_attributes_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  clock_attrCnt: number;
 }
 
 declare class nfs_export_stat_rec {
@@ -15294,6 +34061,16 @@ declare class IOSimpleReportValues {
   reserved3: number;
 }
 
+declare class __Request__clock_alarm_t {
+  constructor(init?: __Request__clock_alarm_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  alarm_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  alarm_type: number;
+  alarm_time: mach_timespec;
+}
+
 declare class __mac_execve_args {
   constructor(init?: __mac_execve_args);
   fname_l_: unknown /* const array */;
@@ -15308,6 +34085,14 @@ declare class __mac_execve_args {
   mac_p_l_: unknown /* const array */;
   mac_p: number;
   mac_p_r_: unknown /* const array */;
+}
+
+declare class HFSCatalogThread {
+  constructor(init?: HFSCatalogThread);
+  recordType: number;
+  reserved: unknown /* const array */;
+  parentID: number;
+  nodeName: unknown /* const array */;
 }
 
 declare class user_nfs_export_args {
@@ -15346,16 +34131,10 @@ declare class kevent64_args {
   timeout_r_: unknown /* const array */;
 }
 
-declare class unnamed_12636272579211584056 {
-  constructor(init?: unnamed_12636272579211584056);
-  indicator: interop.Enum<typeof EXDisplayPipeIndicator>;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  alpha: number;
-  enabled: boolean;
-  populated: boolean;
+declare class BluetoothHCIEventReadClockOffsetResults {
+  constructor(init?: BluetoothHCIEventReadClockOffsetResults);
+  connectionHandle: number;
+  clockOffset: number;
 }
 
 declare class embedded_panic_header {
@@ -15412,6 +34191,22 @@ declare class micro_snapshot {
   ms_opaque_flags: number;
 }
 
+declare class IOUSBSuperSpeedPlusIsochronousEndpointCompanionDescriptor {
+  constructor(init?: IOUSBSuperSpeedPlusIsochronousEndpointCompanionDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  wReserved: number;
+  dwBytesPerInterval: number;
+}
+
+declare class __Reply__clock_get_time_t {
+  constructor(init?: __Reply__clock_get_time_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  cur_time: mach_timespec;
+}
+
 declare class csops_args {
   constructor(init?: csops_args);
   pid_l_: unknown /* const array */;
@@ -15428,11 +34223,59 @@ declare class csops_args {
   usersize_r_: unknown /* const array */;
 }
 
+declare class VPBlock {
+  constructor(init?: VPBlock);
+  vpBaseOffset: number;
+  vpRowBytes: number;
+  vpBounds: Rect;
+  vpVersion: number;
+  vpPackType: number;
+  vpPackSize: number;
+  vpHRes: number;
+  vpVRes: number;
+  vpPixelType: number;
+  vpPixelSize: number;
+  vpCmpCount: number;
+  vpCmpSize: number;
+  vpPlaneBytes: number;
+}
+
+declare class IOHIDEventService_LocalIVars {
+  constructor(init?: IOHIDEventService_LocalIVars);
+}
+
+declare class receive_vfs_nspace_subsystem {
+  constructor(init?: receive_vfs_nspace_subsystem);
+  server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  start: number;
+  end: number;
+  maxsize: number;
+  reserved: number;
+  routine: unknown /* const array */;
+}
+
+declare class DCLJumpStruct {
+  constructor(init?: DCLJumpStruct);
+  pNextDCLCommand: interop.Pointer;
+  compilerData: number;
+  opcode: number;
+  pJumpDCLLabel: interop.Pointer;
+}
+
 declare class aio_error_args {
   constructor(init?: aio_error_args);
   aiocbp_l_: unknown /* const array */;
   aiocbp: number;
   aiocbp_r_: unknown /* const array */;
+}
+
+declare class __Reply__processor_set_statistics_t {
+  constructor(init?: __Reply__processor_set_statistics_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  info_outCnt: number;
+  info_out: unknown /* const array */;
 }
 
 declare class i386_cpu_info {
@@ -15487,15 +34330,6 @@ declare class i386_cpu_info {
   cpuid_xsave_leaf: unknown /* const array */;
 }
 
-declare class unnamed_9573910560995373467 {
-  constructor(init?: unnamed_9573910560995373467);
-  seqNum: bigint;
-  dataSize: bigint;
-  generation: bigint;
-  _reserved: bigint;
-  wrStatus: bigint;
-}
-
 declare class kdebug_typefilter_args {
   constructor(init?: kdebug_typefilter_args);
   addr_l_: unknown /* const array */;
@@ -15506,8 +34340,49 @@ declare class kdebug_typefilter_args {
   size_r_: unknown /* const array */;
 }
 
+declare class __Request__clock_get_time_t {
+  constructor(init?: __Request__clock_get_time_t);
+  Head: mach_msg_header_t;
+}
+
+declare class __Reply__thread_wire_t {
+  constructor(init?: __Reply__thread_wire_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__vm_wire_t {
+  constructor(init?: __Reply__vm_wire_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__processor_set_destroy_t {
+  constructor(init?: __Reply__processor_set_destroy_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class TransducerData {
   constructor(init?: TransducerData);
+}
+
+declare class IOUSBDeviceRequest {
+  constructor(init?: IOUSBDeviceRequest);
+  bmRequestType: number;
+  bRequest: number;
+  wValue: number;
+  wIndex: number;
+  wLength: number;
+}
+
+declare class SCSICmd_INQUIRY_Page83_RelativeTargetPort_Identifier {
+  constructor(init?: SCSICmd_INQUIRY_Page83_RelativeTargetPort_Identifier);
+  OBSOLETE: number;
+  RELATIVE_TARGET_PORT_IDENTIFIER: number;
 }
 
 declare class getuid_args {
@@ -15587,6 +34462,26 @@ declare class fsetattrlist_args {
   options_r_: unknown /* const array */;
 }
 
+declare class IOFBDPLinkConfig {
+  constructor(init?: IOFBDPLinkConfig);
+  version: number;
+  bitRate: number;
+  __reservedA: unknown /* const array */;
+  t1Time: number;
+  t2Time: number;
+  t3Time: number;
+  idlePatterns: number;
+  laneCount: number;
+  voltage: number;
+  preEmphasis: number;
+  downspread: number;
+  scrambler: number;
+  maxBitRate: number;
+  maxLaneCount: number;
+  maxDownspread: number;
+  __reservedB: unknown /* const array */;
+}
+
 declare class _iopol_param_t {
   constructor(init?: _iopol_param_t);
   iop_scope: number;
@@ -15610,6 +34505,14 @@ declare class record_system_event_args {
   payload_r_: unknown /* const array */;
 }
 
+declare class VDPageInfo {
+  constructor(init?: VDPageInfo);
+  csMode: number;
+  csData: number;
+  csPage: number;
+  csBaseAddr: string | null;
+}
+
 declare class IOHIDDevice_LocalIVars {
   constructor(init?: IOHIDDevice_LocalIVars);
 }
@@ -15620,6 +34523,24 @@ declare class sptm_trace_buffer_t {
   buffer: unknown /* const array */;
 }
 
+declare class __Reply__host_get_special_port_t {
+  constructor(init?: __Reply__host_get_special_port_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  port: mach_msg_port_descriptor_t;
+}
+
+declare class __Request__kmod_control_t {
+  constructor(init?: __Request__kmod_control_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  data: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  module: number;
+  flavor: number;
+  dataCnt: number;
+}
+
 declare class IOUSBHostIsochronousCompletion {
   constructor(init?: IOUSBHostIsochronousCompletion);
   owner: interop.Pointer;
@@ -15627,11 +34548,27 @@ declare class IOUSBHostIsochronousCompletion {
   parameter: interop.Pointer;
 }
 
+declare class UserExportDCLJumpStruct {
+  constructor(init?: UserExportDCLJumpStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  pJumpDCLLabel: number;
+}
+
 declare class BillboardAltModeCapabilityCompatibility {
   constructor(init?: BillboardAltModeCapabilityCompatibility);
   wSVID: number;
   dwAlternateMode: number;
   iAlternateModeString: number;
+}
+
+declare class __Reply__host_set_UNDServer_t {
+  constructor(init?: __Reply__host_set_UNDServer_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class bpf_hdr_ext {
@@ -15709,6 +34646,12 @@ declare class __Request__mach_notify_send_once_t {
   Head: mach_msg_header_t;
 }
 
+declare class BluetoothHCIInquiryResults {
+  constructor(init?: BluetoothHCIInquiryResults);
+  results: unknown /* const array */;
+  count: number;
+}
+
 declare class IOKitDiagnosticsParameters {
   constructor(init?: IOKitDiagnosticsParameters);
   size: number;
@@ -15747,6 +34690,33 @@ declare class MD5_CTX {
   buffer: unknown /* const array */;
 }
 
+declare class SCSICmd_INQUIRY_PageCx_Header {
+  constructor(init?: SCSICmd_INQUIRY_PageCx_Header);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  RESERVED: number;
+  PAGE_LENGTH: number;
+}
+
+declare class __Reply__processor_set_tasks_with_flavor_t {
+  constructor(init?: __Reply__processor_set_tasks_with_flavor_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  task_list: mach_msg_ool_ports_descriptor_t;
+  NDR: NDR_record_t;
+  task_listCnt: number;
+}
+
+declare class __Reply__processor_set_info_t {
+  constructor(init?: __Reply__processor_set_info_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  host: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  info_outCnt: number;
+  info_out: unknown /* const array */;
+}
+
 declare class pwrite_nocancel_args {
   constructor(init?: pwrite_nocancel_args);
   fd_l_: unknown /* const array */;
@@ -15761,6 +34731,58 @@ declare class pwrite_nocancel_args {
   offset_l_: unknown /* const array */;
   offset: number;
   offset_r_: unknown /* const array */;
+}
+
+declare class VDHardwareCursorDrawStateRec {
+  constructor(init?: VDHardwareCursorDrawStateRec);
+  csCursorX: number;
+  csCursorY: number;
+  csCursorVisible: number;
+  csCursorSet: number;
+  csReserved1: number;
+  csReserved2: number;
+}
+
+declare class __Request__host_get_exception_ports_t {
+  constructor(init?: __Request__host_get_exception_ports_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  exception_mask: number;
+}
+
+declare class __Reply__processor_set_stack_usage_t {
+  constructor(init?: __Reply__processor_set_stack_usage_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  ltotal: number;
+  space: number;
+  resident: number;
+  maxusage: number;
+  maxstack: number;
+}
+
+declare class HFSCatalogFile {
+  constructor(init?: HFSCatalogFile);
+  recordType: number;
+  flags: number;
+  fileType: number;
+  userInfo: FndrFileInfo;
+  fileID: number;
+  dataStartBlock: number;
+  dataLogicalSize: number;
+  dataPhysicalSize: number;
+  rsrcStartBlock: number;
+  rsrcLogicalSize: number;
+  rsrcPhysicalSize: number;
+  createDate: number;
+  modifyDate: number;
+  backupDate: number;
+  finderInfo: FndrOpaqueInfo;
+  clumpSize: number;
+  dataExtents: unknown /* const array */;
+  rsrcExtents: unknown /* const array */;
+  reserved: number;
 }
 
 declare class __Reply__mach_gss_accept_sec_context_t {
@@ -15795,6 +34817,38 @@ declare class writev_args {
   iovcnt_r_: unknown /* const array */;
 }
 
+declare class __Reply__processor_set_max_priority_t {
+  constructor(init?: __Reply__processor_set_max_priority_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Request__clock_set_attributes_t {
+  constructor(init?: __Request__clock_set_attributes_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  clock_attrCnt: number;
+  clock_attr: unknown /* const array */;
+}
+
+declare class __Request__processor_set_info_t {
+  constructor(init?: __Request__processor_set_info_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  info_outCnt: number;
+}
+
+declare class __Reply__mach_memory_entry_purgable_control_t {
+  constructor(init?: __Reply__mach_memory_entry_purgable_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  state: number;
+}
+
 declare class IOCircularDataQueueMemoryCursor {
   constructor(init?: IOCircularDataQueueMemoryCursor);
   generation: number;
@@ -15805,6 +34859,35 @@ declare class IOCircularDataQueueMemoryCursor {
 declare class issetugid_args {
   constructor(init?: issetugid_args);
   dummy: number;
+}
+
+declare class __Request__processor_set_policy_control_t {
+  constructor(init?: __Request__processor_set_policy_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  policy_infoCnt: number;
+  policy_info: unknown /* const array */;
+  change: number;
+}
+
+declare class __Reply__processor_control_t {
+  constructor(init?: __Reply__processor_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__processor_exit_t {
+  constructor(init?: __Reply__processor_exit_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Request__processor_get_assignment_t {
+  constructor(init?: __Request__processor_get_assignment_t);
+  Head: mach_msg_header_t;
 }
 
 declare class thread_call {
@@ -15823,6 +34906,38 @@ declare class SuperSpeedPlusUSBDeviceCapabilityDescriptor {
   bmSublinkSpeedAttr: interop.Pointer;
 }
 
+declare class __Request__processor_assign_t {
+  constructor(init?: __Request__processor_assign_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  new_set: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  wait: number;
+}
+
+declare class _IODataQueueAppendix {
+  constructor(init?: _IODataQueueAppendix);
+  version: number;
+  msgh: mach_msg_header_t;
+}
+
+declare class __Request__processor_exit_t {
+  constructor(init?: __Request__processor_exit_t);
+  Head: mach_msg_header_t;
+}
+
+declare class __Request__processor_start_t {
+  constructor(init?: __Request__processor_start_t);
+  Head: mach_msg_header_t;
+}
+
+declare class __Reply__host_security_set_task_token_t {
+  constructor(init?: __Reply__host_security_set_task_token_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class HIDCaps {
   constructor(init?: HIDCaps);
   usage: number;
@@ -15837,6 +34952,48 @@ declare class HIDCaps {
   numberOutputValueCaps: number;
   numberFeatureButtonCaps: number;
   numberFeatureValueCaps: number;
+}
+
+declare class __Request__host_security_set_task_token_t {
+  constructor(init?: __Request__host_security_set_task_token_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  target_task: mach_msg_port_descriptor_t;
+  host: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  sec_token: security_token_t;
+  audit_token: audit_token_t;
+}
+
+declare class DVDDiscKeyInfo {
+  constructor(init?: DVDDiscKeyInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  discKeyStructures: unknown /* const array */;
+}
+
+declare class __Reply__host_set_exception_ports_t {
+  constructor(init?: __Reply__host_set_exception_ports_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__kmod_control_t {
+  constructor(init?: __Reply__kmod_control_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  data: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  dataCnt: number;
+}
+
+declare class VDGammaInfoRec {
+  constructor(init?: VDGammaInfoRec);
+  csLastGammaID: number;
+  csNextGammaID: number;
+  csGammaPtr: string | null;
+  csReserved: number;
 }
 
 declare class if_linkheuristics {
@@ -15874,6 +35031,16 @@ declare class gettimeofday_args {
   mach_absolute_time_r_: unknown /* const array */;
 }
 
+declare class __Reply__host_get_boot_info_t {
+  constructor(init?: __Reply__host_get_boot_info_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  boot_infoOffset: number;
+  boot_infoCnt: number;
+  boot_info: unknown /* const array */;
+}
+
 declare class conninfo_multipathtcp {
   constructor(init?: conninfo_multipathtcp);
   mptcpci_subflow_count: number;
@@ -15894,19 +35061,42 @@ declare class ether_vlan_header {
   evl_proto: number;
 }
 
+declare class __Request__host_swap_exception_ports_t {
+  constructor(init?: __Request__host_swap_exception_ports_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  new_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  exception_mask: number;
+  behavior: number;
+  new_flavor: number;
+}
+
+declare class CDTOCDescriptor {
+  constructor(init?: CDTOCDescriptor);
+  session: number;
+  control: number;
+  adr: number;
+  tno: number;
+  point: number;
+  address: CDMSF;
+  zero: number;
+  p: CDMSF;
+}
+
+declare class __Request__host_get_clock_control_t {
+  constructor(init?: __Request__host_get_clock_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  clock_id: number;
+}
+
 declare class __Request__mach_gss_lookup_t {
   constructor(init?: __Request__mach_gss_lookup_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   uid: number;
   asid: number;
-}
-
-declare class unnamed_16013633380207743845 {
-  constructor(init?: unnamed_16013633380207743845);
-  nlm_lock: number;
-  nlm_test: number;
-  nlm_unlock: number;
 }
 
 declare class if_nsreq {
@@ -15930,6 +35120,32 @@ declare class mcc_ecc_event_t {
   index: number;
   bit_off_cl: number;
   bit_off_within_hcl: number;
+}
+
+declare class __Request__host_default_memory_manager_t {
+  constructor(init?: __Request__host_default_memory_manager_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  default_manager: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  cluster_size: number;
+}
+
+declare class IOI2CConnect {
+  constructor(init?: IOI2CConnect);
+}
+
+declare class __Request__host_priv_statistics_t {
+  constructor(init?: __Request__host_priv_statistics_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  host_info_outCnt: number;
+}
+
+declare class __Request__host_get_boot_info_t {
+  constructor(init?: __Request__host_get_boot_info_t);
+  Head: mach_msg_header_t;
 }
 
 declare class aio_read_args {
@@ -15964,6 +35180,15 @@ declare class oslog_coproc_args {
   stream_log_r_: unknown /* const array */;
 }
 
+declare class HFSPlusExtentKey {
+  constructor(init?: HFSPlusExtentKey);
+  keyLength: number;
+  forkType: number;
+  pad: number;
+  fileID: number;
+  startBlock: number;
+}
+
 declare class FWSegment {
   constructor(init?: FWSegment);
   address: FWAddressStruct;
@@ -15975,6 +35200,13 @@ declare class nfserr_info {
   nei_name: string | null;
   nei_error: number;
   nei_index: number;
+}
+
+declare class __Request__kmod_destroy_t {
+  constructor(init?: __Request__kmod_destroy_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  module: number;
 }
 
 declare class objc_bp_assist_cfg_np_args {
@@ -15999,8 +35231,47 @@ declare class sptm_guest_dispatch_sme_t {
   svcr: number;
 }
 
+declare class __Request__clock_set_time_t {
+  constructor(init?: __Request__clock_set_time_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  new_time: mach_timespec;
+}
+
+declare class __Request__processor_set_max_priority_t {
+  constructor(init?: __Request__processor_set_max_priority_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  max_priority: number;
+  change_threads: number;
+}
+
 declare class IOUSBHostHIDDescriptor {
   constructor(init?: IOUSBHostHIDDescriptor);
+}
+
+declare class VDConfigurationFeatureListRec {
+  constructor(init?: VDConfigurationFeatureListRec);
+  csConfigFeatureList: interop.Pointer;
+  csNumConfigFeatures: number;
+  csReserved1: number;
+  csReserved2: number;
+}
+
+declare class __Reply__host_get_clock_control_t {
+  constructor(init?: __Reply__host_get_clock_control_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  clock_ctrl: mach_msg_port_descriptor_t;
+}
+
+declare class BluetoothHCIEventReadRemoteExtendedFeaturesResults {
+  constructor(init?: BluetoothHCIEventReadRemoteExtendedFeaturesResults);
+  error: number;
+  connectionHandle: number;
+  page: number;
+  maxPage: number;
+  lmpFeatures: BluetoothHCISupportedFeatures;
 }
 
 declare class user64_ntptimeval {
@@ -16020,6 +35291,13 @@ declare class sptm_trace_t {
   cpu_id: number;
 }
 
+declare class __Request__host_set_UNDServer_t {
+  constructor(init?: __Request__host_set_UNDServer_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  server: mach_msg_port_descriptor_t;
+}
+
 declare class getrlimit_args {
   constructor(init?: getrlimit_args);
   which_l_: unknown /* const array */;
@@ -16028,6 +35306,13 @@ declare class getrlimit_args {
   rlp_l_: unknown /* const array */;
   rlp: number;
   rlp_r_: unknown /* const array */;
+}
+
+declare class unnamed_15260950953776601072 {
+  constructor(init?: unnamed_15260950953776601072);
+  errs_common: unknown /* const array */;
+  errs_v4: unknown /* const array */;
+  errs_unknown: number;
 }
 
 declare class setattrlist_args {
@@ -16100,6 +35385,24 @@ declare class image_params {
   ip_simulator_binary: number;
 }
 
+declare class IODot3StatsEntry {
+  constructor(init?: IODot3StatsEntry);
+  alignmentErrors: number;
+  fcsErrors: number;
+  singleCollisionFrames: number;
+  multipleCollisionFrames: number;
+  sqeTestErrors: number;
+  deferredTransmissions: number;
+  lateCollisions: number;
+  excessiveCollisions: number;
+  internalMacTransmitErrors: number;
+  carrierSenseErrors: number;
+  frameTooLongs: number;
+  internalMacReceiveErrors: number;
+  etherChipSet: number;
+  missedFrames: number;
+}
+
 declare class ataTaskFile {
   constructor(init?: ataTaskFile);
   ataTFFeatures: number;
@@ -16111,6 +35414,54 @@ declare class ataTaskFile {
   ataTFCommand: number;
 }
 
+declare class BluetoothKeypressNotification {
+  constructor(init?: BluetoothKeypressNotification);
+  deviceAddress: BluetoothDeviceAddress;
+  notificationType: number;
+}
+
+declare class bm38Cursor {
+  constructor(init?: bm38Cursor);
+  image: unknown /* const array */;
+  save: unknown /* const array */;
+}
+
+declare class UserExportDCLCommandStruct {
+  constructor(init?: UserExportDCLCommandStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  operands: unknown /* const array */;
+}
+
+declare class __Reply__processor_set_tasks_t {
+  constructor(init?: __Reply__processor_set_tasks_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  task_list: mach_msg_ool_ports_descriptor_t;
+  NDR: NDR_record_t;
+  task_listCnt: number;
+}
+
+declare class __Request__mach_memory_entry_ownership_t {
+  constructor(init?: __Request__mach_memory_entry_ownership_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  owner: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  ledger_tag: number;
+  ledger_flags: number;
+}
+
+declare class __Request__processor_info_t {
+  constructor(init?: __Request__processor_info_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  processor_info_outCnt: number;
+}
+
 declare class in6_nbrinfo {
   constructor(init?: in6_nbrinfo);
   ifname: unknown /* const array */;
@@ -16119,6 +35470,24 @@ declare class in6_nbrinfo {
   isrouter: number;
   state: number;
   expire: number;
+}
+
+declare class VDResolutionInfoRec {
+  constructor(init?: VDResolutionInfoRec);
+  csPreviousDisplayModeID: number;
+  csDisplayModeID: number;
+  csHorizontalPixels: number;
+  csVerticalLines: number;
+  csRefreshRate: number;
+  csMaxDepthMode: number;
+  csResolutionFlags: number;
+  csReserved: number;
+}
+
+declare class BluetoothHCIEventVendorSpecificResults {
+  constructor(init?: BluetoothHCIEventVendorSpecificResults);
+  length: number;
+  data: unknown /* const array */;
 }
 
 declare class __Request__audit_analytics_t {
@@ -16138,6 +35507,13 @@ declare class __Reply__sysdiagnose_notification_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class __Reply__host_default_memory_manager_t {
+  constructor(init?: __Reply__host_default_memory_manager_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  default_manager: mach_msg_port_descriptor_t;
 }
 
 declare class ecc_event {
@@ -16170,47 +35546,28 @@ declare class audit_session_self_args {
   dummy: number;
 }
 
-declare class unnamed_9302259702586539480 {
-  constructor(init?: unnamed_9302259702586539480);
-  oldtss: sel;
-  : number;
-  esp0: number;
-  ss0: sel;
-  : number;
-  esp1: number;
-  ss1: sel;
-  : number;
-  esp2: number;
-  ss2: sel;
-  : number;
-  cr3: number;
-  eip: number;
-  eflags: number;
-  eax: number;
-  ecx: number;
-  edx: number;
-  ebx: number;
-  esp: number;
-  ebp: number;
-  esi: number;
-  edi: number;
-  es: sel;
-  : number;
-  cs: sel;
-  : number;
-  ss: sel;
-  : number;
-  ds: sel;
-  : number;
-  fs: sel;
-  : number;
-  gs: sel;
-  : number;
-  ldt: sel;
-  : number;
-  t: number;
-  : number;
-  io_bmap: number;
+declare class __Reply__processor_set_policy_enable_t {
+  constructor(init?: __Reply__processor_set_policy_enable_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class unnamed_10533238589767310233 {
+  constructor(init?: unnamed_10533238589767310233);
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
+}
+
+declare class VDConvolutionInfoRec {
+  constructor(init?: VDConvolutionInfoRec);
+  csDisplayModeID: number;
+  csDepthMode: number;
+  csPage: number;
+  csFlags: number;
+  csReserved: number;
 }
 
 declare class trust_cache_module1 {
@@ -16268,8 +35625,70 @@ declare class writev_nocancel_args {
   iovcnt_r_: unknown /* const array */;
 }
 
+declare class VDCommunicationRec {
+  constructor(init?: VDCommunicationRec);
+  csBusID: number;
+  csCommFlags: number;
+  csMinReplyDelay: number;
+  csReserved2: number;
+  csSendAddress: number;
+  csSendType: number;
+  csSendBuffer: interop.Pointer;
+  csSendSize: number;
+  csReplyAddress: number;
+  csReplyType: number;
+  csReplyBuffer: interop.Pointer;
+  csReplySize: number;
+  csReserved3: number;
+  csReserved4: number;
+  csReserved5: number;
+  csReserved6: number;
+}
+
+declare class BluetoothHCIEventMasterLinkKeyCompleteResults {
+  constructor(init?: BluetoothHCIEventMasterLinkKeyCompleteResults);
+  connectionHandle: number;
+  keyFlag: number;
+}
+
+declare class __Request__host_get_UNDServer_t {
+  constructor(init?: __Request__host_get_UNDServer_t);
+  Head: mach_msg_header_t;
+}
+
 declare class airship_driver {
   constructor(init?: airship_driver);
+}
+
+declare class __Reply__host_get_UNDServer_t {
+  constructor(init?: __Reply__host_get_UNDServer_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  server: mach_msg_port_descriptor_t;
+}
+
+declare class IOUSBInterfaceAssociationDescriptor {
+  constructor(init?: IOUSBInterfaceAssociationDescriptor);
+  bLength: number;
+  bDescriptorType: number;
+  bFirstInterface: number;
+  bInterfaceCount: number;
+  bFunctionClass: number;
+  bFunctionSubClass: number;
+  bFunctionProtocol: number;
+  iFunction: number;
+}
+
+declare class IODot3TxExtraEntry {
+  constructor(init?: IODot3TxExtraEntry);
+  underruns: number;
+  jabbers: number;
+  phyErrors: number;
+  timeouts: number;
+  interrupts: number;
+  resets: number;
+  resourceErrors: number;
+  reserved: unknown /* const array */;
 }
 
 declare class mpsc_queue_head {
@@ -16278,12 +35697,49 @@ declare class mpsc_queue_head {
   mpqh_tail: unknown /* _Atomic(struct mpsc_queue_chain *) (CXTypeKind: 177) */;
 }
 
+declare class getsid_args {
+  constructor(init?: getsid_args);
+  pid_l_: unknown /* const array */;
+  pid: number;
+  pid_r_: unknown /* const array */;
+}
+
+declare class __Request__kmod_create_t {
+  constructor(init?: __Request__kmod_create_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  info: number;
+}
+
+declare class VDDisplayConnectInfoRec {
+  constructor(init?: VDDisplayConnectInfoRec);
+  csDisplayType: number;
+  csConnectTaggedType: number;
+  csConnectTaggedData: number;
+  csConnectFlags: number;
+  csDisplayComponent: number;
+  csConnectReserved: number;
+}
+
 declare class arm_debug_info_t {
   constructor(init?: arm_debug_info_t);
   memory_mapped_core_debug: number;
   coprocessor_core_debug: number;
   num_watchpoint_pairs: number;
   num_breakpoint_pairs: number;
+}
+
+declare class __Reply__audit_analytics_t {
+  constructor(init?: __Reply__audit_analytics_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class BluetoothHCILinkPolicySettingsInfo {
+  constructor(init?: BluetoothHCILinkPolicySettingsInfo);
+  settings: number;
+  handle: number;
 }
 
 declare class IOFBCursorControlCallouts {
@@ -16329,6 +35785,12 @@ declare class iopolicysys_args {
   arg_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIEventRemoteNameRequestResults {
+  constructor(init?: BluetoothHCIEventRemoteNameRequestResults);
+  deviceAddress: BluetoothDeviceAddress;
+  deviceName: unknown /* const array */;
+}
+
 declare class lockd_notify {
   constructor(init?: lockd_notify);
   ln_version: number;
@@ -16366,6 +35828,12 @@ declare class if_packet_stats {
   _reserved: unknown /* const array */;
 }
 
+declare class _NXEventExtension {
+  constructor(init?: _NXEventExtension);
+  flags: number;
+  audit: audit_token_t;
+}
+
 declare class airship_daleipc_downlink_packet_completion {
   constructor(init?: airship_daleipc_downlink_packet_completion);
   tag: number;
@@ -16380,12 +35848,6 @@ declare class airship_daleipc_downlink_packet_completion {
   wake_packet: number;
 }
 
-declare class unnamed_12707122223376989547 {
-  constructor(init?: unnamed_12707122223376989547);
-  attr_idx: number;
-  flags: number;
-}
-
 declare class kpc_get_counters_remote {
   constructor(init?: kpc_get_counters_remote);
   classes: number;
@@ -16394,8 +35856,33 @@ declare class kpc_get_counters_remote {
   buf: interop.Pointer;
 }
 
+declare class __Reply__kmod_create_t {
+  constructor(init?: __Reply__kmod_create_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  module: number;
+}
+
 declare class IOUSBHostDevice_IVars {
   constructor(init?: IOUSBHostDevice_IVars);
+}
+
+declare class __Reply__processor_get_assignment_t {
+  constructor(init?: __Reply__processor_get_assignment_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  assigned_set: mach_msg_port_descriptor_t;
+}
+
+declare class unnamed_549004444384603547 {
+  constructor(init?: unnamed_549004444384603547);
+  usageMin: number;
+  usageMax: number;
+  stringMin: number;
+  stringMax: number;
+  designatorMin: number;
+  designatorMax: number;
 }
 
 declare class pwritev_nocancel_args {
@@ -16423,6 +35910,13 @@ declare class BillboardAltModeCapabilityDescriptor {
   dwAlternateModeVdo: number;
 }
 
+declare class unnamed_13377059047963619192 {
+  constructor(init?: unnamed_13377059047963619192);
+  nlm_lock: number;
+  nlm_test: number;
+  nlm_unlock: number;
+}
+
 declare class __Request__upl_abort_t {
   constructor(init?: __Request__upl_abort_t);
   Head: mach_msg_header_t;
@@ -16434,9 +35928,50 @@ declare class IOAudioStreamFormatDesc {
   constructor(init?: IOAudioStreamFormatDesc);
 }
 
+declare class __Reply__mach_vm_wire_t {
+  constructor(init?: __Reply__mach_vm_wire_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class __Reply__vm_allocate_cpm_t {
+  constructor(init?: __Reply__vm_allocate_cpm_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  address: number;
+}
+
+declare class unnamed_1344310673312519813 {
+  constructor(init?: unnamed_1344310673312519813);
+  attr_idx: number;
+  flags: number;
+}
+
+declare class __Request__host_get_special_port_t {
+  constructor(init?: __Request__host_get_special_port_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  node: number;
+  which: number;
+}
+
 declare class hvg_hcall_args {
   constructor(init?: hvg_hcall_args);
   args: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventLEConnectionCompleteResults {
+  constructor(init?: BluetoothHCIEventLEConnectionCompleteResults);
+  connectionHandle: number;
+  role: number;
+  peerAddressType: number;
+  peerAddress: BluetoothDeviceAddress;
+  connInterval: number;
+  connLatency: number;
+  supervisionTimeout: number;
+  masterClockAccuracy: number;
 }
 
 declare class shm_unlink_args {
@@ -16464,11 +35999,24 @@ declare class setlogin_args {
   namebuf_r_: unknown /* const array */;
 }
 
+declare class BluetoothHCIEventEncryptionKeyRefreshCompleteResults {
+  constructor(init?: BluetoothHCIEventEncryptionKeyRefreshCompleteResults);
+  connectionHandle: number;
+}
+
 declare class __Reply__vfs_resolve_dir_with_audit_token_t {
   constructor(init?: __Reply__vfs_resolve_dir_with_audit_token_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
+}
+
+declare class __Request__mach_voucher_extract_attr_content_t {
+  constructor(init?: __Request__mach_voucher_extract_attr_content_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  key: number;
+  contentCnt: number;
 }
 
 declare class cpuid_thermal_leaf_t {
@@ -16483,6 +36031,13 @@ declare class cpuid_thermal_leaf_t {
   ACNT_MCNT: number;
   hardware_feedback: number;
   energy_policy: number;
+}
+
+declare class IOHIDCompletion {
+  constructor(init?: IOHIDCompletion);
+  target: interop.Pointer;
+  action: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  parameter: interop.Pointer;
 }
 
 declare class openat_args {
@@ -16524,14 +36079,48 @@ declare class IOExternalMethodArguments {
   __reserved: unknown /* const array */;
 }
 
-declare class unnamed_11975482992842642533 {
-  constructor(init?: unnamed_11975482992842642533);
-  usageMin: number;
-  usageMax: number;
-  stringMin: number;
-  stringMax: number;
-  designatorMin: number;
-  designatorMax: number;
+declare class VDVideoParametersInfoRec {
+  constructor(init?: VDVideoParametersInfoRec);
+  csDisplayModeID: number;
+  csDepthMode: number;
+  csVPBlockPtr: interop.Pointer;
+  csPageCount: number;
+  csDeviceType: number;
+  csDepthFlags: number;
+}
+
+declare class BluetoothHCIEventSynchronousConnectionChangedResults {
+  constructor(init?: BluetoothHCIEventSynchronousConnectionChangedResults);
+  connectionHandle: number;
+  transmissionInterval: number;
+  retransmissionWindow: number;
+  receivePacketLength: number;
+  transmitPacketLength: number;
+}
+
+declare class __Request__thread_wire_t {
+  constructor(init?: __Request__thread_wire_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  thread: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  wired: number;
+}
+
+declare class __Reply__processor_info_t {
+  constructor(init?: __Reply__processor_info_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  host: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  processor_info_outCnt: number;
+  processor_info_out: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventMaxSlotsChangeResults {
+  constructor(init?: BluetoothHCIEventMaxSlotsChangeResults);
+  connectionHandle: number;
+  maxSlots: number;
 }
 
 declare class if_description {
@@ -16584,6 +36173,24 @@ declare class USB20ExtensionCapabilityDescriptor {
   bmAttributes: number;
 }
 
+declare class _IOAudioTimeStamp {
+  constructor(init?: _IOAudioTimeStamp);
+  fSampleTime: number;
+  fHostTime: number;
+  fRateScalar: number;
+  fWordClockTime: number;
+  fSMPTETime: _IOAudioSMPTETime;
+  fFlags: number;
+  fReserved: number;
+}
+
+declare class __Reply__host_reboot_t {
+  constructor(init?: __Reply__host_reboot_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class audit_triggers_subsystem {
   constructor(init?: audit_triggers_subsystem);
   server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
@@ -16592,6 +36199,11 @@ declare class audit_triggers_subsystem {
   maxsize: number;
   reserved: number;
   routine: unknown /* const array */;
+}
+
+declare class BluetoothEventFilterCondition {
+  constructor(init?: BluetoothEventFilterCondition);
+  data: unknown /* const array */;
 }
 
 declare class __Request__mach_gss_accept_sec_context_v2_t {
@@ -16615,37 +36227,66 @@ declare class nfs_specdata {
   specdata2: number;
 }
 
-declare class __Request__doubleagent_allocate_xattr_t {
-  constructor(init?: __Request__doubleagent_allocate_xattr_t);
+declare class __Reply__host_set_special_port_t {
+  constructor(init?: __Reply__host_set_special_port_t);
   Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  file_port: mach_msg_port_descriptor_t;
   NDR: NDR_record_t;
-  file_size: number;
-  nameOffset: number;
-  nameCnt: number;
-  name: unknown /* const array */;
-  size: number;
-  options: number;
+  RetCode: number;
 }
 
-declare class guarded_pwrite_np_args {
-  constructor(init?: guarded_pwrite_np_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  guard_l_: unknown /* const array */;
-  guard: number;
-  guard_r_: unknown /* const array */;
-  buf_l_: unknown /* const array */;
-  buf: number;
-  buf_r_: unknown /* const array */;
-  nbyte_l_: unknown /* const array */;
-  nbyte: number;
-  nbyte_r_: unknown /* const array */;
-  offset_l_: unknown /* const array */;
-  offset: number;
-  offset_r_: unknown /* const array */;
+declare class __IOStreamBufferQueueEntry {
+  constructor(init?: __IOStreamBufferQueueEntry);
+  bufferID: number;
+  dataOffset: number;
+  dataLength: number;
+  controlOffset: number;
+  controlLength: number;
+  reserved: unknown /* const array */;
+}
+
+declare class BluetoothHCIEventDisconnectionCompleteResults {
+  constructor(init?: BluetoothHCIEventDisconnectionCompleteResults);
+  connectionHandle: number;
+  reason: number;
+}
+
+declare class BluetoothHCILinkQualityInfo {
+  constructor(init?: BluetoothHCILinkQualityInfo);
+  handle: number;
+  qualityValue: number;
+}
+
+declare class DVDPhysicalFormatInfo {
+  constructor(init?: DVDPhysicalFormatInfo);
+  dataLength: unknown /* const array */;
+  reserved: unknown /* const array */;
+  partVersion: number;
+  bookType: number;
+  minimumRate: number;
+  discSize: number;
+  layerType: number;
+  trackPath: number;
+  numberOfLayers: number;
+  reserved2: number;
+  trackDensity: number;
+  linearDensity: number;
+  zero1: number;
+  startingPhysicalSectorNumberOfDataArea: unknown /* const array */;
+  zero2: number;
+  endPhysicalSectorNumberOfDataArea: unknown /* const array */;
+  zero3: number;
+  endSectorNumberInLayerZero: unknown /* const array */;
+  reserved1: number;
+  bcaFlag: number;
+  mediaSpecific: unknown /* const array */;
+}
+
+declare class __Request__processor_control_t {
+  constructor(init?: __Request__processor_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  processor_cmdCnt: number;
+  processor_cmd: unknown /* const array */;
 }
 
 declare class DeviceDescriptor {
@@ -16664,6 +36305,22 @@ declare class DeviceDescriptor {
   iProduct: number;
   iSerialNumber: number;
   bNumConfigurations: number;
+}
+
+declare class __Request__host_processors_t {
+  constructor(init?: __Request__host_processors_t);
+  Head: mach_msg_header_t;
+}
+
+declare class unnamed_18061919316489120194 {
+  constructor(init?: unnamed_18061919316489120194);
+  x: number;
+  y: number;
+}
+
+declare class __Request__processor_set_threads_t {
+  constructor(init?: __Request__processor_set_threads_t);
+  Head: mach_msg_header_t;
 }
 
 declare class AsyncCommitCall {
@@ -16708,20 +36365,6 @@ declare class if_nexusreq {
   ifnr_reserved: unknown /* const array */;
 }
 
-declare class unnamed_7506672353382092904 {
-  constructor(init?: unnamed_7506672353382092904);
-  linkmtu: number;
-  maxmtu: number;
-  basereachable: number;
-  reachable: number;
-  retrans: number;
-  flags: number;
-  recalctm: number;
-  chlim: number;
-  receivedra: number;
-  collision_count: number;
-}
-
 declare class __Request__mach_voucher_attr_control_get_values_t {
   constructor(init?: __Request__mach_voucher_attr_control_get_values_t);
   Head: mach_msg_header_t;
@@ -16742,6 +36385,26 @@ declare class rt_reach_info {
   ri_npm: number;
 }
 
+declare class __Request__processor_set_statistics_t {
+  constructor(init?: __Request__processor_set_statistics_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  flavor: number;
+  info_outCnt: number;
+}
+
+declare class unnamed_7692593549662626158 {
+  constructor(init?: unnamed_7692593549662626158);
+  dx: number;
+  dy: number;
+  subx: number;
+  suby: number;
+  subType: number;
+  reserved1: number;
+  reserved2: number;
+  tablet: unnamed_17369176097837061348;
+}
+
 declare class utimes_args {
   constructor(init?: utimes_args);
   path_l_: unknown /* const array */;
@@ -16752,15 +36415,14 @@ declare class utimes_args {
   tptr_r_: unknown /* const array */;
 }
 
-declare class unnamed_230683991592103003 {
-  constructor(init?: unnamed_230683991592103003);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  offset: number;
-  size: number;
-  cntrl_flags: number;
-  page_listCnt: number;
-  page_list: unknown /* const array */;
+declare class BluetoothHCISetupSynchronousConnectionParams {
+  constructor(init?: BluetoothHCISetupSynchronousConnectionParams);
+  transmitBandwidth: number;
+  receiveBandwidth: number;
+  maxLatency: number;
+  voiceSetting: number;
+  retransmissionEffort: number;
+  packetType: number;
 }
 
 declare class ifnet_stats_per_flow {
@@ -16818,14 +36480,14 @@ declare class fchown_args {
   gid_r_: unknown /* const array */;
 }
 
-declare class unnamed_3364053345864614681 {
-  constructor(init?: unnamed_3364053345864614681);
-  coprocessor_core_debug: number;
-  coprocessor_secure_debug: number;
-  memory_mapped_core_debug: number;
-  coprocessor_trace_debug: number;
-  memory_mapped_trace_debug: number;
-  microcontroller_debug: number;
+declare class __Reply__mach_memory_entry_access_tracking_t {
+  constructor(init?: __Reply__mach_memory_entry_access_tracking_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  access_tracking: number;
+  access_tracking_reads: number;
+  access_tracking_writes: number;
 }
 
 declare class change_fdguard_np_args {
@@ -16850,6 +36512,37 @@ declare class change_fdguard_np_args {
   fdflagsp_r_: unknown /* const array */;
 }
 
+declare class __Request__mach_voucher_attr_control_create_mach_voucher_t {
+  constructor(init?: __Request__mach_voucher_attr_control_create_mach_voucher_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  recipesCnt: number;
+  recipes: unknown /* const array */;
+}
+
+declare class call_gate {
+  constructor(init?: call_gate);
+  offset00: number;
+  seg: sel;
+  argcnt: number;
+  : number;
+  type: number;
+  dpl: number;
+  present: number;
+  offset16: number;
+}
+
+declare class SCSICmd_INQUIRY_PageB2_Data {
+  constructor(init?: SCSICmd_INQUIRY_PageB2_Data);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  PAGE_LENGTH: number;
+  THRESHOLD_EXPONENT: number;
+  LBP_FLAGS: number;
+  MINIMUM_PERCENTAGE: number;
+  THRESHOLD_PERCENTAGE: number;
+}
+
 declare class chmod_extended_args {
   constructor(init?: chmod_extended_args);
   path_l_: unknown /* const array */;
@@ -16869,6 +36562,71 @@ declare class chmod_extended_args {
   xsecurity_r_: unknown /* const array */;
 }
 
+declare class IOI2CRequest {
+  constructor(init?: IOI2CRequest);
+  sendTransactionType: number;
+  replyTransactionType: number;
+  sendAddress: number;
+  replyAddress: number;
+  sendSubAddress: number;
+  replySubAddress: number;
+  __reservedA: unknown /* const array */;
+  minReplyDelay: number;
+  result: number;
+  commFlags: number;
+  __padA: number;
+  sendBytes: number;
+  __reservedB: unknown /* const array */;
+  __padB: number;
+  replyBytes: number;
+  completion: (p1: interop.PointerConvertible) => void | null;
+  sendBuffer: number;
+  replyBuffer: number;
+  __reservedC: unknown /* const array */;
+}
+
+declare class faccessat_args {
+  constructor(init?: faccessat_args);
+  fd_l_: unknown /* const array */;
+  fd: number;
+  fd_r_: unknown /* const array */;
+  path_l_: unknown /* const array */;
+  path: number;
+  path_r_: unknown /* const array */;
+  amode_l_: unknown /* const array */;
+  amode: number;
+  amode_r_: unknown /* const array */;
+  flag_l_: unknown /* const array */;
+  flag: number;
+  flag_r_: unknown /* const array */;
+}
+
+declare class __Reply__kext_request_t {
+  constructor(init?: __Reply__kext_request_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  response_data: mach_msg_ool_descriptor_t;
+  log_data: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  response_dataCnt: number;
+  log_dataCnt: number;
+  op_result: number;
+}
+
+declare class __Request__mach_memory_entry_purgable_control_t {
+  constructor(init?: __Request__mach_memory_entry_purgable_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  control: number;
+  state: number;
+}
+
+declare class BluetoothHCIRoleInfo {
+  constructor(init?: BluetoothHCIRoleInfo);
+  role: number;
+  handle: number;
+}
+
 declare class arm_feature_bits_t {
   constructor(init?: arm_feature_bits_t);
   el0_not_implemented: number;
@@ -16886,6 +36644,13 @@ declare class arm_feature_bits_t {
   reserved: number;
 }
 
+declare class bm12Cursor {
+  constructor(init?: bm12Cursor);
+  image: unknown /* const array */;
+  mask: unknown /* const array */;
+  save: unknown /* const array */;
+}
+
 declare class PlatformCapabilityDescriptor {
   constructor(init?: PlatformCapabilityDescriptor);
   bLength: number;
@@ -16893,6 +36658,13 @@ declare class PlatformCapabilityDescriptor {
   bDevCapabilityType: number;
   bReserved: number;
   uuidPlatformCapability: unknown /* const array */;
+}
+
+declare class VDSetEntryRecord {
+  constructor(init?: VDSetEntryRecord);
+  csTable: interop.Pointer;
+  csStart: number;
+  csCount: number;
 }
 
 declare class HIDButtonCaps {
@@ -16908,21 +36680,18 @@ declare class HIDButtonCaps {
   isDesignatorRange: number;
   isAbsolute: number;
   startBit: number;
-  u: unnamed_9604849382947085229;
+  u: unnamed_13861225699632598356;
 }
 
 declare class airship_acipc_boot {
   constructor(init?: airship_acipc_boot);
 }
 
-declare class aio_cancel_args {
-  constructor(init?: aio_cancel_args);
-  fd_l_: unknown /* const array */;
-  fd: number;
-  fd_r_: unknown /* const array */;
-  aiocbp_l_: unknown /* const array */;
-  aiocbp: number;
-  aiocbp_r_: unknown /* const array */;
+declare class BluetoothHCIReadLMPHandleResults {
+  constructor(init?: BluetoothHCIReadLMPHandleResults);
+  handle: number;
+  lmp_handle: number;
+  reserved: number;
 }
 
 declare class EXBrightMessage {
@@ -16930,6 +36699,16 @@ declare class EXBrightMessage {
   type: interop.Enum<typeof EXBrightMessageType>;
   arg0: number;
   arg1: number;
+}
+
+declare class evioLLEvent {
+  constructor(init?: evioLLEvent);
+  setCursor: number;
+  type: number;
+  location: IOGPoint;
+  data: NXEventData;
+  setFlags: number;
+  flags: number;
 }
 
 declare class seteuid_args {
@@ -16969,6 +36748,12 @@ declare class wait4_args {
   rusage_r_: unknown /* const array */;
 }
 
+declare class _NXSize {
+  constructor(init?: _NXSize);
+  width: number;
+  height: number;
+}
+
 declare class sem_wait_args {
   constructor(init?: sem_wait_args);
   sem_l_: unknown /* const array */;
@@ -16976,12 +36761,26 @@ declare class sem_wait_args {
   sem_r_: unknown /* const array */;
 }
 
-declare class unnamed_1788228608663847795 {
-  constructor(init?: unnamed_1788228608663847795);
+declare class __Request__host_processor_sets_t {
+  constructor(init?: __Request__host_processor_sets_t);
+  Head: mach_msg_header_t;
+}
+
+declare class __Reply__processor_start_t {
+  constructor(init?: __Reply__processor_start_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
-  page_listCnt: number;
-  page_list: unknown /* const array */;
+  RetCode: number;
+}
+
+declare class unnamed_7982933776984537627 {
+  constructor(init?: unnamed_7982933776984537627);
+  prevTimebase: number;
+  prevTimestamp: number;
+  currTimebase: number;
+  currTimestamp: number;
+  timeDiff: number;
+  timebaseDiff: number;
 }
 
 declare class proc_rlimit_control_args {
@@ -17013,6 +36812,17 @@ declare class fclonefileat_args {
   flags_r_: unknown /* const array */;
 }
 
+declare class unnamed_9992975935846799773 {
+  constructor(init?: unnamed_9992975935846799773);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  offset: number;
+  size: number;
+  cntrl_flags: number;
+  page_listCnt: number;
+  page_list: unknown /* const array */;
+}
+
 declare class task_inspect_for_pid_args {
   constructor(init?: task_inspect_for_pid_args);
   target_tport_l_: unknown /* const array */;
@@ -17033,16 +36843,6 @@ declare class ledger_template_info {
   lti_units: unknown /* const array */;
 }
 
-declare class unnamed_804236958011088931 {
-  constructor(init?: unnamed_804236958011088931);
-  usageMin: number;
-  usageMax: number;
-  stringMin: number;
-  stringMax: number;
-  designatorMin: number;
-  designatorMax: number;
-}
-
 declare class shm_open_args {
   constructor(init?: shm_open_args);
   name_l_: unknown /* const array */;
@@ -17056,14 +36856,98 @@ declare class shm_open_args {
   mode_r_: unknown /* const array */;
 }
 
+declare class __Reply__host_processor_set_priv_t {
+  constructor(init?: __Reply__host_processor_set_priv_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  set: mach_msg_port_descriptor_t;
+}
+
+declare class __Reply__kmod_destroy_t {
+  constructor(init?: __Reply__kmod_destroy_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class smrq_stailq_head {
   constructor(init?: smrq_stailq_head);
   first: __smrq_slink_t;
   last: interop.Pointer;
 }
 
+declare class IODisplayScalerInformation {
+  constructor(init?: IODisplayScalerInformation);
+  __reservedA: unknown /* const array */;
+  version: number;
+  __reservedB: unknown /* const array */;
+  scalerFeatures: number;
+  maxHorizontalPixels: number;
+  maxVerticalPixels: number;
+  __reservedC: unknown /* const array */;
+}
+
+declare class __Request__vm_wire_t {
+  constructor(init?: __Request__vm_wire_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  task: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  address: number;
+  size: number;
+  desired_access: number;
+}
+
+declare class __Reply__host_security_create_task_token_t {
+  constructor(init?: __Reply__host_security_create_task_token_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  child_task: mach_msg_port_descriptor_t;
+}
+
+declare class IOVideoDeviceInterface_v1_t {
+  constructor(init?: IOVideoDeviceInterface_v1_t);
+  _reserved: interop.Pointer;
+  QueryInterface: (p1: interop.PointerConvertible, p2: CFUUIDBytes, p3: interop.PointerConvertible) => number | null;
+  AddRef: (p1: interop.PointerConvertible) => number | null;
+  Release: (p1: interop.PointerConvertible) => number | null;
+  Version: number;
+  Revision: number;
+  Open: (p1: interop.PointerConvertible, p2: number) => number | null;
+  Close: (p1: interop.PointerConvertible) => number | null;
+  GetNotificationPort: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  SetNotificationCallback: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => number | null;
+  SetControlValue: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
+  SetStreamFormat: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
+  GetRunLoopSource: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  AddToRunLoop: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  RemoveFromRunLoop: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  CreateStreamInterface: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: boolean, p5: interop.PointerConvertible) => number | null;
+  ReleaseStreamInterface: (p1: interop.PointerConvertible, p2: boolean, p3: interop.PointerConvertible) => number | null;
+}
+
 declare class IOHIDReportHandler {
   constructor(init?: IOHIDReportHandler);
+}
+
+declare class BluetoothHCIEventQoSViolationResults {
+  constructor(init?: BluetoothHCIEventQoSViolationResults);
+  connectionHandle: number;
+}
+
+declare class SCSICmd_INQUIRY_Page89_Data {
+  constructor(init?: SCSICmd_INQUIRY_Page89_Data);
+  PERIPHERAL_DEVICE_TYPE: number;
+  PAGE_CODE: number;
+  PAGE_LENGTH: number;
+  Reserved: number;
+  SAT_VENDOR_IDENTIFICATION: unknown /* const array */;
+  SAT_PRODUCT_IDENTIFICATION: unknown /* const array */;
+  SAT_PRODUCT_REVISION_LEVEL: unknown /* const array */;
+  ATA_DEVICE_SIGNATURE: unknown /* const array */;
+  COMMAND_CODE: number;
+  Reserved2: unknown /* const array */;
+  IDENTIFY_DATA: unknown /* const array */;
 }
 
 declare class if_descreq {
@@ -17071,6 +36955,21 @@ declare class if_descreq {
   ifdr_name: unknown /* const array */;
   ifdr_len: number;
   ifdr_desc: unknown /* const array */;
+}
+
+declare class IOHardwareCursorDescriptor {
+  constructor(init?: IOHardwareCursorDescriptor);
+  majorVersion: number;
+  minorVersion: number;
+  height: number;
+  width: number;
+  bitDepth: number;
+  maskBitDepth: number;
+  numColors: number;
+  colorEncodings: interop.Pointer;
+  flags: number;
+  supportedSpecialEncodings: number;
+  specialEncodings: unknown /* const array */;
 }
 
 declare class OSAction_IOHIDDevice__CompleteReport_IVars {
@@ -17093,6 +36992,34 @@ declare class __Reply__mach_gss_init_sec_context_t {
   minor_stat: number;
 }
 
+declare class __Reply__host_processor_sets_t {
+  constructor(init?: __Reply__host_processor_sets_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  processor_sets: mach_msg_ool_ports_descriptor_t;
+  NDR: NDR_record_t;
+  processor_setsCnt: number;
+}
+
+declare class IOUSBFindInterfaceRequest {
+  constructor(init?: IOUSBFindInterfaceRequest);
+  bInterfaceClass: number;
+  bInterfaceSubClass: number;
+  bInterfaceProtocol: number;
+  bAlternateSetting: number;
+}
+
+declare class in6_route_info {
+  constructor(init?: in6_route_info);
+  prefix: in6_addr;
+  prefixlen: number;
+  defrtrs: number;
+}
+
+declare class IOInterruptAccountingReporter {
+  constructor(init?: IOInterruptAccountingReporter);
+}
+
 declare class select_nocancel_args {
   constructor(init?: select_nocancel_args);
   nd_l_: unknown /* const array */;
@@ -17110,6 +37037,35 @@ declare class select_nocancel_args {
   tv_l_: unknown /* const array */;
   tv: number;
   tv_r_: unknown /* const array */;
+}
+
+declare class UserExportDCLCallProcStruct {
+  constructor(init?: UserExportDCLCallProcStruct);
+  pClientDCLStruct: number;
+  pNextDCLCommand: number;
+  compilerData: number;
+  opcode: number;
+  proc: number;
+  procData: number;
+}
+
+declare class __Request__processor_set_destroy_t {
+  constructor(init?: __Request__processor_set_destroy_t);
+  Head: mach_msg_header_t;
+}
+
+declare class _IOBlitMemory {
+  constructor(init?: _IOBlitMemory);
+}
+
+declare class unnamed_7595605951052496249 {
+  constructor(init?: unnamed_7595605951052496249);
+  contextLock: number;
+  state: number;
+  owner: interop.Pointer;
+  version: number;
+  structSize: number;
+  reserved: unknown /* const array */;
 }
 
 declare class xbpf_d {
@@ -17156,6 +37112,15 @@ declare class IOCircularDataQueue {
   queueHeaderShadow: IOCircularDataQueueDescription;
 }
 
+declare class __Reply__host_priv_statistics_t {
+  constructor(init?: __Reply__host_priv_statistics_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  host_info_outCnt: number;
+  host_info_out: unknown /* const array */;
+}
+
 declare class getfsstat64_args {
   constructor(init?: getfsstat64_args);
   buf_l_: unknown /* const array */;
@@ -17186,54 +37151,44 @@ declare class guarded_write_np_args {
 }
 
 type arm_cpuid_id_aa64dfr0_el1Descriptor = 
-  | { debug_feature: unnamed_1064201811267050249 }
+  | { debug_feature: unnamed_6945852128293241798 }
   | { value: number };
 
 declare class arm_cpuid_id_aa64dfr0_el1 {
   constructor(init?: arm_cpuid_id_aa64dfr0_el1Descriptor);
-  debug_feature: unnamed_1064201811267050249;
+  debug_feature: unnamed_6945852128293241798;
   value: number;
 }
 
-type unnamed_16283433901440427056Descriptor = 
-  | { b8: unknown /* const array */ }
-  | { b32: unknown /* const array */ };
-
-declare class unnamed_16283433901440427056 {
-  constructor(init?: unnamed_16283433901440427056Descriptor);
-  b8: unknown /* const array */;
-  b32: unknown /* const array */;
-}
-
-type unnamed_16186558334874051404Descriptor = 
+type unnamed_951637897755275617Descriptor = 
   | { b8: unknown /* const array */ }
   | { b32: unknown /* const array */ }
   | { b64: unknown /* const array */ };
 
-declare class unnamed_16186558334874051404 {
-  constructor(init?: unnamed_16186558334874051404Descriptor);
+declare class unnamed_951637897755275617 {
+  constructor(init?: unnamed_951637897755275617Descriptor);
   b8: unknown /* const array */;
   b32: unknown /* const array */;
   b64: unknown /* const array */;
 }
 
-type arm_debug_dbgdidrDescriptor = 
-  | { debug_id: unnamed_11298389882924342544 }
-  | { value: number };
+type unnamed_17433309396994173141Descriptor = 
+  | { b8: unknown /* const array */ }
+  | { b32: unknown /* const array */ };
 
-declare class arm_debug_dbgdidr {
-  constructor(init?: arm_debug_dbgdidrDescriptor);
-  debug_id: unnamed_11298389882924342544;
-  value: number;
+declare class unnamed_17433309396994173141 {
+  constructor(init?: unnamed_17433309396994173141Descriptor);
+  b8: unknown /* const array */;
+  b32: unknown /* const array */;
 }
 
 type arm_cpuid_id_dfr0Descriptor = 
-  | { debug_feature: unnamed_3364053345864614681 }
+  | { debug_feature: unnamed_2680670717399822504 }
   | { value: number };
 
 declare class arm_cpuid_id_dfr0 {
   constructor(init?: arm_cpuid_id_dfr0Descriptor);
-  debug_feature: unnamed_3364053345864614681;
+  debug_feature: unnamed_2680670717399822504;
   value: number;
 }
 
@@ -17253,16 +37208,16 @@ declare class __RequestUnion__kextd_kernel_request_subsystem {
   Request_kextd_ping: __Request__kextd_ping_t;
 }
 
-type __RequestUnion__catch_exc_subsystemDescriptor = 
-  | { Request_exception_raise: __Request__exception_raise_t }
-  | { Request_exception_raise_state: __Request__exception_raise_state_t }
-  | { Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t };
+type __ReplyUnion__catch_exc_subsystemDescriptor = 
+  | { Reply_exception_raise: __Reply__exception_raise_t }
+  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
+  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
 
-declare class __RequestUnion__catch_exc_subsystem {
-  constructor(init?: __RequestUnion__catch_exc_subsystemDescriptor);
-  Request_exception_raise: __Request__exception_raise_t;
-  Request_exception_raise_state: __Request__exception_raise_state_t;
-  Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t;
+declare class __ReplyUnion__catch_exc_subsystem {
+  constructor(init?: __ReplyUnion__catch_exc_subsystemDescriptor);
+  Reply_exception_raise: __Reply__exception_raise_t;
+  Reply_exception_raise_state: __Reply__exception_raise_state_t;
+  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
 }
 
 type __RequestUnion__receive_vfs_nspace_subsystemDescriptor = 
@@ -17285,14 +37240,6 @@ declare class __RequestUnion__receive_vfs_nspace_subsystem {
   Request_vfs_resolve_file_with_audit_token: __Request__vfs_resolve_file_with_audit_token_t;
   Request_vfs_resolve_dir_with_audit_token: __Request__vfs_resolve_dir_with_audit_token_t;
   Request_vfs_resolve_reparent_with_audit_token: __Request__vfs_resolve_reparent_with_audit_token_t;
-}
-
-type __RequestUnion__arcade_upcall_subsystemDescriptor = 
-  | { Request_arcade_upcall: __Request__arcade_upcall_t };
-
-declare class __RequestUnion__arcade_upcall_subsystem {
-  constructor(init?: __RequestUnion__arcade_upcall_subsystemDescriptor);
-  Request_arcade_upcall: __Request__arcade_upcall_t;
 }
 
 type __RequestUnion__audit_triggers_subsystemDescriptor = 
@@ -17383,6 +37330,48 @@ declare class __RequestUnion__task_access_subsystem {
   Request_check_task_access_with_flavor: __Request__check_task_access_with_flavor_t;
 }
 
+type __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor = 
+  | { Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t }
+  | { Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t };
+
+declare class __ReplyUnion__receive_sysdiagnose_notification_subsystem {
+  constructor(init?: __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor);
+  Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t;
+  Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t;
+}
+
+type __ReplyUnion__receive_vfs_nspace_subsystemDescriptor = 
+  | { Reply_nspace_handle: __Reply__nspace_handle_t }
+  | { Reply_nspace_resolve_cancel: __Reply__nspace_resolve_cancel_t }
+  | { Reply_nspace_resolve_path: __Reply__nspace_resolve_path_t }
+  | { Reply_vfs_resolve_file: __Reply__vfs_resolve_file_t }
+  | { Reply_vfs_resolve_dir: __Reply__vfs_resolve_dir_t }
+  | { Reply_vfs_resolve_file_with_audit_token: __Reply__vfs_resolve_file_with_audit_token_t }
+  | { Reply_vfs_resolve_dir_with_audit_token: __Reply__vfs_resolve_dir_with_audit_token_t }
+  | { Reply_vfs_resolve_reparent_with_audit_token: __Reply__vfs_resolve_reparent_with_audit_token_t };
+
+declare class __ReplyUnion__receive_vfs_nspace_subsystem {
+  constructor(init?: __ReplyUnion__receive_vfs_nspace_subsystemDescriptor);
+  Reply_nspace_handle: __Reply__nspace_handle_t;
+  Reply_nspace_resolve_cancel: __Reply__nspace_resolve_cancel_t;
+  Reply_nspace_resolve_path: __Reply__nspace_resolve_path_t;
+  Reply_vfs_resolve_file: __Reply__vfs_resolve_file_t;
+  Reply_vfs_resolve_dir: __Reply__vfs_resolve_dir_t;
+  Reply_vfs_resolve_file_with_audit_token: __Reply__vfs_resolve_file_with_audit_token_t;
+  Reply_vfs_resolve_dir_with_audit_token: __Reply__vfs_resolve_dir_with_audit_token_t;
+  Reply_vfs_resolve_reparent_with_audit_token: __Reply__vfs_resolve_reparent_with_audit_token_t;
+}
+
+type __RequestUnion__receive_sysdiagnose_notification_subsystemDescriptor = 
+  | { Request_sysdiagnose_notification: __Request__sysdiagnose_notification_t }
+  | { Request_sysdiagnose_notification_with_audit_token: __Request__sysdiagnose_notification_with_audit_token_t };
+
+declare class __RequestUnion__receive_sysdiagnose_notification_subsystem {
+  constructor(init?: __RequestUnion__receive_sysdiagnose_notification_subsystemDescriptor);
+  Request_sysdiagnose_notification: __Request__sysdiagnose_notification_t;
+  Request_sysdiagnose_notification_with_audit_token: __Request__sysdiagnose_notification_with_audit_token_t;
+}
+
 type __RequestUnion__send_ktrace_background_subsystemDescriptor = 
   | { Request_send_ktrace_background_available: __Request__ktrace_background_available_t };
 
@@ -17401,32 +37390,6 @@ declare class __RequestUnion__memory_error_notification_subsystem {
   Request_mcc_memory_error_notification: __Request__mcc_memory_error_notification_t;
 }
 
-type __ReplyUnion__telemetry_notification_subsystemDescriptor = 
-  | { Reply_telemetry_notification: __Reply__telemetry_notification_t };
-
-declare class __ReplyUnion__telemetry_notification_subsystem {
-  constructor(init?: __ReplyUnion__telemetry_notification_subsystemDescriptor);
-  Reply_telemetry_notification: __Reply__telemetry_notification_t;
-}
-
-type arm_isa_feat1_regDescriptor = 
-  | { value: number }
-  | { field: syscp_ID_instructions_feat_1_reg };
-
-declare class arm_isa_feat1_reg {
-  constructor(init?: arm_isa_feat1_regDescriptor);
-  value: number;
-  field: syscp_ID_instructions_feat_1_reg;
-}
-
-type __RequestUnion__telemetry_notification_subsystemDescriptor = 
-  | { Request_telemetry_notification: __Request__telemetry_notification_t };
-
-declare class __RequestUnion__telemetry_notification_subsystem {
-  constructor(init?: __RequestUnion__telemetry_notification_subsystemDescriptor);
-  Request_telemetry_notification: __Request__telemetry_notification_t;
-}
-
 type __ReplyUnion__coalition_notification_subsystemDescriptor = 
   | { Reply_coalition_notification: __Reply__coalition_notification_t };
 
@@ -17443,42 +37406,12 @@ declare class __ReplyUnion__fairplay_subsystem {
   Reply_fairplayd_arcade_request: __Reply__fairplayd_arcade_request_t;
 }
 
-type __RequestUnion__gssd_mach_subsystemDescriptor = 
-  | { Request_mach_gss_init_sec_context: __Request__mach_gss_init_sec_context_t }
-  | { Request_mach_gss_accept_sec_context: __Request__mach_gss_accept_sec_context_t }
-  | { Request_mach_gss_log_error: __Request__mach_gss_log_error_t }
-  | { Request_mach_gss_init_sec_context_v2: __Request__mach_gss_init_sec_context_v2_t }
-  | { Request_mach_gss_accept_sec_context_v2: __Request__mach_gss_accept_sec_context_v2_t }
-  | { Request_mach_gss_init_sec_context_v3: __Request__mach_gss_init_sec_context_v3_t }
-  | { Request_mach_gss_hold_cred: __Request__mach_gss_hold_cred_t }
-  | { Request_mach_gss_unhold_cred: __Request__mach_gss_unhold_cred_t }
-  | { Request_mach_gss_lookup: __Request__mach_gss_lookup_t };
+type __RequestUnion__fairplay_subsystemDescriptor = 
+  | { Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t };
 
-declare class __RequestUnion__gssd_mach_subsystem {
-  constructor(init?: __RequestUnion__gssd_mach_subsystemDescriptor);
-  Request_mach_gss_init_sec_context: __Request__mach_gss_init_sec_context_t;
-  Request_mach_gss_accept_sec_context: __Request__mach_gss_accept_sec_context_t;
-  Request_mach_gss_log_error: __Request__mach_gss_log_error_t;
-  Request_mach_gss_init_sec_context_v2: __Request__mach_gss_init_sec_context_v2_t;
-  Request_mach_gss_accept_sec_context_v2: __Request__mach_gss_accept_sec_context_v2_t;
-  Request_mach_gss_init_sec_context_v3: __Request__mach_gss_init_sec_context_v3_t;
-  Request_mach_gss_hold_cred: __Request__mach_gss_hold_cred_t;
-  Request_mach_gss_unhold_cred: __Request__mach_gss_unhold_cred_t;
-  Request_mach_gss_lookup: __Request__mach_gss_lookup_t;
-}
-
-type __ReplyUnion__doubleagent_subsystemDescriptor = 
-  | { Reply_doubleagent_lookup_xattr: __Reply__doubleagent_lookup_xattr_t }
-  | { Reply_doubleagent_allocate_xattr: __Reply__doubleagent_allocate_xattr_t }
-  | { Reply_doubleagent_list_xattrs: __Reply__doubleagent_list_xattrs_t }
-  | { Reply_doubleagent_remove_xattr: __Reply__doubleagent_remove_xattr_t };
-
-declare class __ReplyUnion__doubleagent_subsystem {
-  constructor(init?: __ReplyUnion__doubleagent_subsystemDescriptor);
-  Reply_doubleagent_lookup_xattr: __Reply__doubleagent_lookup_xattr_t;
-  Reply_doubleagent_allocate_xattr: __Reply__doubleagent_allocate_xattr_t;
-  Reply_doubleagent_list_xattrs: __Reply__doubleagent_list_xattrs_t;
-  Reply_doubleagent_remove_xattr: __Reply__doubleagent_remove_xattr_t;
+declare class __RequestUnion__fairplay_subsystem {
+  constructor(init?: __RequestUnion__fairplay_subsystemDescriptor);
+  Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t;
 }
 
 type __RequestUnion__doubleagent_subsystemDescriptor = 
@@ -17593,14 +37526,14 @@ declare class __RequestUnion__lockd_mach_subsystem {
   Request_lockd_shutdown: __Request__lockd_shutdown_t;
 }
 
-type unnamed_14374843138598068828Descriptor = 
-  | { un_d_packname: unknown /* const array */ }
-  | { un_b: unnamed_10338689098814162510 };
+type unnamed_5016616128961403802Descriptor = 
+  | { cpg: number }
+  | { sgs: number };
 
-declare class unnamed_14374843138598068828 {
-  constructor(init?: unnamed_14374843138598068828Descriptor);
-  un_d_packname: unknown /* const array */;
-  un_b: unnamed_10338689098814162510;
+declare class unnamed_5016616128961403802 {
+  constructor(init?: unnamed_5016616128961403802Descriptor);
+  cpg: number;
+  sgs: number;
 }
 
 type idt_entryDescriptor = 
@@ -17633,6 +37566,28 @@ declare class gdt_entry {
   task_state: tss_desc;
 }
 
+type dt_entryDescriptor = 
+  | { code: code_desc }
+  | { data: data_desc }
+  | { ldt: ldt_desc }
+  | { task_state: tss_desc }
+  | { call_gate: call_gate }
+  | { trap_gate: trap_gate }
+  | { intr_gate: intr_gate }
+  | { task_gate: task_gate };
+
+declare class dt_entry {
+  constructor(init?: dt_entryDescriptor);
+  code: code_desc;
+  data: data_desc;
+  ldt: ldt_desc;
+  task_state: tss_desc;
+  call_gate: call_gate;
+  trap_gate: trap_gate;
+  intr_gate: intr_gate;
+  task_gate: task_gate;
+}
+
 type sockaddr_in_4_6Descriptor = 
   | { sa: sockaddr }
   | { sah: __sockaddr_header }
@@ -17647,128 +37602,146 @@ declare class sockaddr_in_4_6 {
   sin6: sockaddr_in6;
 }
 
-type unnamed_12749400625580214499Descriptor = 
+type unnamed_15919811067350413891Descriptor = 
+  | { sa_nwk_status: number };
+
+declare class unnamed_15919811067350413891 {
+  constructor(init?: unnamed_15919811067350413891Descriptor);
+  sa_nwk_status: number;
+}
+
+type unnamed_13685751842495429787Descriptor = 
   | { sa_nwk_status_int: number };
 
-declare class unnamed_12749400625580214499 {
-  constructor(init?: unnamed_12749400625580214499Descriptor);
+declare class unnamed_13685751842495429787 {
+  constructor(init?: unnamed_13685751842495429787Descriptor);
   sa_nwk_status_int: number;
 }
 
-type unnamed_3012503987243038479Descriptor = 
-  | { _itpl_sa: sockaddr }
-  | { _itpl_sah: __sockaddr_header }
-  | { _itpl_sin: sockaddr_in }
-  | { _itpl_sin6: sockaddr_in6 };
+type unnamed_1909042307333943457Descriptor = 
+  | { pad_field: number };
 
-declare class unnamed_3012503987243038479 {
-  constructor(init?: unnamed_3012503987243038479Descriptor);
-  _itpl_sa: sockaddr;
-  _itpl_sah: __sockaddr_header;
-  _itpl_sin: sockaddr_in;
-  _itpl_sin6: sockaddr_in6;
+declare class unnamed_1909042307333943457 {
+  constructor(init?: unnamed_1909042307333943457Descriptor);
+  pad_field: number;
 }
 
-type unnamed_17232738562495190869Descriptor = 
-  | { _itpl_sa: sockaddr }
-  | { _itpl_sah: __sockaddr_header }
-  | { _itpl_sin: sockaddr_in }
-  | { _itpl_sin6: sockaddr_in6 };
-
-declare class unnamed_17232738562495190869 {
-  constructor(init?: unnamed_17232738562495190869Descriptor);
-  _itpl_sa: sockaddr;
-  _itpl_sah: __sockaddr_header;
-  _itpl_sin: sockaddr_in;
-  _itpl_sin6: sockaddr_in6;
-}
-
-type unnamed_11635418716625211500Descriptor = 
+type unnamed_17874545593904778746Descriptor = 
   | { queueStateVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */ }
   | { __queueState: IOCircularDataQueueState };
 
-declare class unnamed_11635418716625211500 {
-  constructor(init?: unnamed_11635418716625211500Descriptor);
+declare class unnamed_17874545593904778746 {
+  constructor(init?: unnamed_17874545593904778746Descriptor);
   queueStateVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */;
   __queueState: IOCircularDataQueueState;
 }
 
 type IOCircularDataQueueStateDescriptor = 
   | { val: bigint }
-  | { fields: unnamed_9614755327984743019 };
+  | { fields: unnamed_15460216514130901306 };
 
 declare class IOCircularDataQueueState {
   constructor(init?: IOCircularDataQueueStateDescriptor);
   val: bigint;
-  fields: unnamed_9614755327984743019;
+  fields: unnamed_15460216514130901306;
+}
+
+type unnamed_2799493692168349407Descriptor = 
+  | { headerInfoVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */ }
+  | { __headerInfo: IOCircularDataQueueEntryHeaderInfo };
+
+declare class unnamed_2799493692168349407 {
+  constructor(init?: unnamed_2799493692168349407Descriptor);
+  headerInfoVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */;
+  __headerInfo: IOCircularDataQueueEntryHeaderInfo;
 }
 
 type IOCircularDataQueueEntryHeaderInfoDescriptor = 
   | { val: bigint }
-  | { fields: unnamed_9573910560995373467 };
+  | { fields: unnamed_9083806881957308117 };
 
 declare class IOCircularDataQueueEntryHeaderInfo {
   constructor(init?: IOCircularDataQueueEntryHeaderInfoDescriptor);
   val: bigint;
-  fields: unnamed_9573910560995373467;
+  fields: unnamed_9083806881957308117;
 }
 
 type IOACPIAddressDescriptor = 
   | { addr64: number }
-  | { pci: unnamed_12713508752774757029 };
+  | { pci: unnamed_1895135430156692473 };
 
 declare class IOACPIAddress {
   constructor(init?: IOACPIAddressDescriptor);
   addr64: number;
-  pci: unnamed_12713508752774757029;
+  pci: unnamed_1895135430156692473;
 }
 
 type IOPCIAddressSpaceDescriptor = 
   | { bits: number }
-  | { s: unnamed_17672180226118855821 }
-  | { es: unnamed_1254637360707554498 };
+  | { s: unnamed_15844086107504012933 }
+  | { es: unnamed_6861817109371243644 };
 
 declare class IOPCIAddressSpace {
   constructor(init?: IOPCIAddressSpaceDescriptor);
   bits: number;
-  s: unnamed_17672180226118855821;
-  es: unnamed_1254637360707554498;
+  s: unnamed_15844086107504012933;
+  es: unnamed_6861817109371243644;
 }
 
-type unnamed_11897257300510808881Descriptor = 
-  | { range: unnamed_16222007263645768418 }
-  | { notRange: unnamed_10261520394563487748 };
+type unnamed_4352298141692769949Descriptor = 
+  | { range: unnamed_9332256840806103734 }
+  | { notRange: unnamed_6659401567322203909 };
 
-declare class unnamed_11897257300510808881 {
-  constructor(init?: unnamed_11897257300510808881Descriptor);
-  range: unnamed_16222007263645768418;
-  notRange: unnamed_10261520394563487748;
+declare class unnamed_4352298141692769949 {
+  constructor(init?: unnamed_4352298141692769949Descriptor);
+  range: unnamed_9332256840806103734;
+  notRange: unnamed_6659401567322203909;
 }
 
-type unnamed_9604849382947085229Descriptor = 
-  | { range: unnamed_804236958011088931 }
-  | { notRange: unnamed_8193567900268426915 };
+type unnamed_14286404118290648721Descriptor = 
+  | { range: unnamed_549004444384603547 }
+  | { notRange: unnamed_13504975043066652044 };
 
-declare class unnamed_9604849382947085229 {
-  constructor(init?: unnamed_9604849382947085229Descriptor);
-  range: unnamed_804236958011088931;
-  notRange: unnamed_8193567900268426915;
+declare class unnamed_14286404118290648721 {
+  constructor(init?: unnamed_14286404118290648721Descriptor);
+  range: unnamed_549004444384603547;
+  notRange: unnamed_13504975043066652044;
 }
 
-type unnamed_17503374868355305097Descriptor = 
-  | { params: unknown /* const array */ };
+type unnamed_13861225699632598356Descriptor = 
+  | { range: unnamed_8023499712531875969 }
+  | { notRange: unnamed_9083664578469270211 };
 
-declare class unnamed_17503374868355305097 {
-  constructor(init?: unnamed_17503374868355305097Descriptor);
-  params: unknown /* const array */;
+declare class unnamed_13861225699632598356 {
+  constructor(init?: unnamed_13861225699632598356Descriptor);
+  range: unnamed_8023499712531875969;
+  notRange: unnamed_9083664578469270211;
 }
 
-type unnamed_11714727163374491480Descriptor = 
-  | { xb_buffer: unnamed_13120103969405328411 };
+type unnamed_5688067686302198636Descriptor = 
+  | { q: unknown /* const array */ };
 
-declare class unnamed_11714727163374491480 {
-  constructor(init?: unnamed_11714727163374491480Descriptor);
-  xb_buffer: unnamed_13120103969405328411;
+declare class unnamed_5688067686302198636 {
+  constructor(init?: unnamed_5688067686302198636Descriptor);
+  q: unknown /* const array */;
+}
+
+type __RequestUnion__arcade_upcall_subsystemDescriptor = 
+  | { Request_arcade_upcall: __Request__arcade_upcall_t };
+
+declare class __RequestUnion__arcade_upcall_subsystem {
+  constructor(init?: __RequestUnion__arcade_upcall_subsystemDescriptor);
+  Request_arcade_upcall: __Request__arcade_upcall_t;
+}
+
+type unnamed_14572990255404916774Descriptor = 
+  | { asid: number }
+  | { vmid: number };
+
+declare class unnamed_14572990255404916774 {
+  constructor(init?: unnamed_14572990255404916774Descriptor);
+  asid: number;
+  vmid: number;
 }
 
 type nfs_quadconvertDescriptor = 
@@ -17783,16 +37756,16 @@ declare class nfs_quadconvert {
 
 type __RequestUnion__upl_subsystemDescriptor = 
   | { Request_upl_abort: __Request__upl_abort_t }
-  | { Request_upl_abort_range: unnamed_1650381945006561587 }
-  | { Request_upl_commit: unnamed_1788228608663847795 }
-  | { Request_upl_commit_range: unnamed_230683991592103003 };
+  | { Request_upl_abort_range: unnamed_175931566836450068 }
+  | { Request_upl_commit: unnamed_2426400386901168830 }
+  | { Request_upl_commit_range: unnamed_9992975935846799773 };
 
 declare class __RequestUnion__upl_subsystem {
   constructor(init?: __RequestUnion__upl_subsystemDescriptor);
   Request_upl_abort: __Request__upl_abort_t;
-  Request_upl_abort_range: unnamed_1650381945006561587;
-  Request_upl_commit: unnamed_1788228608663847795;
-  Request_upl_commit_range: unnamed_230683991592103003;
+  Request_upl_abort_range: unnamed_175931566836450068;
+  Request_upl_commit: unnamed_2426400386901168830;
+  Request_upl_commit_range: unnamed_9992975935846799773;
 }
 
 type __ReplyUnion__iocompressionstats_notification_subsystemDescriptor = 
@@ -17803,32 +37776,22 @@ declare class __ReplyUnion__iocompressionstats_notification_subsystem {
   Reply_iocompressionstats_notification: __Reply__iocompressionstats_notification_t;
 }
 
-type __ReplyUnion__audit_triggers_subsystemDescriptor = 
-  | { Reply_audit_triggers: __Reply__audit_triggers_t }
-  | { Reply_audit_analytics: __Reply__audit_analytics_t };
+type unnamed_6826042517262330226Descriptor = 
+  | { b8: unknown /* const array */ }
+  | { b32: unknown /* const array */ };
 
-declare class __ReplyUnion__audit_triggers_subsystem {
-  constructor(init?: __ReplyUnion__audit_triggers_subsystemDescriptor);
-  Reply_audit_triggers: __Reply__audit_triggers_t;
-  Reply_audit_analytics: __Reply__audit_analytics_t;
+declare class unnamed_6826042517262330226 {
+  constructor(init?: unnamed_6826042517262330226Descriptor);
+  b8: unknown /* const array */;
+  b32: unknown /* const array */;
 }
 
-type unnamed_3771936424973120145Descriptor = 
-  | { sin_zero: unknown /* const array */ }
-  | { _in_index: unnamed_10328243768668227060 };
+type unnamed_370117740381083495Descriptor = 
+  | { xb_buffer: unnamed_4464297625279518389 };
 
-declare class unnamed_3771936424973120145 {
-  constructor(init?: unnamed_3771936424973120145Descriptor);
-  sin_zero: unknown /* const array */;
-  _in_index: unnamed_10328243768668227060;
-}
-
-type __RequestUnion__coalition_notification_subsystemDescriptor = 
-  | { Request_coalition_notification: __Request__coalition_notification_t };
-
-declare class __RequestUnion__coalition_notification_subsystem {
-  constructor(init?: __RequestUnion__coalition_notification_subsystemDescriptor);
-  Request_coalition_notification: __Request__coalition_notification_t;
+declare class unnamed_370117740381083495 {
+  constructor(init?: unnamed_370117740381083495Descriptor);
+  xb_buffer: unnamed_4464297625279518389;
 }
 
 type ldt_entryDescriptor = 
@@ -17845,36 +37808,92 @@ declare class ldt_entry {
   task_gate: task_gate;
 }
 
-type __ReplyUnion__catch_mach_exc_subsystemDescriptor = 
-  | { Reply_mach_exception_raise: __Reply__mach_exception_raise_t }
-  | { Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t }
-  | { Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t };
-
-declare class __ReplyUnion__catch_mach_exc_subsystem {
-  constructor(init?: __ReplyUnion__catch_mach_exc_subsystemDescriptor);
-  Reply_mach_exception_raise: __Reply__mach_exception_raise_t;
-  Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t;
-  Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t;
-}
-
 type sptm_update_disjoint_multipage_op_tDescriptor = 
-  | { per_paddr_header: unnamed_5864893492845929824 }
+  | { per_paddr_header: unnamed_16083841720106112854 }
   | { disjoint_op: sptm_disjoint_op_t };
 
 declare class sptm_update_disjoint_multipage_op_t {
   constructor(init?: sptm_update_disjoint_multipage_op_tDescriptor);
-  per_paddr_header: unnamed_5864893492845929824;
+  per_paddr_header: unnamed_16083841720106112854;
   disjoint_op: sptm_disjoint_op_t;
 }
 
-type unnamed_6650140264646410345Descriptor = 
-  | { cpg: number }
-  | { sgs: number };
+type vm_size_struct_tDescriptor = 
+  | { UNSAFE: number };
 
-declare class unnamed_6650140264646410345 {
-  constructor(init?: unnamed_6650140264646410345Descriptor);
-  cpg: number;
-  sgs: number;
+declare class vm_size_struct_t {
+  constructor(init?: vm_size_struct_tDescriptor);
+  UNSAFE: number;
+}
+
+type arm_debug_dbgdidrDescriptor = 
+  | { debug_id: unnamed_7289201672842071041 }
+  | { value: number };
+
+declare class arm_debug_dbgdidr {
+  constructor(init?: arm_debug_dbgdidrDescriptor);
+  debug_id: unnamed_7289201672842071041;
+  value: number;
+}
+
+type unnamed_11409871569097783565Descriptor = 
+  | { F: unknown /* const array */ }
+  | { L: unknown /* const array */ }
+  | { S: unknown /* const array */ }
+  | { C: unknown /* const array */ };
+
+declare class unnamed_11409871569097783565 {
+  constructor(init?: unnamed_11409871569097783565Descriptor);
+  F: unknown /* const array */;
+  L: unknown /* const array */;
+  S: unknown /* const array */;
+  C: unknown /* const array */;
+}
+
+type __ReplyUnion__telemetry_notification_subsystemDescriptor = 
+  | { Reply_telemetry_notification: __Reply__telemetry_notification_t };
+
+declare class __ReplyUnion__telemetry_notification_subsystem {
+  constructor(init?: __ReplyUnion__telemetry_notification_subsystemDescriptor);
+  Reply_telemetry_notification: __Reply__telemetry_notification_t;
+}
+
+type unnamed_13433862529651500428Descriptor = 
+  | { eph_x86_do_not_use: number };
+
+declare class unnamed_13433862529651500428 {
+  constructor(init?: unnamed_13433862529651500428Descriptor);
+  eph_x86_do_not_use: number;
+}
+
+type arm_feature0_reg_tDescriptor = 
+  | { field: arm_feature_bits_t }
+  | { value: number };
+
+declare class arm_feature0_reg_t {
+  constructor(init?: arm_feature0_reg_tDescriptor);
+  field: arm_feature_bits_t;
+  value: number;
+}
+
+type __RequestUnion__catch_exc_subsystemDescriptor = 
+  | { Request_exception_raise: __Request__exception_raise_t }
+  | { Request_exception_raise_state: __Request__exception_raise_state_t }
+  | { Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t };
+
+declare class __RequestUnion__catch_exc_subsystem {
+  constructor(init?: __RequestUnion__catch_exc_subsystemDescriptor);
+  Request_exception_raise: __Request__exception_raise_t;
+  Request_exception_raise_state: __Request__exception_raise_state_t;
+  Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t;
+}
+
+type vm_addr_struct_tDescriptor = 
+  | { UNSAFE: number };
+
+declare class vm_addr_struct_t {
+  constructor(init?: vm_addr_struct_tDescriptor);
+  UNSAFE: number;
 }
 
 type vm32_size_struct_tDescriptor = 
@@ -17885,32 +37904,48 @@ declare class vm32_size_struct_t {
   UNSAFE: number;
 }
 
-type __RequestUnion__fairplay_subsystemDescriptor = 
-  | { Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t };
+type unnamed_13164639886307440841Descriptor = 
+  | { un_d_packname: unknown /* const array */ }
+  | { un_b: unnamed_17436044154748145760 };
 
-declare class __RequestUnion__fairplay_subsystem {
-  constructor(init?: __RequestUnion__fairplay_subsystemDescriptor);
-  Request_fairplayd_arcade_request: __Request__fairplayd_arcade_request_t;
+declare class unnamed_13164639886307440841 {
+  constructor(init?: unnamed_13164639886307440841Descriptor);
+  un_d_packname: unknown /* const array */;
+  un_b: unnamed_17436044154748145760;
 }
 
-type unnamed_867739513131058950Descriptor = 
-  | { eph_x86_do_not_use: number };
+type unnamed_17369176097837061348Descriptor = 
+  | { point: _NXTabletPointData }
+  | { proximity: _NXTabletProximityData };
 
-declare class unnamed_867739513131058950 {
-  constructor(init?: unnamed_867739513131058950Descriptor);
-  eph_x86_do_not_use: number;
+declare class unnamed_17369176097837061348 {
+  constructor(init?: unnamed_17369176097837061348Descriptor);
+  point: _NXTabletPointData;
+  proximity: _NXTabletProximityData;
 }
 
-type __ReplyUnion__catch_exc_subsystemDescriptor = 
-  | { Reply_exception_raise: __Reply__exception_raise_t }
-  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
-  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
+type NXEventDataDescriptor = 
+  | { mouse: unnamed_6187887598941153445 }
+  | { mouseMove: unnamed_7692593549662626158 }
+  | { key: unnamed_5084774997933103994 }
+  | { tracking: unnamed_17859967344121413399 }
+  | { scrollWheel: unnamed_8937820884545876431 }
+  | { zoom: unnamed_8937820884545876431 }
+  | { compound: unnamed_10678294514709290597 }
+  | { tablet: unnamed_17841331041868831329 }
+  | { proximity: unnamed_16303799009253413007 };
 
-declare class __ReplyUnion__catch_exc_subsystem {
-  constructor(init?: __ReplyUnion__catch_exc_subsystemDescriptor);
-  Reply_exception_raise: __Reply__exception_raise_t;
-  Reply_exception_raise_state: __Reply__exception_raise_state_t;
-  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
+declare class NXEventData {
+  constructor(init?: NXEventDataDescriptor);
+  mouse: unnamed_6187887598941153445;
+  mouseMove: unnamed_7692593549662626158;
+  key: unnamed_5084774997933103994;
+  tracking: unnamed_17859967344121413399;
+  scrollWheel: unnamed_8937820884545876431;
+  zoom: unnamed_8937820884545876431;
+  compound: unnamed_10678294514709290597;
+  tablet: unnamed_17841331041868831329;
+  proximity: unnamed_16303799009253413007;
 }
 
 type __RequestUnion__send_vfs_nspace_subsystemDescriptor = 
@@ -17935,116 +37970,144 @@ declare class __RequestUnion__send_vfs_nspace_subsystem {
   Request_send_vfs_resolve_reparent_with_audit_token: __Request__vfs_resolve_reparent_with_audit_token_t;
 }
 
-type unnamed_15850245440478902285Descriptor = 
-  | { sa_nwk_status: number };
+type IOFBHDRMetaDataDescriptor = 
+  | { v1: IOFBHDRMetaDataV1 };
 
-declare class unnamed_15850245440478902285 {
-  constructor(init?: unnamed_15850245440478902285Descriptor);
-  sa_nwk_status: number;
+declare class IOFBHDRMetaData {
+  constructor(init?: IOFBHDRMetaDataDescriptor);
+  v1: IOFBHDRMetaDataV1;
 }
 
-type arm_feature0_reg_tDescriptor = 
-  | { field: arm_feature_bits_t }
-  | { value: number };
+type BTreeKeyDescriptor = 
+  | { length8: number }
+  | { length16: number }
+  | { rawData: unknown /* const array */ };
 
-declare class arm_feature0_reg_t {
-  constructor(init?: arm_feature0_reg_tDescriptor);
-  field: arm_feature_bits_t;
-  value: number;
+declare class BTreeKey {
+  constructor(init?: BTreeKeyDescriptor);
+  length8: number;
+  length16: number;
+  rawData: unknown /* const array */;
 }
 
-type unnamed_6687071577879841066Descriptor = 
-  | { headerInfoVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */ }
-  | { __headerInfo: IOCircularDataQueueEntryHeaderInfo };
+type HFSPlusAttrRecordDescriptor = 
+  | { recordType: number }
+  | { inlineData: HFSPlusAttrInlineData }
+  | { attrData: HFSPlusAttrData }
+  | { forkData: HFSPlusAttrForkData }
+  | { overflowExtents: HFSPlusAttrExtents };
 
-declare class unnamed_6687071577879841066 {
-  constructor(init?: unnamed_6687071577879841066Descriptor);
-  headerInfoVal: unknown /* volatile _Atomic(unsigned __int128) (CXTypeKind: 177) */;
-  __headerInfo: IOCircularDataQueueEntryHeaderInfo;
+declare class HFSPlusAttrRecord {
+  constructor(init?: HFSPlusAttrRecordDescriptor);
+  recordType: number;
+  inlineData: HFSPlusAttrInlineData;
+  attrData: HFSPlusAttrData;
+  forkData: HFSPlusAttrForkData;
+  overflowExtents: HFSPlusAttrExtents;
 }
 
-type vm_size_struct_tDescriptor = 
-  | { UNSAFE: number };
+type __RequestUnion__memory_entry_subsystemDescriptor = 
+  | { Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t }
+  | { Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t }
+  | { Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t }
+  | { Request_mach_memory_entry_get_page_counts: __Request__mach_memory_entry_get_page_counts_t };
 
-declare class vm_size_struct_t {
-  constructor(init?: vm_size_struct_tDescriptor);
-  UNSAFE: number;
+declare class __RequestUnion__memory_entry_subsystem {
+  constructor(init?: __RequestUnion__memory_entry_subsystemDescriptor);
+  Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t;
+  Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t;
+  Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t;
+  Request_mach_memory_entry_get_page_counts: __Request__mach_memory_entry_get_page_counts_t;
 }
 
-type unnamed_17393587275662477423Descriptor = 
-  | { q: unknown /* const array */ };
+type __ReplyUnion__memory_entry_subsystemDescriptor = 
+  | { Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t }
+  | { Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t }
+  | { Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t }
+  | { Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t };
 
-declare class unnamed_17393587275662477423 {
-  constructor(init?: unnamed_17393587275662477423Descriptor);
-  q: unknown /* const array */;
+declare class __ReplyUnion__memory_entry_subsystem {
+  constructor(init?: __ReplyUnion__memory_entry_subsystemDescriptor);
+  Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t;
+  Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t;
+  Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t;
+  Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t;
 }
 
-type __RequestUnion__iocompressionstats_notification_subsystemDescriptor = 
-  | { Request_iocompressionstats_notification: __Request__iocompressionstats_notification_t };
+type __ReplyUnion__mach_voucher_subsystemDescriptor = 
+  | { Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t }
+  | { Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t }
+  | { Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t }
+  | { Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t }
+  | { Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t };
 
-declare class __RequestUnion__iocompressionstats_notification_subsystem {
-  constructor(init?: __RequestUnion__iocompressionstats_notification_subsystemDescriptor);
-  Request_iocompressionstats_notification: __Request__iocompressionstats_notification_t;
+declare class __ReplyUnion__mach_voucher_subsystem {
+  constructor(init?: __ReplyUnion__mach_voucher_subsystemDescriptor);
+  Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t;
+  Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t;
+  Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t;
+  Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t;
+  Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t;
 }
 
-type __ReplyUnion__receive_vfs_nspace_subsystemDescriptor = 
-  | { Reply_nspace_handle: __Reply__nspace_handle_t }
-  | { Reply_nspace_resolve_cancel: __Reply__nspace_resolve_cancel_t }
-  | { Reply_nspace_resolve_path: __Reply__nspace_resolve_path_t }
-  | { Reply_vfs_resolve_file: __Reply__vfs_resolve_file_t }
-  | { Reply_vfs_resolve_dir: __Reply__vfs_resolve_dir_t }
-  | { Reply_vfs_resolve_file_with_audit_token: __Reply__vfs_resolve_file_with_audit_token_t }
-  | { Reply_vfs_resolve_dir_with_audit_token: __Reply__vfs_resolve_dir_with_audit_token_t }
-  | { Reply_vfs_resolve_reparent_with_audit_token: __Reply__vfs_resolve_reparent_with_audit_token_t };
+type __RequestUnion__mach_voucher_subsystemDescriptor = 
+  | { Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t }
+  | { Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t }
+  | { Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t }
+  | { Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t }
+  | { Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t };
 
-declare class __ReplyUnion__receive_vfs_nspace_subsystem {
-  constructor(init?: __ReplyUnion__receive_vfs_nspace_subsystemDescriptor);
-  Reply_nspace_handle: __Reply__nspace_handle_t;
-  Reply_nspace_resolve_cancel: __Reply__nspace_resolve_cancel_t;
-  Reply_nspace_resolve_path: __Reply__nspace_resolve_path_t;
-  Reply_vfs_resolve_file: __Reply__vfs_resolve_file_t;
-  Reply_vfs_resolve_dir: __Reply__vfs_resolve_dir_t;
-  Reply_vfs_resolve_file_with_audit_token: __Reply__vfs_resolve_file_with_audit_token_t;
-  Reply_vfs_resolve_dir_with_audit_token: __Reply__vfs_resolve_dir_with_audit_token_t;
-  Reply_vfs_resolve_reparent_with_audit_token: __Reply__vfs_resolve_reparent_with_audit_token_t;
+declare class __RequestUnion__mach_voucher_subsystem {
+  constructor(init?: __RequestUnion__mach_voucher_subsystemDescriptor);
+  Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t;
+  Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t;
+  Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t;
+  Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t;
+  Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t;
 }
 
-type __RequestUnion__receive_sysdiagnose_notification_subsystemDescriptor = 
-  | { Request_sysdiagnose_notification: __Request__sysdiagnose_notification_t }
-  | { Request_sysdiagnose_notification_with_audit_token: __Request__sysdiagnose_notification_with_audit_token_t };
+type __ReplyUnion__host_security_subsystemDescriptor = 
+  | { Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t }
+  | { Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t };
 
-declare class __RequestUnion__receive_sysdiagnose_notification_subsystem {
-  constructor(init?: __RequestUnion__receive_sysdiagnose_notification_subsystemDescriptor);
-  Request_sysdiagnose_notification: __Request__sysdiagnose_notification_t;
-  Request_sysdiagnose_notification_with_audit_token: __Request__sysdiagnose_notification_with_audit_token_t;
+declare class __ReplyUnion__host_security_subsystem {
+  constructor(init?: __ReplyUnion__host_security_subsystemDescriptor);
+  Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t;
+  Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t;
 }
 
-type unnamed_17870239474130978603Descriptor = 
-  | { range: unnamed_13574595766822801905 }
-  | { notRange: unnamed_3364203081172218251 };
+type __ReplyUnion__clock_subsystemDescriptor = 
+  | { Reply_clock_get_time: __Reply__clock_get_time_t }
+  | { Reply_clock_get_attributes: __Reply__clock_get_attributes_t }
+  | { Reply_clock_alarm: __Reply__clock_alarm_t };
 
-declare class unnamed_17870239474130978603 {
-  constructor(init?: unnamed_17870239474130978603Descriptor);
-  range: unnamed_13574595766822801905;
-  notRange: unnamed_3364203081172218251;
+declare class __ReplyUnion__clock_subsystem {
+  constructor(init?: __ReplyUnion__clock_subsystemDescriptor);
+  Reply_clock_get_time: __Reply__clock_get_time_t;
+  Reply_clock_get_attributes: __Reply__clock_get_attributes_t;
+  Reply_clock_alarm: __Reply__clock_alarm_t;
 }
 
-type unnamed_9008164211909323487Descriptor = 
-  | { pad_field: number };
+type __RequestUnion__clock_subsystemDescriptor = 
+  | { Request_clock_get_time: __Request__clock_get_time_t }
+  | { Request_clock_get_attributes: __Request__clock_get_attributes_t }
+  | { Request_clock_alarm: __Request__clock_alarm_t };
 
-declare class unnamed_9008164211909323487 {
-  constructor(init?: unnamed_9008164211909323487Descriptor);
-  pad_field: number;
+declare class __RequestUnion__clock_subsystem {
+  constructor(init?: __RequestUnion__clock_subsystemDescriptor);
+  Request_clock_get_time: __Request__clock_get_time_t;
+  Request_clock_get_attributes: __Request__clock_get_attributes_t;
+  Request_clock_alarm: __Request__clock_alarm_t;
 }
 
-type unnamed_11444704629501519341Descriptor = 
-  | { b8: unknown /* const array */ }
-  | { b32: unknown /* const array */ };
+type unnamed_2232564682371069418Descriptor = 
+  | { sin_zero: unknown /* const array */ }
+  | { _in_index: unnamed_12983830876191417618 };
 
-declare class unnamed_11444704629501519341 {
-  constructor(init?: unnamed_11444704629501519341Descriptor);
-  b8: unknown /* const array */;
-  b32: unknown /* const array */;
+declare class unnamed_2232564682371069418 {
+  constructor(init?: unnamed_2232564682371069418Descriptor);
+  sin_zero: unknown /* const array */;
+  _in_index: unnamed_12983830876191417618;
 }
 
 type __ReplyUnion__gssd_mach_subsystemDescriptor = 
@@ -18079,54 +38142,124 @@ declare class vm32_addr_struct_t {
   UNSAFE: number;
 }
 
-type dt_entryDescriptor = 
-  | { code: code_desc }
-  | { data: data_desc }
-  | { ldt: ldt_desc }
-  | { task_state: tss_desc }
-  | { call_gate: call_gate }
-  | { trap_gate: trap_gate }
-  | { intr_gate: intr_gate }
-  | { task_gate: task_gate };
+type unnamed_17020950413718322227Descriptor = 
+  | { bw: bm12Cursor }
+  | { bw8: bm18Cursor }
+  | { rgb: bm34Cursor }
+  | { rgb24: bm38Cursor };
 
-declare class dt_entry {
-  constructor(init?: dt_entryDescriptor);
-  code: code_desc;
-  data: data_desc;
-  ldt: ldt_desc;
-  task_state: tss_desc;
-  call_gate: call_gate;
-  trap_gate: trap_gate;
-  intr_gate: intr_gate;
-  task_gate: task_gate;
+declare class unnamed_17020950413718322227 {
+  constructor(init?: unnamed_17020950413718322227Descriptor);
+  bw: bm12Cursor;
+  bw8: bm18Cursor;
+  rgb: bm34Cursor;
+  rgb24: bm38Cursor;
 }
 
-type __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor = 
-  | { Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t }
-  | { Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t };
+type unnamed_13939879976096053167Descriptor = 
+  | { _itpl_sa: sockaddr }
+  | { _itpl_sah: __sockaddr_header }
+  | { _itpl_sin: sockaddr_in }
+  | { _itpl_sin6: sockaddr_in6 };
 
-declare class __ReplyUnion__receive_sysdiagnose_notification_subsystem {
-  constructor(init?: __ReplyUnion__receive_sysdiagnose_notification_subsystemDescriptor);
-  Reply_sysdiagnose_notification: __Reply__sysdiagnose_notification_t;
-  Reply_sysdiagnose_notification_with_audit_token: __Reply__sysdiagnose_notification_with_audit_token_t;
+declare class unnamed_13939879976096053167 {
+  constructor(init?: unnamed_13939879976096053167Descriptor);
+  _itpl_sa: sockaddr;
+  _itpl_sah: __sockaddr_header;
+  _itpl_sin: sockaddr_in;
+  _itpl_sin6: sockaddr_in6;
 }
 
-type vm_addr_struct_tDescriptor = 
-  | { UNSAFE: number };
+type unnamed_12119481840643110804Descriptor = 
+  | { iNodeNum: number }
+  | { linkCount: number }
+  | { rawDevice: number };
 
-declare class vm_addr_struct_t {
-  constructor(init?: vm_addr_struct_tDescriptor);
-  UNSAFE: number;
+declare class unnamed_12119481840643110804 {
+  constructor(init?: unnamed_12119481840643110804Descriptor);
+  iNodeNum: number;
+  linkCount: number;
+  rawDevice: number;
 }
 
-type unnamed_16803006733224326053Descriptor = 
-  | { asid: number }
-  | { vmid: number };
+type unnamed_7763811220117734030Descriptor = 
+  | { v1: IODetailedTimingInformationV1 }
+  | { v2: IODetailedTimingInformationV2 };
 
-declare class unnamed_16803006733224326053 {
-  constructor(init?: unnamed_16803006733224326053Descriptor);
-  asid: number;
-  vmid: number;
+declare class unnamed_7763811220117734030 {
+  constructor(init?: unnamed_7763811220117734030Descriptor);
+  v1: IODetailedTimingInformationV1;
+  v2: IODetailedTimingInformationV2;
+}
+
+type __RequestUnion__iocompressionstats_notification_subsystemDescriptor = 
+  | { Request_iocompressionstats_notification: __Request__iocompressionstats_notification_t };
+
+declare class __RequestUnion__iocompressionstats_notification_subsystem {
+  constructor(init?: __RequestUnion__iocompressionstats_notification_subsystemDescriptor);
+  Request_iocompressionstats_notification: __Request__iocompressionstats_notification_t;
+}
+
+type unnamed_10444646476571369617Descriptor = 
+  | { _itpl_sa: sockaddr }
+  | { _itpl_sah: __sockaddr_header }
+  | { _itpl_sin: sockaddr_in }
+  | { _itpl_sin6: sockaddr_in6 };
+
+declare class unnamed_10444646476571369617 {
+  constructor(init?: unnamed_10444646476571369617Descriptor);
+  _itpl_sa: sockaddr;
+  _itpl_sah: __sockaddr_header;
+  _itpl_sin: sockaddr_in;
+  _itpl_sin6: sockaddr_in6;
+}
+
+type arm_isa_feat1_regDescriptor = 
+  | { value: number }
+  | { field: syscp_ID_instructions_feat_1_reg };
+
+declare class arm_isa_feat1_reg {
+  constructor(init?: arm_isa_feat1_regDescriptor);
+  value: number;
+  field: syscp_ID_instructions_feat_1_reg;
+}
+
+type __RequestUnion__telemetry_notification_subsystemDescriptor = 
+  | { Request_telemetry_notification: __Request__telemetry_notification_t };
+
+declare class __RequestUnion__telemetry_notification_subsystem {
+  constructor(init?: __RequestUnion__telemetry_notification_subsystemDescriptor);
+  Request_telemetry_notification: __Request__telemetry_notification_t;
+}
+
+type __RequestUnion__coalition_notification_subsystemDescriptor = 
+  | { Request_coalition_notification: __Request__coalition_notification_t };
+
+declare class __RequestUnion__coalition_notification_subsystem {
+  constructor(init?: __RequestUnion__coalition_notification_subsystemDescriptor);
+  Request_coalition_notification: __Request__coalition_notification_t;
+}
+
+type __RequestUnion__clock_priv_subsystemDescriptor = 
+  | { Request_clock_set_time: __Request__clock_set_time_t }
+  | { Request_clock_set_attributes: __Request__clock_set_attributes_t };
+
+declare class __RequestUnion__clock_priv_subsystem {
+  constructor(init?: __RequestUnion__clock_priv_subsystemDescriptor);
+  Request_clock_set_time: __Request__clock_set_time_t;
+  Request_clock_set_attributes: __Request__clock_set_attributes_t;
+}
+
+type __ReplyUnion__catch_mach_exc_subsystemDescriptor = 
+  | { Reply_mach_exception_raise: __Reply__mach_exception_raise_t }
+  | { Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t }
+  | { Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t };
+
+declare class __ReplyUnion__catch_mach_exc_subsystem {
+  constructor(init?: __ReplyUnion__catch_mach_exc_subsystemDescriptor);
+  Reply_mach_exception_raise: __Reply__mach_exception_raise_t;
+  Reply_mach_exception_raise_state: __Reply__mach_exception_raise_state_t;
+  Reply_mach_exception_raise_state_identity: __Reply__mach_exception_raise_state_identity_t;
 }
 
 type __ReplyUnion__send_ktrace_background_subsystemDescriptor = 
@@ -18137,24 +38270,326 @@ declare class __ReplyUnion__send_ktrace_background_subsystem {
   Reply_send_ktrace_background_available: __Reply__ktrace_background_available_t;
 }
 
-type unnamed_10414494865187495339Descriptor = 
+type unnamed_873136905003773988Descriptor = 
+  | { bytes: interop.PointerConvertible }
+  | { ref: interop.PointerConvertible };
+
+declare class unnamed_873136905003773988 {
+  constructor(init?: unnamed_873136905003773988Descriptor);
+  bytes: interop.Pointer;
+  ref: interop.Pointer;
+}
+
+type __RequestUnion__processor_set_subsystemDescriptor = 
+  | { Request_processor_set_statistics: __Request__processor_set_statistics_t }
+  | { Request_processor_set_destroy: __Request__processor_set_destroy_t }
+  | { Request_processor_set_max_priority: __Request__processor_set_max_priority_t }
+  | { Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t }
+  | { Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t }
+  | { Request_processor_set_tasks: __Request__processor_set_tasks_t }
+  | { Request_processor_set_threads: __Request__processor_set_threads_t }
+  | { Request_processor_set_policy_control: __Request__processor_set_policy_control_t }
+  | { Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t }
+  | { Request_processor_set_info: __Request__processor_set_info_t }
+  | { Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t };
+
+declare class __RequestUnion__processor_set_subsystem {
+  constructor(init?: __RequestUnion__processor_set_subsystemDescriptor);
+  Request_processor_set_statistics: __Request__processor_set_statistics_t;
+  Request_processor_set_destroy: __Request__processor_set_destroy_t;
+  Request_processor_set_max_priority: __Request__processor_set_max_priority_t;
+  Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t;
+  Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t;
+  Request_processor_set_tasks: __Request__processor_set_tasks_t;
+  Request_processor_set_threads: __Request__processor_set_threads_t;
+  Request_processor_set_policy_control: __Request__processor_set_policy_control_t;
+  Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t;
+  Request_processor_set_info: __Request__processor_set_info_t;
+  Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t;
+}
+
+type __RequestUnion__gssd_mach_subsystemDescriptor = 
+  | { Request_mach_gss_init_sec_context: __Request__mach_gss_init_sec_context_t }
+  | { Request_mach_gss_accept_sec_context: __Request__mach_gss_accept_sec_context_t }
+  | { Request_mach_gss_log_error: __Request__mach_gss_log_error_t }
+  | { Request_mach_gss_init_sec_context_v2: __Request__mach_gss_init_sec_context_v2_t }
+  | { Request_mach_gss_accept_sec_context_v2: __Request__mach_gss_accept_sec_context_v2_t }
+  | { Request_mach_gss_init_sec_context_v3: __Request__mach_gss_init_sec_context_v3_t }
+  | { Request_mach_gss_hold_cred: __Request__mach_gss_hold_cred_t }
+  | { Request_mach_gss_unhold_cred: __Request__mach_gss_unhold_cred_t }
+  | { Request_mach_gss_lookup: __Request__mach_gss_lookup_t };
+
+declare class __RequestUnion__gssd_mach_subsystem {
+  constructor(init?: __RequestUnion__gssd_mach_subsystemDescriptor);
+  Request_mach_gss_init_sec_context: __Request__mach_gss_init_sec_context_t;
+  Request_mach_gss_accept_sec_context: __Request__mach_gss_accept_sec_context_t;
+  Request_mach_gss_log_error: __Request__mach_gss_log_error_t;
+  Request_mach_gss_init_sec_context_v2: __Request__mach_gss_init_sec_context_v2_t;
+  Request_mach_gss_accept_sec_context_v2: __Request__mach_gss_accept_sec_context_v2_t;
+  Request_mach_gss_init_sec_context_v3: __Request__mach_gss_init_sec_context_v3_t;
+  Request_mach_gss_hold_cred: __Request__mach_gss_hold_cred_t;
+  Request_mach_gss_unhold_cred: __Request__mach_gss_unhold_cred_t;
+  Request_mach_gss_lookup: __Request__mach_gss_lookup_t;
+}
+
+type __ReplyUnion__doubleagent_subsystemDescriptor = 
+  | { Reply_doubleagent_lookup_xattr: __Reply__doubleagent_lookup_xattr_t }
+  | { Reply_doubleagent_allocate_xattr: __Reply__doubleagent_allocate_xattr_t }
+  | { Reply_doubleagent_list_xattrs: __Reply__doubleagent_list_xattrs_t }
+  | { Reply_doubleagent_remove_xattr: __Reply__doubleagent_remove_xattr_t };
+
+declare class __ReplyUnion__doubleagent_subsystem {
+  constructor(init?: __ReplyUnion__doubleagent_subsystemDescriptor);
+  Reply_doubleagent_lookup_xattr: __Reply__doubleagent_lookup_xattr_t;
+  Reply_doubleagent_allocate_xattr: __Reply__doubleagent_allocate_xattr_t;
+  Reply_doubleagent_list_xattrs: __Reply__doubleagent_list_xattrs_t;
+  Reply_doubleagent_remove_xattr: __Reply__doubleagent_remove_xattr_t;
+}
+
+type __RequestUnion__processor_subsystemDescriptor = 
+  | { Request_processor_start: __Request__processor_start_t }
+  | { Request_processor_exit: __Request__processor_exit_t }
+  | { Request_processor_info: __Request__processor_info_t }
+  | { Request_processor_control: __Request__processor_control_t }
+  | { Request_processor_assign: __Request__processor_assign_t }
+  | { Request_processor_get_assignment: __Request__processor_get_assignment_t };
+
+declare class __RequestUnion__processor_subsystem {
+  constructor(init?: __RequestUnion__processor_subsystemDescriptor);
+  Request_processor_start: __Request__processor_start_t;
+  Request_processor_exit: __Request__processor_exit_t;
+  Request_processor_info: __Request__processor_info_t;
+  Request_processor_control: __Request__processor_control_t;
+  Request_processor_assign: __Request__processor_assign_t;
+  Request_processor_get_assignment: __Request__processor_get_assignment_t;
+}
+
+type unnamed_7917891800379492215Descriptor = 
+  | { params: unknown /* const array */ };
+
+declare class unnamed_7917891800379492215 {
+  constructor(init?: unnamed_7917891800379492215Descriptor);
+  params: unknown /* const array */;
+}
+
+type __RequestUnion__host_security_subsystemDescriptor = 
+  | { Request_host_security_create_task_token: __Request__host_security_create_task_token_t }
+  | { Request_host_security_set_task_token: __Request__host_security_set_task_token_t };
+
+declare class __RequestUnion__host_security_subsystem {
+  constructor(init?: __RequestUnion__host_security_subsystemDescriptor);
+  Request_host_security_create_task_token: __Request__host_security_create_task_token_t;
+  Request_host_security_set_task_token: __Request__host_security_set_task_token_t;
+}
+
+type __ReplyUnion__host_priv_subsystemDescriptor = 
+  | { Reply_host_get_boot_info: __Reply__host_get_boot_info_t }
+  | { Reply_host_reboot: __Reply__host_reboot_t }
+  | { Reply_host_priv_statistics: __Reply__host_priv_statistics_t }
+  | { Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t }
+  | { Reply_vm_wire: __Reply__vm_wire_t }
+  | { Reply_thread_wire: __Reply__thread_wire_t }
+  | { Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t }
+  | { Reply_host_processors: __Reply__host_processors_t }
+  | { Reply_host_get_clock_control: __Reply__host_get_clock_control_t }
+  | { Reply_kmod_create: __Reply__kmod_create_t }
+  | { Reply_kmod_destroy: __Reply__kmod_destroy_t }
+  | { Reply_kmod_control: __Reply__kmod_control_t }
+  | { Reply_host_get_special_port: __Reply__host_get_special_port_t }
+  | { Reply_host_set_special_port: __Reply__host_set_special_port_t }
+  | { Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t }
+  | { Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t }
+  | { Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t }
+  | { Reply_mach_vm_wire: __Reply__mach_vm_wire_t }
+  | { Reply_host_processor_sets: __Reply__host_processor_sets_t }
+  | { Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t }
+  | { Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t }
+  | { Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t }
+  | { Reply_kext_request: __Reply__kext_request_t };
+
+declare class __ReplyUnion__host_priv_subsystem {
+  constructor(init?: __ReplyUnion__host_priv_subsystemDescriptor);
+  Reply_host_get_boot_info: __Reply__host_get_boot_info_t;
+  Reply_host_reboot: __Reply__host_reboot_t;
+  Reply_host_priv_statistics: __Reply__host_priv_statistics_t;
+  Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t;
+  Reply_vm_wire: __Reply__vm_wire_t;
+  Reply_thread_wire: __Reply__thread_wire_t;
+  Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t;
+  Reply_host_processors: __Reply__host_processors_t;
+  Reply_host_get_clock_control: __Reply__host_get_clock_control_t;
+  Reply_kmod_create: __Reply__kmod_create_t;
+  Reply_kmod_destroy: __Reply__kmod_destroy_t;
+  Reply_kmod_control: __Reply__kmod_control_t;
+  Reply_host_get_special_port: __Reply__host_get_special_port_t;
+  Reply_host_set_special_port: __Reply__host_set_special_port_t;
+  Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t;
+  Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t;
+  Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t;
+  Reply_mach_vm_wire: __Reply__mach_vm_wire_t;
+  Reply_host_processor_sets: __Reply__host_processor_sets_t;
+  Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t;
+  Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t;
+  Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t;
+  Reply_kext_request: __Reply__kext_request_t;
+}
+
+type __RequestUnion__host_priv_subsystemDescriptor = 
+  | { Request_host_get_boot_info: __Request__host_get_boot_info_t }
+  | { Request_host_reboot: __Request__host_reboot_t }
+  | { Request_host_priv_statistics: __Request__host_priv_statistics_t }
+  | { Request_host_default_memory_manager: __Request__host_default_memory_manager_t }
+  | { Request_vm_wire: __Request__vm_wire_t }
+  | { Request_thread_wire: __Request__thread_wire_t }
+  | { Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t }
+  | { Request_host_processors: __Request__host_processors_t }
+  | { Request_host_get_clock_control: __Request__host_get_clock_control_t }
+  | { Request_kmod_create: __Request__kmod_create_t }
+  | { Request_kmod_destroy: __Request__kmod_destroy_t }
+  | { Request_kmod_control: __Request__kmod_control_t }
+  | { Request_host_get_special_port: __Request__host_get_special_port_t }
+  | { Request_host_set_special_port: __Request__host_set_special_port_t }
+  | { Request_host_set_exception_ports: __Request__host_set_exception_ports_t }
+  | { Request_host_get_exception_ports: __Request__host_get_exception_ports_t }
+  | { Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t }
+  | { Request_mach_vm_wire: __Request__mach_vm_wire_t }
+  | { Request_host_processor_sets: __Request__host_processor_sets_t }
+  | { Request_host_processor_set_priv: __Request__host_processor_set_priv_t }
+  | { Request_host_set_UNDServer: __Request__host_set_UNDServer_t }
+  | { Request_host_get_UNDServer: __Request__host_get_UNDServer_t }
+  | { Request_kext_request: __Request__kext_request_t };
+
+declare class __RequestUnion__host_priv_subsystem {
+  constructor(init?: __RequestUnion__host_priv_subsystemDescriptor);
+  Request_host_get_boot_info: __Request__host_get_boot_info_t;
+  Request_host_reboot: __Request__host_reboot_t;
+  Request_host_priv_statistics: __Request__host_priv_statistics_t;
+  Request_host_default_memory_manager: __Request__host_default_memory_manager_t;
+  Request_vm_wire: __Request__vm_wire_t;
+  Request_thread_wire: __Request__thread_wire_t;
+  Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t;
+  Request_host_processors: __Request__host_processors_t;
+  Request_host_get_clock_control: __Request__host_get_clock_control_t;
+  Request_kmod_create: __Request__kmod_create_t;
+  Request_kmod_destroy: __Request__kmod_destroy_t;
+  Request_kmod_control: __Request__kmod_control_t;
+  Request_host_get_special_port: __Request__host_get_special_port_t;
+  Request_host_set_special_port: __Request__host_set_special_port_t;
+  Request_host_set_exception_ports: __Request__host_set_exception_ports_t;
+  Request_host_get_exception_ports: __Request__host_get_exception_ports_t;
+  Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t;
+  Request_mach_vm_wire: __Request__mach_vm_wire_t;
+  Request_host_processor_sets: __Request__host_processor_sets_t;
+  Request_host_processor_set_priv: __Request__host_processor_set_priv_t;
+  Request_host_set_UNDServer: __Request__host_set_UNDServer_t;
+  Request_host_get_UNDServer: __Request__host_get_UNDServer_t;
+  Request_kext_request: __Request__kext_request_t;
+}
+
+type unnamed_6769640197191607942Descriptor = 
   | { level: number }
   | { raw: number };
 
-declare class unnamed_10414494865187495339 {
-  constructor(init?: unnamed_10414494865187495339Descriptor);
+declare class unnamed_6769640197191607942 {
+  constructor(init?: unnamed_6769640197191607942Descriptor);
   level: number;
   raw: number;
 }
 
-type unnamed_6174747975915617679Descriptor = 
-  | { range: unnamed_11975482992842642533 }
-  | { notRange: unnamed_2475899045996132323 };
+type IOUSBHIDDataDescriptor = 
+  | { kbd: IOUSBKeyboardData }
+  | { mouse: IOUSBMouseData };
 
-declare class unnamed_6174747975915617679 {
-  constructor(init?: unnamed_6174747975915617679Descriptor);
-  range: unnamed_11975482992842642533;
-  notRange: unnamed_2475899045996132323;
+declare class IOUSBHIDData {
+  constructor(init?: IOUSBHIDDataDescriptor);
+  kbd: IOUSBKeyboardData;
+  mouse: IOUSBMouseData;
+}
+
+type __ReplyUnion__clock_priv_subsystemDescriptor = 
+  | { Reply_clock_set_time: __Reply__clock_set_time_t }
+  | { Reply_clock_set_attributes: __Reply__clock_set_attributes_t };
+
+declare class __ReplyUnion__clock_priv_subsystem {
+  constructor(init?: __ReplyUnion__clock_priv_subsystemDescriptor);
+  Reply_clock_set_time: __Reply__clock_set_time_t;
+  Reply_clock_set_attributes: __Reply__clock_set_attributes_t;
+}
+
+type __ReplyUnion__processor_subsystemDescriptor = 
+  | { Reply_processor_start: __Reply__processor_start_t }
+  | { Reply_processor_exit: __Reply__processor_exit_t }
+  | { Reply_processor_info: __Reply__processor_info_t }
+  | { Reply_processor_control: __Reply__processor_control_t }
+  | { Reply_processor_assign: __Reply__processor_assign_t }
+  | { Reply_processor_get_assignment: __Reply__processor_get_assignment_t };
+
+declare class __ReplyUnion__processor_subsystem {
+  constructor(init?: __ReplyUnion__processor_subsystemDescriptor);
+  Reply_processor_start: __Reply__processor_start_t;
+  Reply_processor_exit: __Reply__processor_exit_t;
+  Reply_processor_info: __Reply__processor_info_t;
+  Reply_processor_control: __Reply__processor_control_t;
+  Reply_processor_assign: __Reply__processor_assign_t;
+  Reply_processor_get_assignment: __Reply__processor_get_assignment_t;
+}
+
+type unnamed_4652766297264612399Descriptor = 
+  | { point: _NXTabletPointData }
+  | { proximity: _NXTabletProximityData };
+
+declare class unnamed_4652766297264612399 {
+  constructor(init?: unnamed_4652766297264612399Descriptor);
+  point: _NXTabletPointData;
+  proximity: _NXTabletProximityData;
+}
+
+type __ReplyUnion__processor_set_subsystemDescriptor = 
+  | { Reply_processor_set_statistics: __Reply__processor_set_statistics_t }
+  | { Reply_processor_set_destroy: __Reply__processor_set_destroy_t }
+  | { Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t }
+  | { Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t }
+  | { Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t }
+  | { Reply_processor_set_tasks: __Reply__processor_set_tasks_t }
+  | { Reply_processor_set_threads: __Reply__processor_set_threads_t }
+  | { Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t }
+  | { Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t }
+  | { Reply_processor_set_info: __Reply__processor_set_info_t }
+  | { Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t };
+
+declare class __ReplyUnion__processor_set_subsystem {
+  constructor(init?: __ReplyUnion__processor_set_subsystemDescriptor);
+  Reply_processor_set_statistics: __Reply__processor_set_statistics_t;
+  Reply_processor_set_destroy: __Reply__processor_set_destroy_t;
+  Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t;
+  Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t;
+  Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t;
+  Reply_processor_set_tasks: __Reply__processor_set_tasks_t;
+  Reply_processor_set_threads: __Reply__processor_set_threads_t;
+  Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t;
+  Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t;
+  Reply_processor_set_info: __Reply__processor_set_info_t;
+  Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t;
+}
+
+type __ReplyUnion__audit_triggers_subsystemDescriptor = 
+  | { Reply_audit_triggers: __Reply__audit_triggers_t }
+  | { Reply_audit_analytics: __Reply__audit_analytics_t };
+
+declare class __ReplyUnion__audit_triggers_subsystem {
+  constructor(init?: __ReplyUnion__audit_triggers_subsystemDescriptor);
+  Reply_audit_triggers: __Reply__audit_triggers_t;
+  Reply_audit_analytics: __Reply__audit_analytics_t;
+}
+
+type unnamed_11225586803141584598Descriptor = 
+  | { range: unnamed_11084844908341771940 }
+  | { notRange: unnamed_6390395427154259457 };
+
+declare class unnamed_11225586803141584598 {
+  constructor(init?: unnamed_11225586803141584598Descriptor);
+  range: unnamed_11084844908341771940;
+  notRange: unnamed_6390395427154259457;
 }
 
 type __ReplyUnion__memory_error_notification_subsystemDescriptor = 
@@ -18166,6 +38601,132 @@ declare class __ReplyUnion__memory_error_notification_subsystem {
   Reply_memory_error_notification: __Reply__memory_error_notification_t;
   Reply_mcc_memory_error_notification: __Reply__mcc_memory_error_notification_t;
 }
+
+declare function mig_strncpy_zerofill(dest: string, src: string, len: number): number;
+
+declare function clock_set_time(clock_ctrl: number, new_time: mach_timespec): number;
+
+declare function clock_set_attributes(clock_ctrl: number, flavor: number, clock_attr: interop.PointerConvertible, clock_attrCnt: number): number;
+
+declare function host_get_boot_info(host_priv: number, boot_info: unknown /* const array */): number;
+
+declare function host_reboot(host_priv: number, options: number): number;
+
+declare function host_priv_statistics(host_priv: number, flavor: number, host_info_out: interop.PointerConvertible, host_info_outCnt: interop.PointerConvertible): number;
+
+declare function host_default_memory_manager(host_priv: number, default_manager: interop.PointerConvertible, cluster_size: number): number;
+
+declare function vm_wire(host_priv: number, task: number, address: number, size: number, desired_access: number): number;
+
+declare function thread_wire(host_priv: number, thread: number, wired: number): number;
+
+declare function vm_allocate_cpm(host_priv: number, task: number, address: interop.PointerConvertible, size: number, flags: number): number;
+
+declare function host_processors(host_priv: number, out_processor_list: interop.PointerConvertible, out_processor_listCnt: interop.PointerConvertible): number;
+
+declare function host_get_clock_control(host_priv: number, clock_id: number, clock_ctrl: interop.PointerConvertible): number;
+
+declare function kmod_create(host_priv: number, info: number, module: interop.PointerConvertible): number;
+
+declare function kmod_destroy(host_priv: number, module: number): number;
+
+declare function kmod_control(host_priv: number, module: number, flavor: number, data: interop.PointerConvertible, dataCnt: interop.PointerConvertible): number;
+
+declare function host_get_special_port(host_priv: number, node: number, which: number, port: interop.PointerConvertible): number;
+
+declare function host_set_special_port(host_priv: number, which: number, port: number): number;
+
+declare function host_set_exception_ports(host_priv: number, exception_mask: number, new_port: number, behavior: number, new_flavor: number): number;
+
+declare function host_get_exception_ports(host_priv: number, exception_mask: number, masks: interop.PointerConvertible, masksCnt: interop.PointerConvertible, old_handlers: interop.PointerConvertible, old_behaviors: interop.PointerConvertible, old_flavors: interop.PointerConvertible): number;
+
+declare function host_swap_exception_ports(host_priv: number, exception_mask: number, new_port: number, behavior: number, new_flavor: number, masks: interop.PointerConvertible, masksCnt: interop.PointerConvertible, old_handlerss: interop.PointerConvertible, old_behaviors: interop.PointerConvertible, old_flavors: interop.PointerConvertible): number;
+
+declare function mach_vm_wire(host_priv: number, task: number, address: number, size: number, desired_access: number): number;
+
+declare function host_processor_sets(host_priv: number, processor_sets: interop.PointerConvertible, processor_setsCnt: interop.PointerConvertible): number;
+
+declare function host_processor_set_priv(host_priv: number, set_name: number, set: interop.PointerConvertible): number;
+
+declare function host_set_UNDServer(host: number, server: number): number;
+
+declare function host_get_UNDServer(host: number, server: interop.PointerConvertible): number;
+
+declare function kext_request(host_priv: number, user_log_flags: number, request_data: number, request_dataCnt: number, response_data: interop.PointerConvertible, response_dataCnt: interop.PointerConvertible, log_data: interop.PointerConvertible, log_dataCnt: interop.PointerConvertible, op_result: interop.PointerConvertible): number;
+
+declare function host_security_create_task_token(host_security: number, parent_task: number, sec_token: security_token_t, audit_token: audit_token_t, host: number, ledgers: interop.PointerConvertible, ledgersCnt: number, inherit_memory: number, child_task: interop.PointerConvertible): number;
+
+declare function host_security_set_task_token(host_security: number, target_task: number, sec_token: security_token_t, audit_token: audit_token_t, host: number): number;
+
+declare function processor_start(processor: number): number;
+
+declare function processor_exit(processor: number): number;
+
+declare function processor_info(processor: number, flavor: number, host: interop.PointerConvertible, processor_info_out: interop.PointerConvertible, processor_info_outCnt: interop.PointerConvertible): number;
+
+declare function processor_control(processor: number, processor_cmd: interop.PointerConvertible, processor_cmdCnt: number): number;
+
+declare function processor_assign(processor: number, new_set: number, wait: number): number;
+
+declare function processor_get_assignment(processor: number, assigned_set: interop.PointerConvertible): number;
+
+declare function processor_set_statistics(pset: number, flavor: number, info_out: interop.PointerConvertible, info_outCnt: interop.PointerConvertible): number;
+
+declare function processor_set_destroy(set: number): number;
+
+declare function processor_set_max_priority(processor_set: number, max_priority: number, change_threads: number): number;
+
+declare function processor_set_policy_enable(processor_set: number, policy: number): number;
+
+declare function processor_set_policy_disable(processor_set: number, policy: number, change_threads: number): number;
+
+declare function processor_set_tasks(processor_set: number, task_list: interop.PointerConvertible, task_listCnt: interop.PointerConvertible): number;
+
+declare function processor_set_threads(processor_set: number, thread_list: interop.PointerConvertible, thread_listCnt: interop.PointerConvertible): number;
+
+declare function processor_set_policy_control(pset: number, flavor: number, policy_info: interop.PointerConvertible, policy_infoCnt: number, change: number): number;
+
+declare function processor_set_stack_usage(pset: number, ltotal: interop.PointerConvertible, space: interop.PointerConvertible, resident: interop.PointerConvertible, maxusage: interop.PointerConvertible, maxstack: interop.PointerConvertible): number;
+
+declare function processor_set_info(set_name: number, flavor: number, host: interop.PointerConvertible, info_out: interop.PointerConvertible, info_outCnt: interop.PointerConvertible): number;
+
+declare function processor_set_tasks_with_flavor(processor_set: number, flavor: number, task_list: interop.PointerConvertible, task_listCnt: interop.PointerConvertible): number;
+
+declare function clock_get_time(clock_serv: number, cur_time: interop.PointerConvertible): number;
+
+declare function clock_get_attributes(clock_serv: number, flavor: number, clock_attr: interop.PointerConvertible, clock_attrCnt: interop.PointerConvertible): number;
+
+declare function clock_alarm(clock_serv: number, alarm_type: number, alarm_time: mach_timespec, alarm_port: number): number;
+
+declare function mach_voucher_extract_attr_content(voucher: number, key: number, content: interop.PointerConvertible, contentCnt: interop.PointerConvertible): number;
+
+declare function mach_voucher_extract_attr_recipe(voucher: number, key: number, recipe: interop.PointerConvertible, recipeCnt: interop.PointerConvertible): number;
+
+declare function mach_voucher_extract_all_attr_recipes(voucher: number, recipes: interop.PointerConvertible, recipesCnt: interop.PointerConvertible): number;
+
+declare function mach_voucher_attr_command(voucher: number, key: number, command: number, in_content: interop.PointerConvertible, in_contentCnt: number, out_content: interop.PointerConvertible, out_contentCnt: interop.PointerConvertible): number;
+
+declare function mach_voucher_debug_info(task: number, voucher_name: number, recipes: interop.PointerConvertible, recipesCnt: interop.PointerConvertible): number;
+
+declare function mach_memory_entry_purgable_control(mem_entry: number, control: number, state: interop.PointerConvertible): number;
+
+declare function mach_memory_entry_access_tracking(mem_entry: number, access_tracking: interop.PointerConvertible, access_tracking_reads: interop.PointerConvertible, access_tracking_writes: interop.PointerConvertible): number;
+
+declare function mach_memory_entry_ownership(mem_entry: number, owner: number, ledger_tag: number, ledger_flags: number): number;
+
+declare function mach_memory_entry_get_page_counts(mem_entry: number, resident_cnt: interop.PointerConvertible, dirty_cnt: interop.PointerConvertible, swapped_cnt: interop.PointerConvertible): number;
+
+declare function IOFBGetI2CInterfaceCount(framebuffer: number, count: interop.PointerConvertible): number;
+
+declare function IOFBCopyI2CInterfaceForBus(framebuffer: number, bus: number, interface: interop.PointerConvertible): number;
+
+declare function IOI2CCopyInterfaceForID(identifier: interop.Object, interface: interop.PointerConvertible): number;
+
+declare function IOI2CInterfaceOpen(interface: number, options: number, connect: interop.PointerConvertible): number;
+
+declare function IOI2CInterfaceClose(connect: interop.PointerConvertible, options: number): number;
+
+declare function IOI2CSendRequest(connect: interop.PointerConvertible, options: number, request: interop.PointerConvertible): number;
 
 declare function panic(string: string): void;
 
@@ -18326,6 +38887,8 @@ declare function lck_mtx_sleep(lck: interop.PointerConvertible, lck_sleep_action
 declare function lck_mtx_sleep_deadline(lck: interop.PointerConvertible, lck_sleep_action: interop.Enum<typeof lck_sleep_action_t>, event: interop.PointerConvertible, interruptible: number, deadline: number): number;
 
 declare function lck_mtx_assert(lck: interop.PointerConvertible, type: number): void;
+
+declare function lck_mtx_assert_owned_spin(lck: interop.PointerConvertible): void;
 
 declare function lck_rw_alloc_init(grp: interop.PointerConvertible, attr: interop.PointerConvertible): interop.Pointer;
 
@@ -19767,6 +40330,10 @@ declare function sptm_surt_alloc(surt_frame: number, surt_index: number, attr_id
 
 declare function sptm_surt_free(surt_frame: number, surt_index: number): void;
 
+declare function sptm_serial_putc(c: number): void;
+
+declare function sptm_serial_disable(): void;
+
 declare function sptm_update_region(root_pt_paddr: number, start_vaddr: number, num_mappings: number, pte_templates_pa: number, options: number): number;
 
 declare function sptm_update_disjoint(paddr: number, disjoint_ops_pa: number, num_mappings: number, options: number): number;
@@ -19832,6 +40399,8 @@ declare function sptm_trace_num_new_traces(sptm_cpu_id: number, prev_state: inte
 declare function sptm_copy_callee_saved_state(sptm_logical_cpu_id: number, regp: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
 declare function sptm_get_info(info: interop.Enum<typeof sptm_info_t>, arg: number, output: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
+
+declare function sptm_type_is_ecc_retireable(type: interop.Enum<typeof sptm_frame_type_t>, is_ecc_retireable: interop.PointerConvertible): interop.Enum<typeof libsptm_error_t>;
 
 declare function IOMalloc(size: number): interop.Pointer;
 
@@ -22028,6 +42597,8 @@ declare function airship_daleipc_downlink_controller_consume_packets(downlink_ct
 declare function airship_daleipc_downlink_controller_synthesize_reset_completions(downlink_ctrl: interop.PointerConvertible): void;
 
 declare function airship_daleipc_downlink_controller_get_channel_size(downlink_ctrl: interop.PointerConvertible): number;
+
+declare function airship_daleipc_downlink_controller_get_min_buffer_count(downlink_ctrl: interop.PointerConvertible): number;
 
 declare function airship_daleipc_create_device_controller(client: interop.PointerConvertible, channel_name: interop.PointerConvertible): interop.Pointer;
 

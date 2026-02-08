@@ -2,15 +2,17 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./Foundation.d.ts" />
 
+declare const CNLabelContactRelationEldestSister: string;
+
 declare const CNLabelContactRelationGrandchildOrSiblingsChild: string;
 
 declare const CNLabelContactRelationSiblingInLaw: string;
 
 declare const CNLabelContactRelationPartner: string;
 
-declare const CNLabelContactRelationCousinMothersSistersSon: string;
+declare const CNLabelContactRelationBrotherInLawYoungerSistersHusband: string;
 
-declare const CNLabelContactRelationAuntMothersElderSister: string;
+declare const CNLabelContactRelationCousinMothersSistersSon: string;
 
 declare const CNLabelContactRelationYoungerSister: string;
 
@@ -84,6 +86,8 @@ declare const CNSocialProfileServiceFlickr: string;
 
 declare const CNSocialProfileServiceFacebook: string;
 
+declare const CNSocialProfileServiceKey: string;
+
 declare const CNSocialProfileUserIdentifierKey: string;
 
 declare const CNSocialProfileUsernameKey: string;
@@ -120,15 +124,21 @@ declare const CNLabelContactRelationNephewSistersSon: string;
 
 declare const CNLabelContactRelationNieceBrothersDaughterOrHusbandsSiblingsDaughter: string;
 
+declare const CNLabelContactRelationNieceSistersDaughterOrWifesSiblingsDaughter: string;
+
 declare const CNLabelContactRelationNiece: string;
 
 declare const CNLabelContactRelationSiblingsChild: string;
+
+declare const CNLabelContactRelationUncleFathersElderSistersHusband: string;
 
 declare const CNLabelContactRelationUncleFathersYoungerSistersHusband: string;
 
 declare const CNLabelContactRelationUncleFathersElderBrother: string;
 
 declare const CNLabelContactRelationUncleMothersSistersHusband: string;
+
+declare const CNLabelContactRelationUncleMothersElderBrother: string;
 
 declare const CNLabelContactRelationUncleMothersBrother: string;
 
@@ -164,6 +174,8 @@ declare const CNLabelContactRelationParentsSibling: string;
 
 declare const CNLabelContactRelationYoungerCousinMothersSiblingsDaughterOrFathersSistersDaughter: string;
 
+declare const CNLabelContactRelationYoungerCousinMothersSiblingsSonOrFathersSistersSon: string;
+
 declare const CNLabelContactRelationCousinFathersBrothersDaughter: string;
 
 declare const CNLabelContactRelationElderCousinFathersSistersDaughter: string;
@@ -191,8 +203,6 @@ declare const CNLabelContactRelationBrotherInLawHusbandsSistersHusband: string;
 declare const CNLabelContactRelationBrotherInLawWifesSistersHusband: string;
 
 declare const CNLabelContactRelationBrotherInLawElderSistersHusband: string;
-
-declare const CNLabelContactRelationBrotherInLawYoungerSistersHusband: string;
 
 declare const CNLabelContactRelationBrotherInLawSistersHusband: string;
 
@@ -242,6 +252,8 @@ declare const CNLabelContactRelationDaughter: string;
 
 declare const CNLabelContactRelationChild: string;
 
+declare const CNLabelContactRelationFather: string;
+
 declare const CNLabelContactRelationBoyfriend: string;
 
 declare const CNLabelContactRelationGirlfriendOrBoyfriend: string;
@@ -258,13 +270,19 @@ declare const CNLabelContactRelationYoungerBrother: string;
 
 declare const CNLabelContactRelationBrother: string;
 
-declare const CNLabelContactRelationEldestSister: string;
+declare const CNLabelContactRelationElderSister: string;
 
 declare const CNLabelContactRelationSister: string;
 
 declare const CNLabelContactRelationColleague: string;
 
+declare const CNLabelContactRelationManager: string;
+
 declare const CNLabelContactRelationAssistant: string;
+
+declare const CNLabelContactRelationUncleFathersSistersHusband: string;
+
+declare const CNPostalAddressCountryKey: string;
 
 declare const CNPostalAddressSubAdministrativeAreaKey: string;
 
@@ -279,6 +297,8 @@ declare const CNLabelPhoneNumberHomeFax: string;
 declare const CNLabelPhoneNumberMain: string;
 
 declare const CNLabelPhoneNumberAppleWatch: string;
+
+declare const CNLabelPhoneNumberiPhone: string;
 
 declare const CNLabelDateAnniversary: string;
 
@@ -301,6 +321,10 @@ declare const CNLabelContactRelationGrandfather: string;
 declare const CNLabelContactRelationParentsElderSibling: string;
 
 declare const CNLabelContactRelationYoungerSibling: string;
+
+declare const CNPostalAddressPostalCodeKey: string;
+
+declare const CNLabelSchool: string;
 
 declare const CNLabelContactRelationMaleFriend: string;
 
@@ -331,6 +355,8 @@ declare const CNContactPhoneNumbersKey: string;
 declare const CNContactPhoneticFamilyNameKey: string;
 
 declare const CNErrorDomain: string;
+
+declare const CNLabelContactRelationAuntMothersElderSister: string;
 
 declare const CNLabelContactRelationUncleFathersYoungerBrother: string;
 
@@ -370,6 +396,8 @@ declare const CNContactPreviousFamilyNameKey: string;
 
 declare const CNContactImageDataAvailableKey: string;
 
+declare const CNContainerNameKey: string;
+
 declare const CNLabelContactRelationGrandfatherMothersFather: string;
 
 declare const CNLabelContactRelationCoSiblingInLaw: string;
@@ -380,29 +408,21 @@ declare const CNLabelContactRelationElderCousinFathersBrothersDaughter: string;
 
 declare const CNLabelContactRelationNieceBrothersDaughter: string;
 
-declare const CNLabelContactRelationCoFatherInLaw: string;
-
-declare const CNLabelContactRelationNieceSistersDaughter: string;
-
 declare const CNContainerTypeKey: string;
-
-declare const CNLabelContactRelationGrandfatherFathersFather: string;
-
-declare const CNContactDepartmentNameKey: string;
 
 declare const CNLabelContactRelationUncle: string;
 
-declare const CNInstantMessageServiceICQ: string;
+declare const CNContactStoreDidChangeNotification: string;
+
+declare const CNLabelContactRelationElderCousinFathersBrothersSon: string;
 
 declare const CNLabelContactRelationGreatGrandmother: string;
-
-declare const CNContactInstantMessageAddressesKey: string;
-
-declare const CNLabelContactRelationGrandchild: string;
 
 declare const CNLabelContactRelationGranduncle: string;
 
 declare const CNLabelContactRelationStepchild: string;
+
+declare const CNLabelContactRelationParentsSiblingMothersElderSibling: string;
 
 declare const CNLabelContactRelationUncleParentsYoungerBrother: string;
 
@@ -410,39 +430,27 @@ declare const CNLabelContactRelationYoungestSister: string;
 
 declare const CNLabelContactRelationElderCousinMothersSistersDaughter: string;
 
-declare const CNContactImageDataKey: string;
-
-declare const CNLabelContactRelationFather: string;
-
-declare const CNInstantMessageServiceAIM: string;
-
-declare const CNLabelContactRelationManager: string;
-
-declare const CNLabelContactRelationYoungerCousinMothersSiblingsSonOrFathersSistersSon: string;
-
-declare const CNSocialProfileServiceKey: string;
-
-declare const CNLabelHome: string;
-
 declare const CNLabelContactRelationCousinGrandparentsSiblingsSon: string;
 
 declare const CNPostalAddressCityKey: string;
 
-declare const CNLabelContactRelationUncleFathersElderSistersHusband: string;
+declare const CNContactDepartmentNameKey: string;
 
-declare const CNContactTypeKey: string;
+declare const CNLabelPhoneNumberPager: string;
 
 declare const CNLabelContactRelationGreatGrandparent: string;
 
-declare const CNLabelContactRelationNieceSistersDaughterOrWifesSiblingsDaughter: string;
+declare const CNInstantMessageServiceAIM: string;
 
-declare const CNLabelSchool: string;
-
-declare const CNContainerNameKey: string;
-
-declare const CNLabelContactRelationGrandmotherFathersMother: string;
+declare const CNLabelContactRelationGrandfatherFathersFather: string;
 
 declare const CNLabelContactRelationParentsSiblingMothersSibling: string;
+
+declare const CNLabelContactRelationSisterInLawHusbandsBrothersWife: string;
+
+declare const CNLabelContactRelationCousinFathersSistersDaughter: string;
+
+declare const CNLabelContactRelationGrandmotherFathersMother: string;
 
 declare const CNLabelContactRelationYoungerCousinFathersSistersSon: string;
 
@@ -462,19 +470,17 @@ declare const CNLabelContactRelationAuntMothersSister: string;
 
 declare const CNLabelContactRelationAuntFathersElderBrothersWife: string;
 
+declare const CNContactInstantMessageAddressesKey: string;
+
 declare const CNLabelContactRelationYoungerBrotherInLaw: string;
-
-declare const CNLabelContactRelationUncleFathersSistersHusband: string;
-
-declare const CNPostalAddressCountryKey: string;
 
 declare const CNPostalAddressStateKey: string;
 
 declare const CNLabelContactRelationElderCousinMothersSiblingsDaughterOrFathersSistersDaughter: string;
 
-declare const CNContactStoreDidChangeNotification: string;
-
 declare const CNLabelContactRelationCoMotherInLaw: string;
+
+declare const CNLabelHome: string;
 
 declare const CNLabelContactRelationDaughterInLaw: string;
 
@@ -488,9 +494,13 @@ declare const CNLabelContactRelationGrandniece: string;
 
 declare const CNLabelContactRelationGrandnephew: string;
 
+declare const CNContactTypeKey: string;
+
 declare const CNLabelContactRelationGirlfriend: string;
 
 declare const CNLabelContactRelationParent: string;
+
+declare const CNLabelContactRelationYoungerCousinMothersSistersSon: string;
 
 declare const CNLabelPhoneNumberOtherFax: string;
 
@@ -502,7 +512,7 @@ declare const CNLabelContactRelationCousinFathersBrothersSon: string;
 
 declare const CNLabelContactRelationElderCousin: string;
 
-declare const CNLabelContactRelationUncleMothersElderBrother: string;
+declare const CNLabelContactRelationNieceSistersDaughter: string;
 
 declare const CNContactNoteKey: string;
 
@@ -512,13 +522,11 @@ declare const CNLabelContactRelationSisterInLawBrothersWife: string;
 
 declare const CNLabelContactRelationAuntParentsSister: string;
 
-declare const CNPostalAddressPostalCodeKey: string;
-
 declare const CNLabelContactRelationCousinGrandparentsSiblingsChild: string;
 
-declare const CNLabelContactRelationUncleFathersBrother: string;
+declare const CNLabelContactRelationCoFatherInLaw: string;
 
-declare const CNLabelContactRelationParentsSiblingMothersElderSibling: string;
+declare const CNLabelContactRelationUncleFathersBrother: string;
 
 declare const CNLabelContactRelationYoungerSisterInLaw: string;
 
@@ -527,8 +535,6 @@ declare const CNContainerIdentifierKey: string;
 declare const CNContactUrlAddressesKey: string;
 
 declare const CNLabelContactRelationTeacher: string;
-
-declare const CNLabelPhoneNumberPager: string;
 
 declare const CNErrorUserInfoAffectedRecordIdentifiersKey: string;
 
@@ -552,11 +558,9 @@ declare const CNLabelContactRelationElderSibling: string;
 
 declare const CNLabelContactRelationStepbrother: string;
 
-declare const CNLabelContactRelationYoungerCousinMothersSistersSon: string;
+declare const CNLabelContactRelationGrandchild: string;
 
 declare const CNInstantMessageServiceJabber: string;
-
-declare const CNLabelContactRelationElderCousinFathersBrothersSon: string;
 
 declare const CNLabelContactRelationCousinMothersSistersDaughter: string;
 
@@ -588,11 +592,11 @@ declare const CNLabelContactRelationElderSiblingInLaw: string;
 
 declare const CNLabelContactRelationBrotherInLaw: string;
 
+declare const CNInstantMessageServiceICQ: string;
+
 declare const CNLabelContactRelationCousinFathersSistersSon: string;
 
 declare const CNLabelContactRelationNieceOrCousin: string;
-
-declare const CNLabelContactRelationCousinFathersSistersDaughter: string;
 
 declare const CNLabelContactRelationFatherInLaw: string;
 
@@ -602,17 +606,13 @@ declare const CNContactPhoneticMiddleNameKey: string;
 
 declare const CNLabelContactRelationGranddaughterSonsDaughter: string;
 
-declare const CNLabelPhoneNumberiPhone: string;
-
-declare const CNLabelContactRelationElderSister: string;
-
 declare const CNLabelContactRelationYoungestBrother: string;
 
 declare const CNLabelContactRelationYoungerCousinMothersBrothersSon: string;
 
-declare const CNLabelContactRelationSonInLawOrStepson: string;
+declare const CNContactImageDataKey: string;
 
-declare const CNLabelContactRelationSisterInLawHusbandsBrothersWife: string;
+declare const CNLabelContactRelationSonInLawOrStepson: string;
 
 declare const CNLabelContactRelationSonInLaw: string;
 

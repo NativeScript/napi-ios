@@ -903,10 +903,6 @@ declare class _CGDisplayConfigRef {
   constructor(init?: _CGDisplayConfigRef);
 }
 
-declare class CGPDFOperatorTable {
-  constructor(init?: CGPDFOperatorTable);
-}
-
 declare class CGPDFContentStream {
   constructor(init?: CGPDFContentStream);
 }
@@ -997,10 +993,6 @@ declare class CGDataProvider {
   constructor(init?: CGDataProvider);
 }
 
-declare class CGPDFDocument {
-  constructor(init?: CGPDFDocument);
-}
-
 declare class CGPDFArray {
   constructor(init?: CGPDFArray);
 }
@@ -1056,17 +1048,17 @@ declare class CGDataConsumerCallbacks {
   releaseConsumer: (p1: interop.PointerConvertible) => void | null;
 }
 
-declare class CGFunctionCallbacks {
-  constructor(init?: CGFunctionCallbacks);
-  version: number;
-  evaluate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  releaseInfo: (p1: interop.PointerConvertible) => void | null;
-}
-
 declare class CGPatternCallbacks {
   constructor(init?: CGPatternCallbacks);
   version: number;
   drawPattern: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  releaseInfo: (p1: interop.PointerConvertible) => void | null;
+}
+
+declare class CGFunctionCallbacks {
+  constructor(init?: CGFunctionCallbacks);
+  version: number;
+  evaluate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
   releaseInfo: (p1: interop.PointerConvertible) => void | null;
 }
 
@@ -1080,6 +1072,10 @@ declare class CGColorSpace {
 
 declare class __CGEventTapProxy {
   constructor(init?: __CGEventTapProxy);
+}
+
+declare class CGPDFOperatorTable {
+  constructor(init?: CGPDFOperatorTable);
 }
 
 declare class CGPDFString {
@@ -1147,6 +1143,10 @@ declare class CGFont {
 
 declare class CGColor {
   constructor(init?: CGColor);
+}
+
+declare class CGPDFDocument {
+  constructor(init?: CGPDFDocument);
 }
 
 declare function CGRectGetMinX(rect: CGRect): number;
@@ -1335,7 +1335,7 @@ declare function CGColorSpaceCreateExtended(space: interop.Object): interop.Obje
 
 declare function CGColorSpaceCreateExtendedLinearized(space: interop.Object): interop.Object;
 
-declare function CGColorSpaceCreateCopyWithStandardRange(s: interop.Object): interop.Object;
+declare function CGColorSpaceCreateCopyWithStandardRange(space: interop.Object): interop.Object;
 
 declare function CGColorSpaceCreateWithICCProfile(data: interop.Object): interop.Object;
 

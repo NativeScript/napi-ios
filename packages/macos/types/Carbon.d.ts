@@ -6974,11 +6974,11 @@ declare const kThemeSoundScrollArrowEnter: number;
 
 declare const kThemeTextColorBevelButtonStickyInactive: number;
 
-declare const networkMask: number;
-
 declare const kEventTabletProximity: number;
 
 declare const kTXNDisableDragAndDropMask: number;
+
+declare const networkMask: number;
 
 declare const formAlias: number;
 
@@ -9972,12 +9972,6 @@ declare const kSRSndInSourceDisconnected: number;
 
 declare const kTXNCenter: number;
 
-declare class SRCallBackParam {
-  constructor(init?: SRCallBackParam);
-  callBack: (p1: interop.PointerConvertible) => void | null;
-  refCon: interop.Pointer;
-}
-
 declare class OpaqueSRSpeechObject {
   constructor(init?: OpaqueSRSpeechObject);
 }
@@ -10039,7 +10033,7 @@ declare class FileTypeSpec {
 declare class ListDefSpec {
   constructor(init?: ListDefSpec);
   defType: number;
-  u: unnamed_2857126740677160067;
+  u: unnamed_10296931576414164391;
 }
 
 declare class StandardIconListCellDataRec {
@@ -10101,7 +10095,7 @@ declare class ControlTabEntry {
 declare class DataBrowserAccessibilityItemInfo {
   constructor(init?: DataBrowserAccessibilityItemInfo);
   version: number;
-  u: unnamed_13984278800451807663;
+  u: unnamed_6910460127260016824;
 }
 
 declare class DataBrowserAccessibilityItemInfoV1 {
@@ -10114,14 +10108,25 @@ declare class DataBrowserAccessibilityItemInfoV1 {
   columnIndex: number;
 }
 
+declare class unnamed_5695691087253250575 {
+  constructor(init?: unnamed_5695691087253250575);
+  drawItemCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void | null;
+  editTextCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
+  hitTestCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  trackingCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: Point, p6: number) => number | null;
+  dragRegionCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
+  acceptDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  receiveDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
+}
+
 declare class DataBrowserCustomCallbacks {
   constructor(init?: DataBrowserCustomCallbacks);
   version: number;
-  u: unnamed_16754814269475328127;
+  u: unnamed_11503986104782213648;
 }
 
-declare class unnamed_7862278037549649304 {
-  constructor(init?: unnamed_7862278037549649304);
+declare class unnamed_12844395492155114169 {
+  constructor(init?: unnamed_12844395492155114169);
   itemDataCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
   itemCompareCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => number | null;
   itemNotificationCallback: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
@@ -10275,7 +10280,7 @@ declare class HISideBinding {
 declare class HIViewContentInfo {
   constructor(init?: HIViewContentInfo);
   contentType: number;
-  u: unnamed_10152673369849465444;
+  u: unnamed_14717092232052451817;
 }
 
 declare class HIViewFrameMetrics {
@@ -10408,7 +10413,7 @@ declare class HIThemeButtonDrawInfo {
   kind: number;
   value: number;
   adornment: number;
-  animation: unnamed_9463215352432912008;
+  animation: unnamed_10361455799782941013;
 }
 
 declare class HIThemeAnimationTimeInfo {
@@ -10429,7 +10434,7 @@ declare class HIThemeTrackDrawInfo {
   attributes: number;
   enableState: number;
   filler1: number;
-  trackInfo: unnamed_9548908348272556868;
+  trackInfo: unnamed_17740391883872664436;
 }
 
 declare class HIScrollBarTrackInfo {
@@ -10461,33 +10466,35 @@ declare class TabletPointRec {
   vendor3: number;
 }
 
+declare class unnamed_13614669614218900770 {
+  constructor(init?: unnamed_13614669614218900770);
+  menuRef: interop.Object | null;
+  menuItemIndex: number;
+}
+
 declare class HICommandExtended {
   constructor(init?: HICommandExtended);
   attributes: number;
   commandID: number;
-  source: unnamed_17116481973128983476;
+  source: unnamed_10378186255190260503;
 }
 
-declare class unnamed_6626132889242014545 {
-  constructor(init?: unnamed_6626132889242014545);
+declare class unnamed_3346803231123958906 {
+  constructor(init?: unnamed_3346803231123958906);
+  menuRef: interop.Object | null;
+  menuItemIndex: number;
+}
+
+declare class unnamed_7049553899080970402 {
+  constructor(init?: unnamed_7049553899080970402);
+  windowClass: number;
+  windowAttributes: number;
+}
+
+declare class unnamed_132821558175286850 {
+  constructor(init?: unnamed_132821558175286850);
   windowDefProc: number;
   windowHasCloseBox: number;
-}
-
-declare class __TISInputSource {
-  constructor(init?: __TISInputSource);
-}
-
-declare class BasicWindowDescription {
-  constructor(init?: BasicWindowDescription);
-  descriptionSize: number;
-  windowContentRect: Rect;
-  windowZoomRect: Rect;
-  windowRefCon: interop.Pointer;
-  windowStateFlags: number;
-  windowPositionMethod: number;
-  windowDefinitionVersion: number;
-  windowDefinition: unnamed_18112676916515831784;
 }
 
 declare class WinCTab {
@@ -10521,7 +10528,7 @@ declare class OpaqueWindowGroupRef {
 declare class WindowDefSpec {
   constructor(init?: WindowDefSpec);
   defType: number;
-  u: unnamed_5831069759083166394;
+  u: unnamed_9045547264079709904;
 }
 
 declare class WStateData {
@@ -10684,37 +10691,7 @@ declare class ContextualMenuInterfaceStruct {
 declare class MenuDefSpec {
   constructor(init?: MenuDefSpec);
   defType: number;
-  u: unnamed_8091147511952639000;
-}
-
-declare class MenuItemDataRec {
-  constructor(init?: MenuItemDataRec);
-  whichData: number;
-  text: interop.Pointer;
-  mark: number;
-  cmdKey: number;
-  cmdKeyGlyph: number;
-  cmdKeyModifiers: number;
-  style: number;
-  enabled: number;
-  iconEnabled: number;
-  filler1: number;
-  iconID: number;
-  iconType: number;
-  iconHandle: interop.Pointer;
-  cmdID: number;
-  encoding: number;
-  submenuID: number;
-  submenuHandle: interop.Object | null;
-  fontID: number;
-  refcon: interop.Pointer;
-  attr: number;
-  cfText: interop.Object | null;
-  properties: interop.Pointer;
-  indent: number;
-  cmdVirtualKey: number;
-  attributedText: interop.Object | null;
-  font: interop.Object | null;
+  u: unnamed_14678208167067080607;
 }
 
 declare class HMenuBarMenu {
@@ -10774,7 +10751,7 @@ declare class ThemeTrackDrawInfo {
   attributes: number;
   enableState: number;
   filler1: number;
-  trackInfo: unnamed_338682942674878331;
+  trackInfo: unnamed_14281079220088648671;
 }
 
 declare class SliderTrackInfo {
@@ -10793,10 +10770,6 @@ declare class OpaqueControlRef {
 
 declare class OpaqueHIObjectClassRef {
   constructor(init?: OpaqueHIObjectClassRef);
-}
-
-declare class OpaqueEventHandlerRef {
-  constructor(init?: OpaqueEventHandlerRef);
 }
 
 declare class __EventLoopTimer {
@@ -10859,10 +10832,10 @@ declare class HIScaling {
   y: HIAxisScale;
 }
 
-declare class unnamed_17065242291780745842 {
-  constructor(init?: unnamed_17065242291780745842);
-  classID: interop.Object | null;
-  initEvent: interop.Pointer;
+declare class SRCallBackParam {
+  constructor(init?: SRCallBackParam);
+  callBack: (p1: interop.PointerConvertible) => void | null;
+  refCon: interop.Pointer;
 }
 
 declare class OpaqueHIViewTrackingAreaRef {
@@ -10875,17 +10848,27 @@ declare class ScrollBarTrackInfo {
   pressState: number;
 }
 
-declare class unnamed_18327286281903537215 {
-  constructor(init?: unnamed_18327286281903537215);
-  windowClass: number;
-  windowAttributes: number;
-}
-
 declare class HICommand {
   constructor(init?: HICommand);
   attributes: number;
   commandID: number;
-  menu: unnamed_17337783634597839381;
+  menu: unnamed_3346803231123958906;
+}
+
+declare class __TISInputSource {
+  constructor(init?: __TISInputSource);
+}
+
+declare class BasicWindowDescription {
+  constructor(init?: BasicWindowDescription);
+  descriptionSize: number;
+  windowContentRect: Rect;
+  windowZoomRect: Rect;
+  windowRefCon: interop.Pointer;
+  windowStateFlags: number;
+  windowPositionMethod: number;
+  windowDefinitionVersion: number;
+  windowDefinition: unnamed_9451251608846795906;
 }
 
 declare class EventHotKeyID {
@@ -10923,10 +10906,22 @@ declare class TransitionWindowOptions {
   userData: interop.Pointer;
 }
 
+declare class HIBinding {
+  constructor(init?: HIBinding);
+  top: HISideBinding;
+  left: HISideBinding;
+  bottom: HISideBinding;
+  right: HISideBinding;
+}
+
 declare class StScrpRec {
   constructor(init?: StScrpRec);
   scrpNStyles: number;
   scrpStyleTab: unknown /* const array */;
+}
+
+declare class OpaqueEventHandlerRef {
+  constructor(init?: OpaqueEventHandlerRef);
 }
 
 declare class ControlTabInfoRec {
@@ -10958,12 +10953,11 @@ declare class HIAxisPosition {
   offset: number;
 }
 
-declare class HIBinding {
-  constructor(init?: HIBinding);
-  top: HISideBinding;
-  left: HISideBinding;
-  bottom: HISideBinding;
-  right: HISideBinding;
+declare class TypeSelectRecord {
+  constructor(init?: TypeSelectRecord);
+  tsrLastKeyTime: number;
+  tsrScript: number;
+  tsrKeyStrokes: unknown /* const array */;
 }
 
 declare class CalibratorInfo {
@@ -10976,28 +10970,11 @@ declare class CalibratorInfo {
   isGood: number;
 }
 
-declare class TypeSelectRecord {
-  constructor(init?: TypeSelectRecord);
-  tsrLastKeyTime: number;
-  tsrScript: number;
-  tsrKeyStrokes: unknown /* const array */;
-}
-
 declare class HIThemeMenuItemDrawInfo {
   constructor(init?: HIThemeMenuItemDrawInfo);
   version: number;
   itemType: number;
   state: number;
-}
-
-declare class HIThemeWindowDrawInfo {
-  constructor(init?: HIThemeWindowDrawInfo);
-  version: number;
-  state: number;
-  windowType: number;
-  attributes: number;
-  titleHeight: number;
-  titleWidth: number;
 }
 
 declare class HIThemeScrollBarDelimitersDrawInfo {
@@ -11022,10 +10999,6 @@ declare class HIThemeTabPaneDrawInfo {
   size: number;
   kind: number;
   adornment: number;
-}
-
-declare class OpaqueFCFontDescriptorRef {
-  constructor(init?: OpaqueFCFontDescriptorRef);
 }
 
 declare class GetGrowImageRegionRec {
@@ -11074,15 +11047,8 @@ declare class GetWindowRegionRec {
   regionCode: number;
 }
 
-declare class unnamed_3306046706271922423 {
-  constructor(init?: unnamed_3306046706271922423);
-  drawItemCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible, p6: number, p7: number) => void | null;
-  editTextCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  hitTestCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  trackingCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: Point, p6: number) => number | null;
-  dragRegionCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
-  acceptDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  receiveDragCallback: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
+declare class OpaqueFCFontDescriptorRef {
+  constructor(init?: OpaqueFCFontDescriptorRef);
 }
 
 declare class URLCallbackInfo {
@@ -11127,16 +11093,6 @@ declare class TabletProximityRec {
   capabilityMask: number;
   pointerType: number;
   enterProximity: number;
-}
-
-declare class MenuTrackingData {
-  constructor(init?: MenuTrackingData);
-  menu: interop.Object | null;
-  itemSelected: number;
-  itemUnderMouse: number;
-  itemRect: Rect;
-  virtualMenuTop: number;
-  virtualMenuBottom: number;
 }
 
 declare class OpaqueKeyboardLayoutRef {
@@ -11244,7 +11200,7 @@ declare class FileTranslationList {
 declare class HMHelpContent {
   constructor(init?: HMHelpContent);
   contentType: number;
-  u: unnamed_5596887202026904659;
+  u: unnamed_18093569481380179011;
 }
 
 declare class OpaqueEventTargetRef {
@@ -11283,26 +11239,36 @@ declare class HMHelpContentRec {
   content: unknown /* const array */;
 }
 
+declare class unnamed_15132616372053018136 {
+  constructor(init?: unnamed_15132616372053018136);
+  classID: interop.Object | null;
+  initEvent: interop.Pointer;
+}
+
 declare class HIPositioning {
   constructor(init?: HIPositioning);
   x: HIAxisPosition;
   y: HIAxisPosition;
 }
 
-declare class unnamed_17337783634597839381 {
-  constructor(init?: unnamed_17337783634597839381);
-  menuRef: interop.Object | null;
-  menuItemIndex: number;
-}
-
 declare class DataBrowserCallbacks {
   constructor(init?: DataBrowserCallbacks);
   version: number;
-  u: unnamed_2105859447822557000;
+  u: unnamed_11872976852887686767;
 }
 
 declare class OpaqueHIObjectRef {
   constructor(init?: OpaqueHIObjectRef);
+}
+
+declare class MenuTrackingData {
+  constructor(init?: MenuTrackingData);
+  menu: interop.Object | null;
+  itemSelected: number;
+  itemUnderMouse: number;
+  itemRect: Rect;
+  virtualMenuTop: number;
+  virtualMenuBottom: number;
 }
 
 declare class DataBrowserAccessibilityItemInfoV0 {
@@ -11332,7 +11298,7 @@ declare class MDEFDrawItemsData {
 declare class ControlImageContentInfo {
   constructor(init?: ControlImageContentInfo);
   contentType: number;
-  u: unnamed_217146360178583400;
+  u: unnamed_4754376567676597136;
 }
 
 declare class PickerMenuItemInfo {
@@ -11378,10 +11344,49 @@ declare class HIThemeTabPaneDrawInfoVersionZero {
   size: number;
 }
 
-declare class unnamed_5969512033234636902 {
-  constructor(init?: unnamed_5969512033234636902);
-  menuRef: interop.Object | null;
-  menuItemIndex: number;
+declare class ProgressTrackInfo {
+  constructor(init?: ProgressTrackInfo);
+  phase: number;
+}
+
+declare class MenuItemDataRec {
+  constructor(init?: MenuItemDataRec);
+  whichData: number;
+  text: interop.Pointer;
+  mark: number;
+  cmdKey: number;
+  cmdKeyGlyph: number;
+  cmdKeyModifiers: number;
+  style: number;
+  enabled: number;
+  iconEnabled: number;
+  filler1: number;
+  iconID: number;
+  iconType: number;
+  iconHandle: interop.Pointer;
+  cmdID: number;
+  encoding: number;
+  submenuID: number;
+  submenuHandle: interop.Object | null;
+  fontID: number;
+  refcon: interop.Pointer;
+  attr: number;
+  cfText: interop.Object | null;
+  properties: interop.Pointer;
+  indent: number;
+  cmdVirtualKey: number;
+  attributedText: interop.Object | null;
+  font: interop.Object | null;
+}
+
+declare class HIThemeWindowDrawInfo {
+  constructor(init?: HIThemeWindowDrawInfo);
+  version: number;
+  state: number;
+  windowType: number;
+  attributes: number;
+  titleHeight: number;
+  titleWidth: number;
 }
 
 declare class HIThemeTextInfo {
@@ -11425,37 +11430,142 @@ declare class NMRec {
   nmRefCon: interop.Pointer;
 }
 
-declare class ProgressTrackInfo {
-  constructor(init?: ProgressTrackInfo);
-  phase: number;
+type unnamed_10296931576414164391Descriptor = 
+  | { userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null };
+
+declare class unnamed_10296931576414164391 {
+  constructor(init?: unnamed_10296931576414164391Descriptor);
+  userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null;
 }
 
-type unnamed_13984278800451807663Descriptor = 
+type unnamed_11503986104782213648Descriptor = 
+  | { v1: unnamed_5695691087253250575 };
+
+declare class unnamed_11503986104782213648 {
+  constructor(init?: unnamed_11503986104782213648Descriptor);
+  v1: unnamed_5695691087253250575;
+}
+
+type unnamed_17740391883872664436Descriptor = 
+  | { scrollbar: ScrollBarTrackInfo }
+  | { slider: SliderTrackInfo }
+  | { progress: ProgressTrackInfo };
+
+declare class unnamed_17740391883872664436 {
+  constructor(init?: unnamed_17740391883872664436Descriptor);
+  scrollbar: ScrollBarTrackInfo;
+  slider: SliderTrackInfo;
+  progress: ProgressTrackInfo;
+}
+
+type unnamed_9045547264079709904Descriptor = 
+  | { defProc: interop.PointerConvertible }
+  | { classRef: interop.PointerConvertible }
+  | { procID: number }
+  | { rootView: interop.PointerConvertible };
+
+declare class unnamed_9045547264079709904 {
+  constructor(init?: unnamed_9045547264079709904Descriptor);
+  defProc: interop.Pointer;
+  classRef: interop.Pointer;
+  procID: number;
+  rootView: interop.Pointer;
+}
+
+type unnamed_4754376567676597136Descriptor = 
+  | { resID: number }
+  | { iconRef: interop.PointerConvertible }
+  | { imageRef: interop.Object | null };
+
+declare class unnamed_4754376567676597136 {
+  constructor(init?: unnamed_4754376567676597136Descriptor);
+  resID: number;
+  iconRef: interop.Pointer;
+  imageRef: interop.Object | null;
+}
+
+type unnamed_14281079220088648671Descriptor = 
+  | { scrollbar: ScrollBarTrackInfo }
+  | { slider: SliderTrackInfo }
+  | { progress: ProgressTrackInfo };
+
+declare class unnamed_14281079220088648671 {
+  constructor(init?: unnamed_14281079220088648671Descriptor);
+  scrollbar: ScrollBarTrackInfo;
+  slider: SliderTrackInfo;
+  progress: ProgressTrackInfo;
+}
+
+type unnamed_10361455799782941013Descriptor = 
+  | { time: HIThemeAnimationTimeInfo }
+  | { frame: HIThemeAnimationFrameInfo };
+
+declare class unnamed_10361455799782941013 {
+  constructor(init?: unnamed_10361455799782941013Descriptor);
+  time: HIThemeAnimationTimeInfo;
+  frame: HIThemeAnimationFrameInfo;
+}
+
+type unnamed_18093569481380179011Descriptor = 
+  | { tagCFString: interop.Object | null }
+  | { tagString: unknown /* const array */ }
+  | { tagStringRes: HMStringResType }
+  | { tagTEHandle: interop.PointerConvertible }
+  | { tagTextRes: number }
+  | { tagStrRes: number };
+
+declare class unnamed_18093569481380179011 {
+  constructor(init?: unnamed_18093569481380179011Descriptor);
+  tagCFString: interop.Object | null;
+  tagString: unknown /* const array */;
+  tagStringRes: HMStringResType;
+  tagTEHandle: interop.Pointer;
+  tagTextRes: number;
+  tagStrRes: number;
+}
+
+type unnamed_9451251608846795906Descriptor = 
+  | { versionOne: unnamed_132821558175286850 }
+  | { versionTwo: unnamed_7049553899080970402 };
+
+declare class unnamed_9451251608846795906 {
+  constructor(init?: unnamed_9451251608846795906Descriptor);
+  versionOne: unnamed_132821558175286850;
+  versionTwo: unnamed_7049553899080970402;
+}
+
+type unnamed_6910460127260016824Descriptor = 
   | { v0: DataBrowserAccessibilityItemInfoV0 }
   | { v1: DataBrowserAccessibilityItemInfoV1 };
 
-declare class unnamed_13984278800451807663 {
-  constructor(init?: unnamed_13984278800451807663Descriptor);
+declare class unnamed_6910460127260016824 {
+  constructor(init?: unnamed_6910460127260016824Descriptor);
   v0: DataBrowserAccessibilityItemInfoV0;
   v1: DataBrowserAccessibilityItemInfoV1;
 }
 
-type unnamed_2857126740677160067Descriptor = 
-  | { userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null };
+type unnamed_14678208167067080607Descriptor = 
+  | { defProc: interop.PointerConvertible }
+  | { view: unnamed_15132616372053018136 };
 
-declare class unnamed_2857126740677160067 {
-  constructor(init?: unnamed_2857126740677160067Descriptor);
-  userProc: (p1: number, p2: number, p3: interop.PointerConvertible, p4: Point, p5: number, p6: number, p7: interop.PointerConvertible) => void | null;
+declare class unnamed_14678208167067080607 {
+  constructor(init?: unnamed_14678208167067080607Descriptor);
+  defProc: interop.Pointer;
+  view: unnamed_15132616372053018136;
 }
 
-type unnamed_18112676916515831784Descriptor = 
-  | { versionOne: unnamed_6626132889242014545 }
-  | { versionTwo: unnamed_18327286281903537215 };
+type TXNControlDataDescriptor = 
+  | { uValue: number }
+  | { sValue: number }
+  | { tabValue: TXNTab }
+  | { marginsPtr: interop.PointerConvertible };
 
-declare class unnamed_18112676916515831784 {
-  constructor(init?: unnamed_18112676916515831784Descriptor);
-  versionOne: unnamed_6626132889242014545;
-  versionTwo: unnamed_18327286281903537215;
+declare class TXNControlData {
+  constructor(init?: TXNControlDataDescriptor);
+  uValue: number;
+  sValue: number;
+  tabValue: TXNTab;
+  marginsPtr: interop.Pointer;
 }
 
 type TXNAttributeDataDescriptor = 
@@ -11474,21 +11584,7 @@ declare class TXNAttributeData {
   urlReference: interop.Object | null;
 }
 
-type TXNControlDataDescriptor = 
-  | { uValue: number }
-  | { sValue: number }
-  | { tabValue: TXNTab }
-  | { marginsPtr: interop.PointerConvertible };
-
-declare class TXNControlData {
-  constructor(init?: TXNControlDataDescriptor);
-  uValue: number;
-  sValue: number;
-  tabValue: TXNTab;
-  marginsPtr: interop.Pointer;
-}
-
-type unnamed_10152673369849465444Descriptor = 
+type unnamed_14717092232052451817Descriptor = 
   | { iconRef: interop.PointerConvertible }
   | { iconTypeAndCreator: HITypeAndCreator }
   | { imageRef: interop.Object | null }
@@ -11496,8 +11592,8 @@ type unnamed_10152673369849465444Descriptor =
   | { imageFile: interop.Object | null }
   | { nsImage: NSImage | null };
 
-declare class unnamed_10152673369849465444 {
-  constructor(init?: unnamed_10152673369849465444Descriptor);
+declare class unnamed_14717092232052451817 {
+  constructor(init?: unnamed_14717092232052451817Descriptor);
   iconRef: interop.Pointer;
   iconTypeAndCreator: HITypeAndCreator;
   imageRef: interop.Object | null;
@@ -11506,120 +11602,24 @@ declare class unnamed_10152673369849465444 {
   nsImage: NSImage | null;
 }
 
-type unnamed_9463215352432912008Descriptor = 
-  | { time: HIThemeAnimationTimeInfo }
-  | { frame: HIThemeAnimationFrameInfo };
-
-declare class unnamed_9463215352432912008 {
-  constructor(init?: unnamed_9463215352432912008Descriptor);
-  time: HIThemeAnimationTimeInfo;
-  frame: HIThemeAnimationFrameInfo;
-}
-
-type unnamed_9548908348272556868Descriptor = 
-  | { scrollbar: ScrollBarTrackInfo }
-  | { slider: SliderTrackInfo }
-  | { progress: ProgressTrackInfo };
-
-declare class unnamed_9548908348272556868 {
-  constructor(init?: unnamed_9548908348272556868Descriptor);
-  scrollbar: ScrollBarTrackInfo;
-  slider: SliderTrackInfo;
-  progress: ProgressTrackInfo;
-}
-
-type unnamed_338682942674878331Descriptor = 
-  | { scrollbar: ScrollBarTrackInfo }
-  | { slider: SliderTrackInfo }
-  | { progress: ProgressTrackInfo };
-
-declare class unnamed_338682942674878331 {
-  constructor(init?: unnamed_338682942674878331Descriptor);
-  scrollbar: ScrollBarTrackInfo;
-  slider: SliderTrackInfo;
-  progress: ProgressTrackInfo;
-}
-
-type unnamed_8091147511952639000Descriptor = 
-  | { defProc: interop.PointerConvertible }
-  | { view: unnamed_17065242291780745842 };
-
-declare class unnamed_8091147511952639000 {
-  constructor(init?: unnamed_8091147511952639000Descriptor);
-  defProc: interop.Pointer;
-  view: unnamed_17065242291780745842;
-}
-
-type unnamed_17116481973128983476Descriptor = 
+type unnamed_10378186255190260503Descriptor = 
   | { control: interop.Object | null }
   | { window: interop.PointerConvertible }
-  | { menu: unnamed_5969512033234636902 };
+  | { menu: unnamed_13614669614218900770 };
 
-declare class unnamed_17116481973128983476 {
-  constructor(init?: unnamed_17116481973128983476Descriptor);
+declare class unnamed_10378186255190260503 {
+  constructor(init?: unnamed_10378186255190260503Descriptor);
   control: interop.Object | null;
   window: interop.Pointer;
-  menu: unnamed_5969512033234636902;
+  menu: unnamed_13614669614218900770;
 }
 
-type unnamed_217146360178583400Descriptor = 
-  | { resID: number }
-  | { iconRef: interop.PointerConvertible }
-  | { imageRef: interop.Object | null };
+type unnamed_11872976852887686767Descriptor = 
+  | { v1: unnamed_12844395492155114169 };
 
-declare class unnamed_217146360178583400 {
-  constructor(init?: unnamed_217146360178583400Descriptor);
-  resID: number;
-  iconRef: interop.Pointer;
-  imageRef: interop.Object | null;
-}
-
-type unnamed_16754814269475328127Descriptor = 
-  | { v1: unnamed_3306046706271922423 };
-
-declare class unnamed_16754814269475328127 {
-  constructor(init?: unnamed_16754814269475328127Descriptor);
-  v1: unnamed_3306046706271922423;
-}
-
-type unnamed_5596887202026904659Descriptor = 
-  | { tagCFString: interop.Object | null }
-  | { tagString: unknown /* const array */ }
-  | { tagStringRes: HMStringResType }
-  | { tagTEHandle: interop.PointerConvertible }
-  | { tagTextRes: number }
-  | { tagStrRes: number };
-
-declare class unnamed_5596887202026904659 {
-  constructor(init?: unnamed_5596887202026904659Descriptor);
-  tagCFString: interop.Object | null;
-  tagString: unknown /* const array */;
-  tagStringRes: HMStringResType;
-  tagTEHandle: interop.Pointer;
-  tagTextRes: number;
-  tagStrRes: number;
-}
-
-type unnamed_2105859447822557000Descriptor = 
-  | { v1: unnamed_7862278037549649304 };
-
-declare class unnamed_2105859447822557000 {
-  constructor(init?: unnamed_2105859447822557000Descriptor);
-  v1: unnamed_7862278037549649304;
-}
-
-type unnamed_5831069759083166394Descriptor = 
-  | { defProc: interop.PointerConvertible }
-  | { classRef: interop.PointerConvertible }
-  | { procID: number }
-  | { rootView: interop.PointerConvertible };
-
-declare class unnamed_5831069759083166394 {
-  constructor(init?: unnamed_5831069759083166394Descriptor);
-  defProc: interop.Pointer;
-  classRef: interop.Pointer;
-  procID: number;
-  rootView: interop.Pointer;
+declare class unnamed_11872976852887686767 {
+  constructor(init?: unnamed_11872976852887686767Descriptor);
+  v1: unnamed_12844395492155114169;
 }
 
 declare function HIPointConvert(ioPoint: interop.PointerConvertible, inSourceSpace: number, inSourceObject: interop.PointerConvertible, inDestinationSpace: number, inDestinationObject: interop.PointerConvertible): void;

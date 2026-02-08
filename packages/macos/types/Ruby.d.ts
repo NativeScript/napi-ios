@@ -563,6 +563,14 @@ declare class rb_global_variable {
   constructor(init?: rb_global_variable);
 }
 
+declare class unnamed_15395614229727013203 {
+  constructor(init?: unnamed_15395614229727013203);
+  dmark: (p1: interop.PointerConvertible) => void | null;
+  dfree: (p1: interop.PointerConvertible) => void | null;
+  dsize: (p1: interop.PointerConvertible) => number | null;
+  reserved: unknown /* const array */;
+}
+
 declare class RData {
   constructor(init?: RData);
   basic: RBasic;
@@ -648,46 +656,26 @@ declare class RRegexp {
 declare class RArray {
   constructor(init?: RArray);
   basic: RBasic;
-  as: unnamed_8947326465846909553;
+  as: unnamed_13731967589240743757;
+}
+
+declare class unnamed_7979980442557595525 {
+  constructor(init?: unnamed_7979980442557595525);
+  len: number;
+  ptr: string | null;
+  aux: unnamed_9605518636855486743;
 }
 
 declare class RString {
   constructor(init?: RString);
   basic: RBasic;
-  as: unnamed_5811631881619703303;
-}
-
-declare class unnamed_9071603155498430573 {
-  constructor(init?: unnamed_9071603155498430573);
-  numiv: number;
-  ivptr: interop.Pointer;
-  iv_index_tbl: interop.Pointer;
+  as: unnamed_5183378764801119909;
 }
 
 declare class RObject {
   constructor(init?: RObject);
   basic: RBasic;
-  as: unnamed_10013601549612586129;
-}
-
-declare class RClassDeprecated {
-  constructor(init?: RClassDeprecated);
-  basic: RBasic;
-}
-
-declare class unnamed_8252383207716883408 {
-  constructor(init?: unnamed_8252383207716883408);
-  dmark: (p1: interop.PointerConvertible) => void | null;
-  dfree: (p1: interop.PointerConvertible) => void | null;
-  dsize: (p1: interop.PointerConvertible) => number | null;
-  reserved: unknown /* const array */;
-}
-
-declare class unnamed_10844333523920063151 {
-  constructor(init?: unnamed_10844333523920063151);
-  len: number;
-  aux: unnamed_8417304171698770295;
-  ptr: interop.Pointer;
+  as: unnamed_12146719670939536409;
 }
 
 declare class OnigCaptureTreeNodeStruct {
@@ -710,13 +698,6 @@ declare class OnigCompileInfo {
   case_fold_flag: number;
 }
 
-declare class unnamed_10999803535462308628 {
-  constructor(init?: unnamed_10999803535462308628);
-  len: number;
-  ptr: string | null;
-  aux: unnamed_8416264486544584876;
-}
-
 declare class OnigRepeatRange {
   constructor(init?: OnigRepeatRange);
   lower: number;
@@ -726,7 +707,7 @@ declare class OnigRepeatRange {
 declare class rb_data_type_struct {
   constructor(init?: rb_data_type_struct);
   wrap_struct_name: string | null;
-  function: unnamed_8252383207716883408;
+  function: unnamed_15395614229727013203;
   parent: interop.Pointer;
   data: interop.Pointer;
   flags: number;
@@ -740,6 +721,11 @@ declare class rb_econv_t {
   constructor(init?: rb_econv_t);
 }
 
+declare class RClassDeprecated {
+  constructor(init?: RClassDeprecated);
+  basic: RBasic;
+}
+
 declare class RTypedData {
   constructor(init?: RTypedData);
   basic: RBasic;
@@ -748,8 +734,22 @@ declare class RTypedData {
   data: interop.Pointer;
 }
 
+declare class unnamed_7536305061596957276 {
+  constructor(init?: unnamed_7536305061596957276);
+  len: number;
+  aux: unnamed_11818322664768536414;
+  ptr: interop.Pointer;
+}
+
 declare class rb_vm_struct {
   constructor(init?: rb_vm_struct);
+}
+
+declare class unnamed_1774709396288571124 {
+  constructor(init?: unnamed_1774709396288571124);
+  numiv: number;
+  ivptr: interop.Pointer;
+  iv_index_tbl: interop.Pointer;
 }
 
 declare class RBasic {
@@ -758,53 +758,53 @@ declare class RBasic {
   klass: number;
 }
 
-type unnamed_8417304171698770295Descriptor = 
+type unnamed_11818322664768536414Descriptor = 
   | { capa: number }
   | { shared: number };
 
-declare class unnamed_8417304171698770295 {
-  constructor(init?: unnamed_8417304171698770295Descriptor);
+declare class unnamed_11818322664768536414 {
+  constructor(init?: unnamed_11818322664768536414Descriptor);
   capa: number;
   shared: number;
 }
 
-type unnamed_8416264486544584876Descriptor = 
+type unnamed_13731967589240743757Descriptor = 
+  | { heap: unnamed_7536305061596957276 }
+  | { ary: unknown /* const array */ };
+
+declare class unnamed_13731967589240743757 {
+  constructor(init?: unnamed_13731967589240743757Descriptor);
+  heap: unnamed_7536305061596957276;
+  ary: unknown /* const array */;
+}
+
+type unnamed_9605518636855486743Descriptor = 
   | { capa: number }
   | { shared: number };
 
-declare class unnamed_8416264486544584876 {
-  constructor(init?: unnamed_8416264486544584876Descriptor);
+declare class unnamed_9605518636855486743 {
+  constructor(init?: unnamed_9605518636855486743Descriptor);
   capa: number;
   shared: number;
 }
 
-type unnamed_5811631881619703303Descriptor = 
-  | { heap: unnamed_10999803535462308628 }
+type unnamed_5183378764801119909Descriptor = 
+  | { heap: unnamed_7979980442557595525 }
   | { ary: unknown /* const array */ };
 
-declare class unnamed_5811631881619703303 {
-  constructor(init?: unnamed_5811631881619703303Descriptor);
-  heap: unnamed_10999803535462308628;
+declare class unnamed_5183378764801119909 {
+  constructor(init?: unnamed_5183378764801119909Descriptor);
+  heap: unnamed_7979980442557595525;
   ary: unknown /* const array */;
 }
 
-type unnamed_10013601549612586129Descriptor = 
-  | { heap: unnamed_9071603155498430573 }
+type unnamed_12146719670939536409Descriptor = 
+  | { heap: unnamed_1774709396288571124 }
   | { ary: unknown /* const array */ };
 
-declare class unnamed_10013601549612586129 {
-  constructor(init?: unnamed_10013601549612586129Descriptor);
-  heap: unnamed_9071603155498430573;
-  ary: unknown /* const array */;
-}
-
-type unnamed_8947326465846909553Descriptor = 
-  | { heap: unnamed_10844333523920063151 }
-  | { ary: unknown /* const array */ };
-
-declare class unnamed_8947326465846909553 {
-  constructor(init?: unnamed_8947326465846909553Descriptor);
-  heap: unnamed_10844333523920063151;
+declare class unnamed_12146719670939536409 {
+  constructor(init?: unnamed_12146719670939536409Descriptor);
+  heap: unnamed_1774709396288571124;
   ary: unknown /* const array */;
 }
 

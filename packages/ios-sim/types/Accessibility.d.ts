@@ -1,6 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
+declare const AXShowBordersEnabledStatusDidChangeNotification: string;
+
+declare const AXPrefersActionSliderAlternativeDidChangeNotification: string;
+
 declare const AXPrefersHorizontalTextLayoutDidChangeNotification: string;
 
 declare const AXTechnologyZoom: string;
@@ -17,11 +21,11 @@ declare const AXTechnologyVoiceOver: string;
 
 declare const AXMFiHearingDeviceStreamingEarDidChangeNotification: string;
 
-declare const AXTechnologySwitchControl: string;
-
 declare const AXTechnologyHoverText: string;
 
 declare const AXAnimatedImagesEnabledDidChangeNotification: string;
+
+declare const AXTechnologySwitchControl: string;
 
 declare const AXFeatureOverrideSessionErrorDomain: string;
 
@@ -94,6 +98,10 @@ declare function AXAnimatedImagesEnabled(): boolean;
 declare function AXAssistiveAccessEnabled(): boolean;
 
 declare function AXPrefersNonBlinkingTextInsertionIndicator(): boolean;
+
+declare function AXPrefersActionSliderAlternative(): boolean;
+
+declare function AXShowBordersEnabled(): boolean;
 
 declare function AXOpenSettingsFeature(feature: interop.Enum<typeof AXSettingsFeature>, completionHandler: (p1: NSError) => void): void;
 

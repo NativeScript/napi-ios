@@ -88,6 +88,8 @@ declare const NSInferMappingModelAutomaticallyOption: string;
 
 declare const NSMigratePersistentStoresAutomaticallyOption: string;
 
+declare const NSIgnorePersistentStoreVersioningOption: string;
+
 declare const NSSQLiteAnalyzeOption: string;
 
 declare const NSSQLitePragmasOption: string;
@@ -112,6 +114,8 @@ declare const NSMergeByPropertyStoreTrumpMergePolicy: interop.Object;
 
 declare const NSErrorMergePolicy: interop.Object;
 
+declare const NSRefreshedObjectIDsKey: string;
+
 declare const NSUpdatedObjectIDsKey: string;
 
 declare const NSManagedObjectContextQueryGenerationKey: string;
@@ -130,17 +134,11 @@ declare const NSInsertedObjectsKey: string;
 
 declare const NSValidationStringTooLongError: number;
 
-declare const NSPersistentStoreUnsupportedRequestTypeError: number;
-
 declare const NSInMemoryStoreType: string;
 
 declare const NSInferredMappingModelError: number;
 
 declare const NSPersistentStoreFileProtectionKey: string;
-
-declare const NSValidationStringTooShortError: number;
-
-declare const NSPersistentStoreRemoveUbiquitousMetadataOption: string;
 
 declare const NSRefreshedObjectsKey: string;
 
@@ -155,6 +153,8 @@ declare const NSPersistentCloudKitContainerEventUserInfoKey: string;
 declare const NSManagedObjectModelReferenceNotFoundError: number;
 
 declare const NSMergeByPropertyObjectTrumpMergePolicy: interop.Object;
+
+declare const NSSQLiteManualVacuumOption: string;
 
 declare const NSPersistentHistoryTrackingKey: string;
 
@@ -180,17 +180,13 @@ declare const NSDetailedErrorsKey: string;
 
 declare const NSValidationPredicateErrorKey: string;
 
-declare const NSInvalidatedObjectsKey: string;
-
 declare const NSPersistentStoreStagedMigrationManagerOptionKey: string;
 
 declare const NSPersistentStoreOSCompatibility: string;
 
-declare const NSPersistentStoreUbiquitousContentURLKey: string;
-
 declare const NSMigrationEntityPolicyKey: string;
 
-declare const NSSQLiteManualVacuumOption: string;
+declare const NSDeletedObjectsKey: string;
 
 declare const NSCoreDataCoreSpotlightExporter: string;
 
@@ -202,9 +198,7 @@ declare const NSValidationNumberTooLargeError: number;
 
 declare const NSPersistentHistoryTokenExpiredError: number;
 
-declare const NSPersistentStoreInvalidTypeError: number;
-
-declare const NSMigrationMissingSourceModelError: number;
+declare const NSPersistentStoreUbiquitousContentURLKey: string;
 
 declare const NSStoreModelVersionIdentifiersKey: string;
 
@@ -215,8 +209,6 @@ declare const NSPersistentStoreForceDestroyOption: string;
 declare const NSValidationDateTooSoonError: number;
 
 declare const NSManagedObjectContextDidSaveNotification: string;
-
-declare const NSDeletedObjectsKey: string;
 
 declare const NSInvalidatedObjectIDsKey: string;
 
@@ -240,11 +232,15 @@ declare const NSValidationKeyErrorKey: string;
 
 declare const NSPersistentStoreURLKey: string;
 
-declare const NSIgnorePersistentStoreVersioningOption: string;
+declare const NSValidationStringTooShortError: number;
+
+declare const NSPersistentStoreRemoveUbiquitousMetadataOption: string;
 
 declare const NSPersistentStoreTimeoutOption: string;
 
 declare const NSManagedObjectContextDidSaveObjectIDsNotification: string;
+
+declare const NSInvalidatedObjectsKey: string;
 
 declare const NSPersistentStoreIncompatibleVersionHashError: number;
 
@@ -252,7 +248,13 @@ declare const NSManagedObjectExternalRelationshipError: number;
 
 declare const NSValidationNumberTooSmallError: number;
 
+declare const NSPersistentStoreUnsupportedRequestTypeError: number;
+
 declare const NSPersistentStoreCoordinatorStoresWillChangeNotification: string;
+
+declare const NSPersistentStoreInvalidTypeError: number;
+
+declare const NSMigrationMissingSourceModelError: number;
 
 declare const NSMigrationError: number;
 
@@ -265,8 +267,6 @@ declare const NSPersistentStoreSaveError: number;
 declare const NSSQLiteError: number;
 
 declare const NSStagedMigrationBackwardMigrationError: number;
-
-declare const NSRefreshedObjectIDsKey: string;
 
 declare const NSPersistentStoreUbiquitousPeerTokenOption: string;
 

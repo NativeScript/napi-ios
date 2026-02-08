@@ -1,5 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const ASPickerDisplaySettingsDiscoveryTimeoutUnbounded: number;
+
 declare const ASPickerDisplaySettingsDiscoveryTimeoutLong: number;
 
 declare const ASPickerDisplaySettingsDiscoveryTimeoutShort: number;
@@ -7,6 +9,10 @@ declare const ASPickerDisplaySettingsDiscoveryTimeoutShort: number;
 declare const ASPickerDisplaySettingsDiscoveryTimeoutMedium: number;
 
 declare const ASErrorDomain: string;
+
+declare const ASPickerDisplaySettingsOptions: {
+  ASPickerDisplaySettingsOptionFilterDiscoveryResults: 1,
+};
 
 declare const ASPickerDisplayItemSetupOptions: {
   Rename: 1,
@@ -37,6 +43,7 @@ declare const ASAccessoryEventType: {
   AccessoryAdded: 30,
   AccessoryRemoved: 31,
   AccessoryChanged: 32,
+  AccessoryDiscovered: 33,
   PickerDidPresent: 40,
   PickerDidDismiss: 50,
   PickerSetupBridging: 60,

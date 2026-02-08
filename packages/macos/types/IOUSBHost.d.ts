@@ -23,31 +23,245 @@ declare const IOUSBHostVersionString: interop.Pointer;
 
 declare const IOUSBHostVersionNumber: number;
 
+declare const IOUSBHostCITransferCompletionMessageData1TransferStructurePhase: number;
+
+declare const IOUSBHostCITransferCompletionMessageData1TransferStructure: number;
+
+declare const IOUSBHostCITransferCompletionMessageData0TransferLengthPhase: number;
+
+declare const IOUSBHostCITransferCompletionMessageControlEndpointAddressPhase: number;
+
+declare const IOUSBHostCITransferCompletionMessageControlEndpointAddress: number;
+
+declare const IOUSBHostCITransferCompletionMessageControlDeviceAddressPhase: number;
+
+declare const IOUSBHostCILinkData1TransferStructureAddress: number;
+
+declare const IOUSBHostCIIsochronousTransferData0LengthPhase: number;
+
+declare const IOUSBHostCIIsochronousTransferData0Length: number;
+
+declare const IOUSBHostCIIsochronousTransferControlFrameNumber: number;
+
+declare const IOUSBHostCINormalTransferData1BufferPhase: number;
+
+declare const IOUSBHostCINormalTransferData1Buffer: number;
+
+declare const IOUSBHostCINormalTransferData0LengthPhase: number;
+
+declare const IOUSBHostCINormalTransferData0Length: number;
+
+declare const IOUSBHostCISetupTransferData1wLengthPhase: number;
+
+declare const IOUSBHostCISetupTransferData1wLength: number;
+
+declare const IOUSBHostCISetupTransferData1wValuePhase: number;
+
+declare const IOUSBHostCISetupTransferData1bRequest: number;
+
+declare const IOUSBHostCIEndpointSetNextTransferCommandData1Address: number;
+
+declare const IOUSBHostCIEndpointCreateCommandData1Descriptor: number;
+
+declare const IOUSBHostCIDeviceUpdateCommandData1DescriptorAddress: number;
+
+declare const IOUSBHostCIDeviceCreateCommandData1DeviceAddressPhase: number;
+
+declare const IOUSBHostCIDeviceCreateCommandData0Route: number;
+
+declare const IOUSBHostCIDeviceCreateCommandData0RootPortPhase: number;
+
+declare const IOUSBHostCIPortStatusCommandData1ChangeMask: number;
+
+declare const IOUSBHostCIPortStatusCommandData1LinkStateChange: number;
+
+declare const IOUSBHostCIPortStatusCommandData1OvercurrentChange: number;
+
+declare const IOUSBHostCIPortStatusCommandData1SpeedPhase: number;
+
+declare const IOUSBHostCIPortStatusCommandData1LinkStatePhase: number;
+
+declare const IOUSBHostCIPortStatusCommandData1Connected: number;
+
+declare const IOUSBHostCIPortStatusCommandData1Powered: number;
+
+declare const IOUSBHostCIPortEventMessageData0PortNumberPhase: number;
+
+declare const IOUSBHostCICommandMessageData0EndpointAddressPhase: number;
+
+declare const IOUSBHostCICommandMessageData0DeviceAddress: number;
+
+declare const IOUSBHostCICommandMessageData0RootPort: number;
+
+declare const IOUSBHostCICommandMessageControlStatus: number;
+
+declare const IOUSBHostCIPortCapabilitiesMessageData0MaxPower: number;
+
+declare const IOUSBHostCIPortCapabilitiesMessageControlConnectorTypePhase: number;
+
+declare const IOUSBHostCIPortCapabilitiesMessageControlInternalConnector: number;
+
+declare const IOUSBHostCIPortCapabilitiesMessageControlPortNumberPhase: number;
+
+declare const IOUSBHostCICapabilitiesMessageData0CommandTimeoutThresholdPhase: number;
+
+declare const IOUSBHostCICapabilitiesMessageControlPortCountPhase: number;
+
+declare const IOUSBHostCIMessageControlNoResponse: number;
+
+declare const IOUSBHostCIMessageControlStatusPhase: number;
+
+declare const IOUSBHostCIDoorbellStreamID: number;
+
+declare const IOUSBHostCIDoorbellEndpointAddress: number;
+
+declare const IOUSBHostCIPortStatusLinkStateChange: number;
+
+declare const IOUSBHostCIPortStatusLinkState: number;
+
+declare const IOUSBHostCIPortStatusOvercurrent: number;
+
 declare const IOUSBHostMatchingPropertyKeyProductIDMask: string;
+
+declare const IOUSBHostCITransferCompletionMessageControlStatus: number;
 
 declare const IOUSBHostMatchingPropertyKeyInterfaceClass: string;
 
+declare const IOUSBHostCIPortCapabilitiesMessageControlConnectorType: number;
+
 declare const IOUSBHostMatchingPropertyKeyProductID: string;
+
+declare const IOUSBHostCIMessageControlType: number;
+
+declare const IOUSBHostCISetupTransferData1bmRequestType: number;
+
+declare const IOUSBHostCILinkData1TransferStructureAddressPhase: number;
+
+declare const IOUSBHostCISetupTransferData1wIndex: number;
 
 declare const IOUSBHostMatchingPropertyKeyInterfaceProtocol: string;
 
+declare const IOUSBHostCISetupTransferData1bmRequestTypePhase: number;
+
+declare const IOUSBHostCIDoorbellEndpointAddressPhase: number;
+
+declare const IOUSBHostCISetupTransferData1bRequestPhase: number;
+
+declare const IOUSBHostCICapabilitiesMessageData0ConnectionLatencyPhase: number;
+
+declare const IOUSBHostCIPortCapabilitiesMessageControlPortNumber: number;
+
+declare const IOUSBHostCIIsochronousTransferData1Buffer: number;
+
+declare const IOUSBHostCIPortStatusConnected: number;
+
+declare const IOUSBHostCIPortStatusSpeedPhase: number;
+
 declare const IOUSBHostMatchingPropertyKeyInterfaceNumber: string;
+
+declare const IOUSBHostCICapabilitiesMessageData0ConnectionLatency: number;
 
 declare const IOUSBHostMatchingPropertyKeySpeed: string;
 
+declare const IOUSBHostCIEndpointCreateCommandData1DescriptorPhase: number;
+
+declare const IOUSBHostCIPortStatusCommandData1Overcurrent: number;
+
+declare const IOUSBHostCICommandMessageData0EndpointAddress: number;
+
 declare const IOUSBHostMatchingPropertyKeyVendorID: string;
+
+declare const IOUSBHostCIEndpointSetNextTransferCommandData1AddressPhase: number;
+
+declare const IOUSBHostCIIsochronousTransferData1BufferPhase: number;
 
 declare const IOUSBHostMatchingPropertyKeyDeviceReleaseNumber: string;
 
 declare const IOUSBHostMatchingPropertyKeyDeviceProtocol: string;
 
+declare const IOUSBHostCICapabilitiesMessageControlPortCount: number;
+
 declare const IOUSBHostDevicePropertyKeyContainerID: string;
 
 declare const IOUSBHostMatchingPropertyKeyConfigurationValue: string;
 
+declare const IOUSBHostCICommandMessageData0StreamID: number;
+
+declare const IOUSBHostCIPortStatusCommandData1LinkState: number;
+
+declare const IOUSBHostCICommandMessageControlStatusPhase: number;
+
+declare const IOUSBHostCIPortStatusLinkStatePhase: number;
+
+declare const IOUSBHostCIDeviceCreateCommandData1DeviceAddress: number;
+
+declare const IOUSBHostCIDoorbellDeviceAddress: number;
+
+declare const IOUSBHostCIDeviceCreateCommandData0RootPort: number;
+
+declare const IOUSBHostCICommandMessageData0StreamIDPhase: number;
+
+declare const IOUSBHostCICommandMessageData0RootPortPhase: number;
+
 declare const IOUSBHostMatchingPropertyKeyDeviceClass: string;
 
+declare const IOUSBHostCIPortStatusCommandData1ConnectChange: number;
+
+declare const IOUSBHostCIPortStatusPowered: number;
+
 declare const IOUSBHostPropertyKeyLocationID: string;
+
+declare const IOUSBHostCIDeviceUpdateCommandData1DescriptorAddressPhase: number;
+
+declare const IOUSBHostCIEndpointResetCommandData1ClearState: number;
+
+declare const IOUSBHostCISetupTransferData1wValue: number;
+
+declare const IOUSBHostCIMessageControlValid: number;
+
+declare const IOUSBHostCIPortStatusChangeMask: number;
+
+declare const IOUSBHostCIEndpointUpdateCommandData1Descriptor: number;
+
+declare const IOUSBHostCITransferCompletionMessageControlDeviceAddress: number;
+
+declare const IOUSBHostCITransferCompletionMessageData0TransferLength: number;
+
+declare const IOUSBHostCIDeviceCreateCommandData0RoutePhase: number;
+
+declare const IOUSBHostCIPortStatusOvercurrentChange: number;
+
+declare const IOUSBHostCITransferCompletionMessageControlStatusPhase: number;
+
+declare const IOUSBHostCIDoorbellStreamIDPhase: number;
+
+declare const IOUSBHostCICommandMessageData0DeviceAddressPhase: number;
+
+declare const IOUSBHostCIPortEventMessageData0PortNumber: number;
+
+declare const IOUSBHostCISetupTransferData1wIndexPhase: number;
+
+declare const IOUSBHostCIPortStatusCommandData1Speed: number;
+
+declare const IOUSBHostCIMessageControlTypePhase: number;
+
+declare const IOUSBHostCIMessageControlStatus: number;
+
+declare const IOUSBHostCIPortCapabilitiesMessageData0MaxPowerPhase: number;
+
+declare const IOUSBHostCIDoorbellDeviceAddressPhase: number;
+
+declare const IOUSBHostCIPortStatusSpeed: number;
+
+declare const IOUSBHostCIPortStatusConnectChange: number;
+
+declare const IOUSBHostCICapabilitiesMessageData0CommandTimeoutThreshold: number;
+
+declare const IOUSBHostCIIsochronousTransferControlASAP: number;
+
+declare const IOUSBHostCIEndpointUpdateCommandData1DescriptorPhase: number;
+
+declare const IOUSBHostCIIsochronousTransferControlFrameNumberPhase: number;
 
 declare const IOUSBHostObjectDestroyOptions: {
   None: 0,
@@ -74,6 +288,135 @@ declare const IOUSBHostIsochronousTransferOptions: {
   IOUSBHostIsochronousTransferOptionsNone: 0,
 };
 
+declare const IOUSBHostCIDeviceSpeed: {
+  None: 0,
+  Full: 1,
+  Low: 2,
+  High: 3,
+  Super: 4,
+  SuperPlus: 5,
+  SuperPlusBy2: 6,
+};
+
+declare const IOUSBHostCIDeviceState: {
+  Destroyed: 0,
+  Paused: 1,
+  Active: 2,
+};
+
+declare const IOUSBHostCIControllerState: {
+  Off: 0,
+  Paused: 1,
+  Active: 2,
+};
+
+declare const IOUSBHostCIMessageStatus: {
+  Reserved: 0,
+  Success: 1,
+  Offline: 2,
+  NotPermitted: 3,
+  BadArgument: 4,
+  Timeout: 5,
+  NoResources: 6,
+  EndpointStopped: 7,
+  ProtocolError: 8,
+  TransactionError: 9,
+  OverrunError: 10,
+  StallError: 11,
+  MissedServiceError: 12,
+  Error: 13,
+};
+
+declare const IOUSBHostCIMessageType: {
+  ControllerCapabilities: 0,
+  PortCapabilities: 1,
+  PortEvent: 8,
+  FrameNumberUpdate: 9,
+  FrameTimestampUpdate: 10,
+  CommandMin: 16,
+  ControllerPowerOn: 16,
+  ControllerPowerOff: 17,
+  ControllerStart: 18,
+  ControllerPause: 19,
+  ControllerFrameNumber: 20,
+  PortPowerOn: 24,
+  PortPowerOff: 25,
+  PortResume: 26,
+  PortSuspend: 27,
+  PortReset: 28,
+  PortDisable: 29,
+  PortStatus: 30,
+  DeviceCreate: 32,
+  DeviceDestroy: 33,
+  DeviceStart: 34,
+  DevicePause: 35,
+  DeviceUpdate: 36,
+  EndpointCreate: 40,
+  EndpointDestroy: 41,
+  Endpoint_reserved_: 42,
+  EndpointPause: 43,
+  EndpointUpdate: 44,
+  EndpointReset: 45,
+  EndpointSetNextTransfer: 46,
+  CommandMax: 55,
+  SetupTransfer: 56,
+  NormalTransfer: 57,
+  StatusTransfer: 58,
+  IsochronousTransfer: 59,
+  Link: 60,
+  TransferComplete: 61,
+};
+
+declare const IOUSBHostCIUserClientVersion: {
+  IOUSBHostCIUserClientVersion100: 0,
+};
+
+declare const IOUSBHostCIPortState: {
+  Off: 0,
+  Powered: 1,
+  Suspended: 2,
+  Active: 3,
+};
+
+declare const IOUSBHostCIExceptionType: {
+  Unknown: 0,
+  CapabilitiesInvalid: 1,
+  Terminated: 2,
+  CommandReadCollision: 3,
+  CommandWriteFailed: 4,
+  CommandTimeout: 5,
+  CommandFailure: 6,
+  InterruptInvalid: 7,
+  InterruptOverflow: 8,
+  DoorbellReadCollision: 9,
+  DoorbellOverflow: 10,
+  ProtocolError: 11,
+  FrameUpdateError: 12,
+};
+
+declare const IOUSBHostCILinkState: {
+  U0: 0,
+  U1: 1,
+  U2: 2,
+  U3: 3,
+  Disabled: 4,
+  RxDetect: 5,
+  Inactive: 6,
+  Polling: 7,
+  Recovery: 8,
+  Reset: 9,
+  Compliance: 10,
+  Test: 11,
+  Resume: 15,
+};
+
+declare const IOUSBHostCIEndpointState: {
+  Destroyed: 0,
+  Halted: 1,
+  Paused: 2,
+  Active: 3,
+};
+
 declare class IOUSBHostIOSourceDescriptors {
   constructor(init?: IOUSBHostIOSourceDescriptors);
   bcdUSB: number;
@@ -82,8 +425,8 @@ declare class IOUSBHostIOSourceDescriptors {
   sspCompanionDescriptor: IOUSBSuperSpeedPlusIsochronousEndpointCompanionDescriptor;
 }
 
-declare class unnamed_7407701229536316826 {
-  constructor(init?: unnamed_7407701229536316826);
+declare class unnamed_3063437025848074072 {
+  constructor(init?: unnamed_3063437025848074072);
   status: number;
   requestCount: number;
   offset: number;
@@ -92,8 +435,15 @@ declare class unnamed_7407701229536316826 {
   options: interop.Enum<typeof IOUSBHostIsochronousTransactionOptions>;
 }
 
-declare class unnamed_14189960676606666940 {
-  constructor(init?: unnamed_14189960676606666940);
+declare class IOUSBHostCIMessage {
+  constructor(init?: IOUSBHostCIMessage);
+  control: number;
+  data0: number;
+  data1: number;
+}
+
+declare class unnamed_17069786930819702099 {
+  constructor(init?: unnamed_17069786930819702099);
   status: number;
   requestCount: number;
   completeCount: number;

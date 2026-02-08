@@ -2323,6 +2323,7 @@ declare const NSURLErrorNetworkUnavailableReason: {
   Cellular: 0,
   Expensive: 1,
   Constrained: 2,
+  UltraConstrained: 3,
 };
 
 declare const NSNotificationCoalescing: {
@@ -2582,11 +2583,6 @@ declare const NSComparisonPredicateOptions: {
 declare const NSStringEncodingConversionOptions: {
   AllowLossy: 1,
   ExternalRepresentation: 2,
-};
-
-declare const NSCollectionChangeType: {
-  Insert: 0,
-  Remove: 1,
 };
 
 declare const NSXMLNodeOptions: {
@@ -3287,6 +3283,11 @@ declare const NSDataBase64EncodingOptions: {
   Encoding76CharacterLineLength: 2,
   EncodingEndLineWithCarriageReturn: 16,
   EncodingEndLineWithLineFeed: 32,
+};
+
+declare const NSCollectionChangeType: {
+  Insert: 0,
+  Remove: 1,
 };
 
 declare const NSQualityOfService: {
@@ -5533,9 +5534,13 @@ declare class NSProcessInfo extends NSObject {
 
   readonly iOSAppOnMac: boolean;
 
+  readonly iOSAppOnVision: boolean;
+
   isMacCatalystApp(): boolean;
 
   isiOSAppOnMac(): boolean;
+
+  isiOSAppOnVision(): boolean;
 
   isDeviceCertifiedFor(performanceTier: number): boolean;
 
@@ -7556,6 +7561,8 @@ declare class NSURLRequest extends NSObject implements NSSecureCoding, NSCopying
   readonly allowsExpensiveNetworkAccess: boolean;
 
   readonly allowsConstrainedNetworkAccess: boolean;
+
+  readonly allowsUltraConstrainedNetworkAccess: boolean;
 
   readonly assumesHTTP3Capable: boolean;
 
@@ -12447,6 +12454,8 @@ declare class NSURLSessionConfiguration extends NSObject implements NSCopying {
 
   allowsConstrainedNetworkAccess: boolean;
 
+  allowsUltraConstrainedNetworkAccess: boolean;
+
   requiresDNSSECValidation: boolean;
 
   waitsForConnectivity: boolean;
@@ -12511,6 +12520,8 @@ declare class NSURLSessionConfiguration extends NSObject implements NSCopying {
   setAllowsExpensiveNetworkAccess(allowsExpensiveNetworkAccess: boolean): void;
 
   setAllowsConstrainedNetworkAccess(allowsConstrainedNetworkAccess: boolean): void;
+
+  setAllowsUltraConstrainedNetworkAccess(allowsUltraConstrainedNetworkAccess: boolean): void;
 
   setRequiresDNSSECValidation(requiresDNSSECValidation: boolean): void;
 
@@ -15033,6 +15044,9 @@ declare class NSMutableURLRequest extends NSURLRequest {
   allowsConstrainedNetworkAccess: boolean;
 
   // @ts-ignore MemberDecl.tsIgnore
+  allowsUltraConstrainedNetworkAccess: boolean;
+
+  // @ts-ignore MemberDecl.tsIgnore
   assumesHTTP3Capable: boolean;
 
   // @ts-ignore MemberDecl.tsIgnore
@@ -15062,6 +15076,8 @@ declare class NSMutableURLRequest extends NSURLRequest {
   setAllowsExpensiveNetworkAccess(allowsExpensiveNetworkAccess: boolean): void;
 
   setAllowsConstrainedNetworkAccess(allowsConstrainedNetworkAccess: boolean): void;
+
+  setAllowsUltraConstrainedNetworkAccess(allowsUltraConstrainedNetworkAccess: boolean): void;
 
   setAssumesHTTP3Capable(assumesHTTP3Capable: boolean): void;
 

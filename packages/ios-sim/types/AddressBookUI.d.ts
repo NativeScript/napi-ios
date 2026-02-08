@@ -27,8 +27,6 @@ declare const ABPersonGivenNameProperty: string;
 
 declare const ABPersonJobTitleProperty: string;
 
-declare const ABPersonSocialProfilesProperty: string;
-
 declare const ABPersonPhoneticMiddleNameProperty: string;
 
 declare const ABPersonFamilyNameProperty: string;
@@ -46,6 +44,8 @@ declare const ABPersonNameSuffixProperty: string;
 declare const ABPersonNoteProperty: string;
 
 declare const ABPersonUrlAddressesProperty: string;
+
+declare const ABPersonSocialProfilesProperty: string;
 
 declare function ABCreateStringWithAddressDictionary(address: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, addCountryName: boolean): string;
 

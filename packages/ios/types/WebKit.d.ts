@@ -84,8 +84,6 @@ declare const WKErrorDomain: string;
 
 declare const NSReadAccessURLDocumentOption: string;
 
-declare const WKWebsiteDataTypeDiskCache: string;
-
 declare const WKWebExtensionContextNotificationUserInfoKeyPermissions: string;
 
 declare const WKPreviewActionItemIdentifierCopy: string;
@@ -101,6 +99,8 @@ declare const WKWebExtensionMatchPatternErrorDomain: string;
 declare const WKWebsiteDataTypeOfflineWebApplicationCache: string;
 
 declare const WKWebsiteDataTypeHashSalt: string;
+
+declare const WKWebsiteDataTypeDiskCache: string;
 
 declare const WKWebExtensionPermissionContextMenus: string;
 
@@ -306,11 +306,6 @@ declare const WKDownloadPlaceholderPolicy: {
   Enable: 1,
 };
 
-declare const WKWebExtensionWindowType: {
-  Normal: 0,
-  Popup: 1,
-};
-
 declare const WKWebExtensionTabChangedProperties: {
   None: 0,
   Loading: 2,
@@ -342,6 +337,11 @@ declare const WKWebExtensionWindowState: {
   Minimized: 1,
   Maximized: 2,
   Fullscreen: 3,
+};
+
+declare const WKWebExtensionWindowType: {
+  Normal: 0,
+  Popup: 1,
 };
 
 declare interface WKWebExtensionControllerDelegate extends NSObjectProtocol {

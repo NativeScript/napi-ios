@@ -168,14 +168,6 @@ declare const MLCRandomInitializerType: {
   Count: 4,
 };
 
-declare const MLCDeviceType: {
-  CPU: 0,
-  GPU: 1,
-  Any: 2,
-  ANE: 3,
-  Count: 4,
-};
-
 declare const MLCActivationType: {
   None: 0,
   ReLU: 1,
@@ -199,6 +191,14 @@ declare const MLCActivationType: {
   HardSwish: 19,
   Clamp: 20,
   Count: 21,
+};
+
+declare const MLCDeviceType: {
+  CPU: 0,
+  GPU: 1,
+  Any: 2,
+  ANE: 3,
+  Count: 4,
 };
 
 declare function MLCActivationTypeDebugDescription(activationType: interop.Enum<typeof MLCActivationType>): string;

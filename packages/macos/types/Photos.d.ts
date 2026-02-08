@@ -90,6 +90,7 @@ declare const PHPhotosError: {
   MissingResource: 3303,
   NotEnoughSpace: 3305,
   RequestNotSupportedForAsset: 3306,
+  LimitExceeded: 3307,
   AccessRestricted: 3310,
   AccessUserDenied: 3311,
   LibraryInFileProviderSyncRoot: 5423,

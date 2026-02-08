@@ -110,6 +110,14 @@ declare class PTParticipant extends NSObject {
   initWithNameImage(name: string, image: UIImage | null): this;
 }
 
+declare class PTChannelDescriptor extends NSObject {
+  initWithNameImage(name: string, image: UIImage | null): this;
+
+  readonly name: string;
+
+  readonly image: UIImage;
+}
+
 declare class PTChannelManager extends NSObject {
   static channelManagerWithDelegateRestorationDelegateCompletionHandler(delegate: PTChannelManagerDelegate, restorationDelegate: PTChannelRestorationDelegate, completionHandler: (p1: PTChannelManager, p2: NSError) => void | null): void;
 
@@ -132,13 +140,5 @@ declare class PTChannelManager extends NSObject {
   setTransmissionModeForChannelUUIDCompletionHandler(transmissionMode: interop.Enum<typeof PTTransmissionMode>, channelUUID: NSUUID, completionHandler: (p1: NSError) => void | null): void;
 
   setAccessoryButtonEventsEnabledForChannelUUIDCompletionHandler(enabled: boolean, channelUUID: NSUUID, completionHandler: (p1: NSError) => void | null): void;
-}
-
-declare class PTChannelDescriptor extends NSObject {
-  initWithNameImage(name: string, image: UIImage | null): this;
-
-  readonly name: string;
-
-  readonly image: UIImage;
 }
 

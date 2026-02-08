@@ -719,17 +719,17 @@ declare class __SCNetworkConnection {
   constructor(init?: __SCNetworkConnection);
 }
 
-declare class __SCBondStatus {
-  constructor(init?: __SCBondStatus);
-}
-
-declare class SCPreferencesContext {
-  constructor(init?: SCPreferencesContext);
+declare class SCNetworkReachabilityContext {
+  constructor(init?: SCNetworkReachabilityContext);
   version: number;
   info: interop.Pointer;
   retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
   release: (p1: interop.PointerConvertible) => void | null;
   copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
+}
+
+declare class __SCBondStatus {
+  constructor(init?: __SCBondStatus);
 }
 
 declare class __SCDynamicStore {
@@ -738,15 +738,6 @@ declare class __SCDynamicStore {
 
 declare class __SCNetworkReachability {
   constructor(init?: __SCNetworkReachability);
-}
-
-declare class SCNetworkReachabilityContext {
-  constructor(init?: SCNetworkReachabilityContext);
-  version: number;
-  info: interop.Pointer;
-  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  release: (p1: interop.PointerConvertible) => void | null;
-  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
 declare class __SCPreferences {
@@ -776,6 +767,15 @@ declare class __SCNetworkSet {
 
 declare class __SCNetworkInterface {
   constructor(init?: __SCNetworkInterface);
+}
+
+declare class SCPreferencesContext {
+  constructor(init?: SCPreferencesContext);
+  version: number;
+  info: interop.Pointer;
+  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  release: (p1: interop.PointerConvertible) => void | null;
+  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
 }
 
 declare function SCDynamicStoreGetTypeID(): number;

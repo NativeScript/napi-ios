@@ -2639,11 +2639,28 @@ declare class FMInput {
   denom: Point;
 }
 
-declare class ATSFontFilter {
-  constructor(init?: ATSFontFilter);
-  version: number;
-  filterSelector: interop.Enum<typeof ATSFontFilterSelector>;
-  filter: unnamed_17149186175611802152;
+declare class CQDProcs {
+  constructor(init?: CQDProcs);
+  textProc: (p1: number, p2: interop.PointerConvertible, p3: Point, p4: Point) => void | null;
+  lineProc: (p1: Point) => void | null;
+  rectProc: (p1: number, p2: interop.PointerConvertible) => void | null;
+  rRectProc: (p1: number, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  ovalProc: (p1: number, p2: interop.PointerConvertible) => void | null;
+  arcProc: (p1: number, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  polyProc: (p1: number, p2: interop.PointerConvertible) => void | null;
+  rgnProc: (p1: number, p2: interop.PointerConvertible) => void | null;
+  bitsProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void | null;
+  commentProc: (p1: number, p2: number, p3: interop.PointerConvertible) => void | null;
+  txMeasProc: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
+  getPicProc: (p1: interop.PointerConvertible, p2: number) => void | null;
+  putPicProc: (p1: interop.PointerConvertible, p2: number) => void | null;
+  opcodeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
+  newProc1: () => number | null;
+  glyphsProc: (p1: interop.PointerConvertible, p2: number) => number | null;
+  printerStatusProc: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
+  newProc4: () => number | null;
+  newProc5: () => number | null;
+  newProc6: () => number | null;
 }
 
 declare class PhonemeInfo {
@@ -2771,6 +2788,13 @@ declare class NameTable {
   baseFontName: unknown /* const array */;
 }
 
+declare class AsscEntry {
+  constructor(init?: AsscEntry);
+  fontSize: number;
+  fontStyle: number;
+  fontID: number;
+}
+
 declare class FamRec {
   constructor(init?: FamRec);
   ffFlags: number;
@@ -2793,6 +2817,14 @@ declare class PMResolution {
   constructor(init?: PMResolution);
   hRes: number;
   vRes: number;
+}
+
+declare class PMRect {
+  constructor(init?: PMRect);
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
 }
 
 declare class OpaquePMPreset {
@@ -2885,6 +2917,15 @@ declare class LaunchParamBlockRec {
   launchMinimumSize: number;
   launchAvailableSize: number;
   launchAppParameters: interop.Pointer;
+}
+
+declare class unnamed_6143782818925280110 {
+  constructor(init?: unnamed_6143782818925280110);
+  what: number;
+  message: number;
+  when: number;
+  where: Point;
+  modifiers: number;
 }
 
 declare class ICServiceEntry {
@@ -3095,7 +3136,7 @@ declare class CMMultiLocalizedUniCodeEntryRec {
 declare class CMVideoCardGamma {
   constructor(init?: CMVideoCardGamma);
   tagType: number;
-  u: unnamed_6947233698084301064;
+  u: unnamed_3621939969981988629;
 }
 
 declare class CMVideoCardGammaFormula {
@@ -3166,13 +3207,6 @@ declare class CMTextType {
   typeDescriptor: number;
   reserved: number;
   text: unknown /* const array */;
-}
-
-declare class CMNativeDisplayInfoType {
-  constructor(init?: CMNativeDisplayInfoType);
-  typeDescriptor: number;
-  reserved: number;
-  nativeDisplayInfo: CMNativeDisplayInfo;
 }
 
 declare class CMNativeDisplayInfo {
@@ -3345,6 +3379,13 @@ declare class ATSFontNotificationInfoRef_ {
   constructor(init?: ATSFontNotificationInfoRef_);
 }
 
+declare class ATSFontFilter {
+  constructor(init?: ATSFontFilter);
+  version: number;
+  filterSelector: interop.Enum<typeof ATSFontFilterSelector>;
+  filter: unnamed_8212580886576694141;
+}
+
 declare class OpaqueTranslationRef {
   constructor(init?: OpaqueTranslationRef);
 }
@@ -3420,7 +3461,7 @@ declare class FMFilter {
   constructor(init?: FMFilter);
   format: number;
   selector: number;
-  filter: unnamed_5545038100748528495;
+  filter: unnamed_12030589813697024821;
 }
 
 declare class FMFontFamilyInstanceIterator {
@@ -3598,13 +3639,6 @@ declare class ICAppSpecList {
   appSpecs: unknown /* const array */;
 }
 
-declare class AsscEntry {
-  constructor(init?: AsscEntry);
-  fontSize: number;
-  fontStyle: number;
-  fontID: number;
-}
-
 declare class ATSJustWidthDeltaEntryOverride {
   constructor(init?: ATSJustWidthDeltaEntryOverride);
   beforeGrowLimit: number;
@@ -3709,14 +3743,6 @@ declare class CMNamedColorType {
   prefixName: unknown /* const array */;
 }
 
-declare class CMMultiLocalizedUniCodeType {
-  constructor(init?: CMMultiLocalizedUniCodeType);
-  typeDescriptor: number;
-  reserved: number;
-  entryCount: number;
-  entrySize: number;
-}
-
 declare class VoiceFileInfo {
   constructor(init?: VoiceFileInfo);
   fileSpec: FSSpec;
@@ -3814,14 +3840,6 @@ declare class ICServices {
   services: unknown /* const array */;
 }
 
-declare class PMRect {
-  constructor(init?: PMRect);
-  top: number;
-  left: number;
-  bottom: number;
-  right: number;
-}
-
 declare class OpaquePMPrintSession {
   constructor(init?: OpaquePMPrintSession);
 }
@@ -3830,6 +3848,14 @@ declare class ColorSpec {
   constructor(init?: ColorSpec);
   value: number;
   rgb: RGBColor;
+}
+
+declare class CMMultiLocalizedUniCodeType {
+  constructor(init?: CMMultiLocalizedUniCodeType);
+  typeDescriptor: number;
+  reserved: number;
+  entryCount: number;
+  entrySize: number;
 }
 
 declare class OpaqueCMWorldRef {
@@ -3906,6 +3932,13 @@ declare class CMDataType {
   reserved: number;
   dataFlag: number;
   data: unknown /* const array */;
+}
+
+declare class CMNativeDisplayInfoType {
+  constructor(init?: CMNativeDisplayInfoType);
+  typeDescriptor: number;
+  reserved: number;
+  nativeDisplayInfo: CMNativeDisplayInfo;
 }
 
 declare class ATSFlatDataTextLayoutHeader {
@@ -3986,30 +4019,6 @@ declare class CMLuvColor {
   L: number;
   u: number;
   v: number;
-}
-
-declare class CQDProcs {
-  constructor(init?: CQDProcs);
-  textProc: (p1: number, p2: interop.PointerConvertible, p3: Point, p4: Point) => void | null;
-  lineProc: (p1: Point) => void | null;
-  rectProc: (p1: number, p2: interop.PointerConvertible) => void | null;
-  rRectProc: (p1: number, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  ovalProc: (p1: number, p2: interop.PointerConvertible) => void | null;
-  arcProc: (p1: number, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  polyProc: (p1: number, p2: interop.PointerConvertible) => void | null;
-  rgnProc: (p1: number, p2: interop.PointerConvertible) => void | null;
-  bitsProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void | null;
-  commentProc: (p1: number, p2: number, p3: interop.PointerConvertible) => void | null;
-  txMeasProc: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  getPicProc: (p1: interop.PointerConvertible, p2: number) => void | null;
-  putPicProc: (p1: interop.PointerConvertible, p2: number) => void | null;
-  opcodeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  newProc1: () => number | null;
-  glyphsProc: (p1: interop.PointerConvertible, p2: number) => number | null;
-  printerStatusProc: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  newProc4: () => number | null;
-  newProc5: () => number | null;
-  newProc6: () => number | null;
 }
 
 declare class CMS15Fixed16ArrayType {
@@ -4144,15 +4153,6 @@ declare class CMDateTime {
   seconds: number;
 }
 
-declare class unnamed_18256575352276440105 {
-  constructor(init?: unnamed_18256575352276440105);
-  what: number;
-  message: number;
-  when: number;
-  where: Point;
-  modifiers: number;
-}
-
 declare class CMBufferLocation {
   constructor(init?: CMBufferLocation);
   buffer: interop.Pointer;
@@ -4161,7 +4161,7 @@ declare class CMBufferLocation {
 
 declare class AppParameters {
   constructor(init?: AppParameters);
-  theMsgEvent: unnamed_18256575352276440105;
+  theMsgEvent: unnamed_6143782818925280110;
   eventRefCon: number;
   messageLength: number;
 }
@@ -4218,6 +4218,16 @@ declare class CMProfLoc {
   bufferLoc: CMBufferLocation;
 }
 
+type CMAppleProfileHeaderDescriptor = 
+  | { cm2: CM2Header }
+  | { cm4: CM4Header };
+
+declare class CMAppleProfileHeader {
+  constructor(init?: CMAppleProfileHeaderDescriptor);
+  cm2: CM2Header;
+  cm4: CM4Header;
+}
+
 type CMColorDescriptor = 
   | { rgb: CMRGBColor }
   | { hsv: CMHSVColor }
@@ -4254,25 +4264,15 @@ declare class CMColor {
   namedColor: CMNamedColor;
 }
 
-type CMAppleProfileHeaderDescriptor = 
-  | { cm2: CM2Header }
-  | { cm4: CM4Header };
-
-declare class CMAppleProfileHeader {
-  constructor(init?: CMAppleProfileHeaderDescriptor);
-  cm2: CM2Header;
-  cm4: CM4Header;
-}
-
-type unnamed_17149186175611802152Descriptor = 
+type unnamed_8212580886576694141Descriptor = 
   | { generationFilter: number }
   | { fontFamilyFilter: number }
   | { fontFamilyApplierFunctionFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
   | { fontApplierFunctionFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
   | { fontFileRefFilter: interop.PointerConvertible };
 
-declare class unnamed_17149186175611802152 {
-  constructor(init?: unnamed_17149186175611802152Descriptor);
+declare class unnamed_8212580886576694141 {
+  constructor(init?: unnamed_8212580886576694141Descriptor);
   generationFilter: number;
   fontFamilyFilter: number;
   fontFamilyApplierFunctionFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
@@ -4280,32 +4280,12 @@ declare class unnamed_17149186175611802152 {
   fontFileRefFilter: interop.Pointer;
 }
 
-type unnamed_5545038100748528495Descriptor = 
-  | { fontTechnologyFilter: number }
-  | { fontContainerFilter: ATSFSSpec }
-  | { generationFilter: number }
-  | { fontFamilyCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
-  | { fontCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
-  | { fontDirectoryFilter: FMFontDirectoryFilter }
-  | { fontFileRefFilter: interop.PointerConvertible };
-
-declare class unnamed_5545038100748528495 {
-  constructor(init?: unnamed_5545038100748528495Descriptor);
-  fontTechnologyFilter: number;
-  fontContainerFilter: ATSFSSpec;
-  generationFilter: number;
-  fontFamilyCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
-  fontCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
-  fontDirectoryFilter: FMFontDirectoryFilter;
-  fontFileRefFilter: interop.Pointer;
-}
-
-type unnamed_6947233698084301064Descriptor = 
+type unnamed_3621939969981988629Descriptor = 
   | { table: CMVideoCardGammaTable }
   | { formula: CMVideoCardGammaFormula };
 
-declare class unnamed_6947233698084301064 {
-  constructor(init?: unnamed_6947233698084301064Descriptor);
+declare class unnamed_3621939969981988629 {
+  constructor(init?: unnamed_3621939969981988629Descriptor);
   table: CMVideoCardGammaTable;
   formula: CMVideoCardGammaFormula;
 }
@@ -4318,6 +4298,26 @@ declare class ATSUBackgroundData {
   constructor(init?: ATSUBackgroundDataDescriptor);
   backgroundColor: ATSURGBAlphaColor;
   backgroundUPP: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
+}
+
+type unnamed_12030589813697024821Descriptor = 
+  | { fontTechnologyFilter: number }
+  | { fontContainerFilter: ATSFSSpec }
+  | { generationFilter: number }
+  | { fontFamilyCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
+  | { fontCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null }
+  | { fontDirectoryFilter: FMFontDirectoryFilter }
+  | { fontFileRefFilter: interop.PointerConvertible };
+
+declare class unnamed_12030589813697024821 {
+  constructor(init?: unnamed_12030589813697024821Descriptor);
+  fontTechnologyFilter: number;
+  fontContainerFilter: ATSFSSpec;
+  generationFilter: number;
+  fontFamilyCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
+  fontCallbackFilter: (p1: number, p2: interop.PointerConvertible) => number | null;
+  fontDirectoryFilter: FMFontDirectoryFilter;
+  fontFileRefFilter: interop.Pointer;
 }
 
 declare function ATSGetGeneration(): number;
@@ -4407,6 +4407,8 @@ declare function ATSFontGetGlobalAutoActivationSetting(): number;
 declare function ATSFontSetAutoActivationSettingForApplication(iSetting: number, iApplicationFileURL: interop.Object): number;
 
 declare function ATSFontGetAutoActivationSettingForApplication(iApplicationFileURL: interop.Object): number;
+
+declare function ColorSyncAPIVersion(): number;
 
 declare function HIShapeGetTypeID(): number;
 

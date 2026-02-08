@@ -2,7 +2,7 @@
 
 declare const NSUserActivityTypeLockedCameraCapture: string;
 
-declare const LockedCameraCaptureVersionNumber: number;
-
 declare const LockedCameraCaptureVersionString: interop.Pointer;
+
+declare const LockedCameraCaptureVersionNumber: number;
 

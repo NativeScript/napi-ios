@@ -28,6 +28,8 @@ declare const PKContactFieldPhoneticName: string;
 
 declare const PKContactFieldPhoneNumber: string;
 
+declare const PKPaymentNetworkConecs: string;
+
 declare const PKPaymentNetworkMyDebit: string;
 
 declare const PKPaymentNetworkTmoney: string;

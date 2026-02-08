@@ -39,9 +39,9 @@ declare const NERelayErrorDomain: string;
 
 declare const NERelayClientErrorDomain: string;
 
-declare const NETunnelProviderErrorDomain: string;
-
 declare const NEVPNErrorDomain: string;
+
+declare const NETunnelProviderErrorDomain: string;
 
 declare const NEAppPushErrorDomain: string;
 

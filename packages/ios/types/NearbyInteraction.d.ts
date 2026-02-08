@@ -11,11 +11,11 @@ declare const NIAlgorithmConvergenceStatusReasonInsufficientHorizontalSweep: str
 
 declare const NIErrorDomain: string;
 
-declare const NIAlgorithmConvergenceStatusReasonInsufficientVerticalSweep: string;
-
 declare const NINearbyObjectDistanceNotAvailable: number;
 
 declare const NINearbyObjectAngleNotAvailable: number;
+
+declare const NIAlgorithmConvergenceStatusReasonInsufficientVerticalSweep: string;
 
 declare const NINearbyObjectDirectionNotAvailable: unknown /* ext vector */;
 

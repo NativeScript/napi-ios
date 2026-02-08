@@ -1,10 +1,24 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const kSecRevocationNetworkAccessDisabled: number;
+
+declare const TLS_DH_anon_WITH_AES_256_CBC_SHA: number;
+
+declare const errSecInvalidAttributeEffectiveBits: number;
+
+declare const errSecAppleInvalidKeyEndDate: number;
+
+declare const TLS_DH_RSA_WITH_AES_256_CBC_SHA: number;
+
 declare const kSecUseDataProtectionKeychain: interop.Pointer;
 
 declare const errSecNoSuchClass: number;
 
 declare const kSecTrustEvaluationDate: interop.Pointer;
+
+declare const errSecEMMUnloadFailed: number;
+
+declare const errSecInvalidModifyMode: number;
 
 declare const errSecNoStorageModule: number;
 
@@ -14,11 +28,17 @@ declare const TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256: number;
 
 declare const errSSLBufferOverflow: number;
 
+declare const kSecAttrSubjectKeyID: interop.Pointer;
+
+declare const kSecPolicyClient: interop.Pointer;
+
 declare const errSSLConnectionRefused: number;
 
 declare const errSecMobileMeServerNotAvailable: number;
 
 declare const kSecAttrSubject: interop.Pointer;
+
+declare const TLS_DHE_DSS_WITH_AES_128_GCM_SHA256: number;
 
 declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA256: interop.Pointer;
 
@@ -30,9 +50,9 @@ declare const TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256: number;
 
 declare const TLS_DH_RSA_WITH_AES_256_GCM_SHA384: number;
 
-declare const kSecAttrSubjectKeyID: interop.Pointer;
-
 declare const SSL_RSA_WITH_IDEA_CBC_SHA: number;
+
+declare const errSecNoCertificateModule: number;
 
 declare const kSecAttrProtocolNNTP: interop.Pointer;
 
@@ -104,11 +124,15 @@ declare const kSecAttrSerialNumber: interop.Pointer;
 
 declare const errSecMobileMeRequestRedirected: number;
 
+declare const kSecAttrProtocolHTTPS: interop.Pointer;
+
 declare const errSecMissingAttributeSalt: number;
 
 declare const TLS_PSK_WITH_NULL_SHA384: number;
 
 declare const kSecAttrCanVerify: interop.Pointer;
+
+declare const kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA512: interop.Pointer;
 
 declare const TLS_PSK_WITH_RC4_128_SHA: number;
 
@@ -124,6 +148,8 @@ declare const errSecInteractionRequired: number;
 
 declare const errSecCallbackFailed: number;
 
+declare const errSSLNetworkTimeout: number;
+
 declare const TLS_DH_DSS_WITH_AES_256_GCM_SHA384: number;
 
 declare const kSecRevocationOCSPMethod: number;
@@ -137,6 +163,8 @@ declare const errSecInvalidIndexInfo: number;
 declare const SSL_DH_DSS_WITH_DES_CBC_SHA: number;
 
 declare const kSecReturnAttributes: interop.Pointer;
+
+declare const errSecUnsupportedVectorOfBuffers: number;
 
 declare const errSecInvalidAttributeVersion: number;
 
@@ -158,11 +186,17 @@ declare const errSecMissingAttributeKey: number;
 
 declare const errSSLBadCipherSuite: number;
 
+declare const errSecNoAccessForItem: number;
+
+declare const kSecPolicyAppleSSL: interop.Pointer;
+
 declare const TLS_ECDHE_RSA_WITH_NULL_SHA: number;
 
 declare const errSecUnsupportedKeyAttributeMask: number;
 
 declare const errSecMissingAttributeBase: number;
+
+declare const TLS_DHE_RSA_WITH_AES_128_GCM_SHA256: number;
 
 declare const errSSLNegotiation: number;
 
@@ -192,6 +226,8 @@ declare const TLS_PSK_WITH_NULL_SHA: number;
 
 declare const kSecAttrKeyClassPublic: interop.Pointer;
 
+declare const errSecMissingAttributeRandom: number;
+
 declare const kSecAttrEffectiveKeySize: interop.Pointer;
 
 declare const kSecImportItemIdentity: interop.Pointer;
@@ -212,11 +248,13 @@ declare const kSecAttrProtocolAFP: interop.Pointer;
 
 declare const errSecInvalidAttributeStartDate: number;
 
+declare const TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA: number;
+
 declare const errSecUnsupportedQueryLimits: number;
 
-declare const errSecInvalidSampleValue: number;
-
 declare const errSecUnknownCriticalExtensionFlag: number;
+
+declare const kSecAttrSynchronizable: interop.Pointer;
 
 declare const errSecKeyUsageIncorrect: number;
 
@@ -242,35 +280,57 @@ declare const errSecInvalidStopOnPolicy: number;
 
 declare const TLS_DHE_PSK_WITH_AES_256_CBC_SHA384: number;
 
-declare const kSecAttrCanWrap: interop.Pointer;
-
-declare const SSL_RSA_WITH_NULL_SHA: number;
+declare const errSecMobileMeCSRVerifyFailure: number;
 
 declare const TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA: number;
 
 declare const kSSLSessionConfig_TLSv1_RC4_fallback: interop.Pointer;
 
-declare const errSSLUnknownRootCert: number;
-
 declare const kSecUseOperationPrompt: interop.Pointer;
 
 declare const kSSLSessionConfig_ATSv1_noPFS: interop.Pointer;
 
+declare const errSecNoDefaultAuthority: number;
+
+declare const kSecPolicyAppleSSLClient: interop.Pointer;
+
+declare const SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA: number;
+
 declare const errSecMissingAttributeWrappedKeyFormat: number;
 
-declare const errSecAppleAddAppACLSubject: number;
+declare const errSecInvalidData: number;
+
+declare const errSecMissingAttributePassphrase: number;
+
+declare const errSecUnknownCRLExtension: number;
+
+declare const kSecAttrProtocolSMB: interop.Pointer;
+
+declare const kSecKeyAlgorithmECDHKeyExchangeCofactorX963SHA1: interop.Pointer;
+
+declare const errSSLATSLeafCertificateHashAlgorithmViolation: number;
 
 declare const kSecKeyAlgorithmECDSASignatureMessageX962SHA1: interop.Pointer;
 
-declare const kSSLSessionConfig_RC4_fallback: interop.Pointer;
+declare const kSecKeyAlgorithmRSASignatureRaw: interop.Pointer;
+
+declare const errSecMissingAttributeInitVector: number;
+
+declare const errSecMissingAttributeBlockSize: number;
+
+declare const kSSLSessionConfig_anonymous: interop.Pointer;
+
+declare const kSecAttrKeyTypeECSECPrimeRandom: interop.Pointer;
 
 declare const TLS_RSA_WITH_NULL_MD5: number;
 
-declare const SSL_DH_anon_WITH_3DES_EDE_CBC_SHA: number;
+declare const errSSLCrypto: number;
 
-declare const errSecInvalidAttributeSalt: number;
+declare const kSecAttrPersistentReference: interop.Pointer;
 
-declare const errSecDiskFull: number;
+declare const kSecAttrCanWrap: interop.Pointer;
+
+declare const errSecMissingAttributeOutputSize: number;
 
 declare const errSecCodeSigningDevelopment: number;
 
@@ -294,7 +354,7 @@ declare const errSecInvalidSubServiceID: number;
 
 declare const errSecPrivilegeNotSupported: number;
 
-declare const errSecSMIMEKeyUsageNotCritical: number;
+declare const kSSLSessionConfig_legacy: interop.Pointer;
 
 declare const errSecInvalidGUID: number;
 
@@ -302,77 +362,29 @@ declare const errSSLClientCertRequested: number;
 
 declare const TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256: number;
 
-declare const errSecACLNotSimple: number;
-
-declare const kSecAttrType: interop.Pointer;
-
-declare const kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA512AESGCM: interop.Pointer;
+declare const errSecTimestampRejection: number;
 
 declare const errSecIO: number;
 
-declare const kSecAttrProtocolTelnetS: interop.Pointer;
+declare const TLS_DH_anon_WITH_3DES_EDE_CBC_SHA: number;
 
-declare const kSecMatchSubjectContains: interop.Pointer;
-
-declare const errSecBlockSizeMismatch: number;
-
-declare const errSecInvalidAuthorityKeyID: number;
-
-declare const errSecMissingAttributePadding: number;
-
-declare const errSecQuerySizeUnknown: number;
-
-declare const kSecMatchItemList: interop.Pointer;
-
-declare const TLS_DH_DSS_WITH_AES_256_CBC_SHA: number;
-
-declare const errSecMobileMeServerServiceErr: number;
-
-declare const errSecCRLAlreadySigned: number;
-
-declare const errSecInvalidFormType: number;
-
-declare const errSecTimestampRejection: number;
-
-declare const kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224: interop.Pointer;
-
-declare const errSecInvalidReason: number;
-
-declare const errSecDecode: number;
-
-declare const errSecAppleInvalidKeyStartDate: number;
-
-declare const errSecMissingAttributePassphrase: number;
-
-declare const kSecValuePersistentRef: interop.Pointer;
+declare const kSecAttrProtocolHTTPSProxy: interop.Pointer;
 
 declare const kSecMatchValidOnDate: interop.Pointer;
 
 declare const errSecUnimplemented: number;
 
-declare const errSecAttachHandleBusy: number;
+declare const TLS_ECDH_anon_WITH_RC4_128_SHA: number;
 
-declare const errSecNoSuchKeychain: number;
-
-declare const TLS_RSA_PSK_WITH_NULL_SHA: number;
-
-declare const errSSLNetworkTimeout: number;
-
-declare const errSecNoAccessForItem: number;
-
-declare const kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA224AESGCM: interop.Pointer;
-
-declare const kSecAttrIsNegative: interop.Pointer;
-
-declare const SSL_RSA_WITH_3DES_EDE_CBC_MD5: number;
-
-declare const errSecInvalidCRL: number;
+declare const errSecInDarkWake: number;
 
 declare const errSSLPeerInsufficientSecurity: number;
 
 declare const errSSLPeerDecompressFail: number;
 
 declare const errSSLATSViolation: number;
+
+declare const kSecAttrPersistantReference: interop.Pointer;
 
 declare const errSecCreateChainFailed: number;
 
@@ -382,27 +394,17 @@ declare const errSecUnsupportedNumRecordTypes: number;
 
 declare const TLS_DHE_PSK_WITH_AES_256_CBC_SHA: number;
 
-declare const TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA: number;
+declare const errSecRestrictedAPI: number;
 
-declare const TLS_NULL_WITH_NULL_NULL: number;
+declare const errSSLXCertChainInvalid: number;
 
-declare const TLS_DHE_DSS_WITH_AES_128_GCM_SHA256: number;
-
-declare const errSSLPeerBadCert: number;
-
-declare const errSecOCSPResponseNonceMismatch: number;
-
-declare const kSecAttrProtocolHTTPS: interop.Pointer;
-
-declare const errSecInvalidAttributeMode: number;
-
-declare const kSecAttrSynchronizable: interop.Pointer;
+declare const TLS_CHACHA20_POLY1305_SHA256: number;
 
 declare const errSecCRLNotValidYet: number;
 
 declare const kSecMatchSearchList: interop.Pointer;
 
-declare const errSSLUnsupportedExtension: number;
+declare const kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224: interop.Pointer;
 
 declare const errSecUnsupportedFormat: number;
 
@@ -420,13 +422,13 @@ declare const errSecInvalidAddinFunctionTable: number;
 
 declare const errSecMissingRequiredExtension: number;
 
-declare const errSecMissingAttributeInitVector: number;
-
 declare const errSecMemoryError: number;
 
 declare const TLS_RSA_WITH_RC4_128_MD5: number;
 
 declare const TLS_PSK_WITH_CHACHA20_POLY1305_SHA256: number;
+
+declare const kSecMatchCaseInsensitive: interop.Pointer;
 
 declare const kSecAttrProtocolDAAP: interop.Pointer;
 
@@ -434,9 +436,13 @@ declare const kSecAttrAuthenticationTypeHTMLForm: interop.Pointer;
 
 declare const errSecTimestampMissing: number;
 
+declare const errSecBlockSizeMismatch: number;
+
 declare const errSecInvalidExtendedKeyUsage: number;
 
 declare const errSecMissingAttributePublicKeyFormat: number;
+
+declare const TLS_ECDH_RSA_WITH_AES_128_CBC_SHA: number;
 
 declare const errSecInvalidAttributePadding: number;
 
@@ -450,17 +456,25 @@ declare const errSecOCSPNoSigner: number;
 
 declare const TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
+declare const kSecMatchSubjectContains: interop.Pointer;
+
 declare const TLS_AES_128_GCM_SHA256: number;
+
+declare const TLS_DH_DSS_WITH_AES_256_CBC_SHA: number;
 
 declare const TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA: number;
 
-declare const errSecUnsupportedKeyLabel: number;
+declare const errSecInvalidDBLocation: number;
 
-declare const errSecMissingAttributeRounds: number;
+declare const errSecUnsupportedKeyLabel: number;
 
 declare const kSecClassKey: interop.Pointer;
 
+declare const TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256: number;
+
 declare const errSecInvalidAttributeKeyLength: number;
+
+declare const errSSLPeerBadCert: number;
 
 declare const kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA384: interop.Pointer;
 
@@ -470,8 +484,6 @@ declare const errSSLConfigurationFailed: number;
 
 declare const errSecCertificatePolicyNotAllowed: number;
 
-declare const TLS_RSA_PSK_WITH_NULL_SHA384: number;
-
 declare const errSecPrivilegeNotGranted: number;
 
 declare const kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA256: interop.Pointer;
@@ -480,23 +492,13 @@ declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA224AESGCM: interop.Pointer;
 
 declare const errSSLDecodeError: number;
 
-declare const errSecMissingAttributeRandom: number;
-
-declare const errSecInvalidAccessRequest: number;
-
 declare const kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA512: interop.Pointer;
 
 declare const SSL_DH_anon_WITH_RC4_128_MD5: number;
 
-declare const TLS_DH_RSA_WITH_AES_256_CBC_SHA: number;
-
 declare const errSSLPeerUserCancelled: number;
 
 declare const errSecNoPolicyModule: number;
-
-declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA256AESGCM: interop.Pointer;
-
-declare const errSSLHandshakeFail: number;
 
 declare const kSecAttrCanSign: interop.Pointer;
 
@@ -506,15 +508,19 @@ declare const errSecNotLoggedIn: number;
 
 declare const errSecDataTooLarge: number;
 
-declare const errSecCertificateNotValidYet: number;
+declare const errSecFileTooBig: number;
 
-declare const errSSLCrypto: number;
+declare const errSecInvalidAttributeMode: number;
+
+declare const errSecCertificateNotValidYet: number;
 
 declare const kSecKeyKeyExchangeParameterSharedInfo: interop.Pointer;
 
 declare const TLS_ECDH_anon_WITH_NULL_SHA: number;
 
 declare const kSecReturnPersistentRef: interop.Pointer;
+
+declare const kSecPolicyRevocationFlags: interop.Pointer;
 
 declare const errSecNoSuchAttr: number;
 
@@ -527,8 +533,6 @@ declare const errSecDeviceVerifyFailed: number;
 declare const TLS_DHE_PSK_WITH_AES_256_GCM_SHA384: number;
 
 declare const SSL_DHE_DSS_WITH_DES_CBC_SHA: number;
-
-declare const errSSLPeerInternalError: number;
 
 declare const kSecKeyAlgorithmRSASignatureMessagePSSSHA224: interop.Pointer;
 
@@ -550,15 +554,11 @@ declare const kSecAttrIsInvisible: interop.Pointer;
 
 declare const errSecMissingAttributeSubprime: number;
 
-declare const kSecPolicyAppleSSLClient: interop.Pointer;
-
 declare const kSecAttrCanDerive: interop.Pointer;
 
 declare const errSSLPeerDecryptionFail: number;
 
 declare const errSecNetworkFailure: number;
-
-declare const kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384: interop.Pointer;
 
 declare const TLS_PSK_WITH_AES_256_GCM_SHA384: number;
 
@@ -566,13 +566,11 @@ declare const kSecAttrCanEncrypt: interop.Pointer;
 
 declare const errSecInvalidOutputVector: number;
 
-declare const TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384: number;
-
-declare const errSecInvalidCRLIndex: number;
-
 declare const errSecInvalidPolicyIdentifiers: number;
 
-declare const errSecNoCertificateModule: number;
+declare const errSecSMIMEKeyUsageNotCritical: number;
+
+declare const kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA224AESGCM: interop.Pointer;
 
 declare const errSecInvalidDBList: number;
 
@@ -580,31 +578,15 @@ declare const kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA512AESGCM:
 
 declare const errSSLBadConfiguration: number;
 
-declare const errSecNotTrusted: number;
-
-declare const errSecInvalidCRLGroup: number;
-
-declare const kSecAttrPersistantReference: interop.Pointer;
-
-declare const errSSLPeerHandshakeFail: number;
-
-declare const kSecKeyAlgorithmECDHKeyExchangeCofactorX963SHA384: interop.Pointer;
-
-declare const errSSLMissingExtension: number;
-
-declare const errSecFieldSpecifiedMultiple: number;
-
 declare const errSSLTransportReset: number;
 
 declare const kSecClassInternetPassword: interop.Pointer;
 
-declare const kSSLSessionConfig_legacy: interop.Pointer;
+declare const kSSLSessionConfig_RC4_fallback: interop.Pointer;
 
 declare const kSSLSessionConfig_ATSv1: interop.Pointer;
 
 declare const kSSLSessionConfig_default: interop.Pointer;
-
-declare const errSSLInappropriateFallback: number;
 
 declare const TLS_DHE_DSS_WITH_AES_128_CBC_SHA: number;
 
@@ -612,7 +594,9 @@ declare const errSecIncompatibleKeyBlob: number;
 
 declare const kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA224: interop.Pointer;
 
-declare const TLS_DHE_RSA_WITH_AES_128_GCM_SHA256: number;
+declare const SSL_DH_anon_WITH_3DES_EDE_CBC_SHA: number;
+
+declare const errSecUnsupportedKeySize: number;
 
 declare const errSecInvalidKeyAttributeMask: number;
 
@@ -632,25 +616,29 @@ declare const kSecKeyAlgorithmECDHKeyExchangeStandardX963SHA512: interop.Pointer
 
 declare const TLS_DH_anon_WITH_AES_128_CBC_SHA: number;
 
+declare const TLS_RSA_PSK_WITH_NULL_SHA: number;
+
 declare const errSecCertificateCannotOperate: number;
 
 declare const TLS_RSA_WITH_AES_256_CBC_SHA: number;
 
 declare const errSecCertificateExpired: number;
 
-declare const errSecUnsupportedVectorOfBuffers: number;
+declare const kSecMatchLimit: interop.Pointer;
 
 declare const kSecKeyAlgorithmRSAEncryptionPKCS1: interop.Pointer;
+
+declare const kSecAttrType: interop.Pointer;
 
 declare const kSecImportItemTrust: interop.Pointer;
 
 declare const errSecSigningTimeMissing: number;
 
-declare const errSecOCSPUnavailable: number;
-
 declare const errSSLPeerDecodeError: number;
 
 declare const kSecMatchPolicy: interop.Pointer;
+
+declare const errSSLMissingExtension: number;
 
 declare const errSecEndOfData: number;
 
@@ -683,10 +671,6 @@ declare const TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256: number;
 declare const TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384: number;
 
 declare const TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384: number;
-
-declare const TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256: number;
-
-declare const TLS_CHACHA20_POLY1305_SHA256: number;
 
 declare const TLS_AES_256_GCM_SHA384: number;
 
@@ -758,8 +742,6 @@ declare const TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA: number;
 
 declare const TLS_ECDH_anon_WITH_AES_256_CBC_SHA: number;
 
-declare const TLS_ECDH_anon_WITH_RC4_128_SHA: number;
-
 declare const TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA: number;
 
 declare const errSecInvalidAttributeEndDate: number;
@@ -767,8 +749,6 @@ declare const errSecInvalidAttributeEndDate: number;
 declare const TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const TLS_ECDH_RSA_WITH_AES_256_CBC_SHA: number;
-
-declare const TLS_ECDH_RSA_WITH_AES_128_CBC_SHA: number;
 
 declare const TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA: number;
 
@@ -781,8 +761,6 @@ declare const TLS_ECDHE_ECDSA_WITH_RC4_128_SHA: number;
 declare const TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA: number;
 
 declare const TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA: number;
-
-declare const TLS_DH_anon_WITH_AES_256_CBC_SHA: number;
 
 declare const TLS_DHE_RSA_WITH_AES_256_CBC_SHA: number;
 
@@ -801,6 +779,8 @@ declare const SSL_DH_RSA_WITH_3DES_EDE_CBC_SHA: number;
 declare const SSL_DH_RSA_WITH_DES_CBC_SHA: number;
 
 declare const kSecAttrSyncViewHint: interop.Pointer;
+
+declare const SSL_RSA_WITH_NULL_SHA: number;
 
 declare const kSecSharedPassword: interop.Pointer;
 
@@ -824,11 +804,9 @@ declare const kSecPropertyTypeError: interop.Pointer;
 
 declare const kSecPropertyTypeTitle: interop.Pointer;
 
-declare const kSecRevocationNetworkAccessDisabled: number;
+declare const kSecAttrIsNegative: interop.Pointer;
 
 declare const kSecRevocationRequirePositiveResponse: number;
-
-declare const kSecPolicyRevocationFlags: interop.Pointer;
 
 declare const kSecPolicyOid: interop.Pointer;
 
@@ -840,15 +818,13 @@ declare const kSecAttrApplicationLabel: interop.Pointer;
 
 declare const kSecPolicyAppleSMIME: interop.Pointer;
 
-declare const kSecMatchCaseInsensitive: interop.Pointer;
-
-declare const kSecPolicyAppleSSL: interop.Pointer;
-
 declare const kSecKeyAlgorithmRSAEncryptionRaw: interop.Pointer;
 
 declare const errSSLCertExpired: number;
 
 declare const kSecPolicyAppleX509Basic: interop.Pointer;
+
+declare const kSecKeyAlgorithmECDHKeyExchangeCofactorX963SHA384: interop.Pointer;
 
 declare const kSecKeyAlgorithmECDHKeyExchangeCofactor: interop.Pointer;
 
@@ -874,8 +850,6 @@ declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM: interop.P
 
 declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA384AESGCM: interop.Pointer;
 
-declare const errSecInvalidAttributeEffectiveBits: number;
-
 declare const kSecAttrTokenID: interop.Pointer;
 
 declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA224AESGCM: interop.Pointer;
@@ -884,13 +858,7 @@ declare const errSecOCSPResponderMalformedReq: number;
 
 declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA384: interop.Pointer;
 
-declare const kSecAttrProtocolFTPS: interop.Pointer;
-
 declare const kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA512: interop.Pointer;
-
-declare const kSecAttrProtocolSMB: interop.Pointer;
-
-declare const kSecKeyAlgorithmECDHKeyExchangeCofactorX963SHA1: interop.Pointer;
 
 declare const kSecKeyAlgorithmECDSASignatureDigestX962SHA224: interop.Pointer;
 
@@ -906,8 +874,6 @@ declare const kSecKeyAlgorithmRSASignatureDigestPSSSHA1: interop.Pointer;
 
 declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA1: interop.Pointer;
 
-declare const kSecKeyAlgorithmRSASignatureRaw: interop.Pointer;
-
 declare const kSecUseAuthenticationUIAllow: interop.Pointer;
 
 declare const errSecEMMLoadFailed: number;
@@ -917,8 +883,6 @@ declare const kSecUseAuthenticationUI: interop.Pointer;
 declare const errSecMobileMeNoRequestPending: number;
 
 declare const kSecValueData: interop.Pointer;
-
-declare const errSecMobileMeServerAlreadyExists: number;
 
 declare const kSecMatchLimitAll: interop.Pointer;
 
@@ -931,6 +895,8 @@ declare const errSecCodeSigningNoExtendedKeyUsage: number;
 declare const kSecAttrAuthenticationTypeHTTPBasic: interop.Pointer;
 
 declare const kSecAttrAuthenticationTypeDPA: interop.Pointer;
+
+declare const kSecAttrProtocolTelnetS: interop.Pointer;
 
 declare const kSecAttrProtocolIPP: interop.Pointer;
 
@@ -956,7 +922,11 @@ declare const kSecAttrAccessibleWhenUnlockedThisDeviceOnly: interop.Pointer;
 
 declare const kSecAttrKeyTypeEC: interop.Pointer;
 
+declare const errSecOCSPResponseNonceMismatch: number;
+
 declare const errSecNoDefaultKeychain: number;
+
+declare const TLS_NULL_WITH_NULL_NULL: number;
 
 declare const TLS_DH_RSA_WITH_AES_256_CBC_SHA256: number;
 
@@ -1002,17 +972,21 @@ declare const errSSLATSCertificateTrustViolation: number;
 
 declare const kSecAttrAccessibleAlwaysThisDeviceOnly: interop.Pointer;
 
-declare const errSSLATSLeafCertificateHashAlgorithmViolation: number;
-
 declare const errSSLATSMinimumVersionViolation: number;
 
 declare const errSSLUnrecognizedName: number;
 
 declare const errSecAttributeNotInContext: number;
 
+declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA256AESGCM: interop.Pointer;
+
+declare const errSSLHandshakeFail: number;
+
 declare const errSSLPeerUnexpectedMsg: number;
 
 declare const errSSLWeakPeerEphemeralDHKey: number;
+
+declare const errSSLUnsupportedExtension: number;
 
 declare const TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA: number;
 
@@ -1023,6 +997,8 @@ declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA224: interop.Pointer;
 declare const errSSLPeerAuthCompleted: number;
 
 declare const errSSLPeerNoRenegotiation: number;
+
+declare const errSSLPeerInternalError: number;
 
 declare const errSSLPeerExportRestriction: number;
 
@@ -1039,6 +1015,8 @@ declare const errSSLPeerCertExpired: number;
 declare const errSSLPeerUnsupportedCert: number;
 
 declare const errSecDskFull: number;
+
+declare const errSSLPeerHandshakeFail: number;
 
 declare const errSSLClosedGraceful: number;
 
@@ -1058,8 +1036,6 @@ declare const errSecInvalidNewOwner: number;
 
 declare const errSecResourceSignBadCertChainLength: number;
 
-declare const errSecInvalidDBLocation: number;
-
 declare const errSecInvalidCertAuthority: number;
 
 declare const errSecMissingValue: number;
@@ -1070,15 +1046,17 @@ declare const TLS_DH_DSS_WITH_AES_128_GCM_SHA256: number;
 
 declare const errSecNoFieldValues: number;
 
+declare const TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384: number;
+
+declare const errSecInvalidCRLIndex: number;
+
 declare const errSecRejectedForm: number;
-
-declare const errSecInvalidTrustSetting: number;
-
-declare const errSecNoDefaultAuthority: number;
 
 declare const errSecInvalidIndex: number;
 
 declare const errSecInvalidIdentifier: number;
+
+declare const errSecInvalidFormType: number;
 
 declare const errSecInvalidCRLAuthority: number;
 
@@ -1094,6 +1072,10 @@ declare const errSecInvalidDigestAlgorithm: number;
 
 declare const errSSLIllegalParam: number;
 
+declare const errSecMissingAttributePadding: number;
+
+declare const errSecQuerySizeUnknown: number;
+
 declare const errSecVerifyFailed: number;
 
 declare const errSecInvalidAttributeWrappedKeyFormat: number;
@@ -1108,9 +1090,13 @@ declare const errSecInvalidAttributePublicKeyFormat: number;
 
 declare const errSecUnsupportedService: number;
 
+declare const errSecInvalidAccessRequest: number;
+
 declare const errSecInvalidAttributeBase: number;
 
 declare const errSecMissingAttributePrime: number;
+
+declare const errSecDiskFull: number;
 
 declare const kSecRandomDefault: interop.Pointer;
 
@@ -1120,17 +1106,15 @@ declare const errSecInvalidAttributeKeyType: number;
 
 declare const errSecInvalidAlgorithmParms: number;
 
-declare const kSecPolicyClient: interop.Pointer;
-
-declare const errSecMissingAttributeOutputSize: number;
-
-declare const errSecMissingAttributeBlockSize: number;
+declare const errSecMissingAttributeRounds: number;
 
 declare const errSecInvalidAttributePassphrase: number;
 
 declare const errSecInvalidAttributeRandom: number;
 
 declare const kSecAttrProtocolFTPProxy: interop.Pointer;
+
+declare const errSecInvalidAttributeSalt: number;
 
 declare const errSecInvalidAlgorithm: number;
 
@@ -1144,8 +1128,6 @@ declare const errSecUnsupportedKeyUsageMask: number;
 
 declare const errSecInvalidKeyUsageMask: number;
 
-declare const errSecUnsupportedKeySize: number;
-
 declare const errSecUnsupportedKeyFormat: number;
 
 declare const kSecReturnRef: interop.Pointer;
@@ -1155,6 +1137,10 @@ declare const kSecAttrProtocolIRCS: interop.Pointer;
 declare const errSecKeyBlobTypeIncorrect: number;
 
 declare const errSecAlgorithmMismatch: number;
+
+declare const errSecNoSuchKeychain: number;
+
+declare const errSecAttachHandleBusy: number;
 
 declare const errSecEventNotificationCallbackNotFound: number;
 
@@ -1178,9 +1164,13 @@ declare const errSecACLAddFailed: number;
 
 declare const errSecACLReplaceFailed: number;
 
+declare const errSecOCSPUnavailable: number;
+
 declare const errSecInvalidQuery: number;
 
 declare const errSecInvalidName: number;
+
+declare const errSecCRLAlreadySigned: number;
 
 declare const errSecFunctionFailed: number;
 
@@ -1192,9 +1182,9 @@ declare const kSecUseAuthenticationUISkip: interop.Pointer;
 
 declare const errSecMobileMeFailedConsistencyCheck: number;
 
-declare const errSecMobileMeCSRVerifyFailure: number;
-
 declare const kSecAttrService: interop.Pointer;
+
+declare const errSecMobileMeServerAlreadyExists: number;
 
 declare const errSecInvalidSubjectName: number;
 
@@ -1220,10 +1210,6 @@ declare const errSecSMIMEBadKeyUsage: number;
 
 declare const errSecSMIMEBadExtendedKeyUsage: number;
 
-declare const errSecEMMUnloadFailed: number;
-
-declare const errSecInvalidModifyMode: number;
-
 declare const errSecSMIMEEmailAddressesNotFound: number;
 
 declare const errSecCRLPolicyFailed: number;
@@ -1240,17 +1226,17 @@ declare const errSecCRLNotFound: number;
 
 declare const errSecInvalidRoot: number;
 
+declare const errSecInvalidAuthorityKeyID: number;
+
 declare const errSecNoBasicConstraints: number;
 
 declare const errSecInvalidDatabaseBlob: number;
 
-declare const errSecFileTooBig: number;
-
-declare const errSecAppleInvalidKeyEndDate: number;
-
 declare const errSecApplePublicKeyIncomplete: number;
 
 declare const errSSLPeerRecordOverflow: number;
+
+declare const errSecAppleAddAppACLSubject: number;
 
 declare const kSecAttrAccount: interop.Pointer;
 
@@ -1282,7 +1268,7 @@ declare const errSecPolicyNotFound: number;
 
 declare const kSecAttrCertificateType: interop.Pointer;
 
-declare const errSecInDarkWake: number;
+declare const errSecACLNotSimple: number;
 
 declare const errSecInvalidPrefsDomain: number;
 
@@ -1326,17 +1312,11 @@ declare const errSecParam: number;
 
 declare const kSecImportItemCertChain: interop.Pointer;
 
-declare const errSSLXCertChainInvalid: number;
-
-declare const errSecRestrictedAPI: number;
-
 declare const errSecInvalidServiceMask: number;
 
 declare const errSecTagNotFound: number;
 
 declare const kSecPolicyMacAppStoreReceipt: interop.Pointer;
-
-declare const SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const errSecVerificationFailure: number;
 
@@ -1370,6 +1350,8 @@ declare const errSecInvalidResponseVector: number;
 
 declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA512: interop.Pointer;
 
+declare const errSecInvalidTupleGroup: number;
+
 declare const errSSLModuleAttach: number;
 
 declare const TLS_DHE_RSA_WITH_AES_128_CBC_SHA: number;
@@ -1382,11 +1364,13 @@ declare const kSecMatchEmailAddressIfPresent: interop.Pointer;
 
 declare const errSecUnsupportedNumSelectionPreds: number;
 
+declare const SSL_RSA_WITH_3DES_EDE_CBC_MD5: number;
+
 declare const errSSLProtocol: number;
 
-declare const kSecAttrKeyTypeECSECPrimeRandom: interop.Pointer;
-
 declare const errSecIncompatibleVersion: number;
+
+declare const errSSLInappropriateFallback: number;
 
 declare const kSecAttrSecurityDomain: interop.Pointer;
 
@@ -1394,11 +1378,11 @@ declare const errSecMobileMeRequestQueued: number;
 
 declare const kSecKeyAlgorithmRSASignatureDigestPKCS1v15Raw: interop.Pointer;
 
+declare const TLS_RSA_PSK_WITH_NULL_SHA384: number;
+
 declare const kSecMatchHostOrSubdomainOfHost: interop.Pointer;
 
 declare const errSecInvalidAttributeAccessCredentials: number;
-
-declare const errSecInvalidData: number;
 
 declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA224: interop.Pointer;
 
@@ -1409,6 +1393,8 @@ declare const errSecInvalidAttributeIterationCount: number;
 declare const SSL_RSA_WITH_RC4_128_SHA: number;
 
 declare const errSSLCertificateRequired: number;
+
+declare const errSSLUnknownRootCert: number;
 
 declare const kSecAttrProtocolRTSPProxy: interop.Pointer;
 
@@ -1436,6 +1422,8 @@ declare const errSecOCSPResponderSignatureRequired: number;
 
 declare const kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly: interop.Pointer;
 
+declare const errSecInvalidSampleValue: number;
+
 declare const errSecDeviceFailed: number;
 
 declare const kSecAttrKeyTypeRSA: interop.Pointer;
@@ -1449,6 +1437,8 @@ declare const kSecTrustRevocationChecked: interop.Pointer;
 declare const kSecImportItemLabel: interop.Pointer;
 
 declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA512AESGCM: interop.Pointer;
+
+declare const errSecInvalidScope: number;
 
 declare const errSecACLChangeFailed: number;
 
@@ -1474,6 +1464,8 @@ declare const kSecAttrProtocolFTP: interop.Pointer;
 
 declare const TLS_DHE_RSA_WITH_AES_256_GCM_SHA384: number;
 
+declare const errSecNotTrusted: number;
+
 declare const kSecMatchLimitOne: interop.Pointer;
 
 declare const SSL_DH_DSS_EXPORT_WITH_DES40_CBC_SHA: number;
@@ -1488,7 +1480,7 @@ declare const TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const errSSLPeerCertUnknown: number;
 
-declare const kSSLSessionConfig_anonymous: interop.Pointer;
+declare const errSecMobileMeServerServiceErr: number;
 
 declare const errSecOCSPResponderUnauthorized: number;
 
@@ -1500,17 +1492,15 @@ declare const kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA1: interop.Pointer;
 
 declare const errSecInvalidSignature: number;
 
-declare const SSL_RSA_WITH_3DES_EDE_CBC_SHA: number;
+declare const kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA512AESGCM: interop.Pointer;
 
-declare const errSecInvalidRecord: number;
+declare const SSL_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const SSL_RSA_EXPORT_WITH_RC4_40_MD5: number;
 
 declare const errSecOutputLengthError: number;
 
 declare const TLS_ECDH_ECDSA_WITH_RC4_128_SHA: number;
-
-declare const kSecAttrProtocolHTTPSProxy: interop.Pointer;
 
 declare const kSSLSessionConfig_standard: interop.Pointer;
 
@@ -1572,6 +1562,8 @@ declare const errSecMissingAttributeEffectiveBits: number;
 
 declare const TLS_ECDH_RSA_WITH_RC4_128_SHA: number;
 
+declare const kSecKeyAlgorithmECDSASignatureDigestX962SHA256: interop.Pointer;
+
 declare const errSecInvalidID: number;
 
 declare const errSecMissingAttributeKeyLength: number;
@@ -1582,8 +1574,6 @@ declare const errSecAddinLoadFailed: number;
 
 declare const errSecInvalidAttributeRounds: number;
 
-declare const kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA512: interop.Pointer;
-
 declare const TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA: number;
 
 declare const errSSLUnknownPSKIdentity: number;
@@ -1593,6 +1583,10 @@ declare const kSSLSessionConfig_TLSv1_3DES_fallback: interop.Pointer;
 declare const kSecKeyAlgorithmRSASignatureMessagePSSSHA256: interop.Pointer;
 
 declare const errSecInvalidIDLinkage: number;
+
+declare const kSecMatchItemList: interop.Pointer;
+
+declare const kSecAttrProtocolFTPS: interop.Pointer;
 
 declare const kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA224: interop.Pointer;
 
@@ -1606,7 +1600,11 @@ declare const kSecKeyAlgorithmECDSASignatureDigestX962: interop.Pointer;
 
 declare const kSecAttrProtocolSMTP: interop.Pointer;
 
+declare const errSecFieldSpecifiedMultiple: number;
+
 declare const errSecRequestRejected: number;
+
+declare const errSecInvalidCRLGroup: number;
 
 declare const SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA: number;
 
@@ -1660,11 +1658,9 @@ declare const errSecInvalidNetworkAddress: number;
 
 declare const TLS_PSK_WITH_AES_128_GCM_SHA256: number;
 
-declare const kSecKeyAlgorithmECDSASignatureDigestX962SHA256: interop.Pointer;
-
 declare const errSecRequestDescriptor: number;
 
-declare const kSecAttrAuthenticationType: interop.Pointer;
+declare const kSecValuePersistentRef: interop.Pointer;
 
 declare const kSecKeyAlgorithmECDHKeyExchangeStandardX963SHA384: interop.Pointer;
 
@@ -1676,7 +1672,13 @@ declare const errSecSMIMENoEmailAddress: number;
 
 declare const kSecAttrPublicKeyHash: interop.Pointer;
 
+declare const kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384: interop.Pointer;
+
 declare const errSecFunctionIntegrityFail: number;
+
+declare const errSecAppleInvalidKeyStartDate: number;
+
+declare const errSecDecode: number;
 
 declare const TLS_DH_DSS_WITH_AES_128_CBC_SHA256: number;
 
@@ -1698,9 +1700,7 @@ declare const errSecCertificateValidityPeriodTooLong: number;
 
 declare const errSecReadOnly: number;
 
-declare const errSecInvalidTupleGroup: number;
-
-declare const errSecUnknownCRLExtension: number;
+declare const errSecInvalidRecord: number;
 
 declare const kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM: interop.Pointer;
 
@@ -1748,17 +1748,19 @@ declare const kSecAttrAccessGroupToken: interop.Pointer;
 
 declare const kSecAttrKeyClassSymmetric: interop.Pointer;
 
-declare const errSecInvalidScope: number;
-
 declare const kSecMatchTrustedOnly: interop.Pointer;
 
 declare const kSecAttrProtocolNNTPS: interop.Pointer;
 
 declare const TLS_DHE_PSK_WITH_AES_128_CBC_SHA: number;
 
+declare const errSecInvalidTrustSetting: number;
+
 declare const errSecInvalidValidityPeriod: number;
 
 declare const kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA256: interop.Pointer;
+
+declare const errSecInvalidReason: number;
 
 declare const errSecInvalidAttributeBlockSize: number;
 
@@ -1778,10 +1780,6 @@ declare const errSecInvalidValue: number;
 
 declare const kSecKeyAlgorithmECDSASignatureDigestX962SHA512: interop.Pointer;
 
-declare const kSecMatchLimit: interop.Pointer;
-
-declare const kSecAttrPersistentReference: interop.Pointer;
-
 declare const kSecAttrServer: interop.Pointer;
 
 declare const errSecInvalidParsingModule: number;
@@ -1791,6 +1789,8 @@ declare const errSSLPeerUnknownCA: number;
 declare const kSecUseNoAuthenticationUI: interop.Pointer;
 
 declare const errSecTimestampInvalid: number;
+
+declare const kSecAttrAuthenticationType: interop.Pointer;
 
 declare const kSecPolicyAppleSSLServer: interop.Pointer;
 
@@ -1824,8 +1824,6 @@ declare const TLS_DH_anon_WITH_RC4_128_MD5: number;
 
 declare const errSecInvalidInputVector: number;
 
-declare const TLS_DH_anon_WITH_3DES_EDE_CBC_SHA: number;
-
 declare const errSecPathLengthConstraintExceeded: number;
 
 declare const kSecAttrGeneric: interop.Pointer;
@@ -1837,6 +1835,8 @@ declare const errSecTimestampRevocationNotification: number;
 declare const kSecKeyAlgorithmRSAEncryptionOAEPSHA384AESGCM: interop.Pointer;
 
 declare const kSecAttrSynchronizableAny: interop.Pointer;
+
+declare const errSecInvalidCRL: number;
 
 declare const kSecKeyAlgorithmECIESEncryptionCofactorX963SHA1AESGCM: interop.Pointer;
 

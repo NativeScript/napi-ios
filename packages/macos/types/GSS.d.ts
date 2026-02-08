@@ -200,13 +200,27 @@ declare const __gss_c_ma_mech_nego_oid_desc: gss_OID_desc_struct;
 
 declare const __gss_krb5_compat_des3_mic_x_oid_desc: gss_OID_desc_struct;
 
-declare class unnamed_7967380930605020034 {
-  constructor(init?: unnamed_7967380930605020034);
+declare class unnamed_4970242760975718303 {
+  constructor(init?: unnamed_4970242760975718303);
   version: number;
+  initiate: number;
+  endtime: number;
+  send_seq: number;
+  recv_seq: number;
+  protocol: number;
+  rfc1964_kd: gss_krb5_rfc1964_keydata;
+  cfx_kd: gss_krb5_cfx_keydata;
 }
 
-declare class unnamed_4795933033888277118 {
-  constructor(init?: unnamed_4795933033888277118);
+declare class unnamed_12461311675304642114 {
+  constructor(init?: unnamed_12461311675304642114);
+  sign_alg: number;
+  seal_alg: number;
+  ctx_key: gss_krb5_lucid_key;
+}
+
+declare class unnamed_4308440272753702018 {
+  constructor(init?: unnamed_4308440272753702018);
   type: number;
   length: number;
   data: interop.Pointer;
@@ -226,19 +240,13 @@ declare class gss_iov_buffer_desc_struct {
   buffer: gss_buffer_desc_struct;
 }
 
-declare class unnamed_17370042900624271939 {
-  constructor(init?: unnamed_17370042900624271939);
-  length: number;
-  value: interop.Pointer;
-}
-
 declare class gss_cred_id_t_desc_struct {
   constructor(init?: gss_cred_id_t_desc_struct);
 }
 
-declare class unnamed_6084201249083735910 {
-  constructor(init?: unnamed_6084201249083735910);
-  count: number;
+declare class unnamed_14958137125491944171 {
+  constructor(init?: unnamed_14958137125491944171);
+  length: number;
   elements: interop.Pointer;
 }
 
@@ -246,40 +254,26 @@ declare class gss_ctx_id_t_desc_struct {
   constructor(init?: gss_ctx_id_t_desc_struct);
 }
 
-declare class unnamed_211721845698695626 {
-  constructor(init?: unnamed_211721845698695626);
-  sign_alg: number;
-  seal_alg: number;
-  ctx_key: gss_krb5_lucid_key;
-}
-
 declare class gss_name_t_desc_struct {
   constructor(init?: gss_name_t_desc_struct);
 }
 
-declare class unnamed_2579536541302902464 {
-  constructor(init?: unnamed_2579536541302902464);
-  have_acceptor_subkey: number;
-  ctx_key: gss_krb5_lucid_key;
-  acceptor_subkey: gss_krb5_lucid_key;
+declare class unnamed_12714871069096489996 {
+  constructor(init?: unnamed_12714871069096489996);
+  version: number;
 }
 
-declare class unnamed_3561351341452540172 {
-  constructor(init?: unnamed_3561351341452540172);
-  length: number;
+declare class unnamed_11461658976597059967 {
+  constructor(init?: unnamed_11461658976597059967);
+  count: number;
   elements: interop.Pointer;
 }
 
-declare class unnamed_5623556321196614033 {
-  constructor(init?: unnamed_5623556321196614033);
-  version: number;
-  initiate: number;
-  endtime: number;
-  send_seq: number;
-  recv_seq: number;
-  protocol: number;
-  rfc1964_kd: gss_krb5_rfc1964_keydata;
-  cfx_kd: gss_krb5_cfx_keydata;
+declare class unnamed_5128525486750205562 {
+  constructor(init?: unnamed_5128525486750205562);
+  have_acceptor_subkey: number;
+  ctx_key: gss_krb5_lucid_key;
+  acceptor_subkey: gss_krb5_lucid_key;
 }
 
 declare class gss_buffer_set_desc_struct {
@@ -288,8 +282,14 @@ declare class gss_buffer_set_desc_struct {
   elements: interop.Pointer;
 }
 
-declare class unnamed_6944317420548783439 {
-  constructor(init?: unnamed_6944317420548783439);
+declare class unnamed_9846875729954665012 {
+  constructor(init?: unnamed_9846875729954665012);
+  length: number;
+  value: interop.Pointer;
+}
+
+declare class unnamed_11124366194974443844 {
+  constructor(init?: unnamed_11124366194974443844);
   initiator_addrtype: number;
   initiator_address: gss_buffer_desc_struct;
   acceptor_addrtype: number;

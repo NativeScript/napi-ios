@@ -523,8 +523,6 @@ declare const HKCategoryTypeIdentifierSleepAnalysis: string;
 
 declare const HKMetadataKeyVO2MaxValue: string;
 
-declare const HKCategoryTypeIdentifierBloating: string;
-
 declare const HKQuantityTypeIdentifierDietaryVitaminC: string;
 
 declare const HKFHIRResourceTypeMedicationStatement: string;
@@ -559,6 +557,8 @@ declare const HKQuantityTypeIdentifierDietaryCarbohydrates: string;
 
 declare const HKCategoryTypeIdentifierHeartburn: string;
 
+declare const HKCategoryTypeIdentifierBloating: string;
+
 declare const HKMedicationGeneralFormPatch: string;
 
 declare const HKMetadataKeyWasUserEntered: string;
@@ -570,6 +570,8 @@ declare const HKMetadataKeyHeartRateRecoveryActivityDuration: string;
 declare const HKQuantityTypeIdentifierDietaryVitaminB12: string;
 
 declare const HKQuantityTypeIdentifierDietaryFatPolyunsaturated: string;
+
+declare const HKCategoryTypeIdentifierHypertensionEvent: string;
 
 declare const HKCategoryTypeIdentifierIntermenstrualBleeding: string;
 
@@ -3200,6 +3202,16 @@ declare class HKWorkoutRouteBuilder extends HKSeriesBuilder {
   finishRouteWithWorkoutMetadataCompletion(workout: HKWorkout, metadata: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null, completion: (p1: HKWorkoutRoute, p2: NSError) => void | null): void;
 }
 
+declare class HKLensSpecification extends NSObject {
+  readonly sphere: HKQuantity;
+
+  readonly cylinder: HKQuantity;
+
+  readonly axis: HKQuantity;
+
+  readonly addPower: HKQuantity;
+}
+
 declare class HKUserAnnotatedMedicationQuery extends HKQuery {
   initWithPredicateLimitResultsHandler(predicate: NSPredicate | null, limit: number, resultsHandler: (p1: HKUserAnnotatedMedicationQuery, p2: HKUserAnnotatedMedication, p3: boolean, p4: NSError) => void | null): this;
 }
@@ -3329,16 +3341,6 @@ declare class HKClinicalRecord extends HKSample implements NSSecureCoding, NSCop
   initWithCoder(coder: NSCoder): this;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class HKLensSpecification extends NSObject {
-  readonly sphere: HKQuantity;
-
-  readonly cylinder: HKQuantity;
-
-  readonly axis: HKQuantity;
-
-  readonly addPower: HKQuantity;
 }
 
 declare class HKClinicalType extends HKSampleType {

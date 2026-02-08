@@ -1425,16 +1425,6 @@ declare class __CFFileSecurity {
   constructor(init?: __CFFileSecurity);
 }
 
-declare class CFXMLParserCallBacks {
-  constructor(init?: CFXMLParserCallBacks);
-  version: number;
-  createXMLStructure: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  addChild: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  endXMLStructure: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  resolveExternalEntity: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  handleError: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFXMLParserStatusCode>, p3: interop.PointerConvertible) => number | null;
-}
-
 declare class __CFRunLoopSource {
   constructor(init?: __CFRunLoopSource);
 }
@@ -1538,6 +1528,15 @@ declare class __CFFileDescriptor {
   constructor(init?: __CFFileDescriptor);
 }
 
+declare class CFMachPortContext {
+  constructor(init?: CFMachPortContext);
+  version: number;
+  info: interop.Pointer;
+  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  release: (p1: interop.PointerConvertible) => void | null;
+  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
+}
+
 declare class __CFMachPort {
   constructor(init?: __CFMachPort);
 }
@@ -1628,6 +1627,16 @@ declare class __CFRunLoopTimer {
 
 declare class __CFRunLoop {
   constructor(init?: __CFRunLoop);
+}
+
+declare class CFXMLParserCallBacks {
+  constructor(init?: CFXMLParserCallBacks);
+  version: number;
+  createXMLStructure: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  addChild: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
+  endXMLStructure: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
+  resolveExternalEntity: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
+  handleError: (p1: interop.PointerConvertible, p2: interop.Enum<typeof CFXMLParserStatusCode>, p3: interop.PointerConvertible) => number | null;
 }
 
 declare class __CFBundle {
@@ -1727,17 +1736,17 @@ declare class CFRange {
   length: number;
 }
 
-declare class CFMachPortContext {
-  constructor(init?: CFMachPortContext);
-  version: number;
-  info: interop.Pointer;
-  retain: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  release: (p1: interop.PointerConvertible) => void | null;
-  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
-}
-
 declare class __CFAttributedString {
   constructor(init?: __CFAttributedString);
+}
+
+declare class CFDictionaryValueCallBacks {
+  constructor(init?: CFDictionaryValueCallBacks);
+  version: number;
+  retain: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
+  release: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
+  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
+  equal: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
 }
 
 declare class __CFURLEnumerator {
@@ -1917,25 +1926,16 @@ declare class CGVector {
   dy: number;
 }
 
+declare class __CFSet {
+  constructor(init?: __CFSet);
+}
+
 declare class CFSocketSignature {
   constructor(init?: CFSocketSignature);
   protocolFamily: number;
   socketType: number;
   protocol: number;
   address: interop.Object | null;
-}
-
-declare class __CFSet {
-  constructor(init?: __CFSet);
-}
-
-declare class CFDictionaryValueCallBacks {
-  constructor(init?: CFDictionaryValueCallBacks);
-  version: number;
-  retain: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  release: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  copyDescription: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  equal: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
 }
 
 declare class CFGregorianUnits {

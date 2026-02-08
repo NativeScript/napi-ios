@@ -1,7 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kCVImageBufferPostDecodeProcessingFrameMetadataKey: interop.Object;
-
 declare const kCVPixelFormatType_32RGBA: number;
 
 declare const kCVPixelFormatContainsRGB: interop.Object;
@@ -231,6 +229,8 @@ declare const kCVImageBufferLogTransferFunctionKey: interop.Object;
 declare const kCVImageBufferRegionOfInterestKey: interop.Object;
 
 declare const kCVImageBufferContentLightLevelInfoKey: interop.Object;
+
+declare const kCVImageBufferPostDecodeProcessingFrameMetadataKey: interop.Object;
 
 declare const kCVImageBufferPostDecodeProcessingSequenceMetadataKey: interop.Object;
 
@@ -686,10 +686,6 @@ declare class CVSMPTETime {
   frames: number;
 }
 
-declare class __CVOpenGLBufferPool {
-  constructor(init?: __CVOpenGLBufferPool);
-}
-
 declare class __CVBuffer {
   constructor(init?: __CVBuffer);
 }
@@ -731,6 +727,10 @@ declare class CVTimeStamp {
   smpteTime: CVSMPTETime;
   flags: number;
   reserved: number;
+}
+
+declare class __CVOpenGLBufferPool {
+  constructor(init?: __CVOpenGLBufferPool);
 }
 
 declare function CVGetCurrentHostTime(): number;

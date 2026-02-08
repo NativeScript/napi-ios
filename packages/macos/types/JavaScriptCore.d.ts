@@ -82,8 +82,12 @@ declare class JSClassDefinition {
   convertToType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof JSType>, p4: interop.PointerConvertible) => interop.Pointer | null;
 }
 
-declare class OpaqueJSPropertyNameAccumulator {
-  constructor(init?: OpaqueJSPropertyNameAccumulator);
+declare class JSStaticValue {
+  constructor(init?: JSStaticValue);
+  name: string | null;
+  getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
+  setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
+  attributes: number;
 }
 
 declare class OpaqueJSContext {
@@ -92,14 +96,6 @@ declare class OpaqueJSContext {
 
 declare class OpaqueJSClass {
   constructor(init?: OpaqueJSClass);
-}
-
-declare class JSStaticValue {
-  constructor(init?: JSStaticValue);
-  name: string | null;
-  getProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => interop.Pointer | null;
-  setProperty: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => boolean | null;
-  attributes: number;
 }
 
 declare class OpaqueJSString {
@@ -123,6 +119,10 @@ declare class OpaqueJSPropertyNameArray {
 
 declare class OpaqueJSValue {
   constructor(init?: OpaqueJSValue);
+}
+
+declare class OpaqueJSPropertyNameAccumulator {
+  constructor(init?: OpaqueJSPropertyNameAccumulator);
 }
 
 declare function JSEvaluateScript(ctx: interop.PointerConvertible, script: interop.PointerConvertible, thisObject: interop.PointerConvertible, sourceURL: interop.PointerConvertible, startingLineNumber: number, exception: interop.PointerConvertible): interop.Pointer;

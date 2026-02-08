@@ -125,6 +125,7 @@ declare const ASAuthorizationControllerRequestOptions: {
 declare const ASCredentialServiceIdentifierType: {
   Domain: 0,
   URL: 1,
+  App: 2,
 };
 
 declare const ASCredentialIdentityTypes: {
@@ -401,13 +402,6 @@ declare interface ASAuthorizationPublicKeyCredentialRegistrationRequest extends 
 declare class ASAuthorizationPublicKeyCredentialRegistrationRequest extends NativeObject implements ASAuthorizationPublicKeyCredentialRegistrationRequest {
 }
 
-declare interface ASAuthorizationControllerPresentationContextProviding extends NSObjectProtocol {
-  presentationAnchorForAuthorizationController(controller: ASAuthorizationController): NSWindow;
-}
-
-declare class ASAuthorizationControllerPresentationContextProviding extends NativeObject implements ASAuthorizationControllerPresentationContextProviding {
-}
-
 declare interface ASAuthorizationControllerDelegate extends NSObjectProtocol {
   authorizationControllerDidCompleteWithAuthorization?(controller: ASAuthorizationController, authorization: ASAuthorization): void;
 
@@ -467,6 +461,13 @@ declare interface ASWebAuthenticationPresentationContextProviding extends NSObje
 }
 
 declare class ASWebAuthenticationPresentationContextProviding extends NativeObject implements ASWebAuthenticationPresentationContextProviding {
+}
+
+declare interface ASAuthorizationControllerPresentationContextProviding extends NSObjectProtocol {
+  presentationAnchorForAuthorizationController(controller: ASAuthorizationController): NSWindow;
+}
+
+declare class ASAuthorizationControllerPresentationContextProviding extends NativeObject implements ASAuthorizationControllerPresentationContextProviding {
 }
 
 declare interface ASAuthorizationProviderExtensionAuthorizationRequestHandler extends NSObjectProtocol {
@@ -2292,6 +2293,8 @@ declare class ASAuthorizationProviderExtensionLoginManager extends NSObject {
 }
 
 declare class ASAuthorizationWebBrowserPublicKeyCredentialManager extends NSObject {
+  static readonly isDeviceConfiguredForPasskeys: boolean;
+
   init(): this;
 
   requestAuthorizationForPublicKeyCredentials(completionHandler: (p1: interop.Enum<typeof ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState>) => void): void;
@@ -2905,6 +2908,10 @@ declare class ASAuthorizationPublicKeyCredentialPRFAssertionOutput extends NSObj
 
 declare class ASCredentialServiceIdentifier extends NSObject implements NSCopying, NSSecureCoding {
   initWithIdentifierType(identifier: string, type: interop.Enum<typeof ASCredentialServiceIdentifierType>): this;
+
+  initWithIdentifierTypeDisplayName(identifier: string, type: interop.Enum<typeof ASCredentialServiceIdentifierType>, displayName: string): this;
+
+  readonly displayName: string;
 
   readonly identifier: string;
 

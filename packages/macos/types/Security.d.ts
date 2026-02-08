@@ -8020,6 +8020,10 @@ declare class cssm_selection_predicate {
   Attribute: cssm_db_attribute_data;
 }
 
+declare class __SecCertificate {
+  constructor(init?: __SecCertificate);
+}
+
 declare class __CE_ExtendedKeyUsage {
   constructor(init?: __CE_ExtendedKeyUsage);
   numPurposes: number;
@@ -8037,14 +8041,6 @@ declare class cssm_context {
   EncryptionProhibited: number;
   WorkFactor: number;
   Reserved: number;
-}
-
-declare class __CE_GeneralSubtree {
-  constructor(init?: __CE_GeneralSubtree);
-  base: interop.Pointer;
-  minimum: number;
-  maximumPresent: number;
-  maximum: number;
 }
 
 declare class OpaqueSecureDownload {
@@ -8087,10 +8083,6 @@ declare class __OpaqueAuthorizationEngine {
   constructor(init?: __OpaqueAuthorizationEngine);
 }
 
-declare class __SecCertificate {
-  constructor(init?: __SecCertificate);
-}
-
 declare class cssm_x509ext_policyInfo {
   constructor(init?: cssm_x509ext_policyInfo);
   policyIdentifier: cssm_data;
@@ -8117,6 +8109,10 @@ declare class cssm_query_size_data {
 
 declare class OpaqueSecTransformImplementation {
   constructor(init?: OpaqueSecTransformImplementation);
+}
+
+declare class _CMSEncoder {
+  constructor(init?: _CMSEncoder);
 }
 
 declare class __SecTask {
@@ -8574,13 +8570,6 @@ declare class cssm_db_record_index_info {
   IndexInfo: interop.Pointer;
 }
 
-declare class cssm_db_index_info {
-  constructor(init?: cssm_db_index_info);
-  IndexType: number;
-  IndexedDataLocation: number;
-  Info: cssm_db_attribute_info;
-}
-
 declare class cssm_db_parsing_module_info {
   constructor(init?: cssm_db_parsing_module_info);
   RecordType: number;
@@ -8794,12 +8783,6 @@ declare class cssm_acl_entry_prototype {
   EntryTag: unknown /* const array */;
 }
 
-declare class cssm_acl_validity_period {
-  constructor(init?: cssm_acl_validity_period);
-  StartDate: cssm_data;
-  EndDate: cssm_data;
-}
-
 declare class cssm_authorizationgroup {
   constructor(init?: cssm_authorizationgroup);
   NumberOfAuthTags: number;
@@ -8875,10 +8858,6 @@ declare class __SecAccess {
   constructor(init?: __SecAccess);
 }
 
-declare class __SecTrustedApplication {
-  constructor(init?: __SecTrustedApplication);
-}
-
 declare class SecKeychainAttributeList {
   constructor(init?: SecKeychainAttributeList);
   count: number;
@@ -8911,7 +8890,7 @@ declare class cssm_list_element {
   NextElement: interop.Pointer;
   WordID: number;
   ElementType: number;
-  Element: unnamed_3974223647111867301;
+  Element: unnamed_1005392503982832954;
 }
 
 declare class cssm_db_attribute_info {
@@ -8925,6 +8904,12 @@ declare class cssm_x509ext_pair {
   constructor(init?: cssm_x509ext_pair);
   tagAndValue: cssm_x509_extensionTagAndValue;
   parsedValue: interop.Pointer;
+}
+
+declare class cssm_acl_validity_period {
+  constructor(init?: cssm_acl_validity_period);
+  StartDate: cssm_data;
+  EndDate: cssm_data;
 }
 
 declare class SSLContext {
@@ -8951,6 +8936,12 @@ declare class cssm_tp_certreclaim_output {
   KeyCacheHandle: number;
 }
 
+declare class cssm_x509_revoked_cert_list {
+  constructor(init?: cssm_x509_revoked_cert_list);
+  numberOfRevokedCertEntries: number;
+  revokedCertEntry: interop.Pointer;
+}
+
 declare class cssm_x509_tbs_certificate {
   constructor(init?: cssm_x509_tbs_certificate);
   version: cssm_data;
@@ -8963,12 +8954,6 @@ declare class cssm_x509_tbs_certificate {
   issuerUniqueIdentifier: cssm_data;
   subjectUniqueIdentifier: cssm_data;
   extensions: cssm_x509_extensions;
-}
-
-declare class cssm_x509_revoked_cert_list {
-  constructor(init?: cssm_x509_revoked_cert_list);
-  numberOfRevokedCertEntries: number;
-  revokedCertEntry: interop.Pointer;
 }
 
 declare class cssm_pkcs5_pbkdf2_params {
@@ -9076,6 +9061,12 @@ declare class cssm_tp_certchange_output {
   RevokeInfo: cssm_field;
 }
 
+declare class cssm_query_limits {
+  constructor(init?: cssm_query_limits);
+  TimeLimit: number;
+  SizeLimit: number;
+}
+
 declare class __CE_CRLDistributionPoint {
   constructor(init?: __CE_CRLDistributionPoint);
   distPointName: interop.Pointer;
@@ -9127,6 +9118,10 @@ declare class SecKeyImportExportParameters {
   keyAttributes: number;
 }
 
+declare class __SecTrustedApplication {
+  constructor(init?: __SecTrustedApplication);
+}
+
 declare class CSSM_TP_APPLE_EVIDENCE_HEADER {
   constructor(init?: CSSM_TP_APPLE_EVIDENCE_HEADER);
   Version: number;
@@ -9158,8 +9153,11 @@ declare class cssm_x509_rdn {
   AttributeTypeAndValue: interop.Pointer;
 }
 
-declare class _CMSEncoder {
-  constructor(init?: _CMSEncoder);
+declare class cssm_db_index_info {
+  constructor(init?: cssm_db_index_info);
+  IndexType: number;
+  IndexedDataLocation: number;
+  Info: cssm_db_attribute_info;
 }
 
 declare class __CE_PolicyMappings {
@@ -9270,10 +9268,12 @@ declare class __SecKeychainItem {
   constructor(init?: __SecKeychainItem);
 }
 
-declare class cssm_query_limits {
-  constructor(init?: cssm_query_limits);
-  TimeLimit: number;
-  SizeLimit: number;
+declare class __CE_GeneralSubtree {
+  constructor(init?: __CE_GeneralSubtree);
+  base: interop.Pointer;
+  minimum: number;
+  maximumPresent: number;
+  maximum: number;
 }
 
 declare class cssm_name_list {
@@ -9424,7 +9424,7 @@ declare class cssm_crlgroup {
   CrlType: number;
   CrlEncoding: number;
   NumberOfCrls: number;
-  GroupCrlList: unnamed_1190294481556856456;
+  GroupCrlList: unnamed_11627356030352940321;
   CrlGroupType: number;
 }
 
@@ -9433,7 +9433,7 @@ declare class cssm_certgroup {
   CertType: number;
   CertEncoding: number;
   NumCerts: number;
-  GroupList: unnamed_7696827582356642822;
+  GroupList: unnamed_1951022533387693415;
   CertGroupType: number;
   Reserved: interop.Pointer;
 }
@@ -9441,7 +9441,7 @@ declare class cssm_certgroup {
 declare class __CE_DistributionPointName {
   constructor(init?: __CE_DistributionPointName);
   nameType: interop.Enum<typeof __CE_CrlDistributionPointNameType>;
-  dpn: unnamed_8842076481188004116;
+  dpn: unnamed_601231637009910428;
 }
 
 declare class CSSM_APPLE_TP_CERT_REQUEST {
@@ -9532,6 +9532,12 @@ declare class cssm_tp_certnotarize_input {
   UserCredentials: interop.Pointer;
 }
 
+declare class __CE_QC_Statements {
+  constructor(init?: __CE_QC_Statements);
+  numQCStatements: number;
+  qcStatements: interop.Pointer;
+}
+
 declare class SecKeychainSettings {
   constructor(init?: SecKeychainSettings);
   version: number;
@@ -9567,12 +9573,6 @@ declare class CSSM_TUPLE {
   ValidityPeriod: cssm_list;
 }
 
-declare class __CE_QC_Statements {
-  constructor(init?: __CE_QC_Statements);
-  numQCStatements: number;
-  qcStatements: interop.Pointer;
-}
-
 declare class cssm_cert_bundle {
   constructor(init?: cssm_cert_bundle);
   BundleHeader: cssm_cert_bundle_header;
@@ -9593,6 +9593,20 @@ declare class cssm_db_record_attribute_data {
   SemanticInformation: number;
   NumberOfAttributes: number;
   AttributeData: interop.Pointer;
+}
+
+type unnamed_1951022533387693415Descriptor = 
+  | { CertList: interop.PointerConvertible }
+  | { EncodedCertList: interop.PointerConvertible }
+  | { ParsedCertList: interop.PointerConvertible }
+  | { PairCertList: interop.PointerConvertible };
+
+declare class unnamed_1951022533387693415 {
+  constructor(init?: unnamed_1951022533387693415Descriptor);
+  CertList: interop.Pointer;
+  EncodedCertList: interop.Pointer;
+  ParsedCertList: interop.Pointer;
+  PairCertList: interop.Pointer;
 }
 
 type CE_DataDescriptor = 
@@ -9643,6 +9657,16 @@ declare class CE_Data {
   rawData: cssm_data;
 }
 
+type unnamed_601231637009910428Descriptor = 
+  | { fullName: interop.PointerConvertible }
+  | { rdn: interop.PointerConvertible };
+
+declare class unnamed_601231637009910428 {
+  constructor(init?: unnamed_601231637009910428Descriptor);
+  fullName: interop.Pointer;
+  rdn: interop.Pointer;
+}
+
 type cssm_x509ext_valueDescriptor = 
   | { tagAndValue: interop.PointerConvertible }
   | { parsedValue: interop.PointerConvertible }
@@ -9665,6 +9689,20 @@ declare class cssm_db_attribute_label {
   AttributeName: string | null;
   AttributeOID: cssm_data;
   AttributeID: number;
+}
+
+type unnamed_11627356030352940321Descriptor = 
+  | { CrlList: interop.PointerConvertible }
+  | { EncodedCrlList: interop.PointerConvertible }
+  | { ParsedCrlList: interop.PointerConvertible }
+  | { PairCrlList: interop.PointerConvertible };
+
+declare class unnamed_11627356030352940321 {
+  constructor(init?: unnamed_11627356030352940321Descriptor);
+  CrlList: interop.Pointer;
+  EncodedCrlList: interop.Pointer;
+  ParsedCrlList: interop.Pointer;
+  PairCrlList: interop.Pointer;
 }
 
 type cssm_context_attribute_valueDescriptor = 
@@ -9697,52 +9735,14 @@ declare class cssm_context_attribute_value {
   KRProfile: interop.Pointer;
 }
 
-type unnamed_7696827582356642822Descriptor = 
-  | { CertList: interop.PointerConvertible }
-  | { EncodedCertList: interop.PointerConvertible }
-  | { ParsedCertList: interop.PointerConvertible }
-  | { PairCertList: interop.PointerConvertible };
-
-declare class unnamed_7696827582356642822 {
-  constructor(init?: unnamed_7696827582356642822Descriptor);
-  CertList: interop.Pointer;
-  EncodedCertList: interop.Pointer;
-  ParsedCertList: interop.Pointer;
-  PairCertList: interop.Pointer;
-}
-
-type unnamed_1190294481556856456Descriptor = 
-  | { CrlList: interop.PointerConvertible }
-  | { EncodedCrlList: interop.PointerConvertible }
-  | { ParsedCrlList: interop.PointerConvertible }
-  | { PairCrlList: interop.PointerConvertible };
-
-declare class unnamed_1190294481556856456 {
-  constructor(init?: unnamed_1190294481556856456Descriptor);
-  CrlList: interop.Pointer;
-  EncodedCrlList: interop.Pointer;
-  ParsedCrlList: interop.Pointer;
-  PairCrlList: interop.Pointer;
-}
-
-type unnamed_3974223647111867301Descriptor = 
+type unnamed_1005392503982832954Descriptor = 
   | { Sublist: cssm_list }
   | { Word: cssm_data };
 
-declare class unnamed_3974223647111867301 {
-  constructor(init?: unnamed_3974223647111867301Descriptor);
+declare class unnamed_1005392503982832954 {
+  constructor(init?: unnamed_1005392503982832954Descriptor);
   Sublist: cssm_list;
   Word: cssm_data;
-}
-
-type unnamed_8842076481188004116Descriptor = 
-  | { fullName: interop.PointerConvertible }
-  | { rdn: interop.PointerConvertible };
-
-declare class unnamed_8842076481188004116 {
-  constructor(init?: unnamed_8842076481188004116Descriptor);
-  fullName: interop.Pointer;
-  rdn: interop.Pointer;
 }
 
 declare function SecCopyErrorMessageString(status: number, reserved: interop.PointerConvertible): interop.Object;

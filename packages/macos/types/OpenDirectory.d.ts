@@ -912,10 +912,6 @@ declare const ODFrameworkErrors: {
   PluginOperationTimeout: 10003,
 };
 
-declare class __ODSession {
-  constructor(init?: __ODSession);
-}
-
 declare class __ODRecord {
   constructor(init?: __ODRecord);
 }
@@ -930,6 +926,10 @@ declare class __ODNode {
 
 declare class __ODContext {
   constructor(init?: __ODContext);
+}
+
+declare class __ODSession {
+  constructor(init?: __ODSession);
 }
 
 declare function ODContextGetTypeID(): number;

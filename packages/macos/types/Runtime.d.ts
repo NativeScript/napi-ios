@@ -1,9 +1,5 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const tkPlatStubsPtr: interop.Pointer;
-
-declare const tkStubsPtr: interop.Pointer;
-
 declare const PE_arm_debug_panic_hook: (p1: string) => void;
 
 declare const kPEOptionKey: number;
@@ -24,11 +20,7 @@ declare const PE_kputc: (p1: number) => void;
 
 declare const gPESerialBaud: number;
 
-declare const tclPlatStubsPtr: interop.Pointer;
-
 declare const disable_serial_output: boolean;
-
-declare const tclStubsPtr: interop.Pointer;
 
 declare const kPEShiftKey: number;
 
@@ -57,8 +49,6 @@ declare const UNW_LOONGARCH_F23: number;
 declare const UNW_PPC_R9: number;
 
 declare const UNW_MIPS_F19: number;
-
-declare const kHFSUnusedNodeFixMask: number;
 
 declare const UNW_ARM64_D1: number;
 
@@ -98,8 +88,6 @@ declare const UNW_ARM_D23: number;
 
 declare const vm_page_shift: number;
 
-declare const kHFSPlusAttrExtents: number;
-
 declare const UNW_ARM_S18: number;
 
 declare const main_device_port: number;
@@ -128,8 +116,6 @@ declare const UNW_PPC64_LR: number;
 
 declare const _xpc_error_peer_code_signing_requirement: _xpc_dictionary_s;
 
-declare const kHFSVolumeHardwareLockMask: number;
-
 declare const matrix_identity_double4x4: simd_double4x4;
 
 declare const matrix_identity_double2x2: simd_double2x2;
@@ -143,8 +129,6 @@ declare const UNW_ARM64_D7: number;
 declare const UNW_VE_V31: number;
 
 declare const UNW_SPARC_L7: number;
-
-declare const kHFSAttributesFileID: number;
 
 declare const UTEXT_MAGIC: number;
 
@@ -214,8 +198,6 @@ declare const _xpc_error_connection_invalid: _xpc_dictionary_s;
 
 declare const UNW_X86_64_RSP: number;
 
-declare const kHFSPlusCatalogKeyMinimumLength: number;
-
 declare const UNW_VE_VM11: number;
 
 declare const UNW_ARM_S3: number;
@@ -275,8 +257,6 @@ declare const kDNSServiceFlagsPrivateTwo: number;
 declare const TYPE_ALNUM: interop.Pointer;
 
 declare const kDNSServiceFlagsQueueRequest: number;
-
-declare const kHFSFastDevPinnedBit: number;
 
 declare const UNW_AARCH64_V24: number;
 
@@ -340,8 +320,6 @@ declare const UNW_PPC64_VS3: number;
 
 declare const UNW_VE_VM8: number;
 
-declare const kHFSThreadExistsMask: number;
-
 declare const UNW_LOONGARCH_R16: number;
 
 declare const dot3ChipSetNational8390: number;
@@ -396,10 +374,6 @@ declare const kDNSServiceType_TKEY: number;
 
 declare const UNW_RISCV_X18: number;
 
-declare const kBTHeaderNode: number;
-
-declare const kBTMapNode: number;
-
 declare const GSS_C_NT_HOSTBASED_SERVICE: interop.Pointer;
 
 declare const UNW_PPC64_VS4: number;
@@ -413,8 +387,6 @@ declare const UNW_RISCV_F25: number;
 declare const kDNSServiceType_NXT: number;
 
 declare const UNW_PPC64_R5: number;
-
-declare const kHFSHasLinkChainBit: number;
 
 declare const UNW_ARM_S10: number;
 
@@ -442,8 +414,6 @@ declare const kDNSServiceType_UID: number;
 
 declare const UIDNA_ERROR_CONTEXTJ: number;
 
-declare const kHFSVolumeSoftwareLockBit: number;
-
 declare const _xpc_type_session: _xpc_type_s;
 
 declare const UNW_ARM_S8: number;
@@ -465,8 +435,6 @@ declare const dot3ChipSetDigitalDC21140: number;
 declare const UTEXT_PROVIDER_HAS_META_DATA: number;
 
 declare const UNWIND_X86_64_MODE_DWARF: number;
-
-declare const kHFSExtentDensity: number;
 
 declare const UNW_SPARC_L1: number;
 
@@ -548,8 +516,6 @@ declare const UNW_MIPS_R1: number;
 
 declare const UNW_PPC_V1: number;
 
-declare const kHFSBootVolumeInconsistentBit: number;
-
 declare const UNW_PPC64_F18: number;
 
 declare const kDNSServiceClass_IN: number;
@@ -579,8 +545,6 @@ declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
 declare const kDNSServiceType_EID: number;
 
 declare const UNW_REG_IP: number;
-
-declare const kHFSUnusedNodesFixDate: number;
 
 declare const UNW_PPC_R8: number;
 
@@ -628,8 +592,6 @@ declare const UNW_PPC_V3: number;
 
 declare const kDNSServiceType_A: number;
 
-declare const kHFSHasSecurityBit: number;
-
 declare const _os_activity_current: os_activity_s;
 
 declare const SOCKINFO_NDRV: number;
@@ -652,11 +614,7 @@ declare const kDNSServiceType_MAILB: number;
 
 declare const UNW_HEXAGON_R29: number;
 
-declare const kHFSPlusFileThreadRecord: number;
-
 declare const UNW_ARM64_X6: number;
-
-declare const kSymLinkFileType: number;
 
 declare const UNW_PPC64_VS35: number;
 
@@ -673,8 +631,6 @@ declare const UNW_PPC_V22: number;
 declare const UNW_MIPS_F28: number;
 
 declare const UNW_VE_V48: number;
-
-declare const kHFSJMountVersion: number;
 
 declare const rl_prompt: string;
 
@@ -707,8 +663,6 @@ declare const kDNSServiceType_DNSKEY: number;
 declare const UNW_VE_S26: number;
 
 declare const UNW_AARCH64_X10: number;
-
-declare const kHFSPlusAttrInlineData: number;
 
 declare const kDNSServiceType_ISDN: number;
 
@@ -756,8 +710,6 @@ declare const OBJC_RATIO_COLLECTION: number;
 
 declare const DYLD_CHAINED_IMPORT_ADDEND: number;
 
-declare const kHFSUnusedNodeFixBit: number;
-
 declare const UNW_AARCH64_V25: number;
 
 declare const UNW_PPC_V14: number;
@@ -765,8 +717,6 @@ declare const UNW_PPC_V14: number;
 declare const UNW_LOONGARCH_R7: number;
 
 declare const UNW_AARCH64_X15: number;
-
-declare const kHFSFileThreadRecord: number;
 
 declare const UIDNA_CHECK_BIDI: number;
 
@@ -778,13 +728,9 @@ declare const UNW_ARM64_X19: number;
 
 declare const UNW_S390X_F4: number;
 
-declare const kBTVariableIndexKeysMask: number;
-
 declare const UNW_ARM_RA_AUTH_CODE: number;
 
 declare const UNW_OR1K_R9: number;
-
-declare const kHFSVolumeJournaledMask: number;
 
 declare const UNW_RISCV_X5: number;
 
@@ -820,8 +766,6 @@ declare const UNW_PPC64_F30: number;
 
 declare const dot3ChipSetWesternDigital83C790: number;
 
-declare const kHFSAllocationFileID: number;
-
 declare const UNW_X86_64_XMM12: number;
 
 declare const UNW_AARCH64_V12: number;
@@ -852,8 +796,6 @@ declare const UNW_MIPS_R28: number;
 
 declare const UNW_LOONGARCH_R18: number;
 
-declare const kHFSPlusMaxFileNameChars: number;
-
 declare const UNW_S390X_F13: number;
 
 declare const UNW_RISCV_F13: number;
@@ -866,23 +808,15 @@ declare const UNW_ARM64_D21: number;
 
 declare const UNW_HEXAGON_P3_0: number;
 
-declare const kHFSThreadExistsBit: number;
-
 declare const _xpc_type_dictionary: _xpc_type_s;
 
 declare const DYLD_CHAINED_PTR_ARM64E_SEGMENTED: number;
 
 declare const UNW_AARCH64_X16: number;
 
-declare const kHFSRootFolderID: number;
-
 declare const UNW_PPC_F28: number;
 
 declare const UNW_RISCV_F3: number;
-
-declare const kHFSHasChildLinkMask: number;
-
-declare const kHFSBadBlockFileID: number;
 
 declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
 
@@ -902,13 +836,9 @@ declare const ber_sockbuf_io_tcp: sockbuf_io;
 
 declare const UNW_MIPS_F27: number;
 
-declare const kHFSVolumeNoCacheRequiredMask: number;
-
 declare const XPC_ACTIVITY_REQUIRE_BATTERY_LEVEL: string;
 
 declare const dot3ChipSetDigitalDC21040: number;
-
-declare const kHFSContentProtectionMask: number;
 
 declare const DYLD_CHAINED_PTR_START_MULTI: number;
 
@@ -949,8 +879,6 @@ declare const UNW_OR1K_R18: number;
 declare const UNW_PPC64_V5: number;
 
 declare const UNW_LOONGARCH_F22: number;
-
-declare const kHFSCatalogKeyMinimumLength: number;
 
 declare const UNW_PPC64_VS29: number;
 
@@ -995,8 +923,6 @@ declare const DYLD_CHAINED_PTR_32: number;
 declare const kDNSServiceAttributeAAAAFallback: DNSServiceAttribute_s;
 
 declare const optopt: number;
-
-declare const kJIJournalInFSMask: number;
 
 declare const UNW_PPC64_V18: number;
 
@@ -1076,8 +1002,6 @@ declare const UNW_VE_V9: number;
 
 declare const stdscr: interop.Pointer;
 
-declare const kHFSFileLockedBit: number;
-
 declare const UNW_SPARC_G3: number;
 
 declare const UNW_PPC64_V6: number;
@@ -1103,8 +1027,6 @@ declare const UNW_ARM_WC1: number;
 declare const UNW_PPC64_F28: number;
 
 declare const _c_locale: interop.Pointer;
-
-declare const kHFSVolumeUnmountedBit: number;
 
 declare const OBJC_COLLECT_IF_NEEDED: number;
 
@@ -1232,15 +1154,9 @@ declare const UNW_AARCH64_V26: number;
 
 declare const XPC_ACTIVITY_STATE_DEFER: number;
 
-declare const kBTIndexNode: number;
-
-declare const kHFSBinaryCompare: number;
-
 declare const UNW_LOONGARCH_R4: number;
 
 declare const UNWIND_X86_EBP_FRAME_OFFSET: number;
-
-declare const kHFSAutoCandidateBit: number;
 
 declare const UNW_ARM64_D17: number;
 
@@ -1276,8 +1192,6 @@ declare const UNW_AARCH64_V21: number;
 
 declare const UNW_OR1K_R16: number;
 
-declare const kHFSUnusedNodesFixExpandedDate: number;
-
 declare const UNW_PPC_F11: number;
 
 declare const UNW_VE_V44: number;
@@ -1286,15 +1200,11 @@ declare const UNW_OR1K_R7: number;
 
 declare const UNW_PPC64_R12: number;
 
-declare const kHFSFileLockedMask: number;
-
 declare const kDNSServiceFlagsWakeOnResolve: number;
 
 declare const UNW_PPC64_V13: number;
 
 declare const UNW_ARM64_D11: number;
-
-declare const kHFSHasSecurityMask: number;
 
 declare const UNW_PPC64_VS48: number;
 
@@ -1334,8 +1244,6 @@ declare const rl_instream: interop.Pointer;
 
 declare const UNW_ARM64_X2: number;
 
-declare const kHFSXVersion: number;
-
 declare const UNW_X86_64_R11: number;
 
 declare const UNW_VE_V47: number;
@@ -1368,8 +1276,6 @@ declare const UNW_PPC64_F26: number;
 
 declare const UNW_AARCH64_X3: number;
 
-declare const kHFSCatExpandedTimesMask: number;
-
 declare const KRB5_C_RANDSOURCE_TIMING: number;
 
 declare const UNW_ARM_R0: number;
@@ -1389,8 +1295,6 @@ declare const UNW_ARM64_D6: number;
 declare const UNW_X86_64_XMM11: number;
 
 declare const UNW_PPC_F23: number;
-
-declare const kHFSHasFolderCountBit: number;
 
 declare const UNW_LOONGARCH_F4: number;
 
@@ -1442,8 +1346,6 @@ declare const UNW_AARCH64_X20: number;
 
 declare const UNW_VE_S13: number;
 
-declare const kHFSAttributeDataFileID: number;
-
 declare const UIDNA_ERROR_HYPHEN_3_4: number;
 
 declare const kAUNoErr: number;
@@ -1482,15 +1384,11 @@ declare const readline_echoing_p: number;
 
 declare const XPC_ACTIVITY_INTERVAL_7_DAYS: number;
 
-declare const kHFSPlusFileRecord: number;
-
 declare const UNW_SPARC_O5: number;
 
 declare const ber_pvt_opt_on: number;
 
 declare const _xpc_error_termination_imminent: _xpc_dictionary_s;
-
-declare const kJIJournalOnOtherDeviceMask: number;
 
 declare const MTF_DATA: number;
 
@@ -1510,15 +1408,9 @@ declare const UNW_PPC64_R24: number;
 
 declare const kAUMakeSubjectTokErr: number;
 
-declare const kHFSPlusExtentKeyMaximumLength: number;
-
 declare const UNW_VE_V40: number;
 
-declare const kHFSPlusCatalogKeyMaximumLength: number;
-
 declare const _NSConcreteGlobalBlock: unknown /* const array */;
-
-declare const kHFSPlusMountVersion: number;
 
 declare const rl_completion_append_character: number;
 
@@ -1533,8 +1425,6 @@ declare const UNW_AARCH64_V20: number;
 declare const UNW_ARM_D15: number;
 
 declare const UNW_PPC64_R23: number;
-
-declare const kHFSAutoCandidateMask: number;
 
 declare const UNW_RISCV_F20: number;
 
@@ -1575,10 +1465,6 @@ declare const kDNSServiceType_RRSIG: number;
 declare const UNW_PPC64_VS61: number;
 
 declare const UNW_S390X_R14: number;
-
-declare const kBTLeafNode: number;
-
-declare const kHFSVolumeJournaledBit: number;
 
 declare const UNW_PPC64_V7: number;
 
@@ -1684,8 +1570,6 @@ declare const UNW_PPC64_VS31: number;
 
 declare const UNW_ARM_D5: number;
 
-declare const kHFSVolumeSparedBlocksBit: number;
-
 declare const UNW_ARM64_D28: number;
 
 declare const UNW_ARM_S9: number;
@@ -1719,10 +1603,6 @@ declare const UNW_VE_V13: number;
 declare const kDNSServiceType_NSEC: number;
 
 declare const UNW_PPC64_VS15: number;
-
-declare const kBTBigKeysMask: number;
-
-declare const kHFSVolumeUnmountedMask: number;
 
 declare const UNW_ARM_D2: number;
 
@@ -1830,11 +1710,7 @@ declare const UNW_PPC64_VS44: number;
 
 declare const UNW_ARM64_X18: number;
 
-declare const kHFSVolumeInconsistentBit: number;
-
 declare const UNW_ENOMEM: number;
-
-declare const kHFSVolumeSoftwareLockMask: number;
 
 declare const UNW_RISCV_F6: number;
 
@@ -1842,15 +1718,11 @@ declare const DYLD_CHAINED_PTR_ARM64E_OFFSET: number;
 
 declare const disable_kprintf_output: boolean;
 
-declare const kHFSHasAttributesMask: number;
-
 declare const ber_sockbuf_io_udp: sockbuf_io;
 
 declare const UNW_ARM64_D4: number;
 
 declare const kDNSServiceErr_NotInitialized: number;
-
-declare const kHFSFastDevPinnedMask: number;
 
 declare const UNW_VE_V23: number;
 
@@ -1884,8 +1756,6 @@ declare const UNWIND_ARM_FRAME_D_REG_COUNT_MASK: number;
 
 declare const UNWIND_X86_64_RBP_FRAME_REGISTERS: number;
 
-declare const kHFSSigWord: number;
-
 declare const __fpcr_trap_invalid: number;
 
 declare const UNW_PPC_R2: number;
@@ -1893,8 +1763,6 @@ declare const UNW_PPC_R2: number;
 declare const UNW_PPC64_V11: number;
 
 declare const UNW_ARM_S2: number;
-
-declare const kHFSBogusExtentFileID: number;
 
 declare const UNWIND_ARM64_FRAME_X25_X26_PAIR: number;
 
@@ -1945,6 +1813,8 @@ declare const UNW_PPC64_VS18: number;
 declare const kDNSServiceFlagsSecure: number;
 
 declare const UNW_PPC_F26: number;
+
+declare const tkIntXlibStubsPtr: interop.Pointer;
 
 declare const UNW_PPC64_V1: number;
 
@@ -2002,8 +1872,6 @@ declare const UNW_SPARC_G6: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R9: number;
 
-declare const kHFSPlusCatalogMinNodeSize: number;
-
 declare const shadow: number;
 
 declare const rl_point: number;
@@ -2028,8 +1896,6 @@ declare const UNW_ARM64_PC: number;
 
 declare const UNW_ARM_R13: number;
 
-declare const kSymLinkCreator: number;
-
 declare const signgam: number;
 
 declare const UNW_VE_V34: number;
@@ -2047,8 +1913,6 @@ declare const UNW_HEXAGON_R11: number;
 declare const kDNSServiceErr_Invalid: number;
 
 declare const UNW_PPC_CTR: number;
-
-declare const kHFSVolumeSparedBlocksMask: number;
 
 declare const UNW_ARM_D22: number;
 
@@ -2086,8 +1950,6 @@ declare const UNW_X86_64_XMM0: number;
 
 declare const kPEWriteTOD: number;
 
-declare const kHFSPlusFolderThreadRecord: number;
-
 declare const UNW_PPC64_F11: number;
 
 declare const kDNSServiceFlagsInsecure: number;
@@ -2102,8 +1964,6 @@ declare const UNW_X86_ESP: number;
 
 declare const UNW_MIPS_R8: number;
 
-declare const kHFSMaxFileNameChars: number;
-
 declare const UNW_PPC64_R4: number;
 
 declare const UNW_PPC64_VS56: number;
@@ -2115,8 +1975,6 @@ declare const UNW_VE_V38: number;
 declare const UNW_MIPS_F3: number;
 
 declare const UNW_RISCV_X22: number;
-
-declare const kHFSFolderThreadRecord: number;
 
 declare const UNW_AARCH64_X26: number;
 
@@ -2130,11 +1988,7 @@ declare const UIDNA_USE_STD3_RULES: number;
 
 declare const condense: number;
 
-declare const kHFSRootParentID: number;
-
 declare const UNW_MIPS_F0: number;
-
-declare const kHFSHasChildLinkBit: number;
 
 declare const kDNSServiceType_DNAME: number;
 
@@ -2147,8 +2001,6 @@ declare const UNW_VE_V20: number;
 declare const UNW_PPC_R22: number;
 
 declare const UNW_MIPS_F16: number;
-
-declare const kHFSMDBAttributesMask: number;
 
 declare const UNW_ARM_D1: number;
 
@@ -2210,8 +2062,6 @@ declare const UNW_LOONGARCH_R27: number;
 
 declare const kDNSServiceErr_BadFlags: number;
 
-declare const kHFSMaxAttrNameLen: number;
-
 declare const UNWIND_HAS_LSDA: number;
 
 declare const UNW_PPC64_VS26: number;
@@ -2250,8 +2100,6 @@ declare const UNW_ARM64_RA_SIGN_STATE: number;
 
 declare const UNW_PPC64_R6: number;
 
-declare const kHFSCaseFolding: number;
-
 declare const UNW_PPC_CR2: number;
 
 declare const dot3ChipSetIntel82557: number;
@@ -2266,8 +2114,6 @@ declare const UNW_PPC64_R15: number;
 
 declare const UNWIND_X86_64_REG_R13: number;
 
-declare const kHFSHasDateAddedBit: number;
-
 declare const UNW_VE_V12: number;
 
 declare const UNW_ARM64_D0: number;
@@ -2275,8 +2121,6 @@ declare const UNW_ARM64_D0: number;
 declare const UNW_S390X_F0: number;
 
 declare const UNW_PPC_R11: number;
-
-declare const kHFSFolderRecord: number;
 
 declare const UNWIND_ARM64_FRAMELESS_STACK_SIZE_MASK: number;
 
@@ -2322,11 +2166,7 @@ declare const UNW_AARCH64_SP: number;
 
 declare const kDNSServiceType_MF: number;
 
-declare const kHFSPlusFolderRecord: number;
-
 declare const _gmonparam: gmonparam;
-
-declare const kHFSPlusExtentDensity: number;
 
 declare const UNW_PPC_V8: number;
 
@@ -2339,8 +2179,6 @@ declare const UNW_MIPS_F10: number;
 declare const UNW_PPC_R7: number;
 
 declare const _dispatch_source_type_proc: dispatch_source_type_s;
-
-declare const kHFSPlusAttrForkData: number;
 
 declare const UNW_OR1K_R11: number;
 
@@ -2359,8 +2197,6 @@ declare const UNW_S390X_F8: number;
 declare const UNW_VE_S35: number;
 
 declare const UNW_VE_S46: number;
-
-declare const kHFSFastDevCandidateMask: number;
 
 declare const UNW_MIPS_F23: number;
 
@@ -2464,8 +2300,6 @@ declare const UNW_ARM64_X10: number;
 
 declare const UNW_VE_S0: number;
 
-declare const kHFSPlusVersion: number;
-
 declare const UNW_AARCH64_V29: number;
 
 declare const UNW_ARM_WR1: number;
@@ -2516,19 +2350,13 @@ declare const UNW_OR1K_R3: number;
 
 declare const UNW_SPARC_L4: number;
 
-declare const kHardLinkFileType: number;
-
 declare const UNW_ARM64_D24: number;
 
 declare const UNW_LOONGARCH_R25: number;
 
 declare const UNW_PPC64_F2: number;
 
-declare const kHFSExpandedTimesBit: number;
-
 declare const UNWIND_X86_MODE_MASK: number;
-
-declare const kHFSHasLinkChainMask: number;
 
 declare const UNW_ARM64_D22: number;
 
@@ -2542,11 +2370,7 @@ declare const HV_MEMORY_EXEC: number;
 
 declare const _mh_execute_header: mach_header_64;
 
-declare const kHFSPlusExtentMinNodeSize: number;
-
 declare const OSLittleEndian: number;
-
-declare const kHFSHasFolderCountMask: number;
 
 declare const KERNEL_SECURITY_TOKEN: security_token_t;
 
@@ -2658,15 +2482,11 @@ declare const vm_kernel_page_shift: number;
 
 declare const UNW_LOONGARCH_R17: number;
 
-declare const kHFSHasDateAddedMask: number;
-
 declare const UNW_X86_ESI: number;
 
 declare const UNW_LOONGARCH_R14: number;
 
 declare const kDNSServiceFlagsTimeout: number;
-
-declare const kHFSCatalogNodeIDsReusedBit: number;
 
 declare const UNW_LOONGARCH_R3: number;
 
@@ -2681,8 +2501,6 @@ declare const _xpc_type_connection: _xpc_type_s;
 declare const UNW_VE_S19: number;
 
 declare const UNW_S390X_F7: number;
-
-declare const kJIJournalNeedInitMask: number;
 
 declare const UNW_S390X_R8: number;
 
@@ -2713,8 +2531,6 @@ declare const UNW_VE_V63: number;
 declare const kDNSServiceFlagsShareConnection: number;
 
 declare const UNW_ARM_S17: number;
-
-declare const kHFSExtentKeyMaximumLength: number;
 
 declare const UNW_VE_V51: number;
 
@@ -2904,8 +2720,6 @@ declare const UNW_OR1K_R14: number;
 
 declare const kDNSServiceErr_NoRouter: number;
 
-declare const kHFSXSigWord: number;
-
 declare const UNW_MIPS_R25: number;
 
 declare const kDNSServiceType_NIMLOC: number;
@@ -2919,10 +2733,6 @@ declare const UNW_ARM_R6: number;
 declare const GSS_C_NT_EXPORT_NAME: interop.Pointer;
 
 declare const UNW_PPC_F27: number;
-
-declare const kHFSDoNotFastDevPinBit: number;
-
-declare const kBTBadCloseMask: number;
 
 declare const UNW_PPC_V25: number;
 
@@ -3022,8 +2832,6 @@ declare const UNW_ARM64_D25: number;
 
 declare const UNW_PPC_F13: number;
 
-declare const kHFSVolumeInconsistentMask: number;
-
 declare const newscr: interop.Pointer;
 
 declare const _libiconv_version: number;
@@ -3070,8 +2878,6 @@ declare const UNW_S390X_PSWM: number;
 
 declare const UNW_AARCH64_V22: number;
 
-declare const kHFSBootVolumeInconsistentMask: number;
-
 declare const UNW_X86_64_XMM14: number;
 
 declare const UNW_AARCH64_V17: number;
@@ -3113,8 +2919,6 @@ declare const UNW_AARCH64_X18: number;
 declare const __dso_handle: mach_header;
 
 declare const UNW_AARCH64_X0: number;
-
-declare const kHFSDoNotFastDevPinMask: number;
 
 declare const UNW_PPC_V10: number;
 
@@ -3158,15 +2962,11 @@ declare const UNW_PPC64_VS0: number;
 
 declare const UNW_VE_V49: number;
 
-declare const kHFSCatalogNodeIDsReusedMask: number;
-
 declare const _xpc_event_key_name: string;
 
 declare const kDNSServiceErr_BadSig: number;
 
 declare const UNW_EUNSPEC: number;
-
-declare const kHFSVolumeNoCacheRequiredBit: number;
 
 declare const UNW_VE_VM5: number;
 
@@ -3308,10 +3108,6 @@ declare const UNW_HEXAGON_R13: number;
 
 declare const UNW_X86_64_XMM1: number;
 
-declare const kHFSCatalogKeyMaximumLength: number;
-
-declare const kHFSVolumeHardwareLockBit: number;
-
 declare const UNW_X86_64_RCX: number;
 
 declare const UNW_OR1K_R22: number;
@@ -3352,8 +3148,6 @@ declare const XPC_ACTIVITY_INTERVAL_1_MIN: number;
 
 declare const XPC_ACTIVITY_INTERVAL_4_HOURS: number;
 
-declare const kHFSContentProtectionBit: number;
-
 declare const HV_MEMORY_WRITE: number;
 
 declare const UNW_SPARC_O0: number;
@@ -3362,11 +3156,7 @@ declare const noErr: number;
 
 declare const UNW_VE_S23: number;
 
-declare const kHFSPlusAttrMinNodeSize: number;
-
 declare const HV_UNSUPPORTED: number;
-
-declare const kHFSFastDevCandidateBit: number;
 
 declare const UNW_PPC64_VS25: number;
 
@@ -3376,29 +3166,15 @@ declare const UNW_AARCH64_V3: number;
 
 declare const UNW_LOONGARCH_R2: number;
 
-declare const kHFSHasAttributesBit: number;
-
 declare const UNW_VE_V15: number;
 
 declare const kAUBadParamErr: number;
 
-declare const kHFSFirstUserCatalogNodeID: number;
-
 declare const UNW_RISCV_X20: number;
-
-declare const kHFSStartupFileID: number;
-
-declare const kHFSCatalogFileID: number;
-
-declare const kHFSExtentsFileID: number;
 
 declare const NXPtrPrototype: NXHashTablePrototype;
 
 declare const UNW_HEXAGON_R24: number;
-
-declare const kFSKMountVersion: number;
-
-declare const kHFSExpandedTimesMask: number;
 
 declare const ttytype: interop.Pointer;
 
@@ -3496,8 +3272,6 @@ declare const UNW_AARCH64_X21: number;
 
 declare const UNW_VE_V43: number;
 
-declare const kHFSRepairCatalogFileID: number;
-
 declare const UNW_PPC_V13: number;
 
 declare const UNW_ARM64_D18: number;
@@ -3516,8 +3290,6 @@ declare const kDNSServiceErr_NoSuchName: number;
 
 declare const curscr: interop.Pointer;
 
-declare const kHFSFileRecord: number;
-
 declare const XPC_ACTIVITY_REPEATING: string;
 
 declare const UNW_SPARC_I1: number;
@@ -3533,8 +3305,6 @@ declare const vm_kernel_page_size: number;
 declare const UNW_X86_64_R10: number;
 
 declare const kDNSServiceType_NSEC3: number;
-
-declare const kHFSCatExpandedTimesBit: number;
 
 declare const UNW_ARM64_D26: number;
 
@@ -3557,8 +3327,6 @@ declare const UNW_AARCH64_X12: number;
 declare const alphaStage: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
-
-declare const kHFSPlusCreator: number;
 
 declare const outline: number;
 
@@ -3591,8 +3359,6 @@ declare const UIDNA_NONTRANSITIONAL_TO_ASCII: number;
 declare const OBJC_CLEAR_RESIDENT_STACK: number;
 
 declare const gss_nt_krb5_principal: interop.Pointer;
-
-declare const kHFSPlusSigWord: number;
 
 declare const kDNSServiceErr_Refused: number;
 
@@ -3648,8 +3414,6 @@ declare const UNW_PPC64_VS58: number;
 
 declare const UNW_AARCH64_V11: number;
 
-declare const kHFSMaxVolumeNameChars: number;
-
 declare const UNW_VE_V1: number;
 
 declare const UNW_PPC_R4: number;
@@ -3695,7 +3459,8 @@ declare const graftdmg_type_t: {
   PDI_NONCE: 6,
   EFFECTIVE_AP: 7,
   MOBILE_ASSET: 8,
-  MAX: 8,
+  MOBILE_ASSET_WITH_CODE: 9,
+  MAX: 9,
 };
 
 declare const http_encoding_e: {
@@ -3857,57 +3622,6 @@ declare const acl_type_t: {
   CODA: 3,
   NTFS: 4,
   NWFS: 5,
-};
-
-declare const Tk_State: {
-  NULL: -1,
-  ACTIVE: 0,
-  DISABLED: 1,
-  NORMAL: 2,
-  HIDDEN: 3,
-};
-
-declare const Tk_Justify: {
-  LEFT: 0,
-  RIGHT: 1,
-  CENTER: 2,
-};
-
-declare const Tk_Anchor: {
-  N: 0,
-  NE: 1,
-  E: 2,
-  SE: 3,
-  S: 4,
-  SW: 5,
-  W: 6,
-  NW: 7,
-  CENTER: 8,
-};
-
-declare const Tk_ConfigTypes: {
-  BOOLEAN: 0,
-  INT: 1,
-  DOUBLE: 2,
-  STRING: 3,
-  UID: 4,
-  COLOR: 5,
-  FONT: 6,
-  BITMAP: 7,
-  BORDER: 8,
-  RELIEF: 9,
-  CURSOR: 10,
-  ACTIVE_CURSOR: 11,
-  JUSTIFY: 12,
-  ANCHOR: 13,
-  SYNONYM: 14,
-  CAP_STYLE: 15,
-  JOIN_STYLE: 16,
-  PIXELS: 17,
-  MM: 18,
-  WINDOW: 19,
-  CUSTOM: 20,
-  END: 21,
 };
 
 declare const mach_vm_range_flags_t: {
@@ -4171,13 +3885,6 @@ declare const thread_snapshot_flags: {
   ThreadTruncKernBT: 16384,
   ThreadTruncUserBT: 32768,
   ThreadTruncUserAsyncBT: 65536,
-};
-
-declare const Tcl_ValueType: {
-  INT: 0,
-  DOUBLE: 1,
-  EITHER: 2,
-  WIDE_INT: 3,
 };
 
 declare const UJoiningGroup: {
@@ -4460,10 +4167,15 @@ declare const ifnet_interface_advisory_interface_type: {
   CELL: 2,
 };
 
-declare const Tcl_PathType: {
-  ABSOLUT: 0,
-  RELATIV: 1,
-  VOLUME_RELATIV: 2,
+declare const mte_info_cell_state_t: {
+  DISABLED: 0,
+  PINNED: 1,
+  DEACTIVATING: 2,
+  CLAIMED: 3,
+  INACTIVE: 4,
+  RECLAIMING: 5,
+  ACTIVATING: 6,
+  ACTIVE: 7,
 };
 
 declare const cryptex_auth_type_t: {
@@ -4471,7 +4183,8 @@ declare const cryptex_auth_type_t: {
   X1_AUTH_ENV_GENERIC_SUPPLEMENTAL: 5,
   X_AUTH_PDI_NONCE: 6,
   X_AUTH_MOBILE_ASSET: 8,
-  X_AUTH_MAX: 8,
+  X_AUTH_MOBILE_ASSET_WITH_CODE: 9,
+  X_AUTH_MAX: 9,
 };
 
 declare const http_auth_e: {
@@ -4502,6 +4215,9 @@ declare const virtual_memory_guard_exception_code_t: {
   SEC_ASYNC_ACCESS_FAULT: 99,
   SEC_COPY_DENIED: 100,
   SEC_SHARING_DENIED: 101,
+  MTE_SYNC_FAULT: 200,
+  MTE_ASYNC_USER_FAULT: 201,
+  MTE_ASYNC_KERN_FAULT: 202,
 };
 
 declare const dot3Vendors: {
@@ -4546,10 +4262,6 @@ declare const os_log_type_t: {
   FAULT: 17,
 };
 
-declare const BTreeKeyLimits: {
-  kMaxKeyLength: 520,
-};
-
 declare const OSThermalPressureLevel: {
   Nominal: 0,
   Moderate: 1,
@@ -4581,28 +4293,6 @@ declare const DNSServiceAAAAPolicy: {
   Fallback: 1,
 };
 
-declare const Tk_OptionType: {
-  BOOLEAN: 0,
-  INT: 1,
-  DOUBLE: 2,
-  STRING: 3,
-  STRING_TABLE: 4,
-  COLOR: 5,
-  FONT: 6,
-  BITMAP: 7,
-  BORDER: 8,
-  RELIEF: 9,
-  CURSOR: 10,
-  JUSTIFY: 11,
-  ANCHOR: 12,
-  SYNONYM: 13,
-  PIXELS: 14,
-  WINDOW: 15,
-  END: 16,
-  CUSTOM: 17,
-  STYLE: 18,
-};
-
 declare const ifnet_interface_advisory_version: {
   N_1: 1,
   N_2: 2,
@@ -4627,12 +4317,6 @@ declare const http_state_e: {
   STATUS: 13,
   UNKNOWN_METHOD: 14,
   UNKNOWN_VERSION: 15,
-};
-
-declare const Tk_RestrictAction: {
-  DEFER_: 0,
-  PROCESS_: 1,
-  DISCARD_: 2,
 };
 
 declare const malloc_zone_malloc_options_t: {
@@ -4875,10 +4559,6 @@ declare const ipp_finishings_e: {
 
 declare const task_transition_type: {
   kTaskIsTerminated: 1,
-};
-
-declare const exclave_scresult_flags: {
-  kExclaveScresultHaveIPCStack: 1,
 };
 
 declare const malloc_type_kind_v0_t: {
@@ -6071,6 +5751,10 @@ declare const task_latency_qos: {
   R_5: 16711686,
 };
 
+declare const exclave_scresult_flags: {
+  kExclaveScresultHaveIPCStack: 1,
+};
+
 declare const cups_ptype_e: {
   R_LOCAL: 0,
   R_CLASS: 1,
@@ -6416,15 +6100,6 @@ declare const qos_class_t: {
   UTILITY: 17,
   BACKGROUND: 9,
   UNSPECIFIED: 0,
-};
-
-declare const reloc_type_generic: {
-  VANILLA: 0,
-  PAIR: 1,
-  SECTDIFF: 2,
-  PB_LA_PTR: 3,
-  LOCAL_SECTDIFF: 4,
-  TLV: 5,
 };
 
 declare const UWordBreakValues: {
@@ -6822,12 +6497,6 @@ declare const ipp_res_e: {
   CM: 4,
 };
 
-declare const Tcl_QueuePosition: {
-  TAIL: 0,
-  HEAD: 1,
-  MARK: 2,
-};
-
 declare const ppd_ui_e: {
   BOOLEAN: 0,
   PICKONE: 1,
@@ -7006,8 +6675,8 @@ declare class tss {
   io_bmap: number;
 }
 
-declare class unnamed_5022595679192618032 {
-  constructor(init?: unnamed_5022595679192618032);
+declare class unnamed_4496508063133753178 {
+  constructor(init?: unnamed_4496508063133753178);
   offset00: number;
   seg: sel;
   : number;
@@ -7017,8 +6686,8 @@ declare class unnamed_5022595679192618032 {
   offset16: number;
 }
 
-declare class unnamed_15080151464434138647 {
-  constructor(init?: unnamed_15080151464434138647);
+declare class unnamed_7391634615231741349 {
+  constructor(init?: unnamed_7391634615231741349);
   limit00: number;
   base00: number;
   base16: number;
@@ -7041,1654 +6710,8 @@ declare class mwl_region {
   mwlr_size: number;
 }
 
-declare class unnamed_6555016405554135130 {
-  constructor(init?: unnamed_6555016405554135130);
-  offset00: number;
-  seg: sel;
-  argcnt: number;
-  : number;
-  type: number;
-  dpl: number;
-  present: number;
-  offset16: number;
-}
-
 declare class TclTomMathStubHooks {
   constructor(init?: TclTomMathStubHooks);
-}
-
-declare class TkPlatStubHooks {
-  constructor(init?: TkPlatStubHooks);
-}
-
-declare class TkStubs {
-  constructor(init?: TkStubs);
-  magic: number;
-  hooks: interop.Pointer;
-  tk_MainLoop: () => void | null;
-  tk_3DBorderColor: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_3DBorderGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tk_3DHorizontalBevel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number) => void | null;
-  tk_3DVerticalBevel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
-  tk_AddOption: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => void | null;
-  tk_BindEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void | null;
-  tk_CanvasDrawableCoords: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
-  tk_CanvasEventuallyRedraw: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
-  tk_CanvasGetCoord: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  tk_CanvasGetTextInfo: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CanvasPsBitmap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number) => number | null;
-  tk_CanvasPsColor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_CanvasPsFont: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_CanvasPsPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
-  tk_CanvasPsStipple: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tk_CanvasPsY: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tk_CanvasSetStippleOrigin: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_CanvasTagsParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tk_CanvasTagsPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tk_CanvasTkwin: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CanvasWindowCoords: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
-  tk_ChangeWindowAttributes: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tk_CharBbox: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tk_ClearSelection: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_ClipboardAppend: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: string) => number | null;
-  tk_ClipboardClear: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tk_ConfigureInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tk_ConfigureValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tk_ConfigureWidget: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: string, p7: number) => number | null;
-  tk_ConfigureWindow: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tk_ComputeTextLayout: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.Enum<typeof Tk_Justify>, p6: number, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CoordsToWindow: (p1: number, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CreateBinding: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tk_CreateBindingTable: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CreateErrorHandler: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p6: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CreateEventHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
-  tk_CreateGenericHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p2: interop.PointerConvertible) => void | null;
-  tk_CreateImageType: (p1: interop.PointerConvertible) => void | null;
-  tk_CreateItemType: (p1: interop.PointerConvertible) => void | null;
-  tk_CreatePhotoImageFormat: (p1: interop.PointerConvertible) => void | null;
-  tk_CreateSelHandler: (p1: interop.PointerConvertible, p2: number, p3: number, p4: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number) => number, p5: interop.PointerConvertible, p6: number) => void | null;
-  tk_CreateWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => interop.Pointer | null;
-  tk_CreateWindowFromPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => interop.Pointer | null;
-  tk_DefineBitmap: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: number) => number | null;
-  tk_DefineCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_DeleteAllBindings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_DeleteBinding: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string) => number | null;
-  tk_DeleteBindingTable: (p1: interop.PointerConvertible) => void | null;
-  tk_DeleteErrorHandler: (p1: interop.PointerConvertible) => void | null;
-  tk_DeleteEventHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
-  tk_DeleteGenericHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p2: interop.PointerConvertible) => void | null;
-  tk_DeleteImage: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tk_DeleteSelHandler: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_DestroyWindow: (p1: interop.PointerConvertible) => void | null;
-  tk_DisplayName: (p1: interop.PointerConvertible) => string | null;
-  tk_DistanceToTextLayout: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
-  tk_Draw3DPolygon: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number) => void | null;
-  tk_Draw3DRectangle: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
-  tk_DrawChars: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: number, p7: number, p8: number) => void | null;
-  tk_DrawFocusHighlight: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  tk_DrawTextLayout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number) => void | null;
-  tk_Fill3DPolygon: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number) => void | null;
-  tk_Fill3DRectangle: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
-  tk_FindPhoto: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tk_FontId: (p1: interop.PointerConvertible) => number | null;
-  tk_Free3DBorder: (p1: interop.PointerConvertible) => void | null;
-  tk_FreeBitmap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_FreeColor: (p1: interop.PointerConvertible) => void | null;
-  tk_FreeColormap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_FreeCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_FreeFont: (p1: interop.PointerConvertible) => void | null;
-  tk_FreeGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_FreeImage: (p1: interop.PointerConvertible) => void | null;
-  tk_FreeOptions: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => void | null;
-  tk_FreePixmap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_FreeTextLayout: (p1: interop.PointerConvertible) => void | null;
-  tk_FreeXId: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_GCForColor: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tk_GeometryRequest: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_Get3DBorder: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
-  tk_GetAllBindings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_GetAnchor: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tk_GetAtomName: (p1: interop.PointerConvertible, p2: number) => string | null;
-  tk_GetBinding: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string) => string | null;
-  tk_GetBitmap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
-  tk_GetBitmapFromData: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: number) => number | null;
-  tk_GetCapStyle: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tk_GetColor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
-  tk_GetColorByValue: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetColormap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
-  tk_GetCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
-  tk_GetCursorFromData: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number, p6: number, p7: number, p8: number, p9: string, p10: string) => interop.Pointer | null;
-  tk_GetFont: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
-  tk_GetFontFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetFontMetrics: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_GetGC: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number) => void, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetImageMasterData: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetItemTypes: () => interop.Pointer | null;
-  tk_GetJoinStyle: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tk_GetJustify: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tk_GetNumMainWindows: () => number | null;
-  tk_GetOption: (p1: interop.PointerConvertible, p2: string, p3: string) => string | null;
-  tk_GetPixels: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  tk_GetPixmap: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => number | null;
-  tk_GetRelief: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tk_GetRootCoords: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_GetScrollInfo: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  tk_GetScreenMM: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  tk_GetSelection: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number, p6: interop.PointerConvertible) => number | null;
-  tk_GetUid: (p1: string) => string | null;
-  tk_GetVisual: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetVRootGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => void | null;
-  tk_Grab: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tk_HandleEvent: (p1: interop.PointerConvertible) => void | null;
-  tk_IdToWindow: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tk_ImageChanged: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number) => void | null;
-  tk_Init: (p1: interop.PointerConvertible) => number | null;
-  tk_InternAtom: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tk_IntersectTextLayout: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => number | null;
-  tk_MaintainGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number) => void | null;
-  tk_MainWindow: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_MakeWindowExist: (p1: interop.PointerConvertible) => void | null;
-  tk_ManageGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_MapWindow: (p1: interop.PointerConvertible) => void | null;
-  tk_MeasureChars: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
-  tk_MoveResizeWindow: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
-  tk_MoveWindow: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_MoveToplevelWindow: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_NameOf3DBorder: (p1: interop.PointerConvertible) => string | null;
-  tk_NameOfAnchor: (p1: interop.Enum<typeof Tk_Anchor>) => string | null;
-  tk_NameOfBitmap: (p1: interop.PointerConvertible, p2: number) => string | null;
-  tk_NameOfCapStyle: (p1: number) => string | null;
-  tk_NameOfColor: (p1: interop.PointerConvertible) => string | null;
-  tk_NameOfCursor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
-  tk_NameOfFont: (p1: interop.PointerConvertible) => string | null;
-  tk_NameOfImage: (p1: interop.PointerConvertible) => string | null;
-  tk_NameOfJoinStyle: (p1: number) => string | null;
-  tk_NameOfJustify: (p1: interop.Enum<typeof Tk_Justify>) => string | null;
-  tk_NameOfRelief: (p1: number) => string | null;
-  tk_NameToWindow: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_OwnSelection: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
-  tk_ParseArgv: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: number) => number | null;
-  tk_PhotoPutBlock_NoComposite: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number) => void | null;
-  tk_PhotoPutZoomedBlock_NoComposite: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => void | null;
-  tk_PhotoGetImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tk_PhotoBlank: (p1: interop.PointerConvertible) => void | null;
-  tk_PhotoExpand_Panic: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_PhotoGetSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_PhotoSetSize_Panic: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_PointToChar: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
-  tk_PostscriptFontName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tk_PreserveColormap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_QueueWindowEvent: (p1: interop.PointerConvertible, p2: interop.Enum<typeof Tcl_QueuePosition>) => void | null;
-  tk_RedrawImage: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number) => void | null;
-  tk_ResizeWindow: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_RestackWindow: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tk_RestrictEvents: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction>, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction> | null;
-  tk_SafeInit: (p1: interop.PointerConvertible) => number | null;
-  tk_SetAppName: (p1: interop.PointerConvertible, p2: string) => string | null;
-  tk_SetBackgroundFromBorder: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_SetClass: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tk_SetGrid: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
-  tk_SetInternalBorder: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowBackground: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowBackgroundPixmap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowBorder: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowBorderWidth: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowBorderPixmap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowColormap: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tk_SetWindowVisual: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
-  tk_SizeOfBitmap: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  tk_SizeOfImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_StrictMotif: (p1: interop.PointerConvertible) => number | null;
-  tk_TextLayoutToPostscript: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_TextWidth: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tk_UndefineCursor: (p1: interop.PointerConvertible) => void | null;
-  tk_UnderlineChars: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: number, p7: number, p8: number, p9: number) => void | null;
-  tk_UnderlineTextLayout: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number) => void | null;
-  tk_Ungrab: (p1: interop.PointerConvertible) => void | null;
-  tk_UnmaintainGeometry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_UnmapWindow: (p1: interop.PointerConvertible) => void | null;
-  tk_UnsetGrid: (p1: interop.PointerConvertible) => void | null;
-  tk_UpdatePointer: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => void | null;
-  tk_AllocBitmapFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_Alloc3DBorderFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_AllocColorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_AllocCursorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_AllocFontFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CreateOptionTable: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_DeleteOptionTable: (p1: interop.PointerConvertible) => void | null;
-  tk_Free3DBorderFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_FreeBitmapFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_FreeColorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_FreeConfigOptions: (p1: string, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_FreeSavedOptions: (p1: interop.PointerConvertible) => void | null;
-  tk_FreeCursorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_FreeFontFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_Get3DBorderFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetAnchorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_GetBitmapFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tk_GetColorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetCursorFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetOptionInfo: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetOptionValue: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetJustifyFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_GetMMFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tk_GetPixelsFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tk_GetReliefFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_GetScrollInfoObj: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  tk_InitOptions: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tk_MainEx: (p1: number, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible) => number, p4: interop.PointerConvertible) => void | null;
-  tk_RestoreSavedOptions: (p1: interop.PointerConvertible) => void | null;
-  tk_SetOptions: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
-  tk_InitConsoleChannels: (p1: interop.PointerConvertible) => void | null;
-  tk_CreateConsoleWindow: (p1: interop.PointerConvertible) => number | null;
-  tk_CreateSmoothMethod: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  reserved218: interop.Pointer;
-  reserved219: interop.Pointer;
-  tk_GetDash: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tk_CreateOutline: (p1: interop.PointerConvertible) => void | null;
-  tk_DeleteOutline: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tk_ConfigOutlineGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tk_ChangeOutlineGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_ResetOutlineGC: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_CanvasPsOutline: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_SetTSOrigin: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  tk_CanvasGetCoordFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tk_CanvasSetOffset: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_DitherPhoto: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
-  tk_PostscriptBitmap: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number) => number | null;
-  tk_PostscriptColor: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_PostscriptFont: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tk_PostscriptImage: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number) => number | null;
-  tk_PostscriptPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
-  tk_PostscriptStipple: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
-  tk_PostscriptY: (p1: number, p2: interop.PointerConvertible) => number | null;
-  tk_PostscriptPhoto: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => number | null;
-  tk_CreateClientMessageHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number) => void | null;
-  tk_DeleteClientMessageHandler: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number) => void | null;
-  tk_CreateAnonymousWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
-  tk_SetClassProcs: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tk_SetInternalBorderEx: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number) => void | null;
-  tk_SetMinimumRequestSize: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tk_SetCaretPos: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => void | null;
-  tk_PhotoPutBlock_Panic: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number) => void | null;
-  tk_PhotoPutZoomedBlock_Panic: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number) => void | null;
-  tk_CollapseMotionEvents: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tk_RegisterStyleEngine: (p1: string, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetStyleEngine: (p1: string) => interop.Pointer | null;
-  tk_RegisterStyledElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tk_GetElementId: (p1: string) => number | null;
-  tk_CreateStyle: (p1: string, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetStyle: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tk_FreeStyle: (p1: interop.PointerConvertible) => void | null;
-  tk_NameOfStyle: (p1: interop.PointerConvertible) => string | null;
-  tk_AllocStyleFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetStyleFromObj: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_FreeStyleFromObj: (p1: interop.PointerConvertible) => void | null;
-  tk_GetStyledElement: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tk_GetElementSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible) => void | null;
-  tk_GetElementBox: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: interop.PointerConvertible, p11: interop.PointerConvertible, p12: interop.PointerConvertible, p13: interop.PointerConvertible) => void | null;
-  tk_GetElementBorderWidth: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  tk_DrawElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => void | null;
-  tk_PhotoExpand: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
-  tk_PhotoPutBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number) => number | null;
-  tk_PhotoPutZoomedBlock: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number, p12: number) => number | null;
-  tk_PhotoSetSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
-  tk_GetUserInactiveTime: (p1: interop.PointerConvertible) => number | null;
-  tk_ResetUserInactiveTime: (p1: interop.PointerConvertible) => void | null;
-  tk_Interp: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tk_CreateOldImageType: (p1: interop.PointerConvertible) => void | null;
-  tk_CreateOldPhotoImageFormat: (p1: interop.PointerConvertible) => void | null;
-}
-
-declare class TkIntStubs {
-  constructor(init?: TkIntStubs);
-  magic: number;
-  hooks: interop.Pointer;
-  tkAllocWindow: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tkBezierPoints: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tkBezierScreenPoints: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => void | null;
-  tkBindDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkBindEventProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkBindFree: (p1: interop.PointerConvertible) => void | null;
-  tkBindInit: (p1: interop.PointerConvertible) => void | null;
-  tkChangeEventWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkClipInit: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkComputeAnchor: (p1: interop.Enum<typeof Tk_Anchor>, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => void | null;
-  tkCopyAndGlobalEval: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tkCreateBindingProcedure: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number) => number, p6: (p1: interop.PointerConvertible) => void, p7: interop.PointerConvertible) => number | null;
-  tkCreateCursorFromData: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: number, p6: number, p7: number, p8: XColor, p9: XColor) => interop.Pointer | null;
-  tkCreateFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: number, p6: string) => number | null;
-  tkCreateMainWindow: (p1: interop.PointerConvertible, p2: string, p3: string) => interop.Pointer | null;
-  tkCurrentTime: (p1: interop.PointerConvertible) => number | null;
-  tkDeleteAllImages: (p1: interop.PointerConvertible) => void | null;
-  tkDoConfigureNotify: (p1: interop.PointerConvertible) => void | null;
-  tkDrawInsetFocusHighlight: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void | null;
-  tkEventDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkFillPolygon: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => void | null;
-  tkFindStateNum: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: string) => number | null;
-  tkFindStateString: (p1: interop.PointerConvertible, p2: number) => string | null;
-  tkFocusDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkFocusFilterEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkFocusKeyEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tkFontPkgInit: (p1: interop.PointerConvertible) => void | null;
-  tkFontPkgFree: (p1: interop.PointerConvertible) => void | null;
-  tkFreeBindingTags: (p1: interop.PointerConvertible) => void | null;
-  tkpFreeCursor: (p1: interop.PointerConvertible) => void | null;
-  tkGetBitmapData: (p1: interop.PointerConvertible, p2: string, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => string | null;
-  tkGetButtPoints: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => void | null;
-  tkGetCursorByName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => interop.Pointer | null;
-  tkGetDefaultScreenName: (p1: interop.PointerConvertible, p2: string) => string | null;
-  tkGetDisplay: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkGetDisplayOf: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tkGetFocusWin: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkGetInterpNames: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkGetMiterPoints: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tkGetPointerCoords: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tkGetServerInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkGrabDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkGrabState: (p1: interop.PointerConvertible) => number | null;
-  tkIncludePoint: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkInOutEvents: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: interop.Enum<typeof Tcl_QueuePosition>) => void | null;
-  tkInstallFrameMenu: (p1: interop.PointerConvertible) => void | null;
-  tkKeysymToString: (p1: number) => string | null;
-  tkLineToArea: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tkLineToPoint: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tkMakeBezierCurve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tkMakeBezierPostscript: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
-  tkOptionClassChanged: (p1: interop.PointerConvertible) => void | null;
-  tkOptionDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkOvalToArea: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkOvalToPoint: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  tkpChangeFocus: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tkpCloseDisplay: (p1: interop.PointerConvertible) => void | null;
-  tkpClaimFocus: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tkpDisplayWarning: (p1: string, p2: string) => void | null;
-  tkpGetAppName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkpGetOtherWindow: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkpGetWrapperWindow: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkpInit: (p1: interop.PointerConvertible) => number | null;
-  tkpInitializeMenuBindings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkpMakeContainer: (p1: interop.PointerConvertible) => void | null;
-  tkpMakeMenuWindow: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tkpMakeWindow: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tkpMenuNotifyToplevelCreate: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tkpOpenDisplay: (p1: string) => interop.Pointer | null;
-  tkPointerEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkPolygonToArea: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tkPolygonToPoint: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tkPositionInTree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkpRedirectKeyEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkpSetMainMenubar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => void | null;
-  tkpUseWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
-  tkpWindowWasRecentlyDeleted: (p1: number, p2: interop.PointerConvertible) => number | null;
-  tkQueueEventForAllChildren: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkReadBitmapFile: (p1: interop.PointerConvertible, p2: number, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
-  tkScrollWindow: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: interop.PointerConvertible) => number | null;
-  tkSelDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkSelEventProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkSelInit: (p1: interop.PointerConvertible) => void | null;
-  tkSelPropProc: (p1: interop.PointerConvertible) => void | null;
-  reserved84: interop.Pointer;
-  tkSetWindowMenuBar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => void | null;
-  tkStringToKeysym: (p1: string) => number | null;
-  tkThickPolyLineToArea: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
-  tkWmAddToColormapWindows: (p1: interop.PointerConvertible) => void | null;
-  tkWmDeadWindow: (p1: interop.PointerConvertible) => void | null;
-  tkWmFocusToplevel: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkWmMapWindow: (p1: interop.PointerConvertible) => void | null;
-  tkWmNewWindow: (p1: interop.PointerConvertible) => void | null;
-  tkWmProtocolEventProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkWmRemoveFromColormapWindows: (p1: interop.PointerConvertible) => void | null;
-  tkWmRestackToplevel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tkWmSetClass: (p1: interop.PointerConvertible) => void | null;
-  tkWmUnmapWindow: (p1: interop.PointerConvertible) => void | null;
-  tkDebugBitmap: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tkDebugBorder: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tkDebugCursor: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tkDebugColor: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tkDebugConfig: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tkDebugFont: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tkFindStateNumObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tkGetBitmapPredefTable: () => interop.Pointer | null;
-  tkGetDisplayList: () => interop.Pointer | null;
-  tkGetMainInfoList: () => interop.Pointer | null;
-  tkGetWindowFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tkpGetString: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => string | null;
-  tkpGetSubFonts: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkpGetSystemDefault: (p1: interop.PointerConvertible, p2: string, p3: string) => interop.Pointer | null;
-  tkpMenuThreadInit: () => void | null;
-  reserved113: interop.Pointer;
-  reserved114: interop.Pointer;
-  reserved115: interop.Pointer;
-  reserved116: interop.Pointer;
-  reserved117: interop.Pointer;
-  reserved118: interop.Pointer;
-  reserved119: interop.Pointer;
-  reserved120: interop.Pointer;
-  reserved121: interop.Pointer;
-  reserved122: interop.Pointer;
-  reserved123: interop.Pointer;
-  reserved124: interop.Pointer;
-  reserved125: interop.Pointer;
-  reserved126: interop.Pointer;
-  reserved127: interop.Pointer;
-  reserved128: interop.Pointer;
-  reserved129: interop.Pointer;
-  reserved130: interop.Pointer;
-  reserved131: interop.Pointer;
-  reserved132: interop.Pointer;
-  reserved133: interop.Pointer;
-  reserved134: interop.Pointer;
-  tkpDrawHighlightBorder: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => void | null;
-  tkSetFocusWin: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tkpSetKeycodeAndState: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tkpGetKeySym: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tkpInitKeymapInfo: (p1: interop.PointerConvertible) => void | null;
-  tkPhotoGetValidRegion: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkWmStackorderToplevel: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tkFocusFree: (p1: interop.PointerConvertible) => void | null;
-  tkClipCleanup: (p1: interop.PointerConvertible) => void | null;
-  tkGCCleanup: (p1: interop.PointerConvertible) => void | null;
-  reserved145: interop.Pointer;
-  tkStylePkgInit: (p1: interop.PointerConvertible) => void | null;
-  tkStylePkgFree: (p1: interop.PointerConvertible) => void | null;
-  tkToplevelWindowForCommand: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tkGetOptionSpec: (p1: string, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tkMakeRawCurve: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tkMakeRawCurvePostscript: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => void | null;
-  tkpDrawFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number) => void | null;
-  tkCreateThreadExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tkDeleteThreadExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  reserved155: interop.Pointer;
-  tkpTestembedCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tkpTesttextCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  reserved158: interop.Pointer;
-  reserved159: interop.Pointer;
-  reserved160: interop.Pointer;
-  reserved161: interop.Pointer;
-  reserved162: interop.Pointer;
-  reserved163: interop.Pointer;
-  reserved164: interop.Pointer;
-  reserved165: interop.Pointer;
-  reserved166: interop.Pointer;
-  reserved167: interop.Pointer;
-  reserved168: interop.Pointer;
-  tkStateParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tkStatePrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tkCanvasDashParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tkCanvasDashPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tkOffsetParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tkOffsetPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tkPixelParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tkPixelPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tkOrientParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tkOrientPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tkSmoothParseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  tkSmoothPrintProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-}
-
-declare class Tk_ElementOptionSpec {
-  constructor(init?: Tk_ElementOptionSpec);
-  name: string | null;
-  type: interop.Enum<typeof Tk_OptionType>;
-}
-
-declare class Tk_ImageType {
-  constructor(init?: Tk_ImageType);
-  name: string | null;
-  createProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  getProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  displayProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number, p7: number, p8: number, p9: number) => void | null;
-  freeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  deleteProc: (p1: interop.PointerConvertible) => void | null;
-  postscriptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number) => number | null;
-  nextPtr: interop.Pointer;
-  reserved: string | null;
-}
-
-declare class Tk_ItemType {
-  constructor(init?: Tk_ItemType);
-  name: string | null;
-  itemSize: number;
-  createProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number | null;
-  configSpecs: interop.Pointer;
-  configProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: number) => number | null;
-  coordProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number | null;
-  deleteProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  displayProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number, p7: number, p8: number) => void | null;
-  alwaysRedraw: number;
-  pointProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  areaProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  postscriptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
-  scaleProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: number) => void | null;
-  translateProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  indexProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: interop.PointerConvertible) => number | null;
-  icursorProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  selectionProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: number) => number | null;
-  insertProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string) => void | null;
-  dCharsProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => void | null;
-  nextPtr: interop.Pointer;
-  reserved1: string | null;
-  reserved2: number;
-  reserved3: string | null;
-  reserved4: string | null;
-}
-
-declare class XVirtualEvent {
-  constructor(init?: XVirtualEvent);
-  type: number;
-  serial: number;
-  send_event: number;
-  display: interop.Pointer;
-  event: number;
-  root: number;
-  subwindow: number;
-  time: number;
-  x: number;
-  y: number;
-  x_root: number;
-  y_root: number;
-  state: number;
-  name: string | null;
-  same_screen: number;
-  user_data: interop.Pointer;
-}
-
-declare class Tk_ClassProcs {
-  constructor(init?: Tk_ClassProcs);
-  size: number;
-  worldChangedProc: (p1: interop.PointerConvertible) => void | null;
-  createProc: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  modalProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-}
-
-declare class Tk_FontMetrics {
-  constructor(init?: Tk_FontMetrics);
-  ascent: number;
-  descent: number;
-  linespace: number;
-}
-
-declare class TkOption {
-  constructor(init?: TkOption);
-}
-
-declare class Tk_SavedOption {
-  constructor(init?: Tk_SavedOption);
-  optionPtr: interop.Pointer;
-  valuePtr: interop.Pointer;
-  internalForm: number;
-}
-
-declare class Tk_OptionSpec {
-  constructor(init?: Tk_OptionSpec);
-  type: interop.Enum<typeof Tk_OptionType>;
-  optionName: string | null;
-  dbName: string | null;
-  dbClass: string | null;
-  defValue: string | null;
-  objOffset: number;
-  internalOffset: number;
-  flags: number;
-  clientData: interop.Pointer;
-  typeMask: number;
-}
-
-declare class Tk_StyleEngine_ {
-  constructor(init?: Tk_StyleEngine_);
-}
-
-declare class Tk_Style_ {
-  constructor(init?: Tk_Style_);
-}
-
-declare class Tk_Window_ {
-  constructor(init?: Tk_Window_);
-}
-
-declare class Tk_OptionTable_ {
-  constructor(init?: Tk_OptionTable_);
-}
-
-declare class Tk_Cursor_ {
-  constructor(init?: Tk_Cursor_);
-}
-
-declare class Tk_Canvas_ {
-  constructor(init?: Tk_Canvas_);
-}
-
-declare class Tk_BindingTable_ {
-  constructor(init?: Tk_BindingTable_);
-}
-
-declare class TclPlatStubHooks {
-  constructor(init?: TclPlatStubHooks);
-}
-
-declare class TclStubs {
-  constructor(init?: TclStubs);
-  magic: number;
-  hooks: interop.Pointer;
-  tcl_PkgProvideEx: (p1: interop.PointerConvertible, p2: string, p3: string, p4: interop.PointerConvertible) => number | null;
-  tcl_PkgRequireEx: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tcl_Panic: (p1: string) => void | null;
-  tcl_Alloc: (p1: number) => string | null;
-  tcl_Free: (p1: string) => void | null;
-  tcl_Realloc: (p1: string, p2: number) => string | null;
-  tcl_DbCkalloc: (p1: number, p2: string, p3: number) => string | null;
-  tcl_DbCkfree: (p1: string, p2: string, p3: number) => number | null;
-  tcl_DbCkrealloc: (p1: string, p2: number, p3: string, p4: number) => string | null;
-  tcl_CreateFileHandler: (p1: number, p2: number, p3: (p1: interop.PointerConvertible, p2: number) => void, p4: interop.PointerConvertible) => void | null;
-  tcl_DeleteFileHandler: (p1: number) => void | null;
-  tcl_SetTimer: (p1: interop.PointerConvertible) => void | null;
-  tcl_Sleep: (p1: number) => void | null;
-  tcl_WaitForEvent: (p1: interop.PointerConvertible) => number | null;
-  tcl_AppendAllObjTypes: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_AppendStringsToObj: (p1: interop.PointerConvertible) => void | null;
-  tcl_AppendToObj: (p1: interop.PointerConvertible, p2: string, p3: number) => void | null;
-  tcl_ConcatObj: (p1: number, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_ConvertToType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_DbDecrRefCount: (p1: interop.PointerConvertible, p2: string, p3: number) => void | null;
-  tcl_DbIncrRefCount: (p1: interop.PointerConvertible, p2: string, p3: number) => void | null;
-  tcl_DbIsShared: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_DbNewBooleanObj: (p1: number, p2: string, p3: number) => interop.Pointer | null;
-  tcl_DbNewByteArrayObj: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number) => interop.Pointer | null;
-  tcl_DbNewDoubleObj: (p1: number, p2: string, p3: number) => interop.Pointer | null;
-  tcl_DbNewListObj: (p1: number, p2: interop.PointerConvertible, p3: string, p4: number) => interop.Pointer | null;
-  tcl_DbNewLongObj: (p1: number, p2: string, p3: number) => interop.Pointer | null;
-  tcl_DbNewObj: (p1: string, p2: number) => interop.Pointer | null;
-  tcl_DbNewStringObj: (p1: string, p2: number, p3: string, p4: number) => interop.Pointer | null;
-  tcl_DuplicateObj: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclFreeObj: (p1: interop.PointerConvertible) => void | null;
-  tcl_GetBoolean: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_GetBooleanFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetByteArrayFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetDouble: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_GetDoubleFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetIndexFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: number, p6: interop.PointerConvertible) => number | null;
-  tcl_GetInt: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_GetIntFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetLongFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetObjType: (p1: string) => interop.Pointer | null;
-  tcl_GetStringFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
-  tcl_InvalidateStringRep: (p1: interop.PointerConvertible) => void | null;
-  tcl_ListObjAppendList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ListObjAppendElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ListObjGetElements: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tcl_ListObjIndex: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_ListObjLength: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ListObjReplace: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: number, p6: interop.PointerConvertible) => number | null;
-  tcl_NewBooleanObj: (p1: number) => interop.Pointer | null;
-  tcl_NewByteArrayObj: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_NewDoubleObj: (p1: number) => interop.Pointer | null;
-  tcl_NewIntObj: (p1: number) => interop.Pointer | null;
-  tcl_NewListObj: (p1: number, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_NewLongObj: (p1: number) => interop.Pointer | null;
-  tcl_NewObj: () => interop.Pointer | null;
-  tcl_NewStringObj: (p1: string, p2: number) => interop.Pointer | null;
-  tcl_SetBooleanObj: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetByteArrayLength: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_SetByteArrayObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  tcl_SetDoubleObj: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetIntObj: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetListObj: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tcl_SetLongObj: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetObjLength: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetStringObj: (p1: interop.PointerConvertible, p2: string, p3: number) => void | null;
-  tcl_AddErrorInfo: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_AddObjErrorInfo: (p1: interop.PointerConvertible, p2: string, p3: number) => void | null;
-  tcl_AllowExceptions: (p1: interop.PointerConvertible) => void | null;
-  tcl_AppendElement: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_AppendResult: (p1: interop.PointerConvertible) => void | null;
-  tcl_AsyncCreate: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_AsyncDelete: (p1: interop.PointerConvertible) => void | null;
-  tcl_AsyncInvoke: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_AsyncMark: (p1: interop.PointerConvertible) => void | null;
-  tcl_AsyncReady: () => number | null;
-  tcl_BackgroundError: (p1: interop.PointerConvertible) => void | null;
-  tcl_Backslash: (p1: string, p2: interop.PointerConvertible) => number | null;
-  tcl_BadChannelOption: (p1: interop.PointerConvertible, p2: string, p3: string) => number | null;
-  tcl_CallWhenDeleted: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_CancelIdleCall: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tcl_Close: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_CommandComplete: (p1: string) => number | null;
-  tcl_Concat: (p1: number, p2: interop.PointerConvertible) => string | null;
-  tcl_ConvertElement: (p1: string, p2: string, p3: number) => number | null;
-  tcl_ConvertCountedElement: (p1: string, p2: number, p3: string, p4: number) => number | null;
-  tcl_CreateAlias: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: string, p5: number, p6: interop.PointerConvertible) => number | null;
-  tcl_CreateAliasObj: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: string, p5: number, p6: interop.PointerConvertible) => number | null;
-  tcl_CreateChannel: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_CreateChannelHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: number) => void, p4: interop.PointerConvertible) => void | null;
-  tcl_CreateCloseHandler: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_CreateCommand: (p1: interop.PointerConvertible, p2: string, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => interop.Pointer | null;
-  tcl_CreateEventSource: (p1: (p1: interop.PointerConvertible, p2: number) => void, p2: (p1: interop.PointerConvertible, p2: number) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_CreateExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tcl_CreateInterp: () => interop.Pointer | null;
-  tcl_CreateMathFunc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number, p6: interop.PointerConvertible) => void | null;
-  tcl_CreateObjCommand: (p1: interop.PointerConvertible, p2: string, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => interop.Pointer | null;
-  tcl_CreateSlave: (p1: interop.PointerConvertible, p2: string, p3: number) => interop.Pointer | null;
-  tcl_CreateTimerHandler: (p1: number, p2: (p1: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_CreateTrace: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, p6: interop.PointerConvertible, p7: number, p8: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_DeleteAssocData: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_DeleteChannelHandler: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: number) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_DeleteCloseHandler: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_DeleteCommand: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_DeleteCommandFromToken: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_DeleteEvents: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, p2: interop.PointerConvertible) => void | null;
-  tcl_DeleteEventSource: (p1: (p1: interop.PointerConvertible, p2: number) => void, p2: (p1: interop.PointerConvertible, p2: number) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_DeleteExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tcl_DeleteHashEntry: (p1: interop.PointerConvertible) => void | null;
-  tcl_DeleteHashTable: (p1: interop.PointerConvertible) => void | null;
-  tcl_DeleteInterp: (p1: interop.PointerConvertible) => void | null;
-  tcl_DetachPids: (p1: number, p2: interop.PointerConvertible) => void | null;
-  tcl_DeleteTimerHandler: (p1: interop.PointerConvertible) => void | null;
-  tcl_DeleteTrace: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_DontCallWhenDeleted: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_DoOneEvent: (p1: number) => number | null;
-  tcl_DoWhenIdle: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tcl_DStringAppend: (p1: interop.PointerConvertible, p2: string, p3: number) => string | null;
-  tcl_DStringAppendElement: (p1: interop.PointerConvertible, p2: string) => string | null;
-  tcl_DStringEndSublist: (p1: interop.PointerConvertible) => void | null;
-  tcl_DStringFree: (p1: interop.PointerConvertible) => void | null;
-  tcl_DStringGetResult: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_DStringInit: (p1: interop.PointerConvertible) => void | null;
-  tcl_DStringResult: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_DStringSetLength: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_DStringStartSublist: (p1: interop.PointerConvertible) => void | null;
-  tcl_Eof: (p1: interop.PointerConvertible) => number | null;
-  tcl_ErrnoId: () => string | null;
-  tcl_ErrnoMsg: (p1: number) => string | null;
-  tcl_Eval: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_EvalFile: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_EvalObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_EventuallyFree: (p1: interop.PointerConvertible, p2: (p1: string) => void) => void | null;
-  tcl_Exit: (p1: number) => void | null;
-  tcl_ExposeCommand: (p1: interop.PointerConvertible, p2: string, p3: string) => number | null;
-  tcl_ExprBoolean: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprBooleanObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprDouble: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprDoubleObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprLong: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprLongObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_ExprString: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_Finalize: () => void | null;
-  tcl_FindExecutable: (p1: string) => void | null;
-  tcl_FirstHashEntry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_Flush: (p1: interop.PointerConvertible) => number | null;
-  tcl_FreeResult: (p1: interop.PointerConvertible) => void | null;
-  tcl_GetAlias: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tcl_GetAliasObj: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tcl_GetAssocData: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetChannel: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetChannelBufferSize: (p1: interop.PointerConvertible) => number | null;
-  tcl_GetChannelHandle: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tcl_GetChannelInstanceData: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetChannelMode: (p1: interop.PointerConvertible) => number | null;
-  tcl_GetChannelName: (p1: interop.PointerConvertible) => string | null;
-  tcl_GetChannelOption: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  tcl_GetChannelType: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetCommandInfo: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_GetCommandName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
-  tcl_GetErrno: () => number | null;
-  tcl_GetHostName: () => string | null;
-  tcl_GetInterpPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_GetMaster: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetNameOfExecutable: () => string | null;
-  tcl_GetObjResult: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetOpenFile: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
-  tcl_GetPathType: (p1: string) => interop.Enum<typeof Tcl_PathType> | null;
-  tcl_Gets: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_GetsObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_GetServiceMode: () => number | null;
-  tcl_GetSlave: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tcl_GetStdChannel: (p1: number) => interop.Pointer | null;
-  tcl_GetStringResult: (p1: interop.PointerConvertible) => string | null;
-  tcl_GetVar: (p1: interop.PointerConvertible, p2: string, p3: number) => string | null;
-  tcl_GetVar2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => string | null;
-  tcl_GlobalEval: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_GlobalEvalObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_HideCommand: (p1: interop.PointerConvertible, p2: string, p3: string) => number | null;
-  tcl_Init: (p1: interop.PointerConvertible) => number | null;
-  tcl_InitHashTable: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_InputBlocked: (p1: interop.PointerConvertible) => number | null;
-  tcl_InputBuffered: (p1: interop.PointerConvertible) => number | null;
-  tcl_InterpDeleted: (p1: interop.PointerConvertible) => number | null;
-  tcl_IsSafe: (p1: interop.PointerConvertible) => number | null;
-  tcl_JoinPath: (p1: number, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => string | null;
-  tcl_LinkVar: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => number | null;
-  reserved188: interop.Pointer;
-  tcl_MakeFileChannel: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_MakeSafe: (p1: interop.PointerConvertible) => number | null;
-  tcl_MakeTcpClientChannel: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_Merge: (p1: number, p2: interop.PointerConvertible) => string | null;
-  tcl_NextHashEntry: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_NotifyChannel: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_ObjGetVar2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_ObjSetVar2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number) => interop.Pointer | null;
-  tcl_OpenCommandChannel: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_OpenFileChannel: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => interop.Pointer | null;
-  tcl_OpenTcpClient: (p1: interop.PointerConvertible, p2: number, p3: string, p4: string, p5: number, p6: number) => interop.Pointer | null;
-  tcl_OpenTcpServer: (p1: interop.PointerConvertible, p2: number, p3: string, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => void, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_Preserve: (p1: interop.PointerConvertible) => void | null;
-  tcl_PrintDouble: (p1: interop.PointerConvertible, p2: number, p3: string) => void | null;
-  tcl_PutEnv: (p1: string) => number | null;
-  tcl_PosixError: (p1: interop.PointerConvertible) => string | null;
-  tcl_QueueEvent: (p1: interop.PointerConvertible, p2: interop.Enum<typeof Tcl_QueuePosition>) => void | null;
-  tcl_Read: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_ReapDetachedProcs: () => void | null;
-  tcl_RecordAndEval: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_RecordAndEvalObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_RegisterChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_RegisterObjType: (p1: interop.PointerConvertible) => void | null;
-  tcl_RegExpCompile: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tcl_RegExpExec: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => number | null;
-  tcl_RegExpMatch: (p1: interop.PointerConvertible, p2: string, p3: string) => number | null;
-  tcl_RegExpRange: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  tcl_Release: (p1: interop.PointerConvertible) => void | null;
-  tcl_ResetResult: (p1: interop.PointerConvertible) => void | null;
-  tcl_ScanElement: (p1: string, p2: interop.PointerConvertible) => number | null;
-  tcl_ScanCountedElement: (p1: string, p2: number, p3: interop.PointerConvertible) => number | null;
-  tcl_SeekOld: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
-  tcl_ServiceAll: () => number | null;
-  tcl_ServiceEvent: (p1: number) => number | null;
-  tcl_SetAssocData: (p1: interop.PointerConvertible, p2: string, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
-  tcl_SetChannelBufferSize: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetChannelOption: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => number | null;
-  tcl_SetCommandInfo: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_SetErrno: (p1: number) => void | null;
-  tcl_SetErrorCode: (p1: interop.PointerConvertible) => void | null;
-  tcl_SetMaxBlockTime: (p1: interop.PointerConvertible) => void | null;
-  tcl_SetPanicProc: (p1: (p1: string) => void) => void | null;
-  tcl_SetRecursionLimit: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_SetResult: (p1: interop.PointerConvertible, p2: string, p3: (p1: string) => void) => void | null;
-  tcl_SetServiceMode: (p1: number) => number | null;
-  tcl_SetObjErrorCode: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_SetObjResult: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_SetStdChannel: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_SetVar: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => string | null;
-  tcl_SetVar2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: string, p5: number) => string | null;
-  tcl_SignalId: (p1: number) => string | null;
-  tcl_SignalMsg: (p1: number) => string | null;
-  tcl_SourceRCFile: (p1: interop.PointerConvertible) => void | null;
-  tcl_SplitList: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tcl_SplitPath: (p1: string, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tcl_StaticPackage: (p1: interop.PointerConvertible, p2: string, p3: (p1: interop.PointerConvertible) => number, p4: (p1: interop.PointerConvertible) => number) => void | null;
-  tcl_StringMatch: (p1: string, p2: string) => number | null;
-  tcl_TellOld: (p1: interop.PointerConvertible) => number | null;
-  tcl_TraceVar: (p1: interop.PointerConvertible, p2: string, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, p5: interop.PointerConvertible) => number | null;
-  tcl_TraceVar2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, p6: interop.PointerConvertible) => number | null;
-  tcl_TranslateFileName: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => string | null;
-  tcl_Ungets: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number) => number | null;
-  tcl_UnlinkVar: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_UnregisterChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_UnsetVar: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_UnsetVar2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => number | null;
-  tcl_UntraceVar: (p1: interop.PointerConvertible, p2: string, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, p5: interop.PointerConvertible) => void | null;
-  tcl_UntraceVar2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, p6: interop.PointerConvertible) => void | null;
-  tcl_UpdateLinkedVar: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_UpVar: (p1: interop.PointerConvertible, p2: string, p3: string, p4: string, p5: number) => number | null;
-  tcl_UpVar2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: string, p5: string, p6: number) => number | null;
-  tcl_VarEval: (p1: interop.PointerConvertible) => number | null;
-  tcl_VarTraceInfo: (p1: interop.PointerConvertible, p2: string, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_VarTraceInfo2: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, p6: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_Write: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_WrongNumArgs: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: string) => void | null;
-  tcl_DumpActiveMemory: (p1: string) => number | null;
-  tcl_ValidateAllMemory: (p1: string, p2: number) => void | null;
-  tcl_AppendResultVA: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_AppendStringsToObjVA: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_HashStats: (p1: interop.PointerConvertible) => string | null;
-  tcl_ParseVar: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => string | null;
-  tcl_PkgPresent: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => string | null;
-  tcl_PkgPresentEx: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  tcl_PkgProvide: (p1: interop.PointerConvertible, p2: string, p3: string) => number | null;
-  tcl_PkgRequire: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => string | null;
-  tcl_SetErrorCodeVA: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_VarEvalVA: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_WaitPid: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tcl_PanicVA: (p1: string, p2: string) => void | null;
-  tcl_GetVersion: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  tcl_InitMemory: (p1: interop.PointerConvertible) => void | null;
-  tcl_StackChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_UnstackChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_GetStackedChannel: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_SetMainLoop: (p1: () => void) => void | null;
-  reserved285: interop.Pointer;
-  tcl_AppendObjToObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_CreateEncoding: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_CreateThreadExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tcl_DeleteThreadExitHandler: (p1: (p1: interop.PointerConvertible) => void, p2: interop.PointerConvertible) => void | null;
-  tcl_DiscardResult: (p1: interop.PointerConvertible) => void | null;
-  tcl_EvalEx: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number) => number | null;
-  tcl_EvalObjv: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number) => number | null;
-  tcl_EvalObjEx: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_ExitThread: (p1: number) => void | null;
-  tcl_ExternalToUtf: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: number, p6: interop.PointerConvertible, p7: string, p8: number, p9: interop.PointerConvertible, p10: interop.PointerConvertible, p11: interop.PointerConvertible) => number | null;
-  tcl_ExternalToUtfDString: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => string | null;
-  tcl_FinalizeThread: () => void | null;
-  tcl_FinalizeNotifier: (p1: interop.PointerConvertible) => void | null;
-  tcl_FreeEncoding: (p1: interop.PointerConvertible) => void | null;
-  tcl_GetCurrentThread: () => interop.Pointer | null;
-  tcl_GetEncoding: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tcl_GetEncodingName: (p1: interop.PointerConvertible) => string | null;
-  tcl_GetEncodingNames: (p1: interop.PointerConvertible) => void | null;
-  tcl_GetIndexFromObjStruct: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: string, p6: number, p7: interop.PointerConvertible) => number | null;
-  tcl_GetThreadData: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_GetVar2Ex: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => interop.Pointer | null;
-  tcl_InitNotifier: () => interop.Pointer | null;
-  tcl_MutexLock: (p1: interop.PointerConvertible) => void | null;
-  tcl_MutexUnlock: (p1: interop.PointerConvertible) => void | null;
-  tcl_ConditionNotify: (p1: interop.PointerConvertible) => void | null;
-  tcl_ConditionWait: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tcl_NumUtfChars: (p1: string, p2: number) => number | null;
-  tcl_ReadChars: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => number | null;
-  tcl_RestoreResult: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_SaveResult: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_SetSystemEncoding: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_SetVar2Ex: (p1: interop.PointerConvertible, p2: string, p3: string, p4: interop.PointerConvertible, p5: number) => interop.Pointer | null;
-  tcl_ThreadAlert: (p1: interop.PointerConvertible) => void | null;
-  tcl_ThreadQueueEvent: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.Enum<typeof Tcl_QueuePosition>) => void | null;
-  tcl_UniCharAtIndex: (p1: string, p2: number) => number | null;
-  tcl_UniCharToLower: (p1: number) => number | null;
-  tcl_UniCharToTitle: (p1: number) => number | null;
-  tcl_UniCharToUpper: (p1: number) => number | null;
-  tcl_UniCharToUtf: (p1: number, p2: string) => number | null;
-  tcl_UtfAtIndex: (p1: string, p2: number) => string | null;
-  tcl_UtfCharComplete: (p1: string, p2: number) => number | null;
-  tcl_UtfBackslash: (p1: string, p2: interop.PointerConvertible, p3: string) => number | null;
-  tcl_UtfFindFirst: (p1: string, p2: number) => string | null;
-  tcl_UtfFindLast: (p1: string, p2: number) => string | null;
-  tcl_UtfNext: (p1: string) => string | null;
-  tcl_UtfPrev: (p1: string, p2: string) => string | null;
-  tcl_UtfToExternal: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: number, p6: interop.PointerConvertible, p7: string, p8: number, p9: interop.PointerConvertible, p10: interop.PointerConvertible, p11: interop.PointerConvertible) => number | null;
-  tcl_UtfToExternalDString: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => string | null;
-  tcl_UtfToLower: (p1: string) => number | null;
-  tcl_UtfToTitle: (p1: string) => number | null;
-  tcl_UtfToUniChar: (p1: string, p2: interop.PointerConvertible) => number | null;
-  tcl_UtfToUpper: (p1: string) => number | null;
-  tcl_WriteChars: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_WriteObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_GetString: (p1: interop.PointerConvertible) => string | null;
-  tcl_GetDefaultEncodingDir: () => string | null;
-  tcl_SetDefaultEncodingDir: (p1: string) => void | null;
-  tcl_AlertNotifier: (p1: interop.PointerConvertible) => void | null;
-  tcl_ServiceModeHook: (p1: number) => void | null;
-  tcl_UniCharIsAlnum: (p1: number) => number | null;
-  tcl_UniCharIsAlpha: (p1: number) => number | null;
-  tcl_UniCharIsDigit: (p1: number) => number | null;
-  tcl_UniCharIsLower: (p1: number) => number | null;
-  tcl_UniCharIsSpace: (p1: number) => number | null;
-  tcl_UniCharIsUpper: (p1: number) => number | null;
-  tcl_UniCharIsWordChar: (p1: number) => number | null;
-  tcl_UniCharLen: (p1: interop.PointerConvertible) => number | null;
-  tcl_UniCharNcmp: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_UniCharToUtfDString: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => string | null;
-  tcl_UtfToUniCharDString: (p1: string, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetRegExpFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tcl_EvalTokens: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tcl_FreeParse: (p1: interop.PointerConvertible) => void | null;
-  tcl_LogCommandInfo: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number) => void | null;
-  tcl_ParseBraces: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible) => number | null;
-  tcl_ParseCommand: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible) => number | null;
-  tcl_ParseExpr: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_ParseQuotedString: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: number, p6: interop.PointerConvertible) => number | null;
-  tcl_ParseVarName: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
-  tcl_GetCwd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
-  tcl_Chdir: (p1: string) => number | null;
-  tcl_Access: (p1: string, p2: number) => number | null;
-  tcl_Stat: (p1: string, p2: interop.PointerConvertible) => number | null;
-  tcl_UtfNcmp: (p1: string, p2: string, p3: number) => number | null;
-  tcl_UtfNcasecmp: (p1: string, p2: string, p3: number) => number | null;
-  tcl_StringCaseMatch: (p1: string, p2: string, p3: number) => number | null;
-  tcl_UniCharIsControl: (p1: number) => number | null;
-  tcl_UniCharIsGraph: (p1: number) => number | null;
-  tcl_UniCharIsPrint: (p1: number) => number | null;
-  tcl_UniCharIsPunct: (p1: number) => number | null;
-  tcl_RegExpExecObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number, p6: number) => number | null;
-  tcl_RegExpGetInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_NewUnicodeObj: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_SetUnicodeObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  tcl_GetCharLength: (p1: interop.PointerConvertible) => number | null;
-  tcl_GetUniChar: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_GetUnicode: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetRange: (p1: interop.PointerConvertible, p2: number, p3: number) => interop.Pointer | null;
-  tcl_AppendUnicodeToObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  tcl_RegExpMatchObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_SetNotifier: (p1: interop.PointerConvertible) => void | null;
-  tcl_GetAllocMutex: () => interop.Pointer | null;
-  tcl_GetChannelNames: (p1: interop.PointerConvertible) => number | null;
-  tcl_GetChannelNamesEx: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_ProcObjCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_ConditionFinalize: (p1: interop.PointerConvertible) => void | null;
-  tcl_MutexFinalize: (p1: interop.PointerConvertible) => void | null;
-  tcl_CreateThread: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible) => void, p3: interop.PointerConvertible, p4: number, p5: number) => number | null;
-  tcl_ReadRaw: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_WriteRaw: (p1: interop.PointerConvertible, p2: string, p3: number) => number | null;
-  tcl_GetTopChannel: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_ChannelBuffered: (p1: interop.PointerConvertible) => number | null;
-  tcl_ChannelName: (p1: interop.PointerConvertible) => string | null;
-  tcl_ChannelVersion: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_ChannelBlockModeProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_ChannelCloseProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_ChannelClose2Proc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_ChannelInputProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_ChannelOutputProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_ChannelSeekProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_ChannelSetOptionProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => number | null;
-  tcl_ChannelGetOptionProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  tcl_ChannelWatchProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_ChannelGetHandleProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tcl_ChannelFlushProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible) => number | null;
-  tcl_ChannelHandlerProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_JoinThread: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_IsChannelShared: (p1: interop.PointerConvertible) => number | null;
-  tcl_IsChannelRegistered: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_CutChannel: (p1: interop.PointerConvertible) => void | null;
-  tcl_SpliceChannel: (p1: interop.PointerConvertible) => void | null;
-  tcl_ClearChannelHandlers: (p1: interop.PointerConvertible) => void | null;
-  tcl_IsChannelExisting: (p1: string) => number | null;
-  tcl_UniCharNcasecmp: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_UniCharCaseMatch: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_FindHashEntry: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tcl_CreateHashEntry: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_InitCustomHashTable: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tcl_InitObjHashTable: (p1: interop.PointerConvertible) => void | null;
-  tcl_CommandTraceInfo: (p1: interop.PointerConvertible, p2: string, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => void, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_TraceCommand: (p1: interop.PointerConvertible, p2: string, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => void, p5: interop.PointerConvertible) => number | null;
-  tcl_UntraceCommand: (p1: interop.PointerConvertible, p2: string, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => void, p5: interop.PointerConvertible) => void | null;
-  tcl_AttemptAlloc: (p1: number) => string | null;
-  tcl_AttemptDbCkalloc: (p1: number, p2: string, p3: number) => string | null;
-  tcl_AttemptRealloc: (p1: string, p2: number) => string | null;
-  tcl_AttemptDbCkrealloc: (p1: string, p2: number, p3: string, p4: number) => string | null;
-  tcl_AttemptSetObjLength: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_GetChannelThread: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetUnicodeFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetMathFuncInfo: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tcl_ListMathFuncs: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tcl_SubstObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tcl_DetachChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_IsStandardChannel: (p1: interop.PointerConvertible) => number | null;
-  tcl_FSCopyFile: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSCopyDirectory: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_FSCreateDirectory: (p1: interop.PointerConvertible) => number | null;
-  tcl_FSDeleteFile: (p1: interop.PointerConvertible) => number | null;
-  tcl_FSLoadFile: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
-  tcl_FSMatchInDirectory: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: interop.PointerConvertible) => number | null;
-  tcl_FSLink: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tcl_FSRemoveDirectory: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tcl_FSRenameFile: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSLstat: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSUtime: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSFileAttrsGet: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tcl_FSFileAttrsSet: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tcl_FSFileAttrStrings: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSStat: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSAccess: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_FSOpenFileChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => interop.Pointer | null;
-  tcl_FSGetCwd: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSChdir: (p1: interop.PointerConvertible) => number | null;
-  tcl_FSConvertToPathType: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSJoinPath: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_FSSplitPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSEqualPaths: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSGetNormalizedPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSJoinToPath: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSGetInternalRep: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSGetTranslatedPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSEvalFile: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSNewNativePath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSGetNativePath: (p1: interop.PointerConvertible) => string | null;
-  tcl_FSFileSystemInfo: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSPathSeparator: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSListVolumes: () => interop.Pointer | null;
-  tcl_FSRegister: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FSUnregister: (p1: interop.PointerConvertible) => number | null;
-  tcl_FSData: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSGetTranslatedStringPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
-  tcl_FSGetFileSystemForPath: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FSGetPathType: (p1: interop.PointerConvertible) => interop.Enum<typeof Tcl_PathType> | null;
-  tcl_OutputBuffered: (p1: interop.PointerConvertible) => number | null;
-  tcl_FSMountsChanged: (p1: interop.PointerConvertible) => void | null;
-  tcl_EvalTokensStandard: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_GetTime: (p1: interop.PointerConvertible) => void | null;
-  tcl_CreateObjTrace: (p1: interop.PointerConvertible, p2: number, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: interop.PointerConvertible, p6: number, p7: interop.PointerConvertible) => number, p5: interop.PointerConvertible, p6: (p1: interop.PointerConvertible) => void) => interop.Pointer | null;
-  tcl_GetCommandInfoFromToken: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_SetCommandInfoFromToken: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_DbNewWideIntObj: (p1: number, p2: string, p3: number) => interop.Pointer | null;
-  tcl_GetWideIntFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_NewWideIntObj: (p1: number) => interop.Pointer | null;
-  tcl_SetWideIntObj: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_AllocStatBuf: () => interop.Pointer | null;
-  tcl_Seek: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
-  tcl_Tell: (p1: interop.PointerConvertible) => number | null;
-  tcl_ChannelWideSeekProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_DictObjPut: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tcl_DictObjGet: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tcl_DictObjRemove: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_DictObjSize: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_DictObjFirst: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tcl_DictObjNext: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  tcl_DictObjDone: (p1: interop.PointerConvertible) => void | null;
-  tcl_DictObjPutKeyList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  tcl_DictObjRemoveKeyList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tcl_NewDictObj: () => interop.Pointer | null;
-  tcl_DbNewDictObj: (p1: string, p2: number) => interop.Pointer | null;
-  tcl_RegisterConfig: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: string) => void | null;
-  tcl_CreateNamespace: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible) => void) => interop.Pointer | null;
-  tcl_DeleteNamespace: (p1: interop.PointerConvertible) => void | null;
-  tcl_AppendExportList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_Export: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => number | null;
-  tcl_Import: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => number | null;
-  tcl_ForgetImport: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
-  tcl_GetCurrentNamespace: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetGlobalNamespace: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_FindNamespace: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_FindCommand: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_GetCommandFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetCommandFullName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tcl_FSEvalFileEx: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
-  tcl_SetExitProc: (p1: (p1: interop.PointerConvertible) => void) => (p1: interop.PointerConvertible) => void | null;
-  tcl_LimitAddHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => void | null;
-  tcl_LimitRemoveHandler: (p1: interop.PointerConvertible, p2: number, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p4: interop.PointerConvertible) => void | null;
-  tcl_LimitReady: (p1: interop.PointerConvertible) => number | null;
-  tcl_LimitCheck: (p1: interop.PointerConvertible) => number | null;
-  tcl_LimitExceeded: (p1: interop.PointerConvertible) => number | null;
-  tcl_LimitSetCommands: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_LimitSetTime: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_LimitSetGranularity: (p1: interop.PointerConvertible, p2: number, p3: number) => void | null;
-  tcl_LimitTypeEnabled: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_LimitTypeExceeded: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_LimitTypeSet: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_LimitTypeReset: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_LimitGetCommands: (p1: interop.PointerConvertible) => number | null;
-  tcl_LimitGetTime: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_LimitGetGranularity: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_SaveInterpState: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_RestoreInterpState: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_DiscardInterpState: (p1: interop.PointerConvertible) => void | null;
-  tcl_SetReturnOptions: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_GetReturnOptions: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tcl_IsEnsemble: (p1: interop.PointerConvertible) => number | null;
-  tcl_CreateEnsemble: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_FindEnsemble: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  tcl_SetEnsembleSubcommandList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_SetEnsembleMappingDict: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_SetEnsembleUnknownHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_SetEnsembleFlags: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  tcl_GetEnsembleSubcommandList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetEnsembleMappingDict: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetEnsembleUnknownHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetEnsembleFlags: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetEnsembleNamespace: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_SetTimeProc: (p1: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p2: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, p3: interop.PointerConvertible) => void | null;
-  tcl_QueryTimeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tcl_ChannelThreadActionProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number) => void | null;
-  tcl_NewBignumObj: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_DbNewBignumObj: (p1: interop.PointerConvertible, p2: string, p3: number) => interop.Pointer | null;
-  tcl_SetBignumObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_GetBignumFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_TakeBignumFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_TruncateChannel: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_ChannelTruncateProc: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: number) => number | null;
-  tcl_SetChannelErrorInterp: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_GetChannelErrorInterp: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_SetChannelError: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_GetChannelError: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_InitBignumFromDouble: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tcl_GetNamespaceUnknownHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_SetNamespaceUnknownHandler: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetEncodingFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_GetEncodingSearchPath: () => interop.Pointer | null;
-  tcl_SetEncodingSearchPath: (p1: interop.PointerConvertible) => number | null;
-  tcl_GetEncodingNameFromEnvironment: (p1: interop.PointerConvertible) => string | null;
-  tcl_PkgRequireProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  tcl_AppendObjToErrorInfo: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tcl_AppendLimitedToObj: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: string) => void | null;
-  tcl_Format: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_AppendFormatToObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => number | null;
-  tcl_ObjPrintf: (p1: string) => interop.Pointer | null;
-  tcl_AppendPrintfToObj: (p1: interop.PointerConvertible, p2: string) => void | null;
-}
-
-declare class TclIntStubs {
-  constructor(init?: TclIntStubs);
-  magic: number;
-  hooks: interop.Pointer;
-  reserved0: interop.Pointer;
-  reserved1: interop.Pointer;
-  reserved2: interop.Pointer;
-  tclAllocateFreeObjects: () => void | null;
-  reserved4: interop.Pointer;
-  tclCleanupChildren: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  tclCleanupCommand: (p1: interop.PointerConvertible) => void | null;
-  tclCopyAndCollapse: (p1: number, p2: string, p3: string) => number | null;
-  tclCopyChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number | null;
-  tclCreatePipeline: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  tclCreateProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  tclDeleteCompiledLocalVars: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclDeleteVars: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  reserved13: interop.Pointer;
-  tclDumpMemoryInfo: (p1: interop.PointerConvertible) => void | null;
-  reserved15: interop.Pointer;
-  tclExprFloatError: (p1: interop.PointerConvertible, p2: number) => void | null;
-  reserved17: interop.Pointer;
-  reserved18: interop.Pointer;
-  reserved19: interop.Pointer;
-  reserved20: interop.Pointer;
-  reserved21: interop.Pointer;
-  tclFindElement: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  tclFindProc: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  reserved24: interop.Pointer;
-  tclFreePackageInfo: (p1: interop.PointerConvertible) => void | null;
-  reserved26: interop.Pointer;
-  reserved27: interop.Pointer;
-  tclpGetDefaultStdChannel: (p1: number) => interop.Pointer | null;
-  reserved29: interop.Pointer;
-  reserved30: interop.Pointer;
-  tclGetExtension: (p1: string) => string | null;
-  tclGetFrame: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  reserved33: interop.Pointer;
-  tclGetIntForIndex: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  reserved35: interop.Pointer;
-  tclGetLong: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tclGetLoadedPackages: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tclGetNamespaceForQualName: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible, p8: interop.PointerConvertible) => number | null;
-  tclGetObjInterpProc: () => (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tclGetOpenMode: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tclGetOriginalCommand: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclpGetUserHome: (p1: string, p2: interop.PointerConvertible) => string | null;
-  reserved43: interop.Pointer;
-  tclGuessPackageName: (p1: string, p2: interop.PointerConvertible) => number | null;
-  tclHideUnsafeCommands: (p1: interop.PointerConvertible) => number | null;
-  tclInExit: () => number | null;
-  reserved47: interop.Pointer;
-  reserved48: interop.Pointer;
-  reserved49: interop.Pointer;
-  tclInitCompiledLocals: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tclInterpInit: (p1: interop.PointerConvertible) => number | null;
-  reserved52: interop.Pointer;
-  tclInvokeObjectCommand: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tclInvokeStringCommand: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tclIsProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  reserved56: interop.Pointer;
-  reserved57: interop.Pointer;
-  tclLookupVar: (p1: interop.PointerConvertible, p2: string, p3: string, p4: number, p5: string, p6: number, p7: number, p8: interop.PointerConvertible) => interop.Pointer | null;
-  reserved59: interop.Pointer;
-  tclNeedSpace: (p1: string, p2: string) => number | null;
-  tclNewProcBodyObj: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclObjCommandComplete: (p1: interop.PointerConvertible) => number | null;
-  tclObjInterpProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tclObjInvoke: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number) => number | null;
-  reserved65: interop.Pointer;
-  reserved66: interop.Pointer;
-  reserved67: interop.Pointer;
-  reserved68: interop.Pointer;
-  tclpAlloc: (p1: number) => string | null;
-  reserved70: interop.Pointer;
-  reserved71: interop.Pointer;
-  reserved72: interop.Pointer;
-  reserved73: interop.Pointer;
-  tclpFree: (p1: string) => void | null;
-  tclpGetClicks: () => number | null;
-  tclpGetSeconds: () => number | null;
-  tclpGetTime: (p1: interop.PointerConvertible) => void | null;
-  tclpGetTimeZone: (p1: number) => number | null;
-  reserved79: interop.Pointer;
-  reserved80: interop.Pointer;
-  tclpRealloc: (p1: string, p2: number) => string | null;
-  reserved82: interop.Pointer;
-  reserved83: interop.Pointer;
-  reserved84: interop.Pointer;
-  reserved85: interop.Pointer;
-  reserved86: interop.Pointer;
-  reserved87: interop.Pointer;
-  tclPrecTraceProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string | null;
-  tclPreventAliasLoop: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  reserved90: interop.Pointer;
-  tclProcCleanupProc: (p1: interop.PointerConvertible) => void | null;
-  tclProcCompileProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: string) => number | null;
-  tclProcDeleteProc: (p1: interop.PointerConvertible) => void | null;
-  reserved94: interop.Pointer;
-  reserved95: interop.Pointer;
-  tclRenameCommand: (p1: interop.PointerConvertible, p2: string, p3: string) => number | null;
-  tclResetShadowedCmdRefs: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclServiceIdle: () => number | null;
-  reserved99: interop.Pointer;
-  reserved100: interop.Pointer;
-  tclSetPreInitScript: (p1: string) => string | null;
-  tclSetupEnv: (p1: interop.PointerConvertible) => void | null;
-  tclSockGetPort: (p1: interop.PointerConvertible, p2: string, p3: string, p4: interop.PointerConvertible) => number | null;
-  tclSockMinimumBuffers: (p1: number, p2: number) => number | null;
-  reserved105: interop.Pointer;
-  reserved106: interop.Pointer;
-  reserved107: interop.Pointer;
-  tclTeardownNamespace: (p1: interop.PointerConvertible) => void | null;
-  tclUpdateReturnInfo: (p1: interop.PointerConvertible) => number | null;
-  reserved110: interop.Pointer;
-  tcl_AddInterpResolvers: (p1: interop.PointerConvertible, p2: string, p3: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number, p4: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number, p5: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number) => void | null;
-  tcl_AppendExportList: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tcl_CreateNamespace: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible) => void) => interop.Pointer | null;
-  tcl_DeleteNamespace: (p1: interop.PointerConvertible) => void | null;
-  tcl_Export: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => number | null;
-  tcl_FindCommand: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_FindNamespace: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_GetInterpResolvers: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tcl_GetNamespaceResolvers: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tcl_FindNamespaceVar: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number) => interop.Pointer | null;
-  tcl_ForgetImport: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number | null;
-  tcl_GetCommandFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetCommandFullName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tcl_GetCurrentNamespace: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetGlobalNamespace: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tcl_GetVariableFullName: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
-  tcl_Import: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => number | null;
-  tcl_PopCallFrame: (p1: interop.PointerConvertible) => void | null;
-  tcl_PushCallFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
-  tcl_RemoveInterpResolvers: (p1: interop.PointerConvertible, p2: string) => number | null;
-  tcl_SetNamespaceResolvers: (p1: interop.PointerConvertible, p2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number, p3: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => number, p4: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number) => void | null;
-  tclpHasSockets: (p1: interop.PointerConvertible) => number | null;
-  tclpGetDate: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  reserved134: interop.Pointer;
-  reserved135: interop.Pointer;
-  reserved136: interop.Pointer;
-  reserved137: interop.Pointer;
-  tclGetEnv: (p1: string, p2: interop.PointerConvertible) => string | null;
-  reserved139: interop.Pointer;
-  reserved140: interop.Pointer;
-  tclpGetCwd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => string | null;
-  tclSetByteCodeFromAny: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number, p4: interop.PointerConvertible) => number | null;
-  tclAddLiteralObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tclHideLiteral: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => void | null;
-  tclGetAuxDataType: (p1: string) => interop.Pointer | null;
-  tclHandleCreate: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclHandleFree: (p1: interop.PointerConvertible) => void | null;
-  tclHandlePreserve: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclHandleRelease: (p1: interop.PointerConvertible) => void | null;
-  tclRegAbout: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tclRegExpRangeUniChar: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => void | null;
-  tclSetLibraryPath: (p1: interop.PointerConvertible) => void | null;
-  tclGetLibraryPath: () => interop.Pointer | null;
-  reserved154: interop.Pointer;
-  reserved155: interop.Pointer;
-  tclRegError: (p1: interop.PointerConvertible, p2: string, p3: number) => void | null;
-  tclVarTraceExists: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  tclSetStartupScriptFileName: (p1: string) => void | null;
-  tclGetStartupScriptFileName: () => string | null;
-  reserved160: interop.Pointer;
-  tclChannelTransform: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tclChannelEventScriptInvoker: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tclGetInstructionTable: () => interop.Pointer | null;
-  tclExpandCodeArray: (p1: interop.PointerConvertible) => void | null;
-  tclpSetInitialEncodings: () => void | null;
-  tclListObjSetElement: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  tclSetStartupScriptPath: (p1: interop.PointerConvertible) => void | null;
-  tclGetStartupScriptPath: () => interop.Pointer | null;
-  tclpUtfNcmp2: (p1: string, p2: string, p3: number) => number | null;
-  tclCheckInterpTraces: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible) => number | null;
-  tclCheckExecutionTraces: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible) => number | null;
-  tclInThreadExit: () => number | null;
-  tclUniCharMatch: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: number, p5: number) => number | null;
-  reserved174: interop.Pointer;
-  tclCallVarTraces: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number, p7: number) => number | null;
-  tclCleanupVar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclVarErrMsg: (p1: interop.PointerConvertible, p2: string, p3: string, p4: string, p5: string) => void | null;
-  tcl_SetStartupScript: (p1: interop.PointerConvertible, p2: string) => void | null;
-  tcl_GetStartupScript: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  reserved180: interop.Pointer;
-  reserved181: interop.Pointer;
-  tclpLocaltime: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclpGmtime: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  reserved184: interop.Pointer;
-  reserved185: interop.Pointer;
-  reserved186: interop.Pointer;
-  reserved187: interop.Pointer;
-  reserved188: interop.Pointer;
-  reserved189: interop.Pointer;
-  reserved190: interop.Pointer;
-  reserved191: interop.Pointer;
-  reserved192: interop.Pointer;
-  reserved193: interop.Pointer;
-  reserved194: interop.Pointer;
-  reserved195: interop.Pointer;
-  reserved196: interop.Pointer;
-  reserved197: interop.Pointer;
-  tclObjGetFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  reserved199: interop.Pointer;
-  tclpObjRemoveDirectory: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  tclpObjCopyDirectory: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tclpObjCreateDirectory: (p1: interop.PointerConvertible) => number | null;
-  tclpObjDeleteFile: (p1: interop.PointerConvertible) => number | null;
-  tclpObjCopyFile: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tclpObjRenameFile: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tclpObjStat: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tclpObjAccess: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tclpOpenFileChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => interop.Pointer | null;
-  reserved209: interop.Pointer;
-  reserved210: interop.Pointer;
-  reserved211: interop.Pointer;
-  tclpFindExecutable: (p1: string) => void | null;
-  tclGetObjNameOfExecutable: () => interop.Pointer | null;
-  tclSetObjNameOfExecutable: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclStackAlloc: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tclStackFree: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclPushStackFrame: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number) => number | null;
-  tclPopStackFrame: (p1: interop.PointerConvertible) => void | null;
-  reserved219: interop.Pointer;
-  reserved220: interop.Pointer;
-  reserved221: interop.Pointer;
-  reserved222: interop.Pointer;
-  reserved223: interop.Pointer;
-  tclGetPlatform: () => interop.Pointer | null;
-  tclTraceDictPath: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: number) => interop.Pointer | null;
-  tclObjBeingDeleted: (p1: interop.PointerConvertible) => number | null;
-  tclSetNsPath: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
-  tclObjInterpProcCore: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void) => number | null;
-  tclPtrMakeUpvar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: number) => number | null;
-  tclObjLookupVar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: string, p6: number, p7: number, p8: interop.PointerConvertible) => interop.Pointer | null;
-  tclGetNamespaceFromObj: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  tclEvalObjEx: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible, p5: number) => number | null;
-  tclGetSrcInfoForPc: (p1: interop.PointerConvertible) => void | null;
-  tclVarHashCreateVar: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  tclInitVarHashTable: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclBackgroundException: (p1: interop.PointerConvertible, p2: number) => void | null;
-  reserved237: interop.Pointer;
-  reserved238: interop.Pointer;
-  reserved239: interop.Pointer;
-  reserved240: interop.Pointer;
-  reserved241: interop.Pointer;
-  reserved242: interop.Pointer;
-  tclDbDumpActiveObjects: (p1: interop.PointerConvertible) => void | null;
-}
-
-declare class TclPlatStubs {
-  constructor(init?: TclPlatStubs);
-  magic: number;
-  hooks: interop.Pointer;
-}
-
-declare class Tcl_NotifierProcs {
-  constructor(init?: Tcl_NotifierProcs);
-  setTimerProc: (p1: interop.PointerConvertible) => void | null;
-  waitForEventProc: (p1: interop.PointerConvertible) => number | null;
-  createFileHandlerProc: (p1: number, p2: number, p3: (p1: interop.PointerConvertible, p2: number) => void, p4: interop.PointerConvertible) => void | null;
-  deleteFileHandlerProc: (p1: number) => void | null;
-  initNotifierProc: () => interop.Pointer | null;
-  finalizeNotifierProc: (p1: interop.PointerConvertible) => void | null;
-  alertNotifierProc: (p1: interop.PointerConvertible) => void | null;
-  serviceModeHookProc: (p1: number) => void | null;
-}
-
-declare class Tcl_GlobTypeData {
-  constructor(init?: Tcl_GlobTypeData);
-  type: number;
-  perm: number;
-  macType: interop.Pointer;
-  macCreator: interop.Pointer;
-}
-
-declare class Tcl_Time {
-  constructor(init?: Tcl_Time);
-  sec: number;
-  usec: number;
-}
-
-declare class Tcl_DictSearch {
-  constructor(init?: Tcl_DictSearch);
-  next: interop.Pointer;
-  epoch: number;
-  dictionaryPtr: interop.Pointer;
-}
-
-declare class Tcl_HashSearch {
-  constructor(init?: Tcl_HashSearch);
-  tablePtr: interop.Pointer;
-  nextIndex: number;
-  nextEntryPtr: interop.Pointer;
-}
-
-declare class Tcl_HashEntry {
-  constructor(init?: Tcl_HashEntry);
-  nextPtr: interop.Pointer;
-  tablePtr: interop.Pointer;
-  hash: interop.Pointer;
-  clientData: interop.Pointer;
-  key: unnamed_16126239951412607018;
-}
-
-declare class Tcl_HashKeyType {
-  constructor(init?: Tcl_HashKeyType);
-  version: number;
-  flags: number;
-  hashKeyProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  compareKeysProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  allocEntryProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  freeEntryProc: (p1: interop.PointerConvertible) => void | null;
-}
-
-declare class Tcl_DString {
-  constructor(init?: Tcl_DString);
-  string: string | null;
-  length: number;
-  spaceAvl: number;
-  staticSpace: unknown /* const array */;
-}
-
-declare class Tcl_CallFrame {
-  constructor(init?: Tcl_CallFrame);
-  nsPtr: interop.Pointer;
-  dummy1: number;
-  dummy2: number;
-  dummy3: interop.Pointer;
-  dummy4: interop.Pointer;
-  dummy5: interop.Pointer;
-  dummy6: number;
-  dummy7: interop.Pointer;
-  dummy8: interop.Pointer;
-  dummy9: number;
-  dummy10: interop.Pointer;
-  dummy11: interop.Pointer;
-  dummy12: interop.Pointer;
-  dummy13: interop.Pointer;
-}
-
-declare class Tcl_Namespace {
-  constructor(init?: Tcl_Namespace);
-  name: string | null;
-  fullName: string | null;
-  clientData: interop.Pointer;
-  deleteProc: (p1: interop.PointerConvertible) => void | null;
-  parentPtr: interop.Pointer;
-}
-
-declare class Tcl_SavedResult {
-  constructor(init?: Tcl_SavedResult);
-  result: string | null;
-  freeProc: (p1: string) => void | null;
-  objResultPtr: interop.Pointer;
-  appendResult: string | null;
-  appendAvl: number;
-  appendUsed: number;
-  resultSpace: unknown /* const array */;
-}
-
-declare class unnamed_3475170141862813391 {
-  constructor(init?: unnamed_3475170141862813391);
-  ptr: interop.Pointer;
-  value: number;
-}
-
-declare class unnamed_1718681146382766305 {
-  constructor(init?: unnamed_1718681146382766305);
-  ptr1: interop.Pointer;
-  ptr2: interop.Pointer;
-}
-
-declare class Tcl_Value {
-  constructor(init?: Tcl_Value);
-  type: interop.Enum<typeof Tcl_ValueType>;
-  intValue: number;
-  doubleValue: number;
-  wideValue: number;
-}
-
-declare class Tcl_RegExpInfo {
-  constructor(init?: Tcl_RegExpInfo);
-  nsubs: number;
-  matches: interop.Pointer;
-  extendStart: number;
-  reserved: number;
-}
-
-declare class Tcl_RegExpIndices {
-  constructor(init?: Tcl_RegExpIndices);
-  start: number;
-  end: number;
-}
-
-declare class Tcl_Trace_ {
-  constructor(init?: Tcl_Trace_);
-}
-
-declare class Tcl_ThreadDataKey_ {
-  constructor(init?: Tcl_ThreadDataKey_);
-}
-
-declare class Tcl_RegExp_ {
-  constructor(init?: Tcl_RegExp_);
-}
-
-declare class Tcl_Pid_ {
-  constructor(init?: Tcl_Pid_);
-}
-
-declare class Tcl_LoadHandle_ {
-  constructor(init?: Tcl_LoadHandle_);
-}
-
-declare class Tcl_InterpState_ {
-  constructor(init?: Tcl_InterpState_);
-}
-
-declare class Tcl_Dict_ {
-  constructor(init?: Tcl_Dict_);
-}
-
-declare class Tcl_ChannelTypeVersion_ {
-  constructor(init?: Tcl_ChannelTypeVersion_);
-}
-
-declare class Tcl_AsyncHandler_ {
-  constructor(init?: Tcl_AsyncHandler_);
-}
-
-declare class Tk_TSOffset {
-  constructor(init?: Tk_TSOffset);
-  flags: number;
-  xoffset: number;
-  yoffset: number;
 }
 
 declare class PE_state {
@@ -8706,61 +6729,10 @@ declare class timebase_freq_t {
   timebase_den: number;
 }
 
-declare class XActivateDeactivateEvent {
-  constructor(init?: XActivateDeactivateEvent);
-  type: number;
-  serial: number;
-  send_event: number;
-  display: interop.Pointer;
-  window: number;
-}
-
-declare class Tcl_Config {
-  constructor(init?: Tcl_Config);
-  key: string | null;
-  value: string | null;
-}
-
-declare class Tk_ArgvInfo {
-  constructor(init?: Tk_ArgvInfo);
-  key: string | null;
-  type: number;
-  src: string | null;
-  dst: string | null;
-  help: string | null;
-}
-
-declare class Tcl_HashTable {
-  constructor(init?: Tcl_HashTable);
-  buckets: interop.Pointer;
-  staticBuckets: unknown /* const array */;
-  numBuckets: number;
-  numEntries: number;
-  rebuildSize: number;
-  downShift: number;
-  mask: number;
-  keyType: number;
-  findProc: (p1: interop.PointerConvertible, p2: string) => interop.Pointer | null;
-  createProc: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => interop.Pointer | null;
-  typePtr: interop.Pointer;
-}
-
-declare class Tk_ObjCustomOption {
-  constructor(init?: Tk_ObjCustomOption);
-  name: string | null;
-  setProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: string, p6: number, p7: string, p8: number) => number | null;
-  getProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => interop.Pointer | null;
-  restoreProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => void | null;
-  freeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => void | null;
-  clientData: interop.Pointer;
-}
-
-declare class Tk_3DBorder_ {
-  constructor(init?: Tk_3DBorder_);
-}
-
-declare class Tcl_Channel_ {
-  constructor(init?: Tcl_Channel_);
+declare class TkIntXlibStubs {
+  constructor(init?: TkIntXlibStubs);
+  magic: number;
+  hooks: interop.Pointer;
 }
 
 declare class clock_frequency_info_t {
@@ -8790,42 +6762,6 @@ declare class clock_frequency_info_t {
   mem_frequency_min_hz: number;
   mem_frequency_max_hz: number;
   fix_frequency_hz: number;
-}
-
-declare class Tcl_Encoding_ {
-  constructor(init?: Tcl_Encoding_);
-}
-
-declare class Tk_TextLayout_ {
-  constructor(init?: Tk_TextLayout_);
-}
-
-declare class Tcl_ObjType {
-  constructor(init?: Tcl_ObjType);
-  name: string | null;
-  freeIntRepProc: (p1: interop.PointerConvertible) => void | null;
-  dupIntRepProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  updateStringProc: (p1: interop.PointerConvertible) => void | null;
-  setFromAnyProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-}
-
-declare class Tk_PhotoImageBlock {
-  constructor(init?: Tk_PhotoImageBlock);
-  pixelPtr: interop.Pointer;
-  width: number;
-  height: number;
-  pitch: number;
-  pixelSize: number;
-  offset: unknown /* const array */;
-}
-
-declare class Tk_SavedOptions {
-  constructor(init?: Tk_SavedOptions);
-  recordPtr: string | null;
-  tkwin: interop.Pointer;
-  numItems: number;
-  items: unknown /* const array */;
-  nextPtr: interop.Pointer;
 }
 
 declare class __Reply__task_set_ras_pc_t {
@@ -8859,57 +6795,14 @@ declare class log2phys {
 
 declare class ranlib_64 {
   constructor(init?: ranlib_64);
-  ran_un: unnamed_13987264378789662937;
+  ran_un: unnamed_4320346888378553637;
   ran_off: number;
 }
 
-declare class HFSMasterDirectoryBlock {
-  constructor(init?: HFSMasterDirectoryBlock);
-  drSigWord: number;
-  drCrDate: number;
-  drLsMod: number;
-  drAtrb: number;
-  drNmFls: number;
-  drVBMSt: number;
-  drAllocPtr: number;
-  drNmAlBlks: number;
-  drAlBlkSiz: number;
-  drClpSiz: number;
-  drAlBlSt: number;
-  drNxtCNID: number;
-  drFreeBks: number;
-  drVN: unknown /* const array */;
-  drVolBkUp: number;
-  drVSeqNum: number;
-  drWrCnt: number;
-  drXTClpSiz: number;
-  drCTClpSiz: number;
-  drNmRtDirs: number;
-  drFilCnt: number;
-  drDirCnt: number;
-  drFndrInfo: unknown /* const array */;
-  drEmbedSigWord: number;
-  drEmbedExtent: HFSExtentDescriptor;
-  drXTFlSize: number;
-  drXTExtRec: unknown /* const array */;
-  drCTFlSize: number;
-  drCTExtRec: unknown /* const array */;
-}
-
-declare class mach_msg_port_descriptor_t {
-  constructor(init?: mach_msg_port_descriptor_t);
-  name: number;
-  pad1: number;
-  pad2: number;
-  disposition: number;
-  type: number;
-}
-
-declare class __Reply__host_set_special_port_t {
-  constructor(init?: __Reply__host_set_special_port_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
+declare class sadb_ext {
+  constructor(init?: sadb_ext);
+  sadb_ext_len: number;
+  sadb_ext_type: number;
 }
 
 declare class sadb_sens {
@@ -9216,8 +7109,8 @@ declare class un_sockinfo {
   constructor(init?: un_sockinfo);
   unsi_conn_so: number;
   unsi_conn_pcb: number;
-  unsi_addr: unnamed_10884612490709219565;
-  unsi_caddr: unnamed_6952071012929515318;
+  unsi_addr: unnamed_5868516007301915983;
+  unsi_caddr: unnamed_14554331477655427500;
 }
 
 declare class __darwin_arm_neon_state64 {
@@ -9340,6 +7233,18 @@ declare class __Reply__task_dyld_process_info_notify_deregister_t {
   RetCode: number;
 }
 
+declare class __Reply__thread_swap_exception_ports_t {
+  constructor(init?: __Reply__thread_swap_exception_ports_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  old_handlers: unknown /* const array */;
+  NDR: NDR_record_t;
+  masksCnt: number;
+  masks: unknown /* const array */;
+  old_behaviors: unknown /* const array */;
+  old_flavors: unknown /* const array */;
+}
+
 declare class __Request__vm_write_t {
   constructor(init?: __Request__vm_write_t);
   Head: mach_msg_header_t;
@@ -9380,19 +7285,12 @@ declare class __Reply__host_get_io_main_t {
   io_main: mach_msg_port_descriptor_t;
 }
 
-declare class __Reply__vm_protect_t {
-  constructor(init?: __Reply__vm_protect_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class nextvend {
   constructor(init?: nextvend);
   nv_magic: unknown /* const array */;
   nv_version: number;
   : number;
-  nv_U: unnamed_9279470776087544183;
+  nv_U: unnamed_13354706086260099080;
 }
 
 declare class _krb5_enc_kdc_rep_part {
@@ -9422,24 +7320,6 @@ declare class security_token_t {
   val: unknown /* const array */;
 }
 
-declare class unnamed_7192305794184816688 {
-  constructor(init?: unnamed_7192305794184816688);
-  w_Termsig: number;
-  w_Coredump: number;
-  w_Retcode: number;
-  w_Filler: number;
-}
-
-declare class __Request__kext_request_t {
-  constructor(init?: __Request__kext_request_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  request_data: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  user_log_flags: number;
-  request_dataCnt: number;
-}
-
 declare class ldap_url_desc {
   constructor(init?: ldap_url_desc);
   lud_next: interop.Pointer;
@@ -9459,47 +7339,6 @@ declare class kev_request {
   vendor_code: number;
   kev_class: number;
   kev_subclass: number;
-}
-
-declare class Tk_Dash {
-  constructor(init?: Tk_Dash);
-  number: number;
-  pattern: unnamed_5647942776478080617;
-}
-
-declare class Tcl_Filesystem {
-  constructor(init?: Tcl_Filesystem);
-  typeName: string | null;
-  structureLength: number;
-  version: interop.Pointer;
-  pathInFilesystemProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  dupInternalRepProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  freeInternalRepProc: (p1: interop.PointerConvertible) => void | null;
-  internalToNormalizedProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  createInternalRepProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  normalizePathProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  filesystemPathTypeProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  filesystemSeparatorProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  statProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  accessProc: (p1: interop.PointerConvertible, p2: number) => number | null;
-  openFileChannelProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number) => interop.Pointer | null;
-  matchInDirectoryProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: interop.PointerConvertible) => number | null;
-  utimeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  linkProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => interop.Pointer | null;
-  listVolumesProc: () => interop.Pointer | null;
-  fileAttrStringsProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Pointer | null;
-  fileAttrsGetProc: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  fileAttrsSetProc: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  createDirectoryProc: (p1: interop.PointerConvertible) => number | null;
-  removeDirectoryProc: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  deleteFileProc: (p1: interop.PointerConvertible) => number | null;
-  copyFileProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  renameFileProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  copyDirectoryProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  lstatProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  loadFileProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  getCwdProc: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  chdirProc: (p1: interop.PointerConvertible) => number | null;
 }
 
 declare class rpc_routine_arg_descriptor {
@@ -9548,7 +7387,7 @@ declare class icmp6_hdr {
   icmp6_type: number;
   icmp6_code: number;
   icmp6_cksum: number;
-  icmp6_dataun: unnamed_9993560228078637820;
+  icmp6_dataun: unnamed_14870329825906154210;
 }
 
 declare class __Reply__task_get_emulation_vector_t {
@@ -9599,15 +7438,6 @@ declare class au_header32_ex_t {
   ms: number;
 }
 
-declare class __Request__vm_region_recurse_t {
-  constructor(init?: __Request__vm_region_recurse_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  address: number;
-  nesting_depth: number;
-  infoCnt: number;
-}
-
 declare class __Request__mach_port_construct_t {
   constructor(init?: __Request__mach_port_construct_t);
   Head: mach_msg_header_t;
@@ -9622,14 +7452,6 @@ declare class dyld_chained_starts_offsets {
   pointer_format: number;
   starts_count: number;
   chain_starts: unknown /* const array */;
-}
-
-declare class Tcl_Token {
-  constructor(init?: Tcl_Token);
-  type: number;
-  start: string | null;
-  size: number;
-  numComponents: number;
 }
 
 declare class ifma_msghdr {
@@ -9682,20 +7504,6 @@ declare class __Request__vm_protect_t {
   size: number;
   set_maximum: number;
   new_protection: number;
-}
-
-declare class __Request__host_security_create_task_token_t {
-  constructor(init?: __Request__host_security_create_task_token_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  parent_task: mach_msg_port_descriptor_t;
-  host: mach_msg_port_descriptor_t;
-  ledgers: mach_msg_ool_ports_descriptor_t;
-  NDR: NDR_record_t;
-  sec_token: security_token_t;
-  audit_token: audit_token_t;
-  ledgersCnt: number;
-  inherit_memory: number;
 }
 
 declare class __Request__mach_port_get_attributes_t {
@@ -9828,26 +7636,6 @@ declare class vm_region_submap_info_64 {
   object_id_full: number;
 }
 
-declare class task_snapshot_v2 {
-  constructor(init?: task_snapshot_v2);
-  ts_unique_pid: number;
-  ts_ss_flags: number;
-  ts_user_time_in_terminated_threads: number;
-  ts_system_time_in_terminated_threads: number;
-  ts_p_start_sec: number;
-  ts_task_size: number;
-  ts_max_resident_size: number;
-  ts_suspend_count: number;
-  ts_faults: number;
-  ts_pageins: number;
-  ts_cow_faults: number;
-  ts_was_throttled: number;
-  ts_did_throttle: number;
-  ts_latency_qos: number;
-  ts_pid: number;
-  ts_p_comm: unknown /* const array */;
-}
-
 declare class frmrinfo {
   constructor(init?: frmrinfo);
   frmr_rej_pdu0: number;
@@ -9895,13 +7683,6 @@ declare class igmpv3 {
   igmp_misc: number;
   igmp_qqi: number;
   igmp_numsrc: number;
-}
-
-declare class __Request__host_reboot_t {
-  constructor(init?: __Request__host_reboot_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  options: number;
 }
 
 declare class mb_class_stat {
@@ -9959,28 +7740,12 @@ declare class iocs_store_buffer_entry {
   iocs: io_compression_stats;
 }
 
-declare class Tk_GeomMgr {
-  constructor(init?: Tk_GeomMgr);
-  name: string | null;
-  requestProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  lostSlaveProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-}
-
 declare class stackshot_latency_collection {
   constructor(init?: stackshot_latency_collection);
   latency_version: number;
   setup_latency: number;
   total_task_iteration_latency: number;
   total_terminated_task_iteration_latency: number;
-}
-
-declare class __Request__host_set_special_port_t {
-  constructor(init?: __Request__host_set_special_port_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  which: number;
 }
 
 declare class __Reply__mach_port_set_context_t {
@@ -10005,11 +7770,6 @@ declare class __Reply__host_kernel_version_t {
   kernel_versionOffset: number;
   kernel_versionCnt: number;
   kernel_version: unknown /* const array */;
-}
-
-declare class unnamed_1269110085973050989 {
-  constructor(init?: unnamed_1269110085973050989);
-  bitpattern: unknown /* const array */;
 }
 
 declare class objc_selector {
@@ -10136,6 +7896,13 @@ declare class _krb5_key_data {
   constructor(init?: _krb5_key_data);
 }
 
+declare class btinfo_sc_load_info {
+  constructor(init?: btinfo_sc_load_info);
+  sharedCacheSlide: number;
+  sharedCacheUUID: unknown /* const array */;
+  sharedCacheBaseAddress: number;
+}
+
 declare class fstab {
   constructor(init?: fstab);
   fs_spec: string | null;
@@ -10145,13 +7912,6 @@ declare class fstab {
   fs_type: string | null;
   fs_freq: number;
   fs_passno: number;
-}
-
-declare class btinfo_sc_load_info {
-  constructor(init?: btinfo_sc_load_info);
-  sharedCacheSlide: number;
-  sharedCacheUUID: unknown /* const array */;
-  sharedCacheBaseAddress: number;
 }
 
 declare class Float80 {
@@ -10164,6 +7924,12 @@ declare class au_tid {
   constructor(init?: au_tid);
   port: number;
   machine: number;
+}
+
+declare class unnamed_17471426405825150515 {
+  constructor(init?: unnamed_17471426405825150515);
+  tqh_first: interop.Pointer;
+  tqh_last: interop.Pointer;
 }
 
 declare class rr_result {
@@ -10210,28 +7976,11 @@ declare class __Request__thread_swap_mach_voucher_t {
   old_voucher: mach_msg_port_descriptor_t;
 }
 
-declare class HFSPlusAttrInlineData {
-  constructor(init?: HFSPlusAttrInlineData);
-  recordType: number;
-  reserved: number;
-  logicalSize: number;
-  userData: unknown /* const array */;
-}
-
 declare class __Reply__thread_sample_t {
   constructor(init?: __Reply__thread_sample_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-}
-
-declare class unnamed_3131632208855827044 {
-  constructor(init?: unnamed_3131632208855827044);
-  reserved1: number;
-  reserved2: number;
-  reserved3: number;
-  reserved4: number;
-  reserved5: number;
 }
 
 declare class ip6_opt_router {
@@ -10263,18 +8012,6 @@ declare class xinpgen {
   xig_count: number;
   xig_gen: number;
   xig_sogen: number;
-}
-
-declare class Tk_PhotoImageFormat {
-  constructor(init?: Tk_PhotoImageFormat);
-  name: string | null;
-  fileMatchProc: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  stringMatchProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
-  fileReadProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: number, p7: number, p8: number, p9: number, p10: number, p11: number) => number | null;
-  stringReadProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => number | null;
-  fileWriteProc: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  stringWriteProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => number | null;
-  nextPtr: interop.Pointer;
 }
 
 declare class fts5_api {
@@ -10433,27 +8170,9 @@ declare class UText {
   privC: number;
 }
 
-declare class unnamed_12804984068000564476 {
-  constructor(init?: unnamed_12804984068000564476);
-  instr1: number;
-  instr2: number;
-}
-
 declare class if_cellular_status {
   constructor(init?: if_cellular_status);
-  if_cell_u: unnamed_10982442776747473916;
-}
-
-declare class Tk_ConfigSpec {
-  constructor(init?: Tk_ConfigSpec);
-  type: number;
-  argvName: string | null;
-  dbName: string | null;
-  dbClass: string | null;
-  defValue: string | null;
-  offset: number;
-  specFlags: number;
-  customPtr: interop.Pointer;
+  if_cell_u: unnamed_8086752997275463784;
 }
 
 declare class thread_standard_policy {
@@ -10505,7 +8224,7 @@ declare class fvmfile_command {
 
 declare class ranlib {
   constructor(init?: ranlib);
-  ran_un: unnamed_16399479197806178150;
+  ran_un: unnamed_11707847530629603208;
   ran_off: number;
 }
 
@@ -10540,11 +8259,6 @@ declare class __Reply__task_set_mach_voucher_t {
   RetCode: number;
 }
 
-declare class __Request__thread_get_assignment_t {
-  constructor(init?: __Request__thread_get_assignment_t);
-  Head: mach_msg_header_t;
-}
-
 declare class __Reply__task_threads_t {
   constructor(init?: __Reply__task_threads_t);
   Head: mach_msg_header_t;
@@ -10571,6 +8285,18 @@ declare class ostat {
   st_blocks: number;
   st_flags: number;
   st_gen: number;
+}
+
+declare class unnamed_10851913189610803071 {
+  constructor(init?: unnamed_10851913189610803071);
+  offset00: number;
+  seg: sel;
+  argcnt: number;
+  : number;
+  type: number;
+  dpl: number;
+  present: number;
+  offset16: number;
 }
 
 declare class fat_arch_64 {
@@ -10619,6 +8345,10 @@ declare class Operation {
   constructor(init?: Operation);
 }
 
+declare class TkIntXlibStubHooks {
+  constructor(init?: TkIntXlibStubHooks);
+}
+
 declare class __Reply__mach_port_construct_t {
   constructor(init?: __Reply__mach_port_construct_t);
   Head: mach_msg_header_t;
@@ -10643,21 +8373,14 @@ declare class stackshot_latency_cpu {
   intercluster_buf_used: number;
 }
 
-declare class __Request__processor_set_policy_enable_t {
-  constructor(init?: __Request__processor_set_policy_enable_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  policy: number;
-}
-
 declare class _Unwind_Control_Block {
   constructor(init?: _Unwind_Control_Block);
   exception_class: number;
   exception_cleanup: (p1: interop.Enum<typeof _Unwind_Reason_Code>, p2: interop.PointerConvertible) => void | null;
-  unwinder_cache: unnamed_3131632208855827044;
-  barrier_cache: unnamed_15547771113679546793;
-  cleanup_cache: unnamed_1269110085973050989;
-  pr_cache: unnamed_11104031724170527042;
+  unwinder_cache: unnamed_11085822388874491325;
+  barrier_cache: unnamed_1963453509088981222;
+  cleanup_cache: unnamed_2232855473343066318;
+  pr_cache: unnamed_11615304210804108409;
   : number;
 }
 
@@ -10740,13 +8463,6 @@ declare class btinfo_thread_state_data_t {
   tstate: interop.Pointer;
 }
 
-declare class __Reply__processor_assign_t {
-  constructor(init?: __Reply__processor_assign_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class arpstat {
   constructor(init?: arpstat);
   txrequests: number;
@@ -10805,10 +8521,6 @@ declare class __Request__lock_set_create_t {
   policy: number;
 }
 
-declare class Tcl_Mutex_ {
-  constructor(init?: Tcl_Mutex_);
-}
-
 declare class rawarc {
   constructor(init?: rawarc);
   raw_frompc: number;
@@ -10838,13 +8550,6 @@ declare class __Reply__mach_port_extract_right_t {
   poly: mach_msg_port_descriptor_t;
 }
 
-declare class Tcl_Interp {
-  constructor(init?: Tcl_Interp);
-  result: string | null;
-  freeProc: (p1: string) => void | null;
-  errorLine: number;
-}
-
 declare class __Reply__thread_abort_t {
   constructor(init?: __Reply__thread_abort_t);
   Head: mach_msg_header_t;
@@ -10852,14 +8557,29 @@ declare class __Reply__thread_abort_t {
   RetCode: number;
 }
 
-declare class slapi_dn {
-  constructor(init?: slapi_dn);
+declare class ldap_sync_t {
+  constructor(init?: ldap_sync_t);
+  ls_base: string | null;
+  ls_scope: number;
+  ls_filter: string | null;
+  ls_attrs: interop.Pointer;
+  ls_timelimit: number;
+  ls_sizelimit: number;
+  ls_timeout: number;
+  ls_search_entry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.Enum<typeof ldap_sync_refresh_t>) => number | null;
+  ls_search_reference: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
+  ls_intermediate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.Enum<typeof ldap_sync_refresh_t>) => number | null;
+  ls_search_result: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
+  ls_private: interop.Pointer;
+  ls_ld: interop.Pointer;
+  ls_msgid: number;
+  ls_reloadHint: number;
+  ls_cookie: berval;
+  ls_refreshPhase: interop.Enum<typeof ldap_sync_refresh_t>;
 }
 
-declare class unnamed_550285818874235861 {
-  constructor(init?: unnamed_550285818874235861);
-  v: number;
-  h: number;
+declare class slapi_dn {
+  constructor(init?: slapi_dn);
 }
 
 declare class __Request__mach_port_insert_right_t {
@@ -10895,6 +8615,41 @@ declare class policy_infos {
   ts: policy_timeshare_info;
   rr: policy_rr_info;
   fifo: policy_fifo_info;
+}
+
+declare class host_priority_info {
+  constructor(init?: host_priority_info);
+  kernel_priority: number;
+  system_priority: number;
+  server_priority: number;
+  user_priority: number;
+  depress_priority: number;
+  idle_priority: number;
+  minimum_priority: number;
+  maximum_priority: number;
+}
+
+declare class xsocket64 {
+  constructor(init?: xsocket64);
+  xso_len: number;
+  xso_so: number;
+  so_type: number;
+  so_options: number;
+  so_linger: number;
+  so_state: number;
+  so_pcb: number;
+  xso_protocol: number;
+  xso_family: number;
+  so_qlen: number;
+  so_incqlen: number;
+  so_qlimit: number;
+  so_timeo: number;
+  so_error: number;
+  so_pgid: number;
+  so_oobmark: number;
+  so_rcv: xsockbuf;
+  so_snd: xsockbuf;
+  so_uid: number;
 }
 
 declare class __Reply__vm_region_64_t {
@@ -10940,16 +8695,6 @@ declare class ifstat {
   constructor(init?: ifstat);
   ifs_name: unknown /* const array */;
   ascii: unknown /* const array */;
-}
-
-declare class __Reply__mach_memory_entry_get_page_counts_t {
-  constructor(init?: __Reply__mach_memory_entry_get_page_counts_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  resident_cnt: number;
-  dirty_cnt: number;
-  swapped_cnt: number;
 }
 
 declare class tagMENU {
@@ -11000,11 +8745,37 @@ declare class _krb5_pa_data {
   contents: interop.Pointer;
 }
 
+declare class task_snapshot_v2 {
+  constructor(init?: task_snapshot_v2);
+  ts_unique_pid: number;
+  ts_ss_flags: number;
+  ts_user_time_in_terminated_threads: number;
+  ts_system_time_in_terminated_threads: number;
+  ts_p_start_sec: number;
+  ts_task_size: number;
+  ts_max_resident_size: number;
+  ts_suspend_count: number;
+  ts_faults: number;
+  ts_pageins: number;
+  ts_cow_faults: number;
+  ts_was_throttled: number;
+  ts_did_throttle: number;
+  ts_latency_qos: number;
+  ts_pid: number;
+  ts_p_comm: unknown /* const array */;
+}
+
 declare class exit_reason_snapshot {
   constructor(init?: exit_reason_snapshot);
   ers_namespace: number;
   ers_code: number;
   ers_flags: number;
+}
+
+declare class unnamed_8368847888885199020 {
+  constructor(init?: unnamed_8368847888885199020);
+  num_snd_x2: number;
+  num_rcv_x2: number;
 }
 
 declare class __Request__mach_port_type_t {
@@ -11034,14 +8805,6 @@ declare class UCharIterator {
   setState: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => void | null;
 }
 
-declare class __Request__processor_set_policy_disable_t {
-  constructor(init?: __Request__processor_set_policy_disable_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  policy: number;
-  change_threads: number;
-}
-
 declare class __double2 {
   constructor(init?: __double2);
   __sinval: number;
@@ -11052,6 +8815,40 @@ declare class __float2 {
   constructor(init?: __float2);
   __sinval: number;
   __cosval: number;
+}
+
+declare class unnamed_11615304210804108409 {
+  constructor(init?: unnamed_11615304210804108409);
+  fnstart: number;
+  ehtp: interop.Pointer;
+  additional: number;
+  reserved1: number;
+}
+
+declare class unnamed_2232855473343066318 {
+  constructor(init?: unnamed_2232855473343066318);
+  bitpattern: unknown /* const array */;
+}
+
+declare class unnamed_1963453509088981222 {
+  constructor(init?: unnamed_1963453509088981222);
+  sp: number;
+  bitpattern: unknown /* const array */;
+}
+
+declare class dylib_reference {
+  constructor(init?: dylib_reference);
+  isym: number;
+  flags: number;
+}
+
+declare class unnamed_11085822388874491325 {
+  constructor(init?: unnamed_11085822388874491325);
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: number;
 }
 
 declare class __Request__thread_get_special_port_t {
@@ -11066,13 +8863,6 @@ declare class dwarf_eh_bases {
   tbase: number;
   dbase: number;
   func: number;
-}
-
-declare class unnamed_16820094213973402152 {
-  constructor(init?: unnamed_16820094213973402152);
-  w_Stopval: number;
-  w_Stopsig: number;
-  w_Filler: number;
 }
 
 declare class _Unwind_Context {
@@ -11104,17 +8894,6 @@ declare class io_compression_stats {
 
 declare class waitq_set {
   constructor(init?: waitq_set);
-}
-
-declare class __Request__mach_vm_wire_t {
-  constructor(init?: __Request__mach_vm_wire_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  task: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  address: number;
-  size: number;
-  desired_access: number;
 }
 
 declare class xunpgen {
@@ -11205,14 +8984,6 @@ declare class rb_tree {
 declare class rb_node {
   constructor(init?: rb_node);
   opaque: unknown /* const array */;
-}
-
-declare class unnamed_9395669575269098940 {
-  constructor(init?: unnamed_9395669575269098940);
-  top: number;
-  left: number;
-  bottom: number;
-  right: number;
 }
 
 declare class np_uid_t {
@@ -11421,17 +9192,6 @@ declare class __pkthdr {
   constructor(init?: __pkthdr);
 }
 
-declare class __Request__host_set_exception_ports_t {
-  constructor(init?: __Request__host_set_exception_ports_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  new_port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  exception_mask: number;
-  behavior: number;
-  new_flavor: number;
-}
-
 declare class __mbuf {
   constructor(init?: __mbuf);
 }
@@ -11555,6 +9315,27 @@ declare class ipsecstat {
   out_comphist: unknown /* const array */;
 }
 
+declare class mach_port_qos {
+  constructor(init?: mach_port_qos);
+  name: number;
+  prealloc: number;
+  pad1: number;
+  len: number;
+}
+
+declare class source_version_command {
+  constructor(init?: source_version_command);
+  cmd: number;
+  cmdsize: number;
+  version: number;
+}
+
+declare class newesp {
+  constructor(init?: newesp);
+  esp_spi: number;
+  esp_seq: number;
+}
+
 declare class icmp6stat {
   constructor(init?: icmp6stat);
   icp6s_error: number;
@@ -11586,6 +9367,14 @@ declare class ah {
   ah_len: number;
   ah_reserve: number;
   ah_spi: number;
+}
+
+declare class panel {
+  constructor(init?: panel);
+  win: interop.Pointer;
+  below: interop.Pointer;
+  above: interop.Pointer;
+  user: interop.Pointer;
 }
 
 declare class task_gate {
@@ -11692,25 +9481,6 @@ declare class tostruct {
   order: number;
 }
 
-declare class BTHeaderRec {
-  constructor(init?: BTHeaderRec);
-  treeDepth: number;
-  rootNode: number;
-  leafRecords: number;
-  firstLeafNode: number;
-  lastLeafNode: number;
-  nodeSize: number;
-  maxKeyLength: number;
-  totalNodes: number;
-  freeNodes: number;
-  reserved1: number;
-  clumpSize: number;
-  btreeType: number;
-  keyCompareType: number;
-  attributes: number;
-  reserved3: unknown /* const array */;
-}
-
 declare class screen {
   constructor(init?: screen);
 }
@@ -11737,155 +9507,12 @@ declare class hfs_mount_args {
   journal_disable: number;
 }
 
-declare class BTNodeDescriptor {
-  constructor(init?: BTNodeDescriptor);
-  fLink: number;
-  bLink: number;
-  kind: number;
-  height: number;
-  numRecords: number;
-  reserved: number;
-}
-
-declare class HFSPlusVolumeHeader {
-  constructor(init?: HFSPlusVolumeHeader);
-  signature: number;
-  version: number;
-  attributes: number;
-  lastMountedVersion: number;
-  journalInfoBlock: number;
-  createDate: number;
-  modifyDate: number;
-  backupDate: number;
-  checkedDate: number;
-  fileCount: number;
-  folderCount: number;
-  blockSize: number;
-  totalBlocks: number;
-  freeBlocks: number;
-  nextAllocation: number;
-  rsrcClumpSize: number;
-  dataClumpSize: number;
-  nextCatalogID: number;
-  writeCount: number;
-  encodingsBitmap: number;
-  finderInfo: unknown /* const array */;
-  allocationFile: HFSPlusForkData;
-  extentsFile: HFSPlusForkData;
-  catalogFile: HFSPlusForkData;
-  attributesFile: HFSPlusForkData;
-  startupFile: HFSPlusForkData;
-}
-
-declare class HFSPlusAttrKey {
-  constructor(init?: HFSPlusAttrKey);
-  keyLength: number;
-  pad: number;
-  fileID: number;
-  startBlock: number;
-  attrNameLen: number;
-  attrName: unknown /* const array */;
-}
-
-declare class HFSPlusAttrData {
-  constructor(init?: HFSPlusAttrData);
-  recordType: number;
-  reserved: unknown /* const array */;
-  attrSize: number;
-  attrData: unknown /* const array */;
-}
-
-declare class HFSPlusAttrExtents {
-  constructor(init?: HFSPlusAttrExtents);
-  recordType: number;
-  reserved: number;
-  extents: unknown /* const array */;
-}
-
-declare class HFSPlusAttrForkData {
-  constructor(init?: HFSPlusAttrForkData);
-  recordType: number;
-  reserved: number;
-  theFork: HFSPlusForkData;
-}
-
-declare class HFSPlusCatalogThread {
-  constructor(init?: HFSPlusCatalogThread);
-  recordType: number;
-  reserved: number;
-  parentID: number;
-  nodeName: HFSUniStr255;
-}
-
-declare class HFSPlusCatalogFile {
-  constructor(init?: HFSPlusCatalogFile);
-  recordType: number;
-  flags: number;
-  reserved1: number;
-  fileID: number;
-  createDate: number;
-  contentModDate: number;
-  attributeModDate: number;
-  accessDate: number;
-  backupDate: number;
-  bsdInfo: HFSPlusBSDInfo;
-  userInfo: FndrFileInfo;
-  finderInfo: FndrOpaqueInfo;
-  textEncoding: number;
-  reserved2: number;
-  dataFork: HFSPlusForkData;
-  resourceFork: HFSPlusForkData;
-}
-
 declare class sf_hdtr {
   constructor(init?: sf_hdtr);
   headers: interop.Pointer;
   hdr_cnt: number;
   trailers: interop.Pointer;
   trl_cnt: number;
-}
-
-declare class HFSPlusCatalogFolder {
-  constructor(init?: HFSPlusCatalogFolder);
-  recordType: number;
-  flags: number;
-  valence: number;
-  folderID: number;
-  createDate: number;
-  contentModDate: number;
-  attributeModDate: number;
-  accessDate: number;
-  backupDate: number;
-  bsdInfo: HFSPlusBSDInfo;
-  userInfo: FndrDirInfo;
-  finderInfo: FndrOpaqueInfo;
-  textEncoding: number;
-  folderCount: number;
-}
-
-declare class Tk_ErrorHandler_ {
-  constructor(init?: Tk_ErrorHandler_);
-}
-
-declare class HFSCatalogFolder {
-  constructor(init?: HFSCatalogFolder);
-  recordType: number;
-  flags: number;
-  valence: number;
-  folderID: number;
-  createDate: number;
-  modifyDate: number;
-  backupDate: number;
-  userInfo: FndrDirInfo;
-  finderInfo: FndrOpaqueInfo;
-  reserved: unknown /* const array */;
-}
-
-declare class HFSPlusCatalogKey {
-  constructor(init?: HFSPlusCatalogKey);
-  keyLength: number;
-  parentID: number;
-  nodeName: HFSUniStr255;
 }
 
 declare class sqlite3_rtree_query_info {
@@ -11908,28 +9535,12 @@ declare class sqlite3_rtree_query_info {
   apSqlParam: interop.Pointer;
 }
 
-declare class HFSCatalogKey {
-  constructor(init?: HFSCatalogKey);
-  keyLength: number;
-  reserved: number;
-  parentID: number;
-  nodeName: unknown /* const array */;
-}
-
 declare class tostruct_64 {
   constructor(init?: tostruct_64);
   selfpc: number;
   count: number;
   link: number;
   order: number;
-}
-
-declare class HFSPlusForkData {
-  constructor(init?: HFSPlusForkData);
-  logicalSize: number;
-  clumpSize: number;
-  totalBlocks: number;
-  extents: unknown /* const array */;
 }
 
 declare class ip6_opt_nsap {
@@ -11940,64 +9551,6 @@ declare class ip6_opt_nsap {
   ip6on_dst_nsap_len: number;
 }
 
-declare class FndrExtendedFileInfo {
-  constructor(init?: FndrExtendedFileInfo);
-  document_id: number;
-  date_added: number;
-  extended_flags: number;
-  reserved2: number;
-  write_gen_counter: number;
-}
-
-declare class FndrExtendedDirInfo {
-  constructor(init?: FndrExtendedDirInfo);
-  document_id: number;
-  date_added: number;
-  extended_flags: number;
-  reserved3: number;
-  write_gen_counter: number;
-}
-
-declare class FndrOpaqueInfo {
-  constructor(init?: FndrOpaqueInfo);
-  opaque: unknown /* const array */;
-}
-
-declare class host_priority_info {
-  constructor(init?: host_priority_info);
-  kernel_priority: number;
-  system_priority: number;
-  server_priority: number;
-  user_priority: number;
-  depress_priority: number;
-  idle_priority: number;
-  minimum_priority: number;
-  maximum_priority: number;
-}
-
-declare class xsocket64 {
-  constructor(init?: xsocket64);
-  xso_len: number;
-  xso_so: number;
-  so_type: number;
-  so_options: number;
-  so_linger: number;
-  so_state: number;
-  so_pcb: number;
-  xso_protocol: number;
-  xso_family: number;
-  so_qlen: number;
-  so_incqlen: number;
-  so_qlimit: number;
-  so_timeo: number;
-  so_error: number;
-  so_pgid: number;
-  so_oobmark: number;
-  so_rcv: xsockbuf;
-  so_snd: xsockbuf;
-  so_uid: number;
-}
-
 declare class auditpinfo_addr {
   constructor(init?: auditpinfo_addr);
   ap_pid: number;
@@ -12006,50 +9559,6 @@ declare class auditpinfo_addr {
   ap_termid: au_tid_addr;
   ap_asid: number;
   ap_flags: number;
-}
-
-declare class FndrDirInfo {
-  constructor(init?: FndrDirInfo);
-  frRect: unnamed_9395669575269098940;
-  frFlags: number;
-  frLocation: unnamed_7401283081960241141;
-  opaque: number;
-}
-
-declare class mach_port_qos {
-  constructor(init?: mach_port_qos);
-  name: number;
-  prealloc: number;
-  pad1: number;
-  len: number;
-}
-
-declare class source_version_command {
-  constructor(init?: source_version_command);
-  cmd: number;
-  cmdsize: number;
-  version: number;
-}
-
-declare class newesp {
-  constructor(init?: newesp);
-  esp_spi: number;
-  esp_seq: number;
-}
-
-declare class FndrFileInfo {
-  constructor(init?: FndrFileInfo);
-  fdType: number;
-  fdCreator: number;
-  fdFlags: number;
-  fdLocation: unnamed_550285818874235861;
-  opaque: number;
-}
-
-declare class HFSPlusExtentDescriptor {
-  constructor(init?: HFSPlusExtentDescriptor);
-  startBlock: number;
-  blockCount: number;
 }
 
 declare class mach_core_fileheader_v2 {
@@ -12065,16 +9574,18 @@ declare class mach_core_fileheader_v2 {
   files: interop.Pointer;
 }
 
-declare class HFSExtentDescriptor {
-  constructor(init?: HFSExtentDescriptor);
-  startBlock: number;
-  blockCount: number;
-}
-
 declare class HFSUniStr255 {
   constructor(init?: HFSUniStr255);
   length: number;
   unicode: unknown /* const array */;
+}
+
+declare class rawarc_order {
+  constructor(init?: rawarc_order);
+  raw_frompc: number;
+  raw_selfpc: number;
+  raw_count: number;
+  raw_order: number;
 }
 
 declare class image_offset {
@@ -12083,31 +9594,16 @@ declare class image_offset {
   offset: number;
 }
 
-declare class panel {
-  constructor(init?: panel);
-  win: interop.Pointer;
-  below: interop.Pointer;
-  above: interop.Pointer;
-  user: interop.Pointer;
-}
-
-declare class au_tidaddr64 {
-  constructor(init?: au_tidaddr64);
-  port: number;
-  type: number;
-  addr: unknown /* const array */;
-}
-
-declare class unnamed_8096331331514043626 {
-  constructor(init?: unnamed_8096331331514043626);
+declare class unnamed_7711420615956025261 {
+  constructor(init?: unnamed_7711420615956025261);
   le_next: interop.Pointer;
   le_prev: interop.Pointer;
 }
 
-declare class unnamed_17222040562567524509 {
-  constructor(init?: unnamed_17222040562567524509);
-  tqh_first: interop.Pointer;
-  tqh_last: interop.Pointer;
+declare class unnamed_13199390376142184354 {
+  constructor(init?: unnamed_13199390376142184354);
+  tqe_next: interop.Pointer;
+  tqe_prev: interop.Pointer;
 }
 
 declare class au_invalid_t {
@@ -12262,15 +9758,6 @@ declare class au_proc32_t {
   tid: au_tid32;
 }
 
-declare class __Reply__processor_set_tasks_t {
-  constructor(init?: __Reply__processor_set_tasks_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  task_list: mach_msg_ool_ports_descriptor_t;
-  NDR: NDR_record_t;
-  task_listCnt: number;
-}
-
 declare class dyld_chained_ptr_64_kernel_cache_rebase {
   constructor(init?: dyld_chained_ptr_64_kernel_cache_rebase);
   target: number;
@@ -12318,6 +9805,21 @@ declare class cups_dest_s {
   is_default: number;
   num_options: number;
   options: interop.Pointer;
+}
+
+declare class unnamed_3095397964707882416 {
+  constructor(init?: unnamed_3095397964707882416);
+  limit00: number;
+  base00: number;
+  base16: number;
+  type: number;
+  dpl: number;
+  present: number;
+  limit16: number;
+  : number;
+  opsz: number;
+  granular: number;
+  base24: number;
 }
 
 declare class au_inaddr_t {
@@ -12413,6 +9915,13 @@ declare class au_attr32_t {
   dev: number;
 }
 
+declare class au_tidaddr64 {
+  constructor(init?: au_tidaddr64);
+  port: number;
+  type: number;
+  addr: unknown /* const array */;
+}
+
 declare class au_tidaddr32 {
   constructor(init?: au_tidaddr32);
   port: number;
@@ -12448,6 +9957,12 @@ declare class au_class_ent {
   ac_name: string | null;
   ac_class: number;
   ac_desc: string | null;
+}
+
+declare class unnamed_8617991431704144843 {
+  constructor(init?: unnamed_8617991431704144843);
+  instr1: number;
+  instr2: number;
 }
 
 declare class simd_half2x3 {
@@ -12488,13 +10003,10 @@ declare class pipe_fdinfo {
   pipeinfo: pipe_info;
 }
 
-declare class pipe_info {
-  constructor(init?: pipe_info);
-  pipe_stat: vinfo_stat;
-  pipe_handle: number;
-  pipe_peerhandle: number;
-  pipe_status: number;
-  rfu_1: number;
+declare class pshm_fdinfo {
+  constructor(init?: pshm_fdinfo);
+  pfi: proc_fileinfo;
+  pshminfo: pshm_info;
 }
 
 declare class pshm_info {
@@ -12603,21 +10115,12 @@ declare class tcp_sockinfo {
   tcpsi_tp: number;
 }
 
-declare class __Reply__kext_request_t {
-  constructor(init?: __Reply__kext_request_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  response_data: mach_msg_ool_descriptor_t;
-  log_data: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  response_dataCnt: number;
-  log_dataCnt: number;
-  op_result: number;
-}
-
-declare class unnamed_6246702640726293513 {
-  constructor(init?: unnamed_6246702640726293513);
-  in4_tos: number;
+declare class unnamed_10682159380916534482 {
+  constructor(init?: unnamed_10682159380916534482);
+  in6_hlim: number;
+  in6_cksum: number;
+  in6_ifindex: number;
+  in6_hops: number;
 }
 
 declare class in_sockinfo {
@@ -12630,10 +10133,10 @@ declare class in_sockinfo {
   insi_vflag: number;
   insi_ip_ttl: number;
   rfu_1: number;
-  insi_faddr: unnamed_5875706616793615818;
-  insi_laddr: unnamed_18439627466317917467;
-  insi_v4: unnamed_6246702640726293513;
-  insi_v6: unnamed_16467482743495324948;
+  insi_faddr: unnamed_7851555422786624638;
+  insi_laddr: unnamed_8096082473602816505;
+  insi_v4: unnamed_14468356430789685042;
+  insi_v6: unnamed_10682159380916534482;
 }
 
 declare class in4in6_addr {
@@ -12757,6 +10260,17 @@ declare class vnode_info {
   vi_type: number;
   vi_pad: number;
   vi_fsid: fsid;
+}
+
+declare class unnamed_7782833359903947020 {
+  constructor(init?: unnamed_7782833359903947020);
+  numColorChannels: number;
+  log2BlockBytes: number;
+  blockWidth: number;
+  blockHeight: number;
+  isHDR: number;
+  hasAlpha: number;
+  _reserved: number;
 }
 
 declare class vinfo_stat {
@@ -12914,25 +10428,6 @@ declare class vfsquery {
   vq_spare: unknown /* const array */;
 }
 
-declare class Tcl_Parse {
-  constructor(init?: Tcl_Parse);
-  commentStart: string | null;
-  commentSize: number;
-  commandStart: string | null;
-  commandSize: number;
-  numWords: number;
-  tokenPtr: interop.Pointer;
-  numTokens: number;
-  tokensAvailable: number;
-  errorType: number;
-  string: string | null;
-  end: string | null;
-  interp: interop.Pointer;
-  term: string | null;
-  incomplete: number;
-  staticTokens: unknown /* const array */;
-}
-
 declare class vfsidctl {
   constructor(init?: vfsidctl);
   vc_vers: number;
@@ -13030,23 +10525,8 @@ declare class shared_file_mapping_np {
   sfm_init_prot: number;
 }
 
-declare class __Reply__mach_memory_entry_access_tracking_t {
-  constructor(init?: __Reply__mach_memory_entry_access_tracking_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  access_tracking: number;
-  access_tracking_reads: number;
-  access_tracking_writes: number;
-}
-
 declare class inpcbport {
   constructor(init?: inpcbport);
-}
-
-declare class __Request__mach_memory_entry_get_page_counts_t {
-  constructor(init?: __Request__mach_memory_entry_get_page_counts_t);
-  Head: mach_msg_header_t;
 }
 
 declare class __Reply__mach_port_extract_member_t {
@@ -13054,13 +10534,6 @@ declare class __Reply__mach_port_extract_member_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-}
-
-declare class __Request__mach_memory_entry_access_tracking_t {
-  constructor(init?: __Request__mach_memory_entry_access_tracking_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  access_tracking: number;
 }
 
 declare class unw_proc_info_t {
@@ -13075,69 +10548,6 @@ declare class unw_proc_info_t {
   unwind_info_size: number;
   unwind_info: number;
   extra: number;
-}
-
-declare class __Reply__mach_voucher_debug_info_t {
-  constructor(init?: __Reply__mach_voucher_debug_info_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  recipesCnt: number;
-  recipes: unknown /* const array */;
-}
-
-declare class __Reply__mach_voucher_extract_all_attr_recipes_t {
-  constructor(init?: __Reply__mach_voucher_extract_all_attr_recipes_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  recipesCnt: number;
-  recipes: unknown /* const array */;
-}
-
-declare class __Reply__mach_voucher_extract_attr_recipe_t {
-  constructor(init?: __Reply__mach_voucher_extract_attr_recipe_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  recipeCnt: number;
-  recipe: unknown /* const array */;
-}
-
-declare class __Reply__mach_voucher_extract_attr_content_t {
-  constructor(init?: __Reply__mach_voucher_extract_attr_content_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  contentCnt: number;
-  content: unknown /* const array */;
-}
-
-declare class __Request__mach_voucher_debug_info_t {
-  constructor(init?: __Request__mach_voucher_debug_info_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  voucher_name: number;
-  recipesCnt: number;
-}
-
-declare class __Request__mach_voucher_attr_command_t {
-  constructor(init?: __Request__mach_voucher_attr_command_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  key: number;
-  command: number;
-  in_contentCnt: number;
-  in_content: unknown /* const array */;
-  out_contentCnt: number;
-}
-
-declare class __Request__mach_voucher_extract_attr_recipe_t {
-  constructor(init?: __Request__mach_voucher_extract_attr_recipe_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  key: number;
-  recipeCnt: number;
 }
 
 declare class ipsec_wake_pkt_info {
@@ -13226,13 +10636,30 @@ declare class __Reply__mach_vm_page_query_t {
   ref_count: number;
 }
 
-declare class Tcl_Obj {
-  constructor(init?: Tcl_Obj);
-  refCount: number;
-  bytes: string | null;
-  length: number;
-  typePtr: interop.Pointer;
-  internalRep: unnamed_16940517678363118476;
+declare class dyld_info_command {
+  constructor(init?: dyld_info_command);
+  cmd: number;
+  cmdsize: number;
+  rebase_off: number;
+  rebase_size: number;
+  bind_off: number;
+  bind_size: number;
+  weak_bind_off: number;
+  weak_bind_size: number;
+  lazy_bind_off: number;
+  lazy_bind_size: number;
+  export_off: number;
+  export_size: number;
+}
+
+declare class __Reply__mach_vm_remap_t {
+  constructor(init?: __Reply__mach_vm_remap_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  target_address: number;
+  cur_protection: number;
+  max_protection: number;
 }
 
 declare class thread_precedence_policy {
@@ -13379,10 +10806,6 @@ declare class ip6_frag {
   ip6f_reserved: number;
   ip6f_offlg: number;
   ip6f_ident: number;
-}
-
-declare class Tk_Image__ {
-  constructor(init?: Tk_Image__);
 }
 
 declare class __Request__mach_vm_behavior_set_t {
@@ -13555,33 +10978,10 @@ declare class kcdata_type_definition {
   kct_elements: interop.Pointer;
 }
 
-declare class __Reply__clock_alarm_t {
-  constructor(init?: __Reply__clock_alarm_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class proc_vnodepathinfo {
   constructor(init?: proc_vnodepathinfo);
   pvi_cdir: vnode_info_path;
   pvi_rdir: vnode_info_path;
-}
-
-declare class TclStubHooks {
-  constructor(init?: TclStubHooks);
-  tclPlatStubs: interop.Pointer;
-  tclIntStubs: interop.Pointer;
-  tclIntPlatStubs: interop.Pointer;
-}
-
-declare class __Reply__clock_get_attributes_t {
-  constructor(init?: __Reply__clock_get_attributes_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  clock_attrCnt: number;
-  clock_attr: unknown /* const array */;
 }
 
 declare class option {
@@ -13834,13 +11234,6 @@ declare class _pcred {
   p_refcnt: number;
 }
 
-declare class __Reply__clock_set_time_t {
-  constructor(init?: __Reply__clock_set_time_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class sigacts {
   constructor(init?: sigacts);
 }
@@ -13921,13 +11314,6 @@ declare class __Request__mach_vm_machine_attribute_t {
   value: number;
 }
 
-declare class __Request__mach_voucher_extract_all_attr_recipes_t {
-  constructor(init?: __Request__mach_voucher_extract_all_attr_recipes_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  recipesCnt: number;
-}
-
 declare class __Reply__vm_write_t {
   constructor(init?: __Reply__vm_write_t);
   Head: mach_msg_header_t;
@@ -13968,22 +11354,8 @@ declare class knote {
   constructor(init?: knote);
 }
 
-declare class posix_cred {
-  constructor(init?: posix_cred);
-}
-
 declare class ucred {
   constructor(init?: ucred);
-}
-
-declare class HFSPlusBSDInfo {
-  constructor(init?: HFSPlusBSDInfo);
-  ownerID: number;
-  groupID: number;
-  adminFlags: number;
-  ownerFlags: number;
-  fileMode: number;
-  special: unnamed_6913317967658464317;
 }
 
 declare class label {
@@ -14262,6 +11634,8 @@ declare class tcpstat {
   tcps_ka_offload_drops: number;
   tcps_mptcp_triggered_cell: number;
   tcps_fin_timeout_drops: number;
+  tcps_rst_dup_suppressed: number;
+  tcps_rst_not_suppressed: number;
 }
 
 declare class twolevel_hints_command {
@@ -14431,16 +11805,6 @@ declare class _xpc_dictionary_s {
   constructor(init?: _xpc_dictionary_s);
 }
 
-declare class Tcl_EncodingType {
-  constructor(init?: Tcl_EncodingType);
-  encodingName: string | null;
-  toUtfProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: string, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible, p10: interop.PointerConvertible) => number | null;
-  fromUtfProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: number, p5: interop.PointerConvertible, p6: string, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible, p10: interop.PointerConvertible) => number | null;
-  freeProc: (p1: interop.PointerConvertible) => void | null;
-  clientData: interop.Pointer;
-  nullSize: number;
-}
-
 declare class ip6_ext {
   constructor(init?: ip6_ext);
   ip6e_nxt: number;
@@ -14453,7 +11817,7 @@ declare class credentials {
 
 declare class ip6_hdr {
   constructor(init?: ip6_hdr);
-  ip6_ctlun: unnamed_1268940931141765636;
+  ip6_ctlun: unnamed_10135616991905435520;
   ip6_src: in6_addr;
   ip6_dst: in6_addr;
 }
@@ -14480,24 +11844,6 @@ declare class in6_prefixreq {
   ipr_pltime: number;
   ipr_flags: in6_prflags;
   ipr_prefix: sockaddr_in6;
-}
-
-declare class Tk_ElementSpec {
-  constructor(init?: Tk_ElementSpec);
-  version: number;
-  name: string | null;
-  options: interop.Pointer;
-  getSize: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: interop.PointerConvertible, p9: interop.PointerConvertible) => void | null;
-  getBox: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: interop.PointerConvertible, p11: interop.PointerConvertible, p12: interop.PointerConvertible, p13: interop.PointerConvertible) => void | null;
-  getBorderWidth: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  draw: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: number, p6: number, p7: number, p8: number, p9: number, p10: number) => void | null;
-}
-
-declare class __Reply__processor_set_policy_control_t {
-  constructor(init?: __Reply__processor_set_policy_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class fileset_entry_command {
@@ -14621,19 +11967,6 @@ declare class sockaddr_sys {
   ss_reserved: unknown /* const array */;
 }
 
-declare class __Reply__host_processors_t {
-  constructor(init?: __Reply__host_processors_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  out_processor_list: mach_msg_ool_ports_descriptor_t;
-  NDR: NDR_record_t;
-  out_processor_listCnt: number;
-}
-
-declare class Tk_Font_ {
-  constructor(init?: Tk_Font_);
-}
-
 declare class processor_cpu_stat64 {
   constructor(init?: processor_cpu_stat64);
   irq_ex_cnt: number;
@@ -14648,20 +11981,17 @@ declare class processor_cpu_stat64 {
   pmi_cnt: number;
 }
 
-declare class dyld_kernel_process_info {
-  constructor(init?: dyld_kernel_process_info);
-  cache_image_info: dyld_kernel_image_info;
-  timestamp: number;
-  imageCount: number;
-  initialImageCount: number;
-  dyldState: number;
-  no_cache: number;
-  private_cache: number;
+declare class unnamed_13097666654170105294 {
+  constructor(init?: unnamed_13097666654170105294);
+  inp4_ip_tos: number;
 }
 
-declare class unnamed_4284362100486935547 {
-  constructor(init?: unnamed_4284362100486935547);
-  inp4_ip_tos: number;
+declare class unnamed_3780722586148985164 {
+  constructor(init?: unnamed_3780722586148985164);
+  inp6_hlim: number;
+  inp6_cksum: number;
+  inp6_ifindex: number;
+  inp6_hops: number;
 }
 
 declare class xinpcb64 {
@@ -14681,10 +12011,10 @@ declare class xinpcb64 {
   inp_vflag: number;
   inp_ip_ttl: number;
   inp_ip_p: number;
-  inp_dependfaddr: unnamed_9658494857777605109;
-  inp_dependladdr: unnamed_1421198579709750629;
-  inp_depend4: unnamed_4284362100486935547;
-  inp_depend6: unnamed_5798418872761254777;
+  inp_dependfaddr: unnamed_4306535089822406534;
+  inp_dependladdr: unnamed_17175943749766991800;
+  inp_depend4: unnamed_13097666654170105294;
+  inp_depend6: unnamed_3780722586148985164;
   xi_socket: xsocket64;
   xi_alignment_hack: number;
 }
@@ -14750,35 +12080,16 @@ declare class xinpcb {
   xi_alignment_hack: number;
 }
 
-declare class __Reply__host_set_exception_ports_t {
-  constructor(init?: __Reply__host_set_exception_ports_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class unnamed_12889346842302587936 {
-  constructor(init?: unnamed_12889346842302587936);
-  inp4_ip_tos: number;
-  inp4_options: number;
-  inp4_moptions: number;
-}
-
-declare class __Reply__processor_set_threads_t {
-  constructor(init?: __Reply__processor_set_threads_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  thread_list: mach_msg_ool_ports_descriptor_t;
-  NDR: NDR_record_t;
-  thread_listCnt: number;
-}
-
 declare class inpcbpolicy {
   constructor(init?: inpcbpolicy);
 }
 
 declare class ip6_moptions {
   constructor(init?: ip6_moptions);
+}
+
+declare class mbuf {
+  constructor(init?: mbuf);
 }
 
 declare class mach_msg_mac_trailer_t {
@@ -14900,10 +12211,6 @@ declare class ih_pmtu {
   ipm_nextmtu: number;
 }
 
-declare class Tcl_TimerToken_ {
-  constructor(init?: Tcl_TimerToken_);
-}
-
 declare class shared_file_mapping_slide_np {
   constructor(init?: shared_file_mapping_slide_np);
   sms_address: number;
@@ -14929,8 +12236,8 @@ declare class icmp {
   icmp_type: number;
   icmp_code: number;
   icmp_cksum: number;
-  icmp_hun: unnamed_16163939891023180617;
-  icmp_dun: unnamed_18274963185808352070;
+  icmp_hun: unnamed_13962158513039598619;
+  icmp_dun: unnamed_1627070183094216991;
 }
 
 declare class __Reply__task_register_dyld_set_dyld_state_t {
@@ -15056,12 +12363,6 @@ declare class hv_vm_mem_access_msg_t {
   constructor(init?: hv_vm_mem_access_msg_t);
   header: mach_msg_header_t;
   body: hv_data_abort_notification_t;
-}
-
-declare class unnamed_15547771113679546793 {
-  constructor(init?: unnamed_15547771113679546793);
-  sp: number;
-  bitpattern: unknown /* const array */;
 }
 
 declare class __Request__thread_set_mach_voucher_t {
@@ -15209,18 +12510,6 @@ declare class thread_time_constraint_policy {
   preemptible: number;
 }
 
-declare class __Reply__host_swap_exception_ports_t {
-  constructor(init?: __Reply__host_swap_exception_ports_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  old_handlerss: unknown /* const array */;
-  NDR: NDR_record_t;
-  masksCnt: number;
-  masks: unknown /* const array */;
-  old_behaviors: unknown /* const array */;
-  old_flavors: unknown /* const array */;
-}
-
 declare class vm_info_region {
   constructor(init?: vm_info_region);
   vir_start: number;
@@ -15242,24 +12531,12 @@ declare class nd_router_advert {
   nd_ra_retransmit: number;
 }
 
-declare class __Request__processor_set_stack_usage_t {
-  constructor(init?: __Request__processor_set_stack_usage_t);
-  Head: mach_msg_header_t;
+declare class posix_cred {
+  constructor(init?: posix_cred);
 }
 
-declare class mbuf {
-  constructor(init?: mbuf);
-}
-
-declare class __Reply__thread_terminate_t {
-  constructor(init?: __Reply__thread_terminate_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class unnamed_11810500352046755208 {
-  constructor(init?: unnamed_11810500352046755208);
+declare class unnamed_12893189296486044984 {
+  constructor(init?: unnamed_12893189296486044984);
   NV1_opcode: number;
   NV1_xid: number;
   NV1_text: unknown /* const array */;
@@ -15399,19 +12676,6 @@ declare class __Request__task_resume2_t {
   Head: mach_msg_header_t;
 }
 
-declare class __Request__host_processor_set_priv_t {
-  constructor(init?: __Request__host_processor_set_priv_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  set_name: mach_msg_port_descriptor_t;
-}
-
-declare class sadb_ext {
-  constructor(init?: sadb_ext);
-  sadb_ext_len: number;
-  sadb_ext_type: number;
-}
-
 declare class ndrv_protocol_desc {
   constructor(init?: ndrv_protocol_desc);
   version: number;
@@ -15506,7 +12770,7 @@ declare class ifnet_interface_advisory_header {
 declare class in6_ifreq {
   constructor(init?: in6_ifreq);
   ifr_name: unknown /* const array */;
-  ifr_ifru: unnamed_14588102091958030739;
+  ifr_ifru: unnamed_11624122453527324720;
 }
 
 declare class rpc_subsystem {
@@ -15522,7 +12786,7 @@ declare class rpc_subsystem {
 
 declare class if_wifi_status {
   constructor(init?: if_wifi_status);
-  if_wifi_u: unnamed_8068058173877573354;
+  if_wifi_u: unnamed_12400080977536308620;
 }
 
 declare class so_np_extensions {
@@ -15593,53 +12857,37 @@ declare class ifs_iso_8802_3 {
   dot3Compliance: number;
 }
 
-declare class sadb_msg {
-  constructor(init?: sadb_msg);
-  sadb_msg_version: number;
-  sadb_msg_type: number;
-  sadb_msg_errno: number;
-  sadb_msg_satype: number;
-  sadb_msg_len: number;
-  sadb_msg_reserved: number;
-  sadb_msg_seq: number;
-  sadb_msg_pid: number;
-}
-
 declare class ifmedia_description {
   constructor(init?: ifmedia_description);
   ifmt_word: number;
   ifmt_string: string | null;
 }
 
-declare class _krb5_ap_req {
-  constructor(init?: _krb5_ap_req);
-  magic: number;
-  ap_options: number;
-  ticket: interop.Pointer;
-  authenticator: _krb5_enc_data;
+declare class cups_dentry_s {
+  constructor(init?: cups_dentry_s);
+  filename: unknown /* const array */;
+  fileinfo: stat;
 }
 
-declare class rlimit {
-  constructor(init?: rlimit);
-  rlim_cur: number;
-  rlim_max: number;
-}
-
-declare class unnamed_8484498633780266126 {
-  constructor(init?: unnamed_8484498633780266126);
-  control: number;
-  control_ext: number;
-}
-
-declare class unnamed_5031467857764340464 {
-  constructor(init?: unnamed_5031467857764340464);
+declare class unnamed_12642380909708426217 {
+  constructor(init?: unnamed_12642380909708426217);
   control: number;
   org_code: unknown /* const array */;
   ether_type: number;
 }
 
-declare class unnamed_6607071774793166897 {
-  constructor(init?: unnamed_6607071774793166897);
+declare class unnamed_5983823812792710749 {
+  constructor(init?: unnamed_5983823812792710749);
+  control: number;
+  frmr_rej_pdu0: number;
+  frmr_rej_pdu1: number;
+  frmr_control: number;
+  frmr_control_ext: number;
+  frmr_cause: number;
+}
+
+declare class unnamed_5500709861783336209 {
+  constructor(init?: unnamed_5500709861783336209);
   control: number;
   format_id: number;
   class_id: number;
@@ -15659,7 +12907,7 @@ declare class __Request__task_test_async_upcall_propagation_t {
 declare class bpf_dltlist {
   constructor(init?: bpf_dltlist);
   bfl_len: number;
-  bfl_u: unnamed_17575650201846781845;
+  bfl_u: unnamed_15228471721475667251;
 }
 
 declare class bpf_stat {
@@ -15697,17 +12945,6 @@ declare class datum {
   constructor(init?: datum);
   dptr: interop.Pointer;
   dsize: number;
-}
-
-declare class __Request__vm_allocate_cpm_t {
-  constructor(init?: __Request__vm_allocate_cpm_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  task: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  address: number;
-  size: number;
-  flags: number;
 }
 
 declare class __darwin_arm_sve_z_state {
@@ -15778,13 +13015,6 @@ declare class DIR {
   __dd_td: interop.Pointer;
 }
 
-declare class Tk_SmoothMethod {
-  constructor(init?: Tk_SmoothMethod);
-  name: string | null;
-  coordProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: number, p5: interop.PointerConvertible, p6: interop.PointerConvertible) => number | null;
-  postscriptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: number) => void | null;
-}
-
 declare class __Reply__mach_port_dnrequest_info_t {
   constructor(init?: __Reply__mach_port_dnrequest_info_t);
   Head: mach_msg_header_t;
@@ -15826,7 +13056,7 @@ declare class __Request__host_statistics_t {
 declare class ifconf {
   constructor(init?: ifconf);
   ifc_len: number;
-  ifc_ifcu: unnamed_15315128086020544945;
+  ifc_ifcu: unnamed_11253260086941277115;
 }
 
 declare class aiocb {
@@ -15914,17 +13144,6 @@ declare class _copyfile_state {
   constructor(init?: _copyfile_state);
 }
 
-declare class Tk_CustomOption {
-  constructor(init?: Tk_CustomOption);
-  parseProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: string, p5: string, p6: number) => number | null;
-  printProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number, p5: interop.PointerConvertible) => string | null;
-  clientData: interop.Pointer;
-}
-
-declare class Tk_PostscriptInfo_ {
-  constructor(init?: Tk_PostscriptInfo_);
-}
-
 declare class malloc_statistics_t {
   constructor(init?: malloc_statistics_t);
   blocks_in_use: number;
@@ -15945,18 +13164,6 @@ declare class vm_range_t {
   size: number;
 }
 
-declare class pshm_fdinfo {
-  constructor(init?: pshm_fdinfo);
-  pfi: proc_fileinfo;
-  pshminfo: pshm_info;
-}
-
-declare class unnamed_19794695260905054 {
-  constructor(init?: unnamed_19794695260905054);
-  hash: number;
-  summary: malloc_type_summary_v0_t;
-}
-
 declare class malloc_type_summary_v0_t {
   constructor(init?: malloc_type_summary_v0_t);
   version: number;
@@ -15965,13 +13172,6 @@ declare class malloc_type_summary_v0_t {
   type_kind: interop.Enum<typeof malloc_type_kind_v0_t>;
   reserved_1: number;
   layout_semantics: malloc_type_layout_semantics_v0_t;
-}
-
-declare class unnamed_10345764527954279368 {
-  constructor(init?: unnamed_10345764527954279368);
-  opaque1: interop.Pointer;
-  opaque2: interop.Pointer;
-  opaque3: number;
 }
 
 declare class objc_super {
@@ -16035,33 +13235,19 @@ declare class os_activity_s {
   constructor(init?: os_activity_s);
 }
 
-declare class __Request__task_set_emulation_t {
-  constructor(init?: __Request__task_set_emulation_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  routine_entry_pt: number;
-  routine_number: number;
+declare class pipe_info {
+  constructor(init?: pipe_info);
+  pipe_stat: vinfo_stat;
+  pipe_handle: number;
+  pipe_peerhandle: number;
+  pipe_status: number;
+  rfu_1: number;
 }
 
-declare class processor_set_load_info {
-  constructor(init?: processor_set_load_info);
-  task_count: number;
-  thread_count: number;
-  load_average: number;
-  mach_factor: number;
-}
-
-declare class unnamed_9663503115628685357 {
-  constructor(init?: unnamed_9663503115628685357);
+declare class unnamed_1918643197632251027 {
+  constructor(init?: unnamed_1918643197632251027);
   start: number;
   length: number;
-}
-
-declare class __Request__processor_set_tasks_with_flavor_t {
-  constructor(init?: __Request__processor_set_tasks_with_flavor_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
 }
 
 declare class dyld_aot_image_info {
@@ -16095,16 +13281,6 @@ declare class iconv_allocation_t {
   spaceholder: unknown /* const array */;
 }
 
-declare class scattered_relocation_info {
-  constructor(init?: scattered_relocation_info);
-  r_address: number;
-  r_type: number;
-  r_length: number;
-  r_pcrel: number;
-  r_scattered: number;
-  r_value: number;
-}
-
 declare class __Request__thread_get_state_t {
   constructor(init?: __Request__thread_get_state_t);
   Head: mach_msg_header_t;
@@ -16113,19 +13289,9 @@ declare class __Request__thread_get_state_t {
   old_stateCnt: number;
 }
 
-declare class relocation_info {
-  constructor(init?: relocation_info);
-  r_address: number;
-  r_symbolnum: number;
-  r_pcrel: number;
-  r_length: number;
-  r_extern: number;
-  r_type: number;
-}
-
 declare class nlist_64 {
   constructor(init?: nlist_64);
-  n_un: unnamed_996628347941081396;
+  n_un: unnamed_5492683493513449710;
   n_type: number;
   n_sect: number;
   n_desc: number;
@@ -16143,7 +13309,7 @@ declare class __Request__mach_vm_range_create_t {
 
 declare class nlist {
   constructor(init?: nlist);
-  n_un: unnamed_9415269503247588239;
+  n_un: unnamed_2542314000815593647;
   n_type: number;
   n_sect: number;
   n_desc: number;
@@ -16242,12 +13408,6 @@ declare class dyld_chained_ptr_32_bind {
   bind: number;
 }
 
-declare class unnamed_6774222680078317929 {
-  constructor(init?: unnamed_6774222680078317929);
-  __p_forw: interop.Pointer;
-  __p_back: interop.Pointer;
-}
-
 declare class dyld_chained_ptr_64_bind {
   constructor(init?: dyld_chained_ptr_64_bind);
   ordinal: number;
@@ -16259,7 +13419,7 @@ declare class dyld_chained_ptr_64_bind {
 
 declare class extern_proc {
   constructor(init?: extern_proc);
-  p_un: unnamed_15062008226319036936;
+  p_un: unnamed_2599727330696472211;
   p_vmspace: interop.Pointer;
   p_sigacts: interop.Pointer;
   p_flag: number;
@@ -16376,10 +13536,6 @@ declare class dyld_chained_fixups_header {
   symbols_format: number;
 }
 
-declare class Tcl_Var_ {
-  constructor(init?: Tcl_Var_);
-}
-
 declare class uuid_command {
   constructor(init?: uuid_command);
   cmd: number;
@@ -16491,7 +13647,7 @@ declare class au_token {
   constructor(init?: au_token);
   t_data: interop.Pointer;
   len: number;
-  tokens: unnamed_18415285912629137323;
+  tokens: unnamed_13199390376142184354;
 }
 
 declare class linkedit_data_command {
@@ -16530,7 +13686,7 @@ declare class ifkpi {
   constructor(init?: ifkpi);
   ifk_module_id: number;
   ifk_type: number;
-  ifk_data: unnamed_12046250409009717709;
+  ifk_data: unnamed_7379483205066073019;
 }
 
 declare class mach_zone_name {
@@ -16546,7 +13702,7 @@ declare class twolevel_hint {
 
 declare class in6_addr {
   constructor(init?: in6_addr);
-  __u6_addr: unnamed_13006139579446832142;
+  __u6_addr: unnamed_10861874115922531484;
 }
 
 declare class wordexp_t {
@@ -16588,13 +13744,6 @@ declare class gss_krb5_lucid_key {
   type: number;
   length: number;
   data: interop.Pointer;
-}
-
-declare class __Reply__mach_memory_entry_ownership_t {
-  constructor(init?: __Reply__mach_memory_entry_ownership_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class sub_client_command {
@@ -16660,18 +13809,6 @@ declare class tcphdr {
   th_win: number;
   th_sum: number;
   th_urp: number;
-}
-
-declare class __Reply__host_get_exception_ports_t {
-  constructor(init?: __Reply__host_get_exception_ports_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  old_handlers: unknown /* const array */;
-  NDR: NDR_record_t;
-  masksCnt: number;
-  masks: unknown /* const array */;
-  old_behaviors: unknown /* const array */;
-  old_flavors: unknown /* const array */;
 }
 
 declare class vm_region_basic_info {
@@ -16750,10 +13887,6 @@ declare class segment_command_64 {
   flags: number;
 }
 
-declare class Tcl_EncodingState_ {
-  constructor(init?: Tcl_EncodingState_);
-}
-
 declare class stackshot_thread_turnstileinfo_v2 {
   constructor(init?: stackshot_thread_turnstileinfo_v2);
   waiter: number;
@@ -16798,11 +13931,6 @@ declare class rpath_command {
   path: lc_str;
 }
 
-declare class __Request__processor_set_tasks_t {
-  constructor(init?: __Request__processor_set_tasks_t);
-  Head: mach_msg_header_t;
-}
-
 declare class __Reply__task_resume2_t {
   constructor(init?: __Reply__task_resume2_t);
   Head: mach_msg_header_t;
@@ -16843,10 +13971,33 @@ declare class crashinfo_task_security_config {
   task_security_config: number;
 }
 
+declare class unnamed_7545270049141253789 {
+  constructor(init?: unnamed_7545270049141253789);
+  limit00: number;
+  base00: number;
+  base16: number;
+  type: number;
+  : number;
+  present: number;
+  limit16: number;
+  : number;
+  granular: number;
+  base24: number;
+}
+
 declare class crashinfo_mb {
   constructor(init?: crashinfo_mb);
   start_address: number;
   data: unknown /* const array */;
+}
+
+declare class __Request__vm_region_recurse_t {
+  constructor(init?: __Request__vm_region_recurse_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  address: number;
+  nesting_depth: number;
+  infoCnt: number;
 }
 
 declare class gss_OID_set_desc_struct {
@@ -16879,6 +14030,12 @@ declare class NXHashTablePrototype {
   style: number;
 }
 
+declare class unnamed_9526259962648282095 {
+  constructor(init?: unnamed_9526259962648282095);
+  control: number;
+  control_ext: number;
+}
+
 declare class exclave_textlayout_info {
   constructor(init?: exclave_textlayout_info);
   layout_id: number;
@@ -16907,7 +14064,7 @@ declare class socket_info {
   soi_snd: sockbuf_info;
   soi_kind: number;
   rfu_1: number;
-  soi_proto: unnamed_3933339760615492547;
+  soi_proto: unnamed_15953260282657998976;
 }
 
 declare class ip6_hdrctl {
@@ -17025,34 +14182,6 @@ declare class thread_exclaves_info {
   tei_flags: number;
 }
 
-declare class stat {
-  constructor(init?: stat);
-  st_dev: number;
-  st_mode: number;
-  st_nlink: number;
-  st_ino: number;
-  st_uid: number;
-  st_gid: number;
-  st_rdev: number;
-  st_atimespec: timespec;
-  st_mtimespec: timespec;
-  st_ctimespec: timespec;
-  st_birthtimespec: timespec;
-  st_size: number;
-  st_blocks: number;
-  st_blksize: number;
-  st_flags: number;
-  st_gen: number;
-  st_lspare: number;
-  st_qspare: unknown /* const array */;
-}
-
-declare class unnamed_11037506293861388547 {
-  constructor(init?: unnamed_11037506293861388547);
-  num_snd_x2: number;
-  num_rcv_x2: number;
-}
-
 declare class __darwin_mcontext32 {
   constructor(init?: __darwin_mcontext32);
   __es: __darwin_arm_exception_state;
@@ -17089,17 +14218,6 @@ declare class addrinfo {
   ai_next: interop.Pointer;
 }
 
-declare class JournalInfoBlock {
-  constructor(init?: JournalInfoBlock);
-  flags: number;
-  device_signature: unknown /* const array */;
-  offset: number;
-  size: number;
-  ext_jnl_uuid: unknown /* const array */;
-  machine_serial_num: unknown /* const array */;
-  reserved: unknown /* const array */;
-}
-
 declare class stackshot_latency_task {
   constructor(init?: stackshot_latency_task);
   task_uniqueid: number;
@@ -17128,6 +14246,14 @@ declare class proc_workqueueinfo {
   pwq_runthreads: number;
   pwq_blockedthreads: number;
   pwq_state: number;
+}
+
+declare class _krb5_ap_req {
+  constructor(init?: _krb5_ap_req);
+  magic: number;
+  ap_options: number;
+  ticket: interop.Pointer;
+  authenticator: _krb5_enc_data;
 }
 
 declare class sembuf {
@@ -17209,10 +14335,6 @@ declare class rt_msghdr2 {
   rtm_rmx: rt_metrics;
 }
 
-declare class Tcl_Condition_ {
-  constructor(init?: Tcl_Condition_);
-}
-
 declare class newah {
   constructor(init?: newah);
   ah_nxt: number;
@@ -17269,13 +14391,6 @@ declare class stackshot_duration {
   constructor(init?: stackshot_duration);
   stackshot_duration: number;
   stackshot_duration_outer: number;
-}
-
-declare class __Reply__processor_set_policy_disable_t {
-  constructor(init?: __Reply__processor_set_policy_disable_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class task_memorystatus_snapshot {
@@ -17490,6 +14605,16 @@ declare class thread_snapshot_v3 {
   ths_thread_t: number;
 }
 
+declare class mte_info_cell {
+  constructor(init?: mte_info_cell);
+  mic_state: number;
+  mic_tagged_count: number;
+  mic_free_count: number;
+  mic_wired_count: number;
+  mic_wired_tagged_count: number;
+  mic_kernel_wired_tagged_count: number;
+}
+
 declare class user64_dyld_aot_info {
   constructor(init?: user64_dyld_aot_info);
   x86LoadAddress: number;
@@ -17686,25 +14811,6 @@ declare class simd_float2x2 {
   columns: unknown /* const array */;
 }
 
-declare class Tk_Item {
-  constructor(init?: Tk_Item);
-  id: number;
-  nextPtr: interop.Pointer;
-  staticTagSpace: unknown /* const array */;
-  tagPtr: interop.Pointer;
-  tagSpace: number;
-  numTags: number;
-  typePtr: interop.Pointer;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  prevPtr: interop.Pointer;
-  state: interop.Enum<typeof Tk_State>;
-  reserved1: string | null;
-  redraw_flags: number;
-}
-
 declare class simd_float3x4 {
   constructor(init?: simd_float3x4);
   columns: unknown /* const array */;
@@ -17892,10 +14998,6 @@ declare class ip6_dest {
   ip6d_len: number;
 }
 
-declare class Tcl_ThreadId_ {
-  constructor(init?: Tcl_ThreadId_);
-}
-
 declare class __Reply__kmod_get_info_t {
   constructor(init?: __Reply__kmod_get_info_t);
   Head: mach_msg_header_t;
@@ -17985,14 +15087,6 @@ declare class __Request__host_set_multiuser_config_flags_t {
   multiuser_flags: number;
 }
 
-declare class TkStubHooks {
-  constructor(init?: TkStubHooks);
-  tkPlatStubs: interop.Pointer;
-  tkIntStubs: interop.Pointer;
-  tkIntPlatStubs: interop.Pointer;
-  tkIntXlibStubs: interop.Pointer;
-}
-
 declare class thread_extended_info {
   constructor(init?: thread_extended_info);
   pth_user_time: number;
@@ -18067,32 +15161,6 @@ declare class __Request__host_statistics64_t {
   host_info64_outCnt: number;
 }
 
-declare class __Reply__mach_vm_remap_t {
-  constructor(init?: __Reply__mach_vm_remap_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  target_address: number;
-  cur_protection: number;
-  max_protection: number;
-}
-
-declare class dyld_info_command {
-  constructor(init?: dyld_info_command);
-  cmd: number;
-  cmdsize: number;
-  rebase_off: number;
-  rebase_size: number;
-  bind_off: number;
-  bind_size: number;
-  weak_bind_off: number;
-  weak_bind_size: number;
-  lazy_bind_off: number;
-  lazy_bind_size: number;
-  export_off: number;
-  export_size: number;
-}
-
 declare class __Request__mach_memory_object_memory_entry_64_t {
   constructor(init?: __Request__mach_memory_object_memory_entry_64_t);
   Head: mach_msg_header_t;
@@ -18138,22 +15206,6 @@ declare class __Request__mach_memory_object_memory_entry_t {
   permission: number;
 }
 
-declare class rawarc_order {
-  constructor(init?: rawarc_order);
-  raw_frompc: number;
-  raw_selfpc: number;
-  raw_count: number;
-  raw_order: number;
-}
-
-declare class unnamed_5798418872761254777 {
-  constructor(init?: unnamed_5798418872761254777);
-  inp6_hlim: number;
-  inp6_cksum: number;
-  inp6_ifindex: number;
-  inp6_hops: number;
-}
-
 declare class _launch_data {
   constructor(init?: _launch_data);
 }
@@ -18164,48 +15216,6 @@ declare class __Request__host_info_t {
   NDR: NDR_record_t;
   flavor: number;
   host_info_outCnt: number;
-}
-
-declare class Tk_FakeWin {
-  constructor(init?: Tk_FakeWin);
-  display: interop.Pointer;
-  dummy1: string | null;
-  screenNum: number;
-  visual: interop.Pointer;
-  depth: number;
-  window: number;
-  dummy2: string | null;
-  dummy3: string | null;
-  parentPtr: interop.Pointer;
-  dummy4: string | null;
-  dummy5: string | null;
-  pathName: string | null;
-  nameUid: string | null;
-  classUid: string | null;
-  changes: XWindowChanges;
-  dummy6: number;
-  atts: XSetWindowAttributes;
-  dummy7: number;
-  flags: number;
-  dummy8: string | null;
-  dummy10: interop.Pointer;
-  dummy11: number;
-  dummy12: number;
-  dummy13: string | null;
-  dummy14: string | null;
-  dummy15: interop.Pointer;
-  reqWidth: number;
-  reqHeight: number;
-  internalBorderLeft: number;
-  dummy16: string | null;
-  dummy17: string | null;
-  dummy18: interop.Pointer;
-  dummy19: string | null;
-  internalBorderRight: number;
-  internalBorderTop: number;
-  internalBorderBottom: number;
-  minReqWidth: number;
-  minReqHeight: number;
 }
 
 declare class __Reply__mach_port_is_connection_for_service_t {
@@ -18228,12 +15238,6 @@ declare class __Reply__mach_port_guard_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-}
-
-declare class unnamed_7401283081960241141 {
-  constructor(init?: unnamed_7401283081960241141);
-  v: number;
-  h: number;
 }
 
 declare class if_wifi_status_v1 {
@@ -18310,14 +15314,6 @@ declare class __Reply__mach_port_kernel_object_t {
   RetCode: number;
   object_type: number;
   object_addr: number;
-}
-
-declare class unnamed_11104031724170527042 {
-  constructor(init?: unnamed_11104031724170527042);
-  fnstart: number;
-  ehtp: interop.Pointer;
-  additional: number;
-  reserved1: number;
 }
 
 declare class __Reply__task_set_port_space_t {
@@ -18401,14 +15397,6 @@ declare class __Reply__mach_port_mod_refs_t {
   RetCode: number;
 }
 
-declare class unnamed_16467482743495324948 {
-  constructor(init?: unnamed_16467482743495324948);
-  in6_hlim: number;
-  in6_cksum: number;
-  in6_ifindex: number;
-  in6_hops: number;
-}
-
 declare class __Request__mach_vm_purgable_control_t {
   constructor(init?: __Request__mach_vm_purgable_control_t);
   Head: mach_msg_header_t;
@@ -18416,15 +15404,6 @@ declare class __Request__mach_vm_purgable_control_t {
   address: number;
   control: number;
   state: number;
-}
-
-declare class __Reply__mach_voucher_attr_command_t {
-  constructor(init?: __Reply__mach_voucher_attr_command_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  out_contentCnt: number;
-  out_content: unknown /* const array */;
 }
 
 declare class __Reply__mach_port_get_refs_t {
@@ -18611,13 +15590,6 @@ declare class __Request__mach_port_set_attributes_t {
   port_info: unknown /* const array */;
 }
 
-declare class __Reply__clock_set_attributes_t {
-  constructor(init?: __Reply__clock_set_attributes_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class __Request__mach_port_extract_right_t {
   constructor(init?: __Request__mach_port_extract_right_t);
   Head: mach_msg_header_t;
@@ -18788,10 +15760,6 @@ declare class vol_attributes_attr {
   nativeattr: attribute_set;
 }
 
-declare class Tk_StyledElement_ {
-  constructor(init?: Tk_StyledElement_);
-}
-
 declare class __Reply__vm_map_64_t {
   constructor(init?: __Reply__vm_map_64_t);
   Head: mach_msg_header_t;
@@ -18904,14 +15872,6 @@ declare class __Reply__vm_inherit_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
-}
-
-declare class HFSExtentKey {
-  constructor(init?: HFSExtentKey);
-  keyLength: number;
-  forkType: number;
-  fileID: number;
-  startBlock: number;
 }
 
 declare class task_extmod_info {
@@ -19046,19 +16006,19 @@ declare class sqlite3_vtab_cursor {
   pVtab: interop.Pointer;
 }
 
-declare class __Request__clock_get_attributes_t {
-  constructor(init?: __Request__clock_get_attributes_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  clock_attrCnt: number;
-}
-
 declare class __Request__mach_vm_region_info_64_t {
   constructor(init?: __Request__mach_vm_region_info_64_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   address: number;
+}
+
+declare class processor_set_load_info {
+  constructor(init?: processor_set_load_info);
+  task_count: number;
+  thread_count: number;
+  load_average: number;
+  mach_factor: number;
 }
 
 declare class __Request__vm_region_recurse_64_t {
@@ -19176,20 +16136,21 @@ declare class FTS {
   fts_options: number;
 }
 
+declare class unnamed_17581234035804441709 {
+  constructor(init?: unnamed_17581234035804441709);
+  offset00: number;
+  seg: sel;
+  : number;
+  type: number;
+  dpl: number;
+  present: number;
+  offset16: number;
+}
+
 declare class mach_msg_empty_rcv_t {
   constructor(init?: mach_msg_empty_rcv_t);
   header: mach_msg_header_t;
   trailer: mach_msg_trailer_t;
-}
-
-declare class __Request__clock_alarm_t {
-  constructor(init?: __Request__clock_alarm_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  alarm_port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  alarm_type: number;
-  alarm_time: mach_timespec;
 }
 
 declare class ifnet_traffic_rule_action {
@@ -19219,14 +16180,6 @@ declare class __Request__vm_remap_t {
   src_address: number;
   copy: number;
   inheritance: number;
-}
-
-declare class HFSCatalogThread {
-  constructor(init?: HFSCatalogThread);
-  recordType: number;
-  reserved: unknown /* const array */;
-  parentID: number;
-  nodeName: unknown /* const array */;
 }
 
 declare class __Request__vm_map_t {
@@ -19474,14 +16427,6 @@ declare class __Request___mach_make_memory_entry_t {
   permission: number;
 }
 
-declare class __Reply__clock_get_time_t {
-  constructor(init?: __Reply__clock_get_time_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  cur_time: mach_timespec;
-}
-
 declare class kauth_cache_sizes {
   constructor(init?: kauth_cache_sizes);
   kcs_group_size: number;
@@ -19553,6 +16498,13 @@ declare class __Reply__thread_set_state_t {
   RetCode: number;
 }
 
+declare class __Reply__thread_terminate_t {
+  constructor(init?: __Reply__thread_terminate_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class __Request__thread_adopt_exception_handler_t {
   constructor(init?: __Request__thread_adopt_exception_handler_t);
   Head: mach_msg_header_t;
@@ -19575,7 +16527,7 @@ declare class if_link_status {
   constructor(init?: if_link_status);
   ifsr_version: number;
   ifsr_len: number;
-  ifsr_u: unnamed_6655533433688948231;
+  ifsr_u: unnamed_4999453171580543156;
 }
 
 declare class ldapvlvinfo {
@@ -19603,24 +16555,6 @@ declare class __Request__thread_convert_thread_state_t {
   in_stateCnt: number;
   in_state: unknown /* const array */;
   out_stateCnt: number;
-}
-
-declare class Tk_CanvasTextInfo {
-  constructor(init?: Tk_CanvasTextInfo);
-  selBorder: interop.Pointer;
-  selBorderWidth: number;
-  selFgColorPtr: interop.Pointer;
-  selItemPtr: interop.Pointer;
-  selectFirst: number;
-  selectLast: number;
-  anchorItemPtr: interop.Pointer;
-  selectAnchor: number;
-  insertBorder: interop.Pointer;
-  insertWidth: number;
-  insertBorderWidth: number;
-  focusItemPtr: interop.Pointer;
-  gotFocus: number;
-  cursorOn: number;
 }
 
 declare class __Reply__exception_raise_state_t {
@@ -19677,15 +16611,6 @@ declare class __Request__thread_get_mach_voucher_t {
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   which: number;
-}
-
-declare class __Reply__processor_set_statistics_t {
-  constructor(init?: __Reply__processor_set_statistics_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  info_outCnt: number;
-  info_out: unknown /* const array */;
 }
 
 declare class arpreq {
@@ -19771,6 +16696,13 @@ declare class in6_rrenumreq {
   irr_flags: in6_prflags;
   irr_matchprefix: sockaddr_in6;
   irr_useprefix: sockaddr_in6;
+}
+
+declare class __Reply__vm_protect_t {
+  constructor(init?: __Reply__vm_protect_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class __Request__thread_policy_t {
@@ -19875,11 +16807,6 @@ declare class thread_delta_snapshot_v3 {
   tds_effective_policy: number;
 }
 
-declare class __Request__clock_get_time_t {
-  constructor(init?: __Request__clock_get_time_t);
-  Head: mach_msg_header_t;
-}
-
 declare class __Reply__task_map_kcdata_object_64_t {
   constructor(init?: __Reply__task_map_kcdata_object_64_t);
   Head: mach_msg_header_t;
@@ -19894,22 +16821,8 @@ declare class __Request__kmod_get_info_t {
   Head: mach_msg_header_t;
 }
 
-declare class __Reply__thread_wire_t {
-  constructor(init?: __Reply__thread_wire_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class slapi_componentid {
   constructor(init?: slapi_componentid);
-}
-
-declare class __Reply__vm_wire_t {
-  constructor(init?: __Reply__vm_wire_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class fstore {
@@ -19923,13 +16836,6 @@ declare class fstore {
 
 declare class __Reply__act_set_state_t {
   constructor(init?: __Reply__act_set_state_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class __Reply__processor_set_destroy_t {
-  constructor(init?: __Reply__processor_set_destroy_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
@@ -20332,13 +17238,6 @@ declare class __Reply__task_set_exception_ports_t {
   RetCode: number;
 }
 
-declare class __Reply__host_get_special_port_t {
-  constructor(init?: __Reply__host_get_special_port_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  port: mach_msg_port_descriptor_t;
-}
-
 declare class __Reply__thread_create_running_t {
   constructor(init?: __Reply__thread_create_running_t);
   Head: mach_msg_header_t;
@@ -20364,17 +17263,6 @@ declare class ih_idseq {
   icd_seq: number;
 }
 
-declare class __Request__kmod_control_t {
-  constructor(init?: __Request__kmod_control_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  data: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  module: number;
-  flavor: number;
-  dataCnt: number;
-}
-
 declare class nd_opt_rdnss {
   constructor(init?: nd_opt_rdnss);
   nd_opt_rdnss_type: number;
@@ -20397,13 +17285,6 @@ declare class _krb5_enc_data {
   enctype: number;
   kvno: number;
   ciphertext: _krb5_data;
-}
-
-declare class __Reply__host_set_UNDServer_t {
-  constructor(init?: __Reply__host_set_UNDServer_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class __Request__task_get_exception_ports_t {
@@ -20437,6 +17318,8 @@ declare class udpstat {
   udps_snd_swcsum_bytes: number;
   udps_snd6_swcsum: number;
   udps_snd6_swcsum_bytes: number;
+  udps_port_unreach_dup_suppressed: number;
+  udps_port_unreach_not_suppressed: number;
 }
 
 declare class __Reply__task_suspend_t {
@@ -20496,12 +17379,6 @@ declare class __Request__task_set_ras_pc_t {
   NDR: NDR_record_t;
   basepc: number;
   boundspc: number;
-}
-
-declare class TkPlatStubs {
-  constructor(init?: TkPlatStubs);
-  magic: number;
-  hooks: interop.Pointer;
 }
 
 declare class mach_msg_ool_descriptor64_t {
@@ -20643,12 +17520,6 @@ declare class gss_cred_id_struct {
   constructor(init?: gss_cred_id_struct);
 }
 
-declare class unnamed_13382323419751933956 {
-  constructor(init?: unnamed_13382323419751933956);
-  control: number;
-  num_rcv_x2: number;
-}
-
 declare class __Request__task_register_dyld_image_infos_t {
   constructor(init?: __Request__task_register_dyld_image_infos_t);
   Head: mach_msg_header_t;
@@ -20668,6 +17539,14 @@ declare class __Request__task_get_mach_voucher_t {
 declare class __Request__task_get_emulation_vector_t {
   constructor(init?: __Request__task_get_emulation_vector_t);
   Head: mach_msg_header_t;
+}
+
+declare class __Request__task_set_emulation_t {
+  constructor(init?: __Request__task_set_emulation_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  routine_entry_pt: number;
+  routine_number: number;
 }
 
 declare class mach_msg_base_t {
@@ -20866,37 +17745,11 @@ declare class __Request__task_terminate_t {
   Head: mach_msg_header_t;
 }
 
-declare class __Reply__processor_set_tasks_with_flavor_t {
-  constructor(init?: __Reply__processor_set_tasks_with_flavor_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  task_list: mach_msg_ool_ports_descriptor_t;
-  NDR: NDR_record_t;
-  task_listCnt: number;
-}
-
-declare class __Reply__processor_set_info_t {
-  constructor(init?: __Reply__processor_set_info_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  host: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  info_outCnt: number;
-  info_out: unknown /* const array */;
-}
-
 declare class sastat {
   constructor(init?: sastat);
   spi: number;
   created: number;
   lft_c: sadb_lifetime;
-}
-
-declare class __Request__host_get_exception_ports_t {
-  constructor(init?: __Request__host_get_exception_ports_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  exception_mask: number;
 }
 
 declare class __Request__task_create_t {
@@ -20907,41 +17760,6 @@ declare class __Request__task_create_t {
   NDR: NDR_record_t;
   ledgersCnt: number;
   inherit_memory: number;
-}
-
-declare class __Reply__processor_set_stack_usage_t {
-  constructor(init?: __Reply__processor_set_stack_usage_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  ltotal: number;
-  space: number;
-  resident: number;
-  maxusage: number;
-  maxstack: number;
-}
-
-declare class HFSCatalogFile {
-  constructor(init?: HFSCatalogFile);
-  recordType: number;
-  flags: number;
-  fileType: number;
-  userInfo: FndrFileInfo;
-  fileID: number;
-  dataStartBlock: number;
-  dataLogicalSize: number;
-  dataPhysicalSize: number;
-  rsrcStartBlock: number;
-  rsrcLogicalSize: number;
-  rsrcPhysicalSize: number;
-  createDate: number;
-  modifyDate: number;
-  backupDate: number;
-  finderInfo: FndrOpaqueInfo;
-  clumpSize: number;
-  dataExtents: unknown /* const array */;
-  rsrcExtents: unknown /* const array */;
-  reserved: number;
 }
 
 declare class PE_Video {
@@ -20991,22 +17809,6 @@ declare class ifmibdata {
   ifmd_data: if_data64;
 }
 
-declare class __Reply__processor_set_max_priority_t {
-  constructor(init?: __Reply__processor_set_max_priority_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class __Request__clock_set_attributes_t {
-  constructor(init?: __Request__clock_set_attributes_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  clock_attrCnt: number;
-  clock_attr: unknown /* const array */;
-}
-
 declare class __Request__host_register_mach_voucher_attr_manager_t {
   constructor(init?: __Request__host_register_mach_voucher_attr_manager_t);
   Head: mach_msg_header_t;
@@ -21044,22 +17846,6 @@ declare class ip_mreq {
   constructor(init?: ip_mreq);
   imr_multiaddr: in_addr;
   imr_interface: in_addr;
-}
-
-declare class __Request__processor_set_info_t {
-  constructor(init?: __Request__processor_set_info_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  info_outCnt: number;
-}
-
-declare class __Reply__mach_memory_entry_purgable_control_t {
-  constructor(init?: __Reply__mach_memory_entry_purgable_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  state: number;
 }
 
 declare class z_stream_s {
@@ -21116,41 +17902,12 @@ declare class __Reply__task_inspect_t {
   info_out: unknown /* const array */;
 }
 
-declare class __Request__processor_set_policy_control_t {
-  constructor(init?: __Request__processor_set_policy_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  policy_infoCnt: number;
-  policy_info: unknown /* const array */;
-  change: number;
-}
-
-declare class __Reply__processor_control_t {
-  constructor(init?: __Reply__processor_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class __Reply__mach_vm_allocate_t {
   constructor(init?: __Reply__mach_vm_allocate_t);
   Head: mach_msg_header_t;
   NDR: NDR_record_t;
   RetCode: number;
   address: number;
-}
-
-declare class __Reply__processor_exit_t {
-  constructor(init?: __Reply__processor_exit_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class __Request__processor_get_assignment_t {
-  constructor(init?: __Request__processor_get_assignment_t);
-  Head: mach_msg_header_t;
 }
 
 declare class xsockbuf {
@@ -21162,20 +17919,6 @@ declare class xsockbuf {
   sb_lowat: number;
   sb_flags: number;
   sb_timeo: number;
-}
-
-declare class __Request__processor_assign_t {
-  constructor(init?: __Request__processor_assign_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  new_set: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  wait: number;
-}
-
-declare class __Request__processor_exit_t {
-  constructor(init?: __Request__processor_exit_t);
-  Head: mach_msg_header_t;
 }
 
 declare class au_ip_t {
@@ -21192,31 +17935,8 @@ declare class au_ip_t {
   dest: number;
 }
 
-declare class __Request__processor_start_t {
-  constructor(init?: __Request__processor_start_t);
-  Head: mach_msg_header_t;
-}
-
-declare class __Reply__host_security_set_task_token_t {
-  constructor(init?: __Reply__host_security_set_task_token_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class os_workgroup_max_parallel_threads_attr_s {
   constructor(init?: os_workgroup_max_parallel_threads_attr_s);
-}
-
-declare class __Request__host_security_set_task_token_t {
-  constructor(init?: __Request__host_security_set_task_token_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  target_task: mach_msg_port_descriptor_t;
-  host: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  sec_token: security_token_t;
-  audit_token: audit_token_t;
 }
 
 declare class sadb_x_sa2 {
@@ -21257,15 +17977,6 @@ declare class mach_msg_header_t {
   msgh_id: number;
 }
 
-declare class __Reply__kmod_control_t {
-  constructor(init?: __Reply__kmod_control_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  data: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  dataCnt: number;
-}
-
 declare class dyld_aot_shared_cache_info {
   constructor(init?: dyld_aot_shared_cache_info);
   cacheBaseAddress: number;
@@ -21287,16 +17998,6 @@ declare class __Reply__lock_set_destroy_t {
   RetCode: number;
 }
 
-declare class __Reply__host_get_boot_info_t {
-  constructor(init?: __Reply__host_get_boot_info_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  boot_infoOffset: number;
-  boot_infoCnt: number;
-  boot_info: unknown /* const array */;
-}
-
 declare class thread_delta_snapshot_v2 {
   constructor(init?: thread_delta_snapshot_v2);
   tds_thread_id: number;
@@ -21313,28 +18014,10 @@ declare class thread_delta_snapshot_v2 {
   tds_io_tier: number;
 }
 
-declare class __Request__host_swap_exception_ports_t {
-  constructor(init?: __Request__host_swap_exception_ports_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  new_port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  exception_mask: number;
-  behavior: number;
-  new_flavor: number;
-}
-
 declare class rpc_signature {
   constructor(init?: rpc_signature);
   rd: rpc_routine_descriptor;
   rad: unknown /* const array */;
-}
-
-declare class __Request__host_get_clock_control_t {
-  constructor(init?: __Request__host_get_clock_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  clock_id: number;
 }
 
 declare class _krb5_ticket {
@@ -21343,21 +18026,6 @@ declare class _krb5_ticket {
   server: interop.Pointer;
   enc_part: _krb5_enc_data;
   enc_part2: interop.Pointer;
-}
-
-declare class unnamed_11107668213163414474 {
-  constructor(init?: unnamed_11107668213163414474);
-  limit00: number;
-  base00: number;
-  base16: number;
-  type: number;
-  dpl: number;
-  present: number;
-  limit16: number;
-  : number;
-  opsz: number;
-  granular: number;
-  base24: number;
 }
 
 declare class ar_hdr {
@@ -21377,31 +18045,9 @@ declare class ip6_mtuinfo {
   ip6m_mtu: number;
 }
 
-declare class __Request__host_default_memory_manager_t {
-  constructor(init?: __Request__host_default_memory_manager_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  default_manager: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  cluster_size: number;
-}
-
-declare class __Request__host_priv_statistics_t {
-  constructor(init?: __Request__host_priv_statistics_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  host_info_outCnt: number;
-}
-
 declare class simd_half3x3 {
   constructor(init?: simd_half3x3);
   columns: unknown /* const array */;
-}
-
-declare class __Request__host_get_boot_info_t {
-  constructor(init?: __Request__host_get_boot_info_t);
-  Head: mach_msg_header_t;
 }
 
 declare class simd_float4x2 {
@@ -21506,15 +18152,6 @@ declare class kevent {
   udata: interop.Pointer;
 }
 
-declare class HFSPlusExtentKey {
-  constructor(init?: HFSPlusExtentKey);
-  keyLength: number;
-  forkType: number;
-  pad: number;
-  fileID: number;
-  startBlock: number;
-}
-
 declare class mach_msg_seqno_trailer_t {
   constructor(init?: mach_msg_seqno_trailer_t);
   msgh_trailer_type: number;
@@ -21526,7 +18163,7 @@ declare class ndrv_demux_desc {
   constructor(init?: ndrv_demux_desc);
   type: number;
   length: number;
-  data: unnamed_11206538674155518421;
+  data: unnamed_8227840576709709911;
 }
 
 declare class __Reply__mach_port_get_context_t {
@@ -21577,13 +18214,6 @@ declare class task_zone_info_data {
   tzi_caller_acct: number;
   tzi_task_alloc: number;
   tzi_task_free: number;
-}
-
-declare class __Request__kmod_destroy_t {
-  constructor(init?: __Request__kmod_destroy_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  module: number;
 }
 
 declare class proc_bsdinfo {
@@ -21669,13 +18299,6 @@ declare class __Reply__mach_ports_lookup_t {
   init_port_setCnt: number;
 }
 
-declare class __Request__clock_set_time_t {
-  constructor(init?: __Request__clock_set_time_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  new_time: mach_timespec;
-}
-
 declare class mig_subsystem {
   constructor(init?: mig_subsystem);
   server: (p1: interop.PointerConvertible) => (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
@@ -21733,14 +18356,6 @@ declare class NXHashState {
   constructor(init?: NXHashState);
   i: number;
   j: number;
-}
-
-declare class __Request__processor_set_max_priority_t {
-  constructor(init?: __Request__processor_set_max_priority_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  max_priority: number;
-  change_threads: number;
 }
 
 declare class igmpstat_v3 {
@@ -21875,13 +18490,6 @@ declare class kcdata_subtype_descriptor {
 declare class thread_throughput_qos_policy {
   constructor(init?: thread_throughput_qos_policy);
   thread_throughput_qos_tier: number;
-}
-
-declare class __Reply__host_get_clock_control_t {
-  constructor(init?: __Reply__host_get_clock_control_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  clock_ctrl: mach_msg_port_descriptor_t;
 }
 
 declare class sockaddr_inarp {
@@ -22107,13 +18715,6 @@ declare class target_triple_command {
   triple: lc_str;
 }
 
-declare class __Request__host_set_UNDServer_t {
-  constructor(init?: __Request__host_set_UNDServer_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  server: mach_msg_port_descriptor_t;
-}
-
 declare class Fts5ExtensionApi {
   constructor(init?: Fts5ExtensionApi);
   iVersion: number;
@@ -22157,16 +18758,6 @@ declare class mach_port_info_ext {
   mpie_status: mach_port_status;
   mpie_boost_cnt: number;
   reserved: unknown /* const array */;
-}
-
-declare class unnamed_4086398859282741099 {
-  constructor(init?: unnamed_4086398859282741099);
-  control: number;
-  frmr_rej_pdu0: number;
-  frmr_rej_pdu1: number;
-  frmr_control: number;
-  frmr_control_ext: number;
-  frmr_cause: number;
 }
 
 declare class vfstable {
@@ -22303,13 +18894,6 @@ declare class task_basic_info_64 {
   policy: number;
 }
 
-declare class policy_bases {
-  constructor(init?: policy_bases);
-  ts: policy_timeshare_base;
-  rr: policy_rr_base;
-  fifo: policy_fifo_base;
-}
-
 declare class in_addr {
   constructor(init?: in_addr);
   s_addr: number;
@@ -22376,48 +18960,20 @@ declare class __Request__mach_vm_allocate_t {
   flags: number;
 }
 
-declare class Tcl_ChannelType {
-  constructor(init?: Tcl_ChannelType);
-  typeName: string | null;
-  version: interop.Pointer;
-  closeProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  inputProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number | null;
-  outputProc: (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number | null;
-  seekProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  setOptionProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => number | null;
-  getOptionProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number | null;
-  watchProc: (p1: interop.PointerConvertible, p2: number) => void | null;
-  getHandleProc: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number | null;
-  close2Proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  blockModeProc: (p1: interop.PointerConvertible, p2: number) => number | null;
-  flushProc: (p1: interop.PointerConvertible) => number | null;
-  handlerProc: (p1: interop.PointerConvertible, p2: number) => number | null;
-  wideSeekProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number | null;
-  threadActionProc: (p1: interop.PointerConvertible, p2: number) => void | null;
-  truncateProc: (p1: interop.PointerConvertible, p2: number) => number | null;
-}
-
-declare class __Request__mach_memory_entry_ownership_t {
-  constructor(init?: __Request__mach_memory_entry_ownership_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  owner: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  ledger_tag: number;
-  ledger_flags: number;
-}
-
 declare class policy_timeshare_base {
   constructor(init?: policy_timeshare_base);
   base_priority: number;
 }
 
-declare class __Request__processor_info_t {
-  constructor(init?: __Request__processor_info_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  processor_info_outCnt: number;
+declare class dyld_kernel_process_info {
+  constructor(init?: dyld_kernel_process_info);
+  cache_image_info: dyld_kernel_image_info;
+  timestamp: number;
+  imageCount: number;
+  initialImageCount: number;
+  dyldState: number;
+  no_cache: number;
+  private_cache: number;
 }
 
 declare class __Request__task_zone_info_t {
@@ -22513,18 +19069,6 @@ declare class unwind_info_compressed_second_level_page_header {
   encodingsCount: number;
 }
 
-declare class Tcl_CmdInfo {
-  constructor(init?: Tcl_CmdInfo);
-  isNativeObjectProc: number;
-  objProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  objClientData: interop.Pointer;
-  proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
-  clientData: interop.Pointer;
-  deleteProc: (p1: interop.PointerConvertible) => void | null;
-  deleteData: interop.Pointer;
-  namespacePtr: interop.Pointer;
-}
-
 declare class host_load_info {
   constructor(init?: host_load_info);
   avenrun: unknown /* const array */;
@@ -22566,6 +19110,34 @@ declare class host_sched_info {
   min_quantum: number;
 }
 
+declare class rtstat {
+  constructor(init?: rtstat);
+  rts_badredirect: number;
+  rts_dynamic: number;
+  rts_newgateway: number;
+  rts_unreach: number;
+  rts_wildcard: number;
+  rts_badrtgwroute: number;
+}
+
+declare class __Reply__vm_region_recurse_t {
+  constructor(init?: __Reply__vm_region_recurse_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  address: number;
+  size: number;
+  nesting_depth: number;
+  infoCnt: number;
+  info: unknown /* const array */;
+}
+
+declare class unnamed_3674921957790763541 {
+  constructor(init?: unnamed_3674921957790763541);
+  control: number;
+  num_rcv_x2: number;
+}
+
 declare class objc_category {
   constructor(init?: objc_category);
 }
@@ -22602,13 +19174,6 @@ declare class vm_extmod_statistics {
   thread_creation_caller_count: number;
   thread_set_state_count: number;
   thread_set_state_caller_count: number;
-}
-
-declare class __Reply__host_default_memory_manager_t {
-  constructor(init?: __Reply__host_default_memory_manager_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  default_manager: mach_msg_port_descriptor_t;
 }
 
 declare class vm_statistics64 {
@@ -22674,13 +19239,6 @@ declare class ipc_perm {
 declare class __Request__thread_abort_t {
   constructor(init?: __Request__thread_abort_t);
   Head: mach_msg_header_t;
-}
-
-declare class __Reply__processor_set_policy_enable_t {
-  constructor(init?: __Reply__processor_set_policy_enable_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class __Reply__mach_port_assert_attributes_t {
@@ -22987,9 +19545,10 @@ declare class krb5_replay_data {
   seq: number;
 }
 
-declare class __Request__host_get_UNDServer_t {
-  constructor(init?: __Request__host_get_UNDServer_t);
-  Head: mach_msg_header_t;
+declare class unnamed_5945818405836814074 {
+  constructor(init?: unnamed_5945818405836814074);
+  __p_forw: interop.Pointer;
+  __p_back: interop.Pointer;
 }
 
 declare class exclave_textlayout_info_v1 {
@@ -23004,48 +19563,6 @@ declare class stackshot_suspension_source {
   tss_tid: number;
   tss_pid: number;
   tss_procname: unknown /* const array */;
-}
-
-declare class rtstat {
-  constructor(init?: rtstat);
-  rts_badredirect: number;
-  rts_dynamic: number;
-  rts_newgateway: number;
-  rts_unreach: number;
-  rts_wildcard: number;
-  rts_badrtgwroute: number;
-}
-
-declare class __Reply__vm_region_recurse_t {
-  constructor(init?: __Reply__vm_region_recurse_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  address: number;
-  size: number;
-  nesting_depth: number;
-  infoCnt: number;
-  info: unknown /* const array */;
-}
-
-declare class TkIntPlatStubs {
-  constructor(init?: TkIntPlatStubs);
-  magic: number;
-  hooks: interop.Pointer;
-  tkCreateXEventSource: () => void | null;
-  tkFreeWindowId: (p1: interop.PointerConvertible, p2: number) => void | null;
-  tkInitXId: (p1: interop.PointerConvertible) => void | null;
-  tkpCmapStressed: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tkpSync: (p1: interop.PointerConvertible) => void | null;
-  tkUnixContainerId: (p1: interop.PointerConvertible) => number | null;
-  tkUnixDoOneXEvent: (p1: interop.PointerConvertible) => number | null;
-  tkUnixSetMenubar: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tkpScanWindowId: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible) => number | null;
-  tkWmCleanup: (p1: interop.PointerConvertible) => void | null;
-  tkSendCleanup: (p1: interop.PointerConvertible) => void | null;
-  tkFreeXId: (p1: interop.PointerConvertible) => void | null;
-  tkpWmSetState: (p1: interop.PointerConvertible, p2: number) => number | null;
-  tkpTestsendCmd: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number | null;
 }
 
 declare class sqlite3_api_routines {
@@ -23323,13 +19840,6 @@ declare class sqlite3_api_routines {
   setlk_timeout: (p1: interop.PointerConvertible, p2: number, p3: number) => number | null;
 }
 
-declare class __Reply__host_get_UNDServer_t {
-  constructor(init?: __Reply__host_get_UNDServer_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  server: mach_msg_port_descriptor_t;
-}
-
 declare class ppd_choice_s {
   constructor(init?: ppd_choice_s);
   marked: number;
@@ -23399,23 +19909,15 @@ declare class task_basic_info_32 {
   policy: number;
 }
 
+declare class __Request__thread_get_assignment_t {
+  constructor(init?: __Request__thread_get_assignment_t);
+  Head: mach_msg_header_t;
+}
+
 declare class berval {
   constructor(init?: berval);
   bv_len: number;
   bv_val: string | null;
-}
-
-declare class __Request__kmod_create_t {
-  constructor(init?: __Request__kmod_create_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  info: number;
-}
-
-declare class Tcl_Event {
-  constructor(init?: Tcl_Event);
-  proc: (p1: interop.PointerConvertible, p2: number) => number | null;
-  nextPtr: interop.Pointer;
 }
 
 declare class pthread_override_s {
@@ -23719,27 +20221,6 @@ declare class task_inspect_basic_counts {
   cycles: number;
 }
 
-declare class ldap_sync_t {
-  constructor(init?: ldap_sync_t);
-  ls_base: string | null;
-  ls_scope: number;
-  ls_filter: string | null;
-  ls_attrs: interop.Pointer;
-  ls_timelimit: number;
-  ls_sizelimit: number;
-  ls_timeout: number;
-  ls_search_entry: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.Enum<typeof ldap_sync_refresh_t>) => number | null;
-  ls_search_reference: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  ls_intermediate: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.Enum<typeof ldap_sync_refresh_t>) => number | null;
-  ls_search_result: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number | null;
-  ls_private: interop.Pointer;
-  ls_ld: interop.Pointer;
-  ls_msgid: number;
-  ls_reloadHint: number;
-  ls_cookie: berval;
-  ls_refreshPhase: interop.Enum<typeof ldap_sync_refresh_t>;
-}
-
 declare class au_qctrl {
   constructor(init?: au_qctrl);
   aq_hiwater: number;
@@ -23789,14 +20270,6 @@ declare class lineinfo {
   lastchar: string | null;
 }
 
-declare class __Reply__kmod_create_t {
-  constructor(init?: __Reply__kmod_create_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  module: number;
-}
-
 declare class mig_reply_error_t {
   constructor(init?: mig_reply_error_t);
   Head: mach_msg_header_t;
@@ -23822,13 +20295,6 @@ declare class ldapmod {
   mod_op: number;
   mod_type: string | null;
   mod_vals: mod_vals_u;
-}
-
-declare class __Reply__processor_get_assignment_t {
-  constructor(init?: __Reply__processor_get_assignment_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  assigned_set: mach_msg_port_descriptor_t;
 }
 
 declare class msginfo {
@@ -23924,21 +20390,6 @@ declare class UIDNA {
   constructor(init?: UIDNA);
 }
 
-declare class __Reply__mach_vm_wire_t {
-  constructor(init?: __Reply__mach_vm_wire_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class __Reply__vm_allocate_cpm_t {
-  constructor(init?: __Reply__vm_allocate_cpm_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  address: number;
-}
-
 declare class gss_krb5_rfc1964_keydata {
   constructor(init?: gss_krb5_rfc1964_keydata);
   sign_alg: number;
@@ -23965,18 +20416,6 @@ declare class __Request__mach_port_set_seqno_t {
   NDR: NDR_record_t;
   name: number;
   seqno: number;
-}
-
-declare class Tcl_Command_ {
-  constructor(init?: Tcl_Command_);
-}
-
-declare class __Request__host_get_special_port_t {
-  constructor(init?: __Request__host_get_special_port_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  node: number;
-  which: number;
 }
 
 declare class fssearchblock {
@@ -24096,6 +20535,18 @@ declare class _krb5_ap_rep_enc_part {
   seq_number: number;
 }
 
+declare class sadb_msg {
+  constructor(init?: sadb_msg);
+  sadb_msg_version: number;
+  sadb_msg_type: number;
+  sadb_msg_errno: number;
+  sadb_msg_satype: number;
+  sadb_msg_len: number;
+  sadb_msg_reserved: number;
+  sadb_msg_seq: number;
+  sadb_msg_pid: number;
+}
+
 declare class timespec {
   constructor(init?: timespec);
   tv_sec: number;
@@ -24155,14 +20606,6 @@ declare class arm_state_hdr {
   count: number;
 }
 
-declare class __Request__mach_voucher_extract_attr_content_t {
-  constructor(init?: __Request__mach_voucher_extract_attr_content_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  key: number;
-  contentCnt: number;
-}
-
 declare class mig_symtab {
   constructor(init?: mig_symtab);
   ms_routine_name: string | null;
@@ -24172,20 +20615,6 @@ declare class mig_symtab {
 
 declare class sqlite3_mutex {
   constructor(init?: sqlite3_mutex);
-}
-
-declare class unnamed_11871612988508585010 {
-  constructor(init?: unnamed_11871612988508585010);
-  limit00: number;
-  base00: number;
-  base16: number;
-  type: number;
-  : number;
-  present: number;
-  limit16: number;
-  : number;
-  granular: number;
-  base24: number;
 }
 
 declare class _krb5_kdc_req {
@@ -24283,12 +20712,6 @@ declare class __tag_iconv_t {
   constructor(init?: __tag_iconv_t);
 }
 
-declare class unnamed_15232987227899653205 {
-  constructor(init?: unnamed_15232987227899653205);
-  opaque1: interop.Pointer;
-  opaque2: number;
-}
-
 declare class _krb5_authenticator {
   constructor(init?: _krb5_authenticator);
   magic: number;
@@ -24333,7 +20756,7 @@ declare class llc {
   constructor(init?: llc);
   llc_dsap: number;
   llc_ssap: number;
-  llc_un: unnamed_3396947394523107438;
+  llc_un: unnamed_3038933019743913273;
 }
 
 declare class _krb5_checksum {
@@ -24381,15 +20804,6 @@ declare class _krb5_address {
   contents: interop.Pointer;
 }
 
-declare class __Request__thread_wire_t {
-  constructor(init?: __Request__thread_wire_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  thread: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  wired: number;
-}
-
 declare class _krb5_data {
   constructor(init?: _krb5_data);
   magic: number;
@@ -24401,16 +20815,6 @@ declare class gss_buffer_desc_struct {
   constructor(init?: gss_buffer_desc_struct);
   length: number;
   value: interop.Pointer;
-}
-
-declare class __Reply__processor_info_t {
-  constructor(init?: __Reply__processor_info_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  host: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  processor_info_outCnt: number;
-  processor_info_out: unknown /* const array */;
 }
 
 declare class __Request__task_assign_t {
@@ -24489,6 +20893,12 @@ declare class rslvmulti_req {
   llsa: interop.Pointer;
 }
 
+declare class unnamed_243301043993832967 {
+  constructor(init?: unnamed_243301043993832967);
+  opaque1: interop.Pointer;
+  opaque2: number;
+}
+
 declare class timeval32 {
   constructor(init?: timeval32);
   tv_sec: number;
@@ -24501,13 +20911,6 @@ declare class ifaliasreq {
   ifra_addr: sockaddr;
   ifra_broadaddr: sockaddr;
   ifra_mask: sockaddr;
-}
-
-declare class __Reply__host_reboot_t {
-  constructor(init?: __Reply__host_reboot_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class msg_labels_t {
@@ -24589,10 +20992,6 @@ declare class if_data {
   ifi_reserved2: number;
 }
 
-declare class Tcl_FSVersion_ {
-  constructor(init?: Tcl_FSVersion_);
-}
-
 declare class winsize {
   constructor(init?: winsize);
   ws_row: number;
@@ -24638,6 +21037,15 @@ declare class __Request__task_test_sync_upcall_t {
   Head: mach_msg_header_t;
   msgh_body: mach_msg_body_t;
   port: mach_msg_port_descriptor_t;
+}
+
+declare class mach_msg_port_descriptor_t {
+  constructor(init?: mach_msg_port_descriptor_t);
+  name: number;
+  pad1: number;
+  pad2: number;
+  disposition: number;
+  type: number;
 }
 
 declare class __Reply__task_policy_set_t {
@@ -24730,6 +21138,13 @@ declare class ppd_file_s {
   marked: interop.Pointer;
   cups_uiconstraints: interop.Pointer;
   cache: interop.Pointer;
+}
+
+declare class unnamed_14209038877473554429 {
+  constructor(init?: unnamed_14209038877473554429);
+  inp4_ip_tos: number;
+  inp4_options: number;
+  inp4_moptions: number;
 }
 
 declare class tokenizer {
@@ -24826,37 +21241,15 @@ declare class inpcb {
   inp_vflag: number;
   inp_ip_ttl: number;
   inp_ip_p: number;
-  inp_dependfaddr: unnamed_9497288941881539350;
-  inp_dependladdr: unnamed_4946263752583527807;
-  inp_dependroute: unnamed_8047590349428456375;
-  inp_depend4: unnamed_12889346842302587936;
-  inp_depend6: unnamed_13329315681689226472;
+  inp_dependfaddr: unnamed_15031331406388301920;
+  inp_dependladdr: unnamed_8620995710805692012;
+  inp_dependroute: unnamed_11624528944218105525;
+  inp_depend4: unnamed_14209038877473554429;
+  inp_depend6: unnamed_16575538318385377640;
   hash_element: number;
   inp_saved_ppcb: number;
   inp_sp: number;
   reserved: unknown /* const array */;
-}
-
-declare class Tk_Outline {
-  constructor(init?: Tk_Outline);
-  gc: interop.Pointer;
-  width: number;
-  activeWidth: number;
-  disabledWidth: number;
-  offset: number;
-  dash: Tk_Dash;
-  activeDash: Tk_Dash;
-  disabledDash: Tk_Dash;
-  reserved1: interop.Pointer;
-  reserved2: interop.Pointer;
-  reserved3: interop.Pointer;
-  tsoffset: Tk_TSOffset;
-  color: interop.Pointer;
-  activeColor: interop.Pointer;
-  disabledColor: interop.Pointer;
-  stipple: number;
-  activeStipple: number;
-  disabledStipple: number;
 }
 
 declare class DNSServiceAttribute_s {
@@ -24869,12 +21262,6 @@ declare class _DNSServiceRef_t {
 
 declare class dispatch_data_s {
   constructor(init?: dispatch_data_s);
-}
-
-declare class unnamed_18415285912629137323 {
-  constructor(init?: unnamed_18415285912629137323);
-  tqe_next: interop.Pointer;
-  tqe_prev: interop.Pointer;
 }
 
 declare class __Request__mach_vm_page_query_t {
@@ -24919,7 +21306,7 @@ declare class __Reply__thread_get_exception_ports_info_t {
 declare class arm_unified_thread_state {
   constructor(init?: arm_unified_thread_state);
   ash: arm_state_hdr;
-  uts: unnamed_12048718452629231441;
+  uts: unnamed_14472481405302765055;
 }
 
 declare class ip_timestamp {
@@ -24959,14 +21346,6 @@ declare class dispatch_source_type_s {
   constructor(init?: dispatch_source_type_s);
 }
 
-declare class __Request__processor_control_t {
-  constructor(init?: __Request__processor_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  processor_cmdCnt: number;
-  processor_cmd: unknown /* const array */;
-}
-
 declare class sadb_session_id {
   constructor(init?: sadb_session_id);
   sadb_session_id_len: number;
@@ -24974,38 +21353,14 @@ declare class sadb_session_id {
   sadb_session_id_v: unknown /* const array */;
 }
 
-declare class unnamed_13329315681689226472 {
-  constructor(init?: unnamed_13329315681689226472);
-  inp6_options: number;
-  inp6_hlim: number;
-  unused_uint8_1: number;
-  unused_uint16_1: number;
-  inp6_outputopts: number;
-  inp6_moptions: number;
-  inp6_icmp6filt: number;
-  inp6_cksum: number;
-  inp6_ifindex: number;
-  inp6_hops: number;
-}
-
 declare class ifnet_interface_advisory {
   constructor(init?: ifnet_interface_advisory);
-}
-
-declare class __Request__host_processors_t {
-  constructor(init?: __Request__host_processors_t);
-  Head: mach_msg_header_t;
 }
 
 declare class au_exit_t {
   constructor(init?: au_exit_t);
   status: number;
   ret: number;
-}
-
-declare class __Request__processor_set_threads_t {
-  constructor(init?: __Request__processor_set_threads_t);
-  Head: mach_msg_header_t;
 }
 
 declare class mem_and_io_snapshot {
@@ -25200,14 +21555,6 @@ declare class note_command {
   size: number;
 }
 
-declare class __Request__processor_set_statistics_t {
-  constructor(init?: __Request__processor_set_statistics_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  flavor: number;
-  info_outCnt: number;
-}
-
 declare class __darwin_arm_thread_state64 {
   constructor(init?: __darwin_arm_thread_state64);
   __x: unknown /* const array */;
@@ -25227,6 +21574,38 @@ declare class mach_msg_ool_ports_descriptor32_t {
   copy: number;
   disposition: number;
   type: number;
+}
+
+declare class dyld_chained_import {
+  constructor(init?: dyld_chained_import);
+  lib_ordinal: number;
+  weak_import: number;
+  name_offset: number;
+}
+
+declare class Fts5Tokenizer {
+  constructor(init?: Fts5Tokenizer);
+}
+
+declare class os_workgroup_attr_opaque_s {
+  constructor(init?: os_workgroup_attr_opaque_s);
+  sig: number;
+  opaque: unknown /* const array */;
+}
+
+declare class ifa_msghdr {
+  constructor(init?: ifa_msghdr);
+  ifam_msglen: number;
+  ifam_version: number;
+  ifam_type: number;
+  ifam_addrs: number;
+  ifam_flags: number;
+  ifam_index: number;
+  ifam_metric: number;
+}
+
+declare class dispatch_queue_s {
+  constructor(init?: dispatch_queue_s);
 }
 
 declare class _krb5_cred_enc_part {
@@ -25258,27 +21637,6 @@ declare class BackendDB {
   constructor(init?: BackendDB);
 }
 
-declare class TclIntPlatStubs {
-  constructor(init?: TclIntPlatStubs);
-  magic: number;
-  hooks: interop.Pointer;
-  tclGetAndDetachPids: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void | null;
-  tclpCloseFile: (p1: interop.PointerConvertible) => number | null;
-  tclpCreateCommandChannel: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => interop.Pointer | null;
-  tclpCreatePipe: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number | null;
-  tclpCreateProcess: (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible, p6: interop.PointerConvertible, p7: interop.PointerConvertible) => number | null;
-  reserved5: interop.Pointer;
-  tclpMakeFile: (p1: interop.PointerConvertible, p2: number) => interop.Pointer | null;
-  tclpOpenFile: (p1: string, p2: number) => interop.Pointer | null;
-  tclUnixWaitForFile: (p1: number, p2: number, p3: number) => number | null;
-  tclpCreateTempFile: (p1: string) => interop.Pointer | null;
-  tclpReaddir: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclpLocaltime_unix: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclpGmtime_unix: (p1: interop.PointerConvertible) => interop.Pointer | null;
-  tclpInetNtoa: (p1: in_addr) => string | null;
-  tclUnixCopyFile: (p1: string, p2: string, p3: interop.PointerConvertible, p4: number) => number | null;
-}
-
 declare class kev_in_arpalive {
   constructor(init?: kev_in_arpalive);
   link_data: net_event_data;
@@ -25289,6 +21647,20 @@ declare class searchstate {
   ss_union_flags: number;
   ss_union_layer: number;
   ss_fsstate: unknown /* const array */;
+}
+
+declare class unnamed_16575538318385377640 {
+  constructor(init?: unnamed_16575538318385377640);
+  inp6_options: number;
+  inp6_hlim: number;
+  unused_uint8_1: number;
+  unused_uint16_1: number;
+  inp6_outputopts: number;
+  inp6_moptions: number;
+  inp6_icmp6filt: number;
+  inp6_cksum: number;
+  inp6_ifindex: number;
+  inp6_hops: number;
 }
 
 declare class sockaddr {
@@ -25309,6 +21681,20 @@ declare class fpunchhole {
   reserved: number;
   fp_offset: number;
   fp_length: number;
+}
+
+declare class policy_bases {
+  constructor(init?: policy_bases);
+  ts: policy_timeshare_base;
+  rr: policy_rr_base;
+  fifo: policy_fifo_base;
+}
+
+declare class unnamed_15833977829649840769 {
+  constructor(init?: unnamed_15833977829649840769);
+  w_Stopval: number;
+  w_Stopsig: number;
+  w_Filler: number;
 }
 
 declare class __darwin_pthread_handler_rec {
@@ -25383,10 +21769,10 @@ declare class au_record {
   constructor(init?: au_record);
   used: number;
   desc: number;
-  token_q: unnamed_17222040562567524509;
+  token_q: unnamed_17471426405825150515;
   data: interop.Pointer;
   len: number;
-  au_rec_q: unnamed_8096331331514043626;
+  au_rec_q: unnamed_7711420615956025261;
 }
 
 declare class au_expire_after {
@@ -25443,14 +21829,6 @@ declare class dyld_uuid_info_32 {
   constructor(init?: dyld_uuid_info_32);
   imageLoadAddress: number;
   imageUUID: unknown /* const array */;
-}
-
-declare class __Request__mach_memory_entry_purgable_control_t {
-  constructor(init?: __Request__mach_memory_entry_purgable_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  control: number;
-  state: number;
 }
 
 declare class ppd_group_s {
@@ -25612,12 +21990,6 @@ declare class __Reply__mach_port_allocate_t {
   name: number;
 }
 
-declare class cups_dentry_s {
-  constructor(init?: cups_dentry_s);
-  filename: unknown /* const array */;
-  fileinfo: stat;
-}
-
 declare class gss_krb5_lucid_context_v1 {
   constructor(init?: gss_krb5_lucid_context_v1);
   version: number;
@@ -25652,7 +22024,7 @@ declare class tokenstr {
   id: number;
   data: interop.Pointer;
   len: number;
-  tt: unnamed_11293842726292155158;
+  tt: unnamed_184008476779638986;
 }
 
 declare class _krb5_encrypt_block {
@@ -25747,9 +22119,10 @@ declare class __Reply__thread_abort_safely_t {
   RetCode: number;
 }
 
-declare class __Request__host_processor_sets_t {
-  constructor(init?: __Request__host_processor_sets_t);
-  Head: mach_msg_header_t;
+declare class unnamed_15662182899879353854 {
+  constructor(init?: unnamed_15662182899879353854);
+  hash: number;
+  summary: malloc_type_summary_v0_t;
 }
 
 declare class lastlog {
@@ -25762,18 +22135,7 @@ declare class lastlog {
 declare class ifreq {
   constructor(init?: ifreq);
   ifr_name: unknown /* const array */;
-  ifr_ifru: unnamed_4991142208153925470;
-}
-
-declare class Tk_ImageMaster_ {
-  constructor(init?: Tk_ImageMaster_);
-}
-
-declare class __Reply__processor_start_t {
-  constructor(init?: __Reply__processor_start_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
+  ifr_ifru: unnamed_1355146129392989397;
 }
 
 declare class igmp_report {
@@ -25907,12 +22269,6 @@ declare class ifmaddrs {
   ifma_lladdr: interop.Pointer;
 }
 
-declare class dylib_reference {
-  constructor(init?: dylib_reference);
-  isym: number;
-  flags: number;
-}
-
 declare class rt_msghdr {
   constructor(init?: rt_msghdr);
   rtm_msglen: number;
@@ -25929,51 +22285,11 @@ declare class rt_msghdr {
   rtm_rmx: rt_metrics;
 }
 
-declare class __Reply__thread_swap_exception_ports_t {
-  constructor(init?: __Reply__thread_swap_exception_ports_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  old_handlers: unknown /* const array */;
-  NDR: NDR_record_t;
-  masksCnt: number;
-  masks: unknown /* const array */;
-  old_behaviors: unknown /* const array */;
-  old_flavors: unknown /* const array */;
-}
-
 declare class ldap_conncb {
   constructor(init?: ldap_conncb);
   lc_add: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: interop.PointerConvertible) => number | null;
   lc_del: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible) => void | null;
   lc_arg: interop.Pointer;
-}
-
-declare class dyld_chained_import {
-  constructor(init?: dyld_chained_import);
-  lib_ordinal: number;
-  weak_import: number;
-  name_offset: number;
-}
-
-declare class Fts5Tokenizer {
-  constructor(init?: Fts5Tokenizer);
-}
-
-declare class os_workgroup_attr_opaque_s {
-  constructor(init?: os_workgroup_attr_opaque_s);
-  sig: number;
-  opaque: unknown /* const array */;
-}
-
-declare class ifa_msghdr {
-  constructor(init?: ifa_msghdr);
-  ifam_msglen: number;
-  ifam_version: number;
-  ifam_type: number;
-  ifam_addrs: number;
-  ifam_flags: number;
-  ifam_index: number;
-  ifam_metric: number;
 }
 
 declare class sockaddr_in6 {
@@ -26072,13 +22388,6 @@ declare class __Reply__mach_port_kobject_t {
   object_addr: number;
 }
 
-declare class __Reply__host_processor_set_priv_t {
-  constructor(init?: __Reply__host_processor_set_priv_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  set: mach_msg_port_descriptor_t;
-}
-
 declare class __Reply__mach_port_space_basic_info_t {
   constructor(init?: __Reply__mach_port_space_basic_info_t);
   Head: mach_msg_header_t;
@@ -26091,18 +22400,16 @@ declare class _ipp_s {
   constructor(init?: _ipp_s);
 }
 
-declare class __Reply__kmod_destroy_t {
-  constructor(init?: __Reply__kmod_destroy_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class kev_dl_proto_data {
   constructor(init?: kev_dl_proto_data);
   link_data: net_event_data;
   proto_family: number;
   proto_remaining_count: number;
+}
+
+declare class unnamed_14468356430789685042 {
+  constructor(init?: unnamed_14468356430789685042);
+  in4_tos: number;
 }
 
 declare class processor_set_basic_info {
@@ -26149,15 +22456,11 @@ declare class vm_purgeable_info {
   lifo_data: unknown /* const array */;
 }
 
-declare class unnamed_7329341945251432344 {
-  constructor(init?: unnamed_7329341945251432344);
-  offset00: number;
-  seg: sel;
-  : number;
-  type: number;
-  dpl: number;
-  present: number;
-  offset16: number;
+declare class unnamed_11315122558985403673 {
+  constructor(init?: unnamed_11315122558985403673);
+  opaque1: interop.Pointer;
+  opaque2: interop.Pointer;
+  opaque3: number;
 }
 
 declare class __Reply__lock_set_create_t {
@@ -26167,19 +22470,16 @@ declare class __Reply__lock_set_create_t {
   new_lock_set: mach_msg_port_descriptor_t;
 }
 
-declare class __Request__vm_wire_t {
-  constructor(init?: __Request__vm_wire_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  task: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  address: number;
-  size: number;
-  desired_access: number;
-}
-
 declare class __asl_object_s {
   constructor(init?: __asl_object_s);
+}
+
+declare class unnamed_4325523165017696557 {
+  constructor(init?: unnamed_4325523165017696557);
+  w_Termsig: number;
+  w_Coredump: number;
+  w_Retcode: number;
+  w_Filler: number;
 }
 
 declare class io_stats_snapshot {
@@ -26198,13 +22498,6 @@ declare class io_stats_snapshot {
   ss_data_size: number;
   ss_metadata_count: number;
   ss_metadata_size: number;
-}
-
-declare class __Reply__host_security_create_task_token_t {
-  constructor(init?: __Reply__host_security_create_task_token_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  child_task: mach_msg_port_descriptor_t;
 }
 
 declare class _NSZone {
@@ -26271,17 +22564,6 @@ declare class __Request__task_set_special_port_t {
   special_port: mach_msg_port_descriptor_t;
   NDR: NDR_record_t;
   which_port: number;
-}
-
-declare class unnamed_10068016770113449566 {
-  constructor(init?: unnamed_10068016770113449566);
-  numColorChannels: number;
-  log2BlockBytes: number;
-  blockWidth: number;
-  blockHeight: number;
-  isHDR: number;
-  hasAlpha: number;
-  _reserved: number;
 }
 
 declare class _ipp_attribute_s {
@@ -26367,27 +22649,6 @@ declare class dqblk {
   dqb_spare: unknown /* const array */;
 }
 
-declare class __Reply__host_processor_sets_t {
-  constructor(init?: __Reply__host_processor_sets_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  processor_sets: mach_msg_ool_ports_descriptor_t;
-  NDR: NDR_record_t;
-  processor_setsCnt: number;
-}
-
-declare class dispatch_queue_s {
-  constructor(init?: dispatch_queue_s);
-}
-
-declare class mp_int {
-  constructor(init?: mp_int);
-  used: number;
-  alloc: number;
-  sign: number;
-  dp: interop.Pointer;
-}
-
 declare class esp {
   constructor(init?: esp);
   esp_spi: number;
@@ -26446,6 +22707,28 @@ declare class ifma_msghdr2 {
   ifmam_refcount: number;
 }
 
+declare class stat {
+  constructor(init?: stat);
+  st_dev: number;
+  st_mode: number;
+  st_nlink: number;
+  st_ino: number;
+  st_uid: number;
+  st_gid: number;
+  st_rdev: number;
+  st_atimespec: timespec;
+  st_mtimespec: timespec;
+  st_ctimespec: timespec;
+  st_birthtimespec: timespec;
+  st_size: number;
+  st_blocks: number;
+  st_blksize: number;
+  st_flags: number;
+  st_gen: number;
+  st_lspare: number;
+  st_qspare: unknown /* const array */;
+}
+
 declare class __darwin_arm_exception_state {
   constructor(init?: __darwin_arm_exception_state);
   __exception: number;
@@ -26457,6 +22740,12 @@ declare class mach_vm_read_entry {
   constructor(init?: mach_vm_read_entry);
   address: number;
   size: number;
+}
+
+declare class rlimit {
+  constructor(init?: rlimit);
+  rlim_cur: number;
+  rlim_max: number;
 }
 
 declare class __Request__task_policy_t {
@@ -26550,11 +22839,6 @@ declare class aliasent {
   alias_local: number;
 }
 
-declare class __Request__processor_set_destroy_t {
-  constructor(init?: __Request__processor_set_destroy_t);
-  Head: mach_msg_header_t;
-}
-
 declare class mach_msg_audit_trailer_t {
   constructor(init?: mach_msg_audit_trailer_t);
   msgh_trailer_type: number;
@@ -26641,15 +22925,6 @@ declare class proc_taskallinfo {
   constructor(init?: proc_taskallinfo);
   pbsd: proc_bsdinfo;
   ptinfo: proc_taskinfo;
-}
-
-declare class __Reply__host_priv_statistics_t {
-  constructor(init?: __Reply__host_priv_statistics_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  host_info_outCnt: number;
-  host_info_out: unknown /* const array */;
 }
 
 declare class gmon_data {
@@ -26747,22 +23022,34 @@ declare class _opaque_pthread_cond_t {
   __opaque: unknown /* const array */;
 }
 
-type unnamed_16940517678363118476Descriptor = 
-  | { longValue: number }
-  | { doubleValue: number }
-  | { otherValuePtr: interop.PointerConvertible }
-  | { wideValue: number }
-  | { twoPtrValue: unnamed_1718681146382766305 }
-  | { ptrAndLongRep: unnamed_3475170141862813391 };
+type semunDescriptor = 
+  | { val: number }
+  | { buf: interop.PointerConvertible }
+  | { array: interop.PointerConvertible };
 
-declare class unnamed_16940517678363118476 {
-  constructor(init?: unnamed_16940517678363118476Descriptor);
-  longValue: number;
-  doubleValue: number;
-  otherValuePtr: interop.Pointer;
-  wideValue: number;
-  twoPtrValue: unnamed_1718681146382766305;
-  ptrAndLongRep: unnamed_3475170141862813391;
+declare class semun {
+  constructor(init?: semunDescriptor);
+  val: number;
+  buf: interop.Pointer;
+  array: interop.Pointer;
+}
+
+type graft_argsDescriptor = 
+  | { max_size: unknown /* const array */ }
+  | { sbc_args: secure_boot_cryptex_args };
+
+declare class graft_args {
+  constructor(init?: graft_argsDescriptor);
+  max_size: unknown /* const array */;
+  sbc_args: secure_boot_cryptex_args;
+}
+
+type unnamed_8086752997275463784Descriptor = 
+  | { if_status_v1: if_cellular_status_v1 };
+
+declare class unnamed_8086752997275463784 {
+  constructor(init?: unnamed_8086752997275463784Descriptor);
+  if_status_v1: if_cellular_status_v1;
 }
 
 type __RequestUnion__mach_vm_subsystemDescriptor = 
@@ -26817,6 +23104,440 @@ declare class __RequestUnion__mach_vm_subsystem {
   Request_mach_vm_remap_new: __Request__mach_vm_remap_new_t;
   Request_mach_vm_range_create: __Request__mach_vm_range_create_t;
   Request_mach_vm_update_pointers_with_remote_tags: __Request__mach_vm_update_pointers_with_remote_tags_t;
+}
+
+type unnamed_11253260086941277115Descriptor = 
+  | { ifcu_buf: string | null }
+  | { ifcu_req: interop.PointerConvertible };
+
+declare class unnamed_11253260086941277115 {
+  constructor(init?: unnamed_11253260086941277115Descriptor);
+  ifcu_buf: string | null;
+  ifcu_req: interop.Pointer;
+}
+
+type unnamed_2599727330696472211Descriptor = 
+  | { p_st1: unnamed_5945818405836814074 }
+  | { __p_starttime: timeval };
+
+declare class unnamed_2599727330696472211 {
+  constructor(init?: unnamed_2599727330696472211Descriptor);
+  p_st1: unnamed_5945818405836814074;
+  __p_starttime: timeval;
+}
+
+type __ReplyUnion__exc_subsystemDescriptor = 
+  | { Reply_exception_raise: __Reply__exception_raise_t }
+  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
+  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
+
+declare class __ReplyUnion__exc_subsystem {
+  constructor(init?: __ReplyUnion__exc_subsystemDescriptor);
+  Reply_exception_raise: __Reply__exception_raise_t;
+  Reply_exception_raise_state: __Reply__exception_raise_state_t;
+  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
+}
+
+type unnamed_11624528944218105525Descriptor = 
+  | { inp4_route: unknown /* const array */ }
+  | { inp6_route: unknown /* const array */ };
+
+declare class unnamed_11624528944218105525 {
+  constructor(init?: unnamed_11624528944218105525Descriptor);
+  inp4_route: unknown /* const array */;
+  inp6_route: unknown /* const array */;
+}
+
+type fasttrap_instr_tDescriptor = 
+  | { instr32: number }
+  | { instr16: unnamed_8617991431704144843 };
+
+declare class fasttrap_instr_t {
+  constructor(init?: fasttrap_instr_tDescriptor);
+  instr32: number;
+  instr16: unnamed_8617991431704144843;
+}
+
+type ppd_cpvalue_uDescriptor = 
+  | { custom_curve: number }
+  | { custom_int: number }
+  | { custom_invcurve: number }
+  | { custom_passcode: string | null }
+  | { custom_password: string | null }
+  | { custom_points: number }
+  | { custom_real: number }
+  | { custom_string: string | null };
+
+declare class ppd_cpvalue_u {
+  constructor(init?: ppd_cpvalue_uDescriptor);
+  custom_curve: number;
+  custom_int: number;
+  custom_invcurve: number;
+  custom_passcode: string | null;
+  custom_password: string | null;
+  custom_points: number;
+  custom_real: number;
+  custom_string: string | null;
+}
+
+type unnamed_184008476779638986Descriptor = 
+  | { arg32: au_arg32_t }
+  | { arg64: au_arg64_t }
+  | { arb: au_arb_t }
+  | { attr32: au_attr32_t }
+  | { attr64: au_attr64_t }
+  | { execarg: au_execarg_t }
+  | { execenv: au_execenv_t }
+  | { exit: au_exit_t }
+  | { file: au_file_t }
+  | { grps: au_groups_t }
+  | { hdr32: au_header32_t }
+  | { hdr32_ex: au_header32_ex_t }
+  | { hdr64: au_header64_t }
+  | { hdr64_ex: au_header64_ex_t }
+  | { inaddr: au_inaddr_t }
+  | { inaddr_ex: au_inaddr_ex_t }
+  | { ip: au_ip_t }
+  | { ipc: au_ipc_t }
+  | { ipcperm: au_ipcperm_t }
+  | { iport: au_iport_t }
+  | { opaque: au_opaque_t }
+  | { path: au_path_t }
+  | { proc32: au_proc32_t }
+  | { proc32_ex: au_proc32ex_t }
+  | { proc64: au_proc64_t }
+  | { proc64_ex: au_proc64ex_t }
+  | { ret32: au_ret32_t }
+  | { ret64: au_ret64_t }
+  | { seq: au_seq_t }
+  | { socket: au_socket_t }
+  | { socket_ex32: au_socket_ex32_t }
+  | { sockinet_ex32: au_socketinet_ex32_t }
+  | { sockunix: au_socketunix_t }
+  | { subj32: au_subject32_t }
+  | { subj32_ex: au_subject32ex_t }
+  | { subj64: au_subject64_t }
+  | { subj64_ex: au_subject64ex_t }
+  | { text: au_text_t }
+  | { kevent: au_kevent_t }
+  | { invalid: au_invalid_t }
+  | { trail: au_trailer_t }
+  | { zonename: au_zonename_t }
+  | { cert_hash: au_cert_hash_t }
+  | { krb5_principal: au_krb5_principal_t }
+  | { identity: au_identity_t };
+
+declare class unnamed_184008476779638986 {
+  constructor(init?: unnamed_184008476779638986Descriptor);
+  arg32: au_arg32_t;
+  arg64: au_arg64_t;
+  arb: au_arb_t;
+  attr32: au_attr32_t;
+  attr64: au_attr64_t;
+  execarg: au_execarg_t;
+  execenv: au_execenv_t;
+  exit: au_exit_t;
+  file: au_file_t;
+  grps: au_groups_t;
+  hdr32: au_header32_t;
+  hdr32_ex: au_header32_ex_t;
+  hdr64: au_header64_t;
+  hdr64_ex: au_header64_ex_t;
+  inaddr: au_inaddr_t;
+  inaddr_ex: au_inaddr_ex_t;
+  ip: au_ip_t;
+  ipc: au_ipc_t;
+  ipcperm: au_ipcperm_t;
+  iport: au_iport_t;
+  opaque: au_opaque_t;
+  path: au_path_t;
+  proc32: au_proc32_t;
+  proc32_ex: au_proc32ex_t;
+  proc64: au_proc64_t;
+  proc64_ex: au_proc64ex_t;
+  ret32: au_ret32_t;
+  ret64: au_ret64_t;
+  seq: au_seq_t;
+  socket: au_socket_t;
+  socket_ex32: au_socket_ex32_t;
+  sockinet_ex32: au_socketinet_ex32_t;
+  sockunix: au_socketunix_t;
+  subj32: au_subject32_t;
+  subj32_ex: au_subject32ex_t;
+  subj64: au_subject64_t;
+  subj64_ex: au_subject64ex_t;
+  text: au_text_t;
+  kevent: au_kevent_t;
+  invalid: au_invalid_t;
+  trail: au_trailer_t;
+  zonename: au_zonename_t;
+  cert_hash: au_cert_hash_t;
+  krb5_principal: au_krb5_principal_t;
+  identity: au_identity_t;
+}
+
+type unnamed_14554331477655427500Descriptor = 
+  | { ua_sun: sockaddr_un }
+  | { ua_dummy: unknown /* const array */ };
+
+declare class unnamed_14554331477655427500 {
+  constructor(init?: unnamed_14554331477655427500Descriptor);
+  ua_sun: sockaddr_un;
+  ua_dummy: unknown /* const array */;
+}
+
+type __ReplyUnion__clock_reply_subsystemDescriptor = 
+  | { Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t };
+
+declare class __ReplyUnion__clock_reply_subsystem {
+  constructor(init?: __ReplyUnion__clock_reply_subsystemDescriptor);
+  Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t;
+}
+
+type __ReplyUnion__mach_vm_subsystemDescriptor = 
+  | { Reply_mach_vm_allocate: __Reply__mach_vm_allocate_t }
+  | { Reply_mach_vm_deallocate: __Reply__mach_vm_deallocate_t }
+  | { Reply_mach_vm_protect: __Reply__mach_vm_protect_t }
+  | { Reply_mach_vm_inherit: __Reply__mach_vm_inherit_t }
+  | { Reply_mach_vm_read: __Reply__mach_vm_read_t }
+  | { Reply_mach_vm_read_list: __Reply__mach_vm_read_list_t }
+  | { Reply_mach_vm_write: __Reply__mach_vm_write_t }
+  | { Reply_mach_vm_copy: __Reply__mach_vm_copy_t }
+  | { Reply_mach_vm_read_overwrite: __Reply__mach_vm_read_overwrite_t }
+  | { Reply_mach_vm_msync: __Reply__mach_vm_msync_t }
+  | { Reply_mach_vm_behavior_set: __Reply__mach_vm_behavior_set_t }
+  | { Reply_mach_vm_map: __Reply__mach_vm_map_t }
+  | { Reply_mach_vm_machine_attribute: __Reply__mach_vm_machine_attribute_t }
+  | { Reply_mach_vm_remap: __Reply__mach_vm_remap_t }
+  | { Reply_mach_vm_page_query: __Reply__mach_vm_page_query_t }
+  | { Reply_mach_vm_region_recurse: __Reply__mach_vm_region_recurse_t }
+  | { Reply_mach_vm_region: __Reply__mach_vm_region_t }
+  | { Reply__mach_make_memory_entry: __Reply___mach_make_memory_entry_t }
+  | { Reply_mach_vm_purgable_control: __Reply__mach_vm_purgable_control_t }
+  | { Reply_mach_vm_page_info: __Reply__mach_vm_page_info_t }
+  | { Reply_mach_vm_page_range_query: __Reply__mach_vm_page_range_query_t }
+  | { Reply_mach_vm_remap_new: __Reply__mach_vm_remap_new_t }
+  | { Reply_mach_vm_range_create: __Reply__mach_vm_range_create_t }
+  | { Reply_mach_vm_update_pointers_with_remote_tags: __Reply__mach_vm_update_pointers_with_remote_tags_t };
+
+declare class __ReplyUnion__mach_vm_subsystem {
+  constructor(init?: __ReplyUnion__mach_vm_subsystemDescriptor);
+  Reply_mach_vm_allocate: __Reply__mach_vm_allocate_t;
+  Reply_mach_vm_deallocate: __Reply__mach_vm_deallocate_t;
+  Reply_mach_vm_protect: __Reply__mach_vm_protect_t;
+  Reply_mach_vm_inherit: __Reply__mach_vm_inherit_t;
+  Reply_mach_vm_read: __Reply__mach_vm_read_t;
+  Reply_mach_vm_read_list: __Reply__mach_vm_read_list_t;
+  Reply_mach_vm_write: __Reply__mach_vm_write_t;
+  Reply_mach_vm_copy: __Reply__mach_vm_copy_t;
+  Reply_mach_vm_read_overwrite: __Reply__mach_vm_read_overwrite_t;
+  Reply_mach_vm_msync: __Reply__mach_vm_msync_t;
+  Reply_mach_vm_behavior_set: __Reply__mach_vm_behavior_set_t;
+  Reply_mach_vm_map: __Reply__mach_vm_map_t;
+  Reply_mach_vm_machine_attribute: __Reply__mach_vm_machine_attribute_t;
+  Reply_mach_vm_remap: __Reply__mach_vm_remap_t;
+  Reply_mach_vm_page_query: __Reply__mach_vm_page_query_t;
+  Reply_mach_vm_region_recurse: __Reply__mach_vm_region_recurse_t;
+  Reply_mach_vm_region: __Reply__mach_vm_region_t;
+  Reply__mach_make_memory_entry: __Reply___mach_make_memory_entry_t;
+  Reply_mach_vm_purgable_control: __Reply__mach_vm_purgable_control_t;
+  Reply_mach_vm_page_info: __Reply__mach_vm_page_info_t;
+  Reply_mach_vm_page_range_query: __Reply__mach_vm_page_range_query_t;
+  Reply_mach_vm_remap_new: __Reply__mach_vm_remap_new_t;
+  Reply_mach_vm_range_create: __Reply__mach_vm_range_create_t;
+  Reply_mach_vm_update_pointers_with_remote_tags: __Reply__mach_vm_update_pointers_with_remote_tags_t;
+}
+
+type __RequestUnion__clock_reply_subsystemDescriptor = 
+  | { Request_clock_alarm_reply: __Request__clock_alarm_reply_t };
+
+declare class __RequestUnion__clock_reply_subsystem {
+  constructor(init?: __RequestUnion__clock_reply_subsystemDescriptor);
+  Request_clock_alarm_reply: __Request__clock_alarm_reply_t;
+}
+
+type unnamed_13706821744738785356Descriptor = 
+  | { gl_errfunc: (p1: string, p2: number) => number | null }
+  | { gl_errblk: (p1: string, p2: number) => number | null };
+
+declare class unnamed_13706821744738785356 {
+  constructor(init?: unnamed_13706821744738785356Descriptor);
+  gl_errfunc: (p1: string, p2: number) => number | null;
+  gl_errblk: (p1: string, p2: number) => number | null;
+}
+
+type guid_tDescriptor = 
+  | { g_guid: unknown /* const array */ }
+  | { g_guid_asint: unknown /* const array */ };
+
+declare class guid_t {
+  constructor(init?: guid_tDescriptor);
+  g_guid: unknown /* const array */;
+  g_guid_asint: unknown /* const array */;
+}
+
+type unnamed_10135616991905435520Descriptor = 
+  | { ip6_un1: ip6_hdrctl }
+  | { ip6_un2_vfc: number };
+
+declare class unnamed_10135616991905435520 {
+  constructor(init?: unnamed_10135616991905435520Descriptor);
+  ip6_un1: ip6_hdrctl;
+  ip6_un2_vfc: number;
+}
+
+type unnamed_11624122453527324720Descriptor = 
+  | { ifru_addr: sockaddr_in6 }
+  | { ifru_dstaddr: sockaddr_in6 }
+  | { ifru_flags: number }
+  | { ifru_flags6: number }
+  | { ifru_metric: number }
+  | { ifru_intval: number }
+  | { ifru_data: string | null }
+  | { ifru_lifetime: in6_addrlifetime }
+  | { ifru_stat: in6_ifstat }
+  | { ifru_icmp6stat: icmp6_ifstat }
+  | { ifru_scope_id: unknown /* const array */ };
+
+declare class unnamed_11624122453527324720 {
+  constructor(init?: unnamed_11624122453527324720Descriptor);
+  ifru_addr: sockaddr_in6;
+  ifru_dstaddr: sockaddr_in6;
+  ifru_flags: number;
+  ifru_flags6: number;
+  ifru_metric: number;
+  ifru_intval: number;
+  ifru_data: string | null;
+  ifru_lifetime: in6_addrlifetime;
+  ifru_stat: in6_ifstat;
+  ifru_icmp6stat: icmp6_ifstat;
+  ifru_scope_id: unknown /* const array */;
+}
+
+type unnamed_17175943749766991800Descriptor = 
+  | { inp46_local: in_addr_4in6 }
+  | { inp6_local: in6_addr };
+
+declare class unnamed_17175943749766991800 {
+  constructor(init?: unnamed_17175943749766991800Descriptor);
+  inp46_local: in_addr_4in6;
+  inp6_local: in6_addr;
+}
+
+type __ReplyUnion__thread_act_subsystemDescriptor = 
+  | { Reply_thread_terminate: __Reply__thread_terminate_t }
+  | { Reply_act_get_state: __Reply__act_get_state_t }
+  | { Reply_act_set_state: __Reply__act_set_state_t }
+  | { Reply_thread_get_state: __Reply__thread_get_state_t }
+  | { Reply_thread_set_state: __Reply__thread_set_state_t }
+  | { Reply_thread_suspend: __Reply__thread_suspend_t }
+  | { Reply_thread_resume: __Reply__thread_resume_t }
+  | { Reply_thread_abort: __Reply__thread_abort_t }
+  | { Reply_thread_abort_safely: __Reply__thread_abort_safely_t }
+  | { Reply_thread_depress_abort: __Reply__thread_depress_abort_t }
+  | { Reply_thread_get_special_port: __Reply__thread_get_special_port_t }
+  | { Reply_thread_set_special_port: __Reply__thread_set_special_port_t }
+  | { Reply_thread_info: __Reply__thread_info_t }
+  | { Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t }
+  | { Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t }
+  | { Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t }
+  | { Reply_thread_policy: __Reply__thread_policy_t }
+  | { Reply_thread_policy_set: __Reply__thread_policy_set_t }
+  | { Reply_thread_policy_get: __Reply__thread_policy_get_t }
+  | { Reply_thread_sample: __Reply__thread_sample_t }
+  | { Reply_etap_trace_thread: __Reply__etap_trace_thread_t }
+  | { Reply_thread_assign: __Reply__thread_assign_t }
+  | { Reply_thread_assign_default: __Reply__thread_assign_default_t }
+  | { Reply_thread_get_assignment: __Reply__thread_get_assignment_t }
+  | { Reply_thread_set_policy: __Reply__thread_set_policy_t }
+  | { Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t }
+  | { Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t }
+  | { Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t }
+  | { Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t }
+  | { Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t }
+  | { Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t };
+
+declare class __ReplyUnion__thread_act_subsystem {
+  constructor(init?: __ReplyUnion__thread_act_subsystemDescriptor);
+  Reply_thread_terminate: __Reply__thread_terminate_t;
+  Reply_act_get_state: __Reply__act_get_state_t;
+  Reply_act_set_state: __Reply__act_set_state_t;
+  Reply_thread_get_state: __Reply__thread_get_state_t;
+  Reply_thread_set_state: __Reply__thread_set_state_t;
+  Reply_thread_suspend: __Reply__thread_suspend_t;
+  Reply_thread_resume: __Reply__thread_resume_t;
+  Reply_thread_abort: __Reply__thread_abort_t;
+  Reply_thread_abort_safely: __Reply__thread_abort_safely_t;
+  Reply_thread_depress_abort: __Reply__thread_depress_abort_t;
+  Reply_thread_get_special_port: __Reply__thread_get_special_port_t;
+  Reply_thread_set_special_port: __Reply__thread_set_special_port_t;
+  Reply_thread_info: __Reply__thread_info_t;
+  Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t;
+  Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t;
+  Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t;
+  Reply_thread_policy: __Reply__thread_policy_t;
+  Reply_thread_policy_set: __Reply__thread_policy_set_t;
+  Reply_thread_policy_get: __Reply__thread_policy_get_t;
+  Reply_thread_sample: __Reply__thread_sample_t;
+  Reply_etap_trace_thread: __Reply__etap_trace_thread_t;
+  Reply_thread_assign: __Reply__thread_assign_t;
+  Reply_thread_assign_default: __Reply__thread_assign_default_t;
+  Reply_thread_get_assignment: __Reply__thread_get_assignment_t;
+  Reply_thread_set_policy: __Reply__thread_set_policy_t;
+  Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t;
+  Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t;
+  Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t;
+  Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t;
+  Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t;
+  Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t;
+}
+
+type unnamed_8620995710805692012Descriptor = 
+  | { inp46_local: in_addr_4in6 }
+  | { inp6_local: in6_addr };
+
+declare class unnamed_8620995710805692012 {
+  constructor(init?: unnamed_8620995710805692012Descriptor);
+  inp46_local: in_addr_4in6;
+  inp6_local: in6_addr;
+}
+
+type unnamed_15228471721475667251Descriptor = 
+  | { bflu_list: interop.PointerConvertible }
+  | { bflu_pad: number };
+
+declare class unnamed_15228471721475667251 {
+  constructor(init?: unnamed_15228471721475667251Descriptor);
+  bflu_list: interop.Pointer;
+  bflu_pad: number;
+}
+
+type unnamed_15031331406388301920Descriptor = 
+  | { inp46_foreign: in_addr_4in6 }
+  | { inp6_foreign: in6_addr };
+
+declare class unnamed_15031331406388301920 {
+  constructor(init?: unnamed_15031331406388301920Descriptor);
+  inp46_foreign: in_addr_4in6;
+  inp6_foreign: in6_addr;
+}
+
+type unnamed_13962158513039598619Descriptor = 
+  | { ih_pptr: number }
+  | { ih_gwaddr: in_addr }
+  | { ih_idseq: ih_idseq }
+  | { ih_void: number }
+  | { ih_pmtu: ih_pmtu }
+  | { ih_rtradv: ih_rtradv };
+
+declare class unnamed_13962158513039598619 {
+  constructor(init?: unnamed_13962158513039598619Descriptor);
+  ih_pptr: number;
+  ih_gwaddr: in_addr;
+  ih_idseq: ih_idseq;
+  ih_void: number;
+  ih_pmtu: ih_pmtu;
+  ih_rtradv: ih_rtradv;
 }
 
 type __RequestUnion__mach_port_subsystemDescriptor = 
@@ -26909,496 +23630,102 @@ declare class __RequestUnion__mach_port_subsystem {
   Request_mach_port_assert_attributes: __Request__mach_port_assert_attributes_t;
 }
 
-type __ReplyUnion__mach_voucher_subsystemDescriptor = 
-  | { Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t }
-  | { Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t }
-  | { Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t }
-  | { Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t }
-  | { Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t };
+type unnamed_14870329825906154210Descriptor = 
+  | { icmp6_un_data32: unknown /* const array */ }
+  | { icmp6_un_data16: unknown /* const array */ }
+  | { icmp6_un_data8: unknown /* const array */ };
 
-declare class __ReplyUnion__mach_voucher_subsystem {
-  constructor(init?: __ReplyUnion__mach_voucher_subsystemDescriptor);
-  Reply_mach_voucher_extract_attr_content: __Reply__mach_voucher_extract_attr_content_t;
-  Reply_mach_voucher_extract_attr_recipe: __Reply__mach_voucher_extract_attr_recipe_t;
-  Reply_mach_voucher_extract_all_attr_recipes: __Reply__mach_voucher_extract_all_attr_recipes_t;
-  Reply_mach_voucher_attr_command: __Reply__mach_voucher_attr_command_t;
-  Reply_mach_voucher_debug_info: __Reply__mach_voucher_debug_info_t;
+declare class unnamed_14870329825906154210 {
+  constructor(init?: unnamed_14870329825906154210Descriptor);
+  icmp6_un_data32: unknown /* const array */;
+  icmp6_un_data16: unknown /* const array */;
+  icmp6_un_data8: unknown /* const array */;
 }
 
-type unnamed_18439627466317917467Descriptor = 
-  | { ina_46: in4in6_addr }
-  | { ina_6: in6_addr };
+type unnamed_4999453171580543156Descriptor = 
+  | { ifsr_cell: if_cellular_status }
+  | { ifsr_wifi: if_wifi_status };
 
-declare class unnamed_18439627466317917467 {
-  constructor(init?: unnamed_18439627466317917467Descriptor);
-  ina_46: in4in6_addr;
-  ina_6: in6_addr;
+declare class unnamed_4999453171580543156 {
+  constructor(init?: unnamed_4999453171580543156Descriptor);
+  ifsr_cell: if_cellular_status;
+  ifsr_wifi: if_wifi_status;
 }
 
-type unnamed_8068058173877573354Descriptor = 
+type unnamed_2331840929460847711Descriptor = 
+  | { addr8: unknown /* const array */ }
+  | { addr16: unknown /* const array */ }
+  | { addr32: unknown /* const array */ };
+
+declare class unnamed_2331840929460847711 {
+  constructor(init?: unnamed_2331840929460847711Descriptor);
+  addr8: unknown /* const array */;
+  addr16: unknown /* const array */;
+  addr32: unknown /* const array */;
+}
+
+type unnamed_7379483205066073019Descriptor = 
+  | { ifk_ptr: interop.PointerConvertible }
+  | { ifk_value: number };
+
+declare class unnamed_7379483205066073019 {
+  constructor(init?: unnamed_7379483205066073019Descriptor);
+  ifk_ptr: interop.Pointer;
+  ifk_value: number;
+}
+
+type ifnet_interface_advisory_notification_type_tDescriptor = 
+  | { cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell> }
+  | { wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi> };
+
+declare class ifnet_interface_advisory_notification_type_t {
+  constructor(init?: ifnet_interface_advisory_notification_type_tDescriptor);
+  cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell>;
+  wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi>;
+}
+
+type unnamed_12400080977536308620Descriptor = 
   | { if_status_v1: if_wifi_status_v1 };
 
-declare class unnamed_8068058173877573354 {
-  constructor(init?: unnamed_8068058173877573354Descriptor);
+declare class unnamed_12400080977536308620 {
+  constructor(init?: unnamed_12400080977536308620Descriptor);
   if_status_v1: if_wifi_status_v1;
 }
 
-type unnamed_5647942776478080617Descriptor = 
-  | { pt: string | null }
-  | { array: unknown /* const array */ };
+type unnamed_3038933019743913273Descriptor = 
+  | { type_u: unnamed_5500709861783336209 }
+  | { type_i: unnamed_8368847888885199020 }
+  | { type_s: unnamed_3674921957790763541 }
+  | { type_frmr: unnamed_5983823812792710749 }
+  | { type_snap: unnamed_12642380909708426217 }
+  | { type_raw: unnamed_9526259962648282095 };
 
-declare class unnamed_5647942776478080617 {
-  constructor(init?: unnamed_5647942776478080617Descriptor);
-  pt: string | null;
-  array: unknown /* const array */;
+declare class unnamed_3038933019743913273 {
+  constructor(init?: unnamed_3038933019743913273Descriptor);
+  type_u: unnamed_5500709861783336209;
+  type_i: unnamed_8368847888885199020;
+  type_s: unnamed_3674921957790763541;
+  type_frmr: unnamed_5983823812792710749;
+  type_snap: unnamed_12642380909708426217;
+  type_raw: unnamed_9526259962648282095;
 }
 
-type unnamed_16126239951412607018Descriptor = 
-  | { oneWordValue: string | null }
-  | { objPtr: interop.PointerConvertible }
-  | { words: unknown /* const array */ }
-  | { string: unknown /* const array */ };
+type unnamed_10114373821415750281Descriptor = 
+  | { sadb_x_sa2_reserved1: number };
 
-declare class unnamed_16126239951412607018 {
-  constructor(init?: unnamed_16126239951412607018Descriptor);
-  oneWordValue: string | null;
-  objPtr: interop.Pointer;
-  words: unknown /* const array */;
-  string: unknown /* const array */;
+declare class unnamed_10114373821415750281 {
+  constructor(init?: unnamed_10114373821415750281Descriptor);
+  sadb_x_sa2_reserved1: number;
 }
 
-type fasttrap_instr_tDescriptor = 
-  | { instr32: number }
-  | { instr16: unnamed_12804984068000564476 };
+type _TXTRecordRef_tDescriptor = 
+  | { PrivateData: unknown /* const array */ }
+  | { ForceNaturalAlignment: string | null };
 
-declare class fasttrap_instr_t {
-  constructor(init?: fasttrap_instr_tDescriptor);
-  instr32: number;
-  instr16: unnamed_12804984068000564476;
-}
-
-type unnamed_8047590349428456375Descriptor = 
-  | { inp4_route: unknown /* const array */ }
-  | { inp6_route: unknown /* const array */ };
-
-declare class unnamed_8047590349428456375 {
-  constructor(init?: unnamed_8047590349428456375Descriptor);
-  inp4_route: unknown /* const array */;
-  inp6_route: unknown /* const array */;
-}
-
-type HFSPlusAttrRecordDescriptor = 
-  | { recordType: number }
-  | { inlineData: HFSPlusAttrInlineData }
-  | { attrData: HFSPlusAttrData }
-  | { forkData: HFSPlusAttrForkData }
-  | { overflowExtents: HFSPlusAttrExtents };
-
-declare class HFSPlusAttrRecord {
-  constructor(init?: HFSPlusAttrRecordDescriptor);
-  recordType: number;
-  inlineData: HFSPlusAttrInlineData;
-  attrData: HFSPlusAttrData;
-  forkData: HFSPlusAttrForkData;
-  overflowExtents: HFSPlusAttrExtents;
-}
-
-type unnamed_6913317967658464317Descriptor = 
-  | { iNodeNum: number }
-  | { linkCount: number }
-  | { rawDevice: number };
-
-declare class unnamed_6913317967658464317 {
-  constructor(init?: unnamed_6913317967658464317Descriptor);
-  iNodeNum: number;
-  linkCount: number;
-  rawDevice: number;
-}
-
-type unnamed_6952071012929515318Descriptor = 
-  | { ua_sun: sockaddr_un }
-  | { ua_dummy: unknown /* const array */ };
-
-declare class unnamed_6952071012929515318 {
-  constructor(init?: unnamed_6952071012929515318Descriptor);
-  ua_sun: sockaddr_un;
-  ua_dummy: unknown /* const array */;
-}
-
-type unnamed_3933339760615492547Descriptor = 
-  | { pri_in: in_sockinfo }
-  | { pri_tcp: tcp_sockinfo }
-  | { pri_un: un_sockinfo }
-  | { pri_ndrv: ndrv_info }
-  | { pri_kern_event: kern_event_info }
-  | { pri_kern_ctl: kern_ctl_info }
-  | { pri_vsock: vsock_sockinfo };
-
-declare class unnamed_3933339760615492547 {
-  constructor(init?: unnamed_3933339760615492547Descriptor);
-  pri_in: in_sockinfo;
-  pri_tcp: tcp_sockinfo;
-  pri_un: un_sockinfo;
-  pri_ndrv: ndrv_info;
-  pri_kern_event: kern_event_info;
-  pri_kern_ctl: kern_ctl_info;
-  pri_vsock: vsock_sockinfo;
-}
-
-type __RequestUnion__clock_reply_subsystemDescriptor = 
-  | { Request_clock_alarm_reply: __Request__clock_alarm_reply_t };
-
-declare class __RequestUnion__clock_reply_subsystem {
-  constructor(init?: __RequestUnion__clock_reply_subsystemDescriptor);
-  Request_clock_alarm_reply: __Request__clock_alarm_reply_t;
-}
-
-type __ReplyUnion__memory_entry_subsystemDescriptor = 
-  | { Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t }
-  | { Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t }
-  | { Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t }
-  | { Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t };
-
-declare class __ReplyUnion__memory_entry_subsystem {
-  constructor(init?: __ReplyUnion__memory_entry_subsystemDescriptor);
-  Reply_mach_memory_entry_purgable_control: __Reply__mach_memory_entry_purgable_control_t;
-  Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t;
-  Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t;
-  Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t;
-}
-
-type __RequestUnion__mach_voucher_subsystemDescriptor = 
-  | { Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t }
-  | { Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t }
-  | { Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t }
-  | { Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t }
-  | { Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t };
-
-declare class __RequestUnion__mach_voucher_subsystem {
-  constructor(init?: __RequestUnion__mach_voucher_subsystemDescriptor);
-  Request_mach_voucher_extract_attr_content: __Request__mach_voucher_extract_attr_content_t;
-  Request_mach_voucher_extract_attr_recipe: __Request__mach_voucher_extract_attr_recipe_t;
-  Request_mach_voucher_extract_all_attr_recipes: __Request__mach_voucher_extract_all_attr_recipes_t;
-  Request_mach_voucher_attr_command: __Request__mach_voucher_attr_command_t;
-  Request_mach_voucher_debug_info: __Request__mach_voucher_debug_info_t;
-}
-
-type unnamed_4946263752583527807Descriptor = 
-  | { inp46_local: in_addr_4in6 }
-  | { inp6_local: in6_addr };
-
-declare class unnamed_4946263752583527807 {
-  constructor(init?: unnamed_4946263752583527807Descriptor);
-  inp46_local: in_addr_4in6;
-  inp6_local: in6_addr;
-}
-
-type __ReplyUnion__exc_subsystemDescriptor = 
-  | { Reply_exception_raise: __Reply__exception_raise_t }
-  | { Reply_exception_raise_state: __Reply__exception_raise_state_t }
-  | { Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t };
-
-declare class __ReplyUnion__exc_subsystem {
-  constructor(init?: __ReplyUnion__exc_subsystemDescriptor);
-  Reply_exception_raise: __Reply__exception_raise_t;
-  Reply_exception_raise_state: __Reply__exception_raise_state_t;
-  Reply_exception_raise_state_identity: __Reply__exception_raise_state_identity_t;
-}
-
-type unnamed_13987264378789662937Descriptor = 
-  | { ran_strx: number };
-
-declare class unnamed_13987264378789662937 {
-  constructor(init?: unnamed_13987264378789662937Descriptor);
-  ran_strx: number;
-}
-
-type __ReplyUnion__clock_reply_subsystemDescriptor = 
-  | { Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t };
-
-declare class __ReplyUnion__clock_reply_subsystem {
-  constructor(init?: __ReplyUnion__clock_reply_subsystemDescriptor);
-  Reply_clock_alarm_reply: __Reply__clock_alarm_reply_t;
-}
-
-type ppd_cpvalue_uDescriptor = 
-  | { custom_curve: number }
-  | { custom_int: number }
-  | { custom_invcurve: number }
-  | { custom_passcode: string | null }
-  | { custom_password: string | null }
-  | { custom_points: number }
-  | { custom_real: number }
-  | { custom_string: string | null };
-
-declare class ppd_cpvalue_u {
-  constructor(init?: ppd_cpvalue_uDescriptor);
-  custom_curve: number;
-  custom_int: number;
-  custom_invcurve: number;
-  custom_passcode: string | null;
-  custom_password: string | null;
-  custom_points: number;
-  custom_real: number;
-  custom_string: string | null;
-}
-
-type __RequestUnion__memory_entry_subsystemDescriptor = 
-  | { Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t }
-  | { Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t }
-  | { Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t }
-  | { Request_mach_memory_entry_get_page_counts: __Request__mach_memory_entry_get_page_counts_t };
-
-declare class __RequestUnion__memory_entry_subsystem {
-  constructor(init?: __RequestUnion__memory_entry_subsystemDescriptor);
-  Request_mach_memory_entry_purgable_control: __Request__mach_memory_entry_purgable_control_t;
-  Request_mach_memory_entry_access_tracking: __Request__mach_memory_entry_access_tracking_t;
-  Request_mach_memory_entry_ownership: __Request__mach_memory_entry_ownership_t;
-  Request_mach_memory_entry_get_page_counts: __Request__mach_memory_entry_get_page_counts_t;
-}
-
-type guid_tDescriptor = 
-  | { g_guid: unknown /* const array */ }
-  | { g_guid_asint: unknown /* const array */ };
-
-declare class guid_t {
-  constructor(init?: guid_tDescriptor);
-  g_guid: unknown /* const array */;
-  g_guid_asint: unknown /* const array */;
-}
-
-type semunDescriptor = 
-  | { val: number }
-  | { buf: interop.PointerConvertible }
-  | { array: interop.PointerConvertible };
-
-declare class semun {
-  constructor(init?: semunDescriptor);
-  val: number;
-  buf: interop.Pointer;
-  array: interop.Pointer;
-}
-
-type graft_argsDescriptor = 
-  | { max_size: unknown /* const array */ }
-  | { sbc_args: secure_boot_cryptex_args };
-
-declare class graft_args {
-  constructor(init?: graft_argsDescriptor);
-  max_size: unknown /* const array */;
-  sbc_args: secure_boot_cryptex_args;
-}
-
-type unnamed_10884612490709219565Descriptor = 
-  | { ua_sun: sockaddr_un }
-  | { ua_dummy: unknown /* const array */ };
-
-declare class unnamed_10884612490709219565 {
-  constructor(init?: unnamed_10884612490709219565Descriptor);
-  ua_sun: sockaddr_un;
-  ua_dummy: unknown /* const array */;
-}
-
-type unnamed_9254247380599843865Descriptor = 
-  | { fts_compar: () => number | null }
-  | { fts_compar_b: () => number | null };
-
-declare class unnamed_9254247380599843865 {
-  constructor(init?: unnamed_9254247380599843865Descriptor);
-  fts_compar: () => number | null;
-  fts_compar_b: () => number | null;
-}
-
-type unnamed_15062008226319036936Descriptor = 
-  | { p_st1: unnamed_6774222680078317929 }
-  | { __p_starttime: timeval };
-
-declare class unnamed_15062008226319036936 {
-  constructor(init?: unnamed_15062008226319036936Descriptor);
-  p_st1: unnamed_6774222680078317929;
-  __p_starttime: timeval;
-}
-
-type __ReplyUnion__mach_vm_subsystemDescriptor = 
-  | { Reply_mach_vm_allocate: __Reply__mach_vm_allocate_t }
-  | { Reply_mach_vm_deallocate: __Reply__mach_vm_deallocate_t }
-  | { Reply_mach_vm_protect: __Reply__mach_vm_protect_t }
-  | { Reply_mach_vm_inherit: __Reply__mach_vm_inherit_t }
-  | { Reply_mach_vm_read: __Reply__mach_vm_read_t }
-  | { Reply_mach_vm_read_list: __Reply__mach_vm_read_list_t }
-  | { Reply_mach_vm_write: __Reply__mach_vm_write_t }
-  | { Reply_mach_vm_copy: __Reply__mach_vm_copy_t }
-  | { Reply_mach_vm_read_overwrite: __Reply__mach_vm_read_overwrite_t }
-  | { Reply_mach_vm_msync: __Reply__mach_vm_msync_t }
-  | { Reply_mach_vm_behavior_set: __Reply__mach_vm_behavior_set_t }
-  | { Reply_mach_vm_map: __Reply__mach_vm_map_t }
-  | { Reply_mach_vm_machine_attribute: __Reply__mach_vm_machine_attribute_t }
-  | { Reply_mach_vm_remap: __Reply__mach_vm_remap_t }
-  | { Reply_mach_vm_page_query: __Reply__mach_vm_page_query_t }
-  | { Reply_mach_vm_region_recurse: __Reply__mach_vm_region_recurse_t }
-  | { Reply_mach_vm_region: __Reply__mach_vm_region_t }
-  | { Reply__mach_make_memory_entry: __Reply___mach_make_memory_entry_t }
-  | { Reply_mach_vm_purgable_control: __Reply__mach_vm_purgable_control_t }
-  | { Reply_mach_vm_page_info: __Reply__mach_vm_page_info_t }
-  | { Reply_mach_vm_page_range_query: __Reply__mach_vm_page_range_query_t }
-  | { Reply_mach_vm_remap_new: __Reply__mach_vm_remap_new_t }
-  | { Reply_mach_vm_range_create: __Reply__mach_vm_range_create_t }
-  | { Reply_mach_vm_update_pointers_with_remote_tags: __Reply__mach_vm_update_pointers_with_remote_tags_t };
-
-declare class __ReplyUnion__mach_vm_subsystem {
-  constructor(init?: __ReplyUnion__mach_vm_subsystemDescriptor);
-  Reply_mach_vm_allocate: __Reply__mach_vm_allocate_t;
-  Reply_mach_vm_deallocate: __Reply__mach_vm_deallocate_t;
-  Reply_mach_vm_protect: __Reply__mach_vm_protect_t;
-  Reply_mach_vm_inherit: __Reply__mach_vm_inherit_t;
-  Reply_mach_vm_read: __Reply__mach_vm_read_t;
-  Reply_mach_vm_read_list: __Reply__mach_vm_read_list_t;
-  Reply_mach_vm_write: __Reply__mach_vm_write_t;
-  Reply_mach_vm_copy: __Reply__mach_vm_copy_t;
-  Reply_mach_vm_read_overwrite: __Reply__mach_vm_read_overwrite_t;
-  Reply_mach_vm_msync: __Reply__mach_vm_msync_t;
-  Reply_mach_vm_behavior_set: __Reply__mach_vm_behavior_set_t;
-  Reply_mach_vm_map: __Reply__mach_vm_map_t;
-  Reply_mach_vm_machine_attribute: __Reply__mach_vm_machine_attribute_t;
-  Reply_mach_vm_remap: __Reply__mach_vm_remap_t;
-  Reply_mach_vm_page_query: __Reply__mach_vm_page_query_t;
-  Reply_mach_vm_region_recurse: __Reply__mach_vm_region_recurse_t;
-  Reply_mach_vm_region: __Reply__mach_vm_region_t;
-  Reply__mach_make_memory_entry: __Reply___mach_make_memory_entry_t;
-  Reply_mach_vm_purgable_control: __Reply__mach_vm_purgable_control_t;
-  Reply_mach_vm_page_info: __Reply__mach_vm_page_info_t;
-  Reply_mach_vm_page_range_query: __Reply__mach_vm_page_range_query_t;
-  Reply_mach_vm_remap_new: __Reply__mach_vm_remap_new_t;
-  Reply_mach_vm_range_create: __Reply__mach_vm_range_create_t;
-  Reply_mach_vm_update_pointers_with_remote_tags: __Reply__mach_vm_update_pointers_with_remote_tags_t;
-}
-
-type __ReplyUnion__vm_map_subsystemDescriptor = 
-  | { Reply_vm_region: __Reply__vm_region_t }
-  | { Reply_vm_allocate: __Reply__vm_allocate_t }
-  | { Reply_vm_deallocate: __Reply__vm_deallocate_t }
-  | { Reply_vm_protect: __Reply__vm_protect_t }
-  | { Reply_vm_inherit: __Reply__vm_inherit_t }
-  | { Reply_vm_read: __Reply__vm_read_t }
-  | { Reply_vm_read_list: __Reply__vm_read_list_t }
-  | { Reply_vm_write: __Reply__vm_write_t }
-  | { Reply_vm_copy: __Reply__vm_copy_t }
-  | { Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t }
-  | { Reply_vm_msync: __Reply__vm_msync_t }
-  | { Reply_vm_behavior_set: __Reply__vm_behavior_set_t }
-  | { Reply_vm_map: __Reply__vm_map_t }
-  | { Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t }
-  | { Reply_vm_remap: __Reply__vm_remap_t }
-  | { Reply_task_wire: __Reply__task_wire_t }
-  | { Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t }
-  | { Reply_vm_map_page_query: __Reply__vm_map_page_query_t }
-  | { Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t }
-  | { Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t }
-  | { Reply_vm_region_recurse: __Reply__vm_region_recurse_t }
-  | { Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t }
-  | { Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t }
-  | { Reply_vm_region_64: __Reply__vm_region_64_t }
-  | { Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t }
-  | { Reply_vm_map_64: __Reply__vm_map_64_t }
-  | { Reply_vm_purgable_control: __Reply__vm_purgable_control_t }
-  | { Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t }
-  | { Reply_vm_remap_new: __Reply__vm_remap_new_t };
-
-declare class __ReplyUnion__vm_map_subsystem {
-  constructor(init?: __ReplyUnion__vm_map_subsystemDescriptor);
-  Reply_vm_region: __Reply__vm_region_t;
-  Reply_vm_allocate: __Reply__vm_allocate_t;
-  Reply_vm_deallocate: __Reply__vm_deallocate_t;
-  Reply_vm_protect: __Reply__vm_protect_t;
-  Reply_vm_inherit: __Reply__vm_inherit_t;
-  Reply_vm_read: __Reply__vm_read_t;
-  Reply_vm_read_list: __Reply__vm_read_list_t;
-  Reply_vm_write: __Reply__vm_write_t;
-  Reply_vm_copy: __Reply__vm_copy_t;
-  Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t;
-  Reply_vm_msync: __Reply__vm_msync_t;
-  Reply_vm_behavior_set: __Reply__vm_behavior_set_t;
-  Reply_vm_map: __Reply__vm_map_t;
-  Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t;
-  Reply_vm_remap: __Reply__vm_remap_t;
-  Reply_task_wire: __Reply__task_wire_t;
-  Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t;
-  Reply_vm_map_page_query: __Reply__vm_map_page_query_t;
-  Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t;
-  Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t;
-  Reply_vm_region_recurse: __Reply__vm_region_recurse_t;
-  Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t;
-  Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t;
-  Reply_vm_region_64: __Reply__vm_region_64_t;
-  Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t;
-  Reply_vm_map_64: __Reply__vm_map_64_t;
-  Reply_vm_purgable_control: __Reply__vm_purgable_control_t;
-  Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t;
-  Reply_vm_remap_new: __Reply__vm_remap_new_t;
-}
-
-type unnamed_1268940931141765636Descriptor = 
-  | { ip6_un1: ip6_hdrctl }
-  | { ip6_un2_vfc: number };
-
-declare class unnamed_1268940931141765636 {
-  constructor(init?: unnamed_1268940931141765636Descriptor);
-  ip6_un1: ip6_hdrctl;
-  ip6_un2_vfc: number;
-}
-
-type unnamed_16163939891023180617Descriptor = 
-  | { ih_pptr: number }
-  | { ih_gwaddr: in_addr }
-  | { ih_idseq: ih_idseq }
-  | { ih_void: number }
-  | { ih_pmtu: ih_pmtu }
-  | { ih_rtradv: ih_rtradv };
-
-declare class unnamed_16163939891023180617 {
-  constructor(init?: unnamed_16163939891023180617Descriptor);
-  ih_pptr: number;
-  ih_gwaddr: in_addr;
-  ih_idseq: ih_idseq;
-  ih_void: number;
-  ih_pmtu: ih_pmtu;
-  ih_rtradv: ih_rtradv;
-}
-
-type unnamed_14588102091958030739Descriptor = 
-  | { ifru_addr: sockaddr_in6 }
-  | { ifru_dstaddr: sockaddr_in6 }
-  | { ifru_flags: number }
-  | { ifru_flags6: number }
-  | { ifru_metric: number }
-  | { ifru_intval: number }
-  | { ifru_data: string | null }
-  | { ifru_lifetime: in6_addrlifetime }
-  | { ifru_stat: in6_ifstat }
-  | { ifru_icmp6stat: icmp6_ifstat }
-  | { ifru_scope_id: unknown /* const array */ };
-
-declare class unnamed_14588102091958030739 {
-  constructor(init?: unnamed_14588102091958030739Descriptor);
-  ifru_addr: sockaddr_in6;
-  ifru_dstaddr: sockaddr_in6;
-  ifru_flags: number;
-  ifru_flags6: number;
-  ifru_metric: number;
-  ifru_intval: number;
-  ifru_data: string | null;
-  ifru_lifetime: in6_addrlifetime;
-  ifru_stat: in6_ifstat;
-  ifru_icmp6stat: icmp6_ifstat;
-  ifru_scope_id: unknown /* const array */;
-}
-
-type malloc_type_descriptor_v0_tDescriptor = 
-  | { type_id: number };
-
-declare class malloc_type_descriptor_v0_t {
-  constructor(init?: malloc_type_descriptor_v0_tDescriptor);
-  type_id: number;
+declare class _TXTRecordRef_t {
+  constructor(init?: _TXTRecordRef_tDescriptor);
+  PrivateData: unknown /* const array */;
+  ForceNaturalAlignment: string | null;
 }
 
 type __RequestUnion__thread_act_subsystemDescriptor = 
@@ -27469,213 +23796,33 @@ declare class __RequestUnion__thread_act_subsystem {
   Request_thread_adopt_exception_handler: __Request__thread_adopt_exception_handler_t;
 }
 
-type mach_msg_empty_tDescriptor = 
-  | { send: mach_msg_empty_send_t }
-  | { rcv: mach_msg_empty_rcv_t };
+type malloc_type_descriptor_v0_tDescriptor = 
+  | { type_id: number };
 
-declare class mach_msg_empty_t {
-  constructor(init?: mach_msg_empty_tDescriptor);
-  send: mach_msg_empty_send_t;
-  rcv: mach_msg_empty_rcv_t;
+declare class malloc_type_descriptor_v0_t {
+  constructor(init?: malloc_type_descriptor_v0_tDescriptor);
+  type_id: number;
 }
 
-type unnamed_9497288941881539350Descriptor = 
-  | { inp46_foreign: in_addr_4in6 }
-  | { inp6_foreign: in6_addr };
-
-declare class unnamed_9497288941881539350 {
-  constructor(init?: unnamed_9497288941881539350Descriptor);
-  inp46_foreign: in_addr_4in6;
-  inp6_foreign: in6_addr;
-}
-
-type unnamed_11206538674155518421Descriptor = 
-  | { ether_type: number }
-  | { sap: unknown /* const array */ }
-  | { snap: unknown /* const array */ }
-  | { other: unknown /* const array */ };
-
-declare class unnamed_11206538674155518421 {
-  constructor(init?: unnamed_11206538674155518421Descriptor);
-  ether_type: number;
-  sap: unknown /* const array */;
-  snap: unknown /* const array */;
-  other: unknown /* const array */;
-}
-
-type __RequestUnion__host_priv_subsystemDescriptor = 
-  | { Request_host_get_boot_info: __Request__host_get_boot_info_t }
-  | { Request_host_reboot: __Request__host_reboot_t }
-  | { Request_host_priv_statistics: __Request__host_priv_statistics_t }
-  | { Request_host_default_memory_manager: __Request__host_default_memory_manager_t }
-  | { Request_vm_wire: __Request__vm_wire_t }
-  | { Request_thread_wire: __Request__thread_wire_t }
-  | { Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t }
-  | { Request_host_processors: __Request__host_processors_t }
-  | { Request_host_get_clock_control: __Request__host_get_clock_control_t }
-  | { Request_kmod_create: __Request__kmod_create_t }
-  | { Request_kmod_destroy: __Request__kmod_destroy_t }
-  | { Request_kmod_control: __Request__kmod_control_t }
-  | { Request_host_get_special_port: __Request__host_get_special_port_t }
-  | { Request_host_set_special_port: __Request__host_set_special_port_t }
-  | { Request_host_set_exception_ports: __Request__host_set_exception_ports_t }
-  | { Request_host_get_exception_ports: __Request__host_get_exception_ports_t }
-  | { Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t }
-  | { Request_mach_vm_wire: __Request__mach_vm_wire_t }
-  | { Request_host_processor_sets: __Request__host_processor_sets_t }
-  | { Request_host_processor_set_priv: __Request__host_processor_set_priv_t }
-  | { Request_host_set_UNDServer: __Request__host_set_UNDServer_t }
-  | { Request_host_get_UNDServer: __Request__host_get_UNDServer_t }
-  | { Request_kext_request: __Request__kext_request_t };
-
-declare class __RequestUnion__host_priv_subsystem {
-  constructor(init?: __RequestUnion__host_priv_subsystemDescriptor);
-  Request_host_get_boot_info: __Request__host_get_boot_info_t;
-  Request_host_reboot: __Request__host_reboot_t;
-  Request_host_priv_statistics: __Request__host_priv_statistics_t;
-  Request_host_default_memory_manager: __Request__host_default_memory_manager_t;
-  Request_vm_wire: __Request__vm_wire_t;
-  Request_thread_wire: __Request__thread_wire_t;
-  Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t;
-  Request_host_processors: __Request__host_processors_t;
-  Request_host_get_clock_control: __Request__host_get_clock_control_t;
-  Request_kmod_create: __Request__kmod_create_t;
-  Request_kmod_destroy: __Request__kmod_destroy_t;
-  Request_kmod_control: __Request__kmod_control_t;
-  Request_host_get_special_port: __Request__host_get_special_port_t;
-  Request_host_set_special_port: __Request__host_set_special_port_t;
-  Request_host_set_exception_ports: __Request__host_set_exception_ports_t;
-  Request_host_get_exception_ports: __Request__host_get_exception_ports_t;
-  Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t;
-  Request_mach_vm_wire: __Request__mach_vm_wire_t;
-  Request_host_processor_sets: __Request__host_processor_sets_t;
-  Request_host_processor_set_priv: __Request__host_processor_set_priv_t;
-  Request_host_set_UNDServer: __Request__host_set_UNDServer_t;
-  Request_host_get_UNDServer: __Request__host_get_UNDServer_t;
-  Request_kext_request: __Request__kext_request_t;
-}
-
-type unnamed_5875706616793615818Descriptor = 
+type unnamed_8096082473602816505Descriptor = 
   | { ina_46: in4in6_addr }
   | { ina_6: in6_addr };
 
-declare class unnamed_5875706616793615818 {
-  constructor(init?: unnamed_5875706616793615818Descriptor);
+declare class unnamed_8096082473602816505 {
+  constructor(init?: unnamed_8096082473602816505Descriptor);
   ina_46: in4in6_addr;
   ina_6: in6_addr;
 }
 
-type unnamed_1421198579709750629Descriptor = 
-  | { inp46_local: in_addr_4in6 }
-  | { inp6_local: in6_addr };
-
-declare class unnamed_1421198579709750629 {
-  constructor(init?: unnamed_1421198579709750629Descriptor);
-  inp46_local: in_addr_4in6;
-  inp6_local: in6_addr;
-}
-
-type unnamed_5146768361021127489Descriptor = 
-  | { addr8: unknown /* const array */ }
-  | { addr16: unknown /* const array */ }
-  | { addr32: unknown /* const array */ };
-
-declare class unnamed_5146768361021127489 {
-  constructor(init?: unnamed_5146768361021127489Descriptor);
-  addr8: unknown /* const array */;
-  addr16: unknown /* const array */;
-  addr32: unknown /* const array */;
-}
-
-type ifnet_interface_advisory_notification_type_tDescriptor = 
-  | { cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell> }
-  | { wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi> };
-
-declare class ifnet_interface_advisory_notification_type_t {
-  constructor(init?: ifnet_interface_advisory_notification_type_tDescriptor);
-  cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell>;
-  wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi>;
-}
-
-type unnamed_15315128086020544945Descriptor = 
-  | { ifcu_buf: string | null }
-  | { ifcu_req: interop.PointerConvertible };
-
-declare class unnamed_15315128086020544945 {
-  constructor(init?: unnamed_15315128086020544945Descriptor);
-  ifcu_buf: string | null;
-  ifcu_req: interop.Pointer;
-}
-
-type unnamed_9658494857777605109Descriptor = 
-  | { inp46_foreign: in_addr_4in6 }
-  | { inp6_foreign: in6_addr };
-
-declare class unnamed_9658494857777605109 {
-  constructor(init?: unnamed_9658494857777605109Descriptor);
-  inp46_foreign: in_addr_4in6;
-  inp6_foreign: in6_addr;
-}
-
-type __mbstate_tDescriptor = 
-  | { __mbstate8: unknown /* const array */ }
-  | { _mbstateL: number };
-
-declare class __mbstate_t {
-  constructor(init?: __mbstate_tDescriptor);
-  __mbstate8: unknown /* const array */;
-  _mbstateL: number;
-}
-
-type unnamed_6655533433688948231Descriptor = 
-  | { ifsr_cell: if_cellular_status }
-  | { ifsr_wifi: if_wifi_status };
-
-declare class unnamed_6655533433688948231 {
-  constructor(init?: unnamed_6655533433688948231Descriptor);
-  ifsr_cell: if_cellular_status;
-  ifsr_wifi: if_wifi_status;
-}
-
-type unnamed_3396947394523107438Descriptor = 
-  | { type_u: unnamed_6607071774793166897 }
-  | { type_i: unnamed_11037506293861388547 }
-  | { type_s: unnamed_13382323419751933956 }
-  | { type_frmr: unnamed_4086398859282741099 }
-  | { type_snap: unnamed_5031467857764340464 }
-  | { type_raw: unnamed_8484498633780266126 };
-
-declare class unnamed_3396947394523107438 {
-  constructor(init?: unnamed_3396947394523107438Descriptor);
-  type_u: unnamed_6607071774793166897;
-  type_i: unnamed_11037506293861388547;
-  type_s: unnamed_13382323419751933956;
-  type_frmr: unnamed_4086398859282741099;
-  type_snap: unnamed_5031467857764340464;
-  type_raw: unnamed_8484498633780266126;
-}
-
-type BTreeKeyDescriptor = 
-  | { length8: number }
-  | { length16: number }
-  | { rawData: unknown /* const array */ };
-
-declare class BTreeKey {
-  constructor(init?: BTreeKeyDescriptor);
-  length8: number;
-  length16: number;
-  rawData: unknown /* const array */;
-}
-
-type unnamed_18274963185808352070Descriptor = 
+type unnamed_1627070183094216991Descriptor = 
   | { id_ts: id_ts }
   | { id_ip: id_ip }
   | { id_radv: icmp_ra_addr }
   | { id_mask: number }
   | { id_data: unknown /* const array */ };
 
-declare class unnamed_18274963185808352070 {
-  constructor(init?: unnamed_18274963185808352070Descriptor);
+declare class unnamed_1627070183094216991 {
+  constructor(init?: unnamed_1627070183094216991Descriptor);
   id_ts: id_ts;
   id_ip: id_ip;
   id_radv: icmp_ra_addr;
@@ -27683,74 +23830,24 @@ declare class unnamed_18274963185808352070 {
   id_data: unknown /* const array */;
 }
 
-type unnamed_15590176993070696323Descriptor = 
-  | { gl_errfunc: (p1: string, p2: number) => number | null }
-  | { gl_errblk: (p1: string, p2: number) => number | null };
+type unnamed_4320346888378553637Descriptor = 
+  | { ran_strx: number };
 
-declare class unnamed_15590176993070696323 {
-  constructor(init?: unnamed_15590176993070696323Descriptor);
-  gl_errfunc: (p1: string, p2: number) => number | null;
-  gl_errblk: (p1: string, p2: number) => number | null;
+declare class unnamed_4320346888378553637 {
+  constructor(init?: unnamed_4320346888378553637Descriptor);
+  ran_strx: number;
 }
 
-type unnamed_9279470776087544183Descriptor = 
-  | { NV0: unknown /* const array */ }
-  | { NV1: unnamed_11810500352046755208 };
+type unnamed_10861874115922531484Descriptor = 
+  | { __u6_addr8: unknown /* const array */ }
+  | { __u6_addr16: unknown /* const array */ }
+  | { __u6_addr32: unknown /* const array */ };
 
-declare class unnamed_9279470776087544183 {
-  constructor(init?: unnamed_9279470776087544183Descriptor);
-  NV0: unknown /* const array */;
-  NV1: unnamed_11810500352046755208;
-}
-
-type waitDescriptor = 
-  | { w_status: number }
-  | { w_T: unnamed_7192305794184816688 }
-  | { w_S: unnamed_16820094213973402152 };
-
-declare class wait {
-  constructor(init?: waitDescriptor);
-  w_status: number;
-  w_T: unnamed_7192305794184816688;
-  w_S: unnamed_16820094213973402152;
-}
-
-type unnamed_2001311095937887546Descriptor = 
-  | { sadb_x_sa2_reserved2: number };
-
-declare class unnamed_2001311095937887546 {
-  constructor(init?: unnamed_2001311095937887546Descriptor);
-  sadb_x_sa2_reserved2: number;
-}
-
-type _TXTRecordRef_tDescriptor = 
-  | { PrivateData: unknown /* const array */ }
-  | { ForceNaturalAlignment: string | null };
-
-declare class _TXTRecordRef_t {
-  constructor(init?: _TXTRecordRef_tDescriptor);
-  PrivateData: unknown /* const array */;
-  ForceNaturalAlignment: string | null;
-}
-
-type unnamed_996628347941081396Descriptor = 
-  | { n_strx: number };
-
-declare class unnamed_996628347941081396 {
-  constructor(init?: unnamed_996628347941081396Descriptor);
-  n_strx: number;
-}
-
-type unnamed_9993560228078637820Descriptor = 
-  | { icmp6_un_data32: unknown /* const array */ }
-  | { icmp6_un_data16: unknown /* const array */ }
-  | { icmp6_un_data8: unknown /* const array */ };
-
-declare class unnamed_9993560228078637820 {
-  constructor(init?: unnamed_9993560228078637820Descriptor);
-  icmp6_un_data32: unknown /* const array */;
-  icmp6_un_data16: unknown /* const array */;
-  icmp6_un_data8: unknown /* const array */;
+declare class unnamed_10861874115922531484 {
+  constructor(init?: unnamed_10861874115922531484Descriptor);
+  __u6_addr8: unknown /* const array */;
+  __u6_addr16: unknown /* const array */;
+  __u6_addr32: unknown /* const array */;
 }
 
 type lc_strDescriptor = 
@@ -27911,204 +24008,14 @@ declare class __ReplyUnion__mach_port_subsystem {
   Reply_mach_port_assert_attributes: __Reply__mach_port_assert_attributes_t;
 }
 
-type __ReplyUnion__thread_act_subsystemDescriptor = 
-  | { Reply_thread_terminate: __Reply__thread_terminate_t }
-  | { Reply_act_get_state: __Reply__act_get_state_t }
-  | { Reply_act_set_state: __Reply__act_set_state_t }
-  | { Reply_thread_get_state: __Reply__thread_get_state_t }
-  | { Reply_thread_set_state: __Reply__thread_set_state_t }
-  | { Reply_thread_suspend: __Reply__thread_suspend_t }
-  | { Reply_thread_resume: __Reply__thread_resume_t }
-  | { Reply_thread_abort: __Reply__thread_abort_t }
-  | { Reply_thread_abort_safely: __Reply__thread_abort_safely_t }
-  | { Reply_thread_depress_abort: __Reply__thread_depress_abort_t }
-  | { Reply_thread_get_special_port: __Reply__thread_get_special_port_t }
-  | { Reply_thread_set_special_port: __Reply__thread_set_special_port_t }
-  | { Reply_thread_info: __Reply__thread_info_t }
-  | { Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t }
-  | { Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t }
-  | { Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t }
-  | { Reply_thread_policy: __Reply__thread_policy_t }
-  | { Reply_thread_policy_set: __Reply__thread_policy_set_t }
-  | { Reply_thread_policy_get: __Reply__thread_policy_get_t }
-  | { Reply_thread_sample: __Reply__thread_sample_t }
-  | { Reply_etap_trace_thread: __Reply__etap_trace_thread_t }
-  | { Reply_thread_assign: __Reply__thread_assign_t }
-  | { Reply_thread_assign_default: __Reply__thread_assign_default_t }
-  | { Reply_thread_get_assignment: __Reply__thread_get_assignment_t }
-  | { Reply_thread_set_policy: __Reply__thread_set_policy_t }
-  | { Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t }
-  | { Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t }
-  | { Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t }
-  | { Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t }
-  | { Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t }
-  | { Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t };
+type unnamed_4167169337276502831Descriptor = 
+  | { fts_compar: () => number | null }
+  | { fts_compar_b: () => number | null };
 
-declare class __ReplyUnion__thread_act_subsystem {
-  constructor(init?: __ReplyUnion__thread_act_subsystemDescriptor);
-  Reply_thread_terminate: __Reply__thread_terminate_t;
-  Reply_act_get_state: __Reply__act_get_state_t;
-  Reply_act_set_state: __Reply__act_set_state_t;
-  Reply_thread_get_state: __Reply__thread_get_state_t;
-  Reply_thread_set_state: __Reply__thread_set_state_t;
-  Reply_thread_suspend: __Reply__thread_suspend_t;
-  Reply_thread_resume: __Reply__thread_resume_t;
-  Reply_thread_abort: __Reply__thread_abort_t;
-  Reply_thread_abort_safely: __Reply__thread_abort_safely_t;
-  Reply_thread_depress_abort: __Reply__thread_depress_abort_t;
-  Reply_thread_get_special_port: __Reply__thread_get_special_port_t;
-  Reply_thread_set_special_port: __Reply__thread_set_special_port_t;
-  Reply_thread_info: __Reply__thread_info_t;
-  Reply_thread_set_exception_ports: __Reply__thread_set_exception_ports_t;
-  Reply_thread_get_exception_ports: __Reply__thread_get_exception_ports_t;
-  Reply_thread_swap_exception_ports: __Reply__thread_swap_exception_ports_t;
-  Reply_thread_policy: __Reply__thread_policy_t;
-  Reply_thread_policy_set: __Reply__thread_policy_set_t;
-  Reply_thread_policy_get: __Reply__thread_policy_get_t;
-  Reply_thread_sample: __Reply__thread_sample_t;
-  Reply_etap_trace_thread: __Reply__etap_trace_thread_t;
-  Reply_thread_assign: __Reply__thread_assign_t;
-  Reply_thread_assign_default: __Reply__thread_assign_default_t;
-  Reply_thread_get_assignment: __Reply__thread_get_assignment_t;
-  Reply_thread_set_policy: __Reply__thread_set_policy_t;
-  Reply_thread_get_mach_voucher: __Reply__thread_get_mach_voucher_t;
-  Reply_thread_set_mach_voucher: __Reply__thread_set_mach_voucher_t;
-  Reply_thread_swap_mach_voucher: __Reply__thread_swap_mach_voucher_t;
-  Reply_thread_convert_thread_state: __Reply__thread_convert_thread_state_t;
-  Reply_thread_get_exception_ports_info: __Reply__thread_get_exception_ports_info_t;
-  Reply_thread_adopt_exception_handler: __Reply__thread_adopt_exception_handler_t;
-}
-
-type unnamed_16399479197806178150Descriptor = 
-  | { ran_strx: number };
-
-declare class unnamed_16399479197806178150 {
-  constructor(init?: unnamed_16399479197806178150Descriptor);
-  ran_strx: number;
-}
-
-type __RequestUnion__processor_set_subsystemDescriptor = 
-  | { Request_processor_set_statistics: __Request__processor_set_statistics_t }
-  | { Request_processor_set_destroy: __Request__processor_set_destroy_t }
-  | { Request_processor_set_max_priority: __Request__processor_set_max_priority_t }
-  | { Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t }
-  | { Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t }
-  | { Request_processor_set_tasks: __Request__processor_set_tasks_t }
-  | { Request_processor_set_threads: __Request__processor_set_threads_t }
-  | { Request_processor_set_policy_control: __Request__processor_set_policy_control_t }
-  | { Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t }
-  | { Request_processor_set_info: __Request__processor_set_info_t }
-  | { Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t };
-
-declare class __RequestUnion__processor_set_subsystem {
-  constructor(init?: __RequestUnion__processor_set_subsystemDescriptor);
-  Request_processor_set_statistics: __Request__processor_set_statistics_t;
-  Request_processor_set_destroy: __Request__processor_set_destroy_t;
-  Request_processor_set_max_priority: __Request__processor_set_max_priority_t;
-  Request_processor_set_policy_enable: __Request__processor_set_policy_enable_t;
-  Request_processor_set_policy_disable: __Request__processor_set_policy_disable_t;
-  Request_processor_set_tasks: __Request__processor_set_tasks_t;
-  Request_processor_set_threads: __Request__processor_set_threads_t;
-  Request_processor_set_policy_control: __Request__processor_set_policy_control_t;
-  Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t;
-  Request_processor_set_info: __Request__processor_set_info_t;
-  Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t;
-}
-
-type unnamed_11293842726292155158Descriptor = 
-  | { arg32: au_arg32_t }
-  | { arg64: au_arg64_t }
-  | { arb: au_arb_t }
-  | { attr32: au_attr32_t }
-  | { attr64: au_attr64_t }
-  | { execarg: au_execarg_t }
-  | { execenv: au_execenv_t }
-  | { exit: au_exit_t }
-  | { file: au_file_t }
-  | { grps: au_groups_t }
-  | { hdr32: au_header32_t }
-  | { hdr32_ex: au_header32_ex_t }
-  | { hdr64: au_header64_t }
-  | { hdr64_ex: au_header64_ex_t }
-  | { inaddr: au_inaddr_t }
-  | { inaddr_ex: au_inaddr_ex_t }
-  | { ip: au_ip_t }
-  | { ipc: au_ipc_t }
-  | { ipcperm: au_ipcperm_t }
-  | { iport: au_iport_t }
-  | { opaque: au_opaque_t }
-  | { path: au_path_t }
-  | { proc32: au_proc32_t }
-  | { proc32_ex: au_proc32ex_t }
-  | { proc64: au_proc64_t }
-  | { proc64_ex: au_proc64ex_t }
-  | { ret32: au_ret32_t }
-  | { ret64: au_ret64_t }
-  | { seq: au_seq_t }
-  | { socket: au_socket_t }
-  | { socket_ex32: au_socket_ex32_t }
-  | { sockinet_ex32: au_socketinet_ex32_t }
-  | { sockunix: au_socketunix_t }
-  | { subj32: au_subject32_t }
-  | { subj32_ex: au_subject32ex_t }
-  | { subj64: au_subject64_t }
-  | { subj64_ex: au_subject64ex_t }
-  | { text: au_text_t }
-  | { kevent: au_kevent_t }
-  | { invalid: au_invalid_t }
-  | { trail: au_trailer_t }
-  | { zonename: au_zonename_t }
-  | { cert_hash: au_cert_hash_t }
-  | { krb5_principal: au_krb5_principal_t }
-  | { identity: au_identity_t };
-
-declare class unnamed_11293842726292155158 {
-  constructor(init?: unnamed_11293842726292155158Descriptor);
-  arg32: au_arg32_t;
-  arg64: au_arg64_t;
-  arb: au_arb_t;
-  attr32: au_attr32_t;
-  attr64: au_attr64_t;
-  execarg: au_execarg_t;
-  execenv: au_execenv_t;
-  exit: au_exit_t;
-  file: au_file_t;
-  grps: au_groups_t;
-  hdr32: au_header32_t;
-  hdr32_ex: au_header32_ex_t;
-  hdr64: au_header64_t;
-  hdr64_ex: au_header64_ex_t;
-  inaddr: au_inaddr_t;
-  inaddr_ex: au_inaddr_ex_t;
-  ip: au_ip_t;
-  ipc: au_ipc_t;
-  ipcperm: au_ipcperm_t;
-  iport: au_iport_t;
-  opaque: au_opaque_t;
-  path: au_path_t;
-  proc32: au_proc32_t;
-  proc32_ex: au_proc32ex_t;
-  proc64: au_proc64_t;
-  proc64_ex: au_proc64ex_t;
-  ret32: au_ret32_t;
-  ret64: au_ret64_t;
-  seq: au_seq_t;
-  socket: au_socket_t;
-  socket_ex32: au_socket_ex32_t;
-  sockinet_ex32: au_socketinet_ex32_t;
-  sockunix: au_socketunix_t;
-  subj32: au_subject32_t;
-  subj32_ex: au_subject32ex_t;
-  subj64: au_subject64_t;
-  subj64_ex: au_subject64ex_t;
-  text: au_text_t;
-  kevent: au_kevent_t;
-  invalid: au_invalid_t;
-  trail: au_trailer_t;
-  zonename: au_zonename_t;
-  cert_hash: au_cert_hash_t;
-  krb5_principal: au_krb5_principal_t;
-  identity: au_identity_t;
+declare class unnamed_4167169337276502831 {
+  constructor(init?: unnamed_4167169337276502831Descriptor);
+  fts_compar: () => number | null;
+  fts_compar_b: () => number | null;
 }
 
 type _http_addr_uDescriptor = 
@@ -28127,52 +24034,6 @@ declare class _http_addr_u {
   pad: unknown /* const array */;
 }
 
-type unnamed_4991142208153925470Descriptor = 
-  | { ifru_addr: sockaddr }
-  | { ifru_dstaddr: sockaddr }
-  | { ifru_broadaddr: sockaddr }
-  | { ifru_flags: number }
-  | { ifru_metric: number }
-  | { ifru_mtu: number }
-  | { ifru_phys: number }
-  | { ifru_media: number }
-  | { ifru_intval: number }
-  | { ifru_data: string | null }
-  | { ifru_devmtu: ifdevmtu }
-  | { ifru_kpi: ifkpi }
-  | { ifru_wake_flags: number }
-  | { ifru_route_refcnt: number }
-  | { ifru_cap: unknown /* const array */ }
-  | { ifru_functional_type: number }
-  | { ifru_peer_egress_functional_type: number }
-  | { ifru_is_directlink: number }
-  | { ifru_is_vpn: number }
-  | { ifru_is_companionlink: number };
-
-declare class unnamed_4991142208153925470 {
-  constructor(init?: unnamed_4991142208153925470Descriptor);
-  ifru_addr: sockaddr;
-  ifru_dstaddr: sockaddr;
-  ifru_broadaddr: sockaddr;
-  ifru_flags: number;
-  ifru_metric: number;
-  ifru_mtu: number;
-  ifru_phys: number;
-  ifru_media: number;
-  ifru_intval: number;
-  ifru_data: string | null;
-  ifru_devmtu: ifdevmtu;
-  ifru_kpi: ifkpi;
-  ifru_wake_flags: number;
-  ifru_route_refcnt: number;
-  ifru_cap: unknown /* const array */;
-  ifru_functional_type: number;
-  ifru_peer_egress_functional_type: number;
-  ifru_is_directlink: number;
-  ifru_is_vpn: number;
-  ifru_is_companionlink: number;
-}
-
 type sigvalDescriptor = 
   | { sival_int: number }
   | { sival_ptr: interop.PointerConvertible };
@@ -28183,32 +24044,24 @@ declare class sigval {
   sival_ptr: interop.Pointer;
 }
 
-type __RequestUnion__processor_subsystemDescriptor = 
-  | { Request_processor_start: __Request__processor_start_t }
-  | { Request_processor_exit: __Request__processor_exit_t }
-  | { Request_processor_info: __Request__processor_info_t }
-  | { Request_processor_control: __Request__processor_control_t }
-  | { Request_processor_assign: __Request__processor_assign_t }
-  | { Request_processor_get_assignment: __Request__processor_get_assignment_t };
+type unnamed_15953260282657998976Descriptor = 
+  | { pri_in: in_sockinfo }
+  | { pri_tcp: tcp_sockinfo }
+  | { pri_un: un_sockinfo }
+  | { pri_ndrv: ndrv_info }
+  | { pri_kern_event: kern_event_info }
+  | { pri_kern_ctl: kern_ctl_info }
+  | { pri_vsock: vsock_sockinfo };
 
-declare class __RequestUnion__processor_subsystem {
-  constructor(init?: __RequestUnion__processor_subsystemDescriptor);
-  Request_processor_start: __Request__processor_start_t;
-  Request_processor_exit: __Request__processor_exit_t;
-  Request_processor_info: __Request__processor_info_t;
-  Request_processor_control: __Request__processor_control_t;
-  Request_processor_assign: __Request__processor_assign_t;
-  Request_processor_get_assignment: __Request__processor_get_assignment_t;
-}
-
-type __ReplyUnion__host_security_subsystemDescriptor = 
-  | { Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t }
-  | { Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t };
-
-declare class __ReplyUnion__host_security_subsystem {
-  constructor(init?: __ReplyUnion__host_security_subsystemDescriptor);
-  Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t;
-  Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t;
+declare class unnamed_15953260282657998976 {
+  constructor(init?: unnamed_15953260282657998976Descriptor);
+  pri_in: in_sockinfo;
+  pri_tcp: tcp_sockinfo;
+  pri_un: un_sockinfo;
+  pri_ndrv: ndrv_info;
+  pri_kern_event: kern_event_info;
+  pri_kern_ctl: kern_ctl_info;
+  pri_vsock: vsock_sockinfo;
 }
 
 type __RequestUnion__exc_subsystemDescriptor = 
@@ -28221,16 +24074,6 @@ declare class __RequestUnion__exc_subsystem {
   Request_exception_raise: __Request__exception_raise_t;
   Request_exception_raise_state: __Request__exception_raise_state_t;
   Request_exception_raise_state_identity: __Request__exception_raise_state_identity_t;
-}
-
-type __RequestUnion__host_security_subsystemDescriptor = 
-  | { Request_host_security_create_task_token: __Request__host_security_create_task_token_t }
-  | { Request_host_security_set_task_token: __Request__host_security_set_task_token_t };
-
-declare class __RequestUnion__host_security_subsystem {
-  constructor(init?: __RequestUnion__host_security_subsystemDescriptor);
-  Request_host_security_create_task_token: __Request__host_security_create_task_token_t;
-  Request_host_security_set_task_token: __Request__host_security_set_task_token_t;
 }
 
 type ppd_cplimit_uDescriptor = 
@@ -28255,368 +24098,20 @@ declare class ppd_cplimit_u {
   custom_string: number;
 }
 
-type __ReplyUnion__host_priv_subsystemDescriptor = 
-  | { Reply_host_get_boot_info: __Reply__host_get_boot_info_t }
-  | { Reply_host_reboot: __Reply__host_reboot_t }
-  | { Reply_host_priv_statistics: __Reply__host_priv_statistics_t }
-  | { Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t }
-  | { Reply_vm_wire: __Reply__vm_wire_t }
-  | { Reply_thread_wire: __Reply__thread_wire_t }
-  | { Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t }
-  | { Reply_host_processors: __Reply__host_processors_t }
-  | { Reply_host_get_clock_control: __Reply__host_get_clock_control_t }
-  | { Reply_kmod_create: __Reply__kmod_create_t }
-  | { Reply_kmod_destroy: __Reply__kmod_destroy_t }
-  | { Reply_kmod_control: __Reply__kmod_control_t }
-  | { Reply_host_get_special_port: __Reply__host_get_special_port_t }
-  | { Reply_host_set_special_port: __Reply__host_set_special_port_t }
-  | { Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t }
-  | { Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t }
-  | { Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t }
-  | { Reply_mach_vm_wire: __Reply__mach_vm_wire_t }
-  | { Reply_host_processor_sets: __Reply__host_processor_sets_t }
-  | { Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t }
-  | { Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t }
-  | { Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t }
-  | { Reply_kext_request: __Reply__kext_request_t };
+type unnamed_11707847530629603208Descriptor = 
+  | { ran_strx: number };
 
-declare class __ReplyUnion__host_priv_subsystem {
-  constructor(init?: __ReplyUnion__host_priv_subsystemDescriptor);
-  Reply_host_get_boot_info: __Reply__host_get_boot_info_t;
-  Reply_host_reboot: __Reply__host_reboot_t;
-  Reply_host_priv_statistics: __Reply__host_priv_statistics_t;
-  Reply_host_default_memory_manager: __Reply__host_default_memory_manager_t;
-  Reply_vm_wire: __Reply__vm_wire_t;
-  Reply_thread_wire: __Reply__thread_wire_t;
-  Reply_vm_allocate_cpm: __Reply__vm_allocate_cpm_t;
-  Reply_host_processors: __Reply__host_processors_t;
-  Reply_host_get_clock_control: __Reply__host_get_clock_control_t;
-  Reply_kmod_create: __Reply__kmod_create_t;
-  Reply_kmod_destroy: __Reply__kmod_destroy_t;
-  Reply_kmod_control: __Reply__kmod_control_t;
-  Reply_host_get_special_port: __Reply__host_get_special_port_t;
-  Reply_host_set_special_port: __Reply__host_set_special_port_t;
-  Reply_host_set_exception_ports: __Reply__host_set_exception_ports_t;
-  Reply_host_get_exception_ports: __Reply__host_get_exception_ports_t;
-  Reply_host_swap_exception_ports: __Reply__host_swap_exception_ports_t;
-  Reply_mach_vm_wire: __Reply__mach_vm_wire_t;
-  Reply_host_processor_sets: __Reply__host_processor_sets_t;
-  Reply_host_processor_set_priv: __Reply__host_processor_set_priv_t;
-  Reply_host_set_UNDServer: __Reply__host_set_UNDServer_t;
-  Reply_host_get_UNDServer: __Reply__host_get_UNDServer_t;
-  Reply_kext_request: __Reply__kext_request_t;
+declare class unnamed_11707847530629603208 {
+  constructor(init?: unnamed_11707847530629603208Descriptor);
+  ran_strx: number;
 }
 
-type unnamed_13006139579446832142Descriptor = 
-  | { __u6_addr8: unknown /* const array */ }
-  | { __u6_addr16: unknown /* const array */ }
-  | { __u6_addr32: unknown /* const array */ };
+type unnamed_2542314000815593647Descriptor = 
+  | { n_strx: number };
 
-declare class unnamed_13006139579446832142 {
-  constructor(init?: unnamed_13006139579446832142Descriptor);
-  __u6_addr8: unknown /* const array */;
-  __u6_addr16: unknown /* const array */;
-  __u6_addr32: unknown /* const array */;
-}
-
-type __ReplyUnion__clock_subsystemDescriptor = 
-  | { Reply_clock_get_time: __Reply__clock_get_time_t }
-  | { Reply_clock_get_attributes: __Reply__clock_get_attributes_t }
-  | { Reply_clock_alarm: __Reply__clock_alarm_t };
-
-declare class __ReplyUnion__clock_subsystem {
-  constructor(init?: __ReplyUnion__clock_subsystemDescriptor);
-  Reply_clock_get_time: __Reply__clock_get_time_t;
-  Reply_clock_get_attributes: __Reply__clock_get_attributes_t;
-  Reply_clock_alarm: __Reply__clock_alarm_t;
-}
-
-type unnamed_12441087913908856964Descriptor = 
-  | { is_master: number }
-  | { is_main: number };
-
-declare class unnamed_12441087913908856964 {
-  constructor(init?: unnamed_12441087913908856964Descriptor);
-  is_master: number;
-  is_main: number;
-}
-
-type ipt_timestampDescriptor = 
-  | { ipt_time: unknown /* const array */ }
-  | { ipt_ta: unknown /* const array */ };
-
-declare class ipt_timestamp {
-  constructor(init?: ipt_timestampDescriptor);
-  ipt_time: unknown /* const array */;
-  ipt_ta: unknown /* const array */;
-}
-
-type __ReplyUnion__clock_priv_subsystemDescriptor = 
-  | { Reply_clock_set_time: __Reply__clock_set_time_t }
-  | { Reply_clock_set_attributes: __Reply__clock_set_attributes_t };
-
-declare class __ReplyUnion__clock_priv_subsystem {
-  constructor(init?: __ReplyUnion__clock_priv_subsystemDescriptor);
-  Reply_clock_set_time: __Reply__clock_set_time_t;
-  Reply_clock_set_attributes: __Reply__clock_set_attributes_t;
-}
-
-type unnamed_12048718452629231441Descriptor = 
-  | { ts_32: __darwin_arm_thread_state }
-  | { ts_64: __darwin_arm_thread_state64 };
-
-declare class unnamed_12048718452629231441 {
-  constructor(init?: unnamed_12048718452629231441Descriptor);
-  ts_32: __darwin_arm_thread_state;
-  ts_64: __darwin_arm_thread_state64;
-}
-
-type __ReplyUnion__processor_subsystemDescriptor = 
-  | { Reply_processor_start: __Reply__processor_start_t }
-  | { Reply_processor_exit: __Reply__processor_exit_t }
-  | { Reply_processor_info: __Reply__processor_info_t }
-  | { Reply_processor_control: __Reply__processor_control_t }
-  | { Reply_processor_assign: __Reply__processor_assign_t }
-  | { Reply_processor_get_assignment: __Reply__processor_get_assignment_t };
-
-declare class __ReplyUnion__processor_subsystem {
-  constructor(init?: __ReplyUnion__processor_subsystemDescriptor);
-  Reply_processor_start: __Reply__processor_start_t;
-  Reply_processor_exit: __Reply__processor_exit_t;
-  Reply_processor_info: __Reply__processor_info_t;
-  Reply_processor_control: __Reply__processor_control_t;
-  Reply_processor_assign: __Reply__processor_assign_t;
-  Reply_processor_get_assignment: __Reply__processor_get_assignment_t;
-}
-
-type __RequestUnion__clock_priv_subsystemDescriptor = 
-  | { Request_clock_set_time: __Request__clock_set_time_t }
-  | { Request_clock_set_attributes: __Request__clock_set_attributes_t };
-
-declare class __RequestUnion__clock_priv_subsystem {
-  constructor(init?: __RequestUnion__clock_priv_subsystemDescriptor);
-  Request_clock_set_time: __Request__clock_set_time_t;
-  Request_clock_set_attributes: __Request__clock_set_attributes_t;
-}
-
-type __ReplyUnion__processor_set_subsystemDescriptor = 
-  | { Reply_processor_set_statistics: __Reply__processor_set_statistics_t }
-  | { Reply_processor_set_destroy: __Reply__processor_set_destroy_t }
-  | { Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t }
-  | { Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t }
-  | { Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t }
-  | { Reply_processor_set_tasks: __Reply__processor_set_tasks_t }
-  | { Reply_processor_set_threads: __Reply__processor_set_threads_t }
-  | { Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t }
-  | { Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t }
-  | { Reply_processor_set_info: __Reply__processor_set_info_t }
-  | { Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t };
-
-declare class __ReplyUnion__processor_set_subsystem {
-  constructor(init?: __ReplyUnion__processor_set_subsystemDescriptor);
-  Reply_processor_set_statistics: __Reply__processor_set_statistics_t;
-  Reply_processor_set_destroy: __Reply__processor_set_destroy_t;
-  Reply_processor_set_max_priority: __Reply__processor_set_max_priority_t;
-  Reply_processor_set_policy_enable: __Reply__processor_set_policy_enable_t;
-  Reply_processor_set_policy_disable: __Reply__processor_set_policy_disable_t;
-  Reply_processor_set_tasks: __Reply__processor_set_tasks_t;
-  Reply_processor_set_threads: __Reply__processor_set_threads_t;
-  Reply_processor_set_policy_control: __Reply__processor_set_policy_control_t;
-  Reply_processor_set_stack_usage: __Reply__processor_set_stack_usage_t;
-  Reply_processor_set_info: __Reply__processor_set_info_t;
-  Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t;
-}
-
-type NumVersionVariantDescriptor = 
-  | { parts: NumVersion }
-  | { whole: number };
-
-declare class NumVersionVariant {
-  constructor(init?: NumVersionVariantDescriptor);
-  parts: NumVersion;
-  whole: number;
-}
-
-type unnamed_10982442776747473916Descriptor = 
-  | { if_status_v1: if_cellular_status_v1 };
-
-declare class unnamed_10982442776747473916 {
-  constructor(init?: unnamed_10982442776747473916Descriptor);
-  if_status_v1: if_cellular_status_v1;
-}
-
-type mod_vals_uDescriptor = 
-  | { modv_strvals: interop.PointerConvertible }
-  | { modv_bvals: interop.PointerConvertible };
-
-declare class mod_vals_u {
-  constructor(init?: mod_vals_uDescriptor);
-  modv_strvals: interop.Pointer;
-  modv_bvals: interop.Pointer;
-}
-
-type mach_msg_descriptor_tDescriptor = 
-  | { port: mach_msg_port_descriptor_t }
-  | { out_of_line: mach_msg_ool_descriptor_t }
-  | { ool_ports: mach_msg_ool_ports_descriptor_t }
-  | { type: mach_msg_type_descriptor_t }
-  | { guarded_port: mach_msg_guarded_port_descriptor_t };
-
-declare class mach_msg_descriptor_t {
-  constructor(init?: mach_msg_descriptor_tDescriptor);
-  port: mach_msg_port_descriptor_t;
-  out_of_line: mach_msg_ool_descriptor_t;
-  ool_ports: mach_msg_ool_ports_descriptor_t;
-  type: mach_msg_type_descriptor_t;
-  guarded_port: mach_msg_guarded_port_descriptor_t;
-}
-
-type __ReplyUnion__mach_host_subsystemDescriptor = 
-  | { Reply_host_info: __Reply__host_info_t }
-  | { Reply_host_kernel_version: __Reply__host_kernel_version_t }
-  | { Reply__host_page_size: __Reply___host_page_size_t }
-  | { Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t }
-  | { Reply_host_processor_info: __Reply__host_processor_info_t }
-  | { Reply_host_get_io_main: __Reply__host_get_io_main_t }
-  | { Reply_host_get_clock_service: __Reply__host_get_clock_service_t }
-  | { Reply_kmod_get_info: __Reply__kmod_get_info_t }
-  | { Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t }
-  | { Reply_processor_set_default: __Reply__processor_set_default_t }
-  | { Reply_processor_set_create: __Reply__processor_set_create_t }
-  | { Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t }
-  | { Reply_host_statistics: __Reply__host_statistics_t }
-  | { Reply_host_request_notification: __Reply__host_request_notification_t }
-  | { Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t }
-  | { Reply_host_statistics64: __Reply__host_statistics64_t }
-  | { Reply_mach_zone_info: __Reply__mach_zone_info_t }
-  | { Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t }
-  | { Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t }
-  | { Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t }
-  | { Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t }
-  | { Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t }
-  | { Reply_mach_memory_info: __Reply__mach_memory_info_t }
-  | { Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t }
-  | { Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t }
-  | { Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t }
-  | { Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t };
-
-declare class __ReplyUnion__mach_host_subsystem {
-  constructor(init?: __ReplyUnion__mach_host_subsystemDescriptor);
-  Reply_host_info: __Reply__host_info_t;
-  Reply_host_kernel_version: __Reply__host_kernel_version_t;
-  Reply__host_page_size: __Reply___host_page_size_t;
-  Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t;
-  Reply_host_processor_info: __Reply__host_processor_info_t;
-  Reply_host_get_io_main: __Reply__host_get_io_main_t;
-  Reply_host_get_clock_service: __Reply__host_get_clock_service_t;
-  Reply_kmod_get_info: __Reply__kmod_get_info_t;
-  Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t;
-  Reply_processor_set_default: __Reply__processor_set_default_t;
-  Reply_processor_set_create: __Reply__processor_set_create_t;
-  Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t;
-  Reply_host_statistics: __Reply__host_statistics_t;
-  Reply_host_request_notification: __Reply__host_request_notification_t;
-  Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t;
-  Reply_host_statistics64: __Reply__host_statistics64_t;
-  Reply_mach_zone_info: __Reply__mach_zone_info_t;
-  Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t;
-  Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t;
-  Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t;
-  Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t;
-  Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t;
-  Reply_mach_memory_info: __Reply__mach_memory_info_t;
-  Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t;
-  Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t;
-  Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t;
-  Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t;
-}
-
-type unnamed_12046250409009717709Descriptor = 
-  | { ifk_ptr: interop.PointerConvertible }
-  | { ifk_value: number };
-
-declare class unnamed_12046250409009717709 {
-  constructor(init?: unnamed_12046250409009717709Descriptor);
-  ifk_ptr: interop.Pointer;
-  ifk_value: number;
-}
-
-type __RequestUnion__vm_map_subsystemDescriptor = 
-  | { Request_vm_region: __Request__vm_region_t }
-  | { Request_vm_allocate: __Request__vm_allocate_t }
-  | { Request_vm_deallocate: __Request__vm_deallocate_t }
-  | { Request_vm_protect: __Request__vm_protect_t }
-  | { Request_vm_inherit: __Request__vm_inherit_t }
-  | { Request_vm_read: __Request__vm_read_t }
-  | { Request_vm_read_list: __Request__vm_read_list_t }
-  | { Request_vm_write: __Request__vm_write_t }
-  | { Request_vm_copy: __Request__vm_copy_t }
-  | { Request_vm_read_overwrite: __Request__vm_read_overwrite_t }
-  | { Request_vm_msync: __Request__vm_msync_t }
-  | { Request_vm_behavior_set: __Request__vm_behavior_set_t }
-  | { Request_vm_map: __Request__vm_map_t }
-  | { Request_vm_machine_attribute: __Request__vm_machine_attribute_t }
-  | { Request_vm_remap: __Request__vm_remap_t }
-  | { Request_task_wire: __Request__task_wire_t }
-  | { Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t }
-  | { Request_vm_map_page_query: __Request__vm_map_page_query_t }
-  | { Request_mach_vm_region_info: __Request__mach_vm_region_info_t }
-  | { Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t }
-  | { Request_vm_region_recurse: __Request__vm_region_recurse_t }
-  | { Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t }
-  | { Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t }
-  | { Request_vm_region_64: __Request__vm_region_64_t }
-  | { Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t }
-  | { Request_vm_map_64: __Request__vm_map_64_t }
-  | { Request_vm_purgable_control: __Request__vm_purgable_control_t }
-  | { Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t }
-  | { Request_vm_remap_new: __Request__vm_remap_new_t };
-
-declare class __RequestUnion__vm_map_subsystem {
-  constructor(init?: __RequestUnion__vm_map_subsystemDescriptor);
-  Request_vm_region: __Request__vm_region_t;
-  Request_vm_allocate: __Request__vm_allocate_t;
-  Request_vm_deallocate: __Request__vm_deallocate_t;
-  Request_vm_protect: __Request__vm_protect_t;
-  Request_vm_inherit: __Request__vm_inherit_t;
-  Request_vm_read: __Request__vm_read_t;
-  Request_vm_read_list: __Request__vm_read_list_t;
-  Request_vm_write: __Request__vm_write_t;
-  Request_vm_copy: __Request__vm_copy_t;
-  Request_vm_read_overwrite: __Request__vm_read_overwrite_t;
-  Request_vm_msync: __Request__vm_msync_t;
-  Request_vm_behavior_set: __Request__vm_behavior_set_t;
-  Request_vm_map: __Request__vm_map_t;
-  Request_vm_machine_attribute: __Request__vm_machine_attribute_t;
-  Request_vm_remap: __Request__vm_remap_t;
-  Request_task_wire: __Request__task_wire_t;
-  Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t;
-  Request_vm_map_page_query: __Request__vm_map_page_query_t;
-  Request_mach_vm_region_info: __Request__mach_vm_region_info_t;
-  Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t;
-  Request_vm_region_recurse: __Request__vm_region_recurse_t;
-  Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t;
-  Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t;
-  Request_vm_region_64: __Request__vm_region_64_t;
-  Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t;
-  Request_vm_map_64: __Request__vm_map_64_t;
-  Request_vm_purgable_control: __Request__vm_purgable_control_t;
-  Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t;
-  Request_vm_remap_new: __Request__vm_remap_new_t;
-}
-
-type unnamed_2365868755499595526Descriptor = 
-  | { reserved: unknown /* const array */ }
-  | { work_interval_port: number }
-  | { service_port_info: interop.PointerConvertible }
-  | { service_port_name: number };
-
-declare class unnamed_2365868755499595526 {
-  constructor(init?: unnamed_2365868755499595526Descriptor);
-  reserved: unknown /* const array */;
-  work_interval_port: number;
-  service_port_info: interop.Pointer;
-  service_port_name: number;
+declare class unnamed_2542314000815593647 {
+  constructor(init?: unnamed_2542314000815593647Descriptor);
+  n_strx: number;
 }
 
 type __ReplyUnion__task_subsystemDescriptor = 
@@ -28753,42 +24248,338 @@ declare class __ReplyUnion__task_subsystem {
   Reply_task_register_hardened_exception_handler: __Reply__task_register_hardened_exception_handler_t;
 }
 
-type unnamed_13130266384759406209Descriptor = 
-  | { sadb_x_sa2_reserved1: number };
+type unnamed_1355146129392989397Descriptor = 
+  | { ifru_addr: sockaddr }
+  | { ifru_dstaddr: sockaddr }
+  | { ifru_broadaddr: sockaddr }
+  | { ifru_flags: number }
+  | { ifru_metric: number }
+  | { ifru_mtu: number }
+  | { ifru_phys: number }
+  | { ifru_media: number }
+  | { ifru_intval: number }
+  | { ifru_data: string | null }
+  | { ifru_devmtu: ifdevmtu }
+  | { ifru_kpi: ifkpi }
+  | { ifru_wake_flags: number }
+  | { ifru_route_refcnt: number }
+  | { ifru_cap: unknown /* const array */ }
+  | { ifru_functional_type: number }
+  | { ifru_peer_egress_functional_type: number }
+  | { ifru_is_directlink: number }
+  | { ifru_is_vpn: number }
+  | { ifru_is_companionlink: number };
 
-declare class unnamed_13130266384759406209 {
-  constructor(init?: unnamed_13130266384759406209Descriptor);
-  sadb_x_sa2_reserved1: number;
+declare class unnamed_1355146129392989397 {
+  constructor(init?: unnamed_1355146129392989397Descriptor);
+  ifru_addr: sockaddr;
+  ifru_dstaddr: sockaddr;
+  ifru_broadaddr: sockaddr;
+  ifru_flags: number;
+  ifru_metric: number;
+  ifru_mtu: number;
+  ifru_phys: number;
+  ifru_media: number;
+  ifru_intval: number;
+  ifru_data: string | null;
+  ifru_devmtu: ifdevmtu;
+  ifru_kpi: ifkpi;
+  ifru_wake_flags: number;
+  ifru_route_refcnt: number;
+  ifru_cap: unknown /* const array */;
+  ifru_functional_type: number;
+  ifru_peer_egress_functional_type: number;
+  ifru_is_directlink: number;
+  ifru_is_vpn: number;
+  ifru_is_companionlink: number;
 }
 
-type unnamed_9415269503247588239Descriptor = 
-  | { n_strx: number };
+type ipt_timestampDescriptor = 
+  | { ipt_time: unknown /* const array */ }
+  | { ipt_ta: unknown /* const array */ };
 
-declare class unnamed_9415269503247588239 {
-  constructor(init?: unnamed_9415269503247588239Descriptor);
-  n_strx: number;
+declare class ipt_timestamp {
+  constructor(init?: ipt_timestampDescriptor);
+  ipt_time: unknown /* const array */;
+  ipt_ta: unknown /* const array */;
 }
 
-type __RequestUnion__clock_subsystemDescriptor = 
-  | { Request_clock_get_time: __Request__clock_get_time_t }
-  | { Request_clock_get_attributes: __Request__clock_get_attributes_t }
-  | { Request_clock_alarm: __Request__clock_alarm_t };
+type unnamed_14472481405302765055Descriptor = 
+  | { ts_32: __darwin_arm_thread_state }
+  | { ts_64: __darwin_arm_thread_state64 };
 
-declare class __RequestUnion__clock_subsystem {
-  constructor(init?: __RequestUnion__clock_subsystemDescriptor);
-  Request_clock_get_time: __Request__clock_get_time_t;
-  Request_clock_get_attributes: __Request__clock_get_attributes_t;
-  Request_clock_alarm: __Request__clock_alarm_t;
+declare class unnamed_14472481405302765055 {
+  constructor(init?: unnamed_14472481405302765055Descriptor);
+  ts_32: __darwin_arm_thread_state;
+  ts_64: __darwin_arm_thread_state64;
 }
 
-type unnamed_17575650201846781845Descriptor = 
-  | { bflu_list: interop.PointerConvertible }
-  | { bflu_pad: number };
+type __ReplyUnion__vm_map_subsystemDescriptor = 
+  | { Reply_vm_region: __Reply__vm_region_t }
+  | { Reply_vm_allocate: __Reply__vm_allocate_t }
+  | { Reply_vm_deallocate: __Reply__vm_deallocate_t }
+  | { Reply_vm_protect: __Reply__vm_protect_t }
+  | { Reply_vm_inherit: __Reply__vm_inherit_t }
+  | { Reply_vm_read: __Reply__vm_read_t }
+  | { Reply_vm_read_list: __Reply__vm_read_list_t }
+  | { Reply_vm_write: __Reply__vm_write_t }
+  | { Reply_vm_copy: __Reply__vm_copy_t }
+  | { Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t }
+  | { Reply_vm_msync: __Reply__vm_msync_t }
+  | { Reply_vm_behavior_set: __Reply__vm_behavior_set_t }
+  | { Reply_vm_map: __Reply__vm_map_t }
+  | { Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t }
+  | { Reply_vm_remap: __Reply__vm_remap_t }
+  | { Reply_task_wire: __Reply__task_wire_t }
+  | { Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t }
+  | { Reply_vm_map_page_query: __Reply__vm_map_page_query_t }
+  | { Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t }
+  | { Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t }
+  | { Reply_vm_region_recurse: __Reply__vm_region_recurse_t }
+  | { Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t }
+  | { Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t }
+  | { Reply_vm_region_64: __Reply__vm_region_64_t }
+  | { Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t }
+  | { Reply_vm_map_64: __Reply__vm_map_64_t }
+  | { Reply_vm_purgable_control: __Reply__vm_purgable_control_t }
+  | { Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t }
+  | { Reply_vm_remap_new: __Reply__vm_remap_new_t };
 
-declare class unnamed_17575650201846781845 {
-  constructor(init?: unnamed_17575650201846781845Descriptor);
-  bflu_list: interop.Pointer;
-  bflu_pad: number;
+declare class __ReplyUnion__vm_map_subsystem {
+  constructor(init?: __ReplyUnion__vm_map_subsystemDescriptor);
+  Reply_vm_region: __Reply__vm_region_t;
+  Reply_vm_allocate: __Reply__vm_allocate_t;
+  Reply_vm_deallocate: __Reply__vm_deallocate_t;
+  Reply_vm_protect: __Reply__vm_protect_t;
+  Reply_vm_inherit: __Reply__vm_inherit_t;
+  Reply_vm_read: __Reply__vm_read_t;
+  Reply_vm_read_list: __Reply__vm_read_list_t;
+  Reply_vm_write: __Reply__vm_write_t;
+  Reply_vm_copy: __Reply__vm_copy_t;
+  Reply_vm_read_overwrite: __Reply__vm_read_overwrite_t;
+  Reply_vm_msync: __Reply__vm_msync_t;
+  Reply_vm_behavior_set: __Reply__vm_behavior_set_t;
+  Reply_vm_map: __Reply__vm_map_t;
+  Reply_vm_machine_attribute: __Reply__vm_machine_attribute_t;
+  Reply_vm_remap: __Reply__vm_remap_t;
+  Reply_task_wire: __Reply__task_wire_t;
+  Reply_mach_make_memory_entry: __Reply__mach_make_memory_entry_t;
+  Reply_vm_map_page_query: __Reply__vm_map_page_query_t;
+  Reply_mach_vm_region_info: __Reply__mach_vm_region_info_t;
+  Reply_vm_mapped_pages_info: __Reply__vm_mapped_pages_info_t;
+  Reply_vm_region_recurse: __Reply__vm_region_recurse_t;
+  Reply_vm_region_recurse_64: __Reply__vm_region_recurse_64_t;
+  Reply_mach_vm_region_info_64: __Reply__mach_vm_region_info_64_t;
+  Reply_vm_region_64: __Reply__vm_region_64_t;
+  Reply_mach_make_memory_entry_64: __Reply__mach_make_memory_entry_64_t;
+  Reply_vm_map_64: __Reply__vm_map_64_t;
+  Reply_vm_purgable_control: __Reply__vm_purgable_control_t;
+  Reply_vm_map_exec_lockdown: __Reply__vm_map_exec_lockdown_t;
+  Reply_vm_remap_new: __Reply__vm_remap_new_t;
+}
+
+type unnamed_7851555422786624638Descriptor = 
+  | { ina_46: in4in6_addr }
+  | { ina_6: in6_addr };
+
+declare class unnamed_7851555422786624638 {
+  constructor(init?: unnamed_7851555422786624638Descriptor);
+  ina_46: in4in6_addr;
+  ina_6: in6_addr;
+}
+
+type unnamed_2800889257295401023Descriptor = 
+  | { is_master: number }
+  | { is_main: number };
+
+declare class unnamed_2800889257295401023 {
+  constructor(init?: unnamed_2800889257295401023Descriptor);
+  is_master: number;
+  is_main: number;
+}
+
+type NumVersionVariantDescriptor = 
+  | { parts: NumVersion }
+  | { whole: number };
+
+declare class NumVersionVariant {
+  constructor(init?: NumVersionVariantDescriptor);
+  parts: NumVersion;
+  whole: number;
+}
+
+type mod_vals_uDescriptor = 
+  | { modv_strvals: interop.PointerConvertible }
+  | { modv_bvals: interop.PointerConvertible };
+
+declare class mod_vals_u {
+  constructor(init?: mod_vals_uDescriptor);
+  modv_strvals: interop.Pointer;
+  modv_bvals: interop.Pointer;
+}
+
+type unnamed_8227840576709709911Descriptor = 
+  | { ether_type: number }
+  | { sap: unknown /* const array */ }
+  | { snap: unknown /* const array */ }
+  | { other: unknown /* const array */ };
+
+declare class unnamed_8227840576709709911 {
+  constructor(init?: unnamed_8227840576709709911Descriptor);
+  ether_type: number;
+  sap: unknown /* const array */;
+  snap: unknown /* const array */;
+  other: unknown /* const array */;
+}
+
+type mach_msg_descriptor_tDescriptor = 
+  | { port: mach_msg_port_descriptor_t }
+  | { out_of_line: mach_msg_ool_descriptor_t }
+  | { ool_ports: mach_msg_ool_ports_descriptor_t }
+  | { type: mach_msg_type_descriptor_t }
+  | { guarded_port: mach_msg_guarded_port_descriptor_t };
+
+declare class mach_msg_descriptor_t {
+  constructor(init?: mach_msg_descriptor_tDescriptor);
+  port: mach_msg_port_descriptor_t;
+  out_of_line: mach_msg_ool_descriptor_t;
+  ool_ports: mach_msg_ool_ports_descriptor_t;
+  type: mach_msg_type_descriptor_t;
+  guarded_port: mach_msg_guarded_port_descriptor_t;
+}
+
+type __ReplyUnion__mach_host_subsystemDescriptor = 
+  | { Reply_host_info: __Reply__host_info_t }
+  | { Reply_host_kernel_version: __Reply__host_kernel_version_t }
+  | { Reply__host_page_size: __Reply___host_page_size_t }
+  | { Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t }
+  | { Reply_host_processor_info: __Reply__host_processor_info_t }
+  | { Reply_host_get_io_main: __Reply__host_get_io_main_t }
+  | { Reply_host_get_clock_service: __Reply__host_get_clock_service_t }
+  | { Reply_kmod_get_info: __Reply__kmod_get_info_t }
+  | { Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t }
+  | { Reply_processor_set_default: __Reply__processor_set_default_t }
+  | { Reply_processor_set_create: __Reply__processor_set_create_t }
+  | { Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t }
+  | { Reply_host_statistics: __Reply__host_statistics_t }
+  | { Reply_host_request_notification: __Reply__host_request_notification_t }
+  | { Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t }
+  | { Reply_host_statistics64: __Reply__host_statistics64_t }
+  | { Reply_mach_zone_info: __Reply__mach_zone_info_t }
+  | { Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t }
+  | { Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t }
+  | { Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t }
+  | { Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t }
+  | { Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t }
+  | { Reply_mach_memory_info: __Reply__mach_memory_info_t }
+  | { Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t }
+  | { Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t }
+  | { Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t }
+  | { Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t };
+
+declare class __ReplyUnion__mach_host_subsystem {
+  constructor(init?: __ReplyUnion__mach_host_subsystemDescriptor);
+  Reply_host_info: __Reply__host_info_t;
+  Reply_host_kernel_version: __Reply__host_kernel_version_t;
+  Reply__host_page_size: __Reply___host_page_size_t;
+  Reply_mach_memory_object_memory_entry: __Reply__mach_memory_object_memory_entry_t;
+  Reply_host_processor_info: __Reply__host_processor_info_t;
+  Reply_host_get_io_main: __Reply__host_get_io_main_t;
+  Reply_host_get_clock_service: __Reply__host_get_clock_service_t;
+  Reply_kmod_get_info: __Reply__kmod_get_info_t;
+  Reply_host_virtual_physical_table_info: __Reply__host_virtual_physical_table_info_t;
+  Reply_processor_set_default: __Reply__processor_set_default_t;
+  Reply_processor_set_create: __Reply__processor_set_create_t;
+  Reply_mach_memory_object_memory_entry_64: __Reply__mach_memory_object_memory_entry_64_t;
+  Reply_host_statistics: __Reply__host_statistics_t;
+  Reply_host_request_notification: __Reply__host_request_notification_t;
+  Reply_host_lockgroup_info: __Reply__host_lockgroup_info_t;
+  Reply_host_statistics64: __Reply__host_statistics64_t;
+  Reply_mach_zone_info: __Reply__mach_zone_info_t;
+  Reply_host_create_mach_voucher: __Reply__host_create_mach_voucher_t;
+  Reply_host_register_mach_voucher_attr_manager: __Reply__host_register_mach_voucher_attr_manager_t;
+  Reply_host_register_well_known_mach_voucher_attr_manager: __Reply__host_register_well_known_mach_voucher_attr_manager_t;
+  Reply_host_set_atm_diagnostic_flag: __Reply__host_set_atm_diagnostic_flag_t;
+  Reply_host_get_atm_diagnostic_flag: __Reply__host_get_atm_diagnostic_flag_t;
+  Reply_mach_memory_info: __Reply__mach_memory_info_t;
+  Reply_host_set_multiuser_config_flags: __Reply__host_set_multiuser_config_flags_t;
+  Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t;
+  Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t;
+  Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t;
+}
+
+type unnamed_18048086337545855407Descriptor = 
+  | { sadb_x_sa2_reserved2: number };
+
+declare class unnamed_18048086337545855407 {
+  constructor(init?: unnamed_18048086337545855407Descriptor);
+  sadb_x_sa2_reserved2: number;
+}
+
+type unnamed_402881642841529852Descriptor = 
+  | { reserved: unknown /* const array */ }
+  | { work_interval_port: number }
+  | { service_port_info: interop.PointerConvertible }
+  | { service_port_name: number };
+
+declare class unnamed_402881642841529852 {
+  constructor(init?: unnamed_402881642841529852Descriptor);
+  reserved: unknown /* const array */;
+  work_interval_port: number;
+  service_port_info: interop.Pointer;
+  service_port_name: number;
+}
+
+type mach_msg_empty_tDescriptor = 
+  | { send: mach_msg_empty_send_t }
+  | { rcv: mach_msg_empty_rcv_t };
+
+declare class mach_msg_empty_t {
+  constructor(init?: mach_msg_empty_tDescriptor);
+  send: mach_msg_empty_send_t;
+  rcv: mach_msg_empty_rcv_t;
+}
+
+type unnamed_4306535089822406534Descriptor = 
+  | { inp46_foreign: in_addr_4in6 }
+  | { inp6_foreign: in6_addr };
+
+declare class unnamed_4306535089822406534 {
+  constructor(init?: unnamed_4306535089822406534Descriptor);
+  inp46_foreign: in_addr_4in6;
+  inp6_foreign: in6_addr;
+}
+
+type __mbstate_tDescriptor = 
+  | { __mbstate8: unknown /* const array */ }
+  | { _mbstateL: number };
+
+declare class __mbstate_t {
+  constructor(init?: __mbstate_tDescriptor);
+  __mbstate8: unknown /* const array */;
+  _mbstateL: number;
+}
+
+type unnamed_5868516007301915983Descriptor = 
+  | { ua_sun: sockaddr_un }
+  | { ua_dummy: unknown /* const array */ };
+
+declare class unnamed_5868516007301915983 {
+  constructor(init?: unnamed_5868516007301915983Descriptor);
+  ua_sun: sockaddr_un;
+  ua_dummy: unknown /* const array */;
+}
+
+type waitDescriptor = 
+  | { w_status: number }
+  | { w_T: unnamed_4325523165017696557 }
+  | { w_S: unnamed_15833977829649840769 };
+
+declare class wait {
+  constructor(init?: waitDescriptor);
+  w_status: number;
+  w_T: unnamed_4325523165017696557;
+  w_S: unnamed_15833977829649840769;
 }
 
 type __RequestUnion__task_subsystemDescriptor = 
@@ -28931,6 +24722,88 @@ type at_block_features_tDescriptor =
 declare class at_block_features_t {
   constructor(init?: at_block_features_tDescriptor);
   bits: number;
+}
+
+type unnamed_13354706086260099080Descriptor = 
+  | { NV0: unknown /* const array */ }
+  | { NV1: unnamed_12893189296486044984 };
+
+declare class unnamed_13354706086260099080 {
+  constructor(init?: unnamed_13354706086260099080Descriptor);
+  NV0: unknown /* const array */;
+  NV1: unnamed_12893189296486044984;
+}
+
+type __RequestUnion__vm_map_subsystemDescriptor = 
+  | { Request_vm_region: __Request__vm_region_t }
+  | { Request_vm_allocate: __Request__vm_allocate_t }
+  | { Request_vm_deallocate: __Request__vm_deallocate_t }
+  | { Request_vm_protect: __Request__vm_protect_t }
+  | { Request_vm_inherit: __Request__vm_inherit_t }
+  | { Request_vm_read: __Request__vm_read_t }
+  | { Request_vm_read_list: __Request__vm_read_list_t }
+  | { Request_vm_write: __Request__vm_write_t }
+  | { Request_vm_copy: __Request__vm_copy_t }
+  | { Request_vm_read_overwrite: __Request__vm_read_overwrite_t }
+  | { Request_vm_msync: __Request__vm_msync_t }
+  | { Request_vm_behavior_set: __Request__vm_behavior_set_t }
+  | { Request_vm_map: __Request__vm_map_t }
+  | { Request_vm_machine_attribute: __Request__vm_machine_attribute_t }
+  | { Request_vm_remap: __Request__vm_remap_t }
+  | { Request_task_wire: __Request__task_wire_t }
+  | { Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t }
+  | { Request_vm_map_page_query: __Request__vm_map_page_query_t }
+  | { Request_mach_vm_region_info: __Request__mach_vm_region_info_t }
+  | { Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t }
+  | { Request_vm_region_recurse: __Request__vm_region_recurse_t }
+  | { Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t }
+  | { Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t }
+  | { Request_vm_region_64: __Request__vm_region_64_t }
+  | { Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t }
+  | { Request_vm_map_64: __Request__vm_map_64_t }
+  | { Request_vm_purgable_control: __Request__vm_purgable_control_t }
+  | { Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t }
+  | { Request_vm_remap_new: __Request__vm_remap_new_t };
+
+declare class __RequestUnion__vm_map_subsystem {
+  constructor(init?: __RequestUnion__vm_map_subsystemDescriptor);
+  Request_vm_region: __Request__vm_region_t;
+  Request_vm_allocate: __Request__vm_allocate_t;
+  Request_vm_deallocate: __Request__vm_deallocate_t;
+  Request_vm_protect: __Request__vm_protect_t;
+  Request_vm_inherit: __Request__vm_inherit_t;
+  Request_vm_read: __Request__vm_read_t;
+  Request_vm_read_list: __Request__vm_read_list_t;
+  Request_vm_write: __Request__vm_write_t;
+  Request_vm_copy: __Request__vm_copy_t;
+  Request_vm_read_overwrite: __Request__vm_read_overwrite_t;
+  Request_vm_msync: __Request__vm_msync_t;
+  Request_vm_behavior_set: __Request__vm_behavior_set_t;
+  Request_vm_map: __Request__vm_map_t;
+  Request_vm_machine_attribute: __Request__vm_machine_attribute_t;
+  Request_vm_remap: __Request__vm_remap_t;
+  Request_task_wire: __Request__task_wire_t;
+  Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t;
+  Request_vm_map_page_query: __Request__vm_map_page_query_t;
+  Request_mach_vm_region_info: __Request__mach_vm_region_info_t;
+  Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t;
+  Request_vm_region_recurse: __Request__vm_region_recurse_t;
+  Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t;
+  Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t;
+  Request_vm_region_64: __Request__vm_region_64_t;
+  Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t;
+  Request_vm_map_64: __Request__vm_map_64_t;
+  Request_vm_purgable_control: __Request__vm_purgable_control_t;
+  Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t;
+  Request_vm_remap_new: __Request__vm_remap_new_t;
+}
+
+type unnamed_5492683493513449710Descriptor = 
+  | { n_strx: number };
+
+declare class unnamed_5492683493513449710 {
+  constructor(init?: unnamed_5492683493513449710Descriptor);
+  n_strx: number;
 }
 
 type __sigaction_uDescriptor = 
@@ -35193,96 +31066,6 @@ declare function mig_allocate(p1: interop.PointerConvertible, p2: number): void;
 
 declare function mig_deallocate(p1: number, p2: number): void;
 
-declare function mig_strncpy_zerofill(dest: string, src: string, len: number): number;
-
-declare function clock_set_time(clock_ctrl: number, new_time: mach_timespec): number;
-
-declare function clock_set_attributes(clock_ctrl: number, flavor: number, clock_attr: interop.PointerConvertible, clock_attrCnt: number): number;
-
-declare function host_get_boot_info(host_priv: number, boot_info: unknown /* const array */): number;
-
-declare function host_reboot(host_priv: number, options: number): number;
-
-declare function host_priv_statistics(host_priv: number, flavor: number, host_info_out: interop.PointerConvertible, host_info_outCnt: interop.PointerConvertible): number;
-
-declare function host_default_memory_manager(host_priv: number, default_manager: interop.PointerConvertible, cluster_size: number): number;
-
-declare function vm_wire(host_priv: number, task: number, address: number, size: number, desired_access: number): number;
-
-declare function thread_wire(host_priv: number, thread: number, wired: number): number;
-
-declare function vm_allocate_cpm(host_priv: number, task: number, address: interop.PointerConvertible, size: number, flags: number): number;
-
-declare function host_processors(host_priv: number, out_processor_list: interop.PointerConvertible, out_processor_listCnt: interop.PointerConvertible): number;
-
-declare function host_get_clock_control(host_priv: number, clock_id: number, clock_ctrl: interop.PointerConvertible): number;
-
-declare function kmod_create(host_priv: number, info: number, module: interop.PointerConvertible): number;
-
-declare function kmod_destroy(host_priv: number, module: number): number;
-
-declare function kmod_control(host_priv: number, module: number, flavor: number, data: interop.PointerConvertible, dataCnt: interop.PointerConvertible): number;
-
-declare function host_get_special_port(host_priv: number, node: number, which: number, port: interop.PointerConvertible): number;
-
-declare function host_set_special_port(host_priv: number, which: number, port: number): number;
-
-declare function host_set_exception_ports(host_priv: number, exception_mask: number, new_port: number, behavior: number, new_flavor: number): number;
-
-declare function host_get_exception_ports(host_priv: number, exception_mask: number, masks: interop.PointerConvertible, masksCnt: interop.PointerConvertible, old_handlers: interop.PointerConvertible, old_behaviors: interop.PointerConvertible, old_flavors: interop.PointerConvertible): number;
-
-declare function host_swap_exception_ports(host_priv: number, exception_mask: number, new_port: number, behavior: number, new_flavor: number, masks: interop.PointerConvertible, masksCnt: interop.PointerConvertible, old_handlerss: interop.PointerConvertible, old_behaviors: interop.PointerConvertible, old_flavors: interop.PointerConvertible): number;
-
-declare function mach_vm_wire(host_priv: number, task: number, address: number, size: number, desired_access: number): number;
-
-declare function host_processor_sets(host_priv: number, processor_sets: interop.PointerConvertible, processor_setsCnt: interop.PointerConvertible): number;
-
-declare function host_processor_set_priv(host_priv: number, set_name: number, set: interop.PointerConvertible): number;
-
-declare function host_set_UNDServer(host: number, server: number): number;
-
-declare function host_get_UNDServer(host: number, server: interop.PointerConvertible): number;
-
-declare function kext_request(host_priv: number, user_log_flags: number, request_data: number, request_dataCnt: number, response_data: interop.PointerConvertible, response_dataCnt: interop.PointerConvertible, log_data: interop.PointerConvertible, log_dataCnt: interop.PointerConvertible, op_result: interop.PointerConvertible): number;
-
-declare function host_security_create_task_token(host_security: number, parent_task: number, sec_token: security_token_t, audit_token: audit_token_t, host: number, ledgers: interop.PointerConvertible, ledgersCnt: number, inherit_memory: number, child_task: interop.PointerConvertible): number;
-
-declare function host_security_set_task_token(host_security: number, target_task: number, sec_token: security_token_t, audit_token: audit_token_t, host: number): number;
-
-declare function processor_start(processor: number): number;
-
-declare function processor_exit(processor: number): number;
-
-declare function processor_info(processor: number, flavor: number, host: interop.PointerConvertible, processor_info_out: interop.PointerConvertible, processor_info_outCnt: interop.PointerConvertible): number;
-
-declare function processor_control(processor: number, processor_cmd: interop.PointerConvertible, processor_cmdCnt: number): number;
-
-declare function processor_assign(processor: number, new_set: number, wait: number): number;
-
-declare function processor_get_assignment(processor: number, assigned_set: interop.PointerConvertible): number;
-
-declare function processor_set_statistics(pset: number, flavor: number, info_out: interop.PointerConvertible, info_outCnt: interop.PointerConvertible): number;
-
-declare function processor_set_destroy(set: number): number;
-
-declare function processor_set_max_priority(processor_set: number, max_priority: number, change_threads: number): number;
-
-declare function processor_set_policy_enable(processor_set: number, policy: number): number;
-
-declare function processor_set_policy_disable(processor_set: number, policy: number, change_threads: number): number;
-
-declare function processor_set_tasks(processor_set: number, task_list: interop.PointerConvertible, task_listCnt: interop.PointerConvertible): number;
-
-declare function processor_set_threads(processor_set: number, thread_list: interop.PointerConvertible, thread_listCnt: interop.PointerConvertible): number;
-
-declare function processor_set_policy_control(pset: number, flavor: number, policy_info: interop.PointerConvertible, policy_infoCnt: number, change: number): number;
-
-declare function processor_set_stack_usage(pset: number, ltotal: interop.PointerConvertible, space: interop.PointerConvertible, resident: interop.PointerConvertible, maxusage: interop.PointerConvertible, maxstack: interop.PointerConvertible): number;
-
-declare function processor_set_info(set_name: number, flavor: number, host: interop.PointerConvertible, info_out: interop.PointerConvertible, info_outCnt: interop.PointerConvertible): number;
-
-declare function processor_set_tasks_with_flavor(processor_set: number, flavor: number, task_list: interop.PointerConvertible, task_listCnt: interop.PointerConvertible): number;
-
 declare function semaphore_signal(semaphore: number): number;
 
 declare function semaphore_signal_all(semaphore: number): number;
@@ -38251,12 +34034,6 @@ declare function getopt_long_only(__argc: number, p2: interop.PointerConvertible
 
 declare function getopt(__argc: number, p2: interop.Pointer, p3: string): number;
 
-declare function clock_get_time(clock_serv: number, cur_time: interop.PointerConvertible): number;
-
-declare function clock_get_attributes(clock_serv: number, flavor: number, clock_attr: interop.PointerConvertible, clock_attrCnt: interop.PointerConvertible): number;
-
-declare function clock_alarm(clock_serv: number, alarm_type: number, alarm_time: mach_timespec, alarm_port: number): number;
-
 declare function clock_alarm_reply(alarm_port: number, alarm_portPoly: number, alarm_code: number, alarm_type: number, alarm_time: mach_timespec): number;
 
 declare function exception_raise(exception_port: number, thread: number, task: number, exception: number, code: interop.PointerConvertible, codeCnt: number): number;
@@ -38324,24 +34101,6 @@ declare function mach_vm_remap_new(target_task: number, target_address: interop.
 declare function mach_vm_range_create(target_task: number, flavor: interop.Enum<typeof mach_vm_range_flavor_t>, recipes: interop.PointerConvertible, recipesCnt: number): number;
 
 declare function mach_vm_update_pointers_with_remote_tags(target: number, in_pointer_list: interop.PointerConvertible, in_pointer_listCnt: number, out_pointer_list: interop.PointerConvertible, out_pointer_listCnt: interop.PointerConvertible): number;
-
-declare function mach_voucher_extract_attr_content(voucher: number, key: number, content: interop.PointerConvertible, contentCnt: interop.PointerConvertible): number;
-
-declare function mach_voucher_extract_attr_recipe(voucher: number, key: number, recipe: interop.PointerConvertible, recipeCnt: interop.PointerConvertible): number;
-
-declare function mach_voucher_extract_all_attr_recipes(voucher: number, recipes: interop.PointerConvertible, recipesCnt: interop.PointerConvertible): number;
-
-declare function mach_voucher_attr_command(voucher: number, key: number, command: number, in_content: interop.PointerConvertible, in_contentCnt: number, out_content: interop.PointerConvertible, out_contentCnt: interop.PointerConvertible): number;
-
-declare function mach_voucher_debug_info(task: number, voucher_name: number, recipes: interop.PointerConvertible, recipesCnt: interop.PointerConvertible): number;
-
-declare function mach_memory_entry_purgable_control(mem_entry: number, control: number, state: interop.PointerConvertible): number;
-
-declare function mach_memory_entry_access_tracking(mem_entry: number, access_tracking: interop.PointerConvertible, access_tracking_reads: interop.PointerConvertible, access_tracking_writes: interop.PointerConvertible): number;
-
-declare function mach_memory_entry_ownership(mem_entry: number, owner: number, ledger_tag: number, ledger_flags: number): number;
-
-declare function mach_memory_entry_get_page_counts(mem_entry: number, resident_cnt: interop.PointerConvertible, dirty_cnt: interop.PointerConvertible, swapped_cnt: interop.PointerConvertible): number;
 
 declare function port_obj_init(p1: number): void;
 
@@ -49886,1726 +45645,6 @@ declare function PE_init_socd_client(): number;
 declare function PE_read_socd_client_buffer(offset: number, out_buff: interop.PointerConvertible, size: number): void;
 
 declare function PE_write_socd_client_buffer(offset: number, in_buff: interop.PointerConvertible, size: number): void;
-
-declare function Tcl_IncrRefCount(objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DecrRefCount(objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_IsShared(objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_InitStubs(interp: interop.PointerConvertible, version: string, exact: number): string;
-
-declare function TclTomMathInitializeStubs(interp: interop.PointerConvertible, version: string, epoch: number, revision: number): string;
-
-declare function Tcl_Main(argc: number, argv: interop.PointerConvertible, appInitProc: (p1: interop.PointerConvertible) => number): void;
-
-declare function Tcl_PkgInitStubsCheck(interp: interop.PointerConvertible, version: string, exact: number): string;
-
-declare function Tcl_PkgProvideEx(interp: interop.PointerConvertible, name: string, version: string, clientData: interop.PointerConvertible): number;
-
-declare function Tcl_PkgRequireEx(interp: interop.PointerConvertible, name: string, version: string, exact: number, clientDataPtr: interop.PointerConvertible): string;
-
-declare function Tcl_Panic(format: string): void;
-
-declare function Tcl_Alloc(size: number): string;
-
-declare function Tcl_Free(ptr: string): void;
-
-declare function Tcl_Realloc(ptr: string, size: number): string;
-
-declare function Tcl_DbCkalloc(size: number, file: string, line: number): string;
-
-declare function Tcl_DbCkfree(ptr: string, file: string, line: number): number;
-
-declare function Tcl_DbCkrealloc(ptr: string, size: number, file: string, line: number): string;
-
-declare function Tcl_CreateFileHandler(fd: number, mask: number, proc: (p1: interop.PointerConvertible, p2: number) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteFileHandler(fd: number): void;
-
-declare function Tcl_SetTimer(timePtr: interop.PointerConvertible): void;
-
-declare function Tcl_Sleep(ms: number): void;
-
-declare function Tcl_WaitForEvent(timePtr: interop.PointerConvertible): number;
-
-declare function Tcl_AppendAllObjTypes(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_AppendStringsToObj(objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_AppendToObj(objPtr: interop.PointerConvertible, bytes: string, length: number): void;
-
-declare function Tcl_ConcatObj(objc: number, objv: interop.Pointer): interop.Pointer;
-
-declare function Tcl_ConvertToType(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, typePtr: interop.PointerConvertible): number;
-
-declare function Tcl_DbDecrRefCount(objPtr: interop.PointerConvertible, file: string, line: number): void;
-
-declare function Tcl_DbIncrRefCount(objPtr: interop.PointerConvertible, file: string, line: number): void;
-
-declare function Tcl_DbIsShared(objPtr: interop.PointerConvertible, file: string, line: number): number;
-
-declare function Tcl_DbNewBooleanObj(boolValue: number, file: string, line: number): interop.Pointer;
-
-declare function Tcl_DbNewByteArrayObj(bytes: interop.PointerConvertible, length: number, file: string, line: number): interop.Pointer;
-
-declare function Tcl_DbNewDoubleObj(doubleValue: number, file: string, line: number): interop.Pointer;
-
-declare function Tcl_DbNewListObj(objc: number, objv: interop.PointerConvertible, file: string, line: number): interop.Pointer;
-
-declare function Tcl_DbNewLongObj(longValue: number, file: string, line: number): interop.Pointer;
-
-declare function Tcl_DbNewObj(file: string, line: number): interop.Pointer;
-
-declare function Tcl_DbNewStringObj(bytes: string, length: number, file: string, line: number): interop.Pointer;
-
-declare function Tcl_DuplicateObj(objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function TclFreeObj(objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_GetBoolean(interp: interop.PointerConvertible, src: string, boolPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetBooleanFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, boolPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetByteArrayFromObj(objPtr: interop.PointerConvertible, lengthPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetDouble(interp: interop.PointerConvertible, src: string, doublePtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetDoubleFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, doublePtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetIndexFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, tablePtr: interop.PointerConvertible, msg: string, flags: number, indexPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetInt(interp: interop.PointerConvertible, src: string, intPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetIntFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetLongFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, longPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetObjType(typeName: string): interop.Pointer;
-
-declare function Tcl_GetStringFromObj(objPtr: interop.PointerConvertible, lengthPtr: interop.PointerConvertible): string;
-
-declare function Tcl_InvalidateStringRep(objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_ListObjAppendList(interp: interop.PointerConvertible, listPtr: interop.PointerConvertible, elemListPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ListObjAppendElement(interp: interop.PointerConvertible, listPtr: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ListObjGetElements(interp: interop.PointerConvertible, listPtr: interop.PointerConvertible, objcPtr: interop.PointerConvertible, objvPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ListObjIndex(interp: interop.PointerConvertible, listPtr: interop.PointerConvertible, index: number, objPtrPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ListObjLength(interp: interop.PointerConvertible, listPtr: interop.PointerConvertible, lengthPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ListObjReplace(interp: interop.PointerConvertible, listPtr: interop.PointerConvertible, first: number, count: number, objc: number, objv: interop.Pointer): number;
-
-declare function Tcl_NewBooleanObj(boolValue: number): interop.Pointer;
-
-declare function Tcl_NewByteArrayObj(bytes: interop.PointerConvertible, length: number): interop.Pointer;
-
-declare function Tcl_NewDoubleObj(doubleValue: number): interop.Pointer;
-
-declare function Tcl_NewIntObj(intValue: number): interop.Pointer;
-
-declare function Tcl_NewListObj(objc: number, objv: interop.Pointer): interop.Pointer;
-
-declare function Tcl_NewLongObj(longValue: number): interop.Pointer;
-
-declare function Tcl_NewObj(): interop.Pointer;
-
-declare function Tcl_NewStringObj(bytes: string, length: number): interop.Pointer;
-
-declare function Tcl_SetBooleanObj(objPtr: interop.PointerConvertible, boolValue: number): void;
-
-declare function Tcl_SetByteArrayLength(objPtr: interop.PointerConvertible, length: number): interop.Pointer;
-
-declare function Tcl_SetByteArrayObj(objPtr: interop.PointerConvertible, bytes: interop.PointerConvertible, length: number): void;
-
-declare function Tcl_SetDoubleObj(objPtr: interop.PointerConvertible, doubleValue: number): void;
-
-declare function Tcl_SetIntObj(objPtr: interop.PointerConvertible, intValue: number): void;
-
-declare function Tcl_SetListObj(objPtr: interop.PointerConvertible, objc: number, objv: interop.Pointer): void;
-
-declare function Tcl_SetLongObj(objPtr: interop.PointerConvertible, longValue: number): void;
-
-declare function Tcl_SetObjLength(objPtr: interop.PointerConvertible, length: number): void;
-
-declare function Tcl_SetStringObj(objPtr: interop.PointerConvertible, bytes: string, length: number): void;
-
-declare function Tcl_AddErrorInfo(interp: interop.PointerConvertible, message: string): void;
-
-declare function Tcl_AddObjErrorInfo(interp: interop.PointerConvertible, message: string, length: number): void;
-
-declare function Tcl_AllowExceptions(interp: interop.PointerConvertible): void;
-
-declare function Tcl_AppendElement(interp: interop.PointerConvertible, element: string): void;
-
-declare function Tcl_AppendResult(interp: interop.PointerConvertible): void;
-
-declare function Tcl_AsyncCreate(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_AsyncDelete(async: interop.PointerConvertible): void;
-
-declare function Tcl_AsyncInvoke(interp: interop.PointerConvertible, code: number): number;
-
-declare function Tcl_AsyncMark(async: interop.PointerConvertible): void;
-
-declare function Tcl_AsyncReady(): number;
-
-declare function Tcl_BackgroundError(interp: interop.PointerConvertible): void;
-
-declare function Tcl_Backslash(src: string, readPtr: interop.PointerConvertible): number;
-
-declare function Tcl_BadChannelOption(interp: interop.PointerConvertible, optionName: string, optionList: string): number;
-
-declare function Tcl_CallWhenDeleted(interp: interop.PointerConvertible, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_CancelIdleCall(idleProc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_Close(interp: interop.PointerConvertible, chan: interop.PointerConvertible): number;
-
-declare function Tcl_CommandComplete(cmd: string): number;
-
-declare function Tcl_Concat(argc: number, argv: interop.PointerConvertible): string;
-
-declare function Tcl_ConvertElement(src: string, dst: string, flags: number): number;
-
-declare function Tcl_ConvertCountedElement(src: string, length: number, dst: string, flags: number): number;
-
-declare function Tcl_CreateAlias(slave: interop.PointerConvertible, slaveCmd: string, target: interop.PointerConvertible, targetCmd: string, argc: number, argv: interop.PointerConvertible): number;
-
-declare function Tcl_CreateAliasObj(slave: interop.PointerConvertible, slaveCmd: string, target: interop.PointerConvertible, targetCmd: string, objc: number, objv: interop.Pointer): number;
-
-declare function Tcl_CreateChannel(typePtr: interop.PointerConvertible, chanName: string, instanceData: interop.PointerConvertible, mask: number): interop.Pointer;
-
-declare function Tcl_CreateChannelHandler(chan: interop.PointerConvertible, mask: number, proc: (p1: interop.PointerConvertible, p2: number) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_CreateCloseHandler(chan: interop.PointerConvertible, proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_CreateCommand(interp: interop.PointerConvertible, cmdName: string, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, clientData: interop.PointerConvertible, deleteProc: (p1: interop.PointerConvertible) => void): interop.Pointer;
-
-declare function Tcl_CreateEventSource(setupProc: (p1: interop.PointerConvertible, p2: number) => void, checkProc: (p1: interop.PointerConvertible, p2: number) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_CreateExitHandler(proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_CreateInterp(): interop.Pointer;
-
-declare function Tcl_CreateMathFunc(interp: interop.PointerConvertible, name: string, numArgs: number, argTypes: interop.PointerConvertible, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_CreateObjCommand(interp: interop.PointerConvertible, cmdName: string, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, clientData: interop.PointerConvertible, deleteProc: (p1: interop.PointerConvertible) => void): interop.Pointer;
-
-declare function Tcl_CreateSlave(interp: interop.PointerConvertible, slaveName: string, isSafe: number): interop.Pointer;
-
-declare function Tcl_CreateTimerHandler(milliseconds: number, proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_CreateTrace(interp: interop.PointerConvertible, level: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: interop.PointerConvertible) => number, p6: interop.PointerConvertible, p7: number, p8: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_DeleteAssocData(interp: interop.PointerConvertible, name: string): void;
-
-declare function Tcl_DeleteChannelHandler(chan: interop.PointerConvertible, proc: (p1: interop.PointerConvertible, p2: number) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteCloseHandler(chan: interop.PointerConvertible, proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteCommand(interp: interop.PointerConvertible, cmdName: string): number;
-
-declare function Tcl_DeleteCommandFromToken(interp: interop.PointerConvertible, command: interop.PointerConvertible): number;
-
-declare function Tcl_DeleteEvents(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteEventSource(setupProc: (p1: interop.PointerConvertible, p2: number) => void, checkProc: (p1: interop.PointerConvertible, p2: number) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteExitHandler(proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteHashEntry(entryPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteHashTable(tablePtr: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteInterp(interp: interop.PointerConvertible): void;
-
-declare function Tcl_DetachPids(numPids: number, pidPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteTimerHandler(token: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteTrace(interp: interop.PointerConvertible, trace: interop.PointerConvertible): void;
-
-declare function Tcl_DontCallWhenDeleted(interp: interop.PointerConvertible, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DoOneEvent(flags: number): number;
-
-declare function Tcl_DoWhenIdle(proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DStringAppend(dsPtr: interop.PointerConvertible, bytes: string, length: number): string;
-
-declare function Tcl_DStringAppendElement(dsPtr: interop.PointerConvertible, element: string): string;
-
-declare function Tcl_DStringEndSublist(dsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DStringFree(dsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DStringGetResult(interp: interop.PointerConvertible, dsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DStringInit(dsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DStringResult(interp: interop.PointerConvertible, dsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DStringSetLength(dsPtr: interop.PointerConvertible, length: number): void;
-
-declare function Tcl_DStringStartSublist(dsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_Eof(chan: interop.PointerConvertible): number;
-
-declare function Tcl_ErrnoId(): string;
-
-declare function Tcl_ErrnoMsg(err: number): string;
-
-declare function Tcl_Eval(interp: interop.PointerConvertible, script: string): number;
-
-declare function Tcl_EvalFile(interp: interop.PointerConvertible, fileName: string): number;
-
-declare function Tcl_EvalObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_EventuallyFree(clientData: interop.PointerConvertible, freeProc: (p1: string) => void): void;
-
-declare function Tcl_Exit(status: number): void;
-
-declare function Tcl_ExposeCommand(interp: interop.PointerConvertible, hiddenCmdToken: string, cmdName: string): number;
-
-declare function Tcl_ExprBoolean(interp: interop.PointerConvertible, expr: string, ptr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprBooleanObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, ptr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprDouble(interp: interop.PointerConvertible, expr: string, ptr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprDoubleObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, ptr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprLong(interp: interop.PointerConvertible, expr: string, ptr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprLongObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, ptr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, resultPtrPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ExprString(interp: interop.PointerConvertible, expr: string): number;
-
-declare function Tcl_Finalize(): void;
-
-declare function Tcl_FindExecutable(argv0: string): void;
-
-declare function Tcl_FirstHashEntry(tablePtr: interop.PointerConvertible, searchPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_Flush(chan: interop.PointerConvertible): number;
-
-declare function Tcl_FreeResult(interp: interop.PointerConvertible): void;
-
-declare function Tcl_GetAlias(interp: interop.PointerConvertible, slaveCmd: string, targetInterpPtr: interop.PointerConvertible, targetCmdPtr: interop.PointerConvertible, argcPtr: interop.PointerConvertible, argvPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetAliasObj(interp: interop.PointerConvertible, slaveCmd: string, targetInterpPtr: interop.PointerConvertible, targetCmdPtr: interop.PointerConvertible, objcPtr: interop.PointerConvertible, objv: interop.PointerConvertible): number;
-
-declare function Tcl_GetAssocData(interp: interop.PointerConvertible, name: string, procPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetChannel(interp: interop.PointerConvertible, chanName: string, modePtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetChannelBufferSize(chan: interop.PointerConvertible): number;
-
-declare function Tcl_GetChannelHandle(chan: interop.PointerConvertible, direction: number, handlePtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetChannelInstanceData(chan: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetChannelMode(chan: interop.PointerConvertible): number;
-
-declare function Tcl_GetChannelName(chan: interop.PointerConvertible): string;
-
-declare function Tcl_GetChannelOption(interp: interop.PointerConvertible, chan: interop.PointerConvertible, optionName: string, dsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetChannelType(chan: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetCommandInfo(interp: interop.PointerConvertible, cmdName: string, infoPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetCommandName(interp: interop.PointerConvertible, command: interop.PointerConvertible): string;
-
-declare function Tcl_GetErrno(): number;
-
-declare function Tcl_GetHostName(): string;
-
-declare function Tcl_GetInterpPath(askInterp: interop.PointerConvertible, slaveInterp: interop.PointerConvertible): number;
-
-declare function Tcl_GetMaster(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetNameOfExecutable(): string;
-
-declare function Tcl_GetObjResult(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetOpenFile(interp: interop.PointerConvertible, chanID: string, forWriting: number, checkUsage: number, filePtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetPathType(path: string): interop.Enum<typeof Tcl_PathType>;
-
-declare function Tcl_Gets(chan: interop.PointerConvertible, dsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetsObj(chan: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetServiceMode(): number;
-
-declare function Tcl_GetSlave(interp: interop.PointerConvertible, slaveName: string): interop.Pointer;
-
-declare function Tcl_GetStdChannel(type: number): interop.Pointer;
-
-declare function Tcl_GetStringResult(interp: interop.PointerConvertible): string;
-
-declare function Tcl_GetVar(interp: interop.PointerConvertible, varName: string, flags: number): string;
-
-declare function Tcl_GetVar2(interp: interop.PointerConvertible, part1: string, part2: string, flags: number): string;
-
-declare function Tcl_GlobalEval(interp: interop.PointerConvertible, command: string): number;
-
-declare function Tcl_GlobalEvalObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_HideCommand(interp: interop.PointerConvertible, cmdName: string, hiddenCmdToken: string): number;
-
-declare function Tcl_Init(interp: interop.PointerConvertible): number;
-
-declare function Tcl_InitHashTable(tablePtr: interop.PointerConvertible, keyType: number): void;
-
-declare function Tcl_InputBlocked(chan: interop.PointerConvertible): number;
-
-declare function Tcl_InputBuffered(chan: interop.PointerConvertible): number;
-
-declare function Tcl_InterpDeleted(interp: interop.PointerConvertible): number;
-
-declare function Tcl_IsSafe(interp: interop.PointerConvertible): number;
-
-declare function Tcl_JoinPath(argc: number, argv: interop.PointerConvertible, resultPtr: interop.PointerConvertible): string;
-
-declare function Tcl_LinkVar(interp: interop.PointerConvertible, varName: string, addr: string, type: number): number;
-
-declare function Tcl_MakeFileChannel(handle: interop.PointerConvertible, mode: number): interop.Pointer;
-
-declare function Tcl_MakeSafe(interp: interop.PointerConvertible): number;
-
-declare function Tcl_MakeTcpClientChannel(tcpSocket: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_Merge(argc: number, argv: interop.PointerConvertible): string;
-
-declare function Tcl_NextHashEntry(searchPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_NotifyChannel(channel: interop.PointerConvertible, mask: number): void;
-
-declare function Tcl_ObjGetVar2(interp: interop.PointerConvertible, part1Ptr: interop.PointerConvertible, part2Ptr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_ObjSetVar2(interp: interop.PointerConvertible, part1Ptr: interop.PointerConvertible, part2Ptr: interop.PointerConvertible, newValuePtr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_OpenCommandChannel(interp: interop.PointerConvertible, argc: number, argv: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_OpenFileChannel(interp: interop.PointerConvertible, fileName: string, modeString: string, permissions: number): interop.Pointer;
-
-declare function Tcl_OpenTcpClient(interp: interop.PointerConvertible, port: number, address: string, myaddr: string, myport: number, async: number): interop.Pointer;
-
-declare function Tcl_OpenTcpServer(interp: interop.PointerConvertible, port: number, host: string, acceptProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: number) => void, callbackData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_Preserve(data: interop.PointerConvertible): void;
-
-declare function Tcl_PrintDouble(interp: interop.PointerConvertible, value: number, dst: string): void;
-
-declare function Tcl_PutEnv(assignment: string): number;
-
-declare function Tcl_PosixError(interp: interop.PointerConvertible): string;
-
-declare function Tcl_QueueEvent(evPtr: interop.PointerConvertible, position: interop.Enum<typeof Tcl_QueuePosition>): void;
-
-declare function Tcl_Read(chan: interop.PointerConvertible, bufPtr: string, toRead: number): number;
-
-declare function Tcl_ReapDetachedProcs(): void;
-
-declare function Tcl_RecordAndEval(interp: interop.PointerConvertible, cmd: string, flags: number): number;
-
-declare function Tcl_RecordAndEvalObj(interp: interop.PointerConvertible, cmdPtr: interop.PointerConvertible, flags: number): number;
-
-declare function Tcl_RegisterChannel(interp: interop.PointerConvertible, chan: interop.PointerConvertible): void;
-
-declare function Tcl_RegisterObjType(typePtr: interop.PointerConvertible): void;
-
-declare function Tcl_RegExpCompile(interp: interop.PointerConvertible, pattern: string): interop.Pointer;
-
-declare function Tcl_RegExpExec(interp: interop.PointerConvertible, regexp: interop.PointerConvertible, text: string, start: string): number;
-
-declare function Tcl_RegExpMatch(interp: interop.PointerConvertible, text: string, pattern: string): number;
-
-declare function Tcl_RegExpRange(regexp: interop.PointerConvertible, index: number, startPtr: interop.PointerConvertible, endPtr: interop.PointerConvertible): void;
-
-declare function Tcl_Release(clientData: interop.PointerConvertible): void;
-
-declare function Tcl_ResetResult(interp: interop.PointerConvertible): void;
-
-declare function Tcl_ScanElement(str: string, flagPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ScanCountedElement(str: string, length: number, flagPtr: interop.PointerConvertible): number;
-
-declare function Tcl_SeekOld(chan: interop.PointerConvertible, offset: number, mode: number): number;
-
-declare function Tcl_ServiceAll(): number;
-
-declare function Tcl_ServiceEvent(flags: number): number;
-
-declare function Tcl_SetAssocData(interp: interop.PointerConvertible, name: string, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_SetChannelBufferSize(chan: interop.PointerConvertible, sz: number): void;
-
-declare function Tcl_SetChannelOption(interp: interop.PointerConvertible, chan: interop.PointerConvertible, optionName: string, newValue: string): number;
-
-declare function Tcl_SetCommandInfo(interp: interop.PointerConvertible, cmdName: string, infoPtr: interop.PointerConvertible): number;
-
-declare function Tcl_SetErrno(err: number): void;
-
-declare function Tcl_SetErrorCode(interp: interop.PointerConvertible): void;
-
-declare function Tcl_SetMaxBlockTime(timePtr: interop.PointerConvertible): void;
-
-declare function Tcl_SetPanicProc(panicProc: (p1: string) => void): void;
-
-declare function Tcl_SetRecursionLimit(interp: interop.PointerConvertible, depth: number): number;
-
-declare function Tcl_SetResult(interp: interop.PointerConvertible, result: string, freeProc: (p1: string) => void): void;
-
-declare function Tcl_SetServiceMode(mode: number): number;
-
-declare function Tcl_SetObjErrorCode(interp: interop.PointerConvertible, errorObjPtr: interop.PointerConvertible): void;
-
-declare function Tcl_SetObjResult(interp: interop.PointerConvertible, resultObjPtr: interop.PointerConvertible): void;
-
-declare function Tcl_SetStdChannel(channel: interop.PointerConvertible, type: number): void;
-
-declare function Tcl_SetVar(interp: interop.PointerConvertible, varName: string, newValue: string, flags: number): string;
-
-declare function Tcl_SetVar2(interp: interop.PointerConvertible, part1: string, part2: string, newValue: string, flags: number): string;
-
-declare function Tcl_SignalId(sig: number): string;
-
-declare function Tcl_SignalMsg(sig: number): string;
-
-declare function Tcl_SourceRCFile(interp: interop.PointerConvertible): void;
-
-declare function Tcl_SplitList(interp: interop.PointerConvertible, listStr: string, argcPtr: interop.PointerConvertible, argvPtr: interop.PointerConvertible): number;
-
-declare function Tcl_SplitPath(path: string, argcPtr: interop.PointerConvertible, argvPtr: interop.PointerConvertible): void;
-
-declare function Tcl_StaticPackage(interp: interop.PointerConvertible, pkgName: string, initProc: (p1: interop.PointerConvertible) => number, safeInitProc: (p1: interop.PointerConvertible) => number): void;
-
-declare function Tcl_StringMatch(str: string, pattern: string): number;
-
-declare function Tcl_TellOld(chan: interop.PointerConvertible): number;
-
-declare function Tcl_TraceVar(interp: interop.PointerConvertible, varName: string, flags: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, clientData: interop.PointerConvertible): number;
-
-declare function Tcl_TraceVar2(interp: interop.PointerConvertible, part1: string, part2: string, flags: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, clientData: interop.PointerConvertible): number;
-
-declare function Tcl_TranslateFileName(interp: interop.PointerConvertible, name: string, bufferPtr: interop.PointerConvertible): string;
-
-declare function Tcl_Ungets(chan: interop.PointerConvertible, str: string, len: number, atHead: number): number;
-
-declare function Tcl_UnlinkVar(interp: interop.PointerConvertible, varName: string): void;
-
-declare function Tcl_UnregisterChannel(interp: interop.PointerConvertible, chan: interop.PointerConvertible): number;
-
-declare function Tcl_UnsetVar(interp: interop.PointerConvertible, varName: string, flags: number): number;
-
-declare function Tcl_UnsetVar2(interp: interop.PointerConvertible, part1: string, part2: string, flags: number): number;
-
-declare function Tcl_UntraceVar(interp: interop.PointerConvertible, varName: string, flags: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_UntraceVar2(interp: interop.PointerConvertible, part1: string, part2: string, flags: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_UpdateLinkedVar(interp: interop.PointerConvertible, varName: string): void;
-
-declare function Tcl_UpVar(interp: interop.PointerConvertible, frameName: string, varName: string, localName: string, flags: number): number;
-
-declare function Tcl_UpVar2(interp: interop.PointerConvertible, frameName: string, part1: string, part2: string, localName: string, flags: number): number;
-
-declare function Tcl_VarEval(interp: interop.PointerConvertible): number;
-
-declare function Tcl_VarTraceInfo(interp: interop.PointerConvertible, varName: string, flags: number, procPtr: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, prevClientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_VarTraceInfo2(interp: interop.PointerConvertible, part1: string, part2: string, flags: number, procPtr: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => string, prevClientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_Write(chan: interop.PointerConvertible, s: string, slen: number): number;
-
-declare function Tcl_WrongNumArgs(interp: interop.PointerConvertible, objc: number, objv: interop.Pointer, message: string): void;
-
-declare function Tcl_DumpActiveMemory(fileName: string): number;
-
-declare function Tcl_ValidateAllMemory(file: string, line: number): void;
-
-declare function Tcl_AppendResultVA(interp: interop.PointerConvertible, argList: string): void;
-
-declare function Tcl_AppendStringsToObjVA(objPtr: interop.PointerConvertible, argList: string): void;
-
-declare function Tcl_HashStats(tablePtr: interop.PointerConvertible): string;
-
-declare function Tcl_ParseVar(interp: interop.PointerConvertible, start: string, termPtr: interop.PointerConvertible): string;
-
-declare function Tcl_PkgPresent(interp: interop.PointerConvertible, name: string, version: string, exact: number): string;
-
-declare function Tcl_PkgPresentEx(interp: interop.PointerConvertible, name: string, version: string, exact: number, clientDataPtr: interop.PointerConvertible): string;
-
-declare function Tcl_PkgProvide(interp: interop.PointerConvertible, name: string, version: string): number;
-
-declare function Tcl_PkgRequire(interp: interop.PointerConvertible, name: string, version: string, exact: number): string;
-
-declare function Tcl_SetErrorCodeVA(interp: interop.PointerConvertible, argList: string): void;
-
-declare function Tcl_VarEvalVA(interp: interop.PointerConvertible, argList: string): number;
-
-declare function Tcl_WaitPid(pid: interop.PointerConvertible, statPtr: interop.PointerConvertible, options: number): interop.Pointer;
-
-declare function Tcl_PanicVA(format: string, argList: string): void;
-
-declare function Tcl_GetVersion(major: interop.PointerConvertible, minor: interop.PointerConvertible, patchLevel: interop.PointerConvertible, type: interop.PointerConvertible): void;
-
-declare function Tcl_InitMemory(interp: interop.PointerConvertible): void;
-
-declare function Tcl_StackChannel(interp: interop.PointerConvertible, typePtr: interop.PointerConvertible, instanceData: interop.PointerConvertible, mask: number, prevChan: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_UnstackChannel(interp: interop.PointerConvertible, chan: interop.PointerConvertible): number;
-
-declare function Tcl_GetStackedChannel(chan: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_SetMainLoop(proc: () => void): void;
-
-declare function Tcl_AppendObjToObj(objPtr: interop.PointerConvertible, appendObjPtr: interop.PointerConvertible): void;
-
-declare function Tcl_CreateEncoding(typePtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_CreateThreadExitHandler(proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DeleteThreadExitHandler(proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_DiscardResult(statePtr: interop.PointerConvertible): void;
-
-declare function Tcl_EvalEx(interp: interop.PointerConvertible, script: string, numBytes: number, flags: number): number;
-
-declare function Tcl_EvalObjv(interp: interop.PointerConvertible, objc: number, objv: interop.Pointer, flags: number): number;
-
-declare function Tcl_EvalObjEx(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, flags: number): number;
-
-declare function Tcl_ExitThread(status: number): void;
-
-declare function Tcl_ExternalToUtf(interp: interop.PointerConvertible, encoding: interop.PointerConvertible, src: string, srcLen: number, flags: number, statePtr: interop.PointerConvertible, dst: string, dstLen: number, srcReadPtr: interop.PointerConvertible, dstWrotePtr: interop.PointerConvertible, dstCharsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ExternalToUtfDString(encoding: interop.PointerConvertible, src: string, srcLen: number, dsPtr: interop.PointerConvertible): string;
-
-declare function Tcl_FinalizeThread(): void;
-
-declare function Tcl_FinalizeNotifier(clientData: interop.PointerConvertible): void;
-
-declare function Tcl_FreeEncoding(encoding: interop.PointerConvertible): void;
-
-declare function Tcl_GetCurrentThread(): interop.Pointer;
-
-declare function Tcl_GetEncoding(interp: interop.PointerConvertible, name: string): interop.Pointer;
-
-declare function Tcl_GetEncodingName(encoding: interop.PointerConvertible): string;
-
-declare function Tcl_GetEncodingNames(interp: interop.PointerConvertible): void;
-
-declare function Tcl_GetIndexFromObjStruct(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, tablePtr: interop.PointerConvertible, offset: number, msg: string, flags: number, indexPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetThreadData(keyPtr: interop.PointerConvertible, size: number): interop.Pointer;
-
-declare function Tcl_GetVar2Ex(interp: interop.PointerConvertible, part1: string, part2: string, flags: number): interop.Pointer;
-
-declare function Tcl_InitNotifier(): interop.Pointer;
-
-declare function Tcl_MutexLock(mutexPtr: interop.PointerConvertible): void;
-
-declare function Tcl_MutexUnlock(mutexPtr: interop.PointerConvertible): void;
-
-declare function Tcl_ConditionNotify(condPtr: interop.PointerConvertible): void;
-
-declare function Tcl_ConditionWait(condPtr: interop.PointerConvertible, mutexPtr: interop.PointerConvertible, timePtr: interop.PointerConvertible): void;
-
-declare function Tcl_NumUtfChars(src: string, length: number): number;
-
-declare function Tcl_ReadChars(channel: interop.PointerConvertible, objPtr: interop.PointerConvertible, charsToRead: number, appendFlag: number): number;
-
-declare function Tcl_RestoreResult(interp: interop.PointerConvertible, statePtr: interop.PointerConvertible): void;
-
-declare function Tcl_SaveResult(interp: interop.PointerConvertible, statePtr: interop.PointerConvertible): void;
-
-declare function Tcl_SetSystemEncoding(interp: interop.PointerConvertible, name: string): number;
-
-declare function Tcl_SetVar2Ex(interp: interop.PointerConvertible, part1: string, part2: string, newValuePtr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_ThreadAlert(threadId: interop.PointerConvertible): void;
-
-declare function Tcl_ThreadQueueEvent(threadId: interop.PointerConvertible, evPtr: interop.PointerConvertible, position: interop.Enum<typeof Tcl_QueuePosition>): void;
-
-declare function Tcl_UniCharAtIndex(src: string, index: number): number;
-
-declare function Tcl_UniCharToLower(ch: number): number;
-
-declare function Tcl_UniCharToTitle(ch: number): number;
-
-declare function Tcl_UniCharToUpper(ch: number): number;
-
-declare function Tcl_UniCharToUtf(ch: number, buf: string): number;
-
-declare function Tcl_UtfAtIndex(src: string, index: number): string;
-
-declare function Tcl_UtfCharComplete(src: string, length: number): number;
-
-declare function Tcl_UtfBackslash(src: string, readPtr: interop.PointerConvertible, dst: string): number;
-
-declare function Tcl_UtfFindFirst(src: string, ch: number): string;
-
-declare function Tcl_UtfFindLast(src: string, ch: number): string;
-
-declare function Tcl_UtfNext(src: string): string;
-
-declare function Tcl_UtfPrev(src: string, start: string): string;
-
-declare function Tcl_UtfToExternal(interp: interop.PointerConvertible, encoding: interop.PointerConvertible, src: string, srcLen: number, flags: number, statePtr: interop.PointerConvertible, dst: string, dstLen: number, srcReadPtr: interop.PointerConvertible, dstWrotePtr: interop.PointerConvertible, dstCharsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_UtfToExternalDString(encoding: interop.PointerConvertible, src: string, srcLen: number, dsPtr: interop.PointerConvertible): string;
-
-declare function Tcl_UtfToLower(src: string): number;
-
-declare function Tcl_UtfToTitle(src: string): number;
-
-declare function Tcl_UtfToUniChar(src: string, chPtr: interop.PointerConvertible): number;
-
-declare function Tcl_UtfToUpper(src: string): number;
-
-declare function Tcl_WriteChars(chan: interop.PointerConvertible, src: string, srcLen: number): number;
-
-declare function Tcl_WriteObj(chan: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetString(objPtr: interop.PointerConvertible): string;
-
-declare function Tcl_GetDefaultEncodingDir(): string;
-
-declare function Tcl_SetDefaultEncodingDir(path: string): void;
-
-declare function Tcl_AlertNotifier(clientData: interop.PointerConvertible): void;
-
-declare function Tcl_ServiceModeHook(mode: number): void;
-
-declare function Tcl_UniCharIsAlnum(ch: number): number;
-
-declare function Tcl_UniCharIsAlpha(ch: number): number;
-
-declare function Tcl_UniCharIsDigit(ch: number): number;
-
-declare function Tcl_UniCharIsLower(ch: number): number;
-
-declare function Tcl_UniCharIsSpace(ch: number): number;
-
-declare function Tcl_UniCharIsUpper(ch: number): number;
-
-declare function Tcl_UniCharIsWordChar(ch: number): number;
-
-declare function Tcl_UniCharLen(uniStr: interop.PointerConvertible): number;
-
-declare function Tcl_UniCharNcmp(ucs: interop.PointerConvertible, uct: interop.PointerConvertible, numChars: number): number;
-
-declare function Tcl_UniCharToUtfDString(uniStr: interop.PointerConvertible, uniLength: number, dsPtr: interop.PointerConvertible): string;
-
-declare function Tcl_UtfToUniCharDString(src: string, length: number, dsPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetRegExpFromObj(interp: interop.PointerConvertible, patObj: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_EvalTokens(interp: interop.PointerConvertible, tokenPtr: interop.PointerConvertible, count: number): interop.Pointer;
-
-declare function Tcl_FreeParse(parsePtr: interop.PointerConvertible): void;
-
-declare function Tcl_LogCommandInfo(interp: interop.PointerConvertible, script: string, command: string, length: number): void;
-
-declare function Tcl_ParseBraces(interp: interop.PointerConvertible, start: string, numBytes: number, parsePtr: interop.PointerConvertible, append: number, termPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ParseCommand(interp: interop.PointerConvertible, start: string, numBytes: number, nested: number, parsePtr: interop.PointerConvertible): number;
-
-declare function Tcl_ParseExpr(interp: interop.PointerConvertible, start: string, numBytes: number, parsePtr: interop.PointerConvertible): number;
-
-declare function Tcl_ParseQuotedString(interp: interop.PointerConvertible, start: string, numBytes: number, parsePtr: interop.PointerConvertible, append: number, termPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ParseVarName(interp: interop.PointerConvertible, start: string, numBytes: number, parsePtr: interop.PointerConvertible, append: number): number;
-
-declare function Tcl_GetCwd(interp: interop.PointerConvertible, cwdPtr: interop.PointerConvertible): string;
-
-declare function Tcl_Chdir(dirName: string): number;
-
-declare function Tcl_Access(path: string, mode: number): number;
-
-declare function Tcl_Stat(path: string, bufPtr: interop.PointerConvertible): number;
-
-declare function Tcl_UtfNcmp(s1: string, s2: string, n: number): number;
-
-declare function Tcl_UtfNcasecmp(s1: string, s2: string, n: number): number;
-
-declare function Tcl_StringCaseMatch(str: string, pattern: string, nocase: number): number;
-
-declare function Tcl_UniCharIsControl(ch: number): number;
-
-declare function Tcl_UniCharIsGraph(ch: number): number;
-
-declare function Tcl_UniCharIsPrint(ch: number): number;
-
-declare function Tcl_UniCharIsPunct(ch: number): number;
-
-declare function Tcl_RegExpExecObj(interp: interop.PointerConvertible, regexp: interop.PointerConvertible, textObj: interop.PointerConvertible, offset: number, nmatches: number, flags: number): number;
-
-declare function Tcl_RegExpGetInfo(regexp: interop.PointerConvertible, infoPtr: interop.PointerConvertible): void;
-
-declare function Tcl_NewUnicodeObj(unicode: interop.PointerConvertible, numChars: number): interop.Pointer;
-
-declare function Tcl_SetUnicodeObj(objPtr: interop.PointerConvertible, unicode: interop.PointerConvertible, numChars: number): void;
-
-declare function Tcl_GetCharLength(objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetUniChar(objPtr: interop.PointerConvertible, index: number): number;
-
-declare function Tcl_GetUnicode(objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetRange(objPtr: interop.PointerConvertible, first: number, last: number): interop.Pointer;
-
-declare function Tcl_AppendUnicodeToObj(objPtr: interop.PointerConvertible, unicode: interop.PointerConvertible, length: number): void;
-
-declare function Tcl_RegExpMatchObj(interp: interop.PointerConvertible, textObj: interop.PointerConvertible, patternObj: interop.PointerConvertible): number;
-
-declare function Tcl_SetNotifier(notifierProcPtr: interop.PointerConvertible): void;
-
-declare function Tcl_GetAllocMutex(): interop.Pointer;
-
-declare function Tcl_GetChannelNames(interp: interop.PointerConvertible): number;
-
-declare function Tcl_GetChannelNamesEx(interp: interop.PointerConvertible, pattern: string): number;
-
-declare function Tcl_ProcObjCmd(clientData: interop.PointerConvertible, interp: interop.PointerConvertible, objc: number, objv: interop.Pointer): number;
-
-declare function Tcl_ConditionFinalize(condPtr: interop.PointerConvertible): void;
-
-declare function Tcl_MutexFinalize(mutex: interop.PointerConvertible): void;
-
-declare function Tcl_CreateThread(idPtr: interop.PointerConvertible, proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible, stackSize: number, flags: number): number;
-
-declare function Tcl_ReadRaw(chan: interop.PointerConvertible, dst: string, bytesToRead: number): number;
-
-declare function Tcl_WriteRaw(chan: interop.PointerConvertible, src: string, srcLen: number): number;
-
-declare function Tcl_GetTopChannel(chan: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_ChannelBuffered(chan: interop.PointerConvertible): number;
-
-declare function Tcl_ChannelName(chanTypePtr: interop.PointerConvertible): string;
-
-declare function Tcl_ChannelVersion(chanTypePtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_ChannelBlockModeProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number) => number;
-
-declare function Tcl_ChannelCloseProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelClose2Proc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number) => number;
-
-declare function Tcl_ChannelInputProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelOutputProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: string, p3: number, p4: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelSeekProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelSetOptionProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string) => number;
-
-declare function Tcl_ChannelGetOptionProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelWatchProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number) => void;
-
-declare function Tcl_ChannelGetHandleProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number, p3: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelFlushProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible) => number;
-
-declare function Tcl_ChannelHandlerProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number) => number;
-
-declare function Tcl_JoinThread(threadId: interop.PointerConvertible, result: interop.PointerConvertible): number;
-
-declare function Tcl_IsChannelShared(channel: interop.PointerConvertible): number;
-
-declare function Tcl_IsChannelRegistered(interp: interop.PointerConvertible, channel: interop.PointerConvertible): number;
-
-declare function Tcl_CutChannel(channel: interop.PointerConvertible): void;
-
-declare function Tcl_SpliceChannel(channel: interop.PointerConvertible): void;
-
-declare function Tcl_ClearChannelHandlers(channel: interop.PointerConvertible): void;
-
-declare function Tcl_IsChannelExisting(channelName: string): number;
-
-declare function Tcl_UniCharNcasecmp(ucs: interop.PointerConvertible, uct: interop.PointerConvertible, numChars: number): number;
-
-declare function Tcl_UniCharCaseMatch(uniStr: interop.PointerConvertible, uniPattern: interop.PointerConvertible, nocase: number): number;
-
-declare function Tcl_FindHashEntry(tablePtr: interop.PointerConvertible, key: string): interop.Pointer;
-
-declare function Tcl_CreateHashEntry(tablePtr: interop.PointerConvertible, key: string, newPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_InitCustomHashTable(tablePtr: interop.PointerConvertible, keyType: number, typePtr: interop.PointerConvertible): void;
-
-declare function Tcl_InitObjHashTable(tablePtr: interop.PointerConvertible): void;
-
-declare function Tcl_CommandTraceInfo(interp: interop.PointerConvertible, varName: string, flags: number, procPtr: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => void, prevClientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_TraceCommand(interp: interop.PointerConvertible, varName: string, flags: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => void, clientData: interop.PointerConvertible): number;
-
-declare function Tcl_UntraceCommand(interp: interop.PointerConvertible, varName: string, flags: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string, p4: string, p5: number) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_AttemptAlloc(size: number): string;
-
-declare function Tcl_AttemptDbCkalloc(size: number, file: string, line: number): string;
-
-declare function Tcl_AttemptRealloc(ptr: string, size: number): string;
-
-declare function Tcl_AttemptDbCkrealloc(ptr: string, size: number, file: string, line: number): string;
-
-declare function Tcl_AttemptSetObjLength(objPtr: interop.PointerConvertible, length: number): number;
-
-declare function Tcl_GetChannelThread(channel: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetUnicodeFromObj(objPtr: interop.PointerConvertible, lengthPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetMathFuncInfo(interp: interop.PointerConvertible, name: string, numArgsPtr: interop.PointerConvertible, argTypesPtr: interop.PointerConvertible, procPtr: interop.PointerConvertible, clientDataPtr: interop.PointerConvertible): number;
-
-declare function Tcl_ListMathFuncs(interp: interop.PointerConvertible, pattern: string): interop.Pointer;
-
-declare function Tcl_SubstObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_DetachChannel(interp: interop.PointerConvertible, channel: interop.PointerConvertible): number;
-
-declare function Tcl_IsStandardChannel(channel: interop.PointerConvertible): number;
-
-declare function Tcl_FSCopyFile(srcPathPtr: interop.PointerConvertible, destPathPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSCopyDirectory(srcPathPtr: interop.PointerConvertible, destPathPtr: interop.PointerConvertible, errorPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSCreateDirectory(pathPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSDeleteFile(pathPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSLoadFile(interp: interop.PointerConvertible, pathPtr: interop.PointerConvertible, sym1: string, sym2: string, proc1Ptr: interop.PointerConvertible, proc2Ptr: interop.PointerConvertible, handlePtr: interop.PointerConvertible, unloadProcPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSMatchInDirectory(interp: interop.PointerConvertible, result: interop.PointerConvertible, pathPtr: interop.PointerConvertible, pattern: string, types: interop.PointerConvertible): number;
-
-declare function Tcl_FSLink(pathPtr: interop.PointerConvertible, toPtr: interop.PointerConvertible, linkAction: number): interop.Pointer;
-
-declare function Tcl_FSRemoveDirectory(pathPtr: interop.PointerConvertible, recursive: number, errorPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSRenameFile(srcPathPtr: interop.PointerConvertible, destPathPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSLstat(pathPtr: interop.PointerConvertible, buf: interop.PointerConvertible): number;
-
-declare function Tcl_FSUtime(pathPtr: interop.PointerConvertible, tval: interop.PointerConvertible): number;
-
-declare function Tcl_FSFileAttrsGet(interp: interop.PointerConvertible, index: number, pathPtr: interop.PointerConvertible, objPtrRef: interop.PointerConvertible): number;
-
-declare function Tcl_FSFileAttrsSet(interp: interop.PointerConvertible, index: number, pathPtr: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSFileAttrStrings(pathPtr: interop.PointerConvertible, objPtrRef: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSStat(pathPtr: interop.PointerConvertible, buf: interop.PointerConvertible): number;
-
-declare function Tcl_FSAccess(pathPtr: interop.PointerConvertible, mode: number): number;
-
-declare function Tcl_FSOpenFileChannel(interp: interop.PointerConvertible, pathPtr: interop.PointerConvertible, modeString: string, permissions: number): interop.Pointer;
-
-declare function Tcl_FSGetCwd(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSChdir(pathPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSConvertToPathType(interp: interop.PointerConvertible, pathPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSJoinPath(listObj: interop.PointerConvertible, elements: number): interop.Pointer;
-
-declare function Tcl_FSSplitPath(pathPtr: interop.PointerConvertible, lenPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSEqualPaths(firstPtr: interop.PointerConvertible, secondPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSGetNormalizedPath(interp: interop.PointerConvertible, pathPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSJoinToPath(pathPtr: interop.PointerConvertible, objc: number, objv: interop.Pointer): interop.Pointer;
-
-declare function Tcl_FSGetInternalRep(pathPtr: interop.PointerConvertible, fsPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSGetTranslatedPath(interp: interop.PointerConvertible, pathPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSEvalFile(interp: interop.PointerConvertible, fileName: interop.PointerConvertible): number;
-
-declare function Tcl_FSNewNativePath(fromFilesystem: interop.PointerConvertible, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSGetNativePath(pathPtr: interop.PointerConvertible): string;
-
-declare function Tcl_FSFileSystemInfo(pathPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSPathSeparator(pathPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSListVolumes(): interop.Pointer;
-
-declare function Tcl_FSRegister(clientData: interop.PointerConvertible, fsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSUnregister(fsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_FSData(fsPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSGetTranslatedStringPath(interp: interop.PointerConvertible, pathPtr: interop.PointerConvertible): string;
-
-declare function Tcl_FSGetFileSystemForPath(pathPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FSGetPathType(pathPtr: interop.PointerConvertible): interop.Enum<typeof Tcl_PathType>;
-
-declare function Tcl_OutputBuffered(chan: interop.PointerConvertible): number;
-
-declare function Tcl_FSMountsChanged(fsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_EvalTokensStandard(interp: interop.PointerConvertible, tokenPtr: interop.PointerConvertible, count: number): number;
-
-declare function Tcl_GetTime(timeBuf: interop.PointerConvertible): void;
-
-declare function Tcl_CreateObjTrace(interp: interop.PointerConvertible, level: number, flags: number, objProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: number, p4: string, p5: interop.PointerConvertible, p6: number, p7: interop.PointerConvertible) => number, clientData: interop.PointerConvertible, delProc: (p1: interop.PointerConvertible) => void): interop.Pointer;
-
-declare function Tcl_GetCommandInfoFromToken(token: interop.PointerConvertible, infoPtr: interop.PointerConvertible): number;
-
-declare function Tcl_SetCommandInfoFromToken(token: interop.PointerConvertible, infoPtr: interop.PointerConvertible): number;
-
-declare function Tcl_DbNewWideIntObj(wideValue: number, file: string, line: number): interop.Pointer;
-
-declare function Tcl_GetWideIntFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, widePtr: interop.PointerConvertible): number;
-
-declare function Tcl_NewWideIntObj(wideValue: number): interop.Pointer;
-
-declare function Tcl_SetWideIntObj(objPtr: interop.PointerConvertible, wideValue: number): void;
-
-declare function Tcl_AllocStatBuf(): interop.Pointer;
-
-declare function Tcl_Seek(chan: interop.PointerConvertible, offset: number, mode: number): number;
-
-declare function Tcl_Tell(chan: interop.PointerConvertible): number;
-
-declare function Tcl_ChannelWideSeekProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible) => number;
-
-declare function Tcl_DictObjPut(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, keyPtr: interop.PointerConvertible, valuePtr: interop.PointerConvertible): number;
-
-declare function Tcl_DictObjGet(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, keyPtr: interop.PointerConvertible, valuePtrPtr: interop.PointerConvertible): number;
-
-declare function Tcl_DictObjRemove(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, keyPtr: interop.PointerConvertible): number;
-
-declare function Tcl_DictObjSize(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, sizePtr: interop.PointerConvertible): number;
-
-declare function Tcl_DictObjFirst(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, searchPtr: interop.PointerConvertible, keyPtrPtr: interop.PointerConvertible, valuePtrPtr: interop.PointerConvertible, donePtr: interop.PointerConvertible): number;
-
-declare function Tcl_DictObjNext(searchPtr: interop.PointerConvertible, keyPtrPtr: interop.PointerConvertible, valuePtrPtr: interop.PointerConvertible, donePtr: interop.PointerConvertible): void;
-
-declare function Tcl_DictObjDone(searchPtr: interop.PointerConvertible): void;
-
-declare function Tcl_DictObjPutKeyList(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, keyc: number, keyv: interop.PointerConvertible, valuePtr: interop.PointerConvertible): number;
-
-declare function Tcl_DictObjRemoveKeyList(interp: interop.PointerConvertible, dictPtr: interop.PointerConvertible, keyc: number, keyv: interop.PointerConvertible): number;
-
-declare function Tcl_NewDictObj(): interop.Pointer;
-
-declare function Tcl_DbNewDictObj(file: string, line: number): interop.Pointer;
-
-declare function Tcl_RegisterConfig(interp: interop.PointerConvertible, pkgName: string, configuration: interop.PointerConvertible, valEncoding: string): void;
-
-declare function Tcl_CreateNamespace(interp: interop.PointerConvertible, name: string, clientData: interop.PointerConvertible, deleteProc: (p1: interop.PointerConvertible) => void): interop.Pointer;
-
-declare function Tcl_DeleteNamespace(nsPtr: interop.PointerConvertible): void;
-
-declare function Tcl_AppendExportList(interp: interop.PointerConvertible, nsPtr: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tcl_Export(interp: interop.PointerConvertible, nsPtr: interop.PointerConvertible, pattern: string, resetListFirst: number): number;
-
-declare function Tcl_Import(interp: interop.PointerConvertible, nsPtr: interop.PointerConvertible, pattern: string, allowOverwrite: number): number;
-
-declare function Tcl_ForgetImport(interp: interop.PointerConvertible, nsPtr: interop.PointerConvertible, pattern: string): number;
-
-declare function Tcl_GetCurrentNamespace(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetGlobalNamespace(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_FindNamespace(interp: interop.PointerConvertible, name: string, contextNsPtr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_FindCommand(interp: interop.PointerConvertible, name: string, contextNsPtr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_GetCommandFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_GetCommandFullName(interp: interop.PointerConvertible, command: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_FSEvalFileEx(interp: interop.PointerConvertible, fileName: interop.PointerConvertible, encodingName: string): number;
-
-declare function Tcl_SetExitProc(proc: (p1: interop.PointerConvertible) => void): (p1: interop.PointerConvertible) => void;
-
-declare function Tcl_LimitAddHandler(interp: interop.PointerConvertible, type: number, handlerProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible, deleteProc: (p1: interop.PointerConvertible) => void): void;
-
-declare function Tcl_LimitRemoveHandler(interp: interop.PointerConvertible, type: number, handlerProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_LimitReady(interp: interop.PointerConvertible): number;
-
-declare function Tcl_LimitCheck(interp: interop.PointerConvertible): number;
-
-declare function Tcl_LimitExceeded(interp: interop.PointerConvertible): number;
-
-declare function Tcl_LimitSetCommands(interp: interop.PointerConvertible, commandLimit: number): void;
-
-declare function Tcl_LimitSetTime(interp: interop.PointerConvertible, timeLimitPtr: interop.PointerConvertible): void;
-
-declare function Tcl_LimitSetGranularity(interp: interop.PointerConvertible, type: number, granularity: number): void;
-
-declare function Tcl_LimitTypeEnabled(interp: interop.PointerConvertible, type: number): number;
-
-declare function Tcl_LimitTypeExceeded(interp: interop.PointerConvertible, type: number): number;
-
-declare function Tcl_LimitTypeSet(interp: interop.PointerConvertible, type: number): void;
-
-declare function Tcl_LimitTypeReset(interp: interop.PointerConvertible, type: number): void;
-
-declare function Tcl_LimitGetCommands(interp: interop.PointerConvertible): number;
-
-declare function Tcl_LimitGetTime(interp: interop.PointerConvertible, timeLimitPtr: interop.PointerConvertible): void;
-
-declare function Tcl_LimitGetGranularity(interp: interop.PointerConvertible, type: number): number;
-
-declare function Tcl_SaveInterpState(interp: interop.PointerConvertible, status: number): interop.Pointer;
-
-declare function Tcl_RestoreInterpState(interp: interop.PointerConvertible, state: interop.PointerConvertible): number;
-
-declare function Tcl_DiscardInterpState(state: interop.PointerConvertible): void;
-
-declare function Tcl_SetReturnOptions(interp: interop.PointerConvertible, options: interop.PointerConvertible): number;
-
-declare function Tcl_GetReturnOptions(interp: interop.PointerConvertible, result: number): interop.Pointer;
-
-declare function Tcl_IsEnsemble(token: interop.PointerConvertible): number;
-
-declare function Tcl_CreateEnsemble(interp: interop.PointerConvertible, name: string, namespacePtr: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_FindEnsemble(interp: interop.PointerConvertible, cmdNameObj: interop.PointerConvertible, flags: number): interop.Pointer;
-
-declare function Tcl_SetEnsembleSubcommandList(interp: interop.PointerConvertible, token: interop.PointerConvertible, subcmdList: interop.PointerConvertible): number;
-
-declare function Tcl_SetEnsembleMappingDict(interp: interop.PointerConvertible, token: interop.PointerConvertible, mapDict: interop.PointerConvertible): number;
-
-declare function Tcl_SetEnsembleUnknownHandler(interp: interop.PointerConvertible, token: interop.PointerConvertible, unknownList: interop.PointerConvertible): number;
-
-declare function Tcl_SetEnsembleFlags(interp: interop.PointerConvertible, token: interop.PointerConvertible, flags: number): number;
-
-declare function Tcl_GetEnsembleSubcommandList(interp: interop.PointerConvertible, token: interop.PointerConvertible, subcmdListPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetEnsembleMappingDict(interp: interop.PointerConvertible, token: interop.PointerConvertible, mapDictPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetEnsembleUnknownHandler(interp: interop.PointerConvertible, token: interop.PointerConvertible, unknownListPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetEnsembleFlags(interp: interop.PointerConvertible, token: interop.PointerConvertible, flagsPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetEnsembleNamespace(interp: interop.PointerConvertible, token: interop.PointerConvertible, namespacePtrPtr: interop.PointerConvertible): number;
-
-declare function Tcl_SetTimeProc(getProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, scaleProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_QueryTimeProc(getProc: interop.PointerConvertible, scaleProc: interop.PointerConvertible, clientData: interop.PointerConvertible): void;
-
-declare function Tcl_ChannelThreadActionProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number) => void;
-
-declare function Tcl_NewBignumObj(value: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_DbNewBignumObj(value: interop.PointerConvertible, file: string, line: number): interop.Pointer;
-
-declare function Tcl_SetBignumObj(obj: interop.PointerConvertible, value: interop.PointerConvertible): void;
-
-declare function Tcl_GetBignumFromObj(interp: interop.PointerConvertible, obj: interop.PointerConvertible, value: interop.PointerConvertible): number;
-
-declare function Tcl_TakeBignumFromObj(interp: interop.PointerConvertible, obj: interop.PointerConvertible, value: interop.PointerConvertible): number;
-
-declare function Tcl_TruncateChannel(chan: interop.PointerConvertible, length: number): number;
-
-declare function Tcl_ChannelTruncateProc(chanTypePtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: number) => number;
-
-declare function Tcl_SetChannelErrorInterp(interp: interop.PointerConvertible, msg: interop.PointerConvertible): void;
-
-declare function Tcl_GetChannelErrorInterp(interp: interop.PointerConvertible, msg: interop.PointerConvertible): void;
-
-declare function Tcl_SetChannelError(chan: interop.PointerConvertible, msg: interop.PointerConvertible): void;
-
-declare function Tcl_GetChannelError(chan: interop.PointerConvertible, msg: interop.PointerConvertible): void;
-
-declare function Tcl_InitBignumFromDouble(interp: interop.PointerConvertible, initval: number, toInit: interop.PointerConvertible): number;
-
-declare function Tcl_GetNamespaceUnknownHandler(interp: interop.PointerConvertible, nsPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tcl_SetNamespaceUnknownHandler(interp: interop.PointerConvertible, nsPtr: interop.PointerConvertible, handlerPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetEncodingFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, encodingPtr: interop.PointerConvertible): number;
-
-declare function Tcl_GetEncodingSearchPath(): interop.Pointer;
-
-declare function Tcl_SetEncodingSearchPath(searchPath: interop.PointerConvertible): number;
-
-declare function Tcl_GetEncodingNameFromEnvironment(bufPtr: interop.PointerConvertible): string;
-
-declare function Tcl_PkgRequireProc(interp: interop.PointerConvertible, name: string, objc: number, objv: interop.Pointer, clientDataPtr: interop.PointerConvertible): number;
-
-declare function Tcl_AppendObjToErrorInfo(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tcl_AppendLimitedToObj(objPtr: interop.PointerConvertible, bytes: string, length: number, limit: number, ellipsis: string): void;
-
-declare function Tcl_Format(interp: interop.PointerConvertible, format: string, objc: number, objv: interop.Pointer): interop.Pointer;
-
-declare function Tcl_AppendFormatToObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, format: string, objc: number, objv: interop.Pointer): number;
-
-declare function Tcl_ObjPrintf(format: string): interop.Pointer;
-
-declare function Tcl_AppendPrintfToObj(objPtr: interop.PointerConvertible, format: string): void;
-
-declare function Tcl_AppInit(interp: interop.PointerConvertible): number;
-
-declare function Tk_InitStubs(interp: interop.PointerConvertible, version: string, exact: number): string;
-
-declare function Tk_PkgInitStubsCheck(interp: interop.PointerConvertible, version: string, exact: number): string;
-
-declare function Tk_MainLoop(): void;
-
-declare function Tk_3DBorderColor(border: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_3DBorderGC(tkwin: interop.PointerConvertible, border: interop.PointerConvertible, which: number): interop.Pointer;
-
-declare function Tk_3DHorizontalBevel(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, leftIn: number, rightIn: number, topBevel: number, relief: number): void;
-
-declare function Tk_3DVerticalBevel(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, leftBevel: number, relief: number): void;
-
-declare function Tk_AddOption(tkwin: interop.PointerConvertible, name: string, value: string, priority: number): void;
-
-declare function Tk_BindEvent(bindingTable: interop.PointerConvertible, eventPtr: interop.PointerConvertible, tkwin: interop.PointerConvertible, numObjects: number, objectPtr: interop.PointerConvertible): void;
-
-declare function Tk_CanvasDrawableCoords(canvas: interop.PointerConvertible, x: number, y: number, drawableXPtr: interop.PointerConvertible, drawableYPtr: interop.PointerConvertible): void;
-
-declare function Tk_CanvasEventuallyRedraw(canvas: interop.PointerConvertible, x1: number, y1: number, x2: number, y2: number): void;
-
-declare function Tk_CanvasGetCoord(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, str: string, doublePtr: interop.PointerConvertible): number;
-
-declare function Tk_CanvasGetTextInfo(canvas: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CanvasPsBitmap(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, bitmap: number, x: number, y: number, width: number, height: number): number;
-
-declare function Tk_CanvasPsColor(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, colorPtr: interop.PointerConvertible): number;
-
-declare function Tk_CanvasPsFont(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, font: interop.PointerConvertible): number;
-
-declare function Tk_CanvasPsPath(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, coordPtr: interop.PointerConvertible, numPoints: number): void;
-
-declare function Tk_CanvasPsStipple(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, bitmap: number): number;
-
-declare function Tk_CanvasPsY(canvas: interop.PointerConvertible, y: number): number;
-
-declare function Tk_CanvasSetStippleOrigin(canvas: interop.PointerConvertible, gc: interop.PointerConvertible): void;
-
-declare function Tk_CanvasTagsParseProc(clientData: interop.PointerConvertible, interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, value: string, widgRec: string, offset: number): number;
-
-declare function Tk_CanvasTagsPrintProc(clientData: interop.PointerConvertible, tkwin: interop.PointerConvertible, widgRec: string, offset: number, freeProcPtr: interop.PointerConvertible): string;
-
-declare function Tk_CanvasTkwin(canvas: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CanvasWindowCoords(canvas: interop.PointerConvertible, x: number, y: number, screenXPtr: interop.PointerConvertible, screenYPtr: interop.PointerConvertible): void;
-
-declare function Tk_ChangeWindowAttributes(tkwin: interop.PointerConvertible, valueMask: number, attsPtr: interop.PointerConvertible): void;
-
-declare function Tk_CharBbox(layout: interop.PointerConvertible, index: number, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): number;
-
-declare function Tk_ClearSelection(tkwin: interop.PointerConvertible, selection: number): void;
-
-declare function Tk_ClipboardAppend(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, target: number, format: number, buffer: string): number;
-
-declare function Tk_ClipboardClear(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible): number;
-
-declare function Tk_ConfigureInfo(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, specs: interop.PointerConvertible, widgRec: string, argvName: string, flags: number): number;
-
-declare function Tk_ConfigureValue(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, specs: interop.PointerConvertible, widgRec: string, argvName: string, flags: number): number;
-
-declare function Tk_ConfigureWidget(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, specs: interop.PointerConvertible, argc: number, argv: interop.PointerConvertible, widgRec: string, flags: number): number;
-
-declare function Tk_ConfigureWindow(tkwin: interop.PointerConvertible, valueMask: number, valuePtr: interop.PointerConvertible): void;
-
-declare function Tk_ComputeTextLayout(font: interop.PointerConvertible, str: string, numChars: number, wrapLength: number, justify: interop.Enum<typeof Tk_Justify>, flags: number, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CoordsToWindow(rootX: number, rootY: number, tkwin: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CreateBinding(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible, eventStr: string, command: string, append: number): number;
-
-declare function Tk_CreateBindingTable(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CreateErrorHandler(display: interop.PointerConvertible, errNum: number, request: number, minorCode: number, errorProc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CreateEventHandler(token: interop.PointerConvertible, mask: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tk_CreateGenericHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): void;
-
-declare function Tk_CreateImageType(typePtr: interop.PointerConvertible): void;
-
-declare function Tk_CreateItemType(typePtr: interop.PointerConvertible): void;
-
-declare function Tk_CreatePhotoImageFormat(formatPtr: interop.PointerConvertible): void;
-
-declare function Tk_CreateSelHandler(tkwin: interop.PointerConvertible, selection: number, target: number, proc: (p1: interop.PointerConvertible, p2: number, p3: string, p4: number) => number, clientData: interop.PointerConvertible, format: number): void;
-
-declare function Tk_CreateWindow(interp: interop.PointerConvertible, parent: interop.PointerConvertible, name: string, screenName: string): interop.Pointer;
-
-declare function Tk_CreateWindowFromPath(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, pathName: string, screenName: string): interop.Pointer;
-
-declare function Tk_DefineBitmap(interp: interop.PointerConvertible, name: string, source: string, width: number, height: number): number;
-
-declare function Tk_DefineCursor(window: interop.PointerConvertible, cursor: interop.PointerConvertible): void;
-
-declare function Tk_DeleteAllBindings(bindingTable: interop.PointerConvertible, object: interop.PointerConvertible): void;
-
-declare function Tk_DeleteBinding(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible, eventStr: string): number;
-
-declare function Tk_DeleteBindingTable(bindingTable: interop.PointerConvertible): void;
-
-declare function Tk_DeleteErrorHandler(handler: interop.PointerConvertible): void;
-
-declare function Tk_DeleteEventHandler(token: interop.PointerConvertible, mask: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tk_DeleteGenericHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number, clientData: interop.PointerConvertible): void;
-
-declare function Tk_DeleteImage(interp: interop.PointerConvertible, name: string): void;
-
-declare function Tk_DeleteSelHandler(tkwin: interop.PointerConvertible, selection: number, target: number): void;
-
-declare function Tk_DestroyWindow(tkwin: interop.PointerConvertible): void;
-
-declare function Tk_DisplayName(tkwin: interop.PointerConvertible): string;
-
-declare function Tk_DistanceToTextLayout(layout: interop.PointerConvertible, x: number, y: number): number;
-
-declare function Tk_Draw3DPolygon(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, pointPtr: interop.PointerConvertible, numPoints: number, borderWidth: number, leftRelief: number): void;
-
-declare function Tk_Draw3DRectangle(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, borderWidth: number, relief: number): void;
-
-declare function Tk_DrawChars(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, tkfont: interop.PointerConvertible, source: string, numBytes: number, x: number, y: number): void;
-
-declare function Tk_DrawFocusHighlight(tkwin: interop.PointerConvertible, gc: interop.PointerConvertible, width: number, drawable: number): void;
-
-declare function Tk_DrawTextLayout(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, layout: interop.PointerConvertible, x: number, y: number, firstChar: number, lastChar: number): void;
-
-declare function Tk_Fill3DPolygon(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, pointPtr: interop.PointerConvertible, numPoints: number, borderWidth: number, leftRelief: number): void;
-
-declare function Tk_Fill3DRectangle(tkwin: interop.PointerConvertible, drawable: number, border: interop.PointerConvertible, x: number, y: number, width: number, height: number, borderWidth: number, relief: number): void;
-
-declare function Tk_FindPhoto(interp: interop.PointerConvertible, imageName: string): interop.Pointer;
-
-declare function Tk_FontId(font: interop.PointerConvertible): number;
-
-declare function Tk_Free3DBorder(border: interop.PointerConvertible): void;
-
-declare function Tk_FreeBitmap(display: interop.PointerConvertible, bitmap: number): void;
-
-declare function Tk_FreeColor(colorPtr: interop.PointerConvertible): void;
-
-declare function Tk_FreeColormap(display: interop.PointerConvertible, colormap: number): void;
-
-declare function Tk_FreeCursor(display: interop.PointerConvertible, cursor: interop.PointerConvertible): void;
-
-declare function Tk_FreeFont(f: interop.PointerConvertible): void;
-
-declare function Tk_FreeGC(display: interop.PointerConvertible, gc: interop.PointerConvertible): void;
-
-declare function Tk_FreeImage(image: interop.PointerConvertible): void;
-
-declare function Tk_FreeOptions(specs: interop.PointerConvertible, widgRec: string, display: interop.PointerConvertible, needFlags: number): void;
-
-declare function Tk_FreePixmap(display: interop.PointerConvertible, pixmap: number): void;
-
-declare function Tk_FreeTextLayout(textLayout: interop.PointerConvertible): void;
-
-declare function Tk_FreeXId(display: interop.PointerConvertible, xid: number): void;
-
-declare function Tk_GCForColor(colorPtr: interop.PointerConvertible, drawable: number): interop.Pointer;
-
-declare function Tk_GeometryRequest(tkwin: interop.PointerConvertible, reqWidth: number, reqHeight: number): void;
-
-declare function Tk_Get3DBorder(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, colorName: string): interop.Pointer;
-
-declare function Tk_GetAllBindings(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible): void;
-
-declare function Tk_GetAnchor(interp: interop.PointerConvertible, str: string, anchorPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetAtomName(tkwin: interop.PointerConvertible, atom: number): string;
-
-declare function Tk_GetBinding(interp: interop.PointerConvertible, bindingTable: interop.PointerConvertible, object: interop.PointerConvertible, eventStr: string): string;
-
-declare function Tk_GetBitmap(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): number;
-
-declare function Tk_GetBitmapFromData(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, source: string, width: number, height: number): number;
-
-declare function Tk_GetCapStyle(interp: interop.PointerConvertible, str: string, capPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetColor(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, name: string): interop.Pointer;
-
-declare function Tk_GetColorByValue(tkwin: interop.PointerConvertible, colorPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetColormap(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): number;
-
-declare function Tk_GetCursor(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): interop.Pointer;
-
-declare function Tk_GetCursorFromData(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, source: string, mask: string, width: number, height: number, xHot: number, yHot: number, fg: string, bg: string): interop.Pointer;
-
-declare function Tk_GetFont(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string): interop.Pointer;
-
-declare function Tk_GetFontFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetFontMetrics(font: interop.PointerConvertible, fmPtr: interop.PointerConvertible): void;
-
-declare function Tk_GetGC(tkwin: interop.PointerConvertible, valueMask: number, valuePtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetImage(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, name: string, changeProc: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number, p5: number, p6: number, p7: number) => void, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetImageMasterData(interp: interop.PointerConvertible, name: string, typePtrPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetItemTypes(): interop.Pointer;
-
-declare function Tk_GetJoinStyle(interp: interop.PointerConvertible, str: string, joinPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetJustify(interp: interop.PointerConvertible, str: string, justifyPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetNumMainWindows(): number;
-
-declare function Tk_GetOption(tkwin: interop.PointerConvertible, name: string, className: string): string;
-
-declare function Tk_GetPixels(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string, intPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetPixmap(display: interop.PointerConvertible, d: number, width: number, height: number, depth: number): number;
-
-declare function Tk_GetRelief(interp: interop.PointerConvertible, name: string, reliefPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetRootCoords(tkwin: interop.PointerConvertible, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible): void;
-
-declare function Tk_GetScrollInfo(interp: interop.PointerConvertible, argc: number, argv: interop.PointerConvertible, dblPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetScreenMM(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string, doublePtr: interop.PointerConvertible): number;
-
-declare function Tk_GetSelection(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, selection: number, target: number, proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: string) => number, clientData: interop.PointerConvertible): number;
-
-declare function Tk_GetUid(str: string): string;
-
-declare function Tk_GetVisual(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, str: string, depthPtr: interop.PointerConvertible, colormapPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetVRootGeometry(tkwin: interop.PointerConvertible, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
-
-declare function Tk_Grab(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, grabGlobal: number): number;
-
-declare function Tk_HandleEvent(eventPtr: interop.PointerConvertible): void;
-
-declare function Tk_IdToWindow(display: interop.PointerConvertible, window: number): interop.Pointer;
-
-declare function Tk_ImageChanged(master: interop.PointerConvertible, x: number, y: number, width: number, height: number, imageWidth: number, imageHeight: number): void;
-
-declare function Tk_Init(interp: interop.PointerConvertible): number;
-
-declare function Tk_InternAtom(tkwin: interop.PointerConvertible, name: string): number;
-
-declare function Tk_IntersectTextLayout(layout: interop.PointerConvertible, x: number, y: number, width: number, height: number): number;
-
-declare function Tk_MaintainGeometry(slave: interop.PointerConvertible, master: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
-
-declare function Tk_MainWindow(interp: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_MakeWindowExist(tkwin: interop.PointerConvertible): void;
-
-declare function Tk_ManageGeometry(tkwin: interop.PointerConvertible, mgrPtr: interop.PointerConvertible, clientData: interop.PointerConvertible): void;
-
-declare function Tk_MapWindow(tkwin: interop.PointerConvertible): void;
-
-declare function Tk_MeasureChars(tkfont: interop.PointerConvertible, source: string, numBytes: number, maxPixels: number, flags: number, lengthPtr: interop.PointerConvertible): number;
-
-declare function Tk_MoveResizeWindow(tkwin: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
-
-declare function Tk_MoveWindow(tkwin: interop.PointerConvertible, x: number, y: number): void;
-
-declare function Tk_MoveToplevelWindow(tkwin: interop.PointerConvertible, x: number, y: number): void;
-
-declare function Tk_NameOf3DBorder(border: interop.PointerConvertible): string;
-
-declare function Tk_NameOfAnchor(anchor: interop.Enum<typeof Tk_Anchor>): string;
-
-declare function Tk_NameOfBitmap(display: interop.PointerConvertible, bitmap: number): string;
-
-declare function Tk_NameOfCapStyle(cap: number): string;
-
-declare function Tk_NameOfColor(colorPtr: interop.PointerConvertible): string;
-
-declare function Tk_NameOfCursor(display: interop.PointerConvertible, cursor: interop.PointerConvertible): string;
-
-declare function Tk_NameOfFont(font: interop.PointerConvertible): string;
-
-declare function Tk_NameOfImage(imageMaster: interop.PointerConvertible): string;
-
-declare function Tk_NameOfJoinStyle(join: number): string;
-
-declare function Tk_NameOfJustify(justify: interop.Enum<typeof Tk_Justify>): string;
-
-declare function Tk_NameOfRelief(relief: number): string;
-
-declare function Tk_NameToWindow(interp: interop.PointerConvertible, pathName: string, tkwin: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_OwnSelection(tkwin: interop.PointerConvertible, selection: number, proc: (p1: interop.PointerConvertible) => void, clientData: interop.PointerConvertible): void;
-
-declare function Tk_ParseArgv(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, argcPtr: interop.PointerConvertible, argv: interop.PointerConvertible, argTable: interop.PointerConvertible, flags: number): number;
-
-declare function Tk_PhotoPutBlock_NoComposite(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
-
-declare function Tk_PhotoPutZoomedBlock_NoComposite(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, zoomX: number, zoomY: number, subsampleX: number, subsampleY: number): void;
-
-declare function Tk_PhotoGetImage(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible): number;
-
-declare function Tk_PhotoBlank(handle: interop.PointerConvertible): void;
-
-declare function Tk_PhotoExpand_Panic(handle: interop.PointerConvertible, width: number, height: number): void;
-
-declare function Tk_PhotoGetSize(handle: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
-
-declare function Tk_PhotoSetSize_Panic(handle: interop.PointerConvertible, width: number, height: number): void;
-
-declare function Tk_PointToChar(layout: interop.PointerConvertible, x: number, y: number): number;
-
-declare function Tk_PostscriptFontName(tkfont: interop.PointerConvertible, dsPtr: interop.PointerConvertible): number;
-
-declare function Tk_PreserveColormap(display: interop.PointerConvertible, colormap: number): void;
-
-declare function Tk_QueueWindowEvent(eventPtr: interop.PointerConvertible, position: interop.Enum<typeof Tcl_QueuePosition>): void;
-
-declare function Tk_RedrawImage(image: interop.PointerConvertible, imageX: number, imageY: number, width: number, height: number, drawable: number, drawableX: number, drawableY: number): void;
-
-declare function Tk_ResizeWindow(tkwin: interop.PointerConvertible, width: number, height: number): void;
-
-declare function Tk_RestackWindow(tkwin: interop.PointerConvertible, aboveBelow: number, other: interop.PointerConvertible): number;
-
-declare function Tk_RestrictEvents(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction>, arg: interop.PointerConvertible, prevArgPtr: interop.PointerConvertible): (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => interop.Enum<typeof Tk_RestrictAction>;
-
-declare function Tk_SafeInit(interp: interop.PointerConvertible): number;
-
-declare function Tk_SetAppName(tkwin: interop.PointerConvertible, name: string): string;
-
-declare function Tk_SetBackgroundFromBorder(tkwin: interop.PointerConvertible, border: interop.PointerConvertible): void;
-
-declare function Tk_SetClass(tkwin: interop.PointerConvertible, className: string): void;
-
-declare function Tk_SetGrid(tkwin: interop.PointerConvertible, reqWidth: number, reqHeight: number, gridWidth: number, gridHeight: number): void;
-
-declare function Tk_SetInternalBorder(tkwin: interop.PointerConvertible, width: number): void;
-
-declare function Tk_SetWindowBackground(tkwin: interop.PointerConvertible, pixel: number): void;
-
-declare function Tk_SetWindowBackgroundPixmap(tkwin: interop.PointerConvertible, pixmap: number): void;
-
-declare function Tk_SetWindowBorder(tkwin: interop.PointerConvertible, pixel: number): void;
-
-declare function Tk_SetWindowBorderWidth(tkwin: interop.PointerConvertible, width: number): void;
-
-declare function Tk_SetWindowBorderPixmap(tkwin: interop.PointerConvertible, pixmap: number): void;
-
-declare function Tk_SetWindowColormap(tkwin: interop.PointerConvertible, colormap: number): void;
-
-declare function Tk_SetWindowVisual(tkwin: interop.PointerConvertible, visual: interop.PointerConvertible, depth: number, colormap: number): number;
-
-declare function Tk_SizeOfBitmap(display: interop.PointerConvertible, bitmap: number, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
-
-declare function Tk_SizeOfImage(image: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
-
-declare function Tk_StrictMotif(tkwin: interop.PointerConvertible): number;
-
-declare function Tk_TextLayoutToPostscript(interp: interop.PointerConvertible, layout: interop.PointerConvertible): void;
-
-declare function Tk_TextWidth(font: interop.PointerConvertible, str: string, numBytes: number): number;
-
-declare function Tk_UndefineCursor(window: interop.PointerConvertible): void;
-
-declare function Tk_UnderlineChars(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, tkfont: interop.PointerConvertible, source: string, x: number, y: number, firstByte: number, lastByte: number): void;
-
-declare function Tk_UnderlineTextLayout(display: interop.PointerConvertible, drawable: number, gc: interop.PointerConvertible, layout: interop.PointerConvertible, x: number, y: number, underline: number): void;
-
-declare function Tk_Ungrab(tkwin: interop.PointerConvertible): void;
-
-declare function Tk_UnmaintainGeometry(slave: interop.PointerConvertible, master: interop.PointerConvertible): void;
-
-declare function Tk_UnmapWindow(tkwin: interop.PointerConvertible): void;
-
-declare function Tk_UnsetGrid(tkwin: interop.PointerConvertible): void;
-
-declare function Tk_UpdatePointer(tkwin: interop.PointerConvertible, x: number, y: number, state: number): void;
-
-declare function Tk_AllocBitmapFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tk_Alloc3DBorderFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_AllocColorFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_AllocCursorFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_AllocFontFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CreateOptionTable(interp: interop.PointerConvertible, templatePtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_DeleteOptionTable(optionTable: interop.PointerConvertible): void;
-
-declare function Tk_Free3DBorderFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tk_FreeBitmapFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tk_FreeColorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tk_FreeConfigOptions(recordPtr: string, optionToken: interop.PointerConvertible, tkwin: interop.PointerConvertible): void;
-
-declare function Tk_FreeSavedOptions(savePtr: interop.PointerConvertible): void;
-
-declare function Tk_FreeCursorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tk_FreeFontFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): void;
-
-declare function Tk_Get3DBorderFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetAnchorFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, anchorPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetBitmapFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetColorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetCursorFromObj(tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetOptionInfo(interp: interop.PointerConvertible, recordPtr: string, optionTable: interop.PointerConvertible, namePtr: interop.PointerConvertible, tkwin: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetOptionValue(interp: interop.PointerConvertible, recordPtr: string, optionTable: interop.PointerConvertible, namePtr: interop.PointerConvertible, tkwin: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetJustifyFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, justifyPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetMMFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible, doublePtr: interop.PointerConvertible): number;
-
-declare function Tk_GetPixelsFromObj(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, objPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetReliefFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible, resultPtr: interop.PointerConvertible): number;
-
-declare function Tk_GetScrollInfoObj(interp: interop.PointerConvertible, objc: number, objv: interop.Pointer, dblPtr: interop.PointerConvertible, intPtr: interop.PointerConvertible): number;
-
-declare function Tk_InitOptions(interp: interop.PointerConvertible, recordPtr: string, optionToken: interop.PointerConvertible, tkwin: interop.PointerConvertible): number;
-
-declare function Tk_MainEx(argc: number, argv: interop.PointerConvertible, appInitProc: (p1: interop.PointerConvertible) => number, interp: interop.PointerConvertible): void;
-
-declare function Tk_RestoreSavedOptions(savePtr: interop.PointerConvertible): void;
-
-declare function Tk_SetOptions(interp: interop.PointerConvertible, recordPtr: string, optionTable: interop.PointerConvertible, objc: number, objv: interop.Pointer, tkwin: interop.PointerConvertible, savePtr: interop.PointerConvertible, maskPtr: interop.PointerConvertible): number;
-
-declare function Tk_InitConsoleChannels(interp: interop.PointerConvertible): void;
-
-declare function Tk_CreateConsoleWindow(interp: interop.PointerConvertible): number;
-
-declare function Tk_CreateSmoothMethod(interp: interop.PointerConvertible, method: interop.PointerConvertible): void;
-
-declare function Tk_GetDash(interp: interop.PointerConvertible, value: string, dash: interop.PointerConvertible): number;
-
-declare function Tk_CreateOutline(outline: interop.PointerConvertible): void;
-
-declare function Tk_DeleteOutline(display: interop.PointerConvertible, outline: interop.PointerConvertible): void;
-
-declare function Tk_ConfigOutlineGC(gcValues: interop.PointerConvertible, canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
-
-declare function Tk_ChangeOutlineGC(canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
-
-declare function Tk_ResetOutlineGC(canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
-
-declare function Tk_CanvasPsOutline(canvas: interop.PointerConvertible, item: interop.PointerConvertible, outline: interop.PointerConvertible): number;
-
-declare function Tk_SetTSOrigin(tkwin: interop.PointerConvertible, gc: interop.PointerConvertible, x: number, y: number): void;
-
-declare function Tk_CanvasGetCoordFromObj(interp: interop.PointerConvertible, canvas: interop.PointerConvertible, obj: interop.PointerConvertible, doublePtr: interop.PointerConvertible): number;
-
-declare function Tk_CanvasSetOffset(canvas: interop.PointerConvertible, gc: interop.PointerConvertible, offset: interop.PointerConvertible): void;
-
-declare function Tk_DitherPhoto(handle: interop.PointerConvertible, x: number, y: number, width: number, height: number): void;
-
-declare function Tk_PostscriptBitmap(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, psInfo: interop.PointerConvertible, bitmap: number, startX: number, startY: number, width: number, height: number): number;
-
-declare function Tk_PostscriptColor(interp: interop.PointerConvertible, psInfo: interop.PointerConvertible, colorPtr: interop.PointerConvertible): number;
-
-declare function Tk_PostscriptFont(interp: interop.PointerConvertible, psInfo: interop.PointerConvertible, font: interop.PointerConvertible): number;
-
-declare function Tk_PostscriptImage(image: interop.PointerConvertible, interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, psinfo: interop.PointerConvertible, x: number, y: number, width: number, height: number, prepass: number): number;
-
-declare function Tk_PostscriptPath(interp: interop.PointerConvertible, psInfo: interop.PointerConvertible, coordPtr: interop.PointerConvertible, numPoints: number): void;
-
-declare function Tk_PostscriptStipple(interp: interop.PointerConvertible, tkwin: interop.PointerConvertible, psInfo: interop.PointerConvertible, bitmap: number): number;
-
-declare function Tk_PostscriptY(y: number, psInfo: interop.PointerConvertible): number;
-
-declare function Tk_PostscriptPhoto(interp: interop.PointerConvertible, blockPtr: interop.PointerConvertible, psInfo: interop.PointerConvertible, width: number, height: number): number;
-
-declare function Tk_CreateClientMessageHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): void;
-
-declare function Tk_DeleteClientMessageHandler(proc: (p1: interop.PointerConvertible, p2: interop.PointerConvertible) => number): void;
-
-declare function Tk_CreateAnonymousWindow(interp: interop.PointerConvertible, parent: interop.PointerConvertible, screenName: string): interop.Pointer;
-
-declare function Tk_SetClassProcs(tkwin: interop.PointerConvertible, procs: interop.PointerConvertible, instanceData: interop.PointerConvertible): void;
-
-declare function Tk_SetInternalBorderEx(tkwin: interop.PointerConvertible, left: number, right: number, top: number, bottom: number): void;
-
-declare function Tk_SetMinimumRequestSize(tkwin: interop.PointerConvertible, minWidth: number, minHeight: number): void;
-
-declare function Tk_SetCaretPos(tkwin: interop.PointerConvertible, x: number, y: number, height: number): void;
-
-declare function Tk_PhotoPutBlock_Panic(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, compRule: number): void;
-
-declare function Tk_PhotoPutZoomedBlock_Panic(handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, zoomX: number, zoomY: number, subsampleX: number, subsampleY: number, compRule: number): void;
-
-declare function Tk_CollapseMotionEvents(display: interop.PointerConvertible, collapse: number): number;
-
-declare function Tk_RegisterStyleEngine(name: string, parent: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetStyleEngine(name: string): interop.Pointer;
-
-declare function Tk_RegisterStyledElement(engine: interop.PointerConvertible, templatePtr: interop.PointerConvertible): number;
-
-declare function Tk_GetElementId(name: string): number;
-
-declare function Tk_CreateStyle(name: string, engine: interop.PointerConvertible, clientData: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetStyle(interp: interop.PointerConvertible, name: string): interop.Pointer;
-
-declare function Tk_FreeStyle(style: interop.PointerConvertible): void;
-
-declare function Tk_NameOfStyle(style: interop.PointerConvertible): string;
-
-declare function Tk_AllocStyleFromObj(interp: interop.PointerConvertible, objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetStyleFromObj(objPtr: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_FreeStyleFromObj(objPtr: interop.PointerConvertible): void;
-
-declare function Tk_GetStyledElement(style: interop.PointerConvertible, elementId: number, optionTable: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_GetElementSize(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible, width: number, height: number, inner: number, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
-
-declare function Tk_GetElementBox(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible, x: number, y: number, width: number, height: number, inner: number, xPtr: interop.PointerConvertible, yPtr: interop.PointerConvertible, widthPtr: interop.PointerConvertible, heightPtr: interop.PointerConvertible): void;
-
-declare function Tk_GetElementBorderWidth(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible): number;
-
-declare function Tk_DrawElement(style: interop.PointerConvertible, element: interop.PointerConvertible, recordPtr: string, tkwin: interop.PointerConvertible, d: number, x: number, y: number, width: number, height: number, state: number): void;
-
-declare function Tk_PhotoExpand(interp: interop.PointerConvertible, handle: interop.PointerConvertible, width: number, height: number): number;
-
-declare function Tk_PhotoPutBlock(interp: interop.PointerConvertible, handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, compRule: number): number;
-
-declare function Tk_PhotoPutZoomedBlock(interp: interop.PointerConvertible, handle: interop.PointerConvertible, blockPtr: interop.PointerConvertible, x: number, y: number, width: number, height: number, zoomX: number, zoomY: number, subsampleX: number, subsampleY: number, compRule: number): number;
-
-declare function Tk_PhotoSetSize(interp: interop.PointerConvertible, handle: interop.PointerConvertible, width: number, height: number): number;
-
-declare function Tk_GetUserInactiveTime(dpy: interop.PointerConvertible): number;
-
-declare function Tk_ResetUserInactiveTime(dpy: interop.PointerConvertible): void;
-
-declare function Tk_Interp(tkwin: interop.PointerConvertible): interop.Pointer;
-
-declare function Tk_CreateOldImageType(typePtr: interop.PointerConvertible): void;
-
-declare function Tk_CreateOldPhotoImageFormat(formatPtr: interop.PointerConvertible): void;
 
 declare function __map_with_linking_np(regions: interop.Pointer, regionCount: number, blob: interop.PointerConvertible, blobSize: number): number;
 

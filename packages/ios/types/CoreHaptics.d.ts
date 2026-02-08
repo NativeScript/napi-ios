@@ -45,6 +45,8 @@ declare const CHHapticEventParameterIDAudioPitch: string;
 
 declare const CHHapticEventParameterIDReleaseTime: string;
 
+declare const CHHapticEventParameterIDDecayTime: string;
+
 declare const CHHapticEventParameterIDHapticIntensity: string;
 
 declare const CHHapticPatternKeyEventWaveformPath: string;
@@ -73,13 +75,11 @@ declare const CHHapticEventParameterIDHapticSharpness: string;
 
 declare const CHHapticDynamicParameterIDHapticDecayTimeControl: string;
 
-declare const CHHapticEventParameterIDDecayTime: string;
-
-declare const CHHapticPatternKeyTime: string;
-
 declare const CHHapticPatternKeyPattern: string;
 
 declare const CHHapticPatternKeyEventType: string;
+
+declare const CHHapticPatternKeyTime: string;
 
 declare const CHHapticDynamicParameterIDHapticReleaseTimeControl: string;
 

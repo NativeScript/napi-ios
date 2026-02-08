@@ -259,6 +259,10 @@ declare class __GLISharedRec {
   constructor(init?: __GLISharedRec);
 }
 
+declare class _cl_device_id {
+  constructor(init?: _cl_device_id);
+}
+
 declare class _CGLPixelFormatObject {
   constructor(init?: _CGLPixelFormatObject);
 }
@@ -1244,10 +1248,6 @@ declare class __GLIFunctionDispatchRec {
   label_object_with_responsible_process_APPLE: (p1: interop.PointerConvertible, p2: number, p3: number, p4: number) => void | null;
   texture_barrier_NV: (p1: interop.PointerConvertible) => void | null;
   multi_draw_elements_indirect_APPLE: (p1: interop.PointerConvertible, p2: number, p3: number, p4: interop.PointerConvertible, p5: number, p6: number) => void | null;
-}
-
-declare class _cl_device_id {
-  constructor(init?: _cl_device_id);
 }
 
 declare function CGLSetCurrentContext(ctx: interop.PointerConvertible): interop.Enum<typeof _CGLError>;

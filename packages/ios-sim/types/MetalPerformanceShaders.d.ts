@@ -514,8 +514,8 @@ declare class _MPSAxisAlignedBoundingBox {
   max: unknown /* ext vector */;
 }
 
-declare class unnamed_9924866530280295498 {
-  constructor(init?: unnamed_9924866530280295498);
+declare class unnamed_16827545248055569414 {
+  constructor(init?: unnamed_16827545248055569414);
   x: number;
   y: number;
   z: number;
@@ -713,11 +713,11 @@ declare class MPSIntegerDivisionParams {
   shift: number;
 }
 
-type unnamed_9666187149302401476Descriptor = 
+type unnamed_2406924505412476860Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_9666187149302401476 {
-  constructor(init?: unnamed_9666187149302401476Descriptor);
+declare class unnamed_2406924505412476860 {
+  constructor(init?: unnamed_2406924505412476860Descriptor);
   elements: unknown /* const array */;
 }
 
@@ -2077,9 +2077,6 @@ declare class MPSCNNDilatedPoolingMaxNode extends MPSNNFilterNode {
   initWithSourceFilterSizeStrideDilationRate(sourceNode: MPSNNImageNode, size: number, stride: number, dilationRate: number): this;
 
   initWithSourceFilterSize(sourceNode: MPSNNImageNode, size: number): this;
-}
-
-declare class MPSCNNPoolingAverageNode extends MPSCNNPoolingNode {
 }
 
 declare class MPSCNNPoolingNode extends MPSNNFilterNode {
@@ -5075,6 +5072,9 @@ declare class MPSImageConversion extends MPSUnaryImageKernel {
   initWithDeviceSrcAlphaDestAlphaBackgroundColorConversionInfo(device: MTLDevice, srcAlpha: interop.Enum<typeof MPSAlphaType>, destAlpha: interop.Enum<typeof MPSAlphaType>, backgroundColor: interop.PointerConvertible, conversionInfo: interop.PointerConvertible): this;
 }
 
+declare class MPSCNNPoolingAverageNode extends MPSCNNPoolingNode {
+}
+
 declare class MPSNNReduceRowMean extends MPSNNReduceUnary {
   initWithDevice(device: MTLDevice): this;
 
@@ -6354,6 +6354,9 @@ declare class MPSNNConcatenationGradientNode extends MPSNNGradientFilterNode {
   initWithSourceGradientSourceImageGradientState(gradientSourceNode: MPSNNImageNode, sourceImage: MPSNNImageNode, gradientState: MPSNNGradientStateNode): this;
 }
 
+declare class MPSCNNConvolutionTransposeGradientStateNode extends MPSCNNConvolutionGradientStateNode {
+}
+
 declare class MPSCNNBatchNormalizationGradientNode extends MPSNNGradientFilterNode implements MPSNNTrainableNode {
   static nodeWithSourceGradientSourceImageGradientState<This extends abstract new (...args: any) => any>(this: This, sourceGradient: MPSNNImageNode, sourceImage: MPSNNImageNode, gradientState: MPSNNGradientStateNode): InstanceType<This>;
 
@@ -6709,9 +6712,6 @@ declare class MPSKeyedUnarchiver extends NSKeyedUnarchiver implements MPSDeviceP
   initWithDevice(device: MTLDevice): this;
 
   initForReadingWithDataDevice(data: NSData, device: MTLDevice): this;
-}
-
-declare class MPSCNNConvolutionTransposeGradientStateNode extends MPSCNNConvolutionGradientStateNode {
 }
 
 declare class MPSMatrixBatchNormalization extends MPSMatrixUnaryKernel {
