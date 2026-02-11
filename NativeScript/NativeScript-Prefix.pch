@@ -1,0 +1,6 @@
+#ifndef NativeScript_Prefix_pch
+#define NativeScript_Prefix_pch
+
+#define NATIVESCRIPT_VERSION "9.0.0-napi-v8.0"
+
+#endif /* NativeScript_Prefix_pch */

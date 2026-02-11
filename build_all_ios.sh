@@ -26,11 +26,14 @@ for arg in $@; do
 done
 
 rm -rf ./dist
+
 # don't run if NO_UPDATE_VERSION is set
-# if [ -z "$NO_UPDATE_VERSION" ]; then
-  # TODO: integrate version into runtime
-  # ./update_version.sh
-# fi
+if [ -z "$NO_UPDATE_VERSION" ]; then
+  FULL_VERSION=$(jq -r .version package.json)
+  sed -i.bak "s/#define[[:space:]]*NATIVESCRIPT_VERSION[[:space:]]*\"\(.*\)\"/#define NATIVESCRIPT_VERSION \"$FULL_VERSION\"/g" NativeScript/NativeScript-Prefix.pch
+  rm NativeScript/NativeScript-Prefix.pch.bak
+fi
+
 ./build_metadata_generator.sh
 
 if $EMBED_METADATA; then

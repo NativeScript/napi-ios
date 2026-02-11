@@ -35,7 +35,13 @@ def map_and_list(func, iterable):
 
 
 # process environment variables
-effective_platform_name = env("EFFECTIVE_PLATFORM_NAME")
+# Xcode may omit EFFECTIVE_PLATFORM_NAME for some macOS builds.
+# Fall back to PLATFORM_NAME to preserve behavior across targets.
+effective_platform_name = env_or_empty("EFFECTIVE_PLATFORM_NAME")
+if not effective_platform_name:
+    platform_name = env_or_empty("PLATFORM_NAME")
+    if platform_name:
+        effective_platform_name = "-{}".format(platform_name)
 docset_platform = "iOS"
 default_deployment_target_flag_name = "-mios-simulator-version-min"
 default_deployment_target_clang_env_name = "IPHONEOS_DEPLOYMENT_TARGET"
@@ -76,7 +82,16 @@ elif effective_platform_name == "-iphoneos":
 
 sdk_version = env("SDK_VERSION") or "13.0"
 llvm_target_triple_suffix = env_or_empty("LLVM_TARGET_TRIPLE_SUFFIX")
-llvm_target_triple_os_version = "ios{}".format(sdk_version)
+llvm_target_triple_os_name = "ios"
+if effective_platform_name == "-macosx":
+    llvm_target_triple_os_name = "macosx"
+elif effective_platform_name == "-xrsimulator" or effective_platform_name == "-xros":
+    llvm_target_triple_os_name = "xros"
+elif effective_platform_name == "-watchos" or effective_platform_name == "-watchsimulator":
+    llvm_target_triple_os_name = "watchos"
+elif effective_platform_name == "-appletvos" or effective_platform_name == "-appletvsimulator":
+    llvm_target_triple_os_name = "tvos"
+llvm_target_triple_os_version = "{}{}".format(llvm_target_triple_os_name, sdk_version)
 # env("LLVM_TARGET_TRIPLE_OS_VERSION") is the deployment target, so doesn't have all APIs
 # usually it's ios9.0 for NativeScript projects
 llvm_target_triple_vendor = env("LLVM_TARGET_TRIPLE_VENDOR") or "apple"
@@ -85,7 +100,7 @@ conf_build_dir = env("CONFIGURATION_BUILD_DIR")
 sdk_root = env("SDKROOT")
 src_root = env("SRCROOT")
 deployment_target_flag_name = env_or_empty("DEPLOYMENT_TARGET_CLANG_FLAG_NAME") or default_deployment_target_flag_name
-deployment_target = env(env_or_empty("DEPLOYMENT_TARGET_CLANG_ENV_NAME") or default_deployment_target_clang_env_name)
+deployment_target = env_or_empty(env_or_empty("DEPLOYMENT_TARGET_CLANG_ENV_NAME") or default_deployment_target_clang_env_name) or sdk_version
 std = env("GCC_C_LANGUAGE_STANDARD")
 header_search_paths = env_or_empty("HEADER_SEARCH_PATHS")
 header_search_paths_parsed = map_and_list((lambda s: "-I" + s), shlex.split(header_search_paths))

@@ -1,12 +1,16 @@
-if (typeof interop === "undefined") {
+const isNativeScriptRuntime =
+  typeof globalThis.interop !== "undefined" ||
+  typeof globalThis.NSObject !== "undefined";
+
+if (!isNativeScriptRuntime) {
   // deno-lint-ignore no-process-globals
-  if (process) {
+  if (typeof process !== "undefined" && typeof process.dlopen === "function") {
     // ===
     // If we're in a Node-like environment (e.g. Node.js, Deno, or Bun)
     // ===
 
     const path =
-      "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64_x86_64/NativeScript.framework/Versions/0.1.0/NativeScript";
+      "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64_x86_64/NativeScript.framework/Versions/A/NativeScript";
 
     let metaURL = import.meta.url;
     if (!metaURL.includes("://")) {
@@ -22,7 +26,7 @@ if (typeof interop === "undefined") {
       // deno-lint-ignore no-process-globals
       process.env.METADATA_PATH
     );
-  } else {
+  } else if (typeof require !== "undefined") {
     // ===
     // If we're in a React Native-like environment
     // ===

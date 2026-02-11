@@ -292,10 +292,17 @@ target_sources(
   "NativeScript.h"
 )
 
+set(FRAMEWORK_VERSION_VALUE "${VERSION}")
+if(TARGET_PLATFORM_MACOS)
+  # macOS framework consumers (including Xcode's copy/sign phases) expect
+  # the canonical Versions/A layout instead of semantic versioned directories.
+  set(FRAMEWORK_VERSION_VALUE "A")
+endif()
+
 set_target_properties(${NAME} PROPERTIES
   VERSION ${VERSION}
   SOVERSION ${VERSION}
-  FRAMEWORK_VERSION ${VERSION}
+  FRAMEWORK_VERSION ${FRAMEWORK_VERSION_VALUE}
   MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION}
   MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
   MACOSX_FRAMEWORK_IDENTIFIER ${BUNDLE_IDENTIFIER}

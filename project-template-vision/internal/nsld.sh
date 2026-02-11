@@ -59,4 +59,11 @@ printf "Generating metadata..."
 GEN_METADATA $TARGET_ARCH
 DELETE_SWIFT_MODULES_DIR
 NS_LD="${NS_LD:-"$TOOLCHAIN_DIR/usr/bin/clang"}"
+if [ ! -x "$NS_LD" ]; then
+    NS_LD="$(xcrun --find clang 2>/dev/null || command -v clang)"
+fi
+if [ ! -x "$NS_LD" ]; then
+    echo "NSLD: Unable to locate clang linker driver."
+    exit 1
+fi
 $NS_LD "$@"

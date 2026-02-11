@@ -7,6 +7,7 @@ BUILD_IPHONE=$(to_bool ${BUILD_IPHONE:=true})
 BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
 BUILD_VISION=$(to_bool ${BUILD_VISION:=true})
 VERBOSE=$(to_bool ${VERBOSE:=false})
+BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false})
 
 for arg in $@; do
   case $arg in
@@ -18,6 +19,8 @@ for arg in $@; do
     --no-iphone|--no-device) BUILD_IPHONE=false ;;
     --xr|--vision) BUILD_VISION=true ;;
     --no-xr|--no-vision) BUILD_VISION=false ;;
+    --macos) BUILD_MACOS=true ;;
+    --no-macos) BUILD_MACOS=false ;;
     --verbose|-v) VERBOSE=true ;;
     *) ;;
   esac
@@ -27,13 +30,6 @@ DIST=$(PWD)/dist
 mkdir -p $DIST
 
 mkdir -p $DIST/intermediates
-
-#cleanup
-checkpoint "Cleanup TKLiveSync"
-xcodebuild -project v8ios.xcodeproj \
-           -target TKLiveSync \
-           -configuration Release clean \
-           -quiet
 
 if $BUILD_SIMULATOR; then
 # generates library for simulator targets (usually includes arm64, x86_64)
@@ -72,6 +68,19 @@ xcodebuild archive -project v8ios.xcodeproj \
                    SKIP_INSTALL=NO \
                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
                    -archivePath $DIST/intermediates/TKLiveSync.maccatalyst.xcarchive
+fi
+
+if $BUILD_MACOS; then
+#generates library for Mac OS target
+checkpoint "Building TKLiveSync for Mac OS"
+xcodebuild archive -project v8ios.xcodeproj \
+                   -scheme TKLiveSync \
+                   -configuration Release \
+                   -destination "generic/platform=macOS" \
+                   -quiet \
+                   SKIP_INSTALL=NO \
+                   BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                   -archivePath $DIST/intermediates/TKLiveSync.macos.xcarchive
 fi
 
 if $BUILD_VISION; then
@@ -131,6 +140,11 @@ fi
 if $BUILD_IPHONE; then
   XCFRAMEWORKS+=( -framework "$DIST/intermediates/TKLiveSync.iphoneos.xcarchive/Products/Library/Frameworks/TKLiveSync.framework" \
                   -debug-symbols "$DIST/intermediates/TKLiveSync.iphoneos.xcarchive/dSYMs/TKLiveSync.framework.dSYM" )
+fi
+
+if $BUILD_MACOS; then
+  XCFRAMEWORKS+=( -framework "$DIST/intermediates/TKLiveSync.macos.xcarchive/Products/Library/Frameworks/TKLiveSync.framework" \
+                  -debug-symbols "$DIST/intermediates/TKLiveSync.macos.xcarchive/dSYMs/TKLiveSync.framework.dSYM" )
 fi
 
 if $BUILD_VISION; then
