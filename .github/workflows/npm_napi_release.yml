@@ -40,6 +40,10 @@ jobs:
         run: |
           npm install
           python3 -m pip install --upgrade pip six
+          # Ensure LLVM linker used by -fuse-ld=lld is available
+          if ! command -v ld64.lld >/dev/null; then
+            brew list lld || brew install lld
+          fi
           # Ensure CMake is available without conflicting with pinned Homebrew formula
           if ! command -v cmake >/dev/null; then
             brew list cmake || brew install cmake
@@ -101,6 +105,10 @@ jobs:
         run: |
           npm install
           python3 -m pip install --upgrade pip six
+          # Ensure LLVM linker used by -fuse-ld=lld is available
+          if ! command -v ld64.lld >/dev/null; then
+            brew list lld || brew install lld
+          fi
           # Ensure CMake is available without conflicting with pinned Homebrew formula
           if ! command -v cmake >/dev/null; then
             brew list cmake || brew install cmake
