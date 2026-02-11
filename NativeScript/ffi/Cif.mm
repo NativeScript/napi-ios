@@ -7,6 +7,7 @@
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
+#include <cstring>
 
 namespace nativescript {
 
@@ -68,13 +69,13 @@ Cif::Cif(napi_env env, std::string encoding) {
   this->argc = (int)numberOfArguments - 2;
   this->argv = (napi_value*)malloc(sizeof(napi_value) * this->argc);
 
-  unsigned int argc = (unsigned int)numberOfArguments;
+  unsigned int totalArgc = (unsigned int)numberOfArguments;
 
   const char* returnType = signature.methodReturnType;
   this->returnType = TypeConv::Make(env, &returnType);
 
   ffi_type* rtype = this->returnType->type;
-  ffi_type** atypes = (ffi_type**)malloc(sizeof(ffi_type*) * argc);
+  this->atypes = (ffi_type**)malloc(sizeof(ffi_type*) * totalArgc);
 
   unsigned long methodReturnLength = signature.methodReturnLength;
   unsigned long frameLength = signature.frameLength;
@@ -83,16 +84,19 @@ Cif::Cif(napi_env env, std::string encoding) {
   this->rvalueLength = methodReturnLength;
   this->frameLength = frameLength;
 
-  this->avalues = (void**)malloc(sizeof(void*) * argc);
+  this->avalues = (void**)malloc(sizeof(void*) * totalArgc);
+  memset(this->avalues, 0, sizeof(void*) * totalArgc);
   this->shouldFree = (bool*)malloc(sizeof(bool) * this->argc);
   memset(this->shouldFree, false, sizeof(bool) * this->argc);
   this->shouldFreeAny = false;
+  this->avaluesAllocStart = 2;
+  this->avaluesAllocCount = 0;
 
   for (int i = 0; i < numberOfArguments; i++) {
     const char* argenc = [signature getArgumentTypeAtIndex:i];
 
     auto argTypeInfo = TypeConv::Make(env, &argenc);
-    atypes[i] = argTypeInfo->type;
+    this->atypes[i] = argTypeInfo->type;
 
     if (i >= 2) {
       this->argTypes.push_back(argTypeInfo);
@@ -101,15 +105,16 @@ Cif::Cif(napi_env env, std::string encoding) {
 
   [signature release];
 
-  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argc, rtype, atypes);
-
-  for (int i = 2; i < argc; i++) {
-    this->avalues[i] = malloc(cif.arg_types[i]->size);
-  }
+  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, totalArgc, rtype, this->atypes);
 
   if (status != FFI_OK) {
     std::cout << "Failed to prepare CIF, libffi returned error:" << status << std::endl;
     return;
+  }
+
+  for (unsigned int i = 2; i < totalArgc; i++) {
+    this->avalues[i] = malloc(cif.arg_types[i]->size);
+    this->avaluesAllocCount++;
   }
 }
 
@@ -121,11 +126,12 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
 
   returnType = TypeConv::Make(env, reader, &offset);
 
-  ffi_type** atypes = nullptr;
-
   auto implicitArgs = isMethod ? 2 : isBlock ? 1 : 0;
 
   shouldFreeAny = false;
+  atypes = nullptr;
+  avaluesAllocStart = 0;
+  avaluesAllocCount = 0;
 
   if (next || isMethod || isBlock) {
     while (next) {
@@ -146,6 +152,7 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
 
     atypes = (ffi_type**)malloc(sizeof(ffi_type*) * totalArgc);
     avalues = (void**)malloc(sizeof(void*) * argc);
+    memset(avalues, 0, sizeof(void*) * argc);
 
     if (isMethod) {
       atypes[0] = &ffi_type_pointer;
@@ -177,6 +184,7 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
 
   for (int i = 0; i < argc; i++) {
     avalues[i] = malloc(cif.arg_types[i + implicitArgs]->size);
+    avaluesAllocCount++;
   }
 
   rvalue = malloc(cif.rtype->size);
@@ -191,7 +199,16 @@ Cif::~Cif() {
     free(argv);
   }
   if (avalues != nullptr) {
+    for (unsigned int i = 0; i < avaluesAllocCount; i++) {
+      auto index = avaluesAllocStart + i;
+      if (avalues[index] != nullptr) {
+        free(avalues[index]);
+      }
+    }
     free(avalues);
+  }
+  if (atypes != nullptr) {
+    free(atypes);
   }
   if (shouldFree != nullptr) {
     free(shouldFree);

@@ -60,7 +60,9 @@ class Reference {
   ~Reference();
 
   // data = nullptr means the reference is not initialized.
+  napi_env env = nullptr;
   void* data = nullptr;
+  bool ownsData = false;
   std::shared_ptr<TypeConv> type = nullptr;
   napi_ref initValue = nullptr;
 };

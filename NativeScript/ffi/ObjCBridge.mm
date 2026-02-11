@@ -113,11 +113,6 @@ ObjCBridgeState::~ObjCBridgeState() {
   }
   mdBlockSignatureCache.clear();
 
-  for (auto& pair : mdFunctionSignatureCache) {
-    delete pair.second;
-  }
-  mdFunctionSignatureCache.clear();
-
   // Clean up ObjCClass objects
   for (auto& pair : classes) {
     delete pair.second;
@@ -141,6 +136,11 @@ ObjCBridgeState::~ObjCBridgeState() {
     delete pair.second;
   }
   cFunctionCache.clear();
+
+  for (auto& pair : mdFunctionSignatureCache) {
+    delete pair.second;
+  }
+  mdFunctionSignatureCache.clear();
 
   // if (objc_autoreleasePool != nullptr)
   //   objc_autoreleasePoolPop(objc_autoreleasePool);

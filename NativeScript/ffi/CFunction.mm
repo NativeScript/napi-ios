@@ -125,10 +125,6 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   return cif->returnType->toJS(env, rvalue);
 }
 
-CFunction::~CFunction() {
-  if (cif != nullptr) {
-    delete cif;
-  }
-}
+CFunction::~CFunction() { cif = nullptr; }
 
 }  // namespace nativescript

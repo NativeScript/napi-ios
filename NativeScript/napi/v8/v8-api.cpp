@@ -1,8 +1,11 @@
 #include <algorithm>
+#include <chrono>
 #include <climits>  // INT_MAX
 #include <cmath>
+#include <filesystem>
 #include <sstream>
 #include <string_view>  // string_view, u16string_view
+#include <thread>
 
 #define NAPI_EXPERIMENTAL
 
@@ -3301,6 +3304,28 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
   v8::Isolate* isolate = env->isolate;
 
   v8::TryCatch module_try_catch(isolate);
+  auto set_last_exception = [&](v8::Local<v8::Value> exception) {
+    if (!env->last_exception.IsEmpty()) {
+      env->last_exception.Reset();
+    }
+    env->last_exception.Reset(env->isolate, exception);
+  };
+
+  // Normalize module path to keep cache keys stable across equivalent path
+  // spellings (e.g. ".", "..", and symlink traversals).
+  std::error_code pathError;
+  auto normalizedModulePath = std::filesystem::absolute(source_url, pathError);
+  if (pathError) {
+    pathError.clear();
+    normalizedModulePath = std::filesystem::path(source_url);
+  }
+  normalizedModulePath = normalizedModulePath.lexically_normal();
+  auto canonicalModulePath =
+      std::filesystem::weakly_canonical(normalizedModulePath, pathError);
+  if (!pathError) {
+    normalizedModulePath = canonicalModulePath;
+  }
+  const std::string modulePath = normalizedModulePath.string();
 
   // Initialize ES module system on first use
   static bool es_module_initialized = false;
@@ -3312,7 +3337,7 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
   // Create script origin for ES module
   v8::ScriptOrigin origin(
       isolate,
-      v8::String::NewFromUtf8(isolate, source_url, v8::NewStringType::kNormal).ToLocalChecked(),
+      v8::String::NewFromUtf8(isolate, modulePath.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
       0, 0, false, -1, v8::Local<v8::Value>(), false, false,
       true  // is_module = true for ES modules
   );
@@ -3329,10 +3354,6 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
   }
 
   v8::Local<v8::Module> module = maybe_module.ToLocalChecked();
-
-  // Register the module in our module registry for resolution
-  // Use the source_url as the module path
-  std::string modulePath = source_url;
 
   // Safe Global handle management: Clear any existing entry first
   auto it = v8impl::g_moduleRegistry.find(modulePath);
@@ -3363,20 +3384,55 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
   if (!module->InstantiateModule(context, &v8impl::ResolveModuleCallback).FromMaybe(false)) {
     if (instantiate_try_catch.HasCaught()) {
       // Store the exception in env->last_exception instead of throwing
-      v8::Local<v8::Value> exception = instantiate_try_catch.Exception();
-      v8::String::Utf8Value error(isolate, exception);
-      
-      if (!env->last_exception.IsEmpty()) {
-        env->last_exception.Reset();
-      }
-      env->last_exception.Reset(env->isolate, instantiate_try_catch.Exception());
+      set_last_exception(instantiate_try_catch.Exception());
     }
     return napi_set_last_error(env, napi_generic_failure);
   }
   
   // Evaluate the module
+  v8::TryCatch evaluate_try_catch(isolate);
   v8::MaybeLocal<v8::Value> maybe_result = module->Evaluate(context);
-  CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe_result, napi_generic_failure);
+  if (maybe_result.IsEmpty()) {
+    if (evaluate_try_catch.HasCaught()) {
+      set_last_exception(evaluate_try_catch.Exception());
+    } else if (module->GetStatus() == v8::Module::kErrored) {
+      set_last_exception(module->GetException());
+    }
+    return napi_set_last_error(env, napi_generic_failure);
+  }
+
+  v8::Local<v8::Value> evaluate_result = maybe_result.ToLocalChecked();
+
+  // Evaluate may return a promise; surface rejection as module-load failure.
+  if (evaluate_result->IsPromise()) {
+    v8::Local<v8::Promise> promise = evaluate_result.As<v8::Promise>();
+    constexpr int kMaxAttempts = 100;
+    int attempts = 0;
+    while (attempts < kMaxAttempts &&
+           promise->State() == v8::Promise::kPending) {
+      isolate->PerformMicrotaskCheckpoint();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      attempts++;
+    }
+
+    if (promise->State() == v8::Promise::kRejected) {
+      set_last_exception(promise->Result());
+      return napi_set_last_error(env, napi_generic_failure);
+    }
+
+    if (promise->State() == v8::Promise::kPending) {
+      set_last_exception(v8::Exception::Error(
+          v8::String::NewFromUtf8(isolate,
+                                  "Module evaluation did not settle")
+              .ToLocalChecked()));
+      return napi_set_last_error(env, napi_generic_failure);
+    }
+  }
+
+  if (module->GetStatus() == v8::Module::kErrored) {
+    set_last_exception(module->GetException());
+    return napi_set_last_error(env, napi_generic_failure);
+  }
 
   // Get the module namespace as the result
   v8::Local<v8::Value> namespace_obj = module->GetModuleNamespace();

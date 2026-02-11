@@ -21,6 +21,9 @@ class Cif {
 
   void* rvalue;
   void** avalues;
+  ffi_type** atypes = nullptr;
+  unsigned int avaluesAllocStart = 0;
+  unsigned int avaluesAllocCount = 0;
 
   std::shared_ptr<TypeConv> returnType;
   std::vector<std::shared_ptr<TypeConv>> argTypes;

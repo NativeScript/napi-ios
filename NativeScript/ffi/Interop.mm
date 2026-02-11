@@ -802,7 +802,7 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
   napi_get_cb_info(env, info, &argc, argv, &jsThis, nullptr);
 
   Reference* reference = new Reference();
-  bool owned = true;
+  reference->env = env;
 
   if (argc == 1) {
     reference->initValue = make_ref(env, argv[0]);
@@ -816,9 +816,10 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
 
     if (argtype == napi_object && Pointer::isInstance(env, argv[1])) {
       reference->data = Pointer::unwrap(env, argv[1])->data;
-      owned = false;
+      reference->ownsData = false;
     } else {
       reference->data = malloc(reference->type->type->size);
+      reference->ownsData = true;
       bool shouldFree;
       reference->type->toNative(env, argv[1], reference->data, &shouldFree, &shouldFree);
     }
@@ -832,12 +833,7 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  if (owned) {
-    napi_ref ref;
-    napi_wrap(env, jsThis, reference, Reference::finalize, nullptr, &ref);
-  } else {
-    napi_wrap(env, jsThis, reference, nullptr, nullptr, nullptr);
-  }
+  napi_wrap(env, jsThis, reference, Reference::finalize, nullptr, nullptr);
 
   return jsThis;
 }
@@ -897,8 +893,13 @@ void Reference::finalize(napi_env env, void* data, void* hint) {
 }
 
 Reference::~Reference() {
-  if (data != nullptr) {
+  if (initValue != nullptr && env != nullptr) {
+    napi_delete_reference(env, initValue);
+    initValue = nullptr;
+  }
+  if (data != nullptr && ownsData) {
     free(data);
+    data = nullptr;
   }
 }
 
@@ -935,7 +936,17 @@ napi_value FunctionReference::constructor(napi_env env, napi_callback_info info)
   return jsThis;
 }
 
-FunctionReference::~FunctionReference() {}
+FunctionReference::~FunctionReference() {
+  // If closure is already created, it shares the same JS function ref.
+  // Clear it there and delete exactly once here.
+  if (closure != nullptr && closure->func == ref) {
+    closure->func = nullptr;
+  }
+  if (ref != nullptr && env != nullptr) {
+    napi_delete_reference(env, ref);
+    ref = nullptr;
+  }
+}
 
 void* FunctionReference::getFunctionPointer(MDSectionOffset offset) {
   if (closure == nullptr) {

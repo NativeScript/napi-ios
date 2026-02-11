@@ -356,6 +356,22 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
     return mainPath.string();
   }
 
+  // Support extensionless "main" entries (e.g. "bundle") by resolving to
+  // modern ESM/CJS bundle outputs.
+  if (!mainPath.has_extension()) {
+    std::filesystem::path mjsPath = mainPath;
+    mjsPath.replace_extension(".mjs");
+    if (std::filesystem::is_regular_file(mjsPath)) {
+      return mjsPath.string();
+    }
+
+    std::filesystem::path jsPath = mainPath;
+    jsPath.replace_extension(".js");
+    if (std::filesystem::is_regular_file(jsPath)) {
+      return jsPath.string();
+    }
+  }
+
   error = true;
   return "";
 }
@@ -376,8 +392,8 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   // Normalize the path to remove redundant ./ sequences
   fullPath = fullPath.lexically_normal();
 
-  bool isDirectory = false;
   bool exists = std::filesystem::exists(fullPath);
+  bool isDirectory = exists && std::filesystem::is_directory(fullPath);
 
   if (exists == true && isDirectory == true) {
     // Try .mjs first for ES modules
@@ -733,9 +749,20 @@ bool ModuleInternal::IsESModule(const std::string& path) {
 napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
 #ifdef TARGET_ENGINE_V8
   try {
-    // Get absolute path to ensure proper resolution
-    std::filesystem::path absolutePath = std::filesystem::absolute(path);
-    std::string absPath = absolutePath.string();
+    // Use canonicalized module paths so the top-level ESM module identity
+    // matches dependency resolution cache keys.
+    std::error_code pathError;
+    auto absPathFs = std::filesystem::absolute(path, pathError);
+    if (pathError) {
+      pathError.clear();
+      absPathFs = std::filesystem::path(path);
+    }
+    absPathFs = absPathFs.lexically_normal();
+    auto canonicalPath = std::filesystem::weakly_canonical(absPathFs, pathError);
+    if (!pathError) {
+      absPathFs = canonicalPath;
+    }
+    std::string absPath = absPathFs.string();
 
     // Read the ES module source
     napi_value scriptContent = WrapModuleContent(env, absPath);

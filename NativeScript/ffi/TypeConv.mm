@@ -715,6 +715,7 @@ class PointerTypeConv : public TypeConv {
           if (ref->data == nullptr) {
             ref->type = pointeeType;
             ref->data = malloc(pointeeType->type->size);
+            ref->ownsData = true;
             if (ref->initValue) {
               napi_value initValue = get_ref_value(env, ref->initValue);
               bool shouldFree;

@@ -32,6 +32,16 @@ void bootFromBytecode(std::string baseDir, const void* data, size_t size) {
 
 void bootFromModuleSpec(std::string baseDir, std::string spec) {
   RuntimeConfig.BaseDir = baseDir;
+  RuntimeConfig.ApplicationPath = baseDir;
+
+  // In CLI mode, map "~" imports to the directory of the entry file when
+  // possible so app bundles that use "~/package.json" resolve consistently.
+  std::error_code ec;
+  std::filesystem::path specPath(spec);
+  auto absoluteSpecPath = std::filesystem::absolute(specPath, ec);
+  if (!ec && !absoluteSpecPath.empty()) {
+    RuntimeConfig.ApplicationPath = absoluteSpecPath.parent_path().string();
+  }
 
   auto runtime = Runtime();
 
