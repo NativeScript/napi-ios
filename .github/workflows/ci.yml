@@ -1,9 +1,7 @@
 name: CI
-
 on:
   push:
-    branches:
-      - main
+    branches: '*'
   pull_request:
 
 jobs:

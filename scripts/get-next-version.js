@@ -27,17 +27,70 @@ if (currentTag === "pr" && process.env.GITHUB_EVENT_PATH) {
 
 const preRelease = `${currentTag}.${prPrerelease}${dayjs().format("YYYY-MM-DD")}-${runID}`;
 
-let lastTagVersion = (
-  process.env.LAST_TAGGED_VERSION ||
-  child_process
-    .spawnSync("git", ["describe", "--tags", "--abbrev=0", "--match=v*"])
-    .stdout.toString()
-)
-  .trim()
-  .substring(1);
-if (!semver.parse(lastTagVersion)) {
-  throw new Error("Invalid last tag version");
+function normalizeVersionCandidate(candidate) {
+  if (!candidate) {
+    return null;
+  }
+
+  const trimmed = candidate.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const parsedDirect = semver.parse(trimmed);
+  if (parsedDirect) {
+    return parsedDirect.version;
+  }
+
+  const withoutLeadingV = trimmed.replace(/^v/, "");
+  const parsedWithoutV = semver.parse(withoutLeadingV);
+  if (parsedWithoutV) {
+    return parsedWithoutV.version;
+  }
+
+  // Supports tag formats such as refs/tags/v1.2.3, pkg@1.2.3, etc.
+  const extracted = trimmed.match(/\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?/);
+  if (extracted && semver.parse(extracted[0])) {
+    return extracted[0];
+  }
+
+  return null;
 }
+
+function getLastTagVersion() {
+  const explicitTagVersion = normalizeVersionCandidate(process.env.LAST_TAGGED_VERSION);
+  if (explicitTagVersion) {
+    return explicitTagVersion;
+  }
+
+  const gitDescribe = child_process.spawnSync("git", [
+    "describe",
+    "--tags",
+    "--abbrev=0",
+    "--match=v*",
+  ]);
+
+  const describedTag = normalizeVersionCandidate(gitDescribe.stdout.toString());
+  if (describedTag) {
+    return describedTag;
+  }
+
+  // If v* matching tags are unavailable, try any tag name.
+  const gitDescribeAnyTag = child_process.spawnSync("git", [
+    "describe",
+    "--tags",
+    "--abbrev=0",
+  ]);
+
+  const anyTag = normalizeVersionCandidate(gitDescribeAnyTag.stdout.toString());
+  if (anyTag) {
+    return anyTag;
+  }
+
+  return "0.0.0";
+}
+
+const lastTagVersion = getLastTagVersion();
 
 function setPreRelease(version) {
   const parsed = semver.parse(version);

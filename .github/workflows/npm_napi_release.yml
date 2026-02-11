@@ -1,3 +1,4 @@
+name: NPM Node-API Release
 on:
   push:
     branches:
