@@ -59,6 +59,7 @@ function cmake_build () {
   shift
   local archs=("$@")
   local is_macos_cli=false
+  local is_macos_napi=false
 
   if [ "$platform" == "macos-cli" ]; then
     platform="macos"

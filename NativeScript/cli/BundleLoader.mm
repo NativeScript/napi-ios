@@ -24,6 +24,18 @@ std::string resolveMainPath() {
           if ([fileManager fileExistsAtPath:mainPath]) {
             return std::string([mainPath UTF8String]);
           }
+
+          if ([[mainEntry pathExtension] length] == 0) {
+            NSString* mainPathMjs = [mainPath stringByAppendingPathExtension:@"mjs"];
+            if ([fileManager fileExistsAtPath:mainPathMjs]) {
+              return std::string([mainPathMjs UTF8String]);
+            }
+
+            NSString* mainPathJs = [mainPath stringByAppendingPathExtension:@"js"];
+            if ([fileManager fileExistsAtPath:mainPathJs]) {
+              return std::string([mainPathJs UTF8String]);
+            }
+          }
         }
       }
     }

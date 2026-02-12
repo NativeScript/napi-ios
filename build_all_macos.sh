@@ -11,6 +11,6 @@ fi
 
 ./build_metadata_generator.sh
 ./build_nativescript.sh --no-catalyst --no-iphone --no-sim --macos
-./build_tklivesync.sh --no-catalyst --no-iphone --no-sim --macos
+./build_tklivesync.sh --no-catalyst --no-iphone --no-sim --no-vision --macos
 ./prepare_dSYMs.sh
 ./build_npm_macos.sh

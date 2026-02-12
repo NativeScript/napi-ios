@@ -84,6 +84,10 @@ void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
   napi_value global;
   napi_get_global(env, &global);
 
+  napi_value globalEnv;
+  napi_create_external(env, env, nullptr, nullptr, &globalEnv);
+  napi_set_named_property(env, global, "__globalEnv", globalEnv);
+
   napi_value result;
   status = napi_run_script(env, source, &result);
   assert(status == napi_ok);
@@ -535,6 +539,23 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
         result = LoadData(env, path);
       } else {
         std::filesystem::path filePath(path);
+
+        if (std::filesystem::is_directory(filePath)) {
+          std::filesystem::path packageJson = filePath / "package.json";
+          if (std::filesystem::is_regular_file(packageJson)) {
+            bool error = false;
+            std::string packageMain =
+                ResolvePathFromPackageJson(env, packageJson.string(), error);
+            if (error) {
+              throw NativeScriptException("Unable to locate main entry in " +
+                                          packageJson.string());
+            }
+            if (!packageMain.empty() && packageMain != path) {
+              return LoadImpl(env, packageMain, baseDir, isData);
+            }
+          }
+        }
+
         std::filesystem::path fileWithIndexJs = filePath / "index.js";
         std::filesystem::path fileWithIndexMjs = filePath / "index.mjs";
         if (std::filesystem::exists(fileWithIndexMjs)) {
