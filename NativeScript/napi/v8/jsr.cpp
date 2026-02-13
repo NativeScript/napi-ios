@@ -161,13 +161,25 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
 
 napi_status js_free_napi_env(napi_env env) {
     if (env == nullptr) return napi_invalid_arg;
+    JSR::env_to_jsr_cache.erase(env);
     env->DeleteMe();
     return  napi_ok;
 }
 
 napi_status js_free_runtime(napi_runtime runtime) {
+    if (runtime == nullptr) return napi_invalid_arg;
     JSR* jsr = (JSR*) runtime;
+    if (jsr == nullptr || jsr->isolate == nullptr) return napi_invalid_arg;
+
+    // Ensure there are no outstanding current-thread isolate entries when
+    // disposing. This protects teardown from accidental unmatched enters.
+    v8::Locker locker(jsr->isolate);
+    while (v8::Isolate::GetCurrent() == jsr->isolate) {
+        jsr->isolate->Exit();
+    }
+
     jsr->isolate->Dispose();
+    jsr->isolate = nullptr;
     delete jsr;
     return napi_ok;
 }

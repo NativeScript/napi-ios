@@ -40,17 +40,21 @@ Runtime::Runtime() {
 Runtime::~Runtime() {
   currentRuntime_ = nullptr;
 
-  modules_.DeInit();
-
   if (env_) {
-     {
-       NapiScope scope(env_);
+    {
+      // Enter isolate/context for deinit work without creating another
+      // temporary N-API handle scope. We must close the long-lived
+      // `globalScope_` in LIFO order.
+      NapiScope scope(env_, false);
 
-       napi_close_handle_scope(env_, globalScope_);
-       js_free_napi_env(env_);
-     }
+      modules_.DeInit();
+      napi_close_handle_scope(env_, globalScope_);
+      js_free_napi_env(env_);
+    }
 
     js_free_runtime(runtime_);
+  } else {
+    modules_.DeInit();
   }
 
   {
