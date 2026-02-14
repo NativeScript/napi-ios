@@ -13,7 +13,8 @@
   "files": [
     "build/RelWithDebInfo/NativeScript.apple.node",
     "index.d.ts",
-    "types"
+    "types",
+    "./*.d.ts"
   ],
   "scripts": {
     "test": "node ../../examples/foundation.js",
