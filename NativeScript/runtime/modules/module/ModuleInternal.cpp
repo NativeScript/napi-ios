@@ -309,7 +309,8 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
   error = false;
   std::ifstream packageJsonFile(packageJsonPath);
   if (!packageJsonFile.is_open()) {
-    error = true;
+    // Missing package.json is not fatal for directory resolution.
+    error = false;
     return "";
   }
   std::string line;
@@ -321,26 +322,39 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
   std::string packageJson = packageJsonStream.str();
   napi_value obj = JsonParse(env, packageJson);
   if (obj == nullptr) {
+    bool hasPendingException = false;
+    napi_is_exception_pending(env, &hasPendingException);
+    if (hasPendingException) {
+      napi_value exception;
+      napi_get_and_clear_last_exception(env, &exception);
+    }
     error = true;
+    return "";
+  }
+  bool hasMain = false;
+  napi_status hasMainStatus = napi_has_named_property(env, obj, "main", &hasMain);
+  if (hasMainStatus != napi_ok || !hasMain) {
+    // package.json without "main" should fall back to index.js/index.mjs
+    error = false;
     return "";
   }
   napi_value mainValue;
   napi_get_named_property(env, obj, "main", &mainValue);
   if (mainValue == nullptr) {
-    error = true;
+    error = false;
     return "";
   }
 
   napi_valuetype type;
   napi_typeof(env, mainValue, &type);
   if (type != napi_string) {
-    error = true;
+    error = false;
     return "";
   }
 
   std::string main = napi_util::get_cxx_string(env, mainValue);
   if (main.empty()) {
-    error = true;
+    error = false;
     return "";
   }
 
@@ -354,6 +368,19 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
     if (std::filesystem::is_regular_file(mainPath)) {
       return ResolvePathFromPackageJson(env, mainPath.string(), error);
     }
+
+    std::filesystem::path indexMjs = mainPath.parent_path() / "index.mjs";
+    if (std::filesystem::is_regular_file(indexMjs)) {
+      return indexMjs.string();
+    }
+
+    std::filesystem::path indexJs = mainPath.parent_path() / "index.js";
+    if (std::filesystem::is_regular_file(indexJs)) {
+      return indexJs.string();
+    }
+
+    error = false;
+    return "";
   }
 
   if (std::filesystem::is_regular_file(mainPath)) {
@@ -376,7 +403,8 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
     }
   }
 
-  error = true;
+  // Unresolvable "main" should fall back to index.js/index.mjs.
+  error = false;
   return "";
 }
 
@@ -428,10 +456,13 @@ std::string ModuleInternal::ResolvePath(napi_env env,
       }
     }
 
-    // Try .js extension
-    fullPath = fullPath.replace_extension(".js");
-    exists = std::filesystem::exists(fullPath);
-    isDirectory = std::filesystem::is_directory(fullPath);
+    // Try .js extension by appending, preserving dotted filenames
+    std::filesystem::path jsPath = fullPath.string() + ".js";
+    if (std::filesystem::exists(jsPath)) {
+      exists = true;
+      isDirectory = std::filesystem::is_directory(jsPath);
+      fullPath = jsPath;
+    }
   }
 
   if (exists == false) {
@@ -444,16 +475,18 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   }
 
   std::filesystem::path packageJson = fullPath / "package.json";
-  bool error = false;
-  std::string entry =
-      this->ResolvePathFromPackageJson(env, packageJson.string(), error);
-  if (error) {
-    throw NativeScriptException("Unable to locate main entry in " +
-                                packageJson.string());
-  }
+  if (std::filesystem::is_regular_file(packageJson)) {
+    bool error = false;
+    std::string entry =
+        this->ResolvePathFromPackageJson(env, packageJson.string(), error);
+    if (error) {
+      throw NativeScriptException("Unable to locate main entry in " +
+                                  packageJson.string());
+    }
 
-  if (!entry.empty()) {
-    fullPath = entry;
+    if (!entry.empty()) {
+      fullPath = entry;
+    }
   }
 
   exists = std::filesystem::exists(fullPath);
@@ -469,8 +502,8 @@ std::string ModuleInternal::ResolvePath(napi_env env,
       return indexMjs.string();
     }
 
-    // Then try index.js
-    fullPath = fullPath.replace_extension(".js");
+    // Then try path + ".js" (preserves dotted filenames like "file.name")
+    fullPath = fullPath.string() + ".js";
   } else {
     // Try index.mjs first in directory
     std::filesystem::path indexMjs = fullPath / "index.mjs";
