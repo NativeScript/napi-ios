@@ -483,6 +483,11 @@ declare class MPSIntersectionDistancePrimitiveIndexBufferIndex {
   bufferIndex: number;
 }
 
+declare class MPSIntersectionDistance {
+  constructor(init?: MPSIntersectionDistance);
+  distance: number;
+}
+
 declare class MPSRayOriginMinDistanceDirectionMaxDistance {
   constructor(init?: MPSRayOriginMinDistanceDirectionMaxDistance);
   origin: _MPSPackedFloat3;
@@ -509,8 +514,8 @@ declare class _MPSAxisAlignedBoundingBox {
   max: unknown /* ext vector */;
 }
 
-declare class unnamed_14748756872395266712 {
-  constructor(init?: unnamed_14748756872395266712);
+declare class unnamed_18400524562251943158 {
+  constructor(init?: unnamed_18400524562251943158);
   x: number;
   y: number;
   z: number;
@@ -666,18 +671,18 @@ declare class MPSIntersectionDistancePrimitiveIndexInstanceIndexCoordinates {
   coordinates: unknown /* ext vector */;
 }
 
+declare class MPSDimensionSlice {
+  constructor(init?: MPSDimensionSlice);
+  start: number;
+  length: number;
+}
+
 declare class MPSRayOriginMaskDirectionMaxDistance {
   constructor(init?: MPSRayOriginMaskDirectionMaxDistance);
   origin: _MPSPackedFloat3;
   mask: number;
   direction: _MPSPackedFloat3;
   maxDistance: number;
-}
-
-declare class MPSDimensionSlice {
-  constructor(init?: MPSDimensionSlice);
-  start: number;
-  length: number;
 }
 
 declare class MPSCustomKernelInfo {
@@ -700,11 +705,6 @@ declare class MPSImageCoordinate {
   channel: number;
 }
 
-declare class MPSIntersectionDistance {
-  constructor(init?: MPSIntersectionDistance);
-  distance: number;
-}
-
 declare class MPSIntegerDivisionParams {
   constructor(init?: MPSIntegerDivisionParams);
   divisor: number;
@@ -713,11 +713,11 @@ declare class MPSIntegerDivisionParams {
   shift: number;
 }
 
-type unnamed_6491375332595245684Descriptor = 
+type unnamed_17600434027733648557Descriptor = 
   | { elements: unknown /* const array */ };
 
-declare class unnamed_6491375332595245684 {
-  constructor(init?: unnamed_6491375332595245684Descriptor);
+declare class unnamed_17600434027733648557 {
+  constructor(init?: unnamed_17600434027733648557Descriptor);
   elements: unknown /* const array */;
 }
 
@@ -2060,6 +2060,9 @@ declare class MPSCNNDilatedPoolingMaxNode extends MPSNNFilterNode {
   initWithSourceFilterSizeStrideDilationRate(sourceNode: MPSNNImageNode, size: number, stride: number, dilationRate: number): this;
 
   initWithSourceFilterSize(sourceNode: MPSNNImageNode, size: number): this;
+}
+
+declare class MPSCNNPoolingAverageNode extends MPSCNNPoolingNode {
 }
 
 declare class MPSCNNPoolingNode extends MPSNNFilterNode {
@@ -5036,9 +5039,6 @@ declare class MPSImageConversion extends MPSUnaryImageKernel {
   initWithDeviceSrcAlphaDestAlphaBackgroundColorConversionInfo(device: MTLDevice, srcAlpha: interop.Enum<typeof MPSAlphaType>, destAlpha: interop.Enum<typeof MPSAlphaType>, backgroundColor: interop.PointerConvertible, conversionInfo: interop.PointerConvertible): this;
 }
 
-declare class MPSCNNPoolingAverageNode extends MPSCNNPoolingNode {
-}
-
 declare class MPSNNReduceRowMean extends MPSNNReduceUnary {
   initWithDevice(device: MTLDevice): this;
 
@@ -6380,9 +6380,6 @@ declare class MPSNNConcatenationGradientNode extends MPSNNGradientFilterNode {
   initWithSourceGradientSourceImageGradientState(gradientSourceNode: MPSNNImageNode, sourceImage: MPSNNImageNode, gradientState: MPSNNGradientStateNode): this;
 }
 
-declare class MPSCNNConvolutionTransposeGradientStateNode extends MPSCNNConvolutionGradientStateNode {
-}
-
 declare class MPSCNNBatchNormalizationGradientNode extends MPSNNGradientFilterNode implements MPSNNTrainableNode {
   static nodeWithSourceGradientSourceImageGradientState<This extends abstract new (...args: any) => any>(this: This, sourceGradient: MPSNNImageNode, sourceImage: MPSNNImageNode, gradientState: MPSNNGradientStateNode): InstanceType<This>;
 
@@ -6722,6 +6719,9 @@ declare class MPSKeyedUnarchiver extends NSKeyedUnarchiver implements MPSDeviceP
   initWithDevice(device: MTLDevice): this;
 
   initForReadingWithDataDevice(data: NSData, device: MTLDevice): this;
+}
+
+declare class MPSCNNConvolutionTransposeGradientStateNode extends MPSCNNConvolutionGradientStateNode {
 }
 
 declare class MPSMatrixBatchNormalization extends MPSMatrixUnaryKernel {

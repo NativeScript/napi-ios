@@ -151,13 +151,6 @@ declare const SKAttributeType: {
   VectorHalfFloat4: 8,
 };
 
-declare interface SKViewDelegate extends NSObjectProtocol {
-  viewShouldRenderAtTime?(view: SKView, time: number): boolean;
-}
-
-declare class SKViewDelegate extends NativeObject implements SKViewDelegate {
-}
-
 declare interface SKPhysicsContactDelegate extends NSObjectProtocol {
   didBeginContact?(contact: SKPhysicsContact): void;
 
@@ -193,6 +186,13 @@ declare interface SKWarpable extends NSObjectProtocol {
 }
 
 declare class SKWarpable extends NativeObject implements SKWarpable {
+}
+
+declare interface SKViewDelegate extends NSObjectProtocol {
+  viewShouldRenderAtTime?(view: SKView, time: number): boolean;
+}
+
+declare class SKViewDelegate extends NativeObject implements SKViewDelegate {
 }
 
 declare class SK3DNode extends SKNode {

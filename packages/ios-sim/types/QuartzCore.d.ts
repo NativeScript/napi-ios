@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const kCATransitionFromTop: string;
-
 declare const kCAMediaTimingFunctionDefault: string;
 
 declare const kCAEmitterLayerOutline: string;
@@ -25,8 +23,6 @@ declare const kCALineCapButt: string;
 
 declare const CADynamicRangeHigh: string;
 
-declare const kCAValueFunctionRotateX: string;
-
 declare const kCAGravityLeft: string;
 
 declare const kCAFillRuleEvenOdd: string;
@@ -45,13 +41,7 @@ declare const kCAAnimationDiscrete: string;
 
 declare const kCAScrollHorizontally: string;
 
-declare const kCAGradientLayerRadial: string;
-
-declare const kCAAlignmentRight: string;
-
-declare const kCAMediaTimingFunctionEaseOut: string;
-
-declare const kCAAlignmentJustified: string;
+declare const kCAAnimationRotateAutoReverse: string;
 
 declare const kCAValueFunctionTranslateY: string;
 
@@ -64,6 +54,8 @@ declare const kCATransactionAnimationTimingFunction: string;
 declare const kCATransactionDisableActions: string;
 
 declare const kCATransactionAnimationDuration: string;
+
+declare const kCAAlignmentRight: string;
 
 declare const kCAAlignmentNatural: string;
 
@@ -93,13 +85,9 @@ declare const kCAEmitterLayerLine: string;
 
 declare const kCATransitionFromLeft: string;
 
-declare const kCATransitionPush: string;
-
 declare const kCATransitionMoveIn: string;
 
 declare const kCAAnimationRotateAuto: string;
-
-declare const kCAAnimationCubicPaced: string;
 
 declare const kCAAnimationLinear: string;
 
@@ -110,8 +98,6 @@ declare const kCAOnOrderOut: string;
 declare const kCACornerCurveCircular: string;
 
 declare const kCAFilterNearest: string;
-
-declare const kCAContentsFormatAutomatic: string;
 
 declare const kCAContentsFormatGray8Uint: string;
 
@@ -125,8 +111,6 @@ declare const kCAGravityTop: string;
 
 declare const kCAGravityCenter: string;
 
-declare const kCAAnimationRotateAutoReverse: string;
-
 declare const CADynamicRangeAutomatic: string;
 
 declare const CAToneMapModeNever: string;
@@ -137,9 +121,13 @@ declare const kCAFillModeBoth: string;
 
 declare const kCAValueFunctionScaleY: string;
 
+declare const kCAContentsFormatAutomatic: string;
+
+declare const kCAMediaTimingFunctionLinear: string;
+
 declare const kCAEmitterLayerSurface: string;
 
-declare const kCATransitionFromRight: string;
+declare const kCAValueFunctionRotateX: string;
 
 declare const kCAValueFunctionRotateZ: string;
 
@@ -159,6 +147,8 @@ declare const kCAFillModeForwards: string;
 
 declare const kCAEmitterLayerOldestFirst: string;
 
+declare const kCATransitionFromTop: string;
+
 declare const kCAValueFunctionRotateY: string;
 
 declare const kCAGradientLayerConic: string;
@@ -168,6 +158,14 @@ declare const kCACornerCurveContinuous: string;
 declare const kCAAlignmentCenter: string;
 
 declare const kCAAnimationPaced: string;
+
+declare const kCAGradientLayerRadial: string;
+
+declare const kCATransitionPush: string;
+
+declare const kCAAnimationCubicPaced: string;
+
+declare const kCATransitionFromRight: string;
 
 declare const kCAEmitterLayerCuboid: string;
 
@@ -205,6 +203,8 @@ declare const kCAAlignmentLeft: string;
 
 declare const kCAValueFunctionTranslate: string;
 
+declare const kCAAlignmentJustified: string;
+
 declare const kCAGravityBottom: string;
 
 declare const kCAGravityResize: string;
@@ -212,8 +212,6 @@ declare const kCAGravityResize: string;
 declare const CADynamicRangeConstrainedHigh: string;
 
 declare const kCAValueFunctionTranslateZ: string;
-
-declare const kCAMediaTimingFunctionLinear: string;
 
 declare const kCAGravityTopLeft: string;
 
@@ -226,6 +224,8 @@ declare const CATransform3DIdentity: CATransform3D;
 declare const kCAGravityTopRight: string;
 
 declare const kCAEmitterLayerSphere: string;
+
+declare const kCAMediaTimingFunctionEaseOut: string;
 
 declare const CAEdgeAntialiasingMask: {
   Left: 1,

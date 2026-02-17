@@ -34,11 +34,7 @@ declare const SCNSceneSourceAnimationImportPolicyDoNotPlay: string;
 
 declare const SCNSceneSourceAssetDirectoryURLsKey: string;
 
-declare const SCNParticlePropertySize: string;
-
 declare const SCNPhysicsShapeKeepAsCompoundKey: string;
-
-declare const SCNHitTestOptionSearchMode: string;
 
 declare const SCNConsistencyLineNumberErrorKey: string;
 
@@ -56,8 +52,6 @@ declare const SCNPhysicsShapeTypeKey: string;
 
 declare const SCNParticlePropertyFriction: string;
 
-declare const SCNSceneSourceUseSafeModeKey: string;
-
 declare const SCNParticlePropertyOpacity: string;
 
 declare const SCNParticlePropertyLife: string;
@@ -70,8 +64,6 @@ declare const SCNGeometrySourceSemanticVertexCrease: string;
 
 declare const SCNGeometrySourceSemanticTangent: string;
 
-declare const SCNGeometrySourceSemanticTexcoord: string;
-
 declare const SCNGeometrySourceSemanticColor: string;
 
 declare const SCNLightingModelShadowOnly: string;
@@ -81,6 +73,8 @@ declare const SCNLightingModelConstant: string;
 declare const SCNLightingModelLambert: string;
 
 declare const SCNLightingModelPhong: string;
+
+declare const SCNLightTypeArea: string;
 
 declare const SCNLightTypeSpot: string;
 
@@ -95,8 +89,6 @@ declare const SCNConsistencyInvalidArgumentError: number;
 declare const SCNConsistencyInvalidURIError: number;
 
 declare const SCNSceneSourceAnimationImportPolicyPlayRepeatedly: string;
-
-declare const SCNSceneSourceStrictConformanceKey: string;
 
 declare const SCNSceneSourceCheckConsistencyKey: string;
 
@@ -121,6 +113,24 @@ declare const SCNSceneSourceFlattenSceneKey: string;
 declare const SCNProgramCompilationError: number;
 
 declare const SCNMatrix4Identity: SCNMatrix4;
+
+declare const SCNParticlePropertyAngularVelocity: string;
+
+declare const SCNSceneSourceUseSafeModeKey: string;
+
+declare const SCNPhysicsTestSearchModeClosest: string;
+
+declare const SCNSceneSourceStrictConformanceKey: string;
+
+declare const SCNShaderModifierEntryPointLightingModel: string;
+
+declare const SCNVector4Zero: SCNVector4;
+
+declare const SCNGeometrySourceSemanticTexcoord: string;
+
+declare const SCNHitTestOptionSearchMode: string;
+
+declare const SCNParticlePropertySize: string;
 
 declare const SCNSceneSourceAnimationImportPolicyPlayUsingSceneTimeBase: string;
 
@@ -150,8 +160,6 @@ declare const SCNPreferredRenderingAPIKey: string;
 
 declare const SCNParticlePropertyCharge: string;
 
-declare const SCNLightTypeArea: string;
-
 declare const SCNSceneSourceAssetUpAxisKey: string;
 
 declare const SCNSceneSourceAssetAuthoringToolKey: string;
@@ -167,8 +175,6 @@ declare const SCNPreferredDeviceKey: string;
 declare const SCNHitTestIgnoreHiddenNodesKey: string;
 
 declare const SCNSceneStartTimeAttributeKey: string;
-
-declare const SCNPhysicsTestSearchModeClosest: string;
 
 declare const SCNPhysicsTestBackfaceCullingKey: string;
 
@@ -189,8 +195,6 @@ declare const SCNLightTypeDirectional: string;
 declare const SCNHitTestIgnoreChildNodesKey: string;
 
 declare const SCNParticlePropertyColor: string;
-
-declare const SCNVector4Zero: SCNVector4;
 
 declare const SCNSceneExportDestinationURL: string;
 
@@ -224,13 +228,9 @@ declare const SCNSceneSourceAssetUnitKey: string;
 
 declare const SCNSceneUpAxisAttributeKey: string;
 
-declare const SCNParticlePropertyAngularVelocity: string;
-
 declare const SCNLightTypeIES: string;
 
 declare const SCNHitTestRootNodeKey: string;
-
-declare const SCNShaderModifierEntryPointLightingModel: string;
 
 declare const SCNVector3Zero: SCNVector3;
 
@@ -566,6 +566,15 @@ declare function SCNMatrix4FromGLKMatrix4(mat: _GLKMatrix4): SCNMatrix4;
 
 declare function SCNExportJavaScriptModule(context: JSContext): void;
 
+declare interface SCNCameraControllerDelegate extends NSObjectProtocol {
+  cameraInertiaWillStartForController?(cameraController: SCNCameraController): void;
+
+  cameraInertiaDidEndForController?(cameraController: SCNCameraController): void;
+}
+
+declare class SCNCameraControllerDelegate extends NativeObject implements SCNCameraControllerDelegate {
+}
+
 declare interface SCNPhysicsContactDelegate extends NSObjectProtocol {
   physicsWorldDidBeginContact?(world: SCNPhysicsWorld, contact: SCNPhysicsContact): void;
 
@@ -754,15 +763,6 @@ declare interface SCNNodeRendererDelegate extends NSObjectProtocol {
 }
 
 declare class SCNNodeRendererDelegate extends NativeObject implements SCNNodeRendererDelegate {
-}
-
-declare interface SCNCameraControllerDelegate extends NSObjectProtocol {
-  cameraInertiaWillStartForController?(cameraController: SCNCameraController): void;
-
-  cameraInertiaDidEndForController?(cameraController: SCNCameraController): void;
-}
-
-declare class SCNCameraControllerDelegate extends NativeObject implements SCNCameraControllerDelegate {
 }
 
 declare interface SCNCameraControlConfiguration extends NSObjectProtocol {

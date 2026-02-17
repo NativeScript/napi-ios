@@ -139,7 +139,6 @@
 /// <reference path="./SecurityUI.d.ts" />
 /// <reference path="./SensitiveContentAnalysis.d.ts" />
 /// <reference path="./SensorKit.d.ts" />
-/// <reference path="./ServicesAccountLinking.d.ts" />
 /// <reference path="./SharedWithYou.d.ts" />
 /// <reference path="./SharedWithYouCore.d.ts" />
 /// <reference path="./ShazamKit.d.ts" />

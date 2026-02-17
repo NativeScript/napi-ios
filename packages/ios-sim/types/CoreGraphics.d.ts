@@ -1,12 +1,8 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const kCGColorSpaceGenericRGB: interop.Pointer;
-
 declare const kCGUseBT1886ForCoreVideoGamma: interop.Pointer;
 
 declare const kCGPDFContextOutputIntents: interop.Pointer;
-
-declare const kCGPDFOutlineDestination: interop.Pointer;
 
 declare const CGAffineTransformIdentity: CGAffineTransform;
 
@@ -26,17 +22,17 @@ declare const kCGColorSpaceITUR_2020: interop.Pointer;
 
 declare const kCGColorSpaceDisplayP3_HLG: interop.Pointer;
 
+declare const kCGPDFOutlineDestination: interop.Pointer;
+
 declare const kCGDynamicRangeStandard: interop.Object;
 
 declare const kCGColorSpaceExtendedSRGB: interop.Pointer;
 
-declare const kCGColorSpaceSRGB: interop.Pointer;
-
-declare const kCGPDFContextUserPassword: interop.Pointer;
-
 declare const kCGColorSpaceExtendedLinearGray: interop.Pointer;
 
 declare const kCGColorSpaceDisplayP3_PQ_EOTF: interop.Pointer;
+
+declare const kCGPDFContextCropBox: interop.Pointer;
 
 declare const kCGDefaultHDRImageContentHeadroom: number;
 
@@ -45,6 +41,12 @@ declare const kCGColorSpaceITUR_2020_HLG: interop.Pointer;
 declare const kCGPDFContextTrimBox: interop.Pointer;
 
 declare const kCGPDFContextAllowsPrinting: interop.Pointer;
+
+declare const kCGPDFContextOutputIntent: interop.Pointer;
+
+declare const kCGColorSpaceITUR_2020_PQ_EOTF: interop.Pointer;
+
+declare const kCGPDFContextUserPassword: interop.Pointer;
 
 declare const kCGDynamicRangeHigh: interop.Object;
 
@@ -56,15 +58,11 @@ declare const kCGColorSpaceACESCGLinear: interop.Pointer;
 
 declare const kCGEXRToneMappingGammaKneeHigh: interop.Pointer;
 
-declare const kCGPDFContextMediaBox: interop.Pointer;
-
 declare const kCGFontVariationAxisMinValue: interop.Pointer;
 
 declare const kCGPDFTagPropertyLanguageText: interop.Pointer;
 
 declare const kCGPDFTagPropertyTitleText: interop.Pointer;
-
-declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
 
 declare const kCGPDFTagPropertyActualText: interop.Pointer;
 
@@ -77,8 +75,6 @@ declare const kCGPDFXOutputCondition: interop.Pointer;
 declare const kCGPDFXOutputConditionIdentifier: interop.Pointer;
 
 declare const kCGPDFXOutputIntentSubtype: interop.Pointer;
-
-declare const kCGPDFContextOutputIntent: interop.Pointer;
 
 declare const kCGPDFContextAllowsCopying: interop.Pointer;
 
@@ -93,8 +89,6 @@ declare const kCGPDFContextAuthor: interop.Pointer;
 declare const kCGPDFContextTitle: interop.Pointer;
 
 declare const kCGPDFContextArtBox: interop.Pointer;
-
-declare const kCGPDFContextCropBox: interop.Pointer;
 
 declare const kCGColorConversionTRCSize: interop.Pointer;
 
@@ -130,8 +124,6 @@ declare const kCGColorSpaceExtendedRange: interop.Pointer;
 
 declare const kCGColorSpaceExtendedLinearSRGB: interop.Pointer;
 
-declare const kCGColorSpaceITUR_2020_PQ_EOTF: interop.Pointer;
-
 declare const kCGColorSpaceExtendedLinearDisplayP3: interop.Pointer;
 
 declare const kCGColorSpaceExtendedDisplayP3: interop.Pointer;
@@ -160,6 +152,8 @@ declare const kCGColorSpaceGenericGray: interop.Pointer;
 
 declare const CGSizeZero: CGSize;
 
+declare const kCGPDFTagPropertyAlternativeText: interop.Pointer;
+
 declare const kCGColorSpaceGenericRGBLinear: interop.Pointer;
 
 declare const kCGColorSpaceGenericXYZ: interop.Pointer;
@@ -173,6 +167,8 @@ declare const CGRectNull: CGRect;
 declare const kCGFontVariationAxisDefaultValue: interop.Pointer;
 
 declare const kCGPDFContextEncryptionKeyLength: interop.Pointer;
+
+declare const kCGColorSpaceGenericRGB: interop.Pointer;
 
 declare const kCGEXRToneMappingGammaExposure: interop.Pointer;
 
@@ -189,6 +185,8 @@ declare const kCGColorSpaceLinearDisplayP3: interop.Pointer;
 declare const kCGEXRToneMappingGammaDefog: interop.Pointer;
 
 declare const kCGBitmapByteOrder16Host: interop.Enum<typeof CGBitmapInfo>;
+
+declare const kCGPDFContextMediaBox: interop.Pointer;
 
 declare const kCGColorSpaceCoreMedia709: interop.Pointer;
 
@@ -213,6 +211,8 @@ declare const kCGColorSpaceLinearSRGB: interop.Pointer;
 declare const kCGPDFXDestinationOutputProfile: interop.Pointer;
 
 declare const CGRectInfinite: CGRect;
+
+declare const kCGColorSpaceSRGB: interop.Pointer;
 
 declare const kCGColorSpaceITUR_2020_PQ: interop.Pointer;
 
@@ -682,10 +682,6 @@ declare class CGFunction {
   constructor(init?: CGFunction);
 }
 
-declare class CGPDFArray {
-  constructor(init?: CGPDFArray);
-}
-
 declare class CGColor {
   constructor(init?: CGColor);
 }
@@ -708,6 +704,10 @@ declare class CGRenderingBufferProvider {
 
 declare class CGShading {
   constructor(init?: CGShading);
+}
+
+declare class CGPDFArray {
+  constructor(init?: CGPDFArray);
 }
 
 declare class CGDataProviderSequentialCallbacks {
@@ -937,7 +937,7 @@ declare function CGColorSpaceCreateExtended(space: interop.Object): interop.Obje
 
 declare function CGColorSpaceCreateExtendedLinearized(space: interop.Object): interop.Object;
 
-declare function CGColorSpaceCreateCopyWithStandardRange(space: interop.Object): interop.Object;
+declare function CGColorSpaceCreateCopyWithStandardRange(s: interop.Object): interop.Object;
 
 declare function CGColorSpaceCreateWithICCProfile(data: interop.Object): interop.Object;
 

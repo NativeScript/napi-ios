@@ -103,6 +103,12 @@ declare const MTRStorageSharingType: {
   SameFabric: 3,
 };
 
+declare const MTRDeviceState: {
+  Unknown: 0,
+  Reachable: 1,
+  Unreachable: 2,
+};
+
 declare const MTREventIDType: {
   ClusterAccessControlEventAccessControlEntryChanged: 0,
   ClusterAccessControlEventAccessControlExtensionChanged: 1,
@@ -3098,12 +3104,6 @@ declare const MTROTASoftwareUpdateRequestorOTAAnnouncementReason: {
 declare const MTRFanControlWindSettingMask: {
   Sleep: 1,
   Natural: 2,
-};
-
-declare const MTRDeviceState: {
-  Unknown: 0,
-  Reachable: 1,
-  Unreachable: 2,
 };
 
 declare const MTRUnitTestingSimpleBitmap: {
@@ -7947,8 +7947,6 @@ declare interface MTROTAProviderDelegate extends NSObjectProtocol {
 
   handleBDXTransferSessionBeginForNodeIDControllerFileDesignatorOffsetCompletionHandler?(nodeID: NSNumber, controller: MTRDeviceController, fileDesignator: string, offset: NSNumber, completionHandler: (p1: NSError) => void): void;
 
-  handleBDXTransferSessionEndForNodeIDControllerMetricsError?(nodeID: NSNumber, controller: MTRDeviceController, metrics: MTRMetrics, error: NSError | null): void;
-
   handleBDXTransferSessionEndForNodeIDControllerError?(nodeID: NSNumber, controller: MTRDeviceController, error: NSError | null): void;
 
   handleBDXQueryForNodeIDControllerBlockSizeBlockIndexBytesToSkipCompletion?(nodeID: NSNumber, controller: MTRDeviceController, blockSize: NSNumber, blockIndex: NSNumber, bytesToSkip: NSNumber, completion: (p1: NSData, p2: boolean) => void | null): void;
@@ -8007,27 +8005,6 @@ declare interface MTRDeviceControllerServerProtocol extends NSObjectProtocol {
 }
 
 declare class MTRDeviceControllerServerProtocol extends NativeObject implements MTRDeviceControllerServerProtocol {
-}
-
-declare interface MTRCommissioningDelegate extends NSObjectProtocol {
-  commissioningReadCommissioneeInfo?(commissioning: MTRCommissioningOperation, info: MTRCommissioneeInfo): void;
-
-  commissioningCompletedDeviceAttestationErrorCompletion(commissioning: MTRCommissioningOperation, attestationDeviceInfo: MTRDeviceAttestationDeviceInfo, error: NSError | null, completion: () => void): void;
-
-  commissioningNeedsWiFiCredentialsWithScanResultsErrorCompletion?(commissioning: MTRCommissioningOperation, networks: NSArray<interop.Object> | Array<interop.Object> | null, error: NSError | null, completion: (p1: NSData, p2: NSData) => void | null): void;
-
-  commissioningNeedsThreadCredentialsWithScanResultsErrorCompletion?(commissioning: MTRCommissioningOperation, networks: NSArray<interop.Object> | Array<interop.Object> | null, error: NSError | null, completion: (p1: NSData) => void): void;
-
-  commissioningStartingNetworkScan?(commissioning: MTRCommissioningOperation): void;
-
-  commissioningProvisionedNetworkCredentials?(commissioning: MTRCommissioningOperation): void;
-
-  commissioningFailedWithErrorMetrics?(commissioning: MTRCommissioningOperation, error: NSError, metrics: MTRMetrics): void;
-
-  commissioningSucceededForNodeIDMetrics?(commissioning: MTRCommissioningOperation, nodeID: NSNumber, metrics: MTRMetrics): void;
-}
-
-declare class MTRCommissioningDelegate extends NativeObject implements MTRCommissioningDelegate {
 }
 
 declare interface MTRDeviceAttestationDelegate extends NSObjectProtocol {
@@ -8472,14 +8449,20 @@ declare class MTRDeviceControllerFactory extends NSObject {
   isRunning(): boolean;
 }
 
-declare class MTRCommissioningOperation extends NSObject {
-  initWithParametersSetupPayloadDelegateQueue(parameters: MTRCommissioningParameters, payload: string, delegate: MTRCommissioningDelegate, queue: NSObject): this;
+declare class MTRDeviceAttestationDeviceInfo extends NSObject {
+  readonly vendorID: NSNumber;
 
-  startWithController(controller: MTRDeviceController): void;
+  readonly productID: NSNumber;
 
-  stop(): boolean;
+  readonly basicInformationVendorID: NSNumber;
 
-  readonly matchedPayload: MTRSetupPayload;
+  readonly basicInformationProductID: NSNumber;
+
+  readonly dacCertificate: NSData;
+
+  readonly dacPAICertificate: NSData;
+
+  readonly certificateDeclaration: NSData;
 }
 
 declare class MTRCommissioningParameters extends NSObject {
@@ -8503,13 +8486,6 @@ declare class MTRCommissioningParameters extends NSObject {
 
   readEndpointInformation: boolean;
 
-  get extraAttributesToRead(): NSArray;
-  set extraAttributesToRead(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  forceWiFiScan: boolean;
-
-  forceThreadScan: boolean;
-
   setCsrNonce(csrNonce: NSData | null): void;
 
   setAttestationNonce(attestationNonce: NSData | null): void;
@@ -8530,12 +8506,6 @@ declare class MTRCommissioningParameters extends NSObject {
 
   setReadEndpointInformation(readEndpointInformation: boolean): void;
 
-  setExtraAttributesToRead(extraAttributesToRead: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setForceWiFiScan(forceWiFiScan: boolean): void;
-
-  setForceThreadScan(forceThreadScan: boolean): void;
-
   CSRNonce: NSData;
 
   failSafeExpiryTimeoutSecs: NSNumber;
@@ -8545,40 +8515,12 @@ declare class MTRCommissioningParameters extends NSObject {
   setFailSafeExpiryTimeoutSecs(failSafeExpiryTimeoutSecs: NSNumber | null): void;
 }
 
-declare class MTRDeviceAttestationDeviceInfo extends NSObject {
-  readonly vendorID: NSNumber;
-
-  readonly productID: NSNumber;
-
-  readonly basicInformationVendorID: NSNumber;
-
-  readonly basicInformationProductID: NSNumber;
-
-  readonly dacCertificate: NSData;
-
-  readonly dacPAICertificate: NSData;
-
-  readonly certificateDeclaration: NSData;
-
-  readonly attestationChallenge: NSData;
-
-  readonly attestationNonce: NSData;
-
-  readonly elementsTLV: NSData;
-
-  readonly certificationDeclaration: NSData;
-
-  readonly elementsSignature: NSData;
-}
-
 declare class MTRCommissioneeInfo extends NSObject implements NSCopying, NSSecureCoding {
   readonly productIdentity: MTRProductIdentity;
 
   readonly endpointsById: NSDictionary;
 
   readonly rootEndpoint: MTREndpointInfo;
-
-  readonly attributes: NSDictionary;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 
@@ -8599,2678 +8541,6 @@ declare class MTRCommissionableBrowserResult extends NSObject {
   readonly discriminator: NSNumber;
 
   readonly commissioningMode: boolean;
-}
-
-declare class MTRDistinguishedNameInfo extends NSObject implements NSCopying {
-  readonly nodeID: NSNumber;
-
-  readonly fabricID: NSNumber;
-
-  readonly rootCACertificateID: NSNumber;
-
-  readonly intermediateCACertificateID: NSNumber;
-
-  readonly caseAuthenticatedTags: NSSet;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRClusterElectricalMeasurement extends MTRGenericCluster {
-  getProfileInfoCommandWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  getProfileInfoCommandWithExpectedValuesExpectedValueIntervalCompletion(expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  getMeasurementProfileCommandWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  readAttributeMeasurementTypeWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcVoltageMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcVoltageMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcCurrentMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcCurrentMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcPowerMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcPowerMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcVoltageMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcVoltageDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcCurrentDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcPowerMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeDcPowerDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcFrequencyWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcFrequencyMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcFrequencyMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeNeutralCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeTotalActivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeTotalReactivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeTotalApparentPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasured1stHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasured3rdHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasured5thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasured7thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasured9thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasured11thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasuredPhase1stHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasuredPhase3rdHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasuredPhase5thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasuredPhase7thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasuredPhase9thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeMeasuredPhase11thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcFrequencyMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcFrequencyDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePowerMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePowerDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeHarmonicCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePhaseHarmonicCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeInstantaneousVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeInstantaneousLineCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeInstantaneousActiveCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeInstantaneousReactiveCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeInstantaneousPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerMinWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeReactivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeApparentPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePowerFactorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeAverageRmsUnderVoltageCounterWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeAverageRmsUnderVoltageCounterWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeRmsExtremeOverVoltagePeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeRmsExtremeOverVoltagePeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeRmsExtremeUnderVoltagePeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeRmsExtremeUnderVoltagePeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeRmsVoltageSagPeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeRmsVoltageSagPeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeRmsVoltageSagPeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeRmsVoltageSwellPeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeRmsVoltageSwellPeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeRmsVoltageSwellPeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeAcVoltageMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcVoltageDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcCurrentDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcPowerMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcPowerDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeOverloadAlarmsMaskWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeOverloadAlarmsMaskWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeOverloadAlarmsMaskWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeVoltageOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeCurrentOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcOverloadAlarmsMaskWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  writeAttributeAcOverloadAlarmsMaskWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeAcOverloadAlarmsMaskWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  readAttributeAcVoltageOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcCurrentOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcActivePowerOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcReactivePowerOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsOverVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsUnderVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsExtremeOverVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsExtremeUnderVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageSagWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageSwellWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeLineCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActiveCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeReactiveCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltagePhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageMinPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageMaxPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentMinPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentMaxPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerMinPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerMaxPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeReactivePowerPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeApparentPowerPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePowerFactorPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsOverVoltageCounterPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsUnderVoltageCounterPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsExtremeOverVoltagePeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageSagPeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageSwellPeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeLineCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActiveCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeReactiveCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltagePhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageMinPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageMaxPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentMinPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsCurrentMaxPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerMinPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeActivePowerMaxPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeReactivePowerPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeApparentPowerPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributePowerFactorPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsOverVoltageCounterPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAverageRmsUnderVoltageCounterPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsExtremeOverVoltagePeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageSagPeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeRmsVoltageSwellPeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
-
-  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
-
-  getProfileInfoCommandWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  getProfileInfoCommandWithExpectedValuesExpectedValueIntervalCompletionHandler(expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  getMeasurementProfileCommandWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-}
-
-declare class MTRBaseClusterElectricalMeasurement extends MTRGenericBaseCluster {
-  getProfileInfoCommandWithParamsCompletion(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, completion: (p1: NSError) => void): void;
-
-  getProfileInfoCommandWithCompletion(completion: (p1: NSError) => void): void;
-
-  getMeasurementProfileCommandWithParamsCompletion(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, completion: (p1: NSError) => void): void;
-
-  readAttributeMeasurementTypeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasurementTypeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasurementTypeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeNeutralCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeNeutralCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeNeutralCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeTotalActivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeTotalActivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeTotalActivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeTotalReactivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeTotalReactivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeTotalReactivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeTotalApparentPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeTotalApparentPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeTotalApparentPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured1stHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured1stHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured1stHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured3rdHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured3rdHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured3rdHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured5thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured5thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured5thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured7thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured7thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured7thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured9thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured9thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured9thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured11thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured11thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured11thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase1stHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase1stHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase1stHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase3rdHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase3rdHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase3rdHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase5thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase5thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase5thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase7thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase7thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase7thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase9thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase9thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase9thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase11thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase11thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase11thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeHarmonicCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeHarmonicCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeHarmonicCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePhaseHarmonicCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePhaseHarmonicCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePhaseHarmonicCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousLineCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousLineCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousLineCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousActiveCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousActiveCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousActiveCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousReactiveCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousReactiveCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousReactiveCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApparentPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApparentPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApparentPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerFactorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerFactorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerFactorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeAverageRmsVoltageMeasurementPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsVoltageMeasurementPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeAverageRmsUnderVoltageCounterWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeAverageRmsUnderVoltageCounterWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeAverageRmsUnderVoltageCounterWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageCounterWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsExtremeOverVoltagePeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeRmsExtremeOverVoltagePeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsExtremeOverVoltagePeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltagePeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsExtremeUnderVoltagePeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeRmsExtremeUnderVoltagePeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsExtremeUnderVoltagePeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltagePeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsVoltageSagPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeRmsVoltageSagPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsVoltageSagPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsVoltageSwellPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeRmsVoltageSwellPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsVoltageSwellPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcVoltageMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcVoltageMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcVoltageMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcVoltageDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcVoltageDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcVoltageDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcCurrentDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcCurrentDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcCurrentDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcPowerMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcPowerMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcPowerMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcPowerDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcPowerDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcPowerDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOverloadAlarmsMaskWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOverloadAlarmsMaskWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeOverloadAlarmsMaskWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOverloadAlarmsMaskWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOverloadAlarmsMaskWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeVoltageOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeVoltageOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeVoltageOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeCurrentOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcOverloadAlarmsMaskWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeAcOverloadAlarmsMaskWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeAcOverloadAlarmsMaskWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeAcOverloadAlarmsMaskWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcOverloadAlarmsMaskWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcVoltageOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcVoltageOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcVoltageOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcCurrentOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcCurrentOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcCurrentOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcActivePowerOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcActivePowerOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcActivePowerOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcReactivePowerOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcReactivePowerOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcReactivePowerOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsOverVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsOverVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsOverVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsUnderVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeOverVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeUnderVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSagWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSwellWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeLineCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeLineCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeLineCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActiveCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActiveCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActiveCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactiveCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactiveCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactiveCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltagePhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltagePhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltagePhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMinPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMinPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMinPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMaxPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMaxPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMaxPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMinPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMinPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMinPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMaxPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMaxPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMaxPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMinPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMinPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMinPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMaxPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMaxPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMaxPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactivePowerPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactivePowerPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactivePowerPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApparentPowerPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApparentPowerPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApparentPowerPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerFactorPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerFactorPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerFactorPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsOverVoltageCounterPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsOverVoltageCounterPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsOverVoltageCounterPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsUnderVoltageCounterPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageCounterPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltagePeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagPeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSagPeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagPeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellPeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSwellPeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellPeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeLineCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeLineCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeLineCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActiveCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActiveCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActiveCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactiveCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactiveCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactiveCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltagePhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltagePhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltagePhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMinPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMinPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMinPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMaxPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMaxPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMaxPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMinPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMinPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMinPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMaxPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMaxPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMaxPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMinPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMinPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMinPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMaxPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMaxPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMaxPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactivePowerPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactivePowerPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactivePowerPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApparentPowerPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApparentPowerPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApparentPowerPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerFactorPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerFactorPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerFactorPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsOverVoltageCounterPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsOverVoltageCounterPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsOverVoltageCounterPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsUnderVoltageCounterPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageCounterPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltagePeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagPeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSagPeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagPeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellPeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSwellPeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellPeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  getProfileInfoCommandWithParamsCompletionHandler(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, completionHandler: (p1: NSError) => void): void;
-
-  getProfileInfoCommandWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
-
-  getMeasurementProfileCommandWithParamsCompletionHandler(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, completionHandler: (p1: NSError) => void): void;
-
-  readAttributeMeasurementTypeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasurementTypeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasurementTypeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcVoltageDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcVoltageDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcVoltageDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcCurrentDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcCurrentDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcCurrentDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeDcPowerDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeDcPowerDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeDcPowerDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeNeutralCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeNeutralCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeNeutralCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeTotalActivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeTotalActivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeTotalActivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeTotalReactivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeTotalReactivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeTotalReactivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeTotalApparentPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeTotalApparentPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeTotalApparentPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured1stHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured1stHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured1stHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured3rdHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured3rdHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured3rdHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured5thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured5thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured5thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured7thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured7thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured7thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured9thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured9thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured9thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasured11thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasured11thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasured11thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase1stHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase1stHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase1stHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase3rdHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase3rdHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase3rdHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase5thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase5thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase5thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase7thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase7thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase7thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase9thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase9thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase9thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeMeasuredPhase11thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeMeasuredPhase11thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeMeasuredPhase11thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcFrequencyDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcFrequencyDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcFrequencyDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeHarmonicCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeHarmonicCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeHarmonicCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePhaseHarmonicCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePhaseHarmonicCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePhaseHarmonicCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousLineCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousLineCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousLineCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousActiveCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousActiveCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousActiveCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousReactiveCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousReactiveCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousReactiveCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeInstantaneousPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeInstantaneousPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeInstantaneousPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApparentPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApparentPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApparentPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerFactorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerFactorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerFactorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeAverageRmsVoltageMeasurementPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsVoltageMeasurementPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeAverageRmsUnderVoltageCounterWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeAverageRmsUnderVoltageCounterWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeAverageRmsUnderVoltageCounterWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageCounterWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsExtremeOverVoltagePeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeRmsExtremeOverVoltagePeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsExtremeOverVoltagePeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltagePeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsExtremeUnderVoltagePeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeRmsExtremeUnderVoltagePeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsExtremeUnderVoltagePeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltagePeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsVoltageSagPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeRmsVoltageSagPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsVoltageSagPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeRmsVoltageSwellPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeRmsVoltageSwellPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeRmsVoltageSwellPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcVoltageMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcVoltageMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcVoltageMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcVoltageDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcVoltageDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcVoltageDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcCurrentDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcCurrentDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcCurrentDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcPowerMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcPowerMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcPowerMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcPowerDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcPowerDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcPowerDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeOverloadAlarmsMaskWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOverloadAlarmsMaskWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOverloadAlarmsMaskWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOverloadAlarmsMaskWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOverloadAlarmsMaskWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeVoltageOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeVoltageOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeVoltageOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeCurrentOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeCurrentOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeCurrentOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcOverloadAlarmsMaskWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeAcOverloadAlarmsMaskWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeAcOverloadAlarmsMaskWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeAcOverloadAlarmsMaskWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcOverloadAlarmsMaskWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcVoltageOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcVoltageOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcVoltageOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcCurrentOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcCurrentOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcCurrentOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcActivePowerOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcActivePowerOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcActivePowerOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAcReactivePowerOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcReactivePowerOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAcReactivePowerOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsOverVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsOverVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsOverVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsUnderVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeOverVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeUnderVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSagWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSwellWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeLineCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeLineCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeLineCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActiveCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActiveCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActiveCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactiveCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactiveCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactiveCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltagePhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltagePhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltagePhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMinPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMinPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMinPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMaxPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMaxPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMaxPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMinPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMinPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMinPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMaxPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMaxPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMaxPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMinPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMinPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMinPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMaxPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMaxPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMaxPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactivePowerPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactivePowerPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactivePowerPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApparentPowerPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApparentPowerPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApparentPowerPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerFactorPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerFactorPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerFactorPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsOverVoltageCounterPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsOverVoltageCounterPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsOverVoltageCounterPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsUnderVoltageCounterPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageCounterPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltagePeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagPeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSagPeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagPeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellPeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSwellPeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellPeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeLineCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeLineCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeLineCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActiveCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActiveCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActiveCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactiveCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactiveCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactiveCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltagePhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltagePhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltagePhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMinPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMinPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMinPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageMaxPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageMaxPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageMaxPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMinPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMinPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMinPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsCurrentMaxPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsCurrentMaxPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsCurrentMaxPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMinPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMinPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMinPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeActivePowerMaxPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeActivePowerMaxPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeActivePowerMaxPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReactivePowerPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeReactivePowerPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReactivePowerPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApparentPowerPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApparentPowerPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApparentPowerPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePowerFactorPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePowerFactorPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePowerFactorPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsOverVoltageCounterPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsOverVoltageCounterPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsOverVoltageCounterPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeAverageRmsUnderVoltageCounterPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeAverageRmsUnderVoltageCounterPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeAverageRmsUnderVoltageCounterPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeOverVoltagePeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeOverVoltagePeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSagPeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSagPeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSagPeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeRmsVoltageSwellPeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeRmsVoltageSwellPeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeRmsVoltageSwellPeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-}
-
-declare class MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams extends NSObject implements NSCopying {
-  attributeId: NSNumber;
-
-  startTime: NSNumber;
-
-  numberOfIntervals: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setAttributeId(attributeId: NSNumber): void;
-
-  setStartTime(startTime: NSNumber): void;
-
-  setNumberOfIntervals(numberOfIntervals: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams extends NSObject implements NSCopying {
-  startTime: NSNumber;
-
-  status: NSNumber;
-
-  profileIntervalPeriod: NSNumber;
-
-  numberOfIntervalsDelivered: NSNumber;
-
-  attributeId: NSNumber;
-
-  get intervals(): NSArray;
-  set intervals(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
-
-  setStartTime(startTime: NSNumber): void;
-
-  setStatus(status: NSNumber): void;
-
-  setProfileIntervalPeriod(profileIntervalPeriod: NSNumber): void;
-
-  setNumberOfIntervalsDelivered(numberOfIntervalsDelivered: NSNumber): void;
-
-  setAttributeId(attributeId: NSNumber): void;
-
-  setIntervals(intervals: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams extends NSObject implements NSCopying {
-  profileCount: NSNumber;
-
-  profileIntervalPeriod: NSNumber;
-
-  maxNumberOfIntervals: NSNumber;
-
-  get listOfAttributes(): NSArray;
-  set listOfAttributes(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
-
-  setProfileCount(profileCount: NSNumber): void;
-
-  setProfileIntervalPeriod(profileIntervalPeriod: NSNumber): void;
-
-  setMaxNumberOfIntervals(maxNumberOfIntervals: NSNumber): void;
-
-  setListOfAttributes(listOfAttributes: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRBaseClusterBarrierControl extends MTRGenericBaseCluster {
-  barrierControlGoToPercentWithParamsCompletion(params: MTRBarrierControlClusterBarrierControlGoToPercentParams, completion: (p1: NSError) => void): void;
-
-  barrierControlStopWithParamsCompletion(params: MTRBarrierControlClusterBarrierControlStopParams | null, completion: (p1: NSError) => void): void;
-
-  barrierControlStopWithCompletion(completion: (p1: NSError) => void): void;
-
-  readAttributeBarrierMovingStateWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierMovingStateWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierMovingStateWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierSafetyStatusWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierSafetyStatusWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierSafetyStatusWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCapabilitiesWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierCapabilitiesWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCapabilitiesWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierOpenEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierOpenEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeBarrierOpenEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierOpenEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierOpenEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCloseEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierCloseEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeBarrierCloseEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierCloseEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCloseEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCommandOpenEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierCommandOpenEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeBarrierCommandOpenEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierCommandOpenEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCommandOpenEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCommandCloseEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierCommandCloseEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeBarrierCommandCloseEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierCommandCloseEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCommandCloseEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierOpenPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierOpenPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeBarrierOpenPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierOpenPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierOpenPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierClosePeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierClosePeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeBarrierClosePeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierClosePeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierClosePeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierPositionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierPositionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierPositionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  barrierControlGoToPercentWithParamsCompletionHandler(params: MTRBarrierControlClusterBarrierControlGoToPercentParams, completionHandler: (p1: NSError) => void): void;
-
-  barrierControlStopWithParamsCompletionHandler(params: MTRBarrierControlClusterBarrierControlStopParams | null, completionHandler: (p1: NSError) => void): void;
-
-  barrierControlStopWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
-
-  readAttributeBarrierMovingStateWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierMovingStateWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierMovingStateWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierSafetyStatusWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierSafetyStatusWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierSafetyStatusWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCapabilitiesWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierCapabilitiesWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCapabilitiesWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierOpenEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierOpenEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeBarrierOpenEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierOpenEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierOpenEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCloseEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierCloseEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeBarrierCloseEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierCloseEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCloseEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCommandOpenEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierCommandOpenEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeBarrierCommandOpenEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierCommandOpenEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCommandOpenEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierCommandCloseEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierCommandCloseEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeBarrierCommandCloseEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierCommandCloseEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierCommandCloseEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierOpenPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierOpenPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeBarrierOpenPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierOpenPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierOpenPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierClosePeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeBarrierClosePeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeBarrierClosePeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeBarrierClosePeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierClosePeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeBarrierPositionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeBarrierPositionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeBarrierPositionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-}
-
-declare class MTRBarrierControlClusterBarrierControlStopParams extends NSObject implements NSCopying {
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRBaseClusterBinaryInputBasic extends MTRGenericBaseCluster {
-  readAttributeActiveTextWithCompletion(completion: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeActiveTextWithValueCompletion(value: string, completion: (p1: NSError) => void): void;
-
-  writeAttributeActiveTextWithValueParamsCompletion(value: string, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeActiveTextWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeActiveTextWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeDescriptionWithCompletion(completion: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeDescriptionWithValueCompletion(value: string, completion: (p1: NSError) => void): void;
-
-  writeAttributeDescriptionWithValueParamsCompletion(value: string, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeDescriptionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeDescriptionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeInactiveTextWithCompletion(completion: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeInactiveTextWithValueCompletion(value: string, completion: (p1: NSError) => void): void;
-
-  writeAttributeInactiveTextWithValueParamsCompletion(value: string, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeInactiveTextWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeInactiveTextWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeOutOfServiceWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOutOfServiceWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeOutOfServiceWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeOutOfServiceWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOutOfServiceWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePolarityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePolarityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePolarityWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePresentValueWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributePresentValueWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributePresentValueWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributePresentValueWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePresentValueWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReliabilityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeReliabilityWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeReliabilityWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeReliabilityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReliabilityWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeStatusFlagsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeStatusFlagsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeStatusFlagsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApplicationTypeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApplicationTypeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApplicationTypeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  readAttributeActiveTextWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeActiveTextWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeActiveTextWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeActiveTextWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeActiveTextWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeDescriptionWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeDescriptionWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeDescriptionWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeDescriptionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeDescriptionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeInactiveTextWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  writeAttributeInactiveTextWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeInactiveTextWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeInactiveTextWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
-
-  static readAttributeInactiveTextWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
-
-  readAttributeOutOfServiceWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeOutOfServiceWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeOutOfServiceWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeOutOfServiceWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeOutOfServiceWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePolarityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributePolarityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePolarityWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributePresentValueWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributePresentValueWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributePresentValueWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributePresentValueWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributePresentValueWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeReliabilityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeReliabilityWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeReliabilityWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeReliabilityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeReliabilityWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeStatusFlagsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeStatusFlagsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeStatusFlagsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeApplicationTypeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeApplicationTypeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeApplicationTypeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-}
-
-declare class MTRBaseClusterOnOffSwitchConfiguration extends MTRGenericBaseCluster {
-  readAttributeSwitchTypeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeSwitchTypeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeSwitchTypeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeSwitchActionsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeSwitchActionsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeSwitchActionsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  subscribeAttributeSwitchActionsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeSwitchActionsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  readAttributeSwitchTypeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeSwitchTypeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeSwitchTypeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeSwitchActionsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeSwitchActionsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeSwitchActionsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  subscribeAttributeSwitchActionsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeSwitchActionsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 }
 
 declare class MTRClusterTestCluster extends MTRClusterUnitTesting {
@@ -14439,6 +11709,2678 @@ declare class MTRClusterIdentify extends MTRGenericCluster {
   identifyWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRIdentifyClusterIdentifyParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 
   triggerEffectWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRIdentifyClusterTriggerEffectParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+}
+
+declare class MTRDistinguishedNameInfo extends NSObject implements NSCopying {
+  readonly nodeID: NSNumber;
+
+  readonly fabricID: NSNumber;
+
+  readonly rootCACertificateID: NSNumber;
+
+  readonly intermediateCACertificateID: NSNumber;
+
+  readonly caseAuthenticatedTags: NSSet;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRClusterElectricalMeasurement extends MTRGenericCluster {
+  getProfileInfoCommandWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  getProfileInfoCommandWithExpectedValuesExpectedValueIntervalCompletion(expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  getMeasurementProfileCommandWithParamsExpectedValuesExpectedValueIntervalCompletion(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  readAttributeMeasurementTypeWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcVoltageMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcVoltageMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcCurrentMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcCurrentMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcPowerMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcPowerMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcVoltageMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcVoltageDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcCurrentDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcPowerMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeDcPowerDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcFrequencyWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcFrequencyMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcFrequencyMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeNeutralCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeTotalActivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeTotalReactivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeTotalApparentPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasured1stHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasured3rdHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasured5thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasured7thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasured9thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasured11thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasuredPhase1stHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasuredPhase3rdHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasuredPhase5thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasuredPhase7thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasuredPhase9thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeMeasuredPhase11thHarmonicCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcFrequencyMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcFrequencyDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePowerMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePowerDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeHarmonicCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePhaseHarmonicCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeInstantaneousVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeInstantaneousLineCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeInstantaneousActiveCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeInstantaneousReactiveCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeInstantaneousPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerMinWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerMaxWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeReactivePowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeApparentPowerWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePowerFactorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeAverageRmsUnderVoltageCounterWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeAverageRmsUnderVoltageCounterWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeRmsExtremeOverVoltagePeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeRmsExtremeOverVoltagePeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeRmsExtremeUnderVoltagePeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeRmsExtremeUnderVoltagePeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeRmsVoltageSagPeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeRmsVoltageSagPeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeRmsVoltageSagPeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeRmsVoltageSwellPeriodWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeRmsVoltageSwellPeriodWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeRmsVoltageSwellPeriodWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeAcVoltageMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcVoltageDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcCurrentMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcCurrentDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcPowerMultiplierWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcPowerDivisorWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeOverloadAlarmsMaskWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeOverloadAlarmsMaskWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeOverloadAlarmsMaskWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeVoltageOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeCurrentOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcOverloadAlarmsMaskWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeAcOverloadAlarmsMaskWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeAcOverloadAlarmsMaskWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
+  readAttributeAcVoltageOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcCurrentOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcActivePowerOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcReactivePowerOverloadWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsOverVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsUnderVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsExtremeOverVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsExtremeUnderVoltageWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageSagWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageSwellWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeLineCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActiveCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeReactiveCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltagePhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageMinPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageMaxPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentMinPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentMaxPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerMinPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerMaxPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeReactivePowerPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeApparentPowerPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePowerFactorPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsOverVoltageCounterPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsUnderVoltageCounterPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsExtremeOverVoltagePeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageSagPeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageSwellPeriodPhaseBWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeLineCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActiveCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeReactiveCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltagePhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageMinPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageMaxPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentMinPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsCurrentMaxPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerMinPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeActivePowerMaxPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeReactivePowerPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeApparentPowerPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributePowerFactorPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsOverVoltageCounterPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAverageRmsUnderVoltageCounterPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsExtremeOverVoltagePeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageSagPeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeRmsVoltageSwellPeriodPhaseCWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeGeneratedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAcceptedCommandListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeAttributeListWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeFeatureMapWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  readAttributeClusterRevisionWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
+
+  getProfileInfoCommandWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  getProfileInfoCommandWithExpectedValuesExpectedValueIntervalCompletionHandler(expectedValues: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  getMeasurementProfileCommandWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+}
+
+declare class MTRBaseClusterElectricalMeasurement extends MTRGenericBaseCluster {
+  getProfileInfoCommandWithParamsCompletion(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, completion: (p1: NSError) => void): void;
+
+  getProfileInfoCommandWithCompletion(completion: (p1: NSError) => void): void;
+
+  getMeasurementProfileCommandWithParamsCompletion(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, completion: (p1: NSError) => void): void;
+
+  readAttributeMeasurementTypeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasurementTypeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasurementTypeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeNeutralCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeNeutralCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeNeutralCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeTotalActivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTotalActivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTotalActivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeTotalReactivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTotalReactivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTotalReactivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeTotalApparentPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTotalApparentPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTotalApparentPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured1stHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured1stHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured1stHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured3rdHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured3rdHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured3rdHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured5thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured5thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured5thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured7thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured7thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured7thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured9thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured9thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured9thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured11thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured11thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured11thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase1stHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase1stHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase1stHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase3rdHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase3rdHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase3rdHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase5thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase5thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase5thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase7thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase7thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase7thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase9thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase9thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase9thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase11thHarmonicCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase11thHarmonicCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase11thHarmonicCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeHarmonicCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeHarmonicCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeHarmonicCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePhaseHarmonicCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePhaseHarmonicCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePhaseHarmonicCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousLineCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousLineCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousLineCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousActiveCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousActiveCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousActiveCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousReactiveCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousReactiveCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousReactiveCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMinWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMinWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMinWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMaxWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMaxWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMaxWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactivePowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactivePowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactivePowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApparentPowerWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApparentPowerWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApparentPowerWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerFactorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerFactorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerFactorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeAverageRmsVoltageMeasurementPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsVoltageMeasurementPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeAverageRmsUnderVoltageCounterWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeAverageRmsUnderVoltageCounterWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeAverageRmsUnderVoltageCounterWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageCounterWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsExtremeOverVoltagePeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeRmsExtremeOverVoltagePeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsExtremeOverVoltagePeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltagePeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsExtremeUnderVoltagePeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeRmsExtremeUnderVoltagePeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsExtremeUnderVoltagePeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltagePeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsVoltageSagPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeRmsVoltageSagPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsVoltageSagPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsVoltageSwellPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeRmsVoltageSwellPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsVoltageSwellPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcVoltageMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcVoltageMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcVoltageMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcVoltageDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcVoltageDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcVoltageDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcCurrentMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcCurrentMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcCurrentMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcCurrentDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcCurrentDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcCurrentDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcPowerMultiplierWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcPowerMultiplierWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcPowerMultiplierWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcPowerDivisorWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcPowerDivisorWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcPowerDivisorWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOverloadAlarmsMaskWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOverloadAlarmsMaskWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeOverloadAlarmsMaskWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOverloadAlarmsMaskWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOverloadAlarmsMaskWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeVoltageOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeVoltageOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeVoltageOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeCurrentOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcOverloadAlarmsMaskWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeAcOverloadAlarmsMaskWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeAcOverloadAlarmsMaskWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeAcOverloadAlarmsMaskWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcOverloadAlarmsMaskWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcVoltageOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcVoltageOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcVoltageOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcCurrentOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcCurrentOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcCurrentOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcActivePowerOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcActivePowerOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcActivePowerOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcReactivePowerOverloadWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcReactivePowerOverloadWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcReactivePowerOverloadWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsOverVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsOverVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsOverVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsUnderVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeOverVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltageWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeUnderVoltageWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltageWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSagWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSwellWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeLineCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeLineCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeLineCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActiveCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActiveCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActiveCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactiveCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactiveCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactiveCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltagePhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltagePhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltagePhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMinPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMinPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMinPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMaxPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMaxPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMaxPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMinPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMinPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMinPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMaxPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMaxPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMaxPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMinPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMinPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMinPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMaxPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMaxPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMaxPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactivePowerPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactivePowerPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactivePowerPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApparentPowerPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApparentPowerPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApparentPowerPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerFactorPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerFactorPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerFactorPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsOverVoltageCounterPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsOverVoltageCounterPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsOverVoltageCounterPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsUnderVoltageCounterPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageCounterPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltagePeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagPeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSagPeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagPeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellPeriodPhaseBWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSwellPeriodPhaseBWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellPeriodPhaseBWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeLineCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeLineCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeLineCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActiveCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActiveCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActiveCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactiveCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactiveCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactiveCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltagePhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltagePhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltagePhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMinPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMinPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMinPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMaxPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMaxPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMaxPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMinPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMinPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMinPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMaxPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMaxPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMaxPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMinPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMinPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMinPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMaxPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMaxPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMaxPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactivePowerPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactivePowerPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactivePowerPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApparentPowerPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApparentPowerPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApparentPowerPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerFactorPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerFactorPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerFactorPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsOverVoltageCounterPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsOverVoltageCounterPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsOverVoltageCounterPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsUnderVoltageCounterPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageCounterPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltagePeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagPeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSagPeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagPeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellPeriodPhaseCWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSwellPeriodPhaseCWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellPeriodPhaseCWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  getProfileInfoCommandWithParamsCompletionHandler(params: MTRElectricalMeasurementClusterGetProfileInfoCommandParams | null, completionHandler: (p1: NSError) => void): void;
+
+  getProfileInfoCommandWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
+
+  getMeasurementProfileCommandWithParamsCompletionHandler(params: MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams, completionHandler: (p1: NSError) => void): void;
+
+  readAttributeMeasurementTypeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasurementTypeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasurementTypeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcVoltageDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcVoltageDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcVoltageDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcCurrentDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcCurrentDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcCurrentDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeDcPowerDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeDcPowerDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeDcPowerDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeNeutralCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeNeutralCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeNeutralCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeTotalActivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTotalActivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTotalActivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeTotalReactivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTotalReactivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTotalReactivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeTotalApparentPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeTotalApparentPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeTotalApparentPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured1stHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured1stHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured1stHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured3rdHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured3rdHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured3rdHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured5thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured5thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured5thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured7thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured7thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured7thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured9thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured9thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured9thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasured11thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasured11thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasured11thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase1stHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase1stHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase1stHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase3rdHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase3rdHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase3rdHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase5thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase5thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase5thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase7thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase7thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase7thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase9thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase9thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase9thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeMeasuredPhase11thHarmonicCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeMeasuredPhase11thHarmonicCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeMeasuredPhase11thHarmonicCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcFrequencyDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcFrequencyDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcFrequencyDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeHarmonicCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeHarmonicCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeHarmonicCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePhaseHarmonicCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePhaseHarmonicCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePhaseHarmonicCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousLineCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousLineCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousLineCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousActiveCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousActiveCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousActiveCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousReactiveCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousReactiveCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousReactiveCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeInstantaneousPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeInstantaneousPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeInstantaneousPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMinWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMinWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMinWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMaxWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMaxWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMaxWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactivePowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactivePowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactivePowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApparentPowerWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApparentPowerWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApparentPowerWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerFactorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerFactorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerFactorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeAverageRmsVoltageMeasurementPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeAverageRmsVoltageMeasurementPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsVoltageMeasurementPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeAverageRmsUnderVoltageCounterWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeAverageRmsUnderVoltageCounterWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeAverageRmsUnderVoltageCounterWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageCounterWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsExtremeOverVoltagePeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeRmsExtremeOverVoltagePeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsExtremeOverVoltagePeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltagePeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsExtremeUnderVoltagePeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeRmsExtremeUnderVoltagePeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsExtremeUnderVoltagePeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltagePeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsVoltageSagPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeRmsVoltageSagPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsVoltageSagPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeRmsVoltageSwellPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeRmsVoltageSwellPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeRmsVoltageSwellPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcVoltageMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcVoltageMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcVoltageMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcVoltageDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcVoltageDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcVoltageDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcCurrentMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcCurrentMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcCurrentMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcCurrentDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcCurrentDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcCurrentDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcPowerMultiplierWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcPowerMultiplierWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcPowerMultiplierWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcPowerDivisorWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcPowerDivisorWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcPowerDivisorWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeOverloadAlarmsMaskWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOverloadAlarmsMaskWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOverloadAlarmsMaskWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOverloadAlarmsMaskWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOverloadAlarmsMaskWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeVoltageOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeVoltageOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeVoltageOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeCurrentOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeCurrentOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeCurrentOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcOverloadAlarmsMaskWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeAcOverloadAlarmsMaskWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeAcOverloadAlarmsMaskWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeAcOverloadAlarmsMaskWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcOverloadAlarmsMaskWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcVoltageOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcVoltageOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcVoltageOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcCurrentOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcCurrentOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcCurrentOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcActivePowerOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcActivePowerOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcActivePowerOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAcReactivePowerOverloadWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcReactivePowerOverloadWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAcReactivePowerOverloadWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsOverVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsOverVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsOverVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsUnderVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeOverVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltageWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeUnderVoltageWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltageWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSagWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSwellWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeLineCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeLineCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeLineCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActiveCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActiveCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActiveCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactiveCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactiveCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactiveCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltagePhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltagePhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltagePhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMinPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMinPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMinPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMaxPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMaxPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMaxPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMinPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMinPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMinPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMaxPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMaxPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMaxPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMinPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMinPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMinPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMaxPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMaxPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMaxPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactivePowerPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactivePowerPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactivePowerPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApparentPowerPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApparentPowerPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApparentPowerPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerFactorPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerFactorPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerFactorPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsOverVoltageCounterPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsOverVoltageCounterPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsOverVoltageCounterPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsUnderVoltageCounterPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageCounterPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltagePeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltagePeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagPeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSagPeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagPeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellPeriodPhaseBWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSwellPeriodPhaseBWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellPeriodPhaseBWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeLineCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeLineCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeLineCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActiveCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActiveCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActiveCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactiveCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactiveCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactiveCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltagePhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltagePhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltagePhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMinPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMinPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMinPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageMaxPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageMaxPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageMaxPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMinPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMinPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMinPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsCurrentMaxPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsCurrentMaxPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsCurrentMaxPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMinPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMinPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMinPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeActivePowerMaxPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeActivePowerMaxPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeActivePowerMaxPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReactivePowerPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeReactivePowerPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReactivePowerPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApparentPowerPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApparentPowerPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApparentPowerPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePowerFactorPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePowerFactorPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePowerFactorPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsVoltageMeasurementPeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsOverVoltageCounterPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsOverVoltageCounterPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsOverVoltageCounterPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeAverageRmsUnderVoltageCounterPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeAverageRmsUnderVoltageCounterPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeAverageRmsUnderVoltageCounterPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeOverVoltagePeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeOverVoltagePeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeOverVoltagePeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsExtremeUnderVoltagePeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsExtremeUnderVoltagePeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSagPeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSagPeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSagPeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeRmsVoltageSwellPeriodPhaseCWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeRmsVoltageSwellPeriodPhaseCWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeRmsVoltageSwellPeriodPhaseCWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+}
+
+declare class MTRElectricalMeasurementClusterGetMeasurementProfileCommandParams extends NSObject implements NSCopying {
+  attributeId: NSNumber;
+
+  startTime: NSNumber;
+
+  numberOfIntervals: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setAttributeId(attributeId: NSNumber): void;
+
+  setStartTime(startTime: NSNumber): void;
+
+  setNumberOfIntervals(numberOfIntervals: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams extends NSObject implements NSCopying {
+  startTime: NSNumber;
+
+  status: NSNumber;
+
+  profileIntervalPeriod: NSNumber;
+
+  numberOfIntervalsDelivered: NSNumber;
+
+  attributeId: NSNumber;
+
+  get intervals(): NSArray;
+  set intervals(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
+
+  setStartTime(startTime: NSNumber): void;
+
+  setStatus(status: NSNumber): void;
+
+  setProfileIntervalPeriod(profileIntervalPeriod: NSNumber): void;
+
+  setNumberOfIntervalsDelivered(numberOfIntervalsDelivered: NSNumber): void;
+
+  setAttributeId(attributeId: NSNumber): void;
+
+  setIntervals(intervals: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRElectricalMeasurementClusterGetProfileInfoResponseCommandParams extends NSObject implements NSCopying {
+  profileCount: NSNumber;
+
+  profileIntervalPeriod: NSNumber;
+
+  maxNumberOfIntervals: NSNumber;
+
+  get listOfAttributes(): NSArray;
+  set listOfAttributes(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  initWithResponseValueError(responseValue: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, error: interop.PointerConvertible): this;
+
+  setProfileCount(profileCount: NSNumber): void;
+
+  setProfileIntervalPeriod(profileIntervalPeriod: NSNumber): void;
+
+  setMaxNumberOfIntervals(maxNumberOfIntervals: NSNumber): void;
+
+  setListOfAttributes(listOfAttributes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRBaseClusterBarrierControl extends MTRGenericBaseCluster {
+  barrierControlGoToPercentWithParamsCompletion(params: MTRBarrierControlClusterBarrierControlGoToPercentParams, completion: (p1: NSError) => void): void;
+
+  barrierControlStopWithParamsCompletion(params: MTRBarrierControlClusterBarrierControlStopParams | null, completion: (p1: NSError) => void): void;
+
+  barrierControlStopWithCompletion(completion: (p1: NSError) => void): void;
+
+  readAttributeBarrierMovingStateWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierMovingStateWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierMovingStateWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierSafetyStatusWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierSafetyStatusWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierSafetyStatusWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCapabilitiesWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierCapabilitiesWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCapabilitiesWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierOpenEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierOpenEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeBarrierOpenEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierOpenEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierOpenEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCloseEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierCloseEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeBarrierCloseEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierCloseEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCloseEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCommandOpenEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierCommandOpenEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeBarrierCommandOpenEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierCommandOpenEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCommandOpenEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCommandCloseEventsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierCommandCloseEventsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeBarrierCommandCloseEventsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierCommandCloseEventsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCommandCloseEventsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierOpenPeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierOpenPeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeBarrierOpenPeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierOpenPeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierOpenPeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierClosePeriodWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierClosePeriodWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeBarrierClosePeriodWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierClosePeriodWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierClosePeriodWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierPositionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierPositionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierPositionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  barrierControlGoToPercentWithParamsCompletionHandler(params: MTRBarrierControlClusterBarrierControlGoToPercentParams, completionHandler: (p1: NSError) => void): void;
+
+  barrierControlStopWithParamsCompletionHandler(params: MTRBarrierControlClusterBarrierControlStopParams | null, completionHandler: (p1: NSError) => void): void;
+
+  barrierControlStopWithCompletionHandler(completionHandler: (p1: NSError) => void): void;
+
+  readAttributeBarrierMovingStateWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierMovingStateWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierMovingStateWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierSafetyStatusWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierSafetyStatusWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierSafetyStatusWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCapabilitiesWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierCapabilitiesWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCapabilitiesWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierOpenEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierOpenEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeBarrierOpenEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierOpenEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierOpenEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCloseEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierCloseEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeBarrierCloseEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierCloseEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCloseEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCommandOpenEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierCommandOpenEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeBarrierCommandOpenEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierCommandOpenEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCommandOpenEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierCommandCloseEventsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierCommandCloseEventsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeBarrierCommandCloseEventsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierCommandCloseEventsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierCommandCloseEventsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierOpenPeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierOpenPeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeBarrierOpenPeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierOpenPeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierOpenPeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierClosePeriodWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeBarrierClosePeriodWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeBarrierClosePeriodWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeBarrierClosePeriodWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierClosePeriodWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeBarrierPositionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeBarrierPositionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeBarrierPositionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+}
+
+declare class MTRBarrierControlClusterBarrierControlStopParams extends NSObject implements NSCopying {
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRBaseClusterBinaryInputBasic extends MTRGenericBaseCluster {
+  readAttributeActiveTextWithCompletion(completion: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeActiveTextWithValueCompletion(value: string, completion: (p1: NSError) => void): void;
+
+  writeAttributeActiveTextWithValueParamsCompletion(value: string, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeActiveTextWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeActiveTextWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeDescriptionWithCompletion(completion: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeDescriptionWithValueCompletion(value: string, completion: (p1: NSError) => void): void;
+
+  writeAttributeDescriptionWithValueParamsCompletion(value: string, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeDescriptionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeDescriptionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeInactiveTextWithCompletion(completion: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeInactiveTextWithValueCompletion(value: string, completion: (p1: NSError) => void): void;
+
+  writeAttributeInactiveTextWithValueParamsCompletion(value: string, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeInactiveTextWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeInactiveTextWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeOutOfServiceWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOutOfServiceWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeOutOfServiceWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeOutOfServiceWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOutOfServiceWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePolarityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePolarityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePolarityWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePresentValueWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributePresentValueWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributePresentValueWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributePresentValueWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePresentValueWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReliabilityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeReliabilityWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeReliabilityWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeReliabilityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReliabilityWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeStatusFlagsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeStatusFlagsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeStatusFlagsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApplicationTypeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApplicationTypeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApplicationTypeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  readAttributeActiveTextWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeActiveTextWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeActiveTextWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeActiveTextWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeActiveTextWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeDescriptionWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeDescriptionWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeDescriptionWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeDescriptionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeDescriptionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeInactiveTextWithCompletionHandler(completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  writeAttributeInactiveTextWithValueCompletionHandler(value: string, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeInactiveTextWithValueParamsCompletionHandler(value: string, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeInactiveTextWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: string, p2: NSError) => void | null): void;
+
+  static readAttributeInactiveTextWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: string, p2: NSError) => void | null): void;
+
+  readAttributeOutOfServiceWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeOutOfServiceWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeOutOfServiceWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeOutOfServiceWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeOutOfServiceWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePolarityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributePolarityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePolarityWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributePresentValueWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributePresentValueWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributePresentValueWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributePresentValueWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributePresentValueWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeReliabilityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeReliabilityWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeReliabilityWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeReliabilityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeReliabilityWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeStatusFlagsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeStatusFlagsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeStatusFlagsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeApplicationTypeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeApplicationTypeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeApplicationTypeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+}
+
+declare class MTRBaseClusterOnOffSwitchConfiguration extends MTRGenericBaseCluster {
+  readAttributeSwitchTypeWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeSwitchTypeWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeSwitchTypeWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeSwitchActionsWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeSwitchActionsWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeSwitchActionsWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
+  subscribeAttributeSwitchActionsWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeSwitchActionsWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  readAttributeSwitchTypeWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeSwitchTypeWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeSwitchTypeWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeSwitchActionsWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeSwitchActionsWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeSwitchActionsWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
+  subscribeAttributeSwitchActionsWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeSwitchActionsWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 }
 
 declare class MTRAttributeValueWaiter extends NSObject {
@@ -24431,6 +24373,16 @@ declare class MTRUnitTestingClusterTestStructArrayArgumentResponseParams extends
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRTestClusterClusterTestAddArgumentsResponseParams extends MTRUnitTestingClusterTestAddArgumentsResponseParams {
+  returnValue: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  setReturnValue(returnValue: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+}
+
 declare class MTRUnitTestingClusterTestAddArgumentsResponseParams extends NSObject implements NSCopying {
   returnValue: NSNumber;
 
@@ -29266,6 +29218,18 @@ declare class MTRChannelClusterSeriesInfoStruct extends NSObject implements NSCo
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRChannelClusterProgramCategoryStruct extends NSObject implements NSCopying {
+  category: string;
+
+  subCategory: string | null;
+
+  setCategory(category: string): void;
+
+  setSubCategory(subCategory: string | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRThreadNetworkDirectoryClusterThreadNetworkStruct extends NSObject implements NSCopying {
   extendedPanID: NSData;
 
@@ -32652,18 +32616,6 @@ declare class MTRClusterBinding extends MTRGenericCluster {
   initWithDeviceEndpointQueue(device: MTRDevice, endpoint: number, queue: NSObject): this;
 }
 
-declare class MTRChannelClusterProgramCategoryStruct extends NSObject implements NSCopying {
-  category: string;
-
-  subCategory: string | null;
-
-  setCategory(category: string): void;
-
-  setSubCategory(subCategory: string | null): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRDoorLockClusterLockOperationEvent extends NSObject implements NSCopying {
   lockOperationType: NSNumber;
 
@@ -33741,39 +33693,6 @@ declare class MTRDishwasherModeClusterModeTagStruct extends NSObject implements 
   setMfgCode(mfgCode: NSNumber | null): void;
 
   setValue(value: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTRWaterHeaterModeClusterModeOptionStruct extends NSObject implements NSCopying {
-  label: string;
-
-  mode: NSNumber;
-
-  get modeTags(): NSArray;
-  set modeTags(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  setLabel(label: string): void;
-
-  setMode(mode: NSNumber): void;
-
-  setModeTags(modeTags: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
-declare class MTROvenCavityOperationalStateClusterErrorStateStruct extends NSObject implements NSCopying {
-  errorStateID: NSNumber;
-
-  errorStateLabel: string | null;
-
-  errorStateDetails: string | null;
-
-  setErrorStateID(errorStateID: NSNumber): void;
-
-  setErrorStateLabel(errorStateLabel: string | null): void;
-
-  setErrorStateDetails(errorStateDetails: string | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -39499,16 +39418,6 @@ declare class MTRBaseClusterRVCCleanMode extends MTRGenericBaseCluster {
   initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTRTestClusterClusterTestAddArgumentsResponseParams extends MTRUnitTestingClusterTestAddArgumentsResponseParams {
-  returnValue: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  setReturnValue(returnValue: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-}
-
 declare class MTRElectricalPowerMeasurementClusterMeasurementPeriodRangesEvent extends NSObject implements NSCopying {
   get ranges(): NSArray;
   set ranges(value: NSArray<interop.Object> | Array<interop.Object>);
@@ -41750,11 +41659,6 @@ declare class MTROnOffClusterOnWithRecallGlobalSceneParams extends NSObject impl
 declare class MTRSetupPayload extends NSObject implements NSSecureCoding {
   initWithPayload(payload: string): this;
 
-  readonly concatenated: boolean;
-
-  get subPayloads(): NSArray;
-  set subPayloads(value: NSArray<interop.Object> | Array<interop.Object>);
-
   version: NSNumber;
 
   vendorID: NSNumber;
@@ -41792,10 +41696,6 @@ declare class MTRSetupPayload extends NSObject implements NSSecureCoding {
   qrCodeString(): string | null;
 
   static isValidSetupPasscode(setupPasscode: NSNumber): boolean;
-
-  isConcatenated(): boolean;
-
-  setSubPayloads(subPayloads: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setVersion(version: NSNumber): void;
 
@@ -42541,25 +42441,69 @@ declare class MTRClusterColorControl extends MTRGenericCluster {
 
   readAttributeWhitePointXWithParams(params: MTRReadParams | null): NSDictionary | null;
 
+  writeAttributeWhitePointXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeWhitePointXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
   readAttributeWhitePointYWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeWhitePointYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeWhitePointYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 
   readAttributeColorPointRXWithParams(params: MTRReadParams | null): NSDictionary | null;
 
+  writeAttributeColorPointRXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointRXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
   readAttributeColorPointRYWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeColorPointRYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointRYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 
   readAttributeColorPointRIntensityWithParams(params: MTRReadParams | null): NSDictionary | null;
 
+  writeAttributeColorPointRIntensityWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointRIntensityWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
   readAttributeColorPointGXWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeColorPointGXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointGXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 
   readAttributeColorPointGYWithParams(params: MTRReadParams | null): NSDictionary | null;
 
+  writeAttributeColorPointGYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointGYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
   readAttributeColorPointGIntensityWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeColorPointGIntensityWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointGIntensityWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 
   readAttributeColorPointBXWithParams(params: MTRReadParams | null): NSDictionary | null;
 
+  writeAttributeColorPointBXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointBXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
   readAttributeColorPointBYWithParams(params: MTRReadParams | null): NSDictionary | null;
 
+  writeAttributeColorPointBYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointBYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
+
   readAttributeColorPointBIntensityWithParams(params: MTRReadParams | null): NSDictionary | null;
+
+  writeAttributeColorPointBIntensityWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
+
+  writeAttributeColorPointBIntensityWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 
   readAttributeEnhancedCurrentHueWithParams(params: MTRReadParams | null): NSDictionary | null;
 
@@ -42640,50 +42584,6 @@ declare class MTRClusterColorControl extends MTRGenericCluster {
   moveColorTemperatureWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRColorControlClusterMoveColorTemperatureParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
 
   stepColorTemperatureWithParamsExpectedValuesExpectedValueIntervalCompletionHandler(params: MTRColorControlClusterStepColorTemperatureParams, expectedDataValueDictionaries: NSArray<interop.Object> | Array<interop.Object> | null, expectedValueIntervalMs: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeWhitePointXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeWhitePointYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeWhitePointYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointRXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointRXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointRYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointRYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointRIntensityWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointRIntensityWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointGXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointGXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointGYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointGYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointGIntensityWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointGIntensityWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointBXWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointBXWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointBYWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointBYWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
-
-  writeAttributeColorPointBIntensityWithValueExpectedValueInterval(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber): void;
-
-  writeAttributeColorPointBIntensityWithValueExpectedValueIntervalParams(dataValueDictionary: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, expectedValueIntervalMs: NSNumber, params: MTRWriteParams | null): void;
 }
 
 declare class MTRTestClusterClusterTestEmitTestFabricScopedEventRequestParams extends MTRUnitTestingClusterTestEmitTestFabricScopedEventRequestParams {
@@ -44955,111 +44855,6 @@ declare class MTRClusterOzoneConcentrationMeasurement extends MTRGenericCluster 
   initWithDeviceEndpointIDQueue(device: MTRDevice, endpointID: NSNumber, queue: NSObject): this;
 }
 
-declare class MTROtaSoftwareUpdateRequestorClusterAnnounceOtaProviderParams extends MTROTASoftwareUpdateRequestorClusterAnnounceOTAProviderParams {
-  announcementReason: NSNumber;
-
-  metadataForNode: NSData | null;
-
-  endpoint: NSNumber;
-
-  timedInvokeTimeoutMs: NSNumber;
-
-  serverSideProcessingTimeout: NSNumber;
-
-  setAnnouncementReason(announcementReason: NSNumber): void;
-
-  setMetadataForNode(metadataForNode: NSData | null): void;
-
-  setEndpoint(endpoint: NSNumber): void;
-
-  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
-
-  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
-}
-
-declare class MTRBaseClusterKeypadInput extends MTRGenericBaseCluster {
-  sendKeyWithParamsCompletion(params: MTRKeypadInputClusterSendKeyParams, completion: (p1: MTRKeypadInputClusterSendKeyResponseParams, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
-
-  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
-
-  sendKeyWithParamsCompletionHandler(params: MTRKeypadInputClusterSendKeyParams, completionHandler: (p1: MTRKeypadInputClusterSendKeyResponseParams, p2: NSError) => void | null): void;
-
-  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
-
-  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-}
-
-declare class MTRDeviceEnergyManagementClusterPowerAdjustCapabilityStruct extends NSObject implements NSCopying {
-  get powerAdjustCapability(): NSArray | null;
-  set powerAdjustCapability(value: NSArray<interop.Object> | Array<interop.Object> | null);
-
-  cause: NSNumber;
-
-  setPowerAdjustCapability(powerAdjustCapability: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setCause(cause: NSNumber): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-}
-
 declare class MTRWaterHeaterManagementClusterCancelBoostParams extends NSObject implements NSCopying {
   timedInvokeTimeoutMs: NSNumber;
 
@@ -45328,11 +45123,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeWhitePointXWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeWhitePointXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeWhitePointXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
   subscribeAttributeWhitePointXWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeWhitePointXWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeWhitePointYWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeWhitePointYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeWhitePointYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
 
   subscribeAttributeWhitePointYWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45340,11 +45143,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointRXWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointRXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointRXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointRXWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointRXWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointRYWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointRYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointRYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointRYWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45352,11 +45163,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointRIntensityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointRIntensityWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointRIntensityWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointRIntensityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointRIntensityWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointGXWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointGXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointGXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointGXWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45364,11 +45183,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointGYWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointGYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointGYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointGYWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointGYWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointGIntensityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointGIntensityWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointGIntensityWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointGIntensityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45376,17 +45203,29 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointBXWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointBXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointBXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointBXWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointBXWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointBYWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointBYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointBYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointBYWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointBYWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointBIntensityWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointBIntensityWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
+
+  writeAttributeColorPointBIntensityWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointBIntensityWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45720,11 +45559,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeWhitePointXWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeWhitePointXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeWhitePointXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
   subscribeAttributeWhitePointXWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeWhitePointXWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeWhitePointYWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeWhitePointYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeWhitePointYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
 
   subscribeAttributeWhitePointYWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45732,11 +45579,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointRXWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointRXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointRXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointRXWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointRXWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointRYWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointRYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointRYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointRYWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45744,11 +45599,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointRIntensityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointRIntensityWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointRIntensityWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointRIntensityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointRIntensityWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointGXWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointGXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointGXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointGXWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45756,11 +45619,19 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointGYWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointGYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointGYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointGYWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointGYWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointGIntensityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointGIntensityWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointGIntensityWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointGIntensityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45768,17 +45639,29 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
 
   readAttributeColorPointBXWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointBXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointBXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointBXWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointBXWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointBYWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
+  writeAttributeColorPointBYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointBYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
+
   subscribeAttributeColorPointBYWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeColorPointBYWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   readAttributeColorPointBIntensityWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  writeAttributeColorPointBIntensityWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
+
+  writeAttributeColorPointBIntensityWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
 
   subscribeAttributeColorPointBIntensityWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
@@ -45889,94 +45772,6 @@ declare class MTRBaseClusterColorControl extends MTRGenericBaseCluster {
   subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
 
   static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
-
-  writeAttributeWhitePointXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRIntensityWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRIntensityWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGIntensityWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGIntensityWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBXWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBXWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBYWithValueCompletion(value: NSNumber, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBYWithValueParamsCompletion(value: NSNumber, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBIntensityWithValueCompletion(value: NSNumber | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBIntensityWithValueParamsCompletion(value: NSNumber | null, params: MTRWriteParams | null, completion: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeWhitePointYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRIntensityWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointRIntensityWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGIntensityWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointGIntensityWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBXWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBXWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBYWithValueCompletionHandler(value: NSNumber, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBYWithValueParamsCompletionHandler(value: NSNumber, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBIntensityWithValueCompletionHandler(value: NSNumber | null, completionHandler: (p1: NSError) => void): void;
-
-  writeAttributeColorPointBIntensityWithValueParamsCompletionHandler(value: NSNumber | null, params: MTRWriteParams | null, completionHandler: (p1: NSError) => void): void;
 }
 
 declare class MTRClusterThreadNetworkDiagnostics extends MTRGenericCluster {
@@ -46391,6 +46186,39 @@ declare class MTRMediaPlaybackClusterPlayParams extends NSObject implements NSCo
   setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
 
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTRWaterHeaterModeClusterModeOptionStruct extends NSObject implements NSCopying {
+  label: string;
+
+  mode: NSNumber;
+
+  get modeTags(): NSArray;
+  set modeTags(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  setLabel(label: string): void;
+
+  setMode(mode: NSNumber): void;
+
+  setModeTags(modeTags: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROvenCavityOperationalStateClusterErrorStateStruct extends NSObject implements NSCopying {
+  errorStateID: NSNumber;
+
+  errorStateLabel: string | null;
+
+  errorStateDetails: string | null;
+
+  setErrorStateID(errorStateID: NSNumber): void;
+
+  setErrorStateLabel(errorStateLabel: string | null): void;
+
+  setErrorStateDetails(errorStateDetails: string | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -46929,6 +46757,89 @@ declare class MTRDoorLockClusterSetCredentialParams extends NSObject implements 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class MTRBaseClusterKeypadInput extends MTRGenericBaseCluster {
+  sendKeyWithParamsCompletion(params: MTRKeypadInputClusterSendKeyParams, completion: (p1: MTRKeypadInputClusterSendKeyResponseParams, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletion(completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletion(completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithParamsSubscriptionEstablishedReportHandler(params: MTRSubscribeParams, subscriptionEstablished: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithClusterStateCacheEndpointQueueCompletion(clusterStateCacheContainer: MTRClusterStateCacheContainer, endpoint: NSNumber, queue: NSObject, completion: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  initWithDeviceEndpointIDQueue(device: MTRBaseDevice, endpointID: NSNumber, queue: NSObject): this;
+
+  initWithDeviceEndpointQueue(device: MTRBaseDevice, endpoint: number, queue: NSObject): this;
+
+  sendKeyWithParamsCompletionHandler(params: MTRKeypadInputClusterSendKeyParams, completionHandler: (p1: MTRKeypadInputClusterSendKeyResponseParams, p2: NSError) => void | null): void;
+
+  readAttributeGeneratedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeGeneratedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeGeneratedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAcceptedCommandListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAcceptedCommandListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAcceptedCommandListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeAttributeListWithCompletionHandler(completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  subscribeAttributeAttributeListWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  static readAttributeAttributeListWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSArray<interop.Object> | Array<interop.Object>, p2: NSError) => void | null): void;
+
+  readAttributeFeatureMapWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeFeatureMapWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeFeatureMapWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  readAttributeClusterRevisionWithCompletionHandler(completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  subscribeAttributeClusterRevisionWithMinIntervalMaxIntervalParamsSubscriptionEstablishedReportHandler(minInterval: NSNumber, maxInterval: NSNumber, params: MTRSubscribeParams | null, subscriptionEstablishedHandler: () => void | null, reportHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+
+  static readAttributeClusterRevisionWithAttributeCacheEndpointQueueCompletionHandler(attributeCacheContainer: MTRAttributeCacheContainer, endpoint: NSNumber, queue: NSObject, completionHandler: (p1: NSNumber, p2: NSError) => void | null): void;
+}
+
+declare class MTRDeviceEnergyManagementClusterPowerAdjustCapabilityStruct extends NSObject implements NSCopying {
+  get powerAdjustCapability(): NSArray | null;
+  set powerAdjustCapability(value: NSArray<interop.Object> | Array<interop.Object> | null);
+
+  cause: NSNumber;
+
+  setPowerAdjustCapability(powerAdjustCapability: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setCause(cause: NSNumber): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
 declare class MTRGroupsClusterAddGroupParams extends NSObject implements NSCopying {
   groupID: NSNumber;
 
@@ -47189,6 +47100,28 @@ declare class MTRIdentifyClusterIdentifyParams extends NSObject implements NSCop
   setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
+}
+
+declare class MTROtaSoftwareUpdateRequestorClusterAnnounceOtaProviderParams extends MTROTASoftwareUpdateRequestorClusterAnnounceOTAProviderParams {
+  announcementReason: NSNumber;
+
+  metadataForNode: NSData | null;
+
+  endpoint: NSNumber;
+
+  timedInvokeTimeoutMs: NSNumber;
+
+  serverSideProcessingTimeout: NSNumber;
+
+  setAnnouncementReason(announcementReason: NSNumber): void;
+
+  setMetadataForNode(metadataForNode: NSData | null): void;
+
+  setEndpoint(endpoint: NSNumber): void;
+
+  setTimedInvokeTimeoutMs(timedInvokeTimeoutMs: NSNumber | null): void;
+
+  setServerSideProcessingTimeout(serverSideProcessingTimeout: NSNumber | null): void;
 }
 
 declare class MTREnergyEVSEClusterFaultEvent extends NSObject implements NSCopying {

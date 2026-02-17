@@ -1,7 +1,7 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const PHImageErrorKey: string;
+declare const PHImageResultRequestIDKey: string;
 
 declare const PHImageResultIsDegradedKey: string;
 
@@ -9,33 +9,33 @@ declare const PHImageResultIsInCloudKey: string;
 
 declare const PHImageManagerMaximumSize: CGSize;
 
-declare const PHInvalidImageRequestID: number;
-
-declare const PHLocalIdentifiersErrorKey: string;
-
-declare const PHLivePhotoInfoErrorKey: string;
-
-declare const PHImageResultRequestIDKey: string;
-
-declare const PHInvalidAssetResourceDataRequestID: number;
-
-declare const PHLivePhotoRequestIDInvalid: number;
-
-declare const PHContentEditingInputErrorKey: string;
+declare const PHLivePhotoShouldRenderAtPlaybackTime: string;
 
 declare const PHContentEditingInputCancelledKey: string;
 
+declare const PHContentEditingInputResultIsInCloudKey: string;
+
+declare const PHLivePhotoInfoCancelledKey: string;
+
 declare const PHLivePhotoInfoIsDegradedKey: string;
 
-declare const PHImageCancelledKey: string;
-
-declare const PHContentEditingInputResultIsInCloudKey: string;
+declare const PHLivePhotoRequestIDInvalid: number;
 
 declare const PHPhotosErrorDomain: string;
 
-declare const PHLivePhotoShouldRenderAtPlaybackTime: string;
+declare const PHLivePhotoInfoErrorKey: string;
 
-declare const PHLivePhotoInfoCancelledKey: string;
+declare const PHLocalIdentifiersErrorKey: string;
+
+declare const PHImageErrorKey: string;
+
+declare const PHInvalidAssetResourceDataRequestID: number;
+
+declare const PHInvalidImageRequestID: number;
+
+declare const PHImageCancelledKey: string;
+
+declare const PHContentEditingInputErrorKey: string;
 
 declare const PHVideoRequestOptionsDeliveryMode: {
   Automatic: 0,
@@ -88,7 +88,6 @@ declare const PHPhotosError: {
   MissingResource: 3303,
   NotEnoughSpace: 3305,
   RequestNotSupportedForAsset: 3306,
-  LimitExceeded: 3307,
   AccessRestricted: 3310,
   AccessUserDenied: 3311,
   LibraryInFileProviderSyncRoot: 5423,
@@ -101,11 +100,6 @@ declare const PHObjectType: {
   Asset: 1,
   AssetCollection: 2,
   CollectionList: 3,
-};
-
-declare const PHAssetResourceUploadJobAction: {
-  Acknowledge: 1,
-  Retry: 2,
 };
 
 declare const PHAssetSourceType: {
@@ -233,13 +227,6 @@ declare const PHAuthorizationStatus: {
   Denied: 2,
   Authorized: 3,
   Limited: 4,
-};
-
-declare const PHAssetResourceUploadJobState: {
-  Registered: 1,
-  Pending: 2,
-  Failed: 3,
-  Succeeded: 4,
 };
 
 declare const PHAssetResourceType: {
@@ -649,10 +636,6 @@ declare class PHPhotoLibrary extends NSObject {
 
   static requestAuthorization(handler: (p1: interop.Enum<typeof PHAuthorizationStatus>) => void): void;
 
-  readonly uploadJobExtensionEnabled: boolean;
-
-  setUploadJobExtensionEnabledError(enable: boolean, error: interop.PointerConvertible): boolean;
-
   readonly unavailabilityReason: NSError;
 
   registerAvailabilityObserver(observer: PHPhotoLibraryAvailabilityObserver): void;
@@ -670,8 +653,6 @@ declare class PHPhotoLibrary extends NSObject {
   fetchPersistentChangesSinceTokenError(token: PHPersistentChangeToken, error: interop.PointerConvertible): PHPersistentChangeFetchResult;
 
   readonly currentChangeToken: PHPersistentChangeToken;
-
-  isUploadJobExtensionEnabled(): boolean;
 
   localIdentifierMappingsForCloudIdentifiers(cloudIdentifiers: NSArray<interop.Object> | Array<interop.Object>): NSDictionary;
 
@@ -734,16 +715,6 @@ declare class PHLivePhoto extends NSObject implements NSCopying, NSSecureCoding 
   encodeWithCoder(coder: NSCoder): void;
 
   initWithCoder(coder: NSCoder): this;
-}
-
-declare class PHAssetResourceUploadJobChangeRequest extends PHChangeRequest {
-  static createJobWithDestinationResource(destination: NSURLRequest, resource: PHAssetResource): void;
-
-  static changeRequestForUploadJob<This extends abstract new (...args: any) => any>(this: This, job: PHAssetResourceUploadJob): InstanceType<This>;
-
-  acknowledge(): void;
-
-  retryWithDestination(destination: NSURLRequest | null): void;
 }
 
 declare class PHChangeRequest extends NSObject {
@@ -853,18 +824,6 @@ declare class PHContentEditingOutput extends NSObject {
   initWithPlaceholderForCreatedAsset(placeholderForCreatedAsset: PHObjectPlaceholder): this;
 }
 
-declare class PHAssetResourceUploadJob extends PHObject {
-  static readonly jobLimit: number;
-
-  readonly resource: PHAssetResource;
-
-  readonly destination: NSURLRequest;
-
-  readonly state: interop.Enum<typeof PHAssetResourceUploadJobState>;
-
-  static fetchJobsWithActionOptions(action: interop.Enum<typeof PHAssetResourceUploadJobAction>, options: PHFetchOptions | null): PHFetchResult;
-}
-
 declare class PHCloudIdentifier extends NSObject implements NSSecureCoding {
   readonly stringValue: string;
 
@@ -911,6 +870,41 @@ declare class PHChange extends NSObject {
   changeDetailsForObject(object: PHObject): PHObjectChangeDetails;
 
   changeDetailsForFetchResult(object: PHFetchResult): PHFetchResultChangeDetails;
+}
+
+declare class PHAssetCollection extends PHCollection {
+  readonly assetCollectionType: interop.Enum<typeof PHAssetCollectionType>;
+
+  readonly assetCollectionSubtype: interop.Enum<typeof PHAssetCollectionSubtype>;
+
+  readonly estimatedAssetCount: number;
+
+  readonly startDate: NSDate;
+
+  readonly endDate: NSDate;
+
+  readonly approximateLocation: CLLocation;
+
+  readonly localizedLocationNames: NSArray;
+
+  static fetchAssetCollectionsWithLocalIdentifiersOptions(identifiers: NSArray<interop.Object> | Array<interop.Object>, options: PHFetchOptions | null): PHFetchResult;
+
+  static fetchAssetCollectionsWithTypeSubtypeOptions(type: interop.Enum<typeof PHAssetCollectionType>, subtype: interop.Enum<typeof PHAssetCollectionSubtype>, options: PHFetchOptions | null): PHFetchResult;
+
+  static fetchAssetCollectionsContainingAssetWithTypeOptions(asset: PHAsset, type: interop.Enum<typeof PHAssetCollectionType>, options: PHFetchOptions | null): PHFetchResult;
+
+  static fetchAssetCollectionsWithALAssetGroupURLsOptions(assetGroupURLs: NSArray<interop.Object> | Array<interop.Object>, options: PHFetchOptions | null): PHFetchResult;
+
+  static fetchMomentsInMomentListOptions(momentList: PHCollectionList, options: PHFetchOptions | null): PHFetchResult;
+
+  static fetchMomentsWithOptions(options: PHFetchOptions | null): PHFetchResult;
+
+  static transientAssetCollectionWithAssetsTitle(assets: NSArray<interop.Object> | Array<interop.Object>, title: string | null): PHAssetCollection;
+
+  static transientAssetCollectionWithAssetFetchResultTitle(fetchResult: PHFetchResult, title: string | null): PHAssetCollection;
+}
+
+declare class PHObjectPlaceholder extends PHObject {
 }
 
 declare class PHAsset extends PHObject {
@@ -975,41 +969,6 @@ declare class PHAsset extends PHObject {
   requestContentEditingInputWithOptionsCompletionHandler(options: PHContentEditingInputRequestOptions | null, completionHandler: (p1: PHContentEditingInput, p2: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>) => void | null): number;
 
   cancelContentEditingInputRequest(requestID: number): void;
-}
-
-declare class PHAssetCollection extends PHCollection {
-  readonly assetCollectionType: interop.Enum<typeof PHAssetCollectionType>;
-
-  readonly assetCollectionSubtype: interop.Enum<typeof PHAssetCollectionSubtype>;
-
-  readonly estimatedAssetCount: number;
-
-  readonly startDate: NSDate;
-
-  readonly endDate: NSDate;
-
-  readonly approximateLocation: CLLocation;
-
-  readonly localizedLocationNames: NSArray;
-
-  static fetchAssetCollectionsWithLocalIdentifiersOptions(identifiers: NSArray<interop.Object> | Array<interop.Object>, options: PHFetchOptions | null): PHFetchResult;
-
-  static fetchAssetCollectionsWithTypeSubtypeOptions(type: interop.Enum<typeof PHAssetCollectionType>, subtype: interop.Enum<typeof PHAssetCollectionSubtype>, options: PHFetchOptions | null): PHFetchResult;
-
-  static fetchAssetCollectionsContainingAssetWithTypeOptions(asset: PHAsset, type: interop.Enum<typeof PHAssetCollectionType>, options: PHFetchOptions | null): PHFetchResult;
-
-  static fetchAssetCollectionsWithALAssetGroupURLsOptions(assetGroupURLs: NSArray<interop.Object> | Array<interop.Object>, options: PHFetchOptions | null): PHFetchResult;
-
-  static fetchMomentsInMomentListOptions(momentList: PHCollectionList, options: PHFetchOptions | null): PHFetchResult;
-
-  static fetchMomentsWithOptions(options: PHFetchOptions | null): PHFetchResult;
-
-  static transientAssetCollectionWithAssetsTitle(assets: NSArray<interop.Object> | Array<interop.Object>, title: string | null): PHAssetCollection;
-
-  static transientAssetCollectionWithAssetFetchResultTitle(fetchResult: PHFetchResult, title: string | null): PHAssetCollection;
-}
-
-declare class PHObjectPlaceholder extends PHObject {
 }
 
 declare class PHCollection extends PHObject {

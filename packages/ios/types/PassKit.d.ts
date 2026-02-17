@@ -4,6 +4,8 @@
 
 declare const PKIdentityErrorDomain: string;
 
+declare const PKMerchantCategoryCodeNone: number;
+
 declare const PKStoredValuePassBalanceTypeLoyaltyPoints: string;
 
 declare const PKStoredValuePassBalanceTypeCash: string;
@@ -27,8 +29,6 @@ declare const PKDisbursementErrorDomain: string;
 declare const PKPaymentErrorPostalAddressUserInfoKey: string;
 
 declare const PKContactFieldEmailAddress: string;
-
-declare const PKPaymentNetworkConecs: string;
 
 declare const PKPaymentNetworkHimyan: string;
 
@@ -76,6 +76,8 @@ declare const PKContactFieldName: string;
 
 declare const PKPaymentNetworkBancomat: string;
 
+declare const PKPassLibraryRemotePaymentPassesDidChangeNotification: string;
+
 declare const PKPaymentErrorDomain: string;
 
 declare const PKPaymentNetworkAmex: string;
@@ -90,15 +92,13 @@ declare const PKEncryptionSchemeRSA_V2: string;
 
 declare const PKPaymentNetworkBarcode: string;
 
+declare const PKPaymentNetworkBankAxept: string;
+
 declare const PKContactFieldPostalAddress: string;
 
 declare const PKPaymentNetworkCarteBancaire: string;
 
-declare const PKPassLibraryRemotePaymentPassesDidChangeNotification: string;
-
 declare const PKPaymentNetworkCarteBancaires: string;
-
-declare const PKPaymentNetworkCartesBancaires: string;
 
 declare const PKPassLibraryReplacementPassesUserInfoKey: string;
 
@@ -118,15 +118,13 @@ declare const PKPaymentNetworkWaon: string;
 
 declare const PKPaymentNetworkMyDebit: string;
 
-declare const PKPaymentNetworkBankAxept: string;
+declare const PKPaymentNetworkCartesBancaires: string;
 
-declare const PKMerchantCategoryCodeNone: number;
+declare const PKContactFieldPhoneticName: string;
 
 declare const PKEncryptionSchemeECC_V2: string;
 
 declare const PKShareSecureElementPassErrorDomain: string;
-
-declare const PKContactFieldPhoneticName: string;
 
 declare const PKContactFieldPhoneNumber: string;
 
@@ -517,15 +515,6 @@ declare interface PKPaymentInformationRequestHandling {
 declare class PKPaymentInformationRequestHandling extends NativeObject implements PKPaymentInformationRequestHandling {
 }
 
-declare interface PKAddSecureElementPassViewControllerDelegate extends NSObjectProtocol {
-  addSecureElementPassViewControllerDidFinishAddingSecureElementPassError?(controller: PKAddSecureElementPassViewController, pass: PKSecureElementPass | null, error: NSError | null): void;
-
-  addSecureElementPassViewControllerDidFinishAddingSecureElementPassesError(controller: PKAddSecureElementPassViewController, passes: NSArray<interop.Object> | Array<interop.Object> | null, error: NSError | null): void;
-}
-
-declare class PKAddSecureElementPassViewControllerDelegate extends NativeObject implements PKAddSecureElementPassViewControllerDelegate {
-}
-
 declare interface PKVehicleConnectionDelegate extends NSObjectProtocol {
   sessionDidChangeConnectionState(newState: interop.Enum<typeof PKVehicleConnectionSessionConnectionState>): void;
 
@@ -542,6 +531,15 @@ declare interface PKAddPaymentPassViewControllerDelegate extends NSObjectProtoco
 }
 
 declare class PKAddPaymentPassViewControllerDelegate extends NativeObject implements PKAddPaymentPassViewControllerDelegate {
+}
+
+declare interface PKAddSecureElementPassViewControllerDelegate extends NSObjectProtocol {
+  addSecureElementPassViewControllerDidFinishAddingSecureElementPassError?(controller: PKAddSecureElementPassViewController, pass: PKSecureElementPass | null, error: NSError | null): void;
+
+  addSecureElementPassViewControllerDidFinishAddingSecureElementPassesError(controller: PKAddSecureElementPassViewController, passes: NSArray<interop.Object> | Array<interop.Object> | null, error: NSError | null): void;
+}
+
+declare class PKAddSecureElementPassViewControllerDelegate extends NativeObject implements PKAddSecureElementPassViewControllerDelegate {
 }
 
 declare interface PKAddPassesViewControllerDelegate extends NSObjectProtocol {
@@ -564,15 +562,11 @@ declare class PKIdentityRequest extends NSObject {
 
   merchantIdentifier: string;
 
-  usageDescriptionKey: string;
-
   setDescriptor(descriptor: PKIdentityDocumentDescriptor | null): void;
 
   setNonce(nonce: NSData | null): void;
 
   setMerchantIdentifier(merchantIdentifier: string | null): void;
-
-  setUsageDescriptionKey(usageDescriptionKey: string | null): void;
 }
 
 declare class PKIdentityIntentToStore extends NSObject implements NSCopying {

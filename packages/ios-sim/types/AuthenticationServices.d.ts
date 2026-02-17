@@ -19,8 +19,6 @@ declare const ASAuthorizationPublicKeyCredentialAttestationKindDirect: string;
 
 declare const ASAuthorizationPublicKeyCredentialAttestationKindNone: string;
 
-declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged: string;
-
 declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceRequired: string;
 
 declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferencePreferred: string;
@@ -43,7 +41,7 @@ declare const ASAuthorizationScopeEmail: string;
 
 declare const ASCredentialIdentityStoreErrorDomain: string;
 
-declare const ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB: string;
+declare const ASExtensionLocalizedFailureReasonErrorKey: string;
 
 declare const ASAuthorizationPublicKeyCredentialAttestationKindEnterprise: string;
 
@@ -53,19 +51,15 @@ declare const ASCOSEAlgorithmIdentifierES256: number;
 
 declare const ASExtensionErrorDomain: string;
 
-declare const ASExtensionLocalizedFailureReasonErrorKey: string;
-
 declare const ASAuthorizationScopeFullName: string;
 
-declare const ASGeneratedPasswordKindStrong: string;
+declare const ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportUSB: string;
+
+declare const ASAuthorizationPublicKeyCredentialUserVerificationPreferenceDiscouraged: string;
 
 declare const ASAuthorizationPublicKeyCredentialResidentKeyPreferenceRequired: string;
 
 declare const ASWebAuthenticationSessionErrorDomain: string;
-
-declare const ASGeneratedPasswordKindAlphanumeric: string;
-
-declare const ASGeneratedPasswordKindPassphrase: string;
 
 declare const ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle: {
   Standard: 0,
@@ -153,12 +147,6 @@ declare const ASAuthorizationControllerRequestOptions: {
   ASAuthorizationControllerRequestOptionPreferImmediatelyAvailableCredentials: 1,
 };
 
-declare const ASSavePasswordRequestEvent: {
-  UserInitiated: 0,
-  FormDidDisappear: 1,
-  GeneratedPasswordFilled: 2,
-};
-
 declare const ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation: {
   Read: 0,
   Write: 1,
@@ -172,7 +160,6 @@ declare const ASAuthorizationPublicKeyCredentialAttachment: {
 declare const ASCredentialServiceIdentifierType: {
   Domain: 0,
   URL: 1,
-  App: 2,
 };
 
 declare const ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState: {
@@ -291,6 +278,13 @@ declare interface ASAuthorizationPublicKeyCredentialRegistrationRequest extends 
 declare class ASAuthorizationPublicKeyCredentialRegistrationRequest extends NativeObject implements ASAuthorizationPublicKeyCredentialRegistrationRequest {
 }
 
+declare interface ASAuthorizationControllerPresentationContextProviding extends NSObjectProtocol {
+  presentationAnchorForAuthorizationController(controller: ASAuthorizationController): UIWindow;
+}
+
+declare class ASAuthorizationControllerPresentationContextProviding extends NativeObject implements ASAuthorizationControllerPresentationContextProviding {
+}
+
 declare interface ASAuthorizationControllerDelegate extends NSObjectProtocol {
   authorizationControllerDidCompleteWithAuthorization?(controller: ASAuthorizationController, authorization: ASAuthorization): void;
 
@@ -341,13 +335,6 @@ declare interface ASPublicKeyCredential extends ASAuthorizationCredential {
 }
 
 declare class ASPublicKeyCredential extends NativeObject implements ASPublicKeyCredential {
-}
-
-declare interface ASAuthorizationControllerPresentationContextProviding extends NSObjectProtocol {
-  presentationAnchorForAuthorizationController(controller: ASAuthorizationController): UIWindow;
-}
-
-declare class ASAuthorizationControllerPresentationContextProviding extends NativeObject implements ASAuthorizationControllerPresentationContextProviding {
 }
 
 declare interface ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest {
@@ -425,24 +412,6 @@ declare interface ASAuthorizationPublicKeyCredentialRegistration extends ASPubli
 }
 
 declare class ASAuthorizationPublicKeyCredentialRegistration extends NativeObject implements ASAuthorizationPublicKeyCredentialRegistration {
-}
-
-declare class ASGeneratedPassword extends NSObject implements NSCopying, NSSecureCoding {
-  readonly kind: string;
-
-  readonly localizedName: string;
-
-  readonly value: string;
-
-  initWithKindValue(kind: string, value: string): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ASAuthorizationPublicKeyCredentialPRFAssertionOutput extends NSObject {
@@ -941,34 +910,6 @@ declare class ASCredentialProviderViewController extends UIViewController {
   reportAllAcceptedPublicKeyCredentialsForRelyingPartyUserHandleAcceptedCredentialIDs(relyingParty: string, userHandle: NSData, acceptedCredentialIDs: NSArray<interop.Object> | Array<interop.Object>): void;
 
   reportUnusedPasswordCredentialForDomainUserName(domain: string, userName: string): void;
-
-  performSavePasswordRequestWithoutUserInteractionIfPossible(savePasswordRequest: ASSavePasswordRequest): void;
-
-  prepareInterfaceForSavePasswordRequest(savePasswordRequest: ASSavePasswordRequest): void;
-
-  performGeneratePasswordsRequestWithoutUserInteraction(generatePasswordsRequest: ASGeneratePasswordsRequest): void;
-
-  prepareInterfaceForGeneratePasswordsRequest(generatePasswordsRequest: ASGeneratePasswordsRequest): void;
-}
-
-declare class ASGeneratePasswordsRequest extends NSObject implements NSCopying, NSSecureCoding {
-  readonly serviceIdentifier: ASCredentialServiceIdentifier;
-
-  readonly passwordFieldPasswordRules: string;
-
-  readonly confirmPasswordFieldPasswordRules: string;
-
-  readonly passwordRulesFromQuirks: string;
-
-  initWithServiceIdentifierPasswordFieldPasswordRulesConfirmPasswordFieldPasswordRulesPasswordRulesFromQuirks(serviceIdentifier: ASCredentialServiceIdentifier, passwordFieldPasswordRules: string | null, confirmPasswordFieldPasswordRules: string | null, passwordRulesFromQuirks: string | null): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
 }
 
 declare class ASAuthorizationSingleSignOnProvider extends NSObject implements ASAuthorizationProvider {
@@ -1353,36 +1294,6 @@ declare class ASAuthorizationSecurityKeyPublicKeyCredentialRegistration extends 
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class ASSavePasswordRequest extends NSObject implements NSCopying, NSSecureCoding {
-  readonly serviceIdentifier: ASCredentialServiceIdentifier;
-
-  readonly credential: ASPasswordCredential;
-
-  readonly title: string;
-
-  readonly sessionID: string;
-
-  readonly event: interop.Enum<typeof ASSavePasswordRequestEvent>;
-
-  readonly passwordKind: string;
-
-  initWithServiceIdentifierCredentialSessionIDEvent(serviceIdentifier: ASCredentialServiceIdentifier, credential: ASPasswordCredential, sessionID: string, event: interop.Enum<typeof ASSavePasswordRequestEvent>): this;
-
-  initWithServiceIdentifierCredentialTitleSessionIDEvent(serviceIdentifier: ASCredentialServiceIdentifier, credential: ASPasswordCredential, title: string | null, sessionID: string, event: interop.Enum<typeof ASSavePasswordRequestEvent>): this;
-
-  initWithServiceIdentifierCredentialSessionIDEventPasswordKind(serviceIdentifier: ASCredentialServiceIdentifier, credential: ASPasswordCredential, sessionID: string, event: interop.Enum<typeof ASSavePasswordRequestEvent>, passwordKind: string | null): this;
-
-  initWithServiceIdentifierCredentialTitleSessionIDEventPasswordKind(serviceIdentifier: ASCredentialServiceIdentifier, credential: ASPasswordCredential, title: string | null, sessionID: string, event: interop.Enum<typeof ASSavePasswordRequestEvent>, passwordKind: string | null): this;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
 declare class ASCredentialProviderExtensionContext extends NSExtensionContext {
   completeRequestWithSelectedCredentialCompletionHandler(credential: ASPasswordCredential, completionHandler: (p1: boolean) => void | null): void;
 
@@ -1393,10 +1304,6 @@ declare class ASCredentialProviderExtensionContext extends NSExtensionContext {
   completeOneTimeCodeRequestWithSelectedCredentialCompletionHandler(credential: ASOneTimeCodeCredential, completionHandler: (p1: boolean) => void | null): void;
 
   completeRequestWithTextToInsertCompletionHandler(text: string, completionHandler: (p1: boolean) => void | null): void;
-
-  completeSavePasswordRequestWithCompletionHandler(completionHandler: (p1: boolean) => void | null): void;
-
-  completeGeneratePasswordRequestWithResultsCompletionHandler(results: NSArray<interop.Object> | Array<interop.Object>, completionHandler: (p1: boolean) => void | null): void;
 
   completeExtensionConfigurationRequest(): void;
 
@@ -2149,10 +2056,6 @@ declare class ASPasskeyRegistrationCredential extends NSObject implements ASAuth
 declare class ASCredentialServiceIdentifier extends NSObject implements NSCopying, NSSecureCoding {
   initWithIdentifierType(identifier: string, type: interop.Enum<typeof ASCredentialServiceIdentifierType>): this;
 
-  initWithIdentifierTypeDisplayName(identifier: string, type: interop.Enum<typeof ASCredentialServiceIdentifierType>, displayName: string): this;
-
-  readonly displayName: string;
-
   readonly identifier: string;
 
   readonly type: interop.Enum<typeof ASCredentialServiceIdentifierType>;
@@ -2243,8 +2146,6 @@ declare class ASOneTimeCodeCredential extends NSObject implements ASAuthorizatio
 }
 
 declare class ASAuthorizationWebBrowserPublicKeyCredentialManager extends NSObject {
-  static readonly isDeviceConfiguredForPasskeys: boolean;
-
   init(): this;
 
   requestAuthorizationForPublicKeyCredentials(completionHandler: (p1: interop.Enum<typeof ASAuthorizationWebBrowserPublicKeyCredentialManagerAuthorizationState>) => void): void;

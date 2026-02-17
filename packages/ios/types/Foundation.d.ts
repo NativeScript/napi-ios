@@ -1,20 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const NSURLVolumeSupportsSymbolicLinksKey: string;
-
-declare const NSDestinationInvalidException: string;
-
-declare const NSExecutableErrorMinimum: number;
-
-declare const NSLinguisticTagWord: string;
-
-declare const NSDidBecomeSingleThreadedNotification: string;
-
-declare const NSStreamNetworkServiceType: string;
-
-declare const NSURLUbiquitousItemPercentDownloadedKey: string;
-
 declare const NSCompressionErrorMinimum: number;
 
 declare const NSStringEncodingDetectionDisallowedEncodingsKey: string;
@@ -23,9 +9,9 @@ declare const NSTextCheckingAirlineKey: string;
 
 declare const NSUbiquitousFileErrorMinimum: number;
 
-declare const NSUndoManagerCheckpointNotification: string;
-
 declare const NSProgressEstimatedTimeRemainingKey: string;
+
+declare const NSUndoManagerCheckpointNotification: string;
 
 declare const NSURLNameKey: string;
 
@@ -33,13 +19,9 @@ declare const NSFileReadInapplicableStringEncodingError: number;
 
 declare const NSUbiquitousFileNotUploadedDueToQuotaError: number;
 
-declare const NSLinguisticTagSchemeLexicalClass: string;
-
 declare const NSUndefinedDateComponent: number;
 
 declare const NSGregorianCalendar: string;
-
-declare const NSLocaleQuotationBeginDelimiterKey: string;
 
 declare const NSFileType: string;
 
@@ -47,7 +29,7 @@ declare const NSURLDirectoryEntryCountKey: string;
 
 declare const NSProcessInfoThermalStateDidChangeNotification: string;
 
-declare const NSWindowsCP1250StringEncoding: number;
+declare const NSLinguisticTagSchemeLexicalClass: string;
 
 declare const NSStreamSOCKSProxyPortKey: string;
 
@@ -65,8 +47,6 @@ declare const NSStringTransformLatinToThai: string;
 
 declare const NSURLUbiquitousItemUploadingErrorKey: string;
 
-declare const NSCalendarIdentifierIndian: string;
-
 declare const NSExtensionHostWillEnterForegroundNotification: string;
 
 declare const NSSystemTimeZoneDidChangeNotification: string;
@@ -74,10 +54,6 @@ declare const NSSystemTimeZoneDidChangeNotification: string;
 declare const NSURLFileScheme: string;
 
 declare const NSHTTPCookieDomain: string;
-
-declare const NSValidationErrorMinimum: number;
-
-declare const NSURLErrorFailingURLErrorKey: string;
 
 declare const NSHelpAnchorErrorKey: string;
 
@@ -153,13 +129,13 @@ declare const NSInflectionReferentConceptAttributeName: string;
 
 declare const NSFileSystemFreeNodes: string;
 
-declare const NSCloudSharingConflictError: number;
-
 declare const NSObjectInaccessibleException: string;
 
 declare const NSOperationQueueDefaultMaxConcurrentOperationCount: number;
 
 declare const NSCloudSharingTooManyParticipantsError: number;
+
+declare const NSStreamNetworkServiceType: string;
 
 declare const NSMetadataUbiquitousItemUploadingErrorKey: string;
 
@@ -209,8 +185,6 @@ declare const NSFileAppendOnly: string;
 
 declare const NSURLErrorCannotCloseFile: number;
 
-declare const NSTextCheckingNameKey: string;
-
 declare const NSMetadataUbiquitousSharedItemRoleOwner: string;
 
 declare const NSMetadataUbiquitousItemDownloadingStatusKey: string;
@@ -225,65 +199,39 @@ declare const NSCloudSharingNoPermissionError: number;
 
 declare const NSMetadataUbiquitousItemURLInLocalContainerKey: string;
 
-declare const NSPortReceiveException: string;
+declare const NSURLVolumeSupportsRootDirectoryDatesKey: string;
 
 declare const NSCocoaErrorDomain: string;
 
-declare const NSURLErrorCannotLoadFromNetwork: number;
-
-declare const NSXPCConnectionInterrupted: number;
+declare const NSUnionOfSetsKeyValueOperator: string;
 
 declare const NSCurrentLocaleDidChangeNotification: string;
 
+declare const NSInconsistentArchiveException: string;
+
 declare const NSURLUbiquitousItemPercentUploadedKey: string;
-
-declare const NSIslamicCalendar: string;
-
-declare const NSProgressFileOperationKindCopying: string;
-
-declare const NSLinguisticTagWhitespace: string;
 
 declare const NSSymbolStringEncoding: number;
 
-declare const NSTextCheckingStreetKey: string;
-
 declare const NSURLIsWritableKey: string;
 
-declare const NSDebugDescriptionErrorKey: string;
+declare const NSLinguisticTagConjunction: string;
 
-declare const NSCalendarIdentifierDangi: string;
-
-declare const NSFileHandleOperationException: string;
-
-declare const NSURLVolumeSupportsSparseFilesKey: string;
-
-declare const NSExecutableLoadError: number;
-
-declare const NSURLErrorBackgroundTaskCancelledReasonKey: string;
+declare const NSFileSize: string;
 
 declare const NSFormattingError: number;
 
+declare const NSMetadataItemFSNameKey: string;
+
 declare const NSDecimalNumberDivideByZeroException: string;
-
-declare const NSMetadataUbiquitousItemPercentDownloadedKey: string;
-
-declare const NSCloudSharingOtherError: number;
-
-declare const NSFileProtectionKey: string;
-
-declare const NSURLUbiquitousItemIsDownloadedKey: string;
-
-declare const NSURLPreferredIOBlockSizeKey: string;
-
-declare const NSMetadataItemDisplayNameKey: string;
-
-declare const NSProgressFileTotalCountKey: string;
 
 declare const NSFilePosixPermissions: string;
 
 declare const NSErrorFailingURLStringKey: string;
 
 declare const NSMaximumKeyValueOperator: string;
+
+declare const NSURLErrorUnknown: number;
 
 declare const NSURLUbiquitousSharedItemPermissionsReadOnly: string;
 
@@ -293,11 +241,7 @@ declare const NSURLIsUserImmutableKey: string;
 
 declare const NSNotFound: number;
 
-declare const NSCalendarDayChangedNotification: string;
-
 declare const NSURLVolumeTotalCapacityKey: string;
-
-declare const NSURLFileResourceTypeUnknown: string;
 
 declare const NSURLFileProtectionComplete: string;
 
@@ -311,11 +255,39 @@ declare const NSUnionOfArraysKeyValueOperator: string;
 
 declare const NSUndoManagerDidOpenUndoGroupNotification: string;
 
-declare const NSURLFileProtectionNone: string;
+declare const NSURLCustomIconKey: string;
 
-declare const NSURLFileSizeKey: string;
+declare const NSLocaleAlternateQuotationBeginDelimiterKey: string;
+
+declare const NSIndianCalendar: string;
+
+declare const NSStreamSOCKSProxyHostKey: string;
+
+declare const NSFileWriteInapplicableStringEncodingError: number;
+
+declare const NSUserDefaultsDidChangeNotification: string;
+
+declare const NSMetadataItemFSCreationDateKey: string;
+
+declare const NSDebugDescriptionErrorKey: string;
+
+declare const NSXMLParserErrorDomain: string;
+
+declare const NSInvalidUnarchiveOperationException: string;
+
+declare const NSAssertionHandlerKey: string;
+
+declare const NSHTTPCookieManagerAcceptPolicyChangedNotification: string;
 
 declare const NSObjectHashCallBacks: NSHashTableCallBacks;
+
+declare const NSProgressFileTotalCountKey: string;
+
+declare const NSHTTPCookieSameSitePolicy: string;
+
+declare const NSMetadataQueryResultContentRelevanceAttribute: string;
+
+declare const NSUserActivityConnectionUnavailableError: number;
 
 declare const NSLoadedClasses: string;
 
@@ -327,17 +299,27 @@ declare const NSCompressionErrorMaximum: number;
 
 declare const NSURLVolumeSupportsCasePreservedNamesKey: string;
 
-declare const NSListItemDelimiterAttributeName: string;
+declare const NSCalendarIdentifierGujarati: string;
+
+declare const NSLocaleQuotationBeginDelimiterKey: string;
+
+declare const NSOwnedObjectIdentityHashCallBacks: NSHashTableCallBacks;
+
+declare const NSURLErrorDownloadDecodingFailedMidStream: number;
+
+declare const NSCalendarDayChangedNotification: string;
+
+declare const NSURLUbiquitousItemDownloadingStatusKey: string;
+
+declare const NSLanguageIdentifierAttributeName: string;
 
 declare const NSCoderValueNotFoundError: number;
 
 declare const NSDefaultRunLoopMode: string;
 
+declare const NSStreamSOCKSProxyConfigurationKey: string;
+
 declare const NSExtensionItemAttachmentsKey: string;
-
-declare const NSInconsistentArchiveException: string;
-
-declare const NSLanguageIdentifierAttributeName: string;
 
 declare const NSLocaleAlternateQuotationEndDelimiterKey: string;
 
@@ -346,6 +328,8 @@ declare const NSStreamFileCurrentOffsetKey: string;
 declare const NSURLErrorBackgroundSessionInUseByAnotherProcess: number;
 
 declare const NSURLUbiquitousItemContainerDisplayNameKey: string;
+
+declare const NSCalendarIdentifierEthiopicAmeteMihret: string;
 
 declare const NSFileHandleReadToEndOfFileCompletionNotification: string;
 
@@ -369,8 +353,6 @@ declare const NSExtensionHostDidBecomeActiveNotification: string;
 
 declare const NSFileLockingError: number;
 
-declare const NSUserDefaultsDidChangeNotification: string;
-
 declare const NSFileProtectionNone: string;
 
 declare const NSURLErrorCancelled: number;
@@ -379,7 +361,11 @@ declare const NSMetadataQueryUbiquitousDocumentsScope: string;
 
 declare const NSFormattingErrorMinimum: number;
 
+declare const NSURLFileResourceTypeUnknown: string;
+
 declare const NSPresentationIntentAttributeName: string;
+
+declare const NSURLErrorFailingURLErrorKey: string;
 
 declare const NSHTTPCookieOriginURL: string;
 
@@ -393,11 +379,13 @@ declare const NSURLIsSparseKey: string;
 
 declare const NSLinguisticTagOpenParenthesis: string;
 
-declare const NSURLVolumeSupportsRootDirectoryDatesKey: string;
-
 declare const NSURLUbiquitousItemDownloadRequestedKey: string;
 
 declare const NSURLVolumeMaximumFileSizeKey: string;
+
+declare const NSInvalidSendPortException: string;
+
+declare const NSURLErrorNotConnectedToInternet: number;
 
 declare const NSNonOwnedPointerHashCallBacks: NSHashTableCallBacks;
 
@@ -413,17 +401,27 @@ declare const NSFileGroupOwnerAccountID: string;
 
 declare const NSMapTableWeakMemory: interop.Enum<typeof NSPointerFunctionsOptions>;
 
+declare const NSURLErrorCannotLoadFromNetwork: number;
+
+declare const NSUTF32LittleEndianStringEncoding: number;
+
 declare const NSAlternateDescriptionAttributeName: string;
 
-declare const NSAverageKeyValueOperator: string;
-
-declare const NSMetadataItemFSNameKey: string;
+declare const NSFileProtectionKey: string;
 
 declare const NSMetadataQueryUpdateChangedItemsKey: string;
 
+declare const NSCoderReadCorruptError: number;
+
+declare const NSURLUbiquitousItemDownloadingErrorKey: string;
+
 declare const NSStreamSOCKSProxyVersion5: string;
 
-declare const NSLocaleQuotationEndDelimiterKey: string;
+declare const NSFileHandleOperationException: string;
+
+declare const NSURLFileProtectionNone: string;
+
+declare const NSWindowsCP1250StringEncoding: number;
 
 declare const NSURLUbiquitousSharedItemMostRecentEditorNameComponentsKey: string;
 
@@ -445,8 +443,6 @@ declare const NSMacOSRomanStringEncoding: number;
 
 declare const NSJapaneseEUCStringEncoding: number;
 
-declare const NSUserActivityConnectionUnavailableError: number;
-
 declare const NSURLUbiquitousItemIsSyncPausedKey: string;
 
 declare const NSURLIsApplicationKey: string;
@@ -461,9 +457,13 @@ declare const NSFormattingErrorMaximum: number;
 
 declare const NSMetadataUbiquitousItemIsSharedKey: string;
 
+declare const NSNonRetainedObjectMapKeyCallBacks: NSMapTableKeyCallBacks;
+
 declare const NSLocalizedNumberFormatAttributeName: string;
 
 declare const NSURLErrorRequestBodyStreamExhausted: number;
+
+declare const NSInflectionConceptsKey: string;
 
 declare const NSFileWriteInvalidFileNameError: number;
 
@@ -475,17 +475,19 @@ declare const NSStreamSocketSecurityLevelSSLv3: string;
 
 declare const NSCalendarIdentifierPersian: string;
 
-declare const NSLocaleAlternateQuotationBeginDelimiterKey: string;
+declare const NSTextCheckingOrganizationKey: string;
 
-declare const NSCoderReadCorruptError: number;
+declare const NSPersonNameComponentKey: string;
 
-declare const NSURLUbiquitousItemDownloadingErrorKey: string;
+declare const NSHTTPCookieSecure: string;
+
+declare const NSPropertyListReadUnknownVersionError: number;
+
+declare const NSFoundationVersionNumber: number;
 
 declare const NSUndoManagerWillRedoChangeNotification: string;
 
 declare const NSURLUbiquitousItemDownloadingStatusCurrent: string;
-
-declare const NSTextCheckingOrganizationKey: string;
 
 declare const NSURLSessionUploadTaskResumeData: string;
 
@@ -537,6 +539,8 @@ declare const NSMetadataItemPathKey: string;
 
 declare const NSMetadataItemURLKey: string;
 
+declare const NSMetadataItemDisplayNameKey: string;
+
 declare const NSLinguisticTagParagraphBreak: string;
 
 declare const NSURLAuthenticationMethodNegotiate: string;
@@ -557,6 +561,8 @@ declare const NSLinguisticTagVerb: string;
 
 declare const NSLinguisticTagPunctuation: string;
 
+declare const NSLinguisticTagWord: string;
+
 declare const NSLinguisticTagSchemeScript: string;
 
 declare const NSLinguisticTagSchemeLanguage: string;
@@ -574,6 +580,8 @@ declare const NSExtensionHostWillResignActiveNotification: string;
 declare const NSCloudSharingErrorMaximum: number;
 
 declare const NSCloudSharingErrorMinimum: number;
+
+declare const NSCloudSharingConflictError: number;
 
 declare const NSCloudSharingQuotaExceededError: number;
 
@@ -605,11 +613,15 @@ declare const NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey: string;
 
 declare const NSXPCConnectionInvalid: number;
 
+declare const NSXPCConnectionInterrupted: number;
+
 declare const NSPropertyListErrorMinimum: number;
 
 declare const NSPropertyListWriteInvalidError: number;
 
 declare const NSMetadataItemFSContentChangeDateKey: string;
+
+declare const NSExecutableErrorMinimum: number;
 
 declare const NSURLUbiquitousSharedItemRoleParticipant: string;
 
@@ -631,8 +643,6 @@ declare const NSFileWriteVolumeReadOnlyError: number;
 
 declare const NSFileWriteOutOfSpaceError: number;
 
-declare const NSStreamNetworkServiceTypeBackground: string;
-
 declare const NSDecompressionFailedError: number;
 
 declare const NSPropertyListErrorMaximum: number;
@@ -642,8 +652,6 @@ declare const NSFileWriteNoPermissionError: number;
 declare const NSFileReadTooLargeError: number;
 
 declare const NSFileReadUnsupportedSchemeError: number;
-
-declare const NSURLErrorDownloadDecodingFailedToComplete: number;
 
 declare const NSFileReadNoSuchFileError: number;
 
@@ -675,6 +683,8 @@ declare const NSURLErrorServerCertificateNotYetValid: number;
 
 declare const NSURLErrorServerCertificateUntrusted: number;
 
+declare const NSLocaleQuotationEndDelimiterKey: string;
+
 declare const NSURLErrorSecureConnectionFailed: number;
 
 declare const NSURLErrorFileOutsideSafeArea: number;
@@ -693,11 +703,7 @@ declare const NSURLErrorCannotDecodeRawData: number;
 
 declare const NSURLErrorZeroByteResource: number;
 
-declare const NSURLErrorNotConnectedToInternet: number;
-
 declare const NSURLErrorResourceUnavailable: number;
-
-declare const NSURLUbiquitousItemDownloadingStatusKey: string;
 
 declare const NSURLErrorCannotConnectToHost: number;
 
@@ -728,6 +734,8 @@ declare const NSTextCheckingCountryKey: string;
 declare const NSStreamSocketSecurityLevelTLSv1: string;
 
 declare const NSLinguisticTagNumber: string;
+
+declare const NSLocaleIdentifier: string;
 
 declare const NSURLFileResourceTypeKey: string;
 
@@ -764,6 +772,8 @@ declare const NSURLErrorCannotFindHost: number;
 declare const NSCalendarIdentifierMalayalam: string;
 
 declare const NSURLVolumeIsReadOnlyKey: string;
+
+declare const NSExecutableLoadError: number;
 
 declare const NSStringTransformFullwidthToHalfwidth: string;
 
@@ -819,17 +829,17 @@ declare const NSDecimalNumberExactnessException: string;
 
 declare const NSLinguisticTagNoun: string;
 
-declare const NSFileSize: string;
+declare const NSURLErrorDownloadDecodingFailedToComplete: number;
 
 declare const NSKeyValueChangeKindKey: string;
+
+declare const NSURLPreferredIOBlockSizeKey: string;
 
 declare const NSWillBecomeMultiThreadedNotification: string;
 
 declare const NSURLContentTypeKey: string;
 
 declare const NSHTTPCookieCommentURL: string;
-
-declare const NSNonRetainedObjectMapKeyCallBacks: NSMapTableKeyCallBacks;
 
 declare const NSExecutableErrorMaximum: number;
 
@@ -848,8 +858,6 @@ declare const NSKeyValueValidationError: number;
 declare const NSMACHOperatingSystem: number;
 
 declare const NSPropertyListReadCorruptError: number;
-
-declare const NSLocaleIdentifier: string;
 
 declare const NSNonRetainedObjectHashCallBacks: NSHashTableCallBacks;
 
@@ -883,11 +891,11 @@ declare const NSStringEncodingDetectionFromWindowsKey: string;
 
 declare const NSCalendarIdentifierIslamic: string;
 
+declare const NSURLVolumeSupportsSymbolicLinksKey: string;
+
 declare const NSURLIsPackageKey: string;
 
 declare const NSFileSystemNodes: string;
-
-declare const NSPersonNameComponentKey: string;
 
 declare const NSFilePathErrorKey: string;
 
@@ -896,6 +904,8 @@ declare const NSHTTPCookieSetByJavaScript: string;
 declare const NSURLUbiquitousItemIsSharedKey: string;
 
 declare const NSBuddhistCalendar: string;
+
+declare const NSDidBecomeSingleThreadedNotification: string;
 
 declare const NSStreamNetworkServiceTypeCallSignaling: string;
 
@@ -908,10 +918,6 @@ declare const NSURLVolumeIdentifierKey: string;
 declare const NSStreamDataWrittenToMemoryStreamKey: string;
 
 declare const NSStreamSOCKSProxyVersion4: string;
-
-declare const NSFileWriteInapplicableStringEncodingError: number;
-
-declare const NSStreamSOCKSProxyHostKey: string;
 
 declare const NSStreamSocketSecurityLevelNegotiatedSSL: string;
 
@@ -927,6 +933,10 @@ declare const NSURLErrorClientCertificateRequired: number;
 
 declare const NSTextCheckingZIPKey: string;
 
+declare const NSTextCheckingStreetKey: string;
+
+declare const NSTextCheckingNameKey: string;
+
 declare const NSTextCheckingAllCustomTypes: number;
 
 declare const NSLinguisticTagOther: string;
@@ -939,15 +949,9 @@ declare const NSWindows95OperatingSystem: number;
 
 declare const NSWindowsNTOperatingSystem: number;
 
-declare const NSXMLParserErrorDomain: string;
-
-declare const NSInvalidUnarchiveOperationException: string;
-
 declare const NSKeyValueChangeNotificationIsPriorKey: string;
 
 declare const NSKeyValueChangeIndexesKey: string;
-
-declare const NSUnionOfSetsKeyValueOperator: string;
 
 declare const NSXPCConnectionErrorMinimum: number;
 
@@ -959,6 +963,8 @@ declare const NSCountKeyValueOperator: string;
 
 declare const NSStreamNetworkServiceTypeVoIP: string;
 
+declare const NSAverageKeyValueOperator: string;
+
 declare const NSHTTPCookieSameSiteStrict: string;
 
 declare const NSUndoManagerDidUndoChangeNotification: string;
@@ -966,8 +972,6 @@ declare const NSUndoManagerDidUndoChangeNotification: string;
 declare const NSHTTPCookieSameSiteLax: string;
 
 declare const NSHTTPCookieDiscard: string;
-
-declare const NSHTTPCookieSecure: string;
 
 declare const NSFileImmutable: string;
 
@@ -978,8 +982,6 @@ declare const NSInvocationOperationCancelledException: string;
 declare const NSHTTPCookieValue: string;
 
 declare const NSHashTableWeakMemory: interop.Enum<typeof NSPointerFunctionsOptions>;
-
-declare const NSMachErrorDomain: string;
 
 declare const NSFileBusy: string;
 
@@ -1012,6 +1014,8 @@ declare const NSStringTransformLatinToKatakana: string;
 declare const NSURLUbiquitousItemIsExcludedFromSyncKey: string;
 
 declare const NSDecimalNumberUnderflowException: string;
+
+declare const NSURLUbiquitousItemPercentDownloadedKey: string;
 
 declare const NSURLUbiquitousItemIsUploadedKey: string;
 
@@ -1049,8 +1053,6 @@ declare const NSURLVolumeSupportsExtendedSecurityKey: string;
 
 declare const NSURLVolumeSupportsAdvisoryFileLockingKey: string;
 
-declare const NSURLErrorDownloadDecodingFailedMidStream: number;
-
 declare const NSURLVolumeSupportsRenamingKey: string;
 
 declare const NSURLVolumeSupportsZeroRunsKey: string;
@@ -1067,7 +1069,7 @@ declare const NSURLIsAliasFileKey: string;
 
 declare const NSURLTotalFileAllocatedSizeKey: string;
 
-declare const NSLinguisticTagConjunction: string;
+declare const NSURLFileSizeKey: string;
 
 declare const NSDecimalNumberOverflowException: string;
 
@@ -1081,13 +1083,9 @@ declare const NSURLFileIdentifierKey: string;
 
 declare const NSURLDocumentIdentifierKey: string;
 
-declare const NSOwnedObjectIdentityHashCallBacks: NSHashTableCallBacks;
-
 declare const NSURLVolumeAvailableCapacityForImportantUsageKey: string;
 
 declare const NSURLIsReadableKey: string;
-
-declare const NSURLCustomIconKey: string;
 
 declare const NSURLLocalizedLabelKey: string;
 
@@ -1119,6 +1117,8 @@ declare const NSStringEncodingErrorKey: string;
 
 declare const NSRecoveryAttempterErrorKey: string;
 
+declare const NSURLVolumeAvailableCapacityKey: string;
+
 declare const NSLocalizedRecoveryOptionsErrorKey: string;
 
 declare const NSMultipleUnderlyingErrorsKey: string;
@@ -1127,13 +1127,13 @@ declare const NSPOSIXErrorDomain: string;
 
 declare const NSLocaleVariantCode: string;
 
-declare const NSAssertionHandlerKey: string;
+declare const NSPortReceiveException: string;
 
 declare const NS_UnknownByteOrder: number;
 
 declare const NSLocalizedFailureReasonErrorKey: string;
 
-declare const NSInvalidSendPortException: string;
+declare const NSDestinationInvalidException: string;
 
 declare const NSObjectNotAvailableException: string;
 
@@ -1147,9 +1147,13 @@ declare const NSPersonNameComponentFamilyName: string;
 
 declare const NSPersonNameComponentGivenName: string;
 
-declare const NSIndianCalendar: string;
+declare const NSMetadataUbiquitousItemPercentDownloadedKey: string;
 
 declare const NSJapaneseCalendar: string;
+
+declare const NSProgressFileOperationKindCopying: string;
+
+declare const NSIslamicCalendar: string;
 
 declare const NSChineseCalendar: string;
 
@@ -1179,8 +1183,6 @@ declare const NSInflectionRuleAttributeName: string;
 
 declare const NSInlinePresentationIntentAttributeName: string;
 
-declare const NSInflectionConceptsKey: string;
-
 declare const NSInternalInconsistencyException: string;
 
 declare const NSFileTypeSymbolicLink: string;
@@ -1195,8 +1197,6 @@ declare const NSCalendarIdentifierTamil: string;
 
 declare const NSCalendarIdentifierOdia: string;
 
-declare const NSCalendarIdentifierGujarati: string;
-
 declare const NSCalendarIdentifierBangla: string;
 
 declare const NSCalendarIdentifierIslamicTabular: string;
@@ -1206,8 +1206,6 @@ declare const NSCalendarIdentifierIslamicCivil: string;
 declare const NSIsNilTransformerName: string;
 
 declare const NSCalendarIdentifierHebrew: string;
-
-declare const NSCalendarIdentifierEthiopicAmeteMihret: string;
 
 declare const NSCalendarIdentifierCoptic: string;
 
@@ -1255,8 +1253,6 @@ declare const NSStringTransformLatinToHangul: string;
 
 declare const NSStringTransformLatinToHiragana: string;
 
-declare const NSUTF32LittleEndianStringEncoding: number;
-
 declare const NSUTF16LittleEndianStringEncoding: number;
 
 declare const NSURLFileResourceTypeNamedPipe: string;
@@ -1293,8 +1289,6 @@ declare const NSURLThumbnailDictionaryKey: string;
 
 declare const NSProgressFileOperationKindKey: string;
 
-declare const NSHTTPCookieSameSitePolicy: string;
-
 declare const NSUndoManagerDidRedoChangeNotification: string;
 
 declare const NSURLVolumeLocalizedFormatDescriptionKey: string;
@@ -1315,11 +1309,11 @@ declare const NSReplacementIndexAttributeName: string;
 
 declare const NSStringTransformLatinToGreek: string;
 
+declare const NSValidationErrorMinimum: number;
+
 declare const NSHTTPCookieMaximumAge: string;
 
 declare const NSFileHFSCreatorCode: string;
-
-declare const NSUbiquitousKeyValueStoreInitialSyncChange: number;
 
 declare const NSCalendarIdentifierKannada: string;
 
@@ -1339,15 +1333,9 @@ declare const NSLocaleCalendar: string;
 
 declare const NSUndoCloseGroupingRunLoopOrdering: number;
 
-declare const NSFoundationVersionNumber: number;
-
 declare const NSURLIsRegularFileKey: string;
 
 declare const NSLinguisticTagOpenQuote: string;
-
-declare const NSURLVolumeAvailableCapacityKey: string;
-
-declare const NSURLErrorUnknown: number;
 
 declare const NSLocalizedDescriptionKey: string;
 
@@ -1365,8 +1353,6 @@ declare const NSHTTPCookiePort: string;
 
 declare const NSProgressThroughputKey: string;
 
-declare const NSFileProtectionCompleteUntilFirstUserAuthentication: string;
-
 declare const NSURLVolumeSupportsCaseSensitiveNamesKey: string;
 
 declare const NSURLVolumeIsEncryptedKey: string;
@@ -1378,6 +1364,8 @@ declare const NSStringTransformToUnicodeName: string;
 declare const NSURLAuthenticationMethodNTLM: string;
 
 declare const NSURLErrorUnsupportedURL: number;
+
+declare const NSURLErrorBackgroundTaskCancelledReasonKey: string;
 
 declare const NSMorphologyAttributeName: string;
 
@@ -1411,13 +1399,15 @@ declare const NSFileNoSuchFileError: number;
 
 declare const NSLinguisticTagAdjective: string;
 
-declare const NSStreamSOCKSProxyConfigurationKey: string;
-
 declare const NSURLVolumeResourceCountKey: string;
 
 declare const NSObjectMapKeyCallBacks: NSMapTableKeyCallBacks;
 
 declare const NSPersonNameComponentMiddleName: string;
+
+declare const NSCloudSharingOtherError: number;
+
+declare const NSURLVolumeSupportsSparseFilesKey: string;
 
 declare const NSURLVolumeSupportsSwapRenamingKey: string;
 
@@ -1445,6 +1435,8 @@ declare const NSFileTypeDirectory: string;
 
 declare const NSURLVolumeIsRemovableKey: string;
 
+declare const NSCalendarIdentifierIndian: string;
+
 declare const NSWrapCalendarComponents: number;
 
 declare const NSURLSessionDownloadTaskResumeData: string;
@@ -1454,6 +1446,8 @@ declare const NSUbiquitousKeyValueStoreChangeReasonKey: string;
 declare const NSURLUbiquitousItemDownloadingStatusNotDownloaded: string;
 
 declare const NSURLVolumeTypeNameKey: string;
+
+declare const NSListItemDelimiterAttributeName: string;
 
 declare const NSPersianCalendar: string;
 
@@ -1475,8 +1469,6 @@ declare const NSOwnedPointerMapKeyCallBacks: NSMapTableKeyCallBacks;
 
 declare const NSWindowsCP1252StringEncoding: number;
 
-declare const NSMetadataItemFSCreationDateKey: string;
-
 declare const NSURLVolumeSupportsHardLinksKey: string;
 
 declare const NSNonLossyASCIIStringEncoding: number;
@@ -1489,11 +1481,11 @@ declare const NSUTF32StringEncoding: number;
 
 declare const NSURLErrorClientCertificateRejected: number;
 
+declare const NSUbiquitousKeyValueStoreInitialSyncChange: number;
+
 declare const NSHashTableCopyIn: interop.Enum<typeof NSPointerFunctionsOptions>;
 
 declare const NSTextCheckingJobTitleKey: string;
-
-declare const NSMetadataQueryResultContentRelevanceAttribute: string;
 
 declare const NSInflectionAlternativeAttributeName: string;
 
@@ -1506,6 +1498,8 @@ declare const NSURLGenerationIdentifierKey: string;
 declare const NSIslamicCivilCalendar: string;
 
 declare const NSURLIsHiddenKey: string;
+
+declare const NSCalendarIdentifierDangi: string;
 
 declare const NSURLVolumeMountFromLocationKey: string;
 
@@ -1530,6 +1524,8 @@ declare const NSURLVolumeIsJournalingKey: string;
 declare const NSUbiquitousUserDefaultsDidChangeAccountsNotification: string;
 
 declare const NSLocalizedFailureErrorKey: string;
+
+declare const NSURLUbiquitousItemIsDownloadedKey: string;
 
 declare const NSPersonNameComponentNickname: string;
 
@@ -1557,9 +1553,13 @@ declare const NSFileSystemFreeSize: string;
 
 declare const NSPortTimeoutException: string;
 
+declare const NSMachErrorDomain: string;
+
 declare const NSISOLatin2StringEncoding: number;
 
 declare const NSMallocException: string;
+
+declare const NSStreamNetworkServiceTypeBackground: string;
 
 declare const NSProgressFileOperationKindDecompressingAfterDownloading: string;
 
@@ -1572,6 +1572,8 @@ declare const NSParseErrorException: string;
 declare const NSStringTransformStripCombiningMarks: string;
 
 declare const NSDistinctUnionOfSetsKeyValueOperator: string;
+
+declare const NSLinguisticTagWhitespace: string;
 
 declare const NSStreamSOCKSProxyUserKey: string;
 
@@ -1589,9 +1591,9 @@ declare const NSCoderErrorMinimum: number;
 
 declare const NSBundleExecutableArchitectureX86_64: number;
 
-declare const NSHashTableObjectPointerPersonality: interop.Enum<typeof NSPointerFunctionsOptions>;
+declare const NSFileProtectionCompleteUntilFirstUserAuthentication: string;
 
-declare const NSHTTPCookieManagerAcceptPolicyChangedNotification: string;
+declare const NSHashTableObjectPointerPersonality: interop.Enum<typeof NSPointerFunctionsOptions>;
 
 declare const NSMetadataUbiquitousItemDownloadingStatusCurrent: string;
 
@@ -1600,8 +1602,6 @@ declare const NSURLParentDirectoryURLKey: string;
 declare const NSHTTPCookieName: string;
 
 declare const NSSecureUnarchiveFromDataTransformerName: string;
-
-declare const NSPropertyListReadUnknownVersionError: number;
 
 declare const NSUndoManagerWillCloseUndoGroupNotification: string;
 
@@ -1634,7 +1634,6 @@ declare const NSURLErrorNetworkUnavailableReason: {
   Cellular: 0,
   Expensive: 1,
   Constrained: 2,
-  UltraConstrained: 3,
 };
 
 declare const NSNotificationCoalescing: {
@@ -2094,6 +2093,25 @@ declare const NSFileVersionReplacingOptions: {
   NSFileVersionReplacingByMoving: 1,
 };
 
+declare const NSAttributedStringMarkdownParsingFailurePolicy: {
+  Error: 0,
+  PartiallyParsedIfPossible: 1,
+};
+
+declare const NSActivityOptions: {
+  IdleDisplaySleepDisabled: 1099511627776,
+  IdleSystemSleepDisabled: 1048576,
+  SuddenTerminationDisabled: 16384,
+  AutomaticTerminationDisabled: 32768,
+  AnimationTrackingEnabled: 35184372088832,
+  TrackingEnabled: 70368744177664,
+  UserInitiated: 16777215,
+  UserInitiatedAllowingIdleSystemSleep: 15728639,
+  Background: 255,
+  LatencyCritical: 1095216660480,
+  UserInteractive: 1095233437695,
+};
+
 declare const NSURLSessionTaskState: {
   Running: 0,
   Suspended: 1,
@@ -2210,23 +2228,19 @@ declare const NSNumberFormatterStyle: {
   CurrencyAccounting: 10,
 };
 
-declare const NSActivityOptions: {
-  IdleDisplaySleepDisabled: 1099511627776,
-  IdleSystemSleepDisabled: 1048576,
-  SuddenTerminationDisabled: 16384,
-  AutomaticTerminationDisabled: 32768,
-  AnimationTrackingEnabled: 35184372088832,
-  TrackingEnabled: 70368744177664,
-  UserInitiated: 16777215,
-  UserInitiatedAllowingIdleSystemSleep: 15728639,
-  Background: 255,
-  LatencyCritical: 1095216660480,
-  UserInteractive: 1095233437695,
+declare const NSKeyValueSetMutationKind: {
+  Union: 1,
+  Minus: 2,
+  Intersect: 3,
+  Set: 4,
 };
 
-declare const NSAttributedStringMarkdownParsingFailurePolicy: {
-  Error: 0,
-  PartiallyParsedIfPossible: 1,
+declare const NSLocaleLanguageDirection: {
+  Unknown: 0,
+  LeftToRight: 1,
+  RightToLeft: 2,
+  TopToBottom: 3,
+  BottomToTop: 4,
 };
 
 declare const NSFileCoordinatorWritingOptions: {
@@ -2374,21 +2388,6 @@ declare const NSRelativeDateTimeFormatterUnitsStyle: {
   SpellOut: 1,
   Short: 2,
   Abbreviated: 3,
-};
-
-declare const NSLocaleLanguageDirection: {
-  Unknown: 0,
-  LeftToRight: 1,
-  RightToLeft: 2,
-  TopToBottom: 3,
-  BottomToTop: 4,
-};
-
-declare const NSKeyValueSetMutationKind: {
-  Union: 1,
-  Minus: 2,
-  Intersect: 3,
-  Set: 4,
 };
 
 declare const NSGrammaticalGender: {
@@ -4355,13 +4354,9 @@ declare class NSProcessInfo extends NSObject {
 
   readonly iOSAppOnMac: boolean;
 
-  readonly iOSAppOnVision: boolean;
-
   isMacCatalystApp(): boolean;
 
   isiOSAppOnMac(): boolean;
-
-  isiOSAppOnVision(): boolean;
 
   isDeviceCertifiedFor(performanceTier: number): boolean;
 
@@ -6501,8 +6496,6 @@ declare class NSURLRequest extends NSObject implements NSSecureCoding, NSCopying
 
   readonly allowsConstrainedNetworkAccess: boolean;
 
-  readonly allowsUltraConstrainedNetworkAccess: boolean;
-
   readonly assumesHTTP3Capable: boolean;
 
   readonly attribution: interop.Enum<typeof NSURLRequestAttribution>;
@@ -8386,95 +8379,6 @@ declare class NSTimer extends NSObject {
   isValid(): boolean;
 }
 
-declare class NSUnitMass extends NSDimension implements NSSecureCoding {
-  static readonly kilograms: NSUnitMass;
-
-  static readonly grams: NSUnitMass;
-
-  static readonly decigrams: NSUnitMass;
-
-  static readonly centigrams: NSUnitMass;
-
-  static readonly milligrams: NSUnitMass;
-
-  static readonly micrograms: NSUnitMass;
-
-  static readonly nanograms: NSUnitMass;
-
-  static readonly picograms: NSUnitMass;
-
-  static readonly ounces: NSUnitMass;
-
-  static readonly poundsMass: NSUnitMass;
-
-  static readonly stones: NSUnitMass;
-
-  static readonly metricTons: NSUnitMass;
-
-  static readonly shortTons: NSUnitMass;
-
-  static readonly carats: NSUnitMass;
-
-  static readonly ouncesTroy: NSUnitMass;
-
-  static readonly slugs: NSUnitMass;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-}
-
-declare class NSMapTable<KeyType = interop.Object, ObjectType = interop.Object> extends NSObject implements NSCopying, NSSecureCoding, NSFastEnumeration {
-  initWithKeyOptionsValueOptionsCapacity(keyOptions: interop.Enum<typeof NSPointerFunctionsOptions>, valueOptions: interop.Enum<typeof NSPointerFunctionsOptions>, initialCapacity: number): this;
-
-  initWithKeyPointerFunctionsValuePointerFunctionsCapacity(keyFunctions: NSPointerFunctions, valueFunctions: NSPointerFunctions, initialCapacity: number): this;
-
-  static mapTableWithKeyOptionsValueOptions<KeyType, ObjectType>(keyOptions: interop.Enum<typeof NSPointerFunctionsOptions>, valueOptions: interop.Enum<typeof NSPointerFunctionsOptions>): NSMapTable;
-
-  static strongToStrongObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
-
-  static weakToStrongObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
-
-  static strongToWeakObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
-
-  static weakToWeakObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
-
-  readonly keyPointerFunctions: NSPointerFunctions;
-
-  readonly valuePointerFunctions: NSPointerFunctions;
-
-  objectForKey(aKey: KeyType | null): ObjectType;
-
-  removeObjectForKey(aKey: KeyType | null): void;
-
-  setObjectForKey(anObject: ObjectType | null, aKey: KeyType | null): void;
-
-  readonly count: number;
-
-  keyEnumerator(): NSEnumerator;
-
-  objectEnumerator(): NSEnumerator;
-
-  removeAllObjects(): void;
-
-  dictionaryRepresentation(): NSDictionary;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  initWithCoder(coder: NSCoder): this;
-
-  countByEnumeratingWithStateObjectsCount(state: interop.PointerConvertible, buffer: interop.PointerConvertible, len: number): number;
-
-  readonly [Symbol.iterator]: () => Iterator<any>;
-
-}
-
 declare class NSTimeZone extends NSObject implements NSCopying, NSSecureCoding {
   readonly name: string;
 
@@ -9047,6 +8951,55 @@ declare class NSUnitFrequency extends NSDimension implements NSSecureCoding {
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class NSMapTable<KeyType = interop.Object, ObjectType = interop.Object> extends NSObject implements NSCopying, NSSecureCoding, NSFastEnumeration {
+  initWithKeyOptionsValueOptionsCapacity(keyOptions: interop.Enum<typeof NSPointerFunctionsOptions>, valueOptions: interop.Enum<typeof NSPointerFunctionsOptions>, initialCapacity: number): this;
+
+  initWithKeyPointerFunctionsValuePointerFunctionsCapacity(keyFunctions: NSPointerFunctions, valueFunctions: NSPointerFunctions, initialCapacity: number): this;
+
+  static mapTableWithKeyOptionsValueOptions<KeyType, ObjectType>(keyOptions: interop.Enum<typeof NSPointerFunctionsOptions>, valueOptions: interop.Enum<typeof NSPointerFunctionsOptions>): NSMapTable;
+
+  static strongToStrongObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
+
+  static weakToStrongObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
+
+  static strongToWeakObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
+
+  static weakToWeakObjectsMapTable<KeyType, ObjectType>(): NSMapTable;
+
+  readonly keyPointerFunctions: NSPointerFunctions;
+
+  readonly valuePointerFunctions: NSPointerFunctions;
+
+  objectForKey(aKey: KeyType | null): ObjectType;
+
+  removeObjectForKey(aKey: KeyType | null): void;
+
+  setObjectForKey(anObject: ObjectType | null, aKey: KeyType | null): void;
+
+  readonly count: number;
+
+  keyEnumerator(): NSEnumerator;
+
+  objectEnumerator(): NSEnumerator;
+
+  removeAllObjects(): void;
+
+  dictionaryRepresentation(): NSDictionary;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
+
+  countByEnumeratingWithStateObjectsCount(state: interop.PointerConvertible, buffer: interop.PointerConvertible, len: number): number;
+
+  readonly [Symbol.iterator]: () => Iterator<any>;
+
+}
+
 declare class NSHTTPURLResponse extends NSURLResponse {
   initWithURLStatusCodeHTTPVersionHeaderFields(url: NSURL, statusCode: number, HTTPVersion: string | null, headerFields: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): this;
 
@@ -9155,6 +9108,46 @@ declare class NSFileProviderService extends NSObject {
   getFileProviderConnectionWithCompletionHandler(completionHandler: (p1: NSXPCConnection, p2: NSError) => void | null): void;
 
   readonly name: string;
+}
+
+declare class NSUnitMass extends NSDimension implements NSSecureCoding {
+  static readonly kilograms: NSUnitMass;
+
+  static readonly grams: NSUnitMass;
+
+  static readonly decigrams: NSUnitMass;
+
+  static readonly centigrams: NSUnitMass;
+
+  static readonly milligrams: NSUnitMass;
+
+  static readonly micrograms: NSUnitMass;
+
+  static readonly nanograms: NSUnitMass;
+
+  static readonly picograms: NSUnitMass;
+
+  static readonly ounces: NSUnitMass;
+
+  static readonly poundsMass: NSUnitMass;
+
+  static readonly stones: NSUnitMass;
+
+  static readonly metricTons: NSUnitMass;
+
+  static readonly shortTons: NSUnitMass;
+
+  static readonly carats: NSUnitMass;
+
+  static readonly ouncesTroy: NSUnitMass;
+
+  static readonly slugs: NSUnitMass;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  initWithCoder(coder: NSCoder): this;
 }
 
 declare class NSPropertyListSerialization extends NSObject {
@@ -10241,8 +10234,6 @@ declare class NSURLSessionConfiguration extends NSObject implements NSCopying {
 
   allowsConstrainedNetworkAccess: boolean;
 
-  allowsUltraConstrainedNetworkAccess: boolean;
-
   requiresDNSSECValidation: boolean;
 
   waitsForConnectivity: boolean;
@@ -10309,8 +10300,6 @@ declare class NSURLSessionConfiguration extends NSObject implements NSCopying {
   setAllowsExpensiveNetworkAccess(allowsExpensiveNetworkAccess: boolean): void;
 
   setAllowsConstrainedNetworkAccess(allowsConstrainedNetworkAccess: boolean): void;
-
-  setAllowsUltraConstrainedNetworkAccess(allowsUltraConstrainedNetworkAccess: boolean): void;
 
   setRequiresDNSSECValidation(requiresDNSSECValidation: boolean): void;
 
@@ -12590,9 +12579,6 @@ declare class NSMutableURLRequest extends NSURLRequest {
   allowsConstrainedNetworkAccess: boolean;
 
   // @ts-ignore MemberDecl.tsIgnore
-  allowsUltraConstrainedNetworkAccess: boolean;
-
-  // @ts-ignore MemberDecl.tsIgnore
   assumesHTTP3Capable: boolean;
 
   // @ts-ignore MemberDecl.tsIgnore
@@ -12622,8 +12608,6 @@ declare class NSMutableURLRequest extends NSURLRequest {
   setAllowsExpensiveNetworkAccess(allowsExpensiveNetworkAccess: boolean): void;
 
   setAllowsConstrainedNetworkAccess(allowsConstrainedNetworkAccess: boolean): void;
-
-  setAllowsUltraConstrainedNetworkAccess(allowsUltraConstrainedNetworkAccess: boolean): void;
 
   setAssumesHTTP3Capable(assumesHTTP3Capable: boolean): void;
 

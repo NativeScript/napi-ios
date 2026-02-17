@@ -208,6 +208,50 @@ declare class UNNotificationCategory extends NSObject implements NSCopying, NSSe
   initWithCoder(coder: NSCoder): this;
 }
 
+declare class UNNotificationAttributedMessageContext extends NSObject implements UNNotificationContentProviding {
+  static contextWithSendMessageIntentAttributedContent<This extends abstract new (...args: any) => any>(this: This, sendMessageIntent: INSendMessageIntent, attributedContent: NSAttributedString): InstanceType<This>;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+}
+
 declare class UNNotificationActionIcon extends NSObject implements NSCopying, NSSecureCoding {
   static iconWithTemplateImageName<This extends abstract new (...args: any) => any>(this: This, templateImageName: string): InstanceType<This>;
 
@@ -265,18 +309,18 @@ declare class UNNotificationSound extends NSObject implements NSCopying, NSSecur
 declare class UNPushNotificationTrigger extends UNNotificationTrigger {
 }
 
-declare class UNTimeIntervalNotificationTrigger extends UNNotificationTrigger {
-  readonly timeInterval: number;
-
-  static triggerWithTimeIntervalRepeats<This extends abstract new (...args: any) => any>(this: This, timeInterval: number, repeats: boolean): InstanceType<This>;
-
-  nextTriggerDate(): NSDate;
-}
-
 declare class UNCalendarNotificationTrigger extends UNNotificationTrigger {
   readonly dateComponents: NSDateComponents;
 
   static triggerWithDateMatchingComponentsRepeats<This extends abstract new (...args: any) => any>(this: This, dateComponents: NSDateComponents, repeats: boolean): InstanceType<This>;
+
+  nextTriggerDate(): NSDate;
+}
+
+declare class UNTimeIntervalNotificationTrigger extends UNNotificationTrigger {
+  readonly timeInterval: number;
+
+  static triggerWithTimeIntervalRepeats<This extends abstract new (...args: any) => any>(this: This, timeInterval: number, repeats: boolean): InstanceType<This>;
 
   nextTriggerDate(): NSDate;
 }
@@ -528,50 +572,6 @@ declare class UNTextInputNotificationAction extends UNNotificationAction {
   readonly textInputButtonTitle: string;
 
   readonly textInputPlaceholder: string;
-}
-
-declare class UNNotificationAttributedMessageContext extends NSObject implements UNNotificationContentProviding {
-  static contextWithSendMessageIntentAttributedContent<This extends abstract new (...args: any) => any>(this: This, sendMessageIntent: INSendMessageIntent, attributedContent: NSAttributedString): InstanceType<This>;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
 }
 
 declare class UNNotificationTrigger extends NSObject implements NSCopying, NSSecureCoding {

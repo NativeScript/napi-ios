@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const CBAdvertisementDataServiceDataKey: string;
-
 declare const CBUUIDCharacteristicObservationScheduleString: string;
 
 declare const CBUUIDCharacteristicValidRangeString: string;
@@ -11,23 +9,23 @@ declare const CBUUIDClientCharacteristicConfigurationString: string;
 
 declare const CBUUIDCharacteristicUserDescriptionString: string;
 
-declare const CBUUIDCharacteristicExtendedPropertiesString: string;
-
 declare const CBPeripheralManagerRestoredStateAdvertisementDataKey: string;
 
-declare const CBPeripheralManagerRestoredStateServicesKey: string;
+declare const CBErrorDomain: string;
 
-declare const CBPeripheralManagerOptionRestoreIdentifierKey: string;
+declare const CBConnectPeripheralOptionEnableAutoReconnect: string;
 
-declare const CBConnectionEventMatchingOptionPeripheralUUIDs: string;
+declare const CBCentralManagerRestoredStateScanOptionsKey: string;
+
+declare const CBCentralManagerRestoredStateScanServicesKey: string;
 
 declare const CBCentralManagerRestoredStatePeripheralsKey: string;
 
-declare const CBConnectPeripheralOptionRequiresANCS: string;
-
 declare const CBConnectPeripheralOptionEnableTransportBridgingKey: string;
 
-declare const CBConnectPeripheralOptionStartDelayKey: string;
+declare const CBCentralManagerScanOptionAllowDuplicatesKey: string;
+
+declare const CBCentralManagerOptionRestoreIdentifierKey: string;
 
 declare const CBCentralManagerOptionShowPowerAlertKey: string;
 
@@ -35,51 +33,53 @@ declare const CBAdvertisementDataManufacturerDataKey: string;
 
 declare const CBAdvertisementDataServiceUUIDsKey: string;
 
-declare const CBAdvertisementDataTxPowerLevelKey: string;
-
-declare const CBAdvertisementDataLocalNameKey: string;
-
 declare const CBUUIDCharacteristicFormatString: string;
+
+declare const CBAdvertisementDataTxPowerLevelKey: string;
 
 declare const CBConnectionEventMatchingOptionServiceUUIDs: string;
 
-declare const CBConnectPeripheralOptionEnableAutoReconnect: string;
+declare const CBUUIDCharacteristicExtendedPropertiesString: string;
+
+declare const CBPeripheralManagerOptionRestoreIdentifierKey: string;
 
 declare const CBATTErrorDomain: string;
 
+declare const CBAdvertisementDataLocalNameKey: string;
+
 declare const CBAdvertisementDataIsConnectable: string;
-
-declare const CBConnectPeripheralOptionNotifyOnDisconnectionKey: string;
-
-declare const CBUUIDL2CAPPSMCharacteristicString: string;
-
-declare const CBUUIDCharacteristicAggregateFormatString: string;
 
 declare const CBAdvertisementDataSolicitedServiceUUIDsKey: string;
 
-declare const CBAdvertisementDataOverflowServiceUUIDsKey: string;
+declare const CBPeripheralManagerRestoredStateServicesKey: string;
 
-declare const CBConnectPeripheralOptionNotifyOnConnectionKey: string;
+declare const CBAdvertisementDataServiceDataKey: string;
 
 declare const CBConnectPeripheralOptionNotifyOnNotificationKey: string;
 
-declare const CBCentralManagerRestoredStateScanOptionsKey: string;
+declare const CBUUIDCharacteristicAggregateFormatString: string;
 
-declare const CBUUIDServerCharacteristicConfigurationString: string;
+declare const CBConnectionEventMatchingOptionPeripheralUUIDs: string;
 
-declare const CBCentralManagerScanOptionSolicitedServiceUUIDsKey: string;
+declare const CBUUIDL2CAPPSMCharacteristicString: string;
 
-declare const CBCentralManagerScanOptionAllowDuplicatesKey: string;
+declare const CBAdvertisementDataOverflowServiceUUIDsKey: string;
 
-declare const CBErrorDomain: string;
-
-declare const CBCentralManagerRestoredStateScanServicesKey: string;
+declare const CBConnectPeripheralOptionStartDelayKey: string;
 
 declare const CBPeripheralManagerOptionShowPowerAlertKey: string;
 
+declare const CBConnectPeripheralOptionNotifyOnConnectionKey: string;
+
+declare const CBConnectPeripheralOptionRequiresANCS: string;
+
 declare const CBCentralManagerOptionDeviceAccessForMedia: string;
 
-declare const CBCentralManagerOptionRestoreIdentifierKey: string;
+declare const CBUUIDServerCharacteristicConfigurationString: string;
+
+declare const CBConnectPeripheralOptionNotifyOnDisconnectionKey: string;
+
+declare const CBCentralManagerScanOptionSolicitedServiceUUIDsKey: string;
 
 declare const CBPeripheralState: {
   Disconnected: 0,

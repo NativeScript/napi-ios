@@ -36,7 +36,6 @@ declare const SFErrorCode: {
   LoadingInterrupted: 3,
   InternalError: 4,
   MissingEntitlement: 5,
-  MaximumAttemptsExceeded: 6,
 };
 
 declare const SSReadingListErrorCode: {
@@ -73,24 +72,6 @@ declare interface SFAddToHomeScreenActivityItem extends NSObjectProtocol {
 }
 
 declare class SFAddToHomeScreenActivityItem extends NativeObject implements SFAddToHomeScreenActivityItem {
-}
-
-declare class SFSafariExtensionState extends NSObject {
-  readonly enabled: boolean;
-
-  isEnabled(): boolean;
-}
-
-declare class SFSafariExtensionManager extends NSObject {
-  static getStateOfExtensionWithIdentifierCompletionHandler(identifier: string, completionHandler: (p1: SFSafariExtensionState, p2: NSError) => void | null): void;
-}
-
-declare class SFAuthenticationSession extends NSObject {
-  initWithURLCallbackURLSchemeCompletionHandler(URL: NSURL, callbackURLScheme: string | null, completionHandler: (p1: NSURL, p2: NSError) => void): this;
-
-  start(): boolean;
-
-  cancel(): void;
 }
 
 declare class SFSafariViewControllerDataStore extends NSObject {
@@ -149,6 +130,14 @@ declare class SFContentBlockerManager extends NSObject {
   static getStateOfContentBlockerWithIdentifierCompletionHandler(identifier: string, completionHandler: (p1: SFContentBlockerState, p2: NSError) => void | null): void;
 }
 
+declare class SFAuthenticationSession extends NSObject {
+  initWithURLCallbackURLSchemeCompletionHandler(URL: NSURL, callbackURLScheme: string | null, completionHandler: (p1: NSURL, p2: NSError) => void): this;
+
+  start(): boolean;
+
+  cancel(): void;
+}
+
 declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
   initWithManifest(manifest: BEWebAppManifest): this;
 
@@ -164,8 +153,6 @@ declare class SFAddToHomeScreenInfo extends NSObject implements NSCopying {
 
 declare class SFSafariSettings extends NSObject {
   static openExportBrowsingDataSettingsWithCompletionHandler(completionHandler: (p1: NSError) => void | null): void;
-
-  static openExtensionsSettingsForIdentifiersCompletionHandler(extensionIdentifiers: NSArray<interop.Object> | Array<interop.Object>, completionHandler: (p1: NSError) => void | null): void;
 }
 
 declare class SFContentBlockerState extends NSObject {

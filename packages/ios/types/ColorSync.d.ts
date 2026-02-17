@@ -18,6 +18,8 @@ declare const kColorSyncTransformUseITU709OETF: interop.Object;
 
 declare const kColorSyncTransformProfileSequnce: interop.Object;
 
+declare const kColorSyncTransformDstSpace: interop.Object;
+
 declare const kColorSyncTransformCreator: interop.Object;
 
 declare const kColorSyncNormalQuality: interop.Object;
@@ -58,13 +60,7 @@ declare const kColorSyncByteOrderDefault: number;
 
 declare const kColorSyncByteOrderMask: number;
 
-declare const kColorSyncAlphaInfoMask: number;
-
 declare const kColorSyncProfileCacheSeed: interop.Object;
-
-declare const kColorSyncTransformDstSpace: interop.Object;
-
-declare const kColorSyncDoNotSubstituteProfiles: interop.Object;
 
 declare const kColorSyncSigMediaWhitePointTag: interop.Object;
 
@@ -72,13 +68,13 @@ declare const kColorSyncSigViewingCondDescTag: interop.Object;
 
 declare const kColorSyncSigTechnologyTag: interop.Object;
 
-declare const kColorSyncSigInputClass: interop.Object;
-
 declare const kColorSyncSigProfileSequenceDescTag: interop.Object;
 
 declare const kColorSyncSigOutputClass: interop.Object;
 
 declare const kColorSyncSigPreview2Tag: interop.Object;
+
+declare const kColorSyncSigPreview0Tag: interop.Object;
 
 declare const kColorSyncSigNamedColorClass: interop.Object;
 
@@ -126,7 +122,7 @@ declare const kColorSyncGenericCMYKProfile: interop.Object;
 
 declare const kColorSyncGenericGrayProfile: interop.Object;
 
-declare const kColorSyncSRGBProfile: interop.Object;
+declare const kColorSyncProfileColorSpace: interop.Object;
 
 declare const kColorSyncTransformCodeFragmentType: interop.Object;
 
@@ -172,19 +168,25 @@ declare const kColorSyncITUR709Profile: interop.Object;
 
 declare const kColorSyncSigCmykData: interop.Object;
 
+declare const kColorSyncSigRedColorantTag: interop.Object;
+
 declare const kColorSyncSigBlueTRCTag: interop.Object;
+
+declare const kColorSyncSigInputClass: interop.Object;
+
+declare const kColorSyncSigRedTRCTag: interop.Object;
 
 declare const kColorSyncBlackPointCompensation: interop.Object;
 
+declare const kColorSyncTransformCodeFragmentMD5: interop.Object;
+
 declare const kColorSyncHDRDerivative: interop.Object;
+
+declare const kColorSyncSRGBProfile: interop.Object;
 
 declare const kColorSyncConvertUseExtendedRange: interop.Object;
 
 declare const kColorSyncConversionGridPoints: interop.Object;
-
-declare const kColorSyncTransformCodeFragmentMD5: interop.Object;
-
-declare const kColorSyncProfileColorSpace: interop.Object;
 
 declare const kColorSyncGenericGrayGamma22Profile: interop.Object;
 
@@ -198,7 +200,7 @@ declare const kColorSyncRenderingIntentPerceptual: interop.Object;
 
 declare const kColorSyncSigViewingConditionsTag: interop.Object;
 
-declare const kColorSyncSigPreview0Tag: interop.Object;
+declare const kColorSyncConversionParamCurve4: interop.Object;
 
 declare const kColorSyncGenericRGBProfile: interop.Object;
 
@@ -218,9 +220,9 @@ declare const kColorSyncSigDeviceModelDescTag: interop.Object;
 
 declare const kColorSyncSigBToA2Tag: interop.Object;
 
-declare const kColorSyncFixedPointRange: interop.Object;
+declare const kColorSyncAlphaInfoMask: number;
 
-declare const kColorSyncConversionParamCurve4: interop.Object;
+declare const kColorSyncFixedPointRange: interop.Object;
 
 declare const kColorSyncRenderingIntentRelative: interop.Object;
 
@@ -230,11 +232,7 @@ declare const kColorSyncTransformGamutCheck: interop.Object;
 
 declare const kColorSyncSigColorSpaceClass: interop.Object;
 
-declare const kColorSyncSigRedColorantTag: interop.Object;
-
 declare const kColorSyncByteOrder32Big: number;
-
-declare const kColorSyncSigRedTRCTag: interop.Object;
 
 declare const kColorSyncGenericLabProfile: interop.Object;
 
@@ -278,8 +276,6 @@ declare function ColorSyncProfileCreate(data: interop.Object, error: interop.Poi
 
 declare function ColorSyncProfileCreateWithURL(url: interop.Object, error: interop.PointerConvertible): interop.Object;
 
-declare function ColorSyncProfileCreateWithURLAndOptions(url: interop.Object, options: interop.Object, error: interop.PointerConvertible): interop.Object;
-
 declare function ColorSyncProfileCreateWithName(name: interop.Object): interop.Object;
 
 declare function ColorSyncProfileCreateMutable(): interop.Object;
@@ -297,8 +293,6 @@ declare function ColorSyncProfileIsMatrixBased(p1: interop.Object): boolean;
 declare function ColorSyncProfileIsPQBased(p1: interop.Object): boolean;
 
 declare function ColorSyncProfileIsHLGBased(p1: interop.Object): boolean;
-
-declare function ColorSyncProfileEstimateGamma(prof: interop.Object, error: interop.PointerConvertible): number;
 
 declare function ColorSyncProfileGetMD5(prof: interop.Object): ColorSyncMD5;
 

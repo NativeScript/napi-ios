@@ -195,6 +195,258 @@ declare interface SKPhysicsContactDelegate extends NSObjectProtocol {
 declare class SKPhysicsContactDelegate extends NativeObject implements SKPhysicsContactDelegate {
 }
 
+declare class SKNode extends UIResponder implements NSCopying, NSSecureCoding, UIFocusItem, UIFocusItemContainer, UICoordinateSpace {
+  init(): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  static node<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
+
+  static nodeWithFileNamed<This extends abstract new (...args: any) => any>(this: This, filename: string): InstanceType<This>;
+
+  static nodeWithFileNamedSecurelyWithClassesAndError<This extends abstract new (...args: any) => any>(this: This, filename: string, classes: NSSet, error: interop.PointerConvertible): InstanceType<This>;
+
+  readonly frame: CGRect;
+
+  calculateAccumulatedFrame(): CGRect;
+
+  position: CGPoint;
+
+  zPosition: number;
+
+  zRotation: number;
+
+  xScale: number;
+
+  yScale: number;
+
+  speed: number;
+
+  alpha: number;
+
+  paused: boolean;
+
+  hidden: boolean;
+
+  userInteractionEnabled: boolean;
+
+  focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>;
+
+  readonly parent: SKNode;
+
+  readonly children: NSArray;
+
+  name: string;
+
+  readonly scene: SKScene;
+
+  physicsBody: SKPhysicsBody;
+
+  userData: NSMutableDictionary;
+
+  reachConstraints: SKReachConstraints;
+
+  get constraints(): NSArray;
+  set constraints(value: NSArray<interop.Object> | Array<interop.Object>);
+
+  get attributeValues(): NSDictionary;
+  set attributeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
+
+  valueForAttributeNamed(key: string): SKAttributeValue;
+
+  setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
+
+  setScale(scale: number): void;
+
+  addChild(node: SKNode): void;
+
+  insertChildAtIndex(node: SKNode, index: number): void;
+
+  removeChildrenInArray(nodes: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  removeAllChildren(): void;
+
+  removeFromParent(): void;
+
+  moveToParent(parent: SKNode): void;
+
+  childNodeWithName(name: string): SKNode;
+
+  enumerateChildNodesWithNameUsingBlock(name: string, block: (p1: SKNode, p2: interop.PointerConvertible) => void): void;
+
+  objectForKeyedSubscript(name: string): NSArray;
+
+  inParentHierarchy(parent: SKNode): boolean;
+
+  runAction(action: SKAction): void;
+
+  runActionCompletion(action: SKAction, block: () => void): void;
+
+  runActionWithKey(action: SKAction, key: string): void;
+
+  hasActions(): boolean;
+
+  actionForKey(key: string): SKAction;
+
+  removeActionForKey(key: string): void;
+
+  removeAllActions(): void;
+
+  containsPoint(p: CGPoint): boolean;
+
+  nodeAtPoint(p: CGPoint): SKNode;
+
+  nodesAtPoint(p: CGPoint): NSArray;
+
+  convertPointFromNode(point: CGPoint, node: SKNode): CGPoint;
+
+  convertPointToNode(point: CGPoint, node: SKNode): CGPoint;
+
+  intersectsNode(node: SKNode): boolean;
+
+  isEqualToNode(node: SKNode): boolean;
+
+  setPosition(position: CGPoint): void;
+
+  setZPosition(zPosition: number): void;
+
+  setZRotation(zRotation: number): void;
+
+  setXScale(xScale: number): void;
+
+  setYScale(yScale: number): void;
+
+  setSpeed(speed: number): void;
+
+  setAlpha(alpha: number): void;
+
+  isPaused(): boolean;
+
+  setPaused(paused: boolean): void;
+
+  isHidden(): boolean;
+
+  setHidden(hidden: boolean): void;
+
+  isUserInteractionEnabled(): boolean;
+
+  setUserInteractionEnabled(userInteractionEnabled: boolean): void;
+
+  setFocusBehavior(focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>): void;
+
+  setName(name: string | null): void;
+
+  setPhysicsBody(physicsBody: SKPhysicsBody | null): void;
+
+  setUserData(userData: NSMutableDictionary | null): void;
+
+  setReachConstraints(reachConstraints: SKReachConstraints | null): void;
+
+  setConstraints(constraints: NSArray<interop.Object> | Array<interop.Object> | null): void;
+
+  setAttributeValues(attributeValues: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+  static obstaclesFromSpriteTexturesAccuracy(sprites: NSArray<interop.Object> | Array<interop.Object>, accuracy: number): NSArray;
+
+  static obstaclesFromNodeBounds(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  static obstaclesFromNodePhysicsBodies(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
+
+  entity: GKEntity;
+
+  setEntity(entity: GKEntity): void;
+
+  copyWithZone(zone: interop.PointerConvertible): interop.Object;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+
+  readonly canBecomeFocused: boolean;
+
+  readonly focusEffect: UIFocusEffect;
+
+  readonly focusGroupPriority: number;
+
+  readonly focusItemDeferralMode: interop.Enum<typeof UIFocusItemDeferralMode>;
+
+  readonly isTransparentFocusItem: boolean;
+
+  didHintFocusMovement(hint: UIFocusMovementHint): void;
+
+  readonly preferredFocusEnvironments: NSArray;
+
+  readonly parentFocusEnvironment: UIFocusEnvironment;
+
+  readonly focusItemContainer: UIFocusItemContainer;
+
+  setNeedsFocusUpdate(): void;
+
+  updateFocusIfNeeded(): void;
+
+  shouldUpdateFocusInContext(context: UIFocusUpdateContext): boolean;
+
+  didUpdateFocusInContextWithAnimationCoordinator(context: UIFocusUpdateContext, coordinator: UIFocusAnimationCoordinator): void;
+
+  readonly preferredFocusedView: UIView;
+
+  readonly focusGroupIdentifier: string;
+
+  isEqual(object: interop.Object): boolean;
+
+  readonly hash: number;
+
+  readonly superclass: interop.Object;
+
+  class(): interop.Object;
+
+  self(): this;
+
+  performSelector(aSelector: string): interop.Object;
+
+  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
+
+  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
+
+  readonly isProxy: boolean;
+
+  isKindOfClass(aClass: interop.Object): boolean;
+
+  isMemberOfClass(aClass: interop.Object): boolean;
+
+  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
+
+  respondsToSelector(aSelector: string): boolean;
+
+  retain(): this;
+
+  release(): void;
+
+  autorelease(): this;
+
+  retainCount(): number;
+
+  readonly zone: interop.Pointer;
+
+  readonly description: string;
+
+  readonly debugDescription: string;
+
+  readonly coordinateSpace: UICoordinateSpace;
+
+  focusItemsInRect(rect: CGRect): NSArray;
+
+  convertPointToCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
+
+  convertPointFromCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
+
+  convertRectToCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
+
+  convertRectFromCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
+
+  readonly bounds: CGRect;
+}
+
 declare class SKKeyframeSequence extends NSObject implements NSSecureCoding, NSCopying {
   initWithKeyframeValuesTimes(values: NSArray<interop.Object> | Array<interop.Object>, times: NSArray<interop.Object> | Array<interop.Object>): this;
 
@@ -558,258 +810,6 @@ declare class SKWarpGeometryGrid extends SKWarpGeometry implements NSSecureCodin
   static readonly supportsSecureCoding: boolean;
 
   encodeWithCoder(coder: NSCoder): void;
-}
-
-declare class SKNode extends UIResponder implements NSCopying, NSSecureCoding, UIFocusItem, UIFocusItemContainer, UICoordinateSpace {
-  init(): this;
-
-  initWithCoder(aDecoder: NSCoder): this;
-
-  static node<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
-
-  static nodeWithFileNamed<This extends abstract new (...args: any) => any>(this: This, filename: string): InstanceType<This>;
-
-  static nodeWithFileNamedSecurelyWithClassesAndError<This extends abstract new (...args: any) => any>(this: This, filename: string, classes: NSSet, error: interop.PointerConvertible): InstanceType<This>;
-
-  readonly frame: CGRect;
-
-  calculateAccumulatedFrame(): CGRect;
-
-  position: CGPoint;
-
-  zPosition: number;
-
-  zRotation: number;
-
-  xScale: number;
-
-  yScale: number;
-
-  speed: number;
-
-  alpha: number;
-
-  paused: boolean;
-
-  hidden: boolean;
-
-  userInteractionEnabled: boolean;
-
-  focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>;
-
-  readonly parent: SKNode;
-
-  readonly children: NSArray;
-
-  name: string;
-
-  readonly scene: SKScene;
-
-  physicsBody: SKPhysicsBody;
-
-  userData: NSMutableDictionary;
-
-  reachConstraints: SKReachConstraints;
-
-  get constraints(): NSArray;
-  set constraints(value: NSArray<interop.Object> | Array<interop.Object>);
-
-  get attributeValues(): NSDictionary;
-  set attributeValues(value: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>);
-
-  valueForAttributeNamed(key: string): SKAttributeValue;
-
-  setValueForAttributeNamed(value: SKAttributeValue, key: string): void;
-
-  setScale(scale: number): void;
-
-  addChild(node: SKNode): void;
-
-  insertChildAtIndex(node: SKNode, index: number): void;
-
-  removeChildrenInArray(nodes: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  removeAllChildren(): void;
-
-  removeFromParent(): void;
-
-  moveToParent(parent: SKNode): void;
-
-  childNodeWithName(name: string): SKNode;
-
-  enumerateChildNodesWithNameUsingBlock(name: string, block: (p1: SKNode, p2: interop.PointerConvertible) => void): void;
-
-  objectForKeyedSubscript(name: string): NSArray;
-
-  inParentHierarchy(parent: SKNode): boolean;
-
-  runAction(action: SKAction): void;
-
-  runActionCompletion(action: SKAction, block: () => void): void;
-
-  runActionWithKey(action: SKAction, key: string): void;
-
-  hasActions(): boolean;
-
-  actionForKey(key: string): SKAction;
-
-  removeActionForKey(key: string): void;
-
-  removeAllActions(): void;
-
-  containsPoint(p: CGPoint): boolean;
-
-  nodeAtPoint(p: CGPoint): SKNode;
-
-  nodesAtPoint(p: CGPoint): NSArray;
-
-  convertPointFromNode(point: CGPoint, node: SKNode): CGPoint;
-
-  convertPointToNode(point: CGPoint, node: SKNode): CGPoint;
-
-  intersectsNode(node: SKNode): boolean;
-
-  isEqualToNode(node: SKNode): boolean;
-
-  setPosition(position: CGPoint): void;
-
-  setZPosition(zPosition: number): void;
-
-  setZRotation(zRotation: number): void;
-
-  setXScale(xScale: number): void;
-
-  setYScale(yScale: number): void;
-
-  setSpeed(speed: number): void;
-
-  setAlpha(alpha: number): void;
-
-  isPaused(): boolean;
-
-  setPaused(paused: boolean): void;
-
-  isHidden(): boolean;
-
-  setHidden(hidden: boolean): void;
-
-  isUserInteractionEnabled(): boolean;
-
-  setUserInteractionEnabled(userInteractionEnabled: boolean): void;
-
-  setFocusBehavior(focusBehavior: interop.Enum<typeof SKNodeFocusBehavior>): void;
-
-  setName(name: string | null): void;
-
-  setPhysicsBody(physicsBody: SKPhysicsBody | null): void;
-
-  setUserData(userData: NSMutableDictionary | null): void;
-
-  setReachConstraints(reachConstraints: SKReachConstraints | null): void;
-
-  setConstraints(constraints: NSArray<interop.Object> | Array<interop.Object> | null): void;
-
-  setAttributeValues(attributeValues: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
-
-  static obstaclesFromSpriteTexturesAccuracy(sprites: NSArray<interop.Object> | Array<interop.Object>, accuracy: number): NSArray;
-
-  static obstaclesFromNodeBounds(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  static obstaclesFromNodePhysicsBodies(nodes: NSArray<interop.Object> | Array<interop.Object>): NSArray;
-
-  entity: GKEntity;
-
-  setEntity(entity: GKEntity): void;
-
-  copyWithZone(zone: interop.PointerConvertible): interop.Object;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
-
-  readonly canBecomeFocused: boolean;
-
-  readonly focusEffect: UIFocusEffect;
-
-  readonly focusGroupPriority: number;
-
-  readonly focusItemDeferralMode: interop.Enum<typeof UIFocusItemDeferralMode>;
-
-  readonly isTransparentFocusItem: boolean;
-
-  didHintFocusMovement(hint: UIFocusMovementHint): void;
-
-  readonly preferredFocusEnvironments: NSArray;
-
-  readonly parentFocusEnvironment: UIFocusEnvironment;
-
-  readonly focusItemContainer: UIFocusItemContainer;
-
-  setNeedsFocusUpdate(): void;
-
-  updateFocusIfNeeded(): void;
-
-  shouldUpdateFocusInContext(context: UIFocusUpdateContext): boolean;
-
-  didUpdateFocusInContextWithAnimationCoordinator(context: UIFocusUpdateContext, coordinator: UIFocusAnimationCoordinator): void;
-
-  readonly preferredFocusedView: UIView;
-
-  readonly focusGroupIdentifier: string;
-
-  isEqual(object: interop.Object): boolean;
-
-  readonly hash: number;
-
-  readonly superclass: interop.Object;
-
-  class(): interop.Object;
-
-  self(): this;
-
-  performSelector(aSelector: string): interop.Object;
-
-  performSelectorWithObject(aSelector: string, object: interop.Object): interop.Object;
-
-  performSelectorWithObjectWithObject(aSelector: string, object1: interop.Object, object2: interop.Object): interop.Object;
-
-  readonly isProxy: boolean;
-
-  isKindOfClass(aClass: interop.Object): boolean;
-
-  isMemberOfClass(aClass: interop.Object): boolean;
-
-  conformsToProtocol(aProtocol: interop.PointerConvertible): boolean;
-
-  respondsToSelector(aSelector: string): boolean;
-
-  retain(): this;
-
-  release(): void;
-
-  autorelease(): this;
-
-  retainCount(): number;
-
-  readonly zone: interop.Pointer;
-
-  readonly description: string;
-
-  readonly debugDescription: string;
-
-  readonly coordinateSpace: UICoordinateSpace;
-
-  focusItemsInRect(rect: CGRect): NSArray;
-
-  convertPointToCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
-
-  convertPointFromCoordinateSpace(point: CGPoint, coordinateSpace: UICoordinateSpace): CGPoint;
-
-  convertRectToCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
-
-  convertRectFromCoordinateSpace(rect: CGRect, coordinateSpace: UICoordinateSpace): CGRect;
-
-  readonly bounds: CGRect;
 }
 
 declare class SKTileGroup extends NSObject implements NSCopying, NSSecureCoding {

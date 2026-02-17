@@ -704,14 +704,6 @@ declare class BELayerHierarchyHostingTransactionCoordinator extends NSObject imp
   initWithCoder(coder: NSCoder): this;
 }
 
-declare class BEWebContentFilter extends NSObject {
-  static readonly shouldEvaluateURLs: boolean;
-
-  evaluateURLCompletionHandler(url: NSURL, completionHandler: (p1: boolean, p2: NSData) => void | null): void;
-
-  allowURLCompletionHandler(url: NSURL, completionHandler: (p1: boolean, p2: NSError) => void | null): void;
-}
-
 declare class BELayerHierarchyHandle extends NSObject implements NSSecureCoding {
   static handleWithXPCRepresentationError(xpcRepresentation: NSObject | null, error: interop.PointerConvertible): BELayerHierarchyHandle;
 

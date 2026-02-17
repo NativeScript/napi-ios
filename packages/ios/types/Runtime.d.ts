@@ -1,36 +1,10 @@
 /// <reference types="@nativescript/objc-node-api" />
 
-declare const UNW_ARM_R6: number;
-
-declare const UNW_PPC64_F7: number;
-
-declare const UNWIND_ARM_FRAME_SECOND_PUSH_R11: number;
-
-declare const kDNSServiceFlagsBrowseDomains: number;
-
-declare const kDNSServiceType_NSEC3: number;
-
-declare const kUnknownType: number;
-
-declare const UNW_PPC64_VS62: number;
-
-declare const UNW_OR1K_R1: number;
-
-declare const UNW_AARCH64_X3: number;
-
-declare const UNW_HEXAGON_R20: number;
-
-declare const optarg: string;
-
-declare const UNWIND_X86_64_REG_R15: number;
-
-declare const UNW_ARM64_D1: number;
-
-declare const UNW_ARM_WC1: number;
-
 declare const UNW_VE_V0: number;
 
 declare const UNW_ARM64_X28: number;
+
+declare const UNW_HEXAGON_R20: number;
 
 declare const UNW_PPC64_V4: number;
 
@@ -64,13 +38,9 @@ declare const UNW_ARM_D14: number;
 
 declare const UNW_X86_EBX: number;
 
-declare const UNW_VE_V12: number;
-
 declare const UNW_LOONGARCH_F12: number;
 
 declare const UNW_AARCH64_X23: number;
-
-declare const UNW_ARM64_D15: number;
 
 declare const UNW_OR1K_R15: number;
 
@@ -87,8 +57,6 @@ declare const UNW_PPC64_VS61: number;
 declare const UNW_ARM_WR8: number;
 
 declare const optopt: number;
-
-declare const UNW_PPC64_V18: number;
 
 declare const dyld_error_kind_dylib_wrong_arch: number;
 
@@ -134,10 +102,6 @@ declare const UNW_AARCH64_X8: number;
 
 declare const _dispatch_data_destructor_free: () => void;
 
-declare const UNW_MIPS_F17: number;
-
-declare const UNW_SPARC_L1: number;
-
 declare const UNW_VE_V4: number;
 
 declare const UNW_VE_VL: number;
@@ -168,8 +132,6 @@ declare const UNW_RISCV_F0: number;
 
 declare const kDNSServiceType_SPF: number;
 
-declare const UNW_SPARC_G3: number;
-
 declare const UNW_PPC64_F14: number;
 
 declare const KERNEL_SECURITY_TOKEN: security_token_t;
@@ -179,8 +141,6 @@ declare const UNW_PPC_F28: number;
 declare const UNW_PPC64_VS28: number;
 
 declare const UNW_PPC64_VS40: number;
-
-declare const UNW_VE_VM1: number;
 
 declare const UNW_VE_S15: number;
 
@@ -208,29 +168,27 @@ declare const UNW_PPC_R20: number;
 
 declare const HV_ERROR: number;
 
-declare const UNW_ARM64_X23: number;
-
 declare const kDNSServiceType_MF: number;
 
 declare const UNW_PPC64_F15: number;
+
+declare const HV_SUCCESS: number;
 
 declare const UNW_PPC64_VS63: number;
 
 declare const UNW_MIPS_F21: number;
 
+declare const UNW_OR1K_R1: number;
+
 declare const kDNSServiceFlagsExpiredAnswer: number;
 
 declare const UNW_HEXAGON_R25: number;
 
-declare const UNW_RISCV_X3: number;
-
-declare const UNW_SPARC_G5: number;
+declare const UNWIND_ARM_FRAME_SECOND_PUSH_R11: number;
 
 declare const in6addr_loopback: in6_addr;
 
 declare const kDNSServiceType_UINFO: number;
-
-declare const UNW_VE_S0: number;
 
 declare const UNW_RISCV_X19: number;
 
@@ -246,8 +204,6 @@ declare const UNW_LOONGARCH_R24: number;
 
 declare const UNW_VE_V27: number;
 
-declare const UNW_PPC64_R26: number;
-
 declare const opterr: number;
 
 declare const kDNSServiceErr_Transient: number;
@@ -255,8 +211,6 @@ declare const kDNSServiceErr_Transient: number;
 declare const XPC_ACTIVITY_STATE_WAIT: number;
 
 declare const dyld_error_kind_dylib_version: number;
-
-declare const UNW_PPC_F24: number;
 
 declare const UNW_PPC64_F31: number;
 
@@ -304,8 +258,6 @@ declare const UNW_AARCH64_V28: number;
 
 declare const UNW_SPARC_L4: number;
 
-declare const kDNSServiceType_SIG: number;
-
 declare const UNW_X86_64_RCX: number;
 
 declare const UNW_LOONGARCH_R21: number;
@@ -320,8 +272,6 @@ declare const UNW_X86_64_RDX: number;
 
 declare const kDNSServiceType_LOC: number;
 
-declare const UNW_S390X_R14: number;
-
 declare const UNW_ARM_S29: number;
 
 declare const UNW_VE_V46: number;
@@ -333,8 +283,6 @@ declare const UNW_MIPS_F28: number;
 declare const UNW_VE_S5: number;
 
 declare const tzname: interop.Pointer;
-
-declare const UNW_VE_S20: number;
 
 declare const UNW_PPC64_CR6: number;
 
@@ -351,6 +299,8 @@ declare const kDNSServiceType_AFSDB: number;
 declare const UNW_AARCH64_X7: number;
 
 declare const UNW_PPC_V5: number;
+
+declare const UNW_AARCH64_X3: number;
 
 declare const UNW_VE_V19: number;
 
@@ -381,8 +331,6 @@ declare const OBJC_GENERATIONAL_COLLECTION: number;
 declare const UNW_ARM_S14: number;
 
 declare const extend: number;
-
-declare const UNW_VE_V39: number;
 
 declare const kDNSServiceType_MINFO: number;
 
@@ -420,91 +368,63 @@ declare const UNW_VE_VM9: number;
 
 declare const UNW_HEXAGON_R10: number;
 
-declare const UNW_PPC64_VS15: number;
-
 declare const kDNSServiceType_GID: number;
 
-declare const UIDNA_DEFAULT: number;
+declare const kDNSServiceErr_Invalid: number;
 
-declare const UNW_X86_64_XMM1: number;
+declare const UNW_MIPS_R15: number;
 
-declare const UNW_MIPS_R3: number;
+declare const UNW_PPC_R14: number;
 
-declare const kDNSServiceFlagsSecure: number;
+declare const DYLD_CHAINED_IMPORT_ADDEND: number;
 
-declare const matrix_identity_float3x3: simd_float3x3;
+declare const UNW_MIPS_F19: number;
+
+declare const _xpc_error_connection_interrupted: _xpc_dictionary_s;
 
 declare const UNW_EREADONLYREG: number;
 
-declare const kDNSServiceType_MX: number;
+declare const UNW_ARM_SP: number;
 
-declare const bootstrap_port: number;
+declare const UNW_LOONGARCH_F0: number;
 
-declare const UTEXT_MAGIC: number;
+declare const UNW_SPARC_I7: number;
 
-declare const UNW_RISCV_X20: number;
+declare const UNW_PPC_V0: number;
 
-declare const UNW_VE_V53: number;
+declare const UNW_X86_64_R14: number;
 
-declare const UNW_VE_S42: number;
+declare const UNW_ARM64_X31: number;
 
 declare const kDNSServiceFlagsShared: number;
 
 declare const kDNSServiceType_KEY: number;
 
-declare const UNW_PPC_CR6: number;
+declare const UNW_HEXAGON_R3: number;
 
-declare const kDNSServiceType_HINFO: number;
-
-declare const vm_page_size: number;
-
-declare const UNW_VE_S23: number;
-
-declare const HV_MEMORY_EXEC: number;
-
-declare const UNW_LOONGARCH_R0: number;
-
-declare const UNW_HEXAGON_R21: number;
+declare const kDNSServiceType_TSIG: number;
 
 declare const UNW_MIPS_R13: number;
 
-declare const UNW_RISCV_X14: number;
+declare const UNW_X86_64_R10: number;
 
 declare const UNW_LOONGARCH_R23: number;
-
-declare const UNW_VE_VM15: number;
-
-declare const UNW_LOONGARCH_F7: number;
-
-declare const UNW_RISCV_X31: number;
 
 declare const UNW_OR1K_R0: number;
 
 declare const UNW_ARM64_X21: number;
 
-declare const kDNSServiceType_RT: number;
+declare const kDNSServiceType_TXT: number;
 
-declare const UNWIND_X86_REG_EBP: number;
-
-declare const __fpcr_trap_invalid: number;
-
-declare const UNW_AARCH64_X2: number;
-
-declare const UNW_LOONGARCH_R20: number;
-
-declare const UNW_LOONGARCH_F8: number;
+declare const UNW_PPC64_VS15: number;
 
 declare const kDNSServiceType_MAILA: number;
-
-declare const UNW_MIPS_F19: number;
 
 declare const UNW_VE_S2: number;
 
 declare const UNW_SPARC_L5: number;
 
 declare const UNW_HEXAGON_R23: number;
-
-declare const UNW_ARM_S27: number;
 
 declare const UNW_AARCH64_X29: number;
 
@@ -522,11 +442,7 @@ declare const UNW_PPC_F30: number;
 
 declare const kDNSServiceType_DHCID: number;
 
-declare const UNW_ARM64_RA_SIGN_STATE: number;
-
 declare const UNWIND_X86_64_MODE_MASK: number;
-
-declare const UNW_PPC64_VS3: number;
 
 declare const UTEXT_PROVIDER_WRITABLE: number;
 
@@ -538,21 +454,11 @@ declare const UNWIND_ARM64_FRAME_D8_D9_PAIR: number;
 
 declare const UNW_LOONGARCH_F16: number;
 
+declare const kDNSServiceFlagsPrivateFive: number;
+
 declare const UNW_VE_S10: number;
 
-declare const UNW_PPC_V0: number;
-
-declare const UNW_X86_64_R14: number;
-
-declare const UNW_PPC64_R4: number;
-
-declare const UNW_PPC64_V7: number;
-
-declare const UNW_ARM_WR1: number;
-
 declare const kDNSServiceType_NULL: number;
-
-declare const UNW_PPC64_V6: number;
 
 declare const kDNSServiceFlagsEnableDNSSEC: number;
 
@@ -566,27 +472,81 @@ declare const kDNSServiceFlagsAdd: number;
 
 declare const UNW_PPC64_VS36: number;
 
-declare const UIDNA_USE_STD3_RULES: number;
+declare const UNW_PPC64_V7: number;
 
-declare const UNW_S390X_R5: number;
+declare const UNW_ARM_WR1: number;
 
-declare const UNW_PPC_R10: number;
+declare const UNW_ARM64_X23: number;
 
-declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
+declare const UNW_PPC_CR7: number;
+
+declare const UNW_EUNSPEC: number;
+
+declare const kDNSServiceFlagsSecure: number;
+
+declare const matrix_identity_float3x3: simd_float3x3;
+
+declare const UNW_PPC_F13: number;
+
+declare const UNW_RISCV_F4: number;
+
+declare const UNW_PPC64_VS3: number;
+
+declare const _c_locale: interop.Pointer;
 
 declare const UNW_PPC64_VS35: number;
 
-declare const alphaStage: number;
+declare const UNW_ARM_WC3: number;
 
-declare const UNW_ARM64_X31: number;
+declare const UNW_RISCV_X15: number;
 
-declare const UNW_ARM64_D31: number;
+declare const UNWIND_X86_FRAMELESS_STACK_REG_COUNT: number;
 
-declare const UNW_VE_V52: number;
+declare const UNWIND_ARM64_MODE_DWARF: number;
 
-declare const UNW_OR1K_R25: number;
+declare const UNW_SPARC_I6: number;
 
-declare const UNW_PPC64_F17: number;
+declare const UNW_S390X_R6: number;
+
+declare const UNW_X86_64_RDI: number;
+
+declare const UNW_PPC64_VSCR: number;
+
+declare const UNW_MIPS_LO: number;
+
+declare const UNW_OR1K_R22: number;
+
+declare const UNW_MIPS_F10: number;
+
+declare const UNW_ARM_WR5: number;
+
+declare const UNW_OR1K_R11: number;
+
+declare const HV_UNSUPPORTED: number;
+
+declare const kDNSServiceFlagsThresholdOne: number;
+
+declare const DYLD_CHAINED_PTR_64_OFFSET: number;
+
+declare const UNW_PPC64_R7: number;
+
+declare const UNW_ARM_S27: number;
+
+declare const UNW_PPC64_V18: number;
+
+declare const UNW_ARM_S16: number;
+
+declare const UNW_VE_V59: number;
+
+declare const UNW_PPC_V17: number;
+
+declare const UNW_PPC64_V28: number;
+
+declare const UNW_VE_V58: number;
+
+declare const UNW_PPC64_V31: number;
+
+declare const UNW_X86_64_XMM11: number;
 
 declare const UNW_RISCV_F22: number;
 
@@ -600,33 +560,43 @@ declare const UNW_X86_EDI: number;
 
 declare const UNW_MIPS_R17: number;
 
-declare const OBJC_CLEAR_RESIDENT_STACK: number;
-
-declare const KERNEL_AUDIT_TOKEN: audit_token_t;
-
 declare const UNW_PPC64_R17: number;
 
 declare const UNWIND_X86_EBP_FRAME_REGISTERS: number;
 
-declare const UNW_ARM64_X26: number;
+declare const UIDNA_ERROR_CONTEXTO_DIGITS: number;
+
+declare const UNW_VE_VIXR: number;
+
+declare const UNW_VE_V39: number;
+
+declare const UNW_ARM64_D15: number;
+
+declare const UNW_VE_V12: number;
+
+declare const UNW_PPC_F4: number;
+
+declare const UNW_PPC_LR: number;
 
 declare const kDNSServiceFlagsUnicastResponse: number;
 
-declare const UNW_VE_S6: number;
+declare const _dispatch_source_type_proc: dispatch_source_type_s;
 
-declare const HV_SUCCESS: number;
+declare const UNW_ARM_D19: number;
+
+declare const UNW_ARM64_RA_SIGN_STATE: number;
+
+declare const OBJC_WAIT_UNTIL_DONE: number;
+
+declare const UNW_MIPS_F0: number;
+
+declare const KERNEL_AUDIT_TOKEN: audit_token_t;
 
 declare const UNW_MIPS_F26: number;
 
-declare const _dispatch_data_destructor_munmap: () => void;
-
 declare const UNW_RISCV_X8: number;
 
-declare const _xpc_error_connection_interrupted: _xpc_dictionary_s;
-
 declare const UNW_SPARC_I2: number;
-
-declare const UNW_HEXAGON_R3: number;
 
 declare const UNW_PPC64_VS48: number;
 
@@ -642,17 +612,19 @@ declare const UTEXT_PROVIDER_LENGTH_IS_EXPENSIVE: number;
 
 declare const UNWIND_X86_DWARF_SECTION_OFFSET: number;
 
+declare const UNW_VE_S6: number;
+
 declare const UNW_MIPS_F14: number;
 
 declare const UNW_LOONGARCH_R12: number;
 
 declare const UNW_AARCH64_X1: number;
 
-declare const _c_locale: interop.Pointer;
-
-declare const UNW_ARM_D19: number;
+declare const UNW_SPARC_O4: number;
 
 declare const UNW_PPC64_VS39: number;
+
+declare const kDNSServiceType_RT: number;
 
 declare const UNW_LOONGARCH_F23: number;
 
@@ -662,13 +634,7 @@ declare const UNW_PPC64_F23: number;
 
 declare const UNW_MIPS_F25: number;
 
-declare const _dispatch_source_type_proc: dispatch_source_type_s;
-
 declare const UNW_S390X_F10: number;
-
-declare const UNW_X86_64_RDI: number;
-
-declare const UNW_ARM_WR15: number;
 
 declare const UNW_ARM_R8: number;
 
@@ -677,6 +643,8 @@ declare const UNW_HEXAGON_R6: number;
 declare const UNW_RISCV_F18: number;
 
 declare const UNW_VE_VM14: number;
+
+declare const UNW_VE_S0: number;
 
 declare const UNW_VE_V31: number;
 
@@ -692,13 +660,13 @@ declare const UNW_ARM64_D26: number;
 
 declare const UNW_X86_64_XMM9: number;
 
+declare const UNW_HEXAGON_R21: number;
+
 declare const UNW_ARM_WR0: number;
 
 declare const UNW_MIPS_R10: number;
 
 declare const UNW_LOONGARCH_F24: number;
-
-declare const UNW_X86_64_R10: number;
 
 declare const UNW_VE_S48: number;
 
@@ -714,7 +682,15 @@ declare const UNW_PPC64_V15: number;
 
 declare const UNW_ARM_WR3: number;
 
+declare const UNW_VE_S19: number;
+
+declare const UNW_PPC64_VS57: number;
+
+declare const bootstrap_port: number;
+
 declare const UNW_X86_EBP: number;
+
+declare const UNW_PPC64_F7: number;
 
 declare const __fpsr_saturation: number;
 
@@ -726,15 +702,15 @@ declare const UNW_PPC_V7: number;
 
 declare const UNW_SPARC_I0: number;
 
-declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
+declare const UNW_ARM64_X17: number;
 
 declare const __fpcr_trap_denormal: number;
-
-declare const UNW_RISCV_F4: number;
 
 declare const kDNSServiceFlagsDefault: number;
 
 declare const UNW_RISCV_X21: number;
+
+declare const UNW_RISCV_X7: number;
 
 declare const UNW_ARM64_X7: number;
 
@@ -754,21 +730,31 @@ declare const UNW_VE_S17: number;
 
 declare const UNW_VE_S35: number;
 
+declare const UNW_PPC64_F17: number;
+
 declare const UNW_PPC64_V10: number;
 
-declare const UNW_S390X_F6: number;
+declare const UNW_SPARC_L1: number;
 
-declare const OBJC_WAIT_UNTIL_DONE: number;
+declare const UNW_S390X_F6: number;
 
 declare const UNWIND_ARM64_MODE_FRAME: number;
 
 declare const UNW_ARM_R11: number;
 
+declare const UNW_LOONGARCH_R20: number;
+
 declare const UNWIND_ARM_FRAME_D_REG_COUNT_MASK: number;
 
 declare const _xpc_type_error: _xpc_type_s;
 
-declare const UNW_PPC64_VSCR: number;
+declare const UNW_S390X_R5: number;
+
+declare const UIDNA_USE_STD3_RULES: number;
+
+declare const UNW_OR1K_R25: number;
+
+declare const UNW_ARM_IP: number;
 
 declare const UNWIND_X86_64_FRAMELESS_STACK_REG_PERMUTATION: number;
 
@@ -782,11 +768,17 @@ declare const UNW_MIPS_R16: number;
 
 declare const UNW_AARCH64_V23: number;
 
+declare const UNW_LOONGARCH_R19: number;
+
+declare const UNW_RISCV_X31: number;
+
 declare const UNW_AARCH64_V9: number;
 
-declare const UNW_PPC64_R3: number;
+declare const UTEXT_MAGIC: number;
 
-declare const eNoteExitReparentedDeprecated: number;
+declare const UNW_ARM_S8: number;
+
+declare const UNW_PPC_F5: number;
 
 declare const UNW_OR1K_R4: number;
 
@@ -804,6 +796,8 @@ declare const UNW_ARM_D10: number;
 
 declare const UNWIND_X86_MODE_EBP_FRAME: number;
 
+declare const UNW_PPC64_VS62: number;
+
 declare const UNW_PPC64_F8: number;
 
 declare const UNW_ARM64_X8: number;
@@ -814,9 +808,9 @@ declare const UNW_S390X_R10: number;
 
 declare const UIDNA_CHECK_BIDI: number;
 
-declare const UNW_ARM64_X30: number;
-
 declare const UNWIND_X86_64_REG_NONE: number;
+
+declare const UNW_PPC_R10: number;
 
 declare const kDNSServiceErr_ServiceNotRunning: number;
 
@@ -835,6 +829,8 @@ declare const UNW_MIPS_R31: number;
 declare const UNW_PPC64_V11: number;
 
 declare const UNW_MIPS_R11: number;
+
+declare const UNWIND_ARM_FRAME_SECOND_PUSH_R8: number;
 
 declare const UNW_SPARC_O6: number;
 
@@ -858,10 +854,6 @@ declare const UNW_PPC_V25: number;
 
 declare const UNW_PPC64_V24: number;
 
-declare const UNW_VE_V58: number;
-
-declare const UNW_PPC64_V31: number;
-
 declare const UNW_PPC_R22: number;
 
 declare const _xpc_type_string: _xpc_type_s;
@@ -884,7 +876,7 @@ declare const UNW_VE_S58: number;
 
 declare const UNW_PPC_V15: number;
 
-declare const UNW_PPC64_V5: number;
+declare const UNW_MIPS_F30: number;
 
 declare const UNW_PPC64_R28: number;
 
@@ -892,9 +884,7 @@ declare const UNW_MIPS_F27: number;
 
 declare const UNW_ARM_WR11: number;
 
-declare const kDNSServiceFlagsPrivateFive: number;
-
-declare const UNW_AARCH64_RA_SIGN_STATE: number;
+declare const UNW_LOONGARCH_R0: number;
 
 declare const UNW_PPC64_F29: number;
 
@@ -904,11 +894,27 @@ declare const UNW_PPC64_R27: number;
 
 declare const _dispatch_source_type_data_or: dispatch_source_type_s;
 
-declare const UNW_PPC_CR7: number;
-
 declare const UNW_PPC_F1: number;
 
 declare const UNW_ARM_R10: number;
+
+declare const UNW_AARCH64_RA_SIGN_STATE: number;
+
+declare const UNW_SPARC_I5: number;
+
+declare const UNW_VE_V6: number;
+
+declare const UNW_ARM_WR15: number;
+
+declare const UNW_S390X_R14: number;
+
+declare const sqlite3_version: interop.Pointer;
+
+declare const UNW_RISCV_F27: number;
+
+declare const UNW_PPC64_VS13: number;
+
+declare const UNW_HEXAGON_R4: number;
 
 declare const matrix_identity_double4x4: simd_double4x4;
 
@@ -928,6 +934,8 @@ declare const UNW_ARM_R3: number;
 
 declare const UNW_RISCV_F30: number;
 
+declare const _xpc_type_endpoint: _xpc_type_s;
+
 declare const UNW_ARM_D25: number;
 
 declare const UNW_LOONGARCH_R10: number;
@@ -939,8 +947,6 @@ declare const UNW_ARM_R0: number;
 declare const UNW_PPC64_R2: number;
 
 declare const _xpc_bool_false: _xpc_bool_s;
-
-declare const UNW_RISCV_F27: number;
 
 declare const kDNSServiceFlagsReturnIntermediates: number;
 
@@ -956,6 +962,8 @@ declare const UNW_PPC64_VS9: number;
 
 declare const kDNSServiceType_TKEY: number;
 
+declare const suboptarg: string;
+
 declare const __fpcr_flush_to_zero: number;
 
 declare const UNW_S390X_F0: number;
@@ -966,8 +974,6 @@ declare const UNW_OR1K_R31: number;
 
 declare const UIDNA_ERROR_EMPTY_LABEL: number;
 
-declare const UNW_VE_S53: number;
-
 declare const kDNSServiceType_PTR: number;
 
 declare const UNW_PPC64_VS54: number;
@@ -975,8 +981,6 @@ declare const UNW_PPC64_VS54: number;
 declare const _xpc_error_termination_imminent: _xpc_dictionary_s;
 
 declare const UNW_PPC_R3: number;
-
-declare const UNW_MIPS_R20: number;
 
 declare const UNW_PPC_CR3: number;
 
@@ -1012,8 +1016,6 @@ declare const UNW_PPC64_R1: number;
 
 declare const kDNSServiceFlagsNoAutoRename: number;
 
-declare const kDNSServiceErr_Invalid: number;
-
 declare const kDNSServiceAttributeAAAAFallback: DNSServiceAttribute_s;
 
 declare const _FE_DFL_ENV: fenv_t;
@@ -1021,8 +1023,6 @@ declare const _FE_DFL_ENV: fenv_t;
 declare const UNW_PPC64_R29: number;
 
 declare const UNW_ECROSSRASIGNING: number;
-
-declare const UNW_ARM_S16: number;
 
 declare const UNW_VE_V3: number;
 
@@ -1032,11 +1032,7 @@ declare const UNW_ARM64_D18: number;
 
 declare const UNW_X86_64_R11: number;
 
-declare const UNW_MIPS_F0: number;
-
 declare const _dispatch_source_type_read: dispatch_source_type_s;
-
-declare const UNW_ARM_SP: number;
 
 declare const UNWIND_ARM_FRAME_SECOND_PUSH_R10: number;
 
@@ -1062,6 +1058,8 @@ declare const UNW_PPC_R25: number;
 
 declare const OSBigEndian: number;
 
+declare const HV_MEMORY_EXEC: number;
+
 declare const UNW_PPC64_VS47: number;
 
 declare const UNW_MIPS_F20: number;
@@ -1070,11 +1068,7 @@ declare const _dispatch_source_type_mach_send: dispatch_source_type_s;
 
 declare const UNW_PPC64_LR: number;
 
-declare const UNW_ARM_D1: number;
-
 declare const UNW_PPC64_TFHAR: number;
-
-declare const UNW_LOONGARCH_R19: number;
 
 declare const UNW_S390X_R2: number;
 
@@ -1098,19 +1092,13 @@ declare const kDNSServiceFlagsQueueRequest: number;
 
 declare const kDNSServiceErr_BadSig: number;
 
-declare const UNW_PPC64_V28: number;
-
 declare const signgam: number;
 
 declare const UNW_PPC_R29: number;
 
-declare const UNW_SPARC_I7: number;
-
 declare const UNW_LOONGARCH_F27: number;
 
 declare const _dispatch_source_type_signal: dispatch_source_type_s;
-
-declare const UNW_PPC64_VS13: number;
 
 declare const kDNSServiceFlagsSuppressUnusable: number;
 
@@ -1124,8 +1112,6 @@ declare const UNW_PPC64_R20: number;
 
 declare const UNW_PPC_V22: number;
 
-declare const UNW_LOONGARCH_F29: number;
-
 declare const kDNSServiceFlagsAllowRemoteQuery: number;
 
 declare const UNW_PPC_F20: number;
@@ -1135,8 +1121,6 @@ declare const UNW_ARM_D3: number;
 declare const UNW_S390X_R13: number;
 
 declare const UNW_AARCH64_V13: number;
-
-declare const UNW_MIPS_F29: number;
 
 declare const UNW_RISCV_F6: number;
 
@@ -1170,6 +1154,12 @@ declare const _NSConcreteStackBlock: unknown /* const array */;
 
 declare const UNW_HEXAGON_R8: number;
 
+declare const _dispatch_source_type_data_add: dispatch_source_type_s;
+
+declare const XPC_ACTIVITY_STATE_CHECK_IN: number;
+
+declare const UNW_AARCH64_X12: number;
+
 declare const DYLD_CHAINED_PTR_64: number;
 
 declare const UNW_MIPS_F3: number;
@@ -1180,7 +1170,11 @@ declare const UIDNA_CHECK_CONTEXTJ: number;
 
 declare const UNW_ARM_S6: number;
 
+declare const UNW_MIPS_R20: number;
+
 declare const kDNSServiceType_DS: number;
+
+declare const UNW_MIPS_F29: number;
 
 declare const UNW_X86_64_XMM6: number;
 
@@ -1198,11 +1192,11 @@ declare const UNW_ENOINFO: number;
 
 declare const kDNSServiceFlagsBackgroundTrafficClass: number;
 
-declare const UNW_MIPS_LO: number;
-
 declare const UNW_ARM64_D10: number;
 
 declare const UNW_HEXAGON_R11: number;
+
+declare const UNW_PPC64_VS25: number;
 
 declare const UNW_S390X_R9: number;
 
@@ -1232,6 +1226,8 @@ declare const UNW_SPARC_I1: number;
 
 declare const UNW_ARM64_X16: number;
 
+declare const UNW_ARM_D1: number;
+
 declare const _xpc_type_uint64: _xpc_type_s;
 
 declare const UNW_X86_64_RBP: number;
@@ -1242,21 +1238,19 @@ declare const UNW_SPARC_G1: number;
 
 declare const UNW_PPC_R12: number;
 
+declare const UNW_AARCH64_V27: number;
+
 declare const kDNSServiceType_NS: number;
 
 declare const _xpc_type_rich_error: _xpc_type_s;
 
 declare const kDNSServiceType_NSEC: number;
 
-declare const UNW_MIPS_F30: number;
-
 declare const UNW_S390X_F1: number;
 
 declare const UNW_PPC_R5: number;
 
 declare const UIDNA_ERROR_LABEL_TOO_LONG: number;
-
-declare const UNW_PPC_F13: number;
 
 declare const UNW_LOONGARCH_R7: number;
 
@@ -1268,8 +1262,6 @@ declare const kDNSServiceType_A: number;
 
 declare const UNW_ARM64_D14: number;
 
-declare const UNW_ARM_WC3: number;
-
 declare const UNW_VE_S7: number;
 
 declare const UNW_PPC_F7: number;
@@ -1278,9 +1270,9 @@ declare const matrix_identity_half4x4: simd_half4x4;
 
 declare const UNW_PPC64_V2: number;
 
-declare const UNW_ARM_D29: number;
+declare const UNW_AARCH64_V12: number;
 
-declare const kDNSServiceType_TXT: number;
+declare const UNW_ARM_D29: number;
 
 declare const UNW_LOONGARCH_R15: number;
 
@@ -1299,6 +1291,8 @@ declare const UNW_PPC_R30: number;
 declare const UNW_MIPS_F4: number;
 
 declare const UNW_PPC64_VS26: number;
+
+declare const UNW_PPC64_R18: number;
 
 declare const UNW_MIPS_F2: number;
 
@@ -1322,33 +1316,37 @@ declare const UNW_VE_V62: number;
 
 declare const UNW_VE_V48: number;
 
-declare const UNW_RISCV_X7: number;
-
 declare const _xpc_type_double: _xpc_type_s;
 
 declare const DYLD_CHAINED_PTR_64_KERNEL_CACHE: number;
+
+declare const UNW_AARCH64_X15: number;
+
+declare const UNW_PPC64_R26: number;
 
 declare const kDNSServiceType_NSAP: number;
 
 declare const UNWIND_ARM64_FRAME_X19_X20_PAIR: number;
 
-declare const UNW_PPC64_R7: number;
-
 declare const UNW_PPC64_R6: number;
 
 declare const UNW_ARM_D6: number;
 
+declare const __stdinp: interop.Pointer;
+
+declare const UNW_X86_64_XMM1: number;
+
 declare const UNW_X86_EAX: number;
 
 declare const UNW_PPC_V24: number;
+
+declare const UNW_PPC64_R4: number;
 
 declare const UNW_ARM64_X29: number;
 
 declare const UTEXT_PROVIDER_OWNS_TEXT: number;
 
 declare const UNWIND_X86_64_REG_R13: number;
-
-declare const sqlite3_version: interop.Pointer;
 
 declare const kDNSServiceErr_NATPortMappingDisabled: number;
 
@@ -1366,19 +1364,13 @@ declare const UNW_VE_VM3: number;
 
 declare const UIDNA_ERROR_BIDI: number;
 
-declare const UNWIND_X86_64_REG_R12: number;
-
-declare const UNW_PPC64_VS14: number;
-
-declare const UIDNA_ERROR_CONTEXTO_PUNCTUATION: number;
-
-declare const UNW_PPC_CR4: number;
-
 declare const UNW_AARCH64_X13: number;
 
 declare const UNW_ARM_D28: number;
 
 declare const UNW_PPC_R1: number;
+
+declare const UIDNA_DEFAULT: number;
 
 declare const kDNSServiceType_OPT: number;
 
@@ -1386,11 +1378,11 @@ declare const UNW_LOONGARCH_R9: number;
 
 declare const kNilOptions: number;
 
-declare const DYLD_CHAINED_PTR_64_OFFSET: number;
-
 declare const _xpc_type_data: _xpc_type_s;
 
 declare const UNW_OR1K_R12: number;
+
+declare const UNW_ARM64_X30: number;
 
 declare const kDNSServiceErr_NATTraversal: number;
 
@@ -1402,27 +1394,21 @@ declare const UNW_AARCH64_X5: number;
 
 declare const UNW_VE_V47: number;
 
-declare const UNW_VE_S43: number;
-
 declare const UNW_PPC_F15: number;
 
 declare const UNW_ARM64_X0: number;
 
 declare const UNW_ARM64_D8: number;
 
+declare const UNW_ARM64_D20: number;
+
 declare const kDNSServiceType_DNSKEY: number;
 
 declare const UNW_PPC_CTR: number;
 
-declare const UNW_X86_64_RIP: number;
-
 declare const UNW_PPC_R7: number;
 
 declare const UNW_ARM64_D28: number;
-
-declare const UNW_OR1K_R11: number;
-
-declare const UNW_MIPS_R15: number;
 
 declare const UNW_ARM_WC2: number;
 
@@ -1436,9 +1422,17 @@ declare const UNW_PPC_F16: number;
 
 declare const UNW_PPC_V21: number;
 
+declare const UNW_VE_V53: number;
+
+declare const UNW_LOONGARCH_F7: number;
+
+declare const UNW_VE_VM15: number;
+
 declare const UNW_S390X_F8: number;
 
 declare const UNW_AARCH64_V5: number;
+
+declare const UNWIND_ARM_FRAME_FIRST_PUSH_R6: number;
 
 declare const _os_activity_current: os_activity_s;
 
@@ -1450,6 +1444,8 @@ declare const UNWIND_X86_64_REG_RBX: number;
 
 declare const UNW_PPC64_CR2: number;
 
+declare const UNW_PPC64_R31: number;
+
 declare const UNW_ARM_LR: number;
 
 declare const UNW_SPARC_O2: number;
@@ -1457,8 +1453,6 @@ declare const UNW_SPARC_O2: number;
 declare const UNW_VE_S25: number;
 
 declare const UNW_ARM64_X12: number;
-
-declare const UNW_ARM64_X17: number;
 
 declare const UNW_PPC64_VS2: number;
 
@@ -1486,6 +1480,10 @@ declare const UNW_ARM_S22: number;
 
 declare const kDNSServiceFlagsMoreComing: number;
 
+declare const kDNSServiceType_UNSPEC: number;
+
+declare const UNW_ARM64_D5: number;
+
 declare const UNW_PPC64_R0: number;
 
 declare const _xpc_type_date: _xpc_type_s;
@@ -1505,6 +1503,8 @@ declare const UNW_VE_V17: number;
 declare const UNW_ARM_D16: number;
 
 declare const UNW_LOONGARCH_F21: number;
+
+declare const kDNSServiceType_MX: number;
 
 declare const UNW_PPC64_V0: number;
 
@@ -1550,8 +1550,6 @@ declare const OBJC_EXHAUSTIVE_COLLECTION: number;
 
 declare const UNW_AARCH64_V1: number;
 
-declare const UNW_AARCH64_V12: number;
-
 declare const UNW_VE_S27: number;
 
 declare const UNW_RISCV_X25: number;
@@ -1560,19 +1558,17 @@ declare const UNW_AARCH64_V29: number;
 
 declare const kDNSServiceType_CERT: number;
 
-declare const UNW_VE_V28: number;
-
 declare const UNW_LOONGARCH_R22: number;
 
-declare const UNW_VE_S44: number;
+declare const UNW_ARM64_D1: number;
 
-declare const UNW_VE_S19: number;
+declare const UNW_ARM_WC1: number;
+
+declare const UNW_VE_S44: number;
 
 declare const UNW_X86_64_XMM4: number;
 
 declare const UNW_ARM64_LR: number;
-
-declare const kDNSServiceFlagsLongLivedQuery: number;
 
 declare const UNW_PPC64_F27: number;
 
@@ -1620,9 +1616,11 @@ declare const UNW_OR1K_R3: number;
 
 declare const UNW_MIPS_R8: number;
 
-declare const _mh_execute_header: mach_header_64;
+declare const UNW_PPC64_VS14: number;
 
-declare const UNWIND_ARM64_MODE_DWARF: number;
+declare const UIDNA_ERROR_CONTEXTO_PUNCTUATION: number;
+
+declare const _mh_execute_header: mach_header_64;
 
 declare const timezone: number;
 
@@ -1642,17 +1640,15 @@ declare const kDNSServiceType_RP: number;
 
 declare const XPC_ACTIVITY_STATE_CONTINUE: number;
 
-declare const UNW_RISCV_X15: number;
-
 declare const sys_nerr: number;
 
 declare const UNW_PPC64_VS56: number;
 
+declare const UNW_PPC64_V1: number;
+
 declare const UNW_PPC64_TEXASR: number;
 
 declare const UNW_PPC_AP: number;
-
-declare const kDNSServiceType_TSIG: number;
 
 declare const UNW_ESTOPUNWIND: number;
 
@@ -1664,11 +1660,15 @@ declare const UNW_VE_S62: number;
 
 declare const HV_EXISTS: number;
 
+declare const UNW_RISCV_X14: number;
+
 declare const kDNSServiceType_MR: number;
 
 declare const kDNSServiceFlagsAllowExpiredAnswers: number;
 
 declare const UNW_PPC64_V27: number;
+
+declare const UNW_AARCH64_X2: number;
 
 declare const UNW_PPC64_F20: number;
 
@@ -1686,13 +1686,9 @@ declare const kDNSServiceFlagsPrivateOne: number;
 
 declare const kDNSServiceType_SSHFP: number;
 
-declare const UNW_AARCH64_X31: number;
+declare const UNW_VE_VM6: number;
 
 declare const UNW_VE_V29: number;
-
-declare const UNW_PPC64_VS57: number;
-
-declare const UNWIND_X86_64_DWARF_SECTION_OFFSET: number;
 
 declare const UNW_PPC64_R12: number;
 
@@ -1707,8 +1703,6 @@ declare const UNW_ARM_WR6: number;
 declare const UNW_AARCH64_V7: number;
 
 declare const kDNSServiceType_IPSECKEY: number;
-
-declare const UNW_PPC_R18: number;
 
 declare const _os_log_disabled: os_log_s;
 
@@ -1743,8 +1737,6 @@ declare const UNW_PPC64_F5: number;
 declare const kDNSServiceProtocol_IPv6: number;
 
 declare const _dispatch_source_type_vnode: dispatch_source_type_s;
-
-declare const UNW_VE_S29: number;
 
 declare const UNW_VE_V32: number;
 
@@ -1800,23 +1792,17 @@ declare const kDNSServiceFlagsValidateOptional: number;
 
 declare const UNW_LOONGARCH_F1: number;
 
-declare const UNW_LOONGARCH_F0: number;
-
 declare const UNW_LOONGARCH_R31: number;
 
 declare const UNW_LOONGARCH_R29: number;
 
 declare const UNW_PPC64_V16: number;
 
-declare const __stdinp: interop.Pointer;
-
 declare const UNW_ARM_D31: number;
 
 declare const UNW_PPC_R23: number;
 
 declare const UNW_LOONGARCH_R26: number;
-
-declare const UNW_PPC64_V1: number;
 
 declare const UNW_PPC_F11: number;
 
@@ -1858,12 +1844,6 @@ declare const UNW_MIPS_F24: number;
 
 declare const UNW_S390X_R8: number;
 
-declare const UNW_SPARC_I6: number;
-
-declare const UNW_S390X_R6: number;
-
-declare const UNW_PPC_V1: number;
-
 declare const kDNSServiceErr_NoError: number;
 
 declare const UNW_HEXAGON_R0: number;
@@ -1871,6 +1851,8 @@ declare const UNW_HEXAGON_R0: number;
 declare const UNW_S390X_R4: number;
 
 declare const UNW_RISCV_X12: number;
+
+declare const __fpcr_trap_invalid: number;
 
 declare const UNW_VE_V60: number;
 
@@ -1884,8 +1866,6 @@ declare const UNW_S390X_R0: number;
 
 declare const UNW_VE_S54: number;
 
-declare const UNW_VE_VIXR: number;
-
 declare const UUID_NULL: unknown /* const array */;
 
 declare const UIDNA_CHECK_CONTEXTO: number;
@@ -1894,9 +1874,15 @@ declare const UNW_PPC_R8: number;
 
 declare const UNW_X86_64_XMM10: number;
 
+declare const UNW_VE_VM1: number;
+
 declare const UNW_VE_V61: number;
 
 declare const UNW_ARM_S17: number;
+
+declare const UNW_ARM64_D31: number;
+
+declare const UNW_VE_V52: number;
 
 declare const UNW_VE_V45: number;
 
@@ -1911,10 +1897,6 @@ declare const kDNSServiceType_AAAA: number;
 declare const port_obj_table: interop.Pointer;
 
 declare const vm_page_shift: number;
-
-declare const kDNSServiceFlagsThresholdOne: number;
-
-declare const UNW_RISCV_F21: number;
 
 declare const UNW_VE_V24: number;
 
@@ -1948,13 +1930,15 @@ declare const UNW_VE_V7: number;
 
 declare const UNW_PPC64_F0: number;
 
-declare const UNW_VE_V6: number;
-
 declare const UNW_VE_V5: number;
 
 declare const UNWIND_X86_64_RBP_FRAME_REGISTERS: number;
 
 declare const UNW_VE_S59: number;
+
+declare const UNW_LOONGARCH_F14: number;
+
+declare const UNW_VE_S53: number;
 
 declare const UNW_VE_S51: number;
 
@@ -1984,11 +1968,11 @@ declare const UNW_VE_S24: number;
 
 declare const UNW_EBADVERSION: number;
 
+declare const UNW_VE_S23: number;
+
 declare const UNW_AARCH64_V17: number;
 
 declare const UNW_X86_64_XMM14: number;
-
-declare const UNW_SPARC_O4: number;
 
 declare const UNW_VE_S9: number;
 
@@ -2006,7 +1990,11 @@ declare const UNW_RISCV_F24: number;
 
 declare const UNW_RISCV_F19: number;
 
+declare const _dispatch_data_destructor_munmap: () => void;
+
 declare const UNW_ARM64_X6: number;
+
+declare const vm_page_size: number;
 
 declare const UNW_HEXAGON_R26: number;
 
@@ -2023,10 +2011,6 @@ declare const UNW_PPC64_F6: number;
 declare const UNW_RISCV_F3: number;
 
 declare const UNW_RISCV_X28: number;
-
-declare const UNW_PPC_LR: number;
-
-declare const UNW_PPC_F4: number;
 
 declare const UNW_RISCV_X18: number;
 
@@ -2054,8 +2038,6 @@ declare const UNW_RISCV_X10: number;
 
 declare const UNW_PPC_V20: number;
 
-declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
-
 declare const UNW_RISCV_X6: number;
 
 declare const UNW_MIPS_F23: number;
@@ -2068,6 +2050,8 @@ declare const UNW_ARM_S5: number;
 
 declare const UNW_HEXAGON_R24: number;
 
+declare const UNWIND_X86_64_REG_R15: number;
+
 declare const UNW_HEXAGON_R18: number;
 
 declare const UNW_VE_S61: number;
@@ -2076,7 +2060,7 @@ declare const UNW_ARM_S18: number;
 
 declare const UNW_HEXAGON_R5: number;
 
-declare const UNW_HEXAGON_R4: number;
+declare const UNW_AARCH64_X31: number;
 
 declare const UNW_ARM_S15: number;
 
@@ -2104,17 +2088,15 @@ declare const UNW_SPARC_G7: number;
 
 declare const UNW_SPARC_G6: number;
 
-declare const UNW_VE_V51: number;
+declare const UNW_SPARC_G5: number;
 
-declare const DYLD_CHAINED_IMPORT_ADDEND: number;
+declare const UNW_VE_V51: number;
 
 declare const UNW_RISCV_F31: number;
 
-declare const kDNSServiceType_UNSPEC: number;
-
-declare const UNW_ARM64_D5: number;
-
 declare const sys_signame: unknown /* const array */;
+
+declare const UNW_MIPS_F17: number;
 
 declare const UNW_RISCV_F15: number;
 
@@ -2132,13 +2114,7 @@ declare const UNW_PPC64_VS34: number;
 
 declare const UNW_RISCV_F28: number;
 
-declare const UNW_MIPS_F10: number;
-
 declare const DYLD_CHAINED_PTR_ARM64E_USERLAND24: number;
-
-declare const UNW_VE_V59: number;
-
-declare const UNW_PPC_V17: number;
 
 declare const kDNSServiceErr_NameConflict: number;
 
@@ -2170,6 +2146,8 @@ declare const UNW_LOONGARCH_F28: number;
 
 declare const UNW_MIPS_R5: number;
 
+declare const UNW_MIPS_R3: number;
+
 declare const kDNSServiceErr_Incompatible: number;
 
 declare const _dispatch_source_type_data_replace: dispatch_source_type_s;
@@ -2194,6 +2172,8 @@ declare const UNW_ARM64_D27: number;
 
 declare const UNW_OR1K_R8: number;
 
+declare const UNW_ARM_R6: number;
+
 declare const UNW_PPC_F27: number;
 
 declare const UNW_OR1K_R7: number;
@@ -2210,7 +2190,11 @@ declare const kDNSServiceType_SVCB: number;
 
 declare const UNW_ARM_D17: number;
 
+declare const UNW_VE_S42: number;
+
 declare const UNW_VE_V56: number;
+
+declare const UNW_LOONGARCH_F8: number;
 
 declare const UNW_ARM_D13: number;
 
@@ -2226,6 +2210,10 @@ declare const UNW_ARM_D8: number;
 
 declare const UNW_ARM_D7: number;
 
+declare const UNW_RISCV_X3: number;
+
+declare const optarg: string;
+
 declare const UNW_PPC_F29: number;
 
 declare const UNW_ARM_D2: number;
@@ -2238,13 +2226,13 @@ declare const UNW_ARM_RA_AUTH_CODE: number;
 
 declare const UNW_ARM_S11: number;
 
-declare const UNW_ARM64_X3: number;
-
 declare const UNW_ARM_WR10: number;
 
 declare const UNW_ARM_WC0: number;
 
 declare const UNW_ARM_WR4: number;
+
+declare const _dispatch_source_type_write: dispatch_source_type_s;
 
 declare const UNW_VE_V43: number;
 
@@ -2278,15 +2266,11 @@ declare const UNW_AARCH64_X6: number;
 
 declare const UNW_ARM_S13: number;
 
-declare const UNW_ARM_S8: number;
-
 declare const _FE_DFL_DISABLE_DENORMS_ENV: fenv_t;
 
 declare const UNW_ARM_S7: number;
 
 declare const UNW_HEXAGON_R22: number;
-
-declare const UNW_PPC_F5: number;
 
 declare const UNW_ARM_S1: number;
 
@@ -2334,8 +2318,6 @@ declare const UNW_X86_64_R15: number;
 
 declare const UNW_ARM64_D24: number;
 
-declare const UNW_ARM64_D20: number;
-
 declare const UNW_ARM64_D17: number;
 
 declare const UNW_ARM64_D11: number;
@@ -2354,15 +2336,25 @@ declare const UNW_VE_V26: number;
 
 declare const UNW_ARM64_X27: number;
 
+declare const UNW_ARM64_X26: number;
+
+declare const UNW_RISCV_F21: number;
+
 declare const UNWIND_X86_REG_EDX: number;
 
 declare const UNW_PPC64_VS45: number;
 
+declare const UNW_PPC_CR4: number;
+
 declare const UNW_ARM64_X15: number;
+
+declare const OBJC_CLEAR_RESIDENT_STACK: number;
 
 declare const UNW_ARM64_X9: number;
 
 declare const UNW_VE_S36: number;
+
+declare const UNW_ARM64_X3: number;
 
 declare const UNW_PPC64_VS23: number;
 
@@ -2381,8 +2373,6 @@ declare const _DefaultRuneLocale: _RuneLocale;
 declare const UNW_AARCH64_V30: number;
 
 declare const UNW_PPC64_CR1: number;
-
-declare const UNW_AARCH64_V27: number;
 
 declare const UNW_PPC64_TFIAR: number;
 
@@ -2424,7 +2414,9 @@ declare const UNW_X86_64_XMM13: number;
 
 declare const UNW_AARCH64_V6: number;
 
-declare const _dispatch_source_type_write: dispatch_source_type_s;
+declare const UNWIND_X86_64_DWARF_SECTION_OFFSET: number;
+
+declare const UNWIND_X86_64_REG_R12: number;
 
 declare const UNW_RISCV_F20: number;
 
@@ -2464,15 +2456,13 @@ declare const _xpc_error_connection_invalid: _xpc_dictionary_s;
 
 declare const UNW_PPC_VRSAVE: number;
 
-declare const UNW_LOONGARCH_F14: number;
-
 declare const UNW_PPC64_V30: number;
 
 declare const UNW_PPC_F0: number;
 
 declare const kDNSServiceType_SOA: number;
 
-declare const UNW_ARM_IP: number;
+declare const kDNSServiceFlagsLongLivedQuery: number;
 
 declare const UNW_X86_64_XMM15: number;
 
@@ -2489,8 +2479,6 @@ declare const UNWIND_ARM64_FRAME_X27_X28_PAIR: number;
 declare const UNW_LOONGARCH_R8: number;
 
 declare const kDNSServiceErr_NoSuchKey: number;
-
-declare const UNW_PPC64_V3: number;
 
 declare const UNW_AARCH64_X0: number;
 
@@ -2514,9 +2502,9 @@ declare const UNW_RISCV_X30: number;
 
 declare const UNW_PPC64_F25: number;
 
-declare const sqlite3_temp_directory: string;
-
 declare const UNW_PPC64_V23: number;
+
+declare const UNW_X86_64_RIP: number;
 
 declare const UIDNA_ERROR_LABEL_HAS_DOT: number;
 
@@ -2528,6 +2516,8 @@ declare const UNWIND_X86_MODE_STACK_IMMD: number;
 
 declare const UNW_ARM64_X19: number;
 
+declare const UNW_PPC_CR6: number;
+
 declare const kDNSServiceFlagsWakeOnlyService: number;
 
 declare const kDNSServiceErr_BadState: number;
@@ -2536,23 +2526,21 @@ declare const kDNSServiceType_MD: number;
 
 declare const UIDNA_ERROR_LEADING_COMBINING_MARK: number;
 
-declare const UNW_ARM_WR5: number;
-
 declare const UNW_VE_S55: number;
+
+declare const UNW_PPC64_V5: number;
 
 declare const DYLD_CHAINED_IMPORT_ADDEND64: number;
 
-declare const UNW_VE_VM6: number;
-
 declare const kDNSServiceErr_NoAuth: number;
-
-declare const UNW_AARCH64_X15: number;
 
 declare const UNW_PPC64_CTR: number;
 
 declare const UNW_PPC64_F10: number;
 
 declare const UNW_PPC_R21: number;
+
+declare const UNW_PPC_F6: number;
 
 declare const UNW_VE_S28: number;
 
@@ -2586,6 +2574,8 @@ declare const UNW_PPC64_F12: number;
 
 declare const UNW_PPC64_F11: number;
 
+declare const UNW_PPC_F24: number;
+
 declare const UNW_VE_S12: number;
 
 declare const UNW_PPC64_F4: number;
@@ -2600,21 +2590,17 @@ declare const getdate_err: number;
 
 declare const UNWIND_X86_64_FRAMELESS_STACK_ADJUST: number;
 
-declare const UNW_PPC64_R31: number;
-
 declare const __stdoutp: interop.Pointer;
 
 declare const UNW_PPC64_VS58: number;
 
 declare const UNW_PPC64_R23: number;
 
-declare const UNW_X86_64_R13: number;
+declare const UIDNA_ERROR_DOMAIN_NAME_TOO_LONG: number;
 
 declare const UNW_PPC64_VS20: number;
 
 declare const UNW_PPC64_R19: number;
-
-declare const UNW_PPC64_R18: number;
 
 declare const UNW_X86_EDX: number;
 
@@ -2628,6 +2614,8 @@ declare const UNW_X86_64_XMM2: number;
 
 declare const UNW_RISCV_X16: number;
 
+declare const eNoteExitReparentedDeprecated: number;
+
 declare const UNW_PPC_V30: number;
 
 declare const kDNSServiceErr_NoSuchName: number;
@@ -2636,17 +2624,15 @@ declare const UNW_PPC_V23: number;
 
 declare const UNW_VE_V1: number;
 
+declare const UNW_VE_S33: number;
+
 declare const UNW_LOONGARCH_R2: number;
 
 declare const UNW_SPARC_O3: number;
 
 declare const UNW_ARM64_PC: number;
 
-declare const UNW_PPC_R14: number;
-
-declare const UNW_X86_64_XMM11: number;
-
-declare const UNW_PPC64_VS25: number;
+declare const sqlite3_temp_directory: string;
 
 declare const UNW_PPC64_VS59: number;
 
@@ -2666,6 +2652,8 @@ declare const UNW_HEXAGON_R16: number;
 
 declare const UNW_AARCH64_X19: number;
 
+declare const UNW_PPC_R18: number;
+
 declare const sys_siglist: unknown /* const array */;
 
 declare const UNW_VE_V41: number;
@@ -2682,8 +2670,6 @@ declare const UNW_PPC_MQ: number;
 
 declare const UNW_PPC_F26: number;
 
-declare const UNW_AARCH64_X12: number;
-
 declare const UNW_PPC_F22: number;
 
 declare const UNW_VE_S1: number;
@@ -2696,8 +2682,6 @@ declare const XPC_ACTIVITY_REQUIRE_HDD_SPINNING: string;
 
 declare const UNW_PPC_F18: number;
 
-declare const UNW_PPC_F6: number;
-
 declare const OSUnknownByteOrder: number;
 
 declare const kDNSServiceType_CNAME: number;
@@ -2708,13 +2692,21 @@ declare const UNW_AARCH64_PC: number;
 
 declare const _xpc_error_peer_code_signing_requirement: _xpc_dictionary_s;
 
+declare const UNW_PPC64_R3: number;
+
 declare const UNW_PPC64_VS42: number;
+
+declare const kDNSServiceFlagsBrowseDomains: number;
+
+declare const kDNSServiceType_NSEC3: number;
 
 declare const UNW_AARCH64_V3: number;
 
 declare const UNW_SPARC_L0: number;
 
 declare const _xpc_type_connection: _xpc_type_s;
+
+declare const UNWIND_X86_64_RBP_FRAME_OFFSET: number;
 
 declare const UNW_SPARC_O0: number;
 
@@ -2746,8 +2738,6 @@ declare const betaStage: number;
 
 declare const UNW_X86_64_XMM8: number;
 
-declare const UNW_VE_S33: number;
-
 declare const UNW_X86_64_XMM5: number;
 
 declare const _dispatch_data_empty: dispatch_data_s;
@@ -2756,7 +2746,7 @@ declare const UNW_X86_64_R8: number;
 
 declare const UNW_X86_64_RSP: number;
 
-declare const UNW_OR1K_R22: number;
+declare const UNW_SPARC_G3: number;
 
 declare const UNW_PPC_R11: number;
 
@@ -2765,8 +2755,6 @@ declare const UNW_X86_ESP: number;
 declare const UNW_REG_IP: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E_SHARED_CACHE: number;
-
-declare const suboptarg: string;
 
 declare const UNW_EBADFRAME: number;
 
@@ -2779,8 +2767,6 @@ declare const UNWIND_X86_64_MODE_DWARF: number;
 declare const vm_kernel_page_shift: number;
 
 declare const UNW_PPC_XER: number;
-
-declare const UNW_EUNSPEC: number;
 
 declare const UNW_RISCV_F16: number;
 
@@ -2814,15 +2800,21 @@ declare const kDNSServiceFlagAnsweredFromCache: number;
 
 declare const UNW_PPC64_V8: number;
 
+declare const UNW_PPC64_V6: number;
+
 declare const UIDNA_ERROR_HYPHEN_3_4: number;
 
 declare const UNW_PPC64_F9: number;
 
 declare const kDNSServiceType_SRV: number;
 
+declare const UNW_VE_S20: number;
+
 declare const UNW_PPC64_F21: number;
 
 declare const UNW_HEXAGON_R2: number;
+
+declare const UNW_VE_S43: number;
 
 declare const shadow: number;
 
@@ -2831,6 +2823,8 @@ declare const UNWIND_ARM_FRAME_STACK_ADJUST_MASK: number;
 declare const UNWIND_ARM_MODE_FRAME: number;
 
 declare const UNW_X86_64_RSI: number;
+
+declare const UNW_RISCV_X20: number;
 
 declare const UNW_PPC_V13: number;
 
@@ -2846,7 +2840,11 @@ declare const UNW_PPC64_F1: number;
 
 declare const NDR_record: NDR_record_t;
 
+declare const UNW_PPC64_V3: number;
+
 declare const UNW_PPC64_VS33: number;
+
+declare const UNW_LOONGARCH_F29: number;
 
 declare const _xpc_bool_true: _xpc_bool_s;
 
@@ -2859,6 +2857,8 @@ declare const UNWIND_X86_REG_EBX: number;
 declare const UNW_AARCH64_V10: number;
 
 declare const UNWIND_X86_64_REG_R14: number;
+
+declare const UNW_PPC_V1: number;
 
 declare const DYLD_CHAINED_PTR_ARM64E_SEGMENTED: number;
 
@@ -2884,13 +2884,19 @@ declare const vprintf_stderr_func: (p1: string, p2: string) => number;
 
 declare const kDNSServiceType_UID: number;
 
+declare const UNWIND_X86_REG_EBP: number;
+
 declare const outline: number;
+
+declare const kDNSServiceType_SIG: number;
 
 declare const h_errno: number;
 
 declare const UNW_PPC64_XER: number;
 
-declare const XPC_ACTIVITY_STATE_CHECK_IN: number;
+declare const kDNSServiceType_HINFO: number;
+
+declare const kUnknownType: number;
 
 declare const UNW_VE_S13: number;
 
@@ -2902,9 +2908,9 @@ declare const UNW_S390X_F7: number;
 
 declare const kDNSServiceErr_BadParam: number;
 
-declare const HV_UNSUPPORTED: number;
-
 declare const UNW_RISCV_X23: number;
+
+declare const alphaStage: number;
 
 declare const UIDNA_ALLOW_UNASSIGNED: number;
 
@@ -2912,13 +2918,11 @@ declare const UNW_LOONGARCH_R3: number;
 
 declare const UNW_MIPS_F18: number;
 
-declare const _xpc_type_endpoint: _xpc_type_s;
+declare const UNW_X86_64_R13: number;
 
 declare const sys_errlist: interop.Pointer;
 
 declare const UNW_PPC_V31: number;
-
-declare const UNWIND_ARM_FRAME_FIRST_PUSH_R6: number;
 
 declare const normal: number;
 
@@ -2928,8 +2932,6 @@ declare const UNW_ARM64_X2: number;
 
 declare const UIDNA_ERROR_LEADING_HYPHEN: number;
 
-declare const UIDNA_ERROR_DOMAIN_NAME_TOO_LONG: number;
-
 declare const _US_FORCE_UNWIND: number;
 
 declare const kDNSServiceErr_NotPermitted: number;
@@ -2938,15 +2940,17 @@ declare const UIDNA_NONTRANSITIONAL_TO_ASCII: number;
 
 declare const UNW_PPC_F8: number;
 
+declare const UNW_VE_V28: number;
+
 declare const UNW_VE_V10: number;
 
 declare const UNW_SPARC_I3: number;
 
-declare const UNWIND_X86_FRAMELESS_STACK_REG_COUNT: number;
-
 declare const _xpc_error_key_description: string;
 
 declare const UNWIND_ARM_MODE_MASK: number;
+
+declare const finalStage: number;
 
 declare const UTEXT_PROVIDER_STABLE_CHUNKS: number;
 
@@ -3028,19 +3032,15 @@ declare const UNW_OR1K_R9: number;
 
 declare const UNW_LOONGARCH_F31: number;
 
+declare const UNW_VE_S29: number;
+
 declare const UNW_PPC_V27: number;
 
 declare const bold: number;
 
 declare const UNW_X86_64_XMM7: number;
 
-declare const UNW_SPARC_I5: number;
-
 declare const UNW_HEXAGON_R14: number;
-
-declare const _dispatch_source_type_data_add: dispatch_source_type_s;
-
-declare const finalStage: number;
 
 declare const virtual_memory_guard_exception_code_t: {
   DEALLOC_GAP: 1,
@@ -3055,9 +3055,6 @@ declare const virtual_memory_guard_exception_code_t: {
   SEC_ASYNC_ACCESS_FAULT: 99,
   SEC_COPY_DENIED: 100,
   SEC_SHARING_DENIED: 101,
-  MTE_SYNC_FAULT: 200,
-  MTE_ASYNC_USER_FAULT: 201,
-  MTE_ASYNC_KERN_FAULT: 202,
 };
 
 declare const acl_entry_id_t: {
@@ -4060,8 +4057,7 @@ declare const graftdmg_type_t: {
   PDI_NONCE: 6,
   EFFECTIVE_AP: 7,
   MOBILE_ASSET: 8,
-  MOBILE_ASSET_WITH_CODE: 9,
-  MAX: 9,
+  MAX: 8,
 };
 
 declare const UBidiPairedBracketType: {
@@ -4241,8 +4237,7 @@ declare const cryptex_auth_type_t: {
   X1_AUTH_ENV_GENERIC_SUPPLEMENTAL: 5,
   X_AUTH_PDI_NONCE: 6,
   X_AUTH_MOBILE_ASSET: 8,
-  X_AUTH_MOBILE_ASSET_WITH_CODE: 9,
-  X_AUTH_MAX: 9,
+  X_AUTH_MAX: 8,
 };
 
 declare const _Unwind_Reason_Code: {
@@ -4968,8 +4963,9 @@ declare class io_stat_entry {
   size: number;
 }
 
-declare class Fts5Tokenizer {
-  constructor(init?: Fts5Tokenizer);
+declare class unw_cursor_t {
+  constructor(init?: unw_cursor_t);
+  data: unknown /* const array */;
 }
 
 declare class segment_command {
@@ -5079,6 +5075,12 @@ declare class msghdr {
   msg_control: interop.Pointer;
   msg_controllen: number;
   msg_flags: number;
+}
+
+declare class unnamed_13809734755548467804 {
+  constructor(init?: unnamed_13809734755548467804);
+  start: number;
+  length: number;
 }
 
 declare class ifnet_traffic_descriptor_eth {
@@ -5459,12 +5461,6 @@ declare class exception {
   retval: number;
 }
 
-declare class unnamed_3863160158252604791 {
-  constructor(init?: unnamed_3863160158252604791);
-  start: number;
-  length: number;
-}
-
 declare class __double2 {
   constructor(init?: __double2);
   __sinval: number;
@@ -5477,35 +5473,28 @@ declare class __float2 {
   __cosval: number;
 }
 
-declare class unnamed_5385238087898407030 {
-  constructor(init?: unnamed_5385238087898407030);
-  bitpattern: unknown /* const array */;
-}
-
-declare class __darwin_ucontext {
-  constructor(init?: __darwin_ucontext);
-  uc_onstack: number;
-  uc_sigmask: number;
-  uc_stack: __darwin_sigaltstack;
-  uc_link: interop.Pointer;
-  uc_mcsize: number;
-  uc_mcontext: interop.Pointer;
-}
-
-declare class __Reply__vm_msync_t {
-  constructor(init?: __Reply__vm_msync_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class unnamed_14014966867428522070 {
-  constructor(init?: unnamed_14014966867428522070);
+declare class unnamed_5456487753989650130 {
+  constructor(init?: unnamed_5456487753989650130);
+  fnstart: number;
+  ehtp: interop.Pointer;
+  additional: number;
   reserved1: number;
-  reserved2: number;
-  reserved3: number;
-  reserved4: number;
-  reserved5: number;
+}
+
+declare class fileset_entry_command {
+  constructor(init?: fileset_entry_command);
+  cmd: number;
+  cmdsize: number;
+  vmaddr: number;
+  fileoff: number;
+  entry_id: lc_str;
+  reserved: number;
+}
+
+declare class unnamed_15596370743456216885 {
+  constructor(init?: unnamed_15596370743456216885);
+  sp: number;
+  bitpattern: unknown /* const array */;
 }
 
 declare class dwarf_eh_bases {
@@ -6018,6 +6007,25 @@ declare class __Request__mach_voucher_attr_command_t {
   out_contentCnt: number;
 }
 
+declare class __Reply__processor_set_info_t {
+  constructor(init?: __Reply__processor_set_info_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  host: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  info_outCnt: number;
+  info_out: unknown /* const array */;
+}
+
+declare class unnamed_6553058214308019991 {
+  constructor(init?: unnamed_6553058214308019991);
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: number;
+}
+
 declare class __Request__mach_voucher_extract_all_attr_recipes_t {
   constructor(init?: __Request__mach_voucher_extract_all_attr_recipes_t);
   Head: mach_msg_header_t;
@@ -6179,13 +6187,6 @@ declare class __nl_cat_d {
   __size: number;
 }
 
-declare class __Request__mach_port_destroy_t {
-  constructor(init?: __Request__mach_port_destroy_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  name: number;
-}
-
 declare class __Request__task_policy_set_t {
   constructor(init?: __Request__task_policy_set_t);
   Head: mach_msg_header_t;
@@ -6193,6 +6194,13 @@ declare class __Request__task_policy_set_t {
   flavor: number;
   policy_infoCnt: number;
   policy_info: unknown /* const array */;
+}
+
+declare class __Request__mach_port_destroy_t {
+  constructor(init?: __Request__mach_port_destroy_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  name: number;
 }
 
 declare class tm {
@@ -6648,8 +6656,6 @@ declare class tcpstat {
   tcps_ka_offload_drops: number;
   tcps_mptcp_triggered_cell: number;
   tcps_fin_timeout_drops: number;
-  tcps_rst_dup_suppressed: number;
-  tcps_rst_not_suppressed: number;
 }
 
 declare class twolevel_hints_command {
@@ -6783,8 +6789,8 @@ declare class icmp {
   icmp_type: number;
   icmp_code: number;
   icmp_cksum: number;
-  icmp_hun: unnamed_1865520010157675455;
-  icmp_dun: unnamed_10407121191070844577;
+  icmp_hun: unnamed_13999186882269072101;
+  icmp_dun: unnamed_2867314609305102980;
 }
 
 declare class __Reply__host_processor_info_t {
@@ -6811,6 +6817,23 @@ declare class ip6_opt_router {
   ip6or_type: number;
   ip6or_len: number;
   ip6or_value: unknown /* const array */;
+}
+
+declare class dylib_module_64 {
+  constructor(init?: dylib_module_64);
+  module_name: number;
+  iextdefsym: number;
+  nextdefsym: number;
+  irefsym: number;
+  nrefsym: number;
+  ilocalsym: number;
+  nlocalsym: number;
+  iextrel: number;
+  nextrel: number;
+  iinit_iterm: number;
+  ninit_nterm: number;
+  objc_module_info_size: number;
+  objc_module_info_addr: number;
 }
 
 declare class ip6_opt_tunnel {
@@ -6879,7 +6902,7 @@ declare class ip6_ext {
 
 declare class ip6_hdr {
   constructor(init?: ip6_hdr);
-  ip6_ctlun: unnamed_15909396633031732727;
+  ip6_ctlun: unnamed_11564293401966917490;
   ip6_src: in6_addr;
   ip6_dst: in6_addr;
 }
@@ -6992,14 +7015,22 @@ declare class xinpcb {
   xi_alignment_hack: number;
 }
 
-declare class mach_vm_range {
-  constructor(init?: mach_vm_range);
-  min_address: number;
-  max_address: number;
+declare class unnamed_345444173036141159 {
+  constructor(init?: unnamed_345444173036141159);
+  inp6_options: number;
+  inp6_hlim: number;
+  unused_uint8_1: number;
+  unused_uint16_1: number;
+  inp6_outputopts: number;
+  inp6_moptions: number;
+  inp6_icmp6filt: number;
+  inp6_cksum: number;
+  inp6_ifindex: number;
+  inp6_hops: number;
 }
 
-declare class unnamed_11724869810050917006 {
-  constructor(init?: unnamed_11724869810050917006);
+declare class unnamed_16037023209713468788 {
+  constructor(init?: unnamed_16037023209713468788);
   inp4_ip_tos: number;
   inp4_options: number;
   inp4_moptions: number;
@@ -7114,24 +7145,6 @@ declare class rr_pco_match {
   rpm_maxlen: number;
   rpm_reserved: number;
   rpm_prefix: in6_addr;
-}
-
-declare class __Reply__host_statistics64_t {
-  constructor(init?: __Reply__host_statistics64_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  host_info64_outCnt: number;
-  host_info64_out: unknown /* const array */;
-}
-
-declare class icmp6_router_renum {
-  constructor(init?: icmp6_router_renum);
-  rr_hdr: icmp6_hdr;
-  rr_segnum: number;
-  rr_flags: number;
-  rr_maxdelay: number;
-  rr_reserved: number;
 }
 
 declare class ni_reply_fqdn {
@@ -7267,7 +7280,7 @@ declare class icmp6_hdr {
   icmp6_type: number;
   icmp6_code: number;
   icmp6_cksum: number;
-  icmp6_dataun: unnamed_3024305910828868652;
+  icmp6_dataun: unnamed_10850057586384803849;
 }
 
 declare class _opaque_pthread_rwlockattr_t {
@@ -7464,7 +7477,7 @@ declare class if_link_status {
   constructor(init?: if_link_status);
   ifsr_version: number;
   ifsr_len: number;
-  ifsr_u: unnamed_10931216628098187332;
+  ifsr_u: unnamed_16847730341992036315;
 }
 
 declare class __Request__task_resume2_t {
@@ -7586,7 +7599,7 @@ declare class rpc_subsystem {
 
 declare class if_wifi_status {
   constructor(init?: if_wifi_status);
-  if_wifi_u: unnamed_2936482944141353076;
+  if_wifi_u: unnamed_2415581406207035320;
 }
 
 declare class xucred {
@@ -7599,7 +7612,7 @@ declare class xucred {
 
 declare class if_cellular_status {
   constructor(init?: if_cellular_status);
-  if_cell_u: unnamed_12392848442582227950;
+  if_cell_u: unnamed_6035401272168974513;
 }
 
 declare class so_np_extensions {
@@ -7752,7 +7765,7 @@ declare class dispatch_queue_attr_s {
 declare class ifconf {
   constructor(init?: ifconf);
   ifc_len: number;
-  ifc_ifcu: unnamed_6124670997610658826;
+  ifc_ifcu: unnamed_8795425359092744761;
 }
 
 declare class ifdrv {
@@ -7766,7 +7779,7 @@ declare class ifdrv {
 declare class ifreq {
   constructor(init?: ifreq);
   ifr_name: unknown /* const array */;
-  ifr_ifru: unnamed_2113879990700016493;
+  ifr_ifru: unnamed_12792707110849069073;
 }
 
 declare class __Request__processor_info_t {
@@ -7850,12 +7863,6 @@ declare class ifnet_interface_advisory {
 declare class nd_router_solicit {
   constructor(init?: nd_router_solicit);
   nd_rs_hdr: icmp6_hdr;
-}
-
-declare class unnamed_2684729442892510149 {
-  constructor(init?: unnamed_2684729442892510149);
-  opaque1: interop.Pointer;
-  opaque2: number;
 }
 
 declare class if_data64 {
@@ -8066,7 +8073,7 @@ declare class wordexp_t {
 
 declare class in6_addr {
   constructor(init?: in6_addr);
-  __u6_addr: unnamed_2816436468319414568;
+  __u6_addr: unnamed_17264964298470985088;
 }
 
 declare class in_pktinfo {
@@ -8316,6 +8323,18 @@ declare class malloc_introspection_t {
   print_task: (p1: number, p2: number, p3: number, p4: (p1: number, p2: number, p3: number, p4: interop.PointerConvertible) => number, p5: (p1: string) => void) => void | null;
   task_statistics: (p1: number, p2: number, p3: (p1: number, p2: number, p3: number, p4: interop.PointerConvertible) => number, p4: interop.PointerConvertible) => void | null;
   zone_type: number;
+}
+
+declare class unnamed_11724790119960622479 {
+  constructor(init?: unnamed_11724790119960622479);
+  __p_forw: interop.Pointer;
+  __p_back: interop.Pointer;
+}
+
+declare class unnamed_16058447835685051363 {
+  constructor(init?: unnamed_16058447835685051363);
+  opaque1: interop.Pointer;
+  opaque2: number;
 }
 
 declare class objc_super {
@@ -9924,6 +9943,23 @@ declare class __Reply__vm_remap_t {
   max_protection: number;
 }
 
+declare class __darwin_ucontext {
+  constructor(init?: __darwin_ucontext);
+  uc_onstack: number;
+  uc_sigmask: number;
+  uc_stack: __darwin_sigaltstack;
+  uc_link: interop.Pointer;
+  uc_mcsize: number;
+  uc_mcontext: interop.Pointer;
+}
+
+declare class __Reply__vm_msync_t {
+  constructor(init?: __Reply__vm_msync_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
 declare class FixedPoint {
   constructor(init?: FixedPoint);
   x: number;
@@ -10302,23 +10338,6 @@ declare class mach_timespec {
   tv_nsec: number;
 }
 
-declare class dylib_module_64 {
-  constructor(init?: dylib_module_64);
-  module_name: number;
-  iextdefsym: number;
-  nextdefsym: number;
-  irefsym: number;
-  nrefsym: number;
-  ilocalsym: number;
-  nlocalsym: number;
-  iextrel: number;
-  nextrel: number;
-  iinit_iterm: number;
-  ninit_nterm: number;
-  objc_module_info_size: number;
-  objc_module_info_addr: number;
-}
-
 declare class __Reply__vm_machine_attribute_t {
   constructor(init?: __Reply__vm_machine_attribute_t);
   Head: mach_msg_header_t;
@@ -10461,15 +10480,6 @@ declare class __Request__thread_set_policy_t {
   base: unknown /* const array */;
   limitCnt: number;
   limit: unknown /* const array */;
-}
-
-declare class __Request__task_unregister_dyld_image_infos_t {
-  constructor(init?: __Request__task_unregister_dyld_image_infos_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  dyld_images: mach_msg_ool_descriptor_t;
-  NDR: NDR_record_t;
-  dyld_imagesCnt: number;
 }
 
 declare class sqlite3_io_methods {
@@ -10848,12 +10858,6 @@ declare class vm_read_entry {
   size: number;
 }
 
-declare class unnamed_14443230655265557806 {
-  constructor(init?: unnamed_14443230655265557806);
-  __p_forw: interop.Pointer;
-  __p_back: interop.Pointer;
-}
-
 declare class os_workgroup_join_token_opaque_s {
   constructor(init?: os_workgroup_join_token_opaque_s);
   sig: number;
@@ -11107,19 +11111,6 @@ declare class __Reply__thread_create_running_t {
   child_act: mach_msg_port_descriptor_t;
 }
 
-declare class ih_idseq {
-  constructor(init?: ih_idseq);
-  icd_id: number;
-  icd_seq: number;
-}
-
-declare class __Reply__thread_create_t {
-  constructor(init?: __Reply__thread_create_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  child_act: mach_msg_port_descriptor_t;
-}
-
 declare class __Reply__host_set_UNDServer_t {
   constructor(init?: __Reply__host_set_UNDServer_t);
   Head: mach_msg_header_t;
@@ -11287,6 +11278,12 @@ declare class linkedit_data_command {
   datasize: number;
 }
 
+declare class unnamed_8942284529811475182 {
+  constructor(init?: unnamed_8942284529811475182);
+  hash: number;
+  summary: malloc_type_summary_v0_t;
+}
+
 declare class __Reply__mach_port_move_member_t {
   constructor(init?: __Reply__mach_port_move_member_t);
   Head: mach_msg_header_t;
@@ -11347,14 +11344,6 @@ declare class div_t {
   constructor(init?: div_t);
   quot: number;
   rem: number;
-}
-
-declare class unnamed_6375688467033794994 {
-  constructor(init?: unnamed_6375688467033794994);
-  w_Termsig: number;
-  w_Coredump: number;
-  w_Retcode: number;
-  w_Filler: number;
 }
 
 declare class __Request__task_set_exc_guard_behavior_t {
@@ -11437,6 +11426,15 @@ declare class dyld_uuid_info {
 declare class __Request__task_get_dyld_image_infos_t {
   constructor(init?: __Request__task_get_dyld_image_infos_t);
   Head: mach_msg_header_t;
+}
+
+declare class __Request__task_unregister_dyld_image_infos_t {
+  constructor(init?: __Request__task_unregister_dyld_image_infos_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  dyld_images: mach_msg_ool_descriptor_t;
+  NDR: NDR_record_t;
+  dyld_imagesCnt: number;
 }
 
 declare class __Request__task_register_dyld_image_infos_t {
@@ -11882,14 +11880,6 @@ declare class __Request__task_terminate_t {
   Head: mach_msg_header_t;
 }
 
-declare class unnamed_2299216604278948077 {
-  constructor(init?: unnamed_2299216604278948077);
-  fnstart: number;
-  ehtp: interop.Pointer;
-  additional: number;
-  reserved1: number;
-}
-
 declare class __Reply__processor_set_tasks_with_flavor_t {
   constructor(init?: __Reply__processor_set_tasks_with_flavor_t);
   Head: mach_msg_header_t;
@@ -11940,16 +11930,6 @@ declare class mach_vm_info_region {
   vir_inheritance: number;
   vir_wired_count: number;
   vir_user_wired_count: number;
-}
-
-declare class __Reply__processor_set_info_t {
-  constructor(init?: __Reply__processor_set_info_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  host: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  info_outCnt: number;
-  info_out: unknown /* const array */;
 }
 
 declare class sastat {
@@ -12197,6 +12177,13 @@ declare class __Request__processor_assign_t {
 declare class __Request__processor_exit_t {
   constructor(init?: __Request__processor_exit_t);
   Head: mach_msg_header_t;
+}
+
+declare class __Reply__host_security_set_task_token_t {
+  constructor(init?: __Reply__host_security_set_task_token_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
 }
 
 declare class __Request__host_security_create_task_token_t {
@@ -12491,17 +12478,6 @@ declare class kevent {
   udata: interop.Pointer;
 }
 
-declare class unnamed_7933819503058552735 {
-  constructor(init?: unnamed_7933819503058552735);
-  numColorChannels: number;
-  log2BlockBytes: number;
-  blockWidth: number;
-  blockHeight: number;
-  isHDR: number;
-  hasAlpha: number;
-  _reserved: number;
-}
-
 declare class _opaque_pthread_rwlock_t {
   constructor(init?: _opaque_pthread_rwlock_t);
   __sig: number;
@@ -12554,7 +12530,7 @@ declare class ifkpi {
   constructor(init?: ifkpi);
   ifk_module_id: number;
   ifk_type: number;
-  ifk_data: unnamed_7342138313968612537;
+  ifk_data: unnamed_6025928277710245007;
 }
 
 declare class __Reply__mach_port_get_context_t {
@@ -12738,6 +12714,24 @@ declare class mach_no_senders_notification_t {
   trailer: mach_msg_security_trailer_t;
 }
 
+declare class icmp6_router_renum {
+  constructor(init?: icmp6_router_renum);
+  rr_hdr: icmp6_hdr;
+  rr_segnum: number;
+  rr_flags: number;
+  rr_maxdelay: number;
+  rr_reserved: number;
+}
+
+declare class __Reply__host_statistics64_t {
+  constructor(init?: __Reply__host_statistics64_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  host_info64_outCnt: number;
+  host_info64_out: unknown /* const array */;
+}
+
 declare class __Request__vm_allocate_cpm_t {
   constructor(init?: __Request__vm_allocate_cpm_t);
   Head: mach_msg_header_t;
@@ -12767,7 +12761,7 @@ declare class kmod_info_64_v1 {
 
 declare class ranlib_64 {
   constructor(init?: ranlib_64);
-  ran_un: unnamed_2574290062415960284;
+  ran_un: unnamed_4941741395357422292;
   ran_off: number;
 }
 
@@ -13399,6 +13393,11 @@ declare class host_basic_info {
   max_mem: number;
 }
 
+declare class unnamed_10066519736884874946 {
+  constructor(init?: unnamed_10066519736884874946);
+  bitpattern: unknown /* const array */;
+}
+
 declare class __Reply__task_set_state_t {
   constructor(init?: __Reply__task_set_state_t);
   Head: mach_msg_header_t;
@@ -13511,11 +13510,6 @@ declare class vm_region_extended_info {
   pages_reusable: number;
 }
 
-declare class unw_cursor_t {
-  constructor(init?: unw_cursor_t);
-  data: unknown /* const array */;
-}
-
 declare class mach_dead_name_notification_t {
   constructor(init?: mach_dead_name_notification_t);
   not_header: mach_msg_header_t;
@@ -13582,23 +13576,9 @@ declare class ProcessSerialNumber {
   lowLongOfPSN: number;
 }
 
-declare class unnamed_17049482440492181375 {
-  constructor(init?: unnamed_17049482440492181375);
-  inp6_options: number;
-  inp6_hlim: number;
-  unused_uint8_1: number;
-  unused_uint16_1: number;
-  inp6_outputopts: number;
-  inp6_moptions: number;
-  inp6_icmp6filt: number;
-  inp6_cksum: number;
-  inp6_ifindex: number;
-  inp6_hops: number;
-}
-
 declare class nlist {
   constructor(init?: nlist);
-  n_un: unnamed_1997134810170963184;
+  n_un: unnamed_15908451924429773524;
   n_type: number;
   n_sect: number;
   n_desc: number;
@@ -13877,7 +13857,7 @@ declare class dyld_chained_fixups_header {
 
 declare class ranlib {
   constructor(init?: ranlib);
-  ran_un: unnamed_15319621592989086010;
+  ran_un: unnamed_1346248794865957129;
   ran_off: number;
 }
 
@@ -13888,16 +13868,6 @@ declare class __Reply__processor_set_statistics_t {
   RetCode: number;
   info_outCnt: number;
   info_out: unknown /* const array */;
-}
-
-declare class fileset_entry_command {
-  constructor(init?: fileset_entry_command);
-  cmd: number;
-  cmdsize: number;
-  vmaddr: number;
-  fileoff: number;
-  entry_id: lc_str;
-  reserved: number;
 }
 
 declare class __Request__vm_purgable_control_t {
@@ -13958,7 +13928,7 @@ declare class tlv_descriptor {
 declare class arm_unified_thread_state {
   constructor(init?: arm_unified_thread_state);
   ash: arm_state_hdr;
-  uts: unnamed_17041044517782913174;
+  uts: unnamed_900273905782570625;
 }
 
 declare class __Reply__thread_get_exception_ports_info_t {
@@ -14227,12 +14197,6 @@ declare class sub_library_command {
   sub_library: lc_str;
 }
 
-declare class unnamed_3672773870293402563 {
-  constructor(init?: unnamed_3672773870293402563);
-  hash: number;
-  summary: malloc_type_summary_v0_t;
-}
-
 declare class policy_fifo_limit {
   constructor(init?: policy_fifo_limit);
   max_priority: number;
@@ -14243,6 +14207,58 @@ declare class sub_umbrella_command {
   cmd: number;
   cmdsize: number;
   sub_umbrella: lc_str;
+}
+
+declare class os_workgroup_interval_data_opaque_s {
+  constructor(init?: os_workgroup_interval_data_opaque_s);
+  sig: number;
+  opaque: unknown /* const array */;
+}
+
+declare class dyld_chained_starts_offsets {
+  constructor(init?: dyld_chained_starts_offsets);
+  pointer_format: number;
+  starts_count: number;
+  chain_starts: unknown /* const array */;
+}
+
+declare class __Request__host_request_notification_t {
+  constructor(init?: __Request__host_request_notification_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  notify_port: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  notify_type: number;
+}
+
+declare class dyld_info_command {
+  constructor(init?: dyld_info_command);
+  cmd: number;
+  cmdsize: number;
+  rebase_off: number;
+  rebase_size: number;
+  bind_off: number;
+  bind_size: number;
+  weak_bind_off: number;
+  weak_bind_size: number;
+  lazy_bind_off: number;
+  lazy_bind_size: number;
+  export_off: number;
+  export_size: number;
+}
+
+declare class __Reply__mach_memory_entry_ownership_t {
+  constructor(init?: __Reply__mach_memory_entry_ownership_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
+
+declare class sub_client_command {
+  constructor(init?: sub_client_command);
+  cmd: number;
+  cmdsize: number;
+  client: lc_str;
 }
 
 declare class __Reply__mach_port_allocate_name_t {
@@ -14631,6 +14647,12 @@ declare class mach_vm_range_recipe_v1_t {
   range: mach_vm_range;
 }
 
+declare class mach_vm_range {
+  constructor(init?: mach_vm_range);
+  min_address: number;
+  max_address: number;
+}
+
 declare class __Reply__processor_set_policy_enable_t {
   constructor(init?: __Reply__processor_set_policy_enable_t);
   Head: mach_msg_header_t;
@@ -14902,12 +14924,6 @@ declare class __Reply__host_processor_sets_t {
   processor_setsCnt: number;
 }
 
-declare class unnamed_9627001651894680305 {
-  constructor(init?: unnamed_9627001651894680305);
-  sp: number;
-  bitpattern: unknown /* const array */;
-}
-
 declare class user {
   constructor(init?: user);
 }
@@ -14940,20 +14956,6 @@ declare class log2phys {
   l2p_devoffset: number;
 }
 
-declare class sub_client_command {
-  constructor(init?: sub_client_command);
-  cmd: number;
-  cmdsize: number;
-  client: lc_str;
-}
-
-declare class __Reply__mach_memory_entry_ownership_t {
-  constructor(init?: __Reply__mach_memory_entry_ownership_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
 declare class mach_msg_header_t {
   constructor(init?: mach_msg_header_t);
   msgh_bits: number;
@@ -14975,31 +14977,6 @@ declare class au_qctrl {
   aq_bufsz: number;
   aq_delay: number;
   aq_minfree: number;
-}
-
-declare class __Request__host_request_notification_t {
-  constructor(init?: __Request__host_request_notification_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  notify_port: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  notify_type: number;
-}
-
-declare class dyld_info_command {
-  constructor(init?: dyld_info_command);
-  cmd: number;
-  cmdsize: number;
-  rebase_off: number;
-  rebase_size: number;
-  bind_off: number;
-  bind_size: number;
-  weak_bind_off: number;
-  weak_bind_size: number;
-  lazy_bind_off: number;
-  lazy_bind_size: number;
-  export_off: number;
-  export_size: number;
 }
 
 declare class unwind_info_section_header_index_entry {
@@ -15078,12 +15055,6 @@ declare class au_mask {
   am_failure: number;
 }
 
-declare class au_tid {
-  constructor(init?: au_tid);
-  port: number;
-  machine: number;
-}
-
 declare class internal_state {
   constructor(init?: internal_state);
 }
@@ -15103,19 +15074,6 @@ declare class gz_header_s {
   comm_max: number;
   hcrc: number;
   done: number;
-}
-
-declare class dyld_chained_starts_offsets {
-  constructor(init?: dyld_chained_starts_offsets);
-  pointer_format: number;
-  starts_count: number;
-  chain_starts: unknown /* const array */;
-}
-
-declare class os_workgroup_interval_data_opaque_s {
-  constructor(init?: os_workgroup_interval_data_opaque_s);
-  sig: number;
-  opaque: unknown /* const array */;
 }
 
 declare class __Request__task_identity_token_get_task_port_t {
@@ -15545,6 +15503,12 @@ declare class __Reply__mach_port_extract_right_t {
   poly: mach_msg_port_descriptor_t;
 }
 
+declare class au_tid {
+  constructor(init?: au_tid);
+  port: number;
+  machine: number;
+}
+
 declare class sadb_session_id {
   constructor(init?: sadb_session_id);
   sadb_session_id_len: number;
@@ -15646,7 +15610,7 @@ declare class scattered_relocation_info {
 
 declare class extern_proc {
   constructor(init?: extern_proc);
-  p_un: unnamed_17531885097842228595;
+  p_un: unnamed_7010122703229124947;
   p_vmspace: interop.Pointer;
   p_sigacts: interop.Pointer;
   p_flag: number;
@@ -15764,10 +15728,10 @@ declare class _Unwind_Control_Block {
   constructor(init?: _Unwind_Control_Block);
   exception_class: number;
   exception_cleanup: (p1: interop.Enum<typeof _Unwind_Reason_Code>, p2: interop.PointerConvertible) => void | null;
-  unwinder_cache: unnamed_14014966867428522070;
-  barrier_cache: unnamed_9627001651894680305;
-  cleanup_cache: unnamed_5385238087898407030;
-  pr_cache: unnamed_2299216604278948077;
+  unwinder_cache: unnamed_6553058214308019991;
+  barrier_cache: unnamed_15596370743456216885;
+  cleanup_cache: unnamed_10066519736884874946;
+  pr_cache: unnamed_5456487753989650130;
   : number;
 }
 
@@ -15964,13 +15928,6 @@ declare class sqlite3_pcache_methods2 {
   xShrink: (p1: interop.PointerConvertible) => void | null;
 }
 
-declare class unnamed_16287766859982925874 {
-  constructor(init?: unnamed_16287766859982925874);
-  w_Stopval: number;
-  w_Stopsig: number;
-  w_Filler: number;
-}
-
 declare class __Request__host_kernel_version_t {
   constructor(init?: __Request__host_kernel_version_t);
   Head: mach_msg_header_t;
@@ -16011,6 +15968,17 @@ declare class hash_info_bucket {
 
 declare class __asl_object_s {
   constructor(init?: __asl_object_s);
+}
+
+declare class unnamed_2839929001166852682 {
+  constructor(init?: unnamed_2839929001166852682);
+  numColorChannels: number;
+  log2BlockBytes: number;
+  blockWidth: number;
+  blockHeight: number;
+  isHDR: number;
+  hasAlpha: number;
+  _reserved: number;
 }
 
 declare class NDR_record_t {
@@ -16102,6 +16070,53 @@ declare class flocktimeout {
   timeout: timespec;
 }
 
+declare class unnamed_13404737760830140510 {
+  constructor(init?: unnamed_13404737760830140510);
+  w_Stopval: number;
+  w_Stopsig: number;
+  w_Filler: number;
+}
+
+declare class __Reply__mach_port_allocate_t {
+  constructor(init?: __Reply__mach_port_allocate_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+  name: number;
+}
+
+declare class __Request__mach_vm_wire_t {
+  constructor(init?: __Request__mach_vm_wire_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  task: mach_msg_port_descriptor_t;
+  NDR: NDR_record_t;
+  address: number;
+  size: number;
+  desired_access: number;
+}
+
+declare class ih_idseq {
+  constructor(init?: ih_idseq);
+  icd_id: number;
+  icd_seq: number;
+}
+
+declare class __Reply__thread_create_t {
+  constructor(init?: __Reply__thread_create_t);
+  Head: mach_msg_header_t;
+  msgh_body: mach_msg_body_t;
+  child_act: mach_msg_port_descriptor_t;
+}
+
+declare class unnamed_17609042787312303536 {
+  constructor(init?: unnamed_17609042787312303536);
+  w_Termsig: number;
+  w_Coredump: number;
+  w_Retcode: number;
+  w_Filler: number;
+}
+
 declare class __Request__vm_read_t {
   constructor(init?: __Request__vm_read_t);
   Head: mach_msg_header_t;
@@ -16185,49 +16200,6 @@ declare class rusage_info_v5 {
   ri_interval_max_phys_footprint: number;
   ri_runnable_time: number;
   ri_flags: number;
-}
-
-declare class __Reply__mach_port_allocate_t {
-  constructor(init?: __Reply__mach_port_allocate_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-  name: number;
-}
-
-declare class __Request__mach_vm_wire_t {
-  constructor(init?: __Request__mach_vm_wire_t);
-  Head: mach_msg_header_t;
-  msgh_body: mach_msg_body_t;
-  task: mach_msg_port_descriptor_t;
-  NDR: NDR_record_t;
-  address: number;
-  size: number;
-  desired_access: number;
-}
-
-declare class __Reply__processor_set_policy_control_t {
-  constructor(init?: __Reply__processor_set_policy_control_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
-}
-
-declare class fts5_api {
-  constructor(init?: fts5_api);
-  iVersion: number;
-  xCreateTokenizer: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => number | null;
-  xFindTokenizer: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-  xCreateFunction: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void, p5: (p1: interop.PointerConvertible) => void) => number | null;
-  xCreateTokenizer_v2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => number | null;
-  xFindTokenizer_v2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
-}
-
-declare class __Reply__host_security_set_task_token_t {
-  constructor(init?: __Reply__host_security_set_task_token_t);
-  Head: mach_msg_header_t;
-  NDR: NDR_record_t;
-  RetCode: number;
 }
 
 declare class __darwin_arm_neon_state {
@@ -16369,6 +16341,10 @@ declare class sigevent {
 declare class __Request__processor_set_tasks_t {
   constructor(init?: __Request__processor_set_tasks_t);
   Head: mach_msg_header_t;
+}
+
+declare class Fts5Tokenizer {
+  constructor(init?: Fts5Tokenizer);
 }
 
 declare class os_activity_scope_state_s {
@@ -16619,11 +16595,11 @@ declare class inpcb {
   inp_vflag: number;
   inp_ip_ttl: number;
   inp_ip_p: number;
-  inp_dependfaddr: unnamed_14870496260474503123;
-  inp_dependladdr: unnamed_3434985729696241303;
-  inp_dependroute: unnamed_6188694210262777667;
-  inp_depend4: unnamed_11724869810050917006;
-  inp_depend6: unnamed_17049482440492181375;
+  inp_dependfaddr: unnamed_13756188377176985028;
+  inp_dependladdr: unnamed_681966235808295427;
+  inp_dependroute: unnamed_10995753483038369016;
+  inp_depend4: unnamed_16037023209713468788;
+  inp_depend6: unnamed_345444173036141159;
   hash_element: number;
   inp_saved_ppcb: number;
   inp_sp: number;
@@ -16636,7 +16612,7 @@ declare class DNSServiceAttribute_s {
 
 declare class nlist_64 {
   constructor(init?: nlist_64);
-  n_un: unnamed_11960765220081736833;
+  n_un: unnamed_16654037540828547570;
   n_type: number;
   n_sect: number;
   n_desc: number;
@@ -16727,14 +16703,31 @@ declare class task_events_info {
   csw: number;
 }
 
-type unnamed_6124670997610658826Descriptor = 
-  | { ifcu_buf: string | null }
-  | { ifcu_req: interop.PointerConvertible };
+declare class __Reply__processor_set_policy_control_t {
+  constructor(init?: __Reply__processor_set_policy_control_t);
+  Head: mach_msg_header_t;
+  NDR: NDR_record_t;
+  RetCode: number;
+}
 
-declare class unnamed_6124670997610658826 {
-  constructor(init?: unnamed_6124670997610658826Descriptor);
-  ifcu_buf: string | null;
-  ifcu_req: interop.Pointer;
+declare class fts5_api {
+  constructor(init?: fts5_api);
+  iVersion: number;
+  xCreateTokenizer: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => number | null;
+  xFindTokenizer: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+  xCreateFunction: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: (p1: interop.PointerConvertible, p2: interop.PointerConvertible, p3: interop.PointerConvertible, p4: number, p5: interop.PointerConvertible) => void, p5: (p1: interop.PointerConvertible) => void) => number | null;
+  xCreateTokenizer_v2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible, p5: (p1: interop.PointerConvertible) => void) => number | null;
+  xFindTokenizer_v2: (p1: interop.PointerConvertible, p2: string, p3: interop.PointerConvertible, p4: interop.PointerConvertible) => number | null;
+}
+
+type unnamed_16847730341992036315Descriptor = 
+  | { ifsr_cell: if_cellular_status }
+  | { ifsr_wifi: if_wifi_status };
+
+declare class unnamed_16847730341992036315 {
+  constructor(init?: unnamed_16847730341992036315Descriptor);
+  ifsr_cell: if_cellular_status;
+  ifsr_wifi: if_wifi_status;
 }
 
 type __ReplyUnion__processor_set_subsystemDescriptor = 
@@ -16765,24 +16758,14 @@ declare class __ReplyUnion__processor_set_subsystem {
   Reply_processor_set_tasks_with_flavor: __Reply__processor_set_tasks_with_flavor_t;
 }
 
-type graft_argsDescriptor = 
-  | { max_size: unknown /* const array */ }
-  | { sbc_args: secure_boot_cryptex_args };
+type unnamed_17773833349239637140Descriptor = 
+  | { fts_compar: () => number | null }
+  | { fts_compar_b: () => number | null };
 
-declare class graft_args {
-  constructor(init?: graft_argsDescriptor);
-  max_size: unknown /* const array */;
-  sbc_args: secure_boot_cryptex_args;
-}
-
-type unnamed_14870496260474503123Descriptor = 
-  | { inp46_foreign: in_addr_4in6 }
-  | { inp6_foreign: in6_addr };
-
-declare class unnamed_14870496260474503123 {
-  constructor(init?: unnamed_14870496260474503123Descriptor);
-  inp46_foreign: in_addr_4in6;
-  inp6_foreign: in6_addr;
+declare class unnamed_17773833349239637140 {
+  constructor(init?: unnamed_17773833349239637140Descriptor);
+  fts_compar: () => number | null;
+  fts_compar_b: () => number | null;
 }
 
 type __ReplyUnion__memory_entry_subsystemDescriptor = 
@@ -16797,6 +16780,16 @@ declare class __ReplyUnion__memory_entry_subsystem {
   Reply_mach_memory_entry_access_tracking: __Reply__mach_memory_entry_access_tracking_t;
   Reply_mach_memory_entry_ownership: __Reply__mach_memory_entry_ownership_t;
   Reply_mach_memory_entry_get_page_counts: __Reply__mach_memory_entry_get_page_counts_t;
+}
+
+type __RequestUnion__host_security_subsystemDescriptor = 
+  | { Request_host_security_create_task_token: __Request__host_security_create_task_token_t }
+  | { Request_host_security_set_task_token: __Request__host_security_set_task_token_t };
+
+declare class __RequestUnion__host_security_subsystem {
+  constructor(init?: __RequestUnion__host_security_subsystemDescriptor);
+  Request_host_security_create_task_token: __Request__host_security_create_task_token_t;
+  Request_host_security_set_task_token: __Request__host_security_set_task_token_t;
 }
 
 type __ReplyUnion__mach_voucher_subsystemDescriptor = 
@@ -16871,26 +16864,50 @@ declare class __ReplyUnion__clock_subsystem {
   Reply_clock_alarm: __Reply__clock_alarm_t;
 }
 
-type __RequestUnion__clock_subsystemDescriptor = 
-  | { Request_clock_get_time: __Request__clock_get_time_t }
-  | { Request_clock_get_attributes: __Request__clock_get_attributes_t }
-  | { Request_clock_alarm: __Request__clock_alarm_t };
+type unnamed_12792707110849069073Descriptor = 
+  | { ifru_addr: sockaddr }
+  | { ifru_dstaddr: sockaddr }
+  | { ifru_broadaddr: sockaddr }
+  | { ifru_flags: number }
+  | { ifru_metric: number }
+  | { ifru_mtu: number }
+  | { ifru_phys: number }
+  | { ifru_media: number }
+  | { ifru_intval: number }
+  | { ifru_data: string | null }
+  | { ifru_devmtu: ifdevmtu }
+  | { ifru_kpi: ifkpi }
+  | { ifru_wake_flags: number }
+  | { ifru_route_refcnt: number }
+  | { ifru_cap: unknown /* const array */ }
+  | { ifru_functional_type: number }
+  | { ifru_peer_egress_functional_type: number }
+  | { ifru_is_directlink: number }
+  | { ifru_is_vpn: number }
+  | { ifru_is_companionlink: number };
 
-declare class __RequestUnion__clock_subsystem {
-  constructor(init?: __RequestUnion__clock_subsystemDescriptor);
-  Request_clock_get_time: __Request__clock_get_time_t;
-  Request_clock_get_attributes: __Request__clock_get_attributes_t;
-  Request_clock_alarm: __Request__clock_alarm_t;
-}
-
-type unnamed_406165202155620644Descriptor = 
-  | { fts_compar: () => number | null }
-  | { fts_compar_b: () => number | null };
-
-declare class unnamed_406165202155620644 {
-  constructor(init?: unnamed_406165202155620644Descriptor);
-  fts_compar: () => number | null;
-  fts_compar_b: () => number | null;
+declare class unnamed_12792707110849069073 {
+  constructor(init?: unnamed_12792707110849069073Descriptor);
+  ifru_addr: sockaddr;
+  ifru_dstaddr: sockaddr;
+  ifru_broadaddr: sockaddr;
+  ifru_flags: number;
+  ifru_metric: number;
+  ifru_mtu: number;
+  ifru_phys: number;
+  ifru_media: number;
+  ifru_intval: number;
+  ifru_data: string | null;
+  ifru_devmtu: ifdevmtu;
+  ifru_kpi: ifkpi;
+  ifru_wake_flags: number;
+  ifru_route_refcnt: number;
+  ifru_cap: unknown /* const array */;
+  ifru_functional_type: number;
+  ifru_peer_egress_functional_type: number;
+  ifru_is_directlink: number;
+  ifru_is_vpn: number;
+  ifru_is_companionlink: number;
 }
 
 type __RequestUnion__memory_entry_subsystemDescriptor = 
@@ -16929,114 +16946,30 @@ declare class semun {
   array: interop.Pointer;
 }
 
-type __RequestUnion__host_security_subsystemDescriptor = 
-  | { Request_host_security_create_task_token: __Request__host_security_create_task_token_t }
-  | { Request_host_security_set_task_token: __Request__host_security_set_task_token_t };
+type graft_argsDescriptor = 
+  | { max_size: unknown /* const array */ }
+  | { sbc_args: secure_boot_cryptex_args };
 
-declare class __RequestUnion__host_security_subsystem {
-  constructor(init?: __RequestUnion__host_security_subsystemDescriptor);
-  Request_host_security_create_task_token: __Request__host_security_create_task_token_t;
-  Request_host_security_set_task_token: __Request__host_security_set_task_token_t;
+declare class graft_args {
+  constructor(init?: graft_argsDescriptor);
+  max_size: unknown /* const array */;
+  sbc_args: secure_boot_cryptex_args;
 }
 
-type unnamed_1865520010157675455Descriptor = 
-  | { ih_pptr: number }
-  | { ih_gwaddr: in_addr }
-  | { ih_idseq: ih_idseq }
-  | { ih_void: number }
-  | { ih_pmtu: ih_pmtu }
-  | { ih_rtradv: ih_rtradv };
-
-declare class unnamed_1865520010157675455 {
-  constructor(init?: unnamed_1865520010157675455Descriptor);
-  ih_pptr: number;
-  ih_gwaddr: in_addr;
-  ih_idseq: ih_idseq;
-  ih_void: number;
-  ih_pmtu: ih_pmtu;
-  ih_rtradv: ih_rtradv;
-}
-
-type unnamed_3434985729696241303Descriptor = 
-  | { inp46_local: in_addr_4in6 }
-  | { inp6_local: in6_addr };
-
-declare class unnamed_3434985729696241303 {
-  constructor(init?: unnamed_3434985729696241303Descriptor);
-  inp46_local: in_addr_4in6;
-  inp6_local: in6_addr;
-}
-
-type unnamed_10407121191070844577Descriptor = 
+type unnamed_2867314609305102980Descriptor = 
   | { id_ts: id_ts }
   | { id_ip: id_ip }
   | { id_radv: icmp_ra_addr }
   | { id_mask: number }
   | { id_data: unknown /* const array */ };
 
-declare class unnamed_10407121191070844577 {
-  constructor(init?: unnamed_10407121191070844577Descriptor);
+declare class unnamed_2867314609305102980 {
+  constructor(init?: unnamed_2867314609305102980Descriptor);
   id_ts: id_ts;
   id_ip: id_ip;
   id_radv: icmp_ra_addr;
   id_mask: number;
   id_data: unknown /* const array */;
-}
-
-type unnamed_3024305910828868652Descriptor = 
-  | { icmp6_un_data32: unknown /* const array */ }
-  | { icmp6_un_data16: unknown /* const array */ }
-  | { icmp6_un_data8: unknown /* const array */ };
-
-declare class unnamed_3024305910828868652 {
-  constructor(init?: unnamed_3024305910828868652Descriptor);
-  icmp6_un_data32: unknown /* const array */;
-  icmp6_un_data16: unknown /* const array */;
-  icmp6_un_data8: unknown /* const array */;
-}
-
-type unnamed_6188694210262777667Descriptor = 
-  | { inp4_route: unknown /* const array */ }
-  | { inp6_route: unknown /* const array */ };
-
-declare class unnamed_6188694210262777667 {
-  constructor(init?: unnamed_6188694210262777667Descriptor);
-  inp4_route: unknown /* const array */;
-  inp6_route: unknown /* const array */;
-}
-
-type unnamed_11809126586606330617Descriptor = 
-  | { sadb_x_sa2_reserved2: number };
-
-declare class unnamed_11809126586606330617 {
-  constructor(init?: unnamed_11809126586606330617Descriptor);
-  sadb_x_sa2_reserved2: number;
-}
-
-type unnamed_15909396633031732727Descriptor = 
-  | { ip6_un1: ip6_hdrctl }
-  | { ip6_un2_vfc: number };
-
-declare class unnamed_15909396633031732727 {
-  constructor(init?: unnamed_15909396633031732727Descriptor);
-  ip6_un1: ip6_hdrctl;
-  ip6_un2_vfc: number;
-}
-
-type unnamed_15262395339318024159Descriptor = 
-  | { sadb_x_sa2_reserved1: number };
-
-declare class unnamed_15262395339318024159 {
-  constructor(init?: unnamed_15262395339318024159Descriptor);
-  sadb_x_sa2_reserved1: number;
-}
-
-type unnamed_2936482944141353076Descriptor = 
-  | { if_status_v1: if_wifi_status_v1 };
-
-declare class unnamed_2936482944141353076 {
-  constructor(init?: unnamed_2936482944141353076Descriptor);
-  if_status_v1: if_wifi_status_v1;
 }
 
 type mach_msg_descriptor_tDescriptor = 
@@ -17053,6 +16986,312 @@ declare class mach_msg_descriptor_t {
   ool_ports: mach_msg_ool_ports_descriptor_t;
   type: mach_msg_type_descriptor_t;
   guarded_port: mach_msg_guarded_port_descriptor_t;
+}
+
+type unnamed_13999186882269072101Descriptor = 
+  | { ih_pptr: number }
+  | { ih_gwaddr: in_addr }
+  | { ih_idseq: ih_idseq }
+  | { ih_void: number }
+  | { ih_pmtu: ih_pmtu }
+  | { ih_rtradv: ih_rtradv };
+
+declare class unnamed_13999186882269072101 {
+  constructor(init?: unnamed_13999186882269072101Descriptor);
+  ih_pptr: number;
+  ih_gwaddr: in_addr;
+  ih_idseq: ih_idseq;
+  ih_void: number;
+  ih_pmtu: ih_pmtu;
+  ih_rtradv: ih_rtradv;
+}
+
+type unnamed_11564293401966917490Descriptor = 
+  | { ip6_un1: ip6_hdrctl }
+  | { ip6_un2_vfc: number };
+
+declare class unnamed_11564293401966917490 {
+  constructor(init?: unnamed_11564293401966917490Descriptor);
+  ip6_un1: ip6_hdrctl;
+  ip6_un2_vfc: number;
+}
+
+type unnamed_10995753483038369016Descriptor = 
+  | { inp4_route: unknown /* const array */ }
+  | { inp6_route: unknown /* const array */ };
+
+declare class unnamed_10995753483038369016 {
+  constructor(init?: unnamed_10995753483038369016Descriptor);
+  inp4_route: unknown /* const array */;
+  inp6_route: unknown /* const array */;
+}
+
+type unnamed_681966235808295427Descriptor = 
+  | { inp46_local: in_addr_4in6 }
+  | { inp6_local: in6_addr };
+
+declare class unnamed_681966235808295427 {
+  constructor(init?: unnamed_681966235808295427Descriptor);
+  inp46_local: in_addr_4in6;
+  inp6_local: in6_addr;
+}
+
+type __RequestUnion__clock_subsystemDescriptor = 
+  | { Request_clock_get_time: __Request__clock_get_time_t }
+  | { Request_clock_get_attributes: __Request__clock_get_attributes_t }
+  | { Request_clock_alarm: __Request__clock_alarm_t };
+
+declare class __RequestUnion__clock_subsystem {
+  constructor(init?: __RequestUnion__clock_subsystemDescriptor);
+  Request_clock_get_time: __Request__clock_get_time_t;
+  Request_clock_get_attributes: __Request__clock_get_attributes_t;
+  Request_clock_alarm: __Request__clock_alarm_t;
+}
+
+type __ReplyUnion__task_subsystemDescriptor = 
+  | { Reply_task_create: __Reply__task_create_t }
+  | { Reply_task_terminate: __Reply__task_terminate_t }
+  | { Reply_task_threads: __Reply__task_threads_t }
+  | { Reply_mach_ports_register: __Reply__mach_ports_register_t }
+  | { Reply_mach_ports_lookup: __Reply__mach_ports_lookup_t }
+  | { Reply_task_info: __Reply__task_info_t }
+  | { Reply_task_set_info: __Reply__task_set_info_t }
+  | { Reply_task_suspend: __Reply__task_suspend_t }
+  | { Reply_task_resume: __Reply__task_resume_t }
+  | { Reply_task_get_special_port: __Reply__task_get_special_port_t }
+  | { Reply_task_set_special_port: __Reply__task_set_special_port_t }
+  | { Reply_thread_create: __Reply__thread_create_t }
+  | { Reply_thread_create_running: __Reply__thread_create_running_t }
+  | { Reply_task_set_exception_ports: __Reply__task_set_exception_ports_t }
+  | { Reply_task_get_exception_ports: __Reply__task_get_exception_ports_t }
+  | { Reply_task_swap_exception_ports: __Reply__task_swap_exception_ports_t }
+  | { Reply_lock_set_create: __Reply__lock_set_create_t }
+  | { Reply_lock_set_destroy: __Reply__lock_set_destroy_t }
+  | { Reply_semaphore_create: __Reply__semaphore_create_t }
+  | { Reply_semaphore_destroy: __Reply__semaphore_destroy_t }
+  | { Reply_task_policy_set: __Reply__task_policy_set_t }
+  | { Reply_task_policy_get: __Reply__task_policy_get_t }
+  | { Reply_task_sample: __Reply__task_sample_t }
+  | { Reply_task_policy: __Reply__task_policy_t }
+  | { Reply_task_set_emulation: __Reply__task_set_emulation_t }
+  | { Reply_task_get_emulation_vector: __Reply__task_get_emulation_vector_t }
+  | { Reply_task_set_emulation_vector: __Reply__task_set_emulation_vector_t }
+  | { Reply_task_set_ras_pc: __Reply__task_set_ras_pc_t }
+  | { Reply_task_zone_info: __Reply__task_zone_info_t }
+  | { Reply_task_assign: __Reply__task_assign_t }
+  | { Reply_task_assign_default: __Reply__task_assign_default_t }
+  | { Reply_task_get_assignment: __Reply__task_get_assignment_t }
+  | { Reply_task_set_policy: __Reply__task_set_policy_t }
+  | { Reply_task_get_state: __Reply__task_get_state_t }
+  | { Reply_task_set_state: __Reply__task_set_state_t }
+  | { Reply_task_set_phys_footprint_limit: __Reply__task_set_phys_footprint_limit_t }
+  | { Reply_task_suspend2: __Reply__task_suspend2_t }
+  | { Reply_task_resume2: __Reply__task_resume2_t }
+  | { Reply_task_purgable_info: __Reply__task_purgable_info_t }
+  | { Reply_task_get_mach_voucher: __Reply__task_get_mach_voucher_t }
+  | { Reply_task_set_mach_voucher: __Reply__task_set_mach_voucher_t }
+  | { Reply_task_swap_mach_voucher: __Reply__task_swap_mach_voucher_t }
+  | { Reply_task_generate_corpse: __Reply__task_generate_corpse_t }
+  | { Reply_task_map_corpse_info: __Reply__task_map_corpse_info_t }
+  | { Reply_task_register_dyld_image_infos: __Reply__task_register_dyld_image_infos_t }
+  | { Reply_task_unregister_dyld_image_infos: __Reply__task_unregister_dyld_image_infos_t }
+  | { Reply_task_get_dyld_image_infos: __Reply__task_get_dyld_image_infos_t }
+  | { Reply_task_register_dyld_shared_cache_image_info: __Reply__task_register_dyld_shared_cache_image_info_t }
+  | { Reply_task_register_dyld_set_dyld_state: __Reply__task_register_dyld_set_dyld_state_t }
+  | { Reply_task_register_dyld_get_process_state: __Reply__task_register_dyld_get_process_state_t }
+  | { Reply_task_map_corpse_info_64: __Reply__task_map_corpse_info_64_t }
+  | { Reply_task_inspect: __Reply__task_inspect_t }
+  | { Reply_task_get_exc_guard_behavior: __Reply__task_get_exc_guard_behavior_t }
+  | { Reply_task_set_exc_guard_behavior: __Reply__task_set_exc_guard_behavior_t }
+  | { Reply_task_dyld_process_info_notify_register: __Reply__task_dyld_process_info_notify_register_t }
+  | { Reply_task_create_identity_token: __Reply__task_create_identity_token_t }
+  | { Reply_task_identity_token_get_task_port: __Reply__task_identity_token_get_task_port_t }
+  | { Reply_task_dyld_process_info_notify_deregister: __Reply__task_dyld_process_info_notify_deregister_t }
+  | { Reply_task_get_exception_ports_info: __Reply__task_get_exception_ports_info_t }
+  | { Reply_task_test_sync_upcall: __Reply__task_test_sync_upcall_t }
+  | { Reply_task_set_corpse_forking_behavior: __Reply__task_set_corpse_forking_behavior_t }
+  | { Reply_task_test_async_upcall_propagation: __Reply__task_test_async_upcall_propagation_t }
+  | { Reply_task_map_kcdata_object_64: __Reply__task_map_kcdata_object_64_t }
+  | { Reply_task_register_hardened_exception_handler: __Reply__task_register_hardened_exception_handler_t };
+
+declare class __ReplyUnion__task_subsystem {
+  constructor(init?: __ReplyUnion__task_subsystemDescriptor);
+  Reply_task_create: __Reply__task_create_t;
+  Reply_task_terminate: __Reply__task_terminate_t;
+  Reply_task_threads: __Reply__task_threads_t;
+  Reply_mach_ports_register: __Reply__mach_ports_register_t;
+  Reply_mach_ports_lookup: __Reply__mach_ports_lookup_t;
+  Reply_task_info: __Reply__task_info_t;
+  Reply_task_set_info: __Reply__task_set_info_t;
+  Reply_task_suspend: __Reply__task_suspend_t;
+  Reply_task_resume: __Reply__task_resume_t;
+  Reply_task_get_special_port: __Reply__task_get_special_port_t;
+  Reply_task_set_special_port: __Reply__task_set_special_port_t;
+  Reply_thread_create: __Reply__thread_create_t;
+  Reply_thread_create_running: __Reply__thread_create_running_t;
+  Reply_task_set_exception_ports: __Reply__task_set_exception_ports_t;
+  Reply_task_get_exception_ports: __Reply__task_get_exception_ports_t;
+  Reply_task_swap_exception_ports: __Reply__task_swap_exception_ports_t;
+  Reply_lock_set_create: __Reply__lock_set_create_t;
+  Reply_lock_set_destroy: __Reply__lock_set_destroy_t;
+  Reply_semaphore_create: __Reply__semaphore_create_t;
+  Reply_semaphore_destroy: __Reply__semaphore_destroy_t;
+  Reply_task_policy_set: __Reply__task_policy_set_t;
+  Reply_task_policy_get: __Reply__task_policy_get_t;
+  Reply_task_sample: __Reply__task_sample_t;
+  Reply_task_policy: __Reply__task_policy_t;
+  Reply_task_set_emulation: __Reply__task_set_emulation_t;
+  Reply_task_get_emulation_vector: __Reply__task_get_emulation_vector_t;
+  Reply_task_set_emulation_vector: __Reply__task_set_emulation_vector_t;
+  Reply_task_set_ras_pc: __Reply__task_set_ras_pc_t;
+  Reply_task_zone_info: __Reply__task_zone_info_t;
+  Reply_task_assign: __Reply__task_assign_t;
+  Reply_task_assign_default: __Reply__task_assign_default_t;
+  Reply_task_get_assignment: __Reply__task_get_assignment_t;
+  Reply_task_set_policy: __Reply__task_set_policy_t;
+  Reply_task_get_state: __Reply__task_get_state_t;
+  Reply_task_set_state: __Reply__task_set_state_t;
+  Reply_task_set_phys_footprint_limit: __Reply__task_set_phys_footprint_limit_t;
+  Reply_task_suspend2: __Reply__task_suspend2_t;
+  Reply_task_resume2: __Reply__task_resume2_t;
+  Reply_task_purgable_info: __Reply__task_purgable_info_t;
+  Reply_task_get_mach_voucher: __Reply__task_get_mach_voucher_t;
+  Reply_task_set_mach_voucher: __Reply__task_set_mach_voucher_t;
+  Reply_task_swap_mach_voucher: __Reply__task_swap_mach_voucher_t;
+  Reply_task_generate_corpse: __Reply__task_generate_corpse_t;
+  Reply_task_map_corpse_info: __Reply__task_map_corpse_info_t;
+  Reply_task_register_dyld_image_infos: __Reply__task_register_dyld_image_infos_t;
+  Reply_task_unregister_dyld_image_infos: __Reply__task_unregister_dyld_image_infos_t;
+  Reply_task_get_dyld_image_infos: __Reply__task_get_dyld_image_infos_t;
+  Reply_task_register_dyld_shared_cache_image_info: __Reply__task_register_dyld_shared_cache_image_info_t;
+  Reply_task_register_dyld_set_dyld_state: __Reply__task_register_dyld_set_dyld_state_t;
+  Reply_task_register_dyld_get_process_state: __Reply__task_register_dyld_get_process_state_t;
+  Reply_task_map_corpse_info_64: __Reply__task_map_corpse_info_64_t;
+  Reply_task_inspect: __Reply__task_inspect_t;
+  Reply_task_get_exc_guard_behavior: __Reply__task_get_exc_guard_behavior_t;
+  Reply_task_set_exc_guard_behavior: __Reply__task_set_exc_guard_behavior_t;
+  Reply_task_dyld_process_info_notify_register: __Reply__task_dyld_process_info_notify_register_t;
+  Reply_task_create_identity_token: __Reply__task_create_identity_token_t;
+  Reply_task_identity_token_get_task_port: __Reply__task_identity_token_get_task_port_t;
+  Reply_task_dyld_process_info_notify_deregister: __Reply__task_dyld_process_info_notify_deregister_t;
+  Reply_task_get_exception_ports_info: __Reply__task_get_exception_ports_info_t;
+  Reply_task_test_sync_upcall: __Reply__task_test_sync_upcall_t;
+  Reply_task_set_corpse_forking_behavior: __Reply__task_set_corpse_forking_behavior_t;
+  Reply_task_test_async_upcall_propagation: __Reply__task_test_async_upcall_propagation_t;
+  Reply_task_map_kcdata_object_64: __Reply__task_map_kcdata_object_64_t;
+  Reply_task_register_hardened_exception_handler: __Reply__task_register_hardened_exception_handler_t;
+}
+
+type unnamed_13756188377176985028Descriptor = 
+  | { inp46_foreign: in_addr_4in6 }
+  | { inp6_foreign: in6_addr };
+
+declare class unnamed_13756188377176985028 {
+  constructor(init?: unnamed_13756188377176985028Descriptor);
+  inp46_foreign: in_addr_4in6;
+  inp6_foreign: in6_addr;
+}
+
+type unnamed_10850057586384803849Descriptor = 
+  | { icmp6_un_data32: unknown /* const array */ }
+  | { icmp6_un_data16: unknown /* const array */ }
+  | { icmp6_un_data8: unknown /* const array */ };
+
+declare class unnamed_10850057586384803849 {
+  constructor(init?: unnamed_10850057586384803849Descriptor);
+  icmp6_un_data32: unknown /* const array */;
+  icmp6_un_data16: unknown /* const array */;
+  icmp6_un_data8: unknown /* const array */;
+}
+
+type unnamed_7010122703229124947Descriptor = 
+  | { p_st1: unnamed_11724790119960622479 }
+  | { __p_starttime: timeval };
+
+declare class unnamed_7010122703229124947 {
+  constructor(init?: unnamed_7010122703229124947Descriptor);
+  p_st1: unnamed_11724790119960622479;
+  __p_starttime: timeval;
+}
+
+type unnamed_17111531745415781206Descriptor = 
+  | { addr8: unknown /* const array */ }
+  | { addr16: unknown /* const array */ }
+  | { addr32: unknown /* const array */ };
+
+declare class unnamed_17111531745415781206 {
+  constructor(init?: unnamed_17111531745415781206Descriptor);
+  addr8: unknown /* const array */;
+  addr16: unknown /* const array */;
+  addr32: unknown /* const array */;
+}
+
+type unnamed_17264964298470985088Descriptor = 
+  | { __u6_addr8: unknown /* const array */ }
+  | { __u6_addr16: unknown /* const array */ }
+  | { __u6_addr32: unknown /* const array */ };
+
+declare class unnamed_17264964298470985088 {
+  constructor(init?: unnamed_17264964298470985088Descriptor);
+  __u6_addr8: unknown /* const array */;
+  __u6_addr16: unknown /* const array */;
+  __u6_addr32: unknown /* const array */;
+}
+
+type unnamed_2415581406207035320Descriptor = 
+  | { if_status_v1: if_wifi_status_v1 };
+
+declare class unnamed_2415581406207035320 {
+  constructor(init?: unnamed_2415581406207035320Descriptor);
+  if_status_v1: if_wifi_status_v1;
+}
+
+type unnamed_8795425359092744761Descriptor = 
+  | { ifcu_buf: string | null }
+  | { ifcu_req: interop.PointerConvertible };
+
+declare class unnamed_8795425359092744761 {
+  constructor(init?: unnamed_8795425359092744761Descriptor);
+  ifcu_buf: string | null;
+  ifcu_req: interop.Pointer;
+}
+
+type __mbstate_tDescriptor = 
+  | { __mbstate8: unknown /* const array */ }
+  | { _mbstateL: number };
+
+declare class __mbstate_t {
+  constructor(init?: __mbstate_tDescriptor);
+  __mbstate8: unknown /* const array */;
+  _mbstateL: number;
+}
+
+type unnamed_11064935562542215560Descriptor = 
+  | { gl_errfunc: (p1: string, p2: number) => number | null }
+  | { gl_errblk: (p1: string, p2: number) => number | null };
+
+declare class unnamed_11064935562542215560 {
+  constructor(init?: unnamed_11064935562542215560Descriptor);
+  gl_errfunc: (p1: string, p2: number) => number | null;
+  gl_errblk: (p1: string, p2: number) => number | null;
+}
+
+type _TXTRecordRef_tDescriptor = 
+  | { PrivateData: unknown /* const array */ }
+  | { ForceNaturalAlignment: string | null };
+
+declare class _TXTRecordRef_t {
+  constructor(init?: _TXTRecordRef_tDescriptor);
+  PrivateData: unknown /* const array */;
+  ForceNaturalAlignment: string | null;
+}
+
+type malloc_type_descriptor_v0_tDescriptor = 
+  | { type_id: number };
+
+declare class malloc_type_descriptor_v0_t {
+  constructor(init?: malloc_type_descriptor_v0_tDescriptor);
+  type_id: number;
 }
 
 type __ReplyUnion__mach_host_subsystemDescriptor = 
@@ -17113,202 +17352,6 @@ declare class __ReplyUnion__mach_host_subsystem {
   Reply_host_get_multiuser_config_flags: __Reply__host_get_multiuser_config_flags_t;
   Reply_host_check_multiuser_mode: __Reply__host_check_multiuser_mode_t;
   Reply_mach_zone_info_for_zone: __Reply__mach_zone_info_for_zone_t;
-}
-
-type unnamed_12392848442582227950Descriptor = 
-  | { if_status_v1: if_cellular_status_v1 };
-
-declare class unnamed_12392848442582227950 {
-  constructor(init?: unnamed_12392848442582227950Descriptor);
-  if_status_v1: if_cellular_status_v1;
-}
-
-type waitDescriptor = 
-  | { w_status: number }
-  | { w_T: unnamed_6375688467033794994 }
-  | { w_S: unnamed_16287766859982925874 };
-
-declare class wait {
-  constructor(init?: waitDescriptor);
-  w_status: number;
-  w_T: unnamed_6375688467033794994;
-  w_S: unnamed_16287766859982925874;
-}
-
-type unnamed_17041044517782913174Descriptor = 
-  | { ts_32: __darwin_arm_thread_state }
-  | { ts_64: __darwin_arm_thread_state64 };
-
-declare class unnamed_17041044517782913174 {
-  constructor(init?: unnamed_17041044517782913174Descriptor);
-  ts_32: __darwin_arm_thread_state;
-  ts_64: __darwin_arm_thread_state64;
-}
-
-type unnamed_10931216628098187332Descriptor = 
-  | { ifsr_cell: if_cellular_status }
-  | { ifsr_wifi: if_wifi_status };
-
-declare class unnamed_10931216628098187332 {
-  constructor(init?: unnamed_10931216628098187332Descriptor);
-  ifsr_cell: if_cellular_status;
-  ifsr_wifi: if_wifi_status;
-}
-
-type __RequestUnion__processor_subsystemDescriptor = 
-  | { Request_processor_start: __Request__processor_start_t }
-  | { Request_processor_exit: __Request__processor_exit_t }
-  | { Request_processor_info: __Request__processor_info_t }
-  | { Request_processor_control: __Request__processor_control_t }
-  | { Request_processor_assign: __Request__processor_assign_t }
-  | { Request_processor_get_assignment: __Request__processor_get_assignment_t };
-
-declare class __RequestUnion__processor_subsystem {
-  constructor(init?: __RequestUnion__processor_subsystemDescriptor);
-  Request_processor_start: __Request__processor_start_t;
-  Request_processor_exit: __Request__processor_exit_t;
-  Request_processor_info: __Request__processor_info_t;
-  Request_processor_control: __Request__processor_control_t;
-  Request_processor_assign: __Request__processor_assign_t;
-  Request_processor_get_assignment: __Request__processor_get_assignment_t;
-}
-
-type unnamed_7342138313968612537Descriptor = 
-  | { ifk_ptr: interop.PointerConvertible }
-  | { ifk_value: number };
-
-declare class unnamed_7342138313968612537 {
-  constructor(init?: unnamed_7342138313968612537Descriptor);
-  ifk_ptr: interop.Pointer;
-  ifk_value: number;
-}
-
-type __RequestUnion__vm_map_subsystemDescriptor = 
-  | { Request_vm_region: __Request__vm_region_t }
-  | { Request_vm_allocate: __Request__vm_allocate_t }
-  | { Request_vm_deallocate: __Request__vm_deallocate_t }
-  | { Request_vm_protect: __Request__vm_protect_t }
-  | { Request_vm_inherit: __Request__vm_inherit_t }
-  | { Request_vm_read: __Request__vm_read_t }
-  | { Request_vm_read_list: __Request__vm_read_list_t }
-  | { Request_vm_write: __Request__vm_write_t }
-  | { Request_vm_copy: __Request__vm_copy_t }
-  | { Request_vm_read_overwrite: __Request__vm_read_overwrite_t }
-  | { Request_vm_msync: __Request__vm_msync_t }
-  | { Request_vm_behavior_set: __Request__vm_behavior_set_t }
-  | { Request_vm_map: __Request__vm_map_t }
-  | { Request_vm_machine_attribute: __Request__vm_machine_attribute_t }
-  | { Request_vm_remap: __Request__vm_remap_t }
-  | { Request_task_wire: __Request__task_wire_t }
-  | { Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t }
-  | { Request_vm_map_page_query: __Request__vm_map_page_query_t }
-  | { Request_mach_vm_region_info: __Request__mach_vm_region_info_t }
-  | { Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t }
-  | { Request_vm_region_recurse: __Request__vm_region_recurse_t }
-  | { Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t }
-  | { Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t }
-  | { Request_vm_region_64: __Request__vm_region_64_t }
-  | { Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t }
-  | { Request_vm_map_64: __Request__vm_map_64_t }
-  | { Request_vm_purgable_control: __Request__vm_purgable_control_t }
-  | { Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t }
-  | { Request_vm_remap_new: __Request__vm_remap_new_t };
-
-declare class __RequestUnion__vm_map_subsystem {
-  constructor(init?: __RequestUnion__vm_map_subsystemDescriptor);
-  Request_vm_region: __Request__vm_region_t;
-  Request_vm_allocate: __Request__vm_allocate_t;
-  Request_vm_deallocate: __Request__vm_deallocate_t;
-  Request_vm_protect: __Request__vm_protect_t;
-  Request_vm_inherit: __Request__vm_inherit_t;
-  Request_vm_read: __Request__vm_read_t;
-  Request_vm_read_list: __Request__vm_read_list_t;
-  Request_vm_write: __Request__vm_write_t;
-  Request_vm_copy: __Request__vm_copy_t;
-  Request_vm_read_overwrite: __Request__vm_read_overwrite_t;
-  Request_vm_msync: __Request__vm_msync_t;
-  Request_vm_behavior_set: __Request__vm_behavior_set_t;
-  Request_vm_map: __Request__vm_map_t;
-  Request_vm_machine_attribute: __Request__vm_machine_attribute_t;
-  Request_vm_remap: __Request__vm_remap_t;
-  Request_task_wire: __Request__task_wire_t;
-  Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t;
-  Request_vm_map_page_query: __Request__vm_map_page_query_t;
-  Request_mach_vm_region_info: __Request__mach_vm_region_info_t;
-  Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t;
-  Request_vm_region_recurse: __Request__vm_region_recurse_t;
-  Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t;
-  Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t;
-  Request_vm_region_64: __Request__vm_region_64_t;
-  Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t;
-  Request_vm_map_64: __Request__vm_map_64_t;
-  Request_vm_purgable_control: __Request__vm_purgable_control_t;
-  Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t;
-  Request_vm_remap_new: __Request__vm_remap_new_t;
-}
-
-type unnamed_2113879990700016493Descriptor = 
-  | { ifru_addr: sockaddr }
-  | { ifru_dstaddr: sockaddr }
-  | { ifru_broadaddr: sockaddr }
-  | { ifru_flags: number }
-  | { ifru_metric: number }
-  | { ifru_mtu: number }
-  | { ifru_phys: number }
-  | { ifru_media: number }
-  | { ifru_intval: number }
-  | { ifru_data: string | null }
-  | { ifru_devmtu: ifdevmtu }
-  | { ifru_kpi: ifkpi }
-  | { ifru_wake_flags: number }
-  | { ifru_route_refcnt: number }
-  | { ifru_cap: unknown /* const array */ }
-  | { ifru_functional_type: number }
-  | { ifru_peer_egress_functional_type: number }
-  | { ifru_is_directlink: number }
-  | { ifru_is_vpn: number }
-  | { ifru_is_companionlink: number };
-
-declare class unnamed_2113879990700016493 {
-  constructor(init?: unnamed_2113879990700016493Descriptor);
-  ifru_addr: sockaddr;
-  ifru_dstaddr: sockaddr;
-  ifru_broadaddr: sockaddr;
-  ifru_flags: number;
-  ifru_metric: number;
-  ifru_mtu: number;
-  ifru_phys: number;
-  ifru_media: number;
-  ifru_intval: number;
-  ifru_data: string | null;
-  ifru_devmtu: ifdevmtu;
-  ifru_kpi: ifkpi;
-  ifru_wake_flags: number;
-  ifru_route_refcnt: number;
-  ifru_cap: unknown /* const array */;
-  ifru_functional_type: number;
-  ifru_peer_egress_functional_type: number;
-  ifru_is_directlink: number;
-  ifru_is_vpn: number;
-  ifru_is_companionlink: number;
-}
-
-type _TXTRecordRef_tDescriptor = 
-  | { PrivateData: unknown /* const array */ }
-  | { ForceNaturalAlignment: string | null };
-
-declare class _TXTRecordRef_t {
-  constructor(init?: _TXTRecordRef_tDescriptor);
-  PrivateData: unknown /* const array */;
-  ForceNaturalAlignment: string | null;
-}
-
-type malloc_type_descriptor_v0_tDescriptor = 
-  | { type_id: number };
-
-declare class malloc_type_descriptor_v0_t {
-  constructor(init?: malloc_type_descriptor_v0_tDescriptor);
-  type_id: number;
 }
 
 type __RequestUnion__mach_host_subsystemDescriptor = 
@@ -17461,14 +17504,6 @@ declare class __ReplyUnion__mach_port_subsystem {
   Reply_mach_port_assert_attributes: __Reply__mach_port_assert_attributes_t;
 }
 
-type unnamed_15319621592989086010Descriptor = 
-  | { ran_strx: number };
-
-declare class unnamed_15319621592989086010 {
-  constructor(init?: unnamed_15319621592989086010Descriptor);
-  ran_strx: number;
-}
-
 type __RequestUnion__mach_port_subsystemDescriptor = 
   | { Request_mach_port_names: __Request__mach_port_names_t }
   | { Request_mach_port_type: __Request__mach_port_type_t }
@@ -17557,18 +17592,6 @@ declare class __RequestUnion__mach_port_subsystem {
   Request_mach_port_is_connection_for_service: __Request__mach_port_is_connection_for_service_t;
   Request_mach_port_get_service_port_info: __Request__mach_port_get_service_port_info_t;
   Request_mach_port_assert_attributes: __Request__mach_port_assert_attributes_t;
-}
-
-type unnamed_2816436468319414568Descriptor = 
-  | { __u6_addr8: unknown /* const array */ }
-  | { __u6_addr16: unknown /* const array */ }
-  | { __u6_addr32: unknown /* const array */ };
-
-declare class unnamed_2816436468319414568 {
-  constructor(init?: unnamed_2816436468319414568Descriptor);
-  __u6_addr8: unknown /* const array */;
-  __u6_addr16: unknown /* const array */;
-  __u6_addr32: unknown /* const array */;
 }
 
 type __ReplyUnion__thread_act_subsystemDescriptor = 
@@ -17707,14 +17730,6 @@ declare class __RequestUnion__thread_act_subsystem {
   Request_thread_adopt_exception_handler: __Request__thread_adopt_exception_handler_t;
 }
 
-type unnamed_11960765220081736833Descriptor = 
-  | { n_strx: number };
-
-declare class unnamed_11960765220081736833 {
-  constructor(init?: unnamed_11960765220081736833Descriptor);
-  n_strx: number;
-}
-
 type ifnet_interface_advisory_notification_type_tDescriptor = 
   | { cell: interop.Enum<typeof ifnet_interface_advisory_notification_type_cell> }
   | { wifi: interop.Enum<typeof ifnet_interface_advisory_notification_type_wifi> };
@@ -17751,78 +17766,6 @@ declare class __RequestUnion__processor_set_subsystem {
   Request_processor_set_stack_usage: __Request__processor_set_stack_usage_t;
   Request_processor_set_info: __Request__processor_set_info_t;
   Request_processor_set_tasks_with_flavor: __Request__processor_set_tasks_with_flavor_t;
-}
-
-type __ReplyUnion__host_security_subsystemDescriptor = 
-  | { Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t }
-  | { Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t };
-
-declare class __ReplyUnion__host_security_subsystem {
-  constructor(init?: __ReplyUnion__host_security_subsystemDescriptor);
-  Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t;
-  Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t;
-}
-
-type __RequestUnion__host_priv_subsystemDescriptor = 
-  | { Request_host_get_boot_info: __Request__host_get_boot_info_t }
-  | { Request_host_reboot: __Request__host_reboot_t }
-  | { Request_host_priv_statistics: __Request__host_priv_statistics_t }
-  | { Request_host_default_memory_manager: __Request__host_default_memory_manager_t }
-  | { Request_vm_wire: __Request__vm_wire_t }
-  | { Request_thread_wire: __Request__thread_wire_t }
-  | { Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t }
-  | { Request_host_processors: __Request__host_processors_t }
-  | { Request_host_get_clock_control: __Request__host_get_clock_control_t }
-  | { Request_kmod_create: __Request__kmod_create_t }
-  | { Request_kmod_destroy: __Request__kmod_destroy_t }
-  | { Request_kmod_control: __Request__kmod_control_t }
-  | { Request_host_get_special_port: __Request__host_get_special_port_t }
-  | { Request_host_set_special_port: __Request__host_set_special_port_t }
-  | { Request_host_set_exception_ports: __Request__host_set_exception_ports_t }
-  | { Request_host_get_exception_ports: __Request__host_get_exception_ports_t }
-  | { Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t }
-  | { Request_mach_vm_wire: __Request__mach_vm_wire_t }
-  | { Request_host_processor_sets: __Request__host_processor_sets_t }
-  | { Request_host_processor_set_priv: __Request__host_processor_set_priv_t }
-  | { Request_host_set_UNDServer: __Request__host_set_UNDServer_t }
-  | { Request_host_get_UNDServer: __Request__host_get_UNDServer_t }
-  | { Request_kext_request: __Request__kext_request_t };
-
-declare class __RequestUnion__host_priv_subsystem {
-  constructor(init?: __RequestUnion__host_priv_subsystemDescriptor);
-  Request_host_get_boot_info: __Request__host_get_boot_info_t;
-  Request_host_reboot: __Request__host_reboot_t;
-  Request_host_priv_statistics: __Request__host_priv_statistics_t;
-  Request_host_default_memory_manager: __Request__host_default_memory_manager_t;
-  Request_vm_wire: __Request__vm_wire_t;
-  Request_thread_wire: __Request__thread_wire_t;
-  Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t;
-  Request_host_processors: __Request__host_processors_t;
-  Request_host_get_clock_control: __Request__host_get_clock_control_t;
-  Request_kmod_create: __Request__kmod_create_t;
-  Request_kmod_destroy: __Request__kmod_destroy_t;
-  Request_kmod_control: __Request__kmod_control_t;
-  Request_host_get_special_port: __Request__host_get_special_port_t;
-  Request_host_set_special_port: __Request__host_set_special_port_t;
-  Request_host_set_exception_ports: __Request__host_set_exception_ports_t;
-  Request_host_get_exception_ports: __Request__host_get_exception_ports_t;
-  Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t;
-  Request_mach_vm_wire: __Request__mach_vm_wire_t;
-  Request_host_processor_sets: __Request__host_processor_sets_t;
-  Request_host_processor_set_priv: __Request__host_processor_set_priv_t;
-  Request_host_set_UNDServer: __Request__host_set_UNDServer_t;
-  Request_host_get_UNDServer: __Request__host_get_UNDServer_t;
-  Request_kext_request: __Request__kext_request_t;
-}
-
-type unnamed_17531885097842228595Descriptor = 
-  | { p_st1: unnamed_14443230655265557806 }
-  | { __p_starttime: timeval };
-
-declare class unnamed_17531885097842228595 {
-  constructor(init?: unnamed_17531885097842228595Descriptor);
-  p_st1: unnamed_14443230655265557806;
-  __p_starttime: timeval;
 }
 
 type __ReplyUnion__host_priv_subsystemDescriptor = 
@@ -17887,6 +17830,14 @@ declare class ipt_timestamp {
   ipt_ta: unknown /* const array */;
 }
 
+type unnamed_4107851220065511264Descriptor = 
+  | { sadb_x_sa2_reserved1: number };
+
+declare class unnamed_4107851220065511264 {
+  constructor(init?: unnamed_4107851220065511264Descriptor);
+  sadb_x_sa2_reserved1: number;
+}
+
 type __ReplyUnion__clock_priv_subsystemDescriptor = 
   | { Reply_clock_set_time: __Reply__clock_set_time_t }
   | { Reply_clock_set_attributes: __Reply__clock_set_attributes_t };
@@ -17897,56 +17848,50 @@ declare class __ReplyUnion__clock_priv_subsystem {
   Reply_clock_set_attributes: __Reply__clock_set_attributes_t;
 }
 
-type sigvalDescriptor = 
-  | { sival_int: number }
-  | { sival_ptr: interop.PointerConvertible };
+type unnamed_11941034985664691336Descriptor = 
+  | { is_master: number }
+  | { is_main: number };
 
-declare class sigval {
-  constructor(init?: sigvalDescriptor);
-  sival_int: number;
-  sival_ptr: interop.Pointer;
+declare class unnamed_11941034985664691336 {
+  constructor(init?: unnamed_11941034985664691336Descriptor);
+  is_master: number;
+  is_main: number;
 }
 
-type unnamed_1997134810170963184Descriptor = 
+type __ReplyUnion__host_security_subsystemDescriptor = 
+  | { Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t }
+  | { Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t };
+
+declare class __ReplyUnion__host_security_subsystem {
+  constructor(init?: __ReplyUnion__host_security_subsystemDescriptor);
+  Reply_host_security_create_task_token: __Reply__host_security_create_task_token_t;
+  Reply_host_security_set_task_token: __Reply__host_security_set_task_token_t;
+}
+
+type __RequestUnion__processor_subsystemDescriptor = 
+  | { Request_processor_start: __Request__processor_start_t }
+  | { Request_processor_exit: __Request__processor_exit_t }
+  | { Request_processor_info: __Request__processor_info_t }
+  | { Request_processor_control: __Request__processor_control_t }
+  | { Request_processor_assign: __Request__processor_assign_t }
+  | { Request_processor_get_assignment: __Request__processor_get_assignment_t };
+
+declare class __RequestUnion__processor_subsystem {
+  constructor(init?: __RequestUnion__processor_subsystemDescriptor);
+  Request_processor_start: __Request__processor_start_t;
+  Request_processor_exit: __Request__processor_exit_t;
+  Request_processor_info: __Request__processor_info_t;
+  Request_processor_control: __Request__processor_control_t;
+  Request_processor_assign: __Request__processor_assign_t;
+  Request_processor_get_assignment: __Request__processor_get_assignment_t;
+}
+
+type unnamed_15908451924429773524Descriptor = 
   | { n_strx: number };
 
-declare class unnamed_1997134810170963184 {
-  constructor(init?: unnamed_1997134810170963184Descriptor);
+declare class unnamed_15908451924429773524 {
+  constructor(init?: unnamed_15908451924429773524Descriptor);
   n_strx: number;
-}
-
-type unnamed_16051789052577522085Descriptor = 
-  | { addr8: unknown /* const array */ }
-  | { addr16: unknown /* const array */ }
-  | { addr32: unknown /* const array */ };
-
-declare class unnamed_16051789052577522085 {
-  constructor(init?: unnamed_16051789052577522085Descriptor);
-  addr8: unknown /* const array */;
-  addr16: unknown /* const array */;
-  addr32: unknown /* const array */;
-}
-
-type unnamed_2574290062415960284Descriptor = 
-  | { ran_strx: number };
-
-declare class unnamed_2574290062415960284 {
-  constructor(init?: unnamed_2574290062415960284Descriptor);
-  ran_strx: number;
-}
-
-type unnamed_11701587598552734554Descriptor = 
-  | { reserved: unknown /* const array */ }
-  | { work_interval_port: number }
-  | { service_port_info: interop.PointerConvertible }
-  | { service_port_name: number };
-
-declare class unnamed_11701587598552734554 {
-  constructor(init?: unnamed_11701587598552734554Descriptor);
-  reserved: unknown /* const array */;
-  work_interval_port: number;
-  service_port_info: interop.Pointer;
-  service_port_name: number;
 }
 
 type lc_strDescriptor = 
@@ -17957,138 +17902,74 @@ declare class lc_str {
   offset: number;
 }
 
-type __ReplyUnion__task_subsystemDescriptor = 
-  | { Reply_task_create: __Reply__task_create_t }
-  | { Reply_task_terminate: __Reply__task_terminate_t }
-  | { Reply_task_threads: __Reply__task_threads_t }
-  | { Reply_mach_ports_register: __Reply__mach_ports_register_t }
-  | { Reply_mach_ports_lookup: __Reply__mach_ports_lookup_t }
-  | { Reply_task_info: __Reply__task_info_t }
-  | { Reply_task_set_info: __Reply__task_set_info_t }
-  | { Reply_task_suspend: __Reply__task_suspend_t }
-  | { Reply_task_resume: __Reply__task_resume_t }
-  | { Reply_task_get_special_port: __Reply__task_get_special_port_t }
-  | { Reply_task_set_special_port: __Reply__task_set_special_port_t }
-  | { Reply_thread_create: __Reply__thread_create_t }
-  | { Reply_thread_create_running: __Reply__thread_create_running_t }
-  | { Reply_task_set_exception_ports: __Reply__task_set_exception_ports_t }
-  | { Reply_task_get_exception_ports: __Reply__task_get_exception_ports_t }
-  | { Reply_task_swap_exception_ports: __Reply__task_swap_exception_ports_t }
-  | { Reply_lock_set_create: __Reply__lock_set_create_t }
-  | { Reply_lock_set_destroy: __Reply__lock_set_destroy_t }
-  | { Reply_semaphore_create: __Reply__semaphore_create_t }
-  | { Reply_semaphore_destroy: __Reply__semaphore_destroy_t }
-  | { Reply_task_policy_set: __Reply__task_policy_set_t }
-  | { Reply_task_policy_get: __Reply__task_policy_get_t }
-  | { Reply_task_sample: __Reply__task_sample_t }
-  | { Reply_task_policy: __Reply__task_policy_t }
-  | { Reply_task_set_emulation: __Reply__task_set_emulation_t }
-  | { Reply_task_get_emulation_vector: __Reply__task_get_emulation_vector_t }
-  | { Reply_task_set_emulation_vector: __Reply__task_set_emulation_vector_t }
-  | { Reply_task_set_ras_pc: __Reply__task_set_ras_pc_t }
-  | { Reply_task_zone_info: __Reply__task_zone_info_t }
-  | { Reply_task_assign: __Reply__task_assign_t }
-  | { Reply_task_assign_default: __Reply__task_assign_default_t }
-  | { Reply_task_get_assignment: __Reply__task_get_assignment_t }
-  | { Reply_task_set_policy: __Reply__task_set_policy_t }
-  | { Reply_task_get_state: __Reply__task_get_state_t }
-  | { Reply_task_set_state: __Reply__task_set_state_t }
-  | { Reply_task_set_phys_footprint_limit: __Reply__task_set_phys_footprint_limit_t }
-  | { Reply_task_suspend2: __Reply__task_suspend2_t }
-  | { Reply_task_resume2: __Reply__task_resume2_t }
-  | { Reply_task_purgable_info: __Reply__task_purgable_info_t }
-  | { Reply_task_get_mach_voucher: __Reply__task_get_mach_voucher_t }
-  | { Reply_task_set_mach_voucher: __Reply__task_set_mach_voucher_t }
-  | { Reply_task_swap_mach_voucher: __Reply__task_swap_mach_voucher_t }
-  | { Reply_task_generate_corpse: __Reply__task_generate_corpse_t }
-  | { Reply_task_map_corpse_info: __Reply__task_map_corpse_info_t }
-  | { Reply_task_register_dyld_image_infos: __Reply__task_register_dyld_image_infos_t }
-  | { Reply_task_unregister_dyld_image_infos: __Reply__task_unregister_dyld_image_infos_t }
-  | { Reply_task_get_dyld_image_infos: __Reply__task_get_dyld_image_infos_t }
-  | { Reply_task_register_dyld_shared_cache_image_info: __Reply__task_register_dyld_shared_cache_image_info_t }
-  | { Reply_task_register_dyld_set_dyld_state: __Reply__task_register_dyld_set_dyld_state_t }
-  | { Reply_task_register_dyld_get_process_state: __Reply__task_register_dyld_get_process_state_t }
-  | { Reply_task_map_corpse_info_64: __Reply__task_map_corpse_info_64_t }
-  | { Reply_task_inspect: __Reply__task_inspect_t }
-  | { Reply_task_get_exc_guard_behavior: __Reply__task_get_exc_guard_behavior_t }
-  | { Reply_task_set_exc_guard_behavior: __Reply__task_set_exc_guard_behavior_t }
-  | { Reply_task_dyld_process_info_notify_register: __Reply__task_dyld_process_info_notify_register_t }
-  | { Reply_task_create_identity_token: __Reply__task_create_identity_token_t }
-  | { Reply_task_identity_token_get_task_port: __Reply__task_identity_token_get_task_port_t }
-  | { Reply_task_dyld_process_info_notify_deregister: __Reply__task_dyld_process_info_notify_deregister_t }
-  | { Reply_task_get_exception_ports_info: __Reply__task_get_exception_ports_info_t }
-  | { Reply_task_test_sync_upcall: __Reply__task_test_sync_upcall_t }
-  | { Reply_task_set_corpse_forking_behavior: __Reply__task_set_corpse_forking_behavior_t }
-  | { Reply_task_test_async_upcall_propagation: __Reply__task_test_async_upcall_propagation_t }
-  | { Reply_task_map_kcdata_object_64: __Reply__task_map_kcdata_object_64_t }
-  | { Reply_task_register_hardened_exception_handler: __Reply__task_register_hardened_exception_handler_t };
+type __RequestUnion__host_priv_subsystemDescriptor = 
+  | { Request_host_get_boot_info: __Request__host_get_boot_info_t }
+  | { Request_host_reboot: __Request__host_reboot_t }
+  | { Request_host_priv_statistics: __Request__host_priv_statistics_t }
+  | { Request_host_default_memory_manager: __Request__host_default_memory_manager_t }
+  | { Request_vm_wire: __Request__vm_wire_t }
+  | { Request_thread_wire: __Request__thread_wire_t }
+  | { Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t }
+  | { Request_host_processors: __Request__host_processors_t }
+  | { Request_host_get_clock_control: __Request__host_get_clock_control_t }
+  | { Request_kmod_create: __Request__kmod_create_t }
+  | { Request_kmod_destroy: __Request__kmod_destroy_t }
+  | { Request_kmod_control: __Request__kmod_control_t }
+  | { Request_host_get_special_port: __Request__host_get_special_port_t }
+  | { Request_host_set_special_port: __Request__host_set_special_port_t }
+  | { Request_host_set_exception_ports: __Request__host_set_exception_ports_t }
+  | { Request_host_get_exception_ports: __Request__host_get_exception_ports_t }
+  | { Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t }
+  | { Request_mach_vm_wire: __Request__mach_vm_wire_t }
+  | { Request_host_processor_sets: __Request__host_processor_sets_t }
+  | { Request_host_processor_set_priv: __Request__host_processor_set_priv_t }
+  | { Request_host_set_UNDServer: __Request__host_set_UNDServer_t }
+  | { Request_host_get_UNDServer: __Request__host_get_UNDServer_t }
+  | { Request_kext_request: __Request__kext_request_t };
 
-declare class __ReplyUnion__task_subsystem {
-  constructor(init?: __ReplyUnion__task_subsystemDescriptor);
-  Reply_task_create: __Reply__task_create_t;
-  Reply_task_terminate: __Reply__task_terminate_t;
-  Reply_task_threads: __Reply__task_threads_t;
-  Reply_mach_ports_register: __Reply__mach_ports_register_t;
-  Reply_mach_ports_lookup: __Reply__mach_ports_lookup_t;
-  Reply_task_info: __Reply__task_info_t;
-  Reply_task_set_info: __Reply__task_set_info_t;
-  Reply_task_suspend: __Reply__task_suspend_t;
-  Reply_task_resume: __Reply__task_resume_t;
-  Reply_task_get_special_port: __Reply__task_get_special_port_t;
-  Reply_task_set_special_port: __Reply__task_set_special_port_t;
-  Reply_thread_create: __Reply__thread_create_t;
-  Reply_thread_create_running: __Reply__thread_create_running_t;
-  Reply_task_set_exception_ports: __Reply__task_set_exception_ports_t;
-  Reply_task_get_exception_ports: __Reply__task_get_exception_ports_t;
-  Reply_task_swap_exception_ports: __Reply__task_swap_exception_ports_t;
-  Reply_lock_set_create: __Reply__lock_set_create_t;
-  Reply_lock_set_destroy: __Reply__lock_set_destroy_t;
-  Reply_semaphore_create: __Reply__semaphore_create_t;
-  Reply_semaphore_destroy: __Reply__semaphore_destroy_t;
-  Reply_task_policy_set: __Reply__task_policy_set_t;
-  Reply_task_policy_get: __Reply__task_policy_get_t;
-  Reply_task_sample: __Reply__task_sample_t;
-  Reply_task_policy: __Reply__task_policy_t;
-  Reply_task_set_emulation: __Reply__task_set_emulation_t;
-  Reply_task_get_emulation_vector: __Reply__task_get_emulation_vector_t;
-  Reply_task_set_emulation_vector: __Reply__task_set_emulation_vector_t;
-  Reply_task_set_ras_pc: __Reply__task_set_ras_pc_t;
-  Reply_task_zone_info: __Reply__task_zone_info_t;
-  Reply_task_assign: __Reply__task_assign_t;
-  Reply_task_assign_default: __Reply__task_assign_default_t;
-  Reply_task_get_assignment: __Reply__task_get_assignment_t;
-  Reply_task_set_policy: __Reply__task_set_policy_t;
-  Reply_task_get_state: __Reply__task_get_state_t;
-  Reply_task_set_state: __Reply__task_set_state_t;
-  Reply_task_set_phys_footprint_limit: __Reply__task_set_phys_footprint_limit_t;
-  Reply_task_suspend2: __Reply__task_suspend2_t;
-  Reply_task_resume2: __Reply__task_resume2_t;
-  Reply_task_purgable_info: __Reply__task_purgable_info_t;
-  Reply_task_get_mach_voucher: __Reply__task_get_mach_voucher_t;
-  Reply_task_set_mach_voucher: __Reply__task_set_mach_voucher_t;
-  Reply_task_swap_mach_voucher: __Reply__task_swap_mach_voucher_t;
-  Reply_task_generate_corpse: __Reply__task_generate_corpse_t;
-  Reply_task_map_corpse_info: __Reply__task_map_corpse_info_t;
-  Reply_task_register_dyld_image_infos: __Reply__task_register_dyld_image_infos_t;
-  Reply_task_unregister_dyld_image_infos: __Reply__task_unregister_dyld_image_infos_t;
-  Reply_task_get_dyld_image_infos: __Reply__task_get_dyld_image_infos_t;
-  Reply_task_register_dyld_shared_cache_image_info: __Reply__task_register_dyld_shared_cache_image_info_t;
-  Reply_task_register_dyld_set_dyld_state: __Reply__task_register_dyld_set_dyld_state_t;
-  Reply_task_register_dyld_get_process_state: __Reply__task_register_dyld_get_process_state_t;
-  Reply_task_map_corpse_info_64: __Reply__task_map_corpse_info_64_t;
-  Reply_task_inspect: __Reply__task_inspect_t;
-  Reply_task_get_exc_guard_behavior: __Reply__task_get_exc_guard_behavior_t;
-  Reply_task_set_exc_guard_behavior: __Reply__task_set_exc_guard_behavior_t;
-  Reply_task_dyld_process_info_notify_register: __Reply__task_dyld_process_info_notify_register_t;
-  Reply_task_create_identity_token: __Reply__task_create_identity_token_t;
-  Reply_task_identity_token_get_task_port: __Reply__task_identity_token_get_task_port_t;
-  Reply_task_dyld_process_info_notify_deregister: __Reply__task_dyld_process_info_notify_deregister_t;
-  Reply_task_get_exception_ports_info: __Reply__task_get_exception_ports_info_t;
-  Reply_task_test_sync_upcall: __Reply__task_test_sync_upcall_t;
-  Reply_task_set_corpse_forking_behavior: __Reply__task_set_corpse_forking_behavior_t;
-  Reply_task_test_async_upcall_propagation: __Reply__task_test_async_upcall_propagation_t;
-  Reply_task_map_kcdata_object_64: __Reply__task_map_kcdata_object_64_t;
-  Reply_task_register_hardened_exception_handler: __Reply__task_register_hardened_exception_handler_t;
+declare class __RequestUnion__host_priv_subsystem {
+  constructor(init?: __RequestUnion__host_priv_subsystemDescriptor);
+  Request_host_get_boot_info: __Request__host_get_boot_info_t;
+  Request_host_reboot: __Request__host_reboot_t;
+  Request_host_priv_statistics: __Request__host_priv_statistics_t;
+  Request_host_default_memory_manager: __Request__host_default_memory_manager_t;
+  Request_vm_wire: __Request__vm_wire_t;
+  Request_thread_wire: __Request__thread_wire_t;
+  Request_vm_allocate_cpm: __Request__vm_allocate_cpm_t;
+  Request_host_processors: __Request__host_processors_t;
+  Request_host_get_clock_control: __Request__host_get_clock_control_t;
+  Request_kmod_create: __Request__kmod_create_t;
+  Request_kmod_destroy: __Request__kmod_destroy_t;
+  Request_kmod_control: __Request__kmod_control_t;
+  Request_host_get_special_port: __Request__host_get_special_port_t;
+  Request_host_set_special_port: __Request__host_set_special_port_t;
+  Request_host_set_exception_ports: __Request__host_set_exception_ports_t;
+  Request_host_get_exception_ports: __Request__host_get_exception_ports_t;
+  Request_host_swap_exception_ports: __Request__host_swap_exception_ports_t;
+  Request_mach_vm_wire: __Request__mach_vm_wire_t;
+  Request_host_processor_sets: __Request__host_processor_sets_t;
+  Request_host_processor_set_priv: __Request__host_processor_set_priv_t;
+  Request_host_set_UNDServer: __Request__host_set_UNDServer_t;
+  Request_host_get_UNDServer: __Request__host_get_UNDServer_t;
+  Request_kext_request: __Request__kext_request_t;
+}
+
+type unnamed_900273905782570625Descriptor = 
+  | { ts_32: __darwin_arm_thread_state }
+  | { ts_64: __darwin_arm_thread_state64 };
+
+declare class unnamed_900273905782570625 {
+  constructor(init?: unnamed_900273905782570625Descriptor);
+  ts_32: __darwin_arm_thread_state;
+  ts_64: __darwin_arm_thread_state64;
+}
+
+type unnamed_4941741395357422292Descriptor = 
+  | { ran_strx: number };
+
+declare class unnamed_4941741395357422292 {
+  constructor(init?: unnamed_4941741395357422292Descriptor);
+  ran_strx: number;
 }
 
 type __RequestUnion__task_subsystemDescriptor = 
@@ -18233,24 +18114,84 @@ declare class at_block_features_t {
   bits: number;
 }
 
-type unnamed_4269128118088873695Descriptor = 
-  | { is_master: number }
-  | { is_main: number };
+type __RequestUnion__vm_map_subsystemDescriptor = 
+  | { Request_vm_region: __Request__vm_region_t }
+  | { Request_vm_allocate: __Request__vm_allocate_t }
+  | { Request_vm_deallocate: __Request__vm_deallocate_t }
+  | { Request_vm_protect: __Request__vm_protect_t }
+  | { Request_vm_inherit: __Request__vm_inherit_t }
+  | { Request_vm_read: __Request__vm_read_t }
+  | { Request_vm_read_list: __Request__vm_read_list_t }
+  | { Request_vm_write: __Request__vm_write_t }
+  | { Request_vm_copy: __Request__vm_copy_t }
+  | { Request_vm_read_overwrite: __Request__vm_read_overwrite_t }
+  | { Request_vm_msync: __Request__vm_msync_t }
+  | { Request_vm_behavior_set: __Request__vm_behavior_set_t }
+  | { Request_vm_map: __Request__vm_map_t }
+  | { Request_vm_machine_attribute: __Request__vm_machine_attribute_t }
+  | { Request_vm_remap: __Request__vm_remap_t }
+  | { Request_task_wire: __Request__task_wire_t }
+  | { Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t }
+  | { Request_vm_map_page_query: __Request__vm_map_page_query_t }
+  | { Request_mach_vm_region_info: __Request__mach_vm_region_info_t }
+  | { Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t }
+  | { Request_vm_region_recurse: __Request__vm_region_recurse_t }
+  | { Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t }
+  | { Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t }
+  | { Request_vm_region_64: __Request__vm_region_64_t }
+  | { Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t }
+  | { Request_vm_map_64: __Request__vm_map_64_t }
+  | { Request_vm_purgable_control: __Request__vm_purgable_control_t }
+  | { Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t }
+  | { Request_vm_remap_new: __Request__vm_remap_new_t };
 
-declare class unnamed_4269128118088873695 {
-  constructor(init?: unnamed_4269128118088873695Descriptor);
-  is_master: number;
-  is_main: number;
+declare class __RequestUnion__vm_map_subsystem {
+  constructor(init?: __RequestUnion__vm_map_subsystemDescriptor);
+  Request_vm_region: __Request__vm_region_t;
+  Request_vm_allocate: __Request__vm_allocate_t;
+  Request_vm_deallocate: __Request__vm_deallocate_t;
+  Request_vm_protect: __Request__vm_protect_t;
+  Request_vm_inherit: __Request__vm_inherit_t;
+  Request_vm_read: __Request__vm_read_t;
+  Request_vm_read_list: __Request__vm_read_list_t;
+  Request_vm_write: __Request__vm_write_t;
+  Request_vm_copy: __Request__vm_copy_t;
+  Request_vm_read_overwrite: __Request__vm_read_overwrite_t;
+  Request_vm_msync: __Request__vm_msync_t;
+  Request_vm_behavior_set: __Request__vm_behavior_set_t;
+  Request_vm_map: __Request__vm_map_t;
+  Request_vm_machine_attribute: __Request__vm_machine_attribute_t;
+  Request_vm_remap: __Request__vm_remap_t;
+  Request_task_wire: __Request__task_wire_t;
+  Request_mach_make_memory_entry: __Request__mach_make_memory_entry_t;
+  Request_vm_map_page_query: __Request__vm_map_page_query_t;
+  Request_mach_vm_region_info: __Request__mach_vm_region_info_t;
+  Request_vm_mapped_pages_info: __Request__vm_mapped_pages_info_t;
+  Request_vm_region_recurse: __Request__vm_region_recurse_t;
+  Request_vm_region_recurse_64: __Request__vm_region_recurse_64_t;
+  Request_mach_vm_region_info_64: __Request__mach_vm_region_info_64_t;
+  Request_vm_region_64: __Request__vm_region_64_t;
+  Request_mach_make_memory_entry_64: __Request__mach_make_memory_entry_64_t;
+  Request_vm_map_64: __Request__vm_map_64_t;
+  Request_vm_purgable_control: __Request__vm_purgable_control_t;
+  Request_vm_map_exec_lockdown: __Request__vm_map_exec_lockdown_t;
+  Request_vm_remap_new: __Request__vm_remap_new_t;
 }
 
-type __mbstate_tDescriptor = 
-  | { __mbstate8: unknown /* const array */ }
-  | { _mbstateL: number };
+type unnamed_6035401272168974513Descriptor = 
+  | { if_status_v1: if_cellular_status_v1 };
 
-declare class __mbstate_t {
-  constructor(init?: __mbstate_tDescriptor);
-  __mbstate8: unknown /* const array */;
-  _mbstateL: number;
+declare class unnamed_6035401272168974513 {
+  constructor(init?: unnamed_6035401272168974513Descriptor);
+  if_status_v1: if_cellular_status_v1;
+}
+
+type unnamed_1346248794865957129Descriptor = 
+  | { ran_strx: number };
+
+declare class unnamed_1346248794865957129 {
+  constructor(init?: unnamed_1346248794865957129Descriptor);
+  ran_strx: number;
 }
 
 type mach_msg_empty_tDescriptor = 
@@ -18261,6 +18202,26 @@ declare class mach_msg_empty_t {
   constructor(init?: mach_msg_empty_tDescriptor);
   send: mach_msg_empty_send_t;
   rcv: mach_msg_empty_rcv_t;
+}
+
+type unnamed_6998525516005722257Descriptor = 
+  | { sadb_x_sa2_reserved2: number };
+
+declare class unnamed_6998525516005722257 {
+  constructor(init?: unnamed_6998525516005722257Descriptor);
+  sadb_x_sa2_reserved2: number;
+}
+
+type waitDescriptor = 
+  | { w_status: number }
+  | { w_T: unnamed_17609042787312303536 }
+  | { w_S: unnamed_13404737760830140510 };
+
+declare class wait {
+  constructor(init?: waitDescriptor);
+  w_status: number;
+  w_T: unnamed_17609042787312303536;
+  w_S: unnamed_13404737760830140510;
 }
 
 type __RequestUnion__exc_subsystemDescriptor = 
@@ -18377,14 +18338,46 @@ declare class NumVersionVariant {
   whole: number;
 }
 
-type unnamed_2754698849707087107Descriptor = 
-  | { gl_errfunc: (p1: string, p2: number) => number | null }
-  | { gl_errblk: (p1: string, p2: number) => number | null };
+type unnamed_5341868459237587739Descriptor = 
+  | { reserved: unknown /* const array */ }
+  | { work_interval_port: number }
+  | { service_port_info: interop.PointerConvertible }
+  | { service_port_name: number };
 
-declare class unnamed_2754698849707087107 {
-  constructor(init?: unnamed_2754698849707087107Descriptor);
-  gl_errfunc: (p1: string, p2: number) => number | null;
-  gl_errblk: (p1: string, p2: number) => number | null;
+declare class unnamed_5341868459237587739 {
+  constructor(init?: unnamed_5341868459237587739Descriptor);
+  reserved: unknown /* const array */;
+  work_interval_port: number;
+  service_port_info: interop.Pointer;
+  service_port_name: number;
+}
+
+type sigvalDescriptor = 
+  | { sival_int: number }
+  | { sival_ptr: interop.PointerConvertible };
+
+declare class sigval {
+  constructor(init?: sigvalDescriptor);
+  sival_int: number;
+  sival_ptr: interop.Pointer;
+}
+
+type unnamed_6025928277710245007Descriptor = 
+  | { ifk_ptr: interop.PointerConvertible }
+  | { ifk_value: number };
+
+declare class unnamed_6025928277710245007 {
+  constructor(init?: unnamed_6025928277710245007Descriptor);
+  ifk_ptr: interop.Pointer;
+  ifk_value: number;
+}
+
+type unnamed_16654037540828547570Descriptor = 
+  | { n_strx: number };
+
+declare class unnamed_16654037540828547570 {
+  constructor(init?: unnamed_16654037540828547570Descriptor);
+  n_strx: number;
 }
 
 type __sigaction_uDescriptor = 

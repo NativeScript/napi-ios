@@ -1,8 +1,6 @@
 /// <reference types="@nativescript/objc-node-api" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const ASPickerDisplaySettingsDiscoveryTimeoutUnbounded: number;
-
 declare const ASPickerDisplaySettingsDiscoveryTimeoutLong: number;
 
 declare const ASPickerDisplaySettingsDiscoveryTimeoutMedium: number;
@@ -10,10 +8,6 @@ declare const ASPickerDisplaySettingsDiscoveryTimeoutMedium: number;
 declare const ASErrorDomain: string;
 
 declare const ASPickerDisplaySettingsDiscoveryTimeoutShort: number;
-
-declare const ASPickerDisplaySettingsOptions: {
-  ASPickerDisplaySettingsOptionFilterDiscoveryResults: 1,
-};
 
 declare const ASPickerDisplayItemSetupOptions: {
   Rename: 1,
@@ -60,7 +54,6 @@ declare const ASAccessoryEventType: {
   AccessoryAdded: 30,
   AccessoryRemoved: 31,
   AccessoryChanged: 32,
-  AccessoryDiscovered: 33,
   PickerDidPresent: 40,
   PickerDidDismiss: 50,
   PickerSetupBridging: 60,
@@ -84,11 +77,7 @@ declare class ASPickerDisplaySettings extends NSObject {
 
   discoveryTimeout: number;
 
-  options: interop.Enum<typeof ASPickerDisplaySettingsOptions>;
-
   setDiscoveryTimeout(discoveryTimeout: number): void;
-
-  setOptions(options: interop.Enum<typeof ASPickerDisplaySettingsOptions>): void;
 }
 
 declare class ASMigrationDisplayItem extends ASPickerDisplayItem {
@@ -96,13 +85,9 @@ declare class ASMigrationDisplayItem extends ASPickerDisplayItem {
 
   hotspotSSID: string;
 
-  wifiAwarePairedDeviceID: number;
-
   setPeripheralIdentifier(peripheralIdentifier: NSUUID | null): void;
 
   setHotspotSSID(hotspotSSID: string | null): void;
-
-  setWifiAwarePairedDeviceID(wifiAwarePairedDeviceID: number): void;
 }
 
 declare class ASAccessoryEvent extends NSObject {
@@ -187,16 +172,6 @@ declare class ASDiscoveryDescriptor extends NSObject {
   setWifiAwareVendorNameMatch(wifiAwareVendorNameMatch: ASPropertyCompareString): void;
 }
 
-declare class ASDiscoveredDisplayItem extends ASPickerDisplayItem {
-  initWithNameProductImageAccessory(name: string, productImage: UIImage, accessory: ASDiscoveredAccessory): this;
-}
-
-declare class ASDiscoveredAccessory extends ASAccessory {
-  readonly bluetoothAdvertisementData: NSDictionary;
-
-  readonly bluetoothRSSI: NSNumber;
-}
-
 declare class ASAccessory extends NSObject {
   readonly state: interop.Enum<typeof ASAccessoryState>;
 
@@ -265,10 +240,6 @@ declare class ASAccessorySession extends NSObject {
   renameAccessoryOptionsCompletionHandler(accessory: ASAccessory, renameOptions: interop.Enum<typeof ASAccessoryRenameOptions>, completionHandler: (p1: NSError) => void | null): void;
 
   updateAuthorizationDescriptorCompletionHandler(accessory: ASAccessory, descriptor: ASDiscoveryDescriptor, completionHandler: (p1: NSError) => void | null): void;
-
-  updatePickerShowingDiscoveredDisplayItemsCompletionHandler(displayItems: NSArray<interop.Object> | Array<interop.Object>, completionHandler: (p1: NSError) => void | null): void;
-
-  finishPickerDiscovery(completionHandler: (p1: NSError) => void | null): void;
 
   setPickerDisplaySettings(pickerDisplaySettings: ASPickerDisplaySettings): void;
 }

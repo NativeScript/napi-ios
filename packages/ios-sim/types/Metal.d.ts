@@ -5,9 +5,7 @@ declare const MTLBinaryArchiveDomain: string;
 
 declare const MTLLogStateErrorDomain: string;
 
-declare const MTLLibraryErrorDomain: string;
-
-declare const MTLCaptureErrorDomain: string;
+declare const NSProcessPerformanceProfileDefault: number;
 
 declare const NSProcessInfoPerformanceProfileDidChangeNotification: string;
 
@@ -19,41 +17,43 @@ declare const MTLCounterErrorDomain: string;
 
 declare const MTLCommonCounterSetStatistic: string;
 
-declare const MTLCommonCounterPostTessellationVertexCycles: string;
-
 declare const MTLCommonCounterTotalCycles: string;
 
 declare const MTLCommonCounterClipperPrimitivesOut: string;
 
+declare const MTLCommonCounterTessellationCycles: string;
+
 declare const MTLCommonCounterClipperInvocations: string;
+
+declare const MTLCommonCounterPostTessellationVertexCycles: string;
 
 declare const MTLCommonCounterFragmentInvocations: string;
 
-declare const MTLAttributeStrideStatic: number;
-
 declare const MTLCommonCounterRenderTargetWriteCycles: string;
+
+declare const MTLLibraryErrorDomain: string;
 
 declare const MTLCommonCounterSetStageUtilization: string;
 
 declare const NSProcessPerformanceProfileSustained: number;
 
+declare const MTLAttributeStrideStatic: number;
+
 declare const MTLCommonCounterVertexCycles: string;
-
-declare const MTLCommonCounterTimestamp: string;
-
-declare const NSProcessPerformanceProfileDefault: number;
 
 declare const MTLCommandBufferEncoderInfoErrorKey: string;
 
 declare const MTLDynamicLibraryDomain: string;
 
-declare const MTLCommonCounterTessellationCycles: string;
-
 declare const MTLCommonCounterVertexInvocations: string;
+
+declare const MTLCaptureErrorDomain: string;
 
 declare const MTLCommonCounterPostTessellationVertexInvocations: string;
 
 declare const MTLCommonCounterTessellationInputPatches: string;
+
+declare const MTLCommonCounterTimestamp: string;
 
 declare const MTLCommonCounterFragmentCycles: string;
 
@@ -1209,14 +1209,6 @@ declare class MTLVertexAmplificationViewMapping {
   renderTargetArrayIndexOffset: number;
 }
 
-declare class MTLDrawPrimitivesIndirectArguments {
-  constructor(init?: MTLDrawPrimitivesIndirectArguments);
-  vertexCount: number;
-  instanceCount: number;
-  vertexStart: number;
-  baseInstance: number;
-}
-
 declare class MTLViewport {
   constructor(init?: MTLViewport);
   originX: number;
@@ -1268,6 +1260,14 @@ declare class MTLOrigin {
   z: number;
 }
 
+declare class MTLDrawPrimitivesIndirectArguments {
+  constructor(init?: MTLDrawPrimitivesIndirectArguments);
+  vertexCount: number;
+  instanceCount: number;
+  vertexStart: number;
+  baseInstance: number;
+}
+
 declare class MTLStageInRegionIndirectArguments {
   constructor(init?: MTLStageInRegionIndirectArguments);
   stageInOrigin: unknown /* const array */;
@@ -1288,6 +1288,11 @@ declare class MTLCounterResultStatistic {
   fragmentInvocations: number;
   fragmentsPassed: number;
   computeKernelInvocations: number;
+}
+
+declare class MTLDispatchThreadgroupsIndirectArguments {
+  constructor(init?: MTLDispatchThreadgroupsIndirectArguments);
+  threadgroupsPerGrid: unknown /* const array */;
 }
 
 declare class MTLScissorRect {
@@ -1328,13 +1333,6 @@ declare class MTLIntersectionFunctionBufferArguments {
   intersectionFunctionStride: number;
 }
 
-declare class unnamed_10089547626301762602 {
-  constructor(init?: unnamed_10089547626301762602);
-  x: number;
-  y: number;
-  z: number;
-}
-
 declare class MTLIndirectAccelerationStructureMotionInstanceDescriptor {
   constructor(init?: MTLIndirectAccelerationStructureMotionInstanceDescriptor);
   options: interop.Enum<typeof MTLAccelerationStructureInstanceOptions>;
@@ -1356,11 +1354,6 @@ declare class MTLClearColor {
   green: number;
   blue: number;
   alpha: number;
-}
-
-declare class MTLDispatchThreadgroupsIndirectArguments {
-  constructor(init?: MTLDispatchThreadgroupsIndirectArguments);
-  threadgroupsPerGrid: unknown /* const array */;
 }
 
 declare class MTLDrawPatchIndirectArguments {
@@ -1395,19 +1388,17 @@ declare class MTLCounterResultTimestamp {
   timestamp: number;
 }
 
-declare class MTLDrawIndexedPrimitivesIndirectArguments {
-  constructor(init?: MTLDrawIndexedPrimitivesIndirectArguments);
-  indexCount: number;
-  instanceCount: number;
-  indexStart: number;
-  baseVertex: number;
-  baseInstance: number;
-}
-
 declare class MTLTriangleTessellationFactorsHalf {
   constructor(init?: MTLTriangleTessellationFactorsHalf);
   edgeTessellationFactor: unknown /* const array */;
   insideTessellationFactor: number;
+}
+
+declare class unnamed_1544723281756951587 {
+  constructor(init?: unnamed_1544723281756951587);
+  x: number;
+  y: number;
+  z: number;
 }
 
 declare class MTLAccelerationStructureInstanceDescriptor {
@@ -1431,6 +1422,15 @@ declare class MTL4BufferRange {
   length: number;
 }
 
+declare class MTLDrawIndexedPrimitivesIndirectArguments {
+  constructor(init?: MTLDrawIndexedPrimitivesIndirectArguments);
+  indexCount: number;
+  instanceCount: number;
+  indexStart: number;
+  baseVertex: number;
+  baseInstance: number;
+}
+
 declare class MTLSize {
   constructor(init?: MTLSize);
   width: number;
@@ -1438,22 +1438,22 @@ declare class MTLSize {
   depth: number;
 }
 
-type unnamed_16157968378883230096Descriptor = 
+type unnamed_2396530821521805830Descriptor = 
+  | { elements: unknown /* const array */ };
+
+declare class unnamed_2396530821521805830 {
+  constructor(init?: unnamed_2396530821521805830Descriptor);
+  elements: unknown /* const array */;
+}
+
+type unnamed_17922288513342770954Descriptor = 
   | { _impl: number }
   | { textureID: number };
 
-declare class unnamed_16157968378883230096 {
-  constructor(init?: unnamed_16157968378883230096Descriptor);
+declare class unnamed_17922288513342770954 {
+  constructor(init?: unnamed_17922288513342770954Descriptor);
   _impl: number;
   textureID: number;
-}
-
-type unnamed_18231892369801564969Descriptor = 
-  | { elements: unknown /* const array */ };
-
-declare class unnamed_18231892369801564969 {
-  constructor(init?: unnamed_18231892369801564969Descriptor);
-  elements: unknown /* const array */;
 }
 
 declare function MTLCreateSystemDefaultDevice(): MTLDevice;
@@ -2490,8 +2490,6 @@ declare interface MTLDevice extends NSObjectProtocol {
   readonly supportsRaytracingFromRender: boolean;
 
   readonly supportsPrimitiveMotionBlur: boolean;
-
-  readonly maximumConcurrentCompilationTaskCount: number;
 
   newResidencySetWithDescriptorError(desc: MTLResidencySetDescriptor, error: interop.PointerConvertible): MTLResidencySet;
 

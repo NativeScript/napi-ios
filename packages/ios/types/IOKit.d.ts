@@ -1,10 +1,14 @@
 /// <reference types="@nativescript/objc-node-api" />
 
+declare const kIORegistryIterateParents: number;
+
 declare const kIORegistryIterateRecursively: number;
+
+declare const kIOMainPortDefault: number;
 
 declare const kOSAsyncRefSize: number;
 
-declare const kOSAsyncRefCount: number;
+declare const kOSAsyncRef64Size: number;
 
 declare const kOSAsyncRef64Count: number;
 
@@ -33,8 +37,6 @@ declare const kNanosecondScale: number;
 declare const kIOMapGuardedSmall: number;
 
 declare const kIOMapGuardedMask: number;
-
-declare const kIOMapPostedCombinedReordered: number;
 
 declare const kIOMapPostedReordered: number;
 
@@ -78,6 +80,8 @@ declare const kIOSystemStateSleepDescriptionHibernateStateWakingFromHibernate: n
 
 declare const kIOMapUnique: number;
 
+declare const kOSAsyncRefCount: number;
+
 declare const kIOServiceTerminatedNotificationType: number;
 
 declare const kIOInterestCalloutServiceIndex: number;
@@ -102,33 +106,33 @@ declare const kIODefaultMemoryType: number;
 
 declare const kIOPostedWrite: number;
 
-declare const kOSAsyncRef64Size: number;
-
 declare const kOSAsyncCompleteMessageID: number;
 
 declare const kIOServiceMessageNotificationType: number;
 
-declare const kIOCFSerializeToBinary: number;
+declare const kIOPostedCombinedReordered: number;
+
+declare const kIOAsyncCalloutCount: number;
+
+declare const kIOMaxBusStall40usec: number;
 
 declare const kIOMapOverwrite: number;
+
+declare const kIOMapPostedCombinedReordered: number;
 
 declare const kLastIOKitNotificationType: number;
 
 declare const kIODefaultCache: number;
 
-declare const kIOMapUserOptionsMask: number;
-
-declare const kIORegistryIterateParents: number;
-
 declare const kIOInterestCalloutCount: number;
 
 declare const kTickScale: number;
 
-declare const kIOMaxBusStall40usec: number;
-
 declare const kIOMapReference: number;
 
 declare const kIOMapStatic: number;
+
+declare const kIOCFSerializeToBinary: number;
 
 declare const kIOWriteThruCache: number;
 
@@ -140,8 +144,6 @@ declare const kIOMapReadOnly: number;
 
 declare const kIOMapGuardedLarge: number;
 
-declare const kIOMainPortDefault: number;
-
 declare const kIOConnectMethodVarOutputSize: number;
 
 declare const kIOInterestCalloutFuncIndex: number;
@@ -152,17 +154,15 @@ declare const kIOMaxBusStall30usec: number;
 
 declare const kIOCopybackCache: number;
 
-declare const kIOAsyncCalloutCount: number;
-
 declare const kIOKitNoticationTypeMask: number;
 
 declare const kMillisecondScale: number;
 
 declare const kIOMaxBusStall20usec: number;
 
-declare const kIOPostedCombinedReordered: number;
-
 declare const kIOMaxBusStall10usec: number;
+
+declare const kIOMapUserOptionsMask: number;
 
 declare const kIOAsyncCalloutFuncIndex: number;
 

@@ -5,8 +5,6 @@ declare const SHMediaItemConfidence: string;
 
 declare const SHMediaItemMatchOffset: string;
 
-declare const SHErrorDomain: string;
-
 declare const SHMediaItemCreationDate: string;
 
 declare const SHMediaItemFrequencySkewRanges: string;
@@ -32,6 +30,8 @@ declare const SHMediaItemShazamID: string;
 declare const SHMediaItemAppleMusicURL: string;
 
 declare const SHMediaItemFrequencySkew: string;
+
+declare const SHErrorDomain: string;
 
 declare const SHMediaItemArtworkURL: string;
 

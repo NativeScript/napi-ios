@@ -2,89 +2,495 @@
 /// <reference path="./Foundation.d.ts" />
 /// <reference path="./Runtime.d.ts" />
 
-declare const UIImage: number;
+declare const UIKeyInputEscape: string;
 
-declare const NSUnderlinePatternDashDotDot: interop.Enum<typeof NSUnderlineStyle>;
+declare const UITextContentTypeOrganizationName: string;
 
-declare const UITransitionContextViewControllerKey: number;
+declare const UICollectionLayoutSectionOrthogonalScrollingDecelerationRateFast: number;
 
-declare const NSTextAlignment: number;
+declare const UIAccessibilityTraitPlaysSound: number;
 
-declare const UIEventButtonMask: number;
+declare const NSTextHighlightColorSchemeOrange: string;
 
-declare const UIAccessibilityPriority: number;
+declare const UIAccessibilityTextualContextConsole: string;
 
-declare const NSData: number;
+declare const UITextContentTypeMiddleName: string;
+
+declare const UITextFormattingViewControllerTextColorComponentKey: string;
+
+declare const UIFontTextStyleLargeTitle: string;
+
+declare const UITextContentTypeCreditCardSecurityCode: string;
+
+declare const UIMenuAlignment: string;
+
+declare const UIApplicationLaunchOptionsEventAttributionKey: string;
+
+declare const UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata: string;
+
+declare const UIFontWidthCompressed: number;
+
+declare const UIMenuNewScene: string;
+
+declare const UIApplicationCategoryDefaultErrorDomain: string;
+
+declare const UITextInputTextFontKey: string;
+
+declare const UIMenuOpen: string;
+
+declare const NSAdaptiveImageGlyphAttributeName: string;
+
+declare const UIFontWeightHeavy: number;
+
+declare const UITextContentTypeBirthdateMonth: string;
+
+declare const NSPaperMarginDocumentAttribute: string;
+
+declare const UIActivityTypeMarkupAsPDF: string;
+
+declare const UIActivityTypePrint: string;
+
+declare const UIAccessibilityTraitStartsMediaSession: number;
+
+declare const UISceneErrorDomain: string;
+
+declare const NSLigatureAttributeName: string;
+
+declare const UIApplicationProtectedDataWillBecomeUnavailable: string;
+
+declare const UIAccessibilityShouldDifferentiateWithoutColorDidChangeNotification: string;
+
+declare const UICollectionViewLayoutAutomaticDimension: number;
+
+declare const UIMenuSubstitutionOptions: string;
+
+declare const UIAccessibilityAssistiveTechnologyKey: string;
+
+declare const UIMenuLookup: string;
+
+declare const NSTextHighlightStyleDefault: string;
+
+declare const UITextInputTextBackgroundColorKey: string;
+
+declare const UIActivityTypeAirDrop: string;
+
+declare const UITextContentTypeCreditCardGivenName: string;
+
+declare const UIAccessibilityTextualContextWordProcessing: string;
+
+declare const UIAccessibilityVideoAutoplayStatusDidChangeNotification: string;
+
+declare const UIContentSizeCategoryExtraSmall: string;
+
+declare const UIActivityTypeSharePlay: string;
+
+declare const UIApplicationWillChangeStatusBarFrameNotification: string;
+
+declare const UIMenuFormat: string;
+
+declare const UIActivityTypeAddToHomeScreen: string;
 
 declare const UISegmentedControlNoSegment: number;
 
+declare const UITextFormattingViewControllerHighlightMint: string;
+
+declare const UIContentSizeCategoryMedium: string;
+
+declare const UIAccessibilityTextualContextNarrative: string;
+
+declare const NSTextListMarkerHyphen: string;
+
+declare const UICollectionElementKindSectionFooter: string;
+
+declare const UIMinimumKeepAliveTimeout: number;
+
+declare const UITextContentTypeGivenName: string;
+
+declare const NSTextHighlightColorSchemeBlue: string;
+
+declare const UIDocumentStateChangedNotification: string;
+
+declare const NSWritingDirectionAttributeName: string;
+
+declare const UIApplicationWillChangeStatusBarOrientationNotification: string;
+
+declare const UIApplicationBackgroundRefreshStatusDidChangeNotification: string;
+
 declare const UIStackViewSpacingUseDefault: number;
 
-declare const UIApplicationExtensionPointIdentifier: number;
+declare const UIScreenBrightnessDidChangeNotification: string;
 
-declare const NSArray: number;
+declare const UIPasteboardOptionExpirationDate: string;
 
-declare const CTTextAlignment: number;
+declare const UIPasteboardDetectionPatternMoneyAmount: string;
 
-declare const UIContentSizeCategory: number;
+declare const UITextFormattingViewControllerTextAlignmentNatural: string;
 
-declare const NSControlCharacterParagraphBreakAction: number;
+declare const UITextContentTypeUsername: string;
+
+declare const UIAccessibilityVoiceOverStatusChanged: string;
+
+declare const UIAccessibilityPrefersCrossFadeTransitionsStatusDidChangeNotification: string;
+
+declare const UIApplicationStateRestorationSystemVersionKey: string;
+
+declare const UIApplicationLaunchOptionsBluetoothPeripheralsKey: string;
+
+declare const UIActivityItemsConfigurationPreviewIntentThumbnail: string;
+
+declare const UIKeyInputF7: string;
+
+declare const NSTextLayoutSectionsAttribute: string;
+
+declare const UIPointerAccessoryPositionBottomLeft: UIPointerAccessoryPosition;
+
+declare const UILocalNotificationDefaultSoundName: string;
+
+declare const NSBackgroundColorDocumentAttribute: string;
+
+declare const UIKeyInputF10: string;
+
+declare const UITextFieldTextDidEndEditingNotification: string;
+
+declare const UIBackgroundTaskInvalid: number;
+
+declare const NSCharacterEncodingDocumentAttribute: string;
+
+declare const UIAccessibilityShakeToUndoDidChangeNotification: string;
+
+declare const NSTextListMarkerSquare: string;
+
+declare const UITextContentTypeCreditCardFamilyName: string;
+
+declare const UIActivityItemsConfigurationInteractionShare: string;
+
+declare const UIFontFeatureTypeIdentifierKey: string;
+
+declare const UIPointerAccessoryPositionTopRight: UIPointerAccessoryPosition;
+
+declare const UITextFormattingViewControllerHighlightPurple: string;
+
+declare const UIApplicationDidFinishLaunchingNotification: string;
+
+declare const UIPointerAccessoryPositionLeft: UIPointerAccessoryPosition;
+
+declare const UIMenuHelp: string;
+
+declare const UITextFormattingViewControllerSetBoldChangeType: string;
+
+declare const UITextContentTypeBirthdateDay: string;
+
+declare const UINibProxiedObjectsKey: string;
+
+declare const UIConfigurationColorTransformerGrayscale: (p1: UIColor) => UIColor;
+
+declare const UIActivityItemsConfigurationMetadataKeyCollaborationModeRestrictions: string;
+
+declare const UIActivityTypeCollaborationCopyLink: string;
+
+declare const UIActivityTypeCollaborationInviteWithLink: string;
+
+declare const UIActivityTypeOpenInIBooks: string;
+
+declare const UIActivityTypePostToTencentWeibo: string;
+
+declare const UIActivityTypePostToFlickr: string;
+
+declare const UIActivityTypeAddToReadingList: string;
 
 declare const UIFocusGroupPriorityIgnored: number;
 
-declare const NSAttributedStringDocumentReadingOptionKey: number;
+declare const NSTextListMarkerUppercaseAlpha: string;
 
-declare const NSNotificationName: number;
+declare const UIScrollViewDecelerationRateFast: number;
 
-declare const NSTextTabOptionKey: number;
+declare const NSTextListMarkerOctal: string;
 
-declare const NSTimeInterval: number;
+declare const NSTextListMarkerLowercaseHexadecimal: string;
 
-declare const UIDocumentCreationIntent: number;
+declare const NSTextListMarkerDiamond: string;
 
-declare const UIFontDescriptorSystemDesign: number;
+declare const UIContentSizeCategoryExtraExtraLarge: string;
 
-declare const UIActivityType: number;
+declare const NSTextListMarkerCircle: string;
 
-declare const UITextFormattingViewControllerChangeType: number;
+declare const UITextFormattingViewControllerHighlightPickerComponentKey: string;
 
-declare const UIFloatRange: number;
+declare const UITextFormattingViewControllerHighlightComponentKey: string;
 
-declare const NSControlCharacterLineBreakAction: number;
+declare const UITextFormattingViewControllerLineHeightComponentKey: string;
+
+declare const UITextFormattingViewControllerFontSizeComponentKey: string;
+
+declare const UITextFormattingViewControllerFontPickerComponentKey: string;
+
+declare const UITextFormattingViewControllerFormattingStylesComponentKey: string;
+
+declare const UITextFormattingViewControllerRemoveItalicChangeType: string;
+
+declare const UITextFormattingViewControllerTextAlignmentChangeType: string;
+
+declare const UITextFormattingViewControllerFormattingStyleChangeType: string;
+
+declare const UITextFormattingViewControllerDecreaseIndentationChangeType: string;
+
+declare const UITextFormattingViewControllerLineHeightPointSizeChangeType: string;
+
+declare const UITextFormattingViewControllerDecreaseFontSizeChangeType: string;
+
+declare const UITextFormattingViewControllerFontChangeType: string;
+
+declare const UITextFormattingViewControllerRemoveUnderlineChangeType: string;
+
+declare const UITextFormattingViewControllerTextAlignmentJustified: string;
+
+declare const UITextFormattingViewControllerSetUnderlineChangeType: string;
+
+declare const UITextFormattingViewControllerUndefinedChangeType: string;
+
+declare const UITextFormattingViewControllerHighlightOrange: string;
+
+declare const UITextFormattingViewControllerTextAlignmentRight: string;
+
+declare const UIPointerAccessoryPositionBottom: UIPointerAccessoryPosition;
+
+declare const UIPointerAccessoryPositionBottomRight: UIPointerAccessoryPosition;
+
+declare const UIPointerAccessoryPositionTop: UIPointerAccessoryPosition;
+
+declare const UISheetPresentationControllerDetentInactive: number;
+
+declare const UISheetPresentationControllerDetentIdentifierMedium: string;
+
+declare const NSControlCharacterParagraphBreakAction: number;
 
 declare const NSControlCharacterHorizontalTabAction: number;
 
 declare const NSControlCharacterWhitespaceAction: number;
 
-declare const UIActivityItemsConfigurationMetadataKey: number;
+declare const NSTextStorageDidProcessEditingNotification: string;
 
-declare const UIPasteboardOption: number;
+declare const UIActivityItemsConfigurationInteractionCopy: string;
 
-declare const UIPasteboardDetectionPattern: number;
+declare const UIActivityItemsConfigurationMetadataKeyTitle: string;
 
-declare const UIPasteboardName: number;
+declare const UIScreenModeDidChangeNotification: string;
 
-declare const UINibOptionsKey: number;
+declare const UIKeyboardCenterEndUserInfoKey: string;
 
-declare const UICellAccessoryPosition: number;
+declare const UIKeyboardDidChangeFrameNotification: string;
 
-declare const UICollectionLayoutSectionOrthogonalScrollingDecelerationRate: number;
+declare const UIKeyboardFrameEndUserInfoKey: string;
 
-declare const UIAccessibilityHearingDeviceEar: number;
+declare const UIKeyboardFrameBeginUserInfoKey: string;
 
-declare const UIFontTextStyle: number;
+declare const UIKeyboardWillShowNotification: string;
 
-declare const UIBezierPath: number;
+declare const UIWindowDidBecomeVisibleNotification: string;
 
-declare const NSRunLoopMode: number;
+declare const UIWindowLevelAlert: number;
+
+declare const UIWindowLevelNormal: number;
+
+declare const UITextViewTextDidBeginEditingNotification: string;
+
+declare const UISceneSystemProtectionDidChangeNotification: string;
+
+declare const UITransitionContextFromViewKey: string;
+
+declare const UIScreenReferenceDisplayModeStatusDidChangeNotification: string;
+
+declare const UIScreenDidDisconnectNotification: string;
+
+declare const NSUnderlineStyleAttributeName: string;
+
+declare const UIScreenDidConnectNotification: string;
+
+declare const UIPasteboardTypeAutomatic: string;
+
+declare const UIPasteboardTypeListString: NSArray;
+
+declare const UIPasteboardRemovedNotification: string;
+
+declare const UIPasteboardDetectionPatternShipmentTrackingNumber: string;
+
+declare const UIKeyInputF2: string;
+
+declare const UIPasteboardDetectionPatternEmailAddress: string;
+
+declare const UITransitionContextToViewKey: string;
+
+declare const UIPasteboardDetectionPatternProbableWebSearch: string;
+
+declare const UIPageViewControllerOptionInterPageSpacingKey: string;
+
+declare const UINibExternalObjects: string;
+
+declare const UIMenuControllerMenuFrameDidChangeNotification: string;
+
+declare const UIMenuControllerDidShowMenuNotification: string;
+
+declare const UIMenuControllerWillShowMenuNotification: string;
+
+declare const UIWindowSceneSessionRoleAssistiveAccessApplication: string;
+
+declare const UIWindowSceneSessionRoleApplication: string;
+
+declare const UIUserNotificationActionResponseTypedTextKey: string;
+
+declare const UIImagePickerControllerImageURL: string;
+
+declare const UIImagePickerControllerLivePhoto: string;
+
+declare const UIImagePickerControllerReferenceURL: string;
+
+declare const UIImagePickerControllerMediaType: string;
+
+declare const UIDocumentDidMoveToWritableLocationOldURLKey: string;
+
+declare const UITextFormattingViewControllerIncreaseFontSizeChangeType: string;
+
+declare const UIListContentImageStandardDimension: number;
+
+declare const UIListSeparatorAutomaticInsets: NSDirectionalEdgeInsets;
+
+declare const UITableViewIndexSearch: string;
+
+declare const UICellAccessoryStandardDimension: number;
+
+declare const UICollectionLayoutSectionOrthogonalScrollingDecelerationRateNormal: number;
+
+declare const UICollectionLayoutSectionOrthogonalScrollingDecelerationRateAutomatic: number;
+
+declare const UIKeyboardAnimationCurveUserInfoKey: string;
+
+declare const UIAccessibilityOnOffSwitchLabelsDidChangeNotification: string;
+
+declare const UIAccessibilityAssistiveTouchStatusDidChangeNotification: string;
+
+declare const UIAccessibilitySpeakSelectionStatusDidChangeNotification: string;
+
+declare const UIAccessibilitySwitchControlStatusDidChangeNotification: string;
+
+declare const UIAccessibilityInvertColorsStatusDidChangeNotification: string;
+
+declare const NSObliquenessAttributeName: string;
+
+declare const UIAccessibilityMonoAudioStatusDidChangeNotification: string;
+
+declare const UIGuidedAccessErrorDomain: string;
+
+declare const UIViewControllerHierarchyInconsistencyException: string;
+
+declare const UIViewControllerShowDetailTargetDidChangeNotification: string;
+
+declare const UIPointerLockStateSceneUserInfoKey: string;
+
+declare const UISceneDidEnterBackgroundNotification: string;
+
+declare const UISceneWillEnterForegroundNotification: string;
+
+declare const UISceneDidActivateNotification: string;
+
+declare const UISceneDidDisconnectNotification: string;
+
+declare const UIApplicationStateRestorationUserInterfaceIdiomKey: string;
+
+declare const UIApplicationStateRestorationBundleVersionKey: string;
+
+declare const NSUnderlineByWord: interop.Enum<typeof NSUnderlineStyle>;
+
+declare const UIStateRestorationViewControllerStoryboardKey: string;
+
+declare const UIApplicationUserDidTakeScreenshotNotification: string;
+
+declare const UIPointerLockStateDidChangeNotification: string;
+
+declare const UIApplicationOpenURLOptionsEventAttributionKey: string;
+
+declare const UIFontDescriptorSystemDesignMonospaced: string;
+
+declare const UIApplicationOpenURLOptionsSourceApplicationKey: string;
+
+declare const UIApplicationOpenSettingsURLString: string;
+
+declare const UIApplicationLaunchOptionsUserActivityDictionaryKey: string;
+
+declare const UIApplicationLaunchOptionsShortcutItemKey: string;
+
+declare const UIApplicationLaunchOptionsBluetoothCentralsKey: string;
+
+declare const UIApplicationLaunchOptionsAnnotationKey: string;
+
+declare const UIApplicationLaunchOptionsSourceApplicationKey: string;
+
+declare const UIApplicationLaunchOptionsURLKey: string;
+
+declare const UIApplicationProtectedDataDidBecomeAvailable: string;
+
+declare const UIApplicationStatusBarFrameUserInfoKey: string;
+
+declare const UIApplicationDidChangeStatusBarFrameNotification: string;
+
+declare const UIApplicationWillTerminateNotification: string;
+
+declare const UIApplicationWillResignActiveNotification: string;
+
+declare const UIApplicationDidBecomeActiveNotification: string;
+
+declare const UIApplicationDidEnterBackgroundNotification: string;
+
+declare const UIApplicationBackgroundFetchIntervalMinimum: number;
+
+declare const UIApplicationInvalidInterfaceOrientationException: string;
+
+declare const UITextFieldDidEndEditingReasonKey: string;
+
+declare const UITextFieldTextDidChangeNotification: string;
+
+declare const UIKeyInputF8: string;
+
+declare const UITextAttributeTextShadowColor: string;
 
 declare const UITextWritingDirectionRightToLeft: interop.Enum<typeof NSWritingDirection>;
 
 declare const UITextWritingDirectionLeftToRight: interop.Enum<typeof NSWritingDirection>;
 
-declare const UITextContentType: number;
+declare const UITextContentTypeCellularIMEI: string;
 
-declare const CGFloat: number;
+declare const UITextContentTypeCellularEID: string;
+
+declare const UITextContentTypeCreditCardExpirationMonth: string;
+
+declare const UITextContentTypeBirthdateYear: string;
+
+declare const UITextFormattingViewControllerTextAlignmentLeft: string;
+
+declare const UITextContentTypePassword: string;
+
+declare const UITextContentTypeSublocality: string;
+
+declare const UITextContentTypeAddressState: string;
+
+declare const UITextContentTypeStreetAddressLine1: string;
+
+declare const UITextContentTypeLocation: string;
+
+declare const UIActivityItemsConfigurationPreviewIntentFullSize: string;
+
+declare const UITextContentTypeName: string;
+
+declare const UIScrollViewDecelerationRateNormal: number;
+
+declare const UIActionNewFromPasteboard: string;
+
+declare const UIActionPasteAndMatchStyle: string;
+
+declare const UIActionPaste: string;
+
+declare const UIViewNoIntrinsicMetric: number;
+
+declare const UIWindowDidResignKeyNotification: string;
 
 declare const UIFocusGroupPriorityCurrentlyFocused: number;
 
@@ -92,155 +498,865 @@ declare const UIFocusGroupPriorityPrioritized: number;
 
 declare const UIFocusGroupPriorityPreviouslyFocused: number;
 
-declare const NSComparisonResult: number;
+declare const UIContentSizeCategoryDidChangeNotification: string;
+
+declare const UIContentSizeCategoryAccessibilityExtraExtraExtraLarge: string;
+
+declare const UIContentSizeCategoryAccessibilityExtraExtraLarge: string;
+
+declare const UITextContentTypeCountryName: string;
+
+declare const UIContentSizeCategoryAccessibilityLarge: string;
+
+declare const UIContentSizeCategoryExtraExtraExtraLarge: string;
+
+declare const UIDeviceProximityStateDidChangeNotification: string;
+
+declare const UIDeviceBatteryLevelDidChangeNotification: string;
 
 declare const UILayoutPriorityDefaultLow: number;
 
 declare const UILayoutPriorityDragThatCanResizeScene: number;
 
-declare const UIMenuIdentifier: number;
+declare const UIKeyInputF11: string;
 
-declare const NSUnderlineByWord: interop.Enum<typeof NSUnderlineStyle>;
+declare const UIKeyInputF4: string;
+
+declare const UIKeyInputF3: string;
+
+declare const NSTextLayoutSectionRange: string;
+
+declare const UIKeyInputF1: string;
+
+declare const UIKeyInputEnd: string;
+
+declare const UICommandTagShare: string;
+
+declare const UIMenuRoot: string;
+
+declare const UIMenuBringAllToFront: string;
+
+declare const UIMenuFullscreen: string;
+
+declare const UIMenuTextColor: string;
+
+declare const UIMenuSubstitutionsPanel: string;
+
+declare const UINavigationControllerHideShowBarDuration: number;
+
+declare const UIMenuShare: string;
+
+declare const UIPasteboardDetectionPatternFlightNumber: string;
+
+declare const UIMenuStandardEdit: string;
+
+declare const UIMenuDocument: string;
+
+declare const UIMenuPrint: string;
+
+declare const UIMenuClose: string;
+
+declare const UIMenuOpenRecent: string;
+
+declare const UIMenuAutoFill: string;
+
+declare const UIMenuNewItem: string;
+
+declare const UIMenuHide: string;
+
+declare const UIMenuPreferences: string;
+
+declare const UIMenuFile: string;
+
+declare const UIMenuApplication: string;
+
+declare const UIAccessibilityTraitAllowsDirectInteraction: number;
+
+declare const UIMenuFindPanel: string;
+
+declare const UIAccessibilityTraitNotEnabled: number;
+
+declare const UIKeyInputF5: string;
+
+declare const NSUnderlinePatternDashDotDot: interop.Enum<typeof NSUnderlineStyle>;
 
 declare const NSUnderlinePatternDashDot: interop.Enum<typeof NSUnderlineStyle>;
 
 declare const NSUnderlinePatternDot: interop.Enum<typeof NSUnderlineStyle>;
 
-declare const NSAttributedStringDocumentAttributeKey: number;
+declare const NSVerticalGlyphFormAttributeName: string;
 
-declare const NSAttributedStringDocumentType: number;
+declare const UIPasteboardChangedTypesAddedKey: string;
 
-declare const NSTextEffectStyle: number;
+declare const NSTargetTextScalingDocumentOption: string;
 
-declare const NSTextHighlightColorScheme: number;
+declare const UIPageViewControllerOptionSpineLocationKey: string;
 
-declare const UIImageSymbolWeight: number;
+declare const NSCharacterEncodingDocumentOption: string;
 
-declare const UIApplicationLaunchOptionsKey: number;
+declare const NSDefaultFontExcludedDocumentAttribute: string;
+
+declare const NSTextListMarkerDecimal: string;
+
+declare const NSViewSizeDocumentAttribute: string;
+
+declare const NSTextLayoutSectionOrientation: string;
+
+declare const NSHTMLTextDocumentType: string;
+
+declare const NSRTFTextDocumentType: string;
+
+declare const UIContentSizeCategoryLarge: string;
+
+declare const UITextContentTypeNickname: string;
+
+declare const NSTextHighlightColorSchemeMint: string;
+
+declare const UIFontTextStyleCaption2: string;
+
+declare const NSTextHighlightColorSchemePink: string;
+
+declare const NSTextEffectLetterpressStyle: string;
+
+declare const NSTextHighlightStyleAttributeName: string;
+
+declare const NSStrikethroughColorAttributeName: string;
+
+declare const NSBaselineOffsetAttributeName: string;
+
+declare const NSLinkAttributeName: string;
+
+declare const NSAttachmentAttributeName: string;
+
+declare const NSTextEffectAttributeName: string;
+
+declare const NSStrokeWidthAttributeName: string;
+
+declare const NSForegroundColorAttributeName: string;
+
+declare const NSParagraphStyleAttributeName: string;
 
 declare const NSAttachmentCharacter: number;
 
-declare const UIApplicationOpenExternalURLOptionsKey: number;
+declare const UIFontTextStyleFootnote: string;
 
-declare const BOOL: number;
+declare const UIFontTextStyleBody: string;
 
-declare const UIFontDescriptorFeatureKey: number;
+declare const UITextFormattingViewControllerTextListDecimal: string;
 
-declare const UIFontWidth: number;
+declare const NSTextHighlightColorSchemeDefault: string;
 
-declare const UITextFormattingViewControllerComponentKey: number;
+declare const UIFontTextStyleTitle3: string;
 
-declare const UIWindowLevel: number;
+declare const UIFontTextStyleTitle2: string;
 
-declare const UITextFormattingViewControllerTextAlignment: number;
+declare const UIFontTextStyleExtraLargeTitle: string;
 
-declare const UIFocusSoundIdentifier: number;
+declare const UIFontWidthStandard: number;
 
-declare const id: number;
+declare const UIImagePickerControllerOriginalImage: string;
 
-declare const CGVector: number;
+declare const UIFontWidthCondensed: number;
 
-declare const UIActivityItemsConfigurationPreviewIntent: number;
+declare const UIFontWeightMedium: number;
 
-declare const UIAccessibilityNotifications: number;
+declare const UIFontWeightRegular: number;
 
-declare const UIApplicationOpenURLOptionsKey: number;
+declare const UIFontWeightLight: number;
 
-declare const NSErrorDomain: number;
+declare const UIFontWeightThin: number;
 
-declare const NSTextHighlightStyle: number;
+declare const UIFontWidthTrait: string;
 
-declare const CGSize: number;
+declare const UIFontWeightTrait: string;
 
-declare const UIOffset: number;
+declare const UIFontSymbolicTrait: string;
 
-declare const NSDirectionalEdgeInsets: number;
+declare const UIFontDescriptorTextStyleAttribute: string;
 
-declare const UIEdgeInsets: number;
+declare const UIKeyboardAnimationDurationUserInfoKey: string;
+
+declare const UIFontDescriptorFixedAdvanceAttribute: string;
+
+declare const NSControlCharacterLineBreakAction: number;
+
+declare const UIAccessibilityTraitUpdatesFrequently: number;
+
+declare const UIFontDescriptorCascadeListAttribute: string;
+
+declare const UIFontDescriptorCharacterSetAttribute: string;
+
+declare const UIFontDescriptorMatrixAttribute: string;
+
+declare const UIFontDescriptorVisibleNameAttribute: string;
+
+declare const UIAccessibilityReduceTransparencyStatusDidChangeNotification: string;
+
+declare const UIFontDescriptorSizeAttribute: string;
+
+declare const UIFontDescriptorNameAttribute: string;
+
+declare const UIFontDescriptorSystemDesignSerif: string;
+
+declare const UITextContentTypeAddressCityAndState: string;
+
+declare const UITextFormattingViewControllerSetItalicChangeType: string;
+
+declare const UITextFormattingViewControllerRemoveBoldChangeType: string;
+
+declare const UIAccessibilityVoiceOverStatusDidChangeNotification: string;
+
+declare const UITextFormattingViewControllerTextAlignmentAndJustificationComponentKey: string;
+
+declare const UIMenuSpelling: string;
+
+declare const UITextAttributeTextShadowOffset: string;
+
+declare const UITextContentTypeCreditCardNumber: string;
+
+declare const UITextContentTypeFullStreetAddress: string;
+
+declare const NSTextListMarkerUppercaseLatin: string;
+
+declare const UIMenuTextSize: string;
+
+declare const UIAccessibilityScreenChangedNotification: number;
+
+declare const UITableViewSelectionDidChangeNotification: string;
+
+declare const UIKeyInputRightArrow: string;
+
+declare const UIKeyInputUpArrow: string;
+
+declare const NSPaperSizeDocumentAttribute: string;
+
+declare const UIActivityItemsConfigurationMetadataKeyMessageBody: string;
+
+declare const UIKeyInputPageDown: string;
+
+declare const UIApplicationWillEnterForegroundNotification: string;
+
+declare const UIMenuToolbar: string;
+
+declare const UIKeyboardWillHideNotification: string;
+
+declare const UITextAttributeFont: string;
+
+declare const UITextViewTextDidChangeNotification: string;
+
+declare const UIPasteboardTypeListURL: NSArray;
+
+declare const UITextContentTypeStreetAddressLine2: string;
+
+declare const UIFontWeightUltraLight: number;
+
+declare const NSBackgroundColorAttributeName: string;
+
+declare const UIDeviceOrientationDidChangeNotification: string;
+
+declare const NSDirectionalEdgeInsetsZero: NSDirectionalEdgeInsets;
+
+declare const UIKeyboardWillChangeFrameNotification: string;
+
+declare const UIAccessibilityTraitAdjustable: number;
+
+declare const UIPasteboardDetectionPatternNumber: string;
+
+declare const NSSourceTextScalingDocumentOption: string;
+
+declare const UIUserNotificationTextInputActionButtonTitleKey: string;
+
+declare const UIPasteboardDetectionPatternCalendarEvent: string;
+
+declare const UIMenuFind: string;
+
+declare const UITextInputTextColorKey: string;
+
+declare const UIMenuSpellingOptions: string;
+
+declare const UIFloatRangeInfinite: UIFloatRange;
+
+declare const UIApplicationLaunchOptionsUserActivityTypeKey: string;
+
+declare const UILayoutFittingCompressedSize: CGSize;
+
+declare const UITransitionContextFromViewControllerKey: string;
+
+declare const UIScreenCapturedDidChangeNotification: string;
+
+declare const UIPasteboardDetectionPatternPhoneNumber: string;
+
+declare const UIMenuWindow: string;
+
+declare const UITextFormattingViewControllerHighlightDefault: string;
+
+declare const UIPrintErrorDomain: string;
+
+declare const UIMenuSubstitutions: string;
+
+declare const UITextFormattingViewControllerTextColorChangeType: string;
+
+declare const NSTextListMarkerBox: string;
+
+declare const UIAccessibilityTraitSelected: number;
+
+declare const UIApplicationSignificantTimeChangeNotification: string;
+
+declare const UIAccessibilityTraitButton: number;
+
+declare const UIApplicationLaunchOptionsLocationKey: string;
+
+declare const UISheetPresentationControllerAutomaticDimension: number;
+
+declare const UITextContentTypeTelephoneNumber: string;
+
+declare const UIKeyInputF6: string;
+
+declare const UIFontSlantTrait: string;
+
+declare const UIMenuSpellingPanel: string;
+
+declare const UIAccessibilityTextualContextFileSystem: string;
+
+declare const UIImagePickerControllerEditedImage: string;
+
+declare const UIOffsetZero: UIOffset;
+
+declare const UIAccessibilityFocusedElementKey: string;
+
+declare const UIAccessibilityBoldTextStatusDidChangeNotification: string;
+
+declare const UIFontFeatureSelectorIdentifierKey: string;
+
+declare const NSDefaultTabIntervalDocumentAttribute: string;
+
+declare const UITextContentTypeCreditCardExpirationYear: string;
+
+declare const UITextFormattingViewControllerSetStrikethroughChangeType: string;
+
+declare const UIAccessibilityTraitImage: number;
+
+declare const UIImagePickerControllerCropRect: string;
+
+declare const UIWindowSceneSessionRoleExternalDisplayNonInteractive: string;
+
+declare const UIAccessibilityTraitHeader: number;
+
+declare const UIAccessibilityGuidedAccessStatusDidChangeNotification: string;
+
+declare const UITextFormattingViewControllerFontPointSizeComponentKey: string;
+
+declare const UIApplicationLaunchOptionsNewsstandDownloadsKey: string;
+
+declare const NSShadowAttributeName: string;
+
+declare const UIActivityTypeSaveToCameraRoll: string;
+
+declare const UIKeyInputDelete: string;
+
+declare const UIApplicationDidChangeStatusBarOrientationNotification: string;
+
+declare const UIKeyboardIsLocalUserInfoKey: string;
+
+declare const NSSourceTextScalingDocumentAttribute: string;
+
+declare const UIMenuLearn: string;
+
+declare const UIFontDescriptorSystemDesignRounded: string;
 
 declare const UIStackViewSpacingUseSystem: number;
 
+declare const UIAccessibilityTraitSupportsZoom: number;
+
 declare const NSControlCharacterContainerBreakAction: number;
 
-declare const UIPointerAccessoryPosition: number;
+declare const UIFocusDidUpdateNotification: string;
 
-declare const NSAttributedStringKey: number;
+declare const UIAccessibilityTextAttributeContext: string;
 
-declare const UIAccessibilityTextualContext: number;
+declare const UIAccessibilityTextAttributeCustom: string;
 
-declare const UIAccessibilityTraits: number;
+declare const UIAccessibilitySpeechAttributeSpellOut: string;
 
-declare const NSString: number;
+declare const UIAccessibilitySpeechAttributeAnnouncementPriority: string;
 
-declare const NSTextLayoutSectionKey: number;
+declare const UIAccessibilitySpeechAttributeQueueAnnouncement: string;
+
+declare const UIAccessibilitySpeechAttributeIPANotation: string;
+
+declare const UIAccessibilitySpeechAttributeLanguage: string;
+
+declare const UIAccessibilityPriorityLow: string;
+
+declare const UIAccessibilityPriorityDefault: string;
+
+declare const UIAccessibilityPriorityHigh: string;
+
+declare const UIAccessibilityTextualContextSourceCode: string;
+
+declare const UIAccessibilityTextualContextSpreadsheet: string;
+
+declare const UIAccessibilityNotificationSwitchControlIdentifier: string;
+
+declare const UIAccessibilityUnfocusedElementKey: string;
+
+declare const UIAccessibilityElementFocusedNotification: string;
+
+declare const UIAccessibilityAnnouncementKeyWasSuccessful: string;
+
+declare const UIAccessibilityAnnouncementKeyStringValue: string;
+
+declare const UIAccessibilityAnnouncementDidFinishNotification: string;
+
+declare const UIAccessibilityPauseAssistiveTechnologyNotification: number;
+
+declare const UIAccessibilityPageScrolledNotification: number;
+
+declare const UIAccessibilityAnnouncementNotification: number;
+
+declare const UIAccessibilityTraitToggleButton: number;
+
+declare const UIAccessibilityTraitCausesPageTurn: number;
+
+declare const UIAccessibilityTraitSummaryElement: number;
+
+declare const NSDefaultAttributesDocumentAttribute: string;
+
+declare const UIAccessibilityTraitSearchField: number;
+
+declare const UIActivityTypePostToWeibo: string;
+
+declare const UIAccessibilityTraitLink: number;
+
+declare const UIAccessibilityTraitNone: number;
+
+declare const UILayoutFittingExpandedSize: CGSize;
+
+declare const UIFontWeightSemibold: number;
+
+declare const NSFontAttributeName: string;
+
+declare const UIPasteboardNameFind: string;
+
+declare const UIApplicationOpenExternalURLOptionsEventAttributionKey: string;
+
+declare const UIWindowDidBecomeKeyNotification: string;
+
+declare const UITextFormattingViewControllerFontSizeChangeType: string;
+
+declare const UIContentSizeCategoryNewValueKey: string;
+
+declare const UIApplicationLaunchOptionsRemoteNotificationKey: string;
+
+declare const UITextInputCurrentInputModeDidChangeNotification: string;
+
+declare const UIActivityTypeCopyToPasteboard: string;
+
+declare const UIMenuFont: string;
+
+declare const UITextFieldTextDidBeginEditingNotification: string;
+
+declare const UITextFormattingViewControllerIncreaseIndentationChangeType: string;
+
+declare const UIAccessibilityTextAttributeHeadingLevel: string;
+
+declare const UIFontDescriptorSystemDesignDefault: string;
+
+declare const UIFloatRangeZero: UIFloatRange;
+
+declare const UITransitionContextToViewControllerKey: string;
+
+declare const UIAccessibilityReduceMotionStatusDidChangeNotification: string;
 
 declare const UILayoutPriorityRequired: number;
 
+declare const NSHyphenationFactorDocumentAttribute: string;
+
 declare const UILayoutPriorityDefaultHigh: number;
 
-declare const UIFontDescriptorAttributeName: number;
+declare const UIPasteboardOptionLocalOnly: string;
+
+declare const UIFocusUpdateAnimationCoordinatorKey: string;
+
+declare const UIAccessibilityDarkerSystemColorsStatusDidChangeNotification: string;
+
+declare const UIPasteboardTypeListColor: NSArray;
+
+declare const UIFontDescriptorFaceAttribute: string;
+
+declare const UIApplicationDidReceiveMemoryWarningNotification: string;
+
+declare const NSKernAttributeName: string;
+
+declare const NSTextListMarkerLowercaseLatin: string;
+
+declare const UIApplicationOpenDefaultApplicationsSettingsURLString: string;
+
+declare const UIKeyInputDownArrow: string;
+
+declare const NSTabColumnTerminatorsAttributeName: string;
+
+declare const NSStrokeColorAttributeName: string;
+
+declare const UIMenuWritingDirection: string;
+
+declare const NSTextStorageWillProcessEditingNotification: string;
 
 declare const NSUnderlinePatternDash: interop.Enum<typeof NSUnderlineStyle>;
 
+declare const UITextFormattingViewControllerHighlightChangeType: string;
+
+declare const UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey: string;
+
+declare const UIWindowLevelStatusBar: number;
+
+declare const NSExpansionAttributeName: string;
+
+declare const UISceneWillDeactivateNotification: string;
+
+declare const UIFontTextStyleCallout: string;
+
+declare const NSTextListMarkerLowercaseAlpha: string;
+
+declare const UIApplicationBackgroundFetchIntervalNever: number;
+
+declare const UIFontTextStyleCaption1: string;
+
 declare const UITextWritingDirectionNatural: interop.Enum<typeof NSWritingDirection>;
 
-declare const CGContextRef: number;
+declare const UIMenuText: string;
 
-declare const UIScrollViewDecelerationRate: number;
+declare const UIDocumentCreationIntentDefault: string;
 
-declare const UITransitionContextViewKey: number;
+declare const UIMenuTextStylePasteboard: string;
+
+declare const NSUnderlineColorAttributeName: string;
+
+declare const NSStrikethroughStyleAttributeName: string;
+
+declare const UIKeyboardBoundsUserInfoKey: string;
+
+declare const UITextContentTypeNamePrefix: string;
+
+declare const UITextFormattingViewControllerTextAlignmentCenter: string;
+
+declare const UITextFormattingViewControllerTextAlignmentComponentKey: string;
+
+declare const UIFontTextStyleExtraLargeTitle2: string;
+
+declare const UIActivityTypeMail: string;
+
+declare const UIAccessibilityCustomActionCategoryEdit: string;
+
+declare const UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey: string;
+
+declare const UITextContentTypePostalCode: string;
+
+declare const UITextContentTypeShipmentTrackingNumber: string;
+
+declare const UIMenuControllerWillHideMenuNotification: string;
+
+declare const UITextContentTypeCreditCardType: string;
+
+declare const UIFontTextStyleSubheadline: string;
+
+declare const UITextContentTypeNewPassword: string;
+
+declare const UITextFormattingViewControllerTextListChangeType: string;
+
+declare const UIApplicationLaunchOptionsLocalNotificationKey: string;
+
+declare const UIPasteboardNameGeneral: string;
+
+declare const UITextFormattingViewControllerHighlightBlue: string;
+
+declare const UIKeyboardDidShowNotification: string;
+
+declare const UIActionPasteAndSearch: string;
 
 declare const NSControlCharacterZeroAdvancementAction: number;
 
-declare const UIGuidedAccessRestrictionState: number;
+declare const UIActionPasteAndGo: string;
 
-declare const NSErrorUserInfoKey: number;
+declare const UIMenuSpeech: string;
 
-declare const CGAffineTransform: number;
+declare const UIPasteboardChangedTypesRemovedKey: string;
 
-declare const UIBackgroundTaskIdentifier: number;
+declare const NSDocumentTypeDocumentAttribute: string;
 
-declare const UITextFormattingViewControllerHighlight: number;
+declare const UIImagePickerControllerPHAsset: string;
 
-declare const NSExceptionName: number;
+declare const UITextFormattingViewControllerTextListHyphen: string;
 
-declare const UIPageViewControllerOptionsKey: number;
+declare const UIPasteboardDetectionPatternLink: string;
 
-declare const UIFontDescriptorTraitKey: number;
+declare const UIImagePickerControllerMediaMetadata: string;
 
-declare const CGPoint: number;
+declare const UIAccessibilityClosedCaptioningStatusDidChangeNotification: string;
+
+declare const UIDeviceBatteryStateDidChangeNotification: string;
+
+declare const UIAccessibilityLayoutChangedNotification: number;
+
+declare const UIPasteboardDetectionPatternProbableWebURL: string;
+
+declare const UIKeyInputF9: string;
+
+declare const UIMenuReplace: string;
+
+declare const UITextContentTypeCreditCardMiddleName: string;
+
+declare const UIMenuUndoRedo: string;
+
+declare const NSViewZoomDocumentAttribute: string;
+
+declare const UIFocusMovementDidFailNotification: string;
+
+declare const UIPasteboardTypeListImage: NSArray;
+
+declare const UIContentSizeCategoryAccessibilityExtraLarge: string;
+
+declare const UITrackingRunLoopMode: string;
+
+declare const UIActivityItemsConfigurationMetadataKeyShareRecipients: string;
+
+declare const UIApplicationStatusBarOrientationUserInfoKey: string;
+
+declare const UIAccessibilityTraitStaticText: number;
+
+declare const UIConfigurationColorTransformerMonochromeTint: (p1: UIColor) => UIColor;
+
+declare const UIMenuServices: string;
+
+declare const UIFontDescriptorTraitsAttribute: string;
+
+declare const UITextFormattingViewControllerTextListDisc: string;
+
+declare const UIApplicationOpenURLOptionsAnnotationKey: string;
+
+declare const UITextContentTypeFlightNumber: string;
+
+declare const UIPasteboardDetectionPatternPostalAddress: string;
+
+declare const NSTextListMarkerUppercaseHexadecimal: string;
+
+declare const UIMenuView: string;
+
+declare const UIAccessibilityHearingDevicePairedEarDidChangeNotification: string;
+
+declare const NSTextKit1ListMarkerFormatDocumentOption: string;
+
+declare const UIKeyboardDidHideNotification: string;
+
+declare const UITableViewAutomaticDimension: number;
+
+declare const UIFontWeightBlack: number;
+
+declare const UITextContentTypeDateTime: string;
+
+declare const NSTextScalingDocumentAttribute: string;
+
+declare const UIAccessibilityTraitKeyboardKey: number;
+
+declare const UITextContentTypeEmailAddress: string;
+
+declare const UITextContentTypeFamilyName: string;
+
+declare const UIKeyInputF12: string;
+
+declare const NSTextHighlightColorSchemePurple: string;
+
+declare const UIConfigurationColorTransformerPreferredTint: (p1: UIColor) => UIColor;
+
+declare const UITextContentTypeBirthdate: string;
+
+declare const UIAccessibilityButtonShapesEnabledStatusDidChangeNotification: string;
+
+declare const UIKeyboardCenterBeginUserInfoKey: string;
+
+declare const NSTextHighlightColorSchemeAttributeName: string;
+
+declare const UIContentSizeCategoryExtraLarge: string;
+
+declare const UISplitViewControllerAutomaticDimension: number;
 
 declare const UILayoutPrioritySceneSizeStayPut: number;
 
+declare const UIPointerAccessoryPositionTopLeft: UIPointerAccessoryPosition;
+
+declare const UIAccessibilityTextualContextMessaging: string;
+
+declare const UIWindowSceneSessionRoleExternalDisplay: string;
+
+declare const UIFontTextStyleTitle1: string;
+
+declare const NSDefaultAttributesDocumentOption: string;
+
 declare const NSUnderlinePatternSolid: interop.Enum<typeof NSUnderlineStyle>;
+
+declare const UIEdgeInsetsZero: UIEdgeInsets;
 
 declare const UILayoutPriorityDragThatCannotResizeScene: number;
 
-declare const UISheetPresentationControllerDetentIdentifier: number;
+declare const UIPasteboardChangedNotification: string;
 
-declare const NSTextListMarkerFormat: number;
+declare const UIAccessibilityGrayscaleStatusDidChangeNotification: string;
 
-declare const UIImagePickerControllerInfoKey: number;
+declare const NSViewModeDocumentAttribute: string;
 
-declare const UIAccessibilityAssistiveTechnologyIdentifier: number;
+declare const UIActivityTypePostToVimeo: string;
 
-declare const UISceneSessionRole: number;
+declare const UIAccessibilityNotificationVoiceOverIdentifier: string;
 
-declare const CGRect: number;
+declare const UIPointerAccessoryPositionRight: UIPointerAccessoryPosition;
 
-declare const UIConfigurationColorTransformer: number;
+declare const UIImagePickerControllerMediaURL: string;
 
-declare const UIFontWeight: number;
+declare const UITextContentTypeCreditCardExpiration: string;
 
-declare const UIActionIdentifier: number;
+declare const UIMenuTextStyle: string;
+
+declare const UIAccessibilitySpeakScreenStatusDidChangeNotification: string;
+
+declare const UIApplicationKeyboardExtensionPointIdentifier: string;
+
+declare const UIAccessibilityResumeAssistiveTechnologyNotification: number;
+
+declare const UIApplicationLaunchOptionsCloudKitShareMetadataKey: string;
+
+declare const UIMenuControllerDidHideMenuNotification: string;
+
+declare const UIActivityTypePostToFacebook: string;
+
+declare const UIContentSizeCategorySmall: string;
+
+declare const UIMenuMinimizeAndZoom: string;
+
+declare const UIActivityTypeMessage: string;
+
+declare const UIApplicationOpenNotificationSettingsURLString: string;
+
+declare const UIKeyInputLeftArrow: string;
+
+declare const UILargeContentViewerInteractionEnabledStatusDidChangeNotification: string;
+
+declare const UITextContentTypeJobTitle: string;
+
+declare const UIAccessibilityTraitTabBar: number;
+
+declare const UIMenuTransformations: string;
+
+declare const UISceneWillConnectNotification: string;
+
+declare const NSTextListMarkerUppercaseRoman: string;
+
+declare const UITextContentTypeCreditCardName: string;
+
+declare const UIFontWeightBold: number;
+
+declare const NSRTFDTextDocumentType: string;
+
+declare const NSPlainTextDocumentType: string;
+
+declare const UIFontDescriptorFeatureSettingsAttribute: string;
+
+declare const UIFontWidthExpanded: number;
+
+declare const UITextFormattingViewControllerListStylesComponentKey: string;
+
+declare const UIMenuQuit: string;
+
+declare const UICollectionViewFlowLayoutAutomaticSize: CGSize;
+
+declare const UIContentSizeCategoryAccessibilityMedium: string;
+
+declare const UIApplicationOpenURLOptionsOpenInPlaceKey: string;
+
+declare const UIAccessibilitySpeechAttributePitch: string;
+
+declare const UIMenuEdit: string;
+
+declare const NSDocumentTypeDocumentOption: string;
+
+declare const NSWritingToolsExclusionAttributeName: string;
+
+declare const UIWindowDidBecomeHiddenNotification: string;
+
+declare const UITextFormattingViewControllerFontAttributesComponentKey: string;
+
+declare const UIFontDescriptorFamilyAttribute: string;
 
 declare const UILayoutPriorityFittingSizeLevel: number;
 
+declare const UITextFormattingViewControllerTextIndentationComponentKey: string;
+
+declare const NSTextListMarkerCheck: string;
+
+declare const UITextFormattingViewControllerTextListOther: string;
+
+declare const UIKeyInputHome: string;
+
 declare const UIDocumentBrowserErrorDomain: string;
 
-declare const UITextFormattingViewControllerTextList: number;
+declare const UIAccessibilitySpeechAttributePunctuation: string;
 
-declare const UIActivityItemsConfigurationInteraction: number;
+declare const UIFontTextStyleHeadline: string;
+
+declare const UITextItemTagAttributeName: string;
+
+declare const UITextFormattingViewControllerRemoveStrikethroughChangeType: string;
+
+declare const UIKeyInputPageUp: string;
+
+declare const UITextFormattingViewControllerHighlightPink: string;
+
+declare const NSTextContentStorageUnsupportedAttributeAddedNotification: string;
+
+declare const UIApplicationStateRestorationTimestampKey: string;
+
+declare const UITextContentTypeURL: string;
+
+declare const UIMenuAbout: string;
+
+declare const UITextContentTypeOneTimeCode: string;
+
+declare const UICollectionElementKindSectionHeader: string;
+
+declare const NSReadOnlyDocumentAttribute: string;
+
+declare const UIActivityTypeAssignToContact: string;
+
+declare const NSTrackingAttributeName: string;
+
+declare const UIActivityTypePostToTwitter: string;
+
+declare const UIFocusUpdateContextKey: string;
+
+declare const NSCocoaVersionDocumentAttribute: string;
+
+declare const NSTextListMarkerDisc: string;
+
+declare const UISheetPresentationControllerDetentIdentifierLarge: string;
+
+declare const UITextViewTextDidEndEditingNotification: string;
+
+declare const UIMenuSidebar: string;
+
+declare const UIDocumentDidMoveToWritableLocationNotification: string;
+
+declare const NSTextListMarkerLowercaseRoman: string;
+
+declare const UIApplicationOpenURLOptionUniversalLinksOnly: string;
+
+declare const UITextContentTypeAddressCity: string;
+
+declare const NSUserActivityDocumentURLKey: string;
+
+declare const UITextAttributeTextColor: string;
+
+declare const UIContentSizeCategoryUnspecified: string;
+
+declare const UITextContentTypeNameSuffix: string;
 
 declare const UIListContentTextAlignment: {
   Natural: 0,
@@ -2048,6 +3164,29 @@ declare const NSWritingDirectionFormatType: {
   Override: 2,
 };
 
+declare const UITabBarSystemItem: {
+  More: 0,
+  Favorites: 1,
+  Featured: 2,
+  TopRated: 3,
+  Recents: 4,
+  Contacts: 5,
+  History: 6,
+  Bookmarks: 7,
+  Search: 8,
+  Downloads: 9,
+  MostRecent: 10,
+  MostViewed: 11,
+};
+
+declare const UISplitViewControllerColumn: {
+  Primary: 0,
+  Supplementary: 1,
+  Secondary: 2,
+  Compact: 3,
+  Inspector: 4,
+};
+
 declare const UITableViewScrollPosition: {
   None: 0,
   Top: 1,
@@ -2059,14 +3198,6 @@ declare const UIImageSymbolVariableValueMode: {
   Automatic: 0,
   Color: 1,
   Draw: 2,
-};
-
-declare const UISplitViewControllerColumn: {
-  Primary: 0,
-  Supplementary: 1,
-  Secondary: 2,
-  Compact: 3,
-  Inspector: 4,
 };
 
 declare const UIUserNotificationActionBehavior: {
@@ -2937,21 +4068,6 @@ declare const UIMenuElementState: {
   Mixed: 2,
 };
 
-declare const UITabBarSystemItem: {
-  More: 0,
-  Favorites: 1,
-  Featured: 2,
-  TopRated: 3,
-  Recents: 4,
-  Contacts: 5,
-  History: 6,
-  Bookmarks: 7,
-  Search: 8,
-  Downloads: 9,
-  MostRecent: 10,
-  MostViewed: 11,
-};
-
 declare const UIMailConversationEntryKind: {
   None: 0,
   Personal: 1,
@@ -3039,59 +4155,177 @@ declare class NSDirectionalEdgeInsets {
   trailing: number;
 }
 
-declare function UIGraphicsGetCurrentContext(): number;
+declare function NSStringFromCGPoint(point: CGPoint): string;
 
-declare function UIGraphicsPushContext(context: interop.Object): number;
+declare function NSStringFromCGVector(vector: CGVector): string;
 
-declare function UIGraphicsPopContext(): number;
+declare function NSStringFromCGSize(size: CGSize): string;
 
-declare function UIRectFillUsingBlendMode(rect: CGRect, blendMode: interop.Enum<typeof CGBlendMode>): number;
+declare function NSStringFromCGRect(rect: CGRect): string;
 
-declare function UIRectFill(rect: CGRect): number;
+declare function NSStringFromCGAffineTransform(transform: CGAffineTransform): string;
 
-declare function UIRectFrameUsingBlendMode(rect: CGRect, blendMode: interop.Enum<typeof CGBlendMode>): number;
+declare function NSStringFromUIEdgeInsets(insets: UIEdgeInsets): string;
 
-declare function UIRectFrame(rect: CGRect): number;
+declare function NSStringFromDirectionalEdgeInsets(insets: NSDirectionalEdgeInsets): string;
 
-declare function UIRectClip(rect: CGRect): number;
+declare function NSStringFromUIOffset(offset: UIOffset): string;
 
-declare function UIGraphicsBeginImageContext(size: CGSize): number;
+declare function CGPointFromString(string: string): CGPoint;
 
-declare function UIGraphicsBeginImageContextWithOptions(size: CGSize, opaque: boolean, scale: number): number;
+declare function CGVectorFromString(string: string): CGVector;
 
-declare function UIGraphicsEndImageContext(): number;
+declare function CGSizeFromString(string: string): CGSize;
 
-declare function UIGraphicsBeginPDFContextToData(data: NSMutableData, bounds: CGRect, documentInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): number;
+declare function CGRectFromString(string: string): CGRect;
 
-declare function UIGraphicsEndPDFContext(): number;
+declare function CGAffineTransformFromString(string: string): CGAffineTransform;
 
-declare function UIGraphicsBeginPDFPage(): number;
+declare function UIEdgeInsetsFromString(string: string): UIEdgeInsets;
 
-declare function UIGraphicsBeginPDFPageWithInfo(bounds: CGRect, pageInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): number;
+declare function NSDirectionalEdgeInsetsFromString(string: string): NSDirectionalEdgeInsets;
 
-declare function UIGraphicsSetPDFContextURLForRect(url: NSURL, rect: CGRect): number;
+declare function UIOffsetFromString(string: string): UIOffset;
 
-declare function UIGraphicsAddPDFContextDestinationAtPoint(name: string, point: CGPoint): number;
+declare function UIGraphicsGetCurrentContext(): interop.Object;
 
-declare function UIGraphicsSetPDFContextDestinationForRect(name: string, rect: CGRect): number;
+declare function UIGraphicsPushContext(context: interop.Object): void;
+
+declare function UIGraphicsPopContext(): void;
+
+declare function UIRectFillUsingBlendMode(rect: CGRect, blendMode: interop.Enum<typeof CGBlendMode>): void;
+
+declare function UIRectFill(rect: CGRect): void;
+
+declare function UIRectFrameUsingBlendMode(rect: CGRect, blendMode: interop.Enum<typeof CGBlendMode>): void;
+
+declare function UIRectFrame(rect: CGRect): void;
+
+declare function UIRectClip(rect: CGRect): void;
+
+declare function UIGraphicsBeginImageContext(size: CGSize): void;
+
+declare function UIGraphicsBeginImageContextWithOptions(size: CGSize, opaque: boolean, scale: number): void;
+
+declare function UIGraphicsGetImageFromCurrentImageContext(): UIImage;
+
+declare function UIGraphicsEndImageContext(): void;
+
+declare function UIGraphicsBeginPDFContextToFile(path: string, bounds: CGRect, documentInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): boolean;
+
+declare function UIGraphicsBeginPDFContextToData(data: NSMutableData, bounds: CGRect, documentInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+declare function UIGraphicsEndPDFContext(): void;
+
+declare function UIGraphicsBeginPDFPage(): void;
+
+declare function UIGraphicsBeginPDFPageWithInfo(bounds: CGRect, pageInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>): void;
+
+declare function UIGraphicsGetPDFContextBounds(): CGRect;
+
+declare function UIGraphicsSetPDFContextURLForRect(url: NSURL, rect: CGRect): void;
+
+declare function UIGraphicsAddPDFContextDestinationAtPoint(name: string, point: CGPoint): void;
+
+declare function UIGraphicsSetPDFContextDestinationForRect(name: string, rect: CGRect): void;
+
+declare function UIImagePNGRepresentation(image: UIImage): NSData;
+
+declare function UIImageJPEGRepresentation(image: UIImage, compressionQuality: number): NSData;
+
+declare function UIImageHEICRepresentation(image: UIImage): NSData;
+
+declare function UIFontWeightForImageSymbolWeight(symbolWeight: interop.Enum<typeof UIImageSymbolWeight>): number;
+
+declare function UIImageSymbolWeightForFontWeight(fontWeight: number): interop.Enum<typeof UIImageSymbolWeight>;
+
+declare function NSTextAlignmentToCTTextAlignment(nsTextAlignment: interop.Enum<typeof NSTextAlignment>): interop.Enum<typeof CTTextAlignment>;
+
+declare function NSTextAlignmentFromCTTextAlignment(ctTextAlignment: interop.Enum<typeof CTTextAlignment>): interop.Enum<typeof NSTextAlignment>;
+
+declare function UIEventButtonMaskForButtonNumber(buttonNumber: number): interop.Enum<typeof UIEventButtonMask>;
 
 declare function _NSDictionaryOfVariableBindings(commaSeparatedKeysString: string, firstValue: interop.Object): NSDictionary;
 
+declare function UIContentSizeCategoryIsAccessibilityCategory(category: string): boolean;
+
+declare function UIContentSizeCategoryCompareToCategory(lhs: string, rhs: string): interop.Enum<typeof NSComparisonResult>;
+
 declare function UIApplicationMain(argc: number, argv: interop.PointerConvertible, principalClassName: string, delegateClassName: string): number;
 
-declare function UIAccessibilityZoomFocusChanged(type: interop.Enum<typeof UIAccessibilityZoomType>, frame: CGRect, view: UIView): number;
+declare function UIAccessibilityZoomFocusChanged(type: interop.Enum<typeof UIAccessibilityZoomType>, frame: CGRect, view: UIView): void;
 
-declare function UIAccessibilityRegisterGestureConflictWithZoom(): number;
+declare function UIAccessibilityRegisterGestureConflictWithZoom(): void;
 
-declare function UIGuidedAccessConfigureAccessibilityFeatures(features: interop.Enum<typeof UIGuidedAccessAccessibilityFeature>, enabled: boolean, completion: (p1: boolean, p2: NSError) => void): number;
+declare function UIGuidedAccessRestrictionStateForIdentifier(restrictionIdentifier: string): interop.Enum<typeof UIGuidedAccessRestrictionState>;
 
-declare function UIAccessibilityPostNotification(notification: number, argument: interop.Object): number;
+declare function UIGuidedAccessConfigureAccessibilityFeatures(features: interop.Enum<typeof UIGuidedAccessAccessibilityFeature>, enabled: boolean, completion: (p1: boolean, p2: NSError) => void): void;
 
-declare function UIAccessibilityRequestGuidedAccessSession(enable: boolean, completionHandler: (p1: boolean) => void): number;
+declare function UIAccessibilityConvertFrameToScreenCoordinates(rect: CGRect, view: UIView): CGRect;
 
-declare function UIImageWriteToSavedPhotosAlbum(image: UIImage, completionTarget: interop.Object, completionSelector: string, contextInfo: interop.PointerConvertible): number;
+declare function UIAccessibilityConvertPathToScreenCoordinates(path: UIBezierPath, view: UIView): UIBezierPath;
 
-declare function UISaveVideoAtPathToSavedPhotosAlbum(videoPath: string, completionTarget: interop.Object, completionSelector: string, contextInfo: interop.PointerConvertible): number;
+declare function UIAccessibilityFocusedElement(assistiveTechnologyIdentifier: string): interop.Object;
+
+declare function UIAccessibilityPostNotification(notification: number, argument: interop.Object): void;
+
+declare function UIAccessibilityIsVoiceOverRunning(): boolean;
+
+declare function UIAccessibilityIsMonoAudioEnabled(): boolean;
+
+declare function UIAccessibilityIsClosedCaptioningEnabled(): boolean;
+
+declare function UIAccessibilityIsInvertColorsEnabled(): boolean;
+
+declare function UIAccessibilityIsGuidedAccessEnabled(): boolean;
+
+declare function UIAccessibilityIsBoldTextEnabled(): boolean;
+
+declare function UIAccessibilityButtonShapesEnabled(): boolean;
+
+declare function UIAccessibilityIsGrayscaleEnabled(): boolean;
+
+declare function UIAccessibilityIsReduceTransparencyEnabled(): boolean;
+
+declare function UIAccessibilityIsReduceMotionEnabled(): boolean;
+
+declare function UIAccessibilityPrefersCrossFadeTransitions(): boolean;
+
+declare function UIAccessibilityIsVideoAutoplayEnabled(): boolean;
+
+declare function UIAccessibilityDarkerSystemColorsEnabled(): boolean;
+
+declare function UIAccessibilityIsSwitchControlRunning(): boolean;
+
+declare function UIAccessibilityIsSpeakSelectionEnabled(): boolean;
+
+declare function UIAccessibilityIsSpeakScreenEnabled(): boolean;
+
+declare function UIAccessibilityIsShakeToUndoEnabled(): boolean;
+
+declare function UIAccessibilityIsAssistiveTouchRunning(): boolean;
+
+declare function UIAccessibilityShouldDifferentiateWithoutColor(): boolean;
+
+declare function UIAccessibilityIsOnOffSwitchLabelsEnabled(): boolean;
+
+declare function UIAccessibilityRequestGuidedAccessSession(enable: boolean, completionHandler: (p1: boolean) => void): void;
+
+declare function UIAccessibilityHearingDevicePairedEar(): interop.Enum<typeof UIAccessibilityHearingDeviceEar>;
+
+declare function UICellAccessoryPositionBeforeAccessoryOfClass(accessoryClass: interop.Object): (p1: NSArray<interop.Object> | Array<interop.Object>) => number;
+
+declare function UICellAccessoryPositionAfterAccessoryOfClass(accessoryClass: interop.Object): (p1: NSArray<interop.Object> | Array<interop.Object>) => number;
+
+declare function UIImageWriteToSavedPhotosAlbum(image: UIImage, completionTarget: interop.Object, completionSelector: string, contextInfo: interop.PointerConvertible): void;
+
+declare function UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(videoPath: string): boolean;
+
+declare function UISaveVideoAtPathToSavedPhotosAlbum(videoPath: string, completionTarget: interop.Object, completionSelector: string, contextInfo: interop.PointerConvertible): void;
+
+declare function UIFloatRangeIsInfinite(range: UIFloatRange): boolean;
+
+declare function UIWritingToolsCoordinatorTextAnimationDebugDescription(animationType: interop.Enum<typeof UIWritingToolsCoordinatorTextAnimation>): string;
 
 declare interface UIVideoEditorControllerDelegate extends NSObjectProtocol {
   videoEditorControllerDidSaveEditedVideoToPath?(editor: UIVideoEditorController, editedVideoPath: string): void;
@@ -3732,19 +4966,6 @@ declare interface UIViewControllerContextTransitioning extends NSObjectProtocol 
 declare class UIViewControllerContextTransitioning extends NativeObject implements UIViewControllerContextTransitioning {
 }
 
-declare interface UINavigationItemRenameDelegate extends NSObjectProtocol {
-  navigationItemDidEndRenamingWithTitle(navigationItem: UINavigationItem, title: string): void;
-
-  navigationItemShouldBeginRenaming?(navigationItem: UINavigationItem): boolean;
-
-  navigationItemWillBeginRenamingWithSuggestedTitleSelectedRange?(navigationItem: UINavigationItem, title: string, selectedRange: interop.PointerConvertible): string;
-
-  navigationItemShouldEndRenamingWithTitle?(navigationItem: UINavigationItem, title: string): boolean;
-}
-
-declare class UINavigationItemRenameDelegate extends NativeObject implements UINavigationItemRenameDelegate {
-}
-
 declare interface UIPrintInteractionControllerDelegate extends NSObjectProtocol {
   printInteractionControllerParentViewController?(printInteractionController: UIPrintInteractionController): UIViewController | null;
 
@@ -3860,15 +5081,6 @@ declare interface UICalendarSelectionMultiDateDelegate extends NSObjectProtocol 
 }
 
 declare class UICalendarSelectionMultiDateDelegate extends NativeObject implements UICalendarSelectionMultiDateDelegate {
-}
-
-declare interface UICollectionViewDataSourcePrefetching extends NSObjectProtocol {
-  collectionViewPrefetchItemsAtIndexPaths(collectionView: UICollectionView, indexPaths: NSArray<interop.Object> | Array<interop.Object>): void;
-
-  collectionViewCancelPrefetchingForItemsAtIndexPaths?(collectionView: UICollectionView, indexPaths: NSArray<interop.Object> | Array<interop.Object>): void;
-}
-
-declare class UICollectionViewDataSourcePrefetching extends NativeObject implements UICollectionViewDataSourcePrefetching {
 }
 
 declare interface UICalendarSelectionSingleDateDelegate extends NSObjectProtocol {
@@ -4795,6 +6007,19 @@ declare interface UIDocumentMenuDelegate extends NSObjectProtocol {
 declare class UIDocumentMenuDelegate extends NativeObject implements UIDocumentMenuDelegate {
 }
 
+declare interface UINavigationItemRenameDelegate extends NSObjectProtocol {
+  navigationItemDidEndRenamingWithTitle(navigationItem: UINavigationItem, title: string): void;
+
+  navigationItemShouldBeginRenaming?(navigationItem: UINavigationItem): boolean;
+
+  navigationItemWillBeginRenamingWithSuggestedTitleSelectedRange?(navigationItem: UINavigationItem, title: string, selectedRange: interop.PointerConvertible): string;
+
+  navigationItemShouldEndRenamingWithTitle?(navigationItem: UINavigationItem, title: string): boolean;
+}
+
+declare class UINavigationItemRenameDelegate extends NativeObject implements UINavigationItemRenameDelegate {
+}
+
 declare interface UIContentConfiguration extends NSObjectProtocol, NSCopying {
   makeContentView(): UIView;
 
@@ -5441,6 +6666,15 @@ declare class UITraitDefinition extends NativeObject implements UITraitDefinitio
   static readonly name: string;
 
   static readonly affectsColorAppearance: boolean;
+}
+
+declare interface UICollectionViewDataSourcePrefetching extends NSObjectProtocol {
+  collectionViewPrefetchItemsAtIndexPaths(collectionView: UICollectionView, indexPaths: NSArray<interop.Object> | Array<interop.Object>): void;
+
+  collectionViewCancelPrefetchingForItemsAtIndexPaths?(collectionView: UICollectionView, indexPaths: NSArray<interop.Object> | Array<interop.Object>): void;
+}
+
+declare class UICollectionViewDataSourcePrefetching extends NativeObject implements UICollectionViewDataSourcePrefetching {
 }
 
 declare interface UIViewAnimating extends NSObjectProtocol {
@@ -8839,9 +10073,9 @@ declare class UISearchController extends UIViewController implements UIViewContr
 }
 
 declare class UIScreenEdgePanGestureRecognizer extends UIPanGestureRecognizer {
-  edges: number;
+  edges: interop.Enum<typeof UIRectEdge>;
 
-  setEdges(edges: number): void;
+  setEdges(edges: interop.Enum<typeof UIRectEdge>): void;
 }
 
 declare class UITraitListEnvironment extends NSObject implements UINSIntegerTraitDefinition {
@@ -10967,11 +12201,11 @@ declare class UICellAccessoryDelete extends UICellAccessory {
 declare class UIScrollEdgeElementContainerInteraction extends NSObject implements UIInteraction {
   scrollView: UIScrollView;
 
-  edge: number;
+  edge: interop.Enum<typeof UIRectEdge>;
 
   setScrollView(scrollView: UIScrollView | null): void;
 
-  setEdge(edge: number): void;
+  setEdge(edge: interop.Enum<typeof UIRectEdge>): void;
 
   readonly view: UIView;
 
@@ -11179,7 +12413,7 @@ declare class UIViewController extends UIResponder implements NSCoding, UIAppear
 
   wantsFullScreenLayout: boolean;
 
-  edgesForExtendedLayout: number;
+  edgesForExtendedLayout: interop.Enum<typeof UIRectEdge>;
 
   extendedLayoutIncludesOpaqueBars: boolean;
 
@@ -11241,7 +12475,7 @@ declare class UIViewController extends UIResponder implements NSCoding, UIAppear
 
   setWantsFullScreenLayout(wantsFullScreenLayout: boolean): void;
 
-  setEdgesForExtendedLayout(edgesForExtendedLayout: number): void;
+  setEdgesForExtendedLayout(edgesForExtendedLayout: interop.Enum<typeof UIRectEdge>): void;
 
   setExtendedLayoutIncludesOpaqueBars(extendedLayoutIncludesOpaqueBars: boolean): void;
 
@@ -11389,7 +12623,7 @@ declare class UIViewController extends UIResponder implements NSCoding, UIAppear
 
   readonly childViewControllerForScreenEdgesDeferringSystemGestures: UIViewController;
 
-  readonly preferredScreenEdgesDeferringSystemGestures: number;
+  readonly preferredScreenEdgesDeferringSystemGestures: interop.Enum<typeof UIRectEdge>;
 
   setNeedsUpdateOfScreenEdgesDeferringSystemGestures(): void;
 
@@ -13836,8 +15070,6 @@ declare class UITabGroup extends UITab {
 
   sidebarAppearance: interop.Enum<typeof UITabGroupSidebarAppearance>;
 
-  isSidebarDestination: boolean;
-
   initWithTitleImageIdentifierChildrenViewControllerProvider(title: string, image: UIImage | null, identifier: string, children: NSArray<interop.Object> | Array<interop.Object>, viewControllerProvider: (p1: UITab) => UIViewController | null): this;
 
   setSelectedChild(selectedChild: UITab | null): void;
@@ -13855,8 +15087,6 @@ declare class UITabGroup extends UITab {
   setSidebarActions(sidebarActions: NSArray<interop.Object> | Array<interop.Object>): void;
 
   setSidebarAppearance(sidebarAppearance: interop.Enum<typeof UITabGroupSidebarAppearance>): void;
-
-  setIsSidebarDestination(isSidebarDestination: boolean): void;
 }
 
 declare class UIApplication extends UIResponder {
@@ -13876,7 +15106,7 @@ declare class UIApplication extends UIResponder {
 
   canOpenURL(url: NSURL): boolean;
 
-  openURLOptionsCompletionHandler(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completion: (p1: boolean) => void): void;
+  openURLOptionsCompletionHandler(url: NSURL, options: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object>, completion: (p1: boolean) => void | null): void;
 
   sendEvent(event: UIEvent): void;
 
@@ -13908,9 +15138,9 @@ declare class UIApplication extends UIResponder {
 
   readonly backgroundTimeRemaining: number;
 
-  beginBackgroundTaskWithExpirationHandler(handler: () => void): number;
+  beginBackgroundTaskWithExpirationHandler(handler: () => void | null): number;
 
-  beginBackgroundTaskWithNameExpirationHandler(taskName: string | null, handler: () => void): number;
+  beginBackgroundTaskWithNameExpirationHandler(taskName: string | null, handler: () => void | null): number;
 
   endBackgroundTask(identifier: number): void;
 
@@ -14356,7 +15586,7 @@ declare class UIPointerStyle extends UIHoverStyle implements NSCopying {
   static styleWithEffectShape<This extends abstract new (...args: any) => any>(this: This, effect: UIHoverEffect, shape: UIShape | null): InstanceType<This>;
   static styleWithEffectShape<This extends abstract new (...args: any) => any>(this: This, effect: UIPointerEffect, shape: UIPointerShape | null): InstanceType<This>;
 
-  static styleWithShapeConstrainedAxes<This extends abstract new (...args: any) => any>(this: This, shape: UIPointerShape, axes: interop.Object): InstanceType<This>;
+  static styleWithShapeConstrainedAxes<This extends abstract new (...args: any) => any>(this: This, shape: UIPointerShape, axes: interop.Enum<typeof UIAxis>): InstanceType<This>;
 
   static hiddenPointerStyle<This extends abstract new (...args: any) => any>(this: This): InstanceType<This>;
 
@@ -14541,12 +15771,16 @@ declare class UIDocumentBrowserAction extends NSObject {
 
   image: UIImage;
 
+  imageOnlyForContextMenu: UIImage;
+
   get supportedContentTypes(): NSArray;
   set supportedContentTypes(value: NSArray<interop.Object> | Array<interop.Object>);
 
   supportsMultipleItems: boolean;
 
   setImage(image: UIImage | null): void;
+
+  setImageOnlyForContextMenu(imageOnlyForContextMenu: UIImage | null): void;
 
   setSupportedContentTypes(supportedContentTypes: NSArray<interop.Object> | Array<interop.Object>): void;
 
@@ -15334,7 +16568,7 @@ declare class UIContentUnavailableConfiguration extends NSObject implements UICo
 
   alignment: interop.Enum<typeof UIContentUnavailableAlignment>;
 
-  axesPreservingSuperviewLayoutMargins: number;
+  axesPreservingSuperviewLayoutMargins: interop.Enum<typeof UIAxis>;
 
   directionalLayoutMargins: NSDirectionalEdgeInsets;
 
@@ -15364,7 +16598,7 @@ declare class UIContentUnavailableConfiguration extends NSObject implements UICo
 
   setAlignment(alignment: interop.Enum<typeof UIContentUnavailableAlignment>): void;
 
-  setAxesPreservingSuperviewLayoutMargins(axesPreservingSuperviewLayoutMargins: number): void;
+  setAxesPreservingSuperviewLayoutMargins(axesPreservingSuperviewLayoutMargins: interop.Enum<typeof UIAxis>): void;
 
   setDirectionalLayoutMargins(directionalLayoutMargins: NSDirectionalEdgeInsets): void;
 
@@ -16676,6 +17910,72 @@ declare class UIViewPropertyAnimator extends NSObject implements UIViewImplicitl
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
 
+declare class UISceneActivationConditions extends NSObject implements NSSecureCoding {
+  init(): this;
+
+  initWithCoder(aDecoder: NSCoder): this;
+
+  canActivateForTargetContentIdentifierPredicate: NSPredicate;
+
+  prefersToActivateForTargetContentIdentifierPredicate: NSPredicate;
+
+  setCanActivateForTargetContentIdentifierPredicate(canActivateForTargetContentIdentifierPredicate: NSPredicate): void;
+
+  setPrefersToActivateForTargetContentIdentifierPredicate(prefersToActivateForTargetContentIdentifierPredicate: NSPredicate): void;
+
+  static readonly supportsSecureCoding: boolean;
+
+  encodeWithCoder(coder: NSCoder): void;
+}
+
+declare class UIAttachmentBehavior extends UIDynamicBehavior {
+  initWithItemAttachedToAnchor(item: UIDynamicItem, point: CGPoint): this;
+
+  initWithItemOffsetFromCenterAttachedToAnchor(item: UIDynamicItem, offset: UIOffset, point: CGPoint): this;
+
+  initWithItemAttachedToItem(item1: UIDynamicItem, item2: UIDynamicItem): this;
+
+  initWithItemOffsetFromCenterAttachedToItemOffsetFromCenter(item1: UIDynamicItem, offset1: UIOffset, item2: UIDynamicItem, offset2: UIOffset): this;
+
+  static slidingAttachmentWithItemAttachedToItemAttachmentAnchorAxisOfTranslation<This extends abstract new (...args: any) => any>(this: This, item1: UIDynamicItem, item2: UIDynamicItem, point: CGPoint, axis: CGVector): InstanceType<This>;
+
+  static slidingAttachmentWithItemAttachmentAnchorAxisOfTranslation<This extends abstract new (...args: any) => any>(this: This, item: UIDynamicItem, point: CGPoint, axis: CGVector): InstanceType<This>;
+
+  static limitAttachmentWithItemOffsetFromCenterAttachedToItemOffsetFromCenter<This extends abstract new (...args: any) => any>(this: This, item1: UIDynamicItem, offset1: UIOffset, item2: UIDynamicItem, offset2: UIOffset): InstanceType<This>;
+
+  static fixedAttachmentWithItemAttachedToItemAttachmentAnchor<This extends abstract new (...args: any) => any>(this: This, item1: UIDynamicItem, item2: UIDynamicItem, point: CGPoint): InstanceType<This>;
+
+  static pinAttachmentWithItemAttachedToItemAttachmentAnchor<This extends abstract new (...args: any) => any>(this: This, item1: UIDynamicItem, item2: UIDynamicItem, point: CGPoint): InstanceType<This>;
+
+  readonly items: NSArray;
+
+  readonly attachedBehaviorType: interop.Enum<typeof UIAttachmentBehaviorType>;
+
+  anchorPoint: CGPoint;
+
+  length: number;
+
+  damping: number;
+
+  frequency: number;
+
+  frictionTorque: number;
+
+  attachmentRange: UIFloatRange;
+
+  setAnchorPoint(anchorPoint: CGPoint): void;
+
+  setLength(length: number): void;
+
+  setDamping(damping: number): void;
+
+  setFrequency(frequency: number): void;
+
+  setFrictionTorque(frictionTorque: number): void;
+
+  setAttachmentRange(attachmentRange: UIFloatRange): void;
+}
+
 declare class UIDatePicker extends UIControl implements NSCoding {
   datePickerMode: interop.Enum<typeof UIDatePickerMode>;
 
@@ -17593,11 +18893,11 @@ declare class UIPointerRegion extends NSObject implements NSCopying {
 
   readonly identifier: NSObject;
 
-  latchingAxes: number;
+  latchingAxes: interop.Enum<typeof UIAxis>;
 
   static regionWithRectIdentifier<This extends abstract new (...args: any) => any>(this: This, rect: CGRect, identifier: NSObject | null): InstanceType<This>;
 
-  setLatchingAxes(latchingAxes: number): void;
+  setLatchingAxes(latchingAxes: interop.Enum<typeof UIAxis>): void;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -18585,24 +19885,6 @@ declare class UIMutableApplicationShortcutItem extends UIApplicationShortcutItem
   setUserInfo(userInfo: NSDictionary<interop.Object, interop.Object> | Record<interop.Object, interop.Object> | null): void;
 
   setTargetContentIdentifier(targetContentIdentifier: interop.Object | null): void;
-}
-
-declare class UISceneActivationConditions extends NSObject implements NSSecureCoding {
-  init(): this;
-
-  initWithCoder(aDecoder: NSCoder): this;
-
-  canActivateForTargetContentIdentifierPredicate: NSPredicate;
-
-  prefersToActivateForTargetContentIdentifierPredicate: NSPredicate;
-
-  setCanActivateForTargetContentIdentifierPredicate(canActivateForTargetContentIdentifierPredicate: NSPredicate): void;
-
-  setPrefersToActivateForTargetContentIdentifierPredicate(prefersToActivateForTargetContentIdentifierPredicate: NSPredicate): void;
-
-  static readonly supportsSecureCoding: boolean;
-
-  encodeWithCoder(coder: NSCoder): void;
 }
 
 declare class UIAlertView extends UIView {
@@ -19793,7 +21075,7 @@ declare class UIPointerShape extends NSObject implements NSCopying {
 
   static shapeWithRoundedRectCornerRadius<This extends abstract new (...args: any) => any>(this: This, rect: CGRect, cornerRadius: number): InstanceType<This>;
 
-  static beamWithPreferredLengthAxis<This extends abstract new (...args: any) => any>(this: This, length: number, axis: interop.Object): InstanceType<This>;
+  static beamWithPreferredLengthAxis<This extends abstract new (...args: any) => any>(this: This, length: number, axis: interop.Enum<typeof UIAxis>): InstanceType<This>;
 
   copyWithZone(zone: interop.PointerConvertible): interop.Object;
 }
@@ -20756,7 +22038,7 @@ declare class UIListContentConfiguration extends NSObject implements UIContentCo
 
   readonly secondaryTextProperties: UIListContentTextProperties;
 
-  axesPreservingSuperviewLayoutMargins: number;
+  axesPreservingSuperviewLayoutMargins: interop.Enum<typeof UIAxis>;
 
   directionalLayoutMargins: NSDirectionalEdgeInsets;
 
@@ -20794,7 +22076,7 @@ declare class UIListContentConfiguration extends NSObject implements UIContentCo
 
   setSecondaryAttributedText(secondaryAttributedText: NSAttributedString | null): void;
 
-  setAxesPreservingSuperviewLayoutMargins(axesPreservingSuperviewLayoutMargins: number): void;
+  setAxesPreservingSuperviewLayoutMargins(axesPreservingSuperviewLayoutMargins: interop.Enum<typeof UIAxis>): void;
 
   setDirectionalLayoutMargins(directionalLayoutMargins: NSDirectionalEdgeInsets): void;
 
@@ -21617,10 +22899,6 @@ declare class UIAction extends UIMenuElement implements UIMenuLeaf {
   readonly description: string;
 
   readonly debugDescription: string;
-}
-
-declare class UIColorEffect extends UIVisualEffect {
-  static effectWithColor<This extends abstract new (...args: any) => any>(this: This, color: UIColor | null): InstanceType<This>;
 }
 
 declare class NSTextList extends NSObject implements NSSecureCoding, NSCopying {
@@ -26437,11 +27715,7 @@ declare class UISheetPresentationControllerDetent extends NSObject {
 
   readonly identifier: string;
 
-  backgroundEffect: UIVisualEffect;
-
   resolvedValueInContext(context: UISheetPresentationControllerDetentResolutionContext): number;
-
-  setBackgroundEffect(backgroundEffect: UIVisualEffect): void;
 }
 
 declare class UICollectionViewFlowLayout extends UICollectionViewLayout {
@@ -26816,13 +28090,9 @@ declare class UIPresentationController extends NSObject implements UIAppearanceC
 
   overrideTraitCollection: UITraitCollection;
 
-  backgroundEffect: UIVisualEffect;
-
   setDelegate(delegate: UIAdaptivePresentationControllerDelegate | null): void;
 
   setOverrideTraitCollection(overrideTraitCollection: UITraitCollection): void;
-
-  setBackgroundEffect(backgroundEffect: UIVisualEffect): void;
 
   readonly traitOverrides: UITraitOverrides;
 

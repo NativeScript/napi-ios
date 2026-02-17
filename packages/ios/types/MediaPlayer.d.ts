@@ -2,10 +2,6 @@
 /// <reference path="./Runtime.d.ts" />
 /// <reference path="./UIKit.d.ts" />
 
-declare const MPMediaItemPropertyAlbumTrackCount: string;
-
-declare const MPMediaItemPropertyAlbumTrackNumber: string;
-
 declare const MPLanguageOptionCharacteristicDescribesMusicAndSound: string;
 
 declare const MPMoviePlayerWillEnterFullscreenNotification: string;
@@ -48,8 +44,6 @@ declare const MPMusicPlayerControllerVolumeDidChangeNotification: string;
 
 declare const MPMusicPlayerControllerPlaybackStateDidChangeNotification: string;
 
-declare const MPMoviePlayerTimedMetadataKeyDataType: string;
-
 declare const MPMoviePlayerTimedMetadataUpdatedNotification: string;
 
 declare const MPMoviePlayerThumbnailErrorKey: string;
@@ -88,8 +82,6 @@ declare const MPMediaItemPropertyBookmarkTime: string;
 
 declare const MPMediaItemPropertyPlayCount: string;
 
-declare const MPMediaItemPropertyPodcastTitle: string;
-
 declare const MPMediaItemPropertyIsCloudItem: string;
 
 declare const MPMediaItemPropertyLyrics: string;
@@ -108,6 +100,8 @@ declare const MPMediaEntityPropertyPersistentID: string;
 
 declare const MPNowPlayingInfoPropertyInternationalStandardRecordingCode: string;
 
+declare const MPMediaItemPropertyComments: string;
+
 declare const MPMediaItemPropertyDiscCount: string;
 
 declare const MPNowPlayingInfoPropertyMediaType: string;
@@ -117,6 +111,8 @@ declare const MPMoviePlayerWillExitFullscreenNotification: string;
 declare const MPLanguageOptionCharacteristicEasyToRead: string;
 
 declare const MPNowPlayingInfoCollectionIdentifier: string;
+
+declare const MPMediaItemPropertyAlbumTrackNumber: string;
 
 declare const MPMediaPlaylistPropertyName: string;
 
@@ -134,8 +130,6 @@ declare const MPMediaPlaylistPropertyDescriptionText: string;
 
 declare const MPMediaItemPropertyPersistentID: string;
 
-declare const MPMediaPlaylistPropertyCloudGlobalID: string;
-
 declare const MPMediaItemPropertySkipCount: string;
 
 declare const MPMoviePlayerDidExitFullscreenNotification: string;
@@ -148,9 +142,11 @@ declare const MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification: string;
 
 declare const MPNowPlayingInfoPropertyCreditsStartTime: string;
 
-declare const MPMovieSourceTypeAvailableNotification: string;
+declare const MPMoviePlayerTimedMetadataKeyMIMEType: string;
 
-declare const MPMediaItemPropertyAssetURL: string;
+declare const MPMusicPlayerControllerNowPlayingItemDidChangeNotification: string;
+
+declare const MPNowPlayingInfoProperty3x4AnimatedArtwork: string;
 
 declare const MPMediaPlaylistPropertyAuthorDisplayName: string;
 
@@ -158,9 +154,9 @@ declare const MPMediaItemPropertyGenre: string;
 
 declare const MPNowPlayingInfoPropertyChapterNumber: string;
 
-declare const MPMusicPlayerControllerNowPlayingItemDidChangeNotification: string;
+declare const MPMediaItemPropertyPodcastTitle: string;
 
-declare const MPNowPlayingInfoPropertyPlaybackQueueCount: string;
+declare const MPMediaPlaylistPropertyCloudGlobalID: string;
 
 declare const MPMediaItemPropertyArtistPersistentID: string;
 
@@ -178,17 +174,17 @@ declare const MPLanguageOptionCharacteristicVoiceOverTranslation: string;
 
 declare const MPMoviePlayerTimedMetadataKeyLanguageCode: string;
 
+declare const MPMediaLibraryDidChangeNotification: string;
+
 declare const MPNowPlayingInfoPropertyPlaybackQueueIndex: string;
 
 declare const MPMediaItemPropertyDiscNumber: string;
-
-declare const MPMediaItemPropertyComments: string;
 
 declare const MPMediaItemPropertyAlbumArtist: string;
 
 declare const MPNowPlayingInfoPropertyDefaultPlaybackRate: string;
 
-declare const MPNowPlayingInfoProperty3x4AnimatedArtwork: string;
+declare const MPMovieSourceTypeAvailableNotification: string;
 
 declare const MPNowPlayingInfoPropertyAssetURL: string;
 
@@ -202,6 +198,8 @@ declare const MPMovieDurationAvailableNotification: string;
 
 declare const MPNowPlayingInfoProperty1x1AnimatedArtwork: string;
 
+declare const MPMediaItemPropertyAssetURL: string;
+
 declare const MPMediaItemPropertyArtwork: string;
 
 declare const MPNowPlayingInfoPropertyChapterCount: string;
@@ -214,17 +212,17 @@ declare const MPNowPlayingInfoPropertyElapsedPlaybackTime: string;
 
 declare const MPMoviePlayerFullscreenAnimationCurveUserInfoKey: string;
 
+declare const MPMediaItemPropertyAlbumTrackCount: string;
+
 declare const MPErrorDomain: string;
+
+declare const MPMoviePlayerTimedMetadataKeyDataType: string;
+
+declare const MPMoviePlayerPlaybackStateDidChangeNotification: string;
 
 declare const MPMediaItemPropertyReleaseDate: string;
 
-declare const MPMoviePlayerTimedMetadataKeyMIMEType: string;
-
-declare const MPMediaLibraryDidChangeNotification: string;
-
 declare const MPMoviePlayerTimedMetadataKeyName: string;
-
-declare const MPMoviePlayerPlaybackStateDidChangeNotification: string;
 
 declare const MPMediaItemPropertyIsCompilation: string;
 
@@ -235,6 +233,8 @@ declare const MPMediaItemPropertyTitle: string;
 declare const MPMoviePlayerThumbnailImageRequestDidFinishNotification: string;
 
 declare const MPMediaPlaylistPropertySeedItems: string;
+
+declare const MPNowPlayingInfoPropertyPlaybackQueueCount: string;
 
 declare const MPMediaItemPropertyBeatsPerMinute: string;
 
