@@ -104,6 +104,34 @@ void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   JSCallbackInner(closure, func, thisArg, argv, cif->nargs - 2, nullptr, ret);
 }
 
+void JSFunctionCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
+  Closure* closure = (Closure*)data;
+  napi_env env = closure->env;
+
+#ifdef ENABLE_JS_RUNTIME
+  NapiScope scope(env);
+#endif
+
+  napi_value func = get_ref_value(env, closure->func);
+
+  napi_valuetype funcType = napi_undefined;
+  napi_typeof(env, func, &funcType);
+  if (funcType != napi_function) {
+    napi_throw_error(env, nullptr, "Function reference is not callable");
+    return;
+  }
+
+  napi_value thisArg;
+  napi_get_global(env, &thisArg);
+
+  napi_value argv[cif->nargs];
+  for (int i = 0; i < cif->nargs; i++) {
+    argv[i] = closure->argTypes[i]->toJS(env, args[i], 0);
+  }
+
+  JSCallbackInner(closure, func, thisArg, argv, cif->nargs, nullptr, ret);
+}
+
 struct JSBlockCallContext {
   ffi_cif* cif;
   void* ret;
@@ -167,7 +195,7 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   }
 }
 
-Closure::Closure(std::string encoding, bool isBlock) {
+Closure::Closure(std::string encoding, bool isBlock, bool isMethod) {
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   size_t argc = signature.numberOfArguments;
 
@@ -200,7 +228,10 @@ Closure::Closure(std::string encoding, bool isBlock) {
 
   closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
+  ffi_prep_closure_loc(closure, &cif,
+                       isBlock ? JSBlockCallback
+                               : (isMethod ? JSMethodCallback : JSFunctionCallback),
+                       this, fnptr);
 }
 
 Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
@@ -255,7 +286,10 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
 
   closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
+  ffi_prep_closure_loc(closure, &cif,
+                       isBlock ? JSBlockCallback
+                               : (isMethod ? JSMethodCallback : JSFunctionCallback),
+                       this, fnptr);
 }
 
 Closure::~Closure() {

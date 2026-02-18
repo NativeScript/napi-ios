@@ -1,5 +1,6 @@
 #include "Cif.h"
 #include <Foundation/Foundation.h>
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include "Metadata.h"
@@ -21,7 +22,7 @@ Cif* ObjCBridgeState::getMethodCif(napi_env env, Method method) {
     return find;
   }
 
-  auto cif = new Cif(env, encoding);
+  auto cif = new Cif(env, method);
   this->cifs[encoding] = cif;
 
   return cif;
@@ -84,12 +85,14 @@ Cif::Cif(napi_env env, std::string encoding) {
   this->rvalueLength = methodReturnLength;
   this->frameLength = frameLength;
 
-  this->avalues = (void**)malloc(sizeof(void*) * totalArgc);
-  memset(this->avalues, 0, sizeof(void*) * totalArgc);
+  this->avalues = this->argc > 0 ? (void**)malloc(sizeof(void*) * this->argc) : nullptr;
+  if (this->avalues != nullptr) {
+    memset(this->avalues, 0, sizeof(void*) * this->argc);
+  }
   this->shouldFree = (bool*)malloc(sizeof(bool) * this->argc);
   memset(this->shouldFree, false, sizeof(bool) * this->argc);
   this->shouldFreeAny = false;
-  this->avaluesAllocStart = 2;
+  this->avaluesAllocStart = 0;
   this->avaluesAllocCount = 0;
 
   for (int i = 0; i < numberOfArguments; i++) {
@@ -112,8 +115,66 @@ Cif::Cif(napi_env env, std::string encoding) {
     return;
   }
 
-  for (unsigned int i = 2; i < totalArgc; i++) {
-    this->avalues[i] = malloc(cif.arg_types[i]->size);
+  for (unsigned int i = 0; i < this->argc; i++) {
+    this->avalues[i] = malloc(cif.arg_types[i + 2]->size);
+    this->avaluesAllocCount++;
+  }
+}
+
+Cif::Cif(napi_env env, Method method) {
+  const unsigned int totalArgc = method_getNumberOfArguments(method);
+  this->argc = totalArgc >= 2 ? totalArgc - 2 : 0;
+  this->argv = this->argc > 0 ? (napi_value*)malloc(sizeof(napi_value) * this->argc) : nullptr;
+
+  char* returnTypeEnc = method_copyReturnType(method);
+  const char* returnTypePtr = returnTypeEnc;
+  this->returnType = TypeConv::Make(env, &returnTypePtr);
+  if (returnTypeEnc != nullptr) {
+    free(returnTypeEnc);
+  }
+
+  ffi_type* rtype = this->returnType->type;
+  this->atypes = (ffi_type**)malloc(sizeof(ffi_type*) * totalArgc);
+
+  this->rvalueLength = std::max<size_t>(1, rtype->size);
+  this->rvalue = malloc(this->rvalueLength);
+  this->frameLength = 0;
+
+  this->avalues = this->argc > 0 ? (void**)malloc(sizeof(void*) * this->argc) : nullptr;
+  if (this->avalues != nullptr) {
+    memset(this->avalues, 0, sizeof(void*) * this->argc);
+  }
+
+  this->shouldFree = this->argc > 0 ? (bool*)malloc(sizeof(bool) * this->argc) : nullptr;
+  if (this->shouldFree != nullptr) {
+    memset(this->shouldFree, false, sizeof(bool) * this->argc);
+  }
+  this->shouldFreeAny = false;
+  this->avaluesAllocStart = 0;
+  this->avaluesAllocCount = 0;
+
+  for (unsigned int i = 0; i < totalArgc; i++) {
+    char* argEnc = method_copyArgumentType(method, i);
+    const char* argEncPtr = argEnc;
+    auto argTypeInfo = TypeConv::Make(env, &argEncPtr);
+    if (argEnc != nullptr) {
+      free(argEnc);
+    }
+
+    this->atypes[i] = argTypeInfo->type;
+    if (i >= 2) {
+      this->argTypes.push_back(argTypeInfo);
+    }
+  }
+
+  ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, totalArgc, rtype, this->atypes);
+  if (status != FFI_OK) {
+    std::cout << "Failed to prepare CIF, libffi returned error:" << status << std::endl;
+    return;
+  }
+
+  for (unsigned int i = 0; i < this->argc; i++) {
+    this->avalues[i] = malloc(cif.arg_types[i + 2]->size);
     this->avaluesAllocCount++;
   }
 }

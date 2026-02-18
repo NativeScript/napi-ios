@@ -2,7 +2,12 @@
 #import <Foundation/Foundation.h>
 #include <objc/objc.h>
 #include <objc/runtime.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cctype>
 #include <cstring>
+#include <limits>
+#include <unordered_set>
 #include "ClassBuilder.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
@@ -152,6 +157,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
 
 inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues, void* rvalue) {
   bool classMethod = class_isMetaClass(object_getClass(self));
+  SEL selector = avalues != nullptr && cif->cif.nargs >= 2 ? *((SEL*)avalues[1]) : nullptr;
 
   bool supercall = classMethod
                        ? class_conformsToProtocol(self, @protocol(ObjCBridgeClassBuilderProtocol))
@@ -206,6 +212,10 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues, void
 
 // Utility function to check if a JS value can be converted to a specific type
 bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> typeConv) {
+  if (typeConv == nullptr) {
+    return false;
+  }
+
   if (value == nullptr) {
     return true;  // null/undefined can convert to most types
   }
@@ -224,8 +234,19 @@ bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> 
 
     case mdTypeChar:
     case mdTypeUChar:
+      return jsType == napi_boolean || jsType == napi_number || jsType == napi_bigint;
+
     case mdTypeSShort:
+      return jsType == napi_number || jsType == napi_bigint;
+
     case mdTypeUShort:
+      if (jsType == napi_string) {
+        size_t len = 0;
+        napi_get_value_string_utf16(env, value, nullptr, 0, &len);
+        return len == 1;
+      }
+      return jsType == napi_number || jsType == napi_bigint;
+
     case mdTypeSInt:
     case mdTypeUInt:
     case mdTypeSLong:
@@ -235,6 +256,18 @@ bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> 
     case mdTypeFloat:
     case mdTypeDouble:
       return jsType == napi_number || jsType == napi_bigint;
+
+    case mdTypeString:
+      return jsType == napi_string || jsType == napi_object;
+
+    case mdTypeAnyObject:
+      return jsType == napi_object || jsType == napi_function || jsType == napi_string ||
+             jsType == napi_number || jsType == napi_boolean;
+
+    case mdTypeClass:
+    case mdTypeClassObject:
+    case mdTypeProtocolObject:
+      return jsType == napi_function || jsType == napi_object;
 
     case mdTypeInstanceObject:
     case mdTypeNSStringObject:
@@ -263,53 +296,218 @@ bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> 
 
     case mdTypePointer:
     case mdTypeOpaquePointer:
-      return jsType == napi_object || jsType == napi_bigint || jsType == napi_string;
+      return jsType == napi_object || jsType == napi_function || jsType == napi_bigint ||
+             jsType == napi_string;
 
     case mdTypeStruct:
       return jsType == napi_object;
 
     case mdTypeBlock:
-      return jsType == napi_function;
+    case mdTypeFunctionPointer:
+      return jsType == napi_function || jsType == napi_null || jsType == napi_undefined;
 
     default:
-      return true;  // For unknown types, assume compatible
+      return false;
   }
 }
 
-// Find the best initializer for a class given JS arguments
-ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initializers, size_t argc,
-                                        napi_value* argv) {
-  std::vector<ObjCClassMember*> candidates;
+bool isPlainObjectLiteral(napi_env env, napi_value value) {
+  if (value == nullptr) {
+    return false;
+  }
+
+  napi_valuetype type = napi_undefined;
+  napi_typeof(env, value, &type);
+  if (type != napi_object) {
+    return false;
+  }
+
+  bool isArray = false;
+  napi_is_array(env, value, &isArray);
+  if (isArray) {
+    return false;
+  }
+
+  void* wrapped = nullptr;
+  if (napi_unwrap(env, value, &wrapped) == napi_ok && wrapped != nullptr) {
+    return false;
+  }
+
+  return true;
+}
+
+std::string lowerFirst(std::string value) {
+  if (!value.empty()) {
+    value[0] = (char)std::tolower(value[0]);
+  }
+  return value;
+}
+
+std::vector<std::string> selectorTokens(const char* selectorName) {
+  std::vector<std::string> tokens;
+  if (selectorName == nullptr) {
+    return tokens;
+  }
+
+  std::string selector(selectorName);
+  size_t start = 0;
+  while (start < selector.size()) {
+    size_t colon = selector.find(':', start);
+    if (colon == std::string::npos) {
+      break;
+    }
+    tokens.push_back(selector.substr(start, colon - start));
+    start = colon + 1;
+  }
+
+  if (tokens.empty()) {
+    return tokens;
+  }
+
+  std::string& first = tokens[0];
+  if (first.rfind("initWith", 0) == 0 && first.size() > 8) {
+    first = first.substr(8);
+  } else if (first.rfind("init", 0) == 0 && first.size() > 4) {
+    first = first.substr(4);
+  }
+  first = lowerFirst(first);
+
+  for (size_t i = 1; i < tokens.size(); ++i) {
+    tokens[i] = lowerFirst(tokens[i]);
+  }
+
+  return tokens;
+}
+
+bool tryResolveTokenArgs(napi_env env, const char* selectorName, napi_value tokenObject,
+                         std::vector<napi_value>* resolvedArgs) {
+  resolvedArgs->clear();
+
+  std::vector<std::string> tokens = selectorTokens(selectorName);
+  if (tokens.empty()) {
+    return false;
+  }
+
+  for (const std::string& token : tokens) {
+    if (token.empty()) {
+      return false;
+    }
+    bool hasProperty = false;
+    napi_has_named_property(env, tokenObject, token.c_str(), &hasProperty);
+    if (!hasProperty) {
+      return false;
+    }
+    napi_value tokenValue = nullptr;
+    napi_get_named_property(env, tokenObject, token.c_str(), &tokenValue);
+    resolvedArgs->push_back(tokenValue);
+  }
+
+  return !resolvedArgs->empty();
+}
+
+Cif* resolveInitCif(napi_env env, ObjCClassMember* candidate, Class nativeClass) {
+  if (candidate == nullptr || candidate->bridgeState == nullptr) {
+    return nullptr;
+  }
+
+  if (nativeClass != nil) {
+    Method method = class_getInstanceMethod(nativeClass, candidate->methodOrGetter.selector);
+    if (method == nullptr) {
+      return nullptr;
+    }
+    Cif* runtimeCif = candidate->bridgeState->getMethodCif(env, method);
+    Cif* metadataCif =
+        candidate->bridgeState->getMethodCif(env, candidate->methodOrGetter.signatureOffset);
+
+    // Metadata signatures currently under-specify some variadic Objective-C methods
+    // (e.g. initWithTitle:...otherButtonTitles:), so fall back to runtime encoding there.
+    if (metadataCif == nullptr) {
+      return runtimeCif;
+    }
+    if (metadataCif->isVariadic ||
+        (metadataCif->argc == 0 && runtimeCif != nullptr && runtimeCif->argc > 0)) {
+      return runtimeCif != nullptr ? runtimeCif : metadataCif;
+    }
+    return metadataCif;
+  }
+
+  return candidate->bridgeState->getMethodCif(env, candidate->methodOrGetter.signatureOffset);
+}
+
+// Find the best initializer for a class given JS arguments.
+ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initializers,
+                                        Class nativeClass, size_t argc, napi_value* argv,
+                                        std::vector<napi_value>* selectedArgs) {
+  if (initializers == nullptr) {
+    napi_throw_error(env, "NativeScriptException",
+                     "No Objective-C metadata available for constructor invocation.");
+    return nullptr;
+  }
+
+  if (argc > 0 && argv == nullptr) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Invalid constructor arguments for initializer resolution.");
+    return nullptr;
+  }
+
+  struct Candidate {
+    ObjCClassMember* member;
+    Cif* cif;
+    std::vector<napi_value> args;
+    int bonus;
+  };
+
+  std::vector<Candidate> candidates;
+  const bool hasTokenObject = argc == 1 && argv != nullptr && isPlainObjectLiteral(env, argv[0]);
+  napi_value tokenObject = hasTokenObject ? argv[0] : nullptr;
 
   // First pass: find initializers with matching argument count
   for (auto& pair : *initializers) {
     auto* candidate = &pair.second;
-    const char* name = sel_getName(candidate->methodOrGetter.selector);
-    // NSLog(@"Checking initializer: %s", name);
-    if (name[0] != 'i' || name[1] != 'n' || name[2] != 'i' || name[3] != 't') {
+    if (candidate == nullptr || candidate->methodOrGetter.selector == nullptr) {
       continue;
     }
-    Cif* cif = candidate->cif;
-    if (!cif) {
-      // Need to get the CIF to check argument count
-      cif = const_cast<ObjCClassMember*>(candidate)->bridgeState->getMethodCif(
-          env, candidate->methodOrGetter.signatureOffset);
+
+    const std::string& memberName = pair.first;
+    if (memberName.rfind("init", 0) != 0) {
+      continue;
     }
 
-    // Match argument count (cif->argc excludes self and selector)
-    if (cif->argc == argc) {
-      bool canInvoke = true;
+    Cif* cif = resolveInitCif(env, candidate, nativeClass);
+    if (cif == nullptr) {
+      continue;
+    }
+    candidate->cif = cif;
 
-      // Check if all arguments can be converted to the expected types
-      for (size_t i = 0; i < argc; ++i) {
-        if (!canConvertToType(env, argv[i], cif->argTypes[i])) {
-          canInvoke = false;
-          break;
+    auto tryAddCandidate = [&](const std::vector<napi_value>& callArgs, int bonus) {
+      if (cif->argc != callArgs.size()) {
+        return;
+      }
+
+      for (size_t i = 0; i < callArgs.size(); ++i) {
+        if (!canConvertToType(env, callArgs[i], cif->argTypes[i])) {
+          return;
         }
       }
 
-      if (canInvoke) {
-        candidates.push_back(candidate);
+      candidates.push_back(Candidate{candidate, cif, callArgs, bonus});
+    };
+
+    std::vector<napi_value> regularArgs(argc);
+    for (size_t i = 0; i < argc; ++i) {
+      regularArgs[i] = argv[i];
+    }
+    tryAddCandidate(regularArgs, 0);
+
+    if (hasTokenObject) {
+      const char* selectorName = sel_getName(candidate->methodOrGetter.selector);
+      if (selectorName == nullptr) {
+        continue;
+      }
+
+      std::vector<napi_value> tokenArgs;
+      if (tryResolveTokenArgs(env, selectorName, tokenObject, &tokenArgs)) {
+        tryAddCandidate(tokenArgs, 100);
       }
     }
   }
@@ -319,27 +517,116 @@ ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initia
                      "No initializer found that matches constructor invocation.");
     return nullptr;
   } else if (candidates.size() > 1) {
+    auto scoreCandidate = [&](const Candidate& candidate) -> int {
+      int score = candidate.bonus;
+      const char* selectorCStr = sel_getName(candidate.member->methodOrGetter.selector);
+      std::string selectorName = selectorCStr != nullptr ? selectorCStr : "";
+      std::string selectorNameLower = selectorName;
+      std::transform(selectorNameLower.begin(), selectorNameLower.end(), selectorNameLower.begin(),
+                     [](unsigned char ch) { return (char)std::tolower(ch); });
+
+      for (size_t i = 0; i < candidate.args.size(); ++i) {
+        napi_valuetype jsType = napi_undefined;
+        napi_typeof(env, candidate.args[i], &jsType);
+        auto kind = candidate.cif->argTypes[i]->kind;
+
+        if (jsType == napi_object) {
+          bool isArray = false;
+          napi_is_array(env, candidate.args[i], &isArray);
+          if (isArray) {
+            if (selectorNameLower.find("array") != std::string::npos) {
+              score += 8;
+            }
+            if (selectorNameLower.find("url") != std::string::npos ||
+                selectorNameLower.find("file") != std::string::npos ||
+                selectorNameLower.find("coder") != std::string::npos) {
+              score -= 2;
+            }
+          }
+        }
+
+        if ((kind == mdTypeNSStringObject || kind == mdTypeNSMutableStringObject) &&
+            jsType == napi_string) {
+          score += 4;
+        } else if ((kind == mdTypeStruct) && jsType == napi_object) {
+          score += 4;
+        } else if ((kind == mdTypeBool && jsType == napi_boolean) ||
+                   ((kind == mdTypeSInt || kind == mdTypeUInt || kind == mdTypeSLong ||
+                     kind == mdTypeULong || kind == mdTypeSInt64 || kind == mdTypeUInt64 ||
+                     kind == mdTypeFloat || kind == mdTypeDouble) &&
+                    (jsType == napi_number || jsType == napi_bigint))) {
+          score += 3;
+        } else if ((kind == mdTypeClass || kind == mdTypeClassObject ||
+                    kind == mdTypeProtocolObject) &&
+                   jsType == napi_function) {
+          score += 3;
+        } else if ((kind == mdTypeAnyObject || kind == mdTypeInstanceObject) &&
+                   (jsType == napi_object || jsType == napi_function)) {
+          score += 2;
+        } else if (kind == mdTypeString && jsType == napi_string) {
+          score += 2;
+        } else {
+          score += 1;
+        }
+      }
+      return score;
+    };
+
+    int bestScore = std::numeric_limits<int>::min();
+    Candidate* bestCandidate = nullptr;
+    bool tie = false;
+    for (auto& candidate : candidates) {
+      int score = scoreCandidate(candidate);
+      if (score > bestScore) {
+        bestScore = score;
+        bestCandidate = &candidate;
+        tie = false;
+      } else if (score == bestScore) {
+        tie = true;
+      }
+    }
+
+    if (bestCandidate != nullptr && !tie) {
+      if (selectedArgs != nullptr) {
+        *selectedArgs = bestCandidate->args;
+      }
+      bestCandidate->member->cif = bestCandidate->cif;
+      return bestCandidate->member;
+    }
+
     // Prefer "init" if no arguments
     if (argc == 0) {
-      for (auto* candidate : candidates) {
-        const char* selectorName = sel_getName(candidate->methodOrGetter.selector);
+      for (const auto& candidate : candidates) {
+        const char* selectorName = sel_getName(candidate.member->methodOrGetter.selector);
         if (strcmp(selectorName, "init") == 0) {
-          return candidate;
+          if (selectedArgs != nullptr) {
+            selectedArgs->clear();
+          }
+          candidate.member->cif = candidate.cif;
+          return candidate.member;
         }
       }
     }
 
     // If multiple candidates, throw an error with details
     std::string errorMsg = "More than one initializer found that matches constructor invocation:";
-    for (const auto* candidate : candidates) {
+    std::unordered_set<ObjCClassMember*> uniqueMembers;
+    for (const auto& candidate : candidates) {
+      if (!uniqueMembers.insert(candidate.member).second) {
+        continue;
+      }
       errorMsg += " ";
-      errorMsg += sel_getName(candidate->methodOrGetter.selector);
+      errorMsg += sel_getName(candidate.member->methodOrGetter.selector);
     }
     napi_throw_error(env, "NativeScriptException", errorMsg.c_str());
     return nullptr;
   }
 
-  return candidates[0];
+  if (selectedArgs != nullptr) {
+    *selectedArgs = candidates[0].args;
+  }
+  candidates[0].member->cif = candidates[0].cif;
+  return candidates[0].member;
 }
 
 inline id assertSelf(napi_env env, napi_value jsThis) {
@@ -356,6 +643,67 @@ inline id assertSelf(napi_env env, napi_value jsThis) {
   return self;
 }
 
+ObjCClass* resolveInitMetadataClass(napi_env env, napi_value jsThis, ObjCClassMember* method,
+                                    Class nativeClass) {
+  ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+  if (state == nullptr) {
+    return method != nullptr ? method->cls : nullptr;
+  }
+
+  auto resolveFromClass = [&](Class cls) -> ObjCClass* {
+    if (cls == nil) {
+      return nullptr;
+    }
+
+    auto bridgedIt = state->classesByPointer.find(cls);
+    if (bridgedIt != state->classesByPointer.end() && bridgedIt->second != nullptr) {
+      ObjCClass* bridgedClass = bridgedIt->second;
+      if (bridgedClass->metadataOffset != MD_SECTION_OFFSET_NULL) {
+        return bridgedClass;
+      }
+      if (bridgedClass->superclass != nullptr) {
+        return bridgedClass->superclass;
+      }
+    }
+
+    auto mdClsIt = state->mdClassesByPointer.find(cls);
+    if (mdClsIt != state->mdClassesByPointer.end()) {
+      return state->getClass(env, mdClsIt->second);
+    }
+
+    return nullptr;
+  };
+
+  if (jsThis != nullptr) {
+    napi_value constructor = nullptr;
+    if (napi_get_named_property(env, jsThis, "constructor", &constructor) == napi_ok &&
+        constructor != nullptr) {
+      Class constructorClass = nil;
+      if (napi_unwrap(env, constructor, (void**)&constructorClass) == napi_ok) {
+        ObjCClass* resolved = resolveFromClass(constructorClass);
+        if (resolved != nullptr) {
+          return resolved;
+        }
+      }
+    }
+  }
+
+  if (nativeClass != nil) {
+    for (Class current = nativeClass; current != nil; current = class_getSuperclass(current)) {
+      ObjCClass* resolved = resolveFromClass(current);
+      if (resolved != nullptr) {
+        return resolved;
+      }
+    }
+  }
+
+  if (method != nullptr && method->cls != nullptr) {
+    return method->cls;
+  }
+
+  return nullptr;
+}
+
 napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) {
   napi_value jsThis;
   ObjCClassMember* method;
@@ -370,17 +718,35 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   }
 
   SEL sel = method->methodOrGetter.selector;
+  Class nativeClass = [self class];
+  std::vector<napi_value> resolvedInitArgs;
   if (sel == @selector(init) && argc > 0) {
-    napi_value argv[argc];
-    napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, nullptr);
-    Class nativeClass = [self class];
-    ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
-    ObjCClass* cls = state->classesByPointer[nativeClass];
-    // NSLog(@"find init for class: %@, cls: %p", nativeClass, cls);
-    ObjCClassMember* newMethod = findInitializerForArgs(env, &cls->members, argc, argv);
-    // NSLog(@"new init: %p", newMethod);
+    std::vector<napi_value> callArgs(argc);
+    napi_status cbStatus = napi_get_cb_info(env, cbinfo, &argc, callArgs.data(), &jsThis, nullptr);
+    if (cbStatus != napi_ok) {
+      napi_throw_error(env, "NativeScriptException",
+                       "Unable to read constructor arguments for initializer resolution.");
+      return nullptr;
+    }
+    callArgs.resize(argc);
+    ObjCClass* cls = resolveInitMetadataClass(env, jsThis, method, nativeClass);
+    if (cls == nullptr) {
+      napi_throw_error(env, "NativeScriptException",
+                       "Unable to resolve Objective-C class metadata for initializer invocation.");
+      return nullptr;
+    }
+
+    ObjCClassMember* newMethod =
+        findInitializerForArgs(env, &cls->members, nativeClass, argc, callArgs.data(),
+                               &resolvedInitArgs);
     if (newMethod != nullptr) {
       method = newMethod;
+    } else {
+      bool pendingException = false;
+      napi_is_exception_pending(env, &pendingException);
+      if (pendingException) {
+        return nullptr;
+      }
     }
   }
 
@@ -390,8 +756,20 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
         method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
   }
 
-  argc = cif->argc;
-  napi_get_cb_info(env, cbinfo, &argc, cif->argv, &jsThis, nullptr);
+  if (!resolvedInitArgs.empty()) {
+    argc = resolvedInitArgs.size();
+    if (argc != cif->argc) {
+      napi_throw_error(env, "NativeScriptException",
+                       "Initializer resolution produced invalid argument count.");
+      return nullptr;
+    }
+    for (size_t i = 0; i < argc; i++) {
+      cif->argv[i] = resolvedInitArgs[i];
+    }
+  } else {
+    argc = cif->argc;
+    napi_get_cb_info(env, cbinfo, &argc, cif->argv, &jsThis, nullptr);
+  }
 
   void* avalues[cif->cif.nargs];
 
@@ -410,8 +788,18 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   }
 
   id rvalue;
+  bool retainedReceiver = false;
+  if (!method->classMethod) {
+    // init can return a different object and release the original receiver.
+    // Keep the original receiver alive while this JS wrapper still references it.
+    [self retain];
+    retainedReceiver = true;
+  }
 
   if (!objcNativeCall(env, cif, self, avalues, &rvalue)) {
+    if (retainedReceiver) {
+      [self release];
+    }
     return nullptr;
   }
 
@@ -422,19 +810,25 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   }
 
   if (rvalue == nil) {
+    if (retainedReceiver) {
+      [self release];
+    }
     napi_value result;
     napi_get_null(env, &result);
     return result;
   }
 
   napi_value constructor = jsThis;
-  if (!method->classMethod) napi_get_named_property(env, jsThis, "constructor", &constructor);
+  if (!method->classMethod) {
+    napi_get_named_property(env, jsThis, "constructor", &constructor);
+  }
 
   napi_value result = method->bridgeState->getObject(env, rvalue, constructor, kUnownedObject);
 
   if (rvalue != self) {
-    [self retain];
     [rvalue release];
+  } else if (retainedReceiver) {
+    [self release];
   }
 
   return result;
@@ -490,9 +884,25 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
+  const char* selectorName = sel_getName(method->methodOrGetter.selector);
+  if (strcmp(selectorName, "class") == 0) {
+    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
+    if (!receiverIsClass) {
+      napi_value constructor = jsThis;
+      napi_get_named_property(env, jsThis, "constructor", &constructor);
+      return constructor;
+    }
+
+    id classObject = self;
+    return method->bridgeState->getObject(env, classObject, kUnownedObject, 0, nullptr);
+  }
+
   if (cif->returnType->kind == mdTypeInstanceObject) {
+    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     napi_value constructor = jsThis;
-    if (!method->classMethod) napi_get_named_property(env, jsThis, "constructor", &constructor);
+    if (!receiverIsClass) {
+      napi_get_named_property(env, jsThis, "constructor", &constructor);
+    }
     id obj = *((id*)rvalue);
     return method->bridgeState->getObject(env, obj, constructor,
                                           method->returnOwned ? kOwnedObject : kUnownedObject);
@@ -528,13 +938,20 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
     return nullptr;
   }
 
+  const char* selectorName = sel_getName(method->methodOrGetter.selector);
+  if (strcmp(selectorName, "class") == 0) {
+    id classObject = class_isMetaClass(object_getClass(self)) ? self : (id)object_getClass(self);
+    return method->bridgeState->getObject(env, classObject, kUnownedObject, 0, nullptr);
+  }
+
   if (cif->returnType->kind == mdTypeInstanceObject) {
+    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     napi_value constructor = jsThis;
-    if (!method->classMethod) {
+    if (!receiverIsClass) {
       napi_get_named_property(env, jsThis, "constructor", &constructor);
     }
-
-    return method->bridgeState->getObject(env, *((id*)rvalue), constructor,
+    id obj = *((id*)rvalue);
+    return method->bridgeState->getObject(env, obj, constructor,
                                           method->returnOwned ? kOwnedObject : kUnownedObject);
   }
 

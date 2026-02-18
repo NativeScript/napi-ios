@@ -115,11 +115,12 @@ class ObjCBridgeState {
  public:
   std::unordered_map<id, napi_ref> objectRefs;
 
-  napi_ref pointerClass;
-  napi_ref referenceClass;
-  napi_ref createNativeProxy;
-  napi_ref createFastEnumeratorIterator;
-  napi_ref transferOwnershipToNative;
+  napi_ref pointerClass = nullptr;
+  napi_ref referenceClass = nullptr;
+  napi_ref functionReferenceClass = nullptr;
+  napi_ref createNativeProxy = nullptr;
+  napi_ref createFastEnumeratorIterator = nullptr;
+  napi_ref transferOwnershipToNative = nullptr;
 
   std::unordered_map<MDSectionOffset, ObjCClass*> classes;
   std::unordered_map<MDSectionOffset, ObjCProtocol*> protocols;

@@ -11,6 +11,7 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
+#include <cstring>
 #include <string>
 
 namespace nativescript {
@@ -195,10 +196,12 @@ NAPI_FUNCTION(classGetter) {
 }
 
 NAPI_FUNCTION(BridgedConstructor) {
-  NAPI_CALLBACK_BEGIN(1)
+  NAPI_CALLBACK_BEGIN(16)
 
-  napi_valuetype jsType;
-  napi_typeof(env, argv[0], &jsType);
+  napi_valuetype jsType = napi_undefined;
+  if (argc > 0) {
+    napi_typeof(env, argv[0], &jsType);
+  }
 
   id object = nil;
 
@@ -227,13 +230,28 @@ NAPI_FUNCTION(BridgedConstructor) {
       if (!builder->isFinal) builder->build();
     }
 
-    object = [cls new];
+    // Allocate first, then run initializer resolution through the bridged
+    // JS "init" method so constructor arguments participate in selector
+    // matching (including Swift-style token objects).
+    object = [cls alloc];
     jsThis = bridgeState->proxyNativeObject(env, jsThis, object);
   }
 
   napi_wrap(env, jsThis, object, nullptr, nullptr, nullptr);
 
-  return jsThis;
+  napi_value initMethod;
+  napi_status initStatus = napi_get_named_property(env, jsThis, "init", &initMethod);
+  if (initStatus != napi_ok || initMethod == nullptr) {
+    return jsThis;
+  }
+
+  napi_value initResult;
+  initStatus = napi_call_function(env, jsThis, initMethod, argc, argv, &initResult);
+  if (initStatus != napi_ok) {
+    return nullptr;
+  }
+
+  return initResult != nullptr ? initResult : jsThis;
 }
 
 // Used to display the description of a native object in console.log.
@@ -450,8 +468,10 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   MDSectionOffset superClassOffset = MD_SECTION_OFFSET_NULL;
   bool hasMembers = false;
+  std::string jsConstructorName;
   if (isNativeObject) {
     name = NativeObjectName;
+    jsConstructorName = name;
     nativeClass = nil;
   } else {
     auto nameOffset = bridgeState->metadata->getOffset(offset);
@@ -464,6 +484,10 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
     const char* runtimeName = name.c_str();
     if (runtimeNameOffset != MD_SECTION_OFFSET_NULL) {
       runtimeName = bridgeState->metadata->resolveString(runtimeNameOffset);
+    }
+    jsConstructorName = runtimeName;
+    if (jsConstructorName.empty()) {
+      jsConstructorName = name;
     }
     nativeClass = objc_getClass(runtimeName);
     while (hasProtocols) {
@@ -481,8 +505,8 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   napi_value constructor, prototype;
 
-  napi_define_class(env, name.c_str(), name.length(), JS_BridgedConstructor, (void*)nativeClass, 0,
-                    nil, &constructor);
+  napi_define_class(env, jsConstructorName.c_str(), jsConstructorName.length(),
+                    JS_BridgedConstructor, (void*)nativeClass, 0, nil, &constructor);
 
   if (nativeClass != nil) {
     napi_wrap(env, constructor, (void*)nativeClass, nil, nil, nil);

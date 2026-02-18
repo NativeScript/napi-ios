@@ -19,7 +19,7 @@ class ClassBuilder : public ObjCClass {
   ~ClassBuilder();
 
   void addProtocol(ObjCProtocol* protocol);
-  MethodDescriptor* lookupMethodDescriptor(std::string& name);
+  MethodDescriptor* lookupMethodDescriptor(std::string& name, bool setter = false);
   void addMethod(std::string& name, MethodDescriptor* desc, napi_value key,
                  napi_value func = nullptr);
 

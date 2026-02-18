@@ -17,7 +17,7 @@ class Closure {
   static void callBlockFromMainThread(napi_env env, napi_value js_cb,
                                       void* context, void* data);
 
-  Closure(std::string typeEncoding, bool isBlock);
+  Closure(std::string typeEncoding, bool isBlock, bool isMethod = false);
   Closure(MDMetadataReader* reader, MDSectionOffset offset,
           bool isBlock = false, std::string* encoding = nullptr,
           bool isMethod = false, bool isGetter = false, bool isSetter = false);

@@ -1,5 +1,7 @@
 #include "Struct.h"
+#include <algorithm>
 #include <cstring>
+#include <vector>
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
@@ -37,16 +39,58 @@ void ObjCBridgeState::registerStructGlobals(napi_env env, napi_value global) {
       TypeConv::Make(env, metadata, &offset);
     }
 
-    napi_property_descriptor prop = {
-        .utf8name = name,
-        .method = nullptr,
-        .getter = JS_structGetter,
-        .setter = nullptr,
-        .value = nullptr,
-        .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
-        .data = (void*)((size_t)originalOffset),
-    };
-    napi_define_properties(env, global, 1, &prop);
+    bool hasPrimaryName = false;
+    napi_has_named_property(env, global, name, &hasPrimaryName);
+    if (!hasPrimaryName) {
+      napi_property_descriptor prop = {
+          .utf8name = name,
+          .method = nullptr,
+          .getter = JS_structGetter,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+          .data = (void*)((size_t)originalOffset),
+      };
+      napi_define_properties(env, global, 1, &prop);
+    }
+
+    if (!nameStr.empty() && nameStr[0] == '_') {
+      std::string alias = nameStr.substr(1);
+      if (!alias.empty()) {
+        bool hasAlias = false;
+        napi_has_named_property(env, global, alias.c_str(), &hasAlias);
+        if (!hasAlias) {
+          napi_property_descriptor aliasProp = {
+              .utf8name = alias.c_str(),
+              .method = nullptr,
+              .getter = JS_structGetter,
+              .setter = nullptr,
+              .value = nullptr,
+              .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+              .data = (void*)((size_t)originalOffset),
+          };
+          napi_define_properties(env, global, 1, &aliasProp);
+        }
+      }
+    }
+
+    if (nameStr.size() < 6 || nameStr.compare(nameStr.size() - 6, 6, "Struct") != 0) {
+      std::string alias = nameStr + "Struct";
+      bool hasAlias = false;
+      napi_has_named_property(env, global, alias.c_str(), &hasAlias);
+      if (!hasAlias) {
+        napi_property_descriptor aliasProp = {
+            .utf8name = alias.c_str(),
+            .method = nullptr,
+            .getter = JS_structGetter,
+            .setter = nullptr,
+            .value = nullptr,
+            .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+            .data = (void*)((size_t)originalOffset),
+        };
+        napi_define_properties(env, global, 1, &aliasProp);
+      }
+    }
   }
 }
 
@@ -184,11 +228,19 @@ void StructObject_finalize(napi_env env, void* data, void* hint) {
 NAPI_FUNCTION(StructConstructor) {
   NAPI_PREAMBLE
 
-  napi_value jsThis, arg;
+  napi_value jsThis;
+  napi_value argv[1];
   StructInfo* info;
   size_t argc = 1;
 
-  napi_get_cb_info(env, cbinfo, &argc, &arg, &jsThis, (void**)&info);
+  napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, (void**)&info);
+
+  napi_value arg;
+  if (argc > 0) {
+    arg = argv[0];
+  } else {
+    napi_get_undefined(env, &arg);
+  }
 
   napi_valuetype argType;
   napi_typeof(env, arg, &argType);
@@ -216,7 +268,13 @@ NAPI_FUNCTION(StructPropertyGetter) {
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&info);
 
   auto object = StructObject::unwrap(env, jsThis);
-  return object->get(env, info);
+  auto value = object->get(env, info);
+
+  if (StructObject::isInstance(env, value)) {
+    napi_set_named_property(env, value, "__ns_parent_struct", jsThis);
+  }
+
+  return value;
 }
 
 NAPI_FUNCTION(StructPropertySetter) {
@@ -245,6 +303,53 @@ NAPI_FUNCTION(StructCustomInspect) {
 
   napi_value result;
   napi_create_string_utf8(env, str.c_str(), str.length(), &result);
+  return result;
+}
+
+NAPI_FUNCTION(StructEquals) {
+  napi_value jsThis, argv[2];
+  size_t argc = 2;
+  void* data = nullptr;
+  napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, &data);
+
+  StructInfo* info = static_cast<StructInfo*>(data);
+  if (info == nullptr || argc < 2) {
+    napi_value result;
+    napi_get_boolean(env, false, &result);
+    return result;
+  }
+
+  auto serialize = [&](napi_value value, std::vector<uint8_t>& out) -> bool {
+    out.assign(info->size, 0);
+
+    StructObject* structObject = StructObject::unwrap(env, value);
+    if (structObject != nullptr) {
+      size_t copySize = std::min(static_cast<size_t>(info->size),
+                                 static_cast<size_t>(structObject->info->size));
+      memcpy(out.data(), structObject->data, copySize);
+      return true;
+    }
+
+    napi_valuetype type = napi_undefined;
+    napi_typeof(env, value, &type);
+    if (type != napi_object) {
+      return false;
+    }
+
+    StructObject(env, info, value, out.data());
+    bool pending = false;
+    napi_is_exception_pending(env, &pending);
+    return !pending;
+  };
+
+  std::vector<uint8_t> left;
+  std::vector<uint8_t> right;
+  bool okLeft = serialize(argv[0], left);
+  bool okRight = serialize(argv[1], right);
+
+  napi_value result;
+  napi_get_boolean(env, okLeft && okRight && memcmp(left.data(), right.data(), info->size) == 0,
+                   &result);
   return result;
 }
 
@@ -349,7 +454,28 @@ napi_value StructObject::defineJSClass(napi_env env, StructInfo* info) {
   napi_define_class(env, info->name, NAPI_AUTO_LENGTH, JS_StructConstructor, (void*)info,
                     info->fields.size() + 2, properties, &result);
 
-  napi_define_properties(env, result, 1, sizeofProp);
+  const napi_property_descriptor classProps[] = {
+      {
+          .utf8name = "equals",
+          .method = JS_StructEquals,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = napi_default,
+          .data = info,
+      },
+      {
+          .utf8name = nullptr,
+          .name = jsSymbolFor(env, "sizeof"),
+          .method = nullptr,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = size,
+          .attributes = napi_enumerable,
+          .data = nullptr,
+      },
+  };
+  napi_define_properties(env, result, 2, classProps);
 
   free(properties);
 
@@ -357,12 +483,18 @@ napi_value StructObject::defineJSClass(napi_env env, StructInfo* info) {
 }
 
 bool StructObject::isInstance(napi_env env, napi_value object) {
-  napi_value sizeofSymbol = jsSymbolFor(env, "sizeof");
-  napi_value prop;
-  if (napi_get_property(env, object, sizeofSymbol, &prop) == napi_ok) {
-    return true;
+  napi_valuetype valueType = napi_undefined;
+  napi_typeof(env, object, &valueType);
+  if (valueType != napi_object && valueType != napi_function) {
+    return false;
   }
-  return false;
+
+  napi_value sizeofSymbol = jsSymbolFor(env, "sizeof");
+  bool hasProp = false;
+  if (napi_has_property(env, object, sizeofSymbol, &hasProp) != napi_ok) {
+    return false;
+  }
+  return hasProp;
 }
 
 napi_value StructObject::getJSClass(napi_env env, StructInfo* info) {
@@ -381,6 +513,10 @@ napi_value StructObject::fromNative(napi_env env, StructInfo* info, void* data, 
   napi_value cls = getJSClass(env, info);
   napi_new_instance(env, cls, 0, nullptr, &result);
   auto object = StructObject::unwrap(env, result);
+  if (object == nullptr) {
+    return result;
+  }
+
   if (owned) {
     if (object->owned) {
       memcpy(object->data, data, info->size);
@@ -390,7 +526,9 @@ napi_value StructObject::fromNative(napi_env env, StructInfo* info, void* data, 
       object->owned = true;
     }
   } else {
-    object->~StructObject();
+    if (object->owned && object->data != nullptr) {
+      free(object->data);
+    }
     object->data = data;
     object->owned = false;
   }
