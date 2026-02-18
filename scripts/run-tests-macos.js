@@ -27,7 +27,7 @@ if (nsrArg) {
     nsrCandidates.push(path.resolve(nsrArg));
 }
 
-nsrCandidates.push(path.join(__dirname, "dist", "nsr"));
+nsrCandidates.push(path.join(__dirname, "..", "dist", "nsr"));
 
 var nsrBinary = undefined;
 for (var i = 0; i < nsrCandidates.length; i++) {
@@ -45,7 +45,7 @@ if (!nsrBinary) {
     process.exit(1);
 }
 
-var entryScript = path.resolve(entryArg || path.join(__dirname, "TestRunner", "app", "tests", "macos.js"));
+var entryScript = path.resolve(entryArg || path.join(__dirname, "..", "TestRunner", "app", "tests", "macos.js"));
 if (!fs.existsSync(entryScript)) {
     console.error("ERROR: Test entry file not found: " + entryScript);
     process.exit(1);

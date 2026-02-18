@@ -20,16 +20,16 @@ const fs = require("fs");
 const path = require("path");
 const cp = require("child_process");
 
-const projectPath = path.join(__dirname, "napi-ios.xcodeproj");
+const projectPath = path.join(__dirname, "../napi-ios.xcodeproj");
 const scheme = "TestRunner";
 const bundleId = "com.descendra.TestRunner";
 
-const resultsDir = path.join(__dirname, "build", "test-results");
+const resultsDir = path.join(__dirname, "../build", "test-results");
 const defaultJunitPath = path.join(resultsDir, "ios-junit.xml");
-const derivedDataPath = path.join(__dirname, "build", "derived-data", "ios-tests");
+const derivedDataPath = path.join(__dirname, "../build", "derived-data", "ios-tests");
 
-const nativeScriptXCFramework = path.join(__dirname, "dist", "NativeScript.xcframework");
-const tkLiveSyncXCFramework = path.join(__dirname, "dist", "TKLiveSync.xcframework");
+const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
+const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
 
 function parseTimeoutMs(name, fallback) {
     const value = Number(process.env[name] || fallback);
@@ -262,7 +262,7 @@ function hasSimulatorSlice(xcframeworkPath) {
 }
 
 function buildTKLiveSyncSimulatorXCFramework() {
-    const intermediates = path.join(__dirname, "dist", "intermediates", "ios-test-tklivesync");
+    const intermediates = path.join(__dirname, "../dist", "intermediates", "ios-test-tklivesync");
     const sourcePath = path.join(intermediates, "dummy.c");
     const frameworkPath = path.join(intermediates, "TKLiveSync.framework");
     const arm64Binary = path.join(intermediates, "TKLiveSync-arm64");
