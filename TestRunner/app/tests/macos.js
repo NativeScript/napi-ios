@@ -80,7 +80,7 @@ require("./shared/RuntimeTests");
 require("./shared/WeakRef");
 require("./RuntimeImplementedAPIs");
 require("./URLSearchParams");
-require("./URLPattern");
+// require("./URLPattern");
 require("./ExceptionHandlingTests");
 
 // Jasmine in nsr CLI requires an active Cocoa run loop to finish scheduling

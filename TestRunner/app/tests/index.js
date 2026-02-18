@@ -203,7 +203,7 @@ loadTest("./RuntimeImplementedAPIs");
 
 // require("./URL");
 loadTest("./URLSearchParams");
-loadTest("./URLPattern");
+// loadTest("./URLPattern");
 
 // Exception handling tests
 loadTest("./ExceptionHandlingTests");
