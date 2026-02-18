@@ -97,6 +97,9 @@ NAPI_FUNCTION(variableGetter) {
       auto type = TypeConv::Make(env, bridgeState->metadata, &offset);
       auto value = dlsym(bridgeState->self_dl, name);
       if (value == nullptr) {
+        value = dlsym(RTLD_DEFAULT, name);
+      }
+      if (value == nullptr) {
         napi_get_null(env, &result);
       } else {
         result = type->toJS(env, value);
