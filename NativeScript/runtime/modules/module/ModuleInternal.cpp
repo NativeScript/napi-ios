@@ -24,6 +24,66 @@
 using namespace nativescript;
 using namespace std;
 
+namespace {
+bool PathExistsWithExactCase(const std::filesystem::path& path) {
+  std::error_code ec;
+  if (!std::filesystem::exists(path, ec) || ec) {
+    return false;
+  }
+
+  std::filesystem::path normalized = path.lexically_normal();
+  std::filesystem::path current;
+
+  for (const auto& component : normalized) {
+    if (component == normalized.root_name() ||
+        component == normalized.root_directory()) {
+      current /= component;
+      continue;
+    }
+
+    if (component == ".") {
+      continue;
+    }
+
+    if (component == "..") {
+      current = current.parent_path();
+      continue;
+    }
+
+    std::filesystem::path parent = current.empty() ? "." : current;
+    bool matched = false;
+    std::error_code iterEc;
+    for (std::filesystem::directory_iterator it(parent, iterEc), end;
+         !iterEc && it != end; it.increment(iterEc)) {
+      if (it->path().filename() == component) {
+        matched = true;
+        break;
+      }
+    }
+
+    if (iterEc || !matched) {
+      return false;
+    }
+
+    current /= component;
+  }
+
+  return true;
+}
+
+bool IsRegularFileWithExactCase(const std::filesystem::path& path) {
+  std::error_code ec;
+  return PathExistsWithExactCase(path) && std::filesystem::is_regular_file(path, ec) &&
+         !ec;
+}
+
+bool IsDirectoryWithExactCase(const std::filesystem::path& path) {
+  std::error_code ec;
+  return PathExistsWithExactCase(path) && std::filesystem::is_directory(path, ec) &&
+         !ec;
+}
+}  // namespace
+
 ModuleInternal::ModuleInternal()
     : m_env(nullptr),
       m_requireFunction(nullptr),
@@ -307,6 +367,10 @@ napi_value ModuleInternal::LoadInternalModule(napi_env env,
 std::string ModuleInternal::ResolvePathFromPackageJson(
     napi_env env, const std::string& packageJsonPath, bool& error) {
   error = false;
+  if (!IsRegularFileWithExactCase(packageJsonPath)) {
+    return "";
+  }
+
   std::ifstream packageJsonFile(packageJsonPath);
   if (!packageJsonFile.is_open()) {
     // Missing package.json is not fatal for directory resolution.
@@ -363,19 +427,19 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
       packageJsonDir.parent_path().string();
   std::filesystem::path mainPath = packageJsonDirName / main;
 
-  if (std::filesystem::is_directory(mainPath)) {
+  if (IsDirectoryWithExactCase(mainPath)) {
     mainPath = mainPath / "package.json";
-    if (std::filesystem::is_regular_file(mainPath)) {
+    if (IsRegularFileWithExactCase(mainPath)) {
       return ResolvePathFromPackageJson(env, mainPath.string(), error);
     }
 
     std::filesystem::path indexMjs = mainPath.parent_path() / "index.mjs";
-    if (std::filesystem::is_regular_file(indexMjs)) {
+    if (IsRegularFileWithExactCase(indexMjs)) {
       return indexMjs.string();
     }
 
     std::filesystem::path indexJs = mainPath.parent_path() / "index.js";
-    if (std::filesystem::is_regular_file(indexJs)) {
+    if (IsRegularFileWithExactCase(indexJs)) {
       return indexJs.string();
     }
 
@@ -383,7 +447,7 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
     return "";
   }
 
-  if (std::filesystem::is_regular_file(mainPath)) {
+  if (IsRegularFileWithExactCase(mainPath)) {
     return mainPath.string();
   }
 
@@ -392,13 +456,13 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
   if (!mainPath.has_extension()) {
     std::filesystem::path mjsPath = mainPath;
     mjsPath.replace_extension(".mjs");
-    if (std::filesystem::is_regular_file(mjsPath)) {
+    if (IsRegularFileWithExactCase(mjsPath)) {
       return mjsPath.string();
     }
 
     std::filesystem::path jsPath = mainPath;
     jsPath.replace_extension(".js");
-    if (std::filesystem::is_regular_file(jsPath)) {
+    if (IsRegularFileWithExactCase(jsPath)) {
       return jsPath.string();
     }
   }
@@ -424,43 +488,78 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   // Normalize the path to remove redundant ./ sequences
   fullPath = fullPath.lexically_normal();
 
-  bool exists = std::filesystem::exists(fullPath);
-  bool isDirectory = exists && std::filesystem::is_directory(fullPath);
+  bool exists = PathExistsWithExactCase(fullPath);
+  bool isDirectory = exists && IsDirectoryWithExactCase(fullPath);
+  bool isNonRelativeModule =
+      !moduleNameCopy.starts_with("./") && !moduleNameCopy.starts_with("../") &&
+      !moduleNameCopy.starts_with("/") && !moduleNameCopy.starts_with("~");
 
   if (exists == true && isDirectory == true) {
     // Try .mjs first for ES modules
     std::filesystem::path mjsFile = fullPath;
     mjsFile = mjsFile.replace_extension(".mjs");
-    if (std::filesystem::exists(mjsFile) &&
-        !std::filesystem::is_directory(mjsFile)) {
+    if (IsRegularFileWithExactCase(mjsFile)) {
       return mjsFile.string();
     }
 
     // Then try .js for CommonJS
     std::filesystem::path jsFile = fullPath;
     jsFile = jsFile.replace_extension(".js");
-    if (std::filesystem::exists(jsFile) &&
-        !std::filesystem::is_directory(jsFile)) {
+    if (IsRegularFileWithExactCase(jsFile)) {
       return jsFile.string();
     }
   }
 
   if (exists == false) {
+    std::filesystem::path appModulesPath;
+    bool hasAppModulesBase = false;
+
+    if (isNonRelativeModule) {
+      appModulesPath = std::filesystem::path(RuntimeConfig.ApplicationPath) /
+                       "tns_modules" / moduleNameCopy;
+      hasAppModulesBase = true;
+      if (PathExistsWithExactCase(appModulesPath)) {
+        fullPath = appModulesPath;
+        exists = true;
+        isDirectory = IsDirectoryWithExactCase(fullPath);
+      } else {
+        // Preserve legacy runtime behavior for extensionless non-relative
+        // requires by probing app/tns_modules before caller-relative paths.
+        std::filesystem::path appModulesMjs = appModulesPath.string() + ".mjs";
+        if (IsRegularFileWithExactCase(appModulesMjs)) {
+          return appModulesMjs.string();
+        }
+
+        std::filesystem::path appModulesJs = appModulesPath.string() + ".js";
+        if (IsRegularFileWithExactCase(appModulesJs)) {
+          return appModulesJs.string();
+        }
+
+        std::filesystem::path appModulesJson =
+            appModulesPath.string() + ".json";
+        if (IsRegularFileWithExactCase(appModulesJson)) {
+          return appModulesJson.string();
+        }
+      }
+    }
+
     // Try .mjs extension first (ES modules have priority)
-    std::filesystem::path mjsPath = fullPath.string() + ".mjs";
-    if (std::filesystem::exists(mjsPath)) {
+    std::filesystem::path mjsBase = hasAppModulesBase ? appModulesPath : fullPath;
+    std::filesystem::path mjsPath = mjsBase.string() + ".mjs";
+    if (PathExistsWithExactCase(mjsPath)) {
       exists = true;
-      isDirectory = std::filesystem::is_directory(mjsPath);
+      isDirectory = IsDirectoryWithExactCase(mjsPath);
       if (!isDirectory) {
         return mjsPath.string();
       }
     }
 
     // Try .js extension by appending, preserving dotted filenames
-    std::filesystem::path jsPath = fullPath.string() + ".js";
-    if (std::filesystem::exists(jsPath)) {
+    std::filesystem::path jsBase = hasAppModulesBase ? appModulesPath : fullPath;
+    std::filesystem::path jsPath = jsBase.string() + ".js";
+    if (PathExistsWithExactCase(jsPath)) {
       exists = true;
-      isDirectory = std::filesystem::is_directory(jsPath);
+      isDirectory = IsDirectoryWithExactCase(jsPath);
       fullPath = jsPath;
     }
   }
@@ -489,8 +588,8 @@ std::string ModuleInternal::ResolvePath(napi_env env,
     }
   }
 
-  exists = std::filesystem::exists(fullPath);
-  isDirectory = std::filesystem::is_directory(fullPath);
+  exists = PathExistsWithExactCase(fullPath);
+  isDirectory = exists && IsDirectoryWithExactCase(fullPath);
   if (exists == true && isDirectory == false) {
     return fullPath.string();
   }
@@ -498,7 +597,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   if (exists == false) {
     // Try index.mjs first
     std::filesystem::path indexMjs = fullPath.parent_path() / "index.mjs";
-    if (std::filesystem::exists(indexMjs)) {
+    if (IsRegularFileWithExactCase(indexMjs)) {
       return indexMjs.string();
     }
 
@@ -507,7 +606,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
   } else {
     // Try index.mjs first in directory
     std::filesystem::path indexMjs = fullPath / "index.mjs";
-    if (std::filesystem::exists(indexMjs)) {
+    if (IsRegularFileWithExactCase(indexMjs)) {
       return indexMjs.string();
     }
 
@@ -515,7 +614,7 @@ std::string ModuleInternal::ResolvePath(napi_env env,
     fullPath /= "index.js";
   }
 
-  exists = std::filesystem::exists(fullPath);
+  exists = PathExistsWithExactCase(fullPath);
   if (exists == false) {
     throw NativeScriptException("The specified module does not exist: " +
                                 moduleName);
@@ -591,9 +690,9 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
 
         std::filesystem::path fileWithIndexJs = filePath / "index.js";
         std::filesystem::path fileWithIndexMjs = filePath / "index.mjs";
-        if (std::filesystem::exists(fileWithIndexMjs)) {
+        if (IsRegularFileWithExactCase(fileWithIndexMjs)) {
           return LoadImpl(env, fileWithIndexMjs.string(), baseDir, isData);
-        } else if (std::filesystem::exists(fileWithIndexJs)) {
+        } else if (IsRegularFileWithExactCase(fileWithIndexJs)) {
           return LoadImpl(env, fileWithIndexJs.string(), baseDir, isData);
         }
         std::string errMsg = "Unsupported file extension: " + path;

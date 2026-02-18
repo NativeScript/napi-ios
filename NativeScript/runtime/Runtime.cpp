@@ -105,9 +105,78 @@ void Runtime::Init(bool isWorker) {
   napi_set_named_property(env_, global, "global", global);
 
   const char* CompatScript = R"(
-    if (!WeakRef.prototype.get) WeakRef.prototype.get = function() {
-      return this.deref();
-    };
+    if (typeof globalThis.__decorate !== "function") {
+      globalThis.__decorate = function(decorators, target, key, desc) {
+        var c = arguments.length;
+        var r = c < 3 ? target : (desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc);
+        var d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") {
+          r = Reflect.decorate(decorators, target, key, desc);
+        } else {
+          for (var i = decorators.length - 1; i >= 0; i--) {
+            d = decorators[i];
+            if (d) {
+              r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+            }
+          }
+        }
+        if (c > 3 && r) {
+          Object.defineProperty(target, key, r);
+        }
+        return r;
+      };
+    }
+
+    if (typeof globalThis.__param !== "function") {
+      globalThis.__param = function(paramIndex, decorator) {
+        return function(target, key) { decorator(target, key, paramIndex); };
+      };
+    }
+
+    if (typeof globalThis.ObjCClass !== "function") {
+      globalThis.ObjCClass = function ObjCClass(...protocols) {
+        return function(constructor) {
+          constructor.ObjCProtocols = protocols;
+        };
+      };
+    }
+
+    if (typeof WeakRef === "function") {
+      if (!WeakRef.prototype.get && typeof WeakRef.prototype.deref === "function") {
+        WeakRef.prototype.get = WeakRef.prototype.deref;
+      }
+
+      if (!WeakRef.prototype.clear) {
+        WeakRef.prototype.clear = function() {
+          console.warn("WeakRef.clear() is non-standard and has been deprecated. It does nothing and the call can be safely removed.");
+        };
+      }
+    }
+
+    if (!globalThis.__time) {
+      globalThis.__time = function() {
+        if (globalThis.performance && typeof performance.now === "function") {
+          return performance.now();
+        }
+        return Date.now();
+      };
+    }
+
+    if (globalThis.performance && typeof performance.now === "function" &&
+        typeof performance.timeOrigin !== "number") {
+      const now = performance.now();
+      const origin = Date.now() - now;
+      try {
+        Object.defineProperty(performance, "timeOrigin", {
+          configurable: true,
+          enumerable: true,
+          writable: false,
+          value: origin
+        });
+      } catch (_) {
+        performance.timeOrigin = origin;
+      }
+    }
 
     if (!globalThis.__collect) {
       globalThis.__collect = function() {
