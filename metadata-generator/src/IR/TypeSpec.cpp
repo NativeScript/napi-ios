@@ -194,13 +194,18 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
         typeParameters.emplace_back(typeArg, classTypeParameters);
       }
 
-      if (canonicalName == "id" || canonicalName == "Class") {
+      if (canonicalName == "id") {
         if (name == "instancetype") {
           kind = kTypeInstanceObject;
         } else {
           kind = kTypeAnyObject;
         }
-      } else if (canonicalName == "Protocol *") {
+      } else if (canonicalName == "Class") {
+        kind = kTypePointer;
+        pointee = std::make_shared<TypeSpec>();
+        pointee->kind = kTypeVoid;
+      } else if (canonicalName == "Protocol *" || canonicalName == "Protocol*" ||
+                 canonicalName == "Protocol") {
         kind = kTypePointer;
         pointee = std::make_shared<TypeSpec>();
         pointee->kind = kTypeVoid;

@@ -182,19 +182,39 @@ void MetadataFactory::postProcess() {
   resolveRefs();
 
   // Rename protocols whose names conflict with classes.
+  // If the immediate "...Protocol" name is already taken by another protocol,
+  // keep appending a numeric suffix ("...Protocol2", "...Protocol3", ...).
+  std::unordered_map<std::string, std::string> renamedProtocolMap;
+  std::unordered_set<std::string> usedProtocolNames;
+  for (const auto& kv : protocols) {
+    usedProtocolNames.emplace(kv.first);
+  }
 
   for (auto& kv : protocols) {
     ProtocolDecl& protocol = kv.second;
-    if (classes.contains(protocol.name)) {
-      renamedProtocols.emplace(protocol.name);
-      protocol.name = protocol.name + "Protocol";
+    const std::string originalName = protocol.name;
+    if (!classes.contains(originalName)) {
+      continue;
     }
+
+    renamedProtocols.emplace(originalName);
+    usedProtocolNames.erase(originalName);
+
+    std::string newName = originalName + "Protocol";
+    size_t suffix = 2;
+    while (classes.contains(newName) || usedProtocolNames.contains(newName)) {
+      newName = originalName + "Protocol" + std::to_string(suffix++);
+    }
+
+    protocol.name = newName;
+    renamedProtocolMap.emplace(originalName, newName);
+    usedProtocolNames.emplace(newName);
   }
 
-  for (const std::string& name : renamedProtocols) {
-    auto node = protocols.extract(name);
+  for (const auto& kv : renamedProtocolMap) {
+    auto node = protocols.extract(kv.first);
     if (!node.empty()) {
-      node.key() = name + "Protocol";
+      node.key() = kv.second;
       protocols.insert(std::move(node));
     }
   }
@@ -202,8 +222,9 @@ void MetadataFactory::postProcess() {
   for (auto& kv : protocols) {
     ProtocolDecl& protocol = kv.second;
     for (std::string& name : protocol.protocolNames) {
-      if (renamedProtocols.contains(name)) {
-        name += "Protocol";
+      auto renamedIt = renamedProtocolMap.find(name);
+      if (renamedIt != renamedProtocolMap.end()) {
+        name = renamedIt->second;
       }
     }
   }
@@ -211,8 +232,9 @@ void MetadataFactory::postProcess() {
   for (auto& kv : classes) {
     ClassDecl& cls = kv.second;
     for (std::string& name : cls.protocolNames) {
-      if (renamedProtocols.contains(name)) {
-        name += "Protocol";
+      auto renamedIt = renamedProtocolMap.find(name);
+      if (renamedIt != renamedProtocolMap.end()) {
+        name = renamedIt->second;
       }
     }
   }
@@ -233,11 +255,33 @@ void MetadataFactory::postProcess() {
   for (auto& kv : classes) {
     ClassDecl& cls = kv.second;
 
-    if (auto superIt = classes.find(cls.superClassName);
-        superIt != classes.end()) {
-      ClassDecl& ref = superIt->second;
-      cls.superClassRef = &ref;
-      ref.derivedClassRefs.emplace_back(&cls);
+    std::string resolvedSuperClassName = cls.superClassName;
+    std::unordered_set<std::string> visitedSuperClasses;
+    while (!resolvedSuperClassName.empty()) {
+      if (visitedSuperClasses.contains(resolvedSuperClassName)) {
+        resolvedSuperClassName.clear();
+        break;
+      }
+      visitedSuperClasses.emplace(resolvedSuperClassName);
+
+      auto superIt = classes.find(resolvedSuperClassName);
+      if (superIt != classes.end()) {
+        ClassDecl& ref = superIt->second;
+        cls.superClassRef = &ref;
+        cls.superClassName = resolvedSuperClassName;
+        ref.derivedClassRefs.emplace_back(&cls);
+        break;
+      }
+
+      auto skippedIt = skippedClasses.find(resolvedSuperClassName);
+      if (skippedIt != skippedClasses.end() &&
+          !skippedIt->second.superClassName.empty()) {
+        resolvedSuperClassName = skippedIt->second.superClassName;
+        continue;
+      }
+
+      resolvedSuperClassName.clear();
+      break;
     }
 
     implementClassProtocols(cls, cls.protocolNames);
@@ -404,11 +448,12 @@ void MetadataFactory::postProcessFunction(FunctionDecl& decl) {
 }
 
 void MetadataFactory::processClass(CXCursor cursor, bool required) {
+  ClassDecl decl(cursor);
   if (!isAvailable(cursor)) {
+    decl.unavailable = true;
+    skippedClasses.insert_or_assign(decl.name, std::move(decl));
     return;
   }
-
-  ClassDecl decl(cursor);
 
   if (!shouldProcess(cursor, required)) {
     skippedClasses.insert_or_assign(decl.name, std::move(decl));

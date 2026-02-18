@@ -1,7 +1,10 @@
 #pragma once
 
 #include <clang-c/Index.h>
+#include <algorithm>
+#include <cctype>
 #include <string>
+#include <vector>
 
 namespace metagen {
 
@@ -115,9 +118,9 @@ inline std::string getFrameworkName(CXCursor cursor) {
 }
 
 inline bool isAvailable(CXCursor cursor) {
-  CXAvailabilityKind availability = clang_getCursorAvailability(cursor);
-  return availability == CXAvailability_Available ||
-         availability == CXAvailability_Deprecated;
+  // Keep all declarations in metadata, except those that clang marks as
+  // inaccessible.
+  return clang_getCursorAvailability(cursor) != CXAvailability_NotAccessible;
 }
 
 inline bool isSelectorOwned(const std::string& selectorName) {

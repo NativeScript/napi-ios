@@ -32,13 +32,16 @@ ClassDecl::ClassDecl(CXCursor cursor) {
   clang_visitChildren(
       cursor,
       [](CXCursor cursor, CXCursor, CXClientData clientData) {
-        if (!isAvailable(cursor)) {
-          return CXChildVisit_Continue;
-        }
-
         auto cls = (ClassDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
+
+        // Preserve superclass references even when the immediate superclass is
+        // unavailable, so we can later collapse the chain to the nearest
+        // available ancestor.
+        if (kind != CXCursor_ObjCSuperClassRef && !isAvailable(cursor)) {
+          return CXChildVisit_Continue;
+        }
 
         switch (kind) {
           case CXCursor_ObjCSuperClassRef: {
@@ -170,6 +173,12 @@ void MetadataFactory::processClassRefs() {
 
       auto skippedIt = skippedClasses.find(name);
       if (skippedIt != skippedClasses.end()) {
+        if (skippedIt->second.unavailable) {
+          if (!skippedIt->second.superClassName.empty()) {
+            referencedClasses.emplace(skippedIt->second.superClassName);
+          }
+          continue;
+        }
         auto [inserted, _] = classes.try_emplace(name, skippedIt->second);
         postProcessClass(inserted->second);
       } else {

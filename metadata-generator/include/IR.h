@@ -270,6 +270,7 @@ class ClassDecl {
   std::unordered_set<std::string> implementedProtocolNames;
 
   bool tsIgnore = false;
+  bool unavailable = false;
 
   MDSectionOffset mdOffset = MD_SECTION_OFFSET_NULL;
 };

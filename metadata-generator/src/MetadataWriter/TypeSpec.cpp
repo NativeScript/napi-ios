@@ -387,7 +387,7 @@ std::string MDTypeInfoSerde::encode(MDTypeInfo* type) {
     case mdTypeFunctionPointer:
       result = "^v\"";
       result += std::to_string(type->signatureOffset);
-      result = "\"";
+      result += "\"";
       break;
     case mdTypeOpaquePointer:
       result = "^v";
