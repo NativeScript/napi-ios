@@ -126,7 +126,7 @@ napi_value URL::GetSearchParams(napi_env env, napi_callback_info info) {
 
   // Create URLSearchParams from the search string
   url_search_params params(search_string);
-  URLSearchParams* searchParams = new URLSearchParams(params);
+  URLSearchParams* searchParams = new URLSearchParams(params, instance->GetURL());
 
   // Get the URLSearchParams constructor
   napi_value global;

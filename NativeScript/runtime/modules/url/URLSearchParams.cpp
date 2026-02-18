@@ -25,9 +25,24 @@ URLSearchParams* GetInstance(napi_env env, napi_callback_info info) {
 }
 }  // namespace
 
-URLSearchParams::URLSearchParams(url_search_params params) : params_(params) {}
+URLSearchParams::URLSearchParams(url_search_params params, url_aggregator* parent)
+    : params_(params), parent_(parent) {}
 
 url_search_params* URLSearchParams::GetURLSearchParams() { return &params_; }
+
+void URLSearchParams::SyncParent() {
+  if (parent_ == nullptr) {
+    return;
+  }
+
+  auto search = params_.to_string();
+  if (search.empty()) {
+    parent_->set_search("");
+  } else {
+    std::string prefixed = "?" + search;
+    parent_->set_search(prefixed);
+  }
+}
 
 napi_value URLSearchParams::New(napi_env env, napi_callback_info info) {
   NAPI_CALLBACK_BEGIN(1)
@@ -98,6 +113,7 @@ napi_value URLSearchParams::Append(napi_env env, napi_callback_info info) {
 
   instance->GetURLSearchParams()->append(key_buffer.data(),
                                          value_buffer.data());
+  instance->SyncParent();
   return nullptr;
 }
 
@@ -183,6 +199,7 @@ napi_value URLSearchParams::Delete(napi_env env, napi_callback_info info) {
   }
 
   instance->GetURLSearchParams()->remove(buffer.data());
+  instance->SyncParent();
   return nullptr;
 }
 
@@ -254,6 +271,7 @@ napi_value URLSearchParams::Set(napi_env env, napi_callback_info info) {
   }
 
   instance->GetURLSearchParams()->set(key_buffer.data(), value_buffer.data());
+  instance->SyncParent();
   return nullptr;
 }
 
@@ -278,6 +296,7 @@ napi_value URLSearchParams::Sort(napi_env env, napi_callback_info info) {
   if (!instance) return nullptr;
 
   instance->GetURLSearchParams()->sort();
+  instance->SyncParent();
   return nullptr;
 }
 
