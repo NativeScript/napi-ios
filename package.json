@@ -38,8 +38,8 @@
     "build:macos-cli": "./build_nativescript.sh --no-iphone --no-simulator --macos-cli",
     "build:macos-napi": "./build_nativescript.sh --no-iphone --no-simulator --macos-napi",
     "nsr": "./dist/nsr",
-    "test:macos": "node ./run-tests-macos.js ./build/test-results/macos-junit.xml",
-    "test:ios": "node ./run-tests-ios.js"
+    "test:macos": "node ./scripts/run-tests-macos.js ./build/test-results/macos-junit.xml",
+    "test:ios": "node ./scripts/run-tests-ios.js"
   },
   "license": "Apache-2.0",
   "devDependencies": {

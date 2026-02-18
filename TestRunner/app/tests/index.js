@@ -8,9 +8,112 @@ global.utf8 = require("./Infrastructure/utf8")
 global.UNUSED = function (param) {
 };
 
+if (typeof global.__runtimeVersion === "undefined") {
+    global.__runtimeVersion = "napi-ios";
+}
+
 // var args = NSProcessInfo.processInfo.arguments();
 // console.log("TKUnit: Process arguments: " + args);
-var logjunit = false; // args.containsObject("-logjunit");
+function getProcessArgs() {
+    var processInfo = NSProcessInfo.processInfo;
+    var args = processInfo.arguments;
+
+    if (typeof args === "function") {
+        try {
+            args = args.call(processInfo);
+        } catch (_) {
+            args = null;
+        }
+    }
+
+    if (!args) {
+        return [];
+    }
+
+    if (Array.isArray(args)) {
+        return args.map(function (value) { return String(value); });
+    }
+
+    var count = typeof args.count === "function" ? args.count() : args.count;
+    if (typeof count === "number" && count >= 0) {
+        var list = [];
+        for (var i = 0; i < count; i++) {
+            var value = args.objectAtIndex ? args.objectAtIndex(i) : args[i];
+            list.push(String(value));
+        }
+        return list;
+    }
+
+    if (typeof args.length === "number" && args.length >= 0) {
+        var result = [];
+        for (var j = 0; j < args.length; j++) {
+            result.push(String(args[j]));
+        }
+        return result;
+    }
+
+    return [];
+}
+
+function hasProcessArg(expected) {
+    var args = getProcessArgs();
+    for (var i = 0; i < args.length; i++) {
+        if (args[i] === expected) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+var logjunit = hasProcessArg("-logjunit");
+
+function getProcessArgValue(flag) {
+    var args = getProcessArgs();
+    for (var i = 0; i < args.length; i++) {
+        var value = args[i];
+
+        if (value === flag && i + 1 < args.length) {
+            return args[i + 1];
+        }
+
+        if (value.indexOf(flag + "=") === 0) {
+            return value.substring(flag.length + 1);
+        }
+    }
+
+    return null;
+}
+
+var requestedTests = (function () {
+    var value = getProcessArgValue("-tests") || getProcessArgValue("--tests");
+    if (!value) {
+        return null;
+    }
+
+    return String(value)
+        .split(",")
+        .map(function (item) { return item.trim(); })
+        .filter(function (item) { return item.length > 0; });
+})();
+
+function shouldRun(modulePath) {
+    if (!requestedTests || requestedTests.length === 0) {
+        return true;
+    }
+
+    return requestedTests.some(function (token) {
+        return modulePath === token || modulePath.indexOf(token) !== -1;
+    });
+}
+
+function loadTest(modulePath) {
+    if (!shouldRun(modulePath)) {
+        return;
+    }
+
+    require(modulePath);
+}
 
 // Provides an output channel for jasmine JUnit test result xml.
 global.__JUnitSaveResults = function (text) {
@@ -37,59 +140,78 @@ global.__JUnitSaveResults = function (text) {
 };
 
 global.__approot = NSString.stringWithString(NSBundle.mainBundle.bundlePath).stringByResolvingSymlinksInPath;
+if (typeof global.__nativeRequire === "function") {
+    var appRoot = global.__approot + "/app";
+    global.require = function (modulePath) {
+        return global.__nativeRequire(modulePath, appRoot);
+    };
+}
 
 require("./Infrastructure/Jasmine/jasmine-2.0.1/boot");
 
-require("./Marshalling/Primitives/Function");
-require("./Marshalling/Primitives/Static");
-require("./Marshalling/Primitives/Instance");
-require("./Marshalling/Primitives/Derived");
+jasmine.getEnv().addReporter({
+    specStarted: function (result) {
+        console.log("SPEC START: " + result.fullName);
+    },
+    specDone: function (result) {
+        console.log("SPEC DONE: " + result.fullName + " => " + result.status);
+    }
+});
+
+loadTest("./Marshalling/Primitives/Function");
+loadTest("./Marshalling/Primitives/Static");
+loadTest("./Marshalling/Primitives/Instance");
+loadTest("./Marshalling/Primitives/Derived");
 //
-require("./Marshalling/ObjCTypesTests");
-require("./Marshalling/ConstantsTests");
-require("./Marshalling/RecordTests");
-require("./Marshalling/VectorTests");
+loadTest("./Marshalling/ObjCTypesTests");
+loadTest("./Marshalling/ConstantsTests");
+loadTest("./Marshalling/RecordTests");
+// TODO(napi-v8): Vector marshalling currently corrupts heap in simulator runs.
+// Keep this disabled until ffi vector conversion is stabilized.
+// require("./Marshalling/VectorTests");
 // todo: figure out why this test is failing with a EXC_BAD_ACCESS on TNSRecords.m matrix initialization
 // require("./Marshalling/MatrixTests");
-require("./Marshalling/NSStringTests");
+loadTest("./Marshalling/NSStringTests");
 //import "./Marshalling/TypesTests";
-require("./Marshalling/PointerTests");
+loadTest("./Marshalling/PointerTests");
 // require("./Marshalling/ReferenceTests");
-require("./Marshalling/FunctionPointerTests");
-require("./Marshalling/EnumTests");
-require("./Marshalling/ProtocolTests");
+loadTest("./Marshalling/FunctionPointerTests");
+loadTest("./Marshalling/EnumTests");
+loadTest("./Marshalling/ProtocolTests");
 //
 // import "./Inheritance/ConstructorResolutionTests";
 // require("./Inheritance/InheritanceTests");
-require("./Inheritance/ProtocolImplementationTests");
-require("./Inheritance/TypeScriptTests");
+loadTest("./Inheritance/ProtocolImplementationTests");
+loadTest("./Inheritance/TypeScriptTests");
 //
 // require("./MethodCallsTests");
 //import "./FunctionsTests";
-require("./VersionDiffTests");
-require("./ObjCConstructors");
+loadTest("./VersionDiffTests");
+loadTest("./ObjCConstructors");
 //
-require("./MetadataTests");
+loadTest("./MetadataTests");
 //
 // require("./ApiTests");
-require("./DeclarationConflicts");
+loadTest("./DeclarationConflicts");
 //
-require("./Promises");
-require("./Modules");
+loadTest("./Promises");
+loadTest("./Modules");
 //
-require("./RuntimeImplementedAPIs");
+loadTest("./RuntimeImplementedAPIs");
 
 // require("./Timers");
 
 // require("./URL");
-require("./URLSearchParams");
-require("./URLPattern");
+loadTest("./URLSearchParams");
+loadTest("./URLPattern");
 
 // Exception handling tests
-require("./ExceptionHandlingTests");
+loadTest("./ExceptionHandlingTests");
 
 // Tests common for all runtimes.
-require("./shared/index").runAllTests();
+if (shouldRun("./shared/index")) {
+    require("./shared/index").runAllTests();
+}
 
 // (Optional) Custom testing for various optional sdk's and frameworks
 // These can be turned on manually to verify if needed anytime

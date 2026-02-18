@@ -1,0 +1,864 @@
+// Runs TestRunner on an iOS simulator and streams runtime logs directly.
+// This path intentionally avoids XCTest integration so output comes from the app itself.
+//
+// Optional args:
+//  - junit output path (defaults to build/test-results/ios-junit.xml)
+//  - destination (e.g. "platform=iOS Simulator,id=..." or simulator UDID)
+//
+// Env:
+//  - IOS_DESTINATION overrides destination argument.
+//  - IOS_TEST_SKIP_BUILD=1 skips auto-build of iOS simulator runtime artifacts.
+//  - IOS_SWIFT_VERSION overrides default Swift version (default: 5.0).
+//  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
+//  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
+//  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 2 minutes).
+//  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
+//  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
+//  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 45 seconds).
+
+const fs = require("fs");
+const path = require("path");
+const cp = require("child_process");
+
+const projectPath = path.join(__dirname, "napi-ios.xcodeproj");
+const scheme = "TestRunner";
+const bundleId = "com.descendra.TestRunner";
+
+const resultsDir = path.join(__dirname, "build", "test-results");
+const defaultJunitPath = path.join(resultsDir, "ios-junit.xml");
+const derivedDataPath = path.join(__dirname, "build", "derived-data", "ios-tests");
+
+const nativeScriptXCFramework = path.join(__dirname, "dist", "NativeScript.xcframework");
+const tkLiveSyncXCFramework = path.join(__dirname, "dist", "TKLiveSync.xcframework");
+
+function parseTimeoutMs(name, fallback) {
+    const value = Number(process.env[name] || fallback);
+    if (!Number.isFinite(value) || value <= 0) {
+        return fallback;
+    }
+
+    return value;
+}
+
+const commandTimeoutMs = parseTimeoutMs("IOS_COMMAND_TIMEOUT_MS", 3 * 60 * 1000);
+const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", commandTimeoutMs);
+const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
+const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 45 * 1000);
+const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
+const requestedTests = (process.env.IOS_TESTS || "").trim();
+
+function looksLikeDestination(value) {
+    return value.includes("platform=iOS Simulator") || /^[0-9A-Fa-f-]{36}$/.test(value) || value.includes("id=");
+}
+
+function parseArgs() {
+    const args = process.argv.slice(2).filter(Boolean);
+
+    let junitOutPath = defaultJunitPath;
+    let destinationArg;
+
+    for (const arg of args) {
+        if (looksLikeDestination(arg) && !destinationArg) {
+            destinationArg = arg;
+            continue;
+        }
+
+        junitOutPath = path.resolve(arg);
+    }
+
+    return { junitOutPath, destinationArg };
+}
+
+function run(command, args, options = {}) {
+    const effectiveTimeout = options.timeout ?? commandTimeoutMs;
+    const result = cp.spawnSync(command, args, {
+        encoding: "utf8",
+        timeout: effectiveTimeout,
+        ...options
+    });
+
+    if (result.error) {
+        if (result.error.code === "ETIMEDOUT") {
+            throw new Error(`Command timed out after ${effectiveTimeout}ms: ${command} ${args.join(" ")}`);
+        }
+        throw result.error;
+    }
+
+    return result;
+}
+
+function runAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
+    const result = cp.spawnSync(command, args, { stdio: "inherit", timeout: timeoutMs });
+    if (result.error && result.error.code === "ETIMEDOUT") {
+        console.error(`ERROR: Command timed out after ${timeoutMs}ms: ${command} ${args.join(" ")}`);
+        process.exit(1);
+    }
+    if (result.status !== 0) {
+        process.exit(result.status || 1);
+    }
+}
+
+function parseRuntimeKey(runtimeKey) {
+    const match = runtimeKey.match(/iOS[- ](\d+)[- ](\d+)/);
+    if (!match) {
+        return { major: 0, minor: 0 };
+    }
+
+    return {
+        major: Number(match[1]),
+        minor: Number(match[2])
+    };
+}
+
+function listAvailableIphoneSimulators() {
+    const simctl = run("xcrun", ["simctl", "list", "devices", "--json"]);
+    if (simctl.status !== 0) {
+        throw new Error(simctl.stderr || "Failed to list simulators");
+    }
+
+    const json = JSON.parse(simctl.stdout);
+    const devicesByRuntime = json.devices || {};
+
+    const devices = [];
+    for (const runtimeKey of Object.keys(devicesByRuntime)) {
+        if (!runtimeKey.includes("iOS")) {
+            continue;
+        }
+
+        for (const device of devicesByRuntime[runtimeKey] || []) {
+            if (!device.isAvailable || !device.name.startsWith("iPhone")) {
+                continue;
+            }
+
+            devices.push({
+                runtimeKey,
+                runtimeVersion: parseRuntimeKey(runtimeKey),
+                udid: device.udid,
+                name: device.name,
+                state: device.state
+            });
+        }
+    }
+
+    devices.sort((a, b) => {
+        if (b.runtimeVersion.major !== a.runtimeVersion.major) {
+            return b.runtimeVersion.major - a.runtimeVersion.major;
+        }
+
+        if (b.runtimeVersion.minor !== a.runtimeVersion.minor) {
+            return b.runtimeVersion.minor - a.runtimeVersion.minor;
+        }
+
+        return a.name.localeCompare(b.name);
+    });
+
+    return devices;
+}
+
+function pickPreferredSimulator(candidates) {
+    if (candidates.length === 0) {
+        throw new Error("No available iPhone simulator found.");
+    }
+
+    const preferredDeviceNames = [
+        "iPhone 16e",
+        "iPhone 16",
+        "iPhone 16 Plus",
+        "iPhone 16 Pro",
+        "iPhone 16 Pro Max",
+        "iPhone 15",
+        "iPhone 15 Plus",
+        "iPhone 15 Pro",
+        "iPhone 15 Pro Max"
+    ];
+
+    const score = (device) => {
+        const preferredIndex = preferredDeviceNames.indexOf(device.name);
+        if (preferredIndex >= 0) {
+            return preferredIndex;
+        }
+
+        if (device.name.includes("Pro")) {
+            return 10_000;
+        }
+
+        return 5_000;
+    };
+
+    const sorted = [...candidates].sort((a, b) => score(a) - score(b));
+    return sorted.find((d) => d.state === "Booted") || sorted[0];
+}
+
+function normalizeDestinationArg(destinationArg) {
+    if (!destinationArg) {
+        return undefined;
+    }
+
+    if (/^[0-9A-Fa-f-]{36}$/.test(destinationArg)) {
+        return `platform=iOS Simulator,id=${destinationArg}`;
+    }
+
+    return destinationArg;
+}
+
+function resolveDestinationAndSimulator(destinationArg) {
+    const normalized = normalizeDestinationArg(destinationArg);
+    const devices = listAvailableIphoneSimulators();
+
+    if (!normalized) {
+        const selected = pickPreferredSimulator(devices);
+        return {
+            destination: `platform=iOS Simulator,id=${selected.udid}`,
+            simulator: selected
+        };
+    }
+
+    const idMatch = normalized.match(/id=([0-9A-Fa-f-]{36})/);
+    if (idMatch) {
+        const byId = devices.find((d) => d.udid.toLowerCase() === idMatch[1].toLowerCase());
+        if (!byId) {
+            throw new Error(`Requested simulator not found or unavailable: ${idMatch[1]}`);
+        }
+
+        return {
+            destination: `platform=iOS Simulator,id=${byId.udid}`,
+            simulator: byId
+        };
+    }
+
+    const nameMatch = normalized.match(/name=([^,]+)/);
+    if (nameMatch) {
+        const requestedName = nameMatch[1];
+        const sameName = devices.filter((d) => d.name === requestedName);
+        if (sameName.length === 0) {
+            throw new Error(`Requested simulator name not found or unavailable: ${requestedName}`);
+        }
+
+        const selected = sameName[0];
+        return {
+            destination: `platform=iOS Simulator,id=${selected.udid}`,
+            simulator: selected
+        };
+    }
+
+    throw new Error(`Unsupported destination format: ${normalized}`);
+}
+
+function bootSimulator(udid) {
+    run("xcrun", ["simctl", "boot", udid]);
+    const bootstatus = run("xcrun", ["simctl", "bootstatus", udid, "-b"], { stdio: "inherit" });
+    if (bootstatus.status !== 0) {
+        process.exit(bootstatus.status || 1);
+    }
+}
+
+function hasSimulatorSlice(xcframeworkPath) {
+    if (!fs.existsSync(xcframeworkPath)) {
+        return false;
+    }
+
+    const entries = fs.readdirSync(xcframeworkPath, { withFileTypes: true });
+    return entries.some((entry) => entry.isDirectory() && entry.name.includes("simulator"));
+}
+
+function buildTKLiveSyncSimulatorXCFramework() {
+    const intermediates = path.join(__dirname, "dist", "intermediates", "ios-test-tklivesync");
+    const sourcePath = path.join(intermediates, "dummy.c");
+    const frameworkPath = path.join(intermediates, "TKLiveSync.framework");
+    const arm64Binary = path.join(intermediates, "TKLiveSync-arm64");
+    const x64Binary = path.join(intermediates, "TKLiveSync-x86_64");
+    const fatBinary = path.join(frameworkPath, "TKLiveSync");
+    const infoPlistPath = path.join(frameworkPath, "Info.plist");
+
+    fs.rmSync(intermediates, { recursive: true, force: true });
+    fs.mkdirSync(intermediates, { recursive: true });
+    fs.mkdirSync(frameworkPath, { recursive: true });
+    fs.writeFileSync(sourcePath, "void TKLivesyncDummy(void) {}\n");
+
+    console.log("Building minimal TKLiveSync simulator binary for test linking...");
+    runAndRequireSuccess("xcrun", [
+        "--sdk", "iphonesimulator",
+        "clang",
+        "-target", "arm64-apple-ios13.0-simulator",
+        "-dynamiclib",
+        sourcePath,
+        "-install_name", "@rpath/TKLiveSync.framework/TKLiveSync",
+        "-o", arm64Binary
+    ]);
+
+    runAndRequireSuccess("xcrun", [
+        "--sdk", "iphonesimulator",
+        "clang",
+        "-target", "x86_64-apple-ios13.0-simulator",
+        "-dynamiclib",
+        sourcePath,
+        "-install_name", "@rpath/TKLiveSync.framework/TKLiveSync",
+        "-o", x64Binary
+    ]);
+
+    runAndRequireSuccess("xcrun", [
+        "lipo",
+        "-create",
+        arm64Binary,
+        x64Binary,
+        "-output",
+        fatBinary
+    ]);
+
+    fs.writeFileSync(infoPlistPath, `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key><string>org.nativescript.TKLiveSync</string>
+  <key>CFBundleExecutable</key><string>TKLiveSync</string>
+  <key>CFBundleName</key><string>TKLiveSync</string>
+  <key>CFBundlePackageType</key><string>FMWK</string>
+  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleVersion</key><string>1</string>
+</dict>
+</plist>
+`);
+
+    fs.rmSync(tkLiveSyncXCFramework, { recursive: true, force: true });
+    runAndRequireSuccess("xcodebuild", [
+        "-create-xcframework",
+        "-framework", frameworkPath,
+        "-output", tkLiveSyncXCFramework
+    ]);
+}
+
+function ensureIOSSimulatorArtifacts() {
+    const hasNativeScriptSimulator = hasSimulatorSlice(nativeScriptXCFramework);
+    const hasTKLiveSyncSimulator = hasSimulatorSlice(tkLiveSyncXCFramework);
+
+    if (!hasNativeScriptSimulator) {
+        console.log("NativeScript simulator artifacts missing in dist/NativeScript.xcframework; running build:ios-sim...");
+        runAndRequireSuccess("npm", ["run", "build:ios-sim"]);
+    }
+
+    if (!hasTKLiveSyncSimulator) {
+        buildTKLiveSyncSimulatorXCFramework();
+    }
+}
+
+function buildTestRunnerApp(destination, swiftVersion) {
+    fs.rmSync(derivedDataPath, { recursive: true, force: true });
+
+    const args = [
+        "-project", projectPath,
+        "-scheme", scheme,
+        "-configuration", "Debug",
+        "-quiet",
+        "-destination", destination,
+        "-destination-timeout", "120",
+        "-derivedDataPath", derivedDataPath,
+        `SWIFT_VERSION=${swiftVersion}`,
+        "EXCLUDED_SOURCE_FILE_NAMES=Info.plist",
+        "build"
+    ];
+
+    console.log(`Building TestRunner app: xcodebuild -project ${projectPath} -scheme ${scheme} build`);
+    const result = cp.spawnSync("xcodebuild", args, { stdio: "ignore", timeout: buildTimeoutMs });
+    if (result.error && result.error.code === "ETIMEDOUT") {
+        throw new Error(`xcodebuild timed out after ${buildTimeoutMs}ms while building TestRunner.`);
+    }
+    if (result.status !== 0) {
+        console.error("xcodebuild failed. Re-running with full logs...");
+        runAndRequireSuccess("xcodebuild", args, buildTimeoutMs);
+    }
+
+    const appPath = path.join(derivedDataPath, "Build", "Products", "Debug-iphonesimulator", "TestRunner.app");
+    if (!fs.existsSync(appPath)) {
+        throw new Error(`Built app not found at expected path: ${appPath}`);
+    }
+
+    return appPath;
+}
+
+function getAppDataContainerPath(udid) {
+    const result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, "data"]);
+    if (result.status !== 0) {
+        return null;
+    }
+
+    const out = (result.stdout || "").trim();
+    return out || null;
+}
+
+function removeOldJunitFile(udid) {
+    const dataContainer = getAppDataContainerPath(udid);
+    if (!dataContainer) {
+        return;
+    }
+
+    const junitPath = path.join(dataContainer, "Documents", "junit-result.xml");
+    if (fs.existsSync(junitPath)) {
+        fs.rmSync(junitPath, { force: true });
+    }
+}
+
+function startLaunchWithConsole(udid, appArgs = []) {
+    const args = [
+        "simctl",
+        "launch",
+        "--console-pty",
+        "--terminate-running-process",
+        udid,
+        bundleId
+    ];
+    if (appArgs.length > 0) {
+        args.push("--args", ...appArgs);
+    }
+
+    console.log(`Launching app and streaming logs: xcrun ${args.join(" ")}`);
+    return cp.spawn("xcrun", args, {
+        stdio: ["ignore", "pipe", "pipe"]
+    });
+}
+
+function wireOutput(launchProcess, state) {
+    const onStdout = (chunk) => {
+        const text = chunk.toString();
+        state.lastActivityAt = Date.now();
+        state.logs += text;
+        if (state.logs.length > 4 * 1024 * 1024) {
+            state.logs = state.logs.slice(state.logs.length - 2 * 1024 * 1024);
+        }
+        process.stdout.write(text);
+    };
+
+    const onStderr = (chunk) => {
+        const text = chunk.toString();
+        state.lastActivityAt = Date.now();
+        state.logs += text;
+        if (state.logs.length > 4 * 1024 * 1024) {
+            state.logs = state.logs.slice(state.logs.length - 2 * 1024 * 1024);
+        }
+        process.stderr.write(text);
+    };
+
+    launchProcess.stdout.on("data", onStdout);
+    launchProcess.stderr.on("data", onStderr);
+}
+
+function startSimulatorLogStream(udid) {
+    const args = [
+        "simctl",
+        "spawn",
+        udid,
+        "log",
+        "stream",
+        "--style",
+        "compact",
+        "--predicate",
+        'process == "TestRunner"'
+    ];
+
+    console.log(`Streaming simulator logs: xcrun ${args.join(" ")}`);
+    return cp.spawn("xcrun", args, {
+        stdio: ["ignore", "pipe", "pipe"]
+    });
+}
+
+function stripAnsi(text) {
+    return text.replace(/\u001b\[[0-9;]*m/g, "");
+}
+
+function wireLogStreamOutput(logStreamProcess, state) {
+    const buffers = {
+        stdout: "",
+        stderr: ""
+    };
+
+    const includeLine = (normalized) => {
+        return normalized.includes("CONSOLE LOG:") ||
+            normalized.includes("NativeScriptException") ||
+            /Uncaught Exception/i.test(normalized) ||
+            /EXC_BAD_ACCESS|EXC_CRASH|Abort trap/i.test(normalized) ||
+            /heap corruption|malloc: \*\*\*/i.test(normalized) ||
+            normalized.includes("Using metadata from pointer");
+    };
+
+    const fatalPattern = /NativeScriptException::OnUncaughtError|Uncaught Exception|heap corruption|EXC_BAD_ACCESS|EXC_CRASH|Abort trap|malloc: \*\*\*/i;
+
+    const flushLine = (line, streamName) => {
+        if (!line) {
+            return;
+        }
+
+        const normalized = stripAnsi(line);
+        if (!includeLine(normalized)) {
+            return;
+        }
+
+        state.logs += normalized + "\n";
+        state.lastActivityAt = Date.now();
+        if (state.logs.length > 4 * 1024 * 1024) {
+            state.logs = state.logs.slice(state.logs.length - 2 * 1024 * 1024);
+        }
+
+        if (state.jasmineSummary == null) {
+            const summary = parseJasmineSummary(normalized);
+            if (summary) {
+                state.jasmineSummary = summary;
+            }
+        }
+
+        if (fatalPattern.test(normalized)) {
+            state.fatalDetected = true;
+        }
+
+        if (streamName === "stderr") {
+            process.stderr.write(line + "\n");
+        } else {
+            process.stdout.write(line + "\n");
+        }
+    };
+
+    const onChunk = (streamName, chunk) => {
+        const key = streamName;
+        buffers[key] += chunk.toString();
+        const lines = buffers[key].split(/\r?\n/);
+        buffers[key] = lines.pop() || "";
+        for (const line of lines) {
+            flushLine(line, streamName);
+        }
+    };
+
+    logStreamProcess.stdout.on("data", (chunk) => onChunk("stdout", chunk));
+    logStreamProcess.stderr.on("data", (chunk) => onChunk("stderr", chunk));
+}
+
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function readCompletedJunitFileIfPresent(udid) {
+    const dataContainer = getAppDataContainerPath(udid);
+    if (!dataContainer) {
+        return null;
+    }
+
+    const junitPath = path.join(dataContainer, "Documents", "junit-result.xml");
+    if (!fs.existsSync(junitPath)) {
+        return null;
+    }
+
+    const xml = fs.readFileSync(junitPath, "utf8");
+    if (!xml.includes("</testsuites>")) {
+        return null;
+    }
+
+    return { xml, junitPath };
+}
+
+function waitForLaunchProcessClose(launchProcess, timeoutMs) {
+    if (launchProcess.exitCode !== null && launchProcess.exitCode !== undefined) {
+        return Promise.resolve({
+            code: launchProcess.exitCode ?? 0,
+            signal: launchProcess.signalCode || null
+        });
+    }
+
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            if (launchProcess.exitCode === null || launchProcess.exitCode === undefined) {
+                launchProcess.kill("SIGTERM");
+            }
+            reject(new Error(`Timed out waiting for TestRunner process to exit (${timeoutMs}ms).`));
+        }, timeoutMs);
+
+        launchProcess.on("close", (code, signal) => {
+            clearTimeout(timer);
+            resolve({ code: code ?? 0, signal: signal || null });
+        });
+
+        launchProcess.on("error", (error) => {
+            clearTimeout(timer);
+            reject(error);
+        });
+    });
+}
+
+async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs, state) {
+    let launchResult = null;
+    launchProcess.on("close", (code, signal) => {
+        launchResult = { code: code ?? 0, signal: signal || null };
+    });
+
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+        if (state.jasmineSummary) {
+            return { junitResult: null, launchResult, timedOut: false };
+        }
+        if (state.fatalDetected) {
+            return { junitResult: null, launchResult, timedOut: false };
+        }
+
+        const junitResult = readCompletedJunitFileIfPresent(udid);
+        if (junitResult) {
+            return { junitResult, launchResult, timedOut: false };
+        }
+
+        if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
+            return { junitResult: null, launchResult, timedOut: true, inactive: true };
+        }
+
+        await sleep(250);
+    }
+
+    return { junitResult: null, launchResult, timedOut: true, inactive: false };
+}
+
+function extractLaunchPid(logs) {
+    const match = logs.match(/com\.descendra\.TestRunner:\s*(\d+)/);
+    return match ? Number(match[1]) : null;
+}
+
+function collectRecentSimulatorLogs(udid, pid) {
+    const predicate = Number.isInteger(pid)
+        ? `processID == ${pid}`
+        : 'process == "TestRunner"';
+
+    const result = run("xcrun", [
+        "simctl",
+        "spawn",
+        udid,
+        "log",
+        "show",
+        "--style",
+        "compact",
+        "--last",
+        "3m",
+        "--predicate",
+        predicate
+    ]);
+
+    if (result.status !== 0) {
+        return "";
+    }
+
+    const text = result.stdout || "";
+    let lines = text
+        .split(/\r?\n/)
+        .filter((line) =>
+            line.includes("CONSOLE LOG:") ||
+            line.includes("NativeScriptException") ||
+            line.includes("Uncaught") ||
+            line.includes("EXC_BAD_ACCESS") ||
+            line.includes("heap")
+        );
+
+    // Keep only the most recent app run in this log window.
+    const startIndex = (() => {
+        for (let i = lines.length - 1; i >= 0; i--) {
+            if (lines[i].includes("Application Start!")) {
+                return i;
+            }
+        }
+        return -1;
+    })();
+
+    if (startIndex >= 0) {
+        lines = lines.slice(startIndex);
+    }
+
+    // Keep output manageable while preserving the most recent failures/summary.
+    const maxLines = 400;
+    if (lines.length > maxLines) {
+        lines = lines.slice(lines.length - maxLines);
+    }
+
+    return lines.join("\n");
+}
+
+function parseJasmineSummary(logText) {
+    const re = /(SUCCESS|FAILURE):\s+(\d+)\s+specs,\s+(\d+)\s+failure(?:s)?\,\s+(\d+)\s+skipped,\s+(\d+)\s+disabled/i;
+    const match = logText.match(re);
+    if (!match) {
+        return null;
+    }
+
+    return {
+        status: match[1].toUpperCase(),
+        specs: Number(match[2]),
+        failures: Number(match[3]),
+        skipped: Number(match[4]),
+        disabled: Number(match[5])
+    };
+}
+
+function extractCount(xml, attribute) {
+    const regex = new RegExp(`${attribute}="(\\d+)"`, "g");
+    let total = 0;
+    let match;
+    while ((match = regex.exec(xml)) !== null) {
+        total += Number(match[1]);
+    }
+    return total;
+}
+
+function stopAppAndLaunchProcess(udid, launchProcess) {
+    run("xcrun", ["simctl", "terminate", udid, bundleId]);
+
+    if (launchProcess && launchProcess.exitCode === null) {
+        launchProcess.kill("SIGTERM");
+    }
+}
+
+function stopLogStream(logStreamProcess) {
+    if (logStreamProcess && logStreamProcess.exitCode === null) {
+        logStreamProcess.kill("SIGTERM");
+    }
+}
+
+async function main() {
+    const { junitOutPath, destinationArg } = parseArgs();
+
+    if (!fs.existsSync(projectPath)) {
+        console.error(`ERROR: Project not found: ${projectPath}`);
+        process.exit(1);
+    }
+
+    fs.mkdirSync(resultsDir, { recursive: true });
+    fs.mkdirSync(path.dirname(junitOutPath), { recursive: true });
+
+    if (process.env.IOS_TEST_SKIP_BUILD !== "1") {
+        ensureIOSSimulatorArtifacts();
+    }
+
+    const explicitDestination = process.env.IOS_DESTINATION || destinationArg;
+    const resolved = resolveDestinationAndSimulator(explicitDestination);
+    const destination = resolved.destination;
+    const udid = resolved.simulator.udid;
+    const swiftVersion = process.env.IOS_SWIFT_VERSION || "5.0";
+
+    console.log(`Using destination: ${destination} (${resolved.simulator.name})`);
+    bootSimulator(udid);
+
+    const appPath = buildTestRunnerApp(destination, swiftVersion);
+
+    removeOldJunitFile(udid);
+
+    console.log(`Installing app: ${appPath}`);
+    runAndRequireSuccess("xcrun", ["simctl", "install", udid, appPath]);
+
+    // Ensure stale result does not get picked up if a previous run already created the container after install.
+    removeOldJunitFile(udid);
+
+    let launchProcess;
+    let logStreamProcess;
+    let exitCode = 0;
+    const launchState = { logs: "", jasmineSummary: null, fatalDetected: false, lastActivityAt: Date.now() };
+
+    try {
+        logStreamProcess = startSimulatorLogStream(udid);
+        wireLogStreamOutput(logStreamProcess, launchState);
+
+        logStreamProcess.on("error", (error) => {
+            console.error(`ERROR: Failed to start simulator log stream: ${error.message}`);
+        });
+
+        const launchArgs = emitJunitLogs ? ["-logjunit"] : [];
+        if (requestedTests.length > 0) {
+            launchArgs.push("-tests", requestedTests);
+        }
+        launchProcess = startLaunchWithConsole(udid, launchArgs);
+        wireOutput(launchProcess, launchState);
+
+        launchProcess.on("error", (error) => {
+            console.error(`ERROR: Failed to launch app via simctl: ${error.message}`);
+            process.exit(1);
+        });
+
+        console.log("Streaming TestRunner logs...");
+        const { junitResult, launchResult, timedOut, inactive } = await waitForCompletedJunitOrLaunchExit(
+            udid,
+            launchProcess,
+            testTimeoutMs,
+            launchState
+        );
+        if (junitResult) {
+            fs.writeFileSync(junitOutPath, junitResult.xml);
+
+            const tests = extractCount(junitResult.xml, "tests");
+            const failures = extractCount(junitResult.xml, "failures");
+            const errors = extractCount(junitResult.xml, "errors");
+            const skipped = extractCount(junitResult.xml, "skipped");
+
+            console.log(`JUnit source: ${junitResult.junitPath}`);
+            console.log(`JUnit copied to: ${junitOutPath}`);
+            console.log(`Summary: tests=${tests}, failures=${failures}, errors=${errors}, skipped=${skipped}`);
+
+            if (failures > 0 || errors > 0) {
+                exitCode = 1;
+            }
+        } else {
+            const closeResult = launchResult || { code: 0, signal: null };
+            const launchPid = extractLaunchPid(launchState.logs);
+            const simulatorLogs = collectRecentSimulatorLogs(udid, launchPid);
+            if (simulatorLogs) {
+                launchState.logs += `\n${simulatorLogs}`;
+                console.log("\n--- TestRunner Logs (simulator) ---");
+                console.log(simulatorLogs);
+            }
+
+            const jasmineSummary = launchState.jasmineSummary || parseJasmineSummary(launchState.logs);
+            const fatalPatterns = [
+                /NativeScriptException::OnUncaughtError/,
+                /Uncaught Exception/i,
+                /Heap corruption detected/i,
+                /EXC_CRASH|EXC_BAD_ACCESS|Abort trap/i
+            ];
+            const hasFatal = fatalPatterns.some((pattern) => pattern.test(launchState.logs));
+            if (jasmineSummary) {
+                console.log(
+                    `Jasmine summary: ${jasmineSummary.status}: specs=${jasmineSummary.specs}, failures=${jasmineSummary.failures}, skipped=${jasmineSummary.skipped}, disabled=${jasmineSummary.disabled}`
+                );
+                if (jasmineSummary.failures > 0 || jasmineSummary.status === "FAILURE") {
+                    exitCode = 1;
+                }
+            }
+
+            if (timedOut && !jasmineSummary) {
+                if (inactive) {
+                    console.error(`ERROR: No test logs for ${inactivityTimeoutMs}ms; aborting as hung run.`);
+                } else {
+                    console.error(`ERROR: Timed out waiting for test completion (${testTimeoutMs}ms).`);
+                }
+                exitCode = 1;
+            }
+
+            if (!jasmineSummary) {
+                console.error("ERROR: TestRunner exited without Jasmine summary or completed junit-result.xml.");
+                exitCode = 1;
+            }
+
+            if (hasFatal || closeResult.code !== 0) {
+                exitCode = 1;
+            }
+
+            console.log(`TestRunner process ended (code=${closeResult.code}${closeResult.signal ? `, signal=${closeResult.signal}` : ""}).`);
+            if (!jasmineSummary) {
+                console.log("No completed junit-result.xml found; relying on runtime logs.");
+            }
+        }
+    } catch (error) {
+        console.error(`ERROR: ${error.message}`);
+        exitCode = 1;
+    } finally {
+        if (launchProcess) {
+            stopAppAndLaunchProcess(udid, launchProcess);
+            try {
+                await waitForLaunchProcessClose(launchProcess, 5000);
+            } catch (_) {
+                // Ignore close timeout during cleanup.
+            }
+        }
+        stopLogStream(logStreamProcess);
+    }
+
+    process.exit(exitCode);
+}
+
+main();
