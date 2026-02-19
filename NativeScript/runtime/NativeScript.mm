@@ -1,6 +1,9 @@
 #include "NativeScript.h"
 #include "Runtime.h"
 #include "RuntimeConfig.h"
+#include "js_native_api.h"
+#include "jsr.h"
+#include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
 
 using namespace nativescript;
@@ -31,13 +34,93 @@ std::unique_ptr<Runtime> runtime_;
 
 - (void)runMainApplication {
   std::string spec = "./app";
-  runtime_->RunModule(spec);
+  try {
+    runtime_->RunModule(spec);
+  } catch (const NativeScriptException& e) {
+    std::string description = e.Description();
+    NSLog(@"NativeScript runMainApplication failed: %s", description.c_str());
+    @throw [NSException exceptionWithName:@"NativeScriptException"
+                                   reason:@(description.c_str())
+                                 userInfo:nil];
+  } catch (const std::exception& e) {
+    NSLog(@"NativeScript runMainApplication failed: %s", e.what());
+    @throw [NSException exceptionWithName:@"NativeScriptException"
+                                   reason:@(e.what())
+                                 userInfo:nil];
+  }
   runtime_->RunLoop();
   Tasks::Drain();
 }
 
 - (bool)liveSync {
-  return false;
+  if (!runtime_) {
+    return false;
+  }
+
+  napi_env env = runtime_->GetEnv();
+  if (env == nullptr) {
+    return false;
+  }
+
+  bool didInvokeCallback = false;
+
+  NapiScope scope(env);
+
+  napi_value global;
+  if (napi_get_global(env, &global) != napi_ok) {
+    return false;
+  }
+
+  bool hasLiveSyncCallback = false;
+  if (napi_has_named_property(env, global, "__onLiveSync",
+                              &hasLiveSyncCallback) != napi_ok ||
+      !hasLiveSyncCallback) {
+    return false;
+  }
+
+  napi_value callback;
+  if (napi_get_named_property(env, global, "__onLiveSync", &callback) != napi_ok) {
+    return false;
+  }
+
+  napi_valuetype callbackType;
+  if (napi_typeof(env, callback, &callbackType) != napi_ok ||
+      callbackType != napi_function) {
+    return false;
+  }
+
+  napi_value context;
+  if (napi_create_object(env, &context) != napi_ok) {
+    return false;
+  }
+
+  napi_value result;
+  napi_status status = napi_call_function(env, global, callback, 1, &context, &result);
+  if (status != napi_ok) {
+    bool hasPendingException = false;
+    if (napi_is_exception_pending(env, &hasPendingException) == napi_ok &&
+        hasPendingException) {
+      napi_value error;
+      napi_get_and_clear_last_exception(env, &error);
+    }
+    return false;
+  }
+
+  didInvokeCallback = true;
+
+  if (result != nullptr) {
+    napi_valuetype returnType;
+    if (napi_typeof(env, result, &returnType) == napi_ok &&
+        returnType == napi_boolean) {
+      bool callbackResult = false;
+      if (napi_get_value_bool(env, result, &callbackResult) == napi_ok) {
+        didInvokeCallback = callbackResult;
+      }
+    }
+  }
+
+  Tasks::Drain();
+  return didInvokeCallback;
 }
 
 - (void)shutdownRuntime {

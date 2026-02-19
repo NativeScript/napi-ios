@@ -151,7 +151,7 @@
     NSAssert(object.property == -6, NSStringFromSelector(_cmd));
 }
 
-+ (void)apiReadonlyPropertyInProtocolAndOverrideWithSetterInInterface:(UIView*)object {
++ (void)apiReadonlyPropertyInProtocolAndOverrideWithSetterInInterface:(TNSPlatformView*)object {
     NSAssert(CGRectEqualToRect([object bounds], CGRectMake(10, 20, 30, 40)), NSStringFromSelector(_cmd));
 }
 

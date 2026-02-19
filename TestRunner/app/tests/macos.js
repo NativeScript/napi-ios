@@ -1,89 +1,40 @@
-// macOS-focused TestRunner entrypoint for nsr CLI.
-// This keeps the iOS suite untouched and runs a stable subset under nsr.
+// macOS compatibility wrapper.
+// Keep the same test entrypoint behavior as iOS (`index.js`) and only provide
+// small shims needed by nsr-style runners.
 
-console.log("Application Start!");
+if (typeof global.TNSGetOutput !== "function" ||
+    typeof global.TNSLog !== "function" ||
+    typeof global.TNSClearOutput !== "function") {
+    let tnsOutput = null;
 
-require("./Infrastructure/timers");
-require("./Infrastructure/simulator");
-global.utf8 = require("./Infrastructure/utf8");
+    global.TNSGetOutput = function () {
+        if (tnsOutput === null) {
+            tnsOutput = "";
+        }
 
-global.UNUSED = function (param) {
-};
+        return tnsOutput;
+    };
 
-let tnsOutput = null;
+    global.TNSLog = function (message) {
+        let text;
+        try {
+            text = `${message}`;
+        } catch (_) {
+            text = Object.prototype.toString.call(message);
+        }
 
-global.TNSGetOutput = function () {
-    if (tnsOutput === null) {
-        tnsOutput = "";
-    }
+        tnsOutput = global.TNSGetOutput() + text;
+    };
 
-    return tnsOutput;
-};
-
-global.TNSLog = function (message) {
-    let text;
-    try {
-        text = `${message}`;
-    } catch (_) {
-        text = Object.prototype.toString.call(message);
-    }
-    tnsOutput = global.TNSGetOutput() + text;
-};
-
-global.TNSClearOutput = function () {
-    tnsOutput = null;
-};
-
-if (typeof global.__runtimeVersion === "undefined") {
-    global.__runtimeVersion = "nsr-cli";
+    global.TNSClearOutput = function () {
+        tnsOutput = null;
+    };
 }
 
-// Emit JUnit output in the same prefixed format as the iOS runner expects.
-global.__JUnitSaveResults = function (text) {
-    text.split("\n").forEach(function (line) {
-        console.log("TKUnit: " + line);
-    });
-};
+if (typeof global.TNSSaveResults !== "function") {
+    // `index.js` delegates JUnit persistence to TNSSaveResults.
+    // App-based runners provide it natively; nsr-compatible runs can no-op.
+    global.TNSSaveResults = function () {};
+}
 
-global.__approot = __dirname + "/../..";
-
-const appRoot = global.__approot + "/app";
-const tnsModulesRoot = appRoot + "/tns_modules";
-
-// Keep global.require rooted to app/, matching iOS TestRunner behavior.
-global.require = function (modulePath) {
-    return global.__nativeRequire(modulePath, appRoot);
-};
-
-global.__requireOverride = function (modulePath, dirName) {
-    if (modulePath.startsWith("~/")) {
-        return global.__nativeRequire(appRoot + "/" + modulePath.slice(2), dirName);
-    }
-
-    if (!modulePath.startsWith(".") && !modulePath.startsWith("/") &&
-        !modulePath.startsWith("system_lib://")) {
-        try {
-            return global.__nativeRequire(tnsModulesRoot + "/" + modulePath, dirName);
-        } catch (err) {
-            return null;
-        }
-    }
-
-    return null;
-};
-
-require("./Infrastructure/Jasmine/jasmine-2.0.1/boot");
-
-require("./Modules");
-require("./shared/Require");
-require("./shared/RuntimeTests");
-require("./shared/WeakRef");
-require("./RuntimeImplementedAPIs");
-require("./URLSearchParams");
-// require("./URLPattern");
-require("./ExceptionHandlingTests");
-
-// Jasmine in nsr CLI requires an active Cocoa run loop to finish scheduling
-// and reporting all specs.
-execute();
-NSRunLoop.currentRunLoop.run();
+require("./index");

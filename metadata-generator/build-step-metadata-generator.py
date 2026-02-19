@@ -103,12 +103,65 @@ deployment_target_flag_name = env_or_empty("DEPLOYMENT_TARGET_CLANG_FLAG_NAME") 
 deployment_target = env_or_empty(env_or_empty("DEPLOYMENT_TARGET_CLANG_ENV_NAME") or default_deployment_target_clang_env_name) or sdk_version
 std = env("GCC_C_LANGUAGE_STANDARD")
 header_search_paths = env_or_empty("HEADER_SEARCH_PATHS")
-header_search_paths_parsed = map_and_list((lambda s: "-I" + s), shlex.split(header_search_paths))
 framework_search_paths = env_or_empty("FRAMEWORK_SEARCH_PATHS")
-framework_search_paths_parsed = map_and_list((lambda s: "-F" + s), shlex.split(framework_search_paths))
+header_search_paths_list = shlex.split(header_search_paths)
+framework_search_paths_list = shlex.split(framework_search_paths)
+
+if effective_platform_name == "-macosx":
+    sdk_usr_include = os.path.normpath(os.path.join(sdk_root, "usr/include"))
+    filtered_header_search_paths = []
+    for search_path in header_search_paths_list:
+        normalized = os.path.normpath(search_path)
+        if normalized == sdk_usr_include:
+            print(
+                "Skipping SDK usr/include header search path on macOS: {}".format(
+                    search_path
+                )
+            )
+            continue
+        filtered_header_search_paths.append(search_path)
+    header_search_paths_list = filtered_header_search_paths
+
+
+def has_nativescript_framework(search_paths):
+    for search_path in search_paths:
+        if os.path.isdir(os.path.join(search_path, "NativeScript.framework")):
+            return True
+    return False
+
+
+def is_nativescript_source_root(search_path):
+    normalized = os.path.normpath(search_path)
+    srcroot_nativescript = os.path.normpath(os.path.join(src_root, "NativeScript"))
+
+    if normalized == srcroot_nativescript:
+        return True
+
+    return (
+        os.path.isfile(os.path.join(normalized, "NativeScript.h"))
+        and os.path.isdir(os.path.join(normalized, "runtime"))
+    )
+
+
+if has_nativescript_framework(framework_search_paths_list):
+    filtered_header_search_paths = []
+    for search_path in header_search_paths_list:
+        if is_nativescript_source_root(search_path):
+            print("Skipping NativeScript source header search path: {}".format(search_path))
+            continue
+        filtered_header_search_paths.append(search_path)
+    header_search_paths_list = filtered_header_search_paths
+
+header_search_paths_parsed = map_and_list((lambda s: "-I" + s), header_search_paths_list)
+framework_search_paths_parsed = map_and_list((lambda s: "-F" + s), framework_search_paths_list)
 other_cflags = env_or_empty("OTHER_CFLAGS")
 other_cflags_parsed = shlex.split(other_cflags)
 enable_modules = env_bool("CLANG_ENABLE_MODULES")
+if effective_platform_name == "-macosx" and enable_modules:
+    # macOS SDK module maps pull in DriverKit C++ headers during metadata
+    # umbrella discovery, which breaks Objective-C parsing.
+    enable_modules = False
+    print("Disabling clang modules for macOS metadata generation.")
 preprocessor_defs = env_or_empty("GCC_PREPROCESSOR_DEFINITIONS")
 preprocessor_defs_parsed = map_and_list((lambda s: "-D" + s), shlex.split(preprocessor_defs, '\''))
 typescript_output_folder = env_or_none("NS_TYPESCRIPT_DECLARATIONS_PATH") or env_or_none("TNS_TYPESCRIPT_DECLARATIONS_PATH")
@@ -180,9 +233,19 @@ def generate_metadata(arch):
     print("Calling metadata generator with: ")
     print(" ".join(generator_call))
 
-    child_process = subprocess.Popen(generator_call, stderr=subprocess.PIPE, universal_newlines=True)
+    child_process = subprocess.Popen(
+        generator_call,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True
+    )
     sys.stdout.flush()
-    error_stream_content = child_process.communicate()[1]
+    output_stream_content, error_stream_content = child_process.communicate()
+
+    # save stdout stream content to file
+    output_log_file = "{}/metadata-generation-stdout-{}.txt".format(conf_build_dir, arch)
+    print("Saving metadata generation's stdout stream to: {}".format(output_log_file))
+    save_stream_to_file(output_log_file, output_stream_content)
 
     # save error stream content to file
     error_log_file = "{}/metadata-generation-stderr-{}.txt".format(conf_build_dir, arch)
@@ -194,7 +257,19 @@ def generate_metadata(arch):
       save_stream_to_file(yaml_dir_error_log_file, error_stream_content)
 
     if child_process.returncode != 0:
+        # macOS TestRunner currently relies on checked-in metadata fallback.
+        # Keep generator failures non-fatal on macOS while preserving strict
+        # behavior on the other platforms.
+        if effective_platform_name == "-macosx":
+            print(
+                "Warning: metadata generation failed for {} (macOS fallback metadata will be used).".format(
+                    arch
+                )
+            )
+            return
+
         print("Error: Unable to generate metadata for {}.".format(arch))
+        print(output_stream_content)
         print(error_stream_content)
         sys.exit(1)
 

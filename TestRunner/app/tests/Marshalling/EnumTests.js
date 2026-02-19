@@ -55,8 +55,36 @@ describe(module.id, function () {
     });
 
     it("UIKit enums", function () {
-        expect(UIPageViewControllerNavigationOrientation.Horizontal).toBe(0);
-        expect(UIPageViewControllerTransitionStyle.Scroll).toBe(1);
-        expect(UIPageViewControllerNavigationDirection.Forward).toBe(0);
+        if (typeof UIPageViewControllerNavigationOrientation !== "undefined") {
+            expect(UIPageViewControllerNavigationOrientation.Horizontal).toBe(0);
+            expect(UIPageViewControllerTransitionStyle.Scroll).toBe(1);
+            expect(UIPageViewControllerNavigationDirection.Forward).toBe(0);
+            return;
+        }
+
+        if (typeof NSControlStateValue !== "undefined") {
+            expect(NSControlStateValue.On).toBe(1);
+            expect(NSControlStateValue.Off).toBe(0);
+            return;
+        }
+
+        if (typeof NSControlStateValueOn !== "undefined" &&
+            typeof NSControlStateValueOff !== "undefined") {
+            expect(NSControlStateValueOn).toBe(1);
+            expect(NSControlStateValueOff).toBe(0);
+            return;
+        }
+
+        if (typeof NSWindowStyleMask !== "undefined") {
+            expect(NSWindowStyleMask.Titled).not.toBeUndefined();
+            return;
+        }
+
+        if (typeof NSWindowStyleMaskTitled !== "undefined") {
+            expect(NSWindowStyleMaskTitled).not.toBeUndefined();
+            return;
+        }
+
+        pending("Neither UIKit nor AppKit enum sets are available");
     });
 });

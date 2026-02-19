@@ -8,11 +8,22 @@
 #include <ctime>
 #include <fstream>
 
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#endif
+
 #include "libplatform/libplatform.h"
 #include "v8-fast-api-calls.h"
 
 using namespace v8;
 using namespace tns;
+
+#if defined(__APPLE__) && TARGET_OS_IPHONE
+static_assert(v8::internal::PointerCompressionIsEnabled(),
+              "iOS V8 embedder must be built with pointer compression enabled");
+static_assert(v8::internal::SmiValuesAre31Bits(),
+              "iOS V8 embedder must use 31-bit smis on 64-bit arch");
+#endif
 
 tns::SimpleAllocator g_allocator;
 

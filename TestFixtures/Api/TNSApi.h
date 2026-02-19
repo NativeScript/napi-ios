@@ -1,3 +1,13 @@
+#include <TargetConditionals.h>
+
+#if TARGET_OS_OSX
+@class NSColor;
+typedef NSColor TNSPlatformColor;
+#else
+@class UIColor;
+typedef UIColor TNSPlatformColor;
+#endif
+
 typedef NS_ENUM(NSInteger, TNSEnums) {
     TNSEnum1 = -1,
     TNSEnum2,
@@ -26,7 +36,7 @@ void functionThrowsException();
 
 @property(getter=customGetter, setter=customSetter:) int property;
 
-typedef UIColor NIKColor;
+typedef TNSPlatformColor NIKColor;
 @property(strong, nonatomic) NIKColor* strokeColor; // ^{UIColor=#}
 
 + (void)methodThrowsException;

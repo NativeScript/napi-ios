@@ -2,7 +2,7 @@
 #include "TKLiveSync.h"
 #include "unzip.h"
 
-static void tryExtractLiveSyncArchive() {
+static void tryExtractLiveSyncArchive(void) {
     NSFileManager* fileManager = [NSFileManager defaultManager];
 
     NSString* libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject];
@@ -48,7 +48,7 @@ static void tryExtractLiveSyncArchive() {
     }
 }
 
-static void trySetLiveSyncApplicationPath() {
+static void trySetLiveSyncApplicationPath(void) {
     NSFileManager* fileManager = [NSFileManager defaultManager];
 
     NSString* libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject];
@@ -64,7 +64,7 @@ static void trySetLiveSyncApplicationPath() {
     }
 }
 
-void TNSInitializeLiveSync() {
+void TNSInitializeLiveSync(void) {
     tryExtractLiveSyncArchive();
     trySetLiveSyncApplicationPath();
 }

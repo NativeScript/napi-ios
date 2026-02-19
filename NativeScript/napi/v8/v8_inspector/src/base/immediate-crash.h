@@ -5,7 +5,7 @@
 #ifndef V8_BASE_IMMEDIATE_CRASH_H_
 #define V8_BASE_IMMEDIATE_CRASH_H_
 
-#include "include/v8config.h"
+#include "v8config.h"
 #include "src/base/build_config.h"
 
 // Crashes in the fastest possible way with no attempt at logging.

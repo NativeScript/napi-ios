@@ -290,6 +290,17 @@ target_sources(
   "NativeScript.h"
 )
 
+if(TARGET_ENGINE_V8 AND TARGET_PLATFORM_IOS)
+  # iOS V8 slices are built with pointer compression enabled. Keep embedder
+  # build flags in sync to satisfy V8::Initialize() build config checks.
+  target_compile_definitions(
+    ${NAME}
+    PRIVATE
+    V8_COMPRESS_POINTERS
+    V8_31BIT_SMIS_ON_64BIT_ARCH
+  )
+endif()
+
 set(FRAMEWORK_VERSION_VALUE "${VERSION}")
 if(TARGET_PLATFORM_MACOS)
   # macOS framework consumers (including Xcode's copy/sign phases) expect

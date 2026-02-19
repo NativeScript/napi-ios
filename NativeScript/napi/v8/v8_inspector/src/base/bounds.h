@@ -5,7 +5,7 @@
 #ifndef V8_BASE_BOUNDS_H_
 #define V8_BASE_BOUNDS_H_
 
-#include "include/v8config.h"
+#include "v8config.h"
 #include "src/base/macros.h"
 
 namespace v8 {

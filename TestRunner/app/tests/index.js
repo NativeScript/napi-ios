@@ -8,6 +8,10 @@ global.utf8 = require("./Infrastructure/utf8")
 global.UNUSED = function (param) {
 };
 
+if (typeof global.TNSSaveResults !== "function") {
+    global.TNSSaveResults = function () {};
+}
+
 if (typeof global.__runtimeVersion === "undefined") {
     global.__runtimeVersion = "napi-ios";
 }
@@ -139,7 +143,18 @@ global.__JUnitSaveResults = function (text) {
     }
 };
 
-global.__approot = NSString.stringWithString(NSBundle.mainBundle.bundlePath).stringByResolvingSymlinksInPath;
+var fileManager = NSFileManager.defaultManager;
+var bundlePath = NSString.stringWithString(NSBundle.mainBundle.bundlePath).stringByResolvingSymlinksInPath;
+var resourcePath = NSString.stringWithString(NSBundle.mainBundle.resourcePath).stringByResolvingSymlinksInPath;
+
+if (fileManager.fileExistsAtPath(bundlePath + "/app")) {
+    global.__approot = bundlePath;
+} else if (fileManager.fileExistsAtPath(resourcePath + "/app")) {
+    global.__approot = resourcePath;
+} else {
+    global.__approot = bundlePath;
+}
+
 if (typeof global.__nativeRequire === "function") {
     var appRoot = global.__approot + "/app";
     global.require = function (modulePath) {
@@ -219,4 +234,8 @@ if (shouldRun("./shared/index")) {
 
 execute();
 
-UIApplicationMain(0, null, null, null);
+if (typeof UIApplicationMain === "function") {
+    UIApplicationMain(0, null, null, null);
+} else if (typeof NSApplicationMain === "function") {
+    NSApplicationMain(0, null);
+}

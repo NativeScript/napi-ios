@@ -11,6 +11,7 @@
 
 #ifdef DEBUG
 #include <notify.h>
+#include <TKLiveSync/TKLiveSync.h>
 #include "macros.h"
 #endif
 
@@ -35,6 +36,11 @@ NativeScript* nativescriptStart;
                      notify_post(NOTIFICATION("AppRefreshFailed"));
                  }
              });
+
+             TNSInitializeLiveSync();
+             if (getenv("TNSBaseDir")) {
+                 baseDir = @(getenv("TNSBaseDir"));
+             }
 
      #endif
 

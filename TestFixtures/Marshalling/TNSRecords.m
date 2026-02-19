@@ -4,12 +4,9 @@
 typedef vector_float2 simd_float2;
 typedef vector_float3 simd_float3;
 typedef vector_float4 simd_float4;
-#define simd_make_float2(a, b) \
-    { a, b }
-#define simd_make_float3(a, b, c) \
-    { a, b, c }
-#define simd_make_float4(a, b, c, d) \
-    { a, b, c, d }
+#define simd_make_float2(a, b) ((simd_float2){ (a), (b) })
+#define simd_make_float3(a, b, c) ((simd_float3){ (a), (b), (c) })
+#define simd_make_float4(a, b, c, d) ((simd_float4){ (a), (b), (c), (d) })
 #endif
 
 TNSVerySimpleStruct getSimpleStruct() {
