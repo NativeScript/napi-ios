@@ -1,9 +1,9 @@
 #include "Object.h"
+#include <cstring>
 #include "JSObject.h"
 #include "ObjCBridge.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
-#include <cstring>
 
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
@@ -133,6 +133,11 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
   }
 
   NAPI_PREAMBLE
+
+  auto roundTrip = getRoundTripObject(env, obj);
+  if (roundTrip != nullptr) {
+    return roundTrip;
+  }
 
   auto find = objectRefs.find(obj);
   if (find != objectRefs.end()) {
@@ -296,6 +301,11 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership owne
     return nullptr;
   }
 
+  auto roundTrip = getRoundTripObject(env, obj);
+  if (roundTrip != nullptr) {
+    return roundTrip;
+  }
+
   auto find = objectRefs.find(obj);
   if (find != objectRefs.end()) {
     auto value = get_ref_value(env, find->second);
@@ -313,8 +323,8 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership owne
   const char* className = objIsClass ? class_getName((Class)obj) : "";
   if ((objMetaName != nullptr && std::strstr(objMetaName, "TSObject") != nullptr) ||
       (className != nullptr && std::strstr(className, "TSObject") != nullptr)) {
-    NSLog(@"[getObject class] obj=%p objMeta=%s className=%s classOffset=%u directHit=%d",
-          obj, objMetaName, className, classOffset, findClass != classesByPointer.end());
+    NSLog(@"[getObject class] obj=%p objMeta=%s className=%s classOffset=%u directHit=%d", obj,
+          objMetaName, className, classOffset, findClass != classesByPointer.end());
   }
   if (findClass != classesByPointer.end()) {
     return get_ref_value(env, findClass->second->constructor);

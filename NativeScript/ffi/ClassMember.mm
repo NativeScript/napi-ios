@@ -3,8 +3,8 @@
 #include <objc/objc.h>
 #include <objc/runtime.h>
 #include <algorithm>
-#include <cstdlib>
 #include <cctype>
+#include <cstdlib>
 #include <cstring>
 #include <limits>
 #include <unordered_set>
@@ -704,6 +704,26 @@ ObjCClass* resolveInitMetadataClass(napi_env env, napi_value jsThis, ObjCClassMe
   return nullptr;
 }
 
+class RoundTripCacheFrameGuard {
+ public:
+  RoundTripCacheFrameGuard(napi_env env, ObjCBridgeState* bridgeState)
+      : env_(env), bridgeState_(bridgeState) {
+    if (bridgeState_ != nullptr) {
+      bridgeState_->beginRoundTripCacheFrame(env_);
+    }
+  }
+
+  ~RoundTripCacheFrameGuard() {
+    if (bridgeState_ != nullptr) {
+      bridgeState_->endRoundTripCacheFrame(env_);
+    }
+  }
+
+ private:
+  napi_env env_;
+  ObjCBridgeState* bridgeState_;
+};
+
 napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) {
   napi_value jsThis;
   ObjCClassMember* method;
@@ -716,6 +736,8 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   if (self == nullptr) {
     return nullptr;
   }
+
+  RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
   SEL sel = method->methodOrGetter.selector;
   Class nativeClass = [self class];
@@ -736,9 +758,8 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
       return nullptr;
     }
 
-    ObjCClassMember* newMethod =
-        findInitializerForArgs(env, &cls->members, nativeClass, argc, callArgs.data(),
-                               &resolvedInitArgs);
+    ObjCClassMember* newMethod = findInitializerForArgs(env, &cls->members, nativeClass, argc,
+                                                        callArgs.data(), &resolvedInitArgs);
     if (newMethod != nullptr) {
       method = newMethod;
     } else {
@@ -845,6 +866,8 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   if (self == nullptr) {
     return nullptr;
   }
+
+  RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
   Cif* cif = method->cif;
   if (cif == nullptr) {
@@ -970,6 +993,8 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   if (self == nullptr) {
     return nullptr;
   }
+
+  RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
   Cif* cif = method->setterCif;
   if (cif == nullptr) {

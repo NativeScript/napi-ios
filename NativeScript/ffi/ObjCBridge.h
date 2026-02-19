@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include "AutoreleasePool.h"
 #include "CFunction.h"
@@ -86,6 +87,85 @@ class ObjCBridgeState {
 
   void unregisterObject(id object) noexcept;
 
+  inline void beginRoundTripCacheFrame(napi_env /*env*/) {
+    roundTripCacheFrames.emplace_back();
+  }
+
+  inline bool hasRoundTripCacheFrame() const {
+    return !roundTripCacheFrames.empty();
+  }
+
+  inline void cacheRoundTripObject(napi_env env, id object, napi_value value) {
+    if (object == nil || roundTripCacheFrames.empty()) {
+      return;
+    }
+
+    auto& frame = roundTripCacheFrames.back();
+    if (frame.find(object) != frame.end()) {
+      return;
+    }
+
+    frame[object] = make_ref(env, value);
+  }
+
+  inline napi_value getRoundTripObject(napi_env env, id object) const {
+    if (object == nil) {
+      return nullptr;
+    }
+
+    if (roundTripCacheFrames.empty()) {
+      auto recent = recentRoundTripCache.find(object);
+      if (recent == recentRoundTripCache.end()) {
+        return nullptr;
+      }
+
+      return get_ref_value(env, recent->second);
+    }
+
+    for (auto frame = roundTripCacheFrames.rbegin();
+         frame != roundTripCacheFrames.rend(); ++frame) {
+      auto find = frame->find(object);
+      if (find == frame->end()) {
+        continue;
+      }
+
+      return get_ref_value(env, find->second);
+    }
+
+    auto recent = recentRoundTripCache.find(object);
+    if (recent != recentRoundTripCache.end()) {
+      return get_ref_value(env, recent->second);
+    }
+
+    return nullptr;
+  }
+
+  inline void endRoundTripCacheFrame(napi_env env) {
+    if (roundTripCacheFrames.empty()) {
+      return;
+    }
+
+    auto frame = std::move(roundTripCacheFrames.back());
+    roundTripCacheFrames.pop_back();
+
+    if (!roundTripCacheFrames.empty()) {
+      auto& parent = roundTripCacheFrames.back();
+      for (auto& entry : frame) {
+        if (parent.find(entry.first) == parent.end()) {
+          parent[entry.first] = entry.second;
+        } else {
+          napi_delete_reference(env, entry.second);
+        }
+      }
+      return;
+    }
+
+    for (const auto& entry : recentRoundTripCache) {
+      napi_delete_reference(env, entry.second);
+    }
+    recentRoundTripCache = std::move(frame);
+  }
+
   CFunction* getCFunction(napi_env env, MDSectionOffset offset);
 
   inline StructInfo* getStructInfo(napi_env env, MDSectionOffset offset) {
@@ -145,6 +225,8 @@ class ObjCBridgeState {
 
  private:
   std::unordered_map<MDSectionOffset, StructInfo*> structInfoCache;
+  std::vector<std::unordered_map<id, napi_ref>> roundTripCacheFrames;
+  std::unordered_map<id, napi_ref> recentRoundTripCache;
   void* objc_autoreleasePool;
 };
 

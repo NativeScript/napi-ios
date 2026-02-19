@@ -988,9 +988,9 @@ class PointerTypeConv : public TypeConv {
 
         str[len] = '\0';
 
-        bool shouldCreateCFString = pointeeType != nullptr &&
-                                    (pointeeType->kind == mdTypeNSStringObject ||
-                                     pointeeType->kind == mdTypeNSMutableStringObject);
+        bool shouldCreateCFString =
+            pointeeType != nullptr && (pointeeType->kind == mdTypeNSStringObject ||
+                                       pointeeType->kind == mdTypeNSMutableStringObject);
 
         if (shouldCreateCFString) {
           CFStringRef cfStr =
@@ -1105,9 +1105,8 @@ class PointerTypeConv : public TypeConv {
       return;
     }
 
-    bool isCFString = pointeeType != nullptr &&
-                      (pointeeType->kind == mdTypeNSStringObject ||
-                       pointeeType->kind == mdTypeNSMutableStringObject);
+    bool isCFString = pointeeType != nullptr && (pointeeType->kind == mdTypeNSStringObject ||
+                                                 pointeeType->kind == mdTypeNSMutableStringObject);
 
     if (isCFString) {
       CFRelease((CFStringRef)value);
@@ -1483,8 +1482,7 @@ class ObjCObjectTypeConv : public TypeConv {
       return null;
     }
 
-    if ([obj isKindOfClass:[NSNumber class]] &&
-        ![obj isKindOfClass:[NSDecimalNumber class]]) {
+    if ([obj isKindOfClass:[NSNumber class]] && ![obj isKindOfClass:[NSDecimalNumber class]]) {
       if (CFGetTypeID((CFTypeRef)obj) == CFBooleanGetTypeID()) {
         napi_value result;
         napi_get_boolean(env, [obj boolValue], &result);
@@ -1510,6 +1508,11 @@ class ObjCObjectTypeConv : public TypeConv {
     }
 
     auto bridgeState = ObjCBridgeState::InstanceData(env);
+    auto roundTrip = bridgeState->getRoundTripObject(env, obj);
+    if (roundTrip != nullptr) {
+      return roundTrip;
+    }
+
     auto existing = bridgeState->objectRefs.find(obj);
     if (existing != bridgeState->objectRefs.end()) {
       return get_ref_value(env, existing->second);
@@ -1612,12 +1615,12 @@ class ObjCObjectTypeConv : public TypeConv {
       case napi_function: {
         auto bridgeState = ObjCBridgeState::InstanceData(env);
         auto cacheRoundTrip = [&](id nativeObj) {
-          if (nativeObj == nil) {
+          if (nativeObj == nil || bridgeState == nullptr ||
+              !bridgeState->hasRoundTripCacheFrame()) {
             return;
           }
-          if (bridgeState->objectRefs.find(nativeObj) == bridgeState->objectRefs.end()) {
-            bridgeState->objectRefs[nativeObj] = make_ref(env, value);
-          }
+
+          bridgeState->cacheRoundTripObject(env, nativeObj, value);
         };
 
         if (Pointer::isInstance(env, value)) {
@@ -2195,9 +2198,8 @@ class ArrayTypeConv : public TypeConv {
     napi_value result;
     napi_create_array_with_length(env, arraySize, &result);
 
-    size_t elementSize = elementType != nullptr && elementType->type != nullptr
-                             ? elementType->type->size
-                             : 0;
+    size_t elementSize =
+        elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
     if (elementSize == 0) {
       elementSize = sizeof(void*);
     }
@@ -2222,9 +2224,8 @@ class ArrayTypeConv : public TypeConv {
                 bool* shouldFreeAny) override {
     NAPI_PREAMBLE
 
-    size_t elementSize = elementType != nullptr && elementType->type != nullptr
-                             ? elementType->type->size
-                             : 0;
+    size_t elementSize =
+        elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
     if (elementSize == 0) {
       elementSize = sizeof(void*);
     }
