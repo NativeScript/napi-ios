@@ -5,9 +5,9 @@
 #ifndef V8_INSPECTOR_V8_REGEX_H_
 #define V8_INSPECTOR_V8_REGEX_H_
 
-#include "include/v8-persistent-handle.h"
 #include "src/base/macros.h"
 #include "src/inspector/string-16.h"
+#include "v8-persistent-handle.h"
 
 namespace v8 {
 class RegExp;

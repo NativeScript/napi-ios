@@ -8,11 +8,11 @@
 #include <memory>
 #include <vector>
 
-#include "include/v8-inspector.h"
-#include "include/v8-local-handle.h"
 #include "src/base/macros.h"
 #include "src/inspector/protocol/Runtime.h"
 #include "src/inspector/string-16.h"
+#include "v8-inspector.h"
+#include "v8-local-handle.h"
 
 namespace v8 {
 class StackFrame;

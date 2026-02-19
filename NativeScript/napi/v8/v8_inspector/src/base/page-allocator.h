@@ -7,9 +7,9 @@
 
 #include <memory>
 
-#include "include/v8-platform.h"
 #include "src/base/base-export.h"
 #include "src/base/compiler-specific.h"
+#include "v8-platform.h"
 
 namespace v8 {
 namespace base {

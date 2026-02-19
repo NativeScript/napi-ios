@@ -5,7 +5,7 @@
 #ifndef V8_COMMON_HIGH_ALLOCATION_THROUGHPUT_SCOPE_H_
 #define V8_COMMON_HIGH_ALLOCATION_THROUGHPUT_SCOPE_H_
 
-#include "include/v8-platform.h"
+#include "v8-platform.h"
 
 namespace v8 {
 namespace internal {

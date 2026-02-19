@@ -11,7 +11,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "include/v8-inspector.h"
 #include "src/base/macros.h"
 #include "src/inspector/inspected-context.h"
 #include "src/inspector/protocol/Debugger.h"
@@ -19,6 +18,7 @@
 #include "src/inspector/protocol/Runtime.h"
 #include "src/inspector/v8-debugger-id.h"
 #include "src/inspector/v8-debugger-script.h"
+#include "v8-inspector.h"
 
 namespace v8_inspector {
 

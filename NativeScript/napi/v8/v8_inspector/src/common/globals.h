@@ -11,13 +11,13 @@
 #include <limits>
 #include <ostream>
 
-#include "include/v8-internal.h"
 #include "src/base/atomic-utils.h"
 #include "src/base/build_config.h"
 #include "src/base/enum-set.h"
 #include "src/base/flags.h"
 #include "src/base/logging.h"
 #include "src/base/macros.h"
+#include "v8-internal.h"
 
 #define V8_INFINITY std::numeric_limits<double>::infinity()
 

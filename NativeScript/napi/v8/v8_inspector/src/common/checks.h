@@ -5,9 +5,9 @@
 #ifndef V8_COMMON_CHECKS_H_
 #define V8_COMMON_CHECKS_H_
 
-#include "include/v8-internal.h"
 #include "src/base/logging.h"
 #include "src/common/globals.h"
+#include "v8-internal.h"
 
 namespace v8 {
 

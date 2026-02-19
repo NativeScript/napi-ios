@@ -16,9 +16,8 @@
 // [BABYLON-NATIVE-ADDITION]: For INTPTR_MAX and INT64_MAX
 #include <stdint.h>
 
-// [BABYLON-NATIVE-ADDITION]: Enable V8 Pointer Compression and Sandbox for 64-bit architecture
-// #if INTPTR_MAX == INT64_MAX
-// #ifndef V8_COMPRESS_POINTERS
+// [BABYLON-NATIVE-ADDITION]: Enable V8 Pointer Compression and Sandbox for
+// 64-bit architecture #if INTPTR_MAX == INT64_MAX #ifndef V8_COMPRESS_POINTERS
 // #define V8_COMPRESS_POINTERS 1
 // #endif
 // #ifndef V8_31BIT_SMIS_ON_64BIT_ARCH
@@ -30,18 +29,17 @@
 // #endif
 
 #include <v8.h>
+
 #include <cassert>
 
-#define NAPI_ARRAYSIZE(array) \
-  (sizeof(array) / sizeof(array[0]))
+#define NAPI_ARRAYSIZE(array) (sizeof(array) / sizeof(array[0]))
 
 inline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,
-    const char* data,
-    int length) {
-    return v8::String::NewFromOneByte(isolate,
-        reinterpret_cast<const uint8_t*>(data),
-        v8::NewStringType::kNormal,
-        length).ToLocalChecked();
+                                           const char* data, int length) {
+  return v8::String::NewFromOneByte(isolate,
+                                    reinterpret_cast<const uint8_t*>(data),
+                                    v8::NewStringType::kNormal, length)
+      .ToLocalChecked();
 }
 
 #define NAPI_FIXED_ONE_BYTE_STRING(isolate, string) \
@@ -53,13 +51,13 @@ template <typename T>
 using Persistent = v8::Persistent<T>;
 
 class PersistentToLocal {
-public:
-    template <class TypeName>
-    static inline v8::Local<TypeName> Strong(
-        const Persistent<TypeName>& persistent) {
-        return *reinterpret_cast<v8::Local<TypeName>*>(
-            const_cast<Persistent<TypeName>*>(&persistent));
-    }
+ public:
+  template <class TypeName>
+  static inline v8::Local<TypeName> Strong(
+      const Persistent<TypeName>& persistent) {
+    return *reinterpret_cast<v8::Local<TypeName>*>(
+        const_cast<Persistent<TypeName>*>(&persistent));
+  }
 };
 }  // end of namespace v8impl
 
@@ -75,8 +73,12 @@ public:
 #define CHECK_LE(a, b) CHECK((a) <= (b))
 #endif
 
-// [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead of private property
-#define NAPI_PRIVATE_KEY(context)                                      \
-  (v8::Private::New(context->GetIsolate()))
+// [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead of
+// private property
+#if V8_MAJOR_VERSION >= 14
+#define NAPI_PRIVATE_KEY(context) (v8::Private::New(v8::Isolate::GetCurrent()))
+#else
+#define NAPI_PRIVATE_KEY(context) (v8::Private::New(context->GetIsolate()))
+#endif
 
 #endif  // SRC_JS_NATIVE_API_V8_INTERNALS_H_
