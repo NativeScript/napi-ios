@@ -369,6 +369,7 @@ class SCharTypeConv : public TypeConv {
       napi_get_boolean(env, raw == 1, &result);
       return result;
     }
+
     napi_value result;
     napi_create_int32(env, raw, &result);
     return result;
@@ -401,6 +402,7 @@ class UCharTypeConv : public TypeConv {
       napi_get_boolean(env, raw == 1, &result);
       return result;
     }
+
     napi_value result;
     napi_create_uint32(env, raw, &result);
     return result;
@@ -433,6 +435,7 @@ class UInt8TypeConv : public TypeConv {
       napi_get_boolean(env, raw == 1, &result);
       return result;
     }
+
     napi_value result;
     napi_create_uint32(env, raw, &result);
     return result;
@@ -782,17 +785,43 @@ class BoolTypeConv : public TypeConv {
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    uint8_t raw = *(uint8_t*)value;
+    if (raw == 0 || raw == 1) {
+      napi_value result;
+      napi_get_boolean(env, raw == 1, &result);
+      return result;
+    }
+
     napi_value result;
-    napi_get_boolean(env, *(bool*)value, &result);
+    napi_create_uint32(env, raw, &result);
     return result;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    bool val;
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+
+    if (valueType == napi_number) {
+      uint32_t val = 0;
+      napi_coerce_to_number(env, value, &value);
+      napi_get_value_uint32(env, value, &val);
+      *(uint8_t*)result = static_cast<uint8_t>(val);
+      return;
+    }
+
+    if (valueType == napi_bigint) {
+      uint64_t val = 0;
+      bool lossless = false;
+      napi_get_value_bigint_uint64(env, value, &val, &lossless);
+      *(uint8_t*)result = static_cast<uint8_t>(val);
+      return;
+    }
+
+    bool val = false;
     napi_coerce_to_bool(env, value, &value);
     napi_get_value_bool(env, value, &val);
-    *(bool*)result = val;
+    *(uint8_t*)result = static_cast<uint8_t>(val ? 1 : 0);
   }
 
   void encode(std::string* encoding) override { *encoding += "B"; }

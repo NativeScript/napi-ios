@@ -1,10 +1,10 @@
 #include "NativeScript.h"
 #include "Runtime.h"
 #include "RuntimeConfig.h"
-#include "js_native_api.h"
-#include "jsr.h"
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
+#include "js_native_api.h"
+#include "jsr.h"
 
 using namespace nativescript;
 
@@ -44,9 +44,7 @@ std::unique_ptr<Runtime> runtime_;
                                  userInfo:nil];
   } catch (const std::exception& e) {
     NSLog(@"NativeScript runMainApplication failed: %s", e.what());
-    @throw [NSException exceptionWithName:@"NativeScriptException"
-                                   reason:@(e.what())
-                                 userInfo:nil];
+    @throw [NSException exceptionWithName:@"NativeScriptException" reason:@(e.what()) userInfo:nil];
   }
   runtime_->RunLoop();
   Tasks::Drain();
@@ -72,8 +70,7 @@ std::unique_ptr<Runtime> runtime_;
   }
 
   bool hasLiveSyncCallback = false;
-  if (napi_has_named_property(env, global, "__onLiveSync",
-                              &hasLiveSyncCallback) != napi_ok ||
+  if (napi_has_named_property(env, global, "__onLiveSync", &hasLiveSyncCallback) != napi_ok ||
       !hasLiveSyncCallback) {
     return false;
   }
@@ -84,8 +81,7 @@ std::unique_ptr<Runtime> runtime_;
   }
 
   napi_valuetype callbackType;
-  if (napi_typeof(env, callback, &callbackType) != napi_ok ||
-      callbackType != napi_function) {
+  if (napi_typeof(env, callback, &callbackType) != napi_ok || callbackType != napi_function) {
     return false;
   }
 
@@ -98,8 +94,7 @@ std::unique_ptr<Runtime> runtime_;
   napi_status status = napi_call_function(env, global, callback, 1, &context, &result);
   if (status != napi_ok) {
     bool hasPendingException = false;
-    if (napi_is_exception_pending(env, &hasPendingException) == napi_ok &&
-        hasPendingException) {
+    if (napi_is_exception_pending(env, &hasPendingException) == napi_ok && hasPendingException) {
       napi_value error;
       napi_get_and_clear_last_exception(env, &error);
     }
@@ -110,8 +105,7 @@ std::unique_ptr<Runtime> runtime_;
 
   if (result != nullptr) {
     napi_valuetype returnType;
-    if (napi_typeof(env, result, &returnType) == napi_ok &&
-        returnType == napi_boolean) {
+    if (napi_typeof(env, result, &returnType) == napi_ok && returnType == napi_boolean) {
       bool callbackResult = false;
       if (napi_get_value_bool(env, result, &callbackResult) == napi_ok) {
         didInvokeCallback = callbackResult;

@@ -1,7 +1,7 @@
+#include <TargetConditionals.h>
 #include "Api/TNSApi.h"
 #include "Interfaces/TNSInheritance.h"
 #include "Marshalling/TNSRecords.h"
-#include <TargetConditionals.h>
 
 #if TARGET_OS_OSX
 @class NSView;

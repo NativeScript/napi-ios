@@ -5,9 +5,9 @@
 #ifndef V8_BASE_PLATFORM_PLATFORM_POSIX_H_
 #define V8_BASE_PLATFORM_PLATFORM_POSIX_H_
 
-#include "v8config.h"
 #include "src/base/platform/platform.h"
 #include "src/base/timezone-cache.h"
+#include "v8config.h"
 
 namespace v8 {
 namespace base {

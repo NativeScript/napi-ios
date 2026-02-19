@@ -2,10 +2,13 @@ describe(module.id, function() {
     var isIOS = typeof UIDevice !== "undefined" &&
         UIDevice.currentDevice &&
         UIDevice.currentDevice.systemVersion;
+    var isMacOS = !isIOS &&
+        typeof NSProcessInfo !== "undefined" &&
+        NSProcessInfo.processInfo;
 
-    if (!isIOS) {
-        it("Version fixtures are currently iOS-only", function () {
-            pending("Versioned fixture classes are not available on macOS metadata.");
+    if (!isIOS && !isMacOS) {
+        it("Version fixtures are unavailable on this platform", function () {
+            pending("Versioned fixture classes are unavailable on this platform metadata.");
         });
         return;
     }
@@ -20,7 +23,7 @@ describe(module.id, function() {
             systemVersion = NSString.stringWithString(UIDevice.currentDevice.systemVersion);
         } else {
             var osVersion = NSProcessInfo.processInfo.operatingSystemVersion;
-            systemVersion = NSString.stringWithFormat("%d.%d", osVersion.majorVersion, osVersion.minorVersion);
+            systemVersion = NSString.stringWithString(`${osVersion.majorVersion}.${osVersion.minorVersion}`);
         }
 
         return systemVersion.compareOptions(version, NSStringCompareOptions.NSNumericSearch) !== NSComparisonResult.NSOrderedAscending;
