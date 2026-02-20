@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "nativescriptjsi.example"
+      "bundleIdentifier": "org.nativescript.jsi.example"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "nativescriptjsi.example"
+      "package": "org.nativescript.jsi.example"
     },
     "web": {
       "favicon": "./assets/favicon.png"
