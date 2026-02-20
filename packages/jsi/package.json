@@ -32,7 +32,6 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace nativescript-jsi-example",
     "clean": "del-cli lib",
     "prepare": "bob build",
     "typecheck": "tsc",
@@ -81,7 +80,6 @@
   "workspaces": [
     "example"
   ],
-  "packageManager": "yarn@4.11.0",
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
