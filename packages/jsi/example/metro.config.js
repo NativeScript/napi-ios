@@ -1,8 +1,5 @@
-const path = require('path');
-const { getDefaultConfig } = require('@react-native/metro-config');
-const { withMetroConfig } = require('react-native-monorepo-config');
-
-const root = path.resolve(__dirname, '..');
+const path = require('node:path');
+const { makeMetroConfig } = require('@rnx-kit/metro-config');
 
 /**
  * Metro configuration
@@ -10,9 +7,22 @@ const root = path.resolve(__dirname, '..');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = withMetroConfig(getDefaultConfig(__dirname), {
-  root,
-  dirname: __dirname,
+const config = makeMetroConfig({
+  transformer: {
+    getTransformOptions: () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: false,
+      },
+    }),
+  },
 });
+config.watchFolders = [
+  ...new Set([
+    ...config.watchFolders,
+    // Watch the parent directory, for the "nativescript-jsi" package.
+    path.resolve('..'),
+  ]),
+];
 
 module.exports = config;
