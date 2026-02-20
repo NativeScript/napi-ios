@@ -1,8 +1,17 @@
-const path = require('path');
+const path = require('node:path');
+const fs = require('node:fs');
 const { getDefaultConfig } = require('@expo/metro-config');
-const { withMetroConfig } = require('react-native-monorepo-config');
+const { makeMetroConfig } = require('@rnx-kit/metro-config');
 
-const root = path.resolve(__dirname, '..');
+const exampleWorkspace = path.resolve(__dirname, '.');
+const nativescriptJsi = path.resolve(__dirname, '..');
+const monorepoRoot = path.resolve(__dirname, '../../..');
+
+const allNodeModules = [
+  path.resolve(exampleWorkspace, 'node_modules'),
+  path.resolve(nativescriptJsi, 'node_modules'),
+  path.resolve(monorepoRoot, 'node_modules'),
+];
 
 /**
  * Metro configuration
@@ -10,9 +19,17 @@ const root = path.resolve(__dirname, '..');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = withMetroConfig(getDefaultConfig(__dirname), {
-  root,
-  dirname: __dirname,
-});
+const config = makeMetroConfig(getDefaultConfig(__dirname));
+
+config.resolver.nodeModulesPaths = allNodeModules;
+config.resolver.extraNodeModules = {
+  'nativescript-jsi': nativescriptJsi,
+};
+
+config.watchFolders = [
+  ...allNodeModules.filter((filePath) => fs.existsSync(filePath)),
+  nativescriptJsi,
+];
+console.log(config.watchFolders);
 
 module.exports = config;

@@ -16,8 +16,10 @@
   "private": true,
   "devDependencies": {
     "@expo/metro-config": "54.0.14",
+    "@react-native/metro-config": "^0.84.0",
+    "@rnx-kit/metro-config": "^2.2.4",
+    "babel-preset-expo": "^54.0.10",
     "expo-dev-client": "~6.0.20",
-    "react-native-builder-bob": "^0.40.18",
-    "react-native-monorepo-config": "^0.3.3"
+    "react-native-builder-bob": "^0.40.18"
   }
 }
