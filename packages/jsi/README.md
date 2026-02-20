@@ -4,14 +4,11 @@ A JSI projection for NativeScript
 
 ## Installation
 
-
 ```sh
 npm install nativescript-jsi
 ```
 
-
 ## Usage
-
 
 ```js
 import { multiply } from 'nativescript-jsi';
@@ -20,7 +17,6 @@ import { multiply } from 'nativescript-jsi';
 
 const result = multiply(3, 7);
 ```
-
 
 ## Contributing
 

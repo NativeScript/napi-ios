@@ -75,8 +75,6 @@ To fix formatting errors, run the following:
 yarn lint --fix
 ```
 
-
-
 ### Scripts
 
 The `package.json` file contains various scripts for common tasks:
