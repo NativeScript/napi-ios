@@ -75,12 +75,23 @@ std::string transformJSObject(napi_env env, napi_value object) {
 
     // Check if the object has a toString method
     napi_has_named_property(env, object, "toString", &hasToString);
+
     if (hasToString) {
         napi_get_named_property(env, object, "toString", &toStringFunc);
         if (napi_util::is_of_type(env, toStringFunc, napi_function)) {
             napi_value result;
             napi_call_function(env, object, toStringFunc, 0, nullptr, &result);
             auto value = ArgConverter::ConvertToString(env, result);
+
+            bool is_error = false;
+            napi_is_error(env, object, &is_error);
+            if (is_error) {
+                napi_value stack;
+                napi_get_named_property(env, object, "stack", &stack);
+                auto stack_value = ArgConverter::ConvertToString(env, stack);
+                value += "\n" + stack_value;
+            }
+
             auto hasCustomToStringImplementation = value.find("[object Object]") == std::string::npos;
             if (hasCustomToStringImplementation) return value;
         }
