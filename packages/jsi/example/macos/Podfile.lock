@@ -1,9 +1,14 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
+  - EXConstants (18.0.13):
+    - ExpoModulesCore
+  - EXManifests (1.0.10):
+    - ExpoModulesCore
   - Expo (54.0.33):
     - boost
     - DoubleConversion
+    - ExpoModulesCore
     - fast_float
     - fmt
     - glog
@@ -31,6 +36,45 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - ExpoAsset (12.0.12):
+    - ExpoModulesCore
+  - ExpoFileSystem (19.0.21):
+    - ExpoModulesCore
+  - ExpoFont (14.0.11):
+    - ExpoModulesCore
+  - ExpoKeepAwake (15.0.8):
+    - ExpoModulesCore
+  - ExpoModulesCore (3.0.29):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-jsinspector
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
+  - EXUpdatesInterface (2.0.0):
+    - ExpoModulesCore
   - fast_float (8.0.0)
   - FBLazyVector (0.81.2)
   - fmt (11.0.2)
@@ -2290,7 +2334,15 @@ PODS:
 DEPENDENCIES:
   - boost (from `../../../../node_modules/react-native-macos/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../../../../node_modules/react-native-macos/third-party-podspecs/DoubleConversion.podspec`)
+  - EXConstants (from `../../../../node_modules/expo-constants/ios`)
+  - EXManifests (from `../../../../node_modules/expo-manifests/ios`)
   - Expo (from `../../../../node_modules/expo`)
+  - ExpoAsset (from `../../../../node_modules/expo-asset/ios`)
+  - ExpoFileSystem (from `../../../../node_modules/expo-file-system/ios`)
+  - ExpoFont (from `../../../../node_modules/expo-font/ios`)
+  - ExpoKeepAwake (from `../../../../node_modules/expo-keep-awake/ios`)
+  - ExpoModulesCore (from `../../../../node_modules/expo-modules-core`)
+  - EXUpdatesInterface (from `../../../../node_modules/expo-updates-interface/ios`)
   - fast_float (from `../../../../node_modules/react-native-macos/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../../../../node_modules/react-native-macos/Libraries/FBLazyVector`)
   - fmt (from `../../../../node_modules/react-native-macos/third-party-podspecs/fmt.podspec`)
@@ -2372,8 +2424,24 @@ EXTERNAL SOURCES:
     :podspec: "../../../../node_modules/react-native-macos/third-party-podspecs/boost.podspec"
   DoubleConversion:
     :podspec: "../../../../node_modules/react-native-macos/third-party-podspecs/DoubleConversion.podspec"
+  EXConstants:
+    :path: "../../../../node_modules/expo-constants/ios"
+  EXManifests:
+    :path: "../../../../node_modules/expo-manifests/ios"
   Expo:
     :path: "../../../../node_modules/expo"
+  ExpoAsset:
+    :path: "../../../../node_modules/expo-asset/ios"
+  ExpoFileSystem:
+    :path: "../../../../node_modules/expo-file-system/ios"
+  ExpoFont:
+    :path: "../../../../node_modules/expo-font/ios"
+  ExpoKeepAwake:
+    :path: "../../../../node_modules/expo-keep-awake/ios"
+  ExpoModulesCore:
+    :path: "../../../../node_modules/expo-modules-core"
+  EXUpdatesInterface:
+    :path: "../../../../node_modules/expo-updates-interface/ios"
   fast_float:
     :podspec: "../../../../node_modules/react-native-macos/third-party-podspecs/fast_float.podspec"
   FBLazyVector:
@@ -2517,7 +2585,15 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: cea1d4f90a3a59537f3deb03ff5656489d7133dd
   DoubleConversion: d31b1eb37f6d6f456530c4fd9124b857d6889cab
-  Expo: 617938c68151174b619b3a6367fb4eb2bddd36cb
+  EXConstants: 3feb66fd1d94202fc1f0946d74e029d8b224b60e
+  EXManifests: 83ef0844fcf06d6099b12a7bdbd7d36fc0e1dd16
+  Expo: 8f20e31bd2c5a25e60261e248287cfecbcadc1c6
+  ExpoAsset: d999f3bbd998a750f3b74cb913229848901b926b
+  ExpoFileSystem: aefcd337b94b874f88752ebefc52813b84992fad
+  ExpoFont: c625dbd97ed57e9089b172b2a7bb99003d074664
+  ExpoKeepAwake: 44bf6715bc1d2ddb17afe19d927cd039cda123f0
+  ExpoModulesCore: c740a66e579337893e953547429264fe386568ae
+  EXUpdatesInterface: 1436757deb0d574b84bba063bd024c315e0ec08b
   fast_float: 20817c22759af6ac8d4d67e6e059b8b499953656
   FBLazyVector: 0e3076dbb16169b0afc2d701a24a526423b5e76b
   fmt: 24e7591456deb60b4a77518f83d9a916ac84223f
@@ -2589,6 +2665,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 927965149d92a77941dba4f446f50786a95f8ecc
 
-PODFILE CHECKSUM: 24ba21294e937e7deac87c561699bb522e5f019d
+PODFILE CHECKSUM: af4c3bdedf4df2375937d89b0393bbe11ed04e95
 
 COCOAPODS: 1.16.2
