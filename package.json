@@ -38,7 +38,8 @@
     "build:macos": "./build_nativescript.sh --macos --no-iphone --no-simulator",
     "build:macos-cli": "./build_nativescript.sh --no-iphone --no-simulator --macos-cli",
     "build:macos-napi": "./build_nativescript.sh --no-iphone --no-simulator --macos-napi",
-    "nsr": "./dist/nsr"
+    "nsr": "./dist/nsr",
+    "postinstall": "patch-package"
   },
   "license": "Apache-2.0",
   "devDependencies": {
@@ -46,6 +47,7 @@
     "dayjs": "^1.11.7",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
+    "patch-package": "^8.0.1",
     "semver": "^7.5.0"
   },
   "lint-staged": {
