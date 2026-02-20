@@ -51,5 +51,9 @@
     "{NativeScript,metadata-generator/src,TestFixtures}/**/*.{h,hpp,c,cpp,mm,m}": [
       "clang-format -i"
     ]
+  },
+  "overrides": {
+    "react": "19.1.0",
+    "react-native": "0.81.5"
   }
 }
