@@ -95,7 +95,7 @@
     "type": "modules",
     "jsSrcsDir": "src",
     "android": {
-      "javaPackageName": "com.nativescriptjsi"
+      "javaPackageName": "org.nativescript.jsi"
     }
   },
   "prettier": {

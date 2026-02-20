@@ -1,4 +1,4 @@
-package com.nativescriptjsi
+package org.nativescript.jsi
 
 import com.facebook.react.bridge.ReactApplicationContext
 
