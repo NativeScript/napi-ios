@@ -24,9 +24,15 @@ const result = multiply(3, 7);
 
 ## Contributing
 
-- [Development workflow](CONTRIBUTING.md#development-workflow)
-- [Sending a pull request](CONTRIBUTING.md#sending-a-pull-request)
-- [Code of conduct](CODE_OF_CONDUCT.md)
+```sh
+cd packages/jsi/example
+
+# Generate the Xcode project (packages/jsi/example/ios):
+npx expo prebuild --platform ios --clean
+
+# Build and run the iOS example app.
+npm run ios
+```
 
 ## License
 
