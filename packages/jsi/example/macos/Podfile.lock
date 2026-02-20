@@ -82,6 +82,34 @@ PODS:
   - hermes-engine (0.81.5):
     - hermes-engine/Pre-built (= 0.81.5)
   - hermes-engine/Pre-built (0.81.5)
+  - NativescriptJsi (0.1.0):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2348,6 +2376,7 @@ DEPENDENCIES:
   - fmt (from `../../../../node_modules/react-native-macos/third-party-podspecs/fmt.podspec`)
   - glog (from `../../../../node_modules/react-native-macos/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../../../../node_modules/react-native-macos/sdks/hermes-engine/hermes-engine.podspec`)
+  - NativescriptJsi (from `../..`)
   - RCT-Folly (from `../../../../node_modules/react-native-macos/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../../../../node_modules/react-native-macos/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
   - RCTRequired (from `../../../../node_modules/react-native-macos/Libraries/Required`)
@@ -2453,6 +2482,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../../../../node_modules/react-native-macos/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2025-07-07-RNv0.81.0-e0fc67142ec0763c6b6153ca2bf96df815539782
+  NativescriptJsi:
+    :path: "../.."
   RCT-Folly:
     :podspec: "../../../../node_modules/react-native-macos/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2599,6 +2630,7 @@ SPEC CHECKSUMS:
   fmt: 24e7591456deb60b4a77518f83d9a916ac84223f
   glog: 0b31c25149b9d350b2666c7d459229861a00ec07
   hermes-engine: d1e544246fbda6f5b9b0ebe261340f34645cb03a
+  NativescriptJsi: 716565d81fe7d789f16252fa1b44aaf909c33fa9
   RCT-Folly: 0a7558aedae101878b4a1273756c05613dbdfb61
   RCTDeprecation: b60b889eafa75f46c3d6be5332681efbb16ad0c7
   RCTRequired: 070d7f0ef937e7a93aab20761cef55419f16b5de
