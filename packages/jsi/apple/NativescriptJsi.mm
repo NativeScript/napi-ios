@@ -22,6 +22,8 @@
 
 - (void)nativescript_init:(NSString *)metadata_path {
   NSLog(metadata_path);
+
+  // TODO: Port NativeScript/ffi/ObjCBridge.mm to JSI.
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
