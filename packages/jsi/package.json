@@ -58,8 +58,8 @@
     "@types/react": "^19.1.12",
     "del-cli": "^6.0.0",
     "prettier": "^2.8.8",
-    "react": "19.1.0",
-    "react-native": "0.81.5",
+    "react": "19.1.4",
+    "react-native": "0.81.6",
     "react-native-builder-bob": "^0.40.18",
     "turbo": "^2.5.6",
     "typescript": "^5.9.2"
