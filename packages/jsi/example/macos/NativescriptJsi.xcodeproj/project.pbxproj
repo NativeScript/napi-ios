@@ -14,6 +14,10 @@
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		7B824CDAE58CB024149952F9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EFC31A54416DA5A3BCE77EAF /* PrivacyInfo.xcprivacy */; };
+		7D910A3E2F49565700407C28 /* metadata.macos.arm64.h in Resources */ = {isa = PBXBuildFile; fileRef = 7D910A3A2F49565700407C28 /* metadata.macos.arm64.h */; };
+		7D910A3F2F49565700407C28 /* metadata.macos.x86_64.h in Resources */ = {isa = PBXBuildFile; fileRef = 7D910A3B2F49565700407C28 /* metadata.macos.x86_64.h */; };
+		7D910A402F49565700407C28 /* metadata.macos.x86_64.nsmd in Resources */ = {isa = PBXBuildFile; fileRef = 7D910A3C2F49565700407C28 /* metadata.macos.x86_64.nsmd */; };
+		7D910A412F49565700407C28 /* metadata.macos.arm64.nsmd in Resources */ = {isa = PBXBuildFile; fileRef = 7D910A3D2F49565700407C28 /* metadata.macos.arm64.nsmd */; };
 		EF62F1C38E47F6BB34DD982C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EFC31A54416DA5A3BCE77EAF /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +34,10 @@
 		514201592437B4B40078DB4F /* NativescriptJsi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NativescriptJsi.entitlements; sourceTree = "<group>"; };
 		56ACB951E4DBD7FF2C4E44BD /* libPods-NativescriptJsi-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NativescriptJsi-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F6ED21BE44D52AFD144A8A /* Pods-NativescriptJsi-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativescriptJsi-macOS.debug.xcconfig"; path = "Target Support Files/Pods-NativescriptJsi-macOS/Pods-NativescriptJsi-macOS.debug.xcconfig"; sourceTree = "<group>"; };
+		7D910A3A2F49565700407C28 /* metadata.macos.arm64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = metadata.macos.arm64.h; path = "../../../../metadata-generator/metadata/metadata.macos.arm64.h"; sourceTree = "<group>"; };
+		7D910A3B2F49565700407C28 /* metadata.macos.x86_64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = metadata.macos.x86_64.h; path = "../../../../metadata-generator/metadata/metadata.macos.x86_64.h"; sourceTree = "<group>"; };
+		7D910A3C2F49565700407C28 /* metadata.macos.x86_64.nsmd */ = {isa = PBXFileReference; lastKnownFileType = file; name = metadata.macos.x86_64.nsmd; path = "../../../../metadata-generator/metadata/metadata.macos.x86_64.nsmd"; sourceTree = "<group>"; };
+		7D910A3D2F49565700407C28 /* metadata.macos.arm64.nsmd */ = {isa = PBXFileReference; lastKnownFileType = file; name = metadata.macos.arm64.nsmd; path = "../../../../metadata-generator/metadata/metadata.macos.arm64.nsmd"; sourceTree = "<group>"; };
 		C5F477BB472D20434A8B470D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-NativescriptJsi-macOS/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EFC31A54416DA5A3BCE77EAF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -104,6 +112,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				7D910A3A2F49565700407C28 /* metadata.macos.arm64.h */,
+				7D910A3D2F49565700407C28 /* metadata.macos.arm64.nsmd */,
+				7D910A3B2F49565700407C28 /* metadata.macos.x86_64.h */,
+				7D910A3C2F49565700407C28 /* metadata.macos.x86_64.nsmd */,
 				5142014A2437B4B30078DB4F /* NativescriptJsi-macOS */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -226,6 +238,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D910A3E2F49565700407C28 /* metadata.macos.arm64.h in Resources */,
+				7D910A3F2F49565700407C28 /* metadata.macos.x86_64.h in Resources */,
+				7D910A402F49565700407C28 /* metadata.macos.x86_64.nsmd in Resources */,
+				7D910A412F49565700407C28 /* metadata.macos.arm64.nsmd in Resources */,
 				514201522437B4B40078DB4F /* Assets.xcassets in Resources */,
 				514201552437B4B40078DB4F /* Main.storyboard in Resources */,
 				EF62F1C38E47F6BB34DD982C /* PrivacyInfo.xcprivacy in Resources */,

@@ -9,7 +9,9 @@
     "macos": "react-native run-macos"
   },
   "dependencies": {
+    "@bacons/link-assets": "1.1.0",
     "expo": "~54.0.33",
+    "expo-device": "~8.0.10",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.4",
     "react-native": "0.81.6",

@@ -24,6 +24,19 @@
       "edgeToEdgeEnabled": true,
       "package": "org.nativescript.jsi.example"
     },
+    "plugins": [
+      [
+        "@bacons/link-assets",
+        [
+          "../../../metadata-generator/metadata/metadata.ios-sim.arm64.h",
+          "../../../metadata-generator/metadata/metadata.ios-sim.arm64.nsmd",
+          "../../../metadata-generator/metadata/metadata.ios-sim.x86_64.h",
+          "../../../metadata-generator/metadata/metadata.ios-sim.x86_64.nsmd",
+          "../../../metadata-generator/metadata/metadata.ios.arm64.h",
+          "../../../metadata-generator/metadata/metadata.ios.arm64.nsmd"
+        ]
+      ]
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     }

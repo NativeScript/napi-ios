@@ -7,8 +7,21 @@
   return result;
 }
 
+- (NSString *)getMainBundleResourcePath {
+  return [[NSBundle mainBundle] resourcePath];
+}
+
+- (NSString *)getArch {
+#if defined(__arm64__)
+  return @"arm64";
+#elif defined(__x86_64__)
+  return @"x86_64";
+#endif
+  return @"unknown";
+}
+
 - (void)nativescript_init:(NSString *)metadata_path {
-  // TODO
+  NSLog(metadata_path);
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

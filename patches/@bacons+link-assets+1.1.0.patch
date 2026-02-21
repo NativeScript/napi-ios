@@ -1,0 +1,64 @@
+diff --git a/node_modules/@bacons/link-assets/build/groupFiles.js b/node_modules/@bacons/link-assets/build/groupFiles.js
+index 91c7f85..c2470ae 100644
+--- a/node_modules/@bacons/link-assets/build/groupFiles.js
++++ b/node_modules/@bacons/link-assets/build/groupFiles.js
+@@ -5,6 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.groupFilesByType = void 0;
+ const mime_1 = __importDefault(require("mime"));
++function getCustomType(type){
++  if(type.endsWith(".h")){
++    return "text/x-chdr";
++  }
++  if(type.endsWith(".nsmd")){
++    return "application/x-nsmd";
++  }
++
++  return '';
++}
+ /**
+  * Given an array of files, it groups it by it's type.
+  * Type of the file is inferred from it's mimetype based on the extension
+@@ -17,7 +27,7 @@ const mime_1 = __importDefault(require("mime"));
+  * the returned object will be: {font: ['fonts/a.ttf'], image: ['images/b.jpg']}
+  */
+ function groupFilesByType(assets) {
+-    return groupBy(assets, (type) => (mime_1.default.getType(type) || "").split("/")[0]);
++    return groupBy(assets, (type) => (mime_1.default.getType(type) || getCustomType(type) || "").split("/")[0]);
+ }
+ exports.groupFilesByType = groupFilesByType;
+ function groupBy(arr, block) {
+diff --git a/node_modules/@bacons/link-assets/build/index.js b/node_modules/@bacons/link-assets/build/index.js
+index d65e664..b9121c0 100644
+--- a/node_modules/@bacons/link-assets/build/index.js
++++ b/node_modules/@bacons/link-assets/build/index.js
+@@ -62,6 +62,7 @@ const withIosLinkedAsset = (config, { font, image }) => {
+         }
+         addResourceFile(font);
+         addResourceFile(image);
++        addResourceFile(application);
+         return config;
+     });
+     config = (0, config_plugins_1.withInfoPlist)(config, (config) => {
+@@ -71,13 +72,17 @@ const withIosLinkedAsset = (config, { font, image }) => {
+         const existingFonts = config.modResults.UIAppFonts || [];
+         const fontList = (_a = font === null || font === void 0 ? void 0 : font.map((font) => path_1.default.basename(font))) !== null && _a !== void 0 ? _a : [];
+         debug("Native iOS Fonts:", fontList);
+-        const allFonts = [
++        const allFonts = Array.from(new Set([
+             // @ts-expect-error
+             ...existingFonts,
+             ...fontList,
+-        ];
+-        // @ts-ignore Type mismatch with the lib
+-        config.modResults.UIAppFonts = Array.from(new Set(allFonts));
++        ]));
++        // FIXME: if allFonts was previously populated, but is now empty, remove
++        // the key somehow.
++        if(allFonts.length){
++          // @ts-ignore Type mismatch with the lib
++          config.modResults.UIAppFonts = allFonts;
++        }
+         return config;
+     });
+     return config;

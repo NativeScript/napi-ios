@@ -1,5 +1,10 @@
-import { Text, View, StyleSheet, Button } from 'react-native';
-import { multiply, nativescript_init } from 'nativescript-jsi';
+import { Text, View, StyleSheet, Button, Platform } from 'react-native';
+import {
+  getArch,
+  getMainBundleResourcePath,
+  multiply,
+  nativescript_init,
+} from 'nativescript-jsi';
 
 const result = multiply(3, 7);
 
@@ -11,7 +16,10 @@ export default function App() {
         title="Init NativeScript"
         onPress={() => {
           try {
-            nativescript_init('abc');
+            console.log('metadataFileName', getMetadataFileName());
+            nativescript_init(
+              `${getMainBundleResourcePath()}/${getMetadataFileName()}`
+            );
           } catch (error) {
             console.log('Error initialising NativeScript:', error);
           }
@@ -19,6 +27,23 @@ export default function App() {
       />
     </View>
   );
+}
+
+function getMetadataFileName() {
+  if (Platform.OS === 'ios') {
+    const { isDevice, supportedCpuArchitectures } = require('expo-device');
+
+    const arch = supportedCpuArchitectures.some((arch: string) =>
+      arch.toLowerCase().includes('arm64') ? 'arm64' : 'x84_64'
+    );
+    return `metadata.ios${isDevice ? '' : '-sim'}.${arch}.nsmd`;
+  }
+
+  if (Platform.OS === 'macos') {
+    return `metadata.macos.${getArch()}.nsmd`;
+  }
+
+  throw new Error('This example only supports iOS and macOS.');
 }
 
 const styles = StyleSheet.create({

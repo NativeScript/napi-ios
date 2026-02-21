@@ -5,6 +5,28 @@ export function multiply(a: number, b: number): number {
 }
 
 /**
+ * @deprecated This is a convenience API for use by this library's example app
+ * to help get the path to the bundled metadata. Normally this API would be
+ * provided via expo-device or something.
+ *
+ * @platform iOS and macOS. Returns "unknown" on Android.
+ */
+export function getArch(): string {
+  return NativescriptJsi.getArch();
+}
+
+/**
+ * @deprecated This is a convenience API for use by this library's example app
+ * to help get the path to the bundled metadata. Normally this API would be
+ * provided via expo-file-system or something.
+ *
+ * @platform iOS and macOS. Returns empty string on Android.
+ */
+export function getMainBundleResourcePath(): string {
+  return NativescriptJsi.getMainBundleResourcePath();
+}
+
+/**
  * Initialise NativeScript JSI. This installs its bindings to the Objective-C
  * runtime. It will bind to whatever APIs are referenced in in the metadata
  * bundle.
