@@ -87,9 +87,13 @@ std::string transformJSObject(napi_env env, napi_value object) {
             napi_is_error(env, object, &is_error);
             if (is_error) {
                 napi_value stack;
-                napi_get_named_property(env, object, "stack", &stack);
-                auto stack_value = ArgConverter::ConvertToString(env, stack);
-                value += "\n" + stack_value;
+                napi_status status = napi_get_named_property(env, object, "stack", &stack);
+                if (status == napi_ok && !napi_util::is_null_or_undefined(env, stack)) {
+                    auto stack_value = ArgConverter::ConvertToString(env, stack);
+                    if (!stack_value.empty() && value.find(stack_value) == std::string::npos) {
+                        value += "\n" + stack_value;
+                    }
+                }
             }
 
             auto hasCustomToStringImplementation = value.find("[object Object]") == std::string::npos;
