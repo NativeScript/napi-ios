@@ -26,6 +26,9 @@ config.resolver.extraNodeModules = {
   'nativescript-jsi': nativescriptJsi,
 };
 
+// I'm so sick of "Recrawled this watch 23 times".
+config.resolver.useWatchman = false;
+
 config.watchFolders = [
   ...allNodeModules.filter((filePath) => fs.existsSync(filePath)),
   nativescriptJsi,
