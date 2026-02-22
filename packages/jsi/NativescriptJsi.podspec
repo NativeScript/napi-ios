@@ -13,8 +13,14 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => min_ios_version_supported, :osx => "12.0" }
   s.source       = { :git => "https://github.com/NativeScript/napi-ios/tree/main/packages/jsi.git", :tag => "#{s.version}" }
 
-  s.source_files = "apple/**/*.{h,m,mm,swift,cpp}"
-  s.private_header_files = "apple/**/*.h"
+  s.source_files = [
+    "apple/**/*.{h,m,mm,swift}",
+    "cpp/**/*.{h,cpp}"
+  ]
+  s.private_header_files = [
+    "apple/**/*.h",
+    "cpp/**/*.h"
+  ]
 
   install_modules_dependencies(s)
 end

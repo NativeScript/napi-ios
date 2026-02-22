@@ -1,4 +1,11 @@
 #import "NativescriptJsi.h"
+#import "NativescriptJsiInstaller.h"
+#import <jsi/jsi.h>
+
+using namespace facebook;
+
+@interface NativescriptJsi (JSIBindings) <RCTTurboModuleWithJSIBindings>
+@end
 
 @implementation NativescriptJsi
 - (NSNumber *)multiply:(double)a b:(double)b {
@@ -24,6 +31,11 @@
   NSLog(metadata_path);
 
   // TODO: Port NativeScript/ffi/ObjCBridge.mm to JSI.
+}
+
+- (void)installJSIBindingsWithRuntime:(facebook::jsi::Runtime &)runtime
+                          callInvoker:(const std::shared_ptr<facebook::react::CallInvoker> &)callinvoker {
+  nativescriptjsi::NativescriptJsiInstaller::install(runtime);
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

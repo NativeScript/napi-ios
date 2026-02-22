@@ -19,6 +19,7 @@
     "ios",
     "cpp",
     "*.podspec",
+    "LICENSE-brownie",
     "react-native.config.js",
     "!ios/build",
     "!android/build",

@@ -1,5 +1,5 @@
 #import <NativescriptJsiSpec/NativescriptJsiSpec.h>
+#import <ReactCommon/RCTTurboModuleWithJSIBindings.h>
 
-@interface NativescriptJsi : NSObject <NativeNativescriptJsiSpec>
-
+@interface NativescriptJsi : NativeNativescriptJsiSpecBase <NativeNativescriptJsiSpec>
 @end
