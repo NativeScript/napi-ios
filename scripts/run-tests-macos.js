@@ -15,6 +15,7 @@ const fs = require("fs");
 const path = require("path");
 const cp = require("child_process");
 const crypto = require("crypto");
+const os = require("os");
 
 const projectPath = path.join(__dirname, "../napi-ios.xcodeproj");
 const scheme = "TestRunner";
@@ -57,6 +58,7 @@ const launchedMarker = "Application Start!";
 const junitPrefix = "TKUnit: ";
 const junitEndTag = "</testsuites>";
 const consoleLogMarker = "CONSOLE LOG:";
+const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
 
 function parseArgs() {
     const args = process.argv.slice(2).filter(Boolean);
@@ -173,6 +175,202 @@ function stripConsoleLogPrefix(line) {
     }
 
     return line.slice(markerIndex + consoleLogMarker.length).trimStart();
+}
+
+function quoteForLLDB(arg) {
+    return `"${String(arg).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+function getProcessExitStatus(code, signal) {
+    if (typeof code === "number") {
+        return { code, display: String(code) };
+    }
+
+    if (signal) {
+        const signalNumber = os.constants.signals[signal];
+        if (typeof signalNumber === "number") {
+            const mappedCode = 128 + signalNumber;
+            return { code: mappedCode, display: `${mappedCode} (signal ${signal})` };
+        }
+
+        return { code: 1, display: `signal ${signal}` };
+    }
+
+    return { code: 1, display: "unknown" };
+}
+
+function isLikelyCrash(code, signal) {
+    if (signal) {
+        return true;
+    }
+
+    return code === 134 || code === 139;
+}
+
+function readRecentCrashReportForPid(pid, launchedAtMs) {
+    if (!pid || !fs.existsSync(crashReportsDir)) {
+        return null;
+    }
+
+    const candidates = fs.readdirSync(crashReportsDir)
+        .filter((name) => name.startsWith("TestRunner-") && (name.endsWith(".ips") || name.endsWith(".crash")))
+        .map((name) => {
+            const fullPath = path.join(crashReportsDir, name);
+            let stats;
+            try {
+                stats = fs.statSync(fullPath);
+            } catch (_) {
+                return null;
+            }
+
+            return {
+                fullPath,
+                mtimeMs: stats.mtimeMs
+            };
+        })
+        .filter(Boolean)
+        .filter((item) => item.mtimeMs >= (launchedAtMs - 5000))
+        .sort((a, b) => b.mtimeMs - a.mtimeMs);
+
+    const pidMatchers = [
+        `"pid" : ${pid}`,
+        `"pid":${pid}`,
+        `Process:               TestRunner [${pid}]`,
+        `Process:         TestRunner [${pid}]`
+    ];
+
+    for (const candidate of candidates) {
+        let content;
+        try {
+            content = fs.readFileSync(candidate.fullPath, "utf8");
+        } catch (_) {
+            continue;
+        }
+
+        if (pidMatchers.some((matcher) => content.includes(matcher))) {
+            return { path: candidate.fullPath, content };
+        }
+    }
+
+    return null;
+}
+
+function formatBacktraceFromIPS(ipsContent) {
+    const firstNewline = ipsContent.indexOf("\n");
+    if (firstNewline < 0) {
+        return null;
+    }
+
+    let report;
+    try {
+        report = JSON.parse(ipsContent.slice(firstNewline + 1).trim());
+    } catch (_) {
+        return null;
+    }
+
+    const threads = report.threads || [];
+    if (!Array.isArray(threads) || threads.length === 0) {
+        return null;
+    }
+
+    const faultingThread = Number.isInteger(report.faultingThread) ? report.faultingThread : 0;
+    const images = report.usedImages || [];
+    const lines = [];
+    const exceptionType = report.exception && report.exception.type ? report.exception.type : "unknown";
+    const exceptionSignal = report.exception && report.exception.signal ? report.exception.signal : "unknown";
+    lines.push(`Exception: ${exceptionType} (${exceptionSignal})`);
+    lines.push(`Faulting thread: ${faultingThread}`);
+
+    for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
+        const thread = threads[threadIndex];
+        if (!thread || !Array.isArray(thread.frames)) {
+            continue;
+        }
+
+        const threadHeader = threadIndex === faultingThread
+            ? `Thread ${threadIndex} Crashed${thread.queue ? ` (${thread.queue})` : ""}:`
+            : `Thread ${threadIndex}${thread.queue ? ` (${thread.queue})` : ""}:`;
+        lines.push(threadHeader);
+
+        for (let frameIndex = 0; frameIndex < thread.frames.length; frameIndex++) {
+            const frame = thread.frames[frameIndex];
+            const imageName = (typeof frame.imageIndex === "number" && images[frame.imageIndex] && images[frame.imageIndex].name)
+                ? images[frame.imageIndex].name
+                : `image[${frame.imageIndex ?? "?"}]`;
+            const symbol = frame.symbol || (typeof frame.imageOffset === "number" ? `0x${frame.imageOffset.toString(16)}` : "<unknown>");
+            const symbolLocation = typeof frame.symbolLocation === "number" ? ` + ${frame.symbolLocation}` : "";
+            const sourceLocation = frame.sourceFile
+                ? ` (${path.basename(frame.sourceFile)}${typeof frame.sourceLine === "number" ? `:${frame.sourceLine}` : ""})`
+                : "";
+            lines.push(`${String(frameIndex).padStart(3, " ")} ${imageName} ${symbol}${symbolLocation}${sourceLocation}`);
+        }
+    }
+
+    return lines.join("\n");
+}
+
+function formatBacktraceFromCrashText(crashContent) {
+    const match = crashContent.match(/Thread\s+\d+\s+Crashed:[\s\S]*?(?=\n\nThread\s+\d+|\nBinary Images:|$)/);
+    return match ? match[0] : null;
+}
+
+function emitLLDBBacktrace(appBinaryPath, runArgs) {
+    const runCommand = runArgs.length > 0
+        ? `run ${runArgs.map(quoteForLLDB).join(" ")}`
+        : "run";
+    const args = [
+        "lldb",
+        "--batch",
+        "--one-line", "process handle -p true -s false -n false SIGSEGV SIGBUS SIGABRT SIGILL SIGTRAP",
+        "--one-line", runCommand,
+        "--one-line", "thread backtrace all",
+        "--",
+        appBinaryPath
+    ];
+
+    const result = cp.spawnSync("xcrun", args, {
+        encoding: "utf8",
+        timeout: commandTimeoutMs
+    });
+
+    if (result.error) {
+        console.error(`ERROR: Unable to collect LLDB backtrace: ${result.error.message}`);
+        return;
+    }
+
+    const output = `${result.stdout || ""}${result.stderr || ""}`.trim();
+    if (output.length === 0) {
+        console.error("ERROR: LLDB produced no backtrace output.");
+        return;
+    }
+
+    console.error("\n--- Crash Backtrace (LLDB) ---");
+    console.error(output);
+}
+
+async function emitCrashBacktrace(appBinaryPath, runArgs, launchedAtMs, pid) {
+    const deadline = Date.now() + 5000;
+
+    while (Date.now() < deadline) {
+        const report = readRecentCrashReportForPid(pid, launchedAtMs);
+        if (report) {
+            const formatted = report.path.endsWith(".ips")
+                ? formatBacktraceFromIPS(report.content)
+                : formatBacktraceFromCrashText(report.content);
+
+            if (formatted) {
+                console.error(`\n--- Crash Backtrace (${report.path}) ---`);
+                console.error(formatted);
+                return;
+            }
+
+            break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    emitLLDBBacktrace(appBinaryPath, runArgs);
 }
 
 function runBuildAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
@@ -304,6 +502,8 @@ function main() {
     let appLaunched = false;
     let timeoutTimer = null;
     let inactivityTimer = null;
+    let childPid = null;
+    let launchedAtMs = Date.now();
 
     function clearTimers() {
         if (timeoutTimer) {
@@ -343,6 +543,8 @@ function main() {
     const child = cp.spawn(appBinaryPath, runArgs, {
         stdio: ["ignore", "pipe", "pipe"]
     });
+    childPid = child.pid;
+    launchedAtMs = Date.now();
 
     function createChunkHandler() {
         let leftover = "";
@@ -406,12 +608,18 @@ function main() {
         failAndExit(`ERROR: Failed to start TestRunner process: ${error.message}`, child);
     });
 
-    child.on("close", (code) => {
+    child.on("close", async (code, signal) => {
         clearTimers();
         results.end();
+        const exitStatus = getProcessExitStatus(code, signal);
 
         if (!completedSuccessfully) {
-            failAndExit(`ERROR: Test run failed before JUnit completion. Exit code: ${code}`, null);
+            if (isLikelyCrash(code, signal)) {
+                await emitCrashBacktrace(appBinaryPath, runArgs, launchedAtMs, childPid);
+            }
+
+            console.error(`ERROR: Test run failed before JUnit completion. Exit code: ${exitStatus.display}`);
+            process.exit(exitStatus.code);
             return;
         }
 

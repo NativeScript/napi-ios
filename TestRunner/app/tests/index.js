@@ -195,11 +195,11 @@ loadTest("./Marshalling/EnumTests");
 loadTest("./Marshalling/ProtocolTests");
 //
 // import "./Inheritance/ConstructorResolutionTests";
-// require("./Inheritance/InheritanceTests");
+require("./Inheritance/InheritanceTests");
 loadTest("./Inheritance/ProtocolImplementationTests");
 loadTest("./Inheritance/TypeScriptTests");
 //
-// require("./MethodCallsTests");
+require("./MethodCallsTests");
 //import "./FunctionsTests";
 loadTest("./VersionDiffTests");
 loadTest("./ObjCConstructors");
@@ -216,9 +216,9 @@ loadTest("./RuntimeImplementedAPIs");
 
 // require("./Timers");
 
-// require("./URL");
+require("./URL");
 loadTest("./URLSearchParams");
-// loadTest("./URLPattern");
+loadTest("./URLPattern");
 
 // Exception handling tests
 loadTest("./ExceptionHandlingTests");
